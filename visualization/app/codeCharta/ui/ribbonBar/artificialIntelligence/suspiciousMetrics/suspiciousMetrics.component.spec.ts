@@ -1,4 +1,3 @@
-import { SimpleChanges } from "@angular/core"
 import { TestBed } from "@angular/core/testing"
 import { render, screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
@@ -6,6 +5,7 @@ import { Store } from "../../../../state/angular-redux/store"
 import { setColorMetric } from "../../../../state/store/dynamicSettings/colorMetric/colorMetric.actions"
 import { setColorRange } from "../../../../state/store/dynamicSettings/colorRange/colorRange.actions"
 import { setHeightMetric } from "../../../../state/store/dynamicSettings/heightMetric/heightMetric.actions"
+import { updateProperties } from "../../../../util/testUtils/updateProperties"
 import { ArtificialIntelligenceModule } from "../artificialIntelligence.module"
 import { SuspiciousMetricComponent } from "./suspiciousMetrics.component"
 
@@ -19,7 +19,7 @@ describe("SuspiciousMetricsComponent", () => {
 
 	describe("badge", () => {
 		it("should show initially and hide on first click, but show again when data has changed", async () => {
-			const { container, fixture, detectChanges } = await render(SuspiciousMetricComponent, {
+			const { container, fixture } = await render(SuspiciousMetricComponent, {
 				excludeComponentDeclaration: true,
 				componentProperties: {
 					data: {
@@ -35,28 +35,19 @@ describe("SuspiciousMetricsComponent", () => {
 			await userEvent.click(screen.getByTitle("Open Suspicious Metrics Panel"))
 			expect(container.querySelector(".suspicious-metrics-badge")).toBe(null)
 
-			fixture.componentInstance.ngOnChanges({
+			updateProperties(fixture, {
 				data: {
-					previousValue: {
-						analyzedProgrammingLanguage: "ts",
-						unsuspiciousMetrics: ["rloc", "mcc"],
-						suspiciousMetricSuggestionLinks: [],
-						untrackedMetrics: []
-					},
-					currentValue: {
-						analyzedProgrammingLanguage: "ts",
-						unsuspiciousMetrics: ["rloc"],
-						suspiciousMetricSuggestionLinks: [],
-						untrackedMetrics: []
-					}
+					analyzedProgrammingLanguage: "ts",
+					unsuspiciousMetrics: ["rloc"],
+					suspiciousMetricSuggestionLinks: [],
+					untrackedMetrics: []
 				}
-			} as unknown as SimpleChanges)
-			detectChanges()
+			})
 			expect(container.querySelector(".suspicious-metrics-badge")).not.toBe(null)
 		})
 
 		it("should show initially and hide on first click, but not show again when new data has same values", async () => {
-			const { container, rerender } = await render(SuspiciousMetricComponent, {
+			const { container, fixture } = await render(SuspiciousMetricComponent, {
 				excludeComponentDeclaration: true,
 				componentProperties: {
 					data: {
@@ -72,14 +63,12 @@ describe("SuspiciousMetricsComponent", () => {
 			await userEvent.click(screen.getByTitle("Open Suspicious Metrics Panel"))
 			expect(container.querySelector(".suspicious-metrics-badge")).toBe(null)
 
-			rerender({
-				componentProperties: {
-					data: {
-						analyzedProgrammingLanguage: "ts",
-						unsuspiciousMetrics: ["rloc", "mcc"],
-						suspiciousMetricSuggestionLinks: [],
-						untrackedMetrics: []
-					}
+			updateProperties(fixture, {
+				data: {
+					analyzedProgrammingLanguage: "ts",
+					unsuspiciousMetrics: ["rloc", "mcc"],
+					suspiciousMetricSuggestionLinks: [],
+					untrackedMetrics: []
 				}
 			})
 			expect(container.querySelector(".suspicious-metrics-badge")).toBe(null)

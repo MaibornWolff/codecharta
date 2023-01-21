@@ -3,6 +3,7 @@ import { idToNodeSelector } from "../../../state/selectors/accumulatedData/idToN
 import { Store } from "../../../state/store/store"
 
 import { ColorConverter } from "../../../util/color/colorConverter"
+import { updateProperties } from "../../../util/testUtils/updateProperties"
 import { MetricDeltaSelectedComponent } from "./metricDeltaSelected.component"
 
 jest.mock("../../../state/selectors/accumulatedData/idToNode.selector", () => ({
@@ -56,12 +57,12 @@ describe("MetricDeltaSelectedComponent", () => {
 	it("should update when its metricName changes", async () => {
 		mockIdToNodeSelector({ rloc: 2, mcc: 4 })
 
-		const { rerender } = await render(MetricDeltaSelectedComponent, {
+		const { fixture } = await render(MetricDeltaSelectedComponent, {
 			componentProperties: { metricName: "rloc" }
 		})
 		expect(screen.queryByText(/Δ2/)).toBeTruthy()
 
-		await rerender({ metricName: "mcc" })
+		await updateProperties(fixture, { metricName: "mcc" })
 		expect(screen.queryByText(/Δ4/)).toBeTruthy()
 	})
 

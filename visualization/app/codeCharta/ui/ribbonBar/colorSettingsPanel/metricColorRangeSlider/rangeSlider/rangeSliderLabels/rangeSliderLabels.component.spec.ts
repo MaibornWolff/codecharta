@@ -1,5 +1,6 @@
 import { TestBed } from "@angular/core/testing"
 import { render, screen } from "@testing-library/angular"
+import { updateProperties } from "../../../../../../util/testUtils/updateProperties"
 import { RangeSliderModule } from "../rangeSlider.module"
 import { RangeSliderLabelsComponent } from "./rangeSliderLabels.component"
 
@@ -19,7 +20,7 @@ describe("RangeSliderLabelsComponent", () => {
 			sliderWidth: 100,
 			sliderRangePosition: { leftEnd: leftValue, rightStart: rightValue }
 		}
-		const { fixture, rerender } = await render(RangeSliderLabelsComponent, {
+		const { fixture } = await render(RangeSliderLabelsComponent, {
 			excludeComponentDeclaration: true,
 			componentProperties
 		})
@@ -29,7 +30,7 @@ describe("RangeSliderLabelsComponent", () => {
 			fixture.componentInstance[label].nativeElement.getBoundingClientRect = () => ({ width: 10 })
 		}
 		fixture.componentInstance.ngAfterViewChecked()
-		rerender(componentProperties)
+		updateProperties(fixture, componentProperties)
 	}
 
 	it("should display labels for min, currentLeft, currentRight and max value", async () => {

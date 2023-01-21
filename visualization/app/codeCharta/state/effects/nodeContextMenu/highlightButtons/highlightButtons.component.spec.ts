@@ -7,6 +7,7 @@ import { CodeMapNode } from "../../../../codeCharta.model"
 import { IdToBuildingService } from "../../../../services/idToBuilding/idToBuilding.service"
 import { CodeMapBuilding } from "../../../../ui/codeMap/rendering/codeMapBuilding"
 import { ThreeSceneService } from "../../../../ui/codeMap/threeViewer/threeSceneService"
+import { updateProperties } from "../../../../util/testUtils/updateProperties"
 
 describe("flattenButtonsComponent", () => {
 	beforeEach(() => {
@@ -19,7 +20,7 @@ describe("flattenButtonsComponent", () => {
 		const idToBuilding = new IdToBuildingService()
 		idToBuilding.setIdToBuilding([{ id: 0, node: { id: 0 } } as unknown as CodeMapBuilding])
 
-		const { rerender } = await render(HighlightButtonsComponent, {
+		const { fixture } = await render(HighlightButtonsComponent, {
 			excludeComponentDeclaration: true,
 			componentProperties: { codeMapNode: { id: 0 } },
 			providers: [
@@ -31,14 +32,14 @@ describe("flattenButtonsComponent", () => {
 		expect(screen.queryByText("REMOVE HIGHLIGHT")).toBe(null)
 		await userEvent.click(screen.getByText("KEEP HIGHLIGHT"))
 
-		rerender({ codeMapNode: undefined })
-		rerender({ codeMapNode: { id: 0 } })
+		updateProperties(fixture, { codeMapNode: undefined })
+		updateProperties(fixture, { codeMapNode: { id: 0 } })
 
 		expect(screen.queryByText("KEEP HIGHLIGHT")).toBe(null)
 		await userEvent.click(screen.getByText("REMOVE HIGHLIGHT"))
 
-		rerender({ codeMapNode: undefined })
-		rerender({ codeMapNode: { id: 0 } })
+		updateProperties(fixture, { codeMapNode: undefined })
+		updateProperties(fixture, { codeMapNode: { id: 0 } })
 
 		expect(screen.queryByText("REMOVE HIGHLIGHT")).toBe(null)
 		expect(screen.queryByText("KEEP HIGHLIGHT")).not.toBe(null)
