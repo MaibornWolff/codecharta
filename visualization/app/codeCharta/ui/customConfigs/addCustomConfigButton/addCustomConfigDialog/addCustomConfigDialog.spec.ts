@@ -4,10 +4,10 @@ import { render, screen } from "@testing-library/angular"
 import { AddCustomConfigDialogComponent } from "./addCustomConfigDialog.component"
 import { CustomConfigHelper } from "../../../../util/customConfigHelper"
 import userEvent from "@testing-library/user-event"
-import { MatDialog } from "@angular/material/dialog"
 import { Vector3 } from "three"
 import { ThreeCameraService } from "../../../codeMap/threeViewer/threeCamera.service"
 import { ThreeOrbitControlsService } from "../../../codeMap/threeViewer/threeOrbitControls.service"
+import { MatLegacyDialog } from "@angular/material/legacy-dialog"
 
 describe("addCustomConfigDialogComponent", () => {
 	jest.spyOn(CustomConfigHelper, "getConfigNameSuggestionByFileState").mockReturnValue("new custom view name")
@@ -17,7 +17,7 @@ describe("addCustomConfigDialogComponent", () => {
 		TestBed.configureTestingModule({
 			imports: [AddCustomConfigButtonModule],
 			providers: [
-				{ provide: MatDialog, useValue: mockedDialog },
+				{ provide: MatLegacyDialog, useValue: mockedDialog },
 				{ provide: ThreeCameraService, useValue: { camera: { position: new Vector3(0, 300, 1000) } } },
 				{ provide: ThreeOrbitControlsService, useValue: { controls: { target: new Vector3(0, 0, 0) } } }
 			]

@@ -1,7 +1,6 @@
 import { Store } from "../../../state/store/store"
 import { TestBed } from "@angular/core/testing"
 import { CustomConfigsModule } from "../customConfigs.module"
-import { MatDialog } from "@angular/material/dialog"
 import { CustomConfigListComponent } from "./customConfigList.component"
 import { render, screen } from "@testing-library/angular"
 import { CustomConfigHelperService } from "../customConfigHelper.service"
@@ -15,6 +14,7 @@ import { ThreeSceneService } from "../../codeMap/threeViewer/threeSceneService"
 import { ThreeOrbitControlsService } from "../../codeMap/threeViewer/threeOrbitControls.service"
 import userEvent from "@testing-library/user-event"
 import { expect } from "@jest/globals"
+import { MatLegacyDialog } from "@angular/material/legacy-dialog"
 
 const mockedCustomConfigHelperService = {
 	customConfigItemGroups$: of({
@@ -33,7 +33,7 @@ describe("customConfigListComponent", () => {
 		TestBed.configureTestingModule({
 			imports: [CustomConfigsModule],
 			providers: [
-				{ provide: MatDialog, useValue: mockedDialog },
+				{ provide: MatLegacyDialog, useValue: mockedDialog },
 				{ provide: CustomConfigHelperService, useValue: mockedCustomConfigHelperService },
 				{ provide: ThreeSceneService, useValue: {} },
 				{ provide: ThreeCameraService, useValue: {} },

@@ -1,6 +1,6 @@
 import { TestBed } from "@angular/core/testing"
 import { AddCustomConfigButtonModule } from "./addCustomConfigButton.module"
-import { fireEvent, render, screen } from "@testing-library/angular"
+import { fireEvent, render, screen, waitForElementToBeRemoved } from "@testing-library/angular"
 import { AddCustomConfigButtonComponent } from "./addCustomConfigButton.component"
 import userEvent from "@testing-library/user-event"
 import { CustomConfigHelper } from "../../../util/customConfigHelper"
@@ -31,7 +31,7 @@ describe("addCustomConfigButtonComponent", () => {
 		await userEvent.type(screen.getByRole("textbox"), "myCustomConfig")
 		fireEvent.click(screen.getByRole("button", { name: "ADD" }))
 
-		expect(screen.queryByText("Add Custom View")).toBe(null)
+		waitForElementToBeRemoved(screen.queryByText("Add Custom View"))
 		expect(addCustomConfigSpy).toHaveBeenCalledTimes(1)
 	})
 })

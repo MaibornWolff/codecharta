@@ -1,6 +1,5 @@
 import { TestBed } from "@angular/core/testing"
 import { HttpClient } from "@angular/common/http"
-import { MatDialog } from "@angular/material/dialog"
 import { CCFile, LayoutAlgorithm } from "../../codeCharta.model"
 import { State } from "../../state/angular-redux/state"
 import { GLOBAL_SETTINGS } from "../../util/dataMocks"
@@ -13,20 +12,21 @@ import sample1 from "../../assets/sample1.cc.json"
 import sample2 from "../../assets/sample2.cc.json"
 import { FileSelectionState, FileState } from "../../model/files/files"
 import { setFiles } from "../../state/store/files/files.actions"
+import { MatLegacyDialog } from "@angular/material/legacy-dialog"
 
 describe("LoadInitialFileService", () => {
 	let loadInitialFileService: LoadInitialFileService
-	let mockedDialog: MatDialog
+	let mockedDialog: MatLegacyDialog
 
 	beforeEach(() => {
 		localStorage.clear()
 
-		mockedDialog = { open: jest.fn() } as unknown as MatDialog
+		mockedDialog = { open: jest.fn() } as unknown as MatLegacyDialog
 		TestBed.configureTestingModule({
 			providers: [
 				Store,
 				State,
-				{ provide: MatDialog, useValue: mockedDialog },
+				{ provide: MatLegacyDialog, useValue: mockedDialog },
 				{ provide: HttpClient, useValue: {} },
 				{ provide: LoadFileService, useValue: { loadFiles: jest.fn() } }
 			]
