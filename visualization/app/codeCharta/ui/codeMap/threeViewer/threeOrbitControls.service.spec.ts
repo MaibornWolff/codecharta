@@ -3,7 +3,7 @@ import { ThreeOrbitControlsService } from "./threeOrbitControls.service"
 import { ThreeCameraService } from "./threeCamera.service"
 import { ThreeSceneService } from "./threeSceneService"
 import { BoxGeometry, Group, Mesh, PerspectiveCamera, Vector3 } from "three"
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
+import type { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
 import { ThreeRendererService } from "./threeRenderer.service"
 import { wait } from "../../../util/testUtils/wait"
 

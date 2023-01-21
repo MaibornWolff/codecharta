@@ -5,7 +5,7 @@ import { isLeaf } from "../../util/codeMapHelper"
 // eslint-disable-next-line no-duplicate-imports
 import * as Three from "three"
 import oc from "three-orbit-controls"
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
+import type { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
 import { ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitControls.service"
 import { EventEmitter } from "tsee"
 import { Inject, Injectable } from "@angular/core"

@@ -5,7 +5,7 @@ import { ThreeOrbitControlsService } from "./threeOrbitControls.service"
 import { ThreeRendererService } from "./threeRenderer.service"
 import { ThreeViewerService } from "./threeViewer.service"
 import { PerspectiveCamera, Scene, Vector3, WebGLRenderer } from "three"
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
+import type { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
 import { ThreeStatsService } from "./threeStats.service"
 import { CustomComposer } from "../rendering/postprocessor/customComposer"
 

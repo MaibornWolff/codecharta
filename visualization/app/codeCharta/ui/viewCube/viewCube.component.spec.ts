@@ -4,7 +4,7 @@ import { ViewCubeMouseEventsService } from "./viewCube.mouseEvents.service"
 import { PerspectiveCamera } from "three/src/cameras/PerspectiveCamera"
 import { ThreeCameraService } from "../codeMap/threeViewer/threeCamera.service"
 import { Color, Mesh, Vector3, WebGLRenderer } from "three"
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
+import type { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
 import { ViewCubeComponent } from "./viewCube.component"
 
 describe("ViewCubeComponent", () => {
