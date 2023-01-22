@@ -136,7 +136,7 @@
 		"jest-preset-angular": "^9.0.7",
 		"jest-puppeteer": "^6.1.1",
 		"lint-staged": "^11.0.0",
-		"node-polyfill-webpack-plugin": "^1.1.4",
+		"node-polyfill-webpack-plugin": "^2.0.0",
 		"nw-builder": "^3.7.4",
 		"puppeteer": "^17.0.0",
 		"sass": "^1.50.1",
