@@ -23,7 +23,7 @@ buildscript {
         univocity_parsers_version = '2.9.1'
 
         // Test dependency versions
-        assertj_version = '3.24.1'
+        assertj_version = '3.24.2'
         junit5_version = '5.9.2'
         junit_platform_version = '1.9.2'
         jsonassert_version = '1.5.1'
