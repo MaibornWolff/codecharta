@@ -130,7 +130,7 @@
 		"puppeteer": "^17.0.0",
 		"remark-html": "^13.0.1",
 		"remark-loader": "^4.0.0",
-		"ts-jest": "28.0.8",
+		"ts-jest": "^28.0.8",
 		"tsee": "^1.3.2",
 		"typescript": "~4.9.4",
 		"webpack-glsl-loader": "^1.0.1"
