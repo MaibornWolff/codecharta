@@ -29,7 +29,7 @@
 						"assets": ["app/assets", "app/codeCharta/assets"],
 						"styles": ["app/app.scss", "material-icons/iconfont/material-icons.css"],
 						"customWebpackConfig": {
-							"path": "conf/customWebpack.config.js"
+							"path": "conf/webpack.config.js"
 						},
 						"scripts": []
 					},
