@@ -41,7 +41,7 @@ describe("colorPicker", () => {
 		expectColorPickerInDom(true)
 		expect(screen.queryByText("isOpen: true")).toBeTruthy()
 
-		// @ts-ignore
+		// @ts-expect-error
 		ng.getComponent(screen.queryByRole("colorpicker")).onChangeComplete.emit({
 			$event: {},
 			color: { hex: "#000000" }
