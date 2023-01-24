@@ -5,7 +5,6 @@ import { Store } from "../../../../state/angular-redux/store"
 import { setColorMetric } from "../../../../state/store/dynamicSettings/colorMetric/colorMetric.actions"
 import { setColorRange } from "../../../../state/store/dynamicSettings/colorRange/colorRange.actions"
 import { setHeightMetric } from "../../../../state/store/dynamicSettings/heightMetric/heightMetric.actions"
-import { updateProperties } from "../../../../util/testUtils/updateProperties"
 import { ArtificialIntelligenceModule } from "../artificialIntelligence.module"
 import { SuspiciousMetricComponent } from "./suspiciousMetrics.component"
 
@@ -19,7 +18,7 @@ describe("SuspiciousMetricsComponent", () => {
 
 	describe("badge", () => {
 		it("should show initially and hide on first click, but show again when data has changed", async () => {
-			const { container, fixture } = await render(SuspiciousMetricComponent, {
+			const { container, change } = await render(SuspiciousMetricComponent, {
 				excludeComponentDeclaration: true,
 				componentProperties: {
 					data: {
@@ -35,7 +34,7 @@ describe("SuspiciousMetricsComponent", () => {
 			await userEvent.click(screen.getByTitle("Open Suspicious Metrics Panel"))
 			expect(container.querySelector(".suspicious-metrics-badge")).toBe(null)
 
-			updateProperties(fixture, {
+			change({
 				data: {
 					analyzedProgrammingLanguage: "ts",
 					unsuspiciousMetrics: ["rloc"],
@@ -47,7 +46,7 @@ describe("SuspiciousMetricsComponent", () => {
 		})
 
 		it("should show initially and hide on first click, but not show again when new data has same values", async () => {
-			const { container, fixture } = await render(SuspiciousMetricComponent, {
+			const { container, change } = await render(SuspiciousMetricComponent, {
 				excludeComponentDeclaration: true,
 				componentProperties: {
 					data: {
@@ -63,7 +62,7 @@ describe("SuspiciousMetricsComponent", () => {
 			await userEvent.click(screen.getByTitle("Open Suspicious Metrics Panel"))
 			expect(container.querySelector(".suspicious-metrics-badge")).toBe(null)
 
-			updateProperties(fixture, {
+			change({
 				data: {
 					analyzedProgrammingLanguage: "ts",
 					unsuspiciousMetrics: ["rloc", "mcc"],
