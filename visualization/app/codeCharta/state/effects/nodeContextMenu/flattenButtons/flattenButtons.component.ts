@@ -1,4 +1,4 @@
-import { Component, Inject, Input, ViewEncapsulation } from "@angular/core"
+import { Component, Input, ViewEncapsulation } from "@angular/core"
 import { CodeMapNode } from "../../../../codeCharta.model"
 import { Store } from "../../../angular-redux/store"
 import { addBlacklistItem, removeBlacklistItem } from "../../../store/fileSettings/blacklist/blacklist.actions"
@@ -11,7 +11,7 @@ import { addBlacklistItem, removeBlacklistItem } from "../../../store/fileSettin
 export class FlattenButtonsComponent {
 	@Input() codeMapNode: Pick<CodeMapNode, "path" | "type" | "isFlattened">
 
-	constructor(@Inject(Store) private store: Store) {}
+	constructor(private store: Store) {}
 
 	flattenNode() {
 		this.store.dispatch(

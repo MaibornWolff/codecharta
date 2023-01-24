@@ -1,4 +1,4 @@
-import { Component, Inject, OnDestroy, ViewEncapsulation } from "@angular/core"
+import { Component, OnDestroy, ViewEncapsulation } from "@angular/core"
 import { Store } from "../../../state/angular-redux/store"
 import { filesSelector } from "../../../state/store/files/files.selector"
 import { invertStandard, setAll, setStandard } from "../../../state/store/files/files.actions"
@@ -21,7 +21,7 @@ export class FilePanelFileSelectorComponent implements OnDestroy {
 		this.selectedFilesInUI = this.selectedFilesInStore
 	})
 
-	constructor(@Inject(Store) private store: Store) {}
+	constructor(private store: Store) {}
 
 	ngOnDestroy(): void {
 		this.filesSubscription.unsubscribe()

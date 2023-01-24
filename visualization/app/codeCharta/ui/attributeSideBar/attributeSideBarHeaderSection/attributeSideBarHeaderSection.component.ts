@@ -1,4 +1,4 @@
-import { Component, Input, Inject, ViewEncapsulation } from "@angular/core"
+import { Component, Input, ViewEncapsulation } from "@angular/core"
 
 import { CodeMapNode } from "../../../codeCharta.model"
 import { IsAttributeSideBarVisibleService } from "../../../services/isAttributeSideBarVisible.service"
@@ -13,7 +13,7 @@ export class AttributeSideBarHeaderSectionComponent {
 	@Input() node: Pick<CodeMapNode, "children" | "name" | "link" | "path">
 	@Input() fileName: string
 
-	constructor(@Inject(IsAttributeSideBarVisibleService) private isAttributeSideBarVisibleService: IsAttributeSideBarVisibleService) {}
+	constructor(private isAttributeSideBarVisibleService: IsAttributeSideBarVisibleService) {}
 
 	closeSideBar() {
 		this.isAttributeSideBarVisibleService.isOpen = false

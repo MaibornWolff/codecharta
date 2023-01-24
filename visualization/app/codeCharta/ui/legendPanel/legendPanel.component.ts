@@ -1,4 +1,4 @@
-import { Component, Inject, ViewEncapsulation } from "@angular/core"
+import { Component, ViewEncapsulation } from "@angular/core"
 import { Store } from "../../state/angular-redux/store"
 import { isDeltaStateSelector } from "../../state/selectors/isDeltaState.selector"
 import { legendColorMetricSelector } from "./selectors/legendColorMetric.selector"
@@ -21,10 +21,7 @@ export class LegendPanelComponent {
 	colorMetric$ = this.store.select(legendColorMetricSelector)
 	edgeMetric$ = this.store.select(legendEdgeMetricSelector)
 
-	constructor(
-		@Inject(IsAttributeSideBarVisibleService) public isAttributeSideBarVisibleService: IsAttributeSideBarVisibleService,
-		@Inject(Store) private store: Store
-	) {}
+	constructor(public isAttributeSideBarVisibleService: IsAttributeSideBarVisibleService, private store: Store) {}
 
 	toggleIsLegendVisible() {
 		this.isLegendVisible = !this.isLegendVisible

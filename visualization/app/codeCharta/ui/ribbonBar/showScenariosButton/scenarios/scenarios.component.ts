@@ -1,4 +1,4 @@
-import { Component, Inject, Input, ViewEncapsulation } from "@angular/core"
+import { Component, Input, ViewEncapsulation } from "@angular/core"
 import { MatLegacyDialog as MatDialog } from "@angular/material/legacy-dialog"
 import { ScenarioService } from "../scenario.service"
 import { ScenarioItem } from "../scenarioHelper"
@@ -13,7 +13,7 @@ import { AddCustomScenarioComponent } from "../addCustomScenario/addCustomScenar
 export class ScenariosComponent {
 	@Input() scenarios: ScenarioItem[] = []
 
-	constructor(@Inject(ScenarioService) public scenarioService: ScenarioService, @Inject(MatDialog) private dialog: MatDialog) {}
+	constructor(public scenarioService: ScenarioService, private dialog: MatDialog) {}
 
 	addScenario() {
 		this.dialog.open(AddCustomScenarioComponent, { panelClass: "cc-add-custom-scenario" })

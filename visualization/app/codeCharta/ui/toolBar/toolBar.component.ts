@@ -1,4 +1,4 @@
-import { Component, Inject, ViewEncapsulation } from "@angular/core"
+import { Component, ViewEncapsulation } from "@angular/core"
 import { Store } from "../../state/angular-redux/store"
 import { hoveredNodeIdSelector } from "../../state/store/appStatus/hoveredNodeId/hoveredNodeId.selector"
 import { experimentalFeaturesEnabledSelector } from "../../state/store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.selector"
@@ -13,5 +13,5 @@ export class ToolBarComponent {
 	hoveredNodeId$ = this.store.select(hoveredNodeIdSelector)
 	experimentalFeaturesEnabled$ = this.store.select(experimentalFeaturesEnabledSelector)
 
-	constructor(@Inject(Store) private store: Store) {}
+	constructor(private store: Store) {}
 }

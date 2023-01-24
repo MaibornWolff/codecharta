@@ -1,4 +1,4 @@
-import { Component, Inject, ViewEncapsulation } from "@angular/core"
+import { Component, ViewEncapsulation } from "@angular/core"
 import { MatLegacyDialog as MatDialog } from "@angular/material/legacy-dialog"
 import { CustomConfigListComponent } from "./customConfigList/customConfigList.component"
 import { CustomConfigMapSelectionMode } from "../../model/customConfig/customConfig.api.model"
@@ -30,7 +30,7 @@ export interface CustomConfigItemGroup {
 	encapsulation: ViewEncapsulation.None
 })
 export class CustomConfigsComponent {
-	constructor(@Inject(MatDialog) private dialog: MatDialog) {}
+	constructor(private dialog: MatDialog) {}
 
 	openCustomConfigDialog() {
 		this.dialog.open(CustomConfigListComponent, {

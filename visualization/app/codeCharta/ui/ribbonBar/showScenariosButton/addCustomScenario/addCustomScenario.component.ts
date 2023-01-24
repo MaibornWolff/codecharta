@@ -1,4 +1,4 @@
-import { Component, Inject, ViewEncapsulation } from "@angular/core"
+import { Component, ViewEncapsulation } from "@angular/core"
 import { UntypedFormControl } from "@angular/forms"
 import { State } from "../../../../state/angular-redux/state"
 import { ScenarioHelper, ScenarioMetricProperty } from "../scenarioHelper"
@@ -18,11 +18,7 @@ export class AddCustomScenarioComponent {
 	scenarioContent: ScenarioMetricProperty[]
 	areAnyScenarioMetricPropertiesSelected = true
 
-	constructor(
-		@Inject(State) private state: State,
-		@Inject(ThreeCameraService) threeCameraService: ThreeCameraService,
-		@Inject(ThreeOrbitControlsService) threeOrbitControlsService: ThreeOrbitControlsService
-	) {
+	constructor(private state: State, threeCameraService: ThreeCameraService, threeOrbitControlsService: ThreeOrbitControlsService) {
 		this.scenarioContent = getInitialScenarioMetricProperties(this.state.getValue(), {
 			camera: threeCameraService.camera.position,
 			cameraTarget: threeOrbitControlsService.controls.target

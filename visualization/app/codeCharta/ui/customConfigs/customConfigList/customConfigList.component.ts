@@ -1,4 +1,4 @@
-import { Component, Inject, ViewEncapsulation } from "@angular/core"
+import { Component, ViewEncapsulation } from "@angular/core"
 import { CustomConfigHelperService } from "../customConfigHelper.service"
 
 @Component({
@@ -9,7 +9,7 @@ import { CustomConfigHelperService } from "../customConfigHelper.service"
 export class CustomConfigListComponent {
 	isCollapsed = true
 
-	constructor(@Inject(CustomConfigHelperService) public customConfigService: CustomConfigHelperService) {}
+	constructor(public customConfigService: CustomConfigHelperService) {}
 
 	toggleNonApplicableCustomConfigsList() {
 		this.isCollapsed = !this.isCollapsed

@@ -1,4 +1,4 @@
-import { Component, Inject, ViewEncapsulation } from "@angular/core"
+import { Component, ViewEncapsulation } from "@angular/core"
 import { Store } from "../../../state/angular-redux/store"
 import { setDistributionMetric } from "../../../state/store/dynamicSettings/distributionMetric/distributionMetric.actions"
 import { distributionMetricSelector } from "../../../state/store/dynamicSettings/distributionMetric/distributionMetric.selector"
@@ -11,7 +11,7 @@ import { distributionMetricSelector } from "../../../state/store/dynamicSettings
 export class DistributionMetricChooserComponent {
 	distributionMetric$ = this.store.select(distributionMetricSelector)
 
-	constructor(@Inject(Store) private store: Store) {}
+	constructor(private store: Store) {}
 
 	handleDistributionMetricChanged(value: string) {
 		this.store.dispatch(setDistributionMetric(value))

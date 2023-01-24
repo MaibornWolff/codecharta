@@ -1,4 +1,4 @@
-import { Component, Inject, Input, ViewEncapsulation } from "@angular/core"
+import { Component, Input, ViewEncapsulation } from "@angular/core"
 import { Observable } from "rxjs"
 import { Store } from "../../../../state/angular-redux/store"
 import { CodeMapNode, FileCount } from "../../../../codeCharta.model"
@@ -15,7 +15,7 @@ export class NodePathComponent {
 	fileCount$: Observable<FileCount | undefined>
 	isDeltaMode$: Observable<boolean>
 
-	constructor(@Inject(Store) store: Store) {
+	constructor(store: Store) {
 		this.fileCount$ = store.select(fileCountSelector)
 		this.isDeltaMode$ = store.select(isDeltaStateSelector)
 	}

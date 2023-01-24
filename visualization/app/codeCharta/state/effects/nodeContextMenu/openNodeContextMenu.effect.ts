@@ -11,10 +11,7 @@ import { tap } from "rxjs"
 
 @Injectable()
 export class OpenNodeContextMenuEffect {
-	constructor(
-		@Inject(ActionsToken) private actions$: Actions,
-		@Inject(NodeContextMenuService) private nodeContextMenu: NodeContextMenuService
-	) {}
+	constructor(@Inject(ActionsToken) private actions$: Actions, private nodeContextMenu: NodeContextMenuService) {}
 
 	openNodeContextMenu$ = createEffect(
 		() =>

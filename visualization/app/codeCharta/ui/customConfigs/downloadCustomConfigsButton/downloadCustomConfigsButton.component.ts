@@ -1,4 +1,4 @@
-import { Component, Inject, OnDestroy, OnInit, ViewEncapsulation } from "@angular/core"
+import { Component, OnDestroy, OnInit, ViewEncapsulation } from "@angular/core"
 import { DownloadableConfigs } from "./getDownloadableCustomConfigs"
 
 import { downloadCustomConfigs } from "./downloadCustomConfigHelper"
@@ -14,7 +14,7 @@ export class DownloadCustomConfigsButtonComponent implements OnInit, OnDestroy {
 	downloadableConfigs: DownloadableConfigs
 	subscription: Subscription
 
-	constructor(@Inject(CustomConfigHelperService) private downloadCustomConfigService: CustomConfigHelperService) {}
+	constructor(private downloadCustomConfigService: CustomConfigHelperService) {}
 
 	ngOnInit(): void {
 		this.subscription = this.downloadCustomConfigService.downloadableCustomConfigs$.subscribe(downloadableConfigs => {

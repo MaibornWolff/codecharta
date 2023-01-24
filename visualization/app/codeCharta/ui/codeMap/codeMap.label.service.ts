@@ -5,7 +5,7 @@ import { ThreeCameraService } from "./threeViewer/threeCamera.service"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { ColorConverter } from "../../util/color/colorConverter"
 import { State } from "../../state/angular-redux/state"
-import { Inject, Injectable } from "@angular/core"
+import { Injectable } from "@angular/core"
 import { treeMapSize } from "../../util/algorithm/treeMapLayout/treeMapHelper"
 
 interface InternalLabel {
@@ -33,10 +33,10 @@ export class CodeMapLabelService {
 	private nodeHeight = 0
 
 	constructor(
-		@Inject(State) private state: State,
-		@Inject(ThreeCameraService) private threeCameraService: ThreeCameraService,
-		@Inject(ThreeSceneService) private threeSceneService: ThreeSceneService,
-		@Inject(ThreeOrbitControlsService) private threeOrbitControlsService: ThreeOrbitControlsService
+		private state: State,
+		private threeCameraService: ThreeCameraService,
+		private threeSceneService: ThreeSceneService,
+		private threeOrbitControlsService: ThreeOrbitControlsService
 	) {
 		this.labels = new Array<InternalLabel>()
 		this.threeOrbitControlsService.subscribe("onCameraChanged", () => this.onCameraChanged())

@@ -1,4 +1,4 @@
-import { Inject, Injectable } from "@angular/core"
+import { Injectable } from "@angular/core"
 import { MatLegacyDialog as MatDialog } from "@angular/material/legacy-dialog"
 import { ColorRange, MapColors } from "../../../codeCharta.model"
 import { State } from "../../../state/angular-redux/state"
@@ -15,11 +15,11 @@ import { ErrorDialogComponent } from "../../dialogs/errorDialog/errorDialog.comp
 @Injectable()
 export class ScenarioService {
 	constructor(
-		@Inject(State) private state: State,
-		@Inject(Store) private store: Store,
-		@Inject(MatDialog) private dialog: MatDialog,
-		@Inject(ThreeCameraService) private threeCameraService: ThreeCameraService,
-		@Inject(ThreeOrbitControlsService) private threeOrbitControlsService: ThreeOrbitControlsService
+		private state: State,
+		private store: Store,
+		private dialog: MatDialog,
+		private threeCameraService: ThreeCameraService,
+		private threeOrbitControlsService: ThreeOrbitControlsService
 	) {}
 
 	getScenarios() {

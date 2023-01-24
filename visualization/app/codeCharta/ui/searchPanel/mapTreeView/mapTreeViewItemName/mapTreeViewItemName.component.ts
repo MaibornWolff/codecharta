@@ -1,4 +1,4 @@
-import { Component, Inject, Input, ViewEncapsulation } from "@angular/core"
+import { Component, Input, ViewEncapsulation } from "@angular/core"
 import { Observable } from "rxjs"
 
 import { CodeMapNode } from "../../../../codeCharta.model"
@@ -22,7 +22,7 @@ export class MapTreeViewItemNameComponent {
 	rootUnary$: Observable<number>
 	areaMetric$: Observable<string>
 
-	constructor(@Inject(Store) store: Store) {
+	constructor(store: Store) {
 		this.searchedNodePaths$ = store.select(searchedNodePathsSelector)
 		this.rootUnary$ = store.select(rootUnarySelector)
 		this.areaMetric$ = store.select(areaMetricSelector)

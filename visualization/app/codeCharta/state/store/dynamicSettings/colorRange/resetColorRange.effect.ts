@@ -21,7 +21,7 @@ export class ResetColorRangeEffect {
 		)
 	)
 
-	constructor(@Inject(ActionsToken) private actions$: Actions, @Inject(Store) private store: Store) {}
+	constructor(@Inject(ActionsToken) private actions$: Actions, private store: Store) {}
 
 	resetColorRange$ = createEffect(() =>
 		this.resetActions$.pipe(

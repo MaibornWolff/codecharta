@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit, ViewEncapsulation } from "@angular/core"
+import { Component, OnInit, ViewEncapsulation } from "@angular/core"
 import { ErrorDialogComponent } from "../../../../dialogs/errorDialog/errorDialog.component"
 import { ConfirmationDialogComponent } from "../../../../dialogs/confirmationDialog/confirmationDialog.component"
 import { CustomConfigHelper } from "../../../../../util/customConfigHelper"
@@ -14,7 +14,7 @@ import { downloadAndCollectPurgeableConfigs } from "../downloadAndCollectPurgeab
 export class DownloadAndPurgeConfigsComponent implements OnInit {
 	isLocalStorageSizeValid = true
 
-	constructor(@Inject(MatDialog) private dialog: MatDialog) {}
+	constructor(private dialog: MatDialog) {}
 
 	ngOnInit(): void {
 		this.isLocalStorageSizeValid = validateLocalStorageSize()

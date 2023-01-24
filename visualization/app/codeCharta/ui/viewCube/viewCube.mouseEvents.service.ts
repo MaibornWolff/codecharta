@@ -8,7 +8,7 @@ import oc from "three-orbit-controls"
 import type { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
 import { ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitControls.service"
 import { EventEmitter } from "tsee"
-import { Inject, Injectable } from "@angular/core"
+import { Injectable } from "@angular/core"
 
 type ViewCubeEvents = {
 	viewCubeEventPropagation: (data: { event: MouseEvent; type: string }) => void
@@ -28,7 +28,7 @@ export class ViewCubeMouseEventsService {
 	private controls: OrbitControls
 	private isDragging = false
 
-	constructor(@Inject(ThreeOrbitControlsService) private threeOrbitControlsService: ThreeOrbitControlsService) {}
+	constructor(private threeOrbitControlsService: ThreeOrbitControlsService) {}
 
 	init(cubeGroup: Group, camera: PerspectiveCamera, renderer: WebGLRenderer) {
 		this.cubeGroup = cubeGroup

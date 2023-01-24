@@ -1,5 +1,5 @@
 import { map } from "rxjs"
-import { Component, Inject, ViewEncapsulation } from "@angular/core"
+import { Component, ViewEncapsulation } from "@angular/core"
 
 import { Store } from "../../state/angular-redux/store"
 import { selectedNodeSelector } from "../../state/selectors/selectedNode.selector"
@@ -16,8 +16,5 @@ export class AttributeSideBarComponent {
 	selectedNode$ = this.store.select(selectedNodeSelector)
 	fileName$ = this.store.select(accumulatedDataSelector).pipe(map(accumulatedData => accumulatedData.unifiedFileMeta?.fileName ?? ""))
 
-	constructor(
-		@Inject(IsAttributeSideBarVisibleService) public isAttributeSideBarVisibleService: IsAttributeSideBarVisibleService,
-		@Inject(Store) private store: Store
-	) {}
+	constructor(public isAttributeSideBarVisibleService: IsAttributeSideBarVisibleService, private store: Store) {}
 }

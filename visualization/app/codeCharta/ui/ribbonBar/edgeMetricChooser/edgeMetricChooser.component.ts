@@ -1,4 +1,4 @@
-import { Component, Inject, ViewEncapsulation } from "@angular/core"
+import { Component, ViewEncapsulation } from "@angular/core"
 import { Store } from "../../../state/angular-redux/store"
 import { isEdgeMetricVisibleSelector } from "../../../state/store/appSettings/isEdgeMetricVisible/isEdgeMetricVisible.selector"
 import { setEdgeMetric } from "../../../state/store/dynamicSettings/edgeMetric/edgeMetric.actions"
@@ -16,7 +16,7 @@ export class EdgeMetricChooserComponent {
 	hoveredEdgeValue$ = this.store.select(hoveredEdgeValueSelector)
 	isEdgeMetricVisible$ = this.store.select(isEdgeMetricVisibleSelector)
 
-	constructor(@Inject(Store) private store: Store) {}
+	constructor(private store: Store) {}
 
 	handleEdgeMetricChanged(value: string) {
 		this.store.dispatch(setEdgeMetric(value))

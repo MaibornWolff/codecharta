@@ -25,8 +25,7 @@ export const blacklistSearchPattern = (type: BlacklistType): BlacklistSearchPatt
 export class BlacklistSearchPatternEffect {
 	constructor(
 		@Inject(ActionsToken) private actions$: Actions,
-		@Inject(Store) private store: Store,
-		@Inject(AddBlacklistItemsIfNotResultsInEmptyMapEffect)
+		private store: Store,
 		private addBlacklistItemsIfNotResultsInEmptyMapEffect: AddBlacklistItemsIfNotResultsInEmptyMapEffect
 	) {}
 

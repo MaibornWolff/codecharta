@@ -1,4 +1,4 @@
-import { Component, Inject, ViewEncapsulation } from "@angular/core"
+import { Component, ViewEncapsulation } from "@angular/core"
 import { Store } from "../../../state/angular-redux/store"
 import { setHeightMetric } from "../../../state/store/dynamicSettings/heightMetric/heightMetric.actions"
 import { heightMetricSelector } from "../../../state/store/dynamicSettings/heightMetric/heightMetric.selector"
@@ -11,7 +11,7 @@ import { heightMetricSelector } from "../../../state/store/dynamicSettings/heigh
 export class HeightMetricChooserComponent {
 	heightMetric$ = this.store.select(heightMetricSelector)
 
-	constructor(@Inject(Store) private store: Store) {}
+	constructor(private store: Store) {}
 
 	handleHeightMetricChanged(value: string) {
 		this.store.dispatch(setHeightMetric(value))

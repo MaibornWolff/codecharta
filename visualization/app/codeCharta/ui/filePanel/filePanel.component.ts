@@ -1,4 +1,4 @@
-import { Component, Inject, ViewEncapsulation } from "@angular/core"
+import { Component, ViewEncapsulation } from "@angular/core"
 import { Store } from "../../state/angular-redux/store"
 import { isDeltaStateSelector } from "../../state/selectors/isDeltaState.selector"
 
@@ -11,5 +11,5 @@ import { isDeltaStateSelector } from "../../state/selectors/isDeltaState.selecto
 export class FilePanelComponent {
 	isDeltaState$ = this.store.select(isDeltaStateSelector)
 
-	constructor(@Inject(Store) private store: Store) {}
+	constructor(private store: Store) {}
 }

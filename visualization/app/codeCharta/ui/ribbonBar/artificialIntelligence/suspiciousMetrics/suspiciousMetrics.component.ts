@@ -1,4 +1,4 @@
-import { Component, Inject, Input, OnChanges, SimpleChanges, ViewEncapsulation } from "@angular/core"
+import { Component, Input, OnChanges, SimpleChanges, ViewEncapsulation } from "@angular/core"
 import isEqual from "lodash.isequal"
 import { Store } from "../../../../state/angular-redux/store"
 import { defaultMapColors, setMapColors } from "../../../../state/store/appSettings/mapColors/mapColors.actions"
@@ -22,7 +22,7 @@ export class SuspiciousMetricComponent implements OnChanges {
 	>
 	hideBadge = false
 
-	constructor(@Inject(Store) private store: Store) {}
+	constructor(private store: Store) {}
 
 	ngOnChanges(changes: SimpleChanges): void {
 		if (changes.data && !isEqual(changes.data.previousValue, changes.data.currentValue)) {

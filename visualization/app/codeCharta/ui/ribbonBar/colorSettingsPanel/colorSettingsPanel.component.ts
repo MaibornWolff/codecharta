@@ -1,4 +1,4 @@
-import { Component, Inject, ViewEncapsulation } from "@angular/core"
+import { Component, ViewEncapsulation } from "@angular/core"
 import { colorLabelOptions, ColorMode } from "../../../codeCharta.model"
 import { Store } from "../../../state/angular-redux/store"
 import { isDeltaStateSelector } from "../../../state/selectors/isDeltaState.selector"
@@ -22,7 +22,7 @@ export class ColorSettingsPanelComponent {
 	isColorRangeInverted = false
 	areDeltaColorsInverted = false
 
-	constructor(@Inject(Store) private store: Store) {}
+	constructor(private store: Store) {}
 
 	handleColorModeChange(gradient: ColorMode) {
 		this.store.dispatch(setColorMode(gradient))

@@ -1,4 +1,4 @@
-import { Component, Inject, ViewEncapsulation } from "@angular/core"
+import { Component, ViewEncapsulation } from "@angular/core"
 import { Store } from "../../../state/angular-redux/store"
 import { amountOfTopLabelsSelector } from "../../../state/store/appSettings/amountOfTopLabels/amountOfTopLabels.selector"
 import { isLabelsSliderDisabledSelector } from "./selectors/isLabelsSliderDisabled.selector"
@@ -32,7 +32,7 @@ export class HeightSettingsPanelComponent {
 	invertHeight$ = this.store.select(invertHeightSelector)
 	isDeltaState$ = this.store.select(isDeltaStateSelector)
 
-	constructor(@Inject(Store) private store: Store) {}
+	constructor(private store: Store) {}
 
 	applyDebouncedTopLabels = debounce((amountOfTopLabels: number) => {
 		this.store.dispatch(setAmountOfTopLabels(amountOfTopLabels))

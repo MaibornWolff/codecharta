@@ -1,4 +1,4 @@
-import { Inject, Injectable } from "@angular/core"
+import { Injectable } from "@angular/core"
 import { map } from "rxjs"
 import { createEffect } from "../../angular-redux/effects/createEffect"
 import { Store } from "../../angular-redux/store"
@@ -7,7 +7,7 @@ import { unfocusAllNodes } from "../../store/dynamicSettings/focusedNodePath/foc
 
 @Injectable()
 export class UnfocusNodesEffect {
-	constructor(@Inject(Store) private store: Store) {}
+	constructor(private store: Store) {}
 
 	unfocusNodes$ = createEffect(() => this.store.select(visibleFileStatesSelector).pipe(map(() => unfocusAllNodes())))
 }

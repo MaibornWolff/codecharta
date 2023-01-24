@@ -1,4 +1,4 @@
-import { Component, Inject, ViewEncapsulation } from "@angular/core"
+import { Component, ViewEncapsulation } from "@angular/core"
 import { Store } from "../../../state/angular-redux/store"
 import { setColorMetric } from "../../../state/store/dynamicSettings/colorMetric/colorMetric.actions"
 import { colorMetricSelector } from "../../../state/store/dynamicSettings/colorMetric/colorMetric.selector"
@@ -15,7 +15,7 @@ export class ColorMetricChooserComponent {
 	nonDisabledColor = "rgba(0, 0, 0, 0.38)"
 	disabledColor = "rgba(68,68,68, 1)"
 
-	constructor(@Inject(Store) private store: Store) {}
+	constructor(private store: Store) {}
 
 	handleColorMetricChanged(value: string) {
 		this.store.dispatch(setColorMetric(value))

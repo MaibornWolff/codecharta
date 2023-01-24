@@ -1,4 +1,4 @@
-import { Component, Inject, ViewEncapsulation } from "@angular/core"
+import { Component, ViewEncapsulation } from "@angular/core"
 import { Store } from "../../../state/angular-redux/store"
 import { setAreaMetric } from "../../../state/store/dynamicSettings/areaMetric/areaMetric.actions"
 import { areaMetricSelector } from "../../../state/store/dynamicSettings/areaMetric/areaMetric.selector"
@@ -11,7 +11,7 @@ import { areaMetricSelector } from "../../../state/store/dynamicSettings/areaMet
 export class AreaMetricChooserComponent {
 	areaMetric$ = this.store.select(areaMetricSelector)
 
-	constructor(@Inject(Store) private store: Store) {}
+	constructor(private store: Store) {}
 
 	handleAreaMetricChanged(value: string) {
 		this.store.dispatch(setAreaMetric(value))

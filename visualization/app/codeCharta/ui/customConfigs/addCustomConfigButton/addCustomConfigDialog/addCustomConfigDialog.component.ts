@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit, ViewEncapsulation } from "@angular/core"
+import { Component, OnInit, ViewEncapsulation } from "@angular/core"
 import { UntypedFormControl, Validators, AbstractControl, ValidatorFn } from "@angular/forms"
 import { CustomConfigHelper } from "../../../../util/customConfigHelper"
 import { buildCustomConfigFromState } from "../../../../util/customConfigBuilder"
@@ -16,9 +16,9 @@ export class AddCustomConfigDialogComponent implements OnInit {
 	customConfigName: UntypedFormControl
 
 	constructor(
-		@Inject(State) private state: State,
-		@Inject(ThreeCameraService) private threeCameraService: ThreeCameraService,
-		@Inject(ThreeOrbitControlsService) private threeOrbitControlsService: ThreeOrbitControlsService
+		private state: State,
+		private threeCameraService: ThreeCameraService,
+		private threeOrbitControlsService: ThreeOrbitControlsService
 	) {}
 
 	ngOnInit(): void {

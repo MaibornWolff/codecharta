@@ -1,4 +1,4 @@
-import { Component, Inject, Input, OnInit, ViewEncapsulation } from "@angular/core"
+import { Component, Input, OnInit, ViewEncapsulation } from "@angular/core"
 import { Observable } from "rxjs"
 
 import { MapColors, CodeMapNode } from "../../../codeCharta.model"
@@ -17,7 +17,7 @@ export class MetricDeltaSelectedComponent implements OnInit {
 	selectedNode$: Observable<CodeMapNode>
 	mapColors$: Observable<MapColors>
 
-	constructor(@Inject(Store) private store: Store) {}
+	constructor(private store: Store) {}
 
 	ngOnInit(): void {
 		this.selectedNode$ = this.store.select(selectedNodeSelector)

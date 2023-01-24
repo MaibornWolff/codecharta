@@ -1,4 +1,4 @@
-import { Component, Inject, ViewEncapsulation } from "@angular/core"
+import { Component, ViewEncapsulation } from "@angular/core"
 import { Observable } from "rxjs"
 import { Store } from "../../state/angular-redux/store"
 import { isLoadingFileSelector } from "../../state/store/appSettings/isLoadingFile/isLoadingFile.selector"
@@ -12,7 +12,7 @@ import { isLoadingFileSelector } from "../../state/store/appSettings/isLoadingFi
 export class LoadingFileProgressSpinnerComponent {
 	isLoadingFile$: Observable<boolean>
 
-	constructor(@Inject(Store) store: Store) {
+	constructor(store: Store) {
 		this.isLoadingFile$ = store.select(isLoadingFileSelector)
 	}
 }
