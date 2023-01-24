@@ -1,10 +1,11 @@
-import "./uploadFilesButton.component.scss"
-import { Component, Inject } from "@angular/core"
+import { Component, Inject, ViewEncapsulation } from "@angular/core"
 import { UploadFilesService } from "./uploadFiles.service"
 
 @Component({
 	selector: "cc-upload-files-button",
-	template: require("./uploadFilesButton.component.html")
+	templateUrl: "./uploadFilesButton.component.html",
+	styleUrls: ["./uploadFilesButton.component.scss"],
+	encapsulation: ViewEncapsulation.None
 })
 export class UploadFilesButtonComponent {
 	constructor(@Inject(UploadFilesService) private uploadFilesService: UploadFilesService) {}

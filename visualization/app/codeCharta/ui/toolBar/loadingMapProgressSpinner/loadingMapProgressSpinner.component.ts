@@ -1,12 +1,13 @@
-import "./loadingMapProgressSpinner.component.scss"
-import { Component, Inject } from "@angular/core"
+import { Component, Inject, ViewEncapsulation } from "@angular/core"
 import { Observable } from "rxjs"
 import { Store } from "../../../state/angular-redux/store"
 import { isLoadingMapSelector } from "../../../state/store/appSettings/isLoadingMap/isLoadingMap.selector"
 
 @Component({
 	selector: "cc-loading-map-progress-spinner",
-	template: require("./loadingMapProgressSpinner.component.html")
+	templateUrl: "./loadingMapProgressSpinner.component.html",
+	styleUrls: ["./loadingMapProgressSpinner.component.scss"],
+	encapsulation: ViewEncapsulation.None
 })
 export class LoadingMapProgressSpinnerComponent {
 	isLoadingMap$: Observable<boolean>

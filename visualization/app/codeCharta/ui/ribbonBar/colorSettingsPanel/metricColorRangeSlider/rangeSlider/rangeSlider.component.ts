@@ -1,5 +1,4 @@
-import "./rangeSlider.component.scss"
-import { Component, ElementRef, Input, OnChanges, SimpleChanges, ViewChild } from "@angular/core"
+import { Component, ElementRef, Input, OnChanges, SimpleChanges, ViewChild, ViewEncapsulation } from "@angular/core"
 import { calculateSliderRangePosition, SliderRangePosition, updateLeftThumb, updateRightThumb } from "./utils/SliderRangePosition"
 import { parseNumberInput } from "../../../../../util/parseNumberInput"
 
@@ -8,7 +7,9 @@ export type CurrentlySliding = undefined | "leftThumb" | "rightThumb"
 
 @Component({
 	selector: "cc-range-slider",
-	template: require("./rangeSlider.component.html")
+	templateUrl: "./rangeSlider.component.html",
+	styleUrls: ["./rangeSlider.component.scss"],
+	encapsulation: ViewEncapsulation.None
 })
 export class RangeSliderComponent implements OnChanges {
 	@Input() minValue: number

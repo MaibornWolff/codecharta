@@ -4,30 +4,24 @@
 	"coverageDirectory": "<rootDir>/dist/coverage",
 	"collectCoverageFrom": ["<rootDir>/app/**/*.ts", "!**/node_modules/**"],
 	"coveragePathIgnorePatterns": ["\\.(spec|e2e|po)\\.ts$", "<rootDir>/app/puppeteer.helper.ts"],
+	"preset": "jest-preset-angular",
 	"transform": {
-		"\\.(m?js)$": "babel-jest",
-		"\\.(ts|tsx)$": "ts-jest",
-		"\\.glsl$": "<rootDir>/mocks/fileTransformer.js",
-		"\\.html$": "html-loader-jest"
+		"\\.(m?js|ts)$": "jest-preset-angular",
+		"\\.glsl$": "<rootDir>/mocks/fileTransformer.js"
 	},
-	"transformIgnorePatterns": ["/node_modules/(?!(three|ngx-color/fesm2020))"],
+	"transformIgnorePatterns": ["/node_modules/(?!(three|ngx-color/fesm2020|.*\\.mjs$))"],
 	"moduleNameMapper": {
-		"\\.png$": "<rootDir>/mocks/fileMock.js",
-		"\\.(css|scss)$": "<rootDir>/mocks/styleMock.js",
-		"\\CHANGELOG.(md)$": "<rootDir>/mocks/changelogMock.js",
-		"ngx-color/chrome": "<rootDir>/node_modules/ngx-color/fesm2020/ngx-color-chrome.mjs",
-		"ngx-color": "<rootDir>/node_modules/ngx-color/fesm2020/ngx-color.mjs"
+		"\\CHANGELOG.(md)$": "<rootDir>/mocks/changelogMock.js"
 	},
 	"roots": ["<rootDir>/app"],
 	"moduleFileExtensions": ["js", "json", "ts", "mjs"],
 	"moduleDirectories": ["node_modules", "<rootDir>/app"],
+	"setupFiles": ["<rootDir>/mocks/localStorageMock.js"],
+	"setupFilesAfterEnv": ["<rootDir>/conf/setupJestUnit.ts", "jest-canvas-mock"],
 	"globals": {
 		"ts-jest": {
-			"tsconfig": "<rootDir>/tsconfig.spec.json",
-			"babelConfig": true
+			"tsconfig": "tsconfig.spec.json"
 		}
 	},
-	"setupFiles": ["<rootDir>/mocks/localStorageMock.js"],
-	"setupFilesAfterEnv": ["<rootDir>/conf/setupJestUnit.ts"],
 	"testEnvironment": "jsdom"
 }

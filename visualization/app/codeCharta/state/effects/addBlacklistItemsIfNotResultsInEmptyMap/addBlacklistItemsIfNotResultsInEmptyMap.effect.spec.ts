@@ -1,6 +1,6 @@
 import { ApplicationInitStatus } from "@angular/core"
 import { TestBed } from "@angular/core/testing"
-import { MatDialog } from "@angular/material/dialog"
+import { MatLegacyDialog } from "@angular/material/legacy-dialog"
 import { Action } from "redux"
 import { Subject } from "rxjs"
 import { FILE_STATES_JAVA } from "../../../util/dataMocks"
@@ -23,7 +23,7 @@ describe("AddBlacklistItemsIfNotResultsInEmptyMapEffect", () => {
 		EffectsModule.actions$ = new Subject<Action>()
 		TestBed.configureTestingModule({
 			imports: [EffectsModule.forRoot([AddBlacklistItemsIfNotResultsInEmptyMapEffect])],
-			providers: [{ provide: MatDialog, useValue: mockedDialog }]
+			providers: [{ provide: MatLegacyDialog, useValue: mockedDialog }]
 		})
 		await TestBed.inject(ApplicationInitStatus).donePromise
 	})

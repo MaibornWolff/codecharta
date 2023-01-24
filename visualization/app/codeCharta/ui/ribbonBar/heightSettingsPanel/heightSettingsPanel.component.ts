@@ -1,6 +1,4 @@
-import "./heightSettingsPanel.component.scss"
-
-import { Component, Inject } from "@angular/core"
+import { Component, Inject, ViewEncapsulation } from "@angular/core"
 import { Store } from "../../../state/angular-redux/store"
 import { amountOfTopLabelsSelector } from "../../../state/store/appSettings/amountOfTopLabels/amountOfTopLabels.selector"
 import { isLabelsSliderDisabledSelector } from "./selectors/isLabelsSliderDisabled.selector"
@@ -8,7 +6,7 @@ import { debounce } from "lodash"
 import { setAmountOfTopLabels } from "../../../state/store/appSettings/amountOfTopLabels/amountOfTopLabels.actions"
 import { showMetricLabelNodeNameSelector } from "../../../state/store/appSettings/showMetricLabelNodeName/showMetricLabelNodeName.selector"
 import { showMetricLabelNodeValueSelector } from "../../../state/store/appSettings/showMetricLabelNameValue/showMetricLabelNameValue.selector"
-import { MatCheckboxChange } from "@angular/material/checkbox"
+import { MatLegacyCheckboxChange as MatCheckboxChange } from "@angular/material/legacy-checkbox"
 import { setShowMetricLabelNodeName } from "../../../state/store/appSettings/showMetricLabelNodeName/showMetricLabelNodeName.actions"
 import { setShowMetricLabelNameValue } from "../../../state/store/appSettings/showMetricLabelNameValue/showMetricLabelNameValue.actions"
 import { scalingSelector } from "../../../state/store/appSettings/scaling/scaling.selector"
@@ -19,7 +17,9 @@ import { isDeltaStateSelector } from "../../../state/selectors/isDeltaState.sele
 
 @Component({
 	selector: "cc-height-settings-panel",
-	template: require("./heightSettingsPanel.component.html")
+	templateUrl: "./heightSettingsPanel.component.html",
+	styleUrls: ["./heightSettingsPanel.component.scss"],
+	encapsulation: ViewEncapsulation.None
 })
 export class HeightSettingsPanelComponent {
 	static DEBOUNCE_TIME = 400

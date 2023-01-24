@@ -1,10 +1,11 @@
-import { Component, Inject } from "@angular/core"
-import { MatDialog } from "@angular/material/dialog"
+import { Component, Inject, ViewEncapsulation } from "@angular/core"
+import { MatLegacyDialog as MatDialog } from "@angular/material/legacy-dialog"
 import { DownloadDialogComponent } from "./downloadDialog/downloadDialog.component"
 
 @Component({
 	selector: "cc-download-button",
-	template: require("./downloadButton.component.html")
+	templateUrl: "./downloadButton.component.html",
+	encapsulation: ViewEncapsulation.None
 })
 export class DownloadButtonComponent {
 	constructor(@Inject(MatDialog) private dialog: MatDialog) {}

@@ -5,7 +5,6 @@ import { ChangelogDialogComponent } from "./changelogDialog.component"
 
 @NgModule({
 	imports: [CommonModule, MaterialModule],
-	declarations: [ChangelogDialogComponent],
-	entryComponents: [ChangelogDialogComponent]
+	declarations: [ChangelogDialogComponent]
 })
 export class ChangelogDialogModule {}

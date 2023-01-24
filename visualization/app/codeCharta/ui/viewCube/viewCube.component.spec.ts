@@ -4,7 +4,7 @@ import { ViewCubeMouseEventsService } from "./viewCube.mouseEvents.service"
 import { PerspectiveCamera } from "three/src/cameras/PerspectiveCamera"
 import { ThreeCameraService } from "../codeMap/threeViewer/threeCamera.service"
 import { Color, Mesh, Vector3, WebGLRenderer } from "three"
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
+import type { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
 import { ViewCubeComponent } from "./viewCube.component"
 
 describe("ViewCubeComponent", () => {
@@ -17,7 +17,7 @@ describe("ViewCubeComponent", () => {
 		viewCubeMouseEventsService = { init: jest.fn() } as unknown as ViewCubeMouseEventsService
 		threeOrbitControlsService.controls = {
 			target: new Vector3(1, 2, 3)
-		} as OrbitControls
+		} as unknown as OrbitControls
 		ViewCubeComponent.prototype["initRenderer"] = jest.fn()
 		ViewCubeComponent.prototype["onAnimationFrame"] = jest.fn()
 		const elementReference = { nativeElement: {} as HTMLElement }

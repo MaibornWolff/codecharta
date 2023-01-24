@@ -15,7 +15,7 @@ import { setRightClickedNodeData } from "../../state/store/appStatus/rightClicke
 import { idToNodeSelector } from "../../state/selectors/accumulatedData/idToNode.selector"
 import { IdToBuildingService } from "../../services/idToBuilding/idToBuilding.service"
 import { hoveredNodeIdSelector } from "../../state/store/appStatus/hoveredNodeId/hoveredNodeId.selector"
-import { debounce } from "lodash"
+import debounce from "lodash.debounce"
 import { tap, distinctUntilChanged } from "rxjs"
 import { Store } from "../../state/angular-redux/store"
 import { visibleFileStatesSelector } from "../../state/selectors/visibleFileStates.selector"

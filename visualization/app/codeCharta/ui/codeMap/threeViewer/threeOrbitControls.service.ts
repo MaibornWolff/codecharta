@@ -3,7 +3,7 @@ import { Inject, Injectable } from "@angular/core"
 import { Box3, Mesh, MeshNormalMaterial, PerspectiveCamera, Vector3, Sphere, BoxGeometry } from "three"
 import { ThreeSceneService } from "./threeSceneService"
 
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
+import type { OrbitControls as OrbitControlsType } from "three/examples/jsm/controls/OrbitControls"
 // TODO remove this old orbital control and use the jsm examples oneW
 // eslint-disable-next-line no-duplicate-imports
 import * as Three from "three"
@@ -19,7 +19,7 @@ type CameraChangeEvents = {
 export class ThreeOrbitControlsService {
 	static CAMERA_CHANGED_EVENT_NAME = "camera-changed"
 
-	controls: OrbitControls
+	controls: OrbitControlsType
 	private eventEmitter = new EventEmitter<CameraChangeEvents>()
 
 	constructor(
@@ -111,8 +111,8 @@ export class ThreeOrbitControlsService {
 	}
 
 	init(domElement: HTMLCanvasElement) {
-		const orbitControls = oc(Three)
-		this.controls = new orbitControls(this.threeCameraService.camera, domElement)
+		const OrbitControls = oc(Three)
+		this.controls = new OrbitControls(this.threeCameraService.camera, domElement) as unknown as OrbitControlsType
 		this.controls.addEventListener("change", () => {
 			this.onInput(this.threeCameraService.camera)
 		})

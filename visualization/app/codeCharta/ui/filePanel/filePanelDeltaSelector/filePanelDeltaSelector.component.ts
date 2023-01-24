@@ -1,4 +1,4 @@
-import { Component, Inject } from "@angular/core"
+import { Component, Inject, ViewEncapsulation } from "@angular/core"
 import { map } from "rxjs"
 import { CCFile } from "../../../codeCharta.model"
 import { FileSelectionState } from "../../../model/files/files"
@@ -10,7 +10,8 @@ import { pictogramBackgroundSelector } from "./pictogramBackground.selector"
 
 @Component({
 	selector: "cc-file-panel-delta-selector",
-	template: require("./filePanelDeltaSelector.component.html")
+	templateUrl: "./filePanelDeltaSelector.component.html",
+	encapsulation: ViewEncapsulation.None
 })
 export class FilePanelDeltaSelectorComponent {
 	files$ = this.store.select(filesSelector)

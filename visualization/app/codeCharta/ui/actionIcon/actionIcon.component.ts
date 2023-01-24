@@ -1,9 +1,10 @@
-import "./actionIcon.component.scss"
-import { Component, Input } from "@angular/core"
+import { Component, Input, ViewEncapsulation } from "@angular/core"
 
 @Component({
 	selector: "cc-action-icon",
-	template: require("./actionIcon.component.html")
+	templateUrl: "./actionIcon.component.html",
+	styleUrls: ["./actionIcon.component.scss"],
+	encapsulation: ViewEncapsulation.None
 })
 export class ActionIconComponent {
 	@Input() icon: string

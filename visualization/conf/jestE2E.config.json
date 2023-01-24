@@ -5,7 +5,6 @@
 	"collectCoverageFrom": ["<rootDir>/app/**/*.ts", "!**/node_modules/**"],
 	"coveragePathIgnorePatterns": ["\\.(spec|e2e|po)\\.ts$", "<rootDir>/app/puppeteer.helper.ts"],
 	"transform": {
-		"\\.(m?js)$": "babel-jest",
 		"\\.(ts|tsx)$": "ts-jest"
 	},
 	"transformIgnorePatterns": ["/node_modules/(?!(three|ngx-color/fesm2020))"],
@@ -15,8 +14,7 @@
 	"moduleDirectories": ["node_modules", "<rootDir>/app"],
 	"globals": {
 		"ts-jest": {
-			"tsconfig": "tsconfig.spec.json",
-			"babelConfig": true
+			"tsconfig": "tsconfig.spec.json"
 		}
 	},
 	"preset": "./conf/jestE2E-preset.js",

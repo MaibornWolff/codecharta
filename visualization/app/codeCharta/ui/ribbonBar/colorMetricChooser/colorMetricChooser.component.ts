@@ -1,4 +1,4 @@
-import { Component, Inject } from "@angular/core"
+import { Component, Inject, ViewEncapsulation } from "@angular/core"
 import { Store } from "../../../state/angular-redux/store"
 import { setColorMetric } from "../../../state/store/dynamicSettings/colorMetric/colorMetric.actions"
 import { colorMetricSelector } from "../../../state/store/dynamicSettings/colorMetric/colorMetric.selector"
@@ -6,7 +6,8 @@ import { isColorMetricLinkedToHeightMetricSelector } from "../../../state/store/
 
 @Component({
 	selector: "cc-color-metric-chooser",
-	template: require("./colorMetricChooser.component.html")
+	templateUrl: "./colorMetricChooser.component.html",
+	encapsulation: ViewEncapsulation.None
 })
 export class ColorMetricChooserComponent {
 	colorMetric$ = this.store.select(colorMetricSelector)

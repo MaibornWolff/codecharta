@@ -1,6 +1,5 @@
-import "./customConfigs.component.scss"
-import { Component, Inject } from "@angular/core"
-import { MatDialog } from "@angular/material/dialog"
+import { Component, Inject, ViewEncapsulation } from "@angular/core"
+import { MatLegacyDialog as MatDialog } from "@angular/material/legacy-dialog"
 import { CustomConfigListComponent } from "./customConfigList/customConfigList.component"
 import { CustomConfigMapSelectionMode } from "../../model/customConfig/customConfig.api.model"
 import { MapColors, PrimaryMetrics } from "../../codeCharta.model"
@@ -26,7 +25,9 @@ export interface CustomConfigItemGroup {
 
 @Component({
 	selector: "cc-custom-configs",
-	template: require("./customConfigs.component.html")
+	templateUrl: "./customConfigs.component.html",
+	styleUrls: ["./customConfigs.component.scss"],
+	encapsulation: ViewEncapsulation.None
 })
 export class CustomConfigsComponent {
 	constructor(@Inject(MatDialog) private dialog: MatDialog) {}

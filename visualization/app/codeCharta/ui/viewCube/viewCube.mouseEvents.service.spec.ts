@@ -4,6 +4,7 @@ import { ViewCubeMouseEventsService } from "./viewCube.mouseEvents.service"
 // eslint-disable-next-line no-duplicate-imports
 import * as Three from "three"
 import oc from "three-orbit-controls"
+import type { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
 import { CursorType } from "../codeMap/codeMap.mouseEvent.service"
 
 describe("ViewCubeMouseEventsService", () => {
@@ -67,8 +68,8 @@ describe("ViewCubeMouseEventsService", () => {
 	describe("initOrbitalControl", () => {
 		it("should initialize controls with parameters", () => {
 			const camera = new PerspectiveCamera()
-			const OrbitControls = oc(Three)
-			const expectedControls = new OrbitControls(camera, webGLRenderer.domElement)
+			const orbitControls = oc(Three)
+			const expectedControls = new orbitControls(camera, webGLRenderer.domElement) as unknown as OrbitControls
 			expectedControls.enableZoom = false
 			expectedControls.enableKeys = false
 			expectedControls.enablePan = false

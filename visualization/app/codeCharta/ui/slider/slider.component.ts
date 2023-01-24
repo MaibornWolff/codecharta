@@ -1,11 +1,12 @@
-import "./slider.component.scss"
-import { Component, Input } from "@angular/core"
-import { MatSliderChange } from "@angular/material/slider"
+import { Component, Input, ViewEncapsulation } from "@angular/core"
+import { MatLegacySliderChange as MatSliderChange } from "@angular/material/legacy-slider"
 import { parseNumberInput } from "../../util/parseNumberInput"
 
 @Component({
 	selector: "cc-slider",
-	template: require("./slider.component.html")
+	templateUrl: "./slider.component.html",
+	styleUrls: ["./slider.component.scss"],
+	encapsulation: ViewEncapsulation.None
 })
 export class SliderComponent {
 	@Input() value?: number

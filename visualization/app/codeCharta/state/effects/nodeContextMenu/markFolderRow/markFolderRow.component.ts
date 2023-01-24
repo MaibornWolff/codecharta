@@ -1,5 +1,4 @@
-import "./markFolderRow.component.scss"
-import { Component, Inject } from "@angular/core"
+import { Component, Inject, ViewEncapsulation } from "@angular/core"
 import { Store } from "../../../angular-redux/store"
 import { markPackages, unmarkPackage } from "../../../store/fileSettings/markedPackages/markedPackages.actions"
 import { Observable } from "rxjs"
@@ -9,7 +8,9 @@ import { rightClickedCodeMapNodeSelector } from "../rightClickedCodeMapNode.sele
 
 @Component({
 	selector: "cc-mark-folder-row",
-	template: require("./markFolderRow.component.html")
+	templateUrl: "./markFolderRow.component.html",
+	styleUrls: ["./markFolderRow.component.scss"],
+	encapsulation: ViewEncapsulation.None
 })
 export class MarkFolderRowComponent {
 	markFolderItems$: Observable<MarkFolderItem[]>

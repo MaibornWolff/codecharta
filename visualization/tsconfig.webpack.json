@@ -1,4 +1,0 @@
-{
-	"extends": "./tsconfig.json",
-	"exclude": ["node_modules", "**/*/*.spec.ts", "**/*/*.e2e.ts"]
-}

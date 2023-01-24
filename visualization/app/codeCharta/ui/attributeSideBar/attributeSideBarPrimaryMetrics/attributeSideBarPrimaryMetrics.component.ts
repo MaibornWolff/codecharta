@@ -1,4 +1,4 @@
-import { Component, Inject } from "@angular/core"
+import { Component, Inject, ViewEncapsulation } from "@angular/core"
 import { Observable } from "rxjs"
 
 import { Store } from "../../../state/angular-redux/store"
@@ -7,7 +7,8 @@ import { PrimaryMetrics, primaryMetricsSelector } from "../../../state/selectors
 
 @Component({
 	selector: "cc-attribute-side-bar-primary-metrics",
-	template: require("./attributeSideBarPrimaryMetrics.component.html")
+	templateUrl: "./attributeSideBarPrimaryMetrics.component.html",
+	encapsulation: ViewEncapsulation.None
 })
 export class AttributeSideBarPrimaryMetricsComponent {
 	primaryMetrics$: Observable<PrimaryMetrics>

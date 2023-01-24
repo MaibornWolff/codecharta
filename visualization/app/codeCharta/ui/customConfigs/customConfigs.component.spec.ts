@@ -1,11 +1,11 @@
 import { Store } from "../../state/store/store"
 import { TestBed } from "@angular/core/testing"
-import { MatDialog } from "@angular/material/dialog"
 import { fireEvent, render, screen } from "@testing-library/angular"
 import { CustomConfigsComponent } from "./customConfigs.component"
 import { AddCustomConfigDialogComponent } from "./addCustomConfigButton/addCustomConfigDialog/addCustomConfigDialog.component"
 import { CustomConfigListComponent } from "./customConfigList/customConfigList.component"
 import { CustomConfigsModule } from "./customConfigs.module"
+import { MatLegacyDialog } from "@angular/material/legacy-dialog"
 
 describe("CustomConfigsComponent", () => {
 	let mockedDialog = { open: jest.fn() }
@@ -15,7 +15,7 @@ describe("CustomConfigsComponent", () => {
 		Store["initialize"]()
 		TestBed.configureTestingModule({
 			imports: [CustomConfigsModule],
-			providers: [{ provide: MatDialog, useValue: mockedDialog }]
+			providers: [{ provide: MatLegacyDialog, useValue: mockedDialog }]
 		})
 	})
 

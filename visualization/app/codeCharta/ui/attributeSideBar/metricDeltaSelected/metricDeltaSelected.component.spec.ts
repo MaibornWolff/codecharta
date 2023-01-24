@@ -56,12 +56,12 @@ describe("MetricDeltaSelectedComponent", () => {
 	it("should update when its metricName changes", async () => {
 		mockIdToNodeSelector({ rloc: 2, mcc: 4 })
 
-		const { rerender } = await render(MetricDeltaSelectedComponent, {
+		const { change } = await render(MetricDeltaSelectedComponent, {
 			componentProperties: { metricName: "rloc" }
 		})
 		expect(screen.queryByText(/Δ2/)).toBeTruthy()
 
-		await rerender({ metricName: "mcc" })
+		await change({ metricName: "mcc" })
 		expect(screen.queryByText(/Δ4/)).toBeTruthy()
 	})
 

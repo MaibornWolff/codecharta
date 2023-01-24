@@ -1,10 +1,11 @@
-import "./centerMapButton.component.scss"
-import { Component, Inject } from "@angular/core"
+import { Component, Inject, ViewEncapsulation } from "@angular/core"
 import { ThreeOrbitControlsService } from "../../codeMap/threeViewer/threeOrbitControls.service"
 
 @Component({
 	selector: "cc-center-map-button",
-	template: require("./centerMapButton.component.html")
+	templateUrl: "./centerMapButton.component.html",
+	styleUrls: ["./centerMapButton.component.scss"],
+	encapsulation: ViewEncapsulation.None
 })
 export class CenterMapButtonComponent {
 	constructor(@Inject(ThreeOrbitControlsService) private threeOrbitControlsService: ThreeOrbitControlsService) {}

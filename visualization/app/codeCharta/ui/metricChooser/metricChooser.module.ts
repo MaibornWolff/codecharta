@@ -8,7 +8,6 @@ import { MetricChooserComponent } from "./metricChooser.component"
 @NgModule({
 	imports: [CommonModule, MaterialModule, FormsModule],
 	declarations: [MetricChooserComponent, FilterMetricDataBySearchTermPipe],
-	exports: [MetricChooserComponent],
-	entryComponents: [MetricChooserComponent]
+	exports: [MetricChooserComponent]
 })
 export class MetricChooserModule {}

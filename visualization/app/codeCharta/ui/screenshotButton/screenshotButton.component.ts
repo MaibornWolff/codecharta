@@ -4,7 +4,7 @@ import { ThreeCameraService } from "../codeMap/threeViewer/threeCamera.service"
 import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
 import hotkeys from "hotkeys-js"
 
-import { Component, Inject } from "@angular/core"
+import { Component, Inject, ViewEncapsulation } from "@angular/core"
 import { State } from "../../state/angular-redux/state"
 import { Store } from "../../state/angular-redux/store"
 import { screenshotToClipboardEnabledSelector } from "../../state/store/appSettings/enableClipboard/screenshotToClipboardEnabled.selector"
@@ -12,7 +12,8 @@ import { ThreeRendererService } from "../codeMap/threeViewer/threeRenderer.servi
 
 @Component({
 	selector: "cc-screenshot-button",
-	template: require("./screenshotButton.component.html")
+	templateUrl: "./screenshotButton.component.html",
+	encapsulation: ViewEncapsulation.None
 })
 export class ScreenshotButtonComponent {
 	SCREENSHOT_HOTKEY_TO_FILE = "Ctrl+Alt+S"

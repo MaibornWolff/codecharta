@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from "@angular/core"
+import { Component, Inject, OnInit, ViewEncapsulation } from "@angular/core"
 import { Observable } from "rxjs"
 
 import { Store } from "../../../state/angular-redux/store"
@@ -7,7 +7,8 @@ import { sortingOrderAscendingSelector } from "../../../state/store/appSettings/
 
 @Component({
 	selector: "cc-sorting-button",
-	template: require("./sortingButton.component.html")
+	templateUrl: "./sortingButton.component.html",
+	encapsulation: ViewEncapsulation.None
 })
 export class SortingButtonComponent implements OnInit {
 	sortingOrderAscending$: Observable<boolean>

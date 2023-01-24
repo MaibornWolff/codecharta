@@ -1,4 +1,4 @@
-import { Component, Inject } from "@angular/core"
+import { Component, Inject, ViewEncapsulation } from "@angular/core"
 import { Observable } from "rxjs"
 
 import { SortingOption } from "../../../codeCharta.model"
@@ -8,7 +8,8 @@ import { sortingOrderSelector } from "../../../state/store/dynamicSettings/sorti
 
 @Component({
 	selector: "cc-sorting-option",
-	template: require("./sortingOption.component.html")
+	templateUrl: "./sortingOption.component.html",
+	encapsulation: ViewEncapsulation.None
 })
 export class SortingOptionComponent {
 	sortingOptions = Object.values(SortingOption)

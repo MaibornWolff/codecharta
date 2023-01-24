@@ -1,4 +1,4 @@
-import { Component, Inject, Input } from "@angular/core"
+import { Component, Inject, Input, ViewEncapsulation } from "@angular/core"
 import { Observable, map } from "rxjs"
 
 import { CodeMapNode } from "../../../../codeCharta.model"
@@ -9,7 +9,8 @@ import { focusedNodePathSelector } from "../../../store/dynamicSettings/focusedN
 
 @Component({
 	selector: "cc-focus-buttons",
-	template: require("./focusButtons.component.html")
+	templateUrl: "./focusButtons.component.html",
+	encapsulation: ViewEncapsulation.None
 })
 export class FocusButtonsComponent {
 	@Input() codeMapNode: Pick<CodeMapNode, "path">

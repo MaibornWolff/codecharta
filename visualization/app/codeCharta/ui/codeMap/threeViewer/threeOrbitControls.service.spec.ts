@@ -3,7 +3,7 @@ import { ThreeOrbitControlsService } from "./threeOrbitControls.service"
 import { ThreeCameraService } from "./threeCamera.service"
 import { ThreeSceneService } from "./threeSceneService"
 import { BoxGeometry, Group, Mesh, PerspectiveCamera, Vector3 } from "three"
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
+import type { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
 import { ThreeRendererService } from "./threeRenderer.service"
 import { wait } from "../../../util/testUtils/wait"
 
@@ -46,7 +46,7 @@ describe("ThreeOrbitControlsService", () => {
 	function withMockedControlService() {
 		threeOrbitControlsService.controls = {
 			target: new Vector3(1, 1, 1)
-		} as OrbitControls
+		} as unknown as OrbitControls
 		threeOrbitControlsService.controls.update = jest.fn()
 	}
 
@@ -57,7 +57,7 @@ describe("ThreeOrbitControlsService", () => {
 	it("rotateCameraInVectorDirection ", () => {
 		threeOrbitControlsService.controls = {
 			target: new Vector3(0, 0, 0)
-		} as OrbitControls
+		} as unknown as OrbitControls
 		const vector = { x: 0, y: 1, z: 0 }
 
 		threeOrbitControlsService.rotateCameraInVectorDirection(vector.x, vector.y, vector.z)

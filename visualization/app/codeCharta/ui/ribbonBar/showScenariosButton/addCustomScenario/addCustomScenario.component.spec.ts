@@ -1,5 +1,5 @@
 import { TestBed } from "@angular/core/testing"
-import { MatDialogRef } from "@angular/material/dialog"
+import { MatLegacyDialogRef } from "@angular/material/legacy-dialog"
 import { render, screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
 import { Vector3 } from "three"
@@ -19,7 +19,7 @@ describe("AddCustomScenarioComponent", () => {
 			providers: [
 				{ provide: ThreeCameraService, useValue: { camera: { position: new Vector3(0, 300, 1000) } } },
 				{ provide: ThreeOrbitControlsService, useValue: { controls: { target: new Vector3(177, 0, 299) } } },
-				{ provide: MatDialogRef, useValue: { close: jest.fn() } }
+				{ provide: MatLegacyDialogRef, useValue: { close: jest.fn() } }
 			]
 		})
 	})
@@ -28,7 +28,7 @@ describe("AddCustomScenarioComponent", () => {
 		ScenarioHelper.addScenario = jest.fn()
 		Store.dispatch(setState(STATE))
 		const { container } = await render(AddCustomScenarioComponent, { excludeComponentDeclaration: true })
-		const closeDialog = TestBed.inject(MatDialogRef).close
+		const closeDialog = TestBed.inject(MatLegacyDialogRef).close
 
 		await userEvent.type(container.querySelector("input"), "my-custom-scenario")
 		await userEvent.click(container.querySelector("button"))

@@ -1,13 +1,14 @@
-import "./scenarios.component.scss"
-import { Component, Inject, Input } from "@angular/core"
-import { MatDialog } from "@angular/material/dialog"
+import { Component, Inject, Input, ViewEncapsulation } from "@angular/core"
+import { MatLegacyDialog as MatDialog } from "@angular/material/legacy-dialog"
 import { ScenarioService } from "../scenario.service"
 import { ScenarioItem } from "../scenarioHelper"
 import { AddCustomScenarioComponent } from "../addCustomScenario/addCustomScenario.component"
 
 @Component({
 	selector: "cc-scenarios",
-	template: require("./scenarios.component.html")
+	templateUrl: "./scenarios.component.html",
+	styleUrls: ["./scenarios.component.scss"],
+	encapsulation: ViewEncapsulation.None
 })
 export class ScenariosComponent {
 	@Input() scenarios: ScenarioItem[] = []

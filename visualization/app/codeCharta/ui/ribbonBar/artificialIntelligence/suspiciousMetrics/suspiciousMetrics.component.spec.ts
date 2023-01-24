@@ -18,7 +18,7 @@ describe("SuspiciousMetricsComponent", () => {
 
 	describe("badge", () => {
 		it("should show initially and hide on first click, but show again when data has changed", async () => {
-			const { container, rerender } = await render(SuspiciousMetricComponent, {
+			const { container, change } = await render(SuspiciousMetricComponent, {
 				excludeComponentDeclaration: true,
 				componentProperties: {
 					data: {
@@ -34,7 +34,7 @@ describe("SuspiciousMetricsComponent", () => {
 			await userEvent.click(screen.getByTitle("Open Suspicious Metrics Panel"))
 			expect(container.querySelector(".suspicious-metrics-badge")).toBe(null)
 
-			rerender({
+			change({
 				data: {
 					analyzedProgrammingLanguage: "ts",
 					unsuspiciousMetrics: ["rloc"],
@@ -46,7 +46,7 @@ describe("SuspiciousMetricsComponent", () => {
 		})
 
 		it("should show initially and hide on first click, but not show again when new data has same values", async () => {
-			const { container, rerender } = await render(SuspiciousMetricComponent, {
+			const { container, change } = await render(SuspiciousMetricComponent, {
 				excludeComponentDeclaration: true,
 				componentProperties: {
 					data: {
@@ -62,7 +62,7 @@ describe("SuspiciousMetricsComponent", () => {
 			await userEvent.click(screen.getByTitle("Open Suspicious Metrics Panel"))
 			expect(container.querySelector(".suspicious-metrics-badge")).toBe(null)
 
-			rerender({
+			change({
 				data: {
 					analyzedProgrammingLanguage: "ts",
 					unsuspiciousMetrics: ["rloc", "mcc"],

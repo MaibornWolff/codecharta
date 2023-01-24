@@ -14,5 +14,6 @@ test-output/
 doc
 coverage
 .cache
+.angular/cache
 /app/codeCharta/resources/fileStorage/usageData/*-meta
 /app/codeCharta/resources/fileStorage/usageData/*-events

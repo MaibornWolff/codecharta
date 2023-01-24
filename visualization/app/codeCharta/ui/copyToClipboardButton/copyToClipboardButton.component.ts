@@ -1,9 +1,10 @@
-import { Component, Inject } from "@angular/core"
+import { Component, Inject, ViewEncapsulation } from "@angular/core"
 import { CopyToClipboardService } from "./copyToClipboard.service"
 
 @Component({
 	selector: "cc-copy-to-clipboard-button",
-	template: require("./copyToClipboardButton.component.html")
+	templateUrl: "./copyToClipboardButton.component.html",
+	encapsulation: ViewEncapsulation.None
 })
 export class CopyToClipboardButtonComponent {
 	constructor(@Inject(CopyToClipboardService) private service: CopyToClipboardService) {}
