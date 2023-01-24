@@ -1,4 +1,4 @@
-import { Inject, Injectable } from "@angular/core"
+import { Injectable } from "@angular/core"
 import { filter, tap, withLatestFrom } from "rxjs"
 import { defaultNMetrics, isAnyMetricAvailable, preselectCombination } from "./utils/metricHelper"
 import { createEffect } from "../../angular-redux/effects/createEffect"
@@ -13,7 +13,7 @@ import { areChosenMetricsAvailableSelector } from "../../selectors/allNecessaryR
 
 @Injectable()
 export class ResetChosenMetricsEffect {
-	constructor(@Inject(Store) private store: Store) {}
+	constructor(private store: Store) {}
 
 	resetChosenDistributionMetric$ = createEffect(
 		() =>

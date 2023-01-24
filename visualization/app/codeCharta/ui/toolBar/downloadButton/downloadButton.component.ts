@@ -1,4 +1,4 @@
-import { Component, Inject, ViewEncapsulation } from "@angular/core"
+import { Component, ViewEncapsulation } from "@angular/core"
 import { MatLegacyDialog as MatDialog } from "@angular/material/legacy-dialog"
 import { DownloadDialogComponent } from "./downloadDialog/downloadDialog.component"
 
@@ -8,7 +8,7 @@ import { DownloadDialogComponent } from "./downloadDialog/downloadDialog.compone
 	encapsulation: ViewEncapsulation.None
 })
 export class DownloadButtonComponent {
-	constructor(@Inject(MatDialog) private dialog: MatDialog) {}
+	constructor(private dialog: MatDialog) {}
 
 	download() {
 		this.dialog.open(DownloadDialogComponent, { panelClass: "cc-download-dialog" })

@@ -1,5 +1,5 @@
 import { ThreeCameraService } from "./threeCamera.service"
-import { Inject, Injectable } from "@angular/core"
+import { Injectable } from "@angular/core"
 import { Box3, Mesh, MeshNormalMaterial, PerspectiveCamera, Vector3, Sphere, BoxGeometry } from "three"
 import { ThreeSceneService } from "./threeSceneService"
 
@@ -23,9 +23,9 @@ export class ThreeOrbitControlsService {
 	private eventEmitter = new EventEmitter<CameraChangeEvents>()
 
 	constructor(
-		@Inject(ThreeCameraService) private threeCameraService: ThreeCameraService,
-		@Inject(ThreeSceneService) private threeSceneService: ThreeSceneService,
-		@Inject(ThreeRendererService) private threeRendererService: ThreeRendererService
+		private threeCameraService: ThreeCameraService,
+		private threeSceneService: ThreeSceneService,
+		private threeRendererService: ThreeRendererService
 	) {}
 
 	setControlTarget(cameraTarget: Vector3) {

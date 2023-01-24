@@ -1,4 +1,4 @@
-import { Component, Inject, Input, OnInit, ViewEncapsulation } from "@angular/core"
+import { Component, Input, OnInit, ViewEncapsulation } from "@angular/core"
 import { Observable } from "rxjs"
 import { AttributeTypes, PrimaryMetrics } from "../../../codeCharta.model"
 import { Store } from "../../../state/angular-redux/store"
@@ -17,7 +17,7 @@ export class MetricChooserTypeHoveredComponent implements OnInit {
 	isHoveredNodeALeaf$: Observable<boolean>
 	attributeType$: Observable<string>
 
-	constructor(@Inject(Store) private store: Store) {}
+	constructor(private store: Store) {}
 
 	ngOnInit(): void {
 		this.isHoveredNodeALeaf$ = this.store.select(isHoveredNodeALeafSelector)

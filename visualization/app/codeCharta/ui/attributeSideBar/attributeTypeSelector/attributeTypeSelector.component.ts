@@ -1,4 +1,4 @@
-import { Component, Inject, Input, ViewEncapsulation } from "@angular/core"
+import { Component, Input, ViewEncapsulation } from "@angular/core"
 import { AttributeTypes, AttributeTypeValue } from "../../../codeCharta.model"
 import { updateAttributeType } from "../../../state/store/fileSettings/attributeTypes/attributeTypes.actions"
 import { Store } from "../../../state/angular-redux/store"
@@ -16,7 +16,7 @@ export class AttributeTypeSelectorComponent {
 
 	attributeTypes$ = this.store.select(attributeTypesSelector)
 
-	constructor(@Inject(Store) private store: Store) {}
+	constructor(private store: Store) {}
 
 	setToAbsolute() {
 		this.setAttributeType(AttributeTypeValue.absolute)

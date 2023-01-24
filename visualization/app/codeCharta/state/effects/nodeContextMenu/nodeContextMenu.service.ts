@@ -1,6 +1,6 @@
 import { Overlay, OverlayRef } from "@angular/cdk/overlay"
 import { ComponentPortal } from "@angular/cdk/portal"
-import { Inject, Injectable } from "@angular/core"
+import { Injectable } from "@angular/core"
 import { Store } from "../../angular-redux/store"
 import { setRightClickedNodeData } from "../../store/appStatus/rightClickedNodeData/rightClickedNodeData.actions"
 import { NodeContextMenuCardComponent } from "./nodeContextMenuCard/nodeContextMenuCard.component"
@@ -9,7 +9,7 @@ import { NodeContextMenuCardComponent } from "./nodeContextMenuCard/nodeContextM
 export class NodeContextMenuService {
 	private overlayReference: OverlayRef | null = null
 
-	constructor(@Inject(Overlay) private overlay: Overlay, @Inject(Store) private store: Store) {}
+	constructor(private overlay: Overlay, private store: Store) {}
 
 	open(x: number, y: number) {
 		if (this.overlayReference) {

@@ -1,4 +1,4 @@
-import { Component, Inject, ViewEncapsulation } from "@angular/core"
+import { Component, ViewEncapsulation } from "@angular/core"
 import { Store } from "../../../state/angular-redux/store"
 import { marginSelector } from "../../../state/store/dynamicSettings/margin/margin.selector"
 import debounce from "lodash.debounce"
@@ -27,7 +27,7 @@ export class AreaSettingsPanelComponent {
 		this.store.dispatch(setDynamicMargin(false))
 	}, AreaSettingsPanelComponent.DEBOUNCE_TIME)
 
-	constructor(@Inject(Store) private store: Store) {}
+	constructor(private store: Store) {}
 
 	setDynamicMargin($event: MatCheckboxChange) {
 		this.store.dispatch(setDynamicMargin($event.checked))

@@ -1,4 +1,4 @@
-import { Component, Inject, ViewEncapsulation } from "@angular/core"
+import { Component, ViewEncapsulation } from "@angular/core"
 import { Observable } from "rxjs"
 import { Store } from "../../../state/angular-redux/store"
 import { MatchingFilesCounter, matchingFilesCounterSelector } from "./selectors/matchingFilesCounter.selector"
@@ -12,7 +12,7 @@ import { MatchingFilesCounter, matchingFilesCounterSelector } from "./selectors/
 export class MatchingFilesCounterComponent {
 	matchingFileCounters$: Observable<MatchingFilesCounter>
 
-	constructor(@Inject(Store) store: Store) {
+	constructor(store: Store) {
 		this.matchingFileCounters$ = store.select(matchingFilesCounterSelector)
 	}
 }

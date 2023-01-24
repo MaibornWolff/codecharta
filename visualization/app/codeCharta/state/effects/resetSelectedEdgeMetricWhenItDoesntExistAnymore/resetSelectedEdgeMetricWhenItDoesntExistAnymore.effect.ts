@@ -1,4 +1,4 @@
-import { Inject, Injectable } from "@angular/core"
+import { Injectable } from "@angular/core"
 import { filter, withLatestFrom, map, distinctUntilChanged } from "rxjs"
 import { createEffect } from "../../angular-redux/effects/createEffect"
 import { Store } from "../../angular-redux/store"
@@ -8,7 +8,7 @@ import { edgeMetricSelector } from "../../store/dynamicSettings/edgeMetric/edgeM
 
 @Injectable()
 export class ResetSelectedEdgeMetricWhenItDoesntExistAnymoreEffect {
-	constructor(@Inject(Store) private store: Store) {}
+	constructor(private store: Store) {}
 
 	resetSelectedEdgeMetricWhenItDoesntExistAnymore$ = createEffect(() =>
 		this.store.select(edgeMetricDataSelector).pipe(

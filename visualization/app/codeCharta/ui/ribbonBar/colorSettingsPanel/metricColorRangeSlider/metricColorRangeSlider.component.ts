@@ -1,4 +1,4 @@
-import { Component, Inject, ViewEncapsulation } from "@angular/core"
+import { Component, ViewEncapsulation } from "@angular/core"
 import { Store } from "../../../../state/angular-redux/store"
 import { HandleValueChange } from "./rangeSlider/rangeSlider.component"
 import { setColorRange } from "../../../../state/store/dynamicSettings/colorRange/colorRange.actions"
@@ -19,7 +19,7 @@ export class MetricColorRangeSliderComponent {
 	private newLeftValue: null | number = null
 	private newRightValue: null | number = null
 
-	constructor(@Inject(Store) private store: Store) {}
+	constructor(private store: Store) {}
 
 	handleValueChange: HandleValueChange = ({ newLeftValue, newRightValue }) => {
 		if (newLeftValue !== undefined) {

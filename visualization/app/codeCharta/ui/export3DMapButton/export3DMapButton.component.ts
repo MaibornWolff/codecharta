@@ -1,4 +1,4 @@
-import { Component, Inject, ViewEncapsulation } from "@angular/core"
+import { Component, ViewEncapsulation } from "@angular/core"
 import { FileDownloader } from "../../util/fileDownloader"
 import { STLExporter } from "three/examples/jsm/exporters/STLExporter"
 import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
@@ -16,7 +16,7 @@ import { State } from "../../state/angular-redux/state"
 })
 export class Export3DMapButtonComponent {
 	private exporter = new STLExporter()
-	constructor(@Inject(State) private state: State, @Inject(ThreeSceneService) private threeSceneService: ThreeSceneService) {}
+	constructor(private state: State, private threeSceneService: ThreeSceneService) {}
 
 	downloadStlFile() {
 		const files = filesSelector(this.state.getValue())

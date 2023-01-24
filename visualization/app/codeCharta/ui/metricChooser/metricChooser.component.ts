@@ -1,4 +1,4 @@
-import { Component, ElementRef, Inject, Input, OnInit, ViewChild, ViewEncapsulation } from "@angular/core"
+import { Component, ElementRef, Input, OnInit, ViewChild, ViewEncapsulation } from "@angular/core"
 import { Store } from "../../state/angular-redux/store"
 import { nodeMetricDataSelector } from "../../state/selectors/accumulatedData/metricData/nodeMetricData.selector"
 import { Observable } from "rxjs"
@@ -25,7 +25,7 @@ export class MetricChooserComponent implements OnInit {
 	metricData$: Observable<NodeMetricData[] | EdgeMetricData[]>
 	metricDataDescription$: Map<string, string>
 
-	constructor(@Inject(Store) private store: Store) {}
+	constructor(private store: Store) {}
 
 	ngOnInit(): void {
 		this.metricData$ = this.store.select(this.type === "node" ? nodeMetricDataSelector : edgeMetricDataSelector)

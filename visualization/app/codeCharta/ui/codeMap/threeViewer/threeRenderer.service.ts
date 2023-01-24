@@ -1,4 +1,4 @@
-import { Inject, Injectable } from "@angular/core"
+import { Injectable } from "@angular/core"
 import { Camera, RGBAFormat, Scene, Vector2, WebGLInfo, WebGLRenderer, WebGLRenderTarget } from "three"
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass"
 import { WEBGL } from "three/examples/jsm/WebGL"
@@ -37,7 +37,7 @@ export class ThreeRendererService {
 	scene: Scene
 	camera: Camera
 
-	constructor(@Inject(Store) private store: Store, @Inject(State) private state: State) {}
+	constructor(private store: Store, private state: State) {}
 
 	init(containerWidth: number, containerHeight: number, scene: Scene, camera: Camera) {
 		this.scene = scene

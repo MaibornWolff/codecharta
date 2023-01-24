@@ -1,4 +1,4 @@
-import { Component, Inject, ViewEncapsulation } from "@angular/core"
+import { Component, ViewEncapsulation } from "@angular/core"
 import { MatLegacySlideToggleChange as MatSlideToggleChange } from "@angular/material/legacy-slide-toggle"
 import { Store } from "../../../state/angular-redux/store"
 import { setPresentationMode } from "../../../state/store/appSettings/isPresentationMode/isPresentationMode.actions"
@@ -13,7 +13,7 @@ import { isPresentationModeSelector } from "../../../state/store/appSettings/isP
 export class PresentationModeButtonComponent {
 	isPresentationModeEnabled$ = this.store.select(isPresentationModeSelector)
 
-	constructor(@Inject(Store) private readonly store: Store) {}
+	constructor(private readonly store: Store) {}
 
 	setPresentationModeEnabled(event: MatSlideToggleChange) {
 		this.store.dispatch(setPresentationMode(event.checked))

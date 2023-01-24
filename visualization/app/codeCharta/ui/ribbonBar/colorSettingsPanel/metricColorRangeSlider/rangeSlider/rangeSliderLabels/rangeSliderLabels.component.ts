@@ -6,7 +6,6 @@ import {
 	ElementRef,
 	Input,
 	ViewChild,
-	Inject,
 	ViewEncapsulation
 } from "@angular/core"
 import { SliderRangePosition } from "../utils/SliderRangePosition"
@@ -43,7 +42,7 @@ export class RangeSliderLabelsComponent implements AfterViewChecked {
 	rightLabel: number
 	combinedCurrentLeftRightLabelLeftPosition: number
 
-	constructor(@Inject(ChangeDetectorRef) private changeDetector: ChangeDetectorRef) {}
+	constructor(private changeDetector: ChangeDetectorRef) {}
 
 	ngAfterViewChecked(): void {
 		this.updateLabelDisplays()

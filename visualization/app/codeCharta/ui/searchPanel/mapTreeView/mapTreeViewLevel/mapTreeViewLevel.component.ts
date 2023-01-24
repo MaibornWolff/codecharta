@@ -1,4 +1,4 @@
-import { Component, Inject, Input, OnInit, ViewEncapsulation } from "@angular/core"
+import { Component, Input, OnInit, ViewEncapsulation } from "@angular/core"
 
 import { Store } from "../../../../state/angular-redux/store"
 import { CodeMapNode } from "../../../../codeCharta.model"
@@ -25,7 +25,7 @@ export class MapTreeViewLevelComponent implements OnInit {
 
 	areMetricGreaterZero = false
 
-	constructor(@Inject(Store) private store: Store) {}
+	constructor(private store: Store) {}
 
 	ngOnInit(): void {
 		// open root folder initially

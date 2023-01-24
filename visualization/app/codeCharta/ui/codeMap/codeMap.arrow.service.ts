@@ -1,4 +1,4 @@
-import { Injectable, Inject } from "@angular/core"
+import { Injectable } from "@angular/core"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { Node, EdgeVisibility } from "../../codeCharta.model"
 import { ArrowHelper, BufferGeometry, CubicBezierCurve3, Line, LineBasicMaterial, Object3D, Vector3 } from "three"
@@ -20,10 +20,10 @@ export class CodeMapArrowService {
 	private HIGHLIGHT_BUILDING_DELAY = 15
 
 	constructor(
-		@Inject(Store) private store: Store,
-		@Inject(State) private state: State,
-		@Inject(ThreeSceneService) private threeSceneService: ThreeSceneService,
-		@Inject(IdToBuildingService) private idToBuildingService: IdToBuildingService
+		private store: Store,
+		private state: State,
+		private threeSceneService: ThreeSceneService,
+		private idToBuildingService: IdToBuildingService
 	) {
 		this.arrows = new Array<Object3D>()
 		this.store

@@ -1,4 +1,4 @@
-import { Component, Inject, ViewEncapsulation } from "@angular/core"
+import { Component, ViewEncapsulation } from "@angular/core"
 import { UploadFilesService } from "./uploadFiles.service"
 
 @Component({
@@ -8,7 +8,7 @@ import { UploadFilesService } from "./uploadFiles.service"
 	encapsulation: ViewEncapsulation.None
 })
 export class UploadFilesButtonComponent {
-	constructor(@Inject(UploadFilesService) private uploadFilesService: UploadFilesService) {}
+	constructor(private uploadFilesService: UploadFilesService) {}
 
 	uploadFiles() {
 		this.uploadFilesService.uploadFiles()

@@ -1,4 +1,4 @@
-import { Component, Inject, ViewEncapsulation } from "@angular/core"
+import { Component, ViewEncapsulation } from "@angular/core"
 import debounce from "lodash.debounce"
 import { Store } from "../../../state/angular-redux/store"
 import { setSearchPattern } from "../../../state/store/dynamicSettings/searchPattern/searchPattern.actions"
@@ -22,7 +22,7 @@ export class SearchBarComponent {
 	isExcludePatternDisabled$ = this.store.select(isExcludePatternDisabledSelector)
 	setSearchPatternDebounced = debounce(this.setSearchPattern, 400)
 
-	constructor(@Inject(Store) private store: Store) {}
+	constructor(private store: Store) {}
 
 	setSearchPattern(event: Event) {
 		const eventTarget = event.target as HTMLInputElement

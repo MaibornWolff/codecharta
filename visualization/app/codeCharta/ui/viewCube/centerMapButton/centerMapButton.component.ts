@@ -1,4 +1,4 @@
-import { Component, Inject, ViewEncapsulation } from "@angular/core"
+import { Component, ViewEncapsulation } from "@angular/core"
 import { ThreeOrbitControlsService } from "../../codeMap/threeViewer/threeOrbitControls.service"
 
 @Component({
@@ -8,7 +8,7 @@ import { ThreeOrbitControlsService } from "../../codeMap/threeViewer/threeOrbitC
 	encapsulation: ViewEncapsulation.None
 })
 export class CenterMapButtonComponent {
-	constructor(@Inject(ThreeOrbitControlsService) private threeOrbitControlsService: ThreeOrbitControlsService) {}
+	constructor(private threeOrbitControlsService: ThreeOrbitControlsService) {}
 
 	centerMap() {
 		this.threeOrbitControlsService.autoFitTo()

@@ -1,4 +1,4 @@
-import { Component, Inject, Input, ViewEncapsulation } from "@angular/core"
+import { Component, Input, ViewEncapsulation } from "@angular/core"
 import { Observable, map } from "rxjs"
 
 import { CodeMapNode } from "../../../../codeCharta.model"
@@ -18,7 +18,7 @@ export class FocusButtonsComponent {
 	currentFocusedNodePath$: Observable<string | undefined>
 	hasPreviousFocusedNodePath$: Observable<boolean>
 
-	constructor(@Inject(Store) private store: Store) {
+	constructor(private store: Store) {
 		this.currentFocusedNodePath$ = this.store.select(currentFocusedNodePathSelector)
 		this.hasPreviousFocusedNodePath$ = this.store
 			.select(focusedNodePathSelector)

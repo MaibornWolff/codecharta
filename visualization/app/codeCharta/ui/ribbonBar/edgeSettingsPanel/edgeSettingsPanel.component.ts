@@ -1,4 +1,4 @@
-import { Component, Inject, ViewEncapsulation } from "@angular/core"
+import { Component, ViewEncapsulation } from "@angular/core"
 import { MatLegacyCheckboxChange as MatCheckboxChange } from "@angular/material/legacy-checkbox"
 import { map } from "rxjs"
 import { Store } from "../../../state/angular-redux/store"
@@ -27,7 +27,7 @@ export class EdgeSettingsPanelComponent {
 	edgeHeight$ = this.store.select(edgeHeightSelector)
 	showOnlyBuildingsWithEdges$ = this.store.select(showOnlyBuildingsWithEdgesSelector)
 
-	constructor(@Inject(Store) private store) {}
+	constructor(private store: Store) {}
 
 	applySettingsAmountOfEdgePreviews = (value: number) => {
 		this.store.dispatch(setAmountOfEdgePreviews(value))

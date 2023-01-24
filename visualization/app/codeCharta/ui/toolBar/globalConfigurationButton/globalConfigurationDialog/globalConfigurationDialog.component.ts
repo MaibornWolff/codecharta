@@ -1,4 +1,4 @@
-import { Component, Inject, ViewEncapsulation } from "@angular/core"
+import { Component, ViewEncapsulation } from "@angular/core"
 import { MatLegacySlideToggleChange as MatSlideToggleChange } from "@angular/material/legacy-slide-toggle"
 import { Store } from "../../../../state/angular-redux/store"
 import { setScreenshotToClipboardEnabled } from "../../../../state/store/appSettings/enableClipboard/screenshotToClipboardEnabled.actions"
@@ -24,7 +24,7 @@ export class GlobalConfigurationDialogComponent {
 	hideFlatBuildings$ = this.store.select(hideFlatBuildingsSelector)
 	resetCameraIfNewFileIsLoaded$ = this.store.select(resetCameraIfNewFileIsLoadedSelector)
 
-	constructor(@Inject(Store) private store: Store) {}
+	constructor(private store: Store) {}
 
 	handleResetCameraIfNewFileIsLoadedChanged(event: MatSlideToggleChange) {
 		this.store.dispatch(setResetCameraIfNewFileIsLoaded(event.checked))

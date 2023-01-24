@@ -1,4 +1,4 @@
-import { Inject, Injectable } from "@angular/core"
+import { Injectable } from "@angular/core"
 import { combineLatest, filter, map, withLatestFrom } from "rxjs"
 import { createEffect } from "../../angular-redux/effects/createEffect"
 import { Store } from "../../angular-redux/store"
@@ -15,7 +15,7 @@ import { setEdgeVisibility } from "./utils/setEdgeVisibility"
 
 @Injectable()
 export class UpdateEdgePreviewsEffect {
-	constructor(@Inject(Store) private store: Store) {}
+	constructor(private store: Store) {}
 
 	resetIsEdgeMetricVisible$ = createEffect(() =>
 		this.store.select(edgeMetricSelector).pipe(

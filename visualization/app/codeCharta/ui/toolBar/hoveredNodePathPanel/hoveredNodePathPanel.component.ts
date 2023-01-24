@@ -1,4 +1,4 @@
-import { Component, Inject, ViewEncapsulation } from "@angular/core"
+import { Component, ViewEncapsulation } from "@angular/core"
 import { Store } from "../../../state/angular-redux/store"
 import { hoveredNodePathPanelDataSelector } from "./hoveredNodePathPanelData.selector"
 
@@ -11,5 +11,5 @@ import { hoveredNodePathPanelDataSelector } from "./hoveredNodePathPanelData.sel
 export class HoveredNodePathPanelComponent {
 	hoveredNodePathPanelData$ = this.store.select(hoveredNodePathPanelDataSelector)
 
-	constructor(@Inject(Store) private store: Store) {}
+	constructor(private store: Store) {}
 }

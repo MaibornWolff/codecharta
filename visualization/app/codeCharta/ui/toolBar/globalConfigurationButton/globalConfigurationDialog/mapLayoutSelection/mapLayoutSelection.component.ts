@@ -1,4 +1,4 @@
-import { Component, Inject, ViewEncapsulation } from "@angular/core"
+import { Component, ViewEncapsulation } from "@angular/core"
 import { MatLegacySelectChange as MatSelectChange } from "@angular/material/legacy-select"
 import { LayoutAlgorithm } from "../../../../../codeCharta.model"
 import { Store } from "../../../../../state/angular-redux/store"
@@ -18,7 +18,7 @@ export class MapLayoutSelectionComponent {
 	layoutAlgorithm$ = this.store.select(layoutAlgorithmSelector)
 	maxTreeMapFiles$ = this.store.select(maxTreeMapFilesSelector)
 
-	constructor(@Inject(Store) private store: Store) {}
+	constructor(private store: Store) {}
 
 	handleSelectedLayoutAlgorithmChanged(event: MatSelectChange) {
 		this.store.dispatch(setLayoutAlgorithm(event.value))

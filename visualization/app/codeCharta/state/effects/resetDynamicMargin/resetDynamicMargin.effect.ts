@@ -1,4 +1,4 @@
-import { Inject, Injectable } from "@angular/core"
+import { Injectable } from "@angular/core"
 import { filter, map, distinctUntilChanged } from "rxjs"
 import { createEffect } from "../../angular-redux/effects/createEffect"
 import { Store } from "../../angular-redux/store"
@@ -7,7 +7,7 @@ import { defaultMargin, setMargin } from "../../store/dynamicSettings/margin/mar
 
 @Injectable()
 export class ResetDynamicMarginEffect {
-	constructor(@Inject(Store) private store: Store) {}
+	constructor(private store: Store) {}
 
 	resetMargin$ = createEffect(() =>
 		this.store.select(dynamicMarginSelector).pipe(

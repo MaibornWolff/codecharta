@@ -1,11 +1,11 @@
-import { Inject, Pipe, PipeTransform } from "@angular/core"
+import { Pipe, PipeTransform } from "@angular/core"
 import { State } from "../../../../state/angular-redux/state"
 import { CustomConfigItem } from "../../customConfigs.component"
 import { getMissingCustomConfigModeAndMaps } from "./getMissingCustomConfigModeAndMaps"
 
 @Pipe({ name: "customConfig2ApplicableColor" })
 export class CustomConfig2ApplicableColor implements PipeTransform {
-	constructor(@Inject(State) private state: State) {}
+	constructor(private state: State) {}
 
 	transform(customConfig: CustomConfigItem): string {
 		const { mapSelectionMode, mapNames } = getMissingCustomConfigModeAndMaps(customConfig, this.state)

@@ -1,4 +1,4 @@
-import { Component, Inject, ViewEncapsulation } from "@angular/core"
+import { Component, ViewEncapsulation } from "@angular/core"
 import { Observable } from "rxjs"
 
 import { SortingOption } from "../../../codeCharta.model"
@@ -15,7 +15,7 @@ export class SortingOptionComponent {
 	sortingOptions = Object.values(SortingOption)
 	selectedSortingOption$: Observable<SortingOption>
 
-	constructor(@Inject(Store) private store: Store) {
+	constructor(private store: Store) {
 		this.selectedSortingOption$ = store.select(sortingOrderSelector)
 	}
 

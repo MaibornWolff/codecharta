@@ -1,4 +1,4 @@
-import { Inject, Injectable } from "@angular/core"
+import { Injectable } from "@angular/core"
 import { Store } from "../../angular-redux/store"
 import { createEffect } from "../../angular-redux/effects/createEffect"
 import { map, withLatestFrom } from "rxjs"
@@ -9,7 +9,7 @@ import { getNumberOfTopLabels } from "./getNumberOfTopLabels"
 
 @Injectable()
 export class UpdateVisibleTopLabelsEffect {
-	constructor(@Inject(Store) private store: Store) {}
+	constructor(private store: Store) {}
 
 	updateVisibleTopLabels$ = createEffect(() =>
 		this.store.select(visibleFileStatesSelector).pipe(

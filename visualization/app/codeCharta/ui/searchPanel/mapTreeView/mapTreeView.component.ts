@@ -1,4 +1,4 @@
-import { Component, Inject, ViewEncapsulation } from "@angular/core"
+import { Component, ViewEncapsulation } from "@angular/core"
 import { Observable } from "rxjs"
 
 import { CodeMapNode } from "../../../codeCharta.model"
@@ -14,7 +14,7 @@ import { mapTreeViewNodeSelector } from "./mapTreeViewNodeSelector/mapTreeViewNo
 export class MapTreeViewComponent {
 	mapTreeViewNode$: Observable<CodeMapNode>
 
-	constructor(@Inject(Store) store: Store) {
+	constructor(store: Store) {
 		this.mapTreeViewNode$ = store.select(mapTreeViewNodeSelector)
 	}
 }

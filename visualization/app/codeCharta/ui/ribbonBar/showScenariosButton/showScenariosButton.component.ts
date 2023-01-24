@@ -1,4 +1,4 @@
-import { Component, Inject, ViewEncapsulation } from "@angular/core"
+import { Component, ViewEncapsulation } from "@angular/core"
 import { ScenarioService } from "./scenario.service"
 import { ScenarioItem } from "./scenarioHelper"
 
@@ -11,7 +11,7 @@ import { ScenarioItem } from "./scenarioHelper"
 export class ShowScenariosButtonComponent {
 	scenarios: ScenarioItem[] = []
 
-	constructor(@Inject(ScenarioService) public scenarioService: ScenarioService) {}
+	constructor(public scenarioService: ScenarioService) {}
 
 	loadScenarios() {
 		this.scenarios = this.scenarioService.getScenarios()

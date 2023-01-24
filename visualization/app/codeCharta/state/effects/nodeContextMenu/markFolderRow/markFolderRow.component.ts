@@ -1,4 +1,4 @@
-import { Component, Inject, ViewEncapsulation } from "@angular/core"
+import { Component, ViewEncapsulation } from "@angular/core"
 import { Store } from "../../../angular-redux/store"
 import { markPackages, unmarkPackage } from "../../../store/fileSettings/markedPackages/markedPackages.actions"
 import { Observable } from "rxjs"
@@ -16,7 +16,7 @@ export class MarkFolderRowComponent {
 	markFolderItems$: Observable<MarkFolderItem[]>
 	codeMapNode$: Observable<CodeMapNode>
 
-	constructor(@Inject(Store) private store: Store) {
+	constructor(private store: Store) {
 		this.markFolderItems$ = store.select(markFolderItemsSelector)
 		this.codeMapNode$ = store.select(rightClickedCodeMapNodeSelector)
 	}

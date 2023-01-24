@@ -1,4 +1,4 @@
-import { Component, Inject, ViewEncapsulation } from "@angular/core"
+import { Component, ViewEncapsulation } from "@angular/core"
 import { Observable } from "rxjs"
 import { Store } from "../../../state/angular-redux/store"
 import { isLoadingMapSelector } from "../../../state/store/appSettings/isLoadingMap/isLoadingMap.selector"
@@ -12,7 +12,7 @@ import { isLoadingMapSelector } from "../../../state/store/appSettings/isLoading
 export class LoadingMapProgressSpinnerComponent {
 	isLoadingMap$: Observable<boolean>
 
-	constructor(@Inject(Store) store: Store) {
+	constructor(store: Store) {
 		this.isLoadingMap$ = store.select(isLoadingMapSelector)
 	}
 }

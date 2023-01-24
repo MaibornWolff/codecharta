@@ -1,7 +1,7 @@
 import { combineLatest, map } from "rxjs"
 import { CustomConfigHelper } from "../../util/customConfigHelper"
 import { getDownloadableCustomConfigs } from "./downloadCustomConfigsButton/getDownloadableCustomConfigs"
-import { Inject, Injectable } from "@angular/core"
+import { Injectable } from "@angular/core"
 import { Store } from "../../state/angular-redux/store"
 import { getCustomConfigItemGroups } from "./customConfigList/getCustomConfigItemGroups"
 import { visibleFilesBySelectionModeSelector } from "./visibleFilesBySelectionMode.selector"
@@ -18,5 +18,5 @@ export class CustomConfigHelperService {
 		CustomConfigHelper.customConfigChange$
 	]).pipe(map(([visibleFilesBySelectionMode]) => getCustomConfigItemGroups(visibleFilesBySelectionMode)))
 
-	constructor(@Inject(Store) private store: Store) {}
+	constructor(private store: Store) {}
 }

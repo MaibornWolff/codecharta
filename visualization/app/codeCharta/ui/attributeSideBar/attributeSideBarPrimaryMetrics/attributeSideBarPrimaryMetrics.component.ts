@@ -1,4 +1,4 @@
-import { Component, Inject, ViewEncapsulation } from "@angular/core"
+import { Component, ViewEncapsulation } from "@angular/core"
 import { Observable } from "rxjs"
 
 import { Store } from "../../../state/angular-redux/store"
@@ -14,7 +14,7 @@ export class AttributeSideBarPrimaryMetricsComponent {
 	primaryMetrics$: Observable<PrimaryMetrics>
 	showAttributeTypeSelector$: Observable<boolean>
 
-	constructor(@Inject(Store) store: Store) {
+	constructor(store: Store) {
 		this.primaryMetrics$ = store.select(primaryMetricsSelector)
 		this.showAttributeTypeSelector$ = store.select(showAttributeTypeSelectorSelector)
 	}

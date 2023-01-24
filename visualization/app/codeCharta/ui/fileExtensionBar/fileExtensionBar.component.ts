@@ -1,4 +1,4 @@
-import { Component, Inject, ViewEncapsulation } from "@angular/core"
+import { Component, ViewEncapsulation } from "@angular/core"
 import { MetricDistribution, FileExtensionCalculator } from "./selectors/fileExtensionCalculator"
 import { metricDistributionSelector } from "./selectors/metricDistribution.selector"
 import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
@@ -15,7 +15,7 @@ export class FileExtensionBarComponent {
 	showDetails = false
 	metricDistribution: MetricDistribution[]
 
-	constructor(@Inject(Store) private store: Store, @Inject(ThreeSceneService) private threeSceneService: ThreeSceneService) {
+	constructor(private store: Store, private threeSceneService: ThreeSceneService) {
 		this.store.select(metricDistributionSelector).subscribe(metricDistribution => {
 			this.metricDistribution = metricDistribution
 		})

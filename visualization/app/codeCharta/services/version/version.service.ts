@@ -1,5 +1,5 @@
 import packageJson from "../../../../package.json"
-import { Inject, Injectable } from "@angular/core"
+import { Injectable } from "@angular/core"
 import { MatLegacyDialog as MatDialog } from "@angular/material/legacy-dialog"
 import { ChangelogDialogComponent } from "../../ui/dialogs/changelogDialog/changelogDialog.component"
 import { compareVersion } from "./utils/compareVersion"
@@ -8,7 +8,7 @@ import { compareVersion } from "./utils/compareVersion"
 export class VersionService {
 	readonly version = packageJson.version
 
-	constructor(@Inject(MatDialog) private dialog: MatDialog) {}
+	constructor(private dialog: MatDialog) {}
 
 	synchronizeLocalCodeChartaVersion() {
 		const savedPreviousVersion = localStorage.getItem("codeChartaVersion")

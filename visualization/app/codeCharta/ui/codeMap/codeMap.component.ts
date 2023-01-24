@@ -1,4 +1,4 @@
-import { Component, Inject, AfterViewInit, ElementRef, OnDestroy, ViewEncapsulation } from "@angular/core"
+import { Component, AfterViewInit, ElementRef, OnDestroy, ViewEncapsulation } from "@angular/core"
 import { Store } from "../../state/angular-redux/store"
 import { isLoadingFileSelector } from "../../state/store/appSettings/isLoadingFile/isLoadingFile.selector"
 import { ThreeViewerService } from "./threeViewer/threeViewer.service"
@@ -27,11 +27,11 @@ export class CodeMapComponent implements AfterViewInit, OnDestroy {
 		.subscribe()
 
 	constructor(
-		@Inject(IsAttributeSideBarVisibleService) public isAttributeSideBarVisibleService: IsAttributeSideBarVisibleService,
-		@Inject(Store) private store: Store,
-		@Inject(ThreeViewerService) private threeViewerService: ThreeViewerService,
-		@Inject(CodeMapMouseEventService) private codeMapMouseEventService: CodeMapMouseEventService,
-		@Inject(ElementRef) private elementReference: ElementRef
+		public isAttributeSideBarVisibleService: IsAttributeSideBarVisibleService,
+		private store: Store,
+		private threeViewerService: ThreeViewerService,
+		private codeMapMouseEventService: CodeMapMouseEventService,
+		private elementReference: ElementRef
 	) {}
 
 	ngAfterViewInit(): void {

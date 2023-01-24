@@ -1,4 +1,4 @@
-import { Component, Inject, ViewEncapsulation } from "@angular/core"
+import { Component, ViewEncapsulation } from "@angular/core"
 import { State } from "../../../../state/angular-redux/state"
 import { FileDownloader } from "../../../../util/fileDownloader"
 import { accumulatedDataSelector } from "../../../../state/selectors/accumulatedData/accumulatedData.selector"
@@ -21,7 +21,7 @@ export class DownloadDialogComponent {
 	fileName: string
 	properties: (DownloadableProperty & { change: (isSelected: boolean) => void })[]
 
-	constructor(@Inject(State) private state: State) {
+	constructor(private state: State) {
 		const stateValue = this.state.getValue()
 		const { unifiedMapNode, unifiedFileMeta } = accumulatedDataSelector(stateValue)
 		const { fileSettings, files } = stateValue

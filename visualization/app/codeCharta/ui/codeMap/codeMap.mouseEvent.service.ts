@@ -1,4 +1,4 @@
-import { Inject, Injectable } from "@angular/core"
+import { Injectable } from "@angular/core"
 import { ThreeCameraService } from "./threeViewer/threeCamera.service"
 import { CodeMapBuilding } from "./rendering/codeMapBuilding"
 import { ViewCubeMouseEventsService } from "../viewCube/viewCube.mouseEvents.service"
@@ -54,15 +54,15 @@ export class CodeMapMouseEventService {
 	private temporaryLabelForBuilding = null
 
 	constructor(
-		@Inject(ThreeCameraService) private threeCameraService: ThreeCameraService,
-		@Inject(ThreeRendererService) private threeRendererService: ThreeRendererService,
-		@Inject(ThreeSceneService) private threeSceneService: ThreeSceneService,
-		@Inject(Store) private store: Store,
-		@Inject(State) private state: State,
-		@Inject(CodeMapLabelService) private codeMapLabelService: CodeMapLabelService,
-		@Inject(ViewCubeMouseEventsService) private viewCubeMouseEvents: ViewCubeMouseEventsService,
-		@Inject(ThreeViewerService) private threeViewerService: ThreeViewerService,
-		@Inject(IdToBuildingService) private idToBuilding: IdToBuildingService
+		private threeCameraService: ThreeCameraService,
+		private threeRendererService: ThreeRendererService,
+		private threeSceneService: ThreeSceneService,
+		private store: Store,
+		private state: State,
+		private codeMapLabelService: CodeMapLabelService,
+		private viewCubeMouseEvents: ViewCubeMouseEventsService,
+		private threeViewerService: ThreeViewerService,
+		private idToBuilding: IdToBuildingService
 	) {
 		this.store
 			.select(visibleFileStatesSelector)
