@@ -65,19 +65,22 @@ cc-map-tree-view {
 				color: gray;
 			}
 
-			.small-action-button {
-				.md-fab {
-					i {
-						top: 2px;
-					}
+			.small-action-button button {
+				min-height: 0;
+				width: 100%;
+				height: 100%;
+				margin: 0;
+				background-color: transparent;
+				box-shadow: none;
 
-					&:hover {
-						background-color: transparent !important;
-					}
+				&:hover {
+					background-color: #ddd;
+				}
 
-					.md-ripple-container {
-						display: none;
-					}
+				i {
+					position: absolute;
+					top: 2px;
+					left: 6px;
 				}
 			}
 		}
