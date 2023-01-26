@@ -28,7 +28,7 @@ describe("SortingOptionComponent", () => {
 		expect(screen.getByText("Name")).toBeTruthy()
 
 		// it offers all possible sorting Options, when clicking on it
-		const selectBoxTrigger = screen.getByRole("combobox").querySelector(".mat-select-trigger") as HTMLElement
+		const selectBoxTrigger = screen.getByRole("combobox").firstChild as HTMLElement
 		fireEvent.click(selectBoxTrigger)
 		const selectOptionsWrapper = screen.getByRole("listbox")
 		for (const option of Object.values(SortingOption)) {

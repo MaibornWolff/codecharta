@@ -1,4 +1,4 @@
-import { Inject, Injectable } from "@angular/core"
+import { Injectable } from "@angular/core"
 import { LoadFileService } from "../../../services/loadFile/loadFile.service"
 import { Store } from "../../../state/angular-redux/store"
 import { setIsLoadingFile } from "../../../state/store/appSettings/isLoadingFile/isLoadingFile.actions"
@@ -12,7 +12,7 @@ import { readFiles } from "../../../util/uploadFiles/readFiles"
 export class UploadFilesService {
 	isUploading = false
 
-	constructor(@Inject(Store) private store: Store, @Inject(LoadFileService) private loadFileService: LoadFileService) {}
+	constructor(private store: Store, private loadFileService: LoadFileService) {}
 
 	uploadFiles() {
 		const ccFileInput = createCCFileInput()

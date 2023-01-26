@@ -1,21 +1,19 @@
-import { Component, Inject, Input, OnChanges, SimpleChanges } from "@angular/core"
+import { Component, Input, OnChanges, SimpleChanges, ViewEncapsulation } from "@angular/core"
 import { CodeMapNode } from "../../../../codeCharta.model"
 import { IdToBuildingService } from "../../../../services/idToBuilding/idToBuilding.service"
 import { ThreeSceneService } from "../../../../ui/codeMap/threeViewer/threeSceneService"
 
 @Component({
 	selector: "cc-highlight-buttons",
-	template: require("./highlightButtons.component.html")
+	templateUrl: "./highlightButtons.component.html",
+	encapsulation: ViewEncapsulation.None
 })
 export class HighlightButtonsComponent implements OnChanges {
 	@Input() codeMapNode: Pick<CodeMapNode, "id">
 
 	isHighlighted: boolean
 
-	constructor(
-		@Inject(ThreeSceneService) private threeSceneService: ThreeSceneService,
-		@Inject(IdToBuildingService) private idToBuilding: IdToBuildingService
-	) {}
+	constructor(private threeSceneService: ThreeSceneService, private idToBuilding: IdToBuildingService) {}
 
 	ngOnChanges(changes: SimpleChanges): void {
 		if (changes.codeMapNode) {

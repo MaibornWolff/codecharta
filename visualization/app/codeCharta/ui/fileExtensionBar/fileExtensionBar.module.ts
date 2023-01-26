@@ -6,7 +6,6 @@ import { FileExtensionBarComponent } from "./fileExtensionBar.component"
 @NgModule({
 	imports: [CommonModule, DistributionMetricChooserModule],
 	declarations: [FileExtensionBarComponent],
-	exports: [FileExtensionBarComponent],
-	entryComponents: [FileExtensionBarComponent]
+	exports: [FileExtensionBarComponent]
 })
 export class FileExtensionBarModule {}

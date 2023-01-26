@@ -10,12 +10,12 @@ import packageJson from "../../../../package.json"
 import { clone } from "../../util/clone"
 import { nodeMetricDataSelector } from "../../state/selectors/accumulatedData/metricData/nodeMetricData.selector"
 import { klona } from "klona"
-import { MatDialog } from "@angular/material/dialog"
 import { ErrorDialogComponent } from "../../ui/dialogs/errorDialog/errorDialog.component"
 import { loadFilesValidationToErrorDialog } from "../../util/loadFilesValidationToErrorDialog"
 import { Store } from "../../state/angular-redux/store"
 import { State } from "../../state/angular-redux/state"
 import { fileRoot } from "./fileRoot"
+import { MatLegacyDialog } from "@angular/material/legacy-dialog"
 
 const mockedNodeMetricDataSelector = nodeMetricDataSelector as unknown as jest.Mock
 jest.mock("../../state/selectors/accumulatedData/metricData/nodeMetricData.selector", () => ({
@@ -26,7 +26,7 @@ describe("loadFileService", () => {
 	let codeChartaService: LoadFileService
 	let store: Store
 	let state: State
-	let dialog: MatDialog
+	let dialog: MatLegacyDialog
 	let validFileContent: ExportCCFile
 	let metricData: NodeMetricData[]
 	const fileName = "someFileName"
@@ -51,7 +51,7 @@ describe("loadFileService", () => {
 	function restartSystem() {
 		store = TestBed.inject(Store)
 		state = TestBed.inject(State)
-		dialog = { open: jest.fn() } as unknown as MatDialog
+		dialog = { open: jest.fn() } as unknown as MatLegacyDialog
 	}
 
 	function rebuildService() {

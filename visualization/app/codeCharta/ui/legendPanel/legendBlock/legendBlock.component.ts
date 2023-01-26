@@ -1,9 +1,10 @@
-import { Component, Input } from "@angular/core"
+import { Component, Input, ViewEncapsulation } from "@angular/core"
 import { MetricDescriptors } from "../../attributeSideBar/util/metricDescriptors"
 
 @Component({
 	selector: "cc-legend-block",
-	template: require("./legendBlock.component.html")
+	templateUrl: "./legendBlock.component.html",
+	encapsulation: ViewEncapsulation.None
 })
 export class LegendBlockComponent {
 	@Input() metricFor: string

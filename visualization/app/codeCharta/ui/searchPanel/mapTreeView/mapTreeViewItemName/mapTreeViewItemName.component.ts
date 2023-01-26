@@ -1,4 +1,4 @@
-import { Component, Inject, Input } from "@angular/core"
+import { Component, Input, ViewEncapsulation } from "@angular/core"
 import { Observable } from "rxjs"
 
 import { CodeMapNode } from "../../../../codeCharta.model"
@@ -9,7 +9,8 @@ import { areaMetricSelector } from "../../../../state/store/dynamicSettings/area
 
 @Component({
 	selector: "cc-map-tree-view-item-name",
-	template: require("./mapTreeViewItemName.component.html")
+	templateUrl: "./mapTreeViewItemName.component.html",
+	encapsulation: ViewEncapsulation.None
 })
 export class MapTreeViewItemNameComponent {
 	@Input() node: CodeMapNode
@@ -21,7 +22,7 @@ export class MapTreeViewItemNameComponent {
 	rootUnary$: Observable<number>
 	areaMetric$: Observable<string>
 
-	constructor(@Inject(Store) store: Store) {
+	constructor(store: Store) {
 		this.searchedNodePaths$ = store.select(searchedNodePathsSelector)
 		this.rootUnary$ = store.select(rootUnarySelector)
 		this.areaMetric$ = store.select(areaMetricSelector)

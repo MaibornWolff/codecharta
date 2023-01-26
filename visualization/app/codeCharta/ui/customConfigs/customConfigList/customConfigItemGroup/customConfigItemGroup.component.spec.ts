@@ -1,6 +1,5 @@
 import { TestBed } from "@angular/core/testing"
 import { CustomConfigsModule } from "../../customConfigs.module"
-import { MatDialog, MatDialogRef } from "@angular/material/dialog"
 import { render, screen } from "@testing-library/angular"
 import { CustomConfigItemGroupComponent } from "./customConfigItemGroup.component"
 import { CUSTOM_CONFIG_ITEM_GROUPS } from "../../../../util/dataMocks"
@@ -11,6 +10,7 @@ import userEvent from "@testing-library/user-event"
 import { expect } from "@jest/globals"
 import { CustomConfigMapSelectionMode } from "../../../../model/customConfig/customConfig.api.model"
 import { visibleFilesBySelectionModeSelector } from "../../visibleFilesBySelectionMode.selector"
+import { MatLegacyDialog, MatLegacyDialogRef } from "@angular/material/legacy-dialog"
 
 jest.mock("../../visibleFilesBySelectionMode.selector", () => ({
 	visibleFilesBySelectionModeSelector: jest.fn()
@@ -29,8 +29,8 @@ describe("customConfigItemGroupComponent", () => {
 		TestBed.configureTestingModule({
 			imports: [CustomConfigsModule],
 			providers: [
-				{ provide: MatDialogRef, useValue: mockedDialogReference },
-				{ provide: MatDialog, useValue: mockedDialog },
+				{ provide: MatLegacyDialogRef, useValue: mockedDialogReference },
+				{ provide: MatLegacyDialog, useValue: mockedDialog },
 				{ provide: ThreeCameraService, useValue: {} },
 				{ provide: ThreeOrbitControlsService, useValue: {} }
 			]

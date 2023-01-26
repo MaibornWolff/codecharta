@@ -1,4 +1,4 @@
-import { Component, Inject, Input } from "@angular/core"
+import { Component, Input, ViewEncapsulation } from "@angular/core"
 import { Observable } from "rxjs"
 import { CodeMapNode, PrimaryMetrics } from "../../../codeCharta.model"
 import { Store } from "../../../state/angular-redux/store"
@@ -7,7 +7,8 @@ import { primaryMetricNamesSelector } from "../../../state/selectors/primaryMetr
 
 @Component({
 	selector: "cc-metric-chooser-value-hovered",
-	template: require("./metricChooserValueHovered.component.html")
+	templateUrl: "./metricChooserValueHovered.component.html",
+	encapsulation: ViewEncapsulation.None
 })
 export class MetricChooserValueHoveredComponent {
 	@Input() metricFor: keyof PrimaryMetrics
@@ -15,7 +16,7 @@ export class MetricChooserValueHoveredComponent {
 	hoveredNode$: Observable<CodeMapNode | undefined>
 	primaryMetricNames$: Observable<PrimaryMetrics>
 
-	constructor(@Inject(Store) store: Store) {
+	constructor(store: Store) {
 		this.primaryMetricNames$ = store.select(primaryMetricNamesSelector)
 		this.hoveredNode$ = store.select(hoveredNodeSelector)
 	}

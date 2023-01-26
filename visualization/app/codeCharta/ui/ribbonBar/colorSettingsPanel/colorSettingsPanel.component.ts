@@ -1,18 +1,19 @@
-import "./colorSettingsPanel.component.scss"
-import { Component, Inject } from "@angular/core"
+import { Component, ViewEncapsulation } from "@angular/core"
 import { colorLabelOptions, ColorMode } from "../../../codeCharta.model"
 import { Store } from "../../../state/angular-redux/store"
 import { isDeltaStateSelector } from "../../../state/selectors/isDeltaState.selector"
 import { setColorMode } from "../../../state/store/dynamicSettings/colorMode/colorMode.actions"
 import { colorModeSelector } from "../../../state/store/dynamicSettings/colorMode/colorMode.selector"
 import { colorLabelsSelector } from "../../../state/store/appSettings/colorLabels/colorLabels.selector"
-import { MatCheckboxChange } from "@angular/material/checkbox"
+import { MatLegacyCheckboxChange as MatCheckboxChange } from "@angular/material/legacy-checkbox"
 import { setColorLabels } from "../../../state/store/appSettings/colorLabels/colorLabels.actions"
 import { invertColorRange, invertDeltaColors } from "../../../state/store/appSettings/mapColors/mapColors.actions"
 
 @Component({
 	selector: "cc-color-settings-panel",
-	template: require("./colorSettingsPanel.component.html")
+	templateUrl: "./colorSettingsPanel.component.html",
+	styleUrls: ["./colorSettingsPanel.component.scss"],
+	encapsulation: ViewEncapsulation.None
 })
 export class ColorSettingsPanelComponent {
 	isDeltaState$ = this.store.select(isDeltaStateSelector)
@@ -21,7 +22,7 @@ export class ColorSettingsPanelComponent {
 	isColorRangeInverted = false
 	areDeltaColorsInverted = false
 
-	constructor(@Inject(Store) private store: Store) {}
+	constructor(private store: Store) {}
 
 	handleColorModeChange(gradient: ColorMode) {
 		this.store.dispatch(setColorMode(gradient))

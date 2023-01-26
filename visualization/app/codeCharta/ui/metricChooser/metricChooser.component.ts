@@ -1,5 +1,4 @@
-import "./metricChooser.component.scss"
-import { Component, ElementRef, Inject, Input, OnInit, ViewChild } from "@angular/core"
+import { Component, ElementRef, Input, OnInit, ViewChild, ViewEncapsulation } from "@angular/core"
 import { Store } from "../../state/angular-redux/store"
 import { nodeMetricDataSelector } from "../../state/selectors/accumulatedData/metricData/nodeMetricData.selector"
 import { Observable } from "rxjs"
@@ -11,7 +10,9 @@ type MetricChooserType = "node" | "edge"
 
 @Component({
 	selector: "cc-metric-chooser",
-	template: require("./metricChooser.component.html")
+	templateUrl: "./metricChooser.component.html",
+	styleUrls: ["./metricChooser.component.scss"],
+	encapsulation: ViewEncapsulation.None
 })
 export class MetricChooserComponent implements OnInit {
 	@Input() selectedMetricName: string
@@ -24,7 +25,7 @@ export class MetricChooserComponent implements OnInit {
 	metricData$: Observable<NodeMetricData[] | EdgeMetricData[]>
 	metricDataDescription$: Map<string, string>
 
-	constructor(@Inject(Store) private store: Store) {}
+	constructor(private store: Store) {}
 
 	ngOnInit(): void {
 		this.metricData$ = this.store.select(this.type === "node" ? nodeMetricDataSelector : edgeMetricDataSelector)

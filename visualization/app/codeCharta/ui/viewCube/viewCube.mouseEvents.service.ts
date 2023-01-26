@@ -5,10 +5,10 @@ import { isLeaf } from "../../util/codeMapHelper"
 // eslint-disable-next-line no-duplicate-imports
 import * as Three from "three"
 import oc from "three-orbit-controls"
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
+import type { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
 import { ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitControls.service"
 import { EventEmitter } from "tsee"
-import { Inject, Injectable } from "@angular/core"
+import { Injectable } from "@angular/core"
 
 type ViewCubeEvents = {
 	viewCubeEventPropagation: (data: { event: MouseEvent; type: string }) => void
@@ -28,7 +28,7 @@ export class ViewCubeMouseEventsService {
 	private controls: OrbitControls
 	private isDragging = false
 
-	constructor(@Inject(ThreeOrbitControlsService) private threeOrbitControlsService: ThreeOrbitControlsService) {}
+	constructor(private threeOrbitControlsService: ThreeOrbitControlsService) {}
 
 	init(cubeGroup: Group, camera: PerspectiveCamera, renderer: WebGLRenderer) {
 		this.cubeGroup = cubeGroup
@@ -44,7 +44,7 @@ export class ViewCubeMouseEventsService {
 
 	private initOrbitalControl(camera: PerspectiveCamera, renderer: WebGLRenderer) {
 		const orbitControls = oc(Three)
-		this.controls = new orbitControls(camera, renderer.domElement)
+		this.controls = new orbitControls(camera, renderer.domElement) as unknown as OrbitControls
 		this.controls.enableZoom = false
 		this.controls.enableKeys = false
 		this.controls.enablePan = false

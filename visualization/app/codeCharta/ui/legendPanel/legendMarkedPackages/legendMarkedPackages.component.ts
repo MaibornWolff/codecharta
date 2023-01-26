@@ -1,5 +1,4 @@
-import "./legendMarkedPackages.component.scss"
-import { Component, Inject } from "@angular/core"
+import { Component, ViewEncapsulation } from "@angular/core"
 import { Observable, map } from "rxjs"
 import { KeyValue } from "@angular/common"
 
@@ -11,13 +10,15 @@ type MarkedPackagesMapKeyValue = KeyValue<keyof MarkedPackagesMap, MarkedPackage
 
 @Component({
 	selector: "cc-legend-marked-packages",
-	template: require("./legendMarkedPackages.component.html")
+	templateUrl: "./legendMarkedPackages.component.html",
+	styleUrls: ["./legendMarkedPackages.component.scss"],
+	encapsulation: ViewEncapsulation.None
 })
 export class LegendMarkedPackagesComponent {
 	markedPackagesMap$: Observable<MarkedPackagesMap>
 	hasMarkedPackages$: Observable<boolean>
 
-	constructor(@Inject(Store) private store: Store) {
+	constructor(private store: Store) {
 		this.markedPackagesMap$ = store.select(legendMarkedPackagesSelector)
 		this.hasMarkedPackages$ = this.markedPackagesMap$.pipe(map(markedPackagesMap => Object.keys(markedPackagesMap).length > 0))
 	}

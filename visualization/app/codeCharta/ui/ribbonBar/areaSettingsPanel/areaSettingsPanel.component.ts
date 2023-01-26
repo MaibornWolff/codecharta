@@ -1,18 +1,19 @@
-import { Component, Inject } from "@angular/core"
-import "./areaSettingsPanel.component.scss"
+import { Component, ViewEncapsulation } from "@angular/core"
 import { Store } from "../../../state/angular-redux/store"
 import { marginSelector } from "../../../state/store/dynamicSettings/margin/margin.selector"
 import debounce from "lodash.debounce"
 import { setMargin } from "../../../state/store/dynamicSettings/margin/margin.actions"
 import { dynamicMarginSelector } from "../../../state/store/appSettings/dynamicMargin/dynamicMargin.selector"
 import { setDynamicMargin } from "../../../state/store/appSettings/dynamicMargin/dynamicMargin.actions"
-import { MatCheckboxChange } from "@angular/material/checkbox"
+import { MatLegacyCheckboxChange as MatCheckboxChange } from "@angular/material/legacy-checkbox"
 import { setEnableFloorLabels } from "../../../state/store/appSettings/enableFloorLabels/enableFloorLabels.actions"
 import { enableFloorLabelsSelector } from "../../../state/store/appSettings/enableFloorLabels/enableFloorLabels.selector"
 
 @Component({
 	selector: "cc-area-settings-panel",
-	template: require("./areaSettingsPanel.component.html")
+	templateUrl: "./areaSettingsPanel.component.html",
+	styleUrls: ["./areaSettingsPanel.component.scss"],
+	encapsulation: ViewEncapsulation.None
 })
 export class AreaSettingsPanelComponent {
 	static DEBOUNCE_TIME = 400
@@ -26,7 +27,7 @@ export class AreaSettingsPanelComponent {
 		this.store.dispatch(setDynamicMargin(false))
 	}, AreaSettingsPanelComponent.DEBOUNCE_TIME)
 
-	constructor(@Inject(Store) private store: Store) {}
+	constructor(private store: Store) {}
 
 	setDynamicMargin($event: MatCheckboxChange) {
 		this.store.dispatch(setDynamicMargin($event.checked))

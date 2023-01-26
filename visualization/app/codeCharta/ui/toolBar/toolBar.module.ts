@@ -27,7 +27,6 @@ import { LoadingMapProgressSpinnerModule } from "./loadingMapProgressSpinner/loa
 		GlobalConfigurationButtonModule
 	],
 	declarations: [ToolBarComponent],
-	exports: [ToolBarComponent],
-	entryComponents: [ToolBarComponent]
+	exports: [ToolBarComponent]
 })
 export class ToolBarModule {}

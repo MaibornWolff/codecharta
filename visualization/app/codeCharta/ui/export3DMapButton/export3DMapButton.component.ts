@@ -1,4 +1,4 @@
-import { Component, Inject } from "@angular/core"
+import { Component, ViewEncapsulation } from "@angular/core"
 import { FileDownloader } from "../../util/fileDownloader"
 import { STLExporter } from "three/examples/jsm/exporters/STLExporter"
 import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
@@ -11,11 +11,12 @@ import { State } from "../../state/angular-redux/state"
 
 @Component({
 	selector: "cc-export-threed-map-button",
-	template: require("./export3DMapButton.component.html")
+	templateUrl: "./export3DMapButton.component.html",
+	encapsulation: ViewEncapsulation.None
 })
 export class Export3DMapButtonComponent {
 	private exporter = new STLExporter()
-	constructor(@Inject(State) private state: State, @Inject(ThreeSceneService) private threeSceneService: ThreeSceneService) {}
+	constructor(private state: State, private threeSceneService: ThreeSceneService) {}
 
 	downloadStlFile() {
 		const files = filesSelector(this.state.getValue())

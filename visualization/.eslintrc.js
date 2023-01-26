@@ -37,7 +37,6 @@ module.exports = {
 		"@typescript-eslint/no-unnecessary-type-arguments": "error",
 		"@typescript-eslint/no-unused-expressions": "error",
 		"@typescript-eslint/no-unused-vars": ["error"],
-		"@typescript-eslint/prefer-nullish-coalescing": "error",
 		"@typescript-eslint/prefer-optional-chain": "error",
 		"@typescript-eslint/prefer-string-starts-ends-with": "error",
 		"@typescript-eslint/promise-function-async": "error",
@@ -84,17 +83,17 @@ module.exports = {
 		"@typescript-eslint/explicit-function-return-type": "off",
 		"@typescript-eslint/explicit-module-boundary-types": "off",
 		"@typescript-eslint/no-use-before-define": "off",
-    "unicorn/consistent-function-scoping": "off",
-    "unicorn/filename-case": "off",
-    "unicorn/no-null": "off",
-    "unicorn/no-object-as-default-parameter": "off",
-    "unicorn/no-array-reduce": "off",
-    "unicorn/prefer-add-event-listener": "off",
-    "unicorn/prefer-query-selector": "off",
-    "unicorn/prefer-dom-node-append": "off",
-    "unicorn/prefer-module": "off",
-    "unicorn/prefer-node-protocol": "off",
-    "unicorn/no-useless-undefined": "off",
-    "unicorn/no-negated-condition": "off"
-  }
+		"unicorn/consistent-function-scoping": "off",
+		"unicorn/filename-case": "off",
+		"unicorn/no-null": "off",
+		"unicorn/no-object-as-default-parameter": "off",
+		"unicorn/no-array-reduce": "off",
+		"unicorn/prefer-add-event-listener": "off",
+		"unicorn/prefer-query-selector": "off",
+		"unicorn/prefer-dom-node-append": "off",
+		"unicorn/prefer-module": "off",
+		"unicorn/prefer-node-protocol": "off",
+		"unicorn/no-useless-undefined": "off",
+		"unicorn/no-negated-condition": "off"
+	}
 }

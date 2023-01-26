@@ -1,4 +1,4 @@
-import { Inject, Injectable } from "@angular/core"
+import { Injectable } from "@angular/core"
 import { ThreeSceneService } from "./threeSceneService"
 import { ThreeCameraService } from "./threeCamera.service"
 import { ThreeOrbitControlsService } from "./threeOrbitControls.service"
@@ -10,11 +10,11 @@ export class ThreeViewerService {
 	private animationFrameId: number
 
 	constructor(
-		@Inject(ThreeSceneService) private threeSceneService: ThreeSceneService,
-		@Inject(ThreeCameraService) private threeCameraService: ThreeCameraService,
-		@Inject(ThreeOrbitControlsService) private threeOrbitControlsService: ThreeOrbitControlsService,
-		@Inject(ThreeRendererService) private threeRendererService: ThreeRendererService,
-		@Inject(ThreeStatsService) private threeStatsService: ThreeStatsService
+		private threeSceneService: ThreeSceneService,
+		private threeCameraService: ThreeCameraService,
+		private threeOrbitControlsService: ThreeOrbitControlsService,
+		private threeRendererService: ThreeRendererService,
+		private threeStatsService: ThreeStatsService
 	) {}
 
 	init(target: Element) {

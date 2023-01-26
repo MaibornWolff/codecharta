@@ -10,7 +10,6 @@ import { MapLayoutSelectionModule } from "./globalConfigurationDialog/mapLayoutS
 @NgModule({
 	imports: [MaterialModule, ResetSettingsButtonModule, MapLayoutSelectionModule, DisplayQualitySelectionModule, ActionIconModule],
 	declarations: [GlobalConfigurationButtonComponent, GlobalConfigurationDialogComponent],
-	exports: [GlobalConfigurationButtonComponent],
-	entryComponents: [GlobalConfigurationDialogComponent]
+	exports: [GlobalConfigurationButtonComponent]
 })
 export class GlobalConfigurationButtonModule {}

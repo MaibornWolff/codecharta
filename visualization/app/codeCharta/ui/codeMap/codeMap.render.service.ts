@@ -1,4 +1,4 @@
-import { Inject, Injectable } from "@angular/core"
+import { Injectable } from "@angular/core"
 import { CodeMapMesh } from "./rendering/codeMapMesh"
 import { createTreemapNodes } from "../../util/algorithm/treeMapLayout/treeMapGenerator"
 import { CodeMapLabelService } from "./codeMap.label.service"
@@ -25,13 +25,13 @@ export class CodeMapRenderService {
 	private unflattenedNodes
 
 	constructor(
-		@Inject(Store) private store: Store,
-		@Inject(State) private state: State,
-		@Inject(ThreeSceneService) private threeSceneService: ThreeSceneService,
-		@Inject(CodeMapLabelService) private codeMapLabelService: CodeMapLabelService,
-		@Inject(CodeMapArrowService) private codeMapArrowService: CodeMapArrowService,
-		@Inject(ThreeStatsService) private threeStatsService: ThreeStatsService,
-		@Inject(CodeMapMouseEventService) private codeMapMouseEventService: CodeMapMouseEventService
+		private store: Store,
+		private state: State,
+		private threeSceneService: ThreeSceneService,
+		private codeMapLabelService: CodeMapLabelService,
+		private codeMapArrowService: CodeMapArrowService,
+		private threeStatsService: ThreeStatsService,
+		private codeMapMouseEventService: CodeMapMouseEventService
 	) {
 		this.store.select(isLoadingFileSelector).pipe(tap(this.onIsLoadingFileChanged)).subscribe()
 	}

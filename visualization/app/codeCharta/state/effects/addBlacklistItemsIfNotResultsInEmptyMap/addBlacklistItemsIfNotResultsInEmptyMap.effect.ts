@@ -1,6 +1,6 @@
 import { Inject, Injectable } from "@angular/core"
 import { Actions, ActionsToken } from "../../angular-redux/effects/effects.module"
-import { MatDialog } from "@angular/material/dialog"
+import { MatLegacyDialog as MatDialog } from "@angular/material/legacy-dialog"
 import { createEffect } from "../../angular-redux/effects/createEffect"
 import { filter, map, tap, withLatestFrom } from "rxjs"
 import {

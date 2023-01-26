@@ -1,22 +1,20 @@
-import "./codeCharta.component.scss"
 import { setIsLoadingFile } from "./state/store/appSettings/isLoadingFile/isLoadingFile.actions"
 import packageJson from "../../package.json"
 import { LoadInitialFileService } from "./services/loadInitialFile/loadInitialFile.service"
-import { Component, Inject, OnInit } from "@angular/core"
+import { Component, OnInit, ViewEncapsulation } from "@angular/core"
 import { Store } from "./state/angular-redux/store"
 
 @Component({
 	selector: "cc-code-charta",
-	template: require("./codeCharta.component.html")
+	templateUrl: "./codeCharta.component.html",
+	styleUrls: ["./codeCharta.component.scss"],
+	encapsulation: ViewEncapsulation.None
 })
 export class CodeChartaComponent implements OnInit {
 	version = packageJson.version
 	isInitialized = false
 
-	constructor(
-		@Inject(Store) private store: Store,
-		@Inject(LoadInitialFileService) private loadInitialFileService: LoadInitialFileService
-	) {
+	constructor(private store: Store, private loadInitialFileService: LoadInitialFileService) {
 		window.addEventListener("load", () => {
 			this.isInitialized = true
 		})

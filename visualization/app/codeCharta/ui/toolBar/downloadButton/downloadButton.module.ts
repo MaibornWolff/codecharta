@@ -8,7 +8,6 @@ import { DownloadDialogComponent } from "./downloadDialog/downloadDialog.compone
 @NgModule({
 	imports: [ActionIconModule, MaterialModule, FormsModule],
 	declarations: [DownloadButtonComponent, DownloadDialogComponent],
-	exports: [DownloadButtonComponent],
-	entryComponents: [DownloadDialogComponent]
+	exports: [DownloadButtonComponent]
 })
 export class DownloadButtonModule {}
