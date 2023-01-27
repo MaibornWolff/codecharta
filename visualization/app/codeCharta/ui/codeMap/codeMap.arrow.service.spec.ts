@@ -123,6 +123,7 @@ describe("CodeMapArrowService", () => {
 	describe("SelectionMethods", () => {
 		beforeEach(() => {
 			codeMapArrowService.clearArrows = jest.fn()
+			codeMapArrowService.addArrow = jest.fn()
 			codeMapArrowService["showEdgesOfBuildings"] = jest.fn()
 			codeMapArrowService.addEdgePreview = jest.fn()
 			threeSceneService.clearHighlight = jest.fn()
@@ -178,9 +179,10 @@ describe("CodeMapArrowService", () => {
 			codeMapArrowService.onBuildingDeselected()
 
 			expect(codeMapArrowService.clearArrows).toHaveBeenCalled()
-			expect(threeSceneService.clearHighlight).toHaveBeenCalled()
-			expect(codeMapArrowService["showEdgesOfBuildings"]).toHaveBeenCalledTimes(0)
 			expect(codeMapArrowService.addEdgePreview).toHaveBeenCalled()
+			expect(codeMapArrowService.addArrow).toHaveBeenCalledTimes(0)
+			expect(threeSceneService.clearHighlight).toHaveBeenCalledTimes(0)
+			expect(codeMapArrowService["showEdgesOfBuildings"]).toHaveBeenCalledTimes(0)
 		})
 	})
 
