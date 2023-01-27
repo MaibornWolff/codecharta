@@ -368,6 +368,7 @@ export class ThreeSceneService {
 			this.store.dispatch(setSelectedBuildingId(null))
 			this.eventEmitter.emit("onBuildingDeselected")
 		}
+
 		if (this.highlighted.length > 0) {
 			this.highlightBuildings()
 		}
@@ -417,13 +418,6 @@ export class ThreeSceneService {
 
 	getHighlightedBuilding() {
 		return this.highlighted[0]
-	}
-
-	getHighlightedNode() {
-		if (this.getHighlightedBuilding()) {
-			return this.getHighlightedBuilding().node
-		}
-		return null
 	}
 
 	dispose() {
