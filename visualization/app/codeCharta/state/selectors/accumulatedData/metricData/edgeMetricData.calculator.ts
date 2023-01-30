@@ -2,30 +2,14 @@ import { hierarchy } from "d3-hierarchy"
 import { BlacklistItem, Edge, EdgeMetricCount, EdgeMetricData } from "../../../../codeCharta.model"
 import { FileState } from "../../../../model/files/files"
 import { isPathBlacklisted } from "../../../../util/codeMapHelper"
-import { createSelector } from "../../../angular-redux/createSelector"
-import { blacklistSelector } from "../../../store/fileSettings/blacklist/blacklist.selector"
-import { visibleFileStatesSelector } from "../../visibleFileStates.selector"
 import { sortByMetricName } from "./sortByMetricName"
 
 export type EdgeMetricCountMap = Map<string, EdgeMetricCount>
 export type NodeEdgeMetricsMap = Map<string, EdgeMetricCountMap>
-/** @deprecated use edgeMetricMapSelector instead to ensure unidirectional data flow and prevent random manipulation */
-export let nodeEdgeMetricsMap: NodeEdgeMetricsMap = new Map()
-
-const edgeMetricDataAndMapSelector = createSelector([visibleFileStatesSelector, blacklistSelector], calculateEdgeMetricData)
-
-export const edgeMetricDataSelector = createSelector(
-	[edgeMetricDataAndMapSelector],
-	edgeMetricDataAndMap => edgeMetricDataAndMap.sortedEdgeMetricList
-)
-
-export const edgeMetricMapSelector = createSelector(
-	[edgeMetricDataAndMapSelector],
-	edgeMetricDataAndMap => edgeMetricDataAndMap.nodeEdgeMetricsMap
-)
 
 export function calculateEdgeMetricData(visibleFileStates: FileState[], blacklist: BlacklistItem[]) {
-	nodeEdgeMetricsMap = new Map()
+	const nodeEdgeMetricsMap: NodeEdgeMetricsMap = new Map()
+
 	const allFilePaths: Set<string> = new Set()
 
 	for (const { file } of visibleFileStates) {
@@ -39,15 +23,18 @@ export function calculateEdgeMetricData(visibleFileStates: FileState[], blacklis
 			if (bothNodesAssociatedAreVisible(edge, allFilePaths, blacklist)) {
 				// TODO: We likely only need the attributes once per file.
 				for (const edgeMetric of Object.keys(edge.attributes)) {
-					const edgeMetricEntry = getEntryForMetric(edgeMetric)
+					const edgeMetricEntry = updateEntryForMetric(nodeEdgeMetricsMap, edgeMetric)
 					addEdgeToNodes(edgeMetricEntry, edge.fromNodeName, edge.toNodeName)
 				}
 			}
 		}
 	}
-	const newEdgeMetricData = getMetricDataFromMap()
+	const newEdgeMetricData = getMetricDataFromMap(nodeEdgeMetricsMap)
 	sortByMetricName(newEdgeMetricData)
-	return { sortedEdgeMetricList: newEdgeMetricData, nodeEdgeMetricsMap }
+	return {
+		edgeMetricData: newEdgeMetricData,
+		nodeEdgeMetricsMap
+	}
 }
 
 function bothNodesAssociatedAreVisible(edge: Edge, filePaths: Set<string>, blacklist: BlacklistItem[]) {
@@ -57,7 +44,7 @@ function bothNodesAssociatedAreVisible(edge: Edge, filePaths: Set<string>, black
 	return false
 }
 
-function getEntryForMetric(edgeMetricName: string) {
+function updateEntryForMetric(nodeEdgeMetricsMap: NodeEdgeMetricsMap, edgeMetricName: string) {
 	let nodeEdgeMetric = nodeEdgeMetricsMap.get(edgeMetricName)
 	if (!nodeEdgeMetric) {
 		nodeEdgeMetric = new Map()
@@ -82,7 +69,7 @@ function addEdgeToNodes(edgeMetricEntry: EdgeMetricCountMap, fromNode: string, t
 	}
 }
 
-function getMetricDataFromMap() {
+function getMetricDataFromMap(nodeEdgeMetricsMap: NodeEdgeMetricsMap) {
 	const metricData: EdgeMetricData[] = []
 
 	for (const [edgeMetric, occurrences] of nodeEdgeMetricsMap) {

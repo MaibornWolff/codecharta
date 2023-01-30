@@ -3,20 +3,20 @@ import { ApplicationInitStatus } from "@angular/core"
 import { Subject } from "rxjs"
 import { EffectsModule } from "../../angular-redux/effects/effects.module"
 import { Store } from "../../angular-redux/store"
-import { edgeMetricDataSelector } from "../../selectors/accumulatedData/metricData/edgeMetricData.selector"
+import { metricDataSelector } from "../../selectors/accumulatedData/metricData/metricData.selector"
 import { edgeMetricSelector } from "../../store/dynamicSettings/edgeMetric/edgeMetric.selector"
 import { Store as PlainStoreUsedByEffects } from "../../store/store"
 import { ResetSelectedEdgeMetricWhenItDoesntExistAnymoreEffect } from "./resetSelectedEdgeMetricWhenItDoesntExistAnymore.effect"
 import { setEdgeMetric } from "../../store/dynamicSettings/edgeMetric/edgeMetric.actions"
 
 describe("ResetSelectedEdgeMetricWhenItDoesntExistAnymoreEffect", () => {
-	let mockedEdgeMetricDataSelector$ = new Subject()
+	let mockedMetricDataSelector$ = new Subject()
 	let mockedEdgeMetricSelector$ = new Subject()
 	const mockedStore = {
 		select: (selector: unknown) => {
 			switch (selector) {
-				case edgeMetricDataSelector:
-					return mockedEdgeMetricDataSelector$
+				case metricDataSelector:
+					return mockedMetricDataSelector$
 				case edgeMetricSelector:
 					return mockedEdgeMetricSelector$
 				default:
@@ -29,7 +29,7 @@ describe("ResetSelectedEdgeMetricWhenItDoesntExistAnymoreEffect", () => {
 	beforeEach(async () => {
 		mockedStore.dispatch = jest.fn()
 		PlainStoreUsedByEffects.store.dispatch = mockedStore.dispatch
-		mockedEdgeMetricDataSelector$ = new Subject()
+		mockedMetricDataSelector$ = new Subject()
 		mockedEdgeMetricSelector$ = new Subject()
 		TestBed.configureTestingModule({
 			imports: [EffectsModule.forRoot([ResetSelectedEdgeMetricWhenItDoesntExistAnymoreEffect])],
@@ -39,39 +39,39 @@ describe("ResetSelectedEdgeMetricWhenItDoesntExistAnymoreEffect", () => {
 	})
 
 	afterEach(() => {
-		mockedEdgeMetricDataSelector$.complete()
+		mockedMetricDataSelector$.complete()
 		mockedEdgeMetricSelector$.complete()
 	})
 
 	it("should reset selected edge metric to first available, when current isn't available anymore", () => {
 		mockedEdgeMetricSelector$.next("avgCommits")
-		mockedEdgeMetricDataSelector$.next([{ name: "pairingRate" }])
+		mockedMetricDataSelector$.next({ edgeMetricData: [{ name: "pairingRate" }] })
 		expect(mockedStore.dispatch).toHaveBeenLastCalledWith(setEdgeMetric("pairingRate"))
 	})
 
 	it("should do nothing, when current selected edge metric is still available", () => {
 		mockedEdgeMetricSelector$.next("avgCommits")
-		mockedEdgeMetricDataSelector$.next([{ name: "avgCommits" }])
+		mockedMetricDataSelector$.next({ edgeMetricData: [{ name: "avgCommits" }] })
 		expect(mockedStore.dispatch).not.toHaveBeenCalled()
 	})
 
 	it("should not set reselect edge metric to null", () => {
 		mockedEdgeMetricSelector$.next("avgCommits")
-		mockedEdgeMetricDataSelector$.next([])
+		mockedMetricDataSelector$.next({ edgeMetricData: [] })
 		expect(mockedStore.dispatch).toHaveBeenLastCalledWith(setEdgeMetric(undefined))
 
-		mockedEdgeMetricDataSelector$.next([])
+		mockedMetricDataSelector$.next({ edgeMetricData: [] })
 		expect(mockedStore.dispatch).toHaveBeenCalledTimes(1)
 	})
 
 	it("should reset when an edge metric becomes available again", () => {
 		mockedEdgeMetricSelector$.next("pairingRate")
-		mockedEdgeMetricDataSelector$.next([{ name: "avgCommits" }])
+		mockedMetricDataSelector$.next({ edgeMetricData: [{ name: "avgCommits" }] })
 		expect(mockedStore.dispatch).toHaveBeenLastCalledWith(setEdgeMetric("avgCommits"))
 
-		mockedEdgeMetricDataSelector$.next([])
+		mockedMetricDataSelector$.next({ edgeMetricData: [] })
 		mockedEdgeMetricSelector$.next(null)
-		mockedEdgeMetricDataSelector$.next([{ name: "avgCommits" }])
+		mockedMetricDataSelector$.next({ edgeMetricData: [{ name: "avgCommits" }] })
 		expect(mockedStore.dispatch).toHaveBeenCalledTimes(3)
 		expect(mockedStore.dispatch.mock.calls[0][0]).toEqual(setEdgeMetric("avgCommits"))
 	})
