@@ -1,5 +1,4 @@
 import { Component, Input, ViewEncapsulation } from "@angular/core"
-import { MatLegacySliderChange as MatSliderChange } from "@angular/material/legacy-slider"
 import { parseNumberInput } from "../../util/parseNumberInput"
 
 @Component({
@@ -16,12 +15,11 @@ export class SliderComponent {
 	@Input() step?: number = 1
 	@Input() disabled?: boolean = false
 	@Input() onChange: (number) => void
-
-	handleSliderOnChange($event: MatSliderChange) {
-		if ($event.value !== this.value) {
-			this.onChange($event.value)
-		}
-	}
+	// handleSliderOnChange($event: MatSliderChange) {
+	// 	if ($event.value !== this.value) {
+	// 		this.onChange($event.value)
+	// 	}
+	// }
 
 	handleInputOnChange($event: InputEvent) {
 		const newValue = parseNumberInput($event, this.min, this.max)

@@ -2,7 +2,7 @@ import { Component, OnInit, ViewEncapsulation } from "@angular/core"
 import { ErrorDialogComponent } from "../../../../dialogs/errorDialog/errorDialog.component"
 import { ConfirmationDialogComponent } from "../../../../dialogs/confirmationDialog/confirmationDialog.component"
 import { CustomConfigHelper } from "../../../../../util/customConfigHelper"
-import { MatLegacyDialog as MatDialog } from "@angular/material/legacy-dialog"
+import { MatDialog } from "@angular/material/dialog"
 import { validateLocalStorageSize } from "../validateLocalStorageSize"
 import { downloadAndCollectPurgeableConfigs } from "../downloadAndCollectPurgeableConfigs"
 

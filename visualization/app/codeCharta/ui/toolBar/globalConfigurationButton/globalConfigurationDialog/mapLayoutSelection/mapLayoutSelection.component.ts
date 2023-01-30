@@ -1,5 +1,5 @@
 import { Component, ViewEncapsulation } from "@angular/core"
-import { MatLegacySelectChange as MatSelectChange } from "@angular/material/legacy-select"
+import { MatSelectChange } from "@angular/material/select"
 import { LayoutAlgorithm } from "../../../../../codeCharta.model"
 import { Store } from "../../../../../state/angular-redux/store"
 import { setLayoutAlgorithm } from "../../../../../state/store/appSettings/layoutAlgorithm/layoutAlgorithm.actions"

@@ -1,5 +1,5 @@
 import { Component, EventEmitter, HostListener, Input, Output, TemplateRef, ViewChild, ViewEncapsulation } from "@angular/core"
-import { MatLegacyMenuTrigger as MatMenuTrigger, LegacyMenuPositionX as MenuPositionX } from "@angular/material/legacy-menu"
+import { MatMenuTrigger, MenuPositionX } from "@angular/material/menu"
 
 @Component({
 	selector: "cc-color-picker",

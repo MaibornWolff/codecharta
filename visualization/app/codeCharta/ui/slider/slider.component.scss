@@ -2,30 +2,18 @@ cc-slider {
 	width: 100%;
 
 	.cc-slider-container {
-		position: relative;
 		display: flex;
+		flex-direction: column;
+		.slider-with-input {
+			display: flex;
+			gap: 8px;
 
-		label {
-			position: absolute;
-			top: 0;
-			font-size: 0.8em;
-			color: grey;
-			left: 4px;
-		}
-
-		mat-slider {
-			flex: 1;
-			margin-right: 8px;
-			margin-left: -4px;
-		}
-
-		mat-form-field {
-			width: 50px;
-			height: 48px;
-
-			.mat-form-field-infix {
-				border-top-width: 0;
-				padding-top: 16px;
+			mat-slider {
+				margin: 0;
+				flex: 2;
+			}
+			mat-form-field {
+				flex: 1;
 			}
 		}
 	}

@@ -1,6 +1,6 @@
 <cc-search-panel></cc-search-panel>
 
-<mat-card class="scenario-card" id="scenario-card">
+<mat-card appearance="outlined" class="scenario-card" id="scenario-card">
 	<div class="section">
 		<div class="section-header">
 			<cc-show-scenarios-button></cc-show-scenarios-button>
@@ -9,7 +9,7 @@
 	</div>
 </mat-card>
 
-<mat-card id="custom-configs-card" class="custom-configs-card">
+<mat-card appearance="outlined" id="custom-configs-card" class="custom-configs-card">
 	<span class="badge-custom-configs">New</span>
 	<div class="section">
 		<div class="section-header">
@@ -19,7 +19,7 @@
 	</div>
 </mat-card>
 
-<mat-card *ngIf="experimentalFeaturesEnabled$ | async" id="ai-card" class="ai-card">
+<mat-card appearance="outlined" *ngIf="experimentalFeaturesEnabled$ | async" id="ai-card" class="ai-card">
 	<div class="section">
 		<div class="section-header">
 			<cc-artificial-intelligence></cc-artificial-intelligence>
@@ -28,7 +28,12 @@
 	</div>
 </mat-card>
 
-<mat-card id="area-metric-card" class="area-metric-card metric-card" [class.expanded]="panelSelection === 'AREA_PANEL_OPEN'">
+<mat-card
+	appearance="outlined"
+	id="area-metric-card"
+	class="area-metric-card metric-card"
+	[class.expanded]="panelSelection === 'AREA_PANEL_OPEN'"
+>
 	<div class="section">
 		<div class="section-header" id="area-metric-header-section">
 			<cc-area-metric-chooser></cc-area-metric-chooser>
@@ -40,8 +45,13 @@
 	<cc-area-settings-panel class="cc-metric-settings-panel" [class.hidden]="panelSelection !== 'AREA_PANEL_OPEN'"></cc-area-settings-panel>
 </mat-card>
 
-<mat-card id="height-and-color-metric-container">
-	<mat-card id="height-metric-card" class="height-metric-card metric-card" [class.expanded]="panelSelection === 'HEIGHT_PANEL_OPEN'">
+<mat-card appearance="outlined" id="height-and-color-metric-container">
+	<mat-card
+		appearance="outlined"
+		id="height-metric-card"
+		class="height-metric-card metric-card"
+		[class.expanded]="panelSelection === 'HEIGHT_PANEL_OPEN'"
+	>
 		<div class="section" id="height-metric-section">
 			<div class="section-header" id="height-metric-header-section">
 				<cc-height-metric-chooser></cc-height-metric-chooser>
@@ -56,11 +66,12 @@
 		></cc-height-settings-panel>
 	</mat-card>
 
-	<mat-card *ngIf="!(isDeltaState$ | async)" class="link-color-metric-to-height-metric-card">
+	<mat-card appearance="outlined" *ngIf="!(isDeltaState$ | async)" class="link-color-metric-to-height-metric-card">
 		<cc-link-color-metric-to-height-metric-button></cc-link-color-metric-to-height-metric-button>
 	</mat-card>
 
 	<mat-card
+		appearance="outlined"
 		*ngIf="!(isDeltaState$ | async)"
 		id="color-metric-card"
 		class="color-metric-card metric-card"
@@ -82,6 +93,7 @@
 </mat-card>
 
 <mat-card
+	appearance="outlined"
 	*ngIf="hasEdgeMetric$ | async"
 	id="edge-metric-card"
 	class="edge-metric-card metric-card"
@@ -101,7 +113,7 @@
 	</div>
 </mat-card>
 
-<mat-card *ngIf="isDeltaState$ | async" id="color-settings-card">
+<mat-card appearance="outlined" *ngIf="isDeltaState$ | async" id="color-settings-card">
 	<div class="delta-color-section" (click)="updatePanelSelection('COLOR_PANEL_OPEN')" title="Show color settings">
 		<i class="fa fa-paint-brush color-icon"></i>
 		Color Settings

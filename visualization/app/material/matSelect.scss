@@ -1,17 +1,17 @@
 @use "./theme";
 
-.mat-select {
+.mat-mdc-select {
 	text-align: start;
 	border-bottom-width: 1px;
 	border-bottom-style: solid;
 	border-bottom-color: rgba(0, 0, 0, 0.12);
 }
 
-.mat-select:focus {
+.mat-mdc-select:focus {
 	border-bottom-width: 2px;
 	border-bottom-color: theme.$cc-primary-color;
 }
 
-.mat-option.mat-selected.mat-active {
+.mat-mdc-option.mat-mdc-selected.mat-active {
 	color: theme.$cc-emphasized-color;
 }

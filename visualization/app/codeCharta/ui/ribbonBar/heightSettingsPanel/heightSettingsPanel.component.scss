@@ -1,15 +1,10 @@
 cc-height-settings-panel {
-	max-height: 240px;
 	.cc-height-settings-panel-row {
 		margin: 8px 0;
 	}
 
 	.cc-height-settings-panel-reset-row {
 		display: flex;
-
-		mat-checkbox {
-			flex: 1;
-		}
 
 		cc-reset-settings-button {
 			margin-top: -8px;

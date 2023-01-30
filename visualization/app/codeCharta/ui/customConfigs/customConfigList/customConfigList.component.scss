@@ -1,10 +1,10 @@
 @use "../../../../material/theme";
 
-.cc-custom-config-list .mat-dialog-container {
+.cc-custom-config-list .mat-mdc-dialog-container {
 	padding: 5px 16px;
 	max-height: 90vh;
 
-	.mat-dialog-content.content {
+	.mat-mdc-dialog-content.content {
 		max-height: 100%;
 		margin: 0;
 		padding: 0;
@@ -69,12 +69,13 @@
 		}
 
 		&.non-applicable-group {
+			/* TODO(mdc-migration): The following rule targets internal classes of list that may no longer apply for the MDC version. */
 			.mat-expansion-panel-header-title,
 			.mat-list-item-content {
 				color: rgba(0, 0, 0, 0.3);
 			}
 		}
-
+		/* TODO(mdc-migration): The following rule targets internal classes of list that may no longer apply for the MDC version. */
 		.mat-list-item-content {
 			display: flex;
 			justify-content: space-between;
@@ -116,11 +117,11 @@
 		margin: 5px 0;
 	}
 
-	.mat-list-base {
+	.mat-mdc-list-base {
 		padding: 0;
 	}
 
-	.mat-list-item {
+	.mat-mdc-list-item {
 		height: max-content;
 	}
 }
