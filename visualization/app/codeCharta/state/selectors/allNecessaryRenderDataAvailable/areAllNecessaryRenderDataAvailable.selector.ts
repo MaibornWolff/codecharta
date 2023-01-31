@@ -5,15 +5,16 @@ import { colorMetricSelector } from "../../store/dynamicSettings/colorMetric/col
 import { dynamicSettingsSelector } from "../../store/dynamicSettings/dynamicSettings.selector"
 import { heightMetricSelector } from "../../store/dynamicSettings/heightMetric/heightMetric.selector"
 import { filesSelector } from "../../store/files/files.selector"
-import { nodeMetricDataSelector } from "../accumulatedData/metricData/nodeMetricData.selector"
+import { metricDataSelector } from "../accumulatedData/metricData/metricData.selector"
 import { areDynamicSettingsAvailable } from "./utils/areDynamicSettingsAvailable"
 import { areMetricsAvailable } from "./utils/areMetricsAvailable"
 
 const areFileStatesAvailableSelector = createSelector([filesSelector], files => fileStatesAvailable(files))
 
 export const areChosenMetricsAvailableSelector = createSelector(
-	[nodeMetricDataSelector, areaMetricSelector, colorMetricSelector, heightMetricSelector],
-	(nodeMetricData, areaMetric, colorMetric, heightMetric) => areMetricsAvailable(nodeMetricData, [areaMetric, colorMetric, heightMetric])
+	[metricDataSelector, areaMetricSelector, colorMetricSelector, heightMetricSelector],
+	(metricData, areaMetric, colorMetric, heightMetric) =>
+		areMetricsAvailable(metricData.nodeMetricData, [areaMetric, colorMetric, heightMetric])
 )
 
 const areDynamicSettingsAvailableSelector = createSelector([dynamicSettingsSelector], dynamicSettings =>
@@ -21,9 +22,9 @@ const areDynamicSettingsAvailableSelector = createSelector([dynamicSettingsSelec
 )
 
 export const areAllNecessaryRenderDataAvailableSelector = createSelector(
-	[nodeMetricDataSelector, areFileStatesAvailableSelector, areChosenMetricsAvailableSelector, areDynamicSettingsAvailableSelector],
-	(nodeMetricData, areFileStatesAvailable, areChosenMetricsAvailable, areDynamicSettingsAvailable) => {
-		if (nodeMetricData === null || !areFileStatesAvailable || !areChosenMetricsAvailable || !areDynamicSettingsAvailable) {
+	[metricDataSelector, areFileStatesAvailableSelector, areChosenMetricsAvailableSelector, areDynamicSettingsAvailableSelector],
+	(metricData, areFileStatesAvailable, areChosenMetricsAvailable, areDynamicSettingsAvailable) => {
+		if (metricData.nodeMetricData === null || !areFileStatesAvailable || !areChosenMetricsAvailable || !areDynamicSettingsAvailable) {
 			return false
 		}
 

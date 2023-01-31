@@ -34,7 +34,7 @@ export const accumulatedDataSelector: (state: CcState) => AccumulatedData = crea
 		}
 
 		NodeDecorator.decorateMap(data.map, metricData, blacklist)
-		addEdgeMetricsForLeaves(data.map, metricNames)
+		addEdgeMetricsForLeaves(metricData.nodeEdgeMetricsMap, data.map, metricNames)
 		NodeDecorator.decorateParentNodesWithAggregatedAttributes(data.map, isDeltaState(fileStates), attributeTypes)
 
 		return {

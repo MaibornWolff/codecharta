@@ -8,12 +8,12 @@ import { CodeMapNode, LayoutAlgorithm, Node } from "../../codeCharta.model"
 import { isDeltaState } from "../../model/files/files.helper"
 import { StreetLayoutGenerator } from "../../util/algorithm/streetLayout/streetLayoutGenerator"
 import { ThreeStatsService } from "./threeViewer/threeStats.service"
-import { nodeMetricDataSelector } from "../../state/selectors/accumulatedData/metricData/nodeMetricData.selector"
 import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
 import { Store } from "../../state/angular-redux/store"
 import { isLoadingFileSelector } from "../../state/store/appSettings/isLoadingFile/isLoadingFile.selector"
 import { tap } from "rxjs"
 import { State } from "../../state/angular-redux/state"
+import { metricDataSelector } from "../../state/selectors/accumulatedData/metricData/metricData.selector"
 
 @Injectable({ providedIn: "root" })
 export class CodeMapRenderService {
@@ -75,7 +75,7 @@ export class CodeMapRenderService {
 
 	private getNodes(map: CodeMapNode) {
 		const state = this.state.getValue()
-		const nodeMetricData = nodeMetricDataSelector(state)
+		const nodeMetricData = metricDataSelector(state).nodeMetricData
 		const {
 			appSettings: { layoutAlgorithm },
 			files
