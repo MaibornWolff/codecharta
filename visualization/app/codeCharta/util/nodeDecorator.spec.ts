@@ -450,4 +450,17 @@ describe("nodeDecorator", () => {
 			expect(map.attributes["some other attribute"]).not.toBeDefined()
 		})
 	})
+
+	describe("blacklist", () => {
+		it("should calculate flatten and exclude state for every node", () => {
+			NodeDecorator.decorateMap(file.map, { nodeMetricData: [], edgeMetricData: [] }, [
+				{ type: "flatten", path: "small leaf" },
+				{ type: "exclude", path: "other small leaf" }
+			])
+			expect(file.map.children[0].isExcluded).toBe(false)
+			expect(file.map.children[0].isFlattened).toBe(false)
+			expect(file.map.children[1].children[0].isFlattened).toBe(true)
+			expect(file.map.children[1].children[1].isExcluded).toBe(true)
+		})
+	})
 })

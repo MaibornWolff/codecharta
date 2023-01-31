@@ -1,14 +1,16 @@
-import { CCFile, NodeType, Settings } from "../codeCharta.model"
+import { NodeType, Settings } from "../codeCharta.model"
 import { AggregationGenerator } from "./aggregationGenerator"
 import packageJson from "../../../package.json"
+import { FileState } from "../model/files/files"
 
 describe("AggregationGenerator", () => {
-	let file1: CCFile
-	let file2: CCFile
+	let fileState1: Pick<FileState, "file">
+	let fileState2: Pick<FileState, "file">
 
-	describe("multipleService", () => {
-		beforeEach(() => {
-			file1 = {
+	beforeEach(() => {
+		AggregationGenerator["memorizedAggregation"] = { key: undefined, aggregation: undefined }
+		fileState1 = {
+			file: {
 				fileMeta: {
 					fileName: "file1",
 					fileChecksum: "md5-file1",
@@ -47,8 +49,10 @@ describe("AggregationGenerator", () => {
 				},
 				settings: {} as Settings
 			}
+		}
 
-			file2 = {
+		fileState2 = {
+			file: {
 				fileMeta: {
 					fileName: "file2",
 					fileChecksum: "md5-file2",
@@ -87,28 +91,30 @@ describe("AggregationGenerator", () => {
 				},
 				settings: {} as Settings
 			}
-		})
-		it("aggregation of two maps", () => {
-			const aggregationFile = AggregationGenerator.getAggregationFile([file1, file2])
-			expect(aggregationFile).toMatchSnapshot()
-		})
+		}
+	})
 
-		it("aggregation of four maps", () => {
-			const aggregationFile = AggregationGenerator.getAggregationFile([file1, file2, file1, file2])
-			expect(aggregationFile).toMatchSnapshot()
-		})
+	it("aggregation of two maps", () => {
+		const aggregationFile = AggregationGenerator.calculateAggregationFile([fileState1, fileState2])
+		expect(aggregationFile).toMatchSnapshot()
+	})
 
-		it("aggregation one map", () => {
-			const aggregationFile = AggregationGenerator.getAggregationFile([file1])
-			expect(aggregationFile).toMatchSnapshot()
-		})
+	it("aggregation of four maps", () => {
+		const aggregationFile = AggregationGenerator.calculateAggregationFile([fileState1, fileState2, fileState1, fileState2])
+		expect(aggregationFile).toMatchSnapshot()
+	})
 
-		it("aggregate two aggregated maps should aggregate the attributes to root", () => {
-			const aggregationFile = AggregationGenerator.getAggregationFile([file1, file2])
-			expect(aggregationFile.map.attributes.rloc).toBe(430)
-			expect(aggregationFile.map.attributes.functions).toBe(1230)
-			expect(aggregationFile.map.attributes.mcc).toBe(213)
-			expect(aggregationFile.map.attributes.customMetric).toBe(7)
-		})
+	it("aggregation one map", () => {
+		const aggregationFile = AggregationGenerator.calculateAggregationFile([fileState1])
+		expect(aggregationFile).toMatchSnapshot()
+	})
+
+	it("aggregate two aggregated maps should aggregate the attributes to root without manipulating original fileState", () => {
+		const aggregationFile = AggregationGenerator.calculateAggregationFile([fileState1, fileState2])
+		expect(aggregationFile.map.attributes.rloc).toBe(430)
+		expect(aggregationFile.map.attributes.functions).toBe(1230)
+		expect(aggregationFile.map.attributes.mcc).toBe(213)
+		expect(aggregationFile.map.attributes.customMetric).toBe(7)
+		expect(fileState1.file.map.children[0].path).toBe("/root/big leaf")
 	})
 })
