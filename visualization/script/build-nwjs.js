@@ -28,8 +28,8 @@ const nw = new NwBuilder({
   },
   useRcedit: true,
   zip: false,
-  macIcns: './app/assets/icon.icns',
-  winIco: './app/assets/icon.ico',
+  macIcns: './app/codeCharta/assets/icon.icns',
+  winIco: './app/codeCharta/assets/icon.ico',
   winVersionString: {
     'CompanyName': 'MaibornWolff GmbH',
     'FileDescription': 'CodeCharta Visualization',
