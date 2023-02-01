@@ -117,14 +117,14 @@ export class RangeSliderComponent implements OnChanges {
 		this.handleValueChange({ newRightValue: updates.upcomingValue })
 	}
 
-	handleCurrentLeftInputChanged($event: InputEvent) {
+	handleCurrentLeftInputChanged($event: Event) {
 		const newLeftValue = parseNumberInput($event, this.minValue, this.currentRightValue)
 		if (newLeftValue !== this.currentLeftValue) {
 			this.handleValueChange({ newLeftValue })
 		}
 	}
 
-	handleCurrentRightInputChanged($event: InputEvent) {
+	handleCurrentRightInputChanged($event: Event) {
 		const newRightValue = parseNumberInput($event, this.currentLeftValue, this.maxValue)
 		if (newRightValue !== this.currentRightValue) {
 			this.handleValueChange({ newRightValue })
