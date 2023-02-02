@@ -2,7 +2,7 @@
 import { hierarchy } from "d3-hierarchy"
 import { AttributeTypes, AttributeTypeValue, BlacklistItem, CCFile, CodeMapNode, MetricData } from "../codeCharta.model"
 import { isLeaf, isNodeExcludedOrFlattened } from "./codeMapHelper"
-import { UNARY_METRIC } from "../state/selectors/accumulatedData/metricData/nodeMetricData.selector"
+import { UNARY_METRIC } from "../state/selectors/accumulatedData/metricData/nodeMetricData.calculator"
 
 const enum MedianSelectors {
 	MEDIAN = "MEDIAN",
@@ -17,7 +17,7 @@ const enum EdgeAttributeType {
 }
 
 export const NodeDecorator = {
-	decorateMap(map: CodeMapNode, metricData: MetricData, blacklist: BlacklistItem[]) {
+	decorateMap(map: CodeMapNode, metricData: Pick<MetricData, "nodeMetricData" | "edgeMetricData">, blacklist: BlacklistItem[]) {
 		for (const item of blacklist) {
 			for (const { data } of hierarchy(map)) {
 				if (blacklist.length > 0) {
@@ -33,7 +33,7 @@ export const NodeDecorator = {
 		this.decorateMapWithMetricData(map, metricData)
 	},
 
-	decorateMapWithMetricData(map: CodeMapNode, metricData: MetricData) {
+	decorateMapWithMetricData(map: CodeMapNode, metricData: Pick<MetricData, "nodeMetricData" | "edgeMetricData">) {
 		const { nodeMetricData, edgeMetricData } = metricData
 		let id = 0
 		for (const { data } of hierarchy(map)) {

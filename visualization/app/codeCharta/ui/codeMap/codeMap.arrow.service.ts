@@ -62,7 +62,6 @@ export class CodeMapArrowService {
 
 	onBuildingDeselected = () => {
 		this.clearArrows()
-		this.threeSceneService.clearHighlight()
 		this.addEdgePreview()
 	}
 
@@ -170,14 +169,15 @@ export class CodeMapArrowService {
 			}
 			if (node.has(originNode.path)) {
 				this.addArrow(targetNode, originNode, true)
+				this.threeSceneService.highlightBuildings()
 				// TODO: Check if the second if case is actually necessary. Edges should
 				// always have valid origin and target paths. The test data is likely
 				// faulty and should be improved.
 			} else if (node.has(targetNode.path)) {
 				this.addArrow(targetNode, originNode, false)
+				this.threeSceneService.highlightBuildings()
 			}
 		}
-		this.threeSceneService.highlightBuildings()
 	}
 
 	private createCurve(arrowOriginNode: Node, arrowTargetNode: Node, curveScale) {

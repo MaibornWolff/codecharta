@@ -3,9 +3,6 @@ import { hierarchy } from "d3-hierarchy"
 import { BlacklistItem, NodeMetricData } from "../../../../codeCharta.model"
 import { FileState } from "../../../../model/files/files"
 import { isLeaf, isPathBlacklisted } from "../../../../util/codeMapHelper"
-import { createSelector } from "../../../angular-redux/createSelector"
-import { blacklistSelector } from "../../../store/fileSettings/blacklist/blacklist.selector"
-import { visibleFileStatesSelector } from "../../visibleFileStates.selector"
 import { sortByMetricName } from "./sortByMetricName"
 
 export const UNARY_METRIC = "unary"
@@ -54,5 +51,3 @@ export const calculateNodeMetricData = (visibleFileStates: FileState[], blacklis
 	sortByMetricName(metricData)
 	return metricData
 }
-
-export const nodeMetricDataSelector = createSelector([visibleFileStatesSelector, blacklistSelector], calculateNodeMetricData)

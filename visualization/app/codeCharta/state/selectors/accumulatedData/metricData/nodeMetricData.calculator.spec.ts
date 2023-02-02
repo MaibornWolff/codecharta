@@ -2,9 +2,9 @@ import { TEST_DELTA_MAP_A, VALID_NODE_WITH_ROOT_UNARY } from "../../../../util/d
 import { FileSelectionState, FileState } from "../../../../model/files/files"
 import { NodeDecorator } from "../../../../util/nodeDecorator"
 import { clone } from "../../../../util/clone"
-import { calculateNodeMetricData, UNARY_METRIC } from "./nodeMetricData.selector"
+import { calculateNodeMetricData, UNARY_METRIC } from "./nodeMetricData.calculator"
 
-describe("nodeMetricDataSelector", () => {
+describe("nodeMetricDataCalculator", () => {
 	let fileState: FileState
 
 	beforeEach(() => {

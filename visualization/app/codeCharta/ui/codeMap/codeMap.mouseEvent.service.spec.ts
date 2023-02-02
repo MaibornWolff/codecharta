@@ -501,6 +501,7 @@ describe("codeMapMouseEventService", () => {
 		describe("on left click", () => {
 			beforeEach(() => {
 				event = { button: ClickType.LeftClick, clientX: 10, clientY: 20 }
+				codeMapMouseEventService["intersectedBuilding"] = undefined
 			})
 			it("should change the cursor to default when the left click is triggered", () => {
 				document.body.style.cursor = CursorType.Pointer
@@ -537,7 +538,7 @@ describe("codeMapMouseEventService", () => {
 				expect(threeSceneService.selectBuilding).toHaveBeenCalledWith(codeMapBuilding)
 			})
 
-			it("should call clearselection, when the mouse has moved less or exact 3 pixels while left button was pressed", () => {
+			it("should call clearSelection, when the mouse has moved less or exact 3 pixels while left button was pressed", () => {
 				codeMapMouseEventService.onDocumentMouseMove(event)
 				codeMapMouseEventService.onDocumentMouseDown(event)
 				codeMapMouseEventService.onDocumentMouseMove({ clientX: 10, clientY: 17 } as MouseEvent)
@@ -545,6 +546,18 @@ describe("codeMapMouseEventService", () => {
 				codeMapMouseEventService.onDocumentMouseUp(event)
 
 				expect(threeSceneService.clearSelection).toHaveBeenCalled()
+			})
+
+			it("should not call clearSelection, when the mouse has moved less or exact 3 pixels but a building is currently being clicked upon", () => {
+				codeMapMouseEventService.onDocumentMouseMove(event)
+				codeMapMouseEventService.onDocumentMouseDown(event)
+				codeMapMouseEventService.onDocumentMouseMove({ clientX: 10, clientY: 17 } as MouseEvent)
+				codeMapMouseEventService["intersectedBuilding"] = CODE_MAP_BUILDING
+
+				codeMapMouseEventService.onDocumentMouseUp(event)
+
+				expect(threeSceneService.clearSelection).toHaveBeenCalledTimes(0)
+				expect(threeSceneService.selectBuilding).toHaveBeenLastCalledWith(CODE_MAP_BUILDING)
 			})
 
 			it("should not call clear selection, when mouse has moved more than 3 pixels while left button was pressed", () => {

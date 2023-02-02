@@ -8,7 +8,6 @@ import { getCCFiles, isPartialState } from "../../model/files/files.helper"
 import { CCFileValidationResult, ERROR_MESSAGES } from "../../util/fileValidator"
 import packageJson from "../../../../package.json"
 import { clone } from "../../util/clone"
-import { nodeMetricDataSelector } from "../../state/selectors/accumulatedData/metricData/nodeMetricData.selector"
 import { klona } from "klona"
 import { ErrorDialogComponent } from "../../ui/dialogs/errorDialog/errorDialog.component"
 import { loadFilesValidationToErrorDialog } from "../../util/loadFilesValidationToErrorDialog"
@@ -16,10 +15,11 @@ import { Store } from "../../state/angular-redux/store"
 import { State } from "../../state/angular-redux/state"
 import { fileRoot } from "./fileRoot"
 import { MatLegacyDialog } from "@angular/material/legacy-dialog"
+import { metricDataSelector } from "../../state/selectors/accumulatedData/metricData/metricData.selector"
 
-const mockedNodeMetricDataSelector = nodeMetricDataSelector as unknown as jest.Mock
-jest.mock("../../state/selectors/accumulatedData/metricData/nodeMetricData.selector", () => ({
-	nodeMetricDataSelector: jest.fn()
+const mockedMetricDataSelector = metricDataSelector as unknown as jest.Mock
+jest.mock("../../state/selectors/accumulatedData/metricData/metricData.selector", () => ({
+	metricDataSelector: jest.fn()
 }))
 
 describe("loadFileService", () => {
@@ -59,7 +59,7 @@ describe("loadFileService", () => {
 	}
 
 	describe("loadFiles", () => {
-		mockedNodeMetricDataSelector.mockImplementation(() => metricData)
+		mockedMetricDataSelector.mockImplementation(() => ({ nodeMetricData: metricData }))
 
 		const expected: CCFile = {
 			fileMeta: {
