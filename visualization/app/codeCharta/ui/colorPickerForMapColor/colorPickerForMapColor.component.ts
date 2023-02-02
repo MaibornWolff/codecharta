@@ -13,7 +13,7 @@ import { colorRangeSelector } from "../../state/store/dynamicSettings/colorRange
 	encapsulation: ViewEncapsulation.None
 })
 export class ColorPickerForMapColorComponent {
-	@Input() mapColorFor: keyof MapColors
+	@Input() mapColorFor: keyof Omit<MapColors, "labelColorAndAlpha" | "markingColors">
 
 	mapColors$ = this.store.select(mapColorsSelector)
 	colorRange$ = this.store.select(colorRangeSelector)
