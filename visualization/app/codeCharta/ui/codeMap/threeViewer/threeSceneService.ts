@@ -11,7 +11,7 @@ import { IdToBuildingService } from "../../../services/idToBuilding/idToBuilding
 import { mapColorsSelector } from "../../../state/store/appSettings/mapColors/mapColors.selector"
 import { ThreeRendererService } from "./threeRenderer.service"
 import { EventEmitter } from "tsee"
-import { Inject, Injectable } from "@angular/core"
+import { Injectable } from "@angular/core"
 import { Store } from "../../../state/angular-redux/store"
 import { defaultMapColors } from "../../../state/store/appSettings/mapColors/mapColors.actions"
 import { State } from "../../../state/angular-redux/state"
@@ -51,10 +51,10 @@ export class ThreeSceneService {
 	private highlightedLine = null
 
 	constructor(
-		@Inject(Store) private store: Store,
-		@Inject(State) private state: State,
-		@Inject(IdToBuildingService) private idToBuilding: IdToBuildingService,
-		@Inject(ThreeRendererService) private threeRendererService: ThreeRendererService
+		private store: Store,
+		private state: State,
+		private idToBuilding: IdToBuildingService,
+		private threeRendererService: ThreeRendererService
 	) {
 		this.store.select(mapColorsSelector).subscribe(mapColors => {
 			this.folderLabelColorSelected = mapColors.selected
@@ -368,6 +368,7 @@ export class ThreeSceneService {
 			this.store.dispatch(setSelectedBuildingId(null))
 			this.eventEmitter.emit("onBuildingDeselected")
 		}
+
 		if (this.highlighted.length > 0) {
 			this.highlightBuildings()
 		}
@@ -417,13 +418,6 @@ export class ThreeSceneService {
 
 	getHighlightedBuilding() {
 		return this.highlighted[0]
-	}
-
-	getHighlightedNode() {
-		if (this.getHighlightedBuilding()) {
-			return this.getHighlightedBuilding().node
-		}
-		return null
 	}
 
 	dispose() {

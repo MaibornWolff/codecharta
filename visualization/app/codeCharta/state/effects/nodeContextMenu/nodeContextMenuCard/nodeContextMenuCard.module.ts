@@ -12,7 +12,6 @@ import { NodeContextMenuCardComponent } from "./nodeContextMenuCard.component"
 @NgModule({
 	imports: [CommonModule, MaterialModule, FlattenButtonsModule, FocusButtonsModule, HighlightButtonsModule, MarkFolderRowModule],
 	declarations: [NodeContextMenuCardComponent, LastPartOfNodePathPipe, ExcludeButtonComponent],
-	exports: [NodeContextMenuCardComponent],
-	entryComponents: [NodeContextMenuCardComponent]
+	exports: [NodeContextMenuCardComponent]
 })
 export class NodeContextMenuCardModule {}

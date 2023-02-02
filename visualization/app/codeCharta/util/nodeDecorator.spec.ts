@@ -12,7 +12,7 @@ import {
 import { NodeDecorator } from "./nodeDecorator"
 import { HierarchyNode, hierarchy } from "d3-hierarchy"
 import { clone } from "./clone"
-import { UNARY_METRIC } from "../state/selectors/accumulatedData/metricData/nodeMetricData.selector"
+import { UNARY_METRIC } from "../state/selectors/accumulatedData/metricData/nodeMetricData.calculator"
 
 describe("nodeDecorator", () => {
 	let file: CCFile

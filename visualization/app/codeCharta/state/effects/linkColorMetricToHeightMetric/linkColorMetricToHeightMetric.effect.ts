@@ -1,4 +1,4 @@
-import { Inject, Injectable } from "@angular/core"
+import { Injectable } from "@angular/core"
 import { Store } from "../../angular-redux/store"
 import { createEffect } from "../../angular-redux/effects/createEffect"
 import { combineLatest, filter, map } from "rxjs"
@@ -9,7 +9,7 @@ import { heightMetricSelector } from "../../store/dynamicSettings/heightMetric/h
 
 @Injectable()
 export class LinkColorMetricToHeightMetricEffect {
-	constructor(@Inject(Store) private store: Store) {}
+	constructor(private store: Store) {}
 
 	linkHeightAndColorMetric$ = createEffect(() =>
 		combineLatest([this.store.select(heightMetricSelector), this.store.select(isColorMetricLinkedToHeightMetricSelector)]).pipe(

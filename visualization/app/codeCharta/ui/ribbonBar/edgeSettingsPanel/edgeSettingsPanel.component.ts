@@ -1,5 +1,5 @@
-import { Component, Inject } from "@angular/core"
-import { MatCheckboxChange } from "@angular/material/checkbox"
+import { Component, ViewEncapsulation } from "@angular/core"
+import { MatLegacyCheckboxChange as MatCheckboxChange } from "@angular/material/legacy-checkbox"
 import { map } from "rxjs"
 import { Store } from "../../../state/angular-redux/store"
 import { setAmountOfEdgePreviews } from "../../../state/store/appSettings/amountOfEdgePreviews/amountOfEdgePreviews.actions"
@@ -12,7 +12,8 @@ import { amountOfBuildingsWithSelectedEdgeMetricSelector } from "./selectors/amo
 
 @Component({
 	selector: "cc-edge-settings-panel",
-	template: require("./edgeSettingsPanel.component.html")
+	templateUrl: "./edgeSettingsPanel.component.html",
+	encapsulation: ViewEncapsulation.None
 })
 export class EdgeSettingsPanelComponent {
 	amountOfBuildingsWithSelectedEdgeMetric$ = this.store.select(amountOfBuildingsWithSelectedEdgeMetricSelector)
@@ -26,7 +27,7 @@ export class EdgeSettingsPanelComponent {
 	edgeHeight$ = this.store.select(edgeHeightSelector)
 	showOnlyBuildingsWithEdges$ = this.store.select(showOnlyBuildingsWithEdgesSelector)
 
-	constructor(@Inject(Store) private store) {}
+	constructor(private store: Store) {}
 
 	applySettingsAmountOfEdgePreviews = (value: number) => {
 		this.store.dispatch(setAmountOfEdgePreviews(value))

@@ -1,10 +1,11 @@
-import { Component, Input } from "@angular/core"
+import { Component, Input, ViewEncapsulation } from "@angular/core"
 import { CustomConfigHelper } from "../../../../util/customConfigHelper"
 import { CustomConfigItemGroup } from "../../customConfigs.component"
 
 @Component({
 	selector: "cc-custom-config-item-group",
-	template: require("./customConfigItemGroup.component.html")
+	templateUrl: "./customConfigItemGroup.component.html",
+	encapsulation: ViewEncapsulation.None
 })
 export class CustomConfigItemGroupComponent {
 	@Input() customConfigItemGroups: Map<string, CustomConfigItemGroup>

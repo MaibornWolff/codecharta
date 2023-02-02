@@ -1,5 +1,5 @@
-import { Injectable, Inject } from "@angular/core"
-import { MatDialog } from "@angular/material/dialog"
+import { Injectable } from "@angular/core"
+import { MatLegacyDialog as MatDialog } from "@angular/material/legacy-dialog"
 import { HttpClient } from "@angular/common/http"
 import { NameDataPair } from "../../codeCharta.model"
 import { getCCFiles } from "../../model/files/files.helper"
@@ -19,11 +19,11 @@ export class LoadInitialFileService {
 	private urlUtils = new UrlExtractor(this.httpClient)
 
 	constructor(
-		@Inject(Store) private store: Store,
-		@Inject(State) private state: State,
-		@Inject(MatDialog) private dialog: MatDialog,
-		@Inject(LoadFileService) private loadFileService,
-		@Inject(HttpClient) private httpClient: HttpClient
+		private store: Store,
+		private state: State,
+		private dialog: MatDialog,
+		private loadFileService: LoadFileService,
+		private httpClient: HttpClient
 	) {}
 
 	async loadFileOrSample() {
@@ -32,7 +32,7 @@ export class LoadInitialFileService {
 			this.tryLoadingFiles(data)
 			this.setRenderStateFromUrl()
 		} catch (error) {
-			this.tryLoadingSampleFiles(error)
+			this.tryLoadingSampleFiles(error as Error & { statusText?: string; status?: number })
 		}
 	}
 

@@ -1,4 +1,4 @@
-import { Component, Inject, Input, OnInit } from "@angular/core"
+import { Component, Input, OnInit, ViewEncapsulation } from "@angular/core"
 import { Observable } from "rxjs"
 import { AttributeTypes, PrimaryMetrics } from "../../../codeCharta.model"
 import { Store } from "../../../state/angular-redux/store"
@@ -7,7 +7,8 @@ import { isHoveredNodeALeafSelector } from "./isHoveredNodeALeaf.selector"
 
 @Component({
 	selector: "cc-metric-chooser-type-hovered",
-	template: require("./metricChooserTypeHovered.component.html")
+	templateUrl: "./metricChooserTypeHovered.component.html",
+	encapsulation: ViewEncapsulation.None
 })
 export class MetricChooserTypeHoveredComponent implements OnInit {
 	@Input() metricFor: keyof PrimaryMetrics
@@ -16,7 +17,7 @@ export class MetricChooserTypeHoveredComponent implements OnInit {
 	isHoveredNodeALeaf$: Observable<boolean>
 	attributeType$: Observable<string>
 
-	constructor(@Inject(Store) private store: Store) {}
+	constructor(private store: Store) {}
 
 	ngOnInit(): void {
 		this.isHoveredNodeALeaf$ = this.store.select(isHoveredNodeALeafSelector)

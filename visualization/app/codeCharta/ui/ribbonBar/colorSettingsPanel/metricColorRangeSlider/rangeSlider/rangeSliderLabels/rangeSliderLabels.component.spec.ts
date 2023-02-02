@@ -19,7 +19,7 @@ describe("RangeSliderLabelsComponent", () => {
 			sliderWidth: 100,
 			sliderRangePosition: { leftEnd: leftValue, rightStart: rightValue }
 		}
-		const { fixture, rerender } = await render(RangeSliderLabelsComponent, {
+		const { fixture, change } = await render(RangeSliderLabelsComponent, {
 			excludeComponentDeclaration: true,
 			componentProperties
 		})
@@ -29,7 +29,7 @@ describe("RangeSliderLabelsComponent", () => {
 			fixture.componentInstance[label].nativeElement.getBoundingClientRect = () => ({ width: 10 })
 		}
 		fixture.componentInstance.ngAfterViewChecked()
-		rerender(componentProperties)
+		change(componentProperties)
 	}
 
 	it("should display labels for min, currentLeft, currentRight and max value", async () => {

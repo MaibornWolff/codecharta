@@ -1,4 +1,4 @@
-import { Component, Inject } from "@angular/core"
+import { Component, ViewEncapsulation } from "@angular/core"
 import { Store } from "../../../../state/angular-redux/store"
 import { HandleValueChange } from "./rangeSlider/rangeSlider.component"
 import { setColorRange } from "../../../../state/store/dynamicSettings/colorRange/colorRange.actions"
@@ -9,7 +9,8 @@ import { ColorRange } from "../../../../codeCharta.model"
 
 @Component({
 	selector: "cc-metric-color-range-slider",
-	template: require("./metricColorRangeSlider.component.html")
+	templateUrl: "./metricColorRangeSlider.component.html",
+	encapsulation: ViewEncapsulation.None
 })
 export class MetricColorRangeSliderComponent {
 	sliderValues$ = this.store.select(metricColorRangeSliderValuesSelector)
@@ -18,7 +19,7 @@ export class MetricColorRangeSliderComponent {
 	private newLeftValue: null | number = null
 	private newRightValue: null | number = null
 
-	constructor(@Inject(Store) private store: Store) {}
+	constructor(private store: Store) {}
 
 	handleValueChange: HandleValueChange = ({ newLeftValue, newRightValue }) => {
 		if (newLeftValue !== undefined) {

@@ -13,7 +13,7 @@ import { LoadFileService } from "../services/loadFile/loadFile.service"
 import { ExportCCFile } from "../codeCharta.api.model"
 import { hierarchy } from "d3-hierarchy"
 import { clone } from "./clone"
-import { UNARY_METRIC } from "../state/selectors/accumulatedData/metricData/nodeMetricData.selector"
+import { UNARY_METRIC } from "../state/selectors/accumulatedData/metricData/nodeMetricData.calculator"
 
 export type DownloadableSetting = "Nodes" | "AttributeTypes" | "AttributeDescriptors" | "Edges" | "Excludes" | "Flattens" | "MarkedPackages"
 

@@ -1,14 +1,15 @@
-import "./customConfigList.component.scss"
-import { Component, Inject } from "@angular/core"
+import { Component, ViewEncapsulation } from "@angular/core"
 import { CustomConfigHelperService } from "../customConfigHelper.service"
 
 @Component({
-	template: require("./customConfigList.component.html")
+	templateUrl: "./customConfigList.component.html",
+	styleUrls: ["./customConfigList.component.scss"],
+	encapsulation: ViewEncapsulation.None
 })
 export class CustomConfigListComponent {
 	isCollapsed = true
 
-	constructor(@Inject(CustomConfigHelperService) public customConfigService: CustomConfigHelperService) {}
+	constructor(public customConfigService: CustomConfigHelperService) {}
 
 	toggleNonApplicableCustomConfigsList() {
 		this.isCollapsed = !this.isCollapsed

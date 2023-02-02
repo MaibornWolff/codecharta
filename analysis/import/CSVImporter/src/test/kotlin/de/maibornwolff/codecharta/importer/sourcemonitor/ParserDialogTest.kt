@@ -6,7 +6,7 @@ import com.github.kinquirer.components.promptInput
 import io.mockk.every
 import io.mockk.mockkStatic
 import io.mockk.unmockkAll
-import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
@@ -40,9 +40,9 @@ class ParserDialogTest {
 
         val cmdLine = CommandLine(SourceMonitorImporter())
         val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
-        Assertions.assertThat(parseResult.matchedOption("output-file").getValue<String>().equals(outputFileName))
-        Assertions.assertThat(parseResult.matchedOption("not-compressed")).isNull()
-        Assertions.assertThat(parseResult.matchedPositional(0).getValue<ArrayList<File>>()[0].name).isEqualTo(fileName)
+        assertThat(parseResult.matchedOption("output-file").getValue<String>()).isEqualTo(outputFileName)
+        assertThat(parseResult.matchedOption("not-compressed")).isNull()
+        assertThat(parseResult.matchedPositional(0).getValue<ArrayList<File>>()[0].name).isEqualTo(fileName)
     }
 
     @Test
@@ -64,8 +64,8 @@ class ParserDialogTest {
 
         val cmdLine = CommandLine(SourceMonitorImporter())
         val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
-        Assertions.assertThat(parseResult.matchedOption("output-file").getValue<String>().equals(outputFileName))
-        Assertions.assertThat(parseResult.matchedOption("not-compressed").getValue<Boolean>().equals(isCompressed))
-        Assertions.assertThat(parseResult.matchedPositional(0).getValue<ArrayList<File>>()[0].name).isEqualTo(fileName)
+        assertThat(parseResult.matchedOption("output-file").getValue<String>()).isEqualTo(outputFileName)
+        assertThat(parseResult.matchedOption("not-compressed").getValue<Boolean>()).isEqualTo(isCompressed)
+        assertThat(parseResult.matchedPositional(0).getValue<ArrayList<File>>()[0].name).isEqualTo(fileName)
     }
 }

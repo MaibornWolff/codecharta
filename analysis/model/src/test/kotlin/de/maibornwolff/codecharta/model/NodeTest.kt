@@ -1,75 +1,68 @@
 package de.maibornwolff.codecharta.model
 
-import org.hamcrest.CoreMatchers.`is`
-import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers.hasItem
-import org.hamcrest.Matchers.hasSize
-import org.spekframework.spek2.Spek
-import org.spekframework.spek2.style.specification.describe
-import java.util.Arrays
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Nested
+import org.junit.jupiter.api.Test
 import kotlin.test.assertFailsWith
 
-class NodeTest : Spek({
+class NodeTest {
 
-    describe("root with child") {
-
+    @Test
+    fun `getPathOfChild should only return valid children on root with one child`() {
         val childName = "child1"
         val child = MutableNode(childName)
-        val root = MutableNode("root", NodeType.Folder, childrenList = Arrays.asList(child).toSet())
+        val root = MutableNode("root", NodeType.Folder, childrenList = listOf(child).toSet())
 
-        context("getPathOfChild of valid child") {
-            val pathOfChild = root.getPathOfChild(child)
+        val pathOfChild = root.getPathOfChild(child)
 
-            it("should return path") {
-
-                assertThat(pathOfChild.isSingle, `is`(true))
-                assertThat(pathOfChild.head, `is`(childName))
-            }
-        }
-
-        context("getPathOfChild of invalid child") {
-
-            it("should throw an exception") {
-
-                assertFailsWith(NoSuchElementException::class) {
-                    root.getPathOfChild(MutableNode("invalidChild"))
-                }
-            }
-        }
-
-        it("pathsToLeafs should return path of child") {
-            val pathsToLeafs = root.pathsToLeaves
-
-            assertThat(pathsToLeafs, hasSize(1))
-            assertThat(pathsToLeafs, PathMatcher.containsPath(Path(childName)))
+        assertThat(pathOfChild.isSingle).isTrue
+        assertThat(pathOfChild.head).isEqualTo(childName)
+        assertFailsWith(NoSuchElementException::class) {
+            root.getPathOfChild(MutableNode("invalidChild"))
         }
     }
 
-    describe("root node with many children") {
+    @Test
+    fun `pathsToLeafs should return path of child`() {
+        val childName = "child1"
+        val child = MutableNode(childName)
+        val root = MutableNode("root", NodeType.Folder, childrenList = listOf(child).toSet())
 
+        val pathsToLeafs = root.pathsToLeaves
+
+        assertThat(pathsToLeafs).hasSize(1)
+        assertThat(pathsToLeafs).contains((Path(childName)))
+    }
+
+    @Nested
+    @DisplayName("NodeTest > with many children")
+    inner class LeafNodeTest {
         val node11 = MutableNode("node11")
         val node12 = MutableNode("node12")
-        val node1 = MutableNode("node1", NodeType.Folder, childrenList = Arrays.asList(node11, node12).toSet())
+        val node1 = MutableNode("node1", NodeType.Folder, childrenList = listOf(node11, node12).toSet())
         val node21 = MutableNode("node21", NodeType.Folder)
-        val node2 = MutableNode("node2", NodeType.Folder, childrenList = Arrays.asList(node21).toSet())
-        val root = MutableNode("root", NodeType.Folder, childrenList = Arrays.asList(node1, node2).toSet())
+        val node2 = MutableNode("node2", NodeType.Folder, childrenList = listOf(node21).toSet())
+        val root = MutableNode("root", NodeType.Folder, childrenList = listOf(node1, node2).toSet())
 
-        it("getLeafs should return leafs") {
+        @Test
+        fun `getLeafs should return leafs`() {
             val leafs = root.leafObjects
 
-            assertThat(leafs, hasSize(3))
-            assertThat(leafs, hasItem(node11))
-            assertThat(leafs, hasItem(node12))
-            assertThat(leafs, hasItem(node21))
+            assertThat(leafs).hasSize(3)
+            assertThat(leafs).containsExactlyInAnyOrder(node11, node12, node21)
         }
 
-        it("getPathsToLeafs should return paths of all leafs") {
+        @Test
+        fun `getPathsToLeafs should return paths of all leafs`() {
             val pathsToLeafs = root.pathsToLeaves
 
-            assertThat(pathsToLeafs, hasSize(3))
-            assertThat(pathsToLeafs, PathMatcher.containsPath(Path("node1", "node11")))
-            assertThat(pathsToLeafs, PathMatcher.containsPath(Path("node1", "node12")))
-            assertThat(pathsToLeafs, PathMatcher.containsPath(Path("node2", "node21")))
+            assertThat(pathsToLeafs).hasSize(3)
+            assertThat(pathsToLeafs).containsExactlyInAnyOrder(
+                Path("node1", "node11"),
+                Path("node1", "node12"),
+                Path("node2", "node21")
+            )
         }
     }
-})
+}

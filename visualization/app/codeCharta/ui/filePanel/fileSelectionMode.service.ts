@@ -1,4 +1,4 @@
-import { Inject, Injectable, OnDestroy } from "@angular/core"
+import { Injectable, OnDestroy } from "@angular/core"
 import { pairwise, tap, filter } from "rxjs"
 import { FileSelectionState, FileState } from "../../model/files/files"
 import { isDeltaState, isEqual } from "../../model/files/files.helper"
@@ -22,7 +22,7 @@ export class FileSelectionModeService implements OnDestroy {
 		)
 		.subscribe()
 
-	constructor(@Inject(Store) private store: Store, @Inject(State) private state: State) {}
+	constructor(private store: Store, private state: State) {}
 
 	ngOnDestroy(): void {
 		this.subscription.unsubscribe()

@@ -1,5 +1,4 @@
-import "./downloadDialog.component.scss"
-import { Component, Inject } from "@angular/core"
+import { Component, ViewEncapsulation } from "@angular/core"
 import { State } from "../../../../state/angular-redux/state"
 import { FileDownloader } from "../../../../util/fileDownloader"
 import { accumulatedDataSelector } from "../../../../state/selectors/accumulatedData/accumulatedData.selector"
@@ -14,13 +13,15 @@ import {
 } from "./util/propertyHelper"
 
 @Component({
-	template: require("./downloadDialog.component.html")
+	templateUrl: "./downloadDialog.component.html",
+	styleUrls: ["./downloadDialog.component.scss"],
+	encapsulation: ViewEncapsulation.None
 })
 export class DownloadDialogComponent {
 	fileName: string
 	properties: (DownloadableProperty & { change: (isSelected: boolean) => void })[]
 
-	constructor(@Inject(State) private state: State) {
+	constructor(private state: State) {
 		const stateValue = this.state.getValue()
 		const { unifiedMapNode, unifiedFileMeta } = accumulatedDataSelector(stateValue)
 		const { fileSettings, files } = stateValue

@@ -17,6 +17,6 @@
 -   The version number will be updated automatically in corresponding files.
 -   The Changelog section `[unreleased]` will be renamed to the release date like e.g. `[2020-12-12]` and a new `[unreleased]` section will be added on top of the Changelog.
 -   A release post will be created for the GitHub Pages with the corresponding release notes from the Changelog.
--   You will be ask if you want to commit and tag the automatically changed files and thus, the release itself.
--   Then you will be ask if you want to push the release commits finally.
+-   You will be asked if you want to commit and tag the automatically changed files and thus, the release itself.
+-   Then you will be asked if you want to push the release commits finally.
 -   Our build pipeline will detect the new release (tag) and starts a build to publish the new release as npm packages on npmjs.com

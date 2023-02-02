@@ -1,5 +1,4 @@
-import "./filePanelFileSelector.component.scss"
-import { Component, Inject, OnDestroy } from "@angular/core"
+import { Component, OnDestroy, ViewEncapsulation } from "@angular/core"
 import { Store } from "../../../state/angular-redux/store"
 import { filesSelector } from "../../../state/store/files/files.selector"
 import { invertStandard, setAll, setStandard } from "../../../state/store/files/files.actions"
@@ -8,7 +7,9 @@ import { FileSelectionState, FileState } from "../../../model/files/files"
 
 @Component({
 	selector: "cc-file-panel-file-selector",
-	template: require("./filePanelFileSelector.component.html")
+	templateUrl: "./filePanelFileSelector.component.html",
+	styleUrls: ["./filePanelFileSelector.component.scss"],
+	encapsulation: ViewEncapsulation.None
 })
 export class FilePanelFileSelectorComponent implements OnDestroy {
 	fileStates: FileState[] = []
@@ -20,7 +21,7 @@ export class FilePanelFileSelectorComponent implements OnDestroy {
 		this.selectedFilesInUI = this.selectedFilesInStore
 	})
 
-	constructor(@Inject(Store) private store: Store) {}
+	constructor(private store: Store) {}
 
 	ngOnDestroy(): void {
 		this.filesSubscription.unsubscribe()

@@ -26,15 +26,14 @@ import { setShowMetricLabelNameValue } from "../../state/store/appSettings/showM
 import { klona } from "klona"
 import { ThreeStatsService } from "./threeViewer/threeStats.service"
 import { setColorLabels } from "../../state/store/appSettings/colorLabels/colorLabels.actions"
-import { nodeMetricDataSelector } from "../../state/selectors/accumulatedData/metricData/nodeMetricData.selector"
 import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
 import { Store } from "../../state/angular-redux/store"
 import { State } from "../../state/angular-redux/state"
+import { metricDataSelector } from "../../state/selectors/accumulatedData/metricData/metricData.selector"
 
-const mockedNodeMetricDataSelector = nodeMetricDataSelector as unknown as jest.Mock
-jest.mock("../../state/selectors/accumulatedData/metricData/nodeMetricData.selector", () => ({
-	nodeMetricDataSelector: jest.fn(),
-	UNARY_METRIC: "unary"
+const mockedMetricDataSelector = metricDataSelector as unknown as jest.Mock
+jest.mock("../../state/selectors/accumulatedData/metricData/metricData.selector", () => ({
+	metricDataSelector: jest.fn()
 }))
 
 describe("codeMapRenderService", () => {
@@ -74,7 +73,10 @@ describe("codeMapRenderService", () => {
 		NodeDecorator.decorateParentNodesWithAggregatedAttributes(map, false, DEFAULT_STATE.fileSettings.attributeTypes)
 		store.dispatch(setState(STATE))
 		store.dispatch(unfocusNode())
-		mockedNodeMetricDataSelector.mockImplementation(() => METRIC_DATA)
+		mockedMetricDataSelector.mockImplementation(() => ({
+			nodeMetricData: METRIC_DATA,
+			edgeMetricData: []
+		}))
 	}
 
 	function rebuildService() {

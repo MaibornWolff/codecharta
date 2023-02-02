@@ -1,4 +1,4 @@
-import { MatDialog } from "@angular/material/dialog"
+import { MatLegacyDialog } from "@angular/material/legacy-dialog"
 import { State } from "../../../state/angular-redux/state"
 import { Store } from "../../../state/angular-redux/store"
 import { setState } from "../../../state/store/state.actions"
@@ -11,14 +11,14 @@ import { ScenarioHelper } from "./scenarioHelper"
 describe("scenarioService", () => {
 	let scenarioService: ScenarioService
 	let mockedStore: Store
-	let mockedDialog: MatDialog
+	let mockedDialog: MatLegacyDialog
 	let mockedThreeCameraService: ThreeCameraService
 	let mockedThreeOrbitControlsService: ThreeOrbitControlsService
 
 	beforeEach(() => {
 		const mockedState = {} as unknown as State
 		mockedStore = { dispatch: jest.fn() } as unknown as Store
-		mockedDialog = { open: jest.fn() } as unknown as MatDialog
+		mockedDialog = { open: jest.fn() } as unknown as MatLegacyDialog
 		mockedThreeCameraService = { setPosition: jest.fn() } as unknown as ThreeCameraService
 		mockedThreeOrbitControlsService = { setControlTarget: jest.fn() } as unknown as ThreeOrbitControlsService
 		scenarioService = new ScenarioService(

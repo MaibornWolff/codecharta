@@ -1,13 +1,14 @@
-import "./resetSettingsButton.component.scss"
 import { setState } from "../../state/store/state.actions"
 import { getPartialDefaultState } from "./getPartialDefaultState"
-import { Component, Inject, Input } from "@angular/core"
+import { Component, Input, ViewEncapsulation } from "@angular/core"
 import { Store } from "../../state/angular-redux/store"
 import { State } from "../../state/angular-redux/state"
 
 @Component({
 	selector: "cc-reset-settings-button",
-	template: require("./resetSettingsButton.component.html")
+	templateUrl: "./resetSettingsButton.component.html",
+	styleUrls: ["./resetSettingsButton.component.scss"],
+	encapsulation: ViewEncapsulation.None
 })
 export class ResetSettingsButtonComponent {
 	@Input() settingsKeys: string[]
@@ -15,7 +16,7 @@ export class ResetSettingsButtonComponent {
 	@Input() label?: string
 	@Input() callback?: () => void
 
-	constructor(@Inject(Store) private store: Store, @Inject(State) private state: State) {}
+	constructor(private store: Store, private state: State) {}
 
 	applyDefaultSettings() {
 		const partialDefaultState = getPartialDefaultState(this.settingsKeys, this.state.getValue())

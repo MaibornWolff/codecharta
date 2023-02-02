@@ -1,4 +1,4 @@
-import { Directive, ElementRef, Inject, Input, OnChanges, SimpleChanges } from "@angular/core"
+import { Directive, ElementRef, Input, OnChanges, SimpleChanges } from "@angular/core"
 
 @Directive({
 	selector: "[ccRiskProfileBar]"
@@ -6,7 +6,7 @@ import { Directive, ElementRef, Inject, Input, OnChanges, SimpleChanges } from "
 export class RiskProfileBarDirective implements OnChanges {
 	@Input() ccRiskProfileBar = 0
 
-	constructor(@Inject(ElementRef) private element: ElementRef) {}
+	constructor(private element: ElementRef) {}
 
 	ngOnChanges(changes: SimpleChanges) {
 		if (changes.ccRiskProfileBar) {

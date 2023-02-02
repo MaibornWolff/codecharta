@@ -5,7 +5,7 @@ import { ThreeOrbitControlsService } from "./threeOrbitControls.service"
 import { ThreeRendererService } from "./threeRenderer.service"
 import { ThreeViewerService } from "./threeViewer.service"
 import { PerspectiveCamera, Scene, Vector3, WebGLRenderer } from "three"
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
+import type { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
 import { ThreeStatsService } from "./threeStats.service"
 import { CustomComposer } from "../rendering/postprocessor/customComposer"
 
@@ -59,7 +59,7 @@ describe("ThreeViewerService", () => {
 		threeRendererService.composer = { dispose: jest.fn() } as unknown as CustomComposer
 		threeRendererService.renderer.getContext = jest.fn()
 		threeRendererService.renderer.setPixelRatio = jest.fn()
-		threeOrbitControlsService.controls = { enableKeys: null } as OrbitControls
+		threeOrbitControlsService.controls = { enableKeys: null } as unknown as OrbitControls
 		threeOrbitControlsService.controls.update = jest.fn()
 		threeSceneService.scene = { position: new Vector3(1, 2, 3) } as Scene
 		threeSceneService.scene.add = jest.fn()

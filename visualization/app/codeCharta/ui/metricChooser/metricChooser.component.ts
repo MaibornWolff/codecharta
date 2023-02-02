@@ -1,17 +1,17 @@
-import "./metricChooser.component.scss"
-import { Component, ElementRef, Inject, Input, OnInit, ViewChild } from "@angular/core"
+import { Component, ElementRef, Input, OnInit, ViewChild, ViewEncapsulation } from "@angular/core"
 import { Store } from "../../state/angular-redux/store"
-import { nodeMetricDataSelector } from "../../state/selectors/accumulatedData/metricData/nodeMetricData.selector"
-import { Observable } from "rxjs"
+import { map, Observable } from "rxjs"
 import { EdgeMetricData, NodeMetricData } from "../../codeCharta.model"
-import { edgeMetricDataSelector } from "../../state/selectors/accumulatedData/metricData/edgeMetricData.selector"
 import { metricTitles } from "../../util/metric/metricTitles"
+import { metricDataSelector } from "../../state/selectors/accumulatedData/metricData/metricData.selector"
 
 type MetricChooserType = "node" | "edge"
 
 @Component({
 	selector: "cc-metric-chooser",
-	template: require("./metricChooser.component.html")
+	templateUrl: "./metricChooser.component.html",
+	styleUrls: ["./metricChooser.component.scss"],
+	encapsulation: ViewEncapsulation.None
 })
 export class MetricChooserComponent implements OnInit {
 	@Input() selectedMetricName: string
@@ -22,13 +22,14 @@ export class MetricChooserComponent implements OnInit {
 	@ViewChild("searchTermInput") searchTermInput: ElementRef<HTMLInputElement>
 	searchTerm = ""
 	metricData$: Observable<NodeMetricData[] | EdgeMetricData[]>
-	metricDataDescription$: Map<string, string>
+	metricDataDescription: Map<string, string> = metricTitles
 
-	constructor(@Inject(Store) private store: Store) {}
+	constructor(private store: Store) {}
 
 	ngOnInit(): void {
-		this.metricData$ = this.store.select(this.type === "node" ? nodeMetricDataSelector : edgeMetricDataSelector)
-		this.metricDataDescription$ = metricTitles
+		this.metricData$ = this.store
+			.select(metricDataSelector)
+			.pipe(map(metricData => (this.type === "node" ? metricData.nodeMetricData : metricData.edgeMetricData)))
 	}
 
 	handleOpenedChanged(opened: boolean) {

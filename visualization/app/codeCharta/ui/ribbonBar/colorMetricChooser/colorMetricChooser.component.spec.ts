@@ -8,11 +8,14 @@ import { ColorMetricChooserComponent } from "./colorMetricChooser.component"
 import { ColorMetricChooserModule } from "./heightMetricChooser.module"
 import { toggleIsColorMetricLinkedToHeightMetric } from "../../../state/store/appSettings/isHeightAndColorMetricLinked/isColorMetricLinkedToHeightMetric.actions"
 
-jest.mock("../../../state/selectors/accumulatedData/metricData/nodeMetricData.selector", () => ({
-	nodeMetricDataSelector: () => [
-		{ name: "aMetric", maxValue: 1 },
-		{ name: "bMetric", maxValue: 2 }
-	]
+jest.mock("../../../state/selectors/accumulatedData/metricData/metricData.selector", () => ({
+	metricDataSelector: () => ({
+		nodeMetricData: [
+			{ name: "aMetric", maxValue: 1 },
+			{ name: "bMetric", maxValue: 2 }
+		],
+		edgeMetricData: []
+	})
 }))
 
 describe("colorMetricChooserComponent", () => {

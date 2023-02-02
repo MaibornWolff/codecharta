@@ -36,8 +36,8 @@ describe("labelledColorPicker", () => {
 		const colorPicker = screen.getByRole("colorpicker")
 		expectBrushVisibility(container, true)
 
-		// @ts-ignore
-		ng.probe(colorPicker).componentInstance.onChangeComplete.emit({ $event: {}, color: { hex: "#ffffff" } })
+		// @ts-expect-error
+		ng.getComponent(colorPicker).onChangeComplete.emit({ $event: {}, color: { hex: "#ffffff" } })
 		expect(handleColorChange).toHaveBeenCalledWith("#ffffff")
 
 		fireEvent.mouseLeave(colorPickerTrigger)

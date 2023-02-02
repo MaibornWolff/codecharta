@@ -1,11 +1,12 @@
-import { Component } from "@angular/core"
-import "./searchPanel.component.scss"
+import { Component, ViewEncapsulation } from "@angular/core"
 
 export type SearchPanelMode = "minimized" | "treeView" | "blacklist"
 
 @Component({
 	selector: "cc-search-panel",
-	template: require("./searchPanel.component.html")
+	templateUrl: "./searchPanel.component.html",
+	styleUrls: ["./searchPanel.component.scss"],
+	encapsulation: ViewEncapsulation.None
 })
 export class SearchPanelComponent {
 	searchPanelMode: SearchPanelMode = "minimized"

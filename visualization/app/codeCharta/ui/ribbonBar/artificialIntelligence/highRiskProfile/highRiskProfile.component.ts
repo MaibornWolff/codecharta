@@ -1,9 +1,10 @@
-import { Component, Input } from "@angular/core"
+import { Component, Input, ViewEncapsulation } from "@angular/core"
 import { ArtificialIntelligenceData } from "../selectors/artificialIntelligence.selector"
 
 @Component({
 	selector: "cc-high-risk-profile",
-	template: require("./highRiskProfile.component.html")
+	templateUrl: "./highRiskProfile.component.html",
+	encapsulation: ViewEncapsulation.None
 })
 export class HighRiskProfileComponent {
 	@Input() data: Pick<ArtificialIntelligenceData, "analyzedProgrammingLanguage" | "riskProfile">

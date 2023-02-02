@@ -1,23 +1,24 @@
-import "./ribbonBar.component.scss"
-import { Component, Inject, OnDestroy, OnInit } from "@angular/core"
+import { Component, OnDestroy, OnInit, ViewEncapsulation } from "@angular/core"
 import { Store } from "../../state/angular-redux/store"
 import { experimentalFeaturesEnabledSelector } from "../../state/store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.selector"
 import { isDeltaStateSelector } from "../../state/selectors/isDeltaState.selector"
-import { edgeMetricDataSelector } from "../../state/selectors/accumulatedData/metricData/edgeMetricData.selector"
 import { map } from "rxjs"
+import { metricDataSelector } from "../../state/selectors/accumulatedData/metricData/metricData.selector"
 
 type PanelSelection = "NONE" | "AREA_PANEL_OPEN" | "HEIGHT_PANEL_OPEN" | "COLOR_PANEL_OPEN" | "EDGE_PANEL_OPEN"
 
 @Component({
 	selector: "cc-ribbon-bar",
-	template: require("./ribbonBar.component.html")
+	templateUrl: "./ribbonBar.component.html",
+	styleUrls: ["./ribbonBar.component.scss"],
+	encapsulation: ViewEncapsulation.None
 })
 export class RibbonBarComponent implements OnInit, OnDestroy {
 	panelSelection: PanelSelection = "NONE"
 	experimentalFeaturesEnabled$ = this.store.select(experimentalFeaturesEnabledSelector)
 	isDeltaState$ = this.store.select(isDeltaStateSelector)
-	hasEdgeMetric$ = this.store.select(edgeMetricDataSelector).pipe(map(edgeMetricData => edgeMetricData.length > 0))
-	constructor(@Inject(Store) private store: Store) {}
+	hasEdgeMetric$ = this.store.select(metricDataSelector).pipe(map(metricData => metricData.edgeMetricData.length > 0))
+	constructor(private store: Store) {}
 
 	ngOnInit(): void {
 		document.addEventListener("mousedown", this.closePanelSelectionOnOutsideClick)

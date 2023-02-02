@@ -1,6 +1,6 @@
-import { Injectable, Inject } from "@angular/core"
+import { Injectable } from "@angular/core"
 import { tap } from "rxjs"
-import { MatDialog } from "@angular/material/dialog"
+import { MatLegacyDialog as MatDialog } from "@angular/material/legacy-dialog"
 import { clone } from "../../util/clone"
 import { CCFileValidationResult } from "../../util/fileValidator"
 import { setFiles, setStandardByNames } from "../../state/store/files/files.actions"
@@ -29,7 +29,7 @@ export class LoadFileService {
 		)
 		.subscribe()
 
-	constructor(@Inject(Store) private store: Store, @Inject(State) private state: State, @Inject(MatDialog) private dialog: MatDialog) {}
+	constructor(private store: Store, private state: State, private dialog: MatDialog) {}
 
 	loadFiles(nameDataPairs: NameDataPair[]) {
 		const fileStates: FileState[] = clone(this.state.getValue().files)

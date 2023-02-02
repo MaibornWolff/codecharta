@@ -1,4 +1,4 @@
-import { Inject, Injectable } from "@angular/core"
+import { Injectable } from "@angular/core"
 import { switchMap, filter, skip, take, tap, combineLatest } from "rxjs"
 import { ThreeOrbitControlsService } from "../../../ui/codeMap/threeViewer/threeOrbitControls.service"
 import { createEffect } from "../../angular-redux/effects/createEffect"
@@ -13,10 +13,10 @@ import { RenderCodeMapEffect } from "../renderCodeMapEffect/renderCodeMap.effect
 @Injectable()
 export class AutoFitCodeMapEffect {
 	constructor(
-		@Inject(Store) private store: Store,
-		@Inject(State) private state: State,
-		@Inject(RenderCodeMapEffect) private renderCodeMapEffect: RenderCodeMapEffect,
-		@Inject(ThreeOrbitControlsService) private threeOrbitControlsService: ThreeOrbitControlsService
+		private store: Store,
+		private state: State,
+		private renderCodeMapEffect: RenderCodeMapEffect,
+		private threeOrbitControlsService: ThreeOrbitControlsService
 	) {}
 
 	autoFitTo$ = createEffect(

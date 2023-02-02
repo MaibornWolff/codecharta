@@ -1,4 +1,4 @@
-import { Component, Inject, Input } from "@angular/core"
+import { Component, Input, ViewEncapsulation } from "@angular/core"
 
 import { MapColors } from "../../codeCharta.model"
 import { Store } from "../../state/angular-redux/store"
@@ -9,7 +9,8 @@ import { colorRangeSelector } from "../../state/store/dynamicSettings/colorRange
 
 @Component({
 	selector: "cc-color-picker-for-map-color",
-	template: require("./colorPickerForMapColor.component.html")
+	templateUrl: "./colorPickerForMapColor.component.html",
+	encapsulation: ViewEncapsulation.None
 })
 export class ColorPickerForMapColorComponent {
 	@Input() mapColorFor: keyof MapColors
@@ -18,7 +19,7 @@ export class ColorPickerForMapColorComponent {
 	colorRange$ = this.store.select(colorRangeSelector)
 	nodeMetricRange$ = this.store.select(selectedColorMetricDataSelector)
 
-	constructor(@Inject(Store) private store: Store) {}
+	constructor(private store: Store) {}
 
 	handleColorChange(newHexColor: string) {
 		this.store.dispatch(

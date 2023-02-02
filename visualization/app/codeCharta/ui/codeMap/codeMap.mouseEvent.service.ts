@@ -1,4 +1,4 @@
-import { Inject, Injectable } from "@angular/core"
+import { Injectable } from "@angular/core"
 import { ThreeCameraService } from "./threeViewer/threeCamera.service"
 import { CodeMapBuilding } from "./rendering/codeMapBuilding"
 import { ViewCubeMouseEventsService } from "../viewCube/viewCube.mouseEvents.service"
@@ -15,7 +15,7 @@ import { setRightClickedNodeData } from "../../state/store/appStatus/rightClicke
 import { idToNodeSelector } from "../../state/selectors/accumulatedData/idToNode.selector"
 import { IdToBuildingService } from "../../services/idToBuilding/idToBuilding.service"
 import { hoveredNodeIdSelector } from "../../state/store/appStatus/hoveredNodeId/hoveredNodeId.selector"
-import { debounce } from "lodash"
+import debounce from "lodash.debounce"
 import { tap, distinctUntilChanged } from "rxjs"
 import { Store } from "../../state/angular-redux/store"
 import { visibleFileStatesSelector } from "../../state/selectors/visibleFileStates.selector"
@@ -54,15 +54,15 @@ export class CodeMapMouseEventService {
 	private temporaryLabelForBuilding = null
 
 	constructor(
-		@Inject(ThreeCameraService) private threeCameraService: ThreeCameraService,
-		@Inject(ThreeRendererService) private threeRendererService: ThreeRendererService,
-		@Inject(ThreeSceneService) private threeSceneService: ThreeSceneService,
-		@Inject(Store) private store: Store,
-		@Inject(State) private state: State,
-		@Inject(CodeMapLabelService) private codeMapLabelService: CodeMapLabelService,
-		@Inject(ViewCubeMouseEventsService) private viewCubeMouseEvents: ViewCubeMouseEventsService,
-		@Inject(ThreeViewerService) private threeViewerService: ThreeViewerService,
-		@Inject(IdToBuildingService) private idToBuilding: IdToBuildingService
+		private threeCameraService: ThreeCameraService,
+		private threeRendererService: ThreeRendererService,
+		private threeSceneService: ThreeSceneService,
+		private store: Store,
+		private state: State,
+		private codeMapLabelService: CodeMapLabelService,
+		private viewCubeMouseEvents: ViewCubeMouseEventsService,
+		private threeViewerService: ThreeViewerService,
+		private idToBuilding: IdToBuildingService
 	) {
 		this.store
 			.select(visibleFileStatesSelector)
@@ -349,11 +349,12 @@ export class CodeMapMouseEventService {
 	private onLeftClick() {
 		this.isGrabbing = false
 		if (!this.hasMouseMovedMoreThanThreePixels(this.mouseOnLastClick)) {
-			this.threeSceneService.clearSelection()
-			this.threeSceneService.clearConstantHighlight()
 			if (this.intersectedBuilding) {
 				this.threeSceneService.selectBuilding(this.intersectedBuilding)
+			} else {
+				this.threeSceneService.clearSelection()
 			}
+			this.threeSceneService.clearConstantHighlight()
 		}
 		this.threeRendererService.render()
 	}
