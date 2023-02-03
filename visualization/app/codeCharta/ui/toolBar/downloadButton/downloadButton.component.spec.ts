@@ -83,7 +83,8 @@ describe("downloadButtonComponent", () => {
 		expect(mockedDownload).toHaveBeenCalled()
 		expect(mockedDownload.mock.calls[0][0]).toBe(mockedAccumulatedData["unifiedMapNode"])
 		expect(mockedDownload.mock.calls[0][1]).toBe(mockedAccumulatedData["unifiedFileMeta"])
-		expect(mockedDownload.mock.calls[0][3].length).toBe(2)
+		const activatedDownloadSettingCount = 3
+		expect(mockedDownload.mock.calls[0][3].length).toBe(activatedDownloadSettingCount)
 		expect(mockedDownload.mock.calls[0][4]).toBe("fileA_2018-12-14_09-39")
 	})
 })
