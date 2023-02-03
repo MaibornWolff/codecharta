@@ -2,7 +2,6 @@ import { CodeMapNode, FileMeta } from "../../../codeCharta.model"
 import { FileState } from "../../../model/files/files"
 import { fileStatesAvailable, isDeltaState, isPartialState } from "../../../model/files/files.helper"
 import { AggregationGenerator } from "../../../util/aggregationGenerator"
-import { clone } from "../../../util/clone"
 import { NodeDecorator } from "../../../util/nodeDecorator"
 import { CcState } from "../../store/store"
 import { metricNamesSelector } from "./metricData/metricNames.selector"
@@ -28,7 +27,7 @@ export const accumulatedDataSelector: (state: CcState) => AccumulatedData = crea
 			return accumulatedDataFallback
 		}
 
-		const data = getUndecoratedAccumulatedData(fileStates)
+		const data = _getUndecoratedAccumulatedData(fileStates)
 		if (!data?.map) {
 			return accumulatedDataFallback
 		}
@@ -44,19 +43,15 @@ export const accumulatedDataSelector: (state: CcState) => AccumulatedData = crea
 	}
 )
 
-const getUndecoratedAccumulatedData = (fileStates: FileState[]) => {
-	// TODO this cloning shouldn't be necessary. When migrating to NgRx
-	// we should find and eliminate the responsible side effects
-	const visibleFileStates = clone(fileStates)
-
+export const _getUndecoratedAccumulatedData = (fileStates: FileState[]) => {
 	if (isPartialState(fileStates)) {
-		return AggregationGenerator.getAggregationFile(visibleFileStates.map(x => x.file))
+		return AggregationGenerator.calculateAggregationFile(fileStates)
 	}
 	if (isDeltaState(fileStates)) {
-		const [reference, comparison] = visibleFileStates
+		const [reference, comparison] = fileStates
 		if (comparison && reference.file.map.name !== comparison.file.map.name) {
-			return AggregationGenerator.getAggregationFile(visibleFileStates.map(x => x.file))
+			return AggregationGenerator.calculateAggregationFile(fileStates)
 		}
-		return getDeltaFile(visibleFileStates)
+		return getDeltaFile(fileStates)
 	}
 }

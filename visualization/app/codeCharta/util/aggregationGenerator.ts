@@ -3,6 +3,8 @@ import { FileNameHelper } from "./fileNameHelper"
 import { getUpdatedPath } from "./nodePathHelper"
 import packageJson from "../../../package.json"
 import { fileRoot } from "../services/loadFile/fileRoot"
+import { FileState } from "../model/files/files"
+import { clone } from "./clone"
 
 export class AggregationGenerator {
 	private static projectNameArray: string[] = []
@@ -10,7 +12,8 @@ export class AggregationGenerator {
 	private static fileChecksumArray: string[] = []
 	private static fileSizesSum = 0
 
-	static getAggregationFile(inputFiles: CCFile[]) {
+	static calculateAggregationFile(fileStates: Pick<FileState, "file">[]) {
+		const inputFiles = clone(fileStates.map(x => x.file))
 		if (inputFiles.length === 1) {
 			return inputFiles[0]
 		}

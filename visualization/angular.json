@@ -26,7 +26,7 @@
 						"polyfills": "app/polyfills.ts",
 						"tsConfig": "tsconfig.app.json",
 						"inlineStyleLanguage": "sass",
-						"assets": ["app/assets", "app/codeCharta/assets"],
+						"assets": ["app/codeCharta/assets"],
 						"styles": ["app/app.scss", "material-icons/iconfont/material-icons.css"],
 						"customWebpackConfig": {
 							"path": "conf/webpack.config.js"
