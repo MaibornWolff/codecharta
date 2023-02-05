@@ -10,12 +10,12 @@ import { idToNodeSelector } from "../../../state/selectors/accumulatedData/idToN
 import { IdToBuildingService } from "../../../services/idToBuilding/idToBuilding.service"
 import { mapColorsSelector } from "../../../state/store/appSettings/mapColors/mapColors.selector"
 import { ThreeRendererService } from "./threeRenderer.service"
-import { EventEmitter } from "tsee"
 import { Injectable } from "@angular/core"
 import { Store } from "../../../state/angular-redux/store"
 import { defaultMapColors } from "../../../state/store/appSettings/mapColors/mapColors.actions"
 import { State } from "../../../state/angular-redux/state"
 import { treeMapSize } from "../../../util/algorithm/treeMapLayout/treeMapHelper"
+import { EventEmitter } from "../../../util/EventEmitter"
 
 type BuildingSelectedEvents = {
 	onBuildingSelected: (data: { building: CodeMapBuilding }) => void
