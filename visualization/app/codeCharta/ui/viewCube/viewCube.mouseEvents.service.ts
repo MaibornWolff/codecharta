@@ -155,7 +155,7 @@ export class ViewCubeMouseEventsService {
 	private triggerViewCubeUnhoverEvent() {
 		this.currentlyHovered = null
 		CodeMapMouseEventService.changeCursorIndicator(CursorType.Default)
-		this.eventEmitter.emit("viewCubeUnHoveredEvent", undefined)
+		this.eventEmitter.emit("viewCubeUnHoveredEvent")
 	}
 
 	subscribe<Key extends keyof ViewCubeEvents>(key: Key, callback: ViewCubeEvents[Key]) {
