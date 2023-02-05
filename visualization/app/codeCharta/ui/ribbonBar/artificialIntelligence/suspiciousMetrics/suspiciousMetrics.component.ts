@@ -1,5 +1,5 @@
 import { Component, Input, OnChanges, SimpleChanges, ViewEncapsulation } from "@angular/core"
-import isEqual from "fast-deep-equal"
+import { dequal } from "dequal/lite"
 import { Store } from "../../../../state/angular-redux/store"
 import { defaultMapColors, setMapColors } from "../../../../state/store/appSettings/mapColors/mapColors.actions"
 import { setAreaMetric } from "../../../../state/store/dynamicSettings/areaMetric/areaMetric.actions"
@@ -25,7 +25,7 @@ export class SuspiciousMetricComponent implements OnChanges {
 	constructor(private store: Store) {}
 
 	ngOnChanges(changes: SimpleChanges): void {
-		if (changes.data && !isEqual(changes.data.previousValue, changes.data.currentValue)) {
+		if (changes.data && !dequal(changes.data.previousValue, changes.data.currentValue)) {
 			this.hideBadge = false
 		}
 	}
