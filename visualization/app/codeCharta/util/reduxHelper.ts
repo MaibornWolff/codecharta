@@ -1,5 +1,5 @@
 import { clone } from "./clone"
-import isEqual from "lodash.isequal"
+import isEqual from "fast-deep-equal"
 import { Action } from "redux"
 
 export function removeItemFromArray<T>(array: T[], searchItem: T) {

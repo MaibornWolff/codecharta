@@ -1,5 +1,5 @@
 import { Component, Input, OnChanges, SimpleChanges, ViewEncapsulation } from "@angular/core"
-import isEqual from "lodash.isequal"
+import isEqual from "fast-deep-equal"
 import { Store } from "../../../../state/angular-redux/store"
 import { defaultMapColors, setMapColors } from "../../../../state/store/appSettings/mapColors/mapColors.actions"
 import { setAreaMetric } from "../../../../state/store/dynamicSettings/areaMetric/areaMetric.actions"
