@@ -1,7 +1,7 @@
-export const debounce = <F extends (...arguments_: Parameters<F>) => ReturnType<F>>(f: F, waitInMS = 300) => {
-	let timer: NodeJS.Timeout
+export function debounce<F extends (...arguments_: Parameters<F>) => ReturnType<F>>(this: unknown, function_: F, waitInMS = 300) {
+	let timer
 	return (...arguments_: Parameters<F>) => {
 		clearTimeout(timer)
-		timer = setTimeout(() => f(...arguments_), waitInMS)
+		timer = timer = setTimeout(() => function_.apply(this, arguments_), waitInMS)
 	}
 }
