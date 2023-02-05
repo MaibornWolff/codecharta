@@ -85,7 +85,6 @@
 		"lodash.debounce": "^4.0.8",
 		"lodash.isequal": "^4.5.0",
 		"material-icons": "^1.10.4",
-		"md5": "^2.3.0",
 		"ngx-color": "^7.3.3",
 		"nw": "^0.72.0",
 		"pako": "^2.0.4",

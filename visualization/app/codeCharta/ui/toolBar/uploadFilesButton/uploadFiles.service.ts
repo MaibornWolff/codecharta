@@ -14,7 +14,7 @@ export class UploadFilesService {
 
 	constructor(private store: Store, private loadFileService: LoadFileService) {}
 
-	uploadFiles() {
+	async uploadFiles() {
 		const ccFileInput = createCCFileInput()
 		ccFileInput.addEventListener("change", async () => {
 			try {
@@ -23,7 +23,7 @@ export class UploadFilesService {
 				this.store.dispatch(setIsLoadingMap(true))
 
 				const plainFileContents = await Promise.all(readFiles(ccFileInput.files))
-				const { customConfigs, ccFiles } = this.splitCustomConfigsAndCCFiles(ccFileInput.files, plainFileContents)
+				const { customConfigs, ccFiles } = await this.splitCustomConfigsAndCCFiles(ccFileInput.files, plainFileContents)
 
 				for (const customConfig of customConfigs) {
 					CustomConfigHelper.importCustomConfigs(customConfig)
@@ -42,7 +42,7 @@ export class UploadFilesService {
 		ccFileInput.click()
 	}
 
-	private splitCustomConfigsAndCCFiles(fileList: FileList, contents: string[]) {
+	private async splitCustomConfigsAndCCFiles(fileList: FileList, contents: string[]) {
 		const customConfigs = []
 		const ccFiles = []
 
@@ -54,7 +54,7 @@ export class UploadFilesService {
 				ccFiles.push({
 					fileName,
 					fileSize: fileList[index].size,
-					content: getCCFileAndDecorateFileChecksum(content)
+					content: await getCCFileAndDecorateFileChecksum(content)
 				})
 			}
 		}

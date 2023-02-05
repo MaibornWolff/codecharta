@@ -1,6 +1,6 @@
-import md5 from "md5"
 import { AttributeTypes, AttributeTypeValue, CodeMapNode, Edge, FixedPosition, NodeType } from "../../codeCharta.model"
 import { ExportWrappedCCFile } from "../../codeCharta.api.model"
+import { hash } from "../hash"
 
 export interface GameObject {
 	name: string
@@ -21,7 +21,7 @@ export interface Cycle {
 
 const BASE_NAME = "base"
 
-export function parseGameObjectsFile(data): ExportWrappedCCFile {
+export async function parseGameObjectsFile(data): Promise<ExportWrappedCCFile> {
 	const { gameObjectPositions: gameObjects, cycles = [] } = JSON.parse(data)
 
 	const codeChartaJson: ExportWrappedCCFile = {
@@ -51,7 +51,7 @@ export function parseGameObjectsFile(data): ExportWrappedCCFile {
 	codeChartaJson.data.nodes = nodes
 	codeChartaJson.data.edges = cycles.map(cycle => createEdge(cycle))
 	codeChartaJson.data.attributeTypes = createAttributeTypes()
-	codeChartaJson.checksum = md5(JSON.stringify(codeChartaJson.data))
+	codeChartaJson.checksum = await hash(JSON.stringify(codeChartaJson.data))
 	return codeChartaJson
 }
 

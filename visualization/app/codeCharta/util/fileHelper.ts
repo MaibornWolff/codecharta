@@ -1,7 +1,7 @@
 import { ExportBlacklistType, ExportCCFile, ExportWrappedCCFile, OldAttributeTypes } from "../codeCharta.api.model"
 import { AttributeDescriptors, AttributeTypes, BlacklistItem, CCFile, NameDataPair } from "../codeCharta.model"
 import { FileSelectionState, FileState } from "../model/files/files"
-import md5 from "md5"
+import { hash } from "./hash"
 
 export function getCCFile(file: NameDataPair): CCFile {
 	const fileContent = file.content
@@ -65,7 +65,9 @@ export function getSelectedFilesSize(files: FileState[]) {
 	return totalFileSize
 }
 
-export function getCCFileAndDecorateFileChecksum(jsonInput: string | ExportWrappedCCFile | ExportCCFile): ExportCCFile | null {
+export async function getCCFileAndDecorateFileChecksum(
+	jsonInput: string | ExportWrappedCCFile | ExportCCFile
+): Promise<ExportCCFile | null> {
 	let mappedFile: ExportCCFile = null
 
 	try {
@@ -76,14 +78,14 @@ export function getCCFileAndDecorateFileChecksum(jsonInput: string | ExportWrapp
 
 		if ("data" in fileContent && "checksum" in fileContent) {
 			mappedFile = fileContent.data
-			mappedFile.fileChecksum = fileContent.checksum || md5(JSON.stringify(fileContent.data))
+			mappedFile.fileChecksum = fileContent.checksum || (await hash(JSON.stringify(fileContent.data)))
 
 			return mappedFile
 		}
 
 		if (!fileContent.fileChecksum) {
 			const jsonInputString = typeof jsonInput === "string" ? jsonInput : JSON.stringify(jsonInput)
-			fileContent.fileChecksum = md5(jsonInputString)
+			fileContent.fileChecksum = await hash(jsonInputString)
 		}
 		return fileContent
 	} catch {

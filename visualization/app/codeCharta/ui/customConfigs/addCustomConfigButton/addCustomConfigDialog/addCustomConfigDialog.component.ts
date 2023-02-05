@@ -37,8 +37,8 @@ export class AddCustomConfigDialogComponent implements OnInit {
 		return this.customConfigName.hasError("Error") ? this.customConfigName.getError("Error") : ""
 	}
 
-	addCustomConfig() {
-		const newCustomConfig = buildCustomConfigFromState(this.customConfigName.value, this.state.getValue(), {
+	async addCustomConfig() {
+		const newCustomConfig = await buildCustomConfigFromState(this.customConfigName.value, this.state.getValue(), {
 			camera: this.threeCameraService.camera.position,
 			cameraTarget: this.threeOrbitControlsService.controls.target
 		})

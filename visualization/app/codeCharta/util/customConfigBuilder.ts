@@ -1,11 +1,11 @@
 import { State, stateObjectReplacer } from "../codeCharta.model"
 import { CustomConfig } from "../model/customConfig/customConfig.api.model"
-import md5 from "md5"
 import { visibleFilesBySelectionModeSelector } from "../ui/customConfigs/visibleFilesBySelectionMode.selector"
+import { hash } from "./hash"
 
 const CUSTOM_CONFIG_API_VERSION = "1.0.0"
 
-export function buildCustomConfigFromState(configName: string, state: State, camera: CustomConfig["camera"]): CustomConfig {
+export async function buildCustomConfigFromState(configName: string, state: State, camera: CustomConfig["camera"]): Promise<CustomConfig> {
 	const { mapSelectionMode, assignedMaps } = visibleFilesBySelectionModeSelector(state)
 
 	const customConfig: CustomConfig = {
@@ -33,7 +33,7 @@ export function buildCustomConfigFromState(configName: string, state: State, cam
 	// Override the default state settings with the stored CustomConfig values
 	deepMapOneToOther(state, customConfig.stateSettings)
 
-	customConfig.id = md5(JSON.stringify(customConfig, stateObjectReplacer))
+	customConfig.id = await hash(JSON.stringify(customConfig, stateObjectReplacer))
 	return customConfig
 }
 

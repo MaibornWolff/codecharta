@@ -55,7 +55,7 @@ export class UrlExtractor {
 		if (response.status >= 200 && response.status < 300) {
 			const data = response.body
 			const responseData: string | ExportCCFile | ExportWrappedCCFile = ungzip(data, { to: "string" })
-			const content = getCCFileAndDecorateFileChecksum(responseData)
+			const content: ExportCCFile = await getCCFileAndDecorateFileChecksum(responseData)
 			const parsedFileName = this.getFileName(fileName, content.projectName)
 			// see #3111 and PR #3110 for reason of hard coded file size
 			return { fileName: parsedFileName, fileSize: 13, content }
@@ -68,7 +68,7 @@ export class UrlExtractor {
 
 		if (response.status >= 200 && response.status < 300) {
 			const responseData = response.body as string | ExportCCFile | ExportWrappedCCFile
-			const content: ExportCCFile = getCCFileAndDecorateFileChecksum(responseData)
+			const content: ExportCCFile = await getCCFileAndDecorateFileChecksum(responseData)
 			fileName = this.getFileName(fileName, content.projectName)
 			// see #3111 and PR #3110 for reason of hard coded file size
 			return { fileName, fileSize: 15, content }
