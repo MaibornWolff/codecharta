@@ -1,5 +1,4 @@
 import { Component, ViewEncapsulation } from "@angular/core"
-import debounce from "lodash.debounce"
 import { Store } from "../../../state/angular-redux/store"
 import { setSearchPattern } from "../../../state/store/dynamicSettings/searchPattern/searchPattern.actions"
 import { searchPatternSelector } from "../../../state/store/dynamicSettings/searchPattern/searchPattern.selector"
@@ -8,6 +7,7 @@ import { isFlattenPatternDisabledSelector } from "./selectors/isFlattenPatternDi
 import { isExcludePatternDisabledSelector } from "./selectors/isExcludePatternDisabled.selector"
 import { BlacklistType } from "../../../codeCharta.model"
 import { blacklistSearchPattern } from "./blacklistSearchPattern.effect"
+import { debounce } from "../../../util/debounce"
 
 @Component({
 	selector: "cc-search-bar",
@@ -20,7 +20,7 @@ export class SearchBarComponent {
 	isSearchPatternEmpty$ = this.store.select(isSearchPatternEmptySelector)
 	isFlattenPatternDisabled$ = this.store.select(isFlattenPatternDisabledSelector)
 	isExcludePatternDisabled$ = this.store.select(isExcludePatternDisabledSelector)
-	setSearchPatternDebounced = debounce(this.setSearchPattern, 400)
+	setSearchPatternDebounced = debounce((event: Event) => this.setSearchPattern(event), 400)
 
 	constructor(private store: Store) {}
 

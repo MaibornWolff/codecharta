@@ -15,12 +15,12 @@ import { setRightClickedNodeData } from "../../state/store/appStatus/rightClicke
 import { idToNodeSelector } from "../../state/selectors/accumulatedData/idToNode.selector"
 import { IdToBuildingService } from "../../services/idToBuilding/idToBuilding.service"
 import { hoveredNodeIdSelector } from "../../state/store/appStatus/hoveredNodeId/hoveredNodeId.selector"
-import debounce from "lodash.debounce"
 import { tap, distinctUntilChanged } from "rxjs"
 import { Store } from "../../state/angular-redux/store"
 import { visibleFileStatesSelector } from "../../state/selectors/visibleFileStates.selector"
 import { blacklistSelector } from "../../state/store/fileSettings/blacklist/blacklist.selector"
 import { State } from "../../state/angular-redux/state"
+import { debounce } from "../../util/debounce"
 
 interface Coordinates {
 	x: number
@@ -92,10 +92,7 @@ export class CodeMapMouseEventService {
 	}
 
 	start() {
-		this.threeRendererService.renderer.domElement.addEventListener(
-			"mousemove",
-			debounce(event => this.onDocumentMouseMove(event), 60)
-		)
+		this.threeRendererService.renderer.domElement.addEventListener("mousemove", debounce(this.onDocumentMouseMove, 60))
 		this.threeRendererService.renderer.domElement.addEventListener("mouseup", event => this.onDocumentMouseUp(event))
 		this.threeRendererService.renderer.domElement.addEventListener("mousedown", event => this.onDocumentMouseDown(event))
 		this.threeRendererService.renderer.domElement.addEventListener("dblclick", () => this.onDocumentDoubleClick())
@@ -260,7 +257,7 @@ export class CodeMapMouseEventService {
 		}
 	}
 
-	onDocumentMouseMove(event: MouseEvent) {
+	onDocumentMouseMove = (event: MouseEvent) => {
 		this.mouse.x = event.clientX
 		this.mouse.y = event.clientY
 		this.updateHovering()

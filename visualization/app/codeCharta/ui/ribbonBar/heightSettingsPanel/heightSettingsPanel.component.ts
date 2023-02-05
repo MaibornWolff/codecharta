@@ -2,7 +2,6 @@ import { Component, ViewEncapsulation } from "@angular/core"
 import { Store } from "../../../state/angular-redux/store"
 import { amountOfTopLabelsSelector } from "../../../state/store/appSettings/amountOfTopLabels/amountOfTopLabels.selector"
 import { isLabelsSliderDisabledSelector } from "./selectors/isLabelsSliderDisabled.selector"
-import { debounce } from "lodash"
 import { setAmountOfTopLabels } from "../../../state/store/appSettings/amountOfTopLabels/amountOfTopLabels.actions"
 import { showMetricLabelNodeNameSelector } from "../../../state/store/appSettings/showMetricLabelNodeName/showMetricLabelNodeName.selector"
 import { showMetricLabelNodeValueSelector } from "../../../state/store/appSettings/showMetricLabelNameValue/showMetricLabelNameValue.selector"
@@ -14,6 +13,7 @@ import { setScaling } from "../../../state/store/appSettings/scaling/scaling.act
 import { invertHeightSelector } from "../../../state/store/appSettings/invertHeight/invertHeight.selector"
 import { setInvertHeight } from "../../../state/store/appSettings/invertHeight/invertHeight.actions"
 import { isDeltaStateSelector } from "../../../state/selectors/isDeltaState.selector"
+import { debounce } from "../../../util/debounce"
 
 @Component({
 	selector: "cc-height-settings-panel",
