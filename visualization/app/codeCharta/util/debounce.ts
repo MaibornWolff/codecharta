@@ -2,6 +2,9 @@ export function debounce<F extends (...arguments_: Parameters<F>) => ReturnType<
 	let timer
 	return (...arguments_: Parameters<F>) => {
 		clearTimeout(timer)
-		timer = timer = setTimeout(() => function_.apply(this, arguments_), waitInMS)
+		timer = setTimeout(() => {
+			function_.apply(this, arguments_)
+			timer = null
+		}, waitInMS)
 	}
 }
