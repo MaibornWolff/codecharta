@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core"
+import { Injectable, OnDestroy } from "@angular/core"
 import { ThreeCameraService } from "./threeViewer/threeCamera.service"
 import { CodeMapBuilding } from "./rendering/codeMapBuilding"
 import { ViewCubeMouseEventsService } from "../viewCube/viewCube.mouseEvents.service"
@@ -40,7 +40,7 @@ export enum CursorType {
 }
 
 @Injectable({ providedIn: "root" })
-export class CodeMapMouseEventService {
+export class CodeMapMouseEventService implements OnDestroy {
 	private readonly THRESHOLD_FOR_MOUSE_MOVEMENT_TRACKING = 3
 
 	private intersectedBuilding: CodeMapBuilding
@@ -52,26 +52,15 @@ export class CodeMapMouseEventService {
 	private isMoving = false
 	private raycaster = new Raycaster()
 	private temporaryLabelForBuilding = null
-
-	constructor(
-		private threeCameraService: ThreeCameraService,
-		private threeRendererService: ThreeRendererService,
-		private threeSceneService: ThreeSceneService,
-		private store: Store,
-		private state: State,
-		private codeMapLabelService: CodeMapLabelService,
-		private viewCubeMouseEvents: ViewCubeMouseEventsService,
-		private threeViewerService: ThreeViewerService,
-		private idToBuilding: IdToBuildingService
-	) {
+	private subscriptions = [
 		this.store
 			.select(visibleFileStatesSelector)
 			.pipe(tap(() => this.onFilesSelectionChanged()))
-			.subscribe()
+			.subscribe(),
 		this.store
 			.select(blacklistSelector)
 			.pipe(tap(blacklist => this.onBlacklistChanged(blacklist)))
-			.subscribe()
+			.subscribe(),
 		this.store
 			.select(hoveredNodeIdSelector)
 			.pipe(
@@ -85,6 +74,24 @@ export class CodeMapMouseEventService {
 				})
 			)
 			.subscribe()
+	]
+
+	constructor(
+		private threeCameraService: ThreeCameraService,
+		private threeRendererService: ThreeRendererService,
+		private threeSceneService: ThreeSceneService,
+		private store: Store,
+		private state: State,
+		private codeMapLabelService: CodeMapLabelService,
+		private viewCubeMouseEvents: ViewCubeMouseEventsService,
+		private threeViewerService: ThreeViewerService,
+		private idToBuilding: IdToBuildingService
+	) {}
+
+	ngOnDestroy(): void {
+		for (const subscription of this.subscriptions) {
+			subscription.unsubscribe()
+		}
 	}
 
 	static changeCursorIndicator(cursorIcon: CursorType) {

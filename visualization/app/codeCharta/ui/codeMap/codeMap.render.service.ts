@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core"
+import { Injectable, OnDestroy } from "@angular/core"
 import { CodeMapMesh } from "./rendering/codeMapMesh"
 import { createTreemapNodes } from "../../util/algorithm/treeMapLayout/treeMapGenerator"
 import { CodeMapLabelService } from "./codeMap.label.service"
@@ -11,18 +11,19 @@ import { ThreeStatsService } from "./threeViewer/threeStats.service"
 import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
 import { Store } from "../../state/angular-redux/store"
 import { isLoadingFileSelector } from "../../state/store/appSettings/isLoadingFile/isLoadingFile.selector"
-import { tap } from "rxjs"
+import { Subscription, tap } from "rxjs"
 import { State } from "../../state/angular-redux/state"
 import { metricDataSelector } from "../../state/selectors/accumulatedData/metricData/metricData.selector"
 
 @Injectable({ providedIn: "root" })
-export class CodeMapRenderService {
+export class CodeMapRenderService implements OnDestroy {
 	private nodesByColor = {
 		positive: [],
 		neutral: [],
 		negative: []
 	}
 	private unflattenedNodes
+	private subscription: Subscription
 
 	constructor(
 		private store: Store,
@@ -33,7 +34,11 @@ export class CodeMapRenderService {
 		private threeStatsService: ThreeStatsService,
 		private codeMapMouseEventService: CodeMapMouseEventService
 	) {
-		this.store.select(isLoadingFileSelector).pipe(tap(this.onIsLoadingFileChanged)).subscribe()
+		this.subscription = this.store.select(isLoadingFileSelector).pipe(tap(this.onIsLoadingFileChanged)).subscribe()
+	}
+
+	ngOnDestroy(): void {
+		this.subscription.unsubscribe()
 	}
 
 	onIsLoadingFileChanged = (isLoadingFile: boolean) => {
