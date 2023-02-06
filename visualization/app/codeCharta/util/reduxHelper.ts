@@ -1,5 +1,5 @@
 import { clone } from "./clone"
-import { dequal } from "dequal/lite"
+import { dequal } from "dequal"
 import { Action } from "redux"
 
 export function removeItemFromArray<T>(array: T[], searchItem: T) {

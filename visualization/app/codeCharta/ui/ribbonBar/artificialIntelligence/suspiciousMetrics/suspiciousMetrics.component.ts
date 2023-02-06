@@ -1,5 +1,5 @@
 import { Component, Input, OnChanges, SimpleChanges, ViewEncapsulation } from "@angular/core"
-import { dequal } from "dequal/lite"
+import { dequal } from "dequal"
 import { Store } from "../../../../state/angular-redux/store"
 import { defaultMapColors, setMapColors } from "../../../../state/store/appSettings/mapColors/mapColors.actions"
 import { setAreaMetric } from "../../../../state/store/dynamicSettings/areaMetric/areaMetric.actions"
