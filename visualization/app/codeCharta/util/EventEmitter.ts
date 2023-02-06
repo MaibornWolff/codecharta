@@ -5,9 +5,7 @@ export class EventEmitter<EventMap extends AbstractEventMap> {
 	private listeners: Partial<Record<keyof EventMap, Listener[]>> = {}
 
 	on<EventType extends keyof EventMap>(event: EventType, callback: EventMap[EventType]) {
-		if (!this.listeners[event]) {
-			this.listeners[event] = []
-		}
+		this.listeners[event] ??= []
 		this.listeners[event].push(callback)
 	}
 
