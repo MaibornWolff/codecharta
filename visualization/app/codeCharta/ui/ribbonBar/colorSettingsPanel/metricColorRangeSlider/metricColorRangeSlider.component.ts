@@ -2,10 +2,10 @@ import { Component, ViewEncapsulation } from "@angular/core"
 import { Store } from "../../../../state/angular-redux/store"
 import { HandleValueChange } from "./rangeSlider/rangeSlider.component"
 import { setColorRange } from "../../../../state/store/dynamicSettings/colorRange/colorRange.actions"
-import debounce from "lodash.debounce"
 import { metricColorRangeSliderColorsSelector } from "./selectors/metricColorRangeSliderColors.selector"
 import { metricColorRangeSliderValuesSelector } from "./selectors/metricColorRangeSliderValues.selector"
 import { ColorRange } from "../../../../codeCharta.model"
+import { debounce } from "../../../../util/debounce"
 
 @Component({
 	selector: "cc-metric-color-range-slider",
