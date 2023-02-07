@@ -7,11 +7,14 @@ import { Store } from "../../../state/store/store"
 import { AreaMetricChooserComponent } from "./areaMetricChooser.component"
 import { AreaMetricChooserModule } from "./areaMetricChooser.module"
 
-jest.mock("../../../state/selectors/accumulatedData/metricData/nodeMetricData.selector", () => ({
-	nodeMetricDataSelector: () => [
-		{ name: "aMetric", maxValue: 1 },
-		{ name: "bMetric", maxValue: 2 }
-	]
+jest.mock("../../../state/selectors/accumulatedData/metricData/metricData.selector", () => ({
+	metricDataSelector: () => ({
+		nodeMetricData: [
+			{ name: "aMetric", maxValue: 1 },
+			{ name: "bMetric", maxValue: 2 }
+		],
+		edgeMetricData: []
+	})
 }))
 
 describe("areaMetricChooserComponent", () => {

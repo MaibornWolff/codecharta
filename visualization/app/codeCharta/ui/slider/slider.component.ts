@@ -21,7 +21,7 @@ export class SliderComponent {
 	// 	}
 	// }
 
-	handleInputOnChange($event: InputEvent) {
+	handleInputOnChange($event: Event) {
 		const newValue = parseNumberInput($event, this.min, this.max)
 		if (newValue !== this.value && !Number.isNaN(newValue)) {
 			this.onChange(newValue)

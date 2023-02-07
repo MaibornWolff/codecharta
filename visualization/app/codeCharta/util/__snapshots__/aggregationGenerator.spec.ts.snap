@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`AggregationGenerator multipleService aggregation of four maps 1`] = `
+exports[`AggregationGenerator aggregation of four maps 1`] = `
 Object {
   "fileMeta": Object {
     "apiVersion": "1.3",
@@ -32,7 +32,7 @@ Object {
             },
             "link": "https://www.google.de",
             "name": "big leaf",
-            "path": "/root/file1/file1/big leaf",
+            "path": "/root/file1/big leaf",
             "type": "File",
           },
           Object {
@@ -49,12 +49,12 @@ Object {
                   "rloc": 70,
                 },
                 "name": "other small leaf",
-                "path": "/root/file1/file1/Parent Leaf/other small leaf",
+                "path": "/root/file1/Parent Leaf/other small leaf",
                 "type": "File",
               },
             ],
             "name": "Parent Leaf",
-            "path": "/root/file1/file1/Parent Leaf",
+            "path": "/root/file1/Parent Leaf",
             "type": "Folder",
           },
         ],
@@ -78,7 +78,7 @@ Object {
             },
             "link": "https://www.google.de",
             "name": "big leaf",
-            "path": "/root/file2/file2/big leaf",
+            "path": "/root/file2/big leaf",
             "type": "File",
           },
           Object {
@@ -95,12 +95,12 @@ Object {
                   "rloc": 60,
                 },
                 "name": "small leaf",
-                "path": "/root/file2/file2/Parent Leaf/small leaf",
+                "path": "/root/file2/Parent Leaf/small leaf",
                 "type": "File",
               },
             ],
             "name": "Parent Leaf",
-            "path": "/root/file2/file2/Parent Leaf",
+            "path": "/root/file2/Parent Leaf",
             "type": "Folder",
           },
         ],
@@ -123,7 +123,7 @@ Object {
             },
             "link": "https://www.google.de",
             "name": "big leaf",
-            "path": "/root/file1/file1/big leaf",
+            "path": "/root/file1/big leaf",
             "type": "File",
           },
           Object {
@@ -140,12 +140,12 @@ Object {
                   "rloc": 70,
                 },
                 "name": "other small leaf",
-                "path": "/root/file1/file1/Parent Leaf/other small leaf",
+                "path": "/root/file1/Parent Leaf/other small leaf",
                 "type": "File",
               },
             ],
             "name": "Parent Leaf",
-            "path": "/root/file1/file1/Parent Leaf",
+            "path": "/root/file1/Parent Leaf",
             "type": "Folder",
           },
         ],
@@ -169,7 +169,7 @@ Object {
             },
             "link": "https://www.google.de",
             "name": "big leaf",
-            "path": "/root/file2/file2/big leaf",
+            "path": "/root/file2/big leaf",
             "type": "File",
           },
           Object {
@@ -186,12 +186,12 @@ Object {
                   "rloc": 60,
                 },
                 "name": "small leaf",
-                "path": "/root/file2/file2/Parent Leaf/small leaf",
+                "path": "/root/file2/Parent Leaf/small leaf",
                 "type": "File",
               },
             ],
             "name": "Parent Leaf",
-            "path": "/root/file2/file2/Parent Leaf",
+            "path": "/root/file2/Parent Leaf",
             "type": "Folder",
           },
         ],
@@ -219,7 +219,7 @@ Object {
 }
 `;
 
-exports[`AggregationGenerator multipleService aggregation of two maps 1`] = `
+exports[`AggregationGenerator aggregation of two maps 1`] = `
 Object {
   "fileMeta": Object {
     "apiVersion": "1.3",
@@ -347,7 +347,7 @@ Object {
 }
 `;
 
-exports[`AggregationGenerator multipleService aggregation one map 1`] = `
+exports[`AggregationGenerator aggregation one map 1`] = `
 Object {
   "fileMeta": Object {
     "apiVersion": "1.3",

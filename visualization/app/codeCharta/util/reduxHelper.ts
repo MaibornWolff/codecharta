@@ -1,9 +1,9 @@
 import { clone } from "./clone"
-import isEqual from "lodash.isequal"
+import { dequal } from "dequal"
 import { Action } from "redux"
 
 export function removeItemFromArray<T>(array: T[], searchItem: T) {
-	return array.filter(entry => !isEqual(entry, searchItem))
+	return array.filter(entry => !dequal(entry, searchItem))
 }
 
 export function removeEntryAtIndexFromArray<T>(array: T[], index: number) {
@@ -36,5 +36,5 @@ export function isAction<T extends Action>(action: Action, type: string): action
 }
 
 function arrayContainsItem<T>(array: T[], item: T) {
-	return array.some(x => isEqual(x, item))
+	return array.some(x => dequal(x, item))
 }

@@ -6,12 +6,14 @@ import userEvent from "@testing-library/user-event"
 import { MetricChooserComponent } from "./metricChooser.component"
 import { MetricChooserModule } from "./metricChooser.module"
 
-jest.mock("../../state/selectors/accumulatedData/metricData/nodeMetricData.selector", () => ({
-	nodeMetricDataSelector: () => [
-		{ name: "aMetric", maxValue: 1 },
-		{ name: "bMetric", maxValue: 2 },
-		{ name: "cMetric", maxValue: 3 }
-	]
+jest.mock("../../state/selectors/accumulatedData/metricData/metricData.selector", () => ({
+	metricDataSelector: () => ({
+		nodeMetricData: [
+			{ name: "aMetric", maxValue: 1 },
+			{ name: "bMetric", maxValue: 2 },
+			{ name: "cMetric", maxValue: 3 }
+		]
+	})
 }))
 
 describe("metricChooserComponent", () => {

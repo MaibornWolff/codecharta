@@ -1,8 +1,12 @@
 import { createSelector } from "../../../angular-redux/createSelector"
-import { edgeMetricDataSelector } from "./edgeMetricData.selector"
-import { nodeMetricDataSelector } from "./nodeMetricData.selector"
+import { blacklistSelector } from "../../../store/fileSettings/blacklist/blacklist.selector"
+import { visibleFileStatesSelector } from "../../visibleFileStates.selector"
+import { calculateEdgeMetricData } from "./edgeMetricData.calculator"
+import { calculateNodeMetricData } from "./nodeMetricData.calculator"
 
-export const metricDataSelector = createSelector([nodeMetricDataSelector, edgeMetricDataSelector], (nodeMetricData, edgeMetricData) => ({
-	nodeMetricData,
-	edgeMetricData
-}))
+export const metricDataSelector = createSelector([visibleFileStatesSelector, blacklistSelector], (visibleFileStates, blacklist) => {
+	return {
+		nodeMetricData: calculateNodeMetricData(visibleFileStates, blacklist),
+		...calculateEdgeMetricData(visibleFileStates, blacklist)
+	}
+})

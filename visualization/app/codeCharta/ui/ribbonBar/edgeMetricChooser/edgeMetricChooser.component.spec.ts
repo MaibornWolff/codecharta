@@ -8,11 +8,13 @@ import { Store } from "../../../state/store/store"
 import { EdgeMetricChooserComponent } from "./edgeMetricChooser.component"
 import { EdgeMetricChooserModule } from "./edgeMetricChooser.module"
 
-jest.mock("../../../state/selectors/accumulatedData/metricData/edgeMetricData.selector", () => ({
-	edgeMetricDataSelector: () => [
-		{ name: "aMetric", maxValue: 1 },
-		{ name: "bMetric", maxValue: 2 }
-	]
+jest.mock("../../../state/selectors/accumulatedData/metricData/metricData.selector", () => ({
+	metricDataSelector: () => ({
+		edgeMetricData: [
+			{ name: "aMetric", maxValue: 1 },
+			{ name: "bMetric", maxValue: 2 }
+		]
+	})
 }))
 
 describe("edgeMetricChooserComponent", () => {
