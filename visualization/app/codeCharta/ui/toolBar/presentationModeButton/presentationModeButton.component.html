@@ -1,12 +1,8 @@
-<button title="Enabling presentation mode will change the hovering effect so that it simulates a flashlight">
-	<span>Presentation mode</span>
-
+<mat-slide-toggle
+	[checked]="isPresentationModeEnabled$ | async"
+	(change)="setPresentationModeEnabled($event)"
+	[title]="(isPresentationModeEnabled$ | async) ? 'Disable flashlight hover effect' : 'Enable flashlight hover effect'"
+>
 	<i class="presentation-mode-icon fa fa-television"></i>
-
-	<mat-slide-toggle
-		[checked]="isPresentationModeEnabled$ | async"
-		(change)="setPresentationModeEnabled($event)"
-		[title]="(isPresentationModeEnabled$ | async) ? 'Disable presentation mode' : 'Enable presentation mode'"
-	>
-	</mat-slide-toggle>
-</button>
+	Presentation Mode
+</mat-slide-toggle>
