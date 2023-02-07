@@ -2,6 +2,8 @@
 
 @import "@angular/material/theming";
 
+@include mat.core();
+
 $cc-palette: (
 	50: #e0f2f1,
 	100: #b2dfdb,

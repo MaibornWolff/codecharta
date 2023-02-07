@@ -3,7 +3,6 @@
 cc-metric-chooser {
 	position: relative;
 	width: 100%;
-
 	cc-metric-chooser-value-hovered,
 	.cc-metric-chooser-hovered-container {
 		position: absolute;
@@ -28,9 +27,7 @@ cc-metric-chooser {
 }
 
 .mat-mdc-select-panel.cc-metric-chooser {
-	margin-top: 16px;
-	width: 360px;
-	max-width: 360px;
+	background-color: white;
 
 	.cc-metric-chooser-search-field {
 		width: 100%;
@@ -42,10 +39,6 @@ cc-metric-chooser {
 			margin-left: 8px;
 			font-size: 18px;
 		}
-		/* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version. */
-		.mat-form-field-label {
-			margin-top: 4px;
-		}
 	}
 
 	.cc-metric-chooser-option-container {
@@ -54,7 +47,7 @@ cc-metric-chooser {
 		overflow-y: auto;
 		font-size: 16px;
 
-		.metric-max-value {
+		mat-option .metric-max-value {
 			color: #ccc;
 		}
 	}
