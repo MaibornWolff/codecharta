@@ -1,6 +1,6 @@
-<mat-toolbar mat-dialog-title>Changelog</mat-toolbar>
+<h1 mat-dialog-title>Changelog</h1>
 
-<mat-dialog-content>
+<div mat-dialog-content>
 	<h1>What is new in CodeCharta?</h1>
 	<h2>{{ data.previousVersion }} → {{ data.currentVersion }}</h2>
 
@@ -10,9 +10,9 @@
 			<ul [innerHTML]="change.value"></ul>
 		</div>
 	</div>
-</mat-dialog-content>
+</div>
 
-<mat-dialog-actions>
+<div mat-dialog-actions>
 	<a href="https://maibornwolff.github.io/codecharta/news/" target="_blank" rel="noopener noreferrer">Know more</a>
 	<button mat-button [mat-dialog-close]="true">CLOSE</button>
-</mat-dialog-actions>
+</div>

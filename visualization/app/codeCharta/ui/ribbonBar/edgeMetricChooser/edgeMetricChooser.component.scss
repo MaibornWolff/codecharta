@@ -1,4 +1,3 @@
-/* TODO(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version. */
-cc-edge-metric-chooser cc-metric-chooser.is-edge-metric-disabled .mat-select-value {
+cc-edge-metric-chooser cc-metric-chooser.is-edge-metric-disabled .mat-mdc-select-value {
 	color: #808080;
 }

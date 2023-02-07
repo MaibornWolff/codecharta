@@ -28,10 +28,6 @@ cc-global-configuration-button button {
 		margin: 8px;
 		padding: 0 15px;
 	}
-	/* TODO(mdc-migration): The following rule targets internal classes of dialog that may no longer apply for the MDC version. */
-	[mat-dialog-close] {
-		color: theme.$cc-primary-color;
-	}
 
 	cc-map-layout-selection,
 	cc-display-quality-selection {
@@ -50,8 +46,7 @@ cc-global-configuration-button button {
 
 	.cc-global-configuration-toggle-option {
 		margin-bottom: 16px;
-		/* TODO(mdc-migration): The following rule targets internal classes of slide-toggle that may no longer apply for the MDC version. */
-		mat-slide-toggle {
+		mat-mdc-slide-toggle {
 			display: block;
 			margin-bottom: 8px;
 		}

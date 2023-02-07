@@ -8,8 +8,8 @@
 		color: white;
 		background-color: theme.$cc-primary-color;
 	}
-	/* TODO(mdc-migration): The following rule targets internal classes of dialog that may no longer apply for the MDC version. */
-	mat-dialog-content {
+
+	[mat-dialog-content] {
 		padding: 0 24px;
 		margin: 10px 0;
 
@@ -29,8 +29,7 @@
 			height: 512px;
 		}
 	}
-	/* TODO(mdc-migration): The following rule targets internal classes of dialog that may no longer apply for the MDC version. */
-	mat-dialog-actions {
+	[mat-dialog-actions] {
 		justify-content: flex-end;
 
 		a {
