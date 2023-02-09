@@ -3,13 +3,9 @@
 cc-file-panel {
 	display: flex;
 	gap: inherit;
+
 	&.hidden {
 		display: none;
-	}
-
-	.mode-chooser {
-		display: inline-flex;
-		vertical-align: middle;
 	}
 
 	.state-selector-button {
@@ -27,9 +23,11 @@ cc-file-panel {
 				background-color: rgb(0, 150, 136);
 				color: #ffffff;
 			}
+
 			&.current:hover {
 				background-color: rgb(0, 150, 136);
 			}
+
 			.text {
 				display: block;
 				margin-top: -5px;
@@ -67,6 +65,7 @@ cc-file-panel {
 			color: rgb(255, 255, 255);
 		}
 	}
+
 	.pictogram {
 		display: inline-flex;
 		width: 10px;

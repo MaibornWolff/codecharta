@@ -27,7 +27,9 @@ cc-metric-chooser {
 }
 
 .mat-mdc-select-panel.cc-metric-chooser {
-	background-color: white;
+	margin-top: 16px;
+	width: 360px;
+	max-width: 360px;
 
 	.cc-metric-chooser-search-field {
 		width: 100%;
@@ -38,6 +40,10 @@ cc-metric-chooser {
 			margin-right: 8px;
 			margin-left: 8px;
 			font-size: 18px;
+		}
+		/* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version. */
+		.mat-form-field-label {
+			margin-top: 4px;
 		}
 	}
 
