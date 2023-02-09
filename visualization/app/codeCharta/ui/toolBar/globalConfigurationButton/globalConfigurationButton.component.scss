@@ -2,9 +2,10 @@
 
 cc-global-configuration-button button {
 	margin: 0;
+	padding: 0;
 
 	cc-action-icon {
-		margin-left: 4px;
+		margin-left: 12px;
 	}
 
 	&:hover cc-action-icon {
@@ -14,7 +15,6 @@ cc-global-configuration-button button {
 
 .cc-global-configuration-dialog .mat-mdc-dialog-container {
 	width: 50vw;
-	padding: 0;
 
 	.cc-global-configuration-align-right {
 		margin-left: auto;

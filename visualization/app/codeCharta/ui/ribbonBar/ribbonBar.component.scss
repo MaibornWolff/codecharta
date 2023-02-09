@@ -201,7 +201,8 @@ cc-ribbon-bar {
 	cc-color-metric-chooser,
 	cc-edge-metric-chooser {
 		display: flex;
-		margin: 4px;
+		align-items: center;
+		margin: auto;
 
 		i {
 			margin-right: 8px;
