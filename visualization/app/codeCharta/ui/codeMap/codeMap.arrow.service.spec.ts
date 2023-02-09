@@ -107,8 +107,7 @@ describe("CodeMapArrowService", () => {
 			expect(threeSceneService["selected"]).toMatchSnapshot()
 		})
 		it("should debounce the edge reset of buildings to improve performance", async () => {
-			codeMapArrowService["resetEdgesOfBuildings"] = () => {}
-			const resetEdgesOfBuildingMock = jest.fn().mockImplementation()
+			const resetEdgesOfBuildingMock = jest.fn()
 			codeMapArrowService["resetEdgesOfBuildings"] = resetEdgesOfBuildingMock
 			codeMapArrowService.onBuildingHovered(CODE_MAP_BUILDING_WITH_OUTGOING_EDGE_NODE)
 

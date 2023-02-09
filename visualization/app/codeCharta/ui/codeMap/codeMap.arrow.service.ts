@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core"
+import { Injectable, OnDestroy } from "@angular/core"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { Node, EdgeVisibility } from "../../codeCharta.model"
 import { ArrowHelper, BufferGeometry, CubicBezierCurve3, Line, LineBasicMaterial, Object3D, Vector3 } from "three"
@@ -12,12 +12,28 @@ import { State } from "../../state/angular-redux/state"
 import { debounce } from "../../util/debounce"
 
 @Injectable({ providedIn: "root" })
-export class CodeMapArrowService {
-	private VERTICES_PER_LINE = 5
+export class CodeMapArrowService implements OnDestroy {
 	private map: Map<string, Node>
-	private arrows: Object3D[]
-	private debounceCalculation: (hoveredBuilding: CodeMapBuilding) => void
+	private VERTICES_PER_LINE = 5
+	private arrows: Object3D[] = new Array<Object3D>()
 	private HIGHLIGHT_BUILDING_DELAY = 15
+	private debounceCalculation: (hoveredBuilding: CodeMapBuilding) => void = debounce(
+		(hoveredBuilding: CodeMapBuilding) => this.resetEdgesOfBuildings(hoveredBuilding),
+		this.HIGHLIGHT_BUILDING_DELAY
+	)
+	private subscription = this.store
+		.select(hoveredNodeIdSelector)
+		.pipe(
+			tap(hoveredNodeId => {
+				if (hoveredNodeId !== null) {
+					const hoveredBuilding = this.idToBuildingService.get(hoveredNodeId)
+					this.onBuildingHovered(hoveredBuilding)
+				} else {
+					this.onBuildingUnhovered()
+				}
+			})
+		)
+		.subscribe()
 
 	constructor(
 		private store: Store,
@@ -25,26 +41,12 @@ export class CodeMapArrowService {
 		private threeSceneService: ThreeSceneService,
 		private idToBuildingService: IdToBuildingService
 	) {
-		this.arrows = new Array<Object3D>()
-		this.store
-			.select(hoveredNodeIdSelector)
-			.pipe(
-				tap(hoveredNodeId => {
-					if (hoveredNodeId !== null) {
-						const hoveredBuilding = this.idToBuildingService.get(hoveredNodeId)
-						this.onBuildingHovered(hoveredBuilding)
-					} else {
-						this.onBuildingUnhovered()
-					}
-				})
-			)
-			.subscribe()
 		this.threeSceneService.subscribe("onBuildingSelected", this.onBuildingSelected)
 		this.threeSceneService.subscribe("onBuildingDeselected", this.onBuildingDeselected)
-		this.debounceCalculation = debounce(
-			(hoveredBuilding: CodeMapBuilding) => this.resetEdgesOfBuildings(hoveredBuilding),
-			this.HIGHLIGHT_BUILDING_DELAY
-		)
+	}
+
+	ngOnDestroy(): void {
+		this.subscription.unsubscribe()
 	}
 
 	private resetEdgesOfBuildings = (hoveredBuilding: CodeMapBuilding) => {

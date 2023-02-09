@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core"
+import { Injectable, OnDestroy } from "@angular/core"
 import { tap } from "rxjs"
 import { MatLegacyDialog as MatDialog } from "@angular/material/legacy-dialog"
 import { clone } from "../../util/clone"
@@ -15,7 +15,7 @@ import { enrichFileStatesAndRecentFilesWithValidationResults } from "./fileParse
 import { fileRoot } from "./fileRoot"
 
 @Injectable({ providedIn: "root" })
-export class LoadFileService {
+export class LoadFileService implements OnDestroy {
 	static readonly CC_FILE_EXTENSION = ".cc.json"
 
 	referenceFileSubscription = this.store
@@ -30,6 +30,10 @@ export class LoadFileService {
 		.subscribe()
 
 	constructor(private store: Store, private state: State, private dialog: MatDialog) {}
+
+	ngOnDestroy(): void {
+		this.referenceFileSubscription.unsubscribe()
+	}
 
 	loadFiles(nameDataPairs: NameDataPair[]) {
 		const fileStates: FileState[] = clone(this.state.getValue().files)
