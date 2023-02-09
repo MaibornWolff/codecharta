@@ -7,8 +7,8 @@ import * as Three from "three"
 import oc from "three-orbit-controls"
 import type { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
 import { ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitControls.service"
-import { EventEmitter } from "tsee"
 import { Injectable } from "@angular/core"
+import { EventEmitter } from "../../util/EventEmitter"
 
 type ViewCubeEvents = {
 	viewCubeEventPropagation: (data: { event: MouseEvent; type: string }) => void
@@ -155,7 +155,7 @@ export class ViewCubeMouseEventsService {
 	private triggerViewCubeUnhoverEvent() {
 		this.currentlyHovered = null
 		CodeMapMouseEventService.changeCursorIndicator(CursorType.Default)
-		this.eventEmitter.emit("viewCubeUnHoveredEvent", undefined)
+		this.eventEmitter.emit("viewCubeUnHoveredEvent")
 	}
 
 	subscribe<Key extends keyof ViewCubeEvents>(key: Key, callback: ViewCubeEvents[Key]) {

@@ -6,7 +6,7 @@ import { setLayoutAlgorithm } from "../../../../../state/store/appSettings/layou
 import { layoutAlgorithmSelector } from "../../../../../state/store/appSettings/layoutAlgorithm/layoutAlgorithm.selector"
 import { setMaxTreeMapFiles } from "../../../../../state/store/appSettings/maxTreeMapFiles/maxTreeMapFiles.actions"
 import { maxTreeMapFilesSelector } from "../../../../../state/store/appSettings/maxTreeMapFiles/maxTreeMapFiles.selector"
-import debounce from "lodash.debounce"
+import { debounce } from "../../../../../util/debounce"
 
 @Component({
 	selector: "cc-map-layout-selection",

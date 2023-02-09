@@ -8,8 +8,8 @@ import type { OrbitControls as OrbitControlsType } from "three/examples/jsm/cont
 // eslint-disable-next-line no-duplicate-imports
 import * as Three from "three"
 import oc from "three-orbit-controls"
-import { EventEmitter } from "tsee"
 import { ThreeRendererService } from "./threeRenderer.service"
+import { EventEmitter } from "../../../util/EventEmitter"
 
 type CameraChangeEvents = {
 	onCameraChanged: (data: { camera: PerspectiveCamera }) => void

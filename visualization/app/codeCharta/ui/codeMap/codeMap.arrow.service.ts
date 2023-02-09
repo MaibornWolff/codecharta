@@ -4,12 +4,12 @@ import { Node, EdgeVisibility } from "../../codeCharta.model"
 import { ArrowHelper, BufferGeometry, CubicBezierCurve3, Line, LineBasicMaterial, Object3D, Vector3 } from "three"
 import { ColorConverter } from "../../util/color/colorConverter"
 import { CodeMapBuilding } from "./rendering/codeMapBuilding"
-import debounce from "lodash.debounce"
 import { IdToBuildingService } from "../../services/idToBuilding/idToBuilding.service"
 import { tap } from "rxjs"
 import { hoveredNodeIdSelector } from "../../state/store/appStatus/hoveredNodeId/hoveredNodeId.selector"
 import { Store } from "../../state/angular-redux/store"
 import { State } from "../../state/angular-redux/state"
+import { debounce } from "../../util/debounce"
 
 @Injectable({ providedIn: "root" })
 export class CodeMapArrowService {
@@ -41,10 +41,13 @@ export class CodeMapArrowService {
 			.subscribe()
 		this.threeSceneService.subscribe("onBuildingSelected", this.onBuildingSelected)
 		this.threeSceneService.subscribe("onBuildingDeselected", this.onBuildingDeselected)
-		this.debounceCalculation = debounce(hoveredBuildings => this.resetEdgesOfBuildings(hoveredBuildings), this.HIGHLIGHT_BUILDING_DELAY)
+		this.debounceCalculation = debounce(
+			(hoveredBuilding: CodeMapBuilding) => this.resetEdgesOfBuildings(hoveredBuilding),
+			this.HIGHLIGHT_BUILDING_DELAY
+		)
 	}
 
-	private resetEdgesOfBuildings = hoveredBuilding => {
+	private resetEdgesOfBuildings = (hoveredBuilding: CodeMapBuilding) => {
 		if (this.isEdgeApplicableForBuilding(hoveredBuilding)) {
 			this.clearArrows()
 			this.showEdgesOfBuildings(hoveredBuilding)
