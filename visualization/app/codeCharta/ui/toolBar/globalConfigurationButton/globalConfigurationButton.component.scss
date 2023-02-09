@@ -17,27 +17,27 @@ cc-global-configuration-button button {
 	padding: 0;
 
 	.cc-global-configuration-align-right {
-		float: right;
-
+		margin-left: auto;
 		.close-button {
 			padding-bottom: 5px;
 		}
 	}
 
 	.cc-global-configuration-dialog-content {
-		margin: 8px;
 		padding: 0 15px;
+		display: flex;
+		flex-direction: column;
+		gap: 1.6em;
 	}
 
 	cc-map-layout-selection,
 	cc-display-quality-selection {
-		display: block;
-		margin-bottom: 8px;
-
 		> mat-form-field {
 			width: 100%;
 		}
-
+		.mat-mdc-form-field-subscript-wrapper.mat-mdc-form-field-bottom-align {
+			display: none;
+		}
 		.cc-tree-maps-max-tree-map-files {
 			display: inline-block;
 			padding-left: 16px;
@@ -45,20 +45,24 @@ cc-global-configuration-button button {
 	}
 
 	.cc-global-configuration-toggle-option {
-		margin-bottom: 16px;
-		mat-mdc-slide-toggle {
-			display: block;
-			margin-bottom: 8px;
-		}
+		display: flex;
+		flex-direction: column;
+		gap: 1.6em;
 	}
 
-	.weblink {
-		display: block;
-		color: rgba(0, 0, 0, 0.870588);
-		text-decoration: none;
+	.cc-global-configuration-links-list {
+		display: flex;
+		flex-direction: column;
+		gap: 0.6em;
 
-		i {
-			margin-right: 16px;
+		.weblink {
+			display: block;
+			color: rgba(0, 0, 0, 0.870588);
+			text-decoration: none;
+
+			i {
+				margin-right: 16px;
+			}
 		}
 	}
 }

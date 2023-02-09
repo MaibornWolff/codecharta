@@ -1,10 +1,8 @@
 @use "../../../material/theme";
 
 cc-file-panel {
-	width: calc(100% - 150px);
-	min-width: 400px;
-	display: inline-block;
-
+	display: flex;
+	gap: inherit;
 	&.hidden {
 		display: none;
 	}
@@ -12,7 +10,6 @@ cc-file-panel {
 	.mode-chooser {
 		display: inline-flex;
 		vertical-align: middle;
-		margin-right: 8px;
 	}
 
 	.state-selector-button {
@@ -81,13 +78,8 @@ cc-file-panel {
 		vertical-align: bottom;
 	}
 
+	.standard-select,
 	.delta-select {
 		width: 200px;
-		margin: 0 10px 0 10px;
-		vertical-align: bottom;
-	}
-
-	.standard-select {
-		margin: 0 10px 0 10px;
 	}
 }
