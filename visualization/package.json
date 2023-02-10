@@ -40,7 +40,8 @@
 	"main": "dist/webpack/index.html",
 	"browserslist": [
 		"last 2 chrome version",
-		"last 2 firefox version"
+		"last 2 firefox version",
+		"last 2 safari version"
 	],
 	"scripts": {
 		"start": "nw .",
@@ -103,6 +104,7 @@
 		"@angular/cli": "^15.1.2",
 		"@angular/compiler": "^15.1.1",
 		"@angular/compiler-cli": "^15.1.1",
+		"@babel/plugin-proposal-class-static-block": "^7.20.7",
 		"@testing-library/angular": "^13.1.0",
 		"@testing-library/user-event": "^14.0.0",
 		"@types/color-convert": "^2.0.0",
