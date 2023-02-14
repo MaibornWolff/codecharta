@@ -8,12 +8,11 @@ cc-file-extension-bar {
 
 		cc-distribution-metric-chooser {
 			width: 210px;
-			display: inline-flex;
+			display: flex;
+			align-items: center;
 			font-size: 12px;
-
-			i.fa {
-				margin: 2px 8px 0 4px;
-			}
+			gap: 6px;
+			padding-left: 6px;
 
 			.mat-mdc-select {
 				border-bottom: 0;
