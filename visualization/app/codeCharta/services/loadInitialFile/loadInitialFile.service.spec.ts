@@ -12,21 +12,21 @@ import sample1 from "../../assets/sample1.cc.json"
 import sample2 from "../../assets/sample2.cc.json"
 import { FileSelectionState, FileState } from "../../model/files/files"
 import { setFiles } from "../../state/store/files/files.actions"
-import { MatLegacyDialog } from "@angular/material/legacy-dialog"
+import { MatDialog } from "@angular/material/dialog"
 
 describe("LoadInitialFileService", () => {
 	let loadInitialFileService: LoadInitialFileService
-	let mockedDialog: MatLegacyDialog
+	let mockedDialog: MatDialog
 
 	beforeEach(() => {
 		localStorage.clear()
 
-		mockedDialog = { open: jest.fn() } as unknown as MatLegacyDialog
+		mockedDialog = { open: jest.fn() } as unknown as MatDialog
 		TestBed.configureTestingModule({
 			providers: [
 				Store,
 				State,
-				{ provide: MatLegacyDialog, useValue: mockedDialog },
+				{ provide: MatDialog, useValue: mockedDialog },
 				{ provide: HttpClient, useValue: {} },
 				{ provide: LoadFileService, useValue: { loadFiles: jest.fn() } }
 			]

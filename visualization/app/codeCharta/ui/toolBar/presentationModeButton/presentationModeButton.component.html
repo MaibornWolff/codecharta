@@ -2,6 +2,7 @@
 	[checked]="isPresentationModeEnabled$ | async"
 	(change)="setPresentationModeEnabled($event)"
 	[title]="(isPresentationModeEnabled$ | async) ? 'Disable flashlight hover effect' : 'Enable flashlight hover effect'"
+	aria-label="Presentation Mode Toggle"
 >
 	<i class="presentation-mode-icon fa fa-television"></i>
 	Presentation Mode
