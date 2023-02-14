@@ -5,7 +5,7 @@ buildscript {
         commons_lang3_version = '3.12.0'
         gson_version = '2.10.1'
         gradle_module_metadata_maven_plugin = '0.3.0'
-        jackson_version = '2.14.1'
+        jackson_version = '2.14.2'
         jacoco_version = '0.8.8'
         jaxb_api_version = '2.3.1'
         jersey_version = '2.38'
@@ -14,9 +14,9 @@ buildscript {
         juniversalchardet_version = '1.0.3'
         kotlin_inquirer_version = '0.1.0'
         kotlin_logging_version = '2.1.23'
-        kotlin_version = '1.8.0'
+        kotlin_version = '1.8.10'
         kotlinx_coroutines_version = '1.6.4'
-        picocli_version = '4.7.0'
+        picocli_version = '4.7.1'
         slf4j_version = '1.7.36'
         sonar_java_version = '6.8.0.23379'
         sonarqube_version = '3.0'
@@ -31,7 +31,7 @@ buildscript {
 
         mockito_core_version = '3.12.4'
         mockito_kotlin_version = '2.2.0'
-        mockk_version = '1.13.3'
+        mockk_version = '1.13.4'
         wiremock_version = '2.33.2'
     }
 
