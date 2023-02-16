@@ -27,18 +27,30 @@ describe("addCustomConfigDialogComponent", () => {
 	it("should suggest a valid custom view name and 'add' button is enabled", async () => {
 		await render(AddCustomConfigDialogComponent, { excludeComponentDeclaration: true })
 
-		const input = screen.getByRole("textbox") as HTMLInputElement
+		const input = screen.getAllByRole("textbox") as HTMLInputElement[]
+		const nameTextField = input[0]
 
-		expect(input.value).toBe("new custom view name")
+		expect(nameTextField.value).toBe("new custom view name")
+		expect((screen.getByRole("button") as HTMLButtonElement).disabled).toBe(false)
+	})
+
+	it("should show an empty comment text field, with optional entry", async () => {
+		await render(AddCustomConfigDialogComponent, { excludeComponentDeclaration: true })
+
+		const input = screen.getAllByRole("textbox") as HTMLInputElement[]
+		const commentTextField = input[1]
+
+		expect(commentTextField.value).toBe("")
 		expect((screen.getByRole("button") as HTMLButtonElement).disabled).toBe(false)
 	})
 
 	it("should show error message when input field is empty and disable 'add' button", async () => {
 		await render(AddCustomConfigDialogComponent, { excludeComponentDeclaration: true })
 
-		const input = screen.getByRole("textbox") as HTMLInputElement
-		await userEvent.clear(input)
-		input.blur()
+		const input = screen.getAllByRole("textbox") as HTMLInputElement[]
+		const nameTextField = input[0]
+		await userEvent.clear(nameTextField)
+		nameTextField.blur()
 
 		expect(await screen.findByText("Please enter a view name.")).not.toBeNull()
 		expect((screen.getByRole("button") as HTMLButtonElement).disabled).toBe(true)
@@ -48,9 +60,11 @@ describe("addCustomConfigDialogComponent", () => {
 		await render(AddCustomConfigDialogComponent, { excludeComponentDeclaration: true })
 		jest.spyOn(CustomConfigHelper, "hasCustomConfigByName").mockReturnValue(true)
 
-		const input = screen.getByRole("textbox") as HTMLInputElement
-		await userEvent.type(input, "file name already exists")
-		input.blur()
+		const input = screen.getAllByRole("textbox") as HTMLInputElement[]
+		const nameTextField = input[0]
+
+		await userEvent.type(nameTextField, "file name already exists")
+		nameTextField.blur()
 
 		expect(await screen.findByText("A Custom View with this name already exists.")).not.toBeNull()
 		expect((screen.getByRole("button") as HTMLButtonElement).disabled).toBe(true)

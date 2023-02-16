@@ -23,12 +23,16 @@ describe("addCustomConfigButtonComponent", () => {
 		const addCustomConfigSpy = jest.spyOn(CustomConfigHelper, "addCustomConfig")
 		await render(AddCustomConfigButtonComponent, { excludeComponentDeclaration: true })
 
+		const configName = "myCustomConfig"
+		const configNote = "My Custom Note"
+
 		const button = screen.getByRole("button")
 		fireEvent.click(button)
 
 		await screen.findByText("Add Custom View")
 
-		await userEvent.type(screen.getByRole("textbox"), "myCustomConfig")
+		await userEvent.type(screen.getAllByRole("textbox")[0], configName)
+		await userEvent.type(screen.getAllByRole("textbox")[1], configNote)
 		fireEvent.click(screen.getByRole("button", { name: "ADD" }))
 
 		await waitForElementToBeRemoved(screen.queryByText("Add Custom View"))

@@ -1,8 +1,8 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing"
 
-import { CustomConfigNoteDialogComponent } from "./editCustomConfigNoteDialog.component"
+import { CustomConfigNoteDialogComponent } from "./customConfigNoteDialog.component"
 
-describe("EditCustomConfigNoteDialogComponent", () => {
+describe("CustomConfigNoteDialogComponent", () => {
 	let component: CustomConfigNoteDialogComponent
 	let fixture: ComponentFixture<CustomConfigNoteDialogComponent>
 
