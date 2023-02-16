@@ -15,19 +15,5 @@
 </div>
 <div style="display: flex; flex-direction: column">
 	<mat-checkbox (change)="setEnableFloorLabel($event)" [checked]="enableFloorLabels$ | async"> Enable Floor Labels </mat-checkbox>
-
-	<!-- <div class="bottom-row">
-	<mat-checkbox
-		class="default-margin"
-		[checked]="dynamicMargin$ | async"
-		(change)="setDynamicMargin($event)"
-		title="Set margin to default (50px)."
-		>
-		Default margin (50px)
-	</mat-checkbox>
-
-	
-</div> -->
-
 	<cc-invert-area-option></cc-invert-area-option>
 </div>

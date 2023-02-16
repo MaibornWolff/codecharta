@@ -5,20 +5,20 @@
 @include mat.core();
 
 $cc-palette: (
-	50: #e0f2f1,
-	100: #b2dfdb,
-	200: #80cbc4,
-	300: #4db6ac,
-	400: #26a69a,
-	500: #009688,
-	600: #00897b,
-	700: #00796b,
-	800: #00695c,
-	900: #004d40,
-	A100: #a7ffeb,
-	A200: #64ffda,
-	A400: #1de9b6,
-	A700: #00bfa5,
+	50: #c3e5fe,
+	100: #9bd3fe,
+	200: #76c3fd,
+	300: #55b5fc,
+	400: #37a8fc,
+	500: #1b9cfc,
+	600: #038ff8,
+	700: #0381df,
+	800: #0374c9,
+	900: #0368b5,
+	A100: #a0d5ff,
+	A200: #a0d5ff,
+	A400: #7ac5ff,
+	A700: #58b6ff,
 	contrast: (
 		50: #000000,
 		100: #000000,
@@ -49,5 +49,5 @@ $cc-theme: mat.define-light-theme(
 );
 
 $cc-primary-color: mat-color($cc-primary);
-$cc-emphasized-color: rgb(0, 124, 112);
+$cc-emphasized-color: #0374c9;
 $cc-disabled-color: rgb(204, 204, 204);
