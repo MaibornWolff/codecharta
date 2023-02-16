@@ -1,20 +1,20 @@
-<ng-container *ngIf="legendMetric.title; then titleExists; else onlyShowName" class="legend-block"></ng-container>
+<ng-container *ngIf="metricDecorations.title; then titleExists; else onlyShowName" class="legend-block"></ng-container>
 <ng-template #titleExists>
-	<ng-container *ngIf="legendMetric.description; then showTitleAndDescription; else showTitle"></ng-container>
+	<ng-container *ngIf="metricDecorations.description; then showTitleAndDescription; else showTitle"></ng-container>
 </ng-template>
 
 <ng-template #showTitleAndDescription>
-	<div title="{{ legendMetric.key + ': ' + legendMetric.description }}">
-		{{ metricFor }} metric: <span class="bold">{{ legendMetric.title }}</span> ({{ legendMetric.key }})
+	<div title="{{ metricDecorations.description }}">
+		{{ metricFor }} metric: <span class="bold">{{ metricDecorations.title }}</span> ({{ metricDecorations.key }})
 	</div>
 </ng-template>
 <ng-template #showTitle>
-	<div title="{{ legendMetric.key }}">
-		{{ metricFor }} metric: <span class="bold">{{ legendMetric.title }}</span> ({{ legendMetric.key }})
+	<div>
+		{{ metricFor }} metric: <span class="bold">{{ metricDecorations.title }}</span> ({{ metricDecorations.key }})
 	</div>
 </ng-template>
 <ng-template #onlyShowName>
-	<div title="{{ legendMetric.key }}">
-		{{ metricFor }} metric: <span class="bold">{{ legendMetric.key }}</span>
+	<div>
+		{{ metricFor }} metric: <span class="bold">{{ metricDecorations.key }}</span>
 	</div>
 </ng-template>
