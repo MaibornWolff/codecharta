@@ -15,6 +15,7 @@
 	<mat-list *ngFor="let customConfig of customConfigItemGroup.value.customConfigItems">
 		<mat-list-item title="{{ customConfig | customConfig2ApplicableMessage }}">
 			<cc-apply-custom-config-button [customConfigItem]="customConfig"></cc-apply-custom-config-button>
+			<cc-edit-custom-config-note-dialog [customConfigItem]="customConfig"></cc-edit-custom-config-note-dialog>
 			<div>
 				<button class="remove-button" title="Remove Custom View" (click)="removeCustomConfig(customConfig.id)">
 					<i class="fa fa-trash"></i>

@@ -5,7 +5,12 @@ import { visibleFilesBySelectionModeSelector } from "../ui/customConfigs/visible
 
 const CUSTOM_CONFIG_API_VERSION = "1.0.0"
 
-export function buildCustomConfigFromState(configName: string, state: State, camera: CustomConfig["camera"]): CustomConfig {
+export function buildCustomConfigFromState(
+	configName: string,
+	state: State,
+	camera: CustomConfig["camera"],
+	note: string | undefined
+): CustomConfig {
 	const { mapSelectionMode, assignedMaps } = visibleFilesBySelectionModeSelector(state)
 
 	const customConfig: CustomConfig = {
@@ -20,7 +25,8 @@ export function buildCustomConfigFromState(configName: string, state: State, cam
 			dynamicSettings: undefined,
 			fileSettings: undefined
 		},
-		camera
+		camera,
+		note: note ?? ""
 	}
 
 	// Initialize all necessary state settings with default values right here
