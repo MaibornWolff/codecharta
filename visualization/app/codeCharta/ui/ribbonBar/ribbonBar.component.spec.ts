@@ -8,6 +8,7 @@ import { ThreeCameraService } from "../codeMap/threeViewer/threeCamera.service"
 import { ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitControls.service"
 import { RibbonBarComponent } from "./ribbonBar.component"
 import { RibbonBarModule } from "./ribbonBar.module"
+import { VALID_NODE_WITH_PATH_AND_EXTENSION } from "../../util/dataMocks"
 
 jest.mock("../../state/selectors/isDeltaState.selector", () => ({
 	isDeltaStateSelector: jest.fn()
@@ -18,8 +19,18 @@ jest.mock("../../state/selectors/accumulatedData/metricData/metricData.selector"
 }))
 const mockMetricDataSelector = jest.mocked(metricDataSelector)
 
+jest.mock("../../state/store/dynamicSettings/areaMetric/areaMetric.selector", () => ({
+	areaMetricSelector: () => "rloc"
+}))
+
+const mockedAccumulatedData = {}
+jest.mock("../../state/selectors/accumulatedData/accumulatedData.selector", () => ({
+	accumulatedDataSelector: () => mockedAccumulatedData
+}))
+
 describe("RibbonBarComponent", () => {
 	beforeEach(() => {
+		mockedAccumulatedData["unifiedMapNode"] = VALID_NODE_WITH_PATH_AND_EXTENSION
 		mockedIsDeltaStateSelector.mockImplementation(() => false)
 		mockMetricDataSelector.mockImplementation(() => ({ edgeMetricData: [], nodeMetricData: [], nodeEdgeMetricsMap: new Map() }))
 		TestBed.configureTestingModule({
