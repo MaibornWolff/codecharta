@@ -3,7 +3,7 @@
 </button>
 
 <mat-menu #menu="matMenu" class="ai-drop-down high-risk-profile">
-	<ng-container *ngIf="data.analyzedProgrammingLanguage !== undefined && data.analyzedProgrammingLanguage.length">
+	<ng-container *ngIf="data.riskProfile !== undefined">
 		<div class="title">
 			<div>Risk Profile</div>
 		</div>
@@ -56,7 +56,7 @@
 			</div>
 		</div>
 	</ng-container>
-	<ng-container *ngIf="data.analyzedProgrammingLanguage === undefined || data.analyzedProgrammingLanguage.length === 0">
-		Could not calculate Risk Profile. Metrics rloc and mcc not available.
+	<ng-container *ngIf="data.riskProfile === undefined">
+		Could not calculate Risk Profile. Metrics rloc(Real lines of code) and mcc(Cyclomatic complexity) not available.
 	</ng-container>
 </mat-menu>
