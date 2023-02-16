@@ -4,9 +4,6 @@
 	[disabled]="!customConfigItem.isApplicable"
 	[style.color]="customConfigItem | customConfig2ApplicableColor"
 >
-	<p class="config-name" title="{{ customConfigItem.name }}">
-		<b>{{ customConfigItem.name }}</b>
-	</p>
 	<p class="config-metric"><i class="fa fa-arrows-alt"></i> {{ customConfigItem.metrics.areaMetric }}</p>
 	<p class="config-metric"><i class="fa fa-arrows-v"></i> {{ customConfigItem.metrics.heightMetric }}</p>
 	<p class="config-metric"><i class="fa fa-paint-brush"></i> {{ customConfigItem.metrics.colorMetric }}</p>

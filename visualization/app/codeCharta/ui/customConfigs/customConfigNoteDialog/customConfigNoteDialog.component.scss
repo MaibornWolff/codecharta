@@ -1,7 +1,10 @@
 @use "app/material/theme";
 
-edit-note-button {
-	background-color: transparent;
+#customConfigNoteDialogButton {
+	white-space: nowrap;
+	min-width: auto;
+	font-size: 12px;
+	margin: 0;
 
 	&:hover {
 		background-color: rgba(0, 0, 0, 0.05);

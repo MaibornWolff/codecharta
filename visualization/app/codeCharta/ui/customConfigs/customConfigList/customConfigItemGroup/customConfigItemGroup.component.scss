@@ -1,0 +1,25 @@
+cc-custom-config-item-group {
+	#configNoteAndButton {
+		display: flex;
+		align-items: center;
+	}
+
+	p {
+		&.config-item-name {
+			font-size: 15px;
+			margin: 5px 0;
+			text-align: left;
+			flex: 0 0 22em;
+		}
+
+		&.config-item-note {
+			white-space: nowrap;
+			min-width: auto;
+			font-size: 10px;
+			margin: 5px 0;
+			text-align: left;
+			flex: 0 0 22em;
+			color: grey;
+		}
+	}
+}

@@ -13,6 +13,7 @@ import { ApplyCustomConfigButtonComponent } from "./customConfigList/customConfi
 import { CustomConfigColorSchemaBySelectionMode } from "./customConfigList/customConfigItemGroup/customConfigDescription/customConfigColorSchemaBySelectionMode.pipe"
 import { FormsModule } from "@angular/forms"
 import { CustomConfigNoteDialogModule } from "./customConfigNoteDialog/customConfigNoteDialog.module"
+import { CustomConfigTransformNote } from "./customConfigList/customConfigItemGroup/customConfigDescription/customConfigTruncateNotePipe.pipe"
 
 @NgModule({
 	imports: [
@@ -33,6 +34,7 @@ import { CustomConfigNoteDialogModule } from "./customConfigNoteDialog/customCon
 		ApplyCustomConfigButtonComponent,
 		CustomConfig2ApplicableMessage,
 		CustomConfig2ApplicableColor,
+		CustomConfigTransformNote,
 		CustomConfigColorSchemaBySelectionMode
 	],
 	exports: [CustomConfigsComponent]
