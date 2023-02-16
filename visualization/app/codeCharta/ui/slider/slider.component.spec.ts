@@ -46,7 +46,7 @@ describe("SliderComponent", () => {
 			}
 		})
 
-		const sliderThumb = container.querySelector(".mat-slider-thumb")
+		const sliderThumb = container.querySelector(".mdc-slider__thumb-knob")
 		await drag(sliderThumb, {
 			delta: { x: -100, y: 0 }
 		})

@@ -1,15 +1,15 @@
 <div class="cc-slider-container">
 	<mat-label class="label">{{ label }}</mat-label>
 	<div class="slider-with-input">
-		<mat-slider [disabled]="disabled" [step]="step" [min]="min" [max]="max" discrete>
-			<input matSliderThumb [(ngModel)]="value" />
+		<mat-slider [disabled]="disabled" [step]="step" [min]="min" [max]="max">
+			<input matSliderThumb [value]="value" (input)="handleInputOnChange($event)" />
 		</mat-slider>
 		<mat-form-field appearance="outline">
 			<input
 				matInput
 				type="number"
+				[value]="value"
 				[disabled]="disabled"
-				[(ngModel)]="value"
 				(input)="handleInputOnChange($event)"
 				[min]="min"
 				[max]="max"
