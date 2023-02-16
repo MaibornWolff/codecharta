@@ -19,7 +19,6 @@ import { getMostFrequentLanguage } from "./util/mainProgrammingLanguageHelper"
 import { isPathBlacklisted } from "../../../../util/codeMapHelper"
 import { createSelector } from "../../../../state/angular-redux/createSelector"
 import { blacklistSelector } from "../../../../state/store/fileSettings/blacklist/blacklist.selector"
-import { experimentalFeaturesEnabledSelector } from "../../../../state/store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.selector"
 import { CcState } from "../../../../state/store/store"
 import { AccumulatedData, accumulatedDataSelector } from "../../../../state/selectors/accumulatedData/accumulatedData.selector"
 
@@ -32,14 +31,9 @@ export type ArtificialIntelligenceData = {
 }
 
 export const calculate = (
-	experimentalFeaturesEnabled: boolean,
 	accumulatedData: Pick<AccumulatedData, "unifiedMapNode">,
 	blacklist: BlacklistItem[]
 ): ArtificialIntelligenceData | undefined => {
-	if (!experimentalFeaturesEnabled) {
-		return
-	}
-
 	const artificialIntelligenceViewModel: ArtificialIntelligenceData = {
 		analyzedProgrammingLanguage: undefined,
 		suspiciousMetricSuggestionLinks: [],
@@ -97,6 +91,6 @@ function isFileValid(node: CodeMapNode, fileExtension: string) {
 }
 
 export const artificialIntelligenceSelector: (state: CcState) => ArtificialIntelligenceData = createSelector(
-	[experimentalFeaturesEnabledSelector, accumulatedDataSelector, blacklistSelector],
+	[accumulatedDataSelector, blacklistSelector],
 	calculate
 )
