@@ -10,12 +10,12 @@ import { idToNodeSelector } from "../../../state/selectors/accumulatedData/idToN
 import { IdToBuildingService } from "../../../services/idToBuilding/idToBuilding.service"
 import { mapColorsSelector } from "../../../state/store/appSettings/mapColors/mapColors.selector"
 import { ThreeRendererService } from "./threeRenderer.service"
-import { EventEmitter } from "tsee"
-import { Injectable } from "@angular/core"
+import { Injectable, OnDestroy } from "@angular/core"
 import { Store } from "../../../state/angular-redux/store"
 import { defaultMapColors } from "../../../state/store/appSettings/mapColors/mapColors.actions"
 import { State } from "../../../state/angular-redux/state"
 import { treeMapSize } from "../../../util/algorithm/treeMapLayout/treeMapHelper"
+import { EventEmitter } from "../../../util/EventEmitter"
 
 type BuildingSelectedEvents = {
 	onBuildingSelected: (data: { building: CodeMapBuilding }) => void
@@ -23,7 +23,7 @@ type BuildingSelectedEvents = {
 }
 
 @Injectable({ providedIn: "root" })
-export class ThreeSceneService {
+export class ThreeSceneService implements OnDestroy {
 	scene: Scene
 	labels: Group
 	floorLabelPlanes: Group
@@ -49,6 +49,10 @@ export class ThreeSceneService {
 	private highlightedLabel = null
 	private highlightedLineIndex = -1
 	private highlightedLine = null
+	private subscription = this.store.select(mapColorsSelector).subscribe(mapColors => {
+		this.folderLabelColorSelected = mapColors.selected
+		this.numberSelectionColor = ColorConverter.convertHexToNumber(this.folderLabelColorSelected)
+	})
 
 	constructor(
 		private store: Store,
@@ -56,11 +60,6 @@ export class ThreeSceneService {
 		private idToBuilding: IdToBuildingService,
 		private threeRendererService: ThreeRendererService
 	) {
-		this.store.select(mapColorsSelector).subscribe(mapColors => {
-			this.folderLabelColorSelected = mapColors.selected
-			this.numberSelectionColor = ColorConverter.convertHexToNumber(this.folderLabelColorSelected)
-		})
-
 		this.scene = new Scene()
 		this.mapGeometry = new Group()
 		this.lights = new Group()
@@ -75,6 +74,10 @@ export class ThreeSceneService {
 		this.scene.add(this.labels)
 		this.scene.add(this.lights)
 		this.scene.add(this.floorLabelPlanes)
+	}
+
+	ngOnDestroy(): void {
+		this.subscription.unsubscribe()
 	}
 
 	private initFloorLabels(nodes: Node[]) {

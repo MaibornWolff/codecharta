@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core"
+import { Injectable, OnDestroy } from "@angular/core"
 import { ThreeCameraService } from "./threeViewer/threeCamera.service"
 import { CodeMapBuilding } from "./rendering/codeMapBuilding"
 import { ViewCubeMouseEventsService } from "../viewCube/viewCube.mouseEvents.service"
@@ -15,12 +15,12 @@ import { setRightClickedNodeData } from "../../state/store/appStatus/rightClicke
 import { idToNodeSelector } from "../../state/selectors/accumulatedData/idToNode.selector"
 import { IdToBuildingService } from "../../services/idToBuilding/idToBuilding.service"
 import { hoveredNodeIdSelector } from "../../state/store/appStatus/hoveredNodeId/hoveredNodeId.selector"
-import debounce from "lodash.debounce"
 import { tap, distinctUntilChanged } from "rxjs"
 import { Store } from "../../state/angular-redux/store"
 import { visibleFileStatesSelector } from "../../state/selectors/visibleFileStates.selector"
 import { blacklistSelector } from "../../state/store/fileSettings/blacklist/blacklist.selector"
 import { State } from "../../state/angular-redux/state"
+import { debounce } from "../../util/debounce"
 
 interface Coordinates {
 	x: number
@@ -40,7 +40,7 @@ export enum CursorType {
 }
 
 @Injectable({ providedIn: "root" })
-export class CodeMapMouseEventService {
+export class CodeMapMouseEventService implements OnDestroy {
 	private readonly THRESHOLD_FOR_MOUSE_MOVEMENT_TRACKING = 3
 
 	private intersectedBuilding: CodeMapBuilding
@@ -52,26 +52,15 @@ export class CodeMapMouseEventService {
 	private isMoving = false
 	private raycaster = new Raycaster()
 	private temporaryLabelForBuilding = null
-
-	constructor(
-		private threeCameraService: ThreeCameraService,
-		private threeRendererService: ThreeRendererService,
-		private threeSceneService: ThreeSceneService,
-		private store: Store,
-		private state: State,
-		private codeMapLabelService: CodeMapLabelService,
-		private viewCubeMouseEvents: ViewCubeMouseEventsService,
-		private threeViewerService: ThreeViewerService,
-		private idToBuilding: IdToBuildingService
-	) {
+	private subscriptions = [
 		this.store
 			.select(visibleFileStatesSelector)
 			.pipe(tap(() => this.onFilesSelectionChanged()))
-			.subscribe()
+			.subscribe(),
 		this.store
 			.select(blacklistSelector)
 			.pipe(tap(blacklist => this.onBlacklistChanged(blacklist)))
-			.subscribe()
+			.subscribe(),
 		this.store
 			.select(hoveredNodeIdSelector)
 			.pipe(
@@ -85,6 +74,24 @@ export class CodeMapMouseEventService {
 				})
 			)
 			.subscribe()
+	]
+
+	constructor(
+		private threeCameraService: ThreeCameraService,
+		private threeRendererService: ThreeRendererService,
+		private threeSceneService: ThreeSceneService,
+		private store: Store,
+		private state: State,
+		private codeMapLabelService: CodeMapLabelService,
+		private viewCubeMouseEvents: ViewCubeMouseEventsService,
+		private threeViewerService: ThreeViewerService,
+		private idToBuilding: IdToBuildingService
+	) {}
+
+	ngOnDestroy(): void {
+		for (const subscription of this.subscriptions) {
+			subscription.unsubscribe()
+		}
 	}
 
 	static changeCursorIndicator(cursorIcon: CursorType) {
@@ -92,10 +99,7 @@ export class CodeMapMouseEventService {
 	}
 
 	start() {
-		this.threeRendererService.renderer.domElement.addEventListener(
-			"mousemove",
-			debounce(event => this.onDocumentMouseMove(event), 60)
-		)
+		this.threeRendererService.renderer.domElement.addEventListener("mousemove", debounce(this.onDocumentMouseMove, 60))
 		this.threeRendererService.renderer.domElement.addEventListener("mouseup", event => this.onDocumentMouseUp(event))
 		this.threeRendererService.renderer.domElement.addEventListener("mousedown", event => this.onDocumentMouseDown(event))
 		this.threeRendererService.renderer.domElement.addEventListener("dblclick", () => this.onDocumentDoubleClick())
@@ -260,7 +264,7 @@ export class CodeMapMouseEventService {
 		}
 	}
 
-	onDocumentMouseMove(event: MouseEvent) {
+	onDocumentMouseMove = (event: MouseEvent) => {
 		this.mouse.x = event.clientX
 		this.mouse.y = event.clientY
 		this.updateHovering()
