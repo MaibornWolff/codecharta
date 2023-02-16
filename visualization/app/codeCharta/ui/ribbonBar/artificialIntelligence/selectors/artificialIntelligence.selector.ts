@@ -39,12 +39,13 @@ export const calculate = (
 		suspiciousMetricSuggestionLinks: [],
 		unsuspiciousMetrics: [],
 		untrackedMetrics: [],
-		riskProfile: { lowRisk: 0, moderateRisk: 0, highRisk: 0, veryHighRisk: 0 }
+		riskProfile: undefined
 	}
 
 	const numberOfFilesByLanguage = new Map<string, number>()
 	const rlocRisk = { lowRisk: 0, moderateRisk: 0, highRisk: 0, veryHighRisk: 0 }
 	let totalRloc = 0
+	let totalMcc = 0
 	const metricValuesByLanguage: MetricValuesByLanguage = {}
 
 	for (const { data } of hierarchy(accumulatedData.unifiedMapNode)) {
@@ -56,13 +57,14 @@ export const calculate = (
 
 			if (isFileValid(data, fileExtension)) {
 				totalRloc += data.attributes[AREA_METRIC]
+				totalMcc += data.attributes[HEIGHT_METRIC]
 				aggregateRiskProfile(data, rlocRisk, fileExtension)
 			}
 		}
+	}
 
-		if (totalRloc > 0) {
-			artificialIntelligenceViewModel.riskProfile = getPercentagesOfRiskProfile(rlocRisk)
-		}
+	if (totalRloc > 0 && totalMcc > 0) {
+		artificialIntelligenceViewModel.riskProfile = getPercentagesOfRiskProfile(rlocRisk)
 	}
 
 	const mainProgrammingLanguage = getMostFrequentLanguage(numberOfFilesByLanguage)
