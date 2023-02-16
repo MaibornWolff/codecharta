@@ -50,12 +50,7 @@ describe("ArtificialIntelligenceSelector", () => {
 		const actual = calculate({ unifiedMapNode: blacklistedNode }, blacklist)
 
 		expect(actual).toEqual({
-			riskProfile: {
-				highRisk: 0,
-				lowRisk: 0,
-				moderateRisk: 0,
-				veryHighRisk: 0
-			},
+			riskProfile: undefined,
 			suspiciousMetricSuggestionLinks: [],
 			unsuspiciousMetrics: [],
 			untrackedMetrics: []
