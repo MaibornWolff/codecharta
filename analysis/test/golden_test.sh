@@ -71,7 +71,7 @@ check_csvexporter() {
   echo " -- expect CSVexporter to produce correct csv table"
   ACTUAL_CSVEXPORT="${INSTALL_DIR}/actual_csvexport.csv"
   "${CCSH}" csvexport "${DATA}/csvexport_input.cc.json" --depth-of-hierarchy=2 -o "${ACTUAL_CSVEXPORT}"
-  if ! cmp --silent -- "${ACTUAL_CSVEXPORT}" "${DATA}/csvexport_gold.csv"; then
+  if ! diff -q --strip-trailing-cr -- "${ACTUAL_CSVEXPORT}" "${DATA}/csvexport_gold.csv"; then
     exit_with_err "${ACTUAL_CSVEXPORT} could not be found or is not equal to gold"
   fi
 }
