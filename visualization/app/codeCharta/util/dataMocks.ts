@@ -1944,7 +1944,8 @@ export const CUSTOM_CONFIG_ITEM_GROUPS: Map<string, CustomConfigItemGroup> = new
 						negativeDelta: "#ff0E0E"
 					},
 					metrics: { areaMetric: "rloc", heightMetric: "mcc", colorMetric: "mcc", edgeMetric: "avgCommits" },
-					isApplicable: false
+					isApplicable: false,
+					note: ""
 				},
 				{
 					id: "File_A_STANDARD_Sample_Map View #2",
@@ -1960,7 +1961,8 @@ export const CUSTOM_CONFIG_ITEM_GROUPS: Map<string, CustomConfigItemGroup> = new
 						negativeDelta: "#ff0E0E"
 					},
 					metrics: { areaMetric: "rloc", heightMetric: "mcc", colorMetric: "mcc", edgeMetric: "avgCommits" },
-					isApplicable: false
+					isApplicable: false,
+					note: ""
 				}
 			]
 		}
@@ -1989,7 +1991,8 @@ export const CUSTOM_CONFIG_ITEM_GROUPS: Map<string, CustomConfigItemGroup> = new
 						negativeDelta: "#ff0E0E"
 					},
 					metrics: { areaMetric: "rloc", heightMetric: "mcc", colorMetric: "functions", edgeMetric: "avgCommits" },
-					isApplicable: true
+					isApplicable: true,
+					note: ""
 				},
 				{
 					id: "File_B_File_C_STANDARD_Sample_Map View #2",
@@ -2008,7 +2011,8 @@ export const CUSTOM_CONFIG_ITEM_GROUPS: Map<string, CustomConfigItemGroup> = new
 						negativeDelta: "#ff0E0E"
 					},
 					metrics: { areaMetric: "rloc", heightMetric: "mcc", colorMetric: "mcc", edgeMetric: "avgCommits" },
-					isApplicable: true
+					isApplicable: true,
+					note: ""
 				}
 			]
 		}
@@ -2034,7 +2038,8 @@ export const CUSTOM_CONFIG_ITEM_GROUPS: Map<string, CustomConfigItemGroup> = new
 						negativeDelta: "#ff0E0E"
 					},
 					metrics: { areaMetric: "rloc", heightMetric: "mcc", colorMetric: "mcc", edgeMetric: null },
-					isApplicable: false
+					isApplicable: false,
+					note: ""
 				}
 			]
 		}

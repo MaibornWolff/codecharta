@@ -3,6 +3,7 @@
 	(click)="applyCustomConfig()"
 	[disabled]="!customConfigItem.isApplicable"
 	[style.color]="customConfigItem | customConfig2ApplicableColor"
+	title="{{ customConfigItem.name }}"
 >
 	<p class="config-metric"><i class="fa fa-arrows-alt"></i> {{ customConfigItem.metrics.areaMetric }}</p>
 	<p class="config-metric"><i class="fa fa-arrows-v"></i> {{ customConfigItem.metrics.heightMetric }}</p>

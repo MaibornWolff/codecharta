@@ -53,11 +53,10 @@ describe("customConfigItemGroupComponent", () => {
 			excludeComponentDeclaration: true,
 			componentProperties: { customConfigItemGroups }
 		})
-		const applyCustomConfigButton = screen.getByText("SampleMap View #1").closest("button") as HTMLButtonElement
+		const applyCustomConfigButton = screen.getAllByText("mcc")[0].closest("button") as HTMLButtonElement
 
 		await userEvent.click(applyCustomConfigButton)
 
-		expect(screen.getAllByTitle("Apply Custom View").length).toBe(2)
 		expect(applyCustomConfigButton.disabled).toBe(false)
 		expect(CustomConfigHelper.applyCustomConfig).toHaveBeenCalledTimes(1)
 		expect(mockedDialogReference.close).toHaveBeenCalledTimes(1)
@@ -100,7 +99,7 @@ describe("customConfigItemGroupComponent", () => {
 			componentProperties: { customConfigItemGroups }
 		})
 
-		const applyCustomConfigButton = screen.getByText("SampleMap View #1").closest("button")
+		const applyCustomConfigButton = screen.getAllByText("mcc")[0].closest("button")
 
 		expect(
 			screen.getAllByTitle(
@@ -127,7 +126,7 @@ describe("customConfigItemGroupComponent", () => {
 			excludeComponentDeclaration: true,
 			componentProperties: { customConfigItemGroups }
 		})
-		const applyCustomConfigButton = screen.getByText("SampleMap View #1").closest("button") as HTMLButtonElement
+		const applyCustomConfigButton = screen.getAllByText("mcc")[0].closest("button") as HTMLButtonElement
 
 		expect(applyCustomConfigButton.disabled).toBe(true)
 		expect(getComputedStyle(applyCustomConfigButton).color).toBe("rgb(204, 204, 204)")

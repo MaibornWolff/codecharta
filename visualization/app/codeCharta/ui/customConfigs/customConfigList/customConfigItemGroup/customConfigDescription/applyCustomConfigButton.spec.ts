@@ -39,7 +39,6 @@ describe("applyCustomConfigButtonComponent", () => {
 		expect(getComputedStyle(colorSwatchElements[2]).backgroundColor).toBe("rgb(130, 14, 14)")
 		expect(getComputedStyle(colorSwatchElements[3]).backgroundColor).toBe("rgb(235, 131, 25)")
 
-		expect(screen.getByText("SampleMap View #1")).not.toBeNull()
 		expect(screen.getByText("rloc")).not.toBeNull()
 		expect(screen.getByText("mcc")).not.toBeNull()
 		expect(screen.getByText("functions")).not.toBeNull()
@@ -63,7 +62,6 @@ describe("applyCustomConfigButtonComponent", () => {
 		const applyCustomConfigButton = screen.getByRole("button") as HTMLButtonElement
 
 		expect(getComputedStyle(applyCustomConfigButton).color).toBe("rgb(204, 204, 204)")
-		expect(screen.getByText("SampleMap View #1")).not.toBeNull()
 		expect(screen.getByText("rloc")).not.toBeNull()
 		expect(screen.getByText("mcc")).not.toBeNull()
 		expect(screen.getByText("functions")).not.toBeNull()

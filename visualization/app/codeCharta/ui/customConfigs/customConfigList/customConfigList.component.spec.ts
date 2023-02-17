@@ -123,7 +123,8 @@ describe("customConfigListComponent", () => {
 
 		await userEvent.click(customConfigItemGroupElement)
 
-		expect(screen.getByText("SampleMap Delta View #1")).not.toBeNull()
-		expect((screen.getByText("SampleMap Delta View #1").closest("button") as HTMLButtonElement).disabled).toBe(true)
+		expect((screen.getAllByTitle("SampleMap Delta View #1", { exact: false })[1].closest("button") as HTMLButtonElement).disabled).toBe(
+			true
+		)
 	})
 })
