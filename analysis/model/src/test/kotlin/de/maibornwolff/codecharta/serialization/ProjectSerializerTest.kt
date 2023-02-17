@@ -11,7 +11,6 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
 import java.io.OutputStream
-import java.nio.charset.StandardCharsets.UTF_8
 import kotlin.io.path.absolute
 import kotlin.io.path.createTempDirectory
 import kotlin.test.assertTrue
@@ -56,7 +55,7 @@ class ProjectSerializerTest {
     fun `serializeToFileOrStream should write to stream`() {
         val stream = ByteArrayOutputStream()
         ProjectSerializer.serializeToFileOrStream(project, "", stream, true)
-        val result = stream.toString(UTF_8)
+        val result = stream.toString("UTF-8")
         assertTrue { result.startsWith("{") }
     }
 }
