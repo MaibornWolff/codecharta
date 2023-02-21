@@ -1,6 +1,6 @@
 import { FormsModule } from "@angular/forms"
 import { NgModule } from "@angular/core"
-import { BrowserAnimationsModule } from "@angular/platform-browser/animations"
+import { NoopAnimationsModule } from "@angular/platform-browser/animations"
 import { MatSelectModule } from "@angular/material/select"
 import { MatMenuModule } from "@angular/material/menu"
 import { MatButtonModule } from "@angular/material/button"
@@ -38,12 +38,12 @@ const materialModules = [
 	MatExpansionModule,
 	MatSliderModule,
 	MatSlideToggleModule,
-	BrowserAnimationsModule,
+	NoopAnimationsModule,
 	FormsModule
 ]
 
 @NgModule({
-	imports: [BrowserAnimationsModule, materialModules],
+	imports: [NoopAnimationsModule, materialModules],
 	exports: [materialModules]
 })
 export class MaterialModule {}
