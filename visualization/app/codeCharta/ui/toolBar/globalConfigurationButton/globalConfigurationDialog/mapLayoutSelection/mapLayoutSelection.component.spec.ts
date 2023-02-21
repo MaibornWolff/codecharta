@@ -11,10 +11,9 @@ import { MatSelectHarness } from "@angular/material/select/testing"
 import { MatInputHarness } from "@angular/material/input/testing"
 
 let loader: HarnessLoader
+let fixture: ComponentFixture<MapLayoutSelectionComponent>
 
 describe("MapLayoutSelectionComponent", () => {
-	let fixture: ComponentFixture<MapLayoutSelectionComponent>
-
 	beforeEach(() => {
 		Store["initialize"]()
 		TestBed.configureTestingModule({
