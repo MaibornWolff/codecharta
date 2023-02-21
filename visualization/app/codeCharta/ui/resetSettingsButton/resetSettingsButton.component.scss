@@ -1,10 +1,14 @@
+@use "../../../material/theme";
+
 cc-reset-settings-button {
 	button {
-		color: rgb(0, 150, 136);
+		color: theme.$cc-primary-color;
 		background: none;
-		padding: 8px;
+		height: 28px;
+		width: 28px;
 
 		&:hover {
+			border-radius: 100%;
 			background-color: rgba(158, 158, 158, 0.2);
 		}
 	}
