@@ -14,7 +14,7 @@ import { fxaaShaderStrings } from "../rendering/shaders/loaders/fxaaShaderString
 export class ThreeRendererService {
 	static BACKGROUND_COLOR = {
 		white: 0xff_ff_ff,
-		normal: 0xee_ee_dd
+		normal: 0xf4_f4_eb
 	}
 
 	static CLEAR_COLOR = ThreeRendererService.BACKGROUND_COLOR.normal

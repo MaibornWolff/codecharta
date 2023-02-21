@@ -51,3 +51,13 @@ $cc-theme: mat.define-light-theme(
 $cc-primary-color: mat-color($cc-primary);
 $cc-emphasized-color: #0374c9;
 $cc-disabled-color: rgb(204, 204, 204);
+
+// For the lack of a better way of doing this
+// please remove this
+// if a method is found how to change the checkmark colors directly in theme
+// or you wish to keep the default black
+:root {
+	.mat-mdc-checkbox.mat-accent {
+		--mdc-checkbox-selected-checkmark-color: #fff !important;
+	}
+}
