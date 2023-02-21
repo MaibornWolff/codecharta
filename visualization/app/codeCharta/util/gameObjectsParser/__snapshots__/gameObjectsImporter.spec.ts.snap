@@ -1,18 +1,18 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`GameObjectsImporter should parse gameObjects json to cc.json 1`] = `
-Object {
+{
   "checksum": "64ba632559688f092d2adf0dee446d7e",
-  "data": Object {
+  "data": {
     "apiVersion": "1.3",
-    "attributeTypes": Object {
-      "edges": Object {
+    "attributeTypes": {
+      "edges": {
         "coupling": "relative",
       },
     },
-    "edges": Array [
-      Object {
-        "attributes": Object {
+    "edges": [
+      {
+        "attributes": {
           "coupling": 100,
         },
         "fromNodeName": "/base/root/CHANGELOG/CHANGELOG",
@@ -20,28 +20,28 @@ Object {
       },
     ],
     "fileChecksum": "",
-    "nodes": Array [
-      Object {
-        "attributes": Object {},
-        "children": Array [
-          Object {
-            "attributes": Object {},
-            "children": Array [
-              Object {
-                "attributes": Object {},
-                "children": Array [
-                  Object {
-                    "attributes": Object {},
-                    "children": Array [
-                      Object {
-                        "attributes": Object {
+    "nodes": [
+      {
+        "attributes": {},
+        "children": [
+          {
+            "attributes": {},
+            "children": [
+              {
+                "attributes": {},
+                "children": [
+                  {
+                    "attributes": {},
+                    "children": [
+                      {
+                        "attributes": {
                           "height": 1,
                         },
                         "name": "ui",
                         "type": "File",
                       },
                     ],
-                    "fixedPosition": Object {
+                    "fixedPosition": {
                       "height": 3.13,
                       "left": 2.27,
                       "top": 95.63,
@@ -50,18 +50,18 @@ Object {
                     "name": "ui",
                     "type": "Folder",
                   },
-                  Object {
-                    "attributes": Object {},
-                    "children": Array [
-                      Object {
-                        "attributes": Object {
+                  {
+                    "attributes": {},
+                    "children": [
+                      {
+                        "attributes": {
                           "height": 4,
                         },
                         "name": "packageLock",
                         "type": "File",
                       },
                     ],
-                    "fixedPosition": Object {
+                    "fixedPosition": {
                       "height": 1.25,
                       "left": 95.45,
                       "top": 48.13,
@@ -71,7 +71,7 @@ Object {
                     "type": "Folder",
                   },
                 ],
-                "fixedPosition": Object {
+                "fixedPosition": {
                   "height": 95.24,
                   "left": 0.72,
                   "top": 2.38,
@@ -80,18 +80,18 @@ Object {
                 "name": "visualization",
                 "type": "Folder",
               },
-              Object {
-                "attributes": Object {},
-                "children": Array [
-                  Object {
-                    "attributes": Object {
+              {
+                "attributes": {},
+                "children": [
+                  {
+                    "attributes": {
                       "height": 1,
                     },
                     "name": "CHANGELOG",
                     "type": "File",
                   },
                 ],
-                "fixedPosition": Object {
+                "fixedPosition": {
                   "height": 2.98,
                   "left": 98.39,
                   "top": 48.51,
@@ -101,7 +101,7 @@ Object {
                 "type": "Folder",
               },
             ],
-            "fixedPosition": Object {
+            "fixedPosition": {
               "height": 30.05,
               "left": 0,
               "top": 34,
