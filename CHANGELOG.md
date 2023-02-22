@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Added 🚀
+
+-   Supports adding note to a custom view, provides a preview and an edit option for notes from the selection menu [#3234](https://github.com/MaibornWolff/codecharta/pull/3234)
+
 ### Fixed 🐞
 
 -   Unselecting a folder in Presentation Mode leads to console error [#3215](https://github.com/MaibornWolff/codecharta/pull/3215)
