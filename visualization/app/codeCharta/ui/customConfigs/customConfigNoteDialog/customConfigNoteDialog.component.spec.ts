@@ -1,22 +1,26 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing"
+import { TestBed } from "@angular/core/testing"
 
+import { CustomConfigHelper } from "../../../util/customConfigHelper"
+import { CustomConfigNoteDialogModule } from "./customConfigNoteDialog.module"
+import { fireEvent, render, screen } from "@testing-library/angular"
 import { CustomConfigNoteDialogComponent } from "./customConfigNoteDialog.component"
 
-describe("CustomConfigNoteDialogComponent", () => {
-	let component: CustomConfigNoteDialogComponent
-	let fixture: ComponentFixture<CustomConfigNoteDialogComponent>
+describe("customConfigNoteDialogComponent", () => {
+	jest.spyOn(CustomConfigHelper, "getConfigNameSuggestionByFileState").mockReturnValue("new custom view name")
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			declarations: [CustomConfigNoteDialogComponent]
-		}).compileComponents()
-
-		fixture = TestBed.createComponent(CustomConfigNoteDialogComponent)
-		component = fixture.componentInstance
-		fixture.detectChanges()
+			imports: [CustomConfigNoteDialogModule],
+			providers: []
+		})
 	})
 
-	it("should create", () => {
-		expect(component).toBeTruthy()
+	it("should render a clickable button to add a custom note", async () => {
+		await render(CustomConfigNoteDialogComponent, { excludeComponentDeclaration: true })
+
+		const button = screen.getByTitle("Edit/View Note").closest("button") as HTMLButtonElement
+		expect(button).toBeTruthy()
+		expect(button.disabled).not.toBeTruthy()
+		fireEvent.click(button)
 	})
 })

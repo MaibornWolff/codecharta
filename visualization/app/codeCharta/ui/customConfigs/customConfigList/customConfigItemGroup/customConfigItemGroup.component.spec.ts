@@ -126,9 +126,11 @@ describe("customConfigItemGroupComponent", () => {
 			excludeComponentDeclaration: true,
 			componentProperties: { customConfigItemGroups }
 		})
+		const editNoteArea = screen.getAllByText("Add note")[0]
 		const applyCustomConfigButton = screen.getAllByText("mcc")[0].closest("button") as HTMLButtonElement
 
 		expect(applyCustomConfigButton.disabled).toBe(true)
+		expect(editNoteArea).toBeTruthy()
 		expect(getComputedStyle(applyCustomConfigButton).color).toBe("rgb(204, 204, 204)")
 	})
 })
