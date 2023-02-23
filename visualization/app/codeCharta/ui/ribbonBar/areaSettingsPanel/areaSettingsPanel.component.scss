@@ -2,9 +2,18 @@ cc-area-settings-panel {
 	text-align: left;
 	max-height: 300px;
 
-	.bottom-row {
-		align-items: center;
+	.options {
 		display: flex;
-		justify-content: space-between;
+		flex-direction: column;
+
+		.margin-option {
+			position: relative;
+
+			cc-reset-settings-button {
+				position: absolute;
+				top: -20%;
+				left: 20%;
+			}
+		}
 	}
 }
