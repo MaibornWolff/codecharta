@@ -6,8 +6,8 @@ cc-metric-chooser {
 	cc-metric-chooser-value-hovered,
 	.cc-metric-chooser-hovered-container {
 		position: absolute;
-		bottom: 0;
-		right: 0;
+		top: 10%;
+		right: 28px;
 
 		.metric-value {
 			height: 25px;
