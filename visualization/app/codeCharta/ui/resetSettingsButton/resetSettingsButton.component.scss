@@ -4,12 +4,28 @@ cc-reset-settings-button {
 	button {
 		color: theme.$cc-primary-color;
 		background: none;
-		height: 28px;
-		width: 28px;
+		align-items: center;
+		display: flex;
+		gap: 4px;
+		margin: 0;
+		padding: 0;
+
+		.icon-wrapper {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			height: 40px;
+			width: 40px;
+		}
+		.fa {
+			font-size: 18px;
+		}
 
 		&:hover {
-			border-radius: 100%;
-			background-color: rgba(158, 158, 158, 0.2);
+			.icon-wrapper {
+				border-radius: 100px;
+				background-color: rgba(158, 158, 158, 0.2);
+			}
 		}
 	}
 }

@@ -5,12 +5,27 @@ cc-range-slider {
 		display: flex;
 
 		mat-form-field {
-			width: 42px;
-			height: 48px;
+			height: 32px;
 
-			.mat-mdc-form-field-infix {
-				border-top-width: 0;
-				padding-top: 16px;
+			.mat-mdc-text-field-wrapper {
+				padding: 0px 2px;
+
+				div.mat-mdc-form-field-infix {
+					padding: 0px 0px;
+					min-height: 28px;
+
+					.mat-mdc-input-element {
+						min-height: inherit;
+					}
+				}
+			}
+
+			.mat-mdc-form-field-subscript-wrapper.mat-mdc-form-field-bottom-align {
+				display: none;
+			}
+
+			.mat-mdc-form-field-flex {
+				align-self: center;
 			}
 		}
 
