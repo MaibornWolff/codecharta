@@ -19,7 +19,6 @@ import { getMostFrequentLanguage } from "./util/mainProgrammingLanguageHelper"
 import { isPathBlacklisted } from "../../../../util/codeMapHelper"
 import { createSelector } from "../../../../state/angular-redux/createSelector"
 import { blacklistSelector } from "../../../../state/store/fileSettings/blacklist/blacklist.selector"
-import { experimentalFeaturesEnabledSelector } from "../../../../state/store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.selector"
 import { CcState } from "../../../../state/store/store"
 import { AccumulatedData, accumulatedDataSelector } from "../../../../state/selectors/accumulatedData/accumulatedData.selector"
 
@@ -32,25 +31,21 @@ export type ArtificialIntelligenceData = {
 }
 
 export const calculate = (
-	experimentalFeaturesEnabled: boolean,
 	accumulatedData: Pick<AccumulatedData, "unifiedMapNode">,
 	blacklist: BlacklistItem[]
 ): ArtificialIntelligenceData | undefined => {
-	if (!experimentalFeaturesEnabled) {
-		return
-	}
-
 	const artificialIntelligenceViewModel: ArtificialIntelligenceData = {
 		analyzedProgrammingLanguage: undefined,
 		suspiciousMetricSuggestionLinks: [],
 		unsuspiciousMetrics: [],
 		untrackedMetrics: [],
-		riskProfile: { lowRisk: 0, moderateRisk: 0, highRisk: 0, veryHighRisk: 0 }
+		riskProfile: undefined
 	}
 
 	const numberOfFilesByLanguage = new Map<string, number>()
 	const rlocRisk = { lowRisk: 0, moderateRisk: 0, highRisk: 0, veryHighRisk: 0 }
 	let totalRloc = 0
+	let totalMcc = 0
 	const metricValuesByLanguage: MetricValuesByLanguage = {}
 
 	for (const { data } of hierarchy(accumulatedData.unifiedMapNode)) {
@@ -62,13 +57,14 @@ export const calculate = (
 
 			if (isFileValid(data, fileExtension)) {
 				totalRloc += data.attributes[AREA_METRIC]
+				totalMcc += data.attributes[HEIGHT_METRIC]
 				aggregateRiskProfile(data, rlocRisk, fileExtension)
 			}
 		}
+	}
 
-		if (totalRloc > 0) {
-			artificialIntelligenceViewModel.riskProfile = getPercentagesOfRiskProfile(rlocRisk)
-		}
+	if (totalRloc > 0 && totalMcc > 0) {
+		artificialIntelligenceViewModel.riskProfile = getPercentagesOfRiskProfile(rlocRisk)
 	}
 
 	const mainProgrammingLanguage = getMostFrequentLanguage(numberOfFilesByLanguage)
@@ -97,6 +93,6 @@ function isFileValid(node: CodeMapNode, fileExtension: string) {
 }
 
 export const artificialIntelligenceSelector: (state: CcState) => ArtificialIntelligenceData = createSelector(
-	[experimentalFeaturesEnabledSelector, accumulatedDataSelector, blacklistSelector],
+	[accumulatedDataSelector, blacklistSelector],
 	calculate
 )

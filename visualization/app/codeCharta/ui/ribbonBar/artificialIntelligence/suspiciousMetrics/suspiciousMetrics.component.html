@@ -16,6 +16,16 @@
 <mat-menu #menu="matMenu" class="ai-drop-down suspicious-metric-panel">
 	<div *ngIf="data.unsuspiciousMetrics.length">
 		<div class="title">
+			<div>Suspicious Metrics</div>
+		</div>
+		<div class="suspicious-metric">
+			This feature compares the values of certain metrics from the loaded cc.json file with metric values of 241 Open Source Java
+			projects. Based on this data suspicious and inconspicuous metrics are identified and corresponding suggestions can be clicked to
+			view them. Be aware that metrics for other programming languages might not be comparable to Java Reference metric values. More
+			information can be found here:
+			<a href="https://maibornwolff.github.io/codecharta/docs/suspicious-metrics/">link</a> to How-To article.
+		</div>
+		<div class="title">
 			{{
 				data.analyzedProgrammingLanguage?.length
 					? "Unsuspicious Metrics in " + data.analyzedProgrammingLanguage + " code"
@@ -47,7 +57,7 @@
 	</div>
 
 	<div *ngIf="data.untrackedMetrics.length">
-		<div *ngIf="data.analyzedProgrammingLanguage.length" class="title new-section">
+		<div *ngIf="data.analyzedProgrammingLanguage.length" class="title">
 			Untracked metrics in {{ data.analyzedProgrammingLanguage }} code
 		</div>
 		<ul>

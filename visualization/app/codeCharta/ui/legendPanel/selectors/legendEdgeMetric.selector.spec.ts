@@ -44,9 +44,12 @@ describe("_getLegendEdgeMetric", () => {
 				TEST_ATTRIBUTE_DESCRIPTORS_HALF_FILLED
 			)
 		).toEqual({
+			description: "Maximum cyclic complexity",
+			hintHighValue: "",
+			hintLowValue: "",
 			key: "mcc",
-			title: "Maximum Cyclic Complexity",
-			description: "Maximum cyclic complexity"
+			link: "https://www.npmjs.com/package/metric-gardener",
+			title: "Maximum Cyclic Complexity"
 		})
 
 		expect(
@@ -62,9 +65,12 @@ describe("_getLegendEdgeMetric", () => {
 				TEST_ATTRIBUTE_DESCRIPTORS_HALF_FILLED
 			)
 		).toEqual({
+			description: "",
+			hintHighValue: "",
+			hintLowValue: "",
 			key: "rloc",
-			title: "Real Lines of Code",
-			description: ""
+			link: "https://www.npmjs.com/package/metric-gardener",
+			title: "Real Lines of Code"
 		})
 	})
 })
