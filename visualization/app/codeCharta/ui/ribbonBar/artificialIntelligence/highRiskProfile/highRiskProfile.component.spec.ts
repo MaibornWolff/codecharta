@@ -57,7 +57,11 @@ describe("HighRiskProfileComponent", () => {
 
 		await userEvent.click(screen.getByTitle("Open High Risk Profile"))
 
-		expect(screen.getByText("Could not calculate Risk Profile. Metrics rloc and mcc not available.")).toBeTruthy()
+		expect(
+			screen.getByText(
+				"Could not calculate Risk Profile. Metrics rloc(Real lines of code) and mcc(Cyclomatic complexity) not available."
+			)
+		).toBeTruthy()
 	})
 
 	it("should explain that there couldn't be analyzed a risk profile even when analyzedProgrammingLanguage is undefined", async () => {
@@ -74,6 +78,10 @@ describe("HighRiskProfileComponent", () => {
 
 		await userEvent.click(screen.getByTitle("Open High Risk Profile"))
 
-		expect(screen.getByText("Could not calculate Risk Profile. Metrics rloc and mcc not available.")).toBeTruthy()
+		expect(
+			screen.getByText(
+				"Could not calculate Risk Profile. Metrics rloc(Real lines of code) and mcc(Cyclomatic complexity) not available."
+			)
+		).toBeTruthy()
 	})
 })

@@ -19,7 +19,8 @@
 	</div>
 </mat-card>
 
-<mat-card *ngIf="experimentalFeaturesEnabled$ | async" id="ai-card" class="ai-card">
+<mat-card id="ai-card" class="ai-card">
+	<span class="badge-ai">New</span>
 	<div class="section">
 		<div class="section-header">
 			<cc-artificial-intelligence></cc-artificial-intelligence>

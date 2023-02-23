@@ -3,13 +3,8 @@ import { VALID_NODE_JAVA } from "../../../../util/dataMocks"
 import { BlacklistItem, NodeType } from "../../../../codeCharta.model"
 
 describe("ArtificialIntelligenceSelector", () => {
-	it("should return undefined when experimental features are disabled ", () => {
-		const actual = calculate(false, { unifiedMapNode: VALID_NODE_JAVA }, [])
-		expect(actual).toBeUndefined()
-	})
-
 	it("should calculate suspicious metrics and risk profile when experimental features are enabled ", () => {
-		const actual = calculate(true, { unifiedMapNode: VALID_NODE_JAVA }, [])
+		const actual = calculate({ unifiedMapNode: VALID_NODE_JAVA }, [])
 
 		expect(actual).toEqual({
 			analyzedProgrammingLanguage: "java",
@@ -24,11 +19,11 @@ describe("ArtificialIntelligenceSelector", () => {
 		})
 	})
 
-	it("should return untracked metrics when experimental features are enabled ", () => {
+	it("should return untracked metrics", () => {
 		VALID_NODE_JAVA.children[0].children.map(object => {
 			object.attributes.unknownMetric = 2569
 		})
-		const actual = calculate(true, { unifiedMapNode: VALID_NODE_JAVA }, [])
+		const actual = calculate({ unifiedMapNode: VALID_NODE_JAVA }, [])
 
 		expect(actual).toEqual({
 			analyzedProgrammingLanguage: "java",
@@ -43,7 +38,7 @@ describe("ArtificialIntelligenceSelector", () => {
 		})
 	})
 
-	it("should ignore excluded nodes when experimental features are enabled", () => {
+	it("should ignore excluded nodes", () => {
 		const blacklist: BlacklistItem[] = [{ path: "file1.java", type: "exclude" }]
 		const blacklistedNode = {
 			name: "file1.java",
@@ -52,15 +47,10 @@ describe("ArtificialIntelligenceSelector", () => {
 			attributes: { rloc: 70, mcc: 1000 }
 		}
 
-		const actual = calculate(true, { unifiedMapNode: blacklistedNode }, blacklist)
+		const actual = calculate({ unifiedMapNode: blacklistedNode }, blacklist)
 
 		expect(actual).toEqual({
-			riskProfile: {
-				highRisk: 0,
-				lowRisk: 0,
-				moderateRisk: 0,
-				veryHighRisk: 0
-			},
+			riskProfile: undefined,
 			suspiciousMetricSuggestionLinks: [],
 			unsuspiciousMetrics: [],
 			untrackedMetrics: []
