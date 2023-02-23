@@ -19,6 +19,9 @@ cc-custom-config-item-group {
 			margin-bottom: 30px;
 			text-align: left;
 			flex: 0 0 22em;
+			&:hover {
+				cursor: pointer;
+			}
 		}
 
 		&.config-item-note {
@@ -29,6 +32,9 @@ cc-custom-config-item-group {
 			text-align: left;
 			flex: 0 0 22em;
 			color: grey;
+			&:hover {
+				cursor: pointer;
+			}
 		}
 	}
 }

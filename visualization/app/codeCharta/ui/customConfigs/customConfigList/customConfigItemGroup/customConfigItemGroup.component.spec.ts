@@ -86,6 +86,31 @@ describe("customConfigItemGroupComponent", () => {
 		expect(mockedDialogReference.close).toHaveBeenCalledTimes(0)
 	})
 
+	it("should apply a custom config and close custom config dialog when clicking on config name", async () => {
+		mockedVisibleFilesBySelectionModeSelector.mockImplementation(() => {
+			return {
+				mapSelectionMode: CustomConfigMapSelectionMode.MULTIPLE,
+				assignedMaps: new Map([
+					["md5_fileB", "fileB"],
+					["md5_fileC", "fileC"]
+				])
+			}
+		})
+		const customConfigItemGroups = new Map([["File_B_File_C_STANDARD", CUSTOM_CONFIG_ITEM_GROUPS.get("File_B_File_C_STANDARD")]])
+		await render(CustomConfigItemGroupComponent, {
+			excludeComponentDeclaration: true,
+			componentProperties: { customConfigItemGroups }
+		})
+
+		CustomConfigHelper.applyCustomConfig = jest.fn()
+		const applyCustomConfigButton = screen.getByText("SampleMap View #1").closest("span") as HTMLElement
+
+		await userEvent.click(applyCustomConfigButton)
+
+		expect(CustomConfigHelper.applyCustomConfig).toHaveBeenCalledTimes(1)
+		expect(mockedDialogReference.close).toHaveBeenCalledTimes(1)
+	})
+
 	it("should show tooltip with missing maps and correct selection mode if selected custom config is not fully applicable", async () => {
 		mockedVisibleFilesBySelectionModeSelector.mockImplementation(() => {
 			return {

@@ -16,10 +16,18 @@
 		<mat-list-item title="{{ customConfig | customConfig2ApplicableMessage }}">
 			<div class="metrics-box">
 				<p class="config-item-name" title="{{ customConfig.name }}">
-					<b>{{ customConfig.name | customConfigTransformNote: 33 }}</b>
+					<b
+						><span (click)="applyCustomConfig(customConfig.id)" mat-dialog-close>
+							{{ customConfig.name | customConfigTransformNote: 33 }}
+						</span></b
+					>
 				</p>
 				<div class="configNoteAndButton">
-					<p class="config-item-note">{{ customConfig.note | customConfigTransformNote: 47 }}</p>
+					<p class="config-item-note">
+						<span (click)="applyCustomConfig(customConfig.id)" mat-dialog-close>
+							{{ customConfig.note | customConfigTransformNote: 47 }}
+						</span>
+					</p>
 					<cc-custom-config-note-dialog [customConfigItem]="customConfig"></cc-custom-config-note-dialog>
 				</div>
 			</div>
