@@ -1,17 +1,14 @@
 cc-attribute-type-selector {
-	/* TODO(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version. */
-	.mat-button-toggle-group {
+	.mat-mdc-button-toggle-group {
 		height: 18px;
 		align-items: center;
 		justify-content: space-evenly;
 	}
-	/* TODO(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version. */
-	.mat-button-toggle-appearance-standard .mat-button-toggle-label-content {
+	.mat-mdc-button-toggle-appearance-standard .mat-button-toggle-label-content {
 		padding: 0 7px 0 7px;
 	}
-	/* TODO(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version. */
-	.mat-button-toggle-standalone.mat-button-toggle-appearance-standard,
-	.mat-button-toggle-group-appearance-standard {
+	.mat-mdc-button-toggle-standalone.mat-button-toggle-appearance-standard,
+	.mat-mdc-button-toggle-group-appearance-standard {
 		border: 0.1px solid darkgrey;
 	}
 }
