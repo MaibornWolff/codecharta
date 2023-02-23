@@ -18,7 +18,6 @@ import { debounce } from "../../../util/debounce"
 @Component({
 	selector: "cc-height-settings-panel",
 	templateUrl: "./heightSettingsPanel.component.html",
-	styleUrls: ["./heightSettingsPanel.component.scss"],
 	encapsulation: ViewEncapsulation.None
 })
 export class HeightSettingsPanelComponent {

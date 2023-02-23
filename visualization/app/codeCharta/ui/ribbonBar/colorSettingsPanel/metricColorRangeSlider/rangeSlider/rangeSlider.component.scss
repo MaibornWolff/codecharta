@@ -3,29 +3,29 @@
 cc-range-slider {
 	.cc-range-slider-container {
 		display: flex;
-
+		align-items: center;
 		mat-form-field {
 			height: 32px;
 
 			.mat-mdc-text-field-wrapper {
-				padding: 0px 2px;
+				padding: 0px 4px;
 
-				div.mat-mdc-form-field-infix {
-					padding: 0px 0px;
-					min-height: 28px;
+				.mat-mdc-form-field-flex {
+					align-self: center;
 
-					.mat-mdc-input-element {
-						min-height: inherit;
+					.mat-mdc-form-field-infix {
+						padding: 0px 0px;
+						min-height: 28px;
+
+						.mat-mdc-input-element {
+							min-height: inherit;
+						}
 					}
 				}
 			}
 
 			.mat-mdc-form-field-subscript-wrapper.mat-mdc-form-field-bottom-align {
 				display: none;
-			}
-
-			.mat-mdc-form-field-flex {
-				align-self: center;
 			}
 		}
 
