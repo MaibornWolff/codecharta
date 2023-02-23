@@ -1,9 +1,11 @@
 cc-link-color-metric-to-height-metric-button {
 	display: flex;
 	justify-content: center;
+	height: 100%;
 
 	.link-metrics-button {
 		width: 50px;
+		height: 100%;
 		padding: 0;
 		margin: 0;
 		background-color: transparent;

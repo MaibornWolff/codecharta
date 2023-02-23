@@ -9,35 +9,31 @@ cc-global-configuration-button button {
 	}
 
 	&:hover cc-action-icon {
-		background-color: rgb(0, 124, 112);
+		background-color: theme.$cc-emphasized-color;
 	}
 }
 
 .cc-global-configuration-dialog .mat-mdc-dialog-container {
-	width: 50vw;
-
-	.cc-global-configuration-align-right {
-		margin-left: auto;
-		.close-button {
-			padding-bottom: 5px;
-		}
-	}
+	width: 36vw;
+	min-width: 600px;
 
 	.cc-global-configuration-dialog-content {
-		padding: 0 15px;
+		padding: 0 16px;
 		display: flex;
 		flex-direction: column;
-		gap: 1.6em;
+		gap: 26px;
 	}
 
 	cc-map-layout-selection,
 	cc-display-quality-selection {
 		> mat-form-field {
 			width: 100%;
+
+			.mat-mdc-form-field-subscript-wrapper.mat-mdc-form-field-bottom-align {
+				display: none;
+			}
 		}
-		.mat-mdc-form-field-subscript-wrapper.mat-mdc-form-field-bottom-align {
-			display: none;
-		}
+
 		.cc-tree-maps-max-tree-map-files {
 			display: inline-block;
 			padding-left: 16px;
@@ -47,21 +43,20 @@ cc-global-configuration-button button {
 	.cc-global-configuration-toggle-option {
 		display: flex;
 		flex-direction: column;
-		gap: 1.6em;
+		gap: inherit;
 	}
 
 	.cc-global-configuration-links-list {
 		display: flex;
-		flex-direction: column;
-		gap: 0.6em;
+		gap: 16px;
 
 		.weblink {
 			display: block;
 			color: rgba(0, 0, 0, 0.870588);
 			text-decoration: none;
 
-			i {
-				margin-right: 16px;
+			.fa {
+				margin: 8px;
 			}
 		}
 	}
