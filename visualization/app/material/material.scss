@@ -19,6 +19,5 @@
 @include mat.slider-theme(theme.$cc-theme);
 @include mat.slide-toggle-theme(theme.$cc-theme);
 
-@import "./matSelect.scss";
 @import "./matMenu.scss";
 @import "./matDialog.scss";
