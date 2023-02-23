@@ -14,12 +14,12 @@
 	</mat-expansion-panel-header>
 	<mat-list *ngFor="let customConfig of customConfigItemGroup.value.customConfigItems">
 		<mat-list-item title="{{ customConfig | customConfig2ApplicableMessage }}">
-			<div>
+			<div class="metrics-box">
 				<p class="config-item-name" title="{{ customConfig.name }}">
 					<b>{{ customConfig.name | customConfigTransformNote: 33 }}</b>
 				</p>
-				<div id="configNoteAndButton">
-					<p class="config-item-note">{{ customConfig.note | customConfigTransformNote: 42 }}</p>
+				<div class="configNoteAndButton">
+					<p class="config-item-note">{{ customConfig.note | customConfigTransformNote: 47 }}</p>
 					<cc-custom-config-note-dialog [customConfigItem]="customConfig"></cc-custom-config-note-dialog>
 				</div>
 			</div>

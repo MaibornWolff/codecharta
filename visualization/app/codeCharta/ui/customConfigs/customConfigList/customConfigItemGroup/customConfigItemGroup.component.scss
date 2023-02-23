@@ -1,13 +1,22 @@
 cc-custom-config-item-group {
-	#configNoteAndButton {
-		display: flex;
-		align-items: center;
+	div {
+		.configNoteAndButton {
+			display: flex;
+			align-items: center;
+			position: absolute;
+			top: 15px;
+		}
+
+		.metrics-box {
+			margin-right: 30px;
+		}
 	}
 
 	p {
 		&.config-item-name {
 			font-size: 15px;
-			margin: 5px 0;
+			margin-top: 10px;
+			margin-bottom: 29px;
 			text-align: left;
 			flex: 0 0 22em;
 		}

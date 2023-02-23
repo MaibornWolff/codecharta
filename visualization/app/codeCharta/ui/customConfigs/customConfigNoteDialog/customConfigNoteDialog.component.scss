@@ -1,14 +1,16 @@
 @use "app/material/theme";
+cc-manage-custom-config-note-dialog {
+	button {
+		&.customConfigNoteDialogButton {
+			white-space: nowrap;
+			min-width: auto;
+			font-size: 12px;
 
-#customConfigNoteDialogButton {
-	white-space: nowrap;
-	min-width: auto;
-	font-size: 12px;
-	margin: 0;
-
-	&:hover {
-		background-color: rgba(0, 0, 0, 0.05);
-		color: theme.$cc-primary-color;
-		border-radius: 50%;
+			&:hover {
+				background-color: rgba(0, 0, 0, 0.05);
+				color: theme.$cc-primary-color;
+				border-radius: 50%;
+			}
+		}
 	}
 }
