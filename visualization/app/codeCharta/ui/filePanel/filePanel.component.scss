@@ -27,17 +27,6 @@ cc-file-panel {
 			&.current:hover {
 				background-color: theme.$cc-primary-color;
 			}
-
-			.text {
-				display: block;
-				margin-top: -5px;
-				margin-right: 0px;
-
-				&:active {
-					padding: -5px;
-					margin: -5px;
-				}
-			}
 		}
 	}
 
