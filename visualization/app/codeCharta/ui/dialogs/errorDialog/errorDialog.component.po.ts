@@ -8,7 +8,7 @@ export class DialogErrorPageObject {
 
 	async clickOk() {
 		await clickButtonOnPageElement(".mat-mdc-dialog-actions button")
-		await page.waitForSelector(".mat-mdc-dialog-actions button", { visible: false })
+		await page.waitForFunction(() => !document.querySelector(".mat-mdc-dialog-actions button"))
 	}
 
 	async clickOkAndReturnWhenFullyClosed() {
