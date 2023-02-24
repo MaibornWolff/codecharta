@@ -25,6 +25,6 @@ function getMetricTitle(metric: string, attributeDescriptors: AttributeDescripto
 	if (attributeDescriptors?.[metric]?.title !== undefined && attributeDescriptors[metric].title !== "") {
 		return attributeDescriptors[metric].title
 	}
-	//Fallback Description can still return null
+	//Fallback Description can still return undefined
 	return metricTitles.get(metric)
 }
