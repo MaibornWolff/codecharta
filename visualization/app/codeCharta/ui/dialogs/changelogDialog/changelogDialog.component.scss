@@ -1,14 +1,10 @@
 @use "../../../../material/theme";
 
 .cc-changelog-dialog .mat-mdc-dialog-container {
-	[mat-dialog-title] {
-		color: white;
-		background-color: theme.$cc-primary-color;
-	}
-
 	[mat-dialog-content] {
 		padding: 8px 24px 0 24px;
 		margin-top: 10px;
+		color: black;
 
 		img[alt$="xs"] {
 			height: 32px;
