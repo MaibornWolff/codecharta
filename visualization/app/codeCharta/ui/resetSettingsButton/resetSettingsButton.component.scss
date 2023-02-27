@@ -10,20 +10,18 @@ cc-reset-settings-button {
 		margin: 0;
 		padding: 0;
 
-		.icon-wrapper {
+		.fa {
 			display: flex;
 			align-items: center;
 			justify-content: center;
 			height: 40px;
 			width: 40px;
-		}
-		.fa {
 			font-size: 18px;
 		}
 
 		&:hover {
-			.icon-wrapper {
-				border-radius: 100px;
+			.fa {
+				border-radius: 100%;
 				background-color: rgba(158, 158, 158, 0.2);
 			}
 		}
