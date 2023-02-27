@@ -56,7 +56,7 @@ describe("metricChooserComponent", () => {
 		})
 
 		await userEvent.click(await screen.findByText("aMetric (1)"))
-		await screen.getByPlaceholderText("search metric (max value)")
+		screen.getByPlaceholderText("search metric (max value)")
 		const searchBox = getSearchBox()
 		expect(document.activeElement).toBe(searchBox)
 
