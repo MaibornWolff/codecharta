@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Changed
 
--   Improve the docs for suspicious metrics and risk profile feature.
+-   Improve the docs for suspicious metrics and risk profile feature [#3238](https://github.com/MaibornWolff/codecharta/pull/3238)
 
 ### Fixed 🐞
 
