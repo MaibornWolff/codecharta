@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Changed
+
+-   Improve the docs for suspicious metrics and risk profile feature.
+
 ### Fixed 🐞
 
 -   Unselecting a folder in Presentation Mode leads to console error [#3215](https://github.com/MaibornWolff/codecharta/pull/3215)
