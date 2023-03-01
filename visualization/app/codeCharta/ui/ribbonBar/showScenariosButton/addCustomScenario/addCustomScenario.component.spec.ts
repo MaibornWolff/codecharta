@@ -1,11 +1,14 @@
+import { TestbedHarnessEnvironment } from "@angular/cdk/testing/testbed"
 import { TestBed } from "@angular/core/testing"
 import { MatDialogRef } from "@angular/material/dialog"
+import { MatInputHarness } from "@angular/material/input/testing"
+import { MatButtonHarness } from "@angular/material/button/testing"
 import { render, screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
 import { Vector3 } from "three"
 import { setState } from "../../../../state/store/state.actions"
 import { Store } from "../../../../state/store/store"
-import { STATE } from "../../../../util/dataMocks"
+import { SCENARIO_ATTRIBUTE_CONTENT, STATE } from "../../../../util/dataMocks"
 import { ThreeCameraService } from "../../../codeMap/threeViewer/threeCamera.service"
 import { ThreeOrbitControlsService } from "../../../codeMap/threeViewer/threeOrbitControls.service"
 import { ScenarioHelper } from "../scenarioHelper"
@@ -24,21 +27,24 @@ describe("AddCustomScenarioComponent", () => {
 		})
 	})
 
-	//TODO(mdc-migration): MDC-Migration breaks this test (maybe a change to the dialog api)
-	// it("should enable the user to add a custom scenario, with all properties set initially", async () => {
-	// 	ScenarioHelper.addScenario = jest.fn()
-	// 	Store.dispatch(setState(STATE))
-	// 	const { container } = await render(AddCustomScenarioComponent, { excludeComponentDeclaration: true })
-	// 	const closeDialog = TestBed.inject(MatDialogRef).close
+	it("should enable the user to add a custom scenario, with all properties set initially", async () => {
+		ScenarioHelper.addScenario = jest.fn()
+		Store.dispatch(setState(STATE))
+		const { fixture } = await render(AddCustomScenarioComponent, { excludeComponentDeclaration: true })
+		const loader = TestbedHarnessEnvironment.loader(fixture)
 
-	// 	await userEvent.type(container.querySelector("input"), "my-custom-scenario")
-	// 	await userEvent.click(container.querySelector("button"))
+		const closeDialog = TestBed.inject(MatDialogRef).close
+		const nameInput = await loader.getHarness(MatInputHarness)
+		const createButton = await loader.getHarness(MatButtonHarness.with({ text: "ADD" }))
 
-	// 	expect(ScenarioHelper.addScenario).toHaveBeenCalled()
-	// 	expect((ScenarioHelper.addScenario as jest.Mock).mock.calls[0][0]).toBe("my-custom-scenario")
-	// 	expect((ScenarioHelper.addScenario as jest.Mock).mock.calls[0][1]).toEqual(SCENARIO_ATTRIBUTE_CONTENT)
-	// 	expect(closeDialog).toHaveBeenCalled()
-	// })
+		await nameInput.setValue("my-custom-scenario")
+		await createButton.click()
+
+		expect(ScenarioHelper.addScenario).toHaveBeenCalled()
+		expect((ScenarioHelper.addScenario as jest.Mock).mock.calls[0][0]).toBe("my-custom-scenario")
+		expect((ScenarioHelper.addScenario as jest.Mock).mock.calls[0][1]).toEqual(SCENARIO_ATTRIBUTE_CONTENT)
+		expect(closeDialog).toHaveBeenCalled()
+	})
 
 	it("should validate scenario's name", async () => {
 		ScenarioHelper.isScenarioExisting = (name: string) => name === "I-already-exist"
