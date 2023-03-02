@@ -1,8 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`CodeCharta logo should have correct image as logo 1`] = `
-Object {
-  "data": Array [
+{
+  "data": [
     137,
     80,
     78,

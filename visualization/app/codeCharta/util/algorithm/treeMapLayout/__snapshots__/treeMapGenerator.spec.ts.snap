@@ -1,9 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`treeMapGenerator create Treemap nodes create map with fixed root children which include dynamic folders on the one hand and fixed ones at the other 1`] = `
-Array [
-  Object {
-    "attributes": Object {},
+[
+  {
+    "attributes": {},
     "color": "#666666",
     "deltas": undefined,
     "depth": 0,
@@ -34,8 +34,8 @@ Array [
     "y0": 0,
     "z0": 0,
   },
-  Object {
-    "attributes": Object {},
+  {
+    "attributes": {},
     "color": "#666666",
     "deltas": undefined,
     "depth": 1,
@@ -67,8 +67,8 @@ Array [
     "y0": 31.996363335788033,
     "z0": 2,
   },
-  Object {
-    "attributes": Object {},
+  {
+    "attributes": {},
     "color": "#666666",
     "deltas": undefined,
     "depth": 2,
@@ -100,8 +100,8 @@ Array [
     "y0": 60.146078008267445,
     "z0": 4,
   },
-  Object {
-    "attributes": Object {},
+  {
+    "attributes": {},
     "color": "#666666",
     "deltas": undefined,
     "depth": 2,
@@ -133,8 +133,8 @@ Array [
     "y0": 665.8351639188037,
     "z0": 4,
   },
-  Object {
-    "attributes": Object {
+  {
+    "attributes": {
       "rloc": 80,
     },
     "color": "#666666",
@@ -168,8 +168,8 @@ Array [
     "y0": 88.29579268074686,
     "z0": 6,
   },
-  Object {
-    "attributes": Object {
+  {
+    "attributes": {
       "rloc": 80,
     },
     "color": "#666666",
@@ -203,8 +203,8 @@ Array [
     "y0": 88.29579268074686,
     "z0": 6,
   },
-  Object {
-    "attributes": Object {
+  {
+    "attributes": {
       "rloc": 65,
     },
     "color": "#666666",
@@ -238,8 +238,8 @@ Array [
     "y0": 693.9848785912832,
     "z0": 6,
   },
-  Object {
-    "attributes": Object {},
+  {
+    "attributes": {},
     "color": "#666666",
     "deltas": undefined,
     "depth": 1,
@@ -271,8 +271,8 @@ Array [
     "y0": 959.890900073641,
     "z0": 2,
   },
-  Object {
-    "attributes": Object {},
+  {
+    "attributes": {},
     "color": "#666666",
     "deltas": undefined,
     "depth": 2,
@@ -304,8 +304,8 @@ Array [
     "y0": 969.4898090743774,
     "z0": 4,
   },
-  Object {
-    "attributes": Object {
+  {
+    "attributes": {
       "rloc": 5,
     },
     "color": "#666666",
@@ -339,8 +339,8 @@ Array [
     "y0": 976.1730134565818,
     "z0": 6,
   },
-  Object {
-    "attributes": Object {},
+  {
+    "attributes": {},
     "color": "#666666",
     "deltas": undefined,
     "depth": 2,
@@ -372,8 +372,8 @@ Array [
     "y0": 1209.4625340927876,
     "z0": 4,
   },
-  Object {
-    "attributes": Object {
+  {
+    "attributes": {
       "rloc": 12,
     },
     "color": "#666666",
@@ -407,8 +407,8 @@ Array [
     "y0": 1218.5563125172805,
     "z0": 6,
   },
-  Object {
-    "attributes": Object {
+  {
+    "attributes": {
       "rloc": 12,
     },
     "color": "#666666",
@@ -442,8 +442,8 @@ Array [
     "y0": 1218.5563125172805,
     "z0": 6,
   },
-  Object {
-    "attributes": Object {
+  {
+    "attributes": {
       "rloc": 12,
     },
     "color": "#666666",
@@ -477,8 +477,8 @@ Array [
     "y0": 1218.5563125172805,
     "z0": 6,
   },
-  Object {
-    "attributes": Object {
+  {
+    "attributes": {
       "rloc": 12,
     },
     "color": "#666666",
@@ -512,8 +512,8 @@ Array [
     "y0": 1218.5563125172805,
     "z0": 6,
   },
-  Object {
-    "attributes": Object {
+  {
+    "attributes": {
       "rloc": 12,
     },
     "color": "#666666",
@@ -547,8 +547,8 @@ Array [
     "y0": 1307.0683275545528,
     "z0": 6,
   },
-  Object {
-    "attributes": Object {
+  {
+    "attributes": {
       "rloc": 12,
     },
     "color": "#666666",
@@ -582,8 +582,8 @@ Array [
     "y0": 1351.3243350731889,
     "z0": 6,
   },
-  Object {
-    "attributes": Object {
+  {
+    "attributes": {
       "rloc": 12,
     },
     "color": "#666666",
@@ -617,8 +617,8 @@ Array [
     "y0": 1395.5803425918252,
     "z0": 6,
   },
-  Object {
-    "attributes": Object {
+  {
+    "attributes": {
       "rloc": 12,
     },
     "color": "#666666",
@@ -652,8 +652,8 @@ Array [
     "y0": 1307.0683275545528,
     "z0": 6,
   },
-  Object {
-    "attributes": Object {
+  {
+    "attributes": {
       "rloc": 12,
     },
     "color": "#666666",
@@ -687,8 +687,8 @@ Array [
     "y0": 1307.0683275545528,
     "z0": 6,
   },
-  Object {
-    "attributes": Object {
+  {
+    "attributes": {
       "rloc": 12,
     },
     "color": "#666666",
@@ -726,9 +726,9 @@ Array [
 `;
 
 exports[`treeMapGenerator create Treemap nodes create map with fixed root children which include fixed folders on the one hand and a file at the other 1`] = `
-Array [
-  Object {
-    "attributes": Object {},
+[
+  {
+    "attributes": {},
     "color": "#666666",
     "deltas": undefined,
     "depth": 0,
@@ -759,8 +759,8 @@ Array [
     "y0": 0,
     "z0": 0,
   },
-  Object {
-    "attributes": Object {},
+  {
+    "attributes": {},
     "color": "#666666",
     "deltas": undefined,
     "depth": 1,
@@ -792,8 +792,8 @@ Array [
     "y0": 117.88225099390857,
     "z0": 2,
   },
-  Object {
-    "attributes": Object {},
+  {
+    "attributes": {},
     "color": "#666666",
     "deltas": undefined,
     "depth": 2,
@@ -825,8 +825,8 @@ Array [
     "y0": 188.6116015902537,
     "z0": 4,
   },
-  Object {
-    "attributes": Object {
+  {
+    "attributes": {
       "rloc": 12,
     },
     "color": "#666666",
@@ -860,8 +860,8 @@ Array [
     "y0": 210.81829207625287,
     "z0": 6,
   },
-  Object {
-    "attributes": Object {},
+  {
+    "attributes": {},
     "color": "#666666",
     "deltas": undefined,
     "depth": 2,
@@ -893,8 +893,8 @@ Array [
     "y0": 612.9877051683246,
     "z0": 4,
   },
-  Object {
-    "attributes": Object {
+  {
+    "attributes": {
       "rloc": 6,
     },
     "color": "#666666",
@@ -928,8 +928,8 @@ Array [
     "y0": 618.0975054663045,
     "z0": 6,
   },
-  Object {
-    "attributes": Object {},
+  {
+    "attributes": {},
     "color": "#666666",
     "deltas": undefined,
     "depth": 1,
@@ -961,8 +961,8 @@ Array [
     "y0": 943.0580079512686,
     "z0": 2,
   },
-  Object {
-    "attributes": Object {
+  {
+    "attributes": {
       "rloc": 10,
     },
     "color": "#666666",
@@ -1000,9 +1000,9 @@ Array [
 `;
 
 exports[`treeMapGenerator create Treemap nodes only root node 1`] = `
-Array [
-  Object {
-    "attributes": Object {},
+[
+  {
+    "attributes": {},
     "color": "#666666",
     "deltas": undefined,
     "depth": 0,
@@ -1038,9 +1038,9 @@ Array [
 `;
 
 exports[`treeMapGenerator create Treemap nodes root node with two direct children 1`] = `
-Array [
-  Object {
-    "attributes": Object {},
+[
+  {
+    "attributes": {},
     "color": "#666666",
     "deltas": undefined,
     "depth": 0,
@@ -1072,8 +1072,8 @@ Array [
     "y0": 0,
     "z0": 0,
   },
-  Object {
-    "attributes": Object {
+  {
+    "attributes": {
       "functions": 10,
       "mcc": 1,
       "rloc": 100,
@@ -1109,8 +1109,8 @@ Array [
     "y0": 19.200000000000003,
     "z0": 2,
   },
-  Object {
-    "attributes": Object {},
+  {
+    "attributes": {},
     "color": "#666666",
     "deltas": undefined,
     "depth": 1,
@@ -1146,9 +1146,9 @@ Array [
 `;
 
 exports[`treeMapGenerator create Treemap nodes root node with two direct children and some grand children 1`] = `
-Array [
-  Object {
-    "attributes": Object {},
+[
+  {
+    "attributes": {},
     "color": "#666666",
     "deltas": undefined,
     "depth": 0,
@@ -1180,8 +1180,8 @@ Array [
     "y0": 0,
     "z0": 0,
   },
-  Object {
-    "attributes": Object {
+  {
+    "attributes": {
       "functions": 10,
       "mcc": 1,
       "rloc": 100,
@@ -1217,8 +1217,8 @@ Array [
     "y0": 19.200000000000003,
     "z0": 2,
   },
-  Object {
-    "attributes": Object {},
+  {
+    "attributes": {},
     "color": "#666666",
     "deltas": undefined,
     "depth": 1,
@@ -1250,8 +1250,8 @@ Array [
     "y0": 19.200000000000003,
     "z0": 2,
   },
-  Object {
-    "attributes": Object {
+  {
+    "attributes": {
       "functions": 100,
       "mcc": 100,
       "rloc": 30,
@@ -1287,8 +1287,8 @@ Array [
     "y0": 38.400000000000006,
     "z0": 4,
   },
-  Object {
-    "attributes": Object {
+  {
+    "attributes": {
       "functions": 1000,
       "mcc": 10,
       "rloc": 70,
@@ -1324,8 +1324,8 @@ Array [
     "y0": 306.16530459215556,
     "z0": 4,
   },
-  Object {
-    "attributes": Object {},
+  {
+    "attributes": {},
     "color": "#666666",
     "deltas": undefined,
     "depth": 2,
@@ -1361,9 +1361,9 @@ Array [
 `;
 
 exports[`treeMapGenerator create Treemap nodes should build the tree map with valid coordinates using the fixed folder structure 1`] = `
-Array [
-  Object {
-    "attributes": Object {},
+[
+  {
+    "attributes": {},
     "color": "#666666",
     "deltas": undefined,
     "depth": 0,
@@ -1394,8 +1394,8 @@ Array [
     "y0": 0,
     "z0": 0,
   },
-  Object {
-    "attributes": Object {},
+  {
+    "attributes": {},
     "color": "#666666",
     "deltas": undefined,
     "depth": 1,
@@ -1427,8 +1427,8 @@ Array [
     "y0": 78.66563145999496,
     "z0": 2,
   },
-  Object {
-    "attributes": Object {
+  {
+    "attributes": {
       "custom_metric": 2,
     },
     "color": "#666666",
@@ -1462,8 +1462,8 @@ Array [
     "y0": 92.52232984560875,
     "z0": 4,
   },
-  Object {
-    "attributes": Object {
+  {
+    "attributes": {
       "custom_metric": 4,
     },
     "color": "#666666",
@@ -1497,8 +1497,8 @@ Array [
     "y0": 92.52232984560875,
     "z0": 4,
   },
-  Object {
-    "attributes": Object {
+  {
+    "attributes": {
       "custom_metric": 6,
     },
     "color": "#666666",
@@ -1532,8 +1532,8 @@ Array [
     "y0": 92.52232984560875,
     "z0": 4,
   },
-  Object {
-    "attributes": Object {},
+  {
+    "attributes": {},
     "color": "#666666",
     "deltas": undefined,
     "depth": 1,
@@ -1565,8 +1565,8 @@ Array [
     "y0": 393.3281572999748,
     "z0": 2,
   },
-  Object {
-    "attributes": Object {
+  {
+    "attributes": {
       "custom_metric": 10,
     },
     "color": "#666666",
@@ -1600,8 +1600,8 @@ Array [
     "y0": 438.2429351205931,
     "z0": 4,
   },
-  Object {
-    "attributes": Object {
+  {
+    "attributes": {
       "custom_metric": 0,
     },
     "color": "#666666",
@@ -1635,8 +1635,8 @@ Array [
     "y0": 438.2429351205931,
     "z0": 4,
   },
-  Object {
-    "attributes": Object {},
+  {
+    "attributes": {},
     "color": "#666666",
     "deltas": undefined,
     "depth": 1,
@@ -1668,8 +1668,8 @@ Array [
     "y0": 393.3281572999748,
     "z0": 2,
   },
-  Object {
-    "attributes": Object {
+  {
+    "attributes": {
       "custom_metric": 4,
     },
     "color": "#666666",
@@ -1703,8 +1703,8 @@ Array [
     "y0": 438.2429351205931,
     "z0": 4,
   },
-  Object {
-    "attributes": Object {
+  {
+    "attributes": {
       "custom_metric": 0,
     },
     "color": "#666666",
@@ -1738,8 +1738,8 @@ Array [
     "y0": 438.2429351205931,
     "z0": 4,
   },
-  Object {
-    "attributes": Object {},
+  {
+    "attributes": {},
     "color": "#666666",
     "deltas": undefined,
     "depth": 1,
@@ -1771,8 +1771,8 @@ Array [
     "y0": 78.66563145999496,
     "z0": 2,
   },
-  Object {
-    "attributes": Object {
+  {
+    "attributes": {
       "custom_metric": 20,
     },
     "color": "#666666",
@@ -1806,8 +1806,8 @@ Array [
     "y0": 150.91785809502508,
     "z0": 4,
   },
-  Object {
-    "attributes": Object {
+  {
+    "attributes": {
       "custom_metric": 5,
     },
     "color": "#666666",
@@ -1841,8 +1841,8 @@ Array [
     "y0": 150.91785809502508,
     "z0": 4,
   },
-  Object {
-    "attributes": Object {},
+  {
+    "attributes": {},
     "color": "#666666",
     "deltas": undefined,
     "depth": 1,
@@ -1874,8 +1874,8 @@ Array [
     "y0": 78.66563145999496,
     "z0": 2,
   },
-  Object {
-    "attributes": Object {
+  {
+    "attributes": {
       "custom_metric": 10,
     },
     "color": "#666666",
@@ -1909,8 +1909,8 @@ Array [
     "y0": 150.91785809502508,
     "z0": 4,
   },
-  Object {
-    "attributes": Object {
+  {
+    "attributes": {
       "custom_metric": 0,
     },
     "color": "#666666",
@@ -1944,8 +1944,8 @@ Array [
     "y0": 150.91785809502508,
     "z0": 4,
   },
-  Object {
-    "attributes": Object {},
+  {
+    "attributes": {},
     "color": "#666666",
     "deltas": undefined,
     "depth": 1,
@@ -1977,8 +1977,8 @@ Array [
     "y0": 1258.6501033599193,
     "z0": 2,
   },
-  Object {
-    "attributes": Object {
+  {
+    "attributes": {
       "custom_metric": 1,
     },
     "color": "#666666",
@@ -2012,8 +2012,8 @@ Array [
     "y0": 1273.68989137583,
     "z0": 4,
   },
-  Object {
-    "attributes": Object {
+  {
+    "attributes": {
       "custom_metric": 1,
     },
     "color": "#666666",
@@ -2051,9 +2051,9 @@ Array [
 `;
 
 exports[`treeMapGenerator create Treemap nodes should disable floor labels if option is toggled and change size 1`] = `
-Array [
-  Object {
-    "attributes": Object {},
+[
+  {
+    "attributes": {},
     "color": "#666666",
     "deltas": undefined,
     "depth": 0,
@@ -2085,8 +2085,8 @@ Array [
     "y0": 0,
     "z0": 0,
   },
-  Object {
-    "attributes": Object {
+  {
+    "attributes": {
       "functions": 10,
       "mcc": 1,
       "rloc": 100,
@@ -2122,8 +2122,8 @@ Array [
     "y0": 19.200000000000003,
     "z0": 2,
   },
-  Object {
-    "attributes": Object {},
+  {
+    "attributes": {},
     "color": "#666666",
     "deltas": undefined,
     "depth": 1,
@@ -2155,8 +2155,8 @@ Array [
     "y0": 377.17550765359255,
     "z0": 2,
   },
-  Object {
-    "attributes": Object {
+  {
+    "attributes": {
       "functions": 100,
       "mcc": 100,
       "rloc": 30,
@@ -2192,8 +2192,8 @@ Array [
     "y0": 396.3755076535926,
     "z0": 4,
   },
-  Object {
-    "attributes": Object {
+  {
+    "attributes": {
       "functions": 1000,
       "mcc": 10,
       "rloc": 70,
@@ -2229,8 +2229,8 @@ Array [
     "y0": 396.3755076535926,
     "z0": 4,
   },
-  Object {
-    "attributes": Object {},
+  {
+    "attributes": {},
     "color": "#666666",
     "deltas": undefined,
     "depth": 2,
