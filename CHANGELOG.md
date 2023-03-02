@@ -24,11 +24,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Fixed 🐞
 
 -   Unselecting a folder in Presentation Mode leads to console error [#3215](https://github.com/MaibornWolff/codecharta/pull/3215)
--   Fixed various margin problems in the UI [#3226](https://github.com/MaibornWolff/codecharta/pull/3226)
+-   Fix Shrunken FileExplorer's file list on small displays [#3235](https://github.com/MaibornWolff/codecharta/pull/3235)
+-   Fix various margin problems in the UI [#3226](https://github.com/MaibornWolff/codecharta/pull/3226)
 
 ### Chore 👨‍💻 👩‍💻
 
--   Upgraded all material UI components to MDC (not using the UI legacy components any more) [#3226](https://github.com/MaibornWolff/codecharta/pull/3226)
+-   Upgrade all material UI components to MDC (not using the UI legacy components any more) [#3226](https://github.com/MaibornWolff/codecharta/pull/3226)
 
 ## [1.114.0] - 2023-01-13
 
