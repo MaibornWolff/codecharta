@@ -1,8 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`FileHelper getCCFile should build a CCFile 1`] = `
-Object {
-  "fileMeta": Object {
+{
+  "fileMeta": {
     "apiVersion": "1.3",
     "exportedFileSize": 30,
     "fileChecksum": "invalid-md5-sample",
@@ -10,11 +10,11 @@ Object {
     "projectName": "Sample Map",
     "repoCreationDate": "",
   },
-  "map": Object {
-    "attributes": Object {},
-    "children": Array [
-      Object {
-        "attributes": Object {
+  "map": {
+    "attributes": {},
+    "children": [
+      {
+        "attributes": {
           "functions": 10,
           "mcc": 1,
           "rloc": 100,
@@ -25,11 +25,11 @@ Object {
         "name": "big leaf",
         "type": "File",
       },
-      Object {
-        "attributes": Object {},
-        "children": Array [
-          Object {
-            "attributes": Object {
+      {
+        "attributes": {},
+        "children": [
+          {
+            "attributes": {
               "functions": 100,
               "mcc": 100,
               "rloc": 30,
@@ -39,8 +39,8 @@ Object {
             "name": "small leaf",
             "type": "File",
           },
-          Object {
-            "attributes": Object {
+          {
+            "attributes": {
               "functions": 1000,
               "mcc": 10,
               "rloc": 70,
@@ -62,16 +62,16 @@ Object {
     "name": "root",
     "type": "Folder",
   },
-  "settings": Object {
-    "fileSettings": Object {
-      "attributeDescriptors": Object {},
-      "attributeTypes": Object {
-        "edges": Object {},
-        "nodes": Object {},
+  "settings": {
+    "fileSettings": {
+      "attributeDescriptors": {},
+      "attributeTypes": {
+        "edges": {},
+        "nodes": {},
       },
-      "blacklist": Array [],
-      "edges": Array [],
-      "markedPackages": Array [],
+      "blacklist": [],
+      "edges": [],
+      "markedPackages": [],
     },
   },
 }

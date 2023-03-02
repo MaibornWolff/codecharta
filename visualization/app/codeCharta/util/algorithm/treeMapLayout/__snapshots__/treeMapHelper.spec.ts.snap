@@ -1,12 +1,12 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`TreeMapHelper build node deltas 1`] = `
-Object {
-  "attributes": Object {
+{
+  "attributes": {
     "theHeight": 100,
   },
   "color": "#666666",
-  "deltas": Object {
+  "deltas": {
     "theHeight": 33,
   },
   "depth": 1,
@@ -41,8 +41,8 @@ Object {
 `;
 
 exports[`TreeMapHelper build node invertHeight 1`] = `
-Object {
-  "attributes": Object {
+{
+  "attributes": {
     "theHeight": 100,
   },
   "color": "#666666",
@@ -79,8 +79,8 @@ Object {
 `;
 
 exports[`TreeMapHelper build node minimal 1`] = `
-Object {
-  "attributes": Object {
+{
+  "attributes": {
     "theHeight": 100,
   },
   "color": "#666666",
@@ -117,8 +117,8 @@ Object {
 `;
 
 exports[`TreeMapHelper build node should set lowest possible height caused by other visible edge pairs 1`] = `
-Object {
-  "attributes": Object {
+{
+  "attributes": {
     "theHeight": 100,
   },
   "color": "#666666",

@@ -1,9 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`codeMapRenderService getNodes should get Nodes as array 1`] = `
-Array [
-  Object {
-    "attributes": Object {
+[
+  {
+    "attributes": {
       "mcc": 111,
       "rloc": 200,
       "unary": 4,
@@ -11,7 +11,7 @@ Array [
     "color": "#820E0E",
     "deltas": undefined,
     "depth": 0,
-    "edgeAttributes": Object {},
+    "edgeAttributes": {},
     "flat": false,
     "height": 2,
     "heightDelta": 0,
@@ -39,8 +39,8 @@ Array [
     "y0": 0,
     "z0": 0,
   },
-  Object {
-    "attributes": Object {
+  {
+    "attributes": {
       "functions": 10,
       "mcc": 1,
       "rloc": 100,
@@ -49,7 +49,7 @@ Array [
     "color": "#69AE40",
     "deltas": undefined,
     "depth": 1,
-    "edgeAttributes": Object {},
+    "edgeAttributes": {},
     "flat": false,
     "height": 2,
     "heightDelta": 0,
@@ -77,8 +77,8 @@ Array [
     "y0": 19.200000000000003,
     "z0": 2,
   },
-  Object {
-    "attributes": Object {
+  {
+    "attributes": {
       "mcc": 110,
       "rloc": 100,
       "unary": 3,
@@ -86,7 +86,7 @@ Array [
     "color": "#820E0E",
     "deltas": undefined,
     "depth": 1,
-    "edgeAttributes": Object {},
+    "edgeAttributes": {},
     "flat": false,
     "height": 2,
     "heightDelta": 0,
@@ -114,8 +114,8 @@ Array [
     "y0": 19.200000000000003,
     "z0": 2,
   },
-  Object {
-    "attributes": Object {
+  {
+    "attributes": {
       "functions": 100,
       "mcc": 100,
       "rloc": 30,
@@ -124,7 +124,7 @@ Array [
     "color": "#820E0E",
     "deltas": undefined,
     "depth": 2,
-    "edgeAttributes": Object {},
+    "edgeAttributes": {},
     "flat": false,
     "height": 2,
     "heightDelta": 0,
@@ -152,8 +152,8 @@ Array [
     "y0": 38.400000000000006,
     "z0": 4,
   },
-  Object {
-    "attributes": Object {
+  {
+    "attributes": {
       "functions": 1000,
       "mcc": 10,
       "rloc": 70,
@@ -162,7 +162,7 @@ Array [
     "color": "#6caf3e",
     "deltas": undefined,
     "depth": 2,
-    "edgeAttributes": Object {},
+    "edgeAttributes": {},
     "flat": false,
     "height": 2,
     "heightDelta": 0,
@@ -190,8 +190,8 @@ Array [
     "y0": 306.16530459215556,
     "z0": 4,
   },
-  Object {
-    "attributes": Object {
+  {
+    "attributes": {
       "mcc": 0,
       "rloc": 0,
       "unary": 1,
@@ -199,7 +199,7 @@ Array [
     "color": "#69AE40",
     "deltas": undefined,
     "depth": 2,
-    "edgeAttributes": Object {},
+    "edgeAttributes": {},
     "flat": false,
     "height": 500,
     "heightDelta": 0,

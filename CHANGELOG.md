@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   Improve the layout of the global configuration dialog [#3226](https://github.com/MaibornWolff/codecharta/pull/3226)
 -   Improve the layout of the metric chooser panel [#3226](https://github.com/MaibornWolff/codecharta/pull/3226)
 -   Change the primary color to match the color of the CodeCharta logo [#3226](https://github.com/MaibornWolff/codecharta/pull/3226)
+-   Improve the docs for suspicious metrics and risk profile feature [#3238](https://github.com/MaibornWolff/codecharta/pull/3238)
 
 ### Fixed 🐞
 
