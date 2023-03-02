@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Fixed 🐞
 
 -   Unselecting a folder in Presentation Mode leads to console error [#3215](https://github.com/MaibornWolff/codecharta/pull/3215)
+-   Fix Shrunken FileExplorer's file list on small displays [#3235](https://github.com/MaibornWolff/codecharta/pull/3235)
 
 ## [1.114.0] - 2023-01-13
 
