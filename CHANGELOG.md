@@ -13,6 +13,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Changed
 
+-   The Suspicious metrics and Risk profile Feature is now also available outside the Experimental Feature Mode [#2963](https://github.com/MaibornWolff/codecharta/pull/2963) </br>
+    ![image](https://user-images.githubusercontent.com/47224279/222686442-05d4b83c-04d7-4275-b1eb-4339e8906130.jpg)
 -   Made the background color a bit lighter [#3226](https://github.com/MaibornWolff/codecharta/pull/3226)
 -   Saturate the distribution bar colors [#3226](https://github.com/MaibornWolff/codecharta/pull/3226)
 -   Improve the layout of all metric menus [#3226](https://github.com/MaibornWolff/codecharta/pull/3226)
