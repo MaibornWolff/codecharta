@@ -1,5 +1,3 @@
-<cc-edge-metric-toggle></cc-edge-metric-toggle>
-
 <cc-slider
 	[title]="edgePreviewLabel$ | async"
 	[label]="'Preview'"
@@ -24,17 +22,18 @@
 	<cc-color-picker-for-map-color [mapColorFor]="'incomingEdge'"></cc-color-picker-for-map-color>
 </div>
 
-<div class="bottom-row">
-	<mat-checkbox
-		[checked]="showOnlyBuildingsWithEdges$ | async"
-		(change)="applyShowOnlyBuildingsWithEdges($event)"
-		[disabled]="(amountOfBuildingsWithSelectedEdgeMetric$ | async) === 0"
-	>
-		Only nodes with edges
-	</mat-checkbox>
+<mat-checkbox
+	[checked]="showOnlyBuildingsWithEdges$ | async"
+	(change)="applyShowOnlyBuildingsWithEdges($event)"
+	[disabled]="(amountOfBuildingsWithSelectedEdgeMetric$ | async) === 0"
+>
+	Only show nodes with edges
+</mat-checkbox>
 
-	<cc-reset-settings-button
-		[settingsKeys]="['appSettings.showOnlyBuildingsWithEdges', 'appSettings.amountOfEdgePreviews', 'appSettings.edgeHeight']"
-		tooltip="Reset edge metric settings to their defaults"
-	></cc-reset-settings-button>
-</div>
+<cc-edge-metric-toggle></cc-edge-metric-toggle>
+
+<cc-reset-settings-button
+	[settingsKeys]="['appSettings.showOnlyBuildingsWithEdges', 'appSettings.amountOfEdgePreviews', 'appSettings.edgeHeight']"
+	tooltip="Reset edge metric settings to their defaults"
+	label="Reset edge metric settings"
+></cc-reset-settings-button>

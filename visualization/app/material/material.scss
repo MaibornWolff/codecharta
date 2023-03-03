@@ -1,28 +1,23 @@
 @use "@angular/material" as mat;
 @use "./theme";
 
-@include mat.legacy-core-theme(theme.$cc-theme);
-@include mat.legacy-button-theme(theme.$cc-theme);
+@include mat.core-theme(theme.$cc-theme);
+@include mat.button-theme(theme.$cc-theme);
 @include mat.button-toggle-theme(theme.$cc-theme);
-@include mat.legacy-progress-spinner-theme(theme.$cc-theme);
-@include mat.legacy-card-theme(theme.$cc-theme);
-@include mat.legacy-select-theme(theme.$cc-theme);
-@include mat.legacy-menu-theme(theme.$cc-theme);
-@include mat.legacy-dialog-theme(theme.$cc-theme);
-@include mat.legacy-tooltip-theme(theme.$cc-theme);
-@include mat.legacy-checkbox-theme(theme.$cc-theme);
+@include mat.progress-spinner-theme(theme.$cc-theme);
+@include mat.card-theme(theme.$cc-theme);
+@include mat.select-theme(theme.$cc-theme);
+@include mat.menu-theme(theme.$cc-theme);
+@include mat.dialog-theme(theme.$cc-theme);
+@include mat.tooltip-theme(theme.$cc-theme);
+@include mat.checkbox-theme(theme.$cc-theme);
 @include mat.toolbar-theme(theme.$cc-theme);
-@include mat.legacy-input-theme(theme.$cc-theme);
-@include mat.legacy-form-field-theme(theme.$cc-theme);
-@include mat.legacy-list-theme(theme.$cc-theme);
+@include mat.input-theme(theme.$cc-theme);
+@include mat.form-field-theme(theme.$cc-theme);
+@include mat.list-theme(theme.$cc-theme);
 @include mat.divider-theme(theme.$cc-theme);
-@include mat.legacy-slider-theme(theme.$cc-theme);
-@include mat.legacy-slide-toggle-theme(theme.$cc-theme);
+@include mat.slider-theme(theme.$cc-theme);
+@include mat.slide-toggle-theme(theme.$cc-theme);
 
-@import "./matSelect.scss";
 @import "./matMenu.scss";
 @import "./matDialog.scss";
-
-.cc-mat-raised {
-	background-color: theme.$cc-primary-color;
-}

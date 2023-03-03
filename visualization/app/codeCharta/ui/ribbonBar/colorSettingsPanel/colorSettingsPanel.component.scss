@@ -1,23 +1,28 @@
 cc-color-settings-panel {
 	&.cc-metric-settings-panel {
-		width: 266px;
+		mat-form-field {
+			width: 100%;
+			margin: 12px 0px;
 
-		cc-reset-settings-button {
-			display: block;
+			.mat-mdc-text-field-wrapper .mat-mdc-form-field-flex .mat-mdc-form-field-infix {
+				padding: 10px;
+				min-height: 28px;
+
+				.mat-mdc-input-element {
+					min-height: inherit;
+				}
+			}
+
+			.mat-mdc-form-field-subscript-wrapper.mat-mdc-form-field-bottom-align {
+				display: none;
+			}
 		}
 
 		.color-row {
 			display: flex;
+			align-items: center;
 			justify-content: space-between;
-		}
-
-		.invert-colors {
-			display: flex;
-			justify-content: flex-end;
-		}
-
-		cc-reset-settings-button button {
-			margin: 0;
+			padding-right: 8px;
 		}
 	}
 }

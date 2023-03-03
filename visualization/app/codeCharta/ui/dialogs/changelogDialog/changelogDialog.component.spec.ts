@@ -1,5 +1,5 @@
 import { TestBed } from "@angular/core/testing"
-import { MAT_LEGACY_DIALOG_DATA } from "@angular/material/legacy-dialog"
+import { MAT_DIALOG_DATA } from "@angular/material/dialog"
 import { render, screen } from "@testing-library/angular"
 import { ChangelogDialogComponent } from "./changelogDialog.component"
 import { ChangelogDialogModule } from "./changelogDialog.module"
@@ -12,7 +12,7 @@ describe("changelogDialogComponent", () => {
 			imports: [ChangelogDialogModule],
 			providers: [
 				{
-					provide: MAT_LEGACY_DIALOG_DATA,
+					provide: MAT_DIALOG_DATA,
 					useValue: mockedMatDialogData
 				}
 			]

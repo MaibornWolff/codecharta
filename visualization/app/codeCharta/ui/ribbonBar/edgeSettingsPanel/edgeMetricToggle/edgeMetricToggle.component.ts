@@ -7,7 +7,6 @@ import { toggleEdgeMetricVisible } from "../../../../state/store/appSettings/isE
 @Component({
 	selector: "cc-edge-metric-toggle",
 	templateUrl: "./edgeMetricToggle.component.html",
-	styleUrls: ["./edgeMetricToggle.component.scss"],
 	encapsulation: ViewEncapsulation.None
 })
 export class EdgeMetricToggleComponent implements OnInit {

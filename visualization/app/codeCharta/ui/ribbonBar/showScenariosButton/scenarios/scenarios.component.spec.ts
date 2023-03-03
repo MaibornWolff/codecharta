@@ -1,5 +1,5 @@
 import { TestBed } from "@angular/core/testing"
-import { MatLegacyDialog } from "@angular/material/legacy-dialog"
+import { MatDialog } from "@angular/material/dialog"
 import { getByText, getByTitle, render, screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
 import { SCENARIO_ITEMS } from "../../../../util/dataMocks"
@@ -20,14 +20,14 @@ describe("scenariosComponent", () => {
 						removeScenario: jest.fn()
 					}
 				},
-				{ provide: MatLegacyDialog, useValue: { open: jest.fn() } }
+				{ provide: MatDialog, useValue: { open: jest.fn() } }
 			]
 		})
 	})
 
 	it("should let a user open the dialog for creating a custom scenario", async () => {
 		await render(ScenariosComponent, { excludeComponentDeclaration: true })
-		const dialog = TestBed.inject(MatLegacyDialog)
+		const dialog = TestBed.inject(MatDialog)
 
 		await userEvent.click(screen.getByTitle("Create a custom scenario"))
 

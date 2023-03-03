@@ -27,7 +27,7 @@ describe("heightSettingsPanelComponent", () => {
 
 		const amountOfTopLabelsSlider = screen.getByTitle("Disabled because color labels are used")
 		const matSlider = amountOfTopLabelsSlider.querySelector("mat-slider")
-		expect(matSlider.getAttribute("aria-disabled")).toBe("true")
+		expect(matSlider.getAttribute("ng-reflect-disabled")).toBe("true")
 	})
 
 	it("should enable amount of top labels slider when there are no colorLabels", async () => {
@@ -35,7 +35,8 @@ describe("heightSettingsPanelComponent", () => {
 
 		const amountOfTopLabelsSlider = screen.getByTitle("Display the labels of the 1 highest buildings")
 		const matSlider = amountOfTopLabelsSlider.querySelector("mat-slider")
-		expect(matSlider.getAttribute("aria-disabled")).toBe("false")
+
+		expect(matSlider.getAttribute("ng-reflect-disabled")).toBe("false")
 	})
 
 	it("should not display invertHeight-checkbox when being in delta mode", async () => {

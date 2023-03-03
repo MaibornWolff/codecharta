@@ -1,21 +1,22 @@
 <cc-metric-color-range-slider *ngIf="!(isDeltaState$ | async)"></cc-metric-color-range-slider>
 
-<mat-select [value]="colorMode$ | async" (selectionChange)="handleColorModeChange($event.value)">
-	<div (mousedown)="$event.stopPropagation()">
-		<mat-option value="absolute">Absolute</mat-option>
-		<mat-option value="focusedGradient">Focused Gradient</mat-option>
-		<mat-option value="weightedGradient">Weighted Gradient</mat-option>
-		<mat-option value="trueGradient">True Gradient</mat-option>
-	</div>
-</mat-select>
-
 <cc-reset-settings-button
 	[settingsKeys]="['dynamicSettings.colorRange', 'appSettings.mapColors.positiveDelta', 'appSettings.mapColors.negativeDelta']"
 	tooltip="Reset slider thresholds to default"
 	label="Reset thresholds"
 ></cc-reset-settings-button>
 
-<mat-divider></mat-divider>
+<mat-form-field appearance="outline">
+	<mat-label>Gradient Mode</mat-label>
+	<mat-select [value]="colorMode$ | async" (selectionChange)="handleColorModeChange($event.value)">
+		<div (mousedown)="$event.stopPropagation()">
+			<mat-option value="absolute">Absolute</mat-option>
+			<mat-option value="focusedGradient">Focused Gradient</mat-option>
+			<mat-option value="weightedGradient">Weighted Gradient</mat-option>
+			<mat-option value="trueGradient">True Gradient</mat-option>
+		</div>
+	</mat-select>
+</mat-form-field>
 
 <ng-container *ngIf="!(isDeltaState$ | async)">
 	<div class="color-row">

@@ -1,23 +1,9 @@
-<section layout="row" layout-align="center center" class="mode-chooser">
-	<button
-		mat-button
-		class="state-selector-button left"
-		id="tree-view"
-		[class.current]="searchPanelMode === 'treeView'"
-		(click)="updateSearchPanelMode('treeView')"
-		title="Folder structure"
-	>
+<mat-button-toggle-group [value]="searchPanelMode">
+	<mat-button-toggle id="tree-view" value="tree-view" (click)="updateSearchPanelMode('treeView')">
 		<i class="fa fa-sitemap"></i>
-	</button>
-	<button
-		mat-button
-		class="state-selector-button right"
-		id="blacklist"
-		[class.current]="searchPanelMode === 'blacklist'"
-		(click)="updateSearchPanelMode('blacklist')"
-		title="Excluded and flattened buildings"
-	>
+	</mat-button-toggle>
+	<mat-button-toggle id="blacklist" value="blacklist" (click)="updateSearchPanelMode('blacklist')">
 		<i class="fa fa-eye-slash"></i>
 		<div class="has-blacklist-items-indicator" [hidden]="hideBlacklistItemsIndicator$ | async"></div>
-	</button>
-</section>
+	</mat-button-toggle>
+</mat-button-toggle-group>

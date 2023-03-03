@@ -1,12 +1,5 @@
 .file-select {
-	&.mat-select-panel {
-		max-width: max-content;
-	}
-}
-
-.filenames {
-	.mat-option-text {
-		display: flex;
-		justify-content: space-between;
+	&.mat-mdc-select-panel {
+		min-width: max-content;
 	}
 }

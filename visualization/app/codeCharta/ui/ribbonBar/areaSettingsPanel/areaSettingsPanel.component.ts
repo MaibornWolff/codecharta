@@ -4,7 +4,7 @@ import { marginSelector } from "../../../state/store/dynamicSettings/margin/marg
 import { setMargin } from "../../../state/store/dynamicSettings/margin/margin.actions"
 import { dynamicMarginSelector } from "../../../state/store/appSettings/dynamicMargin/dynamicMargin.selector"
 import { setDynamicMargin } from "../../../state/store/appSettings/dynamicMargin/dynamicMargin.actions"
-import { MatLegacyCheckboxChange as MatCheckboxChange } from "@angular/material/legacy-checkbox"
+import { MatCheckboxChange } from "@angular/material/checkbox"
 import { setEnableFloorLabels } from "../../../state/store/appSettings/enableFloorLabels/enableFloorLabels.actions"
 import { enableFloorLabelsSelector } from "../../../state/store/appSettings/enableFloorLabels/enableFloorLabels.selector"
 import { debounce } from "../../../util/debounce"

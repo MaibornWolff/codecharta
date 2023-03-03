@@ -1,6 +1,6 @@
 import { ApplicationInitStatus } from "@angular/core"
 import { TestBed } from "@angular/core/testing"
-import { MatLegacyDialog } from "@angular/material/legacy-dialog"
+import { MatDialog } from "@angular/material/dialog"
 import { Action } from "redux"
 import { Subject } from "rxjs"
 import { EffectsModule } from "../../../state/angular-redux/effects/effects.module"
@@ -27,7 +27,7 @@ describe("BlacklistSearchPatternEffect", () => {
 		EffectsModule.actions$ = new Subject<Action>()
 		TestBed.configureTestingModule({
 			imports: [EffectsModule.forRoot([BlacklistSearchPatternEffect, AddBlacklistItemsIfNotResultsInEmptyMapEffect])],
-			providers: [{ provide: MatLegacyDialog, useValue: mockedDialog }]
+			providers: [{ provide: MatDialog, useValue: mockedDialog }]
 		})
 		await TestBed.inject(ApplicationInitStatus).donePromise
 	})

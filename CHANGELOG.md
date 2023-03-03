@@ -7,8 +7,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Added 🚀
+
+-   Display the CodeCharta logo next to the MaibornWolff logo [#3226](https://github.com/MaibornWolff/codecharta/pull/3226)
+
 ### Changed
 
+-   Made the background color a bit lighter [#3226](https://github.com/MaibornWolff/codecharta/pull/3226)
+-   Saturate the distribution bar colors [#3226](https://github.com/MaibornWolff/codecharta/pull/3226)
+-   Improve the layout of all metric menus [#3226](https://github.com/MaibornWolff/codecharta/pull/3226)
+-   Improve the layout of the global configuration dialog [#3226](https://github.com/MaibornWolff/codecharta/pull/3226)
+-   Improve the layout of the metric chooser panel [#3226](https://github.com/MaibornWolff/codecharta/pull/3226)
+-   Change the primary color to match the color of the CodeCharta logo [#3226](https://github.com/MaibornWolff/codecharta/pull/3226)
 -   Improve the docs for suspicious metrics and risk profile feature [#3238](https://github.com/MaibornWolff/codecharta/pull/3238)
 -   The Suspicious metrics and Risk profile Feature is now also available outside the Experimental Feature Mode [#2963](https://github.com/MaibornWolff/codecharta/pull/2963) </br>
     ![image](https://user-images.githubusercontent.com/47224279/222686442-05d4b83c-04d7-4275-b1eb-4339e8906130.jpg)
@@ -17,6 +27,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 -   Unselecting a folder in Presentation Mode leads to console error [#3215](https://github.com/MaibornWolff/codecharta/pull/3215)
 -   Fix Shrunken FileExplorer's file list on small displays [#3235](https://github.com/MaibornWolff/codecharta/pull/3235)
+-   Fix various margin problems in the UI [#3226](https://github.com/MaibornWolff/codecharta/pull/3226)
+
+### Chore 👨‍💻 👩‍💻
+
+-   Upgrade all material UI components to MDC (not using the UI legacy components any more) [#3226](https://github.com/MaibornWolff/codecharta/pull/3226)
 
 ## [1.114.0] - 2023-01-13
 

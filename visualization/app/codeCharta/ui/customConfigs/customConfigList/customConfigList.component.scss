@@ -1,10 +1,10 @@
 @use "../../../../material/theme";
 
-.cc-custom-config-list .mat-dialog-container {
+.cc-custom-config-list .mat-mdc-dialog-container {
 	padding: 5px 16px;
 	max-height: 90vh;
 
-	.mat-dialog-content.content {
+	.mat-mdc-dialog-content.content {
 		max-height: 100%;
 		margin: 0;
 		padding: 0;
@@ -69,13 +69,12 @@
 		}
 
 		&.non-applicable-group {
-			.mat-expansion-panel-header-title,
-			.mat-list-item-content {
+			.mat-expansion-panel-header-title {
 				color: rgba(0, 0, 0, 0.3);
 			}
 		}
 
-		.mat-list-item-content {
+		.mdc-list-item__content {
 			display: flex;
 			justify-content: space-between;
 			border-bottom: 1px solid #000000;
@@ -116,11 +115,11 @@
 		margin: 5px 0;
 	}
 
-	.mat-list-base {
+	.mat-mdc-list-base {
 		padding: 0;
 	}
 
-	.mat-list-item {
+	.mat-mdc-list-item {
 		height: max-content;
 	}
 }

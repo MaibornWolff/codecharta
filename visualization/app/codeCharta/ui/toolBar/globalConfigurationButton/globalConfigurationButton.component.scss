@@ -2,44 +2,36 @@
 
 cc-global-configuration-button button {
 	margin: 0;
+	padding: 0;
 
 	cc-action-icon {
-		margin-left: 4px;
+		margin-left: 12px;
 	}
 
 	&:hover cc-action-icon {
-		background-color: rgb(0, 124, 112);
+		background-color: theme.$cc-emphasized-color;
 	}
 }
 
-.cc-global-configuration-dialog .mat-dialog-container {
-	width: 50vw;
-	padding: 0;
-
-	.cc-global-configuration-align-right {
-		float: right;
-
-		.close-button {
-			padding-bottom: 5px;
-		}
-	}
+.cc-global-configuration-dialog .mat-mdc-dialog-container {
+	width: 36vw;
+	min-width: 600px;
 
 	.cc-global-configuration-dialog-content {
-		margin: 8px;
-		padding: 0 15px;
-	}
-
-	[mat-dialog-close] {
-		color: theme.$cc-primary-color;
+		padding: 0 16px;
+		display: flex;
+		flex-direction: column;
+		gap: 26px;
 	}
 
 	cc-map-layout-selection,
 	cc-display-quality-selection {
-		display: block;
-		margin-bottom: 8px;
-
 		> mat-form-field {
 			width: 100%;
+
+			.mat-mdc-form-field-subscript-wrapper.mat-mdc-form-field-bottom-align {
+				display: none;
+			}
 		}
 
 		.cc-tree-maps-max-tree-map-files {
@@ -49,21 +41,23 @@ cc-global-configuration-button button {
 	}
 
 	.cc-global-configuration-toggle-option {
-		margin-bottom: 16px;
-
-		mat-slide-toggle {
-			display: block;
-			margin-bottom: 8px;
-		}
+		display: flex;
+		flex-direction: column;
+		gap: inherit;
 	}
 
-	.weblink {
-		display: block;
-		color: rgba(0, 0, 0, 0.870588);
-		text-decoration: none;
+	.cc-global-configuration-links-list {
+		display: flex;
+		gap: 16px;
 
-		i {
-			margin-right: 16px;
+		.weblink {
+			display: block;
+			color: rgba(0, 0, 0, 0.870588);
+			text-decoration: none;
+
+			.fa {
+				margin: 8px;
+			}
 		}
 	}
 }
