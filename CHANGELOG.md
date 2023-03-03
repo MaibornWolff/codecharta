@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Changed
 
 -   Improve the docs for suspicious metrics and risk profile feature [#3238](https://github.com/MaibornWolff/codecharta/pull/3238)
+-   The Suspicious metrics and Risk profile Feature is now also available outside the Experimental Feature Mode [#2963](https://github.com/MaibornWolff/codecharta/pull/2963) </br>
+    ![image](https://user-images.githubusercontent.com/47224279/222686442-05d4b83c-04d7-4275-b1eb-4339e8906130.jpg)
 
 ### Fixed 🐞
 
