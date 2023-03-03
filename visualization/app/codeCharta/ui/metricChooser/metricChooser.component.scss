@@ -1,14 +1,13 @@
 @use "../../../material/theme";
 
 cc-metric-chooser {
-	position: relative;
 	width: 100%;
 
 	cc-metric-chooser-value-hovered,
 	.cc-metric-chooser-hovered-container {
 		position: absolute;
-		bottom: 0;
-		right: 0;
+		top: 10%;
+		right: 28px;
 
 		.metric-value {
 			height: 25px;
@@ -22,39 +21,44 @@ cc-metric-chooser {
 		}
 	}
 
-	.mat-select {
+	.mat-mdc-select {
 		border-bottom: none;
 	}
 }
 
-.mat-select-panel.cc-metric-chooser {
+.mat-mdc-select-panel.cc-metric-chooser {
 	margin-top: 16px;
 	width: 360px;
 	max-width: 360px;
 
 	.cc-metric-chooser-search-field {
 		width: 100%;
-		color: theme.$cc-primary-color;
 		font-size: 14px;
+		padding: 0 6px;
 
 		.search-icon {
-			margin-right: 8px;
+			color: theme.$cc-primary-color;
 			margin-left: 8px;
 			font-size: 18px;
 		}
 
-		.mat-form-field-label {
-			margin-top: 4px;
+		.mat-mdc-form-field-subscript-wrapper.mat-mdc-form-field-bottom-align {
+			display: none;
+		}
+
+		.mat-mdc-form-field-infix {
+			margin-left: 6px;
+			display: flex;
 		}
 	}
 
 	.cc-metric-chooser-option-container {
-		margin-top: -18px;
 		max-height: 216px;
 		overflow-y: auto;
 		font-size: 16px;
+		padding: 0 6px;
 
-		.metric-max-value {
+		mat-option .metric-max-value {
 			color: #ccc;
 		}
 	}

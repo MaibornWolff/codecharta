@@ -18,13 +18,13 @@ describe("linkHeightAndColorMetricComponent", () => {
 
 		expect(container.querySelector(".fa.fa-link")).not.toBe(null)
 		expect(container.querySelector(".fa.fa-chain-broken")).toBe(null)
-		expect(screen.queryByText("Unlink Height And Color Metric")).toBe(null)
+		expect(screen.queryByText("Unlink Height and Color Metric")).toBe(null)
 
-		await userEvent.click(screen.getByTitle("Link Height And Color Metric"))
+		await userEvent.click(screen.getByTitle("Link Height and Color Metric"))
 
 		expect(container.querySelector(".fa.fa-chain-broken")).not.toBe(null)
 		expect(container.querySelector(".fa.fa-link")).toBe(null)
-		expect(screen.getByTitle("Unlink Height And Color Metric")).not.toBe(null)
-		expect(screen.queryByText("Link Height And Color Metric")).toBe(null)
+		expect(screen.getByTitle("Unlink Height and Color Metric")).not.toBe(null)
+		expect(screen.queryByText("Link Height and Color Metric")).toBe(null)
 	})
 })

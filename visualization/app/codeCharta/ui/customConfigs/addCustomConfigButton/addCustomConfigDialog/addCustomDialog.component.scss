@@ -1,6 +1,6 @@
 @use "../../../../../material/theme";
 
-.cc-add-custom-config-dialog .mat-dialog-container {
+.cc-add-custom-config-dialog .mat-mdc-dialog-container {
 	padding: 0;
 	width: 500px;
 	overflow: hidden;
@@ -32,7 +32,7 @@
 		}
 	}
 
-	.mat-dialog-actions {
+	.mat-mdc-dialog-actions {
 		margin: 0;
 		padding: 0 8px;
 		position: relative;
@@ -51,7 +51,7 @@
 			}
 		}
 
-		.mat-button {
+		.mat-mdc-button {
 			padding: 0 8px;
 			margin: 8px 0 8px 8px;
 

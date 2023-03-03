@@ -1,4 +1,4 @@
-<mat-card id="codemap-context-menu" *ngIf="codeMapNode$ | async; let codeMapNode">
+<mat-card appearance="outlined" id="codemap-context-menu" *ngIf="codeMapNode$ | async; let codeMapNode">
 	<div *ngIf="codeMapNode?.children?.length > 0">
 		<cc-mark-folder-row></cc-mark-folder-row>
 		<mat-divider></mat-divider>

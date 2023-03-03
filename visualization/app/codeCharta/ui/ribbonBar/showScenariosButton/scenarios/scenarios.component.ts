@@ -1,5 +1,5 @@
 import { Component, Input, ViewEncapsulation } from "@angular/core"
-import { MatLegacyDialog as MatDialog } from "@angular/material/legacy-dialog"
+import { MatDialog } from "@angular/material/dialog"
 import { ScenarioService } from "../scenario.service"
 import { ScenarioItem } from "../scenarioHelper"
 import { AddCustomScenarioComponent } from "../addCustomScenario/addCustomScenario.component"

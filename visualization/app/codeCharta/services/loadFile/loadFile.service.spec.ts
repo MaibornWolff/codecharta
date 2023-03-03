@@ -14,7 +14,7 @@ import { loadFilesValidationToErrorDialog } from "../../util/loadFilesValidation
 import { Store } from "../../state/angular-redux/store"
 import { State } from "../../state/angular-redux/state"
 import { fileRoot } from "./fileRoot"
-import { MatLegacyDialog } from "@angular/material/legacy-dialog"
+import { MatDialog } from "@angular/material/dialog"
 import { metricDataSelector } from "../../state/selectors/accumulatedData/metricData/metricData.selector"
 
 const mockedMetricDataSelector = metricDataSelector as unknown as jest.Mock
@@ -26,7 +26,7 @@ describe("loadFileService", () => {
 	let codeChartaService: LoadFileService
 	let store: Store
 	let state: State
-	let dialog: MatLegacyDialog
+	let dialog: MatDialog
 	let validFileContent: ExportCCFile
 	let metricData: NodeMetricData[]
 	const fileName = "someFileName"
@@ -51,7 +51,7 @@ describe("loadFileService", () => {
 	function restartSystem() {
 		store = TestBed.inject(Store)
 		state = TestBed.inject(State)
-		dialog = { open: jest.fn() } as unknown as MatLegacyDialog
+		dialog = { open: jest.fn() } as unknown as MatDialog
 	}
 
 	function rebuildService() {

@@ -16,7 +16,7 @@ describe("edgeSettingsPanelComponent", () => {
 		expect(screen.getByText("Height")).toBeTruthy()
 		expect(screen.getByText("Outgoing Edge")).toBeTruthy()
 		expect(screen.getByText("Incoming Edge")).toBeTruthy()
-		expect(screen.getByText("Only nodes with edges")).toBeTruthy()
+		expect(screen.getByText("Only show nodes with edges")).toBeTruthy()
 		expect(screen.getByTitle("Reset edge metric settings to their defaults")).toBeTruthy()
 	})
 })

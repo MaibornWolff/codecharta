@@ -2,32 +2,23 @@
 
 @import "@angular/material/theming";
 
-// TODO(v15): As of v15 mat.legacy-core no longer includes default typography styles.
-//  The following line adds:
-//    1. Default typography styles for all components
-//    2. Styles for typography hierarchy classes (e.g. .mat-headline-1)
-//  If you specify typography styles for the components you use elsewhere, you should delete this line.
-//  If you don't need the default component typographies but still want the hierarchy styles,
-//  you can delete this line and instead use:
-//    `@include mat.legacy-typography-hierarchy(mat.define-legacy-typography-config());`
-@include mat.all-legacy-component-typographies();
-@include mat.legacy-core();
+@include mat.core();
 
 $cc-palette: (
-	50: #e0f2f1,
-	100: #b2dfdb,
-	200: #80cbc4,
-	300: #4db6ac,
-	400: #26a69a,
-	500: #009688,
-	600: #00897b,
-	700: #00796b,
-	800: #00695c,
-	900: #004d40,
-	A100: #a7ffeb,
-	A200: #64ffda,
-	A400: #1de9b6,
-	A700: #00bfa5,
+	50: #c3e5fe,
+	100: #9bd3fe,
+	200: #76c3fd,
+	300: #55b5fc,
+	400: #37a8fc,
+	500: #1b9cfc,
+	600: #038ff8,
+	700: #0381df,
+	800: #0374c9,
+	900: #0368b5,
+	A100: #a0d5ff,
+	A200: #a0d5ff,
+	A400: #7ac5ff,
+	A700: #58b6ff,
 	contrast: (
 		50: #000000,
 		100: #000000,
@@ -58,5 +49,15 @@ $cc-theme: mat.define-light-theme(
 );
 
 $cc-primary-color: mat-color($cc-primary);
-$cc-emphasized-color: rgb(0, 124, 112);
+$cc-emphasized-color: #0374c9;
 $cc-disabled-color: rgb(204, 204, 204);
+
+// For the lack of a better way of doing this
+// please remove this
+// if a method is found how to change the checkmark colors directly in theme
+// or you wish to keep the default black
+:root {
+	.mat-mdc-checkbox.mat-accent {
+		--mdc-checkbox-selected-checkmark-color: #fff !important;
+	}
+}

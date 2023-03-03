@@ -1,8 +1,8 @@
 cc-labelled-color-picker {
 	.cc-labelled-color-picker-container {
 		display: flex;
+		height: 40px;
 		align-items: center;
-		margin: 4px 0;
 
 		&:hover {
 			cursor: pointer;
@@ -10,25 +10,29 @@ cc-labelled-color-picker {
 
 		.cc-color-swatch-container {
 			position: relative;
-			margin-right: 8px;
+			margin: 0px 11px; // Exactly 11px to match the mat-checkbox margin
+			width: 18px;
+			height: 18px;
 
-			.cc-color-swatch,
-			.cc-color-brush {
+			.cc-color-swatch {
 				display: inline-block;
-				width: 16px;
-				height: 16px;
+				width: inherit;
+				height: inherit;
+				border-radius: 2px;
 			}
 
 			.cc-color-brush {
 				position: absolute;
-				left: 0;
+				left: 50%;
+				top: 50%;
+				transform: translate(-50%, -50%);
 				opacity: 0; // handled by component
 			}
 		}
 	}
 }
 
-.mat-menu-panel.cc-color-picker-menu .mat-menu-content {
+.mat-mdc-menu-panel.cc-color-picker-menu .mat-mdc-menu-content {
 	padding: 0;
 }
 

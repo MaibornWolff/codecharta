@@ -1,18 +1,7 @@
 <mat-toolbar color="primary">Global Configuration</mat-toolbar>
 
 <div class="cc-global-configuration-dialog-content">
-	<div class="cc-global-configuration-align-right">
-		<cc-reset-settings-button
-			[settingsKeys]="[
-				'appSettings.hideFlatBuildings',
-				'appSettings.isWhiteBackground',
-				'appSettings.resetCameraIfNewFileIsLoaded',
-				'appSettings.layoutAlgorithm',
-				'appSettings.maxTreeMapFiles'
-			]"
-			tooltip="Reset global settings to their defaults"
-		></cc-reset-settings-button>
-	</div>
+	<div class="cc-global-configuration-align-right"></div>
 
 	<cc-map-layout-selection></cc-map-layout-selection>
 	<cc-display-quality-selection></cc-display-quality-selection>
@@ -35,17 +24,31 @@
 		</mat-slide-toggle>
 	</div>
 
-	<a class="weblink" href="https://github.com/MaibornWolff/codecharta/blob/main/README.md" target="_blank" rel="noopener noreferrer">
-		<em class="fa fa-external-link icon-link"></em>Manual
-	</a>
-	<a class="weblink" href="https://github.com/MaibornWolff/codecharta/" target="_blank" rel="noopener noreferrer">
-		<em class="fa fa-external-link icon-link"></em>Github
-	</a>
-	<a class="weblink" href="https://github.com/MaibornWolff/codecharta/wiki" target="_blank" rel="noopener noreferrer">
-		<em class="fa fa-external-link icon-link"></em>Wiki
-	</a>
+	<cc-reset-settings-button
+		[settingsKeys]="[
+			'appSettings.hideFlatBuildings',
+			'appSettings.isWhiteBackground',
+			'appSettings.resetCameraIfNewFileIsLoaded',
+			'appSettings.layoutAlgorithm',
+			'appSettings.maxTreeMapFiles'
+		]"
+		tooltip="Reset global settings to their defaults"
+		label="Reset global settings"
+	></cc-reset-settings-button>
 
-	<div class="cc-global-configuration-align-right">
-		<button class="close-button" mat-button mat-dialog-close>CLOSE</button>
+	<div class="cc-global-configuration-links-list">
+		<a class="weblink" href="https://github.com/MaibornWolff/codecharta/blob/main/README.md" target="_blank" rel="noopener noreferrer">
+			<em class="fa fa-external-link icon-link"></em>How-to
+		</a>
+		<a class="weblink" href="https://github.com/MaibornWolff/codecharta/" target="_blank" rel="noopener noreferrer">
+			<em class="fa fa-external-link icon-link"></em>Github
+		</a>
+		<a class="weblink" href="https://github.com/MaibornWolff/codecharta/wiki" target="_blank" rel="noopener noreferrer">
+			<em class="fa fa-external-link icon-link"></em>Wiki
+		</a>
 	</div>
+
+	<mat-dialog-actions align="end">
+		<button mat-button mat-dialog-close cdkFocusInitial>Close</button>
+	</mat-dialog-actions>
 </div>

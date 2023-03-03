@@ -1,6 +1,6 @@
 import packageJson from "../../../../package.json"
 import { Injectable } from "@angular/core"
-import { MatLegacyDialog as MatDialog } from "@angular/material/legacy-dialog"
+import { MatDialog } from "@angular/material/dialog"
 import { ChangelogDialogComponent } from "../../ui/dialogs/changelogDialog/changelogDialog.component"
 import { compareVersion } from "./utils/compareVersion"
 

@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core"
-import { MatLegacyDialog as MatDialog } from "@angular/material/legacy-dialog"
+import { MatDialog } from "@angular/material/dialog"
 import { ColorRange, MapColors } from "../../../codeCharta.model"
 import { State } from "../../../state/angular-redux/state"
 import { Store } from "../../../state/angular-redux/store"

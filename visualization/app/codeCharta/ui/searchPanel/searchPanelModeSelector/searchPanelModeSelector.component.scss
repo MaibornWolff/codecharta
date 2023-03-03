@@ -1,10 +1,8 @@
 cc-search-panel-mode-selector {
-	vertical-align: top;
-	.mode-chooser {
-		display: inline-block;
-		margin-right: 10px;
-		margin-bottom: 3px;
-		font-size: 0px;
+	mat-button-toggle-group {
+		height: 100%;
+		align-items: center;
+		font-size: 12px;
 	}
 
 	.has-blacklist-items-indicator {
