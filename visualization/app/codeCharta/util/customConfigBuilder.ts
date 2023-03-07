@@ -48,7 +48,6 @@ function initializeAppSettings(target: CustomConfig) {
 		},
 		amountOfEdgePreviews: 0,
 		amountOfTopLabels: 0,
-		dynamicMargin: false,
 		edgeHeight: 0,
 		hideFlatBuildings: false,
 		invertHeight: false,

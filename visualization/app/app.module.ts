@@ -11,7 +11,6 @@ import { dialogs } from "./codeCharta/ui/dialogs/dialogs"
 import { OpenNodeContextMenuEffect } from "./codeCharta/state/effects/nodeContextMenu/openNodeContextMenu.effect"
 import { BlacklistSearchPatternEffect } from "./codeCharta/ui/searchPanel/searchBar/blacklistSearchPattern.effect"
 import { ResetColorRangeEffect } from "./codeCharta/state/store/dynamicSettings/colorRange/resetColorRange.effect"
-import { ResetDynamicMarginEffect } from "./codeCharta/state/effects/resetDynamicMargin/resetDynamicMargin.effect"
 import { ResetChosenMetricsEffect } from "./codeCharta/state/effects/resetChosenMetrics/resetChosenMetrics.effect"
 import { UpdateEdgePreviewsEffect } from "./codeCharta/state/effects/updateEdgePreviews/updateEdgePreviews.effect"
 import { ChangelogDialogModule } from "./codeCharta/ui/dialogs/changelogDialog/changelogDialog.module"
@@ -36,7 +35,6 @@ import { NodeContextMenuCardModule } from "./codeCharta/state/effects/nodeContex
 			OpenNodeContextMenuEffect,
 			BlacklistSearchPatternEffect,
 			ResetColorRangeEffect,
-			ResetDynamicMarginEffect,
 			ResetChosenMetricsEffect,
 			UpdateEdgePreviewsEffect,
 			RenderCodeMapEffect,
