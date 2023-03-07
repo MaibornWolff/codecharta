@@ -8,7 +8,6 @@ import { mapColors } from "./mapColors/mapColors.reducer"
 import { resetCameraIfNewFileIsLoaded } from "./resetCameraIfNewFileIsLoaded/resetCameraIfNewFileIsLoaded.reducer"
 import { showOnlyBuildingsWithEdges } from "./showOnlyBuildingsWithEdges/showOnlyBuildingsWithEdges.reducer"
 import { isWhiteBackground } from "./isWhiteBackground/isWhiteBackground.reducer"
-import { dynamicMargin } from "./dynamicMargin/dynamicMargin.reducer"
 import { invertHeight } from "./invertHeight/invertHeight.reducer"
 import { hideFlatBuildings } from "./hideFlatBuildings/hideFlatBuildings.reducer"
 import { scaling } from "./scaling/scaling.reducer"
@@ -39,7 +38,6 @@ const appSettings = combineReducers({
 	showOnlyBuildingsWithEdges,
 	isEdgeMetricVisible,
 	isWhiteBackground,
-	dynamicMargin,
 	invertHeight,
 	invertArea,
 	hideFlatBuildings,

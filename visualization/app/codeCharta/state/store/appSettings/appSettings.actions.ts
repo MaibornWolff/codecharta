@@ -9,7 +9,6 @@ import { defaultEdgeHeight } from "./edgeHeight/edgeHeight.actions"
 import { defaultScaling } from "./scaling/scaling.actions"
 import { defaultHideFlatBuildings } from "./hideFlatBuildings/hideFlatBuildings.actions"
 import { defaultInvertHeight } from "./invertHeight/invertHeight.actions"
-import { defaultDynamicMargin } from "./dynamicMargin/dynamicMargin.actions"
 import { defaultIsWhiteBackground } from "./isWhiteBackground/isWhiteBackground.actions"
 import { defaultMapColors } from "./mapColors/mapColors.actions"
 import { defaultIsPresentationMode } from "./isPresentationMode/isPresentationMode.actions"
@@ -57,7 +56,6 @@ export const defaultAppSettings: AppSettings = {
 	hideFlatBuildings: defaultHideFlatBuildings,
 	invertHeight: defaultInvertHeight,
 	invertArea: defaultInvertArea,
-	dynamicMargin: defaultDynamicMargin,
 	isWhiteBackground: defaultIsWhiteBackground,
 	mapColors: defaultMapColors,
 	isPresentationMode: defaultIsPresentationMode,

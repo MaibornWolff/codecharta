@@ -2,7 +2,6 @@ import { Component, ViewEncapsulation } from "@angular/core"
 import { Store } from "../../../state/angular-redux/store"
 import { marginSelector } from "../../../state/store/dynamicSettings/margin/margin.selector"
 import { setMargin } from "../../../state/store/dynamicSettings/margin/margin.actions"
-import { setDynamicMargin } from "../../../state/store/appSettings/dynamicMargin/dynamicMargin.actions"
 import { MatCheckboxChange } from "@angular/material/checkbox"
 import { setEnableFloorLabels } from "../../../state/store/appSettings/enableFloorLabels/enableFloorLabels.actions"
 import { enableFloorLabelsSelector } from "../../../state/store/appSettings/enableFloorLabels/enableFloorLabels.selector"
@@ -28,6 +27,5 @@ export class AreaSettingsPanelComponent {
 
 	applyDebouncedMargin = debounce((margin: number) => {
 		this.store.dispatch(setMargin(margin))
-		this.store.dispatch(setDynamicMargin(false))
 	}, AreaSettingsPanelComponent.DEBOUNCE_TIME)
 }
