@@ -11,7 +11,7 @@
 	<mat-checkbox (change)="setEnableFloorLabel($event)" [checked]="enableFloorLabels$ | async"> Enable Floor Labels </mat-checkbox>
 	<cc-invert-area-option></cc-invert-area-option>
 	<cc-reset-settings-button
-		[settingsKeys]="['appSettings.dynamicMargin']"
+		[settingsKeys]="['dynamicSettings.margin']"
 		tooltip="Reset area metric settings to their defaults"
 		label="Reset area metric settings"
 	></cc-reset-settings-button>
