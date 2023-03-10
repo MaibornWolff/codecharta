@@ -28,6 +28,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   Unselecting a folder in Presentation Mode leads to console error [#3215](https://github.com/MaibornWolff/codecharta/pull/3215)
 -   Fix Shrunken FileExplorer's file list on small displays [#3235](https://github.com/MaibornWolff/codecharta/pull/3235)
 -   Fix various margin problems in the UI [#3226](https://github.com/MaibornWolff/codecharta/pull/3226)
+-   Fix bumpy animations when moving/turning the map, hover buildings (showing labels and edges) [#3244](https://github.com/MaibornWolff/codecharta/pull/3244)
 
 ### Chore 👨‍💻 👩‍💻
 
