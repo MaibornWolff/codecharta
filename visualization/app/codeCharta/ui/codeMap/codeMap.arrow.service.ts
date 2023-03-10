@@ -16,7 +16,7 @@ export class CodeMapArrowService implements OnDestroy {
 	private map: Map<string, Node>
 	private VERTICES_PER_LINE = 5
 	private arrows: Object3D[] = new Array<Object3D>()
-	private HIGHLIGHT_BUILDING_DELAY = 15
+	private HIGHLIGHT_BUILDING_DELAY = 1
 	private debounceCalculation: (hoveredBuilding: CodeMapBuilding) => void = debounce(
 		(hoveredBuilding: CodeMapBuilding) => this.resetEdgesOfBuildings(hoveredBuilding),
 		this.HIGHLIGHT_BUILDING_DELAY
