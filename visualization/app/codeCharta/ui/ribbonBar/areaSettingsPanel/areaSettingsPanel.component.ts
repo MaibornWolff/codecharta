@@ -7,7 +7,7 @@ import { setEnableFloorLabels } from "../../../state/store/appSettings/enableFlo
 import { enableFloorLabelsSelector } from "../../../state/store/appSettings/enableFloorLabels/enableFloorLabels.selector"
 import { invertAreaSelector } from "../../../state/store/appSettings/invertArea/invertArea.selector"
 import { debounce } from "../../../util/debounce"
-import { toggleInvertingArea } from "../../../state/store/appSettings/invertArea/invertArea.actions"
+import { setInvertArea } from "../../../state/store/appSettings/invertArea/invertArea.actions"
 
 @Component({
 	selector: "cc-area-settings-panel",
@@ -32,7 +32,7 @@ export class AreaSettingsPanelComponent {
 		this.store.dispatch(setEnableFloorLabels(event.checked))
 	}
 
-	toggleInvertingArea() {
-		this.store.dispatch(toggleInvertingArea())
+	toggleInvertingArea(event: MatCheckboxChange) {
+		this.store.dispatch(setInvertArea(event.checked))
 	}
 }

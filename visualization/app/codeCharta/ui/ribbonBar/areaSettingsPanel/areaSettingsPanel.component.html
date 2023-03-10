@@ -8,7 +8,7 @@
 		[max]="100"
 	></cc-slider>
 	<mat-checkbox [checked]="enableFloorLabels$ | async" (change)="setEnableFloorLabel($event)">Enable Floor Labels</mat-checkbox>
-	<mat-checkbox [checked]="isInvertedArea$ | async" (change)="toggleInvertingArea()">Invert Area</mat-checkbox>
+	<mat-checkbox [checked]="isInvertedArea$ | async" (change)="toggleInvertingArea($event)">Invert Area</mat-checkbox>
 
 	<cc-reset-settings-button
 		[settingsKeys]="['dynamicSettings.margin', 'appSettings.invertArea', 'appSettings.enableFloorLabels']"
