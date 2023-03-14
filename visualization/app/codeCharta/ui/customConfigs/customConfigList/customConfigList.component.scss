@@ -1,33 +1,35 @@
 @use "../../../../material/theme";
 
-.cc-custom-config-list .mat-mdc-dialog-container {
-	padding: 5px 16px;
-	max-height: 90vh;
-
-	.mat-mdc-dialog-content.content {
+.cc-custom-config-list {
+	.mat-mdc-dialog-content {
 		max-height: 100%;
-		margin: 0;
-		padding: 0;
+		padding: 16px;
+		max-height: 90vh;
 	}
 
 	.row {
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
+		margin-left: auto;
 	}
 
 	.custom-config-documentation-hint {
 		margin: 10px 0 20px 0;
+		font-size: 1.4em;
+		line-height: 1.4em;
+		color: black;
 	}
 
 	.action-buttons button {
 		margin: 0 3px;
 		min-width: 12%;
 		height: 48px;
-		width: 65px;
+		width: 48px;
+		border-radius: 100%;
 		line-height: 48px;
-		background-color: theme.$cc-primary-color;
-		color: #ffffff;
+		background-color: #ffffff;
+		color: theme.$cc-primary-color;
 
 		&:disabled,
 		&[disabled] {
@@ -75,10 +77,15 @@
 		}
 
 		.mdc-list-item__content {
-			display: flex;
-			justify-content: space-between;
+			width: 100%;
 			border-bottom: 1px solid #000000;
 			padding: 0 5px;
+
+			.mdc-list-item__primary-text {
+				display: flex;
+				width: inherit;
+				align-items: center;
+			}
 
 			&:hover {
 				background-color: rgba(0, 0, 0, 0.04);
@@ -90,7 +97,6 @@
 				&.remove-button {
 					font-size: 16px;
 					padding: 8px 10px;
-					margin: 0;
 
 					&:hover {
 						background-color: rgba(0, 0, 0, 0.05);

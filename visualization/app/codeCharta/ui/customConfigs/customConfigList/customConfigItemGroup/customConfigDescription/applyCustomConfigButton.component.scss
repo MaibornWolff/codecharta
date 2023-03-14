@@ -3,15 +3,17 @@ cc-apply-custom-config-button {
 	flex: 1;
 
 	button {
-		flex-direction: row;
-		flex-wrap: wrap;
-		align-items: center;
-		display: flex;
-		flex: 1;
-		gap: 10px;
+		flex-direction: column;
+		width: 100%;
 
 		&:disabled {
 			cursor: default;
+		}
+
+		.config-metric-list {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 10px;
 		}
 
 		p {
