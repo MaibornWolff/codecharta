@@ -1,8 +1,7 @@
+<mat-toolbar color="primary">Custom Views</mat-toolbar>
+
 <mat-dialog-content class="content" *ngIf="customConfigService.customConfigItemGroups$ | async; let dropDownCustomConfigItemGroups">
 	<div class="row">
-		<div class="title">
-			<h3>Custom Views</h3>
-		</div>
 		<div class="action-buttons">
 			<cc-upload-custom-config-button></cc-upload-custom-config-button>
 			<cc-download-custom-configs-button></cc-download-custom-configs-button>
