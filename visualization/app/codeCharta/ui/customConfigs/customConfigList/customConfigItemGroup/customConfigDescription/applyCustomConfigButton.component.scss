@@ -3,7 +3,7 @@ cc-apply-custom-config-button {
 	flex: 1;
 
 	button {
-		flex-direction: column;
+		flex-direction: row;
 		width: 100%;
 
 		&:disabled {
@@ -25,11 +25,12 @@ cc-apply-custom-config-button {
 			text-align: left;
 
 			&.config-name {
-				flex: 0 0 22em;
+				flex: 1 1 auto;
+				width: 100%;
 			}
 
 			&.config-metric {
-				flex: 0 0 8em;
+				flex: 0 0 9em;
 			}
 		}
 
