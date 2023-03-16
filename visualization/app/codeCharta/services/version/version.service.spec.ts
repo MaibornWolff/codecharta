@@ -1,14 +1,14 @@
-import { MatLegacyDialog } from "@angular/material/legacy-dialog"
+import { MatDialog } from "@angular/material/dialog"
 import { ChangelogDialogComponent } from "../../ui/dialogs/changelogDialog/changelogDialog.component"
 import { VersionService } from "./version.service"
 
 describe("versionService", () => {
 	let versionService: VersionService & { version: string }
-	let mockedDialog: MatLegacyDialog
+	let mockedDialog: MatDialog
 	const mockedSetLocalStorageItem = jest.spyOn(Storage.prototype, "setItem")
 
 	beforeEach(() => {
-		mockedDialog = { open: jest.fn() } as unknown as MatLegacyDialog
+		mockedDialog = { open: jest.fn() } as unknown as MatDialog
 		mockedSetLocalStorageItem.mockReset()
 		versionService = new VersionService(mockedDialog)
 		versionService.version = "1.42.0"

@@ -35,7 +35,9 @@
 
 <button
 	mat-button
-	class="panel-button cc-mat-raised cc-shadow"
+	mat-raised-button
+	color="primary"
+	class="panel-button"
 	(click)="toggleIsLegendVisible()"
 	[class.isAttributeSideBarVisible]="isAttributeSideBarVisibleService.isOpen"
 	title="{{ isLegendVisible ? 'Hide panel' : 'Show panel' }}"

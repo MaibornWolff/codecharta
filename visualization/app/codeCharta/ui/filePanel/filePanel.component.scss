@@ -1,18 +1,11 @@
 @use "../../../material/theme";
 
 cc-file-panel {
-	width: calc(100% - 150px);
-	min-width: 400px;
-	display: inline-block;
+	display: flex;
+	gap: inherit;
 
 	&.hidden {
 		display: none;
-	}
-
-	.mode-chooser {
-		display: inline-flex;
-		vertical-align: middle;
-		margin-left: 10px;
 	}
 
 	.state-selector-button {
@@ -27,21 +20,12 @@ cc-file-panel {
 			}
 
 			&.current {
-				background-color: rgb(0, 150, 136);
+				background-color: theme.$cc-primary-color;
 				color: #ffffff;
 			}
-			&.current:hover {
-				background-color: rgb(0, 150, 136);
-			}
-			.text {
-				display: block;
-				margin-top: -5px;
-				margin-right: 0px;
 
-				&:active {
-					padding: -5px;
-					margin: -5px;
-				}
+			&.current:hover {
+				background-color: theme.$cc-primary-color;
 			}
 		}
 	}
@@ -70,6 +54,7 @@ cc-file-panel {
 			color: rgb(255, 255, 255);
 		}
 	}
+
 	.pictogram {
 		display: inline-flex;
 		width: 10px;
@@ -81,13 +66,8 @@ cc-file-panel {
 		vertical-align: bottom;
 	}
 
+	.standard-select,
 	.delta-select {
 		width: 200px;
-		margin: 0 10px 0 10px;
-		vertical-align: bottom;
-	}
-
-	.standard-select {
-		margin: 0 10px 0 10px;
 	}
 }

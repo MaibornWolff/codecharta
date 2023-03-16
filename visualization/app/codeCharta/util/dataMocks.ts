@@ -1607,7 +1607,6 @@ export const STATE: State = {
 		invertHeight: true,
 		invertArea: false,
 		isEdgeMetricVisible: true,
-		dynamicMargin: true,
 		isWhiteBackground: false,
 		isColorMetricLinkedToHeightMetric: false,
 		enableFloorLabels: true,
@@ -1657,7 +1656,6 @@ export const DEFAULT_STATE: State = {
 			neutral: false
 		},
 		edgeHeight: 4,
-		dynamicMargin: true,
 		hideFlatBuildings: false,
 		invertHeight: false,
 		invertArea: false,

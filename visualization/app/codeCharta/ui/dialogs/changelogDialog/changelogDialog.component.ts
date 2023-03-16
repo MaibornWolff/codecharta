@@ -1,6 +1,6 @@
 import markdownFile from "../../../../../../CHANGELOG.md"
 import { Component, Inject, ViewEncapsulation } from "@angular/core"
-import { MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from "@angular/material/legacy-dialog"
+import { MAT_DIALOG_DATA } from "@angular/material/dialog"
 
 @Component({
 	templateUrl: "./changelogDialog.component.html",

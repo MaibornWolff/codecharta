@@ -33,7 +33,7 @@ cc-matching-files-counter {
 		padding: 1px 8px;
 	}
 
-	cc-sorting-option .mat-select {
+	cc-sorting-option .mat-mdc-select {
 		width: 105px;
 		padding: 2px 8px;
 		font-weight: normal;
@@ -43,7 +43,7 @@ cc-matching-files-counter {
 
 	.sort-component {
 		margin-right: 3px;
-		float: right;
+		display: inline-block;
 		color: black;
 	}
 }
