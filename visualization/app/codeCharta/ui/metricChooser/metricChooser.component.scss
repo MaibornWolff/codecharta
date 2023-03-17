@@ -28,8 +28,7 @@ cc-metric-chooser {
 
 .mat-mdc-select-panel.cc-metric-chooser {
 	margin-top: 16px;
-	width: 360px;
-	max-width: 360px;
+	overflow: hidden;
 
 	.cc-metric-chooser-search-field {
 		width: 100%;
@@ -62,4 +61,10 @@ cc-metric-chooser {
 			color: #ccc;
 		}
 	}
+}
+
+.cdk-overlay-pane:not(.mat-mdc-select-panel-above) .mdc-menu-surface.mat-mdc-select-panel {
+	min-width: 300px;
+	position: absolute;
+	right: 0;
 }
