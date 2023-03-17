@@ -5,7 +5,9 @@ import { setMargin } from "../../../state/store/dynamicSettings/margin/margin.ac
 import { MatCheckboxChange } from "@angular/material/checkbox"
 import { setEnableFloorLabels } from "../../../state/store/appSettings/enableFloorLabels/enableFloorLabels.actions"
 import { enableFloorLabelsSelector } from "../../../state/store/appSettings/enableFloorLabels/enableFloorLabels.selector"
+import { invertAreaSelector } from "../../../state/store/appSettings/invertArea/invertArea.selector"
 import { debounce } from "../../../util/debounce"
+import { setInvertArea } from "../../../state/store/appSettings/invertArea/invertArea.actions"
 
 @Component({
 	selector: "cc-area-settings-panel",
@@ -18,14 +20,19 @@ export class AreaSettingsPanelComponent {
 
 	margin$ = this.store.select(marginSelector)
 	enableFloorLabels$ = this.store.select(enableFloorLabelsSelector)
+	isInvertedArea$ = this.store.select(invertAreaSelector)
 
 	constructor(private store: Store) {}
+
+	applyDebouncedMargin = debounce((margin: number) => {
+		this.store.dispatch(setMargin(margin))
+	}, AreaSettingsPanelComponent.DEBOUNCE_TIME)
 
 	setEnableFloorLabel(event: MatCheckboxChange) {
 		this.store.dispatch(setEnableFloorLabels(event.checked))
 	}
 
-	applyDebouncedMargin = debounce((margin: number) => {
-		this.store.dispatch(setMargin(margin))
-	}, AreaSettingsPanelComponent.DEBOUNCE_TIME)
+	toggleInvertingArea(event: MatCheckboxChange) {
+		this.store.dispatch(setInvertArea(event.checked))
+	}
 }
