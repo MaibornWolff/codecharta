@@ -1,5 +1,5 @@
 import { Component, Input } from "@angular/core"
-import { MatLegacyDialog as MatDialog } from "@angular/material/legacy-dialog"
+import { MatDialog } from "@angular/material/dialog"
 import { ManageCustomConfigNoteDialogComponent } from "./manageCustomConfigNoteDialog/manageCustomConfigNoteDialog.component"
 import { CustomConfigItem } from "../customConfigs.component"
 import { CustomConfigHelper } from "../../../util/customConfigHelper"

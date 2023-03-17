@@ -1,5 +1,5 @@
 import { Component, Inject } from "@angular/core"
-import { MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA, MatLegacyDialogRef as MatDialogReference } from "@angular/material/legacy-dialog"
+import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog"
 
 @Component({
 	selector: "cc-manage-custom-config-note-dialog",
@@ -8,7 +8,7 @@ import { MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA, MatLegacyDialogRef as MatDia
 })
 export class ManageCustomConfigNoteDialogComponent {
 	constructor(
-		public dialogReference: MatDialogReference<ManageCustomConfigNoteDialogComponent>,
+		public dialogReference: MatDialogRef<ManageCustomConfigNoteDialogComponent>,
 		@Inject(MAT_DIALOG_DATA) public data: string
 	) {}
 
