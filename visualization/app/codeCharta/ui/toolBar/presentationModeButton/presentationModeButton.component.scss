@@ -1,6 +1,7 @@
 cc-presentation-mode-button {
-	.presentation-mode-icon,
-	mat-slide-toggle {
-		margin-left: 8px;
+	mat-slide-toggle.mat-mdc-slide-toggle div.mdc-form-field {
+		font-size: 10pt;
+		flex-direction: row-reverse;
+		gap: 12px;
 	}
 }

@@ -4,10 +4,10 @@ cc-blacklist-panel {
 		margin: 0 0.25em 0 0;
 	}
 
-	mat-list.mat-list.mat-list-base mat-list-item {
+	mat-list.mat-mdc-list.mat-mdc-list-base mat-list-item {
 		border-top: 1px solid rgba(0, 0, 0, 0.12);
 
-		.mat-list-item-content {
+		.mdc-list-item__content {
 			padding: 0;
 
 			button {

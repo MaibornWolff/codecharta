@@ -1,8 +1,10 @@
 #codemap-context-menu {
-	padding: 2px;
+	padding: 12px;
 
 	.button-group {
-		display: inline-grid;
+		display: flex;
+		flex-direction: column;
+		gap: 6px;
 		width: 100%;
 	}
 
@@ -19,16 +21,13 @@
 	[mat-button] {
 		width: 100%;
 		text-align: left;
-		margin-top: 0;
+		margin: 0;
+		justify-content: left;
 		line-height: 30px;
 		min-height: 30px;
 
 		i {
 			min-width: 15px;
-		}
-
-		&:not(:last-child) {
-			margin-bottom: 0;
 		}
 	}
 }

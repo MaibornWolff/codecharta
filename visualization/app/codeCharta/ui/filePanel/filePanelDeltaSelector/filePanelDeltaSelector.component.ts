@@ -11,6 +11,7 @@ import { pictogramBackgroundSelector } from "./pictogramBackground.selector"
 @Component({
 	selector: "cc-file-panel-delta-selector",
 	templateUrl: "./filePanelDeltaSelector.component.html",
+	styleUrls: ["./filePanelDeltaSelector.component.scss"],
 	encapsulation: ViewEncapsulation.None
 })
 export class FilePanelDeltaSelectorComponent {

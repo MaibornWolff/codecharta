@@ -1,31 +1,31 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`AggregationGenerator aggregation of four maps 1`] = `
-Object {
-  "fileMeta": Object {
+{
+  "fileMeta": {
     "apiVersion": "1.3",
     "exportedFileSize": 1200000,
     "fileChecksum": "md5-file1;md5-file2;md5-file1;md5-file2",
     "fileName": "file_aggregation_of_file1_and_file2_and_file1_and_file2",
     "projectName": "project_aggregation_of_Sample_Project_and_Sample_Project_and_Sample_Project_and_Sample_Project",
   },
-  "map": Object {
-    "attributes": Object {
+  "map": {
+    "attributes": {
       "customMetric": 14,
       "functions": 2460,
       "mcc": 426,
       "rloc": 860,
     },
-    "children": Array [
-      Object {
-        "attributes": Object {
+    "children": [
+      {
+        "attributes": {
           "functions": 1010,
           "mcc": 11,
           "rloc": 170,
         },
-        "children": Array [
-          Object {
-            "attributes": Object {
+        "children": [
+          {
+            "attributes": {
               "functions": 10,
               "mcc": 1,
               "rloc": 100,
@@ -35,15 +35,15 @@ Object {
             "path": "/root/file1/big leaf",
             "type": "File",
           },
-          Object {
-            "attributes": Object {
+          {
+            "attributes": {
               "functions": 1000,
               "mcc": 10,
               "rloc": 70,
             },
-            "children": Array [
-              Object {
-                "attributes": Object {
+            "children": [
+              {
+                "attributes": {
                   "functions": 1000,
                   "mcc": 10,
                   "rloc": 70,
@@ -62,16 +62,16 @@ Object {
         "path": "/root/file1",
         "type": "Folder",
       },
-      Object {
-        "attributes": Object {
+      {
+        "attributes": {
           "customMetric": 7,
           "functions": 220,
           "mcc": 202,
           "rloc": 260,
         },
-        "children": Array [
-          Object {
-            "attributes": Object {
+        "children": [
+          {
+            "attributes": {
               "functions": 20,
               "mcc": 2,
               "rloc": 200,
@@ -81,15 +81,15 @@ Object {
             "path": "/root/file2/big leaf",
             "type": "File",
           },
-          Object {
-            "attributes": Object {
+          {
+            "attributes": {
               "functions": 200,
               "mcc": 200,
               "rloc": 60,
             },
-            "children": Array [
-              Object {
-                "attributes": Object {
+            "children": [
+              {
+                "attributes": {
                   "functions": 200,
                   "mcc": 200,
                   "rloc": 60,
@@ -108,15 +108,15 @@ Object {
         "path": "/root/file2",
         "type": "Folder",
       },
-      Object {
-        "attributes": Object {
+      {
+        "attributes": {
           "functions": 1010,
           "mcc": 11,
           "rloc": 170,
         },
-        "children": Array [
-          Object {
-            "attributes": Object {
+        "children": [
+          {
+            "attributes": {
               "functions": 10,
               "mcc": 1,
               "rloc": 100,
@@ -126,15 +126,15 @@ Object {
             "path": "/root/file1/big leaf",
             "type": "File",
           },
-          Object {
-            "attributes": Object {
+          {
+            "attributes": {
               "functions": 1000,
               "mcc": 10,
               "rloc": 70,
             },
-            "children": Array [
-              Object {
-                "attributes": Object {
+            "children": [
+              {
+                "attributes": {
                   "functions": 1000,
                   "mcc": 10,
                   "rloc": 70,
@@ -153,16 +153,16 @@ Object {
         "path": "/root/file1",
         "type": "Folder",
       },
-      Object {
-        "attributes": Object {
+      {
+        "attributes": {
           "customMetric": 7,
           "functions": 220,
           "mcc": 202,
           "rloc": 260,
         },
-        "children": Array [
-          Object {
-            "attributes": Object {
+        "children": [
+          {
+            "attributes": {
               "functions": 20,
               "mcc": 2,
               "rloc": 200,
@@ -172,15 +172,15 @@ Object {
             "path": "/root/file2/big leaf",
             "type": "File",
           },
-          Object {
-            "attributes": Object {
+          {
+            "attributes": {
               "functions": 200,
               "mcc": 200,
               "rloc": 60,
             },
-            "children": Array [
-              Object {
-                "attributes": Object {
+            "children": [
+              {
+                "attributes": {
                   "functions": 200,
                   "mcc": 200,
                   "rloc": 60,
@@ -204,47 +204,47 @@ Object {
     "path": "/root",
     "type": "Folder",
   },
-  "settings": Object {
-    "fileSettings": Object {
-      "attributeDescriptors": Object {},
-      "attributeTypes": Object {
-        "edges": Object {},
-        "nodes": Object {},
+  "settings": {
+    "fileSettings": {
+      "attributeDescriptors": {},
+      "attributeTypes": {
+        "edges": {},
+        "nodes": {},
       },
-      "blacklist": Array [],
-      "edges": Array [],
-      "markedPackages": Array [],
+      "blacklist": [],
+      "edges": [],
+      "markedPackages": [],
     },
   },
 }
 `;
 
 exports[`AggregationGenerator aggregation of two maps 1`] = `
-Object {
-  "fileMeta": Object {
+{
+  "fileMeta": {
     "apiVersion": "1.3",
     "exportedFileSize": 600000,
     "fileChecksum": "md5-file1;md5-file2",
     "fileName": "file_aggregation_of_file1_and_file2",
     "projectName": "project_aggregation_of_Sample_Project_and_Sample_Project",
   },
-  "map": Object {
-    "attributes": Object {
+  "map": {
+    "attributes": {
       "customMetric": 7,
       "functions": 1230,
       "mcc": 213,
       "rloc": 430,
     },
-    "children": Array [
-      Object {
-        "attributes": Object {
+    "children": [
+      {
+        "attributes": {
           "functions": 1010,
           "mcc": 11,
           "rloc": 170,
         },
-        "children": Array [
-          Object {
-            "attributes": Object {
+        "children": [
+          {
+            "attributes": {
               "functions": 10,
               "mcc": 1,
               "rloc": 100,
@@ -254,15 +254,15 @@ Object {
             "path": "/root/file1/big leaf",
             "type": "File",
           },
-          Object {
-            "attributes": Object {
+          {
+            "attributes": {
               "functions": 1000,
               "mcc": 10,
               "rloc": 70,
             },
-            "children": Array [
-              Object {
-                "attributes": Object {
+            "children": [
+              {
+                "attributes": {
                   "functions": 1000,
                   "mcc": 10,
                   "rloc": 70,
@@ -281,16 +281,16 @@ Object {
         "path": "/root/file1",
         "type": "Folder",
       },
-      Object {
-        "attributes": Object {
+      {
+        "attributes": {
           "customMetric": 7,
           "functions": 220,
           "mcc": 202,
           "rloc": 260,
         },
-        "children": Array [
-          Object {
-            "attributes": Object {
+        "children": [
+          {
+            "attributes": {
               "functions": 20,
               "mcc": 2,
               "rloc": 200,
@@ -300,15 +300,15 @@ Object {
             "path": "/root/file2/big leaf",
             "type": "File",
           },
-          Object {
-            "attributes": Object {
+          {
+            "attributes": {
               "functions": 200,
               "mcc": 200,
               "rloc": 60,
             },
-            "children": Array [
-              Object {
-                "attributes": Object {
+            "children": [
+              {
+                "attributes": {
                   "functions": 200,
                   "mcc": 200,
                   "rloc": 60,
@@ -332,39 +332,39 @@ Object {
     "path": "/root",
     "type": "Folder",
   },
-  "settings": Object {
-    "fileSettings": Object {
-      "attributeDescriptors": Object {},
-      "attributeTypes": Object {
-        "edges": Object {},
-        "nodes": Object {},
+  "settings": {
+    "fileSettings": {
+      "attributeDescriptors": {},
+      "attributeTypes": {
+        "edges": {},
+        "nodes": {},
       },
-      "blacklist": Array [],
-      "edges": Array [],
-      "markedPackages": Array [],
+      "blacklist": [],
+      "edges": [],
+      "markedPackages": [],
     },
   },
 }
 `;
 
 exports[`AggregationGenerator aggregation one map 1`] = `
-Object {
-  "fileMeta": Object {
+{
+  "fileMeta": {
     "apiVersion": "1.3",
     "exportedFileSize": 300000,
     "fileChecksum": "md5-file1",
     "fileName": "file1",
     "projectName": "Sample Project",
   },
-  "map": Object {
-    "attributes": Object {
+  "map": {
+    "attributes": {
       "functions": 1010,
       "mcc": 11,
       "rloc": 170,
     },
-    "children": Array [
-      Object {
-        "attributes": Object {
+    "children": [
+      {
+        "attributes": {
           "functions": 10,
           "mcc": 1,
           "rloc": 100,
@@ -374,15 +374,15 @@ Object {
         "path": "/root/big leaf",
         "type": "File",
       },
-      Object {
-        "attributes": Object {
+      {
+        "attributes": {
           "functions": 1000,
           "mcc": 10,
           "rloc": 70,
         },
-        "children": Array [
-          Object {
-            "attributes": Object {
+        "children": [
+          {
+            "attributes": {
               "functions": 1000,
               "mcc": 10,
               "rloc": 70,
@@ -401,6 +401,6 @@ Object {
     "path": "/root",
     "type": "Folder",
   },
-  "settings": Object {},
+  "settings": {},
 }
 `;

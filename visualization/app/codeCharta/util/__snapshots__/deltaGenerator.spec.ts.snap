@@ -1,21 +1,21 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`deltaGenerator getDeltaFile should result in expected deltaFiles 1`] = `
-Object {
-  "attributes": Object {},
-  "children": Array [
-    Object {
-      "attributes": Object {
+{
+  "attributes": {},
+  "children": [
+    {
+      "attributes": {
         "functions": 10,
         "mcc": 1,
         "rloc": 20,
       },
-      "deltas": Object {
+      "deltas": {
         "functions": 0,
         "mcc": 0,
         "rloc": -80,
       },
-      "fileCount": Object {
+      "fileCount": {
         "added": 0,
         "changed": 1,
         "removed": 0,
@@ -27,18 +27,18 @@ Object {
       "path": "/root/big leaf",
       "type": "File",
     },
-    Object {
-      "attributes": Object {
+    {
+      "attributes": {
         "functions": 11,
         "mcc": 5,
         "rloc": 10,
       },
-      "deltas": Object {
+      "deltas": {
         "functions": 11,
         "mcc": 5,
         "rloc": 10,
       },
-      "fileCount": Object {
+      "fileCount": {
         "added": 1,
         "changed": 0,
         "removed": 0,
@@ -50,23 +50,23 @@ Object {
       "path": "/root/additional leaf",
       "type": "File",
     },
-    Object {
-      "attributes": Object {},
-      "children": Array [
-        Object {
-          "attributes": Object {
+    {
+      "attributes": {},
+      "children": [
+        {
+          "attributes": {
             "functions": 100,
             "mcc": 100,
             "more": 20,
             "rloc": 30,
           },
-          "deltas": Object {
+          "deltas": {
             "functions": 0,
             "mcc": 0,
             "more": 20,
             "rloc": 0,
           },
-          "fileCount": Object {
+          "fileCount": {
             "added": 0,
             "changed": 1,
             "removed": 0,
@@ -77,17 +77,17 @@ Object {
           "path": "/root/Parent Leaf/small leaf",
           "type": "File",
         },
-        Object {
-          "attributes": Object {
+        {
+          "attributes": {
             "functions": 1000,
             "rloc": 70,
           },
-          "deltas": Object {
+          "deltas": {
             "functions": 0,
             "mcc": -10,
             "rloc": 0,
           },
-          "fileCount": Object {
+          "fileCount": {
             "added": 0,
             "changed": 1,
             "removed": 0,
@@ -98,18 +98,18 @@ Object {
           "path": "/root/Parent Leaf/other small leaf",
           "type": "File",
         },
-        Object {
-          "attributes": Object {
+        {
+          "attributes": {
             "functions": 10,
             "mcc": 1,
             "rloc": 20,
           },
-          "deltas": Object {
+          "deltas": {
             "functions": 10,
             "mcc": 1,
             "rloc": 20,
           },
-          "fileCount": Object {
+          "fileCount": {
             "added": 1,
             "changed": 0,
             "removed": 0,
@@ -122,8 +122,8 @@ Object {
           "type": "File",
         },
       ],
-      "deltas": Object {},
-      "fileCount": Object {
+      "deltas": {},
+      "fileCount": {
         "added": 0,
         "changed": 0,
         "removed": 0,
@@ -135,8 +135,8 @@ Object {
       "type": "Folder",
     },
   ],
-  "deltas": Object {},
-  "fileCount": Object {
+  "deltas": {},
+  "fileCount": {
     "added": 0,
     "changed": 0,
     "removed": 0,
@@ -150,21 +150,21 @@ Object {
 `;
 
 exports[`deltaGenerator golden test 1`] = `
-Object {
-  "attributes": Object {},
-  "children": Array [
-    Object {
-      "attributes": Object {
+{
+  "attributes": {},
+  "children": [
+    {
+      "attributes": {
         "functions": 10,
         "mcc": 1,
         "rloc": 20,
       },
-      "deltas": Object {
+      "deltas": {
         "functions": 0,
         "mcc": 0,
         "rloc": -80,
       },
-      "fileCount": Object {
+      "fileCount": {
         "added": 0,
         "changed": 1,
         "removed": 0,
@@ -176,18 +176,18 @@ Object {
       "path": "/root/big leaf",
       "type": "File",
     },
-    Object {
-      "attributes": Object {
+    {
+      "attributes": {
         "functions": 11,
         "mcc": 5,
         "rloc": 10,
       },
-      "deltas": Object {
+      "deltas": {
         "functions": 11,
         "mcc": 5,
         "rloc": 10,
       },
-      "fileCount": Object {
+      "fileCount": {
         "added": 1,
         "changed": 0,
         "removed": 0,
@@ -199,23 +199,23 @@ Object {
       "path": "/root/additional leaf",
       "type": "File",
     },
-    Object {
-      "attributes": Object {},
-      "children": Array [
-        Object {
-          "attributes": Object {
+    {
+      "attributes": {},
+      "children": [
+        {
+          "attributes": {
             "functions": 100,
             "mcc": 100,
             "more": 20,
             "rloc": 30,
           },
-          "deltas": Object {
+          "deltas": {
             "functions": 0,
             "mcc": 0,
             "more": 20,
             "rloc": 0,
           },
-          "fileCount": Object {
+          "fileCount": {
             "added": 0,
             "changed": 1,
             "removed": 0,
@@ -226,17 +226,17 @@ Object {
           "path": "/root/Parent Leaf/small leaf",
           "type": "File",
         },
-        Object {
-          "attributes": Object {
+        {
+          "attributes": {
             "functions": 1000,
             "rloc": 70,
           },
-          "deltas": Object {
+          "deltas": {
             "functions": 0,
             "mcc": -10,
             "rloc": 0,
           },
-          "fileCount": Object {
+          "fileCount": {
             "added": 0,
             "changed": 1,
             "removed": 0,
@@ -247,18 +247,18 @@ Object {
           "path": "/root/Parent Leaf/other small leaf",
           "type": "File",
         },
-        Object {
-          "attributes": Object {
+        {
+          "attributes": {
             "functions": 10,
             "mcc": 1,
             "rloc": 20,
           },
-          "deltas": Object {
+          "deltas": {
             "functions": 10,
             "mcc": 1,
             "rloc": 20,
           },
-          "fileCount": Object {
+          "fileCount": {
             "added": 1,
             "changed": 0,
             "removed": 0,
@@ -271,8 +271,8 @@ Object {
           "type": "File",
         },
       ],
-      "deltas": Object {},
-      "fileCount": Object {
+      "deltas": {},
+      "fileCount": {
         "added": 0,
         "changed": 0,
         "removed": 0,
@@ -283,20 +283,20 @@ Object {
       "path": "/root/Parent Leaf",
       "type": "Folder",
     },
-    Object {
-      "attributes": Object {},
-      "children": Array [
-        Object {
-          "attributes": Object {},
-          "children": Array [
-            Object {
-              "attributes": Object {
+    {
+      "attributes": {},
+      "children": [
+        {
+          "attributes": {},
+          "children": [
+            {
+              "attributes": {
                 "monster": 666,
               },
-              "deltas": Object {
+              "deltas": {
                 "monster": 666,
               },
-              "fileCount": Object {
+              "fileCount": {
                 "added": 1,
                 "changed": 0,
                 "removed": 0,
@@ -307,14 +307,14 @@ Object {
               "path": "/root/onlyA/special/Narwal",
               "type": "File",
             },
-            Object {
-              "attributes": Object {
+            {
+              "attributes": {
                 "special": 42,
               },
-              "deltas": Object {
+              "deltas": {
                 "special": -42,
               },
-              "fileCount": Object {
+              "fileCount": {
                 "added": 0,
                 "changed": 0,
                 "removed": 1,
@@ -325,14 +325,14 @@ Object {
               "path": "/root/onlyA/special/unicorn",
               "type": "File",
             },
-            Object {
-              "attributes": Object {
+            {
+              "attributes": {
                 "special": 10,
               },
-              "deltas": Object {
+              "deltas": {
                 "special": -10,
               },
-              "fileCount": Object {
+              "fileCount": {
                 "added": 0,
                 "changed": 0,
                 "removed": 1,
@@ -344,8 +344,8 @@ Object {
               "type": "File",
             },
           ],
-          "deltas": Object {},
-          "fileCount": Object {
+          "deltas": {},
+          "fileCount": {
             "added": 0,
             "changed": 0,
             "removed": 0,
@@ -357,8 +357,8 @@ Object {
           "type": "Folder",
         },
       ],
-      "deltas": Object {},
-      "fileCount": Object {
+      "deltas": {},
+      "fileCount": {
         "added": 0,
         "changed": 0,
         "removed": 0,
@@ -370,8 +370,8 @@ Object {
       "type": "Folder",
     },
   ],
-  "deltas": Object {},
-  "fileCount": Object {
+  "deltas": {},
+  "fileCount": {
     "added": 0,
     "changed": 0,
     "removed": 0,

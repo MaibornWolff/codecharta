@@ -13,9 +13,9 @@ describe("FileExtensionCalculator", () => {
 	describe("getFileExtensionDistribution", () => {
 		it("should get correct absolute distribution of file-extensions for given metric", () => {
 			const expected: MetricDistribution[] = [
-				{ fileExtension: "java", absoluteMetricValue: 162, relativeMetricValue: 42.970_822_281_167_11, color: "hsl(58, 40%, 50%)" },
-				{ fileExtension: "jpg", absoluteMetricValue: 130, relativeMetricValue: 34.482_758_620_689_66, color: "hsl(321, 40%, 50%)" },
-				{ fileExtension: "json", absoluteMetricValue: 70, relativeMetricValue: 18.567_639_257_294_43, color: "hsl(232, 40%, 50%)" },
+				{ fileExtension: "java", absoluteMetricValue: 162, relativeMetricValue: 42.970_822_281_167_11, color: "hsl(58, 60%, 50%)" },
+				{ fileExtension: "jpg", absoluteMetricValue: 130, relativeMetricValue: 34.482_758_620_689_66, color: "hsl(321, 60%, 50%)" },
+				{ fileExtension: "json", absoluteMetricValue: 70, relativeMetricValue: 18.567_639_257_294_43, color: "hsl(232, 60%, 50%)" },
 				{
 					fileExtension: "None",
 					absoluteMetricValue: 15,
@@ -33,9 +33,9 @@ describe("FileExtensionCalculator", () => {
 			setIsBlacklisted([map.children[0].path], map, "flatten")
 
 			const expected: MetricDistribution[] = [
-				{ fileExtension: "java", absoluteMetricValue: 162, relativeMetricValue: 42.970_822_281_167_11, color: "hsl(58, 40%, 50%)" },
-				{ fileExtension: "jpg", absoluteMetricValue: 130, relativeMetricValue: 34.482_758_620_689_66, color: "hsl(321, 40%, 50%)" },
-				{ fileExtension: "json", absoluteMetricValue: 70, relativeMetricValue: 18.567_639_257_294_43, color: "hsl(232, 40%, 50%)" },
+				{ fileExtension: "java", absoluteMetricValue: 162, relativeMetricValue: 42.970_822_281_167_11, color: "hsl(58, 60%, 50%)" },
+				{ fileExtension: "jpg", absoluteMetricValue: 130, relativeMetricValue: 34.482_758_620_689_66, color: "hsl(321, 60%, 50%)" },
+				{ fileExtension: "json", absoluteMetricValue: 70, relativeMetricValue: 18.567_639_257_294_43, color: "hsl(232, 60%, 50%)" },
 				{
 					fileExtension: "None",
 					absoluteMetricValue: 15,
@@ -53,14 +53,14 @@ describe("FileExtensionCalculator", () => {
 			setIsBlacklisted([map.children[0].path], map, "exclude")
 
 			const expected: MetricDistribution[] = [
-				{ fileExtension: "java", absoluteMetricValue: 162, relativeMetricValue: 58.483_754_512_635_38, color: "hsl(58, 40%, 50%)" },
+				{ fileExtension: "java", absoluteMetricValue: 162, relativeMetricValue: 58.483_754_512_635_38, color: "hsl(58, 60%, 50%)" },
 				{
 					fileExtension: "json",
 					absoluteMetricValue: 70,
 					relativeMetricValue: 25.270_758_122_743_683,
-					color: "hsl(232, 40%, 50%)"
+					color: "hsl(232, 60%, 50%)"
 				},
-				{ fileExtension: "jpg", absoluteMetricValue: 30, relativeMetricValue: 10.830_324_909_747_292, color: "hsl(321, 40%, 50%)" },
+				{ fileExtension: "jpg", absoluteMetricValue: 30, relativeMetricValue: 10.830_324_909_747_292, color: "hsl(321, 60%, 50%)" },
 				{ fileExtension: "None", absoluteMetricValue: 15, relativeMetricValue: 5.415_162_454_873_646, color: "#676867" }
 			]
 
@@ -73,8 +73,8 @@ describe("FileExtensionCalculator", () => {
 			setIsBlacklisted(["/root/another big leaf.java", "/root/Parent Leaf/another leaf.java"], map, "exclude")
 
 			const expected: MetricDistribution[] = [
-				{ fileExtension: "jpg", absoluteMetricValue: 130, relativeMetricValue: 60.465_116_279_069_77, color: "hsl(321, 40%, 50%)" },
-				{ fileExtension: "json", absoluteMetricValue: 70, relativeMetricValue: 32.558_139_534_883_72, color: "hsl(232, 40%, 50%)" },
+				{ fileExtension: "jpg", absoluteMetricValue: 130, relativeMetricValue: 60.465_116_279_069_77, color: "hsl(321, 60%, 50%)" },
+				{ fileExtension: "json", absoluteMetricValue: 70, relativeMetricValue: 32.558_139_534_883_72, color: "hsl(232, 60%, 50%)" },
 				{ fileExtension: "None", absoluteMetricValue: 15, relativeMetricValue: 6.976_744_186_046_512, color: "#676867" }
 			]
 
@@ -89,10 +89,10 @@ describe("FileExtensionCalculator", () => {
 					fileExtension: "java",
 					absoluteMetricValue: 162,
 					relativeMetricValue: 42.970_822_281_167_11,
-					color: "hsl(58, 40%, 50%)"
+					color: "hsl(58, 60%, 50%)"
 				},
-				{ fileExtension: "jpg", absoluteMetricValue: 130, relativeMetricValue: 34.482_758_620_689_66, color: "hsl(321, 40%, 50%)" },
-				{ fileExtension: "json", absoluteMetricValue: 70, relativeMetricValue: 18.567_639_257_294_43, color: "hsl(232, 40%, 50%)" },
+				{ fileExtension: "jpg", absoluteMetricValue: 130, relativeMetricValue: 34.482_758_620_689_66, color: "hsl(321, 60%, 50%)" },
+				{ fileExtension: "json", absoluteMetricValue: 70, relativeMetricValue: 18.567_639_257_294_43, color: "hsl(232, 60%, 50%)" },
 				{
 					fileExtension: "None",
 					absoluteMetricValue: 15,
@@ -158,14 +158,14 @@ describe("FileExtensionCalculator", () => {
 					fileExtension: "java",
 					absoluteMetricValue: 162,
 					relativeMetricValue: 40.806_045_340_050_375,
-					color: "hsl(58, 40%, 50%)"
+					color: "hsl(58, 60%, 50%)"
 				},
-				{ fileExtension: "jpg", absoluteMetricValue: 130, relativeMetricValue: 32.745_591_939_546_6, color: "hsl(321, 40%, 50%)" },
+				{ fileExtension: "jpg", absoluteMetricValue: 130, relativeMetricValue: 32.745_591_939_546_6, color: "hsl(321, 60%, 50%)" },
 				{
 					fileExtension: "json",
 					absoluteMetricValue: 70,
 					relativeMetricValue: 17.632_241_813_602_015,
-					color: "hsl(232, 40%, 50%)"
+					color: "hsl(232, 60%, 50%)"
 				},
 				{
 					fileExtension: "None",
@@ -173,7 +173,7 @@ describe("FileExtensionCalculator", () => {
 					relativeMetricValue: 3.778_337_531_486_146_3,
 					color: "#676867"
 				},
-				{ fileExtension: "xml", absoluteMetricValue: 8, relativeMetricValue: 2.015_113_350_125_944_6, color: "hsl(7, 40%, 50%)" },
+				{ fileExtension: "xml", absoluteMetricValue: 8, relativeMetricValue: 2.015_113_350_125_944_6, color: "hsl(7, 60%, 50%)" },
 				{
 					fileExtension: "other",
 					absoluteMetricValue: 12,

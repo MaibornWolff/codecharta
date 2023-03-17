@@ -1,11 +1,29 @@
+@use "../../../material/theme";
+
 cc-reset-settings-button {
 	button {
-		color: rgb(0, 150, 136);
+		color: theme.$cc-primary-color;
 		background: none;
-		padding: 8px;
+		align-items: center;
+		display: flex;
+		gap: 4px;
+		margin: 0;
+		padding: 0;
+
+		.fa {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			height: 40px;
+			width: 40px;
+			font-size: 18px;
+		}
 
 		&:hover {
-			background-color: rgba(158, 158, 158, 0.2);
+			.fa {
+				border-radius: 100%;
+				background-color: rgba(158, 158, 158, 0.2);
+			}
 		}
 	}
 }

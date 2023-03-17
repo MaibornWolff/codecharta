@@ -10,7 +10,7 @@ import userEvent from "@testing-library/user-event"
 import { expect } from "@jest/globals"
 import { CustomConfigMapSelectionMode } from "../../../../model/customConfig/customConfig.api.model"
 import { visibleFilesBySelectionModeSelector } from "../../visibleFilesBySelectionMode.selector"
-import { MatLegacyDialog, MatLegacyDialogRef } from "@angular/material/legacy-dialog"
+import { MatDialog, MatDialogRef } from "@angular/material/dialog"
 
 jest.mock("../../visibleFilesBySelectionMode.selector", () => ({
 	visibleFilesBySelectionModeSelector: jest.fn()
@@ -29,8 +29,8 @@ describe("customConfigItemGroupComponent", () => {
 		TestBed.configureTestingModule({
 			imports: [CustomConfigsModule],
 			providers: [
-				{ provide: MatLegacyDialogRef, useValue: mockedDialogReference },
-				{ provide: MatLegacyDialog, useValue: mockedDialog },
+				{ provide: MatDialogRef, useValue: mockedDialogReference },
+				{ provide: MatDialog, useValue: mockedDialog },
 				{ provide: ThreeCameraService, useValue: {} },
 				{ provide: ThreeOrbitControlsService, useValue: {} }
 			]

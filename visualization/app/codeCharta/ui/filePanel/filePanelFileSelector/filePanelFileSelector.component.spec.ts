@@ -20,7 +20,7 @@ describe("filePanelFileSelectorComponent", () => {
 		expect(fixture.componentInstance["selectedFilesInUI"].length).toBe(1)
 		expect(fixture.componentInstance["selectedFilesInUI"][0]).toEqual(TEST_FILE_DATA)
 
-		const selectFilesElement = screen.getByRole("combobox").querySelector(".mat-select-trigger")
+		const selectFilesElement = screen.getByRole("combobox").querySelector(".mat-mdc-select-trigger")
 		fireEvent.click(selectFilesElement)
 		const deselectAllButton = screen.getByText("None")
 		fireEvent.click(deselectAllButton)

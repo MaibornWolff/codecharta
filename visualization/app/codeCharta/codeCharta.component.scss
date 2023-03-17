@@ -2,28 +2,33 @@
 @import "../mixins.scss";
 
 cc-code-charta {
-	#mw-logo {
-		.logo {
-			width: 160px;
-			height: 100px;
-			position: absolute;
-			left: 0;
-			bottom: 20px;
-			z-index: 1;
+	#logos {
+		display: flex;
+		flex-direction: column;
+		position: absolute;
+		left: 2em;
+		bottom: 2em;
+		z-index: 1;
+		.logos-wrapper {
+			display: flex;
+			flex-direction: row;
+			align-content: center;
+			align-items: center;
+			gap: 1em;
 		}
-
-		a,
 		img {
-			width: 7em;
-			display: block;
-			margin: auto !important;
+			object-fit: contain;
+			height: 100px;
 		}
-
+		#mw-logo {
+			img {
+				height: 58px;
+			}
+		}
 		h2 {
-			text-transform: uppercase;
 			color: #5a585a;
-			font-weight: 500;
-			font-size: 9pt;
+			font-weight: 600;
+			font-size: 14px;
 			text-align: center;
 			margin: 0;
 			margin-top: 9px;
@@ -50,10 +55,6 @@ cc-code-charta {
 	cc-view-cube,
 	unfocus-button-component {
 		transition: right 0.3s ease;
-	}
-
-	.angular-green {
-		color: #00bfa5 !important;
 	}
 
 	.small-action-button {

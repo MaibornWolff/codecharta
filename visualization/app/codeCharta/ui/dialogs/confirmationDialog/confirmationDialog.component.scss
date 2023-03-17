@@ -1,12 +1,12 @@
-.cc-confirmation-dialog .mat-dialog-container {
+.cc-confirmation-dialog .mat-mdc-dialog-container {
 	.confirmation-message {
 		padding: 10px;
 	}
 
-	.mat-dialog-actions {
+	.mat-mdc-dialog-actions {
 		justify-content: flex-end;
 
-		.mat-button {
+		.mat-mdc-button {
 			background-color: rgba(138, 132, 132, 0.08);
 
 			&.submit-button {

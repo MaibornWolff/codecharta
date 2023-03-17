@@ -1,16 +1,18 @@
-.cc-add-custom-scenario .mat-dialog-container {
+.cc-add-custom-scenario .mat-mdc-dialog-container {
 	width: 50vw;
 	padding: 0;
 
 	.cc-add-custom-scenario-content {
-		margin: 8px;
-
+		.cc-add-custon-scenario-toggles {
+			display: flex;
+			flex-direction: column;
+			gap: 8px;
+			mat-slide-toggle {
+				display: block;
+			}
+		}
 		.cc-add-custom-scenario-name-field {
 			width: 75%;
-		}
-
-		mat-slide-toggle {
-			display: block;
 		}
 
 		.cc-add-custom-scenario-buttons {

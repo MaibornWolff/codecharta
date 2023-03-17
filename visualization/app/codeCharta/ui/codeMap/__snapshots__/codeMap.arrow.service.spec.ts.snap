@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`CodeMapArrowService Arrow Behaviour when selecting and hovering a building should only highlight small leaf when big leaf is selected 1`] = `
-Array [
+[
   CodeMapBuilding {
     "_boundingBox": Box3 {
       "max": Vector3 {
@@ -20,20 +20,20 @@ Array [
     "_defaultDeltaColor": "#000000",
     "_deltaColor": "#000000",
     "_id": 1,
-    "_node": Object {
-      "attributes": Object {
+    "_node": {
+      "attributes": {
         "a": 20,
         "b": 15,
         "mcc": 100,
       },
       "color": "#820E0E",
-      "deltas": Object {
+      "deltas": {
         "a": 1,
         "b": 2,
       },
       "depth": 4,
-      "edgeAttributes": Object {
-        "a": Object {
+      "edgeAttributes": {
+        "a": {
           "incoming": 2,
           "outgoing": 666,
         },
@@ -84,20 +84,20 @@ Array [
     "_defaultDeltaColor": "#000000",
     "_deltaColor": "#000000",
     "_id": 1,
-    "_node": Object {
-      "attributes": Object {
+    "_node": {
+      "attributes": {
         "a": 20,
         "b": 15,
         "mcc": 100,
       },
       "color": "#820E0E",
-      "deltas": Object {
+      "deltas": {
         "a": 1,
         "b": 2,
       },
       "depth": 4,
-      "edgeAttributes": Object {
-        "a": Object {
+      "edgeAttributes": {
+        "a": {
           "incoming": 2,
           "outgoing": 666,
         },
@@ -152,20 +152,20 @@ CodeMapBuilding {
   "_defaultDeltaColor": "#EB8319",
   "_deltaColor": "#EB8319",
   "_id": 1,
-  "_node": Object {
-    "attributes": Object {
+  "_node": {
+    "attributes": {
       "a": 20,
       "b": 15,
       "mcc": 14,
     },
     "color": "#AABBCC",
-    "deltas": Object {
+    "deltas": {
       "a": 1,
       "b": 2,
     },
     "depth": 4,
-    "edgeAttributes": Object {
-      "a": Object {
+    "edgeAttributes": {
+      "a": {
         "incoming": 2,
         "outgoing": 666,
       },

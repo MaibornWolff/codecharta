@@ -6,7 +6,6 @@
 	"coveragePathIgnorePatterns": ["\\.(spec|e2e|po)\\.ts$", "<rootDir>/app/puppeteer.helper.ts"],
 	"preset": "jest-preset-angular",
 	"transform": {
-		"\\.(m?js|ts)$": "jest-preset-angular",
 		"\\.glsl$": "<rootDir>/mocks/fileTransformer.js"
 	},
 	"transformIgnorePatterns": ["/node_modules/(?!(three|ngx-color/fesm2020|.*\\.mjs$))"],
@@ -18,10 +17,5 @@
 	"moduleDirectories": ["node_modules", "<rootDir>/app"],
 	"setupFiles": ["<rootDir>/mocks/localStorageMock.js"],
 	"setupFilesAfterEnv": ["<rootDir>/conf/setupJestUnit.ts", "jest-canvas-mock"],
-	"globals": {
-		"ts-jest": {
-			"tsconfig": "tsconfig.spec.json"
-		}
-	},
 	"testEnvironment": "jsdom"
 }

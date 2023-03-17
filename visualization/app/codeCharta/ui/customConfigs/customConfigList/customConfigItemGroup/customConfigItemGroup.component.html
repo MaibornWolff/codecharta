@@ -32,11 +32,9 @@
 				</div>
 			</div>
 			<cc-apply-custom-config-button [customConfigItem]="customConfig"></cc-apply-custom-config-button>
-			<div>
-				<button class="remove-button" title="Remove Custom View" (click)="removeCustomConfig(customConfig.id)">
-					<i class="fa fa-trash"></i>
-				</button>
-			</div>
+			<button class="remove-button" title="Remove Custom View" (click)="removeCustomConfig(customConfig.id)">
+				<i class="fa fa-trash"></i>
+			</button>
 		</mat-list-item>
 	</mat-list>
 </mat-expansion-panel>

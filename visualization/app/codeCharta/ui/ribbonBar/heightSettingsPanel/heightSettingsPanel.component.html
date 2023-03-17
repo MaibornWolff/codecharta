@@ -13,17 +13,13 @@
 	[onChange]="applyDebouncedTopLabels"
 ></cc-slider>
 
-<div class="cc-height-settings-panel-row">
-	<mat-checkbox [checked]="showMetricLabelNodeName$ | async" (change)="setShowMetricLabelNodeName($event)"
-		>Show label node names
-	</mat-checkbox>
-</div>
+<mat-checkbox [checked]="showMetricLabelNodeName$ | async" (change)="setShowMetricLabelNodeName($event)"
+	>Show label node names
+</mat-checkbox>
 
-<div class="cc-height-settings-panel-row">
-	<mat-checkbox [checked]="showMetricLabelNodeValue$ | async" (change)="setShowMetricLabelNameValue($event)"
-		>Show label node metrics
-	</mat-checkbox>
-</div>
+<mat-checkbox [checked]="showMetricLabelNodeValue$ | async" (change)="setShowMetricLabelNameValue($event)"
+	>Show label node metrics
+</mat-checkbox>
 
 <cc-slider
 	class="cc-height-settings-panel-row"
@@ -36,12 +32,12 @@
 	[onChange]="applyDebouncedScalingY"
 ></cc-slider>
 
-<div class="cc-height-settings-panel-row cc-height-settings-panel-reset-row">
-	<mat-checkbox (change)="setInvertHeight($event)" *ngIf="!(isDeltaState$ | async)" [checked]="invertHeight$ | async">
-		Invert Height
-	</mat-checkbox>
-	<cc-reset-settings-button
-		[settingsKeys]="['appSettings.amountOfTopLabels', 'appSettings.scaling.y', 'appSettings.invertHeight']"
-		tooltip="Reset height metric settings to their defaults"
-	></cc-reset-settings-button>
-</div>
+<mat-checkbox (change)="setInvertHeight($event)" *ngIf="!(isDeltaState$ | async)" [checked]="invertHeight$ | async">
+	Invert Height
+</mat-checkbox>
+
+<cc-reset-settings-button
+	[settingsKeys]="['appSettings.amountOfTopLabels', 'appSettings.scaling.y', 'appSettings.invertHeight']"
+	tooltip="Reset height metric settings to their defaults"
+	label="Reset height metric settings"
+></cc-reset-settings-button>

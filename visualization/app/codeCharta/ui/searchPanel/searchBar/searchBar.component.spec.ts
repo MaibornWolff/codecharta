@@ -11,7 +11,7 @@ import { AddBlacklistItemsIfNotResultsInEmptyMapEffect } from "../../../state/ef
 import { Subject } from "rxjs"
 import { Action } from "redux"
 import { resultsInEmptyMap } from "../../../state/effects/addBlacklistItemsIfNotResultsInEmptyMap/resultsInEmptyMap"
-import { MatLegacyDialog } from "@angular/material/legacy-dialog"
+import { MatDialog } from "@angular/material/dialog"
 
 jest.mock("../../../state/effects/addBlacklistItemsIfNotResultsInEmptyMap/resultsInEmptyMap", () => ({
 	resultsInEmptyMap: jest.fn()
@@ -30,7 +30,7 @@ describe("cc-search-bar", () => {
 				EffectsModule.forRoot([BlacklistSearchPatternEffect, AddBlacklistItemsIfNotResultsInEmptyMapEffect]),
 				SearchBarModule
 			],
-			providers: [{ provide: MatLegacyDialog, useValue: mockedDialog }]
+			providers: [{ provide: MatDialog, useValue: mockedDialog }]
 		})
 	})
 

@@ -1,10 +1,12 @@
-import { AreaSettingsPanelComponent } from "./areaSettingsPanel.component"
-import { render, screen } from "@testing-library/angular"
-import { AreaSettingsPanelModule } from "./areaSettingsPanel.module"
-import { Store } from "../../../state/store/store"
+import { TestbedHarnessEnvironment } from "@angular/cdk/testing/testbed"
 import { TestBed } from "@angular/core/testing"
+import { MatInputHarness } from "@angular/material/input/testing"
+import { render, screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
-import { wait } from "../../../util/testUtils/wait"
+import { State } from "../../../state/angular-redux/state"
+import { CcState, Store } from "../../../state/store/store"
+import { AreaSettingsPanelComponent } from "./areaSettingsPanel.component"
+import { AreaSettingsPanelModule } from "./areaSettingsPanel.module"
 
 describe("AreaSettingsPanelComponent", () => {
 	beforeEach(() => {
@@ -14,19 +16,31 @@ describe("AreaSettingsPanelComponent", () => {
 		})
 	})
 
-	it("should reset default margin checkbox on changes of margin slider", async function () {
-		const { container, detectChanges } = await render(AreaSettingsPanelComponent, { excludeComponentDeclaration: true })
-		expect(screen.queryByRole("checkbox", { checked: true, name: "Default margin (50px)" })).not.toBe(null)
+	it("should allow for change and resetting of 'margin', 'enable floor label' and 'invert area'", async () => {
+		const { fixture } = await render(AreaSettingsPanelComponent, { excludeComponentDeclaration: true })
+		const loader = TestbedHarnessEnvironment.loader(fixture)
+		const state = TestBed.inject(State)
+		const initialValues = extractRelatedValues(state.getValue())
 
-		const marginInput = container.querySelector("input")
-		await userEvent.type(marginInput, "1")
-		await wait(AreaSettingsPanelComponent.DEBOUNCE_TIME)
-		detectChanges()
-		expect(screen.queryByRole("checkbox", { checked: false, name: "Default margin (50px)" })).not.toBe(null)
+		const marginInput = await loader.getHarness(MatInputHarness.with({ ancestor: 'cc-slider[label="Margin"]' }))
+		await marginInput.setValue(String(initialValues.margin + 1))
+		await userEvent.click(await screen.findByText("Enable Floor Labels"))
+		await userEvent.click(await screen.findByText("Invert Area"))
+		const changedValues = extractRelatedValues(state.getValue())
+		expect(changedValues.margin).toBe(initialValues.margin + 1)
+		expect(changedValues.enableFloorLabels).toBe(!initialValues.enableFloorLabels)
+		expect(changedValues.invertArea).toBe(!initialValues.invertArea)
+
+		await userEvent.click(await screen.findByText("Reset area metric settings"))
+		const resetValues = extractRelatedValues(state.getValue())
+		expect(resetValues).toEqual(initialValues)
 	})
 
-	it("should display enableFloorLabels-checkbox", async () => {
-		await render(AreaSettingsPanelComponent, { excludeComponentDeclaration: true })
-		expect(screen.queryByText("Enable Floor Labels")).not.toBe(null)
-	})
+	function extractRelatedValues(state: CcState) {
+		return {
+			margin: state.dynamicSettings.margin,
+			enableFloorLabels: state.appSettings.enableFloorLabels,
+			invertArea: state.appSettings.invertArea
+		}
+	}
 })

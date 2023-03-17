@@ -118,6 +118,6 @@ export class FileExtensionCalculator {
 		for (let index = 0; index < fileExtension.length; index++) {
 			hash = fileExtension.codePointAt(index) + ((hash << 5) - hash)
 		}
-		return new HSL(hash % 360, 40, 50).toString()
+		return new HSL(hash % 360, 60, 50).toString()
 	}
 }

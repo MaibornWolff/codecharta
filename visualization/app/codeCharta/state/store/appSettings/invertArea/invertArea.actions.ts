@@ -1,8 +1,7 @@
 import { Action } from "redux"
 
 export enum InvertAreaActions {
-	SET_INVERT_AREA = "SET_INVERT_AREA",
-	TOGGLE_INVERTING_AREA = "TOGGLE_INVERTING_AREA"
+	SET_INVERT_AREA = "SET_INVERT_AREA"
 }
 
 export interface SetInvertAreaAction extends Action {
@@ -18,15 +17,5 @@ export function setInvertArea(invertArea: boolean = defaultInvertArea): SetInver
 	return {
 		type: InvertAreaActions.SET_INVERT_AREA,
 		payload: invertArea
-	}
-}
-
-export interface ToggleInvertingAreaAction extends Action {
-	type: InvertAreaActions.TOGGLE_INVERTING_AREA
-}
-
-export function toggleInvertingArea(): ToggleInvertingAreaAction {
-	return {
-		type: InvertAreaActions.TOGGLE_INVERTING_AREA
 	}
 }
