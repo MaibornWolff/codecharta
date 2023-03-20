@@ -29,7 +29,7 @@
 						{{ customConfig.note.length === 0 ? "Add Note" : (customConfig.note | truncateText: 95) }}
 					</span>
 				</p>
-				<cc-custom-config-note-dialog [customConfigItem]="customConfig"></cc-custom-config-note-dialog>
+				<cc-custom-config-note-dialog-button [customConfigItem]="customConfig"></cc-custom-config-note-dialog-button>
 			</div>
 			<div class="custom-config-action-buttons">
 				<cc-apply-custom-config-button [customConfigItem]="customConfig"></cc-apply-custom-config-button>

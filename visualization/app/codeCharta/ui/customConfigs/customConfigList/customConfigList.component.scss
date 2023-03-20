@@ -90,7 +90,8 @@
 			button {
 				background-color: transparent;
 
-				&.remove-button {
+				&.remove-button,
+				&.custom-config-note-dialog-button {
 					font-size: 16px;
 					padding: 8px 10px;
 					margin: 0px;

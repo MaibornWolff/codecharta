@@ -70,7 +70,7 @@ export class CustomConfigHelper {
 		CustomConfigHelper.setCustomConfigsToLocalStorage()
 	}
 
-	static editCustomConfigNode(configId: string, configNote: string) {
+	static editCustomConfigNote(configId: string, configNote: string) {
 		const config = CustomConfigHelper.customConfigs.get(configId)
 		config.note = configNote
 		CustomConfigHelper.customConfigs.set(configId, config)

@@ -1,15 +1,14 @@
 import { Component, Input } from "@angular/core"
 import { MatDialog } from "@angular/material/dialog"
-import { ManageCustomConfigNoteDialogComponent } from "./manageCustomConfigNoteDialog/manageCustomConfigNoteDialog.component"
+import { CustomConfigNoteDialogComponent } from "./customConfigNoteDialog/customConfigNoteDialog.component"
 import { CustomConfigItem } from "../customConfigs.component"
 import { CustomConfigHelper } from "../../../util/customConfigHelper"
 
 @Component({
-	selector: "cc-custom-config-note-dialog",
-	templateUrl: "./customConfigNoteDialog.component.html",
-	styleUrls: ["./customConfigNoteDialog.component.scss"]
+	selector: "cc-custom-config-note-dialog-button",
+	templateUrl: "./customConfigNoteDialogButton.component.html"
 })
-export class CustomConfigNoteDialogComponent {
+export class CustomConfigNoteDialogButtonComponent {
 	@Input() customConfigItem: CustomConfigItem
 
 	customConfigNote: string
@@ -19,15 +18,15 @@ export class CustomConfigNoteDialogComponent {
 	openDialog(): void {
 		this.customConfigNote = this.customConfigItem.note
 
-		const dialogReference = this.dialog.open(ManageCustomConfigNoteDialogComponent, {
+		const dialogReference = this.dialog.open(CustomConfigNoteDialogComponent, {
 			width: "600px",
 			data: this.customConfigNote
 		})
 
 		dialogReference.afterClosed().subscribe(result => {
-			if (result !== undefined) {
+			if (result !== undefined && this.customConfigNote !== result) {
 				this.customConfigNote = result
-				CustomConfigHelper.editCustomConfigNode(this.customConfigItem.id, result)
+				CustomConfigHelper.editCustomConfigNote(this.customConfigItem.id, result)
 			}
 		})
 	}

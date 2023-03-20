@@ -12,14 +12,14 @@ import { CustomConfig2ApplicableColor } from "./customConfigList/customConfigIte
 import { ApplyCustomConfigButtonComponent } from "./customConfigList/customConfigItemGroup/customConfigDescription/applyCustomConfigButton.component"
 import { CustomConfigColorSchemaBySelectionMode } from "./customConfigList/customConfigItemGroup/customConfigDescription/customConfigColorSchemaBySelectionMode.pipe"
 import { FormsModule } from "@angular/forms"
-import { CustomConfigNoteDialogModule } from "./customConfigNoteDialog/customConfigNoteDialog.module"
+import { CustomConfigNoteDialogButtonModule } from "./customConfigNoteDialogButton/customConfigNoteDialogButton.module"
 import { TruncateTextPipe } from "../../util/truncateText.pipe"
 
 @NgModule({
 	imports: [
 		MaterialModule,
 		CommonModule,
-		CustomConfigNoteDialogModule,
+		CustomConfigNoteDialogButtonModule,
 		UploadCustomConfigButtonModule,
 		AddCustomConfigButtonModule,
 		DownloadCustomConfigButtonModule,
