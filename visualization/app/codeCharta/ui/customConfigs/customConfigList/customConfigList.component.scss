@@ -1,6 +1,8 @@
 @use "../../../../material/theme";
 
 .cc-custom-config-list {
+	width: 850px;
+
 	.mat-mdc-dialog-content {
 		padding: 16px;
 		max-height: 90vh;
@@ -17,7 +19,7 @@
 		margin: 10px 0 20px 0;
 		font-size: 1.4em;
 		line-height: 1.4em;
-		color: black;
+		color: theme.$cc-font-color;
 	}
 
 	.action-buttons button {
@@ -52,11 +54,6 @@
 			margin: 0;
 		}
 
-		.highlight-mode {
-			font-weight: bold;
-			white-space: break-spaces;
-		}
-
 		.mat-expansion-panel-body {
 			padding: 0 16px;
 		}
@@ -82,8 +79,8 @@
 
 			.mdc-list-item__primary-text {
 				display: flex;
-				width: inherit;
-				align-items: center;
+				flex-direction: column;
+				width: 100%;
 			}
 
 			&:hover {
@@ -96,6 +93,7 @@
 				&.remove-button {
 					font-size: 16px;
 					padding: 8px 10px;
+					margin: 0px;
 
 					&:hover {
 						background-color: rgba(0, 0, 0, 0.05);
@@ -105,13 +103,6 @@
 				}
 			}
 		}
-	}
-
-	.mat-accordion > .mat-expansion-panel-spacing:last-child,
-	.mat-accordion > *:last-child:not(.mat-expansion-panel) .mat-expansion-panel-spacing,
-	.mat-accordion > .mat-expansion-panel-spacing:first-child,
-	.mat-accordion > *:first-child:not(.mat-expansion-panel) .mat-expansion-panel-spacing {
-		margin: 2px 0;
 	}
 
 	.toggle-non-applicable-configs-button {

@@ -10,8 +10,7 @@
 			<mat-hint align="start">Config View Name</mat-hint>
 			<mat-error *ngIf="customConfigName.invalid">{{ getErrorMessage() }}</mat-error>
 		</mat-form-field>
-		<br />
-		<mat-form-field>
+		<mat-form-field class="custom-config-note">
 			<label>Provide custom note for configuration (optional)</label>
 			<textarea
 				cdkAutosizeMinRows="8"

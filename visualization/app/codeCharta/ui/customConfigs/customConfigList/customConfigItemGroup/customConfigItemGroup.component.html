@@ -5,9 +5,9 @@
 	*ngFor="let customConfigItemGroup of customConfigItemGroups | keyvalue"
 >
 	<mat-expansion-panel-header>
-		<mat-panel-title>
+		<mat-panel-title class="custom-config-item-group-title">
 			Custom View(s) in
-			<span class="highlight-mode"> {{ customConfigItemGroup.value.mapSelectionMode | titlecase }} </span>
+			<strong> {{ customConfigItemGroup.value.mapSelectionMode | titlecase }} </strong>
 			mode for
 			{{ customConfigItemGroup.value.mapNames }}
 		</mat-panel-title>
@@ -16,25 +16,27 @@
 		<mat-list-item title="{{ customConfig | customConfig2ApplicableMessage }}">
 			<div class="metrics-box">
 				<p class="config-item-name" title="{{ customConfig.name }}">
-					<b
-						><span (click)="applyCustomConfig(customConfig.id)" mat-dialog-close>
-							{{ customConfig.name | customConfigTransformNote: 33 }}
-						</span></b
-					>
-				</p>
-				<div class="configNoteAndButton">
-					<p class="config-item-note">
+					<strong>
 						<span (click)="applyCustomConfig(customConfig.id)" mat-dialog-close>
-							{{ customConfig.note | customConfigTransformNote: 47 }}
+							{{ customConfig.name | truncateText: 75 }}
 						</span>
-					</p>
-					<cc-custom-config-note-dialog [customConfigItem]="customConfig"></cc-custom-config-note-dialog>
-				</div>
+					</strong>
+				</p>
 			</div>
-			<cc-apply-custom-config-button [customConfigItem]="customConfig"></cc-apply-custom-config-button>
-			<button class="remove-button" title="Remove Custom View" (click)="removeCustomConfig(customConfig.id)">
-				<i class="fa fa-trash"></i>
-			</button>
+			<div class="custom-config-note">
+				<p class="custom-config-note-content">
+					<span (click)="applyCustomConfig(customConfig.id)" mat-dialog-close>
+						{{ customConfig.note.length === 0 ? "Add Note" : (customConfig.note | truncateText: 95) }}
+					</span>
+				</p>
+				<cc-custom-config-note-dialog [customConfigItem]="customConfig"></cc-custom-config-note-dialog>
+			</div>
+			<div class="custom-config-action-buttons">
+				<cc-apply-custom-config-button [customConfigItem]="customConfig"></cc-apply-custom-config-button>
+				<button class="remove-button" title="Remove Custom View" (click)="removeCustomConfig(customConfig.id)">
+					<i class="fa fa-trash"></i>
+				</button>
+			</div>
 		</mat-list-item>
 	</mat-list>
 </mat-expansion-panel>

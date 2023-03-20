@@ -5,6 +5,7 @@ cc-apply-custom-config-button {
 	button {
 		flex-direction: row;
 		width: 100%;
+		margin: 0;
 
 		&:disabled {
 			cursor: default;
@@ -21,7 +22,7 @@ cc-apply-custom-config-button {
 			text-overflow: ellipsis;
 			overflow: hidden;
 			font-size: 15px;
-			margin: 5px 0;
+			margin: 0;
 			text-align: left;
 
 			&.config-name {
