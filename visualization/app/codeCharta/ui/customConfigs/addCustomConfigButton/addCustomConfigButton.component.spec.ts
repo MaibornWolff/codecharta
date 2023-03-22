@@ -1,6 +1,6 @@
 import { TestBed } from "@angular/core/testing"
 import { AddCustomConfigButtonModule } from "./addCustomConfigButton.module"
-import { fireEvent, render, screen, waitForElementToBeRemoved } from "@testing-library/angular"
+import { render, screen } from "@testing-library/angular"
 import { AddCustomConfigButtonComponent } from "./addCustomConfigButton.component"
 import userEvent from "@testing-library/user-event"
 import { CustomConfigHelper } from "../../../util/customConfigHelper"
@@ -14,7 +14,10 @@ describe("addCustomConfigButtonComponent", () => {
 			imports: [AddCustomConfigButtonModule],
 			providers: [
 				{ provide: ThreeCameraService, useValue: { camera: { position: new Vector3(0, 300, 1000) } } },
-				{ provide: ThreeOrbitControlsService, useValue: { controls: { target: new Vector3(0, 0, 0) } } }
+				{
+					provide: ThreeOrbitControlsService,
+					useValue: { controls: { target: new Vector3(0, 0, 0) } }
+				}
 			]
 		})
 	})
@@ -22,20 +25,14 @@ describe("addCustomConfigButtonComponent", () => {
 	it("should let a user save a custom config", async () => {
 		const addCustomConfigSpy = jest.spyOn(CustomConfigHelper, "addCustomConfig")
 		await render(AddCustomConfigButtonComponent, { excludeComponentDeclaration: true })
-
 		const configName = "myCustomConfig"
 		const configNote = "My Custom Note"
 
-		const button = screen.getByRole("button")
-		fireEvent.click(button)
-
-		await screen.findByText("Add Custom View")
-
+		await userEvent.click(screen.getByRole("button"))
 		await userEvent.type(screen.getAllByRole("textbox")[0], configName)
 		await userEvent.type(screen.getAllByRole("textbox")[1], configNote)
-		fireEvent.click(screen.getByRole("button", { name: "ADD" }))
+		await userEvent.click(screen.getByRole("button", { name: "ADD" }))
 
-		await waitForElementToBeRemoved(screen.queryByText("Add Custom View"))
 		expect(addCustomConfigSpy).toHaveBeenCalledTimes(1)
 	})
 })

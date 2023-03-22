@@ -134,7 +134,7 @@ describe("customConfigItemGroupComponent", () => {
 		expect(getComputedStyle(applyCustomConfigButton).color).toBe("rgb(204, 204, 204)")
 	})
 
-	it("should not be clickable for non-applicable custom configs", async () => {
+	it("should not be clickable for non-applicable custom configs, but can still change notes of custom configs", async () => {
 		CustomConfigHelper.applyCustomConfig = jest.fn()
 		CustomConfigHelper.applyCustomConfig = jest.fn()
 		mockedVisibleFilesBySelectionModeSelector.mockImplementation(() => {
@@ -151,11 +151,11 @@ describe("customConfigItemGroupComponent", () => {
 			excludeComponentDeclaration: true,
 			componentProperties: { customConfigItemGroups }
 		})
-		const editNoteArea = screen.getAllByText("Add note")[0]
+		const editNoteArea = screen.getAllByTitle("Edit/View Note")[0] as HTMLButtonElement
 		const applyCustomConfigButton = screen.getAllByText("mcc")[0].closest("button") as HTMLButtonElement
 
 		expect(applyCustomConfigButton.disabled).toBe(true)
-		expect(editNoteArea).toBeTruthy()
+		expect(editNoteArea.disabled).toBe(false)
 		expect(getComputedStyle(applyCustomConfigButton).color).toBe("rgb(204, 204, 204)")
 	})
 })
