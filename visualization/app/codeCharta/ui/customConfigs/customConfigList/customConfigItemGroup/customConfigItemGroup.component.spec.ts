@@ -53,8 +53,7 @@ describe("customConfigItemGroupComponent", () => {
 			excludeComponentDeclaration: true,
 			componentProperties: { customConfigItemGroups }
 		})
-		const applyCustomConfigButton = screen.getAllByText("mcc")[0].closest("button") as HTMLButtonElement
-
+		const applyCustomConfigButton = screen.getAllByText("mcc")[0].closest("button")
 		await userEvent.click(applyCustomConfigButton)
 
 		expect(applyCustomConfigButton.disabled).toBe(false)

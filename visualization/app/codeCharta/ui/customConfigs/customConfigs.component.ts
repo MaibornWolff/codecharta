@@ -14,7 +14,7 @@ export interface CustomConfigItem {
 	metrics: Pick<PrimaryMetrics, "areaMetric" | "heightMetric" | "colorMetric" | "edgeMetric">
 	mapColors: CustomConfigColors
 	isApplicable: boolean
-	note: string
+	note?: string
 }
 
 export interface CustomConfigItemGroup {

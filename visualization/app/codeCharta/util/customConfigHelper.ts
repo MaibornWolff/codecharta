@@ -139,7 +139,7 @@ export class CustomConfigHelper {
 				mapSelectionMode: exportedConfig.mapSelectionMode,
 				stateSettings: exportedConfig.stateSettings,
 				camera: exportedConfig.camera,
-				note: exportedConfig.note
+				...(exportedConfig.note && { note: exportedConfig.note })
 			}
 
 			CustomConfigHelper.addCustomConfig(importedCustomConfig)

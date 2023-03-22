@@ -16,6 +16,7 @@ export function buildCustomConfigFromState(
 	const customConfig: CustomConfig = {
 		id: "",
 		name: configName,
+
 		creationTime: Date.now(),
 		mapSelectionMode,
 		assignedMaps,
@@ -26,7 +27,7 @@ export function buildCustomConfigFromState(
 			fileSettings: undefined
 		},
 		camera,
-		note: note ?? ""
+		...(note && { note })
 	}
 
 	// Initialize all necessary state settings with default values right here

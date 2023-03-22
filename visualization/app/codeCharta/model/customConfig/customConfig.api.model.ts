@@ -25,7 +25,7 @@ export interface CustomConfig {
 		camera: Vector3
 		cameraTarget: Vector3
 	}
-	note: string
+	note?: string
 }
 
 export type ExportCustomConfig = CustomConfig

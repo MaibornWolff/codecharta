@@ -39,7 +39,7 @@ export function getCustomConfigItemGroups({ assignedMaps }: VisibleFilesBySelect
 			metrics: { areaMetric, heightMetric, colorMetric, edgeMetric },
 			mapColors: { positive, neutral, negative, selected, positiveDelta, negativeDelta },
 			isApplicable: isCustomConfigItemApplicable,
-			note: customConfig.note
+			...(customConfig.note && { note: customConfig.note })
 		})
 
 		if (customConfigItemGroups.get(groupKey).hasApplicableItems) {
