@@ -1,18 +1,19 @@
-<mat-dialog-content class="content" *ngIf="customConfigService.customConfigItemGroups$ | async; let dropDownCustomConfigItemGroups">
+<mat-toolbar color="primary"
+	>Custom Views
 	<div class="row">
-		<div class="title">
-			<h3>Custom Views</h3>
-		</div>
 		<div class="action-buttons">
 			<cc-upload-custom-config-button></cc-upload-custom-config-button>
 			<cc-download-custom-configs-button></cc-download-custom-configs-button>
 			<cc-add-custom-config-button class="custom-configs-button-in-custom-views"></cc-add-custom-config-button>
-		</div>
-	</div>
-	<div class="custom-config-documentation-hint">
-		Custom Views allow you to save and upload your individual configurations for certain maps. Find out more about Custom Views in the
+		</div></div
+></mat-toolbar>
+
+<mat-dialog-content class="content" *ngIf="customConfigService.customConfigItemGroups$ | async; let dropDownCustomConfigItemGroups">
+	<p class="custom-config-documentation-hint">
+		Custom Views allow you to save and upload your individual configurations for certain maps. <br />
+		Find out more about Custom Views in the
 		<a href="https://maibornwolff.github.io/codecharta/docs/custom-view/" target="_blank" rel="noopener noreferrer">documentation</a>.
-	</div>
+	</p>
 	<mat-divider></mat-divider>
 	<div
 		class="no-custom-configs-box"

@@ -4,14 +4,16 @@ cc-apply-custom-config-button {
 
 	button {
 		flex-direction: row;
-		flex-wrap: wrap;
-		align-items: center;
-		display: flex;
-		flex: 1;
-		gap: 10px;
+		width: 100%;
 
 		&:disabled {
 			cursor: default;
+		}
+
+		.config-metric-list {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 10px;
 		}
 
 		p {
@@ -23,11 +25,12 @@ cc-apply-custom-config-button {
 			text-align: left;
 
 			&.config-name {
-				flex: 0 0 22em;
+				flex: 1 1 auto;
+				width: 100%;
 			}
 
 			&.config-metric {
-				flex: 0 0 8em;
+				flex: 0 0 9em;
 			}
 		}
 
