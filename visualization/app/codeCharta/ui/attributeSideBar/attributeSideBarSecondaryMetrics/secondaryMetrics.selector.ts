@@ -4,7 +4,7 @@ import { primaryMetricNamesSelector } from "../../../state/selectors/primaryMetr
 import { selectedNodeSelector } from "../../../state/selectors/selectedNode.selector"
 import { CcState } from "../../../state/store/store"
 import { Metric } from "../util/metric"
-import { attributeDescriptorsSelector } from "../../../state/store/fileSettings/attributeDescriptors/attributesDescriptors.selector"
+import { attributeDescriptorsSelector } from "../../../state/store/fileSettings/attributeDescriptors/attributeDescriptors.selector"
 import { getMetricDescriptors } from "../util/metricDescriptors"
 
 export const _calculateSecondaryMetrics = (

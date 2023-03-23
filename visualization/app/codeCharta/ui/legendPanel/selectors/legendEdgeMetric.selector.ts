@@ -3,7 +3,7 @@ import { createSelector } from "../../../state/angular-redux/createSelector"
 import { edgeMetricSelector } from "../../../state/store/dynamicSettings/edgeMetric/edgeMetric.selector"
 import { CcState } from "../../../state/store/store"
 import { getMetricDescriptors, MetricDescriptors } from "../../attributeSideBar/util/metricDescriptors"
-import { attributeDescriptorsSelector } from "../../../state/store/fileSettings/attributeDescriptors/attributesDescriptors.selector"
+import { attributeDescriptorsSelector } from "../../../state/store/fileSettings/attributeDescriptors/attributeDescriptors.selector"
 import { metricDataSelector } from "../../../state/selectors/accumulatedData/metricData/metricData.selector"
 
 export const _getLegendEdgeMetric = (edgeMetric: string, edgeMetricDatas: EdgeMetricData[], attributeDescriptors) => {
