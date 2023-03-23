@@ -10,7 +10,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Added 🚀
 
 -   Display the CodeCharta logo next to the MaibornWolff logo [#3226](https://github.com/MaibornWolff/codecharta/pull/3226)
--   Tooltip for primary and secondary metrics that displays AttributeDescriptor information in the sidebar [#3239](https://github.com/MaibornWolff/codecharta/pull/3239)
+-   Tooltip for primary and secondary metrics that displays AttributeDescriptor information in the sidebar [#3239](https://github.com/MaibornWolff/codecharta/pull/3239) </br>
+    ![image](https://user-images.githubusercontent.com/65733509/227218468-b7d1e1ae-b847-40ab-8513-f3762b8787bb.png)
 
 ### Changed
 
