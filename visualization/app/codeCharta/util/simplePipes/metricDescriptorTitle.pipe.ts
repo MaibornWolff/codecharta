@@ -13,6 +13,6 @@ export class MetricDescriptorTitlePipe implements PipeTransform {
 		subtitle += metricDescriptor.hintHighValue ? `\nHigh Values: ${metricDescriptor.hintHighValue}` : ""
 		subtitle += metricDescriptor.hintLowValue ? `\nLow Values: ${metricDescriptor.hintLowValue}` : ""
 
-		return subtitle !== "" ? `${title}:${subtitle}` : title
+		return subtitle.length > 0 ? `${title}:${subtitle}` : title
 	}
 }

@@ -7,15 +7,8 @@ const testHighValue = "testHighValue"
 const testLowValue = "testLowValue"
 const testDescription = "testDescription"
 const testLink = "testLink"
-const pipe = new MetricDescriptorTitlePipe()
-let md: MetricDescriptors = {
-	key: testKey,
-	title: null,
-	description: null,
-	hintLowValue: null,
-	hintHighValue: null,
-	link: null
-}
+let pipe: MetricDescriptorTitlePipe
+let md: MetricDescriptors
 
 describe("metricDescriptorTitlePipe", () => {
 	beforeEach(() => {
@@ -27,6 +20,7 @@ describe("metricDescriptorTitlePipe", () => {
 			hintHighValue: null,
 			link: null
 		}
+		pipe = new MetricDescriptorTitlePipe()
 	})
 
 	it("should return empty string for null", () => {
