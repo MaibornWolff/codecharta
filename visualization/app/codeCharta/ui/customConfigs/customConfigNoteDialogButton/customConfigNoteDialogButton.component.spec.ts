@@ -1,32 +1,22 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing"
+import { TestBed } from "@angular/core/testing"
 
-import { screen } from "@testing-library/angular"
+import { render, screen } from "@testing-library/angular"
 import { CustomConfigNoteDialogButtonComponent } from "./customConfigNoteDialogButton.component"
 import userEvent from "@testing-library/user-event"
 import { CustomConfigItem } from "../customConfigs.component"
 import { CustomConfigHelper } from "../../../util/customConfigHelper"
 import { CustomConfigNoteDialogButtonModule } from "./customConfigNoteDialogButton.module"
+import { MatDialogRef } from "@angular/material/dialog"
 
 describe("customConfigNoteDialogComponent", () => {
-	let component: CustomConfigNoteDialogButtonComponent
-	let fixture: ComponentFixture<CustomConfigNoteDialogButtonComponent>
 	let editCustomConfigNoteSpy: jest.SpyInstance
 
-	beforeEach(async () => {
-		editCustomConfigNoteSpy = jest.spyOn(CustomConfigHelper, "editCustomConfigNote").mockImplementation(() => {})
-		await TestBed.configureTestingModule({
-			imports: [CustomConfigNoteDialogButtonModule]
-		})
-	})
-
 	beforeEach(() => {
-		fixture = TestBed.createComponent(CustomConfigNoteDialogButtonComponent)
-		component = fixture.componentInstance
-		component.customConfigItem = {
-			id: "configID",
-			note: ""
-		} as CustomConfigItem
-		fixture.detectChanges()
+		editCustomConfigNoteSpy = jest.spyOn(CustomConfigHelper, "editCustomConfigNote").mockImplementation(() => {})
+		TestBed.configureTestingModule({
+			imports: [CustomConfigNoteDialogButtonModule],
+			providers: [{ provide: MatDialogRef, useValue: { close: jest.fn() } }]
+		})
 	})
 
 	afterEach(() => {
@@ -34,6 +24,15 @@ describe("customConfigNoteDialogComponent", () => {
 	})
 
 	it("should render a clickable button and open a dialog to add and submit a note", async () => {
+		const customConfigItem = {
+			id: "configID",
+			note: ""
+		} as CustomConfigItem
+		await render(CustomConfigNoteDialogButtonComponent, {
+			excludeComponentDeclaration: true,
+			componentProperties: { customConfigItem }
+		})
+
 		const newNote = "Some other note"
 		await userEvent.click(screen.getByTitle("Edit/View Note"))
 		await userEvent.type(screen.getByRole("textbox"), newNote)
@@ -43,8 +42,14 @@ describe("customConfigNoteDialogComponent", () => {
 	})
 
 	it("should render a clickable button and open a dialog and and not change the note when the same note is submitted", async () => {
-		component.customConfigItem.note = "a note"
-		fixture.detectChanges()
+		const customConfigItem = {
+			id: "configID",
+			note: "a note"
+		} as CustomConfigItem
+		await render(CustomConfigNoteDialogButtonComponent, {
+			excludeComponentDeclaration: true,
+			componentProperties: { customConfigItem }
+		})
 
 		const editNoteButton = screen.getByTitle("Edit/View Note")
 		await userEvent.click(editNoteButton)
@@ -54,8 +59,14 @@ describe("customConfigNoteDialogComponent", () => {
 	})
 
 	it("should render a clickable button and open a dialog and and not change the note when cancel button is clicked", async () => {
-		component.customConfigItem.note = "a note"
-		fixture.detectChanges()
+		const customConfigItem = {
+			id: "configID",
+			note: "a note"
+		} as CustomConfigItem
+		await render(CustomConfigNoteDialogButtonComponent, {
+			excludeComponentDeclaration: true,
+			componentProperties: { customConfigItem }
+		})
 
 		const editNoteButton = screen.getByTitle("Edit/View Note")
 		await userEvent.click(editNoteButton)
