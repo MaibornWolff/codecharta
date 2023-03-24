@@ -16,10 +16,7 @@ describe("addCustomConfigButtonComponent", () => {
 			imports: [AddCustomConfigButtonModule],
 			providers: [
 				{ provide: ThreeCameraService, useValue: { camera: { position: new Vector3(0, 300, 1000) } } },
-				{
-					provide: ThreeOrbitControlsService,
-					useValue: { controls: { target: new Vector3(0, 0, 0) } }
-				}
+				{ provide: ThreeOrbitControlsService, useValue: { controls: { target: new Vector3(0, 0, 0) } } }
 			]
 		})
 	})
