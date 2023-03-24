@@ -8,16 +8,12 @@ import { ThreeCameraService } from "../../../../codeMap/threeViewer/threeCamera.
 import { ThreeOrbitControlsService } from "../../../../codeMap/threeViewer/threeOrbitControls.service"
 import { CUSTOM_CONFIG_ITEM_GROUPS } from "../../../../../util/dataMocks"
 import { CustomConfigHelper } from "../../../../../util/customConfigHelper"
-import { MatDialogRef } from "@angular/material/dialog"
 
 describe("applyCustomConfigButtonComponent", () => {
-	const mockedDialogReference = { close: jest.fn() }
-
 	beforeEach(() => {
 		TestBed.configureTestingModule({
 			imports: [CustomConfigsModule],
 			providers: [
-				{ provide: MatDialogRef, useValue: mockedDialogReference },
 				{ provide: ThreeCameraService, useValue: {} },
 				{ provide: ThreeOrbitControlsService, useValue: {} }
 			]
