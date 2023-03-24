@@ -5,7 +5,11 @@
 				<tr>
 					<th scope="col" colspan="2">Secondary Metrics</th>
 				</tr>
-				<tr *ngFor="let secondaryMetric of secondaryMetrics$ | async" class="metric-row">
+				<tr
+					*ngFor="let secondaryMetric of secondaryMetrics$ | async"
+					class="metric-row"
+					[title]="secondaryMetric.descriptors | metricDescriptorTitle"
+				>
 					<td class="metric-summary">
 						<span class="metric-type">
 							<cc-attribute-type-selector

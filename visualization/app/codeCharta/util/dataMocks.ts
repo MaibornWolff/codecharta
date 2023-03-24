@@ -1,5 +1,6 @@
 import {
 	AttributeTypeValue,
+	AttributeDescriptors,
 	BlacklistItem,
 	BlacklistType,
 	CCFile,
@@ -100,7 +101,7 @@ export const TEST_ATTRIBUTE_TYPES = {
 	edges: { test: AttributeTypeValue.absolute }
 }
 
-export const TEST_ATTRIBUTE_DESCRIPTORS_HALF_FILLED = {
+export const TEST_ATTRIBUTE_DESCRIPTORS_HALF_FILLED: AttributeDescriptors = {
 	mcc: {
 		title: "Maximum Cyclic Complexity",
 		description: "Maximum cyclic complexity",
@@ -114,6 +115,30 @@ export const TEST_ATTRIBUTE_DESCRIPTORS_HALF_FILLED = {
 		hintLowValue: "",
 		hintHighValue: "",
 		link: "https://www.npmjs.com/package/metric-gardener"
+	}
+}
+
+export const TEST_ATTRIBUTE_DESCRIPTORS: AttributeDescriptors = {
+	a: {
+		title: "a_testTitle",
+		description: "a_testDescription",
+		hintHighValue: "",
+		hintLowValue: "",
+		link: ""
+	},
+	b: {
+		title: "b_testTitle",
+		description: "",
+		hintHighValue: "",
+		hintLowValue: "",
+		link: ""
+	},
+	c: {
+		title: undefined,
+		description: "c_testDescription",
+		hintHighValue: undefined,
+		hintLowValue: undefined,
+		link: undefined
 	}
 }
 

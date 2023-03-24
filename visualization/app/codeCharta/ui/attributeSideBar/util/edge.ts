@@ -1,6 +1,7 @@
 import { MetricDescriptors } from "./metricDescriptors"
-export type Metric = {
+export type Edge = {
 	name: string
-	value: number
+	incoming: number | undefined
+	outgoing: number | undefined
 	descriptors: MetricDescriptors
 }
