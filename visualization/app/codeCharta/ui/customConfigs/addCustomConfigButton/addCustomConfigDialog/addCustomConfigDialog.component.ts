@@ -14,6 +14,7 @@ import { VisibleFilesBySelectionMode, visibleFilesBySelectionModeSelector } from
 })
 export class AddCustomConfigDialogComponent implements OnInit {
 	customConfigName: UntypedFormControl
+	customConfigNote: string
 
 	constructor(
 		private state: State,
@@ -38,10 +39,15 @@ export class AddCustomConfigDialogComponent implements OnInit {
 	}
 
 	addCustomConfig() {
-		const newCustomConfig = buildCustomConfigFromState(this.customConfigName.value, this.state.getValue(), {
-			camera: this.threeCameraService.camera.position,
-			cameraTarget: this.threeOrbitControlsService.controls.target
-		})
+		const newCustomConfig = buildCustomConfigFromState(
+			this.customConfigName.value,
+			this.state.getValue(),
+			{
+				camera: this.threeCameraService.camera.position,
+				cameraTarget: this.threeOrbitControlsService.controls.target
+			},
+			this.customConfigNote
+		)
 		CustomConfigHelper.addCustomConfig(newCustomConfig)
 	}
 }

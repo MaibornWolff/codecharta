@@ -12,6 +12,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   Display the CodeCharta logo next to the MaibornWolff logo [#3226](https://github.com/MaibornWolff/codecharta/pull/3226)
 -   Tooltip for primary and secondary metrics that displays AttributeDescriptor information in the sidebar [#3239](https://github.com/MaibornWolff/codecharta/pull/3239) </br>
     ![image](https://user-images.githubusercontent.com/65733509/227218468-b7d1e1ae-b847-40ab-8513-f3762b8787bb.png)
+-   Supports adding note to a custom view, provides a preview and an edit option for notes from the selection menu [#3234](https://github.com/MaibornWolff/codecharta/pull/3234) </br>
+    ![image](https://user-images.githubusercontent.com/72517530/226942610-9e08d39c-324d-4de3-81d0-4e5da4e589aa.png)
+    ![image](https://user-images.githubusercontent.com/72517530/226943152-1bb339bb-c39f-4bf6-a32d-ee8476249f98.png)
 
 ### Changed
 

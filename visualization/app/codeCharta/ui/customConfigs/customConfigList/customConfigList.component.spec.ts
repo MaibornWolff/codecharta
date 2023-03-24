@@ -106,7 +106,9 @@ describe("customConfigListComponent", () => {
 
 		expect(container.querySelectorAll("mat-list-item").length).toBe(2)
 		expect(screen.getByText("SampleMap View #1")).not.toBeNull()
+		expect(screen.getByText("a note")).not.toBeNull()
 		expect(screen.getByText("SampleMap View #2")).not.toBeNull()
+		expect(screen.getByText("Add Note")).not.toBeNull()
 	})
 
 	it("should disable button for all custom configs belonging to a non-applicable custom config item group", async () => {
@@ -123,7 +125,8 @@ describe("customConfigListComponent", () => {
 
 		await userEvent.click(customConfigItemGroupElement)
 
-		expect(screen.getByText("SampleMap Delta View #1")).not.toBeNull()
-		expect((screen.getByText("SampleMap Delta View #1").closest("button") as HTMLButtonElement).disabled).toBe(true)
+		expect((screen.getAllByTitle("SampleMap Delta View #1", { exact: false })[1].closest("button") as HTMLButtonElement).disabled).toBe(
+			true
+		)
 	})
 })
