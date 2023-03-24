@@ -3,13 +3,13 @@
 		<th scope="col">Primary Metrics</th>
 
 		<tr>
-			<td>
+			<td [title]="primaryMetrics.area.descriptors | metricDescriptorTitle">
 				<cc-attribute-side-bar-primary-metric
 					[iconName]="'fa fa-arrows-alt'"
 					[metric]="primaryMetrics.area"
 				></cc-attribute-side-bar-primary-metric>
 			</td>
-			<td>
+			<td [title]="primaryMetrics.height.descriptors | metricDescriptorTitle">
 				<cc-attribute-side-bar-primary-metric
 					[iconName]="'fa fa-arrows-v'"
 					[metric]="primaryMetrics.height"
@@ -18,14 +18,14 @@
 		</tr>
 
 		<tr>
-			<td>
+			<td [title]="primaryMetrics.color.descriptors | metricDescriptorTitle">
 				<cc-attribute-side-bar-primary-metric
 					[iconName]="'fa fa-paint-brush'"
 					[metric]="primaryMetrics.color"
 				></cc-attribute-side-bar-primary-metric>
 			</td>
-			<ng-container *ngIf="primaryMetrics.edge; let edge">
-				<td *ngIf="edge.name !== 'None'">
+			<ng-container *ngIf="primaryMetrics.edge as edge; else sidebarPrimaryMetricsEdgeElse">
+				<td [title]="edge.descriptors | metricDescriptorTitle">
 					<i class="fa fa-exchange"></i>
 					<div class="metric-value">
 						<cc-attribute-type-selector
@@ -43,6 +43,11 @@
 					<p class="metric-name">{{ edge.name }} (in/out)</p>
 				</td>
 			</ng-container>
+			<ng-template #sidebarPrimaryMetricsEdgeElse>
+				<td>
+					<p class="metric-name">No edge metric available</p>
+				</td>
+			</ng-template>
 		</tr>
 	</table>
 </div>
