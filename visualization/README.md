@@ -21,6 +21,8 @@ You can start with **Codecharta Visualization** on multiple ways:
 -   Build it yourself from the github [repository](#build-it-yourself)
 -   Try out the [online version](https://maibornwolff.github.io/codecharta/visualization/app/index.html?file=codecharta.cc.json&file=codecharta_analysis.cc.json)
 
+> Be aware, that if you are on Apple Silicon, you need to do additional config for npm installation
+
 ## NPM Package
 
 > Make sure you have [Node.js](https://nodejs.org/en/download) (version >=16) installed <br>
@@ -28,6 +30,7 @@ You can start with **Codecharta Visualization** on multiple ways:
 
 ```bash
 # Install the package globally via npm
+# If you're on Apple Silicon (M1 or similar), you have to run `npm_config_nwjs_process_arch=x64 npm i -g codecharta-visualization` instead (see https://github.com/nwjs/npm-installer/issues/83)
 $ npm i -g codecharta-visualization
 # Run it anywhere (you might need administrative rights/sudo)
 # You might need to restart your terminal
