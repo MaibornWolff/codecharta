@@ -13,7 +13,7 @@ export class CustomConfigNoteDialogButtonComponent {
 
 	customConfigNote: string
 
-	constructor(public dialog: MatDialog) {}
+	constructor(private dialog: MatDialog) {}
 
 	openDialog(): void {
 		this.customConfigNote = this.customConfigItem.note
