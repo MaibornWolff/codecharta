@@ -1,6 +1,6 @@
 cc-ribbon-bar {
 	position: fixed;
-	z-index: 10;
+
 	white-space: nowrap;
 	display: flex;
 	flex-wrap: nowrap;
@@ -83,7 +83,6 @@ cc-ribbon-bar {
 			display: inline-block;
 			height: 100%;
 			width: 100%;
-			border-right: $border;
 			vertical-align: top;
 			overflow: hidden;
 
