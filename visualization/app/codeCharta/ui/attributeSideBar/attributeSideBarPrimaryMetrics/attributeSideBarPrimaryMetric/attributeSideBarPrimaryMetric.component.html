@@ -8,7 +8,7 @@
 			[metricType]="'nodes'"
 		></cc-attribute-type-selector>
 		<span class="primary-metric-value">{{ metric.value | number: "1.0-0" }}</span>
-		<cc-metric-delta-selected [metricName]="metric.name"></cc-metric-delta-selected>
 	</div>
+	<cc-metric-delta-selected [metricName]="metric.name"></cc-metric-delta-selected>
 	<span class="metric-name">{{ metric.name }}</span>
 </div>

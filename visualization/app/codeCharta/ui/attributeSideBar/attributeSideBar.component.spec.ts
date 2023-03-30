@@ -71,7 +71,7 @@ describe("AttributeSideBarComponent", () => {
 		expect(pathName).toMatch("/root/big leaf")
 
 		const firstPrimaryMetricEntry = container.querySelector("cc-attribute-side-bar-primary-metric").textContent
-		const expectedPrimaryMetricTextContent = "20 a"
+		const expectedPrimaryMetricTextContent = "20a"
 		expect(firstPrimaryMetricEntry).toMatch(expectedPrimaryMetricTextContent)
 
 		const expectedSecondaryMetricTextContent = "15b"
@@ -79,7 +79,7 @@ describe("AttributeSideBarComponent", () => {
 			.querySelector("cc-attribute-side-bar-primary-metric")
 			.textContent.includes(expectedSecondaryMetricTextContent)
 		expect(isSecondaryMetricInPrimaryMetricSection).toBe(false)
-		const firstSecondaryMetricEntry = container.querySelector("cc-attribute-side-bar-secondary-metrics .metric-row").textContent
+		const firstSecondaryMetricEntry = container.querySelector("cc-attribute-side-bar-secondary-metrics").textContent
 		expect(firstSecondaryMetricEntry).toMatch(expectedSecondaryMetricTextContent)
 
 		expect(isAttributeTypeSelectorShown(container)).toBe(false)
@@ -88,13 +88,12 @@ describe("AttributeSideBarComponent", () => {
 	it("should display deltas if node has delta values", async () => {
 		mockedSelectedNodeSelector.mockImplementation(() => klona(TEST_NODE_LEAF))
 		const { container } = await render(AttributeSideBarComponent, { excludeComponentDeclaration: true })
-
 		const firstPrimaryMetricEntry = container.querySelector("cc-attribute-side-bar-primary-metric").textContent
 		const expectedPrimaryMetricTextContent = /20\s+Δ1.0\s+a/
 		expect(firstPrimaryMetricEntry).toMatch(expectedPrimaryMetricTextContent)
 
 		const expectedSecondaryMetricTextContent = /15\s+Δ2.0\s+b/
-		const firstSecondaryMetricEntry = container.querySelector("cc-attribute-side-bar-secondary-metrics .metric-row").textContent
+		const firstSecondaryMetricEntry = container.querySelector("cc-attribute-side-bar-secondary-metrics").textContent
 		expect(firstSecondaryMetricEntry).toMatch(expectedSecondaryMetricTextContent)
 	})
 
@@ -148,19 +147,15 @@ describe("AttributeSideBarComponent", () => {
 		})
 
 		const { container } = await render(AttributeSideBarComponent, { excludeComponentDeclaration: true })
-
 		const attributeTypeSelectorWithinPrimaryMetrics = container.querySelectorAll("cc-attribute-side-bar-primary-metrics td")
-		const attributeTypeSelectorWithinSecondaryMetrics = container.querySelectorAll(
-			"cc-attribute-side-bar-secondary-metrics .metric-row"
-		)
-
+		const attributeTypeSelectorWithinSecondaryMetrics = container.querySelectorAll("cc-attribute-side-bar-secondary-metrics tr")
 		expect(attributeTypeSelectorWithinPrimaryMetrics[0].getAttribute("title")).toBe("a_testTitle (a):\na_testDescription")
 		expect(attributeTypeSelectorWithinPrimaryMetrics[1].getAttribute("title")).toBe("b_testTitle (b)")
 		expect(attributeTypeSelectorWithinPrimaryMetrics[2].getAttribute("title")).toBe("someColor")
 		expect(attributeTypeSelectorWithinPrimaryMetrics[3].getAttribute("title")).toBe("someEdge")
 
-		expect(attributeTypeSelectorWithinSecondaryMetrics[0].getAttribute("title")).toBe("c:\nc_testDescription")
-		expect(attributeTypeSelectorWithinSecondaryMetrics.length).toBe(1)
+		expect(attributeTypeSelectorWithinSecondaryMetrics[1].getAttribute("title")).toBe("c:\nc_testDescription")
+		expect(attributeTypeSelectorWithinSecondaryMetrics.length).toBe(2)
 	})
 })
 

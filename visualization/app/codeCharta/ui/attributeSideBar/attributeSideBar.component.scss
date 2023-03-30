@@ -67,14 +67,25 @@ cc-attribute-side-bar {
 						}
 					}
 
+					.primary-metric-box {
+						display: flex;
+						flex-direction: column;
+						height: 100%;
+						width: 100%;
+					}
+
+					.metric-name {
+						margin-top: 5px;
+					}
+
+					.primary-metric-value {
+						margin-right: -5px;
+					}
+
 					i.fa {
 						font-size: 12pt;
 						min-width: 17px;
 						text-align: center;
-					}
-
-					.metric-name {
-						margin: 5px 0 0 0;
 					}
 				}
 
@@ -86,13 +97,17 @@ cc-attribute-side-bar {
 							padding-left: 4px;
 						}
 					}
-				}
 
-				.primary-metric-box {
-					display: flex;
-					flex-direction: column;
-					height: 100%;
-					width: 100%;
+					.secondary-metric-box {
+						border-radius: 3px;
+						padding: 4px 4px;
+						vertical-align: middle;
+						background: #d5d5d5;
+					}
+
+					.secondary-metric-row {
+						flex-wrap: nowrap;
+					}
 				}
 
 				.primary-metric-row,
@@ -101,21 +116,6 @@ cc-attribute-side-bar {
 					align-items: center;
 					flex-wrap: wrap;
 					gap: 5px;
-				}
-
-				.primary-metric-value {
-					margin-right: -5px;
-				}
-
-				.secondary-metric-row {
-					flex-wrap: nowrap;
-				}
-
-				.secondary-metric-box {
-					border-radius: 3px;
-					padding: 4px 4px;
-					vertical-align: middle;
-					background: #d5d5d5;
 				}
 
 				.metric-name {
@@ -127,6 +127,10 @@ cc-attribute-side-bar {
 				.delta-value-box {
 					vertical-align: middle;
 				}
+			}
+
+			cc-metric-delta-selected:has(span) {
+				margin-top: 5px;
 			}
 		}
 	}
