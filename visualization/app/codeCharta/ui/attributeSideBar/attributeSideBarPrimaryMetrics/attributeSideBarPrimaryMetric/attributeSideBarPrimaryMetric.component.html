@@ -1,14 +1,14 @@
-<i [class]="iconName"></i>
-<div class="metric-value">
-	<cc-attribute-type-selector
-		*ngIf="showAttributeTypeSelector$ | async"
-		class="attribute-type-select"
-		[metricName]="metric.name"
-		[metricType]="'nodes'"
-	></cc-attribute-type-selector>
-	<span>
-		{{ metric.value | number: "1.0-0" }}
-	</span>
+<div class="primary-metric-box">
+	<div class="primary-metric-row">
+		<i [class]="iconName"></i>
+		<cc-attribute-type-selector
+			*ngIf="showAttributeTypeSelector$ | async"
+			class="attribute-type-select"
+			[metricName]="metric.name"
+			[metricType]="'nodes'"
+		></cc-attribute-type-selector>
+		<span class="primary-metric-value">{{ metric.value | number: "1.0-0" }}</span>
+		<cc-metric-delta-selected [metricName]="metric.name"></cc-metric-delta-selected>
+	</div>
+	<span class="metric-name">{{ metric.name }}</span>
 </div>
-<cc-metric-delta-selected [metricName]="metric.name"></cc-metric-delta-selected>
-<p class="metric-name">{{ metric.name }}</p>

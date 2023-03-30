@@ -46,6 +46,10 @@ cc-attribute-side-bar {
 			}
 
 			table {
+				th {
+					text-align: left;
+				}
+
 				&.primary-metrics {
 					table-layout: fixed;
 					width: 100%;
@@ -74,41 +78,54 @@ cc-attribute-side-bar {
 					}
 				}
 
-				th {
-					text-align: left;
+				&.secondary-metrics {
+					td {
+						padding-left: 5px;
+
+						&:first-child {
+							padding-left: 4px;
+						}
+					}
 				}
 
-				td {
-					text-align: left;
-					vertical-align: initial;
-					margin: 0;
+				.primary-metric-box {
+					display: flex;
+					flex-direction: column;
+					height: 100%;
+					width: 100%;
 				}
 
-				.metric-summary,
-				.metric-delta {
+				.primary-metric-row,
+				.secondary-metric-row {
+					display: flex;
+					align-items: center;
+					flex-wrap: wrap;
+					gap: 5px;
+				}
+
+				.primary-metric-value {
+					margin-right: -5px;
+				}
+
+				.secondary-metric-row {
+					flex-wrap: nowrap;
+				}
+
+				.secondary-metric-box {
 					border-radius: 3px;
 					padding: 4px 4px;
-				}
-
-				.metric-summary {
-					align-content: flex-end;
+					vertical-align: middle;
 					background: #d5d5d5;
-					display: flex;
-					flex-direction: row;
-					gap: 4px;
-					justify-content: space-between;
-					text-align: right;
-					vertical-align: center;
 				}
 
 				.metric-name {
 					color: grey;
 					word-break: break-word;
+					vertical-align: middle;
 				}
 
-				.metric-value {
-					display: inline-block;
-					margin-left: 4px;
+				.delta-value-box {
+					vertical-align: middle;
 				}
 			}
 		}
