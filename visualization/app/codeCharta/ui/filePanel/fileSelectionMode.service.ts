@@ -1,9 +1,9 @@
 import { Injectable, OnDestroy } from "@angular/core"
+import { Store, State as StateService } from "@ngrx/store"
 import { pairwise, tap, filter } from "rxjs"
+import { State } from "../../codeCharta.model"
 import { FileSelectionState, FileState } from "../../model/files/files"
 import { isDeltaState, isEqual } from "../../model/files/files.helper"
-import { State } from "../../state/angular-redux/state"
-import { Store } from "../../state/angular-redux/store"
 import { setDelta, setFiles } from "../../state/store/files/files.actions"
 import { filesSelector } from "../../state/store/files/files.selector"
 
@@ -22,7 +22,7 @@ export class FileSelectionModeService implements OnDestroy {
 		)
 		.subscribe()
 
-	constructor(private store: Store, private state: State) {}
+	constructor(private store: Store<State>, private state: StateService<State>) {}
 
 	ngOnDestroy(): void {
 		this.subscription.unsubscribe()
@@ -43,9 +43,9 @@ export class FileSelectionModeService implements OnDestroy {
 				this.lastSetFilesOfPreviousMode.find(file => file.selectedAs === FileSelectionState.Reference) ??
 				existingFiles.find(file => file.selectedAs === FileSelectionState.Partial)
 			const comparisonFile = this.lastSetFilesOfPreviousMode.find(file => file.selectedAs === FileSelectionState.Comparison)
-			this.store.dispatch(setDelta(referenceFile.file, comparisonFile?.file))
+			this.store.dispatch(setDelta({ referenceFile: referenceFile.file, comparisonFile: comparisonFile?.file }))
 		} else {
-			this.store.dispatch(setFiles(this.lastSetFilesOfPreviousMode))
+			this.store.dispatch(setFiles({ value: this.lastSetFilesOfPreviousMode }))
 		}
 	}
 

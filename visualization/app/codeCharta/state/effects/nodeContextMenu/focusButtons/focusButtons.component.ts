@@ -1,8 +1,8 @@
 import { Component, Input, ViewEncapsulation } from "@angular/core"
+import { Store } from "@ngrx/store"
 import { Observable, map } from "rxjs"
 
-import { CodeMapNode } from "../../../../codeCharta.model"
-import { Store } from "../../../angular-redux/store"
+import { CodeMapNode, State } from "../../../../codeCharta.model"
 import { currentFocusedNodePathSelector } from "../../../store/dynamicSettings/focusedNodePath/currentFocused.selector"
 import { focusNode, unfocusAllNodes, unfocusNode } from "../../../store/dynamicSettings/focusedNodePath/focusedNodePath.actions"
 import { focusedNodePathSelector } from "../../../store/dynamicSettings/focusedNodePath/focusedNodePath.selector"
@@ -18,7 +18,7 @@ export class FocusButtonsComponent {
 	currentFocusedNodePath$: Observable<string | undefined>
 	hasPreviousFocusedNodePath$: Observable<boolean>
 
-	constructor(private store: Store) {
+	constructor(private store: Store<State>) {
 		this.currentFocusedNodePath$ = this.store.select(currentFocusedNodePathSelector)
 		this.hasPreviousFocusedNodePath$ = this.store
 			.select(focusedNodePathSelector)
@@ -26,7 +26,7 @@ export class FocusButtonsComponent {
 	}
 
 	handleFocusNodeClicked() {
-		this.store.dispatch(focusNode(this.codeMapNode.path))
+		this.store.dispatch(focusNode({ value: this.codeMapNode.path }))
 	}
 
 	handleUnfocusNodeClicked() {

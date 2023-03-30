@@ -1,5 +1,6 @@
 import { Component, ViewEncapsulation } from "@angular/core"
-import { Store } from "../../../state/angular-redux/store"
+import { Store } from "@ngrx/store"
+import { State } from "../../../codeCharta.model"
 import { setHeightMetric } from "../../../state/store/dynamicSettings/heightMetric/heightMetric.actions"
 import { heightMetricSelector } from "../../../state/store/dynamicSettings/heightMetric/heightMetric.selector"
 
@@ -11,9 +12,9 @@ import { heightMetricSelector } from "../../../state/store/dynamicSettings/heigh
 export class HeightMetricChooserComponent {
 	heightMetric$ = this.store.select(heightMetricSelector)
 
-	constructor(private store: Store) {}
+	constructor(private store: Store<State>) {}
 
 	handleHeightMetricChanged(value: string) {
-		this.store.dispatch(setHeightMetric(value))
+		this.store.dispatch(setHeightMetric({ value }))
 	}
 }

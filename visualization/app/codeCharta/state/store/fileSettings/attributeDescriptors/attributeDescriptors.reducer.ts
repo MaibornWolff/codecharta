@@ -1,8 +1,7 @@
-import { AttributeDescriptorsAction, AttributeDescriptorsActions, setAttributeDescriptors } from "./attributeDescriptors.action"
+import { createReducer, on } from "@ngrx/store"
+import { setAttributeDescriptors } from "./attributeDescriptors.action"
 
-export function attributeDescriptors(state = setAttributeDescriptors().payload, action: AttributeDescriptorsAction) {
-	if (action.type === AttributeDescriptorsActions.SET_ATTRIBUTE_DESCRIPTORS) {
-		return action.payload
-	}
-	return state
-}
+export const attributeDescriptors = createReducer(
+	{},
+	on(setAttributeDescriptors, (_state, payload) => payload.value)
+)

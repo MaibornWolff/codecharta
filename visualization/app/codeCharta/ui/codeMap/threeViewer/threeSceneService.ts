@@ -1,7 +1,7 @@
 import { AmbientLight, Box3, BufferGeometry, DirectionalLight, Group, Line, Material, Object3D, Raycaster, Scene, Vector3 } from "three"
 import { CodeMapMesh } from "../rendering/codeMapMesh"
 import { CodeMapBuilding } from "../rendering/codeMapBuilding"
-import { CodeMapNode, LayoutAlgorithm, Node } from "../../../codeCharta.model"
+import { CodeMapNode, LayoutAlgorithm, Node, State } from "../../../codeCharta.model"
 import { hierarchy } from "d3-hierarchy"
 import { ColorConverter } from "../../../util/color/colorConverter"
 import { FloorLabelDrawer } from "./floorLabels/floorLabelDrawer"
@@ -11,11 +11,10 @@ import { IdToBuildingService } from "../../../services/idToBuilding/idToBuilding
 import { mapColorsSelector } from "../../../state/store/appSettings/mapColors/mapColors.selector"
 import { ThreeRendererService } from "./threeRenderer.service"
 import { Injectable, OnDestroy } from "@angular/core"
-import { Store } from "../../../state/angular-redux/store"
-import { defaultMapColors } from "../../../state/store/appSettings/mapColors/mapColors.actions"
-import { State } from "../../../state/angular-redux/state"
+import { defaultMapColors } from "../../../state/store/appSettings/mapColors/mapColors.reducer"
 import { treeMapSize } from "../../../util/algorithm/treeMapLayout/treeMapHelper"
 import { EventEmitter } from "../../../util/EventEmitter"
+import { Store, State as StateService } from "@ngrx/store"
 
 type BuildingSelectedEvents = {
 	onBuildingSelected: (data: { building: CodeMapBuilding }) => void
@@ -55,8 +54,8 @@ export class ThreeSceneService implements OnDestroy {
 	})
 
 	constructor(
-		private store: Store,
-		private state: State,
+		private store: Store<State>,
+		private state: StateService<State>,
 		private idToBuilding: IdToBuildingService,
 		private threeRendererService: ThreeRendererService
 	) {
@@ -113,7 +112,7 @@ export class ThreeSceneService implements OnDestroy {
 	}
 
 	highlightBuildings() {
-		const state = this.state.getValue()
+		const state = this.state.getValue() as State
 		this.getMapMesh().highlightBuilding(this.highlighted, this.selected, state, this.constantHighlight)
 		if (this.mapGeometry.children[0]) {
 			this.highlightMaterial(this.mapGeometry.children[0]["material"])
@@ -193,7 +192,7 @@ export class ThreeSceneService implements OnDestroy {
 	selectBuilding(building: CodeMapBuilding) {
 		// TODO: This check shouldn't be necessary. When investing into model we should investigate why and remove the need.
 		if (building.id !== this.selected?.id) {
-			this.store.dispatch(setSelectedBuildingId(building.node.id))
+			this.store.dispatch(setSelectedBuildingId({ value: building.node.id }))
 		}
 
 		this.getMapMesh().selectBuilding(building, this.folderLabelColorSelected)
@@ -368,7 +367,7 @@ export class ThreeSceneService implements OnDestroy {
 	clearSelection() {
 		if (this.selected) {
 			this.getMapMesh().clearSelection(this.selected)
-			this.store.dispatch(setSelectedBuildingId(null))
+			this.store.dispatch(setSelectedBuildingId({ value: null }))
 			this.eventEmitter.emit("onBuildingDeselected")
 		}
 

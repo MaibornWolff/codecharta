@@ -1,5 +1,6 @@
 import { Component, ViewEncapsulation } from "@angular/core"
-import { Store } from "../../../state/angular-redux/store"
+import { Store } from "@ngrx/store"
+import { State } from "../../../codeCharta.model"
 import { setAreaMetric } from "../../../state/store/dynamicSettings/areaMetric/areaMetric.actions"
 import { areaMetricSelector } from "../../../state/store/dynamicSettings/areaMetric/areaMetric.selector"
 
@@ -11,9 +12,9 @@ import { areaMetricSelector } from "../../../state/store/dynamicSettings/areaMet
 export class AreaMetricChooserComponent {
 	areaMetric$ = this.store.select(areaMetricSelector)
 
-	constructor(private store: Store) {}
+	constructor(private store: Store<State>) {}
 
 	handleAreaMetricChanged(value: string) {
-		this.store.dispatch(setAreaMetric(value))
+		this.store.dispatch(setAreaMetric({ value }))
 	}
 }

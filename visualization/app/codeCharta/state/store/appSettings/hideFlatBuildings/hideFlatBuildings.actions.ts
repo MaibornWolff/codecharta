@@ -1,21 +1,3 @@
-import { CCAction } from "../../../../codeCharta.model"
+import { createAction, props } from "@ngrx/store"
 
-export enum HideFlatBuildingsActions {
-	SET_HIDE_FLAT_BUILDINGS = "SET_HIDE_FLAT_BUILDINGS"
-}
-
-export interface SetHideFlatBuildingsAction extends CCAction {
-	type: HideFlatBuildingsActions.SET_HIDE_FLAT_BUILDINGS
-	payload: boolean
-}
-
-export type HideFlatBuildingsAction = SetHideFlatBuildingsAction
-
-export function setHideFlatBuildings(hideFlatBuildings: boolean = defaultHideFlatBuildings): SetHideFlatBuildingsAction {
-	return {
-		type: HideFlatBuildingsActions.SET_HIDE_FLAT_BUILDINGS,
-		payload: hideFlatBuildings
-	}
-}
-
-export const defaultHideFlatBuildings = false
+export const setHideFlatBuildings = createAction("SET_HIDE_FLAT_BUILDINGS", props<{ value: boolean }>())

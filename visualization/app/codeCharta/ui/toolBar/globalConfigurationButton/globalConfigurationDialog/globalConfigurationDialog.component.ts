@@ -1,6 +1,7 @@
 import { Component, ViewEncapsulation } from "@angular/core"
 import { MatSlideToggleChange } from "@angular/material/slide-toggle"
-import { Store } from "../../../../state/angular-redux/store"
+import { Store } from "@ngrx/store"
+import { State } from "../../../../codeCharta.model"
 import { setScreenshotToClipboardEnabled } from "../../../../state/store/appSettings/enableClipboard/screenshotToClipboardEnabled.actions"
 import { screenshotToClipboardEnabledSelector } from "../../../../state/store/appSettings/enableClipboard/screenshotToClipboardEnabled.selector"
 import { setExperimentalFeaturesEnabled } from "../../../../state/store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.actions"
@@ -24,30 +25,30 @@ export class GlobalConfigurationDialogComponent {
 	hideFlatBuildings$ = this.store.select(hideFlatBuildingsSelector)
 	resetCameraIfNewFileIsLoaded$ = this.store.select(resetCameraIfNewFileIsLoadedSelector)
 
-	constructor(private store: Store) {}
+	constructor(private store: Store<State>) {}
 
 	handleResetCameraIfNewFileIsLoadedChanged(event: MatSlideToggleChange) {
-		this.store.dispatch(setResetCameraIfNewFileIsLoaded(event.checked))
+		this.store.dispatch(setResetCameraIfNewFileIsLoaded({ value: event.checked }))
 		GlobalSettingsHelper.setGlobalSettingsInLocalStorage({ resetCameraIfNewFileIsLoaded: event.checked })
 	}
 
 	handleHideFlatBuildingsChanged(event: MatSlideToggleChange) {
-		this.store.dispatch(setHideFlatBuildings(event.checked))
+		this.store.dispatch(setHideFlatBuildings({ value: event.checked }))
 		GlobalSettingsHelper.setGlobalSettingsInLocalStorage({ hideFlatBuildings: event.checked })
 	}
 
 	handleIsWhiteBackgroundChanged(event: MatSlideToggleChange) {
-		this.store.dispatch(setIsWhiteBackground(event.checked))
+		this.store.dispatch(setIsWhiteBackground({ value: event.checked }))
 		GlobalSettingsHelper.setGlobalSettingsInLocalStorage({ isWhiteBackground: event.checked })
 	}
 
 	handleExperimentalFeaturesEnabledChanged(event: MatSlideToggleChange) {
-		this.store.dispatch(setExperimentalFeaturesEnabled(event.checked))
+		this.store.dispatch(setExperimentalFeaturesEnabled({ value: event.checked }))
 		GlobalSettingsHelper.setGlobalSettingsInLocalStorage({ experimentalFeaturesEnabled: event.checked })
 	}
 
 	handleScreenshotToClipboardEnabledChanged(event: MatSlideToggleChange) {
-		this.store.dispatch(setScreenshotToClipboardEnabled(event.checked))
+		this.store.dispatch(setScreenshotToClipboardEnabled({ value: event.checked }))
 		GlobalSettingsHelper.setGlobalSettingsInLocalStorage({ screenshotToClipboardEnabled: event.checked })
 	}
 }

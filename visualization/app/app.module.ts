@@ -4,7 +4,7 @@ import { platformBrowserDynamic } from "@angular/platform-browser-dynamic"
 import { HttpClientModule } from "@angular/common/http"
 import { FormsModule, ReactiveFormsModule } from "@angular/forms"
 import { MaterialModule } from "./material/material.module"
-import { EffectsModule } from "./codeCharta/state/angular-redux/effects/effects.module"
+import { EffectsModule } from "@ngrx/effects"
 import { UnfocusNodesEffect } from "./codeCharta/state/effects/unfocusNodes/unfocusNodes.effect"
 import { AddBlacklistItemsIfNotResultsInEmptyMapEffect } from "./codeCharta/state/effects/addBlacklistItemsIfNotResultsInEmptyMap/addBlacklistItemsIfNotResultsInEmptyMap.effect"
 import { dialogs } from "./codeCharta/ui/dialogs/dialogs"
@@ -24,11 +24,14 @@ import { LinkColorMetricToHeightMetricEffect } from "./codeCharta/state/effects/
 import { UpdateFileSettingsEffect } from "./codeCharta/state/effects/updateFileSettings/updateFileSettings.effect"
 import { CodeChartaComponent } from "./codeCharta/codeCharta.component"
 import { NodeContextMenuCardModule } from "./codeCharta/state/effects/nodeContextMenu/nodeContextMenuCard/nodeContextMenuCard.module"
+import { StoreModule } from "@ngrx/store"
+import { appReducer } from "./codeCharta/state/store/state.reducer"
 
 @NgModule({
 	imports: [
 		BrowserModule,
 		HttpClientModule,
+		StoreModule.forRoot(appReducer),
 		EffectsModule.forRoot([
 			UnfocusNodesEffect,
 			AddBlacklistItemsIfNotResultsInEmptyMapEffect,

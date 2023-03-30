@@ -1,9 +1,9 @@
 import { Component, Input, ViewEncapsulation } from "@angular/core"
 import { CustomConfigItem } from "../../../customConfigs.component"
 import { CustomConfigHelper } from "../../../../../util/customConfigHelper"
-import { Store } from "../../../../../state/angular-redux/store"
 import { ThreeCameraService } from "../../../../codeMap/threeViewer/threeCamera.service"
 import { ThreeOrbitControlsService } from "../../../../codeMap/threeViewer/threeOrbitControls.service"
+import { Store } from "@ngrx/store"
 
 @Component({
 	selector: "cc-apply-custom-config-button",

@@ -2,10 +2,9 @@ import { CodeMapShaderStrings } from "./shaders/loaders/codeMapShaderStrings"
 import { GeometryGenerator } from "./geometryGenerator"
 import { CodeMapGeometricDescription } from "./codeMapGeometricDescription"
 import { CodeMapBuilding } from "./codeMapBuilding"
-import { Node, State } from "../../../codeCharta.model"
+import { Node, Scaling, State } from "../../../codeCharta.model"
 import { BufferAttribute, Camera, Mesh, Ray, ShaderMaterial, UniformsLib, UniformsUtils, Vector3 } from "three"
 import { TreeMapHelper, treeMapSize } from "../../../util/algorithm/treeMapLayout/treeMapHelper"
-import { Scaling } from "../../../state/store/appSettings/scaling/scaling.actions"
 
 export interface MousePos {
 	x: number

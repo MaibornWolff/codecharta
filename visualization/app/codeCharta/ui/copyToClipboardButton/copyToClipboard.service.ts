@@ -1,12 +1,13 @@
 import { Injectable } from "@angular/core"
-import { State } from "../../state/angular-redux/state"
+import { State as StateService } from "@ngrx/store"
+import { State } from "../../codeCharta.model"
 import { accumulatedDataSelector } from "../../state/selectors/accumulatedData/accumulatedData.selector"
 import { buildTextOfFiles } from "./util/clipboardString"
 import { getFilenamesWithHighestMetrics } from "./util/getFilenamesWithHighestMetrics"
 
 @Injectable()
 export class CopyToClipboardService {
-	constructor(private state: State) {}
+	constructor(private state: StateService<State>) {}
 
 	private getUnifiedMapNode() {
 		const { unifiedMapNode } = accumulatedDataSelector(this.state.getValue())

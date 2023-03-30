@@ -1,7 +1,8 @@
 import { Component, Input, OnChanges, SimpleChanges, ViewEncapsulation } from "@angular/core"
+import { Store } from "@ngrx/store"
 import { dequal } from "dequal"
-import { Store } from "../../../../state/angular-redux/store"
-import { defaultMapColors, setMapColors } from "../../../../state/store/appSettings/mapColors/mapColors.actions"
+import { setMapColors } from "../../../../state/store/appSettings/mapColors/mapColors.actions"
+import { defaultMapColors } from "../../../../state/store/appSettings/mapColors/mapColors.reducer"
 import { setAreaMetric } from "../../../../state/store/dynamicSettings/areaMetric/areaMetric.actions"
 import { setColorMetric } from "../../../../state/store/dynamicSettings/colorMetric/colorMetric.actions"
 import { setColorRange } from "../../../../state/store/dynamicSettings/colorRange/colorRange.actions"
@@ -31,20 +32,21 @@ export class SuspiciousMetricComponent implements OnChanges {
 	}
 
 	applySuspiciousMetric(metric: MetricSuggestionParameters, markOutlier: boolean) {
-		this.store.dispatch(setAreaMetric(AREA_METRIC))
-		this.store.dispatch(setHeightMetric(metric.metric))
-		this.store.dispatch(setColorMetric(metric.metric))
+		this.store.dispatch(setAreaMetric({ value: AREA_METRIC }))
+		this.store.dispatch(setHeightMetric({ value: metric.metric }))
+		this.store.dispatch(setColorMetric({ value: metric.metric }))
 		this.store.dispatch(
 			setColorRange({
-				from: metric.from,
-				to: metric.to
+				value: { from: metric.from, to: metric.to }
 			})
 		)
 		this.store.dispatch(
 			setMapColors({
-				positive: markOutlier ? "#ffffff" : defaultMapColors.positive,
-				neutral: markOutlier ? "#ffffff" : defaultMapColors.neutral,
-				negative: markOutlier ? "#A900C0" : defaultMapColors.negative
+				value: {
+					positive: markOutlier ? "#ffffff" : defaultMapColors.positive,
+					neutral: markOutlier ? "#ffffff" : defaultMapColors.neutral,
+					negative: markOutlier ? "#A900C0" : defaultMapColors.negative
+				}
 			})
 		)
 	}

@@ -1,3 +1,3 @@
-import { CcState } from "../store"
+import { State } from "../../../codeCharta.model"
 
-export const fileSettingsSelector = (state: CcState) => state.fileSettings
+export const fileSettingsSelector = (state: State) => state.fileSettings

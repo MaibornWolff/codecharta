@@ -11,7 +11,7 @@ import { colorMetric } from "./colorMetric/colorMetric.reducer"
 import { areaMetric } from "./areaMetric/areaMetric.reducer"
 import { combineReducers } from "redux"
 
-const dynamicSettings = combineReducers({
+export const dynamicSettings = combineReducers({
 	colorMode,
 	sortingOption,
 	edgeMetric,
@@ -24,5 +24,3 @@ const dynamicSettings = combineReducers({
 	colorMetric,
 	areaMetric
 })
-
-export default dynamicSettings

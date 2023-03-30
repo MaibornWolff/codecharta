@@ -1,4 +1,4 @@
-import { createSelector } from "../../../angular-redux/createSelector"
+import { createSelector } from "@ngrx/store"
 import { appSettingsSelector } from "../appSettings.selector"
 
-export const scalingSelector = createSelector([appSettingsSelector], appSettings => appSettings.scaling)
+export const scalingSelector = createSelector(appSettingsSelector, appSettings => appSettings.scaling)

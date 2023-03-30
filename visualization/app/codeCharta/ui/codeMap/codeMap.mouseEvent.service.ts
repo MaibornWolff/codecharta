@@ -2,7 +2,7 @@ import { Injectable, OnDestroy } from "@angular/core"
 import { ThreeCameraService } from "./threeViewer/threeCamera.service"
 import { CodeMapBuilding } from "./rendering/codeMapBuilding"
 import { ViewCubeMouseEventsService } from "../viewCube/viewCube.mouseEvents.service"
-import { BlacklistItem } from "../../codeCharta.model"
+import { BlacklistItem, State } from "../../codeCharta.model"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { ThreeRendererService } from "./threeViewer/threeRenderer.service"
 import { isPathHiddenOrExcluded } from "../../util/codeMapHelper"
@@ -16,11 +16,10 @@ import { idToNodeSelector } from "../../state/selectors/accumulatedData/idToNode
 import { IdToBuildingService } from "../../services/idToBuilding/idToBuilding.service"
 import { hoveredNodeIdSelector } from "../../state/store/appStatus/hoveredNodeId/hoveredNodeId.selector"
 import { tap, distinctUntilChanged } from "rxjs"
-import { Store } from "../../state/angular-redux/store"
 import { visibleFileStatesSelector } from "../../state/selectors/visibleFileStates.selector"
 import { blacklistSelector } from "../../state/store/fileSettings/blacklist/blacklist.selector"
-import { State } from "../../state/angular-redux/state"
 import { debounce } from "../../util/debounce"
+import { Store, State as StateService } from "@ngrx/store"
 
 interface Coordinates {
 	x: number
@@ -80,8 +79,8 @@ export class CodeMapMouseEventService implements OnDestroy {
 		private threeCameraService: ThreeCameraService,
 		private threeRendererService: ThreeRendererService,
 		private threeSceneService: ThreeSceneService,
-		private store: Store,
-		private state: State,
+		private store: Store<State>,
+		private state: StateService<State>,
 		private codeMapLabelService: CodeMapLabelService,
 		private viewCubeMouseEvents: ViewCubeMouseEventsService,
 		private threeViewerService: ThreeViewerService,
@@ -341,9 +340,11 @@ export class CodeMapMouseEventService implements OnDestroy {
 		if (this.intersectedBuilding && !this.hasMouseMovedMoreThanThreePixels(this.mouseOnLastClick)) {
 			this.store.dispatch(
 				setRightClickedNodeData({
-					nodeId: this.intersectedBuilding.node.id,
-					xPositionOfRightClickEvent: this.mouse.x,
-					yPositionOfRightClickEvent: this.mouse.y
+					value: {
+						nodeId: this.intersectedBuilding.node.id,
+						xPositionOfRightClickEvent: this.mouse.x,
+						yPositionOfRightClickEvent: this.mouse.y
+					}
 				})
 			)
 		}
@@ -390,7 +391,7 @@ export class CodeMapMouseEventService implements OnDestroy {
 			}
 		}
 		this.threeSceneService.highlightBuildings()
-		this.store.dispatch(setHoveredNodeId(hoveredBuilding.node.id))
+		this.store.dispatch(setHoveredNodeId({ value: hoveredBuilding.node.id }))
 	}
 
 	private transformHTMLToSceneCoordinates(): Coordinates {

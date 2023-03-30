@@ -1,10 +1,10 @@
 import { Component, ViewEncapsulation } from "@angular/core"
-import { Store } from "../../../angular-redux/store"
 import { markPackages, unmarkPackage } from "../../../store/fileSettings/markedPackages/markedPackages.actions"
 import { Observable } from "rxjs"
 import { MarkFolderItem, markFolderItemsSelector } from "./selectors/markFolderItems.selector"
-import { CodeMapNode } from "../../../../codeCharta.model"
+import { CodeMapNode, State } from "../../../../codeCharta.model"
 import { rightClickedCodeMapNodeSelector } from "../rightClickedCodeMapNode.selector"
+import { Store } from "@ngrx/store"
 
 @Component({
 	selector: "cc-mark-folder-row",
@@ -16,13 +16,13 @@ export class MarkFolderRowComponent {
 	markFolderItems$: Observable<MarkFolderItem[]>
 	codeMapNode$: Observable<CodeMapNode>
 
-	constructor(private store: Store) {
+	constructor(private store: Store<State>) {
 		this.markFolderItems$ = store.select(markFolderItemsSelector)
 		this.codeMapNode$ = store.select(rightClickedCodeMapNodeSelector)
 	}
 
 	markFolder(path: string, color: string) {
-		this.store.dispatch(markPackages([{ path, color }]))
+		this.store.dispatch(markPackages({ packages: [{ path, color }] }))
 	}
 
 	unmarkFolder(path: string) {

@@ -1,5 +1,6 @@
 import { Component, ViewEncapsulation } from "@angular/core"
-import { Store } from "../../state/angular-redux/store"
+import { Store } from "@ngrx/store"
+import { State } from "../../codeCharta.model"
 import { isDeltaStateSelector } from "../../state/selectors/isDeltaState.selector"
 
 @Component({
@@ -11,5 +12,5 @@ import { isDeltaStateSelector } from "../../state/selectors/isDeltaState.selecto
 export class FilePanelComponent {
 	isDeltaState$ = this.store.select(isDeltaStateSelector)
 
-	constructor(private store: Store) {}
+	constructor(private store: Store<State>) {}
 }

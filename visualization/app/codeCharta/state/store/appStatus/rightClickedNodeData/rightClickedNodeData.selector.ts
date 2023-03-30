@@ -1,4 +1,4 @@
-import { createSelector } from "../../../angular-redux/createSelector"
+import { createSelector } from "@ngrx/store"
 import { appStatusSelector } from "../appStatus.selector"
 
-export const rightClickedNodeDataSelector = createSelector([appStatusSelector], appStatus => appStatus.rightClickedNodeData)
+export const rightClickedNodeDataSelector = createSelector(appStatusSelector, appStatus => appStatus.rightClickedNodeData)

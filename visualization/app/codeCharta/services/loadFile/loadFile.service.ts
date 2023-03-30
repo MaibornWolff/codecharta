@@ -5,14 +5,13 @@ import { clone } from "../../util/clone"
 import { CCFileValidationResult } from "../../util/fileValidator"
 import { setFiles, setStandardByNames } from "../../state/store/files/files.actions"
 import { FileState } from "../../model/files/files"
-import { NameDataPair } from "../../codeCharta.model"
+import { NameDataPair, State } from "../../codeCharta.model"
 import { referenceFileSelector } from "../../state/selectors/referenceFile/referenceFile.selector"
 import { ErrorDialogComponent } from "../../ui/dialogs/errorDialog/errorDialog.component"
 import { loadFilesValidationToErrorDialog } from "../../util/loadFilesValidationToErrorDialog"
-import { Store } from "../../state/angular-redux/store"
-import { State } from "../../state/angular-redux/state"
 import { enrichFileStatesAndRecentFilesWithValidationResults } from "./fileParser"
 import { fileRoot } from "./fileRoot"
+import { State as StateService, Store } from "@ngrx/store"
 
 @Injectable({ providedIn: "root" })
 export class LoadFileService implements OnDestroy {
@@ -29,7 +28,7 @@ export class LoadFileService implements OnDestroy {
 		)
 		.subscribe()
 
-	constructor(private store: Store, private state: State, private dialog: MatDialog) {}
+	constructor(private store: Store<State>, private state: StateService<State>, private dialog: MatDialog) {}
 
 	ngOnDestroy(): void {
 		this.referenceFileSubscription.unsubscribe()
@@ -52,11 +51,11 @@ export class LoadFileService implements OnDestroy {
 			throw new Error("No files could be uploaded")
 		}
 
-		this.store.dispatch(setFiles(fileStates))
+		this.store.dispatch(setFiles({ value: fileStates }))
 
 		const recentFile = recentFiles[0]
 		const rootName = this.state.getValue().files.find(f => f.file.fileMeta.fileName === recentFile).file.map.name
-		this.store.dispatch(setStandardByNames(recentFiles))
+		this.store.dispatch(setStandardByNames({ fileNames: recentFiles }))
 
 		fileRoot.updateRoot(rootName)
 	}

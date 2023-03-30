@@ -1,5 +1,5 @@
 import { Component, Input, ViewEncapsulation } from "@angular/core"
-import { Store } from "../../../../state/angular-redux/store"
+import { Store } from "@ngrx/store"
 import { removeFile } from "../../../../state/store/files/files.actions"
 
 @Component({
@@ -13,8 +13,8 @@ export class RemoveFileButtonComponent {
 
 	constructor(private store: Store) {}
 
-	onRemoveFile(filename: string, $event: MouseEvent) {
-		this.store.dispatch(removeFile(filename))
+	onRemoveFile(fileName: string, $event: MouseEvent) {
+		this.store.dispatch(removeFile({ fileName }))
 
 		$event.stopPropagation()
 		$event.preventDefault()

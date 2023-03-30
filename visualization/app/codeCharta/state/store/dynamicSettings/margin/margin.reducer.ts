@@ -1,10 +1,7 @@
-import { defaultMargin, MarginAction, MarginActions } from "./margin.actions"
+import { createReducer, on } from "@ngrx/store"
+import { setMargin } from "./margin.actions"
 
-export function margin(state = defaultMargin, action: MarginAction) {
-	switch (action.type) {
-		case MarginActions.SET_MARGIN:
-			return action.payload
-		default:
-			return state
-	}
-}
+export const margin = createReducer(
+	50,
+	on(setMargin, (_state, payload) => payload.value)
+)

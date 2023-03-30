@@ -15,7 +15,6 @@ import { edgeHeight } from "./edgeHeight/edgeHeight.reducer"
 import { amountOfEdgePreviews } from "./amountOfEdgePreviews/amountOfEdgePreviews.reducer"
 import { amountOfTopLabels } from "./amountOfTopLabels/amountOfTopLabels.reducer"
 import { isPresentationMode } from "./isPresentationMode/isPresentationMode.reducer"
-import { combineReducers } from "redux"
 import { experimentalFeaturesEnabled } from "./enableExperimentalFeatures/experimentalFeaturesEnabled.reducer"
 import { layoutAlgorithm } from "./layoutAlgorithm/layoutAlgorithm.reducer"
 import { maxTreeMapFiles } from "./maxTreeMapFiles/maxTreeMapFiles.reducer"
@@ -25,8 +24,9 @@ import { invertArea } from "./invertArea/invertArea.reducer"
 import { isEdgeMetricVisible } from "./isEdgeMetricVisible/isEdgeMetricVisible.reducer"
 import { isColorMetricLinkedToHeightMetric } from "./isHeightAndColorMetricLinked/isColorMetricLinkedToHeightMetric.reducer"
 import { enableFloorLabels } from "./enableFloorLabels/enableFloorLabels.reducer"
+import { combineReducers } from "@ngrx/store"
 
-const appSettings = combineReducers({
+export const appSettings = combineReducers({
 	colorLabels,
 	showMetricLabelNodeName,
 	showMetricLabelNameValue,
@@ -54,5 +54,3 @@ const appSettings = combineReducers({
 	isColorMetricLinkedToHeightMetric,
 	enableFloorLabels
 })
-
-export default appSettings

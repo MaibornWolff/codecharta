@@ -10,12 +10,12 @@ import {
 } from "../model/customConfig/customConfig.api.model"
 import { FileNameHelper } from "./fileNameHelper"
 import { FileDownloader } from "./fileDownloader"
-import { setState } from "../state/store/state.actions"
+// import { setState } from "../state/store/state.actions"
 import { ThreeCameraService } from "../ui/codeMap/threeViewer/threeCamera.service"
 import { ThreeOrbitControlsService } from "../ui/codeMap/threeViewer/threeOrbitControls.service"
 import { BehaviorSubject } from "rxjs"
-import { Store } from "../state/angular-redux/store"
 import { VisibleFilesBySelectionMode } from "../ui/customConfigs/visibleFilesBySelectionMode.selector"
+import { Store } from "@ngrx/store"
 
 export const CUSTOM_CONFIG_FILE_EXTENSION = ".cc.config.json"
 const CUSTOM_CONFIGS_LOCAL_STORAGE_VERSION = "1.0.1"
@@ -217,7 +217,8 @@ export class CustomConfigHelper {
 		const customConfig = this.getCustomConfigSettings(configId)
 		CustomConfigHelper.deleteUnusedKeyPropsOfCustomConfig(customConfig)
 
-		store.dispatch(setState(customConfig.stateSettings))
+		// TODO setState
+		// store.dispatch(setState(customConfig.stateSettings))
 
 		// TODO: remove this dirty timeout and set camera settings properly
 		// This timeout is a chance that CustomConfigs for a small map can be restored and applied completely (even the camera positions)

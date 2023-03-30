@@ -1,10 +1,8 @@
 import { Injectable } from "@angular/core"
 import { MatDialog } from "@angular/material/dialog"
 import { HttpClient } from "@angular/common/http"
-import { NameDataPair } from "../../codeCharta.model"
+import { NameDataPair, State } from "../../codeCharta.model"
 import { getCCFiles } from "../../model/files/files.helper"
-import { State } from "../../state/angular-redux/state"
-import { Store } from "../../state/angular-redux/store"
 import { setDelta, setStandard } from "../../state/store/files/files.actions"
 import { ErrorDialogComponent } from "../../ui/dialogs/errorDialog/errorDialog.component"
 import { GlobalSettingsHelper } from "../../util/globalSettingsHelper"
@@ -13,6 +11,7 @@ import { UrlExtractor } from "./urlExtractor"
 import sample1 from "../../assets/sample1.cc.json"
 import sample2 from "../../assets/sample2.cc.json"
 import { ExportCCFile } from "../../codeCharta.api.model"
+import { State as StateService, Store } from "@ngrx/store"
 
 @Injectable({ providedIn: "root" })
 export class LoadInitialFileService {
@@ -20,7 +19,7 @@ export class LoadInitialFileService {
 
 	constructor(
 		private store: Store,
-		private state: State,
+		private state: StateService<State>,
 		private dialog: MatDialog,
 		private loadFileService: LoadFileService,
 		private httpClient: HttpClient
@@ -67,9 +66,9 @@ export class LoadInitialFileService {
 		const files = getCCFiles(this.state.getValue().files)
 
 		if (renderState === "Delta" && files.length >= 2) {
-			this.store.dispatch(setDelta(files[0], files[1]))
+			this.store.dispatch(setDelta({ referenceFile: files[0], comparisonFile: files[1] }))
 		} else {
-			this.store.dispatch(setStandard(files))
+			this.store.dispatch(setStandard({ files }))
 		}
 	}
 }

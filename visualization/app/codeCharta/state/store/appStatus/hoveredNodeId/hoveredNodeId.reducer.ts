@@ -1,10 +1,10 @@
-import { SetHoveredNodeIdPayload, defaultHoveredNodeId, HoveredNodeIdActions, SetHoveredNodeIdAction } from "./hoveredNodeId.actions"
+import { createReducer, on } from "@ngrx/store"
+import { State } from "../../../../codeCharta.model"
+import { setHoveredNodeId } from "./hoveredNodeId.actions"
 
-export const hoveredNodeId = (state: SetHoveredNodeIdPayload = defaultHoveredNodeId, action: SetHoveredNodeIdAction) => {
-	switch (action.type) {
-		case HoveredNodeIdActions.SET_HOVERED_NODE_ID:
-			return action.payload
-		default:
-			return state
-	}
-}
+const initialState: State["appStatus"]["hoveredNodeId"] = null
+
+export const hoveredNodeId = createReducer(
+	initialState,
+	on(setHoveredNodeId, (_state, payload) => payload.value)
+)

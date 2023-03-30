@@ -1,10 +1,7 @@
-import { ColorRangeAction, ColorRangeActions, defaultColorRange } from "./colorRange.actions"
+import { createReducer, on } from "@ngrx/store"
+import { setColorRange } from "./colorRange.actions"
 
-export function colorRange(state = defaultColorRange, action: ColorRangeAction) {
-	switch (action.type) {
-		case ColorRangeActions.SET_COLOR_RANGE:
-			return { ...state, ...action.payload }
-		default:
-			return state
-	}
-}
+export const colorRange = createReducer(
+	{ from: null, to: null },
+	on(setColorRange, (state, payload) => ({ ...state, ...payload.value }))
+)

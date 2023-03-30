@@ -1,6 +1,6 @@
 import { Component, ViewEncapsulation } from "@angular/core"
-import { BlacklistItem } from "../../../codeCharta.model"
-import { Store } from "../../../state/angular-redux/store"
+import { Store } from "@ngrx/store"
+import { BlacklistItem, State } from "../../../codeCharta.model"
 import { removeBlacklistItem } from "../../../state/store/fileSettings/blacklist/blacklist.actions"
 import { createBlacklistItemSelector } from "./createBlacklistItemSelector"
 
@@ -14,9 +14,9 @@ export class BlacklistPanelComponent {
 	flattenedItems$ = this.store.select(createBlacklistItemSelector("flatten"))
 	excludedItems$ = this.store.select(createBlacklistItemSelector("exclude"))
 
-	constructor(private store: Store) {}
+	constructor(private store: Store<State>) {}
 
 	removeBlacklistEntry(item: BlacklistItem) {
-		this.store.dispatch(removeBlacklistItem(item))
+		this.store.dispatch(removeBlacklistItem({ item }))
 	}
 }

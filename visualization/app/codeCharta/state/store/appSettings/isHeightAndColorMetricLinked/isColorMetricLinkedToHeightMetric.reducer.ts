@@ -1,19 +1,11 @@
+import { createReducer, on } from "@ngrx/store"
 import {
-	defaultIsColorMetricLinkedToHeightMetric,
-	IsColorMetricLinkedToHeightMetricAction,
-	IsColorMetricLinkedToHeightMetricActions
+	setIsColorMetricLinkedToHeightMetricAction,
+	toggleIsColorMetricLinkedToHeightMetric
 } from "./isColorMetricLinkedToHeightMetric.actions"
 
-export function isColorMetricLinkedToHeightMetric(
-	state = defaultIsColorMetricLinkedToHeightMetric,
-	action: IsColorMetricLinkedToHeightMetricAction
-) {
-	switch (action.type) {
-		case IsColorMetricLinkedToHeightMetricActions.TOGGLE_IS_COLOR_METRIC_LINKED_TO_HEIGHT_METRIC:
-			return !state
-		case IsColorMetricLinkedToHeightMetricActions.SET_IS_COLOR_METRIC_LINKED_TO_HEIGHT_METRIC:
-			return action.payload
-		default:
-			return state
-	}
-}
+export const isColorMetricLinkedToHeightMetric = createReducer(
+	false,
+	on(setIsColorMetricLinkedToHeightMetricAction, (_state, payload) => payload.value),
+	on(toggleIsColorMetricLinkedToHeightMetric, state => !state)
+)

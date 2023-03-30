@@ -1,7 +1,6 @@
 import { Injectable } from "@angular/core"
 import { combineLatest, filter, map, withLatestFrom } from "rxjs"
-import { createEffect } from "../../angular-redux/effects/createEffect"
-import { Store } from "../../angular-redux/store"
+import { createEffect } from "@ngrx/effects"
 import { amountOfEdgePreviewsSelector } from "../../store/appSettings/amountOfEdgePreviews/amountOfEdgePreviews.selector"
 import { edgeHeightSelector } from "../../store/appSettings/edgeHeight/edgeHeight.selector"
 import { toggleEdgeMetricVisible } from "../../store/appSettings/isEdgeMetricVisible/isEdgeMetricVisible.actions"
@@ -12,10 +11,12 @@ import { setEdges } from "../../store/fileSettings/edges/edges.actions"
 import { edgesSelector } from "../../store/fileSettings/edges/edges.selector"
 import { edgePreviewNodesSelector } from "./utils/edgePreviewNodes.selector"
 import { setEdgeVisibility } from "./utils/setEdgeVisibility"
+import { Store } from "@ngrx/store"
+import { State } from "../../../codeCharta.model"
 
 @Injectable()
 export class UpdateEdgePreviewsEffect {
-	constructor(private store: Store) {}
+	constructor(private store: Store<State>) {}
 
 	resetIsEdgeMetricVisible$ = createEffect(() =>
 		this.store.select(edgeMetricSelector).pipe(
@@ -35,7 +36,7 @@ export class UpdateEdgePreviewsEffect {
 			withLatestFrom(this.store.select(edgePreviewNodesSelector), this.store.select(edgesSelector)),
 			map(([[edgeMetric], edgePreviewNodes, edges]) => {
 				setEdgeVisibility(edgePreviewNodes, edges, edgeMetric)
-				return setEdges(edges)
+				return setEdges({ value: edges })
 			})
 		)
 	)

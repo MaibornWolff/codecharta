@@ -1,12 +1,12 @@
 import { Sprite, Vector3, Box3, Sphere, LineBasicMaterial, Line, BufferGeometry, LinearFilter, Texture, SpriteMaterial, Color } from "three"
-import { LayoutAlgorithm, Node } from "../../codeCharta.model"
+import { LayoutAlgorithm, Node, State } from "../../codeCharta.model"
 import { ThreeOrbitControlsService } from "./threeViewer/threeOrbitControls.service"
 import { ThreeCameraService } from "./threeViewer/threeCamera.service"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { ColorConverter } from "../../util/color/colorConverter"
-import { State } from "../../state/angular-redux/state"
 import { Injectable } from "@angular/core"
 import { treeMapSize } from "../../util/algorithm/treeMapLayout/treeMapHelper"
+import { State as StateService } from "@ngrx/store"
 
 interface InternalLabel {
 	sprite: Sprite
@@ -33,7 +33,7 @@ export class CodeMapLabelService {
 	private nodeHeight = 0
 
 	constructor(
-		private state: State,
+		private state: StateService<State>,
 		private threeCameraService: ThreeCameraService,
 		private threeSceneService: ThreeSceneService,
 		private threeOrbitControlsService: ThreeOrbitControlsService

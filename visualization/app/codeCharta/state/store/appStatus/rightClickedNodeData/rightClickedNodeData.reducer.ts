@@ -1,15 +1,10 @@
-import {
-	defaultRightClickedNodeData,
-	RightClickedNodeData,
-	RightClickedNodeDataActions,
-	SetRightClickedNodeDataAction
-} from "./rightClickedNodeData.actions"
+import { createReducer, on } from "@ngrx/store"
+import { State } from "../../../../codeCharta.model"
+import { setRightClickedNodeData } from "./rightClickedNodeData.actions"
 
-export const rightClickedNodeData = (state: RightClickedNodeData = defaultRightClickedNodeData, action: SetRightClickedNodeDataAction) => {
-	switch (action.type) {
-		case RightClickedNodeDataActions.SET_RIGHT_CLICKED_NODE_DATA:
-			return action.payload
-		default:
-			return state
-	}
-}
+export const initialState: State["appStatus"]["rightClickedNodeData"] = null
+
+export const rightClickedNodeData = createReducer(
+	initialState,
+	on(setRightClickedNodeData, (_state, payload) => payload.value)
+)

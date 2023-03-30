@@ -1,15 +1,14 @@
 import { Injectable, OnDestroy } from "@angular/core"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
-import { Node, EdgeVisibility } from "../../codeCharta.model"
+import { Node, EdgeVisibility, State } from "../../codeCharta.model"
 import { ArrowHelper, BufferGeometry, CubicBezierCurve3, Line, LineBasicMaterial, Object3D, Vector3 } from "three"
 import { ColorConverter } from "../../util/color/colorConverter"
 import { CodeMapBuilding } from "./rendering/codeMapBuilding"
 import { IdToBuildingService } from "../../services/idToBuilding/idToBuilding.service"
 import { tap } from "rxjs"
 import { hoveredNodeIdSelector } from "../../state/store/appStatus/hoveredNodeId/hoveredNodeId.selector"
-import { Store } from "../../state/angular-redux/store"
-import { State } from "../../state/angular-redux/state"
 import { debounce } from "../../util/debounce"
+import { Store, State as StateService } from "@ngrx/store"
 
 @Injectable({ providedIn: "root" })
 export class CodeMapArrowService implements OnDestroy {
@@ -36,8 +35,8 @@ export class CodeMapArrowService implements OnDestroy {
 		.subscribe()
 
 	constructor(
-		private store: Store,
-		private state: State,
+		private store: Store<State>,
+		private state: StateService<State>,
 		private threeSceneService: ThreeSceneService,
 		private idToBuildingService: IdToBuildingService
 	) {

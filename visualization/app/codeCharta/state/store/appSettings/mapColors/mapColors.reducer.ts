@@ -1,27 +1,25 @@
+import { createReducer, on } from "@ngrx/store"
 import { MapColors } from "../../../../codeCharta.model"
-import { defaultMapColors, MapColorsAction, MapColorsActions, setMapColors } from "./mapColors.actions"
+import { invertColorRange, invertDeltaColors, setMapColors } from "./mapColors.actions"
 
-export function mapColors(state: MapColors = defaultMapColors, action: MapColorsAction) {
-	if (isSetMapColorsAction(action)) {
-		return { ...state, ...action.payload }
-	}
-	if (action.type === MapColorsActions.INVERT_COLOR_RANGE) {
-		return {
-			...state,
-			positive: state.negative,
-			negative: state.positive
-		}
-	}
-	if (action.type === MapColorsActions.INVERT_DELTA_COLORS) {
-		return {
-			...state,
-			positiveDelta: state.negativeDelta,
-			negativeDelta: state.positiveDelta
-		}
-	}
-	return state
+export const defaultMapColors: MapColors = {
+	positive: "#69AE40",
+	neutral: "#ddcc00",
+	negative: "#820E0E",
+	selected: "#EB8319",
+	positiveDelta: "#64d051",
+	negativeDelta: "#ff0E0E",
+	base: "#666666",
+	flat: "#AAAAAA",
+	markingColors: ["#FF1D8E", "#1d8eff", "#1DFFFF", "#8eff1d", "#8e1dff"],
+	incomingEdge: "#00ffff",
+	outgoingEdge: "#ff00ff",
+	labelColorAndAlpha: { rgb: "#e0e0e0", alpha: 0.7 }
 }
 
-function isSetMapColorsAction(action: MapColorsAction): action is ReturnType<typeof setMapColors> {
-	return action.type === MapColorsActions.SET_MAP_COLORS
-}
+export const mapColors = createReducer(
+	defaultMapColors,
+	on(setMapColors, (state, payload) => ({ ...state, ...payload.value })),
+	on(invertColorRange, state => ({ ...state, positive: state.negative, negative: state.positive })),
+	on(invertDeltaColors, state => ({ ...state, positiveDelta: state.negativeDelta, negativeDelta: state.positiveDelta }))
+)

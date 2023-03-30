@@ -1,15 +1,10 @@
-import { EdgesAction, EdgesActions, setEdges } from "./edges.actions"
+import { addEdge, removeEdge, setEdges } from "./edges.actions"
 import { addItemToArray, removeItemFromArray } from "../../../../util/reduxHelper"
+import { createReducer, on } from "@ngrx/store"
 
-export function edges(state = setEdges().payload, action: EdgesAction) {
-	switch (action.type) {
-		case EdgesActions.SET_EDGES:
-			return action.payload
-		case EdgesActions.ADD_EDGE:
-			return addItemToArray(state, action.payload)
-		case EdgesActions.REMOVE_EDGE:
-			return removeItemFromArray(state, action.payload)
-		default:
-			return state
-	}
-}
+export const edges = createReducer(
+	[],
+	on(setEdges, (_state, payload) => payload.value),
+	on(addEdge, (state, payload) => addItemToArray(state, payload.edge)),
+	on(removeEdge, (state, payload) => removeItemFromArray(state, payload.edge))
+)

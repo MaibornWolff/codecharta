@@ -1,4 +1,4 @@
-import { createSelector } from "../../../angular-redux/createSelector"
+import { createSelector } from "@ngrx/store"
 import { appStatusSelector } from "../appStatus.selector"
 
-export const hoveredNodeIdSelector = createSelector([appStatusSelector], appStatus => appStatus.hoveredNodeId)
+export const hoveredNodeIdSelector = createSelector(appStatusSelector, appStatus => appStatus.hoveredNodeId)

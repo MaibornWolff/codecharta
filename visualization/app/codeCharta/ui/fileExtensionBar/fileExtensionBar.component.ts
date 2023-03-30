@@ -2,7 +2,8 @@ import { Component, ViewEncapsulation } from "@angular/core"
 import { MetricDistribution, FileExtensionCalculator } from "./selectors/fileExtensionCalculator"
 import { metricDistributionSelector } from "./selectors/metricDistribution.selector"
 import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
-import { Store } from "../../state/angular-redux/store"
+import { Store } from "@ngrx/store"
+import { State } from "../../codeCharta.model"
 
 @Component({
 	selector: "cc-file-extension-bar",
@@ -15,7 +16,7 @@ export class FileExtensionBarComponent {
 	showDetails = false
 	metricDistribution: MetricDistribution[]
 
-	constructor(private store: Store, private threeSceneService: ThreeSceneService) {
+	constructor(private store: Store<State>, private threeSceneService: ThreeSceneService) {
 		this.store.select(metricDistributionSelector).subscribe(metricDistribution => {
 			this.metricDistribution = metricDistribution
 		})

@@ -1,11 +1,8 @@
-import { LayoutAlgorithmAction, LayoutAlgorithmActions, setLayoutAlgorithm } from "./layoutAlgorithm.actions"
+import { createReducer, on } from "@ngrx/store"
 import { LayoutAlgorithm } from "../../../../codeCharta.model"
+import { setLayoutAlgorithm } from "./layoutAlgorithm.actions"
 
-export function layoutAlgorithm(state: LayoutAlgorithm = setLayoutAlgorithm().payload, action: LayoutAlgorithmAction): LayoutAlgorithm {
-	switch (action.type) {
-		case LayoutAlgorithmActions.SET_LAYOUT_ALGORITHM:
-			return action.payload
-		default:
-			return state
-	}
-}
+export const layoutAlgorithm = createReducer(
+	LayoutAlgorithm.SquarifiedTreeMap,
+	on(setLayoutAlgorithm, (_state, payload) => payload.value)
+)

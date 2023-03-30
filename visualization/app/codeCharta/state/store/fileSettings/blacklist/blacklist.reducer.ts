@@ -1,17 +1,11 @@
-import { BlacklistAction, BlacklistActions, setBlacklist } from "./blacklist.actions"
+import { addBlacklistItem, addBlacklistItems, removeBlacklistItem, setBlacklist } from "./blacklist.actions"
 import { addItemsToArray, addItemToArray, removeItemFromArray } from "../../../../util/reduxHelper"
+import { createReducer, on } from "@ngrx/store"
 
-export function blacklist(state = setBlacklist().payload, action: BlacklistAction) {
-	switch (action.type) {
-		case BlacklistActions.ADD_BLACKLIST_ITEM:
-			return addItemToArray(state, action.payload)
-		case BlacklistActions.ADD_BLACKLIST_ITEMS:
-			return addItemsToArray(state, action.payload)
-		case BlacklistActions.REMOVE_BLACKLIST_ITEM:
-			return removeItemFromArray(state, action.payload)
-		case BlacklistActions.SET_BLACKLIST:
-			return action.payload
-		default:
-			return state
-	}
-}
+export const blacklist = createReducer(
+	[],
+	on(setBlacklist, (_state, payload) => payload.value),
+	on(addBlacklistItem, (state, payload) => addItemToArray(state, payload.item)),
+	on(addBlacklistItems, (state, payload) => addItemsToArray(state, payload.items)),
+	on(removeBlacklistItem, (state, payload) => removeItemFromArray(state, payload.item))
+)

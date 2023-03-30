@@ -1,5 +1,4 @@
 import { Component, ViewEncapsulation } from "@angular/core"
-import { State } from "../../../../state/angular-redux/state"
 import { FileDownloader } from "../../../../util/fileDownloader"
 import { accumulatedDataSelector } from "../../../../state/selectors/accumulatedData/accumulatedData.selector"
 import { FileNameHelper } from "../../../../util/fileNameHelper"
@@ -11,6 +10,8 @@ import {
 	getDownloadableProperty,
 	getFilteredBlacklistLength
 } from "./util/propertyHelper"
+import { State as StateService } from "@ngrx/store"
+import { State } from "../../../../codeCharta.model"
 
 @Component({
 	templateUrl: "./downloadDialog.component.html",
@@ -21,7 +22,7 @@ export class DownloadDialogComponent {
 	fileName: string
 	properties: (DownloadableProperty & { change: (isSelected: boolean) => void })[]
 
-	constructor(private state: State) {
+	constructor(private state: StateService<State>) {
 		const stateValue = this.state.getValue()
 		const { unifiedMapNode, unifiedFileMeta } = accumulatedDataSelector(stateValue)
 		const { fileSettings, files } = stateValue

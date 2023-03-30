@@ -1,5 +1,4 @@
 import { Component, ViewEncapsulation } from "@angular/core"
-import { Store } from "../../../state/angular-redux/store"
 import { amountOfTopLabelsSelector } from "../../../state/store/appSettings/amountOfTopLabels/amountOfTopLabels.selector"
 import { isLabelsSliderDisabledSelector } from "./selectors/isLabelsSliderDisabled.selector"
 import { setAmountOfTopLabels } from "../../../state/store/appSettings/amountOfTopLabels/amountOfTopLabels.actions"
@@ -14,6 +13,8 @@ import { invertHeightSelector } from "../../../state/store/appSettings/invertHei
 import { setInvertHeight } from "../../../state/store/appSettings/invertHeight/invertHeight.actions"
 import { isDeltaStateSelector } from "../../../state/selectors/isDeltaState.selector"
 import { debounce } from "../../../util/debounce"
+import { Store } from "@ngrx/store"
+import { State } from "../../../codeCharta.model"
 
 @Component({
 	selector: "cc-height-settings-panel",
@@ -31,25 +32,25 @@ export class HeightSettingsPanelComponent {
 	invertHeight$ = this.store.select(invertHeightSelector)
 	isDeltaState$ = this.store.select(isDeltaStateSelector)
 
-	constructor(private store: Store) {}
+	constructor(private store: Store<State>) {}
 
 	applyDebouncedTopLabels = debounce((amountOfTopLabels: number) => {
-		this.store.dispatch(setAmountOfTopLabels(amountOfTopLabels))
+		this.store.dispatch(setAmountOfTopLabels({ value: amountOfTopLabels }))
 	}, HeightSettingsPanelComponent.DEBOUNCE_TIME)
 
 	applyDebouncedScalingY = debounce((y: number) => {
-		this.store.dispatch(setScaling({ y }))
+		this.store.dispatch(setScaling({ value: { y } }))
 	}, HeightSettingsPanelComponent.DEBOUNCE_TIME)
 
 	setShowMetricLabelNodeName(event: MatCheckboxChange) {
-		this.store.dispatch(setShowMetricLabelNodeName(event.checked))
+		this.store.dispatch(setShowMetricLabelNodeName({ value: event.checked }))
 	}
 
 	setShowMetricLabelNameValue(event: MatCheckboxChange) {
-		this.store.dispatch(setShowMetricLabelNameValue(event.checked))
+		this.store.dispatch(setShowMetricLabelNameValue({ value: event.checked }))
 	}
 
 	setInvertHeight(event: MatCheckboxChange) {
-		this.store.dispatch(setInvertHeight(event.checked))
+		this.store.dispatch(setInvertHeight({ value: event.checked }))
 	}
 }

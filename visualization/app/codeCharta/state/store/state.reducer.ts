@@ -1,69 +1,61 @@
-import { Action, combineReducers } from "redux"
+import { appSettings } from "./appSettings/appSettings.reducer"
+import { fileSettings } from "./fileSettings/fileSettings.reducer"
+import { dynamicSettings } from "./dynamicSettings/dynamicSettings.reducer"
+import { files } from "./files/files.reducer"
+import { combineReducers } from "@ngrx/store"
 
-import appSettings from "./appSettings/appSettings.reducer"
-import fileSettings from "./fileSettings/fileSettings.reducer"
-import dynamicSettings from "./dynamicSettings/dynamicSettings.reducer"
-import files from "./files/files.reducer"
-import appStatus from "./appStatus/appStatus.reducer"
-import { SetStateAction, StateActions } from "./state.actions"
-import { State } from "../../codeCharta.model"
-import { clone } from "../../util/clone"
-
-const appReducer = combineReducers({
+export const appReducer = combineReducers({
 	fileSettings,
 	appSettings,
 	dynamicSettings,
-	files,
-	appStatus
+	files
 })
 
-const rootReducer = (state: State, action: Action) => {
-	if (isSetStateAction(action)) {
-		const newState = clone(state)
-		return applyPartialState(newState, action.payload)
-	}
+// const rootReducer = (state: Partial<State>, action: Action): State => {
+// 	if (isSetStateAction(action)) {
+// 		const newState = clone(state)
+// 		// @ts-ignore
+// 		return applyPartialState(newState, action.payload)
+// 	}
 
-	return appReducer(state, action)
-}
+// 	// @ts-ignore
+// 	return appReducer(state, action)
+// }
 
-export default rootReducer
+// export default rootReducer
 
-function isSetStateAction(action: Action): action is SetStateAction {
-	return action.type === StateActions.SET_STATE
-}
+// const objectWithDynamicKeysInStore = new Set([
+// 	"fileSettings.attributeTypes",
+// 	"fileSettings.attributeDescriptors",
+// 	"fileSettings.blacklist",
+// 	"fileSettings.edges",
+// 	"fileSettings.markedPackages",
+// 	"dynamicSettings.focusedNodePath",
+// 	"files" // ToDo; this should be a Map with an unique id
+// ])
 
-const objectWithDynamicKeysInStore = new Set([
-	"fileSettings.attributeTypes",
-	"fileSettings.attributeDescriptors",
-	"fileSettings.blacklist",
-	"fileSettings.edges",
-	"fileSettings.markedPackages",
-	"dynamicSettings.focusedNodePath",
-	"files" // ToDo; this should be a Map with an unique id
-])
+// function applyPartialState<T>(applyTo: T, toBeApplied: unknown, composedPath = []): T {
+// 	for (const [key, value] of Object.entries(toBeApplied)) {
+// 		if (value === null || value === undefined) {
+// 			continue
+// 		}
 
-function applyPartialState<T>(applyTo: T, toBeApplied: unknown, composedPath = []): T {
-	for (const [key, value] of Object.entries(toBeApplied)) {
-		if (value === null || value === undefined) {
-			continue
-		}
+// 		if (!isKeyOf(applyTo, key)) {
+// 			continue
+// 		}
 
-		if (!isKeyOf(applyTo, key)) {
-			continue
-		}
+// 		const newComposedPath = [...composedPath, key]
+// 		const composedJoinedPath = newComposedPath.join(".")
 
-		const newComposedPath = [...composedPath, key]
-		const composedJoinedPath = newComposedPath.join(".")
+// 		applyTo[key] =
+// 			typeof value !== "object" || objectWithDynamicKeysInStore.has(composedJoinedPath)
+// 				? value
+// 				: applyPartialState(applyTo[key], value, newComposedPath)
+// 	}
 
-		applyTo[key] =
-			typeof value !== "object" || objectWithDynamicKeysInStore.has(composedJoinedPath)
-				? value
-				: applyPartialState(applyTo[key], value, newComposedPath)
-	}
+// 	return applyTo
+// }
 
-	return applyTo
-}
-
-function isKeyOf<T>(of: T, key: PropertyKey): key is keyof T {
-	return Object.prototype.hasOwnProperty.call(of, key)
-}
+// function isKeyOf<T>(of: T, key: PropertyKey): key is keyof T {
+// 	return Object.prototype.hasOwnProperty.call(of, key)
+// }

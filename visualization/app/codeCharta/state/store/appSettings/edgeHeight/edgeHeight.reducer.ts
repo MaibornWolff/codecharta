@@ -1,10 +1,7 @@
-import { EdgeHeightAction, EdgeHeightActions, setEdgeHeight } from "./edgeHeight.actions"
+import { createReducer, on } from "@ngrx/store"
+import { setEdgeHeight } from "./edgeHeight.actions"
 
-export function edgeHeight(state = setEdgeHeight().payload, action: EdgeHeightAction) {
-	switch (action.type) {
-		case EdgeHeightActions.SET_EDGE_HEIGHT:
-			return action.payload
-		default:
-			return state
-	}
-}
+export const edgeHeight = createReducer(
+	4,
+	on(setEdgeHeight, (_state, payload) => payload.value)
+)

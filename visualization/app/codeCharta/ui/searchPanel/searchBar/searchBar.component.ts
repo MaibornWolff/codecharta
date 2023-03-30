@@ -1,13 +1,13 @@
 import { Component, ViewEncapsulation } from "@angular/core"
-import { Store } from "../../../state/angular-redux/store"
 import { setSearchPattern } from "../../../state/store/dynamicSettings/searchPattern/searchPattern.actions"
 import { searchPatternSelector } from "../../../state/store/dynamicSettings/searchPattern/searchPattern.selector"
 import { isSearchPatternEmptySelector } from "./selectors/isSearchPatternEmpty.selector"
 import { isFlattenPatternDisabledSelector } from "./selectors/isFlattenPatternDisabled.selector"
 import { isExcludePatternDisabledSelector } from "./selectors/isExcludePatternDisabled.selector"
-import { BlacklistType } from "../../../codeCharta.model"
+import { BlacklistType, State } from "../../../codeCharta.model"
 import { blacklistSearchPattern } from "./blacklistSearchPattern.effect"
 import { debounce } from "../../../util/debounce"
+import { Store } from "@ngrx/store"
 
 @Component({
 	selector: "cc-search-bar",
@@ -22,15 +22,15 @@ export class SearchBarComponent {
 	isExcludePatternDisabled$ = this.store.select(isExcludePatternDisabledSelector)
 	setSearchPatternDebounced = debounce((event: Event) => this.setSearchPattern(event), 400)
 
-	constructor(private store: Store) {}
+	constructor(private store: Store<State>) {}
 
 	setSearchPattern(event: Event) {
 		const eventTarget = event.target as HTMLInputElement
-		this.store.dispatch(setSearchPattern(eventTarget.value))
+		this.store.dispatch(setSearchPattern({ value: eventTarget.value }))
 	}
 
 	resetSearchPattern() {
-		this.store.dispatch(setSearchPattern())
+		this.store.dispatch(setSearchPattern({ value: "" }))
 	}
 
 	blacklistSearchPattern(type: BlacklistType) {

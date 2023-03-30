@@ -1,10 +1,8 @@
-import { SortingOptionAction, SortingOptionActions, setSortingOption } from "./sortingOption.actions"
+import { createReducer, on } from "@ngrx/store"
+import { SortingOption } from "../../../../codeCharta.model"
+import { setSortingOption } from "./sortingOption.actions"
 
-export function sortingOption(state = setSortingOption().payload, action: SortingOptionAction) {
-	switch (action.type) {
-		case SortingOptionActions.SET_SORTING_OPTION:
-			return action.payload
-		default:
-			return state
-	}
-}
+export const sortingOption = createReducer(
+	SortingOption.NAME,
+	on(setSortingOption, (_state, payload) => payload.value)
+)

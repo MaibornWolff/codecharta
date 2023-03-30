@@ -1,3 +1,3 @@
-import { CcState } from "../store"
+import { State } from "../../../codeCharta.model"
 
-export const dynamicSettingsSelector = (state: CcState) => state.dynamicSettings
+export const dynamicSettingsSelector = (state: State) => state.dynamicSettings

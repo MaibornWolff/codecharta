@@ -1,11 +1,12 @@
 import { Pipe, PipeTransform } from "@angular/core"
+import { State as StateService } from "@ngrx/store"
+import { State } from "../../../../codeCharta.model"
 import { CustomConfigItem } from "../../customConfigs.component"
-import { State } from "../../../../state/angular-redux/state"
 import { getMissingCustomConfigModeAndMaps } from "./getMissingCustomConfigModeAndMaps"
 
 @Pipe({ name: "customConfig2ApplicableMessage" })
 export class CustomConfig2ApplicableMessage implements PipeTransform {
-	constructor(private state: State) {}
+	constructor(private state: StateService<State>) {}
 
 	transform(customConfig: CustomConfigItem): string {
 		const { mapSelectionMode, mapNames } = getMissingCustomConfigModeAndMaps(customConfig, this.state)

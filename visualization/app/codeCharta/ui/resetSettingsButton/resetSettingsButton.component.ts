@@ -1,8 +1,7 @@
-import { setState } from "../../state/store/state.actions"
-import { getPartialDefaultState } from "./getPartialDefaultState"
+// import { setState } from "../../state/store/state.actions"
 import { Component, Input, ViewEncapsulation } from "@angular/core"
-import { Store } from "../../state/angular-redux/store"
-import { State } from "../../state/angular-redux/state"
+import { Store, State as StateService } from "@ngrx/store"
+import { State } from "../../codeCharta.model"
 
 @Component({
 	selector: "cc-reset-settings-button",
@@ -16,11 +15,12 @@ export class ResetSettingsButtonComponent {
 	@Input() label?: string
 	@Input() callback?: () => void
 
-	constructor(private store: Store, private state: State) {}
+	constructor(private store: Store<State>, private state: StateService<State>) {}
 
 	applyDefaultSettings() {
-		const partialDefaultState = getPartialDefaultState(this.settingsKeys, this.state.getValue())
-		this.store.dispatch(setState(partialDefaultState))
+		// TODO setState
+		// const partialDefaultState = getPartialDefaultState(this.settingsKeys, this.state.getValue())
+		// this.store.dispatch(setState(partialDefaultState))
 
 		if (this.callback) {
 			this.callback()

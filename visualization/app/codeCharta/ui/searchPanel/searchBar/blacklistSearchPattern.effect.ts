@@ -1,10 +1,8 @@
-import { Inject, Injectable } from "@angular/core"
+import { Injectable } from "@angular/core"
+import { Actions, createEffect, ofType } from "@ngrx/effects"
+import { Store } from "@ngrx/store"
 import { map, filter, withLatestFrom, tap, take } from "rxjs"
-import { BlacklistType } from "../../../codeCharta.model"
-import { createEffect } from "../../../state/angular-redux/effects/createEffect"
-import { Actions, ActionsToken } from "../../../state/angular-redux/effects/effects.module"
-import { ofType } from "../../../state/angular-redux/ofType"
-import { Store } from "../../../state/angular-redux/store"
+import { BlacklistType, State } from "../../../codeCharta.model"
 import { AddBlacklistItemsIfNotResultsInEmptyMapEffect } from "../../../state/effects/addBlacklistItemsIfNotResultsInEmptyMap/addBlacklistItemsIfNotResultsInEmptyMap.effect"
 import { setSearchPattern } from "../../../state/store/dynamicSettings/searchPattern/searchPattern.actions"
 import { searchPatternSelector } from "../../../state/store/dynamicSettings/searchPattern/searchPattern.selector"
@@ -24,8 +22,8 @@ export const blacklistSearchPattern = (type: BlacklistType): BlacklistSearchPatt
 @Injectable()
 export class BlacklistSearchPatternEffect {
 	constructor(
-		@Inject(ActionsToken) private actions$: Actions,
-		private store: Store,
+		private actions$: Actions,
+		private store: Store<State>,
 		private addBlacklistItemsIfNotResultsInEmptyMapEffect: AddBlacklistItemsIfNotResultsInEmptyMapEffect
 	) {}
 
@@ -45,8 +43,8 @@ export class BlacklistSearchPatternEffect {
 			this.searchPattern2BlacklistItems$.pipe(
 				filter(searchPattern2BlacklistItems => searchPattern2BlacklistItems.type === "flatten"),
 				tap(searchPattern2BlacklistItems => {
-					this.store.dispatch(addBlacklistItems(searchPattern2BlacklistItems.blacklistItems))
-					this.store.dispatch(setSearchPattern())
+					this.store.dispatch(addBlacklistItems({ items: searchPattern2BlacklistItems.blacklistItems }))
+					this.store.dispatch(setSearchPattern({ value: "" }))
 				})
 			),
 		{ dispatch: false }
@@ -61,12 +59,14 @@ export class BlacklistSearchPatternEffect {
 						take(1),
 						filter(doBlacklistItemsResultInEmptyMap => !doBlacklistItemsResultInEmptyMap.resultsInEmptyMap),
 						tap(() => {
-							this.store.dispatch(setSearchPattern())
+							this.store.dispatch(setSearchPattern({ value: "" }))
 						})
 					)
 					.subscribe()
 			}),
-			map(searchPattern2BlacklistItems => addBlacklistItemsIfNotResultsInEmptyMap(searchPattern2BlacklistItems.blacklistItems))
+			map(searchPattern2BlacklistItems =>
+				addBlacklistItemsIfNotResultsInEmptyMap({ items: searchPattern2BlacklistItems.blacklistItems })
+			)
 		)
 	)
 }

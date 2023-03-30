@@ -1,18 +1,10 @@
-import {
-	SetSelectedBuildingIdPayload,
-	SelectedBuildingIdActions,
-	SetSelectedBuildingIdAction,
-	setSelectedBuildingId
-} from "./selectedBuildingId.actions"
+import { createReducer, on } from "@ngrx/store"
+import { State } from "../../../../codeCharta.model"
+import { setSelectedBuildingId } from "./selectedBuildingId.actions"
 
-export const selectedBuildingId = (
-	state: SetSelectedBuildingIdPayload = setSelectedBuildingId().payload,
-	action: SetSelectedBuildingIdAction
-) => {
-	switch (action.type) {
-		case SelectedBuildingIdActions.SET_SELECTED_BUILDING_ID:
-			return action.payload
-		default:
-			return state
-	}
-}
+const initialState: State["appStatus"]["selectedBuildingId"] = null
+
+export const selectedBuildingId = createReducer(
+	initialState,
+	on(setSelectedBuildingId, (_state, payload) => payload.value)
+)

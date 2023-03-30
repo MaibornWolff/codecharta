@@ -1,10 +1,8 @@
-import { ColorModeAction, ColorModeActions, setColorMode } from "./colorMode.actions"
+import { createReducer, on } from "@ngrx/store"
+import { ColorMode } from "../../../../codeCharta.model"
+import { setColorMode } from "./colorMode.actions"
 
-export function colorMode(state = setColorMode().payload, action: ColorModeAction) {
-	switch (action.type) {
-		case ColorModeActions.SET_COLOR_MODE:
-			return action.payload
-		default:
-			return state
-	}
-}
+export const colorMode = createReducer(
+	ColorMode.weightedGradient,
+	on(setColorMode, (_state, payload) => payload.value)
+)

@@ -1,8 +1,9 @@
 import { SearchPanelMode } from "../searchPanel.component"
 import { Component, Input, ViewEncapsulation } from "@angular/core"
-import { Store } from "../../../state/angular-redux/store"
 import { Observable } from "rxjs"
 import { hideBlacklistItemsIndicatorSelector } from "./hideBlacklistItemsIndicator.selector"
+import { Store } from "@ngrx/store"
+import { State } from "../../../codeCharta.model"
 
 @Component({
 	selector: "cc-search-panel-mode-selector",
@@ -16,7 +17,7 @@ export class SearchPanelModeSelectorComponent {
 
 	hideBlacklistItemsIndicator$: Observable<boolean>
 
-	constructor(store: Store) {
+	constructor(store: Store<State>) {
 		this.hideBlacklistItemsIndicator$ = store.select(hideBlacklistItemsIndicatorSelector)
 	}
 }

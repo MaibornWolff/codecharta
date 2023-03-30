@@ -1,7 +1,7 @@
-import { createSelector } from "../../angular-redux/createSelector"
+import { createSelector } from "@ngrx/store"
 import { accumulatedDataSelector } from "./accumulatedData.selector"
 
 export const rootUnarySelector = createSelector(
-	[accumulatedDataSelector],
+	accumulatedDataSelector,
 	accumulatedData => accumulatedData.unifiedMapNode?.attributes.unary
 )

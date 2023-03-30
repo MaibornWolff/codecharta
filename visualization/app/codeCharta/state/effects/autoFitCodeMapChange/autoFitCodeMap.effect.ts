@@ -1,9 +1,9 @@
 import { Injectable } from "@angular/core"
+import { State as StateService, Store } from "@ngrx/store"
+import { createEffect } from "@ngrx/effects"
 import { switchMap, filter, skip, take, tap, combineLatest } from "rxjs"
+import { State } from "../../../codeCharta.model"
 import { ThreeOrbitControlsService } from "../../../ui/codeMap/threeViewer/threeOrbitControls.service"
-import { createEffect } from "../../angular-redux/effects/createEffect"
-import { State } from "../../angular-redux/state"
-import { Store } from "../../angular-redux/store"
 import { visibleFileStatesSelector } from "../../selectors/visibleFileStates.selector"
 import { layoutAlgorithmSelector } from "../../store/appSettings/layoutAlgorithm/layoutAlgorithm.selector"
 import { resetCameraIfNewFileIsLoadedSelector } from "../../store/appSettings/resetCameraIfNewFileIsLoaded/resetCameraIfNewFileIsLoaded.selector"
@@ -13,8 +13,8 @@ import { RenderCodeMapEffect } from "../renderCodeMapEffect/renderCodeMap.effect
 @Injectable()
 export class AutoFitCodeMapEffect {
 	constructor(
-		private store: Store,
-		private state: State,
+		private store: Store<State>,
+		private state: StateService<State>,
 		private renderCodeMapEffect: RenderCodeMapEffect,
 		private threeOrbitControlsService: ThreeOrbitControlsService
 	) {}

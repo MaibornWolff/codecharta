@@ -1,10 +1,10 @@
 import { Component, ViewEncapsulation } from "@angular/core"
 import { Observable, map } from "rxjs"
 import { KeyValue } from "@angular/common"
-
-import { Store } from "../../../state/angular-redux/store"
 import { legendMarkedPackagesSelector, MarkedPackagesMap } from "./legendMarkedPackages.selector"
 import { markPackages } from "../../../state/store/fileSettings/markedPackages/markedPackages.actions"
+import { Store } from "@ngrx/store"
+import { State } from "../../../codeCharta.model"
 
 type MarkedPackagesMapKeyValue = KeyValue<keyof MarkedPackagesMap, MarkedPackagesMap[keyof MarkedPackagesMap]>
 
@@ -18,19 +18,16 @@ export class LegendMarkedPackagesComponent {
 	markedPackagesMap$: Observable<MarkedPackagesMap>
 	hasMarkedPackages$: Observable<boolean>
 
-	constructor(private store: Store) {
+	constructor(private store: Store<State>) {
 		this.markedPackagesMap$ = store.select(legendMarkedPackagesSelector)
 		this.hasMarkedPackages$ = this.markedPackagesMap$.pipe(map(markedPackagesMap => Object.keys(markedPackagesMap).length > 0))
 	}
 
 	handleColorChange(newHexColor: string, paths: string[]) {
 		this.store.dispatch(
-			markPackages(
-				paths.map(path => ({
-					color: newHexColor,
-					path
-				}))
-			)
+			markPackages({
+				packages: paths.map(path => ({ color: newHexColor, path }))
+			})
 		)
 	}
 

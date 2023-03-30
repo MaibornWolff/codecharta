@@ -1,10 +1,7 @@
-import { HeightMetricAction, HeightMetricActions, setHeightMetric } from "./heightMetric.actions"
+import { createReducer, on } from "@ngrx/store"
+import { setHeightMetric } from "./heightMetric.actions"
 
-export function heightMetric(state = setHeightMetric().payload, action: HeightMetricAction) {
-	switch (action.type) {
-		case HeightMetricActions.SET_HEIGHT_METRIC:
-			return action.payload
-		default:
-			return state
-	}
-}
+export const heightMetric = createReducer(
+	null,
+	on(setHeightMetric, (_state, payload) => payload.value)
+)

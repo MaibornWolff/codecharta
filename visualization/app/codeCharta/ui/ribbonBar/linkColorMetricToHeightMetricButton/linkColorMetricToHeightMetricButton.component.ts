@@ -1,7 +1,8 @@
 import { Component, ViewEncapsulation } from "@angular/core"
-import { Store } from "../../../state/angular-redux/store"
 import { isColorMetricLinkedToHeightMetricSelector } from "../../../state/store/appSettings/isHeightAndColorMetricLinked/isColorMetricLinkedToHeightMetric.selector"
 import { toggleIsColorMetricLinkedToHeightMetric } from "../../../state/store/appSettings/isHeightAndColorMetricLinked/isColorMetricLinkedToHeightMetric.actions"
+import { Store } from "@ngrx/store"
+import { State } from "../../../codeCharta.model"
 
 @Component({
 	selector: "cc-link-color-metric-to-height-metric-button",
@@ -12,7 +13,7 @@ import { toggleIsColorMetricLinkedToHeightMetric } from "../../../state/store/ap
 export class LinkColorMetricToHeightMetricButtonComponent {
 	isColorMetricLinkedToHeightMetric$ = this.store.select(isColorMetricLinkedToHeightMetricSelector)
 
-	constructor(private store: Store) {}
+	constructor(private store: Store<State>) {}
 
 	toggleIsColorMetricLinkedToHeightMetric() {
 		this.store.dispatch(toggleIsColorMetricLinkedToHeightMetric())

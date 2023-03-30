@@ -3,7 +3,7 @@ import { CodeMapRenderService } from "./codeMap.render.service"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { CodeMapLabelService } from "./codeMap.label.service"
 import { CodeMapArrowService } from "./codeMap.arrow.service"
-import { Node, CodeMapNode, colorLabelOptions } from "../../codeCharta.model"
+import { Node, CodeMapNode, ColorLabelOptions } from "../../codeCharta.model"
 import {
 	COLOR_TEST_NODES,
 	DEFAULT_STATE,
@@ -279,7 +279,7 @@ describe("codeMapRenderService", () => {
 		})
 
 		it("should generate labels for color if option is toggled on", () => {
-			const colorLabelsNegative: colorLabelOptions = {
+			const colorLabelsNegative: ColorLabelOptions = {
 				positive: false,
 				negative: true,
 				neutral: false
@@ -293,7 +293,7 @@ describe("codeMapRenderService", () => {
 		})
 
 		it("should generate labels for multiple colors if corresponding options are toggled on", () => {
-			const colorLabelsPosNeut: colorLabelOptions = {
+			const colorLabelsPosNeut: ColorLabelOptions = {
 				positive: true,
 				negative: false,
 				neutral: true

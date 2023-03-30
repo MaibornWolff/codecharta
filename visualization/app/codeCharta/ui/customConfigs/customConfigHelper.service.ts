@@ -2,9 +2,10 @@ import { combineLatest, map } from "rxjs"
 import { CustomConfigHelper } from "../../util/customConfigHelper"
 import { getDownloadableCustomConfigs } from "./downloadCustomConfigsButton/getDownloadableCustomConfigs"
 import { Injectable } from "@angular/core"
-import { Store } from "../../state/angular-redux/store"
 import { getCustomConfigItemGroups } from "./customConfigList/getCustomConfigItemGroups"
 import { visibleFilesBySelectionModeSelector } from "./visibleFilesBySelectionMode.selector"
+import { Store } from "@ngrx/store"
+import { State } from "../../codeCharta.model"
 
 @Injectable()
 export class CustomConfigHelperService {
@@ -18,5 +19,5 @@ export class CustomConfigHelperService {
 		CustomConfigHelper.customConfigChange$
 	]).pipe(map(([visibleFilesBySelectionMode]) => getCustomConfigItemGroups(visibleFilesBySelectionMode)))
 
-	constructor(private store: Store) {}
+	constructor(private store: Store<State>) {}
 }

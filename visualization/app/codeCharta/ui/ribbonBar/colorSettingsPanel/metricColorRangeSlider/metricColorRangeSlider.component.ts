@@ -1,11 +1,11 @@
 import { Component, ViewEncapsulation } from "@angular/core"
-import { Store } from "../../../../state/angular-redux/store"
 import { HandleValueChange } from "./rangeSlider/rangeSlider.component"
 import { setColorRange } from "../../../../state/store/dynamicSettings/colorRange/colorRange.actions"
 import { metricColorRangeSliderColorsSelector } from "./selectors/metricColorRangeSliderColors.selector"
 import { metricColorRangeSliderValuesSelector } from "./selectors/metricColorRangeSliderValues.selector"
-import { ColorRange } from "../../../../codeCharta.model"
+import { ColorRange, State } from "../../../../codeCharta.model"
 import { debounce } from "../../../../util/debounce"
+import { Store } from "@ngrx/store"
 
 @Component({
 	selector: "cc-metric-color-range-slider",
@@ -19,7 +19,7 @@ export class MetricColorRangeSliderComponent {
 	private newLeftValue: null | number = null
 	private newRightValue: null | number = null
 
-	constructor(private store: Store) {}
+	constructor(private store: Store<State>) {}
 
 	handleValueChange: HandleValueChange = ({ newLeftValue, newRightValue }) => {
 		if (newLeftValue !== undefined) {
@@ -39,7 +39,7 @@ export class MetricColorRangeSliderComponent {
 		if (this.newRightValue !== null) {
 			newColorRange.to = this.newRightValue
 		}
-		this.store.dispatch(setColorRange(newColorRange))
+		this.store.dispatch(setColorRange({ value: newColorRange }))
 
 		this.newLeftValue = null
 		this.newRightValue = null

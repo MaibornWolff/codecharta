@@ -1,9 +1,9 @@
 import { Component, ViewEncapsulation } from "@angular/core"
+import { Store } from "@ngrx/store"
 import { Observable } from "rxjs"
 
-import { SortingOption } from "../../../codeCharta.model"
+import { SortingOption, State } from "../../../codeCharta.model"
 import { setSortingOption } from "../../../state/store/dynamicSettings/sortingOption/sortingOption.actions"
-import { Store } from "../../../state/angular-redux/store"
 import { sortingOrderSelector } from "../../../state/store/dynamicSettings/sortingOption/sortingOrder.selector"
 
 @Component({
@@ -15,7 +15,7 @@ export class SortingOptionComponent {
 	sortingOptions = Object.values(SortingOption)
 	selectedSortingOption$: Observable<SortingOption>
 
-	constructor(private store: Store) {
+	constructor(private store: Store<State>) {
 		this.selectedSortingOption$ = store.select(sortingOrderSelector)
 	}
 

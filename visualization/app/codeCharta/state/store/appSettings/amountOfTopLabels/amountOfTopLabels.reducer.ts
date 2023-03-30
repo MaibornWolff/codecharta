@@ -1,10 +1,8 @@
-import { AmountOfTopLabelsAction, AmountOfTopLabelsActions, setAmountOfTopLabels } from "./amountOfTopLabels.actions"
+import { createReducer, on } from "@ngrx/store"
+import { setAmountOfTopLabels } from "./amountOfTopLabels.actions"
 
-export function amountOfTopLabels(state = setAmountOfTopLabels().payload, action: AmountOfTopLabelsAction) {
-	switch (action.type) {
-		case AmountOfTopLabelsActions.SET_AMOUNT_OF_TOP_LABELS:
-			return action.payload
-		default:
-			return state
-	}
-}
+export const defaultAmountOfTopLabels = 1
+export const amountOfTopLabels = createReducer(
+	defaultAmountOfTopLabels,
+	on(setAmountOfTopLabels, (_state, payload) => payload.value)
+)

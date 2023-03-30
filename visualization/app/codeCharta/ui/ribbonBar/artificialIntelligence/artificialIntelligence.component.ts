@@ -1,6 +1,7 @@
 import { Component, ViewEncapsulation } from "@angular/core"
-import { Store } from "../../../state/angular-redux/store"
+import { Store } from "@ngrx/store"
 import { debounceTime, identity, map } from "rxjs"
+import { State } from "../../../codeCharta.model"
 import { artificialIntelligenceSelector } from "./selectors/artificialIntelligence.selector"
 
 @Component({
@@ -12,5 +13,5 @@ import { artificialIntelligenceSelector } from "./selectors/artificialIntelligen
 export class ArtificialIntelligenceComponent {
 	data$ = this.store.select(identity).pipe(debounceTime(10), map(artificialIntelligenceSelector))
 
-	constructor(private store: Store) {}
+	constructor(private store: Store<State>) {}
 }

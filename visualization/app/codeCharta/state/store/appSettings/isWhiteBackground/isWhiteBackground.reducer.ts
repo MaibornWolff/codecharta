@@ -1,10 +1,7 @@
-import { IsWhiteBackgroundAction, IsWhiteBackgroundActions, setIsWhiteBackground } from "./isWhiteBackground.actions"
+import { createReducer, on } from "@ngrx/store"
+import { setIsWhiteBackground } from "./isWhiteBackground.actions"
 
-export function isWhiteBackground(state = setIsWhiteBackground().payload, action: IsWhiteBackgroundAction) {
-	switch (action.type) {
-		case IsWhiteBackgroundActions.SET_IS_WHITE_BACKGROUND:
-			return action.payload
-		default:
-			return state
-	}
-}
+export const isWhiteBackground = createReducer(
+	false,
+	on(setIsWhiteBackground, (_state, payload) => payload.value)
+)

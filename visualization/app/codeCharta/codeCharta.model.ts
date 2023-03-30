@@ -4,8 +4,12 @@ import { ExportCCFile } from "./codeCharta.api.model"
 import { FileState } from "./model/files/files"
 import { CustomConfig } from "./model/customConfig/customConfig.api.model"
 import Rectangle from "./util/algorithm/streetLayout/rectangle"
-import { RightClickedNodeData } from "./state/store/appStatus/rightClickedNodeData/rightClickedNodeData.actions"
-import { Scaling } from "./state/store/appSettings/scaling/scaling.actions"
+
+export type Scaling = {
+	x: number
+	y: number
+	z: number
+}
 
 export interface NameDataPair {
 	fileName: string
@@ -85,7 +89,7 @@ export enum SortingOption {
 	NUMBER_OF_FILES = "Number of Files"
 }
 
-export interface colorLabelOptions {
+export interface ColorLabelOptions {
 	positive: boolean
 	negative: boolean
 	neutral: boolean
@@ -155,7 +159,7 @@ export interface AppSettings {
 	sharpnessMode: SharpnessMode
 	experimentalFeaturesEnabled: boolean
 	screenshotToClipboardEnabled: boolean
-	colorLabels: colorLabelOptions
+	colorLabels: ColorLabelOptions
 	isColorMetricLinkedToHeightMetric: boolean
 	enableFloorLabels: boolean
 }
@@ -382,6 +386,7 @@ export function stateObjectReviver(_, valueToRevive) {
 	return valueToRevive
 }
 
+// todo delete
 export interface CCAction extends Action {
 	// TODO: Do not use any here! Make sure all our actions are properly declared.
 	//
@@ -400,5 +405,9 @@ export interface CCAction extends Action {
 export interface AppStatus {
 	hoveredNodeId: number | null
 	selectedBuildingId: number | null
-	rightClickedNodeData: RightClickedNodeData
+	rightClickedNodeData: {
+		nodeId: number
+		xPositionOfRightClickEvent: number
+		yPositionOfRightClickEvent: number
+	} | null
 }

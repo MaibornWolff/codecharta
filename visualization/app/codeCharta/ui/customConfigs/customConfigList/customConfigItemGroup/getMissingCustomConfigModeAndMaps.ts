@@ -1,5 +1,6 @@
+import { State as StateService } from "@ngrx/store"
+import { State } from "../../../../codeCharta.model"
 import { CustomConfigItem } from "../../customConfigs.component"
-import { State } from "../../../../state/angular-redux/state"
 import { visibleFilesBySelectionModeSelector } from "../../visibleFilesBySelectionMode.selector"
 
 type MissingCustomConfigsProperties = {
@@ -7,7 +8,10 @@ type MissingCustomConfigsProperties = {
 	mapNames: string[]
 }
 
-export function getMissingCustomConfigModeAndMaps(configItem: CustomConfigItem, state: State): MissingCustomConfigsProperties {
+export function getMissingCustomConfigModeAndMaps(
+	configItem: CustomConfigItem,
+	state: StateService<State>
+): MissingCustomConfigsProperties {
 	const { mapSelectionMode, assignedMaps } = visibleFilesBySelectionModeSelector(state.getValue())
 	const mapNames = []
 

@@ -1,12 +1,12 @@
 import { Component, Input, OnInit, ViewEncapsulation } from "@angular/core"
 
-import { Store } from "../../../../state/angular-redux/store"
-import { CodeMapNode } from "../../../../codeCharta.model"
+import { CodeMapNode, State } from "../../../../codeCharta.model"
 import { setHoveredNodeId } from "../../../../state/store/appStatus/hoveredNodeId/hoveredNodeId.actions"
 import { setRightClickedNodeData } from "../../../../state/store/appStatus/rightClickedNodeData/rightClickedNodeData.actions"
 import { rightClickedNodeDataSelector } from "../../../../state/store/appStatus/rightClickedNodeData/rightClickedNodeData.selector"
 import { hoveredNodeIdSelector } from "../../../../state/store/appStatus/hoveredNodeId/hoveredNodeId.selector"
 import { areaMetricSelector } from "../../../../state/store/dynamicSettings/areaMetric/areaMetric.selector"
+import { Store } from "@ngrx/store"
 
 @Component({
 	selector: "cc-map-tree-view-level",
@@ -25,7 +25,7 @@ export class MapTreeViewLevelComponent implements OnInit {
 
 	areMetricGreaterZero = false
 
-	constructor(private store: Store) {}
+	constructor(private store: Store<State>) {}
 
 	ngOnInit(): void {
 		// open root folder initially
@@ -33,11 +33,11 @@ export class MapTreeViewLevelComponent implements OnInit {
 	}
 
 	onMouseEnter() {
-		this.store.dispatch(setHoveredNodeId(this.node.id))
+		this.store.dispatch(setHoveredNodeId({ value: this.node.id }))
 	}
 
 	onMouseLeave() {
-		this.store.dispatch(setHoveredNodeId(null))
+		this.store.dispatch(setHoveredNodeId({ value: null }))
 	}
 
 	openNodeContextMenu = $event => {
@@ -54,9 +54,11 @@ export class MapTreeViewLevelComponent implements OnInit {
 		if (this.areMetricGreaterZero) {
 			this.store.dispatch(
 				setRightClickedNodeData({
-					nodeId: this.node.id,
-					xPositionOfRightClickEvent: $event.clientX,
-					yPositionOfRightClickEvent: $event.clientY
+					value: {
+						nodeId: this.node.id,
+						xPositionOfRightClickEvent: $event.clientX,
+						yPositionOfRightClickEvent: $event.clientY
+					}
 				})
 			)
 
@@ -69,7 +71,7 @@ export class MapTreeViewLevelComponent implements OnInit {
 	}
 
 	private scrollFunction = () => {
-		this.store.dispatch(setRightClickedNodeData(null))
+		this.store.dispatch(setRightClickedNodeData({ value: null }))
 		document.querySelector(".tree-element-0").removeEventListener("scroll", this.scrollFunction)
 	}
 }

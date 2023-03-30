@@ -1,11 +1,7 @@
-import { defaultScaling, Scaling, ScalingAction, ScalingActions } from "./scaling.actions"
+import { createReducer, on } from "@ngrx/store"
+import { setScaling } from "./scaling.actions"
 
-export function scaling(state: Scaling = defaultScaling, action: ScalingAction): Scaling {
-	switch (action.type) {
-		case ScalingActions.SET_SCALING:
-			return { ...state, ...action.payload }
-
-		default:
-			return state
-	}
-}
+export const scaling = createReducer(
+	{ x: 1, y: 1, z: 1 },
+	on(setScaling, (state, payload) => ({ ...state, ...payload.value }))
+)

@@ -1,6 +1,6 @@
 import { Component, Input, ViewEncapsulation } from "@angular/core"
+import { Store } from "@ngrx/store"
 import { CodeMapNode } from "../../../../codeCharta.model"
-import { Store } from "../../../angular-redux/store"
 import { addBlacklistItemsIfNotResultsInEmptyMap } from "../../../store/fileSettings/blacklist/blacklist.actions"
 
 @Component({
@@ -15,13 +15,15 @@ export class ExcludeButtonComponent {
 
 	excludeNode() {
 		this.store.dispatch(
-			addBlacklistItemsIfNotResultsInEmptyMap([
-				{
-					path: this.codeMapNode.path,
-					type: "exclude",
-					nodeType: this.codeMapNode.type
-				}
-			])
+			addBlacklistItemsIfNotResultsInEmptyMap({
+				items: [
+					{
+						path: this.codeMapNode.path,
+						type: "exclude",
+						nodeType: this.codeMapNode.type
+					}
+				]
+			})
 		)
 	}
 }

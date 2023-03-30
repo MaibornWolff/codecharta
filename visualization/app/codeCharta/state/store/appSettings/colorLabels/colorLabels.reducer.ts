@@ -1,10 +1,7 @@
-import { ColorLabelsAction, ColorLabelsActions, defaultColorLabels } from "./colorLabels.actions"
+import { createReducer, on } from "@ngrx/store"
+import { setColorLabels } from "./colorLabels.actions"
 
-export function colorLabels(state = defaultColorLabels, action: ColorLabelsAction) {
-	switch (action.type) {
-		case ColorLabelsActions.SET_COLOR_LABELS:
-			return { ...state, ...action.payload }
-		default:
-			return state
-	}
-}
+export const colorLabels = createReducer(
+	{ positive: false, negative: false, neutral: false },
+	on(setColorLabels, (state, payload) => ({ ...state, ...payload.value }))
+)

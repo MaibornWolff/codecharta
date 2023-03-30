@@ -1,9 +1,9 @@
 import { Component, OnDestroy, ViewEncapsulation } from "@angular/core"
-import { Store } from "../../../state/angular-redux/store"
 import { filesSelector } from "../../../state/store/files/files.selector"
 import { invertStandard, setAll, setStandard } from "../../../state/store/files/files.actions"
-import { CCFile } from "../../../codeCharta.model"
+import { CCFile, State } from "../../../codeCharta.model"
 import { FileSelectionState, FileState } from "../../../model/files/files"
+import { Store } from "@ngrx/store"
 
 @Component({
 	selector: "cc-file-panel-file-selector",
@@ -21,7 +21,7 @@ export class FilePanelFileSelectorComponent implements OnDestroy {
 		this.selectedFilesInUI = this.selectedFilesInStore
 	})
 
-	constructor(private store: Store) {}
+	constructor(private store: Store<State>) {}
 
 	ngOnDestroy(): void {
 		this.filesSubscription.unsubscribe()
@@ -30,7 +30,7 @@ export class FilePanelFileSelectorComponent implements OnDestroy {
 	handleSelectedFilesChanged(selectedFiles: CCFile[]) {
 		this.selectedFilesInUI = selectedFiles
 		if (selectedFiles.length > 0) {
-			this.store.dispatch(setStandard(selectedFiles))
+			this.store.dispatch(setStandard({ files: selectedFiles }))
 		}
 	}
 
