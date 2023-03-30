@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [1.115.0] - 2023-03-30
+
 ### Added 🚀
 
 -   Display the CodeCharta logo next to the MaibornWolff logo [#3226](https://github.com/MaibornWolff/codecharta/pull/3226)
