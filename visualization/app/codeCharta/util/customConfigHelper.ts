@@ -65,16 +65,15 @@ export class CustomConfigHelper {
 
 		return ccLocalStorage
 	}
-
-	static addCustomConfigs(newCustomConfigs: CustomConfig[]) {
-		for (const newCustomConfig of newCustomConfigs) {
-			CustomConfigHelper.customConfigs.set(newCustomConfig.id, newCustomConfig)
-		}
+	static addCustomConfig(newCustomConfig: CustomConfig) {
+		CustomConfigHelper.customConfigs.set(newCustomConfig.id, newCustomConfig)
 		CustomConfigHelper.setCustomConfigsToLocalStorage()
 	}
 
-	static addCustomConfig(newCustomConfig: CustomConfig) {
-		CustomConfigHelper.customConfigs.set(newCustomConfig.id, newCustomConfig)
+	static editCustomConfigNote(configId: string, configNote: string) {
+		const config = CustomConfigHelper.customConfigs.get(configId)
+		config.note = configNote
+		CustomConfigHelper.customConfigs.set(configId, config)
 		CustomConfigHelper.setCustomConfigsToLocalStorage()
 	}
 
@@ -139,7 +138,8 @@ export class CustomConfigHelper {
 				customConfigVersion: exportedConfig.customConfigVersion,
 				mapSelectionMode: exportedConfig.mapSelectionMode,
 				stateSettings: exportedConfig.stateSettings,
-				camera: exportedConfig.camera
+				camera: exportedConfig.camera,
+				...(exportedConfig.note && { note: exportedConfig.note })
 			}
 
 			CustomConfigHelper.addCustomConfig(importedCustomConfig)

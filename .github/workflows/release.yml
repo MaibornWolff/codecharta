@@ -98,7 +98,7 @@ jobs:
         run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
 
       - name: Publish Docker Visualization Image
-        uses: elgohr/Publish-Docker-Github-Action@v4
+        uses: elgohr/Publish-Docker-Github-Action@v5
         with:
           default_branch: main
           name: codecharta/codecharta-visualization
@@ -108,7 +108,7 @@ jobs:
           workdir: ./visualization
 
       - name: Publish Docker Analysis Image
-        uses: elgohr/Publish-Docker-Github-Action@v4
+        uses: elgohr/Publish-Docker-Github-Action@v5
         with:
           default_branch: main
           name: codecharta/codecharta-analysis

@@ -2012,7 +2012,8 @@ export const CUSTOM_CONFIG_ITEM_GROUPS: Map<string, CustomConfigItemGroup> = new
 						negativeDelta: "#ff0E0E"
 					},
 					metrics: { areaMetric: "rloc", heightMetric: "mcc", colorMetric: "functions", edgeMetric: "avgCommits" },
-					isApplicable: true
+					isApplicable: true,
+					note: "a note"
 				},
 				{
 					id: "File_B_File_C_STANDARD_Sample_Map View #2",

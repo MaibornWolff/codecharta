@@ -53,11 +53,9 @@ describe("customConfigItemGroupComponent", () => {
 			excludeComponentDeclaration: true,
 			componentProperties: { customConfigItemGroups }
 		})
-		const applyCustomConfigButton = screen.getByText("SampleMap View #1").closest("button") as HTMLButtonElement
-
+		const applyCustomConfigButton = screen.getAllByText("mcc")[0].closest("button")
 		await userEvent.click(applyCustomConfigButton)
 
-		expect(screen.getAllByTitle("Apply Custom View").length).toBe(2)
 		expect(applyCustomConfigButton.disabled).toBe(false)
 		expect(CustomConfigHelper.applyCustomConfig).toHaveBeenCalledTimes(1)
 		expect(mockedDialogReference.close).toHaveBeenCalledTimes(1)
@@ -87,6 +85,31 @@ describe("customConfigItemGroupComponent", () => {
 		expect(mockedDialogReference.close).toHaveBeenCalledTimes(0)
 	})
 
+	it("should apply a custom config and close custom config dialog when clicking on config name", async () => {
+		mockedVisibleFilesBySelectionModeSelector.mockImplementation(() => {
+			return {
+				mapSelectionMode: CustomConfigMapSelectionMode.MULTIPLE,
+				assignedMaps: new Map([
+					["md5_fileB", "fileB"],
+					["md5_fileC", "fileC"]
+				])
+			}
+		})
+		const customConfigItemGroups = new Map([["File_B_File_C_STANDARD", CUSTOM_CONFIG_ITEM_GROUPS.get("File_B_File_C_STANDARD")]])
+		await render(CustomConfigItemGroupComponent, {
+			excludeComponentDeclaration: true,
+			componentProperties: { customConfigItemGroups }
+		})
+
+		CustomConfigHelper.applyCustomConfig = jest.fn()
+		const applyCustomConfigButton = screen.getByText("SampleMap View #1").closest("span") as HTMLElement
+
+		await userEvent.click(applyCustomConfigButton)
+
+		expect(CustomConfigHelper.applyCustomConfig).toHaveBeenCalledTimes(1)
+		expect(mockedDialogReference.close).toHaveBeenCalledTimes(1)
+	})
+
 	it("should show tooltip with missing maps and correct selection mode if selected custom config is not fully applicable", async () => {
 		mockedVisibleFilesBySelectionModeSelector.mockImplementation(() => {
 			return {
@@ -100,7 +123,7 @@ describe("customConfigItemGroupComponent", () => {
 			componentProperties: { customConfigItemGroups }
 		})
 
-		const applyCustomConfigButton = screen.getByText("SampleMap View #1").closest("button")
+		const applyCustomConfigButton = screen.getAllByText("mcc")[0].closest("button")
 
 		expect(
 			screen.getAllByTitle(
@@ -110,7 +133,7 @@ describe("customConfigItemGroupComponent", () => {
 		expect(getComputedStyle(applyCustomConfigButton).color).toBe("rgb(204, 204, 204)")
 	})
 
-	it("should not be clickable for non-applicable custom configs", async () => {
+	it("should not be clickable for non-applicable custom configs, but can still change notes of custom configs", async () => {
 		CustomConfigHelper.applyCustomConfig = jest.fn()
 		CustomConfigHelper.applyCustomConfig = jest.fn()
 		mockedVisibleFilesBySelectionModeSelector.mockImplementation(() => {
@@ -127,9 +150,11 @@ describe("customConfigItemGroupComponent", () => {
 			excludeComponentDeclaration: true,
 			componentProperties: { customConfigItemGroups }
 		})
-		const applyCustomConfigButton = screen.getByText("SampleMap View #1").closest("button") as HTMLButtonElement
+		const editNoteArea = screen.getAllByTitle("Edit/View Note")[0] as HTMLButtonElement
+		const applyCustomConfigButton = screen.getAllByText("mcc")[0].closest("button") as HTMLButtonElement
 
 		expect(applyCustomConfigButton.disabled).toBe(true)
+		expect(editNoteArea.disabled).toBe(false)
 		expect(getComputedStyle(applyCustomConfigButton).color).toBe("rgb(204, 204, 204)")
 	})
 })

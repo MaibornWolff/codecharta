@@ -5,9 +5,10 @@ import { AddCustomConfigDialogComponent } from "./addCustomConfigDialog/addCusto
 import { FormsModule, ReactiveFormsModule } from "@angular/forms"
 import { CommonModule } from "@angular/common"
 import { DownloadAndPurgeConfigsComponent } from "./addCustomConfigDialog/downloadAndPurgeConfigs/downloadAndPurgeConfigs.component"
+import { CustomConfigNoteDialogButtonModule } from "../customConfigNoteDialogButton/customConfigNoteDialogButton.module"
 
 @NgModule({
-	imports: [MaterialModule, ReactiveFormsModule, FormsModule, CommonModule],
+	imports: [MaterialModule, ReactiveFormsModule, FormsModule, CommonModule, CustomConfigNoteDialogButtonModule],
 	declarations: [AddCustomConfigButtonComponent, AddCustomConfigDialogComponent, DownloadAndPurgeConfigsComponent],
 	exports: [AddCustomConfigButtonComponent]
 })
