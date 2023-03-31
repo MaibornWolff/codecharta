@@ -4,7 +4,7 @@ import { setIsLoadingFile } from "./isLoadingFile.actions"
 export const isLoadingFile = createReducer(
 	true,
 	on(setIsLoadingFile, (_state, payload) => payload.value)
-	// TODO
+	// TODO this PR
 	// if (isActionOfType(action.type, FilesSelectionActions)) {
 	// 	return true
 	// }

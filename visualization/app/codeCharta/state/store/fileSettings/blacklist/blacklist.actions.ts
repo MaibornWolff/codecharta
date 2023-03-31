@@ -9,5 +9,3 @@ export const addBlacklistItemsIfNotResultsInEmptyMap = createAction(
 	"ADD_BLACKLIST_ITEMS_IF_NOT_RESULTS_IN_EMPTY_MAP",
 	props<{ items: BlacklistItem[] }>()
 )
-
-export const defaultBlacklist: BlacklistItem[] = []

@@ -3,7 +3,7 @@ import { fileRoot } from "../../../../services/loadFile/fileRoot"
 import { createReducer, on } from "@ngrx/store"
 
 export const focusedNodePath = createReducer(
-	[],
+	[] as string[],
 	on(setAllFocusedNodes, (_state, payload) => payload.value),
 	on(unfocusAllNodes, () => []),
 	on(focusNode, (state, payload) => (payload.value === fileRoot.rootPath ? state : [payload.value, ...state])),
