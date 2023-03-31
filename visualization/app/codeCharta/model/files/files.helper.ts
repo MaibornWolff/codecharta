@@ -18,6 +18,10 @@ export function getFileNameOf(fileState: FileState) {
 	return fileState.file.fileMeta.fileName
 }
 
+export function getVisibleFiles(fileStates: FileState[]) {
+	return getVisibleFileStates(fileStates).map(x => x.file)
+}
+
 export function getVisibleFileStates(fileStates: FileState[]) {
 	return fileStates.filter(x => x.selectedAs !== FileSelectionState.None)
 }

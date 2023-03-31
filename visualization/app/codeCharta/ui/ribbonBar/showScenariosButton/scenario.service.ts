@@ -4,12 +4,12 @@ import { ColorRange, MapColors, State } from "../../../codeCharta.model"
 import { metricDataSelector } from "../../../state/selectors/accumulatedData/metricData/metricData.selector"
 import { setMapColors } from "../../../state/store/appSettings/mapColors/mapColors.actions"
 import { setColorRange } from "../../../state/store/dynamicSettings/colorRange/colorRange.actions"
-// import { setState } from "../../../state/store/state.actions"
 import { ScenarioHelper } from "./scenarioHelper"
 import { ThreeCameraService } from "../../codeMap/threeViewer/threeCamera.service"
 import { ThreeOrbitControlsService } from "../../codeMap/threeViewer/threeOrbitControls.service"
 import { ErrorDialogComponent } from "../../dialogs/errorDialog/errorDialog.component"
 import { Store, State as StateService } from "@ngrx/store"
+import { setState } from "../../../state/store/state.actions"
 
 @Injectable()
 export class ScenarioService {
@@ -28,8 +28,7 @@ export class ScenarioService {
 	applyScenario(name: string) {
 		const scenario = ScenarioHelper.scenarios.get(name)
 		const scenarioSettings = ScenarioHelper.getScenarioSettings(scenario)
-		// TODO setState
-		// this.store.dispatch(setState(scenarioSettings))
+		this.store.dispatch(setState({ value: scenarioSettings }))
 		this.store.dispatch(setColorRange({ value: scenarioSettings.dynamicSettings.colorRange as ColorRange }))
 		this.store.dispatch(setMapColors({ value: scenarioSettings.appSettings.mapColors as MapColors }))
 

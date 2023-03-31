@@ -1,6 +1,6 @@
 import { TestBed } from "@angular/core/testing"
 import { AttributeTypeValue, RecursivePartial, State } from "../../codeCharta.model"
-import rootReducer from "./state.reducer"
+import rootReducer from "./state.manager"
 import { defaultState, setState } from "./state.actions"
 import { expect } from "@jest/globals"
 import { defaultInvertArea } from "./appSettings/invertArea/invertArea.actions"
