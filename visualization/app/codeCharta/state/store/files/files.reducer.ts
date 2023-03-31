@@ -17,9 +17,9 @@ import { isEqual } from "../../../model/files/files.helper"
 import { createReducer, on } from "@ngrx/store"
 
 export const files = createReducer(
-	[],
+	[] as FileState[],
 	on(setFiles, (_state, action) => action.value),
-	on(addFile, (state, action) => [...state, { file: action, selectedAs: FileSelectionState.None }]),
+	on(addFile, (state, action) => [...state, { file: action.file, selectedAs: FileSelectionState.None }]),
 	on(removeFile, (state, action) => removeFileFromState(state, action.fileName)),
 	on(setDelta, (state, action) => setDeltaState(state, action.referenceFile, action.comparisonFile)),
 	on(setDeltaReference, (state, action) => setDeltaReferenceState(state, action.file)),
@@ -41,7 +41,7 @@ export const files = createReducer(
 	on(setAll, state => state.map(fileState => ({ ...fileState, selectedAs: FileSelectionState.Partial })))
 )
 
-function removeFileFromState(state: FileState[], fileName: string) {
+function removeFileFromState(state: FileState[], fileName: string): FileState[] {
 	const newState = state.filter(fileState => fileState.file.fileMeta.fileName !== fileName)
 	const isAnyFileSelected = newState.some(fileState => fileState.selectedAs === FileSelectionState.Partial)
 	if (!isAnyFileSelected) {
@@ -53,7 +53,7 @@ function removeFileFromState(state: FileState[], fileName: string) {
 	return newState
 }
 
-function setDeltaState(state: FileState[], reference: CCFile, comparison?: CCFile) {
+function setDeltaState(state: FileState[], reference: CCFile, comparison?: CCFile): FileState[] {
 	return state.map(file => {
 		if (isEqual(file.file, reference)) {
 			return { ...file, selectedAs: FileSelectionState.Reference }
@@ -65,7 +65,7 @@ function setDeltaState(state: FileState[], reference: CCFile, comparison?: CCFil
 	})
 }
 
-function setDeltaReferenceState(state: FileState[], reference: CCFile) {
+function setDeltaReferenceState(state: FileState[], reference: CCFile): FileState[] {
 	return state.map(file => {
 		if (isEqual(file.file, reference)) {
 			return { ...file, selectedAs: FileSelectionState.Reference }
@@ -77,7 +77,7 @@ function setDeltaReferenceState(state: FileState[], reference: CCFile) {
 	})
 }
 
-function setDeltaComparisonState(state: FileState[], comparison: CCFile) {
+function setDeltaComparisonState(state: FileState[], comparison: CCFile): FileState[] {
 	return state.map(file => {
 		if (file.file === comparison) {
 			return { ...file, selectedAs: FileSelectionState.Comparison }
@@ -89,7 +89,7 @@ function setDeltaComparisonState(state: FileState[], comparison: CCFile) {
 	})
 }
 
-function switchReferenceAndComparisonState(state: FileState[]) {
+function switchReferenceAndComparisonState(state: FileState[]): FileState[] {
 	return state.map(file => {
 		if (file.selectedAs === FileSelectionState.Reference) {
 			return { ...file, selectedAs: FileSelectionState.Comparison }

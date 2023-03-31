@@ -3,9 +3,10 @@ import { removeEntryAtIndexFromArray } from "../../../../util/reduxHelper"
 import { addMarkedPackage } from "./util/addMarkedPackage"
 import { findIndexOfMarkedPackageOrParent } from "./util/findIndexOfMarkedPackageOrParent"
 import { createReducer, on } from "@ngrx/store"
+import { MarkedPackage } from "../../../../codeCharta.model"
 
 export const markedPackages = createReducer(
-	[],
+	[] as MarkedPackage[],
 	on(setMarkedPackages, (_state, action) => action.value),
 	on(markPackages, (state, action) => {
 		const markedPackagesMap = new Map(state.map(entry => [entry.path, entry]))

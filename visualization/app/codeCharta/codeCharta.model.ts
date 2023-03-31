@@ -1,5 +1,4 @@
 import { Vector3 } from "three"
-import { Action } from "redux"
 import { ExportCCFile } from "./codeCharta.api.model"
 import { FileState } from "./model/files/files"
 import { CustomConfig } from "./model/customConfig/customConfig.api.model"
@@ -384,22 +383,6 @@ export function stateObjectReviver(_, valueToRevive) {
 	}
 
 	return valueToRevive
-}
-
-// todo delete
-export interface CCAction extends Action {
-	// TODO: Do not use any here! Make sure all our actions are properly declared.
-	//
-	// As a starting point:
-	//
-	// RecursivePartial<MetricData & DynamicSettings & FileSettings & AppSettings  & FileState> & {
-	// 	metricData: MetricData
-	// 	dynamicSettings: DynamicSettings
-	// 	fileSettings: FileSettings
-	// 	appSettings: AppSettings
-	// 	files: FileState[]
-	// }
-	payload?: any
 }
 
 export interface AppStatus {

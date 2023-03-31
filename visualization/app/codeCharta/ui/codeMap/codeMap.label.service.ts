@@ -7,6 +7,7 @@ import { ColorConverter } from "../../util/color/colorConverter"
 import { Injectable } from "@angular/core"
 import { treeMapSize } from "../../util/algorithm/treeMapLayout/treeMapHelper"
 import { State as StateService } from "@ngrx/store"
+import { defaultMapColors } from "../../state/store/appSettings/mapColors/mapColors.reducer"
 
 interface InternalLabel {
 	sprite: Sprite
@@ -19,7 +20,7 @@ interface InternalLabel {
 @Injectable({ providedIn: "root" })
 export class CodeMapLabelService {
 	private labels: InternalLabel[]
-	private mapLabelColors = this.state.getValue().appSettings.mapColors.labelColorAndAlpha
+	private mapLabelColors = defaultMapColors.labelColorAndAlpha
 	private LABEL_COLOR_RGB = ColorConverter.convertHexToRgba(this.mapLabelColors.rgb)
 	private LABEL_WIDTH_DIVISOR = 2100 // empirically gathered
 	private LABEL_HEIGHT_DIVISOR = 35 // empirically gathered
