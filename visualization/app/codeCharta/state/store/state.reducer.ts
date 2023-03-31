@@ -2,14 +2,15 @@ import { appSettings } from "./appSettings/appSettings.reducer"
 import { fileSettings } from "./fileSettings/fileSettings.reducer"
 import { dynamicSettings } from "./dynamicSettings/dynamicSettings.reducer"
 import { files } from "./files/files.reducer"
-import { combineReducers } from "@ngrx/store"
+import { appStatus } from "./appStatus/appStatus.reducer"
 
-export const appReducer = combineReducers({
+export const appReducer = {
 	fileSettings,
 	appSettings,
 	dynamicSettings,
-	files
-})
+	files,
+	appStatus
+}
 
 // const rootReducer = (state: Partial<State>, action: Action): State => {
 // 	if (isSetStateAction(action)) {

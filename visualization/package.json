@@ -78,6 +78,7 @@
 		"@angular/platform-browser-dynamic": "^15.1.1",
 		"@ngrx/effects": "^15.4.0",
 		"@ngrx/store": "^15.4.0",
+		"@ngrx/store-devtools": "^15.4.0",
 		"ajv": "^6.12.6",
 		"color-convert": "^2.0.1",
 		"d3-hierarchy": "^2.0.0",

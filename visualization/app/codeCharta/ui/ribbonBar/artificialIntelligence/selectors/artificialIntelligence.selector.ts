@@ -33,6 +33,10 @@ export const calculate = (
 	accumulatedData: Pick<AccumulatedData, "unifiedMapNode">,
 	blacklist: BlacklistItem[]
 ): ArtificialIntelligenceData | undefined => {
+	if (!accumulatedData.unifiedMapNode) {
+		return
+	}
+
 	const artificialIntelligenceViewModel: ArtificialIntelligenceData = {
 		analyzedProgrammingLanguage: undefined,
 		suspiciousMetricSuggestionLinks: [],

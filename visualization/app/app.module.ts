@@ -25,6 +25,7 @@ import { UpdateFileSettingsEffect } from "./codeCharta/state/effects/updateFileS
 import { CodeChartaComponent } from "./codeCharta/codeCharta.component"
 import { NodeContextMenuCardModule } from "./codeCharta/state/effects/nodeContextMenu/nodeContextMenuCard/nodeContextMenuCard.module"
 import { StoreModule } from "@ngrx/store"
+import { StoreDevtoolsModule } from "@ngrx/store-devtools"
 import { appReducer } from "./codeCharta/state/store/state.reducer"
 
 @NgModule({
@@ -32,6 +33,7 @@ import { appReducer } from "./codeCharta/state/store/state.reducer"
 		BrowserModule,
 		HttpClientModule,
 		StoreModule.forRoot(appReducer),
+		StoreDevtoolsModule.instrument(),
 		EffectsModule.forRoot([
 			UnfocusNodesEffect,
 			AddBlacklistItemsIfNotResultsInEmptyMapEffect,
