@@ -11,7 +11,8 @@ export class ChangelogDialogComponent {
 	changes: Record<string, string>
 
 	constructor(@Inject(MAT_DIALOG_DATA) public data: { previousVersion: string; currentVersion: string }) {
-		let changelogLines = markdownFile.split("\n")
+		const startNewLinePattern = /(?<=>)\s+(?=<)/g
+		let changelogLines = markdownFile.split(startNewLinePattern).map(line => line.trim())
 		const currentVersionFirstLine = this.findVersionLine(changelogLines, this.data.currentVersion)
 		const lastOpenedVersionFirstLine = this.findVersionLine(changelogLines, this.data.previousVersion)
 		//Add 1 to keep the version line so that it detects the end of the last set of changes
