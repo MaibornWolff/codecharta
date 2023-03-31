@@ -35,7 +35,8 @@ export class UpdateEdgePreviewsEffect {
 		]).pipe(
 			withLatestFrom(this.store.select(edgePreviewNodesSelector), this.store.select(edgesSelector)),
 			map(([[edgeMetric], edgePreviewNodes, edges]) => {
-				setEdgeVisibility(edgePreviewNodes, edges, edgeMetric)
+				const newEdges = structuredClone(edges)
+				setEdgeVisibility(edgePreviewNodes, newEdges, edgeMetric)
 				return setEdges({ value: edges })
 			})
 		)
