@@ -65,7 +65,7 @@ export class CodeMapMouseEventService implements OnDestroy {
 			.pipe(
 				distinctUntilChanged(),
 				tap(hoveredNodeId => {
-					if (hoveredNodeId !== null) {
+					if (hoveredNodeId !== null && hoveredNodeId !== undefined) {
 						this.hoverNode(hoveredNodeId)
 					} else {
 						this.unhoverNode()
