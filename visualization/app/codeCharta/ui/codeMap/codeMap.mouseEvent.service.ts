@@ -424,6 +424,6 @@ export class CodeMapMouseEventService implements OnDestroy {
 			this.threeSceneService.clearHighlight()
 		}
 
-		this.store.dispatch(setHoveredNodeId(null))
+		this.store.dispatch(setHoveredNodeId({ value: null }))
 	}
 }
