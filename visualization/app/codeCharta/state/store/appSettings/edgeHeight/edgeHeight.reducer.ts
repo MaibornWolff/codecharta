@@ -1,7 +1,8 @@
 import { createReducer, on } from "@ngrx/store"
 import { setEdgeHeight } from "./edgeHeight.actions"
 
+export const defaultEdgeHeight = 4
 export const edgeHeight = createReducer(
-	4,
+	defaultEdgeHeight,
 	on(setEdgeHeight, (_state, payload) => payload.value)
 )

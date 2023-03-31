@@ -1,7 +1,8 @@
 import { createReducer, on } from "@ngrx/store"
 import { setEnableFloorLabels } from "./enableFloorLabels.actions"
 
+export const defaultEnableFloorLabels = true
 export const enableFloorLabels = createReducer(
-	true,
+	defaultEnableFloorLabels,
 	on(setEnableFloorLabels, (_state, payload) => payload.value)
 )

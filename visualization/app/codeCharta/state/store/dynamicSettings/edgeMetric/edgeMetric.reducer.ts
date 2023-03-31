@@ -1,7 +1,8 @@
 import { createReducer, on } from "@ngrx/store"
 import { setEdgeMetric } from "./edgeMetric.actions"
 
+export const defaultEdgeMetric: null | string = null
 export const edgeMetric = createReducer(
-	null,
+	defaultEdgeMetric,
 	on(setEdgeMetric, (_state, payload) => payload.value)
 )

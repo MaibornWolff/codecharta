@@ -4,8 +4,9 @@ import {
 	toggleIsColorMetricLinkedToHeightMetric
 } from "./isColorMetricLinkedToHeightMetric.actions"
 
+export const defaultIsColorMetricLinkedToHeightMetric = false
 export const isColorMetricLinkedToHeightMetric = createReducer(
-	false,
+	defaultIsColorMetricLinkedToHeightMetric,
 	on(setIsColorMetricLinkedToHeightMetricAction, (_state, payload) => payload.value),
 	on(toggleIsColorMetricLinkedToHeightMetric, state => !state)
 )

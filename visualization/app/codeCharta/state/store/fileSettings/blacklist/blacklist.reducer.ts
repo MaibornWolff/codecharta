@@ -3,8 +3,9 @@ import { addItemsToArray, addItemToArray, removeItemFromArray } from "../../../.
 import { createReducer, on } from "@ngrx/store"
 import { BlacklistItem } from "../../../../codeCharta.model"
 
+export const defaultBlacklist: BlacklistItem[] = []
 export const blacklist = createReducer(
-	[] as BlacklistItem[],
+	defaultBlacklist,
 	on(setBlacklist, (_state, payload) => payload.value),
 	on(addBlacklistItem, (state, payload) => addItemToArray(state, payload.item)),
 	on(addBlacklistItems, (state, payload) => addItemsToArray(state, payload.items)),

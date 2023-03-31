@@ -5,8 +5,9 @@ import { findIndexOfMarkedPackageOrParent } from "./util/findIndexOfMarkedPackag
 import { createReducer, on } from "@ngrx/store"
 import { MarkedPackage } from "../../../../codeCharta.model"
 
+export const defaultMarkedPackages: MarkedPackage[] = []
 export const markedPackages = createReducer(
-	[] as MarkedPackage[],
+	defaultMarkedPackages,
 	on(setMarkedPackages, (_state, action) => action.value),
 	on(markPackages, (state, action) => {
 		const markedPackagesMap = new Map(state.map(entry => [entry.path, entry]))

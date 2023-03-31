@@ -1,8 +1,8 @@
 import { RecursivePartial, Settings, State } from "../../codeCharta.model"
-// import { defaultState } from "../../state/store/state.actions"
 import { convertToVectors } from "../../util/settingsHelper"
 import { codeMapNodesSelector } from "../../state/selectors/accumulatedData/codeMapNodes.selector"
 import { getNumberOfTopLabels } from "../../state/effects/updateVisibleTopLabels/getNumberOfTopLabels"
+import { defaultState } from "../../state/store/state.manager"
 
 const APP_SETTINGS_AMOUNT_OF_TOP_LABELS = "appSettings.amountOfTopLabels"
 
@@ -12,7 +12,7 @@ export const getPartialDefaultState = (settingKeys: string[], state: State) => {
 
 	for (const token of settingKeys) {
 		const steps = token.split(".")
-		let defaultSettingsPointer = {} // TODO setState defaultState
+		let defaultSettingsPointer = defaultState
 		let updatedSettingsPointer = updatedSettings
 
 		for (const [index, step] of steps.entries()) {

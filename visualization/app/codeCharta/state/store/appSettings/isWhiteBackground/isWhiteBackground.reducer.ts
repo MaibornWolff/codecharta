@@ -1,7 +1,8 @@
 import { createReducer, on } from "@ngrx/store"
 import { setIsWhiteBackground } from "./isWhiteBackground.actions"
 
+export const defaultIsWhiteBackground = false
 export const isWhiteBackground = createReducer(
-	false,
+	defaultIsWhiteBackground,
 	on(setIsWhiteBackground, (_state, payload) => payload.value)
 )

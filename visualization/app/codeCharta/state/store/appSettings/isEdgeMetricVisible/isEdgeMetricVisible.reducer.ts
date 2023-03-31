@@ -1,7 +1,8 @@
 import { createReducer, on } from "@ngrx/store"
 import { toggleEdgeMetricVisible } from "./isEdgeMetricVisible.actions"
 
+export const defaultIsEdgeMetricVisible = true
 export const isEdgeMetricVisible = createReducer(
-	true,
+	defaultIsEdgeMetricVisible,
 	on(toggleEdgeMetricVisible, state => !state)
 )

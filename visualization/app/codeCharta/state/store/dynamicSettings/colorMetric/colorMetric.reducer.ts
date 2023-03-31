@@ -1,7 +1,8 @@
 import { createReducer, on } from "@ngrx/store"
 import { setColorMetric } from "./colorMetric.actions"
 
+export const defaultColorMetric: null | string = null
 export const colorMetric = createReducer(
-	null,
+	defaultColorMetric,
 	on(setColorMetric, (_state, payload) => payload.value)
 )

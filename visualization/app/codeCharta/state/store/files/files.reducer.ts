@@ -16,8 +16,9 @@ import { FileSelectionState, FileState } from "../../../model/files/files"
 import { isEqual } from "../../../model/files/files.helper"
 import { createReducer, on } from "@ngrx/store"
 
+export const defaultFiles: FileState[] = []
 export const files = createReducer(
-	[] as FileState[],
+	defaultFiles,
 	on(setFiles, (_state, action) => action.value),
 	on(addFile, (state, action) => [...state, { file: action.file, selectedAs: FileSelectionState.None }]),
 	on(removeFile, (state, action) => removeFileFromState(state, action.fileName)),

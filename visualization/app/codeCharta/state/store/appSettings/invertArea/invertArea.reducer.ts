@@ -1,7 +1,8 @@
 import { createReducer, on } from "@ngrx/store"
 import { setInvertArea } from "./invertArea.actions"
 
+export const defaultInvertArea = false
 export const invertArea = createReducer(
-	false,
+	defaultInvertArea,
 	on(setInvertArea, (_state, payload) => payload.value)
 )

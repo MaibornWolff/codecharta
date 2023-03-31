@@ -1,7 +1,8 @@
 import { createReducer, on } from "@ngrx/store"
 import { setScreenshotToClipboardEnabled } from "./screenshotToClipboardEnabled.actions"
 
+export const defaultScreenshotToClipboardEnabled = false
 export const screenshotToClipboardEnabled = createReducer(
-	false,
+	defaultScreenshotToClipboardEnabled,
 	on(setScreenshotToClipboardEnabled, (_state, payload) => payload.value)
 )
