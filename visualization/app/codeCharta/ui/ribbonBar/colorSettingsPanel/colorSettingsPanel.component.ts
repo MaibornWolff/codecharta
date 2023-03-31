@@ -7,7 +7,10 @@ import { colorLabelsSelector } from "../../../state/store/appSettings/colorLabel
 import { MatCheckboxChange } from "@angular/material/checkbox"
 import { setColorLabels } from "../../../state/store/appSettings/colorLabels/colorLabels.actions"
 import { invertColorRange, invertDeltaColors } from "../../../state/store/appSettings/mapColors/mapColors.actions"
-import { Store } from "@ngrx/store"
+import { Store, State as StateService } from "@ngrx/store"
+import { selectedColorMetricDataSelector } from "../../../state/selectors/accumulatedData/metricData/selectedColorMetricData.selector"
+import { setColorRange } from "../../../state/store/dynamicSettings/colorRange/colorRange.actions"
+import { calculateInitialColorRange } from "../../../state/store/dynamicSettings/colorRange/calculateInitialColorRange"
 
 @Component({
 	selector: "cc-color-settings-panel",
@@ -22,7 +25,7 @@ export class ColorSettingsPanelComponent {
 	isColorRangeInverted = false
 	areDeltaColorsInverted = false
 
-	constructor(private store: Store<State>) {}
+	constructor(private store: Store<State>, private stateService: StateService<State>) {}
 
 	handleColorModeChange(gradient: ColorMode) {
 		this.store.dispatch(setColorMode({ value: gradient }))
@@ -45,5 +48,10 @@ export class ColorSettingsPanelComponent {
 	resetInvertColorCheckboxes = () => {
 		this.isColorRangeInverted = false
 		this.areDeltaColorsInverted = false
+	}
+
+	resetColorRange = () => {
+		const selectedColorMetricData = selectedColorMetricDataSelector(this.stateService.getValue())
+		this.store.dispatch(setColorRange({ value: calculateInitialColorRange(selectedColorMetricData) }))
 	}
 }

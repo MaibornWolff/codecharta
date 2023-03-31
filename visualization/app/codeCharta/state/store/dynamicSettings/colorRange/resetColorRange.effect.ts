@@ -19,6 +19,4 @@ export class ResetColorRangeEffect {
 			map(selectedColorMetricData => setColorRange({ value: calculateInitialColorRange(selectedColorMetricData) }))
 		)
 	)
-
-	// todo { from: null, to: null } := reset
 }
