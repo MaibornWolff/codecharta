@@ -46,6 +46,10 @@ cc-attribute-side-bar {
 			}
 
 			table {
+				th {
+					text-align: left;
+				}
+
 				&.primary-metrics {
 					table-layout: fixed;
 					width: 100%;
@@ -63,53 +67,70 @@ cc-attribute-side-bar {
 						}
 					}
 
+					.primary-metric-box {
+						display: flex;
+						flex-direction: column;
+						height: 100%;
+						width: 100%;
+					}
+
+					.metric-name {
+						margin-top: 5px;
+					}
+
+					.primary-metric-value {
+						margin-right: -5px;
+					}
+
 					i.fa {
 						font-size: 12pt;
 						min-width: 17px;
 						text-align: center;
 					}
+				}
 
-					.metric-name {
-						margin: 5px 0 0 0;
+				&.secondary-metrics {
+					td {
+						padding-left: 5px;
+
+						&:first-child {
+							padding-left: 4px;
+						}
+					}
+
+					.secondary-metric-box {
+						border-radius: 3px;
+						padding: 4px 4px;
+						vertical-align: middle;
+						background: #d5d5d5;
+					}
+
+					.secondary-metric-row {
+						flex-wrap: nowrap;
 					}
 				}
 
-				th {
-					text-align: left;
-				}
-
-				td {
-					text-align: left;
-					vertical-align: initial;
-					margin: 0;
-				}
-
-				.metric-summary,
-				.metric-delta {
-					border-radius: 3px;
-					padding: 4px 4px;
-				}
-
-				.metric-summary {
-					align-content: flex-end;
-					background: #d5d5d5;
+				.primary-metric-row,
+				.secondary-metric-row {
 					display: flex;
-					flex-direction: row;
-					gap: 4px;
-					justify-content: space-between;
-					text-align: right;
-					vertical-align: center;
+					align-items: center;
+					flex-wrap: wrap;
+					gap: 5px;
 				}
 
 				.metric-name {
 					color: grey;
 					word-break: break-word;
+					vertical-align: middle;
 				}
 
-				.metric-value {
-					display: inline-block;
-					margin-left: 4px;
+				.delta-value-box {
+					vertical-align: middle;
 				}
+			}
+
+			cc-metric-delta-selected:has(span) {
+				margin-top: 5px;
 			}
 		}
 	}

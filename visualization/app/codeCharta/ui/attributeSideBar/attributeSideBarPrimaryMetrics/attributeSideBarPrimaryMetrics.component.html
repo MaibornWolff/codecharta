@@ -16,7 +16,6 @@
 				></cc-attribute-side-bar-primary-metric>
 			</td>
 		</tr>
-
 		<tr>
 			<td [title]="primaryMetrics.color.descriptors | metricDescriptorTitle">
 				<cc-attribute-side-bar-primary-metric
@@ -26,26 +25,28 @@
 			</td>
 			<ng-container *ngIf="primaryMetrics.edge as edge; else sidebarPrimaryMetricsEdgeElse">
 				<td [title]="edge.descriptors | metricDescriptorTitle">
-					<i class="fa fa-exchange"></i>
-					<div class="metric-value">
-						<cc-attribute-type-selector
-							*ngIf="showAttributeTypeSelector$ | async"
-							class="attribute-type-select"
-							[metricName]="edge.name"
-							[metricType]="'edges'"
-						></cc-attribute-type-selector>
-						<span class="metric-value">
-							{{ edge.incoming | number: "1.0-0" }}
-							<span>/</span>
-							{{ edge.outgoing | number: "1.0-0" }}
-						</span>
+					<div class="primary-metric-box">
+						<div class="primary-metric-row">
+							<i class="fa fa-exchange"></i>
+							<cc-attribute-type-selector
+								*ngIf="showAttributeTypeSelector$ | async"
+								class="attribute-type-select"
+								[metricName]="edge.name"
+								[metricType]="'edges'"
+							></cc-attribute-type-selector>
+							<span>
+								{{ edge.incoming | number: "1.0-0" }}
+								<span>/</span>
+								{{ edge.outgoing | number: "1.0-0" }}
+							</span>
+						</div>
+						<span class="metric-name">{{ edge.name }} (in/out)</span>
 					</div>
-					<p class="metric-name">{{ edge.name }} (in/out)</p>
 				</td>
 			</ng-container>
 			<ng-template #sidebarPrimaryMetricsEdgeElse>
 				<td>
-					<p class="metric-name">No edge metric available</p>
+					<span class="metric-name">No edge metric available</span>
 				</td>
 			</ng-template>
 		</tr>

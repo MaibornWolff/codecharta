@@ -5,13 +5,9 @@
 				<tr>
 					<th scope="col" colspan="2">Secondary Metrics</th>
 				</tr>
-				<tr
-					*ngFor="let secondaryMetric of secondaryMetrics$ | async"
-					class="metric-row"
-					[title]="secondaryMetric.descriptors | metricDescriptorTitle"
-				>
-					<td class="metric-summary">
-						<span class="metric-type">
+				<tr *ngFor="let secondaryMetric of secondaryMetrics$ | async" [title]="secondaryMetric.descriptors | metricDescriptorTitle">
+					<td class="secondary-metric-box">
+						<div class="secondary-metric-row">
 							<cc-attribute-type-selector
 								*ngIf="showAttributeTypeSelector$ | async"
 								class="attribute-type-select"
@@ -19,13 +15,15 @@
 								[metricType]="'nodes'"
 							>
 							</cc-attribute-type-selector>
-						</span>
-						<span class="metric-value">{{ secondaryMetric.value | number: "1.0-0" }}</span>
+							<span class="metric-value">{{ secondaryMetric.value | number: "1.0-0" }}</span>
+						</div>
 					</td>
-					<td [hidden]="!(showDeltaValue$ | async)">
+					<td class="delta-value-box" [hidden]="!(showDeltaValue$ | async)">
 						<cc-metric-delta-selected [metricName]="secondaryMetric.name"></cc-metric-delta-selected>
 					</td>
-					<td class="metric-name">{{ secondaryMetric.name }}</td>
+					<td>
+						<span class="metric-name">{{ secondaryMetric.name }}</span>
+					</td>
 				</tr>
 			</table>
 		</div>
