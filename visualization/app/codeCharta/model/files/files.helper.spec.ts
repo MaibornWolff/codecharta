@@ -1,5 +1,13 @@
 import { setupFiles, TEST_DELTA_MAP_A, TEST_DELTA_MAP_B } from "../../util/dataMocks"
-import { fileStatesAvailable, getCCFiles, getFileByFileName, getVisibleFileStates, isDeltaState, isPartialState } from "./files.helper"
+import {
+	fileStatesAvailable,
+	getCCFiles,
+	getFileByFileName,
+	getVisibleFiles,
+	getVisibleFileStates,
+	isDeltaState,
+	isPartialState
+} from "./files.helper"
 import { FileSelectionState, FileState } from "./files"
 
 describe("files", () => {
@@ -7,6 +15,35 @@ describe("files", () => {
 
 	beforeEach(() => {
 		files = setupFiles()
+	})
+
+	describe("getVisibleFiles", () => {
+		it("should return an empty array when no files are selected", () => {
+			const result = getVisibleFiles(files)
+
+			expect(result).toEqual([])
+			expect(result.length).toBe(0)
+		})
+
+		it("should return an array when all files are selected", () => {
+			files[0].selectedAs = FileSelectionState.Partial
+			files[1].selectedAs = FileSelectionState.Partial
+
+			const result = getVisibleFiles(files)
+
+			expect(result[0]).toEqual(TEST_DELTA_MAP_A)
+			expect(result[1]).toEqual(TEST_DELTA_MAP_B)
+			expect(result.length).toBe(2)
+		})
+
+		it("should return an array when only some files are selected", () => {
+			files[0].selectedAs = FileSelectionState.Partial
+
+			const result = getVisibleFiles(files)
+
+			expect(result[0]).toEqual(TEST_DELTA_MAP_A)
+			expect(result.length).toBe(1)
+		})
 	})
 
 	describe("getVisibleFileStates", () => {

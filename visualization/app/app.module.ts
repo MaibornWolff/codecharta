@@ -40,12 +40,12 @@ import { ResetSelectedEdgeMetricWhenItDoesntExistAnymoreEffect } from "./codeCha
 			BlacklistSearchPatternEffect,
 			ResetColorRangeEffect,
 			ResetChosenMetricsEffect,
-			ResetSelectedEdgeMetricWhenItDoesntExistAnymoreEffect,
 			UpdateEdgePreviewsEffect,
 			RenderCodeMapEffect,
 			AutoFitCodeMapEffect,
 			UpdateVisibleTopLabelsEffect,
 			LinkColorMetricToHeightMetricEffect,
+			ResetSelectedEdgeMetricWhenItDoesntExistAnymoreEffect,
 			UpdateFileSettingsEffect
 		]),
 		MaterialModule,

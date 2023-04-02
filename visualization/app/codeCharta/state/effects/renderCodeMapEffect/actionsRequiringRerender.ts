@@ -30,6 +30,7 @@ import { setMargin } from "../../store/dynamicSettings/margin/margin.actions"
 import { setSearchPattern } from "../../store/dynamicSettings/searchPattern/searchPattern.actions"
 import { setMarkedPackages, markPackages, unmarkPackage } from "../../store/fileSettings/markedPackages/markedPackages.actions"
 import { setEnableFloorLabels } from "../../store/appSettings/enableFloorLabels/enableFloorLabels.actions"
+import { setState } from "../../store/state.actions"
 
 export const actionsRequiringRerender = [
 	setColorLabels,
@@ -65,7 +66,6 @@ export const actionsRequiringRerender = [
 	setMarkedPackages,
 	markPackages,
 	unmarkPackage,
-	// TODO?
-	// StateActions,
-	setEnableFloorLabels
+	setEnableFloorLabels,
+	setState
 ]
