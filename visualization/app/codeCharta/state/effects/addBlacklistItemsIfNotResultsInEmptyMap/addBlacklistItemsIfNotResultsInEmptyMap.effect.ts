@@ -14,12 +14,9 @@ import { State } from "../../../codeCharta.model"
 export class AddBlacklistItemsIfNotResultsInEmptyMapEffect {
 	constructor(private actions$: Actions, private store: Store<State>, private dialog: MatDialog) {}
 
-	private visibleFiles$ = this.store.select(visibleFileStatesSelector)
-	private blacklist$ = this.store.select(blacklistSelector)
-
 	doBlacklistItemsResultInEmptyMap$ = this.actions$.pipe(
 		ofType(addBlacklistItemsIfNotResultsInEmptyMap),
-		withLatestFrom(this.visibleFiles$, this.blacklist$),
+		withLatestFrom(this.store.select(visibleFileStatesSelector), this.store.select(blacklistSelector)),
 		map(([payload, visibleFiles, blacklist]) => ({
 			items: payload.items,
 			resultsInEmptyMap: resultsInEmptyMap(visibleFiles, blacklist, payload.items)
