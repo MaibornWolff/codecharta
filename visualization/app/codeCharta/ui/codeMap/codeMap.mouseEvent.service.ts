@@ -15,7 +15,7 @@ import { setRightClickedNodeData } from "../../state/store/appStatus/rightClicke
 import { idToNodeSelector } from "../../state/selectors/accumulatedData/idToNode.selector"
 import { IdToBuildingService } from "../../services/idToBuilding/idToBuilding.service"
 import { hoveredNodeIdSelector } from "../../state/store/appStatus/hoveredNodeId/hoveredNodeId.selector"
-import { tap, distinctUntilChanged } from "rxjs"
+import { tap } from "rxjs"
 import { visibleFileStatesSelector } from "../../state/selectors/visibleFileStates.selector"
 import { blacklistSelector } from "../../state/store/fileSettings/blacklist/blacklist.selector"
 import { debounce } from "../../util/debounce"
@@ -63,12 +63,11 @@ export class CodeMapMouseEventService implements OnDestroy {
 		this.store
 			.select(hoveredNodeIdSelector)
 			.pipe(
-				distinctUntilChanged(),
 				tap(hoveredNodeId => {
-					if (hoveredNodeId !== null && hoveredNodeId !== undefined) {
+					if (hoveredNodeId !== null) {
 						this.hoverNode(hoveredNodeId)
 					} else {
-						this.unhoverNode()
+						this.unhoverNode(false)
 					}
 				})
 			)
@@ -119,15 +118,15 @@ export class CodeMapMouseEventService implements OnDestroy {
 		const { buildings } = this.threeSceneService.getMapMesh().getMeshDescription()
 		for (const building of buildings) {
 			if (building.node.id === id) {
-				this.hoverBuilding(building)
+				this.hoverBuilding(building, false)
 				break
 			}
 		}
 		this.threeRendererService.render()
 	}
 
-	unhoverNode() {
-		this.unhoverBuilding()
+	unhoverNode(updateStore = true) {
+		this.unhoverBuilding(updateStore)
 		this.threeRendererService.render()
 	}
 
@@ -216,7 +215,7 @@ export class CodeMapMouseEventService implements OnDestroy {
 				const from = this.threeSceneService.getHighlightedBuilding()
 				const to = this.intersectedBuilding
 
-				if (from !== to) {
+				if (from?.id !== to?.id) {
 					if (this.temporaryLabelForBuilding !== null) {
 						this.codeMapLabelService.clearTemporaryLabel(this.temporaryLabelForBuilding)
 						this.temporaryLabelForBuilding = null
@@ -235,7 +234,6 @@ export class CodeMapMouseEventService implements OnDestroy {
 				}
 			}
 		}
-		this.threeRendererService.render()
 	}
 
 	private drawTemporaryLabelFor(codeMapBuilding: CodeMapBuilding, labels: Object3D[]) {
@@ -380,7 +378,7 @@ export class CodeMapMouseEventService implements OnDestroy {
 		return this.isGrabbing || this.isMoving
 	}
 
-	private hoverBuilding(hoveredBuilding: CodeMapBuilding) {
+	private hoverBuilding(hoveredBuilding: CodeMapBuilding, updateStore = true) {
 		CodeMapMouseEventService.changeCursorIndicator(CursorType.Pointer)
 
 		const idToNode = idToNodeSelector(this.state.getValue())
@@ -392,7 +390,9 @@ export class CodeMapMouseEventService implements OnDestroy {
 			}
 		}
 		this.threeSceneService.highlightBuildings()
-		this.store.dispatch(setHoveredNodeId({ value: hoveredBuilding.node.id }))
+		if (updateStore) {
+			this.store.dispatch(setHoveredNodeId({ value: hoveredBuilding.node.id }))
+		}
 	}
 
 	private transformHTMLToSceneCoordinates(): Coordinates {
@@ -408,7 +408,7 @@ export class CodeMapMouseEventService implements OnDestroy {
 		return { x, y }
 	}
 
-	private unhoverBuilding() {
+	private unhoverBuilding(updateStore = true) {
 		if (!this.isGrabbingOrMoving()) {
 			CodeMapMouseEventService.changeCursorIndicator(CursorType.Default)
 		}
@@ -419,6 +419,8 @@ export class CodeMapMouseEventService implements OnDestroy {
 			this.threeSceneService.clearHighlight()
 		}
 
-		this.store.dispatch(setHoveredNodeId({ value: null }))
+		if (updateStore) {
+			this.store.dispatch(setHoveredNodeId({ value: null }))
+		}
 	}
 }

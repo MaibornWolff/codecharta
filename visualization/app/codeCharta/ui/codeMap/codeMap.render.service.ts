@@ -59,7 +59,6 @@ export class CodeMapRenderService implements OnDestroy {
 		this.getNodesMatchingColorSelector(this.unflattenedNodes)
 		this.setLabels(this.unflattenedNodes)
 		this.setArrows(visibleSortedNodes)
-		this.scaleMap()
 	}
 
 	private setNewMapMesh(allMeshNodes, visibleSortedNodes) {
