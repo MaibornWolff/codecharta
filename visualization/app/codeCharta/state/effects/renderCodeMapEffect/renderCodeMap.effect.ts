@@ -24,9 +24,7 @@ export class RenderCodeMapEffect {
 		private codeMapRenderService: CodeMapRenderService
 	) {}
 
-	private actionsRequiringRender$ = this.actions$.pipe(
-		filter(action => actionsRequiringRerender.some(actionRequiringRerender => action.type === actionRequiringRerender.type))
-	)
+	private actionsRequiringRender$ = this.actions$.pipe(ofType(...actionsRequiringRerender))
 
 	renderCodeMap$ = createEffect(
 		() =>
