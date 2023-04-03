@@ -3,6 +3,12 @@ import { VALID_NODE_JAVA } from "../../../../util/dataMocks"
 import { BlacklistItem, NodeType } from "../../../../codeCharta.model"
 
 describe("ArtificialIntelligenceSelector", () => {
+	it("should return undefined when no unifiedMapNode is available", () => {
+		const actual = calculate({ unifiedMapNode: undefined }, [])
+
+		expect(actual).toBeUndefined()
+	})
+
 	it("should calculate suspicious metrics and risk profile when experimental features are enabled ", () => {
 		const actual = calculate({ unifiedMapNode: VALID_NODE_JAVA }, [])
 

@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+-   Fix the disappearance of the suspicious metrics labels [#3263](https://github.com/MaibornWolff/codecharta/pull/3263)
 -   Fix UI components that look different since version 1.115.0 [#3260](https://github.com/MaibornWolff/codecharta/pull/3260)
 
 ## [1.115.0] - 2023-03-30
