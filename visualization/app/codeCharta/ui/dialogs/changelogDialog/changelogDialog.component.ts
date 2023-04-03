@@ -11,8 +11,8 @@ export class ChangelogDialogComponent {
 	changes: Record<string, string>
 
 	constructor(@Inject(MAT_DIALOG_DATA) public data: { previousVersion: string; currentVersion: string }) {
-		const startNewLinePattern = /(?<=>)\s+(?=<)/g
-		let changelogLines = markdownFile.split(startNewLinePattern).map(line => line.trim())
+		const newLineStartPattern = /(?<=>)\s+(?=<)/g
+		let changelogLines = markdownFile.split(newLineStartPattern).map(line => line.trim())
 		const currentVersionFirstLine = this.findVersionLine(changelogLines, this.data.currentVersion)
 		const lastOpenedVersionFirstLine = this.findVersionLine(changelogLines, this.data.previousVersion)
 		//Add 1 to keep the version line so that it detects the end of the last set of changes
@@ -22,7 +22,7 @@ export class ChangelogDialogComponent {
 		for (const title of titles) {
 			const titlePattern = new RegExp(`<h3>${title}</h3>`)
 			const titleLinesIndexes = this.getAllIndexes(changelogLines, titlePattern)
-			const changelogTypes = []
+			const changelogTypes: string[] = []
 			for (const lineIndex of titleLinesIndexes) {
 				// Add 2 to remove the headline and the <ul> tag
 				const start = lineIndex + 2
@@ -39,7 +39,7 @@ export class ChangelogDialogComponent {
 	}
 
 	private getAllIndexes(titles: string[], pattern: RegExp) {
-		return titles.reduce((matchingTitleIndexes, title, index) => {
+		return titles.reduce((matchingTitleIndexes: number[], title, index) => {
 			if (pattern.test(title)) {
 				matchingTitleIndexes.push(index)
 			}
