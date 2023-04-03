@@ -1,10 +1,11 @@
-import { goto } from "../../../puppeteer.helper"
+import { CC_URL, goto } from "../../../puppeteer.helper"
 import { RibbonBarPageObject } from "./ribbonBar.po"
 import { SearchPanelPageObject } from "../searchPanel/searchPanel.po"
 
 //Commented out flaky test
 
 describe("RibbonBar", () => {
+	const sampleMap = `sample3.cc.json`
 	let searchPanel: SearchPanelPageObject
 	//let searchPanelModeSelector: SearchPanelModeSelectorPageObject
 	let ribbonBar: RibbonBarPageObject
@@ -48,5 +49,23 @@ describe("RibbonBar", () => {
 		const isEdgeSettingsPanelOpen = await ribbonBar.togglePanel(edgePanel, "cc-edge-settings-panel")
 		expect(isEdgeSettingsPanelOpen).toBeTruthy()
 		expect(await ribbonBar.isPanelOpen("cc-area-settings-panel")).toBeFalsy()
+	})
+
+	it("should open suspicious metrics and high risk profile menu ", async () => {
+		await page.goto(`${CC_URL}?file=codeCharta/assets/${sampleMap}`)
+		await page.click("cc-suspicious-metrics")
+		const suspiciousMetricsMenu = await page.waitForSelector(".mat-mdc-menu-panel.mat-mdc-menu-panel.ai-drop-down")
+		expect(suspiciousMetricsMenu).toBeTruthy()
+		let titleElement = await suspiciousMetricsMenu.waitForSelector(".title")
+		let titleContent = await titleElement.evaluate(element => element.textContent)
+		expect(titleContent).toBe("Suspicious Metrics")
+
+		await page.click("cc-code-charta #codeMap")
+		await page.click("cc-high-risk-profile")
+		const highRisProfileMenu = await page.waitForSelector(".mat-mdc-menu-panel.mat-mdc-menu-panel.ai-drop-down")
+		expect(highRisProfileMenu).toBeTruthy()
+		titleElement = await highRisProfileMenu.waitForSelector(".title")
+		titleContent = await titleElement.evaluate(element => element.textContent)
+		expect(titleContent).toBe("Risk Profile")
 	})
 })
