@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Removed 🗑
+
+-   Support for Custom Views created before CodeCharta version 1.110.0 or older is no longer be maintained [#3265](https://github.com/MaibornWolff/codecharta/pull/3265)
+
 ### Fixed 🐞
 
 -   Fix the disappearance of the suspicious metrics labels [#3263](https://github.com/MaibornWolff/codecharta/pull/3263)
