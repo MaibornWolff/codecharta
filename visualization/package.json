@@ -87,7 +87,7 @@
 		"material-icons": "^1.10.4",
 		"md5": "^2.3.0",
 		"ngx-color": "^7.3.3",
-		"nw": "^0.73.0",
+		"nw": "^0.75.0",
 		"pako": "^2.0.4",
 		"percent-round": "^2.2.1",
 		"redux": "^4.0.5",
@@ -95,8 +95,8 @@
 		"shelljs": "^0.8.4",
 		"three": "^0.126.1",
 		"three-orbit-controls": "^82.1.0",
-		"typescript-json-schema": "0.55.0",
-		"zone.js": "^0.12.0"
+		"typescript-json-schema": "0.56.0",
+		"zone.js": "^0.13.0"
 	},
 	"devDependencies": {
 		"@angular-builders/custom-webpack": "^15.0.0",
