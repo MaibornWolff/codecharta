@@ -1,18 +1,16 @@
 import { goto } from "../../../../puppeteer.helper"
-import fs from "fs"
-import path from "path"
+import changelog from "../../../../../../CHANGELOG.md"
 
-async function getSecondLatestCodeChartaVersion() {
-	const changelog = await fs.promises.readFile(path.resolve(__dirname, "../../../../../../CHANGELOG.md"), "utf8")
+function getSecondLatestCodeChartaVersion() {
 	const versionPattern = /\[(\d+\.\d+\.\d+)]/g
-	const versions = changelog?.match(versionPattern) || []
+	const versions = changelog.match(versionPattern) || []
 	const secondLatestVersion = versions[1]?.slice(1, -1)
 	return secondLatestVersion
 }
 
 describe("changelogDialog", () => {
 	beforeEach(async () => {
-		const version = (await getSecondLatestCodeChartaVersion()) ?? ""
+		const version = getSecondLatestCodeChartaVersion() ?? ""
 		await page.evaluateOnNewDocument(version => {
 			localStorage.setItem("codeChartaVersion", version)
 		}, version)
