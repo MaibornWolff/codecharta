@@ -11,7 +11,7 @@
 				"tsconfig": "tsconfig.spec.json"
 			}
 		],
-		"^.+\\.md$": "<rootDir>/app/codecharta/util/testUtils/markdown-transformer.js"
+		"^.+\\.md$": "<rootDir>/app/codeCharta/util/testUtils/markdown-transformer.js"
 	},
 	"transformIgnorePatterns": ["/node_modules/(?!(three|ngx-color/fesm2020))"],
 	"roots": ["<rootDir>/app"],
