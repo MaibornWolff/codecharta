@@ -6,7 +6,7 @@ module.exports = config => {
 		},
 		{
 			test: /\.md$/,
-			use: [{ loader: "raw-loader" }]
+			type: "asset/source"
 		}
 	)
 
