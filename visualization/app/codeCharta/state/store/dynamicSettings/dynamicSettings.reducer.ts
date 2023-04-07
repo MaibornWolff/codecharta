@@ -1,4 +1,4 @@
-import { colorMode } from "./colorMode/colorMode.reducer"
+import { colorMode, defaultColorMode } from "./colorMode/colorMode.reducer"
 import { defaultSortingOption, sortingOption } from "./sortingOption/sortingOption.reducer"
 import { defaultEdgeMetric, edgeMetric } from "./edgeMetric/edgeMetric.reducer"
 import { colorRange, defaultColorRange } from "./colorRange/colorRange.reducer"
@@ -26,7 +26,7 @@ export const dynamicSettings = combineReducers({
 })
 
 export const defaultDynamicSettings = {
-	colorMode: defaultColorMetric,
+	colorMode: defaultColorMode,
 	sortingOption: defaultSortingOption,
 	edgeMetric: defaultEdgeMetric,
 	colorRange: defaultColorRange,
