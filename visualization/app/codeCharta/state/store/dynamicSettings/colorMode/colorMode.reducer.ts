@@ -5,5 +5,5 @@ import { setColorMode } from "./colorMode.actions"
 export const defaultColorMode = ColorMode.weightedGradient
 export const colorMode = createReducer(
 	defaultColorMode,
-	on(setColorMode, (_state, payload) => payload.value)
+	on(setColorMode, (_state, action) => action.value)
 )

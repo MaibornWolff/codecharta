@@ -4,5 +4,5 @@ import { setSearchPattern } from "./searchPattern.actions"
 export const defaultSearchPattern = ""
 export const searchPattern = createReducer(
 	defaultSearchPattern,
-	on(setSearchPattern, (_state, payload) => payload.value)
+	on(setSearchPattern, (_state, action) => action.value)
 )

@@ -4,6 +4,6 @@ import { setSortingOrderAscending, toggleSortingOrderAscending } from "./sorting
 export const defaultSortingOrderAscending = true
 export const sortingOrderAscending = createReducer(
 	defaultSortingOrderAscending,
-	on(setSortingOrderAscending, (_state, payload) => payload.value),
+	on(setSortingOrderAscending, (_state, action) => action.value),
 	on(toggleSortingOrderAscending, state => !state)
 )

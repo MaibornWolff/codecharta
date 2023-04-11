@@ -4,5 +4,5 @@ import { setAmountOfTopLabels } from "./amountOfTopLabels.actions"
 export const defaultAmountOfTopLabels = 1
 export const amountOfTopLabels = createReducer(
 	defaultAmountOfTopLabels,
-	on(setAmountOfTopLabels, (_state, payload) => payload.value)
+	on(setAmountOfTopLabels, (_state, action) => action.value)
 )

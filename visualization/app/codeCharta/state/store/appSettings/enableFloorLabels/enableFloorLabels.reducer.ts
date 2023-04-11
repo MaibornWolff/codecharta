@@ -4,5 +4,5 @@ import { setEnableFloorLabels } from "./enableFloorLabels.actions"
 export const defaultEnableFloorLabels = true
 export const enableFloorLabels = createReducer(
 	defaultEnableFloorLabels,
-	on(setEnableFloorLabels, (_state, payload) => payload.value)
+	on(setEnableFloorLabels, (_state, action) => action.value)
 )

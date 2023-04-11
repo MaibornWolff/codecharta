@@ -6,8 +6,8 @@ import { BlacklistItem } from "../../../../codeCharta.model"
 export const defaultBlacklist: BlacklistItem[] = []
 export const blacklist = createReducer(
 	defaultBlacklist,
-	on(setBlacklist, (_state, payload) => payload.value),
-	on(addBlacklistItem, (state, payload) => addItemToArray(state, payload.item)),
-	on(addBlacklistItems, (state, payload) => addItemsToArray(state, payload.items)),
-	on(removeBlacklistItem, (state, payload) => removeItemFromArray(state, payload.item))
+	on(setBlacklist, (_state, action) => action.value),
+	on(addBlacklistItem, (state, action) => addItemToArray(state, action.item)),
+	on(addBlacklistItems, (state, action) => addItemsToArray(state, action.items)),
+	on(removeBlacklistItem, (state, action) => removeItemFromArray(state, action.item))
 )

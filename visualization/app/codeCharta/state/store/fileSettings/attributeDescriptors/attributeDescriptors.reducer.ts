@@ -5,5 +5,5 @@ import { AttributeDescriptors } from "../../../../codeCharta.model"
 export const defaultAttributeDescriptors: AttributeDescriptors = {}
 export const attributeDescriptors = createReducer(
 	defaultAttributeDescriptors,
-	on(setAttributeDescriptors, (_state, payload) => payload.value)
+	on(setAttributeDescriptors, (_state, action) => action.value)
 )

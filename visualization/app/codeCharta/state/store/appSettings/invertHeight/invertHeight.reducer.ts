@@ -4,5 +4,5 @@ import { setInvertHeight } from "./invertHeight.actions"
 export const defaultInvertHeight = false
 export const invertHeight = createReducer(
 	defaultInvertHeight,
-	on(setInvertHeight, (_state, payload) => payload.value)
+	on(setInvertHeight, (_state, action) => action.value)
 )

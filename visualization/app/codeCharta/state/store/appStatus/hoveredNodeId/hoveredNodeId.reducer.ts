@@ -5,5 +5,5 @@ import { setHoveredNodeId } from "./hoveredNodeId.actions"
 export const defaultHoveredNodeId: State["appStatus"]["hoveredNodeId"] = null
 export const hoveredNodeId = createReducer(
 	defaultHoveredNodeId,
-	on(setHoveredNodeId, (_state, payload) => payload.value)
+	on(setHoveredNodeId, (_state, action) => action.value)
 )

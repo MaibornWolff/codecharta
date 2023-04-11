@@ -5,5 +5,5 @@ import { setSelectedBuildingId } from "./selectedBuildingId.actions"
 export const defaultSelectedBuildingId: State["appStatus"]["selectedBuildingId"] = null
 export const selectedBuildingId = createReducer(
 	defaultSelectedBuildingId,
-	on(setSelectedBuildingId, (_state, payload) => payload.value)
+	on(setSelectedBuildingId, (_state, action) => action.value)
 )

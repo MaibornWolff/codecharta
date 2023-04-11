@@ -4,7 +4,7 @@ import { createReducer, on } from "@ngrx/store"
 export const defaultIsLoadingMap = true
 export const isLoadingMap = createReducer(
 	defaultIsLoadingMap,
-	on(setIsLoadingMap, (_state, payload) => payload.value)
+	on(setIsLoadingMap, (_state, action) => action.value)
 	// TODO this PR
 	// if (actionsRequiringRerender.some(actions => isActionOfType(action.type, actions))) {
 	// 	return true

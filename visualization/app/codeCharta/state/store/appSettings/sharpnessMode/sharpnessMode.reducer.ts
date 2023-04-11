@@ -5,5 +5,5 @@ import { setSharpnessMode } from "./sharpnessMode.actions"
 export const defaultSharpnessMode = SharpnessMode.Standard
 export const sharpnessMode = createReducer(
 	defaultSharpnessMode,
-	on(setSharpnessMode, (_state, payload) => payload.value)
+	on(setSharpnessMode, (_state, action) => action.value)
 )

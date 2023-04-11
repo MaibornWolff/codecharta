@@ -5,9 +5,9 @@ import { createReducer, on } from "@ngrx/store"
 export const defaultAttributeTypes: AttributeTypes = { nodes: {}, edges: {} }
 export const attributeTypes = createReducer(
 	defaultAttributeTypes,
-	on(setAttributeTypes, (_state, payload) => payload.value),
-	on(updateAttributeType, (state, payload) => ({
+	on(setAttributeTypes, (_state, action) => action.value),
+	on(updateAttributeType, (state, action) => ({
 		...state,
-		[payload.category]: { ...state[payload.category], [payload.name]: payload.attributeType }
+		[action.category]: { ...state[action.category], [action.name]: action.attributeType }
 	}))
 )

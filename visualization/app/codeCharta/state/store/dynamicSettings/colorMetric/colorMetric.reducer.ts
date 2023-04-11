@@ -4,5 +4,5 @@ import { setColorMetric } from "./colorMetric.actions"
 export const defaultColorMetric: null | string = null
 export const colorMetric = createReducer(
 	defaultColorMetric,
-	on(setColorMetric, (_state, payload) => payload.value)
+	on(setColorMetric, (_state, action) => action.value)
 )

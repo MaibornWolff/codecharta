@@ -4,5 +4,5 @@ import { setExperimentalFeaturesEnabled } from "./experimentalFeaturesEnabled.ac
 export const defaultExperimentalFeaturesEnabled = false
 export const experimentalFeaturesEnabled = createReducer(
 	defaultExperimentalFeaturesEnabled,
-	on(setExperimentalFeaturesEnabled, (_state, payload) => payload.value)
+	on(setExperimentalFeaturesEnabled, (_state, action) => action.value)
 )

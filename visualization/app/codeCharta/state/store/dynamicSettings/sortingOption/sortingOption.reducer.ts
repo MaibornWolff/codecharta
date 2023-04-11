@@ -5,5 +5,5 @@ import { setSortingOption } from "./sortingOption.actions"
 export const defaultSortingOption = SortingOption.NAME
 export const sortingOption = createReducer(
 	defaultSortingOption,
-	on(setSortingOption, (_state, payload) => payload.value)
+	on(setSortingOption, (_state, action) => action.value)
 )

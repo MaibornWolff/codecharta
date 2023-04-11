@@ -11,12 +11,12 @@ import { parseBlacklistItems } from "./utils/parseBlacklistItems"
 
 type BlacklistSearchPatternAction = {
 	type: "BlacklistSearchPatternAction"
-	payload: { type: BlacklistType }
+	action: { type: BlacklistType }
 }
 
 export const blacklistSearchPattern = (type: BlacklistType): BlacklistSearchPatternAction => ({
 	type: "BlacklistSearchPatternAction",
-	payload: { type }
+	action: { type }
 })
 
 @Injectable()
@@ -33,8 +33,8 @@ export class BlacklistSearchPatternEffect {
 		ofType<BlacklistSearchPatternAction>("BlacklistSearchPatternAction"),
 		withLatestFrom(this.searchPattern$),
 		map(([blacklistSearchPatternAction, searchPattern]) => ({
-			type: blacklistSearchPatternAction.payload.type,
-			blacklistItems: parseBlacklistItems(blacklistSearchPatternAction.payload.type, searchPattern)
+			type: blacklistSearchPatternAction.action.type,
+			blacklistItems: parseBlacklistItems(blacklistSearchPatternAction.action.type, searchPattern)
 		}))
 	)
 

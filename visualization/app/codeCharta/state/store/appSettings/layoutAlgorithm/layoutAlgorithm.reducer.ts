@@ -5,5 +5,5 @@ import { setLayoutAlgorithm } from "./layoutAlgorithm.actions"
 export const defaultLayoutAlgorithm = LayoutAlgorithm.SquarifiedTreeMap
 export const layoutAlgorithm = createReducer(
 	defaultLayoutAlgorithm,
-	on(setLayoutAlgorithm, (_state, payload) => payload.value)
+	on(setLayoutAlgorithm, (_state, action) => action.value)
 )

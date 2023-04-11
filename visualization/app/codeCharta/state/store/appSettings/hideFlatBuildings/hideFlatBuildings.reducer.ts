@@ -4,5 +4,5 @@ import { setHideFlatBuildings } from "./hideFlatBuildings.actions"
 export const defaultHideFlatBuildings = false
 export const hideFlatBuildings = createReducer(
 	defaultHideFlatBuildings,
-	on(setHideFlatBuildings, (_state, payload) => payload.value)
+	on(setHideFlatBuildings, (_state, action) => action.value)
 )

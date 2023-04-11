@@ -4,5 +4,5 @@ import { setScreenshotToClipboardEnabled } from "./screenshotToClipboardEnabled.
 export const defaultScreenshotToClipboardEnabled = false
 export const screenshotToClipboardEnabled = createReducer(
 	defaultScreenshotToClipboardEnabled,
-	on(setScreenshotToClipboardEnabled, (_state, payload) => payload.value)
+	on(setScreenshotToClipboardEnabled, (_state, action) => action.value)
 )

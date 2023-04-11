@@ -6,7 +6,7 @@ import { Edge } from "../../../../codeCharta.model"
 export const defaultEdges: Edge[] = []
 export const edges = createReducer(
 	defaultEdges,
-	on(setEdges, (_state, payload) => payload.value),
-	on(addEdge, (state, payload) => addItemToArray(state, payload.edge)),
-	on(removeEdge, (state, payload) => removeItemFromArray(state, payload.edge))
+	on(setEdges, (_state, action) => action.value),
+	on(addEdge, (state, action) => addItemToArray(state, action.edge)),
+	on(removeEdge, (state, action) => removeItemFromArray(state, action.edge))
 )

@@ -12,9 +12,9 @@ export class OpenNodeContextMenuEffect {
 		() =>
 			this.actions$.pipe(
 				ofType(setRightClickedNodeData),
-				tap(payload => {
-					if (payload.value) {
-						this.nodeContextMenu.open(payload.value.xPositionOfRightClickEvent, payload.value.yPositionOfRightClickEvent)
+				tap(action => {
+					if (action.value) {
+						this.nodeContextMenu.open(action.value.xPositionOfRightClickEvent, action.value.yPositionOfRightClickEvent)
 					}
 				})
 			),

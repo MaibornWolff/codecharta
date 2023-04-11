@@ -5,5 +5,5 @@ import { setRightClickedNodeData } from "./rightClickedNodeData.actions"
 export const defaultRightClickedNodeData: State["appStatus"]["rightClickedNodeData"] = null
 export const rightClickedNodeData = createReducer(
 	defaultRightClickedNodeData,
-	on(setRightClickedNodeData, (_state, payload) => payload.value)
+	on(setRightClickedNodeData, (_state, action) => action.value)
 )

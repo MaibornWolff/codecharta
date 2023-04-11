@@ -4,5 +4,5 @@ import { setShowMetricLabelNodeName } from "./showMetricLabelNodeName.actions"
 export const defaultShowMetricLabelNodeName = true
 export const showMetricLabelNodeName = createReducer(
 	defaultShowMetricLabelNodeName,
-	on(setShowMetricLabelNodeName, (_state, payload) => payload.value)
+	on(setShowMetricLabelNodeName, (_state, action) => action.value)
 )

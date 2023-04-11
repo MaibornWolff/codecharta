@@ -4,5 +4,5 @@ import { setShowOnlyBuildingsWithEdges } from "./showOnlyBuildingsWithEdges.acti
 export const defaultShowOnlyBuildingsWithEdges = false
 export const showOnlyBuildingsWithEdges = createReducer(
 	defaultShowOnlyBuildingsWithEdges,
-	on(setShowOnlyBuildingsWithEdges, (_state, payload) => payload.value)
+	on(setShowOnlyBuildingsWithEdges, (_state, action) => action.value)
 )
