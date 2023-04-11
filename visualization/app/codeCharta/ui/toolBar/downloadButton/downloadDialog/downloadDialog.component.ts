@@ -10,7 +10,7 @@ import {
 	getDownloadableProperty,
 	getFilteredBlacklistLength
 } from "./util/propertyHelper"
-import { State as StateService } from "@ngrx/store"
+import { State } from "@ngrx/store"
 import { CcState } from "../../../../codeCharta.model"
 
 @Component({
@@ -22,7 +22,7 @@ export class DownloadDialogComponent {
 	fileName: string
 	properties: (DownloadableProperty & { change: (isSelected: boolean) => void })[]
 
-	constructor(private state: StateService<CcState>) {
+	constructor(private state: State<CcState>) {
 		const stateValue = this.state.getValue()
 		const { unifiedMapNode, unifiedFileMeta } = accumulatedDataSelector(stateValue)
 		const { fileSettings, files } = stateValue

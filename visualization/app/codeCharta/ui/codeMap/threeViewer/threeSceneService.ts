@@ -14,7 +14,7 @@ import { Injectable, OnDestroy } from "@angular/core"
 import { defaultMapColors } from "../../../state/store/appSettings/mapColors/mapColors.reducer"
 import { treeMapSize } from "../../../util/algorithm/treeMapLayout/treeMapHelper"
 import { EventEmitter } from "../../../util/EventEmitter"
-import { Store, State as StateService } from "@ngrx/store"
+import { Store, State } from "@ngrx/store"
 
 type BuildingSelectedEvents = {
 	onBuildingSelected: (data: { building: CodeMapBuilding }) => void
@@ -55,7 +55,7 @@ export class ThreeSceneService implements OnDestroy {
 
 	constructor(
 		private store: Store<CcState>,
-		private state: StateService<CcState>,
+		private state: State<CcState>,
 		private idToBuilding: IdToBuildingService,
 		private threeRendererService: ThreeRendererService
 	) {

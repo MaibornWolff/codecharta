@@ -19,7 +19,7 @@ import { tap } from "rxjs"
 import { visibleFileStatesSelector } from "../../state/selectors/visibleFileStates.selector"
 import { blacklistSelector } from "../../state/store/fileSettings/blacklist/blacklist.selector"
 import { debounce } from "../../util/debounce"
-import { Store, State as StateService } from "@ngrx/store"
+import { Store, State } from "@ngrx/store"
 
 interface Coordinates {
 	x: number
@@ -79,7 +79,7 @@ export class CodeMapMouseEventService implements OnDestroy {
 		private threeRendererService: ThreeRendererService,
 		private threeSceneService: ThreeSceneService,
 		private store: Store<CcState>,
-		private state: StateService<CcState>,
+		private state: State<CcState>,
 		private codeMapLabelService: CodeMapLabelService,
 		private viewCubeMouseEvents: ViewCubeMouseEventsService,
 		private threeViewerService: ThreeViewerService,

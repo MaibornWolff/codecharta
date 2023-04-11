@@ -12,7 +12,7 @@ import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
 import { isLoadingFileSelector } from "../../state/store/appSettings/isLoadingFile/isLoadingFile.selector"
 import { Subscription, tap } from "rxjs"
 import { metricDataSelector } from "../../state/selectors/accumulatedData/metricData/metricData.selector"
-import { Store, State as StateService } from "@ngrx/store"
+import { Store, State } from "@ngrx/store"
 
 @Injectable({ providedIn: "root" })
 export class CodeMapRenderService implements OnDestroy {
@@ -26,7 +26,7 @@ export class CodeMapRenderService implements OnDestroy {
 
 	constructor(
 		private store: Store<CcState>,
-		private state: StateService<CcState>,
+		private state: State<CcState>,
 		private threeSceneService: ThreeSceneService,
 		private codeMapLabelService: CodeMapLabelService,
 		private codeMapArrowService: CodeMapArrowService,

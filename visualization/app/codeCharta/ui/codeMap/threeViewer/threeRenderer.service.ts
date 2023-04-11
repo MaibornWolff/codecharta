@@ -7,7 +7,7 @@ import { CustomComposer } from "../rendering/postprocessor/customComposer"
 import { isWhiteBackgroundSelector } from "../../../state/store/appSettings/isWhiteBackground/isWhiteBackground.selector"
 import { SharpnessMode, CcState } from "../../../codeCharta.model"
 import { fxaaShaderStrings } from "../rendering/shaders/loaders/fxaaShaderStrings"
-import { State as StateService, Store } from "@ngrx/store"
+import { Store, State } from "@ngrx/store"
 
 @Injectable({ providedIn: "root" })
 export class ThreeRendererService {
@@ -36,7 +36,7 @@ export class ThreeRendererService {
 	scene: Scene
 	camera: Camera
 
-	constructor(private store: Store<CcState>, private state: StateService<CcState>) {}
+	constructor(private store: Store<CcState>, private state: State<CcState>) {}
 
 	init(containerWidth: number, containerHeight: number, scene: Scene, camera: Camera) {
 		this.scene = scene

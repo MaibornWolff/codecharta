@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core"
-import { State as StateService, Store } from "@ngrx/store"
+import { Store, State } from "@ngrx/store"
 import { createEffect } from "@ngrx/effects"
 import { switchMap, filter, skip, take, tap, combineLatest } from "rxjs"
 import { CcState } from "../../../codeCharta.model"
@@ -14,7 +14,7 @@ import { RenderCodeMapEffect } from "../renderCodeMapEffect/renderCodeMap.effect
 export class AutoFitCodeMapEffect {
 	constructor(
 		private store: Store<CcState>,
-		private state: StateService<CcState>,
+		private state: State<CcState>,
 		private renderCodeMapEffect: RenderCodeMapEffect,
 		private threeOrbitControlsService: ThreeOrbitControlsService
 	) {}

@@ -5,7 +5,7 @@ import { ThreeCameraService } from "../../../codeMap/threeViewer/threeCamera.ser
 import { ThreeOrbitControlsService } from "../../../codeMap/threeViewer/threeOrbitControls.service"
 import { customScenarioNameValidator } from "./utils/customScenarioName.validator"
 import { getInitialScenarioMetricProperties } from "./utils/getInitialScenarioMetricProperties"
-import { State as StateService } from "@ngrx/store"
+import { State } from "@ngrx/store"
 import { CcState } from "../../../../codeCharta.model"
 
 @Component({
@@ -20,7 +20,7 @@ export class AddCustomScenarioComponent {
 	areAnyScenarioMetricPropertiesSelected = true
 
 	constructor(
-		private state: StateService<CcState>,
+		private state: State<CcState>,
 		threeCameraService: ThreeCameraService,
 		threeOrbitControlsService: ThreeOrbitControlsService
 	) {

@@ -11,7 +11,7 @@ import { ErrorDialogComponent } from "../../ui/dialogs/errorDialog/errorDialog.c
 import { loadFilesValidationToErrorDialog } from "../../util/loadFilesValidationToErrorDialog"
 import { enrichFileStatesAndRecentFilesWithValidationResults } from "./fileParser"
 import { fileRoot } from "./fileRoot"
-import { State as StateService, Store } from "@ngrx/store"
+import { Store, State } from "@ngrx/store"
 
 @Injectable({ providedIn: "root" })
 export class LoadFileService implements OnDestroy {
@@ -28,7 +28,7 @@ export class LoadFileService implements OnDestroy {
 		)
 		.subscribe()
 
-	constructor(private store: Store<CcState>, private state: StateService<CcState>, private dialog: MatDialog) {}
+	constructor(private store: Store<CcState>, private state: State<CcState>, private dialog: MatDialog) {}
 
 	ngOnDestroy(): void {
 		this.referenceFileSubscription.unsubscribe()

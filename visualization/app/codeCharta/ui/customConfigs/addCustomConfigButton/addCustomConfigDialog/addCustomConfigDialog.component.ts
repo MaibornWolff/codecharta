@@ -6,7 +6,7 @@ import { ThreeCameraService } from "../../../codeMap/threeViewer/threeCamera.ser
 import { ThreeOrbitControlsService } from "../../../codeMap/threeViewer/threeOrbitControls.service"
 import { VisibleFilesBySelectionMode, visibleFilesBySelectionModeSelector } from "../../visibleFilesBySelectionMode.selector"
 import { CcState } from "../../../../codeCharta.model"
-import { State as StateService } from "@ngrx/store"
+import { State } from "@ngrx/store"
 
 @Component({
 	templateUrl: "./addCustomConfigDialog.component.html",
@@ -18,7 +18,7 @@ export class AddCustomConfigDialogComponent implements OnInit {
 	customConfigNote: string
 
 	constructor(
-		private state: StateService<CcState>,
+		private state: State<CcState>,
 		private threeCameraService: ThreeCameraService,
 		private threeOrbitControlsService: ThreeOrbitControlsService
 	) {}

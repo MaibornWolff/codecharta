@@ -6,7 +6,7 @@ import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { ColorConverter } from "../../util/color/colorConverter"
 import { Injectable } from "@angular/core"
 import { treeMapSize } from "../../util/algorithm/treeMapLayout/treeMapHelper"
-import { State as StateService } from "@ngrx/store"
+import { State } from "@ngrx/store"
 import { defaultMapColors } from "../../state/store/appSettings/mapColors/mapColors.reducer"
 
 interface InternalLabel {
@@ -34,7 +34,7 @@ export class CodeMapLabelService {
 	private nodeHeight = 0
 
 	constructor(
-		private state: StateService<CcState>,
+		private state: State<CcState>,
 		private threeCameraService: ThreeCameraService,
 		private threeSceneService: ThreeSceneService,
 		private threeOrbitControlsService: ThreeOrbitControlsService

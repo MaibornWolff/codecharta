@@ -7,7 +7,7 @@ import hotkeys from "hotkeys-js"
 import { Component, ViewEncapsulation } from "@angular/core"
 import { screenshotToClipboardEnabledSelector } from "../../state/store/appSettings/enableClipboard/screenshotToClipboardEnabled.selector"
 import { ThreeRendererService } from "../codeMap/threeViewer/threeRenderer.service"
-import { Store, State as StateService } from "@ngrx/store"
+import { Store, State } from "@ngrx/store"
 import { CcState } from "../../codeCharta.model"
 
 @Component({
@@ -25,7 +25,7 @@ export class ScreenshotButtonComponent {
 		private threeSceneService: ThreeSceneService,
 		private threeRendererService: ThreeRendererService,
 		private store: Store<CcState>,
-		private state: StateService<CcState>
+		private state: State<CcState>
 	) {
 		hotkeys(this.SCREENSHOT_HOTKEY_TO_FILE, () => {
 			this.makeScreenshotToFile()

@@ -8,7 +8,7 @@ import { IdToBuildingService } from "../../services/idToBuilding/idToBuilding.se
 import { tap } from "rxjs"
 import { hoveredNodeIdSelector } from "../../state/store/appStatus/hoveredNodeId/hoveredNodeId.selector"
 import { debounce } from "../../util/debounce"
-import { Store, State as StateService } from "@ngrx/store"
+import { Store, State } from "@ngrx/store"
 
 @Injectable({ providedIn: "root" })
 export class CodeMapArrowService implements OnDestroy {
@@ -36,7 +36,7 @@ export class CodeMapArrowService implements OnDestroy {
 
 	constructor(
 		private store: Store<CcState>,
-		private state: StateService<CcState>,
+		private state: State<CcState>,
 		private threeSceneService: ThreeSceneService,
 		private idToBuildingService: IdToBuildingService
 	) {

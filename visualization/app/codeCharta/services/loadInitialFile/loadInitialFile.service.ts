@@ -11,7 +11,7 @@ import { UrlExtractor } from "./urlExtractor"
 import sample1 from "../../assets/sample1.cc.json"
 import sample2 from "../../assets/sample2.cc.json"
 import { ExportCCFile } from "../../codeCharta.api.model"
-import { State as StateService, Store } from "@ngrx/store"
+import { Store, State } from "@ngrx/store"
 
 @Injectable({ providedIn: "root" })
 export class LoadInitialFileService {
@@ -19,7 +19,7 @@ export class LoadInitialFileService {
 
 	constructor(
 		private store: Store,
-		private state: StateService<CcState>,
+		private state: State<CcState>,
 		private dialog: MatDialog,
 		private loadFileService: LoadFileService,
 		private httpClient: HttpClient

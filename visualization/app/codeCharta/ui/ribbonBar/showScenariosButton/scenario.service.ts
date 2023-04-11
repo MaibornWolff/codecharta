@@ -8,13 +8,13 @@ import { ScenarioHelper } from "./scenarioHelper"
 import { ThreeCameraService } from "../../codeMap/threeViewer/threeCamera.service"
 import { ThreeOrbitControlsService } from "../../codeMap/threeViewer/threeOrbitControls.service"
 import { ErrorDialogComponent } from "../../dialogs/errorDialog/errorDialog.component"
-import { Store, State as StateService } from "@ngrx/store"
+import { Store, State } from "@ngrx/store"
 import { setState } from "../../../state/store/state.actions"
 
 @Injectable()
 export class ScenarioService {
 	constructor(
-		private state: StateService<CcState>,
+		private state: State<CcState>,
 		private store: Store<CcState>,
 		private dialog: MatDialog,
 		private threeCameraService: ThreeCameraService,
