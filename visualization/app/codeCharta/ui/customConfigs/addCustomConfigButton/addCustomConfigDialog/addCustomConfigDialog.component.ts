@@ -42,8 +42,7 @@ export class AddCustomConfigDialogComponent implements OnInit {
 	addCustomConfig() {
 		const newCustomConfig = buildCustomConfigFromState(
 			this.customConfigName.value,
-			// todo remove cast after full migration to ngrx
-			this.state.getValue() as State,
+			this.state.getValue(),
 			{
 				camera: this.threeCameraService.camera.position,
 				cameraTarget: this.threeOrbitControlsService.controls.target
