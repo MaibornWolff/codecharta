@@ -5,8 +5,4 @@ export const defaultIsLoadingFile = true
 export const isLoadingFile = createReducer(
 	defaultIsLoadingFile,
 	on(setIsLoadingFile, (_state, action) => action.value)
-	// TODO this PR
-	// if (isActionOfType(action.type, FilesSelectionActions)) {
-	// 	return true
-	// }
 )
