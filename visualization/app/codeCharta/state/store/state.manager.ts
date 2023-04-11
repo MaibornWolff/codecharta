@@ -15,7 +15,7 @@ export const appReducers = {
 	files,
 	appStatus
 }
-export const defaultState = {
+export const defaultState: State = {
 	fileSettings: defaultFileSettings,
 	appSettings: defaultAppSettings,
 	dynamicSettings: defaultDynamicSettings,
