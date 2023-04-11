@@ -1,5 +1,5 @@
 import { markPackages, setMarkedPackages, unmarkPackage } from "./markedPackages.actions"
-import { removeEntryAtIndexFromArray } from "../../../../util/reduxHelper"
+import { removeEntryAtIndexFromArray } from "../../../../util/arrayHelper"
 import { addMarkedPackage } from "./util/addMarkedPackage"
 import { findIndexOfMarkedPackageOrParent } from "./util/findIndexOfMarkedPackageOrParent"
 import { createReducer, on } from "@ngrx/store"

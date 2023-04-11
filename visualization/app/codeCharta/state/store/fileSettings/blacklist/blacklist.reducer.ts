@@ -1,5 +1,5 @@
 import { addBlacklistItem, addBlacklistItems, removeBlacklistItem, setBlacklist } from "./blacklist.actions"
-import { addItemsToArray, addItemToArray, removeItemFromArray } from "../../../../util/reduxHelper"
+import { addItemsToArray, addItemToArray, removeItemFromArray } from "../../../../util/arrayHelper"
 import { createReducer, on } from "@ngrx/store"
 import { BlacklistItem } from "../../../../codeCharta.model"
 

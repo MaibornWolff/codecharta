@@ -1,4 +1,4 @@
-import { addItemToArray, isActionOfType, removeItemFromArray } from "./reduxHelper"
+import { addItemToArray, isActionOfType, removeItemFromArray } from "./arrayHelper"
 import { ScalingActions } from "../state/store/appSettings/scaling/scaling.actions"
 import { IsLoadingFileActions } from "../state/store/appSettings/isLoadingFile/isLoadingFile.actions"
 
@@ -6,7 +6,7 @@ function mutateObject(object: Record<string, number>) {
 	object.x = 10_000
 }
 
-describe("reduxHelper", () => {
+describe("arrayHelper", () => {
 	let object1: { x: number; y: number }
 	let object2: { x: number; y: number }
 	let array: { x: number; y: number }[]

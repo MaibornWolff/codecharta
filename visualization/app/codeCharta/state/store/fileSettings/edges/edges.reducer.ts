@@ -1,5 +1,5 @@
 import { addEdge, removeEdge, setEdges } from "./edges.actions"
-import { addItemToArray, removeItemFromArray } from "../../../../util/reduxHelper"
+import { addItemToArray, removeItemFromArray } from "../../../../util/arrayHelper"
 import { createReducer, on } from "@ngrx/store"
 import { Edge } from "../../../../codeCharta.model"
 

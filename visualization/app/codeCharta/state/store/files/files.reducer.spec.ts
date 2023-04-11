@@ -19,7 +19,7 @@ import files from "./files.reducer"
 import { isDeltaState, isPartialState } from "../../../model/files/files.helper"
 import { FileSelectionState, FileState } from "../../../model/files/files"
 import { clone } from "../../../util/clone"
-import { isActionOfType } from "../../../util/reduxHelper"
+import { isActionOfType } from "../../../util/arrayHelper"
 
 describe("files", () => {
 	let state: FileState[] = []
