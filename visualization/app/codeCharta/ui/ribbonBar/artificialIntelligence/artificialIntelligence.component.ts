@@ -1,6 +1,5 @@
 import { Component, ViewEncapsulation } from "@angular/core"
 import { Store } from "@ngrx/store"
-import { debounceTime, identity, map } from "rxjs"
 import { State } from "../../../codeCharta.model"
 import { artificialIntelligenceSelector } from "./selectors/artificialIntelligence.selector"
 
@@ -11,7 +10,7 @@ import { artificialIntelligenceSelector } from "./selectors/artificialIntelligen
 	encapsulation: ViewEncapsulation.None
 })
 export class ArtificialIntelligenceComponent {
-	data$ = this.store.select(identity).pipe(debounceTime(10), map(artificialIntelligenceSelector))
+	data$ = this.store.select(artificialIntelligenceSelector)
 
 	constructor(private store: Store<State>) {}
 }
