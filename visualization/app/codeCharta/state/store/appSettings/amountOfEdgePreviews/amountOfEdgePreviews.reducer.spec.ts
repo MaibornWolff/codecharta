@@ -1,26 +1,10 @@
 import { amountOfEdgePreviews } from "./amountOfEdgePreviews.reducer"
-import { AmountOfEdgePreviewsAction, setAmountOfEdgePreviews } from "./amountOfEdgePreviews.actions"
+import { setAmountOfEdgePreviews } from "./amountOfEdgePreviews.actions"
 
 describe("amountOfEdgePreviews", () => {
-	describe("Default State", () => {
-		it("should initialize the default state", () => {
-			const result = amountOfEdgePreviews(undefined, {} as AmountOfEdgePreviewsAction)
+	it("should set new amountOfEdgePreviews", () => {
+		const result = amountOfEdgePreviews(1, setAmountOfEdgePreviews({ value: 2 }))
 
-			expect(result).toEqual(1)
-		})
-	})
-
-	describe("Action: SET_AMOUNT_OF_EDGE_PREVIEWS", () => {
-		it("should set new amountOfEdgePreviews", () => {
-			const result = amountOfEdgePreviews(1, setAmountOfEdgePreviews(2))
-
-			expect(result).toEqual(2)
-		})
-
-		it("should set default amountOfEdgePreviews", () => {
-			const result = amountOfEdgePreviews(2, setAmountOfEdgePreviews())
-
-			expect(result).toEqual(1)
-		})
+		expect(result).toEqual(2)
 	})
 })

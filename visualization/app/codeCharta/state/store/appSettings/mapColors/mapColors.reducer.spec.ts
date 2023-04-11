@@ -1,18 +1,11 @@
-import { mapColors } from "./mapColors.reducer"
-import { defaultMapColors, invertColorRange, invertDeltaColors, MapColorsAction, setMapColors } from "./mapColors.actions"
-import { MapColors } from "../../../../codeCharta.model"
+import { defaultMapColors, mapColors } from "./mapColors.reducer"
+import { invertColorRange, invertDeltaColors, setMapColors } from "./mapColors.actions"
 
 describe("mapColors", () => {
-	it("should initialize the default state", () => {
-		const result = mapColors(undefined, {} as MapColorsAction)
-
-		expect(result).toEqual(defaultMapColors)
-	})
-
 	it("should set new mapColors", () => {
 		const newMapColors = { ...defaultMapColors, positive: "ABCDEF" }
 
-		const result = mapColors(defaultMapColors, setMapColors(newMapColors))
+		const result = mapColors(defaultMapColors, setMapColors({ value: newMapColors }))
 
 		expect(result).toEqual(newMapColors)
 	})
@@ -20,7 +13,7 @@ describe("mapColors", () => {
 	it("should update mapColors with partial mapColors object", () => {
 		const oldMapColors = { ...defaultMapColors }
 
-		const result = mapColors(oldMapColors, setMapColors({ positive: "ABCDEF" } as MapColors))
+		const result = mapColors(oldMapColors, setMapColors({ value: { positive: "ABCDEF" } }))
 
 		expect(Object.values(result)).toHaveLength(12)
 		expect(result.positive).toEqual("ABCDEF")
