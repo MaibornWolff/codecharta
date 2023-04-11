@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core"
-import { Actions, createEffect } from "@ngrx/effects"
+import { Actions, createEffect, ofType } from "@ngrx/effects"
 import { Store } from "@ngrx/store"
 import { asyncScheduler, combineLatest, filter, tap, throttleTime } from "rxjs"
 import { State } from "../../../codeCharta.model"
