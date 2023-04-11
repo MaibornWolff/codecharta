@@ -8,7 +8,7 @@ import { Component, ViewEncapsulation } from "@angular/core"
 import { screenshotToClipboardEnabledSelector } from "../../state/store/appSettings/enableClipboard/screenshotToClipboardEnabled.selector"
 import { ThreeRendererService } from "../codeMap/threeViewer/threeRenderer.service"
 import { Store, State as StateService } from "@ngrx/store"
-import { State } from "../../codeCharta.model"
+import { CcState } from "../../codeCharta.model"
 
 @Component({
 	selector: "cc-screenshot-button",
@@ -24,8 +24,8 @@ export class ScreenshotButtonComponent {
 		private threeCameraService: ThreeCameraService,
 		private threeSceneService: ThreeSceneService,
 		private threeRendererService: ThreeRendererService,
-		private store: Store<State>,
-		private state: StateService<State>
+		private store: Store<CcState>,
+		private state: StateService<CcState>
 	) {
 		hotkeys(this.SCREENSHOT_HOTKEY_TO_FILE, () => {
 			this.makeScreenshotToFile()

@@ -8,11 +8,11 @@ import { blacklistSelector } from "../../store/fileSettings/blacklist/blacklist.
 import { resultsInEmptyMap } from "./resultsInEmptyMap"
 import { ErrorDialogComponent } from "../../../ui/dialogs/errorDialog/errorDialog.component"
 import { Store } from "@ngrx/store"
-import { State } from "../../../codeCharta.model"
+import { CcState } from "../../../codeCharta.model"
 
 @Injectable()
 export class AddBlacklistItemsIfNotResultsInEmptyMapEffect {
-	constructor(private actions$: Actions, private store: Store<State>, private dialog: MatDialog) {}
+	constructor(private actions$: Actions, private store: Store<CcState>, private dialog: MatDialog) {}
 
 	doBlacklistItemsResultInEmptyMap$ = this.actions$.pipe(
 		ofType(addBlacklistItemsIfNotResultsInEmptyMap),

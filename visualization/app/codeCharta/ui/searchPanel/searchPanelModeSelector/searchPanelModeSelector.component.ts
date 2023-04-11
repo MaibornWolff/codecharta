@@ -3,7 +3,7 @@ import { Component, Input, ViewEncapsulation } from "@angular/core"
 import { Observable } from "rxjs"
 import { hideBlacklistItemsIndicatorSelector } from "./hideBlacklistItemsIndicator.selector"
 import { Store } from "@ngrx/store"
-import { State } from "../../../codeCharta.model"
+import { CcState } from "../../../codeCharta.model"
 
 @Component({
 	selector: "cc-search-panel-mode-selector",
@@ -17,7 +17,7 @@ export class SearchPanelModeSelectorComponent {
 
 	hideBlacklistItemsIndicator$: Observable<boolean>
 
-	constructor(store: Store<State>) {
+	constructor(store: Store<CcState>) {
 		this.hideBlacklistItemsIndicator$ = store.select(hideBlacklistItemsIndicatorSelector)
 	}
 }

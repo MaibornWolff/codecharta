@@ -1,7 +1,7 @@
 import { AmbientLight, Box3, BufferGeometry, DirectionalLight, Group, Line, Material, Object3D, Raycaster, Scene, Vector3 } from "three"
 import { CodeMapMesh } from "../rendering/codeMapMesh"
 import { CodeMapBuilding } from "../rendering/codeMapBuilding"
-import { CodeMapNode, LayoutAlgorithm, Node, State } from "../../../codeCharta.model"
+import { CodeMapNode, LayoutAlgorithm, Node, CcState } from "../../../codeCharta.model"
 import { hierarchy } from "d3-hierarchy"
 import { ColorConverter } from "../../../util/color/colorConverter"
 import { FloorLabelDrawer } from "./floorLabels/floorLabelDrawer"
@@ -54,8 +54,8 @@ export class ThreeSceneService implements OnDestroy {
 	})
 
 	constructor(
-		private store: Store<State>,
-		private state: StateService<State>,
+		private store: Store<CcState>,
+		private state: StateService<CcState>,
 		private idToBuilding: IdToBuildingService,
 		private threeRendererService: ThreeRendererService
 	) {
@@ -112,7 +112,7 @@ export class ThreeSceneService implements OnDestroy {
 	}
 
 	highlightBuildings() {
-		const state = this.state.getValue() as State
+		const state = this.state.getValue() as CcState
 		this.getMapMesh().highlightBuilding(this.highlighted, this.selected, state, this.constantHighlight)
 		if (this.mapGeometry.children[0]) {
 			this.highlightMaterial(this.mapGeometry.children[0]["material"])

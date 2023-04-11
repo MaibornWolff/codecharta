@@ -12,11 +12,11 @@ import { edgesSelector } from "../../store/fileSettings/edges/edges.selector"
 import { edgePreviewNodesSelector } from "./utils/edgePreviewNodes.selector"
 import { setEdgeVisibility } from "./utils/setEdgeVisibility"
 import { Store } from "@ngrx/store"
-import { State } from "../../../codeCharta.model"
+import { CcState } from "../../../codeCharta.model"
 
 @Injectable()
 export class UpdateEdgePreviewsEffect {
-	constructor(private store: Store<State>) {}
+	constructor(private store: Store<CcState>) {}
 
 	resetIsEdgeMetricVisible$ = createEffect(() =>
 		this.store.select(edgeMetricSelector).pipe(

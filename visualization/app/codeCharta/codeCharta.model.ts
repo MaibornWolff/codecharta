@@ -350,7 +350,7 @@ export interface Node {
 	outgoingEdgePoint: Vector3
 }
 
-export interface State {
+export interface CcState {
 	fileSettings: FileSettings
 	dynamicSettings: DynamicSettings
 	appSettings: AppSettings

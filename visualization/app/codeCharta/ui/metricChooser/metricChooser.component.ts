@@ -1,6 +1,6 @@
 import { Component, ElementRef, Input, OnInit, ViewChild, ViewEncapsulation } from "@angular/core"
 import { map, Observable } from "rxjs"
-import { EdgeMetricData, NodeMetricData, State } from "../../codeCharta.model"
+import { EdgeMetricData, NodeMetricData, CcState } from "../../codeCharta.model"
 import { metricTitles } from "../../util/metric/metricTitles"
 import { metricDataSelector } from "../../state/selectors/accumulatedData/metricData/metricData.selector"
 import { Store } from "@ngrx/store"
@@ -24,7 +24,7 @@ export class MetricChooserComponent implements OnInit {
 	metricData$: Observable<NodeMetricData[] | EdgeMetricData[]>
 	metricDataDescription: Map<string, string> = metricTitles
 
-	constructor(private store: Store<State>) {}
+	constructor(private store: Store<CcState>) {}
 
 	ngOnInit(): void {
 		this.metricData$ = this.store

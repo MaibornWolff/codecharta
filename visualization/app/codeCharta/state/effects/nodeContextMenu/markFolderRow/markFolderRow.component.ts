@@ -2,7 +2,7 @@ import { Component, ViewEncapsulation } from "@angular/core"
 import { markPackages, unmarkPackage } from "../../../store/fileSettings/markedPackages/markedPackages.actions"
 import { Observable } from "rxjs"
 import { MarkFolderItem, markFolderItemsSelector } from "./selectors/markFolderItems.selector"
-import { CodeMapNode, State } from "../../../../codeCharta.model"
+import { CodeMapNode, CcState } from "../../../../codeCharta.model"
 import { rightClickedCodeMapNodeSelector } from "../rightClickedCodeMapNode.selector"
 import { Store } from "@ngrx/store"
 
@@ -16,7 +16,7 @@ export class MarkFolderRowComponent {
 	markFolderItems$: Observable<MarkFolderItem[]>
 	codeMapNode$: Observable<CodeMapNode>
 
-	constructor(private store: Store<State>) {
+	constructor(private store: Store<CcState>) {
 		this.markFolderItems$ = store.select(markFolderItemsSelector)
 		this.codeMapNode$ = store.select(rightClickedCodeMapNodeSelector)
 	}

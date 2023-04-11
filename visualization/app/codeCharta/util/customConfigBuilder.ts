@@ -1,4 +1,4 @@
-import { State, stateObjectReplacer } from "../codeCharta.model"
+import { CcState, stateObjectReplacer } from "../codeCharta.model"
 import { CustomConfig } from "../model/customConfig/customConfig.api.model"
 import md5 from "md5"
 import { visibleFilesBySelectionModeSelector } from "../ui/customConfigs/visibleFilesBySelectionMode.selector"
@@ -7,7 +7,7 @@ const CUSTOM_CONFIG_API_VERSION = "1.0.0"
 
 export function buildCustomConfigFromState(
 	configName: string,
-	state: State,
+	state: CcState,
 	camera: CustomConfig["camera"],
 	note: string | undefined
 ): CustomConfig {
@@ -120,7 +120,7 @@ function initializeFileSettings(target: CustomConfig) {
 	}
 }
 
-function deepMapOneToOther<T>(source: State, target: T) {
+function deepMapOneToOther<T>(source: CcState, target: T) {
 	for (const [key, value] of Object.entries(source)) {
 		// if a property of source is missing, we don't want to copy it into target.
 		if (!Object.prototype.hasOwnProperty.call(target, key)) {

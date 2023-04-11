@@ -1,4 +1,4 @@
-import { NodeMetricData, State, CodeMapNode, Node, NameDataPair } from "../../../codeCharta.model"
+import { NodeMetricData, CcState, CodeMapNode, Node, NameDataPair } from "../../../codeCharta.model"
 import {
 	METRIC_DATA,
 	TEST_FILE_WITH_PATHS,
@@ -16,7 +16,7 @@ import * as SquarifiedLayoutGenerator from "./treeMapGenerator"
 
 describe("treeMapGenerator", () => {
 	let map: CodeMapNode
-	let state: State
+	let state: CcState
 	let metricData: NodeMetricData[]
 	let codeMapNode: CodeMapNode
 	let isDeltaState

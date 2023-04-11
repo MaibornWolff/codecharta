@@ -1,5 +1,5 @@
 import { Sprite, Vector3, Box3, Sphere, LineBasicMaterial, Line, BufferGeometry, LinearFilter, Texture, SpriteMaterial, Color } from "three"
-import { LayoutAlgorithm, Node, State } from "../../codeCharta.model"
+import { LayoutAlgorithm, Node, CcState } from "../../codeCharta.model"
 import { ThreeOrbitControlsService } from "./threeViewer/threeOrbitControls.service"
 import { ThreeCameraService } from "./threeViewer/threeCamera.service"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
@@ -34,7 +34,7 @@ export class CodeMapLabelService {
 	private nodeHeight = 0
 
 	constructor(
-		private state: StateService<State>,
+		private state: StateService<CcState>,
 		private threeCameraService: ThreeCameraService,
 		private threeSceneService: ThreeSceneService,
 		private threeOrbitControlsService: ThreeOrbitControlsService

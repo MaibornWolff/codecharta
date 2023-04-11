@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core"
 import { Actions, createEffect, ofType } from "@ngrx/effects"
 import { Store } from "@ngrx/store"
 import { map, filter, withLatestFrom, tap, take } from "rxjs"
-import { BlacklistType, State } from "../../../codeCharta.model"
+import { BlacklistType, CcState } from "../../../codeCharta.model"
 import { AddBlacklistItemsIfNotResultsInEmptyMapEffect } from "../../../state/effects/addBlacklistItemsIfNotResultsInEmptyMap/addBlacklistItemsIfNotResultsInEmptyMap.effect"
 import { setSearchPattern } from "../../../state/store/dynamicSettings/searchPattern/searchPattern.actions"
 import { searchPatternSelector } from "../../../state/store/dynamicSettings/searchPattern/searchPattern.selector"
@@ -23,7 +23,7 @@ export const blacklistSearchPattern = (type: BlacklistType): BlacklistSearchPatt
 export class BlacklistSearchPatternEffect {
 	constructor(
 		private actions$: Actions,
-		private store: Store<State>,
+		private store: Store<CcState>,
 		private addBlacklistItemsIfNotResultsInEmptyMapEffect: AddBlacklistItemsIfNotResultsInEmptyMapEffect
 	) {}
 

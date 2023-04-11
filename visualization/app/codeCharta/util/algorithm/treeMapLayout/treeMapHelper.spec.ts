@@ -1,5 +1,5 @@
 import { TreeMapHelper } from "./treeMapHelper"
-import { CodeMapNode, ColorMode, EdgeVisibility, NodeType, State } from "../../../codeCharta.model"
+import { CodeMapNode, ColorMode, EdgeVisibility, NodeType, CcState } from "../../../codeCharta.model"
 import { CODE_MAP_BUILDING, STATE } from "../../dataMocks"
 import { HierarchyRectangularNode } from "d3-hierarchy"
 
@@ -23,7 +23,7 @@ describe("TreeMapHelper", () => {
 	describe("build node", () => {
 		let codeMapNode: CodeMapNode
 		let squaredNode: HierarchyRectangularNode<CodeMapNode>
-		let state: State
+		let state: CcState
 
 		const heightScale = 1
 		const maxHeight = 2000

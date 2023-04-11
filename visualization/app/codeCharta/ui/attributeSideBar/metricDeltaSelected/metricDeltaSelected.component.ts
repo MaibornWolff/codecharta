@@ -2,7 +2,7 @@ import { Component, Input, OnInit, ViewEncapsulation } from "@angular/core"
 import { Store } from "@ngrx/store"
 import { Observable } from "rxjs"
 
-import { MapColors, CodeMapNode, State } from "../../../codeCharta.model"
+import { MapColors, CodeMapNode, CcState } from "../../../codeCharta.model"
 import { selectedNodeSelector } from "../../../state/selectors/selectedNode.selector"
 import { mapColorsSelector } from "../../../state/store/appSettings/mapColors/mapColors.selector"
 
@@ -17,7 +17,7 @@ export class MetricDeltaSelectedComponent implements OnInit {
 	selectedNode$: Observable<CodeMapNode>
 	mapColors$: Observable<MapColors>
 
-	constructor(private store: Store<State>) {}
+	constructor(private store: Store<CcState>) {}
 
 	ngOnInit(): void {
 		this.selectedNode$ = this.store.select(selectedNodeSelector)

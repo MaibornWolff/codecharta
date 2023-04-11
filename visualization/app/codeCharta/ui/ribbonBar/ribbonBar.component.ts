@@ -4,7 +4,7 @@ import { isDeltaStateSelector } from "../../state/selectors/isDeltaState.selecto
 import { map } from "rxjs"
 import { metricDataSelector } from "../../state/selectors/accumulatedData/metricData/metricData.selector"
 import { Store } from "@ngrx/store"
-import { State } from "../../codeCharta.model"
+import { CcState } from "../../codeCharta.model"
 
 type PanelSelection = "NONE" | "AREA_PANEL_OPEN" | "HEIGHT_PANEL_OPEN" | "COLOR_PANEL_OPEN" | "EDGE_PANEL_OPEN"
 
@@ -19,7 +19,7 @@ export class RibbonBarComponent implements OnInit, OnDestroy {
 	experimentalFeaturesEnabled$ = this.store.select(experimentalFeaturesEnabledSelector)
 	isDeltaState$ = this.store.select(isDeltaStateSelector)
 	hasEdgeMetric$ = this.store.select(metricDataSelector).pipe(map(metricData => metricData.edgeMetricData.length > 0))
-	constructor(private store: Store<State>) {}
+	constructor(private store: Store<CcState>) {}
 
 	ngOnInit(): void {
 		document.addEventListener("mousedown", this.closePanelSelectionOnOutsideClick)

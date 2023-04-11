@@ -9,12 +9,12 @@ import { setHeightMetric } from "../../store/dynamicSettings/heightMetric/height
 import { setColorMetric } from "../../store/dynamicSettings/colorMetric/colorMetric.actions"
 import { areChosenMetricsAvailableSelector } from "../../selectors/allNecessaryRenderDataAvailable/areAllNecessaryRenderDataAvailable.selector"
 import { metricDataSelector } from "../../selectors/accumulatedData/metricData/metricData.selector"
-import { State } from "../../../codeCharta.model"
+import { CcState } from "../../../codeCharta.model"
 import { Store } from "@ngrx/store"
 
 @Injectable()
 export class ResetChosenMetricsEffect {
-	constructor(private store: Store<State>) {}
+	constructor(private store: Store<CcState>) {}
 
 	resetChosenDistributionMetric$ = createEffect(
 		() =>

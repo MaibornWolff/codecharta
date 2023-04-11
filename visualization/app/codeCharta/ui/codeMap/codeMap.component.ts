@@ -6,7 +6,7 @@ import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
 import { skip, tap } from "rxjs"
 import { IsAttributeSideBarVisibleService } from "../../services/isAttributeSideBarVisible.service"
 import { Store } from "@ngrx/store"
-import { State } from "../../codeCharta.model"
+import { CcState } from "../../codeCharta.model"
 
 @Component({
 	selector: "cc-code-map",
@@ -29,7 +29,7 @@ export class CodeMapComponent implements AfterViewInit, OnDestroy {
 
 	constructor(
 		public isAttributeSideBarVisibleService: IsAttributeSideBarVisibleService,
-		private store: Store<State>,
+		private store: Store<CcState>,
 		private threeViewerService: ThreeViewerService,
 		private codeMapMouseEventService: CodeMapMouseEventService,
 		private elementReference: ElementRef

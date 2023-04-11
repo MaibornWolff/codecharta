@@ -2,7 +2,7 @@ import { Injectable, OnDestroy } from "@angular/core"
 import { ThreeCameraService } from "./threeViewer/threeCamera.service"
 import { CodeMapBuilding } from "./rendering/codeMapBuilding"
 import { ViewCubeMouseEventsService } from "../viewCube/viewCube.mouseEvents.service"
-import { BlacklistItem, State } from "../../codeCharta.model"
+import { BlacklistItem, CcState } from "../../codeCharta.model"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { ThreeRendererService } from "./threeViewer/threeRenderer.service"
 import { isPathHiddenOrExcluded } from "../../util/codeMapHelper"
@@ -78,8 +78,8 @@ export class CodeMapMouseEventService implements OnDestroy {
 		private threeCameraService: ThreeCameraService,
 		private threeRendererService: ThreeRendererService,
 		private threeSceneService: ThreeSceneService,
-		private store: Store<State>,
-		private state: StateService<State>,
+		private store: Store<CcState>,
+		private state: StateService<CcState>,
 		private codeMapLabelService: CodeMapLabelService,
 		private viewCubeMouseEvents: ViewCubeMouseEventsService,
 		private threeViewerService: ThreeViewerService,

@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core"
 import { MatDialog } from "@angular/material/dialog"
-import { ColorRange, MapColors, State } from "../../../codeCharta.model"
+import { ColorRange, MapColors, CcState } from "../../../codeCharta.model"
 import { metricDataSelector } from "../../../state/selectors/accumulatedData/metricData/metricData.selector"
 import { setMapColors } from "../../../state/store/appSettings/mapColors/mapColors.actions"
 import { setColorRange } from "../../../state/store/dynamicSettings/colorRange/colorRange.actions"
@@ -14,8 +14,8 @@ import { setState } from "../../../state/store/state.actions"
 @Injectable()
 export class ScenarioService {
 	constructor(
-		private state: StateService<State>,
-		private store: Store<State>,
+		private state: StateService<CcState>,
+		private store: Store<CcState>,
 		private dialog: MatDialog,
 		private threeCameraService: ThreeCameraService,
 		private threeOrbitControlsService: ThreeOrbitControlsService

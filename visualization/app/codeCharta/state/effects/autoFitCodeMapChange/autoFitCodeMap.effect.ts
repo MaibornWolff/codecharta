@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core"
 import { State as StateService, Store } from "@ngrx/store"
 import { createEffect } from "@ngrx/effects"
 import { switchMap, filter, skip, take, tap, combineLatest } from "rxjs"
-import { State } from "../../../codeCharta.model"
+import { CcState } from "../../../codeCharta.model"
 import { ThreeOrbitControlsService } from "../../../ui/codeMap/threeViewer/threeOrbitControls.service"
 import { visibleFileStatesSelector } from "../../selectors/visibleFileStates.selector"
 import { layoutAlgorithmSelector } from "../../store/appSettings/layoutAlgorithm/layoutAlgorithm.selector"
@@ -13,8 +13,8 @@ import { RenderCodeMapEffect } from "../renderCodeMapEffect/renderCodeMap.effect
 @Injectable()
 export class AutoFitCodeMapEffect {
 	constructor(
-		private store: Store<State>,
-		private state: StateService<State>,
+		private store: Store<CcState>,
+		private state: StateService<CcState>,
 		private renderCodeMapEffect: RenderCodeMapEffect,
 		private threeOrbitControlsService: ThreeOrbitControlsService
 	) {}

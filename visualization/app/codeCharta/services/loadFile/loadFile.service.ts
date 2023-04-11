@@ -5,7 +5,7 @@ import { clone } from "../../util/clone"
 import { CCFileValidationResult } from "../../util/fileValidator"
 import { setFiles, setStandardByNames } from "../../state/store/files/files.actions"
 import { FileState } from "../../model/files/files"
-import { NameDataPair, State } from "../../codeCharta.model"
+import { NameDataPair, CcState } from "../../codeCharta.model"
 import { referenceFileSelector } from "../../state/selectors/referenceFile/referenceFile.selector"
 import { ErrorDialogComponent } from "../../ui/dialogs/errorDialog/errorDialog.component"
 import { loadFilesValidationToErrorDialog } from "../../util/loadFilesValidationToErrorDialog"
@@ -28,7 +28,7 @@ export class LoadFileService implements OnDestroy {
 		)
 		.subscribe()
 
-	constructor(private store: Store<State>, private state: StateService<State>, private dialog: MatDialog) {}
+	constructor(private store: Store<CcState>, private state: StateService<CcState>, private dialog: MatDialog) {}
 
 	ngOnDestroy(): void {
 		this.referenceFileSubscription.unsubscribe()

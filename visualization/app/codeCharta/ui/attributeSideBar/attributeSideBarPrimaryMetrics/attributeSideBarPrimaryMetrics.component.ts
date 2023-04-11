@@ -4,7 +4,7 @@ import { Observable } from "rxjs"
 import { showAttributeTypeSelectorSelector } from "../util/showAttributeTypeSelector.selector"
 import { PrimaryMetrics, primaryMetricsSelector } from "../../../state/selectors/primaryMetrics/primaryMetrics.selector"
 import { Store } from "@ngrx/store"
-import { State } from "../../../codeCharta.model"
+import { CcState } from "../../../codeCharta.model"
 
 @Component({
 	selector: "cc-attribute-side-bar-primary-metrics",
@@ -15,7 +15,7 @@ export class AttributeSideBarPrimaryMetricsComponent {
 	primaryMetrics$: Observable<PrimaryMetrics>
 	showAttributeTypeSelector$: Observable<boolean>
 
-	constructor(store: Store<State>) {
+	constructor(store: Store<CcState>) {
 		this.primaryMetrics$ = store.select(primaryMetricsSelector)
 		this.showAttributeTypeSelector$ = store.select(showAttributeTypeSelectorSelector)
 	}

@@ -2,7 +2,7 @@ import { Component, ViewEncapsulation } from "@angular/core"
 import { Store } from "@ngrx/store"
 import { Observable } from "rxjs"
 
-import { CodeMapNode, State } from "../../../codeCharta.model"
+import { CodeMapNode, CcState } from "../../../codeCharta.model"
 import { mapTreeViewNodeSelector } from "./mapTreeViewNodeSelector/mapTreeViewNode.selector"
 
 @Component({
@@ -14,7 +14,7 @@ import { mapTreeViewNodeSelector } from "./mapTreeViewNodeSelector/mapTreeViewNo
 export class MapTreeViewComponent {
 	mapTreeViewNode$: Observable<CodeMapNode>
 
-	constructor(store: Store<State>) {
+	constructor(store: Store<CcState>) {
 		this.mapTreeViewNode$ = store.select(mapTreeViewNodeSelector)
 	}
 }

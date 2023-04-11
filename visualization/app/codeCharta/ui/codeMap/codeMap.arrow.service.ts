@@ -1,6 +1,6 @@
 import { Injectable, OnDestroy } from "@angular/core"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
-import { Node, EdgeVisibility, State } from "../../codeCharta.model"
+import { Node, EdgeVisibility, CcState } from "../../codeCharta.model"
 import { ArrowHelper, BufferGeometry, CubicBezierCurve3, Line, LineBasicMaterial, Object3D, Vector3 } from "three"
 import { ColorConverter } from "../../util/color/colorConverter"
 import { CodeMapBuilding } from "./rendering/codeMapBuilding"
@@ -35,8 +35,8 @@ export class CodeMapArrowService implements OnDestroy {
 		.subscribe()
 
 	constructor(
-		private store: Store<State>,
-		private state: StateService<State>,
+		private store: Store<CcState>,
+		private state: StateService<CcState>,
 		private threeSceneService: ThreeSceneService,
 		private idToBuildingService: IdToBuildingService
 	) {

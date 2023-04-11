@@ -4,7 +4,7 @@ import { KeyValue } from "@angular/common"
 import { legendMarkedPackagesSelector, MarkedPackagesMap } from "./legendMarkedPackages.selector"
 import { markPackages } from "../../../state/store/fileSettings/markedPackages/markedPackages.actions"
 import { Store } from "@ngrx/store"
-import { State } from "../../../codeCharta.model"
+import { CcState } from "../../../codeCharta.model"
 
 type MarkedPackagesMapKeyValue = KeyValue<keyof MarkedPackagesMap, MarkedPackagesMap[keyof MarkedPackagesMap]>
 
@@ -18,7 +18,7 @@ export class LegendMarkedPackagesComponent {
 	markedPackagesMap$: Observable<MarkedPackagesMap>
 	hasMarkedPackages$: Observable<boolean>
 
-	constructor(private store: Store<State>) {
+	constructor(private store: Store<CcState>) {
 		this.markedPackagesMap$ = store.select(legendMarkedPackagesSelector)
 		this.hasMarkedPackages$ = this.markedPackagesMap$.pipe(map(markedPackagesMap => Object.keys(markedPackagesMap).length > 0))
 	}

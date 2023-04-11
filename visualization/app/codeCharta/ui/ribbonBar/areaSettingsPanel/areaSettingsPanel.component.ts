@@ -8,7 +8,7 @@ import { invertAreaSelector } from "../../../state/store/appSettings/invertArea/
 import { debounce } from "../../../util/debounce"
 import { setInvertArea } from "../../../state/store/appSettings/invertArea/invertArea.actions"
 import { Store } from "@ngrx/store"
-import { State } from "../../../codeCharta.model"
+import { CcState } from "../../../codeCharta.model"
 
 @Component({
 	selector: "cc-area-settings-panel",
@@ -23,7 +23,7 @@ export class AreaSettingsPanelComponent {
 	enableFloorLabels$ = this.store.select(enableFloorLabelsSelector)
 	isInvertedArea$ = this.store.select(invertAreaSelector)
 
-	constructor(private store: Store<State>) {}
+	constructor(private store: Store<CcState>) {}
 
 	applyDebouncedMargin = debounce((margin: number) => {
 		this.store.dispatch(setMargin({ value: margin }))

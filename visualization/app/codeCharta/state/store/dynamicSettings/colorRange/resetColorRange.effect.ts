@@ -6,11 +6,11 @@ import { selectedColorMetricDataSelector } from "../../../selectors/accumulatedD
 import { calculateInitialColorRange } from "./calculateInitialColorRange"
 import { setColorRange } from "./colorRange.actions"
 import { fileActions } from "../../files/files.actions"
-import { State } from "../../../../codeCharta.model"
+import { CcState } from "../../../../codeCharta.model"
 
 @Injectable()
 export class ResetColorRangeEffect {
-	constructor(private actions$: Actions, private store: Store<State>) {}
+	constructor(private actions$: Actions, private store: Store<CcState>) {}
 
 	resetColorRange$ = createEffect(() =>
 		this.actions$.pipe(

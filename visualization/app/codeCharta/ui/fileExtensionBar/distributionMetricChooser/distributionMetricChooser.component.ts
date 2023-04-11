@@ -1,6 +1,6 @@
 import { Component, ViewEncapsulation } from "@angular/core"
 import { Store } from "@ngrx/store"
-import { State } from "../../../codeCharta.model"
+import { CcState } from "../../../codeCharta.model"
 import { setDistributionMetric } from "../../../state/store/dynamicSettings/distributionMetric/distributionMetric.actions"
 import { distributionMetricSelector } from "../../../state/store/dynamicSettings/distributionMetric/distributionMetric.selector"
 
@@ -12,7 +12,7 @@ import { distributionMetricSelector } from "../../../state/store/dynamicSettings
 export class DistributionMetricChooserComponent {
 	distributionMetric$ = this.store.select(distributionMetricSelector)
 
-	constructor(private store: Store<State>) {}
+	constructor(private store: Store<CcState>) {}
 
 	handleDistributionMetricChanged(value: string) {
 		this.store.dispatch(setDistributionMetric({ value }))

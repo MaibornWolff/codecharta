@@ -6,7 +6,7 @@ import { legendAreaMetricSelector } from "./selectors/legendAreaMetric.selector"
 import { legendEdgeMetricSelector } from "./selectors/legendEdgeMetric.selector"
 import { IsAttributeSideBarVisibleService } from "../../services/isAttributeSideBarVisible.service"
 import { Store } from "@ngrx/store"
-import { State } from "../../codeCharta.model"
+import { CcState } from "../../codeCharta.model"
 
 @Component({
 	selector: "cc-legend-panel",
@@ -22,7 +22,7 @@ export class LegendPanelComponent {
 	colorMetric$ = this.store.select(legendColorMetricSelector)
 	edgeMetric$ = this.store.select(legendEdgeMetricSelector)
 
-	constructor(public isAttributeSideBarVisibleService: IsAttributeSideBarVisibleService, private store: Store<State>) {}
+	constructor(public isAttributeSideBarVisibleService: IsAttributeSideBarVisibleService, private store: Store<CcState>) {}
 
 	toggleIsLegendVisible() {
 		this.isLegendVisible = !this.isLegendVisible

@@ -1,7 +1,7 @@
 import { Component, ViewEncapsulation } from "@angular/core"
 import { MatSlideToggleChange } from "@angular/material/slide-toggle"
 import { Store } from "@ngrx/store"
-import { State } from "../../../../codeCharta.model"
+import { CcState } from "../../../../codeCharta.model"
 import { setScreenshotToClipboardEnabled } from "../../../../state/store/appSettings/enableClipboard/screenshotToClipboardEnabled.actions"
 import { screenshotToClipboardEnabledSelector } from "../../../../state/store/appSettings/enableClipboard/screenshotToClipboardEnabled.selector"
 import { setExperimentalFeaturesEnabled } from "../../../../state/store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.actions"
@@ -25,7 +25,7 @@ export class GlobalConfigurationDialogComponent {
 	hideFlatBuildings$ = this.store.select(hideFlatBuildingsSelector)
 	resetCameraIfNewFileIsLoaded$ = this.store.select(resetCameraIfNewFileIsLoadedSelector)
 
-	constructor(private store: Store<State>) {}
+	constructor(private store: Store<CcState>) {}
 
 	handleResetCameraIfNewFileIsLoadedChanged(event: MatSlideToggleChange) {
 		this.store.dispatch(setResetCameraIfNewFileIsLoaded({ value: event.checked }))

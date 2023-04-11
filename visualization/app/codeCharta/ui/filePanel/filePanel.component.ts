@@ -1,6 +1,6 @@
 import { Component, ViewEncapsulation } from "@angular/core"
 import { Store } from "@ngrx/store"
-import { State } from "../../codeCharta.model"
+import { CcState } from "../../codeCharta.model"
 import { isDeltaStateSelector } from "../../state/selectors/isDeltaState.selector"
 
 @Component({
@@ -12,5 +12,5 @@ import { isDeltaStateSelector } from "../../state/selectors/isDeltaState.selecto
 export class FilePanelComponent {
 	isDeltaState$ = this.store.select(isDeltaStateSelector)
 
-	constructor(private store: Store<State>) {}
+	constructor(private store: Store<CcState>) {}
 }

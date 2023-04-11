@@ -14,7 +14,7 @@ import { setInvertHeight } from "../../../state/store/appSettings/invertHeight/i
 import { isDeltaStateSelector } from "../../../state/selectors/isDeltaState.selector"
 import { debounce } from "../../../util/debounce"
 import { Store } from "@ngrx/store"
-import { State } from "../../../codeCharta.model"
+import { CcState } from "../../../codeCharta.model"
 
 @Component({
 	selector: "cc-height-settings-panel",
@@ -32,7 +32,7 @@ export class HeightSettingsPanelComponent {
 	invertHeight$ = this.store.select(invertHeightSelector)
 	isDeltaState$ = this.store.select(isDeltaStateSelector)
 
-	constructor(private store: Store<State>) {}
+	constructor(private store: Store<CcState>) {}
 
 	applyDebouncedTopLabels = debounce((amountOfTopLabels: number) => {
 		this.store.dispatch(setAmountOfTopLabels({ value: amountOfTopLabels }))

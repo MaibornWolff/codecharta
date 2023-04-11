@@ -8,7 +8,7 @@ import { accumulatedDataSelector } from "../../state/selectors/accumulatedData/a
 import { filesSelector } from "../../state/store/files/files.selector"
 import { Mesh } from "three"
 import { State as StateService } from "@ngrx/store"
-import { State } from "../../codeCharta.model"
+import { CcState } from "../../codeCharta.model"
 
 @Component({
 	selector: "cc-export-threed-map-button",
@@ -17,7 +17,7 @@ import { State } from "../../codeCharta.model"
 })
 export class Export3DMapButtonComponent {
 	private exporter = new STLExporter()
-	constructor(private state: StateService<State>, private threeSceneService: ThreeSceneService) {}
+	constructor(private state: StateService<CcState>, private threeSceneService: ThreeSceneService) {}
 
 	downloadStlFile() {
 		const files = filesSelector(this.state.getValue())

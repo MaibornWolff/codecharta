@@ -1,7 +1,7 @@
 import { createAction, props } from "@ngrx/store"
-import { State } from "../../../../codeCharta.model"
+import { CcState } from "../../../../codeCharta.model"
 
 export const setRightClickedNodeData = createAction(
 	"SET_RIGHT_CLICKED_NODE_DATA",
-	props<{ value: State["appStatus"]["rightClickedNodeData"] }>()
+	props<{ value: CcState["appStatus"]["rightClickedNodeData"] }>()
 )

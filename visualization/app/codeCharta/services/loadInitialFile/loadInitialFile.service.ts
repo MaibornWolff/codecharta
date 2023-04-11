@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core"
 import { MatDialog } from "@angular/material/dialog"
 import { HttpClient } from "@angular/common/http"
-import { NameDataPair, State } from "../../codeCharta.model"
+import { NameDataPair, CcState } from "../../codeCharta.model"
 import { getCCFiles } from "../../model/files/files.helper"
 import { setDelta, setStandard } from "../../state/store/files/files.actions"
 import { ErrorDialogComponent } from "../../ui/dialogs/errorDialog/errorDialog.component"
@@ -19,7 +19,7 @@ export class LoadInitialFileService {
 
 	constructor(
 		private store: Store,
-		private state: StateService<State>,
+		private state: StateService<CcState>,
 		private dialog: MatDialog,
 		private loadFileService: LoadFileService,
 		private httpClient: HttpClient

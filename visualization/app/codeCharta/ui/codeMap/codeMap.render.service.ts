@@ -4,7 +4,7 @@ import { createTreemapNodes } from "../../util/algorithm/treeMapLayout/treeMapGe
 import { CodeMapLabelService } from "./codeMap.label.service"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { CodeMapArrowService } from "./codeMap.arrow.service"
-import { CodeMapNode, LayoutAlgorithm, Node, State } from "../../codeCharta.model"
+import { CodeMapNode, LayoutAlgorithm, Node, CcState } from "../../codeCharta.model"
 import { isDeltaState } from "../../model/files/files.helper"
 import { StreetLayoutGenerator } from "../../util/algorithm/streetLayout/streetLayoutGenerator"
 import { ThreeStatsService } from "./threeViewer/threeStats.service"
@@ -25,8 +25,8 @@ export class CodeMapRenderService implements OnDestroy {
 	private subscription: Subscription
 
 	constructor(
-		private store: Store<State>,
-		private state: StateService<State>,
+		private store: Store<CcState>,
+		private state: StateService<CcState>,
 		private threeSceneService: ThreeSceneService,
 		private codeMapLabelService: CodeMapLabelService,
 		private codeMapArrowService: CodeMapArrowService,
@@ -62,7 +62,7 @@ export class CodeMapRenderService implements OnDestroy {
 	}
 
 	private setNewMapMesh(allMeshNodes, visibleSortedNodes) {
-		const state = this.state.getValue() as State
+		const state = this.state.getValue() as CcState
 		const mapMesh = new CodeMapMesh(visibleSortedNodes, state, isDeltaState(state.files))
 		this.threeSceneService.setMapMesh(allMeshNodes, mapMesh)
 	}
@@ -77,7 +77,7 @@ export class CodeMapRenderService implements OnDestroy {
 	}
 
 	private getNodes(map: CodeMapNode) {
-		const state = this.state.getValue() as State
+		const state = this.state.getValue() as CcState
 		const nodeMetricData = metricDataSelector(state).nodeMetricData
 		const {
 			appSettings: { layoutAlgorithm },

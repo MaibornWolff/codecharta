@@ -1,6 +1,6 @@
 import { Component, Input, OnInit, ViewEncapsulation } from "@angular/core"
 
-import { CodeMapNode, State } from "../../../../codeCharta.model"
+import { CodeMapNode, CcState } from "../../../../codeCharta.model"
 import { setHoveredNodeId } from "../../../../state/store/appStatus/hoveredNodeId/hoveredNodeId.actions"
 import { setRightClickedNodeData } from "../../../../state/store/appStatus/rightClickedNodeData/rightClickedNodeData.actions"
 import { rightClickedNodeDataSelector } from "../../../../state/store/appStatus/rightClickedNodeData/rightClickedNodeData.selector"
@@ -25,7 +25,7 @@ export class MapTreeViewLevelComponent implements OnInit {
 
 	areMetricGreaterZero = false
 
-	constructor(private store: Store<State>) {}
+	constructor(private store: Store<CcState>) {}
 
 	ngOnInit(): void {
 		// open root folder initially

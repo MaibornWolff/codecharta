@@ -3,7 +3,7 @@ import { Observable } from "rxjs"
 import { isEdgeMetricVisibleSelector } from "../../../../state/store/appSettings/isEdgeMetricVisible/isEdgeMetricVisible.selector"
 import { toggleEdgeMetricVisible } from "../../../../state/store/appSettings/isEdgeMetricVisible/isEdgeMetricVisible.actions"
 import { Store } from "@ngrx/store"
-import { State } from "../../../../codeCharta.model"
+import { CcState } from "../../../../codeCharta.model"
 
 @Component({
 	selector: "cc-edge-metric-toggle",
@@ -13,7 +13,7 @@ import { State } from "../../../../codeCharta.model"
 export class EdgeMetricToggleComponent implements OnInit {
 	isEdgeMetricVisible$: Observable<boolean>
 
-	constructor(private store: Store<State>) {}
+	constructor(private store: Store<CcState>) {}
 
 	ngOnInit(): void {
 		this.isEdgeMetricVisible$ = this.store.select(isEdgeMetricVisibleSelector)

@@ -1,5 +1,5 @@
 import { State as StateService } from "@ngrx/store"
-import { State } from "../../../../codeCharta.model"
+import { CcState } from "../../../../codeCharta.model"
 import { CustomConfigItem } from "../../customConfigs.component"
 import { visibleFilesBySelectionModeSelector } from "../../visibleFilesBySelectionMode.selector"
 
@@ -10,7 +10,7 @@ type MissingCustomConfigsProperties = {
 
 export function getMissingCustomConfigModeAndMaps(
 	configItem: CustomConfigItem,
-	state: StateService<State>
+	state: StateService<CcState>
 ): MissingCustomConfigsProperties {
 	const { mapSelectionMode, assignedMaps } = visibleFilesBySelectionModeSelector(state.getValue())
 	const mapNames = []

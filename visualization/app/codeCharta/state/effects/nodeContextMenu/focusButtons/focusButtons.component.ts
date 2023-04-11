@@ -2,7 +2,7 @@ import { Component, Input, ViewEncapsulation } from "@angular/core"
 import { Store } from "@ngrx/store"
 import { Observable, map } from "rxjs"
 
-import { CodeMapNode, State } from "../../../../codeCharta.model"
+import { CodeMapNode, CcState } from "../../../../codeCharta.model"
 import { currentFocusedNodePathSelector } from "../../../store/dynamicSettings/focusedNodePath/currentFocused.selector"
 import { focusNode, unfocusAllNodes, unfocusNode } from "../../../store/dynamicSettings/focusedNodePath/focusedNodePath.actions"
 import { focusedNodePathSelector } from "../../../store/dynamicSettings/focusedNodePath/focusedNodePath.selector"
@@ -18,7 +18,7 @@ export class FocusButtonsComponent {
 	currentFocusedNodePath$: Observable<string | undefined>
 	hasPreviousFocusedNodePath$: Observable<boolean>
 
-	constructor(private store: Store<State>) {
+	constructor(private store: Store<CcState>) {
 		this.currentFocusedNodePath$ = this.store.select(currentFocusedNodePathSelector)
 		this.hasPreviousFocusedNodePath$ = this.store
 			.select(focusedNodePathSelector)

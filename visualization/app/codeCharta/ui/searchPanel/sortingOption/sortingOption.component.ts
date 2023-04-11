@@ -2,7 +2,7 @@ import { Component, ViewEncapsulation } from "@angular/core"
 import { Store } from "@ngrx/store"
 import { Observable } from "rxjs"
 
-import { SortingOption, State } from "../../../codeCharta.model"
+import { SortingOption, CcState } from "../../../codeCharta.model"
 import { setSortingOption } from "../../../state/store/dynamicSettings/sortingOption/sortingOption.actions"
 import { sortingOrderSelector } from "../../../state/store/dynamicSettings/sortingOption/sortingOrder.selector"
 
@@ -15,7 +15,7 @@ export class SortingOptionComponent {
 	sortingOptions = Object.values(SortingOption)
 	selectedSortingOption$: Observable<SortingOption>
 
-	constructor(private store: Store<State>) {
+	constructor(private store: Store<CcState>) {
 		this.selectedSortingOption$ = store.select(sortingOrderSelector)
 	}
 

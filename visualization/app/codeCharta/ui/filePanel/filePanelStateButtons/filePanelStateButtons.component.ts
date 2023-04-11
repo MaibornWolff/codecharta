@@ -1,6 +1,6 @@
 import { Component, ViewEncapsulation } from "@angular/core"
 import { Store } from "@ngrx/store"
-import { State } from "../../../codeCharta.model"
+import { CcState } from "../../../codeCharta.model"
 import { isDeltaStateSelector } from "../../../state/selectors/isDeltaState.selector"
 import { FileSelectionModeService } from "../fileSelectionMode.service"
 
@@ -12,5 +12,5 @@ import { FileSelectionModeService } from "../fileSelectionMode.service"
 export class FilePanelStateButtonsComponent {
 	isDeltaState$ = this.store.select(isDeltaStateSelector)
 
-	constructor(private store: Store<State>, public fileSelectionModeService: FileSelectionModeService) {}
+	constructor(private store: Store<CcState>, public fileSelectionModeService: FileSelectionModeService) {}
 }

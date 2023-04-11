@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewEncapsulation } from "@angular/core"
 import { Store } from "@ngrx/store"
 import { Observable } from "rxjs"
-import { State } from "../../../codeCharta.model"
+import { CcState } from "../../../codeCharta.model"
 
 import { toggleSortingOrderAscending } from "../../../state/store/appSettings/sortingOrderAscending/sortingOrderAscending.actions"
 import { sortingOrderAscendingSelector } from "../../../state/store/appSettings/sortingOrderAscending/sortingOrderAscending.selector"
@@ -14,7 +14,7 @@ import { sortingOrderAscendingSelector } from "../../../state/store/appSettings/
 export class SortingButtonComponent implements OnInit {
 	sortingOrderAscending$: Observable<boolean>
 
-	constructor(private store: Store<State>) {}
+	constructor(private store: Store<CcState>) {}
 
 	ngOnInit(): void {
 		this.sortingOrderAscending$ = this.store.select(sortingOrderAscendingSelector)

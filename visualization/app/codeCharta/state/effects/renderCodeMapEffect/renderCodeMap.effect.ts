@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core"
 import { Actions, createEffect, ofType } from "@ngrx/effects"
 import { Store } from "@ngrx/store"
 import { asyncScheduler, combineLatest, filter, tap, throttleTime } from "rxjs"
-import { State } from "../../../codeCharta.model"
+import { CcState } from "../../../codeCharta.model"
 import { CodeMapRenderService } from "../../../ui/codeMap/codeMap.render.service"
 import { ThreeRendererService } from "../../../ui/codeMap/threeViewer/threeRenderer.service"
 import { UploadFilesService } from "../../../ui/toolBar/uploadFilesButton/uploadFiles.service"
@@ -17,7 +17,7 @@ export const maxFPS = 1000 / 60
 @Injectable()
 export class RenderCodeMapEffect {
 	constructor(
-		private store: Store<State>,
+		private store: Store<CcState>,
 		private actions$: Actions,
 		private uploadFilesService: UploadFilesService,
 		private threeRendererService: ThreeRendererService,

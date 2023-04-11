@@ -3,7 +3,7 @@ import { Actions, createEffect, ofType } from "@ngrx/effects"
 import { fileActions } from "../../store/files/files.actions"
 import { setState } from "../../store/state.actions"
 import { State as StateService } from "@ngrx/store"
-import { State } from "../../../codeCharta.model"
+import { CcState } from "../../../codeCharta.model"
 import { map } from "rxjs"
 import { getVisibleFiles, isPartialState } from "../../../model/files/files.helper"
 import { visibleFileStatesSelector } from "../../selectors/visibleFileStates.selector"
@@ -15,7 +15,7 @@ import { getMergedAttributeDescriptors } from "./utils/attributeDescriptors.merg
 
 @Injectable()
 export class UpdateFileSettingsEffect {
-	constructor(private actions$: Actions, private stateService: StateService<State>) {}
+	constructor(private actions$: Actions, private stateService: StateService<CcState>) {}
 
 	updateFileSettings$ = createEffect(() =>
 		this.actions$.pipe(

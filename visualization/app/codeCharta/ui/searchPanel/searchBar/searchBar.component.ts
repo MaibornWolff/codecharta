@@ -4,7 +4,7 @@ import { searchPatternSelector } from "../../../state/store/dynamicSettings/sear
 import { isSearchPatternEmptySelector } from "./selectors/isSearchPatternEmpty.selector"
 import { isFlattenPatternDisabledSelector } from "./selectors/isFlattenPatternDisabled.selector"
 import { isExcludePatternDisabledSelector } from "./selectors/isExcludePatternDisabled.selector"
-import { BlacklistType, State } from "../../../codeCharta.model"
+import { BlacklistType, CcState } from "../../../codeCharta.model"
 import { blacklistSearchPattern } from "./blacklistSearchPattern.effect"
 import { debounce } from "../../../util/debounce"
 import { Store } from "@ngrx/store"
@@ -22,7 +22,7 @@ export class SearchBarComponent {
 	isExcludePatternDisabled$ = this.store.select(isExcludePatternDisabledSelector)
 	setSearchPatternDebounced = debounce((event: Event) => this.setSearchPattern(event), 400)
 
-	constructor(private store: Store<State>) {}
+	constructor(private store: Store<CcState>) {}
 
 	setSearchPattern(event: Event) {
 		const eventTarget = event.target as HTMLInputElement

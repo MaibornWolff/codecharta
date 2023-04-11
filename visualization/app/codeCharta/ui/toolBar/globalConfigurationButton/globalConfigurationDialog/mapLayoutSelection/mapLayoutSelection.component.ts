@@ -1,7 +1,7 @@
 import { Component, ViewEncapsulation } from "@angular/core"
 import { MatSelectChange } from "@angular/material/select"
 import { Store } from "@ngrx/store"
-import { LayoutAlgorithm, State } from "../../../../../codeCharta.model"
+import { LayoutAlgorithm, CcState } from "../../../../../codeCharta.model"
 import { setLayoutAlgorithm } from "../../../../../state/store/appSettings/layoutAlgorithm/layoutAlgorithm.actions"
 import { layoutAlgorithmSelector } from "../../../../../state/store/appSettings/layoutAlgorithm/layoutAlgorithm.selector"
 import { setMaxTreeMapFiles } from "../../../../../state/store/appSettings/maxTreeMapFiles/maxTreeMapFiles.actions"
@@ -18,7 +18,7 @@ export class MapLayoutSelectionComponent {
 	layoutAlgorithm$ = this.store.select(layoutAlgorithmSelector)
 	maxTreeMapFiles$ = this.store.select(maxTreeMapFilesSelector)
 
-	constructor(private store: Store<State>) {}
+	constructor(private store: Store<CcState>) {}
 
 	handleSelectedLayoutAlgorithmChanged(event: MatSelectChange) {
 		this.store.dispatch(setLayoutAlgorithm(event.value))

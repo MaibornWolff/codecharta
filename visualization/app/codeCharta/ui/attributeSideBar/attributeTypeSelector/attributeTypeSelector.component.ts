@@ -1,6 +1,6 @@
 import { Component, Input, ViewEncapsulation } from "@angular/core"
 import { Store } from "@ngrx/store"
-import { AttributeTypes, AttributeTypeValue, State } from "../../../codeCharta.model"
+import { AttributeTypes, AttributeTypeValue, CcState } from "../../../codeCharta.model"
 import { updateAttributeType } from "../../../state/store/fileSettings/attributeTypes/attributeTypes.actions"
 import { attributeTypesSelector } from "../../../state/store/fileSettings/attributeTypes/attributeTypes.selector"
 
@@ -16,7 +16,7 @@ export class AttributeTypeSelectorComponent {
 
 	attributeTypes$ = this.store.select(attributeTypesSelector)
 
-	constructor(private store: Store<State>) {}
+	constructor(private store: Store<CcState>) {}
 
 	setToAbsolute() {
 		this.setAttributeType(AttributeTypeValue.absolute)

@@ -5,7 +5,7 @@ import { Injectable } from "@angular/core"
 import { getCustomConfigItemGroups } from "./customConfigList/getCustomConfigItemGroups"
 import { visibleFilesBySelectionModeSelector } from "./visibleFilesBySelectionMode.selector"
 import { Store } from "@ngrx/store"
-import { State } from "../../codeCharta.model"
+import { CcState } from "../../codeCharta.model"
 
 @Injectable()
 export class CustomConfigHelperService {
@@ -19,5 +19,5 @@ export class CustomConfigHelperService {
 		CustomConfigHelper.customConfigChange$
 	]).pipe(map(([visibleFilesBySelectionMode]) => getCustomConfigItemGroups(visibleFilesBySelectionMode)))
 
-	constructor(private store: Store<State>) {}
+	constructor(private store: Store<CcState>) {}
 }

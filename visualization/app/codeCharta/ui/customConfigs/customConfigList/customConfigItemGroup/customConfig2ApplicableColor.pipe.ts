@@ -1,12 +1,12 @@
 import { Pipe, PipeTransform } from "@angular/core"
 import { State as StateService } from "@ngrx/store"
-import { State } from "../../../../codeCharta.model"
+import { CcState } from "../../../../codeCharta.model"
 import { CustomConfigItem } from "../../customConfigs.component"
 import { getMissingCustomConfigModeAndMaps } from "./getMissingCustomConfigModeAndMaps"
 
 @Pipe({ name: "customConfig2ApplicableColor" })
 export class CustomConfig2ApplicableColor implements PipeTransform {
-	constructor(private state: StateService<State>) {}
+	constructor(private state: StateService<CcState>) {}
 
 	transform(customConfig: CustomConfigItem): string {
 		const { mapSelectionMode, mapNames } = getMissingCustomConfigModeAndMaps(customConfig, this.state)

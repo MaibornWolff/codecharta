@@ -2,7 +2,7 @@ import { Component, ViewEncapsulation } from "@angular/core"
 import { MatCheckboxChange } from "@angular/material/checkbox"
 import { Store } from "@ngrx/store"
 import { map } from "rxjs"
-import { State } from "../../../codeCharta.model"
+import { CcState } from "../../../codeCharta.model"
 import { setAmountOfEdgePreviews } from "../../../state/store/appSettings/amountOfEdgePreviews/amountOfEdgePreviews.actions"
 import { amountOfEdgePreviewsSelector } from "../../../state/store/appSettings/amountOfEdgePreviews/amountOfEdgePreviews.selector"
 import { setEdgeHeight } from "../../../state/store/appSettings/edgeHeight/edgeHeight.actions"
@@ -28,7 +28,7 @@ export class EdgeSettingsPanelComponent {
 	edgeHeight$ = this.store.select(edgeHeightSelector)
 	showOnlyBuildingsWithEdges$ = this.store.select(showOnlyBuildingsWithEdgesSelector)
 
-	constructor(private store: Store<State>) {}
+	constructor(private store: Store<CcState>) {}
 
 	applySettingsAmountOfEdgePreviews = (value: number) => {
 		this.store.dispatch(setAmountOfEdgePreviews({ value }))

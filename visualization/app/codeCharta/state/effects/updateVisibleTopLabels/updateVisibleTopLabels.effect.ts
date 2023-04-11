@@ -7,11 +7,11 @@ import { codeMapNodesSelector } from "../../selectors/accumulatedData/codeMapNod
 import { setAmountOfTopLabels } from "../../store/appSettings/amountOfTopLabels/amountOfTopLabels.actions"
 import { getNumberOfTopLabels } from "./getNumberOfTopLabels"
 import { Store } from "@ngrx/store"
-import { State } from "../../../codeCharta.model"
+import { CcState } from "../../../codeCharta.model"
 
 @Injectable()
 export class UpdateVisibleTopLabelsEffect {
-	constructor(private store: Store<State>) {}
+	constructor(private store: Store<CcState>) {}
 
 	updateVisibleTopLabels$ = createEffect(() =>
 		this.store.select(visibleFileStatesSelector).pipe(

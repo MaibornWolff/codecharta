@@ -3,7 +3,7 @@ import { HandleValueChange } from "./rangeSlider/rangeSlider.component"
 import { setColorRange } from "../../../../state/store/dynamicSettings/colorRange/colorRange.actions"
 import { metricColorRangeSliderColorsSelector } from "./selectors/metricColorRangeSliderColors.selector"
 import { metricColorRangeSliderValuesSelector } from "./selectors/metricColorRangeSliderValues.selector"
-import { ColorRange, State } from "../../../../codeCharta.model"
+import { ColorRange, CcState } from "../../../../codeCharta.model"
 import { debounce } from "../../../../util/debounce"
 import { Store } from "@ngrx/store"
 
@@ -19,7 +19,7 @@ export class MetricColorRangeSliderComponent {
 	private newLeftValue: null | number = null
 	private newRightValue: null | number = null
 
-	constructor(private store: Store<State>) {}
+	constructor(private store: Store<CcState>) {}
 
 	handleValueChange: HandleValueChange = ({ newLeftValue, newRightValue }) => {
 		if (newLeftValue !== undefined) {

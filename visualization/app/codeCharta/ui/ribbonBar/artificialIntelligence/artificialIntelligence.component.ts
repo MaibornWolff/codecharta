@@ -1,6 +1,6 @@
 import { Component, ViewEncapsulation } from "@angular/core"
 import { Store } from "@ngrx/store"
-import { State } from "../../../codeCharta.model"
+import { CcState } from "../../../codeCharta.model"
 import { artificialIntelligenceSelector } from "./selectors/artificialIntelligence.selector"
 
 @Component({
@@ -12,5 +12,5 @@ import { artificialIntelligenceSelector } from "./selectors/artificialIntelligen
 export class ArtificialIntelligenceComponent {
 	data$ = this.store.select(artificialIntelligenceSelector)
 
-	constructor(private store: Store<State>) {}
+	constructor(private store: Store<CcState>) {}
 }

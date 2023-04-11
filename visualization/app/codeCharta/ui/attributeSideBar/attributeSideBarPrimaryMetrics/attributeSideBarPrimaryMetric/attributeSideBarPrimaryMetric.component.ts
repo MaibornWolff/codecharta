@@ -1,7 +1,7 @@
 import { Component, Input, ViewEncapsulation } from "@angular/core"
 import { Store } from "@ngrx/store"
 import { Observable } from "rxjs"
-import { State } from "../../../../codeCharta.model"
+import { CcState } from "../../../../codeCharta.model"
 
 import { Metric } from "../../util/metric"
 import { showAttributeTypeSelectorSelector } from "../../util/showAttributeTypeSelector.selector"
@@ -16,7 +16,7 @@ export class AttributeSideBarPrimaryMetricComponent {
 	@Input() metric: Metric
 	showAttributeTypeSelector$: Observable<boolean>
 
-	constructor(store: Store<State>) {
+	constructor(store: Store<CcState>) {
 		this.showAttributeTypeSelector$ = store.select(showAttributeTypeSelectorSelector)
 	}
 }

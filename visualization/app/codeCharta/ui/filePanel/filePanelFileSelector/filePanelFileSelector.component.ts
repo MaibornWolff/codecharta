@@ -1,7 +1,7 @@
 import { Component, OnDestroy, ViewEncapsulation } from "@angular/core"
 import { filesSelector } from "../../../state/store/files/files.selector"
 import { invertStandard, setAll, setStandard } from "../../../state/store/files/files.actions"
-import { CCFile, State } from "../../../codeCharta.model"
+import { CCFile, CcState } from "../../../codeCharta.model"
 import { FileSelectionState, FileState } from "../../../model/files/files"
 import { Store } from "@ngrx/store"
 
@@ -21,7 +21,7 @@ export class FilePanelFileSelectorComponent implements OnDestroy {
 		this.selectedFilesInUI = this.selectedFilesInStore
 	})
 
-	constructor(private store: Store<State>) {}
+	constructor(private store: Store<CcState>) {}
 
 	ngOnDestroy(): void {
 		this.filesSubscription.unsubscribe()

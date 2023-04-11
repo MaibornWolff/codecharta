@@ -1,5 +1,5 @@
 import { TestBed } from "@angular/core/testing"
-import { AttributeTypeValue, RecursivePartial, State } from "../../codeCharta.model"
+import { AttributeTypeValue, RecursivePartial, CcState } from "../../codeCharta.model"
 import rootReducer from "./state.manager"
 import { defaultState, setState } from "./state.actions"
 import { expect } from "@jest/globals"
@@ -11,7 +11,7 @@ import { defaultMargin } from "./dynamicSettings/margin/margin.actions"
 
 describe("rootReducer", () => {
 	it("should update partial state", () => {
-		const partialState: RecursivePartial<State> = {
+		const partialState: RecursivePartial<CcState> = {
 			appSettings: {
 				invertArea: true
 			}
@@ -28,7 +28,7 @@ describe("rootReducer", () => {
 			dynamicSettings: {
 				notValidKey: "doesn't exist"
 			}
-		} as RecursivePartial<State>
+		} as RecursivePartial<CcState>
 
 		const newState = rootReducer(clone(defaultState), setState(partialState))
 
@@ -36,7 +36,7 @@ describe("rootReducer", () => {
 	})
 
 	it("should update partial state with objects that have dynamic keys ", () => {
-		const partialState: RecursivePartial<State> = {
+		const partialState: RecursivePartial<CcState> = {
 			fileSettings: {
 				attributeTypes: {
 					nodes: {
@@ -69,7 +69,7 @@ describe("rootReducer", () => {
 			dynamicSettings: {
 				margin: 20
 			}
-		} as RecursivePartial<State>
+		} as RecursivePartial<CcState>
 
 		const marginChangedSpy = jest.fn()
 		store.select(marginSelector).subscribe(marginChangedSpy)

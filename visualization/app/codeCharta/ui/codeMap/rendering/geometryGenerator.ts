@@ -1,4 +1,4 @@
-import { Node, State } from "../../../codeCharta.model"
+import { Node, CcState } from "../../../codeCharta.model"
 import { CodeMapGeometricDescription } from "./codeMapGeometricDescription"
 import { addBoxToVertexData, IntermediateVertexData, BoxMeasures } from "./geometryGenerationHelper"
 import { ColorConverter } from "../../../util/color/colorConverter"
@@ -16,7 +16,7 @@ export class GeometryGenerator {
 	private floorGradient: string[]
 	private materials: Material[]
 
-	build(nodes: Node[], material: Material, state: State, isDeltaState: boolean): BuildResult {
+	build(nodes: Node[], material: Material, state: CcState, isDeltaState: boolean): BuildResult {
 		const desc = new CodeMapGeometricDescription(treeMapSize)
 
 		this.floorGradient = ColorConverter.gradient("#333333", "#DDDDDD", this.getMaxNodeDepth(nodes))
@@ -97,7 +97,7 @@ export class GeometryGenerator {
 		node: Node,
 		index: number,
 		desc: CodeMapGeometricDescription,
-		state: State,
+		state: CcState,
 		isDeltaState: boolean
 	) {
 		const measures = this.mapNodeToLocalBox(node)

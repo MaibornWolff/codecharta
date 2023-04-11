@@ -1,5 +1,5 @@
 import { Component, ViewEncapsulation } from "@angular/core"
-import { ColorLabelOptions, ColorMode, State } from "../../../codeCharta.model"
+import { ColorLabelOptions, ColorMode, CcState } from "../../../codeCharta.model"
 import { isDeltaStateSelector } from "../../../state/selectors/isDeltaState.selector"
 import { setColorMode } from "../../../state/store/dynamicSettings/colorMode/colorMode.actions"
 import { colorModeSelector } from "../../../state/store/dynamicSettings/colorMode/colorMode.selector"
@@ -25,7 +25,7 @@ export class ColorSettingsPanelComponent {
 	isColorRangeInverted = false
 	areDeltaColorsInverted = false
 
-	constructor(private store: Store<State>, private stateService: StateService<State>) {}
+	constructor(private store: Store<CcState>, private stateService: StateService<CcState>) {}
 
 	handleColorModeChange(gradient: ColorMode) {
 		this.store.dispatch(setColorMode({ value: gradient }))

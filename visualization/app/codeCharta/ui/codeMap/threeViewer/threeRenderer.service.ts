@@ -5,7 +5,7 @@ import { WEBGL } from "three/examples/jsm/WebGL"
 import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass"
 import { CustomComposer } from "../rendering/postprocessor/customComposer"
 import { isWhiteBackgroundSelector } from "../../../state/store/appSettings/isWhiteBackground/isWhiteBackground.selector"
-import { SharpnessMode, State } from "../../../codeCharta.model"
+import { SharpnessMode, CcState } from "../../../codeCharta.model"
 import { fxaaShaderStrings } from "../rendering/shaders/loaders/fxaaShaderStrings"
 import { State as StateService, Store } from "@ngrx/store"
 
@@ -36,7 +36,7 @@ export class ThreeRendererService {
 	scene: Scene
 	camera: Camera
 
-	constructor(private store: Store<State>, private state: StateService<State>) {}
+	constructor(private store: Store<CcState>, private state: StateService<CcState>) {}
 
 	init(containerWidth: number, containerHeight: number, scene: Scene, camera: Camera) {
 		this.scene = scene

@@ -4,7 +4,7 @@ import { defaultDynamicSettings, dynamicSettings } from "./dynamicSettings/dynam
 import { defaultFiles, files } from "./files/files.reducer"
 import { appStatus, defaultAppStatus } from "./appStatus/appStatus.reducer"
 import { ActionReducer } from "@ngrx/store"
-import { State } from "../../codeCharta.model"
+import { CcState } from "../../codeCharta.model"
 import { isSetStateAction } from "./state.actions"
 import { clone } from "../../util/clone"
 
@@ -15,7 +15,7 @@ export const appReducers = {
 	files,
 	appStatus
 }
-export const defaultState: State = {
+export const defaultState: CcState = {
 	fileSettings: defaultFileSettings,
 	appSettings: defaultAppSettings,
 	dynamicSettings: defaultDynamicSettings,
@@ -24,7 +24,7 @@ export const defaultState: State = {
 }
 
 export const setStateMiddleware =
-	(reducer: ActionReducer<State>): ActionReducer<State> =>
+	(reducer: ActionReducer<CcState>): ActionReducer<CcState> =>
 	(state, action) => {
 		if (isSetStateAction(action)) {
 			const newState = clone(state)

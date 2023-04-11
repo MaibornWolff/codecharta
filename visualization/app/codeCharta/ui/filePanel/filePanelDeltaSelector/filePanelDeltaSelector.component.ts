@@ -1,7 +1,7 @@
 import { Component, ViewEncapsulation } from "@angular/core"
 import { Store } from "@ngrx/store"
 import { map } from "rxjs"
-import { CCFile, State } from "../../../codeCharta.model"
+import { CCFile, CcState } from "../../../codeCharta.model"
 import { FileSelectionState } from "../../../model/files/files"
 import { referenceFileSelector } from "../../../state/selectors/referenceFile/referenceFile.selector"
 import { setDeltaComparison, setDeltaReference, switchReferenceAndComparison } from "../../../state/store/files/files.actions"
@@ -21,7 +21,7 @@ export class FilePanelDeltaSelectorComponent {
 	possibleComparisonFiles$ = this.files$.pipe(map(files => files.filter(file => file.selectedAs !== FileSelectionState.Reference)))
 	pictogramBackground$ = this.store.select(pictogramBackgroundSelector)
 
-	constructor(private store: Store<State>) {}
+	constructor(private store: Store<CcState>) {}
 
 	handleDeltaReferenceFileChange(file: CCFile) {
 		this.store.dispatch(setDeltaReference({ file }))

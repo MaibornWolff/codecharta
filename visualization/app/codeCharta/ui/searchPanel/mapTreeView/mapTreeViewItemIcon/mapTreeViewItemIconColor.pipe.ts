@@ -1,7 +1,7 @@
 import { Pipe, PipeTransform } from "@angular/core"
 import { State as StateService } from "@ngrx/store"
 
-import { CodeMapNode, State } from "../../../../codeCharta.model"
+import { CodeMapNode, CcState } from "../../../../codeCharta.model"
 import { getMarkingColor, isLeaf } from "../../../../util/codeMapHelper"
 
 @Pipe({ name: "mapTreeViewItemIconColor", pure: false })
@@ -9,7 +9,7 @@ export class MapTreeViewItemIconColorPipe implements PipeTransform {
 	static defaultColor = "#000000"
 	static areMetricZeroColor = "#BDBDBD"
 
-	constructor(private state: StateService<State>) {}
+	constructor(private state: StateService<CcState>) {}
 
 	transform(value: CodeMapNode): string | undefined {
 		const { areaMetric } = this.state.getValue().dynamicSettings
