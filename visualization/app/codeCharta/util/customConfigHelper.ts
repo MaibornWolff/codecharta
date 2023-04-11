@@ -37,23 +37,7 @@ export class CustomConfigHelper {
 
 	static loadCustomConfigsFromLocalStorage() {
 		const ccLocalStorage = this.getCcLocalStorage()
-		const configs = new Map(ccLocalStorage?.customConfigs)
-		this.mapOldConfigStructureToNew(configs)
-		return configs
-	}
-
-	// TODO [2023-04-01] remove support
-	private static mapOldConfigStructureToNew(configs: Map<string, CustomConfig>) {
-		for (const config of configs.values()) {
-			if (config["mapChecksum"]) {
-				const checksums = config["mapChecksum"].split(";")
-				config.assignedMaps = new Map(checksums.map((checksum, index) => [checksum, config["assignedMaps"][index]]))
-			}
-			// @ts-ignore
-			if (config.mapSelectionMode === "MULTIPLE") {
-				config.mapSelectionMode = CustomConfigMapSelectionMode.MULTIPLE
-			}
-		}
+		return new Map(ccLocalStorage?.customConfigs)
 	}
 
 	private static getCcLocalStorage() {
@@ -111,8 +95,6 @@ export class CustomConfigHelper {
 
 	static importCustomConfigs(content: string) {
 		const importedCustomConfigsFile: CustomConfigsDownloadFile = JSON.parse(content, stateObjectReviver)
-
-		this.mapOldConfigStructureToNew(importedCustomConfigsFile.customConfigs)
 
 		for (const exportedConfig of importedCustomConfigsFile.customConfigs.values()) {
 			const alreadyExistingConfig = CustomConfigHelper.getCustomConfigSettings(exportedConfig.id)
@@ -214,8 +196,6 @@ export class CustomConfigHelper {
 		threeOrbitControlsService: ThreeOrbitControlsService
 	) {
 		const customConfig = this.getCustomConfigSettings(configId)
-		CustomConfigHelper.deleteUnusedKeyPropsOfCustomConfig(customConfig)
-
 		store.dispatch(setState({ value: customConfig.stateSettings }))
 
 		// TODO: remove this dirty timeout and set camera settings properly
@@ -225,14 +205,6 @@ export class CustomConfigHelper {
 				threeOrbitControlsService.setControlTarget(customConfig.camera.cameraTarget)
 				threeCameraService.setPosition(customConfig.camera.camera)
 			}, 100)
-		}
-	}
-
-	// TODO [2023-04-01] remove support
-	private static deleteUnusedKeyPropsOfCustomConfig(customConfig: any) {
-		if (customConfig.stateSettings.treeMap || customConfig.stateSettings.fileSettings.attributeTypes) {
-			delete customConfig.stateSettings.treeMap
-			delete customConfig.stateSettings.fileSettings.attributeTypes
 		}
 	}
 }

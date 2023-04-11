@@ -1,14 +1,24 @@
+@use "../../../../material/theme";
 cc-attribute-type-selector {
-	.mat-mdc-button-toggle-group {
-		height: 18px;
+	.mat-button-toggle-appearance-standard .mat-button-toggle-label-content {
+		display: flex;
 		align-items: center;
-		justify-content: space-evenly;
+		height: 100%;
 	}
-	.mat-mdc-button-toggle-appearance-standard .mat-button-toggle-label-content {
-		padding: 0 7px 0 7px;
+
+	button {
+		align-items: center;
+		height: 100%;
+
+		&:hover {
+			background-color: rgba(0, 0, 0, 0.05);
+			color: theme.$cc-primary-color;
+		}
 	}
-	.mat-mdc-button-toggle-standalone.mat-button-toggle-appearance-standard,
-	.mat-mdc-button-toggle-group-appearance-standard {
-		border: 0.1px solid darkgrey;
+
+	.mat-button-toggle-standalone.mat-button-toggle-appearance-standard:not([class*="mat-elevation-z"]),
+	.mat-button-toggle-group-appearance-standard:not([class*="mat-elevation-z"]) {
+		height: 22px;
+		border: 0.5px solid darkgrey;
 	}
 }

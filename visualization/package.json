@@ -10,7 +10,7 @@
 		"url": "https://github.com/MaibornWolff/codecharta.git"
 	},
 	"name": "codecharta-visualization",
-	"version": "1.115.0",
+	"version": "1.115.1",
 	"engines": {
 		"node": ">=16"
 	},
@@ -90,14 +90,14 @@
 		"material-icons": "^1.10.4",
 		"md5": "^2.3.0",
 		"ngx-color": "^7.3.3",
-		"nw": "^0.73.0",
+		"nw": "^0.75.0",
 		"pako": "^2.0.4",
 		"percent-round": "^2.2.1",
 		"rxjs": "^7.5.1",
 		"shelljs": "^0.8.4",
 		"three": "^0.126.1",
 		"three-orbit-controls": "^82.1.0",
-		"typescript-json-schema": "0.55.0",
+		"typescript-json-schema": "0.56.0",
 		"zone.js": "^0.12.0"
 	},
 	"devDependencies": {
@@ -120,7 +120,7 @@
 		"bestzip": "^2.2.0",
 		"eslint": "^8.28.0",
 		"eslint-config-prettier": "^8.5.0",
-		"eslint-plugin-unicorn": "^45.0.0",
+		"eslint-plugin-unicorn": "^46.0.0",
 		"eslint-plugin-unused-imports": "^2.0.0",
 		"html-loader": "^4.0.0",
 		"jest": "^29.4.3",
@@ -130,8 +130,7 @@
 		"lint-staged": "^13.0.0",
 		"nw-builder": "^3.7.4",
 		"puppeteer": "^17.0.0",
-		"remark-html": "^13.0.1",
-		"remark-loader": "^4.0.0",
+		"marked": "^4.3.0",
 		"ts-jest": "^29.0.5",
 		"typescript": "~4.9.4",
 		"webpack-glsl-loader": "^1.0.1"
