@@ -11,6 +11,7 @@ import { attributeTypesSelector } from "../../store/fileSettings/attributeTypes/
 import { visibleFileStatesSelector } from "../visibleFileStates.selector"
 import { metricDataSelector } from "./metricData/metricData.selector"
 import { createSelector } from "@ngrx/store"
+import { clone } from "../../../util/clone"
 
 const accumulatedDataFallback = Object.freeze({
 	unifiedMapNode: undefined,
@@ -30,7 +31,7 @@ export const accumulatedDataSelector = createSelector(
 			return accumulatedDataFallback
 		}
 
-		const data = _getUndecoratedAccumulatedData(fileStates)
+		const data = _getUndecoratedAccumulatedData(clone(fileStates))
 		if (!data?.map) {
 			return accumulatedDataFallback
 		}
