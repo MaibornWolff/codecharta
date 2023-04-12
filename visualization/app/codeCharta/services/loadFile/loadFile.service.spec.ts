@@ -1,8 +1,8 @@
 import { TestBed } from "@angular/core/testing"
 import { LoadFileService } from "./loadFile.service"
 import { TEST_FILE_CONTENT } from "../../util/dataMocks"
-import { CCFile, NodeMetricData, NodeType } from "../../codeCharta.model"
-import { removeFile, setDeltaReference, setFiles, setStandard } from "../../state/store/files/files.actions"
+import { CCFile, CcState, NodeMetricData, NodeType } from "../../codeCharta.model"
+import { removeFile, setDeltaReference, setStandard } from "../../state/store/files/files.actions"
 import { ExportBlacklistType, ExportCCFile } from "../../codeCharta.api.model"
 import { getCCFiles, isPartialState } from "../../model/files/files.helper"
 import { CCFileValidationResult, ERROR_MESSAGES } from "../../util/fileValidator"
@@ -11,11 +11,11 @@ import { clone } from "../../util/clone"
 import { klona } from "klona"
 import { ErrorDialogComponent } from "../../ui/dialogs/errorDialog/errorDialog.component"
 import { loadFilesValidationToErrorDialog } from "../../util/loadFilesValidationToErrorDialog"
-import { Store } from "../../state/angular-redux/store"
-import { State } from "../../state/angular-redux/state"
 import { fileRoot } from "./fileRoot"
 import { MatDialog } from "@angular/material/dialog"
 import { metricDataSelector } from "../../state/selectors/accumulatedData/metricData/metricData.selector"
+import { State, Store, StoreModule } from "@ngrx/store"
+import { appReducers, setStateMiddleware } from "../../state/store/state.manager"
 
 const mockedMetricDataSelector = metricDataSelector as unknown as jest.Mock
 jest.mock("../../state/selectors/accumulatedData/metricData/metricData.selector", () => ({
@@ -24,8 +24,8 @@ jest.mock("../../state/selectors/accumulatedData/metricData/metricData.selector"
 
 describe("loadFileService", () => {
 	let codeChartaService: LoadFileService
-	let store: Store
-	let state: State
+	let store: Store<CcState>
+	let state: State<CcState>
 	let dialog: MatDialog
 	let validFileContent: ExportCCFile
 	let metricData: NodeMetricData[]
@@ -41,7 +41,6 @@ describe("loadFileService", () => {
 			{ name: "mcc", maxValue: 1, minValue: 1 },
 			{ name: "rloc", maxValue: 2, minValue: 1 }
 		]
-		store.dispatch(setFiles([]))
 	})
 
 	afterEach(() => {
@@ -49,6 +48,9 @@ describe("loadFileService", () => {
 	})
 
 	function restartSystem() {
+		TestBed.configureTestingModule({
+			imports: [StoreModule.forRoot(appReducers, { metaReducers: [setStateMiddleware] })]
+		})
 		store = TestBed.inject(Store)
 		state = TestBed.inject(State)
 		dialog = { open: jest.fn() } as unknown as MatDialog
@@ -365,7 +367,7 @@ describe("loadFileService", () => {
 				{ fileName: "SecondFile", content: validFileContent, fileSize: 42 }
 			])
 
-			store.dispatch(removeFile("FirstFile"))
+			store.dispatch(removeFile({ fileName: "FirstFile" }))
 			expect(state.getValue().files).toHaveLength(1)
 			expect(state.getValue().files[0].file.fileMeta.fileName).toEqual("SecondFile")
 		})
@@ -376,12 +378,12 @@ describe("loadFileService", () => {
 		const updateRootDataSpy = jest.spyOn(fileRoot, "updateRoot")
 
 		const newReferenceFile = state.getValue().files[0].file
-		store.dispatch(setDeltaReference(newReferenceFile))
+		store.dispatch(setDeltaReference({ file: newReferenceFile }))
 		expect(updateRootDataSpy).toHaveBeenCalledTimes(1)
 		expect(updateRootDataSpy).toHaveBeenCalledWith(state.getValue().files[0].file.map.name)
 
 		// set reference file to a partial selected file. Therefore reference file becomes undefined
-		store.dispatch(setStandard([state.getValue().files[0].file]))
+		store.dispatch(setStandard({ files: [state.getValue().files[0].file] }))
 		expect(updateRootDataSpy).toHaveBeenCalledTimes(1)
 	})
 })

@@ -2,6 +2,7 @@ import { ExportBlacklistType, ExportCCFile, ExportWrappedCCFile, OldAttributeTyp
 import { AttributeDescriptors, AttributeTypes, BlacklistItem, CCFile, NameDataPair } from "../codeCharta.model"
 import { FileSelectionState, FileState } from "../model/files/files"
 import md5 from "md5"
+import { clone } from "./clone"
 
 export function getCCFile(file: NameDataPair): CCFile {
 	const fileContent = file.content
@@ -23,7 +24,7 @@ export function getCCFile(file: NameDataPair): CCFile {
 				markedPackages: fileContent.markedPackages || []
 			}
 		},
-		map: fileContent.nodes[0]
+		map: clone(fileContent.nodes[0])
 	}
 }
 
