@@ -4,18 +4,24 @@ import { expect } from "@jest/globals"
 import { FocusButtonsComponent } from "./focusButtons.component"
 import { FocusButtonsModule } from "./focusButtons.module"
 import { focusedNodePathSelector } from "../../../store/dynamicSettings/focusedNodePath/focusedNodePath.selector"
-
-jest.mock("../../../store/dynamicSettings/focusedNodePath/focusedNodePath.selector", () => ({
-	focusedNodePathSelector: jest.fn()
-}))
-const mockedFocusedNodePathSelector = focusedNodePathSelector as jest.Mock
+import { MockStore, provideMockStore } from "@ngrx/store/testing"
+import { currentFocusedNodePathSelector } from "../../../store/dynamicSettings/focusedNodePath/currentFocused.selector"
 
 describe("focusButton", () => {
 	beforeEach(() => {
 		TestBed.configureTestingModule({
-			imports: [FocusButtonsModule]
+			imports: [FocusButtonsModule],
+			providers: [
+				provideMockStore({
+					selectors: [
+						{ selector: currentFocusedNodePathSelector, value: undefined },
+						{ selector: focusedNodePathSelector, value: [] }
+					]
+				})
+			]
 		})
 	})
+
 	it("should render only 'focus' button if neither node nor one of its parents is focused", async () => {
 		const { container } = await render(FocusButtonsComponent, {
 			excludeComponentDeclaration: true,
@@ -28,11 +34,15 @@ describe("focusButton", () => {
 	})
 
 	it("should render 'focus' and 'unfocus parent' buttons if a parent is focused", async () => {
-		mockedFocusedNodePathSelector.mockImplementation(() => ["/root/foo"])
-		const { container } = await render(FocusButtonsComponent, {
+		const { container, detectChanges } = await render(FocusButtonsComponent, {
 			excludeComponentDeclaration: true,
 			componentProperties: { codeMapNode: { path: "/root/foo/bar" } }
 		})
+		const store = TestBed.inject(MockStore)
+		store.overrideSelector(focusedNodePathSelector, ["/root/foo"])
+		store.overrideSelector(currentFocusedNodePathSelector, "/root/foo")
+		store.refreshState()
+		detectChanges()
 
 		const buttons = container.querySelectorAll("button")
 		expect(buttons.length).toBe(2)
@@ -41,11 +51,15 @@ describe("focusButton", () => {
 	})
 
 	it("should render 'unfocus' and 'unfocus all' buttons if node is focused and there was node focused before", async () => {
-		mockedFocusedNodePathSelector.mockImplementation(() => ["/root/foo", "/root/bar"])
-		const { container } = await render(FocusButtonsComponent, {
+		const { container, detectChanges } = await render(FocusButtonsComponent, {
 			excludeComponentDeclaration: true,
 			componentProperties: { codeMapNode: { path: "/root/foo" } }
 		})
+		const store = TestBed.inject(MockStore)
+		store.overrideSelector(focusedNodePathSelector, ["/root/foo", "/root/bar"])
+		store.overrideSelector(currentFocusedNodePathSelector, "/root/foo")
+		store.refreshState()
+		detectChanges()
 
 		const buttons = container.querySelectorAll("button")
 		expect(buttons.length).toBe(2)
