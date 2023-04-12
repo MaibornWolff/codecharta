@@ -1,25 +1,16 @@
 import { searchPattern } from "./searchPattern.reducer"
-import { SearchPatternAction, setSearchPattern } from "./searchPattern.actions"
+import { setSearchPattern } from "./searchPattern.actions"
 import { setStandard } from "../../files/files.actions"
 
 describe("searchPattern", () => {
-	it("should initialize the default state", () => {
-		const result = searchPattern(undefined, {} as SearchPatternAction)
-		expect(result).toEqual("")
-	})
-
 	it("should set new searchPattern", () => {
-		const result = searchPattern("", setSearchPattern("mySearch/*.ts"))
+		const result = searchPattern("", setSearchPattern({ value: "mySearch/*.ts" }))
 		expect(result).toEqual("mySearch/*.ts")
 	})
 
-	it("should set default searchPattern", () => {
-		const result = searchPattern("mySearch/*.ts", setSearchPattern())
-		expect(result).toEqual("")
-	})
-
+	// TODO is this part of an effect?
 	it("should reset searchPattern on FilesSelectionActions", () => {
-		const result = searchPattern("mySearch/*.ts", setStandard([]))
+		const result = searchPattern("mySearch/*.ts", setStandard({ files: [] }))
 		expect(result).toBe("")
 	})
 })
