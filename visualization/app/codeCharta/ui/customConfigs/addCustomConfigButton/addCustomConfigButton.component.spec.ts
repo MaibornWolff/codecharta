@@ -1,4 +1,5 @@
 import { TestBed } from "@angular/core/testing"
+import { State } from "@ngrx/store"
 import { AddCustomConfigButtonModule } from "./addCustomConfigButton.module"
 import { render, screen } from "@testing-library/angular"
 import { AddCustomConfigButtonComponent } from "./addCustomConfigButton.component"
@@ -9,6 +10,7 @@ import { ThreeCameraService } from "../../codeMap/threeViewer/threeCamera.servic
 import { ThreeOrbitControlsService } from "../../codeMap/threeViewer/threeOrbitControls.service"
 import { TestbedHarnessEnvironment } from "@angular/cdk/testing/testbed"
 import { MatDialogHarness } from "@angular/material/dialog/testing"
+import { defaultState } from "../../../state/store/state.manager"
 
 describe("addCustomConfigButtonComponent", () => {
 	beforeEach(async () => {
@@ -16,7 +18,8 @@ describe("addCustomConfigButtonComponent", () => {
 			imports: [AddCustomConfigButtonModule],
 			providers: [
 				{ provide: ThreeCameraService, useValue: { camera: { position: new Vector3(0, 300, 1000) } } },
-				{ provide: ThreeOrbitControlsService, useValue: { controls: { target: new Vector3(0, 0, 0) } } }
+				{ provide: ThreeOrbitControlsService, useValue: { controls: { target: new Vector3(0, 0, 0) } } },
+				{ provide: State, useValue: { getValue: () => defaultState } }
 			]
 		})
 	})

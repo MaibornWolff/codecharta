@@ -1,4 +1,4 @@
-import { Store } from "../../state/store/store"
+import { provideMockStore } from "@ngrx/store/testing"
 import { TestBed } from "@angular/core/testing"
 import { render, screen } from "@testing-library/angular"
 import { CustomConfigsComponent } from "./customConfigs.component"
@@ -13,10 +13,9 @@ describe("CustomConfigsComponent", () => {
 
 	beforeEach(() => {
 		mockedDialog = { open: jest.fn() }
-		Store["initialize"]()
 		TestBed.configureTestingModule({
 			imports: [CustomConfigsModule],
-			providers: [{ provide: MatDialog, useValue: mockedDialog }]
+			providers: [{ provide: MatDialog, useValue: mockedDialog }, provideMockStore()]
 		})
 	})
 
