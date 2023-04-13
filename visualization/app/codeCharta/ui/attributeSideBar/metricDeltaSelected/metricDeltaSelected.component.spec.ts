@@ -1,17 +1,13 @@
 import { render, screen } from "@testing-library/angular"
-import { idToNodeSelector } from "../../../state/selectors/accumulatedData/idToNode.selector"
-import { Store } from "../../../state/store/store"
 
 import { ColorConverter } from "../../../util/color/colorConverter"
 import { MetricDeltaSelectedComponent } from "./metricDeltaSelected.component"
-
-jest.mock("../../../state/selectors/accumulatedData/idToNode.selector", () => ({
-	idToNodeSelector: jest.fn()
-}))
-const mockedIdToNodeSelector = jest.mocked(idToNodeSelector)
-jest.mock("../../../state/store/appStatus/selectedBuildingId/selectedBuildingId.selector", () => ({
-	selectedBuildingIdSelector: () => 0
-}))
+import { TestBed } from "@angular/core/testing"
+import { provideMockStore, MockStore } from "@ngrx/store/testing"
+import { selectedNodeSelector } from "../../../state/selectors/selectedNode.selector"
+import { CodeMapNode } from "../../../codeCharta.model"
+import { defaultMapColors } from "../../../state/store/appSettings/mapColors/mapColors.reducer"
+import { mapColorsSelector } from "../../../state/store/appSettings/mapColors/mapColors.selector"
 
 describe("MetricDeltaSelectedComponent", () => {
 	const areColorsEqual = (hex: string, styleColor: string) => {
@@ -20,54 +16,64 @@ describe("MetricDeltaSelectedComponent", () => {
 		return formattedHex === formattedStyleColor
 	}
 
+	beforeEach(() => {
+		TestBed.configureTestingModule({
+			providers: [
+				provideMockStore({
+					selectors: [
+						{ selector: selectedNodeSelector, value: null },
+						{ selector: mapColorsSelector, value: defaultMapColors }
+					]
+				})
+			]
+		})
+	})
+
 	it("should not show, if there is no delta value", async () => {
 		await render(MetricDeltaSelectedComponent)
 		expect(screen.queryByText(/Δ/)).toBe(null)
 	})
 
 	it("should show in positive delta color when selected building has a positive delta value", async () => {
-		mockIdToNodeSelector({ rloc: 2 })
-
-		await render(MetricDeltaSelectedComponent, {
+		const { detectChanges } = await render(MetricDeltaSelectedComponent, {
 			componentProperties: { metricName: "rloc" }
 		})
+		const store = TestBed.inject(MockStore)
+		mockSelectedNode(store, detectChanges, { rloc: 2 })
 
 		const metricDeltaSelectedDomNode = screen.queryByText(/Δ2/)
 		expect(metricDeltaSelectedDomNode).toBeTruthy()
-		expect(areColorsEqual(Store.store.getState().appSettings.mapColors.positiveDelta, metricDeltaSelectedDomNode.style.color)).toBe(
-			true
-		)
+		expect(areColorsEqual(defaultMapColors.positiveDelta, metricDeltaSelectedDomNode.style.color)).toBe(true)
 	})
 
 	it("should show in negative delta color when selected building has a negative delta value", async () => {
-		mockIdToNodeSelector({ rloc: -2 })
-
-		await render(MetricDeltaSelectedComponent, {
+		const { detectChanges } = await render(MetricDeltaSelectedComponent, {
 			componentProperties: { metricName: "rloc" }
 		})
+		const store = TestBed.inject(MockStore)
+		mockSelectedNode(store, detectChanges, { rloc: -2 })
 
 		const metricDeltaSelectedDomNode = screen.queryByText(/Δ-2/)
 		expect(metricDeltaSelectedDomNode).toBeTruthy()
-		expect(areColorsEqual(Store.store.getState().appSettings.mapColors.negativeDelta, metricDeltaSelectedDomNode.style.color)).toBe(
-			true
-		)
+		expect(areColorsEqual(defaultMapColors.negativeDelta, metricDeltaSelectedDomNode.style.color)).toBe(true)
 	})
 
 	it("should update when its metricName changes", async () => {
-		mockIdToNodeSelector({ rloc: 2, mcc: 4 })
-
-		const { change } = await render(MetricDeltaSelectedComponent, {
+		const { change, detectChanges } = await render(MetricDeltaSelectedComponent, {
 			componentProperties: { metricName: "rloc" }
 		})
+		const store = TestBed.inject(MockStore)
+		mockSelectedNode(store, detectChanges, { rloc: 2, mcc: 4 })
+
 		expect(screen.queryByText(/Δ2/)).toBeTruthy()
 
 		await change({ metricName: "mcc" })
 		expect(screen.queryByText(/Δ4/)).toBeTruthy()
 	})
 
-	function mockIdToNodeSelector(deltas: Record<string, unknown>) {
-		const idToNode = new Map()
-		idToNode.set(0, { id: 0, deltas })
-		mockedIdToNodeSelector.mockImplementation(() => idToNode)
+	function mockSelectedNode(store: MockStore, detectChanges: () => void, deltas: Record<string, unknown>) {
+		store.overrideSelector(selectedNodeSelector, { deltas } as unknown as CodeMapNode)
+		store.refreshState()
+		detectChanges()
 	}
 })
