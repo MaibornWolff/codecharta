@@ -1,21 +1,15 @@
 import { TestBed } from "@angular/core/testing"
+import { provideMockStore } from "@ngrx/store/testing"
 import { render, screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
 import { CODE_MAP_BUILDING_TS_NODE } from "../../util/dataMocks"
 import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
 import { FileExtensionBarComponent } from "./fileExtensionBar.component"
 import { FileExtensionBarModule } from "./fileExtensionBar.module"
-
-jest.mock("./selectors/metricDistribution.selector", () => ({
-	metricDistributionSelector: () => [
-		{
-			fileExtension: "ts",
-			absoluteMetricValue: 1120,
-			relativeMetricValue: 100,
-			color: "hsl(111, 40%, 50%)"
-		}
-	]
-}))
+import { metricDistributionSelector } from "./selectors/metricDistribution.selector"
+import { distributionMetricSelector } from "../../state/store/dynamicSettings/distributionMetric/distributionMetric.selector"
+import { defaultDistributionMetric } from "../../state/store/dynamicSettings/distributionMetric/distributionMetric.reducer"
+import { metricDataSelector } from "../../state/selectors/accumulatedData/metricData/metricData.selector"
 
 describe("fileExtensionBarComponent", () => {
 	beforeEach(() => {
@@ -33,7 +27,24 @@ describe("fileExtensionBarComponent", () => {
 						addBuildingToHighlightingList: jest.fn(),
 						highlightBuildings: jest.fn()
 					}
-				}
+				},
+				provideMockStore({
+					selectors: [
+						{
+							selector: metricDistributionSelector,
+							value: [
+								{
+									fileExtension: "ts",
+									absoluteMetricValue: 1120,
+									relativeMetricValue: 100,
+									color: "hsl(111, 40%, 50%)"
+								}
+							]
+						},
+						{ selector: distributionMetricSelector, value: defaultDistributionMetric },
+						{ selector: metricDataSelector, value: { nodeMetricData: [] } }
+					]
+				})
 			]
 		})
 	})
