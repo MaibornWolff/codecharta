@@ -1,8 +1,7 @@
-import "../../codeCharta.module"
-import "./codeMap.module"
 import { TestBed } from "@angular/core/testing"
+import { StoreModule, Store, State } from "@ngrx/store"
 import { CodeMapArrowService } from "./codeMap.arrow.service"
-import { ThreeSceneService } from "./threeViewer/threeSceneService"
+import { ThreeSceneService } from "../threeViewer/threeSceneService"
 import { Object3D, Vector3 } from "three"
 import {
 	CODE_MAP_BUILDING,
@@ -12,41 +11,36 @@ import {
 	VALID_EDGES_DECORATED,
 	CODE_MAP_BUILDING_WITH_INCOMING_EDGE_NODE,
 	CODE_MAP_BUILDING_WITH_OUTGOING_EDGE_NODE
-} from "../../util/dataMocks"
-import { Node } from "../../codeCharta.model"
-import { ColorConverter } from "../../util/color/colorConverter"
-import { setScaling } from "../../state/store/appSettings/scaling/scaling.actions"
-import { setEdges } from "../../state/store/fileSettings/edges/edges.actions"
-import { setHeightMetric } from "../../state/store/dynamicSettings/heightMetric/heightMetric.actions"
-import { CodeMapMesh } from "./rendering/codeMapMesh"
-import { toggleEdgeMetricVisible } from "../../state/store/appSettings/isEdgeMetricVisible/isEdgeMetricVisible.actions"
-import { wait } from "../../util/testUtils/wait"
-import { Store } from "../../state/angular-redux/store"
-import { State } from "../../state/angular-redux/state"
-import { IdToBuildingService } from "../../services/idToBuilding/idToBuilding.service"
+} from "../../../util/dataMocks"
+import { CcState, Node } from "../../../codeCharta.model"
+import { ColorConverter } from "../../../util/color/colorConverter"
+import { setScaling } from "../../../state/store/appSettings/scaling/scaling.actions"
+import { setEdges } from "../../../state/store/fileSettings/edges/edges.actions"
+import { setHeightMetric } from "../../../state/store/dynamicSettings/heightMetric/heightMetric.actions"
+import { CodeMapMesh } from "../rendering/codeMapMesh"
+import { toggleEdgeMetricVisible } from "../../../state/store/appSettings/isEdgeMetricVisible/isEdgeMetricVisible.actions"
+import { wait } from "../../../util/testUtils/wait"
+import { IdToBuildingService } from "../../../services/idToBuilding/idToBuilding.service"
+import { appReducers, setStateMiddleware } from "../../../state/store/state.manager"
+import { clone } from "../../../util/clone"
 
 describe("CodeMapArrowService", () => {
 	let codeMapArrowService: CodeMapArrowService
 	let threeSceneService: ThreeSceneService
-	let store: Store
-	let state: State
+	let store: Store<CcState>
+	let state: State<CcState>
 	let idToBuildingService: IdToBuildingService
 
 	beforeEach(() => {
-		restartSystem()
-		rebuildService()
-	})
-
-	function restartSystem() {
+		TestBed.configureTestingModule({
+			imports: [StoreModule.forRoot(appReducers, { metaReducers: [setStateMiddleware] })]
+		})
 		threeSceneService = TestBed.inject(ThreeSceneService)
 		store = TestBed.inject(Store)
 		state = TestBed.inject(State)
 		idToBuildingService = TestBed.inject(IdToBuildingService)
-	}
-
-	function rebuildService() {
 		codeMapArrowService = new CodeMapArrowService(store, state, threeSceneService, idToBuildingService)
-	}
+	})
 
 	function withMockedThreeSceneService() {
 		threeSceneService = codeMapArrowService["threeSceneService"] = jest.fn().mockReturnValue({
@@ -88,7 +82,7 @@ describe("CodeMapArrowService", () => {
 
 	describe("Arrow Behaviour when selecting and hovering a building", () => {
 		it("should only highlight small leaf when big leaf is selected", async () => {
-			store.dispatch(setEdges(VALID_EDGES_DECORATED))
+			store.dispatch(setEdges({ value: VALID_EDGES_DECORATED }))
 			const nodes: Node[] = [
 				CODE_MAP_BUILDING_WITH_OUTGOING_EDGE_NODE.node,
 				CODE_MAP_BUILDING_WITH_INCOMING_EDGE_NODE.node,
@@ -96,7 +90,7 @@ describe("CodeMapArrowService", () => {
 			]
 			threeSceneService["mapMesh"] = new CodeMapMesh(nodes, state.getValue(), false)
 			codeMapArrowService.addEdgePreview(nodes)
-			store.dispatch(setHeightMetric("mcc"))
+			store.dispatch(setHeightMetric({ value: "mcc" }))
 
 			threeSceneService.selectBuilding(CODE_MAP_BUILDING_WITH_OUTGOING_EDGE_NODE)
 			codeMapArrowService.onBuildingHovered(CODE_MAP_BUILDING_WITH_OUTGOING_EDGE_NODE)
@@ -228,9 +222,9 @@ describe("CodeMapArrowService", () => {
 			expect(codeMapArrowService["map"].size).toEqual(0)
 		})
 		it("when targetNode is invalid then it should not call preview mode", () => {
-			const invalidEdge = VALID_EDGES_DECORATED
+			const invalidEdge = clone(VALID_EDGES_DECORATED)
 			invalidEdge[0].toNodeName = "invalid"
-			store.dispatch(setEdges(invalidEdge))
+			store.dispatch(setEdges({ value: invalidEdge }))
 			const nodes: Node[] = [CODE_MAP_BUILDING_WITH_OUTGOING_EDGE_NODE.node]
 
 			codeMapArrowService.addEdgePreview(nodes)
@@ -238,9 +232,9 @@ describe("CodeMapArrowService", () => {
 			expect(codeMapArrowService["previewMode"]).not.toHaveBeenCalled()
 		})
 		it("when originNodeName is invalid then it should not call preview mode", () => {
-			const invalidEdge = VALID_EDGES_DECORATED
+			const invalidEdge = clone(VALID_EDGES_DECORATED)
 			invalidEdge[0].fromNodeName = "invalid"
-			store.dispatch(setEdges(invalidEdge))
+			store.dispatch(setEdges({ value: invalidEdge }))
 			const nodes: Node[] = [CODE_MAP_BUILDING_WITH_INCOMING_EDGE_NODE.node]
 
 			codeMapArrowService.addEdgePreview(nodes)
@@ -294,7 +288,7 @@ describe("CodeMapArrowService", () => {
 	describe("scale", () => {
 		it("should set the scale of all arrows to x, y and z", () => {
 			setupArrows()
-			store.dispatch(setScaling(new Vector3(1, 2, 3)))
+			store.dispatch(setScaling({ value: new Vector3(1, 2, 3) }))
 
 			codeMapArrowService.scale()
 

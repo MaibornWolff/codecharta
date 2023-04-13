@@ -1,14 +1,15 @@
 import { Injectable, OnDestroy } from "@angular/core"
-import { ThreeSceneService } from "./threeViewer/threeSceneService"
-import { Node, EdgeVisibility, CcState } from "../../codeCharta.model"
+import { ThreeSceneService } from "../threeViewer/threeSceneService"
+import { Node, EdgeVisibility, CcState } from "../../../codeCharta.model"
 import { ArrowHelper, BufferGeometry, CubicBezierCurve3, Line, LineBasicMaterial, Object3D, Vector3 } from "three"
-import { ColorConverter } from "../../util/color/colorConverter"
-import { CodeMapBuilding } from "./rendering/codeMapBuilding"
-import { IdToBuildingService } from "../../services/idToBuilding/idToBuilding.service"
+import { ColorConverter } from "../../../util/color/colorConverter"
+import { CodeMapBuilding } from "../rendering/codeMapBuilding"
+import { IdToBuildingService } from "../../../services/idToBuilding/idToBuilding.service"
 import { tap } from "rxjs"
-import { hoveredNodeIdSelector } from "../../state/store/appStatus/hoveredNodeId/hoveredNodeId.selector"
-import { debounce } from "../../util/debounce"
+import { hoveredNodeIdSelector } from "../../../state/store/appStatus/hoveredNodeId/hoveredNodeId.selector"
+import { debounce } from "../../../util/debounce"
 import { Store, State } from "@ngrx/store"
+import { edgeVisibilitySelector } from "./utils/edgeVisibility.selector"
 
 @Injectable({ providedIn: "root" })
 export class CodeMapArrowService implements OnDestroy {
@@ -108,7 +109,7 @@ export class CodeMapArrowService implements OnDestroy {
 
 		this.map = this.getNodesAsMap(nodes)
 
-		const { edges } = this.state.getValue().fileSettings
+		const edges = edgeVisibilitySelector(this.state.getValue())
 
 		for (const edge of edges) {
 			const originNode = this.map.get(edge.fromNodeName)

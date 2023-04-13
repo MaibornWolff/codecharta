@@ -2,7 +2,7 @@ import { TestBed } from "@angular/core/testing"
 import { CodeMapRenderService } from "./codeMap.render.service"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { CodeMapLabelService } from "./codeMap.label.service"
-import { CodeMapArrowService } from "./codeMap.arrow.service"
+import { CodeMapArrowService } from "./arrow/codeMap.arrow.service"
 import { Node, CodeMapNode, ColorLabelOptions } from "../../codeCharta.model"
 import {
 	COLOR_TEST_NODES,
