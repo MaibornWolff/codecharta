@@ -2,6 +2,7 @@
 permalink: /docs/suspicious-metrics/
 title: "Suspicious metrics"
 ---
+
 The Suspicious Metrics feature button appears in the main menu. Pressing this button will open the suspicious metrics panel.
 Compare [User Controls Legend]({{site.baseurl}}{% link _docs/06-02-user-controls.md %}).
 This feature will find the suspicious metrics in a code base and provides options that can be clicked to highlight high-risk files directly in the map that probably have a limited maintainability.

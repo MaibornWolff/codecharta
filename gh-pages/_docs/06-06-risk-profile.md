@@ -2,6 +2,7 @@
 permalink: /docs/risk-profile/
 title: "Risk profile"
 ---
+
 The Risk Profile gives a quick overview about the complexity and risk structure of the code base. It tells you how much
 of the code is placed in files associated with low risk, medium risk, high risk and very-high risk in means of maintainability.
 Furthermore, it allows to compare different projects.
