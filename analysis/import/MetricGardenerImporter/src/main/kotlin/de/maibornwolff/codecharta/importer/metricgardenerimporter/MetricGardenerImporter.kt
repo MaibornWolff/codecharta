@@ -101,4 +101,7 @@ class MetricGardenerImporter(
     }
 
     override fun getDialog(): ParserDialogInterface = ParserDialog
+    override fun isUsable(inputFile: String): Boolean {
+        return false
+    }
 }

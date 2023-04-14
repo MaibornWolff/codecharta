@@ -1,6 +1,7 @@
 package de.maibornwolff.codecharta.tools.ccsh.parser
 
 import com.github.kinquirer.KInquirer
+import com.github.kinquirer.components.promptCheckbox
 import com.github.kinquirer.components.promptList
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import picocli.CommandLine
@@ -8,6 +9,27 @@ import picocli.CommandLine
 class ParserService {
     companion object {
         private const val EXIT_CODE_PARSER_NOT_SUPPORTED = 42
+
+         private fun getUsableParsers(commandLine: CommandLine, inputFile : String): List<String> {
+            val allParserNames = getParserNames(commandLine)
+            val usableParsers = mutableListOf<String>()
+            for(parserName in allParserNames){
+                val subCommand = commandLine.subcommands.getValue(parserName)
+                val parserObject = subCommand.commandSpec.userObject()
+                val interactive = parserObject as? InteractiveParser
+
+                if(interactive != null && interactive.isUsable(inputFile)){
+                    usableParsers.add(parserName)
+                }
+            }
+            return usableParsers
+        }
+
+        fun offerParserSuggestions(commandLine: CommandLine, inputFile: String): List<String> {
+            return KInquirer.promptCheckbox(
+                    message = "Choose from this list of applicable parsers",
+                    choices = getUsableParsers(commandLine, inputFile))
+        }
 
         fun selectParser(commandLine: CommandLine): String {
             val selectedParser: String = KInquirer.promptList(
@@ -31,6 +53,16 @@ class ParserService {
             } else {
                 printNotSupported(selectedParser)
                 return EXIT_CODE_PARSER_NOT_SUPPORTED
+            }
+        }
+
+        private fun getParserNames(commandLine: CommandLine): List<String> {
+            val subCommands = commandLine.subcommands.values
+            return subCommands.mapNotNull { subCommand ->
+                val parserName = subCommand.commandName
+                if(subCommand.commandSpec.userObject() is InteractiveParser){
+                    parserName
+                }else null
             }
         }
 

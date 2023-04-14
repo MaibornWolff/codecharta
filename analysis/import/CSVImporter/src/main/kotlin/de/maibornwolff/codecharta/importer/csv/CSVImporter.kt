@@ -60,4 +60,7 @@ class CSVImporter(
     }
 
     override fun getDialog(): ParserDialogInterface = ParserDialog
+    override fun isUsable(inputFile: String): Boolean {
+        return false;
+    }
 }

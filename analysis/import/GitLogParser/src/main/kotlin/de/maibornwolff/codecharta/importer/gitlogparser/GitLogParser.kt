@@ -152,4 +152,7 @@ class GitLogParser(
     }
 
     override fun getDialog(): ParserDialogInterface = ParserDialog
+    override fun isUsable(inputFile: String): Boolean {
+        TODO("Not yet implemented")
+    }
 }

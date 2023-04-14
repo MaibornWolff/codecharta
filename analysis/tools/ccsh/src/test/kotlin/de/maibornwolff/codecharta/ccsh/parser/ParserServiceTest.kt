@@ -1,7 +1,9 @@
 package de.maibornwolff.codecharta.ccsh.parser
 
 import com.github.kinquirer.KInquirer
+import com.github.kinquirer.components.promptCheckbox
 import com.github.kinquirer.components.promptList
+import de.maibornwolff.codecharta.importer.codemaat.CodeMaatImporter
 import de.maibornwolff.codecharta.tools.ccsh.Ccsh
 import de.maibornwolff.codecharta.tools.ccsh.parser.ParserService
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
@@ -50,7 +52,7 @@ class ParserServiceTest {
 
     companion object {
         @JvmStatic
-        fun provideArguments(): List<Arguments> {
+        fun providerParserArguments(): List<Arguments> {
             return listOf(
                 Arguments.of("check"),
                 Arguments.of("edgefilter"),
@@ -67,6 +69,18 @@ class ParserServiceTest {
                 Arguments.of("codemaatimport"),
             )
         }
+
+        // TODO: Complete these Arguments to make sense
+        @JvmStatic
+        fun provideInputFileArguments(): List<Arguments> {
+            return listOf(
+                    Arguments.of("https://www.somewebsite.com"),
+                    Arguments.of("www.somewebsite.com"),
+                    Arguments.of("somewebsite.com"),
+                    Arguments.of("/my/git/repo"),
+                    Arguments.of("/my/git/repo/"),
+                    Arguments.of("/my/sonar/scanned/repo/"))
+        }
     }
 
     @Test
@@ -82,7 +96,7 @@ class ParserServiceTest {
     }
 
     @ParameterizedTest
-    @MethodSource("provideArguments")
+    @MethodSource("providerParserArguments")
     fun `should execute parser`(parser: String) {
         mockParserObject(parser)
 
@@ -98,6 +112,27 @@ class ParserServiceTest {
             ParserService.executeSelectedParser(cmdLine, "unknownparser")
         }
     }
+
+    // TODO: This test does not make any sense right now, I will completely rework that before merging the automatic suggestion pr
+    @ParameterizedTest
+    @MethodSource("provideInputFileArguments")
+    fun `should suggest usable parsers for valid input`(inputFile : String) {
+        mockkStatic("com.github.kinquirer.components.ListKt")
+        every {
+            KInquirer.promptCheckbox(any(), any(), any(), any(), any())
+        } returns (ParserService.getUsableParsers(cmdLine, inputFile))
+
+        val suggestedParsers = ParserService.offerParserSuggestions(cmdLine, inputFile)
+
+        Assertions.assertThat(suggestedParsers).isNotNull
+        Assertions.assertThat(suggestedParsers).isNotEmpty
+    }
+
+    @Test
+    fun `should return all usable parsers by name`() {
+
+    }
+
 
     private fun mockParserObject(name: String): InteractiveParser {
         val obj = cmdLine.subcommands[name]!!.commandSpec.userObject() as InteractiveParser

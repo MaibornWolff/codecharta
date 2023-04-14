@@ -98,6 +98,9 @@ class CSVExporter : Callable<Void>, InteractiveParser {
     }
 
     override fun getDialog(): ParserDialogInterface = ParserDialog
+    override fun isUsable(inputFile: String): Boolean {
+        return false
+    }
 }
 
 private fun Node.toAttributeList(attributeNames: List<String>): List<String> {

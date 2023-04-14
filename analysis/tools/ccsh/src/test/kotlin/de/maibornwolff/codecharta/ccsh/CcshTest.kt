@@ -52,11 +52,11 @@ class CcshTest {
     }
 
     @Test
-    fun `should start interactive parser when no arguments or parameters are passed`() {
+    fun `should execute parser suggestions and all selected parsers when no options are passed`() {
         mockkObject(ParserService)
         every {
-            ParserService.selectParser(any())
-        } returns "someparser"
+            ParserService.offerParserSuggestions(any(), any())
+        } returns listOf("parser1", "parser2")
         every {
             ParserService.executeSelectedParser(any(), any())
         } returns 0
@@ -64,9 +64,10 @@ class CcshTest {
         val exitCode = Ccsh.executeCommandLine(emptyArray())
         Assertions.assertThat(exitCode).isZero
 
-        verify { ParserService.executeSelectedParser(any(), any()) }
+        verify (exactly = 2) { ParserService.executeSelectedParser(any(), any()) }
     }
 
+    // TODO: Find out if this is still valid after changing default to parser suggestions instead of the interactive parser
     @Test
     fun `should execute interactive parser when passed parser is unknown`() {
         mockkObject(ParserService)
@@ -82,4 +83,21 @@ class CcshTest {
 
         verify { ParserService.executeSelectedParser(any(), any()) }
     }
+
+    @Test
+    fun `should execute interactive parser when -i option is passed`() {
+        mockkObject(ParserService)
+        every {
+            ParserService.selectParser(any())
+        } returns "someparser"
+        every {
+            ParserService.executeSelectedParser(any(), any())
+        } returns 0
+
+        val exitCode = Ccsh.executeCommandLine(arrayOf("-i"))
+        Assertions.assertThat(exitCode).isZero
+
+        verify { ParserService.executeSelectedParser(any(), any()) }
+    }
+
 }
