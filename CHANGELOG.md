@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Fixed 🐞
+
+-   Fix suspicious metrics and risk profile docs not loading [#3272](https://github.com/MaibornWolff/codecharta/pull/3272)
+
 ## [1.115.1] - 2023-04-06
 
 ### Removed 🗑
