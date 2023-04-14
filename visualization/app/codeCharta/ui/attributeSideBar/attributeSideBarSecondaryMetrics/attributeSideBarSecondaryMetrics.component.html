@@ -22,7 +22,19 @@
 						<cc-metric-delta-selected [metricName]="secondaryMetric.name"></cc-metric-delta-selected>
 					</td>
 					<td>
-						<span class="metric-name">{{ secondaryMetric.name }}</span>
+						<a
+							class="metric-name"
+							[href]="link"
+							target="_blank"
+							class="metric-name"
+							*ngIf="secondaryMetric.descriptors.link as link; else secondaryMetricNoLink"
+						>
+							{{ secondaryMetric.name }}
+							<i class="fa fa-external-link"></i>
+						</a>
+						<ng-template #secondaryMetricNoLink
+							><span class="metric-name">{{ secondaryMetric.name }}</span></ng-template
+						>
 					</td>
 				</tr>
 			</table>
