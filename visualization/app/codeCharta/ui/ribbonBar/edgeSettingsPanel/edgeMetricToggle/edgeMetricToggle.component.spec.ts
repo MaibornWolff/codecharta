@@ -1,29 +1,27 @@
-import { Store } from "../../../../state/store/store"
 import { fireEvent, render } from "@testing-library/angular"
 import { EdgeMetricToggleComponent } from "./edgeMetricToggle.component"
 import { TestBed } from "@angular/core/testing"
 import { MaterialModule } from "../../../../../material/material.module"
 import { isEdgeMetricVisibleSelector } from "../../../../state/store/appSettings/isEdgeMetricVisible/isEdgeMetricVisible.selector"
+import { MockStore, provideMockStore } from "@ngrx/store/testing"
+import { getLastAction } from "../../../../util/testUtils/store.utils"
+import { toggleEdgeMetricVisible } from "../../../../state/store/appSettings/isEdgeMetricVisible/isEdgeMetricVisible.actions"
 
 describe("edgeMetricToggleComponent", () => {
 	beforeEach(() => {
-		Store["initialize"]()
 		TestBed.configureTestingModule({
-			imports: [MaterialModule]
+			imports: [MaterialModule],
+			providers: [provideMockStore({ selectors: [{ selector: isEdgeMetricVisibleSelector, value: false }] })]
 		})
 	})
 
 	it("should toggle edge metric on map on click", async () => {
 		const { container } = await render(EdgeMetricToggleComponent)
-		const isEdgeMetricVisible = isEdgeMetricVisibleSelector(Store.store.getState())
 		const checkbox = container.querySelector("input")
-
-		expect(checkbox.checked).toBeFalsy()
+		expect(checkbox.checked).toBe(true)
 
 		fireEvent.click(checkbox)
-
-		expect(checkbox.checked).toBeTruthy()
-
-		expect(isEdgeMetricVisibleSelector(Store.store.getState())).toBe(!isEdgeMetricVisible)
+		const store = TestBed.inject(MockStore)
+		expect(await getLastAction(store)).toEqual(toggleEdgeMetricVisible())
 	})
 })

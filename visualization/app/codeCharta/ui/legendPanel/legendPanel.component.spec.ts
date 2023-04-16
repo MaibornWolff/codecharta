@@ -5,29 +5,41 @@ import { isDeltaStateSelector } from "../../state/selectors/isDeltaState.selecto
 import { LegendPanelComponent } from "./legendPanel.component"
 import { LegendPanelModule } from "./legendPanel.module"
 import { IsAttributeSideBarVisibleService } from "../../services/isAttributeSideBarVisible.service"
-
-jest.mock("../../state/store/dynamicSettings/heightMetric/heightMetric.selector", () => ({
-	heightMetricSelector: () => "mcc"
-}))
-jest.mock("../../state/store/dynamicSettings/areaMetric/areaMetric.selector", () => ({
-	areaMetricSelector: () => "loc"
-}))
-jest.mock("../../state/store/dynamicSettings/colorMetric/colorMetric.selector", () => ({
-	colorMetricSelector: () => "rloc"
-}))
-jest.mock("../../state/store/dynamicSettings/colorRange/colorRange.selector", () => ({
-	colorRangeSelector: () => ({ from: 21, to: 42, max: 9001 })
-}))
-
-const mockedIsDeltaStateSelector = isDeltaStateSelector as jest.Mock
-jest.mock("../../state/selectors/isDeltaState.selector", () => ({
-	isDeltaStateSelector: jest.fn()
-}))
+import { MockStore, provideMockStore } from "@ngrx/store/testing"
+import { heightMetricSelector } from "../../state/store/dynamicSettings/heightMetric/heightMetric.selector"
+import { areaMetricSelector } from "../../state/store/dynamicSettings/areaMetric/areaMetric.selector"
+import { colorMetricSelector } from "../../state/store/dynamicSettings/colorMetric/colorMetric.selector"
+import { colorRangeSelector } from "../../state/store/dynamicSettings/colorRange/colorRange.selector"
+import { State } from "@ngrx/store"
+import { mapColorsSelector } from "../../state/store/appSettings/mapColors/mapColors.selector"
+import { defaultMapColors } from "../../state/store/appSettings/mapColors/mapColors.reducer"
+import { legendHeightMetricSelector } from "./selectors/legendHeightMetric.selector"
+import { legendAreaMetricSelector } from "./selectors/legendAreaMetric.selector"
+import { legendColorMetricSelector } from "./selectors/legendColorMetric.selector"
+import { selectedColorMetricDataSelector } from "../../state/selectors/accumulatedData/metricData/selectedColorMetricData.selector"
+import { getMetricDescriptors } from "../attributeSideBar/util/metricDescriptors"
 
 describe("LegendPanelController", () => {
 	beforeEach(() => {
 		TestBed.configureTestingModule({
-			imports: [LegendPanelModule]
+			imports: [LegendPanelModule],
+			providers: [
+				provideMockStore({
+					selectors: [
+						{ selector: heightMetricSelector, value: "mcc" },
+						{ selector: legendHeightMetricSelector, value: getMetricDescriptors("mcc") },
+						{ selector: areaMetricSelector, value: "loc" },
+						{ selector: legendAreaMetricSelector, value: getMetricDescriptors("loc") },
+						{ selector: colorMetricSelector, value: "rloc" },
+						{ selector: legendColorMetricSelector, value: getMetricDescriptors("rloc") },
+						{ selector: colorRangeSelector, value: { from: 21, to: 42, max: 9001 } },
+						{ selector: isDeltaStateSelector, value: true },
+						{ selector: mapColorsSelector, value: defaultMapColors },
+						{ selector: selectedColorMetricDataSelector, value: {} }
+					]
+				}),
+				{ provide: State, useValue: {} }
+			]
 		})
 	})
 
@@ -46,8 +58,11 @@ describe("LegendPanelController", () => {
 	})
 
 	it("should display legend for single mode", async () => {
-		mockedIsDeltaStateSelector.mockImplementation(() => false)
-		const { container } = await render(LegendPanelComponent, { excludeComponentDeclaration: true })
+		const { container, detectChanges } = await render(LegendPanelComponent, { excludeComponentDeclaration: true })
+		const store = TestBed.inject(MockStore)
+		store.overrideSelector(isDeltaStateSelector, false)
+		store.refreshState()
+		detectChanges()
 		fireEvent.click(screen.getByTitle("Show panel"))
 
 		const areDeltaEntriesShown = screen.queryAllByText("delta", { exact: false }).length > 0
@@ -60,7 +75,6 @@ describe("LegendPanelController", () => {
 	})
 
 	it("should display legend for delta mode", async () => {
-		mockedIsDeltaStateSelector.mockImplementation(() => true)
 		const { container } = await render(LegendPanelComponent, { excludeComponentDeclaration: true })
 		fireEvent.click(screen.getByTitle("Show panel"))
 

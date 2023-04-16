@@ -10,7 +10,7 @@ export type MetricDescriptors = {
 	link: string
 }
 
-export function getMetricDescriptors(metricKey: string, attributeDescriptors: AttributeDescriptors): MetricDescriptors {
+export function getMetricDescriptors(metricKey: string, attributeDescriptors?: AttributeDescriptors): MetricDescriptors {
 	return {
 		key: metricKey,
 		title: getMetricTitle(metricKey, attributeDescriptors),
