@@ -1,7 +1,7 @@
 ---
-
 permalink: /docs/suspicious-metrics/
 title: "Suspicious metrics"
+---
 
 The Suspicious Metrics feature button appears in the main menu. Pressing this button will open the suspicious metrics panel.
 Compare [User Controls Legend]({{site.baseurl}}{% link _docs/06-02-user-controls.md %}).
