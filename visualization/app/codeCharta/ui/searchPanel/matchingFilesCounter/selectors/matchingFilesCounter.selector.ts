@@ -14,24 +14,26 @@ export type MatchingFilesCounter = {
 	excludeCount: string
 }
 
+export const _calculateMatchingFilesCounter = (searchedNodes: CodeMapNode[], blacklist: BlacklistItem[], allNodes: CodeMapNode[]) => {
+	const searchedNodeLeaves = searchedNodes.filter(node => isLeaf(node))
+	return {
+		fileCount: `${searchedNodeLeaves.length}/${allNodes.length}`,
+		flattenCount: `${getBlacklistedFileCount("flatten", searchedNodeLeaves, blacklist)}/${getBlacklistedFileCount(
+			"flatten",
+			allNodes,
+			blacklist
+		)}`,
+		excludeCount: `${getBlacklistedFileCount("exclude", searchedNodeLeaves, blacklist)}/${getBlacklistedFileCount(
+			"exclude",
+			allNodes,
+			blacklist
+		)}`
+	}
+}
+
 export const matchingFilesCounterSelector = createSelector(
 	searchedNodesSelector,
 	blacklistSelector,
 	codeMapNodesSelector,
-	(searchedNodes, blacklist, allNodes) => {
-		const searchedNodeLeaves = searchedNodes.filter(node => isLeaf(node))
-		return {
-			fileCount: `${searchedNodeLeaves.length}/${allNodes.length}`,
-			flattenCount: `${getBlacklistedFileCount("flatten", searchedNodeLeaves, blacklist)}/${getBlacklistedFileCount(
-				"flatten",
-				allNodes,
-				blacklist
-			)}`,
-			excludeCount: `${getBlacklistedFileCount("exclude", searchedNodeLeaves, blacklist)}/${getBlacklistedFileCount(
-				"exclude",
-				allNodes,
-				blacklist
-			)}`
-		}
-	}
+	_calculateMatchingFilesCounter
 )
