@@ -1,23 +1,23 @@
 import { MatDialog } from "@angular/material/dialog"
-import { State } from "../../../state/angular-redux/state"
-import { Store } from "../../../state/angular-redux/store"
 import { setState } from "../../../state/store/state.actions"
 import { ThreeCameraService } from "../../codeMap/threeViewer/threeCamera.service"
 import { ThreeOrbitControlsService } from "../../codeMap/threeViewer/threeOrbitControls.service"
 import { ErrorDialogComponent } from "../../dialogs/errorDialog/errorDialog.component"
 import { ScenarioService } from "./scenario.service"
 import { ScenarioHelper } from "./scenarioHelper"
+import { State, Store } from "@ngrx/store"
+import { CcState } from "../../../codeCharta.model"
 
 describe("scenarioService", () => {
 	let scenarioService: ScenarioService
-	let mockedStore: Store
+	let mockedStore: Store<CcState>
 	let mockedDialog: MatDialog
 	let mockedThreeCameraService: ThreeCameraService
 	let mockedThreeOrbitControlsService: ThreeOrbitControlsService
 
 	beforeEach(() => {
-		const mockedState = {} as unknown as State
-		mockedStore = { dispatch: jest.fn() } as unknown as Store
+		const mockedState = {} as unknown as State<CcState>
+		mockedStore = { dispatch: jest.fn() } as unknown as Store<CcState>
 		mockedDialog = { open: jest.fn() } as unknown as MatDialog
 		mockedThreeCameraService = { setPosition: jest.fn() } as unknown as ThreeCameraService
 		mockedThreeOrbitControlsService = { setControlTarget: jest.fn() } as unknown as ThreeOrbitControlsService
@@ -44,8 +44,10 @@ describe("scenarioService", () => {
 		scenarioService.applyScenario("Scenario1")
 		expect(mockedStore.dispatch).toHaveBeenCalledWith(
 			setState({
-				dynamicSettings: { areaMetric: "rloc", margin: 50 },
-				appSettings: { edgeHeight: 42 }
+				value: {
+					dynamicSettings: { areaMetric: "rloc", margin: 50 },
+					appSettings: { edgeHeight: 42 }
+				}
 			})
 		)
 		expect(mockedThreeCameraService.setPosition).toHaveBeenCalledWith({ x: 1, y: 1, z: 1 })

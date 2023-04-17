@@ -1,12 +1,12 @@
 import { TestBed } from "@angular/core/testing"
 import { render, screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
-import { Store } from "../../../../state/angular-redux/store"
 import { setColorMetric } from "../../../../state/store/dynamicSettings/colorMetric/colorMetric.actions"
 import { setColorRange } from "../../../../state/store/dynamicSettings/colorRange/colorRange.actions"
 import { setHeightMetric } from "../../../../state/store/dynamicSettings/heightMetric/heightMetric.actions"
 import { ArtificialIntelligenceModule } from "../artificialIntelligence.module"
 import { SuspiciousMetricComponent } from "./suspiciousMetrics.component"
+import { Store } from "@ngrx/store"
 
 describe("SuspiciousMetricsComponent", () => {
 	beforeEach(() => {
@@ -129,9 +129,9 @@ describe("SuspiciousMetricsComponent", () => {
 
 			await userEvent.click(screen.getByText("Suspicious MCC Files"), undefined)
 			const store = TestBed.inject(Store)
-			expect(store.dispatch).toHaveBeenCalledWith(setHeightMetric("mcc"))
-			expect(store.dispatch).toHaveBeenCalledWith(setColorMetric("mcc"))
-			expect(store.dispatch).toHaveBeenCalledWith(setColorRange({ from: 10, to: 22 }))
+			expect(store.dispatch).toHaveBeenCalledWith(setHeightMetric({ value: "mcc" }))
+			expect(store.dispatch).toHaveBeenCalledWith(setColorMetric({ value: "mcc" }))
+			expect(store.dispatch).toHaveBeenCalledWith(setColorRange({ value: { from: 10, to: 22 } }))
 		})
 	})
 })

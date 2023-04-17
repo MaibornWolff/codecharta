@@ -2,18 +2,32 @@ import { TestBed } from "@angular/core/testing"
 import { render, screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
 import { MaterialModule } from "../../../../material/material.module"
-import { setBlacklist } from "../../../state/store/fileSettings/blacklist/blacklist.actions"
-import { Store } from "../../../state/store/store"
+import { removeBlacklistItem } from "../../../state/store/fileSettings/blacklist/blacklist.actions"
 import { BlacklistPanelComponent } from "./blacklistPanel.component"
+import { Store } from "@ngrx/store"
+import { BehaviorSubject } from "rxjs"
+import { BlacklistItem } from "../../../codeCharta.model"
 
 const placeholderText = "Add pattern via search or node context-menu"
 
 describe("blacklistPanel", () => {
+	let flattenedItems$: BehaviorSubject<BlacklistItem[]>
+	let excludedItems$: BehaviorSubject<BlacklistItem[]>
+	let dispatchSpy: jest.Mock
+
 	beforeEach(() => {
-		Store["initialize"]()
+		flattenedItems$ = new BehaviorSubject([])
+		excludedItems$ = new BehaviorSubject([])
+		dispatchSpy = jest.fn()
 		TestBed.configureTestingModule({
-			imports: [MaterialModule]
+			imports: [MaterialModule],
+			providers: [{ provide: Store, useValue: { select: () => new BehaviorSubject([]), dispatch: dispatchSpy } }]
 		})
+	})
+
+	afterEach(() => {
+		flattenedItems$.complete()
+		excludedItems$.complete()
 	})
 
 	it("should have place holder texts when there are no flattened nor excluded items", async () => {
@@ -22,22 +36,25 @@ describe("blacklistPanel", () => {
 	})
 
 	it("should display all flattened and excluded items in the correct section and remove an item on click", async () => {
-		Store.dispatch(
-			setBlacklist([
-				{ type: "flatten", path: "some/flattened/building.ts" },
-				{ type: "exclude", path: "some/excluded/building.ts" }
-			])
-		)
-		await render(BlacklistPanelComponent)
+		const { fixture, detectChanges } = await render(BlacklistPanelComponent)
+		flattenedItems$.next([{ type: "flatten", path: "some/flattened/building.ts" }])
+		excludedItems$.next([{ type: "exclude", path: "some/excluded/building.ts" }])
+		fixture.componentInstance.flattenedItems$ = flattenedItems$
+		fixture.componentInstance.excludedItems$ = excludedItems$
+		detectChanges()
 
 		expect(screen.queryByText(placeholderText)).toBe(null)
 		expect(screen.getByText("some/flattened/building.ts")).not.toBe(null)
 		expect(screen.getByText("some/excluded/building.ts")).not.toBe(null)
 
 		await userEvent.click(screen.getByText("some/excluded/building.ts"))
-		expect(Store.store.getState().fileSettings.blacklist).not.toContainEqual({
-			type: "exclude",
-			path: "some/excluded/building.ts"
-		})
+		expect(dispatchSpy).toHaveBeenCalledWith(
+			removeBlacklistItem({
+				item: {
+					type: "exclude",
+					path: "some/excluded/building.ts"
+				}
+			})
+		)
 	})
 })

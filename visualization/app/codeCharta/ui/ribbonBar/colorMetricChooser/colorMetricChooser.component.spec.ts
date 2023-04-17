@@ -2,33 +2,41 @@ import { TestBed } from "@angular/core/testing"
 import { render, screen } from "@testing-library/angular"
 import { expect } from "@jest/globals"
 import userEvent from "@testing-library/user-event"
-import { setColorMetric } from "../../../state/store/dynamicSettings/colorMetric/colorMetric.actions"
-import { Store } from "../../../state/store/store"
 import { ColorMetricChooserComponent } from "./colorMetricChooser.component"
 import { ColorMetricChooserModule } from "./heightMetricChooser.module"
-import { toggleIsColorMetricLinkedToHeightMetric } from "../../../state/store/appSettings/isHeightAndColorMetricLinked/isColorMetricLinkedToHeightMetric.actions"
-
-jest.mock("../../../state/selectors/accumulatedData/metricData/metricData.selector", () => ({
-	metricDataSelector: () => ({
-		nodeMetricData: [
-			{ name: "aMetric", maxValue: 1 },
-			{ name: "bMetric", maxValue: 2 }
-		],
-		edgeMetricData: []
-	})
-}))
+import { MockStore, provideMockStore } from "@ngrx/store/testing"
+import { metricDataSelector } from "../../../state/selectors/accumulatedData/metricData/metricData.selector"
+import { hoveredNodeSelector } from "../../../state/selectors/hoveredNode.selector"
+import { isColorMetricLinkedToHeightMetricSelector } from "../../../state/store/appSettings/isHeightAndColorMetricLinked/isColorMetricLinkedToHeightMetric.selector"
+import { colorMetricSelector } from "../../../state/store/dynamicSettings/colorMetric/colorMetric.selector"
 
 describe("colorMetricChooserComponent", () => {
 	beforeEach(() => {
 		TestBed.configureTestingModule({
-			imports: [ColorMetricChooserModule]
+			imports: [ColorMetricChooserModule],
+			providers: [
+				provideMockStore({
+					selectors: [
+						{
+							selector: metricDataSelector,
+							value: {
+								nodeMetricData: [
+									{ name: "aMetric", maxValue: 1 },
+									{ name: "bMetric", maxValue: 2 }
+								]
+							}
+						},
+						{ selector: colorMetricSelector, value: "aMetric" },
+						{ selector: hoveredNodeSelector, value: null },
+						{ selector: isColorMetricLinkedToHeightMetricSelector, value: false }
+					]
+				})
+			]
 		})
 	})
 
 	it("should be a select for color metric", async () => {
 		const nonDisabledIconColor = "color: rgb(68, 68, 68);"
-		Store.dispatch(setColorMetric("aMetric"))
-
 		const { container } = await render(ColorMetricChooserComponent, { excludeComponentDeclaration: true })
 
 		expect(screen.getByRole("combobox").getAttribute("aria-disabled")).toBe("false")
@@ -46,9 +54,12 @@ describe("colorMetricChooserComponent", () => {
 	})
 
 	it("should disable metric chooser when height and color metric are linked", async () => {
-		Store.dispatch(toggleIsColorMetricLinkedToHeightMetric())
 		const disabledIconColor = "color: rgba(0, 0, 0, 0.38);"
-		const { container } = await render(ColorMetricChooserComponent, { excludeComponentDeclaration: true })
+		const { container, detectChanges } = await render(ColorMetricChooserComponent, { excludeComponentDeclaration: true })
+		const store = TestBed.inject(MockStore)
+		store.overrideSelector(isColorMetricLinkedToHeightMetricSelector, true)
+		store.refreshState()
+		detectChanges()
 
 		expect(screen.getByRole("combobox").getAttribute("aria-disabled")).toBe("true")
 		expect(container.querySelector(".fa.fa-paint-brush").getAttribute("style")).toEqual(disabledIconColor)
