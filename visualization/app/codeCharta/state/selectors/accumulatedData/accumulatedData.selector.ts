@@ -13,12 +13,12 @@ import { metricDataSelector } from "./metricData/metricData.selector"
 import { createSelector } from "@ngrx/store"
 import { clone } from "../../../util/clone"
 
-const accumulatedDataFallback = Object.freeze({
+const accumulatedDataFallback: AccumulatedData = Object.freeze({
 	unifiedMapNode: undefined,
 	unifiedFileMeta: undefined
 })
 
-export type AccumulatedData = { unifiedMapNode: CodeMapNode; unifiedFileMeta: FileMeta }
+export type AccumulatedData = { unifiedMapNode: CodeMapNode | undefined; unifiedFileMeta: FileMeta | undefined }
 
 export const accumulatedDataSelector = createSelector(
 	metricDataSelector,
