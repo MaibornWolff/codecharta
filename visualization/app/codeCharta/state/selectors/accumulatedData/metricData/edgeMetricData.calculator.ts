@@ -1,13 +1,18 @@
 import { hierarchy } from "d3-hierarchy"
-import { BlacklistItem, Edge, EdgeMetricCount, EdgeMetricData } from "../../../../codeCharta.model"
+import { BlacklistItem, Edge, EdgeMetricCount, EdgeMetricData, AttributeDescriptors } from "../../../../codeCharta.model"
 import { FileState } from "../../../../model/files/files"
 import { isPathBlacklisted } from "../../../../util/codeMapHelper"
 import { sortByMetricName } from "./sortByMetricName"
+import { getMetricDescriptors } from "../../../../util/metric/metricDescriptors"
 
 export type EdgeMetricCountMap = Map<string, EdgeMetricCount>
 export type NodeEdgeMetricsMap = Map<string, EdgeMetricCountMap>
 
-export function calculateEdgeMetricData(visibleFileStates: FileState[], blacklist: BlacklistItem[]) {
+export function calculateEdgeMetricData(
+	visibleFileStates: FileState[],
+	blacklist: BlacklistItem[],
+	attributeDescriptors: AttributeDescriptors
+) {
 	const nodeEdgeMetricsMap: NodeEdgeMetricsMap = new Map()
 
 	const allFilePaths: Set<string> = new Set()
@@ -29,7 +34,7 @@ export function calculateEdgeMetricData(visibleFileStates: FileState[], blacklis
 			}
 		}
 	}
-	const newEdgeMetricData = getMetricDataFromMap(nodeEdgeMetricsMap)
+	const newEdgeMetricData = getMetricDataFromMap(nodeEdgeMetricsMap, attributeDescriptors)
 	sortByMetricName(newEdgeMetricData)
 	return {
 		edgeMetricData: newEdgeMetricData,
@@ -69,7 +74,7 @@ function addEdgeToNodes(edgeMetricEntry: EdgeMetricCountMap, fromNode: string, t
 	}
 }
 
-function getMetricDataFromMap(nodeEdgeMetricsMap: NodeEdgeMetricsMap) {
+function getMetricDataFromMap(nodeEdgeMetricsMap: NodeEdgeMetricsMap, attributeDescriptors: AttributeDescriptors) {
 	const metricData: EdgeMetricData[] = []
 
 	for (const [edgeMetric, occurrences] of nodeEdgeMetricsMap) {
@@ -84,7 +89,12 @@ function getMetricDataFromMap(nodeEdgeMetricsMap: NodeEdgeMetricsMap) {
 				minimumMetricValue = combinedValue
 			}
 		}
-		metricData.push({ name: edgeMetric, maxValue: maximumMetricValue, minValue: minimumMetricValue })
+		metricData.push({
+			name: edgeMetric,
+			maxValue: maximumMetricValue,
+			minValue: minimumMetricValue,
+			descriptor: getMetricDescriptors(edgeMetric, attributeDescriptors)
+		})
 	}
 
 	return metricData

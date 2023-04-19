@@ -1,13 +1,18 @@
 import { hierarchy } from "d3-hierarchy"
 
-import { BlacklistItem, NodeMetricData } from "../../../../codeCharta.model"
+import { BlacklistItem, NodeMetricData, AttributeDescriptors } from "../../../../codeCharta.model"
 import { FileState } from "../../../../model/files/files"
 import { isLeaf, isPathBlacklisted } from "../../../../util/codeMapHelper"
 import { sortByMetricName } from "./sortByMetricName"
+import { getMetricDescriptors } from "../../../../util/metric/metricDescriptors"
 
 export const UNARY_METRIC = "unary"
 
-export const calculateNodeMetricData = (visibleFileStates: FileState[], blacklist: BlacklistItem[]) => {
+export const calculateNodeMetricData = (
+	visibleFileStates: FileState[],
+	blacklist: BlacklistItem[],
+	attributeDescriptors: AttributeDescriptors
+) => {
 	if (visibleFileStates.length === 0) {
 		return []
 	}
@@ -44,7 +49,8 @@ export const calculateNodeMetricData = (visibleFileStates: FileState[], blacklis
 		metricData.push({
 			name: key,
 			maxValue: value,
-			minValue: metricMinValues.get(key)
+			minValue: metricMinValues.get(key),
+			descriptor: getMetricDescriptors(key, attributeDescriptors)
 		})
 	}
 

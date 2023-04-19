@@ -3,10 +3,14 @@ import { blacklistSelector } from "../../../store/fileSettings/blacklist/blackli
 import { visibleFileStatesSelector } from "../../visibleFileStates.selector"
 import { calculateEdgeMetricData } from "./edgeMetricData.calculator"
 import { calculateNodeMetricData } from "./nodeMetricData.calculator"
+import { attributeDescriptorsSelector } from "../../../store/fileSettings/attributeDescriptors/attributeDescriptors.selector"
 
-export const metricDataSelector = createSelector([visibleFileStatesSelector, blacklistSelector], (visibleFileStates, blacklist) => {
-	return {
-		nodeMetricData: calculateNodeMetricData(visibleFileStates, blacklist),
-		...calculateEdgeMetricData(visibleFileStates, blacklist)
+export const metricDataSelector = createSelector(
+	[visibleFileStatesSelector, blacklistSelector, attributeDescriptorsSelector],
+	(visibleFileStates, blacklist, attributeDescriptors) => {
+		return {
+			nodeMetricData: calculateNodeMetricData(visibleFileStates, blacklist, attributeDescriptors),
+			...calculateEdgeMetricData(visibleFileStates, blacklist, attributeDescriptors)
+		}
 	}
-})
+)

@@ -6,6 +6,7 @@ import { CustomConfig } from "./model/customConfig/customConfig.api.model"
 import Rectangle from "./util/algorithm/streetLayout/rectangle"
 import { RightClickedNodeData } from "./state/store/appStatus/rightClickedNodeData/rightClickedNodeData.actions"
 import { Scaling } from "./state/store/appSettings/scaling/scaling.actions"
+import { MetricDescriptors } from "./util/metric/metricDescriptors"
 
 export interface NameDataPair {
 	fileName: string
@@ -247,12 +248,14 @@ export interface EdgeMetricData {
 	name: string
 	maxValue: number
 	minValue: number
+	descriptor: MetricDescriptors
 }
 
 export interface NodeMetricData {
 	name: string
 	maxValue: number
 	minValue: number
+	descriptor: MetricDescriptors
 }
 
 export interface MetricData {

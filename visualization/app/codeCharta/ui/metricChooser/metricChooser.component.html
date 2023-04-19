@@ -13,7 +13,7 @@
 		<mat-option
 			*ngFor="let option of metricData$ | async | filterMetricDataBySearchTerm: searchTerm"
 			[value]="option.name"
-			matTooltip="{{ metricDataDescription.get(option.name) }}"
+			[title]="option.descriptor | metricDescriptorTitle"
 		>
 			{{ option.name }}
 			<span class="metric-max-value">({{ option.maxValue }})</span>
