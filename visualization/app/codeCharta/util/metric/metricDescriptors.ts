@@ -1,5 +1,5 @@
-import { AttributeDescriptors } from "../../../codeCharta.model"
-import { metricTitles } from "../../../util/metric/metricTitles"
+import { AttributeDescriptors } from "../../codeCharta.model"
+import { metricTitles } from "./metricTitles"
 
 export type MetricDescriptors = {
 	key: string

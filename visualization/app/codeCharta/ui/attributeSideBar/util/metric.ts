@@ -1,4 +1,4 @@
-import { MetricDescriptors } from "./metricDescriptors"
+import { MetricDescriptors } from "../../../util/metric/metricDescriptors"
 export type Metric = {
 	name: string
 	value: number

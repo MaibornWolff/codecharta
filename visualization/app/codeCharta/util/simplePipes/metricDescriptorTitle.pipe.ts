@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from "@angular/core"
-import { MetricDescriptors } from "../../ui/attributeSideBar/util/metricDescriptors"
+import { MetricDescriptors } from "../metric/metricDescriptors"
 
 @Pipe({ name: "metricDescriptorTitle" })
 export class MetricDescriptorTitlePipe implements PipeTransform {

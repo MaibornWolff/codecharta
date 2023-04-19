@@ -1,4 +1,4 @@
-import { MetricDescriptors } from "app/codeCharta/ui/attributeSideBar/util/metricDescriptors"
+import { MetricDescriptors } from "app/codeCharta/util/metric/metricDescriptors"
 import { MetricDescriptorTitlePipe } from "./metricDescriptorTitle.pipe"
 
 const testKey = "testKey"
