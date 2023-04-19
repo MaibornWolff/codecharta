@@ -1,5 +1,5 @@
 import { Component, Input, ViewEncapsulation } from "@angular/core"
-import { MetricDescriptors } from "../../attributeSideBar/util/metricDescriptors"
+import { MetricDescriptors } from "../../../util/metric/metricDescriptors"
 
 @Component({
 	selector: "cc-legend-block",
