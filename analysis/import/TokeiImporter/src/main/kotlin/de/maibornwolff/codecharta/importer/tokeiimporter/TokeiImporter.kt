@@ -17,11 +17,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
 import picocli.CommandLine
-import java.io.File
-import java.io.IOException
-import java.io.InputStream
-import java.io.PrintStream
-import java.io.PrintWriter
+import java.io.*
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
@@ -133,5 +129,9 @@ class TokeiImporter(
     override fun getDialog(): ParserDialogInterface = ParserDialog
     override fun isUsable(inputFile: String): Boolean {
         return false
+    }
+
+    override fun getName(): String {
+        return "tokeiimporter"
     }
 }

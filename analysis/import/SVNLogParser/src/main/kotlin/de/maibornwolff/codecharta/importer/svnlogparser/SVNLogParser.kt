@@ -22,7 +22,7 @@ import java.io.InputStream
 import java.io.PrintStream
 import java.nio.charset.Charset
 import java.nio.file.Files
-import java.util.Arrays
+import java.util.*
 import java.util.concurrent.Callable
 import java.util.stream.Stream
 
@@ -175,5 +175,9 @@ class SVNLogParser(
     override fun getDialog(): ParserDialogInterface = ParserDialog
     override fun isUsable(inputFile: String): Boolean {
         return false
+    }
+
+    override fun getName(): String {
+        return "svnlogparser"
     }
 }

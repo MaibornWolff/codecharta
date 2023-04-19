@@ -149,10 +149,22 @@ class GitLogParser(
         fun main(args: Array<String>) {
             CommandLine(GitLogParser()).execute(*args)
         }
+
     }
 
     override fun getDialog(): ParserDialogInterface = ParserDialog
     override fun isUsable(inputFile: String): Boolean {
-        TODO("Not yet implemented")
+        if(inputFile.endsWith(".git")) {
+            return true
+        }
+
+        val searchFile = File(inputFile)
+        val files = searchFile.walk().asSequence()
+                .map { it.name }
+                .filter { it.endsWith(".git") }
+        return (files.count() > 0)
+    }
+    override fun getName(): String {
+        return "gitlogparser"
     }
 }

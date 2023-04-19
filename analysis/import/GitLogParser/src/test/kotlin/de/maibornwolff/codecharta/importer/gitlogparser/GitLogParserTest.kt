@@ -2,12 +2,33 @@ package de.maibornwolff.codecharta.importer.gitlogparser
 
 import de.maibornwolff.codecharta.importer.gitlogparser.GitLogParser.Companion.main
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
+import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.Arguments
+import org.junit.jupiter.params.provider.MethodSource
 import java.io.File
 
 class GitLogParserTest {
+
+    companion object {
+        @JvmStatic
+        fun provideValidInputFiles(): List<Arguments> {
+            return listOf(
+                    Arguments.of("src/test/resources/my/git"),
+                    Arguments.of("src/test/resources/my/git/repo/Test.git"),
+                    Arguments.of(""))
+        }
+
+        @JvmStatic
+        fun provideInvalidInputFiles(): List<Arguments> {
+            return listOf(
+                    Arguments.of("src/test/resources/my/empty/repo"),
+                    Arguments.of("src/test/resources/this/does/not/exist"))
+        }
+    }
 
     @Test
     fun `should create json uncompressed file repo-scan`() {
@@ -61,5 +82,19 @@ class GitLogParserTest {
         file.deleteOnExit()
 
         assertTrue(file.exists())
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideValidInputFiles")
+    fun `should return true with valid git repository as input for isUsable`(inputFile : String) {
+        val isUsable = GitLogParser().isUsable(inputFile)
+        Assertions.assertThat(isUsable).isTrue()
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideInvalidInputFiles")
+    fun `should return false with non git repository as input for isUsable`(inputFile : String) {
+        val isUsable = GitLogParser().isUsable(inputFile)
+        Assertions.assertThat(isUsable).isFalse()
     }
 }

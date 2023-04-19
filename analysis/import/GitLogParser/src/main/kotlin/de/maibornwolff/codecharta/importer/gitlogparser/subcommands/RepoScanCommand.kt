@@ -85,4 +85,8 @@ class RepoScanCommand : Callable<Void>, InteractiveParser {
     override fun isUsable(inputFile: String): Boolean {
         return false
     }
+
+    override fun getName(): String {
+        return "repo-scan"
+    }
 }

@@ -9,12 +9,7 @@ import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import picocli.CommandLine
-import java.io.BufferedWriter
-import java.io.File
-import java.io.FileWriter
-import java.io.IOException
-import java.io.OutputStreamWriter
-import java.io.Writer
+import java.io.*
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
@@ -100,6 +95,10 @@ class CSVExporter : Callable<Void>, InteractiveParser {
     override fun getDialog(): ParserDialogInterface = ParserDialog
     override fun isUsable(inputFile: String): Boolean {
         return false
+    }
+
+    override fun getName(): String {
+        return "csvexport"
     }
 }
 

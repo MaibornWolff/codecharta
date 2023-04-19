@@ -4,4 +4,6 @@ interface InteractiveParser {
     fun getDialog(): ParserDialogInterface
 
     fun isUsable(inputFile: String) : Boolean
+
+    fun getName() : String
 }

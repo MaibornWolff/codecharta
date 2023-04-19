@@ -80,6 +80,10 @@ class CodeMaatImporter(
 
     override fun getDialog(): ParserDialogInterface = ParserDialog
     override fun isUsable(inputFile: String): Boolean {
-        return false;
+        return false
+    }
+
+    override fun getName(): String {
+        return "codemaatimport"
     }
 }

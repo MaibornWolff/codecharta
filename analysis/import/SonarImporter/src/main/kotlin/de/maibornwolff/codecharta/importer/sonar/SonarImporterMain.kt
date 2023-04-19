@@ -9,6 +9,7 @@ import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import picocli.CommandLine
+import java.io.File
 import java.io.InputStream
 import java.io.PrintStream
 import java.net.URL
@@ -94,6 +95,24 @@ class SonarImporterMain(
 
     override fun getDialog(): ParserDialogInterface = ParserDialog
     override fun isUsable(inputFile: String): Boolean {
-        TODO("Not yet implemented")
+        val trimmedInput = inputFile.trim()
+        if(trimmedInput.startsWith("http://") || trimmedInput.startsWith("https://")) {
+            return true
+        }
+
+        if(trimmedInput.endsWith("sonar-project.properties")){
+            return true
+        }
+
+        val searchFile = File(inputFile)
+        val files = searchFile.walk().asSequence()
+                .filter { it.isFile }
+                .map { it.name }
+
+        return files.contains(inputFile)
+    }
+
+    override fun getName(): String {
+        return "sonarimport"
     }
 }
