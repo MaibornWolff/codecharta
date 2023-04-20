@@ -1,7 +1,9 @@
 package de.maibornwolff.codecharta.importer.sonar
 
 import com.github.tomakehurst.wiremock.client.WireMock
-import com.github.tomakehurst.wiremock.client.WireMock.*
+import com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor
+import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
+import com.github.tomakehurst.wiremock.client.WireMock.verify
 import com.github.tomakehurst.wiremock.junit5.WireMockTest
 import de.maibornwolff.codecharta.importer.sonar.dataaccess.SonarMetricsAPIDatasource
 import org.junit.jupiter.api.Assertions
@@ -42,7 +44,6 @@ class SonarImporterMainTest {
                     Arguments.of("src/test/resources/this/does/not/exist"),
                     Arguments.of(""))
         }
-
     }
 
     @BeforeEach
@@ -96,21 +97,21 @@ class SonarImporterMainTest {
 
     @ParameterizedTest
     @MethodSource("provideValidUrls")
-    fun `should return true with url as input for isUsable`(inputFile : String) {
+    fun `should return true with url as input for isUsable`(inputFile: String) {
         val isUsable = SonarImporterMain().isUsable("https://thisisatesturl.com")
         Assertions.assertTrue(isUsable)
     }
 
     @ParameterizedTest
     @MethodSource("provideValidInputFiles")
-    fun `should return true with sonar analyzed directory as input for isUsable`(inputFile : String) {
+    fun `should return true with sonar analyzed directory as input for isUsable`(inputFile: String) {
         val isUsable = SonarImporterMain().isUsable(inputFile)
         Assertions.assertTrue(isUsable)
     }
 
     @ParameterizedTest
     @MethodSource("provideInvalidInputFiles")
-    fun `should return false with non sonar analyzed directory as input for isUsable`(inputFile : String) {
+    fun `should return false with non sonar analyzed directory as input for isUsable`(inputFile: String) {
         val isUsable = SonarImporterMain().isUsable(inputFile)
         Assertions.assertFalse(isUsable)
     }

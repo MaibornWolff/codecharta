@@ -21,6 +21,7 @@ import java.io.InputStream
 import java.io.PrintStream
 import java.nio.charset.Charset
 import java.nio.file.Files
+import java.nio.file.Paths
 import java.util.concurrent.Callable
 import java.util.stream.Stream
 
@@ -149,20 +150,24 @@ class GitLogParser(
         fun main(args: Array<String>) {
             CommandLine(GitLogParser()).execute(*args)
         }
-
     }
 
     override fun getDialog(): ParserDialogInterface = ParserDialog
     override fun isUsable(inputFile: String): Boolean {
-        if(inputFile.endsWith(".git")) {
+        if (inputFile.endsWith(".git")) {
             return true
         }
 
-        val searchFile = File(inputFile)
-        val files = searchFile.walk().asSequence()
+        val searchFile = if (inputFile == "") {
+            File(Paths.get("").toAbsolutePath().toString())
+        } else {
+            File(inputFile)
+        }
+        val result = searchFile.walk()
+                .asSequence()
                 .map { it.name }
                 .filter { it.endsWith(".git") }
-        return (files.count() > 0)
+        return (result.count() > 0)
     }
     override fun getName(): String {
         return "gitlogparser"

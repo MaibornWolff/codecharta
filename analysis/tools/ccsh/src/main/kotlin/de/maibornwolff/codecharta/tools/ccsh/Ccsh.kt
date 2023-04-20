@@ -84,32 +84,31 @@ class Ccsh : Callable<Void?> {
             exitProcess(executeCommandLine(args))
         }
 
-
         fun executeCommandLine(args: Array<String>): Int {
             val commandLine = CommandLine(Ccsh())
             commandLine.executionStrategy = CommandLine.RunAll()
             return if (args.isEmpty()) {
                 val configuredParsers = offerInteractiveParserSuggestions(commandLine)
-                if(configuredParsers.isEmpty()) {
+                if (configuredParsers.isEmpty()) {
                     return 0
                 }
 
                 return executeConfiguredParsers(commandLine, configuredParsers)
-            } else if(isParserUnknown(args, commandLine) || args.contains("--interactive") || args.contains("-i")) {
+            } else if (isParserUnknown(args, commandLine) || args.contains("--interactive") || args.contains("-i")) {
                 executeInteractiveParser(commandLine)
             } else {
                 commandLine.execute(*sanitizeArgs(args))
             }
         }
 
-        fun offerInteractiveParserSuggestions(commandLine: CommandLine) : Map<String, List<String>>{
+        fun offerInteractiveParserSuggestions(commandLine: CommandLine): Map<String, List<String>> {
             val inputFile: String = KInquirer.promptInput(
                     message = "What is the name of the input file/folder/url?",
                     hint = "path/to/input/")
 
             val selectedParsers = ParserService.offerParserSuggestions(commandLine, PicocliParserRepository(), inputFile)
 
-            if(selectedParsers.isEmpty()) {
+            if (selectedParsers.isEmpty()) {
                 println(NO_USABLE_PARSER_FOUND_MESSAGE)
                 return emptyMap()
             }
@@ -119,20 +118,20 @@ class Ccsh : Callable<Void?> {
                             message = "Do you want to run all configured parsers?",
                             default = true)
 
-            if(!shouldRunConfiguredParsers) {
+            if (!shouldRunConfiguredParsers) {
                 return emptyMap()
             }
 
             return (ParserService.configureParserSelection(commandLine, PicocliParserRepository(), selectedParsers))
         }
 
-        fun executeConfiguredParsers(commandLine: CommandLine, configuredParsers : Map<String, List<String>>) : Int{
+        fun executeConfiguredParsers(commandLine: CommandLine, configuredParsers: Map<String, List<String>>): Int {
             val exitCode = AtomicInteger(0)
             val threadPool = Executors.newFixedThreadPool(configuredParsers.size)
-            for(configuredParser in configuredParsers) {
+            for (configuredParser in configuredParsers) {
                 threadPool.execute {
                     val currentExitCode = executeConfiguredParser(commandLine, configuredParser)
-                    if(currentExitCode != 0) {
+                    if (currentExitCode != 0) {
                         println("Code: $currentExitCode")
                         exitCode.set(currentExitCode)
                     }
@@ -142,19 +141,18 @@ class Ccsh : Callable<Void?> {
             threadPool.awaitTermination(1, TimeUnit.DAYS)
 
             println("Code: ${exitCode.get()}")
-            if(exitCode.get() != 0) {
+            if (exitCode.get() != 0) {
                 return exitCode.get()
             }
             // Improvement: Try to extract merge commands before so user does not have to configure merge args?
             return ParserService.executeSelectedParser(commandLine, "merge")
         }
 
-
-        private fun executeConfiguredParser(commandLine : CommandLine,configuredParser : Map.Entry<String, List<String>>) : Int {
+        private fun executeConfiguredParser(commandLine: CommandLine, configuredParser: Map.Entry<String, List<String>>): Int {
             logger.info { "Executing ${configuredParser.key}" }
             val exitCode = ParserService.executePreconfiguredParser(commandLine, Pair(configuredParser.key, configuredParser.value))
 
-            if(exitCode != 0){
+            if (exitCode != 0) {
                 println("Error executing ${configuredParser.key}, code $exitCode")
             }
 

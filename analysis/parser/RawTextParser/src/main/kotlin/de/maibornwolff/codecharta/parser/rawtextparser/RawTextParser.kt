@@ -7,7 +7,11 @@ import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import picocli.CommandLine
-import java.io.*
+import java.io.File
+import java.io.IOException
+import java.io.InputStream
+import java.io.PrintStream
+import java.io.PrintWriter
 import java.nio.file.Paths
 import java.util.concurrent.Callable
 

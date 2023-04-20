@@ -9,9 +9,9 @@ class PicocliParserRepository : IParserRepository<CommandLine> {
         val subCommands = dataSource.subcommands.values
         return subCommands.mapNotNull { subCommand ->
             val parserName = subCommand.commandName
-            if(subCommand.commandSpec.userObject() is InteractiveParser){
+            if (subCommand.commandSpec.userObject() is InteractiveParser) {
                 parserName
-            }else null
+            } else null
         }
     }
 
@@ -27,17 +27,17 @@ class PicocliParserRepository : IParserRepository<CommandLine> {
         }
     }
 
-    override fun extractParserName(parserNameWithDescription: String) : String {
+    override fun extractParserName(parserNameWithDescription: String): String {
         return parserNameWithDescription.substringBefore(' ')
     }
 
     override fun getAllParsers(dataSource: CommandLine): List<InteractiveParser> {
         val allParserNames = getParserNames(dataSource)
         val allParsers = mutableListOf<InteractiveParser>()
-        for(parserName in allParserNames){
+        for (parserName in allParserNames) {
             val interactive = getParser(dataSource, parserName)
 
-            if(interactive != null){
+            if (interactive != null) {
                 allParsers.add(interactive)
             }
         }
@@ -47,8 +47,8 @@ class PicocliParserRepository : IParserRepository<CommandLine> {
     override fun getUsableParserNames(inputFile: String, allParsers: List<InteractiveParser>): List<String> {
         val usableParsers = mutableListOf<String>()
 
-        for(parser in allParsers){
-            if(parser.isUsable(inputFile)){
+        for (parser in allParsers) {
+            if (parser.isUsable(inputFile)) {
                 usableParsers.add(parser.getName())
             }
         }

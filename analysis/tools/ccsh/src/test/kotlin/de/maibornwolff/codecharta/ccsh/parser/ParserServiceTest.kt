@@ -5,9 +5,18 @@ import de.maibornwolff.codecharta.tools.ccsh.parser.ParserService
 import de.maibornwolff.codecharta.tools.ccsh.parser.repository.PicocliParserRepository
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
-import io.mockk.*
+import io.mockk.every
+import io.mockk.mockkClass
+import io.mockk.mockkConstructor
+import io.mockk.mockkObject
+import io.mockk.unmockkAll
+import io.mockk.verify
 import org.assertj.core.api.Assertions
-import org.junit.jupiter.api.*
+import org.junit.jupiter.api.AfterAll
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
@@ -60,7 +69,7 @@ class ParserServiceTest {
 
     @ParameterizedTest
     @MethodSource("providerParserArguments")
-    fun `should output generated parser command for each configured parser`(selectedParser : String) {
+    fun `should output generated parser command for each configured parser`(selectedParser: String) {
         val parser = mockParserObject(selectedParser)
 
         val collectedArgs = parser.getDialog().collectParserArgs()
@@ -97,7 +106,7 @@ class ParserServiceTest {
         Assertions.assertThat(configuredParsers).isNotEmpty
         Assertions.assertThat(configuredParsers).size().isEqualTo(selectedParserList.size)
 
-        for(entry in configuredParsers) {
+        for (entry in configuredParsers) {
             Assertions.assertThat(entry.value).isNotEmpty
             Assertions.assertThat(entry.value[0] == "dummyArg").isTrue()
         }
@@ -150,7 +159,7 @@ class ParserServiceTest {
         return obj
     }
 
-    private fun mockParserRepository(mockParserName : String) : PicocliParserRepository {
+    private fun mockParserRepository(mockParserName: String): PicocliParserRepository {
         val obj = mockkClass(PicocliParserRepository::class)
 
         every {

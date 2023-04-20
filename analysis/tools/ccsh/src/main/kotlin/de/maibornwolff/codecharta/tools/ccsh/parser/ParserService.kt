@@ -15,7 +15,7 @@ class ParserService {
             val allParsers = parserRepository.getAllParsers(commandLine)
             val usableParsers = parserRepository.getUsableParserNames(inputFile, allParsers)
 
-            return if(usableParsers.isEmpty()){
+            return if (usableParsers.isEmpty()) {
                 emptyList()
             } else {
                 KInquirer.promptCheckbox(
@@ -24,11 +24,11 @@ class ParserService {
             }
         }
 
-        fun configureParserSelection(commandLine: CommandLine, parserRepository: PicocliParserRepository, selectedParsers: List<String>) : Map<String,List<String>> {
+        fun configureParserSelection(commandLine: CommandLine, parserRepository: PicocliParserRepository, selectedParsers: List<String>): Map<String, List<String>> {
             val configuredParsers = mutableMapOf<String, List<String>>()
-            for(selectedParser in selectedParsers) {
+            for (selectedParser in selectedParsers) {
                 val interactiveParser = parserRepository.getParser(commandLine, selectedParser)
-                if(interactiveParser == null) {
+                if (interactiveParser == null) {
                     throw IllegalArgumentException("Tried to configure non existing parser!")
                 } else {
                     val configuration = interactiveParser.getDialog().collectParserArgs()
@@ -65,7 +65,7 @@ class ParserService {
             }
         }
 
-        fun executePreconfiguredParser(commandLine: CommandLine, configuredParser : Pair<String, List<String>>): Int {
+        fun executePreconfiguredParser(commandLine: CommandLine, configuredParser: Pair<String, List<String>>): Int {
             val subCommand = commandLine.subcommands.getValue(configuredParser.first)
             val parserObject = subCommand.commandSpec.userObject()
             val interactive = parserObject as? InteractiveParser

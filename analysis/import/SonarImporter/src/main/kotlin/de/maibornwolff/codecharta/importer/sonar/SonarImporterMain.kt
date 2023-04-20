@@ -96,11 +96,11 @@ class SonarImporterMain(
     override fun getDialog(): ParserDialogInterface = ParserDialog
     override fun isUsable(inputFile: String): Boolean {
         val trimmedInput = inputFile.trim()
-        if(trimmedInput.startsWith("http://") || trimmedInput.startsWith("https://")) {
+        if (trimmedInput.startsWith("http://") || trimmedInput.startsWith("https://")) {
             return true
         }
 
-        if(trimmedInput.endsWith("sonar-project.properties")){
+        if (trimmedInput.endsWith("sonar-project.properties")) {
             return true
         }
 
@@ -109,7 +109,7 @@ class SonarImporterMain(
                 .filter { it.isFile }
                 .map { it.name }
 
-        return files.contains(inputFile)
+        return files.contains("sonar-project.properties")
     }
 
     override fun getName(): String {

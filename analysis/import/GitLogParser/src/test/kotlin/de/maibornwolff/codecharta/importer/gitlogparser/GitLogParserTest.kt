@@ -12,7 +12,6 @@ import org.junit.jupiter.params.provider.MethodSource
 import java.io.File
 
 class GitLogParserTest {
-
     companion object {
         @JvmStatic
         fun provideValidInputFiles(): List<Arguments> {
@@ -86,14 +85,14 @@ class GitLogParserTest {
 
     @ParameterizedTest
     @MethodSource("provideValidInputFiles")
-    fun `should return true with valid git repository as input for isUsable`(inputFile : String) {
+    fun `should return true with valid git repository as input for isUsable`(inputFile: String) {
         val isUsable = GitLogParser().isUsable(inputFile)
         Assertions.assertThat(isUsable).isTrue()
     }
 
     @ParameterizedTest
     @MethodSource("provideInvalidInputFiles")
-    fun `should return false with non git repository as input for isUsable`(inputFile : String) {
+    fun `should return false with non git repository as input for isUsable`(inputFile: String) {
         val isUsable = GitLogParser().isUsable(inputFile)
         Assertions.assertThat(isUsable).isFalse()
     }

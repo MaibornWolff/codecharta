@@ -6,7 +6,11 @@ import com.github.kinquirer.components.promptInput
 import com.github.kinquirer.components.promptList
 import de.maibornwolff.codecharta.tools.ccsh.Ccsh
 import de.maibornwolff.codecharta.tools.ccsh.parser.ParserService
-import io.mockk.*
+import io.mockk.every
+import io.mockk.mockkObject
+import io.mockk.mockkStatic
+import io.mockk.unmockkAll
+import io.mockk.verify
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
@@ -101,7 +105,7 @@ class CcshTest {
         val exitCode = Ccsh.executeCommandLine(emptyArray())
         Assertions.assertThat(exitCode).isZero
 
-        verify (exactly = 2) { ParserService.executePreconfiguredParser(any(), any()) }
+        verify(exactly = 2) { ParserService.executePreconfiguredParser(any(), any()) }
     }
 
     @Test
@@ -172,8 +176,8 @@ class CcshTest {
 
         Ccsh.offerInteractiveParserSuggestions(ccshCLI)
 
-        verify (exactly = 0) { ParserService.executeSelectedParser(any(), any()) }
-        verify (exactly = 0) { ParserService.executePreconfiguredParser(any(), any()) }
+        verify(exactly = 0) { ParserService.executeSelectedParser(any(), any()) }
+        verify(exactly = 0) { ParserService.executePreconfiguredParser(any(), any()) }
     }
 
     @Test
@@ -186,13 +190,12 @@ class CcshTest {
             ParserService.executePreconfiguredParser(any(), any())
         } returns -1
 
-
         val dummyConfiguredParsers = mapOf("dummyParser1" to listOf("dummyArg1", "dummyArg2"), "dummyParser2" to listOf("dummyArg1", "dummyArg2"))
 
         Ccsh.executeConfiguredParsers(cmdLine, dummyConfiguredParsers)
 
-        verify (exactly = 2) { ParserService.executePreconfiguredParser(any(), any()) }
-        verify (exactly = 0) { ParserService.executeSelectedParser(any(), any()) }
+        verify(exactly = 2) { ParserService.executePreconfiguredParser(any(), any()) }
+        verify(exactly = 0) { ParserService.executeSelectedParser(any(), any()) }
     }
 
     @Test

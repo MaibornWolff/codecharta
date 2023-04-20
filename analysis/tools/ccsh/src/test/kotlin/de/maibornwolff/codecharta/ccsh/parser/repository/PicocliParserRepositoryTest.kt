@@ -18,8 +18,17 @@ import de.maibornwolff.codecharta.tools.ccsh.Ccsh
 import de.maibornwolff.codecharta.tools.ccsh.parser.repository.PicocliParserRepository
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
-import io.mockk.*
-import org.junit.jupiter.api.*
+import io.mockk.every
+import io.mockk.mockkClass
+import io.mockk.mockkConstructor
+import io.mockk.mockkObject
+import io.mockk.unmockkAll
+import org.junit.jupiter.api.AfterAll
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestInstance
 import picocli.CommandLine
 import java.io.ByteArrayOutputStream
 import java.io.PrintStream
@@ -48,7 +57,7 @@ class PicocliParserRepositoryTest {
         unmockkAll()
     }
 
-    private fun getExpectedParsers() : List<InteractiveParser> {
+    private fun getExpectedParsers(): List<InteractiveParser> {
         return listOf<InteractiveParser>(CSVExporter(),
                 EdgeFilter(), MergeFilter(),
                 StructureModifier(), CSVImporter(),
@@ -58,7 +67,7 @@ class PicocliParserRepositoryTest {
                 TokeiImporter(), RawTextParser(), MetricGardenerImporter())
     }
 
-    private fun getExpectedParserNamesWithDescription() : List<String> {
+    private fun getExpectedParserNamesWithDescription(): List<String> {
         return listOf(CSVExporter().getName() + " - generates csv file with header",
                 EdgeFilter().getName() + " - aggregates edgeAttributes as nodeAttributes into a new cc.json file",
                 MergeFilter().getName() + " - merges multiple cc.json files",
@@ -83,7 +92,7 @@ class PicocliParserRepositoryTest {
         val actualParsers = picocliParserRepository.getAllParsers(cmdLine)
         val actualParserNames = actualParsers.map { it.getName() }
 
-        for(parser in expectedParserNames) {
+        for (parser in expectedParserNames) {
             Assertions.assertTrue(actualParserNames.contains(parser))
         }
     }
@@ -95,7 +104,7 @@ class PicocliParserRepositoryTest {
 
         val actualParserNames = picocliParserRepository.getParserNames(cmdLine)
 
-        for(parser in expectedParserNames) {
+        for (parser in expectedParserNames) {
             Assertions.assertTrue(actualParserNames.contains(parser))
         }
     }
@@ -130,11 +139,10 @@ class PicocliParserRepositoryTest {
         val expectedParsers = getExpectedParsers()
         val expectedParserNames = expectedParsers.map { it.getName() }
 
-        for(parser in expectedParserNamesWithDescription) {
+        for (parser in expectedParserNamesWithDescription) {
             Assertions.assertTrue(expectedParserNames.contains(picocliParserRepository.extractParserName(parser)))
         }
     }
-
 
     private fun mockParserObject(name: String, isUsable: Boolean): InteractiveParser {
         val obj = cmdLine.subcommands[name]!!.commandSpec.userObject() as InteractiveParser
@@ -157,5 +165,4 @@ class PicocliParserRepositoryTest {
         every { anyConstructed<CommandLine>().execute(*dummyArgs.toTypedArray()) } returns 0
         return obj
     }
-
 }
