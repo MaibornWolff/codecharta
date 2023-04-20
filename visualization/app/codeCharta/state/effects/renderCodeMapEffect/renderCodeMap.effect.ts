@@ -32,6 +32,7 @@ export class RenderCodeMapEffect {
 				filter(([accumulatedData]) => Boolean(accumulatedData.unifiedMapNode)),
 				throttleTime(maxFPS, asyncScheduler, { leading: false, trailing: true }),
 				tap(([accumulatedData, action]) => {
+					console.log("hi from effect", action.type)
 					this.codeMapRenderService.render(accumulatedData.unifiedMapNode)
 					this.threeRendererService.render()
 					if (action.type === setScaling.type) {
