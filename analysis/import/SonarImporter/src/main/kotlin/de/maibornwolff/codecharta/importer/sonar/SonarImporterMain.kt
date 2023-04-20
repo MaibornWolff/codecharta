@@ -8,6 +8,7 @@ import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
+import de.maibornwolff.codecharta.tools.interactiveparser.util.InteractiveParserHelper
 import picocli.CommandLine
 import java.io.File
 import java.io.InputStream
@@ -16,9 +17,9 @@ import java.net.URL
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
-    name = "sonarimport",
-    description = ["generates cc.json from metric data from SonarQube"],
-    footer = ["Copyright(c) 2022, MaibornWolff GmbH"]
+    name = InteractiveParserHelper.SonarImporterConstants.name,
+    description = [InteractiveParserHelper.SonarImporterConstants.description],
+    footer = [InteractiveParserHelper.GeneralConstants.GenericFooter]
 )
 class SonarImporterMain(
     private val input: InputStream = System.`in`,
@@ -96,6 +97,7 @@ class SonarImporterMain(
     override fun getDialog(): ParserDialogInterface = ParserDialog
     override fun isUsable(inputFile: String): Boolean {
         val trimmedInput = inputFile.trim()
+        // TODO: Is this sufficient to check for urls?
         if (trimmedInput.startsWith("http://") || trimmedInput.startsWith("https://")) {
             return true
         }
@@ -113,6 +115,6 @@ class SonarImporterMain(
     }
 
     override fun getName(): String {
-        return "sonarimport"
+        return InteractiveParserHelper.SonarImporterConstants.name
     }
 }

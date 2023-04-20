@@ -1,5 +1,7 @@
 package de.maibornwolff.codecharta.ccsh.parser
 
+import com.github.kinquirer.KInquirer
+import com.github.kinquirer.components.promptCheckbox
 import de.maibornwolff.codecharta.tools.ccsh.Ccsh
 import de.maibornwolff.codecharta.tools.ccsh.parser.ParserService
 import de.maibornwolff.codecharta.tools.ccsh.parser.repository.PicocliParserRepository
@@ -9,6 +11,7 @@ import io.mockk.every
 import io.mockk.mockkClass
 import io.mockk.mockkConstructor
 import io.mockk.mockkObject
+import io.mockk.mockkStatic
 import io.mockk.unmockkAll
 import io.mockk.verify
 import org.assertj.core.api.Assertions
@@ -76,12 +79,43 @@ class ParserServiceTest {
         val expectedParserCommand = "ccsh " + selectedParser + " " + collectedArgs.map { x -> '"' + x + '"' }.joinToString(" ")
 
         val selectedParserList = listOf(selectedParser)
-        val mockPicocliParserRepository = mockParserRepository(selectedParser)
+        val mockPicocliParserRepository = mockParserRepository(selectedParser, emptyList())
 
         ParserService.configureParserSelection(cmdLine, mockPicocliParserRepository, selectedParserList)
 
         Assertions.assertThat(outContent.toString())
                 .contains(expectedParserCommand)
+    }
+
+    @Test
+    fun `should output empty list for parser suggestions if no usable parsers were found`() {
+        // Parser name is chosen arbitrarily
+        val mockParserRepository = mockParserRepository("check", emptyList())
+
+        val usableParsers = ParserService.offerParserSuggestions(cmdLine, mockParserRepository, "dummy")
+
+        Assertions.assertThat(usableParsers).isNotNull
+        Assertions.assertThat(usableParsers).isEmpty()
+    }
+
+    @Test
+    fun `should output parser name list of user selected parsers from parser suggestions`() {
+        val expectedUsualParsers = listOf("check", "validate")
+        // Parser name is chosen arbitrarily
+        val mockParserRepository = mockParserRepository("check", expectedUsualParsers)
+
+        mockkStatic("com.github.kinquirer.components.CheckboxKt")
+        every {
+            KInquirer.promptCheckbox(any(), any(), any(), any(), any())
+        } returns expectedUsualParsers
+
+        val actualUsableParsers = ParserService.offerParserSuggestions(cmdLine, mockParserRepository, "dummy")
+
+        Assertions.assertThat(actualUsableParsers).isNotNull
+        Assertions.assertThat(actualUsableParsers).isNotEmpty
+
+        Assertions.assertThat(actualUsableParsers).contains("check")
+        Assertions.assertThat(actualUsableParsers).contains("validate")
     }
 
     @Test
@@ -99,7 +133,7 @@ class ParserServiceTest {
                 "modify",
                 "csvexport",
                 "codemaatimport")
-        val mockPicocliParserRepository = mockParserRepository(selectedParserList[0])
+        val mockPicocliParserRepository = mockParserRepository(selectedParserList[0], emptyList())
 
         val configuredParsers = ParserService.configureParserSelection(cmdLine, mockPicocliParserRepository, selectedParserList)
 
@@ -159,12 +193,20 @@ class ParserServiceTest {
         return obj
     }
 
-    private fun mockParserRepository(mockParserName: String): PicocliParserRepository {
+    private fun mockParserRepository(mockParserName: String, usableParsers: List<String>): PicocliParserRepository {
         val obj = mockkClass(PicocliParserRepository::class)
 
         every {
             obj.getParser(any(), any())
         } returns mockParserObject(mockParserName)
+
+        every {
+            obj.getAllParsers(any())
+        } returns emptyList()
+
+        every {
+            obj.getUsableParserNames(any(), any())
+        } returns usableParsers
 
         return obj
     }

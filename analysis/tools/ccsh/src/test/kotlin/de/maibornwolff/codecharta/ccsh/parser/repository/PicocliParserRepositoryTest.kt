@@ -76,7 +76,7 @@ class PicocliParserRepositoryTest {
                 SonarImporterMain().getName() + " - generates cc.json from metric data from SonarQube",
                 SourceMonitorImporter().getName() + " - generates cc.json from sourcemonitor csv",
                 SVNLogParser().getName() + " - generates cc.json from svn log file",
-                GitLogParser().getName() + " - git log parser - generates cc.json from git-log files",
+                GitLogParser().getName() + " - generates cc.json from git-log files",
                 SourceCodeParserMain().getName() + " - generates cc.json from source code",
                 CodeMaatImporter().getName() + " - generates cc.json from codemaat coupling csv",
                 TokeiImporter().getName() + " - generates cc.json from tokei json",

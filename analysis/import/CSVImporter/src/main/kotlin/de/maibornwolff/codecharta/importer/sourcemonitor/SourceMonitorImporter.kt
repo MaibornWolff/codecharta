@@ -4,6 +4,7 @@ import de.maibornwolff.codecharta.importer.csv.CSVProjectBuilder
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
+import de.maibornwolff.codecharta.tools.interactiveparser.util.InteractiveParserHelper
 import de.maibornwolff.codecharta.translator.MetricNameTranslator
 import picocli.CommandLine
 import java.io.File
@@ -13,9 +14,9 @@ import java.io.PrintStream
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
-    name = "sourcemonitorimport",
-    description = ["generates cc.json from sourcemonitor csv"],
-    footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
+    name = InteractiveParserHelper.SourceMonitorImporterConstants.name,
+    description = [InteractiveParserHelper.SourceMonitorImporterConstants.description],
+    footer = [InteractiveParserHelper.GeneralConstants.GenericFooter]
 )
 class SourceMonitorImporter(
     private val output: PrintStream = System.out
@@ -88,6 +89,6 @@ class SourceMonitorImporter(
         return false
     }
     override fun getName(): String {
-        return "sourcemonitorimport"
+        return InteractiveParserHelper.SourceMonitorImporterConstants.name
     }
 }

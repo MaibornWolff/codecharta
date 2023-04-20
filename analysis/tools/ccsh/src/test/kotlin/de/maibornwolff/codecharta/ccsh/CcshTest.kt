@@ -24,7 +24,6 @@ import java.io.StringWriter
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class CcshTest {
-
     private val outContent = ByteArrayOutputStream()
     private val originalOut = System.out
     private val cmdLine = CommandLine(Ccsh())

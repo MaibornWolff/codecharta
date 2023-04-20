@@ -8,6 +8,7 @@ import de.maibornwolff.codecharta.importer.metricgardenerimporter.model.MetricGa
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
+import de.maibornwolff.codecharta.tools.interactiveparser.util.InteractiveParserHelper
 import mu.KotlinLogging
 import picocli.CommandLine
 import java.io.File
@@ -18,9 +19,9 @@ import java.nio.file.Paths
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
-    name = "metricgardenerimport",
-    description = ["generates a cc.json file from a project parsed with metric-gardener"],
-    footer = ["Copyright(c) 2022, MaibornWolff GmbH"]
+    name = InteractiveParserHelper.MetricGardenerImporterConstants.name,
+    description = [InteractiveParserHelper.MetricGardenerImporterConstants.description],
+    footer = [InteractiveParserHelper.GeneralConstants.GenericFooter]
 )
 
 class MetricGardenerImporter(
@@ -106,6 +107,6 @@ class MetricGardenerImporter(
     }
 
     override fun getName(): String {
-        return "metricgardenerimport"
+        return InteractiveParserHelper.MetricGardenerImporterConstants.name
     }
 }

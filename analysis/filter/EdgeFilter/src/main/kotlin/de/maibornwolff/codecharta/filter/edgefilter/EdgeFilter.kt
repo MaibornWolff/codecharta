@@ -4,15 +4,16 @@ import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
+import de.maibornwolff.codecharta.tools.interactiveparser.util.InteractiveParserHelper
 import picocli.CommandLine
 import java.io.File
 import java.io.PrintStream
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
-    name = "edgefilter",
-    description = ["aggregates edgeAttributes as nodeAttributes into a new cc.json file"],
-    footer = ["Copyright(c) 2022, MaibornWolff GmbH"]
+    name = InteractiveParserHelper.EdgeFilterConstants.name,
+    description = [InteractiveParserHelper.EdgeFilterConstants.description],
+    footer = [InteractiveParserHelper.GeneralConstants.GenericFooter]
 )
 class EdgeFilter(
     private val output: PrintStream = System.out
@@ -53,6 +54,6 @@ class EdgeFilter(
     }
 
     override fun getName(): String {
-        return "edgefilter"
+        return InteractiveParserHelper.EdgeFilterConstants.name
     }
 }

@@ -6,6 +6,7 @@ import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
+import de.maibornwolff.codecharta.tools.interactiveparser.util.InteractiveParserHelper
 import picocli.CommandLine
 import java.io.File
 import java.io.IOException
@@ -16,9 +17,9 @@ import java.nio.file.Paths
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
-    name = "rawtextparser",
-    description = ["generates cc.json from projects or source code files"],
-    footer = ["Copyright(c) 2022, MaibornWolff GmbH"]
+    name = InteractiveParserHelper.RawTextParserConstants.name,
+    description = [InteractiveParserHelper.RawTextParserConstants.description],
+    footer = [InteractiveParserHelper.GeneralConstants.GenericFooter]
 )
 class RawTextParser(
     private val input: InputStream = System.`in`,
@@ -119,6 +120,6 @@ class RawTextParser(
         return false
     }
     override fun getName(): String {
-        return "rawtextparser"
+        return InteractiveParserHelper.RawTextParserConstants.name
     }
 }

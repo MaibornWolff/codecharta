@@ -5,6 +5,7 @@ import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
+import de.maibornwolff.codecharta.tools.interactiveparser.util.InteractiveParserHelper
 import mu.KotlinLogging
 import picocli.CommandLine
 import java.io.File
@@ -13,9 +14,9 @@ import java.io.PrintStream
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
-    name = "modify",
-    description = ["changes the structure of cc.json files"],
-    footer = ["Copyright(c) 2022, MaibornWolff GmbH"]
+    name = InteractiveParserHelper.StructureModifierConstants.name,
+    description = [InteractiveParserHelper.StructureModifierConstants.description],
+    footer = [InteractiveParserHelper.GeneralConstants.GenericFooter]
 )
 class StructureModifier(
     private val input: InputStream = System.`in`,
@@ -105,6 +106,6 @@ class StructureModifier(
     }
 
     override fun getName(): String {
-        return "modify"
+        return InteractiveParserHelper.StructureModifierConstants.name
     }
 }
