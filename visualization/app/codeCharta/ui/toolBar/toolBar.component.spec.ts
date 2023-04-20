@@ -7,6 +7,8 @@ import { ThreeRendererService } from "../codeMap/threeViewer/threeRenderer.servi
 import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
 import { ToolBarComponent } from "./toolBar.component"
 import { ToolBarModule } from "./toolBar.module"
+import { appReducers, setStateMiddleware } from "../../state/store/state.manager"
+import { StoreModule } from "@ngrx/store"
 
 jest.mock("../../state/store/appStatus/hoveredNodeId/hoveredNodeId.selector", () => ({
 	hoveredNodeIdSelector: jest.fn()
@@ -16,7 +18,7 @@ const mockedHoveredNodeIdSelector = jest.mocked(hoveredNodeIdSelector)
 describe("ToolBarComponent", () => {
 	beforeEach(() => {
 		TestBed.configureTestingModule({
-			imports: [ToolBarModule],
+			imports: [ToolBarModule, StoreModule.forRoot(appReducers, { metaReducers: [setStateMiddleware] })],
 			providers: [
 				{ provide: LoadFileService, useValue: {} },
 				{ provide: ThreeCameraService, useValue: {} },

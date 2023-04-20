@@ -27,11 +27,9 @@ export class BlacklistSearchPatternEffect {
 		private addBlacklistItemsIfNotResultsInEmptyMapEffect: AddBlacklistItemsIfNotResultsInEmptyMapEffect
 	) {}
 
-	private searchPattern$ = this.store.select(searchPatternSelector)
-
 	private searchPattern2BlacklistItems$ = this.actions$.pipe(
 		ofType<BlacklistSearchPatternAction>("BlacklistSearchPatternAction"),
-		withLatestFrom(this.searchPattern$),
+		withLatestFrom(this.store.select(searchPatternSelector)),
 		map(([blacklistSearchPatternAction, searchPattern]) => ({
 			type: blacklistSearchPatternAction.action.type,
 			blacklistItems: parseBlacklistItems(blacklistSearchPatternAction.action.type, searchPattern)

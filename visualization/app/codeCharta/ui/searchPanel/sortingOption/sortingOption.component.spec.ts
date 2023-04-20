@@ -3,26 +3,23 @@ import { MatSelectModule } from "@angular/material/select"
 import { fireEvent, render, screen, getByText, waitForElementToBeRemoved } from "@testing-library/angular"
 
 import { SortingOption } from "../../../codeCharta.model"
-import { Store } from "../../../state/store/store"
 import { SortingOptionComponent } from "./sortingOption.component"
+import { provideMockStore } from "@ngrx/store/testing"
+import { sortingOrderSelector } from "../../../state/store/dynamicSettings/sortingOption/sortingOrder.selector"
 
 describe("SortingOptionComponent", () => {
 	beforeEach(() => {
-		Store["initialize"]()
-
 		TestBed.configureTestingModule({
-			imports: [MatSelectModule]
+			imports: [MatSelectModule],
+			providers: [provideMockStore({ selectors: [{ selector: sortingOrderSelector, value: SortingOption.NAME }] })]
 		})
-	})
-
-	it("should have an explaining title", async () => {
-		await render(SortingOptionComponent)
-		expect(await screen.findByTitle("Sort by")).toBeTruthy()
 	})
 
 	it("should be a select for the sorting option", async () => {
 		const { detectChanges } = await render(SortingOptionComponent)
 		detectChanges()
+
+		expect(await screen.findByTitle("Sort by")).toBeTruthy()
 
 		// it has initial sorting order
 		expect(screen.getByText("Name")).toBeTruthy()

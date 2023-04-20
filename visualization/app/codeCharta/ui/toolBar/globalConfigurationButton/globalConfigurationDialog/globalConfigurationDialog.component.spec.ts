@@ -4,11 +4,19 @@ import userEvent from "@testing-library/user-event"
 import { GlobalSettingsHelper } from "../../../../util/globalSettingsHelper"
 import { GlobalConfigurationButtonModule } from "../globalConfigurationButton.module"
 import { GlobalConfigurationDialogComponent } from "./globalConfigurationDialog.component"
+import { provideMockStore } from "@ngrx/store/testing"
+import { isWhiteBackgroundSelector } from "../../../../state/store/appSettings/isWhiteBackground/isWhiteBackground.selector"
+import { State } from "@ngrx/store"
+import { defaultState } from "../../../../state/store/state.manager"
 
 describe("globalConfigurationDialogComponent", () => {
 	beforeEach(() => {
 		TestBed.configureTestingModule({
-			imports: [GlobalConfigurationButtonModule]
+			imports: [GlobalConfigurationButtonModule],
+			providers: [
+				provideMockStore({ selectors: [{ selector: isWhiteBackgroundSelector, value: false }], initialState: defaultState }),
+				{ provide: State, useValue: {} }
+			]
 		})
 	})
 
@@ -18,8 +26,6 @@ describe("globalConfigurationDialogComponent", () => {
 
 		await userEvent.click(screen.getByText("White Background"))
 
-		expect(setGlobalSettingsInLocalStorageSpy).toHaveBeenCalledWith({
-			isWhiteBackground: true
-		})
+		expect(setGlobalSettingsInLocalStorageSpy).toHaveBeenCalledWith({ isWhiteBackground: true })
 	})
 })

@@ -4,14 +4,13 @@ import { BlacklistSearchPatternEffect } from "./blacklistSearchPattern.effect"
 import { SearchBarComponent } from "./searchBar.component"
 import { SearchBarModule } from "./searchBar.module"
 import userEvent from "@testing-library/user-event"
-import { Store as PlainStore } from "../../../state/store/store"
 import { searchPatternSelector } from "../../../state/store/dynamicSettings/searchPattern/searchPattern.selector"
-import { EffectsModule } from "../../../state/angular-redux/effects/effects.module"
 import { AddBlacklistItemsIfNotResultsInEmptyMapEffect } from "../../../state/effects/addBlacklistItemsIfNotResultsInEmptyMap/addBlacklistItemsIfNotResultsInEmptyMap.effect"
-import { Subject } from "rxjs"
-import { Action } from "redux"
 import { resultsInEmptyMap } from "../../../state/effects/addBlacklistItemsIfNotResultsInEmptyMap/resultsInEmptyMap"
 import { MatDialog } from "@angular/material/dialog"
+import { State, Store, StoreModule } from "@ngrx/store"
+import { appReducers, setStateMiddleware } from "../../../state/store/state.manager"
+import { EffectsModule } from "@ngrx/effects"
 
 jest.mock("../../../state/effects/addBlacklistItemsIfNotResultsInEmptyMap/resultsInEmptyMap", () => ({
 	resultsInEmptyMap: jest.fn()
@@ -23,10 +22,9 @@ describe("cc-search-bar", () => {
 	const mockedDialog = { open: jest.fn() }
 
 	beforeEach(async () => {
-		PlainStore["initialize"]()
-		EffectsModule.actions$ = new Subject<Action>()
 		TestBed.configureTestingModule({
 			imports: [
+				StoreModule.forRoot(appReducers, { metaReducers: [setStateMiddleware] }),
 				EffectsModule.forRoot([BlacklistSearchPatternEffect, AddBlacklistItemsIfNotResultsInEmptyMapEffect]),
 				SearchBarModule
 			],
@@ -34,13 +32,11 @@ describe("cc-search-bar", () => {
 		})
 	})
 
-	afterEach(() => {
-		EffectsModule.actions$.complete()
-	})
-
 	it("should be a debounced field for search pattern with clear button if is not empty", async () => {
 		await render(SearchBarComponent, { excludeComponentDeclaration: true })
-		const dispatchSpy = jest.spyOn(PlainStore.store, "dispatch")
+		const store = TestBed.inject(Store)
+		const state = TestBed.inject(State)
+		const dispatchSpy = jest.spyOn(store, "dispatch")
 
 		expect(screen.queryByTestId("search-bar-clear-button")).toBe(null)
 
@@ -49,17 +45,18 @@ describe("cc-search-bar", () => {
 
 		const clearButton = await screen.findByTestId("search-bar-clear-button")
 		expect(dispatchSpy).toHaveBeenCalledTimes(1)
-		expect(searchPatternSelector(PlainStore.store.getState())).toBe("needle")
+		expect(searchPatternSelector(state.getValue())).toBe("needle")
 
 		await userEvent.click(clearButton)
 
 		searchField = screen.getByPlaceholderText("Search: *.js, **/app/*")
 		expect(searchField.value).toBe("")
-		expect(searchPatternSelector(PlainStore.store.getState())).toBe("")
+		expect(searchPatternSelector(state.getValue())).toBe("")
 	})
 
 	it("should flatten pattern", async () => {
 		await render(SearchBarComponent, { excludeComponentDeclaration: true })
+		const state = TestBed.inject(State)
 
 		let searchField = screen.getByPlaceholderText("Search: *.js, **/app/*") as HTMLInputElement
 		await userEvent.type(searchField, "needle")
@@ -70,12 +67,13 @@ describe("cc-search-bar", () => {
 
 		searchField = screen.getByPlaceholderText("Search: *.js, **/app/*")
 		expect(searchField.value).toBe("")
-		expect(PlainStore.store.getState().fileSettings.blacklist[0]).toEqual({ type: "flatten", path: "*needle*" })
+		expect(state.getValue().fileSettings.blacklist[0]).toEqual({ type: "flatten", path: "*needle*" })
 	})
 
 	it("should exclude pattern", async () => {
 		mockedResultsInEmptyMap.mockImplementation(() => false)
 		await render(SearchBarComponent, { excludeComponentDeclaration: true })
+		const state = TestBed.inject(State)
 
 		let searchField = screen.getByPlaceholderText("Search: *.js, **/app/*") as HTMLInputElement
 		await userEvent.type(searchField, "needle")
@@ -86,6 +84,6 @@ describe("cc-search-bar", () => {
 
 		searchField = screen.getByPlaceholderText("Search: *.js, **/app/*")
 		expect(searchField.value).toBe("")
-		expect(PlainStore.store.getState().fileSettings.blacklist[0]).toEqual({ type: "exclude", path: "*needle*" })
+		expect(state.getValue().fileSettings.blacklist[0]).toEqual({ type: "exclude", path: "*needle*" })
 	})
 })

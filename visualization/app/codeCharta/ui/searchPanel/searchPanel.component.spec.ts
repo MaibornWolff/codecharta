@@ -2,12 +2,13 @@ import { TestBed } from "@angular/core/testing"
 import { fireEvent, render } from "@testing-library/angular"
 import { SearchPanelComponent } from "./searchPanel.component"
 import { SearchPanelModule } from "./searchPanel.module"
+import { provideMockStore } from "@ngrx/store/testing"
 
 describe("SearchPanelComponent", () => {
 	beforeEach(() => {
 		TestBed.configureTestingModule({
 			imports: [SearchPanelModule],
-			providers: [SearchPanelComponent]
+			providers: [SearchPanelComponent, provideMockStore()]
 		})
 	})
 
