@@ -28,7 +28,7 @@ export const setStateMiddleware =
 	(state, action) => {
 		if (isSetStateAction(action)) {
 			const newState = clone(state)
-			return applyPartialState(newState, action.value)
+			return _applyPartialState(newState, action.value)
 		}
 		return reducer(state, action)
 	}
@@ -43,7 +43,7 @@ const objectWithDynamicKeysInStore = new Set([
 	"files" // ToDo; this should be a Map with an unique id
 ])
 
-function applyPartialState<T>(applyTo: T, toBeApplied: unknown, composedPath = []): T {
+export function _applyPartialState<T>(applyTo: T, toBeApplied: unknown, composedPath = []): T {
 	for (const [key, value] of Object.entries(toBeApplied)) {
 		if (value === null || value === undefined) {
 			continue
@@ -59,7 +59,7 @@ function applyPartialState<T>(applyTo: T, toBeApplied: unknown, composedPath = [
 		applyTo[key] =
 			typeof value !== "object" || objectWithDynamicKeysInStore.has(composedJoinedPath)
 				? value
-				: applyPartialState(applyTo[key], value, newComposedPath)
+				: _applyPartialState(applyTo[key], value, newComposedPath)
 	}
 
 	return applyTo
