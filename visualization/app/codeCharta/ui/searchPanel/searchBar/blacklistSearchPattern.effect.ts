@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core"
 import { Actions, createEffect, ofType } from "@ngrx/effects"
 import { Store } from "@ngrx/store"
-import { map, filter, withLatestFrom, tap, take } from "rxjs"
+import { map, filter, withLatestFrom, tap, take, share } from "rxjs"
 import { BlacklistType, CcState } from "../../../codeCharta.model"
 import { AddBlacklistItemsIfNotResultsInEmptyMapEffect } from "../../../state/effects/addBlacklistItemsIfNotResultsInEmptyMap/addBlacklistItemsIfNotResultsInEmptyMap.effect"
 import { setSearchPattern } from "../../../state/store/dynamicSettings/searchPattern/searchPattern.actions"
@@ -33,7 +33,8 @@ export class BlacklistSearchPatternEffect {
 		map(([blacklistSearchPatternAction, searchPattern]) => ({
 			type: blacklistSearchPatternAction.action.type,
 			blacklistItems: parseBlacklistItems(blacklistSearchPatternAction.action.type, searchPattern)
-		}))
+		})),
+		share()
 	)
 
 	flattenSearchPattern$ = createEffect(

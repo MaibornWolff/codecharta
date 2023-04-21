@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core"
 import { MatDialog } from "@angular/material/dialog"
 import { Actions, createEffect, ofType } from "@ngrx/effects"
-import { filter, map, tap, withLatestFrom } from "rxjs"
+import { filter, map, share, tap, withLatestFrom } from "rxjs"
 import { addBlacklistItems, addBlacklistItemsIfNotResultsInEmptyMap } from "../../store/fileSettings/blacklist/blacklist.actions"
 import { visibleFileStatesSelector } from "../../selectors/visibleFileStates.selector"
 import { blacklistSelector } from "../../store/fileSettings/blacklist/blacklist.selector"
@@ -20,7 +20,8 @@ export class AddBlacklistItemsIfNotResultsInEmptyMapEffect {
 		map(([action, visibleFiles, blacklist]) => ({
 			items: action.items,
 			resultsInEmptyMap: resultsInEmptyMap(visibleFiles, blacklist, action.items)
-		}))
+		})),
+		share()
 	)
 
 	showErrorDialogIfBlacklistItemsResultInEmptyMap$ = createEffect(
