@@ -1,9 +1,11 @@
 import { getMissingCustomConfigModeAndMaps } from "./getMissingCustomConfigModeAndMaps"
 import { CustomConfigMapSelectionMode } from "../../../../model/customConfig/customConfig.api.model"
 import { CustomConfigItem } from "../../customConfigs.component"
-import { Store as PlainStore } from "../../../../state/store/store"
 import { expect } from "@jest/globals"
 import { visibleFilesBySelectionModeSelector } from "../../visibleFilesBySelectionMode.selector"
+import { defaultState } from "../../../../state/store/state.manager"
+import { State } from "@ngrx/store"
+import { CcState } from "../../../../codeCharta.model"
 
 jest.mock("../../visibleFilesBySelectionMode.selector", () => ({
 	visibleFilesBySelectionModeSelector: jest.fn()
@@ -18,6 +20,7 @@ describe("getMissingCustomConfigModeAndMaps", () => {
 		]),
 		mapSelectionMode: CustomConfigMapSelectionMode.MULTIPLE
 	} as CustomConfigItem
+	const state = { getValue: () => defaultState } as State<CcState>
 
 	it("should return empty values when selected maps and map selection mode are the same as the custom config", () => {
 		mockedVisibleFilesBySelectionModeSelector.mockImplementationOnce(() => {
@@ -30,7 +33,7 @@ describe("getMissingCustomConfigModeAndMaps", () => {
 			}
 		})
 
-		const missingModeAndMaps = getMissingCustomConfigModeAndMaps(customConfigItem, { getValue: PlainStore.store.getState })
+		const missingModeAndMaps = getMissingCustomConfigModeAndMaps(customConfigItem, state)
 
 		expect(missingModeAndMaps).toEqual({ mapSelectionMode: "", mapNames: [] })
 	})
@@ -43,7 +46,7 @@ describe("getMissingCustomConfigModeAndMaps", () => {
 			}
 		})
 
-		const missingModeAndMaps = getMissingCustomConfigModeAndMaps(customConfigItem, { getValue: PlainStore.store.getState })
+		const missingModeAndMaps = getMissingCustomConfigModeAndMaps(customConfigItem, state)
 
 		expect(missingModeAndMaps).toEqual({ mapSelectionMode: "STANDARD", mapNames: ["file1"] })
 	})

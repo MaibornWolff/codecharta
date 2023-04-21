@@ -1,4 +1,4 @@
-import { CcState } from "../../../store/store"
+import { CcState } from "../../../../codeCharta.model"
 import { metricDataSelector } from "./metricData.selector"
 import { metricNamesSelector } from "./metricNames.selector"
 

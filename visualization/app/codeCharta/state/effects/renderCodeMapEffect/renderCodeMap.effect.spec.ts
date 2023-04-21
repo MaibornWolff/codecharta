@@ -11,13 +11,16 @@ import { setScaling } from "../../store/appSettings/scaling/scaling.actions"
 import { maxFPS, RenderCodeMapEffect } from "./renderCodeMap.effect"
 import { provideMockActions } from "@ngrx/effects/testing"
 import { Action } from "@ngrx/store"
-import { provideMockStore } from "@ngrx/store/testing"
+import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { EffectsModule } from "@ngrx/effects"
+import { setIsLoadingFile } from "../../store/appSettings/isLoadingFile/isLoadingFile.actions"
+import { setIsLoadingMap } from "../../store/appSettings/isLoadingMap/isLoadingMap.actions"
 
 describe("renderCodeMapEffect", () => {
 	let actions$: Subject<Action>
 	let threeRendererService: ThreeRendererService
 	let codeMapRenderService: CodeMapRenderService
+	let dispatchSpy: jest.SpyInstance
 
 	beforeEach(() => {
 		threeRendererService = { render: jest.fn() } as unknown as ThreeRendererService
@@ -34,22 +37,24 @@ describe("renderCodeMapEffect", () => {
 				provideMockActions(() => actions$)
 			]
 		})
+
+		const store = TestBed.inject(MockStore)
+		dispatchSpy = jest.spyOn(store, "dispatch")
 	})
 
 	afterEach(() => {
 		actions$.complete()
 	})
 
-	it("should render once initially and throttled after actions requiring rerender, but not scale map", async () => {
-		actions$.next(setInvertArea({ value: true }))
+	it("should render throttled after actions requiring rerender, but not scale map", async () => {
 		actions$.next(setInvertArea({ value: true }))
 		actions$.next(setInvertArea({ value: true }))
 		expect(codeMapRenderService.render).toHaveBeenCalledTimes(0)
 		expect(threeRendererService.render).toHaveBeenCalledTimes(0)
 
 		await wait(maxFPS)
-		expect(codeMapRenderService.render).toHaveBeenCalledTimes(2)
-		expect(threeRendererService.render).toHaveBeenCalledTimes(2)
+		expect(codeMapRenderService.render).toHaveBeenCalledTimes(1)
+		expect(threeRendererService.render).toHaveBeenCalledTimes(1)
 		expect(codeMapRenderService.scaleMap).not.toHaveBeenCalled()
 	})
 
@@ -59,19 +64,19 @@ describe("renderCodeMapEffect", () => {
 		expect(codeMapRenderService.scaleMap).toHaveBeenCalledTimes(1)
 	})
 
-	// it("should remove loading indicators after render", async () => {
-	// 	actions$.next(setInvertArea({ value: true }))
-	// 	await wait(maxFPS)
-	// 	expect(mockedStore.dispatch).toHaveBeenCalledWith(setIsLoadingFile({ value: false }))
-	// 	expect(mockedStore.dispatch).toHaveBeenCalledWith(setIsLoadingMap({ value: false }))
-	// })
+	it("should remove loading indicators after render", async () => {
+		actions$.next(setInvertArea({ value: true }))
+		await wait(maxFPS)
+		expect(dispatchSpy).toHaveBeenCalledWith(setIsLoadingFile({ value: false }))
+		expect(dispatchSpy).toHaveBeenCalledWith(setIsLoadingMap({ value: false }))
+	})
 
-	// it("should not remove loading indicators after render when a file is still being uploaded", async () => {
-	// 	const uploadFileService = TestBed.inject(UploadFilesService)
-	// 	uploadFileService.isUploading = true
-	// 	actions$.next(setInvertArea({ value: true }))
-	// 	await wait(maxFPS)
-	// 	expect(mockedStore.dispatch).not.toHaveBeenCalledWith(setIsLoadingFile({ value: false }))
-	// 	expect(mockedStore.dispatch).not.toHaveBeenCalledWith(setIsLoadingMap({ value: false }))
-	// })
+	it("should not remove loading indicators after render when a file is still being uploaded", async () => {
+		const uploadFileService = TestBed.inject(UploadFilesService)
+		uploadFileService.isUploading = true
+		actions$.next(setInvertArea({ value: true }))
+		await wait(maxFPS)
+		expect(dispatchSpy).not.toHaveBeenCalledWith(setIsLoadingFile({ value: false }))
+		expect(dispatchSpy).not.toHaveBeenCalledWith(setIsLoadingMap({ value: false }))
+	})
 })
