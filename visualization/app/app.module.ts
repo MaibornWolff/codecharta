@@ -33,7 +33,6 @@ import { SetLoadingIndicatorEffect } from "./codeCharta/state/effects/setLoading
 		BrowserModule,
 		HttpClientModule,
 		StoreModule.forRoot(appReducers, { metaReducers: [setStateMiddleware] }),
-		// StoreDevtoolsModule.instrument(),
 		EffectsModule.forRoot([
 			UnfocusNodesEffect,
 			AddBlacklistItemsIfNotResultsInEmptyMapEffect,
