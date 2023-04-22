@@ -22,19 +22,13 @@ describe("treeMapGenerator", () => {
 	let isDeltaState
 
 	beforeEach(() => {
-		restartSystem()
-	})
-
-	function restartSystem() {
 		map = klona(TEST_FILE_WITH_PATHS.map)
-		const file: NameDataPair = { fileName: "someFile", fileSize: 42, content: fileWithFixedFolders }
-		NodeDecorator.decorateMapWithPathAttribute(getCCFile(file))
 		state = klona(STATE)
 		codeMapNode = klona(VALID_NODE_WITH_PATH)
 		metricData = klona(METRIC_DATA)
 		isDeltaState = false
 		state.dynamicSettings.focusedNodePath = []
-	}
+	})
 
 	describe("create Treemap nodes", () => {
 		it("create map with fixed root children which include dynamic folders on the one hand and fixed ones at the other", () => {
@@ -105,7 +99,10 @@ describe("treeMapGenerator", () => {
 		})
 
 		it("should build the tree map with valid coordinates using the fixed folder structure", () => {
-			const nodes = SquarifiedLayoutGenerator.createTreemapNodes(fileWithFixedFolders.nodes[0], state, metricData, isDeltaState)
+			const file: NameDataPair = { fileName: "someFile", fileSize: 42, content: fileWithFixedFolders }
+			const ccFile = getCCFile(file)
+			NodeDecorator.decorateMapWithPathAttribute(ccFile)
+			const nodes = SquarifiedLayoutGenerator.createTreemapNodes(ccFile.map, state, metricData, isDeltaState)
 
 			expect(nodes).toMatchSnapshot()
 		})
