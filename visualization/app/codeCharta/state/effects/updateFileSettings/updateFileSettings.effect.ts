@@ -15,13 +15,13 @@ import { State } from "@ngrx/store"
 
 @Injectable()
 export class UpdateFileSettingsEffect {
-	constructor(private actions$: Actions, private State: State<CcState>) {}
+	constructor(private actions$: Actions, private state: State<CcState>) {}
 
 	updateFileSettings$ = createEffect(() =>
 		this.actions$.pipe(
 			ofType(...fileActions),
 			map(() => {
-				const state = this.State.getValue()
+				const state = this.state.getValue()
 				const visibleFiles = getVisibleFiles(state.files)
 				const withUpdatedPath = isPartialState(state.files)
 				const allAttributeTypes = visibleFileStatesSelector(state).map(({ file }) => file.settings.fileSettings.attributeTypes)
