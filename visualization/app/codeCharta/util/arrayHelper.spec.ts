@@ -1,6 +1,4 @@
-import { addItemToArray, isActionOfType, removeItemFromArray } from "./arrayHelper"
-import { ScalingActions } from "../state/store/appSettings/scaling/scaling.actions"
-import { IsLoadingFileActions } from "../state/store/appSettings/isLoadingFile/isLoadingFile.actions"
+import { addItemToArray, removeItemFromArray } from "./arrayHelper"
 
 function mutateObject(object: Record<string, number>) {
 	object.x = 10_000
@@ -40,20 +38,6 @@ describe("arrayHelper", () => {
 				{ x: 10_000, y: 2 },
 				{ x: 3, y: 4 }
 			])
-		})
-	})
-
-	describe("isActionOfType", () => {
-		it("should return true if an action is part of an enum", () => {
-			const result = isActionOfType(ScalingActions.SET_SCALING, ScalingActions)
-
-			expect(result).toBeTruthy()
-		})
-
-		it("should return false if an action is not part of an enum", () => {
-			const result = isActionOfType(IsLoadingFileActions.SET_IS_LOADING_FILE, ScalingActions)
-
-			expect(result).toBeFalsy()
 		})
 	})
 })

@@ -8,7 +8,6 @@ describe("searchPattern", () => {
 		expect(result).toEqual("mySearch/*.ts")
 	})
 
-	// TODO is this part of an effect?
 	it("should reset searchPattern on FilesSelectionActions", () => {
 		const result = searchPattern("mySearch/*.ts", setStandard({ files: [] }))
 		expect(result).toBe("")
