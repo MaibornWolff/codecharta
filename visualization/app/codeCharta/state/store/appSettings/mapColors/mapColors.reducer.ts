@@ -19,7 +19,7 @@ export const defaultMapColors: MapColors = {
 
 export const mapColors = createReducer(
 	defaultMapColors,
-	on(setMapColors, (state, action) => ({ ...state, ...action.value })),
+	on(setMapColors, (state, action) => ({ ...state, ...(action.value ?? defaultMapColors) })),
 	on(invertColorRange, state => ({ ...state, positive: state.negative, negative: state.positive })),
 	on(invertDeltaColors, state => ({ ...state, positiveDelta: state.negativeDelta, negativeDelta: state.positiveDelta }))
 )
