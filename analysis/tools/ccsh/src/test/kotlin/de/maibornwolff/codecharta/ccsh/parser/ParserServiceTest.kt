@@ -1,7 +1,5 @@
 package de.maibornwolff.codecharta.ccsh.parser
 
-import com.github.kinquirer.KInquirer
-import com.github.kinquirer.components.promptCheckbox
 import de.maibornwolff.codecharta.tools.ccsh.Ccsh
 import de.maibornwolff.codecharta.tools.ccsh.parser.ParserService
 import de.maibornwolff.codecharta.tools.ccsh.parser.repository.PicocliParserRepository
@@ -11,7 +9,6 @@ import io.mockk.every
 import io.mockk.mockkClass
 import io.mockk.mockkConstructor
 import io.mockk.mockkObject
-import io.mockk.mockkStatic
 import io.mockk.unmockkAll
 import io.mockk.verify
 import org.assertj.core.api.Assertions
@@ -92,7 +89,7 @@ class ParserServiceTest {
         // Parser name is chosen arbitrarily
         val mockParserRepository = mockParserRepository("check", emptyList())
 
-        val usableParsers = ParserService.offerParserSuggestions(cmdLine, mockParserRepository, "dummy")
+        val usableParsers = ParserService.getParserSuggestions(cmdLine, mockParserRepository, "dummy")
 
         Assertions.assertThat(usableParsers).isNotNull
         Assertions.assertThat(usableParsers).isEmpty()
@@ -103,13 +100,7 @@ class ParserServiceTest {
         val expectedUsualParsers = listOf("check", "validate")
         // Parser name is chosen arbitrarily
         val mockParserRepository = mockParserRepository("check", expectedUsualParsers)
-
-        mockkStatic("com.github.kinquirer.components.CheckboxKt")
-        every {
-            KInquirer.promptCheckbox(any(), any(), any(), any(), any())
-        } returns expectedUsualParsers
-
-        val actualUsableParsers = ParserService.offerParserSuggestions(cmdLine, mockParserRepository, "dummy")
+        val actualUsableParsers = ParserService.getParserSuggestions(cmdLine, mockParserRepository, "dummy")
 
         Assertions.assertThat(actualUsableParsers).isNotNull
         Assertions.assertThat(actualUsableParsers).isNotEmpty
@@ -197,15 +188,15 @@ class ParserServiceTest {
         val obj = mockkClass(PicocliParserRepository::class)
 
         every {
-            obj.getParser(any(), any())
+            obj.getInteractiveParser(any(), any())
         } returns mockParserObject(mockParserName)
 
         every {
-            obj.getAllParsers(any())
+            obj.getAllInteractiveParsers(any())
         } returns emptyList()
 
         every {
-            obj.getUsableParserNames(any(), any())
+            obj.getApplicableInteractiveParserNames(any(), any())
         } returns usableParsers
 
         return obj

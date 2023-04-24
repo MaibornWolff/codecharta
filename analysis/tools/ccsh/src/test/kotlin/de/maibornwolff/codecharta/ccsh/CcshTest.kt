@@ -1,6 +1,7 @@
 package de.maibornwolff.codecharta.ccsh
 
 import com.github.kinquirer.KInquirer
+import com.github.kinquirer.components.promptCheckbox
 import com.github.kinquirer.components.promptConfirm
 import com.github.kinquirer.components.promptInput
 import com.github.kinquirer.components.promptList
@@ -13,7 +14,8 @@ import io.mockk.unmockkAll
 import io.mockk.verify
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.AfterAll
-import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import picocli.CommandLine
@@ -26,16 +28,20 @@ import java.io.StringWriter
 class CcshTest {
     private val outContent = ByteArrayOutputStream()
     private val originalOut = System.out
+    private val errorOut = ByteArrayOutputStream()
+    private val originalErrorOut = System.err
     private val cmdLine = CommandLine(Ccsh())
 
-    @BeforeAll
+    @BeforeEach
     fun setUpStreams() {
-        System.setOut(PrintStream(outContent))
+        System.setOut(PrintStream(outContent, true))
+        System.setErr(PrintStream(errorOut, true))
     }
 
-    @AfterAll
+    @AfterEach
     fun restoreStreams() {
         System.setOut(originalOut)
+        System.setErr(originalErrorOut)
     }
 
     @AfterAll
@@ -75,10 +81,12 @@ class CcshTest {
         val parser1 = "parser1"
         val parser2 = "parser2"
 
+        val selectedParsers = listOf(parser1, parser2)
+
         mockkObject(ParserService)
         every {
-            ParserService.offerParserSuggestions(any(), any(), any())
-        } returns listOf(parser1, parser2)
+            ParserService.getParserSuggestions(any(), any(), any())
+        } returns selectedParsers
 
         every {
             ParserService.configureParserSelection(any(), any(), any())
@@ -96,6 +104,12 @@ class CcshTest {
         every {
             KInquirer.promptInput(any(), any(), any(), any(), any())
         } returns ""
+
+        mockkStatic("com.github.kinquirer.components.CheckboxKt")
+        every {
+            KInquirer.promptCheckbox(any(), any(), any(), any(), any())
+        } returns selectedParsers
+
         mockkStatic("com.github.kinquirer.components.ConfirmKt")
         every {
             KInquirer.promptConfirm(any(), any())
@@ -108,6 +122,48 @@ class CcshTest {
     }
 
     @Test
+    fun `should not configure or execute parsers when user selects no parser`() {
+        val parser1 = "parser1"
+        val parser2 = "parser2"
+
+        val selectedParsers = listOf(parser1, parser2)
+
+        mockkObject(ParserService)
+        every {
+            ParserService.getParserSuggestions(any(), any(), any())
+        } returns selectedParsers
+
+        every {
+            ParserService.configureParserSelection(any(), any(), any())
+        } returns mapOf(parser1 to listOf("dummyArg"), parser2 to listOf("dummyArg"))
+
+        every {
+            ParserService.executeSelectedParser(any(), any())
+        } returns 0
+
+        every {
+            ParserService.executePreconfiguredParser(any(), any())
+        } returns 0
+
+        mockkStatic("com.github.kinquirer.components.InputKt")
+        every {
+            KInquirer.promptInput(any(), any(), any(), any(), any())
+        } returns ""
+
+        mockkStatic("com.github.kinquirer.components.CheckboxKt")
+        every {
+            KInquirer.promptCheckbox(any(), any(), any(), any(), any())
+        } returns emptyList()
+
+        val exitCode = Ccsh.executeCommandLine(emptyArray())
+        Assertions.assertThat(exitCode).isZero
+
+        verify(exactly = 0) { ParserService.executePreconfiguredParser(any(), any()) }
+        verify(exactly = 0) { ParserService.executeSelectedParser(any(), any()) }
+        verify(exactly = 0) { ParserService.configureParserSelection(any(), any(), any()) }
+    }
+
+    @Test
     fun `should only output message when no usable parsers were found`() {
         mockkStatic("com.github.kinquirer.components.ListKt")
         every {
@@ -116,7 +172,7 @@ class CcshTest {
 
         mockkObject(ParserService)
         every {
-            ParserService.offerParserSuggestions(any(), any(), any())
+            ParserService.getParserSuggestions(any(), any(), any())
         } returns emptyList()
 
         every {
@@ -134,9 +190,7 @@ class CcshTest {
         val exitCode = Ccsh.executeCommandLine(emptyArray())
 
         Assertions.assertThat(exitCode).isEqualTo(0)
-        Assertions.assertThat(outContent.toString())
-                .contains(Ccsh.NO_USABLE_PARSER_FOUND_MESSAGE)
-
+        Assertions.assertThat(errorOut.toString()).contains(Ccsh.NO_USABLE_PARSER_FOUND_MESSAGE)
         verify(exactly = 0) { ParserService.executePreconfiguredParser(any(), any()) }
         verify(exactly = 0) { ParserService.executeSelectedParser(any(), any()) }
     }
@@ -146,11 +200,11 @@ class CcshTest {
         val parser1 = "parser1"
         val parser2 = "parser2"
 
+        val selectedParsers = listOf(parser1, parser2)
         mockkObject(ParserService)
         every {
-            ParserService.offerParserSuggestions(any(), any(), any())
-        } returns listOf(parser1, parser2)
-
+            ParserService.getParserSuggestions(any(), any(), any())
+        } returns selectedParsers
         every {
             ParserService.configureParserSelection(any(), any(), any())
         } returns mapOf(parser1 to listOf("dummyArg"), parser2 to listOf("dummyArg"))
@@ -166,6 +220,10 @@ class CcshTest {
         every {
             KInquirer.promptInput(any(), any(), any(), any(), any())
         } returns ""
+        mockkStatic("com.github.kinquirer.components.CheckboxKt")
+        every {
+            KInquirer.promptCheckbox(any(), any(), any(), any(), any())
+        } returns selectedParsers
         mockkStatic("com.github.kinquirer.components.ConfirmKt")
         every {
             KInquirer.promptConfirm(any(), any())

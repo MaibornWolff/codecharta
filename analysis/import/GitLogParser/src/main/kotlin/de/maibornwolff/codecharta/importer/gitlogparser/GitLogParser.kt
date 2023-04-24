@@ -154,21 +154,23 @@ class GitLogParser(
     }
 
     override fun getDialog(): ParserDialogInterface = ParserDialog
-    override fun isUsable(inputFile: String): Boolean {
-        if (inputFile.endsWith(".git")) {
+    override fun isApplicable(resourceToBeParsed: String): Boolean {
+        if (resourceToBeParsed.endsWith(".git")) {
             return true
         }
 
-        val searchFile = if (inputFile == "") {
+        val searchFile = if (resourceToBeParsed == "") {
             File(Paths.get("").toAbsolutePath().toString())
         } else {
-            File(inputFile)
+            File(resourceToBeParsed)
         }
-        val result = searchFile.walk()
+
+        return searchFile.walk()
+                .maxDepth(1)
                 .asSequence()
                 .map { it.name }
                 .filter { it.endsWith(".git") }
-        return (result.count() > 0)
+                .any()
     }
     override fun getName(): String {
         return InteractiveParserHelper.GitLogParserConstants.name

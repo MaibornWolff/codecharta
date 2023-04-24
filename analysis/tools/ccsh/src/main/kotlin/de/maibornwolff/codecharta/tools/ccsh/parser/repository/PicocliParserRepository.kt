@@ -2,10 +2,11 @@ package de.maibornwolff.codecharta.tools.ccsh.parser.repository
 
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import picocli.CommandLine
+import java.lang.NullPointerException
 
-class PicocliParserRepository : IParserRepository<CommandLine> {
+class PicocliParserRepository : ParserRepository<CommandLine> {
 
-    override fun getParserNames(dataSource: CommandLine): List<String> {
+    override fun getInteractiveParserNames(dataSource: CommandLine): List<String> {
         val subCommands = dataSource.subcommands.values
         return subCommands.mapNotNull { subCommand ->
             val parserName = subCommand.commandName
@@ -15,7 +16,7 @@ class PicocliParserRepository : IParserRepository<CommandLine> {
         }
     }
 
-    override fun getParserNamesWithDescription(dataSource: CommandLine): List<String> {
+    override fun getInteractiveParserNamesWithDescription(dataSource: CommandLine): List<String> {
         val subCommands = dataSource.subcommands.values
         return subCommands.mapNotNull { subCommand ->
             val parserName = subCommand.commandName
@@ -31,11 +32,11 @@ class PicocliParserRepository : IParserRepository<CommandLine> {
         return parserNameWithDescription.substringBefore(' ')
     }
 
-    override fun getAllParsers(dataSource: CommandLine): List<InteractiveParser> {
-        val allParserNames = getParserNames(dataSource)
+    override fun getAllInteractiveParsers(dataSource: CommandLine): List<InteractiveParser> {
+        val allParserNames = getInteractiveParserNames(dataSource)
         val allParsers = mutableListOf<InteractiveParser>()
         for (parserName in allParserNames) {
-            val interactive = getParser(dataSource, parserName)
+            val interactive = getInteractiveParser(dataSource, parserName)
 
             if (interactive != null) {
                 allParsers.add(interactive)
@@ -44,21 +45,25 @@ class PicocliParserRepository : IParserRepository<CommandLine> {
         return allParsers
     }
 
-    override fun getUsableParserNames(inputFile: String, allParsers: List<InteractiveParser>): List<String> {
+    override fun getApplicableInteractiveParserNames(inputFile: String, allParsers: List<InteractiveParser>): List<String> {
         val usableParsers = mutableListOf<String>()
 
         for (parser in allParsers) {
-            if (parser.isUsable(inputFile)) {
+            if (parser.isApplicable(inputFile)) {
                 usableParsers.add(parser.getName())
             }
         }
         return usableParsers
     }
 
-    override fun getParser(dataSource: CommandLine, name: String): InteractiveParser? {
-        val subCommand = dataSource.subcommands.getValue(name)
-        val parserObject = subCommand.commandSpec.userObject()
-
-        return parserObject as? InteractiveParser
+    override fun getInteractiveParser(dataSource: CommandLine, name: String): InteractiveParser? {
+        try {
+            val subCommand = dataSource.subcommands.getValue(name)
+            val parserObject = subCommand.commandSpec.userObject()
+            return parserObject as? InteractiveParser
+        } catch (exception: NullPointerException) {
+            println("Could not find the specified parser with the name '$name'!")
+            return null
+        }
     }
 }

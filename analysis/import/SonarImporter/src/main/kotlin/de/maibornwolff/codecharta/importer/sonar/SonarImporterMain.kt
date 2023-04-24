@@ -95,23 +95,16 @@ class SonarImporterMain(
     }
 
     override fun getDialog(): ParserDialogInterface = ParserDialog
-    override fun isUsable(inputFile: String): Boolean {
-        val trimmedInput = inputFile.trim()
-        // TODO: Is this sufficient to check for urls?
-        if (trimmedInput.startsWith("http://") || trimmedInput.startsWith("https://")) {
-            return true
-        }
+    override fun isApplicable(resourceToBeParsed: String): Boolean {
+        val trimmedInput = resourceToBeParsed.trim()
+        val searchFile = File(resourceToBeParsed)
 
-        if (trimmedInput.endsWith("sonar-project.properties")) {
-            return true
-        }
-
-        val searchFile = File(inputFile)
-        val files = searchFile.walk().asSequence()
-                .filter { it.isFile }
-                .map { it.name }
-
-        return files.contains("sonar-project.properties")
+        return (trimmedInput.startsWith("http://") || trimmedInput.startsWith("https://") ||
+                trimmedInput == ("sonar-project.properties") ||
+                searchFile.walk()
+                .asSequence().filter { it.isFile }
+                .map { it.name }.filter { it == "sonar-project.properties" }
+                .any())
     }
 
     override fun getName(): String {

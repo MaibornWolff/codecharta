@@ -16,16 +16,17 @@ class GitLogParserTest {
         @JvmStatic
         fun provideValidInputFiles(): List<Arguments> {
             return listOf(
-                    Arguments.of("src/test/resources/my/git"),
-                    Arguments.of("src/test/resources/my/git/repo/Test.git"),
-                    Arguments.of(""))
+                    Arguments.of("src/test/resources/my/git/repo"),
+                    Arguments.of("src/test/resources/my/git/repo/Test.git"))
         }
 
         @JvmStatic
         fun provideInvalidInputFiles(): List<Arguments> {
             return listOf(
                     Arguments.of("src/test/resources/my/empty/repo"),
-                    Arguments.of("src/test/resources/this/does/not/exist"))
+                    Arguments.of("src/test/resources/this/does/not/exist"),
+                    Arguments.of(""),
+                    Arguments.of("src/test/resources/my"))
         }
     }
 
@@ -85,15 +86,15 @@ class GitLogParserTest {
 
     @ParameterizedTest
     @MethodSource("provideValidInputFiles")
-    fun `should return true with valid git repository as input for isUsable`(inputFile: String) {
-        val isUsable = GitLogParser().isUsable(inputFile)
+    fun `should be identified as applicable for given directory path containing a git folder`(resourceToBeParsed: String) {
+        val isUsable = GitLogParser().isApplicable(resourceToBeParsed)
         Assertions.assertThat(isUsable).isTrue()
     }
 
     @ParameterizedTest
     @MethodSource("provideInvalidInputFiles")
-    fun `should return false with non git repository as input for isUsable`(inputFile: String) {
-        val isUsable = GitLogParser().isUsable(inputFile)
+    fun `should NOT be identified as applicable if no git folder is present at given path`(resourceToBeParsed: String) {
+        val isUsable = GitLogParser().isApplicable(resourceToBeParsed)
         Assertions.assertThat(isUsable).isFalse()
     }
 }

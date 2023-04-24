@@ -89,7 +89,7 @@ class PicocliParserRepositoryTest {
         val expectedParsers = getExpectedParsers()
         val expectedParserNames = expectedParsers.map { it.getName() }
 
-        val actualParsers = picocliParserRepository.getAllParsers(cmdLine)
+        val actualParsers = picocliParserRepository.getAllInteractiveParsers(cmdLine)
         val actualParserNames = actualParsers.map { it.getName() }
 
         for (parser in expectedParserNames) {
@@ -102,7 +102,7 @@ class PicocliParserRepositoryTest {
         val expectedParsers = getExpectedParsers()
         val expectedParserNames = expectedParsers.map { it.getName() }
 
-        val actualParserNames = picocliParserRepository.getParserNames(cmdLine)
+        val actualParserNames = picocliParserRepository.getInteractiveParserNames(cmdLine)
 
         for (parser in expectedParserNames) {
             Assertions.assertTrue(actualParserNames.contains(parser))
@@ -115,7 +115,7 @@ class PicocliParserRepositoryTest {
         val usableParser = mockParserObject("gitlogparser", true)
         val unusableParser = mockParserObject("sonarimport", false)
 
-        val usableParsers = picocliParserRepository.getUsableParserNames("input", listOf(usableParser, unusableParser))
+        val usableParsers = picocliParserRepository.getApplicableInteractiveParserNames("input", listOf(usableParser, unusableParser))
 
         Assertions.assertTrue(usableParsers.contains("gitlogparser"))
         Assertions.assertFalse(usableParsers.contains("sonarimport"))
@@ -126,7 +126,7 @@ class PicocliParserRepositoryTest {
         // Names are chosen arbitrarily
         val expectedParserNamesWithDescription = getExpectedParserNamesWithDescription()
 
-        val actualParserNamesWithDescription = picocliParserRepository.getParserNamesWithDescription(cmdLine)
+        val actualParserNamesWithDescription = picocliParserRepository.getInteractiveParserNamesWithDescription(cmdLine)
 
         for (parserNameWithDescription in expectedParserNamesWithDescription) {
             Assertions.assertTrue(actualParserNamesWithDescription.contains(parserNameWithDescription))
@@ -156,7 +156,7 @@ class PicocliParserRepositoryTest {
             obj.getDialog()
         } returns dialogInterface
         every {
-            obj.isUsable(any())
+            obj.isApplicable(any())
         } returns isUsable
         every {
             obj.getName()

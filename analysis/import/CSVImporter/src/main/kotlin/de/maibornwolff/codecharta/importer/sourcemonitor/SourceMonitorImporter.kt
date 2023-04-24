@@ -85,7 +85,7 @@ class SourceMonitorImporter(
     }
 
     override fun getDialog(): ParserDialogInterface = ParserDialog
-    override fun isUsable(inputFile: String): Boolean {
+    override fun isApplicable(resourceToBeParsed: String): Boolean {
         return false
     }
     override fun getName(): String {

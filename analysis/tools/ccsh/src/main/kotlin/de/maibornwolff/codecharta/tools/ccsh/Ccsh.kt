@@ -1,6 +1,7 @@
 package de.maibornwolff.codecharta.tools.ccsh
 
 import com.github.kinquirer.KInquirer
+import com.github.kinquirer.components.promptCheckbox
 import com.github.kinquirer.components.promptConfirm
 import com.github.kinquirer.components.promptInput
 import de.maibornwolff.codecharta.exporter.csv.CSVExporter
@@ -26,6 +27,7 @@ import java.util.concurrent.Callable
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
+import kotlin.math.min
 import kotlin.system.exitProcess
 
 @CommandLine.Command(
@@ -87,65 +89,77 @@ class Ccsh : Callable<Void?> {
         fun executeCommandLine(args: Array<String>): Int {
             val commandLine = CommandLine(Ccsh())
             commandLine.executionStrategy = CommandLine.RunAll()
-            return if (args.isEmpty()) {
+            if (args.isEmpty()) {
                 val configuredParsers = offerInteractiveParserSuggestions(commandLine)
+
                 if (configuredParsers.isEmpty()) {
                     return 0
                 }
 
                 return executeConfiguredParsers(commandLine, configuredParsers)
             } else if (isParserUnknown(args, commandLine) || args.contains("--interactive") || args.contains("-i")) {
-                executeInteractiveParser(commandLine)
+                return executeInteractiveParser(commandLine)
             } else {
-                commandLine.execute(*sanitizeArgs(args))
+                return commandLine.execute(*sanitizeArgs(args))
             }
         }
 
         fun offerInteractiveParserSuggestions(commandLine: CommandLine): Map<String, List<String>> {
             val inputFile: String = KInquirer.promptInput(
-                    message = "What is the name of the input file/folder/url?",
-                    hint = "path/to/input/")
+                    message = "Which path should be scanned?",
+                    hint = "You can provide a directory path / file path / sonar url.")
 
-            val selectedParsers = ParserService.offerParserSuggestions(commandLine, PicocliParserRepository(), inputFile)
+            val applicableParsers = ParserService.getParserSuggestions(commandLine, PicocliParserRepository(), inputFile)
+
+            if (applicableParsers.isEmpty()) {
+                logger.info(NO_USABLE_PARSER_FOUND_MESSAGE)
+                return emptyMap()
+            }
+
+            val selectedParsers = KInquirer.promptCheckbox(
+                                    message = "Choose from this list of applicable parsers",
+                                    choices = applicableParsers)
 
             if (selectedParsers.isEmpty()) {
-                println(NO_USABLE_PARSER_FOUND_MESSAGE)
+                logger.info("Did not select any parser to be configured!")
                 return emptyMap()
             }
 
             val shouldRunConfiguredParsers: Boolean =
                     KInquirer.promptConfirm(
-                            message = "Do you want to run all configured parsers?",
+                            message = "Do you want to run all configured parsers now?",
                             default = true)
 
-            if (!shouldRunConfiguredParsers) {
-                return emptyMap()
-            }
-
-            return (ParserService.configureParserSelection(commandLine, PicocliParserRepository(), selectedParsers))
+            return if (shouldRunConfiguredParsers) {
+                ParserService.configureParserSelection(commandLine, PicocliParserRepository(), selectedParsers)
+            } else { emptyMap() }
         }
 
         fun executeConfiguredParsers(commandLine: CommandLine, configuredParsers: Map<String, List<String>>): Int {
             val exitCode = AtomicInteger(0)
-            val threadPool = Executors.newFixedThreadPool(configuredParsers.size)
+            val numberOfThreadsToBeStarted = min(configuredParsers.size, Runtime.getRuntime().availableProcessors())
+            val threadPool = Executors.newFixedThreadPool(numberOfThreadsToBeStarted)
             for (configuredParser in configuredParsers) {
                 threadPool.execute {
                     val currentExitCode = executeConfiguredParser(commandLine, configuredParser)
                     if (currentExitCode != 0) {
-                        println("Code: $currentExitCode")
                         exitCode.set(currentExitCode)
+                        logger.info("Code: $currentExitCode")
                     }
                 }
             }
             threadPool.shutdown()
             threadPool.awaitTermination(1, TimeUnit.DAYS)
 
-            println("Code: ${exitCode.get()}")
-            if (exitCode.get() != 0) {
-                return exitCode.get()
+            val finalExitCode = exitCode.get()
+            logger.info("Code: $finalExitCode")
+            if (finalExitCode != 0) {
+                return finalExitCode
             }
             // Improvement: Try to extract merge commands before so user does not have to configure merge args?
-            return ParserService.executeSelectedParser(commandLine, "merge")
+            logger.info("Each parser was successfully executed and created a cc.json file. \n " +
+                        "You can merge all results by making sure they are in one folder and executing the merging tool.")
+            return 0
         }
 
         private fun executeConfiguredParser(commandLine: CommandLine, configuredParser: Map.Entry<String, List<String>>): Int {
@@ -153,7 +167,7 @@ class Ccsh : Callable<Void?> {
             val exitCode = ParserService.executePreconfiguredParser(commandLine, Pair(configuredParser.key, configuredParser.value))
 
             if (exitCode != 0) {
-                println("Error executing ${configuredParser.key}, code $exitCode")
+                logger.info("Error executing ${configuredParser.key}, code $exitCode")
             }
 
             return exitCode

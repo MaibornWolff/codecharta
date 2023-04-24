@@ -34,7 +34,8 @@ class SonarImporterMainTest {
         fun provideValidInputFiles(): List<Arguments> {
             return listOf(
                     Arguments.of("src/test/resources/my/sonar/repo"),
-                    Arguments.of("src/test/resources/my/sonar/repo/sonar-project.properties"))
+                    Arguments.of("src/test/resources/my/sonar/repo/sonar-project.properties"),
+                    Arguments.of("src/test/resources/my/sonar"))
         }
 
         @JvmStatic
@@ -97,22 +98,24 @@ class SonarImporterMainTest {
 
     @ParameterizedTest
     @MethodSource("provideValidUrls")
-    fun `should return true with url as input for isUsable`(inputFile: String) {
-        val isUsable = SonarImporterMain().isUsable("https://thisisatesturl.com")
-        Assertions.assertTrue(isUsable)
+    fun `should be identified as applicable for given directory path being an url`(inputFile: String) {
+        val isHttpsUsable = SonarImporterMain().isApplicable("https://thisisatesturl.com")
+        val isHttpUsable = SonarImporterMain().isApplicable("http://thisisatesturl.com")
+        Assertions.assertTrue(isHttpsUsable)
+        Assertions.assertTrue(isHttpUsable)
     }
 
     @ParameterizedTest
     @MethodSource("provideValidInputFiles")
-    fun `should return true with sonar analyzed directory as input for isUsable`(inputFile: String) {
-        val isUsable = SonarImporterMain().isUsable(inputFile)
+    fun `should be identified as applicable for given directory path containing a sonar properties file`(inputFile: String) {
+        val isUsable = SonarImporterMain().isApplicable(inputFile)
         Assertions.assertTrue(isUsable)
     }
 
     @ParameterizedTest
     @MethodSource("provideInvalidInputFiles")
-    fun `should return false with non sonar analyzed directory as input for isUsable`(inputFile: String) {
-        val isUsable = SonarImporterMain().isUsable(inputFile)
+    fun `should NOT be identified as applicable if no sonar properties file is present at given path`(inputFile: String) {
+        val isUsable = SonarImporterMain().isApplicable(inputFile)
         Assertions.assertFalse(isUsable)
     }
 }
