@@ -96,7 +96,16 @@ class Ccsh : Callable<Void?> {
                     return 0
                 }
 
-                return executeConfiguredParsers(commandLine, configuredParsers)
+                val shouldRunConfiguredParsers: Boolean =
+                        KInquirer.promptConfirm(
+                                message = "Do you want to run all configured parsers now?",
+                                default = true)
+
+                return if (shouldRunConfiguredParsers) {
+                    executeConfiguredParsers(commandLine, configuredParsers)
+                } else {
+                    0
+                }
             } else if (isParserUnknown(args, commandLine) || args.contains("--interactive") || args.contains("-i")) {
                 return executeInteractiveParser(commandLine)
             } else {
@@ -125,14 +134,7 @@ class Ccsh : Callable<Void?> {
                 return emptyMap()
             }
 
-            val shouldRunConfiguredParsers: Boolean =
-                    KInquirer.promptConfirm(
-                            message = "Do you want to run all configured parsers now?",
-                            default = true)
-
-            return if (shouldRunConfiguredParsers) {
-                ParserService.configureParserSelection(commandLine, PicocliParserRepository(), selectedParsers)
-            } else { emptyMap() }
+            return ParserService.configureParserSelection(commandLine, PicocliParserRepository(), selectedParsers)
         }
 
         fun executeConfiguredParsers(commandLine: CommandLine, configuredParsers: Map<String, List<String>>): Int {

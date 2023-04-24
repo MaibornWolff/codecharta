@@ -98,24 +98,22 @@ class SonarImporterMainTest {
 
     @ParameterizedTest
     @MethodSource("provideValidUrls")
-    fun `should be identified as applicable for given directory path being an url`(inputFile: String) {
-        val isHttpsUsable = SonarImporterMain().isApplicable("https://thisisatesturl.com")
-        val isHttpUsable = SonarImporterMain().isApplicable("http://thisisatesturl.com")
-        Assertions.assertTrue(isHttpsUsable)
-        Assertions.assertTrue(isHttpUsable)
+    fun `should be identified as applicable for given directory path being an url`(resourceToBeParsed: String) {
+        val isApplicable = SonarImporterMain().isApplicable(resourceToBeParsed)
+        Assertions.assertTrue(isApplicable)
     }
 
     @ParameterizedTest
     @MethodSource("provideValidInputFiles")
-    fun `should be identified as applicable for given directory path containing a sonar properties file`(inputFile: String) {
-        val isUsable = SonarImporterMain().isApplicable(inputFile)
-        Assertions.assertTrue(isUsable)
+    fun `should be identified as applicable for given directory path containing a sonar properties file`(resourceToBeParsed: String) {
+        val isApplicable = SonarImporterMain().isApplicable(resourceToBeParsed)
+        Assertions.assertTrue(isApplicable)
     }
 
     @ParameterizedTest
     @MethodSource("provideInvalidInputFiles")
-    fun `should NOT be identified as applicable if no sonar properties file is present at given path`(inputFile: String) {
-        val isUsable = SonarImporterMain().isApplicable(inputFile)
-        Assertions.assertFalse(isUsable)
+    fun `should NOT be identified as applicable if no sonar properties file is present at given path`(resourceToBeParsed: String) {
+        val isApplicable = SonarImporterMain().isApplicable(resourceToBeParsed)
+        Assertions.assertFalse(isApplicable)
     }
 }

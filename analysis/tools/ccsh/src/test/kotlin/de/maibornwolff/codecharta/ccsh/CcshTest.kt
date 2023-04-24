@@ -34,8 +34,8 @@ class CcshTest {
 
     @BeforeEach
     fun setUpStreams() {
-        System.setOut(PrintStream(outContent, true))
-        System.setErr(PrintStream(errorOut, true))
+        System.setOut(PrintStream(outContent))
+        System.setErr(PrintStream(errorOut))
     }
 
     @AfterEach
@@ -196,7 +196,7 @@ class CcshTest {
     }
 
     @Test
-    fun `should only configure suggested interactive parsers and not execute them`() {
+    fun `should only configure suggested interactive parsers when user does not confirm execution`() {
         val parser1 = "parser1"
         val parser2 = "parser2"
 
@@ -227,12 +227,11 @@ class CcshTest {
         mockkStatic("com.github.kinquirer.components.ConfirmKt")
         every {
             KInquirer.promptConfirm(any(), any())
-        } returns true
+        } returns false
 
-        val ccshCLI = CommandLine(Ccsh())
+        val exitCode = Ccsh.executeCommandLine(emptyArray())
 
-        Ccsh.offerInteractiveParserSuggestions(ccshCLI)
-
+        Assertions.assertThat(exitCode == 0).isTrue()
         verify(exactly = 0) { ParserService.executeSelectedParser(any(), any()) }
         verify(exactly = 0) { ParserService.executePreconfiguredParser(any(), any()) }
     }

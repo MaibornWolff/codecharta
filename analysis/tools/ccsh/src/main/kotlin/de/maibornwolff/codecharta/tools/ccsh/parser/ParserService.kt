@@ -46,15 +46,15 @@ class ParserService {
             val subCommand = commandLine.subcommands.getValue(selectedParser)
             val parserObject = subCommand.commandSpec.userObject()
             val interactive = parserObject as? InteractiveParser
-            if (interactive != null) {
+            return if (interactive != null) {
                 val collectedArgs = interactive.getDialog().collectParserArgs()
                 val subCommandLine = CommandLine(interactive)
                 println("You can run the same command again by using the following command line arguments:")
                 println("ccsh " + selectedParser + " " + collectedArgs.map { x -> '"' + x + '"' }.joinToString(" "))
-                return subCommandLine.execute(*collectedArgs.toTypedArray())
+                subCommandLine.execute(*collectedArgs.toTypedArray())
             } else {
                 printNotSupported(selectedParser)
-                return EXIT_CODE_PARSER_NOT_SUPPORTED
+                EXIT_CODE_PARSER_NOT_SUPPORTED
             }
         }
 
@@ -62,12 +62,12 @@ class ParserService {
             val subCommand = commandLine.subcommands.getValue(configuredParser.first)
             val parserObject = subCommand.commandSpec.userObject()
             val interactive = parserObject as? InteractiveParser
-            if (interactive != null) {
+            return if (interactive != null) {
                 val subCommandLine = CommandLine(interactive)
-                return subCommandLine.execute(*configuredParser.second.toTypedArray())
+                subCommandLine.execute(*configuredParser.second.toTypedArray())
             } else {
                 printNotSupported(configuredParser.first)
-                return EXIT_CODE_PARSER_NOT_SUPPORTED
+                EXIT_CODE_PARSER_NOT_SUPPORTED
             }
         }
 
