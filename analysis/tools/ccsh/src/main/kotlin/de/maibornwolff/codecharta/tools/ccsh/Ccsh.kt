@@ -89,9 +89,8 @@ class Ccsh : Callable<Void?> {
         fun executeCommandLine(args: Array<String>): Int {
             val commandLine = CommandLine(Ccsh())
             commandLine.executionStrategy = CommandLine.RunAll()
-            if (args.isEmpty()) {
+            return if (args.isEmpty()) {
                 val configuredParsers = offerInteractiveParserSuggestions(commandLine)
-
                 if (configuredParsers.isEmpty()) {
                     return 0
                 }
@@ -107,9 +106,9 @@ class Ccsh : Callable<Void?> {
                     0
                 }
             } else if (isParserUnknown(args, commandLine) || args.contains("--interactive") || args.contains("-i")) {
-                return executeInteractiveParser(commandLine)
+                executeInteractiveParser(commandLine)
             } else {
-                return commandLine.execute(*sanitizeArgs(args))
+                commandLine.execute(*sanitizeArgs(args))
             }
         }
 
