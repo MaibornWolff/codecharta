@@ -9,7 +9,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
--   Add automatic parser suggestions to recommend usable parsers for a codebase (supports GitLogParser and SonarImporter) when running `ccsh` command [#3275](https://github.com/MaibornWolff/codecharta/pull/3275)
+-   Add automatic parser suggestions to recommend usable parsers for a codebase (supports GitLogParser and SonarImporter) when running `ccsh` command [#3275](https://github.com/MaibornWolff/codecharta/pull/3275) </br>
+    ![image](https://user-images.githubusercontent.com/129938897/234309117-c9edd4e7-7c53-4ba7-b849-ec9c3f8f3215.png)
 
 ### Changed
 
