@@ -14,6 +14,11 @@ class InteractiveParserSuggestionDialog {
 
         fun offerAndGetInteractiveParserSuggestionsAndConfigurations(commandLine: CommandLine): Map<String, List<String>> {
             val applicableParsers = getApplicableInteractiveParsers(commandLine)
+
+            if (applicableParsers.isEmpty()) {
+                return emptyMap()
+            }
+
             val selectedParsers = selectToBeExecutedInteractiveParsers(applicableParsers)
 
             return if (selectedParsers.isEmpty()) {
