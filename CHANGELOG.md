@@ -7,9 +7,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
-### Fixed 🐞
+### Added 🚀
 
--   Fix suspicious metrics and risk profile docs not loading [#3272](https://github.com/MaibornWolff/codecharta/pull/3272)
+-   Add automatic parser suggestions to recommend usable parsers for a codebase (supports GitLogParser and SonarImporter) [#3275](https://github.com/MaibornWolff/codecharta/pull/3275)
+
+### Changed
+
+-   Changed default behavior when launching ccsh without arguments to parser suggestions [#3275](https://github.com/MaibornWolff/codecharta/pull/3275)
+-   Old interactive parser selection now reachable by passing -i or --interactive as arguments [#3275](https://github.com/MaibornWolff/codecharta/pull/3275)
 
 ## [1.115.1] - 2023-04-06
 
