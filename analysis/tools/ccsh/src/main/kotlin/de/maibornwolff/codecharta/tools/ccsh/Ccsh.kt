@@ -1,9 +1,7 @@
 package de.maibornwolff.codecharta.tools.ccsh
 
 import com.github.kinquirer.KInquirer
-import com.github.kinquirer.components.promptCheckbox
 import com.github.kinquirer.components.promptConfirm
-import com.github.kinquirer.components.promptInput
 import de.maibornwolff.codecharta.exporter.csv.CSVExporter
 import de.maibornwolff.codecharta.filter.edgefilter.EdgeFilter
 import de.maibornwolff.codecharta.filter.mergefilter.MergeFilter
@@ -18,6 +16,7 @@ import de.maibornwolff.codecharta.importer.sourcemonitor.SourceMonitorImporter
 import de.maibornwolff.codecharta.importer.svnlogparser.SVNLogParser
 import de.maibornwolff.codecharta.importer.tokeiimporter.TokeiImporter
 import de.maibornwolff.codecharta.parser.rawtextparser.RawTextParser
+import de.maibornwolff.codecharta.tools.ccsh.parser.InteractiveParserSuggestionDialog
 import de.maibornwolff.codecharta.tools.ccsh.parser.ParserService
 import de.maibornwolff.codecharta.tools.ccsh.parser.repository.PicocliParserRepository
 import de.maibornwolff.codecharta.tools.validation.ValidationTool
@@ -90,7 +89,7 @@ class Ccsh : Callable<Void?> {
             val commandLine = CommandLine(Ccsh())
             commandLine.executionStrategy = CommandLine.RunAll()
             return if (args.isEmpty()) {
-                val configuredParsers = offerInteractiveParserSuggestions(commandLine)
+                val configuredParsers = InteractiveParserSuggestionDialog.offerAndGetInteractiveParserSuggestionsAndConfigurations(commandLine)
                 if (configuredParsers.isEmpty()) {
                     return 0
                 }
@@ -110,30 +109,6 @@ class Ccsh : Callable<Void?> {
             } else {
                 commandLine.execute(*sanitizeArgs(args))
             }
-        }
-
-        fun offerInteractiveParserSuggestions(commandLine: CommandLine): Map<String, List<String>> {
-            val inputFile: String = KInquirer.promptInput(
-                    message = "Which path should be scanned?",
-                    hint = "You can provide a directory path / file path / sonar url.")
-
-            val applicableParsers = ParserService.getParserSuggestions(commandLine, PicocliParserRepository(), inputFile)
-
-            if (applicableParsers.isEmpty()) {
-                logger.info(NO_USABLE_PARSER_FOUND_MESSAGE)
-                return emptyMap()
-            }
-
-            val selectedParsers = KInquirer.promptCheckbox(
-                                    message = "Choose from this list of applicable parsers",
-                                    choices = applicableParsers)
-
-            if (selectedParsers.isEmpty()) {
-                logger.info("Did not select any parser to be configured!")
-                return emptyMap()
-            }
-
-            return ParserService.configureParserSelection(commandLine, PicocliParserRepository(), selectedParsers)
         }
 
         fun executeConfiguredParsers(commandLine: CommandLine, configuredParsers: Map<String, List<String>>): Int {
@@ -158,7 +133,7 @@ class Ccsh : Callable<Void?> {
                 return finalExitCode
             }
             // Improvement: Try to extract merge commands before so user does not have to configure merge args?
-            logger.info("Each parser was successfully executed and created a cc.json file. \n " +
+            logger.info("Each parser was successfully executed and created a cc.json file. " +
                         "You can merge all results by making sure they are in one folder and executing the merging tool.")
             return 0
         }

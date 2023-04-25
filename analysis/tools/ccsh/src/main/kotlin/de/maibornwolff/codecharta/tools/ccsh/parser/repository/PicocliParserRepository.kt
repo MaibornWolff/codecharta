@@ -2,7 +2,6 @@ package de.maibornwolff.codecharta.tools.ccsh.parser.repository
 
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import picocli.CommandLine
-import java.lang.NullPointerException
 
 class PicocliParserRepository : ParserRepository<CommandLine> {
 
@@ -57,13 +56,13 @@ class PicocliParserRepository : ParserRepository<CommandLine> {
     }
 
     override fun getInteractiveParser(dataSource: CommandLine, name: String): InteractiveParser? {
-        try {
+        return try {
             val subCommand = dataSource.subcommands.getValue(name)
             val parserObject = subCommand.commandSpec.userObject()
-            return parserObject as? InteractiveParser
-        } catch (exception: NullPointerException) {
+            parserObject as? InteractiveParser
+        } catch (exception: NoSuchElementException) {
             println("Could not find the specified parser with the name '$name'!")
-            return null
+            null
         }
     }
 }

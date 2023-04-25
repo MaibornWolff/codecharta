@@ -1,11 +1,9 @@
 package de.maibornwolff.codecharta.ccsh
 
 import com.github.kinquirer.KInquirer
-import com.github.kinquirer.components.promptCheckbox
 import com.github.kinquirer.components.promptConfirm
-import com.github.kinquirer.components.promptInput
-import com.github.kinquirer.components.promptList
 import de.maibornwolff.codecharta.tools.ccsh.Ccsh
+import de.maibornwolff.codecharta.tools.ccsh.parser.InteractiveParserSuggestionDialog
 import de.maibornwolff.codecharta.tools.ccsh.parser.ParserService
 import io.mockk.every
 import io.mockk.mockkObject
@@ -14,8 +12,7 @@ import io.mockk.unmockkAll
 import io.mockk.verify
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.AfterAll
-import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import picocli.CommandLine
@@ -28,20 +25,16 @@ import java.io.StringWriter
 class CcshTest {
     private val outContent = ByteArrayOutputStream()
     private val originalOut = System.out
-    private val errorOut = ByteArrayOutputStream()
-    private val originalErrorOut = System.err
     private val cmdLine = CommandLine(Ccsh())
 
-    @BeforeEach
+    @BeforeAll
     fun setUpStreams() {
         System.setOut(PrintStream(outContent))
-        System.setErr(PrintStream(errorOut))
     }
 
-    @AfterEach
+    @AfterAll
     fun restoreStreams() {
         System.setOut(originalOut)
-        System.setErr(originalErrorOut)
     }
 
     @AfterAll
@@ -78,20 +71,15 @@ class CcshTest {
 
     @Test
     fun `should execute parser suggestions and all selected parsers when no options are passed`() {
-        val parser1 = "parser1"
-        val parser2 = "parser2"
+        val selectedParsers = listOf("parser1", "parser2")
+        val args = listOf(listOf("dummyArg1"), listOf("dummyArg2"))
 
-        val selectedParsers = listOf(parser1, parser2)
+        mockkObject(InteractiveParserSuggestionDialog)
+        every {
+            InteractiveParserSuggestionDialog.offerAndGetInteractiveParserSuggestionsAndConfigurations(any())
+        } returns mapOf(selectedParsers[0] to args[0], selectedParsers[1] to args[1])
 
         mockkObject(ParserService)
-        every {
-            ParserService.getParserSuggestions(any(), any(), any())
-        } returns selectedParsers
-
-        every {
-            ParserService.configureParserSelection(any(), any(), any())
-        } returns mapOf(parser1 to listOf("dummyArg"), parser2 to listOf("dummyArg"))
-
         every {
             ParserService.executeSelectedParser(any(), any())
         } returns 0
@@ -99,16 +87,6 @@ class CcshTest {
         every {
             ParserService.executePreconfiguredParser(any(), any())
         } returns 0
-
-        mockkStatic("com.github.kinquirer.components.InputKt")
-        every {
-            KInquirer.promptInput(any(), any(), any(), any(), any())
-        } returns ""
-
-        mockkStatic("com.github.kinquirer.components.CheckboxKt")
-        every {
-            KInquirer.promptCheckbox(any(), any(), any(), any(), any())
-        } returns selectedParsers
 
         mockkStatic("com.github.kinquirer.components.ConfirmKt")
         every {
@@ -122,93 +100,38 @@ class CcshTest {
     }
 
     @Test
-    fun `should not configure or execute parsers when user selects no parser`() {
-        val parser1 = "parser1"
-        val parser2 = "parser2"
-
-        val selectedParsers = listOf(parser1, parser2)
+    fun `should only execute parsers when configuration was successful`() {
+        mockkObject(InteractiveParserSuggestionDialog)
+        every {
+            InteractiveParserSuggestionDialog.offerAndGetInteractiveParserSuggestionsAndConfigurations(any())
+        } returns emptyMap()
 
         mockkObject(ParserService)
-        every {
-            ParserService.getParserSuggestions(any(), any(), any())
-        } returns selectedParsers
-
-        every {
-            ParserService.configureParserSelection(any(), any(), any())
-        } returns mapOf(parser1 to listOf("dummyArg"), parser2 to listOf("dummyArg"))
-
-        every {
-            ParserService.executeSelectedParser(any(), any())
-        } returns 0
-
-        every {
-            ParserService.executePreconfiguredParser(any(), any())
-        } returns 0
-
-        mockkStatic("com.github.kinquirer.components.InputKt")
-        every {
-            KInquirer.promptInput(any(), any(), any(), any(), any())
-        } returns ""
-
-        mockkStatic("com.github.kinquirer.components.CheckboxKt")
-        every {
-            KInquirer.promptCheckbox(any(), any(), any(), any(), any())
-        } returns emptyList()
-
-        val exitCode = Ccsh.executeCommandLine(emptyArray())
-        Assertions.assertThat(exitCode).isZero
-
-        verify(exactly = 0) { ParserService.executePreconfiguredParser(any(), any()) }
-        verify(exactly = 0) { ParserService.executeSelectedParser(any(), any()) }
-        verify(exactly = 0) { ParserService.configureParserSelection(any(), any(), any()) }
-    }
-
-    @Test
-    fun `should only output message when no usable parsers were found`() {
-        mockkStatic("com.github.kinquirer.components.ListKt")
-        every {
-            KInquirer.promptList(any(), any(), any(), any(), any())
-        } returns ""
-
-        mockkObject(ParserService)
-        every {
-            ParserService.getParserSuggestions(any(), any(), any())
-        } returns emptyList()
-
         every {
             ParserService.executeSelectedParser(any(), any())
         } returns 0
         every {
             ParserService.executePreconfiguredParser(any(), any())
         } returns 0
-
-        mockkStatic("com.github.kinquirer.components.InputKt")
-        every {
-            KInquirer.promptInput(any(), any(), any(), any(), any())
-        } returns ""
 
         val exitCode = Ccsh.executeCommandLine(emptyArray())
 
-        Assertions.assertThat(exitCode).isEqualTo(0)
-        Assertions.assertThat(errorOut.toString()).contains(Ccsh.NO_USABLE_PARSER_FOUND_MESSAGE)
-        verify(exactly = 0) { ParserService.executePreconfiguredParser(any(), any()) }
+        Assertions.assertThat(exitCode == 0).isTrue()
         verify(exactly = 0) { ParserService.executeSelectedParser(any(), any()) }
+        verify(exactly = 0) { ParserService.executePreconfiguredParser(any(), any()) }
     }
 
     @Test
-    fun `should only configure suggested interactive parsers when user does not confirm execution`() {
-        val parser1 = "parser1"
-        val parser2 = "parser2"
+    fun `should only execute parsers when user does confirm execution`() {
+        val selectedParsers = listOf("parser1", "parser2")
+        val args = listOf(listOf("dummyArg1"), listOf("dummyArg2"))
 
-        val selectedParsers = listOf(parser1, parser2)
+        mockkObject(InteractiveParserSuggestionDialog)
+        every {
+            InteractiveParserSuggestionDialog.offerAndGetInteractiveParserSuggestionsAndConfigurations(any())
+        } returns mapOf(selectedParsers[0] to args[0], selectedParsers[1] to args[1])
+
         mockkObject(ParserService)
-        every {
-            ParserService.getParserSuggestions(any(), any(), any())
-        } returns selectedParsers
-        every {
-            ParserService.configureParserSelection(any(), any(), any())
-        } returns mapOf(parser1 to listOf("dummyArg"), parser2 to listOf("dummyArg"))
-
         every {
             ParserService.executeSelectedParser(any(), any())
         } returns 0
@@ -216,14 +139,6 @@ class CcshTest {
             ParserService.executePreconfiguredParser(any(), any())
         } returns 0
 
-        mockkStatic("com.github.kinquirer.components.InputKt")
-        every {
-            KInquirer.promptInput(any(), any(), any(), any(), any())
-        } returns ""
-        mockkStatic("com.github.kinquirer.components.CheckboxKt")
-        every {
-            KInquirer.promptCheckbox(any(), any(), any(), any(), any())
-        } returns selectedParsers
         mockkStatic("com.github.kinquirer.components.ConfirmKt")
         every {
             KInquirer.promptConfirm(any(), any())

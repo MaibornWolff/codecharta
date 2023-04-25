@@ -144,6 +144,14 @@ class PicocliParserRepositoryTest {
         }
     }
 
+    @Test
+    fun `should not crash when trying to get invalid parser name and output message`() {
+        val parserName = picocliParserRepository.getInteractiveParser(cmdLine, "nonexistent")
+
+        Assertions.assertNull(parserName)
+        Assertions.assertTrue(outContent.toString().contains("Could not find the specified parser with the name 'nonexistent'!"))
+    }
+
     private fun mockParserObject(name: String, isUsable: Boolean): InteractiveParser {
         val obj = cmdLine.subcommands[name]!!.commandSpec.userObject() as InteractiveParser
         mockkObject(obj)
