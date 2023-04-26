@@ -13,10 +13,13 @@
 		<mat-option
 			*ngFor="let option of metricData$ | async | filterMetricDataBySearchTerm: searchTerm"
 			[value]="option.name"
-			[title]="option.descriptor | metricDescriptorTitle"
+			[title]="attributeDescriptors[option.name] | attributeDescriptorTooltip: option.name"
 		>
 			{{ option.name }}
-			<span class="metric-max-value">({{ option.maxValue }})</span>
+			<span class="metric-max-value">({{ option.maxValue }})</span><br />
+			<span class="metric-subtitle" *ngIf="attributeDescriptors[option.name]?.title as descriptorSubtitle">{{
+				descriptorSubtitle
+			}}</span>
 		</mat-option>
 	</div>
 </mat-select>
