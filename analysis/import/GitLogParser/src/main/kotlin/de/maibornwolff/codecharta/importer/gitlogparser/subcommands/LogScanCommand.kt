@@ -58,4 +58,11 @@ class LogScanCommand : Callable<Void>, InteractiveParser {
     }
 
     override fun getDialog(): ParserDialogInterface = LogScanParserDialog
+    override fun isApplicable(resourceToBeParsed: String): Boolean {
+        return false
+    }
+
+    override fun getName(): String {
+        return "log-scan"
+    }
 }

@@ -5,6 +5,7 @@ import de.maibornwolff.codecharta.model.AttributeTypes
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
+import de.maibornwolff.codecharta.tools.interactiveparser.util.InteractiveParserHelper
 import de.maibornwolff.codecharta.translator.MetricNameTranslator
 import picocli.CommandLine
 import java.io.File
@@ -14,9 +15,9 @@ import java.io.PrintStream
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
-        name = "codemaatimport",
-        description = ["generates cc.json from codemaat coupling csv"],
-        footer = ["Copyright(c) 2022, MaibornWolff GmbH"]
+        name = InteractiveParserHelper.CodeMaatImporterConstants.name,
+        description = [InteractiveParserHelper.CodeMaatImporterConstants.description],
+        footer = [InteractiveParserHelper.GeneralConstants.GenericFooter]
 )
 class CodeMaatImporter(
         private val output: PrintStream = System.out) : Callable<Void>, InteractiveParser {
@@ -79,4 +80,11 @@ class CodeMaatImporter(
     }
 
     override fun getDialog(): ParserDialogInterface = ParserDialog
+    override fun isApplicable(resourceToBeParsed: String): Boolean {
+        return false
+    }
+
+    override fun getName(): String {
+        return InteractiveParserHelper.CodeMaatImporterConstants.name
+    }
 }
