@@ -15,7 +15,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Changed
 
 -   Changed default behavior when launching ccsh without arguments to parser suggestions [#3275](https://github.com/MaibornWolff/codecharta/pull/3275)
--   Old interactive parser selection now reachable by passing -i or --interactive as arguments [#3275](https://github.com/MaibornWolff/codecharta/pull/3275)
+-   Old interactive parser selection now reachable by passing `-i` or `--interactive as arguments [#3275](https://github.com/MaibornWolff/codecharta/pull/3275)
 
 ### Fixed 🐞
 
