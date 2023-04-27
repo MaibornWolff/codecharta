@@ -10,14 +10,7 @@
 		<span class="primary-metric-value">{{ metric.value | number: "1.0-0" }}</span>
 	</div>
 	<cc-metric-delta-selected [metricName]="metric.name"></cc-metric-delta-selected>
-	<ng-container></ng-container>
-	<a
-		class="metric-name"
-		[href]="link"
-		target="_blank"
-		class="metric-name"
-		*ngIf="metric.descriptors.link as link; else primaryMetricNoLink"
-	>
+	<a class="metric-name" [href]="link" target="_blank" *ngIf="metric.descriptors.link as link; else primaryMetricNoLink">
 		{{ metric.name }}
 		<i class="fa fa-external-link"></i>
 	</a>
