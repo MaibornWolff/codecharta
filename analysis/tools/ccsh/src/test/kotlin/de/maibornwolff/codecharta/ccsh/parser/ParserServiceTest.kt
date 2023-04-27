@@ -1,16 +1,14 @@
 package de.maibornwolff.codecharta.ccsh.parser
 
-import com.github.kinquirer.KInquirer
-import com.github.kinquirer.components.promptList
 import de.maibornwolff.codecharta.tools.ccsh.Ccsh
 import de.maibornwolff.codecharta.tools.ccsh.parser.ParserService
+import de.maibornwolff.codecharta.tools.ccsh.parser.repository.PicocliParserRepository
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import io.mockk.every
 import io.mockk.mockkClass
 import io.mockk.mockkConstructor
 import io.mockk.mockkObject
-import io.mockk.mockkStatic
 import io.mockk.unmockkAll
 import io.mockk.verify
 import org.assertj.core.api.Assertions
@@ -50,7 +48,7 @@ class ParserServiceTest {
 
     companion object {
         @JvmStatic
-        fun provideArguments(): List<Arguments> {
+        fun providerParserArguments(): List<Arguments> {
             return listOf(
                 Arguments.of("check"),
                 Arguments.of("edgefilter"),
@@ -69,20 +67,78 @@ class ParserServiceTest {
         }
     }
 
+    @ParameterizedTest
+    @MethodSource("providerParserArguments")
+    fun `should output generated parser command for each configured parser`(selectedParser: String) {
+        val parser = mockParserObject(selectedParser)
+
+        val collectedArgs = parser.getDialog().collectParserArgs()
+        val expectedParserCommand = "ccsh " + selectedParser + " " + collectedArgs.map { x -> '"' + x + '"' }.joinToString(" ")
+
+        val selectedParserList = listOf(selectedParser)
+        val mockPicocliParserRepository = mockParserRepository(selectedParser, emptyList())
+
+        ParserService.configureParserSelection(cmdLine, mockPicocliParserRepository, selectedParserList)
+
+        Assertions.assertThat(outContent.toString())
+                .contains(expectedParserCommand)
+    }
+
     @Test
-    fun `should return the selected parser name`() {
-        mockkStatic("com.github.kinquirer.components.ListKt")
-        every {
-            KInquirer.promptList(any(), any(), any(), any(), any())
-        } returns "parser - description"
+    fun `should output empty list for parser suggestions if no usable parsers were found`() {
+        // Parser name is chosen arbitrarily
+        val mockParserRepository = mockParserRepository("check", emptyList())
 
-        val selectedParserName = ParserService.selectParser(CommandLine(Ccsh()))
+        val usableParsers = ParserService.getParserSuggestions(cmdLine, mockParserRepository, "dummy")
 
-        Assertions.assertThat(selectedParserName).isEqualTo("parser")
+        Assertions.assertThat(usableParsers).isNotNull
+        Assertions.assertThat(usableParsers).isEmpty()
+    }
+
+    @Test
+    fun `should output parser name list of user selected parsers from parser suggestions`() {
+        val expectedUsualParsers = listOf("check", "validate")
+        // Parser name is chosen arbitrarily
+        val mockParserRepository = mockParserRepository("check", expectedUsualParsers)
+        val actualUsableParsers = ParserService.getParserSuggestions(cmdLine, mockParserRepository, "dummy")
+
+        Assertions.assertThat(actualUsableParsers).isNotNull
+        Assertions.assertThat(actualUsableParsers).isNotEmpty
+
+        Assertions.assertThat(actualUsableParsers).contains("check")
+        Assertions.assertThat(actualUsableParsers).contains("validate")
+    }
+
+    @Test
+    fun `should start configuration for each selected parser`() {
+        val selectedParserList = listOf("check",
+                "edgefilter",
+                "sonarimport",
+                "svnlogparser",
+                "merge",
+                "gitlogparser",
+                "rawtextparser",
+                "sourcemonitorimport",
+                "tokeiimporter",
+                "sourcecodeparser",
+                "modify",
+                "csvexport",
+                "codemaatimport")
+        val mockPicocliParserRepository = mockParserRepository(selectedParserList[0], emptyList())
+
+        val configuredParsers = ParserService.configureParserSelection(cmdLine, mockPicocliParserRepository, selectedParserList)
+
+        Assertions.assertThat(configuredParsers).isNotEmpty
+        Assertions.assertThat(configuredParsers).size().isEqualTo(selectedParserList.size)
+
+        for (entry in configuredParsers) {
+            Assertions.assertThat(entry.value).isNotEmpty
+            Assertions.assertThat(entry.value[0] == "dummyArg").isTrue()
+        }
     }
 
     @ParameterizedTest
-    @MethodSource("provideArguments")
+    @MethodSource("providerParserArguments")
     fun `should execute parser`(parser: String) {
         mockParserObject(parser)
 
@@ -91,11 +147,24 @@ class ParserServiceTest {
         verify { anyConstructed<CommandLine>().execute(any()) }
     }
 
+    @ParameterizedTest
+    @MethodSource("providerParserArguments")
+    fun `should execute preconfigured parser`(parser: String) {
+        val parserObject = mockParserObject(parser)
+
+        ParserService.executePreconfiguredParser(cmdLine, Pair(parser, parserObject.getDialog().collectParserArgs()))
+
+        verify { anyConstructed<CommandLine>().execute(any()) }
+    }
+
     @Test
     fun `should not execute any parser`() {
-
         Assertions.assertThatExceptionOfType(NoSuchElementException::class.java).isThrownBy {
             ParserService.executeSelectedParser(cmdLine, "unknownparser")
+        }
+
+        Assertions.assertThatExceptionOfType(NoSuchElementException::class.java).isThrownBy {
+            ParserService.executePreconfiguredParser(cmdLine, Pair("unknownparser", listOf("dummyArg")))
         }
     }
 
@@ -112,6 +181,24 @@ class ParserServiceTest {
         } returns dialogInterface
         mockkConstructor(CommandLine::class)
         every { anyConstructed<CommandLine>().execute(*dummyArgs.toTypedArray()) } returns 0
+        return obj
+    }
+
+    private fun mockParserRepository(mockParserName: String, usableParsers: List<String>): PicocliParserRepository {
+        val obj = mockkClass(PicocliParserRepository::class)
+
+        every {
+            obj.getInteractiveParser(any(), any())
+        } returns mockParserObject(mockParserName)
+
+        every {
+            obj.getAllInteractiveParsers(any())
+        } returns emptyList()
+
+        every {
+            obj.getApplicableInteractiveParserNames(any(), any())
+        } returns usableParsers
+
         return obj
     }
 }

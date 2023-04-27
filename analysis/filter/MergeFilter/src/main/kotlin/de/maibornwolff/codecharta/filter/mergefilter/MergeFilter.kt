@@ -5,6 +5,7 @@ import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
+import de.maibornwolff.codecharta.tools.interactiveparser.util.InteractiveParserHelper
 import mu.KotlinLogging
 import picocli.CommandLine
 import java.io.File
@@ -12,9 +13,9 @@ import java.io.PrintStream
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
-    name = "merge",
-    description = ["merges multiple cc.json files"],
-    footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
+    name = InteractiveParserHelper.MergeFilterConstants.name,
+    description = [InteractiveParserHelper.MergeFilterConstants.description],
+    footer = [InteractiveParserHelper.GeneralConstants.GenericFooter]
 )
 class MergeFilter(
     private val output: PrintStream = System.out
@@ -99,4 +100,11 @@ class MergeFilter(
     }
 
     override fun getDialog(): ParserDialogInterface = ParserDialog
+    override fun isApplicable(resourceToBeParsed: String): Boolean {
+        return false
+    }
+
+    override fun getName(): String {
+        return InteractiveParserHelper.MergeFilterConstants.name
+    }
 }
