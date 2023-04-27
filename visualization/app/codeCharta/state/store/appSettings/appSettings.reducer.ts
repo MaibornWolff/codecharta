@@ -1,4 +1,4 @@
-import { colorLabels, defaultColorLabels } from "./colorLabels/colorLabels.reducer"
+import { colorLabels, defaultColorLabelOptions } from "./colorLabels/colorLabels.reducer"
 import { defaultShowMetricLabelNodeName, showMetricLabelNodeName } from "./showMetricLabelNodeName/showMetricLabelNodeName.reducer"
 import { defaultShowMetricLabelNameValue, showMetricLabelNameValue } from "./showMetricLabelNameValue/showMetricLabelNameValue.reducer"
 import { defaultSortingOrderAscending, sortingOrderAscending } from "./sortingOrderAscending/sortingOrderAscending.reducer"
@@ -68,7 +68,7 @@ export const appSettings = combineReducers({
 })
 
 export const defaultAppSettings = {
-	colorLabels: defaultColorLabels,
+	colorLabels: defaultColorLabelOptions,
 	showMetricLabelNodeName: defaultShowMetricLabelNodeName,
 	showMetricLabelNameValue: defaultShowMetricLabelNameValue,
 	sortingOrderAscending: defaultSortingOrderAscending,

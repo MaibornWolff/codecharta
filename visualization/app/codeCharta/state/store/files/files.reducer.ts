@@ -15,11 +15,12 @@ import { CCFile } from "../../../codeCharta.model"
 import { FileSelectionState, FileState } from "../../../model/files/files"
 import { isEqual } from "../../../model/files/files.helper"
 import { createReducer, on } from "@ngrx/store"
+import { setState } from "../util/setState.reducer.factory"
 
 export const defaultFiles: FileState[] = []
 export const files = createReducer(
 	defaultFiles,
-	on(setFiles, (_state, action) => action.value),
+	on(setFiles, setState(defaultFiles)),
 	on(addFile, (state, action) => [...state, { file: action.file, selectedAs: FileSelectionState.None }]),
 	on(removeFile, (state, action) => removeFileFromState(state, action.fileName)),
 	on(setDelta, (state, action) => setDeltaState(state, action.referenceFile, action.comparisonFile)),
