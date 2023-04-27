@@ -5,7 +5,10 @@
 				<tr>
 					<th scope="col" colspan="2">Secondary Metrics</th>
 				</tr>
-				<tr *ngFor="let secondaryMetric of secondaryMetrics$ | async" [title]="secondaryMetric.descriptors | metricDescriptorTitle">
+				<tr
+					*ngFor="let secondaryMetric of secondaryMetrics$ | async"
+					[title]="attributeDescriptors[secondaryMetric.name] | attributeDescriptorTooltip: secondaryMetric.name"
+				>
 					<td class="secondary-metric-box">
 						<div class="secondary-metric-row">
 							<cc-attribute-type-selector
@@ -26,8 +29,7 @@
 							class="metric-name"
 							[href]="link"
 							target="_blank"
-							class="metric-name"
-							*ngIf="secondaryMetric.descriptors.link as link; else secondaryMetricNoLink"
+							*ngIf="attributeDescriptors[secondaryMetric.name]?.link as link; else secondaryMetricNoLink"
 						>
 							{{ secondaryMetric.name }}
 							<i class="fa fa-external-link"></i>
