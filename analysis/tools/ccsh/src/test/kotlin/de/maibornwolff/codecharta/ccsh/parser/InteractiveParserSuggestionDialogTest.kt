@@ -83,7 +83,7 @@ class InteractiveParserSuggestionDialogTest {
 
         mockkStatic("com.github.kinquirer.components.CheckboxKt")
         every {
-            KInquirer.promptCheckbox(any(), any(), any(), any(), any())
+            KInquirer.promptCheckbox(any(), any())
         } returns emptyList()
 
         val parser = "dummyParser"
