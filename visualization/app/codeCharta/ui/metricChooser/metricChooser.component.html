@@ -5,6 +5,7 @@
 	(openedChange)="handleOpenedChanged($event)"
 	[disabled]="isDisabled"
 >
+	<mat-select-trigger>{{ selectedMetricName }}</mat-select-trigger>
 	<mat-form-field class="cc-metric-chooser-search-field">
 		<i matPrefix class="fa fa-search search-icon"></i>
 		<input #searchTermInput matInput type="text" [placeholder]="searchPlaceholder" [(ngModel)]="searchTerm" />
@@ -17,9 +18,9 @@
 		>
 			{{ option.name }}
 			<span class="metric-max-value">({{ option.maxValue }})</span><br />
-			<span class="metric-subtitle" *ngIf="attributeDescriptors[option.name]?.title as descriptorSubtitle">{{
-				descriptorSubtitle
-			}}</span>
+			<span class="metric-subtitle" *ngIf="attributeDescriptors[option.name]?.title as descriptorSubtitle">
+				{{ descriptorSubtitle }}
+			</span>
 		</mat-option>
 	</div>
 </mat-select>
