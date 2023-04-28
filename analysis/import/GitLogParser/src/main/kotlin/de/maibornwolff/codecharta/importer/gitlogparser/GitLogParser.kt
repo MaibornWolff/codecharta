@@ -169,7 +169,7 @@ class GitLogParser(
                 .maxDepth(1)
                 .asSequence()
                 .map { it.name }
-                .filter { it.endsWith(".git") }
+                .filter { it == ".git" }
                 .any()
     }
     override fun getName(): String {

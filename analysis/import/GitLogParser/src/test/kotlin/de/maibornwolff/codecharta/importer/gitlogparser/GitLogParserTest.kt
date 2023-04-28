@@ -14,13 +14,6 @@ import java.io.File
 class GitLogParserTest {
     companion object {
         @JvmStatic
-        fun provideValidInputFiles(): List<Arguments> {
-            return listOf(
-                    Arguments.of("src/test/resources/my/git/repo"),
-                    Arguments.of("src/test/resources/my/git/repo/Test.git"))
-        }
-
-        @JvmStatic
         fun provideInvalidInputFiles(): List<Arguments> {
             return listOf(
                     Arguments.of("src/test/resources/my/empty/repo"),
@@ -84,11 +77,21 @@ class GitLogParserTest {
         assertTrue(file.exists())
     }
 
-    @ParameterizedTest
-    @MethodSource("provideValidInputFiles")
-    fun `should be identified as applicable for given directory path containing a git folder`(resourceToBeParsed: String) {
-        val isUsable = GitLogParser().isApplicable(resourceToBeParsed)
-        Assertions.assertThat(isUsable).isTrue()
+    @Test
+    fun `should be identified as applicable for given directory path containing a git folder`() {
+        val gitFolderParentFilePath = "src/test/resources/my/git/repo/"
+        val gitFolderFilePath = "src/test/resources/my/git/repo/.git"
+
+        val testGitDirectory = File(gitFolderFilePath)
+        testGitDirectory.mkdir()
+
+        val isUsableFromParentFolder = GitLogParser().isApplicable(gitFolderParentFilePath)
+        val isUsableFromGitFolder = GitLogParser().isApplicable(gitFolderFilePath)
+
+        Assertions.assertThat(isUsableFromParentFolder).isTrue()
+        Assertions.assertThat(isUsableFromGitFolder).isTrue()
+
+        testGitDirectory.delete()
     }
 
     @ParameterizedTest
