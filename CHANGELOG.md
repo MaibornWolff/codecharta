@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [1.116.0] - 2023-04-28
+
 ### Added 🚀
 
 -   Add automatic parser suggestions to recommend usable parsers for a codebase (supports GitLogParser and SonarImporter) when running `ccsh` command [#3275](https://github.com/MaibornWolff/codecharta/pull/3275) </br>
