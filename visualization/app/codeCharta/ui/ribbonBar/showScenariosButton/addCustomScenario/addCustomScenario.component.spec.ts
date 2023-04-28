@@ -7,29 +7,30 @@ import { render, screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
 import { Vector3 } from "three"
 import { setState } from "../../../../state/store/state.actions"
-import { Store } from "../../../../state/store/store"
 import { SCENARIO_ATTRIBUTE_CONTENT, STATE } from "../../../../util/dataMocks"
 import { ThreeCameraService } from "../../../codeMap/threeViewer/threeCamera.service"
 import { ThreeOrbitControlsService } from "../../../codeMap/threeViewer/threeOrbitControls.service"
 import { ScenarioHelper } from "../scenarioHelper"
 import { AddCustomScenarioComponent } from "./addCustomScenario.component"
 import { AddCustomScenarioModule } from "./addCustomScenario.module"
+import { appReducers, setStateMiddleware } from "../../../../state/store/state.manager"
+import { State, Store, StoreModule } from "@ngrx/store"
 
 describe("AddCustomScenarioComponent", () => {
-	beforeEach(() => {
-		TestBed.configureTestingModule({
-			imports: [AddCustomScenarioModule],
+	beforeEach(async () => {
+		return TestBed.configureTestingModule({
+			imports: [AddCustomScenarioModule, StoreModule.forRoot(appReducers, { metaReducers: [setStateMiddleware] })],
 			providers: [
 				{ provide: ThreeCameraService, useValue: { camera: { position: new Vector3(0, 300, 1000) } } },
 				{ provide: ThreeOrbitControlsService, useValue: { controls: { target: new Vector3(177, 0, 299) } } },
-				{ provide: MatDialogRef, useValue: { close: jest.fn() } }
+				{ provide: MatDialogRef, useValue: { close: jest.fn() } },
+				{ provide: State, useValue: { getValue: () => STATE } }
 			]
-		})
+		}).compileComponents()
 	})
 
 	it("should enable the user to add a custom scenario, with all properties set initially", async () => {
 		ScenarioHelper.addScenario = jest.fn()
-		Store.dispatch(setState(STATE))
 		const { fixture } = await render(AddCustomScenarioComponent, { excludeComponentDeclaration: true })
 		const loader = TestbedHarnessEnvironment.loader(fixture)
 
@@ -63,8 +64,10 @@ describe("AddCustomScenarioComponent", () => {
 	})
 
 	it("should show an error message, when no properties are selected", async () => {
-		Store.dispatch(setState(STATE))
-		await render(AddCustomScenarioComponent, { excludeComponentDeclaration: true })
+		const { detectChanges } = await render(AddCustomScenarioComponent, { excludeComponentDeclaration: true })
+		const store = TestBed.inject(Store)
+		store.dispatch(setState({ value: STATE }))
+		detectChanges()
 
 		await userEvent.click(screen.getByText("Camera-Position"))
 		await userEvent.click(screen.getByText("Area-Metric (rloc)"))

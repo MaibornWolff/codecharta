@@ -4,14 +4,12 @@ import { platformBrowserDynamic } from "@angular/platform-browser-dynamic"
 import { HttpClientModule } from "@angular/common/http"
 import { FormsModule, ReactiveFormsModule } from "@angular/forms"
 import { MaterialModule } from "./material/material.module"
-import { EffectsModule } from "./codeCharta/state/angular-redux/effects/effects.module"
+import { EffectsModule } from "@ngrx/effects"
 import { UnfocusNodesEffect } from "./codeCharta/state/effects/unfocusNodes/unfocusNodes.effect"
 import { AddBlacklistItemsIfNotResultsInEmptyMapEffect } from "./codeCharta/state/effects/addBlacklistItemsIfNotResultsInEmptyMap/addBlacklistItemsIfNotResultsInEmptyMap.effect"
 import { dialogs } from "./codeCharta/ui/dialogs/dialogs"
 import { OpenNodeContextMenuEffect } from "./codeCharta/state/effects/nodeContextMenu/openNodeContextMenu.effect"
 import { BlacklistSearchPatternEffect } from "./codeCharta/ui/searchPanel/searchBar/blacklistSearchPattern.effect"
-import { ResetColorRangeEffect } from "./codeCharta/state/store/dynamicSettings/colorRange/resetColorRange.effect"
-import { ResetChosenMetricsEffect } from "./codeCharta/state/effects/resetChosenMetrics/resetChosenMetrics.effect"
 import { UpdateEdgePreviewsEffect } from "./codeCharta/state/effects/updateEdgePreviews/updateEdgePreviews.effect"
 import { ChangelogDialogModule } from "./codeCharta/ui/dialogs/changelogDialog/changelogDialog.module"
 import { VersionService } from "./codeCharta/services/version/version.service"
@@ -19,16 +17,22 @@ import { RenderCodeMapEffect } from "./codeCharta/state/effects/renderCodeMapEff
 import { AutoFitCodeMapEffect } from "./codeCharta/state/effects/autoFitCodeMapChange/autoFitCodeMap.effect"
 import { CodeChartaModule } from "./codeCharta/codeCharta.module"
 import { UpdateVisibleTopLabelsEffect } from "./codeCharta/state/effects/updateVisibleTopLabels/updateVisibleTopLabels.effect"
-import { ResetSelectedEdgeMetricWhenItDoesntExistAnymoreEffect } from "./codeCharta/state/effects/resetSelectedEdgeMetricWhenItDoesntExistAnymore/resetSelectedEdgeMetricWhenItDoesntExistAnymore.effect"
 import { LinkColorMetricToHeightMetricEffect } from "./codeCharta/state/effects/linkColorMetricToHeightMetric/linkColorMetricToHeightMetric.effect"
 import { UpdateFileSettingsEffect } from "./codeCharta/state/effects/updateFileSettings/updateFileSettings.effect"
 import { CodeChartaComponent } from "./codeCharta/codeCharta.component"
 import { NodeContextMenuCardModule } from "./codeCharta/state/effects/nodeContextMenu/nodeContextMenuCard/nodeContextMenuCard.module"
+import { StoreModule } from "@ngrx/store"
+import { appReducers, setStateMiddleware } from "./codeCharta/state/store/state.manager"
+import { ResetColorRangeEffect } from "./codeCharta/state/store/dynamicSettings/colorRange/resetColorRange.effect"
+import { ResetChosenMetricsEffect } from "./codeCharta/state/effects/resetChosenMetrics/resetChosenMetrics.effect"
+import { ResetSelectedEdgeMetricWhenItDoesntExistAnymoreEffect } from "./codeCharta/state/effects/resetSelectedEdgeMetricWhenItDoesntExistAnymore/resetSelectedEdgeMetricWhenItDoesntExistAnymore.effect"
+import { SetLoadingIndicatorEffect } from "./codeCharta/state/effects/setLoadingIndicator/setLoadingIndicator.effect"
 
 @NgModule({
 	imports: [
 		BrowserModule,
 		HttpClientModule,
+		StoreModule.forRoot(appReducers, { metaReducers: [setStateMiddleware] }),
 		EffectsModule.forRoot([
 			UnfocusNodesEffect,
 			AddBlacklistItemsIfNotResultsInEmptyMapEffect,
@@ -42,7 +46,8 @@ import { NodeContextMenuCardModule } from "./codeCharta/state/effects/nodeContex
 			UpdateVisibleTopLabelsEffect,
 			LinkColorMetricToHeightMetricEffect,
 			ResetSelectedEdgeMetricWhenItDoesntExistAnymoreEffect,
-			UpdateFileSettingsEffect
+			UpdateFileSettingsEffect,
+			SetLoadingIndicatorEffect
 		]),
 		MaterialModule,
 		FormsModule,

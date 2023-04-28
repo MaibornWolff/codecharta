@@ -21,7 +21,7 @@ import {
 	Settings,
 	SharpnessMode,
 	SortingOption,
-	State
+	CcState
 } from "../codeCharta.model"
 import { CodeMapBuilding } from "../ui/codeMap/rendering/codeMapBuilding"
 import { Box3, Vector3 } from "three"
@@ -1586,7 +1586,7 @@ export const EDGE_METRIC_DATA: EdgeMetricData[] = [
 	{ name: "average_commits", maxValue: 20, minValue: 0 }
 ]
 
-export const STATE: State = {
+export const STATE: CcState = {
 	fileSettings: {
 		attributeTypes: {
 			nodes: {
@@ -1671,7 +1671,7 @@ export const STATE: State = {
 	}
 }
 
-export const DEFAULT_STATE: State = {
+export const DEFAULT_STATE: CcState = {
 	appSettings: {
 		amountOfTopLabels: 1,
 		amountOfEdgePreviews: 1,

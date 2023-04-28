@@ -1,7 +1,6 @@
 import { Component, ViewEncapsulation } from "@angular/core"
-import { MatSelectChange } from "@angular/material/select"
-import { SharpnessMode } from "../../../../../codeCharta.model"
-import { Store } from "../../../../../state/angular-redux/store"
+import { Store } from "@ngrx/store"
+import { SharpnessMode, CcState } from "../../../../../codeCharta.model"
 import { setSharpnessMode } from "../../../../../state/store/appSettings/sharpnessMode/sharpnessMode.actions"
 import { sharpnessModeSelector } from "../../../../../state/store/appSettings/sharpnessMode/sharpnessMode.selector"
 
@@ -14,9 +13,9 @@ export class DisplayQualitySelectionComponent {
 	sharpnessModes = Object.values(SharpnessMode)
 	sharpnessMode$ = this.store.select(sharpnessModeSelector)
 
-	constructor(private store: Store) {}
+	constructor(private store: Store<CcState>) {}
 
-	handleSelectedSharpnessModeChanged(event: MatSelectChange) {
-		this.store.dispatch(setSharpnessMode(event.value))
+	handleSelectedSharpnessModeChanged(event: { value: SharpnessMode }) {
+		this.store.dispatch(setSharpnessMode({ value: event.value }))
 	}
 }

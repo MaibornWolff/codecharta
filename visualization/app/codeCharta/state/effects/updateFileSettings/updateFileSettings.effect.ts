@@ -1,26 +1,25 @@
-import { Injectable, Inject } from "@angular/core"
-import { filter, map } from "rxjs"
-import { getVisibleFiles, isPartialState } from "../../../model/files/files.helper"
-import { isActionOfType } from "../../../util/reduxHelper"
-import { createEffect } from "../../angular-redux/effects/createEffect"
-import { Actions, ActionsToken } from "../../angular-redux/effects/effects.module"
-import { State } from "../../angular-redux/state"
-import { visibleFileStatesSelector } from "../../selectors/visibleFileStates.selector"
-import { FilesSelectionActions } from "../../store/files/files.actions"
+import { Injectable } from "@angular/core"
+import { Actions, createEffect, ofType } from "@ngrx/effects"
+import { fileActions } from "../../store/files/files.actions"
 import { setState } from "../../store/state.actions"
-import { getMergedAttributeTypes } from "./utils/attributeTypes.merger"
-import { getMergedBlacklist } from "./utils/blacklist.merger"
+import { CcState } from "../../../codeCharta.model"
+import { map } from "rxjs"
+import { getVisibleFiles, isPartialState } from "../../../model/files/files.helper"
+import { visibleFileStatesSelector } from "../../selectors/visibleFileStates.selector"
 import { getMergedEdges } from "./utils/edges.merger"
 import { getMergedMarkedPackages } from "./utils/markedPackages.merger"
+import { getMergedBlacklist } from "./utils/blacklist.merger"
+import { getMergedAttributeTypes } from "./utils/attributeTypes.merger"
 import { getMergedAttributeDescriptors } from "./utils/attributeDescriptors.merger"
+import { State } from "@ngrx/store"
 
 @Injectable()
 export class UpdateFileSettingsEffect {
-	constructor(@Inject(ActionsToken) private actions$: Actions, private state: State) {}
+	constructor(private actions$: Actions, private state: State<CcState>) {}
 
 	updateFileSettings$ = createEffect(() =>
 		this.actions$.pipe(
-			filter(action => isActionOfType(action.type, FilesSelectionActions)),
+			ofType(...fileActions),
 			map(() => {
 				const state = this.state.getValue()
 				const visibleFiles = getVisibleFiles(state.files)
@@ -29,13 +28,16 @@ export class UpdateFileSettingsEffect {
 				const allAttributeDescriptors = visibleFileStatesSelector(state).map(
 					({ file }) => file.settings.fileSettings.attributeDescriptors
 				)
+
 				return setState({
-					fileSettings: {
-						edges: getMergedEdges(visibleFiles, withUpdatedPath),
-						markedPackages: getMergedMarkedPackages(visibleFiles, withUpdatedPath),
-						blacklist: getMergedBlacklist(visibleFiles, withUpdatedPath),
-						attributeTypes: getMergedAttributeTypes(allAttributeTypes),
-						attributeDescriptors: getMergedAttributeDescriptors(allAttributeDescriptors)
+					value: {
+						fileSettings: {
+							edges: getMergedEdges(visibleFiles, withUpdatedPath),
+							markedPackages: getMergedMarkedPackages(visibleFiles, withUpdatedPath),
+							blacklist: getMergedBlacklist(visibleFiles, withUpdatedPath),
+							attributeTypes: getMergedAttributeTypes(allAttributeTypes),
+							attributeDescriptors: getMergedAttributeDescriptors(allAttributeDescriptors)
+						}
 					}
 				})
 			})

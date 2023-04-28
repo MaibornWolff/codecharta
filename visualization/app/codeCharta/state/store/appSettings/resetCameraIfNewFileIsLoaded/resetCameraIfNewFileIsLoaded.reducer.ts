@@ -1,17 +1,9 @@
-import {
-	ResetCameraIfNewFileIsLoadedAction,
-	ResetCameraIfNewFileIsLoadedActions,
-	setResetCameraIfNewFileIsLoaded
-} from "./resetCameraIfNewFileIsLoaded.actions"
+import { createReducer, on } from "@ngrx/store"
+import { setResetCameraIfNewFileIsLoaded } from "./resetCameraIfNewFileIsLoaded.actions"
+import { setState } from "../../util/setState.reducer.factory"
 
-export function resetCameraIfNewFileIsLoaded(
-	state = setResetCameraIfNewFileIsLoaded().payload,
-	action: ResetCameraIfNewFileIsLoadedAction
-) {
-	switch (action.type) {
-		case ResetCameraIfNewFileIsLoadedActions.SET_RESET_CAMERA_IF_NEW_FILE_IS_LOADED:
-			return action.payload
-		default:
-			return state
-	}
-}
+export const defaultResetCameraIfNewFileIsLoaded = true
+export const resetCameraIfNewFileIsLoaded = createReducer(
+	defaultResetCameraIfNewFileIsLoaded,
+	on(setResetCameraIfNewFileIsLoaded, setState(defaultResetCameraIfNewFileIsLoaded))
+)

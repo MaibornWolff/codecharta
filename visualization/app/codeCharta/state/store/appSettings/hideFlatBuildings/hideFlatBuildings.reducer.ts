@@ -1,10 +1,6 @@
-import { HideFlatBuildingsAction, HideFlatBuildingsActions, setHideFlatBuildings } from "./hideFlatBuildings.actions"
+import { createReducer, on } from "@ngrx/store"
+import { setHideFlatBuildings } from "./hideFlatBuildings.actions"
+import { setState } from "../../util/setState.reducer.factory"
 
-export function hideFlatBuildings(state = setHideFlatBuildings().payload, action: HideFlatBuildingsAction) {
-	switch (action.type) {
-		case HideFlatBuildingsActions.SET_HIDE_FLAT_BUILDINGS:
-			return action.payload
-		default:
-			return state
-	}
-}
+export const defaultHideFlatBuildings = false
+export const hideFlatBuildings = createReducer(defaultHideFlatBuildings, on(setHideFlatBuildings, setState(defaultHideFlatBuildings)))

@@ -1,11 +1,11 @@
-import { markedPackages } from "./markedPackages/markedPackages.reducer"
-import { edges } from "./edges/edges.reducer"
-import { attributeTypes } from "./attributeTypes/attributeTypes.reducer"
-import { blacklist } from "./blacklist/blacklist.reducer"
-import { combineReducers } from "redux"
-import { attributeDescriptors } from "./attributeDescriptors/attributeDescriptors.reducer"
+import { defaultMarkedPackages, markedPackages } from "./markedPackages/markedPackages.reducer"
+import { defaultEdges, edges } from "./edges/edges.reducer"
+import { attributeTypes, defaultAttributeTypes } from "./attributeTypes/attributeTypes.reducer"
+import { blacklist, defaultBlacklist } from "./blacklist/blacklist.reducer"
+import { attributeDescriptors, defaultAttributeDescriptors } from "./attributeDescriptors/attributeDescriptors.reducer"
+import { combineReducers } from "@ngrx/store"
 
-const fileSettings = combineReducers({
+export const fileSettings = combineReducers({
 	markedPackages,
 	edges,
 	attributeTypes,
@@ -13,4 +13,10 @@ const fileSettings = combineReducers({
 	blacklist
 })
 
-export default fileSettings
+export const defaultFileSettings = {
+	markedPackages: defaultMarkedPackages,
+	edges: defaultEdges,
+	attributeTypes: defaultAttributeTypes,
+	attributeDescriptors: defaultAttributeDescriptors,
+	blacklist: defaultBlacklist
+}

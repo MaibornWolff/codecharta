@@ -3,11 +3,12 @@ import { render, screen, fireEvent } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
 
 import { searchedNodePathsSelector } from "../../../../state/selectors/searchedNodes/searchedNodePaths.selector"
-import { Store } from "../../../../state/store/store"
 import { MapTreeViewModule } from "../mapTreeView.module"
 import { MapTreeViewLevelComponent } from "./mapTreeViewLevel.component"
 import { rootNode } from "./mocks"
-import { setAreaMetric } from "../../../../state/store/dynamicSettings/areaMetric/areaMetric.actions"
+import { appReducers, setStateMiddleware } from "../../../../state/store/state.manager"
+import { StoreModule } from "@ngrx/store"
+import { areaMetricSelector } from "../../../../state/store/dynamicSettings/areaMetric/areaMetric.selector"
 
 jest.mock("../../../../state/selectors/searchedNodes/searchedNodePaths.selector", () => ({
 	searchedNodePathsSelector: jest.fn(
@@ -16,6 +17,11 @@ jest.mock("../../../../state/selectors/searchedNodes/searchedNodePaths.selector"
 }))
 const searchedNodePathsSelectorMock = searchedNodePathsSelector as unknown as jest.Mock<ReturnType<typeof searchedNodePathsSelector>>
 
+jest.mock("../../../../state/store/dynamicSettings/areaMetric/areaMetric.selector", () => ({
+	areaMetricSelector: jest.fn(() => "unary")
+}))
+const areaMetricSelectorMock = areaMetricSelector as unknown as jest.Mock<ReturnType<typeof areaMetricSelector>>
+
 describe("mapTreeViewLevel", () => {
 	const componentProperties = {
 		depth: 0,
@@ -23,12 +29,10 @@ describe("mapTreeViewLevel", () => {
 	}
 
 	beforeEach(() => {
+		areaMetricSelectorMock.mockImplementation(() => "unary")
 		TestBed.configureTestingModule({
-			imports: [MapTreeViewModule]
+			imports: [MapTreeViewModule, StoreModule.forRoot(appReducers, { metaReducers: [setStateMiddleware] })]
 		})
-
-		Store["initialize"]()
-		Store.dispatch(setAreaMetric("unary"))
 	})
 
 	it("should show root and first level folder and files initially", async () => {
@@ -143,7 +147,7 @@ describe("mapTreeViewLevel", () => {
 
 		expect(firstLevelFolder.querySelector("cc-map-tree-view-item-option-buttons")).toBeTruthy()
 
-		Store.dispatch(setAreaMetric("mcc"))
+		areaMetricSelectorMock.mockImplementation(() => "mcc")
 		await userEvent.hover(firstLevelFolder)
 
 		expect(firstLevelFolder.querySelector("cc-map-tree-view-item-option-buttons")).toBeFalsy()

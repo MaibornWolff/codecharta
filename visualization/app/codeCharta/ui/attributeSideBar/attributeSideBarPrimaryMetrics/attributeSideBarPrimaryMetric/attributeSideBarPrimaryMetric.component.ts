@@ -1,6 +1,7 @@
 import { Component, Input, ViewEncapsulation } from "@angular/core"
+import { Store } from "@ngrx/store"
 import { Observable } from "rxjs"
-import { Store } from "../../../../state/angular-redux/store"
+import { CcState } from "../../../../codeCharta.model"
 
 import { Metric } from "../../util/metric"
 import { showAttributeTypeSelectorSelector } from "../../util/showAttributeTypeSelector.selector"
@@ -15,7 +16,7 @@ export class AttributeSideBarPrimaryMetricComponent {
 	@Input() metric: Metric
 	showAttributeTypeSelector$: Observable<boolean>
 
-	constructor(store: Store) {
+	constructor(store: Store<CcState>) {
 		this.showAttributeTypeSelector$ = store.select(showAttributeTypeSelectorSelector)
 	}
 }

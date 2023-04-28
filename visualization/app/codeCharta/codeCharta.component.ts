@@ -2,7 +2,7 @@ import { setIsLoadingFile } from "./state/store/appSettings/isLoadingFile/isLoad
 import packageJson from "../../package.json"
 import { LoadInitialFileService } from "./services/loadInitialFile/loadInitialFile.service"
 import { Component, OnInit, ViewEncapsulation } from "@angular/core"
-import { Store } from "./state/angular-redux/store"
+import { Store } from "@ngrx/store"
 
 @Component({
 	selector: "cc-code-charta",
@@ -21,7 +21,7 @@ export class CodeChartaComponent implements OnInit {
 	}
 
 	async ngOnInit(): Promise<void> {
-		this.store.dispatch(setIsLoadingFile(true))
+		this.store.dispatch(setIsLoadingFile({ value: true }))
 		await this.loadInitialFileService.loadFileOrSample()
 	}
 }

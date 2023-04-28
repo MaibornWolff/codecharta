@@ -1,17 +1,9 @@
-import {
-	ScreenshotToClipboardEnabledAction,
-	ScreenshotToClipboardEnabledActions,
-	setScreenshotToClipboardEnabled
-} from "./screenshotToClipboardEnabled.actions"
+import { createReducer, on } from "@ngrx/store"
+import { setScreenshotToClipboardEnabled } from "./screenshotToClipboardEnabled.actions"
+import { setState } from "../../util/setState.reducer.factory"
 
-export function screenshotToClipboardEnabled(
-	state = setScreenshotToClipboardEnabled().payload,
-	action: ScreenshotToClipboardEnabledAction
-) {
-	switch (action.type) {
-		case ScreenshotToClipboardEnabledActions.SET_SCREENSHOT_TO_CLIPBOARD_ENABLED:
-			return action.payload
-		default:
-			return state
-	}
-}
+export const defaultScreenshotToClipboardEnabled = false
+export const screenshotToClipboardEnabled = createReducer(
+	defaultScreenshotToClipboardEnabled,
+	on(setScreenshotToClipboardEnabled, setState(defaultScreenshotToClipboardEnabled))
+)

@@ -3,13 +3,16 @@ import { render, waitFor } from "@testing-library/angular"
 import { screen } from "@testing-library/dom"
 import userEvent from "@testing-library/user-event"
 import { stubDate } from "../../../../../mocks/dateMock.helper"
-import { State } from "../../../state/angular-redux/state"
 import { FILE_META, VALID_EDGES, VALID_NODE_WITH_PATH_AND_EXTENSION } from "../../../util/dataMocks"
 import { FileDownloader } from "../../../util/fileDownloader"
 import { DownloadButtonComponent } from "./downloadButton.component"
 import { DownloadButtonModule } from "./downloadButton.module"
+import { State } from "@ngrx/store"
 
-const mockedAccumulatedData = {}
+const mockedAccumulatedData = {
+	unifiedMapNode: VALID_NODE_WITH_PATH_AND_EXTENSION,
+	unifiedFileMeta: FILE_META
+}
 jest.mock("../../../state/selectors/accumulatedData/accumulatedData.selector", () => ({
 	accumulatedDataSelector: () => mockedAccumulatedData
 }))
@@ -27,8 +30,6 @@ describe("downloadButtonComponent", () => {
 	}
 
 	beforeEach(() => {
-		mockedAccumulatedData["unifiedMapNode"] = VALID_NODE_WITH_PATH_AND_EXTENSION
-		mockedAccumulatedData["unifiedFileMeta"] = FILE_META
 		TestBed.configureTestingModule({
 			imports: [DownloadButtonModule],
 			providers: [

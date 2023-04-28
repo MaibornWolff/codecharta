@@ -1,7 +1,7 @@
 import { Component, Input, ViewEncapsulation } from "@angular/core"
+import { Store } from "@ngrx/store"
 
-import { MapColors } from "../../codeCharta.model"
-import { Store } from "../../state/angular-redux/store"
+import { MapColors, CcState } from "../../codeCharta.model"
 import { selectedColorMetricDataSelector } from "../../state/selectors/accumulatedData/metricData/selectedColorMetricData.selector"
 import { setMapColors } from "../../state/store/appSettings/mapColors/mapColors.actions"
 import { mapColorsSelector } from "../../state/store/appSettings/mapColors/mapColors.selector"
@@ -19,12 +19,12 @@ export class ColorPickerForMapColorComponent {
 	colorRange$ = this.store.select(colorRangeSelector)
 	nodeMetricRange$ = this.store.select(selectedColorMetricDataSelector)
 
-	constructor(private store: Store) {}
+	constructor(private store: Store<CcState>) {}
 
 	handleColorChange(newHexColor: string) {
 		this.store.dispatch(
 			setMapColors({
-				[this.mapColorFor]: newHexColor
+				value: { [this.mapColorFor]: newHexColor }
 			})
 		)
 	}

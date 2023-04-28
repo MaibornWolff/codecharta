@@ -1,3 +1,4 @@
-import { CcState } from "../../store"
+import { createSelector } from "@ngrx/store"
+import { appSettingsSelector } from "../appSettings.selector"
 
-export const sortingOrderAscendingSelector = (state: CcState): boolean => state.appSettings.sortingOrderAscending
+export const sortingOrderAscendingSelector = createSelector(appSettingsSelector, appSettings => appSettings.sortingOrderAscending)

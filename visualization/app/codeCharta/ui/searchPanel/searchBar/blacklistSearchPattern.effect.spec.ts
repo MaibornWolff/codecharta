@@ -1,59 +1,66 @@
-import { ApplicationInitStatus } from "@angular/core"
 import { TestBed } from "@angular/core/testing"
 import { MatDialog } from "@angular/material/dialog"
-import { Action } from "redux"
-import { Subject } from "rxjs"
-import { EffectsModule } from "../../../state/angular-redux/effects/effects.module"
+import { first, Subject } from "rxjs"
 import { AddBlacklistItemsIfNotResultsInEmptyMapEffect } from "../../../state/effects/addBlacklistItemsIfNotResultsInEmptyMap/addBlacklistItemsIfNotResultsInEmptyMap.effect"
-import { resultsInEmptyMap } from "../../../state/effects/addBlacklistItemsIfNotResultsInEmptyMap/resultsInEmptyMap"
-import { setSearchPattern } from "../../../state/store/dynamicSettings/searchPattern/searchPattern.actions"
-import { addBlacklistItemsIfNotResultsInEmptyMap } from "../../../state/store/fileSettings/blacklist/blacklist.actions"
-import { Store } from "../../../state/store/store"
 import { blacklistSearchPattern, BlacklistSearchPatternEffect } from "./blacklistSearchPattern.effect"
-
-jest.mock("../../../state/effects/addBlacklistItemsIfNotResultsInEmptyMap/resultsInEmptyMap", () => ({
-	resultsInEmptyMap: jest.fn()
-}))
-
-const mockedResultsInEmptyMap = jest.mocked(resultsInEmptyMap)
+import { MockStore, provideMockStore } from "@ngrx/store/testing"
+import { searchPatternSelector } from "../../../state/store/dynamicSettings/searchPattern/searchPattern.selector"
+import { provideMockActions } from "@ngrx/effects/testing"
+import { Action } from "@ngrx/store"
+import { addBlacklistItemsIfNotResultsInEmptyMap } from "../../../state/store/fileSettings/blacklist/blacklist.actions"
+import { setSearchPattern } from "../../../state/store/dynamicSettings/searchPattern/searchPattern.actions"
 
 describe("BlacklistSearchPatternEffect", () => {
-	const mockedDialog = { open: jest.fn() }
+	let effect: BlacklistSearchPatternEffect
+	let actions$: Subject<Action>
+	let doBlacklistItemsResultInEmptyMap$: Subject<{ resultsInEmptyMap: boolean }>
+	let store: MockStore
 
-	beforeEach(async () => {
-		Store["initialize"]()
-		mockedDialog.open = jest.fn()
+	beforeEach(() => {
+		actions$ = new Subject()
+		doBlacklistItemsResultInEmptyMap$ = new Subject()
 
-		EffectsModule.actions$ = new Subject<Action>()
 		TestBed.configureTestingModule({
-			imports: [EffectsModule.forRoot([BlacklistSearchPatternEffect, AddBlacklistItemsIfNotResultsInEmptyMapEffect])],
-			providers: [{ provide: MatDialog, useValue: mockedDialog }]
+			providers: [
+				BlacklistSearchPatternEffect,
+				{ provide: MatDialog, useValue: { open: jest.fn() } },
+				{ provide: AddBlacklistItemsIfNotResultsInEmptyMapEffect, useValue: { doBlacklistItemsResultInEmptyMap$ } },
+				provideMockStore({ selectors: [{ selector: searchPatternSelector, value: "" }] }),
+				provideMockActions(() => actions$)
+			]
 		})
-		await TestBed.inject(ApplicationInitStatus).donePromise
+		effect = TestBed.inject(BlacklistSearchPatternEffect)
+		store = TestBed.inject(MockStore)
 	})
 
 	afterEach(() => {
-		EffectsModule.actions$.complete()
+		actions$.complete()
+		doBlacklistItemsResultInEmptyMap$.complete()
 	})
 
 	it("should exclude pattern and reset search pattern", () => {
-		mockedResultsInEmptyMap.mockImplementation(() => false)
-		Store.dispatch(setSearchPattern("needle"))
+		store.overrideSelector(searchPatternSelector, "needle")
+		store.refreshState()
+		const dispatchSpy = jest.spyOn(store, "dispatch")
 
-		EffectsModule.actions$.next(blacklistSearchPattern("exclude"))
+		let firedEffect
+		effect.excludeSearchPattern$.pipe(first()).subscribe(event => {
+			firedEffect = event
+		})
+		actions$.next(blacklistSearchPattern("exclude"))
+		expect(firedEffect).toEqual(addBlacklistItemsIfNotResultsInEmptyMap({ items: [{ type: "exclude", path: "*needle*" }] }))
 
-		expect(Store.store.getState().dynamicSettings.searchPattern).toBe("")
-		expect(Store.store.getState().fileSettings.blacklist).toEqual([{ type: "exclude", path: "*needle*" }])
+		doBlacklistItemsResultInEmptyMap$.next({ resultsInEmptyMap: false })
+		expect(dispatchSpy).toHaveBeenCalledWith(setSearchPattern({ value: "" }))
 	})
 
-	it("should not reset search pattern, when excluding from search bar failed and afterwards excluding within CodeCharta map", () => {
-		mockedResultsInEmptyMap.mockImplementation(() => true)
-		Store.dispatch(setSearchPattern("root"))
-		EffectsModule.actions$.next(blacklistSearchPattern("exclude"))
+	it("should not reset search pattern, when excluding from search bar failed / would result in an empty map", () => {
+		store.overrideSelector(searchPatternSelector, "root")
+		store.refreshState()
+		const dispatchSpy = jest.spyOn(store, "dispatch")
 
-		mockedResultsInEmptyMap.mockImplementation(() => false)
-		EffectsModule.actions$.next(addBlacklistItemsIfNotResultsInEmptyMap([{ type: "exclude", path: "*needle*" }]))
-
-		expect(Store.store.getState().dynamicSettings.searchPattern).toBe("root")
+		actions$.next(blacklistSearchPattern("exclude"))
+		doBlacklistItemsResultInEmptyMap$.next({ resultsInEmptyMap: true })
+		expect(dispatchSpy).not.toHaveBeenCalled()
 	})
 })

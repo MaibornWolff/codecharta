@@ -8,6 +8,9 @@ import { ThreeCameraService } from "../../../../codeMap/threeViewer/threeCamera.
 import { ThreeOrbitControlsService } from "../../../../codeMap/threeViewer/threeOrbitControls.service"
 import { CUSTOM_CONFIG_ITEM_GROUPS } from "../../../../../util/dataMocks"
 import { CustomConfigHelper } from "../../../../../util/customConfigHelper"
+import { provideMockStore } from "@ngrx/store/testing"
+import { State } from "@ngrx/store"
+import { defaultState } from "../../../../../state/store/state.manager"
 
 describe("applyCustomConfigButtonComponent", () => {
 	beforeEach(() => {
@@ -15,7 +18,9 @@ describe("applyCustomConfigButtonComponent", () => {
 			imports: [CustomConfigsModule],
 			providers: [
 				{ provide: ThreeCameraService, useValue: {} },
-				{ provide: ThreeOrbitControlsService, useValue: {} }
+				{ provide: ThreeOrbitControlsService, useValue: {} },
+				provideMockStore(),
+				{ provide: State, useValue: { getValue: () => defaultState } }
 			]
 		})
 	})

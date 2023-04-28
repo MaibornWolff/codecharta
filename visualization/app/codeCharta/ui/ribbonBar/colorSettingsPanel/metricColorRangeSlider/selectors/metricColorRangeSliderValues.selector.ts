@@ -1,9 +1,10 @@
-import { createSelector } from "../../../../../state/angular-redux/createSelector"
+import { createSelector } from "@ngrx/store"
 import { selectedColorMetricDataSelector } from "../../../../../state/selectors/accumulatedData/metricData/selectedColorMetricData.selector"
 import { colorRangeSelector } from "../../../../../state/store/dynamicSettings/colorRange/colorRange.selector"
 
 export const metricColorRangeSliderValuesSelector = createSelector(
-	[selectedColorMetricDataSelector, colorRangeSelector],
+	selectedColorMetricDataSelector,
+	colorRangeSelector,
 	(colorMetricData, colorRange) => ({
 		min: colorMetricData.minValue,
 		max: colorMetricData.maxValue,

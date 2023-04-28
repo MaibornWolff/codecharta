@@ -1,21 +1,3 @@
-import { CCAction } from "../../../../codeCharta.model"
+import { createAction, props } from "@ngrx/store"
 
-export enum EdgeHeightActions {
-	SET_EDGE_HEIGHT = "SET_EDGE_HEIGHT"
-}
-
-export interface SetEdgeHeightAction extends CCAction {
-	type: EdgeHeightActions.SET_EDGE_HEIGHT
-	payload: number
-}
-
-export type EdgeHeightAction = SetEdgeHeightAction
-
-export function setEdgeHeight(edgeHeight: number = defaultEdgeHeight): SetEdgeHeightAction {
-	return {
-		type: EdgeHeightActions.SET_EDGE_HEIGHT,
-		payload: edgeHeight
-	}
-}
-
-export const defaultEdgeHeight = 4
+export const setEdgeHeight = createAction("SET_EDGE_HEIGHT", props<{ value: number }>())

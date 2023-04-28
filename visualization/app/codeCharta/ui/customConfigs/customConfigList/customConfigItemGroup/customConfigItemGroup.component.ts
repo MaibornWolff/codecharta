@@ -1,9 +1,9 @@
 import { Component, Input, ViewEncapsulation } from "@angular/core"
 import { CustomConfigHelper } from "../../../../util/customConfigHelper"
 import { CustomConfigItemGroup } from "../../customConfigs.component"
-import { Store } from "../../../../state/angular-redux/store"
 import { ThreeCameraService } from "../../../codeMap/threeViewer/threeCamera.service"
 import { ThreeOrbitControlsService } from "../../../codeMap/threeViewer/threeOrbitControls.service"
+import { Store } from "@ngrx/store"
 
 @Component({
 	selector: "cc-custom-config-item-group",

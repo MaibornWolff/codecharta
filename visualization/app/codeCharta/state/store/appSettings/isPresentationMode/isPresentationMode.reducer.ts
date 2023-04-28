@@ -1,10 +1,6 @@
-import { PresentationModeAction, PresentationModeActions, setPresentationMode } from "./isPresentationMode.actions"
+import { createReducer, on } from "@ngrx/store"
+import { setPresentationMode } from "./isPresentationMode.actions"
+import { setState } from "../../util/setState.reducer.factory"
 
-export function isPresentationMode(state = setPresentationMode().payload, action: PresentationModeAction) {
-	switch (action.type) {
-		case PresentationModeActions.SET_PRESENTATION_MODE:
-			return action.payload
-		default:
-			return state
-	}
-}
+export const defaultIsPresentationMode = false
+export const isPresentationMode = createReducer(defaultIsPresentationMode, on(setPresentationMode, setState(defaultIsPresentationMode)))

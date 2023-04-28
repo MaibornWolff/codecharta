@@ -4,27 +4,31 @@ import { CodeMapNode } from "../../../codeCharta.model"
 import { hoveredNodeSelector } from "../../../state/selectors/hoveredNode.selector"
 import { MetricChooserValueHoveredComponent } from "./metricChooserValueHovered.component"
 import { MetricChooserValueHoveredModule } from "./metricChooserValueHovered.module"
-
-jest.mock("../../../state/selectors/primaryMetrics/primaryMetricNames.selector", () => ({
-	primaryMetricNamesSelector: () => ({
-		areaMetric: "rloc",
-		heightMetric: "mcc"
-	})
-}))
-jest.mock("../../../state/selectors/hoveredNode.selector", () => ({
-	hoveredNodeSelector: jest.fn()
-}))
-const mockedHoveredNodeSelector = jest.mocked(hoveredNodeSelector)
+import { MockStore, provideMockStore } from "@ngrx/store/testing"
+import { primaryMetricNamesSelector } from "../../../state/selectors/primaryMetrics/primaryMetricNames.selector"
 
 describe("metricChooserValueHoveredComponent", () => {
 	beforeEach(() => {
 		TestBed.configureTestingModule({
-			imports: [MetricChooserValueHoveredModule]
+			imports: [MetricChooserValueHoveredModule],
+			providers: [
+				provideMockStore({
+					selectors: [
+						{
+							selector: primaryMetricNamesSelector,
+							value: {
+								areaMetric: "rloc",
+								heightMetric: "mcc"
+							}
+						},
+						{ selector: hoveredNodeSelector, value: null }
+					]
+				})
+			]
 		})
 	})
 
 	it("should display nothing when there is no hovered node", async () => {
-		mockedHoveredNodeSelector.mockImplementation(() => undefined)
 		const { container } = await render(MetricChooserValueHoveredComponent, {
 			excludeComponentDeclaration: true,
 			componentProperties: { metricFor: "areaMetric" }
@@ -33,27 +37,30 @@ describe("metricChooserValueHoveredComponent", () => {
 	})
 
 	it("should display attribute value", async () => {
-		mockedHoveredNodeSelector.mockImplementation(() => ({ attributes: { rloc: 42 } } as unknown as CodeMapNode))
-		await render(MetricChooserValueHoveredComponent, {
+		const { detectChanges } = await render(MetricChooserValueHoveredComponent, {
 			excludeComponentDeclaration: true,
 			componentProperties: { metricFor: "areaMetric" }
 		})
+		const store = TestBed.inject(MockStore)
+		store.overrideSelector(hoveredNodeSelector, { attributes: { rloc: 42 } } as unknown as CodeMapNode)
+		store.refreshState()
+		detectChanges()
 		expect(screen.queryByText("42")).not.toBe(null)
 		expect(screen.queryByText("Δ")).toBe(null)
 	})
 
 	it("should display zero height delta value in grey", async () => {
-		mockedHoveredNodeSelector.mockImplementation(
-			() =>
-				({
-					attributes: { mcc: 42 },
-					deltas: { mcc: 0 }
-				} as unknown as CodeMapNode)
-		)
-		const { container } = await render(MetricChooserValueHoveredComponent, {
+		const { container, detectChanges } = await render(MetricChooserValueHoveredComponent, {
 			excludeComponentDeclaration: true,
 			componentProperties: { metricFor: "heightMetric" }
 		})
+		const store = TestBed.inject(MockStore)
+		store.overrideSelector(hoveredNodeSelector, {
+			attributes: { mcc: 42 },
+			deltas: { mcc: 0 }
+		} as unknown as CodeMapNode)
+		store.refreshState()
+		detectChanges()
 
 		expect(screen.queryByText("Δ0")).not.toBe(null)
 		const deltaContainer = container.querySelector(".rounded-box.value") as HTMLElement
@@ -61,17 +68,17 @@ describe("metricChooserValueHoveredComponent", () => {
 	})
 
 	it("should display positive height delta value in green", async () => {
-		mockedHoveredNodeSelector.mockImplementation(
-			() =>
-				({
-					attributes: { mcc: 42 },
-					deltas: { mcc: 21 }
-				} as unknown as CodeMapNode)
-		)
-		const { container } = await render(MetricChooserValueHoveredComponent, {
+		const { container, detectChanges } = await render(MetricChooserValueHoveredComponent, {
 			excludeComponentDeclaration: true,
 			componentProperties: { metricFor: "heightMetric" }
 		})
+		const store = TestBed.inject(MockStore)
+		store.overrideSelector(hoveredNodeSelector, {
+			attributes: { mcc: 42 },
+			deltas: { mcc: 21 }
+		} as unknown as CodeMapNode)
+		store.refreshState()
+		detectChanges()
 
 		expect(screen.queryByText("Δ21")).not.toBe(null)
 		const deltaContainer = container.querySelector(".rounded-box.value") as HTMLElement
@@ -79,17 +86,17 @@ describe("metricChooserValueHoveredComponent", () => {
 	})
 
 	it("should display negative height delta value in red", async () => {
-		mockedHoveredNodeSelector.mockImplementation(
-			() =>
-				({
-					attributes: { mcc: 42 },
-					deltas: { mcc: -1 }
-				} as unknown as CodeMapNode)
-		)
-		const { container } = await render(MetricChooserValueHoveredComponent, {
+		const { container, detectChanges } = await render(MetricChooserValueHoveredComponent, {
 			excludeComponentDeclaration: true,
 			componentProperties: { metricFor: "heightMetric" }
 		})
+		const store = TestBed.inject(MockStore)
+		store.overrideSelector(hoveredNodeSelector, {
+			attributes: { mcc: 42 },
+			deltas: { mcc: -1 }
+		} as unknown as CodeMapNode)
+		store.refreshState()
+		detectChanges()
 
 		expect(screen.queryByText("Δ-1")).not.toBe(null)
 		const deltaContainer = container.querySelector(".rounded-box.value") as HTMLElement

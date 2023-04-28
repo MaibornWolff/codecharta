@@ -1,6 +1,7 @@
 import { Component, ViewEncapsulation } from "@angular/core"
+import { Store } from "@ngrx/store"
 import { Observable } from "rxjs"
-import { Store } from "../../../state/angular-redux/store"
+import { CcState } from "../../../codeCharta.model"
 import { MatchingFilesCounter, matchingFilesCounterSelector } from "./selectors/matchingFilesCounter.selector"
 
 @Component({
@@ -12,7 +13,7 @@ import { MatchingFilesCounter, matchingFilesCounterSelector } from "./selectors/
 export class MatchingFilesCounterComponent {
 	matchingFileCounters$: Observable<MatchingFilesCounter>
 
-	constructor(store: Store) {
+	constructor(store: Store<CcState>) {
 		this.matchingFileCounters$ = store.select(matchingFilesCounterSelector)
 	}
 }

@@ -1,12 +1,13 @@
 import { Sprite, Vector3, Box3, Sphere, LineBasicMaterial, Line, BufferGeometry, LinearFilter, Texture, SpriteMaterial, Color } from "three"
-import { LayoutAlgorithm, Node } from "../../codeCharta.model"
+import { LayoutAlgorithm, Node, CcState } from "../../codeCharta.model"
 import { ThreeOrbitControlsService } from "./threeViewer/threeOrbitControls.service"
 import { ThreeCameraService } from "./threeViewer/threeCamera.service"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { ColorConverter } from "../../util/color/colorConverter"
-import { State } from "../../state/angular-redux/state"
 import { Injectable } from "@angular/core"
 import { treeMapSize } from "../../util/algorithm/treeMapLayout/treeMapHelper"
+import { State } from "@ngrx/store"
+import { defaultMapColors } from "../../state/store/appSettings/mapColors/mapColors.reducer"
 
 interface InternalLabel {
 	sprite: Sprite
@@ -19,7 +20,7 @@ interface InternalLabel {
 @Injectable({ providedIn: "root" })
 export class CodeMapLabelService {
 	private labels: InternalLabel[]
-	private mapLabelColors = this.state.getValue().appSettings.mapColors.labelColorAndAlpha
+	private mapLabelColors = defaultMapColors.labelColorAndAlpha
 	private LABEL_COLOR_RGB = ColorConverter.convertHexToRgba(this.mapLabelColors.rgb)
 	private LABEL_WIDTH_DIVISOR = 2100 // empirically gathered
 	private LABEL_HEIGHT_DIVISOR = 35 // empirically gathered
@@ -33,7 +34,7 @@ export class CodeMapLabelService {
 	private nodeHeight = 0
 
 	constructor(
-		private state: State,
+		private state: State<CcState>,
 		private threeCameraService: ThreeCameraService,
 		private threeSceneService: ThreeSceneService,
 		private threeOrbitControlsService: ThreeOrbitControlsService

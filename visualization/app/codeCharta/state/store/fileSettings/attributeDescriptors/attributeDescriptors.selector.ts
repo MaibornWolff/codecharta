@@ -1,3 +1,4 @@
-import { CcState } from "../../store"
+import { createSelector } from "@ngrx/store"
+import { fileSettingsSelector } from "../fileSettings.selector"
 
-export const attributeDescriptorsSelector = (state: CcState) => state.fileSettings.attributeDescriptors
+export const attributeDescriptorsSelector = createSelector(fileSettingsSelector, fileSettings => fileSettings.attributeDescriptors)

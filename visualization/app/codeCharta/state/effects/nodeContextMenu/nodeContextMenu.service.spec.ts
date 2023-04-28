@@ -2,22 +2,20 @@ import { ApplicationInitStatus } from "@angular/core"
 import { TestBed } from "@angular/core/testing"
 import { fireEvent } from "@testing-library/angular"
 import { MaterialModule } from "../../../../material/material.module"
-import { EffectsModule } from "../../angular-redux/effects/effects.module"
 import { NodeContextMenuService } from "./nodeContextMenu.service"
 import { NodeContextMenuCardModule } from "./nodeContextMenuCard/nodeContextMenuCard.module"
-import { OpenNodeContextMenuEffect } from "./openNodeContextMenu.effect"
+import { Store } from "@ngrx/store"
 
 describe("nodeContextMenuService", () => {
 	let mockedWheelTargetElement
 
 	beforeEach(async () => {
 		mockedWheelTargetElement = { addEventListener: jest.fn(), removeEventListener: jest.fn() }
-		// @ts-ignore
 		jest.spyOn(document, "getElementById").mockImplementation(() => mockedWheelTargetElement)
 
 		TestBed.configureTestingModule({
-			imports: [MaterialModule, EffectsModule.forRoot([OpenNodeContextMenuEffect]), NodeContextMenuCardModule],
-			providers: [NodeContextMenuService]
+			imports: [MaterialModule, NodeContextMenuCardModule],
+			providers: [NodeContextMenuService, { provide: Store, useValue: { dispatch: jest.fn() } }]
 		})
 		await TestBed.inject(ApplicationInitStatus).donePromise
 	})

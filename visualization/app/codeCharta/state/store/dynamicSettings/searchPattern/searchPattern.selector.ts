@@ -1,3 +1,4 @@
-import { CcState } from "../../store"
+import { createSelector } from "@ngrx/store"
+import { dynamicSettingsSelector } from "../dynamicSettings.selector"
 
-export const searchPatternSelector = (state: CcState) => state.dynamicSettings.searchPattern
+export const searchPatternSelector = createSelector(dynamicSettingsSelector, dynamicSettings => dynamicSettings.searchPattern)

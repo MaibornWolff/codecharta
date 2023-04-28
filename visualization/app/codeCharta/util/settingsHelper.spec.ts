@@ -1,4 +1,4 @@
-import { RecursivePartial, State } from "../codeCharta.model"
+import { RecursivePartial, CcState } from "../codeCharta.model"
 import { convertToVectors } from "./settingsHelper"
 import { Vector3 } from "three"
 
@@ -11,13 +11,13 @@ describe("SettingsHelper", () => {
 				}
 			}
 
-			const expected: RecursivePartial<State> = {
+			const expected: RecursivePartial<CcState> = {
 				appSettings: {
 					scaling: new Vector3(1, 27, 1)
 				}
 			}
 
-			convertToVectors(partialState as RecursivePartial<State>)
+			convertToVectors(partialState as RecursivePartial<CcState>)
 
 			expect(partialState).toEqual(expected)
 		})
@@ -31,7 +31,7 @@ describe("SettingsHelper", () => {
 				}
 			}
 
-			const expected: RecursivePartial<State> = {
+			const expected: RecursivePartial<CcState> = {
 				appSettings: {
 					scaling: new Vector3(1, 27, 1),
 					invertHeight: false,
@@ -39,7 +39,7 @@ describe("SettingsHelper", () => {
 				}
 			}
 
-			convertToVectors(partialState as RecursivePartial<State>)
+			convertToVectors(partialState as RecursivePartial<CcState>)
 
 			expect(partialState).toEqual(expected)
 		})

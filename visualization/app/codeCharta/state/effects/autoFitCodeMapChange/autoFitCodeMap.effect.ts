@@ -1,9 +1,9 @@
 import { Injectable } from "@angular/core"
-import { switchMap, filter, skip, take, tap, combineLatest } from "rxjs"
+import { Store } from "@ngrx/store"
+import { createEffect } from "@ngrx/effects"
+import { switchMap, filter, skip, take, tap, combineLatest, withLatestFrom } from "rxjs"
+import { CcState } from "../../../codeCharta.model"
 import { ThreeOrbitControlsService } from "../../../ui/codeMap/threeViewer/threeOrbitControls.service"
-import { createEffect } from "../../angular-redux/effects/createEffect"
-import { State } from "../../angular-redux/state"
-import { Store } from "../../angular-redux/store"
 import { visibleFileStatesSelector } from "../../selectors/visibleFileStates.selector"
 import { layoutAlgorithmSelector } from "../../store/appSettings/layoutAlgorithm/layoutAlgorithm.selector"
 import { resetCameraIfNewFileIsLoadedSelector } from "../../store/appSettings/resetCameraIfNewFileIsLoaded/resetCameraIfNewFileIsLoaded.selector"
@@ -13,8 +13,7 @@ import { RenderCodeMapEffect } from "../renderCodeMapEffect/renderCodeMap.effect
 @Injectable()
 export class AutoFitCodeMapEffect {
 	constructor(
-		private store: Store,
-		private state: State,
+		private store: Store<CcState>,
 		private renderCodeMapEffect: RenderCodeMapEffect,
 		private threeOrbitControlsService: ThreeOrbitControlsService
 	) {}
@@ -27,7 +26,8 @@ export class AutoFitCodeMapEffect {
 				this.store.select(layoutAlgorithmSelector)
 			]).pipe(
 				skip(1), // initial map load is already fitted
-				filter(() => resetCameraIfNewFileIsLoadedSelector(this.state.getValue())),
+				withLatestFrom(this.store.select(resetCameraIfNewFileIsLoadedSelector)),
+				filter(([, resetCameraIfNewFileIsLoaded]) => resetCameraIfNewFileIsLoaded),
 				switchMap(() => this.renderCodeMapEffect.renderCodeMap$.pipe(take(1))),
 				tap(() => {
 					this.threeOrbitControlsService.autoFitTo()

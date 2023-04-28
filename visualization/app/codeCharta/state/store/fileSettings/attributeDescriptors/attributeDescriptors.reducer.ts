@@ -1,8 +1,10 @@
-import { AttributeDescriptorsAction, AttributeDescriptorsActions, setAttributeDescriptors } from "./attributeDescriptors.action"
+import { createReducer, on } from "@ngrx/store"
+import { setAttributeDescriptors } from "./attributeDescriptors.action"
+import { AttributeDescriptors } from "../../../../codeCharta.model"
+import { setState } from "../../util/setState.reducer.factory"
 
-export function attributeDescriptors(state = setAttributeDescriptors().payload, action: AttributeDescriptorsAction) {
-	if (action.type === AttributeDescriptorsActions.SET_ATTRIBUTE_DESCRIPTORS) {
-		return action.payload
-	}
-	return state
-}
+export const defaultAttributeDescriptors: AttributeDescriptors = {}
+export const attributeDescriptors = createReducer(
+	defaultAttributeDescriptors,
+	on(setAttributeDescriptors, setState(defaultAttributeDescriptors))
+)

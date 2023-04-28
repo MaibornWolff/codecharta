@@ -1,27 +1,13 @@
 import { markedPackages } from "./markedPackages.reducer"
-import { MarkedPackagesAction, setMarkedPackages, markPackages, unmarkPackage } from "./markedPackages.actions"
+import { setMarkedPackages, markPackages, unmarkPackage } from "./markedPackages.actions"
 import { MARKED_PACKAGES } from "../../../../util/dataMocks"
 
 describe("markedPackages", () => {
-	describe("Default State", () => {
-		it("should initialize the default state", () => {
-			const result = markedPackages(undefined, {} as MarkedPackagesAction)
-
-			expect(result).toEqual([])
-		})
-	})
-
 	describe("Action: SET_MARKED_PACKAGES", () => {
 		it("should set new markedPackages", () => {
-			const result = markedPackages([], setMarkedPackages(MARKED_PACKAGES))
+			const result = markedPackages([], setMarkedPackages({ value: MARKED_PACKAGES }))
 
 			expect(result).toEqual(MARKED_PACKAGES)
-		})
-
-		it("should set default markedPackages", () => {
-			const result = markedPackages(MARKED_PACKAGES, setMarkedPackages())
-
-			expect(result).toEqual([])
 		})
 	})
 
@@ -39,18 +25,24 @@ describe("markedPackages", () => {
 
 	describe("Action: MARK_PACKAGES", () => {
 		it("should add a package", () => {
-			const result = markedPackages([MARKED_PACKAGES[0]], markPackages(MARKED_PACKAGES.slice(1)))
+			const result = markedPackages([MARKED_PACKAGES[0]], markPackages({ packages: MARKED_PACKAGES.slice(1) }))
 			expect(result).toEqual(MARKED_PACKAGES)
 		})
 
 		it("should remove the children of a marked package if children marked color is the same", () => {
-			const result = markedPackages([{ path: "/root/child", color: "#000000" }], markPackages([{ path: "/root", color: "#000000" }]))
+			const result = markedPackages(
+				[{ path: "/root/child", color: "#000000" }],
+				markPackages({ packages: [{ path: "/root", color: "#000000" }] })
+			)
 			expect(result.length).toBe(1)
 			expect(result[0]).toEqual({ path: "/root", color: "#000000" })
 		})
 
 		it("should not remove the children of a marked package if color is different", () => {
-			const result = markedPackages([{ path: "/root/child", color: "#000000" }], markPackages([{ path: "/root", color: "#ffffff" }]))
+			const result = markedPackages(
+				[{ path: "/root/child", color: "#000000" }],
+				markPackages({ packages: [{ path: "/root", color: "#ffffff" }] })
+			)
 			expect(result.length).toBe(2)
 			expect(result[0]).toEqual({ path: "/root/child", color: "#000000" })
 			expect(result[1]).toEqual({ path: "/root", color: "#ffffff" })
@@ -62,7 +54,7 @@ describe("markedPackages", () => {
 					{ path: "/root", color: "#ffffff" },
 					{ path: "/root/child", color: "#000000" }
 				],
-				markPackages([{ path: "/root", color: "#333333" }])
+				markPackages({ packages: [{ path: "/root", color: "#333333" }] })
 			)
 			expect(result.length).toBe(2)
 			expect(result[0]).toEqual({ path: "/root", color: "#333333" })

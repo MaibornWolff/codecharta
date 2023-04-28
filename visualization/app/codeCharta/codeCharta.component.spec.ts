@@ -2,8 +2,8 @@ import { TestBed } from "@angular/core/testing"
 import { LoadInitialFileService } from "./services/loadInitialFile/loadInitialFile.service"
 import { CodeChartaModule } from "./codeCharta.module"
 import { CodeChartaComponent } from "./codeCharta.component"
-import { Store } from "./state/angular-redux/store"
 import { setIsLoadingFile } from "./state/store/appSettings/isLoadingFile/isLoadingFile.actions"
+import { Store } from "@ngrx/store"
 
 describe("codeChartaComponent", () => {
 	beforeEach(() => {
@@ -20,7 +20,7 @@ describe("codeChartaComponent", () => {
 		const codeChartaComponent = new CodeChartaComponent(mockedStore, mockedLoadInitialFileService)
 		await codeChartaComponent.ngOnInit()
 
-		expect(mockedStore.dispatch).toHaveBeenCalledWith(setIsLoadingFile(true))
+		expect(mockedStore.dispatch).toHaveBeenCalledWith(setIsLoadingFile({ value: true }))
 		expect(mockedLoadInitialFileService.loadFileOrSample).toHaveBeenCalled()
 	})
 

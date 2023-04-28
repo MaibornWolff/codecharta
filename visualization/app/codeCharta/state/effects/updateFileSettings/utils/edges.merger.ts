@@ -1,5 +1,6 @@
 import { getUpdatedPath } from "../../../../util/nodePathHelper"
 import { CCFile, Edge } from "../../../../codeCharta.model"
+import { clone } from "../../../../util/clone"
 
 export function getMergedEdges(inputFiles: CCFile[], withUpdatedPath: boolean) {
 	const edges: Map<string, Edge> = new Map()
@@ -16,7 +17,7 @@ export function getMergedEdges(inputFiles: CCFile[], withUpdatedPath: boolean) {
 						? getUpdatedPath(inputFile.fileMeta.fileName, oldEdge.fromNodeName)
 						: oldEdge.fromNodeName,
 					toNodeName: withUpdatedPath ? getUpdatedPath(inputFile.fileMeta.fileName, oldEdge.toNodeName) : oldEdge.toNodeName,
-					attributes: oldEdge.attributes,
+					attributes: clone(oldEdge.attributes),
 					visible: oldEdge.visible
 				}
 				const equalEdgeItem = edges.get(`${edge.fromNodeName}|${edge.toNodeName}`)

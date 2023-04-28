@@ -2,8 +2,8 @@ import { TestBed } from "@angular/core/testing"
 import { CodeMapRenderService } from "./codeMap.render.service"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { CodeMapLabelService } from "./codeMap.label.service"
-import { CodeMapArrowService } from "./codeMap.arrow.service"
-import { Node, CodeMapNode, colorLabelOptions } from "../../codeCharta.model"
+import { CodeMapArrowService } from "./arrow/codeMap.arrow.service"
+import { Node, CodeMapNode, ColorLabelOptions, CcState } from "../../codeCharta.model"
 import {
 	COLOR_TEST_NODES,
 	DEFAULT_STATE,
@@ -20,16 +20,15 @@ import { NodeDecorator } from "../../util/nodeDecorator"
 import { Object3D, Vector3 } from "three"
 import { setState } from "../../state/store/state.actions"
 import { setEdges } from "../../state/store/fileSettings/edges/edges.actions"
-import { unfocusNode } from "../../state/store/dynamicSettings/focusedNodePath/focusedNodePath.actions"
 import { setShowMetricLabelNodeName } from "../../state/store/appSettings/showMetricLabelNodeName/showMetricLabelNodeName.actions"
 import { setShowMetricLabelNameValue } from "../../state/store/appSettings/showMetricLabelNameValue/showMetricLabelNameValue.actions"
 import { klona } from "klona"
 import { ThreeStatsService } from "./threeViewer/threeStats.service"
 import { setColorLabels } from "../../state/store/appSettings/colorLabels/colorLabels.actions"
 import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
-import { Store } from "../../state/angular-redux/store"
-import { State } from "../../state/angular-redux/state"
 import { metricDataSelector } from "../../state/selectors/accumulatedData/metricData/metricData.selector"
+import { State, Store, StoreModule } from "@ngrx/store"
+import { appReducers, setStateMiddleware } from "../../state/store/state.manager"
 
 const mockedMetricDataSelector = metricDataSelector as unknown as jest.Mock
 jest.mock("../../state/selectors/accumulatedData/metricData/metricData.selector", () => ({
@@ -37,8 +36,8 @@ jest.mock("../../state/selectors/accumulatedData/metricData/metricData.selector"
 }))
 
 describe("codeMapRenderService", () => {
-	let store: Store
-	let state: State
+	let store: Store<CcState>
+	let state: State<CcState>
 	let codeMapRenderService: CodeMapRenderService
 	let threeSceneService: ThreeSceneService
 	let codeMapLabelService: CodeMapLabelService
@@ -59,6 +58,9 @@ describe("codeMapRenderService", () => {
 	})
 
 	function restartSystem() {
+		TestBed.configureTestingModule({
+			imports: [StoreModule.forRoot(appReducers, { metaReducers: [setStateMiddleware] })]
+		})
 		store = TestBed.inject(Store)
 		state = TestBed.inject(State)
 		codeMapLabelService = TestBed.inject(CodeMapLabelService)
@@ -71,8 +73,7 @@ describe("codeMapRenderService", () => {
 		map = klona(TEST_FILE_WITH_PATHS.map)
 		NodeDecorator.decorateMap(map, { nodeMetricData: METRIC_DATA, edgeMetricData: [] }, [])
 		NodeDecorator.decorateParentNodesWithAggregatedAttributes(map, false, DEFAULT_STATE.fileSettings.attributeTypes)
-		store.dispatch(setState(STATE))
-		store.dispatch(unfocusNode())
+		store.dispatch(setState({ value: STATE }))
 		mockedMetricDataSelector.mockImplementation(() => ({
 			nodeMetricData: METRIC_DATA,
 			edgeMetricData: []
@@ -165,7 +166,6 @@ describe("codeMapRenderService", () => {
 			expect(codeMapRenderService["setNewMapMesh"]).toHaveBeenCalledWith(nodes, expect.any(Array))
 			expect(codeMapRenderService["setLabels"]).toHaveBeenCalled()
 			expect(codeMapRenderService["setArrows"]).toHaveBeenCalled()
-			expect(codeMapRenderService["scaleMap"]).toHaveBeenCalled()
 		})
 
 		it("should call getNodesMatchingColorSelector", () => {
@@ -252,8 +252,8 @@ describe("codeMapRenderService", () => {
 		})
 
 		it("should not generate labels when showMetricLabelNodeName and showMetricLabelNameValue are both false", () => {
-			store.dispatch(setShowMetricLabelNodeName(false))
-			store.dispatch(setShowMetricLabelNameValue(false))
+			store.dispatch(setShowMetricLabelNodeName({ value: false }))
+			store.dispatch(setShowMetricLabelNameValue({ value: false }))
 
 			codeMapRenderService["setLabels"](nodes)
 
@@ -261,31 +261,27 @@ describe("codeMapRenderService", () => {
 		})
 
 		it("should not generate labels for flattened nodes", () => {
-			nodes[0].flat = true
+			codeMapRenderService["getNodes"] = () => [{ ...TEST_NODE_ROOT, flat: true }]
+			codeMapRenderService.render(null)
 
+			expect(codeMapLabelService.addLeafLabel).toHaveBeenCalledTimes(0)
+		})
+
+		it("should generate labels for not-flattened nodes", () => {
 			codeMapRenderService["getNodes"] = jest.fn().mockReturnValue(nodes)
 			codeMapRenderService.render(null)
 
 			expect(codeMapLabelService.addLeafLabel).toHaveBeenCalledTimes(2)
 		})
 
-		it("should generate labels for not-flattened nodes", () => {
-			nodes[0].flat = false
-
-			codeMapRenderService["getNodes"] = jest.fn().mockReturnValue(nodes)
-			codeMapRenderService.render(null)
-
-			expect(codeMapLabelService.addLeafLabel).toHaveBeenCalledTimes(4)
-		})
-
 		it("should generate labels for color if option is toggled on", () => {
-			const colorLabelsNegative: colorLabelOptions = {
+			const colorLabelsNegative: ColorLabelOptions = {
 				positive: false,
 				negative: true,
 				neutral: false
 			}
 
-			store.dispatch(setColorLabels(colorLabelsNegative))
+			store.dispatch(setColorLabels({ value: colorLabelsNegative }))
 			codeMapRenderService["getNodesMatchingColorSelector"](COLOR_TEST_NODES)
 			codeMapRenderService["setLabels"](COLOR_TEST_NODES)
 
@@ -293,13 +289,13 @@ describe("codeMapRenderService", () => {
 		})
 
 		it("should generate labels for multiple colors if corresponding options are toggled on", () => {
-			const colorLabelsPosNeut: colorLabelOptions = {
+			const colorLabelsPosNeut: ColorLabelOptions = {
 				positive: true,
 				negative: false,
 				neutral: true
 			}
 
-			store.dispatch(setColorLabels(colorLabelsPosNeut))
+			store.dispatch(setColorLabels({ value: colorLabelsPosNeut }))
 			codeMapRenderService["getNodesMatchingColorSelector"](COLOR_TEST_NODES)
 			codeMapRenderService["setLabels"](COLOR_TEST_NODES)
 
@@ -323,7 +319,7 @@ describe("codeMapRenderService", () => {
 		})
 
 		it("should call codeMapArrowService.addEdgeArrows", () => {
-			store.dispatch(setEdges(VALID_EDGES))
+			store.dispatch(setEdges({ value: VALID_EDGES }))
 
 			codeMapRenderService["setArrows"](sortedNodes)
 

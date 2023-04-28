@@ -1,7 +1,7 @@
 import { Component, Input, ViewEncapsulation } from "@angular/core"
-import { AttributeTypes, AttributeTypeValue } from "../../../codeCharta.model"
+import { Store } from "@ngrx/store"
+import { AttributeTypes, AttributeTypeValue, CcState } from "../../../codeCharta.model"
 import { updateAttributeType } from "../../../state/store/fileSettings/attributeTypes/attributeTypes.actions"
-import { Store } from "../../../state/angular-redux/store"
 import { attributeTypesSelector } from "../../../state/store/fileSettings/attributeTypes/attributeTypes.selector"
 
 @Component({
@@ -16,7 +16,7 @@ export class AttributeTypeSelectorComponent {
 
 	attributeTypes$ = this.store.select(attributeTypesSelector)
 
-	constructor(private store: Store) {}
+	constructor(private store: Store<CcState>) {}
 
 	setToAbsolute() {
 		this.setAttributeType(AttributeTypeValue.absolute)
@@ -27,6 +27,12 @@ export class AttributeTypeSelectorComponent {
 	}
 
 	private setAttributeType(attributeTypeValue: AttributeTypeValue) {
-		this.store.dispatch(updateAttributeType(this.metricType, this.metricName, attributeTypeValue))
+		this.store.dispatch(
+			updateAttributeType({
+				category: this.metricType,
+				name: this.metricName,
+				attributeType: attributeTypeValue
+			})
+		)
 	}
 }

@@ -1,4 +1,4 @@
-import { createSelector } from "../../../angular-redux/createSelector"
+import { createSelector } from "@ngrx/store"
 import { appSettingsSelector } from "../appSettings.selector"
 
-export const amountOfEdgePreviewsSelector = createSelector([appSettingsSelector], appSettings => appSettings.amountOfEdgePreviews)
+export const amountOfEdgePreviewsSelector = createSelector(appSettingsSelector, appSettings => appSettings.amountOfEdgePreviews)

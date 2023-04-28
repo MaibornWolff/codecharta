@@ -5,10 +5,10 @@ import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
 import hotkeys from "hotkeys-js"
 
 import { Component, ViewEncapsulation } from "@angular/core"
-import { State } from "../../state/angular-redux/state"
-import { Store } from "../../state/angular-redux/store"
 import { screenshotToClipboardEnabledSelector } from "../../state/store/appSettings/enableClipboard/screenshotToClipboardEnabled.selector"
 import { ThreeRendererService } from "../codeMap/threeViewer/threeRenderer.service"
+import { Store, State } from "@ngrx/store"
+import { CcState } from "../../codeCharta.model"
 
 @Component({
 	selector: "cc-screenshot-button",
@@ -24,8 +24,8 @@ export class ScreenshotButtonComponent {
 		private threeCameraService: ThreeCameraService,
 		private threeSceneService: ThreeSceneService,
 		private threeRendererService: ThreeRendererService,
-		private store: Store,
-		private state: State
+		private store: Store<CcState>,
+		private state: State<CcState>
 	) {
 		hotkeys(this.SCREENSHOT_HOTKEY_TO_FILE, () => {
 			this.makeScreenshotToFile()

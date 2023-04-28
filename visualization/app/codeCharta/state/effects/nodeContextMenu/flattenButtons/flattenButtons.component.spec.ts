@@ -4,13 +4,17 @@ import { FlattenButtonsComponent } from "./flattenButtons.component"
 import { FlattenButtonsModule } from "./flattenButtons.module"
 import { NodeType } from "../../../../codeCharta.model"
 import userEvent from "@testing-library/user-event"
-import { Store } from "../../../store/store"
+import { Store } from "@ngrx/store"
+import { addBlacklistItem, removeBlacklistItem } from "../../../store/fileSettings/blacklist/blacklist.actions"
 
 describe("flattenButtonsComponent", () => {
+	let mockedStore: { dispatch: jest.Mock }
+
 	beforeEach(() => {
-		Store["initialize"]()
+		mockedStore = { dispatch: jest.fn() }
 		TestBed.configureTestingModule({
-			imports: [FlattenButtonsModule]
+			imports: [FlattenButtonsModule],
+			providers: [{ provide: Store, useValue: mockedStore }]
 		})
 	})
 
@@ -24,19 +28,18 @@ describe("flattenButtonsComponent", () => {
 		expect(screen.queryByText("FLATTEN")).not.toBe(null)
 
 		await userEvent.click(screen.queryByText("FLATTEN"))
-		expect(Store.store.getState().fileSettings.blacklist).toContainEqual({
-			nodeType: NodeType.FILE,
-			path: "/root/foo.ts",
-			type: "flatten"
-		})
+		expect(mockedStore.dispatch).toHaveBeenCalledWith(
+			addBlacklistItem({
+				item: {
+					nodeType: NodeType.FILE,
+					path: "/root/foo.ts",
+					type: "flatten"
+				}
+			})
+		)
 	})
 
 	it("should show un-flatten button for a flattened node", async () => {
-		Store.store.getState().fileSettings.blacklist.push({
-			nodeType: NodeType.FILE,
-			path: "/root/foo.ts",
-			type: "flatten"
-		})
 		await render(FlattenButtonsComponent, {
 			excludeComponentDeclaration: true,
 			componentProperties: { codeMapNode: { path: "/root/foo.ts", type: NodeType.FILE, isFlattened: true } }
@@ -46,10 +49,14 @@ describe("flattenButtonsComponent", () => {
 		expect(screen.queryByText("SHOW")).not.toBe(null)
 
 		await userEvent.click(screen.queryByText("SHOW"))
-		expect(Store.store.getState().fileSettings.blacklist).not.toContainEqual({
-			nodeType: NodeType.FILE,
-			path: "/root/foo.ts",
-			type: "flatten"
-		})
+		expect(mockedStore.dispatch).toHaveBeenLastCalledWith(
+			removeBlacklistItem({
+				item: {
+					nodeType: NodeType.FILE,
+					path: "/root/foo.ts",
+					type: "flatten"
+				}
+			})
+		)
 	})
 })

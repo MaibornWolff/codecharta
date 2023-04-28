@@ -1,8 +1,8 @@
 import { Component, OnInit, ViewEncapsulation } from "@angular/core"
-import { Store } from "../../../angular-redux/store"
 import { rightClickedCodeMapNodeSelector } from "../rightClickedCodeMapNode.selector"
 import { Observable } from "rxjs"
-import { CodeMapNode } from "../../../../codeCharta.model"
+import { CodeMapNode, CcState } from "../../../../codeCharta.model"
+import { Store } from "@ngrx/store"
 
 @Component({
 	templateUrl: "./nodeContextMenuCard.component.html",
@@ -12,7 +12,7 @@ import { CodeMapNode } from "../../../../codeCharta.model"
 export class NodeContextMenuCardComponent implements OnInit {
 	codeMapNode$: Observable<CodeMapNode>
 
-	constructor(private store: Store) {}
+	constructor(private store: Store<CcState>) {}
 
 	ngOnInit(): void {
 		this.codeMapNode$ = this.store.select(rightClickedCodeMapNodeSelector)

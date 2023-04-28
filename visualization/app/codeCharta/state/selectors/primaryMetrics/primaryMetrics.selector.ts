@@ -1,13 +1,12 @@
 import { selectedNodeSelector } from "../selectedNode.selector"
-import { CcState } from "../../store/store"
 import { Metric } from "../../../ui/attributeSideBar/util/metric"
 import { primaryMetricNamesSelector } from "./primaryMetricNames.selector"
-import { createSelector } from "../../angular-redux/createSelector"
 import { getMetricDescriptors } from "../../../ui/attributeSideBar/util/metricDescriptors"
 import { attributeDescriptorsSelector } from "../../store/fileSettings/attributeDescriptors/attributeDescriptors.selector"
 import { Edge } from "app/codeCharta/ui/attributeSideBar/util/edge"
 import { CodeMapNode } from "app/codeCharta/codeCharta.model"
 import { AttributeDescriptors } from "../../../codeCharta.model"
+import { createSelector } from "@ngrx/store"
 
 export type PrimaryMetrics = {
 	area: Metric
@@ -16,8 +15,10 @@ export type PrimaryMetrics = {
 	edge: Edge
 }
 
-export const primaryMetricsSelector: (state: CcState) => PrimaryMetrics | undefined = createSelector(
-	[selectedNodeSelector, primaryMetricNamesSelector, attributeDescriptorsSelector],
+export const primaryMetricsSelector = createSelector(
+	selectedNodeSelector,
+	primaryMetricNamesSelector,
+	attributeDescriptorsSelector,
 	(selectedNode, primaryMetricNames, attributeDescriptors) => {
 		if (!selectedNode) {
 			return

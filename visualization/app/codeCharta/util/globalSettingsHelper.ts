@@ -8,7 +8,7 @@ import { setMaxTreeMapFiles } from "../state/store/appSettings/maxTreeMapFiles/m
 import { setResetCameraIfNewFileIsLoaded } from "../state/store/appSettings/resetCameraIfNewFileIsLoaded/resetCameraIfNewFileIsLoaded.actions"
 import packageJson from "../../../package.json"
 import { setScreenshotToClipboardEnabled } from "../state/store/appSettings/enableClipboard/screenshotToClipboardEnabled.actions"
-import { Store } from "../state/angular-redux/store"
+import { Store } from "@ngrx/store"
 
 export class GlobalSettingsHelper {
 	static readonly GLOBALSETTINGS_LOCAL_STORAGE_ELEMENT = "globalSettings"
@@ -28,28 +28,28 @@ export class GlobalSettingsHelper {
 			).globalSettings
 
 			if (appSettings.hideFlatBuildings !== globalSettings.hideFlatBuildings) {
-				store.dispatch(setHideFlatBuildings(globalSettings.hideFlatBuildings))
+				store.dispatch(setHideFlatBuildings({ value: globalSettings.hideFlatBuildings }))
 			}
 			if (appSettings.isWhiteBackground !== globalSettings.isWhiteBackground) {
-				store.dispatch(setIsWhiteBackground(globalSettings.isWhiteBackground))
+				store.dispatch(setIsWhiteBackground({ value: globalSettings.isWhiteBackground }))
 			}
 			if (appSettings.resetCameraIfNewFileIsLoaded !== globalSettings.resetCameraIfNewFileIsLoaded) {
-				store.dispatch(setResetCameraIfNewFileIsLoaded(globalSettings.resetCameraIfNewFileIsLoaded))
+				store.dispatch(setResetCameraIfNewFileIsLoaded({ value: globalSettings.resetCameraIfNewFileIsLoaded }))
 			}
 			if (appSettings.experimentalFeaturesEnabled !== globalSettings.experimentalFeaturesEnabled) {
-				store.dispatch(setExperimentalFeaturesEnabled(globalSettings.experimentalFeaturesEnabled))
+				store.dispatch(setExperimentalFeaturesEnabled({ value: globalSettings.experimentalFeaturesEnabled }))
 			}
 			if (appSettings.screenshotToClipboardEnabled !== globalSettings.screenshotToClipboardEnabled) {
-				store.dispatch(setScreenshotToClipboardEnabled(globalSettings.screenshotToClipboardEnabled))
+				store.dispatch(setScreenshotToClipboardEnabled({ value: globalSettings.screenshotToClipboardEnabled }))
 			}
 			if (appSettings.layoutAlgorithm !== globalSettings.layoutAlgorithm) {
-				store.dispatch(setLayoutAlgorithm(globalSettings.layoutAlgorithm))
+				store.dispatch(setLayoutAlgorithm({ value: globalSettings.layoutAlgorithm }))
 			}
 			if (appSettings.maxTreeMapFiles !== globalSettings.maxTreeMapFiles) {
-				store.dispatch(setMaxTreeMapFiles(globalSettings.maxTreeMapFiles))
+				store.dispatch(setMaxTreeMapFiles({ value: globalSettings.maxTreeMapFiles }))
 			}
 			if (appSettings.sharpnessMode !== globalSettings.sharpnessMode) {
-				store.dispatch(setSharpnessMode(globalSettings.sharpnessMode))
+				store.dispatch(setSharpnessMode({ value: globalSettings.sharpnessMode }))
 			}
 		}
 	}

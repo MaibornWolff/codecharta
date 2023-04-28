@@ -6,23 +6,19 @@ import { ThreeRendererService } from "./threeViewer/threeRenderer.service"
 import { ViewCubeMouseEventsService } from "../viewCube/viewCube.mouseEvents.service"
 import { CodeMapBuilding } from "./rendering/codeMapBuilding"
 import { CODE_MAP_BUILDING, CONSTANT_HIGHLIGHT, TEST_FILE_WITH_PATHS, TEST_NODES } from "../../util/dataMocks"
-import { BlacklistItem, CodeMapNode, Node } from "../../codeCharta.model"
+import { BlacklistItem, CcState, CodeMapNode, Node } from "../../codeCharta.model"
 import { NodeDecorator } from "../../util/nodeDecorator"
 import { klona } from "klona"
 import { CodeMapLabelService } from "./codeMap.label.service"
 import { CodeMapMesh } from "./rendering/codeMapMesh"
 import { BufferGeometry, Material, Object3D, Raycaster, Vector3 } from "three"
 import { ThreeViewerService } from "./threeViewer/threeViewer.service"
-import { setShowMetricLabelNameValue } from "../../state/store/appSettings/showMetricLabelNameValue/showMetricLabelNameValue.actions"
-import { setShowMetricLabelNodeName } from "../../state/store/appSettings/showMetricLabelNodeName/showMetricLabelNodeName.actions"
 import { idToNodeSelector } from "../../state/selectors/accumulatedData/idToNode.selector"
 import { IdToBuildingService } from "../../services/idToBuilding/idToBuilding.service"
-import { Store } from "../../state/angular-redux/store"
-import { State } from "../../state/angular-redux/state"
-import {
-	RightClickedNodeDataActions,
-	setRightClickedNodeData
-} from "../../state/store/appStatus/rightClickedNodeData/rightClickedNodeData.actions"
+import { setRightClickedNodeData } from "../../state/store/appStatus/rightClickedNodeData/rightClickedNodeData.actions"
+import { State, Store } from "@ngrx/store"
+import { MockStore, provideMockStore } from "@ngrx/store/testing"
+import { defaultState } from "../../state/store/state.manager"
 
 jest.mock("../../state/selectors/accumulatedData/idToNode.selector", () => ({
 	idToNodeSelector: jest.fn()
@@ -34,8 +30,8 @@ describe("codeMapMouseEventService", () => {
 	let threeCameraService: ThreeCameraService
 	let threeRendererService: ThreeRendererService
 	let threeSceneService: ThreeSceneService
-	let store: Store
-	let state: State
+	let store: Store<CcState>
+	let state: State<CcState>
 	let codeMapLabelService: CodeMapLabelService
 	let viewCubeMouseEventsService: ViewCubeMouseEventsService
 	let threeViewerService: ThreeViewerService
@@ -63,6 +59,9 @@ describe("codeMapMouseEventService", () => {
 	})
 
 	function restartSystem() {
+		TestBed.configureTestingModule({
+			providers: [provideMockStore(), { provide: State, useValue: { getValue: () => defaultState } }]
+		})
 		threeCameraService = TestBed.inject(ThreeCameraService)
 		threeRendererService = TestBed.inject(ThreeRendererService)
 		threeSceneService = TestBed.inject(ThreeSceneService)
@@ -80,7 +79,7 @@ describe("codeMapMouseEventService", () => {
 		threeSceneService.getHighlightedBuilding = jest.fn().mockReturnValue(CODE_MAP_BUILDING)
 		threeSceneService.getConstantHighlight = jest.fn().mockReturnValue(new Map())
 
-		store = TestBed.inject(Store)
+		store = TestBed.inject(MockStore)
 		state = TestBed.inject(State)
 		threeViewerService = TestBed.inject(ThreeViewerService)
 		viewCubeMouseEventsService = {
@@ -390,7 +389,7 @@ describe("codeMapMouseEventService", () => {
 		it("should un-highlight the building, when no intersection was found and a building is hovered", () => {
 			codeMapMouseEventService["modifiedLabel"] = null
 			codeMapMouseEventService["highlightedInTreeView"] = null
-			codeMapMouseEventService["threeSceneService"].getHighlightedBuilding = () => ({ node: { id: 1 } } as CodeMapBuilding)
+			codeMapMouseEventService["threeSceneService"].getHighlightedBuilding = () => ({ id: 1 } as CodeMapBuilding)
 
 			codeMapMouseEventService.updateHovering()
 			expect(threeSceneService.clearHighlight).toHaveBeenCalled()
@@ -592,9 +591,11 @@ describe("codeMapMouseEventService", () => {
 
 				expect(dispatchSpy).toHaveBeenCalledWith(
 					setRightClickedNodeData({
-						nodeId: 1,
-						xPositionOfRightClickEvent: 0,
-						yPositionOfRightClickEvent: 1
+						value: {
+							nodeId: 1,
+							xPositionOfRightClickEvent: 0,
+							yPositionOfRightClickEvent: 1
+						}
 					})
 				)
 			})
@@ -609,7 +610,7 @@ describe("codeMapMouseEventService", () => {
 
 				expect(dispatchSpy).not.toHaveBeenCalledWith(
 					expect.objectContaining({
-						type: RightClickedNodeDataActions.SET_RIGHT_CLICKED_NODE_DATA
+						type: "SET_RIGHT_CLICKED_NODE_DATA"
 					})
 				)
 			})
@@ -623,7 +624,7 @@ describe("codeMapMouseEventService", () => {
 
 				expect(dispatchSpy).not.toHaveBeenCalledWith(
 					expect.objectContaining({
-						type: RightClickedNodeDataActions.SET_RIGHT_CLICKED_NODE_DATA
+						type: "SET_RIGHT_CLICKED_NODE_DATA"
 					})
 				)
 			})
@@ -827,20 +828,6 @@ describe("codeMapMouseEventService", () => {
 		it("should call addLeafLabel on codeMapLabelService with temporary label name even when both label options are set to false", () => {
 			threeSceneService.getLabelForHoveredNode = jest.fn()
 			codeMapLabelService.addLeafLabel = jest.fn()
-			store.dispatch(setShowMetricLabelNameValue(false))
-			store.dispatch(setShowMetricLabelNodeName(false))
-
-			codeMapMouseEventService["drawTemporaryLabelFor"](codeMapBuilding, null)
-
-			expect(threeSceneService.getLabelForHoveredNode).toHaveBeenCalled()
-			expect(codeMapLabelService.addLeafLabel).toHaveBeenCalledWith(codeMapBuilding.node, 0, true)
-		})
-
-		it("should not generate names in temporary Label when metric option is set to true and name is set to false", () => {
-			threeSceneService.getLabelForHoveredNode = jest.fn()
-			codeMapLabelService.addLeafLabel = jest.fn()
-			store.dispatch(setShowMetricLabelNameValue(true))
-			store.dispatch(setShowMetricLabelNodeName(false))
 
 			codeMapMouseEventService["drawTemporaryLabelFor"](codeMapBuilding, null)
 

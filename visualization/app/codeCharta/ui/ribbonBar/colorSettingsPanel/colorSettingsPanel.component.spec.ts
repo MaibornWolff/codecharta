@@ -1,18 +1,14 @@
 import { TestBed } from "@angular/core/testing"
 import { render, screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
-import { State } from "../../../state/angular-redux/state"
-import { Store } from "../../../state/angular-redux/store"
 import { isDeltaStateSelector } from "../../../state/selectors/isDeltaState.selector"
 import { setColorLabels } from "../../../state/store/appSettings/colorLabels/colorLabels.actions"
-import {
-	defaultMapColors,
-	invertColorRange,
-	invertDeltaColors,
-	setMapColors
-} from "../../../state/store/appSettings/mapColors/mapColors.actions"
+import { invertColorRange, invertDeltaColors, setMapColors } from "../../../state/store/appSettings/mapColors/mapColors.actions"
 import { ColorSettingsPanelComponent } from "./colorSettingsPanel.component"
 import { ColorSettingsPanelModule } from "./colorSettingsPanel.module"
+import { appReducers, setStateMiddleware } from "../../../state/store/state.manager"
+import { State, Store, StoreModule } from "@ngrx/store"
+import { defaultMapColors } from "../../../state/store/appSettings/mapColors/mapColors.reducer"
 
 jest.mock("../../../state/selectors/isDeltaState.selector", () => ({
 	isDeltaStateSelector: jest.fn()
@@ -27,7 +23,7 @@ describe("colorSettingsPanelComponent", () => {
 	mockedIsDeltaStateSelector.mockImplementation(() => false)
 	beforeEach(() => {
 		TestBed.configureTestingModule({
-			imports: [ColorSettingsPanelModule]
+			imports: [ColorSettingsPanelModule, StoreModule.forRoot(appReducers, { metaReducers: [setStateMiddleware] })]
 		})
 	})
 
@@ -61,7 +57,7 @@ describe("colorSettingsPanelComponent", () => {
 			const showNegativeLabels = screen.queryAllByText("Show labels")[2]
 			await userEvent.click(showNegativeLabels)
 
-			expect(dispatchSpy).toHaveBeenCalledWith(setColorLabels({ negative: true }))
+			expect(dispatchSpy).toHaveBeenCalledWith(setColorLabels({ value: { negative: true } }))
 		})
 
 		it("should reset invert colors checkbox on resetting colors", async () => {
@@ -103,9 +99,11 @@ describe("colorSettingsPanelComponent", () => {
 			const store = TestBed.inject(Store)
 			store.dispatch(
 				setMapColors({
-					positiveDelta: "#000000",
-					negativeDelta: "#000000",
-					selected: "#000000"
+					value: {
+						positiveDelta: "#000000",
+						negativeDelta: "#000000",
+						selected: "#000000"
+					}
 				})
 			)
 

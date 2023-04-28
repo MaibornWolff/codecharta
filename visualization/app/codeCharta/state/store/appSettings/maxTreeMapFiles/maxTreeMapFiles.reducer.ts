@@ -1,10 +1,6 @@
-import { MaxTreeMapFilesAction, MaxTreeMapFilesActions, setMaxTreeMapFiles } from "./maxTreeMapFiles.actions"
+import { createReducer, on } from "@ngrx/store"
+import { setMaxTreeMapFiles } from "./maxTreeMapFiles.actions"
+import { setState } from "../../util/setState.reducer.factory"
 
-export function maxTreeMapFiles(state: number = setMaxTreeMapFiles().payload, action: MaxTreeMapFilesAction): number {
-	switch (action.type) {
-		case MaxTreeMapFilesActions.SET_MAX_TREE_MAP_FILES:
-			return action.payload
-		default:
-			return state
-	}
-}
+export const defaultMaxTreeMapFiles = 100
+export const maxTreeMapFiles = createReducer(defaultMaxTreeMapFiles, on(setMaxTreeMapFiles, setState(defaultMaxTreeMapFiles)))

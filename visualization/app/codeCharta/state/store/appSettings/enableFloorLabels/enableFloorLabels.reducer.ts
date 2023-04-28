@@ -1,10 +1,6 @@
-import { EnableFloorLabelAction, EnableFloorLabelsActions, setEnableFloorLabels } from "./enableFloorLabels.actions"
+import { createReducer, on } from "@ngrx/store"
+import { setEnableFloorLabels } from "./enableFloorLabels.actions"
+import { setState } from "../../util/setState.reducer.factory"
 
-export function enableFloorLabels(state = setEnableFloorLabels().payload, action: EnableFloorLabelAction) {
-	switch (action.type) {
-		case EnableFloorLabelsActions.SET_ENABLE_FLOOR_LABELS:
-			return action.payload
-		default:
-			return state
-	}
-}
+export const defaultEnableFloorLabels = true
+export const enableFloorLabels = createReducer(defaultEnableFloorLabels, on(setEnableFloorLabels, setState(defaultEnableFloorLabels)))

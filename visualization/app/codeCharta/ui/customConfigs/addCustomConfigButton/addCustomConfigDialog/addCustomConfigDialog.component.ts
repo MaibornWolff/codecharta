@@ -2,10 +2,11 @@ import { Component, OnInit, ViewEncapsulation } from "@angular/core"
 import { UntypedFormControl, Validators, AbstractControl, ValidatorFn } from "@angular/forms"
 import { CustomConfigHelper } from "../../../../util/customConfigHelper"
 import { buildCustomConfigFromState } from "../../../../util/customConfigBuilder"
-import { State } from "../../../../state/angular-redux/state"
 import { ThreeCameraService } from "../../../codeMap/threeViewer/threeCamera.service"
 import { ThreeOrbitControlsService } from "../../../codeMap/threeViewer/threeOrbitControls.service"
 import { VisibleFilesBySelectionMode, visibleFilesBySelectionModeSelector } from "../../visibleFilesBySelectionMode.selector"
+import { CcState } from "../../../../codeCharta.model"
+import { State } from "@ngrx/store"
 
 @Component({
 	templateUrl: "./addCustomConfigDialog.component.html",
@@ -17,7 +18,7 @@ export class AddCustomConfigDialogComponent implements OnInit {
 	customConfigNote: string
 
 	constructor(
-		private state: State,
+		private state: State<CcState>,
 		private threeCameraService: ThreeCameraService,
 		private threeOrbitControlsService: ThreeOrbitControlsService
 	) {}

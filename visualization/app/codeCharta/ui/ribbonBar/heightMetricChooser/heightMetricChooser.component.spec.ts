@@ -2,30 +2,38 @@ import { TestBed } from "@angular/core/testing"
 import { render, screen } from "@testing-library/angular"
 import { expect } from "@jest/globals"
 import userEvent from "@testing-library/user-event"
-import { setHeightMetric } from "../../../state/store/dynamicSettings/heightMetric/heightMetric.actions"
-import { Store } from "../../../state/store/store"
 import { HeightMetricChooserComponent } from "./areaMetricChooser.component"
 import { HeightMetricChooserModule } from "./heightMetricChooser.module"
-
-jest.mock("../../../state/selectors/accumulatedData/metricData/metricData.selector", () => ({
-	metricDataSelector: () => ({
-		nodeMetricData: [
-			{ name: "aMetric", maxValue: 1 },
-			{ name: "bMetric", maxValue: 2 }
-		],
-		edgeMetricData: []
-	})
-}))
+import { provideMockStore } from "@ngrx/store/testing"
+import { metricDataSelector } from "../../../state/selectors/accumulatedData/metricData/metricData.selector"
+import { heightMetricSelector } from "../../../state/store/dynamicSettings/heightMetric/heightMetric.selector"
+import { hoveredNodeSelector } from "../../../state/selectors/hoveredNode.selector"
 
 describe("heightMetricChooserComponent", () => {
 	beforeEach(() => {
 		TestBed.configureTestingModule({
-			imports: [HeightMetricChooserModule]
+			imports: [HeightMetricChooserModule],
+			providers: [
+				provideMockStore({
+					selectors: [
+						{
+							selector: metricDataSelector,
+							value: {
+								nodeMetricData: [
+									{ name: "aMetric", maxValue: 1 },
+									{ name: "bMetric", maxValue: 2 }
+								]
+							}
+						},
+						{ selector: heightMetricSelector, value: "aMetric" },
+						{ selector: hoveredNodeSelector, value: null }
+					]
+				})
+			]
 		})
 	})
 
 	it("should be a select for height metric", async () => {
-		Store.dispatch(setHeightMetric("aMetric"))
 		await render(HeightMetricChooserComponent, { excludeComponentDeclaration: true })
 
 		await userEvent.click(await screen.findByText("aMetric (1)"))

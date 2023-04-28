@@ -1,13 +1,14 @@
 import { ScreenshotButtonComponent } from "./screenshotButton.component"
-import { setScreenshotToClipboardEnabled } from "../../state/store/appSettings/enableClipboard/screenshotToClipboardEnabled.actions"
 import { TestBed } from "@angular/core/testing"
-import { Store } from "../../state/store/store"
 import { render, screen } from "@testing-library/angular"
 import { ScreenshotButtonModule } from "./screenshotButton.module"
 import userEvent from "@testing-library/user-event"
 import { ThreeRendererService } from "../codeMap/threeViewer/threeRenderer.service"
 import { ThreeCameraService } from "../codeMap/threeViewer/threeCamera.service"
 import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
+import { MockStore, provideMockStore } from "@ngrx/store/testing"
+import { screenshotToClipboardEnabledSelector } from "../../state/store/appSettings/enableClipboard/screenshotToClipboardEnabled.selector"
+import { State } from "@ngrx/store"
 
 describe("screenshotButtonComponent", () => {
 	beforeEach(() => {
@@ -16,13 +17,14 @@ describe("screenshotButtonComponent", () => {
 			providers: [
 				{ provide: ThreeCameraService, useValue: {} },
 				{ provide: ThreeSceneService, useValue: {} },
-				{ provide: ThreeRendererService, useValue: {} }
+				{ provide: ThreeRendererService, useValue: {} },
+				{ provide: State, useValue: {} },
+				provideMockStore({ selectors: [{ selector: screenshotToClipboardEnabledSelector, value: true }] })
 			]
 		})
 	})
 
 	it("should copy to clipboard on click, when screenshot to clipboard is enabled", async () => {
-		Store.store.dispatch(setScreenshotToClipboardEnabled(true))
 		const { fixture } = await render(ScreenshotButtonComponent, { excludeComponentDeclaration: true })
 		fixture.componentInstance.makeScreenshotToClipBoard = jest.fn()
 
@@ -31,8 +33,11 @@ describe("screenshotButtonComponent", () => {
 	})
 
 	it("should save to file on click, when screenshot to clipboard is not enabled", async () => {
-		Store.store.dispatch(setScreenshotToClipboardEnabled(false))
-		const { fixture } = await render(ScreenshotButtonComponent, { excludeComponentDeclaration: true })
+		const { fixture, detectChanges } = await render(ScreenshotButtonComponent, { excludeComponentDeclaration: true })
+		const store = TestBed.inject(MockStore)
+		store.overrideSelector(screenshotToClipboardEnabledSelector, false)
+		store.refreshState()
+		detectChanges()
 		fixture.componentInstance.makeScreenshotToFile = jest.fn()
 
 		await userEvent.click(screen.getByTitle("Export screenshot as file (Ctrl+Alt+S), copy it to clipboard by (Ctrl+Alt+F)"))

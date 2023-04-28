@@ -3,7 +3,6 @@ import { FileState } from "../../../model/files/files"
 import { fileStatesAvailable, isDeltaState, isPartialState } from "../../../model/files/files.helper"
 import { AggregationGenerator } from "../../../util/aggregationGenerator"
 import { NodeDecorator } from "../../../util/nodeDecorator"
-import { CcState } from "../../store/store"
 import { metricNamesSelector } from "./metricData/metricNames.selector"
 import { getDeltaFile } from "./utils/getDeltaFile"
 import { addEdgeMetricsForLeaves } from "./utils/addEdgeMetricsForLeaves"
@@ -11,23 +10,28 @@ import { blacklistSelector } from "../../store/fileSettings/blacklist/blacklist.
 import { attributeTypesSelector } from "../../store/fileSettings/attributeTypes/attributeTypes.selector"
 import { visibleFileStatesSelector } from "../visibleFileStates.selector"
 import { metricDataSelector } from "./metricData/metricData.selector"
-import { createSelector } from "../../angular-redux/createSelector"
+import { createSelector } from "@ngrx/store"
+import { clone } from "../../../util/clone"
 
-const accumulatedDataFallback = Object.freeze({
+const accumulatedDataFallback: AccumulatedData = Object.freeze({
 	unifiedMapNode: undefined,
 	unifiedFileMeta: undefined
 })
 
-export type AccumulatedData = { unifiedMapNode: CodeMapNode; unifiedFileMeta: FileMeta }
+export type AccumulatedData = { unifiedMapNode: CodeMapNode | undefined; unifiedFileMeta: FileMeta | undefined }
 
-export const accumulatedDataSelector: (state: CcState) => AccumulatedData = createSelector(
-	[metricDataSelector, visibleFileStatesSelector, attributeTypesSelector, blacklistSelector, metricNamesSelector],
+export const accumulatedDataSelector = createSelector(
+	metricDataSelector,
+	visibleFileStatesSelector,
+	attributeTypesSelector,
+	blacklistSelector,
+	metricNamesSelector,
 	(metricData, fileStates, attributeTypes, blacklist, metricNames) => {
 		if (!fileStatesAvailable(fileStates) || !metricData.nodeMetricData) {
 			return accumulatedDataFallback
 		}
 
-		const data = _getUndecoratedAccumulatedData(fileStates)
+		const data = _getUndecoratedAccumulatedData(clone(fileStates))
 		if (!data?.map) {
 			return accumulatedDataFallback
 		}

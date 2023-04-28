@@ -3,16 +3,16 @@ import { TestBed } from "@angular/core/testing"
 import { MatInputHarness } from "@angular/material/input/testing"
 import { render, screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
-import { State } from "../../../state/angular-redux/state"
-import { CcState, Store } from "../../../state/store/store"
 import { AreaSettingsPanelComponent } from "./areaSettingsPanel.component"
 import { AreaSettingsPanelModule } from "./areaSettingsPanel.module"
+import { State, StoreModule } from "@ngrx/store"
+import { appReducers, setStateMiddleware } from "../../../state/store/state.manager"
+import { CcState } from "../../../codeCharta.model"
 
 describe("AreaSettingsPanelComponent", () => {
 	beforeEach(() => {
-		Store["initialize"]()
 		TestBed.configureTestingModule({
-			imports: [AreaSettingsPanelModule]
+			imports: [AreaSettingsPanelModule, StoreModule.forRoot(appReducers, { metaReducers: [setStateMiddleware] })]
 		})
 	})
 

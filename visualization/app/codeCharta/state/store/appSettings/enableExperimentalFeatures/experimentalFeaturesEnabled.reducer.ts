@@ -1,14 +1,9 @@
-import {
-	ExperimentalFeaturesEnabledAction,
-	ExperimentalFeaturesEnabledActions,
-	setExperimentalFeaturesEnabled
-} from "./experimentalFeaturesEnabled.actions"
+import { createReducer, on } from "@ngrx/store"
+import { setExperimentalFeaturesEnabled } from "./experimentalFeaturesEnabled.actions"
+import { setState } from "../../util/setState.reducer.factory"
 
-export function experimentalFeaturesEnabled(state = setExperimentalFeaturesEnabled().payload, action: ExperimentalFeaturesEnabledAction) {
-	switch (action.type) {
-		case ExperimentalFeaturesEnabledActions.SET_EXPERIMENTAL_FEATURES_ENABLED:
-			return action.payload
-		default:
-			return state
-	}
-}
+export const defaultExperimentalFeaturesEnabled = false
+export const experimentalFeaturesEnabled = createReducer(
+	defaultExperimentalFeaturesEnabled,
+	on(setExperimentalFeaturesEnabled, setState(defaultExperimentalFeaturesEnabled))
+)

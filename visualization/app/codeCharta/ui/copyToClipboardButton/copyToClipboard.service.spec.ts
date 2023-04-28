@@ -1,7 +1,9 @@
-import { State } from "../../state/angular-redux/state"
+import { State } from "@ngrx/store"
 import { CopyToClipboardService } from "./copyToClipboard.service"
 import { buildTextOfFiles } from "./util/clipboardString"
 import { getFilenamesWithHighestMetrics } from "./util/getFilenamesWithHighestMetrics"
+import { CcState } from "../../codeCharta.model"
+
 let service: CopyToClipboardService
 jest.mock("./util/clipboardString", () => {
 	return { buildTextOfFiles: jest.fn().mockReturnValue("Magic Monday") }
@@ -9,14 +11,14 @@ jest.mock("./util/clipboardString", () => {
 jest.mock("./util/getFilenamesWithHighestMetrics", () => {
 	return { getFilenamesWithHighestMetrics: jest.fn() }
 })
+
 describe("CopyToClipboardService", () => {
 	beforeEach(() => {
-		const stateStub = {} as unknown as State
+		const stateStub = {} as unknown as State<CcState>
 		service = new CopyToClipboardService(stateStub)
 		service["getUnifiedMapNode"] = jest.fn()
-
-		jest.clearAllMocks()
 	})
+
 	describe("getClipboardText", () => {
 		it("should call functions to convert state and to build text", () => {
 			const stateConverterMock = getFilenamesWithHighestMetrics

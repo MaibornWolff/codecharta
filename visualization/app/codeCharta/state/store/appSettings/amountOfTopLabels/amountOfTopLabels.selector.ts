@@ -1,4 +1,4 @@
-import { createSelector } from "../../../angular-redux/createSelector"
+import { createSelector } from "@ngrx/store"
 import { appSettingsSelector } from "../appSettings.selector"
 
-export const amountOfTopLabelsSelector = createSelector([appSettingsSelector], appSettings => appSettings.amountOfTopLabels)
+export const amountOfTopLabelsSelector = createSelector(appSettingsSelector, appSettings => appSettings.amountOfTopLabels)
