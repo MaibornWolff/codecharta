@@ -14,7 +14,7 @@
 </button>
 
 <mat-menu #menu="matMenu" class="ai-drop-down suspicious-metric-panel">
-	<div *ngIf="data.unsuspiciousMetrics.length">
+	<div>
 		<div class="title">
 			<div>Suspicious Metrics</div>
 		</div>
@@ -25,7 +25,7 @@
 			information can be found here:
 			<a href="https://maibornwolff.github.io/codecharta/docs/suspicious-metrics/">link</a> to How-To article.
 		</div>
-		<div class="title">
+		<div class="title" *ngIf="data.unsuspiciousMetrics.length">
 			{{
 				data.analyzedProgrammingLanguage?.length
 					? "Unsuspicious Metrics in " + data.analyzedProgrammingLanguage + " code"
