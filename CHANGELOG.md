@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Fixed 🐞
 
 -   Show again delta of a building which have nothing in common in red or green [#3271](https://github.com/MaibornWolff/codecharta/pull/3271)
--   Show always description of suspicious metrics [#3285](https://github.com/MaibornWolff/codecharta/pull/3285)
+-   Always show description of suspicious metrics [#3285](https://github.com/MaibornWolff/codecharta/pull/3285)
 
 ### Chore 👨‍💻 👩‍💻
 
