@@ -1,10 +1,6 @@
-import { AreaMetricAction, AreaMetricActions, setAreaMetric } from "./areaMetric.actions"
+import { createReducer, on } from "@ngrx/store"
+import { setAreaMetric } from "./areaMetric.actions"
+import { setState } from "../../util/setState.reducer.factory"
 
-export function areaMetric(state = setAreaMetric().payload, action: AreaMetricAction) {
-	switch (action.type) {
-		case AreaMetricActions.SET_AREA_METRIC:
-			return action.payload
-		default:
-			return state
-	}
-}
+export const defaultAreaMetric: null | string = null
+export const areaMetric = createReducer(defaultAreaMetric, on(setAreaMetric, setState(defaultAreaMetric)))

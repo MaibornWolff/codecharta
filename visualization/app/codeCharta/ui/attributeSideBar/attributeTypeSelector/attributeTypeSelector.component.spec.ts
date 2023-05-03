@@ -2,23 +2,22 @@ import { TestBed } from "@angular/core/testing"
 import { render, screen, fireEvent } from "@testing-library/angular"
 
 import { AttributeTypeSelectorModule } from "./attributeTypeSelector.module"
-import { Store } from "../../../state/store/store"
+import { provideMockStore } from "@ngrx/store/testing"
+
 import { AttributeTypeSelectorComponent } from "./attributeTypeSelector.component"
 import { AttributeTypeValue } from "../../../codeCharta.model"
-import { setAttributeTypes } from "../../../state/store/fileSettings/attributeTypes/attributeTypes.actions"
+import { attributeTypesSelector } from "../../../state/store/fileSettings/attributeTypes/attributeTypes.selector"
 
 describe("attributeTypeSelector", () => {
 	beforeEach(() => {
 		TestBed.configureTestingModule({
-			imports: [AttributeTypeSelectorModule]
+			imports: [AttributeTypeSelectorModule],
+			providers: [
+				provideMockStore({
+					selectors: [{ selector: attributeTypesSelector, value: { nodes: { rloc: AttributeTypeValue.absolute } } }]
+				})
+			]
 		})
-
-		Store["initialize"]()
-		Store.store.dispatch(
-			setAttributeTypes({
-				nodes: { rloc: AttributeTypeValue.absolute }
-			})
-		)
 	})
 
 	it("should update to median", async () => {

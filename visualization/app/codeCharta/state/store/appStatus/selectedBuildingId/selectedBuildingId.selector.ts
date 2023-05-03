@@ -1,3 +1,4 @@
-import { CcState } from "../../store"
+import { createSelector } from "@ngrx/store"
+import { appStatusSelector } from "../appStatus.selector"
 
-export const selectedBuildingIdSelector = (state: CcState) => state.appStatus.selectedBuildingId
+export const selectedBuildingIdSelector = createSelector(appStatusSelector, appStatus => appStatus.selectedBuildingId)

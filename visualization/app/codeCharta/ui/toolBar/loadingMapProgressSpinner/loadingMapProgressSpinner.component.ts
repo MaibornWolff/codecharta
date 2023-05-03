@@ -1,6 +1,7 @@
 import { Component, ViewEncapsulation } from "@angular/core"
+import { Store } from "@ngrx/store"
 import { Observable } from "rxjs"
-import { Store } from "../../../state/angular-redux/store"
+import { CcState } from "../../../codeCharta.model"
 import { isLoadingMapSelector } from "../../../state/store/appSettings/isLoadingMap/isLoadingMap.selector"
 
 @Component({
@@ -12,7 +13,7 @@ import { isLoadingMapSelector } from "../../../state/store/appSettings/isLoading
 export class LoadingMapProgressSpinnerComponent {
 	isLoadingMap$: Observable<boolean>
 
-	constructor(store: Store) {
+	constructor(store: Store<CcState>) {
 		this.isLoadingMap$ = store.select(isLoadingMapSelector)
 	}
 }

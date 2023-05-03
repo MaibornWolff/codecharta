@@ -1,11 +1,12 @@
 import { ElementRef } from "@angular/core"
 import { Subject } from "rxjs"
 import { IsAttributeSideBarVisibleService } from "../../services/isAttributeSideBarVisible.service"
-import { Store } from "../../state/angular-redux/store"
 import { sharpnessModeSelector } from "../../state/store/appSettings/sharpnessMode/sharpnessMode.selector"
 import { CodeMapComponent } from "./codeMap.component"
 import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
 import { ThreeViewerService } from "./threeViewer/threeViewer.service"
+import { Store } from "@ngrx/store"
+import { CcState } from "../../codeCharta.model"
 
 describe("CodeMapComponent", () => {
 	let mockedThreeViewService: ThreeViewerService
@@ -21,7 +22,7 @@ describe("CodeMapComponent", () => {
 					return jest.fn()
 			}
 		}
-	} as unknown as Store
+	} as unknown as Store<CcState>
 
 	beforeEach(() => {
 		mockedThreeViewService = { init: jest.fn(), restart: jest.fn() } as unknown as ThreeViewerService

@@ -1,12 +1,15 @@
 import { Vector3 } from "three"
-import { Action } from "redux"
 import { ExportCCFile } from "./codeCharta.api.model"
 import { FileState } from "./model/files/files"
 import { CustomConfig } from "./model/customConfig/customConfig.api.model"
 import Rectangle from "./util/algorithm/streetLayout/rectangle"
-import { RightClickedNodeData } from "./state/store/appStatus/rightClickedNodeData/rightClickedNodeData.actions"
-import { Scaling } from "./state/store/appSettings/scaling/scaling.actions"
 import { MetricDescriptors } from "./util/metric/metricDescriptors"
+
+export type Scaling = {
+	x: number
+	y: number
+	z: number
+}
 
 export interface NameDataPair {
 	fileName: string
@@ -86,7 +89,7 @@ export enum SortingOption {
 	NUMBER_OF_FILES = "Number of Files"
 }
 
-export interface colorLabelOptions {
+export interface ColorLabelOptions {
 	positive: boolean
 	negative: boolean
 	neutral: boolean
@@ -156,7 +159,7 @@ export interface AppSettings {
 	sharpnessMode: SharpnessMode
 	experimentalFeaturesEnabled: boolean
 	screenshotToClipboardEnabled: boolean
-	colorLabels: colorLabelOptions
+	colorLabels: ColorLabelOptions
 	isColorMetricLinkedToHeightMetric: boolean
 	enableFloorLabels: boolean
 }
@@ -350,7 +353,7 @@ export interface Node {
 	outgoingEdgePoint: Vector3
 }
 
-export interface State {
+export interface CcState {
 	fileSettings: FileSettings
 	dynamicSettings: DynamicSettings
 	appSettings: AppSettings
@@ -385,23 +388,12 @@ export function stateObjectReviver(_, valueToRevive) {
 	return valueToRevive
 }
 
-export interface CCAction extends Action {
-	// TODO: Do not use any here! Make sure all our actions are properly declared.
-	//
-	// As a starting point:
-	//
-	// RecursivePartial<MetricData & DynamicSettings & FileSettings & AppSettings  & FileState> & {
-	// 	metricData: MetricData
-	// 	dynamicSettings: DynamicSettings
-	// 	fileSettings: FileSettings
-	// 	appSettings: AppSettings
-	// 	files: FileState[]
-	// }
-	payload?: any
-}
-
 export interface AppStatus {
 	hoveredNodeId: number | null
 	selectedBuildingId: number | null
-	rightClickedNodeData: RightClickedNodeData
+	rightClickedNodeData: {
+		nodeId: number
+		xPositionOfRightClickEvent: number
+		yPositionOfRightClickEvent: number
+	} | null
 }

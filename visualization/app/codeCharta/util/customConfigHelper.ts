@@ -1,4 +1,3 @@
-"use strict"
 import { LocalStorageCustomConfigs, stateObjectReplacer, stateObjectReviver } from "../codeCharta.model"
 import { CustomConfigItemGroup } from "../ui/customConfigs/customConfigs.component"
 import {
@@ -10,12 +9,12 @@ import {
 } from "../model/customConfig/customConfig.api.model"
 import { FileNameHelper } from "./fileNameHelper"
 import { FileDownloader } from "./fileDownloader"
-import { setState } from "../state/store/state.actions"
 import { ThreeCameraService } from "../ui/codeMap/threeViewer/threeCamera.service"
 import { ThreeOrbitControlsService } from "../ui/codeMap/threeViewer/threeOrbitControls.service"
 import { BehaviorSubject } from "rxjs"
-import { Store } from "../state/angular-redux/store"
 import { VisibleFilesBySelectionMode } from "../ui/customConfigs/visibleFilesBySelectionMode.selector"
+import { Store } from "@ngrx/store"
+import { setState } from "../state/store/state.actions"
 
 export const CUSTOM_CONFIG_FILE_EXTENSION = ".cc.config.json"
 const CUSTOM_CONFIGS_LOCAL_STORAGE_VERSION = "1.0.1"
@@ -197,7 +196,7 @@ export class CustomConfigHelper {
 		threeOrbitControlsService: ThreeOrbitControlsService
 	) {
 		const customConfig = this.getCustomConfigSettings(configId)
-		store.dispatch(setState(customConfig.stateSettings))
+		store.dispatch(setState({ value: customConfig.stateSettings }))
 
 		// TODO: remove this dirty timeout and set camera settings properly
 		// This timeout is a chance that CustomConfigs for a small map can be restored and applied completely (even the camera positions)

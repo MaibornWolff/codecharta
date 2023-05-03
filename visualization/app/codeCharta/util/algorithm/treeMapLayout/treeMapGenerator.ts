@@ -1,6 +1,6 @@
 import { hierarchy, HierarchyNode, HierarchyRectangularNode, treemap } from "d3-hierarchy"
 import { TreeMapHelper, treeMapSize } from "./treeMapHelper"
-import { CodeMapNode, DynamicSettings, Node, NodeMetricData, State } from "../../../codeCharta.model"
+import { CodeMapNode, DynamicSettings, Node, NodeMetricData, CcState } from "../../../codeCharta.model"
 import { getMapResolutionScaleFactor, isLeaf } from "../../codeMapHelper"
 
 export type SquarifiedTreeMap = { treeMap: HierarchyRectangularNode<CodeMapNode>; height: number; width: number }
@@ -11,7 +11,7 @@ const DEFAULT_PADDING_FLOOR_LABEL_FROM_LEVEL_2 = 95
 const DEFAULT_ROOT_FLOOR_LABEL_SCALING = 0.035
 const DEFAULT_SUB_FLOOR_LABEL_SCALING = 0.028
 
-export function createTreemapNodes(map: CodeMapNode, state: State, metricData: NodeMetricData[], isDeltaState: boolean): Node[] {
+export function createTreemapNodes(map: CodeMapNode, state: CcState, metricData: NodeMetricData[], isDeltaState: boolean): Node[] {
 	const mapSizeResolutionScaling = getMapResolutionScaleFactor(state.files)
 	const maxHeight = metricData.find(x => x.name === state.dynamicSettings.heightMetric).maxValue * mapSizeResolutionScaling
 	const maxWidth = metricData.find(x => x.name === state.dynamicSettings.areaMetric).maxValue * mapSizeResolutionScaling
@@ -62,7 +62,7 @@ export function createTreemapNodes(map: CodeMapNode, state: State, metricData: N
 
 function buildSquarifiedTreeMapsForFixedFolders(
 	hierarchyNode: HierarchyNode<CodeMapNode>,
-	state: State,
+	state: CcState,
 	scaleLength: number,
 	scaleWidth: number,
 	offsetX0: number,
@@ -155,7 +155,7 @@ function scaleRoot(root: Node, scaleLength: number, scaleWidth: number) {
 	root.length *= scaleLength
 }
 
-function getSquarifiedTreeMap(map: CodeMapNode, state: State, mapSizeResolutionScaling: number, maxWidth: number): SquarifiedTreeMap {
+function getSquarifiedTreeMap(map: CodeMapNode, state: CcState, mapSizeResolutionScaling: number, maxWidth: number): SquarifiedTreeMap {
 	const hierarchyNode = hierarchy(map)
 	const nodesPerSide = getEstimatedNodesPerSide(hierarchyNode)
 	const { enableFloorLabels } = state.appSettings
@@ -255,7 +255,7 @@ function isOnlyVisibleInComparisonMap(node: CodeMapNode, dynamicSettings: Dynami
 }
 
 // Only exported for testing.
-export function calculateAreaValue(node: CodeMapNode, { dynamicSettings, appSettings }: State, maxWidth: number) {
+export function calculateAreaValue(node: CodeMapNode, { dynamicSettings, appSettings }: CcState, maxWidth: number) {
 	if (node.isExcluded) {
 		return 0
 	}

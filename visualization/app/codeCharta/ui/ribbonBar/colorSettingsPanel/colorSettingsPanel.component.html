@@ -1,7 +1,8 @@
 <cc-metric-color-range-slider *ngIf="!(isDeltaState$ | async)"></cc-metric-color-range-slider>
 
 <cc-reset-settings-button
-	[settingsKeys]="['dynamicSettings.colorRange', 'appSettings.mapColors.positiveDelta', 'appSettings.mapColors.negativeDelta']"
+	[settingsKeys]="['appSettings.mapColors.positiveDelta', 'appSettings.mapColors.negativeDelta']"
+	[callback]="resetColorRange"
 	tooltip="Reset slider thresholds to default"
 	label="Reset thresholds"
 ></cc-reset-settings-button>

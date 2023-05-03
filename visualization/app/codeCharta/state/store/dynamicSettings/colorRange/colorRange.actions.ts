@@ -1,21 +1,4 @@
-import { CCAction, ColorRange } from "../../../../codeCharta.model"
+import { createAction, props } from "@ngrx/store"
+import { ColorRange } from "../../../../codeCharta.model"
 
-export enum ColorRangeActions {
-	SET_COLOR_RANGE = "SET_COLOR_RANGE"
-}
-
-export interface SetColorRangeAction extends CCAction {
-	type: ColorRangeActions.SET_COLOR_RANGE
-	payload: Partial<ColorRange>
-}
-
-export type ColorRangeAction = SetColorRangeAction
-
-export function setColorRange(colorRange: Partial<ColorRange> = defaultColorRange): SetColorRangeAction {
-	return {
-		type: ColorRangeActions.SET_COLOR_RANGE,
-		payload: colorRange
-	}
-}
-
-export const defaultColorRange: ColorRange = { from: null, to: null }
+export const setColorRange = createAction("SET_COLOR_RANGE", props<{ value: Partial<ColorRange> }>())

@@ -1,11 +1,12 @@
 import { Component, AfterViewInit, ElementRef, OnDestroy, ViewEncapsulation } from "@angular/core"
-import { Store } from "../../state/angular-redux/store"
 import { isLoadingFileSelector } from "../../state/store/appSettings/isLoadingFile/isLoadingFile.selector"
 import { ThreeViewerService } from "./threeViewer/threeViewer.service"
 import { sharpnessModeSelector } from "../../state/store/appSettings/sharpnessMode/sharpnessMode.selector"
 import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
 import { skip, tap } from "rxjs"
 import { IsAttributeSideBarVisibleService } from "../../services/isAttributeSideBarVisible.service"
+import { Store } from "@ngrx/store"
+import { CcState } from "../../codeCharta.model"
 
 @Component({
 	selector: "cc-code-map",
@@ -28,7 +29,7 @@ export class CodeMapComponent implements AfterViewInit, OnDestroy {
 
 	constructor(
 		public isAttributeSideBarVisibleService: IsAttributeSideBarVisibleService,
-		private store: Store,
+		private store: Store<CcState>,
 		private threeViewerService: ThreeViewerService,
 		private codeMapMouseEventService: CodeMapMouseEventService,
 		private elementReference: ElementRef

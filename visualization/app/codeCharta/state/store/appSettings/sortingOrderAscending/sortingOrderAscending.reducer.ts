@@ -1,20 +1,10 @@
-import {
-	SortingOrderAscendingAction,
-	SortingOrderAscendingActions,
-	setSortingOrderAscending,
-	ToggleSortingOrderAscendingAction
-} from "./sortingOrderAscending.actions"
+import { createReducer, on } from "@ngrx/store"
+import { setSortingOrderAscending, toggleSortingOrderAscending } from "./sortingOrderAscending.actions"
+import { setState } from "../../util/setState.reducer.factory"
 
-export function sortingOrderAscending(
-	state = setSortingOrderAscending().payload,
-	action: SortingOrderAscendingAction | ToggleSortingOrderAscendingAction
-) {
-	switch (action.type) {
-		case SortingOrderAscendingActions.SET_SORTING_ORDER_ASCENDING:
-			return action.payload
-		case SortingOrderAscendingActions.TOGGLE_SORTING_ORDER_ASCENDING:
-			return !state
-		default:
-			return state
-	}
-}
+export const defaultSortingOrderAscending = true
+export const sortingOrderAscending = createReducer(
+	defaultSortingOrderAscending,
+	on(setSortingOrderAscending, setState(defaultSortingOrderAscending)),
+	on(toggleSortingOrderAscending, state => !state)
+)

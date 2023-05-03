@@ -3,11 +3,7 @@ import { render } from "@testing-library/angular"
 import { HoveredNodePathPanelComponent } from "./hoveredNodePathPanel.component"
 import { HoveredNodePathPanelModule } from "./hoveredNodePathPanel.module"
 import { hoveredNodePathPanelDataSelector } from "./hoveredNodePathPanelData.selector"
-
-jest.mock("./hoveredNodePathPanelData.selector", () => ({
-	hoveredNodePathPanelDataSelector: jest.fn()
-}))
-const mockedHoveredNodePathPanelDataSelector = jest.mocked(hoveredNodePathPanelDataSelector)
+import { provideMockStore } from "@ngrx/store/testing"
 
 describe("HoveredNodePathPanelComponent", () => {
 	beforeEach(() => {
@@ -17,17 +13,27 @@ describe("HoveredNodePathPanelComponent", () => {
 	})
 
 	it("should be empty when there is no node hovered", async () => {
-		mockedHoveredNodePathPanelDataSelector.mockImplementation(() => undefined)
-		const { container } = await render(HoveredNodePathPanelComponent, { excludeComponentDeclaration: true })
+		const { container } = await render(HoveredNodePathPanelComponent, {
+			excludeComponentDeclaration: true,
+			providers: [provideMockStore({ selectors: [{ selector: hoveredNodePathPanelDataSelector, value: undefined }] })]
+		})
 		expect(container.textContent).toBe("")
 	})
 
 	it("should show path to a hovered file", async () => {
-		mockedHoveredNodePathPanelDataSelector.mockImplementation(() => ({
-			path: ["root", "a.ts"],
-			isFile: true
-		}))
-		const { container } = await render(HoveredNodePathPanelComponent, { excludeComponentDeclaration: true })
+		const { container } = await render(HoveredNodePathPanelComponent, {
+			excludeComponentDeclaration: true,
+			providers: [
+				provideMockStore({
+					selectors: [
+						{
+							selector: hoveredNodePathPanelDataSelector,
+							value: { path: ["root", "a.ts"], isFile: true }
+						}
+					]
+				})
+			]
+		})
 
 		const steps = container.children
 		expect(steps.length).toBe(2)
@@ -42,12 +48,19 @@ describe("HoveredNodePathPanelComponent", () => {
 	})
 
 	it("should show path to a hovered folder", async () => {
-		mockedHoveredNodePathPanelDataSelector.mockImplementation(() => ({
-			path: ["root"],
-			isFile: false
-		}))
-		const { container } = await render(HoveredNodePathPanelComponent, { excludeComponentDeclaration: true })
-
+		const { container } = await render(HoveredNodePathPanelComponent, {
+			excludeComponentDeclaration: true,
+			providers: [
+				provideMockStore({
+					selectors: [
+						{
+							selector: hoveredNodePathPanelDataSelector,
+							value: { path: ["root"], isFile: false }
+						}
+					]
+				})
+			]
+		})
 		const steps = container.children
 		expect(steps.length).toBe(1)
 

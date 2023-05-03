@@ -1,52 +1,56 @@
 import { TestBed } from "@angular/core/testing"
 import { FileSelectionState } from "../../model/files/files"
-import { State } from "../../state/angular-redux/state"
-import { Store } from "../../state/angular-redux/store"
 import { referenceFileSelector } from "../../state/selectors/referenceFile/referenceFile.selector"
 import { addFile, removeFile, setDelta, setStandard } from "../../state/store/files/files.actions"
-import { Store as PlainStore } from "../../state/store/store"
 import { TEST_FILE_DATA, TEST_FILE_DATA_JAVA } from "../../util/dataMocks"
 import { FileSelectionModeService } from "./fileSelectionMode.service"
+import { State, Store, StoreModule } from "@ngrx/store"
+import { appReducers, setStateMiddleware } from "../../state/store/state.manager"
+import { CcState } from "../../codeCharta.model"
 
 describe("FileSelectionModeService", () => {
 	let fileSelectionModeService: FileSelectionModeService
+	let store: Store<CcState>
+	let state: State<CcState>
 
 	beforeEach(() => {
-		PlainStore["initialize"]()
-		PlainStore.dispatch(addFile(TEST_FILE_DATA))
-		PlainStore.dispatch(addFile(TEST_FILE_DATA_JAVA))
-		PlainStore.dispatch(setStandard([TEST_FILE_DATA]))
+		TestBed.configureTestingModule({
+			imports: [StoreModule.forRoot(appReducers, { metaReducers: [setStateMiddleware] })]
+		})
+		store = TestBed.inject(Store)
+		state = TestBed.inject(State)
+		store.dispatch(addFile({ file: TEST_FILE_DATA }))
+		store.dispatch(addFile({ file: TEST_FILE_DATA_JAVA }))
+		store.dispatch(setStandard({ files: [TEST_FILE_DATA] }))
 
-		const store = TestBed.inject(Store)
-		const state = TestBed.inject(State)
 		fileSelectionModeService = new FileSelectionModeService(store, state)
 	})
 
 	it("should set first selected file as reference, when there was no reference file before", () => {
 		fileSelectionModeService.toggle()
-		expect(referenceFileSelector(PlainStore.store.getState())).toBe(TEST_FILE_DATA)
+		expect(referenceFileSelector(state.getValue())).toBe(TEST_FILE_DATA)
 	})
 
 	it("should restore previous files on toggle", () => {
-		let fileStates = PlainStore.store.getState().files
+		let fileStates = state.getValue().files
 		expect(fileStates[0].selectedAs).toBe(FileSelectionState.Partial)
 		expect(fileStates[1].selectedAs).toBe(FileSelectionState.None)
 
 		fileSelectionModeService.toggle()
-		PlainStore.dispatch(setDelta(TEST_FILE_DATA_JAVA, TEST_FILE_DATA))
+		store.dispatch(setDelta({ referenceFile: TEST_FILE_DATA_JAVA, comparisonFile: TEST_FILE_DATA }))
 
 		fileSelectionModeService.toggle()
-		fileStates = PlainStore.store.getState().files
+		fileStates = state.getValue().files
 		expect(fileStates[0].selectedAs).toBe(FileSelectionState.Partial)
 		expect(fileStates[1].selectedAs).toBe(FileSelectionState.None)
 	})
 
 	it("should not restore a removed file when toggling back to delta mode", () => {
 		fileSelectionModeService.toggle()
-		PlainStore.dispatch(setDelta(TEST_FILE_DATA_JAVA, TEST_FILE_DATA))
+		store.dispatch(setDelta({ referenceFile: TEST_FILE_DATA_JAVA, comparisonFile: TEST_FILE_DATA }))
 		fileSelectionModeService.toggle()
-		PlainStore.dispatch(removeFile(TEST_FILE_DATA_JAVA.fileMeta.fileName))
+		store.dispatch(removeFile({ fileName: TEST_FILE_DATA_JAVA.fileMeta.fileName }))
 		fileSelectionModeService.toggle()
-		expect(referenceFileSelector(PlainStore.store.getState())).toBe(TEST_FILE_DATA)
+		expect(referenceFileSelector(state.getValue())).toBe(TEST_FILE_DATA)
 	})
 })

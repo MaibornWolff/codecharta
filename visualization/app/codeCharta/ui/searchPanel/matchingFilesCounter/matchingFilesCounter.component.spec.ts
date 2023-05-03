@@ -3,19 +3,27 @@ import { render } from "@testing-library/angular"
 import { expect } from "@jest/globals"
 import { MatchingFilesCounterComponent } from "./matchingFilesCounter.component"
 import { MatchingFilesCounterModule } from "./matchingFilesCounter.module"
-
-jest.mock("./selectors/matchingFilesCounter.selector", () => ({
-	matchingFilesCounterSelector: () => ({
-		fileCount: "2/3",
-		flattenCount: "1/1",
-		excludeCount: "0/1"
-	})
-}))
+import { provideMockStore } from "@ngrx/store/testing"
+import { matchingFilesCounterSelector } from "./selectors/matchingFilesCounter.selector"
 
 describe("MatchingFilesCounterComponent", () => {
 	beforeEach(() => {
 		TestBed.configureTestingModule({
-			imports: [MatchingFilesCounterModule]
+			imports: [MatchingFilesCounterModule],
+			providers: [
+				provideMockStore({
+					selectors: [
+						{
+							selector: matchingFilesCounterSelector,
+							value: {
+								fileCount: "2/3",
+								flattenCount: "1/1",
+								excludeCount: "0/1"
+							}
+						}
+					]
+				})
+			]
 		})
 	})
 

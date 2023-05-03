@@ -1,13 +1,13 @@
 import { Component, ViewEncapsulation } from "@angular/core"
+import { Store } from "@ngrx/store"
 import { Observable } from "rxjs"
+import { AttributeDescriptors, CcState } from "../../../codeCharta.model"
 
-import { Store } from "../../../state/angular-redux/store"
 import { Metric } from "../util/metric"
 import { showAttributeTypeSelectorSelector } from "../util/showAttributeTypeSelector.selector"
 import { showDeltaValueSelector } from "../util/showDeltaValueSelector"
 import { secondaryMetricsSelector } from "./secondaryMetrics.selector"
 import { attributeDescriptorsSelector } from "../../../state/store/fileSettings/attributeDescriptors/attributeDescriptors.selector"
-import { AttributeDescriptors } from "../../../codeCharta.model"
 
 @Component({
 	selector: "cc-attribute-side-bar-secondary-metrics",
@@ -20,7 +20,7 @@ export class AttributeSideBarSecondaryMetricsComponent {
 	showDeltaValue$: Observable<boolean>
 	attributeDescriptors: AttributeDescriptors
 
-	constructor(store: Store) {
+	constructor(store: Store<CcState>) {
 		this.secondaryMetrics$ = store.select(secondaryMetricsSelector)
 		this.showAttributeTypeSelector$ = store.select(showAttributeTypeSelectorSelector)
 		this.showDeltaValue$ = store.select(showDeltaValueSelector)

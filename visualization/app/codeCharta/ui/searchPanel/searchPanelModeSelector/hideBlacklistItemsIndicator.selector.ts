@@ -1,4 +1,4 @@
-import { createSelector } from "../../../state/angular-redux/createSelector"
+import { createSelector } from "@ngrx/store"
 import { blacklistSelector } from "../../../state/store/fileSettings/blacklist/blacklist.selector"
 
-export const hideBlacklistItemsIndicatorSelector = createSelector([blacklistSelector], blacklist => blacklist.length === 0)
+export const hideBlacklistItemsIndicatorSelector = createSelector(blacklistSelector, blacklist => blacklist.length === 0)

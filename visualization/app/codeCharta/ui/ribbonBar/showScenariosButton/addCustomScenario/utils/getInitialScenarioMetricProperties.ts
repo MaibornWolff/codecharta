@@ -1,5 +1,4 @@
-import { Scenario } from "../../../../../codeCharta.model"
-import { CcState } from "../../../../../state/store/store"
+import { Scenario, CcState } from "../../../../../codeCharta.model"
 import { ScenarioMetricProperty } from "../../scenarioHelper"
 
 export const getInitialScenarioMetricProperties = (state: CcState, camera: Scenario["camera"]): ScenarioMetricProperty[] => {

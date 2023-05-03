@@ -1,7 +1,6 @@
 import { Component, ViewEncapsulation } from "@angular/core"
-import { MatSelectChange } from "@angular/material/select"
-import { LayoutAlgorithm } from "../../../../../codeCharta.model"
-import { Store } from "../../../../../state/angular-redux/store"
+import { Store } from "@ngrx/store"
+import { LayoutAlgorithm, CcState } from "../../../../../codeCharta.model"
 import { setLayoutAlgorithm } from "../../../../../state/store/appSettings/layoutAlgorithm/layoutAlgorithm.actions"
 import { layoutAlgorithmSelector } from "../../../../../state/store/appSettings/layoutAlgorithm/layoutAlgorithm.selector"
 import { setMaxTreeMapFiles } from "../../../../../state/store/appSettings/maxTreeMapFiles/maxTreeMapFiles.actions"
@@ -18,13 +17,13 @@ export class MapLayoutSelectionComponent {
 	layoutAlgorithm$ = this.store.select(layoutAlgorithmSelector)
 	maxTreeMapFiles$ = this.store.select(maxTreeMapFilesSelector)
 
-	constructor(private store: Store) {}
+	constructor(private store: Store<CcState>) {}
 
-	handleSelectedLayoutAlgorithmChanged(event: MatSelectChange) {
-		this.store.dispatch(setLayoutAlgorithm(event.value))
+	handleSelectedLayoutAlgorithmChanged(event: { value: LayoutAlgorithm }) {
+		this.store.dispatch(setLayoutAlgorithm({ value: event.value }))
 	}
 
 	handleChangeMaxTreeMapFiles = debounce((maxTreeMapFiles: number) => {
-		this.store.dispatch(setMaxTreeMapFiles(maxTreeMapFiles))
+		this.store.dispatch(setMaxTreeMapFiles({ value: maxTreeMapFiles }))
 	}, 400)
 }

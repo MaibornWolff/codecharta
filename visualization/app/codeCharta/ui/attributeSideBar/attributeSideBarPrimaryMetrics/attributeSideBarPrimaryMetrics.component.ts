@@ -1,10 +1,10 @@
 import { Component, ViewEncapsulation } from "@angular/core"
 import { Observable } from "rxjs"
 
-import { Store } from "../../../state/angular-redux/store"
 import { showAttributeTypeSelectorSelector } from "../util/showAttributeTypeSelector.selector"
 import { PrimaryMetrics, primaryMetricsSelector } from "../../../state/selectors/primaryMetrics/primaryMetrics.selector"
-import { AttributeDescriptors } from "../../../codeCharta.model"
+import { Store } from "@ngrx/store"
+import { AttributeDescriptors, CcState } from "../../../codeCharta.model"
 import { attributeDescriptorsSelector } from "../../../state/store/fileSettings/attributeDescriptors/attributeDescriptors.selector"
 
 @Component({
@@ -17,7 +17,7 @@ export class AttributeSideBarPrimaryMetricsComponent {
 	showAttributeTypeSelector$: Observable<boolean>
 	attributeDescriptors: AttributeDescriptors
 
-	constructor(store: Store) {
+	constructor(store: Store<CcState>) {
 		this.primaryMetrics$ = store.select(primaryMetricsSelector)
 		this.showAttributeTypeSelector$ = store.select(showAttributeTypeSelectorSelector)
 		store.select(attributeDescriptorsSelector).subscribe(descriptors => (this.attributeDescriptors = descriptors))

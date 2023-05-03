@@ -1,22 +1,21 @@
 import { Injectable } from "@angular/core"
 import { MatDialog } from "@angular/material/dialog"
-import { ColorRange, MapColors } from "../../../codeCharta.model"
-import { State } from "../../../state/angular-redux/state"
-import { Store } from "../../../state/angular-redux/store"
+import { ColorRange, MapColors, CcState } from "../../../codeCharta.model"
 import { metricDataSelector } from "../../../state/selectors/accumulatedData/metricData/metricData.selector"
 import { setMapColors } from "../../../state/store/appSettings/mapColors/mapColors.actions"
 import { setColorRange } from "../../../state/store/dynamicSettings/colorRange/colorRange.actions"
-import { setState } from "../../../state/store/state.actions"
 import { ScenarioHelper } from "./scenarioHelper"
 import { ThreeCameraService } from "../../codeMap/threeViewer/threeCamera.service"
 import { ThreeOrbitControlsService } from "../../codeMap/threeViewer/threeOrbitControls.service"
 import { ErrorDialogComponent } from "../../dialogs/errorDialog/errorDialog.component"
+import { Store, State } from "@ngrx/store"
+import { setState } from "../../../state/store/state.actions"
 
 @Injectable()
 export class ScenarioService {
 	constructor(
-		private state: State,
-		private store: Store,
+		private state: State<CcState>,
+		private store: Store<CcState>,
 		private dialog: MatDialog,
 		private threeCameraService: ThreeCameraService,
 		private threeOrbitControlsService: ThreeOrbitControlsService
@@ -29,9 +28,9 @@ export class ScenarioService {
 	applyScenario(name: string) {
 		const scenario = ScenarioHelper.scenarios.get(name)
 		const scenarioSettings = ScenarioHelper.getScenarioSettings(scenario)
-		this.store.dispatch(setState(scenarioSettings))
-		this.store.dispatch(setColorRange(scenarioSettings.dynamicSettings.colorRange as ColorRange))
-		this.store.dispatch(setMapColors(scenarioSettings.appSettings.mapColors as MapColors))
+		this.store.dispatch(setState({ value: scenarioSettings }))
+		this.store.dispatch(setColorRange({ value: scenarioSettings.dynamicSettings.colorRange as ColorRange }))
+		this.store.dispatch(setMapColors({ value: scenarioSettings.appSettings.mapColors as MapColors }))
 
 		if (scenario.camera) {
 			// @ts-ignore -- we know that it is not a partial when it is set

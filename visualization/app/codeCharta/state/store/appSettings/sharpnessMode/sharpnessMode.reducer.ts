@@ -1,11 +1,7 @@
-import { SharpnessModeAction, SharpnessModeActions, setSharpnessMode } from "./sharpnessMode.actions"
+import { createReducer, on } from "@ngrx/store"
 import { SharpnessMode } from "../../../../codeCharta.model"
+import { setSharpnessMode } from "./sharpnessMode.actions"
+import { setState } from "../../util/setState.reducer.factory"
 
-export function sharpnessMode(state: SharpnessMode = setSharpnessMode().payload, action: SharpnessModeAction): SharpnessMode {
-	switch (action.type) {
-		case SharpnessModeActions.SET_SHARPNESS_MODE:
-			return action.payload
-		default:
-			return state
-	}
-}
+export const defaultSharpnessMode = SharpnessMode.Standard
+export const sharpnessMode = createReducer(defaultSharpnessMode, on(setSharpnessMode, setState(defaultSharpnessMode)))

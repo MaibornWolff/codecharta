@@ -3,7 +3,7 @@ import { hierarchy } from "d3-hierarchy"
 import { CodeMapNode } from "../../../codeCharta.model"
 import { returnIgnore, transformPath } from "../../../util/codeMapHelper"
 
-export function getNodesByGitignorePath(root: CodeMapNode, gitignorePath: string) {
+export function getNodesByGitignorePath(root: CodeMapNode, gitignorePath: string): CodeMapNode[] {
 	gitignorePath = gitignorePath.trimStart()
 	if (gitignorePath.length === 0 || !root) {
 		return []

@@ -1,7 +1,8 @@
 import { TreeMapHelper } from "./treeMapHelper"
-import { CodeMapNode, ColorMode, EdgeVisibility, NodeType, State } from "../../../codeCharta.model"
+import { CodeMapNode, ColorMode, EdgeVisibility, NodeType, CcState } from "../../../codeCharta.model"
 import { CODE_MAP_BUILDING, STATE } from "../../dataMocks"
 import { HierarchyRectangularNode } from "d3-hierarchy"
+import { clone } from "../../clone"
 
 jest.mock("../../../state/selectors/accumulatedData/accumulatedData.selector", () => ({
 	accumulatedDataSelector: () => ({
@@ -23,7 +24,7 @@ describe("TreeMapHelper", () => {
 	describe("build node", () => {
 		let codeMapNode: CodeMapNode
 		let squaredNode: HierarchyRectangularNode<CodeMapNode>
-		let state: State
+		let state: CcState
 
 		const heightScale = 1
 		const maxHeight = 2000
@@ -48,7 +49,7 @@ describe("TreeMapHelper", () => {
 				y1: 400
 			} as HierarchyRectangularNode<CodeMapNode>
 
-			state = STATE
+			state = clone(STATE)
 			state.dynamicSettings.margin = 15
 			state.dynamicSettings.heightMetric = "theHeight"
 			state.appSettings.invertHeight = false
@@ -73,14 +74,12 @@ describe("TreeMapHelper", () => {
 			state.dynamicSettings.heightMetric = "theHeight"
 			squaredNode.data.deltas[state.dynamicSettings.heightMetric] = 33
 			expect(buildNode()).toMatchSnapshot()
-			squaredNode.data.deltas = undefined
 		})
 
 		it("given negative deltas the resulting heightDelta also should be negative", () => {
 			squaredNode.data.deltas = {}
 			squaredNode.data.deltas[state.dynamicSettings.heightMetric] = -33
 			expect(buildNode().heightDelta).toBe(-33)
-			squaredNode.data.deltas = undefined
 		})
 
 		it("should set lowest possible height caused by other visible edge pairs", () => {
@@ -155,7 +154,6 @@ describe("TreeMapHelper", () => {
 					y1: 400
 				} as HierarchyRectangularNode<CodeMapNode>
 
-				state = STATE
 				state.dynamicSettings.margin = 15
 			})
 
@@ -232,7 +230,6 @@ describe("TreeMapHelper", () => {
 
 				node.attributes = { validMetricName: 0 }
 
-				state = STATE
 				state.dynamicSettings.colorRange.from = 5
 				state.dynamicSettings.colorRange.to = 10
 				state.dynamicSettings.colorMetric = "validMetricName"

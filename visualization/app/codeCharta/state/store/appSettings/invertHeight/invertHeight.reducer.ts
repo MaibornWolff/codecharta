@@ -1,10 +1,6 @@
-import { InvertHeightAction, InvertHeightActions, setInvertHeight } from "./invertHeight.actions"
+import { createReducer, on } from "@ngrx/store"
+import { setInvertHeight } from "./invertHeight.actions"
+import { setState } from "../../util/setState.reducer.factory"
 
-export function invertHeight(state = setInvertHeight().payload, action: InvertHeightAction) {
-	switch (action.type) {
-		case InvertHeightActions.SET_INVERT_HEIGHT:
-			return action.payload
-		default:
-			return state
-	}
-}
+export const defaultInvertHeight = false
+export const invertHeight = createReducer(defaultInvertHeight, on(setInvertHeight, setState(defaultInvertHeight)))

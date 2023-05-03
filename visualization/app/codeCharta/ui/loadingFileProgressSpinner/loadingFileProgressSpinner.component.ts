@@ -1,6 +1,7 @@
 import { Component, ViewEncapsulation } from "@angular/core"
+import { Store } from "@ngrx/store"
 import { Observable } from "rxjs"
-import { Store } from "../../state/angular-redux/store"
+import { CcState } from "../../codeCharta.model"
 import { isLoadingFileSelector } from "../../state/store/appSettings/isLoadingFile/isLoadingFile.selector"
 
 @Component({
@@ -12,7 +13,7 @@ import { isLoadingFileSelector } from "../../state/store/appSettings/isLoadingFi
 export class LoadingFileProgressSpinnerComponent {
 	isLoadingFile$: Observable<boolean>
 
-	constructor(store: Store) {
+	constructor(store: Store<CcState>) {
 		this.isLoadingFile$ = store.select(isLoadingFileSelector)
 	}
 }

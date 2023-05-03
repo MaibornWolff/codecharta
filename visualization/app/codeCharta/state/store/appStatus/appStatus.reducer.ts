@@ -1,13 +1,16 @@
-import { combineReducers } from "redux"
+import { combineReducers } from "@ngrx/store"
+import { defaultHoveredNodeId, hoveredNodeId } from "./hoveredNodeId/hoveredNodeId.reducer"
+import { defaultRightClickedNodeData, rightClickedNodeData } from "./rightClickedNodeData/rightClickedNodeData.reducer"
+import { defaultSelectedBuildingId, selectedBuildingId } from "./selectedBuildingId/selectedBuildingId.reducer"
 
-import { hoveredNodeId } from "./hoveredNodeId/hoveredNodeId.reducer"
-import { rightClickedNodeData } from "./rightClickedNodeData/rightClickedNodeData.reducer"
-import { selectedBuildingId } from "./selectedBuildingId/selectedBuildingId.reducer"
-
-const appStatus = combineReducers({
+export const appStatus = combineReducers({
 	hoveredNodeId,
 	selectedBuildingId,
 	rightClickedNodeData
 })
 
-export default appStatus
+export const defaultAppStatus = {
+	hoveredNodeId: defaultHoveredNodeId,
+	selectedBuildingId: defaultSelectedBuildingId,
+	rightClickedNodeData: defaultRightClickedNodeData
+}

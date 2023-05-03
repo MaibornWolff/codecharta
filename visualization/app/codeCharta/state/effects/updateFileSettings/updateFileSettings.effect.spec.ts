@@ -1,50 +1,47 @@
-import { ApplicationInitStatus } from "@angular/core"
 import { TestBed } from "@angular/core/testing"
-import { Action } from "redux"
 import { Subject } from "rxjs"
+import { Action, State } from "@ngrx/store"
+import { EffectsModule } from "@ngrx/effects"
+import { provideMockActions } from "@ngrx/effects/testing"
+import { provideMockStore, MockStore } from "@ngrx/store/testing"
 
-import { EffectsModule } from "../../angular-redux/effects/effects.module"
-import { State } from "../../angular-redux/state"
 import { setFiles } from "../../store/files/files.actions"
 import { setState } from "../../store/state.actions"
-import { Store } from "../../store/store"
 import { UpdateFileSettingsEffect } from "./updateFileSettings.effect"
+import { getLastAction } from "../../../util/testUtils/store.utils"
 
 describe("UpdateFileSettingsEffect", () => {
-	const mockedDialog = { open: jest.fn() }
-	let storeDispatchSpy
+	let actions$: Subject<Action>
 
 	beforeEach(async () => {
-		storeDispatchSpy = jest.spyOn(Store, "dispatch")
-		mockedDialog.open = jest.fn()
-
-		EffectsModule.actions$ = new Subject<Action>()
+		actions$ = new Subject()
 		TestBed.configureTestingModule({
 			imports: [EffectsModule.forRoot([UpdateFileSettingsEffect])],
-			providers: [{ provide: State, useValue: { getValue: () => ({ files: [] }) } }]
+			providers: [
+				{ provide: State, useValue: { getValue: () => ({ files: [] }) } },
+				provideMockStore(),
+				provideMockActions(() => actions$)
+			]
 		})
-		await TestBed.inject(ApplicationInitStatus).donePromise
 	})
 
 	afterEach(() => {
-		EffectsModule.actions$.complete()
+		actions$.complete()
 	})
 
-	it("should ignore a not relevant action", () => {
-		EffectsModule.actions$.next({ type: "whatever" })
-		expect(storeDispatchSpy).not.toHaveBeenCalled()
-	})
-
-	it("should not blacklist items if it would lead to an empty map but show error dialog", () => {
-		EffectsModule.actions$.next(setFiles([]))
-		expect(storeDispatchSpy).not.toHaveBeenCalledWith(
+	it("should update fileSettings when files have changed", async () => {
+		const store = TestBed.inject(MockStore)
+		actions$.next(setFiles({ value: [] }))
+		expect(await getLastAction(store)).toEqual(
 			setState({
-				fileSettings: {
-					edges: [],
-					markedPackages: [],
-					blacklist: [],
-					attributeTypes: {},
-					attributeDescriptors: {}
+				value: {
+					fileSettings: {
+						edges: [],
+						markedPackages: [],
+						blacklist: [],
+						attributeTypes: { edges: {}, nodes: {} },
+						attributeDescriptors: {}
+					}
 				}
 			})
 		)

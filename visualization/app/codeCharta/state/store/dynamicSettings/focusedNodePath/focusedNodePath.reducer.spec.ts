@@ -1,30 +1,22 @@
 import { focusedNodePath } from "./focusedNodePath.reducer"
-import { FocusedNodePathAction, focusNode, setAllFocusedNodes, unfocusAllNodes, unfocusNode } from "./focusedNodePath.actions"
+import { focusNode, setAllFocusedNodes, unfocusAllNodes, unfocusNode } from "./focusedNodePath.actions"
 
 describe("focusedNodePath", () => {
-	describe("Default State", () => {
-		it("should initialize the default state", () => {
-			const result = focusedNodePath(undefined, {} as FocusedNodePathAction)
-
-			expect(result).toEqual([])
-		})
-	})
-
 	describe("Action: FOCUS_NODE", () => {
 		it("should set new focusedNodePath", () => {
-			const result = focusedNodePath([], focusNode("some/path/*.ts"))
+			const result = focusedNodePath([], focusNode({ value: "some/path/*.ts" }))
 
 			expect(result).toEqual(["some/path/*.ts"])
 		})
 
 		it("should add focusedNodePath", () => {
-			const result = focusedNodePath(["some/path/*.ts"], focusNode("foo.ts"))
+			const result = focusedNodePath(["some/path/*.ts"], focusNode({ value: "foo.ts" }))
 
 			expect(result).toEqual(["foo.ts", "some/path/*.ts"])
 		})
 
 		it("should not allow to focus root folder", () => {
-			const result = focusedNodePath([], focusNode("/root"))
+			const result = focusedNodePath([], focusNode({ value: "/root" }))
 
 			expect(result).toEqual([])
 		})
@@ -48,7 +40,7 @@ describe("focusedNodePath", () => {
 
 	describe("Action: SET_ALL_FOCUSED_NODES", () => {
 		it("should set all focusedNodePaths", () => {
-			const result = focusedNodePath([], setAllFocusedNodes(["some/path/*.ts", "foo.ts"]))
+			const result = focusedNodePath([], setAllFocusedNodes({ value: ["some/path/*.ts", "foo.ts"] }))
 
 			expect(result).toEqual(["some/path/*.ts", "foo.ts"])
 		})

@@ -2,10 +2,9 @@ import { CodeMapShaderStrings } from "./shaders/loaders/codeMapShaderStrings"
 import { GeometryGenerator } from "./geometryGenerator"
 import { CodeMapGeometricDescription } from "./codeMapGeometricDescription"
 import { CodeMapBuilding } from "./codeMapBuilding"
-import { Node, State } from "../../../codeCharta.model"
+import { Node, Scaling, CcState } from "../../../codeCharta.model"
 import { BufferAttribute, Camera, Mesh, Ray, ShaderMaterial, UniformsLib, UniformsUtils, Vector3 } from "three"
 import { TreeMapHelper, treeMapSize } from "../../../util/algorithm/treeMapLayout/treeMapHelper"
-import { Scaling } from "../../../state/store/appSettings/scaling/scaling.actions"
 
 export interface MousePos {
 	x: number
@@ -24,7 +23,7 @@ export class CodeMapMesh {
 	private mapGeomDesc: CodeMapGeometricDescription
 	private nodes: Node[]
 
-	constructor(nodes: Node[], state: State, isDeltaState: boolean) {
+	constructor(nodes: Node[], state: CcState, isDeltaState: boolean) {
 		this.initMaterial()
 
 		this.geomGen = new GeometryGenerator()
@@ -79,7 +78,7 @@ export class CodeMapMesh {
 	highlightBuilding(
 		highlightedBuildings: CodeMapBuilding[],
 		selected: CodeMapBuilding,
-		state: State,
+		state: CcState,
 		constantHighlight: Map<number, CodeMapBuilding>
 	) {
 		const highlightBuildingMap = TreeMapHelper.buildingArrayToMap(highlightedBuildings)
@@ -109,7 +108,7 @@ export class CodeMapMesh {
 		this.updateVertices()
 	}
 
-	private adjustSurroundingBuildingColors(highlighted: CodeMapBuilding[], building: CodeMapBuilding, state: State) {
+	private adjustSurroundingBuildingColors(highlighted: CodeMapBuilding[], building: CodeMapBuilding, state: CcState) {
 		if (state.appSettings.isPresentationMode) {
 			const distance = highlighted[0].getCenterPoint(treeMapSize).distanceTo(building.getCenterPoint(treeMapSize))
 			this.decreaseLightnessByDistance(building, distance)
@@ -118,7 +117,7 @@ export class CodeMapMesh {
 		}
 	}
 
-	private initDeltaColorsOnMesh(state: State) {
+	private initDeltaColorsOnMesh(state: CcState) {
 		if (this.mapGeomDesc.buildings[0]?.node.deltas) {
 			for (const building of this.mapGeomDesc.buildings) {
 				this.setNewDeltaColor(building, state)
@@ -128,7 +127,7 @@ export class CodeMapMesh {
 		}
 	}
 
-	private setNewDeltaColor(building: CodeMapBuilding, state: State) {
+	private setNewDeltaColor(building: CodeMapBuilding, state: CcState) {
 		const {
 			appSettings: { mapColors },
 			dynamicSettings: { heightMetric }

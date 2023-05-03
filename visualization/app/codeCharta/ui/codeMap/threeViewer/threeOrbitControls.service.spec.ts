@@ -1,4 +1,5 @@
 import { TestBed } from "@angular/core/testing"
+import { StoreModule } from "@ngrx/store"
 import { ThreeOrbitControlsService } from "./threeOrbitControls.service"
 import { ThreeCameraService } from "./threeCamera.service"
 import { ThreeSceneService } from "./threeSceneService"
@@ -6,6 +7,7 @@ import { BoxGeometry, Group, Mesh, PerspectiveCamera, Vector3 } from "three"
 import type { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
 import { ThreeRendererService } from "./threeRenderer.service"
 import { wait } from "../../../util/testUtils/wait"
+import { appReducers, setStateMiddleware } from "../../../state/store/state.manager"
 
 describe("ThreeOrbitControlsService", () => {
 	let threeOrbitControlsService: ThreeOrbitControlsService
@@ -16,6 +18,9 @@ describe("ThreeOrbitControlsService", () => {
 	let vector: Vector3
 
 	beforeEach(() => {
+		TestBed.configureTestingModule({
+			imports: [StoreModule.forRoot(appReducers, { metaReducers: [setStateMiddleware] })]
+		})
 		restartSystem()
 		rebuildService()
 		withMockedThreeCameraService()

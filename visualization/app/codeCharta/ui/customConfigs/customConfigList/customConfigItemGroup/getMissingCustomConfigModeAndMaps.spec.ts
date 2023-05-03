@@ -1,9 +1,9 @@
 import { getMissingCustomConfigModeAndMaps } from "./getMissingCustomConfigModeAndMaps"
 import { CustomConfigMapSelectionMode } from "../../../../model/customConfig/customConfig.api.model"
 import { CustomConfigItem } from "../../customConfigs.component"
-import { Store as PlainStore } from "../../../../state/store/store"
 import { expect } from "@jest/globals"
 import { visibleFilesBySelectionModeSelector } from "../../visibleFilesBySelectionMode.selector"
+import { defaultState } from "../../../../state/store/state.manager"
 
 jest.mock("../../visibleFilesBySelectionMode.selector", () => ({
 	visibleFilesBySelectionModeSelector: jest.fn()
@@ -30,7 +30,7 @@ describe("getMissingCustomConfigModeAndMaps", () => {
 			}
 		})
 
-		const missingModeAndMaps = getMissingCustomConfigModeAndMaps(customConfigItem, { getValue: PlainStore.store.getState })
+		const missingModeAndMaps = getMissingCustomConfigModeAndMaps(customConfigItem, defaultState)
 
 		expect(missingModeAndMaps).toEqual({ mapSelectionMode: "", mapNames: [] })
 	})
@@ -43,7 +43,7 @@ describe("getMissingCustomConfigModeAndMaps", () => {
 			}
 		})
 
-		const missingModeAndMaps = getMissingCustomConfigModeAndMaps(customConfigItem, { getValue: PlainStore.store.getState })
+		const missingModeAndMaps = getMissingCustomConfigModeAndMaps(customConfigItem, defaultState)
 
 		expect(missingModeAndMaps).toEqual({ mapSelectionMode: "STANDARD", mapNames: ["file1"] })
 	})

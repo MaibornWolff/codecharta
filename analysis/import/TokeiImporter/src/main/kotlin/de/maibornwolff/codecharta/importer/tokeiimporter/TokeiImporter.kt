@@ -12,6 +12,7 @@ import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.serialization.mapLines
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
+import de.maibornwolff.codecharta.tools.interactiveparser.util.InteractiveParserHelper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -25,9 +26,9 @@ import java.io.PrintWriter
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
-    name = "tokeiimporter",
-    description = ["generates cc.json from tokei json"],
-    footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
+    name = InteractiveParserHelper.TokeiImporterConstants.name,
+    description = [InteractiveParserHelper.TokeiImporterConstants.description],
+    footer = [InteractiveParserHelper.GeneralConstants.GenericFooter]
 )
 class TokeiImporter(
     private val input: InputStream = System.`in`,
@@ -131,4 +132,11 @@ class TokeiImporter(
     }
 
     override fun getDialog(): ParserDialogInterface = ParserDialog
+    override fun isApplicable(resourceToBeParsed: String): Boolean {
+        return false
+    }
+
+    override fun getName(): String {
+        return InteractiveParserHelper.TokeiImporterConstants.name
+    }
 }

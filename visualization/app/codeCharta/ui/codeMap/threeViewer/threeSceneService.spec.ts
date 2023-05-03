@@ -1,3 +1,4 @@
+import { Store, State, StoreModule } from "@ngrx/store"
 import {
 	CODE_MAP_BUILDING,
 	CODE_MAP_BUILDING_TS_NODE,
@@ -10,17 +11,16 @@ import {
 import { CodeMapBuilding } from "../rendering/codeMapBuilding"
 import { ThreeSceneService } from "./threeSceneService"
 import { CodeMapMesh } from "../rendering/codeMapMesh"
-import { CodeMapNode, LayoutAlgorithm } from "../../../codeCharta.model"
+import { CcState, CodeMapNode, LayoutAlgorithm } from "../../../codeCharta.model"
 import { setScaling } from "../../../state/store/appSettings/scaling/scaling.actions"
 import { Box3, BufferGeometry, Group, Material, Matrix4, Object3D, Raycaster, Vector3 } from "three"
 import { setLayoutAlgorithm } from "../../../state/store/appSettings/layoutAlgorithm/layoutAlgorithm.actions"
 import { FloorLabelDrawer } from "./floorLabels/floorLabelDrawer"
 import { idToNodeSelector } from "../../../state/selectors/accumulatedData/idToNode.selector"
 import { TestBed } from "@angular/core/testing"
-import { State } from "../../../state/angular-redux/state"
 import { IdToBuildingService } from "../../../services/idToBuilding/idToBuilding.service"
-import { Store } from "../../../state/angular-redux/store"
 import { setEnableFloorLabels } from "../../../state/store/appSettings/enableFloorLabels/enableFloorLabels.actions"
+import { appReducers, setStateMiddleware } from "../../../state/store/state.manager"
 
 jest.mock("../../../state/selectors/accumulatedData/idToNode.selector", () => ({
 	idToNodeSelector: jest.fn()
@@ -29,13 +29,14 @@ const mockedIdToNodeSelector = jest.mocked(idToNodeSelector)
 
 describe("ThreeSceneService", () => {
 	let threeSceneService: ThreeSceneService
-	let state: State
+	let state: State<CcState>
 	let idToBuildingService: IdToBuildingService
-	let store: Store
+	let store: Store<CcState>
 
 	beforeEach(() => {
 		TestBed.configureTestingModule({
-			providers: [ThreeSceneService]
+			providers: [ThreeSceneService],
+			imports: [StoreModule.forRoot(appReducers, { metaReducers: [setStateMiddleware] })]
 		})
 
 		state = TestBed.inject(State)
@@ -387,7 +388,7 @@ describe("ThreeSceneService", () => {
 			}
 
 			const scaling = new Vector3(1, 2, 3)
-			store.dispatch(setScaling(scaling))
+			store.dispatch(setScaling({ value: scaling }))
 
 			threeSceneService.scaleHeight()
 
@@ -404,7 +405,7 @@ describe("ThreeSceneService", () => {
 			}
 
 			const scaling = new Vector3(1, 2, 3)
-			store.dispatch(setScaling(scaling))
+			store.dispatch(setScaling({ value: scaling }))
 			threeSceneService["mapMesh"].setScale = jest.fn()
 
 			threeSceneService.scaleHeight()
@@ -427,10 +428,10 @@ describe("ThreeSceneService", () => {
 			const originalGetRootNode = threeSceneService["getRootNode"]
 			threeSceneService["getRootNode"] = getRootNodeMock
 
-			store.dispatch(setLayoutAlgorithm(LayoutAlgorithm.StreetMap))
+			store.dispatch(setLayoutAlgorithm({ value: LayoutAlgorithm.StreetMap }))
 			threeSceneService.setMapMesh([], new CodeMapMesh(TEST_NODES, state.getValue(), false))
 
-			store.dispatch(setLayoutAlgorithm(LayoutAlgorithm.TreeMapStreet))
+			store.dispatch(setLayoutAlgorithm({ value: LayoutAlgorithm.TreeMapStreet }))
 			threeSceneService.setMapMesh([], new CodeMapMesh(TEST_NODES, state.getValue(), false))
 
 			expect(getRootNodeMock).not.toHaveBeenCalled()
@@ -438,7 +439,7 @@ describe("ThreeSceneService", () => {
 
 			threeSceneService["getRootNode"] = originalGetRootNode
 
-			store.dispatch(setLayoutAlgorithm(LayoutAlgorithm.SquarifiedTreeMap))
+			store.dispatch(setLayoutAlgorithm({ value: LayoutAlgorithm.SquarifiedTreeMap }))
 			threeSceneService.setMapMesh(TEST_NODES, new CodeMapMesh(TEST_NODES, state.getValue(), false))
 
 			expect(floorLabelDrawerSpy).toHaveBeenCalled()
@@ -448,7 +449,7 @@ describe("ThreeSceneService", () => {
 			threeSceneService["notifyMapMeshChanged"] = jest.fn()
 			const floorLabelDrawerSpy = jest.spyOn(FloorLabelDrawer.prototype, "draw").mockReturnValue([])
 
-			store.dispatch(setLayoutAlgorithm(LayoutAlgorithm.SquarifiedTreeMap))
+			store.dispatch(setLayoutAlgorithm({ value: LayoutAlgorithm.SquarifiedTreeMap }))
 			threeSceneService.setMapMesh([TEST_NODE_LEAF], new CodeMapMesh(TEST_NODES, state.getValue(), false))
 
 			expect(floorLabelDrawerSpy).not.toHaveBeenCalled()
@@ -458,7 +459,7 @@ describe("ThreeSceneService", () => {
 			threeSceneService["notifyMapMeshChanged"] = jest.fn()
 			const floorLabelDrawerSpy = jest.spyOn(FloorLabelDrawer.prototype, "draw").mockReturnValue([])
 
-			store.dispatch(setEnableFloorLabels(false))
+			store.dispatch(setEnableFloorLabels({ value: false }))
 			threeSceneService.setMapMesh([TEST_NODE_LEAF], new CodeMapMesh(TEST_NODES, state.getValue(), false))
 
 			expect(floorLabelDrawerSpy).not.toHaveBeenCalled()

@@ -17,10 +17,9 @@ import { hierarchy } from "d3-hierarchy"
 import { BlacklistItem, CodeMapNode, NodeType } from "../../../../codeCharta.model"
 import { getMostFrequentLanguage } from "./util/mainProgrammingLanguageHelper"
 import { isPathBlacklisted } from "../../../../util/codeMapHelper"
-import { createSelector } from "../../../../state/angular-redux/createSelector"
 import { blacklistSelector } from "../../../../state/store/fileSettings/blacklist/blacklist.selector"
-import { CcState } from "../../../../state/store/store"
 import { AccumulatedData, accumulatedDataSelector } from "../../../../state/selectors/accumulatedData/accumulatedData.selector"
+import { createSelector } from "@ngrx/store"
 
 export type ArtificialIntelligenceData = {
 	analyzedProgrammingLanguage: string
@@ -96,7 +95,4 @@ function isFileValid(node: CodeMapNode, fileExtension: string) {
 	)
 }
 
-export const artificialIntelligenceSelector: (state: CcState) => ArtificialIntelligenceData = createSelector(
-	[accumulatedDataSelector, blacklistSelector],
-	calculate
-)
+export const artificialIntelligenceSelector = createSelector(accumulatedDataSelector, blacklistSelector, calculate)

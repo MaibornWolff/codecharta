@@ -1,4 +1,4 @@
-import { CodeMapNode, Node, State, NodeMetricData, LayoutAlgorithm } from "../../../codeCharta.model"
+import { CodeMapNode, Node, CcState, NodeMetricData, LayoutAlgorithm } from "../../../codeCharta.model"
 import BoundingBox from "./boundingBox"
 import VerticalStreet from "./verticalStreet"
 import HorizontalStreet from "./horizontalStreet"
@@ -14,7 +14,7 @@ import { treeMapSize } from "../treeMapLayout/treeMapHelper"
 const MARGIN_SCALING_FACTOR = 0.02
 const HEIGHT_SCALING_FACTOR = 0.1
 export class StreetLayoutGenerator {
-	static createStreetLayoutNodes(map: CodeMapNode, state: State, metricData: NodeMetricData[], isDeltaState: boolean): Node[] {
+	static createStreetLayoutNodes(map: CodeMapNode, state: CcState, metricData: NodeMetricData[], isDeltaState: boolean): Node[] {
 		const mapSizeResolutionScaling = getMapResolutionScaleFactor(state.files)
 		const maxHeight =
 			(metricData.find(x => x.name === state.dynamicSettings.heightMetric).maxValue * mapSizeResolutionScaling) /
@@ -38,7 +38,7 @@ export class StreetLayoutGenerator {
 	private static createBoxes(
 		node: CodeMapNode,
 		metricName: string,
-		state: State,
+		state: CcState,
 		orientation: StreetOrientation,
 		depth: number,
 		maxTreeMapFiles: number

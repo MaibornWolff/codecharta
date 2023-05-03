@@ -1,3 +1,4 @@
-import { CcState } from "../../store"
+import { createSelector } from "@ngrx/store"
+import { appSettingsSelector } from "../appSettings.selector"
 
-export const invertAreaSelector = (state: CcState): boolean => state.appSettings.invertArea
+export const invertAreaSelector = createSelector(appSettingsSelector, appSettings => appSettings.invertArea)

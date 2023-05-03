@@ -1,44 +1,49 @@
-import { FilesAction, FilesSelectionActions, NewFilesImportedActions, setFiles } from "./files.actions"
+import {
+	addFile,
+	invertStandard,
+	removeFile,
+	setAll,
+	setDelta,
+	setDeltaComparison,
+	setDeltaReference,
+	setFiles,
+	setStandard,
+	setStandardByNames,
+	switchReferenceAndComparison
+} from "./files.actions"
 import { CCFile } from "../../../codeCharta.model"
 import { FileSelectionState, FileState } from "../../../model/files/files"
 import { isEqual } from "../../../model/files/files.helper"
+import { createReducer, on } from "@ngrx/store"
+import { setState } from "../util/setState.reducer.factory"
 
-export default function files(state = setFiles().payload, action: FilesAction) {
-	switch (action.type) {
-		case FilesSelectionActions.SET_FILES:
-			return action.payload
-		case NewFilesImportedActions.ADD_FILE:
-			return [...state, { file: action.payload, selectedAs: FileSelectionState.None }]
-		case NewFilesImportedActions.REMOVE_FILE:
-			return removeFile(state, action.payload)
-		case FilesSelectionActions.SET_DELTA:
-			return setDelta(state, action.payload.referenceFile, action.payload.comparisonFile)
-		case FilesSelectionActions.SET_DELTA_REFERENCE:
-			return setDeltaReference(state, action.payload)
-		case FilesSelectionActions.SET_DELTA_COMPARISON:
-			return setDeltaComparison(state, action.payload)
-		case FilesSelectionActions.SWITCH_REFERENCE_AND_COMPARISON:
-			return switchReferenceAndComparison(state)
-		case FilesSelectionActions.SET_STANDARD:
-			return setStandardByNames(
-				state,
-				action.payload.map(x => x.fileMeta.fileName)
-			)
-		case FilesSelectionActions.SET_STANDARD_BY_NAMES:
-			return setStandardByNames(state, action.payload)
-		case FilesSelectionActions.INVERT_STANDARD:
-			return state.map(fileState => ({
-				...fileState,
-				selectedAs: fileState.selectedAs === FileSelectionState.Partial ? FileSelectionState.None : FileSelectionState.Partial
-			}))
-		case FilesSelectionActions.SET_ALL:
-			return state.map(fileState => ({ ...fileState, selectedAs: FileSelectionState.Partial }))
-		default:
-			return state
-	}
-}
+export const defaultFiles: FileState[] = []
+export const files = createReducer(
+	defaultFiles,
+	on(setFiles, setState(defaultFiles)),
+	on(addFile, (state, action) => [...state, { file: action.file, selectedAs: FileSelectionState.None }]),
+	on(removeFile, (state, action) => removeFileFromState(state, action.fileName)),
+	on(setDelta, (state, action) => setDeltaState(state, action.referenceFile, action.comparisonFile)),
+	on(setDeltaReference, (state, action) => setDeltaReferenceState(state, action.file)),
+	on(setDeltaComparison, (state, action) => setDeltaComparisonState(state, action.file)),
+	on(switchReferenceAndComparison, state => switchReferenceAndComparisonState(state)),
+	on(setStandard, (state, action) =>
+		setStandardByNamesState(
+			state,
+			action.files.map(x => x.fileMeta.fileName)
+		)
+	),
+	on(setStandardByNames, (state, action) => setStandardByNamesState(state, action.fileNames)),
+	on(invertStandard, state =>
+		state.map(fileState => ({
+			...fileState,
+			selectedAs: fileState.selectedAs === FileSelectionState.Partial ? FileSelectionState.None : FileSelectionState.Partial
+		}))
+	),
+	on(setAll, state => state.map(fileState => ({ ...fileState, selectedAs: FileSelectionState.Partial })))
+)
 
-function removeFile(state: FileState[], fileName: string) {
+function removeFileFromState(state: FileState[], fileName: string): FileState[] {
 	const newState = state.filter(fileState => fileState.file.fileMeta.fileName !== fileName)
 	const isAnyFileSelected = newState.some(fileState => fileState.selectedAs === FileSelectionState.Partial)
 	if (!isAnyFileSelected) {
@@ -50,7 +55,7 @@ function removeFile(state: FileState[], fileName: string) {
 	return newState
 }
 
-function setDelta(state: FileState[], reference: CCFile, comparison?: CCFile) {
+function setDeltaState(state: FileState[], reference: CCFile, comparison?: CCFile): FileState[] {
 	return state.map(file => {
 		if (isEqual(file.file, reference)) {
 			return { ...file, selectedAs: FileSelectionState.Reference }
@@ -62,7 +67,7 @@ function setDelta(state: FileState[], reference: CCFile, comparison?: CCFile) {
 	})
 }
 
-function setDeltaReference(state: FileState[], reference: CCFile) {
+function setDeltaReferenceState(state: FileState[], reference: CCFile): FileState[] {
 	return state.map(file => {
 		if (isEqual(file.file, reference)) {
 			return { ...file, selectedAs: FileSelectionState.Reference }
@@ -74,7 +79,7 @@ function setDeltaReference(state: FileState[], reference: CCFile) {
 	})
 }
 
-function setDeltaComparison(state: FileState[], comparison: CCFile) {
+function setDeltaComparisonState(state: FileState[], comparison: CCFile): FileState[] {
 	return state.map(file => {
 		if (file.file === comparison) {
 			return { ...file, selectedAs: FileSelectionState.Comparison }
@@ -86,7 +91,7 @@ function setDeltaComparison(state: FileState[], comparison: CCFile) {
 	})
 }
 
-function switchReferenceAndComparison(state: FileState[]) {
+function switchReferenceAndComparisonState(state: FileState[]): FileState[] {
 	return state.map(file => {
 		if (file.selectedAs === FileSelectionState.Reference) {
 			return { ...file, selectedAs: FileSelectionState.Comparison }
@@ -98,7 +103,7 @@ function switchReferenceAndComparison(state: FileState[]) {
 	})
 }
 
-function setStandardByNames(state: FileState[], partialFileNames: string[]): FileState[] {
+function setStandardByNamesState(state: FileState[], partialFileNames: string[]): FileState[] {
 	return state.map(fileState => ({
 		...fileState,
 		selectedAs: partialFileNames.includes(fileState.file.fileMeta.fileName) ? FileSelectionState.Partial : FileSelectionState.None

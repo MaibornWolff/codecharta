@@ -1,21 +1,4 @@
-import { CCAction, LayoutAlgorithm } from "../../../../codeCharta.model"
+import { createAction, props } from "@ngrx/store"
+import { LayoutAlgorithm } from "../../../../codeCharta.model"
 
-export enum LayoutAlgorithmActions {
-	SET_LAYOUT_ALGORITHM = "SET_LAYOUT_ALGORITHM"
-}
-
-export interface SetLayoutAlgorithmAction extends CCAction {
-	type: LayoutAlgorithmActions.SET_LAYOUT_ALGORITHM
-	payload: LayoutAlgorithm
-}
-
-export type LayoutAlgorithmAction = SetLayoutAlgorithmAction
-
-export function setLayoutAlgorithm(layoutAlgorithm: LayoutAlgorithm = defaultLayoutAlgorithm): SetLayoutAlgorithmAction {
-	return {
-		type: LayoutAlgorithmActions.SET_LAYOUT_ALGORITHM,
-		payload: layoutAlgorithm
-	}
-}
-
-export const defaultLayoutAlgorithm: LayoutAlgorithm = LayoutAlgorithm.SquarifiedTreeMap
+export const setLayoutAlgorithm = createAction("SET_LAYOUT_ALGORITHM", props<{ value: LayoutAlgorithm }>())

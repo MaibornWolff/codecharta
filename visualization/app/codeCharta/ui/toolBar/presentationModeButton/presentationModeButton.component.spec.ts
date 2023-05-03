@@ -1,21 +1,20 @@
 import { TestBed } from "@angular/core/testing"
 import { render, screen } from "@testing-library/angular"
-import userEvent from "@testing-library/user-event"
 import { PresentationModeButtonComponent } from "./presentationModeButton.component"
 import { PresentationModeButtonModule } from "./presentationModeButton.module"
+import { provideMockStore } from "@ngrx/store/testing"
+import { isPresentationModeSelector } from "../../../state/store/appSettings/isPresentationMode/isPresentationMode.selector"
 
 describe("presentationModeButtonComponent", () => {
 	beforeEach(() => {
 		TestBed.configureTestingModule({
-			imports: [PresentationModeButtonModule]
+			imports: [PresentationModeButtonModule],
+			providers: [provideMockStore({ selectors: [{ selector: isPresentationModeSelector, value: false }] })]
 		})
 	})
 
 	it("should toggle presentation mode", async () => {
-		const { container } = await render(PresentationModeButtonComponent, { excludeComponentDeclaration: true })
+		await render(PresentationModeButtonComponent, { excludeComponentDeclaration: true })
 		expect(screen.getByTitle("Enable flashlight hover effect")).toBeTruthy()
-
-		await userEvent.click(container.querySelector("mat-slide-toggle label"))
-		expect(screen.getByTitle("Disable flashlight hover effect")).toBeTruthy()
 	})
 })

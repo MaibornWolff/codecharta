@@ -1,4 +1,6 @@
 import { TestBed } from "@angular/core/testing"
+import { provideMockStore } from "@ngrx/store/testing"
+import { State } from "@ngrx/store"
 import { ThreeSceneService } from "./threeSceneService"
 import { ThreeCameraService } from "./threeCamera.service"
 import { ThreeOrbitControlsService } from "./threeOrbitControls.service"
@@ -20,6 +22,9 @@ describe("ThreeViewerService", () => {
 	let element: Element
 
 	beforeEach(() => {
+		TestBed.configureTestingModule({
+			providers: [provideMockStore(), { provide: State, useValue: {} }]
+		})
 		restartSystem()
 		rebuildService()
 		withMockedElement()

@@ -3,17 +3,16 @@ import { CodeMapMesh } from "./rendering/codeMapMesh"
 import { createTreemapNodes } from "../../util/algorithm/treeMapLayout/treeMapGenerator"
 import { CodeMapLabelService } from "./codeMap.label.service"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
-import { CodeMapArrowService } from "./codeMap.arrow.service"
-import { CodeMapNode, LayoutAlgorithm, Node } from "../../codeCharta.model"
+import { CodeMapArrowService } from "./arrow/codeMap.arrow.service"
+import { CodeMapNode, LayoutAlgorithm, Node, CcState } from "../../codeCharta.model"
 import { isDeltaState } from "../../model/files/files.helper"
 import { StreetLayoutGenerator } from "../../util/algorithm/streetLayout/streetLayoutGenerator"
 import { ThreeStatsService } from "./threeViewer/threeStats.service"
 import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
-import { Store } from "../../state/angular-redux/store"
 import { isLoadingFileSelector } from "../../state/store/appSettings/isLoadingFile/isLoadingFile.selector"
 import { Subscription, tap } from "rxjs"
-import { State } from "../../state/angular-redux/state"
 import { metricDataSelector } from "../../state/selectors/accumulatedData/metricData/metricData.selector"
+import { Store, State } from "@ngrx/store"
 
 @Injectable({ providedIn: "root" })
 export class CodeMapRenderService implements OnDestroy {
@@ -26,8 +25,8 @@ export class CodeMapRenderService implements OnDestroy {
 	private subscription: Subscription
 
 	constructor(
-		private store: Store,
-		private state: State,
+		private store: Store<CcState>,
+		private state: State<CcState>,
 		private threeSceneService: ThreeSceneService,
 		private codeMapLabelService: CodeMapLabelService,
 		private codeMapArrowService: CodeMapArrowService,
@@ -60,11 +59,10 @@ export class CodeMapRenderService implements OnDestroy {
 		this.getNodesMatchingColorSelector(this.unflattenedNodes)
 		this.setLabels(this.unflattenedNodes)
 		this.setArrows(visibleSortedNodes)
-		this.scaleMap()
 	}
 
 	private setNewMapMesh(allMeshNodes, visibleSortedNodes) {
-		const state = this.state.getValue()
+		const state = this.state.getValue() as CcState
 		const mapMesh = new CodeMapMesh(visibleSortedNodes, state, isDeltaState(state.files))
 		this.threeSceneService.setMapMesh(allMeshNodes, mapMesh)
 	}
@@ -79,7 +77,7 @@ export class CodeMapRenderService implements OnDestroy {
 	}
 
 	private getNodes(map: CodeMapNode) {
-		const state = this.state.getValue()
+		const state = this.state.getValue() as CcState
 		const nodeMetricData = metricDataSelector(state).nodeMetricData
 		const {
 			appSettings: { layoutAlgorithm },

@@ -1,5 +1,6 @@
-import { Store } from "../../../state/store/store"
 import { TestBed } from "@angular/core/testing"
+import { provideMockStore } from "@ngrx/store/testing"
+import { State } from "@ngrx/store"
 import { CustomConfigsModule } from "../customConfigs.module"
 import { CustomConfigListComponent } from "./customConfigList.component"
 import { render, screen } from "@testing-library/angular"
@@ -15,6 +16,7 @@ import { ThreeOrbitControlsService } from "../../codeMap/threeViewer/threeOrbitC
 import userEvent from "@testing-library/user-event"
 import { expect } from "@jest/globals"
 import { MatDialog } from "@angular/material/dialog"
+import { defaultState } from "../../../state/store/state.manager"
 
 const mockedCustomConfigHelperService = {
 	customConfigItemGroups$: of({
@@ -29,7 +31,6 @@ describe("customConfigListComponent", () => {
 
 	beforeEach(() => {
 		mockedDialog = { open: jest.fn() }
-		Store["initialize"]()
 		TestBed.configureTestingModule({
 			imports: [CustomConfigsModule],
 			providers: [
@@ -37,7 +38,9 @@ describe("customConfigListComponent", () => {
 				{ provide: CustomConfigHelperService, useValue: mockedCustomConfigHelperService },
 				{ provide: ThreeSceneService, useValue: {} },
 				{ provide: ThreeCameraService, useValue: {} },
-				{ provide: ThreeOrbitControlsService, useValue: {} }
+				{ provide: ThreeOrbitControlsService, useValue: {} },
+				provideMockStore(),
+				{ provide: State, useValue: { getValue: () => defaultState } }
 			]
 		})
 	})

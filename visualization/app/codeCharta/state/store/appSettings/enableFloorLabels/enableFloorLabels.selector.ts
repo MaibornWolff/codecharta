@@ -1,4 +1,4 @@
-import { createSelector } from "../../../angular-redux/createSelector"
+import { createSelector } from "@ngrx/store"
 import { appSettingsSelector } from "../appSettings.selector"
 
-export const enableFloorLabelsSelector = createSelector([appSettingsSelector], appSettings => appSettings.enableFloorLabels)
+export const enableFloorLabelsSelector = createSelector(appSettingsSelector, appSettings => appSettings.enableFloorLabels)

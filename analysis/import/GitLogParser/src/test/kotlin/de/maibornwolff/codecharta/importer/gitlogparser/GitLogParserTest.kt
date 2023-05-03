@@ -2,12 +2,26 @@ package de.maibornwolff.codecharta.importer.gitlogparser
 
 import de.maibornwolff.codecharta.importer.gitlogparser.GitLogParser.Companion.main
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
+import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.Arguments
+import org.junit.jupiter.params.provider.MethodSource
 import java.io.File
 
 class GitLogParserTest {
+    companion object {
+        @JvmStatic
+        fun provideInvalidInputFiles(): List<Arguments> {
+            return listOf(
+                    Arguments.of("src/test/resources/my/empty/repo"),
+                    Arguments.of("src/test/resources/this/does/not/exist"),
+                    Arguments.of(""),
+                    Arguments.of("src/test/resources/my"))
+        }
+    }
 
     @Test
     fun `should create json uncompressed file repo-scan`() {
@@ -61,5 +75,29 @@ class GitLogParserTest {
         file.deleteOnExit()
 
         assertTrue(file.exists())
+    }
+
+    @Test
+    fun `should be identified as applicable for given directory path containing a git folder`() {
+        val gitFolderParentFilePath = "src/test/resources/my/git/repo/"
+        val gitFolderFilePath = "src/test/resources/my/git/repo/.git"
+
+        val testGitDirectory = File(gitFolderFilePath)
+        testGitDirectory.mkdir()
+
+        val isUsableFromParentFolder = GitLogParser().isApplicable(gitFolderParentFilePath)
+        val isUsableFromGitFolder = GitLogParser().isApplicable(gitFolderFilePath)
+
+        Assertions.assertThat(isUsableFromParentFolder).isTrue()
+        Assertions.assertThat(isUsableFromGitFolder).isTrue()
+
+        testGitDirectory.delete()
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideInvalidInputFiles")
+    fun `should NOT be identified as applicable if no git folder is present at given path`(resourceToBeParsed: String) {
+        val isUsable = GitLogParser().isApplicable(resourceToBeParsed)
+        Assertions.assertThat(isUsable).isFalse()
     }
 }

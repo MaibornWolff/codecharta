@@ -1,21 +1,12 @@
-import { defaultFocusedNodePath, FocusedNodePathAction, FocusedNodePathActions } from "./focusedNodePath.actions"
+import { focusNode, setAllFocusedNodes, unfocusAllNodes, unfocusNode } from "./focusedNodePath.actions"
 import { fileRoot } from "../../../../services/loadFile/fileRoot"
+import { createReducer, on } from "@ngrx/store"
 
-export function focusedNodePath(state = defaultFocusedNodePath, action: FocusedNodePathAction) {
-	switch (action.type) {
-		case FocusedNodePathActions.FOCUS_NODE:
-			if (action.payload === fileRoot.rootPath) {
-				return state
-			}
-			return [action.payload, ...state]
-
-		case FocusedNodePathActions.UNFOCUS_NODE:
-			return state.slice(1)
-		case FocusedNodePathActions.UNFOCUS_ALL_NODES:
-			return []
-		case FocusedNodePathActions.SET_ALL_FOCUSED_NODES:
-			return [...action.payload]
-		default:
-			return state
-	}
-}
+export const defaultFocusedNodePath: string[] = []
+export const focusedNodePath = createReducer(
+	defaultFocusedNodePath,
+	on(setAllFocusedNodes, (_state, action) => [...action.value]),
+	on(unfocusAllNodes, () => []),
+	on(focusNode, (state, action) => (action.value === fileRoot.rootPath ? state : [action.value, ...state])),
+	on(unfocusNode, state => state.slice(1))
+)

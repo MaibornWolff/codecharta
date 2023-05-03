@@ -1,10 +1,8 @@
-import { IsEdgeMetricVisibleActions, IsEdgeMetricVisibleAction, defaultIsEdgeMetricVisible } from "./isEdgeMetricVisible.actions"
+import { createReducer, on } from "@ngrx/store"
+import { toggleEdgeMetricVisible } from "./isEdgeMetricVisible.actions"
 
-export function isEdgeMetricVisible(state = defaultIsEdgeMetricVisible, action: IsEdgeMetricVisibleAction) {
-	switch (action.type) {
-		case IsEdgeMetricVisibleActions.TOGGLE_IS_EDGE_METRIC_VISIBLE:
-			return !state
-		default:
-			return state
-	}
-}
+export const defaultIsEdgeMetricVisible = true
+export const isEdgeMetricVisible = createReducer(
+	defaultIsEdgeMetricVisible,
+	on(toggleEdgeMetricVisible, state => !state)
+)

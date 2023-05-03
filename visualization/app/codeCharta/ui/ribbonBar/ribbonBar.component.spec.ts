@@ -9,6 +9,8 @@ import { ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitCont
 import { RibbonBarComponent } from "./ribbonBar.component"
 import { RibbonBarModule } from "./ribbonBar.module"
 import { VALID_NODE_WITH_PATH_AND_EXTENSION } from "../../util/dataMocks"
+import { appReducers, setStateMiddleware } from "../../state/store/state.manager"
+import { StoreModule } from "@ngrx/store"
 
 jest.mock("../../state/selectors/isDeltaState.selector", () => ({
 	isDeltaStateSelector: jest.fn()
@@ -34,7 +36,7 @@ describe("RibbonBarComponent", () => {
 		mockedIsDeltaStateSelector.mockImplementation(() => false)
 		mockMetricDataSelector.mockImplementation(() => ({ edgeMetricData: [], nodeMetricData: [], nodeEdgeMetricsMap: new Map() }))
 		TestBed.configureTestingModule({
-			imports: [RibbonBarModule],
+			imports: [RibbonBarModule, StoreModule.forRoot(appReducers, { metaReducers: [setStateMiddleware] })],
 			providers: [
 				{ provide: ThreeCameraService, useValue: {} },
 				{ provide: ThreeOrbitControlsService, useValue: {} }

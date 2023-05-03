@@ -1,10 +1,9 @@
-import { AmountOfEdgePreviewsAction, AmountOfEdgePreviewsActions, setAmountOfEdgePreviews } from "./amountOfEdgePreviews.actions"
+import { createReducer, on } from "@ngrx/store"
+import { setAmountOfEdgePreviews } from "./amountOfEdgePreviews.actions"
+import { setState } from "../../util/setState.reducer.factory"
 
-export function amountOfEdgePreviews(state = setAmountOfEdgePreviews().payload, action: AmountOfEdgePreviewsAction) {
-	switch (action.type) {
-		case AmountOfEdgePreviewsActions.SET_AMOUNT_OF_EDGE_PREVIEWS:
-			return action.payload
-		default:
-			return state
-	}
-}
+export const defaultAmountOfEdgesPreviews = 1
+export const amountOfEdgePreviews = createReducer(
+	defaultAmountOfEdgesPreviews,
+	on(setAmountOfEdgePreviews, setState(defaultAmountOfEdgesPreviews))
+)

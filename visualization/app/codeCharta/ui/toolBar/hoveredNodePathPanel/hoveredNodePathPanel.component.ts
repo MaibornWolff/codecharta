@@ -1,5 +1,6 @@
 import { Component, ViewEncapsulation } from "@angular/core"
-import { Store } from "../../../state/angular-redux/store"
+import { Store } from "@ngrx/store"
+import { CcState } from "../../../codeCharta.model"
 import { hoveredNodePathPanelDataSelector } from "./hoveredNodePathPanelData.selector"
 
 @Component({
@@ -11,5 +12,5 @@ import { hoveredNodePathPanelDataSelector } from "./hoveredNodePathPanelData.sel
 export class HoveredNodePathPanelComponent {
 	hoveredNodePathPanelData$ = this.store.select(hoveredNodePathPanelDataSelector)
 
-	constructor(private store: Store) {}
+	constructor(private store: Store<CcState>) {}
 }

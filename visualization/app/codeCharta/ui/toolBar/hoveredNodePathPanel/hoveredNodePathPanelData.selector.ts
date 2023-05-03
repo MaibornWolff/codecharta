@@ -1,5 +1,5 @@
+import { createSelector } from "@ngrx/store"
 import { CodeMapNode } from "../../../codeCharta.model"
-import { createSelector } from "../../../state/angular-redux/createSelector"
 import { hoveredNodeSelector } from "../../../state/selectors/hoveredNode.selector"
 
 export const _getHoveredNodePathPanelData = (hoveredNode?: Pick<CodeMapNode, "path" | "type">) =>
@@ -8,4 +8,4 @@ export const _getHoveredNodePathPanelData = (hoveredNode?: Pick<CodeMapNode, "pa
 		isFile: hoveredNode.type === "File"
 	}
 
-export const hoveredNodePathPanelDataSelector = createSelector([hoveredNodeSelector], _getHoveredNodePathPanelData)
+export const hoveredNodePathPanelDataSelector = createSelector(hoveredNodeSelector, _getHoveredNodePathPanelData)

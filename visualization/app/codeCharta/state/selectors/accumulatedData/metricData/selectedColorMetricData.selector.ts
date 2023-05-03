@@ -1,6 +1,5 @@
-import { createSelector } from "../../../angular-redux/createSelector"
+import { createSelector } from "@ngrx/store"
 import { colorMetricSelector } from "../../../store/dynamicSettings/colorMetric/colorMetric.selector"
-import { CcState } from "../../../store/store"
 import { metricDataSelector } from "./metricData.selector"
 
 export type MetricMinMax = {
@@ -8,13 +7,10 @@ export type MetricMinMax = {
 	maxValue: number
 }
 
-export const selectedColorMetricDataSelector: (state: CcState) => MetricMinMax = createSelector(
-	[metricDataSelector, colorMetricSelector],
-	(metricData, colorMetric) => {
-		const data = metricData.nodeMetricData.find(x => x.name === colorMetric)
-		return {
-			minValue: data?.minValue ?? 0,
-			maxValue: data?.maxValue ?? 0
-		}
+export const selectedColorMetricDataSelector = createSelector(metricDataSelector, colorMetricSelector, (metricData, colorMetric) => {
+	const data = metricData.nodeMetricData.find(x => x.name === colorMetric)
+	return {
+		minValue: data?.minValue ?? 0,
+		maxValue: data?.maxValue ?? 0
 	}
-)
+})

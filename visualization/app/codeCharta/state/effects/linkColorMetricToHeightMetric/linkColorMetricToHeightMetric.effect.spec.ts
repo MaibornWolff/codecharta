@@ -1,58 +1,51 @@
 import { TestBed } from "@angular/core/testing"
-import { EffectsModule } from "../../angular-redux/effects/effects.module"
-import { ApplicationInitStatus } from "@angular/core"
-import { Subject } from "rxjs"
-import { Store } from "../../angular-redux/store"
-import { Store as PlainStoreUsedByEffects } from "../../store/store"
+import { BehaviorSubject } from "rxjs"
 import { heightMetricSelector } from "../../store/dynamicSettings/heightMetric/heightMetric.selector"
 import { isColorMetricLinkedToHeightMetricSelector } from "../../store/appSettings/isHeightAndColorMetricLinked/isColorMetricLinkedToHeightMetric.selector"
 import { LinkColorMetricToHeightMetricEffect } from "./linkColorMetricToHeightMetric.effect"
 import { setColorMetric } from "../../store/dynamicSettings/colorMetric/colorMetric.actions"
+import { EffectsModule } from "@ngrx/effects"
+import { MockStore, provideMockStore } from "@ngrx/store/testing"
+import { Action } from "@ngrx/store"
+import { provideMockActions } from "@ngrx/effects/testing"
+import { getLastAction } from "../../../util/testUtils/store.utils"
 
 describe("linkHeightAndColorMetricEffect", () => {
-	let mockedHeightMetricSelector$ = new Subject()
-	let mockedIsHeightAndColorMetricLinkedSelector$ = new Subject()
+	let actions$: BehaviorSubject<Action>
+	let store: MockStore
 
-	const mockedStore = {
-		select: (selector: unknown) => {
-			switch (selector) {
-				case heightMetricSelector:
-					return mockedHeightMetricSelector$
-				case isColorMetricLinkedToHeightMetricSelector:
-					return mockedIsHeightAndColorMetricLinkedSelector$
-				default:
-					throw new Error("selector is not mocked")
-			}
-		},
-		dispatch: jest.fn()
-	}
-
-	beforeEach(async () => {
-		mockedStore.dispatch = jest.fn()
-		PlainStoreUsedByEffects.store.dispatch = mockedStore.dispatch
-		mockedHeightMetricSelector$ = new Subject()
-		mockedIsHeightAndColorMetricLinkedSelector$ = new Subject()
+	beforeEach(() => {
+		actions$ = new BehaviorSubject({ type: "" })
 		TestBed.configureTestingModule({
 			imports: [EffectsModule.forRoot([LinkColorMetricToHeightMetricEffect])],
-			providers: [{ provide: Store, useValue: mockedStore }]
+			providers: [
+				provideMockStore({
+					selectors: [
+						{ selector: heightMetricSelector, value: "loc" },
+						{ selector: isColorMetricLinkedToHeightMetricSelector, value: true }
+					]
+				}),
+				provideMockActions(() => actions$)
+			]
 		})
-		await TestBed.inject(ApplicationInitStatus).donePromise
+		store = TestBed.inject(MockStore)
 	})
 
 	afterEach(() => {
-		mockedHeightMetricSelector$.complete()
-		mockedIsHeightAndColorMetricLinkedSelector$.complete()
+		actions$.complete()
 	})
 
-	it("should not set color metric when height metric changes but height and color metric are not linked", () => {
-		mockedHeightMetricSelector$.next("rloc")
-		mockedIsHeightAndColorMetricLinkedSelector$.next(false)
-		expect(mockedStore.dispatch).not.toHaveBeenCalledWith(setColorMetric("rloc"))
+	it("should not set color metric when height metric changes but height and color metric are not linked", async () => {
+		store.overrideSelector(isColorMetricLinkedToHeightMetricSelector, false)
+		store.refreshState()
+		store.overrideSelector(heightMetricSelector, "rloc")
+		store.refreshState()
+		expect(await getLastAction(store)).toEqual({ type: "@ngrx/effects/init" })
 	})
 
-	it("should set color metric to the same height metric when height metric changes and height and color metric are linked", () => {
-		mockedHeightMetricSelector$.next("rloc")
-		mockedIsHeightAndColorMetricLinkedSelector$.next(true)
-		expect(mockedStore.dispatch).toHaveBeenCalledWith(setColorMetric("rloc"))
+	it("should set color metric to the same height metric when height metric changes and height and color metric are linked", async () => {
+		store.overrideSelector(heightMetricSelector, "rloc")
+		store.refreshState()
+		expect(await getLastAction(store)).toEqual(setColorMetric({ value: "rloc" }))
 	})
 })

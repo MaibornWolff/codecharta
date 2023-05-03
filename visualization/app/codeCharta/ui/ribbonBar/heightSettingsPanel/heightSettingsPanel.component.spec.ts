@@ -2,28 +2,32 @@ import { TestBed } from "@angular/core/testing"
 import { render, screen } from "@testing-library/angular"
 import { setColorLabels } from "../../../state/store/appSettings/colorLabels/colorLabels.actions"
 import { addFile, setDelta } from "../../../state/store/files/files.actions"
-import { Store } from "../../../state/store/store"
 import { TEST_FILE_DATA } from "../../../util/dataMocks"
 import { HeightSettingsPanelComponent } from "./heightSettingsPanel.component"
 import { HeightSettingsPanelModule } from "./heightSettingsPanel.module"
+import { Store, StoreModule } from "@ngrx/store"
+import { appReducers, setStateMiddleware } from "../../../state/store/state.manager"
 
 describe("heightSettingsPanelComponent", () => {
 	beforeEach(() => {
-		Store["initialize"]()
 		TestBed.configureTestingModule({
-			imports: [HeightSettingsPanelModule]
+			imports: [HeightSettingsPanelModule, StoreModule.forRoot(appReducers, { metaReducers: [setStateMiddleware] })]
 		})
 	})
 
 	it("should disable amount of top labels slider when there are colorLabels", async () => {
-		Store.dispatch(
+		const { detectChanges } = await render(HeightSettingsPanelComponent, { excludeComponentDeclaration: true })
+		const store = TestBed.inject(Store)
+		store.dispatch(
 			setColorLabels({
-				positive: true,
-				negative: false,
-				neutral: false
+				value: {
+					positive: true,
+					negative: false,
+					neutral: false
+				}
 			})
 		)
-		await render(HeightSettingsPanelComponent, { excludeComponentDeclaration: true })
+		detectChanges()
 
 		const amountOfTopLabelsSlider = screen.getByTitle("Disabled because color labels are used")
 		const matSlider = amountOfTopLabelsSlider.querySelector("mat-slider")
@@ -40,9 +44,12 @@ describe("heightSettingsPanelComponent", () => {
 	})
 
 	it("should not display invertHeight-checkbox when being in delta mode", async () => {
-		Store.dispatch(addFile(TEST_FILE_DATA))
-		Store.dispatch(setDelta(TEST_FILE_DATA, TEST_FILE_DATA))
-		await render(HeightSettingsPanelComponent, { excludeComponentDeclaration: true })
+		const { detectChanges } = await render(HeightSettingsPanelComponent, { excludeComponentDeclaration: true })
+		const store = TestBed.inject(Store)
+		store.dispatch(addFile({ file: TEST_FILE_DATA }))
+		store.dispatch(setDelta({ referenceFile: TEST_FILE_DATA, comparisonFile: TEST_FILE_DATA }))
+		detectChanges()
+
 		expect(screen.queryByText("Invert Height")).toBe(null)
 	})
 

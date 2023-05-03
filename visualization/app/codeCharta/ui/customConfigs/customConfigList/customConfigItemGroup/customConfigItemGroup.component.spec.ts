@@ -11,12 +11,9 @@ import { expect } from "@jest/globals"
 import { CustomConfigMapSelectionMode } from "../../../../model/customConfig/customConfig.api.model"
 import { visibleFilesBySelectionModeSelector } from "../../visibleFilesBySelectionMode.selector"
 import { MatDialog, MatDialogRef } from "@angular/material/dialog"
-
-jest.mock("../../visibleFilesBySelectionMode.selector", () => ({
-	visibleFilesBySelectionModeSelector: jest.fn()
-}))
-
-const mockedVisibleFilesBySelectionModeSelector = visibleFilesBySelectionModeSelector as jest.Mock
+import { MockStore, provideMockStore } from "@ngrx/store/testing"
+import { State } from "@ngrx/store"
+import { defaultState } from "../../../../state/store/state.manager"
 
 describe("customConfigItemGroupComponent", () => {
 	let mockedDialog = { open: jest.fn() }
@@ -32,21 +29,27 @@ describe("customConfigItemGroupComponent", () => {
 				{ provide: MatDialogRef, useValue: mockedDialogReference },
 				{ provide: MatDialog, useValue: mockedDialog },
 				{ provide: ThreeCameraService, useValue: {} },
-				{ provide: ThreeOrbitControlsService, useValue: {} }
+				{ provide: ThreeOrbitControlsService, useValue: {} },
+				provideMockStore({
+					selectors: [
+						{
+							selector: visibleFilesBySelectionModeSelector,
+							value: {
+								mapSelectionMode: CustomConfigMapSelectionMode.MULTIPLE,
+								assignedMaps: new Map([
+									["md5_fileB", "fileB"],
+									["md5_fileC", "fileC"]
+								])
+							}
+						}
+					]
+				}),
+				{ provide: State, useValue: { getValue: () => defaultState } }
 			]
 		})
 	})
 
 	it("should apply a custom Config and close custom config dialog", async () => {
-		mockedVisibleFilesBySelectionModeSelector.mockImplementation(() => {
-			return {
-				mapSelectionMode: CustomConfigMapSelectionMode.MULTIPLE,
-				assignedMaps: new Map([
-					["md5_fileB", "fileB"],
-					["md5_fileC", "fileC"]
-				])
-			}
-		})
 		CustomConfigHelper.applyCustomConfig = jest.fn()
 		const customConfigItemGroups = new Map([["File_B_File_C_STANDARD", CUSTOM_CONFIG_ITEM_GROUPS.get("File_B_File_C_STANDARD")]])
 		await render(CustomConfigItemGroupComponent, {
@@ -62,15 +65,6 @@ describe("customConfigItemGroupComponent", () => {
 	})
 
 	it("should remove a custom Config and not close custom config dialog", async () => {
-		mockedVisibleFilesBySelectionModeSelector.mockImplementation(() => {
-			return {
-				mapSelectionMode: CustomConfigMapSelectionMode.MULTIPLE,
-				assignedMaps: new Map([
-					["md5_fileB", "fileB"],
-					["md5_fileC", "fileC"]
-				])
-			}
-		})
 		CustomConfigHelper.deleteCustomConfig = jest.fn()
 		const customConfigItemGroups = new Map([["File_B_File_C_STANDARD", CUSTOM_CONFIG_ITEM_GROUPS.get("File_B_File_C_STANDARD")]])
 		await render(CustomConfigItemGroupComponent, {
@@ -86,15 +80,6 @@ describe("customConfigItemGroupComponent", () => {
 	})
 
 	it("should apply a custom config and close custom config dialog when clicking on config name", async () => {
-		mockedVisibleFilesBySelectionModeSelector.mockImplementation(() => {
-			return {
-				mapSelectionMode: CustomConfigMapSelectionMode.MULTIPLE,
-				assignedMaps: new Map([
-					["md5_fileB", "fileB"],
-					["md5_fileC", "fileC"]
-				])
-			}
-		})
 		const customConfigItemGroups = new Map([["File_B_File_C_STANDARD", CUSTOM_CONFIG_ITEM_GROUPS.get("File_B_File_C_STANDARD")]])
 		await render(CustomConfigItemGroupComponent, {
 			excludeComponentDeclaration: true,
@@ -111,17 +96,18 @@ describe("customConfigItemGroupComponent", () => {
 	})
 
 	it("should show tooltip with missing maps and correct selection mode if selected custom config is not fully applicable", async () => {
-		mockedVisibleFilesBySelectionModeSelector.mockImplementation(() => {
-			return {
-				mapSelectionMode: CustomConfigMapSelectionMode.DELTA,
-				assignedMaps: new Map([["md5_fileB", "fileB"]])
-			}
-		})
 		const customConfigItemGroups = new Map([["File_B_File_C_STANDARD", CUSTOM_CONFIG_ITEM_GROUPS.get("File_B_File_C_STANDARD")]])
-		await render(CustomConfigItemGroupComponent, {
+		const { rerender } = await render(CustomConfigItemGroupComponent, {
 			excludeComponentDeclaration: true,
 			componentProperties: { customConfigItemGroups }
 		})
+		const store = TestBed.inject(MockStore)
+		store.overrideSelector(visibleFilesBySelectionModeSelector, {
+			mapSelectionMode: CustomConfigMapSelectionMode.DELTA,
+			assignedMaps: new Map([["md5_fileB", "fileB"]])
+		})
+		store.refreshState()
+		await rerender({ componentProperties: { customConfigItemGroups } })
 
 		const applyCustomConfigButton = screen.getAllByText("mcc")[0].closest("button")
 
@@ -136,20 +122,22 @@ describe("customConfigItemGroupComponent", () => {
 	it("should not be clickable for non-applicable custom configs, but can still change notes of custom configs", async () => {
 		CustomConfigHelper.applyCustomConfig = jest.fn()
 		CustomConfigHelper.applyCustomConfig = jest.fn()
-		mockedVisibleFilesBySelectionModeSelector.mockImplementation(() => {
-			return {
-				mapSelectionMode: CustomConfigMapSelectionMode.DELTA,
-				assignedMaps: new Map([["md5_fileA", "fileA"]])
-			}
-		})
 		CUSTOM_CONFIG_ITEM_GROUPS.get("File_B_File_C_STANDARD").hasApplicableItems = false
 		CUSTOM_CONFIG_ITEM_GROUPS.get("File_B_File_C_STANDARD").customConfigItems[0].isApplicable = false
 		CUSTOM_CONFIG_ITEM_GROUPS.get("File_B_File_C_STANDARD").customConfigItems[1].isApplicable = false
 		const customConfigItemGroups = new Map([["File_B_File_C_STANDARD", CUSTOM_CONFIG_ITEM_GROUPS.get("File_B_File_C_STANDARD")]])
-		await render(CustomConfigItemGroupComponent, {
+		const { rerender } = await render(CustomConfigItemGroupComponent, {
 			excludeComponentDeclaration: true,
 			componentProperties: { customConfigItemGroups }
 		})
+		const store = TestBed.inject(MockStore)
+		store.overrideSelector(visibleFilesBySelectionModeSelector, {
+			mapSelectionMode: CustomConfigMapSelectionMode.DELTA,
+			assignedMaps: new Map([["md5_fileA", "fileA"]])
+		})
+		store.refreshState()
+		await rerender({ componentProperties: { customConfigItemGroups } })
+
 		const editNoteArea = screen.getAllByTitle("Edit/View Note")[0] as HTMLButtonElement
 		const applyCustomConfigButton = screen.getAllByText("mcc")[0].closest("button") as HTMLButtonElement
 

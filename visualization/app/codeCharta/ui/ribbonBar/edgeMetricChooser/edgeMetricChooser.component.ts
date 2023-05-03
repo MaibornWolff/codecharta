@@ -1,5 +1,6 @@
 import { Component, ViewEncapsulation } from "@angular/core"
-import { Store } from "../../../state/angular-redux/store"
+import { Store } from "@ngrx/store"
+import { CcState } from "../../../codeCharta.model"
 import { isEdgeMetricVisibleSelector } from "../../../state/store/appSettings/isEdgeMetricVisible/isEdgeMetricVisible.selector"
 import { setEdgeMetric } from "../../../state/store/dynamicSettings/edgeMetric/edgeMetric.actions"
 import { edgeMetricSelector } from "../../../state/store/dynamicSettings/edgeMetric/edgeMetric.selector"
@@ -16,9 +17,9 @@ export class EdgeMetricChooserComponent {
 	hoveredEdgeValue$ = this.store.select(hoveredEdgeValueSelector)
 	isEdgeMetricVisible$ = this.store.select(isEdgeMetricVisibleSelector)
 
-	constructor(private store: Store) {}
+	constructor(private store: Store<CcState>) {}
 
 	handleEdgeMetricChanged(value: string) {
-		this.store.dispatch(setEdgeMetric(value))
+		this.store.dispatch(setEdgeMetric({ value }))
 	}
 }

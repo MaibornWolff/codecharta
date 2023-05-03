@@ -1,20 +1,10 @@
-<ng-container *ngIf="metricDecorations.title; then titleExists; else onlyShowName" class="legend-block"></ng-container>
-<ng-template #titleExists>
-	<ng-container *ngIf="metricDecorations.description; then showTitleAndDescription; else showTitle"></ng-container>
-</ng-template>
-
-<ng-template #showTitleAndDescription>
-	<div title="{{ metricDecorations.description }}">
-		{{ metricFor }} metric: <span class="bold">{{ metricDecorations.title }}</span> ({{ metricDecorations.key }})
+<ng-container *ngIf="attributeDescriptor?.title as descriptorTitle; else onlyShowName" class="legend-block">
+	<div [title]="attributeDescriptor | attributeDescriptorTooltip: metricName">
+		<ng-content></ng-content> metric: <span class="bold">{{ descriptorTitle }}</span> ({{ metricName }})
 	</div>
-</ng-template>
-<ng-template #showTitle>
-	<div>
-		{{ metricFor }} metric: <span class="bold">{{ metricDecorations.title }}</span> ({{ metricDecorations.key }})
-	</div>
-</ng-template>
+</ng-container>
 <ng-template #onlyShowName>
 	<div>
-		{{ metricFor }} metric: <span class="bold">{{ metricDecorations.key }}</span>
+		<ng-content></ng-content> metric: <span class="bold">{{ metricName }}</span>
 	</div>
 </ng-template>
