@@ -133,7 +133,22 @@ class SourceCodeParserMain(
 
     override fun getDialog(): ParserDialogInterface = ParserDialog
     override fun isApplicable(resourceToBeParsed: String): Boolean {
-        return false
+        if (resourceToBeParsed.endsWith(".java")) {
+            return true
+        }
+
+        val searchFile = if (resourceToBeParsed == "") {
+            File(Paths.get("").toAbsolutePath().toString())
+        } else {
+            File(resourceToBeParsed)
+        }
+
+        return searchFile.walk()
+                .asSequence()
+                .filter { it.isFile }
+                .map { it.name }
+                .filter { it.endsWith(".java") }
+                .any()
     }
 
     override fun getName(): String {
