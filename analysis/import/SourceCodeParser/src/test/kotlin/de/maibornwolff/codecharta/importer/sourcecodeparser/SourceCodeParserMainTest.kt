@@ -12,6 +12,7 @@ class SourceCodeParserMainTest {
         fun provideValidInputFiles(): List<Arguments> {
             return listOf(
                     Arguments.of("src/test/resources/my/java/repo"),
+                    Arguments.of("src/test/resources/my/java/repo/hello_world.java"),
                     Arguments.of("src/test/resources/my"),
                     Arguments.of(""))
         }
