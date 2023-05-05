@@ -8,6 +8,7 @@ import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import de.maibornwolff.codecharta.tools.interactiveparser.util.InteractiveParserHelper
+import de.maibornwolff.codecharta.util.ResourceSearchHelper
 import picocli.CommandLine
 import java.io.BufferedWriter
 import java.io.File
@@ -133,22 +134,9 @@ class SourceCodeParserMain(
 
     override fun getDialog(): ParserDialogInterface = ParserDialog
     override fun isApplicable(resourceToBeParsed: String): Boolean {
-        if (resourceToBeParsed.endsWith(".java")) {
-            return true
-        }
-
-        val searchFile = if (resourceToBeParsed == "") {
-            File(Paths.get("").toAbsolutePath().toString())
-        } else {
-            File(resourceToBeParsed)
-        }
-
-        return searchFile.walk()
-                .asSequence()
-                .filter { it.isFile }
-                .map { it.name }
-                .filter { it.endsWith(".java") }
-                .any()
+        return ResourceSearchHelper.isResourcePresent(resourceToBeParsed, ".java",
+                ResourceSearchHelper::doesStringEndWith, 0,
+                shouldSearchFullDirectory = true, resourceShouldBeFile = true)
     }
 
     override fun getName(): String {
