@@ -29,8 +29,8 @@ class SourceCodeParserMainTest {
     @ParameterizedTest
     @MethodSource("provideValidInputFiles")
     fun `should be identified as applicable for given directory path containing a java file`(resourceToBeParsed: String) {
-        val isUsableFromParentFolder = SourceCodeParserMain().isApplicable(resourceToBeParsed)
-        Assertions.assertThat(isUsableFromParentFolder).isTrue()
+        val isUsable = SourceCodeParserMain().isApplicable(resourceToBeParsed)
+        Assertions.assertThat(isUsable).isTrue()
     }
 
     @ParameterizedTest

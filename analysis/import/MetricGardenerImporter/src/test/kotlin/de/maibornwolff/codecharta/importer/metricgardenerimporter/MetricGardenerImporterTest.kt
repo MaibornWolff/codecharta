@@ -1,7 +1,6 @@
 package de.maibornwolff.codecharta.importer.metricgardenerimporter
 
 import de.maibornwolff.codecharta.importer.metricgardenerimporter.MetricGardenerImporter.Companion.main
-import de.maibornwolff.codecharta.importer.sourcecodeparser.SourceCodeParserMain
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -99,14 +98,14 @@ class MetricGardenerImporterTest {
     @ParameterizedTest
     @MethodSource("provideValidInputFiles")
     fun `should be identified as applicable for given directory path containing a file of a supported language`(resourceToBeParsed: String) {
-        val isUsableFromParentFolder = SourceCodeParserMain().isApplicable(resourceToBeParsed)
-        Assertions.assertThat(isUsableFromParentFolder).isTrue()
+        val isUsable = MetricGardenerImporter().isApplicable(resourceToBeParsed)
+        Assertions.assertThat(isUsable).isTrue()
     }
 
     @ParameterizedTest
     @MethodSource("provideInvalidInputFiles")
     fun `should NOT be identified as applicable if no file of a supported language is present at given path`(resourceToBeParsed: String) {
-        val isUsable = SourceCodeParserMain().isApplicable(resourceToBeParsed)
+        val isUsable = MetricGardenerImporter().isApplicable(resourceToBeParsed)
         Assertions.assertThat(isUsable).isFalse()
     }
 }
