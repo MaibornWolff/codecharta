@@ -99,7 +99,7 @@ class MetricGardenerImporter(
 
         @JvmStatic
         fun getSupportedLanguageFileEndings(): List<String> {
-            // TODO: Find all file endings that are supported, e.g. for C++: cpp/CPP/cc/c++/..., for Kotlin .kt/.kts ...
+            // If needed: Add more file endings for each supported language
             return listOf(".go", ".php", ".ts", ".cs", ".cpp", ".java", ".js", ".kt", ".py")
         }
     }
