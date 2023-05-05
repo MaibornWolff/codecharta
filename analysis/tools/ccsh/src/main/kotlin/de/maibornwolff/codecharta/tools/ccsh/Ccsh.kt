@@ -2,6 +2,7 @@ package de.maibornwolff.codecharta.tools.ccsh
 
 import com.github.kinquirer.KInquirer
 import com.github.kinquirer.components.promptConfirm
+import com.github.kinquirer.components.promptInput
 import de.maibornwolff.codecharta.exporter.csv.CSVExporter
 import de.maibornwolff.codecharta.filter.edgefilter.EdgeFilter
 import de.maibornwolff.codecharta.filter.mergefilter.MergeFilter
@@ -19,6 +20,7 @@ import de.maibornwolff.codecharta.parser.rawtextparser.RawTextParser
 import de.maibornwolff.codecharta.tools.ccsh.parser.InteractiveParserSuggestionDialog
 import de.maibornwolff.codecharta.tools.ccsh.parser.ParserService
 import de.maibornwolff.codecharta.tools.ccsh.parser.repository.PicocliParserRepository
+import de.maibornwolff.codecharta.tools.interactiveparser.util.InteractiveParserHelper
 import de.maibornwolff.codecharta.tools.validation.ValidationTool
 import mu.KotlinLogging
 import picocli.CommandLine
@@ -133,9 +135,44 @@ class Ccsh : Callable<Void?> {
                 return finalExitCode
             }
             // Improvement: Try to extract merge commands before so user does not have to configure merge args?
-            logger.info("Each parser was successfully executed and created a cc.json file. " +
-                        "You can merge all results by making sure they are in one folder and executing the merging tool.")
-            return 0
+            logger.info("Each parser was successfully executed and created a cc.json file.")
+            return askAndMergeResults(commandLine)
+        }
+
+        private fun askAndMergeResults(commandLine: CommandLine): Int {
+            val shouldMerge = KInquirer.promptConfirm(
+                    message = "Do you want to merge all generated files into one result now?",
+                    default = false)
+
+            return if (shouldMerge) {
+                val ccJsonFilePath = KInquirer.promptInput(
+                        message = "What is the folder path containing all cc.json files?",
+                        hint = "If you did not output all cc.json files into the same folder, " +
+                              "you need to manually move them there before trying to merge.")
+
+                val outputFilePath = "$ccJsonFilePath/mergedResult.cc.json"
+                // Default args with input path being the output path as well
+                val mergeArguments =
+                        listOf(
+                                ccJsonFilePath,
+                                "--output-file=$outputFilePath+",
+                                "--not-compressed=true",
+                                "--add-missing=false",
+                                "--recursive=true",
+                                "--leaf=false",
+                                "--ignore-case=false"
+                              )
+
+                val map = mapOf(InteractiveParserHelper.MergeFilterConstants.name to mergeArguments)
+                var exitCode = -1
+                // TODO: This is super stupid but I did not find another way to create a Map.Entry???
+                for (entry in map) {
+                     exitCode = executeConfiguredParser(commandLine, entry)
+                }
+                exitCode
+            } else {
+                0
+            }
         }
 
         private fun executeConfiguredParser(commandLine: CommandLine, configuredParser: Map.Entry<String, List<String>>): Int {
