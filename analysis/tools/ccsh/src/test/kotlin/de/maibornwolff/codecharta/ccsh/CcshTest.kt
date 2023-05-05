@@ -2,6 +2,7 @@ package de.maibornwolff.codecharta.ccsh
 
 import com.github.kinquirer.KInquirer
 import com.github.kinquirer.components.promptConfirm
+import com.github.kinquirer.components.promptInput
 import de.maibornwolff.codecharta.tools.ccsh.Ccsh
 import de.maibornwolff.codecharta.tools.ccsh.parser.InteractiveParserSuggestionDialog
 import de.maibornwolff.codecharta.tools.ccsh.parser.ParserService
@@ -81,10 +82,6 @@ class CcshTest {
 
         mockkObject(ParserService)
         every {
-            ParserService.executeSelectedParser(any(), any())
-        } returns 0
-
-        every {
             ParserService.executePreconfiguredParser(any(), any())
         } returns 0
 
@@ -93,10 +90,16 @@ class CcshTest {
             KInquirer.promptConfirm(any(), any())
         } returns true
 
+        mockkStatic("com.github.kinquirer.components.InputKt")
+        every {
+            KInquirer.promptInput(any(), any(), any(), any(), any())
+        } returns "dummy/path"
+
         val exitCode = Ccsh.executeCommandLine(emptyArray())
         Assertions.assertThat(exitCode).isZero
 
-        verify(exactly = 2) { ParserService.executePreconfiguredParser(any(), any()) }
+        // 3 because 2 parsers and the merge in the end
+        verify(exactly = 3) { ParserService.executePreconfiguredParser(any(), any()) }
     }
 
     @Test
