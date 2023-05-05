@@ -2,11 +2,15 @@ package de.maibornwolff.codecharta.rawtextparser
 
 import com.google.gson.JsonParser
 import de.maibornwolff.codecharta.filter.mergefilter.MergeFilter
+import de.maibornwolff.codecharta.parser.rawtextparser.RawTextParser
 import de.maibornwolff.codecharta.parser.rawtextparser.RawTextParser.Companion.mainWithInOut
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.Arguments
+import org.junit.jupiter.params.provider.MethodSource
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -15,6 +19,16 @@ import java.io.OutputStreamWriter
 import java.io.PrintStream
 
 class RawTextParserTest {
+
+    companion object {
+        @JvmStatic
+        fun provideValidInputFiles(): List<Arguments> {
+            return listOf(
+                    Arguments.of("src/test/resources/sampleproject"),
+                    Arguments.of("src/test/resources/sampleproject/tabs.xyz"),
+                    Arguments.of(""))
+        }
+    }
 
     @Test
     fun `should be able to process single file`() {
@@ -79,4 +93,27 @@ class RawTextParserTest {
             }
             baOutputStream.toString()
         }
+
+    @ParameterizedTest
+    @MethodSource("provideValidInputFiles")
+    fun `should be identified as applicable for given directory path containing a source code file`(resourceToBeParsed: String) {
+        val isUsable = RawTextParser().isApplicable(resourceToBeParsed)
+        Assertions.assertThat(isUsable).isTrue()
+    }
+
+    @Test
+    fun `should NOT be identified as applicable if given directory does not contain any source code file `() {
+        val emptyFolderPath = "src/test/resources/empty"
+        val nonExistentPath = "src/test/resources/this/does/not/exist"
+
+        val emptyFolder = File(emptyFolderPath)
+        emptyFolder.mkdir()
+        emptyFolder.deleteOnExit()
+
+        val isEmptyPathApplicable = RawTextParser().isApplicable(emptyFolderPath)
+        val isNonExistentPathApplicable = RawTextParser().isApplicable(nonExistentPath)
+
+        Assertions.assertThat(isEmptyPathApplicable).isFalse()
+        Assertions.assertThat(isNonExistentPathApplicable).isFalse()
+    }
 }
