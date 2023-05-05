@@ -1,15 +1,39 @@
 package de.maibornwolff.codecharta.importer.metricgardenerimporter
 
 import de.maibornwolff.codecharta.importer.metricgardenerimporter.MetricGardenerImporter.Companion.main
+import de.maibornwolff.codecharta.importer.sourcecodeparser.SourceCodeParserMain
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
+import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.Arguments
+import org.junit.jupiter.params.provider.MethodSource
 import picocli.CommandLine
 import java.io.File
 
 class MetricGardenerImporterTest {
+
+    companion object {
+        @JvmStatic
+        fun provideValidInputFiles(): List<Arguments> {
+            return listOf(
+                    Arguments.of("src/test/resources/my/supported-multi-language/repo"),
+                    Arguments.of("src/test/resources/my/supported-multi-language/repo/dummyFile.js"),
+                    Arguments.of("src/test/resources/my"),
+                    Arguments.of(""))
+        }
+
+        @JvmStatic
+        fun provideInvalidInputFiles(): List<Arguments> {
+            return listOf(
+                    Arguments.of("src/test/resources/my/empty/repo"),
+                    Arguments.of("src/test/resources/this/does/not/exist"),
+                    Arguments.of("src/test/resources/my/non-supported-language/repo"))
+        }
+    }
 
     @Test
     fun `should create json uncompressed file with attribute Descriptors`() {
@@ -70,5 +94,19 @@ class MetricGardenerImporterTest {
         file.deleteOnExit()
         CommandLine(MetricGardenerImporter()).execute()
         assertFalse(file.exists())
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideValidInputFiles")
+    fun `should be identified as applicable for given directory path containing a file of a supported language`(resourceToBeParsed: String) {
+        val isUsableFromParentFolder = SourceCodeParserMain().isApplicable(resourceToBeParsed)
+        Assertions.assertThat(isUsableFromParentFolder).isTrue()
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideInvalidInputFiles")
+    fun `should NOT be identified as applicable if no file of a supported language is present at given path`(resourceToBeParsed: String) {
+        val isUsable = SourceCodeParserMain().isApplicable(resourceToBeParsed)
+        Assertions.assertThat(isUsable).isFalse()
     }
 }

@@ -9,6 +9,7 @@ import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import de.maibornwolff.codecharta.tools.interactiveparser.util.InteractiveParserHelper
+import de.maibornwolff.codecharta.util.ResourceSearchHelper
 import mu.KotlinLogging
 import picocli.CommandLine
 import java.io.File
@@ -95,6 +96,12 @@ class MetricGardenerImporter(
         fun main(args: Array<String>) {
             CommandLine(MetricGardenerImporter()).execute(*args)
         }
+
+        @JvmStatic
+        fun getSupportedLanguageFileEndings(): List<String> {
+            // TODO: Find all file endings that are supported, e.g. for C++: cpp/CPP/cc/c++/..., for Kotlin .kt/.kts ...
+            return listOf(".go", ".php", ".ts", ".cs", ".cpp", ".java", ".js", ".kt", ".py")
+        }
     }
 
     private fun isWindows(): Boolean {
@@ -103,6 +110,16 @@ class MetricGardenerImporter(
 
     override fun getDialog(): ParserDialogInterface = ParserDialog
     override fun isApplicable(resourceToBeParsed: String): Boolean {
+        val supportedLanguageFileEndings = getSupportedLanguageFileEndings()
+
+        for (supportedLanguageFileEnding in supportedLanguageFileEndings) {
+            if (ResourceSearchHelper.isResourcePresent(resourceToBeParsed, supportedLanguageFileEnding,
+                            ResourceSearchHelper::doesStringEndWith, 0,
+                            shouldSearchFullDirectory = true, resourceShouldBeFile = true)) {
+                return true
+            }
+        }
+
         return false
     }
 

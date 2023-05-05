@@ -12,6 +12,7 @@ import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import de.maibornwolff.codecharta.tools.interactiveparser.util.InteractiveParserHelper
+import de.maibornwolff.codecharta.util.ResourceSearchHelper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -23,7 +24,6 @@ import java.io.InputStream
 import java.io.PrintStream
 import java.nio.charset.Charset
 import java.nio.file.Files
-import java.nio.file.Paths
 import java.util.Arrays
 import java.util.concurrent.Callable
 import java.util.stream.Stream
@@ -175,22 +175,9 @@ class SVNLogParser(
 
     override fun getDialog(): ParserDialogInterface = ParserDialog
     override fun isApplicable(resourceToBeParsed: String): Boolean {
-        if (resourceToBeParsed.endsWith(".svn")) {
-            return true
-        }
-
-        val searchFile = if (resourceToBeParsed == "") {
-            File(Paths.get("").toAbsolutePath().toString())
-        } else {
-            File(resourceToBeParsed)
-        }
-
-        return searchFile.walk()
-                .maxDepth(1)
-                .asSequence()
-                .map { it.name }
-                .filter { it == ".svn" }
-                .any()
+        return ResourceSearchHelper.isResourcePresent(resourceToBeParsed, ".svn",
+                ResourceSearchHelper::doStringsEqual, 1,
+                shouldSearchFullDirectory = false, resourceShouldBeFile = false)
     }
 
     override fun getName(): String {
