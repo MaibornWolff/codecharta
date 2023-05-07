@@ -98,7 +98,7 @@ class SonarImporterMain(
     override fun isApplicable(resourceToBeParsed: String): Boolean {
         val trimmedInput = resourceToBeParsed.trim()
 
-        if (trimmedInput.startsWith("http://") || trimmedInput.startsWith("https://")) {
+        if (trimmedInput.contains("^http(s)?://".toRegex())) {
             return true
         }
 
