@@ -164,12 +164,7 @@ class Ccsh : Callable<Void?> {
                               )
 
                 val map = mapOf(InteractiveParserHelper.MergeFilterConstants.name to mergeArguments)
-                var exitCode = -1
-                // TODO: This is super stupid but I did not find another way to create a Map.Entry???
-                for (entry in map) {
-                     exitCode = executeConfiguredParser(commandLine, entry)
-                }
-                exitCode
+                executeConfiguredParser(commandLine, map.entries.first())
             } else {
                 0
             }
