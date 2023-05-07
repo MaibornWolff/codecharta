@@ -24,7 +24,7 @@ class SonarImporterMainTest {
             "/api/metrics/search?f=hidden,decimalScale&p=1&ps=${SonarMetricsAPIDatasource.PAGE_SIZE}"
 
         @JvmStatic
-        fun provideValidUrls(): List<Arguments> {
+        fun provideValidURLs(): List<Arguments> {
             return listOf(
                     Arguments.of("https://thisisatesturl.com"),
                     Arguments.of("http://thisisatesturl.com"))
@@ -44,6 +44,15 @@ class SonarImporterMainTest {
             return listOf(
                     Arguments.of("src/test/resources/my/nonsonar/repo"),
                     Arguments.of("src/test/resources/this/does/not/exist"))
+        }
+
+        @JvmStatic
+        fun provideInvalidURLs(): List<Arguments> {
+            return listOf(
+                Arguments.of("thisisatesturl.https://"),
+                Arguments.of("thisisatesturl.http://"),
+                Arguments.of("http:/noturl.com"),
+                Arguments.of("www.google.com"))
         }
     }
 
@@ -97,7 +106,7 @@ class SonarImporterMainTest {
     }
 
     @ParameterizedTest
-    @MethodSource("provideValidUrls")
+    @MethodSource("provideValidURLs")
     fun `should be identified as applicable for given directory path being an url`(resourceToBeParsed: String) {
         val isApplicable = SonarImporterMain().isApplicable(resourceToBeParsed)
         Assertions.assertTrue(isApplicable)
@@ -113,6 +122,13 @@ class SonarImporterMainTest {
     @ParameterizedTest
     @MethodSource("provideInvalidInputFiles")
     fun `should NOT be identified as applicable if no sonar properties file is present at given path`(resourceToBeParsed: String) {
+        val isApplicable = SonarImporterMain().isApplicable(resourceToBeParsed)
+        Assertions.assertFalse(isApplicable)
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideInvalidURLs")
+    fun `should NOT be identified as applicable for given broken url`(resourceToBeParsed: String) {
         val isApplicable = SonarImporterMain().isApplicable(resourceToBeParsed)
         Assertions.assertFalse(isApplicable)
     }
