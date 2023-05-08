@@ -10,6 +10,12 @@ Finally, it would be great if you looked at how we give and receive [feedback]({
 # Branching / Releasing
 
 We create Pull Requests to the `main` branch after implementing a feature or fixing a bug. There is no release or development branch. We never push on `main` directly. Please take a look at our [contributing guidelines](https://github.com/MaibornWolff/codecharta/blob/main/CONTRIBUTING.md) before you start committing.
+When updating your branch, we prefer using a rebase instead of merging to keep the commit history clean.
+
+# Code Style Guide
+
+Besides the rules enforced by our linter, we do not follow a set of defined style guidelines for our code.
+Just try to make your code readable and follow common best practices.
 
 # GitHub Actions
 
@@ -39,124 +45,18 @@ All workflow files can be found under `.github/workflows`
 
 -   Workflow: `release.yml`
 
-# Analysis
+# Common Issues
 
-The analysis is a CLI to import, export or filter from all kind of resources.
+There are a few issues regularly occurring when trying to start contributing. This aims to be like a FAQ section to help address the most common problems.
 
-### Importing the Project
+### General
 
-Don't import the whole codecharta project to IntelliJ when working on the analysis. Simply import the analysis folder for that. IntelliJ might not able to identify it as a Gradle project otherwise.
+1. Error `lint-staged: command not found` when trying to commit: Try to reinstall the node packages in the project. To do that, visit the root directory of the project (and the subdirectories for analysis and visualization if that still fails) and execute `npm ci`.
 
-### Definitions
+### Analysis
 
-#### Importer
+1. First build fails on new setup: One of our parsers depends on MetricGardener which is a multi-language parser to calculate metrics for a variety of languages. Therefore, make sure to install MetricGardener before trying to build the project. Also make sure that `metric-gardener` is available in your CLI. You can find more information on the documentation page about the [MetricGardenerImporter]({{site.baseurl}}{% link _docs/04-13-metricgardener.md %}).
 
--   Retrieves metrics from external sources, such as `SonarQube` and creates a `cc.json`.
+# Further documentation
 
-#### Exporter
-
--   Consumes a cc.json and creates another format, such as CSV
-
-#### Filter
-
--   Consumes a cc.json and creates another cc.json. A common use case is merging two cc.jsons
-
-### Technologies
-
--   [Kotlin]({{site.baseurl}}{% link _posts/adr/2017-01-02-ADR_2_pick_analysis_language.md %})
--   Gradle
--   [PicoCli]({{site.baseurl}}{% link _posts/adr/2017-01-02-ADR_5_pick_analysis_cli_library.md %})
--   JUnit
--   Assertj
--   Mockito
--   Gson
--   Sonar-Plugins to create our own parsers
-
-### Concepts
-
--   [Pipes and filters architecture]({{site.baseurl}}{% link _posts/adr/2017-01-02-ADR_4_decide_analysis_architecture.md %})
--   Shared nothing importers.
-
-### Building
-
--   `gradlew.bat build` or `./gradlew build`
--   Navigate to `build/distributions` and unzip the zip-folder
--   Navigate to the `build/distributions/codecharta-analysis-VERSION/bin` and execute the ccsh
-
-### Testing
-
--   Run `gradlew.bat test` or `./gradlew test`
--   Run `gradlew.bat integrationTest` or `./gradlew integrationTest`
-
-The integration tests might fail on windows, because of a missing or unknown `sh` command.
-To make it work, add the path to the Git `sh.exe` (which is normally placed here `C:\<path-to-git>\Git\bin`) to your PATH variable.
-
-**If you want to run the JUnit tests with the IntelliJ-Runner, make sure to go to `File -> Settings ->Build,Execution, Deployment -> Build Tools -> Gradle` and select `Run test using: IntelliJ IDEA`**
-
-### Linting/Formatting
-
--   `gradlew.bat ktlintApplyToIdea` or `./gradlew ktlintApplyToIdea` (tested in IntelliJ)
-
-# Visualization
-
-The visualization opens a cc.json and displays a city-like landscape based on the folder structure.
-
-### State Management
-
-We use Redux to manage our state. This way we have a single state that allows us to have a single one-directional data flow at a time. Get familiar with the [core-concepts of redux](https://redux.js.org/introduction/core-concepts) and check out the chart below afterwards.
-
-This chart shows the correct way to update the viewModel of a controller.
-
-![redux]({{site.baseurl}}/assets/images/docs/reference/redux-flow.png)
-
-This chart shows the data flow in our architecture when a new cc.json is opened.
-
-![new-file-imported]({{site.baseurl}}/assets/images/docs/reference/loading-a-new-file-flow.png)
-
-### PlopJS
-
-In order to reduce the amount of time spent on repetitive work such as creating 5 files for an ui-component, we implemented some plop-templates that will help you with that. Just type `npm run plop` and let the magic take over.
-
-Currently, we support the creation of:
-
--   state service
--   ui-component
--   util static class
--   redux property
--   redux sub-reducer
-
-### Other Technologies
-
--   [Typescript]({{site.baseurl}}{% link _posts/adr/2017-09-03-ADR_7_pick_visualization_language.md %})
--   npm
--   AngularJs 1.x, specifically what are Components, Services
--   Jest (Unit Tests)
--   Puppeteer (E2E Tests)
--   ESLint
--   ThreeJs for 3d visualization
--   d3 for tree map algorithm and tree hierarchy (parent-child relations)
--   Webpack
--   nwjs
--   Redux
-
-### Important Concepts
-
--   Dependency Injection
--   Observer Pattern (`.subscribe(...)`)
--   2D Squarified TreeMap
-
-### Building
-
-There are 3 possible ways to build and run the application. You can run it as a developer with hot-code, which allows you to make changes in the code and see the results in your browser a few seconds later. But you can also build the application yourself and run it in a standalone or in the browser.
-
--   Development: `npm run dev`
--   Standalone: `npm run build` -> `npm start`
--   Web: `npm run build` -> Move the created content to a nginx server for example
-
-### Testing
-
--   Unit-Tests: `npm test`
--   E2E-Tests: `npm run build && npm run e2e`
--   For IntelliJ: Run -> Edit Configurations -> Templates -> Jest -> Add configuration file -> Select `jest.config.json` -> Add CLI argument `--env=jsdom`
-
-For more test options check the `package.json`
+For further information please check out the documentation pages for the [analysis]({{site.baseurl}}{% link _docs/07-02-new-to-code-analysis.md %}) and [visualization]({{site.baseurl}}{% link _docs/07-03-new-to-code-visualization.md %}) parts of the project.
