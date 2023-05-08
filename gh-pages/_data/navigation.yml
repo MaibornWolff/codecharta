@@ -74,6 +74,10 @@ docs:
             url: /docs/timeline/
           - title: "Custom View"
             url: /docs/custom-view/
+          - title: "Suspicious metrics"
+            url: /docs/suspicious-metrics/
+          - title: "Risk profile"
+            url: /docs/risk-profile/
 
     - title: Reference
       children:
