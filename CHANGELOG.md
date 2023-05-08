@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Added 🚀
+
+-   Expanded developer documentation to include common problems and solutions for them [#3289](https://github.com/MaibornWolff/codecharta/pull/3289)
+
 ### Fixed 🐞
 
 -   Show again delta of a building which have nothing in common in red or green [#3271](https://github.com/MaibornWolff/codecharta/pull/3271)
