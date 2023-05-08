@@ -28,12 +28,14 @@ class ResourceSearchHelper {
             return (string1 == string2)
         }
 
-        private fun getFileFromResourceName(resourceName: String): File {
-            return if (resourceName == "") {
-                File(Paths.get("").toAbsolutePath().toString())
-            } else {
-                File(resourceName)
+        fun ifEmptyGetPathOtherwiseReturnSelf(path: String): String {
+            return path.ifEmpty {
+                Paths.get("").toAbsolutePath().toString()
             }
+        }
+
+        private fun getFileFromResourceName(resourceName: String): File {
+            return (File(ifEmptyGetPathOtherwiseReturnSelf(resourceName)))
         }
 
         private fun isResourcePresentInDirectory(searchFile: File, searchToken: String, searchOperator: (String, String) -> Boolean,
