@@ -84,14 +84,13 @@ class GitLogParserTest {
 
         val testGitDirectory = File(gitFolderFilePath)
         testGitDirectory.mkdir()
+        testGitDirectory.deleteOnExit()
 
         val isUsableFromParentFolder = GitLogParser().isApplicable(gitFolderParentFilePath)
         val isUsableFromGitFolder = GitLogParser().isApplicable(gitFolderFilePath)
 
         Assertions.assertThat(isUsableFromParentFolder).isTrue()
         Assertions.assertThat(isUsableFromGitFolder).isTrue()
-
-        testGitDirectory.delete()
     }
 
     @ParameterizedTest

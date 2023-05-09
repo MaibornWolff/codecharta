@@ -81,7 +81,8 @@ class PicocliParserRepositoryTest {
                 CodeMaatImporter().getName() + " - generates cc.json from codemaat coupling csv",
                 TokeiImporter().getName() + " - generates cc.json from tokei json",
                 RawTextParser().getName() + " - generates cc.json from projects or source code files",
-                MetricGardenerImporter().getName() + " - generates a cc.json file from a project parsed with metric-gardener")
+                MetricGardenerImporter().getName() + " - generates a cc.json file from a project parsed with metric-gardener." +
+                "Caution - this parser is still experimental and may take a long time to parse code!")
     }
 
     @Test

@@ -7,11 +7,20 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Added 🚀
+
+-   Added support for parser suggestions to SVN-, MetricGardener-, RawText- and SourceCodeParser [#3287](https://github.com/MaibornWolff/codecharta/pull/3287) </br>
+-   Add semi automatic merging feature after executing multiple parsers [#3287](https://github.com/MaibornWolff/codecharta/pull/3287)
+
 ### Fixed 🐞
 
 -   Show again delta of a building which have nothing in common in red or green [#3271](https://github.com/MaibornWolff/codecharta/pull/3271)
 -   Always show description of suspicious metrics [#3285](https://github.com/MaibornWolff/codecharta/pull/3285)
 -   Show suspicious metrics and risk profile documentation pages in navigation bar [#3290](https://github.com/MaibornWolff/codecharta/pull/3290)
+
+### Changed
+
+-   Adjusted documentation for parser suggestions [#3287](https://github.com/MaibornWolff/codecharta/pull/3287) </br>
 
 ### Chore 👨‍💻 👩‍💻
 
