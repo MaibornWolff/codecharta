@@ -13,6 +13,8 @@ import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
+import de.maibornwolff.codecharta.tools.interactiveparser.util.InteractiveParserHelper
+import de.maibornwolff.codecharta.util.ResourceSearchHelper
 import org.mozilla.universalchardet.UniversalDetector
 import picocli.CommandLine
 import java.io.File
@@ -25,10 +27,10 @@ import java.util.concurrent.Callable
 import java.util.stream.Stream
 
 @CommandLine.Command(
-    name = "gitlogparser",
-    description = ["git log parser - generates cc.json from git-log files"],
+    name = InteractiveParserHelper.GitLogParserConstants.name,
+    description = [InteractiveParserHelper.GitLogParserConstants.description],
     subcommands = [LogScanCommand::class, RepoScanCommand::class],
-    footer = ["Copyright(c) 2022, MaibornWolff GmbH"]
+    footer = [InteractiveParserHelper.GeneralConstants.GenericFooter]
 )
 class GitLogParser(
     private val input: InputStream = System.`in`,
@@ -152,4 +154,12 @@ class GitLogParser(
     }
 
     override fun getDialog(): ParserDialogInterface = ParserDialog
+    override fun isApplicable(resourceToBeParsed: String): Boolean {
+        return ResourceSearchHelper.isResourcePresent(resourceToBeParsed, ".git",
+                ResourceSearchHelper::doesStringEndWith, 1,
+                shouldSearchFullDirectory = false, resourceShouldBeFile = false)
+    }
+    override fun getName(): String {
+        return InteractiveParserHelper.GitLogParserConstants.name
+    }
 }

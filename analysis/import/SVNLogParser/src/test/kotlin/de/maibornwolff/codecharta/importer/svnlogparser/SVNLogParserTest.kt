@@ -1,11 +1,26 @@
 package de.maibornwolff.codecharta.importer.svnlogparser
 
 import de.maibornwolff.codecharta.importer.svnlogparser.SVNLogParser.Companion.main
+import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.Arguments
+import org.junit.jupiter.params.provider.MethodSource
 import java.io.File
 
 class SVNLogParserTest {
+
+    companion object {
+        @JvmStatic
+        fun provideInvalidInputFiles(): List<Arguments> {
+            return listOf(
+                    Arguments.of("src/test/resources/my/empty/repo"),
+                    Arguments.of("src/test/resources/this/does/not/exist"),
+                    Arguments.of(""),
+                    Arguments.of("src/test/resources/my"))
+        }
+    }
 
     @Test
     fun `should create json uncompressed file`() {
@@ -35,5 +50,29 @@ class SVNLogParserTest {
         file.deleteOnExit()
 
         assertTrue(file.exists())
+    }
+
+    @Test
+    fun `should be identified as applicable for given directory path containing a svn folder`() {
+        val svnFolderParentFilePath = "src/test/resources/my/svn/repo/"
+        val svnFolderFilePath = "src/test/resources/my/svn/repo/.svn"
+
+        val testSVNDirectory = File(svnFolderFilePath)
+        testSVNDirectory.mkdir()
+
+        val isUsableFromParentFolder = SVNLogParser().isApplicable(svnFolderParentFilePath)
+        val isUsableFromSVNFolder = SVNLogParser().isApplicable(svnFolderFilePath)
+
+        Assertions.assertThat(isUsableFromParentFolder).isTrue()
+        Assertions.assertThat(isUsableFromSVNFolder).isTrue()
+
+        testSVNDirectory.delete()
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideInvalidInputFiles")
+    fun `should NOT be identified as applicable if no svn folder is present at given path`(resourceToBeParsed: String) {
+        val isUsable = SVNLogParser().isApplicable(resourceToBeParsed)
+        Assertions.assertThat(isUsable).isFalse()
     }
 }

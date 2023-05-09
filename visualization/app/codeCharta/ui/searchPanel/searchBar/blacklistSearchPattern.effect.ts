@@ -1,10 +1,8 @@
-import { Inject, Injectable } from "@angular/core"
-import { map, filter, withLatestFrom, tap, take } from "rxjs"
-import { BlacklistType } from "../../../codeCharta.model"
-import { createEffect } from "../../../state/angular-redux/effects/createEffect"
-import { Actions, ActionsToken } from "../../../state/angular-redux/effects/effects.module"
-import { ofType } from "../../../state/angular-redux/ofType"
-import { Store } from "../../../state/angular-redux/store"
+import { Injectable } from "@angular/core"
+import { Actions, createEffect, ofType } from "@ngrx/effects"
+import { Store } from "@ngrx/store"
+import { map, filter, withLatestFrom, tap, take, share } from "rxjs"
+import { BlacklistType, CcState } from "../../../codeCharta.model"
 import { AddBlacklistItemsIfNotResultsInEmptyMapEffect } from "../../../state/effects/addBlacklistItemsIfNotResultsInEmptyMap/addBlacklistItemsIfNotResultsInEmptyMap.effect"
 import { setSearchPattern } from "../../../state/store/dynamicSettings/searchPattern/searchPattern.actions"
 import { searchPatternSelector } from "../../../state/store/dynamicSettings/searchPattern/searchPattern.selector"
@@ -13,31 +11,30 @@ import { parseBlacklistItems } from "./utils/parseBlacklistItems"
 
 type BlacklistSearchPatternAction = {
 	type: "BlacklistSearchPatternAction"
-	payload: { type: BlacklistType }
+	action: { type: BlacklistType }
 }
 
 export const blacklistSearchPattern = (type: BlacklistType): BlacklistSearchPatternAction => ({
 	type: "BlacklistSearchPatternAction",
-	payload: { type }
+	action: { type }
 })
 
 @Injectable()
 export class BlacklistSearchPatternEffect {
 	constructor(
-		@Inject(ActionsToken) private actions$: Actions,
-		private store: Store,
+		private actions$: Actions,
+		private store: Store<CcState>,
 		private addBlacklistItemsIfNotResultsInEmptyMapEffect: AddBlacklistItemsIfNotResultsInEmptyMapEffect
 	) {}
 
-	private searchPattern$ = this.store.select(searchPatternSelector)
-
 	private searchPattern2BlacklistItems$ = this.actions$.pipe(
 		ofType<BlacklistSearchPatternAction>("BlacklistSearchPatternAction"),
-		withLatestFrom(this.searchPattern$),
+		withLatestFrom(this.store.select(searchPatternSelector)),
 		map(([blacklistSearchPatternAction, searchPattern]) => ({
-			type: blacklistSearchPatternAction.payload.type,
-			blacklistItems: parseBlacklistItems(blacklistSearchPatternAction.payload.type, searchPattern)
-		}))
+			type: blacklistSearchPatternAction.action.type,
+			blacklistItems: parseBlacklistItems(blacklistSearchPatternAction.action.type, searchPattern)
+		})),
+		share()
 	)
 
 	flattenSearchPattern$ = createEffect(
@@ -45,8 +42,8 @@ export class BlacklistSearchPatternEffect {
 			this.searchPattern2BlacklistItems$.pipe(
 				filter(searchPattern2BlacklistItems => searchPattern2BlacklistItems.type === "flatten"),
 				tap(searchPattern2BlacklistItems => {
-					this.store.dispatch(addBlacklistItems(searchPattern2BlacklistItems.blacklistItems))
-					this.store.dispatch(setSearchPattern())
+					this.store.dispatch(addBlacklistItems({ items: searchPattern2BlacklistItems.blacklistItems }))
+					this.store.dispatch(setSearchPattern({ value: "" }))
 				})
 			),
 		{ dispatch: false }
@@ -61,12 +58,14 @@ export class BlacklistSearchPatternEffect {
 						take(1),
 						filter(doBlacklistItemsResultInEmptyMap => !doBlacklistItemsResultInEmptyMap.resultsInEmptyMap),
 						tap(() => {
-							this.store.dispatch(setSearchPattern())
+							this.store.dispatch(setSearchPattern({ value: "" }))
 						})
 					)
 					.subscribe()
 			}),
-			map(searchPattern2BlacklistItems => addBlacklistItemsIfNotResultsInEmptyMap(searchPattern2BlacklistItems.blacklistItems))
+			map(searchPattern2BlacklistItems =>
+				addBlacklistItemsIfNotResultsInEmptyMap({ items: searchPattern2BlacklistItems.blacklistItems })
+			)
 		)
 	)
 }

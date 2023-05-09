@@ -3,6 +3,7 @@ package de.maibornwolff.codecharta.importer.csv
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
+import de.maibornwolff.codecharta.tools.interactiveparser.util.InteractiveParserHelper
 import picocli.CommandLine
 import java.io.File
 import java.io.IOException
@@ -11,9 +12,9 @@ import java.io.PrintStream
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
-    name = "csvimport",
-    description = ["generates cc.json from csv with header"],
-    footer = ["Copyright(c) 2022, MaibornWolff GmbH"]
+    name = InteractiveParserHelper.CSVImporterConstants.name,
+    description = [InteractiveParserHelper.CSVImporterConstants.description],
+    footer = [InteractiveParserHelper.GeneralConstants.GenericFooter]
 )
 class CSVImporter(
     private val output: PrintStream = System.out
@@ -60,4 +61,10 @@ class CSVImporter(
     }
 
     override fun getDialog(): ParserDialogInterface = ParserDialog
+    override fun isApplicable(resourceToBeParsed: String): Boolean {
+        return false
+    }
+    override fun getName(): String {
+        return InteractiveParserHelper.CSVImporterConstants.name
+    }
 }

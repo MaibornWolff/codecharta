@@ -8,6 +8,8 @@ import de.maibornwolff.codecharta.importer.metricgardenerimporter.model.MetricGa
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
+import de.maibornwolff.codecharta.tools.interactiveparser.util.InteractiveParserHelper
+import de.maibornwolff.codecharta.util.ResourceSearchHelper
 import mu.KotlinLogging
 import picocli.CommandLine
 import java.io.File
@@ -18,9 +20,9 @@ import java.nio.file.Paths
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
-    name = "metricgardenerimport",
-    description = ["generates a cc.json file from a project parsed with metric-gardener"],
-    footer = ["Copyright(c) 2022, MaibornWolff GmbH"]
+    name = InteractiveParserHelper.MetricGardenerImporterConstants.name,
+    description = [InteractiveParserHelper.MetricGardenerImporterConstants.description],
+    footer = [InteractiveParserHelper.GeneralConstants.GenericFooter]
 )
 
 class MetricGardenerImporter(
@@ -94,6 +96,12 @@ class MetricGardenerImporter(
         fun main(args: Array<String>) {
             CommandLine(MetricGardenerImporter()).execute(*args)
         }
+
+        @JvmStatic
+        fun getSupportedLanguageFileEndings(): List<String> {
+            // If needed: Add more file endings for each supported language
+            return listOf(".go", ".php", ".ts", ".cs", ".cpp", ".java", ".js", ".kt", ".py")
+        }
     }
 
     private fun isWindows(): Boolean {
@@ -101,4 +109,21 @@ class MetricGardenerImporter(
     }
 
     override fun getDialog(): ParserDialogInterface = ParserDialog
+    override fun isApplicable(resourceToBeParsed: String): Boolean {
+        val supportedLanguageFileEndings = getSupportedLanguageFileEndings()
+
+        for (supportedLanguageFileEnding in supportedLanguageFileEndings) {
+            if (ResourceSearchHelper.isResourcePresent(resourceToBeParsed, supportedLanguageFileEnding,
+                            ResourceSearchHelper::doesStringEndWith, 0,
+                            shouldSearchFullDirectory = true, resourceShouldBeFile = true)) {
+                return true
+            }
+        }
+
+        return false
+    }
+
+    override fun getName(): String {
+        return InteractiveParserHelper.MetricGardenerImporterConstants.name
+    }
 }

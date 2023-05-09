@@ -2,26 +2,36 @@ import { TestBed } from "@angular/core/testing"
 import { render, screen } from "@testing-library/angular"
 import { expect } from "@jest/globals"
 import userEvent from "@testing-library/user-event"
-import { toggleEdgeMetricVisible } from "../../../state/store/appSettings/isEdgeMetricVisible/isEdgeMetricVisible.actions"
-import { setEdgeMetric } from "../../../state/store/dynamicSettings/edgeMetric/edgeMetric.actions"
-import { Store } from "../../../state/store/store"
 import { EdgeMetricChooserComponent } from "./edgeMetricChooser.component"
 import { EdgeMetricChooserModule } from "./edgeMetricChooser.module"
-
-jest.mock("../../../state/selectors/accumulatedData/metricData/metricData.selector", () => ({
-	metricDataSelector: () => ({
-		edgeMetricData: [
-			{ name: "aMetric", maxValue: 1 },
-			{ name: "bMetric", maxValue: 2 }
-		]
-	})
-}))
+import { MockStore, provideMockStore } from "@ngrx/store/testing"
+import { metricDataSelector } from "../../../state/selectors/accumulatedData/metricData/metricData.selector"
+import { edgeMetricSelector } from "../../../state/store/dynamicSettings/edgeMetric/edgeMetric.selector"
+import { isEdgeMetricVisibleSelector } from "../../../state/store/appSettings/isEdgeMetricVisible/isEdgeMetricVisible.selector"
+import { hoveredEdgeValueSelector } from "./hoveredEdgeValue.selector"
 
 describe("edgeMetricChooserComponent", () => {
 	beforeEach(() => {
-		Store.dispatch(setEdgeMetric("aMetric"))
 		TestBed.configureTestingModule({
-			imports: [EdgeMetricChooserModule]
+			imports: [EdgeMetricChooserModule],
+			providers: [
+				provideMockStore({
+					selectors: [
+						{
+							selector: metricDataSelector,
+							value: {
+								edgeMetricData: [
+									{ name: "aMetric", maxValue: 1 },
+									{ name: "bMetric", maxValue: 2 }
+								]
+							}
+						},
+						{ selector: edgeMetricSelector, value: "aMetric" },
+						{ selector: hoveredEdgeValueSelector, value: null },
+						{ selector: isEdgeMetricVisibleSelector, value: true }
+					]
+				})
+			]
 		})
 	})
 
@@ -44,9 +54,11 @@ describe("edgeMetricChooserComponent", () => {
 
 		let metricChoser = container.querySelector("cc-metric-chooser")
 		expect(metricChoser.classList.contains("is-edge-metric-disabled")).toBe(false)
-
-		Store.dispatch(toggleEdgeMetricVisible())
+		const store = TestBed.inject(MockStore)
+		store.overrideSelector(isEdgeMetricVisibleSelector, false)
+		store.refreshState()
 		detectChanges()
+
 		metricChoser = container.querySelector("cc-metric-chooser")
 		expect(metricChoser.classList.contains("is-edge-metric-disabled")).toBe(true)
 	})

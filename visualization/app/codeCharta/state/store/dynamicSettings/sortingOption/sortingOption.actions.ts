@@ -1,22 +1,4 @@
-import { Action } from "redux"
+import { createAction, props } from "@ngrx/store"
 import { SortingOption } from "../../../../codeCharta.model"
 
-export enum SortingOptionActions {
-	SET_SORTING_OPTION = "SET_SORTING_OPTION"
-}
-
-export interface SetSortingOptionAction extends Action {
-	type: SortingOptionActions.SET_SORTING_OPTION
-	payload: SortingOption
-}
-
-export type SortingOptionAction = SetSortingOptionAction
-
-export function setSortingOption(sortingOption: SortingOption = defaultSortingOption): SetSortingOptionAction {
-	return {
-		type: SortingOptionActions.SET_SORTING_OPTION,
-		payload: sortingOption
-	}
-}
-
-export const defaultSortingOption: SortingOption = SortingOption.NAME
+export const setSortingOption = createAction("SET_SORTING_OPTION", props<{ value: SortingOption }>())

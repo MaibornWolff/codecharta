@@ -1,8 +1,9 @@
 import { Component, ViewEncapsulation } from "@angular/core"
-import { Store } from "../../../state/angular-redux/store"
 import { setColorMetric } from "../../../state/store/dynamicSettings/colorMetric/colorMetric.actions"
 import { colorMetricSelector } from "../../../state/store/dynamicSettings/colorMetric/colorMetric.selector"
 import { isColorMetricLinkedToHeightMetricSelector } from "../../../state/store/appSettings/isHeightAndColorMetricLinked/isColorMetricLinkedToHeightMetric.selector"
+import { Store } from "@ngrx/store"
+import { CcState } from "../../../codeCharta.model"
 
 @Component({
 	selector: "cc-color-metric-chooser",
@@ -15,9 +16,9 @@ export class ColorMetricChooserComponent {
 	nonDisabledColor = "rgba(0, 0, 0, 0.38)"
 	disabledColor = "rgba(68,68,68, 1)"
 
-	constructor(private store: Store) {}
+	constructor(private store: Store<CcState>) {}
 
 	handleColorMetricChanged(value: string) {
-		this.store.dispatch(setColorMetric(value))
+		this.store.dispatch(setColorMetric({ value }))
 	}
 }

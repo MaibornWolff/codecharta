@@ -9,7 +9,62 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
+-   Added support for parser suggestions to SVN-, MetricGardener-, RawText- and SourceCodeParser [#3287](https://github.com/MaibornWolff/codecharta/pull/3287) </br>
+-   Add semi automatic merging feature after executing multiple parsers [#3287](https://github.com/MaibornWolff/codecharta/pull/3287)
+
+### Fixed 🐞
+
+-   Show again delta of a building which have nothing in common in red or green [#3271](https://github.com/MaibornWolff/codecharta/pull/3271)
+-   Always show description of suspicious metrics [#3285](https://github.com/MaibornWolff/codecharta/pull/3285)
+-   Show suspicious metrics and risk profile documentation pages in navigation bar [#3290](https://github.com/MaibornWolff/codecharta/pull/3290)
+
+### Changed
+
+-   Adjusted documentation for parser suggestions [#3287](https://github.com/MaibornWolff/codecharta/pull/3287) </br>
+
+### Chore 👨‍💻 👩‍💻
+
+-   Replace custom Redux adapter through real NgRx [#3271](https://github.com/MaibornWolff/codecharta/pull/3271)
+
+## [1.116.0] - 2023-04-28
+
+### Added 🚀
+
+-   Add automatic parser suggestions to recommend usable parsers for a codebase (supports GitLogParser and SonarImporter) when running `ccsh` command [#3275](https://github.com/MaibornWolff/codecharta/pull/3275) </br>
+    ![image](https://user-images.githubusercontent.com/129938897/234309117-c9edd4e7-7c53-4ba7-b849-ec9c3f8f3215.png)
+-   Add documentation subsections for interactive shell and parser suggestions
+
+### Changed
+
+-   Changed default behavior when launching ccsh without arguments to parser suggestions [#3275](https://github.com/MaibornWolff/codecharta/pull/3275)
+-   Old interactive parser selection now reachable by passing `-i` or `--interactive` as arguments [#3275](https://github.com/MaibornWolff/codecharta/pull/3275)
+
+### Fixed 🐞
+
+-   Fix suspicious metrics and risk profile docs not loading [#3272](https://github.com/MaibornWolff/codecharta/pull/3272)
+
+## [1.115.1] - 2023-04-06
+
+### Removed 🗑
+
+-   Support for Custom Views created before CodeCharta version 1.110.0 or older is no longer be maintained [#3265](https://github.com/MaibornWolff/codecharta/pull/3265)
+
+### Fixed 🐞
+
+-   Fix the disappearance of the suspicious metrics labels [#3263](https://github.com/MaibornWolff/codecharta/pull/3263)
+-   Fix UI components that look different since version 1.115.0 [#3260](https://github.com/MaibornWolff/codecharta/pull/3260)
+-   Show latest release notes in changelog dialog [#3264](https://github.com/MaibornWolff/codecharta/pull/3264)
+
+## [1.115.0] - 2023-03-30
+
+### Added 🚀
+
 -   Display the CodeCharta logo next to the MaibornWolff logo [#3226](https://github.com/MaibornWolff/codecharta/pull/3226)
+-   Tooltip for primary and secondary metrics that displays AttributeDescriptor information in the sidebar [#3239](https://github.com/MaibornWolff/codecharta/pull/3239) </br>
+    ![image](https://user-images.githubusercontent.com/65733509/227218468-b7d1e1ae-b847-40ab-8513-f3762b8787bb.png)
+-   Supports adding note to a custom view, provides a preview and an edit option for notes from the selection menu [#3234](https://github.com/MaibornWolff/codecharta/pull/3234) </br>
+    ![image](https://user-images.githubusercontent.com/72517530/226942610-9e08d39c-324d-4de3-81d0-4e5da4e589aa.png)
+    ![image](https://user-images.githubusercontent.com/72517530/226943152-1bb339bb-c39f-4bf6-a32d-ee8476249f98.png)
 
 ### Changed
 
@@ -22,6 +77,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   Improve the layout of the metric chooser panel [#3226](https://github.com/MaibornWolff/codecharta/pull/3226)
 -   Change the primary color to match the color of the CodeCharta logo [#3226](https://github.com/MaibornWolff/codecharta/pull/3226)
 -   Improve the docs for suspicious metrics and risk profile feature [#3238](https://github.com/MaibornWolff/codecharta/pull/3238)
+-   Improve Custom Views Dialog [#3238](https://github.com/MaibornWolff/codecharta/pull/3248)
 
 ### Fixed 🐞
 

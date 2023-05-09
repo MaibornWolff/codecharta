@@ -1,30 +1,21 @@
-import { attributeDescriptors } from "./attributeDescriptors.reducer"
-import { STATE } from "../../../../util/dataMocks"
+import { attributeDescriptors, defaultAttributeDescriptors } from "./attributeDescriptors.reducer"
 import { AttributeDescriptors } from "../../../../codeCharta.model"
-import { AttributeDescriptorsAction, setAttributeDescriptors } from "./attributeDescriptors.action"
+import { setAttributeDescriptors } from "./attributeDescriptors.action"
 
 describe("attributeDescriptors", () => {
-	const defaultValue: AttributeDescriptors = {}
+	it("should set new attributeDescriptors", () => {
+		const newAttributeDescriptors: AttributeDescriptors = {
+			rloc: {
+				title: "title",
+				description: "description",
+				hintLowValue: "hintLowValue",
+				hintHighValue: "hintHighValue",
+				link: "link"
+			}
+		}
 
-	describe("Default State", () => {
-		it("should initialize the default state", () => {
-			const result = attributeDescriptors(undefined, {} as AttributeDescriptorsAction)
+		const result = attributeDescriptors(defaultAttributeDescriptors, setAttributeDescriptors({ value: newAttributeDescriptors }))
 
-			expect(result).toEqual(defaultValue)
-		})
-	})
-
-	describe("Action: SET_ATTRIBUTE_DESCRIPTORS", () => {
-		it("should set new attributeDescriptors", () => {
-			const result = attributeDescriptors(defaultValue, setAttributeDescriptors(STATE.fileSettings.attributeDescriptors))
-
-			expect(result).toEqual(STATE.fileSettings.attributeDescriptors)
-		})
-
-		it("should set default attributeDescriptors", () => {
-			const result = attributeDescriptors(STATE.fileSettings.attributeDescriptors, setAttributeDescriptors())
-
-			expect(result).toEqual(defaultValue)
-		})
+		expect(result).toEqual(newAttributeDescriptors)
 	})
 })

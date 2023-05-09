@@ -1,20 +1,25 @@
 import { render } from "@testing-library/angular"
 import { CodeMapNode } from "../../../../codeCharta.model"
+import { provideMockStore, MockStore } from "@ngrx/store/testing"
 import { selectedNodeSelector } from "../../../../state/selectors/selectedNode.selector"
 import { NodePathComponent } from "./nodePath.component"
 import { isDeltaStateSelector } from "../../../../state/selectors/isDeltaState.selector"
-
-jest.mock("../../../../state/selectors/selectedNode.selector", () => ({
-	selectedNodeSelector: jest.fn()
-}))
-jest.mock("../../../../state/selectors/isDeltaState.selector", () => ({
-	isDeltaStateSelector: jest.fn()
-}))
-
-const selectedNodeSelectorMock = selectedNodeSelector as jest.Mock
-const isDeltaStateSelectorMock = isDeltaStateSelector as jest.Mock
+import { TestBed } from "@angular/core/testing"
 
 describe("nodePathComponent", () => {
+	beforeEach(() => {
+		TestBed.configureTestingModule({
+			providers: [
+				provideMockStore({
+					selectors: [
+						{ selector: selectedNodeSelector, value: null },
+						{ selector: isDeltaStateSelector, value: false }
+					]
+				})
+			]
+		})
+	})
+
 	it("should display an empty p tag, if no building is selected", async () => {
 		const { container } = await render(NodePathComponent, { componentProperties: { node: undefined } })
 		const pTag = container.querySelector("p")
@@ -23,10 +28,13 @@ describe("nodePathComponent", () => {
 	})
 
 	it("should display only node path, when a file is selected", async () => {
-		const node = { path: "some/file.ts" }
-		selectedNodeSelectorMock.mockImplementation(() => node)
+		const node = { path: "some/file.ts" } as CodeMapNode
+		const { container, detectChanges } = await render(NodePathComponent, { componentProperties: { node } })
+		const store = TestBed.inject(MockStore)
+		store.overrideSelector(selectedNodeSelector, node)
+		store.refreshState()
+		detectChanges()
 
-		const { container } = await render(NodePathComponent, { componentProperties: { node } })
 		expect(container.textContent).toContain("some/file.ts")
 	})
 
@@ -39,10 +47,12 @@ describe("nodePathComponent", () => {
 				added: 1,
 				removed: 2
 			}
-		}
-		selectedNodeSelectorMock.mockImplementation(() => node)
-
-		const { container } = await render(NodePathComponent, { componentProperties: { node } })
+		} as unknown as CodeMapNode
+		const { container, detectChanges } = await render(NodePathComponent, { componentProperties: { node } })
+		const store = TestBed.inject(MockStore)
+		store.overrideSelector(selectedNodeSelector, node)
+		store.refreshState()
+		detectChanges()
 
 		expect(container.textContent.replace(/\s+/g, " ")).toContain("some/folder ( 2 files )")
 	})
@@ -57,14 +67,17 @@ describe("nodePathComponent", () => {
 				removed: 2,
 				changed: 3
 			}
-		}
-		isDeltaStateSelectorMock.mockImplementationOnce(() => true)
-		selectedNodeSelectorMock.mockImplementation(() => node)
-
-		const { container } = await render(NodePathComponent, { componentProperties: { node } })
+		} as unknown as CodeMapNode
+		const { container, detectChanges } = await render(NodePathComponent, { componentProperties: { node } })
+		const store = TestBed.inject(MockStore)
+		store.overrideSelector(selectedNodeSelector, node)
+		store.overrideSelector(isDeltaStateSelector, true)
+		store.refreshState()
+		detectChanges()
 
 		expect(container.textContent.replace(/\s+/g, " ")).toContain("some/folder ( 2 files | Δ1 | Δ-2 | Δ3)")
 	})
+
 	it("should display amount of files with correct english grammar, when an empty folder is selected and delta mode is enabled", async () => {
 		const node = {
 			children: [{}] as CodeMapNode[],
@@ -75,14 +88,17 @@ describe("nodePathComponent", () => {
 				removed: 2,
 				changed: 0
 			}
-		}
-		isDeltaStateSelectorMock.mockImplementationOnce(() => true)
-		selectedNodeSelectorMock.mockImplementation(() => node)
-
-		const { container } = await render(NodePathComponent, { componentProperties: { node } })
+		} as unknown as CodeMapNode
+		const { container, detectChanges } = await render(NodePathComponent, { componentProperties: { node } })
+		const store = TestBed.inject(MockStore)
+		store.overrideSelector(selectedNodeSelector, node)
+		store.overrideSelector(isDeltaStateSelector, true)
+		store.refreshState()
+		detectChanges()
 
 		expect(container.textContent).toContain(" 0 files ") // because "zero file" is not grammatically correct
 	})
+
 	it("should display amount of files with correct english grammar, when a folder with 1 file is selected and delta mode is enabled", async () => {
 		const node = {
 			children: [{}] as CodeMapNode[],
@@ -92,11 +108,13 @@ describe("nodePathComponent", () => {
 				added: 1,
 				removed: 0
 			}
-		}
-		isDeltaStateSelectorMock.mockImplementationOnce(() => true)
-		selectedNodeSelectorMock.mockImplementation(() => node)
-
-		const { container } = await render(NodePathComponent, { componentProperties: { node } })
+		} as unknown as CodeMapNode
+		const { container, detectChanges } = await render(NodePathComponent, { componentProperties: { node } })
+		const store = TestBed.inject(MockStore)
+		store.overrideSelector(selectedNodeSelector, node)
+		store.overrideSelector(isDeltaStateSelector, true)
+		store.refreshState()
+		detectChanges()
 
 		expect(container.textContent).toContain(" 1 file ") // because "one files" is not grammatically correct
 	})

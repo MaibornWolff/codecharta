@@ -1,4 +1,3 @@
-"use strict"
 import { LocalStorageCustomConfigs, stateObjectReplacer, stateObjectReviver } from "../codeCharta.model"
 import { CustomConfigItemGroup } from "../ui/customConfigs/customConfigs.component"
 import {
@@ -10,12 +9,12 @@ import {
 } from "../model/customConfig/customConfig.api.model"
 import { FileNameHelper } from "./fileNameHelper"
 import { FileDownloader } from "./fileDownloader"
-import { setState } from "../state/store/state.actions"
 import { ThreeCameraService } from "../ui/codeMap/threeViewer/threeCamera.service"
 import { ThreeOrbitControlsService } from "../ui/codeMap/threeViewer/threeOrbitControls.service"
 import { BehaviorSubject } from "rxjs"
-import { Store } from "../state/angular-redux/store"
 import { VisibleFilesBySelectionMode } from "../ui/customConfigs/visibleFilesBySelectionMode.selector"
+import { Store } from "@ngrx/store"
+import { setState } from "../state/store/state.actions"
 
 export const CUSTOM_CONFIG_FILE_EXTENSION = ".cc.config.json"
 const CUSTOM_CONFIGS_LOCAL_STORAGE_VERSION = "1.0.1"
@@ -38,23 +37,7 @@ export class CustomConfigHelper {
 
 	static loadCustomConfigsFromLocalStorage() {
 		const ccLocalStorage = this.getCcLocalStorage()
-		const configs = new Map(ccLocalStorage?.customConfigs)
-		this.mapOldConfigStructureToNew(configs)
-		return configs
-	}
-
-	// TODO [2023-04-01] remove support
-	private static mapOldConfigStructureToNew(configs: Map<string, CustomConfig>) {
-		for (const config of configs.values()) {
-			if (config["mapChecksum"]) {
-				const checksums = config["mapChecksum"].split(";")
-				config.assignedMaps = new Map(checksums.map((checksum, index) => [checksum, config["assignedMaps"][index]]))
-			}
-			// @ts-ignore
-			if (config.mapSelectionMode === "MULTIPLE") {
-				config.mapSelectionMode = CustomConfigMapSelectionMode.MULTIPLE
-			}
-		}
+		return new Map(ccLocalStorage?.customConfigs)
 	}
 
 	private static getCcLocalStorage() {
@@ -65,16 +48,15 @@ export class CustomConfigHelper {
 
 		return ccLocalStorage
 	}
-
-	static addCustomConfigs(newCustomConfigs: CustomConfig[]) {
-		for (const newCustomConfig of newCustomConfigs) {
-			CustomConfigHelper.customConfigs.set(newCustomConfig.id, newCustomConfig)
-		}
+	static addCustomConfig(newCustomConfig: CustomConfig) {
+		CustomConfigHelper.customConfigs.set(newCustomConfig.id, newCustomConfig)
 		CustomConfigHelper.setCustomConfigsToLocalStorage()
 	}
 
-	static addCustomConfig(newCustomConfig: CustomConfig) {
-		CustomConfigHelper.customConfigs.set(newCustomConfig.id, newCustomConfig)
+	static editCustomConfigNote(configId: string, configNote: string) {
+		const config = CustomConfigHelper.customConfigs.get(configId)
+		config.note = configNote
+		CustomConfigHelper.customConfigs.set(configId, config)
 		CustomConfigHelper.setCustomConfigsToLocalStorage()
 	}
 
@@ -114,8 +96,6 @@ export class CustomConfigHelper {
 	static importCustomConfigs(content: string) {
 		const importedCustomConfigsFile: CustomConfigsDownloadFile = JSON.parse(content, stateObjectReviver)
 
-		this.mapOldConfigStructureToNew(importedCustomConfigsFile.customConfigs)
-
 		for (const exportedConfig of importedCustomConfigsFile.customConfigs.values()) {
 			const alreadyExistingConfig = CustomConfigHelper.getCustomConfigSettings(exportedConfig.id)
 
@@ -139,7 +119,8 @@ export class CustomConfigHelper {
 				customConfigVersion: exportedConfig.customConfigVersion,
 				mapSelectionMode: exportedConfig.mapSelectionMode,
 				stateSettings: exportedConfig.stateSettings,
-				camera: exportedConfig.camera
+				camera: exportedConfig.camera,
+				...(exportedConfig.note && { note: exportedConfig.note })
 			}
 
 			CustomConfigHelper.addCustomConfig(importedCustomConfig)
@@ -215,9 +196,7 @@ export class CustomConfigHelper {
 		threeOrbitControlsService: ThreeOrbitControlsService
 	) {
 		const customConfig = this.getCustomConfigSettings(configId)
-		CustomConfigHelper.deleteUnusedKeyPropsOfCustomConfig(customConfig)
-
-		store.dispatch(setState(customConfig.stateSettings))
+		store.dispatch(setState({ value: customConfig.stateSettings }))
 
 		// TODO: remove this dirty timeout and set camera settings properly
 		// This timeout is a chance that CustomConfigs for a small map can be restored and applied completely (even the camera positions)
@@ -226,14 +205,6 @@ export class CustomConfigHelper {
 				threeOrbitControlsService.setControlTarget(customConfig.camera.cameraTarget)
 				threeCameraService.setPosition(customConfig.camera.camera)
 			}, 100)
-		}
-	}
-
-	// TODO [2023-04-01] remove support
-	private static deleteUnusedKeyPropsOfCustomConfig(customConfig: any) {
-		if (customConfig.stateSettings.treeMap || customConfig.stateSettings.fileSettings.attributeTypes) {
-			delete customConfig.stateSettings.treeMap
-			delete customConfig.stateSettings.fileSettings.attributeTypes
 		}
 	}
 }

@@ -1,6 +1,7 @@
 import markdownFile from "../../../../../../CHANGELOG.md"
 import { Component, Inject, ViewEncapsulation } from "@angular/core"
 import { MAT_DIALOG_DATA } from "@angular/material/dialog"
+import { marked } from "marked"
 
 @Component({
 	templateUrl: "./changelogDialog.component.html",
@@ -11,7 +12,12 @@ export class ChangelogDialogComponent {
 	changes: Record<string, string>
 
 	constructor(@Inject(MAT_DIALOG_DATA) public data: { previousVersion: string; currentVersion: string }) {
-		let changelogLines = markdownFile.split("\n")
+		this.changes = this.getChangelogChanges()
+	}
+
+	private getChangelogChanges() {
+		const parsedMarkdownFile = marked.parse(markdownFile, { headerIds: false })
+		let changelogLines = parsedMarkdownFile.split("\n")
 		const currentVersionFirstLine = this.findVersionLine(changelogLines, this.data.currentVersion)
 		const lastOpenedVersionFirstLine = this.findVersionLine(changelogLines, this.data.previousVersion)
 		//Add 1 to keep the version line so that it detects the end of the last set of changes
@@ -21,7 +27,7 @@ export class ChangelogDialogComponent {
 		for (const title of titles) {
 			const titlePattern = new RegExp(`<h3>${title}</h3>`)
 			const titleLinesIndexes = this.getAllIndexes(changelogLines, titlePattern)
-			const changelogTypes = []
+			const changelogTypes: string[] = []
 			for (const lineIndex of titleLinesIndexes) {
 				// Add 2 to remove the headline and the <ul> tag
 				const start = lineIndex + 2
@@ -34,11 +40,11 @@ export class ChangelogDialogComponent {
 				changes[title] = changelogTypes.join("\n")
 			}
 		}
-		this.changes = changes
+		return changes
 	}
 
 	private getAllIndexes(titles: string[], pattern: RegExp) {
-		return titles.reduce((matchingTitleIndexes, title, index) => {
+		return titles.reduce((matchingTitleIndexes: number[], title, index) => {
 			if (pattern.test(title)) {
 				matchingTitleIndexes.push(index)
 			}

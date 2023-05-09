@@ -2,10 +2,11 @@ import { Component, OnInit, ViewEncapsulation } from "@angular/core"
 import { UntypedFormControl, Validators, AbstractControl, ValidatorFn } from "@angular/forms"
 import { CustomConfigHelper } from "../../../../util/customConfigHelper"
 import { buildCustomConfigFromState } from "../../../../util/customConfigBuilder"
-import { State } from "../../../../state/angular-redux/state"
 import { ThreeCameraService } from "../../../codeMap/threeViewer/threeCamera.service"
 import { ThreeOrbitControlsService } from "../../../codeMap/threeViewer/threeOrbitControls.service"
 import { VisibleFilesBySelectionMode, visibleFilesBySelectionModeSelector } from "../../visibleFilesBySelectionMode.selector"
+import { CcState } from "../../../../codeCharta.model"
+import { State } from "@ngrx/store"
 
 @Component({
 	templateUrl: "./addCustomConfigDialog.component.html",
@@ -14,9 +15,10 @@ import { VisibleFilesBySelectionMode, visibleFilesBySelectionModeSelector } from
 })
 export class AddCustomConfigDialogComponent implements OnInit {
 	customConfigName: UntypedFormControl
+	customConfigNote: string
 
 	constructor(
-		private state: State,
+		private state: State<CcState>,
 		private threeCameraService: ThreeCameraService,
 		private threeOrbitControlsService: ThreeOrbitControlsService
 	) {}
@@ -38,10 +40,15 @@ export class AddCustomConfigDialogComponent implements OnInit {
 	}
 
 	addCustomConfig() {
-		const newCustomConfig = buildCustomConfigFromState(this.customConfigName.value, this.state.getValue(), {
-			camera: this.threeCameraService.camera.position,
-			cameraTarget: this.threeOrbitControlsService.controls.target
-		})
+		const newCustomConfig = buildCustomConfigFromState(
+			this.customConfigName.value,
+			this.state.getValue(),
+			{
+				camera: this.threeCameraService.camera.position,
+				cameraTarget: this.threeOrbitControlsService.controls.target
+			},
+			this.customConfigNote
+		)
 		CustomConfigHelper.addCustomConfig(newCustomConfig)
 	}
 }

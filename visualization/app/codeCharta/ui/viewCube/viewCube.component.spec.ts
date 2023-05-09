@@ -1,4 +1,3 @@
-import "./viewCube.module"
 import { ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitControls.service"
 import { ViewCubeMouseEventsService } from "./viewCube.mouseEvents.service"
 import { PerspectiveCamera } from "three/src/cameras/PerspectiveCamera"

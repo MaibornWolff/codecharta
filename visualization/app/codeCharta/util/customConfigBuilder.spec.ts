@@ -1,7 +1,7 @@
 import { Vector3 } from "three"
 import { buildCustomConfigFromState } from "./customConfigBuilder"
 import { DEFAULT_STATE } from "./dataMocks"
-import { AppSettings, State } from "../codeCharta.model"
+import { AppSettings, CcState } from "../codeCharta.model"
 import { expect } from "@jest/globals"
 import { CustomConfigMapSelectionMode } from "../model/customConfig/customConfig.api.model"
 
@@ -18,12 +18,17 @@ jest.mock("../ui/customConfigs/visibleFilesBySelectionMode.selector", () => ({
 describe("CustomConfigBuilder", () => {
 	describe("buildCustomConfigFromState", () => {
 		it("should return a new CustomConfig instance", () => {
-			const state: State = { ...DEFAULT_STATE, appSettings: { experimentalFeaturesEnabled: true } as AppSettings }
+			const state: CcState = { ...DEFAULT_STATE, appSettings: { experimentalFeaturesEnabled: true } as AppSettings }
 
-			const customConfig = buildCustomConfigFromState("testCustomConfig", state, {
-				camera: new Vector3(1, 2, 3),
-				cameraTarget: new Vector3(4, 5, 6)
-			})
+			const customConfig = buildCustomConfigFromState(
+				"testCustomConfig",
+				state,
+				{
+					camera: new Vector3(1, 2, 3),
+					cameraTarget: new Vector3(4, 5, 6)
+				},
+				"My Custom Note"
+			)
 
 			expect(customConfig.name).toBe("testCustomConfig")
 			expect(customConfig.mapSelectionMode).toBe(CustomConfigMapSelectionMode.MULTIPLE)
@@ -49,6 +54,8 @@ describe("CustomConfigBuilder", () => {
 			expect(customConfig.camera.cameraTarget.x).toBe(4)
 			expect(customConfig.camera.cameraTarget.y).toBe(5)
 			expect(customConfig.camera.cameraTarget.z).toBe(6)
+
+			expect(customConfig.note).toBe("My Custom Note")
 		})
 	})
 })

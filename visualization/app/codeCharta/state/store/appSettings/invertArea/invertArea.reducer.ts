@@ -1,10 +1,6 @@
-import { InvertAreaAction, InvertAreaActions, setInvertArea } from "./invertArea.actions"
+import { createReducer, on } from "@ngrx/store"
+import { setInvertArea } from "./invertArea.actions"
+import { setState } from "../../util/setState.reducer.factory"
 
-export function invertArea(state = setInvertArea().payload, action: InvertAreaAction) {
-	switch (action.type) {
-		case InvertAreaActions.SET_INVERT_AREA:
-			return action.payload
-		default:
-			return state
-	}
-}
+export const defaultInvertArea = false
+export const invertArea = createReducer(defaultInvertArea, on(setInvertArea, setState(defaultInvertArea)))

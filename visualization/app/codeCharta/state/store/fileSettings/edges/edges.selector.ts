@@ -1,4 +1,4 @@
-import { createSelector } from "../../../angular-redux/createSelector"
+import { createSelector } from "@ngrx/store"
 import { fileSettingsSelector } from "../fileSettings.selector"
 
-export const edgesSelector = createSelector([fileSettingsSelector], fileSettings => fileSettings.edges)
+export const edgesSelector = createSelector(fileSettingsSelector, fileSettings => fileSettings.edges)

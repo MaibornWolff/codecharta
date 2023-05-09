@@ -1,5 +1,4 @@
 import { Component, ViewEncapsulation } from "@angular/core"
-import { Store } from "../../../state/angular-redux/store"
 import { marginSelector } from "../../../state/store/dynamicSettings/margin/margin.selector"
 import { setMargin } from "../../../state/store/dynamicSettings/margin/margin.actions"
 import { MatCheckboxChange } from "@angular/material/checkbox"
@@ -8,6 +7,8 @@ import { enableFloorLabelsSelector } from "../../../state/store/appSettings/enab
 import { invertAreaSelector } from "../../../state/store/appSettings/invertArea/invertArea.selector"
 import { debounce } from "../../../util/debounce"
 import { setInvertArea } from "../../../state/store/appSettings/invertArea/invertArea.actions"
+import { Store } from "@ngrx/store"
+import { CcState } from "../../../codeCharta.model"
 
 @Component({
 	selector: "cc-area-settings-panel",
@@ -22,17 +23,17 @@ export class AreaSettingsPanelComponent {
 	enableFloorLabels$ = this.store.select(enableFloorLabelsSelector)
 	isInvertedArea$ = this.store.select(invertAreaSelector)
 
-	constructor(private store: Store) {}
+	constructor(private store: Store<CcState>) {}
 
 	applyDebouncedMargin = debounce((margin: number) => {
-		this.store.dispatch(setMargin(margin))
+		this.store.dispatch(setMargin({ value: margin }))
 	}, AreaSettingsPanelComponent.DEBOUNCE_TIME)
 
 	setEnableFloorLabel(event: MatCheckboxChange) {
-		this.store.dispatch(setEnableFloorLabels(event.checked))
+		this.store.dispatch(setEnableFloorLabels({ value: event.checked }))
 	}
 
 	toggleInvertingArea(event: MatCheckboxChange) {
-		this.store.dispatch(setInvertArea(event.checked))
+		this.store.dispatch(setInvertArea({ value: event.checked }))
 	}
 }

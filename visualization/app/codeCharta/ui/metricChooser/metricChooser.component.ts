@@ -1,9 +1,9 @@
 import { Component, ElementRef, Input, OnInit, ViewChild, ViewEncapsulation } from "@angular/core"
-import { Store } from "../../state/angular-redux/store"
 import { map, Observable } from "rxjs"
-import { EdgeMetricData, NodeMetricData } from "../../codeCharta.model"
+import { EdgeMetricData, NodeMetricData, CcState } from "../../codeCharta.model"
 import { metricTitles } from "../../util/metric/metricTitles"
 import { metricDataSelector } from "../../state/selectors/accumulatedData/metricData/metricData.selector"
+import { Store } from "@ngrx/store"
 
 type MetricChooserType = "node" | "edge"
 
@@ -24,7 +24,7 @@ export class MetricChooserComponent implements OnInit {
 	metricData$: Observable<NodeMetricData[] | EdgeMetricData[]>
 	metricDataDescription: Map<string, string> = metricTitles
 
-	constructor(private store: Store) {}
+	constructor(private store: Store<CcState>) {}
 
 	ngOnInit(): void {
 		this.metricData$ = this.store

@@ -1,14 +1,9 @@
-import {
-	ShowMetricLabelNodeNameAction,
-	ShowMetricLabelNodeNameActions,
-	setShowMetricLabelNodeName
-} from "./showMetricLabelNodeName.actions"
+import { createReducer, on } from "@ngrx/store"
+import { setShowMetricLabelNodeName } from "./showMetricLabelNodeName.actions"
+import { setState } from "../../util/setState.reducer.factory"
 
-export function showMetricLabelNodeName(state = setShowMetricLabelNodeName().payload, action: ShowMetricLabelNodeNameAction) {
-	switch (action.type) {
-		case ShowMetricLabelNodeNameActions.SET_SHOW_METRIC_LABEL_NODE_NAME:
-			return action.payload
-		default:
-			return state
-	}
-}
+export const defaultShowMetricLabelNodeName = true
+export const showMetricLabelNodeName = createReducer(
+	defaultShowMetricLabelNodeName,
+	on(setShowMetricLabelNodeName, setState(defaultShowMetricLabelNodeName))
+)

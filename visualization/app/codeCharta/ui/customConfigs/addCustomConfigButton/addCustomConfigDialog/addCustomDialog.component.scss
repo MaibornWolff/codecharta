@@ -15,11 +15,12 @@
 	}
 
 	.dialog-content {
-		padding: 0 24px;
-		margin: 10px 0;
-
 		mat-form-field {
 			width: 100%;
+
+			&.custom-config-note {
+				padding-top: 30px;
+			}
 		}
 
 		label {

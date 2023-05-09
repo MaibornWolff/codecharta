@@ -1,5 +1,6 @@
-import { Store } from "../../../state/store/store"
 import { TestBed } from "@angular/core/testing"
+import { provideMockStore } from "@ngrx/store/testing"
+import { State } from "@ngrx/store"
 import { CustomConfigsModule } from "../customConfigs.module"
 import { CustomConfigListComponent } from "./customConfigList.component"
 import { render, screen } from "@testing-library/angular"
@@ -15,6 +16,7 @@ import { ThreeOrbitControlsService } from "../../codeMap/threeViewer/threeOrbitC
 import userEvent from "@testing-library/user-event"
 import { expect } from "@jest/globals"
 import { MatDialog } from "@angular/material/dialog"
+import { defaultState } from "../../../state/store/state.manager"
 
 const mockedCustomConfigHelperService = {
 	customConfigItemGroups$: of({
@@ -29,7 +31,6 @@ describe("customConfigListComponent", () => {
 
 	beforeEach(() => {
 		mockedDialog = { open: jest.fn() }
-		Store["initialize"]()
 		TestBed.configureTestingModule({
 			imports: [CustomConfigsModule],
 			providers: [
@@ -37,7 +38,9 @@ describe("customConfigListComponent", () => {
 				{ provide: CustomConfigHelperService, useValue: mockedCustomConfigHelperService },
 				{ provide: ThreeSceneService, useValue: {} },
 				{ provide: ThreeCameraService, useValue: {} },
-				{ provide: ThreeOrbitControlsService, useValue: {} }
+				{ provide: ThreeOrbitControlsService, useValue: {} },
+				provideMockStore(),
+				{ provide: State, useValue: { getValue: () => defaultState } }
 			]
 		})
 	})
@@ -106,7 +109,9 @@ describe("customConfigListComponent", () => {
 
 		expect(container.querySelectorAll("mat-list-item").length).toBe(2)
 		expect(screen.getByText("SampleMap View #1")).not.toBeNull()
+		expect(screen.getByText("a note")).not.toBeNull()
 		expect(screen.getByText("SampleMap View #2")).not.toBeNull()
+		expect(screen.getByText("Add Note")).not.toBeNull()
 	})
 
 	it("should disable button for all custom configs belonging to a non-applicable custom config item group", async () => {
@@ -123,7 +128,8 @@ describe("customConfigListComponent", () => {
 
 		await userEvent.click(customConfigItemGroupElement)
 
-		expect(screen.getByText("SampleMap Delta View #1")).not.toBeNull()
-		expect((screen.getByText("SampleMap Delta View #1").closest("button") as HTMLButtonElement).disabled).toBe(true)
+		expect((screen.getAllByTitle("SampleMap Delta View #1", { exact: false })[1].closest("button") as HTMLButtonElement).disabled).toBe(
+			true
+		)
 	})
 })

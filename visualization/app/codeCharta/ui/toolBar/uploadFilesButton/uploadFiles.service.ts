@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core"
+import { Store } from "@ngrx/store"
 import { LoadFileService } from "../../../services/loadFile/loadFile.service"
-import { Store } from "../../../state/angular-redux/store"
 import { setIsLoadingFile } from "../../../state/store/appSettings/isLoadingFile/isLoadingFile.actions"
 import { setIsLoadingMap } from "../../../state/store/appSettings/isLoadingMap/isLoadingMap.actions"
 import { CustomConfigHelper, CUSTOM_CONFIG_FILE_EXTENSION } from "../../../util/customConfigHelper"
@@ -19,8 +19,8 @@ export class UploadFilesService {
 		ccFileInput.addEventListener("change", async () => {
 			try {
 				this.isUploading = true
-				this.store.dispatch(setIsLoadingFile(true))
-				this.store.dispatch(setIsLoadingMap(true))
+				this.store.dispatch(setIsLoadingFile({ value: true }))
+				this.store.dispatch(setIsLoadingMap({ value: true }))
 
 				const plainFileContents = await Promise.all(readFiles(ccFileInput.files))
 				const { customConfigs, ccFiles } = this.splitCustomConfigsAndCCFiles(ccFileInput.files, plainFileContents)
@@ -33,8 +33,8 @@ export class UploadFilesService {
 					await this.loadFileService.loadFiles(ccFiles)
 				}
 			} catch {
-				this.store.dispatch(setIsLoadingFile(false))
-				this.store.dispatch(setIsLoadingMap(false))
+				this.store.dispatch(setIsLoadingFile({ value: false }))
+				this.store.dispatch(setIsLoadingMap({ value: false }))
 			} finally {
 				this.isUploading = false
 			}

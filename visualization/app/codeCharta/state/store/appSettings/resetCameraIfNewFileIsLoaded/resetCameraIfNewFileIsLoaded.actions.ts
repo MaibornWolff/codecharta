@@ -1,23 +1,3 @@
-import { CCAction } from "../../../../codeCharta.model"
+import { createAction, props } from "@ngrx/store"
 
-export enum ResetCameraIfNewFileIsLoadedActions {
-	SET_RESET_CAMERA_IF_NEW_FILE_IS_LOADED = "SET_RESET_CAMERA_IF_NEW_FILE_IS_LOADED"
-}
-
-export interface SetResetCameraIfNewFileIsLoadedAction extends CCAction {
-	type: ResetCameraIfNewFileIsLoadedActions.SET_RESET_CAMERA_IF_NEW_FILE_IS_LOADED
-	payload: boolean
-}
-
-export type ResetCameraIfNewFileIsLoadedAction = SetResetCameraIfNewFileIsLoadedAction
-
-export function setResetCameraIfNewFileIsLoaded(
-	resetCameraIfNewFileIsLoaded: boolean = defaultResetIfNewFileIsLoaded
-): SetResetCameraIfNewFileIsLoadedAction {
-	return {
-		type: ResetCameraIfNewFileIsLoadedActions.SET_RESET_CAMERA_IF_NEW_FILE_IS_LOADED,
-		payload: resetCameraIfNewFileIsLoaded
-	}
-}
-
-export const defaultResetIfNewFileIsLoaded = true
+export const setResetCameraIfNewFileIsLoaded = createAction("SET_RESET_CAMERA_IF_NEW_FILE_IS_LOADED", props<{ value: boolean }>())

@@ -1,21 +1,3 @@
-import { Action } from "redux"
+import { createAction, props } from "@ngrx/store"
 
-export enum IsLoadingMapActions {
-	SET_IS_LOADING_MAP = "SET_IS_LOADING_MAP"
-}
-
-export interface SetIsLoadingMapAction extends Action {
-	type: IsLoadingMapActions.SET_IS_LOADING_MAP
-	payload: boolean
-}
-
-export type IsLoadingMapAction = SetIsLoadingMapAction
-
-export function setIsLoadingMap(isLoadingMap: boolean = defaultIsLoadingMap): SetIsLoadingMapAction {
-	return {
-		type: IsLoadingMapActions.SET_IS_LOADING_MAP,
-		payload: isLoadingMap
-	}
-}
-
-export const defaultIsLoadingMap = true
+export const setIsLoadingMap = createAction("SET_IS_LOADING_MAP", props<{ value: boolean }>())

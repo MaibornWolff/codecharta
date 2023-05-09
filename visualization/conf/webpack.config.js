@@ -1,5 +1,3 @@
-const RemarkHTML = require("remark-html")
-
 module.exports = config => {
 	config.module.rules.push(
 		{
@@ -8,18 +6,7 @@ module.exports = config => {
 		},
 		{
 			test: /\.md$/,
-			use: [
-				{ loader: "html-loader" },
-				{
-					loader: "remark-loader",
-					options: {
-						removeFrontMatter: false,
-						remarkOptions: {
-							plugins: [RemarkHTML]
-						}
-					}
-				}
-			]
+			type: "asset/source"
 		}
 	)
 

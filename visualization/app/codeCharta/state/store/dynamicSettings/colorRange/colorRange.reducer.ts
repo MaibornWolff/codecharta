@@ -1,10 +1,7 @@
-import { ColorRangeAction, ColorRangeActions, defaultColorRange } from "./colorRange.actions"
+import { createReducer, on } from "@ngrx/store"
+import { setColorRange } from "./colorRange.actions"
+import { ColorRange } from "../../../../codeCharta.model"
+import { mergeState } from "../../util/setState.reducer.factory"
 
-export function colorRange(state = defaultColorRange, action: ColorRangeAction) {
-	switch (action.type) {
-		case ColorRangeActions.SET_COLOR_RANGE:
-			return { ...state, ...action.payload }
-		default:
-			return state
-	}
-}
+export const defaultColorRange: ColorRange = { from: 0, to: 0 }
+export const colorRange = createReducer(defaultColorRange, on(setColorRange, mergeState(defaultColorRange)))

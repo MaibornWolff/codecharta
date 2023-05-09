@@ -1,6 +1,6 @@
-import { createSelector } from "../../../../state/angular-redux/createSelector"
 import { selectedNodeSelector } from "../../../../state/selectors/selectedNode.selector"
 import { CodeMapNode, FileCount } from "../../../../codeCharta.model"
+import { createSelector } from "@ngrx/store"
 
 export const getFileCount = (node?: Pick<CodeMapNode, "attributes" | "fileCount">): FileCount => {
 	if (!node) {
@@ -15,4 +15,4 @@ export const getFileCount = (node?: Pick<CodeMapNode, "attributes" | "fileCount"
 	}
 }
 
-export const fileCountSelector = createSelector([selectedNodeSelector], getFileCount)
+export const fileCountSelector = createSelector(selectedNodeSelector, getFileCount)

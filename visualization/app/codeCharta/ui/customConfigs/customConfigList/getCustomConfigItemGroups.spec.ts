@@ -30,7 +30,8 @@ describe("getCustomConfigItemGroups", () => {
 				colorMetric: "mcc",
 				edgeMetric: "avgCommits"
 			}
-		}
+		},
+		note: "Custom Note 1"
 	} as CustomConfig
 
 	const customConfigStub2 = {
@@ -75,6 +76,7 @@ describe("getCustomConfigItemGroups", () => {
 		const applicableGroup = actualCustomConfigItemGroups.applicableItems.get("map1_map2_STANDARD")
 		expect(applicableGroup.customConfigItems[0].name).toBe("config1")
 		expect(applicableGroup.customConfigItems[0].isApplicable).toBe(true)
+		expect(applicableGroup.customConfigItems[0].note).toBe("Custom Note 1")
 		expect(applicableGroup.customConfigItems[0].metrics).toEqual({
 			heightMetric: "mcc",
 			areaMetric: "rloc",
@@ -89,6 +91,7 @@ describe("getCustomConfigItemGroups", () => {
 			negativeDelta: "red",
 			positiveDelta: "green"
 		})
+		expect(applicableGroup.customConfigItems[0].note).toBe("Custom Note 1")
 	})
 
 	it("should set applicable-flags to false when current assigned map names, checksums and selection mode are not matching a custom config", () => {
@@ -107,6 +110,7 @@ describe("getCustomConfigItemGroups", () => {
 
 		const nonApplicableGroup = actualCustomConfigItemGroups.nonApplicableItems.get("map3_STANDARD")
 		expect(nonApplicableGroup.customConfigItems[0].name).toBe("config2")
+		expect(nonApplicableGroup.customConfigItems[0].note).toBeUndefined()
 		expect(nonApplicableGroup.customConfigItems[0].isApplicable).toBe(false)
 	})
 

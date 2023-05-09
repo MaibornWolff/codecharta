@@ -1,3 +1,4 @@
+@use "../../../material/theme";
 cc-legend-panel {
 	$fixedHeight: 35;
 
@@ -10,6 +11,12 @@ cc-legend-panel {
 		height: 36px;
 		width: 88px;
 		margin: 6px 8px;
+		color: white;
+		background-color: theme.$cc-primary-color;
+
+		&:hover {
+			background-color: theme.$cc-emphasized-color;
+		}
 
 		&.isAttributeSideBarVisible {
 			right: 316px;

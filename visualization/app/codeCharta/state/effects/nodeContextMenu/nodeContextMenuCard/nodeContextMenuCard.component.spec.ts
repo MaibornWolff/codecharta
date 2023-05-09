@@ -3,14 +3,10 @@ import { render, screen } from "@testing-library/angular"
 import { IdToBuildingService } from "../../../../services/idToBuilding/idToBuilding.service"
 import { ThreeSceneService } from "../../../../ui/codeMap/threeViewer/threeSceneService"
 import { VALID_FILE_NODE_WITH_ID, VALID_NODE_WITH_PATH } from "../../../../util/dataMocks"
-import { rightClickedCodeMapNodeSelector } from "../rightClickedCodeMapNode.selector"
 import { NodeContextMenuCardComponent } from "./nodeContextMenuCard.component"
 import { NodeContextMenuCardModule } from "./nodeContextMenuCard.module"
-
-jest.mock("../rightClickedCodeMapNode.selector", () => ({
-	rightClickedCodeMapNodeSelector: jest.fn()
-}))
-const mockedRightClickedCodeMapNodeSelector = jest.mocked(rightClickedCodeMapNodeSelector)
+import { provideMockStore } from "@ngrx/store/testing"
+import { rightClickedCodeMapNodeSelector } from "../rightClickedCodeMapNode.selector"
 
 describe("NodeContextMenuCardComponent", () => {
 	beforeEach(() => {
@@ -30,21 +26,25 @@ describe("NodeContextMenuCardComponent", () => {
 		})
 	})
 
-	it("should not display mark folder option if node is a leaf", async () => {
-		mockedRightClickedCodeMapNodeSelector.mockImplementation(() => VALID_FILE_NODE_WITH_ID)
-		await render(NodeContextMenuCardComponent, { excludeComponentDeclaration: true })
-		expect(screen.queryByTitle("Colorize folder")).toBe(null)
+	it("should display all information", async () => {
+		const { container } = await render(NodeContextMenuCardComponent, {
+			excludeComponentDeclaration: true,
+			providers: provideMockStore({ selectors: [{ selector: rightClickedCodeMapNodeSelector, value: VALID_NODE_WITH_PATH }] })
+		})
+
+		expect(screen.getByText("/root")).not.toBe(null)
+		expect(screen.getByText("FOCUS")).not.toBe(null)
+		expect(screen.getByText("FLATTEN")).not.toBe(null)
+		expect(screen.getByText("KEEP HIGHLIGHT")).not.toBe(null)
+		expect(screen.getByText("EXCLUDE")).not.toBe(null)
+		expect(container.querySelector("cc-mark-folder-row")).not.toBe(null)
 	})
 
-	it("should display all information", async () => {
-		mockedRightClickedCodeMapNodeSelector.mockImplementation(() => VALID_NODE_WITH_PATH)
-		await render(NodeContextMenuCardComponent, { excludeComponentDeclaration: true })
-
-		expect(screen.queryByText("/root")).not.toBe(null)
-		expect(screen.queryByText("FOCUS")).not.toBe(null)
-		expect(screen.queryByText("FLATTEN")).not.toBe(null)
-		expect(screen.queryByText("KEEP HIGHLIGHT")).not.toBe(null)
-		expect(screen.queryByText("EXCLUDE")).not.toBe(null)
-		expect(screen.queryAllByTitle("Colorize folder").length).toBe(5)
+	it("should not display mark folder option if node is a leaf", async () => {
+		const { container } = await render(NodeContextMenuCardComponent, {
+			excludeComponentDeclaration: true,
+			providers: provideMockStore({ selectors: [{ selector: rightClickedCodeMapNodeSelector, value: VALID_FILE_NODE_WITH_ID }] })
+		})
+		expect(container.querySelector("cc-mark-folder-row")).toBe(null)
 	})
 })

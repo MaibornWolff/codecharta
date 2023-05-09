@@ -1,3 +1,4 @@
-import { CcState } from "../../store"
+import { createSelector } from "@ngrx/store"
+import { dynamicSettingsSelector } from "../dynamicSettings.selector"
 
-export const sortingOrderSelector = (state: CcState) => state.dynamicSettings.sortingOption
+export const sortingOrderSelector = createSelector(dynamicSettingsSelector, dynamicSettings => dynamicSettings.sortingOption)

@@ -1,7 +1,7 @@
 import { Overlay, OverlayRef } from "@angular/cdk/overlay"
 import { ComponentPortal } from "@angular/cdk/portal"
 import { Injectable } from "@angular/core"
-import { Store } from "../../angular-redux/store"
+import { Store } from "@ngrx/store"
 import { setRightClickedNodeData } from "../../store/appStatus/rightClickedNodeData/rightClickedNodeData.actions"
 import { NodeContextMenuCardComponent } from "./nodeContextMenuCard/nodeContextMenuCard.component"
 

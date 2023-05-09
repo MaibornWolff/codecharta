@@ -1,5 +1,6 @@
 import {
 	AttributeTypeValue,
+	AttributeDescriptors,
 	BlacklistItem,
 	BlacklistType,
 	CCFile,
@@ -20,7 +21,7 @@ import {
 	Settings,
 	SharpnessMode,
 	SortingOption,
-	State
+	CcState
 } from "../codeCharta.model"
 import { CodeMapBuilding } from "../ui/codeMap/rendering/codeMapBuilding"
 import { Box3, Vector3 } from "three"
@@ -100,7 +101,7 @@ export const TEST_ATTRIBUTE_TYPES = {
 	edges: { test: AttributeTypeValue.absolute }
 }
 
-export const TEST_ATTRIBUTE_DESCRIPTORS_HALF_FILLED = {
+export const TEST_ATTRIBUTE_DESCRIPTORS_HALF_FILLED: AttributeDescriptors = {
 	mcc: {
 		title: "Maximum Cyclic Complexity",
 		description: "Maximum cyclic complexity",
@@ -114,6 +115,30 @@ export const TEST_ATTRIBUTE_DESCRIPTORS_HALF_FILLED = {
 		hintLowValue: "",
 		hintHighValue: "",
 		link: "https://www.npmjs.com/package/metric-gardener"
+	}
+}
+
+export const TEST_ATTRIBUTE_DESCRIPTORS: AttributeDescriptors = {
+	a: {
+		title: "a_testTitle",
+		description: "a_testDescription",
+		hintHighValue: "",
+		hintLowValue: "",
+		link: ""
+	},
+	b: {
+		title: "b_testTitle",
+		description: "",
+		hintHighValue: "",
+		hintLowValue: "",
+		link: ""
+	},
+	c: {
+		title: undefined,
+		description: "c_testDescription",
+		hintHighValue: undefined,
+		hintLowValue: undefined,
+		link: undefined
 	}
 }
 
@@ -1561,7 +1586,7 @@ export const EDGE_METRIC_DATA: EdgeMetricData[] = [
 	{ name: "average_commits", maxValue: 20, minValue: 0 }
 ]
 
-export const STATE: State = {
+export const STATE: CcState = {
 	fileSettings: {
 		attributeTypes: {
 			nodes: {
@@ -1646,7 +1671,7 @@ export const STATE: State = {
 	}
 }
 
-export const DEFAULT_STATE: State = {
+export const DEFAULT_STATE: CcState = {
 	appSettings: {
 		amountOfTopLabels: 1,
 		amountOfEdgePreviews: 1,
@@ -1987,7 +2012,8 @@ export const CUSTOM_CONFIG_ITEM_GROUPS: Map<string, CustomConfigItemGroup> = new
 						negativeDelta: "#ff0E0E"
 					},
 					metrics: { areaMetric: "rloc", heightMetric: "mcc", colorMetric: "functions", edgeMetric: "avgCommits" },
-					isApplicable: true
+					isApplicable: true,
+					note: "a note"
 				},
 				{
 					id: "File_B_File_C_STANDARD_Sample_Map View #2",

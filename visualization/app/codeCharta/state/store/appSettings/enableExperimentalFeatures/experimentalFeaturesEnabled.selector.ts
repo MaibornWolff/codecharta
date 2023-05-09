@@ -1,7 +1,7 @@
-import { createSelector } from "../../../angular-redux/createSelector"
+import { createSelector } from "@ngrx/store"
 import { appSettingsSelector } from "../appSettings.selector"
 
 export const experimentalFeaturesEnabledSelector = createSelector(
-	[appSettingsSelector],
+	appSettingsSelector,
 	appSettings => appSettings.experimentalFeaturesEnabled
 )

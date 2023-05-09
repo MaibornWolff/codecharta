@@ -8,6 +8,8 @@ import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
+import de.maibornwolff.codecharta.tools.interactiveparser.util.InteractiveParserHelper
+import de.maibornwolff.codecharta.util.ResourceSearchHelper
 import picocli.CommandLine
 import java.io.InputStream
 import java.io.PrintStream
@@ -15,9 +17,9 @@ import java.net.URL
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
-    name = "sonarimport",
-    description = ["generates cc.json from metric data from SonarQube"],
-    footer = ["Copyright(c) 2022, MaibornWolff GmbH"]
+    name = InteractiveParserHelper.SonarImporterConstants.name,
+    description = [InteractiveParserHelper.SonarImporterConstants.description],
+    footer = [InteractiveParserHelper.GeneralConstants.GenericFooter]
 )
 class SonarImporterMain(
     private val input: InputStream = System.`in`,
@@ -93,4 +95,19 @@ class SonarImporterMain(
     }
 
     override fun getDialog(): ParserDialogInterface = ParserDialog
+    override fun isApplicable(resourceToBeParsed: String): Boolean {
+        val trimmedInput = resourceToBeParsed.trim()
+
+        if (trimmedInput.contains("^http(s)?://".toRegex())) {
+            return true
+        }
+
+        return ResourceSearchHelper.isResourcePresent(trimmedInput, "sonar-project.properties",
+                ResourceSearchHelper::doStringsEqual, 0,
+                shouldSearchFullDirectory = true, resourceShouldBeFile = true)
+    }
+
+    override fun getName(): String {
+        return InteractiveParserHelper.SonarImporterConstants.name
+    }
 }

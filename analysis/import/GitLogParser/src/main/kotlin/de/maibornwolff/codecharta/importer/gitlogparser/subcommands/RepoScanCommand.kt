@@ -82,4 +82,11 @@ class RepoScanCommand : Callable<Void>, InteractiveParser {
     }
 
     override fun getDialog(): ParserDialogInterface = RepoScanParserDialog
+    override fun isApplicable(resourceToBeParsed: String): Boolean {
+        return false
+    }
+
+    override fun getName(): String {
+        return "repo-scan"
+    }
 }

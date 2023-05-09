@@ -1,6 +1,6 @@
+import { createSelector } from "@ngrx/store"
 import { hierarchy } from "d3-hierarchy"
 import { CodeMapNode } from "../../../codeCharta.model"
-import { createSelector } from "../../angular-redux/createSelector"
 import { AccumulatedData, accumulatedDataSelector } from "./accumulatedData.selector"
 
 export const _calculateIdToNode = (accumulatedData: Pick<AccumulatedData, "unifiedMapNode">): Map<number, CodeMapNode> => {
@@ -15,4 +15,4 @@ export const _calculateIdToNode = (accumulatedData: Pick<AccumulatedData, "unifi
 	return idToNode
 }
 
-export const idToNodeSelector = createSelector([accumulatedDataSelector], _calculateIdToNode)
+export const idToNodeSelector = createSelector(accumulatedDataSelector, _calculateIdToNode)

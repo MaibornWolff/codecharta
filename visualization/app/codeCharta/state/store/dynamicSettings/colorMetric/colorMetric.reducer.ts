@@ -1,10 +1,6 @@
-import { ColorMetricAction, ColorMetricActions, setColorMetric } from "./colorMetric.actions"
+import { createReducer, on } from "@ngrx/store"
+import { setColorMetric } from "./colorMetric.actions"
+import { setState } from "../../util/setState.reducer.factory"
 
-export function colorMetric(state = setColorMetric().payload, action: ColorMetricAction) {
-	switch (action.type) {
-		case ColorMetricActions.SET_COLOR_METRIC:
-			return action.payload
-		default:
-			return state
-	}
-}
+export const defaultColorMetric: null | string = null
+export const colorMetric = createReducer(defaultColorMetric, on(setColorMetric, setState(defaultColorMetric)))

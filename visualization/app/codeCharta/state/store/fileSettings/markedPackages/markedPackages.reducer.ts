@@ -1,29 +1,29 @@
-import { MarkedPackagesAction, MarkedPackagesActions, setMarkedPackages } from "./markedPackages.actions"
-import { removeEntryAtIndexFromArray } from "../../../../util/reduxHelper"
+import { markPackages, setMarkedPackages, unmarkPackage } from "./markedPackages.actions"
+import { removeEntryAtIndexFromArray } from "../../../../util/arrayHelper"
 import { addMarkedPackage } from "./util/addMarkedPackage"
 import { findIndexOfMarkedPackageOrParent } from "./util/findIndexOfMarkedPackageOrParent"
+import { createReducer, on } from "@ngrx/store"
+import { MarkedPackage } from "../../../../codeCharta.model"
+import { setState } from "../../util/setState.reducer.factory"
 
-export function markedPackages(state = setMarkedPackages().payload, action: MarkedPackagesAction) {
-	switch (action.type) {
-		case MarkedPackagesActions.SET_MARKED_PACKAGES:
-			return action.payload
-		case MarkedPackagesActions.UNMARK_PACKAGE: {
-			const indexOfPackageToBeUnmarked = findIndexOfMarkedPackageOrParent(state, action.payload)
-			if (indexOfPackageToBeUnmarked !== -1) {
-				return removeEntryAtIndexFromArray(state, indexOfPackageToBeUnmarked)
-			}
-			return state
+export const defaultMarkedPackages: MarkedPackage[] = []
+export const markedPackages = createReducer(
+	defaultMarkedPackages,
+	on(setMarkedPackages, setState(defaultMarkedPackages)),
+	on(markPackages, (state, action) => {
+		const markedPackagesMap = new Map(state.map(entry => [entry.path, entry]))
+
+		for (const markedPackage of action.packages) {
+			addMarkedPackage(markedPackagesMap, markedPackage)
 		}
-		case MarkedPackagesActions.MARK_PACKAGE: {
-			const markedPackagesMap = new Map(state.map(entry => [entry.path, entry]))
 
-			for (const markedPackage of action.payload) {
-				addMarkedPackage(markedPackagesMap, markedPackage)
-			}
-
-			return [...markedPackagesMap.values()]
+		return [...markedPackagesMap.values()]
+	}),
+	on(unmarkPackage, (state, action) => {
+		const indexOfPackageToBeUnmarked = findIndexOfMarkedPackageOrParent(state, action.path)
+		if (indexOfPackageToBeUnmarked !== -1) {
+			return removeEntryAtIndexFromArray(state, indexOfPackageToBeUnmarked)
 		}
-		default:
-			return state
-	}
-}
+		return state
+	})
+)

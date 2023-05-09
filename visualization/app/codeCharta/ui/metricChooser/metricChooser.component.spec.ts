@@ -5,21 +5,29 @@ import { render, screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
 import { MetricChooserComponent } from "./metricChooser.component"
 import { MetricChooserModule } from "./metricChooser.module"
-
-jest.mock("../../state/selectors/accumulatedData/metricData/metricData.selector", () => ({
-	metricDataSelector: () => ({
-		nodeMetricData: [
-			{ name: "aMetric", maxValue: 1 },
-			{ name: "bMetric", maxValue: 2 },
-			{ name: "cMetric", maxValue: 3 }
-		]
-	})
-}))
+import { provideMockStore } from "@ngrx/store/testing"
+import { metricDataSelector } from "../../state/selectors/accumulatedData/metricData/metricData.selector"
 
 describe("metricChooserComponent", () => {
 	beforeEach(() => {
 		TestBed.configureTestingModule({
-			imports: [MetricChooserModule]
+			imports: [MetricChooserModule],
+			providers: [
+				provideMockStore({
+					selectors: [
+						{
+							selector: metricDataSelector,
+							value: {
+								nodeMetricData: [
+									{ name: "aMetric", maxValue: 1 },
+									{ name: "bMetric", maxValue: 2 },
+									{ name: "cMetric", maxValue: 3 }
+								]
+							}
+						}
+					]
+				})
+			]
 		})
 	})
 

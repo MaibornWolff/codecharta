@@ -1,11 +1,12 @@
 import { Component, ViewEncapsulation } from "@angular/core"
-import { Store } from "../../state/angular-redux/store"
 import { isDeltaStateSelector } from "../../state/selectors/isDeltaState.selector"
 import { legendColorMetricSelector } from "./selectors/legendColorMetric.selector"
 import { legendHeightMetricSelector } from "./selectors/legendHeightMetric.selector"
 import { legendAreaMetricSelector } from "./selectors/legendAreaMetric.selector"
 import { legendEdgeMetricSelector } from "./selectors/legendEdgeMetric.selector"
 import { IsAttributeSideBarVisibleService } from "../../services/isAttributeSideBarVisible.service"
+import { Store } from "@ngrx/store"
+import { CcState } from "../../codeCharta.model"
 
 @Component({
 	selector: "cc-legend-panel",
@@ -21,7 +22,7 @@ export class LegendPanelComponent {
 	colorMetric$ = this.store.select(legendColorMetricSelector)
 	edgeMetric$ = this.store.select(legendEdgeMetricSelector)
 
-	constructor(public isAttributeSideBarVisibleService: IsAttributeSideBarVisibleService, private store: Store) {}
+	constructor(public isAttributeSideBarVisibleService: IsAttributeSideBarVisibleService, private store: Store<CcState>) {}
 
 	toggleIsLegendVisible() {
 		this.isLegendVisible = !this.isLegendVisible

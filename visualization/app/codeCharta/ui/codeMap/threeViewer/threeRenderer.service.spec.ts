@@ -1,15 +1,16 @@
 import { TestBed } from "@angular/core/testing"
 import { Camera, Scene, Vector2, WebGLRenderer } from "three"
+import { Store, StoreModule } from "@ngrx/store"
 // eslint-disable-next-line no-duplicate-imports
 import * as three from "three"
 import { WEBGL } from "three/examples/jsm/WebGL"
 import { SharpnessMode } from "../../../codeCharta.model"
-import { Store } from "../../../state/angular-redux/store"
 import { setSharpnessMode } from "../../../state/store/appSettings/sharpnessMode/sharpnessMode.actions"
 import { CustomComposer } from "../rendering/postprocessor/customComposer"
 import { ThreeRendererService } from "./threeRenderer.service"
 import * as composer from "../rendering/postprocessor/customComposer"
 import { setIsWhiteBackground } from "../../../state/store/appSettings/isWhiteBackground/isWhiteBackground.actions"
+import { appReducers, setStateMiddleware } from "../../../state/store/state.manager"
 
 describe("threeRendererService", () => {
 	let threeRendererService: ThreeRendererService
@@ -17,12 +18,12 @@ describe("threeRendererService", () => {
 
 	const setFXAA = (value: boolean) => {
 		ThreeRendererService.enableFXAA = value
-		store.dispatch(setSharpnessMode(value ? SharpnessMode.PixelRatioFXAA : SharpnessMode.Standard))
+		store.dispatch(setSharpnessMode({ value: value ? SharpnessMode.PixelRatioFXAA : SharpnessMode.Standard }))
 	}
 
 	const setPixelRatio = (value: boolean) => {
 		ThreeRendererService.setPixelRatio = value
-		store.dispatch(setSharpnessMode(value ? SharpnessMode.PixelRatioFXAA : SharpnessMode.Standard))
+		store.dispatch(setSharpnessMode({ value: value ? SharpnessMode.PixelRatioFXAA : SharpnessMode.Standard }))
 	}
 
 	const setWebGl2 = value => {
@@ -40,7 +41,8 @@ describe("threeRendererService", () => {
 
 	beforeEach(() => {
 		TestBed.configureTestingModule({
-			providers: [ThreeRendererService, Store]
+			imports: [StoreModule.forRoot(appReducers, { metaReducers: [setStateMiddleware] })],
+			providers: [ThreeRendererService]
 		})
 		store = TestBed.inject(Store)
 
@@ -128,14 +130,14 @@ describe("threeRendererService", () => {
 		})
 
 		it("should ignore background updates before it was initialized", () => {
-			store.dispatch(setIsWhiteBackground(true))
+			store.dispatch(setIsWhiteBackground({ value: true }))
 			expect(threeRendererService["setBackgroundColorToState"]).not.toHaveBeenCalled()
 		})
 
 		it("should set its background color within init and subscribe to updates", () => {
 			threeRendererService.init(10, 20, new Scene(), new Camera())
 			expect(threeRendererService["setBackgroundColorToState"]).toHaveBeenCalledTimes(1)
-			store.dispatch(setIsWhiteBackground(false))
+			store.dispatch(setIsWhiteBackground({ value: true }))
 			expect(threeRendererService["setBackgroundColorToState"]).toHaveBeenCalledTimes(2)
 		})
 	})
@@ -192,7 +194,7 @@ describe("threeRendererService", () => {
 
 		it("should call initComposer when enableFXAA is true", () => {
 			threeRendererService["initComposer"] = jest.fn()
-			store.dispatch(setSharpnessMode(SharpnessMode.PixelRatioFXAA))
+			store.dispatch(setSharpnessMode({ value: SharpnessMode.PixelRatioFXAA }))
 
 			threeRendererService["initGL"](1, 1)
 			expect(threeRendererService["initComposer"]).toHaveBeenCalled()
@@ -200,7 +202,7 @@ describe("threeRendererService", () => {
 
 		it("should not call initComposer when enableFXAA is false", () => {
 			threeRendererService["initComposer"] = jest.fn()
-			store.dispatch(setSharpnessMode(SharpnessMode.Standard))
+			store.dispatch(setSharpnessMode({ value: SharpnessMode.Standard }))
 
 			threeRendererService["initGL"](1, 1)
 			expect(threeRendererService["initComposer"]).not.toHaveBeenCalled()
@@ -209,7 +211,7 @@ describe("threeRendererService", () => {
 
 	describe("setGLOptions", () => {
 		it("should call and set the standard options", () => {
-			store.dispatch(setSharpnessMode(SharpnessMode.Standard))
+			store.dispatch(setSharpnessMode({ value: SharpnessMode.Standard }))
 
 			threeRendererService["setGLOptions"]()
 
@@ -219,7 +221,7 @@ describe("threeRendererService", () => {
 		})
 
 		it("should call and set the pixel ration with no AA options", () => {
-			store.dispatch(setSharpnessMode(SharpnessMode.PixelRatioNoAA))
+			store.dispatch(setSharpnessMode({ value: SharpnessMode.PixelRatioNoAA }))
 
 			threeRendererService["setGLOptions"]()
 
@@ -229,7 +231,7 @@ describe("threeRendererService", () => {
 		})
 
 		it("should call and set the pixel ration with FXAA options", () => {
-			store.dispatch(setSharpnessMode(SharpnessMode.PixelRatioFXAA))
+			store.dispatch(setSharpnessMode({ value: SharpnessMode.PixelRatioFXAA }))
 
 			threeRendererService["setGLOptions"]()
 
@@ -239,7 +241,7 @@ describe("threeRendererService", () => {
 		})
 
 		it("should call and set the pixel ration with AA options", () => {
-			store.dispatch(setSharpnessMode(SharpnessMode.PixelRatioAA))
+			store.dispatch(setSharpnessMode({ value: SharpnessMode.PixelRatioAA }))
 
 			threeRendererService["setGLOptions"]()
 

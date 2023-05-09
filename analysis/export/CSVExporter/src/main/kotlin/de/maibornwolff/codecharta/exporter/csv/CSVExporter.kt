@@ -8,6 +8,7 @@ import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
+import de.maibornwolff.codecharta.tools.interactiveparser.util.InteractiveParserHelper
 import picocli.CommandLine
 import java.io.BufferedWriter
 import java.io.File
@@ -18,9 +19,9 @@ import java.io.Writer
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
-    name = "csvexport",
-    description = ["generates csv file with header"],
-    footer = ["Copyright(c) 2022, MaibornWolff GmbH"]
+    name = InteractiveParserHelper.CSVExporterConstants.name,
+    description = [InteractiveParserHelper.CSVExporterConstants.description],
+    footer = [InteractiveParserHelper.GeneralConstants.GenericFooter]
 )
 class CSVExporter : Callable<Void>, InteractiveParser {
 
@@ -98,6 +99,13 @@ class CSVExporter : Callable<Void>, InteractiveParser {
     }
 
     override fun getDialog(): ParserDialogInterface = ParserDialog
+    override fun isApplicable(resourceToBeParsed: String): Boolean {
+        return false
+    }
+
+    override fun getName(): String {
+        return InteractiveParserHelper.CSVExporterConstants.name
+    }
 }
 
 private fun Node.toAttributeList(attributeNames: List<String>): List<String> {

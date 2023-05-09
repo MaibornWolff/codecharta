@@ -1,10 +1,6 @@
-import { DistributionMetricAction, DistributionMetricActions, setDistributionMetric } from "./distributionMetric.actions"
+import { createReducer, on } from "@ngrx/store"
+import { setDistributionMetric } from "./distributionMetric.actions"
+import { setState } from "../../util/setState.reducer.factory"
 
-export function distributionMetric(state = setDistributionMetric().payload, action: DistributionMetricAction) {
-	switch (action.type) {
-		case DistributionMetricActions.SET_DISTRIBUTION_METRIC:
-			return action.payload
-		default:
-			return state
-	}
-}
+export const defaultDistributionMetric: null | string = null
+export const distributionMetric = createReducer(defaultDistributionMetric, on(setDistributionMetric, setState(defaultDistributionMetric)))

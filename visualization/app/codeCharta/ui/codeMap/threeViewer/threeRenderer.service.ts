@@ -4,11 +4,10 @@ import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass"
 import { WEBGL } from "three/examples/jsm/WebGL"
 import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass"
 import { CustomComposer } from "../rendering/postprocessor/customComposer"
-import { Store } from "../../../state/angular-redux/store"
-import { State } from "../../../state/angular-redux/state"
 import { isWhiteBackgroundSelector } from "../../../state/store/appSettings/isWhiteBackground/isWhiteBackground.selector"
-import { SharpnessMode } from "../../../codeCharta.model"
+import { SharpnessMode, CcState } from "../../../codeCharta.model"
 import { fxaaShaderStrings } from "../rendering/shaders/loaders/fxaaShaderStrings"
+import { Store, State } from "@ngrx/store"
 
 @Injectable({ providedIn: "root" })
 export class ThreeRendererService {
@@ -37,7 +36,7 @@ export class ThreeRendererService {
 	scene: Scene
 	camera: Camera
 
-	constructor(private store: Store, private state: State) {}
+	constructor(private store: Store<CcState>, private state: State<CcState>) {}
 
 	init(containerWidth: number, containerHeight: number, scene: Scene, camera: Camera) {
 		this.scene = scene

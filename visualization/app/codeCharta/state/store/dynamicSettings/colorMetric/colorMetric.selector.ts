@@ -1,4 +1,4 @@
-import { createSelector } from "../../../angular-redux/createSelector"
+import { createSelector } from "@ngrx/store"
 import { dynamicSettingsSelector } from "../dynamicSettings.selector"
 
-export const colorMetricSelector = createSelector([dynamicSettingsSelector], dynamicSettings => dynamicSettings.colorMetric)
+export const colorMetricSelector = createSelector(dynamicSettingsSelector, dynamicSettings => dynamicSettings.colorMetric)

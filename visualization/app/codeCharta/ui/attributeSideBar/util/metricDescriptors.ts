@@ -10,7 +10,7 @@ export type MetricDescriptors = {
 	link: string
 }
 
-export function getMetricDescriptors(metricKey: string, attributeDescriptors: AttributeDescriptors): MetricDescriptors {
+export function getMetricDescriptors(metricKey: string, attributeDescriptors?: AttributeDescriptors): MetricDescriptors {
 	return {
 		key: metricKey,
 		title: getMetricTitle(metricKey, attributeDescriptors),
@@ -25,6 +25,6 @@ function getMetricTitle(metric: string, attributeDescriptors: AttributeDescripto
 	if (attributeDescriptors?.[metric]?.title !== undefined && attributeDescriptors[metric].title !== "") {
 		return attributeDescriptors[metric].title
 	}
-	//Fallback Description can still return null
+	//Fallback Description can still return undefined
 	return metricTitles.get(metric)
 }

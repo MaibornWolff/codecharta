@@ -1,11 +1,12 @@
 import { Component, ViewEncapsulation } from "@angular/core"
 import { UntypedFormControl } from "@angular/forms"
-import { State } from "../../../../state/angular-redux/state"
 import { ScenarioHelper, ScenarioMetricProperty } from "../scenarioHelper"
 import { ThreeCameraService } from "../../../codeMap/threeViewer/threeCamera.service"
 import { ThreeOrbitControlsService } from "../../../codeMap/threeViewer/threeOrbitControls.service"
 import { customScenarioNameValidator } from "./utils/customScenarioName.validator"
 import { getInitialScenarioMetricProperties } from "./utils/getInitialScenarioMetricProperties"
+import { State } from "@ngrx/store"
+import { CcState } from "../../../../codeCharta.model"
 
 @Component({
 	templateUrl: "./addCustomScenario.component.html",
@@ -18,7 +19,11 @@ export class AddCustomScenarioComponent {
 	scenarioContent: ScenarioMetricProperty[]
 	areAnyScenarioMetricPropertiesSelected = true
 
-	constructor(private state: State, threeCameraService: ThreeCameraService, threeOrbitControlsService: ThreeOrbitControlsService) {
+	constructor(
+		private state: State<CcState>,
+		threeCameraService: ThreeCameraService,
+		threeOrbitControlsService: ThreeOrbitControlsService
+	) {
 		this.scenarioContent = getInitialScenarioMetricProperties(this.state.getValue(), {
 			camera: threeCameraService.camera.position,
 			cameraTarget: threeOrbitControlsService.controls.target

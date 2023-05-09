@@ -1,33 +1,36 @@
 @use "../../../../material/theme";
 
-.cc-custom-config-list .mat-mdc-dialog-container {
-	padding: 5px 16px;
-	max-height: 90vh;
+.cc-custom-config-list {
+	width: 850px;
 
-	.mat-mdc-dialog-content.content {
-		max-height: 100%;
-		margin: 0;
-		padding: 0;
+	.mat-mdc-dialog-content {
+		padding: 16px;
+		max-height: 90vh;
 	}
 
 	.row {
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
+		margin-left: auto;
 	}
 
 	.custom-config-documentation-hint {
 		margin: 10px 0 20px 0;
+		font-size: 1.4em;
+		line-height: 1.4em;
+		color: theme.$cc-font-color;
 	}
 
 	.action-buttons button {
 		margin: 0 3px;
 		min-width: 12%;
 		height: 48px;
-		width: 65px;
+		width: 48px;
+		border-radius: 100%;
 		line-height: 48px;
-		background-color: theme.$cc-primary-color;
-		color: #ffffff;
+		background-color: #ffffff;
+		color: theme.$cc-primary-color;
 
 		&:disabled,
 		&[disabled] {
@@ -51,11 +54,6 @@
 			margin: 0;
 		}
 
-		.highlight-mode {
-			font-weight: bold;
-			white-space: break-spaces;
-		}
-
 		.mat-expansion-panel-body {
 			padding: 0 16px;
 		}
@@ -75,10 +73,15 @@
 		}
 
 		.mdc-list-item__content {
-			display: flex;
-			justify-content: space-between;
+			width: 100%;
 			border-bottom: 1px solid #000000;
 			padding: 0 5px;
+
+			.mdc-list-item__primary-text {
+				display: flex;
+				flex-direction: column;
+				width: 100%;
+			}
 
 			&:hover {
 				background-color: rgba(0, 0, 0, 0.04);
@@ -87,10 +90,11 @@
 			button {
 				background-color: transparent;
 
-				&.remove-button {
+				&.remove-button,
+				&.custom-config-note-dialog-button {
 					font-size: 16px;
 					padding: 8px 10px;
-					margin: 0;
+					margin: 0px;
 
 					&:hover {
 						background-color: rgba(0, 0, 0, 0.05);
@@ -100,13 +104,6 @@
 				}
 			}
 		}
-	}
-
-	.mat-accordion > .mat-expansion-panel-spacing:last-child,
-	.mat-accordion > *:last-child:not(.mat-expansion-panel) .mat-expansion-panel-spacing,
-	.mat-accordion > .mat-expansion-panel-spacing:first-child,
-	.mat-accordion > *:first-child:not(.mat-expansion-panel) .mat-expansion-panel-spacing {
-		margin: 2px 0;
 	}
 
 	.toggle-non-applicable-configs-button {

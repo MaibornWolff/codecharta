@@ -1,3 +1,4 @@
-import { CcState } from "../../store"
+import { createSelector } from "@ngrx/store"
+import { appSettingsSelector } from "../appSettings.selector"
 
-export const mapColorsSelector = (state: CcState) => state.appSettings.mapColors
+export const mapColorsSelector = createSelector(appSettingsSelector, appSettings => appSettings.mapColors)

@@ -1,4 +1,4 @@
-import { createSelector } from "../../../angular-redux/createSelector"
+import { createSelector } from "@ngrx/store"
 import { appSettingsSelector } from "../appSettings.selector"
 
-export const hideFlatBuildingsSelector = createSelector([appSettingsSelector], appSettings => appSettings.hideFlatBuildings)
+export const hideFlatBuildingsSelector = createSelector(appSettingsSelector, appSettings => appSettings.hideFlatBuildings)

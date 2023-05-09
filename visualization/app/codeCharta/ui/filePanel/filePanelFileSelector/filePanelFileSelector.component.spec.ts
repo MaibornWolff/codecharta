@@ -1,21 +1,23 @@
 import { TestBed } from "@angular/core/testing"
 import { fireEvent, render, screen, waitForElementToBeRemoved } from "@testing-library/angular"
 import { FileSelectionState } from "../../../model/files/files"
-import { Store } from "../../../state/angular-redux/store"
 import { addFile, invertStandard, setStandard } from "../../../state/store/files/files.actions"
 import { TEST_FILE_DATA } from "../../../util/dataMocks"
 import { FilePanelModule } from "../filePanel.module"
 import { FilePanelFileSelectorComponent } from "./filePanelFileSelector.component"
+import { appReducers, setStateMiddleware } from "../../../state/store/state.manager"
+import { Store, StoreModule } from "@ngrx/store"
+import { CcState } from "../../../codeCharta.model"
 
 describe("filePanelFileSelectorComponent", () => {
 	it("should reset selected files to selected in store when closing with zero selections", async () => {
 		const { detectChanges, fixture } = await render(FilePanelFileSelectorComponent, {
-			imports: [FilePanelModule],
+			imports: [FilePanelModule, StoreModule.forRoot(appReducers, { metaReducers: [setStateMiddleware] })],
 			excludeComponentDeclaration: true
 		})
 		const store = TestBed.inject(Store)
-		store.dispatch(addFile(TEST_FILE_DATA))
-		store.dispatch(setStandard([TEST_FILE_DATA]))
+		store.dispatch(addFile({ file: TEST_FILE_DATA }))
+		store.dispatch(setStandard({ files: [TEST_FILE_DATA] }))
 		detectChanges()
 		expect(fixture.componentInstance["selectedFilesInUI"].length).toBe(1)
 		expect(fixture.componentInstance["selectedFilesInUI"][0]).toEqual(TEST_FILE_DATA)
@@ -44,7 +46,7 @@ describe("filePanelFileSelectorComponent", () => {
 			const mockedStore = createMockedStore()
 			const component = new FilePanelFileSelectorComponent(mockedStore)
 			component.handleSelectedFilesChanged([TEST_FILE_DATA])
-			expect(mockedStore.dispatch).toHaveBeenCalledWith(setStandard([TEST_FILE_DATA]))
+			expect(mockedStore.dispatch).toHaveBeenCalledWith(setStandard({ files: [TEST_FILE_DATA] }))
 		})
 	})
 
@@ -80,6 +82,6 @@ describe("filePanelFileSelectorComponent", () => {
 		return {
 			dispatch: jest.fn(),
 			select: () => ({ subscribe: jest.fn() })
-		} as unknown as Store
+		} as unknown as Store<CcState>
 	}
 })

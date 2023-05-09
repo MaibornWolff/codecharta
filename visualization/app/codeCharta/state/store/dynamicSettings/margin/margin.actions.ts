@@ -1,21 +1,3 @@
-import { CCAction } from "../../../../codeCharta.model"
+import { createAction, props } from "@ngrx/store"
 
-export enum MarginActions {
-	SET_MARGIN = "SET_MARGIN"
-}
-
-export interface SetMarginAction extends CCAction {
-	type: MarginActions.SET_MARGIN
-	payload: number
-}
-
-export type MarginAction = SetMarginAction
-
-export function setMargin(margin: number = defaultMargin): SetMarginAction {
-	return {
-		type: MarginActions.SET_MARGIN,
-		payload: margin
-	}
-}
-
-export const defaultMargin = 50
+export const setMargin = createAction("SET_MARGIN", props<{ value: number }>())

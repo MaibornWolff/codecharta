@@ -1,32 +1,22 @@
-import { Inject, Injectable } from "@angular/core"
-import { filter, map, withLatestFrom } from "rxjs"
-import { isAction, isActionOfType } from "../../../../util/reduxHelper"
-import { createEffect } from "../../../angular-redux/effects/createEffect"
-import { Actions, ActionsToken } from "../../../angular-redux/effects/effects.module"
-import { Store } from "../../../angular-redux/store"
+import { Injectable } from "@angular/core"
+import { Store } from "@ngrx/store"
+import { Actions, createEffect, ofType } from "@ngrx/effects"
+import { map, skip, switchMap, take } from "rxjs"
 import { selectedColorMetricDataSelector } from "../../../selectors/accumulatedData/metricData/selectedColorMetricData.selector"
-import { FilesSelectionActions } from "../../files/files.actions"
 import { calculateInitialColorRange } from "./calculateInitialColorRange"
-import { ColorRangeActions, setColorRange, SetColorRangeAction } from "./colorRange.actions"
+import { setColorRange } from "./colorRange.actions"
+import { fileActions } from "../../files/files.actions"
+import { CcState } from "../../../../codeCharta.model"
 
 @Injectable()
 export class ResetColorRangeEffect {
-	private resetActions$ = this.actions$.pipe(
-		filter(
-			action =>
-				isActionOfType(action.type, FilesSelectionActions) ||
-				(isAction<SetColorRangeAction>(action, ColorRangeActions.SET_COLOR_RANGE) &&
-					action.payload.from === null &&
-					action.payload.to === null)
-		)
-	)
-
-	constructor(@Inject(ActionsToken) private actions$: Actions, private store: Store) {}
+	constructor(private actions$: Actions, private store: Store<CcState>) {}
 
 	resetColorRange$ = createEffect(() =>
-		this.resetActions$.pipe(
-			withLatestFrom(this.store.select(selectedColorMetricDataSelector)),
-			map(([, selectedColorMetricData]) => setColorRange(calculateInitialColorRange(selectedColorMetricData)))
+		this.actions$.pipe(
+			ofType(...fileActions),
+			switchMap(() => this.store.select(selectedColorMetricDataSelector).pipe(skip(1), take(1))),
+			map(selectedColorMetricData => setColorRange({ value: calculateInitialColorRange(selectedColorMetricData) }))
 		)
 	)
 }
