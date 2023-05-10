@@ -1,7 +1,8 @@
 import { Component, Input, ViewEncapsulation } from "@angular/core"
-import { AttributeDescriptor, AttributeDescriptors } from "../../../codeCharta.model"
-import { Observable } from "rxjs"
+import { AttributeDescriptors, CcState } from "../../../codeCharta.model"
 import { attributeDescriptorsSelector } from "../../../state/store/fileSettings/attributeDescriptors/attributeDescriptors.selector"
+import { Store } from "@ngrx/store"
+import { metricTitles } from "../../../util/metric/metricTitles"
 
 @Component({
 	selector: "cc-legend-block",
@@ -10,6 +11,10 @@ import { attributeDescriptorsSelector } from "../../../state/store/fileSettings/
 })
 export class LegendBlockComponent {
 	@Input() metricName: string
-	@Input() attributeDescriptors?: Observable<AttributeDescriptors> = this.store.select(attributeDescriptorsSelector)
-	attributeDescriptor: AttributeDescriptor
+	attributeDescriptors: AttributeDescriptors
+	fallbackTitles: Map<string, string> = metricTitles
+
+	constructor(private store: Store<CcState>) {
+		this.store.select(attributeDescriptorsSelector).subscribe(descriptors => (this.attributeDescriptors = descriptors))
+	}
 }
