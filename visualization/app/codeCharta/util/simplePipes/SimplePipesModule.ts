@@ -1,10 +1,9 @@
 import { NgModule } from "@angular/core"
 import { RemoveExtensionPipe } from "./removeExtension.pipe"
-import { MetricDescriptorTitlePipe } from "./metricDescriptorTitle.pipe"
 import { AttributeDescriptorTooltipPipe } from "./attributeDescriptorTooltip.pipe"
 
 @NgModule({
-	declarations: [RemoveExtensionPipe, MetricDescriptorTitlePipe, AttributeDescriptorTooltipPipe],
-	exports: [RemoveExtensionPipe, MetricDescriptorTitlePipe, AttributeDescriptorTooltipPipe]
+	declarations: [RemoveExtensionPipe, AttributeDescriptorTooltipPipe],
+	exports: [RemoveExtensionPipe, AttributeDescriptorTooltipPipe]
 })
 export class SimplePipesModule {}
