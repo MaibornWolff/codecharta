@@ -14,6 +14,7 @@ import { showAttributeTypeSelectorSelector } from "../../util/showAttributeTypeS
 export class AttributeSideBarPrimaryMetricComponent {
 	@Input() iconName: string
 	@Input() metric: Metric
+	@Input() metricLink: string
 	showAttributeTypeSelector$: Observable<boolean>
 
 	constructor(store: Store<CcState>) {
