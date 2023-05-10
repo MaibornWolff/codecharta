@@ -1,7 +1,6 @@
 import { Component, ElementRef, Input, OnInit, ViewChild, ViewEncapsulation } from "@angular/core"
 import { map, Observable } from "rxjs"
 import { EdgeMetricData, NodeMetricData, AttributeDescriptors, CcState } from "../../codeCharta.model"
-import { metricTitles } from "../../util/metric/metricTitles"
 import { metricDataSelector } from "../../state/selectors/accumulatedData/metricData/metricData.selector"
 import { attributeDescriptorsSelector } from "../../state/store/fileSettings/attributeDescriptors/attributeDescriptors.selector"
 import { Store } from "@ngrx/store"
@@ -23,7 +22,6 @@ export class MetricChooserComponent implements OnInit {
 	@ViewChild("searchTermInput") searchTermInput: ElementRef<HTMLInputElement>
 	searchTerm = ""
 	metricData$: Observable<NodeMetricData[] | EdgeMetricData[]>
-	metricDataDescription: Map<string, string> = metricTitles
 	attributeDescriptors$: Observable<AttributeDescriptors>
 	attributeDescriptors: AttributeDescriptors
 

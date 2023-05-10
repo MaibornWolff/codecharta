@@ -3,7 +3,6 @@ import { ExportCCFile } from "./codeCharta.api.model"
 import { FileState } from "./model/files/files"
 import { CustomConfig } from "./model/customConfig/customConfig.api.model"
 import Rectangle from "./util/algorithm/streetLayout/rectangle"
-import { MetricDescriptors } from "./util/metric/metricDescriptors"
 
 export type Scaling = {
 	x: number
@@ -251,14 +250,12 @@ export interface EdgeMetricData {
 	name: string
 	maxValue: number
 	minValue: number
-	descriptor: MetricDescriptors
 }
 
 export interface NodeMetricData {
 	name: string
 	maxValue: number
 	minValue: number
-	descriptor: MetricDescriptors
 }
 
 export interface MetricData {
