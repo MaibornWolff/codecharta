@@ -66,3 +66,9 @@ There are 3 possible ways to build and run the application. You can run it as a 
 -   For IntelliJ: Run -> Edit Configurations -> Templates -> Jest -> Add configuration file -> Select `jest.config.json` -> Add CLI argument `--env=jsdom`
 
 For more test options check the `package.json`
+
+### Troubleshooting
+
+#### ESLint & IntelliJ
+
+If you run into a warning about the ESLint configuration you can try to change `Run for files` default glob pattern to this pattern `"**/*.(js|ts|jsx|tsx|html|vue)"`
