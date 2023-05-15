@@ -43,7 +43,9 @@ The names of authors are saved when the --add-author flag is set.
 
 See `ccsh gitlogparser repo-scan -h` for help. Standard usage:
 
-> `ccsh gitlogparser repo-scan --repo-path <path>`
+```
+ccsh gitlogparser repo-scan --repo-path <path>
+```
 
 With the sub command `repo-scan` you can parse a local git repository on your disk. During scanning a git log of the
 repository in the current working directory (or from the directory specified by repo-path) is created in your
@@ -64,7 +66,9 @@ The resulting project has the project name specified for the GitLogParser.
 
 See `ccsh gitlogparser log-scan -h` for help. Standard usage:
 
-> `ccsh gitlogparser log-scan --git-log <path> --repo-files <path>`
+```
+ccsh gitlogparser log-scan --git-log <path> --repo-files <path>
+```
 
 With the sub command `log-scan`, an existing git log and file name list are used for parsing.
 
@@ -85,7 +89,9 @@ which generates a git log with anonymized authors for usage with CodeCharta.
 
 #### Creating the git files list of the repository for metric generation
 
-> `git ls-files > file-name-list.txt`
+```
+git ls-files > file-name-list.txt
+```
 
 Please make sure to execute this command in the root folder of your repository.
 
