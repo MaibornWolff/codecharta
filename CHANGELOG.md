@@ -15,7 +15,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
--   Fix entrypoint for analysis docker image [#3259]
+-   Fix entrypoint for analysis docker image [#3259](https://github.com/MaibornWolff/codecharta/pull/3259)
 -   Show again delta of a building which have nothing in common in red or green [#3271](https://github.com/MaibornWolff/codecharta/pull/3271)
 -   Always show description of suspicious metrics [#3285](https://github.com/MaibornWolff/codecharta/pull/3285)
 -   Show suspicious metrics and risk profile documentation pages in navigation bar [#3290](https://github.com/MaibornWolff/codecharta/pull/3290)
