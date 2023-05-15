@@ -21,7 +21,7 @@ The Sonar-Importer generates visualisation data from SonarQube data through an A
 The command
 
 ```
-ccsh sonarimport \<url of server> \<project id>
+ccsh sonarimport <url of server> <project id>
 ```
 
 prints the visualisation data to stdout (or a file if option `-o <filename>` is given).
@@ -42,7 +42,7 @@ The resulting project has the project name specified for the SonarImporter.
 ### Example
 
 ```
-ccsh sonarimport \<url> \<projectKey> --user=\<userToken> --output-file=\<fileName> --merge-modules=\<Boolean>
+ccsh sonarimport <url> <projectKey> --user=<userToken> --output-file=<fileName> --merge-modules=<Boolean>
 ```
 
 If you use SonarQube locally, an example command would look like the following:
