@@ -12,6 +12,7 @@ import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import de.maibornwolff.codecharta.tools.interactiveparser.util.InteractiveParserHelper
+import de.maibornwolff.codecharta.util.ResourceSearchHelper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -174,7 +175,9 @@ class SVNLogParser(
 
     override fun getDialog(): ParserDialogInterface = ParserDialog
     override fun isApplicable(resourceToBeParsed: String): Boolean {
-        return false
+        return ResourceSearchHelper.isResourcePresent(resourceToBeParsed, ".svn",
+                ResourceSearchHelper::doStringsEqual, 1,
+                shouldSearchFullDirectory = false, resourceShouldBeFile = false)
     }
 
     override fun getName(): String {

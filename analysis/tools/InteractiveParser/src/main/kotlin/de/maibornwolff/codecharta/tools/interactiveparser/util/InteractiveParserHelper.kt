@@ -47,7 +47,8 @@ class InteractiveParserHelper {
 
     object MetricGardenerImporterConstants {
         const val name = "metricgardenerimport"
-        const val description = "generates a cc.json file from a project parsed with metric-gardener"
+        const val description = "generates a cc.json file from a project parsed with metric-gardener." +
+                                "Caution - this parser is still experimental and may take a long time to parse code!"
     }
 
     object SonarImporterConstants {
