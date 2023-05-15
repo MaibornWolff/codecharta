@@ -83,6 +83,10 @@ docs:
       children:
           - title: "New to this Code?"
             url: /docs/new-to-code/
+          - title: "New to Analysis?"
+            url: /docs/new-to-code-analysis/
+          - title: "New to Visualization?"
+            url: /docs/new-to-code-visualization/
 
     - title: Meta
       children:

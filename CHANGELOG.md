@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 -   Added support for parser suggestions to SVN-, MetricGardener-, RawText- and SourceCodeParser [#3287](https://github.com/MaibornWolff/codecharta/pull/3287) </br>
 -   Add semi automatic merging feature after executing multiple parsers [#3287](https://github.com/MaibornWolff/codecharta/pull/3287)
+-   Expanded developer documentation to include common problems and solutions for them [#3289](https://github.com/MaibornWolff/codecharta/pull/3289)
 
 ### Fixed 🐞
 
