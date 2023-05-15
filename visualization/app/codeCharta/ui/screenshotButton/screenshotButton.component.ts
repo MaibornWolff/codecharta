@@ -65,7 +65,9 @@ export class ScreenshotButtonComponent {
 		this.buildScreenShotCanvas(renderer)
 
 		renderer.domElement.toBlob(blob => {
-			navigator.clipboard.write([new ClipboardItem({ [blob.type]: blob })])
+			navigator.clipboard.write([new ClipboardItem({ [blob.type]: blob })]).catch(() => {
+				// We can add a popup on failure here, explaining the problem
+			})
 		})
 	}
 
