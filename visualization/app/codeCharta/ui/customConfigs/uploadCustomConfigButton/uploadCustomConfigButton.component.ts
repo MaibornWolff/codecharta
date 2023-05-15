@@ -12,15 +12,19 @@ export class UploadCustomConfigButtonComponent {
 	upload() {
 		const fileInput = createCCFileInput()
 		fileInput.addEventListener("change", async () => {
-			const customConfigsContent = await Promise.all(readFiles(fileInput.files))
-			for (const customConfigContent of customConfigsContent) {
-				try {
-					CustomConfigHelper.importCustomConfigs(customConfigContent)
-				} catch {
-					// Explicitly ignored
-				}
-			}
+			void this.uploadOnEvent(fileInput)
 		})
 		fileInput.click()
+	}
+
+	private async uploadOnEvent(fileInput: HTMLInputElement) {
+		const customConfigsContent = await Promise.all(readFiles(fileInput.files))
+		for (const customConfigContent of customConfigsContent) {
+			try {
+				CustomConfigHelper.importCustomConfigs(customConfigContent)
+			} catch {
+				// Explicitly ignored
+			}
+		}
 	}
 }
