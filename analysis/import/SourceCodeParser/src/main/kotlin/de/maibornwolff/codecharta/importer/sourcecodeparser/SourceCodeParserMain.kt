@@ -8,6 +8,7 @@ import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import de.maibornwolff.codecharta.tools.interactiveparser.util.InteractiveParserHelper
+import de.maibornwolff.codecharta.util.ResourceSearchHelper
 import picocli.CommandLine
 import java.io.BufferedWriter
 import java.io.File
@@ -133,7 +134,9 @@ class SourceCodeParserMain(
 
     override fun getDialog(): ParserDialogInterface = ParserDialog
     override fun isApplicable(resourceToBeParsed: String): Boolean {
-        return false
+        return ResourceSearchHelper.isResourcePresent(resourceToBeParsed, ".java",
+                ResourceSearchHelper::doesStringEndWith, 0,
+                shouldSearchFullDirectory = true, resourceShouldBeFile = true)
     }
 
     override fun getName(): String {

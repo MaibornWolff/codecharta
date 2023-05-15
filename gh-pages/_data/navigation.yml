@@ -74,11 +74,19 @@ docs:
             url: /docs/timeline/
           - title: "Custom View"
             url: /docs/custom-view/
+          - title: "Suspicious metrics"
+            url: /docs/suspicious-metrics/
+          - title: "Risk profile"
+            url: /docs/risk-profile/
 
     - title: Reference
       children:
           - title: "New to this Code?"
             url: /docs/new-to-code/
+          - title: "New to Analysis?"
+            url: /docs/new-to-code-analysis/
+          - title: "New to Visualization?"
+            url: /docs/new-to-code-visualization/
 
     - title: Meta
       children:

@@ -16,30 +16,35 @@ export class UploadFilesService {
 
 	uploadFiles() {
 		const ccFileInput = createCCFileInput()
-		ccFileInput.addEventListener("change", async () => {
-			try {
-				this.isUploading = true
-				this.store.dispatch(setIsLoadingFile({ value: true }))
-				this.store.dispatch(setIsLoadingMap({ value: true }))
-
-				const plainFileContents = await Promise.all(readFiles(ccFileInput.files))
-				const { customConfigs, ccFiles } = this.splitCustomConfigsAndCCFiles(ccFileInput.files, plainFileContents)
-
-				for (const customConfig of customConfigs) {
-					CustomConfigHelper.importCustomConfigs(customConfig)
-				}
-
-				if (ccFiles.length > 0) {
-					await this.loadFileService.loadFiles(ccFiles)
-				}
-			} catch {
-				this.store.dispatch(setIsLoadingFile({ value: false }))
-				this.store.dispatch(setIsLoadingMap({ value: false }))
-			} finally {
-				this.isUploading = false
-			}
+		ccFileInput.addEventListener("change", () => {
+			void this.uploadFilesOnEvent(ccFileInput)
 		})
+
 		ccFileInput.click()
+	}
+
+	private async uploadFilesOnEvent(ccFileInput: HTMLInputElement) {
+		try {
+			this.isUploading = true
+			this.store.dispatch(setIsLoadingFile({ value: true }))
+			this.store.dispatch(setIsLoadingMap({ value: true }))
+
+			const plainFileContents = await Promise.all(readFiles(ccFileInput.files))
+			const { customConfigs, ccFiles } = this.splitCustomConfigsAndCCFiles(ccFileInput.files, plainFileContents)
+
+			for (const customConfig of customConfigs) {
+				CustomConfigHelper.importCustomConfigs(customConfig)
+			}
+
+			if (ccFiles.length > 0) {
+				await this.loadFileService.loadFiles(ccFiles)
+			}
+		} catch {
+			this.store.dispatch(setIsLoadingFile({ value: false }))
+			this.store.dispatch(setIsLoadingMap({ value: false }))
+		} finally {
+			this.isUploading = false
+		}
 	}
 
 	private splitCustomConfigsAndCCFiles(fileList: FileList, contents: string[]) {
