@@ -24,5 +24,9 @@
 		"husky": "^8.0.0",
 		"prettier": "^2.2.1",
 		"pretty-quick": "^3.1.0"
+	},
+	"dependencies": {
+		"@angular/cdk": "^16.0.1",
+		"@angular/material": "^16.0.1"
 	}
 }

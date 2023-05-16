@@ -9,6 +9,7 @@ import { screenshotToClipboardEnabledSelector } from "../../state/store/appSetti
 import { ThreeRendererService } from "../codeMap/threeViewer/threeRenderer.service"
 import { Store, State } from "@ngrx/store"
 import { CcState } from "../../codeCharta.model"
+import { MatSnackBar } from '@angular/material/snack-bar'
 
 @Component({
 	selector: "cc-screenshot-button",
@@ -25,7 +26,8 @@ export class ScreenshotButtonComponent {
 		private threeSceneService: ThreeSceneService,
 		private threeRendererService: ThreeRendererService,
 		private store: Store<CcState>,
-		private state: State<CcState>
+		private state: State<CcState>,
+		private snackbar: MatSnackBar
 	) {
 		hotkeys(this.SCREENSHOT_HOTKEY_TO_FILE, () => {
 			this.makeScreenshotToFile()
@@ -65,8 +67,11 @@ export class ScreenshotButtonComponent {
 		this.buildScreenShotCanvas(renderer)
 
 		renderer.domElement.toBlob(blob => {
-			navigator.clipboard.write([new ClipboardItem({ [blob.type]: blob })]).catch(() => {
+			navigator.clipboard.write([new ClipboardItem({ [blob.type]: blob })]).catch((err) => {
 				// We can add a popup on failure here, explaining the problem
+				if(err){
+					this.showPopupOnFailure(err);
+				}
 			})
 		})
 	}
@@ -81,4 +86,12 @@ export class ScreenshotButtonComponent {
 		renderer.render(this.threeSceneService.scene, this.threeCameraService.camera)
 		renderer.setClearColor(currentClearColor)
 	}
+
+	private showPopupOnFailure(error: any) {
+		this.snackbar.open('Failed to save screenshot to clipboard', 'Close');
+
+		console.error("Failed to save screenshot to clipboard:", error);
+	}
 }
+
+	
