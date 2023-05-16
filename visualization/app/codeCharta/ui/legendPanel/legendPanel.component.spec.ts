@@ -13,11 +13,8 @@ import { colorRangeSelector } from "../../state/store/dynamicSettings/colorRange
 import { State } from "@ngrx/store"
 import { mapColorsSelector } from "../../state/store/appSettings/mapColors/mapColors.selector"
 import { defaultMapColors } from "../../state/store/appSettings/mapColors/mapColors.reducer"
-import { legendHeightMetricSelector } from "./selectors/legendHeightMetric.selector"
-import { legendAreaMetricSelector } from "./selectors/legendAreaMetric.selector"
-import { legendColorMetricSelector } from "./selectors/legendColorMetric.selector"
 import { selectedColorMetricDataSelector } from "../../state/selectors/accumulatedData/metricData/selectedColorMetricData.selector"
-import { getMetricDescriptors } from "../attributeSideBar/util/metricDescriptors"
+import { attributeDescriptorsSelector } from "../../state/store/fileSettings/attributeDescriptors/attributeDescriptors.selector"
 
 describe("LegendPanelController", () => {
 	beforeEach(() => {
@@ -27,15 +24,13 @@ describe("LegendPanelController", () => {
 				provideMockStore({
 					selectors: [
 						{ selector: heightMetricSelector, value: "mcc" },
-						{ selector: legendHeightMetricSelector, value: getMetricDescriptors("mcc") },
 						{ selector: areaMetricSelector, value: "loc" },
-						{ selector: legendAreaMetricSelector, value: getMetricDescriptors("loc") },
 						{ selector: colorMetricSelector, value: "rloc" },
-						{ selector: legendColorMetricSelector, value: getMetricDescriptors("rloc") },
 						{ selector: colorRangeSelector, value: { from: 21, to: 42, max: 9001 } },
 						{ selector: isDeltaStateSelector, value: true },
 						{ selector: mapColorsSelector, value: defaultMapColors },
-						{ selector: selectedColorMetricDataSelector, value: {} }
+						{ selector: selectedColorMetricDataSelector, value: {} },
+						{ selector: attributeDescriptorsSelector, value: {} }
 					]
 				}),
 				{ provide: State, useValue: {} }
