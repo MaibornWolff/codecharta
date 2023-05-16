@@ -16,7 +16,7 @@ describe("CodeCharta logo", () => {
 	})
 
 	it("should have correct link", async () => {
-		expect(await logo.getLink()).toContain("maibornwolff.de")
+		expect(await logo.getLink()).toBe("https://github.com/MaibornWolff/codecharta")
 	})
 
 	it("should have correct image as logo", async () => {
