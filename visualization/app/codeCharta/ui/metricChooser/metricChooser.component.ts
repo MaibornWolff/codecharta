@@ -1,5 +1,5 @@
-import { Component, ElementRef, Input, OnInit, ViewChild, ViewEncapsulation } from "@angular/core"
-import { map, Observable } from "rxjs"
+import { Component, ElementRef, Input, OnInit, ViewChild, ViewEncapsulation, OnDestroy } from "@angular/core"
+import { map, Observable, Subscription } from "rxjs"
 import { EdgeMetricData, NodeMetricData, AttributeDescriptors, CcState } from "../../codeCharta.model"
 import { metricDataSelector } from "../../state/selectors/accumulatedData/metricData/metricData.selector"
 import { attributeDescriptorsSelector } from "../../state/store/fileSettings/attributeDescriptors/attributeDescriptors.selector"
@@ -13,7 +13,7 @@ type MetricChooserType = "node" | "edge"
 	styleUrls: ["./metricChooser.component.scss"],
 	encapsulation: ViewEncapsulation.None
 })
-export class MetricChooserComponent implements OnInit {
+export class MetricChooserComponent implements OnInit, OnDestroy {
 	@Input() selectedMetricName: string
 	@Input() searchPlaceholder: string
 	@Input() handleMetricChanged: (newSelectedMetricName: string) => void
@@ -24,6 +24,7 @@ export class MetricChooserComponent implements OnInit {
 	metricData$: Observable<NodeMetricData[] | EdgeMetricData[]>
 	attributeDescriptors$: Observable<AttributeDescriptors>
 	attributeDescriptors: AttributeDescriptors
+	descriptorSubscription: Subscription
 
 	constructor(private store: Store<CcState>) {
 		this.attributeDescriptors$ = store.select(attributeDescriptorsSelector)
@@ -33,7 +34,7 @@ export class MetricChooserComponent implements OnInit {
 		this.metricData$ = this.store
 			.select(metricDataSelector)
 			.pipe(map(metricData => (this.type === "node" ? metricData.nodeMetricData : metricData.edgeMetricData)))
-		this.attributeDescriptors$.subscribe(descriptions => (this.attributeDescriptors = descriptions))
+		this.descriptorSubscription = this.attributeDescriptors$.subscribe(descriptions => (this.attributeDescriptors = descriptions))
 	}
 
 	handleOpenedChanged(opened: boolean) {
@@ -42,5 +43,9 @@ export class MetricChooserComponent implements OnInit {
 		} else {
 			this.searchTerm = ""
 		}
+	}
+
+	ngOnDestroy(): void {
+		this.descriptorSubscription.unsubscribe()
 	}
 }

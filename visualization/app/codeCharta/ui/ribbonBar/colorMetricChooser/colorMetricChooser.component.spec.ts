@@ -9,6 +9,7 @@ import { metricDataSelector } from "../../../state/selectors/accumulatedData/met
 import { hoveredNodeSelector } from "../../../state/selectors/hoveredNode.selector"
 import { isColorMetricLinkedToHeightMetricSelector } from "../../../state/store/appSettings/isHeightAndColorMetricLinked/isColorMetricLinkedToHeightMetric.selector"
 import { colorMetricSelector } from "../../../state/store/dynamicSettings/colorMetric/colorMetric.selector"
+import { attributeDescriptorsSelector } from "../../../state/store/fileSettings/attributeDescriptors/attributeDescriptors.selector"
 
 describe("colorMetricChooserComponent", () => {
 	beforeEach(() => {
@@ -28,7 +29,8 @@ describe("colorMetricChooserComponent", () => {
 						},
 						{ selector: colorMetricSelector, value: "aMetric" },
 						{ selector: hoveredNodeSelector, value: null },
-						{ selector: isColorMetricLinkedToHeightMetricSelector, value: false }
+						{ selector: isColorMetricLinkedToHeightMetricSelector, value: false },
+						{ selector: attributeDescriptorsSelector, value: {} }
 					]
 				})
 			]
@@ -41,15 +43,15 @@ describe("colorMetricChooserComponent", () => {
 
 		expect(screen.getByRole("combobox").getAttribute("aria-disabled")).toBe("false")
 
-		await userEvent.click(await screen.findByText("aMetric (1)"))
+		await userEvent.click(await screen.findByText("aMetric"))
 		expect(screen.getByPlaceholderText("Color Metric (highest value)")).not.toBe(null)
 		const options = screen.queryAllByRole("option")
 		expect(options[0].textContent).toMatch("aMetric (1)")
 		expect(options[1].textContent).toMatch("bMetric (2)")
 
 		await userEvent.click(options[1])
-		expect(screen.queryByText("aMetric (1)")).toBe(null)
-		expect(screen.queryByText("bMetric (2)")).not.toBe(null)
+		expect(screen.queryByText("aMetric")).toBe(null)
+		expect(screen.queryByText("bMetric")).not.toBe(null)
 		expect(container.querySelector(".fa.fa-paint-brush").getAttribute("style")).toEqual(nonDisabledIconColor)
 	})
 
