@@ -79,4 +79,21 @@ class MergeFilterTest {
 
         assertThat(file.exists()).isTrue
     }
+
+    @Test
+    fun `should output warning for all files from parameters which were not found`() {
+        System.setOut(PrintStream(outContent))
+        System.setErr(PrintStream(errContent))
+
+        CommandLine(MergeFilter()).execute(
+                "src/test/resources/test.json", "src/test/resources/test2.json",
+                "src/test/resources/thisDoesNotExist1.json",
+                "src/test/resources/thisDoesNotExist2.json").toString()
+
+        System.setOut(originalOut)
+        System.setErr(originalErr)
+
+        assertThat(errContent.toString()).contains("Could not find file `src/test/resources/thisDoesNotExist1.json` and did not merge!")
+        assertThat(errContent.toString()).contains("Could not find file `src/test/resources/thisDoesNotExist2.json` and did not merge!")
+    }
 }

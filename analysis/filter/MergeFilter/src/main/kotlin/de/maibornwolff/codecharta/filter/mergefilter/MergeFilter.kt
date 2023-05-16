@@ -59,7 +59,12 @@ class MergeFilter(
 
         val sourceFiles = mutableListOf<File>()
         for (source in sources) {
-            sourceFiles.addAll(getFilesInFolder(source))
+            if (!source.exists()) {
+                // TODO: Should execution be halted and an error thrown if this happens? Or continue without the file?
+                logger.error("Could not find file `${ source.path }` and did not merge!")
+            } else {
+                sourceFiles.addAll(getFilesInFolder(source))
+            }
         }
 
         val srcProjects = sourceFiles
