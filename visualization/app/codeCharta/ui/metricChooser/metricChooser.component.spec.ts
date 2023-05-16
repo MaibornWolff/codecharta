@@ -8,6 +8,7 @@ import { MetricChooserModule } from "./metricChooser.module"
 import { provideMockStore } from "@ngrx/store/testing"
 import { metricDataSelector } from "../../state/selectors/accumulatedData/metricData/metricData.selector"
 import { attributeDescriptorsSelector } from "../../state/store/fileSettings/attributeDescriptors/attributeDescriptors.selector"
+import { TEST_ATTRIBUTE_DESCRIPTORS_FULL } from "../../util/dataMocks"
 
 describe("metricChooserComponent", () => {
 	beforeEach(() => {
@@ -22,11 +23,12 @@ describe("metricChooserComponent", () => {
 								nodeMetricData: [
 									{ name: "aMetric", maxValue: 1 },
 									{ name: "bMetric", maxValue: 2 },
-									{ name: "cMetric", maxValue: 3 }
+									{ name: "cMetric", maxValue: 3 },
+									{ name: "fullMetric", maxValue: 42 }
 								]
 							}
 						},
-						{ selector: attributeDescriptorsSelector, value: {} }
+						{ selector: attributeDescriptorsSelector, value: TEST_ATTRIBUTE_DESCRIPTORS_FULL }
 					]
 				})
 			]
@@ -49,6 +51,7 @@ describe("metricChooserComponent", () => {
 		expect(options[0].textContent).toMatch("aMetric (1)")
 		expect(options[1].textContent).toMatch("bMetric (2)")
 		expect(options[2].textContent).toMatch("cMetric (3)")
+		expect(options[3].textContent).toMatch("fullMetric (42) FullTestTitle")
 
 		await userEvent.click(options[1])
 		expect(screen.queryByText("aMetric")).toBe(null)
