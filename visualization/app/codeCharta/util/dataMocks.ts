@@ -142,6 +142,16 @@ export const TEST_ATTRIBUTE_DESCRIPTORS: AttributeDescriptors = {
 	}
 }
 
+export const TEST_ATTRIBUTE_DESCRIPTORS_FULL: AttributeDescriptors = {
+	fullMetric: {
+		title: "FullTestTitle",
+		description: "FullTestDescription",
+		hintHighValue: "FukkTestHigh",
+		hintLowValue: "FullLowValue",
+		link: "https://test.abc"
+	}
+}
+
 export const VALID_NODE: CodeMapNode = {
 	...DEFAULT_ROOT,
 	children: [
