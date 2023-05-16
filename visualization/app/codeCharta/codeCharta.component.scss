@@ -2,36 +2,26 @@
 @import "../mixins.scss";
 
 cc-code-charta {
-	#logos {
+	#logo {
 		display: flex;
 		flex-direction: column;
 		position: absolute;
 		left: 2em;
-		bottom: 2em;
+		bottom: 1em;
 		z-index: 1;
-		.logos-wrapper {
-			display: flex;
-			flex-direction: row;
-			align-content: center;
-			align-items: center;
-			gap: 1em;
-		}
+
 		img {
 			object-fit: contain;
-			height: 100px;
+			max-width: 100%;
+			height: auto;
 		}
-		#mw-logo {
-			img {
-				height: 58px;
-			}
-		}
+
 		h2 {
 			color: #5a585a;
-			font-weight: 600;
-			font-size: 14px;
+			font-weight: bold;
+			font-size: 10px;
 			text-align: center;
 			margin: 0;
-			margin-top: 9px;
 			z-index: -1;
 		}
 	}

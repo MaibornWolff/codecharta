@@ -23,7 +23,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Changed
 
--   Adjusted documentation for parser suggestions [#3287](https://github.com/MaibornWolff/codecharta/pull/3287) </br>
+-   Adjusted documentation for parser suggestions [#3287](https://github.com/MaibornWolff/codecharta/pull/3287)
+-   Make the size of the CodeCharta logo more suitable for any screen size and remove MaibornWolff logo [#3302](https://github.com/MaibornWolff/codecharta/pull/3302)
 
 ### Chore 👨‍💻 👩‍💻
 
