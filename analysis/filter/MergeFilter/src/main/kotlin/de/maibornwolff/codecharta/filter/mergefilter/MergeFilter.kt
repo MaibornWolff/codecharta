@@ -6,6 +6,7 @@ import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import de.maibornwolff.codecharta.tools.interactiveparser.util.InteractiveParserHelper
+import de.maibornwolff.codecharta.util.InputHelper
 import mu.KotlinLogging
 import picocli.CommandLine
 import java.io.File
@@ -57,14 +58,10 @@ class MergeFilter(
                 )
             }
 
-        val sourceFiles = mutableListOf<File>()
-        for (source in sources) {
-            if (!source.exists()) {
-                // TODO: Should execution be halted and an error thrown if this happens? Or continue without the file?
-                logger.error("Could not find file `${ source.path }` and did not merge!")
-            } else {
-                sourceFiles.addAll(getFilesInFolder(source))
-            }
+        val sourceFiles = InputHelper.getAndCheckAllSpecifiedInputFiles(sources)
+        if (sourceFiles.isEmpty()) {
+            logger.error("Aborting execution because one or more input files have not been found!")
+            return null
         }
 
         val srcProjects = sourceFiles
@@ -83,11 +80,6 @@ class MergeFilter(
         ProjectSerializer.serializeToFileOrStream(mergedProject, outputFile, output, compress)
 
         return null
-    }
-
-    private fun getFilesInFolder(folder: File): List<File> {
-        val files = folder.walk().filter { !it.name.startsWith(".") && !it.isDirectory }
-        return files.toList()
     }
 
     companion object {
