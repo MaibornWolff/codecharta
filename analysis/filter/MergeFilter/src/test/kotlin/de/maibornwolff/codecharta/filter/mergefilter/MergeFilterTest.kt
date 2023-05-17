@@ -116,7 +116,7 @@ class MergeFilterTest {
                 "src/test/resources/thisDoesNotExist.cc.json").toString()
         System.setErr(originalErr)
 
-        assertThat(errContent.toString()).contains("Aborting execution because one or more input files have not been found!")
+        assertThat(errContent.toString()).contains("Aborting execution because one or more input files have not been found or no input was specified at all!")
 
         verify(exactly = 0) { ProjectDeserializer.deserializeProject(any<FileInputStream>()) }
     }

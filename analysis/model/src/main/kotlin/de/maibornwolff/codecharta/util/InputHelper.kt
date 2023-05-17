@@ -8,6 +8,11 @@ class InputHelper {
         private val logger = KotlinLogging.logger {}
 
         fun getAndCheckAllSpecifiedInputFiles(inputFiles: Array<File>): MutableList<File> {
+            if (inputFiles.isEmpty()) {
+                logger.error("Did not find any input files!")
+                return mutableListOf()
+            }
+
             val resultList = mutableListOf<File>()
             var doesInputContainNonexistentFile = false
 

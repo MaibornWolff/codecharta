@@ -39,8 +39,20 @@ class InputHelperTest {
                 File("src/test/resources/thisDoesNotExist1.json"))
 
         val result = InputHelper.getAndCheckAllSpecifiedInputFiles(inputFiles)
+        Assertions.assertThat(result).isEmpty()
+    }
+
+    @Test
+    fun `should return empty list if no files are specified`() {
+        val inputFiles = arrayOf<File>()
+
+        System.setErr(PrintStream(errContent))
+        val result = InputHelper.getAndCheckAllSpecifiedInputFiles(inputFiles)
+        System.setErr(originalErr)
 
         Assertions.assertThat(result).isEmpty()
+        Assertions.assertThat(errContent.toString())
+                .contains("Did not find any input files!")
     }
 
     @Test
