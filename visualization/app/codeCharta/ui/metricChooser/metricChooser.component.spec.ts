@@ -24,7 +24,8 @@ describe("metricChooserComponent", () => {
 									{ name: "aMetric", maxValue: 1 },
 									{ name: "bMetric", maxValue: 2 },
 									{ name: "cMetric", maxValue: 3 },
-									{ name: "fullMetric", maxValue: 42 }
+									{ name: "fullMetric", maxValue: 42 },
+									{ name: "mcc", maxValue: 55 }
 								]
 							}
 						},
@@ -52,6 +53,11 @@ describe("metricChooserComponent", () => {
 		expect(options[1].textContent).toMatch("bMetric (2)")
 		expect(options[2].textContent).toMatch("cMetric (3)")
 		expect(options[3].textContent).toMatch("fullMetric (42) FullTestTitle")
+		expect(options[3].getAttribute("title")).toMatch(
+			"FullTestTitle (fullMetric):\nFullTestDescription\nHigh Values: FukkTestHigh\nLow Values: FullLowValue\nhttps://test.abc"
+		)
+		expect(options[4].textContent).toMatch("mcc (55)")
+		expect(options[4].getAttribute("title")).toMatch("Cyclomatic Complexity")
 
 		await userEvent.click(options[1])
 		expect(screen.queryByText("aMetric")).toBe(null)
