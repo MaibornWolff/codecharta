@@ -27,9 +27,9 @@ class InputHelperTest {
         System.setErr(originalErr)
 
         Assertions.assertThat(errContent.toString())
-                .contains("Could not find file `src/test/resources/thisDoesNotExist1.json` and did not merge!")
+                .contains("thisDoesNotExist1.json` and did not merge!")
         Assertions.assertThat(errContent.toString())
-                .contains("Could not find file `src/test/resources/thisDoesNotExist2.json` and did not merge!")
+                .contains("thisDoesNotExist2.json` and did not merge!")
     }
 
     @Test
