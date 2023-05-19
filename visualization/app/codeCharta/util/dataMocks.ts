@@ -146,7 +146,7 @@ export const TEST_ATTRIBUTE_DESCRIPTORS_FULL: AttributeDescriptors = {
 	fullMetric: {
 		title: "FullTestTitle",
 		description: "FullTestDescription",
-		hintHighValue: "FukkTestHigh",
+		hintHighValue: "FullTestHigh",
 		hintLowValue: "FullLowValue",
 		link: "https://test.abc"
 	}

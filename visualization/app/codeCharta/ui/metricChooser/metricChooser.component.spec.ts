@@ -36,9 +36,9 @@ describe("metricChooserComponent", () => {
 		})
 	})
 
-	it("should be a select for metrics", async () => {
+	it.only("should be a select for metrics", async () => {
 		let selectedMetricName = "aMetric"
-		await render(MetricChooserComponent, {
+		const { rerender } = await render(MetricChooserComponent, {
 			excludeComponentDeclaration: true,
 			componentProperties: {
 				searchPlaceholder: "search metric (max value)",
@@ -54,14 +54,21 @@ describe("metricChooserComponent", () => {
 		expect(options[2].textContent).toMatch("cMetric (3)")
 		expect(options[3].textContent).toMatch("fullMetric (42) FullTestTitle")
 		expect(options[3].getAttribute("title")).toMatch(
-			"FullTestTitle (fullMetric):\nFullTestDescription\nHigh Values: FukkTestHigh\nLow Values: FullLowValue\nhttps://test.abc"
+			"FullTestTitle (fullMetric):\nFullTestDescription\nHigh Values: FullTestHigh\nLow Values: FullLowValue\nhttps://test.abc"
 		)
 		expect(options[4].textContent).toMatch("mcc (55)")
 		expect(options[4].getAttribute("title")).toMatch("Cyclomatic Complexity")
 
 		await userEvent.click(options[1])
+		await rerender({
+			componentProperties: {
+				searchPlaceholder: "search metric (max value)",
+				selectedMetricName,
+				handleMetricChanged: (value: string) => (selectedMetricName = value)
+			}
+		})
 		expect(screen.queryByText("aMetric")).toBe(null)
-		expect(screen.queryByText("bMetric")).not.toBe(null)
+		expect(await screen.findByText("bMetric")).not.toBe(null)
 	})
 
 	it("should focus search field initially, filter options by search term, and reset search term on close", async () => {
