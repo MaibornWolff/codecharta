@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [1.117.0] - 2023-05-19
+
 ### Added 🚀
 
 -   Added support for parser suggestions to SVN-, MetricGardener-, RawText- and SourceCodeParser [#3287](https://github.com/MaibornWolff/codecharta/pull/3287) </br>
