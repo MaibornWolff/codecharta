@@ -33,7 +33,9 @@ Currently, SourceMonitorImporter does not support metrics for methods in csv fil
 
 If SourceMonitor v3.5 is installed in 'C:\Program Files (x86)\SourceMonitor' you may use the wrapper script sourcemonImport.bat to generate and import metrics from SourceMonitor in one step:
 
-> sourcemonImport.bat \<projectBuilder name> \<source code path> \<language>
+```
+sourcemonImport.bat <projectBuilder name> <source code path> <language>
+```
 
 If SourceMonitor is installed in a different directory the script must be changed accordingly.
 
