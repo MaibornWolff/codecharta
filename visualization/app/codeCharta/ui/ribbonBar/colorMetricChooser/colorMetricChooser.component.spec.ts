@@ -73,6 +73,7 @@ describe("colorMetricChooserComponent", () => {
 		detectChanges()
 
 		expect(screen.getByRole("combobox").getAttribute("aria-disabled")).toBe("true")
+		expect(container.querySelector("cc-metric-chooser").getAttribute("title")).toBe("Currently linked to height metric")
 		expect(container.querySelector(".fa.fa-paint-brush").getAttribute("style")).toEqual(disabledIconColor)
 	})
 })
