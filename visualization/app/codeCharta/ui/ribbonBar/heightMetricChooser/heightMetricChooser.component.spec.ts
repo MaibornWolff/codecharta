@@ -11,7 +11,6 @@ import { hoveredNodeSelector } from "../../../state/selectors/hoveredNode.select
 import { attributeDescriptorsSelector } from "../../../state/store/fileSettings/attributeDescriptors/attributeDescriptors.selector"
 import { getLastAction } from "../../../util/testUtils/store.utils"
 import { setHeightMetric } from "../../../state/store/dynamicSettings/heightMetric/heightMetric.actions"
-import { selectedNodeSelector } from "../../../state/selectors/selectedNode.selector"
 
 describe("heightMetricChooserComponent", () => {
 	let store: MockStore
@@ -33,8 +32,7 @@ describe("heightMetricChooserComponent", () => {
 						},
 						{ selector: heightMetricSelector, value: "aMetric" },
 						{ selector: hoveredNodeSelector, value: null },
-						{ selector: attributeDescriptorsSelector, value: {} },
-						{ selector: selectedNodeSelector, value: null }
+						{ selector: attributeDescriptorsSelector, value: {} }
 					]
 				})
 			]
