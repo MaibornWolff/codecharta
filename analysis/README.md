@@ -53,6 +53,8 @@ Components that export data from visualisation data to other formats.
 -   Bash or similar
 -   JRE 8-11 (Oracle Java or OpenJDK)
 
+# Installation
+
 ## Installation via npm
 
 This installs all binaries to run the analysis. Java 11 is recommended, while Java 8 is still supported.
@@ -61,7 +63,7 @@ This installs all binaries to run the analysis. Java 11 is recommended, while Ja
 
 To run it you can call `ccsh`
 
-## Installation
+## Manual Installation
 
 -   Download / build package
 -   Unzip / untar package in desired destination folder (named CC_INSTALL_DIR)
@@ -71,6 +73,8 @@ To run it you can call `ccsh`
     > source <(./bin/ccsh generate-completion)
     -   Enter `ccsh` and press `TAB` to see available commands
     -   Enter `ccsh <ANY-COMMAND> -` and press `TAB` to see available parameters
+
+# Getting Started (?)
 
 ## Build
 

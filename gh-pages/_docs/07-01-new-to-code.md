@@ -14,8 +14,8 @@ When updating your branch, we prefer using a rebase instead of merging to keep t
 
 # Code Style Guide
 
-Besides the rules enforced by our linter, we do not follow a set of defined style guidelines for our code.
-Just try to make your code readable and follow common best practices.
+Besides the rules enforced by our linter, we generally do not follow a set of defined style guidelines for our code.
+For the analysis there is an XML file containing a few style rules for your IDE, you can find out more about that in the analysis readme.
 
 # GitHub Actions
 
