@@ -21,7 +21,6 @@ describe("heightMetricChooserComponent", () => {
 			imports: [HeightMetricChooserModule],
 			providers: [
 				provideMockStore({
-					initialState: { dynamicSettings: { heightMetric: "aMetric" } },
 					selectors: [
 						{
 							selector: metricDataSelector,
