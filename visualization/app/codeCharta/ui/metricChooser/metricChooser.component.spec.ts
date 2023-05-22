@@ -36,9 +36,9 @@ describe("metricChooserComponent", () => {
 		})
 	})
 
-	it.only("should be a select for metrics", async () => {
+	it("should be a select for metrics", async () => {
 		let selectedMetricName = "aMetric"
-		const { rerender } = await render(MetricChooserComponent, {
+		const { rerender, detectChanges } = await render(MetricChooserComponent, {
 			excludeComponentDeclaration: true,
 			componentProperties: {
 				searchPlaceholder: "search metric (max value)",
@@ -60,6 +60,7 @@ describe("metricChooserComponent", () => {
 		expect(options[4].getAttribute("title")).toMatch("Cyclomatic Complexity")
 
 		await userEvent.click(options[1])
+
 		await rerender({
 			componentProperties: {
 				searchPlaceholder: "search metric (max value)",
@@ -67,17 +68,19 @@ describe("metricChooserComponent", () => {
 				handleMetricChanged: (value: string) => (selectedMetricName = value)
 			}
 		})
+		detectChanges()
 		expect(screen.queryByText("aMetric")).toBe(null)
-		expect(await screen.findByText("bMetric")).not.toBe(null)
+		expect(screen.queryByText("bMetric")).not.toBe(null)
 	})
 
 	it("should focus search field initially, filter options by search term, and reset search term on close", async () => {
-		await render(MetricChooserComponent, {
+		let selectedMetricName = "aMetric"
+		const { rerender } = await render(MetricChooserComponent, {
 			excludeComponentDeclaration: true,
 			componentProperties: {
 				searchPlaceholder: "search metric (max value)",
-				selectedMetricName: "aMetric",
-				handleMetricChanged: jest.fn()
+				selectedMetricName,
+				handleMetricChanged: (value: string) => (selectedMetricName = value)
 			}
 		})
 
@@ -94,6 +97,13 @@ describe("metricChooserComponent", () => {
 		await userEvent.click(options[0])
 		expect(screen.queryByRole("listbox")).toBeNull()
 
+		await rerender({
+			componentProperties: {
+				searchPlaceholder: "search metric (max value)",
+				selectedMetricName,
+				handleMetricChanged: (value: string) => (selectedMetricName = value)
+			}
+		})
 		await userEvent.click(await screen.findByText("bMetric"))
 		expect(getSearchBox().value).toBe("")
 
