@@ -10,6 +10,8 @@ import { edgeMetricSelector } from "../../../state/store/dynamicSettings/edgeMet
 import { isEdgeMetricVisibleSelector } from "../../../state/store/appSettings/isEdgeMetricVisible/isEdgeMetricVisible.selector"
 import { hoveredEdgeValueSelector } from "./hoveredEdgeValue.selector"
 import { attributeDescriptorsSelector } from "../../../state/store/fileSettings/attributeDescriptors/attributeDescriptors.selector"
+import { getLastAction } from "../../../util/testUtils/store.utils"
+import { setEdgeMetric } from "../../../state/store/dynamicSettings/edgeMetric/edgeMetric.actions"
 
 describe("edgeMetricChooserComponent", () => {
 	beforeEach(() => {
@@ -38,7 +40,7 @@ describe("edgeMetricChooserComponent", () => {
 	})
 
 	it("should be a select for edge metric", async () => {
-		await render(EdgeMetricChooserComponent, { excludeComponentDeclaration: true })
+		const { detectChanges } = await render(EdgeMetricChooserComponent, { excludeComponentDeclaration: true })
 
 		await userEvent.click(await screen.findByText("aMetric"))
 		expect(screen.getByPlaceholderText("Edge Metric (highest value)")).not.toBe(null)
@@ -46,7 +48,13 @@ describe("edgeMetricChooserComponent", () => {
 		expect(options[0].textContent).toMatch("aMetric (1)")
 		expect(options[1].textContent).toMatch("bMetric (2)")
 
+		const store = TestBed.inject(MockStore)
 		await userEvent.click(options[1])
+		expect(await getLastAction(store)).toEqual(setEdgeMetric({ value: "bMetric" }))
+		store.overrideSelector(edgeMetricSelector, "bMetric")
+		store.refreshState()
+		detectChanges()
+
 		expect(screen.queryByText("aMetric")).toBe(null)
 		expect(screen.queryByText("bMetric")).not.toBe(null)
 	})
