@@ -131,7 +131,7 @@ export const TEST_ATTRIBUTE_DESCRIPTORS: AttributeDescriptors = {
 		description: "",
 		hintHighValue: "",
 		hintLowValue: "",
-		link: ""
+		link: "https://test.link"
 	},
 	c: {
 		title: undefined,
@@ -139,6 +139,13 @@ export const TEST_ATTRIBUTE_DESCRIPTORS: AttributeDescriptors = {
 		hintHighValue: undefined,
 		hintLowValue: undefined,
 		link: undefined
+	},
+	d: {
+		title: "",
+		description: "",
+		hintHighValue: "",
+		hintLowValue: "",
+		link: "https://test2.link"
 	}
 }
 

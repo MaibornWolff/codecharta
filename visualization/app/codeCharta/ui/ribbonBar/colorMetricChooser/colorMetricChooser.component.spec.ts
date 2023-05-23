@@ -61,6 +61,7 @@ describe("colorMetricChooserComponent", () => {
 
 		expect(screen.queryByText("aMetric")).toBe(null)
 		expect(screen.queryByText("bMetric")).not.toBe(null)
+		expect(container.querySelector("cc-metric-chooser").getAttribute("title")).toBe("Change color metric")
 		expect(container.querySelector(".fa.fa-paint-brush").getAttribute("style")).toEqual(nonDisabledIconColor)
 	})
 
