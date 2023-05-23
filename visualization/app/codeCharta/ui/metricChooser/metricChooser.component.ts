@@ -39,6 +39,9 @@ export class MetricChooserComponent implements OnInit {
 		} else {
 			this.searchTerm = ""
 		}
+	}
+
+	onChange() {
 		if (this.callback) {
 			this.callback()
 		}
