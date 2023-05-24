@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Added 🚀
+
+-   Expanded and restructured documentation regarding Docker usage [#3312](https://github.com/MaibornWolff/codecharta/pull/3312) </br>
+
 ## [1.117.0] - 2023-05-19
 
 ### Added 🚀
