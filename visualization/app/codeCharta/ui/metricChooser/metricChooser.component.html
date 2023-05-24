@@ -4,6 +4,7 @@
 	(selectionChange)="handleMetricChanged($event.value)"
 	(openedChange)="handleOpenedChanged($event)"
 	[disabled]="isDisabled"
+	*ngIf="attributeDescriptors$ | async as attributeDescriptors"
 >
 	<mat-select-trigger>{{ selectedMetricName }}</mat-select-trigger>
 	<mat-form-field class="cc-metric-chooser-search-field">

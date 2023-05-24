@@ -1,16 +1,18 @@
-<ng-container *ngIf="attributeDescriptors[metricName]?.title as descriptorTitle; else metricTitleFallback" class="legend-block">
-	<div [title]="attributeDescriptors[metricName] | attributeDescriptorTooltip: metricName">
-		<ng-content></ng-content> metric: <span class="bold">{{ descriptorTitle }}</span> ({{ metricName }})
-	</div>
+<ng-container *ngIf="attributeDescriptors$ | async as attributeDescriptors">
+	<ng-container *ngIf="attributeDescriptors[metricName]?.title as descriptorTitle; else metricTitleFallback" class="legend-block">
+		<div [title]="attributeDescriptors[metricName] | attributeDescriptorTooltip: metricName">
+			<ng-content></ng-content> metric: <span class="bold">{{ descriptorTitle }}</span> ({{ metricName }})
+		</div>
+	</ng-container>
+	<ng-template #metricTitleFallback>
+		<div>
+			<ng-content></ng-content> metric:
+			<ng-container *ngIf="fallbackTitles.get(metricName) as metricTitle; else noFallback">
+				<span class="bold">{{ metricTitle }}</span> ({{ metricName }})
+			</ng-container>
+			<ng-template #noFallback>
+				<span class="bold"> {{ metricName }} </span>
+			</ng-template>
+		</div>
+	</ng-template>
 </ng-container>
-<ng-template #metricTitleFallback>
-	<div>
-		<ng-content></ng-content> metric:
-		<ng-container *ngIf="fallbackTitles.get(metricName) as metricTitle; else noFallback">
-			<span class="bold">{{ metricTitle }}</span> ({{ metricName }})
-		</ng-container>
-		<ng-template #noFallback>
-			<span class="bold"> {{ metricName }} </span>
-		</ng-template>
-	</div>
-</ng-template>

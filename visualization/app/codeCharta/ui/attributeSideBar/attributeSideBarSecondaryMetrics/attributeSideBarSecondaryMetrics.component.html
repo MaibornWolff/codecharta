@@ -1,6 +1,6 @@
 <div class="secondary-metrics-wrapper">
 	<div class="metrics-wrapper">
-		<div class="metric-box scrollable-content">
+		<div class="metric-box scrollable-content" *ngIf="attributeDescriptors$ | async as attributeDescriptors">
 			<table class="secondary-metrics" aria-hidden="true">
 				<tr>
 					<th scope="col" colspan="2">Secondary Metrics</th>

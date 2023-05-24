@@ -1,4 +1,4 @@
-<div class="metric-box">
+<div class="metric-box" *ngIf="attributeDescriptors$ | async as attributeDescriptors">
 	<table *ngIf="primaryMetrics$ | async; let primaryMetrics" class="primary-metrics" aria-hidden="true">
 		<th scope="col">Primary Metrics</th>
 
