@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [1.117.0] - 2023-05-19
+
 ### Added 🚀
 
 -   Added support for parser suggestions to SVN-, MetricGardener-, RawText- and SourceCodeParser [#3287](https://github.com/MaibornWolff/codecharta/pull/3287) </br>
@@ -15,13 +17,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+-   Fix entrypoint for analysis docker image [#3259](https://github.com/MaibornWolff/codecharta/pull/3259)
 -   Show again delta of a building which have nothing in common in red or green [#3271](https://github.com/MaibornWolff/codecharta/pull/3271)
 -   Always show description of suspicious metrics [#3285](https://github.com/MaibornWolff/codecharta/pull/3285)
 -   Show suspicious metrics and risk profile documentation pages in navigation bar [#3290](https://github.com/MaibornWolff/codecharta/pull/3290)
+-   Merge filter will now abort execution when an invalid file is specified as input [#3305](https://github.com/MaibornWolff/codecharta/pull/3305)
+-   Fix formatting issues in docs turning `--` to `–` [#3301](https://github.com/MaibornWolff/codecharta/pull/3301)
 
 ### Changed
 
--   Adjusted documentation for parser suggestions [#3287](https://github.com/MaibornWolff/codecharta/pull/3287) </br>
+-   Adjusted documentation for parser suggestions [#3287](https://github.com/MaibornWolff/codecharta/pull/3287)
+-   Make the size of the CodeCharta logo more suitable for any screen size and remove MaibornWolff logo [#3302](https://github.com/MaibornWolff/codecharta/pull/3302)
 
 ### Chore 👨‍💻 👩‍💻
 

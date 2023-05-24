@@ -6,6 +6,7 @@ import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import de.maibornwolff.codecharta.tools.interactiveparser.util.InteractiveParserHelper
+import de.maibornwolff.codecharta.util.InputHelper
 import mu.KotlinLogging
 import picocli.CommandLine
 import java.io.File
@@ -57,9 +58,10 @@ class MergeFilter(
                 )
             }
 
-        val sourceFiles = mutableListOf<File>()
-        for (source in sources) {
-            sourceFiles.addAll(getFilesInFolder(source))
+        val sourceFiles = InputHelper.getAndCheckAllSpecifiedInputFiles(sources)
+        if (sourceFiles.isEmpty()) {
+            logger.error("Aborting execution because one or more input files have not been found or no input was specified at all!")
+            return null
         }
 
         val srcProjects = sourceFiles
@@ -78,11 +80,6 @@ class MergeFilter(
         ProjectSerializer.serializeToFileOrStream(mergedProject, outputFile, output, compress)
 
         return null
-    }
-
-    private fun getFilesInFolder(folder: File): List<File> {
-        val files = folder.walk().filter { !it.name.startsWith(".") && !it.isDirectory }
-        return files.toList()
     }
 
     companion object {
