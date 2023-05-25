@@ -19,7 +19,7 @@ You can start with **Codecharta Visualization** on multiple ways:
 -   Installation as a [npm package](#npm-package) (Recommended)
 -   Run an operating system specific [standalone](#run-a-standalone)
 -   Build it yourself from the github [repository](#build-it-yourself)
--   Use [docker-compose]({{site.baseurl}}{% link _docs/01-04-docker-containers.md %}) to run this with all other containers
+-   Use [docker-compose]({{site.baseurl}}{% link _docs/01-04-docker-containers.md %}) to run this with other needed tools like a Sonar instance or analyzing tools of codecharta-analysis.
 -   Use our [Dockerfile](#run-in-docker-container) to run the visualization in a container
 -   Try out the [online version](https://maibornwolff.github.io/codecharta/visualization/app/index.html?file=codecharta.cc.json&file=codecharta_analysis.cc.json)
 
@@ -149,8 +149,8 @@ We assume that you already installed docker, if not, you have to do that before!
 
 To containerize the visualization, please follow the below listed steps.
 
--   Start the docker container: `docker run -d -p 80:9000 codecharta/codecharta-visualization`. This detaches the container and exposes port 80 on the container and port 9000 on the host.
--   Open `localhost:9000` in your browser and you can already use the visualization!
+-   Start the docker container: `docker run -d -p 9000:80 codecharta/codecharta-visualization`. This detaches the container and exposes port 80 on the container and port 9000 on the host.
+-   Open `localhost:9000` in your browser and you can already use the visualization, upload `cc.json` files and play around!
 
 # JSON structure
 

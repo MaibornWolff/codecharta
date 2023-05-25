@@ -59,7 +59,7 @@ You can start with **Codecharta Analysis** on multiple ways:
 
 -   Installation as a [npm package](#installation-via-npm) (Recommended)
 -   Use our [Docker Image](#installation-via-docker) to run the analysis in a container
--   Use [docker-compose]({{site.baseurl}}{% link _docs/01-04-docker-containers.md %}) to run this with all other containers
+-   Use [docker-compose]({{site.baseurl}}{% link _docs/01-04-docker-containers.md %}) to run the analysis in a complete environment with other needed tools like Sonar and a running CodeCharta Visualization instance to view your city map.
 -   Download the SourceCode and [build it yourself](#manual-installation)
 
 ## Installation via npm
@@ -78,8 +78,8 @@ We assume that you already installed docker, if not, you have to do that before!
 To containerize the analysis, please follow the below listed steps.
 
 -   Navigate into the directory you want to analyse with CodeCharta. There are multiple ways to use the docker image:
-    1. Start the docker container and a bash shell in it with `docker run -it -v $(pwd):$(pwd) -w $(pwd) codecharta/codecharta-analysis bash` (for that to work you have to make sure bash is added to your PATH). This runs the image and mounts the current directory and sets it as the working directory in the image. You can now use the CodeCharta shell or any other of the installed tools via the command line.
-    2. Start the docker container and directly use some command (like the ccsh): `docker run -it -v $(pwd):$(pwd) -w $(pwd) codecharta-analysis ccsh`. This starts the Ccsh without any commands, which will open the parser suggestions.
+    1. Start the docker container and a bash shell in it with `docker run -it -v $(pwd):$(pwd) -w $(pwd) codecharta/codecharta-analysis bash`. This runs the image and mounts the current directory and sets it as the working directory in the image. You can now use the CodeCharta shell or any other of the tools installed in the container via the command line. An overview with all tools installed can be found [here]({{site.baseurl}}{% link _docs/01-04-docker-containers.md#codecharta-analysis %})
+    2. Start the docker container and directly use some command (like the ccsh): `docker run -it -v $(pwd):$(pwd) -w $(pwd) codecharta-analysis ccsh`. This starts the Ccsh without any commands, which will open an interactive codecharta shell that will guide you through the parsing/analyzing process.
     3. Start the docker container and directly use a specific parser: `docker run -it -v $(pwd):$(pwd) -w $(pwd) codecharta-analysis ccsh rawtextparser .`. This starts the RawTextParser in the current working directory in a container.
 -   After analysing, you can copy any results with `docker cp codecharta-analysis:/root/fileName.cc.json fileName.cc.json` to your current working directory (replace `/root/` with correct path if file is not in root in container)
 
