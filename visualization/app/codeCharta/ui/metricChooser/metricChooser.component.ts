@@ -41,7 +41,7 @@ export class MetricChooserComponent implements OnInit {
 		}
 	}
 
-	onChange() {
+	matSelectChange() {
 		if (this.callback) {
 			this.callback()
 		}

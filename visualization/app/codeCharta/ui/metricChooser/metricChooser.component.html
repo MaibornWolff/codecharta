@@ -1,7 +1,7 @@
 <mat-select
 	[panelClass]="'cc-metric-chooser'"
 	[value]="selectedMetricName"
-	(selectionChange)="handleMetricChanged($event.value); onChange()"
+	(selectionChange)="handleMetricChanged($event.value); matSelectChange()"
 	(openedChange)="handleOpenedChanged($event)"
 	[disabled]="isDisabled"
 >
