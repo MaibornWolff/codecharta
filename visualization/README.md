@@ -1,6 +1,6 @@
 # CodeCharta Visualization
 
-[![Build Status](https://travis-ci.org/MaibornWolff/codecharta.svg?branch=main)](https://travis-ci.org/MaibornWolff/codecharta)
+[![Quality Gate Status For Visualization](https://sonarcloud.io/api/project_badges/measure?project=maibornwolff-gmbh_codecharta_visualization&metric=alert_status)](https://sonarcloud.io/project/overview?id=maibornwolff-gmbh_codecharta_visualization)
 
 > CodeCharta by [MaibornWolff](https://www.maibornwolff.de)
 
