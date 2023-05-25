@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
--   Add metric tooltips that display attribute descriptors and provide hyperlinks in the sidebar to the metric's documentation [#3273](https://github.com/MaibornWolff/codecharta/pull/3273)
+-   Add metric tooltips that display attribute descriptors and provide hyperlinks in the sidebar to the metric's documentation [#3273](https://github.com/MaibornWolff/codecharta/pull/3273) </br>
     <img src="https://github.com/MaibornWolff/codecharta/assets/65733509/b8fd88ba-1437-441c-b3ef-61fd8e9b3a70" width="350px"/> <img src="https://github.com/MaibornWolff/codecharta/assets/65733509/0ade9ad4-e60b-4911-aadc-d8142167b21a" width="350px"/>
 
 ## [1.117.0] - 2023-05-19

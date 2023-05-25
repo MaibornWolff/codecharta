@@ -53,7 +53,7 @@ describe("attributeDescriptorTooltipPipe", () => {
 		expect(pipe.transform(aD, testKey)).toBe(result)
 	})
 
-	it("should include link", () => {
+	it("should include link after the other information", () => {
 		aD.description = testDescription
 		aD.link = testLink
 		expect(pipe.transform(aD, testKey)).toBe(`${testKey}:\n${testDescription}\n${testLink}`)

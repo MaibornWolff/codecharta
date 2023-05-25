@@ -149,7 +149,7 @@ describe("AttributeSideBarComponent", () => {
 		expect(attributeTypeSelectorWithinSecondaryMetrics[1].getAttribute("title")).toBe("d:\nhttps://test2.link")
 		expect(attributeTypeSelectorWithinSecondaryMetrics[2].getAttribute("title")).toBe(metricTitles.get("rloc"))
 		expect(attributeTypeSelectorWithinSecondaryMetrics[3].getAttribute("title")).toBe("") // someColor
-		expect(attributeTypeSelectorWithinSecondaryMetrics.length).toBe(4) // header + two entries
+		expect(attributeTypeSelectorWithinSecondaryMetrics.length).toBe(4) // header + three entries
 	})
 })
 
