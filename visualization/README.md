@@ -19,7 +19,7 @@ You can start with **Codecharta Visualization** on multiple ways:
 -   Installation as a [npm package](#npm-package) (Recommended)
 -   Run an operating system specific [standalone](#run-a-standalone)
 -   Build it yourself from the github [repository](#build-it-yourself)
--   Use [docker-compose]({{site.baseurl}}{% link _docs/01-04-docker-containers.md %}) to run this with other needed tools like a Sonar instance or analyzing tools of codecharta-analysis.
+-   Use [docker-compose](https://maibornwolff.github.io/codecharta/docs/docker-containers/) to run this with other needed tools like a Sonar instance or analyzing tools of codecharta-analysis.
 -   Use our [Dockerfile](#run-in-docker-container) to run the visualization in a container
 -   Try out the [online version](https://maibornwolff.github.io/codecharta/visualization/app/index.html?file=codecharta.cc.json&file=codecharta_analysis.cc.json)
 
@@ -144,7 +144,7 @@ $ npm run e2e:auto
 
 ## Run in Docker container
 
-You can use this via docker compose or as a standalone container. This section will deal with how to use the visualization as a standalone container. For information on how to use this with docker compose, please check out [Docker Getting Started]({{site.baseurl}}{% link _docs/01-04-docker-containers.md %})
+You can use this via docker compose or as a standalone container. This section will deal with how to use the visualization as a standalone container. For information on how to use this with docker compose, please check out [Docker Getting Started](https://maibornwolff.github.io/codecharta/docs/docker-containers/)
 We assume that you already installed docker, if not, you have to do that before!
 
 To containerize the visualization, please follow the below listed steps.

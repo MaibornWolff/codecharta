@@ -59,7 +59,7 @@ You can start with **Codecharta Analysis** on multiple ways:
 
 -   Installation as a [npm package](#installation-via-npm) (Recommended)
 -   Use our [Docker Image](#installation-via-docker) to run the analysis in a container
--   Use [docker-compose]({{site.baseurl}}{% link _docs/01-04-docker-containers.md %}) to run the analysis in a complete environment with other needed tools like Sonar and a running CodeCharta Visualization instance to view your city map.
+-   Use [docker-compose](https://maibornwolff.github.io/codecharta/docs/docker-containers/) to run the analysis in a complete environment with other needed tools like Sonar and a running CodeCharta Visualization instance to view your city map.
 -   Download the SourceCode and [build it yourself](#manual-installation)
 
 ## Installation via npm
@@ -72,7 +72,7 @@ To run it you can call `ccsh`
 
 ## Installation via Docker
 
-You can use Codecharta analysis in multiple ways. This section will deal with how to use the analysis as a standalone container. For information on how to use with docker compose, please check out our [docker compose documentation]({{site.baseurl}}{% link _docs/01-04-docker-containers.md %}).
+You can use Codecharta analysis in multiple ways. This section will deal with how to use the analysis as a standalone container. For information on how to use with docker compose, please check out our [docker compose documentation](https://maibornwolff.github.io/codecharta/docs/docker-containers/).
 We assume that you already installed docker, if not, you have to do that before!
 
 To containerize the analysis, please follow the below listed steps.
