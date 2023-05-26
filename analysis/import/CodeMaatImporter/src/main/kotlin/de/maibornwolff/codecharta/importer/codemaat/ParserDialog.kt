@@ -4,6 +4,8 @@ import com.github.kinquirer.KInquirer
 import com.github.kinquirer.components.promptConfirm
 import com.github.kinquirer.components.promptInput
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
+import java.io.File
+import java.nio.file.Paths
 
 class ParserDialog {
     companion object : ParserDialogInterface {
@@ -13,8 +15,8 @@ class ParserDialog {
             val defaultInputFileName = "edges.$EXTENSION"
             val inputFileName = KInquirer.promptInput(
                 message = "What is the $EXTENSION file that has to be parsed?",
-                hint = defaultInputFileName,
-                default = defaultInputFileName
+                hint = Paths.get("").toAbsolutePath().toString() + File.separator + defaultInputFileName,
+                default = Paths.get("").toAbsolutePath().toString() + File.separator + defaultInputFileName
             )
 
             val defaultOutputFileName = getOutputFileName(inputFileName)

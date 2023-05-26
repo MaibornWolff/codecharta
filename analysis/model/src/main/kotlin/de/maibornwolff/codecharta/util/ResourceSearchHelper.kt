@@ -8,6 +8,11 @@ class ResourceSearchHelper {
         fun isResourcePresent(resourceName: String, searchToken: String, searchOperator: (String, String) -> Boolean,
                               maxSearchingDepth: Int, shouldSearchFullDirectory: Boolean, resourceShouldBeFile: Boolean): Boolean {
             val trimmedResourceName = resourceName.trim()
+
+            if (trimmedResourceName == "") {
+                return false
+            }
+
             // To be able to generally search for the existence of files, do not check empty string here,
             // otherwise the real check never gets executed.
             if (searchOperator(trimmedResourceName, searchToken) && searchToken != "") {

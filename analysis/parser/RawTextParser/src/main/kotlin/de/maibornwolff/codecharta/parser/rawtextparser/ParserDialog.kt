@@ -8,8 +8,6 @@ import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import java.math.BigDecimal
 import java.nio.file.Paths
 
-
-
 class ParserDialog {
     companion object : ParserDialogInterface {
 

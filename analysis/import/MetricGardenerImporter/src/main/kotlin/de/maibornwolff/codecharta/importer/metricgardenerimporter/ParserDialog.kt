@@ -4,6 +4,8 @@ import com.github.kinquirer.KInquirer
 import com.github.kinquirer.components.promptConfirm
 import com.github.kinquirer.components.promptInput
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
+import java.io.File
+import java.nio.file.Paths
 
 class ParserDialog {
     companion object : ParserDialogInterface {
@@ -18,7 +20,7 @@ class ParserDialog {
             val inputFile = KInquirer.promptInput(
                 message = if (isJsonFile) "Which MetricGardener json-File do you want to import?"
                 else "What Project do you want to parse?",
-                hint = if (isJsonFile) "path/to/metricgardener/file.json" else "path/to/my/project"
+                hint = if (isJsonFile) { Paths.get("").toAbsolutePath().toString() + File.separator + "file.json" } else Paths.get("").toAbsolutePath().toString()
             )
 
             val outputFileName: String = KInquirer.promptInput(
