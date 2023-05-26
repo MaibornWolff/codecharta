@@ -19,11 +19,15 @@ service/Service1.ts,40,20
 
 You can transform that file into a `.cc.json` via command-line:
 
-`ccsh csvimport newmetrics.csv -o newmetrics.cc.json`
+```
+ccsh csvimport newmetrics.csv -o newmetrics.cc.json
+```
 
 This will result in a new file which you can merge into your existing `standardmetrics.cc.json` files via:
 
-`ccsh merge newmetrics.cc.json standardmetrics.cc.json -o mergedmetrics.cc.json`
+```
+ccsh merge newmetrics.cc.json standardmetrics.cc.json -o mergedmetrics.cc.json
+```
 
 If you are interested the `newmetrics.cc.json` looks like this:
 

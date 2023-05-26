@@ -48,7 +48,9 @@ The names of authors are saved when the --add-author flag is set.
 
 Standard usage:
 
-> `ccsh svnlogparser <log_file>`
+```
+ccsh svnlogparser <log_file>
+```
 
 The result is written as JSON to standard out or into an output file (if specified by `-o` option).
 

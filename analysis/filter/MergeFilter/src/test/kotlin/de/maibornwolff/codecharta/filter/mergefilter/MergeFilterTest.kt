@@ -1,11 +1,20 @@
 package de.maibornwolff.codecharta.filter.mergefilter
 
 import de.maibornwolff.codecharta.filter.mergefilter.MergeFilter.Companion.main
+import de.maibornwolff.codecharta.model.Project
+import de.maibornwolff.codecharta.serialization.ProjectDeserializer
+import de.maibornwolff.codecharta.util.InputHelper
+import io.mockk.every
+import io.mockk.mockkObject
+import io.mockk.unmockkAll
+import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
 import picocli.CommandLine
 import java.io.ByteArrayOutputStream
 import java.io.File
+import java.io.FileInputStream
 import java.io.PrintStream
 
 class MergeFilterTest {
@@ -13,6 +22,11 @@ class MergeFilterTest {
     val originalOut = System.out
     val errContent = ByteArrayOutputStream()
     val originalErr = System.err
+
+    @AfterEach
+    fun unmockEverything() {
+        unmockkAll()
+    }
 
     @Test
     fun `should merge all files in a folder correctly`() {
@@ -54,9 +68,12 @@ class MergeFilterTest {
 
     @Test
     fun `should create json uncompressed file`() {
+        val inputFile1 = "src/test/resources/test.json"
+        val inputFile2 = "src/test/resources/test2.json"
+
         main(
             arrayOf(
-                "src/test/resources/test.json", "src/test/resources/test2.json", "-nc",
+                inputFile1, inputFile2, "-nc",
                 "-o=src/test/resources/output"
             )
         )
@@ -78,5 +95,29 @@ class MergeFilterTest {
         file.deleteOnExit()
 
         assertThat(file.exists()).isTrue
+    }
+
+    @Test
+    fun `should abort if at least one input file does not exist`() {
+        mockkObject(InputHelper)
+        every {
+            InputHelper.getAndCheckAllSpecifiedInputFiles(any())
+        } returns mutableListOf()
+
+        mockkObject(ProjectDeserializer)
+        every {
+            ProjectDeserializer.deserializeProject(any<FileInputStream>())
+        } returns Project("")
+
+        System.setErr(PrintStream(errContent))
+        CommandLine(MergeFilter()).execute(
+                "src/test/resources/mergeFolderTest/file1.cc.json",
+                "src/test/resources/mergeFolderTest/file2.cc.json",
+                "src/test/resources/thisDoesNotExist.cc.json").toString()
+        System.setErr(originalErr)
+
+        assertThat(errContent.toString()).contains("Aborting execution because one or more input files have not been found or no input was specified at all!")
+
+        verify(exactly = 0) { ProjectDeserializer.deserializeProject(any<FileInputStream>()) }
     }
 }

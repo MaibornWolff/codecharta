@@ -18,7 +18,7 @@ export const _calculateSecondaryMetrics = (
 	const primaryMetricNamesList = Object.values(primaryMetrics)
 	const secondaryMetricNames = Object.keys(node.attributes)
 		.filter(metricName => metricName !== "unary" && !primaryMetricNamesList.includes(metricName))
-		.sort()
+		.sort((metricNameA, metricNameB) => metricNameA.localeCompare(metricNameB))
 
 	return secondaryMetricNames.map(secondaryMetricName => ({
 		name: secondaryMetricName,

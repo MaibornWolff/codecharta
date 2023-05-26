@@ -1,4 +1,4 @@
-FROM sapmachine:11.0.18
+FROM sapmachine:11.0.19
 
 COPY ./build/distributions/codecharta-analysis-*.tar /usr/local/
 
@@ -35,4 +35,4 @@ RUN wget -qO /tmp/sonar-scanner.zip https://binaries.sonarsource.com/Distributio
     mkdir --parents /usr/local/conf ; cp ./conf/sonar-scanner.properties /usr/local/conf/; \
     cp -r ./jre/ /usr/local/jre; cd /; rm /tmp/sonar-scanner.zip; rm -rf /tmp/sonar-scanner-*-linux;
 
-ENTRYPOINT ["tail", "-f", "/dev/null"]
+CMD ["ccsh"]
