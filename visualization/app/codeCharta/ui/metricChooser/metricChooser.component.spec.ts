@@ -52,9 +52,9 @@ describe("metricChooserComponent", () => {
 		expect(options[0].textContent).toMatch("aMetric (1)")
 		expect(options[1].textContent).toMatch("bMetric (2)")
 		expect(options[2].textContent).toMatch("cMetric (3)")
-		expect(options[3].textContent).toMatch("fullMetric (42) FullTestTitle")
+		expect(options[3].textContent).toMatch("fullMetric (42) FullTestDescription")
 		expect(options[3].getAttribute("title")).toMatch(
-			"FullTestTitle (fullMetric):\nFullTestDescription\nHigh Values: FullTestHigh\nLow Values: FullLowValue\nhttps://test.abc"
+			"FullTestTitle (fullMetric):\nFullTestDescription\nHigh Values: FullTestHigh\nLow Values: FullLowValue"
 		)
 		expect(options[4].textContent).toMatch("mcc (55)")
 		expect(options[4].getAttribute("title")).toMatch("Cyclomatic Complexity")

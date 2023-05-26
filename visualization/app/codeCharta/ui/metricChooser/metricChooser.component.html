@@ -19,7 +19,7 @@
 		>
 			{{ option.name }}
 			<span class="metric-max-value">({{ option.maxValue }})</span><br />
-			<span class="metric-subtitle" *ngIf="attributeDescriptors[option.name]?.title as descriptorSubtitle">
+			<span class="metric-subtitle" *ngIf="attributeDescriptors[option.name]?.description as descriptorSubtitle">
 				{{ descriptorSubtitle }}
 			</span>
 		</mat-option>

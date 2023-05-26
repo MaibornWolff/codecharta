@@ -11,6 +11,7 @@ import { metricTitles } from "../../../util/metric/metricTitles"
 })
 export class LegendBlockComponent {
 	@Input() metricName: string
+	@Input() metricSpecification: string
 	attributeDescriptors$ = this.store.select(attributeDescriptorsSelector)
 	fallbackTitles: Map<string, string> = metricTitles
 

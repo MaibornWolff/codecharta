@@ -64,6 +64,9 @@ cc-metric-chooser {
 		mat-option .metric-subtitle {
 			color: #999;
 			font-size: 11px;
+			overflow: hidden;
+			white-space: nowrap;
+			text-overflow: ellipsis;
 		}
 	}
 }

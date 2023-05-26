@@ -13,7 +13,6 @@ export class AttributeDescriptorTooltipPipe implements PipeTransform {
 		let subtitle: string = attributeDescriptor.description ? `\n${attributeDescriptor.description}` : ""
 		subtitle += attributeDescriptor.hintHighValue ? `\nHigh Values: ${attributeDescriptor.hintHighValue}` : ""
 		subtitle += attributeDescriptor.hintLowValue ? `\nLow Values: ${attributeDescriptor.hintLowValue}` : ""
-		subtitle += attributeDescriptor.link ? `\n${attributeDescriptor.link}` : ""
 
 		return subtitle.length > 0 ? `${title}:${subtitle}` : title
 	}

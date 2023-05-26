@@ -140,13 +140,13 @@ describe("AttributeSideBarComponent", () => {
 		const attributeTypeSelectorWithinPrimaryMetrics = container.querySelectorAll("cc-attribute-side-bar-primary-metrics td")
 		const attributeTypeSelectorWithinSecondaryMetrics = container.querySelectorAll("cc-attribute-side-bar-secondary-metrics tr")
 		expect(attributeTypeSelectorWithinPrimaryMetrics[0].getAttribute("title")).toBe("a_testTitle (a):\na_testDescription")
-		expect(attributeTypeSelectorWithinPrimaryMetrics[1].getAttribute("title")).toBe("b_testTitle (b):\nhttps://test.link")
+		expect(attributeTypeSelectorWithinPrimaryMetrics[1].getAttribute("title")).toBe("b_testTitle (b)")
 		expect(attributeTypeSelectorWithinPrimaryMetrics[1].querySelector("a").getAttribute("href")).toBe("https://test.link")
 		expect(attributeTypeSelectorWithinPrimaryMetrics[2].getAttribute("title")).toBe(metricTitles.get("mcc"))
 		expect(attributeTypeSelectorWithinPrimaryMetrics[3].getAttribute("title")).toBe("")
 
 		expect(attributeTypeSelectorWithinSecondaryMetrics[1].querySelector("a").getAttribute("href")).toBe("https://test2.link")
-		expect(attributeTypeSelectorWithinSecondaryMetrics[1].getAttribute("title")).toBe("d:\nhttps://test2.link")
+		expect(attributeTypeSelectorWithinSecondaryMetrics[1].getAttribute("title")).toBe("d")
 		expect(attributeTypeSelectorWithinSecondaryMetrics[2].getAttribute("title")).toBe(metricTitles.get("rloc"))
 		expect(attributeTypeSelectorWithinSecondaryMetrics[3].getAttribute("title")).toBe("") // someColor
 		expect(attributeTypeSelectorWithinSecondaryMetrics.length).toBe(4) // header + three entries

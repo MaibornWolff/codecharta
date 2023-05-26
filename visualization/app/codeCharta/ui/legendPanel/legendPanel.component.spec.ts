@@ -15,6 +15,7 @@ import { mapColorsSelector } from "../../state/store/appSettings/mapColors/mapCo
 import { defaultMapColors } from "../../state/store/appSettings/mapColors/mapColors.reducer"
 import { selectedColorMetricDataSelector } from "../../state/selectors/accumulatedData/metricData/selectedColorMetricData.selector"
 import { attributeDescriptorsSelector } from "../../state/store/fileSettings/attributeDescriptors/attributeDescriptors.selector"
+import { AttributeDescriptorTooltipPipe } from "../../util/simplePipes/attributeDescriptorTooltip.pipe"
 
 describe("LegendPanelController", () => {
 	beforeEach(() => {
@@ -67,6 +68,35 @@ describe("LegendPanelController", () => {
 		expect(metricDescriptions[0].textContent).toMatch("Area metric: Lines of Code (loc)")
 		expect(metricDescriptions[1].textContent).toMatch("Height metric: Cyclomatic Complexity (mcc)")
 		expect(metricDescriptions[2].textContent).toMatch("Color metric: Real Lines of Code (rloc)")
+	})
+
+	it("should contain elements with titles and links if attributeDescriptors are present", async () => {
+		const { container, detectChanges } = await render(LegendPanelComponent, { excludeComponentDeclaration: true })
+		const store = TestBed.inject(MockStore)
+		const pipe = new AttributeDescriptorTooltipPipe()
+		const metricLink = "https://rl.oc"
+		store.overrideSelector(isDeltaStateSelector, false)
+		const mccAttributeDescriptor = {
+			mcc: { title: "MCC_Title", description: "MCC_description", hintLowValue: "MCC_lowValue", hintHighValue: "", link: "" }
+		}
+		store.overrideSelector(attributeDescriptorsSelector, {
+			...mccAttributeDescriptor,
+			rloc: { title: "RLOC_Title", description: "RLOC_Description", hintLowValue: "", hintHighValue: "", link: metricLink }
+		})
+		store.refreshState()
+		detectChanges()
+		fireEvent.click(screen.getByTitle("Show panel"))
+		const areDeltaEntriesShown = screen.queryAllByText("delta", { exact: false }).length > 0
+		expect(areDeltaEntriesShown).toBe(false)
+
+		const metricDescriptions = container.querySelectorAll("cc-legend-block")
+		expect(metricDescriptions[0].textContent).toMatch("Area metric: Lines of Code (loc)")
+		expect(metricDescriptions[1].textContent).toMatch("Height metric: MCC_Title (mcc)")
+		expect(metricDescriptions[1].firstElementChild.getAttribute("title")).toMatch(pipe.transform(mccAttributeDescriptor.mcc, "mcc"))
+		expect(metricDescriptions[1].querySelector("a")).toBeNull()
+		expect(metricDescriptions[2].textContent).toMatch("Color metric: RLOC_Title (rloc)")
+		expect(metricDescriptions[2].firstElementChild.getAttribute("title")).toMatch("RLOC_Title (rloc)")
+		expect(metricDescriptions[2].querySelector("a").getAttribute("href")).toMatch(metricLink)
 	})
 
 	it("should display legend for delta mode", async () => {
