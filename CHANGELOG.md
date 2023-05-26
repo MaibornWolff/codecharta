@@ -9,15 +9,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
--   Expanded and restructured documentation regarding Docker usage [#3312](https://github.com/MaibornWolff/codecharta/pull/3312) </br>
+-   Expand and restructure documentation regarding Docker usage [#3312](https://github.com/MaibornWolff/codecharta/pull/3312) </br>
 
 ## [1.117.0] - 2023-05-19
 
 ### Added 🚀
 
--   Added support for parser suggestions to SVN-, MetricGardener-, RawText- and SourceCodeParser [#3287](https://github.com/MaibornWolff/codecharta/pull/3287) </br>
+-   Add support for parser suggestions to SVN-, MetricGardener-, RawText- and SourceCodeParser [#3287](https://github.com/MaibornWolff/codecharta/pull/3287) </br>
 -   Add semi automatic merging feature after executing multiple parsers [#3287](https://github.com/MaibornWolff/codecharta/pull/3287)
--   Expanded developer documentation to include common problems and solutions for them [#3289](https://github.com/MaibornWolff/codecharta/pull/3289)
+-   Expand developer documentation to include common problems and solutions for them [#3289](https://github.com/MaibornWolff/codecharta/pull/3289)
 
 ### Fixed 🐞
 
