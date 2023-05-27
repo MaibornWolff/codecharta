@@ -9,6 +9,9 @@ import { metricDataSelector } from "../../../state/selectors/accumulatedData/met
 import { edgeMetricSelector } from "../../../state/store/dynamicSettings/edgeMetric/edgeMetric.selector"
 import { isEdgeMetricVisibleSelector } from "../../../state/store/appSettings/isEdgeMetricVisible/isEdgeMetricVisible.selector"
 import { hoveredEdgeValueSelector } from "./hoveredEdgeValue.selector"
+import { attributeDescriptorsSelector } from "../../../state/store/fileSettings/attributeDescriptors/attributeDescriptors.selector"
+import { getLastAction } from "../../../util/testUtils/store.utils"
+import { setEdgeMetric } from "../../../state/store/dynamicSettings/edgeMetric/edgeMetric.actions"
 
 describe("edgeMetricChooserComponent", () => {
 	beforeEach(() => {
@@ -28,7 +31,8 @@ describe("edgeMetricChooserComponent", () => {
 						},
 						{ selector: edgeMetricSelector, value: "aMetric" },
 						{ selector: hoveredEdgeValueSelector, value: null },
-						{ selector: isEdgeMetricVisibleSelector, value: true }
+						{ selector: isEdgeMetricVisibleSelector, value: true },
+						{ selector: attributeDescriptorsSelector, value: {} }
 					]
 				})
 			]
@@ -36,17 +40,23 @@ describe("edgeMetricChooserComponent", () => {
 	})
 
 	it("should be a select for edge metric", async () => {
-		await render(EdgeMetricChooserComponent, { excludeComponentDeclaration: true })
+		const { detectChanges } = await render(EdgeMetricChooserComponent, { excludeComponentDeclaration: true })
 
-		await userEvent.click(await screen.findByText("aMetric (1)"))
+		await userEvent.click(await screen.findByText("aMetric"))
 		expect(screen.getByPlaceholderText("Edge Metric (highest value)")).not.toBe(null)
 		const options = screen.queryAllByRole("option")
 		expect(options[0].textContent).toMatch("aMetric (1)")
 		expect(options[1].textContent).toMatch("bMetric (2)")
 
+		const store = TestBed.inject(MockStore)
 		await userEvent.click(options[1])
-		expect(screen.queryByText("aMetric (1)")).toBe(null)
-		expect(screen.queryByText("bMetric (2)")).not.toBe(null)
+		expect(await getLastAction(store)).toEqual(setEdgeMetric({ value: "bMetric" }))
+		store.overrideSelector(edgeMetricSelector, "bMetric")
+		store.refreshState()
+		detectChanges()
+
+		expect(screen.queryByText("aMetric")).toBe(null)
+		expect(screen.queryByText("bMetric")).not.toBe(null)
 	})
 
 	it("should reflect edge metric's visibility in its class name", async () => {

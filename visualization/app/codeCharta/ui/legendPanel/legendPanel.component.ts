@@ -1,12 +1,12 @@
 import { Component, ViewEncapsulation } from "@angular/core"
 import { isDeltaStateSelector } from "../../state/selectors/isDeltaState.selector"
-import { legendColorMetricSelector } from "./selectors/legendColorMetric.selector"
-import { legendHeightMetricSelector } from "./selectors/legendHeightMetric.selector"
-import { legendAreaMetricSelector } from "./selectors/legendAreaMetric.selector"
-import { legendEdgeMetricSelector } from "./selectors/legendEdgeMetric.selector"
 import { IsAttributeSideBarVisibleService } from "../../services/isAttributeSideBarVisible.service"
 import { Store } from "@ngrx/store"
 import { CcState } from "../../codeCharta.model"
+import { heightMetricSelector } from "../../state/store/dynamicSettings/heightMetric/heightMetric.selector"
+import { areaMetricSelector } from "../../state/store/dynamicSettings/areaMetric/areaMetric.selector"
+import { colorMetricSelector } from "../../state/store/dynamicSettings/colorMetric/colorMetric.selector"
+import { edgeMetricSelector } from "../../state/store/dynamicSettings/edgeMetric/edgeMetric.selector"
 
 @Component({
 	selector: "cc-legend-panel",
@@ -17,10 +17,10 @@ import { CcState } from "../../codeCharta.model"
 export class LegendPanelComponent {
 	isLegendVisible = false
 	isDeltaState$ = this.store.select(isDeltaStateSelector)
-	heightMetric$ = this.store.select(legendHeightMetricSelector)
-	areaMetric$ = this.store.select(legendAreaMetricSelector)
-	colorMetric$ = this.store.select(legendColorMetricSelector)
-	edgeMetric$ = this.store.select(legendEdgeMetricSelector)
+	heightMetric$ = this.store.select(heightMetricSelector)
+	areaMetric$ = this.store.select(areaMetricSelector)
+	colorMetric$ = this.store.select(colorMetricSelector)
+	edgeMetric$ = this.store.select(edgeMetricSelector)
 
 	constructor(public isAttributeSideBarVisibleService: IsAttributeSideBarVisibleService, private store: Store<CcState>) {}
 

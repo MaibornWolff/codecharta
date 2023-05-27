@@ -13,11 +13,8 @@ import { colorRangeSelector } from "../../state/store/dynamicSettings/colorRange
 import { State } from "@ngrx/store"
 import { mapColorsSelector } from "../../state/store/appSettings/mapColors/mapColors.selector"
 import { defaultMapColors } from "../../state/store/appSettings/mapColors/mapColors.reducer"
-import { legendHeightMetricSelector } from "./selectors/legendHeightMetric.selector"
-import { legendAreaMetricSelector } from "./selectors/legendAreaMetric.selector"
-import { legendColorMetricSelector } from "./selectors/legendColorMetric.selector"
 import { selectedColorMetricDataSelector } from "../../state/selectors/accumulatedData/metricData/selectedColorMetricData.selector"
-import { getMetricDescriptors } from "../attributeSideBar/util/metricDescriptors"
+import { attributeDescriptorsSelector } from "../../state/store/fileSettings/attributeDescriptors/attributeDescriptors.selector"
 
 describe("LegendPanelController", () => {
 	beforeEach(() => {
@@ -27,15 +24,13 @@ describe("LegendPanelController", () => {
 				provideMockStore({
 					selectors: [
 						{ selector: heightMetricSelector, value: "mcc" },
-						{ selector: legendHeightMetricSelector, value: getMetricDescriptors("mcc") },
 						{ selector: areaMetricSelector, value: "loc" },
-						{ selector: legendAreaMetricSelector, value: getMetricDescriptors("loc") },
 						{ selector: colorMetricSelector, value: "rloc" },
-						{ selector: legendColorMetricSelector, value: getMetricDescriptors("rloc") },
 						{ selector: colorRangeSelector, value: { from: 21, to: 42, max: 9001 } },
 						{ selector: isDeltaStateSelector, value: true },
 						{ selector: mapColorsSelector, value: defaultMapColors },
-						{ selector: selectedColorMetricDataSelector, value: {} }
+						{ selector: selectedColorMetricDataSelector, value: {} },
+						{ selector: attributeDescriptorsSelector, value: {} }
 					]
 				}),
 				{ provide: State, useValue: {} }
@@ -65,8 +60,7 @@ describe("LegendPanelController", () => {
 		detectChanges()
 		fireEvent.click(screen.getByTitle("Show panel"))
 
-		const areDeltaEntriesShown = screen.queryAllByText("delta", { exact: false }).length > 0
-		expect(areDeltaEntriesShown).toBe(false)
+		expect(screen.queryAllByText("delta", { exact: false }).length).not.toBeGreaterThan(0)
 
 		const metricDescriptions = container.querySelectorAll("cc-legend-block")
 		expect(metricDescriptions[0].textContent).toMatch("Area metric: Lines of Code (loc)")
@@ -74,12 +68,40 @@ describe("LegendPanelController", () => {
 		expect(metricDescriptions[2].textContent).toMatch("Color metric: Real Lines of Code (rloc)")
 	})
 
+	it("should contain elements with titles and links if attributeDescriptors are present", async () => {
+		const { container, detectChanges } = await render(LegendPanelComponent, { excludeComponentDeclaration: true })
+		const store = TestBed.inject(MockStore)
+		const metricLink = "https://rl.oc"
+		store.overrideSelector(isDeltaStateSelector, false)
+		const mccAttributeDescriptor = {
+			mcc: { title: "MCC_Title", description: "MCC_description", hintLowValue: "MCC_lowValue", hintHighValue: "", link: "" }
+		}
+		store.overrideSelector(attributeDescriptorsSelector, {
+			...mccAttributeDescriptor,
+			rloc: { title: "RLOC_Title", description: "RLOC_Description", hintLowValue: "", hintHighValue: "", link: metricLink }
+		})
+		store.refreshState()
+		detectChanges()
+		fireEvent.click(screen.getByTitle("Show panel"))
+		expect(screen.queryAllByText("delta", { exact: false }).length).not.toBeGreaterThan(0)
+
+		const metricDescriptions = container.querySelectorAll("cc-legend-block")
+		expect(metricDescriptions[0].textContent).toMatch("Area metric: Lines of Code (loc)")
+		expect(metricDescriptions[1].textContent).toMatch("Height metric: MCC_Title (mcc)")
+		expect(metricDescriptions[1].firstElementChild.getAttribute("title")).toMatch(
+			"MCC_Title (mcc):\nMCC_description\nLow Values: MCC_lowValue"
+		)
+		expect(metricDescriptions[1].querySelector("a")).toBeNull()
+		expect(metricDescriptions[2].textContent).toMatch("Color metric: RLOC_Title (rloc)")
+		expect(metricDescriptions[2].firstElementChild.getAttribute("title")).toMatch("RLOC_Title (rloc)")
+		expect(metricDescriptions[2].querySelector("a").getAttribute("href")).toMatch(metricLink)
+	})
+
 	it("should display legend for delta mode", async () => {
 		const { container } = await render(LegendPanelComponent, { excludeComponentDeclaration: true })
 		fireEvent.click(screen.getByTitle("Show panel"))
 
-		const areDeltaEntriesShown = screen.queryAllByText("delta", { exact: false }).length > 0
-		expect(areDeltaEntriesShown).toBe(true)
+		expect(screen.queryAllByText("delta", { exact: false }).length).toBeGreaterThan(0)
 
 		const metricDescriptions = container.querySelectorAll("cc-legend-block")
 		expect(metricDescriptions.length).toBe(0)

@@ -13,7 +13,7 @@ import { ApplyCustomConfigButtonComponent } from "./customConfigList/customConfi
 import { CustomConfigColorSchemaBySelectionMode } from "./customConfigList/customConfigItemGroup/customConfigDescription/customConfigColorSchemaBySelectionMode.pipe"
 import { FormsModule } from "@angular/forms"
 import { CustomConfigNoteDialogButtonModule } from "./customConfigNoteDialogButton/customConfigNoteDialogButton.module"
-import { TruncateTextPipe } from "../../util/truncateText.pipe"
+import { TruncateTextPipeModule } from "../../util/pipes/TruncateTextPipeModule"
 
 @NgModule({
 	imports: [
@@ -23,7 +23,8 @@ import { TruncateTextPipe } from "../../util/truncateText.pipe"
 		UploadCustomConfigButtonModule,
 		AddCustomConfigButtonModule,
 		DownloadCustomConfigButtonModule,
-		FormsModule
+		FormsModule,
+		TruncateTextPipeModule
 	],
 	declarations: [
 		CustomConfigsComponent,
@@ -32,7 +33,7 @@ import { TruncateTextPipe } from "../../util/truncateText.pipe"
 		ApplyCustomConfigButtonComponent,
 		CustomConfig2ApplicableMessage,
 		CustomConfig2ApplicableColor,
-		TruncateTextPipe,
+
 		CustomConfigColorSchemaBySelectionMode
 	],
 	exports: [CustomConfigsComponent]

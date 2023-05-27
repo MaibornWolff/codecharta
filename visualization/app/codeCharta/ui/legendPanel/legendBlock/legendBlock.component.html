@@ -1,20 +1,24 @@
-<ng-container *ngIf="metricDecorations.title; then titleExists; else onlyShowName" class="legend-block"></ng-container>
-<ng-template #titleExists>
-	<ng-container *ngIf="metricDecorations.description; then showTitleAndDescription; else showTitle"></ng-container>
-</ng-template>
-
-<ng-template #showTitleAndDescription>
-	<div title="{{ metricDecorations.description }}">
-		{{ metricFor }} metric: <span class="bold">{{ metricDecorations.title }}</span> ({{ metricDecorations.key }})
-	</div>
-</ng-template>
-<ng-template #showTitle>
-	<div>
-		{{ metricFor }} metric: <span class="bold">{{ metricDecorations.title }}</span> ({{ metricDecorations.key }})
-	</div>
-</ng-template>
-<ng-template #onlyShowName>
-	<div>
-		{{ metricFor }} metric: <span class="bold">{{ metricDecorations.key }}</span>
-	</div>
-</ng-template>
+<ng-container *ngIf="attributeDescriptors$ | async as attributeDescriptors">
+	<ng-container *ngIf="attributeDescriptors[metricName]?.title as descriptorTitle; else metricTitleFallback" class="legend-block">
+		<div [title]="attributeDescriptors[metricName] | attributeDescriptorTooltip: metricName">
+			{{ metricSpecification }} metric:
+			<a [href]="link" target="_blank" *ngIf="attributeDescriptors[metricName].link as link; else metricNoLink">
+				<span class="bold">{{ descriptorTitle }}</span> ({{ metricName }}) <i class="fa fa-external-link"></i>
+			</a>
+			<ng-template #metricNoLink>
+				<span class="bold">{{ descriptorTitle }}</span> ({{ metricName }})
+			</ng-template>
+		</div>
+	</ng-container>
+	<ng-template #metricTitleFallback>
+		<div>
+			{{ metricSpecification }} metric:
+			<ng-container *ngIf="fallbackTitles.get(metricName) as metricTitle; else noFallback">
+				<span class="bold">{{ metricTitle }}</span> ({{ metricName }})
+			</ng-container>
+			<ng-template #noFallback>
+				<span class="bold"> {{ metricName }} </span>
+			</ng-template>
+		</div>
+	</ng-template>
+</ng-container>

@@ -10,10 +10,18 @@ import { AttributeSideBarPrimaryMetricComponent } from "./attributeSideBarPrimar
 import { AttributeSideBarHeaderSectionComponent } from "./attributeSideBarHeaderSection/attributeSideBarHeaderSection.component"
 import { NodePathComponent } from "./attributeSideBarHeaderSection/nodePath/nodePath.component"
 import { MaterialModule } from "../../../material/material.module"
-import { SimplePipesModule } from "../../util/simplePipes/SimplePipesModule"
+import { RemoveExtensionPipeModule } from "../../util/pipes/RemoveExtensionPipeModule"
+import { AttributeDescriptorTooltipPipeModule } from "../../util/pipes/AttributeDescriptorTooltipPipeModule"
 
 @NgModule({
-	imports: [CommonModule, MaterialModule, AttributeTypeSelectorModule, MetricDeltaSelectedModule, SimplePipesModule],
+	imports: [
+		CommonModule,
+		MaterialModule,
+		AttributeTypeSelectorModule,
+		MetricDeltaSelectedModule,
+		RemoveExtensionPipeModule,
+		AttributeDescriptorTooltipPipeModule
+	],
 	declarations: [
 		AttributeSideBarComponent,
 		AttributeSideBarHeaderSectionComponent,

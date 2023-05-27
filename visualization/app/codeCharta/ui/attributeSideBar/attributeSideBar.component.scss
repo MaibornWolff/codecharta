@@ -133,5 +133,32 @@ cc-attribute-side-bar {
 				margin-top: 5px;
 			}
 		}
+
+		cc-attribute-side-bar-primary-metrics,
+		cc-attribute-side-bar-secondary-metrics {
+			.metric-box,
+			.metrics-wrapper {
+				i.fa.fa-external-link {
+					font-size: 10px;
+					min-width: 10px;
+					text-align: center;
+				}
+
+				a:link,
+				a:visited {
+					text-decoration: none;
+				}
+
+				a:hover {
+					color: blue;
+					text-decoration: solid;
+					text-decoration-line: underline;
+				}
+
+				a:active {
+					color: red;
+				}
+			}
+		}
 	}
 }

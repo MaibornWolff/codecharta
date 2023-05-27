@@ -84,7 +84,11 @@ function getMetricDataFromMap(nodeEdgeMetricsMap: NodeEdgeMetricsMap) {
 				minimumMetricValue = combinedValue
 			}
 		}
-		metricData.push({ name: edgeMetric, maxValue: maximumMetricValue, minValue: minimumMetricValue })
+		metricData.push({
+			name: edgeMetric,
+			maxValue: maximumMetricValue,
+			minValue: minimumMetricValue
+		})
 	}
 
 	return metricData
