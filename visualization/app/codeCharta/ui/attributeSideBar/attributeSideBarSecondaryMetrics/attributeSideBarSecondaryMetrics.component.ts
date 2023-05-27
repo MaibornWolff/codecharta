@@ -1,7 +1,7 @@
 import { Component, ViewEncapsulation } from "@angular/core"
 import { Store } from "@ngrx/store"
 import { Observable } from "rxjs"
-import { CcState } from "../../../codeCharta.model"
+import { AttributeDescriptors, CcState } from "../../../codeCharta.model"
 
 import { Metric } from "../util/metric"
 import { showAttributeTypeSelectorSelector } from "../util/showAttributeTypeSelector.selector"
@@ -18,11 +18,12 @@ export class AttributeSideBarSecondaryMetricsComponent {
 	secondaryMetrics$: Observable<Metric[]>
 	showAttributeTypeSelector$: Observable<boolean>
 	showDeltaValue$: Observable<boolean>
-	attributeDescriptors$ = this.store.select(attributeDescriptorsSelector)
+	attributeDescriptors$: Observable<AttributeDescriptors>
 
 	constructor(private store: Store<CcState>) {
 		this.secondaryMetrics$ = this.store.select(secondaryMetricsSelector)
 		this.showAttributeTypeSelector$ = this.store.select(showAttributeTypeSelectorSelector)
 		this.showDeltaValue$ = this.store.select(showDeltaValueSelector)
+		this.attributeDescriptors$ = this.store.select(attributeDescriptorsSelector)
 	}
 }
