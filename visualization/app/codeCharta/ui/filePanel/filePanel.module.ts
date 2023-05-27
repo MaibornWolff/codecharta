@@ -6,12 +6,12 @@ import { NgModule } from "@angular/core"
 import { CommonModule } from "@angular/common"
 import { MaterialModule } from "../../../material/material.module"
 import { FormsModule } from "@angular/forms"
-import { SimplePipesModule } from "../../util/simplePipes/SimplePipesModule"
 import { FileSelectionModeService } from "./fileSelectionMode.service"
 import { FilePanelComponent } from "./filePanel.component"
+import { RemoveExtensionPipeModule } from "../../util/pipes/RemoveExtensionPipeModule"
 
 @NgModule({
-	imports: [CommonModule, MaterialModule, FormsModule, SimplePipesModule],
+	imports: [CommonModule, MaterialModule, FormsModule, RemoveExtensionPipeModule],
 	declarations: [
 		FilePanelDeltaSelectorComponent,
 		FilePanelFileSelectorComponent,

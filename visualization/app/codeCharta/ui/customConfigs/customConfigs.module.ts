@@ -13,7 +13,7 @@ import { ApplyCustomConfigButtonComponent } from "./customConfigList/customConfi
 import { CustomConfigColorSchemaBySelectionMode } from "./customConfigList/customConfigItemGroup/customConfigDescription/customConfigColorSchemaBySelectionMode.pipe"
 import { FormsModule } from "@angular/forms"
 import { CustomConfigNoteDialogButtonModule } from "./customConfigNoteDialogButton/customConfigNoteDialogButton.module"
-import { SimplePipesModule } from "../../util/simplePipes/SimplePipesModule"
+import { TruncateTextPipeModule } from "../../util/pipes/TruncateTextPipeModule"
 
 @NgModule({
 	imports: [
@@ -24,7 +24,7 @@ import { SimplePipesModule } from "../../util/simplePipes/SimplePipesModule"
 		AddCustomConfigButtonModule,
 		DownloadCustomConfigButtonModule,
 		FormsModule,
-		SimplePipesModule
+		TruncateTextPipeModule
 	],
 	declarations: [
 		CustomConfigsComponent,
