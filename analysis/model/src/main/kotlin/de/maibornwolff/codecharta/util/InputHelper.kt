@@ -8,6 +8,11 @@ class InputHelper {
     companion object {
         private val logger = KotlinLogging.logger {}
 
+        /**
+         * Returns list of the specified files if all conditions are met to consider input valid, otherwise throws IllegalArgumentException.
+         * If input can be piped, we check if all input resources exist and folders are not empty.
+         * If input can not be piped, we check for that as well and additionally check if input is not empty.
+         */
         fun getInputFileListIfValid(inputResources: Array<File>, canInputBePiped: Boolean): MutableList<File> {
             val isInputValid = isInputValid(inputResources, canInputBePiped)
 
@@ -54,7 +59,11 @@ class InputHelper {
         private fun getFileListFromValidatedFileArray(inputFiles: Array<File>): MutableList<File> {
             val resultList = mutableListOf<File>()
             for (source in inputFiles) {
-                resultList.addAll(getFilesInFolder(source))
+                if (source.isDirectory) {
+                    resultList.addAll(getFilesInFolder(source))
+                } else {
+                    resultList.add(source)
+                }
             }
             return resultList
         }

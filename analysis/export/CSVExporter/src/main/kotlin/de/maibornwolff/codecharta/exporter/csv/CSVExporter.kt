@@ -9,6 +9,7 @@ import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import de.maibornwolff.codecharta.tools.interactiveparser.util.InteractiveParserHelper
+import de.maibornwolff.codecharta.util.InputHelper
 import picocli.CommandLine
 import java.io.BufferedWriter
 import java.io.File
@@ -51,7 +52,15 @@ class CSVExporter : Callable<Void>, InteractiveParser {
             throw IllegalArgumentException("depth-of-hierarchy must not be negative")
         }
 
-        val projects = sources.map { ProjectDeserializer.deserializeProject(it.inputStream()) }
+        val sourceFiles: MutableList<File>
+        try {
+            sourceFiles = InputHelper.getInputFileListIfValid(sources, canInputBePiped = false)
+        } catch (invalidInputException: IllegalArgumentException) {
+            println("Aborting execution because of invalid input resources!")
+            return null
+        }
+
+        val projects = sourceFiles.map { ProjectDeserializer.deserializeProject(it.inputStream()) }
 
         projects.forEach { writeUsingWriter(it, writer()) }
 

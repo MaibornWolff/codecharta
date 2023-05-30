@@ -103,15 +103,20 @@ class InputHelperTest {
         val validFile1 = File("src/test/resources/example.cc.json")
         val validFile2 = File("src/test/resources/example_api_version_1.3.cc.json")
         val validFile3 = File("src/test/resources/exampleUncompressed.txt")
+        val validDirectory = File("src/test/resources/inputFiles")
+        val amountOfFilesInDirectory = 2
 
-        val inputFiles = arrayOf(validFile1, validFile2, validFile3)
+        val inputFiles = arrayOf(validFile1, validFile2, validFile3, validDirectory)
 
         val result = InputHelper.getInputFileListIfValid(inputFiles, canInputBePiped)
 
         Assertions.assertThat(result).contains(validFile1)
         Assertions.assertThat(result).contains(validFile2)
         Assertions.assertThat(result).contains(validFile3)
+        Assertions.assertThat(result).contains(File("src/test/resources/inputFiles/dummyFile1.txt"))
+        Assertions.assertThat(result).contains(File("src/test/resources/inputFiles/dummyFile2.txt"))
 
-        Assertions.assertThat(result.size).isEqualTo(inputFiles.size)
+        // Subtract directory as file in list, add number of files in directory
+        Assertions.assertThat(result.size).isEqualTo(inputFiles.size - 1 + amountOfFilesInDirectory)
     }
 }
