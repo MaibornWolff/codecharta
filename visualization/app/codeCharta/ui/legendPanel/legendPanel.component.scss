@@ -51,33 +51,31 @@ cc-legend-panel {
 			color: #000;
 		}
 
-		.legend-block {
-			display: block;
-			min-height: 25px;
-			max-width: 350px;
-			overflow: hidden;
-
-			i,
-			img {
-				display: inline-block;
-				width: 14px;
+		cc-legend-block {
+			a:link,
+			a:visited {
+				text-decoration: none;
+				color: #000;
 			}
 
-			i {
-				margin-right: 4px;
+			a:hover {
+				color: blue;
+				text-decoration: solid;
+				text-decoration-line: underline;
 			}
 
-			img {
-				padding-top: 3px;
-				height: 17px;
+			a:active {
+				color: red;
+			}
+
+			i.fa.fa-external-link {
+				font-size: 10px;
+				min-width: 10px;
+				text-align: center;
 			}
 
 			span {
 				display: inline-block;
-			}
-
-			.set-left-margin {
-				margin-left: 18px;
 			}
 		}
 

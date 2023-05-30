@@ -1,5 +1,8 @@
 import { Component, Input, ViewEncapsulation } from "@angular/core"
-import { MetricDescriptors } from "../../attributeSideBar/util/metricDescriptors"
+import { CcState } from "../../../codeCharta.model"
+import { attributeDescriptorsSelector } from "../../../state/store/fileSettings/attributeDescriptors/attributeDescriptors.selector"
+import { Store } from "@ngrx/store"
+import { metricTitles } from "../../../util/metric/metricTitles"
 
 @Component({
 	selector: "cc-legend-block",
@@ -7,6 +10,10 @@ import { MetricDescriptors } from "../../attributeSideBar/util/metricDescriptors
 	encapsulation: ViewEncapsulation.None
 })
 export class LegendBlockComponent {
-	@Input() metricFor: string
-	@Input() metricDecorations: MetricDescriptors
+	@Input() metricName: string
+	@Input() metricSpecification: string
+	attributeDescriptors$ = this.store.select(attributeDescriptorsSelector)
+	fallbackTitles: Map<string, string> = metricTitles
+
+	constructor(private store: Store<CcState>) {}
 }

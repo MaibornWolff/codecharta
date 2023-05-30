@@ -1,11 +1,8 @@
 import { selectedNodeSelector } from "../selectedNode.selector"
 import { Metric } from "../../../ui/attributeSideBar/util/metric"
 import { primaryMetricNamesSelector } from "./primaryMetricNames.selector"
-import { getMetricDescriptors } from "../../../ui/attributeSideBar/util/metricDescriptors"
-import { attributeDescriptorsSelector } from "../../store/fileSettings/attributeDescriptors/attributeDescriptors.selector"
 import { Edge } from "app/codeCharta/ui/attributeSideBar/util/edge"
 import { CodeMapNode } from "app/codeCharta/codeCharta.model"
-import { AttributeDescriptors } from "../../../codeCharta.model"
 import { createSelector } from "@ngrx/store"
 
 export type PrimaryMetrics = {
@@ -18,8 +15,7 @@ export type PrimaryMetrics = {
 export const primaryMetricsSelector = createSelector(
 	selectedNodeSelector,
 	primaryMetricNamesSelector,
-	attributeDescriptorsSelector,
-	(selectedNode, primaryMetricNames, attributeDescriptors) => {
+	(selectedNode, primaryMetricNames) => {
 		if (!selectedNode) {
 			return
 		}
@@ -27,32 +23,28 @@ export const primaryMetricsSelector = createSelector(
 		return {
 			area: {
 				name: primaryMetricNames.areaMetric,
-				value: selectedNode.attributes[primaryMetricNames.areaMetric],
-				descriptors: getMetricDescriptors(primaryMetricNames.areaMetric, attributeDescriptors)
+				value: selectedNode.attributes[primaryMetricNames.areaMetric]
 			},
 			height: {
 				name: primaryMetricNames.heightMetric,
-				value: selectedNode.attributes[primaryMetricNames.heightMetric],
-				descriptors: getMetricDescriptors(primaryMetricNames.heightMetric, attributeDescriptors)
+				value: selectedNode.attributes[primaryMetricNames.heightMetric]
 			},
 			color: {
 				name: primaryMetricNames.colorMetric,
-				value: selectedNode.attributes[primaryMetricNames.colorMetric],
-				descriptors: getMetricDescriptors(primaryMetricNames.colorMetric, attributeDescriptors)
+				value: selectedNode.attributes[primaryMetricNames.colorMetric]
 			},
-			edge: getEdge(primaryMetricNames.edgeMetric, selectedNode, attributeDescriptors)
+			edge: getEdge(primaryMetricNames.edgeMetric, selectedNode)
 		}
 	}
 )
 
-function getEdge(key: string, selectedNode: CodeMapNode, attributeDescriptors: AttributeDescriptors): Edge {
+function getEdge(key: string, selectedNode: CodeMapNode): Edge {
 	if (key === undefined || key === null) {
 		return null
 	}
 	return {
 		name: key,
 		incoming: selectedNode.edgeAttributes[key]?.incoming,
-		outgoing: selectedNode.edgeAttributes[key]?.outgoing,
-		descriptors: getMetricDescriptors(key, attributeDescriptors)
+		outgoing: selectedNode.edgeAttributes[key]?.outgoing
 	}
 }

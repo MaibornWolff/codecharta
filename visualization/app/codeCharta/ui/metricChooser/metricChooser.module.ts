@@ -4,10 +4,11 @@ import { FormsModule } from "@angular/forms"
 import { MaterialModule } from "../../../material/material.module"
 import { FilterMetricDataBySearchTermPipe } from "./filterMetricDataBySearchTerm.pipe"
 import { MetricChooserComponent } from "./metricChooser.component"
+import { AttributeDescriptorTooltipPipeModule } from "../../util/pipes/AttributeDescriptorTooltipPipeModule"
 
 @NgModule({
-	imports: [CommonModule, MaterialModule, FormsModule],
 	declarations: [MetricChooserComponent, FilterMetricDataBySearchTermPipe],
-	exports: [MetricChooserComponent]
+	exports: [MetricChooserComponent],
+	imports: [CommonModule, MaterialModule, FormsModule, AttributeDescriptorTooltipPipeModule]
 })
 export class MetricChooserModule {}
