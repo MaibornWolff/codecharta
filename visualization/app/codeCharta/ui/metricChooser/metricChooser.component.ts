@@ -19,7 +19,6 @@ export class MetricChooserComponent implements OnInit {
 	@Input() handleMetricChanged: (newSelectedMetricName: string) => void
 	@Input() type: MetricChooserType = "node"
 	@Input() isDisabled = false
-	@Input() callback?: () => void
 	@ViewChild("searchTermInput") searchTermInput: ElementRef<HTMLInputElement>
 	searchTerm = ""
 	metricData$: Observable<NodeMetricData[] | EdgeMetricData[]>
@@ -38,12 +37,6 @@ export class MetricChooserComponent implements OnInit {
 			this.searchTermInput.nativeElement.focus()
 		} else {
 			this.searchTerm = ""
-		}
-	}
-
-	matSelectChange() {
-		if (this.callback) {
-			this.callback()
 		}
 	}
 }
