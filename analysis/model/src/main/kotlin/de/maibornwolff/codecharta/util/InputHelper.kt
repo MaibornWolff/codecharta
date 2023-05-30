@@ -2,34 +2,61 @@ package de.maibornwolff.codecharta.util
 
 import mu.KotlinLogging
 import java.io.File
+import java.lang.IllegalArgumentException
 
 class InputHelper {
     companion object {
         private val logger = KotlinLogging.logger {}
 
-        fun getAndCheckAllSpecifiedInputFiles(inputFiles: Array<File>): MutableList<File> {
-            if (inputFiles.isEmpty()) {
-                logger.error("Did not find any input files!")
-                return mutableListOf()
+        fun getInputFileListIfValid(inputResources: Array<File>, canInputBePiped: Boolean): MutableList<File> {
+            val isInputValid = isInputValid(inputResources, canInputBePiped)
+
+            return if (isInputValid) {
+                getFileListFromValidatedFileArray(inputResources)
+            } else {
+                throw IllegalArgumentException()
             }
+        }
 
-            val resultList = mutableListOf<File>()
-            var doesInputContainNonexistentFile = false
+        private fun isInputValid(inputResources: Array<File>, canInputBePiped: Boolean): Boolean {
+            return if (canInputBePiped) {
+                isAllInputExistentAndFoldersNotEmpty(inputResources)
+            } else {
+                !isInputEmpty(inputResources) && isAllInputExistentAndFoldersNotEmpty(inputResources)
+            }
+        }
 
-            for (source in inputFiles) {
+        private fun isInputEmpty(inputResources: Array<File>): Boolean{
+            if (inputResources.isEmpty()) {
+                logger.error("Did not find any input files!")
+                return true
+            }
+            return false
+        }
+
+        private fun isAllInputExistentAndFoldersNotEmpty(inputResources: Array<File>): Boolean{
+            var isInputValid = true
+
+            for (source in inputResources) {
                 if (!source.exists()) {
                     logger.error("Could not find file `${ source.path }` and did not merge!")
-                    doesInputContainNonexistentFile = true
+                    isInputValid = false
                 } else {
-                    resultList.addAll(getFilesInFolder(source))
+                    if (source.isDirectory && getFilesInFolder(source).isEmpty()) {
+                        logger.error("The specified path `${ source.path }` exists but is empty!")
+                        isInputValid = false
+                    }
                 }
             }
+            return isInputValid
+        }
 
-            return if (doesInputContainNonexistentFile) {
-                mutableListOf()
-            } else {
-                resultList
+        private fun getFileListFromValidatedFileArray(inputFiles: Array<File>): MutableList<File> {
+            val resultList = mutableListOf<File>()
+            for (source in inputFiles) {
+                resultList.addAll(getFilesInFolder(source))
             }
+            return resultList
         }
 
         private fun getFilesInFolder(folder: File): List<File> {

@@ -58,8 +58,10 @@ class MergeFilter(
                 )
             }
 
-        val sourceFiles = InputHelper.getAndCheckAllSpecifiedInputFiles(sources)
-        if (sourceFiles.isEmpty()) {
+        val sourceFiles: MutableList<File>
+        try {
+            sourceFiles = InputHelper.getInputFileListIfValid(sources, true)
+        } catch (invalidFilesException: IllegalArgumentException) {
             logger.error("Aborting execution because one or more input files have not been found or no input was specified at all!")
             return null
         }

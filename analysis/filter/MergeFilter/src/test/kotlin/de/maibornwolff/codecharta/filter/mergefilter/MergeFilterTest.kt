@@ -16,6 +16,7 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileInputStream
 import java.io.PrintStream
+import java.lang.IllegalArgumentException
 
 class MergeFilterTest {
     val outContent = ByteArrayOutputStream()
@@ -98,11 +99,11 @@ class MergeFilterTest {
     }
 
     @Test
-    fun `should abort if at least one input file does not exist`() {
+    fun `should abort if input is invalid`() {
         mockkObject(InputHelper)
         every {
-            InputHelper.getAndCheckAllSpecifiedInputFiles(any())
-        } returns mutableListOf()
+            InputHelper.getInputFileListIfValid(any(), any())
+        } throws IllegalArgumentException()
 
         mockkObject(ProjectDeserializer)
         every {
