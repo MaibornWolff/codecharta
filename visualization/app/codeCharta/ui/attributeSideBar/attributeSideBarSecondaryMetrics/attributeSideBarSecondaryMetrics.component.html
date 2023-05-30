@@ -1,11 +1,14 @@
 <div class="secondary-metrics-wrapper">
 	<div class="metrics-wrapper">
-		<div class="metric-box scrollable-content">
+		<div class="metric-box scrollable-content" *ngIf="attributeDescriptors$ | async as attributeDescriptors">
 			<table class="secondary-metrics" aria-hidden="true">
 				<tr>
 					<th scope="col" colspan="2">Secondary Metrics</th>
 				</tr>
-				<tr *ngFor="let secondaryMetric of secondaryMetrics$ | async" [title]="secondaryMetric.descriptors | metricDescriptorTitle">
+				<tr
+					*ngFor="let secondaryMetric of secondaryMetrics$ | async"
+					[title]="attributeDescriptors[secondaryMetric.name] | attributeDescriptorTooltip: secondaryMetric.name"
+				>
 					<td class="secondary-metric-box">
 						<div class="secondary-metric-row">
 							<cc-attribute-type-selector
@@ -22,7 +25,18 @@
 						<cc-metric-delta-selected [metricName]="secondaryMetric.name"></cc-metric-delta-selected>
 					</td>
 					<td>
-						<span class="metric-name">{{ secondaryMetric.name }}</span>
+						<a
+							class="metric-name"
+							[href]="link"
+							target="_blank"
+							*ngIf="attributeDescriptors[secondaryMetric.name]?.link as link; else secondaryMetricNoLink"
+						>
+							{{ secondaryMetric.name }}
+							<i class="fa fa-external-link"></i>
+						</a>
+						<ng-template #secondaryMetricNoLink
+							><span class="metric-name">{{ secondaryMetric.name }}</span>
+						</ng-template>
 					</td>
 				</tr>
 			</table>

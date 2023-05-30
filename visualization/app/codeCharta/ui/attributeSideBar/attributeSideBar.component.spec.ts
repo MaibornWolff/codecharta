@@ -18,6 +18,7 @@ import { primaryMetricsSelector } from "../../state/selectors/primaryMetrics/pri
 import { attributeTypesSelector } from "../../state/store/fileSettings/attributeTypes/attributeTypes.selector"
 import { defaultAttributeTypes } from "../../state/store/fileSettings/attributeTypes/attributeTypes.reducer"
 import { showAttributeTypeSelectorSelector } from "./util/showAttributeTypeSelector.selector"
+import { metricTitles } from "../../util/metric/metricTitles"
 
 let selectedMetricNames
 
@@ -110,31 +111,29 @@ describe("AttributeSideBarComponent", () => {
 	it("should contain primary/secondary metrics with title/tooltip attribute/metric descriptor information", async () => {
 		selectedMetricNames.areaMetric = "a"
 		selectedMetricNames.heightMetric = "b"
-		selectedMetricNames.colorMetric = "someColor"
+		selectedMetricNames.colorMetric = "mcc"
 		selectedMetricNames.edgeMetric = "someEdge"
 
 		const { container, detectChanges } = await render(AttributeSideBarComponent, { excludeComponentDeclaration: true })
 
 		const store = TestBed.inject(MockStore)
 		store.overrideSelector(primaryMetricsSelector, {
-			area: { name: "a", value: 3, descriptors: { ...TEST_ATTRIBUTE_DESCRIPTORS.a, key: "a" } },
-			height: { name: "b", value: 1, descriptors: { ...TEST_ATTRIBUTE_DESCRIPTORS.b, key: "b" } },
+			area: { name: "a", value: 3 },
+			height: { name: "b", value: 1 },
 			color: {
-				name: "someColor",
-				value: 10,
-				descriptors: { key: "someColor", description: "", hintHighValue: "", hintLowValue: "", link: "", title: "" }
+				name: "mcc",
+				value: 10
 			},
 			edge: {
-				name: "a",
+				name: "someEdge",
 				incoming: 20,
-				outgoing: 60,
-				descriptors: { key: "someEdge", description: "", hintHighValue: "", hintLowValue: "", link: "", title: "" }
+				outgoing: 60
 			}
 		})
 
 		const selectedNode = klona(TEST_NODE_FOLDER)
 		selectedNode["children"] = [{}]
-		selectedNode["attributes"] = { a: 3, b: 1, c: 4, someColor: 10 }
+		selectedNode["attributes"] = { a: 3, b: 1, mcc: 4, rloc: 222, someColor: 10, d: 100 }
 		selectedNode["edgeAttributes"] = { someEdge: { incoming: 20, outgoing: 60 } }
 		mockSelectedNode(selectedNode as unknown as CodeMapNode, detectChanges)
 
@@ -142,11 +141,15 @@ describe("AttributeSideBarComponent", () => {
 		const attributeTypeSelectorWithinSecondaryMetrics = container.querySelectorAll("cc-attribute-side-bar-secondary-metrics tr")
 		expect(attributeTypeSelectorWithinPrimaryMetrics[0].getAttribute("title")).toBe("a_testTitle (a):\na_testDescription")
 		expect(attributeTypeSelectorWithinPrimaryMetrics[1].getAttribute("title")).toBe("b_testTitle (b)")
-		expect(attributeTypeSelectorWithinPrimaryMetrics[2].getAttribute("title")).toBe("someColor")
-		expect(attributeTypeSelectorWithinPrimaryMetrics[3].getAttribute("title")).toBe("someEdge")
+		expect(attributeTypeSelectorWithinPrimaryMetrics[1].querySelector("a").getAttribute("href")).toBe("https://test.link")
+		expect(attributeTypeSelectorWithinPrimaryMetrics[2].getAttribute("title")).toBe(metricTitles.get("mcc"))
+		expect(attributeTypeSelectorWithinPrimaryMetrics[3].getAttribute("title")).toBe("")
 
-		expect(attributeTypeSelectorWithinSecondaryMetrics[1].getAttribute("title")).toBe("c:\nc_testDescription")
-		expect(attributeTypeSelectorWithinSecondaryMetrics.length).toBe(2)
+		expect(attributeTypeSelectorWithinSecondaryMetrics[1].querySelector("a").getAttribute("href")).toBe("https://test2.link")
+		expect(attributeTypeSelectorWithinSecondaryMetrics[1].getAttribute("title")).toBe("d")
+		expect(attributeTypeSelectorWithinSecondaryMetrics[2].getAttribute("title")).toBe(metricTitles.get("rloc"))
+		expect(attributeTypeSelectorWithinSecondaryMetrics[3].getAttribute("title")).toBe("") // someColor
+		expect(attributeTypeSelectorWithinSecondaryMetrics.length).toBe(4) // header + three entries
 	})
 })
 

@@ -10,6 +10,7 @@ import { metricDistributionSelector } from "./selectors/metricDistribution.selec
 import { distributionMetricSelector } from "../../state/store/dynamicSettings/distributionMetric/distributionMetric.selector"
 import { defaultDistributionMetric } from "../../state/store/dynamicSettings/distributionMetric/distributionMetric.reducer"
 import { metricDataSelector } from "../../state/selectors/accumulatedData/metricData/metricData.selector"
+import { attributeDescriptorsSelector } from "../../state/store/fileSettings/attributeDescriptors/attributeDescriptors.selector"
 
 describe("fileExtensionBarComponent", () => {
 	beforeEach(() => {
@@ -42,7 +43,8 @@ describe("fileExtensionBarComponent", () => {
 							]
 						},
 						{ selector: distributionMetricSelector, value: defaultDistributionMetric },
-						{ selector: metricDataSelector, value: { nodeMetricData: [] } }
+						{ selector: metricDataSelector, value: { nodeMetricData: [] } },
+						{ selector: attributeDescriptorsSelector, value: {} }
 					]
 				})
 			]
