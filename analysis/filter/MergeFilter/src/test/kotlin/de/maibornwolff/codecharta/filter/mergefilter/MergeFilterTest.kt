@@ -99,10 +99,10 @@ class MergeFilterTest {
     }
 
     @Test
-    fun `should abort if input is invalid`() {
+    fun `should not execute merge if input is invalid`() {
         mockkObject(InputHelper)
         every {
-            InputHelper.getInputFileListIfValid(any(), any())
+            InputHelper.getInputFileListIfValid(any(), any(), any())
         } throws IllegalArgumentException()
 
         mockkObject(ProjectDeserializer)
@@ -113,11 +113,8 @@ class MergeFilterTest {
         System.setErr(PrintStream(errContent))
         CommandLine(MergeFilter()).execute(
                 "src/test/resources/mergeFolderTest/file1.cc.json",
-                "src/test/resources/mergeFolderTest/file2.cc.json",
                 "src/test/resources/thisDoesNotExist.cc.json").toString()
         System.setErr(originalErr)
-
-        assertThat(errContent.toString()).contains("Aborting execution because of invalid input resources!")
 
         verify(exactly = 0) { ProjectDeserializer.deserializeProject(any<FileInputStream>()) }
     }

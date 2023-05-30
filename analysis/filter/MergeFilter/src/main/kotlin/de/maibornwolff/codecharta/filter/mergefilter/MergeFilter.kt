@@ -58,13 +58,7 @@ class MergeFilter(
                 )
             }
 
-        val sourceFiles: MutableList<File>
-        try {
-            sourceFiles = InputHelper.getInputFileListIfValid(sources, canInputBePiped = true)
-        } catch (invalidInputException: IllegalArgumentException) {
-            logger.error("Aborting execution because of invalid input resources!")
-            return null
-        }
+        val sourceFiles = InputHelper.getInputFileListIfValid(sources, canInputBePiped = true, canInputContainFolders = true)
 
         val srcProjects = sourceFiles
             .mapNotNull {

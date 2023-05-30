@@ -52,13 +52,7 @@ class CSVExporter : Callable<Void>, InteractiveParser {
             throw IllegalArgumentException("depth-of-hierarchy must not be negative")
         }
 
-        val sourceFiles: MutableList<File>
-        try {
-            sourceFiles = InputHelper.getInputFileListIfValid(sources, canInputBePiped = false)
-        } catch (invalidInputException: IllegalArgumentException) {
-            println("Aborting execution because of invalid input resources!")
-            return null
-        }
+        val sourceFiles = InputHelper.getInputFileListIfValid(sources, canInputBePiped = false, canInputContainFolders = false)
 
         val projects = sourceFiles.map { ProjectDeserializer.deserializeProject(it.inputStream()) }
 

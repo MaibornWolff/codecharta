@@ -9,46 +9,75 @@ class InputHelper {
         private val logger = KotlinLogging.logger {}
 
         /**
-         * Returns list of the specified files if all conditions are met to consider input valid, otherwise throws IllegalArgumentException.
+         * Returns list of the specified files (and all contained files if resource is directory and flag is given) if all conditions are met to consider input valid, otherwise throws IllegalArgumentException.
          * If input can be piped, we check if all input resources exist and folders are not empty.
          * If input can not be piped, we check for that as well and additionally check if input is not empty.
+         * An error is also thrown, if a folder is input, but `canInputContainFolders` is set to `false`.
          */
-        fun getInputFileListIfValid(inputResources: Array<File>, canInputBePiped: Boolean): MutableList<File> {
-            val isInputValid = isInputValid(inputResources, canInputBePiped)
+        fun getInputFileListIfValid(inputResources: Array<File>,
+                                    canInputBePiped: Boolean,
+                                    canInputContainFolders: Boolean): MutableList<File> {
+            val isInputValid = isInputValid(inputResources, canInputBePiped, canInputContainFolders)
 
             return if (isInputValid) {
                 getFileListFromValidatedFileArray(inputResources)
             } else {
-                throw IllegalArgumentException()
+                throw IllegalArgumentException("Invalid input resources (file/folder) specified!")
             }
         }
 
-        private fun isInputValid(inputResources: Array<File>, canInputBePiped: Boolean): Boolean {
+        private fun isInputValid(inputResources: Array<File>,
+                                 canInputBePiped: Boolean,
+                                 canInputContainFolders: Boolean): Boolean {
             return if (canInputBePiped) {
-                isAllInputExistentAndFoldersNotEmpty(inputResources)
+                areInputResourcesValid(inputResources, canInputContainFolders)
             } else {
-                !isInputEmpty(inputResources) && isAllInputExistentAndFoldersNotEmpty(inputResources)
+                !isInputEmpty(inputResources) && areInputResourcesValid(inputResources, canInputContainFolders)
             }
         }
 
-        private fun isInputEmpty(inputResources: Array<File>): Boolean{
+        private fun isInputEmpty(inputResources: Array<File>): Boolean {
             if (inputResources.isEmpty()) {
-                logger.error("Did not find any input files!")
+                logger.error("Did not find any input resources!")
                 return true
             }
             return false
         }
 
-        private fun isAllInputExistentAndFoldersNotEmpty(inputResources: Array<File>): Boolean{
+        private fun doesInputExist(inputResource: File): Boolean {
+            if (!inputResource.exists()) {
+                logger.error("Could not find file `${ inputResource.path }`!")
+                return false
+            }
+            return true
+        }
+
+        private fun isResourceValid(inputResource: File,
+                                    canInputContainFolders: Boolean): Boolean {
+            if (canInputContainFolders) {
+                if (inputResource.isDirectory && getFilesInFolder(inputResource).isEmpty()) {
+                    logger.error("The specified path `${ inputResource.path }` exists but is empty!")
+                    return false
+                }
+                return true
+            } else {
+                if (inputResource.isDirectory) {
+                    logger.error("Input folder where only files are allowed!")
+                    return false
+                }
+                return true
+            }
+        }
+
+        private fun areInputResourcesValid(inputResources: Array<File>,
+                                           canInputContainFolders: Boolean): Boolean {
             var isInputValid = true
 
             for (source in inputResources) {
-                if (!source.exists()) {
-                    logger.error("Could not find file `${ source.path }` and did not merge!")
+                if (!doesInputExist(source)) {
                     isInputValid = false
                 } else {
-                    if (source.isDirectory && getFilesInFolder(source).isEmpty()) {
-                        logger.error("The specified path `${ source.path }` exists but is empty!")
+                    if (!isResourceValid(source, canInputContainFolders)) {
                         isInputValid = false
                     }
                 }

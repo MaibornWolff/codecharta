@@ -6,24 +6,32 @@ import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.util.InputHelper
 import io.mockk.every
 import io.mockk.mockkObject
+import io.mockk.unmockkAll
 import io.mockk.verify
-import org.assertj.core.api.Assertions
+import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestInstance
 import picocli.CommandLine
 import java.io.ByteArrayOutputStream
 import java.io.FileInputStream
 import java.io.PrintStream
-import java.lang.IllegalArgumentException
+import kotlin.IllegalArgumentException
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class CSVExporterTest {
     val outContent = ByteArrayOutputStream()
     val originalOut = System.out
 
+    @AfterAll
+    fun afterTest() {
+        unmockkAll()
+    }
+
     @Test
-    fun `should abort if input is invalid`() {
+    fun `should not execute exporter if input is invalid`() {
         mockkObject(InputHelper)
         every {
-            InputHelper.getInputFileListIfValid(any(), any())
+            InputHelper.getInputFileListIfValid(any(), any(), any())
         } throws IllegalArgumentException()
 
         mockkObject(ProjectDeserializer)
@@ -32,12 +40,13 @@ class CSVExporterTest {
         } returns Project("")
 
         System.setOut(PrintStream(outContent))
-        CommandLine(CSVExporter()).execute(
-                "src/test/resources/dummyFile.cc.json",
-                "src/test/resources/thisDoesNotExist.cc.json").toString()
+        try {
+            CommandLine(CSVExporter()).execute(
+                    "thisDoesNotExist.cc.json").toString()
+        } catch (invalidArgumentException: IllegalArgumentException) {
+            // do nothing
+        }
         System.setOut(originalOut)
-
-        Assertions.assertThat(outContent.toString()).contains("Aborting execution because of invalid input resources!")
 
         verify(exactly = 0) { ProjectDeserializer.deserializeProject(any<FileInputStream>()) }
     }
