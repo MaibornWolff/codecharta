@@ -1,15 +1,32 @@
 package de.maibornwolff.codecharta.importer.svnlogparser
 
 import de.maibornwolff.codecharta.importer.svnlogparser.SVNLogParser.Companion.main
+import de.maibornwolff.codecharta.util.InputHelper
+import io.mockk.every
+import io.mockk.mockkObject
+import io.mockk.unmockkAll
 import org.assertj.core.api.Assertions
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
+import picocli.CommandLine
+import java.io.ByteArrayOutputStream
 import java.io.File
+import java.io.PrintStream
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class SVNLogParserTest {
+    val errContent = ByteArrayOutputStream()
+    val originalErr = System.err
+
+    @AfterEach
+    fun afterTest() {
+        unmockkAll()
+    }
 
     companion object {
         @JvmStatic
@@ -74,5 +91,19 @@ class SVNLogParserTest {
     fun `should NOT be identified as applicable if no svn folder is present at given path`(resourceToBeParsed: String) {
         val isUsable = SVNLogParser().isApplicable(resourceToBeParsed)
         Assertions.assertThat(isUsable).isFalse()
+    }
+
+    @Test
+    fun `should stop execution if input files are invalid`() {
+        mockkObject(InputHelper)
+        every {
+            InputHelper.isInputValid(any(), any(), any())
+        } returns false
+
+        System.setErr(PrintStream(errContent))
+        CommandLine(SVNLogParser()).execute("thisDoesNotExist.cc.json").toString()
+        System.setErr(originalErr)
+
+        Assertions.assertThat(errContent.toString()).contains("Input invalid file for SVNLogParser, stopping execution")
     }
 }

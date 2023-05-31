@@ -8,6 +8,7 @@ import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import de.maibornwolff.codecharta.tools.interactiveparser.util.InteractiveParserHelper
+import de.maibornwolff.codecharta.util.InputHelper
 import de.maibornwolff.codecharta.util.ResourceSearchHelper
 import picocli.CommandLine
 import java.io.BufferedWriter
@@ -19,7 +20,6 @@ import java.io.OutputStreamWriter
 import java.io.PrintStream
 import java.io.PrintWriter
 import java.io.Writer
-import java.nio.file.Paths
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
@@ -73,12 +73,9 @@ class SourceCodeParserMain(
 
     @Throws(IOException::class)
     override fun call(): Void? {
-
         print(" ")
-        if (!file.exists()) {
-            val path = Paths.get("").toAbsolutePath().toString()
-            error.println("Current working directory = $path")
-            error.println("Could not find $file")
+        if (!InputHelper.isInputValid(arrayOf(file), canInputBePiped = true, canInputContainFolders = true)) {
+            System.err.println("Input invalid file for SourceCodeParser, stopping execution...")
             return null
         }
 

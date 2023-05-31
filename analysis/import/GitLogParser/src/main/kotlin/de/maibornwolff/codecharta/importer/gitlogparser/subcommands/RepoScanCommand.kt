@@ -4,6 +4,8 @@ import de.maibornwolff.codecharta.importer.gitlogparser.GitLogParser
 import de.maibornwolff.codecharta.importer.gitlogparser.util.GitAdapter
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
+import de.maibornwolff.codecharta.util.InputHelper
+import mu.KotlinLogging
 import picocli.CommandLine
 import java.io.File
 import java.io.FileWriter
@@ -45,12 +47,20 @@ class RepoScanCommand : Callable<Void>, InteractiveParser {
     @CommandLine.Option(names = ["--add-author"], description = ["add an array of authors to every file"])
     private var addAuthor = false
 
+    companion object {
+        private val logger = KotlinLogging.logger {}
+    }
+
     override fun call(): Void? {
         val repoPath: Path
         if (repoPathName.isNullOrBlank()) {
             println("--repo-path not set, aborting...")
             return null
         } else {
+            if (!InputHelper.isInputValid(arrayOf(File(repoPathName!!)), canInputBePiped = false, canInputContainFolders = true)) {
+                logger.error("Input invalid file for GitRepoScan, stopping execution...")
+                return null
+            }
             repoPath = Paths.get(repoPathName!!).normalize().toAbsolutePath()
         }
         println("Creating git.log file...")

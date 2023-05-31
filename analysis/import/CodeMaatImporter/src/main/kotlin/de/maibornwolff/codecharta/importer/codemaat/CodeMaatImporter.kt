@@ -7,6 +7,8 @@ import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import de.maibornwolff.codecharta.tools.interactiveparser.util.InteractiveParserHelper
 import de.maibornwolff.codecharta.translator.MetricNameTranslator
+import de.maibornwolff.codecharta.util.InputHelper
+import mu.KotlinLogging
 import picocli.CommandLine
 import java.io.File
 import java.io.IOException
@@ -40,6 +42,11 @@ class CodeMaatImporter(
 
     @Throws(IOException::class)
     override fun call(): Void? {
+        if (!InputHelper.isInputValid(files.toTypedArray(), canInputBePiped = false, canInputContainFolders = false)) {
+            logger.error("Input invalid file for CodeMaatImporter, stopping execution...")
+            return null
+        }
+
         val csvProjectBuilder =
                 CSVProjectBuilder(pathSeparator, csvDelimiter, codemaatReplacement, attributeTypes, getAttributeDescriptors())
         files.map { it.inputStream() }.forEach<InputStream> { csvProjectBuilder.parseCSVStream(it) }
@@ -73,6 +80,8 @@ class CodeMaatImporter(
         }
 
     companion object {
+        private val logger = KotlinLogging.logger {}
+
         @JvmStatic
         fun main(args: Array<String>) {
             CommandLine(CodeMaatImporter()).execute(*args)

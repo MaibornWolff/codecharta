@@ -7,13 +7,15 @@ import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import de.maibornwolff.codecharta.tools.interactiveparser.util.InteractiveParserHelper
+import de.maibornwolff.codecharta.util.InputHelper
+import de.maibornwolff.codecharta.util.ResourceSearchHelper
+import mu.KotlinLogging
 import picocli.CommandLine
 import java.io.File
 import java.io.IOException
 import java.io.InputStream
 import java.io.PrintStream
 import java.io.PrintWriter
-import java.nio.file.Paths
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
@@ -75,8 +77,8 @@ class RawTextParser(
     @Throws(IOException::class)
     override fun call(): Void? {
         print(" ")
-        if (!inputFile.exists()) {
-            fileNotExistentMessage()
+        if (!InputHelper.isInputValid(arrayOf(inputFile), canInputBePiped = true, canInputContainFolders = true)) {
+            logger.error("Input invalid file for RawTextParser, stopping execution...")
             return null
         }
 
@@ -94,12 +96,6 @@ class RawTextParser(
         return null
     }
 
-    private fun fileNotExistentMessage() {
-        val path = Paths.get("").toAbsolutePath().toString()
-        error.println("Current working directory = $path")
-        error.println("Could not find $inputFile")
-    }
-
     private fun assembleParameterMap(): Map<String, Int> {
         return mapOf(
             "verbose" to verbose.toInt(),
@@ -109,6 +105,7 @@ class RawTextParser(
     }
 
     companion object {
+        private val logger = KotlinLogging.logger {}
         @JvmStatic
         fun mainWithInOut(outputStream: PrintStream, input: InputStream, error: PrintStream, args: Array<String>) {
             CommandLine(RawTextParser(input, outputStream, error)).setOut(PrintWriter(outputStream)).execute(*args)

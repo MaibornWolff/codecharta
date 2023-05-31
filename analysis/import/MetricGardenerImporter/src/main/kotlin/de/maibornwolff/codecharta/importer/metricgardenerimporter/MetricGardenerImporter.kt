@@ -9,6 +9,7 @@ import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import de.maibornwolff.codecharta.tools.interactiveparser.util.InteractiveParserHelper
+import de.maibornwolff.codecharta.util.InputHelper
 import de.maibornwolff.codecharta.util.ResourceSearchHelper
 import mu.KotlinLogging
 import picocli.CommandLine
@@ -16,7 +17,6 @@ import java.io.File
 import java.io.IOException
 import java.io.PrintStream
 import java.nio.charset.Charset
-import java.nio.file.Paths
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
@@ -55,10 +55,11 @@ class MetricGardenerImporter(
 
     @Throws(IOException::class)
     override fun call(): Void? {
-        if (!inputFile.exists()) {
-            printErrorLog()
+        if (!InputHelper.isInputValid(arrayOf(inputFile), canInputBePiped = true, canInputContainFolders = true)) {
+            logger.error("Input invalid file for MetricGardenerImporter, stopping execution...")
             return null
         }
+
         if (!isJsonFile) {
             val tempMgOutput = File.createTempFile("MGOutput", ".json")
             tempMgOutput.deleteOnExit()
@@ -83,12 +84,6 @@ class MetricGardenerImporter(
         ProjectSerializer.serializeToFileOrStream(project, outputFile, output, compress)
 
         return null
-    }
-
-    private fun printErrorLog() {
-        val path = Paths.get("").toAbsolutePath().toString()
-        logger.error { "Current working directory = $path" }
-        logger.error { "Could not find $inputFile" }
     }
 
     companion object {

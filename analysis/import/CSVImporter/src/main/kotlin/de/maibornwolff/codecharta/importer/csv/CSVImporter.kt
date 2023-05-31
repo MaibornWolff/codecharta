@@ -4,6 +4,8 @@ import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import de.maibornwolff.codecharta.tools.interactiveparser.util.InteractiveParserHelper
+import de.maibornwolff.codecharta.util.InputHelper
+import mu.KotlinLogging
 import picocli.CommandLine
 import java.io.File
 import java.io.IOException
@@ -43,6 +45,10 @@ class CSVImporter(
 
     @Throws(IOException::class)
     override fun call(): Void? {
+        if (!InputHelper.isInputValid(files.toTypedArray(), canInputBePiped = false, canInputContainFolders = false)) {
+            logger.error("Input invalid file for CSVImporter, stopping execution...")
+            return null
+        }
 
         val csvProjectBuilder = CSVProjectBuilder(pathSeparator, csvDelimiter, pathColumnName)
         files.map { it.inputStream() }.forEach<InputStream> { csvProjectBuilder.parseCSVStream(it) }
@@ -54,6 +60,8 @@ class CSVImporter(
     }
 
     companion object {
+        private val logger = KotlinLogging.logger {}
+
         @JvmStatic
         fun main(args: Array<String>) {
             CommandLine(CSVImporter()).execute(*args)

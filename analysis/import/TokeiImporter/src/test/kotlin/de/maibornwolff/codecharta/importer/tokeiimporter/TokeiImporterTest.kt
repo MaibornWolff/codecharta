@@ -3,16 +3,30 @@ package de.maibornwolff.codecharta.importer.tokeiimporter
 import de.maibornwolff.codecharta.importer.tokeiimporter.TokeiImporter.Companion.mainWithInOut
 import de.maibornwolff.codecharta.model.AttributeType
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
+import de.maibornwolff.codecharta.util.InputHelper
+import io.mockk.every
+import io.mockk.mockkObject
+import io.mockk.unmockkAll
 import org.assertj.core.api.Assertions
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestInstance
+import picocli.CommandLine
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.InputStream
 import java.io.PrintStream
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class TokeiImporterTest {
+    val errContent = ByteArrayOutputStream()
+    val originalErr = System.err
 
+    @AfterEach
+    fun afterTest() {
+        unmockkAll()
+    }
     @Test
     fun `reads tokei from file`() {
         val cliResult = executeForOutput("", arrayOf("src/test/resources/tokei_results.json", "--path-separator=\\"))
@@ -121,6 +135,20 @@ class TokeiImporterTest {
 
         val project = ProjectDeserializer.deserializeProject(cliResult)
         Assertions.assertThat(project.attributeDescriptors).isEqualTo(getAttributeDescriptors())
+    }
+
+    @Test
+    fun `should stop execution if input files are invalid`() {
+        mockkObject(InputHelper)
+        every {
+            InputHelper.isInputValid(any(), any(), any())
+        } returns false
+
+        System.setErr(PrintStream(errContent))
+        CommandLine(TokeiImporter()).execute("thisDoesNotExist.cc.json").toString()
+        System.setErr(originalErr)
+
+        Assertions.assertThat(errContent.toString()).contains("Input invalid file for TokeiImporter, stopping execution")
     }
 }
 

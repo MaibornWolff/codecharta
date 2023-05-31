@@ -38,7 +38,7 @@ class SonarImporterMain(
     )
     private var help = false
 
-    @CommandLine.Parameters(index = "0", paramLabel = "URL", description = ["url of sonarqube server"])
+    @CommandLine.Parameters(index = "0", arity = "1", paramLabel = "URL", description = ["url of sonarqube server"])
     private var url: String = "http://localhost"
 
     @CommandLine.Parameters(
@@ -81,7 +81,6 @@ class SonarImporterMain(
     }
 
     override fun call(): Void? {
-
         val importer = createMeasuresAPIImporter()
         var project = importer.getProjectFromMeasureAPI(projectId, metrics)
 

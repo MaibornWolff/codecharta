@@ -3,6 +3,8 @@ package de.maibornwolff.codecharta.importer.gitlogparser.subcommands
 import de.maibornwolff.codecharta.importer.gitlogparser.GitLogParser
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
+import de.maibornwolff.codecharta.util.InputHelper
+import mu.KotlinLogging
 import picocli.CommandLine
 import java.io.File
 import java.util.concurrent.Callable
@@ -52,7 +54,15 @@ class LogScanCommand : Callable<Void>, InteractiveParser {
     @CommandLine.Option(names = ["--add-author"], description = ["add an array of authors to every file"])
     private var addAuthor = false
 
+    companion object {
+        private val logger = KotlinLogging.logger {}
+    }
+
     override fun call(): Void? {
+        if (gitLogFile == null || !InputHelper.isInputValid(arrayOf(gitLogFile!!), canInputBePiped = false, canInputContainFolders = false)) {
+            logger.error("Input invalid file for GitLogScan, stopping execution...")
+            return null
+        }
         GitLogParser().buildProject(gitLogFile!!, gitLsFile!!, outputFilePath, addAuthor, silent, compress)
         return null
     }
