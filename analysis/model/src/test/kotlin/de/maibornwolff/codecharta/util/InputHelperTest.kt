@@ -1,6 +1,7 @@
 package de.maibornwolff.codecharta.util
 
 import org.assertj.core.api.Assertions
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
@@ -46,7 +47,7 @@ class InputHelperTest {
                 File(invalidFilePath1),
                 File(invalidFilePath2))
         try {
-            InputHelper.getInputFileListIfValid(inputFiles, canInputBePiped, canInputContainFolders)
+            InputHelper.isInputValid(inputFiles, canInputBePiped, canInputContainFolders)
         } catch (exception: IllegalArgumentException) {
             // do nothing
         }
@@ -55,108 +56,122 @@ class InputHelperTest {
         System.setErr(originalErr)
 
         Assertions.assertThat(errContent.toString())
-                .contains("Could not find file `$invalidFilePath1`")
+                .contains("Could not find resource `$invalidFilePath1`")
         Assertions.assertThat(errContent.toString())
-                .contains("Could not find file `$invalidFilePath2`")
+                .contains("Could not find resource `$invalidFilePath2`")
     }
 
     @ParameterizedTest
     @MethodSource("providerParserArguments")
-    fun `should throw exception if input contains one nonexistent file`(canInputBePiped: Boolean, canInputContainFolders: Boolean) {
+    fun `should return invalid if input contains one nonexistent file`(canInputBePiped: Boolean, canInputContainFolders: Boolean) {
         val inputFiles = arrayOf(File("src/test/resources/example.cc.json"),
                 File("src/test/resources/example_api_version_1.3.cc.json"),
                 File("src/test/resources/thisDoesNotExist1.json"))
 
-        Assertions.assertThatIllegalArgumentException().isThrownBy { InputHelper.getInputFileListIfValid(inputFiles, canInputBePiped, canInputContainFolders) }
+        val result = InputHelper.isInputValid(inputFiles, canInputBePiped, canInputContainFolders)
+
+        Assertions.assertThat(result).isFalse()
     }
 
     @ParameterizedTest
     @MethodSource("provideOneFlagArgument")
-    fun `should throw exception if no files are specified and input can not be piped`(canInputContainFolders: Boolean) {
+    fun `should return invalid if no files are specified and input can not be piped`(canInputContainFolders: Boolean) {
         val inputFiles = arrayOf<File>()
 
         System.setErr(PrintStream(errContent))
-        Assertions.assertThatIllegalArgumentException()
-                .isThrownBy { InputHelper.getInputFileListIfValid(inputFiles, false, canInputContainFolders) }
+        val result = InputHelper.isInputValid(inputFiles, canInputBePiped = false, canInputContainFolders)
         System.setErr(originalErr)
 
+        Assertions.assertThat(result).isFalse()
         Assertions.assertThat(errContent.toString())
                 .contains("Did not find any input resources!")
     }
 
     @ParameterizedTest
     @MethodSource("provideOneFlagArgument")
-    fun `should throw no exception if no files are specified and input can be piped`(canInputContainFolders: Boolean) {
+    fun `should return valid if no files are specified and input can be piped`(canInputContainFolders: Boolean) {
         val inputFiles = arrayOf<File>()
 
-        Assertions.assertThatNoException()
-                .isThrownBy { InputHelper.getInputFileListIfValid(inputFiles, true, canInputContainFolders) }
+        val result = InputHelper.isInputValid(inputFiles, true, canInputContainFolders)
+        Assertions.assertThat(result).isTrue()
     }
 
     @ParameterizedTest
     @MethodSource("provideOneFlagArgument")
-    fun `should throw exception if input contains existent but empty directory as input`(canInputBePiped: Boolean) {
+    fun `should return invalid if input contains existent but empty directory as input`(canInputBePiped: Boolean) {
         val emptyDirectoryPath = "src/test/resources/emptyDirectory"
         val emptyTestDirectory = File(emptyDirectoryPath)
         emptyTestDirectory.mkdir()
         emptyTestDirectory.deleteOnExit()
 
         System.setErr(PrintStream(errContent))
-        Assertions.assertThatIllegalArgumentException()
-                .isThrownBy { InputHelper.getInputFileListIfValid(arrayOf(emptyTestDirectory), canInputBePiped, true) }
+        val result = InputHelper.isInputValid(arrayOf(emptyTestDirectory), canInputBePiped, true)
         System.setErr(originalErr)
 
+        Assertions.assertThat(result).isFalse()
         Assertions.assertThat(errContent.toString())
                 .contains("The specified path `${ emptyTestDirectory.path }` exists but is empty!")
     }
 
     @ParameterizedTest
     @MethodSource("providerParserArguments")
-    fun `should return list of all input files if input is valid`(canInputBePiped: Boolean, canInputContainFolders: Boolean) {
+    fun `should return valid if input only contains existing files`(canInputBePiped: Boolean, canInputContainFolders: Boolean) {
         val validFile1 = File("src/test/resources/example.cc.json")
         val validFile2 = File("src/test/resources/example_api_version_1.3.cc.json")
         val validFile3 = File("src/test/resources/exampleUncompressed.txt")
 
         val inputFiles = arrayOf(validFile1, validFile2, validFile3)
 
-        val result = InputHelper.getInputFileListIfValid(inputFiles, canInputBePiped, canInputContainFolders)
+        val result = InputHelper.isInputValid(inputFiles, canInputBePiped, canInputContainFolders)
 
-        Assertions.assertThat(result).contains(validFile1)
-        Assertions.assertThat(result).contains(validFile2)
-        Assertions.assertThat(result).contains(validFile3)
+        Assertions.assertThat(result).isTrue()
+    }
+
+    @Test
+    fun `should return list of all contained input files in valid directory`() {
+        val validFile1 = File("src/test/resources/example.cc.json")
+        val validFile2 = File("src/test/resources/example_api_version_1.3.cc.json")
+        val validFile3 = File("src/test/resources/exampleUncompressed.txt")
+
+        val inputFiles = arrayOf(validFile1, validFile2, validFile3)
+
+        val result = InputHelper.getFileListFromValidatedResourceArray(inputFiles)
+
+        Assertions.assertThat(validFile1)
+        Assertions.assertThat(validFile2)
+        Assertions.assertThat(validFile3)
 
         Assertions.assertThat(result.size).isEqualTo(inputFiles.size)
     }
 
-    @ParameterizedTest
-    @MethodSource("provideOneFlagArgument")
-    fun `should return list of all contained input files in valid directory`(canInputBePiped: Boolean) {
+    @Test
+    fun `should return list of all input files in valid directory`() {
         val validDirectory = File("src/test/resources/inputFiles")
         val amountOfFilesInDirectory = 2
 
         val inputFiles = arrayOf(validDirectory)
 
-        val result = InputHelper.getInputFileListIfValid(inputFiles, canInputBePiped, true)
+        val result = InputHelper.getFileListFromValidatedResourceArray(inputFiles)
 
         Assertions.assertThat(result).contains(File("src/test/resources/inputFiles/dummyFile1.txt"))
         Assertions.assertThat(result).contains(File("src/test/resources/inputFiles/dummyFile2.txt"))
 
         // Subtract directory as file in list, add number of files in directory
-        Assertions.assertThat(result.size).isEqualTo(inputFiles.size - 1 + amountOfFilesInDirectory)
+        Assertions.assertThat(result.size).isEqualTo(amountOfFilesInDirectory)
     }
 
     @ParameterizedTest
     @MethodSource("provideOneFlagArgument")
-    fun `should throw exception if folder is given with no-folder-flag`(canInputBePiped: Boolean) {
+    fun `should return invalid if folder is given with no-folder-flag`(canInputBePiped: Boolean) {
         val validDirectory = File("src/test/resources/inputFiles")
 
         val inputFiles = arrayOf(validDirectory)
 
         System.setErr(PrintStream(errContent))
-        Assertions.assertThatIllegalArgumentException()
-                .isThrownBy { InputHelper.getInputFileListIfValid(inputFiles, canInputBePiped, false) }
+        val result = InputHelper.isInputValid(inputFiles, canInputBePiped, false)
         System.setErr(originalErr)
 
+        Assertions.assertThat(result).isFalse()
         Assertions.assertThat(errContent.toString())
                 .contains("Input folder where only files are allowed!")
     }

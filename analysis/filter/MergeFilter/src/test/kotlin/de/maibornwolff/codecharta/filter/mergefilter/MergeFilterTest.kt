@@ -1,22 +1,17 @@
 package de.maibornwolff.codecharta.filter.mergefilter
 
 import de.maibornwolff.codecharta.filter.mergefilter.MergeFilter.Companion.main
-import de.maibornwolff.codecharta.model.Project
-import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.util.InputHelper
 import io.mockk.every
 import io.mockk.mockkObject
 import io.mockk.unmockkAll
-import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
 import picocli.CommandLine
 import java.io.ByteArrayOutputStream
 import java.io.File
-import java.io.FileInputStream
 import java.io.PrintStream
-import java.lang.IllegalArgumentException
 
 class MergeFilterTest {
     val outContent = ByteArrayOutputStream()
@@ -102,13 +97,8 @@ class MergeFilterTest {
     fun `should not execute merge if input is invalid`() {
         mockkObject(InputHelper)
         every {
-            InputHelper.getInputFileListIfValid(any(), any(), any())
-        } throws IllegalArgumentException()
-
-        mockkObject(ProjectDeserializer)
-        every {
-            ProjectDeserializer.deserializeProject(any<FileInputStream>())
-        } returns Project("")
+            InputHelper.isInputValid(any(), any(), any())
+        } returns false
 
         System.setErr(PrintStream(errContent))
         CommandLine(MergeFilter()).execute(
@@ -116,6 +106,6 @@ class MergeFilterTest {
                 "src/test/resources/thisDoesNotExist.cc.json").toString()
         System.setErr(originalErr)
 
-        verify(exactly = 0) { ProjectDeserializer.deserializeProject(any<FileInputStream>()) }
+        assertThat(errContent.toString()).contains("Input invalid files/folders for MergeFilter, stopping execution")
     }
 }

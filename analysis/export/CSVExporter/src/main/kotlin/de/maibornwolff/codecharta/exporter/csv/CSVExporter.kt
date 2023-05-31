@@ -52,9 +52,12 @@ class CSVExporter : Callable<Void>, InteractiveParser {
             throw IllegalArgumentException("depth-of-hierarchy must not be negative")
         }
 
-        val sourceFiles = InputHelper.getInputFileListIfValid(sources, canInputBePiped = false, canInputContainFolders = false)
+        if (!InputHelper.isInputValid(sources, canInputBePiped = false, canInputContainFolders = false)) {
+            System.err.println("Input invalid file for CSVExporter, stopping execution...")
+            return null
+        }
 
-        val projects = sourceFiles.map { ProjectDeserializer.deserializeProject(it.inputStream()) }
+        val projects = sources.map { ProjectDeserializer.deserializeProject(it.inputStream()) }
 
         projects.forEach { writeUsingWriter(it, writer()) }
 

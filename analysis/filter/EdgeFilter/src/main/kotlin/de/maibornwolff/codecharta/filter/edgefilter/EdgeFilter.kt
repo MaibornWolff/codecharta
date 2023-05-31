@@ -5,6 +5,8 @@ import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import de.maibornwolff.codecharta.tools.interactiveparser.util.InteractiveParserHelper
+import de.maibornwolff.codecharta.util.InputHelper
+import mu.KotlinLogging
 import picocli.CommandLine
 import java.io.File
 import java.io.PrintStream
@@ -22,8 +24,8 @@ class EdgeFilter(
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     var help: Boolean = false
 
-    @CommandLine.Parameters(arity = "1..*", paramLabel = "FILE", description = ["files to filter"])
-    private var source: String = ""
+    @CommandLine.Parameters(arity = "1", paramLabel = "FILE", description = ["files to filter"])
+    private var source: File = File("")
 
     @CommandLine.Option(names = ["--path-separator"], description = ["path separator (default = '/')"])
     private var pathSeparator = '/'
@@ -32,7 +34,12 @@ class EdgeFilter(
     private var outputFile: String? = null
 
     override fun call(): Void? {
-        val srcProject = ProjectDeserializer.deserializeProject(File(source).inputStream())
+        if (!InputHelper.isInputValid(arrayOf(source), canInputBePiped = true, canInputContainFolders = false)) {
+            logger.error("Input invalid file for EdgeFilter, stopping execution...")
+            return null
+        }
+
+        val srcProject = ProjectDeserializer.deserializeProject(source.inputStream())
 
         val newProject = EdgeProjectBuilder(srcProject, pathSeparator).merge()
 
@@ -42,6 +49,8 @@ class EdgeFilter(
     }
 
     companion object {
+        private val logger = KotlinLogging.logger {}
+
         @JvmStatic
         fun main(args: Array<String>) {
             CommandLine(EdgeFilter()).execute(*args)
