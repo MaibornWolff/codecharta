@@ -25,7 +25,7 @@ class EdgeFilter(
     var help: Boolean = false
 
     @CommandLine.Parameters(arity = "1", paramLabel = "FILE", description = ["files to filter"])
-    private var source: File = File("")
+    private var source: File? = null
 
     @CommandLine.Option(names = ["--path-separator"], description = ["path separator (default = '/')"])
     private var pathSeparator = '/'
@@ -34,12 +34,12 @@ class EdgeFilter(
     private var outputFile: String? = null
 
     override fun call(): Void? {
-        if (!InputHelper.isInputValid(arrayOf(source), canInputContainFolders = false)) {
+        if (source == null || !InputHelper.isInputValid(arrayOf(source!!), canInputContainFolders = false)) {
             logger.error("Input invalid file for EdgeFilter, stopping execution...")
             return null
         }
 
-        val srcProject = ProjectDeserializer.deserializeProject(source.inputStream())
+        val srcProject = ProjectDeserializer.deserializeProject(source!!.inputStream())
 
         val newProject = EdgeProjectBuilder(srcProject, pathSeparator).merge()
 

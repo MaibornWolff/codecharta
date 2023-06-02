@@ -69,12 +69,12 @@ class SourceCodeParserMain(
     private var verbose = false
 
     @CommandLine.Parameters(arity = "1", paramLabel = "FOLDER or FILE", description = ["project folder or code file"])
-    private var file: File = File("")
+    private var file: File? = null
 
     @Throws(IOException::class)
     override fun call(): Void? {
         print(" ")
-        if (!InputHelper.isInputValid(arrayOf(file), canInputContainFolders = true)) {
+        if (file == null || !InputHelper.isInputValid(arrayOf(file!!), canInputContainFolders = true)) {
             System.err.println("Input invalid file for SourceCodeParser, stopping execution...")
             return null
         }
@@ -84,7 +84,7 @@ class SourceCodeParserMain(
         val projectParser = ProjectParser(exclude, verbose, !findNoIssues)
 
         projectParser.setUpAnalyzers()
-        projectParser.scanProject(file)
+        projectParser.scanProject(file!!)
 
         val writer = getMetricWriter()
         val pipedProject = ProjectDeserializer.deserializeProject(input)

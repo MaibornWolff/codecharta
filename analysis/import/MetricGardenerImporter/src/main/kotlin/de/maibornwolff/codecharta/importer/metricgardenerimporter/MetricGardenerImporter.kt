@@ -40,7 +40,7 @@ class MetricGardenerImporter(
         arity = "1", paramLabel = "FOLDER or FILE",
         description = ["path for project folder or code file"]
     )
-    private var inputFile = File("")
+    private var inputFile: File? = null
 
     @CommandLine.Option(names = ["-j", "--is-json-file"], description = ["Input file is a MetricGardener JSON file"])
     private var isJsonFile: Boolean = false
@@ -53,7 +53,7 @@ class MetricGardenerImporter(
 
     @Throws(IOException::class)
     override fun call(): Void? {
-        if (!InputHelper.isInputValid(arrayOf(inputFile), canInputContainFolders = true)) {
+        if (inputFile == null || !InputHelper.isInputValid(arrayOf(inputFile!!), canInputContainFolders = true)) {
             System.err.println("Input invalid file for MetricGardenerImporter, stopping execution...")
             return null
         }
@@ -67,7 +67,7 @@ class MetricGardenerImporter(
                 command = npm,
                 arguments = listOf(
                     "exec", "-y", "metric-gardener", "--", "parse",
-                    inputFile.absolutePath, "--output-path", tempMgOutput.absolutePath
+                    inputFile!!.absolutePath, "--output-path", tempMgOutput.absolutePath
                 ),
                 workingDirectory = ShellLocation.CURRENT_WORKING
             )
@@ -75,7 +75,7 @@ class MetricGardenerImporter(
         }
 
         val metricGardenerNodes: MetricGardenerNodes =
-            mapper.readValue(inputFile.reader(Charset.defaultCharset()), MetricGardenerNodes::class.java)
+            mapper.readValue(inputFile!!.reader(Charset.defaultCharset()), MetricGardenerNodes::class.java)
         val metricGardenerProjectBuilder = MetricGardenerProjectBuilder(metricGardenerNodes)
         val project = metricGardenerProjectBuilder.build()
 

@@ -20,16 +20,16 @@ class ValidationTool : Callable<Void?>, InteractiveParser {
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     var help: Boolean = false
 
-    @CommandLine.Parameters(index = "0", description = ["file to validate"])
-    var file: String = ""
+    @CommandLine.Parameters(index = "0", arity = "1", paramLabel = "FILE", description = ["file to validate"])
+    var file: File? = null
 
     override fun call(): Void? {
-        if (!InputHelper.isInputValid(arrayOf(File(file)), canInputContainFolders = false)) {
+        if (file == null || !InputHelper.isInputValid(arrayOf(file!!), canInputContainFolders = false)) {
             logger.error("Input invalid file for ValidationTool, stopping execution...")
             return null
         }
 
-        EveritValidator(SCHEMA_PATH).validate(FileInputStream(File(file).absoluteFile))
+        EveritValidator(SCHEMA_PATH).validate(FileInputStream(file!!.absoluteFile))
 
         return null
     }

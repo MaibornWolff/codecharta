@@ -38,7 +38,7 @@ class RawTextParser(
     private var verbose = false
 
     @CommandLine.Parameters(arity = "1", paramLabel = "FILE or FOLDER", description = ["file/project to parse"])
-    private var inputFile: File = File("")
+    private var inputFile: File? = null
 
     @CommandLine.Option(
         arity = "0..",
@@ -77,7 +77,7 @@ class RawTextParser(
     @Throws(IOException::class)
     override fun call(): Void? {
         print(" ")
-        if (!InputHelper.isInputValid(arrayOf(inputFile), canInputContainFolders = true)) {
+        if (inputFile == null || !InputHelper.isInputValid(arrayOf(inputFile!!), canInputContainFolders = true)) {
             logger.error("Input invalid file for RawTextParser, stopping execution...")
             return null
         }
@@ -86,7 +86,7 @@ class RawTextParser(
 
         val parameterMap = assembleParameterMap()
         val results: Map<String, FileMetrics> =
-            MetricCollector(inputFile, exclude, fileExtensions, parameterMap, metrics).parse()
+            MetricCollector(inputFile!!, exclude, fileExtensions, parameterMap, metrics).parse()
 
         val pipedProject = ProjectDeserializer.deserializeProject(input)
         val project = ProjectGenerator().generate(results, pipedProject)
