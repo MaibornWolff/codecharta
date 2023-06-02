@@ -7,6 +7,7 @@
 	[searchPlaceholder]="'Edge Metric (highest value)'"
 	[handleMetricChanged]="handleEdgeMetricChanged"
 	[type]="'edge'"
+	title="Change edge metric"
 >
 	<div hoveredInformation class="cc-metric-chooser-hovered-container">
 		<div class="metric-value" *ngIf="hoveredEdgeValue$ | async; let hoveredEdgeValue">

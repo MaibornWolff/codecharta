@@ -11,7 +11,7 @@ import { readFiles } from "../../../util/uploadFiles/readFiles"
 export class UploadCustomConfigButtonComponent {
 	upload() {
 		const fileInput = createCCFileInput()
-		fileInput.addEventListener("change", async () => {
+		fileInput.addEventListener("change", () => {
 			void this.uploadOnEvent(fileInput)
 		})
 		fileInput.click()

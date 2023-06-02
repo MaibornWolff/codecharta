@@ -7,6 +7,8 @@ import { MetricChooserComponent } from "./metricChooser.component"
 import { MetricChooserModule } from "./metricChooser.module"
 import { provideMockStore } from "@ngrx/store/testing"
 import { metricDataSelector } from "../../state/selectors/accumulatedData/metricData/metricData.selector"
+import { attributeDescriptorsSelector } from "../../state/store/fileSettings/attributeDescriptors/attributeDescriptors.selector"
+import { TEST_ATTRIBUTE_DESCRIPTORS_FULL } from "../../util/dataMocks"
 
 describe("metricChooserComponent", () => {
 	beforeEach(() => {
@@ -21,10 +23,13 @@ describe("metricChooserComponent", () => {
 								nodeMetricData: [
 									{ name: "aMetric", maxValue: 1 },
 									{ name: "bMetric", maxValue: 2 },
-									{ name: "cMetric", maxValue: 3 }
+									{ name: "cMetric", maxValue: 3 },
+									{ name: "fullMetric", maxValue: 42 },
+									{ name: "mcc", maxValue: 55 }
 								]
 							}
-						}
+						},
+						{ selector: attributeDescriptorsSelector, value: TEST_ATTRIBUTE_DESCRIPTORS_FULL }
 					]
 				})
 			]
@@ -33,7 +38,7 @@ describe("metricChooserComponent", () => {
 
 	it("should be a select for metrics", async () => {
 		let selectedMetricName = "aMetric"
-		await render(MetricChooserComponent, {
+		const { rerender, detectChanges } = await render(MetricChooserComponent, {
 			excludeComponentDeclaration: true,
 			componentProperties: {
 				searchPlaceholder: "search metric (max value)",
@@ -42,28 +47,44 @@ describe("metricChooserComponent", () => {
 			}
 		})
 
-		await userEvent.click(await screen.findByText("aMetric (1)"))
+		await userEvent.click(await screen.findByText("aMetric"))
 		const options = screen.queryAllByRole("option")
 		expect(options[0].textContent).toMatch("aMetric (1)")
 		expect(options[1].textContent).toMatch("bMetric (2)")
 		expect(options[2].textContent).toMatch("cMetric (3)")
+		expect(options[3].textContent).toMatch("fullMetric (42) FullTestDescription")
+		expect(options[3].getAttribute("title")).toMatch(
+			"FullTestTitle (fullMetric):\nFullTestDescription\nHigh Values: FullTestHigh\nLow Values: FullLowValue"
+		)
+		expect(options[4].textContent).toMatch("mcc (55)")
+		expect(options[4].getAttribute("title")).toMatch("Cyclomatic Complexity")
 
 		await userEvent.click(options[1])
-		expect(screen.queryByText("aMetric (1)")).toBe(null)
-		expect(screen.queryByText("bMetric (2)")).not.toBe(null)
+
+		await rerender({
+			componentProperties: {
+				searchPlaceholder: "search metric (max value)",
+				selectedMetricName,
+				handleMetricChanged: (value: string) => (selectedMetricName = value)
+			}
+		})
+		detectChanges()
+		expect(screen.queryByText("aMetric")).toBe(null)
+		expect(screen.queryByText("bMetric")).not.toBe(null)
 	})
 
 	it("should focus search field initially, filter options by search term, and reset search term on close", async () => {
-		await render(MetricChooserComponent, {
+		let selectedMetricName = "aMetric"
+		const { rerender } = await render(MetricChooserComponent, {
 			excludeComponentDeclaration: true,
 			componentProperties: {
 				searchPlaceholder: "search metric (max value)",
-				selectedMetricName: "aMetric",
-				handleMetricChanged: jest.fn()
+				selectedMetricName,
+				handleMetricChanged: (value: string) => (selectedMetricName = value)
 			}
 		})
 
-		await userEvent.click(await screen.findByText("aMetric (1)"))
+		await userEvent.click(await screen.findByText("aMetric"))
 		screen.getByPlaceholderText("search metric (max value)")
 		const searchBox = getSearchBox()
 		expect(document.activeElement).toBe(searchBox)
@@ -76,7 +97,14 @@ describe("metricChooserComponent", () => {
 		await userEvent.click(options[0])
 		expect(screen.queryByRole("listbox")).toBeNull()
 
-		await userEvent.click(await screen.findByText("bMetric (2)"))
+		await rerender({
+			componentProperties: {
+				searchPlaceholder: "search metric (max value)",
+				selectedMetricName,
+				handleMetricChanged: (value: string) => (selectedMetricName = value)
+			}
+		})
+		await userEvent.click(await screen.findByText("bMetric"))
 		expect(getSearchBox().value).toBe("")
 
 		function getSearchBox() {
