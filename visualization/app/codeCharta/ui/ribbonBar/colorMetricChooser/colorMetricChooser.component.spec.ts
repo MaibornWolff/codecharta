@@ -4,13 +4,11 @@ import { expect } from "@jest/globals"
 import userEvent from "@testing-library/user-event"
 import { ColorMetricChooserComponent } from "./colorMetricChooser.component"
 import { ColorMetricChooserModule } from "./heightMetricChooser.module"
-import { MockState, MockStore, provideMockStore } from "@ngrx/store/testing"
+import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { metricDataSelector } from "../../../state/selectors/accumulatedData/metricData/metricData.selector"
 import { hoveredNodeSelector } from "../../../state/selectors/hoveredNode.selector"
 import { isColorMetricLinkedToHeightMetricSelector } from "../../../state/store/appSettings/isHeightAndColorMetricLinked/isColorMetricLinkedToHeightMetric.selector"
 import { colorMetricSelector } from "../../../state/store/dynamicSettings/colorMetric/colorMetric.selector"
-import { defaultState } from "../../../state/store/state.manager"
-import { State } from "@ngrx/store"
 
 describe("colorMetricChooserComponent", () => {
 	beforeEach(() => {
@@ -32,8 +30,7 @@ describe("colorMetricChooserComponent", () => {
 						{ selector: hoveredNodeSelector, value: null },
 						{ selector: isColorMetricLinkedToHeightMetricSelector, value: false }
 					]
-				}),
-				{ provide: State, useValue: { getValue: () => defaultState } }
+				})
 			]
 		})
 	})
@@ -60,7 +57,6 @@ describe("colorMetricChooserComponent", () => {
 		const disabledIconColor = "color: rgba(0, 0, 0, 0.38);"
 		const { container, detectChanges } = await render(ColorMetricChooserComponent, { excludeComponentDeclaration: true })
 		const store = TestBed.inject(MockStore)
-		TestBed.inject(MockState)
 		store.overrideSelector(isColorMetricLinkedToHeightMetricSelector, true)
 		store.refreshState()
 		detectChanges()

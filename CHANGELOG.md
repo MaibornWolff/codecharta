@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
--   Fix color range on color metric change [#3311](https://github.com/MaibornWolff/codecharta/pull/3311)
+-   Fix color range reset not triggering on color metric change [#3311](https://github.com/MaibornWolff/codecharta/pull/3311)
 
 ## [1.117.0] - 2023-05-19
 

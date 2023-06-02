@@ -8,6 +8,7 @@ import { BehaviorSubject } from "rxjs"
 import { Action } from "@ngrx/store"
 import { setStandard } from "../../files/files.actions"
 import { getLastAction } from "../../../../util/testUtils/store.utils"
+import { setColorMetric } from "../colorMetric/colorMetric.actions"
 
 describe("ResetColorRangeEffect", () => {
 	let actions$: BehaviorSubject<Action>
@@ -47,5 +48,13 @@ describe("ResetColorRangeEffect", () => {
 		store.overrideSelector(selectedColorMetricDataSelector, { minValue: 20, maxValue: 120 })
 		store.refreshState()
 		expect(await getLastAction(store)).not.toEqual({ value: { from: 53, to: 86 }, type: "SET_COLOR_RANGE" })
+	})
+
+	it("should fire when colorMetric selection changed", async () => {
+		const store = TestBed.inject(MockStore)
+		store.overrideSelector(selectedColorMetricDataSelector, { minValue: 20, maxValue: 120 })
+		store.refreshState()
+		actions$.next(setColorMetric({ value: "anotherMetric" }))
+		expect(await getLastAction(store)).toEqual({ value: { from: 53, to: 86 }, type: "SET_COLOR_RANGE" })
 	})
 })
