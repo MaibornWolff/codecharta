@@ -11,7 +11,6 @@ import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import de.maibornwolff.codecharta.tools.interactiveparser.util.InteractiveParserHelper
 import de.maibornwolff.codecharta.util.InputHelper
 import de.maibornwolff.codecharta.util.ResourceSearchHelper
-import mu.KotlinLogging
 import picocli.CommandLine
 import java.io.File
 import java.io.IOException
@@ -29,7 +28,6 @@ class MetricGardenerImporter(
     private val output: PrintStream = System.out
 ) : Callable<Void>, InteractiveParser {
 
-    private val logger = KotlinLogging.logger {}
     private val mapper = jacksonObjectMapper()
 
     @CommandLine.Option(
@@ -56,7 +54,7 @@ class MetricGardenerImporter(
     @Throws(IOException::class)
     override fun call(): Void? {
         if (!InputHelper.isInputValid(arrayOf(inputFile), canInputContainFolders = true)) {
-            logger.error("Input invalid file for MetricGardenerImporter, stopping execution...")
+            System.err.println("Input invalid file for MetricGardenerImporter, stopping execution...")
             return null
         }
 

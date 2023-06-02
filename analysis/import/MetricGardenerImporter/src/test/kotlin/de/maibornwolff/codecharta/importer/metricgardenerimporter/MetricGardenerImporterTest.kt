@@ -11,7 +11,6 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.params.ParameterizedTest
@@ -126,8 +125,6 @@ class MetricGardenerImporterTest {
         Assertions.assertThat(isUsable).isFalse()
     }
 
-    // TODO: Fix this test
-    @Disabled
     @Test
     fun `should stop execution if input files are invalid`() {
         mockkObject(InputHelper)
