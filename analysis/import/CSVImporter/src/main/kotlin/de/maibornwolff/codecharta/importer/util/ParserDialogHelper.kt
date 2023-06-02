@@ -15,7 +15,7 @@ class ParserDialogHelper {
 
             while (true) {
                 val additionalFile = KInquirer.promptInput(
-                        message = "If you want to parse additional sourcemonitor CSV files, specify the name of the next file. Otherwise, leave this field empty to skip.",
+                        message = "If you want to parse additional CSV files, specify the name of the next file. Otherwise, leave this field empty to skip.",
                                                           )
                 if (additionalFile.isNotBlank()) {
                     inputFileNames.add(additionalFile)
