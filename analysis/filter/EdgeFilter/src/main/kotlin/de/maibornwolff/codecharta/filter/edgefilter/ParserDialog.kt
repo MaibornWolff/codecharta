@@ -4,6 +4,7 @@ import com.github.kinquirer.KInquirer
 import com.github.kinquirer.components.promptInput
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import mu.KotlinLogging
+import java.io.File
 import java.nio.file.Paths
 
 private val logger = KotlinLogging.logger {}
@@ -16,7 +17,7 @@ class ParserDialog {
 
             val inputFileName = KInquirer.promptInput(
                     message = "What is the $EXTENSION file that has to be parsed?",
-                    hint = Paths.get("").toAbsolutePath().toString())
+                    hint = Paths.get("").toAbsolutePath().toString()) + File.separator + "yourInput." + EXTENSION
             logger.info { "File path: $inputFileName" }
 
             val defaultOutputFileName = getOutputFileName(inputFileName)

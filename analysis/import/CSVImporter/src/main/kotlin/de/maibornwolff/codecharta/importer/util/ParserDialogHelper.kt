@@ -10,7 +10,7 @@ class ParserDialogHelper {
     companion object {
         fun getInputFiles(isSourceMonitor: Boolean): MutableList<String> {
             val inputFileNames = mutableListOf(KInquirer.promptInput(
-                    message = if (isSourceMonitor) { "What is the sourcemonitor CSV file that has to be parsed?" } else { "Please specify the name of the first sourcemonitor CSV file to be parsed" },
+                    message = if (isSourceMonitor) { "What is the SourceMonitor CSV file that has to be parsed?" } else { "Please specify the name of the first CSV file to be parsed." },
                     hint = Paths.get("").toAbsolutePath().toString() + File.separator + "yourInput.csv"))
 
             while (true) {
