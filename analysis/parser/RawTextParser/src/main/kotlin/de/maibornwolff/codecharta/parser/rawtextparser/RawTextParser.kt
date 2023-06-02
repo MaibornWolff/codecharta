@@ -77,7 +77,7 @@ class RawTextParser(
     @Throws(IOException::class)
     override fun call(): Void? {
         print(" ")
-        if (!InputHelper.isInputValid(arrayOf(inputFile), canInputBePiped = true, canInputContainFolders = true)) {
+        if (!InputHelper.isInputValid(arrayOf(inputFile), canInputContainFolders = true)) {
             logger.error("Input invalid file for RawTextParser, stopping execution...")
             return null
         }

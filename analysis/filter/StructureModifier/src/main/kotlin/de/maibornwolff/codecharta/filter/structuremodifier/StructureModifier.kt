@@ -82,7 +82,7 @@ class StructureModifier(
         }
 
         // Can not be piped here, because that case is already covered by the previous check (source == null)
-        if (!InputHelper.isInputValid(arrayOf(source!!), canInputBePiped = false, canInputContainFolders = false)) {
+        if (!InputHelper.isInputValid(arrayOf(source!!), canInputContainFolders = false)) {
             logger.error("Input invalid file for StructureModifier, stopping execution...")
             return null
         }

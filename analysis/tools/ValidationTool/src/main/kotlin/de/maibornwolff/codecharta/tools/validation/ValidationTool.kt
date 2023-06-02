@@ -24,7 +24,7 @@ class ValidationTool : Callable<Void?>, InteractiveParser {
     var file: String = ""
 
     override fun call(): Void? {
-        if (!InputHelper.isInputValid(arrayOf(File(file)), canInputBePiped = false, canInputContainFolders = false)) {
+        if (!InputHelper.isInputValid(arrayOf(File(file)), canInputContainFolders = false)) {
             logger.error("Input invalid file for ValidationTool, stopping execution...")
             return null
         }

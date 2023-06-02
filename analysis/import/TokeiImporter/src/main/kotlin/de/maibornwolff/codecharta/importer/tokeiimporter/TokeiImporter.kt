@@ -74,7 +74,7 @@ class TokeiImporter(
 
         if (file == null) {
             // do not do anything, if null there could come piped input
-        } else if (!InputHelper.isInputValid(arrayOf(file!!), canInputBePiped = true, canInputContainFolders = false)) {
+        } else if (!InputHelper.isInputValid(arrayOf(file!!), canInputContainFolders = false)) {
             logger.error("Input invalid file for TokeiImporter, stopping execution...")
             return null
         }

@@ -28,7 +28,7 @@ class EdgeFilterTest {
     fun `should create json uncompressed file`() {
         mockkObject(InputHelper)
         every {
-            InputHelper.isInputValid(any(), any(), any())
+            InputHelper.isInputValid(any(), any())
         } returns true
 
         main(
@@ -46,7 +46,7 @@ class EdgeFilterTest {
     fun `should stop execution if input file is invalid`() {
         mockkObject(InputHelper)
         every {
-            InputHelper.isInputValid(any(), any(), any())
+            InputHelper.isInputValid(any(), any())
         } returns false
 
         System.setErr(PrintStream(errContent))

@@ -58,7 +58,7 @@ class MergeFilter(
                 )
             }
 
-        if (!InputHelper.isInputValid(sources, canInputBePiped = true, canInputContainFolders = true)) {
+        if (!InputHelper.isInputValid(sources, canInputContainFolders = true)) {
             logger.error("Input invalid files/folders for MergeFilter, stopping execution...")
             return null
         }

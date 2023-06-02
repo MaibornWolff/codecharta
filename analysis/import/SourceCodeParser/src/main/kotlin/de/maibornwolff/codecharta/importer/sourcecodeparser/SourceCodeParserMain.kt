@@ -74,7 +74,7 @@ class SourceCodeParserMain(
     @Throws(IOException::class)
     override fun call(): Void? {
         print(" ")
-        if (!InputHelper.isInputValid(arrayOf(file), canInputBePiped = true, canInputContainFolders = true)) {
+        if (!InputHelper.isInputValid(arrayOf(file), canInputContainFolders = true)) {
             System.err.println("Input invalid file for SourceCodeParser, stopping execution...")
             return null
         }

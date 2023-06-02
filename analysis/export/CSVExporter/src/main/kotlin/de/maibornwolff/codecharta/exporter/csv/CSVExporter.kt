@@ -52,7 +52,7 @@ class CSVExporter : Callable<Void>, InteractiveParser {
             throw IllegalArgumentException("depth-of-hierarchy must not be negative")
         }
 
-        if (!InputHelper.isInputValid(sources, canInputBePiped = false, canInputContainFolders = false)) {
+        if (!InputHelper.isInputValid(sources, canInputContainFolders = false)) {
             System.err.println("Input invalid file for CSVExporter, stopping execution...")
             return null
         }

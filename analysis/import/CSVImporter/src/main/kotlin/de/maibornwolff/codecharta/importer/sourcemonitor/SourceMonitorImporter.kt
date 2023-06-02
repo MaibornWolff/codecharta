@@ -42,7 +42,7 @@ class SourceMonitorImporter(
 
     @Throws(IOException::class)
     override fun call(): Void? {
-        if (!InputHelper.isInputValid(files.toTypedArray(), canInputBePiped = false, canInputContainFolders = false)) {
+        if (!InputHelper.isInputValid(files.toTypedArray(), canInputContainFolders = false)) {
             logger.error("Input invalid file for SourceMonitorImporter, stopping execution...")
             return null
         }

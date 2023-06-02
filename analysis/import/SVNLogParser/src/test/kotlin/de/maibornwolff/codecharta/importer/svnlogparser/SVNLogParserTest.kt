@@ -97,7 +97,7 @@ class SVNLogParserTest {
     fun `should stop execution if input files are invalid`() {
         mockkObject(InputHelper)
         every {
-            InputHelper.isInputValid(any(), any(), any())
+            InputHelper.isInputValid(any(), any())
         } returns false
 
         System.setErr(PrintStream(errContent))

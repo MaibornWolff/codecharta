@@ -55,7 +55,7 @@ class MetricGardenerImporter(
 
     @Throws(IOException::class)
     override fun call(): Void? {
-        if (!InputHelper.isInputValid(arrayOf(inputFile), canInputBePiped = true, canInputContainFolders = true)) {
+        if (!InputHelper.isInputValid(arrayOf(inputFile), canInputContainFolders = true)) {
             logger.error("Input invalid file for MetricGardenerImporter, stopping execution...")
             return null
         }

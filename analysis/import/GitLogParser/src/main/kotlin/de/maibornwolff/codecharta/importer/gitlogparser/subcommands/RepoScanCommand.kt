@@ -57,7 +57,7 @@ class RepoScanCommand : Callable<Void>, InteractiveParser {
             println("--repo-path not set, aborting...")
             return null
         } else {
-            if (!InputHelper.isInputValid(arrayOf(File(repoPathName!!)), canInputBePiped = false, canInputContainFolders = true)) {
+            if (!InputHelper.isInputValid(arrayOf(File(repoPathName!!)), canInputContainFolders = true)) {
                 logger.error("Input invalid file for GitRepoScan, stopping execution...")
                 return null
             }

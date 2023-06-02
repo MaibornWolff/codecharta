@@ -9,18 +9,13 @@ class InputHelper {
 
         /**
          * Checks if input resources meet a number of requirements:
-         * If input can not be piped in, the array can not be empty.
+         * The input array can not be empty.
          * If input can not contain folders, no element in the list can be a path to a folder.
          * All elements in the array have to either be existing files or if allowed, folders.
          */
         fun isInputValid(inputResources: Array<File>,
-                         canInputBePiped: Boolean,
                          canInputContainFolders: Boolean): Boolean {
-            return if (canInputBePiped) {
-                areInputResourcesValid(inputResources, canInputContainFolders)
-            } else {
-                !isInputEmpty(inputResources) && areInputResourcesValid(inputResources, canInputContainFolders)
-            }
+            return !isInputEmpty(inputResources) && areInputResourcesValid(inputResources, canInputContainFolders)
         }
 
         private fun isInputEmpty(inputResources: Array<File>): Boolean {
