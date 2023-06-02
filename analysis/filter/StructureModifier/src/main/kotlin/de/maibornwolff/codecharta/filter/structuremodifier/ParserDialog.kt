@@ -15,7 +15,8 @@ class ParserDialog {
             val inputFolderName =
                     KInquirer.promptInput(
                             message = "What is the cc.json file that has to be modified?",
-                            hint = Paths.get("").toAbsolutePath().toString()) + File.separator + "yourInput.cc.json"
+                            hint = Paths.get("").toAbsolutePath().toString() + File.separator + "yourInput.cc.json"
+                                         )
 
             val outputFileName: String = KInquirer.promptInput(
                     message = "What is the name of the output file?"

@@ -17,7 +17,8 @@ class ParserDialog {
 
             val inputFileName = KInquirer.promptInput(
                     message = "What is the $EXTENSION file that has to be parsed?",
-                    hint = Paths.get("").toAbsolutePath().toString()) + File.separator + "yourInput." + EXTENSION
+                    hint = Paths.get("").toAbsolutePath().toString() + File.separator + "yourInput." + EXTENSION
+                                                     )
             logger.info { "File path: $inputFileName" }
 
             val defaultOutputFileName = getOutputFileName(inputFileName)

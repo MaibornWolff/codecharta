@@ -7,6 +7,7 @@ import de.maibornwolff.codecharta.tools.ccsh.Ccsh
 import de.maibornwolff.codecharta.tools.ccsh.parser.repository.PicocliParserRepository
 import mu.KotlinLogging
 import picocli.CommandLine
+import java.nio.file.Paths
 
 class InteractiveParserSuggestionDialog {
     companion object {
@@ -31,7 +32,8 @@ class InteractiveParserSuggestionDialog {
         private fun getApplicableInteractiveParsers(commandLine: CommandLine): List<String> {
             val inputFile: String = KInquirer.promptInput(
                     message = "Which path should be scanned?",
-                    hint = "You can provide a directory path / file path / sonar url.")
+                    hint = "You can provide a directory path / file path / sonar url.",
+                    default = Paths.get("").toAbsolutePath().toString())
 
             val applicableParsers =
                     ParserService.getParserSuggestions(commandLine, PicocliParserRepository(), inputFile)
