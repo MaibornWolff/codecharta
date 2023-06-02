@@ -175,7 +175,9 @@ class SVNLogParser(
 
     override fun getDialog(): ParserDialogInterface = ParserDialog
     override fun isApplicable(resourceToBeParsed: String): Boolean {
-        return ResourceSearchHelper.isResourcePresent(resourceToBeParsed, ".svn",
+        println("Checking if SVNLogParser is applicable...")
+
+        return ResourceSearchHelper.isResourcePresent(resourceToBeParsed, listOf(".svn"),
                 ResourceSearchHelper::doStringsEqual, 1,
                 shouldSearchFullDirectory = false, resourceShouldBeFile = false)
     }

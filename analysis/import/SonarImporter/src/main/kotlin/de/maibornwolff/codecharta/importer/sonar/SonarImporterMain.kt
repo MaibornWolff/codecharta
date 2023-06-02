@@ -96,13 +96,15 @@ class SonarImporterMain(
 
     override fun getDialog(): ParserDialogInterface = ParserDialog
     override fun isApplicable(resourceToBeParsed: String): Boolean {
+        println("Checking if SonarImporter is applicable...")
+
         val trimmedInput = resourceToBeParsed.trim()
 
         if (trimmedInput.contains("^http(s)?://".toRegex())) {
             return true
         }
 
-        return ResourceSearchHelper.isResourcePresent(trimmedInput, "sonar-project.properties",
+        return ResourceSearchHelper.isResourcePresent(trimmedInput, listOf("sonar-project.properties"),
                 ResourceSearchHelper::doStringsEqual, 0,
                 shouldSearchFullDirectory = true, resourceShouldBeFile = true)
     }
