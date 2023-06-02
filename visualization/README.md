@@ -1,6 +1,6 @@
 # CodeCharta Visualization
 
-[![Build Status](https://travis-ci.org/MaibornWolff/codecharta.svg?branch=main)](https://travis-ci.org/MaibornWolff/codecharta)
+[![Quality Gate Status For Visualization](https://sonarcloud.io/api/project_badges/measure?project=maibornwolff-gmbh_codecharta_visualization&metric=alert_status)](https://sonarcloud.io/project/overview?id=maibornwolff-gmbh_codecharta_visualization)
 
 > CodeCharta by [MaibornWolff](https://www.maibornwolff.de)
 
@@ -19,6 +19,8 @@ You can start with **Codecharta Visualization** on multiple ways:
 -   Installation as a [npm package](#npm-package) (Recommended)
 -   Run an operating system specific [standalone](#run-a-standalone)
 -   Build it yourself from the github [repository](#build-it-yourself)
+-   Use [docker-compose](https://maibornwolff.github.io/codecharta/docs/docker-containers/) to run this with other needed tools like a Sonar instance or analyzing tools of codecharta-analysis.
+-   Use our [Dockerfile](#run-in-docker-container) to run the visualization in a container
 -   Try out the [online version](https://maibornwolff.github.io/codecharta/visualization/app/index.html?file=codecharta.cc.json&file=codecharta_analysis.cc.json)
 
 > Be aware, that if you are on Apple Silicon, you need to do additional config for npm installation
@@ -139,6 +141,16 @@ $ npm run e2e:auto
 ```
 
 > To follow/watch the steps the e2e test is performing, deactivate headless mode in `jest-puppeteer.config.js` (and maybe set the `slowMo` parameter)
+
+## Run in Docker container
+
+You can use this via docker compose or as a standalone container. This section will deal with how to use the visualization as a standalone container. For information on how to use this with docker compose, please check out [Docker Getting Started](https://maibornwolff.github.io/codecharta/docs/docker-containers/)
+We assume that you already installed docker, if not, you have to do that before!
+
+To containerize the visualization, please follow the below listed steps.
+
+-   Start the docker container: `docker run -d -p 9000:80 codecharta/codecharta-visualization`. This detaches the container and exposes port 80 on the container and port 9000 on the host.
+-   Open `localhost:9000` in your browser and you can already use the visualization, upload `cc.json` files and play around!
 
 # JSON structure
 
