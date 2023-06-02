@@ -7,7 +7,6 @@ import io.mockk.mockkObject
 import io.mockk.unmockkAll
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import picocli.CommandLine
@@ -52,17 +51,6 @@ class StructureModifierTest {
         System.setErr(originalError)
 
         assertThat(errorStream.toString()).contains("invalid_project.cc.json is not a valid project")
-    }
-
-    // TODO: Why is this disabled? Should it not be removed?
-    @Disabled
-    @Test
-    fun `reads project piped input multiline`() {
-        val input = File("src/test/resources/sample_project.cc.json").bufferedReader().readLines()
-            .joinToString(separator = "\n") { it }
-        val cliResult = executeForOutput(input, arrayOf("-r=/does/not/exist"))
-
-        assertThat(cliResult).contains(listOf("otherFile.java"))
     }
 
     @Test
