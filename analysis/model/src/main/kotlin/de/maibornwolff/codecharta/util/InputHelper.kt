@@ -44,7 +44,15 @@ class InputHelper {
             return false
         }
 
-        private fun isInputExistentAndFolderOrFile(inputResource: File): Boolean {
+        private fun isInputEmptyString(inputResource: File): Boolean {
+            if (inputResource.name == "") {
+                logger.error("Input empty string for input files/folders, which is not allowed!")
+                return true
+            }
+            return false
+        }
+
+        private fun isInputExistentFolderOrFile(inputResource: File): Boolean {
             if (!(inputResource.isFile || inputResource.isDirectory)) {
                 logger.error("Could not find resource `${ inputResource.path }`!")
                 return false
@@ -73,8 +81,11 @@ class InputHelper {
                                            canInputContainFolders: Boolean): Boolean {
             var isInputValid = true
 
+            // We do not end/break early here, so user is informed about all input faults in one run
             for (source in inputResources) {
-                if (!isInputExistentAndFolderOrFile(source)) {
+                if (isInputEmptyString(source)) {
+                    isInputValid = false
+                } else if (!isInputExistentFolderOrFile(source)) {
                     isInputValid = false
                 } else {
                     if (!isInputValidFolderOrAnyFile(source, canInputContainFolders)) {

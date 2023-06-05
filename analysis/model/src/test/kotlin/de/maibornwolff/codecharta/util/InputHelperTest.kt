@@ -167,17 +167,33 @@ class InputHelperTest {
                 .contains("Input folder where only files are allowed!")
     }
 
-    @Test
-    fun `should return invalid if input contains null elements`() {
+    @ParameterizedTest
+    @MethodSource("provideBooleanValues")
+    fun `should return invalid if input contains null elements`(canInputContainFolders: Boolean) {
         val nullInputFile: File? = null
         val inputFiles = arrayOf(nullInputFile)
 
         System.setErr(PrintStream(errContent))
-        val result = InputHelper.isInputValidAndNotNull(inputFiles, false)
+        val result = InputHelper.isInputValidAndNotNull(inputFiles, canInputContainFolders)
         System.setErr(originalErr)
 
         Assertions.assertThat(result).isFalse()
         Assertions.assertThat(errContent.toString())
                 .contains("Input contained illegal null resource!")
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideBooleanValues")
+    fun `should return invalid if input contains empty string`(canInputContainFolders: Boolean) {
+        val emptyStringFile = File("")
+        val inputFiles = arrayOf(emptyStringFile)
+
+        System.setErr(PrintStream(errContent))
+        val result = InputHelper.isInputValid(inputFiles, canInputContainFolders)
+        System.setErr(originalErr)
+
+        Assertions.assertThat(result).isFalse()
+        Assertions.assertThat(errContent.toString())
+                .contains("Input empty string for input files/folders, which is not allowed!")
     }
 }
