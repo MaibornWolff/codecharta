@@ -34,7 +34,7 @@ class EdgeFilter(
     private var outputFile: String? = null
 
     override fun call(): Void? {
-        if (source == null || !InputHelper.isInputValid(arrayOf(source!!), canInputContainFolders = false)) {
+        if (!InputHelper.isInputValidAndNotNull(arrayOf(source), canInputContainFolders = false)) {
             logger.error("Input invalid file for EdgeFilter, stopping execution...")
             return null
         }

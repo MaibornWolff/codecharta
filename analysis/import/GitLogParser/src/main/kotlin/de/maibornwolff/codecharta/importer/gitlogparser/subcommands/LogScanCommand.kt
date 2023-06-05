@@ -59,7 +59,7 @@ class LogScanCommand : Callable<Void>, InteractiveParser {
     }
 
     override fun call(): Void? {
-        if (gitLogFile == null || !InputHelper.isInputValid(arrayOf(gitLogFile!!), canInputContainFolders = false)) {
+        if (!InputHelper.isInputValidAndNotNull(arrayOf(gitLogFile), canInputContainFolders = false)) {
             logger.error("Input invalid file for GitLogScan, stopping execution...")
             return null
         }

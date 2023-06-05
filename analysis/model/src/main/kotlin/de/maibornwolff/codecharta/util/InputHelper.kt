@@ -8,6 +8,23 @@ class InputHelper {
         private val logger = KotlinLogging.logger {}
 
         /**
+         * Checks the same as ´isInputValid(Array<File>, Boolean)`, but additionally checks for nullness in elements in array.
+         */
+        fun isInputValidAndNotNull(inputResources: Array<File?>,
+                         canInputContainFolders: Boolean): Boolean {
+
+            val nonNullInputResources: Array<File>
+            try {
+                nonNullInputResources = inputResources.requireNoNulls()
+            } catch (e: IllegalArgumentException) {
+                logger.error("Input contained illegal null resource!")
+                return false
+            }
+
+            return isInputValid(nonNullInputResources, canInputContainFolders)
+        }
+
+        /**
          * Checks if input resources meet a number of requirements:
          * The input array can not be empty.
          * If input can not contain folders, no element in the list can be a path to a folder.
@@ -15,7 +32,8 @@ class InputHelper {
          */
         fun isInputValid(inputResources: Array<File>,
                          canInputContainFolders: Boolean): Boolean {
-            return !isInputEmpty(inputResources) && areInputResourcesValid(inputResources, canInputContainFolders)
+            return !isInputEmpty(inputResources) &&
+                   areInputResourcesValid(inputResources, canInputContainFolders)
         }
 
         private fun isInputEmpty(inputResources: Array<File>): Boolean {

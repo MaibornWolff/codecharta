@@ -62,7 +62,6 @@ class TokeiImporter(
     @CommandLine.Option(names = ["-nc", "--not-compressed"], description = ["save uncompressed output File"])
     private var compress = true
 
-    // TODO: Why is 0 allowed?
     @CommandLine.Parameters(arity = "0..1", paramLabel = "FILE", description = ["tokei generated json"])
     private var file: File? = null
 
@@ -71,14 +70,6 @@ class TokeiImporter(
     @Throws(IOException::class)
     override fun call(): Void? {
         print(" ")
-
-        if (file == null) {
-            // do not do anything, if null there could come piped input
-        } else if (!InputHelper.isInputValid(arrayOf(file!!), canInputContainFolders = false)) {
-            logger.error("Input invalid file for TokeiImporter, stopping execution...")
-            return null
-        }
-
         projectBuilder = ProjectBuilder()
         val root = getInput() ?: return null
         runBlocking(Dispatchers.Default) {
@@ -109,11 +100,11 @@ class TokeiImporter(
         runBlocking(Dispatchers.Default) {
             if (file != null) {
                 launch {
-                    if (file!!.isFile) {
+                    if (InputHelper.isInputValid(arrayOf(file!!), canInputContainFolders = false)) {
                         val bufferedReader = file!!.bufferedReader()
                         root = JsonParser.parseReader(bufferedReader)
                     } else {
-                        logger.error("${file!!.name} has not been found.")
+                        logger.error("Input invalid file for TokeiImporter, stopping execution...")
                     }
                 }
             } else {

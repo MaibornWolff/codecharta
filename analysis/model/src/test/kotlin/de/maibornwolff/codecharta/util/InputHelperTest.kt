@@ -166,4 +166,18 @@ class InputHelperTest {
         Assertions.assertThat(errContent.toString())
                 .contains("Input folder where only files are allowed!")
     }
+
+    @Test
+    fun `should return invalid if input contains null elements`() {
+        val nullInputFile: File? = null
+        val inputFiles = arrayOf(nullInputFile)
+
+        System.setErr(PrintStream(errContent))
+        val result = InputHelper.isInputValidAndNotNull(inputFiles, false)
+        System.setErr(originalErr)
+
+        Assertions.assertThat(result).isFalse()
+        Assertions.assertThat(errContent.toString())
+                .contains("Input contained illegal null resource!")
+    }
 }

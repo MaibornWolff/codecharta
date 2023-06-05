@@ -83,7 +83,7 @@ class SVNLogParser(
     override fun call(): Void? {
         print(" ")
 
-        if (file == null || !InputHelper.isInputValid(arrayOf(file!!), canInputContainFolders = false)) {
+        if (!InputHelper.isInputValidAndNotNull(arrayOf(file), canInputContainFolders = false)) {
             logger.error("Input invalid file for SVNLogParser, stopping execution...")
             return null
         }
