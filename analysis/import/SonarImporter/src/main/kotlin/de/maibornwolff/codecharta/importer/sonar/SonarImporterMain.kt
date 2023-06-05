@@ -104,9 +104,9 @@ class SonarImporterMain(
             return true
         }
 
-        return ResourceSearchHelper.isResourcePresent(trimmedInput, listOf("sonar-project.properties"),
-                ResourceSearchHelper::doStringsEqual, 0,
-                shouldSearchFullDirectory = true, resourceShouldBeFile = true)
+        return ResourceSearchHelper.isResourceFulfillingSearchOperatorPresent(trimmedInput, listOf("sonar-project.properties"),
+                ResourceSearchHelper::doStringsEqual,
+                shouldOnlySearchCurrentDirectory = true, resourceShouldBeFile = true)
     }
 
     override fun getName(): String {

@@ -177,9 +177,9 @@ class SVNLogParser(
     override fun isApplicable(resourceToBeParsed: String): Boolean {
         println("Checking if SVNLogParser is applicable...")
 
-        return ResourceSearchHelper.isResourcePresent(resourceToBeParsed, listOf(".svn"),
-                ResourceSearchHelper::doStringsEqual, 1,
-                shouldSearchFullDirectory = false, resourceShouldBeFile = false)
+        return ResourceSearchHelper.isResourceFulfillingSearchOperatorPresent(resourceToBeParsed, listOf(".svn"),
+                ResourceSearchHelper::doStringsEqual,
+                shouldOnlySearchCurrentDirectory = true, resourceShouldBeFile = false)
     }
 
     override fun getName(): String {

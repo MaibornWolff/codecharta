@@ -9,11 +9,10 @@ class ResourceSearchHelper {
 
         /**
          * Checks whether a resource contains one of the specified searchTokens. To check that, the given searchOperator is used.
-         *
          */
-        fun isResourcePresent(resourceName: String, searchToken: List<String>, searchOperator: (String, List<String>) -> Boolean,
-                              maxSearchingDepth: Int, shouldSearchFullDirectory: Boolean, resourceShouldBeFile: Boolean): Boolean {
-            val trimmedResourceName = resourceName.trim()
+        fun isResourceFulfillingSearchOperatorPresent(resource: String, searchToken: List<String>, searchOperator: (String, List<String>) -> Boolean,
+                                                      shouldOnlySearchCurrentDirectory: Boolean, resourceShouldBeFile: Boolean): Boolean {
+            val trimmedResourceName = resource.trim()
 
             // Check if given resource is directly the searched object
             if (searchOperator(trimmedResourceName, searchToken)) {
@@ -21,27 +20,9 @@ class ResourceSearchHelper {
             }
 
             val searchFile = getFileFromResourceName(trimmedResourceName)
-            println("Did not find resource directly, scanning directory `${searchFile.absolutePath}` if applicable...")
+            println("Did not find resource directly, scanning directory `${searchFile.absolutePath}` if applicable.")
 
-            return isResourcePresentInDirectory(searchFile, searchToken, searchOperator, maxSearchingDepth, shouldSearchFullDirectory, resourceShouldBeFile)
-        }
-
-        fun doesStringEndWith(resource: String, searchToken: List<String>): Boolean {
-            for (token in searchToken) {
-                if (resource.endsWith(token)) {
-                    return true
-                }
-            }
-            return false
-        }
-
-        fun doStringsEqual(resource: String, searchToken: List<String>): Boolean {
-            for (token in searchToken) {
-                if (resource == token) {
-                    return true
-                }
-            }
-            return false
+            return isResourcePresentInDirectory(searchFile, searchToken, searchOperator, shouldOnlySearchCurrentDirectory, resourceShouldBeFile)
         }
 
         private fun getFileFromResourceName(resourceName: String): File {
@@ -53,11 +34,11 @@ class ResourceSearchHelper {
         }
 
         private fun isResourcePresentInDirectory(searchFile: File, searchToken: List<String>, searchOperator: (String, List<String>) -> Boolean,
-                                                 maxSearchingDepth: Int, shouldSearchFullDirectory: Boolean, resourceShouldBeFile: Boolean): Boolean {
+                                                 shouldOnlySearchCurrentDirectory: Boolean, resourceShouldBeFile: Boolean): Boolean {
             var fileSearch = searchFile.walk()
 
-            if (!shouldSearchFullDirectory) {
-                fileSearch = fileSearch.maxDepth(maxSearchingDepth)
+            if (shouldOnlySearchCurrentDirectory) {
+                fileSearch = fileSearch.maxDepth(1)
             }
 
             return if (resourceShouldBeFile) {
@@ -72,6 +53,24 @@ class ResourceSearchHelper {
                         .filter { searchOperator(it, searchToken) }
                         .any()
             }
+        }
+
+        fun doesStringEndWith(toBeChecked: String, searchToken: List<String>): Boolean {
+            for (token in searchToken) {
+                if (toBeChecked.endsWith(token)) {
+                    return true
+                }
+            }
+            return false
+        }
+
+        fun doStringsEqual(toBeChecked: String, searchToken: List<String>): Boolean {
+            for (token in searchToken) {
+                if (toBeChecked == token) {
+                    return true
+                }
+            }
+            return false
         }
     }
 }

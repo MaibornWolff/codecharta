@@ -125,7 +125,6 @@ class RawTextParser(
 
         return fileSearch.asSequence()
                 .filter { it.isFile }
-                .map { it.name }
                 .any()
     }
 
