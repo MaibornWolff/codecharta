@@ -12,7 +12,7 @@ import { mapColorsSelector } from "../../../state/store/appSettings/mapColors/ma
 describe("MetricDeltaSelectedComponent", () => {
 	const areColorsEqual = (hex: string, styleColor: string) => {
 		const formattedHex = ColorConverter.convertHexToRgba(hex).replace(/,1\)$/, ")").replace("a", "")
-		const formattedStyleColor = styleColor.replace(/ /g, "")
+		const formattedStyleColor = styleColor.replaceAll(" ", "")
 		return formattedHex === formattedStyleColor
 	}
 
