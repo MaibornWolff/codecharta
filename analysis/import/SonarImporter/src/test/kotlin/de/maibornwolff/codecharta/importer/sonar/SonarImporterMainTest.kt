@@ -6,6 +6,11 @@ import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
 import com.github.tomakehurst.wiremock.client.WireMock.verify
 import com.github.tomakehurst.wiremock.junit5.WireMockTest
 import de.maibornwolff.codecharta.importer.sonar.dataaccess.SonarMetricsAPIDatasource
+import de.maibornwolff.codecharta.util.InputHelper
+import io.mockk.every
+import io.mockk.mockkObject
+import io.mockk.unmockkAll
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -13,12 +18,21 @@ import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
 import picocli.CommandLine
+import java.io.ByteArrayOutputStream
+import java.io.PrintStream
 import javax.ws.rs.core.MediaType
 
 private const val PORT = 8089
 
 @WireMockTest(httpPort = PORT)
 class SonarImporterMainTest {
+    val errContent = ByteArrayOutputStream()
+    val originalErr = System.err
+
+    @AfterEach
+    fun afterTest() {
+        unmockkAll()
+    }
     companion object {
         private const val METRIC_LIST_URL_PATH =
             "/api/metrics/search?f=hidden,decimalScale&p=1&ps=${SonarMetricsAPIDatasource.PAGE_SIZE}"
@@ -133,6 +147,34 @@ class SonarImporterMainTest {
     fun `should NOT be identified as applicable for given broken url`(resourceToBeParsed: String) {
         val isApplicable = SonarImporterMain().isApplicable(resourceToBeParsed)
         Assertions.assertFalse(isApplicable)
+    }
+
+    @Test
+    fun `should stop execution if url is empty string`() {
+        mockkObject(InputHelper)
+        every {
+            InputHelper.isInputValid(any(), any())
+        } returns false
+
+        System.setErr(PrintStream(errContent))
+        CommandLine(SonarImporterMain()).execute(*arrayOf("", "dummyVal"))
+        System.setErr(originalErr)
+
+        Assertions.assertTrue(errContent.toString().contains("Input invalid file for SonarImporter, stopping execution"))
+    }
+
+    @Test
+    fun `should stop execution if project key is empty string`() {
+        mockkObject(InputHelper)
+        every {
+            InputHelper.isInputValid(any(), any())
+        } returns false
+
+        System.setErr(PrintStream(errContent))
+        CommandLine(SonarImporterMain()).execute(*arrayOf("dummyVal", ""))
+        System.setErr(originalErr)
+
+        Assertions.assertTrue(errContent.toString().contains("Input invalid file for SonarImporter, stopping execution"))
     }
 
     @Test

@@ -81,6 +81,11 @@ class SonarImporterMain(
     }
 
     override fun call(): Void? {
+        if (url == "" || projectId == "") {
+            System.err.println("Input invalid file for SonarImporter, stopping execution...")
+            return null
+        }
+
         val importer = createMeasuresAPIImporter()
         var project = importer.getProjectFromMeasureAPI(projectId, metrics)
 

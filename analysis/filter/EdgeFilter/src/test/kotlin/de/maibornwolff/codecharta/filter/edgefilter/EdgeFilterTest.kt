@@ -19,6 +19,7 @@ import java.io.PrintStream
 class EdgeFilterTest {
     val errContent = ByteArrayOutputStream()
     val originalErr = System.err
+
     @AfterEach
     fun afterTest() {
         unmockkAll()
@@ -26,11 +27,6 @@ class EdgeFilterTest {
 
     @Test
     fun `should create json uncompressed file`() {
-        mockkObject(InputHelper)
-        every {
-            InputHelper.isInputValid(any(), any())
-        } returns true
-
         main(
             arrayOf(
                 "src/test/resources/coupling.json", "-o=src/test/resources/output"
