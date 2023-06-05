@@ -160,7 +160,7 @@ class SonarImporterMainTest {
         CommandLine(SonarImporterMain()).execute(*arrayOf("", "dummyVal"))
         System.setErr(originalErr)
 
-        Assertions.assertTrue(errContent.toString().contains("Input invalid file for SonarImporter, stopping execution"))
+        Assertions.assertTrue(errContent.toString().contains("Input invalid Url or ProjectID for SonarImporter, stopping execution"))
     }
 
     @Test
@@ -174,7 +174,7 @@ class SonarImporterMainTest {
         CommandLine(SonarImporterMain()).execute(*arrayOf("dummyVal", ""))
         System.setErr(originalErr)
 
-        Assertions.assertTrue(errContent.toString().contains("Input invalid file for SonarImporter, stopping execution"))
+        Assertions.assertTrue(errContent.toString().contains("Input invalid Url or ProjectID for SonarImporter, stopping execution"))
     }
 
     @Test

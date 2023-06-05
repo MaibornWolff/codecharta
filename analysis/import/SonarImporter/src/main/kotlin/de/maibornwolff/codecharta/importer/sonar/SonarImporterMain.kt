@@ -82,7 +82,7 @@ class SonarImporterMain(
 
     override fun call(): Void? {
         if (url == "" || projectId == "") {
-            System.err.println("Input invalid file for SonarImporter, stopping execution...")
+            System.err.println("Input invalid Url or ProjectID for SonarImporter, stopping execution...")
             return null
         }
 
