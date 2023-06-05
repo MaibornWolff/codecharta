@@ -235,8 +235,8 @@ export default class HorizontalStreet extends Street {
 	 * @param streetOrigin topleft point of street
 	 */
 	private calculateRightStreetOverhang(streetOrigin: Vector2): number {
-		const lastTopBox = this.topRow[this.topRow.length - 1]
-		const lastBottomBox = this.bottomRow[this.bottomRow.length - 1]
+		const lastTopBox = this.topRow.at(-1)
+		const lastBottomBox = this.bottomRow.at(-1)
 		const streetRightX = streetOrigin.x + this.width
 		const topOverhang =
 			lastTopBox instanceof VerticalStreet && lastTopBox.streetRect
