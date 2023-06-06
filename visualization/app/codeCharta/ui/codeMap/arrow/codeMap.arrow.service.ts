@@ -256,12 +256,9 @@ export class CodeMapArrowService implements OnDestroy {
 	}
 
 	private buildArrow(points: Vector3[], ARROW_COLOR = 0, headLength = 10, headWidth = 10) {
-		const direction = points[points.length - 1]
-			.clone()
-			.sub(points[points.length - 2].clone())
-			.normalize()
+		const direction = points.at(-1).clone().sub(points.at(-2).clone()).normalize()
 
-		const origin = points[points.length - 1].clone()
+		const origin = points.at(-1).clone()
 		if (direction.y < 0) {
 			origin.y += headLength + 1
 		}

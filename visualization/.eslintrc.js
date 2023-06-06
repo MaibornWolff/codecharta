@@ -89,10 +89,12 @@ module.exports = {
 		"unicorn/no-object-as-default-parameter": "off",
 		"unicorn/no-array-reduce": "off",
 		"unicorn/prefer-add-event-listener": "off",
-		"unicorn/prefer-query-selector": "off",
+		"unicorn/prefer-blob-reading-methods": "off", // issue#3331
 		"unicorn/prefer-dom-node-append": "off",
+		"unicorn/prefer-event-target": "off", // depends on issue https://github.com/sindresorhus/eslint-plugin-unicorn/issues/1853
 		"unicorn/prefer-module": "off",
 		"unicorn/prefer-node-protocol": "off",
+		"unicorn/prefer-query-selector": "off",
 		"unicorn/no-useless-undefined": "off",
 		"unicorn/no-negated-condition": "off"
 	}

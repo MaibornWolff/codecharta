@@ -110,7 +110,8 @@ class RawTextParserTest {
     fun `should NOT be identified as applicable if given directory does not contain any source code file `() {
         val emptyFolderPath = "src/test/resources/empty"
         val nonExistentPath = "src/test/resources/this/does/not/exist"
-        val emptyInput = ""
+        // Empty String is invalid because File("") generates an empty abstract pathname which does not physically exist
+        val emptyString = ""
 
         val emptyFolder = File(emptyFolderPath)
         emptyFolder.mkdir()
@@ -118,10 +119,10 @@ class RawTextParserTest {
 
         val isEmptyPathApplicable = RawTextParser().isApplicable(emptyFolderPath)
         val isNonExistentPathApplicable = RawTextParser().isApplicable(nonExistentPath)
-        val isEmptyInputApplicable = RawTextParser().isApplicable(emptyInput)
+        val isEmptyStringApplicable = RawTextParser().isApplicable(emptyString)
 
         Assertions.assertThat(isEmptyPathApplicable).isFalse()
         Assertions.assertThat(isNonExistentPathApplicable).isFalse()
-        Assertions.assertThat(isEmptyInputApplicable).isFalse()
+        Assertions.assertThat(isEmptyStringApplicable).isFalse()
     }
 }

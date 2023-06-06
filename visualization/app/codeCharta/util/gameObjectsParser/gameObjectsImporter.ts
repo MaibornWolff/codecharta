@@ -158,7 +158,7 @@ function getCenteredRootPosition(rootFixedPosition: FixedPosition): FixedPositio
 }
 
 function wrapFilePath(filePath: string): string {
-	const filePathWithSlash = filePath.replace(/\./g, "/")
+	const filePathWithSlash = filePath.replaceAll(".", "/")
 	const splitFilePath = filePath.split(".")
 	const fileName = splitFilePath.slice(-1)
 	// add file name again to the end because the file has been wrapped in a folder. (with the same name)
