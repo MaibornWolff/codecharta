@@ -104,7 +104,7 @@ class SonarImporterMain(
         if (trimmedInput.contains("^http(s)?://".toRegex()) || (inputFile.isFile && inputFile.name == searchFile)) {
             return true
         }
-        if (!inputFile.isDirectory) {
+        if (!inputFile.isDirectory || trimmedInput == "") {
             return false
         }
 

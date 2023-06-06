@@ -16,6 +16,17 @@ class ResourceSearchHelperTest {
         Assertions.assertThat(resultFile).isFalse()
     }
 
+    @Test
+    fun `should return false if input is empty string`() {
+        val input = ""
+
+        val resultFolder = ResourceSearchHelper.isFolderDirectlyInGivenDirectory(input, "dummyVal")
+        val resultFile = ResourceSearchHelper.isFileWithOneOrMoreOfEndingsPresent(input, listOf("dummyVal"))
+
+        Assertions.assertThat(resultFolder).isFalse()
+        Assertions.assertThat(resultFile).isFalse()
+    }
+
     // Tests for `isFolderDirectlyInGivenDirectory`
     @Test
     fun `should return true if folder exists in given directory path`() {

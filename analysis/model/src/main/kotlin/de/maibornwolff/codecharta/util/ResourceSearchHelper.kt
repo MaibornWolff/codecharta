@@ -40,6 +40,9 @@ class ResourceSearchHelper {
         }
 
         private fun getFileFromStringIfExists(inputFilePath: String): File? {
+            if (inputFilePath == "") {
+                return null
+            }
             val result = File(inputFilePath.trim())
             if (result.exists()) {
                 return result

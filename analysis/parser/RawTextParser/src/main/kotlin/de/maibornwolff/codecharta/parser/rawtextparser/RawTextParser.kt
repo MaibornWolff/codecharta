@@ -119,8 +119,11 @@ class RawTextParser(
     override fun isApplicable(resourceToBeParsed: String): Boolean {
         println("Checking if RawTextParser is applicable...")
 
-        val searchFile = File(resourceToBeParsed.trim())
+        if (resourceToBeParsed == "") {
+            return false
+        }
 
+        val searchFile = File(resourceToBeParsed.trim())
         if (searchFile.isFile) {
             return true
         }
