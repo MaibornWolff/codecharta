@@ -119,10 +119,17 @@ class RawTextParser(
     override fun isApplicable(resourceToBeParsed: String): Boolean {
         println("Checking if RawTextParser is applicable...")
 
-        val searchFile = if (resourceToBeParsed != "") File(resourceToBeParsed) else File(Paths.get("").toAbsolutePath().toString())
+        val searchFile = File(resourceToBeParsed.trim())
+
+        if (searchFile.isFile) {
+            return true
+        }
+
+        if (!searchFile.isDirectory) {
+            return false
+        }
 
         val fileSearch = searchFile.walk()
-
         return fileSearch.asSequence()
                 .filter { it.isFile }
                 .any()

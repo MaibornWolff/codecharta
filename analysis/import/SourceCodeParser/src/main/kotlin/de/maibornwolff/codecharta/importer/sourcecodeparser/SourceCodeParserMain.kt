@@ -135,10 +135,7 @@ class SourceCodeParserMain(
     override fun getDialog(): ParserDialogInterface = ParserDialog
     override fun isApplicable(resourceToBeParsed: String): Boolean {
         println("Checking if SourceCodeParser is applicable...")
-
-        return ResourceSearchHelper.isResourceFulfillingSearchOperatorPresent(resourceToBeParsed, listOf(".java"),
-                ResourceSearchHelper::doesStringEndWith,
-                shouldOnlySearchCurrentDirectory = false, resourceShouldBeFile = true)
+        return ResourceSearchHelper.isFileWithOneOrMoreOfEndingsPresent(resourceToBeParsed, listOf(".java"))
     }
 
     override fun getName(): String {

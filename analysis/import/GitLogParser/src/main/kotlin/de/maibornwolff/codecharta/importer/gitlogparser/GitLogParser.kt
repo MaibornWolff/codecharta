@@ -156,9 +156,7 @@ class GitLogParser(
     override fun getDialog(): ParserDialogInterface = ParserDialog
     override fun isApplicable(resourceToBeParsed: String): Boolean {
         println("Checking if GitLogParser is applicable...")
-        return ResourceSearchHelper.isResourceFulfillingSearchOperatorPresent(resourceToBeParsed, listOf(".git"),
-                ResourceSearchHelper::doesStringEndWith,
-                shouldOnlySearchCurrentDirectory = true, resourceShouldBeFile = false)
+        return ResourceSearchHelper.isFolderDirectlyInGivenDirectory(resourceToBeParsed, ".git")
     }
     override fun getName(): String {
         return InteractiveParserHelper.GitLogParserConstants.name

@@ -34,15 +34,17 @@ class SonarImporterMainTest {
         fun provideValidInputFiles(): List<Arguments> {
             return listOf(
                     Arguments.of("src/test/resources/my/sonar/repo"),
+                    Arguments.of("src/test/resources/my/sonar"),
                     Arguments.of("src/test/resources/my/sonar/repo/sonar-project.properties"))
         }
 
         @JvmStatic
         fun provideInvalidInputFiles(): List<Arguments> {
             return listOf(
-                    Arguments.of("src/test/resources/my/nonsonar/repo"),
+                    Arguments.of("src/test/resources/my/other/repo"),
+                    Arguments.of("src/test/resources"),
+                    Arguments.of("src/test/resources/my/other/sonar-project.properties"),
                     Arguments.of("src/test/resources/this/does/not/exist"),
-                    Arguments.of("src/test/resources/my/sonar"),
                     Arguments.of(""))
         }
 
@@ -130,6 +132,18 @@ class SonarImporterMainTest {
     @MethodSource("provideInvalidURLs")
     fun `should NOT be identified as applicable for given broken url`(resourceToBeParsed: String) {
         val isApplicable = SonarImporterMain().isApplicable(resourceToBeParsed)
+        Assertions.assertFalse(isApplicable)
+    }
+
+    @Test
+    fun `should NOT be identified as applicable if input is a file but not the sonar properties file`() {
+        val isApplicable = SonarImporterMain().isApplicable("src/test/resources/example.xml")
+        Assertions.assertFalse(isApplicable)
+    }
+
+    @Test
+    fun `should NOT be identified as applicable if input does not contain sonar properties file in first two directory levels`() {
+        val isApplicable = SonarImporterMain().isApplicable("src/test/resources/my")
         Assertions.assertFalse(isApplicable)
     }
 }

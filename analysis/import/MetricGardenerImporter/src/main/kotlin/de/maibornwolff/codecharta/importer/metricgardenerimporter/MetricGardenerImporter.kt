@@ -112,10 +112,7 @@ class MetricGardenerImporter(
     override fun isApplicable(resourceToBeParsed: String): Boolean {
         val supportedLanguageFileEndings = getSupportedLanguageFileEndings()
         println("Checking if MetricGardener is applicable...")
-
-        return ResourceSearchHelper.isResourceFulfillingSearchOperatorPresent(resourceToBeParsed, supportedLanguageFileEndings,
-                ResourceSearchHelper::doesStringEndWith,
-                shouldOnlySearchCurrentDirectory = false, resourceShouldBeFile = true)
+        return ResourceSearchHelper.isFileWithOneOrMoreOfEndingsPresent(resourceToBeParsed, supportedLanguageFileEndings)
     }
 
     override fun getName(): String {

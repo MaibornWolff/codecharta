@@ -1,72 +1,59 @@
 package de.maibornwolff.codecharta.util
 
 import java.io.File
-import java.nio.file.Paths
 
 class ResourceSearchHelper {
 
     companion object {
-
-        /**
-         * Checks whether a resource contains one of the specified searchTokens. To check that, the given searchOperator is used.
-         */
-        fun isResourceFulfillingSearchOperatorPresent(resource: String, searchToken: List<String>, searchOperator: (String, List<String>) -> Boolean,
-                                                      shouldOnlySearchCurrentDirectory: Boolean, resourceShouldBeFile: Boolean): Boolean {
-            val trimmedResourceName = resource.trim()
-
-            // Check if given resource is directly the searched object
-            if (searchOperator(trimmedResourceName, searchToken)) {
+        fun isFolderDirectlyInGivenDirectory(directoryPath: String, toBeSearchedFolder: String): Boolean {
+            val inputFile = getFileFromStringIfExists(directoryPath) ?: return false
+            if (!inputFile.isDirectory) {
+                return false
+            } else if (isInputFileNameSearchToken(inputFile, toBeSearchedFolder)) {
                 return true
             }
 
-            val searchFile = getFileFromResourceName(trimmedResourceName)
-            println("Did not find resource directly, scanning directory `${searchFile.absolutePath}` if applicable.")
-
-            return isResourcePresentInDirectory(searchFile, searchToken, searchOperator, shouldOnlySearchCurrentDirectory, resourceShouldBeFile)
+            println("Did not find folder directly, scanning directory `${inputFile.absolutePath}` if folder exists at top level.")
+            return inputFile.walk()
+                    .maxDepth(1)
+                    .asSequence()
+                    .filter { it.isDirectory && isInputFileNameSearchToken(it, toBeSearchedFolder) }
+                    .any()
         }
 
-        private fun getFileFromResourceName(resourceName: String): File {
-            return if (resourceName == "") {
-                File(Paths.get("").toAbsolutePath().toString())
-            } else {
-                File(resourceName)
+        fun isFileWithOneOrMoreOfEndingsPresent(resourcePath: String, toBeCheckedFileEndings: List<String>): Boolean {
+            val inputFile = getFileFromStringIfExists(resourcePath) ?: return false
+            if (inputFile.isFile && doesInputFileNameEndWithOneOrMoreOfEndings(inputFile, toBeCheckedFileEndings)) {
+                return true
             }
+
+            if (!inputFile.isDirectory) {
+                return false
+            }
+
+            println("Given resource did not end with any of the supplied file endings. " +
+                    "Scanning directory `${inputFile.absolutePath}` if it contains a file with any of the supplied file endings.")
+            return inputFile.walk()
+                    .asSequence()
+                    .filter { it.isFile && doesInputFileNameEndWithOneOrMoreOfEndings(it, toBeCheckedFileEndings) }
+                    .any()
         }
 
-        private fun isResourcePresentInDirectory(searchFile: File, searchToken: List<String>, searchOperator: (String, List<String>) -> Boolean,
-                                                 shouldOnlySearchCurrentDirectory: Boolean, resourceShouldBeFile: Boolean): Boolean {
-            var fileSearch = searchFile.walk()
-
-            if (shouldOnlySearchCurrentDirectory) {
-                fileSearch = fileSearch.maxDepth(1)
+        private fun getFileFromStringIfExists(inputFilePath: String): File? {
+            val result = File(inputFilePath.trim())
+            if (result.exists()) {
+                return result
             }
-
-            return if (resourceShouldBeFile) {
-                fileSearch.asSequence()
-                        .filter { it.isFile }
-                        .map { it.name }
-                        .filter { searchOperator(it, searchToken) }
-                        .any()
-            } else {
-                fileSearch.asSequence()
-                        .map { it.name }
-                        .filter { searchOperator(it, searchToken) }
-                        .any()
-            }
+            return null
         }
 
-        fun doesStringEndWith(toBeChecked: String, searchToken: List<String>): Boolean {
-            for (token in searchToken) {
-                if (toBeChecked.endsWith(token)) {
-                    return true
-                }
-            }
-            return false
+        private fun isInputFileNameSearchToken(inputFile: File, searchToken: String): Boolean {
+            return(inputFile.name == searchToken)
         }
 
-        fun doStringsEqual(toBeChecked: String, searchToken: List<String>): Boolean {
-            for (token in searchToken) {
-                if (toBeChecked == token) {
+        private fun doesInputFileNameEndWithOneOrMoreOfEndings(inputFile: File, fileEndings: List<String>): Boolean {
+            for (fileEnding in fileEndings) {
+                if (inputFile.name.endsWith(fileEnding)) {
                     return true
                 }
             }

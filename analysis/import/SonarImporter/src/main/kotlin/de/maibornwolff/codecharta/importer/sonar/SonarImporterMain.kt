@@ -9,8 +9,8 @@ import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import de.maibornwolff.codecharta.tools.interactiveparser.util.InteractiveParserHelper
-import de.maibornwolff.codecharta.util.ResourceSearchHelper
 import picocli.CommandLine
+import java.io.File
 import java.io.InputStream
 import java.io.PrintStream
 import java.net.URL
@@ -97,16 +97,22 @@ class SonarImporterMain(
     override fun getDialog(): ParserDialogInterface = ParserDialog
     override fun isApplicable(resourceToBeParsed: String): Boolean {
         println("Checking if SonarImporter is applicable...")
+        val searchFile = "sonar-project.properties"
 
         val trimmedInput = resourceToBeParsed.trim()
-
-        if (trimmedInput.contains("^http(s)?://".toRegex())) {
+        val inputFile = File(trimmedInput)
+        if (trimmedInput.contains("^http(s)?://".toRegex()) || (inputFile.isFile && inputFile.name == searchFile)) {
             return true
         }
+        if (!inputFile.isDirectory) {
+            return false
+        }
 
-        return ResourceSearchHelper.isResourceFulfillingSearchOperatorPresent(trimmedInput, listOf("sonar-project.properties"),
-                ResourceSearchHelper::doStringsEqual,
-                shouldOnlySearchCurrentDirectory = true, resourceShouldBeFile = true)
+        return inputFile.walk()
+                .maxDepth(2)
+                .asSequence()
+                .filter { it.isFile && it.name == searchFile }
+                .any()
     }
 
     override fun getName(): String {

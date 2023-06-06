@@ -25,8 +25,7 @@ class RawTextParserTest {
         fun provideValidInputFiles(): List<Arguments> {
             return listOf(
                     Arguments.of("src/test/resources/sampleproject"),
-                    Arguments.of("src/test/resources/sampleproject/tabs.xyz"),
-                    Arguments.of(""))
+                    Arguments.of("src/test/resources/sampleproject/tabs.xyz"))
         }
     }
 
@@ -102,9 +101,16 @@ class RawTextParserTest {
     }
 
     @Test
+    fun `should be identified as applicable for given path being a file`() {
+        val isUsable = RawTextParser().isApplicable("src/test/resources/sampleproject/tabs.xyz")
+        Assertions.assertThat(isUsable).isTrue()
+    }
+
+    @Test
     fun `should NOT be identified as applicable if given directory does not contain any source code file `() {
         val emptyFolderPath = "src/test/resources/empty"
         val nonExistentPath = "src/test/resources/this/does/not/exist"
+        val emptyInput = ""
 
         val emptyFolder = File(emptyFolderPath)
         emptyFolder.mkdir()
@@ -112,8 +118,10 @@ class RawTextParserTest {
 
         val isEmptyPathApplicable = RawTextParser().isApplicable(emptyFolderPath)
         val isNonExistentPathApplicable = RawTextParser().isApplicable(nonExistentPath)
+        val isEmptyInputApplicable = RawTextParser().isApplicable(emptyInput)
 
         Assertions.assertThat(isEmptyPathApplicable).isFalse()
         Assertions.assertThat(isNonExistentPathApplicable).isFalse()
+        Assertions.assertThat(isEmptyInputApplicable).isFalse()
     }
 }

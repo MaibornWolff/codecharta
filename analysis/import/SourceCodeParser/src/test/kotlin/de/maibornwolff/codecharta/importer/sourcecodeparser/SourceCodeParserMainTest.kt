@@ -13,8 +13,7 @@ class SourceCodeParserMainTest {
             return listOf(
                     Arguments.of("src/test/resources/my/java/repo"),
                     Arguments.of("src/test/resources/my/java/repo/hello_world.java"),
-                    Arguments.of("src/test/resources/my"),
-                    Arguments.of(""))
+                    Arguments.of("src/test/resources/my"))
         }
 
         @JvmStatic
@@ -22,7 +21,8 @@ class SourceCodeParserMainTest {
             return listOf(
                     Arguments.of("src/test/resources/my/empty/repo"),
                     Arguments.of("src/test/resources/this/does/not/exist"),
-                    Arguments.of("src/test/resources/my/non-java/repo"))
+                    Arguments.of("src/test/resources/my/non-java/repo"),
+                    Arguments.of(""))
         }
     }
 
