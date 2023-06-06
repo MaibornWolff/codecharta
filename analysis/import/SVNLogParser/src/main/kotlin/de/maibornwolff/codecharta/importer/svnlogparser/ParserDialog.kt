@@ -15,10 +15,11 @@ class ParserDialog {
         override fun collectParserArgs(): List<String> {
             print("You can generate this file with: svn log --verbose > svn.log")
             val defaultInputFileName = "svn.$EXTENSION"
+            val defaultInputFilePath = Paths.get("").toAbsolutePath().toString() + File.separator + defaultInputFileName
             val inputFileName = KInquirer.promptInput(
                 message = "What is the $EXTENSION file that has to be parsed?",
-                hint = Paths.get("").toAbsolutePath().toString() + File.separator + defaultInputFileName,
-                default = Paths.get("").toAbsolutePath().toString() + File.separator + defaultInputFileName
+                hint = defaultInputFilePath,
+                default = defaultInputFilePath
             )
 
             val defaultOutputFileName = getOutputFileName(inputFileName)
