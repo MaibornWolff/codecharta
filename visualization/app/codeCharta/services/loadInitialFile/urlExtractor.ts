@@ -9,7 +9,7 @@ export class UrlExtractor {
 	constructor(private httpClient: HttpClient) {}
 
 	getParameterByName(name: string) {
-		const sanitizedName = name.replace(/[[\]]/g, "\\$&")
+		const sanitizedName = name.replaceAll(/[[\]]/g, "\\$&")
 		const regex = new RegExp(`[?&]${sanitizedName}(=([^&#]*)|&|#|$)`),
 			results = regex.exec(window.location.href)
 
@@ -19,7 +19,7 @@ export class UrlExtractor {
 		if (!results[2]) {
 			return ""
 		}
-		return decodeURIComponent(results[2].replace(/\+/g, " "))
+		return decodeURIComponent(results[2].replaceAll("+", " "))
 	}
 
 	async getFileDataFromQueryParam() {

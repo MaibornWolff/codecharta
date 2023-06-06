@@ -173,8 +173,8 @@ export default class VerticalStreet extends Street {
 	}
 
 	private calculateBottomStreetOverhang(streetOrigin: Vector2): number {
-		const lastLeftNode = this.leftRow[this.leftRow.length - 1]
-		const lastRightNode = this.rightRow[this.rightRow.length - 1]
+		const lastLeftNode = this.leftRow.at(-1)
+		const lastRightNode = this.rightRow.at(-1)
 		const streetBottomY = streetOrigin.y + this.height
 		const leftOverhang =
 			lastLeftNode instanceof HorizontalStreet && lastLeftNode.streetRect
