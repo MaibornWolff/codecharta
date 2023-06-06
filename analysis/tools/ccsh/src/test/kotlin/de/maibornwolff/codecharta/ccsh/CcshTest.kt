@@ -26,6 +26,9 @@ import java.io.StringWriter
 class CcshTest {
     private val outContent = ByteArrayOutputStream()
     private val originalOut = System.out
+    val errContent = ByteArrayOutputStream()
+    val originalErr = System.err
+
     private val cmdLine = CommandLine(Ccsh())
 
     @BeforeAll
@@ -202,5 +205,21 @@ class CcshTest {
         Assertions.assertThat(exitCode).isZero
 
         verify { ParserService.executeSelectedParser(any(), any()) }
+    }
+
+    @Test
+    fun `should execute the selected interactive parser when only called with name and no args`() {
+        mockkObject(ParserService)
+        every {
+            ParserService.executeSelectedParser(any(), any())
+        } returns 0
+
+        System.setErr(PrintStream(errContent))
+        val exitCode = Ccsh.executeCommandLine(arrayOf("sonarimport"))
+        System.setErr(originalErr)
+
+        Assertions.assertThat(exitCode).isEqualTo(0)
+        Assertions.assertThat(errContent.toString())
+                .contains("Executing sonarimport")
     }
 }

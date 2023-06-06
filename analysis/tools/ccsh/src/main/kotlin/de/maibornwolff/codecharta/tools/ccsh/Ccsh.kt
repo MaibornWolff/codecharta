@@ -107,7 +107,9 @@ class Ccsh : Callable<Void?> {
                     0
                 }
             } else if (isParserUnknown(args, commandLine) || args.contains("--interactive") || args.contains("-i")) {
-                executeInteractiveParser(commandLine)
+                selectAndExecuteInteractiveParser(commandLine)
+            } else if (isParserKnownButWithoutArgs(args, commandLine)) {
+                executeInteractiveParser(args.first(), commandLine)
             } else {
                 commandLine.execute(*sanitizeArgs(args))
             }
@@ -181,8 +183,12 @@ class Ccsh : Callable<Void?> {
             return exitCode
         }
 
-        private fun executeInteractiveParser(commandLine: CommandLine): Int {
+        private fun selectAndExecuteInteractiveParser(commandLine: CommandLine): Int {
             val selectedParser = ParserService.selectParser(commandLine, PicocliParserRepository())
+            return executeInteractiveParser(selectedParser, commandLine)
+        }
+
+        private fun executeInteractiveParser(selectedParser: String, commandLine: CommandLine): Int {
             logger.info { "Executing $selectedParser" }
             return ParserService.executeSelectedParser(commandLine, selectedParser)
         }
@@ -195,6 +201,10 @@ class Ccsh : Callable<Void?> {
                 return !parserList.contains(firstArg) && !optionsList.contains(firstArg)
             }
             return false
+        }
+
+        private fun isParserKnownButWithoutArgs(args: Array<String>, commandLine: CommandLine): Boolean {
+            return !isParserUnknown(args, commandLine) && args.size == 1
         }
 
         private fun sanitizeArgs(args: Array<String>): Array<String> {
