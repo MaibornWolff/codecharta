@@ -11,8 +11,8 @@ class RepoScanParserDialog {
         override fun collectParserArgs(): List<String> {
 
             val repoPath = KInquirer.promptInput(
-                message = "What is the root directory of the git project you want to parse? If empty, \".\" is assumed",
-                default = Paths.get("").toAbsolutePath().toString()
+                message = "What is the root directory of the git project you want to parse?",
+                default = Paths.get("").normalize().toAbsolutePath().toString()
             )
 
             return listOfNotNull(
