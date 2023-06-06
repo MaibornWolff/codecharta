@@ -6,6 +6,7 @@ import com.github.kinquirer.components.promptInput
 import com.github.kinquirer.components.promptListObject
 import com.github.kinquirer.core.Choice
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
+import java.nio.file.Paths
 
 class ParserDialog {
     companion object : ParserDialogInterface {
@@ -13,7 +14,7 @@ class ParserDialog {
         override fun collectParserArgs(): List<String> {
             val inputFileName = KInquirer.promptInput(
                     message = "Which project folder or code file should be parsed?",
-                    hint = "file.java"
+                    default = Paths.get("").toAbsolutePath().toString()
             )
 
             val outputFormat = KInquirer.promptListObject(

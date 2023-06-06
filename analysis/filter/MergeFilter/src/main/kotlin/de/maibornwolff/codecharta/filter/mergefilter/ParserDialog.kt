@@ -4,6 +4,7 @@ import com.github.kinquirer.KInquirer
 import com.github.kinquirer.components.promptConfirm
 import com.github.kinquirer.components.promptInput
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
+import java.nio.file.Paths
 
 class ParserDialog {
     companion object : ParserDialogInterface {
@@ -11,7 +12,9 @@ class ParserDialog {
         override fun collectParserArgs(): List<String> {
 
             val inputFolderName =
-                KInquirer.promptInput(message = "What is the folder of cc.json files that has to be merged?")
+                KInquirer.promptInput(
+                        message = "What is the folder of cc.json files that has to be merged?",
+                        default = Paths.get("").toAbsolutePath().toString())
 
             val outputFileName: String = KInquirer.promptInput(
                 message = "What is the name of the output file?"

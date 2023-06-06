@@ -35,15 +35,15 @@ class SonarImporterMainTest {
             return listOf(
                     Arguments.of("src/test/resources/my/sonar/repo"),
                     Arguments.of("src/test/resources/my/sonar/repo/sonar-project.properties"),
-                    Arguments.of("src/test/resources/my/sonar"),
-                    Arguments.of(""))
+                    Arguments.of("src/test/resources/my/sonar"))
         }
 
         @JvmStatic
         fun provideInvalidInputFiles(): List<Arguments> {
             return listOf(
                     Arguments.of("src/test/resources/my/nonsonar/repo"),
-                    Arguments.of("src/test/resources/this/does/not/exist"))
+                    Arguments.of("src/test/resources/this/does/not/exist"),
+                    Arguments.of(""))
         }
 
         @JvmStatic

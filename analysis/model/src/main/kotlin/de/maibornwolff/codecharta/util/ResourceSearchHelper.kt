@@ -1,7 +1,6 @@
 package de.maibornwolff.codecharta.util
 
 import java.io.File
-import java.nio.file.Paths
 
 class ResourceSearchHelper {
 
@@ -9,13 +8,18 @@ class ResourceSearchHelper {
         fun isResourcePresent(resourceName: String, searchToken: String, searchOperator: (String, String) -> Boolean,
                               maxSearchingDepth: Int, shouldSearchFullDirectory: Boolean, resourceShouldBeFile: Boolean): Boolean {
             val trimmedResourceName = resourceName.trim()
+
+            if (trimmedResourceName == "") {
+                return false
+            }
+
             // To be able to generally search for the existence of files, do not check empty string here,
             // otherwise the real check never gets executed.
             if (searchOperator(trimmedResourceName, searchToken) && searchToken != "") {
                 return true
             }
 
-            val searchFile = getFileFromResourceName(trimmedResourceName)
+            val searchFile = File(trimmedResourceName)
 
             return isResourcePresentInDirectory(searchFile, searchToken, searchOperator, maxSearchingDepth, shouldSearchFullDirectory, resourceShouldBeFile)
         }
@@ -26,14 +30,6 @@ class ResourceSearchHelper {
 
         fun doStringsEqual(string1: String, string2: String): Boolean {
             return (string1 == string2)
-        }
-
-        private fun getFileFromResourceName(resourceName: String): File {
-            return if (resourceName == "") {
-                File(Paths.get("").toAbsolutePath().toString())
-            } else {
-                File(resourceName)
-            }
         }
 
         private fun isResourcePresentInDirectory(searchFile: File, searchToken: String, searchOperator: (String, String) -> Boolean,

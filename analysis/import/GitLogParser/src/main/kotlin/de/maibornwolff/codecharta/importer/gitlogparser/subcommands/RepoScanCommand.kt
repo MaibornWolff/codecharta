@@ -48,8 +48,8 @@ class RepoScanCommand : Callable<Void>, InteractiveParser {
     override fun call(): Void? {
         val repoPath: Path
         if (repoPathName.isNullOrBlank()) {
-            repoPath = Paths.get("").normalize().toAbsolutePath()
-            println("--repo-path not set, assuming current working directory ($repoPath)")
+            println("--repo-path not set, aborting...")
+            return null
         } else {
             repoPath = Paths.get(repoPathName!!).normalize().toAbsolutePath()
         }

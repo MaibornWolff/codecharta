@@ -4,6 +4,8 @@ import com.github.kinquirer.KInquirer
 import com.github.kinquirer.components.promptConfirm
 import com.github.kinquirer.components.promptInput
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
+import java.io.File
+import java.nio.file.Paths
 
 class ParserDialog {
     companion object : ParserDialogInterface {
@@ -13,10 +15,11 @@ class ParserDialog {
         override fun collectParserArgs(): List<String> {
             print("You can generate this file with: svn log --verbose > svn.log")
             val defaultInputFileName = "svn.$EXTENSION"
+            val defaultInputFilePath = Paths.get("").toAbsolutePath().toString() + File.separator + defaultInputFileName
             val inputFileName = KInquirer.promptInput(
                 message = "What is the $EXTENSION file that has to be parsed?",
-                hint = defaultInputFileName,
-                default = defaultInputFileName
+                hint = defaultInputFilePath,
+                default = defaultInputFilePath
             )
 
             val defaultOutputFileName = getOutputFileName(inputFileName)
