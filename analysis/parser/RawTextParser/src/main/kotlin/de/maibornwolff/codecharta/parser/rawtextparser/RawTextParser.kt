@@ -8,7 +8,6 @@ import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import de.maibornwolff.codecharta.tools.interactiveparser.util.InteractiveParserHelper
 import de.maibornwolff.codecharta.util.InputHelper
-import de.maibornwolff.codecharta.util.ResourceSearchHelper
 import mu.KotlinLogging
 import picocli.CommandLine
 import java.io.File
