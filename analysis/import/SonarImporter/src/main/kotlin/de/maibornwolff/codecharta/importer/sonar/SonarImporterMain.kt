@@ -9,6 +9,7 @@ import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import de.maibornwolff.codecharta.tools.interactiveparser.util.InteractiveParserHelper
+import de.maibornwolff.codecharta.util.ResourceSearchHelper
 import picocli.CommandLine
 import java.io.File
 import java.io.InputStream
@@ -97,22 +98,30 @@ class SonarImporterMain(
     override fun getDialog(): ParserDialogInterface = ParserDialog
     override fun isApplicable(resourceToBeParsed: String): Boolean {
         println("Checking if SonarImporter is applicable...")
-        val searchFile = "sonar-project.properties"
 
         val trimmedInput = resourceToBeParsed.trim()
         val inputFile = File(trimmedInput)
-        if (trimmedInput.contains("^http(s)?://".toRegex()) || (inputFile.isFile && inputFile.name == searchFile)) {
+        if (isUrl(trimmedInput) || isSonarPropertiesFile(inputFile)) {
             return true
         }
-        if (!inputFile.isDirectory || trimmedInput == "") {
+        if (!ResourceSearchHelper.isSearchableDirectory(inputFile)) {
             return false
         }
 
         return inputFile.walk()
                 .maxDepth(2)
                 .asSequence()
-                .filter { it.isFile && it.name == searchFile }
+                .filter { isSonarPropertiesFile(it) }
                 .any()
+    }
+
+    private fun isUrl(inputString: String): Boolean {
+        return inputString.contains("^http(s)?://".toRegex())
+    }
+
+    private fun isSonarPropertiesFile(inputFile: File): Boolean {
+        val searchFile = "sonar-project.properties"
+        return (inputFile.isFile && inputFile.name == searchFile)
     }
 
     override fun getName(): String {

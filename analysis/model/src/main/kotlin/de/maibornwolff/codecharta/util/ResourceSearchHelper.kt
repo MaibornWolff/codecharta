@@ -23,7 +23,7 @@ class ResourceSearchHelper {
 
         fun isFileWithOneOrMoreOfEndingsPresent(resourcePath: String, toBeCheckedFileEndings: List<String>): Boolean {
             val inputFile = getFileFromStringIfExists(resourcePath) ?: return false
-            if (inputFile.isFile && doesInputFileNameEndWithOneOrMoreOfEndings(inputFile, toBeCheckedFileEndings)) {
+            if (inputFile.isFile && endsWithAtLeastOne(inputFile.name, toBeCheckedFileEndings)) {
                 return true
             }
 
@@ -35,8 +35,12 @@ class ResourceSearchHelper {
                     "Scanning directory `${inputFile.absolutePath}` if it contains a file with any of the supplied file endings.")
             return inputFile.walk()
                     .asSequence()
-                    .filter { it.isFile && doesInputFileNameEndWithOneOrMoreOfEndings(it, toBeCheckedFileEndings) }
+                    .filter { it.isFile && endsWithAtLeastOne(it.name, toBeCheckedFileEndings) }
                     .any()
+        }
+
+        fun isSearchableDirectory(inputFile: File): Boolean {
+            return(inputFile.isDirectory && inputFile.name != "")
         }
 
         private fun getFileFromStringIfExists(inputFilePath: String): File? {
@@ -54,9 +58,9 @@ class ResourceSearchHelper {
             return(inputFile.name == searchToken)
         }
 
-        private fun doesInputFileNameEndWithOneOrMoreOfEndings(inputFile: File, fileEndings: List<String>): Boolean {
-            for (fileEnding in fileEndings) {
-                if (inputFile.name.endsWith(fileEnding)) {
+        private fun endsWithAtLeastOne(inputString: String, endings: List<String>): Boolean {
+            for (ending in endings) {
+                if (inputString.endsWith(ending)) {
                     return true
                 }
             }
