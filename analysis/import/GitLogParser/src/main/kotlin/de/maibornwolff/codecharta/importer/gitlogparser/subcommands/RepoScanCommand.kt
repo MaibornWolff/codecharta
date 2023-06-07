@@ -53,14 +53,10 @@ class RepoScanCommand : Callable<Void>, InteractiveParser {
 
     override fun call(): Void? {
         val repoPath: Path
-        if (repoPathName.isNullOrBlank()) {
-            println("--repo-path not set, aborting...")
+        if (repoPathName == null || !InputHelper.isInputValid(arrayOf(File(repoPathName!!)), canInputContainFolders = true)) {
+            logger.error("Input invalid file for GitRepoScan, stopping execution...")
             return null
         } else {
-            if (!InputHelper.isInputValid(arrayOf(File(repoPathName!!)), canInputContainFolders = true)) {
-                logger.error("Input invalid file for GitRepoScan, stopping execution...")
-                return null
-            }
             repoPath = Paths.get(repoPathName!!).normalize().toAbsolutePath()
         }
         println("Creating git.log file...")
