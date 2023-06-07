@@ -48,7 +48,7 @@ class InteractiveParserSuggestionDialog {
 
         private fun selectToBeExecutedInteractiveParsers(applicableParsers: List<String>): List<String> {
             val selectedParsers = KInquirer.promptCheckbox(
-                    message = "Choose from this list of applicable parsers",
+                    message = "Choose from this list of applicable parsers. You can select individual parsers by pressing spacebar.",
                     choices = applicableParsers)
 
             if (selectedParsers.isEmpty()) {

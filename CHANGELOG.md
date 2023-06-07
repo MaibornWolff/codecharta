@@ -13,9 +13,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
     <img src="https://user-images.githubusercontent.com/65733509/241383211-d9e8e54b-6b06-45bb-8b99-81cc8e0a4596.png" width="450px"/> <img src="https://github.com/MaibornWolff/codecharta/assets/65733509/0ade9ad4-e60b-4911-aadc-d8142167b21a" width="300px"/>
 -   Expand and restructure documentation regarding Docker usage [#3312](https://github.com/MaibornWolff/codecharta/pull/3312)
 -   Add current working directories as hint or default value to interactive parser and parser suggestions when asking for input [#3319](https://github.com/MaibornWolff/codecharta/pull/3319)
+-   Add helpful status messages when calculating parser suggestions [#3329](https://github.com/MaibornWolff/codecharta/pull/3329)
 
 ### Fixed 🐞
 
+-   Speed up parser suggestions significantly [#3329](https://github.com/MaibornWolff/codecharta/pull/3329)
 -   Fix color range reset not triggering on color metric change [#3311](https://github.com/MaibornWolff/codecharta/pull/3311)
 
 ## [1.117.0] - 2023-05-19

@@ -101,6 +101,12 @@ class RawTextParserTest {
     }
 
     @Test
+    fun `should be identified as applicable for given path being a file`() {
+        val isUsable = RawTextParser().isApplicable("src/test/resources/sampleproject/tabs.xyz")
+        Assertions.assertThat(isUsable).isTrue()
+    }
+
+    @Test
     fun `should NOT be identified as applicable if given directory does not contain any source code file `() {
         val emptyFolderPath = "src/test/resources/empty"
         val nonExistentPath = "src/test/resources/this/does/not/exist"
