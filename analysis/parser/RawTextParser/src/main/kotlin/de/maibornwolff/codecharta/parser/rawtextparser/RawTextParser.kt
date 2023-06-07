@@ -7,7 +7,6 @@ import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import de.maibornwolff.codecharta.tools.interactiveparser.util.InteractiveParserHelper
-import de.maibornwolff.codecharta.util.ResourceSearchHelper
 import picocli.CommandLine
 import java.io.File
 import java.io.IOException
@@ -118,9 +117,25 @@ class RawTextParser(
 
     override fun getDialog(): ParserDialogInterface = ParserDialog
     override fun isApplicable(resourceToBeParsed: String): Boolean {
-        return ResourceSearchHelper.isResourcePresent(resourceToBeParsed, "",
-                ResourceSearchHelper::doesStringEndWith, 0,
-                shouldSearchFullDirectory = true, resourceShouldBeFile = true)
+        println("Checking if RawTextParser is applicable...")
+
+        if (resourceToBeParsed == "") {
+            return false
+        }
+
+        val searchFile = File(resourceToBeParsed.trim())
+        if (searchFile.isFile) {
+            return true
+        }
+
+        if (!searchFile.isDirectory) {
+            return false
+        }
+
+        val fileSearch = searchFile.walk()
+        return fileSearch.asSequence()
+                .filter { it.isFile }
+                .any()
     }
 
     override fun getName(): String {

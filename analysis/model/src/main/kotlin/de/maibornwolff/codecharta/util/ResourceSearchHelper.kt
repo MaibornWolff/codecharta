@@ -5,53 +5,66 @@ import java.io.File
 class ResourceSearchHelper {
 
     companion object {
-        fun isResourcePresent(resourceName: String, searchToken: String, searchOperator: (String, String) -> Boolean,
-                              maxSearchingDepth: Int, shouldSearchFullDirectory: Boolean, resourceShouldBeFile: Boolean): Boolean {
-            val trimmedResourceName = resourceName.trim()
-
-            if (trimmedResourceName == "") {
+        fun isFolderDirectlyInGivenDirectory(directoryPath: String, toBeSearchedFolder: String): Boolean {
+            val inputFile = getFileFromStringIfExists(directoryPath) ?: return false
+            if (!inputFile.isDirectory) {
                 return false
-            }
-
-            // To be able to generally search for the existence of files, do not check empty string here,
-            // otherwise the real check never gets executed.
-            if (searchOperator(trimmedResourceName, searchToken) && searchToken != "") {
+            } else if (isInputFileNameSearchToken(inputFile, toBeSearchedFolder)) {
                 return true
             }
 
-            val searchFile = File(trimmedResourceName)
-
-            return isResourcePresentInDirectory(searchFile, searchToken, searchOperator, maxSearchingDepth, shouldSearchFullDirectory, resourceShouldBeFile)
+            println("Did not find folder directly, scanning directory `${inputFile.absolutePath}` if folder exists at top level.")
+            return inputFile.walk()
+                    .maxDepth(1)
+                    .asSequence()
+                    .filter { it.isDirectory && isInputFileNameSearchToken(it, toBeSearchedFolder) }
+                    .any()
         }
 
-        fun doesStringEndWith(toBeCheckedString: String, searchToken: String): Boolean {
-            return (toBeCheckedString.endsWith(searchToken))
-        }
-
-        fun doStringsEqual(string1: String, string2: String): Boolean {
-            return (string1 == string2)
-        }
-
-        private fun isResourcePresentInDirectory(searchFile: File, searchToken: String, searchOperator: (String, String) -> Boolean,
-                                                 maxSearchingDepth: Int, shouldSearchFullDirectory: Boolean, resourceShouldBeFile: Boolean): Boolean {
-            var fileSearch = searchFile.walk()
-
-            if (!shouldSearchFullDirectory) {
-                fileSearch = fileSearch.maxDepth(maxSearchingDepth)
+        fun isFileWithOneOrMoreOfEndingsPresent(resourcePath: String, toBeCheckedFileEndings: List<String>): Boolean {
+            val inputFile = getFileFromStringIfExists(resourcePath) ?: return false
+            if (inputFile.isFile && endsWithAtLeastOne(inputFile.name, toBeCheckedFileEndings)) {
+                return true
             }
 
-            return if (resourceShouldBeFile) {
-                fileSearch.asSequence()
-                        .filter { it.isFile }
-                        .map { it.name }
-                        .filter { searchOperator(it, searchToken) }
-                        .any()
-            } else {
-                fileSearch.asSequence()
-                        .map { it.name }
-                        .filter { searchOperator(it, searchToken) }
-                        .any()
+            if (!inputFile.isDirectory) {
+                return false
             }
+
+            println("Given resource did not end with any of the supplied file endings. " +
+                    "Scanning directory `${inputFile.absolutePath}` if it contains a file with any of the supplied file endings.")
+            return inputFile.walk()
+                    .asSequence()
+                    .filter { it.isFile && endsWithAtLeastOne(it.name, toBeCheckedFileEndings) }
+                    .any()
+        }
+
+        fun isSearchableDirectory(inputFile: File): Boolean {
+            return(inputFile.isDirectory && inputFile.name != "")
+        }
+
+        private fun getFileFromStringIfExists(inputFilePath: String): File? {
+            if (inputFilePath == "") {
+                return null
+            }
+            val result = File(inputFilePath.trim())
+            if (result.exists()) {
+                return result
+            }
+            return null
+        }
+
+        private fun isInputFileNameSearchToken(inputFile: File, searchToken: String): Boolean {
+            return(inputFile.name == searchToken)
+        }
+
+        private fun endsWithAtLeastOne(inputString: String, endings: List<String>): Boolean {
+            for (ending in endings) {
+                if (inputString.endsWith(ending)) {
+                    return true
+                }
+            }
+            return false
         }
     }
 }
