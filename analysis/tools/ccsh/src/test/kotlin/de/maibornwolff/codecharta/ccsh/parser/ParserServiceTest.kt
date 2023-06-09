@@ -124,6 +124,7 @@ class ParserServiceTest {
                 "modify",
                 "csvexport",
                 "codemaatimport")
+
         val mockPicocliParserRepository = mockParserRepository(selectedParserList[0], emptyList())
 
         val configuredParsers = ParserService.configureParserSelection(cmdLine, mockPicocliParserRepository, selectedParserList)
@@ -166,6 +167,16 @@ class ParserServiceTest {
         Assertions.assertThatExceptionOfType(NoSuchElementException::class.java).isThrownBy {
             ParserService.executePreconfiguredParser(cmdLine, Pair("unknownparser", listOf("dummyArg")))
         }
+    }
+
+    @ParameterizedTest
+    @MethodSource("providerParserArguments")
+    fun `should output message informing about which parser is being configured`(parser: String) {
+        val mockParserRepository = mockParserRepository(parser, listOf(parser))
+
+        ParserService.configureParserSelection(cmdLine, mockParserRepository, listOf(parser))
+
+        Assertions.assertThat(outContent.toString()).contains("Now configuring $parser.")
     }
 
     private fun mockParserObject(name: String): InteractiveParser {
