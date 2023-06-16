@@ -32,11 +32,13 @@ class InputHelperTest {
 
         val invalidFilePath1 = "src/test/resources/thisDoesNotExist1.json"
         val invalidFilePath2 = "src/test/resources/thisDoesNotExist2.json"
+        val invalidFile1 = File(invalidFilePath1)
+        val invalidFile2 = File(invalidFilePath2)
 
         val inputFiles = arrayOf(File("src/test/resources/example.cc.json"),
                 File("src/test/resources/example_api_version_1.3.cc.json"),
-                File(invalidFilePath1),
-                File(invalidFilePath2))
+                invalidFile1,
+                invalidFile2)
         try {
             InputHelper.isInputValid(inputFiles, canInputContainFolders)
         } catch (exception: IllegalArgumentException) {
@@ -47,9 +49,9 @@ class InputHelperTest {
         System.setErr(originalErr)
 
         Assertions.assertThat(errContent.toString())
-                .contains("Could not find resource `$invalidFilePath1`")
+                .contains("Could not find resource `${invalidFile1.path}`")
         Assertions.assertThat(errContent.toString())
-                .contains("Could not find resource `$invalidFilePath2`")
+                .contains("Could not find resource `${invalidFile2.path}`")
     }
 
     @ParameterizedTest
