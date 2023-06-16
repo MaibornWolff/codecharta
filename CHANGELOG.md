@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [1.118.0] - 2023-06-15
+
 ### Added 🚀
 
 -   Add metric tooltips that display attribute descriptors and provide hyperlinks in the sidebar to the metric's documentation [#3273](https://github.com/MaibornWolff/codecharta/pull/3273) </br>
