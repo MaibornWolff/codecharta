@@ -8,6 +8,7 @@ import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import de.maibornwolff.codecharta.tools.interactiveparser.util.InteractiveParserHelper
+import de.maibornwolff.codecharta.util.InputHelper
 import de.maibornwolff.codecharta.util.ResourceSearchHelper
 import picocli.CommandLine
 import java.io.BufferedWriter
@@ -19,7 +20,6 @@ import java.io.OutputStreamWriter
 import java.io.PrintStream
 import java.io.PrintWriter
 import java.io.Writer
-import java.nio.file.Paths
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
@@ -69,17 +69,13 @@ class SourceCodeParserMain(
     private var verbose = false
 
     @CommandLine.Parameters(arity = "1", paramLabel = "FOLDER or FILE", description = ["project folder or code file"])
-    private var file: File = File("")
+    private var file: File? = null
 
     @Throws(IOException::class)
     override fun call(): Void? {
-
         print(" ")
-        if (!file.exists()) {
-            val path = Paths.get("").toAbsolutePath().toString()
-            error.println("Current working directory = $path")
-            error.println("Could not find $file")
-            return null
+        if (!InputHelper.isInputValidAndNotNull(arrayOf(file), canInputContainFolders = true)) {
+            throw IllegalArgumentException("Input invalid file for SourceCodeParser, stopping execution...")
         }
 
         if (defaultExcludes) exclude += DEFAULT_EXCLUDES
@@ -87,7 +83,7 @@ class SourceCodeParserMain(
         val projectParser = ProjectParser(exclude, verbose, !findNoIssues)
 
         projectParser.setUpAnalyzers()
-        projectParser.scanProject(file)
+        projectParser.scanProject(file!!)
 
         val writer = getMetricWriter()
         val pipedProject = ProjectDeserializer.deserializeProject(input)

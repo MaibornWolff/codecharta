@@ -6,6 +6,7 @@ import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import de.maibornwolff.codecharta.tools.interactiveparser.util.InteractiveParserHelper
+import de.maibornwolff.codecharta.util.InputHelper
 import mu.KotlinLogging
 import picocli.CommandLine
 import java.io.File
@@ -78,9 +79,10 @@ class StructureModifier(
     private fun readProject(): Project? {
         if (source == null) {
             return ProjectDeserializer.deserializeProject(input)
-        } else if (!source!!.isFile) {
-            logger.error("${source!!.name} has not been found.")
-            return null
+        }
+
+        if (!InputHelper.isInputValid(arrayOf(source!!), canInputContainFolders = false)) {
+            throw IllegalArgumentException("Input invalid file for StructureModifier, stopping execution...")
         }
 
         val input = source!!.inputStream()

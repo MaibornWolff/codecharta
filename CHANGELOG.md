@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Added 🚀
+
+-   Add message outputting which parser is being configured during parser suggestions [#3335](https://github.com/MaibornWolff/codecharta/pull/3335)
+-   Add basic validity checking for all input resources (files/folders, url for SonarImporter) [#3325](https://github.com/MaibornWolff/codecharta/pull/3325)
+
 ## [1.118.0] - 2023-06-15
 
 ### Added 🚀
@@ -16,7 +21,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   Expand and restructure documentation regarding Docker usage [#3312](https://github.com/MaibornWolff/codecharta/pull/3312)
 -   Add current working directories as hint or default value to interactive parser and parser suggestions when asking for input [#3319](https://github.com/MaibornWolff/codecharta/pull/3319)
 -   Add helpful status messages when calculating parser suggestions [#3329](https://github.com/MaibornWolff/codecharta/pull/3329)
--   Add message outputting which parser is being configured during parser suggestions [#3335](https://github.com/MaibornWolff/codecharta/pull/3335)
 
 ### Fixed 🐞
 

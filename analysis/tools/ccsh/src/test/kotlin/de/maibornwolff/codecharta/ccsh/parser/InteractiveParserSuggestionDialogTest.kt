@@ -3,7 +3,6 @@ package de.maibornwolff.codecharta.ccsh.parser
 import com.github.kinquirer.KInquirer
 import com.github.kinquirer.components.promptCheckbox
 import com.github.kinquirer.components.promptInput
-import com.github.kinquirer.components.promptList
 import de.maibornwolff.codecharta.tools.ccsh.Ccsh
 import de.maibornwolff.codecharta.tools.ccsh.parser.InteractiveParserSuggestionDialog
 import de.maibornwolff.codecharta.tools.ccsh.parser.ParserService
@@ -50,12 +49,7 @@ class InteractiveParserSuggestionDialogTest {
         mockkStatic("com.github.kinquirer.components.InputKt")
         every {
             KInquirer.promptInput(any(), any(), any(), any(), any())
-        } returns ""
-
-        mockkStatic("com.github.kinquirer.components.ListKt")
-        every {
-            KInquirer.promptList(any(), any(), any(), any(), any())
-        } returns ""
+        } returns "src"
 
         mockkObject(ParserService)
         every {
@@ -74,12 +68,7 @@ class InteractiveParserSuggestionDialogTest {
         mockkStatic("com.github.kinquirer.components.InputKt")
         every {
             KInquirer.promptInput(any(), any(), any(), any(), any())
-        } returns ""
-
-        mockkStatic("com.github.kinquirer.components.ListKt")
-        every {
-            KInquirer.promptList(any(), any(), any(), any(), any())
-        } returns ""
+        } returns "src"
 
         mockkStatic("com.github.kinquirer.components.CheckboxKt")
         every {
@@ -104,12 +93,7 @@ class InteractiveParserSuggestionDialogTest {
         mockkStatic("com.github.kinquirer.components.InputKt")
         every {
             KInquirer.promptInput(any(), any(), any(), any(), any())
-        } returns ""
-
-        mockkStatic("com.github.kinquirer.components.ListKt")
-        every {
-            KInquirer.promptList(any(), any(), any(), any(), any())
-        } returns ""
+        } returns "src"
 
         val parser = "dummyParser"
         val configuration = listOf("dummyArg")
@@ -136,5 +120,33 @@ class InteractiveParserSuggestionDialogTest {
 
         Assertions.assertThat(configuredParsers).containsKey(parser)
         Assertions.assertThat(configuredParsers[parser] == configuration).isTrue()
+    }
+
+    @Test
+    fun `should return empty map when user enters empty input to scan`() {
+        mockkStatic("com.github.kinquirer.components.InputKt")
+        every {
+            KInquirer.promptInput(any(), any(), any(), any(), any())
+        } returns ""
+
+        val selectedParsers = InteractiveParserSuggestionDialog.offerAndGetInteractiveParserSuggestionsAndConfigurations(cmdLine)
+
+        Assertions.assertThat(selectedParsers).isNotNull
+        Assertions.assertThat(selectedParsers).isEmpty()
+        Assertions.assertThat(errorOut.toString()).contains("Specified invalid or empty path to analyze! Aborting...")
+    }
+
+    @Test
+    fun `should return empty map when user enters nonexistent input to scan`() {
+        mockkStatic("com.github.kinquirer.components.InputKt")
+        every {
+            KInquirer.promptInput(any(), any(), any(), any(), any())
+        } returns "src/test/resources/does/not/exist"
+
+        val selectedParsers = InteractiveParserSuggestionDialog.offerAndGetInteractiveParserSuggestionsAndConfigurations(cmdLine)
+
+        Assertions.assertThat(selectedParsers).isNotNull
+        Assertions.assertThat(selectedParsers).isEmpty()
+        Assertions.assertThat(errorOut.toString()).contains("Specified invalid or empty path to analyze! Aborting...")
     }
 }

@@ -1,14 +1,30 @@
 package de.maibornwolff.codecharta.importer.csv
 
 import de.maibornwolff.codecharta.importer.csv.CSVImporter.Companion.main
+import de.maibornwolff.codecharta.util.InputHelper
+import io.mockk.every
+import io.mockk.mockkObject
+import io.mockk.unmockkAll
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestInstance
 import org.skyscreamer.jsonassert.JSONAssert
 import org.skyscreamer.jsonassert.JSONCompareMode
+import java.io.ByteArrayOutputStream
 import java.io.File
+import java.io.PrintStream
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class CSVImporterTest {
+    val errContent = ByteArrayOutputStream()
+    val originalErr = System.err
+
+    @AfterEach
+    fun afterTest() {
+        unmockkAll()
+    }
 
     @Test
     fun `should create json uncompressed file`() {
@@ -64,5 +80,20 @@ class CSVImporterTest {
         file.deleteOnExit()
 
         assertThat(file.readText()).contains(listOf("\"Lines\":44.0"))
+    }
+
+    @Test
+    fun `should stop execution if input file is invalid`() {
+        mockkObject(InputHelper)
+        every {
+            InputHelper.isInputValid(any(), any())
+        } returns false
+
+        System.setErr(PrintStream(errContent))
+        main(arrayOf("thisDoesNotExist.cc.json"))
+        System.setErr(originalErr)
+
+        assertThat(errContent.toString())
+                .contains("Input invalid file for CSVImporter, stopping execution")
     }
 }

@@ -4,6 +4,7 @@ import de.maibornwolff.codecharta.importer.gitlogparser.GitLogParser
 import de.maibornwolff.codecharta.importer.gitlogparser.util.GitAdapter
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
+import de.maibornwolff.codecharta.util.InputHelper
 import picocli.CommandLine
 import java.io.File
 import java.io.FileWriter
@@ -47,9 +48,8 @@ class RepoScanCommand : Callable<Void>, InteractiveParser {
 
     override fun call(): Void? {
         val repoPath: Path
-        if (repoPathName.isNullOrBlank()) {
-            println("--repo-path not set, aborting...")
-            return null
+        if (repoPathName == null || !InputHelper.isInputValid(arrayOf(File(repoPathName!!)), canInputContainFolders = true)) {
+            throw IllegalArgumentException("Input invalid file for GitRepoScan, stopping execution...")
         } else {
             repoPath = Paths.get(repoPathName!!).normalize().toAbsolutePath()
         }

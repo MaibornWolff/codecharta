@@ -9,6 +9,7 @@ import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import de.maibornwolff.codecharta.tools.interactiveparser.util.InteractiveParserHelper
+import de.maibornwolff.codecharta.util.InputHelper
 import picocli.CommandLine
 import java.io.BufferedWriter
 import java.io.File
@@ -49,6 +50,10 @@ class CSVExporter : Callable<Void>, InteractiveParser {
     override fun call(): Void? {
         if (maxHierarchy < 0) {
             throw IllegalArgumentException("depth-of-hierarchy must not be negative")
+        }
+
+        if (!InputHelper.isInputValid(sources, canInputContainFolders = false)) {
+            throw IllegalArgumentException("Input invalid file for CSVExporter, stopping execution...")
         }
 
         val projects = sources.map { ProjectDeserializer.deserializeProject(it.inputStream()) }

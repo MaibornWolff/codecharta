@@ -7,6 +7,7 @@ import de.maibornwolff.codecharta.tools.ccsh.Ccsh
 import de.maibornwolff.codecharta.tools.ccsh.parser.repository.PicocliParserRepository
 import mu.KotlinLogging
 import picocli.CommandLine
+import java.io.File
 import java.nio.file.Paths
 
 class InteractiveParserSuggestionDialog {
@@ -30,13 +31,19 @@ class InteractiveParserSuggestionDialog {
         }
 
         private fun getApplicableInteractiveParsers(commandLine: CommandLine): List<String> {
-            val inputFile: String = KInquirer.promptInput(
+            val inputFilePath: String = KInquirer.promptInput(
                     message = "Which path should be scanned?",
                     hint = "You can provide a directory path / file path / sonar url.",
                     default = Paths.get("").toAbsolutePath().toString())
 
+            val inputFile = File(inputFilePath)
+            if (inputFilePath == "" || !isInputFileOrDirectory(inputFile)) {
+                logger.error("Specified invalid or empty path to analyze! Aborting...")
+                return emptyList()
+            }
+
             val applicableParsers =
-                    ParserService.getParserSuggestions(commandLine, PicocliParserRepository(), inputFile)
+                    ParserService.getParserSuggestions(commandLine, PicocliParserRepository(), inputFilePath)
 
             if (applicableParsers.isEmpty()) {
                 logger.info(Ccsh.NO_USABLE_PARSER_FOUND_MESSAGE)
@@ -56,6 +63,10 @@ class InteractiveParserSuggestionDialog {
                 return emptyList()
             }
             return selectedParsers
+        }
+
+        private fun isInputFileOrDirectory(inputFile: File): Boolean {
+            return (inputFile.isDirectory || inputFile.isFile)
         }
     }
 }

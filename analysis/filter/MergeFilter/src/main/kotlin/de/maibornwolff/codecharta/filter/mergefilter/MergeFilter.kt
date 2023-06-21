@@ -58,11 +58,10 @@ class MergeFilter(
                 )
             }
 
-        val sourceFiles = InputHelper.getAndCheckAllSpecifiedInputFiles(sources)
-        if (sourceFiles.isEmpty()) {
-            logger.error("Aborting execution because one or more input files have not been found or no input was specified at all!")
-            return null
+        if (!InputHelper.isInputValid(sources, canInputContainFolders = true)) {
+            throw IllegalArgumentException("Input invalid files/folders for MergeFilter, stopping execution...")
         }
+        val sourceFiles = InputHelper.getFileListFromValidatedResourceArray(sources)
 
         val srcProjects = sourceFiles
             .mapNotNull {

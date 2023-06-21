@@ -7,13 +7,13 @@ import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import de.maibornwolff.codecharta.tools.interactiveparser.util.InteractiveParserHelper
+import de.maibornwolff.codecharta.util.InputHelper
 import picocli.CommandLine
 import java.io.File
 import java.io.IOException
 import java.io.InputStream
 import java.io.PrintStream
 import java.io.PrintWriter
-import java.nio.file.Paths
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
@@ -36,7 +36,7 @@ class RawTextParser(
     private var verbose = false
 
     @CommandLine.Parameters(arity = "1", paramLabel = "FILE or FOLDER", description = ["file/project to parse"])
-    private var inputFile: File = File("")
+    private var inputFile: File? = null
 
     @CommandLine.Option(
         arity = "0..",
@@ -75,16 +75,15 @@ class RawTextParser(
     @Throws(IOException::class)
     override fun call(): Void? {
         print(" ")
-        if (!inputFile.exists()) {
-            fileNotExistentMessage()
-            return null
+        if (!InputHelper.isInputValidAndNotNull(arrayOf(inputFile), canInputContainFolders = true)) {
+            throw IllegalArgumentException("Input invalid file for RawTextParser, stopping execution...")
         }
 
         if (!withoutDefaultExcludes) exclude += DEFAULT_EXCLUDES
 
         val parameterMap = assembleParameterMap()
         val results: Map<String, FileMetrics> =
-            MetricCollector(inputFile, exclude, fileExtensions, parameterMap, metrics).parse()
+            MetricCollector(inputFile!!, exclude, fileExtensions, parameterMap, metrics).parse()
 
         val pipedProject = ProjectDeserializer.deserializeProject(input)
         val project = ProjectGenerator().generate(results, pipedProject)
@@ -92,12 +91,6 @@ class RawTextParser(
         ProjectSerializer.serializeToFileOrStream(project, outputFile, output, compress)
 
         return null
-    }
-
-    private fun fileNotExistentMessage() {
-        val path = Paths.get("").toAbsolutePath().toString()
-        error.println("Current working directory = $path")
-        error.println("Could not find $inputFile")
     }
 
     private fun assembleParameterMap(): Map<String, Int> {

@@ -12,10 +12,8 @@ import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import de.maibornwolff.codecharta.tools.interactiveparser.util.InteractiveParserHelper
+import de.maibornwolff.codecharta.util.InputHelper
 import de.maibornwolff.codecharta.util.ResourceSearchHelper
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import org.mozilla.universalchardet.UniversalDetector
 import picocli.CommandLine
 import java.io.File
@@ -82,8 +80,12 @@ class SVNLogParser(
 
     @Throws(IOException::class)
     override fun call(): Void? {
-
         print(" ")
+
+        if (!InputHelper.isInputValidAndNotNull(arrayOf(file), canInputContainFolders = false)) {
+            throw IllegalArgumentException("Input invalid file for SVNLogParser, stopping execution...")
+        }
+
         var project = createProjectFromLog(
             file!!,
             logParserStrategy,
@@ -121,34 +123,6 @@ class SVNLogParser(
             logSizeInByte,
             silent
         ).parse(lines)
-    }
-
-    // not implemented yet.
-    private fun printUsage() {
-        println("----")
-        printLogCreation()
-
-        println("----")
-        printMetricInfo()
-    }
-
-    private fun printLogCreation() {
-        println("  Log creation via:")
-
-        println(String.format("  \t%s :\t\"%s\".", inputFormatNames, logParserStrategy.creationCommand()))
-    }
-
-    private fun printMetricInfo() {
-        val infoFormat = "  \t%s:\t %s"
-        println("  Available metrics:")
-        runBlocking(Dispatchers.Default) {
-            metricsFactory.createMetrics()
-                .forEach {
-                    launch {
-                        println(String.format(infoFormat, it.metricName(), it.description()))
-                    }
-                }
-        }
     }
 
     companion object {
