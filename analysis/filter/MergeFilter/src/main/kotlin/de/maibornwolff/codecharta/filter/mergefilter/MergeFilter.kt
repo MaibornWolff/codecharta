@@ -59,8 +59,7 @@ class MergeFilter(
             }
 
         if (!InputHelper.isInputValid(sources, canInputContainFolders = true)) {
-            logger.error("Input invalid files/folders for MergeFilter, stopping execution...")
-            return null
+            throw IllegalArgumentException("Input invalid files/folders for MergeFilter, stopping execution...")
         }
         val sourceFiles = InputHelper.getFileListFromValidatedResourceArray(sources)
 

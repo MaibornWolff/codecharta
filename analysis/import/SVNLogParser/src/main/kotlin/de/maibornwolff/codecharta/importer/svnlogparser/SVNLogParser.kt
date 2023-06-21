@@ -14,7 +14,6 @@ import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import de.maibornwolff.codecharta.tools.interactiveparser.util.InteractiveParserHelper
 import de.maibornwolff.codecharta.util.InputHelper
 import de.maibornwolff.codecharta.util.ResourceSearchHelper
-import mu.KotlinLogging
 import org.mozilla.universalchardet.UniversalDetector
 import picocli.CommandLine
 import java.io.File
@@ -84,8 +83,7 @@ class SVNLogParser(
         print(" ")
 
         if (!InputHelper.isInputValidAndNotNull(arrayOf(file), canInputContainFolders = false)) {
-            logger.error("Input invalid file for SVNLogParser, stopping execution...")
-            return null
+            throw IllegalArgumentException("Input invalid file for SVNLogParser, stopping execution...")
         }
 
         var project = createProjectFromLog(
@@ -128,7 +126,6 @@ class SVNLogParser(
     }
 
     companion object {
-        private val logger = KotlinLogging.logger {}
         @JvmStatic
         fun main(args: Array<String>) {
             CommandLine(SVNLogParser()).execute(*args)

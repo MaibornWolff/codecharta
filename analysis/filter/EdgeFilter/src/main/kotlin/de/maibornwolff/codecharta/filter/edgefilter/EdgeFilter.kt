@@ -6,7 +6,6 @@ import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import de.maibornwolff.codecharta.tools.interactiveparser.util.InteractiveParserHelper
 import de.maibornwolff.codecharta.util.InputHelper
-import mu.KotlinLogging
 import picocli.CommandLine
 import java.io.File
 import java.io.PrintStream
@@ -35,8 +34,7 @@ class EdgeFilter(
 
     override fun call(): Void? {
         if (!InputHelper.isInputValidAndNotNull(arrayOf(source), canInputContainFolders = false)) {
-            logger.error("Input invalid file for EdgeFilter, stopping execution...")
-            return null
+            throw IllegalArgumentException("Input invalid file for EdgeFilter, stopping execution...")
         }
 
         val srcProject = ProjectDeserializer.deserializeProject(source!!.inputStream())
@@ -49,8 +47,6 @@ class EdgeFilter(
     }
 
     companion object {
-        private val logger = KotlinLogging.logger {}
-
         @JvmStatic
         fun main(args: Array<String>) {
             CommandLine(EdgeFilter()).execute(*args)

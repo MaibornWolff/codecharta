@@ -75,8 +75,7 @@ class SourceCodeParserMain(
     override fun call(): Void? {
         print(" ")
         if (!InputHelper.isInputValidAndNotNull(arrayOf(file), canInputContainFolders = true)) {
-            System.err.println("Input invalid file for SourceCodeParser, stopping execution...")
-            return null
+            throw IllegalArgumentException("Input invalid file for SourceCodeParser, stopping execution...")
         }
 
         if (defaultExcludes) exclude += DEFAULT_EXCLUDES

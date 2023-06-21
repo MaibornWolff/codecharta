@@ -82,8 +82,7 @@ class StructureModifier(
         }
 
         if (!InputHelper.isInputValid(arrayOf(source!!), canInputContainFolders = false)) {
-            logger.error("Input invalid file for StructureModifier, stopping execution...")
-            return null
+            throw IllegalArgumentException("Input invalid file for StructureModifier, stopping execution...")
         }
 
         val input = source!!.inputStream()

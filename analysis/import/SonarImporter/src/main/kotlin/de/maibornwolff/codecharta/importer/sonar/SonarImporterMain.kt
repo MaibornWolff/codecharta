@@ -82,8 +82,7 @@ class SonarImporterMain(
 
     override fun call(): Void? {
         if (url == "" || projectId == "") {
-            System.err.println("Input invalid Url or ProjectID for SonarImporter, stopping execution...")
-            return null
+            throw IllegalArgumentException("Input invalid Url or ProjectID for SonarImporter, stopping execution...")
         }
 
         val importer = createMeasuresAPIImporter()

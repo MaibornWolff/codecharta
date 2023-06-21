@@ -53,8 +53,7 @@ class CSVExporter : Callable<Void>, InteractiveParser {
         }
 
         if (!InputHelper.isInputValid(sources, canInputContainFolders = false)) {
-            System.err.println("Input invalid file for CSVExporter, stopping execution...")
-            return null
+            throw IllegalArgumentException("Input invalid file for CSVExporter, stopping execution...")
         }
 
         val projects = sources.map { ProjectDeserializer.deserializeProject(it.inputStream()) }

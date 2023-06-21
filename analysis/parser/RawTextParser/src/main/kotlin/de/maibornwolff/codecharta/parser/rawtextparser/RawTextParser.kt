@@ -8,7 +8,6 @@ import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import de.maibornwolff.codecharta.tools.interactiveparser.util.InteractiveParserHelper
 import de.maibornwolff.codecharta.util.InputHelper
-import mu.KotlinLogging
 import picocli.CommandLine
 import java.io.File
 import java.io.IOException
@@ -77,8 +76,7 @@ class RawTextParser(
     override fun call(): Void? {
         print(" ")
         if (!InputHelper.isInputValidAndNotNull(arrayOf(inputFile), canInputContainFolders = true)) {
-            logger.error("Input invalid file for RawTextParser, stopping execution...")
-            return null
+            throw IllegalArgumentException("Input invalid file for RawTextParser, stopping execution...")
         }
 
         if (!withoutDefaultExcludes) exclude += DEFAULT_EXCLUDES
@@ -104,7 +102,6 @@ class RawTextParser(
     }
 
     companion object {
-        private val logger = KotlinLogging.logger {}
         @JvmStatic
         fun mainWithInOut(outputStream: PrintStream, input: InputStream, error: PrintStream, args: Array<String>) {
             CommandLine(RawTextParser(input, outputStream, error)).setOut(PrintWriter(outputStream)).execute(*args)

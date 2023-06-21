@@ -4,7 +4,6 @@ import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import de.maibornwolff.codecharta.tools.interactiveparser.util.InteractiveParserHelper
 import de.maibornwolff.codecharta.util.InputHelper
-import mu.KotlinLogging
 import picocli.CommandLine
 import java.io.File
 import java.io.FileInputStream
@@ -25,8 +24,7 @@ class ValidationTool : Callable<Void?>, InteractiveParser {
 
     override fun call(): Void? {
         if (!InputHelper.isInputValidAndNotNull(arrayOf(file), canInputContainFolders = false)) {
-            logger.error("Input invalid file for ValidationTool, stopping execution...")
-            return null
+            throw IllegalArgumentException("Input invalid file for ValidationTool, stopping execution...")
         }
 
         EveritValidator(SCHEMA_PATH).validate(FileInputStream(file!!.absoluteFile))
@@ -35,8 +33,6 @@ class ValidationTool : Callable<Void?>, InteractiveParser {
     }
 
     companion object {
-        private val logger = KotlinLogging.logger {}
-
         const val SCHEMA_PATH = "cc.json"
     }
 

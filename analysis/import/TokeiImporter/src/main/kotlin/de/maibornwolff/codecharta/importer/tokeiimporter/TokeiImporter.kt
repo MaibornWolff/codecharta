@@ -104,7 +104,7 @@ class TokeiImporter(
                         val bufferedReader = file!!.bufferedReader()
                         root = JsonParser.parseReader(bufferedReader)
                     } else {
-                        logger.error("Input invalid file for TokeiImporter, stopping execution...")
+                        throw IllegalArgumentException("Input invalid file for TokeiImporter, stopping execution...")
                     }
                 }
             } else {

@@ -54,8 +54,7 @@ class MetricGardenerImporter(
     @Throws(IOException::class)
     override fun call(): Void? {
         if (!InputHelper.isInputValidAndNotNull(arrayOf(inputFile), canInputContainFolders = true)) {
-            System.err.println("Input invalid file for MetricGardenerImporter, stopping execution...")
-            return null
+            throw IllegalArgumentException("Input invalid file for MetricGardenerImporter, stopping execution...")
         }
 
         if (!isJsonFile) {
