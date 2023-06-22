@@ -9,6 +9,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
+-   Add message outputting which parser is being configured during parser suggestions [#3335](https://github.com/MaibornWolff/codecharta/pull/3335)
+-   Add basic validity checking for all input resources (files/folders, url for SonarImporter) [#3325](https://github.com/MaibornWolff/codecharta/pull/3325)
+
+## [1.118.0] - 2023-06-15
+
+### Added 🚀
+
 -   Add metric tooltips that display attribute descriptors and provide hyperlinks in the sidebar to the metric's documentation [#3273](https://github.com/MaibornWolff/codecharta/pull/3273) </br>
     <img src="https://user-images.githubusercontent.com/65733509/241383211-d9e8e54b-6b06-45bb-8b99-81cc8e0a4596.png" width="450px"/> <img src="https://github.com/MaibornWolff/codecharta/assets/65733509/0ade9ad4-e60b-4911-aadc-d8142167b21a" width="300px"/>
 -   Expand and restructure documentation regarding Docker usage [#3312](https://github.com/MaibornWolff/codecharta/pull/3312)

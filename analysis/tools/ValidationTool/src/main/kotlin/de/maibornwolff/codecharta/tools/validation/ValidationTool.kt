@@ -3,6 +3,7 @@ package de.maibornwolff.codecharta.tools.validation
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import de.maibornwolff.codecharta.tools.interactiveparser.util.InteractiveParserHelper
+import de.maibornwolff.codecharta.util.InputHelper
 import picocli.CommandLine
 import java.io.File
 import java.io.FileInputStream
@@ -18,11 +19,15 @@ class ValidationTool : Callable<Void?>, InteractiveParser {
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     var help: Boolean = false
 
-    @CommandLine.Parameters(index = "0", description = ["file to validate"])
-    var file: String = ""
+    @CommandLine.Parameters(index = "0", arity = "1", paramLabel = "FILE", description = ["file to validate"])
+    var file: File? = null
 
     override fun call(): Void? {
-        EveritValidator(SCHEMA_PATH).validate(FileInputStream(File(file).absoluteFile))
+        if (!InputHelper.isInputValidAndNotNull(arrayOf(file), canInputContainFolders = false)) {
+            throw IllegalArgumentException("Input invalid file for ValidationTool, stopping execution...")
+        }
+
+        EveritValidator(SCHEMA_PATH).validate(FileInputStream(file!!.absoluteFile))
 
         return null
     }

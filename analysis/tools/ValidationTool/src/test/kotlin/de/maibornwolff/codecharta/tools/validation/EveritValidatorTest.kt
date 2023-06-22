@@ -1,11 +1,29 @@
 package de.maibornwolff.codecharta.tools.validation
 
+import de.maibornwolff.codecharta.util.InputHelper
+import io.mockk.every
+import io.mockk.mockkObject
+import io.mockk.unmockkAll
+import org.assertj.core.api.Assertions
 import org.everit.json.schema.ValidationException
 import org.json.JSONException
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestInstance
+import picocli.CommandLine
+import java.io.ByteArrayOutputStream
+import java.io.PrintStream
 import kotlin.test.assertFailsWith
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class EveritValidatorTest {
+    val errContent = ByteArrayOutputStream()
+    val originalErr = System.err
+
+    @AfterEach
+    fun afterTest() {
+        unmockkAll()
+    }
 
     private val validator = EveritValidator(ValidationTool.SCHEMA_PATH)
 
@@ -52,5 +70,19 @@ class EveritValidatorTest {
         assertFailsWith(JSONException::class) {
             validator.validate(this.javaClass.classLoader.getResourceAsStream("invalidJson.json"))
         }
+    }
+
+    @Test
+    fun `should stop execution if input files are invalid`() {
+        mockkObject(InputHelper)
+        every {
+            InputHelper.isInputValid(any(), any())
+        } returns false
+
+        System.setErr(PrintStream(errContent))
+        CommandLine(ValidationTool()).execute("thisDoesNotExist.cc.json").toString()
+        System.setErr(originalErr)
+
+        Assertions.assertThat(errContent.toString()).contains("Input invalid file for ValidationTool, stopping execution")
     }
 }

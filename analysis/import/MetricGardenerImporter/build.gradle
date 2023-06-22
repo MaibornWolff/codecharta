@@ -1,6 +1,5 @@
 dependencies {
     implementation project(':tools:InteractiveParser')
-    implementation project(':import:SourceCodeParser')
     implementation project(':model')
 
     implementation group: 'io.reactivex.rxjava2', name: 'rxjava', version: '2.2.21'

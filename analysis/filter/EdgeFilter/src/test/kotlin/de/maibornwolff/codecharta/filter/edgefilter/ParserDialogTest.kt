@@ -10,6 +10,7 @@ import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import picocli.CommandLine
+import java.io.File
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ParserDialogTest {
@@ -44,6 +45,6 @@ class ParserDialogTest {
         val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
         assertThat(parseResult.matchedOption("output-file").getValue<String>()).isEqualTo("sampleOutputFile")
         assertThat(parseResult.matchedOption("path-separator").getValue<Char>()).isEqualTo('/')
-        assertThat(parseResult.matchedPositional(0).getValue<String>()).isEqualTo("sampleFile.cc.json")
+        assertThat(parseResult.matchedPositional(0).getValue<File>()).isEqualTo(File("sampleFile.cc.json"))
     }
 }

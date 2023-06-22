@@ -1,14 +1,29 @@
 package de.maibornwolff.codecharta.filter.structuremodifier
 
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
+import de.maibornwolff.codecharta.util.InputHelper
+import io.mockk.every
+import io.mockk.mockkObject
+import io.mockk.unmockkAll
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.Disabled
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestInstance
+import picocli.CommandLine
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.PrintStream
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class StructureModifierTest {
+    val errContent = ByteArrayOutputStream()
+    val originalErr = System.err
+
+    @AfterEach
+    fun afterTest() {
+        unmockkAll()
+    }
+
     @Test
     fun `reads project from file`() {
         val cliResult = executeForOutput("", arrayOf("src/test/resources/sample_project.cc.json", "-r=/does/not/exist"))
@@ -36,16 +51,6 @@ class StructureModifierTest {
         System.setErr(originalError)
 
         assertThat(errorStream.toString()).contains("invalid_project.cc.json is not a valid project")
-    }
-
-    @Disabled
-    @Test
-    fun `reads project piped input multiline`() {
-        val input = File("src/test/resources/sample_project.cc.json").bufferedReader().readLines()
-            .joinToString(separator = "\n") { it }
-        val cliResult = executeForOutput(input, arrayOf("-r=/does/not/exist"))
-
-        assertThat(cliResult).contains(listOf("otherFile.java"))
     }
 
     @Test
@@ -111,5 +116,19 @@ class StructureModifierTest {
         val resultProject = ProjectDeserializer.deserializeProject(cliResult)
         assertThat(resultProject.attributeDescriptors.size).isEqualTo(3)
         assertThat(resultProject.attributeDescriptors["yrloc"]).isNull()
+    }
+
+    @Test
+    fun `should stop execution if input file is invalid`() {
+        mockkObject(InputHelper)
+        every {
+            InputHelper.isInputValid(any(), any())
+        } returns false
+
+        System.setErr(PrintStream(errContent))
+        CommandLine(StructureModifier()).execute("thisDoesNotExist.cc.json").toString()
+        System.setErr(originalErr)
+
+        assertThat(errContent.toString()).contains("Input invalid file for StructureModifier, stopping execution")
     }
 }

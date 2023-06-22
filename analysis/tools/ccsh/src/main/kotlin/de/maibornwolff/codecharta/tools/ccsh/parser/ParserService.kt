@@ -20,6 +20,7 @@ class ParserService {
         fun configureParserSelection(commandLine: CommandLine, parserRepository: PicocliParserRepository, selectedParsers: List<String>): Map<String, List<String>> {
             val configuredParsers = mutableMapOf<String, List<String>>()
             for (selectedParser in selectedParsers) {
+                println(System.lineSeparator() + "Now configuring $selectedParser.")
                 val interactiveParser = parserRepository.getInteractiveParser(commandLine, selectedParser)
                 if (interactiveParser == null) {
                     throw IllegalArgumentException("Tried to configure non existing parser!")

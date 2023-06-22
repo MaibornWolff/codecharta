@@ -6,11 +6,18 @@ import de.maibornwolff.codecharta.parser.rawtextparser.RawTextParser
 import de.maibornwolff.codecharta.parser.rawtextparser.RawTextParser.Companion.mainWithInOut
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
+import de.maibornwolff.codecharta.util.InputHelper
+import io.mockk.every
+import io.mockk.mockkObject
+import io.mockk.unmockkAll
 import org.assertj.core.api.Assertions
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
+import picocli.CommandLine
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -18,8 +25,15 @@ import java.io.InputStream
 import java.io.OutputStreamWriter
 import java.io.PrintStream
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class RawTextParserTest {
+    val errContent = ByteArrayOutputStream()
+    val originalErr = System.err
 
+    @AfterEach
+    fun afterTest() {
+        unmockkAll()
+    }
     companion object {
         @JvmStatic
         fun provideValidInputFiles(): List<Arguments> {
@@ -124,5 +138,19 @@ class RawTextParserTest {
         Assertions.assertThat(isEmptyPathApplicable).isFalse()
         Assertions.assertThat(isNonExistentPathApplicable).isFalse()
         Assertions.assertThat(isEmptyStringApplicable).isFalse()
+    }
+
+    @Test
+    fun `should stop execution if input files are invalid`() {
+        mockkObject(InputHelper)
+        every {
+            InputHelper.isInputValid(any(), any())
+        } returns false
+
+        System.setErr(PrintStream(errContent))
+        CommandLine(RawTextParser()).execute("thisDoesNotExist.cc.json").toString()
+        System.setErr(originalErr)
+
+        Assertions.assertThat(errContent.toString()).contains("Input invalid file for RawTextParser, stopping execution")
     }
 }

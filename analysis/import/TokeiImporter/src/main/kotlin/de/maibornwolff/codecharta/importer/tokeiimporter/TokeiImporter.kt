@@ -13,6 +13,7 @@ import de.maibornwolff.codecharta.serialization.mapLines
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import de.maibornwolff.codecharta.tools.interactiveparser.util.InteractiveParserHelper
+import de.maibornwolff.codecharta.util.InputHelper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -99,11 +100,11 @@ class TokeiImporter(
         runBlocking(Dispatchers.Default) {
             if (file != null) {
                 launch {
-                    if (file!!.isFile) {
+                    if (InputHelper.isInputValid(arrayOf(file!!), canInputContainFolders = false)) {
                         val bufferedReader = file!!.bufferedReader()
                         root = JsonParser.parseReader(bufferedReader)
                     } else {
-                        logger.error("${file!!.name} has not been found.")
+                        throw IllegalArgumentException("Input invalid file for TokeiImporter, stopping execution...")
                     }
                 }
             } else {
