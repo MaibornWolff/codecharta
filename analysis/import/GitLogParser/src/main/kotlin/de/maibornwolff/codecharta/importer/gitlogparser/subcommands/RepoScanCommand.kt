@@ -6,7 +6,6 @@ import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import picocli.CommandLine
 import java.io.File
-import java.io.FileWriter
 import java.nio.file.Path
 import java.nio.file.Paths
 import java.util.concurrent.Callable
@@ -67,8 +66,8 @@ class RepoScanCommand : Callable<Void>, InteractiveParser {
         val tempGitLog = File.createTempFile("git", ".log")
         tempGitLog.deleteOnExit()
 
-        val fileWriter = FileWriter(tempGitLog)
-        GitAdapter(repoPath.toFile()).getGitLog().forEach { fileWriter.write(it + System.lineSeparator()) }
+        val adapter = GitAdapter(repoPath.toFile(), tempGitLog)
+        adapter.getGitLog()
 
         return tempGitLog
     }
@@ -76,8 +75,10 @@ class RepoScanCommand : Callable<Void>, InteractiveParser {
     private fun createGitLsFile(repoPath: Path): File {
         val tempGitLs = File.createTempFile("file-name-list", ".txt")
         tempGitLs.deleteOnExit()
-        val fileWriter = FileWriter(tempGitLs)
-        GitAdapter(repoPath.toFile()).getGitFiles().forEach { fileWriter.write(it + System.lineSeparator()) }
+
+        val adapter = GitAdapter(repoPath.toFile(), tempGitLs)
+        adapter.getGitFiles()
+
         return tempGitLs
     }
 

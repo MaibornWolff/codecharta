@@ -9,17 +9,21 @@ class GitAdapterTest {
 
     @Test
     fun `should produce a gitLog that contains commits`() {
-        val gitLog = GitAdapter(File(Paths.get("").toAbsolutePath().toUri())).getGitLog()
+        val gitFile = File.createTempFile("git", ".log")
+        gitFile.deleteOnExit()
+        GitAdapter(File(Paths.get("").toAbsolutePath().toUri()), gitFile).getGitLog()
         val commitRegex = """commit [0-9a-f]{5,40}""".toRegex()
 
-        assertTrue(gitLog.isNotEmpty())
-        assertTrue(gitLog[0].matches(commitRegex))
+        assertTrue(gitFile.exists())
+        assertTrue(gitFile.inputStream().bufferedReader().readLine().matches(commitRegex))
     }
 
     @Test
     fun `should produce a not empty git file list for the current directory`() {
-        val gitLs = GitAdapter(File(Paths.get("").toAbsolutePath().toUri())).getGitFiles()
+        val gitLs = File.createTempFile("git", ".log")
+        gitLs.deleteOnExit()
+        GitAdapter(File(Paths.get("").toAbsolutePath().toUri()), gitLs).getGitFiles()
 
-        assertTrue(gitLs.isNotEmpty())
+        assertTrue(gitLs.length() > 0)
     }
 }
