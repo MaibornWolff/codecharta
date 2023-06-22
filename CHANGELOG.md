@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 -   Add message outputting which parser is being configured during parser suggestions [#3335](https://github.com/MaibornWolff/codecharta/pull/3335)
 -   Add basic validity checking for all input resources (files/folders, url for SonarImporter) [#3325](https://github.com/MaibornWolff/codecharta/pull/3325)
+-   Automatically start specific interactive parser when calling parser without args [#3332](https://github.com/MaibornWolff/codecharta/pull/3332)
 
 ## [1.118.0] - 2023-06-15
 

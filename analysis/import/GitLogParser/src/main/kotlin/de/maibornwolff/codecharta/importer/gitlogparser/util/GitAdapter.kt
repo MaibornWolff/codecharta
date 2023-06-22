@@ -3,26 +3,22 @@ package de.maibornwolff.codecharta.importer.gitlogparser.util
 import java.io.File
 import java.util.concurrent.TimeUnit
 
-class GitAdapter(private val gitDirectory: File) {
+class GitAdapter(private val gitDirectory: File, private val fileHandle: File) {
 
-    fun getGitLog(): List<String> {
+    fun getGitLog() {
         val process = ProcessBuilder("git", "log", "--numstat", "--raw", "--topo-order", "--reverse", "-m")
-        return executeProcess(process)
+        executeProcess(process)
     }
 
-    fun getGitFiles(): List<String> {
+    fun getGitFiles() {
         val process = ProcessBuilder("git", "ls-files")
-        return executeProcess(process)
+        executeProcess(process)
     }
 
-    private fun executeProcess(process: ProcessBuilder): MutableList<String> {
-        val output = mutableListOf<String>()
+    private fun executeProcess(process: ProcessBuilder) {
         process.directory(gitDirectory)
+        process.redirectOutput(fileHandle)
         val runningProcess = process.start()
-        runningProcess.inputStream.reader(Charsets.UTF_8).use {
-            output += it.readLines()
-        }
         runningProcess.waitFor(3, TimeUnit.MINUTES)
-        return output
     }
 }

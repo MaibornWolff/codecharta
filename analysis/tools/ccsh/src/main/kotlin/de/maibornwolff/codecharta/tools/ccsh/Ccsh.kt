@@ -90,26 +90,29 @@ class Ccsh : Callable<Void?> {
         fun executeCommandLine(args: Array<String>): Int {
             val commandLine = CommandLine(Ccsh())
             commandLine.executionStrategy = CommandLine.RunAll()
-            return if (args.isEmpty()) {
-                val configuredParsers = InteractiveParserSuggestionDialog.offerAndGetInteractiveParserSuggestionsAndConfigurations(commandLine)
-                if (configuredParsers.isEmpty()) {
-                    return 0
-                }
+            return when {
+                args.isEmpty() -> executeParserSuggestions(commandLine)
+                (isParserUnknown(args, commandLine) || args.contains("--interactive") || args.contains("-i")) -> selectAndExecuteInteractiveParser(commandLine)
+                isParserKnownButWithoutArgs(args, commandLine) -> executeInteractiveParser(args.first(), commandLine)
+                else -> commandLine.execute(*sanitizeArgs(args))
+            }
+        }
 
-                val shouldRunConfiguredParsers: Boolean =
-                        KInquirer.promptConfirm(
-                                message = "Do you want to run all configured parsers now?",
-                                default = true)
+        private fun executeParserSuggestions(commandLine: CommandLine): Int {
+            val configuredParsers = InteractiveParserSuggestionDialog.offerAndGetInteractiveParserSuggestionsAndConfigurations(commandLine)
+            if (configuredParsers.isEmpty()) {
+                return 0
+            }
 
-                return if (shouldRunConfiguredParsers) {
-                    executeConfiguredParsers(commandLine, configuredParsers)
-                } else {
-                    0
-                }
-            } else if (isParserUnknown(args, commandLine) || args.contains("--interactive") || args.contains("-i")) {
-                executeInteractiveParser(commandLine)
+            val shouldRunConfiguredParsers: Boolean =
+                    KInquirer.promptConfirm(
+                            message = "Do you want to run all configured parsers now?",
+                            default = true)
+
+            return if (shouldRunConfiguredParsers) {
+                executeConfiguredParsers(commandLine, configuredParsers)
             } else {
-                commandLine.execute(*sanitizeArgs(args))
+                0
             }
         }
 
@@ -181,8 +184,12 @@ class Ccsh : Callable<Void?> {
             return exitCode
         }
 
-        private fun executeInteractiveParser(commandLine: CommandLine): Int {
+        private fun selectAndExecuteInteractiveParser(commandLine: CommandLine): Int {
             val selectedParser = ParserService.selectParser(commandLine, PicocliParserRepository())
+            return executeInteractiveParser(selectedParser, commandLine)
+        }
+
+        private fun executeInteractiveParser(selectedParser: String, commandLine: CommandLine): Int {
             logger.info { "Executing $selectedParser" }
             return ParserService.executeSelectedParser(commandLine, selectedParser)
         }
@@ -195,6 +202,10 @@ class Ccsh : Callable<Void?> {
                 return !parserList.contains(firstArg) && !optionsList.contains(firstArg)
             }
             return false
+        }
+
+        private fun isParserKnownButWithoutArgs(args: Array<String>, commandLine: CommandLine): Boolean {
+            return !isParserUnknown(args, commandLine) && args.size == 1
         }
 
         private fun sanitizeArgs(args: Array<String>): Array<String> {
