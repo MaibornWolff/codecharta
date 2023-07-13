@@ -5,7 +5,7 @@ buildscript {
         commons_lang3_version = '3.12.0'
         gson_version = '2.10.1'
         gradle_module_metadata_maven_plugin = '0.3.0'
-        jackson_version = '2.15.1'
+        jackson_version = '2.15.2'
         jacoco_version = '0.8.10'
         jaxb_api_version = '2.3.1'
         jersey_version = '2.39.1'
