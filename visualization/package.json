@@ -37,15 +37,15 @@
 		"width": 1024,
 		"height": 768
 	},
-	"main": "dist/webpack/index.html",
+	"main": "dist/webpack/main.js",
 	"browserslist": [
 		"last 2 chrome version",
 		"last 2 firefox version",
 		"last 2 safari version"
 	],
 	"scripts": {
-		"start": "nw .",
-		"build": "ng build",
+		"start": "electron .",
+		"build": "ng build && cp electron/* dist/webpack",
 		"dev": "ng serve",
 		"test": "jest --config conf/jestUnit.config.json .*\\.spec\\.ts",
 		"test:auto": "npm test -- --watch",
@@ -117,6 +117,7 @@
 		"@typescript-eslint/eslint-plugin": "^5.44.0",
 		"@typescript-eslint/parser": "^5.44.0",
 		"bestzip": "^2.2.0",
+		"electron": "^25.3.0",
 		"eslint": "^8.28.0",
 		"eslint-config-prettier": "^8.5.0",
 		"eslint-plugin-unicorn": "^47.0.0",
