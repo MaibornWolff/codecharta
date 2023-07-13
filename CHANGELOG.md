@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [1.119.0] - 2023-07-13
+
 ### Added 🚀
 
 -   Add message outputting which parser is being configured during parser suggestions [#3335](https://github.com/MaibornWolff/codecharta/pull/3335)
