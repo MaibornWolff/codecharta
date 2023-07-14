@@ -30,13 +30,6 @@
 	"codecharta": {
 		"apiVersion": "1.3"
 	},
-	"window": {
-		"icon": "app/codeCharta/assets/icon.png",
-		"toolbar": true,
-		"frame": true,
-		"width": 1024,
-		"height": 768
-	},
 	"main": "dist/webpack/main.js",
 	"browserslist": [
 		"last 2 chrome version",

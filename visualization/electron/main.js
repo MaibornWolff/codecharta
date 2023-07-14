@@ -8,7 +8,8 @@ const createWindow = () => {
 	// Create the browser window.
 	const mainWindow = new BrowserWindow({
 		width: 1400,
-		height: 900
+		height: 900,
+		icon: path.join(__dirname, "codeCharta/assets/icon.ico")
 	})
 
 	// open links in web browser instead of in electron
