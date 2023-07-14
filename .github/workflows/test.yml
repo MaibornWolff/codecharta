@@ -178,7 +178,7 @@ jobs:
 
       - name: SonarCloud Scan
         if: github.actor != 'dependabot[bot]' && github.actor != 'dependabot-preview[bot]'
-        uses: SonarSource/sonarcloud-github-action@v1.7
+        uses: SonarSource/sonarcloud-github-action@v1.6
         with:
           projectBaseDir: ./visualization
           args: >
