@@ -13,7 +13,8 @@
 	"version": "1.119.0",
 	"description": "MaibornWolff CodeCharta Analysis Tools",
 	"scripts": {
-		"prepare": "rm -rf ../build/install/codecharta-analysis public && ../gradlew -p .. installDist && cp -R ../build/install/codecharta-analysis public"
+		"prepare": "rm -rf ../build/install/codecharta-analysis public && ../gradlew -p .. installDist && cp -R ../build/install/codecharta-analysis public",
+		"postinstall": "node install.js"
 	},
 	"bin": {
 		"ccsh": "public/bin/ccsh"
