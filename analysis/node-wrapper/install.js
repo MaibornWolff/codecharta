@@ -5,7 +5,7 @@ const path = require("path");
 
 (async () => {
     if (process.env.npm_package_name === "codecharta-analysis") {
-		const bins = ["ccsh", "ccsh.ps1", "ccsh.cmd"];
+		const bins = ["ccsh.ps1", "ccsh.cmd"];
 		const globalOrLocal = process.env.npm_config_global === "true";
 		const scriptLocation = globalOrLocal ? "binScripts/global" : "binScripts/local";
 		const scriptTarget = globalOrLocal
