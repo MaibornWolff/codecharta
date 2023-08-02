@@ -21,6 +21,7 @@
 	},
 	"license": "BSD-3-Clause",
 	"dependencies": {
+		"is-windows": "^1.0.2",
 		"makeshift": "^1.1.0",
 		"shelljs": "^0.8.1"
 	}
