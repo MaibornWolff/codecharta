@@ -15,7 +15,7 @@ if (isWindows() === true && process.env.npm_package_name === "codecharta-analysi
 
       await Promise.all(bins.map((async (file) => {
         try {
-          await fs.promises.copyFile(path.join(scriptLocation, file), path.join(scriptTarget, "d",file));
+          await fs.promises.copyFile(path.join(scriptLocation, file), path.join(scriptTarget, file));
           console.log(`${file} was moved to ${scriptTarget}`);
         } catch (err) {
           console.error("File could not get copied")
