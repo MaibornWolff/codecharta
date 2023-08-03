@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [1.119.1] - 2023-08-03
+
 ### Fixed 🐞
 
 -   Fix ccsh execution under windows via cmd-terminal [#3354](https://github.com/MaibornWolff/codecharta/pull/3354)
