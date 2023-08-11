@@ -2,6 +2,7 @@
 * text eol=lf
 
 # Files that should be normalized and converted.
+gradlew.bat text eol=crlf
 *.md text
 *.json text
 *.ts
