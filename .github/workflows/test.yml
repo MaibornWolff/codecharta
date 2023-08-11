@@ -152,14 +152,12 @@ jobs:
           ./gradlew jacocoTestReport
         working-directory: ${{env.working-directory}}
 
-      - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@v1.6
-        with:
-          projectBaseDir: ./analysis
+
+      - name: SonarCloud Scan Gradle
+        run: ./gradlew sonar
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          JAVA_HOME: ''
 
 
  publish_sonar_visualization:
