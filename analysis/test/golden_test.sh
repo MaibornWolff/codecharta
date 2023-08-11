@@ -173,7 +173,8 @@ check_pipe() {
 
 run_tests() {
   echo
-  echo "Running Tests..."
+  echo "Running Tests"
+  java -version
   echo
 
   check_gitlogparser_log_scan
