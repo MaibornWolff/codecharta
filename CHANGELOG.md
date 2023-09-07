@@ -7,10 +7,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
-### Chore 👨‍💻 👩‍💻
-
--   Swap to the gradle sonar plugin for codecharta analysis
-
 ## [1.119.1] - 2023-08-03
 
 ### Fixed 🐞
