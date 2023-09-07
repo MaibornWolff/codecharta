@@ -19,6 +19,7 @@ buildscript {
         picocli_version = '4.7.3'
         slf4j_version = '2.0.7'
         sonar_java_version = '6.8.0.23379'
+        sonarqube_version = '4.3.0.3225'
         univocity_parsers_version = '2.9.1'
 
         // Test dependency versions
@@ -51,6 +52,7 @@ buildscript {
 plugins {
     id 'distribution'
     id "org.jlleitschuh.gradle.ktlint" version "${ktlint_version}"
+    id 'org.sonarqube' version "${sonarqube_version}"
 }
 
 allprojects {
@@ -62,6 +64,7 @@ allprojects {
     apply plugin: 'jacoco'
     apply plugin: 'maven-publish'
     apply plugin: 'org.jlleitschuh.gradle.ktlint'
+    apply plugin: 'org.sonarqube'
 
     jacoco {
         toolVersion = jacoco_version
@@ -168,3 +171,4 @@ jacocoTestReport.dependsOn {
 }
 
 integrationTest.dependsOn build
+project.tasks["sonar"].dependsOn "build"
