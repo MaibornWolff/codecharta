@@ -154,7 +154,7 @@ jobs:
           ./gradlew jacocoTestReport
         working-directory: ${{env.working-directory}}
         env:
-          JAVA_HOME: ${env.JAVA_HOME_8_X64}
+          JAVA_HOME: ${JAVA_HOME_8_X64}
 
       - name: SonarCloud Scan Gradle
         run: |
