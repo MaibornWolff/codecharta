@@ -150,20 +150,20 @@ jobs:
 
       - name: Test Analysis
         run: |
+          export JAVA_HOME=$JAVA_HOME_8_x64
+          echo $JAVA_HOME
           ./gradlew integrationTest
           ./gradlew jacocoTestReport
         working-directory: ${{env.working-directory}}
-        env:
-          JAVA_HOME: ${{ JAVA_HOME_8_x64 }}
-
 
       - name: SonarCloud Scan Gradle
-        run: ./gradlew sonar
+        run: |
+          export JAVA_HOME=$JAVA_HOME_8_x64
+          echo $JAVA_HOME
+          ./gradlew sonar
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          JAVA_HOME: ${{ JAVA_HOME_17_x64 }}
-
 
  publish_sonar_visualization:
     needs: [build_visualization_test, build_visualization_e2e]
