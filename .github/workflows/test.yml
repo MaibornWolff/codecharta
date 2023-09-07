@@ -145,7 +145,7 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: |
-            8
+            11
             17
 
       - name: Test Analysis
@@ -154,7 +154,7 @@ jobs:
           ./gradlew jacocoTestReport
         working-directory: ${{env.working-directory}}
         env:
-          JAVA_HOME: ${{ env.JAVA_HOME_8_X64 }}
+          JAVA_HOME: ${{ env.JAVA_HOME_11_X64 }}
 
       - name: SonarCloud Scan Gradle
         run: |
@@ -165,7 +165,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          JAVA_HOME: ${env.JAVA_HOME_17_X64}
+          JAVA_HOME: ${{ env.JAVA_HOME_17_X64 }}
 
  publish_sonar_visualization:
     needs: [build_visualization_test, build_visualization_e2e]
