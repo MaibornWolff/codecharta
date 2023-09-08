@@ -145,8 +145,6 @@ jobs:
           ./gradlew integrationTest
           ./gradlew jacocoTestReport
         working-directory: ${{env.working-directory}}
-        env:
-          JAVA_HOME: ${{ env.JAVA_HOME_11_X64 }}
 
       - name: Setup Java JDK
         uses: actions/setup-java@v3.11.0
@@ -161,7 +159,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          JAVA_HOME: ${{ env.JAVA_HOME_17_X64 }}
+          JAVA_HOME: ${{ env.JAVA_HOME }}
 
  publish_sonar_visualization:
     needs: [build_visualization_test, build_visualization_e2e]
@@ -181,7 +179,7 @@ jobs:
 
       - name: SonarCloud Scan
         if: github.actor != 'dependabot[bot]' && github.actor != 'dependabot-preview[bot]'
-        uses: SonarSource/sonarcloud-github-action@v1.6
+        uses: SonarSource/sonarcloud-github-action@v2.0.1
         with:
           projectBaseDir: ./visualization
           args: >
@@ -189,5 +187,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          JAVA_HOME: ${{ env.JAVA_HOME_17_X64 }}
 
