@@ -133,6 +133,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
       - name: Build
         run: |
@@ -178,9 +180,6 @@ jobs:
         with:
           name: coverage
           path: ./visualization/dist/
-
-      - name: Fetch Main
-        run: git fetch origin ${{ env.CHANGE_TARGET }}:${{ env.CHANGE_TARGET }}
 
       - name: SonarCloud Scan
         if: github.actor != 'dependabot[bot]' && github.actor != 'dependabot-preview[bot]'
