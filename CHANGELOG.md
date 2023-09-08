@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Chore 👨‍💻 👩‍💻
 
--   Swap to the gradle sonar plugin for codecharta analysis
+-   Raised minimum required Java Version from 8 to 11 [#3357](https://github.com/MaibornWolff/codecharta/issues/3357)
 
 ## [1.119.1] - 2023-08-03
 
