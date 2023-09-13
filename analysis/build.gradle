@@ -165,6 +165,20 @@ task jacocoTestReport(type: JacocoReport) {
     }
 }
 
+sonar {
+  properties {
+    property "sonar.projectKey", "myProjectKey"
+    property "sonar.organization", "myOrganization"
+    property "sonar.host.url", "myHostUrl"
+    property "sonar.sources", "${project.rootDir}/**/src/main/kotlin/**"
+    property "sonar.exclusions", "${project.rootDir}/**/node-wrapper/**"
+    property "sonar.tests", "${project.rootDir}/**/src/test/kotlin/**"
+    property "sonar.coverage.exclusions", "${project.rootDir}/**/node-wrapper/**"
+    property "sonar.coverage.jacoco.xmlReportPaths", "${project.rootDir}/build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml"
+    property "sonar.junit.reportPaths", "${project.rootDir}/**build/test-results/test/**"
+  }
+}
+
 // always run the tests before generating the report
 jacocoTestReport.dependsOn {
     subprojects*.test
