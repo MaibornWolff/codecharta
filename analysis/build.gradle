@@ -102,6 +102,12 @@ subprojects {
             arg("project", "${project.group}/${project.name}")
         }
     }
+
+    sonar {
+        properties {
+            property "sonar.junit.reportPaths", "${project.buildDir}/test-results/test/"
+        }
+    }
 }
 
 distributions {
@@ -175,7 +181,7 @@ sonar {
     property "sonar.tests", "${project.rootDir}/**/src/test/kotlin/**"
     property "sonar.coverage.exclusions", "${project.rootDir}/**/node-wrapper/**"
     property "sonar.coverage.jacoco.xmlReportPaths", "${project.rootDir}/build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml"
-    property "sonar.junit.reportPaths", "${project.rootDir}/**/build/test-results/test/**"
+    // property "sonar.junit.reportPaths", "${project.rootDir}/**/build/test-results/test/**"
   }
 }
 
