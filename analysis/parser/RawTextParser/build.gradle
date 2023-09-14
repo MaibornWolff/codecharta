@@ -17,3 +17,9 @@ dependencies {
 test {
     useJUnitPlatform()
 }
+
+sonar {
+    properties {
+        property "sonar.junit.reportPaths", "${project.buildDir}/test-results/test"
+    }
+}
