@@ -178,9 +178,18 @@ sonar {
   }
 }
 
+project(":RawTextParser") {
+    sonar {
+        properties {
+            property "sonar.junit.reportPaths", "${project.buildDir}/test-results/test"
+        }
+    }
+}
+
 // always run the tests before generating the report
 jacocoTestReport.dependsOn {
     subprojects*.test
+    subprojects*.jacocoTestReport
 }
 
 integrationTest.dependsOn build
