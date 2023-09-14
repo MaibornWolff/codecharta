@@ -102,6 +102,14 @@ subprojects {
             arg("project", "${project.group}/${project.name}")
         }
     }
+
+    if("${project.name}".contains("RawTextParser")) {
+        sonar {
+            properties {
+                property "sonar.junit.reportPaths", "${project.buildDir}/test-results/test"
+            }
+        }
+    }
 }
 
 distributions {
@@ -176,14 +184,6 @@ sonar {
     property "sonar.coverage.exclusions", "${project.rootDir}/**/node-wrapper/**"
     property "sonar.coverage.jacoco.xmlReportPaths", "${project.rootDir}/build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml"
   }
-}
-
-project(":RawTextParser") {
-    sonar {
-        properties {
-            property "sonar.junit.reportPaths", "${project.buildDir}/test-results/test"
-        }
-    }
 }
 
 // always run the tests before generating the report
