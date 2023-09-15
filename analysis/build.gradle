@@ -168,9 +168,6 @@ task jacocoTestReport(type: JacocoReport) {
 
 sonar {
   properties {
-    property "sonar.projectKey", "myProjectKey"
-    property "sonar.organization", "myOrganization"
-    property "sonar.host.url", "myHostUrl"
     property "sonar.sources", "${project.rootDir}/**/src/main/kotlin/**"
     property "sonar.exclusions", "${project.rootDir}/**/node-wrapper/**"
     property "sonar.tests", "${project.rootDir}/**/src/test/kotlin/**"
