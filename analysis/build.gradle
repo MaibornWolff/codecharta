@@ -91,6 +91,12 @@ subprojects {
         testLogging {
             events "passed", "skipped", "failed"
         }
+
+        finalizedBy jacocoTestReport
+    }
+
+    jacocoTestReport {
+        dependsOn test
     }
 
     kotlin {
@@ -151,6 +157,8 @@ task integrationTest(type: Exec) {
 
 task jacocoTestReport(type: JacocoReport) {
 
+    dependsOn subprojects*.jacocoTestReport
+
     // Gather execution data from all subprojects
     executionData fileTree(project.rootDir.absolutePath).include("**/build/jacoco/*.exec")
 
@@ -168,19 +176,15 @@ task jacocoTestReport(type: JacocoReport) {
 
 sonar {
   properties {
-    property "sonar.sources", "${project.rootDir}/**/src/main/kotlin/**"
-    property "sonar.exclusions", "${project.rootDir}/**/node-wrapper/**"
-    property "sonar.tests", "${project.rootDir}/**/src/test/kotlin/**"
-    property "sonar.coverage.exclusions", "${project.rootDir}/**/node-wrapper/**"
+    property "sonar.sources", "."
+    property "sonar.exclusions", "**/**"
+    property "sonar.inclusions", "**/src/main/kotlin/**"
+    property "sonar.tests", "."
+    property "sonar.test.exclusions", "**/**"
+    property "sonar.test.inclusions", "**/src/test/kotlin/**"
     property "sonar.coverage.jacoco.xmlReportPaths", "${project.rootDir}/build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml"
   }
 }
 
-// always run the tests before generating the report
-jacocoTestReport.dependsOn {
-    subprojects*.test
-    subprojects*.jacocoTestReport
-}
-
 integrationTest.dependsOn build
-project.tasks["sonar"].dependsOn "build"
+project.tasks["sonar"].dependsOn "build", "jacocoTestReport"
