@@ -103,13 +103,6 @@ subprojects {
         }
     }
 
-    if("${project.name}".contains("RawTextParser")) {
-        sonar {
-            properties {
-                property "sonar.junit.reportPaths", "${project.buildDir}/test-results/test"
-            }
-        }
-    }
 }
 
 distributions {
