@@ -16,7 +16,7 @@ buildscript {
         kotlin_logging_version = '2.1.23'
         kotlin_version = '1.8.21'
         kotlinx_coroutines_version = '1.7.2'
-        picocli_version = '4.7.3'
+        picocli_version = '4.7.5'
         slf4j_version = '2.0.7'
         sonar_java_version = '6.8.0.23379'
         sonarqube_version = '3.0'
