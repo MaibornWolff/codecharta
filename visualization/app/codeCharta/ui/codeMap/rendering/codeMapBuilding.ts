@@ -9,6 +9,7 @@ export class CodeMapBuilding {
 	private _defaultColor: string
 	private _deltaColor: string
 	private _defaultDeltaColor: string
+	private _initColor: string
 	private _node: Node
 	parent: CodeMapBuilding
 
@@ -19,6 +20,7 @@ export class CodeMapBuilding {
 		this._defaultColor = color
 		this._deltaColor = "#000000"
 		this._defaultDeltaColor = "#000000"
+		this._initColor = "#000000"
 		this._node = node
 	}
 
@@ -70,7 +72,9 @@ export class CodeMapBuilding {
 
 	resetColor() {
 		this._color = this._defaultColor
-		this._deltaColor = this._defaultDeltaColor
+		// it turns out, in delta mode,
+		// the color of the difference part on the building is this._defaultDeltaColor not this._deltaColor
+		this._defaultDeltaColor = this._initColor
 	}
 
 	equals(building: CodeMapBuilding) {
@@ -110,6 +114,10 @@ export class CodeMapBuilding {
 	}
 
 	setDeltaColor(color: string) {
+		// record the original color: it's red or green but not #000000
+		if (this._initColor === "#000000") {
+			this._initColor = color
+		}
 		this._defaultDeltaColor = color
 		this._deltaColor = color
 	}

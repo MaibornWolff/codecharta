@@ -192,6 +192,9 @@ export class ThreeSceneService implements OnDestroy {
 	selectBuilding(building: CodeMapBuilding) {
 		// TODO: This check shouldn't be necessary. When investing into model we should investigate why and remove the need.
 		if (building.id !== this.selected?.id) {
+			// it turns out, in delta mode, if you choose another building
+			// you need reset color of the currently selected building
+			this.selected?.resetColor()
 			this.store.dispatch(setSelectedBuildingId({ value: building.node.id }))
 		}
 

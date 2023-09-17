@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [1.120.0] - 2023-09-17
+
+### Fixed 🐞
+
+- Fix Deselected buildings with green/red roof in delta mode do not reset their color roof [#3368](https://github.com/MaibornWolff/codecharta/pull/3368)
+
 ## [1.119.1] - 2023-08-03
 
 ### Fixed 🐞
