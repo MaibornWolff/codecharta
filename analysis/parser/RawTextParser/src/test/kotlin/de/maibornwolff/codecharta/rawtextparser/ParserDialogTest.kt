@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.indentationlevelparser
+package de.maibornwolff.codecharta.rawtextparser
 
 import com.github.kinquirer.KInquirer
 import com.github.kinquirer.components.promptConfirm

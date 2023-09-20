@@ -1,7 +1,0 @@
-language: java
-jdk:
-  - oraclejdk9
-install: true
-cache:
-  directories:
-    - '$HOME/.gradle/caches'
