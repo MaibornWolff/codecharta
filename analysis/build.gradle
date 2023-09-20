@@ -176,12 +176,6 @@ task jacocoTestReport(type: JacocoReport) {
 
 sonar {
   properties {
-    property "sonar.sources", "."
-    property "sonar.exclusions", "**/**"
-    property "sonar.inclusions", "**/src/main/kotlin/**"
-    property "sonar.tests", "."
-    property "sonar.test.exclusions", "**/**"
-    property "sonar.test.inclusions", "**/src/test/kotlin/**"
     property "sonar.coverage.jacoco.xmlReportPaths", "${project.rootDir}/build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml"
   }
 }
