@@ -133,32 +133,35 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-
-      - name: Setup Java JDK
-        uses: actions/setup-java@v3.6.0
         with:
-          distribution: 'zulu'
-          java-version: '11'
+          fetch-depth: 0
 
       - name: Build
-        run: chmod +x ./gradlew
+        run: |
+          chmod +x ./gradlew
+          ./gradlew build
         working-directory: ${{env.working-directory}}
 
       - name: Test Analysis
         run: |
-          ./gradlew build integrationTest
+          ./gradlew integrationTest
           ./gradlew jacocoTestReport
         working-directory: ${{env.working-directory}}
 
-      - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@v1.6
+      - name: Setup Java JDK
+        uses: actions/setup-java@v3.11.0
         with:
-          projectBaseDir: ./analysis
+          distribution: 'zulu'
+          java-version: 17
+
+      - name: SonarCloud Scan Gradle
+        run: |
+          ./gradlew sonar
+        working-directory: ${{env.working-directory}}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          JAVA_HOME: ''
-
+          JAVA_HOME: ${{ env.JAVA_HOME }}
 
  publish_sonar_visualization:
     needs: [build_visualization_test, build_visualization_e2e]
@@ -170,6 +173,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
       - uses: actions/download-artifact@v3
         with:
@@ -178,7 +183,7 @@ jobs:
 
       - name: SonarCloud Scan
         if: github.actor != 'dependabot[bot]' && github.actor != 'dependabot-preview[bot]'
-        uses: SonarSource/sonarcloud-github-action@v1.7
+        uses: SonarSource/sonarcloud-github-action@v2.0.1
         with:
           projectBaseDir: ./visualization
           args: >

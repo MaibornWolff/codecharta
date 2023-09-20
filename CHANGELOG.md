@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Chore 👨‍💻 👩‍💻
+
+-   Raised minimum required Java Version from 8 to 11 [#3357](https://github.com/MaibornWolff/codecharta/issues/3357)
+
+## [1.119.1] - 2023-08-03
+
+### Fixed 🐞
+
+-   Fix ccsh execution under windows via cmd-terminal [#3354](https://github.com/MaibornWolff/codecharta/pull/3354)
+
 ## [1.119.0] - 2023-07-13
 
 ### Added 🚀

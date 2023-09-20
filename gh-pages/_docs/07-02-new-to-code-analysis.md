@@ -49,7 +49,7 @@ A simple way to only import the analysis is to clone the whole repository and th
 ### Building
 
 -   `gradlew.bat build` or `./gradlew build`
--   Navigate to `build/distributions` and unzip the zip-folder
+-   Navigate to `build/distributions` and unzip the zip-folder (or use the gradle task `installDist`)
 -   Navigate to the `build/distributions/codecharta-analysis-VERSION/bin` and execute the ccsh
 
 ### Testing

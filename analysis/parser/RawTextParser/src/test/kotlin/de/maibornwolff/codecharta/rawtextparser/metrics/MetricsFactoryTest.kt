@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.indentationlevelparser.metrics
+package de.maibornwolff.codecharta.rawtextparser.metrics
 
 import de.maibornwolff.codecharta.parser.rawtextparser.metrics.MetricsFactory
 import org.assertj.core.api.Assertions

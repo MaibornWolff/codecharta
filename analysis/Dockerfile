@@ -1,4 +1,4 @@
-FROM sapmachine:11.0.19
+FROM sapmachine:11.0.20
 
 COPY ./build/distributions/codecharta-analysis-*.tar /usr/local/
 
