@@ -73,7 +73,7 @@ class VersionControlledFilesList(private val metricsFactory: MetricsFactory) {
             renamesMap.remove(possibleConflictName)
         }
 
-        val updatedOldestName = if (oldestName != null) oldestName else oldFileName
+        val updatedOldestName = oldestName ?: oldFileName
         renamesMap[newVCFFileName] = updatedOldestName
 
         // When parsing node.js repository, NullPointerExceptions occurs.
@@ -98,7 +98,7 @@ class VersionControlledFilesList(private val metricsFactory: MetricsFactory) {
 
     private fun handleDeletedFileReplacedByRenamedFile(newFileName: String) {
         // Clear the corresponding maps for file which will be replaced
-        renamesMap.remove(versionControlledFiles[newFileName]!!.filename)
+        renamesMap.remove(versionControlledFiles[newFileName]?.filename)
         nameConflictsMap.remove(buildPossibleConflictName(newFileName))
 
         // Remove deleted file with new file which has been added now
@@ -108,9 +108,7 @@ class VersionControlledFilesList(private val metricsFactory: MetricsFactory) {
     private fun resolveFileKey(trackName: String): String {
         val possibleConflictName = buildPossibleConflictName(trackName)
 
-        val oldestName = retrieveOldestName(possibleConflictName)
-
-        return if (oldestName == null) possibleConflictName else oldestName
+        return retrieveOldestName(possibleConflictName) ?: possibleConflictName
     }
 
     /**
