@@ -7,9 +7,9 @@ class ComponentMap {
         get() = components.values
 
     fun updateComponent(component: Component) {
-        if (components.containsKey(component.key)) {
-            val updateableComponent = components[component.key]!!
-            updateableComponent.measures!!.addAll(component.measures!!)
+        val updatableComponent = components[component.key]
+        if (updatableComponent != null) {
+            updatableComponent.measures!!.addAll(component.measures!!)
         } else {
             components[component.key!!] = component
         }
