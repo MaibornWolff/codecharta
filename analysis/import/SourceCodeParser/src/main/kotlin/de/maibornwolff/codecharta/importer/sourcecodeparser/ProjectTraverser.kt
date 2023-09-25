@@ -6,7 +6,7 @@ import java.nio.file.Paths
 
 class ProjectTraverser(var root: File, private val exclude: Array<String> = arrayOf()) {
     private var fileList: MutableList<File> = mutableListOf()
-    private val analyzerFileLists: MutableMap<String, MutableList<String>>? = HashMap()
+    private val analyzerFileLists: MutableMap<String, MutableList<String>> = HashMap()
 
     fun traverse() {
         val excludePatterns = exclude.joinToString(separator = "|", prefix = "(", postfix = ")").toRegex()
@@ -27,18 +27,19 @@ class ProjectTraverser(var root: File, private val exclude: Array<String> = arra
             val fileName = getRelativeFileName(file.toString())
             val fileExtension = FilenameUtils.getExtension(fileName)
 
-            if (!this.analyzerFileLists!!.containsKey(fileExtension)) {
+           val fileExtensionEntry = analyzerFileLists[fileExtension]
+            if (fileExtensionEntry != null) {
+                fileExtensionEntry.add(fileName)
+            } else {
                 val fileListForType: MutableList<String> = mutableListOf()
                 fileListForType.add(fileName)
                 this.analyzerFileLists[fileExtension] = fileListForType
-            } else {
-                this.analyzerFileLists[fileExtension]!!.add(fileName)
             }
         }
     }
 
     fun getFileListByExtension(type: String): List<String> {
-        return if (this.analyzerFileLists!!.containsKey(type)) {
+        return if (this.analyzerFileLists.containsKey(type)) {
             this.analyzerFileLists[type] ?: listOf()
         } else {
             ArrayList()
