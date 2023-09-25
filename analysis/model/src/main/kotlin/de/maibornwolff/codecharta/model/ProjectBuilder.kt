@@ -82,7 +82,7 @@ open class ProjectBuilder(
         if (!attributeTypes.containsKey(attributeTypesToAdd.type)) {
             attributeTypes[attributeTypesToAdd.type] = attributeTypesToAdd.attributeTypes.toMutableMap()
         } else {
-            attributeTypes[attributeTypesToAdd.type]!!.plus(attributeTypesToAdd.attributeTypes)
+            attributeTypes.getValue(attributeTypesToAdd.type).plus(attributeTypesToAdd.attributeTypes)
         }
         return this
     }
