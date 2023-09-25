@@ -193,9 +193,9 @@ class JavaSonarAnalyzer(verbose: Boolean = false, searchIssues: Boolean = true) 
             val type = issueRepository.rule(ruleKey)?.type().toString().lowercase(Locale.getDefault())
             if (verbose) System.err.println("Found: $type ${it.ruleKey().rule()} \n with message ${it.primaryLocation().message()}")
             if (issues.containsKey(type)) {
-                issues[type] = issues[type]!! + 1
+                issues[type] = issues.getValue(type) + 1
             } else {
-                issues["sonar_issue_other"] = issues["sonar_issue_other"]!! + 1
+                issues["sonar_issue_other"] = issues.getValue("sonar_issue_other") + 1
             }
         }
         return issues
