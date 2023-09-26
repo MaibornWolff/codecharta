@@ -54,8 +54,10 @@ class ProjectBuilderTest {
     fun `should add new attributeTypes`() {
         val projectBuilder = ProjectBuilder(attributeTypes = mutableMapOf("nodes" to mutableMapOf("nodeMetric" to AttributeType.absolute)))
         val attributeTypesToAdd = AttributeTypes(mutableMapOf("edgeMetric" to AttributeType.absolute), "edges")
+        val attributeTypesToAddExisting = AttributeTypes(mutableMapOf("nodeMetric2" to AttributeType.relative), "nodes")
         projectBuilder.addAttributeTypes(attributeTypesToAdd)
-        assertThat(projectBuilder.toString()).contains("edges={edgeMetric=absolute}", "nodes={nodeMetric=absolute}")
+        projectBuilder.addAttributeTypes(attributeTypesToAddExisting)
+        assertThat(projectBuilder.toString()).contains("edges={edgeMetric=absolute}", "nodes={nodeMetric=absolute, nodeMetric2=relative}")
     }
 
     @Test
