@@ -120,6 +120,6 @@ open class ProjectBuilder(
     }
 
     override fun toString(): String {
-        return "Project{nodes=$nodes, edges=$edges, attributeTypes=$attributeTypes, blacklist=$blacklist}"
+        return "Project{nodes=$nodes, edges=$edges, attributeTypes=$attributeTypes, attributeDescriptors=$attributeDescriptors, blacklist=$blacklist}"
     }
 }
