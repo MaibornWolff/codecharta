@@ -16,6 +16,7 @@ dependencies {
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter', version: junit5_version
     testImplementation group: 'io.mockk', name: 'mockk', version: mockk_version
     testImplementation group: 'com.github.tomakehurst', name: 'wiremock', version: wiremock_version
+    testImplementation group: 'org.assertj', name: 'assertj-core', version: assertj_version
 }
 
 test {
