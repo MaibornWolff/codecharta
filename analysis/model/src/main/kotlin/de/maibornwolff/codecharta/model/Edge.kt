@@ -13,15 +13,24 @@ class Edge constructor(
     }
 
     override fun equals(other: Any?): Boolean {
-        val otherEdge = other as Edge
-        return (
-            this.fromNodeName == otherEdge.fromNodeName &&
-                this.toNodeName == otherEdge.toNodeName &&
-                this.attributes == otherEdge.attributes
-            )
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as Edge
+
+        return fromNodeName == other.fromNodeName &&
+                toNodeName == other.toNodeName &&
+                attributes == other.attributes
     }
 
     fun translateMetrics(metricNameTranslator: MetricNameTranslator) {
         attributes = attributes.mapKeys { metricNameTranslator.translate(it.key) }
+    }
+
+    override fun hashCode(): Int {
+        var result = fromNodeName.hashCode()
+        result = 31 * result + toNodeName.hashCode()
+        result = 31 * result + attributes.hashCode()
+        return result
     }
 }

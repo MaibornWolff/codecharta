@@ -77,7 +77,8 @@ class LeafNodeMergerStrategy(private val addMisfittingNodes: Boolean, ignoreCase
         return newNodes
             .plus(unchangedNodes)
             .mapValues {
-                if (this[it.key] == null) it.value else it.value.merge(listOf(this[it.key]!!))
+                val tempNode = this[it.key]
+                if (tempNode == null) it.value else it.value.merge(listOf(tempNode))
             }
     }
 }
