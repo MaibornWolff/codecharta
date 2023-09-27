@@ -14,6 +14,8 @@ internal class ComponentMapTest {
         val component = Component("baseComponent", identicalKeyCheck, null, null, null, mutableListOf(measureBase))
         val anotherComponent = Component("anotherComponent", "someOtherKey", null, null, null)
         val componentToMerge = Component("merger", identicalKeyCheck, null, null, null, measureToAdd)
+
+        assertThat(componentMap.componentList).hasSize(0)
         componentMap.updateComponent(component)
         componentMap.updateComponent(anotherComponent)
         assertThat(componentMap.componentList.take(1)[0]).isEqualTo(component)

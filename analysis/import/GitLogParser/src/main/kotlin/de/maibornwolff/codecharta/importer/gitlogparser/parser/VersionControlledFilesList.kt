@@ -98,7 +98,7 @@ class VersionControlledFilesList(private val metricsFactory: MetricsFactory) {
 
     private fun handleDeletedFileReplacedByRenamedFile(newFileName: String) {
         // Clear the corresponding maps for file which will be replaced
-        renamesMap.remove(versionControlledFiles[newFileName]?.filename)
+        renamesMap.remove(versionControlledFiles.getValue(newFileName).filename)
         nameConflictsMap.remove(buildPossibleConflictName(newFileName))
 
         // Remove deleted file with new file which has been added now
