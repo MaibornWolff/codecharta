@@ -23,7 +23,7 @@ You can start with **Codecharta Visualization** on multiple ways:
 -   Use our [Dockerfile](#run-in-docker-container) to run the visualization in a container
 -   Try out the [online version](https://maibornwolff.github.io/codecharta/visualization/app/index.html?file=codecharta.cc.json&file=codecharta_analysis.cc.json)
 
-> Be aware, that if you are on Apple Silicon, you need to do additional config for npm installation
+> Be aware, that if you are on Apple Silicon, you may run into problems with the standalone and build versions
 
 ## NPM Package
 
@@ -32,7 +32,6 @@ You can start with **Codecharta Visualization** on multiple ways:
 
 ```bash
 # Install the package globally via npm
-# If you're on Apple Silicon (M1 or similar), you might have to run `npm_config_nwjs_process_arch=x64 npm i -g codecharta-visualization` instead (see https://github.com/nwjs/npm-installer/issues/83)
 $ npm i -g codecharta-visualization
 # Run it anywhere (you might need administrative rights/sudo)
 # You might need to restart your terminal
@@ -56,7 +55,7 @@ $ codecharta-visualization
 $ git clone https://github.com/MaibornWolff/codecharta.git
 # Navigate to Visualization
 $ cd codecharta/visualization
-# Installation. If you're on Apple Silicon, you might have to do `npm_config_nwjs_process_arch=x64 npm install` instead (see https://github.com/nwjs/npm-installer/issues/83).
+# Installation.
 $ npm install
 # Run the development server
 $ npm run dev
@@ -65,11 +64,13 @@ $ npm run dev
 
 ### Tasks
 
-After cloning the repository and running the installation as described above, you can use the other available commands and tasks inside the visualization project:
+After cloning the repository and running the `npm` installation as described above, you can use the other available commands and tasks inside the visualization project. You can check all tasks and their functionality inside the `package.json` section `scripts`.
 
 #### Build
 
-Build the project in `dist/`. The produced files are required if you want to [package](#package) the application or [start](#start) the standalone version.
+Build the project in `dist/webpack`. The produced files are required if you want to [package](#package) the application or [start](#start) the standalone version.
+
+> Additional files are copied inside the webpack, which are required to execute the electron standalone via npm (run) start
 
 ```bash
 # Make sure you are still inside the visualization project
@@ -81,12 +82,12 @@ $ npm run build
 
 #### Package
 
-Package the nwjs application to produce the standalone versions for Windows (32bit/64bit), Linux (32bit/64bit) and MacOS (64bit) for distribution and testing. Creates `.zip` files for every OS and the webpack in the `dist/packages/` folder.
+Package the electron application to produce the standalone versions for Windows, Linux and MacOS for distribution and testing. Creates `.zip` files for every OS/arch and the webpack in the `dist/packages/` folder.
 
 > Make sure to run the [build](#build) task beforehand <br>
 > This process might require administrative rights/sudo depending on the OS <br>
-> For UNIX-based systems you need to install [Wine](https://www.winehq.org/) to package the Windows application <br>
-> Currently the MacOS version can't be packaged while using Windows (see `sript/build-nwjs.js`)
+> For UNIX-based systems you probably need to install [Wine](https://www.winehq.org/) to package the Windows application <br>
+> The MacOS version usually can't be packaged while using Windows
 
 ```bash
 # You might need to edit the build script before you start
@@ -96,7 +97,7 @@ $ npm run package
 #### Dev
 
 ```bash
-# Build the weebpack and serve it under localhost:3000
+# Build the webpack and serve it under localhost:3000
 $ npm run dev
 # This server listens to file changes
 ```
@@ -106,7 +107,7 @@ $ npm run dev
 > Make sure to run [build](#build) beforehand
 
 ```bash
-# Start the nwjs application
+# Start the electron application
 $ npm run start
 ```
 

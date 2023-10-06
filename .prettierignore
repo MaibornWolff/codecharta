@@ -31,3 +31,4 @@ Pipfile.lock
 _site
 out
 **/resources/fileStorage/**
+**/binScripts/**

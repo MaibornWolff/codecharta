@@ -42,7 +42,7 @@ Currently, we support the creation of:
 -   ThreeJs for 3d visualization
 -   d3 for tree map algorithm and tree hierarchy (parent-child relations)
 -   Webpack
--   nwjs
+-   electron
 -   Redux
 
 ### Important Concepts
