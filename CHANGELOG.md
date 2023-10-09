@@ -9,7 +9,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Chore 👨‍💻 👩‍💻
 
--   Raised minimum required Java Version from 8 to 11 [#3357](https://github.com/MaibornWolff/codecharta/issues/3357)
+-   Raise minimum required Java Version from 8 to 11 [#3357](https://github.com/MaibornWolff/codecharta/issues/3357)
+-   Swap nw.js to electron for standalone execution [#3253](https://github.com/MaibornWolff/codecharta/issues/3253)
 
 ## [1.119.1] - 2023-08-03
 
