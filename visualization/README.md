@@ -82,7 +82,7 @@ $ npm run build
 
 #### Package
 
-Package the electron application to produce the standalone versions for Windows, Linux and MacOS for distribution and testing. Creates `.zip` files for every OS/arch and the webpack in the `dist/packages/` folder.
+**Package** the electron application to produce the standalone versions for Windows, Linux and MacOS for distribution and testing. The different versions are inside the `dist/applications` folder.
 
 > Make sure to run the [build](#build) task beforehand <br>
 > This process might require administrative rights/sudo depending on the OS <br>
@@ -90,8 +90,16 @@ Package the electron application to produce the standalone versions for Windows,
 > The MacOS version usually can't be packaged while using Windows
 
 ```bash
-# You might need to edit the build script before you start
 $ npm run package
+# If you only want to produce the standalone version for your current OS/arch combo use package:local
+$ npm run package:local
+```
+
+For distribution the different application folders they need to be zipped. This command creates a `.zip` compressed file for every folder inside `dist/applications` and puts them in the `dist/packages` folder:
+
+```bash
+# You may not be able to zip every OS/arch combo on every OS. You might need to adjust the script/package-zips.js for your usage.
+$ npm run package:zip
 ```
 
 #### Dev
