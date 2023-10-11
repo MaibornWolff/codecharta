@@ -52,6 +52,7 @@ jobs:
           npm run test
           npm run build
           npm run package
+          npm run package:zip
           docker build -t codecharta/codecharta-visualization .
 
       - name: Add Changelog Entries to Release
