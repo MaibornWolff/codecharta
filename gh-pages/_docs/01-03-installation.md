@@ -12,6 +12,8 @@ We use npm to distribute [both](https://www.npmjs.com/package/codecharta-analysi
 
 If you are on Windows we recommend installing Git and use the bundled Git Bash to make the scripts easily transferable.
 
+> Note: This guide explains how to **use** codecharta, if you want to **develop** on it checkout the [*New to Code*]({{site.baseurl}}{% link _docs/07-01-new-to-code.md %}) sections and corresponding READMEs.
+
 # Global Install with npm (recommended)
 
 ## Analysis

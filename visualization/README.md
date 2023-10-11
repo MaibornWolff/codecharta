@@ -16,9 +16,9 @@
 
 You can start with **Codecharta Visualization** on multiple ways:
 
--   Installation as a [npm package](#npm-package) (Recommended)
+-   Installation as a [npm package](#npm-package) (Recommended for users)
 -   Run an operating system specific [standalone](#run-a-standalone)
--   Build it yourself from the github [repository](#build-it-yourself)
+-   Build it yourself from the github [repository](#build-it-yourself) (Development)
 -   Use [docker-compose](https://maibornwolff.github.io/codecharta/docs/docker-containers/) to run this with other needed tools like a Sonar instance or analyzing tools of codecharta-analysis.
 -   Use our [Dockerfile](#run-in-docker-container) to run the visualization in a container
 -   Try out the [online version](https://maibornwolff.github.io/codecharta/visualization/app/index.html?file=codecharta.cc.json&file=codecharta_analysis.cc.json)
