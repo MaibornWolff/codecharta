@@ -71,6 +71,7 @@ After cloning the repository and running the `npm` installation as described abo
 Build the project in `dist/webpack`. The produced files are required if you want to [package](#package) the application or [start](#start) the standalone version.
 
 > Additional files are copied inside the webpack, which are required to execute the electron standalone via npm (run) start
+> Note that the `build` command requires unix tools on path, so on Windows add them to it or use the bash shell
 
 ```bash
 # Make sure you are still inside the visualization project

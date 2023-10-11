@@ -55,6 +55,8 @@ Currently, we support the creation of:
 
 There are 3 possible ways to build and run the application. You can run it as a developer with hot-code, which allows you to make changes in the code and see the results in your browser a few seconds later. But you can also build the application yourself and run it in a standalone or in the browser.
 
+> Note that the `build` command requires unix tools on path, so on Windows add them to it or use the bash shell
+
 -   Development: `npm run dev`
 -   Standalone: `npm run build` -> `npm start`
 -   Web: `npm run build` -> Move the created content to a nginx server for example
