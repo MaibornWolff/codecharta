@@ -31,12 +31,10 @@ To avoid these issues there are two options:
 
 accepted 1.
 
-# Decision
+# Decision & Consequences
 
 1. Use the _electron_ framework for standalone CodeCharta-Visualization
 2. Use the [electron-packager](https://github.com/electron/electron-packager) to produce all available combinations of OS and architectures
 3. Zip the results like previously and add them as assets to releases.
-
-# Consequences
 
 Because we did not use any features of the nwjs standalone framework, we don't need to adapt or change anything, besides the call in the `package.json` and some adjustments are needed in the github release action.
