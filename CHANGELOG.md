@@ -7,7 +7,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
-## [1.120.0] - 2023-10-12
+### Fixed 🐞
+
+-   Fix command not found issue for --version and --help in the analysis [#3377](https://github.com/MaibornWolff/codecharta/pull/3377)
 
 ### Chore 👨‍💻 👩‍💻
 
