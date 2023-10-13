@@ -7,8 +7,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
-## [1.120.0] - 2023-10-12
-
 ### Chore 👨‍💻 👩‍💻
 
 -   Raise minimum required Java Version from 8 to 11 [#3359](https://github.com/MaibornWolff/codecharta/pull/3359)
