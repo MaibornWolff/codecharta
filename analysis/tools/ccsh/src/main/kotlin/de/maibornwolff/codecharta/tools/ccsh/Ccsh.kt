@@ -92,7 +92,7 @@ class Ccsh : Callable<Void?> {
             commandLine.executionStrategy = CommandLine.RunAll()
             return when {
                 args.isEmpty() -> executeParserSuggestions(commandLine)
-                (isParserUnknown(args, commandLine) || args.contains("--interactive") || args.contains("-i")) -> selectAndExecuteInteractiveParser(commandLine)
+                (!isParserKnown(args, commandLine) && !isCommandKnown(args, commandLine) || args.contains("--interactive") || args.contains("-i")) -> selectAndExecuteInteractiveParser(commandLine)
                 isParserKnownButWithoutArgs(args, commandLine) -> executeInteractiveParser(args.first(), commandLine)
                 else -> commandLine.execute(*sanitizeArgs(args))
             }
@@ -194,18 +194,20 @@ class Ccsh : Callable<Void?> {
             return ParserService.executeSelectedParser(commandLine, selectedParser)
         }
 
-        private fun isParserUnknown(args: Array<String>, commandLine: CommandLine): Boolean {
-            if (args.isNotEmpty()) {
-                val firstArg = args.first()
-                val parserList = commandLine.subcommands.keys
-                val optionsList = commandLine.commandSpec.options().map { it.names().toMutableList() }.flatten()
-                return !parserList.contains(firstArg) && !optionsList.contains(firstArg)
-            }
-            return false
+        private fun isParserKnown(args: Array<String>, commandLine: CommandLine): Boolean {
+            val firstArg = args.first()
+            val parserList = commandLine.subcommands.keys
+            return parserList.contains(firstArg)
+        }
+
+        private fun isCommandKnown(args: Array<String>, commandLine: CommandLine): Boolean {
+            val firstArg = args.first()
+            val optionsList = commandLine.commandSpec.options().map { it.names().toMutableList() }.flatten()
+            return optionsList.contains(firstArg)
         }
 
         private fun isParserKnownButWithoutArgs(args: Array<String>, commandLine: CommandLine): Boolean {
-            return !isParserUnknown(args, commandLine) && args.size == 1
+            return isParserKnown(args, commandLine) && args.size == 1
         }
 
         private fun sanitizeArgs(args: Array<String>): Array<String> {
