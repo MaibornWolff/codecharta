@@ -63,8 +63,6 @@ class CcshTest {
         val originalOut = System.out
         System.setOut(PrintStream(outStream))
 
-        // val exitCode = ccshCLI.execute("-h")
-
         val exitCode = Ccsh.executeCommandLine(arrayOf("-h"))
 
         Assertions.assertThat(exitCode).isEqualTo(0)
