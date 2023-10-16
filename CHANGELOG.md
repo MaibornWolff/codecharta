@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Fixed 🐞
+
+-   Fix command not found issue for --version and --help in the analysis [#3377](https://github.com/MaibornWolff/codecharta/pull/3377)
+
 ### Chore 👨‍💻 👩‍💻
 
 -   Raise minimum required Java Version from 8 to 11 [#3359](https://github.com/MaibornWolff/codecharta/pull/3359)

@@ -171,6 +171,30 @@ check_pipe() {
   fi
 }
 
+check_help() {
+  echo " -- expected to put out help information"
+  sh "${CCSH}" --help >${INSTALL_DIR}/help_long_output 2>&1
+  sh "${CCSH}" -h >${INSTALL_DIR}/help_short_output 2>&1
+  if ! grep -q "Command Line Interface for CodeCharta analysis" ${INSTALL_DIR}/help_long_output; then
+    exit_with_err "ERR: Help not printed as expected"
+  fi
+  if ! grep -q "Command Line Interface for CodeCharta analysis" ${INSTALL_DIR}/help_short_output; then
+    exit_with_err "ERR: Help not printed as expected"
+  fi
+}
+
+check_version() {
+  echo " -- expected to put out version information"
+  sh "${CCSH}" --version >${INSTALL_DIR}/version_long_output  2>&1
+  sh "${CCSH}" -v >${INSTALL_DIR}/version_short_output 2>&1
+  if ! grep -q "$1" ${INSTALL_DIR}/version_long_output; then
+    exit_with_err "ERR: Version not printed as expected"
+  fi
+  if ! grep -q "$1" ${INSTALL_DIR}/version_short_output; then
+    exit_with_err "ERR: Version not printed as expected"
+  fi
+}
+
 run_tests() {
   echo
   echo "Running Tests"
@@ -194,11 +218,14 @@ run_tests() {
 
   check_pipe
 
+  check_help
+  check_version "$1"
+
   echo
   echo "... Testing finished."
   echo
 }
 
 install_codecharta "../build/distributions/${CC_TAR_NAME}"
-run_tests
+run_tests "$1"
 deinstall_codecharta
