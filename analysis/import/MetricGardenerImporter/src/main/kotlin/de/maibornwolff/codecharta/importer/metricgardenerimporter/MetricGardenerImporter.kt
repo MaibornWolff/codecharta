@@ -2,7 +2,6 @@ package de.maibornwolff.codecharta.importer.metricgardenerimporter
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.lordcodes.turtle.ShellLocation
-import com.lordcodes.turtle.shellRun
 import de.maibornwolff.codecharta.importer.metricgardenerimporter.json.MetricGardenerProjectBuilder
 import de.maibornwolff.codecharta.importer.metricgardenerimporter.model.MetricGardenerNodes
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
@@ -62,17 +61,22 @@ class MetricGardenerImporter(
             tempMgOutput.deleteOnExit()
 
             val npm = if (isWindows()) "npm.cmd" else "npm"
-            shellRun(
-                command = npm,
-                arguments = listOf(
-                    "exec", "-y", "metric-gardener", "--", "parse",
-                    inputFile!!.absolutePath, "--output-path", tempMgOutput.absolutePath
-                ),
-                workingDirectory = ShellLocation.CURRENT_WORKING
+            val processStartTime = System.currentTimeMillis() * 0.001
+            val commandToExecute = listOf(
+                npm, "exec", "-y", "metric-gardener", "--", "parse",
+                inputFile!!.absolutePath, "--output-path", tempMgOutput.absolutePath
             )
+            println("Running metric gardener, this might take some time for larger inputs...")
+            ProcessBuilder(commandToExecute)
+                .redirectOutput(ProcessBuilder.Redirect.DISCARD) // we need to actively discard the output or redirect it, otherwise the program hangs for larger outputs of MetricGardener
+                .redirectError(ProcessBuilder.Redirect.INHERIT)
+                .directory(ShellLocation.CURRENT_WORKING) // check if this is necessary. If not, we completely remove the dependency on turtle package
+                .start()
+                .waitFor()
+            val processEndTime = System.currentTimeMillis() * 0.001
+            println("Metric gardener execution completed in %.2fs.".format(processEndTime - processStartTime))
             inputFile = tempMgOutput
         }
-
         val metricGardenerNodes: MetricGardenerNodes =
             mapper.readValue(inputFile!!.reader(Charset.defaultCharset()), MetricGardenerNodes::class.java)
         val metricGardenerProjectBuilder = MetricGardenerProjectBuilder(metricGardenerNodes)
