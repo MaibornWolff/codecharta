@@ -1,57 +1,55 @@
+#!/usr/bin/env node
 
-const DISTRIBUTIONS = require("./appBuild")
-const electronVersion = require("../package.json").dependencies.electron
-const fs = require('fs-extra')
+const fs = require('fs')
+const path = require('node:path');
+const {downloadArtifact} = require("@electron/get");
 
+const { DISTRIBUTIONS, VERSION } = require("./appBuild")
 const DOWNLOAD_DIR = "build/binaries"
-const version = // strip ^ from electronVersion
+
 
 async function downloadAll (version) {
   console.log(`Downloading Electron v${version}`)
-  const combinations = download.createDownloadCombos({ electronVersion: config.version, all: true }, targets.officialPlatforms, targets.officialArchs, skipDownloadingMacZips)
 
   await downloadElectronChecksum(version)
-  return Promise.all(
-    [
-      ...combinations.map(combination => combination.arch === 'universal' ? null : downloadElectronZip(version, combination)),
-      downloadElectronZip('6.0.0', {
-        platform: 'darwin'
-      })
-    ]
-  )
+  const downloadElectronPromises = [];
+
+  for (let [aPlatform, aArch] of Object.entries(DISTRIBUTIONS)) {
+    aArch.forEach(anArchitecture =>
+      downloadElectronPromises.push(
+        downloadElectronZip(
+          version,
+          {platform: aPlatform, arch: anArchitecture}
+        )
+      )
+    )
+  }
+
+  return downloadElectronPromises
 }
 
 
 async function downloadElectronChecksum (version) {
   return downloadArtifact({
     isGeneric: true,
-    cacheRoot: path.join(os.homedir(), '.electron'),
+    cacheRoot: DOWNLOAD_DIR,
     version,
     artifactName: 'SHASUMS256.txt'
   })
 }
 
 async function downloadElectronZip (version, options) {
-  return download.downloadElectronZip({
+  return downloadArtifact({
     ...options,
     artifactName: 'electron',
-    cacheRoot: path.join(os.homedir(), '.electron'),
+    cacheRoot: DOWNLOAD_DIR,
     version
   })
 }
 
-async function downloadElectron () {
-  const versions = [
-    config.version
-  ]
-  await Promise.all(versions.map(downloadAll))
-}
-
-
-
 async function cleanCacheFolder () {
-  await fs.remove(DOWNLOAD_DIR)
-  await fs.mkdirs(DOWNLOAD_DIR)
+  await fs.rm(path.resolve(DOWNLOAD_DIR), () => {console.log(`Removed ${DOWNLOAD_DIR}`);})
+  await fs.mkdir(path.resolve(DOWNLOAD_DIR), () => {console.log(`Created ${DOWNLOAD_DIR}`);})
 }
 
 
@@ -59,7 +57,7 @@ module.exports = {
   prepareBinaries: async function  () {
     await cleanCacheFolder()
     try {
-      await downloadElectron()
+      await downloadAll(VERSION)
     } catch (error) {
       console.error(error.stack || error)
       return process.exit(1)
