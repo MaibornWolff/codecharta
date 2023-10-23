@@ -1,7 +1,6 @@
 package de.maibornwolff.codecharta.importer.metricgardenerimporter
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.lordcodes.turtle.ShellLocation
 import de.maibornwolff.codecharta.importer.metricgardenerimporter.json.MetricGardenerProjectBuilder
 import de.maibornwolff.codecharta.importer.metricgardenerimporter.model.MetricGardenerNodes
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
@@ -61,18 +60,18 @@ class MetricGardenerImporter(
             tempMgOutput.deleteOnExit()
 
             val npm = if (isWindows()) "npm.cmd" else "npm"
-            val processStartTime = System.currentTimeMillis() * 0.001
             val commandToExecute = listOf(
                 npm, "exec", "-y", "metric-gardener", "--", "parse",
                 inputFile!!.absolutePath, "--output-path", tempMgOutput.absolutePath
             )
             println("Running metric gardener, this might take some time for larger inputs...")
+            val processStartTime = System.currentTimeMillis() * 0.001
             ProcessBuilder(commandToExecute)
-                .redirectOutput(ProcessBuilder.Redirect.DISCARD) // we need to actively discard the output or redirect it, otherwise the program hangs for larger outputs of MetricGardener
-                .redirectError(ProcessBuilder.Redirect.INHERIT)
-                .directory(ShellLocation.CURRENT_WORKING) // check if this is necessary. If not, we completely remove the dependency on turtle package
-                .start()
-                .waitFor()
+                    // not actively discarding or redirecting the output of MetricGardener loses performance on larger folders
+                    .redirectOutput(ProcessBuilder.Redirect.DISCARD)
+                    .redirectError(ProcessBuilder.Redirect.INHERIT)
+                    .start()
+                    .waitFor()
             val processEndTime = System.currentTimeMillis() * 0.001
             println("Metric gardener execution completed in %.2fs.".format(processEndTime - processStartTime))
             inputFile = tempMgOutput
