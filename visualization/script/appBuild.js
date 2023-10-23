@@ -1,41 +1,15 @@
 #!/usr/bin/env node
 
-// 1. Download the electron binaries
-// 2. Build the standalone desktop apps
-// 3. Zip the apps
+const packager = require('electron-packager');
+const fs = require('fs');
+const path = require('node:path');
 
-const packager = require('electron-packager')
+const { paths, distributions } = require("./appConfig.json")
+var distributionCombos = {};
 
-const downloadModule = require("./appDownload.js")
-const electronVersion = require("../package.json").dependencies.electron.substring(1)
-
-const DISTRIBUTIONS = {
-  "win32" : ["ia32", "x64", "arm64"],
-  "darwin" : ["x64", "arm64"],
-  "linux" : ["x64", "arm64", "armv7l"]
-};
-
-await downloadModule.prepareBinaries()
-
-async function build() {
-  // set distributions to local ?
-}
-
-async function buildElectronApps() {
-  const bundlePromises = []
-
-  for (let [aPlatform, aArch] of Object.entries(DISTRIBUTIONS)) {
-    aArch.forEach(anArchitecture =>
-      bundlePromises.push(
-        bundleElectronApp(
-          version,
-          {platform: aPlatform, arch: anArchitecture}
-        )
-      )
-    )
-  }
-
-  return bundlePromises
+async function cleanDirectory(dir) {
+  await fs.rm(path.resolve(dir), () => {console.log(`Removed ${dir}`);})
+  await fs.mkdir(path.resolve(dir), () => {console.log(`Created ${dir}`);})
 }
 
 async function bundleElectronApp(options) {
@@ -43,10 +17,39 @@ async function bundleElectronApp(options) {
       ...options,
       asar: true,
       icon: 'app/codeCharta/assets/icon',
-      electronZipDir: 'build/binaries'})
+      })
+}
+
+async function buildElectronApps(version) {
+  const bundlePromises = []
+  console.log(`Building distributions: ${JSON.stringify(distributionCombos)}`);
+
+  for (let [aPlatform, aArch] of Object.entries(distributionCombos)) {
+    aArch.forEach(anArchitecture =>
+      bundlePromises.push(
+        bundleElectronApp({
+          platform: aPlatform,
+          arch: anArchitecture,
+          version: version,
+          electronZipDir: paths.binaryPath,
+          dir: paths.webpackPath,
+          out: paths.applicationPath}
+        )
+      )
+    );
+  }
+
+  return Promise.all(bundlePromises)
+}
+
+async function build(version, buildLocal) {
+  await cleanDirectory(paths.applicationPath);
+  distributionCombos = buildLocal ? buildLocal : distributions;
+  return buildElectronApps(version);
 }
 
 module.exports = {
-  DISTRIBUTIONS: DISTRIBUTIONS,
-  VERSION: electronVersion
+  prepareApplications: async function (version, buildLocal) {
+    return build(version, buildLocal);
+  }
 }

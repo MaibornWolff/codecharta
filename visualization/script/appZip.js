@@ -4,29 +4,42 @@ const fs = require('fs');
 const zip = require('bestzip');
 const path = require('node:path');
 
-fs.rmSync("dist/packages", {recursive: true, force: true});
+const { paths } = require("./appConfig.json");
+
 const getDirectories = srcPath => fs.readdirSync(srcPath).filter(file => fs.statSync(path.join(srcPath, file)).isDirectory());
 
-(async () => {
-  const baseZipPath = path.resolve("dist/packages");
-  const applicationPath = "dist/applications"
-  fs.mkdirSync(baseZipPath, {recursive: true});
+async function cleanDirectory(dir) {
+  await fs.rm(path.resolve(dir), () => {console.log(`Removed ${dir}`);})
+  await fs.mkdir(path.resolve(dir), () => {console.log(`Created ${dir}`);})
+}
 
+async function zipApplications(){
   const zipPromises = []
-  getDirectories(applicationPath).forEach((aPath) => {
+
+  getDirectories(paths.applicationPath).forEach((aPath) => {
     zipPromises.push(
       zip({
         source: aPath,
-        destination: path.join(baseZipPath, aPath + ".zip"),
-        cwd: path.resolve(applicationPath)})
+        destination: path.join(paths.packagePath, aPath + ".zip"),
+        cwd: path.resolve(paths.applicationPath)})
     )
   });
   zipPromises.push(zip({
-    source: "webpack",
-    destination: path.join(baseZipPath, "web.zip"),
-    cwd: path.resolve("dist/")
+    source: paths.webpackPath,
+    destination: path.join(paths.packagePath, "web.zip"),
+    cwd: path.resolve(".")
   }));
 
-  await Promise.all(zipPromises);
-  console.log('Everything zipped')
-})();
+  return Promise.all(zipPromises);
+}
+
+async function zipEverything() {
+  cleanDirectory(paths.packagePath);
+  return zipApplications();
+}
+
+module.exports = {
+  prepareZips : async function () {
+    return zipEverything();
+  }
+}
