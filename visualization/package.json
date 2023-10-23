@@ -17,7 +17,6 @@
 	"description": "MaibornWolff CodeCharta",
 	"files": [
 		"dist/webpack",
-		"app",
 		"conf",
 		"Dockerfile",
 		"LICENSE.md",
@@ -30,22 +29,15 @@
 	"codecharta": {
 		"apiVersion": "1.3"
 	},
-	"window": {
-		"icon": "app/codeCharta/assets/icon.png",
-		"toolbar": true,
-		"frame": true,
-		"width": 1024,
-		"height": 768
-	},
-	"main": "dist/webpack/index.html",
+	"main": "main.js",
 	"browserslist": [
 		"last 2 chrome version",
 		"last 2 firefox version",
 		"last 2 safari version"
 	],
 	"scripts": {
-		"start": "nw .",
-		"build": "ng build",
+		"start": "electron dist/webpack",
+		"build": "ng build && cp electron/* package.json dist/webpack",
 		"dev": "ng serve",
 		"test": "jest --config conf/jestUnit.config.json .*\\.spec\\.ts",
 		"test:auto": "npm test -- --watch",
@@ -54,7 +46,10 @@
 		"e2e": "jest --config conf/jestE2E.config.json .*\\.e2e\\.ts --coverage false",
 		"e2e:auto": "npm run e2e -- --watch",
 		"e2e:ci": "npm run e2e -- --runInBand",
-		"package": "node script/build-nwjs.js",
+		"package": "npm run package:electron -- --all",
+		"package:local": "npm run package:electron",
+		"package:electron": "npx electron-packager dist/webpack --out dist/applications --icon app/codeCharta/assets/icon --overwrite --asar",
+		"package:zip": "node script/package-zips.js",
 		"lint": "eslint \"app/**/*.ts\"",
 		"lint:fix": "npm run lint -- --fix",
 		"precommit": "lint-staged",
@@ -89,7 +84,6 @@
 		"material-icons": "^1.10.4",
 		"md5": "^2.3.0",
 		"ngx-color": "^7.3.3",
-		"nw": "^0.75.0",
 		"pako": "^2.0.4",
 		"percent-round": "^2.2.1",
 		"rxjs": "^7.5.1",
@@ -117,6 +111,8 @@
 		"@typescript-eslint/eslint-plugin": "^5.44.0",
 		"@typescript-eslint/parser": "^5.44.0",
 		"bestzip": "^2.2.0",
+		"electron": "^25.3.0",
+		"electron-packager": "^17.1.2",
 		"eslint": "^8.28.0",
 		"eslint-config-prettier": "^8.5.0",
 		"eslint-plugin-unicorn": "^47.0.0",
@@ -128,7 +124,6 @@
 		"jest-puppeteer": "^6.1.1",
 		"lint-staged": "^13.0.0",
 		"marked": "^4.3.0",
-		"nw-builder": "3.7.4",
 		"puppeteer": "^17.0.0",
 		"ts-jest": "^29.0.5",
 		"typescript": "~4.9.4",

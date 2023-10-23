@@ -19,8 +19,6 @@ import org.junit.jupiter.api.TestInstance
 import picocli.CommandLine
 import java.io.ByteArrayOutputStream
 import java.io.PrintStream
-import java.io.PrintWriter
-import java.io.StringWriter
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class CcshTest {
@@ -49,28 +47,29 @@ class CcshTest {
     @Test
     fun `should convert arguments to kebab-case`() {
         val outStream = ByteArrayOutputStream()
-        val originalOut = System.out
+        val originalErr = System.err
         System.setErr(PrintStream(outStream))
         val exitCode = Ccsh.executeCommandLine(arrayOf("edgefilter", ".", "--defaultExcludesS=AbC"))
 
         Assertions.assertThat(exitCode).isNotZero
         Assertions.assertThat(outStream.toString()).contains("--default-excludes-s=AbC")
-        System.setOut(originalOut)
+        System.setErr(originalErr)
     }
 
     @Test
     fun `should just show help message`() {
         mockkObject(ParserService)
-        val ccshCLI = CommandLine(Ccsh())
-        val contentOutput = StringWriter()
-        ccshCLI.out = PrintWriter(contentOutput)
+        val outStream = ByteArrayOutputStream()
+        val originalOut = System.out
+        System.setOut(PrintStream(outStream))
 
-        val exitCode = ccshCLI.execute("-h")
+        val exitCode = Ccsh.executeCommandLine(arrayOf("-h"))
 
         Assertions.assertThat(exitCode).isEqualTo(0)
-        Assertions.assertThat(contentOutput.toString())
+        Assertions.assertThat(outStream.toString())
             .contains("Usage: ccsh [-hiv] [COMMAND]", "Command Line Interface for CodeCharta analysis")
         verify(exactly = 0) { ParserService.executePreconfiguredParser(any(), any()) }
+        System.setOut(originalOut)
     }
 
     @Test

@@ -51,16 +51,17 @@ Components that export data from visualisation data to other formats.
 ## Requirements
 
 -   Bash or similar
--   JRE 8-11 (Oracle Java or OpenJDK)
+-   JRE 11+
 
-# Installation
+# Installation methods
 
 You can start with **Codecharta Analysis** on multiple ways:
 
--   Installation as a [npm package](#installation-via-npm) (Recommended)
+-   [Installation](#installation-via-npm) as a [npm package](#installation-via-npm) (Recommended for users)
 -   Use our [Docker Image](#installation-via-docker) to run the analysis in a container
 -   Use [docker-compose](https://maibornwolff.github.io/codecharta/docs/docker-containers/) to run the analysis in a complete environment with other needed tools like Sonar and a running CodeCharta Visualization instance to view your city map.
--   Download the SourceCode and [build it yourself](#manual-installation)
+-   Download the SourceCode from the asset section of a release and [extract it](#extract-tar-or-zip-archive)
+-   Clone the repository and [build it yourself](#build-it-yourself) (Development)
 
 ## Installation via npm
 
@@ -84,7 +85,7 @@ To containerize the analysis, please follow the below listed steps.
 -   After executing the run command once, you can repeat the same docker configuration with `docker start codecharta-analysis` or you have to change the name or delete the old container if you want to `docker run` a different configuration.
 -   After analysing, you can copy any results with `docker cp codecharta-analysis:/your/path/fileName.cc.json fileName.cc.json` to your current working directory (replace `/your/path/` with correct path in container). If this does not work, make sure you assigned the name `codecharta-analysis` to your container, if not use the correct name or container id.
 
-## Manual Installation
+## Extract tar or zip archive
 
 -   Download / build package
 -   Unzip / untar package in desired destination folder (named CC_INSTALL_DIR)
@@ -95,7 +96,7 @@ To containerize the analysis, please follow the below listed steps.
     -   Enter `ccsh` and press `TAB` to see available commands
     -   Enter `ccsh <ANY-COMMAND> -` and press `TAB` to see available parameters
 
-# Other
+# Build it yourself
 
 ## Build
 

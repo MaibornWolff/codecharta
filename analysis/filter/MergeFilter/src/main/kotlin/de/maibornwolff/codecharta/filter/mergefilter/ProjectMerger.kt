@@ -67,10 +67,11 @@ class ProjectMerger(private val projects: List<Project>, private val nodeMerger:
         projects.forEach {
             it.attributeTypes.forEach { attributeTypes ->
                 val key: String = attributeTypes.key
-                if (mergedAttributeTypes.containsKey(key)) {
+                val mergedAttributeType = mergedAttributeTypes[key]
+                if (mergedAttributeType != null) {
                     attributeTypes.value.forEach { attribute ->
-                        if (!mergedAttributeTypes[key]!!.containsKey(attribute.key)) {
-                            mergedAttributeTypes[key]!![attribute.key] = attribute.value
+                        if (!mergedAttributeType.containsKey(attribute.key)) {
+                            mergedAttributeType[attribute.key] = attribute.value
                         }
                     }
                 } else {

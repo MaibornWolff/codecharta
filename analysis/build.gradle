@@ -19,7 +19,7 @@ buildscript {
         picocli_version = '4.7.5'
         slf4j_version = '2.0.7'
         sonar_java_version = '6.8.0.23379'
-        sonarqube_version = '3.0'
+        sonarqube_version = '4.4.1.3373'
         univocity_parsers_version = '2.9.1'
 
         // Test dependency versions
@@ -46,13 +46,13 @@ buildscript {
     }
     dependencies {
         classpath group: 'org.jetbrains.kotlin', name: 'kotlin-gradle-plugin', version: kotlin_version
-
     }
 }
 
 plugins {
     id 'distribution'
     id "org.jlleitschuh.gradle.ktlint" version "${ktlint_version}"
+    id 'org.sonarqube' version "${sonarqube_version}"
 }
 
 allprojects {
@@ -63,7 +63,8 @@ allprojects {
 
     apply plugin: 'jacoco'
     apply plugin: 'maven-publish'
-    apply plugin: "org.jlleitschuh.gradle.ktlint"
+    apply plugin: 'org.jlleitschuh.gradle.ktlint'
+    apply plugin: 'org.sonarqube'
 
     jacoco {
         toolVersion = jacoco_version
@@ -90,10 +91,16 @@ subprojects {
         testLogging {
             events "passed", "skipped", "failed"
         }
+
+        finalizedBy jacocoTestReport
+    }
+
+    jacocoTestReport {
+        dependsOn test
     }
 
     kotlin {
-        jvmToolchain(8)
+        jvmToolchain(11)
     }
 
     kapt {
@@ -101,6 +108,7 @@ subprojects {
             arg("project", "${project.group}/${project.name}")
         }
     }
+
 }
 
 distributions {
@@ -149,6 +157,8 @@ task integrationTest(type: Exec) {
 
 task jacocoTestReport(type: JacocoReport) {
 
+    dependsOn subprojects*.jacocoTestReport
+
     // Gather execution data from all subprojects
     executionData fileTree(project.rootDir.absolutePath).include("**/build/jacoco/*.exec")
 
@@ -164,9 +174,11 @@ task jacocoTestReport(type: JacocoReport) {
     }
 }
 
-// always run the tests before generating the report
-jacocoTestReport.dependsOn {
-    subprojects*.test
+sonar {
+  properties {
+    property "sonar.coverage.jacoco.xmlReportPaths", "${project.rootDir}/build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml"
+  }
 }
 
 integrationTest.dependsOn build
+project.tasks["sonar"].dependsOn "build", "jacocoTestReport"

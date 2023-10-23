@@ -17,7 +17,7 @@ open class MetricNameTranslator(
 
     open fun translate(oldMetricName: String): String {
         return when {
-            translationMap.containsKey(oldMetricName) -> translationMap[oldMetricName]!!
+            translationMap.containsKey(oldMetricName) -> translationMap.getValue(oldMetricName)
             else -> prefix + oldMetricName.lowercase(Locale.getDefault()).replace(' ', '_')
         }
     }

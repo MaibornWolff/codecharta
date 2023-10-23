@@ -7,11 +7,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
-## [1.120.0] - 2023-09-17
-
 ### Fixed 🐞
 
-- Fix Deselected buildings with green/red roof in delta mode do not reset their color roof [#3368](https://github.com/MaibornWolff/codecharta/pull/3368)
+-   Fix command not found issue for --version and --help in the analysis [#3377](https://github.com/MaibornWolff/codecharta/pull/3377)
+-   Fix Deselected buildings with green/red roof in delta mode do not reset their color roof [#3368](https://github.com/MaibornWolff/codecharta/pull/3368)
+
+### Chore 👨‍💻 👩‍💻
+
+-   Raise minimum required Java Version from 8 to 11 [#3359](https://github.com/MaibornWolff/codecharta/pull/3359)
+-   Swap nw.js to electron for standalone execution [#3373](https://github.com/MaibornWolff/codecharta/pull/3373)
 
 ## [1.119.1] - 2023-08-03
 

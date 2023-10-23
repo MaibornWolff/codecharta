@@ -82,7 +82,7 @@ open class ProjectBuilder(
         if (!attributeTypes.containsKey(attributeTypesToAdd.type)) {
             attributeTypes[attributeTypesToAdd.type] = attributeTypesToAdd.attributeTypes.toMutableMap()
         } else {
-            attributeTypes[attributeTypesToAdd.type]!!.plus(attributeTypesToAdd.attributeTypes)
+            attributeTypes.getValue(attributeTypesToAdd.type).putAll(attributeTypesToAdd.attributeTypes)
         }
         return this
     }
@@ -120,6 +120,6 @@ open class ProjectBuilder(
     }
 
     override fun toString(): String {
-        return "Project{nodes=$nodes, edges=$edges, attributeTypes=$attributeTypes, blacklist=$blacklist}"
+        return "Project{nodes=$nodes, edges=$edges, attributeTypes=$attributeTypes, attributeDescriptors=$attributeDescriptors, blacklist=$blacklist}"
     }
 }

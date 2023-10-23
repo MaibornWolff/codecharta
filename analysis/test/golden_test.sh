@@ -45,7 +45,7 @@ check_gitlogparser_log_scan() {
   echo " -- expect GitLogParser log-scan subcommand to produce valid cc.json file"
   ACTUAL_GITLOG_JSON_LOG_SCAN="${INSTALL_DIR}/actual_gitlogparser_log_scan.cc.json"
   returnCode="0"
-  timeout 60s "${CCSH}" gitlogparser "log-scan" --git-log "${DATA}/gitlogparser-cc.txt" --repo-files "${DATA}/gitlogparser-cc-filelist.txt" -o "${ACTUAL_GITLOG_JSON_LOG_SCAN}" -nc || returnCode="$?"
+  timeout 60s "${CCSH}" gitlogparser "log-scan" --git-log "${DATA}/gitlogparser-cc.txt" --repo-files "${DATA}/gitlogparser-cc-filelist.txt" -o "${ACTUAL_GITLOG_JSON_LOG_SCAN}" --silent=true -nc || returnCode="$?"
   if [ "$returnCode" -eq 124 ]; then
     exit_with_err "Parser got stuck, this is likely due to an open System.in stream not handled correctly"
   elif [ "$returnCode" -ne 0 ]; then
@@ -58,7 +58,7 @@ check_gitlogparser_repo_scan() {
   echo " -- expect GitLogParser repo-scan subcommand to produce valid cc.json file"
   ACTUAL_GITLOG_JSON_REPO_SCAN="${INSTALL_DIR}/actual_gitlogparser_repo_scan.cc.json"
   returnCode="0"
-  timeout 120s "${CCSH}" gitlogparser "repo-scan" --repo-path "$(dirname "$(dirname "$PWD")")" -o "${ACTUAL_GITLOG_JSON_REPO_SCAN}" -nc || returnCode="$?"
+  timeout 120s "${CCSH}" gitlogparser "repo-scan" --repo-path "$(dirname "$(dirname "$PWD")")" -o "${ACTUAL_GITLOG_JSON_REPO_SCAN}" --silent=true -nc || returnCode="$?"
   if [ "$returnCode" -eq 124 ]; then
     exit_with_err "Parser got stuck, this is likely due to an open System.in stream not handled correctly"
   elif [ "$returnCode" -ne 0 ]; then
@@ -171,9 +171,34 @@ check_pipe() {
   fi
 }
 
+check_help() {
+  echo " -- expected to put out help information"
+  sh "${CCSH}" --help >${INSTALL_DIR}/help_long_output 2>&1
+  sh "${CCSH}" -h >${INSTALL_DIR}/help_short_output 2>&1
+  if ! grep -q "Command Line Interface for CodeCharta analysis" ${INSTALL_DIR}/help_long_output; then
+    exit_with_err "ERR: Help not printed as expected"
+  fi
+  if ! grep -q "Command Line Interface for CodeCharta analysis" ${INSTALL_DIR}/help_short_output; then
+    exit_with_err "ERR: Help not printed as expected"
+  fi
+}
+
+check_version() {
+  echo " -- expected to put out version information"
+  sh "${CCSH}" --version >${INSTALL_DIR}/version_long_output  2>&1
+  sh "${CCSH}" -v >${INSTALL_DIR}/version_short_output 2>&1
+  if ! grep -q "$1" ${INSTALL_DIR}/version_long_output; then
+    exit_with_err "ERR: Version not printed as expected"
+  fi
+  if ! grep -q "$1" ${INSTALL_DIR}/version_short_output; then
+    exit_with_err "ERR: Version not printed as expected"
+  fi
+}
+
 run_tests() {
   echo
-  echo "Running Tests..."
+  echo "Running Tests"
+  java -version
   echo
 
   check_gitlogparser_log_scan
@@ -193,11 +218,14 @@ run_tests() {
 
   check_pipe
 
+  check_help
+  check_version "$1"
+
   echo
   echo "... Testing finished."
   echo
 }
 
 install_codecharta "../build/distributions/${CC_TAR_NAME}"
-run_tests
+run_tests "$1"
 deinstall_codecharta
