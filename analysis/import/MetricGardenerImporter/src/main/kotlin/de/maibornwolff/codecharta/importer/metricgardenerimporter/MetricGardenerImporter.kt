@@ -65,15 +65,12 @@ class MetricGardenerImporter(
                 inputFile!!.absolutePath, "--output-path", tempMgOutput.absolutePath
             )
             println("Running metric gardener, this might take some time for larger inputs...")
-            val processStartTime = System.currentTimeMillis() * 0.001
             ProcessBuilder(commandToExecute)
-                    // not actively discarding or redirecting the output of MetricGardener loses performance on larger folders
+                    // Not actively discarding or redirecting the output of MetricGardener loses performance on larger folders
                     .redirectOutput(ProcessBuilder.Redirect.DISCARD)
                     .redirectError(ProcessBuilder.Redirect.INHERIT)
                     .start()
                     .waitFor()
-            val processEndTime = System.currentTimeMillis() * 0.001
-            println("Metric gardener execution completed in %.2fs.".format(processEndTime - processStartTime))
             inputFile = tempMgOutput
         }
         val metricGardenerNodes: MetricGardenerNodes =
