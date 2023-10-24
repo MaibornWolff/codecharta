@@ -15,6 +15,7 @@ import java.io.IOException
 import java.io.PrintStream
 import java.nio.charset.Charset
 import java.util.concurrent.Callable
+import kotlin.system.exitProcess
 
 @CommandLine.Command(
     name = InteractiveParserHelper.MetricGardenerImporterConstants.name,
@@ -65,13 +66,17 @@ class MetricGardenerImporter(
                 inputFile!!.absolutePath, "--output-path", tempMgOutput.absolutePath
             )
             println("Running metric gardener, this might take some time for larger inputs...")
-            ProcessBuilder(commandToExecute)
+            val processExitCode = ProcessBuilder(commandToExecute)
                     // Not actively discarding or redirecting the output of MetricGardener loses performance on larger folders
                     .redirectOutput(ProcessBuilder.Redirect.DISCARD)
                     .redirectError(ProcessBuilder.Redirect.INHERIT)
                     .start()
                     .waitFor()
             inputFile = tempMgOutput
+            if (processExitCode != 0) {
+                println("Error while executing metric gardener! Process returned with status $processExitCode.")
+                exitProcess(processExitCode)
+            }
         }
         val metricGardenerNodes: MetricGardenerNodes =
             mapper.readValue(inputFile!!.reader(Charset.defaultCharset()), MetricGardenerNodes::class.java)
