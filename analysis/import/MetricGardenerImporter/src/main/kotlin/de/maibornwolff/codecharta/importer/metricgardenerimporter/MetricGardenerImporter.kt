@@ -9,13 +9,13 @@ import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import de.maibornwolff.codecharta.tools.interactiveparser.util.InteractiveParserHelper
 import de.maibornwolff.codecharta.util.InputHelper
 import de.maibornwolff.codecharta.util.ResourceSearchHelper
+import jdk.jshell.spi.ExecutionControl.InternalException
 import picocli.CommandLine
 import java.io.File
 import java.io.IOException
 import java.io.PrintStream
 import java.nio.charset.Charset
 import java.util.concurrent.Callable
-import kotlin.system.exitProcess
 
 @CommandLine.Command(
     name = InteractiveParserHelper.MetricGardenerImporterConstants.name,
@@ -74,8 +74,7 @@ class MetricGardenerImporter(
                     .waitFor()
             inputFile = tempMgOutput
             if (processExitCode != 0) {
-                println("Error while executing metric gardener! Process returned with status $processExitCode.")
-                exitProcess(processExitCode)
+                throw InternalException("Error while executing metric gardener! Process returned with status $processExitCode.")
             }
         }
         val metricGardenerNodes: MetricGardenerNodes =
