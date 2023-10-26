@@ -24,8 +24,8 @@ import java.io.PrintStream
 class CcshTest {
     private val outContent = ByteArrayOutputStream()
     private val originalOut = System.out
-    val errContent = ByteArrayOutputStream()
-    val originalErr = System.err
+    private val errContent = ByteArrayOutputStream()
+    private val originalErr = System.err
 
     private val cmdLine = CommandLine(Ccsh())
 
@@ -220,5 +220,34 @@ class CcshTest {
         Assertions.assertThat(exitCode).isEqualTo(0)
         Assertions.assertThat(errContent.toString())
                 .contains("Executing sonarimport")
+    }
+
+    @Test
+    fun `should not ask for merging results after using parser suggestions if only one parser was executed`() {
+        val selectedParsers = listOf("parser1")
+        val args = listOf(listOf("dummyArg1"))
+
+        mockkObject(InteractiveParserSuggestionDialog)
+        every {
+            InteractiveParserSuggestionDialog.offerAndGetInteractiveParserSuggestionsAndConfigurations(any())
+        } returns mapOf(selectedParsers[0] to args[0])
+
+        mockkObject(ParserService)
+        every {
+            ParserService.executePreconfiguredParser(any(), any())
+        } returns 0
+
+        mockkStatic("com.github.kinquirer.components.ConfirmKt")
+        every {
+            KInquirer.promptConfirm(any(), any())
+        } returns true
+
+        System.setErr(PrintStream(errContent))
+        val exitCode = Ccsh.executeCommandLine(emptyArray())
+        System.setErr(originalErr)
+
+        Assertions.assertThat(exitCode).isZero()
+        Assertions.assertThat(errContent.toString())
+                .contains("Parser was successfully executed and created a cc.json file.")
     }
 }

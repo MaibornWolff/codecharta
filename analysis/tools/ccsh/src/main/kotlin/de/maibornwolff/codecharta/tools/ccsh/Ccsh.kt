@@ -125,7 +125,7 @@ class Ccsh : Callable<Void?> {
                     val currentExitCode = executeConfiguredParser(commandLine, configuredParser)
                     if (currentExitCode != 0) {
                         exitCode.set(currentExitCode)
-                        logger.info("Code: $currentExitCode")
+                        logger.info { "Code: $currentExitCode" }
                     }
                 }
             }
@@ -133,13 +133,18 @@ class Ccsh : Callable<Void?> {
             threadPool.awaitTermination(1, TimeUnit.DAYS)
 
             val finalExitCode = exitCode.get()
-            logger.info("Code: $finalExitCode")
+            logger.info { "Code: $finalExitCode" }
             if (finalExitCode != 0) {
                 return finalExitCode
             }
             // Improvement: Try to extract merge commands before so user does not have to configure merge args?
-            logger.info("Each parser was successfully executed and created a cc.json file.")
-            return askAndMergeResults(commandLine)
+            return if (configuredParsers.size == 1) {
+                logger.info { "Parser was successfully executed and created a cc.json file." }
+                0
+            } else {
+                logger.info { "Each parser was successfully executed and created a cc.json file." }
+                askAndMergeResults(commandLine)
+            }
         }
 
         private fun askAndMergeResults(commandLine: CommandLine): Int {
@@ -178,7 +183,7 @@ class Ccsh : Callable<Void?> {
             val exitCode = ParserService.executePreconfiguredParser(commandLine, Pair(configuredParser.key, configuredParser.value))
 
             if (exitCode != 0) {
-                logger.info("Error executing ${configuredParser.key}, code $exitCode")
+                logger.info { "Error executing ${configuredParser.key}, code $exitCode" }
             }
 
             return exitCode
