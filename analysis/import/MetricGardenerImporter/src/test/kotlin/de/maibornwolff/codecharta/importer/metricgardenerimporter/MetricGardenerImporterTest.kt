@@ -142,13 +142,14 @@ class MetricGardenerImporterTest {
 
     @Test
     fun `should stop execution if error happens while executing metric gardener`() {
+        val npm = if (System.getProperty("os.name").contains("win", ignoreCase = true)) "npm.cmd" else "npm"
         val metricGardenerInvalidCommand = listOf(
-                "npm", "exec", "metric-gardener",
+                npm, "exec", "metric-gardener",
                 "--", "parse", "this/path/is/invalid", "-o", "MGout.json"
         )
         val metricGardenerInvalidInputProcess = ProcessBuilder(metricGardenerInvalidCommand)
         mockkConstructor(ProcessBuilder::class)
-        every { anyConstructed<ProcessBuilder>().start().waitFor() } returns metricGardenerInvalidInputProcess.inheritIO().start().waitFor()
+        every { anyConstructed<ProcessBuilder>().start().waitFor() } returns metricGardenerInvalidInputProcess.start().waitFor()
 
         System.setErr(PrintStream(errContent))
         CommandLine(MetricGardenerImporter()).execute("src").toString()
