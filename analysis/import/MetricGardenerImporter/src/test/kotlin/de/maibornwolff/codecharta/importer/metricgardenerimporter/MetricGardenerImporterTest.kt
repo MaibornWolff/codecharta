@@ -149,7 +149,10 @@ class MetricGardenerImporterTest {
         )
         val metricGardenerInvalidInputProcess = ProcessBuilder(metricGardenerInvalidCommand)
         mockkConstructor(ProcessBuilder::class)
-        every { anyConstructed<ProcessBuilder>().start().waitFor() } returns metricGardenerInvalidInputProcess.start().waitFor()
+        every { anyConstructed<ProcessBuilder>().start().waitFor() } returns metricGardenerInvalidInputProcess
+                .redirectError(ProcessBuilder.Redirect.DISCARD)
+                .start()
+                .waitFor()
 
         System.setErr(PrintStream(errContent))
         CommandLine(MetricGardenerImporter()).execute("src").toString()
