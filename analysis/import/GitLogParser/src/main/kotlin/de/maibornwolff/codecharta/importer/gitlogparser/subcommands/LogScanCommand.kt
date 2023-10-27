@@ -3,15 +3,16 @@ package de.maibornwolff.codecharta.importer.gitlogparser.subcommands
 import de.maibornwolff.codecharta.importer.gitlogparser.GitLogParser
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
+import de.maibornwolff.codecharta.tools.interactiveparser.util.CodeChartaConstants
 import de.maibornwolff.codecharta.util.InputHelper
 import picocli.CommandLine
 import java.io.File
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
-    name = "log-scan",
-    description = ["git log parser log-scan - generates cc.json from a given git-log file"],
-    footer = ["Copyright(c) 2022, MaibornWolff GmbH"]
+        name = LogScanCommand.NAME,
+        description = [LogScanCommand.DESCRIPTION],
+        footer = [CodeChartaConstants.General.GENERIC_FOOTER]
 )
 
 class LogScanCommand : Callable<Void>, InteractiveParser {
@@ -53,6 +54,14 @@ class LogScanCommand : Callable<Void>, InteractiveParser {
     @CommandLine.Option(names = ["--add-author"], description = ["add an array of authors to every file"])
     private var addAuthor = false
 
+    override val name = NAME
+    override val description = DESCRIPTION
+
+    companion object {
+        const val NAME = "log-scan"
+        const val DESCRIPTION = "git log parser log-scan - generates cc.json from a given git-log file"
+    }
+
     override fun call(): Void? {
         if (!InputHelper.isInputValidAndNotNull(arrayOf(gitLogFile), canInputContainFolders = false)) {
             throw IllegalArgumentException("Input invalid file for GitLogScan, stopping execution...")
@@ -64,9 +73,5 @@ class LogScanCommand : Callable<Void>, InteractiveParser {
     override fun getDialog(): ParserDialogInterface = LogScanParserDialog
     override fun isApplicable(resourceToBeParsed: String): Boolean {
         return false
-    }
-
-    override fun getName(): String {
-        return "log-scan"
     }
 }

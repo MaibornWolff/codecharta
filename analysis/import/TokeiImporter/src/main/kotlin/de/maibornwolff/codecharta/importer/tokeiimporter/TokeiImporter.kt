@@ -12,7 +12,7 @@ import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.serialization.mapLines
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
-import de.maibornwolff.codecharta.tools.interactiveparser.util.InteractiveParserHelper
+import de.maibornwolff.codecharta.tools.interactiveparser.util.CodeChartaConstants
 import de.maibornwolff.codecharta.util.InputHelper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -27,9 +27,9 @@ import java.io.PrintWriter
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
-    name = InteractiveParserHelper.TokeiImporterConstants.name,
-    description = [InteractiveParserHelper.TokeiImporterConstants.description],
-    footer = [InteractiveParserHelper.GeneralConstants.GenericFooter]
+        name = TokeiImporter.NAME,
+        description = [TokeiImporter.DESCRIPTION],
+        footer = [CodeChartaConstants.General.GENERIC_FOOTER]
 )
 class TokeiImporter(
     private val input: InputStream = System.`in`,
@@ -66,6 +66,22 @@ class TokeiImporter(
     private var file: File? = null
 
     private lateinit var importerStrategy: ImporterStrategy
+
+    override val name = NAME
+    override val description = DESCRIPTION
+
+    companion object {
+        const val NAME = "tokeiimporter"
+        const val DESCRIPTION = "generates cc.json from tokei json"
+
+        @JvmStatic
+        fun mainWithInOut(input: InputStream, output: PrintStream, error: PrintStream, args: Array<String>) {
+            CommandLine(TokeiImporter(input, output, error)).setOut(PrintWriter(output)).execute(*args)
+        }
+
+        @JvmStatic
+        val TOP_LEVEL_OBJECT = "inner"
+    }
 
     @Throws(IOException::class)
     override fun call(): Void? {
@@ -122,22 +138,8 @@ class TokeiImporter(
         return root
     }
 
-    companion object {
-        @JvmStatic
-        fun mainWithInOut(input: InputStream, output: PrintStream, error: PrintStream, args: Array<String>) {
-            CommandLine(TokeiImporter(input, output, error)).setOut(PrintWriter(output)).execute(*args)
-        }
-
-        @JvmStatic
-        val TOP_LEVEL_OBJECT = "inner"
-    }
-
     override fun getDialog(): ParserDialogInterface = ParserDialog
     override fun isApplicable(resourceToBeParsed: String): Boolean {
         return false
-    }
-
-    override fun getName(): String {
-        return InteractiveParserHelper.TokeiImporterConstants.name
     }
 }

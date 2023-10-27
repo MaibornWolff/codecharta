@@ -13,7 +13,7 @@ import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
-import de.maibornwolff.codecharta.tools.interactiveparser.util.InteractiveParserHelper
+import de.maibornwolff.codecharta.tools.interactiveparser.util.CodeChartaConstants
 import de.maibornwolff.codecharta.util.ResourceSearchHelper
 import org.mozilla.universalchardet.UniversalDetector
 import picocli.CommandLine
@@ -27,10 +27,10 @@ import java.util.concurrent.Callable
 import java.util.stream.Stream
 
 @CommandLine.Command(
-    name = InteractiveParserHelper.GitLogParserConstants.name,
-    description = [InteractiveParserHelper.GitLogParserConstants.description],
+        name = GitLogParser.NAME,
+        description = [GitLogParser.DESCRIPTION],
     subcommands = [LogScanCommand::class, RepoScanCommand::class],
-    footer = [InteractiveParserHelper.GeneralConstants.GenericFooter]
+        footer = [CodeChartaConstants.General.GENERIC_FOOTER]
 )
 class GitLogParser(
     private val input: InputStream = System.`in`,
@@ -42,6 +42,34 @@ class GitLogParser(
 
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
+
+    override val name = NAME
+    override val description = DESCRIPTION
+
+    companion object {
+        const val NAME = "gitlogparser"
+        const val DESCRIPTION = "generates cc.json from git-log files"
+
+        @JvmStatic
+        fun main(args: Array<String>) {
+            CommandLine(GitLogParser()).execute(*args)
+        }
+
+        private fun guessEncoding(pathToLog: File): String? {
+            val inputStream = pathToLog.inputStream()
+            val buffer = ByteArray(4096)
+            val detector = UniversalDetector(null)
+
+            var sizeRead = inputStream.read(buffer)
+            while (sizeRead > 0 && !detector.isDone) {
+                detector.handleData(buffer, 0, sizeRead)
+                sizeRead = inputStream.read(buffer)
+            }
+            detector.dataEnd()
+
+            return detector.detectedCharset
+        }
+    }
 
     private val logParserStrategy: LogParserStrategy
         get() = getLogParserStrategyByInputFormat(inputFormatNames)
@@ -131,34 +159,9 @@ class GitLogParser(
         )
     }
 
-    companion object {
-        private fun guessEncoding(pathToLog: File): String? {
-            val inputStream = pathToLog.inputStream()
-            val buffer = ByteArray(4096)
-            val detector = UniversalDetector(null)
-
-            var sizeRead = inputStream.read(buffer)
-            while (sizeRead > 0 && !detector.isDone) {
-                detector.handleData(buffer, 0, sizeRead)
-                sizeRead = inputStream.read(buffer)
-            }
-            detector.dataEnd()
-
-            return detector.detectedCharset
-        }
-
-        @JvmStatic
-        fun main(args: Array<String>) {
-            CommandLine(GitLogParser()).execute(*args)
-        }
-    }
-
     override fun getDialog(): ParserDialogInterface = ParserDialog
     override fun isApplicable(resourceToBeParsed: String): Boolean {
         println("Checking if GitLogParser is applicable...")
         return ResourceSearchHelper.isFolderDirectlyInGivenDirectory(resourceToBeParsed, ".git")
-    }
-    override fun getName(): String {
-        return InteractiveParserHelper.GitLogParserConstants.name
     }
 }

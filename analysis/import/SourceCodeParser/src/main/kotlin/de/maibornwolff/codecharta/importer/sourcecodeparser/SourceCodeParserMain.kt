@@ -7,7 +7,7 @@ import de.maibornwolff.codecharta.serialization.OutputFileHandler
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
-import de.maibornwolff.codecharta.tools.interactiveparser.util.InteractiveParserHelper
+import de.maibornwolff.codecharta.tools.interactiveparser.util.CodeChartaConstants
 import de.maibornwolff.codecharta.util.InputHelper
 import de.maibornwolff.codecharta.util.ResourceSearchHelper
 import picocli.CommandLine
@@ -23,9 +23,9 @@ import java.io.Writer
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
-    name = InteractiveParserHelper.SourceCodeParserConstants.name,
-    description = [InteractiveParserHelper.SourceCodeParserConstants.description],
-    footer = [InteractiveParserHelper.SourceCodeParserConstants.footer]
+        name = SourceCodeParserMain.NAME,
+        description = [SourceCodeParserMain.DESCRIPTION],
+        footer = [SourceCodeParserMain.FOOTER]
 )
 class SourceCodeParserMain(
     private val outputStream: PrintStream,
@@ -71,6 +71,33 @@ class SourceCodeParserMain(
     @CommandLine.Parameters(arity = "1", paramLabel = "FOLDER or FILE", description = ["project folder or code file"])
     private var file: File? = null
 
+    override val name = NAME
+    override val description = DESCRIPTION
+
+    companion object {
+        const val NAME = "sourcecodeparser"
+        const val DESCRIPTION = "generates cc.json from source code"
+        const val FOOTER = "This program uses the SonarJava, which is licensed under the GNU Lesser General Public Library, version 3.\n" +
+                CodeChartaConstants.General.GENERIC_FOOTER
+
+        @JvmStatic
+        fun main(args: Array<String>) {
+            mainWithOutputStream(System.out, args)
+        }
+
+        @JvmStatic
+        fun mainWithOutputStream(outputStream: PrintStream, args: Array<String>) {
+            CommandLine(SourceCodeParserMain(outputStream)).execute(*args)
+        }
+
+        @JvmStatic
+        fun mainWithInOut(outputStream: PrintStream, input: InputStream, error: PrintStream, args: Array<String>) {
+            CommandLine(SourceCodeParserMain(outputStream, input, error))
+                    .setOut(PrintWriter(outputStream))
+                    .execute(*args)
+        }
+    }
+
     @Throws(IOException::class)
     override fun call(): Void? {
         print(" ")
@@ -109,32 +136,9 @@ class SourceCodeParserMain(
 
     private fun getJsonOutputStream() = OutputFileHandler.stream(outputFile?.absolutePath, outputStream, compress)
 
-    companion object {
-        @JvmStatic
-        fun main(args: Array<String>) {
-            mainWithOutputStream(System.out, args)
-        }
-
-        @JvmStatic
-        fun mainWithOutputStream(outputStream: PrintStream, args: Array<String>) {
-            CommandLine(SourceCodeParserMain(outputStream)).execute(*args)
-        }
-
-        @JvmStatic
-        fun mainWithInOut(outputStream: PrintStream, input: InputStream, error: PrintStream, args: Array<String>) {
-            CommandLine(SourceCodeParserMain(outputStream, input, error))
-                .setOut(PrintWriter(outputStream))
-                .execute(*args)
-        }
-    }
-
     override fun getDialog(): ParserDialogInterface = ParserDialog
     override fun isApplicable(resourceToBeParsed: String): Boolean {
         println("Checking if SourceCodeParser is applicable...")
         return ResourceSearchHelper.isFileWithOneOrMoreOfEndingsPresent(resourceToBeParsed, listOf(".java"))
-    }
-
-    override fun getName(): String {
-        return InteractiveParserHelper.SourceCodeParserConstants.name
     }
 }

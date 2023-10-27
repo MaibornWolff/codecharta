@@ -8,7 +8,7 @@ import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
-import de.maibornwolff.codecharta.tools.interactiveparser.util.InteractiveParserHelper
+import de.maibornwolff.codecharta.tools.interactiveparser.util.CodeChartaConstants
 import de.maibornwolff.codecharta.util.InputHelper
 import picocli.CommandLine
 import java.io.BufferedWriter
@@ -20,11 +20,11 @@ import java.io.Writer
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
-    name = InteractiveParserHelper.CSVExporterConstants.name,
-    description = [InteractiveParserHelper.CSVExporterConstants.description],
-    footer = [InteractiveParserHelper.GeneralConstants.GenericFooter]
+        name = CSVExporter.NAME,
+        description = [CSVExporter.DESCRIPTION],
+        footer = [CodeChartaConstants.General.GENERIC_FOOTER]
 )
-class CSVExporter : Callable<Void>, InteractiveParser {
+class CSVExporter() : Callable<Void>, InteractiveParser {
 
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
@@ -37,6 +37,19 @@ class CSVExporter : Callable<Void>, InteractiveParser {
 
     @CommandLine.Option(names = ["--depth-of-hierarchy"], description = ["depth of the hierarchy"])
     private var maxHierarchy: Int = 10
+
+    override val name = NAME
+    override val description = DESCRIPTION
+
+    companion object {
+        const val NAME = "csvexport"
+        const val DESCRIPTION = "generates csv file with header"
+
+        @JvmStatic
+        fun main(args: Array<String>) {
+            CommandLine(CSVExporter()).execute()
+        }
+    }
 
     private fun writer(): Writer {
         return if (outputFile.isEmpty()) {
@@ -96,20 +109,9 @@ class CSVExporter : Callable<Void>, InteractiveParser {
         }
     }
 
-    companion object {
-        @JvmStatic
-        fun main(args: Array<String>) {
-            CommandLine(CSVExporter()).execute()
-        }
-    }
-
     override fun getDialog(): ParserDialogInterface = ParserDialog
     override fun isApplicable(resourceToBeParsed: String): Boolean {
         return false
-    }
-
-    override fun getName(): String {
-        return InteractiveParserHelper.CSVExporterConstants.name
     }
 }
 

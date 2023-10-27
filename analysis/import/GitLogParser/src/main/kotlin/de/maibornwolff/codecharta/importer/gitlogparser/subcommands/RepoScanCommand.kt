@@ -12,8 +12,8 @@ import java.nio.file.Paths
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
-    name = "repo-scan",
-    description = ["git log parser repo-scan - generates cc.json from an automatically generated git-log file"],
+        name = RepoScanCommand.NAME,
+        description = [RepoScanCommand.DESCRIPTION],
     footer = ["Copyright(c) 2022, MaibornWolff GmbH"]
 )
 
@@ -44,6 +44,14 @@ class RepoScanCommand : Callable<Void>, InteractiveParser {
 
     @CommandLine.Option(names = ["--add-author"], description = ["add an array of authors to every file"])
     private var addAuthor = false
+
+    override val name = NAME
+    override val description = DESCRIPTION
+
+    companion object {
+        const val NAME = "repo-scan"
+        const val DESCRIPTION = "git log parser repo-scan - generates cc.json from an automatically generated git-log file"
+    }
 
     override fun call(): Void? {
         val repoPath: Path
@@ -85,9 +93,5 @@ class RepoScanCommand : Callable<Void>, InteractiveParser {
     override fun getDialog(): ParserDialogInterface = RepoScanParserDialog
     override fun isApplicable(resourceToBeParsed: String): Boolean {
         return false
-    }
-
-    override fun getName(): String {
-        return "repo-scan"
     }
 }

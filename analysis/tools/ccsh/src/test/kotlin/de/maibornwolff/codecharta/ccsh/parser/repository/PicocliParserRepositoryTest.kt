@@ -18,6 +18,7 @@ import de.maibornwolff.codecharta.tools.ccsh.Ccsh
 import de.maibornwolff.codecharta.tools.ccsh.parser.repository.PicocliParserRepository
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
+import de.maibornwolff.codecharta.tools.validation.ValidationTool
 import io.mockk.every
 import io.mockk.mockkClass
 import io.mockk.mockkConstructor
@@ -29,6 +30,9 @@ import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.Arguments
+import org.junit.jupiter.params.provider.MethodSource
 import picocli.CommandLine
 import java.io.ByteArrayOutputStream
 import java.io.PrintStream
@@ -64,34 +68,49 @@ class PicocliParserRepositoryTest {
                 SonarImporterMain(), SourceMonitorImporter(),
                 SVNLogParser(), GitLogParser(),
                 SourceCodeParserMain(), CodeMaatImporter(),
-                TokeiImporter(), RawTextParser(), MetricGardenerImporter())
+                TokeiImporter(), RawTextParser(),
+                MetricGardenerImporter(), ValidationTool())
     }
 
-    private fun getExpectedParserNamesWithDescription(): List<String> {
-        return listOf(CSVExporter().getName() + " - generates csv file with header",
-                EdgeFilter().getName() + " - aggregates edgeAttributes as nodeAttributes into a new cc.json file",
-                MergeFilter().getName() + " - merges multiple cc.json files",
-                StructureModifier().getName() + " - changes the structure of cc.json files",
-                CSVImporter().getName() + " - generates cc.json from csv with header",
-                SonarImporterMain().getName() + " - generates cc.json from metric data from SonarQube",
-                SourceMonitorImporter().getName() + " - generates cc.json from sourcemonitor csv",
-                SVNLogParser().getName() + " - generates cc.json from svn log file",
-                GitLogParser().getName() + " - generates cc.json from git-log files",
-                SourceCodeParserMain().getName() + " - generates cc.json from source code",
-                CodeMaatImporter().getName() + " - generates cc.json from codemaat coupling csv",
-                TokeiImporter().getName() + " - generates cc.json from tokei json",
-                RawTextParser().getName() + " - generates cc.json from projects or source code files",
-                MetricGardenerImporter().getName() + " - generates a cc.json file from a project parsed with metric-gardener." +
-                "Caution - this parser is still experimental and may take a long time to parse code!")
+    companion object {
+        @JvmStatic
+        fun getArgumentsOfExpectedParserNamesWithDescriptions(): List<Arguments> {
+            val expectedParserNamesWithDescriptions = getExpectedParserNamesWithDescription()
+            val result = mutableListOf<Arguments>()
+
+            for (expectedParserNameWithDescription in expectedParserNamesWithDescriptions) {
+                result.add(Arguments.of(expectedParserNameWithDescription))
+            }
+            return result
+        }
+
+        fun getExpectedParserNamesWithDescription(): List<List<String>> {
+            return listOf(
+                    listOf(CSVExporter.NAME, " - " + CSVExporter.DESCRIPTION),
+                    listOf(EdgeFilter.NAME, " - " + EdgeFilter.DESCRIPTION),
+                    listOf(MergeFilter.NAME, " - " + MergeFilter.DESCRIPTION),
+                    listOf(StructureModifier.NAME, " - " + StructureModifier.DESCRIPTION),
+                    listOf(CSVImporter.NAME, " - " + CSVImporter.DESCRIPTION),
+                    listOf(SonarImporterMain.NAME, " - " + SonarImporterMain.DESCRIPTION),
+                    listOf(SourceMonitorImporter.NAME, " - " + SourceMonitorImporter.DESCRIPTION),
+                    listOf(SVNLogParser.NAME, " - " + SVNLogParser.DESCRIPTION),
+                    listOf(GitLogParser.NAME, " - " + GitLogParser.DESCRIPTION),
+                    listOf(SourceCodeParserMain.NAME, " - " + SourceCodeParserMain.DESCRIPTION),
+                    listOf(CodeMaatImporter.NAME, " - " + CodeMaatImporter.DESCRIPTION),
+                    listOf(TokeiImporter.NAME, " - " + TokeiImporter.DESCRIPTION),
+                    listOf(RawTextParser.NAME, " - " + RawTextParser.DESCRIPTION),
+                    listOf(ValidationTool.NAME, " - " + ValidationTool.DESCRIPTION),
+                    listOf(MetricGardenerImporter.NAME, " - " + MetricGardenerImporter.DESCRIPTION))
+        }
     }
 
     @Test
     fun `should return all interactive parsers`() {
         val expectedParsers = getExpectedParsers()
-        val expectedParserNames = expectedParsers.map { it.getName() }
+        val expectedParserNames = expectedParsers.map { it.getParserName() }
 
         val actualParsers = picocliParserRepository.getAllInteractiveParsers(cmdLine)
-        val actualParserNames = actualParsers.map { it.getName() }
+        val actualParserNames = actualParsers.map { it.getParserName() }
 
         for (parser in expectedParserNames) {
             Assertions.assertTrue(actualParserNames.contains(parser))
@@ -101,7 +120,7 @@ class PicocliParserRepositoryTest {
     @Test
     fun `should return all interactive parser names`() {
         val expectedParsers = getExpectedParsers()
-        val expectedParserNames = expectedParsers.map { it.getName() }
+        val expectedParserNames = expectedParsers.map { it.getParserName() }
 
         val actualParserNames = picocliParserRepository.getInteractiveParserNames(cmdLine)
 
@@ -111,26 +130,39 @@ class PicocliParserRepositoryTest {
     }
 
     @Test
-    fun `should return all usable parser names`() {
-        // Names are chosen arbitrarily
+    fun `should return only applicable parser names with description`() {
         val usableParser = mockParserObject("gitlogparser", true)
         val unusableParser = mockParserObject("sonarimport", false)
 
-        val usableParsers = picocliParserRepository.getApplicableInteractiveParserNames("input", listOf(usableParser, unusableParser))
+        val usableParsers = picocliParserRepository.getApplicableInteractiveParserNamesWithDescription("input", listOf(usableParser, unusableParser))
 
-        Assertions.assertTrue(usableParsers.contains("gitlogparser"))
-        Assertions.assertFalse(usableParsers.contains("sonarimport"))
+        Assertions.assertTrue(usableParsers.contains("gitlogparser - generates cc.json from git-log files"))
+        Assertions.assertFalse(usableParsers.contains("sonarimport - generates cc.json from metric data from SonarQube"))
+    }
+
+    @ParameterizedTest
+    @MethodSource("getArgumentsOfExpectedParserNamesWithDescriptions")
+    fun `should return all applicable parser names with description`(parserNameWithDescription: List<String>) {
+        val parser = mockParserObject(parserNameWithDescription[0], true)
+        val parserNameAndDescription = parserNameWithDescription[0] + parserNameWithDescription[1]
+
+        val applicableParser = picocliParserRepository.getApplicableInteractiveParserNamesWithDescription("input", listOf(parser))
+
+        Assertions.assertTrue(applicableParser.size == 1)
+        Assertions.assertTrue(applicableParser[0] == parserNameAndDescription)
     }
 
     @Test
     fun `should return all parser names with description`() {
-        // Names are chosen arbitrarily
         val expectedParserNamesWithDescription = getExpectedParserNamesWithDescription()
 
         val actualParserNamesWithDescription = picocliParserRepository.getInteractiveParserNamesWithDescription(cmdLine)
 
-        for (parserNameWithDescription in expectedParserNamesWithDescription) {
-            Assertions.assertTrue(actualParserNamesWithDescription.contains(parserNameWithDescription))
+        for (parserNameWithDescriptionList in expectedParserNamesWithDescription) {
+            val parserNameWithDescription = parserNameWithDescriptionList[0] + parserNameWithDescriptionList[1]
+            Assertions.assertTrue(
+                    actualParserNamesWithDescription
+                            .contains(parserNameWithDescription))
         }
     }
 
@@ -138,10 +170,13 @@ class PicocliParserRepositoryTest {
     fun `should return the selected parser name`() {
         val expectedParserNamesWithDescription = getExpectedParserNamesWithDescription()
         val expectedParsers = getExpectedParsers()
-        val expectedParserNames = expectedParsers.map { it.getName() }
+        val expectedParserNames = expectedParsers.map { it.getParserName() }
 
-        for (parser in expectedParserNamesWithDescription) {
-            Assertions.assertTrue(expectedParserNames.contains(picocliParserRepository.extractParserName(parser)))
+        for (parserNameDescriptionList in expectedParserNamesWithDescription) {
+            val parserName = parserNameDescriptionList[0]
+            Assertions.assertTrue(
+                    expectedParserNames.contains(
+                            picocliParserRepository.extractParserName(parserName)))
         }
     }
 
@@ -168,7 +203,7 @@ class PicocliParserRepositoryTest {
             obj.isApplicable(any())
         } returns isUsable
         every {
-            obj.getName()
+            obj.getParserName()
         } returns name
         mockkConstructor(CommandLine::class)
         every { anyConstructed<CommandLine>().execute(*dummyArgs.toTypedArray()) } returns 0

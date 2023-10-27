@@ -4,7 +4,7 @@ import de.maibornwolff.codecharta.importer.csv.CSVProjectBuilder
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
-import de.maibornwolff.codecharta.tools.interactiveparser.util.InteractiveParserHelper
+import de.maibornwolff.codecharta.tools.interactiveparser.util.CodeChartaConstants
 import de.maibornwolff.codecharta.translator.MetricNameTranslator
 import de.maibornwolff.codecharta.util.InputHelper
 import picocli.CommandLine
@@ -15,9 +15,9 @@ import java.io.PrintStream
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
-    name = InteractiveParserHelper.SourceMonitorImporterConstants.name,
-    description = [InteractiveParserHelper.SourceMonitorImporterConstants.description],
-    footer = [InteractiveParserHelper.GeneralConstants.GenericFooter]
+        name = SourceMonitorImporter.NAME,
+        description = [SourceMonitorImporter.DESCRIPTION],
+        footer = [CodeChartaConstants.General.GENERIC_FOOTER]
 )
 class SourceMonitorImporter(
     private val output: PrintStream = System.out
@@ -38,6 +38,19 @@ class SourceMonitorImporter(
     private val pathSeparator = '\\'
 
     private val csvDelimiter = ','
+
+    override val name = NAME
+    override val description = DESCRIPTION
+
+    companion object {
+        const val NAME = "sourcemonitorimport"
+        const val DESCRIPTION = "generates cc.json from sourcemonitor csv"
+
+        @JvmStatic
+        fun main(args: Array<String>) {
+            CommandLine(SourceMonitorImporter()).execute(*args)
+        }
+    }
 
     @Throws(IOException::class)
     override fun call(): Void? {
@@ -82,18 +95,8 @@ class SourceMonitorImporter(
             return MetricNameTranslator(replacementMap.toMap(), prefix)
         }
 
-    companion object {
-        @JvmStatic
-        fun main(args: Array<String>) {
-            CommandLine(SourceMonitorImporter()).execute(*args)
-        }
-    }
-
     override fun getDialog(): ParserDialogInterface = ParserDialog
     override fun isApplicable(resourceToBeParsed: String): Boolean {
         return false
-    }
-    override fun getName(): String {
-        return InteractiveParserHelper.SourceMonitorImporterConstants.name
     }
 }

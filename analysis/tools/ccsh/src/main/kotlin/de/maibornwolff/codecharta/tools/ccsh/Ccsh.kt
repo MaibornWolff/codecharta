@@ -20,7 +20,7 @@ import de.maibornwolff.codecharta.parser.rawtextparser.RawTextParser
 import de.maibornwolff.codecharta.tools.ccsh.parser.InteractiveParserSuggestionDialog
 import de.maibornwolff.codecharta.tools.ccsh.parser.ParserService
 import de.maibornwolff.codecharta.tools.ccsh.parser.repository.PicocliParserRepository
-import de.maibornwolff.codecharta.tools.interactiveparser.util.InteractiveParserHelper
+import de.maibornwolff.codecharta.tools.interactiveparser.util.CodeChartaConstants
 import de.maibornwolff.codecharta.tools.validation.ValidationTool
 import mu.KotlinLogging
 import picocli.CommandLine
@@ -53,7 +53,7 @@ import kotlin.system.exitProcess
         MetricGardenerImporter::class
     ],
     versionProvider = Ccsh.ManifestVersionProvider::class,
-    footer = ["Copyright(c) 2022, MaibornWolff GmbH"]
+        footer = [CodeChartaConstants.General.GENERIC_FOOTER]
 )
 
 class Ccsh : Callable<Void?> {
@@ -171,7 +171,7 @@ class Ccsh : Callable<Void?> {
                                 "--ignore-case=false"
                               )
 
-                val map = mapOf(InteractiveParserHelper.MergeFilterConstants.name to mergeArguments)
+                val map = mapOf(MergeFilter.NAME to mergeArguments)
                 executeConfiguredParser(commandLine, map.entries.first())
             } else {
                 0
