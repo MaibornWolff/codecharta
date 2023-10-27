@@ -8,7 +8,7 @@ import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
-import de.maibornwolff.codecharta.tools.interactiveparser.util.InteractiveParserHelper
+import de.maibornwolff.codecharta.tools.interactiveparser.util.CodeChartaConstants
 import de.maibornwolff.codecharta.util.ResourceSearchHelper
 import picocli.CommandLine
 import java.io.File
@@ -18,9 +18,9 @@ import java.net.URL
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
-    name = InteractiveParserHelper.SonarImporterConstants.name,
-    description = [InteractiveParserHelper.SonarImporterConstants.description],
-    footer = [InteractiveParserHelper.GeneralConstants.GenericFooter]
+        name = SonarImporterMain.NAME,
+        description = [SonarImporterMain.DESCRIPTION],
+        footer = [CodeChartaConstants.General.GENERIC_FOOTER]
 )
 class SonarImporterMain(
     private val input: InputStream = System.`in`,
@@ -67,6 +67,14 @@ class SonarImporterMain(
 
     @CommandLine.Option(names = ["--merge-modules"], description = ["merges modules in multi-module projects"])
     private var usePath = false
+
+    override val name = NAME
+    override val description = DESCRIPTION
+
+    companion object {
+        const val NAME = "sonarimport"
+        const val DESCRIPTION = "generates cc.json from metric data from SonarQube"
+    }
 
     private fun createMeasuresAPIImporter(): SonarMeasuresAPIImporter {
         if (url.endsWith("/")) url = url.substring(0, url.length - 1)
@@ -125,9 +133,5 @@ class SonarImporterMain(
     private fun isSonarPropertiesFile(inputFile: File): Boolean {
         val searchFile = "sonar-project.properties"
         return (inputFile.isFile && inputFile.name == searchFile)
-    }
-
-    override fun getName(): String {
-        return InteractiveParserHelper.SonarImporterConstants.name
     }
 }

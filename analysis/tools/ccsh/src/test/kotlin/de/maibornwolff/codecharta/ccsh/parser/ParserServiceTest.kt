@@ -1,10 +1,25 @@
 package de.maibornwolff.codecharta.ccsh.parser
 
+import de.maibornwolff.codecharta.exporter.csv.CSVExporter
+import de.maibornwolff.codecharta.filter.edgefilter.EdgeFilter
+import de.maibornwolff.codecharta.filter.mergefilter.MergeFilter
+import de.maibornwolff.codecharta.filter.structuremodifier.StructureModifier
+import de.maibornwolff.codecharta.importer.codemaat.CodeMaatImporter
+import de.maibornwolff.codecharta.importer.csv.CSVImporter
+import de.maibornwolff.codecharta.importer.gitlogparser.GitLogParser
+import de.maibornwolff.codecharta.importer.metricgardenerimporter.MetricGardenerImporter
+import de.maibornwolff.codecharta.importer.sonar.SonarImporterMain
+import de.maibornwolff.codecharta.importer.sourcecodeparser.SourceCodeParserMain
+import de.maibornwolff.codecharta.importer.sourcemonitor.SourceMonitorImporter
+import de.maibornwolff.codecharta.importer.svnlogparser.SVNLogParser
+import de.maibornwolff.codecharta.importer.tokeiimporter.TokeiImporter
+import de.maibornwolff.codecharta.parser.rawtextparser.RawTextParser
 import de.maibornwolff.codecharta.tools.ccsh.Ccsh
 import de.maibornwolff.codecharta.tools.ccsh.parser.ParserService
 import de.maibornwolff.codecharta.tools.ccsh.parser.repository.PicocliParserRepository
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
+import de.maibornwolff.codecharta.tools.validation.ValidationTool
 import io.mockk.every
 import io.mockk.mockkClass
 import io.mockk.mockkConstructor
@@ -50,19 +65,21 @@ class ParserServiceTest {
         @JvmStatic
         fun providerParserArguments(): List<Arguments> {
             return listOf(
-                Arguments.of("check"),
-                Arguments.of("edgefilter"),
-                Arguments.of("sonarimport"),
-                Arguments.of("svnlogparser"),
-                Arguments.of("merge"),
-                Arguments.of("gitlogparser"),
-                Arguments.of("rawtextparser"),
-                Arguments.of("sourcemonitorimport"),
-                Arguments.of("tokeiimporter"),
-                Arguments.of("sourcecodeparser"),
-                Arguments.of("modify"),
-                Arguments.of("csvexport"),
-                Arguments.of("codemaatimport"),
+                    Arguments.of(CSVExporter.NAME),
+                    Arguments.of(EdgeFilter.NAME),
+                    Arguments.of(MergeFilter.NAME),
+                    Arguments.of(StructureModifier.NAME),
+                    Arguments.of(CodeMaatImporter.NAME),
+                    Arguments.of(CSVImporter.NAME),
+                    Arguments.of(SourceMonitorImporter.NAME),
+                    Arguments.of(GitLogParser.NAME),
+                    Arguments.of(MetricGardenerImporter.NAME),
+                    Arguments.of(SonarImporterMain.NAME),
+                    Arguments.of(SourceCodeParserMain.NAME),
+                    Arguments.of(SVNLogParser.NAME),
+                    Arguments.of(TokeiImporter.NAME),
+                    Arguments.of(RawTextParser.NAME),
+                    Arguments.of(ValidationTool.NAME)
             )
         }
     }
@@ -123,7 +140,9 @@ class ParserServiceTest {
                 "sourcecodeparser",
                 "modify",
                 "csvexport",
-                "codemaatimport")
+                "codemaatimport",
+                "metricgardenerimport",
+                "csvimport")
 
         val mockPicocliParserRepository = mockParserRepository(selectedParserList[0], emptyList())
 
@@ -207,7 +226,7 @@ class ParserServiceTest {
         } returns emptyList()
 
         every {
-            obj.getApplicableInteractiveParserNames(any(), any())
+            obj.getApplicableInteractiveParserNamesWithDescription(any(), any())
         } returns usableParsers
 
         return obj

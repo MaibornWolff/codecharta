@@ -6,6 +6,8 @@ interface ParserRepository<T> {
     fun getInteractiveParserNamesWithDescription(dataSource: T): List<String>
     fun extractParserName(parserNameWithDescription: String): String
     fun getAllInteractiveParsers(dataSource: T): List<InteractiveParser>
-    fun getApplicableInteractiveParserNames(inputFile: String, allParsers: List<InteractiveParser>): List<String>
+
+    fun getApplicableParsers(inputFile: String, allParsers: List<InteractiveParser>): List<InteractiveParser>
+    fun getApplicableInteractiveParserNamesWithDescription(inputFile: String, allParsers: List<InteractiveParser>): List<String>
     fun getInteractiveParser(dataSource: T, name: String): InteractiveParser?
 }

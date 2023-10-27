@@ -5,7 +5,7 @@ import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
-import de.maibornwolff.codecharta.tools.interactiveparser.util.InteractiveParserHelper
+import de.maibornwolff.codecharta.tools.interactiveparser.util.CodeChartaConstants
 import de.maibornwolff.codecharta.util.InputHelper
 import mu.KotlinLogging
 import picocli.CommandLine
@@ -14,9 +14,9 @@ import java.io.PrintStream
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
-    name = InteractiveParserHelper.MergeFilterConstants.name,
-    description = [InteractiveParserHelper.MergeFilterConstants.description],
-    footer = [InteractiveParserHelper.GeneralConstants.GenericFooter]
+        name = MergeFilter.NAME,
+        description = [MergeFilter.DESCRIPTION],
+        footer = [CodeChartaConstants.General.GENERIC_FOOTER]
 )
 class MergeFilter(
     private val output: PrintStream = System.out
@@ -47,6 +47,26 @@ class MergeFilter(
     private var ignoreCase = false
 
     private val logger = KotlinLogging.logger {}
+
+    override val name = NAME
+    override val description = DESCRIPTION
+
+    companion object {
+        const val NAME = "merge"
+        const val DESCRIPTION = "merges multiple cc.json files"
+
+        fun mergePipedWithCurrentProject(pipedProject: Project, currentProject: Project): Project {
+            return ProjectMerger(
+                    listOf(pipedProject, currentProject),
+                    RecursiveNodeMergerStrategy(false)
+            ).merge()
+        }
+
+        @JvmStatic
+        fun main(args: Array<String>) {
+            CommandLine(MergeFilter()).execute(*args)
+        }
+    }
 
     override fun call(): Void? {
         val nodeMergerStrategy =
@@ -81,26 +101,8 @@ class MergeFilter(
         return null
     }
 
-    companion object {
-        fun mergePipedWithCurrentProject(pipedProject: Project, currentProject: Project): Project {
-            return ProjectMerger(
-                listOf(pipedProject, currentProject),
-                RecursiveNodeMergerStrategy(false)
-            ).merge()
-        }
-
-        @JvmStatic
-        fun main(args: Array<String>) {
-            CommandLine(MergeFilter()).execute(*args)
-        }
-    }
-
     override fun getDialog(): ParserDialogInterface = ParserDialog
     override fun isApplicable(resourceToBeParsed: String): Boolean {
         return false
-    }
-
-    override fun getName(): String {
-        return InteractiveParserHelper.MergeFilterConstants.name
     }
 }

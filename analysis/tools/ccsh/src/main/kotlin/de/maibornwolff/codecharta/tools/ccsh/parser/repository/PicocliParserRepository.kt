@@ -19,7 +19,8 @@ class PicocliParserRepository : ParserRepository<CommandLine> {
         val subCommands = dataSource.subcommands.values
         return subCommands.mapNotNull { subCommand ->
             val parserName = subCommand.commandName
-            if (subCommand.commandSpec.userObject() is InteractiveParser) {
+            val parser = subCommand.commandSpec.userObject()
+            if (parser is InteractiveParser) {
                 val parserDescriptions = subCommand.commandSpec.usageMessage().description()
                 val parserDescription = parserDescriptions[0]
                 "$parserName - $parserDescription"
@@ -29,6 +30,18 @@ class PicocliParserRepository : ParserRepository<CommandLine> {
 
     override fun extractParserName(parserNameWithDescription: String): String {
         return parserNameWithDescription.substringBefore(' ')
+    }
+
+    override fun getApplicableParsers(inputFile: String, allParsers: List<InteractiveParser>): List<InteractiveParser> {
+        val usableParsers = mutableListOf<InteractiveParser>()
+
+        for (parser in allParsers) {
+            if (parser.isApplicable(inputFile)) {
+                usableParsers.add(parser)
+            }
+        }
+
+        return usableParsers
     }
 
     override fun getAllInteractiveParsers(dataSource: CommandLine): List<InteractiveParser> {
@@ -44,15 +57,15 @@ class PicocliParserRepository : ParserRepository<CommandLine> {
         return allParsers
     }
 
-    override fun getApplicableInteractiveParserNames(inputFile: String, allParsers: List<InteractiveParser>): List<String> {
-        val usableParsers = mutableListOf<String>()
-
-        for (parser in allParsers) {
-            if (parser.isApplicable(inputFile)) {
-                usableParsers.add(parser.getName())
-            }
+    override fun getApplicableInteractiveParserNamesWithDescription(
+            inputFile: String, allParsers: List<InteractiveParser>): List<String> {
+        val applicableParsers = getApplicableParsers(inputFile, allParsers)
+        val result = mutableListOf<String>()
+        for (parser in applicableParsers) {
+            val nameAndDescription = parser.getParserName() + " - " + parser.getParserDescription()
+            result.add(nameAndDescription)
         }
-        return usableParsers
+        return result
     }
 
     override fun getInteractiveParser(dataSource: CommandLine, name: String): InteractiveParser? {

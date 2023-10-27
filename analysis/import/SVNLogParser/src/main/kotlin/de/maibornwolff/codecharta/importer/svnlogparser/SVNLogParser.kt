@@ -11,7 +11,7 @@ import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
-import de.maibornwolff.codecharta.tools.interactiveparser.util.InteractiveParserHelper
+import de.maibornwolff.codecharta.tools.interactiveparser.util.CodeChartaConstants
 import de.maibornwolff.codecharta.util.InputHelper
 import de.maibornwolff.codecharta.util.ResourceSearchHelper
 import org.mozilla.universalchardet.UniversalDetector
@@ -27,9 +27,9 @@ import java.util.concurrent.Callable
 import java.util.stream.Stream
 
 @CommandLine.Command(
-    name = InteractiveParserHelper.SVNLogParserConstants.name,
-    description = [InteractiveParserHelper.SVNLogParserConstants.description],
-    footer = [InteractiveParserHelper.GeneralConstants.GenericFooter]
+        name = SVNLogParser.NAME,
+        description = [SVNLogParser.DESCRIPTION],
+        footer = [CodeChartaConstants.General.GENERIC_FOOTER]
 )
 class SVNLogParser(
     private val input: InputStream = System.`in`,
@@ -59,6 +59,9 @@ class SVNLogParser(
 
     private val logParserStrategy: LogParserStrategy = SVNLogParserStrategy()
 
+    override val name = NAME
+    override val description = DESCRIPTION
+
     private val metricsFactory: MetricsFactory
         get() {
             val nonChurnMetrics = Arrays.asList(
@@ -77,6 +80,31 @@ class SVNLogParser(
                 SVN_LOG -> MetricsFactory(nonChurnMetrics)
             }
         }
+
+    companion object {
+        const val NAME = "svnlogparser"
+        const val DESCRIPTION = "generates cc.json from svn log file"
+
+        @JvmStatic
+        fun main(args: Array<String>) {
+            CommandLine(SVNLogParser()).execute(*args)
+        }
+
+        private fun guessEncoding(pathToLog: File): String? {
+            val inputStream = pathToLog.inputStream()
+            val buffer = ByteArray(4096)
+            val detector = UniversalDetector(null)
+
+            var sizeRead = inputStream.read(buffer)
+            while (sizeRead > 0 && !detector.isDone) {
+                detector.handleData(buffer, 0, sizeRead)
+                sizeRead = inputStream.read(buffer)
+            }
+            detector.dataEnd()
+
+            return detector.detectedCharset
+        }
+    }
 
     @Throws(IOException::class)
     override fun call(): Void? {
@@ -125,35 +153,9 @@ class SVNLogParser(
         ).parse(lines)
     }
 
-    companion object {
-        @JvmStatic
-        fun main(args: Array<String>) {
-            CommandLine(SVNLogParser()).execute(*args)
-        }
-
-        private fun guessEncoding(pathToLog: File): String? {
-            val inputStream = pathToLog.inputStream()
-            val buffer = ByteArray(4096)
-            val detector = UniversalDetector(null)
-
-            var sizeRead = inputStream.read(buffer)
-            while (sizeRead > 0 && !detector.isDone) {
-                detector.handleData(buffer, 0, sizeRead)
-                sizeRead = inputStream.read(buffer)
-            }
-            detector.dataEnd()
-
-            return detector.detectedCharset
-        }
-    }
-
     override fun getDialog(): ParserDialogInterface = ParserDialog
     override fun isApplicable(resourceToBeParsed: String): Boolean {
         println("Checking if SVNLogParser is applicable...")
         return ResourceSearchHelper.isFolderDirectlyInGivenDirectory(resourceToBeParsed, ".svn")
-    }
-
-    override fun getName(): String {
-        return InteractiveParserHelper.SVNLogParserConstants.name
     }
 }

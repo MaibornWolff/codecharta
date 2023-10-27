@@ -7,7 +7,7 @@ import de.maibornwolff.codecharta.importer.metricgardenerimporter.model.MetricGa
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
-import de.maibornwolff.codecharta.tools.interactiveparser.util.InteractiveParserHelper
+import de.maibornwolff.codecharta.tools.interactiveparser.util.CodeChartaConstants
 import de.maibornwolff.codecharta.util.InputHelper
 import de.maibornwolff.codecharta.util.ResourceSearchHelper
 import picocli.CommandLine
@@ -18,9 +18,9 @@ import java.nio.charset.Charset
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
-    name = InteractiveParserHelper.MetricGardenerImporterConstants.name,
-    description = [InteractiveParserHelper.MetricGardenerImporterConstants.description],
-    footer = [InteractiveParserHelper.GeneralConstants.GenericFooter]
+        name = MetricGardenerImporter.NAME,
+        description = [MetricGardenerImporter.DESCRIPTION],
+        footer = [CodeChartaConstants.General.GENERIC_FOOTER]
 )
 
 class MetricGardenerImporter(
@@ -49,6 +49,26 @@ class MetricGardenerImporter(
 
     @CommandLine.Option(names = ["-nc", "--not-compressed"], description = ["save uncompressed output File"])
     private var compress = true
+
+    override val name = NAME
+    override val description = DESCRIPTION
+
+    companion object {
+        const val NAME = "metricgardenerimport"
+        const val DESCRIPTION = "generates a cc.json file from a project parsed with metric-gardener. " +
+                "Caution - this parser is still experimental and may take a long time to parse code!"
+
+        @JvmStatic
+        fun main(args: Array<String>) {
+            CommandLine(MetricGardenerImporter()).execute(*args)
+        }
+
+        @JvmStatic
+        fun getSupportedLanguageFileEndings(): List<String> {
+            // If needed: Add more file endings for each supported language
+            return listOf(".go", ".php", ".ts", ".cs", ".cpp", ".java", ".js", ".kt", ".py")
+        }
+    }
 
     @Throws(IOException::class)
     override fun call(): Void? {
@@ -87,19 +107,6 @@ class MetricGardenerImporter(
         return null
     }
 
-    companion object {
-        @JvmStatic
-        fun main(args: Array<String>) {
-            CommandLine(MetricGardenerImporter()).execute(*args)
-        }
-
-        @JvmStatic
-        fun getSupportedLanguageFileEndings(): List<String> {
-            // If needed: Add more file endings for each supported language
-            return listOf(".go", ".php", ".ts", ".cs", ".cpp", ".java", ".js", ".kt", ".py")
-        }
-    }
-
     private fun isWindows(): Boolean {
         return System.getProperty("os.name").contains("win", ignoreCase = true)
     }
@@ -109,9 +116,5 @@ class MetricGardenerImporter(
         val supportedLanguageFileEndings = getSupportedLanguageFileEndings()
         println("Checking if MetricGardener is applicable...")
         return ResourceSearchHelper.isFileWithOneOrMoreOfEndingsPresent(resourceToBeParsed, supportedLanguageFileEndings)
-    }
-
-    override fun getName(): String {
-        return InteractiveParserHelper.MetricGardenerImporterConstants.name
     }
 }

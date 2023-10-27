@@ -12,7 +12,7 @@ class ParserService {
 
         fun getParserSuggestions(commandLine: CommandLine, parserRepository: PicocliParserRepository, inputFile: String): List<String> {
             val allParsers = parserRepository.getAllInteractiveParsers(commandLine)
-            val usableParsers = parserRepository.getApplicableInteractiveParserNames(inputFile, allParsers)
+            val usableParsers = parserRepository.getApplicableInteractiveParserNamesWithDescription(inputFile, allParsers)
 
             return usableParsers.ifEmpty { emptyList() }
         }

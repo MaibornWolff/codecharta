@@ -6,7 +6,7 @@ import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
-import de.maibornwolff.codecharta.tools.interactiveparser.util.InteractiveParserHelper
+import de.maibornwolff.codecharta.tools.interactiveparser.util.CodeChartaConstants
 import de.maibornwolff.codecharta.util.InputHelper
 import picocli.CommandLine
 import java.io.File
@@ -17,9 +17,9 @@ import java.io.PrintWriter
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
-    name = InteractiveParserHelper.RawTextParserConstants.name,
-    description = [InteractiveParserHelper.RawTextParserConstants.description],
-    footer = [InteractiveParserHelper.GeneralConstants.GenericFooter]
+        name = RawTextParser.NAME,
+        description = [RawTextParser.DESCRIPTION],
+        footer = [CodeChartaConstants.General.GENERIC_FOOTER]
 )
 class RawTextParser(
     private val input: InputStream = System.`in`,
@@ -72,6 +72,19 @@ class RawTextParser(
     )
     private var withoutDefaultExcludes = false
 
+    override val name = NAME
+    override val description = DESCRIPTION
+
+    companion object {
+        const val NAME = "rawtextparser"
+        const val DESCRIPTION = "generates cc.json from projects or source code files"
+
+        @JvmStatic
+        fun mainWithInOut(outputStream: PrintStream, input: InputStream, error: PrintStream, args: Array<String>) {
+            CommandLine(RawTextParser(input, outputStream, error)).setOut(PrintWriter(outputStream)).execute(*args)
+        }
+    }
+
     @Throws(IOException::class)
     override fun call(): Void? {
         print(" ")
@@ -101,13 +114,6 @@ class RawTextParser(
         ).filterValues { it != null }.mapValues { it.value as Int }
     }
 
-    companion object {
-        @JvmStatic
-        fun mainWithInOut(outputStream: PrintStream, input: InputStream, error: PrintStream, args: Array<String>) {
-            CommandLine(RawTextParser(input, outputStream, error)).setOut(PrintWriter(outputStream)).execute(*args)
-        }
-    }
-
     override fun getDialog(): ParserDialogInterface = ParserDialog
     override fun isApplicable(resourceToBeParsed: String): Boolean {
         println("Checking if RawTextParser is applicable...")
@@ -129,9 +135,5 @@ class RawTextParser(
         return fileSearch.asSequence()
                 .filter { it.isFile }
                 .any()
-    }
-
-    override fun getName(): String {
-        return InteractiveParserHelper.RawTextParserConstants.name
     }
 }
