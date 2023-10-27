@@ -138,12 +138,12 @@ class Ccsh : Callable<Void?> {
                 return finalExitCode
             }
             // Improvement: Try to extract merge commands before so user does not have to configure merge args?
-            return if (configuredParsers.size == 1) {
+            if (configuredParsers.size == 1) {
                 logger.info { "Parser was successfully executed and created a cc.json file." }
-                0
+                return 0
             } else {
                 logger.info { "Each parser was successfully executed and created a cc.json file." }
-                askAndMergeResults(commandLine)
+                return askAndMergeResults(commandLine)
             }
         }
 
