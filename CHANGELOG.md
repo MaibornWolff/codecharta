@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Fixed 🐞
 
 -   Fix command not found issue for --version and --help in the analysis [#3377](https://github.com/MaibornWolff/codecharta/pull/3377)
+-   Updated docs for ccsh to remove outdated parameters and unified the structure [#3333](https://github.com/MaibornWolff/codecharta/pull/3388)
 
 ### Chore 👨‍💻 👩‍💻
 
