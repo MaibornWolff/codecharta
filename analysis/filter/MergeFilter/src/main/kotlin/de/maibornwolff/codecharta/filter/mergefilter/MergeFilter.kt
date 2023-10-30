@@ -31,7 +31,7 @@ class MergeFilter(
     @CommandLine.Option(names = ["-a", "--add-missing"], description = ["enable adding missing nodes to reference"])
     private var addMissingNodes = false
 
-    @CommandLine.Option(names = ["--recursive"], description = ["recursive merging strategy"])
+    @CommandLine.Option(names = ["--recursive"], description = ["recursive merging strategy (default)"])
     private var recursiveStrategySet = true
 
     @CommandLine.Option(names = ["--leaf"], description = ["leaf merging strategy"])
