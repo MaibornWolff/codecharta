@@ -2,6 +2,7 @@ package de.maibornwolff.codecharta.importer.metricgardenerimporter
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import de.maibornwolff.codecharta.importer.metricgardenerimporter.json.MetricGardenerProjectBuilder
+import de.maibornwolff.codecharta.importer.metricgardenerimporter.model.MetricGardenerException
 import de.maibornwolff.codecharta.importer.metricgardenerimporter.model.MetricGardenerNodes
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
@@ -9,7 +10,6 @@ import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import de.maibornwolff.codecharta.tools.interactiveparser.util.InteractiveParserHelper
 import de.maibornwolff.codecharta.util.InputHelper
 import de.maibornwolff.codecharta.util.ResourceSearchHelper
-import jdk.jshell.spi.ExecutionControl.InternalException
 import picocli.CommandLine
 import java.io.File
 import java.io.IOException
@@ -74,7 +74,7 @@ class MetricGardenerImporter(
                     .waitFor()
             inputFile = tempMgOutput
             if (processExitCode != 0) {
-                throw InternalException("Error while executing metric gardener! Process returned with status $processExitCode.")
+                throw MetricGardenerException("Error while executing metric gardener! Process returned with status $processExitCode.")
             }
         }
         val metricGardenerNodes: MetricGardenerNodes =
