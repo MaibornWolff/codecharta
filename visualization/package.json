@@ -77,7 +77,7 @@
 		"color-convert": "^2.0.1",
 		"d3-hierarchy": "^2.0.0",
 		"dequal": "^2.0.3",
-		"electron": "^27.0.0",
+		"electron": "27.0.2",
 		"font-awesome": "^4.7.0",
 		"hotkeys-js": "^3.8.2",
 		"ignore": "^5.1.8",

@@ -3,11 +3,12 @@
     "applicationPath": "dist/applications",
     "packagePath": "dist/packages",
     "binaryPath": "build/binaries",
-    "webpackPath": "dist/webpack"
+    "webpackPath": "dist/webpack",
+    "tempPath": "build/applicationTemp"
   },
   "distributions": {
     "win32" : ["ia32", "x64", "arm64"],
-    "darwin" : ["x64", "arm64"],
-    "linux" : ["x64", "arm64", "armv7l"]
+    "darwin" : ["x64","arm64"],
+    "linux" : ["x64","arm64","armv7l"]
   }
 }

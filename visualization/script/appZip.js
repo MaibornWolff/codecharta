@@ -6,22 +6,20 @@ const path = require('node:path');
 
 const { paths } = require("./appConfig.json");
 
-const getDirectories = srcPath => fs.readdirSync(srcPath).filter(file => fs.statSync(path.join(srcPath, file)).isDirectory());
+const { cleanDirectory } = require("./appUtils.js");
 
-async function cleanDirectory(dir) {
-  await fs.rm(path.resolve(dir), () => {console.log(`Removed ${dir}`);})
-  await fs.mkdir(path.resolve(dir), () => {console.log(`Created ${dir}`);})
-}
+const getDirectories = srcPath => fs.readdirSync(srcPath).filter(file => fs.statSync(path.join(srcPath, file)).isDirectory());
 
 async function zipApplications(){
   const zipPromises = []
 
-  getDirectories(paths.applicationPath).forEach((aPath) => {
+  const allApplicationFolders = getDirectories(paths.applicationPath);
+  allApplicationFolders.forEach((aPath) => {
     zipPromises.push(
       zip({
         source: aPath,
-        destination: path.join(paths.packagePath, aPath + ".zip"),
-        cwd: path.resolve(paths.applicationPath)})
+        destination: path.join("../..", paths.packagePath, aPath + ".zip"),
+        cwd: paths.applicationPath})
     )
   });
   zipPromises.push(zip({
@@ -40,6 +38,7 @@ async function zipEverything() {
 
 module.exports = {
   prepareZips : async function () {
-    return zipEverything();
+    await zipEverything();
+    return;
   }
 }

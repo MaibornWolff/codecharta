@@ -4,14 +4,10 @@ const fs = require('fs')
 const path = require('node:path');
 const { downloadArtifact } = require("@electron/get");
 
-const { paths, distributions } = require("./appConfig.json");
+const { paths } = require("./appConfig.json");
+const { cleanDirectory } = require("./appUtils.js");
 
-var distributionCombos = {};
-
-async function cleanDirectory(dir) {
-  await fs.rm(dir, {recursive: true}, () => {console.log(`Removed ${dir}`);})
-  await fs.mkdir(dir, () => {console.log(`Created ${dir}`);})
-}
+var localDistributions = {};
 
 async function downloadElectronChecksum(version) {
   return downloadArtifact({
@@ -31,34 +27,35 @@ async function downloadElectronZip(version, options) {
   })
 }
 
-async function downloadAll(version) {
+async function downloadAll(version, distributions) {
   console.log(`Downloading Electron v${version}`);
 
   await downloadElectronChecksum(version);
   const downloadElectronPromises = [];
-  console.log(`Building distributions: ${JSON.stringify(distributionCombos)}`);
-  for (let [aPlatform, aArch] of Object.entries(distributionCombos)) {
-    aArch.forEach(anArchitecture =>
+  for (aPlatform in distributions) {
+    let allArchitectures = distributions[aPlatform];
+    allArchitectures.forEach((architectureEntry) => {
       downloadElectronPromises.push(
         downloadElectronZip(
-          version,
-          { platform: aPlatform, arch: anArchitecture, tmp: false }
-        )
-      )
-    )
+        version,
+        { platform: aPlatform, arch: architectureEntry }
+      ));
+
+    });
   }
 
-  return Promise.all(downloadElectronPromises)
+  return Promise.all(downloadElectronPromises);
 }
 
-async function download(version, buildLocal) {
-  await cleanDirectory(paths.binaryPath)
-  distributionCombos = buildLocal ? buildLocal : distributions;
-  return downloadAll(version);
+async function download(version, distributions) {
+  cleanDirectory(paths.binaryPath)
+
+  return downloadAll(version, distributions);
 }
 
 module.exports = {
-  prepareBinaries: async function (version, buildLocal) {
-    return download(version, buildLocal);
+  prepareBinaries: async function (version, distributions) {
+    const downloadPaths = await download(version, distributions);
+    return path.dirname(downloadPaths[0]);
   }
 }
