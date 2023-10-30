@@ -137,14 +137,14 @@ class Ccsh : Callable<Void?> {
             if (finalExitCode != 0) {
                 return finalExitCode
             }
-            // Improvement: Try to extract merge commands before so user does not have to configure merge args?
             if (configuredParsers.size == 1) {
                 logger.info { "Parser was successfully executed and created a cc.json file." }
                 return 0
-            } else {
-                logger.info { "Each parser was successfully executed and created a cc.json file." }
-                return askAndMergeResults(commandLine)
             }
+
+            // Improvement: Try to extract merge commands before so user does not have to configure merge args?
+            logger.info { "Each parser was successfully executed and created a cc.json file." }
+            return askAndMergeResults(commandLine)
         }
 
         private fun askAndMergeResults(commandLine: CommandLine): Int {
