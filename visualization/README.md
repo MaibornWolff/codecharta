@@ -96,12 +96,7 @@ $ npm run package
 $ npm run package:local
 ```
 
-For distribution the different application folders they need to be zipped. This command creates a `.zip` compressed file for every folder inside `dist/applications` and puts them in the `dist/packages` folder:
-
-```bash
-# You may not be able to zip every OS/arch combo on every OS. You might need to adjust the script/package-zips.js for your usage.
-$ npm run package:zip
-```
+> For each application there will be a `.zip` file inside the `dist/packages` folder. Zipping is part of the `npm run package` process. You can check the scripts inside `script/app*.js` for details.
 
 #### Dev
 
