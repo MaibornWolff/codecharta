@@ -13,7 +13,7 @@ localCombo[process.platform] = [localArch]
 
 var distributions = localFlag === "--local" ? localCombo : config.distributions
 
-;(async () => {
+async function main() {
 	console.log(`Codecharta-Visualization package utility. Targets: ${JSON.stringify(distributions)}`)
 
 	console.log("Build Step 1/3: Downloading binaries...")
@@ -22,4 +22,14 @@ var distributions = localFlag === "--local" ? localCombo : config.distributions
 	await prepareApplications(electronVersion, distributions, downloadPath)
 	console.log("Build Step 3/3: Zipping packages...")
 	await prepareZips()
-})()
+}
+
+main()
+	.then(() => {
+		console.log("Done!")
+		process.exit(0)
+	})
+	.catch(err => {
+		console.error(err) // Writes to stderr
+		process.exit(1)
+	})
