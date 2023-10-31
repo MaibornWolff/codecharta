@@ -15,8 +15,6 @@ dependencies {
     implementation group: 'org.glassfish.jersey.inject', name: 'jersey-hk2', version: jersey_version
     implementation group: 'com.sun.activation', name: 'javax.activation', version: '1.2.0'
 
-    implementation group: 'com.lordcodes.turtle', name: 'turtle', version: '0.8.0'
-
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter', version: junit5_version
     testImplementation group: 'org.assertj', name: 'assertj-core', version: assertj_version
     testImplementation group: 'io.mockk', name: 'mockk', version: mockk_version

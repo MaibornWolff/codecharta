@@ -4,6 +4,7 @@ import de.maibornwolff.codecharta.importer.metricgardenerimporter.MetricGardener
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.util.InputHelper
 import io.mockk.every
+import io.mockk.mockkConstructor
 import io.mockk.mockkObject
 import io.mockk.unmockkAll
 import org.assertj.core.api.Assertions
@@ -137,5 +138,25 @@ class MetricGardenerImporterTest {
         System.setErr(originalErr)
 
         Assertions.assertThat(errContent.toString()).contains("Input invalid file for MetricGardenerImporter, stopping execution")
+    }
+
+    @Test
+    fun `should stop execution if error happens while executing metric gardener`() {
+        val npm = if (System.getProperty("os.name").contains("win", ignoreCase = true)) "npm.cmd" else "npm"
+        val metricGardenerInvalidCommand = listOf(
+                npm, "exec", "metric-gardener",
+                "--", "parse", "this/path/is/invalid", "-o", "MGout.json"
+        )
+        val metricGardenerInvalidInputProcess = ProcessBuilder(metricGardenerInvalidCommand)
+        mockkConstructor(ProcessBuilder::class)
+        every { anyConstructed<ProcessBuilder>().start().waitFor() } returns metricGardenerInvalidInputProcess
+                .redirectError(ProcessBuilder.Redirect.DISCARD)
+                .start()
+                .waitFor()
+
+        System.setErr(PrintStream(errContent))
+        CommandLine(MetricGardenerImporter()).execute("src").toString()
+        System.setErr(originalErr)
+        Assertions.assertThat(errContent.toString()).contains("Error while executing metric gardener! Process returned with status")
     }
 }

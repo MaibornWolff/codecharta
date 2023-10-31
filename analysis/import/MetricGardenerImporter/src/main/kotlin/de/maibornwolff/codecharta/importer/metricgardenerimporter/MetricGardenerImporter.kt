@@ -1,9 +1,8 @@
 package de.maibornwolff.codecharta.importer.metricgardenerimporter
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.lordcodes.turtle.ShellLocation
-import com.lordcodes.turtle.shellRun
 import de.maibornwolff.codecharta.importer.metricgardenerimporter.json.MetricGardenerProjectBuilder
+import de.maibornwolff.codecharta.importer.metricgardenerimporter.model.MetricGardenerException
 import de.maibornwolff.codecharta.importer.metricgardenerimporter.model.MetricGardenerNodes
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
@@ -62,17 +61,22 @@ class MetricGardenerImporter(
             tempMgOutput.deleteOnExit()
 
             val npm = if (isWindows()) "npm.cmd" else "npm"
-            shellRun(
-                command = npm,
-                arguments = listOf(
-                    "exec", "-y", "metric-gardener", "--", "parse",
-                    inputFile!!.absolutePath, "--output-path", tempMgOutput.absolutePath
-                ),
-                workingDirectory = ShellLocation.CURRENT_WORKING
+            val commandToExecute = listOf(
+                npm, "exec", "-y", "metric-gardener", "--", "parse",
+                inputFile!!.absolutePath, "--output-path", tempMgOutput.absolutePath
             )
+            println("Running metric gardener, this might take some time for larger inputs...")
+            val processExitCode = ProcessBuilder(commandToExecute)
+                    // Not actively discarding or redirecting the output of MetricGardener loses performance on larger folders
+                    .redirectOutput(ProcessBuilder.Redirect.DISCARD)
+                    .redirectError(ProcessBuilder.Redirect.INHERIT)
+                    .start()
+                    .waitFor()
             inputFile = tempMgOutput
+            if (processExitCode != 0) {
+                throw MetricGardenerException("Error while executing metric gardener! Process returned with status $processExitCode.")
+            }
         }
-
         val metricGardenerNodes: MetricGardenerNodes =
             mapper.readValue(inputFile!!.reader(Charset.defaultCharset()), MetricGardenerNodes::class.java)
         val metricGardenerProjectBuilder = MetricGardenerProjectBuilder(metricGardenerNodes)
