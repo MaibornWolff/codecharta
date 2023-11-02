@@ -12,17 +12,18 @@ CodeCharta analysis tools generally follow the pipes and filters architecture pr
 
 Components that import data from an external source, e.g. SonarQube, and generate visualisation data.
 
-| Source             | Project                                               |
-| ------------------ | ----------------------------------------------------- |
-| CodeMaat CSV       | [CodeMaatImporter](import/CodeMaatImporter/README.md) |
-| generic CSV        | [CSVImporter](import/CSVImporter/README.md)           |
-| SVN log            | [SVNLogParser](import/SVNLogParser/README.md)         |
-| Git log            | [GitLogParser](import/GitLogParser/README.md)         |
-| SonarQube          | [SonarImporter](import/SonarImporter/README.md)       |
-| Source Code        | [SourceCodeParser](import/SourceCodeParser/README.md) |
-| SourceMonitor CSV  | [SourceMonitorImporter](import/CSVImporter/README.md) |
-| Source Code / Text | [RawTextParser](parser/RawTextParser/README.md)       |
-| Tokei              | [TokeiImporter](import/TokeiImporter/README.md)       |
+| Source             | Project                                                                          |
+| ------------------ | -------------------------------------------------------------------------------- |
+| CodeMaat CSV       | [CodeMaatImporter](import/CodeMaatImporter/README.md)                            |
+| generic CSV        | [CSVImporter](import/CSVImporter/README.md)                                      |
+| Git log            | [GitLogParser](import/GitLogParser/README.md)                                    |
+| Metric Gardener    | [MetricGardenerImporter](import/MetricGardenerImporter/README.md) (experimental) |
+| Source Code / Text | [RawTextParser](parser/RawTextParser/README.md)                                  |
+| SonarQube          | [SonarImporter](import/SonarImporter/README.md)                                  |
+| Source Code        | [SourceCodeParser](import/SourceCodeParser/README.md)                            |
+| SourceMonitor CSV  | [SourceMonitorImporter](import/CSVImporter/README.md)                            |
+| SVN log            | [SVNLogParser](import/SVNLogParser/README.md)                                    |
+| Tokei              | [TokeiImporter](import/TokeiImporter/README.md)                                  |
 
 ### Filter
 
@@ -30,8 +31,8 @@ Components that take visualisation data and modifies them.
 
 | Name                                                    | Description                                                                                        |
 | ------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
-| [MergeFilter](filter/MergeFilter/README.md)             | merges multiple json files                                                                         |
 | [EdgeFilter](filter/EdgeFilter/README.md)               | aggregates edge-attributes of each appropriate node and inserts them into the nodes attribute-list |
+| [MergeFilter](filter/MergeFilter/README.md)             | merges multiple json files                                                                         |
 | [StructureModifier](filter/StructureModifier/README.md) | modifies the structure of .cc.json files                                                           |
 
 ### Exporter

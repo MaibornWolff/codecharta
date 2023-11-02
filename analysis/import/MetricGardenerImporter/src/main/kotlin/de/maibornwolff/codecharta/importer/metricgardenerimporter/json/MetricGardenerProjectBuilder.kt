@@ -8,19 +8,13 @@ import de.maibornwolff.codecharta.model.NodeType
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.model.ProjectBuilder
 import de.maibornwolff.codecharta.translator.MetricNameTranslator
-import mu.KotlinLogging
 
 class MetricGardenerProjectBuilder(var metricGardenerNodes: MetricGardenerNodes) : ProjectBuilder() {
 
-    private val logger = KotlinLogging.logger {}
-
     override fun build(): Project {
-        var i = 0
         for (inputNode in metricGardenerNodes.metricGardenerNodes) {
             val node = generateCodeChartaFileNode(inputNode)
             insertByPath(inputNode.getPathWithoutFileName(), node)
-            i = i.inc()
-            logger.info { "$i. node of ${metricGardenerNodes.metricGardenerNodes.size} MetricGardenerNodes processed" }
         }
         withMetricTranslator(metricGardenReplacement)
         addAttributeDescriptions(
