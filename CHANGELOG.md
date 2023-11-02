@@ -11,10 +11,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 -   Only ask to merge results after parser suggestion execution when more than one parser was executed [#3384](https://github.com/MaibornWolff/codecharta/pull/3384)
 
+### Changed
+
+-   Adjust console output of metric gardener importer to no longer include one line for each processed node [#3386](https://github.com/MaibornWolff/codecharta/pull/3390)
+
 ### Fixed 🐞
 
 -   Fix command not found issue for --version and --help in the analysis [#3377](https://github.com/MaibornWolff/codecharta/pull/3377)
 -   Fix metric gardener importer getting stuck for large inputs [#3382](https://github.com/MaibornWolff/codecharta/pull/3382)
+-   Update docs for ccsh to remove outdated parameters and unify the pages structure [#3333](https://github.com/MaibornWolff/codecharta/pull/3388)
 
 ### Chore 👨‍💻 👩‍💻
 
