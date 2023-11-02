@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [1.120.0] - 2023-11-02
+
 ### Added 🚀
 
 -   Only ask to merge results after parser suggestion execution when more than one parser was executed [#3384](https://github.com/MaibornWolff/codecharta/pull/3384)
