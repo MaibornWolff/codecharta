@@ -2,7 +2,6 @@
 node_modules
 install.js
 build
-script
 plop-templates
 dist
 assets
@@ -12,6 +11,7 @@ __snapshots__
 Dockerfile
 *.glsl
 .*
+*.sh
 *.hbs
 *.kt
 *.txt
