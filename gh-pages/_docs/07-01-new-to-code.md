@@ -55,7 +55,7 @@ There are a few issues regularly occurring when trying to start contributing. Th
 
 ### Analysis
 
-1. First build fails on new setup: One of our parsers depends on MetricGardener which is a multi-language parser to calculate metrics for a variety of languages. Therefore, make sure to install MetricGardener before trying to build the project. Also make sure that `metric-gardener` is available in your CLI. You can find more information on the documentation page about the [MetricGardenerImporter]({{site.baseurl}}{% link _docs/04-13-metricgardener.md %}).
+1. First build fails on new setup: One of our parsers depends on MetricGardener which is a multi-language parser to calculate metrics for a variety of languages. Therefore, make sure to install MetricGardener before trying to build the project. Also make sure that `metric-gardener` is available in your CLI, else npm will try to install it on the fly. You can find more information on the documentation page about the [MetricGardenerImporter]({{site.baseurl}}{% link _docs/04-13-metricgardener.md %}).
 
 # Further documentation
 

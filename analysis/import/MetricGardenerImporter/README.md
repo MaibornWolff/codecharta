@@ -9,8 +9,25 @@ For more information on MetricGardener, like the supported languages, and comman
 [README](https://github.com/MaibornWolff/metric-gardener#readme). You can also refer to the documentation in
 our [GitHub Pages](https://maibornwolff.github.io/codecharta/docs/metricgardener-importer)
 
-> Please note: MetricGardener is currently only compatible with NodeJS up to version 16.x. If you use NodeJS 18.x, you
-> need to install version 16.x to use MetricGardener.
+## Additional Requirements
+
+> Also refer to the [Metric-Gardener GitHub](https://github.com/MaibornWolff/metric-gardener) page, as the requirements can change
+
+If you want to execute the `metric-gardener`, either with your own installation or indirectly through the `ccsh`, you need to install the additional requirements listed below:
+
+### Windows
+
+-   Python
+-   C/C++ compiler toolchain (e.g. Visual Studio Build Tools 2022 with "Desktop development with C++")
+
+> You might need to install additional packages to python depending on its version. Please refer to the node-gyp GitHub page for help.
+
+### Unix
+
+-   Python
+-   C/C++ compiler toolchain
+
+> Those tools could be an included in your distribution of linux (or your version of MacOS).
 
 ## Supported Metrics
 
@@ -37,7 +54,7 @@ our [GitHub Pages](https://maibornwolff.github.io/codecharta/docs/metricgardener
 
 ## Examples
 
-### Create a CodeCharta json file from local source code (metric-gardener is executed internally on the fly):
+### Create a CodeCharta json file from local source code (metric-gardener is located/installed and executed internally on the fly):
 
 ```
 ccsh metricgardenerimport /path/to/source/code -o outfile.cc.json
@@ -45,9 +62,11 @@ ccsh metricgardenerimport /path/to/source/code -o outfile.cc.json
 
 ### Create a CodeCharta json file by importing a given metric-gardener json file (run MetricGardener yourself):
 
-For this MetricGardener needs to be installed on your system. Install it with `npm i -g metric-gardener`
+In this case you need to use the metric-gardener beforehand (you can install it via `npm i -g metric-gardener`)
 
 ```
+# Parsing your source code with metric-gardener directly
 npx metric-gardener parse /path/to/source/code -o mg_results.json
+# Parsing the metric-gardener results with the cchs to produce a .cc.json
 ccsh metricgardenerimport mg_results.json --is-json-file -o outfile.cc.json
 ```
