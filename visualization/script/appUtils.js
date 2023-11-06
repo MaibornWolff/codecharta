@@ -20,5 +20,7 @@ function createDarwinArmREADME(filePath) {
 	fs.writeFileSync(filePath, readmeInfo, { encoding: "utf-8" })
 }
 
-module.exports.cleanDirectory = cleanDirectory
-module.exports.createDarwinArmREADME = createDarwinArmREADME
+module.exports = {
+	cleanDirectory,
+	createDarwinArmREADME
+}

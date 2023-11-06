@@ -18,8 +18,8 @@ async function bundleElectronApp(options) {
 async function buildElectronApps(version, distributions, downloadPath) {
 	const bundlePromises = []
 
-	for (let aPlatform in distributions) {
-		let allArchitectures = distributions[aPlatform]
+	for (const aPlatform in distributions) {
+		const allArchitectures = distributions[aPlatform]
 		for (const anArchitecture of allArchitectures) {
 			bundlePromises.push(
 				bundleElectronApp({

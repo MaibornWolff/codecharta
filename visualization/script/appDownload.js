@@ -32,7 +32,7 @@ async function downloadAll(version, distributions) {
 
 	await downloadElectronChecksum(version)
 	const downloadElectronPromises = []
-	for (aPlatform in distributions) {
+	for (const aPlatform in distributions) {
 		let allArchitectures = distributions[aPlatform]
 		allArchitectures.forEach(architectureEntry => {
 			downloadElectronPromises.push(downloadElectronZip(version, { platform: aPlatform, arch: architectureEntry }))
