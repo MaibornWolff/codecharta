@@ -4,7 +4,7 @@ const packager = require("electron-packager")
 const path = require("node:path")
 
 const { paths } = require("./appConfig.json")
-const { cleanDirectory } = require("./appUtils.js")
+const { cleanDirectory, createDarwinArmREADME } = require("./appUtils.js")
 
 async function bundleElectronApp(options) {
 	return packager({
@@ -18,9 +18,9 @@ async function bundleElectronApp(options) {
 async function buildElectronApps(version, distributions, downloadPath) {
 	const bundlePromises = []
 
-	for (aPlatform in distributions) {
+	for (let aPlatform in distributions) {
 		let allArchitectures = distributions[aPlatform]
-		allArchitectures.forEach(async anArchitecture => {
+		for (const anArchitecture of allArchitectures) {
 			bundlePromises.push(
 				bundleElectronApp({
 					platform: aPlatform,
@@ -31,7 +31,7 @@ async function buildElectronApps(version, distributions, downloadPath) {
 					out: paths.applicationPath
 				})
 			)
-		})
+		}
 	}
 
 	return Promise.all(bundlePromises)
@@ -46,6 +46,8 @@ async function build(version, distributions, downloadPath) {
 module.exports = {
 	prepareApplications: async function (version, distributions, downloadPath) {
 		await build(version, distributions, downloadPath)
-		return
+		if (Object.hasOwn(distributions, "darwin")) {
+			createDarwinArmREADME(path.join(paths.applicationPath, "codecharta-visualization-darwin-arm64/", "README.md"))
+		}
 	}
 }
