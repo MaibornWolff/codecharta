@@ -113,3 +113,16 @@ cd codecharta-analysis/bin
 cd codecharta-visualization
 # Start visualization with the provided executable
 ```
+
+### MacOS
+
+> If you get an error on MacOS because of a missing license, try this [apple support article](https://support.apple.com/en-gb/guide/mac-help/mh40616/12.0/mac/12.0) <br>
+> You may be required to give the application executable rights
+
+> If you are using an M1 or similar (arm64) architectures you might need to do additional steps, because the OS might flag the executable as damaged, if it is downloaded and from an unverified developer:
+
+-   Remove the 'downloaded' attributes from the OS:
+
+```bash
+xattr -cr codecharta-visualization.app/
+```
