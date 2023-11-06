@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Chore 👨‍💻 👩‍💻
+
+-   Add documentation for the installation requirements for metric-gardener []()
+-   Add hints to visualization README for MacOS arm64 standalone execution []()
+
 ## [1.120.0] - 2023-11-02
 
 ### Added 🚀

@@ -66,7 +66,7 @@ You can start with **Codecharta Analysis** on multiple ways:
 
 ## Installation via npm
 
-This installs all binaries to run the analysis. Java 11 is recommended, while Java 8 is still supported.
+This installs all binaries to run the analysis. Java 11 is recommended, while Java 8 might work.
 
 `npm install -g codecharta-analysis`
 
@@ -98,6 +98,13 @@ To containerize the analysis, please follow the below listed steps.
     -   Enter `ccsh <ANY-COMMAND> -` and press `TAB` to see available parameters
 
 # Build it yourself
+
+There are some additional requirements if you want to build it yourself:
+
+-   NodeJS
+-   Metric-Gardener:
+-   -   Python
+-   -   C/C++ compiler toolchain (e.g. Visual Studio Build Tools 2022 with "Desktop development with C++")
 
 ## Build
 

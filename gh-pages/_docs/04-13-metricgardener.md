@@ -11,8 +11,25 @@ file.
 For more information on MetricGardener, like the supported languages, and command line options, refer to its
 [README](https://github.com/MaibornWolff/metric-gardener#readme).
 
-> Please note: MetricGardener is currently only compatible with NodeJS up to version 16.x. If you use NodeJS 18.x, you
-> need to install version 16.x to use MetricGardener.
+## Additional Requirements
+
+> Also refer to the [Metric-Gardener GitHub](https://github.com/MaibornWolff/metric-gardener) page, as the requirements can change
+
+If you want to execute the `metric-gardener`, either with your own installation or indirectly through the `ccsh`, you need to install the additional requirements listed below:
+
+### Windows
+
+-   Python
+-   C/C++ compiler toolchain (e.g. Visual Studio Build Tools 2022 with "Desktop development with C++")
+
+> You might need to install additional packages to python depending on its version. Please refer to the node-gyp GitHub page for help.
+
+### Unix
+
+-   Python
+-   C/C++ compiler toolchain
+
+> Those tools could be an included in your distribution of linux (or your version of MacOS).
 
 ## Supported Metrics
 
