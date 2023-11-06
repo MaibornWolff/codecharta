@@ -14,14 +14,11 @@ export class CodeChartaComponent implements OnInit {
 	version = packageJson.version
 	isInitialized = false
 
-	constructor(private store: Store, private loadInitialFileService: LoadInitialFileService) {
-		window.addEventListener("load", () => {
-			this.isInitialized = true
-		})
-	}
+	constructor(private store: Store, private loadInitialFileService: LoadInitialFileService) {}
 
 	async ngOnInit(): Promise<void> {
 		this.store.dispatch(setIsLoadingFile({ value: true }))
 		await this.loadInitialFileService.loadFileOrSample()
+		this.isInitialized = true
 	}
 }
