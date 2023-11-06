@@ -9,8 +9,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Chore 👨‍💻 👩‍💻
 
--   Add documentation for the installation requirements for metric-gardener []()
--   Add hints to visualization README for MacOS arm64 standalone execution []()
+-   Add documentation for the installation requirements for metric-gardener [#3395](https://github.com/MaibornWolff/codecharta/pull/3395)
+-   Add hints to README (visualization and package) about MacOS arm64 standalone execution [#3395](https://github.com/MaibornWolff/codecharta/pull/3395)
 
 ## [1.120.0] - 2023-11-02
 
