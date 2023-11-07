@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Fixed 🐞
+
+-   Fix an issue with web demo on Safari showing a white screen and not loading [#3396](https://github.com/MaibornWolff/codecharta/pull/3396)
+
 ### Chore 👨‍💻 👩‍💻
 
 -   Add documentation for the installation requirements for metric-gardener [#3395](https://github.com/MaibornWolff/codecharta/pull/3395)
