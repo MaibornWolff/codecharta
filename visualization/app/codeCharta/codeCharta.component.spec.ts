@@ -24,14 +24,14 @@ describe("codeChartaComponent", () => {
 		expect(mockedLoadInitialFileService.loadFileOrSample).toHaveBeenCalled()
 	})
 
-	it("should set isInitilized on windows' load event, so the app doesn't flicker on initial page load", () => {
+	it("should set isInitialized on angulars init event after fileService is loaded", async () => {
 		const mockedStore = { dispatch: jest.fn() } as unknown as Store
 		const mockedLoadInitialFileService = { loadFileOrSample: jest.fn() } as unknown as LoadInitialFileService
 
 		const codeChartaComponent = new CodeChartaComponent(mockedStore, mockedLoadInitialFileService)
 		expect(codeChartaComponent.isInitialized).toBe(false)
 
-		window.dispatchEvent(new Event("load"))
+		await codeChartaComponent.ngOnInit()
 		expect(codeChartaComponent.isInitialized).toBe(true)
 	})
 })
