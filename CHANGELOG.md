@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Removed 🗑
+
+-   Deprecated download button removed (functionality has been replaced by custom views) [#3398](https://github.com/MaibornWolff/codecharta/pull/3398)
+
 ### Fixed 🐞
 
 -   Fix an issue with web demo on Safari showing a white screen and not loading [#3396](https://github.com/MaibornWolff/codecharta/pull/3396)
