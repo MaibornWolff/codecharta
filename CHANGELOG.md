@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Removed 🗑
 
 -   Deprecated download button removed (functionality has been replaced by custom views) [#3398](https://github.com/MaibornWolff/codecharta/pull/3398)
+-   Remove the 'new' badges from the 'Custom Views' and 'Suspicious Metrics' features as these features are no longer new [#3393](https://github.com/MaibornWolff/codecharta/pull/3399)
 
 ### Fixed 🐞
 
