@@ -62,7 +62,7 @@ class RawTextParser(
 
     @CommandLine.Option(
         names = ["-f", "--file-extensions"],
-        description = ["parse only files with specified extensions (defualt: any)"]
+        description = ["parse only files with specified extensions (default: any)"]
     )
     private var fileExtensions: Array<String> = arrayOf()
 
