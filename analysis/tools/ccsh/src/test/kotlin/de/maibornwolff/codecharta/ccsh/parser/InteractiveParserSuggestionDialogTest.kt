@@ -6,10 +6,7 @@ import com.github.kinquirer.components.promptInput
 import de.maibornwolff.codecharta.tools.ccsh.Ccsh
 import de.maibornwolff.codecharta.tools.ccsh.parser.InteractiveParserSuggestionDialog
 import de.maibornwolff.codecharta.tools.ccsh.parser.ParserService
-import io.mockk.every
-import io.mockk.mockkObject
-import io.mockk.mockkStatic
-import io.mockk.unmockkAll
+import io.mockk.*
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
@@ -95,31 +92,35 @@ class InteractiveParserSuggestionDialogTest {
             KInquirer.promptInput(any(), any(), any(), any(), any())
         } returns "src"
 
-        val parser = "dummyParser"
+        val parserWithDescription = "dummyParser - dummyDescription"
+        val parserWithoutDescription = "dummyParser"
         val configuration = listOf("dummyArg")
-        val parserList = listOf(parser)
+        val parserListWithDescription = listOf(parserWithDescription)
+        val parserListWithoutDescription = listOf(parserWithoutDescription)
 
         mockkStatic("com.github.kinquirer.components.CheckboxKt")
         every {
             KInquirer.promptCheckbox(any(), any(), any(), any(), any(), any(), any())
-        } returns parserList
+        } returns parserListWithDescription
 
         mockkObject(ParserService)
         every {
             ParserService.getParserSuggestions(any(), any(), any())
-        } returns parserList
+        } returns parserListWithDescription
 
         every {
             ParserService.configureParserSelection(any(), any(), any())
-        } returns mapOf(parser to configuration)
+        } returns mapOf(parserWithoutDescription to configuration)
 
         val configuredParsers = InteractiveParserSuggestionDialog.offerAndGetInteractiveParserSuggestionsAndConfigurations(cmdLine)
+
+        verify { ParserService.configureParserSelection(any(), any(), parserListWithoutDescription) }
 
         Assertions.assertThat(configuredParsers).isNotNull
         Assertions.assertThat(configuredParsers).isNotEmpty
 
-        Assertions.assertThat(configuredParsers).containsKey(parser)
-        Assertions.assertThat(configuredParsers[parser] == configuration).isTrue()
+        Assertions.assertThat(configuredParsers).containsKey(parserWithoutDescription)
+        Assertions.assertThat(configuredParsers[parserWithoutDescription] == configuration).isTrue()
     }
 
     @Test
