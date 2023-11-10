@@ -95,11 +95,14 @@ class RawTextParser(
 
         if (!withoutDefaultExcludes) exclude += DEFAULT_EXCLUDES
 
-        println(fileExtensions[0])
-
         val parameterMap = assembleParameterMap()
         val results: Map<String, FileMetrics> =
             MetricCollector(inputFile!!, exclude, fileExtensions, parameterMap, metrics).parse()
+
+        if (results.isEmpty()) {
+            System.err.println("\n\nERROR: No files with specified file extension(s) were found within the given folder - not generating an output file!")
+            return null
+        }
 
         val pipedProject = ProjectDeserializer.deserializeProject(input)
         val project = ProjectGenerator().generate(results, pipedProject)
