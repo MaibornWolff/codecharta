@@ -6,7 +6,11 @@ import com.github.kinquirer.components.promptInput
 import de.maibornwolff.codecharta.tools.ccsh.Ccsh
 import de.maibornwolff.codecharta.tools.ccsh.parser.InteractiveParserSuggestionDialog
 import de.maibornwolff.codecharta.tools.ccsh.parser.ParserService
-import io.mockk.*
+import io.mockk.every
+import io.mockk.mockkObject
+import io.mockk.mockkStatic
+import io.mockk.unmockkAll
+import io.mockk.verify
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
