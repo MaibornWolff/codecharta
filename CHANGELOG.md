@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Fixed 🐞
 
 -   Fix an issue with web demo on Safari showing a white screen and not loading [#3396](https://github.com/MaibornWolff/codecharta/pull/3396)
+-   Fix ccsh not finding parsers when run without flags [#3401](https://github.com/MaibornWolff/codecharta/pull/3401)
 
 ### Chore 👨‍💻 👩‍💻
 
