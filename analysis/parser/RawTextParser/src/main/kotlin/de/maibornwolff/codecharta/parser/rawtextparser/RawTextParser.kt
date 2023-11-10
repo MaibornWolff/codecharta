@@ -62,7 +62,8 @@ class RawTextParser(
 
     @CommandLine.Option(
         names = ["-f", "--file-extensions"],
-        description = ["parse only files with specified extensions (default: any)"]
+        description = ["parse only files with specified extensions (default: any)"],
+        split = "\\s*,\\s*"
     )
     private var fileExtensions: Array<String> = arrayOf()
 
@@ -93,6 +94,8 @@ class RawTextParser(
         }
 
         if (!withoutDefaultExcludes) exclude += DEFAULT_EXCLUDES
+
+        println(fileExtensions[0])
 
         val parameterMap = assembleParameterMap()
         val results: Map<String, FileMetrics> =
