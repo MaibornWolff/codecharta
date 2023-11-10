@@ -7,9 +7,7 @@ import de.maibornwolff.codecharta.parser.rawtextparser.RawTextParser.Companion.m
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.util.InputHelper
-import io.mockk.every
-import io.mockk.mockkObject
-import io.mockk.unmockkAll
+import io.mockk.*
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
@@ -152,5 +150,26 @@ class RawTextParserTest {
         System.setErr(originalErr)
 
         Assertions.assertThat(errContent.toString()).contains("Input invalid file for RawTextParser, stopping execution")
+    }
+
+    @Test
+    fun `Should not produce an output and notify the user if the only specified extension was not found in the folder`() {
+
+        System.setErr(PrintStream(errContent))
+        val result = executeForOutput("", arrayOf("src/test/resources/sampleproject/tabs.xyz", "--file-extensions=invalid"))
+        System.setErr(originalErr)
+
+        Assertions.assertThat(result == "")
+        Assertions.assertThat(errContent.toString()).contains("ERROR: No files with specified file extension(s) were found within the given folder - not generating an output file!")
+    }
+
+    @Test
+    fun `Should warn the user if one of the specified extensions was not found in the folder`() {
+
+    }
+
+    @Test
+    fun `Should not produce an output and notify the user if none of the specified extensions were found in the folder`() {
+
     }
 }
