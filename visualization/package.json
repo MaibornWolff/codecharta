@@ -43,6 +43,7 @@
 		"test:auto": "npm test -- --watch",
 		"test:autoNoCoverage": "npm run test:auto -- --coverage false",
 		"test:updateSnaps": "npm test -- --updateSnapshot",
+		"test:limitedWorker": "npm test -- --maxWorkers=70%",
 		"e2e": "jest --config conf/jestE2E.config.json .*\\.e2e\\.ts --coverage false",
 		"e2e:auto": "npm run e2e -- --watch",
 		"e2e:ci": "npm run e2e -- --runInBand",
