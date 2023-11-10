@@ -64,7 +64,7 @@ class MetricCollectorTest {
     fun `Should include all Files when no specific extensions were given (default for interactive mode)`() {
         val result = MetricCollector(File("src/test/resources/sampleproject").absoluteFile, fileExtensions = arrayOf("")).parse()
 
-        Assertions.assertThat(result.size).isEqualTo(4)
+        Assertions.assertThat(result.size).isEqualTo(5)
         Assertions.assertThat(result).containsKey("/spaces/spaces_xyz.wrong")
         Assertions.assertThat(result).containsKey("/spaces/spaces_3.xyz")
         Assertions.assertThat(result).containsKey("/spaces/spaces_4.xyz")
@@ -72,14 +72,8 @@ class MetricCollectorTest {
     }
 
     @Test
-    fun `Should not produce an output and notify the user if the only specified extension was not found in the folder`() {
-        val result = MetricCollector(File("src/test/resources/sampleproject").absoluteFile, fileExtensions = arrayOf("wrong, abc")).parse()
-
+    fun `Should produce empty result if no valid file extensions were given`() {
+        val result = MetricCollector(File("src/test/resources/sampleproject").absoluteFile, fileExtensions = arrayOf("none")).parse()
         Assertions.assertThat(result.size).isEqualTo(0)
-    }
-
-    @Test
-    fun `Should warn the user if one of the specified extensions was not found in the folder`() {
-
     }
 }
