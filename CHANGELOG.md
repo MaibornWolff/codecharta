@@ -15,7 +15,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Fixed 🐞
 
 -   Fix an issue with web demo on Safari showing a white screen and not loading [#3396](https://github.com/MaibornWolff/codecharta/pull/3396)
--   Fix ccsh not finding parsers when run without flags [#3401](https://github.com/MaibornWolff/codecharta/pull/3401)
 
 ### Chore 👨‍💻 👩‍💻
 
@@ -27,6 +26,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Added 🚀
 
 -   Only ask to merge results after parser suggestion execution when more than one parser was executed [#3384](https://github.com/MaibornWolff/codecharta/pull/3384)
+-   Add the description of each parser to the list of suggested parsers [#3387](https://github.com/MaibornWolff/codecharta/pull/3387)
 
 ### Changed
 

@@ -21,12 +21,12 @@ class InteractiveParserSuggestionDialog {
                 return emptyMap()
             }
 
-            val parserRepository = PicocliParserRepository()
             val selectedParsers = selectToBeExecutedInteractiveParsers(applicableParsers)
 
             return if (selectedParsers.isEmpty()) {
                 emptyMap()
             } else {
+                val parserRepository = PicocliParserRepository()
                 val selectedParsersWithoutDescription = selectedParsers.map { parserRepository.extractParserName(it) }
                 ParserService.configureParserSelection(commandLine, parserRepository, selectedParsersWithoutDescription)
             }
