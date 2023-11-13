@@ -76,4 +76,12 @@ class MetricCollectorTest {
         val result = MetricCollector(File("src/test/resources/sampleproject").absoluteFile, fileExtensions = arrayOf("none")).parse()
         Assertions.assertThat(result.size).isEqualTo(0)
     }
+
+    @Test
+    fun `Should produce the same result whether the user included a dot in the filetype or not`() {
+        val resultWithoutDot = MetricCollector(File("src/test/resources/sampleproject").absoluteFile, fileExtensions = arrayOf("wrong", "xyz")).parse()
+        val resultWithDot = MetricCollector(File("src/test/resources/sampleproject").absoluteFile, fileExtensions = arrayOf(".wrong", ".xyz")).parse()
+
+        Assertions.assertThat(resultWithoutDot == resultWithDot)
+    }
 }
