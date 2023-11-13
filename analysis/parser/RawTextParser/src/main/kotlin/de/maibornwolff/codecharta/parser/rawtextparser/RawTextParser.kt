@@ -98,10 +98,29 @@ class RawTextParser(
         val parameterMap = assembleParameterMap()
         val results: Map<String, FileMetrics> =
             MetricCollector(inputFile!!, exclude, fileExtensions, parameterMap, metrics).parse()
+        println("")
 
         if (results.isEmpty()) {
-            System.err.println("\n\nERROR: No files with specified file extension(s) were found within the given folder - not generating an output file!")
+            System.err.println()
+            System.err.println("ERROR: No files with specified file extension(s) were found within the given folder - not generating an output file!")
             return null
+        }
+
+        val notFoundFileExtensions = mutableListOf<String>()
+        for (fileExtension in fileExtensions) {
+            var isFileExtensionIncluded = false
+            for (relativeFileName in results.keys) {
+                if (relativeFileName.contains(fileExtension)) {
+                    isFileExtensionIncluded = true
+                }
+            }
+            if (!isFileExtensionIncluded) {
+                notFoundFileExtensions.add(fileExtension)
+            }
+        }
+        if (notFoundFileExtensions.size != 0) {
+            System.err.println()
+            notFoundFileExtensions.forEach { System.err.println("WARNING: The specified file extension '$it' was not found within the given folder!") }
         }
 
         val pipedProject = ProjectDeserializer.deserializeProject(input)
