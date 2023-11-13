@@ -158,7 +158,7 @@ class RawTextParserTest {
         val result = executeForOutput("", arrayOf("src/test/resources/sampleproject/", "--file-extensions=invalid"))
         System.setErr(originalErr)
 
-        Assertions.assertThat(result == "")
+        Assertions.assertThat(result).isEmpty()
         Assertions.assertThat(errContent.toString()).contains("ERROR: No files with specified file extension(s) were found within the given folder - not generating an output file!")
     }
 
@@ -168,7 +168,7 @@ class RawTextParserTest {
         val result = executeForOutput("", arrayOf("src/test/resources/sampleproject/tabs.xyz", "--file-extensions=xyz, invalid"))
         System.setErr(originalErr)
 
-        Assertions.assertThat(result != "").isTrue()
+        Assertions.assertThat(result).isNotEmpty()
         Assertions.assertThat(errContent.toString()).contains("WARNING: The specified file extension 'invalid' was not found within the given folder!")
         Assertions.assertThat(errContent.toString()).doesNotContain("WARNING: The specified file extension 'xyz' was not found within the given folder!")
 
@@ -180,7 +180,7 @@ class RawTextParserTest {
         val result = executeForOutput("", arrayOf("src/test/resources/sampleproject/", "--file-extensions=invalid1, invalid2, also_invalid"))
         System.setErr(originalErr)
 
-        Assertions.assertThat(result == "")
+        Assertions.assertThat(result).isEmpty()
         Assertions.assertThat(errContent.toString()).contains("ERROR: No files with specified file extension(s) were found within the given folder - not generating an output file!")
     }
 }
