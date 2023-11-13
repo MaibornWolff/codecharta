@@ -35,7 +35,7 @@ class ParserDialog {
             )
 
             val tabWidth: BigDecimal =
-                KInquirer.promptInputNumber(message = "What is the tab width used (estimated if not provided)?")
+                KInquirer.promptInputNumber(message = "What is the tab width used (estimated if not provided)?", default="")
 
             val maxIndentationLevel: BigDecimal = KInquirer.promptInputNumber(message = "What is the maximum Indentation Level?", default = "10", hint = "10")
 
