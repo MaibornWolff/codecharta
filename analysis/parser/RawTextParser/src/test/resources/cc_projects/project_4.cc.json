@@ -1,5 +1,5 @@
 {
-  "checksum": "8e426f4db76a5e9b3a72bcfadc338bd9",
+  "checksum": "1df41fd8cedec533737e0c5bf2990c70",
   "data": {
     "projectName": "",
     "nodes": [
@@ -36,6 +36,17 @@
                 },
                 "link": "",
                 "children": []
+              },
+              {
+                "name":"spaces_5.abc",
+                "type":"File",
+                "attributes": {
+                  "indentation_level_0+":5.0,
+                  "indentation_level_1+":3.0,
+                  "indentation_level_2+":3.0
+                },
+                "link":"",
+                "children":[]
               },
               {
                 "name": "spaces_xyz.wrong",
