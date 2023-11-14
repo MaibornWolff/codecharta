@@ -6,7 +6,6 @@ import com.github.kinquirer.components.promptInput
 import com.github.kinquirer.components.promptInputNumber
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import java.math.BigDecimal
-import java.math.BigInteger
 import java.nio.file.Paths
 
 class ParserDialog {
