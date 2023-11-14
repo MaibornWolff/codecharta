@@ -34,8 +34,9 @@ class ParserDialog {
                 hint = "metric1, metric2, metric3 (leave empty for all metrics)"
             )
 
-            val tabWidth: Int =
-                KInquirer.promptInput(message = "What is the tab width used (estimated if unknown)?", default = "unknown", hint = "unknown").toIntOrNull() ?: 0
+            val tabWidth: String =
+                KInquirer.promptInput(message = "What is the tab width used (estimated if unknown)?", default = "unknown", hint = "unknown")
+            val tabWidthValue = tabWidth.toIntOrNull() ?: 0
 
             val maxIndentationLevel: BigDecimal = KInquirer.promptInputNumber(message = "What is the maximum Indentation Level?", default = "10", hint = "10")
 
@@ -54,7 +55,7 @@ class ParserDialog {
                 if (isCompressed) null else "--not-compressed",
                 "--verbose=$verbose",
                 "--metrics=$metrics",
-                "--tab-width=$tabWidth",
+                "--tab-width=$tabWidthValue",
                 "--max-indentation-level=$maxIndentationLevel",
                 "--exclude=$exclude",
                 "--file-extensions=$fileExtensions",
