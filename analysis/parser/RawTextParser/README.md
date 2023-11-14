@@ -13,7 +13,8 @@ Usage: rawtextparser [-hv] [--withoutDefaultExcludes]
                      [--maxIndentationLevel=<maxIndentLvl>]
                      [--tabWidth=<tabWith>] [-o=<outputFile>]
                      [-p=<projectName>] [-e=<exclude>]... [-m
-                     [=<metrics>...]]... FILE or FOLDER
+                     [=<metrics>...]]... [-f [=<file-extensions>
+                     ...]]... FILE or FOLDER
 generates cc.json from projects or source code files
       FILE or FOLDER         file/project to parse
       --maxIndentationLevel=<maxIndentLvl>
@@ -23,6 +24,8 @@ generates cc.json from projects or source code files
                              include build, target, dist, resources and out folders
                                as well as files/folders starting with '.'
   -e, --exclude=<exclude>    exclude file/folder according to regex pattern
+  -f, --file-extensions[=<file-extensions>...]
+                             parse only files with specified extensions
   -h, --help                 displays this help and exits
   -m, --metrics[=<metrics>...]
                              metrics to be computed (select all if not specified)
