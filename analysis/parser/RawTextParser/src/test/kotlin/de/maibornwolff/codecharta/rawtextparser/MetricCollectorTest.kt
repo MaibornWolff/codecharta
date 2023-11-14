@@ -19,7 +19,7 @@ class MetricCollectorTest {
     fun `Should collect information about all files within a project`() {
         val result = MetricCollector(File("src/test/resources/sampleproject").absoluteFile).parse()
 
-        Assertions.assertThat(result.size).isEqualTo(4)
+        Assertions.assertThat(result.size).isEqualTo(5)
         Assertions.assertThat(result).containsKey("/tabs.xyz")
         Assertions.assertThat(result).containsKey("/spaces/spaces_3.xyz")
         Assertions.assertThat(result["/tabs.xyz"]?.metricMap).isNotEmpty
@@ -36,7 +36,7 @@ class MetricCollectorTest {
     fun `Should exclude regex patterns`() {
         val result = MetricCollector(File("src/test/resources/sampleproject").absoluteFile, exclude = arrayOf(".*\\.xyz", "foobar")).parse()
 
-        Assertions.assertThat(result.size).isEqualTo(1)
+        Assertions.assertThat(result.size).isEqualTo(2)
         Assertions.assertThat(result).containsKey("/spaces/spaces_xyz.wrong")
     }
 
