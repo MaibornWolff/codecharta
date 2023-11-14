@@ -57,6 +57,7 @@ class MetricCollectorTest {
         Assertions.assertThat(result.size).isEqualTo(4)
         Assertions.assertThat(result).containsKey("/spaces/spaces_xyz.wrong")
         Assertions.assertThat(result).containsKey("/spaces/spaces_3.xyz")
+        Assertions.assertThat(result).containsKey("/spaces/spaces_4.xyz")
         Assertions.assertThat(result).doesNotContainKey("/spaces/spaces_5.abc")
     }
 
@@ -68,6 +69,7 @@ class MetricCollectorTest {
         Assertions.assertThat(result).containsKey("/spaces/spaces_xyz.wrong")
         Assertions.assertThat(result).containsKey("/spaces/spaces_3.xyz")
         Assertions.assertThat(result).containsKey("/spaces/spaces_4.xyz")
+        Assertions.assertThat(result).containsKey("/spaces/spaces_5.abc")
         Assertions.assertThat(result).containsKey("/tabs.xyz")
     }
 
