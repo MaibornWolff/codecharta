@@ -7,7 +7,14 @@ import de.maibornwolff.codecharta.parser.rawtextparser.RawTextParser.Companion.m
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.util.InputHelper
-import io.mockk.*
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.mockkObject
+import io.mockk.slot
+import io.mockk.unmockkAll
+import io.mockk.verify
+import mu.KLogger
+import mu.KotlinLogging
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
@@ -154,33 +161,49 @@ class RawTextParserTest {
 
     @Test
     fun `Should not produce an output and notify the user if the only specified extension was not found in the folder`() {
-        System.setErr(PrintStream(errContent))
+        mockkObject(KotlinLogging)
+        val loggerMock = mockk<KLogger>()
+        val lambdaSlot = slot<(() -> Unit)>()
+        val messagesLogged = mutableListOf<String>()
+        every { KotlinLogging.logger(capture(lambdaSlot)) } returns loggerMock
+        every { loggerMock.error(capture(messagesLogged)) } returns Unit
+
         val result = executeForOutput("", arrayOf("src/test/resources/sampleproject/", "--file-extensions=invalid"))
-        System.setErr(originalErr)
 
         Assertions.assertThat(result).isEmpty()
-        Assertions.assertThat(errContent.toString()).contains("ERROR: No files with specified file extension(s) were found within the given folder - not generating an output file!")
+
+        verify { loggerMock.error(any<String>()) }
+        Assertions.assertThat(messagesLogged).contains("No files with specified file extension(s) were found within the given folder - not generating an output file!")
     }
 
     @Test
     fun `Should warn the user if one of the specified extensions was not found in the folder`() {
-        System.setErr(PrintStream(errContent))
+        mockkObject(KotlinLogging)
+        val loggerMock = mockk<KLogger>()
+        val lambdaSlot = slot<(() -> Unit)>()
+        val messagesLogged = mutableListOf<String>()
+        every { KotlinLogging.logger(capture(lambdaSlot)) } returns loggerMock
+        every { loggerMock.warn(capture(messagesLogged)) } returns Unit
+
         val result = executeForOutput("", arrayOf("src/test/resources/sampleproject/tabs.xyz", "--file-extensions=xyz, invalid"))
-        System.setErr(originalErr)
 
         Assertions.assertThat(result).isNotEmpty()
-        Assertions.assertThat(errContent.toString()).contains("WARNING: The specified file extension 'invalid' was not found within the given folder!")
-        Assertions.assertThat(errContent.toString()).doesNotContain("WARNING: The specified file extension 'xyz' was not found within the given folder!")
-
+        Assertions.assertThat(messagesLogged).contains("The specified file extension 'invalid' was not found within the given folder!")
+        Assertions.assertThat(messagesLogged).doesNotContain("The specified file extension 'xyz' was not found within the given folder!")
     }
 
     @Test
     fun `Should not produce an output and notify the user if none of the specified extensions were found in the folder`() {
-        System.setErr(PrintStream(errContent))
+        mockkObject(KotlinLogging)
+        val loggerMock = mockk<KLogger>()
+        val lambdaSlot = slot<(() -> Unit)>()
+        val messagesLogged = mutableListOf<String>()
+        every { KotlinLogging.logger(capture(lambdaSlot)) } returns loggerMock
+        every { loggerMock.error(capture(messagesLogged)) } returns Unit
+
         val result = executeForOutput("", arrayOf("src/test/resources/sampleproject/", "--file-extensions=invalid1, invalid2, also_invalid"))
-        System.setErr(originalErr)
 
         Assertions.assertThat(result).isEmpty()
-        Assertions.assertThat(errContent.toString()).contains("ERROR: No files with specified file extension(s) were found within the given folder - not generating an output file!")
+        Assertions.assertThat(messagesLogged).contains("No files with specified file extension(s) were found within the given folder - not generating an output file!")
     }
 }
