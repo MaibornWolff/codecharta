@@ -6,6 +6,7 @@ import com.github.kinquirer.components.promptInput
 import com.github.kinquirer.components.promptInputNumber
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import java.math.BigDecimal
+import java.math.BigInteger
 import java.nio.file.Paths
 
 class ParserDialog {
@@ -34,8 +35,8 @@ class ParserDialog {
                 hint = "metric1, metric2, metric3 (leave empty for all metrics)"
             )
 
-            val tabWidth: BigDecimal =
-                KInquirer.promptInputNumber(message = "What is the tab width used (estimated if kept at 0)?", default = "0", hint = "0")
+            val tabWidth: Int =
+                KInquirer.promptInput(message = "What is the tab width used (estimated if unknown)?", default = "unknown", hint = "unknown").toIntOrNull() ?: 0
 
             val maxIndentationLevel: BigDecimal = KInquirer.promptInputNumber(message = "What is the maximum Indentation Level?", default = "10", hint = "10")
 
