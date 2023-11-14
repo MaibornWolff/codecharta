@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Fixed 🐞
 
 -   Fix an issue with web demo on Safari showing a white screen and not loading [#3396](https://github.com/MaibornWolff/codecharta/pull/3396)
+-   Allow user to skip the value for tabwidth when configuring the rawtextparser and estimate its value [#3404](https://github.com/MaibornWolff/codecharta/pull/3404)
 
 ### Chore 👨‍💻 👩‍💻
 
