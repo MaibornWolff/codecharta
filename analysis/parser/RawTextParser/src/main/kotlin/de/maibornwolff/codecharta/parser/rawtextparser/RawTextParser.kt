@@ -8,6 +8,7 @@ import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import de.maibornwolff.codecharta.tools.interactiveparser.util.CodeChartaConstants
 import de.maibornwolff.codecharta.util.InputHelper
+import mu.KotlinLogging
 import picocli.CommandLine
 import java.io.File
 import java.io.IOException
@@ -26,6 +27,8 @@ class RawTextParser(
     private val output: PrintStream = System.out,
     private val error: PrintStream = System.err,
 ) : Callable<Void>, InteractiveParser {
+
+    private val logger = KotlinLogging.logger {}
 
     private val DEFAULT_EXCLUDES = arrayOf("/out/", "/build/", "/target/", "/dist/", "/resources/", "/\\..*")
 
@@ -98,11 +101,11 @@ class RawTextParser(
         val parameterMap = assembleParameterMap()
         val results: Map<String, FileMetrics> =
             MetricCollector(inputFile!!, exclude, fileExtensions, parameterMap, metrics).parse()
-        println("")
+        println()
 
         if (results.isEmpty()) {
-            System.err.println()
-            System.err.println("ERROR: No files with specified file extension(s) were found within the given folder - not generating an output file!")
+            println()
+            logger.error("No files with specified file extension(s) were found within the given folder - not generating an output file!")
             return null
         }
 
@@ -119,8 +122,8 @@ class RawTextParser(
             }
         }
         if (notFoundFileExtensions.size != 0) {
-            System.err.println()
-            notFoundFileExtensions.forEach { System.err.println("WARNING: The specified file extension '$it' was not found within the given folder!") }
+            println()
+            notFoundFileExtensions.forEach { logger.warn("The specified file extension '$it' was not found within the given folder!") }
         }
 
         val pipedProject = ProjectDeserializer.deserializeProject(input)
