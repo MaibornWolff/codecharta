@@ -72,7 +72,7 @@ class IndentationCounter(
     }
 
     override fun getValue(): FileMetrics {
-        if (tabWidth == 0) {
+        if (tabWidth <= 0) {
             guessTabWidth()
         }
         correctMismatchingIndents(tabWidth)
