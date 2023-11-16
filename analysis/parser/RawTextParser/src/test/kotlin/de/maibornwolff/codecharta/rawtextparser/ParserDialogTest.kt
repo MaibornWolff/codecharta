@@ -32,8 +32,8 @@ class ParserDialogTest {
         @JvmStatic
         fun provideInvalidTabWidth(): List<Arguments> {
             return listOf(
-                    Arguments.of("unknown"),
                     Arguments.of("string-value"),
+                    Arguments.of(""),
                     Arguments.of("12."),
                     Arguments.of("12.0"))
         }
