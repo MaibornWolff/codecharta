@@ -121,7 +121,7 @@ class RawTextParser(
                 notFoundFileExtensions.add(fileExtension)
             }
         }
-        if (notFoundFileExtensions.size != 0) {
+        if (notFoundFileExtensions.isNotEmpty()) {
             println()
             notFoundFileExtensions.forEach { logger.warn("The specified file extension '$it' was not found within the given folder!") }
         }
