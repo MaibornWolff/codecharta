@@ -5,12 +5,15 @@ import com.univocity.parsers.csv.CsvWriterSettings
 import de.maibornwolff.codecharta.model.Node
 import de.maibornwolff.codecharta.model.Path
 import de.maibornwolff.codecharta.model.Project
+import de.maibornwolff.codecharta.serialization.OutputFileHandler
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
+import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import de.maibornwolff.codecharta.tools.interactiveparser.util.CodeChartaConstants
 import de.maibornwolff.codecharta.util.InputHelper
 import picocli.CommandLine
+import mu.KotlinLogging
 import java.io.BufferedWriter
 import java.io.File
 import java.io.FileWriter
@@ -41,6 +44,7 @@ class CSVExporter() : Callable<Void>, InteractiveParser {
     override val name = NAME
     override val description = DESCRIPTION
 
+    private val logger = KotlinLogging.logger {}
     companion object {
         const val NAME = "csvexport"
         const val DESCRIPTION = "generates csv file with header"
@@ -69,9 +73,15 @@ class CSVExporter() : Callable<Void>, InteractiveParser {
             throw IllegalArgumentException("Input invalid file for CSVExporter, stopping execution...")
         }
 
-        val projects = sources.map { ProjectDeserializer.deserializeProject(it.inputStream()) }
+        outputFile = OutputFileHandler.checkAndFixFileExtensionCsv(outputFile)
 
+        val projects = sources.map { ProjectDeserializer.deserializeProject(it.inputStream()) }
         projects.forEach { writeUsingWriter(it, writer()) }
+
+        if (!outputFile.isNullOrEmpty()) {
+            val absoluteFilePath = File(outputFile).absolutePath
+            logger.info("Created output file at $absoluteFilePath")
+        }
 
         return null
     }
@@ -84,11 +94,11 @@ class CSVExporter() : Callable<Void>, InteractiveParser {
 
         val header = listOf("path", "name", "type")
             .plus(attributeNames)
-            .plus(List(maxHierarchy, { "dir$it" }))
+            .plus(List(maxHierarchy) { "dir$it" })
 
         writer.writeHeaders(header)
 
-        project.rootNode.nodes.forEach({ path: Path, node: Node -> writer.writeRow(row(path, node, attributeNames)) })
+        project.rootNode.nodes.forEach { (path: Path, node: Node) -> writer.writeRow(row(path, node, attributeNames)) }
 
         writer.close()
     }
@@ -101,10 +111,9 @@ class CSVExporter() : Callable<Void>, InteractiveParser {
         val dirs = path.edgesList.dropLast(1)
 
         return when {
-            values.distinct().none { !it.isBlank() } -> listOf()
-            dirs.size < maxHierarchy -> rowWithoutDirs.plus(dirs).plus(
-                List(maxHierarchy - dirs.size, { "" })
-            )
+            values.distinct().none { it.isNotBlank() } -> listOf()
+            dirs.size < maxHierarchy                   -> rowWithoutDirs.plus(dirs).plus(
+                List(maxHierarchy - dirs.size) { "" })
             else -> rowWithoutDirs.plus(dirs.subList(0, maxHierarchy))
         }
     }

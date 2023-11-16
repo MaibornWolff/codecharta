@@ -5,12 +5,14 @@ import de.maibornwolff.codecharta.importer.sourcecodeparser.metricwriters.JSONMe
 import de.maibornwolff.codecharta.importer.sourcecodeparser.metricwriters.MetricWriter
 import de.maibornwolff.codecharta.serialization.OutputFileHandler
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
+import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import de.maibornwolff.codecharta.tools.interactiveparser.util.CodeChartaConstants
 import de.maibornwolff.codecharta.util.InputHelper
 import de.maibornwolff.codecharta.util.ResourceSearchHelper
 import picocli.CommandLine
+import mu.KotlinLogging
 import java.io.BufferedWriter
 import java.io.File
 import java.io.FileWriter
@@ -34,6 +36,8 @@ class SourceCodeParserMain(
 ) : Callable<Void>, InteractiveParser {
     // we need this constructor because ccsh requires an empty constructor
     constructor() : this(System.out)
+
+    private val logger = KotlinLogging.logger {}
 
     private val DEFAULT_EXCLUDES = arrayOf("/out/", "/build/", "/target/", "/dist/", "/resources/", "/\\..*")
 
@@ -116,6 +120,15 @@ class SourceCodeParserMain(
         val pipedProject = ProjectDeserializer.deserializeProject(input)
         writer.generate(projectParser.projectMetrics, projectParser.metricKinds, pipedProject)
 
+        outputFile?.let { nonNullOutputFile ->
+            val absoluteFilePath = if (writer::class == CSVMetricWriter::class) {
+                OutputFileHandler.checkAndFixFileExtensionCsv(nonNullOutputFile.absolutePath)
+            } else {
+                OutputFileHandler.checkAndFixFileExtensionJson(nonNullOutputFile.absolutePath, compress)
+            }
+            logger.info("Created output file at $absoluteFilePath")
+        }
+
         return null
     }
 
@@ -130,7 +143,7 @@ class SourceCodeParserMain(
         return if (outputFile == null) {
             OutputStreamWriter(outputStream)
         } else {
-            BufferedWriter(FileWriter(outputFile!!))
+            BufferedWriter(FileWriter(OutputFileHandler.checkAndFixFileExtensionCsv(outputFile!!.name)))
         }
     }
 
