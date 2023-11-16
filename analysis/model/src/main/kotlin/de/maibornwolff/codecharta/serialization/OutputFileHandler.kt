@@ -9,13 +9,16 @@ object OutputFileHandler {
         return if (outputFilePath.isNullOrBlank()) {
             fallbackOutputStream
         } else {
-            FileOutputStream(File(checkAndFixFileExtension(outputFilePath, compressed)))
+            FileOutputStream(File(checkAndFixFileExtensionJson(outputFilePath, compressed)))
         }
     }
 
-    fun checkAndFixFileExtension(outputName: String, compressed: Boolean): String =
+    fun checkAndFixFileExtensionJson(outputName: String, compressed: Boolean): String =
             outputName.removeSuffix(".gz").removeSuffix(".json").removeSuffix(".cc") + getExtension(compressed)
 
-    fun getExtension(compressed: Boolean) =
+    fun checkAndFixFileExtensionCsv(outputName: String): String =
+            outputName.removeSuffix(".csv") + ".csv"
+
+    private fun getExtension(compressed: Boolean) =
             if (compressed) ".cc.json.gz" else ".cc.json"
 }
