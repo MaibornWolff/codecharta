@@ -8,11 +8,11 @@ import java.io.File
 class MetricCollectorTest {
     @Test
     fun `Should collect information about a single file`() {
-        val result = MetricCollector(File("src/test/resources/sampleproject/tabs.xyz").absoluteFile).parse()
+        val result = MetricCollector(File("src/test/resources/sampleproject/tabs.included").absoluteFile).parse()
 
         Assertions.assertThat(result.size).isEqualTo(1)
-        Assertions.assertThat(result).containsKey("/tabs.xyz")
-        Assertions.assertThat(result["/tabs.xyz"]?.metricMap).isNotEmpty
+        Assertions.assertThat(result).containsKey("/tabs.included")
+        Assertions.assertThat(result["/tabs.included"]?.metricMap).isNotEmpty
     }
 
     @Test
@@ -20,9 +20,9 @@ class MetricCollectorTest {
         val result = MetricCollector(File("src/test/resources/sampleproject").absoluteFile).parse()
 
         Assertions.assertThat(result.size).isEqualTo(5)
-        Assertions.assertThat(result).containsKey("/tabs.xyz")
-        Assertions.assertThat(result).containsKey("/spaces/spaces_3.xyz")
-        Assertions.assertThat(result["/tabs.xyz"]?.metricMap).isNotEmpty
+        Assertions.assertThat(result).containsKey("/tabs.included")
+        Assertions.assertThat(result).containsKey("/spaces/spaces_3.included")
+        Assertions.assertThat(result["/tabs.included"]?.metricMap).isNotEmpty
     }
 
     @Test
@@ -34,31 +34,33 @@ class MetricCollectorTest {
 
     @Test
     fun `Should exclude regex patterns`() {
-        val result = MetricCollector(File("src/test/resources/sampleproject").absoluteFile, exclude = arrayOf(".*\\.xyz", "foobar")).parse()
+        val result = MetricCollector(File("src/test/resources/sampleproject").absoluteFile, exclude = arrayOf(".*\\.excluded$", "foobar")).parse()
 
-        Assertions.assertThat(result.size).isEqualTo(2)
-        Assertions.assertThat(result).containsKey("/spaces/spaces_xyz.wrong")
+        Assertions.assertThat(result.size).isEqualTo(4)
+        Assertions.assertThat(result).containsKey("/spaces/spaces_3.included")
+        Assertions.assertThat(result).containsKey("/spaces/spaces_5.includedtoo")
+        Assertions.assertThat(result).doesNotContainKey("/spaces/spaces_x_not_included.excluded")
     }
 
     @Test
     fun `Should include only specified File extension with one given`() {
-        val result = MetricCollector(File("src/test/resources/sampleproject").absoluteFile, fileExtensions = arrayOf("wrong")).parse()
+        val result = MetricCollector(File("src/test/resources/sampleproject").absoluteFile, fileExtensions = arrayOf("includedtoo")).parse()
 
         Assertions.assertThat(result.size).isEqualTo(1)
-        Assertions.assertThat(result).containsKey("/spaces/spaces_xyz.wrong")
-        Assertions.assertThat(result).doesNotContainKey("/spaces/spaces_3.xyz")
-        Assertions.assertThat(result).doesNotContainKey("tabs.xyz")
+        Assertions.assertThat(result).containsKey("/spaces/spaces_5.includedtoo")
+        Assertions.assertThat(result).doesNotContainKey("/spaces/spaces_3.included")
+        Assertions.assertThat(result).doesNotContainKey("tabs.included")
     }
 
     @Test
     fun `Should include only specified File extensions with multiple given`() {
-        val result = MetricCollector(File("src/test/resources/sampleproject").absoluteFile, fileExtensions = arrayOf("wrong", "xyz")).parse()
+        val result = MetricCollector(File("src/test/resources/sampleproject").absoluteFile, fileExtensions = arrayOf("included", "includedtoo")).parse()
 
         Assertions.assertThat(result.size).isEqualTo(4)
-        Assertions.assertThat(result).containsKey("/spaces/spaces_xyz.wrong")
-        Assertions.assertThat(result).containsKey("/spaces/spaces_3.xyz")
-        Assertions.assertThat(result).containsKey("/spaces/spaces_4.xyz")
-        Assertions.assertThat(result).doesNotContainKey("/spaces/spaces_5.abc")
+        Assertions.assertThat(result).containsKey("/spaces/spaces_3.included")
+        Assertions.assertThat(result).containsKey("/spaces/spaces_4.included")
+        Assertions.assertThat(result).containsKey("/spaces/spaces_5.includedtoo")
+        Assertions.assertThat(result).doesNotContainKey("/spaces/spaces_x_not_included.excluded")
     }
 
     @Test
@@ -66,11 +68,11 @@ class MetricCollectorTest {
         val result = MetricCollector(File("src/test/resources/sampleproject").absoluteFile, fileExtensions = arrayOf("")).parse()
 
         Assertions.assertThat(result.size).isEqualTo(5)
-        Assertions.assertThat(result).containsKey("/spaces/spaces_xyz.wrong")
-        Assertions.assertThat(result).containsKey("/spaces/spaces_3.xyz")
-        Assertions.assertThat(result).containsKey("/spaces/spaces_4.xyz")
-        Assertions.assertThat(result).containsKey("/spaces/spaces_5.abc")
-        Assertions.assertThat(result).containsKey("/tabs.xyz")
+        Assertions.assertThat(result).containsKey("/spaces/spaces_x_not_included.excluded")
+        Assertions.assertThat(result).containsKey("/spaces/spaces_3.included")
+        Assertions.assertThat(result).containsKey("/spaces/spaces_4.included")
+        Assertions.assertThat(result).containsKey("/spaces/spaces_5.includedtoo")
+        Assertions.assertThat(result).containsKey("/tabs.included")
     }
 
     @Test
@@ -81,8 +83,8 @@ class MetricCollectorTest {
 
     @Test
     fun `Should produce the same result whether the user included a dot in the filetype or not`() {
-        val resultWithoutDot = MetricCollector(File("src/test/resources/sampleproject").absoluteFile, fileExtensions = arrayOf("wrong", "xyz")).parse()
-        val resultWithDot = MetricCollector(File("src/test/resources/sampleproject").absoluteFile, fileExtensions = arrayOf(".wrong", ".xyz")).parse()
+        val resultWithoutDot = MetricCollector(File("src/test/resources/sampleproject").absoluteFile, fileExtensions = arrayOf("included", "includedtoo")).parse()
+        val resultWithDot = MetricCollector(File("src/test/resources/sampleproject").absoluteFile, fileExtensions = arrayOf(".included", ".includedtoo")).parse()
 
         Assertions.assertThat(resultWithoutDot == resultWithDot)
     }

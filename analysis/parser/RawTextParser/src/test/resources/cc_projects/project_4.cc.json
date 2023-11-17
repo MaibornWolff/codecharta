@@ -1,5 +1,5 @@
 {
-  "checksum": "1df41fd8cedec533737e0c5bf2990c70",
+  "checksum": "eb374d0b890eb05b71595a5184a6d7e0",
   "data": {
     "projectName": "",
     "nodes": [
@@ -16,7 +16,7 @@
             "link": "",
             "children": [
               {
-                "name": "spaces_4.xyz",
+                "name": "spaces_4.included",
                 "type": "File",
                 "attributes": {
                   "indentation_level_0+": 7,
@@ -27,7 +27,7 @@
                 "children": []
               },
               {
-                "name": "spaces_3.xyz",
+                "name": "spaces_3.included",
                 "type": "File",
                 "attributes": {
                   "indentation_level_0+": 5,
@@ -38,7 +38,7 @@
                 "children": []
               },
               {
-                "name":"spaces_5.abc",
+                "name":"spaces_5.includedtoo",
                 "type":"File",
                 "attributes": {
                   "indentation_level_0+":5.0,
@@ -49,7 +49,7 @@
                 "children":[]
               },
               {
-                "name": "spaces_xyz.wrong",
+                "name": "spaces_x_not_included.excluded",
                 "type": "File",
                 "attributes": {
                   "indentation_level_0+": 4,

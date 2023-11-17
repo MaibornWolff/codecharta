@@ -12,6 +12,7 @@ dependencies {
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter', version: junit5_version
     testImplementation group: 'org.assertj', name: 'assertj-core', version: assertj_version
     testImplementation group: 'io.mockk', name: 'mockk', version: mockk_version
+    testImplementation group: 'org.skyscreamer', name: 'jsonassert', version: '1.5.1'
 }
 
 test {
