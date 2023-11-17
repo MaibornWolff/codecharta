@@ -1,5 +1,5 @@
 {
-  "checksum": "f8498bc9be2f883fb003073d51b17b8b",
+  "checksum": "4d50b12a539de0139c1bd0b85367e14b",
   "data": {
     "projectName": "",
     "nodes": [
@@ -10,7 +10,7 @@
         "link": "",
         "children": [
           {
-            "name": "tabs.xyz",
+            "name": "tabs.included",
             "type": "File",
             "attributes": {
               "indentation_level_0+": 6,

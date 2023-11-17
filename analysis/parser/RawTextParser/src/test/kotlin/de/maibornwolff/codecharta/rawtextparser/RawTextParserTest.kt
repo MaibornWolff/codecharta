@@ -1,6 +1,5 @@
 package de.maibornwolff.codecharta.rawtextparser
 
-import com.google.gson.JsonParser
 import de.maibornwolff.codecharta.filter.mergefilter.MergeFilter
 import de.maibornwolff.codecharta.parser.rawtextparser.RawTextParser
 import de.maibornwolff.codecharta.parser.rawtextparser.RawTextParser.Companion.mainWithInOut
@@ -22,6 +21,8 @@ import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
+import org.skyscreamer.jsonassert.JSONAssert
+import org.skyscreamer.jsonassert.JSONCompareMode
 import picocli.CommandLine
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
@@ -44,7 +45,7 @@ class RawTextParserTest {
         fun provideValidInputFiles(): List<Arguments> {
             return listOf(
                     Arguments.of("src/test/resources/sampleproject"),
-                    Arguments.of("src/test/resources/sampleproject/tabs.xyz"))
+                    Arguments.of("src/test/resources/sampleproject/tabs.included"))
         }
     }
 
@@ -52,11 +53,9 @@ class RawTextParserTest {
     fun `should be able to process single file`() {
         val expectedResultFile = File("src/test/resources/cc_projects/project_3.cc.json").absoluteFile
 
-        val result = executeForOutput("", arrayOf("src/test/resources/sampleproject/tabs.xyz"))
+        val result = executeForOutput("", arrayOf("src/test/resources/sampleproject/tabs.included"))
 
-        val resultJSON = JsonParser.parseString(result)
-        val expectedJson = JsonParser.parseReader(expectedResultFile.reader())
-        Assertions.assertThat(resultJSON).isEqualTo(expectedJson)
+        JSONAssert.assertEquals(result, expectedResultFile.readText(), JSONCompareMode.NON_EXTENSIBLE)
     }
 
     @Test
@@ -68,16 +67,14 @@ class RawTextParserTest {
             arrayOf("src/test/resources/sampleproject/", "--tab-width=2", "--max-indentation-level=2", "-e=tabs*.")
         )
 
-        val resultJSON = JsonParser.parseString(result)
-        val expectedJson = JsonParser.parseReader(expectedResultFile.reader())
-        Assertions.assertThat(resultJSON).isEqualTo(expectedJson)
+        JSONAssert.assertEquals(result, expectedResultFile.readText(), JSONCompareMode.NON_EXTENSIBLE)
     }
 
     @Test
     fun `should merge with piped project`() {
         val pipedProject = "src/test/resources/cc_projects/project_4.cc.json"
         val partialResult = "src/test/resources/cc_projects/project_3.cc.json"
-        val fileToParse = "src/test/resources/sampleproject/tabs.xyz"
+        val fileToParse = "src/test/resources/sampleproject/tabs.included"
         val input = File(pipedProject).bufferedReader().readLines().joinToString(separator = "\n") { it }
         val partialProject1 = ProjectDeserializer.deserializeProject(File(partialResult).inputStream())
         val partialProject2 = ProjectDeserializer.deserializeProject(File(pipedProject).inputStream())
@@ -89,8 +86,7 @@ class RawTextParserTest {
 
         val result = executeForOutput(input, arrayOf(fileToParse))
 
-        val resultJSON = JsonParser.parseString(result)
-        Assertions.assertThat(resultJSON).isEqualTo(JsonParser.parseString(expected.toString()))
+        JSONAssert.assertEquals(result, expected.toString(), JSONCompareMode.NON_EXTENSIBLE)
     }
 
     fun executeForOutput(input: String, args: Array<String> = emptyArray()) =
@@ -121,7 +117,7 @@ class RawTextParserTest {
 
     @Test
     fun `should be identified as applicable for given path being a file`() {
-        val isUsable = RawTextParser().isApplicable("src/test/resources/sampleproject/tabs.xyz")
+        val isUsable = RawTextParser().isApplicable("src/test/resources/sampleproject/tabs.included")
         Assertions.assertThat(isUsable).isTrue()
     }
 
@@ -185,11 +181,11 @@ class RawTextParserTest {
         every { KotlinLogging.logger(capture(lambdaSlot)) } returns loggerMock
         every { loggerMock.warn(capture(messagesLogged)) } returns Unit
 
-        val result = executeForOutput("", arrayOf("src/test/resources/sampleproject/tabs.xyz", "--file-extensions=xyz, invalid"))
+        val result = executeForOutput("", arrayOf("src/test/resources/sampleproject", "--file-extensions=invalid, included"))
 
         Assertions.assertThat(result).isNotEmpty()
         Assertions.assertThat(messagesLogged).contains("The specified file extension 'invalid' was not found within the given folder!")
-        Assertions.assertThat(messagesLogged).doesNotContain("The specified file extension 'xyz' was not found within the given folder!")
+        Assertions.assertThat(messagesLogged).doesNotContain("The specified file extension 'included' was not found within the given folder!")
     }
 
     @Test
