@@ -16,8 +16,10 @@ import java.io.PrintStream
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class CSVExporterTest {
-    val errContent = ByteArrayOutputStream()
-    val originalErr = System.err
+    private val errContent = ByteArrayOutputStream()
+    private val originalErr = System.err
+    private val outContent = ByteArrayOutputStream()
+    private val originalOut = System.out
 
     @AfterAll
     fun afterTest() {
@@ -45,6 +47,10 @@ class CSVExporterTest {
         System.setErr(originalErr)
 
         Assertions.assertThat(errContent.toString()).contains("Input invalid file for CSVExporter, stopping execution")
+    }
+
+    @Test
+    fun `should stop execution if folder specified for input file`() {
     }
 
     @Test
@@ -85,12 +91,29 @@ class CSVExporterTest {
     @Test
     fun `should stop execution if depth-of-hierarchy is negative`() {
         val filePath = "../../test/data/codecharta/csvexport_input.cc.json"
-        Assertions.assertThat(File(filePath).exists())
         val maxHierarchy = -1
         System.setErr(PrintStream(errContent))
-        CommandLine(CSVExporter()).execute("filePath", "--depth-of-hierarchy", "$maxHierarchy").toString()
+
+        CommandLine(CSVExporter()).execute("$filePath", "--depth-of-hierarchy", "$maxHierarchy").toString()
         System.setErr(originalErr)
 
         Assertions.assertThat(errContent.toString()).contains("depth-of-hierarchy must not be negative")
     }
+
+    @Test
+    fun `should produce valid output for depth-of-hierarchy equals zero`() {
+        val filePath = "../../test/data/codecharta/csvexport_input.cc.json"
+        val maxHierarchy = 0
+        System.setOut(PrintStream(outContent))
+
+        CommandLine(CSVExporter()).execute("$filePath", "--depth-of-hierarchy", "$maxHierarchy")
+        System.setOut(originalOut)
+
+        val csvContent = outContent.toString()
+        val firstList = csvContent.lines().first()
+
+        Assertions.assertThat(firstList).doesNotContainPattern("dir\\d+")
+    }
+
+
 }
