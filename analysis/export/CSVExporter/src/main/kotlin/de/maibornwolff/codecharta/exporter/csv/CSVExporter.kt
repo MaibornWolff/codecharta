@@ -7,7 +7,6 @@ import de.maibornwolff.codecharta.model.Path
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.serialization.OutputFileHandler
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
-import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import de.maibornwolff.codecharta.tools.interactiveparser.util.CodeChartaConstants
@@ -55,11 +54,11 @@ class CSVExporter() : Callable<Void>, InteractiveParser {
         }
     }
 
-    private fun writer(): Writer {
+    private fun writer(append: Boolean): Writer {
         return if (outputFile.isEmpty()) {
             OutputStreamWriter(System.out)
         } else {
-            BufferedWriter(FileWriter(outputFile))
+            BufferedWriter(FileWriter(outputFile, append))
         }
     }
 
@@ -76,7 +75,10 @@ class CSVExporter() : Callable<Void>, InteractiveParser {
         outputFile = OutputFileHandler.checkAndFixFileExtensionCsv(outputFile)
 
         val projects = sources.map { ProjectDeserializer.deserializeProject(it.inputStream()) }
-        projects.forEach { writeUsingWriter(it, writer()) }
+        projects.forEachIndexed { index, project ->
+            val append = index > 0
+            writeUsingWriter(project, writer(append))
+        }
 
         if (!outputFile.isNullOrEmpty()) {
             val absoluteFilePath = File(outputFile).absolutePath
