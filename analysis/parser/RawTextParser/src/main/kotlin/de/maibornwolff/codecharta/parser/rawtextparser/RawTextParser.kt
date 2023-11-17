@@ -109,6 +109,25 @@ class RawTextParser(
             return null
         }
 
+        logWarningsForNotFoundFileExtensions(results)
+
+        val pipedProject = ProjectDeserializer.deserializeProject(input)
+        val project = ProjectGenerator().generate(results, pipedProject)
+
+        ProjectSerializer.serializeToFileOrStream(project, outputFile, output, compress)
+
+        return null
+    }
+
+    private fun assembleParameterMap(): Map<String, Int> {
+        return mapOf(
+            "verbose" to verbose.toInt(),
+            "maxIndentationLevel" to maxIndentLvl,
+            "tabWidth" to tabWidth
+        ).filterValues { it != null }.mapValues { it.value as Int }
+    }
+
+    private fun logWarningsForNotFoundFileExtensions(results: Map<String, FileMetrics>) {
         val notFoundFileExtensions = mutableListOf<String>()
         for (fileExtension in fileExtensions) {
             var isFileExtensionIncluded = false
@@ -125,21 +144,6 @@ class RawTextParser(
             println()
             notFoundFileExtensions.forEach { logger.warn("The specified file extension '$it' was not found within the given folder!") }
         }
-
-        val pipedProject = ProjectDeserializer.deserializeProject(input)
-        val project = ProjectGenerator().generate(results, pipedProject)
-
-        ProjectSerializer.serializeToFileOrStream(project, outputFile, output, compress)
-
-        return null
-    }
-
-    private fun assembleParameterMap(): Map<String, Int> {
-        return mapOf(
-            "verbose" to verbose.toInt(),
-            "maxIndentationLevel" to maxIndentLvl,
-            "tabWidth" to tabWidth
-        ).filterValues { it != null }.mapValues { it.value as Int }
     }
 
     override fun getDialog(): ParserDialogInterface = ParserDialog
