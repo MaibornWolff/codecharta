@@ -18,7 +18,7 @@ describe("SuspiciousMetricsComponent", () => {
 
 	describe("badge", () => {
 		it("should show initially and hide on first click, but show again when data has changed", async () => {
-			const { container, change } = await render(SuspiciousMetricComponent, {
+			const { container, rerender } = await render(SuspiciousMetricComponent, {
 				excludeComponentDeclaration: true,
 				componentProperties: {
 					data: {
@@ -34,19 +34,21 @@ describe("SuspiciousMetricsComponent", () => {
 			await userEvent.click(screen.getByTitle("Open Suspicious Metrics Panel"))
 			expect(container.querySelector(".suspicious-metrics-badge")).toBe(null)
 
-			change({
-				data: {
-					analyzedProgrammingLanguage: "ts",
-					unsuspiciousMetrics: ["rloc"],
-					suspiciousMetricSuggestionLinks: [],
-					untrackedMetrics: []
+			await rerender({
+				componentProperties: {
+					data: {
+						analyzedProgrammingLanguage: "ts",
+						unsuspiciousMetrics: ["rloc"],
+						suspiciousMetricSuggestionLinks: [],
+						untrackedMetrics: []
+					}
 				}
 			})
 			expect(container.querySelector(".suspicious-metrics-badge")).not.toBe(null)
 		})
 
 		it("should show initially and hide on first click, but not show again when new data has same values", async () => {
-			const { container, change } = await render(SuspiciousMetricComponent, {
+			const { container, rerender } = await render(SuspiciousMetricComponent, {
 				excludeComponentDeclaration: true,
 				componentProperties: {
 					data: {
@@ -62,12 +64,14 @@ describe("SuspiciousMetricsComponent", () => {
 			await userEvent.click(screen.getByTitle("Open Suspicious Metrics Panel"))
 			expect(container.querySelector(".suspicious-metrics-badge")).toBe(null)
 
-			change({
-				data: {
-					analyzedProgrammingLanguage: "ts",
-					unsuspiciousMetrics: ["rloc", "mcc"],
-					suspiciousMetricSuggestionLinks: [],
-					untrackedMetrics: []
+			await rerender({
+				componentProperties: {
+					data: {
+						analyzedProgrammingLanguage: "ts",
+						unsuspiciousMetrics: ["rloc", "mcc"],
+						suspiciousMetricSuggestionLinks: [],
+						untrackedMetrics: []
+					}
 				}
 			})
 			expect(container.querySelector(".suspicious-metrics-badge")).toBe(null)

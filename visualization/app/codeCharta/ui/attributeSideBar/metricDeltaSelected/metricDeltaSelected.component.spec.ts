@@ -59,7 +59,7 @@ describe("MetricDeltaSelectedComponent", () => {
 	})
 
 	it("should update when its metricName changes", async () => {
-		const { change, detectChanges } = await render(MetricDeltaSelectedComponent, {
+		const { rerender, detectChanges } = await render(MetricDeltaSelectedComponent, {
 			componentProperties: { metricName: "rloc" }
 		})
 		const store = TestBed.inject(MockStore)
@@ -67,7 +67,7 @@ describe("MetricDeltaSelectedComponent", () => {
 
 		expect(screen.queryByText(/Δ2/)).toBeTruthy()
 
-		await change({ metricName: "mcc" })
+		await rerender({ componentProperties: { metricName: "mcc" } })
 		expect(screen.queryByText(/Δ4/)).toBeTruthy()
 	})
 
