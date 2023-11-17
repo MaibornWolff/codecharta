@@ -19,7 +19,7 @@ describe("flattenButtonsComponent", () => {
 		const idToBuilding = new IdToBuildingService()
 		idToBuilding.setIdToBuilding([{ id: 0, node: { id: 0 } } as unknown as CodeMapBuilding])
 
-		const { change } = await render(HighlightButtonsComponent, {
+		const { rerender } = await render(HighlightButtonsComponent, {
 			excludeComponentDeclaration: true,
 			componentProperties: { codeMapNode: { id: 0 } },
 			providers: [
@@ -31,14 +31,14 @@ describe("flattenButtonsComponent", () => {
 		expect(screen.queryByText("REMOVE HIGHLIGHT")).toBe(null)
 		await userEvent.click(screen.getByText("KEEP HIGHLIGHT"))
 
-		change({ codeMapNode: undefined })
-		change({ codeMapNode: { id: 0 } })
+		await rerender({ componentProperties: { codeMapNode: undefined } })
+		await rerender({ componentProperties: { codeMapNode: { id: 0 } } })
 
 		expect(screen.queryByText("KEEP HIGHLIGHT")).toBe(null)
 		await userEvent.click(screen.getByText("REMOVE HIGHLIGHT"))
 
-		change({ codeMapNode: undefined })
-		change({ codeMapNode: { id: 0 } })
+		await rerender({ componentProperties: { codeMapNode: undefined } })
+		await rerender({ componentProperties: { codeMapNode: { id: 0 } } })
 
 		expect(screen.queryByText("REMOVE HIGHLIGHT")).toBe(null)
 		expect(screen.queryByText("KEEP HIGHLIGHT")).not.toBe(null)
