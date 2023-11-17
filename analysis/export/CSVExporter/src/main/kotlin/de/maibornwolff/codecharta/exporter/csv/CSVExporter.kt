@@ -11,8 +11,8 @@ import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import de.maibornwolff.codecharta.tools.interactiveparser.util.CodeChartaConstants
 import de.maibornwolff.codecharta.util.InputHelper
-import picocli.CommandLine
 import mu.KotlinLogging
+import picocli.CommandLine
 import java.io.BufferedWriter
 import java.io.File
 import java.io.FileWriter
@@ -52,7 +52,6 @@ class CSVExporter() : Callable<Void>, InteractiveParser {
         fun main(args: Array<String>) {
             CommandLine(CSVExporter()).execute()
         }
-
     }
 
     private fun writer(append: Boolean): Writer {
@@ -70,10 +69,12 @@ class CSVExporter() : Callable<Void>, InteractiveParser {
         }
 
         if (!InputHelper.isInputValid(sources, canInputContainFolders = false)) {
-            throw IllegalArgumentException("Input invalid file for CSVExporter, stopping execution...")
+            throw IllegalArgumentException("Invalid input file for CSVExporter, stopping execution...")
         }
 
-        //outputFile = OutputFileHandler.checkAndFixFileExtensionCsv(outputFile)
+        if (outputFile.isNotEmpty()) {
+            outputFile = OutputFileHandler.checkAndFixFileExtensionCsv(outputFile)
+        }
 
         val projects = sources.map { ProjectDeserializer.deserializeProject(it.inputStream()) }
         projects.forEachIndexed { index, project ->
@@ -81,7 +82,7 @@ class CSVExporter() : Callable<Void>, InteractiveParser {
             writeUsingWriter(project, writer(append))
         }
 
-        if (!outputFile.isNullOrEmpty()) {
+        if (outputFile.isNotEmpty()) {
             val absoluteFilePath = File(outputFile).absolutePath
             logger.info("Created output file at $absoluteFilePath")
         }
@@ -115,7 +116,7 @@ class CSVExporter() : Callable<Void>, InteractiveParser {
 
         return when {
             values.distinct().none { it.isNotBlank() } -> listOf()
-            dirs.size < maxHierarchy                   -> rowWithoutDirs.plus(dirs).plus(
+            dirs.size < maxHierarchy -> rowWithoutDirs.plus(dirs).plus(
                 List(maxHierarchy - dirs.size) { "" })
             else -> rowWithoutDirs.plus(dirs.subList(0, maxHierarchy))
         }

@@ -232,6 +232,6 @@ class CcshTest {
 
         Assertions.assertThat(exitCode).isZero()
         Assertions.assertThat(errContent.toString())
-                .contains("Parser was successfully executed and created a cc.json file.")
+                .contains("Parser was successfully executed.")
     }
 }

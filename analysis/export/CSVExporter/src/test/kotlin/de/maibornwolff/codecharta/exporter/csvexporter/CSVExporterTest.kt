@@ -6,7 +6,7 @@ import io.mockk.every
 import io.mockk.mockkObject
 import io.mockk.unmockkAll
 import org.assertj.core.api.Assertions
-import org.junit.jupiter.api.AfterAll
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import picocli.CommandLine
@@ -16,97 +16,185 @@ import java.io.PrintStream
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class CSVExporterTest {
-    private val errContent = ByteArrayOutputStream()
+    private var errContent = ByteArrayOutputStream()
     private val originalErr = System.err
-    private val outContent = ByteArrayOutputStream()
+    private var outContent = ByteArrayOutputStream()
     private val originalOut = System.out
 
-    @AfterAll
+    @AfterEach
     fun afterTest() {
         unmockkAll()
+        errContent = ByteArrayOutputStream()
+        outContent = ByteArrayOutputStream()
     }
 
     @Test
-    fun `should handle single valid input file`() {
+    fun `should create correct output for single valid file as input source`() {
+        val inputFilePath = "src/test/resources/input_valid_1.cc.json"
+        val outputFilePath = "src/test/resources/output.csv"
 
+        val outputFile = File(outputFilePath)
+        val referenceFile = File("src/test/resources/reference_valid_1.csv")
+        outputFile.deleteOnExit()
+
+        CommandLine(CSVExporter()).execute(inputFilePath, "-o", outputFilePath)
+
+        Assertions.assertThat(outputFile.exists()).isTrue()
+        Assertions.assertThat(outputFile.length()).isNotEqualTo(0)
+        Assertions.assertThat(outputFile).hasSameTextualContentAs(referenceFile)
     }
 
     @Test
-    fun `should handle two valid input files with appending`() {
+    fun `should create correct output for two valid files as input sources`() {
+        val inputFilePath1 = "src/test/resources/input_valid_1.cc.json"
+        val inputFilePath2 = "src/test/resources/input_valid_2.cc.json"
+        val outputFilePath = "src/test/resources/output.csv"
+
+        val outputFile = File(outputFilePath)
+        val referenceFile = File("src/test/resources/reference_valid_1_valid_2.csv")
+        outputFile.deleteOnExit()
+
+        CommandLine(CSVExporter()).execute(inputFilePath1, inputFilePath2, "-o", outputFilePath)
+
+        Assertions.assertThat(outputFile.exists()).isTrue()
+        Assertions.assertThat(outputFile.length()).isNotEqualTo(0)
+        Assertions.assertThat(outputFile).hasSameTextualContentAs(referenceFile)
     }
 
     @Test
-    fun `should stop execution if input files are invalid`() {
+    fun `should fail to create output for invalid file as input source`() {
+        val invalidInputFilePath = "filePathDoesNotExist.cc.json"
+
         mockkObject(InputHelper)
         every {
             InputHelper.isInputValid(any(), any())
         } returns false
 
         System.setErr(PrintStream(errContent))
-        CommandLine(CSVExporter()).execute("thisDoesNotExist.cc.json").toString()
+        CommandLine(CSVExporter()).execute(invalidInputFilePath).toString()
         System.setErr(originalErr)
 
-        Assertions.assertThat(errContent.toString()).contains("Input invalid file for CSVExporter, stopping execution")
+        Assertions.assertThat(errContent.toString()).contains("Invalid input file for CSVExporter, stopping execution...")
     }
 
     @Test
-    fun `should stop execution if folder specified for input file`() {
-    }
+    fun `should fail to create output for invalid and valid file as input source`() {
+        val validInputFilePath = "src/test/resources/input_valid_1.cc.json"
+        val invalidInputFilePath = "filePathDoesNotExist.cc.json"
 
-    @Test
-    fun `should handle mix of valid and invalid input files`() {
-        // Implement the test logic
-    }
+        mockkObject(InputHelper)
+        every {
+            InputHelper.isInputValid(any(), any())
+        } returns false
 
-    @Test
-    fun `should handle nodes with empty values`() {
-        // Implement the test logic
-    }
-
-    @Test
-    fun `should handle nodes with null values`() {
-        // Implement the test logic
-    }
-
-    @Test
-    fun `should handle nodes with different attribute types`() {
-        // Implement the test logic
-    }
-
-    @Test
-    fun `should handle no output file specified (stdout case)`() {
-        // Implement the test logic
-    }
-
-    @Test
-    fun `should handle output file specified`() {
-        // Implement the test logic
-    }
-
-    @Test
-    fun `should handle existing output file with data (test overwriting)`() {
-        // Implement the test logic
-    }
-
-    @Test
-    fun `should stop execution if depth-of-hierarchy is negative`() {
-        val filePath = "../../test/data/codecharta/csvexport_input.cc.json"
-        val maxHierarchy = -1
         System.setErr(PrintStream(errContent))
-
-        CommandLine(CSVExporter()).execute("$filePath", "--depth-of-hierarchy", "$maxHierarchy").toString()
+        CommandLine(CSVExporter()).execute(validInputFilePath, invalidInputFilePath).toString()
         System.setErr(originalErr)
 
-        Assertions.assertThat(errContent.toString()).contains("depth-of-hierarchy must not be negative")
+        Assertions.assertThat(errContent.toString()).contains("Invalid input file for CSVExporter, stopping execution...")
     }
 
     @Test
-    fun `should produce valid output for depth-of-hierarchy equals zero`() {
+    fun `should fail to create output for folder as input source`() {
+        val pathToFolder = "src/test/resources/"
+
+        mockkObject(InputHelper)
+        every {
+            InputHelper.isInputValid(any(), any())
+        } returns false
+
+        System.setErr(PrintStream(errContent))
+        CommandLine(CSVExporter()).execute(pathToFolder).toString()
+        System.setErr(originalErr)
+
+        Assertions.assertThat(errContent.toString()).contains("Invalid input file for CSVExporter, stopping execution...")
+    }
+
+    @Test
+    fun `should write output to file when output file is missing csv extension`() {
+        val inputFilePath = "src/test/resources/input_valid_1.cc.json"
+        val outputFilePathWitExtension = "src/test/resources/output.csv"
+        val outputFilePathWithoutExtension = "src/test/resources/output"
+
+        val outputFileWithExtension = File(outputFilePathWitExtension)
+        outputFileWithExtension.deleteOnExit()
+
+        CommandLine(CSVExporter()).execute(inputFilePath, "-o", outputFilePathWithoutExtension)
+        Assertions.assertThat(outputFileWithExtension.exists()).isTrue()
+        Assertions.assertThat(outputFileWithExtension.length()).isNotEqualTo(0)
+    }
+
+    @Test
+    fun `should overwrite content in output file`() {
+        val inputFilePath = "src/test/resources/input_valid_1.cc.json"
+        val outputFilePath = "src/test/resources/output.csv"
+
+        val outputFile = File(outputFilePath)
+        val initialContent = "Initial content"
+        outputFile.writeText(initialContent)
+
+        val referenceFile = File("src/test/resources/reference_valid_1.csv")
+        outputFile.deleteOnExit()
+
+        CommandLine(CSVExporter()).execute(inputFilePath, "-o", outputFilePath)
+
+        Assertions.assertThat(outputFile.exists()).isTrue()
+        Assertions.assertThat(outputFile.length()).isNotEqualTo(0)
+        Assertions.assertThat(outputFile).hasSameTextualContentAs(referenceFile)
+    }
+
+    @Test
+    fun `should write output to stdout when no output file specified`() {
+        val inputFilePath = "../../test/data/codecharta/csvexport_input.cc.json"
+
+        System.setOut(PrintStream(outContent))
+        CommandLine(CSVExporter()).execute(inputFilePath)
+        System.setOut(originalOut)
+
+        val csvContent = outContent.toString()
+
+        Assertions.assertThat(csvContent.isNotEmpty()).isTrue()
+    }
+
+    @Test
+    fun `should write output to stdout when empty output file specified`() {
+        val inputFilePath = "src/test/resources/input_valid_1.cc.json"
+        val emptyOutputFilePath = ""
+
+        System.setOut(PrintStream(outContent))
+        CommandLine(CSVExporter()).execute(inputFilePath, "-o", emptyOutputFilePath)
+        System.setOut(originalOut)
+
+        val csvContent = outContent.toString()
+
+        Assertions.assertThat(csvContent.isNotEmpty()).isTrue()
+    }
+
+    @Test
+    fun `should create correct output for depth-of-hierarchy of five`() {
+        val filePath = "../../test/data/codecharta/csvexport_input.cc.json"
+        val maxHierarchy = 5
+
+        System.setOut(PrintStream(outContent))
+        CommandLine(CSVExporter()).execute(filePath, "--depth-of-hierarchy", "$maxHierarchy")
+        System.setOut(originalOut)
+
+        val csvContent = outContent.toString()
+        val firstList = csvContent.lines().first()
+
+        val dirsZeroToFour = "dir0,dir1,dir2,dir3,dir4"
+        val dirsFiveToNine = "dir[5-9]"
+        Assertions.assertThat(firstList).containsPattern(dirsZeroToFour)
+        Assertions.assertThat(firstList).doesNotContainPattern(dirsFiveToNine)
+    }
+
+    @Test
+    fun `should create correct output for depth-of-hierarchy of zero`() {
         val filePath = "../../test/data/codecharta/csvexport_input.cc.json"
         val maxHierarchy = 0
-        System.setOut(PrintStream(outContent))
 
-        CommandLine(CSVExporter()).execute("$filePath", "--depth-of-hierarchy", "$maxHierarchy")
+        System.setOut(PrintStream(outContent))
+        CommandLine(CSVExporter()).execute(filePath, "--depth-of-hierarchy", "$maxHierarchy")
         System.setOut(originalOut)
 
         val csvContent = outContent.toString()
@@ -115,5 +203,15 @@ class CSVExporterTest {
         Assertions.assertThat(firstList).doesNotContainPattern("dir\\d+")
     }
 
+    @Test
+    fun `should fail to create output for negative depth-of-hierarchy`() {
+        val filePath = "../../test/data/codecharta/csvexport_input.cc.json"
+        val maxHierarchy = -1
+        System.setErr(PrintStream(errContent))
 
+        CommandLine(CSVExporter()).execute(filePath, "--depth-of-hierarchy", "$maxHierarchy").toString()
+        System.setErr(originalErr)
+
+        Assertions.assertThat(errContent.toString()).contains("depth-of-hierarchy must not be negative")
+    }
 }
