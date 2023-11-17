@@ -22,8 +22,7 @@ describe("downloadAndPurgeConfigsComponent", () => {
 	@NgModule({
 		imports: [MaterialModule],
 		providers: [{ provide: InteractivityChecker, useValue: { isFocusable: () => true, isTabbable: () => true } }],
-		declarations: [ErrorDialogComponent, ConfirmationDialogComponent],
-		entryComponents: [ErrorDialogComponent, ConfirmationDialogComponent]
+		declarations: [ErrorDialogComponent, ConfirmationDialogComponent]
 	})
 	class TestModule {}
 
