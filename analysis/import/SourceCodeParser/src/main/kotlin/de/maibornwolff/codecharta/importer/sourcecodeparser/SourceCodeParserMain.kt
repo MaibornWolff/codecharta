@@ -5,14 +5,13 @@ import de.maibornwolff.codecharta.importer.sourcecodeparser.metricwriters.JSONMe
 import de.maibornwolff.codecharta.importer.sourcecodeparser.metricwriters.MetricWriter
 import de.maibornwolff.codecharta.serialization.OutputFileHandler
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
-import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import de.maibornwolff.codecharta.tools.interactiveparser.util.CodeChartaConstants
 import de.maibornwolff.codecharta.util.InputHelper
 import de.maibornwolff.codecharta.util.ResourceSearchHelper
-import picocli.CommandLine
 import mu.KotlinLogging
+import picocli.CommandLine
 import java.io.BufferedWriter
 import java.io.File
 import java.io.FileWriter
@@ -143,7 +142,8 @@ class SourceCodeParserMain(
         return if (outputFile == null) {
             OutputStreamWriter(outputStream)
         } else {
-            BufferedWriter(FileWriter(OutputFileHandler.checkAndFixFileExtensionCsv(outputFile!!.name)))
+            val outputName = outputFile!!.name
+            BufferedWriter(FileWriter(OutputFileHandler.checkAndFixFileExtensionCsv(outputName)))
         }
     }
 
