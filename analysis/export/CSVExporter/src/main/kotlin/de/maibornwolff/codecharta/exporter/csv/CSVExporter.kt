@@ -52,6 +52,7 @@ class CSVExporter() : Callable<Void>, InteractiveParser {
         fun main(args: Array<String>) {
             CommandLine(CSVExporter()).execute()
         }
+
     }
 
     private fun writer(append: Boolean): Writer {
@@ -72,7 +73,7 @@ class CSVExporter() : Callable<Void>, InteractiveParser {
             throw IllegalArgumentException("Input invalid file for CSVExporter, stopping execution...")
         }
 
-        outputFile = OutputFileHandler.checkAndFixFileExtensionCsv(outputFile)
+        //outputFile = OutputFileHandler.checkAndFixFileExtensionCsv(outputFile)
 
         val projects = sources.map { ProjectDeserializer.deserializeProject(it.inputStream()) }
         projects.forEachIndexed { index, project ->
