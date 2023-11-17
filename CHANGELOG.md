@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [1.120.1] - 2023-11-17
+
 ### Removed 🗑
 
 -   Deprecated download button removed (functionality has been replaced by custom views) [#3398](https://github.com/MaibornWolff/codecharta/pull/3398)
