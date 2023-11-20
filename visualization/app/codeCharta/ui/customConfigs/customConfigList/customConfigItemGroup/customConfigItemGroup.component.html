@@ -18,7 +18,7 @@
 				<p class="config-item-name" title="{{ customConfig.name }}">
 					<strong>
 						<span (click)="applyCustomConfig(customConfig.id)" mat-dialog-close>
-							{{ customConfig.name | truncateText: 75 }}
+							{{ customConfig.name | truncateText : 75 }}
 						</span>
 					</strong>
 				</p>
@@ -26,7 +26,7 @@
 			<div class="custom-config-note">
 				<p class="custom-config-note-content">
 					<span (click)="applyCustomConfig(customConfig.id)" mat-dialog-close>
-						{{ customConfig.note ? (customConfig.note | truncateText: 95) : "Add Note" }}
+						{{ customConfig.note ? (customConfig.note | truncateText : 95) : "Add Note" }}
 					</span>
 				</p>
 				<cc-custom-config-note-dialog-button [customConfigItem]="customConfig"></cc-custom-config-note-dialog-button>

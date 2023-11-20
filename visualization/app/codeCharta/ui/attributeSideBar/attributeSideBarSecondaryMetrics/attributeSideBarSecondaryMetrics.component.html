@@ -7,7 +7,7 @@
 				</tr>
 				<tr
 					*ngFor="let secondaryMetric of secondaryMetrics$ | async"
-					[title]="attributeDescriptors[secondaryMetric.name] | attributeDescriptorTooltip: secondaryMetric.name"
+					[title]="attributeDescriptors[secondaryMetric.name] | attributeDescriptorTooltip : secondaryMetric.name"
 				>
 					<td class="secondary-metric-box">
 						<div class="secondary-metric-row">
@@ -18,7 +18,7 @@
 								[metricType]="'nodes'"
 							>
 							</cc-attribute-type-selector>
-							<span class="metric-value">{{ secondaryMetric.value | number: "1.0-0" }}</span>
+							<span class="metric-value">{{ secondaryMetric.value | number : "1.0-0" }}</span>
 						</div>
 					</td>
 					<td class="delta-value-box" [hidden]="!(showDeltaValue$ | async)">

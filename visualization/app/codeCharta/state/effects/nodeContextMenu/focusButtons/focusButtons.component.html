@@ -1,4 +1,4 @@
-<ng-container *ngIf="currentFocusedNodePath$ | async | isNodeFocused: codeMapNode; let isNodeFocused">
+<ng-container *ngIf="currentFocusedNodePath$ | async | isNodeFocused : codeMapNode; let isNodeFocused">
 	<ng-container *ngIf="!isNodeFocused.isNodeFocused">
 		<button mat-button (click)="handleFocusNodeClicked()" id="focus-button" title="Only show selected nodes with children-nodes">
 			<i class="fa fa-bullseye"></i> FOCUS

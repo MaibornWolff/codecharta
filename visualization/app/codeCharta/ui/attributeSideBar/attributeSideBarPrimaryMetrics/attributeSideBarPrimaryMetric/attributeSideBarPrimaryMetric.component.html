@@ -7,7 +7,7 @@
 			[metricName]="metric.name"
 			[metricType]="'nodes'"
 		></cc-attribute-type-selector>
-		<span class="primary-metric-value">{{ metric.value | number: "1.0-0" }}</span>
+		<span class="primary-metric-value">{{ metric.value | number : "1.0-0" }}</span>
 	</div>
 	<cc-metric-delta-selected [metricName]="metric.name"></cc-metric-delta-selected>
 	<a class="metric-name" [href]="link" target="_blank" *ngIf="metricLink as link; else primaryMetricNoLink">

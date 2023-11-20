@@ -13,9 +13,9 @@
 	</mat-form-field>
 	<div class="cc-metric-chooser-option-container">
 		<mat-option
-			*ngFor="let option of metricData$ | async | filterMetricDataBySearchTerm: searchTerm"
+			*ngFor="let option of metricData$ | async | filterMetricDataBySearchTerm : searchTerm"
 			[value]="option.name"
-			[title]="attributeDescriptors[option.name] | attributeDescriptorTooltip: option.name"
+			[title]="attributeDescriptors[option.name] | attributeDescriptorTooltip : option.name"
 		>
 			{{ option.name }}
 			<span class="metric-max-value">({{ option.maxValue }})</span><br />
