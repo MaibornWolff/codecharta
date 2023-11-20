@@ -1,6 +1,6 @@
 <ng-container *ngIf="attributeDescriptors$ | async as attributeDescriptors">
 	<ng-container *ngIf="attributeDescriptors[metricName]?.title as descriptorTitle; else metricTitleFallback" class="legend-block">
-		<div [title]="attributeDescriptors[metricName] | attributeDescriptorTooltip: metricName">
+		<div [title]="attributeDescriptors[metricName] | attributeDescriptorTooltip : metricName">
 			{{ metricSpecification }} metric:
 			<a [href]="link" target="_blank" *ngIf="attributeDescriptors[metricName].link as link; else metricNoLink">
 				<span class="bold">{{ descriptorTitle }}</span> ({{ metricName }}) <i class="fa fa-external-link"></i>

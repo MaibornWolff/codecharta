@@ -3,14 +3,14 @@
 		<th scope="col">Primary Metrics</th>
 
 		<tr>
-			<td [title]="attributeDescriptors[primaryMetrics.area.name] | attributeDescriptorTooltip: primaryMetrics.area.name">
+			<td [title]="attributeDescriptors[primaryMetrics.area.name] | attributeDescriptorTooltip : primaryMetrics.area.name">
 				<cc-attribute-side-bar-primary-metric
 					[iconName]="'fa fa-arrows-alt'"
 					[metric]="primaryMetrics.area"
 					[metricLink]="attributeDescriptors[primaryMetrics.area.name]?.link"
 				></cc-attribute-side-bar-primary-metric>
 			</td>
-			<td [title]="attributeDescriptors[primaryMetrics.height.name] | attributeDescriptorTooltip: primaryMetrics.height.name">
+			<td [title]="attributeDescriptors[primaryMetrics.height.name] | attributeDescriptorTooltip : primaryMetrics.height.name">
 				<cc-attribute-side-bar-primary-metric
 					[iconName]="'fa fa-arrows-v'"
 					[metric]="primaryMetrics.height"
@@ -19,7 +19,7 @@
 			</td>
 		</tr>
 		<tr>
-			<td [title]="attributeDescriptors[primaryMetrics.color.name] | attributeDescriptorTooltip: primaryMetrics.color.name">
+			<td [title]="attributeDescriptors[primaryMetrics.color.name] | attributeDescriptorTooltip : primaryMetrics.color.name">
 				<cc-attribute-side-bar-primary-metric
 					[iconName]="'fa fa-paint-brush'"
 					[metric]="primaryMetrics.color"
@@ -27,7 +27,7 @@
 				></cc-attribute-side-bar-primary-metric>
 			</td>
 			<ng-container *ngIf="primaryMetrics.edge as edge; else sidebarPrimaryMetricsEdgeElse">
-				<td [title]="attributeDescriptors[edge.name] | attributeDescriptorTooltip: edge.name">
+				<td [title]="attributeDescriptors[edge.name] | attributeDescriptorTooltip : edge.name">
 					<div class="primary-metric-box">
 						<div class="primary-metric-row">
 							<i class="fa fa-exchange"></i>
@@ -38,9 +38,9 @@
 								[metricType]="'edges'"
 							></cc-attribute-type-selector>
 							<span>
-								{{ edge.incoming | number: "1.0-0" }}
+								{{ edge.incoming | number : "1.0-0" }}
 								<span>/</span>
-								{{ edge.outgoing | number: "1.0-0" }}
+								{{ edge.outgoing | number : "1.0-0" }}
 							</span>
 						</div>
 						<a

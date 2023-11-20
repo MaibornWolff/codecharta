@@ -1,7 +1,7 @@
 <ng-container *ngIf="hasMarkedPackages$ | async">
 	<hr />
 
-	<ng-container *ngFor="let markedPackage of markedPackagesMap$ | async | keyvalue: sortMarkedPackagesMap; trackBy: trackMarkedPackage">
+	<ng-container *ngFor="let markedPackage of markedPackagesMap$ | async | keyvalue : sortMarkedPackagesMap; trackBy: trackMarkedPackage">
 		<cc-labelled-color-picker
 			[hexColor]="markedPackage.key"
 			[labels]="markedPackage.value"
