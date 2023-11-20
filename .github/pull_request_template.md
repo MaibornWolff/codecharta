@@ -12,7 +12,7 @@ _**Please read the [CONTRIBUTING.md](https://github.com/MaibornWolff/codecharta/
 
 ## Definition of Done
 
-A PR is only ready for review once all the following acceptance criteria are fulfilled:
+A PR is only ready for merge once all the following acceptance criteria are fulfilled:
 -[ ] Changes have been manually tested
 -[ ] All TODOs related to this PR have been closed
 -[ ] There are automated tests for newly written code and bug fixes
