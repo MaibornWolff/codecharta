@@ -6,10 +6,12 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkObject
 import io.mockk.slot
+import io.mockk.unmockkAll
 import io.mockk.verify
 import mu.KLogger
 import mu.KotlinLogging
 import org.assertj.core.api.Assertions
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
 import org.skyscreamer.jsonassert.JSONAssert
 import org.skyscreamer.jsonassert.JSONCompareMode
@@ -26,6 +28,11 @@ class ProjectSerializerTest {
     val tempDir = createTempDirectory()
     val filename = tempDir.absolute().toString() + "test.cc.json"
     val project = mockk<Project>()
+
+    @AfterEach
+    fun afterTest() {
+        unmockkAll()
+    }
 
     @Test
     fun `should serialize project`() {
