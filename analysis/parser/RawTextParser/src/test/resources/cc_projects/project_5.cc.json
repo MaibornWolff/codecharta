@@ -1,0 +1,104 @@
+{
+  "checksum": "4e44036af555cc2dbb77bf7973e387c6",
+  "data": {
+    "projectName": "",
+    "nodes": [
+      {
+        "name": "root",
+        "type": "Folder",
+        "attributes": {},
+        "link": "",
+        "children": [
+          {
+            "name": "spaces",
+            "type": "Folder",
+            "attributes": {},
+            "link": "",
+            "children": [
+              {
+                "name": "spaces_3.included",
+                "type": "File",
+                "attributes": {
+                  "indentation_level_0+": 5.0,
+                  "indentation_level_1+": 3.0,
+                  "indentation_level_2+": 2.0,
+                  "indentation_level_3+": 0.0,
+                  "indentation_level_4+": 0.0,
+                  "indentation_level_5+": 0.0,
+                  "indentation_level_6+": 0.0
+                },
+                "link": "",
+                "children": []
+              },
+              {
+                "name": "spaces_4.included",
+                "type": "File",
+                "attributes": {
+                  "indentation_level_0+": 7.0,
+                  "indentation_level_1+": 4.0,
+                  "indentation_level_2+": 2.0,
+                  "indentation_level_3+": 1.0,
+                  "indentation_level_4+": 1.0,
+                  "indentation_level_5+": 0.0,
+                  "indentation_level_6+": 0.0
+                },
+                "link": "",
+                "children": []
+              },
+              {
+                "name": "spaces_5.includedtoo",
+                "type": "File",
+                "attributes": {
+                  "indentation_level_0+": 5.0,
+                  "indentation_level_1+": 3.0,
+                  "indentation_level_2+": 1.0,
+                  "indentation_level_3+": 0.0,
+                  "indentation_level_4+": 0.0,
+                  "indentation_level_5+": 0.0,
+                  "indentation_level_6+": 0.0
+                },
+                "link": "",
+                "children": []
+              },
+              {
+                "name": "spaces_x_not_included.excluded",
+                "type": "File",
+                "attributes": {
+                  "indentation_level_0+": 4.0,
+                  "indentation_level_1+": 3.0,
+                  "indentation_level_2+": 3.0,
+                  "indentation_level_3+": 3.0,
+                  "indentation_level_4+": 3.0,
+                  "indentation_level_5+": 1.0,
+                  "indentation_level_6+": 0.0
+                },
+                "link": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "name": "tabs.included",
+            "type": "File",
+            "attributes": {
+              "indentation_level_0+": 6.0,
+              "indentation_level_1+": 3.0,
+              "indentation_level_2+": 1.0,
+              "indentation_level_3+": 1.0,
+              "indentation_level_4+": 0.0,
+              "indentation_level_5+": 0.0,
+              "indentation_level_6+": 0.0
+            },
+            "link": "",
+            "children": []
+          }
+        ]
+      }
+    ],
+    "apiVersion": "1.3",
+    "edges": [],
+    "attributeTypes": {},
+    "attributeDescriptors": {},
+    "blacklist": []
+  }
+}
