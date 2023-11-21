@@ -43,7 +43,7 @@ ccsh rawtextparser foo/bar/project
 ```
 
 ```
-ccsh rawtextparser foo.txt --max-indentation-level=6 tabWidth=4 --metrics=IndentationLevel
+ccsh rawtextparser foo.txt --max-indentation-level=6 tab-width=4 --metrics=IndentationLevel
 ```
 
 ```
