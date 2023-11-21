@@ -33,7 +33,7 @@ The Source-Code-Parser is parser to generate code metrics from a source code fil
 | `FILE or FOLDER`                | file/project to parse                                                                  |
 | `--default-excludes`            | exclude build, target, dist and out folders as well as files/folders starting with '.' |
 | `-e, --exclude=<exclude>`       | exclude file/folders according to regex pattern                                        |
-| `-f, --format=<outputFormat>`   | the format to output                                                                   |
+| `-f, --format=<outputFormat>`   | the format to output (csv or json)                                                     |
 | `-h, --help`                    | displays help                                                                          |
 | `-i, --no-issues`               | do not search for sonar issues                                                         |
 | `-o, --outputFile=<outputFile>` | output File (or empty for stdout)                                                      |
