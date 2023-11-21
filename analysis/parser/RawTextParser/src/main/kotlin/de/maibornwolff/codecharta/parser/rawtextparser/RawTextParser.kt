@@ -64,7 +64,7 @@ class RawTextParser(
     private var exclude: Array<String> = arrayOf()
 
     @CommandLine.Option(
-        names = ["-f", "--file-extensions"],
+        names = ["-fe", "--file-extensions"],
         description = ["parse only files with specified extensions (default: any)"],
         split = "\\s*,\\s*"
     )

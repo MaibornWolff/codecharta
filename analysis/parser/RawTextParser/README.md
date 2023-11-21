@@ -9,31 +9,33 @@ This parser analyzes code regardless of the programming language used to generat
 ## Parameters
 
 ```
-Usage: rawtextparser [-hv] [--withoutDefaultExcludes]
-                     [--maxIndentationLevel=<maxIndentLvl>]
-                     [--tabWidth=<tabWith>] [-o=<outputFile>]
-                     [-p=<projectName>] [-e=<exclude>]... [-m
-                     [=<metrics>...]]... [-f [=<file-extensions>
-                     ...]]... FILE or FOLDER
+Usage: rawtextparser [-hv] [-nc] [--without-default-excludes]
+                          [--max-indentation-level=<maxIndentLvl>]
+                          [-o=<outputFile>] [--tab-width=<tabWidth>]
+                          [-e=<exclude>]... [-fe=<fileExtensions>[\s*,
+                          \s*<fileExtensions>...]]... [-m[=<metrics>...]]...
+                          FILE or FOLDER
 generates cc.json from projects or source code files
-      FILE or FOLDER         file/project to parse
-      --maxIndentationLevel=<maxIndentLvl>
-                             maximum Indentation Level (default 10)
-      --tabWidth=<tabWith>   tab width used (estimated if not provided)
-      --withoutDefaultExcludes
-                             include build, target, dist, resources and out folders
-                               as well as files/folders starting with '.'
-  -e, --exclude=<exclude>    exclude file/folder according to regex pattern
-  -f, --file-extensions[=<file-extensions>...]
-                             parse only files with specified extensions
-  -h, --help                 displays this help and exits
+      FILE or FOLDER        file/project to parse
+  -e, --exclude=<exclude>   exclude file/folder according to regex pattern
+      -fe, --file-extensions=<fileExtensions>[\s*,\s*<fileExtensions>...]
+                            parse only files with specified extensions
+                              (default: any)
+  -h, --help                displays this help and exits
   -m, --metrics[=<metrics>...]
-                             metrics to be computed (select all if not specified)
-  -o, --outputFile=<outputFile>
-                             output File (or empty for stdout)
-  -p, --projectName=<projectName>
-                             project name
-  -v, --verbose              verbose mode
+                            metrics to be computed (select all if not specified)
+      --max-indentation-level=<maxIndentLvl>
+                            maximum Indentation Level (default 10)
+      -nc, --not-compressed save uncompressed output File
+  -o, --output-file=<outputFile>
+                            output File (or empty for stdout)
+      --tab-width=<tabWidth>
+                            tab width used (estimated if not provided)
+  -v, --verbose             verbose mode
+      --without-default-excludes
+                            include build, target, dist, resources and out
+                              folders as well as files/folders starting with
+                              '.'
 ```
 
 ## Examples
