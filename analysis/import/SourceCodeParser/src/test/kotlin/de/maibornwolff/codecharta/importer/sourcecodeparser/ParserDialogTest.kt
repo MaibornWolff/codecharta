@@ -64,7 +64,7 @@ class ParserDialogTest {
     @Test
     fun `should accept multiple exclude patterns`() {
         val fileName = "in.java"
-        val outputFormat = OutputFormat.TABLE
+        val outputFormat = OutputFormat.CSV
         val outputFileName = "out.csv"
         val excludes = arrayOf("ex1", "ex2")
         val findIssues = false

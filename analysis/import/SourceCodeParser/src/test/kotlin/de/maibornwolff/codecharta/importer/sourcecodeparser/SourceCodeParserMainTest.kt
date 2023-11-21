@@ -1,8 +1,11 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser
 
-import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.util.InputHelper
-import io.mockk.*
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.mockkObject
+import io.mockk.slot
+import io.mockk.unmockkAll
 import mu.KLogger
 import mu.KotlinLogging
 import org.assertj.core.api.Assertions
@@ -15,7 +18,6 @@ import org.junit.jupiter.params.provider.MethodSource
 import picocli.CommandLine
 import java.io.ByteArrayOutputStream
 import java.io.File
-import java.io.OutputStream
 import java.io.PrintStream
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -73,7 +75,6 @@ class SourceCodeParserMainTest {
 
         Assertions.assertThat(errContent.toString()).contains("Input invalid file for SourceCodeParser, stopping execution")
     }
-
 
     @Test
     fun `serializeToFileOrStream should log the correct absolute path of the output file`() {

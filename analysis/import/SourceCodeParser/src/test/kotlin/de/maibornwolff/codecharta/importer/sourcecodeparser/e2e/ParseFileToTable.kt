@@ -10,7 +10,7 @@ class ParseFileToTable {
     private val resource = "src/test/resources/ScriptShellSample.java"
 
     private val output = retrieveStreamAsString {
-        SourceCodeParserMain.mainWithOutputStream(it, arrayOf(resource, "--format=table"))
+        SourceCodeParserMain.mainWithOutputStream(it, arrayOf(resource, "--format=csv"))
     }
 
     @Test
