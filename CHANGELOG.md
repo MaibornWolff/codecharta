@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 -   Changed short form of parameter `--file-extensions` of RawTextParser from `-f` to `-fe` [#3405](https://github.com/MaibornWolff/codecharta/pull/3405)
 -   Update readme and gh-pages for RawTextParser [#3405](https://github.com/MaibornWolff/codecharta/pull/3405)
+-   Changed the `--format` flag for csv-output in SourceCodeParser from `table` to `csv` [#3414](https://github.com/MaibornWolff/codecharta/pull/3414)
 
 ### Fixed 🐞
 
