@@ -44,7 +44,7 @@ class ParserDialog {
                 KInquirer.promptInput(message = "Do you want to exclude file/folder according to regex pattern?", default = "", hint = "regex1, regex2.. (leave empty if you don't want to exclude anything)")
 
             val fileExtensions: String =
-                KInquirer.promptInput(message = "Do you only want to parse files with specific file-extensions? ", default = "", hint = ".fileType1, .fileType2, fileType1, fileType2... (leave empty to include all file-extensions)")
+                KInquirer.promptInput(message = "Do you only want to parse files with specific file-extensions? ", default = "", hint = "fileType1, fileType2... (leave empty to include all file-extensions)")
 
             val withoutDefaultExcludes: Boolean =
                 KInquirer.promptConfirm(message = "Do you want to include build, target, dist, resources and out folders as well as files/folders starting with '.'?", default = false)

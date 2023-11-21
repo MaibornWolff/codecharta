@@ -18,6 +18,7 @@ This parser analyzes code regardless of the programming language used to generat
 | `--tab-width=<tabWidth>`                 | tab width used (estimated if not provided)                                                         |
 | `--without-default-excludes`             | includes build, target, dist, resources and out folders as well as files/folders starting with '.' |
 | `-e, --exclude=<exclude>`                | exclude file/folders according to regex pattern                                                    |
+| `-fe, --file-extensions`                 | include only files with the specified file extensions (include all if not specified)               |
 | `-h, --help`                             | displays help                                                                                      |
 | `-m, --metrics[=<metrics>...]`           | metrics to be computed (select all if not specified)                                               |
 | `-o, --output-file=<outputFile>`         | output File (or empty for stdout)                                                                  |
