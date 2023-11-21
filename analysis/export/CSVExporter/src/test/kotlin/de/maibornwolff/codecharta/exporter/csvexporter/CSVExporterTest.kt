@@ -3,8 +3,12 @@ package de.maibornwolff.codecharta.exporter.csvexporter
 import de.maibornwolff.codecharta.exporter.csv.CSVExporter
 import de.maibornwolff.codecharta.util.InputHelper
 import io.mockk.every
+import io.mockk.mockk
 import io.mockk.mockkObject
+import io.mockk.slot
 import io.mockk.unmockkAll
+import mu.KLogger
+import mu.KotlinLogging
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
@@ -71,7 +75,7 @@ class CSVExporterTest {
         } returns false
 
         System.setErr(PrintStream(errContent))
-        CommandLine(CSVExporter()).execute(invalidInputFilePath).toString()
+        CommandLine(CSVExporter()).execute(invalidInputFilePath)
         System.setErr(originalErr)
 
         Assertions.assertThat(errContent.toString()).contains("Invalid input file for CSVExporter, stopping execution...")
@@ -88,7 +92,7 @@ class CSVExporterTest {
         } returns false
 
         System.setErr(PrintStream(errContent))
-        CommandLine(CSVExporter()).execute(validInputFilePath, invalidInputFilePath).toString()
+        CommandLine(CSVExporter()).execute(validInputFilePath, invalidInputFilePath)
         System.setErr(originalErr)
 
         Assertions.assertThat(errContent.toString()).contains("Invalid input file for CSVExporter, stopping execution...")
@@ -209,9 +213,29 @@ class CSVExporterTest {
         val maxHierarchy = -1
         System.setErr(PrintStream(errContent))
 
-        CommandLine(CSVExporter()).execute(filePath, "--depth-of-hierarchy", "$maxHierarchy").toString()
+        CommandLine(CSVExporter()).execute(filePath, "--depth-of-hierarchy", "$maxHierarchy")
         System.setErr(originalErr)
 
         Assertions.assertThat(errContent.toString()).contains("depth-of-hierarchy must not be negative")
+    }
+
+    @Test
+    fun `should log the correct absolute path of the output file`() {
+        val inputFilePath = "../../test/data/codecharta/csvexport_input.cc.json"
+        val outputFilePath = "src/test/resources/output.csv"
+        val absoluteOutputFilePath = File(outputFilePath).absolutePath
+        val outputFile = File(outputFilePath)
+        outputFile.deleteOnExit()
+
+        mockkObject(KotlinLogging)
+        val loggerMock = mockk<KLogger>()
+        val lambdaSlot = slot<(() -> Unit)>()
+        val messagesLogged = mutableListOf<String>()
+        every { KotlinLogging.logger(capture(lambdaSlot)) } returns loggerMock
+        every { loggerMock.info(capture(messagesLogged)) } returns Unit
+
+        CommandLine(CSVExporter()).execute(inputFilePath, "-o", outputFilePath)
+
+        Assertions.assertThat(messagesLogged.any { e -> e.contains(absoluteOutputFilePath) }).isTrue()
     }
 }
