@@ -13,8 +13,8 @@ import java.util.concurrent.ConcurrentHashMap
 
 class MetricCollector(
     private var root: File,
-    private val exclude: Array<String> = arrayOf(),
-    private val fileExtensions: Array<String> = arrayOf(),
+    private val exclude: List<String> = listOf(),
+    private val fileExtensions: List<String> = listOf(),
     private val parameters: Map<String, Int> = mapOf(),
     private val metrics: List<String> = listOf()
 ) {

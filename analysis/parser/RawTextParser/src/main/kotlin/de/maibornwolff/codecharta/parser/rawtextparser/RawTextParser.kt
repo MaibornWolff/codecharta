@@ -9,6 +9,7 @@ import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import de.maibornwolff.codecharta.tools.interactiveparser.util.CodeChartaConstants
 import de.maibornwolff.codecharta.util.InputHelper
 import mu.KotlinLogging
+import de.maibornwolff.codecharta.util.StringToListInputConverter
 import picocli.CommandLine
 import java.io.File
 import java.io.IOException
@@ -44,7 +45,8 @@ class RawTextParser(
     @CommandLine.Option(
         arity = "0..",
         names = ["-m", "--metrics"],
-        description = ["metrics to be computed (select all if not specified)"]
+        description = ["metrics to be computed (select all if not specified)"],
+        converter = [(StringToListInputConverter::class)]
     )
     private var metrics: List<String> = listOf()
 
@@ -60,15 +62,18 @@ class RawTextParser(
     @CommandLine.Option(names = ["--max-indentation-level"], description = ["maximum Indentation Level (default 10)"])
     private var maxIndentLvl: Int? = null
 
-    @CommandLine.Option(names = ["-e", "--exclude"], description = ["exclude file/folder according to regex pattern"])
-    private var exclude: Array<String> = arrayOf()
+    @CommandLine.Option(
+            names = ["-e", "--exclude"],
+            description = ["exclude file/folder according to regex pattern"],
+            converter = [(StringToListInputConverter::class)])
+    private var exclude: List<String> = listOf()
 
     @CommandLine.Option(
         names = ["-fe", "--file-extensions"],
         description = ["parse only files with specified extensions (default: any)"],
-        split = "\\s*,\\s*"
+        converter = [(StringToListInputConverter::class)]
     )
-    private var fileExtensions: Array<String> = arrayOf()
+    private var fileExtensions: List<String> = listOf()
 
     @CommandLine.Option(
         names = ["--without-default-excludes"],
