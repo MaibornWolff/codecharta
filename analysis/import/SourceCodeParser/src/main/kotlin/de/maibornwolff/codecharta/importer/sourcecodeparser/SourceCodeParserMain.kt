@@ -57,7 +57,7 @@ class SourceCodeParserMain(
 
     @CommandLine.Option(
         names = ["-f", "--format"],
-        description = ["the format to output"],
+        description = ["the format to output (either json or csv)"],
         converter = [(OutputTypeConverter::class)]
     )
     private var outputFormat = OutputFormat.JSON
@@ -134,7 +134,7 @@ class SourceCodeParserMain(
     private fun getMetricWriter(): MetricWriter {
         return when (outputFormat) {
             OutputFormat.JSON -> JSONMetricWriter(getJsonOutputStream(), compress && outputFile != null)
-            OutputFormat.TABLE -> CSVMetricWriter(getCsvOutputWriter())
+            OutputFormat.CSV -> CSVMetricWriter(getCsvOutputWriter())
         }
     }
 
