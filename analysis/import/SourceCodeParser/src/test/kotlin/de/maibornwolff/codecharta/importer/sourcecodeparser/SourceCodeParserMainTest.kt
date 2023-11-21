@@ -1,9 +1,10 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser
 
+import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.util.InputHelper
-import io.mockk.every
-import io.mockk.mockkObject
-import io.mockk.unmockkAll
+import io.mockk.*
+import mu.KLogger
+import mu.KotlinLogging
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
@@ -13,6 +14,8 @@ import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
 import picocli.CommandLine
 import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.OutputStream
 import java.io.PrintStream
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -69,5 +72,26 @@ class SourceCodeParserMainTest {
         System.setErr(originalErr)
 
         Assertions.assertThat(errContent.toString()).contains("Input invalid file for SourceCodeParser, stopping execution")
+    }
+
+
+    @Test
+    fun `serializeToFileOrStream should log the correct absolute path of the output file`() {
+        val inputFilePath = "src/test/resources/my/java/repo"
+        val outputFilePath = "src/test/resources/output.cc.json"
+        val absoluteOutputFilePath = File(outputFilePath).absolutePath
+        val outputFile = File(outputFilePath)
+        outputFile.deleteOnExit()
+
+        mockkObject(KotlinLogging)
+        val loggerMock = mockk<KLogger>()
+        val lambdaSlot = slot<(() -> Unit)>()
+        val messagesLogged = mutableListOf<String>()
+        every { KotlinLogging.logger(capture(lambdaSlot)) } returns loggerMock
+        every { loggerMock.info(capture(messagesLogged)) } returns Unit
+
+        CommandLine(SourceCodeParserMain()).execute(inputFilePath, "-o", outputFilePath, "-nc").toString()
+
+        Assertions.assertThat(messagesLogged.any { e -> e.endsWith(absoluteOutputFilePath) }).isTrue()
     }
 }
