@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## Fixed 🐞
+
+-   Fix RawTextParser producing incorrect output when no (or multiple) file extensions were specified in interactive mode [#3405](https://github.com/MaibornWolff/codecharta/pull/3405)
+
 ## [1.120.1] - 2023-11-17
 
 ### Removed 🗑

@@ -18,7 +18,7 @@ class ParserDialog {
             )
 
             val outputFileName: String = KInquirer.promptInput(
-                message = "What is the name of the output file (Press enter for console output)?",
+                message = "What is the name of the output file (leave empty to print to stdout)?",
             )
 
             val isCompressed = (outputFileName.isEmpty()) || KInquirer.promptConfirm(
