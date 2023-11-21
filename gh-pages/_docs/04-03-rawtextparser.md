@@ -11,25 +11,24 @@ This parser analyzes code regardless of the programming language used to generat
 
 ## Usage and Parameters
 
-| Parameter                              | description                                                                                        |
-| -------------------------------------- | -------------------------------------------------------------------------------------------------- |
-| `FILE or FOLDER`                       | file/project to parse                                                                              |
-| `--maxIndentationLevel=<maxIndentLvl>` | maximum Indentation Level (default 10)                                                             |
-| `--tabWidth=<tabWidth>`                | tab width used (estimated if not provided)                                                         |
-| `--withoutDefaultExcludes`             | includes build, target, dist, resources and out folders as well as files/folders starting with '.' |
-| `-e, --exclude=<exclude>`              | exclude file/folders according to regex pattern                                                    |
-| `-h, --help`                           | displays help                                                                                      |
-| `-m, --metrics[=<metrics>...]`         | metrics to be computed (select all if not specified)                                               |
-| `-o, --outputFile=<outputFile>`        | output File (or empty for stdout)                                                                  |
-| `-nc, --not-compressed`                | uncompresses outputfile to json format, if format of File is gzip                                  |
-| `-p, --projectName=<projectName>`      | project name                                                                                       |
-| `-v, --verbose`                        | verbose mode                                                                                       |
+| Parameter                                | description                                                                                        |
+| ---------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| `FILE or FOLDER`                         | file/project to parse                                                                              |
+| `--max-indentation-level=<maxIndentLvl>` | maximum Indentation Level (default 10)                                                             |
+| `--tab-width=<tabWidth>`                 | tab width used (estimated if not provided)                                                         |
+| `--without-default-excludes`             | includes build, target, dist, resources and out folders as well as files/folders starting with '.' |
+| `-e, --exclude=<exclude>`                | exclude file/folders according to regex pattern                                                    |
+| `-h, --help`                             | displays help                                                                                      |
+| `-m, --metrics[=<metrics>...]`           | metrics to be computed (select all if not specified)                                               |
+| `-o, --output-file=<outputFile>`         | output File (or empty for stdout)                                                                  |
+| `-nc, --not-compressed`                  | uncompresses outputfile to json format, if format of File is gzip                                  |
+| `-v, --verbose`                          | verbose mode                                                                                       |
 
 ```
-Usage: rawtextparser [-chv] [--withoutDefaultExcludes]
-                     [--maxIndentationLevel=<maxIndentLvl>]
-                     [--tabWidth=<tabWith>] [-o=<outputFile>] [-c]
-                     [-p=<projectName>] [-e=<exclude>]... [-m
+Usage: rawtextparser [-hv] [-nc] [--without-default-excludes]
+                     [--max-indentation-level=<maxIndentLvl>]
+                     [-o=<outputFile>] [--tab-width=<tabWidth>]
+                     [-e=<exclude>]... [-f=<fileExtensions>]... [-m
                      [=<metrics>...]]... FILE or FOLDER
 ```
 
@@ -44,7 +43,7 @@ ccsh rawtextparser foo/bar/project
 ```
 
 ```
-ccsh rawtextparser foo.txt --maxIndentationLevel=6 tabWidth=4 --metrics=IndentationLevel
+ccsh rawtextparser foo.txt --max-indentation-level=6 tabWidth=4 --metrics=IndentationLevel
 ```
 
 ```
