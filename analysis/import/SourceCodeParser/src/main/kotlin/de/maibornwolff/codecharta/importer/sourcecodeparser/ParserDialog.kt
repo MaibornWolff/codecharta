@@ -19,7 +19,7 @@ class ParserDialog {
 
             val outputFormat = KInquirer.promptListObject(
                     message = "Which output format should be generated?",
-                    choices = listOf(Choice("CodeCharta JSON", OutputFormat.JSON), Choice("CSV", OutputFormat.TABLE)),
+                    choices = listOf(Choice("CodeCharta JSON", OutputFormat.JSON), Choice("CSV", OutputFormat.CSV)),
             )
 
             val defaultOutputFilename = if (outputFormat == OutputFormat.JSON) "output.cc.json" else "output.csv"
