@@ -7,7 +7,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
-## Fixed 🐞
+### Changed
+
+-   Changed short form of parameter `--file-extensions` of RawTextParser from `-f` to `-fe` [#3405](https://github.com/MaibornWolff/codecharta/pull/3405)
+-   Update readme and gh-pages for RawTextParser [#3405](https://github.com/MaibornWolff/codecharta/pull/3405)
+
+### Fixed 🐞
 
 -   Fix RawTextParser producing incorrect output when no (or multiple) file extensions were specified in interactive mode [#3405](https://github.com/MaibornWolff/codecharta/pull/3405)
 
