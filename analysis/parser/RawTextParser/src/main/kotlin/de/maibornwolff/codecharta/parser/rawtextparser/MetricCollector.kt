@@ -59,7 +59,6 @@ class MetricCollector(
 
     private fun isParsableFileExtension(path: String): Boolean {
         return fileExtensions.isEmpty() ||
-               fileExtensions.contentEquals(arrayOf("")) ||
                fileExtensions.contains(path.substringAfterLast(".")) ||
                fileExtensions.contains(".${path.substringAfterLast(".")}")
     }

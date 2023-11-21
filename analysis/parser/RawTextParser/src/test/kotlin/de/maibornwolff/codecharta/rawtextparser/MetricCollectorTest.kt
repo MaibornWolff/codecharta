@@ -64,18 +64,6 @@ class MetricCollectorTest {
     }
 
     @Test
-    fun `Should include all Files when no specific extensions were given (default for interactive mode)`() {
-        val result = MetricCollector(File("src/test/resources/sampleproject").absoluteFile, fileExtensions = listOf("")).parse()
-
-        Assertions.assertThat(result.size).isEqualTo(5)
-        Assertions.assertThat(result).containsKey("/spaces/spaces_x_not_included.excluded")
-        Assertions.assertThat(result).containsKey("/spaces/spaces_3.included")
-        Assertions.assertThat(result).containsKey("/spaces/spaces_4.included")
-        Assertions.assertThat(result).containsKey("/spaces/spaces_5.includedtoo")
-        Assertions.assertThat(result).containsKey("/tabs.included")
-    }
-
-    @Test
     fun `Should produce empty result if no valid file extensions were given`() {
         val result = MetricCollector(File("src/test/resources/sampleproject").absoluteFile, fileExtensions = listOf("none")).parse()
         Assertions.assertThat(result.size).isEqualTo(0)

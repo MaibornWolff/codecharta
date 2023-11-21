@@ -8,8 +8,8 @@ import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import de.maibornwolff.codecharta.tools.interactiveparser.util.CodeChartaConstants
 import de.maibornwolff.codecharta.util.InputHelper
-import mu.KotlinLogging
 import de.maibornwolff.codecharta.util.StringToListInputConverter
+import mu.KotlinLogging
 import picocli.CommandLine
 import java.io.File
 import java.io.IOException

@@ -88,10 +88,10 @@ class ParserDialogTest {
         Assertions.assertThat(parseResult.matchedOption("metrics").getValue<List<String>>()).isEqualTo(listOf(metrics))
         Assertions.assertThat(parseResult.matchedOption("max-indentation-level").getValue<Int>()).isEqualTo(maxIndentLvl.toInt())
         Assertions.assertThat(parseResult.matchedOption("tab-width").getValue<Int>()).isEqualTo(tabWidthValue)
-        Assertions.assertThat(parseResult.matchedOption("file-extensions").getValue<Array<String>>()).isEqualTo(arrayOf(fileExtensions))
+        Assertions.assertThat(parseResult.matchedOption("file-extensions").getValue<List<String>>()).isEqualTo(listOf<String>())
         Assertions.assertThat(parseResult.matchedOption("without-default-excludes").getValue<Boolean>()).isEqualTo(withoutDefaultExcludes)
         Assertions.assertThat(parseResult.matchedOption("verbose").getValue<Boolean>()).isEqualTo(withoutDefaultExcludes)
-        Assertions.assertThat(parseResult.matchedOption("exclude").getValue<Array<String>>()).isEqualTo(arrayOf(exclude))
+        Assertions.assertThat(parseResult.matchedOption("exclude").getValue<List<String>>()).isEqualTo(listOf(exclude))
         Assertions.assertThat(parseResult.matchedPositional(0).getValue<File>().name).isEqualTo(fileName)
     }
 
@@ -119,10 +119,10 @@ class ParserDialogTest {
         Assertions.assertThat(parseResult.matchedOption("metrics").getValue<List<String>>()).isEqualTo(listOf(metrics))
         Assertions.assertThat(parseResult.matchedOption("max-indentation-level").getValue<Int>()).isEqualTo(maxIndentLvl.toInt())
         Assertions.assertThat(parseResult.matchedOption("tab-width").getValue<Int>()).isEqualTo(tabWidthValue)
-        Assertions.assertThat(parseResult.matchedOption("file-extensions").getValue<Array<String>>()).isEqualTo(arrayOf(fileExtensions))
+        Assertions.assertThat(parseResult.matchedOption("file-extensions").getValue<List<String>>()).isEqualTo(listOf<String>())
         Assertions.assertThat(parseResult.matchedOption("without-default-excludes").getValue<Boolean>()).isEqualTo(withoutDefaultExcludes)
         Assertions.assertThat(parseResult.matchedOption("verbose").getValue<Boolean>()).isEqualTo(withoutDefaultExcludes)
-        Assertions.assertThat(parseResult.matchedOption("exclude").getValue<Array<String>>()).isEqualTo(arrayOf(exclude))
+        Assertions.assertThat(parseResult.matchedOption("exclude").getValue<List<String>>()).isEqualTo(listOf(exclude))
         Assertions.assertThat(parseResult.matchedPositional(0).getValue<File>().name).isEqualTo(fileName)
     }
 }

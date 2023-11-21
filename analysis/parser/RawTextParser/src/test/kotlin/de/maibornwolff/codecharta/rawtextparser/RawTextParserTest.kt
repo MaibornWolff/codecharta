@@ -202,4 +202,31 @@ class RawTextParserTest {
         Assertions.assertThat(result).isEmpty()
         Assertions.assertThat(messagesLogged).contains("No files with specified file extension(s) were found within the given folder - not generating an output file!")
     }
+
+    @Test
+    fun `Should include all metrics when metrics-flag is empty string (default in interactive mode)`() {
+        val expectedResultFile = File("src/test/resources/cc_projects/project_3.cc.json").absoluteFile
+
+        val result = executeForOutput("", arrayOf("src/test/resources/sampleproject/tabs.included", "--metrics="))
+
+        JSONAssert.assertEquals(result, expectedResultFile.readText(), JSONCompareMode.NON_EXTENSIBLE)
+    }
+
+    @Test
+    fun `Should include all files when exclude-regex-flag is empty string (default in interactive mode)`() {
+        val expectedResultFile = File("src/test/resources/cc_projects/project_5.cc.json").absoluteFile
+
+        val result = executeForOutput("", arrayOf("src/test/resources/sampleproject/", "--exclude="))
+
+        JSONAssert.assertEquals(result, expectedResultFile.readText(), JSONCompareMode.NON_EXTENSIBLE)
+    }
+
+    @Test
+    fun `Should include all files when file-extensions-flag is empty string (default in interactive mode)`() {
+        val expectedResultFile = File("src/test/resources/cc_projects/project_5.cc.json").absoluteFile
+
+        val result = executeForOutput("", arrayOf("src/test/resources/sampleproject/", "--file-extensions="))
+
+        JSONAssert.assertEquals(result, expectedResultFile.readText(), JSONCompareMode.NON_EXTENSIBLE)
+    }
 }
