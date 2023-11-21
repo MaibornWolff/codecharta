@@ -1,9 +1,10 @@
 package de.maibornwolff.codecharta.serialization
 
 import de.maibornwolff.codecharta.model.Project
-import io.mockk.called
-import io.mockk.mockk
-import io.mockk.verify
+import io.mockk.*
+import mu.KLogger
+import mu.KotlinLogging
+import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 import org.skyscreamer.jsonassert.JSONAssert
 import org.skyscreamer.jsonassert.JSONCompareMode
@@ -57,5 +58,25 @@ class ProjectSerializerTest {
         ProjectSerializer.serializeToFileOrStream(project, "", stream, true)
         val result = stream.toString("UTF-8")
         assertTrue { result.startsWith("{") }
+    }
+
+    @Test
+    fun `serializeToFileOrStream should log the correct absolute path of the output file`() {
+        val outputFilePath = "src/test/resources/output.csv"
+        val absoluteOutputFilePath = File(outputFilePath).absolutePath
+        val outputFile = File(outputFilePath)
+        outputFile.deleteOnExit()
+
+        mockkObject(KotlinLogging)
+        val loggerMock = mockk<KLogger>()
+        val lambdaSlot = slot<(() -> Unit)>()
+        val messagesLogged = mutableListOf<String>()
+        every { KotlinLogging.logger(capture(lambdaSlot)) } returns loggerMock
+        every { loggerMock.info(capture(messagesLogged)) } returns Unit
+
+        val mockStream = mockk<OutputStream>()
+        ProjectSerializer.serializeToFileOrStream(project, outputFilePath, mockStream, false)
+
+        Assertions.assertThat(messagesLogged.any { e -> e.contains(absoluteOutputFilePath) }).isTrue()
     }
 }
