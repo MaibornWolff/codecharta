@@ -119,14 +119,7 @@ class SourceCodeParserMain(
         val pipedProject = ProjectDeserializer.deserializeProject(input)
         writer.generate(projectParser.projectMetrics, projectParser.metricKinds, pipedProject)
 
-        outputFile?.let { nonNullOutputFile ->
-            val absoluteFilePath = if (writer::class == CSVMetricWriter::class) {
-                OutputFileHandler.checkAndFixFileExtensionCsv(nonNullOutputFile.absolutePath)
-            } else {
-                OutputFileHandler.checkAndFixFileExtensionJson(nonNullOutputFile.absolutePath, compress)
-            }
-            logger.info("Created output file at $absoluteFilePath")
-        }
+        logOutputFilePath()
 
         return null
     }
@@ -144,6 +137,17 @@ class SourceCodeParserMain(
         } else {
             val outputName = outputFile!!.name
             BufferedWriter(FileWriter(OutputFileHandler.checkAndFixFileExtensionCsv(outputName)))
+        }
+    }
+
+    private fun logOutputFilePath() {
+        outputFile?.let { nonNullOutputFile ->
+            val absoluteFilePath = if (outputFormat == OutputFormat.CSV) {
+                OutputFileHandler.checkAndFixFileExtensionCsv(nonNullOutputFile.absolutePath)
+            } else {
+                OutputFileHandler.checkAndFixFileExtensionJson(nonNullOutputFile.absolutePath, compress)
+            }
+            logger.info("Created output file at $absoluteFilePath")
         }
     }
 
