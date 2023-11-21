@@ -44,6 +44,7 @@ class CSVExporter() : Callable<Void>, InteractiveParser {
     override val description = DESCRIPTION
 
     private val logger = KotlinLogging.logger {}
+
     companion object {
         const val NAME = "csvexport"
         const val DESCRIPTION = "generates csv file with header"
