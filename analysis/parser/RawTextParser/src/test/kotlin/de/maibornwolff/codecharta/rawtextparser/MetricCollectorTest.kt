@@ -33,8 +33,8 @@ class MetricCollectorTest {
     }
 
     @Test
-    fun `Should exclude regex patterns`() {
-        val result = MetricCollector(File("src/test/resources/sampleproject").absoluteFile, exclude = arrayOf(".*\\.excluded$", "foobar")).parse()
+    fun `Should exlude regex patterns`() {
+        val result = MetricCollector(File("src/test/resources/sampleproject").absoluteFile, exclude = listOf(".*\\.excluded$", "foobar")).parse()
 
         Assertions.assertThat(result.size).isEqualTo(4)
         Assertions.assertThat(result).containsKey("/spaces/spaces_3.included")
@@ -43,8 +43,8 @@ class MetricCollectorTest {
     }
 
     @Test
-    fun `Should include only specified File extension with one given`() {
-        val result = MetricCollector(File("src/test/resources/sampleproject").absoluteFile, fileExtensions = arrayOf("includedtoo")).parse()
+    fun `Should include only spedified File extensions`() {
+        val result = MetricCollector(File("src/test/resources/sampleproject").absoluteFile, fileExtensions = listOf("includedtoo")).parse()
 
         Assertions.assertThat(result.size).isEqualTo(1)
         Assertions.assertThat(result).containsKey("/spaces/spaces_5.includedtoo")
@@ -54,7 +54,7 @@ class MetricCollectorTest {
 
     @Test
     fun `Should include only specified File extensions with multiple given`() {
-        val result = MetricCollector(File("src/test/resources/sampleproject").absoluteFile, fileExtensions = arrayOf("included", "includedtoo")).parse()
+        val result = MetricCollector(File("src/test/resources/sampleproject").absoluteFile, fileExtensions = listOf("included", "includedtoo")).parse()
 
         Assertions.assertThat(result.size).isEqualTo(4)
         Assertions.assertThat(result).containsKey("/spaces/spaces_3.included")
@@ -65,7 +65,7 @@ class MetricCollectorTest {
 
     @Test
     fun `Should include all Files when no specific extensions were given (default for interactive mode)`() {
-        val result = MetricCollector(File("src/test/resources/sampleproject").absoluteFile, fileExtensions = arrayOf("")).parse()
+        val result = MetricCollector(File("src/test/resources/sampleproject").absoluteFile, fileExtensions = listOf("")).parse()
 
         Assertions.assertThat(result.size).isEqualTo(5)
         Assertions.assertThat(result).containsKey("/spaces/spaces_x_not_included.excluded")
@@ -77,14 +77,14 @@ class MetricCollectorTest {
 
     @Test
     fun `Should produce empty result if no valid file extensions were given`() {
-        val result = MetricCollector(File("src/test/resources/sampleproject").absoluteFile, fileExtensions = arrayOf("none")).parse()
+        val result = MetricCollector(File("src/test/resources/sampleproject").absoluteFile, fileExtensions = listOf("none")).parse()
         Assertions.assertThat(result.size).isEqualTo(0)
     }
 
     @Test
     fun `Should produce the same result whether the user included a dot in the filetype or not`() {
-        val resultWithoutDot = MetricCollector(File("src/test/resources/sampleproject").absoluteFile, fileExtensions = arrayOf("included", "includedtoo")).parse()
-        val resultWithDot = MetricCollector(File("src/test/resources/sampleproject").absoluteFile, fileExtensions = arrayOf(".included", ".includedtoo")).parse()
+        val resultWithoutDot = MetricCollector(File("src/test/resources/sampleproject").absoluteFile, fileExtensions = listOf("included", "includedtoo")).parse()
+        val resultWithDot = MetricCollector(File("src/test/resources/sampleproject").absoluteFile, fileExtensions = listOf(".included", ".includedtoo")).parse()
 
         Assertions.assertThat(resultWithoutDot == resultWithDot)
     }

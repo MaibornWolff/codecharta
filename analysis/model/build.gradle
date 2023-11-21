@@ -4,6 +4,7 @@ dependencies {
     implementation group: 'org.jetbrains.kotlin', name: 'kotlin-reflect', version: kotlin_version
     implementation group: 'io.github.microutils', name: 'kotlin-logging-jvm', version: '2.1.23'
 
+    implementation group: 'info.picocli', name: 'picocli', version: picocli_version
     implementation group: 'org.slf4j', name: 'slf4j-simple', version: slf4j_version
 
     testImplementation group: 'org.jetbrains.kotlin', name: 'kotlin-test', version: kotlin_version
