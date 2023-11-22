@@ -2,12 +2,8 @@ package de.maibornwolff.codecharta.importer.sourcecodeparser
 
 import de.maibornwolff.codecharta.util.InputHelper
 import io.mockk.every
-import io.mockk.mockk
 import io.mockk.mockkObject
-import io.mockk.slot
 import io.mockk.unmockkAll
-import mu.KLogger
-import mu.KotlinLogging
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
@@ -24,10 +20,13 @@ import java.io.PrintStream
 class SourceCodeParserMainTest {
     val errContent = ByteArrayOutputStream()
     val originalErr = System.err
+    private var outContent = ByteArrayOutputStream()
+    private val originalOut = System.out
 
     @AfterEach
     fun afterTest() {
         unmockkAll()
+        outContent = ByteArrayOutputStream()
     }
     companion object {
         @JvmStatic
@@ -51,48 +50,60 @@ class SourceCodeParserMainTest {
     @ParameterizedTest
     @MethodSource("provideValidInputFiles")
     fun `should be identified as applicable for given directory path containing a java file`(resourceToBeParsed: String) {
+        // when
         val isUsable = SourceCodeParserMain().isApplicable(resourceToBeParsed)
+
+        // then
         Assertions.assertThat(isUsable).isTrue()
     }
 
     @ParameterizedTest
     @MethodSource("provideInvalidInputFiles")
     fun `should NOT be identified as applicable if no java file is present at given path`(resourceToBeParsed: String) {
+        // when
         val isUsable = SourceCodeParserMain().isApplicable(resourceToBeParsed)
+
+        // then
         Assertions.assertThat(isUsable).isFalse()
     }
 
     @Test
     fun `should stop execution if input files are invalid`() {
+        // given
         mockkObject(InputHelper)
         every {
             InputHelper.isInputValid(any(), any())
         } returns false
 
         System.setErr(PrintStream(errContent))
-        CommandLine(SourceCodeParserMain()).execute("thisDoesNotExist").toString()
-        System.setErr(originalErr)
 
+        // when
+        CommandLine(SourceCodeParserMain()).execute("thisDoesNotExist").toString()
+
+        // then
         Assertions.assertThat(errContent.toString()).contains("Input invalid file for SourceCodeParser, stopping execution")
+
+        // clean up
+        System.setErr(originalErr)
     }
 
     @Test
     fun `serializeToFileOrStream should log the correct absolute path of the output file`() {
+        // given
         val inputFilePath = "src/test/resources/my/java/repo"
         val outputFilePath = "src/test/resources/output.cc.json"
         val absoluteOutputFilePath = File(outputFilePath).absolutePath
         val outputFile = File(outputFilePath)
         outputFile.deleteOnExit()
+        System.setOut(PrintStream(outContent))
 
-        mockkObject(KotlinLogging)
-        val loggerMock = mockk<KLogger>()
-        val lambdaSlot = slot<(() -> Unit)>()
-        val messagesLogged = mutableListOf<String>()
-        every { KotlinLogging.logger(capture(lambdaSlot)) } returns loggerMock
-        every { loggerMock.info(capture(messagesLogged)) } returns Unit
-
+        // when
         CommandLine(SourceCodeParserMain()).execute(inputFilePath, "-o", outputFilePath, "-nc").toString()
 
-        Assertions.assertThat(messagesLogged.any { e -> e.endsWith(absoluteOutputFilePath) }).isTrue()
+        // then
+        Assertions.assertThat(outContent.toString().contains(absoluteOutputFilePath)).isTrue()
+
+        // clean up
+        System.setOut(originalOut)
     }
 }

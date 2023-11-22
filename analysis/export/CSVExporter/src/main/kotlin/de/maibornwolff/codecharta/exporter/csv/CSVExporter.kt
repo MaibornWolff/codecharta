@@ -11,7 +11,6 @@ import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import de.maibornwolff.codecharta.tools.interactiveparser.util.CodeChartaConstants
 import de.maibornwolff.codecharta.util.InputHelper
-import mu.KotlinLogging
 import picocli.CommandLine
 import java.io.BufferedWriter
 import java.io.File
@@ -42,8 +41,6 @@ class CSVExporter() : Callable<Void>, InteractiveParser {
 
     override val name = NAME
     override val description = DESCRIPTION
-
-    private val logger = KotlinLogging.logger {}
 
     companion object {
         const val NAME = "csvexport"
@@ -85,7 +82,7 @@ class CSVExporter() : Callable<Void>, InteractiveParser {
 
         if (outputFile.isNotEmpty()) {
             val absoluteFilePath = File(outputFile).absolutePath
-            logger.info("Created output file at $absoluteFilePath")
+            println("Created output file at $absoluteFilePath")
         }
 
         return null
