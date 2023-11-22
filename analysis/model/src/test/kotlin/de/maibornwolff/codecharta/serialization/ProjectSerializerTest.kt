@@ -34,7 +34,7 @@ class ProjectSerializerTest {
     }
 
     @Test
-    fun `should serialize project`() {
+    fun `should correctly serialize the specified project when provided as input`() {
         // given
         val jsonReader = this.javaClass.classLoader.getResourceAsStream(EXAMPLE_JSON_VERSION_1_3)!!.reader()
         val expectedJsonString = this.javaClass.classLoader.getResource("example_api_version_1.3.cc.json")!!.readText()
@@ -49,7 +49,7 @@ class ProjectSerializerTest {
     }
 
     @Test
-    fun `serializeToFileOrStream should create a gz file`() {
+    fun `should create compressed json file when output file is specified and compress is true`() {
         // given
         val outputFilePath = "test.cc.json"
         val outputFilePathCompressed = "test.cc.json.gz"
@@ -66,7 +66,7 @@ class ProjectSerializerTest {
     }
 
     @Test
-    fun `serializeToFileOrStream should create a json file`() {
+    fun `should create uncompressed json file when output file is specified and compress is false`() {
         // given
         val outputFilePath = "test.cc.json"
         val outputFile = File(outputFilePath)
@@ -82,7 +82,7 @@ class ProjectSerializerTest {
     }
 
     @Test
-    fun `serializeToFileOrStream should write to stream`() {
+    fun `should write to stream when outputFilePath is empty`() {
         // given
         val stream = ByteArrayOutputStream()
 
@@ -95,9 +95,9 @@ class ProjectSerializerTest {
     }
 
     @Test
-    fun `file should log the correct absolute path of the output file`() {
+    fun `should log the correct absolute path of the output file when serializing a project`() {
         // given
-        val outputFilePath = "src/test/resources/output.csv"
+        val outputFilePath = "src/test/resources/output.cc.json"
         val outputFile = File(outputFilePath)
         val absoluteOutputFilePath = outputFile.absolutePath
         outputFile.deleteOnExit()
