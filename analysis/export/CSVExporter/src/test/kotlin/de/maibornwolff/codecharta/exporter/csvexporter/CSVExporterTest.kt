@@ -3,8 +3,12 @@ package de.maibornwolff.codecharta.exporter.csvexporter
 import de.maibornwolff.codecharta.exporter.csv.CSVExporter
 import de.maibornwolff.codecharta.util.InputHelper
 import io.mockk.every
+import io.mockk.mockk
 import io.mockk.mockkObject
 import io.mockk.unmockkAll
+import io.mockk.verify
+import mu.KLogger
+import mu.KotlinLogging
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
@@ -267,15 +271,18 @@ class CSVExporterTest {
         val absoluteOutputFilePath = File(outputFilePath).absolutePath
         val outputFile = File(outputFilePath)
         outputFile.deleteOnExit()
-        System.setOut(PrintStream(outContent))
+
+        val loggerMock = mockk<KLogger>()
+        val infoMessagesLogged = mutableListOf<String>()
+        mockkObject(KotlinLogging)
+        every { KotlinLogging.logger(any<(() -> Unit)>()) } returns loggerMock
+        every { loggerMock.info(capture(infoMessagesLogged)) } returns Unit
 
         // when
         CommandLine(CSVExporter()).execute(inputFilePath, "-o", outputFilePath)
 
         // then
-        Assertions.assertThat(outContent.toString().contains(absoluteOutputFilePath)).isTrue()
-
-        // clean up
-        System.setOut(originalOut)
+        verify { loggerMock.info(any<String>()) }
+        Assertions.assertThat(infoMessagesLogged.any { e -> e.contains(absoluteOutputFilePath) }).isTrue()
     }
 }
