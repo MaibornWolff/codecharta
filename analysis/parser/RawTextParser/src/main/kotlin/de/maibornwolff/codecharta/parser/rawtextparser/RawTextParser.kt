@@ -7,8 +7,8 @@ import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import de.maibornwolff.codecharta.tools.interactiveparser.util.CodeChartaConstants
+import de.maibornwolff.codecharta.util.CommaSeparatedStringToListConverter
 import de.maibornwolff.codecharta.util.InputHelper
-import de.maibornwolff.codecharta.util.StringToListInputConverter
 import mu.KotlinLogging
 import picocli.CommandLine
 import java.io.File
@@ -46,7 +46,7 @@ class RawTextParser(
         arity = "0..",
         names = ["-m", "--metrics"],
         description = ["metrics to be computed (select all if not specified)"],
-        converter = [(StringToListInputConverter::class)]
+        converter = [(CommaSeparatedStringToListConverter::class)]
     )
     private var metrics: List<String> = listOf()
 
@@ -65,13 +65,13 @@ class RawTextParser(
     @CommandLine.Option(
             names = ["-e", "--exclude"],
             description = ["exclude file/folder according to regex pattern"],
-            converter = [(StringToListInputConverter::class)])
+            converter = [(CommaSeparatedStringToListConverter::class)])
     private var exclude: List<String> = listOf()
 
     @CommandLine.Option(
         names = ["-fe", "--file-extensions"],
         description = ["parse only files with specified extensions (default: any)"],
-        converter = [(StringToListInputConverter::class)]
+        converter = [(CommaSeparatedStringToListConverter::class)]
     )
     private var fileExtensions: List<String> = listOf()
 

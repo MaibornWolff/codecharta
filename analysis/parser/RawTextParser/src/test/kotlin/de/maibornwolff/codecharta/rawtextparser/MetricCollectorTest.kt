@@ -33,7 +33,7 @@ class MetricCollectorTest {
     }
 
     @Test
-    fun `Should exlude regex patterns`() {
+    fun `Should exclude regex patterns`() {
         val result = MetricCollector(File("src/test/resources/sampleproject").absoluteFile, exclude = listOf(".*\\.excluded$", "foobar")).parse()
 
         Assertions.assertThat(result.size).isEqualTo(4)
@@ -43,7 +43,7 @@ class MetricCollectorTest {
     }
 
     @Test
-    fun `Should include only spedified File extensions`() {
+    fun `Should include only specified File extensions`() {
         val result = MetricCollector(File("src/test/resources/sampleproject").absoluteFile, fileExtensions = listOf("includedtoo")).parse()
 
         Assertions.assertThat(result.size).isEqualTo(1)
