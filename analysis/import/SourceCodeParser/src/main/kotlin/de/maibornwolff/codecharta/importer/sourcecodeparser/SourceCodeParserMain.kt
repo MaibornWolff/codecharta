@@ -11,6 +11,7 @@ import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import de.maibornwolff.codecharta.tools.interactiveparser.util.CodeChartaConstants
 import de.maibornwolff.codecharta.util.InputHelper
 import de.maibornwolff.codecharta.util.ResourceSearchHelper
+import mu.KotlinLogging
 import picocli.CommandLine
 import java.io.BufferedWriter
 import java.io.File
@@ -74,6 +75,8 @@ class SourceCodeParserMain(
 
     override val name = NAME
     override val description = DESCRIPTION
+
+    private val logger = KotlinLogging.logger {}
 
     companion object {
         const val NAME = "sourcecodeparser"
@@ -145,7 +148,7 @@ class SourceCodeParserMain(
             } else {
                 OutputFileHandler.checkAndFixFileExtension(nonNullOutputFile.absolutePath, compress, FileExtension.JSON)
             }
-            println("Created output file at $absoluteFilePath")
+            logger.info("Created output file at $absoluteFilePath")
         }
     }
 
