@@ -10,7 +10,6 @@ import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import de.maibornwolff.codecharta.tools.interactiveparser.util.CodeChartaConstants
 import de.maibornwolff.codecharta.util.InputHelper
 import de.maibornwolff.codecharta.util.ResourceSearchHelper
-import mu.KotlinLogging
 import picocli.CommandLine
 import java.io.BufferedWriter
 import java.io.File
@@ -35,8 +34,6 @@ class SourceCodeParserMain(
 ) : Callable<Void>, InteractiveParser {
     // we need this constructor because ccsh requires an empty constructor
     constructor() : this(System.out)
-
-    private val logger = KotlinLogging.logger {}
 
     private val DEFAULT_EXCLUDES = arrayOf("/out/", "/build/", "/target/", "/dist/", "/resources/", "/\\..*")
 
@@ -147,7 +144,7 @@ class SourceCodeParserMain(
             } else {
                 OutputFileHandler.checkAndFixFileExtensionJson(nonNullOutputFile.absolutePath, compress)
             }
-            logger.info("Created output file at $absoluteFilePath")
+            println("Created output file at $absoluteFilePath")
         }
     }
 
