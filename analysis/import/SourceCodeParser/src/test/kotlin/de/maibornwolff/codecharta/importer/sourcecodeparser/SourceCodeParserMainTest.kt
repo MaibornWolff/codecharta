@@ -49,7 +49,7 @@ class SourceCodeParserMainTest {
 
     @ParameterizedTest
     @MethodSource("provideValidInputFiles")
-    fun `should be identified as applicable for given directory path containing a java file`(resourceToBeParsed: String) {
+    fun `should be identified as applicable when given directory path contains a java file`(resourceToBeParsed: String) {
         // when
         val isUsable = SourceCodeParserMain().isApplicable(resourceToBeParsed)
 
@@ -59,7 +59,7 @@ class SourceCodeParserMainTest {
 
     @ParameterizedTest
     @MethodSource("provideInvalidInputFiles")
-    fun `should NOT be identified as applicable if no java file is present at given path`(resourceToBeParsed: String) {
+    fun `should NOT be identified as applicable when no java file is present at given path`(resourceToBeParsed: String) {
         // when
         val isUsable = SourceCodeParserMain().isApplicable(resourceToBeParsed)
 
@@ -68,7 +68,7 @@ class SourceCodeParserMainTest {
     }
 
     @Test
-    fun `should stop execution if input files are invalid`() {
+    fun `should stop execution when input files are invalid`() {
         // given
         mockkObject(InputHelper)
         every {
@@ -88,7 +88,7 @@ class SourceCodeParserMainTest {
     }
 
     @Test
-    fun `serializeToFileOrStream should log the correct absolute path of the output file`() {
+    fun `should log the correct absolute path of the output file when serializing a project`() {
         // given
         val inputFilePath = "src/test/resources/my/java/repo"
         val outputFilePath = "src/test/resources/output.cc.json"

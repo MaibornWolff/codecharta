@@ -29,7 +29,7 @@ class CSVExporterTest {
     }
 
     @Test
-    fun `should create correct output for single valid file as input source`() {
+    fun `should create correct output when single valid file is specified as input source`() {
         // given
         val inputFilePath = "src/test/resources/input_valid_1.cc.json"
         val outputFilePath = "src/test/resources/output.csv"
@@ -47,7 +47,7 @@ class CSVExporterTest {
     }
 
     @Test
-    fun `should create correct output for two valid files as input sources`() {
+    fun `should create correct output when two valid files are specified as input sources`() {
         // given
         val inputFilePath1 = "src/test/resources/input_valid_1.cc.json"
         val inputFilePath2 = "src/test/resources/input_valid_2.cc.json"
@@ -66,7 +66,7 @@ class CSVExporterTest {
     }
 
     @Test
-    fun `should fail to create output for invalid file as input source`() {
+    fun `should fail to create output when invalid file is specified as input source`() {
         // given
         val invalidInputFilePath = "filePathDoesNotExist.cc.json"
         System.setErr(PrintStream(errContent))
@@ -75,7 +75,6 @@ class CSVExporterTest {
         every {
             InputHelper.isInputValid(any(), any())
         } returns false
-
 
         // when
         CommandLine(CSVExporter()).execute(invalidInputFilePath)
@@ -88,7 +87,7 @@ class CSVExporterTest {
     }
 
     @Test
-    fun `should fail to create output for invalid and valid file as input source`() {
+    fun `should fail to create output when an invalid and valid file are specified as input sources`() {
         // given
         val validInputFilePath = "src/test/resources/input_valid_1.cc.json"
         val invalidInputFilePath = "filePathDoesNotExist.cc.json"
@@ -98,7 +97,6 @@ class CSVExporterTest {
         every {
             InputHelper.isInputValid(any(), any())
         } returns false
-
 
         // when
         CommandLine(CSVExporter()).execute(validInputFilePath, invalidInputFilePath)
@@ -111,7 +109,7 @@ class CSVExporterTest {
     }
 
     @Test
-    fun `should fail to create output for folder as input source`() {
+    fun `should fail with invalid input file error-message when path folder is specified as input`() {
         // given
         val pathToFolder = "src/test/resources/"
         System.setErr(PrintStream(errContent))
@@ -120,7 +118,6 @@ class CSVExporterTest {
         every {
             InputHelper.isInputValid(any(), any())
         } returns false
-
 
         // when
         CommandLine(CSVExporter()).execute(pathToFolder).toString()
@@ -133,7 +130,7 @@ class CSVExporterTest {
     }
 
     @Test
-    fun `should write output to file when output file is missing csv extension`() {
+    fun `should correct output-file-extension when output file is missing csv extension`() {
         // given
         val inputFilePath = "src/test/resources/input_valid_1.cc.json"
         val outputFilePathWitExtension = "src/test/resources/output.csv"
@@ -150,7 +147,7 @@ class CSVExporterTest {
     }
 
     @Test
-    fun `should overwrite content in output file`() {
+    fun `should overwrite content in the output file when the specified output file already contains content`() {
         // given
         val inputFilePath = "src/test/resources/input_valid_1.cc.json"
         val outputFilePath = "src/test/resources/output.csv"
@@ -205,7 +202,7 @@ class CSVExporterTest {
     }
 
     @Test
-    fun `should create correct output for depth-of-hierarchy of five`() {
+    fun `should create correct output when depth-of-hierarchy is five`() {
         // given
         val filePath = "../../test/data/codecharta/csvexport_input.cc.json"
         val maxHierarchy = 5
@@ -227,7 +224,7 @@ class CSVExporterTest {
     }
 
     @Test
-    fun `should create correct output for depth-of-hierarchy of zero`() {
+    fun `should create correct output when depth-of-hierarchy is zero`() {
         // given
         val filePath = "../../test/data/codecharta/csvexport_input.cc.json"
         val maxHierarchy = 0
@@ -246,7 +243,7 @@ class CSVExporterTest {
     }
 
     @Test
-    fun `should fail to create output for negative depth-of-hierarchy`() {
+    fun `should fail to create output when depth-of-hierarchy is negative`() {
         // given
         val filePath = "../../test/data/codecharta/csvexport_input.cc.json"
         val maxHierarchy = -1
@@ -263,7 +260,7 @@ class CSVExporterTest {
     }
 
     @Test
-    fun `should log the correct absolute path of the output file`() {
+    fun `should log the correct absolute path when output file is specified`() {
         // given
         val inputFilePath = "../../test/data/codecharta/csvexport_input.cc.json"
         val outputFilePath = "src/test/resources/output.csv"
