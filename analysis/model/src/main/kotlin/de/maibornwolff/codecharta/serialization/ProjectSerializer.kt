@@ -61,7 +61,7 @@ object ProjectSerializer {
         val stream = OutputFileHandler.stream(outputFilePath, fallbackOutputStream, reallyCompress)
         serializeProject(project, stream, reallyCompress)
         if (!outputFilePath.isNullOrEmpty()) {
-            val absoluteFilePath = OutputFileHandler.checkAndFixFileExtensionJson(File(outputFilePath).absolutePath, reallyCompress)
+            val absoluteFilePath = OutputFileHandler.checkAndFixFileExtension(File(outputFilePath).absolutePath, reallyCompress, FileExtension.JSON)
             println("Created output file at $absoluteFilePath")
         }
     }

@@ -5,6 +5,7 @@ import com.univocity.parsers.csv.CsvWriterSettings
 import de.maibornwolff.codecharta.model.Node
 import de.maibornwolff.codecharta.model.Path
 import de.maibornwolff.codecharta.model.Project
+import de.maibornwolff.codecharta.serialization.FileExtension
 import de.maibornwolff.codecharta.serialization.OutputFileHandler
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
@@ -71,7 +72,7 @@ class CSVExporter() : Callable<Void>, InteractiveParser {
         }
 
         if (outputFile.isNotEmpty()) {
-            outputFile = OutputFileHandler.checkAndFixFileExtensionCsv(outputFile)
+            outputFile = OutputFileHandler.checkAndFixFileExtension(outputFile, false, FileExtension.CSV)
         }
 
         val projects = sources.map { ProjectDeserializer.deserializeProject(it.inputStream()) }

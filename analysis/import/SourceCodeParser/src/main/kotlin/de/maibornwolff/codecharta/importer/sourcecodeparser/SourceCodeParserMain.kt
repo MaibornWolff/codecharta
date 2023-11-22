@@ -3,6 +3,7 @@ package de.maibornwolff.codecharta.importer.sourcecodeparser
 import de.maibornwolff.codecharta.importer.sourcecodeparser.metricwriters.CSVMetricWriter
 import de.maibornwolff.codecharta.importer.sourcecodeparser.metricwriters.JSONMetricWriter
 import de.maibornwolff.codecharta.importer.sourcecodeparser.metricwriters.MetricWriter
+import de.maibornwolff.codecharta.serialization.FileExtension
 import de.maibornwolff.codecharta.serialization.OutputFileHandler
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
@@ -133,16 +134,16 @@ class SourceCodeParserMain(
             OutputStreamWriter(outputStream)
         } else {
             val outputName = outputFile!!.name
-            BufferedWriter(FileWriter(OutputFileHandler.checkAndFixFileExtensionCsv(outputName)))
+            BufferedWriter(FileWriter(OutputFileHandler.checkAndFixFileExtension(outputName, false, FileExtension.CSV)))
         }
     }
 
     private fun logOutputFilePath() {
         outputFile?.let { nonNullOutputFile ->
             val absoluteFilePath = if (outputFormat == OutputFormat.CSV) {
-                OutputFileHandler.checkAndFixFileExtensionCsv(nonNullOutputFile.absolutePath)
+                OutputFileHandler.checkAndFixFileExtension(nonNullOutputFile.absolutePath, false, FileExtension.CSV)
             } else {
-                OutputFileHandler.checkAndFixFileExtensionJson(nonNullOutputFile.absolutePath, compress)
+                OutputFileHandler.checkAndFixFileExtension(nonNullOutputFile.absolutePath, compress, FileExtension.JSON)
             }
             println("Created output file at $absoluteFilePath")
         }

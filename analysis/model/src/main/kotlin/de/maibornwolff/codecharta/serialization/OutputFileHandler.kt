@@ -9,16 +9,23 @@ object OutputFileHandler {
         return if (outputFilePath.isNullOrBlank()) {
             fallbackOutputStream
         } else {
-            FileOutputStream(File(checkAndFixFileExtensionJson(outputFilePath, compressed)))
+            FileOutputStream(File(checkAndFixFileExtension(outputFilePath, compressed, FileExtension.JSON)))
         }
     }
 
-    fun checkAndFixFileExtensionJson(outputName: String, compressed: Boolean): String =
-            outputName.removeSuffix(".gz").removeSuffix(".json").removeSuffix(".cc") + getExtension(compressed)
-
-    fun checkAndFixFileExtensionCsv(outputName: String): String =
-            outputName.removeSuffix(".csv") + ".csv"
-
-    private fun getExtension(compressed: Boolean) =
-            if (compressed) ".cc.json.gz" else ".cc.json"
+    fun checkAndFixFileExtension(outputName: String, compressed: Boolean, fileExtension: FileExtension): String {
+        return when (fileExtension) {
+            FileExtension.JSON -> outputName
+                    .removeSuffix(FileExtension.GZIP.extension)
+                    .removeSuffix(FileExtension.JSON.extension)
+                    .removeSuffix(FileExtension.CODECHARTA.extension) +
+                                  FileExtension.CODECHARTA.extension +
+                                  FileExtension.JSON.extension +
+                                  if (compressed) FileExtension.GZIP.extension else String()
+            FileExtension.CSV -> outputName
+                    .removeSuffix(FileExtension.CSV.extension) +
+                                 FileExtension.CSV.extension
+            else -> throw IllegalArgumentException()
+        }
+    }
 }
