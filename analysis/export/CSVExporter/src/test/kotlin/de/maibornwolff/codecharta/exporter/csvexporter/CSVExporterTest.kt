@@ -113,7 +113,7 @@ class CSVExporterTest {
     }
 
     @Test
-    fun `should fail with invalid input file error-message when path folder is specified as input`() {
+    fun `should fail to create output when folder is specified as input source`() {
         // given
         val pathToFolder = "src/test/resources/"
         System.setErr(PrintStream(errContent))
