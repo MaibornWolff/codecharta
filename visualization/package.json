@@ -101,7 +101,7 @@
 		"@angular/compiler-cli": "^15.1.1",
 		"@babel/plugin-proposal-class-static-block": "^7.20.7",
 		"@electron/get": "^2.0.3",
-		"@testing-library/angular": "^13.1.0",
+		"@testing-library/angular": "^14.0.0",
 		"@testing-library/user-event": "^14.0.0",
 		"@types/color-convert": "^2.0.0",
 		"@types/d3-hierarchy": "^3.0.2",
