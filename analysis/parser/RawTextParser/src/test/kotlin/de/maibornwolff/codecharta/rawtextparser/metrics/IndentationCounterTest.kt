@@ -62,9 +62,9 @@ class IndentationCounterTest {
 
     @Test
     fun `should calculate indentations based on given tabWidth`() {
-        val indentationCounter = IndentationCounter()
+        val indentationCounter = IndentationCounter(tabWidth = 1)
 
-        indentationCounter.setParameters(mapOf("tabWidth" to 1))
+        //indentationCounter.setParameters(mapOf("tabWidth" to 1))
         addDoubleSpacedLines(indentationCounter)
         val result = indentationCounter.getValue().metricMap
 
@@ -76,9 +76,9 @@ class IndentationCounterTest {
     fun `should correct invalid indentation levels`() {
         val printContent = ByteArrayOutputStream()
         val writer = PrintStream(printContent)
-        val indentationCounter = IndentationCounter(stderr = writer)
+        val indentationCounter = IndentationCounter(stderr = writer, tabWidth = 3)
 
-        indentationCounter.setParameters(mapOf("tabWidth" to 3))
+        //indentationCounter.setParameters(mapOf("tabWidth" to 3))
         addDoubleSpacedLines(indentationCounter)
         val result = indentationCounter.getValue().metricMap
 

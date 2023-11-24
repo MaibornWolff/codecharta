@@ -1,7 +1,6 @@
 package de.maibornwolff.codecharta.parser.rawtextparser
 
 import de.maibornwolff.codecharta.parser.rawtextparser.model.FileMetrics
-import de.maibornwolff.codecharta.parser.rawtextparser.model.toInt
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
@@ -60,7 +59,7 @@ class RawTextParser(
     private var tabWidth: Int? = null
 
     @CommandLine.Option(names = ["--max-indentation-level"], description = ["maximum Indentation Level (default 10)"])
-    private var maxIndentLvl: Int? = null
+    private var maxIndentLvl: Int = DEFAULT_INDENT_LVL
 
     @CommandLine.Option(
             names = ["-e", "--exclude"],
@@ -88,6 +87,9 @@ class RawTextParser(
         const val NAME = "rawtextparser"
         const val DESCRIPTION = "generates cc.json from projects or source code files"
 
+        const val DEFAULT_INDENT_LVL = 10
+        const val METRIC_INDENT_LVL = "IndentationLevel"
+
         @JvmStatic
         fun mainWithInOut(outputStream: PrintStream, input: InputStream, error: PrintStream, args: Array<String>) {
             CommandLine(RawTextParser(input, outputStream, error)).setOut(PrintWriter(outputStream)).execute(*args)
@@ -103,9 +105,8 @@ class RawTextParser(
 
         if (!withoutDefaultExcludes) exclude += DEFAULT_EXCLUDES
 
-        val parameterMap = assembleParameterMap()
         val results: Map<String, FileMetrics> =
-            MetricCollector(inputFile!!, exclude, fileExtensions, parameterMap, metrics).parse()
+            MetricCollector(inputFile!!, exclude, fileExtensions, metrics, verbose, maxIndentLvl, tabWidth).parse()
         println()
 
         if (results.isEmpty()) {
@@ -122,14 +123,6 @@ class RawTextParser(
         ProjectSerializer.serializeToFileOrStream(project, outputFile, output, compress)
 
         return null
-    }
-
-    private fun assembleParameterMap(): Map<String, Int> {
-        return mapOf(
-            "verbose" to verbose.toInt(),
-            "maxIndentationLevel" to maxIndentLvl,
-            "tabWidth" to tabWidth
-        ).filterValues { it != null }.mapValues { it.value as Int }
     }
 
     private fun logWarningsForNotFoundFileExtensions(results: Map<String, FileMetrics>) {
