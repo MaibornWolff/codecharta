@@ -16,13 +16,10 @@ class MetricCollector(
     private var root: File,
     private val exclude: List<String> = listOf(),
     private val fileExtensions: List<String> = listOf(),
-    //private val parameters: Map<String, Int> = mapOf(),
-    private val metrics: List<String> = listOf(),
-    //do these have to get a standard value here? -> dont think so, root also didnt get one
-    //TODO remove standard values
-    private val verbose: Boolean = false,
-    private val maxIndentLvl: Int = RawTextParser.DEFAULT_INDENT_LVL,
-    private val tabWidth: Int? = 0
+    private val metricNames: List<String> = listOf(),
+    private val verbose: Boolean,
+    private val maxIndentLvl: Int,
+    private val tabWidth: Int?
 ) {
 
     private var excludePatterns: Regex = exclude.joinToString(separator = "|", prefix = "(", postfix = ")").toRegex()
@@ -74,17 +71,16 @@ class MetricCollector(
     }
 
     private fun parseFile(file: File): FileMetrics {
-        //TODO remove next line later
-        val metricsList = mutableListOf<Metric>()
-        if (metrics.isEmpty() || metrics.any { it.equals(RawTextParser.METRIC_INDENT_LVL, ignoreCase = true) }) {
-            metricsList.add(IndentationMetric(maxIndentLvl, verbose, tabWidth ?: 0))
+        val metrics = mutableListOf<Metric>()
+        if (metricNames.isEmpty() || metricNames.any { it.equals(RawTextParser.METRIC_INDENT_LVL, ignoreCase = true) }) {
+            metrics.add(IndentationMetric(maxIndentLvl, verbose, tabWidth))
         }
 
         file
             .bufferedReader()
-            .useLines { lines -> lines.forEach { line -> metricsList.forEach { it.parseLine(line) } } }
+            .useLines { lines -> lines.forEach { line -> metrics.forEach { it.parseLine(line) } } }
 
-        return metricsList.map { it.getValue() }.reduceRight { current: FileMetrics, acc: FileMetrics ->
+        return metrics.map { it.getValue() }.reduceRight { current: FileMetrics, acc: FileMetrics ->
             acc.metricMap.putAll(current.metricMap)
             acc
         }

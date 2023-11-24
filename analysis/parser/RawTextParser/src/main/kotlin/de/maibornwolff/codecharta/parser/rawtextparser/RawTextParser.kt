@@ -47,7 +47,7 @@ class RawTextParser(
         description = ["metrics to be computed (select all if not specified)"],
         converter = [(CommaSeparatedStringToListConverter::class)]
     )
-    private var metrics: List<String> = listOf()
+    private var metricNames: List<String> = listOf()
 
     @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File (or empty for stdout)"])
     private var outputFile: String? = null
@@ -106,7 +106,7 @@ class RawTextParser(
         if (!withoutDefaultExcludes) exclude += DEFAULT_EXCLUDES
 
         val results: Map<String, FileMetrics> =
-            MetricCollector(inputFile!!, exclude, fileExtensions, metrics, verbose, maxIndentLvl, tabWidth).parse()
+            MetricCollector(inputFile!!, exclude, fileExtensions, metricNames, verbose, maxIndentLvl, tabWidth).parse()
         println()
 
         if (results.isEmpty()) {

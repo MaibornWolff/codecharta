@@ -7,12 +7,13 @@ import java.lang.Integer.min
 class IndentationMetric(
     private var maxIndentation: Int,
     private var verbose: Boolean,
-    private var tabWidth: Int,
+    tabWidth: Int?,
 ) : Metric {
     private val logger = KotlinLogging.logger {}
 
     private val spaceIndentations = MutableList(maxIndentation * 8 + 1) { 0 }
     private val tabIndentations = MutableList(maxIndentation + 1) { 0 }
+    private var usableTabWidth = tabWidth ?: 0
 
     override val name = "IndentationLevel"
     override val description = "Number of lines with an indentation level of at least x"
@@ -34,8 +35,8 @@ class IndentationMetric(
 
     // TODO tabSize - (offset % tabSize) from the current position
     private fun guessTabWidth(): Int {
-        tabWidth = 1
-        if (spaceIndentations.sum() == 0) return tabWidth
+        usableTabWidth = 1
+        if (spaceIndentations.sum() == 0) return usableTabWidth
 
         val candidates = 2..8
         candidates.forEach { candidate ->
@@ -46,13 +47,13 @@ class IndentationMetric(
                 }
             }
             if (mismatches == 0) {
-                tabWidth = candidate
+                usableTabWidth = candidate
             }
         }
         if (verbose) {
-            logger.info("Assumed tab width to be $tabWidth")
+            logger.info("Assumed tab width to be $usableTabWidth")
         }
-        return tabWidth
+        return usableTabWidth
     }
 
     private fun correctMismatchingIndents(tabWidth: Int) {
@@ -67,15 +68,15 @@ class IndentationMetric(
     }
 
     override fun getValue(): FileMetrics {
-        if (tabWidth <= 0) {
+        if (usableTabWidth <= 0) {
             guessTabWidth()
         }
-        correctMismatchingIndents(tabWidth)
+        correctMismatchingIndents(usableTabWidth)
 
         val fileMetrics = FileMetrics()
         for (i in 0..maxIndentation) {
             val tabVal = tabIndentations.subList(i, tabIndentations.size).sum()
-            val spaceVal = spaceIndentations.subList(i * tabWidth, spaceIndentations.size).sum()
+            val spaceVal = spaceIndentations.subList(i * usableTabWidth, spaceIndentations.size).sum()
             val name = "indentation_level_$i+"
             fileMetrics.addMetric(name, tabVal + spaceVal)
         }
