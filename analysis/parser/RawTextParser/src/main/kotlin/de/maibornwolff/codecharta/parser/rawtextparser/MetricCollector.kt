@@ -1,6 +1,7 @@
 package de.maibornwolff.codecharta.parser.rawtextparser
 
-import de.maibornwolff.codecharta.parser.rawtextparser.metrics.MetricsFactory
+import de.maibornwolff.codecharta.parser.rawtextparser.metrics.IndentationCounter
+import de.maibornwolff.codecharta.parser.rawtextparser.metrics.Metric
 import de.maibornwolff.codecharta.parser.rawtextparser.model.FileMetrics
 import de.maibornwolff.codecharta.progresstracker.ParsingUnit
 import de.maibornwolff.codecharta.progresstracker.ProgressTracker
@@ -15,8 +16,13 @@ class MetricCollector(
     private var root: File,
     private val exclude: List<String> = listOf(),
     private val fileExtensions: List<String> = listOf(),
-    private val parameters: Map<String, Int> = mapOf(),
-    private val metrics: List<String> = listOf()
+    //private val parameters: Map<String, Int> = mapOf(),
+    private val metrics: List<String> = listOf(),
+    //do these have to get a standard value here? -> dont think so, root also didnt get one
+    //TODO remove standard values
+    private val verbose: Boolean = false,
+    private val maxIndentLvl: Int = RawTextParser.DEFAULT_INDENT_LVL,
+    private val tabWidth: Int? = 0
 ) {
 
     private var excludePatterns: Regex = exclude.joinToString(separator = "|", prefix = "(", postfix = ")").toRegex()
@@ -68,13 +74,20 @@ class MetricCollector(
     }
 
     private fun parseFile(file: File): FileMetrics {
-        val metrics = MetricsFactory.create(metrics, parameters)
+        //TODO remove next line later
+        val newTabWidth = tabWidth ?: 0
+        //maybe directly call the IndentationCounter with the correct values here?
+        //val metricsList = MetricsFactory.create(metrics, verbose, maxIndentLvl, tabWidth)
+        val metricsList = mutableListOf<Metric>()
+        if (metrics.isEmpty() || metrics.any {it.equals(RawTextParser.METRIC_INDENT_LVL, ignoreCase = true)}) {
+            metricsList.add(IndentationCounter(maxIndentLvl, verbose, newTabWidth))
+        }
 
         file
             .bufferedReader()
-            .useLines { lines -> lines.forEach { line -> metrics.forEach { it.parseLine(line) } } }
+            .useLines { lines -> lines.forEach { line -> metricsList.forEach { it.parseLine(line) } } }
 
-        return metrics.map { it.getValue() }.reduceRight { current: FileMetrics, acc: FileMetrics ->
+        return metricsList.map { it.getValue() }.reduceRight { current: FileMetrics, acc: FileMetrics ->
             acc.metricMap.putAll(current.metricMap)
             acc
         }

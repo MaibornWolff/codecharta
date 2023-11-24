@@ -1,15 +1,14 @@
 package de.maibornwolff.codecharta.parser.rawtextparser.metrics
 
 import de.maibornwolff.codecharta.parser.rawtextparser.model.FileMetrics
-import de.maibornwolff.codecharta.parser.rawtextparser.model.toBool
 import java.io.PrintStream
 import java.lang.Integer.min
 
 class IndentationCounter(
     private var maxIndentation: Int = 6,
-    private var stderr: PrintStream = System.err,
     private var verbose: Boolean = false,
-    private var tabWidth: Int = 0
+    private var tabWidth: Int = 0,
+    private var stderr: PrintStream = System.err
 ) : Metric {
 
     private val spaceIndentations = MutableList(maxIndentation * 8 + 1) { 0 }
@@ -31,12 +30,6 @@ class IndentationCounter(
             tabIndent = min(tabIndent, maxIndentation)
             tabIndentations[tabIndent] = tabIndentations[tabIndent] + 1
         }
-    }
-
-    override fun setParameters(parameters: Map<String, Int>) {
-        maxIndentation = parameters["maxIndentationLevel"] ?: maxIndentation
-        tabWidth = parameters["tabWidth"] ?: tabWidth
-        verbose = parameters["verbose"]?.toBool() ?: verbose
     }
 
     // TODO tabSize - (offset % tabSize) from the current position
