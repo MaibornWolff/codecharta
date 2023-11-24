@@ -1,12 +1,22 @@
 package de.maibornwolff.codecharta.rawtextparser.metrics
 
+import de.maibornwolff.codecharta.parser.rawtextparser.RawTextParser
 import de.maibornwolff.codecharta.parser.rawtextparser.metrics.IndentationMetric
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.mockkObject
+import io.mockk.slot
+import io.mockk.verify
+import mu.KLogger
+import mu.KotlinLogging
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
-import java.io.ByteArrayOutputStream
-import java.io.PrintStream
 
 class IndentationMetricTest {
+
+    private val defaultVerbose = false
+    private val defaultMaxIndentLvl = RawTextParser.DEFAULT_INDENT_LVL
+    private val defaultTabWidth = null
 
     private fun addDoubleSpacedLines(indentationCounter: IndentationMetric) {
         indentationCounter.parseLine("    foo")
@@ -17,7 +27,7 @@ class IndentationMetricTest {
 
     @Test
     fun `should register indentation with tabs`() {
-        val indentationCounter = IndentationMetric()
+        val indentationCounter = IndentationMetric(defaultMaxIndentLvl, defaultVerbose, defaultTabWidth)
 
         indentationCounter.parseLine("\t\tfoo")
         indentationCounter.parseLine("\tfoo")
@@ -32,7 +42,7 @@ class IndentationMetricTest {
 
     @Test
     fun `should register indentation with spaces`() {
-        val indentationCounter = IndentationMetric()
+        val indentationCounter = IndentationMetric(defaultMaxIndentLvl, defaultVerbose, defaultTabWidth)
 
         indentationCounter.parseLine("  foo")
         indentationCounter.parseLine(" foo")
@@ -47,9 +57,14 @@ class IndentationMetricTest {
 
     @Test
     fun `should guess indentation width correctly`() {
-        val printContent = ByteArrayOutputStream()
-        val writer = PrintStream(printContent)
-        val indentationCounter = IndentationMetric(stderr = writer, verbose = true)
+        mockkObject(KotlinLogging)
+        val loggerMock = mockk<KLogger>()
+        val lambdaSlot = slot<(() -> Unit)>()
+        val messagesLogged = mutableListOf<String>()
+        every { KotlinLogging.logger(capture(lambdaSlot)) } returns loggerMock
+        every { loggerMock.info(capture(messagesLogged)) } returns Unit
+
+        val indentationCounter = IndentationMetric(defaultMaxIndentLvl, verbose = true, defaultTabWidth)
 
         addDoubleSpacedLines(indentationCounter)
         val result = indentationCounter.getValue().metricMap
@@ -57,14 +72,15 @@ class IndentationMetricTest {
         Assertions.assertThat(result["indentation_level_0+"]).isEqualTo(4.0)
         Assertions.assertThat(result["indentation_level_2+"]).isEqualTo(1.0)
         Assertions.assertThat(result["indentation_level_3+"]).isEqualTo(0.0)
-        Assertions.assertThat(printContent.toString()).contains("INFO: Assumed tab width to be 2")
+
+        verify { loggerMock.info(any<String>()) }
+        Assertions.assertThat(messagesLogged).contains("Assumed tab width to be 2")
     }
 
     @Test
     fun `should calculate indentations based on given tabWidth`() {
-        val indentationCounter = IndentationMetric(tabWidth = 1)
+        val indentationCounter = IndentationMetric(defaultMaxIndentLvl, defaultVerbose, tabWidth = 1)
 
-        //indentationCounter.setParameters(mapOf("tabWidth" to 1))
         addDoubleSpacedLines(indentationCounter)
         val result = indentationCounter.getValue().metricMap
 
@@ -74,23 +90,29 @@ class IndentationMetricTest {
 
     @Test
     fun `should correct invalid indentation levels`() {
-        val printContent = ByteArrayOutputStream()
-        val writer = PrintStream(printContent)
-        val indentationCounter = IndentationMetric(stderr = writer, tabWidth = 3)
+        mockkObject(KotlinLogging)
+        val loggerMock = mockk<KLogger>()
+        val lambdaSlot = slot<(() -> Unit)>()
+        val messagesLogged = mutableListOf<String>()
+        every { KotlinLogging.logger(capture(lambdaSlot)) } returns loggerMock
+        every { loggerMock.warn(capture(messagesLogged)) } returns Unit
 
-        //indentationCounter.setParameters(mapOf("tabWidth" to 3))
+        val indentationCounter = IndentationMetric(defaultMaxIndentLvl, defaultVerbose, tabWidth = 3)
+
         addDoubleSpacedLines(indentationCounter)
         val result = indentationCounter.getValue().metricMap
 
         Assertions.assertThat(result["indentation_level_2+"]).isEqualTo(1.0)
         Assertions.assertThat(result["indentation_level_1+"]).isEqualTo(3.0)
-        Assertions.assertThat(printContent.toString()).contains("WARN: Corrected mismatching indentations, moved 2 lines to indentation level 1+")
-        Assertions.assertThat(printContent.toString()).contains("WARN: Corrected mismatching indentations, moved 1 lines to indentation level 2+")
+
+        verify { loggerMock.warn(any<String>()) }
+        Assertions.assertThat(messagesLogged).contains("Corrected mismatching indentations, moved 2 lines to indentation level 1+")
+        Assertions.assertThat(messagesLogged).contains("Corrected mismatching indentations, moved 1 lines to indentation level 2+")
     }
 
     @Test
     fun `should consider maximum indentation levels`() {
-        val indentationCounter = IndentationMetric(maxIndentation = 2)
+        val indentationCounter = IndentationMetric(maxIndentation = 2, defaultVerbose, defaultTabWidth)
 
         indentationCounter.parseLine("\t\tfoo")
         indentationCounter.parseLine("\t\t\tfoo")
@@ -102,7 +124,7 @@ class IndentationMetricTest {
 
     @Test
     fun `should ignore lines that contain only spaces or tabs`() {
-        val indentationCounter = IndentationMetric()
+        val indentationCounter = IndentationMetric(defaultMaxIndentLvl, defaultVerbose, defaultTabWidth)
 
         indentationCounter.parseLine("\t\t")
         indentationCounter.parseLine("      ")
