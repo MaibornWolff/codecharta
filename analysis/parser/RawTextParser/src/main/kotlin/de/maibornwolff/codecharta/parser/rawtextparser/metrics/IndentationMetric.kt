@@ -1,15 +1,15 @@
 package de.maibornwolff.codecharta.parser.rawtextparser.metrics
 
 import de.maibornwolff.codecharta.parser.rawtextparser.model.FileMetrics
-import java.io.PrintStream
+import mu.KotlinLogging
 import java.lang.Integer.min
 
-class IndentationCounter(
-    private var maxIndentation: Int = 6,
-    private var verbose: Boolean = false,
-    private var tabWidth: Int = 0,
-    private var stderr: PrintStream = System.err
+class IndentationMetric(
+    private var maxIndentation: Int,
+    private var verbose: Boolean,
+    private var tabWidth: Int,
 ) : Metric {
+    private val logger = KotlinLogging.logger {}
 
     private val spaceIndentations = MutableList(maxIndentation * 8 + 1) { 0 }
     private val tabIndentations = MutableList(maxIndentation + 1) { 0 }
@@ -49,7 +49,9 @@ class IndentationCounter(
                 tabWidth = candidate
             }
         }
-        if (verbose) stderr.println("INFO: Assumed tab width to be $tabWidth")
+        if (verbose) {
+            logger.info("Assumed tab width to be $tabWidth")
+        }
         return tabWidth
     }
 
@@ -58,7 +60,7 @@ class IndentationCounter(
             if (i % tabWidth != 0 && spaceIndentations[i] > 0) {
                 val nextLevel: Int = i / tabWidth + 1
                 spaceIndentations[nextLevel * tabWidth] = spaceIndentations[nextLevel * tabWidth] + spaceIndentations[i]
-                stderr.println("WARN: Corrected mismatching indentations, moved ${spaceIndentations[i]} lines to indentation level $nextLevel+")
+                logger.warn("Corrected mismatching indentations, moved ${spaceIndentations[i]} lines to indentation level $nextLevel+")
                 spaceIndentations[i] = 0
             }
         }

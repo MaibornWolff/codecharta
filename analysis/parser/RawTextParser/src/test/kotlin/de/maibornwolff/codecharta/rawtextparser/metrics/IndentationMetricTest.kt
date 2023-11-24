@@ -1,14 +1,14 @@
 package de.maibornwolff.codecharta.rawtextparser.metrics
 
-import de.maibornwolff.codecharta.parser.rawtextparser.metrics.IndentationCounter
+import de.maibornwolff.codecharta.parser.rawtextparser.metrics.IndentationMetric
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 import java.io.ByteArrayOutputStream
 import java.io.PrintStream
 
-class IndentationCounterTest {
+class IndentationMetricTest {
 
-    private fun addDoubleSpacedLines(indentationCounter: IndentationCounter) {
+    private fun addDoubleSpacedLines(indentationCounter: IndentationMetric) {
         indentationCounter.parseLine("    foo")
         indentationCounter.parseLine("  foo")
         indentationCounter.parseLine("  foo")
@@ -17,7 +17,7 @@ class IndentationCounterTest {
 
     @Test
     fun `should register indentation with tabs`() {
-        val indentationCounter = IndentationCounter()
+        val indentationCounter = IndentationMetric()
 
         indentationCounter.parseLine("\t\tfoo")
         indentationCounter.parseLine("\tfoo")
@@ -32,7 +32,7 @@ class IndentationCounterTest {
 
     @Test
     fun `should register indentation with spaces`() {
-        val indentationCounter = IndentationCounter()
+        val indentationCounter = IndentationMetric()
 
         indentationCounter.parseLine("  foo")
         indentationCounter.parseLine(" foo")
@@ -49,7 +49,7 @@ class IndentationCounterTest {
     fun `should guess indentation width correctly`() {
         val printContent = ByteArrayOutputStream()
         val writer = PrintStream(printContent)
-        val indentationCounter = IndentationCounter(stderr = writer, verbose = true)
+        val indentationCounter = IndentationMetric(stderr = writer, verbose = true)
 
         addDoubleSpacedLines(indentationCounter)
         val result = indentationCounter.getValue().metricMap
@@ -62,7 +62,7 @@ class IndentationCounterTest {
 
     @Test
     fun `should calculate indentations based on given tabWidth`() {
-        val indentationCounter = IndentationCounter(tabWidth = 1)
+        val indentationCounter = IndentationMetric(tabWidth = 1)
 
         //indentationCounter.setParameters(mapOf("tabWidth" to 1))
         addDoubleSpacedLines(indentationCounter)
@@ -76,7 +76,7 @@ class IndentationCounterTest {
     fun `should correct invalid indentation levels`() {
         val printContent = ByteArrayOutputStream()
         val writer = PrintStream(printContent)
-        val indentationCounter = IndentationCounter(stderr = writer, tabWidth = 3)
+        val indentationCounter = IndentationMetric(stderr = writer, tabWidth = 3)
 
         //indentationCounter.setParameters(mapOf("tabWidth" to 3))
         addDoubleSpacedLines(indentationCounter)
@@ -90,7 +90,7 @@ class IndentationCounterTest {
 
     @Test
     fun `should consider maximum indentation levels`() {
-        val indentationCounter = IndentationCounter(maxIndentation = 2)
+        val indentationCounter = IndentationMetric(maxIndentation = 2)
 
         indentationCounter.parseLine("\t\tfoo")
         indentationCounter.parseLine("\t\t\tfoo")
@@ -102,7 +102,7 @@ class IndentationCounterTest {
 
     @Test
     fun `should ignore lines that contain only spaces or tabs`() {
-        val indentationCounter = IndentationCounter()
+        val indentationCounter = IndentationMetric()
 
         indentationCounter.parseLine("\t\t")
         indentationCounter.parseLine("      ")

@@ -1,6 +1,6 @@
 package de.maibornwolff.codecharta.parser.rawtextparser
 
-import de.maibornwolff.codecharta.parser.rawtextparser.metrics.IndentationCounter
+import de.maibornwolff.codecharta.parser.rawtextparser.metrics.IndentationMetric
 import de.maibornwolff.codecharta.parser.rawtextparser.metrics.Metric
 import de.maibornwolff.codecharta.parser.rawtextparser.model.FileMetrics
 import de.maibornwolff.codecharta.progresstracker.ParsingUnit
@@ -75,12 +75,9 @@ class MetricCollector(
 
     private fun parseFile(file: File): FileMetrics {
         //TODO remove next line later
-        val newTabWidth = tabWidth ?: 0
-        //maybe directly call the IndentationCounter with the correct values here?
-        //val metricsList = MetricsFactory.create(metrics, verbose, maxIndentLvl, tabWidth)
         val metricsList = mutableListOf<Metric>()
-        if (metrics.isEmpty() || metrics.any {it.equals(RawTextParser.METRIC_INDENT_LVL, ignoreCase = true)}) {
-            metricsList.add(IndentationCounter(maxIndentLvl, verbose, newTabWidth))
+        if (metrics.isEmpty() || metrics.any { it.equals(RawTextParser.METRIC_INDENT_LVL, ignoreCase = true) }) {
+            metricsList.add(IndentationMetric(maxIndentLvl, verbose, tabWidth ?: 0))
         }
 
         file
