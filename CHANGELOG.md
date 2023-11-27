@@ -23,6 +23,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 -   Add logging of absolute file paths of output files [#3414](https://github.com/MaibornWolff/codecharta/pull/3414)
 
+### Chore ‍👨‍💻 👩‍💻
+
+-   Upgraded to angular 16 [#3408](https://github.com/MaibornWolff/codecharta/pull/3408)
+
 ## [1.120.1] - 2023-11-17
 
 ### Removed 🗑
