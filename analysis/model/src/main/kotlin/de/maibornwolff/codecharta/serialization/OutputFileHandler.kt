@@ -24,7 +24,7 @@ object OutputFileHandler {
                                   if (compressed) FileExtension.GZIP.extension else String()
             FileExtension.CSV -> outputName
                     .removeSuffix(FileExtension.CSV.extension) +
-                                 FileExtension.CSV.extension
+                                  FileExtension.CSV.extension
             else -> throw IllegalArgumentException()
         }
     }

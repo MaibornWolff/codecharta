@@ -163,7 +163,7 @@ class Ccsh : Callable<Void?> {
                 val mergeArguments =
                         listOf(
                                 ccJsonFilePath,
-                                "--output-file=$outputFilePath+",
+                                "--output-file=$outputFilePath",
                                 "--not-compressed=true",
                                 "--add-missing=false",
                                 "--recursive=true",
