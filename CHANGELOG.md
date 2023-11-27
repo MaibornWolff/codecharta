@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   Fix RawTextParser producing incorrect output when no (or multiple) file extensions were specified in interactive mode [#3405](https://github.com/MaibornWolff/codecharta/pull/3405)
 -   Fix handling of empty inputs for the `--metrics`, `--exclude`, `--file-extensions` flags in the RawTextParser [#3415](https://github.com/MaibornWolff/codecharta/pull/3415)
 -   Fix the csv-exporter so that it exports multiple projects instead of just one when multiple projects are specified [#3414](https://github.com/MaibornWolff/codecharta/pull/3414)
+-   Fix file extensions of output files for merged projects [#3421](https://github.com/MaibornWolff/codecharta/pull/3421)
 
 ### Added 🚀
 
