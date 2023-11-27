@@ -97,6 +97,7 @@ describe("customConfigItemGroupComponent", () => {
 
 	it("should show tooltip with missing maps and correct selection mode if selected custom config is not fully applicable", async () => {
 		const customConfigItemGroups = new Map([["File_B_File_C_STANDARD", CUSTOM_CONFIG_ITEM_GROUPS.get("File_B_File_C_STANDARD")]])
+
 		const { rerender } = await render(CustomConfigItemGroupComponent, {
 			excludeComponentDeclaration: true,
 			componentProperties: { customConfigItemGroups }
@@ -107,6 +108,9 @@ describe("customConfigItemGroupComponent", () => {
 			assignedMaps: new Map([["md5_fileB", "fileB"]])
 		})
 		store.refreshState()
+
+		// Empty Component Input to rerender it completely
+		await rerender()
 		await rerender({ componentProperties: { customConfigItemGroups } })
 
 		const applyCustomConfigButton = screen.getAllByText("mcc")[0].closest("button")
@@ -136,6 +140,8 @@ describe("customConfigItemGroupComponent", () => {
 			assignedMaps: new Map([["md5_fileA", "fileA"]])
 		})
 		store.refreshState()
+		// Empty Component Input to rerender it completely
+		await rerender()
 		await rerender({ componentProperties: { customConfigItemGroups } })
 
 		const editNoteArea = screen.getAllByTitle("Edit/View Note")[0] as HTMLButtonElement
