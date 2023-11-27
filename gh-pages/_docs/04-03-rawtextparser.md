@@ -29,7 +29,7 @@ This parser analyzes code regardless of the programming language used to generat
 Usage: rawtextparser [-hv] [-nc] [--without-default-excludes]
                      [--max-indentation-level=<maxIndentLvl>]
                      [-o=<outputFile>] [--tab-width=<tabWidth>]
-                     [-e=<exclude>]... [-f=<fileExtensions>]... [-m
+                     [-e=<exclude>]... [-fe=<fileExtensions>]... [-m
                      [=<metrics>...]]... FILE or FOLDER
 ```
 
