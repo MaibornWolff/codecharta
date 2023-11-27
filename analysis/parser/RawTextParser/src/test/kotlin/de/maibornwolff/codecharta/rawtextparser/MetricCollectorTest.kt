@@ -1,14 +1,24 @@
 package de.maibornwolff.codecharta.rawtextparser
 
 import de.maibornwolff.codecharta.parser.rawtextparser.MetricCollector
+import de.maibornwolff.codecharta.parser.rawtextparser.RawTextParser
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 import java.io.File
 
 class MetricCollectorTest {
+
+    private val defaultVerbose = false
+    private val defaultMaxIndentLvl = RawTextParser.DEFAULT_INDENT_LVL
+    private val defaultTabWidth = null
     @Test
     fun `Should collect information about a single file`() {
-        val result = MetricCollector(File("src/test/resources/sampleproject/tabs.included").absoluteFile).parse()
+        val result = MetricCollector(
+                File("src/test/resources/sampleproject/tabs.included").absoluteFile,
+                verbose = defaultVerbose,
+                maxIndentLvl = defaultMaxIndentLvl,
+                tabWidth = defaultTabWidth
+        ).parse()
 
         Assertions.assertThat(result.size).isEqualTo(1)
         Assertions.assertThat(result).containsKey("/tabs.included")
@@ -17,7 +27,12 @@ class MetricCollectorTest {
 
     @Test
     fun `Should collect information about all files within a project`() {
-        val result = MetricCollector(File("src/test/resources/sampleproject").absoluteFile).parse()
+        val result = MetricCollector(
+                File("src/test/resources/sampleproject").absoluteFile,
+                verbose = defaultVerbose,
+                maxIndentLvl = defaultMaxIndentLvl,
+                tabWidth = defaultTabWidth
+        ).parse()
 
         Assertions.assertThat(result.size).isEqualTo(5)
         Assertions.assertThat(result).containsKey("/tabs.included")
@@ -27,14 +42,24 @@ class MetricCollectorTest {
 
     @Test
     fun `Should not process subfolders of projects`() {
-        val result = MetricCollector(File("src/test/resources/sampleproject").absoluteFile).parse()
+        val result = MetricCollector(
+                File("src/test/resources/sampleproject").absoluteFile,
+                verbose = defaultVerbose,
+                maxIndentLvl = defaultMaxIndentLvl,
+                tabWidth = defaultTabWidth
+        ).parse()
 
         Assertions.assertThat(result).doesNotContainKey("/spaces")
     }
 
     @Test
     fun `Should exclude regex patterns`() {
-        val result = MetricCollector(File("src/test/resources/sampleproject").absoluteFile, exclude = listOf(".*\\.excluded$", "foobar")).parse()
+        val result = MetricCollector(File("src/test/resources/sampleproject").absoluteFile,
+                exclude = listOf(".*\\.excluded$", "foobar"),
+                verbose = defaultVerbose,
+                maxIndentLvl = defaultMaxIndentLvl,
+                tabWidth = defaultTabWidth
+        ).parse()
 
         Assertions.assertThat(result.size).isEqualTo(4)
         Assertions.assertThat(result).containsKey("/spaces/spaces_3.included")
@@ -44,7 +69,12 @@ class MetricCollectorTest {
 
     @Test
     fun `Should include only specified File extensions`() {
-        val result = MetricCollector(File("src/test/resources/sampleproject").absoluteFile, fileExtensions = listOf("includedtoo")).parse()
+        val result = MetricCollector(File("src/test/resources/sampleproject").absoluteFile,
+                fileExtensions = listOf("includedtoo"),
+                verbose = defaultVerbose,
+                maxIndentLvl = defaultMaxIndentLvl,
+                tabWidth = defaultTabWidth
+        ).parse()
 
         Assertions.assertThat(result.size).isEqualTo(1)
         Assertions.assertThat(result).containsKey("/spaces/spaces_5.includedtoo")
@@ -54,7 +84,12 @@ class MetricCollectorTest {
 
     @Test
     fun `Should include only specified File extensions with multiple given`() {
-        val result = MetricCollector(File("src/test/resources/sampleproject").absoluteFile, fileExtensions = listOf("included", "includedtoo")).parse()
+        val result = MetricCollector(File("src/test/resources/sampleproject").absoluteFile,
+                fileExtensions = listOf("included", "includedtoo"),
+                verbose = defaultVerbose,
+                maxIndentLvl = defaultMaxIndentLvl,
+                tabWidth = defaultTabWidth
+        ).parse()
 
         Assertions.assertThat(result.size).isEqualTo(4)
         Assertions.assertThat(result).containsKey("/spaces/spaces_3.included")
@@ -65,14 +100,29 @@ class MetricCollectorTest {
 
     @Test
     fun `Should produce empty result if no valid file extensions were given`() {
-        val result = MetricCollector(File("src/test/resources/sampleproject").absoluteFile, fileExtensions = listOf("none")).parse()
+        val result = MetricCollector(File("src/test/resources/sampleproject").absoluteFile,
+                fileExtensions = listOf("none"),
+                verbose = defaultVerbose,
+                maxIndentLvl = defaultMaxIndentLvl,
+                tabWidth = defaultTabWidth
+        ).parse()
         Assertions.assertThat(result.size).isEqualTo(0)
     }
 
     @Test
     fun `Should produce the same result whether the user included a dot in the filetype or not`() {
-        val resultWithoutDot = MetricCollector(File("src/test/resources/sampleproject").absoluteFile, fileExtensions = listOf("included", "includedtoo")).parse()
-        val resultWithDot = MetricCollector(File("src/test/resources/sampleproject").absoluteFile, fileExtensions = listOf(".included", ".includedtoo")).parse()
+        val resultWithoutDot = MetricCollector(File("src/test/resources/sampleproject").absoluteFile,
+                fileExtensions = listOf("included", "includedtoo"),
+                verbose = defaultVerbose,
+                maxIndentLvl = defaultMaxIndentLvl,
+                tabWidth = defaultTabWidth
+        ).parse()
+        val resultWithDot = MetricCollector(File("src/test/resources/sampleproject").absoluteFile,
+                fileExtensions = listOf(".included", ".includedtoo"),
+                verbose = defaultVerbose,
+                maxIndentLvl = defaultMaxIndentLvl,
+                tabWidth = defaultTabWidth
+        ).parse()
 
         Assertions.assertThat(resultWithoutDot == resultWithDot)
     }
