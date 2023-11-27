@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Added 🚀
+
+-   Add logging of absolute file paths of output files [#3414](https://github.com/MaibornWolff/codecharta/pull/3414)
+
 ### Changed
 
 -   Changed short form of parameter `--file-extensions` of RawTextParser from `-f` to `-fe` [#3405](https://github.com/MaibornWolff/codecharta/pull/3405)
@@ -17,12 +21,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 -   Fix RawTextParser producing incorrect output when no (or multiple) file extensions were specified in interactive mode [#3405](https://github.com/MaibornWolff/codecharta/pull/3405)
 -   Fix handling of empty inputs for the `--metrics`, `--exclude`, `--file-extensions` flags in the RawTextParser [#3415](https://github.com/MaibornWolff/codecharta/pull/3415)
+-   Fix RawTextParser incorrectly setting max indentation level to a predefined value [#3419](https://github.com/MaibornWolff/codecharta/pull/3419)
 -   Fix the csv-exporter so that it exports multiple projects instead of just one when multiple projects are specified [#3414](https://github.com/MaibornWolff/codecharta/pull/3414)
 -   Fix file extensions of output files for merged projects [#3421](https://github.com/MaibornWolff/codecharta/pull/3421)
-
-### Added 🚀
-
--   Add logging of absolute file paths of output files [#3414](https://github.com/MaibornWolff/codecharta/pull/3414)
 
 ### Chore ‍👨‍💻 👩‍💻
 
