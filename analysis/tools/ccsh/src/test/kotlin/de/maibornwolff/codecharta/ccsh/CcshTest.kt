@@ -3,14 +3,18 @@ package de.maibornwolff.codecharta.ccsh
 import com.github.kinquirer.KInquirer
 import com.github.kinquirer.components.promptConfirm
 import com.github.kinquirer.components.promptInput
+import de.maibornwolff.codecharta.importer.sourcecodeparser.SourceCodeParserMain
 import de.maibornwolff.codecharta.tools.ccsh.Ccsh
 import de.maibornwolff.codecharta.tools.ccsh.parser.InteractiveParserSuggestionDialog
 import de.maibornwolff.codecharta.tools.ccsh.parser.ParserService
 import io.mockk.every
+import io.mockk.mockk
 import io.mockk.mockkObject
 import io.mockk.mockkStatic
 import io.mockk.unmockkAll
 import io.mockk.verify
+import mu.KLogger
+import mu.KotlinLogging
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.AfterEach
@@ -19,6 +23,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import picocli.CommandLine
 import java.io.ByteArrayOutputStream
+import java.io.File
 import java.io.PrintStream
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -42,7 +47,7 @@ class CcshTest {
         System.setErr(originalErr)
     }
 
-    @AfterAll
+    @AfterEach
     fun afterTest() {
         unmockkAll()
     }
@@ -233,5 +238,36 @@ class CcshTest {
         Assertions.assertThat(exitCode).isZero()
         Assertions.assertThat(errContent.toString())
                 .contains("Parser was successfully executed.")
+    }
+
+    @Test
+    fun `should log the correct absolute path of the output file when asked to merge results`() {
+        // when
+        val folderPath = "src/test/resources"
+        val outputFilePath = "$folderPath/mergedResult.cc.json.gz"
+        val absoluteOutputFilePath = File(outputFilePath).absolutePath
+        val outputFile = File(outputFilePath)
+        outputFile.deleteOnExit()
+        val multipleConfiguredParsers = mapOf("dummyParser1" to listOf("dummyArg1", "dummyArg2"), "dummyParser2" to listOf("dummyArg1", "dummyArg2"))
+
+        val loggerMock = mockk<KLogger>()
+        val infoMessagesLogged = mutableListOf<String>()
+        mockkObject(KotlinLogging)
+        every { KotlinLogging.logger(any<(() -> Unit)>()) } returns loggerMock
+        every { loggerMock.info(capture(infoMessagesLogged)) } returns Unit
+
+        mockKInquirerConfirm(true)
+
+        mockkStatic("com.github.kinquirer.components.InputKt")
+        every {
+            KInquirer.promptInput(any(), any(), any(), any(), any())
+        } returns folderPath
+
+        // when
+        Ccsh.executeConfiguredParsers(cmdLine, multipleConfiguredParsers)
+
+        // then
+        verify { loggerMock.info(any<String>()) }
+        Assertions.assertThat(infoMessagesLogged.any { e -> e.endsWith(absoluteOutputFilePath) }).isTrue()
     }
 }
