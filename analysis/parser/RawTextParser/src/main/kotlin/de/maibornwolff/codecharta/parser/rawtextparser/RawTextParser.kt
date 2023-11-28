@@ -35,7 +35,7 @@ class RawTextParser(
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
 
-    @CommandLine.Option(names = ["-v", "--verbose"], description = ["verbose mode"])
+    @CommandLine.Option(names = ["--verbose"], description = ["verbose mode"])
     private var verbose = false
 
     @CommandLine.Parameters(arity = "1", paramLabel = "FILE or FOLDER", description = ["file/project to parse"])
@@ -45,6 +45,7 @@ class RawTextParser(
         arity = "0..",
         names = ["-m", "--metrics"],
         description = ["metrics to be computed (select all if not specified)"],
+        paramLabel = "metrics",
         converter = [(CommaSeparatedStringToListConverter::class)]
     )
     private var metricNames: List<String> = listOf()
@@ -56,7 +57,7 @@ class RawTextParser(
     private var compress = true
 
     @CommandLine.Option(names = ["--tab-width"], description = ["tab width used (estimated if not provided)"])
-    private var tabWidth: Int? = null
+    private var tabWidth: Int = DEFAULT_TAB_WIDTH
 
     @CommandLine.Option(names = ["--max-indentation-level"], description = ["maximum Indentation Level (default 10)"])
     private var maxIndentLvl: Int = DEFAULT_INDENT_LVL
@@ -88,7 +89,7 @@ class RawTextParser(
         const val DESCRIPTION = "generates cc.json from projects or source code files"
 
         const val DEFAULT_INDENT_LVL = 10
-        const val METRIC_INDENT_LVL = "IndentationLevel"
+        const val DEFAULT_TAB_WIDTH = -1
 
         @JvmStatic
         fun mainWithInOut(outputStream: PrintStream, input: InputStream, error: PrintStream, args: Array<String>) {
