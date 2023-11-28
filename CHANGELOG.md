@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   Fix handling of empty inputs for the `--metrics`, `--exclude`, `--file-extensions` flags in the RawTextParser [#3415](https://github.com/MaibornWolff/codecharta/pull/3415)
 -   Fix RawTextParser incorrectly setting max indentation level to a predefined value [#3419](https://github.com/MaibornWolff/codecharta/pull/3419)
 -   Fix the csv-exporter so that it exports multiple projects instead of just one when multiple projects are specified [#3414](https://github.com/MaibornWolff/codecharta/pull/3414)
+-   Fix file extensions of output files for merged projects [#3421](https://github.com/MaibornWolff/codecharta/pull/3421)
 
 ### Chore ‍👨‍💻 👩‍💻
 
