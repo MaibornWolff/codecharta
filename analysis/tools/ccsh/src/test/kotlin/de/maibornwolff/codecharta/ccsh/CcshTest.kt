@@ -3,7 +3,6 @@ package de.maibornwolff.codecharta.ccsh
 import com.github.kinquirer.KInquirer
 import com.github.kinquirer.components.promptConfirm
 import com.github.kinquirer.components.promptInput
-import de.maibornwolff.codecharta.importer.sourcecodeparser.SourceCodeParserMain
 import de.maibornwolff.codecharta.tools.ccsh.Ccsh
 import de.maibornwolff.codecharta.tools.ccsh.parser.InteractiveParserSuggestionDialog
 import de.maibornwolff.codecharta.tools.ccsh.parser.ParserService
@@ -16,7 +15,6 @@ import io.mockk.verify
 import mu.KLogger
 import mu.KotlinLogging
 import org.assertj.core.api.Assertions
-import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -268,7 +266,6 @@ class CcshTest {
 
         // when
         val exitCode = Ccsh.executeCommandLine(emptyArray())
-
 
         // then
         Assertions.assertThat(exitCode).isZero()
