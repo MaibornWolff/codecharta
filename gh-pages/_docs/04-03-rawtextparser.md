@@ -23,14 +23,15 @@ This parser analyzes code regardless of the programming language used to generat
 | `-m, --metrics[=<metrics>...]`           | metrics to be computed (select all if not specified)                                               |
 | `-o, --output-file=<outputFile>`         | output File (or empty for stdout)                                                                  |
 | `-nc, --not-compressed`                  | uncompresses outputfile to json format, if format of File is gzip                                  |
-| `-v, --verbose`                          | verbose mode                                                                                       |
+| `--verbose`                              | verbose mode                                                                                       |
 
 ```
-Usage: rawtextparser [-hv] [-nc] [--without-default-excludes]
+Usage: rawtextparser [-h] [-nc] [--verbose] [--without-default-excludes]
                      [--max-indentation-level=<maxIndentLvl>]
                      [-o=<outputFile>] [--tab-width=<tabWidth>]
                      [-e=<exclude>]... [-fe=<fileExtensions>]... [-m
-                     [=<metrics>...]]... FILE or FOLDER
+                     [=<metricNames>...]]... FILE or FOLDER
+
 ```
 
 generates cc.json from projects or source code files

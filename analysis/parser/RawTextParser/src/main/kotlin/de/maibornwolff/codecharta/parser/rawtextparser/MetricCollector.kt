@@ -14,12 +14,12 @@ import java.util.concurrent.ConcurrentHashMap
 
 class MetricCollector(
     private var root: File,
-    private val exclude: List<String> = listOf(),
-    private val fileExtensions: List<String> = listOf(),
-    private val metricNames: List<String> = listOf(),
+    private val exclude: List<String>,
+    private val fileExtensions: List<String>,
+    private val metricNames: List<String>,
     private val verbose: Boolean,
     private val maxIndentLvl: Int,
-    private val tabWidth: Int?
+    private val tabWidth: Int
 ) {
 
     private var excludePatterns: Regex = exclude.joinToString(separator = "|", prefix = "(", postfix = ")").toRegex()
@@ -72,7 +72,7 @@ class MetricCollector(
 
     private fun parseFile(file: File): FileMetrics {
         val metrics = mutableListOf<Metric>()
-        if (metricNames.isEmpty() || metricNames.any { it.equals(RawTextParser.METRIC_INDENT_LVL, ignoreCase = true) }) {
+        if (metricNames.isEmpty() || metricNames.any { it.equals("IndentationLevel", ignoreCase = true) }) {
             metrics.add(IndentationMetric(maxIndentLvl, verbose, tabWidth))
         }
 

@@ -9,20 +9,19 @@ This parser analyzes code regardless of the programming language used to generat
 ## Parameters
 
 ```
-Usage: rawtextparser [-hv] [-nc] [--without-default-excludes]
-                          [--max-indentation-level=<maxIndentLvl>]
-                          [-o=<outputFile>] [--tab-width=<tabWidth>]
-                          [-e=<exclude>]... [-fe=<fileExtensions>[\s*,
-                          \s*<fileExtensions>...]]... [-m[=<metrics>...]]...
-                          FILE or FOLDER
+Usage: rawtextparser [-h] [-nc] [--verbose] [--without-default-excludes]
+                     [--max-indentation-level=<maxIndentLvl>]
+                     [-o=<outputFile>] [--tab-width=<tabWidth>]
+                     [-e=<exclude>]... [-fe=<fileExtensions>]... [-m
+                     [=<metricNames>...]]... FILE or FOLDER
 generates cc.json from projects or source code files
       FILE or FOLDER        file/project to parse
   -e, --exclude=<exclude>   exclude file/folder according to regex pattern
-      -fe, --file-extensions=<fileExtensions>[\s*,\s*<fileExtensions>...]
+      -fe, --file-extensions=<fileExtensions>
                             parse only files with specified extensions
                               (default: any)
   -h, --help                displays this help and exits
-  -m, --metrics[=<metrics>...]
+  -m, --metrics[=<metricNames>...]
                             metrics to be computed (select all if not specified)
       --max-indentation-level=<maxIndentLvl>
                             maximum Indentation Level (default 10)
@@ -31,7 +30,7 @@ generates cc.json from projects or source code files
                             output File (or empty for stdout)
       --tab-width=<tabWidth>
                             tab width used (estimated if not provided)
-  -v, --verbose             verbose mode
+      --verbose             verbose mode
       --without-default-excludes
                             include build, target, dist, resources and out
                               folders as well as files/folders starting with

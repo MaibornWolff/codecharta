@@ -8,32 +8,46 @@ import java.io.File
 
 class MetricCollectorTest {
 
+    private val defaultExclude = listOf<String>()
+    private val defaultFileExtensions = listOf<String>()
+    private val defaultMetricNames = listOf<String>()
     private val defaultVerbose = false
     private val defaultMaxIndentLvl = RawTextParser.DEFAULT_INDENT_LVL
-    private val defaultTabWidth = null
+    private val defaultTabWidth = RawTextParser.DEFAULT_TAB_WIDTH
+
     @Test
-    fun `Should collect information about a single file`() {
+    fun `Should correctly collect information when given a single file as input`() {
+        // when
         val result = MetricCollector(
                 File("src/test/resources/sampleproject/tabs.included").absoluteFile,
-                verbose = defaultVerbose,
-                maxIndentLvl = defaultMaxIndentLvl,
-                tabWidth = defaultTabWidth
+                defaultExclude,
+                defaultFileExtensions,
+                defaultMetricNames,
+                defaultVerbose,
+                defaultMaxIndentLvl,
+                defaultTabWidth
         ).parse()
 
+        // then
         Assertions.assertThat(result.size).isEqualTo(1)
         Assertions.assertThat(result).containsKey("/tabs.included")
         Assertions.assertThat(result["/tabs.included"]?.metricMap).isNotEmpty
     }
 
     @Test
-    fun `Should collect information about all files within a project`() {
+    fun `Should correctly collect information about all files when a folder was given as input`() {
+        // when
         val result = MetricCollector(
                 File("src/test/resources/sampleproject").absoluteFile,
-                verbose = defaultVerbose,
-                maxIndentLvl = defaultMaxIndentLvl,
-                tabWidth = defaultTabWidth
+                defaultExclude,
+                defaultFileExtensions,
+                defaultMetricNames,
+                defaultVerbose,
+                defaultMaxIndentLvl,
+                defaultTabWidth
         ).parse()
 
+        // then
         Assertions.assertThat(result.size).isEqualTo(5)
         Assertions.assertThat(result).containsKey("/tabs.included")
         Assertions.assertThat(result).containsKey("/spaces/spaces_3.included")
@@ -41,26 +55,35 @@ class MetricCollectorTest {
     }
 
     @Test
-    fun `Should not process subfolders of projects`() {
+    fun `Should not include folders (only files) when given a folder as input`() {
+        // when
         val result = MetricCollector(
                 File("src/test/resources/sampleproject").absoluteFile,
-                verbose = defaultVerbose,
-                maxIndentLvl = defaultMaxIndentLvl,
-                tabWidth = defaultTabWidth
+                defaultExclude,
+                defaultFileExtensions,
+                defaultMetricNames,
+                defaultVerbose,
+                defaultMaxIndentLvl,
+                defaultTabWidth
         ).parse()
 
+        // then
         Assertions.assertThat(result).doesNotContainKey("/spaces")
     }
 
     @Test
-    fun `Should exclude regex patterns`() {
+    fun `Should exclude matching files when regex patterns were given`() {
+        // when
         val result = MetricCollector(File("src/test/resources/sampleproject").absoluteFile,
                 exclude = listOf(".*\\.excluded$", "foobar"),
-                verbose = defaultVerbose,
-                maxIndentLvl = defaultMaxIndentLvl,
-                tabWidth = defaultTabWidth
+                defaultFileExtensions,
+                defaultMetricNames,
+                defaultVerbose,
+                defaultMaxIndentLvl,
+                defaultTabWidth
         ).parse()
 
+        // then
         Assertions.assertThat(result.size).isEqualTo(4)
         Assertions.assertThat(result).containsKey("/spaces/spaces_3.included")
         Assertions.assertThat(result).containsKey("/spaces/spaces_5.includedtoo")
@@ -68,14 +91,18 @@ class MetricCollectorTest {
     }
 
     @Test
-    fun `Should include only specified File extensions`() {
+    fun `Should only include file extensions when they were specified`() {
+        // when
         val result = MetricCollector(File("src/test/resources/sampleproject").absoluteFile,
+                defaultExclude,
                 fileExtensions = listOf("includedtoo"),
-                verbose = defaultVerbose,
-                maxIndentLvl = defaultMaxIndentLvl,
-                tabWidth = defaultTabWidth
+                defaultMetricNames,
+                defaultVerbose,
+                defaultMaxIndentLvl,
+                defaultTabWidth
         ).parse()
 
+        // then
         Assertions.assertThat(result.size).isEqualTo(1)
         Assertions.assertThat(result).containsKey("/spaces/spaces_5.includedtoo")
         Assertions.assertThat(result).doesNotContainKey("/spaces/spaces_3.included")
@@ -83,14 +110,18 @@ class MetricCollectorTest {
     }
 
     @Test
-    fun `Should include only specified File extensions with multiple given`() {
+    fun `Should include only specified file extensions when multiple are given`() {
+        // when
         val result = MetricCollector(File("src/test/resources/sampleproject").absoluteFile,
+                defaultExclude,
                 fileExtensions = listOf("included", "includedtoo"),
-                verbose = defaultVerbose,
-                maxIndentLvl = defaultMaxIndentLvl,
-                tabWidth = defaultTabWidth
+                defaultMetricNames,
+                defaultVerbose,
+                defaultMaxIndentLvl,
+                defaultTabWidth
         ).parse()
 
+        // then
         Assertions.assertThat(result.size).isEqualTo(4)
         Assertions.assertThat(result).containsKey("/spaces/spaces_3.included")
         Assertions.assertThat(result).containsKey("/spaces/spaces_4.included")
@@ -99,31 +130,42 @@ class MetricCollectorTest {
     }
 
     @Test
-    fun `Should produce empty result if no valid file extensions were given`() {
+    fun `Should produce empty result when no valid file extensions were given`() {
+        // when
         val result = MetricCollector(File("src/test/resources/sampleproject").absoluteFile,
+                defaultExclude,
                 fileExtensions = listOf("none"),
-                verbose = defaultVerbose,
-                maxIndentLvl = defaultMaxIndentLvl,
-                tabWidth = defaultTabWidth
+                defaultMetricNames,
+                defaultVerbose,
+                defaultMaxIndentLvl,
+                defaultTabWidth
         ).parse()
+
+        // then
         Assertions.assertThat(result.size).isEqualTo(0)
     }
 
     @Test
     fun `Should produce the same result whether the user included a dot in the filetype or not`() {
+        // when
         val resultWithoutDot = MetricCollector(File("src/test/resources/sampleproject").absoluteFile,
+                defaultExclude,
                 fileExtensions = listOf("included", "includedtoo"),
-                verbose = defaultVerbose,
-                maxIndentLvl = defaultMaxIndentLvl,
-                tabWidth = defaultTabWidth
+                defaultMetricNames,
+                defaultVerbose,
+                defaultMaxIndentLvl,
+                defaultTabWidth
         ).parse()
         val resultWithDot = MetricCollector(File("src/test/resources/sampleproject").absoluteFile,
+                defaultExclude,
                 fileExtensions = listOf(".included", ".includedtoo"),
-                verbose = defaultVerbose,
-                maxIndentLvl = defaultMaxIndentLvl,
-                tabWidth = defaultTabWidth
+                defaultMetricNames,
+                defaultVerbose,
+                defaultMaxIndentLvl,
+                defaultTabWidth
         ).parse()
 
+        // then
         Assertions.assertThat(resultWithoutDot == resultWithDot)
     }
 }

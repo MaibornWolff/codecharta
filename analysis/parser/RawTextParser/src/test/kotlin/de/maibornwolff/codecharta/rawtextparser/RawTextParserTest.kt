@@ -49,29 +49,55 @@ class RawTextParserTest {
         }
     }
 
+    private fun executeForOutput(input: String, args: Array<String> = emptyArray()) =
+            outputAsString(input) { inputStream, outputStream, errorStream ->
+                mainWithInOut(outputStream, inputStream, errorStream, args)
+            }
+
+    private fun outputAsString(input: String, aMethod: (input: InputStream, output: PrintStream, error: PrintStream) -> Unit) =
+            outputAsString(ByteArrayInputStream(input.toByteArray()), aMethod)
+
+    private fun outputAsString(
+            inputStream: InputStream = System.`in`,
+            aMethod: (input: InputStream, output: PrintStream, error: PrintStream) -> Unit
+    ) =
+            ByteArrayOutputStream().use { baOutputStream ->
+                PrintStream(baOutputStream).use { outputStream ->
+                    aMethod(inputStream, outputStream, System.err)
+                }
+                baOutputStream.toString()
+            }
+
     @Test
-    fun `should be able to process single file`() {
+    fun `should produce correct output when given single file`() {
+        // given
         val expectedResultFile = File("src/test/resources/cc_projects/project_3.cc.json").absoluteFile
 
+        // when
         val result = executeForOutput("", arrayOf("src/test/resources/sampleproject/tabs.included"))
 
+        // then
         JSONAssert.assertEquals(result, expectedResultFile.readText(), JSONCompareMode.NON_EXTENSIBLE)
     }
 
     @Test
-    fun `should process project and pass on parameters`() {
+    fun `should produce correct output when given a folder and specific parameters`() {
+        // given
         val expectedResultFile = File("src/test/resources/cc_projects/project_4.cc.json").absoluteFile
 
+        // when
         val result = executeForOutput(
             "",
             arrayOf("src/test/resources/sampleproject/", "--tab-width=2", "--max-indentation-level=2", "-e=tabs*.")
         )
 
+        // then
         JSONAssert.assertEquals(result, expectedResultFile.readText(), JSONCompareMode.NON_EXTENSIBLE)
     }
 
     @Test
-    fun `should merge with piped project`() {
+    fun `should correctly merge when piped into another project`() {
+        // given
         val pipedProject = "src/test/resources/cc_projects/project_4.cc.json"
         val partialResult = "src/test/resources/cc_projects/project_3.cc.json"
         val fileToParse = "src/test/resources/sampleproject/tabs.included"
@@ -79,84 +105,79 @@ class RawTextParserTest {
         val partialProject1 = ProjectDeserializer.deserializeProject(File(partialResult).inputStream())
         val partialProject2 = ProjectDeserializer.deserializeProject(File(pipedProject).inputStream())
         val expected = ByteArrayOutputStream()
+
+        // when
         ProjectSerializer.serializeProject(
             MergeFilter.mergePipedWithCurrentProject(partialProject2, partialProject1),
             OutputStreamWriter(PrintStream(expected))
         )
-
         val result = executeForOutput(input, arrayOf(fileToParse))
 
+        // then
         JSONAssert.assertEquals(result, expected.toString(), JSONCompareMode.NON_EXTENSIBLE)
     }
 
-    fun executeForOutput(input: String, args: Array<String> = emptyArray()) =
-        outputAsString(input) { inputStream, outputStream, errorStream ->
-            mainWithInOut(outputStream, inputStream, errorStream, args)
-        }
-
-    fun outputAsString(input: String, aMethod: (input: InputStream, output: PrintStream, error: PrintStream) -> Unit) =
-        outputAsString(ByteArrayInputStream(input.toByteArray()), aMethod)
-
-    fun outputAsString(
-        inputStream: InputStream = System.`in`,
-        aMethod: (input: InputStream, output: PrintStream, error: PrintStream) -> Unit
-    ) =
-        ByteArrayOutputStream().use { baOutputStream ->
-            PrintStream(baOutputStream).use { outputStream ->
-                aMethod(inputStream, outputStream, System.err)
-            }
-            baOutputStream.toString()
-        }
-
     @ParameterizedTest
     @MethodSource("provideValidInputFiles")
-    fun `should be identified as applicable for given directory path containing a source code file`(resourceToBeParsed: String) {
+    fun `should be identified as applicable when given directory path contains a source code file`(resourceToBeParsed: String) {
+        // when
         val isUsable = RawTextParser().isApplicable(resourceToBeParsed)
+        // then
         Assertions.assertThat(isUsable).isTrue()
     }
 
     @Test
-    fun `should be identified as applicable for given path being a file`() {
+    fun `should be identified as applicable when given path is a file`() {
+        // when
         val isUsable = RawTextParser().isApplicable("src/test/resources/sampleproject/tabs.included")
+        // then
         Assertions.assertThat(isUsable).isTrue()
     }
 
     @Test
-    fun `should NOT be identified as applicable if given directory does not contain any source code file `() {
+    fun `should NOT be identified as applicable when given directory does not contain any source code file `() {
+        // given
         val emptyFolderPath = "src/test/resources/empty"
         val nonExistentPath = "src/test/resources/this/does/not/exist"
         // Empty String is invalid because File("") generates an empty abstract pathname which does not physically exist
         val emptyString = ""
-
         val emptyFolder = File(emptyFolderPath)
         emptyFolder.mkdir()
         emptyFolder.deleteOnExit()
 
+        // when
         val isEmptyPathApplicable = RawTextParser().isApplicable(emptyFolderPath)
         val isNonExistentPathApplicable = RawTextParser().isApplicable(nonExistentPath)
         val isEmptyStringApplicable = RawTextParser().isApplicable(emptyString)
 
+        // then
         Assertions.assertThat(isEmptyPathApplicable).isFalse()
         Assertions.assertThat(isNonExistentPathApplicable).isFalse()
         Assertions.assertThat(isEmptyStringApplicable).isFalse()
     }
 
     @Test
-    fun `should stop execution if input files are invalid`() {
+    fun `should stop execution when input files are invalid`() {
+        // given
         mockkObject(InputHelper)
         every {
             InputHelper.isInputValid(any(), any())
         } returns false
-
         System.setErr(PrintStream(errContent))
-        CommandLine(RawTextParser()).execute("thisDoesNotExist.cc.json").toString()
-        System.setErr(originalErr)
 
+        // when
+        CommandLine(RawTextParser()).execute("thisDoesNotExist.cc.json").toString()
+
+        // then
         Assertions.assertThat(errContent.toString()).contains("Input invalid file for RawTextParser, stopping execution")
+
+        // clean up
+        System.setErr(originalErr)
     }
 
     @Test
-    fun `Should not produce an output and notify the user if the only specified extension was not found in the folder`() {
+    fun `Should not produce an output and notify the user when the only specified extension was not found in the folder`() {
+        // given
         mockkObject(KotlinLogging)
         val loggerMock = mockk<KLogger>()
         val lambdaSlot = slot<(() -> Unit)>()
@@ -164,16 +185,18 @@ class RawTextParserTest {
         every { KotlinLogging.logger(capture(lambdaSlot)) } returns loggerMock
         every { loggerMock.error(capture(messagesLogged)) } returns Unit
 
+        // when
         val result = executeForOutput("", arrayOf("src/test/resources/sampleproject/", "--file-extensions=invalid"))
 
+        // then
         Assertions.assertThat(result).isEmpty()
-
-        verify { loggerMock.error(any<String>()) }
         Assertions.assertThat(messagesLogged).contains("No files with specified file extension(s) were found within the given folder - not generating an output file!")
+        verify { loggerMock.error(any<String>()) }
     }
 
     @Test
-    fun `Should warn the user if one of the specified extensions was not found in the folder`() {
+    fun `Should warn the user when one of the specified extensions was not found in the folder`() {
+        // given
         mockkObject(KotlinLogging)
         val loggerMock = mockk<KLogger>()
         val lambdaSlot = slot<(() -> Unit)>()
@@ -181,15 +204,18 @@ class RawTextParserTest {
         every { KotlinLogging.logger(capture(lambdaSlot)) } returns loggerMock
         every { loggerMock.warn(capture(messagesLogged)) } returns Unit
 
+        // when
         val result = executeForOutput("", arrayOf("src/test/resources/sampleproject", "--file-extensions=invalid, included"))
 
+        // then
         Assertions.assertThat(result).isNotEmpty()
         Assertions.assertThat(messagesLogged).contains("The specified file extension 'invalid' was not found within the given folder!")
         Assertions.assertThat(messagesLogged).doesNotContain("The specified file extension 'included' was not found within the given folder!")
     }
 
     @Test
-    fun `Should not produce an output and notify the user if none of the specified extensions were found in the folder`() {
+    fun `Should not produce an output and notify the user when none of the specified extensions were found in the folder`() {
+        // given
         mockkObject(KotlinLogging)
         val loggerMock = mockk<KLogger>()
         val lambdaSlot = slot<(() -> Unit)>()
@@ -197,36 +223,47 @@ class RawTextParserTest {
         every { KotlinLogging.logger(capture(lambdaSlot)) } returns loggerMock
         every { loggerMock.error(capture(messagesLogged)) } returns Unit
 
+        // when
         val result = executeForOutput("", arrayOf("src/test/resources/sampleproject/", "--file-extensions=invalid1, invalid2, also_invalid"))
 
+        // then
         Assertions.assertThat(result).isEmpty()
         Assertions.assertThat(messagesLogged).contains("No files with specified file extension(s) were found within the given folder - not generating an output file!")
     }
 
     @Test
     fun `Should include all metrics when metrics-flag is empty string (default in interactive mode)`() {
+        // given
         val expectedResultFile = File("src/test/resources/cc_projects/project_3.cc.json").absoluteFile
 
+        // when
         val result = executeForOutput("", arrayOf("src/test/resources/sampleproject/tabs.included", "--metrics="))
 
+        // then
         JSONAssert.assertEquals(result, expectedResultFile.readText(), JSONCompareMode.NON_EXTENSIBLE)
     }
 
     @Test
     fun `Should include all files when exclude-regex-flag is empty string (default in interactive mode)`() {
+        // given
         val expectedResultFile = File("src/test/resources/cc_projects/project_5.cc.json").absoluteFile
 
+        // when
         val result = executeForOutput("", arrayOf("src/test/resources/sampleproject/", "--exclude="))
 
+        // then
         JSONAssert.assertEquals(result, expectedResultFile.readText(), JSONCompareMode.NON_EXTENSIBLE)
     }
 
     @Test
     fun `Should include all files when file-extensions-flag is empty string (default in interactive mode)`() {
+        // given
         val expectedResultFile = File("src/test/resources/cc_projects/project_5.cc.json").absoluteFile
 
+        // when
         val result = executeForOutput("", arrayOf("src/test/resources/sampleproject/", "--file-extensions="))
 
+        // then
         JSONAssert.assertEquals(result, expectedResultFile.readText(), JSONCompareMode.NON_EXTENSIBLE)
     }
 }
