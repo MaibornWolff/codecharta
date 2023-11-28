@@ -104,35 +104,47 @@ class CcshTest {
     }
 
     @Test
-    fun `should convert arguments to kebab-case`() {
+    fun `should convert all arguments to snake-case when given arguments`() {
+        // given
         val outStream = ByteArrayOutputStream()
         val originalErr = System.err
         System.setErr(PrintStream(outStream))
+
+        // when
         val exitCode = Ccsh.executeCommandLine(arrayOf("edgefilter", ".", "--defaultExcludesS=AbC"))
 
-        Assertions.assertThat(exitCode).isNotZero
+        // then
+        Assertions.assertThat(exitCode).isNotZero()
         Assertions.assertThat(outStream.toString()).contains("--default-excludes-s=AbC")
+
+        // clean up
         System.setErr(originalErr)
     }
 
     @Test
-    fun `should just show help message`() {
+    fun `should only show help message when executed with help flag`() {
+        // given
         mockkObject(ParserService)
         val outStream = ByteArrayOutputStream()
         val originalOut = System.out
         System.setOut(PrintStream(outStream))
 
+        // when
         val exitCode = Ccsh.executeCommandLine(arrayOf("-h"))
 
+        // then
         Assertions.assertThat(exitCode).isEqualTo(0)
         Assertions.assertThat(outStream.toString())
             .contains("Usage: ccsh [-hiv] [COMMAND]", "Command Line Interface for CodeCharta analysis")
         verify(exactly = 0) { ParserService.executePreconfiguredParser(any(), any()) }
+
+        // clean up
         System.setOut(originalOut)
     }
 
     @Test
     fun `should execute parser suggestions and all selected parsers when no options are passed`() {
+        // given
         val selectedParsers = listOf("parser1", "parser2")
         val args = listOf(listOf("dummyArg1"), listOf("dummyArg2"))
 
@@ -145,20 +157,25 @@ class CcshTest {
             KInquirer.promptInput(any(), any(), any(), any(), any())
         } returns "dummy/path"
 
+        // when
         val exitCode = Ccsh.executeCommandLine(emptyArray())
-        Assertions.assertThat(exitCode).isZero
 
+        // then
+        Assertions.assertThat(exitCode).isZero
         // 3 because 2 parsers and the merge in the end
         verify(exactly = 3) { ParserService.executePreconfiguredParser(any(), any()) }
     }
 
     @Test
     fun `should only execute parsers when configuration was successful`() {
+        // given
         mockInteractiveParserSuggestionDialog(emptyList(), emptyList())
         mockSuccessfulParserService()
 
+        // when
         val exitCode = Ccsh.executeCommandLine(emptyArray())
 
+        // then
         Assertions.assertThat(exitCode == 0).isTrue()
         verify(exactly = 0) { ParserService.executeSelectedParser(any(), any()) }
         verify(exactly = 0) { ParserService.executePreconfiguredParser(any(), any()) }
@@ -166,6 +183,7 @@ class CcshTest {
 
     @Test
     fun `should only execute parsers when user does confirm execution`() {
+        // given
         val selectedParsers = listOf("parser1", "parser2")
         val args = listOf(listOf("dummyArg1"), listOf("dummyArg2"))
 
@@ -173,59 +191,74 @@ class CcshTest {
         mockSuccessfulParserService()
         mockKInquirerConfirm(false)
 
+        // when
         val exitCode = Ccsh.executeCommandLine(emptyArray())
 
+        // then
         Assertions.assertThat(exitCode == 0).isTrue()
         verify(exactly = 0) { ParserService.executeSelectedParser(any(), any()) }
         verify(exactly = 0) { ParserService.executePreconfiguredParser(any(), any()) }
     }
 
     @Test
-    fun `should continue executing parsers even if there is an error while executing one`() {
+    fun `should continue executing parsers even when one parser throws an error`() {
+        // given
         mockUnsuccessfulParserService()
-
         val dummyConfiguredParsers =
                 mapOf("dummyParser1" to listOf("dummyArg1", "dummyArg2"),
                         "dummyParser2" to listOf("dummyArg1", "dummyArg2"))
+
+        // when
         Ccsh.executeConfiguredParsers(cmdLine, dummyConfiguredParsers)
 
+        // then
         verify(exactly = 2) { ParserService.executePreconfiguredParser(any(), any()) }
         verify(exactly = 0) { ParserService.executeSelectedParser(any(), any()) }
     }
 
     @Test
     fun `should execute interactive parser when passed parser is unknown`() {
+        // given
         mockSuccessfulParserService()
 
+        // when
         val exitCode = Ccsh.executeCommandLine(arrayOf("unknownparser"))
-        Assertions.assertThat(exitCode).isZero
 
+        // then
+        Assertions.assertThat(exitCode).isZero
         verify { ParserService.executeSelectedParser(any(), any()) }
     }
 
     @Test
     fun `should execute interactive parser when -i option is passed`() {
+        // given
         mockSuccessfulParserService()
 
+        // when
         val exitCode = Ccsh.executeCommandLine(arrayOf("-i"))
-        Assertions.assertThat(exitCode).isZero
 
+        // then
+        Assertions.assertThat(exitCode).isZero
         verify { ParserService.executeSelectedParser(any(), any()) }
     }
 
     @Test
     fun `should execute the selected interactive parser when only called with name and no args`() {
+        // given
         mockSuccessfulParserService()
 
+        // when
         val exitCode = Ccsh.executeCommandLine(arrayOf("sonarimport"))
 
+        // then
         Assertions.assertThat(exitCode).isEqualTo(0)
         Assertions.assertThat(errContent.toString())
                 .contains("Executing sonarimport")
     }
 
     @Test
-    fun `should not ask for merging results after using parser suggestions if only one parser was executed`() {
+    fun `should not ask for merging results after using parser suggestions when only one parser was executed`() {
+        // given
         val selectedParsers = listOf("parser1")
         val args = listOf(listOf("dummyArg1"))
 
@@ -233,16 +266,19 @@ class CcshTest {
         mockSuccessfulParserService()
         mockKInquirerConfirm(true)
 
+        // when
         val exitCode = Ccsh.executeCommandLine(emptyArray())
 
+
+        // then
         Assertions.assertThat(exitCode).isZero()
         Assertions.assertThat(errContent.toString())
                 .contains("Parser was successfully executed.")
     }
 
     @Test
-    fun `should log the correct absolute path of the output file when asked to merge results`() {
-        // when
+    fun `should log the absolute path of the merged output file when asked to merge results`() {
+        // given
         val folderPath = "src/test/resources"
         val outputFilePath = "$folderPath/mergedResult.cc.json.gz"
         val absoluteOutputFilePath = File(outputFilePath).absolutePath
@@ -267,7 +303,7 @@ class CcshTest {
         Ccsh.executeConfiguredParsers(cmdLine, multipleConfiguredParsers)
 
         // then
-        verify { loggerMock.info(any<String>()) }
         Assertions.assertThat(infoMessagesLogged.any { e -> e.endsWith(absoluteOutputFilePath) }).isTrue()
+        verify { loggerMock.info(any<String>()) }
     }
 }
