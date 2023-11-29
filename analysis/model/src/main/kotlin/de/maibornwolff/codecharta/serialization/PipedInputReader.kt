@@ -1,7 +1,6 @@
 package de.maibornwolff.codecharta.serialization
 
 import java.io.InputStream
-import java.util.Scanner
 
 fun <R> InputStream.mapLines(transform: (String) -> R): List<R> {
     val result = mutableListOf<R>()
@@ -19,10 +18,9 @@ fun <R> InputStream.mapLines(transform: (String) -> R): List<R> {
 // sign to wait. In order to give the preceding command time to send this blank, we wait for some time before
 // checking the availability of the InputStream.
 fun InputStream.forEachLine(action: (String) -> Unit) {
-    val scanner = Scanner(this)
+    val reader = bufferedReader()
     Thread.sleep(1000)
-    if (available() <= 0) return // Otherwise it will get stuck waiting for user input
-    while (scanner.hasNext()) {
-        action(scanner.nextLine())
+    while (reader.ready()) {
+        action(reader.readLine())
     }
 }
