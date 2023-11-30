@@ -10,13 +10,13 @@ fun <R> InputStream.mapLines(transform: (String) -> R): List<R> {
     return result
 }
 
-// Bash runs commands in a pipe chain in parallel. This means that the input may not be available/complete at the
-// time of reading it.
-// The ccsh commands need to determine whether there is piped input or not. If there is, it should wait until the
-// input is complete. To indicate that there will be a piped project, the filters/importers of ccsh send a blank to
-// their OutputStream as soon as they start. This is detected by potentially following commands and is taken as a
-// sign to wait. In order to give the preceding command time to send this blank, we wait for some time before
-// checking the availability of the InputStream.
+/*
+Bash runs commands concurrently in a pipe chain, causing potential delays in input availability.
+For ccsh commands, they check for piped input and wait until it's complete.
+To signal piped projects, ccsh filters/importers send a blank to OutputStream at the start.
+Subsequent commands detect this blank as a cue to wait.
+To allow time for the preceding command to send the blank, a brief delay precedes InputStream availability checks.
+*/
 fun InputStream.forEachLine(action: (String) -> Unit) {
     val reader = bufferedReader()
     Thread.sleep(1000)
