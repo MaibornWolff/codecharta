@@ -1,6 +1,5 @@
 package de.maibornwolff.codecharta.parser.rawtextparser
 
-import de.maibornwolff.codecharta.parser.rawtextparser.metrics.FileMetrics
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser

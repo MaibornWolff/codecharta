@@ -2,18 +2,31 @@ package de.maibornwolff.codecharta.rawtextparser
 
 import de.maibornwolff.codecharta.parser.rawtextparser.MetricCollector
 import de.maibornwolff.codecharta.parser.rawtextparser.RawTextParser
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.mockkObject
+import io.mockk.slot
+import io.mockk.unmockkAll
+import io.mockk.verify
+import mu.KLogger
+import mu.KotlinLogging
 import org.assertj.core.api.Assertions
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
 import java.io.File
 
 class MetricCollectorTest {
-
     private val defaultExclude = listOf<String>()
     private val defaultFileExtensions = listOf<String>()
     private val defaultMetricNames = listOf<String>()
     private val defaultVerbose = false
     private val defaultMaxIndentLvl = RawTextParser.DEFAULT_INDENT_LVL
     private val defaultTabWidth = RawTextParser.DEFAULT_TAB_WIDTH
+
+    @AfterEach
+    fun afterTest() {
+        unmockkAll()
+    }
 
     @Test
     fun `Should correctly collect information when given a single file as input`() {
@@ -167,5 +180,60 @@ class MetricCollectorTest {
 
         // then
         Assertions.assertThat(resultWithoutDot == resultWithDot)
+    }
+
+    @Test
+    fun `Should produce output with empty attributes when given invalid metrics only`() {
+        // given
+        val inputPath = "src/test/resources/sampleproject"
+        val inputFile = File(inputPath)
+        val invalidMetricName = "invalidMetric"
+        val metricNames = listOf(invalidMetricName)
+
+        // when
+        val result = MetricCollector(
+                inputFile,
+                defaultExclude,
+                defaultFileExtensions,
+                metricNames,
+                defaultVerbose,
+                defaultMaxIndentLvl,
+                defaultTabWidth
+        ).parse()
+
+        // then
+        Assertions.assertThat(result.values.stream().allMatch { it.metricMap.isEmpty() }).isTrue()
+    }
+
+    @Test
+    fun `Should produce warning logs when given invalid metrics`() {
+        // given
+        val inputPath = "src/test/resources/sampleproject"
+        val inputFile = File(inputPath)
+        val validMetricName = "IndentationLevel"
+        val invalidMetricName = "invalidMetric"
+        val metricNames = listOf(validMetricName, invalidMetricName)
+
+        mockkObject(KotlinLogging)
+        val loggerMock = mockk<KLogger>()
+        val lambdaSlot = slot<(() -> Unit)>()
+        val warningMessagesLogged = mutableListOf<String>()
+        every { KotlinLogging.logger(capture(lambdaSlot)) } returns loggerMock
+        every { loggerMock.warn(capture(warningMessagesLogged)) } returns Unit
+
+        // when
+        val result = MetricCollector(
+                inputFile,
+                defaultExclude,
+                defaultFileExtensions,
+                metricNames,
+                defaultVerbose,
+                defaultMaxIndentLvl,
+                defaultTabWidth
+        ).parse()
+
+        // then
+        verify { loggerMock.warn(any<String>()) }
+        Assertions.assertThat(warningMessagesLogged.any { it.contains(invalidMetricName) }).isTrue()
     }
 }

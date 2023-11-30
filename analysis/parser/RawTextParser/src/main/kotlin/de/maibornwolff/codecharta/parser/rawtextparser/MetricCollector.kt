@@ -2,7 +2,6 @@ package de.maibornwolff.codecharta.parser.rawtextparser
 
 import de.maibornwolff.codecharta.parser.rawtextparser.metrics.IndentationMetric
 import de.maibornwolff.codecharta.parser.rawtextparser.metrics.Metric
-import de.maibornwolff.codecharta.parser.rawtextparser.metrics.FileMetrics
 import de.maibornwolff.codecharta.progresstracker.ParsingUnit
 import de.maibornwolff.codecharta.progresstracker.ProgressTracker
 import kotlinx.coroutines.Dispatchers
@@ -23,12 +22,11 @@ class MetricCollector(
     private val tabWidth: Int
 ) {
 
-    private var excludePatterns: Regex = exclude.joinToString(separator = "|", prefix = "(", postfix = ")").toRegex()
-
-    private var filesParsed = 0L
     private var totalFiles = 0L
-    private val progressTracker: ProgressTracker = ProgressTracker()
+    private var filesParsed = 0L
     private val parsingUnit = ParsingUnit.Files
+    private val progressTracker: ProgressTracker = ProgressTracker()
+    private var excludePatterns: Regex = exclude.joinToString(separator = "|", prefix = "(", postfix = ")").toRegex()
 
     private val logger = KotlinLogging.logger {}
 
@@ -36,16 +34,8 @@ class MetricCollector(
         var lastFileName = ""
         val projectMetrics = ConcurrentHashMap<String, FileMetrics>()
 
-        val metrics = mutableListOf<Metric>()
-        if (metricNames.isEmpty() || metricNames.any { it.equals(IndentationMetric.NAME, ignoreCase = true) }) {
-            metrics.add(IndentationMetric(maxIndentLvl, verbose, tabWidth))
-        }
-
-        for (metricName in metricNames) {
-            if (metricName !in metrics.map { it.name }) {
-                logger.warn("Metric $metricName is invalid and not included in the output")
-            }
-        }
+        val metrics = createMetricsFromMetricNames()
+        logWarningsForInvalidMetrics(metrics)
 
         runBlocking(Dispatchers.Default) {
             val files = root.walk().asSequence()
@@ -72,6 +62,22 @@ class MetricCollector(
         logProgress(lastFileName, totalFiles)
 
         return projectMetrics
+    }
+
+    private fun createMetricsFromMetricNames(): MutableList<Metric> {
+        val metrics = mutableListOf<Metric>()
+        if (metricNames.isEmpty() || metricNames.any { it.equals(IndentationMetric.NAME, ignoreCase = true) }) {
+            metrics.add(IndentationMetric(maxIndentLvl, verbose, tabWidth))
+        }
+        return metrics
+    }
+
+    private fun logWarningsForInvalidMetrics(metrics: List<Metric>) {
+        for (metricName in metricNames) {
+            if (metricName !in metrics.map { it.name }) {
+                logger.warn("Metric $metricName is invalid and not included in the output")
+            }
+        }
     }
 
     private fun isParsableFileExtension(path: String): Boolean {

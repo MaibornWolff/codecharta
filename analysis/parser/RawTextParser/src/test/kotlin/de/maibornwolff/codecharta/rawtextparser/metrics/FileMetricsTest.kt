@@ -1,6 +1,6 @@
-package de.maibornwolff.codecharta.rawtextparser.model
+package de.maibornwolff.codecharta.rawtextparser.metrics
 
-import de.maibornwolff.codecharta.parser.rawtextparser.metrics.FileMetrics
+import de.maibornwolff.codecharta.parser.rawtextparser.FileMetrics
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 
