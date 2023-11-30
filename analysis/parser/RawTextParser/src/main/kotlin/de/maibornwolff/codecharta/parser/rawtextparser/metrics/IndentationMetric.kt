@@ -14,9 +14,6 @@ class IndentationMetric(
     private val spaceIndentations = MutableList(maxIndentation * 8 + 1) { 0 }
     private val tabIndentations = MutableList(maxIndentation + 1) { 0 }
 
-    override val name = NAME
-    override val description = "Number of lines with an indentation level of at least x"
-
     companion object {
         const val NAME = "IndentationLevel"
     }
