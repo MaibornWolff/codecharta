@@ -7,7 +7,6 @@ import de.maibornwolff.codecharta.progresstracker.ProgressTracker
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import mu.KotlinLogging
 import java.io.File
 import java.nio.file.Paths
 
@@ -26,8 +25,6 @@ class ProjectMetricsCollector(
     private val parsingUnit = ParsingUnit.Files
     private val progressTracker: ProgressTracker = ProgressTracker()
     private var excludePatterns: Regex = exclude.joinToString(separator = "|", prefix = "(", postfix = ")").toRegex()
-
-    private val logger = KotlinLogging.logger {}
 
     fun parseProject(): ProjectMetrics {
         var lastFileName = ""
@@ -71,8 +68,7 @@ class ProjectMetricsCollector(
 
     private fun isParsableFileExtension(path: String): Boolean {
         return fileExtensions.isEmpty() ||
-               fileExtensions.contains(path.substringAfterLast(".")) ||
-               fileExtensions.contains(".${path.substringAfterLast(".")}")
+               fileExtensions.contains(path.substringAfterLast("."))
     }
 
     private fun isPathExcluded(path: String): Boolean {
