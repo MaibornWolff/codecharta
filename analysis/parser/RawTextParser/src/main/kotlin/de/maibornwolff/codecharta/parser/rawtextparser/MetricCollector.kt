@@ -34,9 +34,6 @@ class MetricCollector(
         var lastFileName = ""
         val projectMetrics = ConcurrentHashMap<String, FileMetrics>()
 
-        val metrics = createMetricsFromMetricNames()
-        logWarningsForInvalidMetrics(metrics)
-
         runBlocking(Dispatchers.Default) {
             val files = root.walk().asSequence()
                 .filter { it.isFile }
@@ -53,13 +50,15 @@ class MetricCollector(
                     ) {
                         filesParsed++
                         logProgress(it.name, filesParsed)
-                        projectMetrics[standardizedPath] = parseFile(it, metrics)
+                        projectMetrics[standardizedPath] = parseFile(it)
                         lastFileName = it.name
                     }
                 }
             }
         }
+
         logProgress(lastFileName, totalFiles)
+        logWarningsForInvalidMetrics(projectMetrics)
 
         return projectMetrics
     }
@@ -72,9 +71,9 @@ class MetricCollector(
         return metrics
     }
 
-    private fun logWarningsForInvalidMetrics(metrics: List<Metric>) {
+    private fun logWarningsForInvalidMetrics(projectMetrics: ConcurrentHashMap<String, FileMetrics>) {
         for (metricName in metricNames) {
-            if (metricName !in metrics.map { it.name }) {
+            if (metricName !in projectMetrics.values.map { it.metricMap.keys }.flatten()) {
                 logger.warn("Metric $metricName is invalid and not included in the output")
             }
         }
@@ -90,7 +89,8 @@ class MetricCollector(
         return exclude.isNotEmpty() && excludePatterns.containsMatchIn(path)
     }
 
-    private fun parseFile(file: File, metrics: List<Metric>): FileMetrics {
+    private fun parseFile(file: File): FileMetrics {
+        val metrics = createMetricsFromMetricNames()
         file
             .bufferedReader()
             .useLines { lines -> lines.forEach { line -> metrics.forEach { it.parseLine(line) } } }
