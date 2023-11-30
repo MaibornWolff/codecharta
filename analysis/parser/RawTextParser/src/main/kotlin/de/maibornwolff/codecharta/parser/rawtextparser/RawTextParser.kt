@@ -6,6 +6,7 @@ import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import de.maibornwolff.codecharta.tools.interactiveparser.util.CodeChartaConstants
 import de.maibornwolff.codecharta.util.CommaSeparatedStringToListConverter
+import de.maibornwolff.codecharta.util.FileExtensionConverter
 import de.maibornwolff.codecharta.util.InputHelper
 import mu.KotlinLogging
 import picocli.CommandLine
@@ -70,7 +71,7 @@ class RawTextParser(
     @CommandLine.Option(
         names = ["-fe", "--file-extensions"],
         description = ["parseProject only files with specified extensions (default: any)"],
-        converter = [(CommaSeparatedStringToListConverter::class)]
+        converter = [(FileExtensionConverter::class)]
     )
     private var fileExtensions: List<String> = listOf()
 
