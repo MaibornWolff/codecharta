@@ -2,7 +2,7 @@ package de.maibornwolff.codecharta.rawtextparser
 
 import com.google.gson.JsonParser
 import de.maibornwolff.codecharta.parser.rawtextparser.ProjectGenerator
-import de.maibornwolff.codecharta.parser.rawtextparser.model.FileMetrics
+import de.maibornwolff.codecharta.parser.rawtextparser.metrics.FileMetrics
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import org.assertj.core.api.Assertions

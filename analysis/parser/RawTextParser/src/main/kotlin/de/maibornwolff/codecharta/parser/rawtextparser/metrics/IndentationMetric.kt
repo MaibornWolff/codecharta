@@ -1,6 +1,5 @@
 package de.maibornwolff.codecharta.parser.rawtextparser.metrics
 
-import de.maibornwolff.codecharta.parser.rawtextparser.model.FileMetrics
 import mu.KotlinLogging
 import java.lang.Integer.min
 
@@ -14,8 +13,12 @@ class IndentationMetric(
     private val spaceIndentations = MutableList(maxIndentation * 8 + 1) { 0 }
     private val tabIndentations = MutableList(maxIndentation + 1) { 0 }
 
-    override val name = "IndentationLevel"
+    override val name = NAME
     override val description = "Number of lines with an indentation level of at least x"
+
+    companion object {
+        const val NAME = "IndentationLevel"
+    }
 
     // TODO no mixed tab/ space possible at line start?
     override fun parseLine(line: String) {
