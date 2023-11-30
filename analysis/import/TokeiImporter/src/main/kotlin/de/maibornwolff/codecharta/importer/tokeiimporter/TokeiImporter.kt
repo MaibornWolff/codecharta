@@ -9,7 +9,7 @@ import de.maibornwolff.codecharta.model.AttributeType
 import de.maibornwolff.codecharta.model.AttributeTypes
 import de.maibornwolff.codecharta.model.ProjectBuilder
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
-import de.maibornwolff.codecharta.serialization.mapLines
+import de.maibornwolff.codecharta.serialization.readNonBlockingInput
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import de.maibornwolff.codecharta.tools.interactiveparser.util.CodeChartaConstants
@@ -125,7 +125,7 @@ class TokeiImporter(
                 }
             } else {
                 launch {
-                    val projectString: String = input.mapLines { it }.joinToString(separator = "") { it }
+                    val projectString: String = input.readNonBlockingInput()
                     if (projectString.isNotEmpty()) {
                         root = JsonParser.parseString(projectString)
                     } else {
