@@ -9,9 +9,9 @@ import de.maibornwolff.codecharta.model.ProjectBuilder
 class ProjectGenerator() {
     private lateinit var projectBuilder: ProjectBuilder
 
-    fun generate(metricMap: Map<String, FileMetrics>, pipedProject: Project?): Project {
+    fun generate(projectMetrics: ProjectMetrics, pipedProject: Project?): Project {
         projectBuilder = ProjectBuilder()
-        metricMap.forEach { addAsNode(it) }
+        projectMetrics.metricsMap.forEach { addAsNode(it) }
         var project = projectBuilder.build()
         if (pipedProject != null) {
             project = MergeFilter.mergePipedWithCurrentProject(pipedProject, project)
@@ -27,7 +27,7 @@ class ProjectGenerator() {
             fileName = metrics.key.substringAfterLast("/")
         }
 
-        val node = MutableNode(fileName, attributes = metrics.value.metricMap)
+        val node = MutableNode(fileName, attributes = metrics.value.metricsMap)
         val path = PathFactory.fromFileSystemPath(directory)
         projectBuilder.insertByPath(path, node)
     }

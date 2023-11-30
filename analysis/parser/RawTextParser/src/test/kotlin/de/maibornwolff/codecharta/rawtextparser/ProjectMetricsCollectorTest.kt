@@ -1,21 +1,14 @@
 package de.maibornwolff.codecharta.rawtextparser
 
-import de.maibornwolff.codecharta.parser.rawtextparser.MetricCollector
+import de.maibornwolff.codecharta.parser.rawtextparser.ProjectMetricsCollector
 import de.maibornwolff.codecharta.parser.rawtextparser.RawTextParser
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.mockkObject
-import io.mockk.slot
 import io.mockk.unmockkAll
-import io.mockk.verify
-import mu.KLogger
-import mu.KotlinLogging
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
 import java.io.File
 
-class MetricCollectorTest {
+class ProjectMetricsCollectorTest {
     private val defaultExclude = listOf<String>()
     private val defaultFileExtensions = listOf<String>()
     private val defaultMetricNames = listOf<String>()
@@ -31,7 +24,7 @@ class MetricCollectorTest {
     @Test
     fun `Should correctly collect information when given a single file as input`() {
         // when
-        val result = MetricCollector(
+        val projectMetrics = ProjectMetricsCollector(
                 File("src/test/resources/sampleproject/tabs.included").absoluteFile,
                 defaultExclude,
                 defaultFileExtensions,
@@ -39,18 +32,18 @@ class MetricCollectorTest {
                 defaultVerbose,
                 defaultMaxIndentLvl,
                 defaultTabWidth
-        ).parse()
+                                            ).parseProject()
 
         // then
-        Assertions.assertThat(result.size).isEqualTo(1)
-        Assertions.assertThat(result).containsKey("/tabs.included")
-        Assertions.assertThat(result["/tabs.included"]?.metricMap).isNotEmpty
+        Assertions.assertThat(projectMetrics.metricsMap.size).isEqualTo(1)
+        Assertions.assertThat(projectMetrics.metricsMap).containsKey("/tabs.included")
+        Assertions.assertThat(projectMetrics.metricsMap["/tabs.included"]?.metricsMap).isNotEmpty
     }
 
     @Test
     fun `Should correctly collect information about all files when a folder was given as input`() {
         // when
-        val result = MetricCollector(
+        val projectMetrics = ProjectMetricsCollector(
                 File("src/test/resources/sampleproject").absoluteFile,
                 defaultExclude,
                 defaultFileExtensions,
@@ -58,19 +51,19 @@ class MetricCollectorTest {
                 defaultVerbose,
                 defaultMaxIndentLvl,
                 defaultTabWidth
-        ).parse()
+                                            ).parseProject()
 
         // then
-        Assertions.assertThat(result.size).isEqualTo(5)
-        Assertions.assertThat(result).containsKey("/tabs.included")
-        Assertions.assertThat(result).containsKey("/spaces/spaces_3.included")
-        Assertions.assertThat(result["/tabs.included"]?.metricMap).isNotEmpty
+        Assertions.assertThat(projectMetrics.metricsMap.size).isEqualTo(5)
+        Assertions.assertThat(projectMetrics.metricsMap).containsKey("/tabs.included")
+        Assertions.assertThat(projectMetrics.metricsMap).containsKey("/spaces/spaces_3.included")
+        Assertions.assertThat(projectMetrics.metricsMap["/tabs.included"]?.metricsMap).isNotEmpty
     }
 
     @Test
     fun `Should not include folders (only files) when given a folder as input`() {
         // when
-        val result = MetricCollector(
+        val projectMetrics = ProjectMetricsCollector(
                 File("src/test/resources/sampleproject").absoluteFile,
                 defaultExclude,
                 defaultFileExtensions,
@@ -78,105 +71,105 @@ class MetricCollectorTest {
                 defaultVerbose,
                 defaultMaxIndentLvl,
                 defaultTabWidth
-        ).parse()
+                                                    ).parseProject()
 
         // then
-        Assertions.assertThat(result).doesNotContainKey("/spaces")
+        Assertions.assertThat(projectMetrics.metricsMap).doesNotContainKey("/spaces")
     }
 
     @Test
     fun `Should exclude matching files when regex patterns were given`() {
         // when
-        val result = MetricCollector(File("src/test/resources/sampleproject").absoluteFile,
+        val projectMetrics = ProjectMetricsCollector(File("src/test/resources/sampleproject").absoluteFile,
                 exclude = listOf(".*\\.excluded$", "foobar"),
                 defaultFileExtensions,
                 defaultMetricNames,
                 defaultVerbose,
                 defaultMaxIndentLvl,
                 defaultTabWidth
-        ).parse()
+                                                    ).parseProject()
 
         // then
-        Assertions.assertThat(result.size).isEqualTo(4)
-        Assertions.assertThat(result).containsKey("/spaces/spaces_3.included")
-        Assertions.assertThat(result).containsKey("/spaces/spaces_5.includedtoo")
-        Assertions.assertThat(result).doesNotContainKey("/spaces/spaces_x_not_included.excluded")
+        Assertions.assertThat(projectMetrics.metricsMap.size).isEqualTo(4)
+        Assertions.assertThat(projectMetrics.metricsMap).containsKey("/spaces/spaces_3.included")
+        Assertions.assertThat(projectMetrics.metricsMap).containsKey("/spaces/spaces_5.includedtoo")
+        Assertions.assertThat(projectMetrics.metricsMap).doesNotContainKey("/spaces/spaces_x_not_included.excluded")
     }
 
     @Test
     fun `Should only include file extensions when they were specified`() {
         // when
-        val result = MetricCollector(File("src/test/resources/sampleproject").absoluteFile,
+        val projectMetrics = ProjectMetricsCollector(File("src/test/resources/sampleproject").absoluteFile,
                 defaultExclude,
                 fileExtensions = listOf("includedtoo"),
                 defaultMetricNames,
                 defaultVerbose,
                 defaultMaxIndentLvl,
                 defaultTabWidth
-        ).parse()
+                                                    ).parseProject()
 
         // then
-        Assertions.assertThat(result.size).isEqualTo(1)
-        Assertions.assertThat(result).containsKey("/spaces/spaces_5.includedtoo")
-        Assertions.assertThat(result).doesNotContainKey("/spaces/spaces_3.included")
-        Assertions.assertThat(result).doesNotContainKey("tabs.included")
+        Assertions.assertThat(projectMetrics.metricsMap.size).isEqualTo(1)
+        Assertions.assertThat(projectMetrics.metricsMap).containsKey("/spaces/spaces_5.includedtoo")
+        Assertions.assertThat(projectMetrics.metricsMap).doesNotContainKey("/spaces/spaces_3.included")
+        Assertions.assertThat(projectMetrics.metricsMap).doesNotContainKey("tabs.included")
     }
 
     @Test
     fun `Should include only specified file extensions when multiple are given`() {
         // when
-        val result = MetricCollector(File("src/test/resources/sampleproject").absoluteFile,
+        val projectMetrics = ProjectMetricsCollector(File("src/test/resources/sampleproject").absoluteFile,
                 defaultExclude,
                 fileExtensions = listOf("included", "includedtoo"),
                 defaultMetricNames,
                 defaultVerbose,
                 defaultMaxIndentLvl,
                 defaultTabWidth
-        ).parse()
+                                                    ).parseProject()
 
         // then
-        Assertions.assertThat(result.size).isEqualTo(4)
-        Assertions.assertThat(result).containsKey("/spaces/spaces_3.included")
-        Assertions.assertThat(result).containsKey("/spaces/spaces_4.included")
-        Assertions.assertThat(result).containsKey("/spaces/spaces_5.includedtoo")
-        Assertions.assertThat(result).doesNotContainKey("/spaces/spaces_x_not_included.excluded")
+        Assertions.assertThat(projectMetrics.metricsMap.size).isEqualTo(4)
+        Assertions.assertThat(projectMetrics.metricsMap).containsKey("/spaces/spaces_3.included")
+        Assertions.assertThat(projectMetrics.metricsMap).containsKey("/spaces/spaces_4.included")
+        Assertions.assertThat(projectMetrics.metricsMap).containsKey("/spaces/spaces_5.includedtoo")
+        Assertions.assertThat(projectMetrics.metricsMap).doesNotContainKey("/spaces/spaces_x_not_included.excluded")
     }
 
     @Test
     fun `Should produce empty result when no valid file extensions were given`() {
         // when
-        val result = MetricCollector(File("src/test/resources/sampleproject").absoluteFile,
+        val projectMetrics = ProjectMetricsCollector(File("src/test/resources/sampleproject").absoluteFile,
                 defaultExclude,
                 fileExtensions = listOf("none"),
                 defaultMetricNames,
                 defaultVerbose,
                 defaultMaxIndentLvl,
                 defaultTabWidth
-        ).parse()
+                                                    ).parseProject()
 
         // then
-        Assertions.assertThat(result.size).isEqualTo(0)
+        Assertions.assertThat(projectMetrics.metricsMap.size).isEqualTo(0)
     }
 
     @Test
     fun `Should produce the same result whether the user included a dot in the filetype or not`() {
         // when
-        val resultWithoutDot = MetricCollector(File("src/test/resources/sampleproject").absoluteFile,
+        val resultWithoutDot = ProjectMetricsCollector(File("src/test/resources/sampleproject").absoluteFile,
                 defaultExclude,
                 fileExtensions = listOf("included", "includedtoo"),
                 defaultMetricNames,
                 defaultVerbose,
                 defaultMaxIndentLvl,
                 defaultTabWidth
-        ).parse()
-        val resultWithDot = MetricCollector(File("src/test/resources/sampleproject").absoluteFile,
+                                                      ).parseProject()
+        val resultWithDot = ProjectMetricsCollector(File("src/test/resources/sampleproject").absoluteFile,
                 defaultExclude,
                 fileExtensions = listOf(".included", ".includedtoo"),
                 defaultMetricNames,
                 defaultVerbose,
                 defaultMaxIndentLvl,
                 defaultTabWidth
-        ).parse()
+                                                   ).parseProject()
 
         // then
         Assertions.assertThat(resultWithoutDot == resultWithDot)
@@ -191,7 +184,7 @@ class MetricCollectorTest {
         val metricNames = listOf(invalidMetricName)
 
         // when
-        val result = MetricCollector(
+        val projectMetrics = ProjectMetricsCollector(
                 inputFile,
                 defaultExclude,
                 defaultFileExtensions,
@@ -199,41 +192,9 @@ class MetricCollectorTest {
                 defaultVerbose,
                 defaultMaxIndentLvl,
                 defaultTabWidth
-        ).parse()
+                                                    ).parseProject()
 
         // then
-        Assertions.assertThat(result.values.stream().allMatch { it.metricMap.isEmpty() }).isTrue()
-    }
-
-    @Test
-    fun `Should produce warning logs when given invalid metrics`() {
-        // given
-        val inputPath = "src/test/resources/sampleproject"
-        val inputFile = File(inputPath)
-        val validMetricName = "IndentationLevel"
-        val invalidMetricName = "invalidMetric"
-        val metricNames = listOf(validMetricName, invalidMetricName)
-
-        mockkObject(KotlinLogging)
-        val loggerMock = mockk<KLogger>()
-        val lambdaSlot = slot<(() -> Unit)>()
-        val warningMessagesLogged = mutableListOf<String>()
-        every { KotlinLogging.logger(capture(lambdaSlot)) } returns loggerMock
-        every { loggerMock.warn(capture(warningMessagesLogged)) } returns Unit
-
-        // when
-        val result = MetricCollector(
-                inputFile,
-                defaultExclude,
-                defaultFileExtensions,
-                metricNames,
-                defaultVerbose,
-                defaultMaxIndentLvl,
-                defaultTabWidth
-        ).parse()
-
-        // then
-        verify { loggerMock.warn(any<String>()) }
-        Assertions.assertThat(warningMessagesLogged.any { it.contains(invalidMetricName) }).isTrue()
+        Assertions.assertThat(projectMetrics.metricsMap.values.stream().allMatch { it.metricsMap.isEmpty() }).isTrue()
     }
 }

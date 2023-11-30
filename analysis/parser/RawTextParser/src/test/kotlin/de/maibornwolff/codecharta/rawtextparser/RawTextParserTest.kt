@@ -266,4 +266,26 @@ class RawTextParserTest {
         // then
         JSONAssert.assertEquals(result, expectedResultFile.readText(), JSONCompareMode.NON_EXTENSIBLE)
     }
+
+    @Test
+    fun `Should produce warning logs when given invalid metrics`() {
+        // given
+        val inputFilePath = "src/test/resources/sampleproject"
+        val validMetricName = "IndentationLevel"
+        val invalidMetricName = "invalidMetric"
+
+        mockkObject(KotlinLogging)
+        val loggerMock = mockk<KLogger>()
+        val lambdaSlot = slot<(() -> Unit)>()
+        val warningMessagesLogged = mutableListOf<String>()
+        every { KotlinLogging.logger(capture(lambdaSlot)) } returns loggerMock
+        every { loggerMock.warn(capture(warningMessagesLogged)) } returns Unit
+
+        // when
+        val result = executeForOutput("", arrayOf(inputFilePath, "--metrics=$validMetricName, $invalidMetricName"))
+
+        // then
+        verify { loggerMock.warn(any<String>()) }
+        Assertions.assertThat(warningMessagesLogged.any { it.contains(invalidMetricName) }).isTrue()
+    }
 }

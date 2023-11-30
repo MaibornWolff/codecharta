@@ -35,7 +35,7 @@ class IndentationMetricTest {
         indentationCounter.parseLine("\tfoo")
         indentationCounter.parseLine("\tfoo")
         indentationCounter.parseLine("foo")
-        val result = indentationCounter.getValue().metricMap
+        val result = indentationCounter.getValue().metricsMap
 
         // then
         Assertions.assertThat(result["indentation_level_0+"]).isEqualTo(4.0)
@@ -53,7 +53,7 @@ class IndentationMetricTest {
         indentationCounter.parseLine(" foo")
         indentationCounter.parseLine(" foo")
         indentationCounter.parseLine("foo")
-        val result = indentationCounter.getValue().metricMap
+        val result = indentationCounter.getValue().metricsMap
 
         // then
         Assertions.assertThat(result["indentation_level_0+"]).isEqualTo(4.0)
@@ -74,7 +74,7 @@ class IndentationMetricTest {
         // when
         val indentationCounter = IndentationMetric(defaultMaxIndentLvl, verbose = true, defaultTabWidth)
         addDoubleSpacedLines(indentationCounter)
-        val result = indentationCounter.getValue().metricMap
+        val result = indentationCounter.getValue().metricsMap
 
         // then
         Assertions.assertThat(result["indentation_level_0+"]).isEqualTo(4.0)
@@ -91,7 +91,7 @@ class IndentationMetricTest {
 
         // when
         addDoubleSpacedLines(indentationCounter)
-        val result = indentationCounter.getValue().metricMap
+        val result = indentationCounter.getValue().metricsMap
 
         // then
         Assertions.assertThat(result["indentation_level_2+"]).isEqualTo(3.0)
@@ -111,7 +111,7 @@ class IndentationMetricTest {
         // when
         val indentationCounter = IndentationMetric(defaultMaxIndentLvl, defaultVerbose, tabWidth = 3)
         addDoubleSpacedLines(indentationCounter)
-        val result = indentationCounter.getValue().metricMap
+        val result = indentationCounter.getValue().metricsMap
 
         // then
         Assertions.assertThat(result["indentation_level_2+"]).isEqualTo(1.0)
@@ -129,7 +129,7 @@ class IndentationMetricTest {
         // when
         indentationCounter.parseLine("\t\tfoo")
         indentationCounter.parseLine("\t\t\tfoo")
-        val result = indentationCounter.getValue().metricMap
+        val result = indentationCounter.getValue().metricsMap
 
         // then
         Assertions.assertThat(result["indentation_level_2+"]).isEqualTo(2.0)
@@ -145,7 +145,7 @@ class IndentationMetricTest {
         indentationCounter.parseLine("\t\t")
         indentationCounter.parseLine("      ")
         indentationCounter.parseLine("     foo")
-        val result = indentationCounter.getValue().metricMap
+        val result = indentationCounter.getValue().metricsMap
 
         // then
         Assertions.assertThat(result["indentation_level_2+"]).isEqualTo(0.0)

@@ -1,10 +1,10 @@
 package de.maibornwolff.codecharta.parser.rawtextparser
 
 class FileMetrics {
-    val metricMap = mutableMapOf<String, Double>()
+    val metricsMap = mutableMapOf<String, Double>()
 
     fun addMetric(name: String, value: Number): FileMetrics {
-        metricMap[name] = value.toDouble()
+        metricsMap[name] = value.toDouble()
         return this
     }
 }
