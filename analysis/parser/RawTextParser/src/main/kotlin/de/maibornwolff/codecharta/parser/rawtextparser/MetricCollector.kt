@@ -2,12 +2,13 @@ package de.maibornwolff.codecharta.parser.rawtextparser
 
 import de.maibornwolff.codecharta.parser.rawtextparser.metrics.IndentationMetric
 import de.maibornwolff.codecharta.parser.rawtextparser.metrics.Metric
-import de.maibornwolff.codecharta.parser.rawtextparser.model.FileMetrics
+import de.maibornwolff.codecharta.parser.rawtextparser.metrics.FileMetrics
 import de.maibornwolff.codecharta.progresstracker.ParsingUnit
 import de.maibornwolff.codecharta.progresstracker.ProgressTracker
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import mu.KotlinLogging
 import java.io.File
 import java.nio.file.Paths
 import java.util.concurrent.ConcurrentHashMap
@@ -29,9 +30,22 @@ class MetricCollector(
     private val progressTracker: ProgressTracker = ProgressTracker()
     private val parsingUnit = ParsingUnit.Files
 
+    private val logger = KotlinLogging.logger {}
+
     fun parse(): Map<String, FileMetrics> {
-        val projectMetrics = ConcurrentHashMap<String, FileMetrics>()
         var lastFileName = ""
+        val projectMetrics = ConcurrentHashMap<String, FileMetrics>()
+
+        val metrics = mutableListOf<Metric>()
+        if (metricNames.isEmpty() || metricNames.any { it.equals(IndentationMetric.NAME, ignoreCase = true) }) {
+            metrics.add(IndentationMetric(maxIndentLvl, verbose, tabWidth))
+        }
+
+        for (metricName in metricNames) {
+            if (metricName !in metrics.map { it.name }) {
+                logger.warn("Metric $metricName is invalid and not included in the output")
+            }
+        }
 
         runBlocking(Dispatchers.Default) {
             val files = root.walk().asSequence()
@@ -49,7 +63,7 @@ class MetricCollector(
                     ) {
                         filesParsed++
                         logProgress(it.name, filesParsed)
-                        projectMetrics[standardizedPath] = parseFile(it)
+                        projectMetrics[standardizedPath] = parseFile(it, metrics)
                         lastFileName = it.name
                     }
                 }
@@ -70,16 +84,12 @@ class MetricCollector(
         return exclude.isNotEmpty() && excludePatterns.containsMatchIn(path)
     }
 
-    private fun parseFile(file: File): FileMetrics {
-        val metrics = mutableListOf<Metric>()
-        if (metricNames.isEmpty() || metricNames.any { it.equals("IndentationLevel", ignoreCase = true) }) {
-            metrics.add(IndentationMetric(maxIndentLvl, verbose, tabWidth))
-        }
-
+    private fun parseFile(file: File, metrics: List<Metric>): FileMetrics {
         file
             .bufferedReader()
             .useLines { lines -> lines.forEach { line -> metrics.forEach { it.parseLine(line) } } }
 
+        if (metrics.isEmpty()) return FileMetrics()
         return metrics.map { it.getValue() }.reduceRight { current: FileMetrics, acc: FileMetrics ->
             acc.metricMap.putAll(current.metricMap)
             acc

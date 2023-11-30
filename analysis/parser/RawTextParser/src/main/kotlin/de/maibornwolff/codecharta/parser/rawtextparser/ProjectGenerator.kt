@@ -5,7 +5,7 @@ import de.maibornwolff.codecharta.model.MutableNode
 import de.maibornwolff.codecharta.model.PathFactory
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.model.ProjectBuilder
-import de.maibornwolff.codecharta.parser.rawtextparser.model.FileMetrics
+import de.maibornwolff.codecharta.parser.rawtextparser.metrics.FileMetrics
 
 class ProjectGenerator() {
     private lateinit var projectBuilder: ProjectBuilder
