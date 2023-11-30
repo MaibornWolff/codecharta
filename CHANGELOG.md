@@ -26,6 +26,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   Fix file extensions of output files for merged projects [#3421](https://github.com/MaibornWolff/codecharta/pull/3421)
 -   Fix the ability for users to accidentally pass invalid metrics to the RawTextParser without it crashing [#3424](https://github.com/MaibornWolff/codecharta/pull/3424)
 -   Fix deselected buildings with green/red roof in delta mode do not reset their color roof [#3426](https://github.com/MaibornWolff/codecharta/pull/3426)
+-   Fix parser hang issue in interactive mode caused by unintentional "enter" input after the last question [#3422](https://github.com/MaibornWolff/codecharta/pull/3422)
 
 ### Chore ‍👨‍💻 👩‍💻
 
