@@ -10,9 +10,8 @@ import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
 import java.io.File
 import java.nio.file.Paths
-import java.util.concurrent.ConcurrentHashMap
 
-class MetricCollector(
+class ProjectMetricsCollector(
     private var root: File,
     private val exclude: List<String>,
     private val fileExtensions: List<String>,
@@ -20,7 +19,7 @@ class MetricCollector(
     private val verbose: Boolean,
     private val maxIndentLvl: Int,
     private val tabWidth: Int
-) {
+                             ) {
 
     private var totalFiles = 0L
     private var filesParsed = 0L
@@ -30,9 +29,9 @@ class MetricCollector(
 
     private val logger = KotlinLogging.logger {}
 
-    fun parse(): Map<String, FileMetrics> {
+    fun parseProject(): ProjectMetrics {
         var lastFileName = ""
-        val projectMetrics = ConcurrentHashMap<String, FileMetrics>()
+        val projectMetrics = ProjectMetrics()
 
         runBlocking(Dispatchers.Default) {
             val files = root.walk().asSequence()
@@ -50,7 +49,7 @@ class MetricCollector(
                     ) {
                         filesParsed++
                         logProgress(it.name, filesParsed)
-                        projectMetrics[standardizedPath] = parseFile(it)
+                        projectMetrics.addFileMetrics(standardizedPath, parseFile(it))
                         lastFileName = it.name
                     }
                 }
@@ -58,7 +57,6 @@ class MetricCollector(
         }
 
         logProgress(lastFileName, totalFiles)
-        logWarningsForInvalidMetrics(projectMetrics)
 
         return projectMetrics
     }
@@ -69,14 +67,6 @@ class MetricCollector(
             metrics.add(IndentationMetric(maxIndentLvl, verbose, tabWidth))
         }
         return metrics
-    }
-
-    private fun logWarningsForInvalidMetrics(projectMetrics: ConcurrentHashMap<String, FileMetrics>) {
-        for (metricName in metricNames) {
-            if (metricName !in projectMetrics.values.map { it.metricMap.keys }.flatten()) {
-                logger.warn("Metric $metricName is invalid and not included in the output")
-            }
-        }
     }
 
     private fun isParsableFileExtension(path: String): Boolean {
@@ -97,7 +87,7 @@ class MetricCollector(
 
         if (metrics.isEmpty()) return FileMetrics()
         return metrics.map { it.getValue() }.reduceRight { current: FileMetrics, acc: FileMetrics ->
-            acc.metricMap.putAll(current.metricMap)
+            acc.metricsMap.putAll(current.metricsMap)
             acc
         }
     }

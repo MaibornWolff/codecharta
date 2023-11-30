@@ -13,6 +13,6 @@ class FileMetricsTest {
         fileMetric.addMetric("foo", 1)
         fileMetric.addMetric("bar", 2)
 
-        Assertions.assertThat(fileMetric.metricMap).isEqualTo(result)
+        Assertions.assertThat(fileMetric.metricsMap).isEqualTo(result)
     }
 }

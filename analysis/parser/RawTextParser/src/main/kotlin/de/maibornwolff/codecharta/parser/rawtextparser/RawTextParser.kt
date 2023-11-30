@@ -37,7 +37,7 @@ class RawTextParser(
     @CommandLine.Option(names = ["--verbose"], description = ["verbose mode"])
     private var verbose = false
 
-    @CommandLine.Parameters(arity = "1", paramLabel = "FILE or FOLDER", description = ["file/project to parse"])
+    @CommandLine.Parameters(arity = "1", paramLabel = "FILE or FOLDER", description = ["file/project to parseProject"])
     private var inputFile: File? = null
 
     @CommandLine.Option(
@@ -69,7 +69,7 @@ class RawTextParser(
 
     @CommandLine.Option(
         names = ["-fe", "--file-extensions"],
-        description = ["parse only files with specified extensions (default: any)"],
+        description = ["parseProject only files with specified extensions (default: any)"],
         converter = [(CommaSeparatedStringToListConverter::class)]
     )
     private var fileExtensions: List<String> = listOf()
@@ -105,31 +105,32 @@ class RawTextParser(
 
         if (!withoutDefaultExcludes) exclude += DEFAULT_EXCLUDES
 
-        val results: Map<String, FileMetrics> =
-            MetricCollector(inputFile!!, exclude, fileExtensions, metricNames, verbose, maxIndentLvl, tabWidth).parse()
+        val projectMetrics: ProjectMetrics =
+            ProjectMetricsCollector(inputFile!!, exclude, fileExtensions, metricNames, verbose, maxIndentLvl, tabWidth).parseProject()
         println()
 
-        if (results.isEmpty()) {
+        if (projectMetrics.metricsMap.isEmpty()) {
             println()
             logger.error("No files with specified file extension(s) were found within the given folder - not generating an output file!")
             return null
         }
 
-        logWarningsForNotFoundFileExtensions(results)
+        logWarningsForNotFoundFileExtensions(projectMetrics)
+        logWarningsForInvalidMetrics(projectMetrics)
 
         val pipedProject = ProjectDeserializer.deserializeProject(input)
-        val project = ProjectGenerator().generate(results, pipedProject)
+        val project = ProjectGenerator().generate(projectMetrics, pipedProject)
 
         ProjectSerializer.serializeToFileOrStream(project, outputFile, output, compress)
 
         return null
     }
 
-    private fun logWarningsForNotFoundFileExtensions(results: Map<String, FileMetrics>) {
+    private fun logWarningsForNotFoundFileExtensions(projectMetrics: ProjectMetrics) {
         val notFoundFileExtensions = mutableListOf<String>()
         for (fileExtension in fileExtensions) {
             var isFileExtensionIncluded = false
-            for (relativeFileName in results.keys) {
+            for (relativeFileName in projectMetrics.metricsMap.keys) {
                 if (relativeFileName.contains(fileExtension)) {
                     isFileExtensionIncluded = true
                 }
@@ -141,6 +142,14 @@ class RawTextParser(
         if (notFoundFileExtensions.isNotEmpty()) {
             println()
             notFoundFileExtensions.forEach { logger.warn("The specified file extension '$it' was not found within the given folder!") }
+        }
+    }
+
+    private fun logWarningsForInvalidMetrics(projectMetrics: ProjectMetrics) {
+        for (metricName in metricNames) {
+            if (metricName !in projectMetrics.metricsMap.values.map { it.metricsMap.keys }.flatten()) {
+                logger.warn("Metric $metricName is invalid and not included in the output")
+            }
         }
     }
 
