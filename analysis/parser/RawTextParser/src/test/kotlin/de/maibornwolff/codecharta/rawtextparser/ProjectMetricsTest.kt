@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test
 
 class ProjectMetricsTest {
     @Test
-    fun `Should add metric to map when provided with valid input`() {
+    fun `Should add metric when provided with valid input`() {
         // given
         val filePath1 = "filePath1"
         val filePath2 = "filePath2"
@@ -31,7 +31,7 @@ class ProjectMetricsTest {
     }
 
     @Test
-    fun `Should return metricsMaps when metric added`() {
+    fun `Should return updated metrics when metric added`() {
         // given
         val filePath1 = "filePath1"
         val key1 = "foo"

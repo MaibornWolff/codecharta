@@ -8,7 +8,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.io.File
-import java.nio.file.Paths
 
 class ProjectMetricsCollector(
     private var root: File,
@@ -24,7 +23,7 @@ class ProjectMetricsCollector(
     private var filesParsed = 0L
     private val parsingUnit = ParsingUnit.Files
     private val progressTracker = ProgressTracker()
-    private var excludePatterns = createExlucdePatterns()
+    private var excludePatterns = createExcludePatterns()
 
     fun parseProject(): ProjectMetrics {
         var lastFileName = ""
@@ -58,7 +57,7 @@ class ProjectMetricsCollector(
         return projectMetrics
     }
 
-    private fun createExlucdePatterns(): Regex {
+    private fun createExcludePatterns(): Regex {
         return exclude.joinToString(separator = "|", prefix = "(", postfix = ")").toRegex()
     }
 
@@ -104,15 +103,14 @@ class ProjectMetricsCollector(
     }
 
     private fun getStandardizedPath(file: File): String {
-        return "/" + getRelativeFileName(file.toString())
-    }
-    private fun getRelativeFileName(fileName: String): String {
-        if (root.isFile) root = root.parentFile
+        val normalizedRoot = if (root.isFile) root.parentFile else root
+        val relativePath = normalizedRoot.toPath().toAbsolutePath()
+                .relativize(file.toPath().toAbsolutePath())
+                .toString()
+                .replace(File.separatorChar, '/')
+                .removePrefix("/")
 
-        return root.toPath().toAbsolutePath()
-            .relativize(Paths.get(fileName).toAbsolutePath())
-            .toString()
-            .replace('\\', '/')
+        return "/$relativePath"
     }
 
     private fun logProgress(fileName: String, parsedFiles: Long) {

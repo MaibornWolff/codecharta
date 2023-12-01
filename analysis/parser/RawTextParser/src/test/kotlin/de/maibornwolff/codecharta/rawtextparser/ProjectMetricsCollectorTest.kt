@@ -195,6 +195,6 @@ class ProjectMetricsCollectorTest {
                                                     ).parseProject()
 
         // then
-        Assertions.assertThat(projectMetrics.metricsMap.values.stream().allMatch { it.metricsMap.isEmpty() }).isTrue()
+        Assertions.assertThat(projectMetrics.metricsMap.values.stream().allMatch { it.isEmpty() }).isTrue()
     }
 }

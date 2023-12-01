@@ -9,4 +9,12 @@ class ProjectMetrics {
         metricsMap[filePath] = fileMetrics
         return this
     }
+
+    fun isEmpty(): Boolean {
+        return metricsMap.isEmpty()
+    }
+
+    fun hasMetric(metricName: String): Boolean {
+        return metricsMap.containsKey(metricName)
+    }
 }
