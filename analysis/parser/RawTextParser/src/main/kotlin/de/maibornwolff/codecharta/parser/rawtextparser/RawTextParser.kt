@@ -69,7 +69,7 @@ class RawTextParser(
 
     @CommandLine.Option(
         names = ["-fe", "--file-extensions"],
-        description = ["parseProject only files with specified extensions (default: any)"],
+        description = ["parse only files with specified extensions (default: any)"],
         converter = [(FileExtensionConverter::class)]
     )
     private var fileExtensions: List<String> = listOf()
@@ -104,7 +104,7 @@ class RawTextParser(
             ProjectMetricsCollector(inputFile!!, exclude, fileExtensions, metricNames, verbose, maxIndentLvl, tabWidth).parseProject()
         println()
 
-        if (projectMetrics.metricsMap.isEmpty()) {
+        if (projectMetrics.isEmpty()) {
             println()
             logger.error("No files with specified file extension(s) were found within the given folder - not generating an output file!")
             return null
@@ -142,7 +142,7 @@ class RawTextParser(
 
     private fun logWarningsForInvalidMetrics(projectMetrics: ProjectMetrics) {
         for (metricName in metricNames) {
-            if (metricName !in projectMetrics.metricsMap.values.map { it.metricsMap.keys }.flatten()) {
+            if (!projectMetrics.hasMetric(metricName)) {
                 logger.warn("Metric $metricName is invalid and not included in the output")
             }
         }

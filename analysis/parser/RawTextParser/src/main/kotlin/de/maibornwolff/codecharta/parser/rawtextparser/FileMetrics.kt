@@ -7,4 +7,8 @@ class FileMetrics {
         metricsMap[name] = value.toDouble()
         return this
     }
+
+    fun isEmpty(): Boolean {
+        return metricsMap.isEmpty()
+    }
 }

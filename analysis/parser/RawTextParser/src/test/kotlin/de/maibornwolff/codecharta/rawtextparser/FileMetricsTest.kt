@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test
 
 class FileMetricsTest {
     @Test
-    fun `Should add metric to map when provided with valid input`() {
+    fun `Should add file metric when provided with valid input`() {
         // given
         val key1 = "foo"
         val key2 = "bar"
@@ -24,7 +24,7 @@ class FileMetricsTest {
     }
 
     @Test
-    fun `Should return metricsMaps when metric added`() {
+    fun `Should return updated metrics when metric added`() {
         // given
         val key1 = "foo"
         val value1 = 1.0
