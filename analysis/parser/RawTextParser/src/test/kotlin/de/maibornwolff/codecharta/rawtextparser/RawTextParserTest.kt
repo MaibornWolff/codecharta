@@ -2,7 +2,6 @@ package de.maibornwolff.codecharta.rawtextparser
 
 import de.maibornwolff.codecharta.filter.mergefilter.MergeFilter
 import de.maibornwolff.codecharta.parser.rawtextparser.RawTextParser
-import de.maibornwolff.codecharta.parser.rawtextparser.RawTextParser.Companion.mainWithInOut
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.util.InputHelper
@@ -27,14 +26,13 @@ import picocli.CommandLine
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.File
-import java.io.InputStream
 import java.io.OutputStreamWriter
 import java.io.PrintStream
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class RawTextParserTest {
-    val errContent = ByteArrayOutputStream()
-    val originalErr = System.err
+    private val errContent = ByteArrayOutputStream()
+    private val originalErr = System.err
 
     @AfterEach
     fun afterTest() {
@@ -49,54 +47,46 @@ class RawTextParserTest {
         }
     }
 
-    private fun executeForOutput(input: String, args: Array<String> = emptyArray()) =
-            outputAsString(input) { inputStream, outputStream, errorStream ->
-                mainWithInOut(outputStream, inputStream, errorStream, args)
-            }
-
-    private fun outputAsString(input: String, aMethod: (input: InputStream, output: PrintStream, error: PrintStream) -> Unit) =
-            outputAsString(ByteArrayInputStream(input.toByteArray()), aMethod)
-
-    private fun outputAsString(
-            inputStream: InputStream = System.`in`,
-            aMethod: (input: InputStream, output: PrintStream, error: PrintStream) -> Unit
-    ) =
-            ByteArrayOutputStream().use { baOutputStream ->
-                PrintStream(baOutputStream).use { outputStream ->
-                    aMethod(inputStream, outputStream, System.err)
-                }
-                baOutputStream.toString()
-            }
+    private fun executeForOutput(input: String, args: Array<String>): String {
+        val inputStream = ByteArrayInputStream(input.toByteArray())
+        val outputStream = ByteArrayOutputStream()
+        val printStream = PrintStream(outputStream)
+        val errorStream = System.err
+        val configuredParser = RawTextParser(inputStream, printStream, errorStream)
+        CommandLine(configuredParser).execute(*args)
+        return outputStream.toString()
+    }
 
     @Test
-    fun `should produce correct output when given single file`() {
+    fun `Should produce correct output when given single file`() {
         // given
-        val expectedResultFile = File("src/test/resources/cc_projects/project_3.cc.json").absoluteFile
+        val pipedProject = ""
+        val inputFilePath = "src/test/resources/sampleproject/tabs.included"
+        val expectedResultFile = File("src/test/resources/cc_projects/project_3.cc.json")
 
         // when
-        val result = executeForOutput("", arrayOf("src/test/resources/sampleproject/tabs.included"))
+        val result = executeForOutput(pipedProject, arrayOf(inputFilePath))
 
         // then
         JSONAssert.assertEquals(result, expectedResultFile.readText(), JSONCompareMode.NON_EXTENSIBLE)
     }
 
     @Test
-    fun `should produce correct output when given a folder and specific parameters`() {
+    fun `Should produce correct output when given a folder and specific parameters`() {
         // given
+        val pipedProject = ""
+        val inputFilePath = "src/test/resources/sampleproject/"
         val expectedResultFile = File("src/test/resources/cc_projects/project_4.cc.json").absoluteFile
 
         // when
-        val result = executeForOutput(
-            "",
-            arrayOf("src/test/resources/sampleproject/", "--tab-width=2", "--max-indentation-level=2", "-e=tabs*.")
-        )
+        val result = executeForOutput(pipedProject, arrayOf(inputFilePath, "--tab-width=2", "--max-indentation-level=2", "-e=tabs*."))
 
         // then
         JSONAssert.assertEquals(result, expectedResultFile.readText(), JSONCompareMode.NON_EXTENSIBLE)
     }
 
     @Test
-    fun `should correctly merge when piped into another project`() {
+    fun `Should correctly merge when piped into another project`() {
         // given
         val pipedProject = "src/test/resources/cc_projects/project_4.cc.json"
         val partialResult = "src/test/resources/cc_projects/project_3.cc.json"
@@ -119,7 +109,7 @@ class RawTextParserTest {
 
     @ParameterizedTest
     @MethodSource("provideValidInputFiles")
-    fun `should be identified as applicable when given directory path contains a source code file`(resourceToBeParsed: String) {
+    fun `Should be identified as applicable when given directory path contains a source code file`(resourceToBeParsed: String) {
         // when
         val isUsable = RawTextParser().isApplicable(resourceToBeParsed)
         // then
@@ -127,7 +117,7 @@ class RawTextParserTest {
     }
 
     @Test
-    fun `should be identified as applicable when given path is a file`() {
+    fun `Should be identified as applicable when given path is a file`() {
         // when
         val isUsable = RawTextParser().isApplicable("src/test/resources/sampleproject/tabs.included")
         // then
@@ -135,7 +125,7 @@ class RawTextParserTest {
     }
 
     @Test
-    fun `should NOT be identified as applicable when given directory does not contain any source code file `() {
+    fun `Should NOT be identified as applicable when given directory does not contain any source code file `() {
         // given
         val emptyFolderPath = "src/test/resources/empty"
         val nonExistentPath = "src/test/resources/this/does/not/exist"
@@ -157,7 +147,7 @@ class RawTextParserTest {
     }
 
     @Test
-    fun `should stop execution when input files are invalid`() {
+    fun `Should stop execution when input files are invalid`() {
         // given
         mockkObject(InputHelper)
         every {

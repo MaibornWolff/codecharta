@@ -14,7 +14,6 @@ import java.io.File
 import java.io.IOException
 import java.io.InputStream
 import java.io.PrintStream
-import java.io.PrintWriter
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
@@ -90,11 +89,6 @@ class RawTextParser(
 
         const val DEFAULT_INDENT_LVL = 10
         const val DEFAULT_TAB_WIDTH = -1
-
-        @JvmStatic
-        fun mainWithInOut(outputStream: PrintStream, input: InputStream, error: PrintStream, args: Array<String>) {
-            CommandLine(RawTextParser(input, outputStream, error)).setOut(PrintWriter(outputStream)).execute(*args)
-        }
     }
 
     @Throws(IOException::class)
