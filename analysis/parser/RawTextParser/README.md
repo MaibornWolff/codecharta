@@ -22,7 +22,8 @@ generates cc.json from projects or source code files
                               (default: any)
   -h, --help                displays this help and exits
   -m, --metrics[=<metricNames>...]
-                            metrics to be computed (select all if not specified)
+                            available metrics: IndentationLevel
+                              (all available metrics are computed if not specified)
       --max-indentation-level=<maxIndentLvl>
                             maximum Indentation Level (default 10)
       -nc, --not-compressed save uncompressed output File
