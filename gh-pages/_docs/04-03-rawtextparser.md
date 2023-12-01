@@ -12,7 +12,7 @@ This parser analyzes code regardless of the programming language used to generat
 ## Usage and Parameters
 
 | Parameter                                | description                                                                                        |
-| ---------------------------------------- |----------------------------------------------------------------------------------------------------|
+| ---------------------------------------- | -------------------------------------------------------------------------------------------------- |
 | `FILE or FOLDER`                         | file/project to parse                                                                              |
 | `--max-indentation-level=<maxIndentLvl>` | maximum Indentation Level (default 10)                                                             |
 | `--tab-width=<tabWidth>`                 | tab width used (estimated if not provided)                                                         |
@@ -20,7 +20,7 @@ This parser analyzes code regardless of the programming language used to generat
 | `-e, --exclude=<exclude>`                | exclude file/folders according to regex pattern                                                    |
 | `-fe, --file-extensions`                 | include only files with the specified file extensions (include all if not specified)               |
 | `-h, --help`                             | displays help                                                                                      |
-| `-m, --metrics[=<metrics>...]`           | available metrics: IndentationLevel (all available metrics are computed if not specified)                                                               |
+| `-m, --metrics[=<metrics>...]`           | available metrics: IndentationLevel (all available metrics are computed if not specified)          |
 | `-o, --output-file=<outputFile>`         | output File (or empty for stdout)                                                                  |
 | `-nc, --not-compressed`                  | uncompresses outputfile to json format, if format of File is gzip                                  |
 | `--verbose`                              | verbose mode                                                                                       |
