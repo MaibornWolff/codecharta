@@ -40,6 +40,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 -   Fix an issue with web demo on Safari showing a white screen and not loading [#3396](https://github.com/MaibornWolff/codecharta/pull/3396)
 -   Fix the ability for users to skip the value for tab-width when configuring the rawtextparser and estimate its value [#3404](https://github.com/MaibornWolff/codecharta/pull/3404)
+-   Fix the ability for users to accidentally pass invalid metrics to the RawTextParser without it crashing [#3424](https://github.com/MaibornWolff/codecharta/pull/3424)
 
 ### Chore 👨‍💻 👩‍💻
 
