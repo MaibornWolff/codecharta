@@ -13,9 +13,12 @@ To allow time for the preceding command to send the blank, a brief delay precede
 fun InputStream.readNonBlockingInput(): String {
     Thread.sleep(1000)
     val result = StringBuilder()
-    val reader = bufferedReader()
-    while (reader.ready()) {
-        result.append(reader.readLine())
+
+    bufferedReader().use { reader ->
+        while (reader.ready()) {
+            result.append(reader.readLine())
+        }
     }
+
     return result.toString()
 }
