@@ -23,8 +23,8 @@ class ProjectMetricsCollector(
     private var totalFiles = 0L
     private var filesParsed = 0L
     private val parsingUnit = ParsingUnit.Files
-    private val progressTracker: ProgressTracker = ProgressTracker()
-    private var excludePatterns: Regex = exclude.joinToString(separator = "|", prefix = "(", postfix = ")").toRegex()
+    private val progressTracker = ProgressTracker()
+    private var excludePatterns = createExlucdePatterns()
 
     fun parseProject(): ProjectMetrics {
         var lastFileName = ""
@@ -38,7 +38,7 @@ class ProjectMetricsCollector(
 
             files.forEach {
                 launch {
-                    val standardizedPath = "/" + getRelativeFileName(it.toString())
+                    val standardizedPath = getStandardizedPath(it)
 
                     if (
                         !isPathExcluded(standardizedPath) &&
@@ -58,12 +58,27 @@ class ProjectMetricsCollector(
         return projectMetrics
     }
 
-    private fun createMetricsFromMetricNames(): MutableList<Metric> {
+    private fun createExlucdePatterns(): Regex {
+        return exclude.joinToString(separator = "|", prefix = "(", postfix = ")").toRegex()
+    }
+
+    private fun createMetricsFromMetricNames(): List<Metric> {
+        if (metricNames.isEmpty()) {
+            return getAllMetrics()
+        }
+
         val metrics = mutableListOf<Metric>()
-        if (metricNames.isEmpty() || metricNames.any { it.equals(IndentationMetric.NAME, ignoreCase = true) }) {
+        if (IndentationMetric.NAME in metricNames) {
             metrics.add(IndentationMetric(maxIndentLvl, verbose, tabWidth))
         }
+
         return metrics
+    }
+
+    private fun getAllMetrics(): List<Metric> {
+        val metrics = mutableListOf<Metric>()
+        metrics.add(IndentationMetric(maxIndentLvl, verbose, tabWidth))
+        return metrics.toList()
     }
 
     private fun isParsableFileExtension(path: String): Boolean {
@@ -88,6 +103,9 @@ class ProjectMetricsCollector(
         }
     }
 
+    private fun getStandardizedPath(file: File): String {
+        return "/" + getRelativeFileName(file.toString())
+    }
     private fun getRelativeFileName(fileName: String): String {
         if (root.isFile) root = root.parentFile
 
