@@ -25,6 +25,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   Fix the csv-exporter so that it exports multiple projects instead of just one when multiple projects are specified [#3414](https://github.com/MaibornWolff/codecharta/pull/3414)
 -   Fix file extensions of output files for merged projects [#3421](https://github.com/MaibornWolff/codecharta/pull/3421)
 -   Fix the ability for users to accidentally pass invalid metrics to the RawTextParser without it crashing [#3424](https://github.com/MaibornWolff/codecharta/pull/3424)
+-   Fix deselected buildings with green/red roof in delta mode do not reset their color roof [#3426](https://github.com/MaibornWolff/codecharta/pull/3426)
 
 ### Chore ‍👨‍💻 👩‍💻
 
