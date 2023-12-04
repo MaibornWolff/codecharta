@@ -17,7 +17,7 @@ A PR is only ready for merge once all the following acceptance criteria are fulf
 -[ ] All TODOs related to this PR have been closed
 -[ ] There are automated tests for newly written code and bug fixes
 -[ ] All bugs discovered while working on this PR have been submitted as issues (if not already an open issue)
--[ ] Documentation (GH-pages, analysis/visualisation READMEs, parser READMEs, --help, etc.) has been updated (almost always necessary except for bug fixes)
+-[ ] Documentation (GH-pages, analysis/visualization READMEs, parser READMEs, --help, etc.) has been updated (almost always necessary except for bug fixes)
 -[ ] CHANGELOG.md has been updated
 
 ## Screenshots or gifs
