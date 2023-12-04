@@ -9,6 +9,7 @@ export class CodeMapBuilding {
 	private _defaultColor: string
 	private _deltaColor: string
 	private _defaultDeltaColor: string
+	private _deltaColorStorage: string
 	private _node: Node
 	parent: CodeMapBuilding
 
@@ -19,6 +20,7 @@ export class CodeMapBuilding {
 		this._defaultColor = color
 		this._deltaColor = "#000000"
 		this._defaultDeltaColor = "#000000"
+		this._deltaColorStorage = "#000000"
 		this._node = node
 	}
 
@@ -31,25 +33,23 @@ export class CodeMapBuilding {
 	}
 
 	decreaseLightness(value: number) {
-		const defaultColorHSL = ColorConverter.hexToHSL(this._defaultColor)
-		defaultColorHSL.decreaseLightness(value)
-		if (defaultColorHSL.getLightness() < 10) {
-			defaultColorHSL.setLightness(10)
-		} else {
-			defaultColorHSL.setLightness(defaultColorHSL.getLightness())
-		}
-		this._color = defaultColorHSL.toHex()
+		this._color = this._decreaseLightnessForColor(this._defaultColor, value)
 
 		if (this._node.deltas) {
-			const deltaColorHSL = ColorConverter.hexToHSL(this._defaultDeltaColor)
-			deltaColorHSL.decreaseLightness(value)
-			if (deltaColorHSL.getLightness() < 10) {
-				deltaColorHSL.setLightness(10)
-			} else {
-				deltaColorHSL.setLightness(deltaColorHSL.getLightness())
-			}
-			this._deltaColor = deltaColorHSL.toHex()
+			this._deltaColor = this._decreaseLightnessForColor(this._defaultDeltaColor, value)
+			this._defaultDeltaColor = this._deltaColorStorage
 		}
+	}
+
+	_decreaseLightnessForColor(color: string, value: number) {
+		const colorHSL = ColorConverter.hexToHSL(color)
+		colorHSL.decreaseLightness(value)
+		if (colorHSL.getLightness() < 10) {
+			colorHSL.setLightness(10)
+		} else {
+			colorHSL.setLightness(colorHSL.getLightness())
+		}
+		return colorHSL.toHex()
 	}
 
 	getColorVector() {
@@ -70,7 +70,8 @@ export class CodeMapBuilding {
 
 	resetColor() {
 		this._color = this._defaultColor
-		this._deltaColor = this._defaultDeltaColor
+		this._deltaColor = "#000000"
+		this._defaultDeltaColor = this._deltaColorStorage
 	}
 
 	equals(building: CodeMapBuilding) {
@@ -112,5 +113,12 @@ export class CodeMapBuilding {
 	setDeltaColor(color: string) {
 		this._defaultDeltaColor = color
 		this._deltaColor = color
+		this._deltaColorStorage = color
+	}
+
+	// Both color need to be set, deltaColor = lower part, defaultDeltaColor = upperPart (where defined?)
+	setClickDeltaColor(color: string) {
+		this._deltaColor = color
+		this._defaultDeltaColor = color
 	}
 }
