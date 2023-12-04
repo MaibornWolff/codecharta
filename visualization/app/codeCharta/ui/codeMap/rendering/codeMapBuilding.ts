@@ -9,7 +9,6 @@ export class CodeMapBuilding {
 	private _defaultColor: string
 	private _deltaColor: string
 	private _defaultDeltaColor: string
-	private _deltaColorStorage: string
 	private _node: Node
 	parent: CodeMapBuilding
 
