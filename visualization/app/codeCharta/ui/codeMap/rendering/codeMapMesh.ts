@@ -47,8 +47,8 @@ export class CodeMapMesh {
 
 	selectBuilding(building: CodeMapBuilding, color: string) {
 		building.setColor(color)
-		building.setClickDeltaColor(color)
-		this.setVertexColor(building.id, building.getColorVector(), building.getDefaultDeltaColorVector())
+		building.setOnclickDeltaColor(color)
+		this.setVertexColor(building.id, building.getColorVector(), building.getDeltaColorVector())
 		this.updateVertices()
 	}
 

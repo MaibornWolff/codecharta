@@ -20,7 +20,6 @@ export class CodeMapBuilding {
 		this._defaultColor = color
 		this._deltaColor = "#000000"
 		this._defaultDeltaColor = "#000000"
-		this._deltaColorStorage = "#000000"
 		this._node = node
 	}
 
@@ -37,7 +36,6 @@ export class CodeMapBuilding {
 
 		if (this._node.deltas) {
 			this._deltaColor = this._decreaseLightnessForColor(this._defaultDeltaColor, value)
-			this._defaultDeltaColor = this._deltaColorStorage
 		}
 	}
 
@@ -70,8 +68,7 @@ export class CodeMapBuilding {
 
 	resetColor() {
 		this._color = this._defaultColor
-		this._deltaColor = "#000000"
-		this._defaultDeltaColor = this._deltaColorStorage
+		this._deltaColor = this._defaultDeltaColor
 	}
 
 	equals(building: CodeMapBuilding) {
@@ -113,12 +110,9 @@ export class CodeMapBuilding {
 	setDeltaColor(color: string) {
 		this._defaultDeltaColor = color
 		this._deltaColor = color
-		this._deltaColorStorage = color
 	}
 
-	// Both color need to be set, deltaColor = lower part, defaultDeltaColor = upperPart (where defined?)
-	setClickDeltaColor(color: string) {
+	setOnclickDeltaColor(color: string) {
 		this._deltaColor = color
-		this._defaultDeltaColor = color
 	}
 }
