@@ -2,10 +2,13 @@ package de.maibornwolff.codecharta.serialization
 
 import de.maibornwolff.codecharta.tools.pipeableparser.PipeableParserSyncFlag
 import java.io.BufferedInputStream
+import java.io.BufferedReader
 import java.io.InputStream
 import java.io.InputStreamReader
+import java.io.Reader
 import java.nio.charset.StandardCharsets
 import java.util.Scanner
+import java.util.zip.GZIPInputStream
 
 object ProjectInputReader {
     /**
@@ -19,6 +22,7 @@ object ProjectInputReader {
      */
     fun extractProjectString(input: InputStream): String {
         Thread.sleep(1000)
+        val maxBufferSize = 1024
         val availableBytes = input.available()
 
         if (availableBytes <= 0) {
@@ -28,7 +32,9 @@ object ProjectInputReader {
             return extractProjectString(BufferedInputStream(input))
         }
 
-        val isSyncSignalContained = isSyncSignalContained(input, availableBytes)
+        println(GZIPInputStream.GZIP_MAGIC.toByte())
+
+        val isSyncSignalContained = isSyncSignalContained(input, availableBytes, maxBufferSize)
 
         if (isSyncSignalContained) {
             val scanner = Scanner(input)
@@ -41,14 +47,18 @@ object ProjectInputReader {
             return extractJsonObjectFromEndOfStream(stringBuilder.toString())
         }
 
-        val buffer = CharArray(availableBytes)
-        val reader = InputStreamReader(input, StandardCharsets.UTF_8)
-        val bytesRead = reader.read(buffer, 0, availableBytes)
-        return StringBuilder().appendRange(buffer, 0, bytesRead).toString()
+        val charBuffer = CharArray(maxBufferSize)
+        val reader = BufferedReader(InputStreamReader(input, StandardCharsets.UTF_8))
+        val stringBuilder = StringBuilder()
+        while (reader.ready()) {
+            val bytesRead = reader.read(charBuffer)
+            stringBuilder.appendRange(charBuffer, 0, bytesRead)
+        }
+        return stringBuilder.toString()
     }
 
-    private fun isSyncSignalContained(input: InputStream, availableBytes: Int): Boolean {
-        val maxBufferSize = 1024
+    private fun isSyncSignalContained(input: InputStream, availableBytes: Int, maxBufferSize: Int): Boolean {
+
         val bufferSize = minOf(availableBytes, maxBufferSize)
         val buffer = ByteArray(bufferSize)
         input.mark(bufferSize)
