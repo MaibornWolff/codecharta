@@ -33,8 +33,8 @@ class StructureModifierTest {
 
     @Test
     fun `reads project piped input`() {
-        val input = File("src/test/resources/sample_project.cc.json").bufferedReader().readLines()
-            .joinToString(separator = "") { it }
+        val inputFilePath = "src/test/resources/sample_project.cc.json"
+        val input = File(inputFilePath).bufferedReader().readLines().joinToString(separator = "") { it }
 
         val cliResult = executeForOutput(input, arrayOf("-r=/does/not/exist"))
 

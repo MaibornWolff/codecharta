@@ -1,18 +1,21 @@
 package de.maibornwolff.codecharta.serialization
 
+import de.maibornwolff.codecharta.tools.pipeableparser.PipeableParserSyncFlag
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.Timeout
 import java.io.PipedInputStream
 import java.io.PipedOutputStream
 import java.nio.charset.StandardCharsets
+import java.util.concurrent.TimeUnit
 
+@Timeout(value = 15, unit = TimeUnit.SECONDS)
 class ProjectInputReaderTest {
     @Test
-    fun `Should not wait for input when handling blocking input stream`() {
+    fun `Should not accept input when pipeable parser sync flag is not set`() {
         // given
         val line1 = "line1"
-        val line2 = "line2"
         val newLine = "\n"
         val inputStream = PipedInputStream()
         val outputStream = PipedOutputStream(inputStream)
@@ -20,65 +23,52 @@ class ProjectInputReaderTest {
         outputStream.write(newLine.toByteArray(StandardCharsets.UTF_8))
 
         // when
+        val linesRead = ProjectInputReader.extractProjectString(inputStream)
+
+        // then
+        Assertions.assertThat(linesRead).isEmpty()
+    }
+
+    @Test
+    fun `Should wait for input when pipeable parser sync flag is set`() {
+        // given
+        val syncFlag = PipeableParserSyncFlag.SYNC_FLAG.value
+        val line1 = "{\"data\":\"data\"}"
+        val inputStream = PipedInputStream()
+        val outputStream = PipedOutputStream(inputStream)
+        outputStream.write(syncFlag.toByteArray(StandardCharsets.UTF_8))
+
+        // when
         Thread {
             Thread.sleep(5000)
-            outputStream.write(line2.toByteArray(StandardCharsets.UTF_8))
-            outputStream.write(newLine.toByteArray(StandardCharsets.UTF_8))
+            outputStream.write(line1.toByteArray(StandardCharsets.UTF_8))
             outputStream.close()
         }.start()
 
-        val linesRead = inputStream.readNonBlockingInput()
+        val linesRead = ProjectInputReader.extractProjectString(inputStream)
 
         // then
         assertEquals(line1, linesRead)
     }
 
     @Test
-    fun `Should finish reading when encountering EOF in input stream`() {
+    fun `Should discard input before project string when project comes at end of stream`() {
         // given
+        val syncFlag = PipeableParserSyncFlag.SYNC_FLAG.value
         val line1 = "line1"
-        val line2 = "line2"
-        val line3 = "line3"
-        val newLine = "\n"
-        val expectedResult = buildString {
-            append(line1)
-            append(line2)
-            append(line3)
-        }
-        val inputStream = PipedInputStream()
-        val outputStream = PipedOutputStream(inputStream)
-        outputStream.write(line1.toByteArray(StandardCharsets.UTF_8))
-        outputStream.write(newLine.toByteArray(StandardCharsets.UTF_8))
-        outputStream.write(line2.toByteArray(StandardCharsets.UTF_8))
-        outputStream.write(newLine.toByteArray(StandardCharsets.UTF_8))
-        outputStream.write(line3.toByteArray(StandardCharsets.UTF_8))
-        outputStream.write(newLine.toByteArray(StandardCharsets.UTF_8))
-
-        // when
-        val linesRead = inputStream.readNonBlockingInput()
-
-        // then
-        assertEquals(expectedResult, linesRead)
-    }
-
-    @Test
-    fun `Should remove new line characters when provided with multiline input stream`() {
-        // given
-        val line1 = "line1"
-        val line2 = "line2"
-        val newLine = "\n"
+        val line2 = "{\"data\":\"data\"}"
 
         val inputStream = PipedInputStream()
         val outputStream = PipedOutputStream(inputStream)
+        outputStream.write(syncFlag.toByteArray(StandardCharsets.UTF_8))
         outputStream.write(line1.toByteArray(StandardCharsets.UTF_8))
-        outputStream.write(newLine.toByteArray(StandardCharsets.UTF_8))
         outputStream.write(line2.toByteArray(StandardCharsets.UTF_8))
-        outputStream.write(newLine.toByteArray(StandardCharsets.UTF_8))
+        outputStream.close()
 
         // when
-        val linesRead = inputStream.readNonBlockingInput()
+        val linesRead = ProjectInputReader.extractProjectString(inputStream)
 
         // then
-        Assertions.assertThat(linesRead).doesNotContain(newLine)
+        Assertions.assertThat(linesRead).isEqualTo(line2)
     }
 }

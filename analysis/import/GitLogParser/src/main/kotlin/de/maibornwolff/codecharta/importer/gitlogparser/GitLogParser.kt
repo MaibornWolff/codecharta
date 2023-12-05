@@ -14,6 +14,8 @@ import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import de.maibornwolff.codecharta.tools.interactiveparser.util.CodeChartaConstants
+import de.maibornwolff.codecharta.tools.pipeableparser.PipeableParser
+import de.maibornwolff.codecharta.tools.pipeableparser.PipeableParserSyncFlag
 import de.maibornwolff.codecharta.util.ResourceSearchHelper
 import org.mozilla.universalchardet.UniversalDetector
 import picocli.CommandLine
@@ -36,7 +38,7 @@ class GitLogParser(
     private val input: InputStream = System.`in`,
     private val output: PrintStream = System.out,
     private val error: PrintStream = System.err
-) : Callable<Void>, InteractiveParser {
+) : Callable<Void>, InteractiveParser, PipeableParser {
 
     private val inputFormatNames = GIT_LOG_NUMSTAT_RAW_REVERSED
 
@@ -95,7 +97,7 @@ class GitLogParser(
 
     @Throws(IOException::class)
     override fun call(): Void? {
-        print(" ")
+        logPipeableParserSyncSignal(PipeableParserSyncFlag.SYNC_FLAG)
         return null
     }
 

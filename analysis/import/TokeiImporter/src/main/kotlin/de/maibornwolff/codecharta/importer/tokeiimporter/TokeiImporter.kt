@@ -8,11 +8,13 @@ import de.maibornwolff.codecharta.importer.tokeiimporter.strategy.TokeiTwelveStr
 import de.maibornwolff.codecharta.model.AttributeType
 import de.maibornwolff.codecharta.model.AttributeTypes
 import de.maibornwolff.codecharta.model.ProjectBuilder
+import de.maibornwolff.codecharta.serialization.ProjectInputReader
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
-import de.maibornwolff.codecharta.serialization.readNonBlockingInput
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import de.maibornwolff.codecharta.tools.interactiveparser.util.CodeChartaConstants
+import de.maibornwolff.codecharta.tools.pipeableparser.PipeableParser
+import de.maibornwolff.codecharta.tools.pipeableparser.PipeableParserSyncFlag
 import de.maibornwolff.codecharta.util.InputHelper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -35,7 +37,7 @@ class TokeiImporter(
     private val input: InputStream = System.`in`,
     private val output: PrintStream = System.out,
     private val error: PrintStream = System.err
-) : Callable<Void>, InteractiveParser {
+) : Callable<Void>, InteractiveParser, PipeableParser {
 
     private val logger = KotlinLogging.logger {}
 
@@ -85,7 +87,8 @@ class TokeiImporter(
 
     @Throws(IOException::class)
     override fun call(): Void? {
-        print(" ")
+        logPipeableParserSyncSignal(PipeableParserSyncFlag.SYNC_FLAG)
+
         projectBuilder = ProjectBuilder()
         val root = getInput() ?: return null
         runBlocking(Dispatchers.Default) {
@@ -125,7 +128,7 @@ class TokeiImporter(
                 }
             } else {
                 launch {
-                    val projectString: String = input.readNonBlockingInput()
+                    val projectString: String = ProjectInputReader.extractProjectString(input)
                     if (projectString.isNotEmpty()) {
                         root = JsonParser.parseString(projectString)
                     } else {

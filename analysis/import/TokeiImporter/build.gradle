@@ -1,6 +1,7 @@
 dependencies {
     implementation project(':model')
     implementation project(':tools:InteractiveParser')
+    implementation project(':tools:PipeableParser')
 
     implementation group: 'info.picocli', name: 'picocli', version: picocli_version
     implementation group: 'io.fastjson', name: 'boon', version: boon_version
