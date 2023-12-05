@@ -7,7 +7,6 @@ import java.io.InputStream
 import java.io.InputStreamReader
 import java.nio.charset.StandardCharsets
 import java.util.Scanner
-import java.util.zip.GZIPInputStream
 
 object ProjectInputReader {
     /**
@@ -31,8 +30,6 @@ object ProjectInputReader {
             return extractProjectString(BufferedInputStream(input))
         }
 
-        println(GZIPInputStream.GZIP_MAGIC.toByte())
-
         val isSyncSignalContained = isSyncSignalContained(input, availableBytes, maxBufferSize)
 
         if (isSyncSignalContained) {
@@ -53,7 +50,8 @@ object ProjectInputReader {
             val bytesRead = reader.read(charBuffer)
             stringBuilder.appendRange(charBuffer, 0, bytesRead)
         }
-        return stringBuilder.toString()
+        val content = stringBuilder.toString()
+        return content.replace(Regex("[\\n\\r]"), "")
     }
 
     private fun isSyncSignalContained(input: InputStream, availableBytes: Int, maxBufferSize: Int): Boolean {
