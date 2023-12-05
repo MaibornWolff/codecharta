@@ -12,6 +12,8 @@ import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import de.maibornwolff.codecharta.tools.interactiveparser.util.CodeChartaConstants
+import de.maibornwolff.codecharta.tools.pipeableparser.PipeableParser
+import de.maibornwolff.codecharta.tools.pipeableparser.PipeableParserSyncFlag
 import de.maibornwolff.codecharta.util.InputHelper
 import de.maibornwolff.codecharta.util.ResourceSearchHelper
 import org.mozilla.universalchardet.UniversalDetector
@@ -35,7 +37,7 @@ class SVNLogParser(
     private val input: InputStream = System.`in`,
     private val output: PrintStream = System.out,
     private val error: PrintStream = System.err
-) : Callable<Void>, InteractiveParser {
+) : Callable<Void>, InteractiveParser, PipeableParser {
 
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
@@ -74,7 +76,7 @@ class SVNLogParser(
                 "weeks_with_commits",
                 "highly_coupled_files",
                 "median_coupled_files"
-            )
+                                               )
 
             return when (inputFormatNames) {
                 SVN_LOG -> MetricsFactory(nonChurnMetrics)
@@ -108,7 +110,7 @@ class SVNLogParser(
 
     @Throws(IOException::class)
     override fun call(): Void? {
-        print(" ")
+        logPipeableParserSyncSignal(PipeableParserSyncFlag.SYNC_FLAG)
 
         if (!InputHelper.isInputValidAndNotNull(arrayOf(file), canInputContainFolders = false)) {
             throw IllegalArgumentException("Input invalid file for SVNLogParser, stopping execution...")
