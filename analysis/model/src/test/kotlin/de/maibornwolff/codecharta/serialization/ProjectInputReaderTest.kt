@@ -56,40 +56,7 @@ class ProjectInputReaderTest {
         // given
         val syncFlag = PipeableParserSyncFlag.SYNC_FLAG.value
         val line1 = "line1"
-<<<<<<< Updated upstream
-        val line2 = "line2"
-        val line3 = "line3"
-        val newLine = "\n"
-        val expectedResult = buildString {
-            append(line1)
-            append(line2)
-            append(line3)
-        }
-        val inputStream = PipedInputStream()
-        val outputStream = PipedOutputStream(inputStream)
-        outputStream.write(line1.toByteArray(StandardCharsets.UTF_8))
-        outputStream.write(newLine.toByteArray(StandardCharsets.UTF_8))
-        outputStream.write(line2.toByteArray(StandardCharsets.UTF_8))
-        outputStream.write(newLine.toByteArray(StandardCharsets.UTF_8))
-        outputStream.write(line3.toByteArray(StandardCharsets.UTF_8))
-        outputStream.write(newLine.toByteArray(StandardCharsets.UTF_8))
-
-        // when
-        val linesRead = ProjectInputReader.extractProjectString(inputStream)
-
-        // then
-        assertEquals(expectedResult, linesRead)
-    }
-
-    @Test
-    fun `Should remove new line characters when provided with multiline input stream`() {
-        // given
-        val line1 = "line1"
-        val line2 = "line2"
-        val newLine = "\n"
-=======
         val line2 = "{\"data\":\"data\"}"
->>>>>>> Stashed changes
 
         val inputStream = PipedInputStream()
         val outputStream = PipedOutputStream(inputStream)
