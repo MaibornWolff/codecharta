@@ -38,7 +38,7 @@ export class CodeMapBuilding {
 		}
 	}
 
-	_decreaseLightnessForColor(color: string, value: number) {
+	private _decreaseLightnessForColor(color: string, value: number) {
 		const colorHSL = ColorConverter.hexToHSL(color)
 		colorHSL.decreaseLightness(value)
 		if (colorHSL.getLightness() < 10) {
@@ -106,12 +106,12 @@ export class CodeMapBuilding {
 		this._node = node
 	}
 
-	setDeltaColor(color: string) {
+	setInitialDeltaColor(color: string) {
 		this._defaultDeltaColor = color
 		this._deltaColor = color
 	}
 
-	setOnclickDeltaColor(color: string) {
+	setDeltaColor(color: string) {
 		this._deltaColor = color
 	}
 }
