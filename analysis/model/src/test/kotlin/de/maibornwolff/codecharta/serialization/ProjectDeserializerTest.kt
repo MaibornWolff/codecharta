@@ -2,6 +2,8 @@ package de.maibornwolff.codecharta.serialization
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import java.io.File
+import java.io.InputStream
 import java.io.StringReader
 
 class ProjectDeserializerTest {
@@ -34,7 +36,7 @@ class ProjectDeserializerTest {
     fun `should deserialize project from cc json string with api version 1_2 or lower`() {
         val expectedJsonString = this.javaClass.classLoader.getResource(EXAMPLE_JSON_VERSION_1_0)!!.readText()
 
-        val project = ProjectDeserializer.deserializeProject(expectedJsonString)
+        val project = ProjectDeserializer.deserializeProject("garbage xxx xxx " + expectedJsonString)
 
         assertThat(project.projectName).isEqualTo("201701poolobject")
         assertThat(project.size).isEqualTo(6)
@@ -62,7 +64,6 @@ class ProjectDeserializerTest {
         assertThat(node.children).isNotNull
     }
 
-    /*
     @Test
     fun `should deserialize project from cc json gz with api version 1_2 or lower`() {
         val expectedInputStream = this.javaClass.classLoader.getResourceAsStream(EXAMPLE_JSON_GZ_VERSION_1_0)!!
@@ -81,6 +82,4 @@ class ProjectDeserializerTest {
         assertThat(project!!.projectName).isEqualTo("201701poolobject")
         assertThat(project.size).isEqualTo(6)
     }
-
-     */
 }
