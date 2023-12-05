@@ -11,7 +11,7 @@ import java.util.Scanner
 object ProjectInputReader {
     /**
      * Extracts a JSON string representing a project from the given InputStream.
-     * Because piped bash commands run concurrently, pipeable ccsh-parser send a sync flag
+     * Because piped bash commands run concurrently, a pipeable ccsh-parser sends a sync flag
      * to signal other parsers to check for piped input.
      * A short wait ensures the availability of potential sync flags.
      *
@@ -19,8 +19,7 @@ object ProjectInputReader {
      * @return JSON string of the project, or an empty string if no valid data is found.
      */
     fun extractProjectString(input: InputStream): String {
-        Thread.sleep(1000)
-        val maxBufferSize = 1024
+        Thread.sleep(100)
         val availableBytes = input.available()
 
         if (availableBytes <= 0) {
@@ -30,7 +29,7 @@ object ProjectInputReader {
             return extractProjectString(BufferedInputStream(input))
         }
 
-        val isSyncSignalContained = isSyncSignalContained(input, availableBytes, maxBufferSize)
+        val isSyncSignalContained = isSyncSignalContained(input, availableBytes)
 
         if (isSyncSignalContained) {
             val scanner = Scanner(input)
@@ -43,7 +42,7 @@ object ProjectInputReader {
             return extractJsonObjectFromEndOfStream(stringBuilder.toString())
         }
 
-        val charBuffer = CharArray(maxBufferSize)
+        val charBuffer = CharArray(1024)
         val reader = BufferedReader(InputStreamReader(input, StandardCharsets.UTF_8))
         val stringBuilder = StringBuilder()
         while (reader.ready()) {
@@ -54,9 +53,9 @@ object ProjectInputReader {
         return content.replace(Regex("[\\n\\r]"), "")
     }
 
-    private fun isSyncSignalContained(input: InputStream, availableBytes: Int, maxBufferSize: Int): Boolean {
+    private fun isSyncSignalContained(input: InputStream, availableBytes: Int): Boolean {
 
-        val bufferSize = minOf(availableBytes, maxBufferSize)
+        val bufferSize = minOf(availableBytes, 1024)
         val buffer = ByteArray(bufferSize)
         input.mark(bufferSize)
         input.read(buffer, 0, bufferSize)
