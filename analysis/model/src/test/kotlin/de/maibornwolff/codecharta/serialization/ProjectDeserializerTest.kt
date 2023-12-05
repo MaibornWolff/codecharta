@@ -2,8 +2,6 @@ package de.maibornwolff.codecharta.serialization
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import java.io.File
-import java.io.InputStream
 import java.io.StringReader
 
 class ProjectDeserializerTest {
