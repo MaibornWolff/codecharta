@@ -100,6 +100,22 @@ describe("CodeMapArrowService", () => {
 			expect(threeSceneService["highlighted"]).toMatchSnapshot()
 			expect(threeSceneService["selected"]).toMatchSnapshot()
 		})
+		it("should restore to previous color if another building is selected in delta mode", async () => {
+			const nodes: Node[] = [
+				CODE_MAP_BUILDING_WITH_OUTGOING_EDGE_NODE.node,
+				CODE_MAP_BUILDING_WITH_INCOMING_EDGE_NODE.node,
+				DIFFERENT_NODE
+			]
+			threeSceneService["mapMesh"] = new CodeMapMesh(nodes, state.getValue(), true)
+
+			store.dispatch(setHeightMetric({ value: "mcc" }))
+
+			threeSceneService.selectBuilding(CODE_MAP_BUILDING_WITH_OUTGOING_EDGE_NODE)
+			threeSceneService.selectBuilding(CODE_MAP_BUILDING_WITH_INCOMING_EDGE_NODE)
+
+			expect(threeSceneService["selected"]).toMatchSnapshot()
+			expect(threeSceneService["mapMesh"].getBuildingByPath(CODE_MAP_BUILDING_WITH_OUTGOING_EDGE_NODE.node.path)).toMatchSnapshot()
+		})
 		it("should debounce the edge reset of buildings to improve performance", async () => {
 			const resetEdgesOfBuildingMock = jest.fn()
 			codeMapArrowService["resetEdgesOfBuildings"] = resetEdgesOfBuildingMock

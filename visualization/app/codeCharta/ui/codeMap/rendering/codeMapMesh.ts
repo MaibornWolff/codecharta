@@ -47,7 +47,7 @@ export class CodeMapMesh {
 
 	selectBuilding(building: CodeMapBuilding, color: string) {
 		building.setColor(color)
-		building.setOnclickDeltaColor(color)
+		building.setDeltaColor(color)
 		this.setVertexColor(building.id, building.getColorVector(), building.getDeltaColorVector())
 		this.updateVertices()
 	}
@@ -135,16 +135,16 @@ export class CodeMapMesh {
 		const { node } = building
 
 		if (node.flat) {
-			building.setDeltaColor(mapColors.flat)
+			building.setInitialDeltaColor(mapColors.flat)
 		} else if (node.deltas) {
 			const deltaValue = node.deltas[heightMetric]
 
 			if (deltaValue > 0) {
-				building.setDeltaColor(mapColors.positiveDelta)
+				building.setInitialDeltaColor(mapColors.positiveDelta)
 			}
 
 			if (deltaValue < 0) {
-				building.setDeltaColor(mapColors.negativeDelta)
+				building.setInitialDeltaColor(mapColors.negativeDelta)
 			}
 		}
 	}
