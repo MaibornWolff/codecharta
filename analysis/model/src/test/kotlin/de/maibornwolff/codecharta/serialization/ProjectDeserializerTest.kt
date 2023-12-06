@@ -34,7 +34,7 @@ class ProjectDeserializerTest {
     fun `should deserialize project from cc json string with api version 1_2 or lower`() {
         val expectedJsonString = this.javaClass.classLoader.getResource(EXAMPLE_JSON_VERSION_1_0)!!.readText()
 
-        val project = ProjectDeserializer.deserializeProject(expectedJsonString)
+        val project = ProjectDeserializer.deserializeProject("garbage xxx xxx " + expectedJsonString)
 
         assertThat(project.projectName).isEqualTo("201701poolobject")
         assertThat(project.size).isEqualTo(6)
