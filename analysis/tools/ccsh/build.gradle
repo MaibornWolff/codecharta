@@ -33,7 +33,6 @@ dependencies {
     def csvExporter = project(':export:CSVExporter')
     def rawTextParser = project(':parser:RawTextParser')
     def interactiveParser = project(':tools:InteractiveParser')
-    def pipeableParser = project(':tools:PipeableParser')
     def metricGardenerImporter = project(':import:MetricGardenerImporter')
 
     // first implementation is for dependency in main, testImplementation is so our test suite can find all other tests
@@ -51,7 +50,6 @@ dependencies {
     implementation structureModifier; testImplementation structureModifier.sourceSets.test.output
     implementation rawTextParser; testImplementation rawTextParser.sourceSets.test.output
     implementation interactiveParser; testImplementation interactiveParser.sourceSets.test.output
-    implementation pipeableParser; testImplementation pipeableParser.sourceSets.test.output
     implementation metricGardenerImporter; testImplementation metricGardenerImporter.sourceSets.test.output
 
     implementation group: 'info.picocli', name: 'picocli', version: picocli_version
@@ -70,8 +68,8 @@ jar {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     manifest {
         attributes 'Main-Class': mainClassName,
-            'Implementation-Title': 'CodeCharta ccsh',
-            'Implementation-Version': archiveVersion
+                'Implementation-Title': 'CodeCharta ccsh',
+                'Implementation-Version': archiveVersion
     }
     zip64 true
     exclude 'META-INF/*.RSA', 'META-INF/*.SF','META-INF/*.DSA'
@@ -89,5 +87,5 @@ startScripts{
 }
 
 test {
-    useJUnitPlatform()
+  useJUnitPlatform()
 }
