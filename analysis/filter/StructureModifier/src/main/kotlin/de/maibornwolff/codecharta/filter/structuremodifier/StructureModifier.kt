@@ -23,7 +23,7 @@ class StructureModifier(
     private val input: InputStream = System.`in`,
     private val output: PrintStream = System.out,
     private val error: PrintStream = System.err
-) : Callable<Void?>, InteractiveParser {
+) : Callable<Unit?>, InteractiveParser {
 
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     var help: Boolean = false
@@ -69,7 +69,7 @@ class StructureModifier(
         }
     }
 
-    override fun call(): Void? {
+    override fun call(): Unit? {
 
         project = readProject() ?: return null
 

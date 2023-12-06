@@ -56,7 +56,7 @@ import kotlin.system.exitProcess
         footer = [CodeChartaConstants.General.GENERIC_FOOTER]
 )
 
-class Ccsh : Callable<Void?> {
+class Ccsh : Callable<Unit?> {
 
     @CommandLine.Option(
         names = ["-v", "--version"],
@@ -71,7 +71,7 @@ class Ccsh : Callable<Void?> {
     @CommandLine.Option(names = ["-i", "--interactive"], description = ["starts interactive parser"])
     var shouldUseInteractiveShell: Boolean = false
 
-    override fun call(): Void? {
+    override fun call(): Unit? {
         // info: always run
 
         return null
@@ -245,9 +245,9 @@ class Ccsh : Callable<Void?> {
 }
 
 @CommandLine.Command(name = "install", description = ["[deprecated]: does nothing"])
-class Installer : Callable<Void?> {
+class Installer : Callable<Unit?> {
 
-    override fun call(): Void? {
+    override fun call(): Unit? {
         println("[deprecated]: does nothing")
         return null
     }

@@ -38,7 +38,7 @@ class GitLogParser(
     private val input: InputStream = System.`in`,
     private val output: PrintStream = System.out,
     private val error: PrintStream = System.err
-) : Callable<Void>, InteractiveParser, PipeableParser {
+) : Callable<Unit>, InteractiveParser, PipeableParser {
 
     private val inputFormatNames = GIT_LOG_NUMSTAT_RAW_REVERSED
 
@@ -96,7 +96,7 @@ class GitLogParser(
         }
 
     @Throws(IOException::class)
-    override fun call(): Void? {
+    override fun call(): Unit? {
         logPipeableParserSyncSignal(PipeableParserSyncFlag.SYNC_FLAG)
         return null
     }

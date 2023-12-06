@@ -19,7 +19,7 @@ import java.util.concurrent.Callable
 )
 class CSVImporter(
     private val output: PrintStream = System.out
-) : Callable<Void>, InteractiveParser {
+) : Callable<Unit>, InteractiveParser {
 
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
@@ -56,7 +56,7 @@ class CSVImporter(
     }
 
     @Throws(IOException::class)
-    override fun call(): Void? {
+    override fun call(): Unit? {
         if (!InputHelper.isInputValid(files.toTypedArray(), canInputContainFolders = false)) {
             throw IllegalArgumentException("Input invalid file for CSVImporter, stopping execution...")
         }

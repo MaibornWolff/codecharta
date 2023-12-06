@@ -100,4 +100,23 @@ class ProjectInputReaderTest {
         // then
         Assertions.assertThat(linesRead).isEqualTo(line2)
     }
+
+    @Test
+    fun `Should return stream content when no valid project at end of stream`() {
+        // given
+        val syncFlag = PipeableParserSyncFlag.SYNC_FLAG.value
+        val invalidProjectData = "data\":\"data\"}"
+
+        val inputStream = PipedInputStream()
+        val outputStream = PipedOutputStream(inputStream)
+        outputStream.write(syncFlag.toByteArray(StandardCharsets.UTF_8))
+        outputStream.write(invalidProjectData.toByteArray(StandardCharsets.UTF_8))
+        outputStream.close()
+
+        // when
+        val linesRead = ProjectInputReader.extractProjectString(inputStream)
+
+        // then
+        Assertions.assertThat(linesRead).isEqualTo(invalidProjectData)
+    }
 }
