@@ -3,7 +3,6 @@ dependencies {
     implementation group: 'io.github.microutils', name: 'kotlin-logging', version: kotlin_logging_version
     implementation group: 'org.jetbrains.kotlin', name: 'kotlin-reflect', version: kotlin_version
     implementation group: 'io.github.microutils', name: 'kotlin-logging-jvm', version: '2.1.23'
-    implementation project(':tools:PipeableParser')
 
     implementation group: 'info.picocli', name: 'picocli', version: picocli_version
     implementation group: 'org.slf4j', name: 'slf4j-simple', version: slf4j_version
@@ -13,7 +12,6 @@ dependencies {
     testImplementation group: 'org.assertj', name: 'assertj-core', version: assertj_version
     testImplementation group: 'io.mockk', name: 'mockk', version: mockk_version
     testImplementation group: 'org.skyscreamer', name: 'jsonassert', version: jsonassert_version
-    testImplementation project(':tools:PipeableParser')
 
     testRuntimeOnly group: 'org.jetbrains.kotlin', name: 'kotlin-reflect', version: kotlin_version
 }
