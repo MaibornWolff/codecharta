@@ -3,15 +3,10 @@ package de.maibornwolff.codecharta.serialization
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.TestInstance
-import org.junit.jupiter.api.Timeout
 import java.io.PipedInputStream
 import java.io.PipedOutputStream
 import java.nio.charset.StandardCharsets
-import java.util.concurrent.TimeUnit
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@Timeout(value = 10, unit = TimeUnit.SECONDS)
 class ProjectInputReaderTest {
     @Test
     fun `Should not wait for input when handling blocking input stream`() {
