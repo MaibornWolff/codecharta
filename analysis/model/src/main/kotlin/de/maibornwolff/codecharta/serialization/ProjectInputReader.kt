@@ -5,7 +5,6 @@ import java.io.BufferedInputStream
 import java.io.BufferedReader
 import java.io.InputStream
 import java.io.InputStreamReader
-import java.nio.charset.StandardCharsets
 import java.util.Scanner
 
 object ProjectInputReader {
@@ -29,7 +28,7 @@ object ProjectInputReader {
             return extractProjectString(BufferedInputStream(input))
         }
 
-        val isSyncSignalContained = isSyncSignalContained(input, availableBytes)
+        val isSyncSignalContained = containsSyncSignal(input)
 
         if (isSyncSignalContained) {
             val scanner = Scanner(input)
@@ -43,7 +42,7 @@ object ProjectInputReader {
         }
 
         val charBuffer = CharArray(1024)
-        val reader = BufferedReader(InputStreamReader(input, StandardCharsets.UTF_8))
+        val reader = BufferedReader(InputStreamReader(input))
         val stringBuilder = StringBuilder()
         while (reader.ready()) {
             val bytesRead = reader.read(charBuffer)
@@ -53,9 +52,8 @@ object ProjectInputReader {
         return content.replace(Regex("[\\n\\r]"), "")
     }
 
-    private fun isSyncSignalContained(input: InputStream, availableBytes: Int): Boolean {
-
-        val bufferSize = minOf(availableBytes, 1024)
+    private fun containsSyncSignal(input: InputStream): Boolean {
+        val bufferSize = 1024
         val buffer = ByteArray(bufferSize)
         input.mark(bufferSize)
         input.read(buffer, 0, bufferSize)
