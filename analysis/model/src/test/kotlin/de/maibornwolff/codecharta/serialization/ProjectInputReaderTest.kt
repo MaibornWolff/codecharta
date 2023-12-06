@@ -59,14 +59,12 @@ class ProjectInputReaderTest {
     @Test
     fun `Should discard newline characters when input contains newline characters`() {
         // given
-        val syncFlag = PipeableParserSyncFlag.SYNC_FLAG.value
         val line1 = "line1"
         val line2 = "line2"
         val newLine = "\n"
 
         val inputStream = PipedInputStream()
         val outputStream = PipedOutputStream(inputStream)
-        outputStream.write(syncFlag.toByteArray(StandardCharsets.UTF_8))
         outputStream.write(line1.toByteArray(StandardCharsets.UTF_8))
         outputStream.write(newLine.toByteArray(StandardCharsets.UTF_8))
         outputStream.write(line2.toByteArray(StandardCharsets.UTF_8))
@@ -104,12 +102,10 @@ class ProjectInputReaderTest {
     @Test
     fun `Should return stream content when no valid project at end of stream`() {
         // given
-        val syncFlag = PipeableParserSyncFlag.SYNC_FLAG.value
         val invalidProjectData = "data\":\"data\"}"
 
         val inputStream = PipedInputStream()
         val outputStream = PipedOutputStream(inputStream)
-        outputStream.write(syncFlag.toByteArray(StandardCharsets.UTF_8))
         outputStream.write(invalidProjectData.toByteArray(StandardCharsets.UTF_8))
         outputStream.close()
 
