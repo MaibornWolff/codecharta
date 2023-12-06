@@ -6,7 +6,7 @@ import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import de.maibornwolff.codecharta.tools.interactiveparser.util.CodeChartaConstants
-import de.maibornwolff.codecharta.util.CommaSeparatedStringToListConverter
+import de.maibornwolff.codecharta.util.CommaSeparatedParameterPreprocessor
 import de.maibornwolff.codecharta.util.InputHelper
 import mu.KotlinLogging
 import picocli.CommandLine
@@ -51,7 +51,7 @@ class StructureModifier(
     @CommandLine.Option(
             names = ["-r", "--remove"],
             description = ["node(s) to be removed"],
-            converter = [(CommaSeparatedStringToListConverter::class)]
+            preprocessor = CommaSeparatedParameterPreprocessor::class
     )
     private var remove: Array<String> = arrayOf()
 
