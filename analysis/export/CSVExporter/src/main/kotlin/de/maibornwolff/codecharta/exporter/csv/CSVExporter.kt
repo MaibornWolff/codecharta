@@ -27,7 +27,7 @@ import java.util.concurrent.Callable
         description = [CSVExporter.DESCRIPTION],
         footer = [CodeChartaConstants.General.GENERIC_FOOTER]
 )
-class CSVExporter() : Callable<Unit>, InteractiveParser {
+class CSVExporter() : Callable<Void>, InteractiveParser {
 
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
@@ -65,7 +65,7 @@ class CSVExporter() : Callable<Unit>, InteractiveParser {
     }
 
     @Throws(IOException::class)
-    override fun call(): Unit? {
+    override fun call(): Void? {
         if (maxHierarchy < 0) {
             throw IllegalArgumentException("depth-of-hierarchy must not be negative")
         }

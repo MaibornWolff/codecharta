@@ -25,7 +25,7 @@ import java.util.concurrent.Callable
 
 class MetricGardenerImporter(
     private val output: PrintStream = System.out
-) : Callable<Unit>, InteractiveParser {
+) : Callable<Void>, InteractiveParser {
 
     private val mapper = jacksonObjectMapper()
 
@@ -71,7 +71,7 @@ class MetricGardenerImporter(
     }
 
     @Throws(IOException::class)
-    override fun call(): Unit? {
+    override fun call(): Void? {
         if (!InputHelper.isInputValidAndNotNull(arrayOf(inputFile), canInputContainFolders = true)) {
             throw IllegalArgumentException("Input invalid file for MetricGardenerImporter, stopping execution...")
         }

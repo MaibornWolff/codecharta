@@ -21,7 +21,7 @@ import java.util.concurrent.Callable
 )
 class SourceMonitorImporter(
     private val output: PrintStream = System.out
-) : Callable<Unit>, InteractiveParser {
+) : Callable<Void>, InteractiveParser {
 
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
@@ -53,7 +53,7 @@ class SourceMonitorImporter(
     }
 
     @Throws(IOException::class)
-    override fun call(): Unit? {
+    override fun call(): Void? {
         if (!InputHelper.isInputValid(files.toTypedArray(), canInputContainFolders = false)) {
             throw IllegalArgumentException("Input invalid file for SourceMonitorImporter, stopping execution...")
         }

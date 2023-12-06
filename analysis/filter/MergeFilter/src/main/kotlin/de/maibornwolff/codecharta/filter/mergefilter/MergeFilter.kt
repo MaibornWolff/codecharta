@@ -20,7 +20,7 @@ import java.util.concurrent.Callable
 )
 class MergeFilter(
     private val output: PrintStream = System.out
-) : Callable<Unit?>, InteractiveParser {
+) : Callable<Void?>, InteractiveParser {
 
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     var help: Boolean = false
@@ -68,7 +68,7 @@ class MergeFilter(
         }
     }
 
-    override fun call(): Unit? {
+    override fun call(): Void? {
         val nodeMergerStrategy =
             when {
                 leafStrategySet -> LeafNodeMergerStrategy(addMissingNodes, ignoreCase)

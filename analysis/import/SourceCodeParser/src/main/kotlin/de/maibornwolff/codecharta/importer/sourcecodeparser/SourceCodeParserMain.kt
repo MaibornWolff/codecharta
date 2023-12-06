@@ -35,7 +35,7 @@ class SourceCodeParserMain(
         private val output: PrintStream,
         private val input: InputStream = System.`in`,
         private val error: PrintStream = System.err
-) : Callable<Unit>, InteractiveParser, PipeableParser {
+) : Callable<Void>, InteractiveParser, PipeableParser {
     // we need this constructor because ccsh requires an empty constructor
     constructor() : this(System.out)
 
@@ -105,7 +105,7 @@ class SourceCodeParserMain(
     }
 
     @Throws(IOException::class)
-    override fun call(): Unit? {
+    override fun call(): Void? {
         logPipeableParserSyncSignal(PipeableParserSyncFlag.SYNC_FLAG)
 
         if (!InputHelper.isInputValidAndNotNull(arrayOf(file), canInputContainFolders = true)) {

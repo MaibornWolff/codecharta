@@ -37,7 +37,7 @@ class TokeiImporter(
     private val input: InputStream = System.`in`,
     private val output: PrintStream = System.out,
     private val error: PrintStream = System.err
-) : Callable<Unit>, InteractiveParser, PipeableParser {
+) : Callable<Void>, InteractiveParser, PipeableParser {
 
     private val logger = KotlinLogging.logger {}
 
@@ -86,7 +86,7 @@ class TokeiImporter(
     }
 
     @Throws(IOException::class)
-    override fun call(): Unit? {
+    override fun call(): Void? {
         logPipeableParserSyncSignal(PipeableParserSyncFlag.SYNC_FLAG)
 
         projectBuilder = ProjectBuilder()

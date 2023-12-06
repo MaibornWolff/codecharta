@@ -15,7 +15,7 @@ import java.util.concurrent.Callable
         footer = [CodeChartaConstants.General.GENERIC_FOOTER]
 )
 
-class LogScanCommand : Callable<Unit>, InteractiveParser {
+class LogScanCommand : Callable<Void>, InteractiveParser {
 
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
@@ -62,7 +62,7 @@ class LogScanCommand : Callable<Unit>, InteractiveParser {
         const val DESCRIPTION = "git log parser log-scan - generates cc.json from a given git-log file"
     }
 
-    override fun call(): Unit? {
+    override fun call(): Void? {
         if (!InputHelper.isInputValidAndNotNull(arrayOf(gitLogFile), canInputContainFolders = false)) {
             throw IllegalArgumentException("Input invalid file for GitLogScan, stopping execution...")
         }

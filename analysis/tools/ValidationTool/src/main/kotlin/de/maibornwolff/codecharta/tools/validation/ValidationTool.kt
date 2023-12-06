@@ -14,7 +14,7 @@ import java.util.concurrent.Callable
         description = [ValidationTool.DESCRIPTION],
         footer = [CodeChartaConstants.General.GENERIC_FOOTER]
 )
-class ValidationTool : Callable<Unit?>, InteractiveParser {
+class ValidationTool : Callable<Void?>, InteractiveParser {
 
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     var help: Boolean = false
@@ -32,7 +32,7 @@ class ValidationTool : Callable<Unit?>, InteractiveParser {
         const val SCHEMA_PATH = "cc.json"
     }
 
-    override fun call(): Unit? {
+    override fun call(): Void? {
         if (!InputHelper.isInputValidAndNotNull(arrayOf(file), canInputContainFolders = false)) {
             throw IllegalArgumentException("Input invalid file for ValidationTool, stopping execution...")
         }
