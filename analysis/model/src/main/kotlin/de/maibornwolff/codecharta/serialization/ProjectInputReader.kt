@@ -18,7 +18,7 @@ object ProjectInputReader {
      * @return JSON string of the project, or an empty string if no valid data is found.
      */
     fun extractProjectString(input: InputStream): String {
-        Thread.sleep(1000)
+        Thread.sleep(100)
         val availableBytes = input.available()
 
         if (availableBytes <= 0) {
@@ -29,22 +29,20 @@ object ProjectInputReader {
         }
 
         val isSyncSignalContained = isSyncSignalContained(input, availableBytes)
+        val isProjectAtFrontOfStream = isJsonObjectAtFrontOfStream(input, availableBytes)
 
-        if (isSyncSignalContained) {
-            val scanner = Scanner(input)
-            val stringBuilder = StringBuilder()
-
-            while (scanner.hasNextLine()) {
-                stringBuilder.append(scanner.nextLine())
-            }
-
-            return extractJsonObjectFromEndOfStream(stringBuilder.toString())
+        if (!isSyncSignalContained and !isProjectAtFrontOfStream) {
+            return ""
         }
 
-        val buffer = CharArray(availableBytes)
-        val reader = InputStreamReader(input, StandardCharsets.UTF_8)
-        val bytesRead = reader.read(buffer, 0, availableBytes)
-        return StringBuilder().appendRange(buffer, 0, bytesRead).toString()
+        val scanner = Scanner(input)
+        val stringBuilder = StringBuilder()
+
+        while (scanner.hasNextLine()) {
+            stringBuilder.append(scanner.nextLine())
+        }
+
+        return extractJsonObjectFromEndOfStream(stringBuilder.toString())
     }
 
     private fun isSyncSignalContained(input: InputStream, availableBytes: Int): Boolean {
@@ -58,6 +56,20 @@ object ProjectInputReader {
         val syncSignalBytes = syncFlag.toByteArray()
         input.reset()
         return isSubarray(syncSignalBytes, buffer)
+    }
+
+    private fun isJsonObjectAtFrontOfStream(input: InputStream, availableBytes: Int): Boolean {
+        input.mark(availableBytes)
+        val buffer = CharArray(availableBytes)
+        val reader = InputStreamReader(input, StandardCharsets.UTF_8)
+        val bytesRead = reader.read(buffer, 0, availableBytes)
+        val content = StringBuilder().appendRange(buffer, 0, bytesRead).toString()
+        val openingBracket = "{".toCharArray()[0]
+        val closingBracket = "}".toCharArray()[0]
+        val lastClosingBracketIndex = content.lastIndexOf(closingBracket)
+        val firstOpeningBracketIndex = content.lastIndexOf(openingBracket)
+        input.reset()
+        return firstOpeningBracketIndex == 0 && lastClosingBracketIndex == -1
     }
 
     private fun extractJsonObjectFromEndOfStream(streamContent: String): String {
