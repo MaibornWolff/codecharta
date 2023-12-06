@@ -1,7 +1,14 @@
 package de.maibornwolff.codecharta.serialization
 
 import java.io.InputStream
-import java.lang.StringBuilder
+
+fun <R> InputStream.mapLines(transform: (String) -> R): List<R> {
+    val result = mutableListOf<R>()
+    forEachLine {
+        result.add(transform(it))
+    }
+    return result
+}
 
 /*
 Bash runs commands concurrently in a pipe chain, causing potential delays in input availability.
@@ -10,12 +17,10 @@ To signal piped projects, ccsh filters/importers send a blank to OutputStream at
 Subsequent commands detect this blank as a cue to wait.
 To allow time for the preceding command to send the blank, a brief delay precedes InputStream availability checks.
 */
-fun InputStream.readNonBlockingInput(): String {
-    Thread.sleep(1000)
-    val result = StringBuilder()
+fun InputStream.forEachLine(action: (String) -> Unit) {
     val reader = bufferedReader()
+    Thread.sleep(1000)
     while (reader.ready()) {
-        result.append(reader.readLine())
+        action(reader.readLine())
     }
-    return result.toString()
 }
