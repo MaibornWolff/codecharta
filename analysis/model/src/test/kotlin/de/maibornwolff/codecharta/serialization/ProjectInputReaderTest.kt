@@ -13,25 +13,20 @@ import java.util.concurrent.TimeUnit
 @Timeout(value = 15, unit = TimeUnit.SECONDS)
 class ProjectInputReaderTest {
     @Test
-    fun `Should not wait for input when pipeable parser sync flag is not set`() {
+    fun `Should not accept input when pipeable parser sync flag is not set`() {
         // given
         val line1 = "line1"
-        val line2 = "line2"
+        val newLine = "\n"
         val inputStream = PipedInputStream()
         val outputStream = PipedOutputStream(inputStream)
         outputStream.write(line1.toByteArray(StandardCharsets.UTF_8))
+        outputStream.write(newLine.toByteArray(StandardCharsets.UTF_8))
 
         // when
-        Thread {
-            Thread.sleep(5000)
-            outputStream.write(line2.toByteArray(StandardCharsets.UTF_8))
-            outputStream.close()
-        }.start()
-
         val linesRead = ProjectInputReader.extractProjectString(inputStream)
 
         // then
-        Assertions.assertThat(linesRead).isEqualTo(line1)
+        Assertions.assertThat(linesRead).isEmpty()
     }
 
     @Test
