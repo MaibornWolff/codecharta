@@ -27,7 +27,7 @@ class RawTextParser(
     private val input: InputStream = System.`in`,
     private val output: PrintStream = System.out,
     private val error: PrintStream = System.err,
-) : Callable<Void>, InteractiveParser, PipeableParser {
+) : Callable<Unit>, InteractiveParser, PipeableParser {
 
     private val logger = KotlinLogging.logger {}
 
@@ -94,7 +94,7 @@ class RawTextParser(
     }
 
     @Throws(IOException::class)
-    override fun call(): Void? {
+    override fun call(): Unit? {
         logPipeableParserSyncSignal(PipeableParserSyncFlag.SYNC_FLAG)
 
         if (!InputHelper.isInputValidAndNotNull(arrayOf(inputFile), canInputContainFolders = true)) {

@@ -17,7 +17,7 @@ import java.util.concurrent.Callable
     footer = ["Copyright(c) 2022, MaibornWolff GmbH"]
 )
 
-class RepoScanCommand : Callable<Void>, InteractiveParser {
+class RepoScanCommand : Callable<Unit>, InteractiveParser {
 
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
@@ -53,7 +53,7 @@ class RepoScanCommand : Callable<Void>, InteractiveParser {
         const val DESCRIPTION = "git log parser repo-scan - generates cc.json from an automatically generated git-log file"
     }
 
-    override fun call(): Void? {
+    override fun call(): Unit? {
         val repoPath: Path
         if (repoPathName == null || !InputHelper.isInputValid(arrayOf(File(repoPathName!!)), canInputContainFolders = true)) {
             throw IllegalArgumentException("Input invalid file for GitRepoScan, stopping execution...")

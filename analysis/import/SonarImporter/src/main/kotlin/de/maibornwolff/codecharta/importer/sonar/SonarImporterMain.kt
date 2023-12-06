@@ -25,7 +25,7 @@ import java.util.concurrent.Callable
 class SonarImporterMain(
     private val input: InputStream = System.`in`,
     private val output: PrintStream = System.out
-) : Callable<Void>, InteractiveParser {
+) : Callable<Unit>, InteractiveParser {
 
     @CommandLine.Option(
         names = ["-h", "--help"], usageHelp = true, description = [
@@ -88,7 +88,7 @@ class SonarImporterMain(
         return SonarMeasuresAPIImporter(measuresDatasource, metricsDatasource, sonarCodeURLLinker, translator, usePath)
     }
 
-    override fun call(): Void? {
+    override fun call(): Unit? {
         if (url == "" || projectId == "") {
             throw IllegalArgumentException("Input invalid Url or ProjectID for SonarImporter, stopping execution...")
         }

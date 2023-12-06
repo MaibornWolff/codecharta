@@ -36,7 +36,7 @@ class SVNLogParser(
     private val input: InputStream = System.`in`,
     private val output: PrintStream = System.out,
     private val error: PrintStream = System.err
-) : Callable<Void>, InteractiveParser, PipeableParser {
+) : Callable<Unit>, InteractiveParser, PipeableParser {
 
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
@@ -108,7 +108,7 @@ class SVNLogParser(
     }
 
     @Throws(IOException::class)
-    override fun call(): Void? {
+    override fun call(): Unit? {
         logPipeableParserSyncSignal(PipeableParserSyncFlag.SYNC_FLAG)
 
         if (!InputHelper.isInputValidAndNotNull(arrayOf(file), canInputContainFolders = false)) {

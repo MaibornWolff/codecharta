@@ -18,7 +18,7 @@ import java.util.concurrent.Callable
 )
 class EdgeFilter(
     private val output: PrintStream = System.out
-) : Callable<Void?>, InteractiveParser {
+) : Callable<Unit?>, InteractiveParser {
 
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     var help: Boolean = false
@@ -45,7 +45,7 @@ class EdgeFilter(
         }
     }
 
-    override fun call(): Void? {
+    override fun call(): Unit? {
         if (!InputHelper.isInputValidAndNotNull(arrayOf(source), canInputContainFolders = false)) {
             throw IllegalArgumentException("Input invalid file for EdgeFilter, stopping execution...")
         }

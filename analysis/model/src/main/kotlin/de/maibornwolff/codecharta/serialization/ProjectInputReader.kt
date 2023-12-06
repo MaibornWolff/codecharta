@@ -68,8 +68,8 @@ object ProjectInputReader {
 
     private fun extractJsonObjectFromEndOfStream(streamContent: String): String {
         var count = 0
-        val openingBracket = "{".toCharArray()[0]
-        val closingBracket = "}".toCharArray()[0]
+        val openingBracket = '{'
+        val closingBracket = '}'
         val lastClosingBracketIndex = streamContent.lastIndexOf(closingBracket)
         if (lastClosingBracketIndex == -1) {
             return streamContent
