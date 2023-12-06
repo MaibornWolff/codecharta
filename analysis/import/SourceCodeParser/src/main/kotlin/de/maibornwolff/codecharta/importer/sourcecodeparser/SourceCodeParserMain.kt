@@ -9,8 +9,6 @@ import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import de.maibornwolff.codecharta.tools.interactiveparser.util.CodeChartaConstants
-import de.maibornwolff.codecharta.tools.pipeableparser.PipeableParser
-import de.maibornwolff.codecharta.tools.pipeableparser.PipeableParserSyncFlag
 import de.maibornwolff.codecharta.util.InputHelper
 import de.maibornwolff.codecharta.util.ResourceSearchHelper
 import mu.KotlinLogging
@@ -32,10 +30,10 @@ import java.util.concurrent.Callable
         footer = [SourceCodeParserMain.FOOTER]
 )
 class SourceCodeParserMain(
-        private val output: PrintStream,
-        private val input: InputStream = System.`in`,
-        private val error: PrintStream = System.err
-) : Callable<Void>, InteractiveParser, PipeableParser {
+    private val outputStream: PrintStream,
+    private val input: InputStream = System.`in`,
+    private val error: PrintStream = System.err
+) : Callable<Void>, InteractiveParser {
     // we need this constructor because ccsh requires an empty constructor
     constructor() : this(System.out)
 
@@ -106,8 +104,7 @@ class SourceCodeParserMain(
 
     @Throws(IOException::class)
     override fun call(): Void? {
-        logPipeableParserSyncSignal(PipeableParserSyncFlag.SYNC_FLAG)
-
+        print(" ")
         if (!InputHelper.isInputValidAndNotNull(arrayOf(file), canInputContainFolders = true)) {
             throw IllegalArgumentException("Input invalid file for SourceCodeParser, stopping execution...")
         }
@@ -137,7 +134,7 @@ class SourceCodeParserMain(
 
     private fun getCsvOutputWriter(): Writer {
         return if (outputFile == null) {
-            OutputStreamWriter(output)
+            OutputStreamWriter(outputStream)
         } else {
             val outputName = outputFile!!.name
             BufferedWriter(FileWriter(OutputFileHandler.checkAndFixFileExtension(outputName, false, FileExtension.CSV)))
@@ -155,7 +152,7 @@ class SourceCodeParserMain(
         }
     }
 
-    private fun getJsonOutputStream() = OutputFileHandler.stream(outputFile?.absolutePath, output, compress)
+    private fun getJsonOutputStream() = OutputFileHandler.stream(outputFile?.absolutePath, outputStream, compress)
 
     override fun getDialog(): ParserDialogInterface = ParserDialog
     override fun isApplicable(resourceToBeParsed: String): Boolean {

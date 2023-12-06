@@ -5,8 +5,6 @@ import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import de.maibornwolff.codecharta.tools.interactiveparser.util.CodeChartaConstants
-import de.maibornwolff.codecharta.tools.pipeableparser.PipeableParser
-import de.maibornwolff.codecharta.tools.pipeableparser.PipeableParserSyncFlag
 import de.maibornwolff.codecharta.util.CommaSeparatedStringToListConverter
 import de.maibornwolff.codecharta.util.FileExtensionConverter
 import de.maibornwolff.codecharta.util.InputHelper
@@ -27,7 +25,7 @@ class RawTextParser(
     private val input: InputStream = System.`in`,
     private val output: PrintStream = System.out,
     private val error: PrintStream = System.err,
-) : Callable<Void>, InteractiveParser, PipeableParser {
+) : Callable<Void>, InteractiveParser {
 
     private val logger = KotlinLogging.logger {}
 
@@ -95,8 +93,7 @@ class RawTextParser(
 
     @Throws(IOException::class)
     override fun call(): Void? {
-        logPipeableParserSyncSignal(PipeableParserSyncFlag.SYNC_FLAG)
-
+        print(" ")
         if (!InputHelper.isInputValidAndNotNull(arrayOf(inputFile), canInputContainFolders = true)) {
             throw IllegalArgumentException("Input invalid file for RawTextParser, stopping execution...")
         }

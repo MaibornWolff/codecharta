@@ -2,7 +2,6 @@ dependencies {
     implementation project(':model')
     implementation project(':filter:MergeFilter')
     implementation project(':tools:InteractiveParser')
-    implementation project(':tools:PipeableParser')
 
     implementation group: 'org.apache.commons', name: 'commons-lang3', version: commons_lang3_version
     implementation group: 'info.picocli', name: 'picocli', version: picocli_version

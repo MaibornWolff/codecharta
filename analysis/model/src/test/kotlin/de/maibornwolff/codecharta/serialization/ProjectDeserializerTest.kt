@@ -62,7 +62,6 @@ class ProjectDeserializerTest {
         assertThat(node.children).isNotNull
     }
 
-    /*
     @Test
     fun `should deserialize project from cc json gz with api version 1_2 or lower`() {
         val expectedInputStream = this.javaClass.classLoader.getResourceAsStream(EXAMPLE_JSON_GZ_VERSION_1_0)!!
@@ -81,6 +80,4 @@ class ProjectDeserializerTest {
         assertThat(project!!.projectName).isEqualTo("201701poolobject")
         assertThat(project.size).isEqualTo(6)
     }
-
-     */
 }

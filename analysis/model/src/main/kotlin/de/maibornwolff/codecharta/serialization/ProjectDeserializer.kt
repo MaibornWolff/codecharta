@@ -36,7 +36,7 @@ object ProjectDeserializer {
 
     fun deserializeProject(input: InputStream): Project? {
         val content = CompressedStreamHandler.wrapInput(input)
-        val projectString = ProjectInputReader.extractProjectString(content)
+        val projectString = content.readNonBlockingInput()
         if (projectString.length <= 1) return null
 
         return try {
