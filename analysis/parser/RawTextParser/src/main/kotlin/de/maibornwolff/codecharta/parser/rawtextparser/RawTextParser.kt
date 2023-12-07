@@ -44,7 +44,7 @@ class RawTextParser(
 
     @CommandLine.Option(
         names = ["-m", "--metrics"],
-        description = ["metrics to be computed (select all if not specified)"],
+        description = ["comma-separated list of metrics to be computed (all available metrics are computed if not specified)"],
         paramLabel = "metrics",
         converter = [(CommaSeparatedStringToListConverter::class)]
     )
@@ -64,13 +64,13 @@ class RawTextParser(
 
     @CommandLine.Option(
             names = ["-e", "--exclude"],
-            description = ["exclude file/folder according to regex pattern"],
+            description = ["comma-separated list of regex patterns to exclude files/folders"],
             converter = [(CommaSeparatedStringToListConverter::class)])
     private var exclude: List<String> = listOf()
 
     @CommandLine.Option(
         names = ["-fe", "--file-extensions"],
-        description = ["parse only files with specified extensions (default: any)"],
+        description = ["comma-separated list of file-extensions to parse only those files (default: any)"],
         converter = [(FileExtensionConverter::class)]
     )
     private var fileExtensions: List<String> = listOf()

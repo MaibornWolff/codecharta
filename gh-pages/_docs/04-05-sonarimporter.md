@@ -5,41 +5,25 @@ title: "Sonar Importer"
 
 The Sonar-Importer generates visualisation data from SonarQube data through an API call to a SonarQube server.
 
-## Parameter and Usage
+## Usage and Parameters
 
-| Parameter                       | description                                                       |
-| ------------------------------- | ----------------------------------------------------------------- |
-| `URL`                           | url of sonarqube server                                           |
-| `PROJECT_ID`                    | sonarqube project id                                              |
-| `--merge-modules`               | merges modules in multi-module projects                           |
-| `-h, --help`                    | displays help                                                     |
-| `-m, --metrics=<metrics>`       | comma-sepetated list of metrics to import                         |
-| `-o, --outputFile=<outputFile>` | output File (or empty for stdout)                                 |
-| `-nc, --not-compressed`         | uncompresses outputfile to json format, if format of File is gzip |
-| `-u, --user=<user>`             | user token for connecting to remote sonar instance                |
-
-The command
+| Parameter                        | description                                                                                                                                                                                                                                          |
+|----------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `URL`                            | url of sonarqube server                                                                                                                                                                                                                              |
+| `PROJECT_ID`                     | sonarqube project id                                                                                                                                                                                                                                 |
+| `-h, --help`                     | Please locate:<br/> - sonar.host.url=https://sonar.foo<br/> - sonar.login=c123d456<br/> - sonar.projectKey=de.foo:bar<br/> That you use to upload your code to sonar.<br/> Then execute [sonarimport https://sonar.foo de.foo:<br/> bar -u c123d456] |
+| `-m, --metrics=<metrics>`        | comma-separated list of metrics to import                                                                                                                                                                                                            |
+| `--merge-modules`                | merges modules in multi-module projects                                                                                                                                                                                                              |
+| `-nc, --not-compressed`          | save uncompressed output File                                                                                                                                                                                                                        |
+| `-o, --output-file=<outputFile>` | output File                                                                                                                                                                                                                                          |
+| `-u, --user=<user>`              | user token for connecting to remote sonar instance                                                                                                                                                                                                   |
 
 ```
-ccsh sonarimport <url of server> <project id>
+Usage: ccsh sonarimport [-h] [--merge-modules] [-nc] [-o=<outputFile>]
+                        [-u=<user>] [-m=<metrics>]... URL PROJECT_ID
 ```
 
-prints the visualisation data to stdout (or a file if option `-o <filename>` is given).
-
-SonarImporter ignores the multi-module structure of sonar projects if the toggle `--merge-modules` is set.
-
-Further usage information may be retrieved through
-
-```
-ccsh sonarimport -h
-```
-
-_Alternatively you can use the interactive mode, if you type `ccsh` into your terminal and select the sonar importer._
-
-_Note_: If a project is piped into the [SourceCodeParser]({{site.baseurl}}{% link _docs/04-02-sourcecodeparser.md %}), the results and the piped project are merged.
-The resulting project has the project name specified for the SonarImporter.
-
-### Example
+### Examples
 
 ```
 ccsh sonarimport <url> <projectKey> --user=<userToken> --output-file=<fileName> --merge-modules=<Boolean>
