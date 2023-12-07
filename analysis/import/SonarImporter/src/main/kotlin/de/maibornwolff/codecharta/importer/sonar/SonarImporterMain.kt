@@ -9,6 +9,7 @@ import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import de.maibornwolff.codecharta.tools.interactiveparser.util.CodeChartaConstants
+import de.maibornwolff.codecharta.util.CommaSeparatedStringToListConverter
 import de.maibornwolff.codecharta.util.ResourceSearchHelper
 import picocli.CommandLine
 import java.io.File
@@ -52,7 +53,11 @@ class SonarImporterMain(
     @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File"])
     private var outputFile: String? = null
 
-    @CommandLine.Option(names = ["-m", "--metrics"], description = ["comma-separated list of metrics to import"])
+    @CommandLine.Option(
+            names = ["-m", "--metrics"],
+            description = ["comma-separated list of metrics to import"],
+            converter = [(CommaSeparatedStringToListConverter::class)]
+    )
     private var metrics = mutableListOf<String>()
 
     @CommandLine.Option(names = ["-u", "--user"], description = ["user token for connecting to remote sonar instance"])
