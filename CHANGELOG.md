@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [1.121.0] - 2023-12-07
+
 ### Added 🚀
 
 -   Add logging of absolute file paths of output files [#3414](https://github.com/MaibornWolff/codecharta/pull/3414)
