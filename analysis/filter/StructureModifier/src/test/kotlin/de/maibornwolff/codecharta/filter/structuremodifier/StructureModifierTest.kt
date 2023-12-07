@@ -16,119 +16,164 @@ import java.io.PrintStream
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class StructureModifierTest {
-    val errContent = ByteArrayOutputStream()
-    val originalErr = System.err
+    private val errContent = ByteArrayOutputStream()
+    private val originalErr = System.err
 
     @AfterEach
     fun afterTest() {
         unmockkAll()
+        errContent.flush()
     }
 
     @Test
-    fun `reads project from file`() {
+    fun `should read project when prodided with input file`() {
+        // when
         val cliResult = executeForOutput("", arrayOf("src/test/resources/sample_project.cc.json", "-r=/does/not/exist"))
 
+        // then
         assertThat(cliResult).contains(listOf("otherFile.java"))
     }
 
     @Test
-    fun `reads project piped input`() {
+    fun `should read project when receiving piped input`() {
+        // given
         val inputFilePath = "src/test/resources/sample_project.cc.json"
         val input = File(inputFilePath).bufferedReader().readLines().joinToString(separator = "") { it }
 
+        // when
         val cliResult = executeForOutput(input, arrayOf("-r=/does/not/exist"))
 
+        // then
         assertThat(cliResult).contains(listOf("otherFile.java"))
     }
 
     @Test
-    fun `processes only valid project files`() {
-        val originalError = System.err
-        val errorStream = ByteArrayOutputStream()
-        System.setErr(PrintStream(errorStream))
+    fun `should not produce output when provided with invalid project file`() {
+        // given
+        System.setErr(PrintStream(errContent))
 
+        // when
         executeForOutput("", arrayOf("src/test/resources/invalid_project.cc.json", "-p=2"))
-        System.setErr(originalError)
 
-        assertThat(errorStream.toString()).contains("invalid_project.cc.json is not a valid project")
+        // then
+        assertThat(errContent.toString()).contains("invalid_project.cc.json is not a valid project")
+
+        // clean up
+        System.setErr(originalErr)
     }
 
     @Test
-    fun `returns error for malformed piped input`() {
-        val originalError = System.err
-        val errorStream = ByteArrayOutputStream()
-        System.setErr(PrintStream(errorStream))
+    fun `should return error when given malformed piped input`() {
+        // given
         val input = "{this: 12}"
+        System.setErr(PrintStream(errContent))
 
+        // when
         executeForOutput(input, arrayOf("-r=/does/not/exist"))
 
-        System.setErr(originalError)
+        // then
+        assertThat(errContent.toString()).contains("The piped input is not a valid project")
 
-        assertThat(errorStream.toString()).contains("The piped input is not a valid project")
+        // clean up
+        System.setErr(originalErr)
     }
 
     @Test
-    fun `sets root for new subproject`() {
+    fun `should set the  root for new subproject when provided with new root`() {
+        // when
         val cliResult =
             executeForOutput("", arrayOf("src/test/resources/sample_project.cc.json", "-s=/root/src/folder3"))
 
+        // then
         assertThat(cliResult).contains("otherFile2.java")
         assertThat(cliResult).doesNotContain(listOf("src", "otherFile.java", "folder3"))
     }
 
     @Test
-    fun `removes nodes`() {
+    fun `should remove single node when given single folder to remove`() {
+        // when
         val cliResult = executeForOutput("", arrayOf("src/test/resources/sample_project.cc.json", "-r=/root/src"))
 
+        // then
         assertThat(cliResult).contains(listOf("root"))
         assertThat(cliResult).doesNotContain(listOf("src", "otherFile.java"))
     }
 
     @Test
-    fun `moves nodes`() {
+    fun `should move nodes when move-from flag is specified`() {
+        // when
         val cliResult = executeForOutput(
             "",
             arrayOf("src/test/resources/sample_project.cc.json", "-f=/root/src", "-t=/root/new123")
         )
 
+        // then
         assertThat(cliResult).contains("new123")
         assertThat(cliResult).doesNotContain("src")
     }
 
     @Test
-    fun `prints structure`() {
+    fun `should print structure accordingly when print-level is set`() {
+        // when
         val cliResult = executeForOutput("", arrayOf("src/test/resources/sample_project.cc.json", "-p=2"))
 
+        // then
         assertThat(cliResult).contains(listOf("folder3", "- - "))
     }
 
     @Test
-    fun `sets root and removes unused descriptors`() {
+    fun `should set root and remove unused descriptors when root specified`() {
+        // when
         val cliResult = executeForOutput("", arrayOf("src/test/resources/test_attributeDescriptors.json", "-s=/root/AnotherParentLeaf"))
         val resultProject = ProjectDeserializer.deserializeProject(cliResult)
+
+        // then
         assertThat(resultProject.attributeDescriptors.size).isEqualTo(3)
         assertThat(resultProject.attributeDescriptors["rloc"]).isNull()
     }
 
     @Test
-    fun `remove nodes and removes unused descriptors`() {
+    fun `should remove nodes and unused descriptors when provided with an input file containing unused descriptors`() {
+        // when
         val cliResult = executeForOutput("", arrayOf("src/test/resources/test_attributeDescriptors.json", "-r=/root/AnotherParentLeaf"))
         val resultProject = ProjectDeserializer.deserializeProject(cliResult)
+
+        // then
         assertThat(resultProject.attributeDescriptors.size).isEqualTo(3)
         assertThat(resultProject.attributeDescriptors["yrloc"]).isNull()
     }
 
     @Test
-    fun `should stop execution if input file is invalid`() {
+    fun `should stop execution when input file is invalid`() {
+        // given
         mockkObject(InputHelper)
         every {
             InputHelper.isInputValid(any(), any())
         } returns false
-
         System.setErr(PrintStream(errContent))
-        CommandLine(StructureModifier()).execute("thisDoesNotExist.cc.json").toString()
-        System.setErr(originalErr)
 
+        // when
+        CommandLine(StructureModifier()).execute("thisDoesNotExist.cc.json").toString()
+
+        // then
         assertThat(errContent.toString()).contains("Input invalid file for StructureModifier, stopping execution")
+
+        // clean up
+        System.setErr(originalErr)
+    }
+
+    @Test
+    fun `should remove all specified nodes when multiple values are provided for the remove flag`() {
+        // given
+        val file1 = "/root/src/main/file1.java"
+        val file2 = "/root/src/main/file2.java"
+        val nodesToRemove = listOf(file1, file2)
+
+        // when
+        val cliResult = executeForOutput("", arrayOf("src/test/resources/sample_project.cc.json", "--remove", "$nodesToRemove"))
+
+        // then
+        assertThat(cliResult).doesNotContain(file1)
+        assertThat(cliResult).doesNotContain(file2)
     }
 }

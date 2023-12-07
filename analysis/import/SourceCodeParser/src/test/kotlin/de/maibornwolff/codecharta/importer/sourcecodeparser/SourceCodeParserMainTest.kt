@@ -29,6 +29,7 @@ class SourceCodeParserMainTest {
     @AfterEach
     fun afterTest() {
         unmockkAll()
+        errContent.flush()
     }
 
     companion object {
@@ -81,7 +82,7 @@ class SourceCodeParserMainTest {
         System.setErr(PrintStream(errContent))
 
         // when
-        CommandLine(SourceCodeParserMain()).execute("thisDoesNotExist").toString()
+        CommandLine(SourceCodeParserMain()).execute("thisDoesNotExist")
 
         // then
         Assertions.assertThat(errContent.toString()).contains("Input invalid file for SourceCodeParser, stopping execution")
@@ -106,10 +107,27 @@ class SourceCodeParserMainTest {
         every { loggerMock.info(capture(infoMessagesLogged)) } returns Unit
 
         // when
-        CommandLine(SourceCodeParserMain()).execute(inputFilePath, "-o", outputFilePath, "-nc").toString()
+        CommandLine(SourceCodeParserMain()).execute(inputFilePath, "-o", outputFilePath, "-nc")
 
         // then
         verify { loggerMock.info(any<String>()) }
         Assertions.assertThat(infoMessagesLogged.any { e -> e.endsWith(absoluteOutputFilePath) }).isTrue()
+    }
+
+    @Test
+    fun `should exclude all specified files when multiple files are specified for the exclude flag`() {
+        // given
+        val inputFilePath = "src/test/resources/sampleproject"
+        val outputStream = ByteArrayOutputStream()
+        val fileToExclude1 = "foo.java"
+        val fileToExclude2 = "Java14.java"
+        val exclude = listOf(fileToExclude1, fileToExclude2)
+
+        // when
+        CommandLine(SourceCodeParserMain(PrintStream(outputStream))).execute(inputFilePath, "--exclude", "$exclude")
+
+        // then
+        Assertions.assertThat(outputStream.toString()).doesNotContain(fileToExclude1)
+        Assertions.assertThat(outputStream.toString()).doesNotContain(fileToExclude2)
     }
 }
