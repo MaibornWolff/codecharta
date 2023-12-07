@@ -49,7 +49,7 @@ class StructureModifier(
 
     @CommandLine.Option(
             names = ["-r", "--remove"],
-            description = ["node(s) to be removed"],
+            description = ["comma-separated list of node(s) to be removed"],
             converter = [(CommaSeparatedStringToListConverter::class)]
     )
     private var remove: Array<String> = arrayOf()

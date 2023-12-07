@@ -45,12 +45,12 @@ class SourceCodeParserMain(
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
 
-    @CommandLine.Option(names = ["-i", "--no-issues"], description = ["do not search for sonar issues"])
+    @CommandLine.Option(names = ["-ni", "--no-issues"], description = ["do not search for sonar issues"])
     private var findNoIssues = false
 
     @CommandLine.Option(
             names = ["-e", "--exclude"],
-            description = ["exclude file/folder according to regex pattern"],
+            description = ["comma-separated list of regex patterns to exclude files/folders"],
             converter = [(CommaSeparatedStringToListConverter::class)]
     )
     private var exclude: Array<String> = arrayOf()
@@ -74,7 +74,7 @@ class SourceCodeParserMain(
     @CommandLine.Option(names = ["-nc", "--not-compressed"], description = ["save uncompressed output File"])
     private var compress = true
 
-    @CommandLine.Option(names = ["-v", "--verbose"], description = ["display info messages from sonar plugins"])
+    @CommandLine.Option(names = ["--verbose"], description = ["display info messages from sonar plugins"])
     private var verbose = false
 
     @CommandLine.Parameters(arity = "1", paramLabel = "FOLDER or FILE", description = ["project folder or code file"])

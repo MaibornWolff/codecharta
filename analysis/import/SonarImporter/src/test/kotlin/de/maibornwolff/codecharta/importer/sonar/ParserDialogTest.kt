@@ -116,8 +116,8 @@ class ParserDialogTest {
         assertNull(parseResult.matchedOption("user"))
         assertEquals(parseResult.matchedOption("output-file").getValue<String>(), outputFileName)
         assertEquals(
-            listOf("metric1", "metric2"),
-            parseResult.matchedOption("metrics").getValue<ArrayList<String>>()
+            parseResult.matchedOption("metrics").getValue<ArrayList<String>>(),
+            listOf("metric1", "metric2")
         )
         assertEquals(parseResult.matchedOption("not-compressed").getValue<Boolean>(), compress)
         assertEquals(parseResult.matchedOption("merge-modules").getValue<Boolean>(), mergeModules)

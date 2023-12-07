@@ -26,25 +26,23 @@ The Source-Code-Parser is parser to generate code metrics from a source code fil
 -   bug
 -   sonar_issue_other
 
-## Parameter and Usage
+## Usage and Parameters
 
-| Parameter                       | description                                                                            |
-| ------------------------------- | -------------------------------------------------------------------------------------- |
-| `FILE or FOLDER`                | file/project to parse                                                                  |
-| `--default-excludes`            | exclude build, target, dist and out folders as well as files/folders starting with '.' |
-| `-e, --exclude=<exclude>`       | exclude file/folders according to regex pattern                                        |
-| `-f, --format=<outputFormat>`   | the format to output (csv or json)                                                     |
-| `-h, --help`                    | displays help                                                                          |
-| `-i, --no-issues`               | do not search for sonar issues                                                         |
-| `-o, --outputFile=<outputFile>` | output File (or empty for stdout)                                                      |
-| `-nc, --not-compressed`         | save uncompressed output file (instead of gzip)                                        |
-| `-v, --verbose`                 | display info messages from sonar plugin                                                |
-
-### Usage
-
+| Parameter                        | description                                                                            |
+|----------------------------------|----------------------------------------------------------------------------------------|
+| `FOLDER or FILE`                 | project folder or code file                                                            |
+| `--default-excludes`             | exclude build, target, dist and out folders as well as files/folders starting with '.' |
+| `-e, --exclude=<exclude>`        | comma-separated list of regex patterns to exclude files/folders                        |
+| `-f, --format=<outputFormat>`    | the format to output (either json or csv)                                              |
+| `-h, --help`                     | displays this help and exits                                                           |
+| `-nc, --not-compressed`          | save uncompressed output File                                                          |
+| `-ni, --no-issues`               | do not search for sonar issues                                                         |
+| `-o, --output-file=<outputFile>` | output File (or empty for stdout)                                                      |
+| `--verbose`                      | display info messages from sonar plugins                                               |
 ```
-sourcecodeparser [-chiv] [--default-excludes] [-f=<outputFormat>]
-                 [-o=<outputFile>] [-e=<exclude>]... FOLDER or FILE
+Usage: ccsh sourcecodeparser [-h] [--default-excludes] [-nc] [-ni] [--verbose]
+                             [-f=<outputFormat>] [-o=<outputFile>]
+                             [-e=<exclude>]... FOLDER or FILE
 ```
 
 ## Run

@@ -11,27 +11,27 @@ This parser analyzes code regardless of the programming language used to generat
 
 ## Usage and Parameters
 
-| Parameter                                | description                                                                                        |
-| ---------------------------------------- | -------------------------------------------------------------------------------------------------- |
-| `FILE or FOLDER`                         | file/project to parse                                                                              |
-| `--max-indentation-level=<maxIndentLvl>` | maximum Indentation Level (default 10)                                                             |
-| `--tab-width=<tabWidth>`                 | tab width used (estimated if not provided)                                                         |
-| `--without-default-excludes`             | includes build, target, dist, resources and out folders as well as files/folders starting with '.' |
-| `-e, --exclude=<exclude>`                | exclude file/folders according to regex pattern                                                    |
-| `-fe, --file-extensions`                 | include only files with the specified file extensions (include all if not specified)               |
-| `-h, --help`                             | displays help                                                                                      |
-| `-m, --metrics[=<metrics>...]`           | available metrics: IndentationLevel (all available metrics are computed if not specified)          |
-| `-o, --output-file=<outputFile>`         | output File (or empty for stdout)                                                                  |
-| `-nc, --not-compressed`                  | uncompresses outputfile to json format, if format of File is gzip                                  |
-| `--verbose`                              | verbose mode                                                                                       |
+| Parameter                                 | description                                                                                          |
+|-------------------------------------------|------------------------------------------------------------------------------------------------------|
+| `FILE or FOLDER`                          | file/project to parseProject                                                                         |
+| `-e, --exclude=<exclude>`                 | comma-separated list of regex patterns to exclude files/folders                                      |
+| `-e, --exclude=<exclude>`                 | comma-separated list of regex patterns to exclude files/folders                                      |
+| `-fe, --file-extensions=<fileExtensions>` | comma-separated list of file-extensions to parse only those files (default: any)                     |
+| `-h, --help`                              | displays this help and exits                                                                         |
+| `-m, --metrics=metrics`                   | comma-separated list of metrics to be computed (all available metrics are computed if not specified) |
+| `--max-indentation-level=<maxIndentLvl>`  | maximum Indentation Level (default 10)                                                               |
+| `-nc, --not-compressed`                   | save uncompressed output File                                                                        |
+| `-o, --output-file=<outputFile>`          | output File (or empty for stdout)                                                                    |
+| `--tab-width=<tabWidth>`                  | tab width used (estimated if not provided)                                                           |
+| `--verbose`                               | verbose mode                                                                                         |
+| `--without-default-excludes`              | include build, target, dist, resources and out folders as well as files/folders starting with '.'    |
 
 ```
-Usage: rawtextparser [-h] [-nc] [--verbose] [--without-default-excludes]
-                     [--max-indentation-level=<maxIndentLvl>]
-                     [-o=<outputFile>] [--tab-width=<tabWidth>]
-                     [-e=<exclude>]... [-fe=<fileExtensions>]... [-m
-                     [=<metricNames>...]]... FILE or FOLDER
-
+Usage: ccsh rawtextparser [-h] [-nc] [--verbose] [--without-default-excludes]
+                          [--max-indentation-level=<maxIndentLvl>]
+                          [-o=<outputFile>] [--tab-width=<tabWidth>]
+                          [-e=<exclude>]... [-fe=<fileExtensions>]...
+                          [-m=metrics]... FILE or FOLDER
 ```
 
 generates cc.json from projects or source code files

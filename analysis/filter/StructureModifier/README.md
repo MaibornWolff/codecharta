@@ -9,27 +9,21 @@ The StructureModifier is used to modify the structure of .cc.json files. It enab
 
 The edges and blacklist entries associated with moved/removed nodes will be altered as well, while all attribute types will be copied.
 
-## Usage
+## Usage and Parameters
 
+| Parameter                          | description                                 |
+|------------------------------------|---------------------------------------------|
+| `[FILE]`                           | input project file                          |
+| `-f, --move-from=<moveFrom>`       | move nodes in project folder...             |
+| `-h, --help`                       | displays this help and exits                |
+| `-o, --output-file=<outputFile>`   | output File (or empty for stdout)           |
+| `-p, --print-levels=<printLevels>` | show first x layers of project hierarchy    |
+| `-r, --remove=<remove>`            | comma-separated list of nodes to be removed |
+| `-s, --set-root=<setRoot>`         | path within project to be extracted         |
+| `-t, --move-to=<moveTo>`           | ... move nodes to destination folder        |
 ```
-ccsh modify [-h] [-f=<moveFrom>] [-o=<outputFile>]
-                   [-p=<printLevels>] [-s=<setRoot>] [-t=<moveTo>]
-                   [-r=<remove>...]... [FILE]
-```
-
-### Parameters
-
-```
-      [FILE]                 input project file
-  -f, --move-from=<moveFrom>  move nodes in project folder...
-  -h, --help                 displays this help and exits
-  -o, --output-file=<outputFile>
-                             output File (or empty for stdout)
-  -p, --print-levels=<printLevels>
-                             show first x layers of project hierarchy
-  -r, --remove=<remove>...   node(s) to be removed
-  -s, --set-root=<setRoot>    path within project to be extracted
-  -t, --move-to=<moveTo>      ... move nodes to destination folder
+Usage: ccsh modify [-h] [-f=<moveFrom>] [-o=<outputFile>] [-p=<printLevels>]
+                   [-s=<setRoot>] [-t=<moveTo>] [-r=<remove>]... [FILE]
 ```
 
 ## Examples
