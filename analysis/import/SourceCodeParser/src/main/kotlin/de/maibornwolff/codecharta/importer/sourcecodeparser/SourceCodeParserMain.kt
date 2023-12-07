@@ -11,6 +11,7 @@ import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import de.maibornwolff.codecharta.tools.interactiveparser.util.CodeChartaConstants
 import de.maibornwolff.codecharta.tools.pipeableparser.PipeableParser
 import de.maibornwolff.codecharta.tools.pipeableparser.PipeableParserSyncFlag
+import de.maibornwolff.codecharta.util.CommaSeparatedStringToListConverter
 import de.maibornwolff.codecharta.util.InputHelper
 import de.maibornwolff.codecharta.util.ResourceSearchHelper
 import mu.KotlinLogging
@@ -47,7 +48,11 @@ class SourceCodeParserMain(
     @CommandLine.Option(names = ["-i", "--no-issues"], description = ["do not search for sonar issues"])
     private var findNoIssues = false
 
-    @CommandLine.Option(names = ["-e", "--exclude"], description = ["exclude file/folder according to regex pattern"])
+    @CommandLine.Option(
+            names = ["-e", "--exclude"],
+            description = ["exclude file/folder according to regex pattern"],
+            converter = [(CommaSeparatedStringToListConverter::class)]
+    )
     private var exclude: Array<String> = arrayOf()
 
     @CommandLine.Option(

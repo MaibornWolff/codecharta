@@ -43,7 +43,6 @@ class RawTextParser(
     private var inputFile: File? = null
 
     @CommandLine.Option(
-        arity = "0..",
         names = ["-m", "--metrics"],
         description = ["metrics to be computed (select all if not specified)"],
         paramLabel = "metrics",

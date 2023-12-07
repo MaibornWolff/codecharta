@@ -6,6 +6,7 @@ import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import de.maibornwolff.codecharta.tools.interactiveparser.util.CodeChartaConstants
+import de.maibornwolff.codecharta.util.CommaSeparatedStringToListConverter
 import de.maibornwolff.codecharta.util.InputHelper
 import mu.KotlinLogging
 import picocli.CommandLine
@@ -35,7 +36,6 @@ class StructureModifier(
     private var setRoot: String? = null
 
     @CommandLine.Option(
-        arity = "1",
         names = ["-p", "--print-levels"],
         description = ["show first x layers of project hierarchy"]
     )
@@ -47,7 +47,11 @@ class StructureModifier(
     @CommandLine.Option(names = ["-f", "--move-from"], description = ["move nodes in project folder..."])
     private var moveFrom: String? = null
 
-    @CommandLine.Option(arity = "1..*", names = ["-r", "--remove"], description = ["node(s) to be removed"])
+    @CommandLine.Option(
+            names = ["-r", "--remove"],
+            description = ["node(s) to be removed"],
+            converter = [(CommaSeparatedStringToListConverter::class)]
+    )
     private var remove: Array<String> = arrayOf()
 
     @CommandLine.Option(names = ["-t", "--move-to"], description = ["... move nodes to destination folder"])
