@@ -12,7 +12,7 @@ This parser analyzes code regardless of the programming language used to generat
 ## Usage and Parameters
 
 | Parameter                                 | description                                                                                          |
-|-------------------------------------------|------------------------------------------------------------------------------------------------------|
+| ----------------------------------------- | ---------------------------------------------------------------------------------------------------- |
 | `FILE or FOLDER`                          | file/project to parseProject                                                                         |
 | `-e, --exclude=<exclude>`                 | comma-separated list of regex patterns to exclude files/folders                                      |
 | `-e, --exclude=<exclude>`                 | comma-separated list of regex patterns to exclude files/folders                                      |
