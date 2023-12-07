@@ -29,7 +29,7 @@ The Source-Code-Parser is parser to generate code metrics from a source code fil
 ## Usage and Parameters
 
 | Parameter                        | description                                                                            |
-|----------------------------------|----------------------------------------------------------------------------------------|
+| -------------------------------- | -------------------------------------------------------------------------------------- |
 | `FOLDER or FILE`                 | project folder or code file                                                            |
 | `--default-excludes`             | exclude build, target, dist and out folders as well as files/folders starting with '.' |
 | `-e, --exclude=<exclude>`        | comma-separated list of regex patterns to exclude files/folders                        |
@@ -39,6 +39,7 @@ The Source-Code-Parser is parser to generate code metrics from a source code fil
 | `-ni, --no-issues`               | do not search for sonar issues                                                         |
 | `-o, --output-file=<outputFile>` | output File (or empty for stdout)                                                      |
 | `--verbose`                      | display info messages from sonar plugins                                               |
+
 ```
 Usage: ccsh sourcecodeparser [-h] [--default-excludes] [-nc] [-ni] [--verbose]
                              [-f=<outputFormat>] [-o=<outputFile>]
