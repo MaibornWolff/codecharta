@@ -9,6 +9,7 @@ import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import de.maibornwolff.codecharta.tools.interactiveparser.util.CodeChartaConstants
+import de.maibornwolff.codecharta.util.CommaSeparatedParameterPreprocessor
 import de.maibornwolff.codecharta.util.CommaSeparatedStringToListConverter
 import de.maibornwolff.codecharta.util.ResourceSearchHelper
 import picocli.CommandLine
@@ -56,7 +57,8 @@ class SonarImporterMain(
     @CommandLine.Option(
             names = ["-m", "--metrics"],
             description = ["comma-separated list of metrics to import"],
-            converter = [(CommaSeparatedStringToListConverter::class)]
+            converter = [(CommaSeparatedStringToListConverter::class)],
+            preprocessor = CommaSeparatedParameterPreprocessor::class
     )
     private var metrics = mutableListOf<String>()
 

@@ -7,6 +7,7 @@ import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import de.maibornwolff.codecharta.tools.interactiveparser.util.CodeChartaConstants
 import de.maibornwolff.codecharta.tools.pipeableparser.PipeableParser
 import de.maibornwolff.codecharta.tools.pipeableparser.PipeableParserSyncFlag
+import de.maibornwolff.codecharta.util.CommaSeparatedParameterPreprocessor
 import de.maibornwolff.codecharta.util.CommaSeparatedStringToListConverter
 import de.maibornwolff.codecharta.util.FileExtensionConverter
 import de.maibornwolff.codecharta.util.InputHelper
@@ -46,7 +47,8 @@ class RawTextParser(
         names = ["-m", "--metrics"],
         description = ["comma-separated list of metrics to be computed (all available metrics are computed if not specified)"],
         paramLabel = "metrics",
-        converter = [(CommaSeparatedStringToListConverter::class)]
+        converter = [(CommaSeparatedStringToListConverter::class)],
+        preprocessor = CommaSeparatedParameterPreprocessor::class
     )
     private var metricNames: List<String> = listOf()
 
@@ -65,13 +67,16 @@ class RawTextParser(
     @CommandLine.Option(
             names = ["-e", "--exclude"],
             description = ["comma-separated list of regex patterns to exclude files/folders"],
-            converter = [(CommaSeparatedStringToListConverter::class)])
+            converter = [(CommaSeparatedStringToListConverter::class)],
+            preprocessor = CommaSeparatedParameterPreprocessor::class
+    )
     private var exclude: List<String> = listOf()
 
     @CommandLine.Option(
         names = ["-fe", "--file-extensions"],
         description = ["comma-separated list of file-extensions to parse only those files (default: any)"],
-        converter = [(FileExtensionConverter::class)]
+        converter = [(FileExtensionConverter::class)],
+        preprocessor = CommaSeparatedParameterPreprocessor::class
     )
     private var fileExtensions: List<String> = listOf()
 

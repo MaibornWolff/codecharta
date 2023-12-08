@@ -11,6 +11,7 @@ import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import de.maibornwolff.codecharta.tools.interactiveparser.util.CodeChartaConstants
 import de.maibornwolff.codecharta.tools.pipeableparser.PipeableParser
 import de.maibornwolff.codecharta.tools.pipeableparser.PipeableParserSyncFlag
+import de.maibornwolff.codecharta.util.CommaSeparatedParameterPreprocessor
 import de.maibornwolff.codecharta.util.CommaSeparatedStringToListConverter
 import de.maibornwolff.codecharta.util.InputHelper
 import de.maibornwolff.codecharta.util.ResourceSearchHelper
@@ -51,7 +52,8 @@ class SourceCodeParserMain(
     @CommandLine.Option(
             names = ["-e", "--exclude"],
             description = ["comma-separated list of regex patterns to exclude files/folders"],
-            converter = [(CommaSeparatedStringToListConverter::class)]
+            converter = [(CommaSeparatedStringToListConverter::class)],
+            preprocessor = CommaSeparatedParameterPreprocessor::class
     )
     private var exclude: Array<String> = arrayOf()
 
