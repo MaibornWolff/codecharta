@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
--  Fix github-pages not showing documentation [#3436](https://github.com/MaibornWolff/codecharta/pull/3436)
+-   Fix github-pages not showing documentation [#3436](https://github.com/MaibornWolff/codecharta/pull/3436)
 
 ## [1.121.0] - 2023-12-07
 
