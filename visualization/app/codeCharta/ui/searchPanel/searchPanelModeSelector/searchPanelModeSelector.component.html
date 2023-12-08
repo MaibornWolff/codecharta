@@ -1,9 +1,0 @@
-<mat-button-toggle-group [value]="searchPanelMode">
-	<mat-button-toggle id="tree-view" value="tree-view" (click)="updateSearchPanelMode('treeView')">
-		<i class="fa fa-sitemap"></i>
-	</mat-button-toggle>
-	<mat-button-toggle id="blacklist" value="blacklist" (click)="updateSearchPanelMode('blacklist')">
-		<i class="fa fa-eye-slash"></i>
-		<div class="has-blacklist-items-indicator" [hidden]="hideBlacklistItemsIndicator$ | async"></div>
-	</mat-button-toggle>
-</mat-button-toggle-group>

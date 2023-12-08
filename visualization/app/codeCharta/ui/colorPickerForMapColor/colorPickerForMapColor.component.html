@@ -1,5 +1,0 @@
-<cc-labelled-color-picker
-	[hexColor]="(mapColors$ | async)[mapColorFor]"
-	[labels]="[mapColorFor | mapColorLabel : (colorRange$ | async) : (nodeMetricRange$ | async)]"
-	(onColorChange)="handleColorChange($event)"
-></cc-labelled-color-picker>

@@ -1,121 +1,101 @@
-<h1 align="center">
-  <br>
-  <a href="https://maibornwolff.github.io/codecharta/visualization/app/index.html?file=codecharta.cc.json.gz&file=codecharta_analysis.cc.json.gz"><img src="https://raw.githubusercontent.com/maibornwolff/codecharta/main/logo/codecharta_logo.svg" alt="CodeCharta" width="200"/></a>
-  <br>
-  CodeCharta
-  <br>
-</h1>
+# CodeCharta Docs
 
-<h4 align="center">a beautiful tool to help you visualize and understand code in 3D.</h4>
+The CodeCharta docs use [Jekyll](https://jekyllrb.com) and the [Minimal Mistakes (MM) Theme](https://mmistakes.github.io/minimal-mistakes/). The target of the docs are users (the ones that use the ccsh and the web version) and developers (the ones that maintain and extend CodeCharta). These audiences share similar concerns. As an example most users don't need to know how to write a new importer. They could benefit from the context view, however.
 
-<p align="center">
-  <a href="">
-    <img src="https://github.com/MaibornWolff/codecharta/actions/workflows/release.yml/badge.svg"
-         alt="Build Status">
-  </a>
-  <a href="https://sonarcloud.io/dashboard?id=maibornwolff-gmbh_codecharta_analysis">
-    <img src="https://sonarcloud.io/api/project_badges/measure?project=maibornwolff-gmbh_codecharta_analysis&metric=alert_status" alt="Quality Gate Analysis"></a>
-  <a href="https://sonarcloud.io/dashboard?id=maibornwolff-gmbh_codecharta_visualization">
-      <img src="https://sonarcloud.io/api/project_badges/measure?project=maibornwolff-gmbh_codecharta_visualization&metric=alert_status" alt="Quality Gate Visualization">
-  </a>
-</p>
+## Usage
 
-<p align="center">
-  <a href="#key-features">Key Features</a> •
-  <a href="#experimental-features">Experimental Features</a> •
-  <a href="#how-to-use">How To Use</a> •
-  <a href="#feedback">Feedback</a> •
-  <a href="#further-information">Further Info</a> •
-  <a href="#about-codecharta">About</a>
-</p>
+The generated docs can be viewed locally before being pushed to GitHub (see below). Please note that some files like the web version of CodeCharta are **generated** by `release.yml` when the release pipeline runs.
 
-![Screenshot of visualization](screenshot.png)
+### Local
 
-## Key Features
+1. [Install Ruby](https://www.ruby-lang.org/en/documentation/installation/) version 2.7.0 or above (check with `ruby -v`). Please be aware, that some OS come with an old Ruby version. [Rubyenv](https://github.com/rbenv/rbenv#installation) did wonders for me (you can skip these steps if you use rbenv already or have some other way to acquire ruby):
+    - `brew install rbenv`
+    - Add `eval "$(rbenv init -)"` to the `~/.bash_profile`
+    - Close terminal
+    - `which ruby` should now point to _~/.rbenv/shims/ruby_
+    - `rbenv install -v 2.7.4`
+    - OPTIONAL to create a `.ruby-version` in `gh-pages`
+    - `cd gh-pages` to go into the docs directory
+    - `rbenv local 2.7.4`
+    - `ruby -v` should now be 2.7.4 for this directory
+    - `bundle` to install all gems
+        - `gem install bundler:2.0.2` and `bundle update --bundler` in case the bundler needs to be updated first
+    - `bundle exec jekyll serve` to build the site and make it available on a local server
+    - Now browse to http://localhost:4000/codecharta/
+        - the path `/codecharta` is there because we added `baseurl` to our `_config.yml`
 
--   [CodeCharta Visualization](https://maibornwolff.github.io/codecharta/docs/visualization/):
+### GitHub
 
-    -   CC visualizes code bases as 3D cities, so that you can understand it - view the [Web Demo](https://maibornwolff.github.io/codecharta/visualization/app/index.html?file=codecharta.cc.json.gz&file=codecharta_analysis.cc.json.gz).
-    -   It uses code metrics from `.cc.json` files.
-    -   The imported files are validated using JSON Schema as defined in [generatedSchema.json](/visualization/app/codeCharta/util/generatedSchema.json).
-    -   You can change the way the file is displayed and save and later load it as a [Custom View](https://maibornwolff.github.io/codecharta/docs/custom-view/).
+GitHub uses Jekyll to [render static site](https://help.github.com/en/articles/about-github-pages-and-jekyll) content for Github-Pages. Content in a top-level _docs folder_ or in a _branch gh-pages_ is automatically rendered.
 
--   [CodeCharta Analysis](https://maibornwolff.github.io/codecharta/docs/analysis/):
-    -   CC Analysis is used to calculate or to import metrics from third party tools for a code base.
-    -   It generates `.cc.json` files for CC Visualization through a Command-Line-Tool.
-    -   It includes some pre-defined importers for e.g. [SonarQube](https://maibornwolff.github.io/codecharta/docs/sonar-importer), [SourceMonitor](https://maibornwolff.github.io/codecharta/docs/sourcemonitorimporter), [Git](https://maibornwolff.github.io/codecharta/docs/git-log-parser), generic [CSV](https://maibornwolff.github.io/codecharta/docs/csv-importer) data
-    -   It also includes commands to [validate]() and [merge]() multiple `.cc.json` files.
+GitHub does not support all Jekyll plugins however and only supports those it has [whitelisted](https://pages.github.com/versions/).
 
-## Experimental Features
+## Modify the docs
 
--   **In CodeCharta Visualization:**
+In case it's important the technical underpinnings of Jekyll and Minimal Mistakes are described in the [Tech Chapter](#tech).
 
-    -   **Suspicious Metrics:** Highlight files with suspicious metrics and a _risk profile analysis_ of the code based on the cyclomatic complexity.
+## Draw.io
 
-> **NOTE:** You can enable them from the settings panel.
+The `assets/img/*.drawio.*` files can be opened directly with [Draw.io](https://about.draw.io/integrations/#integrations_offline). Download Draw.io, click on File->Open and select the image file. Yes you can open an image file directly. This is because we exported the image with a complete copy of the diagram in the meta-data: File->Export As->PNG then "Include copy of my diagram".
 
-## Requirements
+## Tech
 
-For using CodeCharta the following needs to be installed on your system:
+Jekyll is a static site renderer written in Ruby and most notably it is directly supported by GitHub. By default, it does not provide any look-and-feel for your sites. MM provides that theme (css, layouts, some js etc.) and also adds very nice things like search.
 
--   Node >= 16
--   Java >= 11
+At first sight Jekyll is very simple. Basically "all" it does is copy files from your project structure to the generated folder called `_site`. So if you place an `index.html` in your project root, it'll also be in the root of `_site`. What creates value is that Jekyll can also modify the files during the copy operation, provided we tell it to:
 
-## How To Use
+-   either we place a file in a [special Jekyll folder](https://jekyllrb.com/docs/structure/) like `_pages` or `_posts`
+-   a [custom collection folder](https://jekyllrb.com/docs/collections/) like `_docs`
+-   or we place special [front matter header](https://jekyllrb.com/docs/front-matter/) in the **beginning** of the file
 
-### How to use **Visualization**?
+The Front Matter Header in a html file:
 
--   **Online:** You can try the [web visualization](https://maibornwolff.github.io/codecharta/visualization/app/index.html?file=codecharta.cc.json&file=codecharta_analysis.cc.json) without any installation and explore the CodeCharta code (shown by default).
--   **Local:** See [here](visualization/README.md).
-
-### How to use **Analysis**?
-
--   Analysis is split into different parsers that generate `.cc.json` files. To run these parsers you need the [CodeCharta Shell](https://maibornwolff.github.io/codecharta/docs/ccsh/).
-
-In this example we will generate a `.cc.json` from [JUnit4](https://github.com/junit-team/junit4) using the [Source Code Parser](https://maibornwolff.github.io/codecharta/docs/source-code-parser) (that parses java projects).
-
-```bash
-# Install codecharta-analysis globally
-$ npm i -g codecharta-analysis
-# Clone the junit4 repository
-$ git clone https://github.com/junit-team/junit4
-# Parse sources with CodeCharta Shell
-$ ccsh sourcecodeparser junit4 -p junit4 -o junit4.source.cc.json
-# Now you can upload `junit4.source.cc.json` to CodeCharta Visualization
-```
-
-> **Note**
-> If you want to be guided through selecting the arguments. Just execute `ccsh` and you can run the parsers **interactively** with dialogs.
-
-## Feedback
-
-Have a **bug**, a **feature** request or any question? Please open [a new issue](https://github.com/MaibornWolff/codecharta/issues/new). Feedback is always welcome.
-
-Want to know what we are **working on**? Please check out [our board](https://app.zenhub.com/workspaces/codecharta-workspace-5cd16b609795a865159e7107/board) or install the Zenhub Firefox/Chrome plugin.
-
-Want to have even **more information**? Please check our [news](https://maibornwolff.github.io/codecharta/news/).
-
-## Further Information
-
--   [Docs](https://maibornwolff.github.io/codecharta/)
--   [Quickstart Guide](https://maibornwolff.github.io/codecharta/docs/quick-start-guide/)
--   [Coverage](https://maibornwolff.github.io/codecharta/visualization/coverage/lcov-report/)
--   [Sonarqube Visualization](https://sonarcloud.io/project/overview?id=maibornwolff-gmbh_codecharta_visualization)
--   [Sonarqube Analysis](https://sonarcloud.io/project/overview?id=maibornwolff-gmbh_codecharta_analysis)
-
-## About CodeCharta
-
--   [Releases](https://github.com/MaibornWolff/codecharta/releases)
--   [Changelog](CHANGELOG.md)
--   [Contributing](CONTRIBUTING.md)
--   [Code of Conduct](CODE_OF_CONDUCT.md)
--   [License](LICENSE.md)
-
-## License
-
-MIT
-
+```html
+---
+title: Some Title
+customVariable: Dave
 ---
 
-> [maibornwolff.de](https://www.maibornwolff.de) &nbsp;&middot;&nbsp;
-> GitHub [@MaibornWolff](https://github.com/maibornwolff)
+<p>Hi {{customVariable}}</p>
+```
+
+In all cases the file is processed using the [Liquid Template Engine](https://jekyllrb.com/docs/liquid/) which we can use to replace parts of the file with any variable that is available. Some variables like `{{date}}` are predefined by Jekyll. But we can also define our own custom variables like `{{customVariable}}` in the Front Matter Header or in the `_config.yml`.
+
+### Configuration
+
+Besides defining global variables, the `_config.yml` is also used to configure Jekyll and the MM Theme. It also contains some comments that explain what the variables do. To further understand what the variables do it's best to check out the [Jekyll Configuration](https://jekyllrb.com/docs/configuration/) and the [MM Configuration](https://mmistakes.github.io/minimal-mistakes/docs/configuration/). Please note that changes to the `_config.yml` won't be picked up by `bundle exec jekyll serve`. You need to stop and restart that command.
+
+-   Available [MM Layouts](https://mmistakes.github.io/minimal-mistakes/docs/layouts/)
+-   Create a [MM Image Gallery](https://mmistakes.github.io/minimal-mistakes/docs/helpers/#gallery)
+-   Change the [MM docs navigation list](https://mmistakes.github.io/minimal-mistakes/docs/layouts/#custom-sidebar-navigation-menu)
+-   Auto-generate [MM Table of Contents](https://mmistakes.github.io/minimal-mistakes/docs/helpers/#table-of-contents) for a page
+-   [Align text blocks with MM](https://mmistakes.github.io/minimal-mistakes/docs/utility-classes/#text-alignment)
+-   Make links standout more with [MM buttons](https://mmistakes.github.io/minimal-mistakes/docs/utility-classes/#buttons)
+-   Place special [MM Notice blocks](https://mmistakes.github.io/minimal-mistakes/docs/utility-classes/#notices) around text
+
+### Modifying the Template
+
+MM can be modified by copying files from MM directly and changing their content. Take a look at the files in `_includes`.
+
+### Markdown
+
+Jekyll uses kramdown to parse Markdown. Please take a look at its [qickref](https://kramdown.gettalong.org/syntax.html#links-and-images). Also, please use this format for internal links between markdown files: `[visualization]({{site.baseurl}}{% link _docs/06-01-visualization.md %})`. It has the benefit that the build will fail locally if a file cannot be found.
+
+## Troubleshoot Docs Generation
+
+### Port Occupied
+
+-   `netstat -vanp tcp | grep 4000`
+-   `kill <pid>`
+
+## Initial Project Creation
+
+-   `mkdir -p <project>/docs`
+-   `cd <project>`
+-   `rbenv local 2.6.3`
+-   `cd docs`
+-   `jekyll new .`
+-   Read [Minimal Mistakes Quickstart](https://mmistakes.github.io/minimal-mistakes/docs/quick-start-guide/)
+-   Set the remote theme: `remote_theme: "mmistakes/minimal-mistakes"`
+-   ???
+-   Profit
