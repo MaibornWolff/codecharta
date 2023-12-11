@@ -31,7 +31,7 @@ class SourceMonitorImporterTest {
         main(
             arrayOf(
                 "src/test/resources/sourcemonitor.csv",
-                "-nc",
+                "--not-compressed",
                 "-o=src/test/resources/sourcemonitor.cc.json"
                    )
             )
@@ -55,7 +55,7 @@ class SourceMonitorImporterTest {
         main(
             arrayOf(
                 "src/test/resources/sourcemonitor.csv",
-                "-nc",
+                "--not-compressed",
                 "-o=src/test/resources/sourcemonitor.cc.json"
             )
         )

@@ -33,7 +33,7 @@ class MergeFilterTest {
 
         System.setOut(PrintStream(outContent))
         System.setErr(PrintStream(errContent))
-        CommandLine(MergeFilter()).execute(projectLocation).toString()
+        CommandLine(MergeFilter()).execute(projectLocation, "--not-compressed").toString()
         System.setOut(originalOut)
         System.setErr(originalErr)
 
@@ -52,7 +52,7 @@ class MergeFilterTest {
     fun `should merge all indicated files`() {
         System.setOut(PrintStream(outContent))
         CommandLine(MergeFilter()).execute(
-            "src/test/resources/mergeFolderTest/file1.cc.json", "src/test/resources/mergeFolderTest/file2.cc.json"
+            "src/test/resources/mergeFolderTest/file1.cc.json", "src/test/resources/mergeFolderTest/file2.cc.json", "--not-compressed"
         ).toString()
         System.setOut(originalOut)
         val valueInFile1 = "SourceMonCsvConverterTest.java"
@@ -69,7 +69,7 @@ class MergeFilterTest {
 
         main(
             arrayOf(
-                inputFile1, inputFile2, "-nc",
+                inputFile1, inputFile2, "--not-compressed",
                 "-o=src/test/resources/output"
             )
         )

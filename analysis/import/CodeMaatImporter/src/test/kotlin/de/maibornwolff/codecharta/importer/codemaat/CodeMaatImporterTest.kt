@@ -36,7 +36,7 @@ class CodeMaatImporterTest {
         outputFile.deleteOnExit()
 
         // when
-        main(arrayOf(inputFilePath, "-nc", "-o=$outputFilePath"))
+        main(arrayOf(inputFilePath, "--not-compressed", "-o=$outputFilePath"))
 
         assertTrue(outputFile.exists())
     }
@@ -66,7 +66,7 @@ class CodeMaatImporterTest {
         file.deleteOnExit()
 
         // when
-        main(arrayOf(inputFilePath, "-nc", "-o=$outputFilePath"))
+        main(arrayOf(inputFilePath, "--not-compressed", "-o=$outputFilePath"))
 
         // then
         assertThat(file.readText()).contains("\"avgCommits\":5")
