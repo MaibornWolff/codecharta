@@ -12,6 +12,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   Multiple values for options need to be separated by comma [#3434](https://github.com/MaibornWolff/codecharta/pull/3434)
 -   Changed the short-form of the `--no-issues` flag in the SourceCodeParser from `-i` to `-ni` [#3434](https://github.com/MaibornWolff/codecharta/pull/3434)
 
+### Fixed 🐞
+-   Fix parsers crashing after printing output to stdout [#3442](https://github.com/MaibornWolff/codecharta/pull/3442)
+
 ## [1.121.1] - 2023-12-08
 
 ### Fixed 🐞
