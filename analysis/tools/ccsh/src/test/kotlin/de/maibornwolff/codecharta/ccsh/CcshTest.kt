@@ -276,7 +276,7 @@ class CcshTest {
     @Test
     fun `should log the absolute path of the merged output file when asked to merge results`() {
         // given
-        val folderPath = "src/test/resources"
+        val folderPath = "src/test/resources/mergefiles"
         val outputFilePath = "$folderPath/mergedResult.cc.json.gz"
         val absoluteOutputFilePath = File(outputFilePath).absolutePath
         val outputFile = File(outputFilePath)
@@ -302,5 +302,36 @@ class CcshTest {
         // then
         Assertions.assertThat(infoMessagesLogged.any { e -> e.endsWith(absoluteOutputFilePath) }).isTrue()
         verify { loggerMock.info(any<String>()) }
+    }
+
+    @Test
+    fun `should log the absolute path of the merged output file when one out of two parsers prints output to stdout`() {
+        val folderPath = "src/test/resources/sampleproject"
+        val mergedOutputFilePath = "$folderPath/mergedResult.cc.json.gz"
+        val mergedOutputFile = File(mergedOutputFilePath)
+        val sourcecodeOutputFilePath = "$folderPath/source.cc.json"
+        val sourcecodeOutputFile = File(sourcecodeOutputFilePath)
+        mergedOutputFile.deleteOnExit()
+        sourcecodeOutputFile.deleteOnExit()
+
+        val selectedParsers = listOf("rawtextparser", "sourcecodeparser")
+        val args = listOf(
+                listOf(File(folderPath).absolutePath, "--output-file="),
+                listOf(File(folderPath).absolutePath, "--format=JSON", "--output-file=$sourcecodeOutputFilePath", "--no-issues", "--default-excludes", "--not-compressed")
+        )
+
+        mockInteractiveParserSuggestionDialog(selectedParsers, args)
+        mockKInquirerConfirm(true)
+        mockkStatic("com.github.kinquirer.components.InputKt")
+        every {
+            KInquirer.promptInput(any(), any(), any(), any(), any())
+        } returns File(folderPath).absolutePath
+
+        // when
+        val exitCode = Ccsh.executeCommandLine(emptyArray())
+
+        // then
+        Assertions.assertThat(exitCode).isZero()
+        Assertions.assertThat(mergedOutputFile).exists()
     }
 }
