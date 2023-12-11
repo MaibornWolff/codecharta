@@ -55,7 +55,7 @@ class MetricGardenerImporterTest {
     fun `should create json uncompressed file with attribute Descriptors`() {
         main(
             arrayOf(
-                "--is-json-file", "src/test/resources/metricgardener-analysis.json", "-nc",
+                "--is-json-file", "src/test/resources/metricgardener-analysis.json", "--not-compressed",
                 "-o=src/test/resources/import-result"
             )
         )
@@ -89,7 +89,7 @@ class MetricGardenerImporterTest {
     fun `should create file when MG needs to run first`() {
         main(
             arrayOf(
-                "src/test/resources/MetricGardenerRawFile.kt", "-nc",
+                "src/test/resources/MetricGardenerRawFile.kt", "--not-compressed",
                 "-o=src/test/resources/import-result-mg"
             )
         )

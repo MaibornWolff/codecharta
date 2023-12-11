@@ -45,7 +45,7 @@ object ProjectSerializer {
      */
     @Throws(IOException::class)
     fun serializeProject(project: Project, out: OutputStream, compress: Boolean, isOutputFileSpecified: Boolean = false) {
-        val wrappedOut = if (compress && isOutputFileSpecified) GZIPOutputStream(out) else out
+        val wrappedOut = if (compress) GZIPOutputStream(out) else out
         val writer = wrappedOut.bufferedWriter(UTF_8)
         serializeProject(project, writer, isOutputFileSpecified)
     }

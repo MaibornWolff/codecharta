@@ -107,7 +107,7 @@ class SourceCodeParserMainTest {
         every { loggerMock.info(capture(infoMessagesLogged)) } returns Unit
 
         // when
-        CommandLine(SourceCodeParserMain()).execute(inputFilePath, "-o", outputFilePath, "-nc")
+        CommandLine(SourceCodeParserMain()).execute(inputFilePath, "-o", outputFilePath, "--not-compressed")
 
         // then
         verify { loggerMock.info(any<String>()) }
