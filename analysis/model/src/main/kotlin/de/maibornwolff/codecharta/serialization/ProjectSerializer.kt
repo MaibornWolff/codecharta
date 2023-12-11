@@ -26,11 +26,14 @@ object ProjectSerializer {
      * @param out writer to write serialized object
      */
     @Throws(IOException::class)
-    fun serializeProject(project: Project, out: Writer) {
+    fun serializeProject(project: Project, out: Writer, writeToFile: Boolean) {
         val wrappedProject = getWrappedProject(project)
         GSON.toJson(wrappedProject, out)
         out.flush()
-        out.close()
+        if (writeToFile) {
+            out.close()
+        }
+
     }
 
     /**
@@ -42,10 +45,10 @@ object ProjectSerializer {
      * @param compress whether the output should be GZIP compressed
      */
     @Throws(IOException::class)
-    fun serializeProject(project: Project, out: OutputStream, compress: Boolean) {
-        val wrappedOut = if (compress) GZIPOutputStream(out) else out
+    fun serializeProject(project: Project, out: OutputStream, compress: Boolean, isOutputFileSpecified: Boolean = false) {
+        val wrappedOut = if (compress && isOutputFileSpecified) GZIPOutputStream(out) else out
         val writer = wrappedOut.bufferedWriter(UTF_8)
-        serializeProject(project, writer)
+        serializeProject(project, writer, isOutputFileSpecified)
     }
 
     /**
@@ -59,11 +62,11 @@ object ProjectSerializer {
      */
     @Throws(IOException::class)
     fun serializeToFileOrStream(project: Project, outputFilePath: String?, fallbackOutputStream: OutputStream, compress: Boolean) {
-        val reallyCompress = compress && !outputFilePath.isNullOrEmpty()
-        val stream = OutputFileHandler.stream(outputFilePath, fallbackOutputStream, reallyCompress)
-        serializeProject(project, stream, reallyCompress)
-        if (!outputFilePath.isNullOrEmpty()) {
-            val absoluteFilePath = OutputFileHandler.checkAndFixFileExtension(File(outputFilePath).absolutePath, reallyCompress, FileExtension.JSON)
+        val isOutputFileSpecified = !outputFilePath.isNullOrEmpty()
+        val stream = OutputFileHandler.stream(outputFilePath, fallbackOutputStream, compress)
+        serializeProject(project, stream, compress, isOutputFileSpecified)
+        if (isOutputFileSpecified) {
+            val absoluteFilePath = OutputFileHandler.checkAndFixFileExtension(File(outputFilePath).absolutePath, compress, FileExtension.JSON)
             logger.info("Created output file at $absoluteFilePath")
         }
     }
