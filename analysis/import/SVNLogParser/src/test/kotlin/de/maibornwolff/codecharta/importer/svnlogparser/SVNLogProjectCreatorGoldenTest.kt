@@ -56,7 +56,7 @@ class SVNLogProjectCreatorGoldenTest {
     @Throws(IOException::class)
     private fun serializeAndDeserializeProject(svnProject: Project): Project {
         ByteArrayOutputStream().use { baos ->
-            ProjectSerializer.serializeProject(svnProject, OutputStreamWriter(baos), false)
+            ProjectSerializer.serializeProject(svnProject, OutputStreamWriter(baos))
             return ProjectDeserializer.deserializeProject(InputStreamReader(ByteArrayInputStream(baos.toByteArray())))
         }
     }

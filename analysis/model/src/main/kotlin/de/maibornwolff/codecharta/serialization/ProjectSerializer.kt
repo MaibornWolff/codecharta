@@ -26,14 +26,13 @@ object ProjectSerializer {
      * @param out writer to write serialized object
      */
     @Throws(IOException::class)
-    fun serializeProject(project: Project, out: Writer, writeToFile: Boolean) {
+    fun serializeProject(project: Project, out: Writer, writeToFile: Boolean = false) {
         val wrappedProject = getWrappedProject(project)
         GSON.toJson(wrappedProject, out)
         out.flush()
         if (writeToFile) {
             out.close()
         }
-
     }
 
     /**
