@@ -3,7 +3,7 @@ package de.maibornwolff.codecharta.util
 import picocli.CommandLine
 import java.util.Stack
 
-class CommaSeparatedParameterPreprocessor: CommandLine.IParameterPreprocessor {
+class CommaSeparatedParameterPreprocessor : CommandLine.IParameterPreprocessor {
     override fun preprocess(args: Stack<String>?, commandSpec: CommandLine.Model.CommandSpec?, argSpec: CommandLine.Model.ArgSpec?, info: MutableMap<String, Any>?): Boolean {
         if (args == null) return false
 
