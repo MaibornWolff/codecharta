@@ -51,7 +51,7 @@ class SourceCodeParserMain(
 
     @CommandLine.Option(
             names = ["-e", "--exclude"],
-            description = ["comma-separated list of regex patterns to exclude files/folders"],
+            description = ["comma-separated list of regex patterns to exclude files/folders (when using powershell, the list either can't contain spaces or has to be in quotes)"],
             converter = [(CommaSeparatedStringToListConverter::class)],
             preprocessor = CommaSeparatedParameterPreprocessor::class
     )
