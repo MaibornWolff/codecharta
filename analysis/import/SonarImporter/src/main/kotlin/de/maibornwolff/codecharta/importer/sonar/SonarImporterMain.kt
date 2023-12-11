@@ -56,7 +56,7 @@ class SonarImporterMain(
 
     @CommandLine.Option(
             names = ["-m", "--metrics"],
-            description = ["comma-separated list of metrics to import"],
+            description = ["comma-separated list of metrics to import (when using powershell, the list either can't contain spaces or has to be in quotes)"],
             converter = [(CommaSeparatedStringToListConverter::class)],
             preprocessor = CommaSeparatedParameterPreprocessor::class
     )

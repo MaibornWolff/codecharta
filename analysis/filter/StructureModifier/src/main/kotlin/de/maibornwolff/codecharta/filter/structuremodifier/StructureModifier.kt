@@ -50,7 +50,7 @@ class StructureModifier(
 
     @CommandLine.Option(
             names = ["-r", "--remove"],
-            description = ["comma-separated list of node(s) to be removed"],
+            description = ["comma-separated list of nodes to be removed (when using powershell, the list either can't contain spaces or has to be in quotes)"],
             converter = [(CommaSeparatedStringToListConverter::class)],
             preprocessor = CommaSeparatedParameterPreprocessor::class
     )
