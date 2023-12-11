@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Changed
 
 -   Multiple values for options need to be separated by comma [#3434](https://github.com/MaibornWolff/codecharta/pull/3434)
--   Parameters and options can be specified in any order [#3434](https://github.com/MaibornWolff/codecharta/pull/3434)
+-   Changed the short-form of the `--no-issues` flag in the SourceCodeParser from `-i` to `-ni` [#3434](https://github.com/MaibornWolff/codecharta/pull/3434)
 
 ## [1.121.1] - 2023-12-08
 

@@ -7,15 +7,16 @@ class CommaSeparatedParameterPreprocessor: CommandLine.IParameterPreprocessor {
     override fun preprocess(args: Stack<String>?, commandSpec: CommandLine.Model.CommandSpec?, argSpec: CommandLine.Model.ArgSpec?, info: MutableMap<String, Any>?): Boolean {
         if (args == null) return false
 
-        var argsList = ""
+        val stringBuilder = StringBuilder()
         while (args.peek() != null) {
-            val currentArg = args.pop()
-            argsList += currentArg
-            if (!currentArg.matches(Regex(".*,\\s*$"))) {
+            val arg = args.pop()
+            stringBuilder.append(arg)
+            if (!arg.matches(Regex(".*,\\s*$"))) {
                 break
             }
         }
-        args.push(argsList)
+
+        args.push(stringBuilder.toString())
         return false
     }
 }
