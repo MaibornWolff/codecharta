@@ -99,7 +99,8 @@ class RawTextParserTest {
         // when
         ProjectSerializer.serializeProject(
             MergeFilter.mergePipedWithCurrentProject(partialProject2, partialProject1),
-            OutputStreamWriter(PrintStream(expected))
+            OutputStreamWriter(PrintStream(expected)),
+            true
         )
         val result = executeForOutput(input, arrayOf(fileToParse))
 
