@@ -29,19 +29,26 @@ class NodeRemover(private val project: Project) {
         ).build(cleanAttributeDescriptors = true)
     }
 
-    private fun filterNodes(path: List<String>, node: MutableNode): MutableNode {
-        val filteredChildren = node.children.filter { it.name != path.firstOrNull() || path.size > 1 }
-        node.children = filteredChildren.map {
-            filterNodes(path.drop(1), it)
-        }.toMutableSet()
-        return node
+    private fun removeNodes(paths: List<List<String>>): List<MutableNode> {
+        val rootNode = project.rootNode.toMutableNode()
+
+        for (path in paths) {
+            var currentNode = rootNode
+            val pathUntilRoot = path.dropWhile { it != "root" }
+            val pathWithoutRoot = pathUntilRoot.dropWhile { it == "root" }
+            for ((index, pathElement) in pathWithoutRoot.withIndex()) {
+                val isLastElement = index == pathWithoutRoot.lastIndex
+                if (isLastElement) {
+                    currentNode.children.removeIf { it.name == pathElement }
+                } else {
+                    currentNode = currentNode.children.find { it.name == pathElement } ?: break
+                }
+            }
+        }
+
+        return listOf(rootNode)
     }
 
-    private fun removeNodes(paths: List<List<String>>): MutableList<MutableNode> {
-        var root = project.rootNode.toMutableNode()
-        paths.forEach { root = filterNodes(it.drop(1), root) }
-        return mutableListOf(root)
-    }
 
     private fun removeEdges(removePatterns: Array<String>): MutableList<Edge> {
         var edges = project.edges

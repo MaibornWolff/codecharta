@@ -124,7 +124,7 @@ class NodeRemoverTest {
         // when
         val result = subProjectExtractor.remove(arrayOf("/root/src/test/java/io"))
         val testFolder = result.rootNode.children.find { it.name == "src" }
-                                        ?.children?.find { it.name == "test" }
+                                        ?.children?.find { it.name == "main" }
                                         ?.children?.find { it.name == "java" }
                                         ?.children?.find { it.name == "io" }
 
