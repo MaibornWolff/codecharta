@@ -7,10 +7,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
-### Added 🚀
-
--   Add warning when compress flag is specified but output gets written to stdout [#3442](https://github.com/MaibornWolff/codecharta/pull/3442)
-
 ### Changed
 
 -   Multiple values for options need to be separated by comma [#3434](https://github.com/MaibornWolff/codecharta/pull/3434)
