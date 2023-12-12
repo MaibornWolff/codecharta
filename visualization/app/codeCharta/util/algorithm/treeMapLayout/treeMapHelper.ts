@@ -93,9 +93,7 @@ function buildNodeFrom(
 	const flattened = isNodeFlat(data, state)
 	const heightValue = getHeightValue(state, squaredNode, maxHeight, flattened)
 	const depth = data.path.split("/").length - 2
-	const height = Math.abs(
-		isNodeLeaf ? Math.max(heightScale * heightValue, MIN_BUILDING_HEIGHT) * mapSizeResolutionScaling : FOLDER_HEIGHT
-	)
+	const height = isNodeLeaf ? resolveHeightValue(heightValue, heightScale, data, state) * mapSizeResolutionScaling : FOLDER_HEIGHT
 	const width = x1 - x0
 	const length = y1 - y0
 	const z0 = depth * FOLDER_HEIGHT
@@ -141,6 +139,11 @@ export function getHeightValue(state: CcState, squaredNode: HierarchyRectangular
 		return maxHeight - heightValue
 	}
 	return heightValue
+}
+
+function resolveHeightValue(heightValue: number, heightScale: number, data: CodeMapNode, state: CcState): number {
+	const minimalHeight = data.deltas?.[state.dynamicSettings.heightMetric] ? 0 : MIN_BUILDING_HEIGHT
+	return Math.max(Math.abs(heightScale * heightValue), minimalHeight)
 }
 
 export function isVisible(squaredNode: CodeMapNode, isNodeLeaf: boolean, state: CcState, flattened: boolean) {
