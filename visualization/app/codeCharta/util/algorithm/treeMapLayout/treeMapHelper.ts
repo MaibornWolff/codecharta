@@ -97,6 +97,8 @@ function buildNodeFrom(
 	const width = x1 - x0
 	const length = y1 - y0
 	const z0 = depth * FOLDER_HEIGHT
+	const heightDelta = (data.deltas?.[state.dynamicSettings.heightMetric] ?? 0) * heightScale * mapSizeResolutionScaling
+	const edgePointHeight = height + (heightDelta < 0 ? Math.abs(heightDelta) : 0)
 
 	return {
 		name: data.name,
@@ -113,15 +115,15 @@ function buildNodeFrom(
 		attributes: data.attributes,
 		edgeAttributes: data.edgeAttributes,
 		deltas: data.deltas,
-		heightDelta: (data.deltas?.[state.dynamicSettings.heightMetric] ?? 0) * heightScale * mapSizeResolutionScaling,
+		heightDelta,
 		visible: isVisible(data, isNodeLeaf, state, flattened),
 		path: data.path,
 		link: data.link,
 		markingColor: getMarkingColor(data, state.fileSettings.markedPackages),
 		flat: flattened,
 		color: getBuildingColor(data, state, selectedColorMetricDataSelector(state), isDeltaState, flattened),
-		incomingEdgePoint: getIncomingEdgePoint(width, height, length, new Vector3(x0, z0, y0), treeMapSize),
-		outgoingEdgePoint: getOutgoingEdgePoint(width, height, length, new Vector3(x0, z0, y0), treeMapSize)
+		incomingEdgePoint: getIncomingEdgePoint(width, edgePointHeight, length, new Vector3(x0, z0, y0), treeMapSize),
+		outgoingEdgePoint: getOutgoingEdgePoint(width, edgePointHeight, length, new Vector3(x0, z0, y0), treeMapSize)
 	}
 }
 
