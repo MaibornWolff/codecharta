@@ -9,7 +9,7 @@ class ParseFolderToJson {
     private val resource = "src/test/resources/sampleproject"
 
     private val output = retrieveStreamAsString {
-        SourceCodeParserMain.mainWithOutputStream(it, arrayOf(resource, "--format=json", "--not-compressed"))
+        SourceCodeParserMain.mainWithOutputStream(it, arrayOf(resource, "--format=json", "-nc"))
     }
 
     @Test

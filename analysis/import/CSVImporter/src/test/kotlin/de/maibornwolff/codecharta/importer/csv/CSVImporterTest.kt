@@ -30,7 +30,7 @@ class CSVImporterTest {
     fun `should create json uncompressed file`() {
         main(
             arrayOf(
-                "src/test/resources/csvimporter.csv", "--not-compressed",
+                "src/test/resources/csvimporter.csv", "-nc",
                 "-o=src/test/resources/csvimporter.cc.json"
             )
         )
@@ -44,7 +44,7 @@ class CSVImporterTest {
     fun `should create a correct json when having a different path column name`() {
         main(
             arrayOf(
-                "src/test/resources/csvimporter_different_path_column_name.csv", "--not-compressed",
+                "src/test/resources/csvimporter_different_path_column_name.csv", "-nc",
                 "--path-separator=\\",
                 "--path-column-name=File Name",
                 "-o=src/test/resources/csvimporter-path.cc.json"
@@ -72,7 +72,7 @@ class CSVImporterTest {
     fun `should contain Lines value of 44`() {
         main(
             arrayOf(
-                "src/test/resources/csvimporter.csv", "--not-compressed",
+                "src/test/resources/csvimporter.csv", "-nc",
                 "-o=src/test/resources/csvimporter-content.cc.json"
             )
         )
