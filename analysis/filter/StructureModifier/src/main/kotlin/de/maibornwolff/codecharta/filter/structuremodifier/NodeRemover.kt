@@ -49,7 +49,6 @@ class NodeRemover(private val project: Project) {
         return listOf(rootNode)
     }
 
-
     private fun removeEdges(removePatterns: Array<String>): MutableList<Edge> {
         var edges = project.edges
         removePatterns.forEach { path -> edges = edges.filter { !it.fromNodeName.contains(path) && !it.toNodeName.contains(path) } }
