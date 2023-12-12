@@ -26,6 +26,8 @@ To start contributing to codecharta, first clone the [GitHub repository](https:/
 git clone https://github.com/MaibornWolff/codecharta.git
 # naviagte into the created folder
 cd codecharta
+# install npm dependencies
+npm i
 ```
 
 CodeCharta consists of the two parts analysis and visualization which can be installed and used separately.
@@ -37,26 +39,68 @@ Therefore, this guide includes separate installation guides for both parts.
 ```bash
 # change into analysis sub-folder
 cd analysis
-# install npm dependencies
-npm i
-# build the program from source (bundled in .tar and .zip files)
+# build the program from source (result is bundled in .tar and .zip files)
 ./gradlew build
 # installs the built distribution
 ./gradlew installDist
 ```
 
 With this, the cli-tool is installed. When running `ccsh` however, we still get an error as the command is not accessible. There are three options how it can be used:
-There are three ways in which the cli- tool can be used:
+There are three ways in which the cli-tool can be used:
 
 -   Navigate into the folder where the installed shell and batch files are created (`analysis/build/install/codecharta-analysis/bin`) and executing commands from there
 -   Call the ccsh with the relative path to the current location. E.g. in the analysis folder with `./build/install/codecharta-analysis/bin/ccsh`
--   Add the installed shell or batch files to the path to make it globally accessible. This is done by `...` on windows and `...` on unix systems.
-    This solution is the most effort in the short term but the most comfortable in the long run.
+-   Add the installed shell or batch files to the path to make it globally accessible. This can be done by adding the shell or batch file to the path of your terminal.
+    As this process is specific to each terminal, we cannot include instructions here, but searching for "{name-of-console} add to path" should result in fitting instructions.
+    This solution is recommended, as it is the most effort in the short term but the most comfortable in the long run.
 
 ## Install Visualisation
 
-[make part on how to build/start dev server meaning the web version] -> von visualisation readme klauen
-[make part on how to build the visualisation desktop app] -> auch von vis. readme -> einfach verlinken oder explizit hier nochmal???
+As the visualisation has both a desktop client and a web-version, we provide instructions on how to install both.
+
+### Web version
+
+This option will be the more comfortable choice for development, as the program is started as localhost and changes are quickly visible.
+
+```bash
+# change into visualisation sub-folder
+cd visualization
+# install visualisation specific npm dependencies
+npm i
+# build and start the web-version as localhost
+npm run dev
+# this should open a browser window with the web version
+```
+
+### Desktop client
+
+We also provide CodeCharta as a standalone desktop app with versions for windows, mac and linux. A local version for your system can be built using the following commands:
+
+```bash
+# change into visualisation sub-folder
+cd visualization
+# install visualisation specific npm dependencies
+npm i
+# build the standalone app from source
+npm run build
+# start the built standalone client
+npm run start
+```
+
+You can also directly build a distributable package (.zip) of the standalone client for your system.
+For more information, see the 'Package' section of the [visualisation readme](https://github.com/MaibornWolff/codecharta/tree/main/visualization#package).
+
+# IntelliJ setup
+
+We mainly use IntelliJ for our development. The project generally works right away, except for two issues that sometimes occur:
+
+-   Sometimes when opening the main codecharta folder, the analysis part does not get detected as a module. To solve this, directly open the analysis folder.
+-   When working on visualization, IntelliJ does not correctly detect our test-suite. To execute tests using the build in runners,
+    it is necessary to adjust the Jest-Configuration:
+    -   First select 'Edit...' from the 'More actions' menu next to the Runner icon
+    -   Inside there, select 'Edit configuration templates...' at the bottom left
+    -   Select 'Jest' and set 'jestUnit.config.json' as the configuration file as well as adding the Jest option '--env=jsdom'
+    -   After clicking apply, IntelliJ should e able to execute all visualisation tests
 
 # Documentation structure
 
