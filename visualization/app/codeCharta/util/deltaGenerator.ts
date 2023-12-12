@@ -98,8 +98,7 @@ export class DeltaGenerator {
 
 			for (const [key, value] of Object.entries(node.attributes)) {
 				node.deltas[key] = -value
-				delete node.attributes[key]
-				// node.attributes[key] = 0
+				node.attributes[key] = 0
 			}
 
 			deltaNodesByPath.set(node.path, node)
