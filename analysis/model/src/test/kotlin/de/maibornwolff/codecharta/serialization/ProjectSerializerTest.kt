@@ -33,17 +33,20 @@ class ProjectSerializerTest {
     private val project = mockk<Project>()
     private val loggerMock = mockk<KLogger>()
     private val infoMessagesLogged = mutableListOf<String>()
+    private val warningMessagesLogged = mutableListOf<String>()
 
     @BeforeAll
     fun beforeTests() {
         mockkObject(KotlinLogging)
         every { KotlinLogging.logger(any<(() -> Unit)>()) } returns loggerMock
         every { loggerMock.info(capture(infoMessagesLogged)) } returns Unit
+        every { loggerMock.warn(capture(warningMessagesLogged)) } returns Unit
     }
 
     @BeforeEach
     fun beforeTest() {
         infoMessagesLogged.clear()
+        warningMessagesLogged.clear()
     }
 
     @AfterAll
@@ -128,5 +131,22 @@ class ProjectSerializerTest {
         // then
         verify { loggerMock.info(any<String>()) }
         Assertions.assertThat(infoMessagesLogged.any { e -> e.endsWith(absoluteOutputFilePath) }).isTrue()
+    }
+
+    @Test
+    fun `should log warning when compress flag is set but no outputfile is specified`() {
+        // given
+        val compress = true
+        val isOutputFileSpecified = false
+        val mockStream = mockk<OutputStream>()
+        every { mockStream.write(any<ByteArray>(), any(), any()) } returns Unit
+        every { mockStream.flush() } returns Unit
+
+        // when
+        ProjectSerializer.serializeProject(project, mockStream, compress, isOutputFileSpecified)
+
+        // then
+        Assertions.assertThat(warningMessagesLogged).isNotEmpty()
+        verify { loggerMock.warn(any<String>()) }
     }
 }
