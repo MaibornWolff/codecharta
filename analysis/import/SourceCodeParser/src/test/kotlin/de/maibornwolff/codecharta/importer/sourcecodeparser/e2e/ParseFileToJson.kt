@@ -8,7 +8,7 @@ class ParseFileToJson {
     private val resource = "src/test/resources/ScriptShellSample.java"
 
     private val output = retrieveStreamAsString {
-        SourceCodeParserMain.mainWithOutputStream(it, arrayOf(resource, "--format=json", "--not-compressed"))
+        SourceCodeParserMain.mainWithOutputStream(it, arrayOf(resource, "--format=json", "-nc"))
     }
 
     @Test

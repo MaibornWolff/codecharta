@@ -37,7 +37,6 @@ class RawTextParserTest {
     @AfterEach
     fun afterTest() {
         unmockkAll()
-        errContent.flush()
     }
     companion object {
         @JvmStatic
@@ -66,7 +65,7 @@ class RawTextParserTest {
         val expectedResultFile = File("src/test/resources/cc_projects/project_3.cc.json")
 
         // when
-        val result = executeForOutput(pipedProject, arrayOf(inputFilePath, "--not-compressed"))
+        val result = executeForOutput(pipedProject, arrayOf(inputFilePath))
 
         // then
         JSONAssert.assertEquals(result, expectedResultFile.readText(), JSONCompareMode.NON_EXTENSIBLE)
@@ -80,7 +79,7 @@ class RawTextParserTest {
         val expectedResultFile = File("src/test/resources/cc_projects/project_4.cc.json").absoluteFile
 
         // when
-        val result = executeForOutput(pipedProject, arrayOf(inputFilePath, "--tab-width=2", "--max-indentation-level=2", "-e=tabs*.", "--not-compressed"))
+        val result = executeForOutput(pipedProject, arrayOf(inputFilePath, "--tab-width=2", "--max-indentation-level=2", "-e=tabs*."))
 
         // then
         JSONAssert.assertEquals(result, expectedResultFile.readText(), JSONCompareMode.NON_EXTENSIBLE)
@@ -102,7 +101,7 @@ class RawTextParserTest {
             MergeFilter.mergePipedWithCurrentProject(partialProject2, partialProject1),
             OutputStreamWriter(PrintStream(expected))
         )
-        val result = executeForOutput(input, arrayOf(fileToParse, "--not-compressed"))
+        val result = executeForOutput(input, arrayOf(fileToParse))
 
         // then
         JSONAssert.assertEquals(result, expected.toString(), JSONCompareMode.NON_EXTENSIBLE)
@@ -228,7 +227,7 @@ class RawTextParserTest {
         val expectedResultFile = File("src/test/resources/cc_projects/project_3.cc.json").absoluteFile
 
         // when
-        val result = executeForOutput("", arrayOf("src/test/resources/sampleproject/tabs.included", "--metrics=", "--not-compressed"))
+        val result = executeForOutput("", arrayOf("src/test/resources/sampleproject/tabs.included", "--metrics="))
 
         // then
         JSONAssert.assertEquals(result, expectedResultFile.readText(), JSONCompareMode.NON_EXTENSIBLE)
@@ -240,7 +239,7 @@ class RawTextParserTest {
         val expectedResultFile = File("src/test/resources/cc_projects/project_5.cc.json").absoluteFile
 
         // when
-        val result = executeForOutput("", arrayOf("src/test/resources/sampleproject/", "--exclude=", "--not-compressed"))
+        val result = executeForOutput("", arrayOf("src/test/resources/sampleproject/", "--exclude="))
 
         // then
         JSONAssert.assertEquals(result, expectedResultFile.readText(), JSONCompareMode.NON_EXTENSIBLE)
@@ -252,7 +251,7 @@ class RawTextParserTest {
         val expectedResultFile = File("src/test/resources/cc_projects/project_5.cc.json").absoluteFile
 
         // when
-        val result = executeForOutput("", arrayOf("src/test/resources/sampleproject/", "--file-extensions=", "--not-compressed"))
+        val result = executeForOutput("", arrayOf("src/test/resources/sampleproject/", "--file-extensions="))
 
         // then
         JSONAssert.assertEquals(result, expectedResultFile.readText(), JSONCompareMode.NON_EXTENSIBLE)

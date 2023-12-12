@@ -106,7 +106,7 @@ class ProjectSerializerTest {
         val stream = ByteArrayOutputStream()
 
         // when
-        ProjectSerializer.serializeToFileOrStream(project, "", stream, false)
+        ProjectSerializer.serializeToFileOrStream(project, "", stream, true)
         val result = stream.toString("UTF-8")
 
         // then
