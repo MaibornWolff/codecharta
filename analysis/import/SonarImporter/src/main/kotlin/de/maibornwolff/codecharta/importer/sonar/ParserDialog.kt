@@ -20,8 +20,8 @@ class ParserDialog {
             )
 
             val user: String = KInquirer.promptInput(
-                message = "What is the sonar.login for connecting to the remote sonar instance?",
-                hint = "c123d456"
+                message = "What is the sonar user token (sonar.login) required to connect to the remote Sonar instance?",
+                hint = "squ_a85eae3934941de66cbd0115f500aa59234afcda"
             )
 
             val outputFileName: String = KInquirer.promptInput(
