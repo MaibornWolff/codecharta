@@ -6,6 +6,8 @@ import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import de.maibornwolff.codecharta.tools.interactiveparser.util.CodeChartaConstants
+import de.maibornwolff.codecharta.tools.pipeableparser.PipeableParser
+import de.maibornwolff.codecharta.tools.pipeableparser.PipeableParserSyncFlag
 import de.maibornwolff.codecharta.util.CommaSeparatedParameterPreprocessor
 import de.maibornwolff.codecharta.util.CommaSeparatedStringToListConverter
 import de.maibornwolff.codecharta.util.InputHelper
@@ -25,7 +27,7 @@ class StructureModifier(
     private val input: InputStream = System.`in`,
     private val output: PrintStream = System.out,
     private val error: PrintStream = System.err
-) : Callable<Unit?>, InteractiveParser {
+) : Callable<Unit?>, InteractiveParser, PipeableParser {
 
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     var help: Boolean = false
@@ -76,7 +78,7 @@ class StructureModifier(
     }
 
     override fun call(): Unit? {
-
+        logPipeableParserSyncSignal(PipeableParserSyncFlag.SYNC_FLAG)
         project = readProject() ?: return null
 
         when {
