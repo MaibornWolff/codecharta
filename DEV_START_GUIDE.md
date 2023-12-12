@@ -102,6 +102,14 @@ We mainly use IntelliJ for our development. The project generally works right aw
     -   Select 'Jest' and set 'jestUnit.config.json' as the configuration file as well as adding the Jest option '--env=jsdom'
     -   After clicking apply, IntelliJ should e able to execute all visualisation tests
 
+# Testing
+
+The analysis and visualisation parts are tested separately with different tools. \
+For the analysis, we use gradle for testing, linting and formatting. More information is available [here](https://maibornwolff.github.io/codecharta/docs/new-to-code-analysis/#testing).\
+For the visualisation, we utilize Jest and puppeteer for unit- and e2e-tests. To run all unit tests, execute `npm test`. More information about e2e-tests can be found [here](https://maibornwolff.github.io/codecharta/dev-guide/e2e-testing-with-puppeteer/).
+
+When opening a pull requests, all tests are executed automatically using GitHub-actions and a branch can only be merged if all tests are successful. However, it is highly recommended to test changes before pushing them!
+
 # Documentation structure
 
 Our documentation is generally split between user docs and developer docs.
