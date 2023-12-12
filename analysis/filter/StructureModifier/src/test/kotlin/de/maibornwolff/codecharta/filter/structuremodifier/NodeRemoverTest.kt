@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.filter.structuremodifier
 
+import de.maibornwolff.codecharta.model.Path
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import org.assertj.core.api.Assertions
@@ -111,5 +112,23 @@ class NodeRemoverTest {
         assertEquals(resultProject.attributeDescriptors.size, 3)
         assertEquals(resultProject.attributeDescriptors["rloc"]!!.description, "1")
         assertEquals(resultProject.attributeDescriptors["yrloc"], null)
+    }
+
+    @Test
+    fun `Should correctly remove node when another node in a different subfolder has the same name`() {
+        // given
+        val bufferedReader = File("src/test/resources/merged_project.cc.json").bufferedReader()
+        val mergedProject = ProjectDeserializer.deserializeProject(bufferedReader)
+        val subProjectExtractor = NodeRemover(mergedProject)
+
+        // when
+        val result = subProjectExtractor.remove(arrayOf("/root/src/test/java/io"))
+        val testFolder = result.rootNode.children.find { it.name == "src" }
+                                        ?.children?.find { it.name == "test" }
+                                        ?.children?.find { it.name == "java" }
+                                        ?.children?.find { it.name == "io" }
+
+        // then
+        Assertions.assertThat(testFolder).isNotNull()
     }
 }

@@ -5,6 +5,9 @@ dependencies {
     implementation group: 'info.picocli', name: 'picocli', version: picocli_version
     implementation group: 'io.github.microutils', name: 'kotlin-logging', version: kotlin_logging_version
     implementation group: 'com.github.kotlin-inquirer', name: 'kotlin-inquirer', version: kotlin_inquirer_version
+    implementation project(path: ':tools:PipeableParser')
+    implementation project(path: ':tools:PipeableParser')
+    implementation project(path: ':tools:PipeableParser')
 
     testImplementation group: 'org.jetbrains.kotlin', name: 'kotlin-test', version: kotlin_version
     testImplementation project(path: ':model', configuration: 'testOutput')
