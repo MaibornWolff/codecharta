@@ -34,13 +34,14 @@ class NodeRemover(private val project: Project) {
 
         for (path in paths) {
             var currentNode = rootNode
-            val pathWithoutRoot = path.takeLastWhile { it != "root" }
-            for ((index, pathElement) in pathWithoutRoot.withIndex()) {
-                val isLastElement = index == pathWithoutRoot.lastIndex
-                if (isLastElement) {
-                    currentNode.children.removeIf { it.name == pathElement }
+            val rootElementIndex = path.indexOfFirst { it == "root" }
+            val pathSegmentsWithoutRoot = path.subList(rootElementIndex + 1, path.size)
+            for ((index, pathSegment) in pathSegmentsWithoutRoot.withIndex()) {
+                val isLastSegment = index == pathSegmentsWithoutRoot.lastIndex
+                if (isLastSegment) {
+                    currentNode.children.removeIf { it.name == pathSegment }
                 } else {
-                    currentNode = currentNode.children.find { it.name == pathElement } ?: break
+                    currentNode = currentNode.children.find { it.name == pathSegment } ?: break
                 }
             }
         }

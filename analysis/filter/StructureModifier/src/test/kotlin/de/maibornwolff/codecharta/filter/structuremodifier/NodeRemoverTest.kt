@@ -182,7 +182,7 @@ class NodeRemoverTest {
         val bufferedReader = File("src/test/resources/merged_project.cc.json").bufferedReader()
         val mergedProject = ProjectDeserializer.deserializeProject(bufferedReader)
         val subProjectExtractor = NodeRemover(mergedProject)
-        val pathToRemove = "/root/src/test/java/io"
+        val pathToRemove = "/root/src/test/java/io/root"
         val pathToRemoveAbsolute = "C:/Users/root/AppData/Local/Programs/Git$pathToRemove"
 
         // when
@@ -191,6 +191,7 @@ class NodeRemoverTest {
                 ?.children?.find { it.name == "test" }
                 ?.children?.find { it.name == "java" }
                 ?.children?.find { it.name == "io" }
+                ?.children?.find { it.name == "root" }
 
         // then
         Assertions.assertThat(folderToRemove).isNull()
