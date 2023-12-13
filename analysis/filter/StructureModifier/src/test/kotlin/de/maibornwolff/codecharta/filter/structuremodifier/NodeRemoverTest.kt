@@ -138,13 +138,54 @@ class NodeRemoverTest {
         val bufferedReader = File("src/test/resources/merged_project.cc.json").bufferedReader()
         val mergedProject = ProjectDeserializer.deserializeProject(bufferedReader)
         val subProjectExtractor = NodeRemover(mergedProject)
+        val pathToRemove = "/root/src/test/java/io"
 
         // when
-        val result = subProjectExtractor.remove(arrayOf("/root/src/test/java/io"))
+        val result = subProjectExtractor.remove(arrayOf(pathToRemove))
         val testFolder = result.rootNode.children.find { it.name == "src" }
                                         ?.children?.find { it.name == "main" }
                                         ?.children?.find { it.name == "java" }
                                         ?.children?.find { it.name == "io" }
+
+        // then
+        Assertions.assertThat(testFolder).isNotNull()
+    }
+
+    @Test
+    fun `Should correctly remove node when arguments starting with a forward slash get converted to absolute paths (git-bash)`() {
+        // given
+        val bufferedReader = File("src/test/resources/merged_project.cc.json").bufferedReader()
+        val mergedProject = ProjectDeserializer.deserializeProject(bufferedReader)
+        val subProjectExtractor = NodeRemover(mergedProject)
+        val pathToRemove = "/root/src/test/java/io"
+        val pathToRemoveAbsolute = "C:/Users/User/AppData/Local/Programs/Git$pathToRemove"
+
+        // when
+        val result = subProjectExtractor.remove(arrayOf(pathToRemoveAbsolute))
+        val testFolder = result.rootNode.children.find { it.name == "src" }
+                ?.children?.find { it.name == "main" }
+                ?.children?.find { it.name == "java" }
+                ?.children?.find { it.name == "io" }
+
+        // then
+        Assertions.assertThat(testFolder).isNotNull()
+    }
+
+    @Test
+    fun `Should correctly remove node when remove value is absolute path and contains an additional "root" path element`() {
+        // given
+        val bufferedReader = File("src/test/resources/merged_project.cc.json").bufferedReader()
+        val mergedProject = ProjectDeserializer.deserializeProject(bufferedReader)
+        val subProjectExtractor = NodeRemover(mergedProject)
+        val pathToRemove = "/root/src/test/java/io"
+        val pathToRemoveAbsolute = "C:/Users/root/AppData/Local/Programs/Git$pathToRemove"
+
+        // when
+        val result = subProjectExtractor.remove(arrayOf(pathToRemoveAbsolute))
+        val testFolder = result.rootNode.children.find { it.name == "src" }
+                ?.children?.find { it.name == "main" }
+                ?.children?.find { it.name == "java" }
+                ?.children?.find { it.name == "io" }
 
         // then
         Assertions.assertThat(testFolder).isNotNull()
