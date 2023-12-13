@@ -142,13 +142,18 @@ class NodeRemoverTest {
 
         // when
         val result = subProjectExtractor.remove(arrayOf(pathToRemove))
-        val testFolder = result.rootNode.children.find { it.name == "src" }
+        val folderToKeep = result.rootNode.children.find { it.name == "src" }
                                         ?.children?.find { it.name == "main" }
                                         ?.children?.find { it.name == "java" }
                                         ?.children?.find { it.name == "io" }
+        val folderToRemove = result.rootNode.children.find { it.name == "src" }
+                ?.children?.find { it.name == "test" }
+                ?.children?.find { it.name == "java" }
+                ?.children?.find { it.name == "io" }
 
         // then
-        Assertions.assertThat(testFolder).isNotNull()
+        Assertions.assertThat(folderToKeep).isNotNull()
+        Assertions.assertThat(folderToRemove).isNull()
     }
 
     @Test
@@ -162,17 +167,17 @@ class NodeRemoverTest {
 
         // when
         val result = subProjectExtractor.remove(arrayOf(pathToRemoveAbsolute))
-        val testFolder = result.rootNode.children.find { it.name == "src" }
-                ?.children?.find { it.name == "main" }
+        val folderToRemove = result.rootNode.children.find { it.name == "src" }
+                ?.children?.find { it.name == "test" }
                 ?.children?.find { it.name == "java" }
                 ?.children?.find { it.name == "io" }
 
         // then
-        Assertions.assertThat(testFolder).isNotNull()
+        Assertions.assertThat(folderToRemove).isNull()
     }
 
     @Test
-    fun `Should correctly remove node when remove value is absolute path and contains an additional "root" path element`() {
+    fun `Should correctly remove node when remove value is absolute path and contains an additional 'root' path element`() {
         // given
         val bufferedReader = File("src/test/resources/merged_project.cc.json").bufferedReader()
         val mergedProject = ProjectDeserializer.deserializeProject(bufferedReader)
@@ -182,12 +187,12 @@ class NodeRemoverTest {
 
         // when
         val result = subProjectExtractor.remove(arrayOf(pathToRemoveAbsolute))
-        val testFolder = result.rootNode.children.find { it.name == "src" }
-                ?.children?.find { it.name == "main" }
+        val folderToRemove = result.rootNode.children.find { it.name == "src" }
+                ?.children?.find { it.name == "test" }
                 ?.children?.find { it.name == "java" }
                 ?.children?.find { it.name == "io" }
 
         // then
-        Assertions.assertThat(testFolder).isNotNull()
+        Assertions.assertThat(folderToRemove).isNull()
     }
 }
