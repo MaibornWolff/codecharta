@@ -23,7 +23,7 @@ To start contributing to codecharta, first clone the [GitHub repository](https:/
 
 ```bash
 # clone the repository
-git clone https://github.com/MaibornWolff/codecharta.git
+git clone git@github.com:MaibornWolff/codecharta.git
 # naviagte into the created folder
 cd codecharta
 # install npm dependencies
