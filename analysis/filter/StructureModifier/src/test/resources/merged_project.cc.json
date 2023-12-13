@@ -2067,6 +2067,36 @@
                                 ]
                               }
                             ]
+                          },
+                          {
+                            "name": "root",
+                            "type": "Folder",
+                            "attributes": {},
+                            "link": "",
+                            "children": [
+                              {
+                                "name": "TestTypeConverter.java",
+                                "type": "File",
+                                "attributes": {
+                                  "rloc": 342.0,
+                                  "classes": 1.0,
+                                  "functions": 63.0,
+                                  "statements": 80.0,
+                                  "comment_lines": 0.0,
+                                  "mcc": 63.0,
+                                  "cognitive_complexity": 0.0,
+                                  "commented_out_code_blocks": 0.0,
+                                  "max_nesting_level": 0.0,
+                                  "code_smell": 1.0,
+                                  "security_hotspot": 0.0,
+                                  "vulnerability": 0.0,
+                                  "bug": 0.0,
+                                  "sonar_issue_other": 0.0
+                                },
+                                "link": "",
+                                "children": []
+                              }
+                            ]
                           }
                         ]
                       },
