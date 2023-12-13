@@ -19,10 +19,10 @@ class ParserDialog {
                 hint = "de.foo:bar"
             )
 
-            val user: String = KInquirer.promptInput(
+            val userToken: String = KInquirer.promptInput(
                 message = "What is the sonar user token (sonar.login) required to connect to the remote Sonar instance?",
                 hint = "sqp_0a81f6490875e062f79ccdeace23ac3c68dac6e"
-            )
+                                                         )
 
             val outputFileName: String = KInquirer.promptInput(
                 message = "What is the name of the output file?",
@@ -47,7 +47,7 @@ class ParserDialog {
             return listOfNotNull(
                 hostUrl,
                 projectKey,
-                if (user.isEmpty()) null else "--user=$user",
+                if (userToken.isEmpty()) null else "--user-token=$userToken",
                 "--output-file=$outputFileName",
                 if (metrics.isEmpty()) null else "--metrics=${eraseWhitespace(metrics)}",
                 if (isCompressed) null else "--not-compressed",

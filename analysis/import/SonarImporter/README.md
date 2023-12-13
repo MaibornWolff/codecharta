@@ -13,11 +13,11 @@ Generates visualisation data from SonarQube data through an API call to a SonarQ
 | `--merge-modules`                | merges modules in multi-module projects                                                                                                                                                                                                              |
 | `-nc, --not-compressed`          | save uncompressed output File                                                                                                                                                                                                                        |
 | `-o, --output-file=<outputFile>` | output File                                                                                                                                                                                                                                          |
-| `-u, --user=<user>`              | user token for connecting to remote sonar instance                                                                                                                                                                                                   |
+| `-u, --user-token=<userToken>`   | user token for connecting to remote sonar instance                                                                                                                                                                                                   |
 
 ```
 Usage: ccsh sonarimport [-h] [--merge-modules] [-nc] [-o=<outputFile>]
-                        [-u=<user>] [-m=<metrics>]... URL PROJECT_ID
+                        [-u=<userToken>] [-m=<metrics>]... URL PROJECT_ID
 ```
 
 ## Examples
