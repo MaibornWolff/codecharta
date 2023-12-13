@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Fixed 🐞
 
 -   Fix parsers crashing after printing output to stdout [#3442](https://github.com/MaibornWolff/codecharta/pull/3442)
+-   Fix removal of nodes in `modify` [#3446](https://github.com/MaibornWolff/codecharta/pull/3446)
 
 ## [1.121.1] - 2023-12-08
 
