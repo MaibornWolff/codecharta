@@ -34,8 +34,7 @@ class NodeRemover(private val project: Project) {
 
         for (path in paths) {
             var currentNode = rootNode
-            val pathUntilRoot = path.dropWhile { it != "root" }
-            val pathWithoutRoot = pathUntilRoot.dropWhile { it == "root" }
+            val pathWithoutRoot = path.takeLastWhile { it != "root" }
             for ((index, pathElement) in pathWithoutRoot.withIndex()) {
                 val isLastElement = index == pathWithoutRoot.lastIndex
                 if (isLastElement) {
