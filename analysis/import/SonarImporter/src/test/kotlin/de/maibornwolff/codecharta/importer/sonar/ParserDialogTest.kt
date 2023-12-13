@@ -25,7 +25,7 @@ class ParserDialogTest {
     fun `should output correct arguments`() {
         val hostUrl = "https://sonar.foo"
         val projectKey = "de.foo:bar"
-        val user = "c123d456"
+        val userToken = "c123d456"
         val outputFileName = "codecharta.cc.json"
         val metrics = "metric1, metric2"
         val compress = false
@@ -34,7 +34,7 @@ class ParserDialogTest {
         mockkStatic("com.github.kinquirer.components.InputKt")
         every {
             KInquirer.promptInput(any(), any(), any())
-        } returns hostUrl andThen projectKey andThen user andThen outputFileName andThen metrics
+        } returns hostUrl andThen projectKey andThen userToken andThen outputFileName andThen metrics
         mockkStatic("com.github.kinquirer.components.ConfirmKt")
         every {
             KInquirer.promptConfirm(any(), any())
@@ -46,7 +46,7 @@ class ParserDialogTest {
         val parseResult = commandLine.parseArgs(*parserArguments.toTypedArray())
         assertEquals(parseResult.matchedPositional(0).getValue<String>(), hostUrl)
         assertEquals(parseResult.matchedPositional(1).getValue<String>(), projectKey)
-        assertEquals(parseResult.matchedOption("user").getValue<String>(), user)
+        assertEquals(parseResult.matchedOption("user-token").getValue<String>(), userToken)
         assertEquals(parseResult.matchedOption("output-file").getValue<String>(), outputFileName)
         assertEquals(
             parseResult.matchedOption("metrics").getValue<ArrayList<String>>(),
@@ -60,7 +60,7 @@ class ParserDialogTest {
     fun `should omit the metrics flag if the metrics are empty`() {
         val hostUrl = "https://sonar.foo"
         val projectKey = "de.foo:bar"
-        val user = "c123d456"
+        val userToken = "c123d456"
         val outputFileName = "codecharta.cc.json"
         val metrics = ""
         val compress = false
@@ -69,7 +69,7 @@ class ParserDialogTest {
         mockkStatic("com.github.kinquirer.components.InputKt")
         every {
             KInquirer.promptInput(any(), any(), any())
-        } returns hostUrl andThen projectKey andThen user andThen outputFileName andThen metrics
+        } returns hostUrl andThen projectKey andThen userToken andThen outputFileName andThen metrics
         mockkStatic("com.github.kinquirer.components.ConfirmKt")
         every {
             KInquirer.promptConfirm(any(), any())
@@ -81,7 +81,7 @@ class ParserDialogTest {
         val parseResult = commandLine.parseArgs(*parserArguments.toTypedArray())
         assertEquals(parseResult.matchedPositional(0).getValue<String>(), hostUrl)
         assertEquals(parseResult.matchedPositional(1).getValue<String>(), projectKey)
-        assertEquals(parseResult.matchedOption("user").getValue<String>(), user)
+        assertEquals(parseResult.matchedOption("user-token").getValue<String>(), userToken)
         assertEquals(parseResult.matchedOption("output-file").getValue<String>(), outputFileName)
         assertNull(parseResult.matchedOption("metrics"))
         assertEquals(parseResult.matchedOption("not-compressed").getValue<Boolean>(), compress)
@@ -89,10 +89,10 @@ class ParserDialogTest {
     }
 
     @Test
-    fun `should omit the user flag if user is empty`() {
+    fun `should omit the user-tooen flag if user-token is empty`() {
         val hostUrl = "https://sonar.foo"
         val projectKey = "de.foo:bar"
-        val user = ""
+        val userToken = ""
         val outputFileName = "codecharta.cc.json"
         val metrics = "metric1, metric2"
         val compress = false
@@ -101,7 +101,7 @@ class ParserDialogTest {
         mockkStatic("com.github.kinquirer.components.InputKt")
         every {
             KInquirer.promptInput(any(), any(), any())
-        } returns hostUrl andThen projectKey andThen user andThen outputFileName andThen metrics
+        } returns hostUrl andThen projectKey andThen userToken andThen outputFileName andThen metrics
         mockkStatic("com.github.kinquirer.components.ConfirmKt")
         every {
             KInquirer.promptConfirm(any(), any())
@@ -113,7 +113,7 @@ class ParserDialogTest {
         val parseResult = commandLine.parseArgs(*parserArguments.toTypedArray())
         assertEquals(parseResult.matchedPositional(0).getValue<String>(), hostUrl)
         assertEquals(parseResult.matchedPositional(1).getValue<String>(), projectKey)
-        assertNull(parseResult.matchedOption("user"))
+        assertNull(parseResult.matchedOption("user-token"))
         assertEquals(parseResult.matchedOption("output-file").getValue<String>(), outputFileName)
         assertEquals(
             parseResult.matchedOption("metrics").getValue<ArrayList<String>>(),

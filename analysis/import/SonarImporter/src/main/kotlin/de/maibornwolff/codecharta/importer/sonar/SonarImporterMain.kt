@@ -62,8 +62,8 @@ class SonarImporterMain(
     )
     private var metrics = mutableListOf<String>()
 
-    @CommandLine.Option(names = ["-u", "--user"], description = ["user token for connecting to remote sonar instance"])
-    private var user = ""
+    @CommandLine.Option(names = ["-u", "--user-token"], description = ["user token for connecting to remote sonar instance"])
+    private var userToken = ""
 
     @CommandLine.Option(
         names = ["-nc", "--not-compressed"],
@@ -86,9 +86,9 @@ class SonarImporterMain(
     private fun createMeasuresAPIImporter(): SonarMeasuresAPIImporter {
         if (url.endsWith("/")) url = url.substring(0, url.length - 1)
         val baseUrl = URL(url)
-        val version = SonarVersionAPIDatasource(user, baseUrl).getSonarqubeVersion()
-        val measuresDatasource = SonarMeasuresAPIDatasource(user, baseUrl, version)
-        val metricsDatasource = SonarMetricsAPIDatasource(user, baseUrl)
+        val version = SonarVersionAPIDatasource(userToken, baseUrl).getSonarqubeVersion()
+        val measuresDatasource = SonarMeasuresAPIDatasource(userToken, baseUrl, version)
+        val metricsDatasource = SonarMetricsAPIDatasource(userToken, baseUrl)
         val sonarCodeURLLinker = SonarCodeURLLinker(baseUrl)
         val translator = SonarMetricTranslatorFactory.createMetricTranslator()
 
