@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   Changed the short-form of the `--no-issues` flag in the SourceCodeParser from `-i` to `-ni` [#3434](https://github.com/MaibornWolff/codecharta/pull/3434)
 -   Clarify sonar user token question [#3445](https://github.com/MaibornWolff/codecharta/pull/3445)
 -   Changed the `--user` flag to `--user-token` in SonarImporter [#3445](https://github.com/MaibornWolff/codecharta/pull/3445)
+-   Changed the interactive dialog of `modify` to prompt user for single action to perform [#3448](https://github.com/MaibornWolff/codecharta/pull/3448)
 
 ### Fixed 🐞
 
