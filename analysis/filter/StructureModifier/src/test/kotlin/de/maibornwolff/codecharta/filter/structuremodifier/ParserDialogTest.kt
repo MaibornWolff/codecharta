@@ -3,10 +3,11 @@ package de.maibornwolff.codecharta.filter.structuremodifier
 import com.github.kinquirer.KInquirer
 import com.github.kinquirer.components.promptInput
 import com.github.kinquirer.components.promptInputNumber
+import com.github.kinquirer.components.promptList
 import io.mockk.every
 import io.mockk.mockkStatic
 import io.mockk.unmockkAll
-import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
@@ -23,100 +24,130 @@ class ParserDialogTest {
     }
 
     @Test
-    fun `should output correct arguments`() {
+    fun `should output correct arguments when print structure is selected`() {
+        // given
         val inputFolderName = "sampleInputFile"
-        val outputFileName = "sampleOutputFile"
-        val printLevels = BigDecimal(25)
-        val setRoot = "myRoot"
-        val moveTo = "myMoveTo"
-        val moveFrom = "myMoveFrom"
-        val remove = "myRemove"
+        val printLevels = BigDecimal(5)
 
         mockkStatic("com.github.kinquirer.components.InputKt")
         every {
-            KInquirer.promptInput(any(), any(), any())
-        } returns inputFolderName andThen outputFileName andThen setRoot andThen moveFrom andThen moveTo andThen remove
+            KInquirer.promptInput(any(), any(), any(), any(), any(), any())
+        } returns inputFolderName
         every {
-            KInquirer.promptInputNumber(any(), any(), any())
+            KInquirer.promptInputNumber(any(), any(), any(), any())
         } returns printLevels
+        mockkStatic("com.github.kinquirer.components.ListKt")
+        every {
+            KInquirer.promptList(any(), any(), any(), any(), any())
+        } returns StructureModifierAction.PRINT_STRUCTURE.descripton
 
+        // when
         val parserArguments = ParserDialog.collectParserArgs()
-        println(parserArguments.toString())
-
         val commandLine = CommandLine(StructureModifier())
         val parseResult = commandLine.parseArgs(*parserArguments.toTypedArray())
-        println(parseResult.toString())
-        assertThat(parseResult.matchedPositional(0).getValue<File>().name).isEqualTo(inputFolderName)
-        assertThat(parseResult.matchedOption("output-file").getValue<String>()).isEqualTo(outputFileName)
-        assertThat(parseResult.matchedOption("print-levels").getValue<Int>()).isEqualTo(printLevels.toInt())
-        assertThat(parseResult.matchedOption("set-root").getValue<String>()).isEqualTo(setRoot)
-        assertThat(parseResult.matchedOption("move-to").getValue<String>()).isEqualTo(moveTo)
-        assertThat(parseResult.matchedOption("move-from").getValue<String>()).isEqualTo(moveFrom)
-        assertThat(parseResult.matchedOption("remove").getValue<Array<String>>()).isEqualTo(arrayOf(remove))
+
+        // then
+        Assertions.assertThat(parseResult.matchedPositional(0).getValue<File>().name).isEqualTo(inputFolderName)
+        Assertions.assertThat(parseResult.matchedOption("print-levels").getValue<Int>()).isEqualTo(5)
+        Assertions.assertThat(parseResult.matchedOption("output-file")).isNull()
+        Assertions.assertThat(parseResult.matchedOption("set-root")).isNull()
+        Assertions.assertThat(parseResult.matchedOption("move-to")).isNull()
+        Assertions.assertThat(parseResult.matchedOption("move-from")).isNull()
+        Assertions.assertThat(parseResult.matchedOption("remove")).isNull()
     }
 
     @Test
-    fun `should output correct arguments if all actions are empty`() {
+    fun `should output correct arguments when extract path is selected`() {
+        // given
         val inputFolderName = "sampleInputFile"
-        val outputFileName = "sampleOutputFile"
-        val printLevels = BigDecimal(0)
-        val setRoot = ""
-        val moveFrom = ""
-        val remove = ""
+        val pathToBeExtracted = "/root/src/main"
+        val outputFileName = "output"
 
         mockkStatic("com.github.kinquirer.components.InputKt")
         every {
-            KInquirer.promptInput(any(), any(), any())
-        } returns inputFolderName andThen outputFileName andThen setRoot andThen moveFrom andThen remove
+            KInquirer.promptInput(any(), any(), any(), any(), any(), any())
+        } returns inputFolderName andThen pathToBeExtracted andThen outputFileName
+        mockkStatic("com.github.kinquirer.components.ListKt")
         every {
-            KInquirer.promptInputNumber(any(), any(), any())
-        } returns printLevels
+            KInquirer.promptList(any(), any(), any(), any(), any())
+        } returns StructureModifierAction.EXTRACT_PATH.descripton
 
+        // when
         val parserArguments = ParserDialog.collectParserArgs()
-        println(parserArguments.toString())
-
         val commandLine = CommandLine(StructureModifier())
         val parseResult = commandLine.parseArgs(*parserArguments.toTypedArray())
-        println(parseResult.toString())
-        assertThat(parseResult.matchedPositional(0).getValue<File>().name).isEqualTo(inputFolderName)
-        assertThat(parseResult.matchedOption("output-file").getValue<String>()).isEqualTo(outputFileName)
-        assertThat(parseResult.matchedOption("print-levels")).isNull()
-        assertThat(parseResult.matchedOption("set-root")).isNull()
-        assertThat(parseResult.matchedOption("move-to")).isNull()
-        assertThat(parseResult.matchedOption("move-from")).isNull()
-        assertThat(parseResult.matchedOption("remove")).isNull()
+
+        // then
+        Assertions.assertThat(parseResult.matchedPositional(0).getValue<File>().name).isEqualTo(inputFolderName)
+        Assertions.assertThat(parseResult.matchedOption("output-file").getValue<String>()).isEqualTo(outputFileName)
+        Assertions.assertThat(parseResult.matchedOption("set-root").getValue<String>()).isEqualTo(pathToBeExtracted)
+        Assertions.assertThat(parseResult.matchedOption("print-levels")).isNull()
+        Assertions.assertThat(parseResult.matchedOption("move-from")).isNull()
+        Assertions.assertThat(parseResult.matchedOption("move-to")).isNull()
+        Assertions.assertThat(parseResult.matchedOption("remove")).isNull()
     }
 
     @Test
-    fun `should output correct arguments if moveTo and moveFrom is set`() {
+    fun `should output correct arguments when move nodes is selected`() {
+        // given
         val inputFolderName = "sampleInputFile"
-        val outputFileName = "sampleOutputFile"
-        val printLevels = BigDecimal(0)
-        val setRoot = ""
-        val moveTo = "myMoveTo"
-        val moveFrom = "myMoveFrom"
-        val remove = ""
+        val outputFileName = "output"
+        val moveFrom = "/root/src/main/java"
+        val moveTo = "/root/src/main/java/subfolder"
 
         mockkStatic("com.github.kinquirer.components.InputKt")
         every {
-            KInquirer.promptInput(any(), any(), any())
-        } returns inputFolderName andThen outputFileName andThen setRoot andThen moveFrom andThen moveTo andThen remove
+            KInquirer.promptInput(any(), any(), any(), any(), any(), any())
+        } returns inputFolderName andThen moveFrom andThen moveTo andThen outputFileName
+        mockkStatic("com.github.kinquirer.components.ListKt")
         every {
-            KInquirer.promptInputNumber(any(), any(), any())
-        } returns printLevels
+            KInquirer.promptList(any(), any(), any(), any(), any())
+        } returns StructureModifierAction.MOVES_NODES.descripton
 
+        // when
         val parserArguments = ParserDialog.collectParserArgs()
-        println(parserArguments.toString())
-
         val commandLine = CommandLine(StructureModifier())
         val parseResult = commandLine.parseArgs(*parserArguments.toTypedArray())
-        println(parseResult.toString())
-        assertThat(parseResult.matchedPositional(0).getValue<File>().name).isEqualTo(inputFolderName)
-        assertThat(parseResult.matchedOption("output-file").getValue<String>()).isEqualTo(outputFileName)
-        assertThat(parseResult.matchedOption("print-levels")).isNull()
-        assertThat(parseResult.matchedOption("set-root")).isNull()
-        assertThat(parseResult.matchedOption("move-to").getValue<String>()).isEqualTo(moveTo)
-        assertThat(parseResult.matchedOption("move-from").getValue<String>()).isEqualTo(moveFrom)
-        assertThat(parseResult.matchedOption("remove")).isNull()
+
+        // then
+        Assertions.assertThat(parseResult.matchedPositional(0).getValue<File>().name).isEqualTo(inputFolderName)
+        Assertions.assertThat(parseResult.matchedOption("output-file").getValue<String>()).isEqualTo(outputFileName)
+        Assertions.assertThat(parseResult.matchedOption("move-from").getValue<String>()).isEqualTo(moveFrom)
+        Assertions.assertThat(parseResult.matchedOption("move-to").getValue<String>()).isEqualTo(moveTo)
+        Assertions.assertThat(parseResult.matchedOption("print-levels")).isNull()
+        Assertions.assertThat(parseResult.matchedOption("set-root")).isNull()
+        Assertions.assertThat(parseResult.matchedOption("remove")).isNull()
+    }
+
+    @Test
+    fun `should output correct arguments when remove nodes is selected`() {
+        // given
+        val inputFolderName = "sampleInputFile"
+        val outputFileName = "output"
+        val nodeToRemove = "/root/src/main/java"
+        val nodesToRemove = arrayOf(nodeToRemove)
+
+        mockkStatic("com.github.kinquirer.components.InputKt")
+        every {
+            KInquirer.promptInput(any(), any(), any(), any(), any(), any())
+        } returns inputFolderName andThen nodeToRemove andThen outputFileName
+        mockkStatic("com.github.kinquirer.components.ListKt")
+        every {
+            KInquirer.promptList(any(), any(), any(), any(), any())
+        } returns StructureModifierAction.REMOVE_NODES.descripton
+
+        // when
+        val parserArguments = ParserDialog.collectParserArgs()
+        val commandLine = CommandLine(StructureModifier())
+        val parseResult = commandLine.parseArgs(*parserArguments.toTypedArray())
+
+        // then
+        Assertions.assertThat(parseResult.matchedPositional(0).getValue<File>().name).isEqualTo(inputFolderName)
+        Assertions.assertThat(parseResult.matchedOption("output-file").getValue<String>()).isEqualTo(outputFileName)
+        Assertions.assertThat(parseResult.matchedOption("remove").getValue<Array<String>>()).isEqualTo(nodesToRemove)
+        Assertions.assertThat(parseResult.matchedOption("print-levels")).isNull()
+        Assertions.assertThat(parseResult.matchedOption("move-from")).isNull()
+        Assertions.assertThat(parseResult.matchedOption("set-root")).isNull()
+        Assertions.assertThat(parseResult.matchedOption("move-to")).isNull()
     }
 }
