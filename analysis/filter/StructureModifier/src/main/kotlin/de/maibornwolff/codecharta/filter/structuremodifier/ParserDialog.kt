@@ -23,7 +23,7 @@ class ParserDialog {
                     choices = listOf(
                             StructureModifierAction.PRINT_STRUCTURE.descripton,
                             StructureModifierAction.EXTRACT_PATH.descripton,
-                            StructureModifierAction.MOVES_NODES.descripton,
+                            StructureModifierAction.MOVE_NODES.descripton,
                             StructureModifierAction.REMOVE_NODES.descripton
                     )
             )
@@ -31,7 +31,7 @@ class ParserDialog {
             return when (selectedAction) {
                 StructureModifierAction.PRINT_STRUCTURE.descripton -> collectPrintArguments(inputFolderName)
                 StructureModifierAction.EXTRACT_PATH.descripton -> collectExtractPathArguments(inputFolderName)
-                StructureModifierAction.MOVES_NODES.descripton -> collectMoveNodesArguments(inputFolderName)
+                StructureModifierAction.MOVE_NODES.descripton -> collectMoveNodesArguments(inputFolderName)
                 StructureModifierAction.REMOVE_NODES.descripton -> collectRemoveNodesArguments(inputFolderName)
                 else -> listOf()
             }
