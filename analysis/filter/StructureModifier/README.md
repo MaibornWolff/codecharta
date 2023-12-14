@@ -1,13 +1,15 @@
 # StructureModifier
 
-The StructureModifier is used to modify the structure of .cc.json files. It enables to ...
+The StructureModifier modifies .cc.json files.\
+Perform one of the following actions at a time:
 
--   remove nodes from a project. The resulting project will not include these nodes and their children.
--   declare a node as root. This means that the chosen node will become the root node of the resulting sub-project.
--   move nodes within the project. All children of the source node will be transferred to the destination node.
--   print the hierarchy of the project.
+-   Use `-r, --remove=<remove>` to eliminate nodes from a project, excluding them and their children.
+-   Use `-s, --set-root=<setRoot>` to designate a node as the root, making it the root of the resulting sub-project.
+-   Use `-f, --move-from=<moveFrom>` and `-t, --move-to=<moveTo>` to move nodes within the project, transferring all children of the source node to the destination node.
+-   Use `-p, --print-levels=<printLevels>` to display the project hierarchy.
 
-The edges and blacklist entries associated with moved/removed nodes will be altered as well, while all attribute types will be copied.
+Specifying multiple actions in a single command results in only one being performed.\
+Edges and blacklist entries associated with moved or removed nodes will be adjusted, and all attribute types will be copied.
 
 ## Usage and Parameters
 

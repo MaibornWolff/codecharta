@@ -40,7 +40,7 @@ class StructureModifier(
         names = ["-p", "--print-levels"],
         description = ["show first x layers of project hierarchy"]
     )
-    private var printLevels: Int = 0
+    private var printLevels: Int? = null
 
     @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File (or empty for stdout)"])
     private var outputFile: String? = null
@@ -79,8 +79,8 @@ class StructureModifier(
         project = readProject() ?: return null
 
         when {
-            printLevels > 0 -> {
-                ProjectStructurePrinter(project, output).printProjectStructure(printLevels)
+            printLevels != null -> {
+                ProjectStructurePrinter(project, output).printProjectStructure(printLevels!!)
                 return null
             }
 
