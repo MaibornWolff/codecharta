@@ -45,23 +45,23 @@ class ParserDialog {
 
         private fun collectSetRootArguments(): Array<String> {
             val setRoot: String =
-                    KInquirer.promptInput(message = "What path within project to be extracted?")
+                    KInquirer.promptInput(message = "What path within project to be extracted as the new root?")
             val outputFileName = collectOutputFileName()
             return arrayOf("--set-root=$setRoot", "--output-file=$outputFileName")
         }
 
         private fun collectMoveNodesArguments(): Array<String> {
             val moveFrom: String =
-                    KInquirer.promptInput(message = "What are the nodes to be moved?")
+                    KInquirer.promptInput(message = "What path should be moved (containing children will be moved also)?")
             val moveTo: String =
-                    KInquirer.promptInput(message = "Where to move them?")
+                    KInquirer.promptInput(message = "What is the target path to move them?")
             val outputFileName = collectOutputFileName()
             return arrayOf("--move-from=$moveFrom", "--move-to=$moveTo", "--output-file=$outputFileName")
         }
 
         private fun collectRemoveNodesArguments(): Array<String> {
             val remove: String =
-                    KInquirer.promptInput(message = "What are the nodes to be removed?")
+                    KInquirer.promptInput(message = "What is the path of the nodes to be removed?")
             val outputFileName = collectOutputFileName()
             return arrayOf("--remove=$remove", "--output-file=$outputFileName")
         }

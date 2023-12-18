@@ -3,8 +3,11 @@ package de.maibornwolff.codecharta.filter.structuremodifier
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.util.InputHelper
 import io.mockk.every
+import io.mockk.mockk
 import io.mockk.mockkObject
 import io.mockk.unmockkAll
+import mu.KLogger
+import mu.KotlinLogging
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
@@ -175,5 +178,43 @@ class StructureModifierTest {
         // then
         assertThat(cliResult).doesNotContain(file1)
         assertThat(cliResult).doesNotContain(file2)
+    }
+
+    @Test
+    fun `should log warning when more than one action is specified`() {
+        // given
+        val file1 = "/root/src/main/file1.java"
+        val file2 = "/root/src/main/file2.java"
+        val nodesToRemove = listOf(file1, file2)
+
+        val loggerMock = mockk<KLogger>()
+        val warningMessagesLogged = mutableListOf<String>()
+        mockkObject(KotlinLogging)
+        every { KotlinLogging.logger(any<(() -> Unit)>()) } returns loggerMock
+        every { loggerMock.warn(capture(warningMessagesLogged)) } returns Unit
+
+        // when
+        executeForOutput("", arrayOf("src/test/resources/sample_project.cc.json", "--remove", "$nodesToRemove", "--set-root", "$nodesToRemove"))
+
+        // then
+        assertThat(warningMessagesLogged).isNotEmpty()
+    }
+
+    @Test
+    fun `should log error when move-from but not move-to is specified`() {
+        // given
+        val folderToMove = "/root/src/main"
+
+        val loggerMock = mockk<KLogger>()
+        val errorMessagesLogged = mutableListOf<String>()
+        mockkObject(KotlinLogging)
+        every { KotlinLogging.logger(any<(() -> Unit)>()) } returns loggerMock
+        every { loggerMock.error(capture(errorMessagesLogged)) } returns Unit
+
+        // when
+        executeForOutput("", arrayOf("src/test/resources/sample_project.cc.json", "--move-from", folderToMove, "--move-to", ""))
+
+        // then
+        assertThat(errorMessagesLogged).isNotEmpty()
     }
 }
