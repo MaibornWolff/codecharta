@@ -16,7 +16,7 @@ class FolderMover(private val project: Project) {
     private var toMove: List<MutableNode>? = null
 
     fun move(moveFrom: String?, moveTo: String?): Project? {
-        if ((moveFrom == null) || (moveTo == null)) {
+        if ((moveFrom.isNullOrEmpty()) || (moveTo.isNullOrEmpty())) {
             logger.error("In order to move nodes, both source and destination need to be set.")
             return null
         }

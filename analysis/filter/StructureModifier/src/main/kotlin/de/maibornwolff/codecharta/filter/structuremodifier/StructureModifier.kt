@@ -33,7 +33,7 @@ class StructureModifier(
     @CommandLine.Parameters(arity = "0..1", paramLabel = "FILE", description = ["input project file"])
     private var source: File? = null
 
-    @CommandLine.Option(names = ["-s", "--set-root"], description = ["path within project to be extracted"])
+    @CommandLine.Option(names = ["-s", "--set-root"], description = ["path within project to be extracted as the new roo"])
     private var setRoot: String? = null
 
     @CommandLine.Option(
@@ -76,6 +76,10 @@ class StructureModifier(
     }
 
     override fun call(): Unit? {
+        if (isMoreThanOneActionSpecified()) {
+            logger.warn("More than one action specified - aborting execution.")
+        }
+
         project = readProject() ?: return null
 
         when {
@@ -92,6 +96,15 @@ class StructureModifier(
         ProjectSerializer.serializeToFileOrStream(project, outputFile, output, false)
 
         return null
+    }
+
+    private fun isMoreThanOneActionSpecified(): Boolean {
+        var actionCount = 0
+        actionCount += if (setRoot != null) 1 else 0
+        actionCount += if (printLevels != null) 1 else 0
+        actionCount += if (moveFrom != null) 1 else 0
+        actionCount += if (remove.isNotEmpty()) 1 else 0
+        return actionCount > 1
     }
 
     private fun readProject(): Project? {
