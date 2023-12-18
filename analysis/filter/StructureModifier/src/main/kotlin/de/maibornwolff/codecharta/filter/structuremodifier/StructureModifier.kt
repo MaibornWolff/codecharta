@@ -33,11 +33,7 @@ class StructureModifier(
     @CommandLine.Parameters(arity = "0..1", paramLabel = "FILE", description = ["input project file"])
     private var source: File? = null
 
-    @CommandLine.Option(
-            names = ["-s", "--set-root"],
-            description = ["path within project to be extracted"],
-            preprocessor = ExtractFirstOptionPreprocessor::class
-    )
+    @CommandLine.Option(names = ["-s", "--set-root"], description = ["path within project to be extracted"])
     private var setRoot: String? = null
 
     @CommandLine.Option(
@@ -56,7 +52,7 @@ class StructureModifier(
             names = ["-r", "--remove"],
             description = ["comma-separated list of nodes to be removed (when using powershell, the list either can't contain spaces or has to be in quotes)"],
             converter = [(CommaSeparatedStringToListConverter::class)],
-            preprocessor = CommaSeparatedParameterPreprocessor::class //TODO: add the other preprocessor
+            preprocessor = CommaSeparatedParameterPreprocessor::class
     )
     private var remove: Array<String> = arrayOf()
 
