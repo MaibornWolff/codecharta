@@ -70,7 +70,7 @@ class ParserDialogTest {
         mockkStatic("com.github.kinquirer.components.ListKt")
         every {
             KInquirer.promptList(any(), any(), any(), any(), any())
-        } returns StructureModifierAction.EXTRACT_PATH.descripton
+        } returns StructureModifierAction.SET_ROOT.descripton
 
         // when
         val parserArguments = ParserDialog.collectParserArgs()
