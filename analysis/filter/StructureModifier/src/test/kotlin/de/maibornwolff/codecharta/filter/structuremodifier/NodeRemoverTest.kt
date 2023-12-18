@@ -66,7 +66,7 @@ class NodeRemoverTest {
     }
 
     @Test
-    fun `Should remove affected edges when removal are specified`() {
+    fun `Should remove affected edges when removal is specified`() {
         // when
         val subProjectExtractor = NodeRemover(sampleProject)
         val result = subProjectExtractor.remove(arrayOf("/root/foo"))

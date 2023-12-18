@@ -40,7 +40,7 @@ class NodeRemover(private val project: Project) {
 
             val pathWithoutRoot = path.drop(1)
             for ((index, pathSegment) in pathWithoutRoot.withIndex()) {
-                val isLastSegment = index == pathWithoutRoot.lastIndex
+                val isLastSegment = pathWithoutRoot.lastIndex == index
                 if (isLastSegment) {
                     currentNode.children.removeIf { it.name == pathSegment }
                 } else {
