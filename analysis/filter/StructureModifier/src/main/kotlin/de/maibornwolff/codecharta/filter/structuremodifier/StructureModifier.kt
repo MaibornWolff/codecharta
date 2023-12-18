@@ -102,7 +102,7 @@ class StructureModifier(
         var actionCount = 0
         actionCount += if (setRoot != null) 1 else 0
         actionCount += if (printLevels != null) 1 else 0
-        actionCount += if (moveFrom != null) 1 else 0
+        actionCount += if (moveFrom != null || moveTo != null) 1 else 0
         actionCount += if (remove.isNotEmpty()) 1 else 0
         return actionCount > 1
     }
