@@ -39,20 +39,20 @@ class ParserDialog {
 
         private fun collectPrintArguments(): Array<String> {
             val printLevels: BigDecimal =
-                    KInquirer.promptInputNumber(message = "How many print levels do you want to print? (Optional)", default = "0", hint = "0")
+                    KInquirer.promptInputNumber(message = "How many print levels do you want to print?", default = "0", hint = "0")
             return arrayOf("--print-levels=$printLevels")
         }
 
         private fun collectSetRootArguments(): Array<String> {
             val setRoot: String =
-                    KInquirer.promptInput(message = "What path within project to be extracted as the new root?")
+                    KInquirer.promptInput(message = "What path within the project should be extracted as the new root?")
             val outputFileName = collectOutputFileName()
             return arrayOf("--set-root=$setRoot", "--output-file=$outputFileName")
         }
 
         private fun collectMoveNodesArguments(): Array<String> {
             val moveFrom: String =
-                    KInquirer.promptInput(message = "What path should be moved (containing children will be moved also)?")
+                    KInquirer.promptInput(message = "What path should be moved (contained children will be moved as well)?")
             val moveTo: String =
                     KInquirer.promptInput(message = "What is the target path to move them?")
             val outputFileName = collectOutputFileName()
@@ -61,7 +61,7 @@ class ParserDialog {
 
         private fun collectRemoveNodesArguments(): Array<String> {
             val remove: String =
-                    KInquirer.promptInput(message = "What is the path of the nodes to be removed?")
+                    KInquirer.promptInput(message = "What are the paths of the nodes to be removed?")
             val outputFileName = collectOutputFileName()
             return arrayOf("--remove=$remove", "--output-file=$outputFileName")
         }
