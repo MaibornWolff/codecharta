@@ -77,7 +77,8 @@ class StructureModifier(
 
     override fun call(): Unit? {
         if (isMoreThanOneActionSpecified()) {
-            logger.warn("More than one action specified - aborting execution.")
+            logger.error("More than one action specified - aborting execution.")
+            return null
         }
 
         project = readProject() ?: return null

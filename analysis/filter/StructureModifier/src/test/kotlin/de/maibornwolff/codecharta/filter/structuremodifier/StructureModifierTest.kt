@@ -188,16 +188,16 @@ class StructureModifierTest {
         val nodesToRemove = listOf(file1, file2)
 
         val loggerMock = mockk<KLogger>()
-        val warningMessagesLogged = mutableListOf<String>()
+        val errorMessagesLogged = mutableListOf<String>()
         mockkObject(KotlinLogging)
         every { KotlinLogging.logger(any<(() -> Unit)>()) } returns loggerMock
-        every { loggerMock.warn(capture(warningMessagesLogged)) } returns Unit
+        every { loggerMock.error(capture(errorMessagesLogged)) } returns Unit
 
         // when
         executeForOutput("", arrayOf("src/test/resources/sample_project.cc.json", "--remove", "$nodesToRemove", "--set-root", "$nodesToRemove"))
 
         // then
-        assertThat(warningMessagesLogged).isNotEmpty()
+        assertThat(errorMessagesLogged).isNotEmpty()
     }
 
     @Test
