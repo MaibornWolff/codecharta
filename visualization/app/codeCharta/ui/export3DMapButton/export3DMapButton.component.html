@@ -1,1 +1,10 @@
-<cc-action-icon [icon]="'fa fa-cube'" title="Download stl file for 3D printing" (click)="downloadStlFile()"></cc-action-icon>
+<cc-action-icon
+	[icon]="'fa fa-cube'"
+	title="Download STL file for 3D printing (single material, geometry only)"
+	(click)="downloadStlFile()"
+></cc-action-icon>
+<cc-action-icon
+	[icon]="'fa fa-cubes'"
+	title="Download STL files for multi-color 3D printing (one STL per color, import all together to merge in slicer)"
+	(click)="downloadMultipleStlFiles()"
+></cc-action-icon>
