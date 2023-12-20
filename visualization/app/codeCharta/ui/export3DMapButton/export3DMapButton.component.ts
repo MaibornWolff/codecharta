@@ -44,6 +44,13 @@ export class Export3DMapButtonComponent {
 				threeMesh.geometry.attributes.color.getY(index),
 				threeMesh.geometry.attributes.color.getZ(index)
 			]
+			// special case for grey tones, unify into one color
+			if (colorsArray[0] === colorsArray[1] && colorsArray[1] === colorsArray[2]) {
+				colorsArray[0] = 0.5
+				colorsArray[1] = 0.5
+				colorsArray[2] = 0.5
+			}
+
 			// convert color array to hex color string
 			const color = colorsArray
 				.map(c =>
