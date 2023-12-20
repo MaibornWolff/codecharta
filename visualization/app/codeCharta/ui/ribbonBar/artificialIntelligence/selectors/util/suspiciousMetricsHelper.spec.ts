@@ -160,6 +160,7 @@ describe("suspiciousMetricsHelper", () => {
 			{
 				from: 1,
 				isOutlier: true,
+				outlierThreshold: 1000,
 				metric: "mcc",
 				to: 10
 			}
