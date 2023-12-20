@@ -27,7 +27,7 @@ You can start with **Codecharta Visualization** on multiple ways:
 
 ## NPM Package
 
-> Make sure you have [Node.js](https://nodejs.org/en/download) (version >=16) installed <br>
+> Make sure you have [Node.js](https://nodejs.org/en/download) (version >=18) installed <br>
 > For reference: [Codecharta-Visualization on NPM](https://www.npmjs.com/package/codecharta-visualization)
 
 ```bash
@@ -55,7 +55,7 @@ $ codecharta-visualization
 
 ## Build it yourself
 
-> To clone and run this application, you'll need [Git](https://git-scm.com) and [Node.js](https://nodejs.org/en/download/) (version >=16) installed
+> To clone and run this application, you'll need [Git](https://git-scm.com) and [Node.js](https://nodejs.org/en/download/) (version >=18) installed
 
 ```bash
 # Clone the CodeCharta repo

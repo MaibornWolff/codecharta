@@ -15,7 +15,7 @@ To work on CodeCharta, please ensure your system includes:
 
 -   Git
 -   Java >= 11
--   Node >= 16
+-   Node >= 18
 
 # Install guide
 

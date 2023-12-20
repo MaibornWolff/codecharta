@@ -22,7 +22,7 @@ RUN wget -qO codemaat.jar https://github.com/adamtornhill/code-maat/releases/dow
     mkdir --parents /opt/codemaat; \
     mv codemaat.jar /opt/codemaat/;
 
-RUN curl -sL https://deb.nodesource.com/setup_16.x -o /tmp/nodesource_setup.sh; \
+RUN curl -sL https://deb.nodesource.com/setup_18.x -o /tmp/nodesource_setup.sh; \
     bash /tmp/nodesource_setup.sh; \
     apt-get install nodejs make gcc build-essential -y; \
     npm install -g --unsafe-perm metric-gardener

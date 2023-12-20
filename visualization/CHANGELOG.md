@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
     </br>
 -   Persist uploaded files and applied configuration accross page-reloads [#3486](https://github.com/MaibornWolff/codecharta/pull/3486)
 
+### Chore 👨‍💻 👩‍💻
+
+-   Bump node version from 16 to 18 [#3452](https://github.com/MaibornWolff/codecharta/pull/3452)
+
 ## [1.123.0] - 2024-02-26
 
 ### Changed
