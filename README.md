@@ -68,7 +68,7 @@ Latest Release: <br>
 
 For using CodeCharta the following needs to be installed on your system:
 
--   Node >= 16
+-   Node >= 18
 -   Java >= 11
 
 ## How To Use
