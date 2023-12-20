@@ -16,8 +16,8 @@ describe("ArtificialIntelligenceSelector", () => {
 			analyzedProgrammingLanguage: "java",
 			riskProfile: { highRisk: 37, lowRisk: 46, moderateRisk: 17, veryHighRisk: 0 },
 			suspiciousMetricSuggestionLinks: [
-				{ from: 365, isOutlier: true, metric: "loc", to: 554 },
-				{ from: 29, isOutlier: true, metric: "functions", to: 44 },
+				{ from: 365, isOutlier: true, metric: "loc", to: 554, outlierThreshold: 1001 },
+				{ from: 29, isOutlier: true, metric: "functions", to: 44, outlierThreshold: 75 },
 				{ from: 48, metric: "mcc", to: 71 }
 			],
 			unsuspiciousMetrics: ["rloc (Real Lines of Code)"],
@@ -35,8 +35,8 @@ describe("ArtificialIntelligenceSelector", () => {
 			analyzedProgrammingLanguage: "java",
 			riskProfile: { highRisk: 37, lowRisk: 46, moderateRisk: 17, veryHighRisk: 0 },
 			suspiciousMetricSuggestionLinks: [
-				{ from: 365, isOutlier: true, metric: "loc", to: 554 },
-				{ from: 29, isOutlier: true, metric: "functions", to: 44 },
+				{ from: 365, isOutlier: true, metric: "loc", to: 554, outlierThreshold: 1001 },
+				{ from: 29, isOutlier: true, metric: "functions", to: 44, outlierThreshold: 75 },
 				{ from: 48, metric: "mcc", to: 71 }
 			],
 			unsuspiciousMetrics: ["rloc (Real Lines of Code)"],

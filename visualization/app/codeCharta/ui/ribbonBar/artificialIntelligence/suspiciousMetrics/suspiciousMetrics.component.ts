@@ -37,7 +37,10 @@ export class SuspiciousMetricComponent implements OnChanges {
 		this.store.dispatch(setColorMetric({ value: metric.metric }))
 		this.store.dispatch(
 			setColorRange({
-				value: { from: metric.from, to: metric.to }
+				value: {
+					from: metric.from,
+					to: markOutlier ? metric.outlierThreshold : metric.to
+				}
 			})
 		)
 		this.store.dispatch(
