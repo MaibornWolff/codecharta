@@ -153,7 +153,7 @@ describe("SuspiciousMetricsComponent", () => {
 				}
 			})
 			await userEvent.click(screen.getByTitle("Open Suspicious Metrics Panel"))
-			await userEvent.click(screen.getByTitle("Show very high risk files"), undefined)
+			await userEvent.click(screen.getByTitle("Show very high risk files (90th percentile)"), undefined)
 			const store = TestBed.inject(Store)
 			expect(store.dispatch).toHaveBeenCalledWith(setHeightMetric({ value: "mcc" }))
 			expect(store.dispatch).toHaveBeenCalledWith(setColorMetric({ value: "mcc" }))
