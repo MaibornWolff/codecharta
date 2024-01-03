@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewEncapsulation } from "@angular/core"
 import { Store } from "@ngrx/store"
 import { CcState } from "app/codeCharta/codeCharta.model"
-import { isFileExplorerPinnedSelector } from "app/codeCharta/state/store/appSettings/isFileExplorerPinned/isFileExplorerPinned.selector"
+import { isSearchPanelPinnedSelector } from "../../state/store/appSettings/isSearchPanelPinned/isSearchPanelPinned.selector"
 import { Subscription } from "rxjs"
 
 export type SearchPanelMode = "minimized" | "treeView" | "blacklist"
@@ -14,19 +14,19 @@ export type SearchPanelMode = "minimized" | "treeView" | "blacklist"
 })
 export class SearchPanelComponent implements OnInit {
 	searchPanelMode: SearchPanelMode = "minimized"
-	isFileExplorerPinned: boolean
-	isFileExplorerPinnedSubscription: Subscription
+	isSearchPanelPinned: boolean
+	isSearchPanelPinnedSubscription: Subscription
 
 	constructor(private store: Store<CcState>) {}
 
 	ngOnInit(): void {
-		this.isFileExplorerPinnedSubscription = this.store.select(isFileExplorerPinnedSelector).subscribe(isFileExplorerPinned => {
-			this.isFileExplorerPinned = isFileExplorerPinned
+		this.isSearchPanelPinnedSubscription = this.store.select(isSearchPanelPinnedSelector).subscribe(isSearchPanelPinned => {
+			this.isSearchPanelPinned = isSearchPanelPinned
 		})
 	}
 
 	ngOnDestroy(): void {
-		this.isFileExplorerPinnedSubscription.unsubscribe()
+		this.isSearchPanelPinnedSubscription.unsubscribe()
 	}
 
 	updateSearchPanelMode = (searchPanelMode: SearchPanelMode) => {
@@ -38,7 +38,7 @@ export class SearchPanelComponent implements OnInit {
 	}
 
 	private closeSearchPanelOnOutsideClick = (event: MouseEvent) => {
-		if (this.isOutside(event) && !this.isFileExplorerPinned) {
+		if (this.isOutside(event) && !this.isSearchPanelPinned) {
 			this.setSearchPanelMode("minimized")
 		}
 	}

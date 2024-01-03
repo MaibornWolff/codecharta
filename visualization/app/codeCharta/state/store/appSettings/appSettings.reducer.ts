@@ -35,7 +35,10 @@ import {
 	defaultIsColorMetricLinkedToHeightMetric,
 	isColorMetricLinkedToHeightMetric
 } from "./isHeightAndColorMetricLinked/isColorMetricLinkedToHeightMetric.reducer"
-import { defaultIsFileExplorerPinned, isFileExplorerPinned } from "./isFileExplorerPinned/isFileExplorerPinned.reducer"
+import {
+	defaultIsSearchPanelPinned as defaultIsSearchPanelPinned,
+	isSearchPanelPinned as isSearchPanelPinned
+} from "./isSearchPanelPinned/isSearchPanelPinned.reducer"
 import { defaultEnableFloorLabels, enableFloorLabels } from "./enableFloorLabels/enableFloorLabels.reducer"
 import { combineReducers } from "@ngrx/store"
 
@@ -44,7 +47,7 @@ export const appSettings = combineReducers({
 	showMetricLabelNodeName,
 	showMetricLabelNameValue,
 	sortingOrderAscending,
-	isFileExplorerPinned,
+	isSearchPanelPinned,
 	isLoadingFile,
 	isLoadingMap,
 	mapColors,
@@ -74,7 +77,7 @@ export const defaultAppSettings = {
 	showMetricLabelNodeName: defaultShowMetricLabelNodeName,
 	showMetricLabelNameValue: defaultShowMetricLabelNameValue,
 	sortingOrderAscending: defaultSortingOrderAscending,
-	isFileExplorerPinned: defaultIsFileExplorerPinned,
+	isSearchPanelPinned: defaultIsSearchPanelPinned,
 	isLoadingFile: defaultIsLoadingFile,
 	isLoadingMap: defaultIsLoadingMap,
 	mapColors: defaultMapColors,

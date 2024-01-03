@@ -3,8 +3,8 @@ import { Store } from "@ngrx/store"
 import { Observable } from "rxjs"
 import { CcState } from "../../../codeCharta.model"
 
-import { toggleIsFileExplorerPinned } from "../../../state/store/appSettings/isFileExplorerPinned/isFileExplorerPinned.actions"
-import { isFileExplorerPinnedSelector } from "../../../state/store/appSettings/isFileExplorerPinned/isFileExplorerPinned.selector"
+import { toggleIsSearchPanelPinned } from "../../../state/store/appSettings/isSearchPanelPinned/isSearchPanelPinned.actions"
+import { isSearchPanelPinnedSelector } from "../../../state/store/appSettings/isSearchPanelPinned/isSearchPanelPinned.selector"
 
 @Component({
 	selector: "cc-thumb-tack-button",
@@ -13,15 +13,15 @@ import { isFileExplorerPinnedSelector } from "../../../state/store/appSettings/i
 	encapsulation: ViewEncapsulation.None
 })
 export class ThumbTackButtonComponent implements OnInit {
-	isFileExplorerPinned$: Observable<boolean>
+	isSearchPanelPinned$: Observable<boolean>
 
 	constructor(private store: Store<CcState>) {}
 
 	ngOnInit(): void {
-		this.isFileExplorerPinned$ = this.store.select(isFileExplorerPinnedSelector)
+		this.isSearchPanelPinned$ = this.store.select(isSearchPanelPinnedSelector)
 	}
 
 	onClick() {
-		this.store.dispatch(toggleIsFileExplorerPinned())
+		this.store.dispatch(toggleIsSearchPanelPinned())
 	}
 }
