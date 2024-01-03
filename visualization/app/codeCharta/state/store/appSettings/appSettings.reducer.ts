@@ -35,6 +35,7 @@ import {
 	defaultIsColorMetricLinkedToHeightMetric,
 	isColorMetricLinkedToHeightMetric
 } from "./isHeightAndColorMetricLinked/isColorMetricLinkedToHeightMetric.reducer"
+import { defaultIsFileExplorerPinned, isFileExplorerPinned } from "./isFileExplorerPinned/isFileExplorerPinned.reducer"
 import { defaultEnableFloorLabels, enableFloorLabels } from "./enableFloorLabels/enableFloorLabels.reducer"
 import { combineReducers } from "@ngrx/store"
 
@@ -43,6 +44,7 @@ export const appSettings = combineReducers({
 	showMetricLabelNodeName,
 	showMetricLabelNameValue,
 	sortingOrderAscending,
+	isFileExplorerPinned,
 	isLoadingFile,
 	isLoadingMap,
 	mapColors,
@@ -72,6 +74,7 @@ export const defaultAppSettings = {
 	showMetricLabelNodeName: defaultShowMetricLabelNodeName,
 	showMetricLabelNameValue: defaultShowMetricLabelNameValue,
 	sortingOrderAscending: defaultSortingOrderAscending,
+	isFileExplorerPinned: defaultIsFileExplorerPinned,
 	isLoadingFile: defaultIsLoadingFile,
 	isLoadingMap: defaultIsLoadingMap,
 	mapColors: defaultMapColors,

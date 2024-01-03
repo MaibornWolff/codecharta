@@ -27,6 +27,12 @@ cc-matching-files-counter {
 		margin-left: 6px;
 	}
 
+	cc-thumb-tack-button button {
+		height: 25px;
+		background: #e6e6e6;
+		padding: 1px 8px;
+	}
+
 	cc-sorting-button button {
 		height: 25px;
 		background: #e6e6e6;
@@ -41,9 +47,9 @@ cc-matching-files-counter {
 		font-size: 10pt;
 	}
 
-	.sort-component {
-		margin-right: 3px;
+	.clickable-component {
 		display: inline-block;
 		color: black;
+		margin-left: -9px;
 	}
 }
