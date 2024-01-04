@@ -10,7 +10,7 @@
 		<span class="section-title" (click)="updateSearchPanelMode('treeView')">
 			File/Node Explorer <i class="fa fa-angle-down" title="Show folder structure"></i>
 		</span>
-		<div class="section-body">
+		<div class="section-body" [class.hidden]="searchPanelMode === 'minimized'">
 			<cc-blacklist-panel [hidden]="searchPanelMode !== 'blacklist'"></cc-blacklist-panel>
 			<cc-matching-files-counter [hidden]="searchPanelMode !== 'treeView'"></cc-matching-files-counter>
 			<cc-map-tree-view [hidden]="searchPanelMode !== 'treeView'"></cc-map-tree-view>
