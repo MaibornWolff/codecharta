@@ -4,6 +4,7 @@ import com.github.kinquirer.KInquirer
 import com.github.kinquirer.components.promptConfirm
 import com.github.kinquirer.components.promptInput
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
+import de.maibornwolff.codecharta.util.InputHelper
 import java.io.File
 import java.nio.file.Paths
 
@@ -11,10 +12,10 @@ class ParserDialog {
     companion object : ParserDialogInterface {
 
         override fun collectParserArgs(): List<String> {
-            val inputFileName = KInquirer.promptInput(
-                    message = "Please specify the name of the Tokei JSON file to be parsed:",
-                    hint = Paths.get("").toAbsolutePath().toString() + File.separator + "yourInput.json"
-            )
+            var inputFileName = collectInputFileName()
+            while (!InputHelper.isInputValidAndNotNull(arrayOf(File(inputFileName)), canInputContainFolders = false)) {
+                inputFileName = collectInputFileName()
+            }
 
             val outputFileName: String = KInquirer.promptInput(
                     message = "What is the name of the output file?",
@@ -44,6 +45,13 @@ class ParserDialog {
                 "--root-name=$rootName",
                 "--path-separator=$pathSeparator",
                 if (isCompressed) null else "--not-compressed",
+            )
+        }
+
+        private fun collectInputFileName(): String {
+            return KInquirer.promptInput(
+                    message = "Please specify the name of the Tokei JSON file to be parsed:",
+                    hint = Paths.get("").toAbsolutePath().toString() + File.separator + "yourInput.json"
             )
         }
     }

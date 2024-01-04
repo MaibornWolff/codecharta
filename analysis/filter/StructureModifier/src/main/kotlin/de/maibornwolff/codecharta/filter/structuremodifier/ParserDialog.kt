@@ -5,6 +5,7 @@ import com.github.kinquirer.components.promptInput
 import com.github.kinquirer.components.promptInputNumber
 import com.github.kinquirer.components.promptList
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
+import de.maibornwolff.codecharta.util.InputHelper
 import java.io.File
 import java.math.BigDecimal
 import java.nio.file.Paths
@@ -13,10 +14,10 @@ class ParserDialog {
     companion object : ParserDialogInterface {
 
         override fun collectParserArgs(): List<String> {
-            val inputFolderName =
-                    KInquirer.promptInput(
-                            message = "What is the cc.json file that has to be modified?",
-                            hint = Paths.get("").toAbsolutePath().toString() + File.separator + "yourInput.cc.json")
+            var inputFileName = collectInputFileName()
+            while (!InputHelper.isInputValidAndNotNull(arrayOf(File(inputFileName)), canInputContainFolders = false)) {
+                inputFileName = collectInputFileName()
+            }
 
             val selectedAction: String = KInquirer.promptList(
                     message = "Which action do you want to perform?",
@@ -29,12 +30,16 @@ class ParserDialog {
             )
 
             return when (selectedAction) {
-                StructureModifierAction.PRINT_STRUCTURE.descripton -> listOf(inputFolderName, *collectPrintArguments())
-                StructureModifierAction.SET_ROOT.descripton -> listOf(inputFolderName, *collectSetRootArguments())
-                StructureModifierAction.MOVE_NODES.descripton -> listOf(inputFolderName, *collectMoveNodesArguments())
-                StructureModifierAction.REMOVE_NODES.descripton -> listOf(inputFolderName, *collectRemoveNodesArguments())
+                StructureModifierAction.PRINT_STRUCTURE.descripton -> listOf(inputFileName, *collectPrintArguments())
+                StructureModifierAction.SET_ROOT.descripton -> listOf(inputFileName, *collectSetRootArguments())
+                StructureModifierAction.MOVE_NODES.descripton -> listOf(inputFileName, *collectMoveNodesArguments())
+                StructureModifierAction.REMOVE_NODES.descripton -> listOf(inputFileName, *collectRemoveNodesArguments())
                 else -> listOf()
             }
+        }
+
+        private fun collectInputFileName(): String {
+            return KInquirer.promptInput(message = "What is the cc.json file that has to be modified?", hint = Paths.get("").toAbsolutePath().toString() + File.separator + "yourInput.cc.json")
         }
 
         private fun collectPrintArguments(): Array<String> {

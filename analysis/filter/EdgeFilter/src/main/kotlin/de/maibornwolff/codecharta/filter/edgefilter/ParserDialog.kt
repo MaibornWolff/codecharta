@@ -3,6 +3,7 @@ package de.maibornwolff.codecharta.filter.edgefilter
 import com.github.kinquirer.KInquirer
 import com.github.kinquirer.components.promptInput
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
+import de.maibornwolff.codecharta.util.InputHelper
 import mu.KotlinLogging
 import java.io.File
 import java.nio.file.Paths
@@ -14,11 +15,11 @@ class ParserDialog {
         private const val EXTENSION = "cc.json"
 
         override fun collectParserArgs(): List<String> {
+            var inputFileName = collectInputFileName()
+            while (!InputHelper.isInputValidAndNotNull(arrayOf(File(inputFileName)), canInputContainFolders = false)) {
+                inputFileName = collectInputFileName()
+            }
 
-            val inputFileName = KInquirer.promptInput(
-                    message = "What is the $EXTENSION file that has to be parsed?",
-                    hint = Paths.get("").toAbsolutePath().toString() + File.separator + "yourInput." + EXTENSION
-                                                     )
             logger.info { "File path: $inputFileName" }
 
             val defaultOutputFileName = getOutputFileName(inputFileName)
@@ -36,6 +37,10 @@ class ParserDialog {
             )
 
             return listOf(inputFileName, "--output-file=$outputFileName", "--path-separator=$pathSeparator")
+        }
+
+        private fun collectInputFileName(): String {
+            return KInquirer.promptInput(message = "What is the $EXTENSION file that has to be parsed?", hint = Paths.get("").toAbsolutePath().toString() + File.separator + "yourInput." + EXTENSION)
         }
     }
 }
