@@ -9,6 +9,7 @@ import { sortingOrderSelector } from "../../../state/store/dynamicSettings/sorti
 @Component({
 	selector: "cc-sorting-option",
 	templateUrl: "./sortingOption.component.html",
+	styleUrls: ["./sortingOption.component.scss"],
 	encapsulation: ViewEncapsulation.None
 })
 export class SortingOptionComponent {

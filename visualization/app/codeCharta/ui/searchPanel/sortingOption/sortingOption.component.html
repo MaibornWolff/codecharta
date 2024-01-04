@@ -1,4 +1,9 @@
-<mat-select title="Sort by" [value]="selectedSortingOption$ | async" (selectionChange)="handleSelectedSortingOptionChanged($event)">
+<mat-select
+	class="sorting-option-select"
+	title="Sort by"
+	[value]="selectedSortingOption$ | async"
+	(selectionChange)="handleSelectedSortingOptionChanged($event)"
+>
 	<mat-option *ngFor="let option of sortingOptions" [value]="option">
 		{{ option }}
 	</mat-option>

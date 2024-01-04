@@ -38,13 +38,34 @@ cc-ribbon-bar {
 	}
 
 	cc-search-panel {
-		.search-panel-card.expanded {
-			height: 100%;
+		.search-panel-card {
+			border-left: none;
+			width: 100%;
+
+			&.expanded {
+				height: 100%;
+
+				.section-body {
+					min-height: ($heightExpanded - $heightCollapsed) + 5px;
+					max-height: 500px;
+					overflow-y: auto;
+				}
+			}
 
 			.section-body {
-				min-height: ($heightExpanded - $heightCollapsed) + 5 + px;
-				max-height: 500px;
-				overflow-y: auto;
+				display: flex;
+				flex-direction: column;
+				padding: 6px;
+				position: absolute;
+				top: 45px;
+				background: white;
+				border: 1px solid #b5b5b5;
+				box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14), 0 2px 1px -1px rgba(0, 0, 0, 0.12);
+
+				&.hidden {
+					display: none;
+					pointer-events: none;
+				}
 			}
 		}
 	}
@@ -87,10 +108,10 @@ cc-ribbon-bar {
 				font-size: 8pt;
 				display: block;
 				width: 100%;
+				height: 100%;
 				color: gray;
 				text-align: center;
 				transition: background-color 0.4s;
-				padding: 1px 0 1px 0;
 				border-bottom: 1px solid transparent;
 
 				&:hover {
