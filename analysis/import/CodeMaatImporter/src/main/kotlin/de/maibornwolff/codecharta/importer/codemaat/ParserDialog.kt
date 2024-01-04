@@ -4,6 +4,7 @@ import com.github.kinquirer.KInquirer
 import com.github.kinquirer.components.promptConfirm
 import com.github.kinquirer.components.promptInput
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
+import de.maibornwolff.codecharta.util.InputHelper
 import java.io.File
 import java.nio.file.Paths
 
@@ -12,13 +13,10 @@ class ParserDialog {
         private const val EXTENSION = "csv"
 
         override fun collectParserArgs(): List<String> {
-            val defaultInputFileName = "edges.$EXTENSION"
-            val defaultInputFilePath = Paths.get("").toAbsolutePath().toString() + File.separator + defaultInputFileName
-            val inputFileName = KInquirer.promptInput(
-                message = "What is the $EXTENSION file that has to be parsed?",
-                hint = defaultInputFilePath,
-                default = defaultInputFilePath
-            )
+            var inputFileName = collectInputFileName()
+            while (!InputHelper.isInputValidAndNotNull(arrayOf(File(inputFileName)), canInputContainFolders = false)) {
+                inputFileName = collectInputFileName()
+            }
 
             val defaultOutputFileName = getOutputFileName(inputFileName)
             val outputFileName: String = KInquirer.promptInput(
@@ -36,6 +34,16 @@ class ParserDialog {
                 inputFileName,
                 "--output-file=$outputFileName",
                 if (isCompressed) null else "--not-compressed",
+            )
+        }
+
+        private fun collectInputFileName(): String {
+            val defaultInputFileName = "edges.$EXTENSION"
+            val defaultInputFilePath = Paths.get("").toAbsolutePath().toString() + File.separator + defaultInputFileName
+            return KInquirer.promptInput(
+                    message = "What is the $EXTENSION file that has to be parsed?",
+                    hint = defaultInputFilePath,
+                    default = defaultInputFilePath
             )
         }
     }

@@ -4,6 +4,7 @@ import com.github.kinquirer.KInquirer
 import com.github.kinquirer.components.promptConfirm
 import com.github.kinquirer.components.promptInput
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
+import de.maibornwolff.codecharta.util.InputHelper
 import java.io.File
 import java.nio.file.Paths
 
@@ -17,11 +18,10 @@ class ParserDialog {
                     default = false
                 )
 
-            val inputFile = KInquirer.promptInput(
-                message = if (isJsonFile) "Which MetricGardener json-File do you want to import?"
-                else "What Project do you want to parse?",
-                hint = if (isJsonFile) { Paths.get("").toAbsolutePath().toString() + File.separator + "file.json" } else Paths.get("").toAbsolutePath().toString()
-            )
+            var inputFile = collectInputFileName(isJsonFile)
+            while (!InputHelper.isInputValidAndNotNull(arrayOf(File(inputFile)), canInputContainFolders = true)) {
+                inputFile = collectInputFileName(isJsonFile)
+            }
 
             val outputFileName: String = KInquirer.promptInput(
                 message = "What is the name of the output file? If empty, the result will be returned in the terminal",
@@ -38,6 +38,13 @@ class ParserDialog {
                 "--output-file=$outputFileName",
                 if (isCompressed) null else "--not-compressed",
                 if (isJsonFile) "--is-json-file" else null
+            )
+        }
+
+        private fun collectInputFileName(isJsonFile: Boolean): String {
+            return KInquirer.promptInput(
+                    message = if (isJsonFile) "Which MetricGardener json-File do you want to import?" else "What Project do you want to parse?",
+                    hint = if (isJsonFile) { Paths.get("").toAbsolutePath().toString() + File.separator + "file.json" } else Paths.get("").toAbsolutePath().toString()
             )
         }
     }

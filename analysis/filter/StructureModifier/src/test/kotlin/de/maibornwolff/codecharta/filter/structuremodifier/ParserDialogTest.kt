@@ -4,7 +4,9 @@ import com.github.kinquirer.KInquirer
 import com.github.kinquirer.components.promptInput
 import com.github.kinquirer.components.promptInputNumber
 import com.github.kinquirer.components.promptList
+import de.maibornwolff.codecharta.util.InputHelper
 import io.mockk.every
+import io.mockk.mockkObject
 import io.mockk.mockkStatic
 import io.mockk.unmockkAll
 import org.assertj.core.api.Assertions
@@ -28,6 +30,9 @@ class ParserDialogTest {
         // given
         val inputFolderName = "sampleInputFile"
         val printLevels = BigDecimal(5)
+
+        mockkObject(InputHelper)
+        every { InputHelper.isInputValidAndNotNull(any(), any()) } returns true
 
         mockkStatic("com.github.kinquirer.components.InputKt")
         every {
@@ -63,6 +68,9 @@ class ParserDialogTest {
         val pathToBeExtracted = "/root/src/main"
         val outputFileName = "output"
 
+        mockkObject(InputHelper)
+        every { InputHelper.isInputValidAndNotNull(any(), any()) } returns true
+
         mockkStatic("com.github.kinquirer.components.InputKt")
         every {
             KInquirer.promptInput(any(), any(), any(), any(), any(), any())
@@ -94,6 +102,9 @@ class ParserDialogTest {
         val outputFileName = "output"
         val moveFrom = "/root/src/main/java"
         val moveTo = "/root/src/main/java/subfolder"
+
+        mockkObject(InputHelper)
+        every { InputHelper.isInputValidAndNotNull(any(), any()) } returns true
 
         mockkStatic("com.github.kinquirer.components.InputKt")
         every {
@@ -127,6 +138,9 @@ class ParserDialogTest {
         val nodeToRemove = "/root/src/main/java"
         val nodesToRemove = arrayOf(nodeToRemove)
 
+        mockkObject(InputHelper)
+        every { InputHelper.isInputValidAndNotNull(any(), any()) } returns true
+
         mockkStatic("com.github.kinquirer.components.InputKt")
         every {
             KInquirer.promptInput(any(), any(), any(), any(), any(), any())
@@ -149,5 +163,34 @@ class ParserDialogTest {
         Assertions.assertThat(parseResult.matchedOption("move-from")).isNull()
         Assertions.assertThat(parseResult.matchedOption("set-root")).isNull()
         Assertions.assertThat(parseResult.matchedOption("move-to")).isNull()
+    }
+
+    @Test
+    fun `should prompt user twice for input file when first input file is invalid`() {
+        // given
+        val invalidInputFolderName = ""
+        val validInputFolderName = "sampleInputFile"
+        val outputFileName = "output"
+        val nodeToRemove = "/root/src/main/java"
+
+        mockkObject(InputHelper)
+        every { InputHelper.isInputValidAndNotNull(any(), any()) } returns false andThen true
+
+        mockkStatic("com.github.kinquirer.components.InputKt")
+        every {
+            KInquirer.promptInput(any(), any(), any(), any(), any(), any())
+        } returns invalidInputFolderName andThen validInputFolderName andThen nodeToRemove andThen outputFileName
+        mockkStatic("com.github.kinquirer.components.ListKt")
+        every {
+            KInquirer.promptList(any(), any(), any(), any(), any())
+        } returns StructureModifierAction.REMOVE_NODES.descripton
+
+        // when
+        val parserArguments = ParserDialog.collectParserArgs()
+        val commandLine = CommandLine(StructureModifier())
+        val parseResult = commandLine.parseArgs(*parserArguments.toTypedArray())
+
+        // then
+        Assertions.assertThat(parseResult.matchedPositional(0).getValue<File>().name).isEqualTo(validInputFolderName)
     }
 }

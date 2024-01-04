@@ -4,25 +4,29 @@ import com.github.kinquirer.KInquirer
 import com.github.kinquirer.components.promptConfirm
 import com.github.kinquirer.components.promptInput
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
+import mu.KotlinLogging
 
 class ParserDialog {
     companion object : ParserDialogInterface {
+    private val logger = KotlinLogging.logger {}
 
         override fun collectParserArgs(): List<String> {
-            val hostUrl = KInquirer.promptInput(
-                message = "What is the sonar.host.url of your project?",
-                hint = "https://sonar.foo"
-            )
+            var hostUrl = collectHostUrl()
+            while (hostUrl.isEmpty()) {
+                logger.error("Empty hostUrl is not allowed!")
+                hostUrl = collectHostUrl()
+            }
 
-            val projectKey = KInquirer.promptInput(
-                message = "What is the sonar.projectKey?",
-                hint = "de.foo:bar"
-            )
+            var projectKey = collectProjectKey()
+            while (projectKey.isEmpty()) {
+                logger.error("Empty projectKey is not allowed!")
+                projectKey = collectProjectKey()
+            }
 
             val userToken: String = KInquirer.promptInput(
                 message = "What is the sonar user token (sonar.login) required to connect to the remote Sonar instance?",
                 hint = "sqp_0a81f6490875e062f79ccdeace23ac3c68dac6e"
-                                                         )
+            )
 
             val outputFileName: String = KInquirer.promptInput(
                 message = "What is the name of the output file?",
@@ -38,11 +42,10 @@ class ParserDialog {
                 default = true
             )
 
-            val mergeModules: Boolean =
-                KInquirer.promptConfirm(
+            val mergeModules: Boolean = KInquirer.promptConfirm(
                     message = "Do you want to merge modules in multi-module projects?",
                     default = false
-                )
+            )
 
             return listOfNotNull(
                 hostUrl,
@@ -52,9 +55,17 @@ class ParserDialog {
                 if (metrics.isEmpty()) null else "--metrics=${eraseWhitespace(metrics)}",
                 if (isCompressed) null else "--not-compressed",
                 "--merge-modules=$mergeModules",
-                                )
+            )
         }
 
         private fun eraseWhitespace(input: String) = input.replace(" ", "")
+
+        private fun collectHostUrl(): String {
+            return KInquirer.promptInput(message = "What is the sonar.host.url of your project?", hint = "https://sonar.foo")
+        }
+
+        private fun collectProjectKey(): String {
+            return KInquirer.promptInput(message = "What is the sonar.projectKey?", hint = "de.foo:bar")
+        }
     }
 }
