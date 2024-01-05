@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Added 🚀
+
+-   File explorer can be pinned while analyzing the code-map [#3459](https://github.com/MaibornWolff/codecharta/pull/3459)
+
 ### Changed
 
 -   Multiple values for options need to be separated by comma [#3434](https://github.com/MaibornWolff/codecharta/pull/3434)
