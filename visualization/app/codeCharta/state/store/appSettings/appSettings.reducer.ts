@@ -35,10 +35,7 @@ import {
 	defaultIsColorMetricLinkedToHeightMetric,
 	isColorMetricLinkedToHeightMetric
 } from "./isHeightAndColorMetricLinked/isColorMetricLinkedToHeightMetric.reducer"
-import {
-	defaultIsSearchPanelPinned as defaultIsSearchPanelPinned,
-	isSearchPanelPinned as isSearchPanelPinned
-} from "./isSearchPanelPinned/isSearchPanelPinned.reducer"
+import { defaultIsSearchPanelPinned, isSearchPanelPinned } from "./isSearchPanelPinned/isSearchPanelPinned.reducer"
 import { defaultEnableFloorLabels, enableFloorLabels } from "./enableFloorLabels/enableFloorLabels.reducer"
 import { combineReducers } from "@ngrx/store"
 
