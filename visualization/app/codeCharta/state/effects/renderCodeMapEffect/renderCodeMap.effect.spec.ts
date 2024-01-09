@@ -1,13 +1,11 @@
 import { TestBed } from "@angular/core/testing"
 import { Subject } from "rxjs"
-import { Vector3 } from "three"
 import { CodeMapRenderService } from "../../../ui/codeMap/codeMap.render.service"
 import { ThreeRendererService } from "../../../ui/codeMap/threeViewer/threeRenderer.service"
 import { UploadFilesService } from "../../../ui/toolBar/uploadFilesButton/uploadFiles.service"
 import { wait } from "../../../util/testUtils/wait"
 import { accumulatedDataSelector } from "../../selectors/accumulatedData/accumulatedData.selector"
 import { setInvertArea } from "../../store/appSettings/invertArea/invertArea.actions"
-import { setScaling } from "../../store/appSettings/scaling/scaling.actions"
 import { maxFPS, RenderCodeMapEffect } from "./renderCodeMap.effect"
 import { provideMockActions } from "@ngrx/effects/testing"
 import { Action } from "@ngrx/store"
@@ -46,7 +44,7 @@ describe("renderCodeMapEffect", () => {
 		actions$.complete()
 	})
 
-	it("should render throttled after actions requiring rerender, but not scale map", async () => {
+	it("should render throttled after actions requiring rerender and scale map", async () => {
 		actions$.next(setInvertArea({ value: true }))
 		actions$.next(setInvertArea({ value: true }))
 		expect(codeMapRenderService.render).toHaveBeenCalledTimes(0)
@@ -55,12 +53,6 @@ describe("renderCodeMapEffect", () => {
 		await wait(maxFPS)
 		expect(codeMapRenderService.render).toHaveBeenCalledTimes(1)
 		expect(threeRendererService.render).toHaveBeenCalledTimes(1)
-		expect(codeMapRenderService.scaleMap).not.toHaveBeenCalled()
-	})
-
-	it("should scale map when scaling changes", async () => {
-		actions$.next(setScaling({ value: new Vector3(1, 1, 1) }))
-		await wait(maxFPS)
 		expect(codeMapRenderService.scaleMap).toHaveBeenCalledTimes(1)
 	})
 
