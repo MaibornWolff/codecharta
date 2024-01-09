@@ -3,5 +3,5 @@ repositories {
 }
 
 dependencies {
-
+    implementation group: 'com.github.kotlin-inquirer', name: 'kotlin-inquirer', version: kotlin_inquirer_version
 }

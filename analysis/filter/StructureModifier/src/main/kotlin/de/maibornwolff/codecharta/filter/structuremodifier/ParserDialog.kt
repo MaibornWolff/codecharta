@@ -14,10 +14,13 @@ class ParserDialog {
     companion object : ParserDialogInterface {
 
         override fun collectParserArgs(): List<String> {
-            var inputFileName = collectInputFileName()
-            while (!InputHelper.isInputValidAndNotNull(arrayOf(File(inputFileName)), canInputContainFolders = false)) {
-                inputFileName = collectInputFileName()
-            }
+            var inputFileName: String
+            do {
+                inputFileName = KInquirer.promptInput(
+                    message = "What is the cc.json file that has to be modified?",
+                    hint = Paths.get("").toAbsolutePath().toString() + File.separator + "yourInput.cc.json"
+                )
+            } while (!InputHelper.isInputValidAndNotNull(arrayOf(File(inputFileName)), canInputContainFolders = false))
 
             val selectedAction: String = KInquirer.promptList(
                     message = "Which action do you want to perform?",
@@ -36,10 +39,6 @@ class ParserDialog {
                 StructureModifierAction.REMOVE_NODES.descripton -> listOf(inputFileName, *collectRemoveNodesArguments())
                 else -> listOf()
             }
-        }
-
-        private fun collectInputFileName(): String {
-            return KInquirer.promptInput(message = "What is the cc.json file that has to be modified?", hint = Paths.get("").toAbsolutePath().toString() + File.separator + "yourInput.cc.json")
         }
 
         private fun collectPrintArguments(): Array<String> {

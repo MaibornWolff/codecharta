@@ -15,10 +15,10 @@ class ParserDialog {
 
         override fun collectParserArgs(): List<String> {
             print("You can generate this file with: svn log --verbose > svn.log")
-            var inputFileName = collectInputFileName()
-            while (!InputHelper.isInputValidAndNotNull(arrayOf(File(inputFileName)), canInputContainFolders = false)) {
+            var inputFileName: String
+            do {
                 inputFileName = collectInputFileName()
-            }
+            } while (!InputHelper.isInputValidAndNotNull(arrayOf(File(inputFileName)), canInputContainFolders = false))
 
             val defaultOutputFileName = getOutputFileName(inputFileName)
             val outputFileName: String = KInquirer.promptInput(

@@ -13,10 +13,10 @@ class ParserDialog {
         private const val EXTENSION = "csv"
 
         override fun collectParserArgs(): List<String> {
-            var inputFileName = collectInputFileName()
-            while (!InputHelper.isInputValidAndNotNull(arrayOf(File(inputFileName)), canInputContainFolders = false)) {
-                inputFileName = collectInputFileName()
-            }
+            var inputFileName: String
+            do {
+                inputFileName = getInputFileName()
+            } while (!InputHelper.isInputValidAndNotNull(arrayOf(File(inputFileName)), canInputContainFolders = false))
 
             val defaultOutputFileName = getOutputFileName(inputFileName)
             val outputFileName: String = KInquirer.promptInput(
@@ -37,7 +37,7 @@ class ParserDialog {
             )
         }
 
-        private fun collectInputFileName(): String {
+        private fun getInputFileName(): String {
             val defaultInputFileName = "edges.$EXTENSION"
             val defaultInputFilePath = Paths.get("").toAbsolutePath().toString() + File.separator + defaultInputFileName
             return KInquirer.promptInput(

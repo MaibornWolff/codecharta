@@ -65,7 +65,7 @@ class ParserDialog {
         }
 
         private fun collectProjectKey(): String {
-            return KInquirer.promptInput(message = "What is the sonar.projectKey?", hint = "de.foo:bar")
+            return KInquirer.promptInput(message = "What is the sonar.projectKey?", hint = "Unique identifier of your project")
         }
     }
 }
