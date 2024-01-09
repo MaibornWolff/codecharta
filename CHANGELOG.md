@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+-   Fix saving the number of top-labels in custom configs [#3461](https://github.com/MaibornWolff/codecharta/pull/3461)
 -   Fix parsers crashing after printing output to stdout [#3442](https://github.com/MaibornWolff/codecharta/pull/3442)
 -   Fix removal of nodes with identical names in `modify` [#3446](https://github.com/MaibornWolff/codecharta/pull/3446)
 -   Fix the highlighting of very high risk metrics to highlight only matching files [#3454](https://github.com/MaibornWolff/codecharta/pull/3454)
