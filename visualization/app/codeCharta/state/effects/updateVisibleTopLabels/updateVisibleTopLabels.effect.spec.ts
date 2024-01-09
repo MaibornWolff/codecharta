@@ -24,11 +24,18 @@ describe("updateVisibleTopLabelsEffect", () => {
 					selectors: [
 						{
 							selector: visibleFileStatesSelector,
-							value: {}
+							value: []
 						},
 						{
 							selector: codeMapNodesSelector,
-							value: {}
+							value: [
+								{
+									name: "sample1.ts"
+								},
+								{
+									name: "sample2.ts"
+								}
+							]
 						}
 					]
 				}),
@@ -44,11 +51,9 @@ describe("updateVisibleTopLabelsEffect", () => {
 	})
 
 	it("should set amount of top labels to current app-settings when visible file-states are unchanged", async () => {
-		const visibleFileStates = {}
-		const codeMapNodes = {}
+		const visibleFileStates = []
 
 		store.overrideSelector(visibleFileStatesSelector, visibleFileStates as ReturnType<typeof visibleFileStatesSelector>)
-		store.overrideSelector(codeMapNodesSelector, codeMapNodes as ReturnType<typeof codeMapNodesSelector>)
 		store.refreshState()
 
 		expect(await getLastAction(store)).toEqual(setAmountOfTopLabels({ value: 5 }))
@@ -64,17 +69,8 @@ describe("updateVisibleTopLabelsEffect", () => {
 				}
 			}
 		]
-		const codeMapNodes = [
-			{
-				name: "sample1.ts"
-			},
-			{
-				name: "sample2.ts"
-			}
-		]
 
 		store.overrideSelector(visibleFileStatesSelector, visibleFileStates as ReturnType<typeof visibleFileStatesSelector>)
-		store.overrideSelector(codeMapNodesSelector, codeMapNodes as ReturnType<typeof codeMapNodesSelector>)
 		store.refreshState()
 
 		expect(await getLastAction(store)).toEqual(setAmountOfTopLabels({ value: 1 }))

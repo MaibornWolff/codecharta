@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core"
 import { createEffect } from "@ngrx/effects"
 
-import { combineLatest, map, pairwise } from "rxjs"
+import { map, pairwise, withLatestFrom } from "rxjs"
 import { visibleFileStatesSelector } from "../../selectors/visibleFileStates.selector"
 import { codeMapNodesSelector } from "../../selectors/accumulatedData/codeMapNodes.selector"
 import { setAmountOfTopLabels } from "../../store/appSettings/amountOfTopLabels/amountOfTopLabels.actions"
@@ -14,16 +14,14 @@ export class UpdateVisibleTopLabelsEffect {
 	constructor(private store: Store<CcState>, private state: State<CcState>) {}
 
 	updateVisibleTopLabels$ = createEffect(() =>
-		combineLatest([
-			this.store.select(visibleFileStatesSelector).pipe(pairwise()),
-			this.store.select(codeMapNodesSelector).pipe(pairwise())
-		]).pipe(
-			map(([[previousVisibleFileStates, currentVisibleFileStates], [, currentCodeMapNodes]]) => {
-				const state = this.state.getValue()
-				const isVisibleFileStatesUnchanged = JSON.stringify(previousVisibleFileStates) === JSON.stringify(currentVisibleFileStates)
-				const amountOfTopLabels = isVisibleFileStatesUnchanged
-					? state.appSettings.amountOfTopLabels
-					: getNumberOfTopLabels(currentCodeMapNodes)
+		this.store.select(visibleFileStatesSelector).pipe(
+			pairwise(),
+			withLatestFrom(this.store.select(codeMapNodesSelector)),
+			map(([[previousVisibleFileStates, currentVisibleFileStates], codeMapNodes]) => {
+				const isUnchanged = JSON.stringify(previousVisibleFileStates) === JSON.stringify(currentVisibleFileStates)
+				const amountOfTopLabels = isUnchanged
+					? this.state.getValue().appSettings.amountOfTopLabels
+					: getNumberOfTopLabels(codeMapNodes)
 
 				return setAmountOfTopLabels({ value: amountOfTopLabels })
 			})
