@@ -6,19 +6,16 @@ import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import de.maibornwolff.codecharta.util.InputHelper
 import mu.KotlinLogging
 import java.io.File
-import java.nio.file.Paths
 
 private val logger = KotlinLogging.logger {}
 
 class ParserDialog {
     companion object : ParserDialogInterface {
-        private const val EXTENSION = "cc.json"
-
         override fun collectParserArgs(): List<String> {
-            var inputFileName = collectInputFileName()
-            while (!InputHelper.isInputValidAndNotNull(arrayOf(File(inputFileName)), canInputContainFolders = false)) {
-                inputFileName = collectInputFileName()
-            }
+            var inputFileName: String
+            do {
+                inputFileName = getInputFileName("cc.json", false)
+            } while (!InputHelper.isInputValidAndNotNull(arrayOf(File(inputFileName)), canInputContainFolders = false))
 
             logger.info { "File path: $inputFileName" }
 
@@ -37,10 +34,6 @@ class ParserDialog {
             )
 
             return listOf(inputFileName, "--output-file=$outputFileName", "--path-separator=$pathSeparator")
-        }
-
-        private fun collectInputFileName(): String {
-            return KInquirer.promptInput(message = "What is the $EXTENSION file that has to be parsed?", hint = Paths.get("").toAbsolutePath().toString() + File.separator + "yourInput." + EXTENSION)
         }
     }
 }

@@ -11,11 +11,10 @@ class RepoScanParserDialog {
     companion object : ParserDialogInterface {
 
         override fun collectParserArgs(): List<String> {
-
-            var repoPath = collectRepoPath()
-            while (!InputHelper.isInputValidAndNotNull(arrayOf(File(repoPath)), canInputContainFolders = true)) {
+            var repoPath: String
+            do {
                 repoPath = collectRepoPath()
-            }
+            } while (!InputHelper.isInputValidAndNotNull(arrayOf(File(repoPath)), canInputContainFolders = true))
 
             return listOfNotNull(
                 if (repoPath.isBlank()) null else "--repo-path=$repoPath"

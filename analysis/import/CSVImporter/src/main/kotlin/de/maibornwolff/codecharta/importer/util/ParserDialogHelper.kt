@@ -11,11 +11,11 @@ class ParserDialogHelper {
     companion object {
         fun getInputFiles(isSourceMonitor: Boolean): MutableList<String> {
             val inputFileNames = mutableListOf<String>()
+            var firstFile: String
+            do {
+                firstFile = getInputFileName(isSourceMonitor)
+            } while (!InputHelper.isInputValidAndNotNull(arrayOf(File(firstFile)), canInputContainFolders = false))
 
-            var firstFile = collectFirstFile(isSourceMonitor)
-            while (!InputHelper.isInputValidAndNotNull(arrayOf(File(firstFile)), canInputContainFolders = false)) {
-                firstFile = collectFirstFile(isSourceMonitor)
-            }
             inputFileNames.add(firstFile)
 
             while (true) {
@@ -30,7 +30,7 @@ class ParserDialogHelper {
             return inputFileNames
         }
 
-        private fun collectFirstFile(isSourceMonitor: Boolean): String {
+        private fun getInputFileName(isSourceMonitor: Boolean): String {
             return KInquirer.promptInput(
                     message = if (isSourceMonitor) "What is the SourceMonitor CSV file that has to be parsed?" else "Please specify the name of the first CSV file to be parsed.",
                     hint = Paths.get("").toAbsolutePath().toString() + File.separator + "yourInput.csv"

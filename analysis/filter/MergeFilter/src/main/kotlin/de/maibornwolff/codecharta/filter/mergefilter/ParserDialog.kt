@@ -6,17 +6,15 @@ import com.github.kinquirer.components.promptInput
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import de.maibornwolff.codecharta.util.InputHelper
 import java.io.File
-import java.nio.file.Paths
 
 class ParserDialog {
     companion object : ParserDialogInterface {
 
         override fun collectParserArgs(): List<String> {
-
-            var inputFolderName = collectInputFileName()
-            while (!InputHelper.isInputValidAndNotNull(arrayOf(File(inputFolderName)), canInputContainFolders = true)) {
-                inputFolderName = collectInputFileName()
-            }
+            var inputFolderName: String
+            do {
+                inputFolderName = getInputFileName("cc.json", true)
+            } while (!InputHelper.isInputValidAndNotNull(arrayOf(File(inputFolderName)), canInputContainFolders = true))
 
             val outputFileName: String = KInquirer.promptInput(
                 message = "What is the name of the output file?"
@@ -51,10 +49,6 @@ class ParserDialog {
                 "--leaf=$leaf",
                 "--ignore-case=$ignoreCase"
             )
-        }
-
-        private fun collectInputFileName(): String {
-            return KInquirer.promptInput(message = "What is the folder of cc.json files that has to be merged?", default = Paths.get("").toAbsolutePath().toString())
         }
     }
 }
