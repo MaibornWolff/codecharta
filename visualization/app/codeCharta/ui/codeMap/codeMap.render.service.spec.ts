@@ -127,6 +127,7 @@ describe("codeMapRenderService", () => {
 			clearArrows: jest.fn(),
 			addEdgeArrows: jest.fn(),
 			addEdgePreview: jest.fn(),
+			addEdgeMapBasedOnNodes: jest.fn(),
 			arrows: [new Object3D()],
 			threeSceneService
 		})()
@@ -323,7 +324,8 @@ describe("codeMapRenderService", () => {
 
 			codeMapRenderService["setArrows"](sortedNodes)
 
-			expect(codeMapArrowService["addEdgePreview"]).toHaveBeenCalledWith(sortedNodes)
+			expect(codeMapArrowService["addEdgeMapBasedOnNodes"]).toHaveBeenCalledWith(sortedNodes)
+			expect(codeMapArrowService["addEdgePreview"]).toHaveBeenCalled()
 		})
 	})
 })
