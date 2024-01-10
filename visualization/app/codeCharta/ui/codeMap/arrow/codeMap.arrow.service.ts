@@ -119,7 +119,7 @@ export class CodeMapArrowService implements OnDestroy {
 		}
 	}
 
-	addMapBasedOnNodes(nodes: Node[]) {
+	addEdgeMapBasedOnNodes(nodes: Node[]) {
 		this.map = this.getNodesAsMap(nodes)
 	}
 
