@@ -438,6 +438,44 @@ describe("TreeMapHelper", () => {
 		})
 	})
 
+	describe("resolve height value", () => {
+		const state = STATE
+		state.dynamicSettings.heightMetric = "rloc"
+		const someNode: CodeMapNode = {
+			deltas: {
+				mcc: 42
+			},
+			name: "",
+			type: NodeType.FILE
+		}
+
+		it("should use MIN_BUILDING_HEIGHT if no delta", () => {
+			const resultHeight = TreeMapHelper.resolveHeightValue(1, 1, someNode, state)
+
+			expect(resultHeight).toBe(TreeMapHelper.MIN_BUILDING_HEIGHT)
+		})
+
+		it("should produce positive height value if big enough", () => {
+			const stateMCC = clone(state)
+			stateMCC.dynamicSettings.heightMetric = "mcc"
+
+			const resultHeightWithDelta = TreeMapHelper.resolveHeightValue(10, 1, someNode, stateMCC)
+			const resultHeightWithoutDelta = TreeMapHelper.resolveHeightValue(10, 1, someNode, state)
+
+			expect(resultHeightWithDelta).toBe(10)
+			expect(resultHeightWithoutDelta).toBe(10)
+		})
+
+		it("should use zero as min height if delta present", () => {
+			state.dynamicSettings.heightMetric = "mcc"
+			const resultHeightZero = TreeMapHelper.resolveHeightValue(0, 1, someNode, state)
+			const resultHeightPositive = TreeMapHelper.resolveHeightValue(10, 1, someNode, state)
+
+			expect(resultHeightZero).toBe(0)
+			expect(resultHeightPositive).toBe(10)
+		})
+	})
+
 	describe("buildingArrayToMap", () => {
 		it("should convert a array of buildings to a map", () => {
 			const result = TreeMapHelper.buildingArrayToMap([CODE_MAP_BUILDING])
