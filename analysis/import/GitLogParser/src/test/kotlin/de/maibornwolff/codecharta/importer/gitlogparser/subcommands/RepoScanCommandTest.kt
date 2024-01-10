@@ -5,7 +5,7 @@ import io.mockk.every
 import io.mockk.mockkObject
 import io.mockk.unmockkAll
 import org.assertj.core.api.Assertions
-import org.junit.jupiter.api.AfterAll
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import picocli.CommandLine
@@ -14,10 +14,10 @@ import java.io.PrintStream
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class RepoScanCommandTest {
-    val errContent = ByteArrayOutputStream()
-    val originalErr = System.err
+    private val errContent = ByteArrayOutputStream()
+    private val originalErr = System.err
 
-    @AfterAll
+    @AfterEach
     fun afterTest() {
         unmockkAll()
     }
