@@ -291,10 +291,10 @@ exports[`deltaGenerator golden test 1`] = `
           "children": [
             {
               "attributes": {
-                "monster": 666,
+                "monster": 42,
               },
               "deltas": {
-                "monster": 666,
+                "monster": 42,
               },
               "fileCount": {
                 "added": 1,
@@ -309,7 +309,25 @@ exports[`deltaGenerator golden test 1`] = `
             },
             {
               "attributes": {
-                "special": 42,
+                "monster": 666,
+              },
+              "deltas": {
+                "monster": 665,
+              },
+              "fileCount": {
+                "added": 0,
+                "changed": 1,
+                "removed": 0,
+              },
+              "isExcluded": false,
+              "isFlattened": false,
+              "name": "Cthulhu",
+              "path": "/root/onlyA/special/Cthulhu",
+              "type": "File",
+            },
+            {
+              "attributes": {
+                "special": 0,
               },
               "deltas": {
                 "special": -42,
@@ -327,7 +345,7 @@ exports[`deltaGenerator golden test 1`] = `
             },
             {
               "attributes": {
-                "special": 10,
+                "special": 0,
               },
               "deltas": {
                 "special": -10,
