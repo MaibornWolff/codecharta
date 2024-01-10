@@ -51,6 +51,7 @@ export class CodeMapMouseEventService implements OnDestroy {
 	private isMoving = false
 	private raycaster = new Raycaster()
 	private temporaryLabelForBuilding = null
+	private temporaryLabelForSelectedBuilding = null
 	private subscriptions = [
 		this.store
 			.select(visibleFileStatesSelector)
@@ -216,17 +217,14 @@ export class CodeMapMouseEventService implements OnDestroy {
 				const to = this.intersectedBuilding
 
 				if (from?.id !== to?.id) {
-					if (this.temporaryLabelForBuilding !== null) {
-						this.codeMapLabelService.clearTemporaryLabel(this.temporaryLabelForBuilding)
-						this.temporaryLabelForBuilding = null
-					}
+					this.clearTemporaryLabel()
 
 					this.threeSceneService.resetLabel()
 					this.unhoverBuilding()
 					if (to && !this.isGrabbingOrMoving()) {
 						if (to.node.isLeaf) {
 							const labelForBuilding =
-								this.threeSceneService.getLabelForHoveredNode(to, labels) ?? this.drawTemporaryLabelFor(to, labels)
+								this.threeSceneService.getLabelForHoveredNode(to, labels) ?? this.drawTemporaryLabelFor(to)
 							this.threeSceneService.animateLabel(labelForBuilding, this.raycaster, labels)
 						}
 						this.hoverBuilding(to)
@@ -236,11 +234,11 @@ export class CodeMapMouseEventService implements OnDestroy {
 		}
 	}
 
-	private drawTemporaryLabelFor(codeMapBuilding: CodeMapBuilding, labels: Object3D[]) {
+	private drawTemporaryLabelFor(codeMapBuilding: CodeMapBuilding) {
 		const enforceLabel = true
 		this.codeMapLabelService.addLeafLabel(codeMapBuilding.node, 0, enforceLabel)
 
-		labels = this.threeSceneService.labels?.children
+		const labels = this.threeSceneService.labels?.children
 		const labelForBuilding = this.threeSceneService.getLabelForHoveredNode(codeMapBuilding, labels)
 		this.temporaryLabelForBuilding = codeMapBuilding.node
 
@@ -355,12 +353,40 @@ export class CodeMapMouseEventService implements OnDestroy {
 		if (!this.hasMouseMovedMoreThanThreePixels(this.mouseOnLastClick)) {
 			if (this.intersectedBuilding) {
 				this.threeSceneService.selectBuilding(this.intersectedBuilding)
+				this.drawLabelForSelected(this.intersectedBuilding)
 			} else {
 				this.threeSceneService.clearSelection()
+				this.clearLabelForSelected()
 			}
 			this.threeSceneService.clearConstantHighlight()
 		}
 		this.threeRendererService.render()
+	}
+
+	private drawLabelForSelected(codeMapBuilding: CodeMapBuilding) {
+		if (this.temporaryLabelForSelectedBuilding !== null) {
+			this.clearTemporaryLabel()
+			this.codeMapLabelService.clearTemporaryLabel(this.temporaryLabelForSelectedBuilding)
+		}
+		if (!codeMapBuilding.node.isLeaf) {
+			return
+		}
+
+		this.codeMapLabelService.addLeafLabel(codeMapBuilding.node, 0, true)
+
+		const labels = this.threeSceneService.labels?.children
+		const labelForBuilding = this.threeSceneService.getLabelForHoveredNode(codeMapBuilding, labels)
+		this.threeSceneService.animateLabel(labelForBuilding, this.raycaster, labels)
+
+		this.temporaryLabelForSelectedBuilding = codeMapBuilding.node
+		return labelForBuilding
+	}
+
+	private clearLabelForSelected() {
+		if (this.temporaryLabelForSelectedBuilding !== null) {
+			this.codeMapLabelService.clearTemporaryLabel(this.temporaryLabelForSelectedBuilding)
+			this.temporaryLabelForSelectedBuilding = null
+		}
 	}
 
 	private hasMouseMovedMoreThanThreePixels({ x, y }: Coordinates) {
