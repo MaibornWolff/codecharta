@@ -143,7 +143,7 @@ export function getHeightValue(state: CcState, squaredNode: HierarchyRectangular
 	return heightValue
 }
 
-function resolveHeightValue(heightValue: number, heightScale: number, data: CodeMapNode, state: CcState): number {
+export function resolveHeightValue(heightValue: number, heightScale: number, data: CodeMapNode, state: CcState): number {
 	const minimalHeight = data.deltas?.[state.dynamicSettings.heightMetric] ? 0 : MIN_BUILDING_HEIGHT
 	return Math.max(Math.abs(heightScale * heightValue), minimalHeight)
 }
@@ -255,6 +255,7 @@ export const TreeMapHelper = {
 	calculateSize,
 	buildNodeFrom,
 	isNodeFlat,
+	resolveHeightValue,
 	FOLDER_HEIGHT,
 	MIN_BUILDING_HEIGHT,
 	HEIGHT_VALUE_WHEN_METRIC_NOT_FOUND
