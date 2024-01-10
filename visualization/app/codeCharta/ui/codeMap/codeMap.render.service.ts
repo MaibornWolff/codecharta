@@ -158,7 +158,7 @@ export class CodeMapRenderService implements OnDestroy {
 
 	private setArrows(sortedNodes: Node[]) {
 		this.codeMapArrowService.clearArrows()
-		this.codeMapArrowService.addMapBasedOnNodes(sortedNodes)
+		this.codeMapArrowService.addEdgeMapBasedOnNodes(sortedNodes)
 		this.codeMapArrowService.addEdgePreview()
 	}
 }
