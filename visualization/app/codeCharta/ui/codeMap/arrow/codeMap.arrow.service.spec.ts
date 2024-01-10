@@ -89,7 +89,8 @@ describe("CodeMapArrowService", () => {
 				DIFFERENT_NODE
 			]
 			threeSceneService["mapMesh"] = new CodeMapMesh(nodes, state.getValue(), false)
-			codeMapArrowService.addEdgePreview(nodes)
+			codeMapArrowService.addEdgeMapBasedOnNodes(nodes)
+			codeMapArrowService.addEdgePreview()
 			store.dispatch(setHeightMetric({ value: "mcc" }))
 
 			threeSceneService.selectBuilding(CODE_MAP_BUILDING_WITH_OUTGOING_EDGE_NODE)
@@ -228,11 +229,11 @@ describe("CodeMapArrowService", () => {
 		it("should create an edge Preview of one", () => {
 			const nodes: Node[] = [OUTGOING_NODE]
 
-			codeMapArrowService.addEdgePreview(nodes)
+			codeMapArrowService.addEdgeMapBasedOnNodes(nodes)
 
 			expect(codeMapArrowService["map"].size).toEqual(1)
 		})
-		it("should create no edge Preview at all", () => {
+		it("should not change stored edges for Preview", () => {
 			codeMapArrowService.addEdgePreview()
 
 			expect(codeMapArrowService["map"].size).toEqual(0)
@@ -243,7 +244,8 @@ describe("CodeMapArrowService", () => {
 			store.dispatch(setEdges({ value: invalidEdge }))
 			const nodes: Node[] = [CODE_MAP_BUILDING_WITH_OUTGOING_EDGE_NODE.node]
 
-			codeMapArrowService.addEdgePreview(nodes)
+			codeMapArrowService.addEdgeMapBasedOnNodes(nodes)
+			codeMapArrowService.addEdgePreview()
 
 			expect(codeMapArrowService["previewMode"]).not.toHaveBeenCalled()
 		})
@@ -253,7 +255,8 @@ describe("CodeMapArrowService", () => {
 			store.dispatch(setEdges({ value: invalidEdge }))
 			const nodes: Node[] = [CODE_MAP_BUILDING_WITH_INCOMING_EDGE_NODE.node]
 
-			codeMapArrowService.addEdgePreview(nodes)
+			codeMapArrowService.addEdgeMapBasedOnNodes(nodes)
+			codeMapArrowService.addEdgePreview()
 
 			expect(codeMapArrowService["previewMode"]).not.toHaveBeenCalled()
 		})
