@@ -19,7 +19,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   Clarify sonar user token question [#3445](https://github.com/MaibornWolff/codecharta/pull/3445)
 -   Changed the `--user` flag to `--user-token` in SonarImporter [#3445](https://github.com/MaibornWolff/codecharta/pull/3445)
 -   Changed the interactive dialog of `modify` to prompt user for single action to perform [#3448](https://github.com/MaibornWolff/codecharta/pull/3448)
--   Selected buildings now keep their label untul they are unselected [#3465](https://github.com/MaibornWolff/codecharta/pull/3465)
+-   Selected buildings now keep their label until they are unselected [#3465](https://github.com/MaibornWolff/codecharta/pull/3465)
 
 ### Fixed 🐞
 
