@@ -1,4 +1,3 @@
-import { Component, ViewEncapsulation } from "@angular/core"
 import { isDeltaStateSelector } from "../../state/selectors/isDeltaState.selector"
 import { IsAttributeSideBarVisibleService } from "../../services/isAttributeSideBarVisible.service"
 import { Store } from "@ngrx/store"
@@ -7,6 +6,7 @@ import { heightMetricSelector } from "../../state/store/dynamicSettings/heightMe
 import { areaMetricSelector } from "../../state/store/dynamicSettings/areaMetric/areaMetric.selector"
 import { colorMetricSelector } from "../../state/store/dynamicSettings/colorMetric/colorMetric.selector"
 import { edgeMetricSelector } from "../../state/store/dynamicSettings/edgeMetric/edgeMetric.selector"
+import { Component, ViewEncapsulation } from "@angular/core"
 
 @Component({
 	selector: "cc-legend-panel",
@@ -22,7 +22,7 @@ export class LegendPanelComponent {
 	colorMetric$ = this.store.select(colorMetricSelector)
 	edgeMetric$ = this.store.select(edgeMetricSelector)
 
-	constructor(public isAttributeSideBarVisibleService: IsAttributeSideBarVisibleService, private store: Store<CcState>) {}
+	constructor(private store: Store<CcState>, public isAttributeSideBarVisibleService: IsAttributeSideBarVisibleService) {}
 
 	toggleIsLegendVisible() {
 		this.isLegendVisible = !this.isLegendVisible
