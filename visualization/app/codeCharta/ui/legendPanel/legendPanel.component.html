@@ -1,4 +1,9 @@
-<div class="block-wrapper" [class.visible]="isLegendVisible" [class.isAttributeSideBarVisible]="isAttributeSideBarVisibleService.isOpen">
+<div
+	id="legend-panel"
+	class="block-wrapper"
+	[class.visible]="isLegendVisible"
+	[class.isAttributeSideBarVisible]="isAttributeSideBarVisibleService.isOpen"
+>
 	<div *ngIf="!(isDeltaState$ | async)">
 		<cc-legend-block [metricName]="areaMetric$ | async" metricSpecification="Area"></cc-legend-block>
 		<cc-legend-block [metricName]="heightMetric$ | async" metricSpecification="Height"></cc-legend-block>
@@ -26,6 +31,8 @@
 
 	<cc-legend-marked-packages></cc-legend-marked-packages>
 </div>
+
+<cc-legend-screenshot-button [isLegendVisible]="isLegendVisible"> </cc-legend-screenshot-button>
 
 <button
 	color="primary"

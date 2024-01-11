@@ -1,17 +1,15 @@
 @use "../../../material/theme";
-cc-legend-panel {
-	$fixedHeight: 35;
 
-	.panel-button {
+$fixedHeight: 35;
+cc-legend-panel {
+	.rotated-button {
 		position: fixed;
-		bottom: ($fixedHeight + 20) + px;
-		right: -35px;
 		transform: rotate(90deg);
 		border-radius: 0 0 5px 5px;
 		height: 36px;
-		width: 88px;
-		margin: 6px 8px;
+		right: -35px;
 		color: white;
+		user-select: none;
 		background-color: theme.$cc-primary-color;
 
 		&:hover {
@@ -23,10 +21,16 @@ cc-legend-panel {
 		}
 	}
 
+	.panel-button {
+		@extend .rotated-button;
+		margin: 6px 8px;
+		bottom: ($fixedHeight + 20) + px;
+		width: 88px;
+	}
+
 	.block-wrapper {
 		background-color: white;
 		border: 1px solid #cdcdcd;
-		box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 2px 1px -1px rgba(0, 0, 0, 0.12);
 		position: fixed;
 		bottom: $fixedHeight + px;
 		padding: 10px;
@@ -86,7 +90,6 @@ cc-legend-panel {
 		.cc-labelled-color-picker-container > .cc-labelled-color-picker-label {
 			white-space: nowrap;
 			text-overflow: ellipsis;
-			overflow: hidden;
 
 			/* This tricks the browser into cutting off the beginning instead of the end of the label. However,
 			   changing the text direction has side effects, like moving punctuation around.  */

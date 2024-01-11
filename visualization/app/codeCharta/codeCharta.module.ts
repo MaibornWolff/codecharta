@@ -7,6 +7,7 @@ import { RibbonBarModule } from "./ui/ribbonBar/ribbonBar.module"
 import { ToolBarModule } from "./ui/toolBar/toolBar.module"
 import { FileExtensionBarModule } from "./ui/fileExtensionBar/fileExtensionBar.module"
 import { LoadingFileProgressSpinnerModule } from "./ui/loadingFileProgressSpinner/loadingFileProgressSpinner.module"
+import { AttributeSideBarModule } from "./ui/attributeSideBar/attributeSideBar.module"
 
 @NgModule({
 	imports: [
@@ -16,7 +17,8 @@ import { LoadingFileProgressSpinnerModule } from "./ui/loadingFileProgressSpinne
 		RibbonBarModule,
 		ToolBarModule,
 		FileExtensionBarModule,
-		LoadingFileProgressSpinnerModule
+		LoadingFileProgressSpinnerModule,
+		AttributeSideBarModule
 	],
 	declarations: [CodeChartaComponent],
 	exports: [CodeChartaComponent]

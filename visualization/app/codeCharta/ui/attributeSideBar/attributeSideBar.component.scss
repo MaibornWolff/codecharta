@@ -6,7 +6,9 @@ cc-attribute-side-bar {
 		font-size: 11pt;
 		position: absolute;
 		right: -355px;
+		bottom: 0px;
 		background: white;
+		z-index: 1;
 
 		&.expanded {
 			right: 0;

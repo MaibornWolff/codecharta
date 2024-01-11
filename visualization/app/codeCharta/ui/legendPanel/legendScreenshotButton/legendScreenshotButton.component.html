@@ -1,0 +1,31 @@
+<div>
+	<button
+		*ngIf="isScreenshotToClipboardEnabled$ | async"
+		(click)="makeScreenshotToClipboard()"
+		title="{{
+			isWriteToClipboardAllowed ? 'Copy screenshot of legend to clipboard' : 'Copy legend to clipboard not available in Firefox'
+		}}"
+		color="primary"
+		class="screenshot-button"
+		[disabled]="!isWriteToClipboardAllowed || isRenderingScreenshot"
+		[class.visible]="isLegendVisible"
+		[class.disabled]="!isWriteToClipboardAllowed || isRenderingScreenshot"
+		[class.isAttributeSideBarVisible]="isAttributeSideBarVisibleService.isOpen"
+	>
+		<i class="fa fa-camera"></i>
+	</button>
+
+	<button
+		*ngIf="!(isScreenshotToClipboardEnabled$ | async)"
+		(click)="makeScreenshotToFile()"
+		title="Export screenshot of legend as file"
+		color="primary"
+		class="screenshot-button"
+		[disabled]="!isWriteToClipboardAllowed || isRenderingScreenshot"
+		[class.visible]="isLegendVisible"
+		[class.disabled]="!isWriteToClipboardAllowed || isRenderingScreenshot"
+		[class.isAttributeSideBarVisible]="isAttributeSideBarVisibleService.isOpen"
+	>
+		<i class="fa fa-camera"></i>
+	</button>
+</div>
