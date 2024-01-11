@@ -5,7 +5,6 @@ import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { ThreeRendererService } from "./threeViewer/threeRenderer.service"
 import { ViewCubeMouseEventsService } from "../viewCube/viewCube.mouseEvents.service"
 import { CodeMapBuilding } from "./rendering/codeMapBuilding"
-import { CODE_MAP_BUILDING, CONSTANT_HIGHLIGHT, TEST_FILE_WITH_PATHS, TEST_NODES } from "../../util/dataMocks"
 import { BlacklistItem, CcState, CodeMapNode, Node } from "../../codeCharta.model"
 import { NodeDecorator } from "../../util/nodeDecorator"
 import { klona } from "klona"
@@ -19,6 +18,7 @@ import { setRightClickedNodeData } from "../../state/store/appStatus/rightClicke
 import { State, Store } from "@ngrx/store"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { defaultState } from "../../state/store/state.manager"
+import { CODE_MAP_BUILDING, CODE_MAP_BUILDING_TS_NODE, CONSTANT_HIGHLIGHT, TEST_FILE_WITH_PATHS, TEST_NODES } from "../../util/dataMocks"
 
 jest.mock("../../state/selectors/accumulatedData/idToNode.selector", () => ({
 	idToNodeSelector: jest.fn()
@@ -871,7 +871,25 @@ describe("codeMapMouseEventService", () => {
 		})
 
 		it("should remove the old and create the new label when selected building is changed", () => {
-			//TODO we need two buildings for this, check if we have two in the mocks
+			const oldSelection = codeMapBuilding
+			const newSelection = CODE_MAP_BUILDING_TS_NODE
+
+			threeSceneService.getLabelForHoveredNode = jest.fn()
+			threeSceneService.animateLabel = jest.fn()
+			codeMapLabelService.clearTemporaryLabel = jest.fn()
+			codeMapLabelService.addLeafLabel = jest.fn()
+
+			codeMapMouseEventService["drawLabelForSelected"](codeMapBuilding)
+
+			codeMapMouseEventService["intersectedBuilding"] = newSelection
+			codeMapMouseEventService["onLeftClick"]()
+
+			expect(codeMapMouseEventService["temporaryLabelForSelectedBuilding"]).not.toEqual(oldSelection.node)
+			expect(codeMapMouseEventService["temporaryLabelForSelectedBuilding"]).toEqual(newSelection.node)
+			expect(codeMapLabelService.clearTemporaryLabel).toHaveBeenCalledWith(codeMapBuilding.node)
+			expect(codeMapLabelService.addLeafLabel).toHaveBeenCalledWith(oldSelection.node, 0, true)
+			expect(codeMapLabelService.addLeafLabel).toHaveBeenCalledWith(newSelection.node, 0, true)
+			expect(codeMapLabelService.addLeafLabel).toHaveBeenCalledTimes(2)
 		})
 
 		it("should keep the label when clicking on the already selected building", () => {
@@ -882,8 +900,8 @@ describe("codeMapMouseEventService", () => {
 
 			codeMapMouseEventService["drawLabelForSelected"](codeMapBuilding)
 			const referenceLabel = codeMapMouseEventService["temporaryLabelForSelectedBuilding"]
-			codeMapMouseEventService["intersectedBuilding"] = codeMapBuilding
 
+			codeMapMouseEventService["intersectedBuilding"] = codeMapBuilding
 			codeMapMouseEventService["onLeftClick"]()
 
 			expect(codeMapMouseEventService["drawLabelForSelected"]).toHaveBeenCalledWith(codeMapBuilding)
