@@ -846,12 +846,50 @@ describe("codeMapMouseEventService", () => {
 	})
 
 	describe("labelForSelectedBuilding", () => {
-		it("should create a label when clicking on a building", () => {})
+		it("should create a label when selecting a building", () => {
+			threeSceneService.getLabelForHoveredNode = jest.fn()
+			threeSceneService.animateLabel = jest.fn()
+			codeMapLabelService.addLeafLabel = jest.fn()
 
-		it("should remove the label when the building is unselected", () => {})
+			codeMapMouseEventService["drawLabelForSelected"](codeMapBuilding)
 
-		it("should remove the old and create the new label when selected building is changed", () => {})
+			expect(threeSceneService.getLabelForHoveredNode).toHaveBeenCalled()
+			expect(codeMapLabelService.addLeafLabel).toHaveBeenCalledWith(codeMapBuilding.node, 0, true)
+			expect(codeMapMouseEventService["temporaryLabelForSelectedBuilding"]).toEqual(codeMapBuilding.node)
+		})
 
-		it("should keep the label when clicking on the already selected building", () => {})
+		it("should remove the label when a previously selected building is unselected", () => {
+			threeSceneService.getLabelForHoveredNode = jest.fn()
+			threeSceneService.animateLabel = jest.fn()
+			codeMapLabelService.clearTemporaryLabel = jest.fn()
+			codeMapMouseEventService["drawLabelForSelected"](codeMapBuilding)
+
+			codeMapMouseEventService["clearLabelForSelected"]()
+
+			expect(codeMapLabelService.clearTemporaryLabel).toHaveBeenCalledWith(codeMapBuilding.node)
+			expect(codeMapMouseEventService["temporaryLabelForSelectedBuilding"]).toBeNull()
+		})
+
+		it("should remove the old and create the new label when selected building is changed", () => {
+			//TODO we need two buildings for this, check if we have two in the mocks
+		})
+
+		it("should keep the label when clicking on the already selected building", () => {
+			threeSceneService.getLabelForHoveredNode = jest.fn()
+			threeSceneService.animateLabel = jest.fn()
+			codeMapMouseEventService["clearTemporaryLabel"] = jest.fn()
+			codeMapMouseEventService["drawLabelForSelected"] = jest.fn()
+
+			codeMapMouseEventService["drawLabelForSelected"](codeMapBuilding)
+			const referenceLabel = codeMapMouseEventService["temporaryLabelForSelectedBuilding"]
+			codeMapMouseEventService["intersectedBuilding"] = codeMapBuilding
+
+			codeMapMouseEventService["onLeftClick"]()
+
+			expect(codeMapMouseEventService["drawLabelForSelected"]).toHaveBeenCalledWith(codeMapBuilding)
+			expect(codeMapMouseEventService["drawLabelForSelected"]).toHaveBeenCalledTimes(2)
+			expect(codeMapMouseEventService["clearTemporaryLabel"]).not.toHaveBeenCalled()
+			expect(codeMapMouseEventService["temporaryLabelForSelectedBuilding"]).toEqual(referenceLabel)
+		})
 	})
 })
