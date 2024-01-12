@@ -1122,60 +1122,7 @@ export const FIXED_FOLDERS_NESTED_MIXED_WITH_A_FILE_MAP_FILE: CCFile = {
 
 export const TEST_FILE_WITH_PATHS: CCFile = {
 	fileMeta: FILE_META,
-	map: {
-		name: "root",
-		type: NodeType.FOLDER,
-		path: "/root",
-		attributes: {},
-		isExcluded: false,
-		isFlattened: false,
-		children: [
-			{
-				name: "big leaf",
-				type: NodeType.FILE,
-				path: "/root/big leaf",
-				attributes: { rloc: 100, functions: 10, mcc: 1 },
-				link: "https://www.google.de",
-				isExcluded: false,
-				isFlattened: false
-			},
-			{
-				name: "Parent Leaf",
-				type: NodeType.FOLDER,
-				attributes: {},
-				path: "/root/Parent Leaf",
-				isExcluded: false,
-				isFlattened: false,
-				children: [
-					{
-						name: "small leaf",
-						type: NodeType.FILE,
-						path: "/root/Parent Leaf/small leaf",
-						attributes: { rloc: 30, functions: 100, mcc: 100 },
-						isExcluded: false,
-						isFlattened: false
-					},
-					{
-						name: "other small leaf",
-						type: NodeType.FILE,
-						path: "/root/Parent Leaf/other small leaf",
-						attributes: { rloc: 70, functions: 1000, mcc: 10 },
-						isExcluded: false,
-						isFlattened: false
-					},
-					{
-						name: "empty folder",
-						type: NodeType.FOLDER,
-						path: "/root/Parent Leaf/empty folder",
-						attributes: {},
-						isExcluded: false,
-						isFlattened: false,
-						children: []
-					}
-				]
-			}
-		]
-	},
+	map: VALID_NODE_WITH_PATH,
 	settings: DEFAULT_SETTINGS
 }
 
@@ -1770,8 +1717,9 @@ export const FILE_STATES_JAVA: FileState[] = [
 ]
 
 export const METRIC_DATA: NodeMetricData[] = [
-	{ name: "mcc", maxValue: 1, minValue: 1 },
-	{ name: "rloc", maxValue: 2, minValue: 1 },
+	{ name: "mcc", maxValue: 100, minValue: 1 },
+	{ name: "rloc", maxValue: 100, minValue: 30 },
+	{ name: "functions", maxValue: 1000, minValue: 10 },
 	{ name: UNARY_METRIC, maxValue: 1, minValue: 1 }
 ]
 

@@ -4,6 +4,7 @@ exports[`codeMapRenderService getNodes should get Nodes as array 1`] = `
 [
   {
     "attributes": {
+      "functions": 1110,
       "mcc": 111,
       "rloc": 200,
       "unary": 4,
@@ -51,12 +52,12 @@ exports[`codeMapRenderService getNodes should get Nodes as array 1`] = `
     "depth": 1,
     "edgeAttributes": {},
     "flat": false,
-    "height": 2,
+    "height": 495,
     "heightDelta": 0,
     "id": 1,
     "incomingEdgePoint": Vector3 {
       "x": -32.862246173203744,
-      "y": 4,
+      "y": 497,
       "z": -2.862246173203772,
     },
     "isLeaf": true,
@@ -67,7 +68,7 @@ exports[`codeMapRenderService getNodes should get Nodes as array 1`] = `
     "name": "big leaf",
     "outgoingEdgePoint": Vector3 {
       "x": -32.862246173203744,
-      "y": 4,
+      "y": 497,
       "z": 453.01326148038873,
     },
     "path": "/root/big leaf",
@@ -79,6 +80,7 @@ exports[`codeMapRenderService getNodes should get Nodes as array 1`] = `
   },
   {
     "attributes": {
+      "functions": 1100,
       "mcc": 110,
       "rloc": 100,
       "unary": 3,
@@ -164,12 +166,12 @@ exports[`codeMapRenderService getNodes should get Nodes as array 1`] = `
     "depth": 2,
     "edgeAttributes": {},
     "flat": false,
-    "height": 2,
+    "height": 450,
     "heightDelta": 0,
     "id": 4,
     "incomingEdgePoint": Vector3 {
       "x": 344.31326148038886,
-      "y": 6,
+      "y": 454,
       "z": 207.5617322709129,
     },
     "isLeaf": true,
@@ -180,7 +182,7 @@ exports[`codeMapRenderService getNodes should get Nodes as array 1`] = `
     "name": "other small leaf",
     "outgoingEdgePoint": Vector3 {
       "x": 344.31326148038886,
-      "y": 6,
+      "y": 454,
       "z": 510.35458762842757,
     },
     "path": "/root/Parent Leaf/other small leaf",
@@ -192,6 +194,7 @@ exports[`codeMapRenderService getNodes should get Nodes as array 1`] = `
   },
   {
     "attributes": {
+      "functions": 0,
       "mcc": 0,
       "rloc": 0,
       "unary": 1,
