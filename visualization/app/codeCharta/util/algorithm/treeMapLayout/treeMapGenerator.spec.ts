@@ -6,7 +6,8 @@ import {
 	VALID_EDGES,
 	STATE,
 	FIXED_FOLDERS_NESTED_MIXED_WITH_DYNAMIC_ONES_MAP_FILE,
-	FIXED_FOLDERS_NESTED_MIXED_WITH_A_FILE_MAP_FILE
+	FIXED_FOLDERS_NESTED_MIXED_WITH_A_FILE_MAP_FILE,
+	VALID_NODE_WITH_PATH_AND_DELTAS
 } from "../../dataMocks"
 import { klona } from "klona"
 import { NodeDecorator } from "../../nodeDecorator"
@@ -88,6 +89,14 @@ describe("treeMapGenerator", () => {
 			map.children[1].children = []
 
 			const nodes: Node[] = SquarifiedLayoutGenerator.createTreemapNodes(map, state, metricData, isDeltaState)
+
+			expect(nodes).toMatchSnapshot()
+		})
+
+		it("root node with two direct children and some grand children in delta mode", () => {
+			const deltaMap = klona(VALID_NODE_WITH_PATH_AND_DELTAS)
+
+			const nodes: Node[] = SquarifiedLayoutGenerator.createTreemapNodes(deltaMap, state, metricData, true)
 
 			expect(nodes).toMatchSnapshot()
 		})
