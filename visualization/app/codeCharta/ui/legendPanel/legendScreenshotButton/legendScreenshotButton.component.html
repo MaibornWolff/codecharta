@@ -21,9 +21,9 @@
 		title="Export screenshot of legend as file"
 		color="primary"
 		class="screenshot-button"
-		[disabled]="!isWriteToClipboardAllowed || isRenderingScreenshot"
+		[disabled]="isRenderingScreenshot"
 		[class.visible]="isLegendVisible"
-		[class.disabled]="!isWriteToClipboardAllowed || isRenderingScreenshot"
+		[class.disabled]="isRenderingScreenshot"
 		[class.isAttributeSideBarVisible]="isAttributeSideBarVisibleService.isOpen"
 	>
 		<i class="fa fa-camera"></i>

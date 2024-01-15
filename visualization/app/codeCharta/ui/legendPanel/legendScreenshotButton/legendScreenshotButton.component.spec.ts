@@ -27,15 +27,19 @@ describe("screenshotButtonComponent", () => {
 		})
 	})
 
+	afterEach(() => {
+		jest.restoreAllMocks()
+	})
+
 	it("should copy to clipboard on click, when screenshot to clipboard is enabled", async () => {
 		const { fixture } = await render(LegendScreenshotButtonComponent, {
 			excludeComponentDeclaration: true,
 			componentProperties: { isLegendVisible: true }
 		})
-		fixture.componentInstance.makeScreenshotToClipboard = jest.fn()
+		const makeScreenshotToClipboardSpy = jest.spyOn(fixture.componentInstance, "makeScreenshotToClipboard")
 		fireEvent.click(screen.getByTitle("Copy screenshot of legend to clipboard"))
 
-		expect(fixture.componentInstance.makeScreenshotToClipboard).toHaveBeenCalled()
+		expect(makeScreenshotToClipboardSpy).toHaveBeenCalled()
 	})
 
 	it("should save to file on click, when screenshot to clipboard is not enabled", async () => {
@@ -47,10 +51,10 @@ describe("screenshotButtonComponent", () => {
 		store.overrideSelector(screenshotToClipboardEnabledSelector, false)
 		store.refreshState()
 		detectChanges()
-		fixture.componentInstance.makeScreenshotToFile = jest.fn()
+		const makeScreenshotToFileSpy = jest.spyOn(fixture.componentInstance, "makeScreenshotToFile")
 		fireEvent.click(screen.getByTitle("Export screenshot of legend as file"))
 
-		expect(fixture.componentInstance.makeScreenshotToFile).toHaveBeenCalled()
+		expect(makeScreenshotToFileSpy).toHaveBeenCalled()
 	})
 
 	it("should open and close", async () => {
