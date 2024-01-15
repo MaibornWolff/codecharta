@@ -43,25 +43,25 @@ export class LegendScreenshotButtonComponent {
 		this.isRenderingScreenshot = false
 	}
 
-	private getLegendPanelHTMLElement() {
+	getLegendPanelHTMLElement() {
 		return document.getElementById("legend-panel")
 	}
 
 	private async captureScreenshot(element: HTMLElement): Promise<HTMLCanvasElement> {
+		const tagsNamesToIgnore = new Set([
+			"cc-tool-bar",
+			"cc-file-extension-bar",
+			"cc-ribbon-bar",
+			"cc-code-map",
+			"cc-attribute-side-bar",
+			"cc-loading-file-progess-spinner"
+		])
 		return html2canvas(element, {
 			removeContainer: true,
 			scale: 2,
 			allowTaint: true,
 			ignoreElements(element) {
-				const tagsToIgnore = [
-					"cc-tool-bar",
-					"cc-file-extension-bar",
-					"cc-ribbon-bar",
-					"cc-code-map",
-					"cc-attribute-side-bar",
-					"cc-loading-file-progess-spinner"
-				]
-				return tagsToIgnore.includes(element.tagName.toLowerCase())
+				return tagsNamesToIgnore.has(element.tagName.toLowerCase())
 			}
 		})
 	}
