@@ -4,9 +4,11 @@ import com.github.kinquirer.KInquirer
 import com.github.kinquirer.components.promptInput
 import com.github.kinquirer.components.promptInputNumber
 import com.github.kinquirer.components.promptList
+import de.maibornwolff.codecharta.tools.interactiveparser.Inquirer
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import de.maibornwolff.codecharta.util.InputHelper
 import java.io.File
+import java.lang.RuntimeException
 import java.math.BigDecimal
 import java.nio.file.Paths
 
@@ -15,6 +17,11 @@ class ParserDialog {
 
         override fun collectParserArgs(): List<String> {
             var inputFileName: String
+
+            println(Inquirer.myPromptInput(
+                    message = "What is the cc.json file that has to be modified?",
+                    hint = Paths.get("").toAbsolutePath().toString() + File.separator + "yourInput.cc.json"
+            ))
             do {
                 inputFileName = KInquirer.promptInput(
                     message = "What is the cc.json file that has to be modified?",
