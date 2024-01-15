@@ -47,7 +47,7 @@ export class LegendScreenshotButtonComponent {
 		return document.getElementById("legend-panel")
 	}
 
-	private async captureScreenshot(element: HTMLElement): Promise<HTMLCanvasElement> {
+	async captureScreenshot(element: HTMLElement): Promise<HTMLCanvasElement> {
 		const tagsNamesToIgnore = new Set([
 			"cc-tool-bar",
 			"cc-file-extension-bar",
@@ -66,7 +66,7 @@ export class LegendScreenshotButtonComponent {
 		})
 	}
 
-	private downloadScreenshot(dataUrl: string, fileName: string): void {
+	downloadScreenshot(dataUrl: string, fileName: string): void {
 		const downloadLink = document.createElement("a")
 		downloadLink.download = fileName
 		downloadLink.href = dataUrl
@@ -80,7 +80,7 @@ export class LegendScreenshotButtonComponent {
 		await navigator.clipboard.write(data)
 	}
 
-	private makePNGFileName(): string {
+	makePNGFileName(): string {
 		const files = this.state.getValue().files
 		const jsonFileNames = getVisibleFileStates(files)
 		const state = isPartialState(files) ? "partial" : isDeltaState(files) ? "delta" : ""
