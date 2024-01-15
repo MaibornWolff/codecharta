@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 -   File explorer can be pinned while analyzing the code-map [#3459](https://github.com/MaibornWolff/codecharta/pull/3459)
 -   Validate input file during interactive parser configuration [#3460](https://github.com/MaibornWolff/codecharta/pull/3460)
+-   Add functionality to screenshot legend [#3471](https://github.com/MaibornWolff/codecharta/pull/3471)
 
 ### Changed
 
