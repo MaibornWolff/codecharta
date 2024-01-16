@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/14</span>
+                <span class='fraction'>18/18</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/0</span>
+                <span class='fraction'>2/2</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/3</span>
+                <span class='fraction'>3/3</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/13</span>
+                <span class='fraction'>16/16</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line low'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -87,50 +87,71 @@
 <a name='L22'></a><a href='#L22'>22</a>
 <a name='L23'></a><a href='#L23'>23</a>
 <a name='L24'></a><a href='#L24'>24</a>
-<a name='L25'></a><a href='#L25'>25</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<a name='L25'></a><a href='#L25'>25</a>
+<a name='L26'></a><a href='#L26'>26</a>
+<a name='L27'></a><a href='#L27'>27</a>
+<a name='L28'></a><a href='#L28'>28</a>
+<a name='L29'></a><a href='#L29'>29</a>
+<a name='L30'></a><a href='#L30'>30</a>
+<a name='L31'></a><a href='#L31'>31</a>
+<a name='L32'></a><a href='#L32'>32</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js"><span class="cstat-no" title="statement not covered" >import { Injectable } from "@angular/core"</span>
-<span class="cstat-no" title="statement not covered" >import { createEffect } from "@ngrx/effects"</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import stringify from "safe-stable-stringify"
+import { Injectable } from "@angular/core"
+import { State, Store } from "@ngrx/store"
+import { createEffect } from "@ngrx/effects"
+import { map, pairwise, withLatestFrom } from "rxjs"
 &nbsp;
-<span class="cstat-no" title="statement not covered" >import { map, withLatestFrom } from "rxjs"</span>
-<span class="cstat-no" title="statement not covered" >import { visibleFileStatesSelector } from "../../selectors/visibleFileStates.selector"</span>
-<span class="cstat-no" title="statement not covered" >import { codeMapNodesSelector } from "../../selectors/accumulatedData/codeMapNodes.selector"</span>
-<span class="cstat-no" title="statement not covered" >import { setAmountOfTopLabels } from "../../store/appSettings/amountOfTopLabels/amountOfTopLabels.actions"</span>
-<span class="cstat-no" title="statement not covered" >import { getNumberOfTopLabels } from "./getNumberOfTopLabels"</span>
-<span class="cstat-no" title="statement not covered" >import { Store } from "@ngrx/store"</span>
+import { visibleFileStatesSelector } from "../../selectors/visibleFileStates.selector"
+import { codeMapNodesSelector } from "../../selectors/accumulatedData/codeMapNodes.selector"
+import { setAmountOfTopLabels } from "../../store/appSettings/amountOfTopLabels/amountOfTopLabels.actions"
+import { getNumberOfTopLabels } from "./getNumberOfTopLabels"
 import { CcState } from "../../../codeCharta.model"
 &nbsp;
 @Injectable()
-export class <span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" >UpdateVisibleTopLabelsEffect </span>{</span>
-<span class="fstat-no" title="function not covered" >	constructor(private <span class="cstat-no" title="statement not covered" >s</span>tore: Store&lt;CcState&gt;)</span> {}
+export class UpdateVisibleTopLabelsEffect {
+	constructor(private store: Store&lt;CcState&gt;, private state: State&lt;CcState&gt;) {}
 &nbsp;
-<span class="cstat-no" title="statement not covered" >	updateVisibleTopLabels$ = createEffect(<span class="fstat-no" title="function not covered" >() =</span>&gt;</span>
-<span class="cstat-no" title="statement not covered" >		this.store.select(visibleFileStatesSelector).pipe(</span>
+	updateVisibleTopLabels$ = createEffect(() =&gt;
+		this.store.select(visibleFileStatesSelector).pipe(
+			pairwise(),
 			withLatestFrom(this.store.select(codeMapNodesSelector)),
-			map(<span class="fstat-no" title="function not covered" >([</span>, codeMapNodes]) =&gt; {
-<span class="cstat-no" title="statement not covered" >				return setAmountOfTopLabels({ value: getNumberOfTopLabels(codeMapNodes) })</span>
+			map(([[previousVisibleFileStates, currentVisibleFileStates], codeMapNodes]) =&gt; {
+				const isUnchanged = stringify(previousVisibleFileStates) === stringify(currentVisibleFileStates)
+				const amountOfTopLabels = isUnchanged
+					? this.state.getValue().appSettings.amountOfTopLabels
+					: getNumberOfTopLabels(codeMapNodes)
+&nbsp;
+				return setAmountOfTopLabels({ value: amountOfTopLabels })
 			})
 		)
 	)
@@ -142,7 +163,7 @@ export class <span class="cstat-no" title="statement not covered" ><span class="
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-12-08T10:43:55.187Z
+                at 2024-01-16T15:52:40.685Z
             </div>
         <script src="../../../../../prettify.js"></script>
         <script>

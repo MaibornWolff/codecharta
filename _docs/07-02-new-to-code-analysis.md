@@ -35,7 +35,7 @@ A simple way to only import the analysis is to clone the whole repository and th
 -   [PicoCli]({{site.baseurl}}{% link _posts/adr/2017-01-02-ADR_5_pick_analysis_cli_library.md %})
 -   JUnit
 -   Assertj
--   Mockito
+-   MockK
 -   Gson
 -   Sonar-Plugins to create our own parsers
 

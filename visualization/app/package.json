@@ -10,7 +10,7 @@
 		"url": "https://github.com/MaibornWolff/codecharta.git"
 	},
 	"name": "codecharta-visualization",
-	"version": "1.121.1",
+	"version": "1.122.0",
 	"engines": {
 		"node": ">=16"
 	},
@@ -88,6 +88,7 @@
 		"pako": "^2.0.4",
 		"percent-round": "^2.2.1",
 		"rxjs": "^7.5.1",
+		"safe-stable-stringify": "^2.4.3",
 		"shelljs": "^0.8.4",
 		"three": "^0.126.1",
 		"three-orbit-controls": "^82.1.0",
