@@ -37,3 +37,17 @@ export function isPartialState(fileStates: FileState[]) {
 export function isEqual(file1: CCFile, file2: CCFile) {
 	return file1.fileMeta.fileChecksum === file2.fileMeta.fileChecksum
 }
+
+export function createPNGFileName(files: FileState[], pngFileNameSuffix: PngFileNameSuffix) {
+	const jsonFileNames = getVisibleFileStates(files)
+	const state = isPartialState(files) ? "partial" : isDeltaState(files) ? "delta" : ""
+	const pngFileName = jsonFileNames
+		.map(fileState => {
+			const fileName = fileState.file.fileMeta.fileName
+			return fileName.slice(0, fileName.lastIndexOf(".json"))
+		})
+		.join("_")
+	return `${state}_${pngFileName}_${pngFileNameSuffix}.png`
+}
+
+type PngFileNameSuffix = "legend" | "map"

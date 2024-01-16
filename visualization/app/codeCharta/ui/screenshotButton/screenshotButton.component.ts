@@ -1,5 +1,5 @@
 import { Color, WebGLRenderer } from "three"
-import { getVisibleFileStates, isDeltaState, isPartialState } from "../../model/files/files.helper"
+import { createPNGFileName } from "../../model/files/files.helper"
 import { ThreeCameraService } from "../codeMap/threeViewer/threeCamera.service"
 import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
 import hotkeys from "hotkeys-js"
@@ -37,21 +37,10 @@ export class ScreenshotButtonComponent {
 
 	makeScreenshotToFile() {
 		const link = document.createElement("a")
-		link.download = this.makePNGFileName()
+		const files = this.state.getValue().files
+		link.download = createPNGFileName(files, "map")
 		link.onclick = () => this.loadScript(link, this.threeRendererService.renderer)
 		link.click()
-	}
-
-	private makePNGFileName() {
-		const files = this.state.getValue().files
-		const jsonFileNames = getVisibleFileStates(files)
-		const state = isPartialState(files) ? "partial" : isDeltaState(files) ? "delta" : ""
-		let pngFileName = ""
-		for (const fileState of jsonFileNames) {
-			const fileName = fileState.file.fileMeta.fileName
-			pngFileName += `${fileName.slice(0, fileName.indexOf(".json"))}_`
-		}
-		return `${state}_${pngFileName.slice(0, pngFileName.lastIndexOf("_"))}.png`
 	}
 
 	private loadScript(link: HTMLAnchorElement, renderer: WebGLRenderer) {
