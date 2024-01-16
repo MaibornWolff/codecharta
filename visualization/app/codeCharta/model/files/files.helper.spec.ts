@@ -223,10 +223,22 @@ describe("files", () => {
 
 			const result = createPNGFileName(files, "legend")
 
-			//const expectedFileName = "file_a_file_b_legend.png"
 			expect(result.length).toBe(255)
 		})
 
-		it("should create the correct PNG filename when more than 3 maps are loaded", () => {})
+		it("should create the correct PNG filename when more than 3 maps are loaded", () => {
+			files[0].selectedAs = FileSelectionState.Partial
+			files[1].selectedAs = FileSelectionState.Partial
+			files[2].selectedAs = FileSelectionState.Partial
+			files[3].selectedAs = FileSelectionState.Partial
+			files[0].file.fileMeta.fileName = "file_a.json"
+			files[1].file.fileMeta.fileName = "file_b.json"
+			files[2].file.fileMeta.fileName = "file_c.json"
+			files[3].file.fileMeta.fileName = "file_d.json"
+
+			const result = createPNGFileName(files, "legend")
+			const expectedFileName = "file_a_~_file_d_legend.png"
+			expect(result).toBe(expectedFileName)
+		})
 	})
 })

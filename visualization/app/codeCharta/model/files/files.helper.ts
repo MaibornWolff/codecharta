@@ -45,7 +45,8 @@ export function createPNGFileName(files: FileState[], pngFileNameSuffix: PngFile
 		const fileName = fileState.file.fileMeta.fileName
 		return fileName.replaceAll(/(.cc)?.json$/g, "")
 	})
-	const combinedFileName = jsonFileNames.length < 4 ? strippedJsonFileNames.join("_") : `${jsonFileNames[0]}_${jsonFileNames.at(-1)}`
+	const combinedFileName =
+		jsonFileNames.length < 4 ? strippedJsonFileNames.join("_") : `${strippedJsonFileNames[0]}_~_${strippedJsonFileNames.at(-1)}`
 	return `${state}${combinedFileName}_${pngFileNameSuffix}.png`.slice(0, 255)
 }
 

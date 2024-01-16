@@ -2515,6 +2515,8 @@ function setBlacklistFlagByType(node: CodeMapNode, type: BlacklistType, flag: bo
 export function setupFiles(): FileState[] {
 	return [
 		{ file: TEST_DELTA_MAP_A, selectedAs: FileSelectionState.None },
-		{ file: TEST_DELTA_MAP_B, selectedAs: FileSelectionState.None }
+		{ file: TEST_DELTA_MAP_B, selectedAs: FileSelectionState.None },
+		{ file: TEST_DELTA_MAP_C, selectedAs: FileSelectionState.None },
+		{ file: TEST_DELTA_MAP_D, selectedAs: FileSelectionState.None }
 	]
 }
