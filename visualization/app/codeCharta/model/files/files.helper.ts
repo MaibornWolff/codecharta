@@ -40,14 +40,13 @@ export function isEqual(file1: CCFile, file2: CCFile) {
 
 export function createPNGFileName(files: FileState[], pngFileNameSuffix: PngFileNameSuffix) {
 	const jsonFileNames = getVisibleFileStates(files)
-	const state = isPartialState(files) ? "partial" : isDeltaState(files) ? "delta" : ""
-	const pngFileName = jsonFileNames
-		.map(fileState => {
-			const fileName = fileState.file.fileMeta.fileName
-			return fileName.slice(0, fileName.lastIndexOf(".json"))
-		})
-		.join("_")
-	return `${state}_${pngFileName}_${pngFileNameSuffix}.png`
+	const state = isDeltaState(files) ? "delta_" : ""
+	const strippedJsonFileNames = jsonFileNames.map(fileState => {
+		const fileName = fileState.file.fileMeta.fileName
+		return fileName.replaceAll(/(.cc)?.json$/g, "")
+	})
+	const combinedFileName = jsonFileNames.length < 4 ? strippedJsonFileNames.join("_") : `${jsonFileNames[0]}_${jsonFileNames.at(-1)}`
+	return `${state}${combinedFileName}_${pngFileNameSuffix}.png`.slice(0, 255)
 }
 
 type PngFileNameSuffix = "legend" | "map"
