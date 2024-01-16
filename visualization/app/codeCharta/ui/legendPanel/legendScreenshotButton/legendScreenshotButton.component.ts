@@ -16,7 +16,7 @@ import { createPNGFileName } from "../../../../../app/codeCharta/model/files/fil
 export class LegendScreenshotButtonComponent {
 	@Input() isLegendVisible: boolean
 	isRenderingScreenshot: boolean
-	isWriteToClipboardAllowed: boolean = "write" in navigator.clipboard
+	isWriteToClipboardAllowed: boolean = this.checkWriteToClipBoardAllowed()
 	isScreenshotToClipboardEnabled$ = this.store.select(screenshotToClipboardEnabledSelector)
 
 	constructor(
@@ -44,11 +44,11 @@ export class LegendScreenshotButtonComponent {
 		this.isRenderingScreenshot = false
 	}
 
-	getLegendPanelHTMLElement() {
+	private getLegendPanelHTMLElement() {
 		return document.getElementById("legend-panel")
 	}
 
-	async captureScreenshot(element: HTMLElement): Promise<HTMLCanvasElement> {
+	private async captureScreenshot(element: HTMLElement): Promise<HTMLCanvasElement> {
 		const tagsNamesToIgnore = new Set([
 			"cc-tool-bar",
 			"cc-file-extension-bar",
@@ -67,7 +67,7 @@ export class LegendScreenshotButtonComponent {
 		})
 	}
 
-	downloadScreenshot(dataUrl: string, fileName: string): void {
+	private downloadScreenshot(dataUrl: string, fileName: string): void {
 		const downloadLink = document.createElement("a")
 		downloadLink.download = fileName
 		downloadLink.href = dataUrl
@@ -76,8 +76,12 @@ export class LegendScreenshotButtonComponent {
 		downloadLink.remove()
 	}
 
-	async setToClipboard(blob: Blob) {
+	private async setToClipboard(blob: Blob) {
 		const data = [new ClipboardItem({ [blob.type]: blob })]
 		await navigator.clipboard.write(data)
+	}
+
+	private checkWriteToClipBoardAllowed(): boolean {
+		return "clipboard" in navigator && "write" in navigator.clipboard
 	}
 }

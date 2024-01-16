@@ -17,14 +17,6 @@ import { selectedColorMetricDataSelector } from "../../state/selectors/accumulat
 import { attributeDescriptorsSelector } from "../../state/store/fileSettings/attributeDescriptors/attributeDescriptors.selector"
 
 describe("LegendPanelController", () => {
-	beforeAll(() => {
-		Object.defineProperty(navigator, "clipboard", {
-			value: {
-				write: jest.fn()
-			}
-		})
-	})
-
 	beforeEach(() => {
 		TestBed.configureTestingModule({
 			imports: [LegendPanelModule],
