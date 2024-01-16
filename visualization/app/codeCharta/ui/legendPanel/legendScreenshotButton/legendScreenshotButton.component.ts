@@ -6,6 +6,7 @@ import { CcState } from "../../../codeCharta.model"
 import { IsAttributeSideBarVisibleService } from "../../../services/isAttributeSideBarVisible.service"
 import { screenshotToClipboardEnabledSelector } from "../../../state/store/appSettings/enableClipboard/screenshotToClipboardEnabled.selector"
 import { createPNGFileName } from "../../../model/files/files.helper"
+import { checkWriteToClipBoardAllowed, setToClipboard } from "../../../util/clipboard/clipboardWriter"
 
 @Component({
 	selector: "cc-legend-screenshot-button",
@@ -16,7 +17,7 @@ import { createPNGFileName } from "../../../model/files/files.helper"
 export class LegendScreenshotButtonComponent {
 	@Input() isLegendVisible: boolean
 	isRenderingScreenshot: boolean
-	isWriteToClipboardAllowed: boolean = this.checkWriteToClipBoardAllowed()
+	isWriteToClipboardAllowed: boolean = checkWriteToClipBoardAllowed()
 	isScreenshotToClipboardEnabled$ = this.store.select(screenshotToClipboardEnabledSelector)
 
 	constructor(
@@ -40,7 +41,7 @@ export class LegendScreenshotButtonComponent {
 		const element = this.getLegendPanelHTMLElement()
 		const canvas = await this.captureScreenshot(element)
 		const blob: Blob = await new Promise(resolve => canvas.toBlob(resolve))
-		await this.setToClipboard(blob)
+		await setToClipboard(blob)
 		this.isRenderingScreenshot = false
 	}
 
@@ -74,14 +75,5 @@ export class LegendScreenshotButtonComponent {
 		document.body.appendChild(downloadLink)
 		downloadLink.click()
 		downloadLink.remove()
-	}
-
-	private async setToClipboard(blob: Blob) {
-		const data = [new ClipboardItem({ [blob.type]: blob })]
-		await navigator.clipboard.write(data)
-	}
-
-	private checkWriteToClipBoardAllowed(): boolean {
-		return "clipboard" in navigator && "write" in navigator.clipboard
 	}
 }
