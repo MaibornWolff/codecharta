@@ -10,15 +10,14 @@ import { IsAttributeSideBarVisibleService } from "../../../../../app/codeCharta/
 import { defaultState } from "../../../../../app/codeCharta/state/store/state.manager"
 import userEvent from "@testing-library/user-event"
 
-describe("screenshotButtonComponent", () => {
-	beforeAll(() => {
-		Object.defineProperty(navigator, "clipboard", {
-			value: {
-				write: jest.fn()
-			}
-		})
-	})
+jest.mock("html2canvas", () => {
+	return {
+		__esModule: true,
+		default: jest.fn(() => document.createElement("canvas"))
+	}
+})
 
+describe("screenshotButtonComponent", () => {
 	beforeEach(() => {
 		TestBed.configureTestingModule({
 			imports: [LegendPanelModule],
@@ -35,23 +34,23 @@ describe("screenshotButtonComponent", () => {
 	})
 
 	it("should copy to clipboard on click when screenshot to clipboard is enabled", async () => {
+		const user = userEvent.setup()
 		const { fixture } = await render(LegendScreenshotButtonComponent, {
 			excludeComponentDeclaration: true,
 			componentProperties: { isLegendVisible: true }
 		})
 
-		const captureScreenshotSpy = jest
-			.spyOn(fixture.componentInstance, "captureScreenshot")
-			.mockResolvedValue(document.createElement("canvas"))
-		const setToClipboardSpy = jest.spyOn(fixture.componentInstance, "setToClipboard").mockResolvedValue()
+		const createClipboardItem = (global.ClipboardItem = jest.fn())
+		const makeScreenshotToClipboardSpy = jest.spyOn(fixture.componentInstance, "makeScreenshotToClipboard")
 
-		await userEvent.click(screen.getByTitle("Copy screenshot of legend to clipboard"))
+		await user.click(screen.getByTitle("Copy screenshot of legend to clipboard"))
 
-		expect(captureScreenshotSpy).toHaveBeenCalled()
-		expect(setToClipboardSpy).toHaveBeenCalled()
+		expect(createClipboardItem).toHaveBeenCalledTimes(1)
+		expect(makeScreenshotToClipboardSpy).toHaveBeenCalledTimes(1)
 	})
 
 	it("should save to file on click when screenshot to clipboard is disabled", async () => {
+		const user = userEvent.setup()
 		const { fixture, detectChanges } = await render(LegendScreenshotButtonComponent, {
 			excludeComponentDeclaration: true,
 			componentProperties: { isLegendVisible: true }
@@ -62,17 +61,13 @@ describe("screenshotButtonComponent", () => {
 		store.refreshState()
 		detectChanges()
 
-		const captureScreenshotSpy = jest
-			.spyOn(fixture.componentInstance, "captureScreenshot")
-			.mockResolvedValue(document.createElement("canvas"))
-		const downloadScreenshotSpy = jest.spyOn(fixture.componentInstance, "downloadScreenshot")
-		const clickSpy = jest.spyOn(HTMLAnchorElement.prototype, "click").mockImplementation()
+		const clickDownloadLinkSpy = jest.spyOn(HTMLAnchorElement.prototype, "click").mockImplementation()
+		const makeScreenshotToFileSpy = jest.spyOn(fixture.componentInstance, "makeScreenshotToFile")
 
-		await userEvent.click(screen.getByTitle("Export screenshot of legend as file"))
+		await user.click(screen.getByTitle("Export screenshot of legend as file"))
 
-		expect(captureScreenshotSpy).toHaveBeenCalled()
-		expect(downloadScreenshotSpy).toHaveBeenCalled()
-		expect(clickSpy).toHaveBeenCalled()
+		expect(clickDownloadLinkSpy).toHaveBeenCalledTimes(1)
+		expect(makeScreenshotToFileSpy).toHaveBeenCalledTimes(1)
 	})
 
 	it("should open and close", async () => {

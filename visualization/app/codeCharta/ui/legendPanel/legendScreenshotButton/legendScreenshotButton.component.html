@@ -2,9 +2,7 @@
 	<button
 		*ngIf="isScreenshotToClipboardEnabled$ | async"
 		(click)="makeScreenshotToClipboard()"
-		title="{{
-			isWriteToClipboardAllowed ? 'Copy screenshot of legend to clipboard' : 'Copy legend to clipboard not available in Firefox'
-		}}"
+		title="{{ isWriteToClipboardAllowed ? 'Copy screenshot of legend to clipboard' : 'Firefox does support copying to clipboard' }}"
 		color="primary"
 		class="screenshot-button"
 		[disabled]="!isWriteToClipboardAllowed || isRenderingScreenshot"
