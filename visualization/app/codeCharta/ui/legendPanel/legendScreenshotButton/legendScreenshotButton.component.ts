@@ -2,10 +2,10 @@ import html2canvas from "html2canvas"
 import { State, Store } from "@ngrx/store"
 import { Component, Input, ViewEncapsulation } from "@angular/core"
 
-import { CcState } from "../../../../../app/codeCharta/codeCharta.model"
-import { IsAttributeSideBarVisibleService } from "../../../../../app/codeCharta/services/isAttributeSideBarVisible.service"
-import { screenshotToClipboardEnabledSelector } from "../../../../../app/codeCharta/state/store/appSettings/enableClipboard/screenshotToClipboardEnabled.selector"
-import { createPNGFileName } from "../../../../../app/codeCharta/model/files/files.helper"
+import { CcState } from "../../../codeCharta.model"
+import { IsAttributeSideBarVisibleService } from "../../../services/isAttributeSideBarVisible.service"
+import { screenshotToClipboardEnabledSelector } from "../../../state/store/appSettings/enableClipboard/screenshotToClipboardEnabled.selector"
+import { createPNGFileName } from "../../../model/files/files.helper"
 
 @Component({
 	selector: "cc-legend-screenshot-button",

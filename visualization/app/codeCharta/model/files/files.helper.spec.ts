@@ -199,7 +199,7 @@ describe("files", () => {
 
 			const result = createPNGFileName(files, "legend")
 
-			const expectedFileName = "partial_file_a_file_b_legend.png"
+			const expectedFileName = "file_a_file_b_legend.png"
 			expect(result).toBe(expectedFileName)
 		})
 
@@ -213,5 +213,20 @@ describe("files", () => {
 			const expectedFileName = "delta_file_a_file_b_map.png"
 			expect(result).toBe(expectedFileName)
 		})
+
+		it("should cut off a file name when it is longer than 255 characters", () => {
+			files[0].selectedAs = FileSelectionState.Partial
+			files[1].selectedAs = FileSelectionState.Partial
+			files[0].file.fileMeta.fileName = "filename_of_file_a.json"
+			files[1].file.fileMeta.fileName =
+				"filename_of_file_b_Lorem_ipsum_dolor_sit_amet_consectetur_adipiscing_elit_Quisque_tristique_lectus_a_nibh_ullamcorper_aliquam_in_et_orci_Cras_tincidunt_imperdiet_massa_sed_ultricies_Nullam_tristique_congue_nisl_id_lacinia_Praesent_varius_interdum_turpis_eget_eleifend.json"
+
+			const result = createPNGFileName(files, "legend")
+
+			//const expectedFileName = "file_a_file_b_legend.png"
+			expect(result.length).toBe(255)
+		})
+
+		it("should create the correct PNG filename when more than 3 maps are loaded", () => {})
 	})
 })
