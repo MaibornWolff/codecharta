@@ -1,5 +1,6 @@
 import { setupFiles, TEST_DELTA_MAP_A, TEST_DELTA_MAP_B } from "../../util/dataMocks"
 import {
+	createPNGFileName,
 	fileStatesAvailable,
 	getCCFiles,
 	getFileByFileName,
@@ -186,6 +187,31 @@ describe("files", () => {
 			files[0].selectedAs = FileSelectionState.Partial
 
 			expect(fileStatesAvailable(files)).toBeTruthy()
+		})
+	})
+
+	describe("createPNGFileName", () => {
+		it("should create the correct PNG filename for partial state and 'legend' suffix", () => {
+			files[0].selectedAs = FileSelectionState.Partial
+			files[1].selectedAs = FileSelectionState.Partial
+			files[0].file.fileMeta.fileName = "file_a.json"
+			files[1].file.fileMeta.fileName = "file_b.json"
+
+			const result = createPNGFileName(files, "legend")
+
+			const expectedFileName = "partial_file_a_file_b_legend.png"
+			expect(result).toBe(expectedFileName)
+		})
+
+		it("should create the correct PNG filename for delta state and 'map' suffix", () => {
+			files[0].selectedAs = FileSelectionState.Reference
+			files[1].selectedAs = FileSelectionState.Comparison
+			files[0].file.fileMeta.fileName = "file_a.json"
+			files[1].file.fileMeta.fileName = "file_b.json"
+			const result = createPNGFileName(files, "map")
+
+			const expectedFileName = "delta_file_a_file_b_map.png"
+			expect(result).toBe(expectedFileName)
 		})
 	})
 })

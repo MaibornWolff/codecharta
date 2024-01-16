@@ -5,7 +5,7 @@ import { Component, Input, ViewEncapsulation } from "@angular/core"
 import { CcState } from "../../../../../app/codeCharta/codeCharta.model"
 import { IsAttributeSideBarVisibleService } from "../../../../../app/codeCharta/services/isAttributeSideBarVisible.service"
 import { screenshotToClipboardEnabledSelector } from "../../../../../app/codeCharta/state/store/appSettings/enableClipboard/screenshotToClipboardEnabled.selector"
-import { getVisibleFileStates, isDeltaState, isPartialState } from "../../../../../app/codeCharta/model/files/files.helper"
+import { createPNGFileName } from "../../../../../app/codeCharta/model/files/files.helper"
 
 @Component({
 	selector: "cc-legend-screenshot-button",
@@ -30,7 +30,8 @@ export class LegendScreenshotButtonComponent {
 		const element = this.getLegendPanelHTMLElement()
 		const canvas = await this.captureScreenshot(element)
 		const dataUrl = canvas.toDataURL("image/png")
-		this.downloadScreenshot(dataUrl, this.makePNGFileName())
+		const files = this.state.getValue().files
+		this.downloadScreenshot(dataUrl, createPNGFileName(files, "legend"))
 		this.isRenderingScreenshot = false
 	}
 
@@ -78,16 +79,5 @@ export class LegendScreenshotButtonComponent {
 	async setToClipboard(blob: Blob) {
 		const data = [new ClipboardItem({ [blob.type]: blob })]
 		await navigator.clipboard.write(data)
-	}
-
-	makePNGFileName(): string {
-		const files = this.state.getValue().files
-		const jsonFileNames = getVisibleFileStates(files)
-		const state = isPartialState(files) ? "partial" : isDeltaState(files) ? "delta" : ""
-		const pngFileName = `${jsonFileNames
-			.map(fileState => fileState.file.fileMeta.fileName.slice(0, fileState.file.fileMeta.fileName.indexOf(".json")))
-			.join("_")}_legend`
-
-		return `${state}_${pngFileName}.png`
 	}
 }
