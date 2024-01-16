@@ -1,4 +1,4 @@
-import { setupFiles, TEST_DELTA_MAP_A, TEST_DELTA_MAP_B } from "../../util/dataMocks"
+import { setupFiles, TEST_DELTA_MAP_A, TEST_DELTA_MAP_B, TEST_DELTA_MAP_C, TEST_DELTA_MAP_D } from "../../util/dataMocks"
 import {
 	createPNGFileName,
 	fileStatesAvailable,
@@ -227,16 +227,21 @@ describe("files", () => {
 		})
 
 		it("should create the correct PNG filename when more than 3 maps are loaded", () => {
-			files[0].selectedAs = FileSelectionState.Partial
-			files[1].selectedAs = FileSelectionState.Partial
-			files[2].selectedAs = FileSelectionState.Partial
-			files[3].selectedAs = FileSelectionState.Partial
-			files[0].file.fileMeta.fileName = "file_a.json"
-			files[1].file.fileMeta.fileName = "file_b.json"
-			files[2].file.fileMeta.fileName = "file_c.json"
-			files[3].file.fileMeta.fileName = "file_d.json"
+			const moreFiles = [
+				...files,
+				{ file: TEST_DELTA_MAP_C, selectedAs: FileSelectionState.None },
+				{ file: TEST_DELTA_MAP_D, selectedAs: FileSelectionState.None }
+			]
+			moreFiles[0].selectedAs = FileSelectionState.Partial
+			moreFiles[1].selectedAs = FileSelectionState.Partial
+			moreFiles[2].selectedAs = FileSelectionState.Partial
+			moreFiles[3].selectedAs = FileSelectionState.Partial
+			moreFiles[0].file.fileMeta.fileName = "file_a.json"
+			moreFiles[1].file.fileMeta.fileName = "file_b.json"
+			moreFiles[2].file.fileMeta.fileName = "file_c.json"
+			moreFiles[3].file.fileMeta.fileName = "file_d.json"
 
-			const result = createPNGFileName(files, "legend")
+			const result = createPNGFileName(moreFiles, "legend")
 			const expectedFileName = "file_a_~_file_d_legend.png"
 			expect(result).toBe(expectedFileName)
 		})
