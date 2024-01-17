@@ -17,7 +17,7 @@ jest.mock("html2canvas", () => {
 	}
 })
 
-describe("screenshotButtonComponent", () => {
+describe("legendScreenshotButtonComponent", () => {
 	beforeEach(() => {
 		TestBed.configureTestingModule({
 			imports: [LegendPanelModule],
@@ -29,10 +29,6 @@ describe("screenshotButtonComponent", () => {
 		})
 	})
 
-	afterEach(() => {
-		jest.restoreAllMocks()
-	})
-
 	it("should copy to clipboard on click when screenshot to clipboard is enabled", async () => {
 		const user = userEvent.setup()
 		const { fixture } = await render(LegendScreenshotButtonComponent, {
@@ -40,12 +36,12 @@ describe("screenshotButtonComponent", () => {
 			componentProperties: { isLegendVisible: true }
 		})
 
-		const createClipboardItem = (global.ClipboardItem = jest.fn())
+		const clipboardItemMock = (global.ClipboardItem = jest.fn())
 		const makeScreenshotToClipboardSpy = jest.spyOn(fixture.componentInstance, "makeScreenshotToClipboard")
 
 		await user.click(screen.getByTitle("Copy screenshot of legend to clipboard"))
 
-		expect(createClipboardItem).toHaveBeenCalledTimes(1)
+		expect(clipboardItemMock).toHaveBeenCalledTimes(1)
 		expect(makeScreenshotToClipboardSpy).toHaveBeenCalledTimes(1)
 	})
 

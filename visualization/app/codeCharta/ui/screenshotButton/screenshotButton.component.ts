@@ -9,7 +9,7 @@ import { screenshotToClipboardEnabledSelector } from "../../state/store/appSetti
 import { ThreeRendererService } from "../codeMap/threeViewer/threeRenderer.service"
 import { Store, State } from "@ngrx/store"
 import { CcState } from "../../codeCharta.model"
-import { checkWriteToClipBoardAllowed, setToClipboard } from "../../../../app/codeCharta/util/clipboard/clipboardWriter"
+import { checkWriteToClipboardAllowed, setToClipboard } from "../../../../app/codeCharta/util/clipboard/clipboardWriter"
 
 @Component({
 	selector: "cc-screenshot-button",
@@ -33,7 +33,7 @@ export class ScreenshotButtonComponent {
 	) {}
 
 	ngOnInit() {
-		this.isWriteToClipboardAllowed = checkWriteToClipBoardAllowed()
+		this.isWriteToClipboardAllowed = checkWriteToClipboardAllowed()
 		this.TITLE_CLIPBOARD_BUTTON = this.createTitleClipboardButton()
 		this.TITLE_FILE_BUTTON = this.createTitleFileButton()
 
@@ -58,30 +58,30 @@ export class ScreenshotButtonComponent {
 			return
 		}
 		const renderer = this.threeRendererService.renderer
-		const settings = this.saveSettings(renderer)
+		const renderSettings = this.saveRenderSettings(renderer)
 		const canvas = this.buildScreenShotCanvas(renderer)
-		canvas.toBlob(blob => {
-			setToClipboard(blob)
-		})
-		this.applySettings(renderer, settings)
+		const canvasToBlobPromise: Promise<Blob> = new Promise(resolve => canvas.toBlob(resolve))
+		this.applyRenderSettings(renderer, renderSettings)
+		const blob = await canvasToBlobPromise
+		await setToClipboard(blob)
 	}
 
 	private downloadScreenshot(link: HTMLAnchorElement) {
 		const renderer = this.threeRendererService.renderer
-		const settings = this.saveSettings(renderer)
+		const renderSettings = this.saveRenderSettings(renderer)
 		const canvas = this.buildScreenShotCanvas(renderer)
 		link.href = canvas.toDataURL()
-		this.applySettings(renderer, settings)
+		this.applyRenderSettings(renderer, renderSettings)
 	}
 
-	private saveSettings(renderer: WebGLRenderer) {
+	private saveRenderSettings(renderer: WebGLRenderer) {
 		const pixelRatio = renderer.getPixelRatio()
 		const clearColor = new Color()
 		renderer.getClearColor(clearColor)
 		return { pixelRatio, clearColor }
 	}
 
-	private applySettings(renderer: WebGLRenderer, settings: { pixelRatio: number; clearColor: Color }) {
+	private applyRenderSettings(renderer: WebGLRenderer, settings: { pixelRatio: number; clearColor: Color }) {
 		const { pixelRatio, clearColor } = settings
 		renderer.setPixelRatio(pixelRatio)
 		renderer.setClearColor(clearColor)
@@ -92,18 +92,17 @@ export class ScreenshotButtonComponent {
 		renderer.setPixelRatio(window.devicePixelRatio)
 		renderer.setClearColor(new Color(0, 0, 0), 0)
 		renderer.render(this.threeSceneService.scene, this.threeCameraService.camera)
-
 		const canvas = renderer.domElement
 		return canvas
 	}
 
 	private createTitleClipboardButton() {
 		return this.isWriteToClipboardAllowed
-			? `Screenshot the map with ${this.SCREENSHOT_HOTKEY_TO_CLIPBOARD} (copy to clipboard) or ${this.SCREENSHOT_HOTKEY_TO_FILE} (save as file)`
+			? `Take a screenshot of the map with ${this.SCREENSHOT_HOTKEY_TO_CLIPBOARD} (copy to clipboard) or ${this.SCREENSHOT_HOTKEY_TO_FILE} (save as file)`
 			: "Firefox does support copying to clipboard"
 	}
 
 	private createTitleFileButton() {
-		return `Screenshot the map with ${this.SCREENSHOT_HOTKEY_TO_FILE} (save as file) or ${this.SCREENSHOT_HOTKEY_TO_CLIPBOARD} (copy to clipboard)`
+		return `Take a screenshot of the map with ${this.SCREENSHOT_HOTKEY_TO_FILE} (save as file) or ${this.SCREENSHOT_HOTKEY_TO_CLIPBOARD} (copy to clipboard)`
 	}
 }
