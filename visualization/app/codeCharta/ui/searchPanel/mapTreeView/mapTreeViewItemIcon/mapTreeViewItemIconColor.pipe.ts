@@ -3,6 +3,7 @@ import { State } from "@ngrx/store"
 
 import { CodeMapNode, CcState } from "../../../../codeCharta.model"
 import { getMarkingColor, isLeaf } from "../../../../util/codeMapHelper"
+import { isAreaValid } from "../areaMetricValidPipe.pipe"
 
 @Pipe({ name: "mapTreeViewItemIconColor", pure: false })
 export class MapTreeViewItemIconColorPipe implements PipeTransform {
@@ -14,7 +15,7 @@ export class MapTreeViewItemIconColorPipe implements PipeTransform {
 	transform(value: CodeMapNode): string | undefined {
 		const { areaMetric } = this.state.getValue().dynamicSettings
 
-		if (!value.attributes[areaMetric]) {
+		if (!isAreaValid(value, areaMetric)) {
 			return MapTreeViewItemIconColorPipe.areMetricZeroColor
 		}
 		if (isLeaf(value)) {
