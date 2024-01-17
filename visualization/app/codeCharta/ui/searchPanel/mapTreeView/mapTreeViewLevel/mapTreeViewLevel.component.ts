@@ -7,6 +7,7 @@ import { rightClickedNodeDataSelector } from "../../../../state/store/appStatus/
 import { hoveredNodeIdSelector } from "../../../../state/store/appStatus/hoveredNodeId/hoveredNodeId.selector"
 import { areaMetricSelector } from "../../../../state/store/dynamicSettings/areaMetric/areaMetric.selector"
 import { Store } from "@ngrx/store"
+import { isAreaValid } from "../areaMetricValidPipe.pipe"
 
 @Component({
 	selector: "cc-map-tree-view-level",
@@ -23,7 +24,7 @@ export class MapTreeViewLevelComponent implements OnInit {
 
 	isOpen = false
 
-	areMetricGreaterZero = false
+	areMetricValid = false
 
 	constructor(private store: Store<CcState>) {}
 
@@ -44,14 +45,9 @@ export class MapTreeViewLevelComponent implements OnInit {
 		$event.preventDefault()
 		$event.stopPropagation()
 
-		this.areaMetric$
-			.subscribe(
-				areaMetricName =>
-					(this.areMetricGreaterZero = this.node.attributes[areaMetricName] && this.node.attributes[areaMetricName] !== 0)
-			)
-			.unsubscribe()
+		this.areaMetric$.subscribe(areaMetricName => (this.areMetricValid = isAreaValid(this.node, areaMetricName))).unsubscribe()
 
-		if (this.areMetricGreaterZero) {
+		if (this.areMetricValid) {
 			this.store.dispatch(
 				setRightClickedNodeData({
 					value: {

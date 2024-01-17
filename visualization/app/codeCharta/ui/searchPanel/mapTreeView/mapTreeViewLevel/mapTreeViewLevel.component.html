@@ -8,14 +8,14 @@
 		(mouseleave)="onMouseLeave()"
 		(click)="toggleOpen()"
 		(contextmenu)="openNodeContextMenu($event)"
-		[title]="node.attributes[areaMetric$ | async] > 0 ? '' : 'No Node Area for Chosen Metric'"
+		[title]="(node | areaMetricValid : (areaMetric$ | async)) ? '' : 'No Node Area for Chosen Metric'"
 	>
 		<cc-map-tree-view-item-icon [node]="node" [isOpen]="isOpen"></cc-map-tree-view-item-icon>
 		<cc-map-tree-view-item-name [node]="node" [isHovered]="(hoveredNodeId$ | async) === node.id" [unaryValue]="node.attributes.unary">
 		</cc-map-tree-view-item-name>
 
 		<cc-map-tree-view-item-option-buttons
-			*ngIf="(hoveredNodeId$ | async) === node.id && node.attributes[areaMetric$ | async] > 0"
+			*ngIf="(hoveredNodeId$ | async) === node.id && (node | areaMetricValid : (areaMetric$ | async))"
 			[isFlattened]="node.isFlattened"
 			[openNodeContextMenu]="openNodeContextMenu"
 		></cc-map-tree-view-item-option-buttons>
