@@ -3,6 +3,6 @@ export async function setToClipboard(blob: Blob) {
 	await navigator.clipboard.write(data)
 }
 
-export function checkWriteToClipBoardAllowed(): boolean {
+export function checkWriteToClipboardAllowed(): boolean {
 	return "clipboard" in navigator && "write" in navigator.clipboard
 }

@@ -6,7 +6,7 @@ import { CcState } from "../../../codeCharta.model"
 import { IsAttributeSideBarVisibleService } from "../../../services/isAttributeSideBarVisible.service"
 import { screenshotToClipboardEnabledSelector } from "../../../state/store/appSettings/enableClipboard/screenshotToClipboardEnabled.selector"
 import { createPNGFileName } from "../../../model/files/files.helper"
-import { checkWriteToClipBoardAllowed, setToClipboard } from "../../../util/clipboard/clipboardWriter"
+import { checkWriteToClipboardAllowed, setToClipboard } from "../../../util/clipboard/clipboardWriter"
 
 @Component({
 	selector: "cc-legend-screenshot-button",
@@ -17,7 +17,7 @@ import { checkWriteToClipBoardAllowed, setToClipboard } from "../../../util/clip
 export class LegendScreenshotButtonComponent {
 	@Input() isLegendVisible: boolean
 	isRenderingScreenshot: boolean
-	isWriteToClipboardAllowed: boolean = checkWriteToClipBoardAllowed()
+	isWriteToClipboardAllowed: boolean = checkWriteToClipboardAllowed()
 	isScreenshotToClipboardEnabled$ = this.store.select(screenshotToClipboardEnabledSelector)
 
 	constructor(
