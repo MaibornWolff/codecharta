@@ -1,6 +1,11 @@
 import { CCFile } from "../../codeCharta.model"
 import { FileSelectionState, FileState } from "./files"
 
+const FILE_EXTENSION_PNG = ".png"
+const SCREENSHOT_FILE_NAME_LENGTH_LIMIT = 255
+const SCREENSHOT_FILE_NAME_SHORTENER = "~"
+const SCREENSHOT_FILE_NAME_LINK = "_"
+
 export function getCCFiles(fileStates: FileState[]) {
 	return fileStates.map(x => x.file)
 }
@@ -38,16 +43,35 @@ export function isEqual(file1: CCFile, file2: CCFile) {
 	return file1.fileMeta.fileChecksum === file2.fileMeta.fileChecksum
 }
 
-export function createPNGFileName(files: FileState[], pngFileNameSuffix: PngFileNameSuffix) {
-	const jsonFileNames = getVisibleFileStates(files)
-	const state = isDeltaState(files) ? "delta_" : ""
-	const strippedJsonFileNames = jsonFileNames.map(fileState => {
-		const fileName = fileState.file.fileMeta.fileName
-		return fileName.replaceAll(/(.cc)?.json$/g, "")
-	})
-	const combinedFileName =
-		jsonFileNames.length < 4 ? strippedJsonFileNames.join("_") : `${strippedJsonFileNames[0]}_~_${strippedJsonFileNames.at(-1)}`
-	return `${state}${combinedFileName}_${pngFileNameSuffix}.png`.slice(0, 255)
+export function createPNGFileName(files: FileState[], screenshotFileNameSuffix: FileNameSuffixScreenshot) {
+	const state = isDeltaState(files) ? "delta" : ""
+	const fileNames = getVisibleFileStates(files)
+	const fileNamesStripped = fileNames.map(fileStates => createStrippedFileName(fileStates))
+	const fileNameCombined = createCombinedFileName(fileNamesStripped)
+	const fileNameCapped = createCappedFileName(fileNameCombined, state, screenshotFileNameSuffix)
+	return fileNameCapped
 }
 
-type PngFileNameSuffix = "legend" | "map"
+function createStrippedFileName(fileState: FileState) {
+	return fileState.file.fileMeta.fileName.replace(/(.cc)?.json$/, "")
+}
+
+function createCombinedFileName(fileNamesStripped: string[]) {
+	return fileNamesStripped.length <= 3
+		? fileNamesStripped.join(SCREENSHOT_FILE_NAME_LINK)
+		: [fileNamesStripped.at(0), SCREENSHOT_FILE_NAME_SHORTENER, fileNamesStripped.at(-1)].join(SCREENSHOT_FILE_NAME_LINK)
+}
+
+function createCappedFileName(fileNameCombined: string, state: string, screenshotFileNameSuffix: string) {
+	const fileNameFull = [state, fileNameCombined, screenshotFileNameSuffix]
+		.filter(fileNameElement => fileNameElement.length > 0)
+		.join(SCREENSHOT_FILE_NAME_LINK)
+
+	const maxLength = SCREENSHOT_FILE_NAME_LENGTH_LIMIT - FILE_EXTENSION_PNG.length
+
+	return fileNameFull.length <= maxLength
+		? [fileNameFull, FILE_EXTENSION_PNG].join("")
+		: [fileNameFull.slice(0, maxLength - 1), SCREENSHOT_FILE_NAME_SHORTENER, FILE_EXTENSION_PNG].join("")
+}
+
+type FileNameSuffixScreenshot = "legend" | "map"
