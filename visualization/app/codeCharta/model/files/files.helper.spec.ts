@@ -224,7 +224,7 @@ describe("files", () => {
 			const result = createPNGFileName(files, "legend")
 
 			expect(result.length).toBe(255)
-			expect(result).toMatch(/~\.png$/)
+			expect(result).toMatch(/~legend\.png$/)
 		})
 
 		it("should create the correct PNG filename when more than 3 maps are loaded", () => {
