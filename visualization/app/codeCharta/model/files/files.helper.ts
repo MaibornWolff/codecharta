@@ -63,15 +63,13 @@ function createCombinedFileName(fileNamesStripped: string[]) {
 }
 
 function createCappedFileName(fileNameCombined: string, state: string, screenshotFileNameSuffix: string) {
-	const fileNameFull = [state, fileNameCombined, screenshotFileNameSuffix]
-		.filter(fileNameElement => fileNameElement.length > 0)
-		.join(SCREENSHOT_FILE_NAME_LINK)
+	const fileName = [state, fileNameCombined].filter(fileNameElement => fileNameElement.length > 0).join(SCREENSHOT_FILE_NAME_LINK)
 
-	const maxLength = SCREENSHOT_FILE_NAME_LENGTH_LIMIT - FILE_EXTENSION_PNG.length
+	const maxLength = SCREENSHOT_FILE_NAME_LENGTH_LIMIT - screenshotFileNameSuffix.length - FILE_EXTENSION_PNG.length
 
-	return fileNameFull.length <= maxLength
-		? [fileNameFull, FILE_EXTENSION_PNG].join("")
-		: [fileNameFull.slice(0, maxLength - 1), SCREENSHOT_FILE_NAME_SHORTENER, FILE_EXTENSION_PNG].join("")
+	return fileName.length <= maxLength
+		? [fileName, SCREENSHOT_FILE_NAME_LINK, screenshotFileNameSuffix, FILE_EXTENSION_PNG].join("")
+		: [fileName.slice(0, maxLength - 1), SCREENSHOT_FILE_NAME_SHORTENER, screenshotFileNameSuffix, FILE_EXTENSION_PNG].join("")
 }
 
 type FileNameSuffixScreenshot = "legend" | "map"
