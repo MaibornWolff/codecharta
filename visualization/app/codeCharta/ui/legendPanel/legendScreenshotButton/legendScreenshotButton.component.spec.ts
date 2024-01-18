@@ -1,6 +1,6 @@
 import { State } from "@ngrx/store"
 import { TestBed } from "@angular/core/testing"
-import { render, screen } from "@testing-library/angular"
+import { render, screen, waitFor } from "@testing-library/angular"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 
 import { LegendPanelModule } from "../legendPanel.module"
@@ -41,8 +41,8 @@ describe("legendScreenshotButtonComponent", () => {
 
 		await user.click(screen.getByTitle("Copy screenshot of legend to clipboard"))
 
-		expect(clipboardItemMock).toHaveBeenCalledTimes(1)
 		expect(makeScreenshotToClipboardSpy).toHaveBeenCalledTimes(1)
+		waitFor(() => expect(clipboardItemMock).toHaveBeenCalledTimes(1))
 	})
 
 	it("should save to file on click when screenshot to clipboard is disabled", async () => {
@@ -62,8 +62,8 @@ describe("legendScreenshotButtonComponent", () => {
 
 		await user.click(screen.getByTitle("Export screenshot of legend as file"))
 
-		expect(clickDownloadLinkSpy).toHaveBeenCalledTimes(1)
 		expect(makeScreenshotToFileSpy).toHaveBeenCalledTimes(1)
+		waitFor(() => expect(clickDownloadLinkSpy).toHaveBeenCalledTimes(1))
 	})
 
 	it("should open and close", async () => {
@@ -83,7 +83,7 @@ describe("legendScreenshotButtonComponent", () => {
 		expect(isScreenshotButtonVisible(container)).toBe(false)
 	})
 
-	it("should be disabled if write to console not available in browser", async () => {
+	it("should be disabled if write to console is not available in browser", async () => {
 		const { container } = await render(LegendScreenshotButtonComponent, {
 			excludeComponentDeclaration: true,
 			componentProperties: {
@@ -92,7 +92,7 @@ describe("legendScreenshotButtonComponent", () => {
 			}
 		})
 
-		expect(isScreenshotButtonDisabled(container)).toBe(true)
+		waitFor(() => expect(isScreenshotButtonDisabled(container)).toBe(true))
 	})
 
 	it("should add class 'isAttributeSideBarVisible' to screenshot button, when attribute sidebar is open", async () => {
