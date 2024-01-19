@@ -1,13 +1,17 @@
 import { Component, Input, OnInit, ViewEncapsulation } from "@angular/core"
 
 import { CodeMapNode, CcState } from "../../../../codeCharta.model"
-import { setHoveredNodeId } from "../../../../state/store/appStatus/hoveredNodeId/hoveredNodeId.actions"
 import { setRightClickedNodeData } from "../../../../state/store/appStatus/rightClickedNodeData/rightClickedNodeData.actions"
 import { rightClickedNodeDataSelector } from "../../../../state/store/appStatus/rightClickedNodeData/rightClickedNodeData.selector"
 import { hoveredNodeIdSelector } from "../../../../state/store/appStatus/hoveredNodeId/hoveredNodeId.selector"
 import { areaMetricSelector } from "../../../../state/store/dynamicSettings/areaMetric/areaMetric.selector"
 import { Store } from "@ngrx/store"
 import { isAreaValid } from "../areaMetricValidPipe.pipe"
+import { setHoveredNodeId } from "../../../../state/store/appStatus/hoveredNodeId/hoveredNodeId.actions"
+import { ThreeSceneService } from "../../../../../../app/codeCharta/ui/codeMap/threeViewer/threeSceneService"
+import { IdToBuildingService } from "../../../../../../app/codeCharta/services/idToBuilding/idToBuilding.service"
+import { ThreeRendererService } from "../../../../../../app/codeCharta/ui/codeMap/threeViewer/threeRenderer.service"
+import { CodeMapMouseEventService } from "../../../../../../app/codeCharta/ui/codeMap/codeMap.mouseEvent.service"
 
 @Component({
 	selector: "cc-map-tree-view-level",
@@ -26,7 +30,13 @@ export class MapTreeViewLevelComponent implements OnInit {
 
 	areMetricValid = false
 
-	constructor(private store: Store<CcState>) {}
+	constructor(
+		private store: Store<CcState>,
+		private threeSceneService: ThreeSceneService,
+		private idToBuildingService: IdToBuildingService,
+		private threeRendererService: ThreeRendererService,
+		private codeMapMouseEventService: CodeMapMouseEventService
+	) {}
 
 	ngOnInit(): void {
 		// open root folder initially
@@ -34,11 +44,27 @@ export class MapTreeViewLevelComponent implements OnInit {
 	}
 
 	onMouseEnter() {
+		const building = this.idToBuildingService.get(this.node.id)
+		const labels = this.threeSceneService.labels?.children
+		this.codeMapMouseEventService.setLabelHoveredLeaf(building, labels)
+		this.codeMapMouseEventService.hoverNode(this.node.id)
 		this.store.dispatch(setHoveredNodeId({ value: this.node.id }))
 	}
 
 	onMouseLeave() {
+		this.threeSceneService.resetLabel()
+		this.codeMapMouseEventService.unhoverNode()
+		this.codeMapMouseEventService.clearLabelHoveredBuilding()
 		this.store.dispatch(setHoveredNodeId({ value: null }))
+	}
+
+	onClick() {
+		this.isOpen = !this.isOpen
+		const building = this.idToBuildingService.get(this.node.id)
+		this.codeMapMouseEventService.drawLabelSelectedBuilding(building)
+		this.threeSceneService.selectBuilding(building)
+		this.threeSceneService.clearConstantHighlight()
+		this.threeRendererService.render()
 	}
 
 	openNodeContextMenu = $event => {
@@ -60,10 +86,6 @@ export class MapTreeViewLevelComponent implements OnInit {
 
 			document.querySelector(".tree-element-0").addEventListener("scroll", this.scrollFunction)
 		}
-	}
-
-	toggleOpen() {
-		this.isOpen = !this.isOpen
 	}
 
 	private scrollFunction = () => {
