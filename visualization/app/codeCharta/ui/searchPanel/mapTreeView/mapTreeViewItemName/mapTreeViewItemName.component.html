@@ -2,7 +2,7 @@
 	class="node-name"
 	[class.flattened]="node.isFlattened"
 	[class.noAreaMetric]="!(node | areaMetricValid : (areaMetric$ | async))"
-	[class.angular-green]="(searchedNodePaths$ | async).has(node.path)"
+	[class.tree-search-result]="(searchedNodePaths$ | async).has(node.path)"
 >
 	{{ node.name }}
 </span>
