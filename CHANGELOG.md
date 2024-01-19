@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Fixed 🐞
 
 -   Fix buildings inability to be completely red in delta mode [#3439](https://github.com/MaibornWolff/codecharta/pull/3439)
+-   Fix edge preview in visualization [#3439](https://github.com/MaibornWolff/codecharta/pull/3439)
+-   Fix edges start/end intersecting with building in delta mode [#3439](https://github.com/MaibornWolff/codecharta/pull/3439)
+-   Fix style issues in the node/file explorer of visualization [#3439](https://github.com/MaibornWolff/codecharta/pull/3439)
 
 ## [1.122.0] - 2024-01-16
 
