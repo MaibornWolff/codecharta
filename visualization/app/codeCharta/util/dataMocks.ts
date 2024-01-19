@@ -1217,6 +1217,278 @@ export const VALID_NODE_WITH_PATH_AND_EXTENSION: CodeMapNode = {
 	]
 }
 
+export const VALID_BIG_NODE_WITH_DELTAS: CodeMapNode = {
+	name: "root",
+	type: NodeType.FOLDER,
+	attributes: {
+		avgCommits: 0,
+		functions: 131,
+		mcc: 182,
+		pairingRate: 0,
+		rloc: 820,
+		unary: 5
+	},
+	children: [
+		{
+			name: "bigLeaf.ts",
+			type: NodeType.FILE,
+			attributes: {
+				rloc: 120,
+				functions: 10,
+				mcc: 1,
+				unary: 1,
+				avgCommits: 0,
+				pairingRate: 0
+			},
+			link: "http://www.google.de",
+			path: "/root/bigLeaf.ts",
+			deltas: {
+				rloc: 20,
+				functions: 0,
+				mcc: 0,
+				pairingRate: -77,
+				avgCommits: -56,
+				unary: 0
+			},
+			fileCount: {
+				added: 0,
+				removed: 0,
+				changed: 1
+			},
+			isFlattened: false,
+			isExcluded: false,
+			id: 1,
+			edgeAttributes: {
+				avgCommits: {
+					incoming: 1,
+					outgoing: 1
+				},
+				pairingRate: {
+					incoming: 1,
+					outgoing: 1
+				}
+			}
+		},
+		{
+			name: "ParentLeaf",
+			type: NodeType.FOLDER,
+			attributes: {
+				avgCommits: 0,
+				functions: 121,
+				mcc: 181,
+				pairingRate: 0,
+				rloc: 700,
+				unary: 3
+			},
+			children: [
+				{
+					name: "smallLeaf.html",
+					type: NodeType.FILE,
+					attributes: {
+						rloc: 30,
+						functions: 101,
+						mcc: 80,
+						unary: 1,
+						avgCommits: 0,
+						pairingRate: 0
+					},
+					path: "/root/ParentLeaf/smallLeaf.html",
+					deltas: {
+						rloc: 0,
+						functions: 1,
+						mcc: -20,
+						pairingRate: -60,
+						avgCommits: -51,
+						unary: 0
+					},
+					fileCount: {
+						added: 0,
+						removed: 0,
+						changed: 1
+					},
+					isFlattened: false,
+					isExcluded: false,
+					id: 4,
+					edgeAttributes: {
+						avgCommits: {
+							incoming: 2,
+							outgoing: 0
+						},
+						pairingRate: {
+							incoming: 2,
+							outgoing: 0
+						}
+					}
+				},
+				{
+					name: "otherSmallLeaf.ts",
+					type: NodeType.FILE,
+					attributes: {
+						rloc: 70,
+						functions: 10,
+						mcc: 100,
+						unary: 1,
+						avgCommits: 0,
+						pairingRate: 0
+					},
+					path: "/root/ParentLeaf/otherSmallLeaf.ts",
+					deltas: {
+						rloc: 0,
+						functions: -990,
+						mcc: 90,
+						pairingRate: -65,
+						avgCommits: -22,
+						unary: 0
+					},
+					fileCount: {
+						added: 0,
+						removed: 0,
+						changed: 1
+					},
+					isFlattened: false,
+					isExcluded: false,
+					id: 5,
+					edgeAttributes: {
+						avgCommits: {
+							incoming: 0,
+							outgoing: 1
+						},
+						pairingRate: {
+							incoming: 0,
+							outgoing: 1
+						}
+					}
+				},
+				{
+					name: "sample2LeafMergedIn.kt",
+					type: NodeType.FILE,
+					attributes: {
+						rloc: 600,
+						functions: 10,
+						mcc: 1,
+						unary: 1,
+						avgCommits: 0,
+						pairingRate: 0
+					},
+					link: "http://www.google.de",
+					path: "/root/ParentLeaf/sample2LeafMergedIn.kt",
+					deltas: {
+						rloc: 600,
+						functions: 10,
+						mcc: 1,
+						avgCommits: 0,
+						pairingRate: 0,
+						unary: 0
+					},
+					fileCount: {
+						added: 1,
+						removed: 0,
+						changed: 0
+					},
+					isFlattened: false,
+					isExcluded: false,
+					id: 6,
+					edgeAttributes: {}
+				}
+			],
+			path: "/root/ParentLeaf",
+			deltas: {
+				avgCommits: -73,
+				functions: -979,
+				mcc: 71,
+				pairingRate: -62.5,
+				rloc: 600,
+				unary: 0
+			},
+			fileCount: {
+				added: 1,
+				removed: 0,
+				changed: 2
+			},
+			isFlattened: false,
+			isExcluded: false,
+			id: 2,
+			edgeAttributes: {
+				avgCommits: {
+					incoming: 2,
+					outgoing: 1
+				},
+				pairingRate: {
+					incoming: 2,
+					outgoing: 1
+				}
+			}
+		},
+		{
+			name: "sample1OnlyLeaf.scss",
+			type: NodeType.FILE,
+			attributes: {
+				rloc: 0,
+				functions: 0,
+				mcc: 0,
+				pairingRate: 0,
+				avgCommits: 0,
+				unary: 1
+			},
+			link: "http://www.google.de",
+			path: "/root/sample1OnlyLeaf.scss",
+			deltas: {
+				rloc: -400,
+				functions: -10,
+				mcc: -100,
+				pairingRate: -32,
+				avgCommits: -17,
+				unary: 0
+			},
+			fileCount: {
+				added: 0,
+				removed: 1,
+				changed: 0
+			},
+			isFlattened: false,
+			isExcluded: false,
+			id: 3,
+			edgeAttributes: {
+				avgCommits: {
+					incoming: 0,
+					outgoing: 1
+				},
+				pairingRate: {
+					incoming: 0,
+					outgoing: 1
+				}
+			}
+		}
+	],
+	path: "/root",
+	deltas: {
+		avgCommits: -146,
+		functions: -989,
+		mcc: -29,
+		pairingRate: -62.5,
+		rloc: 220,
+		unary: 0
+	},
+	fileCount: {
+		added: 1,
+		removed: 1,
+		changed: 3
+	},
+	isFlattened: false,
+	isExcluded: false,
+	id: 0,
+	edgeAttributes: {
+		avgCommits: {
+			incoming: 3,
+			outgoing: 3
+		},
+		pairingRate: {
+			incoming: 1.5,
+			outgoing: 1
+		}
+	}
+}
+
 export const VALID_NODE_WITH_PATH_AND_DELTAS: CodeMapNode = {
 	name: "root",
 	attributes: {},
