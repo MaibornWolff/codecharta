@@ -3,7 +3,7 @@ import { setToClipboard, checkWriteToClipboardAllowed } from "./clipboardWriter"
 
 describe("clipboardWriter", () => {
 	describe("setToClipboard", () => {
-		it("writes to clipboard with correct data", async () => {
+		it("writes correct data to clipboard when write to clipboard is supported", async () => {
 			userEvent.setup()
 			const text = "sample-text"
 			const blobFromText = new Blob([text], { type: "text/plain" })
@@ -19,7 +19,7 @@ describe("clipboardWriter", () => {
 	})
 
 	describe("checkWriteToClipboardAllowed", () => {
-		it("returns true if clipboard writing is supported", () => {
+		it("returns true when write to clipboard is supported", () => {
 			userEvent.setup()
 			const clipboard = { write: jest.fn() } as any as Clipboard
 			jest.spyOn(navigator, "clipboard", "get").mockReturnValue(clipboard)
@@ -29,7 +29,7 @@ describe("clipboardWriter", () => {
 			expect(result).toBe(true)
 		})
 
-		it("returns false if clipboard writing is not supported", () => {
+		it("returns false when write to clipboard is not supported", () => {
 			userEvent.setup()
 			const clipboard = {} as any as Clipboard
 			jest.spyOn(navigator, "clipboard", "get").mockReturnValue(clipboard)

@@ -44,17 +44,16 @@ describe("screenshotButtonComponent", () => {
 			componentProperties: { isWriteToClipboardAllowed: true }
 		})
 
-		const clipboardItemMock = (global.ClipboardItem = jest.fn())
-		const toBlobMock = (HTMLCanvasElement.prototype.toBlob = jest.fn())
+		const mockClickboardItem = (global.ClipboardItem = jest.fn())
+		const mockToBlob = (HTMLCanvasElement.prototype.toBlob = jest.fn())
 		const makeScreenshotToClipboardSpy = jest.spyOn(fixture.componentInstance, "makeScreenshotToClipboard")
 
 		await user.click(screen.getByTitle("Take a screenshot of the map with Ctrl+Alt+F (copy to clipboard) or Ctrl+Alt+S (save as file)"))
 
-		expect(makeScreenshotToClipboardSpy).toHaveBeenCalledTimes(1)
-
 		waitFor(() => {
-			expect(clipboardItemMock).toHaveBeenCalledTimes(1)
-			expect(toBlobMock).toHaveBeenCalledTimes(1)
+			expect(makeScreenshotToClipboardSpy).toHaveBeenCalledTimes(1)
+			expect(mockClickboardItem).toHaveBeenCalledTimes(1)
+			expect(mockToBlob).toHaveBeenCalledTimes(1)
 		})
 	})
 
@@ -74,28 +73,29 @@ describe("screenshotButtonComponent", () => {
 
 		await user.click(screen.getByTitle("Take a screenshot of the map with Ctrl+Alt+S (save as file) or Ctrl+Alt+F (copy to clipboard)"))
 
-		expect(makeScreenshotToFileSpy).toHaveBeenCalledTimes(1)
-		waitFor(() => expect(clickDownloadLinkSpy).toHaveBeenCalledTimes(1))
+		await waitFor(() => {
+			expect(makeScreenshotToFileSpy).toHaveBeenCalledTimes(1)
+			expect(clickDownloadLinkSpy).toHaveBeenCalledTimes(1)
+		})
 	})
 
-	it("should be disabled when write to console is not available in browser", async () => {
+	it("should be disabled when write to clipoard is not available in browser", async () => {
 		const user = userEvent.setup()
-		const { fixture, container } = await render(ScreenshotButtonComponent, {
+		const { container, fixture } = await render(ScreenshotButtonComponent, {
 			excludeComponentDeclaration: true,
-			componentProperties: { isWriteToClipboardAllowed: true }
+			componentProperties: { isWriteToClipboardAllowed: false }
 		})
 
-		const clipboardItemMock = (global.ClipboardItem = jest.fn())
-		const toBlobMock = (HTMLCanvasElement.prototype.toBlob = jest.fn())
+		const mockClickboardItem = (global.ClipboardItem = jest.fn())
+		const mockToBlob = (HTMLCanvasElement.prototype.toBlob = jest.fn())
 		const makeScreenshotToClipboardSpy = jest.spyOn(fixture.componentInstance, "makeScreenshotToClipboard")
 
 		await user.click(screen.getByTitle("Take a screenshot of the map with Ctrl+Alt+F (copy to clipboard) or Ctrl+Alt+S (save as file)"))
 
-		expect(makeScreenshotToClipboardSpy).toHaveBeenCalledTimes(1)
-
 		waitFor(() => {
-			expect(clipboardItemMock).not.toHaveBeenCalled()
-			expect(toBlobMock).not.toHaveBeenCalled()
+			expect(makeScreenshotToClipboardSpy).toHaveBeenCalledTimes(1)
+			expect(mockClickboardItem).not.toHaveBeenCalled()
+			expect(mockToBlob).not.toHaveBeenCalled()
 			expect(isScreenshotButtonDisabled(container)).toBe(true)
 		})
 	})
