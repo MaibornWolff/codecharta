@@ -1240,7 +1240,7 @@ export const VALID_BIG_NODE_WITH_DELTAS: CodeMapNode = {
 				avgCommits: 0,
 				pairingRate: 0
 			},
-			link: "http://www.google.de",
+			link: "https://www.google.de",
 			path: "/root/bigLeaf.ts",
 			deltas: {
 				rloc: 20,
@@ -1370,7 +1370,7 @@ export const VALID_BIG_NODE_WITH_DELTAS: CodeMapNode = {
 						avgCommits: 0,
 						pairingRate: 0
 					},
-					link: "http://www.google.de",
+					link: "https://www.google.de",
 					path: "/root/ParentLeaf/sample2LeafMergedIn.kt",
 					deltas: {
 						rloc: 600,
@@ -1430,7 +1430,7 @@ export const VALID_BIG_NODE_WITH_DELTAS: CodeMapNode = {
 				avgCommits: 0,
 				unary: 1
 			},
-			link: "http://www.google.de",
+			link: "https://www.google.de",
 			path: "/root/sample1OnlyLeaf.scss",
 			deltas: {
 				rloc: -400,
