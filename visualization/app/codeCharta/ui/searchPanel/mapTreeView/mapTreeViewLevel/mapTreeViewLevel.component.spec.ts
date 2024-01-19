@@ -116,7 +116,7 @@ describe("mapTreeViewLevel", () => {
 		expect(showsPercentageAfterHover).toBe(false)
 	})
 
-	it("should make searched items 'angular-green'", async () => {
+	it("should make searched items 'tree-search-result'", async () => {
 		searchedNodePathsSelectorMock.mockImplementationOnce(() => new Set(["/root/bigLeaf"]))
 		const { container, detectChanges } = await render(MapTreeViewLevelComponent, {
 			componentProperties,
@@ -126,7 +126,7 @@ describe("mapTreeViewLevel", () => {
 		detectChanges()
 
 		const bigLeaf = container.querySelector("#\\/root\\/bigLeaf")
-		const isAngularGreen = bigLeaf.querySelector(".angular-green")
+		const isAngularGreen = bigLeaf.querySelector(".tree-search-result")
 		expect(isAngularGreen).toBeTruthy()
 	})
 
