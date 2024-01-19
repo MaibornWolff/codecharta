@@ -24,7 +24,7 @@ describe("mapTreeViewItemNameComponent", () => {
 		})
 	})
 
-	it("shouldn't have class 'noAreaMetric' when node's area metric is bigger than 0", async () => {
+	it("should not have class 'noAreaMetric' when node's area metric is bigger than 0", async () => {
 		const { container } = await render(MapTreeViewItemNameComponent, {
 			excludeComponentDeclaration: true,
 			componentProperties: {
@@ -36,7 +36,7 @@ describe("mapTreeViewItemNameComponent", () => {
 		expect(nodeNameWrapper.classList).not.toContain("noAreaMetric")
 	})
 
-	it("shouldn't have class 'noAreaMetric' when node's delta area metric is smaller than 0", async () => {
+	it("should not have class 'noAreaMetric' when node's delta area metric is smaller than 0", async () => {
 		const { container } = await render(MapTreeViewItemNameComponent, {
 			excludeComponentDeclaration: true,
 			componentProperties: {
