@@ -50,8 +50,8 @@ export class CodeMapMouseEventService implements OnDestroy {
 	private isGrabbing = false
 	private isMoving = false
 	private raycaster = new Raycaster()
-	private temporaryLabelForBuilding = null
-	private temporaryLabelForSelectedBuilding = null
+	private labelHoveredBuilding = null
+	private labelSelectedBuilding = null
 	private subscriptions = [
 		this.store
 			.select(visibleFileStatesSelector)
@@ -151,12 +151,12 @@ export class CodeMapMouseEventService implements OnDestroy {
 	onFilesSelectionChanged() {
 		this.threeSceneService.clearSelection()
 		this.threeSceneService.clearConstantHighlight()
-		this.clearTemporaryLabel()
+		this.clearLabelHoveredBuilding()
 	}
 
 	onBlacklistChanged(blacklist: BlacklistItem[]) {
 		const selectedBuilding = this.threeSceneService.getSelectedBuilding()
-		this.clearTemporaryLabel()
+		this.clearLabelHoveredBuilding()
 		if (selectedBuilding) {
 			const isSelectedBuildingBlacklisted = isPathHiddenOrExcluded(selectedBuilding.node.path, blacklist)
 
@@ -167,20 +167,13 @@ export class CodeMapMouseEventService implements OnDestroy {
 		this.unhoverBuilding()
 	}
 
-	private clearTemporaryLabel() {
-		if (this.temporaryLabelForBuilding !== null) {
-			this.codeMapLabelService.clearTemporaryLabel(this.temporaryLabelForBuilding)
-			this.temporaryLabelForBuilding = null
-		}
-	}
-
 	updateHovering() {
 		if (this.hasMouseMoved(this.oldMouse)) {
 			const labels = this.threeSceneService.labels?.children
 
 			if (this.isGrabbingOrMoving()) {
 				this.threeSceneService.resetLabel()
-				this.clearTemporaryLabel()
+				this.clearLabelHoveredBuilding()
 				this.threeRendererService.render()
 				return
 			}
@@ -217,16 +210,12 @@ export class CodeMapMouseEventService implements OnDestroy {
 				const to = this.intersectedBuilding
 
 				if (from?.id !== to?.id) {
-					this.clearTemporaryLabel()
+					this.clearLabelHoveredBuilding()
 
 					this.threeSceneService.resetLabel()
 					this.unhoverBuilding()
 					if (to && !this.isGrabbingOrMoving()) {
-						if (to.node.isLeaf) {
-							const labelForBuilding =
-								this.threeSceneService.getLabelForHoveredNode(to, labels) ?? this.drawTemporaryLabelFor(to)
-							this.threeSceneService.animateLabel(labelForBuilding, this.raycaster, labels)
-						}
+						this.setLabelHoveredLeaf(to, labels)
 						this.hoverBuilding(to)
 					}
 				}
@@ -234,15 +223,56 @@ export class CodeMapMouseEventService implements OnDestroy {
 		}
 	}
 
-	private drawTemporaryLabelFor(codeMapBuilding: CodeMapBuilding) {
+	setLabelHoveredLeaf(codeMapBuilding: CodeMapBuilding, labels: Object3D[]) {
+		if (codeMapBuilding.node.isLeaf) {
+			const labelForBuilding =
+				this.threeSceneService.getLabelForHoveredNode(codeMapBuilding, labels) ?? this.drawLabelHoveredBuilding(codeMapBuilding)
+			this.threeSceneService.animateLabel(labelForBuilding, this.raycaster, labels)
+		}
+	}
+
+	drawLabelHoveredBuilding(codeMapBuilding: CodeMapBuilding) {
 		const enforceLabel = true
 		this.codeMapLabelService.addLeafLabel(codeMapBuilding.node, 0, enforceLabel)
 
 		const labels = this.threeSceneService.labels?.children
 		const labelForBuilding = this.threeSceneService.getLabelForHoveredNode(codeMapBuilding, labels)
-		this.temporaryLabelForBuilding = codeMapBuilding.node
+		this.labelHoveredBuilding = codeMapBuilding.node
 
 		return labelForBuilding
+	}
+
+	drawLabelSelectedBuilding(codeMapBuilding: CodeMapBuilding) {
+		this.clearLabelHoveredBuilding()
+		if (this.labelSelectedBuilding !== null) {
+			this.codeMapLabelService.clearTemporaryLabel(this.labelSelectedBuilding)
+		}
+		if (!codeMapBuilding.node.isLeaf) {
+			return
+		}
+
+		this.codeMapLabelService.addLeafLabel(codeMapBuilding.node, 0, true)
+
+		const labels = this.threeSceneService.labels?.children
+		const labelForBuilding = this.threeSceneService.getLabelForHoveredNode(codeMapBuilding, labels)
+		this.threeSceneService.animateLabel(labelForBuilding, this.raycaster, labels)
+
+		this.labelSelectedBuilding = codeMapBuilding.node
+		return labelForBuilding
+	}
+
+	clearLabelHoveredBuilding() {
+		if (this.labelHoveredBuilding !== null) {
+			this.codeMapLabelService.clearTemporaryLabel(this.labelHoveredBuilding)
+			this.labelHoveredBuilding = null
+		}
+	}
+
+	private clearLabelSelectedBuilding() {
+		if (this.labelSelectedBuilding !== null) {
+			this.codeMapLabelService.clearTemporaryLabel(this.labelSelectedBuilding)
+			this.labelSelectedBuilding = null
+		}
 	}
 
 	private EnableOrbitalsRotation(isRotation: boolean) {
@@ -353,40 +383,14 @@ export class CodeMapMouseEventService implements OnDestroy {
 		if (!this.hasMouseMovedMoreThanThreePixels(this.mouseOnLastClick)) {
 			if (this.intersectedBuilding) {
 				this.threeSceneService.selectBuilding(this.intersectedBuilding)
-				this.drawLabelForSelected(this.intersectedBuilding)
+				this.drawLabelSelectedBuilding(this.intersectedBuilding)
 			} else {
 				this.threeSceneService.clearSelection()
-				this.clearLabelForSelected()
+				this.clearLabelSelectedBuilding()
 			}
 			this.threeSceneService.clearConstantHighlight()
 		}
 		this.threeRendererService.render()
-	}
-
-	private drawLabelForSelected(codeMapBuilding: CodeMapBuilding) {
-		this.clearTemporaryLabel()
-		if (this.temporaryLabelForSelectedBuilding !== null) {
-			this.codeMapLabelService.clearTemporaryLabel(this.temporaryLabelForSelectedBuilding)
-		}
-		if (!codeMapBuilding.node.isLeaf) {
-			return
-		}
-
-		this.codeMapLabelService.addLeafLabel(codeMapBuilding.node, 0, true)
-
-		const labels = this.threeSceneService.labels?.children
-		const labelForBuilding = this.threeSceneService.getLabelForHoveredNode(codeMapBuilding, labels)
-		this.threeSceneService.animateLabel(labelForBuilding, this.raycaster, labels)
-
-		this.temporaryLabelForSelectedBuilding = codeMapBuilding.node
-		return labelForBuilding
-	}
-
-	private clearLabelForSelected() {
-		if (this.temporaryLabelForSelectedBuilding !== null) {
-			this.codeMapLabelService.clearTemporaryLabel(this.temporaryLabelForSelectedBuilding)
-			this.temporaryLabelForSelectedBuilding = null
-		}
 	}
 
 	private hasMouseMovedMoreThanThreePixels({ x, y }: Coordinates) {

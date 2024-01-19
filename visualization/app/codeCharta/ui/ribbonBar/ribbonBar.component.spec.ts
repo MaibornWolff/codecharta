@@ -4,13 +4,12 @@ import userEvent from "@testing-library/user-event"
 import { EdgeMetricData } from "../../codeCharta.model"
 import { metricDataSelector } from "../../state/selectors/accumulatedData/metricData/metricData.selector"
 import { isDeltaStateSelector } from "../../state/selectors/isDeltaState.selector"
-import { ThreeCameraService } from "../codeMap/threeViewer/threeCamera.service"
-import { ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitControls.service"
 import { RibbonBarComponent } from "./ribbonBar.component"
 import { RibbonBarModule } from "./ribbonBar.module"
 import { VALID_NODE_WITH_PATH_AND_EXTENSION } from "../../util/dataMocks"
 import { appReducers, setStateMiddleware } from "../../state/store/state.manager"
 import { StoreModule } from "@ngrx/store"
+import { CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
 
 jest.mock("../../state/selectors/isDeltaState.selector", () => ({
 	isDeltaStateSelector: jest.fn()
@@ -37,10 +36,7 @@ describe("RibbonBarComponent", () => {
 		mockMetricDataSelector.mockImplementation(() => ({ edgeMetricData: [], nodeMetricData: [], nodeEdgeMetricsMap: new Map() }))
 		TestBed.configureTestingModule({
 			imports: [RibbonBarModule, StoreModule.forRoot(appReducers, { metaReducers: [setStateMiddleware] })],
-			providers: [
-				{ provide: ThreeCameraService, useValue: {} },
-				{ provide: ThreeOrbitControlsService, useValue: {} }
-			]
+			providers: [{ provide: CodeMapMouseEventService, useValue: jest.fn() }]
 		})
 	})
 

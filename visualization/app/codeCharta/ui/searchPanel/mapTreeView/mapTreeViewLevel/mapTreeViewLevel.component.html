@@ -6,7 +6,7 @@
 		[class.marked]="(rightClickedNodeData$ | async)?.nodeId === node.id"
 		(mouseenter)="onMouseEnter()"
 		(mouseleave)="onMouseLeave()"
-		(click)="toggleOpen()"
+		(click)="onClick()"
 		(contextmenu)="openNodeContextMenu($event)"
 		[title]="(node | areaMetricValid : (areaMetric$ | async)) ? '' : 'No Node Area for Chosen Metric'"
 	>
