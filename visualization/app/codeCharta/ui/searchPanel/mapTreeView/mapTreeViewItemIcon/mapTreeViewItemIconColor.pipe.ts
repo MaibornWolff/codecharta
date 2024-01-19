@@ -7,8 +7,8 @@ import { isAreaValid } from "../areaMetricValidPipe.pipe"
 
 @Pipe({ name: "mapTreeViewItemIconColor", pure: false })
 export class MapTreeViewItemIconColorPipe implements PipeTransform {
-	static defaultColor = "#000000"
-	static areMetricZeroColor = "#BDBDBD"
+	static readonly defaultColor = "#000000"
+	static readonly areMetricZeroColor = "#BDBDBD"
 
 	constructor(private state: State<CcState>) {}
 
