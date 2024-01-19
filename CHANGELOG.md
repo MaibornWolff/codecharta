@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Fixed 🐞
+
+-   Fix buildings inability to be completely red in delta mode [#3439](https://github.com/MaibornWolff/codecharta/pull/3439)
+
 ## [1.122.0] - 2024-01-16
 
 ### Added 🚀
