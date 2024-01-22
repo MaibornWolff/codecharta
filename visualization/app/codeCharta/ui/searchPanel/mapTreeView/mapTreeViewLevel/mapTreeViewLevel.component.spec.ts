@@ -126,8 +126,8 @@ describe("mapTreeViewLevel", () => {
 		detectChanges()
 
 		const bigLeaf = container.querySelector("#\\/root\\/bigLeaf")
-		const isAngularGreen = bigLeaf.querySelector(".tree-search-result")
-		expect(isAngularGreen).toBeTruthy()
+		const hasTreeSearchResultClass = bigLeaf.querySelector(".tree-search-result")
+		expect(hasTreeSearchResultClass).toBeTruthy()
 	})
 
 	it("should change text color to gray if node has no area metric", async () => {
