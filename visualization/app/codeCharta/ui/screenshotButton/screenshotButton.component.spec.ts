@@ -10,6 +10,14 @@ import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { screenshotToClipboardEnabledSelector } from "../../state/store/appSettings/enableClipboard/screenshotToClipboardEnabled.selector"
 import { State } from "@ngrx/store"
 import { defaultState } from "../../state/store/state.manager"
+import { setToClipboard, checkWriteToClipboardAllowed } from "../../../../app/codeCharta/util/clipboard/clipboardWriter"
+
+jest.mock("../../../../app/codeCharta/util/clipboard/clipboardWriter", () => {
+	return {
+		setToClipboard: jest.fn(),
+		checkWriteToClipboardAllowed: jest.fn(() => false)
+	}
+})
 
 describe("screenshotButtonComponent", () => {
 	beforeEach(() => {
@@ -37,31 +45,32 @@ describe("screenshotButtonComponent", () => {
 		})
 	})
 
+	afterEach(() => {
+		jest.resetAllMocks()
+	})
+
 	it("should copy to clipboard on click, when screenshot to clipboard is enabled", async () => {
+		;(checkWriteToClipboardAllowed as jest.Mock).mockImplementation(() => true)
 		const user = userEvent.setup()
+
 		const { fixture } = await render(ScreenshotButtonComponent, {
-			excludeComponentDeclaration: true,
-			componentProperties: { isWriteToClipboardAllowed: true }
+			excludeComponentDeclaration: true
 		})
 
-		const mockClipboardItem = (global.ClipboardItem = jest.fn())
-		const mockToBlob = (HTMLCanvasElement.prototype.toBlob = jest.fn())
 		const makeScreenshotToClipboardSpy = jest.spyOn(fixture.componentInstance, "makeScreenshotToClipboard")
 
 		await user.click(screen.getByTitle("Take a screenshot of the map with Ctrl+Alt+F (copy to clipboard) or Ctrl+Alt+S (save as file)"))
 
-		waitFor(() => {
+		await waitFor(() => {
 			expect(makeScreenshotToClipboardSpy).toHaveBeenCalledTimes(1)
-			expect(mockClipboardItem).toHaveBeenCalledTimes(1)
-			expect(mockToBlob).toHaveBeenCalledTimes(1)
+			expect(setToClipboard).toHaveBeenCalledTimes(1)
 		})
 	})
 
 	it("should save to file on click, when screenshot to clipboard is not enabled", async () => {
 		const user = userEvent.setup()
 		const { fixture, detectChanges } = await render(ScreenshotButtonComponent, {
-			excludeComponentDeclaration: true,
-			componentProperties: { isWriteToClipboardAllowed: true }
+			excludeComponentDeclaration: true
 		})
 		const store = TestBed.inject(MockStore)
 		store.overrideSelector(screenshotToClipboardEnabledSelector, false)
@@ -82,21 +91,17 @@ describe("screenshotButtonComponent", () => {
 	it("should be disabled when write to clipoard is not available in browser", async () => {
 		const user = userEvent.setup()
 		const { container, fixture } = await render(ScreenshotButtonComponent, {
-			excludeComponentDeclaration: true,
-			componentProperties: { isWriteToClipboardAllowed: false }
+			excludeComponentDeclaration: true
 		})
 
-		const mockClipboardItem = (global.ClipboardItem = jest.fn())
-		const mockToBlob = (HTMLCanvasElement.prototype.toBlob = jest.fn())
 		const makeScreenshotToClipboardSpy = jest.spyOn(fixture.componentInstance, "makeScreenshotToClipboard")
 
-		await user.click(screen.getByTitle("Take a screenshot of the map with Ctrl+Alt+F (copy to clipboard) or Ctrl+Alt+S (save as file)"))
+		await user.click(screen.getByTitle("Firefox does not support copying to clipboard"))
 
-		waitFor(() => {
+		await waitFor(() => {
 			expect(makeScreenshotToClipboardSpy).toHaveBeenCalledTimes(1)
-			expect(mockClipboardItem).not.toHaveBeenCalled()
-			expect(mockToBlob).not.toHaveBeenCalled()
 			expect(isScreenshotButtonDisabled(container)).toBe(true)
+			expect(setToClipboard).not.toHaveBeenCalled()
 		})
 	})
 })

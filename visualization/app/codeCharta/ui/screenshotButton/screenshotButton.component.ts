@@ -99,7 +99,7 @@ export class ScreenshotButtonComponent {
 	private createTitleClipboardButton() {
 		return this.isWriteToClipboardAllowed
 			? `Take a screenshot of the map with ${this.SCREENSHOT_HOTKEY_TO_CLIPBOARD} (copy to clipboard) or ${this.SCREENSHOT_HOTKEY_TO_FILE} (save as file)`
-			: "Firefox does support copying to clipboard"
+			: "Firefox does not support copying to clipboard"
 	}
 
 	private createTitleFileButton() {
