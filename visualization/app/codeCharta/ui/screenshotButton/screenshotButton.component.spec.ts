@@ -44,7 +44,7 @@ describe("screenshotButtonComponent", () => {
 			componentProperties: { isWriteToClipboardAllowed: true }
 		})
 
-		const mockClickboardItem = (global.ClipboardItem = jest.fn())
+		const mockClipboardItem = (global.ClipboardItem = jest.fn())
 		const mockToBlob = (HTMLCanvasElement.prototype.toBlob = jest.fn())
 		const makeScreenshotToClipboardSpy = jest.spyOn(fixture.componentInstance, "makeScreenshotToClipboard")
 
@@ -52,7 +52,7 @@ describe("screenshotButtonComponent", () => {
 
 		waitFor(() => {
 			expect(makeScreenshotToClipboardSpy).toHaveBeenCalledTimes(1)
-			expect(mockClickboardItem).toHaveBeenCalledTimes(1)
+			expect(mockClipboardItem).toHaveBeenCalledTimes(1)
 			expect(mockToBlob).toHaveBeenCalledTimes(1)
 		})
 	})
@@ -86,7 +86,7 @@ describe("screenshotButtonComponent", () => {
 			componentProperties: { isWriteToClipboardAllowed: false }
 		})
 
-		const mockClickboardItem = (global.ClipboardItem = jest.fn())
+		const mockClipboardItem = (global.ClipboardItem = jest.fn())
 		const mockToBlob = (HTMLCanvasElement.prototype.toBlob = jest.fn())
 		const makeScreenshotToClipboardSpy = jest.spyOn(fixture.componentInstance, "makeScreenshotToClipboard")
 
@@ -94,7 +94,7 @@ describe("screenshotButtonComponent", () => {
 
 		waitFor(() => {
 			expect(makeScreenshotToClipboardSpy).toHaveBeenCalledTimes(1)
-			expect(mockClickboardItem).not.toHaveBeenCalled()
+			expect(mockClipboardItem).not.toHaveBeenCalled()
 			expect(mockToBlob).not.toHaveBeenCalled()
 			expect(isScreenshotButtonDisabled(container)).toBe(true)
 		})
