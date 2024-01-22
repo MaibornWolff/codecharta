@@ -8,7 +8,6 @@ import de.maibornwolff.codecharta.tools.interactiveparser.Inquirer
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import de.maibornwolff.codecharta.util.InputHelper
 import java.io.File
-import java.lang.RuntimeException
 import java.math.BigDecimal
 import java.nio.file.Paths
 
