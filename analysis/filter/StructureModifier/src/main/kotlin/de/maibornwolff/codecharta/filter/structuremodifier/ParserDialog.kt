@@ -16,13 +16,16 @@ class ParserDialog {
         override fun collectParserArgs(): List<String> {
             var inputFileName: String
 
-            //temporary test for kotter methods TODO: remove
-            println(Inquirer.myPromptInput(
-                    message = "Input a test input",
-                    hint = Paths.get("").toAbsolutePath().toString() + File.separator + "yourInput.cc.json"
-            ))
+            //temporary test for kotter methods TODO: refactor methods to no longer include session tags
 
-            println(Inquirer.myPromptInputNumber("input a test number:", "42"))
+//            println(Inquirer.myPromptInput(
+//                    message = "Input a test input",
+//                    hint = Paths.get("").toAbsolutePath().toString() + File.separator + "yourInput.cc.json"
+//            ))
+//
+//            println(Inquirer.myPromptInputNumber("input a test number:", "42"))
+
+            println(Inquirer.myPromptConfirm("Confirm the test?"))
 
             do {
                 inputFileName =
