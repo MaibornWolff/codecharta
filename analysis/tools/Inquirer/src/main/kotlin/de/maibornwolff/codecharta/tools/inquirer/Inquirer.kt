@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.tools.inquirer
 
+import com.varabyte.kotter.foundation.collections.liveListOf
 import com.varabyte.kotter.foundation.input.Completions
 import com.varabyte.kotter.foundation.input.Keys
 import com.varabyte.kotter.foundation.input.input
@@ -106,6 +107,43 @@ class Inquirer {
                         }
                     }
                 }
+            }
+            return result
+        }
+
+        fun myPromptCheckbox(message: String, choices: List<String>, hint: String = ""): List<String> {
+            var result = listOf<String>()
+            session {
+                var pos by liveVarOf(0)
+                val selectedElems = liveListOf(MutableList(choices.size) {false})
+                section {
+                    green { text("? ") }; text(message); black(isBright = true) { textLine("  $hint") }
+                    for (i in choices.indices) {
+                        cyan(isBright = true) { text(if (i == pos) " ❯ " else "   ") }
+                        if (selectedElems[i]) {
+                            green { text("◉ ") }; cyan { textLine(choices[i]) }
+                        } else {
+                            textLine("◯ ${choices[i]}")
+                        }
+                    }
+                }.runUntilSignal {
+                    onKeyPressed {
+                        when(key) {
+                            Keys.UP -> if (pos>0) {pos -= 1}
+                            Keys.DOWN -> if (pos<choices.size-1) {pos +=1}
+                            Keys.SPACE -> selectedElems[pos] = !selectedElems[pos]
+                            Keys.ENTER -> {result = getSelectedElems(choices, selectedElems); signal()}
+                        }
+                    }
+                }
+            }
+            return result
+        }
+
+        private fun getSelectedElems(choices: List<String>, selection: List<Boolean>): List<String> {
+            val result = mutableListOf<String>()
+            for (i in choices.indices) {
+                if (selection[i]) result.add(choices[i])
             }
             return result
         }
