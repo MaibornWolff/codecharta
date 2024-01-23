@@ -25,7 +25,9 @@ class ParserDialog {
 //
 //            println(Inquirer.myPromptInputNumber("input a test number:", "42"))
 
-            println(Inquirer.myPromptConfirm("Confirm the test?"))
+            //println(Inquirer.myPromptConfirm("Confirm the test?"))
+
+            println(Inquirer.myPromptList("select any", listOf("a", "b", "c", "1", "2", "3")))
 
             do {
                 inputFileName =
