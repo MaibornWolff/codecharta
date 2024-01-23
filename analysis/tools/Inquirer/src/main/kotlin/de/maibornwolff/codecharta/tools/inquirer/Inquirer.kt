@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.tools.interactiveparser
+package de.maibornwolff.codecharta.tools.inquirer
 
 import com.varabyte.kotter.foundation.input.Completions
 import com.varabyte.kotter.foundation.input.input

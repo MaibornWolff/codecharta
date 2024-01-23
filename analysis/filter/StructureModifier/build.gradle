@@ -1,6 +1,7 @@
 dependencies {
     implementation project(':model')
     implementation project(':tools:InteractiveParser')
+    implementation project(':tools:Inquirer')
 
     implementation group: 'info.picocli', name: 'picocli', version: picocli_version
     implementation group: 'io.github.microutils', name: 'kotlin-logging', version: kotlin_logging_version
