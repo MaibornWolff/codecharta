@@ -281,6 +281,11 @@ export interface LocalStorageGlobalSettings {
 	globalSettings: GlobalSettings
 }
 
+export interface LocalStorageFiles {
+	version: string
+	files: Uint8Array
+}
+
 export interface GlobalSettings {
 	hideFlatBuildings: boolean
 	isWhiteBackground: boolean

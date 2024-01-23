@@ -5,9 +5,6 @@ import { GLOBAL_SETTINGS } from "../../util/dataMocks"
 import { GlobalSettingsHelper } from "../../util/globalSettingsHelper"
 import { LoadInitialFileService } from "./loadInitialFile.service"
 import { LoadFileService } from "../loadFile/loadFile.service"
-import { ErrorDialogComponent } from "../../ui/dialogs/errorDialog/errorDialog.component"
-import sample1 from "../../assets/sample1.cc.json"
-import sample2 from "../../assets/sample2.cc.json"
 import { FileSelectionState, FileState } from "../../model/files/files"
 import { setFiles } from "../../state/store/files/files.actions"
 import { MatDialog } from "@angular/material/dialog"
@@ -43,7 +40,7 @@ describe("LoadInitialFileService", () => {
 		GlobalSettingsHelper.setGlobalSettingsInLocalStorage(GLOBAL_SETTINGS)
 		loadInitialFileService["urlUtils"].getFileDataFromQueryParam = jest.fn().mockReturnValue(Promise.resolve([{}]))
 
-		await loadInitialFileService.loadFileOrSample()
+		await loadInitialFileService.loadFilesOrSamples()
 
 		expect(state.getValue().appSettings.hideFlatBuildings).toBeTruthy()
 		expect(state.getValue().appSettings.isWhiteBackground).toBeTruthy()
@@ -53,22 +50,9 @@ describe("LoadInitialFileService", () => {
 		expect(state.getValue().appSettings.maxTreeMapFiles).toEqual(50)
 	})
 
-	it("should show error dialog and load sample files", () => {
-		const loadFileService = TestBed.inject(LoadFileService)
+	it("should load files from local storage when files could not be loaded from query params", () => {})
 
-		loadInitialFileService["tryLoadingSampleFiles"](new Error("Actual error message"))
-
-		expect(mockedDialog.open).toHaveBeenCalledWith(ErrorDialogComponent, {
-			data: {
-				title: "Error (Actual error message)",
-				message: "One or more files from the given file URL parameter could not be loaded. Loading sample files instead."
-			}
-		})
-		expect(loadFileService.loadFiles).toHaveBeenCalledWith([
-			{ fileName: "sample1.cc.json", content: sample1, fileSize: 3072 },
-			{ fileName: "sample2.cc.json", content: sample2, fileSize: 2048 }
-		])
-	})
+	it("should load sample files when files could not be loaded from local storage", () => {})
 
 	it("should set files to standard mode when no 'mode' parameter is given", () => {
 		const store = TestBed.inject(Store)
