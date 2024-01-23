@@ -16,10 +16,14 @@ class ParserDialog {
         override fun collectParserArgs(): List<String> {
             var inputFileName: String
 
+            //temporary test for kotter methods TODO: remove
             println(Inquirer.myPromptInput(
-                    message = "What is the cc.json file that has to be modified?",
+                    message = "Input a test input",
                     hint = Paths.get("").toAbsolutePath().toString() + File.separator + "yourInput.cc.json"
             ))
+
+            println(Inquirer.myPromptInputNumber("input a test number:", "42"))
+
             do {
                 inputFileName =
                     KInquirer.promptInput(
