@@ -27,7 +27,9 @@ class ParserDialog {
 
             //println(Inquirer.myPromptConfirm("Confirm the test?"))
 
-            println(Inquirer.myPromptList("select any", listOf("a", "b", "c", "1", "2", "3")))
+            //println(Inquirer.myPromptList("select any", listOf("a", "b", "c", "1", "2", "3")))
+
+            println(Inquirer.myPromptCheckbox("select any", listOf("a", "b", "c", "1", "2", "3")))
 
             do {
                 inputFileName =
