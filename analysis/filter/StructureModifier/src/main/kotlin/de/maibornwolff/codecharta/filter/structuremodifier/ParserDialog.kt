@@ -4,7 +4,7 @@ import com.github.kinquirer.KInquirer
 import com.github.kinquirer.components.promptInput
 import com.github.kinquirer.components.promptInputNumber
 import com.github.kinquirer.components.promptList
-import de.maibornwolff.codecharta.tools.interactiveparser.Inquirer
+import de.maibornwolff.codecharta.tools.inquirer.Inquirer
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import de.maibornwolff.codecharta.util.InputHelper
 import java.io.File
