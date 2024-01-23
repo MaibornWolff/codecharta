@@ -10,7 +10,9 @@ import com.varabyte.kotter.foundation.input.runUntilInputEntered
 import com.varabyte.kotter.foundation.liveVarOf
 import com.varabyte.kotter.foundation.runUntilSignal
 import com.varabyte.kotter.foundation.session
+import com.varabyte.kotter.foundation.text.black
 import com.varabyte.kotter.foundation.text.bold
+import com.varabyte.kotter.foundation.text.cyan
 import com.varabyte.kotter.foundation.text.green
 import com.varabyte.kotter.foundation.text.red
 import com.varabyte.kotter.foundation.text.text
@@ -74,6 +76,33 @@ class Inquirer {
                             Keys.LEFT -> res = true
                             Keys.RIGHT -> res = false
                             Keys.ENTER -> { result = res; signal() }
+                        }
+                    }
+                }
+            }
+            return result
+        }
+
+        fun myPromptList(message: String, choices: List<String>, hint: String = ""): String {
+            var result = ""
+            session {
+                var selection by liveVarOf(0)
+                section {
+                    green { text("? ") }; text(message); black(isBright = true) { textLine("  $hint") }
+                    for (i in choices.indices) {
+                        if (i == selection) {
+                            cyan(isBright = true) { text(" ❯ ") }; cyan { textLine(choices[i]) }
+                        }
+                        else {
+                            textLine("   ${choices[i]}")
+                        }
+                    }
+                }.runUntilSignal {
+                    onKeyPressed {
+                        when(key) {
+                            Keys.UP -> if (selection>0) {selection -= 1}
+                            Keys.DOWN -> if (selection<choices.size-1) {selection +=1}
+                            Keys.ENTER -> {result = choices[selection]; signal()}
                         }
                     }
                 }
