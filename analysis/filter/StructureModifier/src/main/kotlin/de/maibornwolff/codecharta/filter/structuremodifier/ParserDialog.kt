@@ -4,7 +4,12 @@ import com.github.kinquirer.KInquirer
 import com.github.kinquirer.components.promptInput
 import com.github.kinquirer.components.promptInputNumber
 import com.github.kinquirer.components.promptList
-import de.maibornwolff.codecharta.tools.inquirer.Inquirer
+import com.varabyte.kotter.foundation.session
+import de.maibornwolff.codecharta.tools.inquirer.myPromptCheckbox
+import de.maibornwolff.codecharta.tools.inquirer.myPromptConfirm
+import de.maibornwolff.codecharta.tools.inquirer.myPromptInput
+import de.maibornwolff.codecharta.tools.inquirer.myPromptInputNumber
+import de.maibornwolff.codecharta.tools.inquirer.myPromptList
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import de.maibornwolff.codecharta.util.InputHelper
 import java.io.File
@@ -16,20 +21,14 @@ class ParserDialog {
         override fun collectParserArgs(): List<String> {
             var inputFileName: String
 
-            //temporary test for kotter methods TODO: refactor methods to no longer include session tags
-
-//            println(Inquirer.myPromptInput(
-//                    message = "Input a test input",
-//                    hint = Paths.get("").toAbsolutePath().toString() + File.separator + "yourInput.cc.json"
-//            ))
-//
-//            println(Inquirer.myPromptInputNumber("input a test number:", "42"))
-
-            //println(Inquirer.myPromptConfirm("Confirm the test?"))
-
-            //println(Inquirer.myPromptList("select any", listOf("a", "b", "c", "1", "2", "3")))
-
-            println(Inquirer.myPromptCheckbox("select any", listOf("a", "b", "c", "1", "2", "3")))
+            // temporary test for kotter methods TODO: remove
+            session {
+                myPromptInput("Input a test input:")
+                myPromptInputNumber("input a test number:", "42")
+                myPromptConfirm("Confirm the test?")
+                myPromptList("select any", listOf("a", "b", "c", "1", "2", "3"))
+                myPromptCheckbox("select any", listOf("a", "b", "c", "1", "2", "3"))
+            }
 
             do {
                 inputFileName =
