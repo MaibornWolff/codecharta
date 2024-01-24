@@ -40,7 +40,7 @@ describe("LoadInitialFileService", () => {
 		GlobalSettingsHelper.setGlobalSettingsInLocalStorage(GLOBAL_SETTINGS)
 		loadInitialFileService["urlUtils"].getFileDataFromQueryParam = jest.fn().mockReturnValue(Promise.resolve([{}]))
 
-		await loadInitialFileService.loadFilesOrSamples()
+		await loadInitialFileService.loadFilesOrSampleFiles()
 
 		expect(state.getValue().appSettings.hideFlatBuildings).toBeTruthy()
 		expect(state.getValue().appSettings.isWhiteBackground).toBeTruthy()
