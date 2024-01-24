@@ -18,7 +18,7 @@ export class CodeChartaComponent implements OnInit {
 
 	async ngOnInit(): Promise<void> {
 		this.store.dispatch(setIsLoadingFile({ value: true }))
-		await this.loadInitialFileService.loadFilesOrSamples()
+		await this.loadInitialFileService.loadFilesOrSampleFiles()
 		this.isInitialized = true
 	}
 }

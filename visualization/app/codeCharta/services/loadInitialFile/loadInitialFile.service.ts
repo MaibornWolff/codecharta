@@ -28,70 +28,65 @@ export class LoadInitialFileService {
 		private httpClient: HttpClient
 	) {}
 
-	async loadFilesOrSamples() {
+	async loadFilesOrSampleFiles() {
+		const fileQueryParametersPresent = this.checkFileQueryParamsPresent()
+		if (fileQueryParametersPresent) {
+			this.loadFilesFromQueryParams()
+		} else {
+			this.loadFilesFromLocalStorage()
+		}
+	}
+
+	private checkFileQueryParamsPresent() {
+		return Boolean(this.urlUtils.getParameterByName("file"))
+	}
+
+	private async loadFilesFromQueryParams() {
 		try {
-			await this.loadFilesFromQueryParam()
+			const data = await this.urlUtils.getFileDataFromQueryParam()
+			this.loadFiles(data)
+			this.setRenderStateFromUrl()
 		} catch (error) {
-			this.handleErrorLoadFilesFromQueryParam(error as Error)
+			const message = "Files could not be loaded from the given file URL parameter. Loaded sample files instead."
+			this.showErrorDialog(error as Error, message)
+			this.loadSampleFiles()
 		}
-	}
-
-	private async loadFilesFromQueryParam() {
-		const data = await this.urlUtils.getFileDataFromQueryParam()
-		this.loadFiles(data)
-		this.setRenderStateFromUrl()
-	}
-
-	private handleErrorLoadFilesFromQueryParam(error: Error) {
-		if (this.urlUtils.getParameterByName("file")) {
-			const message =
-				"One or more files from the given file URL parameter could not be loaded. Loading files from local storage instead."
-			this.showErrorDialog(error as Error & { statusText?: string; status?: number }, message)
-		}
-		this.loadFilesFromLocalStorage()
 	}
 
 	private loadFilesFromLocalStorage() {
 		try {
-			const files: FileState[] = this.readFilesFromLocalStorage()
+			const files = this.readFilesFromLocalStorage()
 			this.store.dispatch(setFiles({ value: files }))
+			GlobalSettingsHelper.setGlobalSettingsOfLocalStorageIfExists(this.store, this.state.getValue().appSettings)
 		} catch (error) {
-			this.handleErrorLoadFilesFromLocalStorage(error as Error)
+			const localStorageFilesPresent = this.getLocalStorageFiles()
+			if (localStorageFilesPresent) {
+				const message = "Files could not be loaded from local storage. Loaded sample files instead."
+				this.showErrorDialog(error as Error, message)
+			}
+			this.loadSampleFiles()
 		}
-	}
-
-	private handleErrorLoadFilesFromLocalStorage(error: Error) {
-		if (localStorage.getItem(FILES_LOCAL_STORAGE_ELEMENT)) {
-			const message = "Files could not be loaded from local storage. Loading sample files instead."
-			this.showErrorDialog(error as Error & { statusText?: string; status?: number }, message)
-		}
-		this.loadSampleFiles()
 	}
 
 	private readFilesFromLocalStorage(): FileState[] {
-		const localStorageItem = localStorage.getItem(FILES_LOCAL_STORAGE_ELEMENT)
+		const localStorageFiles = this.getLocalStorageFiles()
 
-		if (localStorageItem) {
-			const parsedLocalStorageItem = JSON.parse(localStorageItem)
-			const compressedFiles = parsedLocalStorageItem.files
-			const decompressedFiles = pako.inflate(compressedFiles, { to: "string" })
-			const files = JSON.parse(decompressedFiles) as FileState[]
-
-			return files
+		if (localStorageFiles) {
+			try {
+				const parsedLocalStorageItem = JSON.parse(localStorageFiles)
+				const compressedFiles = parsedLocalStorageItem.files
+				const decompressedFiles = pako.inflate(compressedFiles, { to: "string" })
+				const files = JSON.parse(decompressedFiles) as FileState[]
+				return files
+			} catch {
+				throw new Error("Files in local storage are invalid.")
+			}
 		}
-		throw new Error("No files found in local storage")
+		throw new Error("No files found in local storage.")
 	}
 
-	showErrorDialog(error: Error & { statusText?: string; status?: number }, message: string) {
-		let title = "Error"
-		if (error.message) {
-			title += ` (${error.message})`
-		} else if (error.statusText && error.status) {
-			title += ` (${error.status}: ${error.statusText})`
-		}
-		this.dialog.open(ErrorDialogComponent, {
-			data: { title, message }
-		})
+	private getLocalStorageFiles() {
+		return localStorage.getItem(FILES_LOCAL_STORAGE_ELEMENT)
 	}
 
 	private loadSampleFiles() {
@@ -104,6 +99,18 @@ export class LoadInitialFileService {
 	private loadFiles(values: NameDataPair[]) {
 		GlobalSettingsHelper.setGlobalSettingsOfLocalStorageIfExists(this.store, this.state.getValue().appSettings)
 		this.loadFileService.loadFiles(values)
+	}
+
+	private showErrorDialog(error: Error & { statusText?: string; status?: number }, message: string) {
+		let title = "Error"
+		if (error.message) {
+			title += ` (${error.message})`
+		} else if (error.statusText && error.status) {
+			title += ` (${error.status}: ${error.statusText})`
+		}
+		this.dialog.open(ErrorDialogComponent, {
+			data: { title, message }
+		})
 	}
 
 	// TODO: Please make sure that this function works fine on Github pages with
