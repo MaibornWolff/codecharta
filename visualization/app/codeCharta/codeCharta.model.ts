@@ -283,7 +283,7 @@ export interface LocalStorageGlobalSettings {
 
 export interface LocalStorageFiles {
 	version: string
-	files: Uint8Array
+	files: FileState[]
 }
 
 export interface GlobalSettings {

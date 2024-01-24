@@ -58,11 +58,11 @@ export class UpdateFileSettingsEffect {
 					const state: CcState = this.state.getValue()
 					const files: FileState[] = state.files
 					const compressedFiles = pako.deflate(stringify(files))
-					const newLocalStorageElement: LocalStorageFiles = {
+					const localStorageFiles: LocalStorageFiles = {
 						version: FILES_LOCAL_STORAGE_VERSION,
 						files: compressedFiles
 					}
-					localStorage.setItem(FILES_LOCAL_STORAGE_ELEMENT, stringify(newLocalStorageElement, stateObjectReplacer))
+					localStorage.setItem(FILES_LOCAL_STORAGE_ELEMENT, stringify(localStorageFiles, stateObjectReplacer))
 				})
 			),
 		{ dispatch: false }
