@@ -9,7 +9,7 @@ buildscript {
         jacoco_version = '0.8.11'
         jaxb_api_version = '2.3.1'
         jersey_version = '2.39.1'
-        json_schema_version = '1.14.3'
+        json_schema_version = '1.14.4'
         json_version = '20190722'
         juniversalchardet_version = '1.0.3'
         kotlin_inquirer_version = '0.1.0'
