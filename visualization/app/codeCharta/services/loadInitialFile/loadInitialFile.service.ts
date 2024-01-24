@@ -15,6 +15,8 @@ import { ExportCCFile } from "../../codeCharta.api.model"
 import { Store, State } from "@ngrx/store"
 import { FILES_LOCAL_STORAGE_ELEMENT } from "../../../../app/codeCharta/state/effects/updateFileSettings/updateFileSettings.effect"
 import { FileState } from "../../../../app/codeCharta/model/files/files"
+import { validateFileStates } from "../loadFile/fileParser"
+import { buildErrorMessages, buildWarningsMessages } from "../../../../app/codeCharta/util/loadFilesValidationToErrorDialog"
 
 @Injectable({ providedIn: "root" })
 export class LoadInitialFileService {
@@ -56,15 +58,24 @@ export class LoadInitialFileService {
 	private loadFilesFromLocalStorage() {
 		try {
 			const files = this.readFilesFromLocalStorage()
-			this.store.dispatch(setFiles({ value: files }))
-			GlobalSettingsHelper.setGlobalSettingsOfLocalStorageIfExists(this.store, this.state.getValue().appSettings)
-		} catch (error) {
-			const localStorageFilesPresent = this.getLocalStorageFiles()
-			if (localStorageFilesPresent) {
-				const message = "Files could not be loaded from local storage. Loaded sample files instead."
-				this.showErrorDialog(error as Error, message)
+			if (!files) {
+				this.loadSampleFiles()
+			} else {
+				const fileValidationResults = validateFileStates(files)
+				const errorMessages = buildErrorMessages(fileValidationResults)
+				const warningMessages = buildWarningsMessages(fileValidationResults)
+
+				if (errorMessages) {
+					throw new Error(...errorMessages)
+				} else if (warningMessages) {
+					throw new Error(warningMessages.join(""))
+				}
+				this.store.dispatch(setFiles({ value: files }))
+				GlobalSettingsHelper.setGlobalSettingsOfLocalStorageIfExists(this.store, this.state.getValue().appSettings)
 			}
+		} catch (error) {
 			this.loadSampleFiles()
+			this.showErrorDialog(error as Error, (error as Error).message)
 		}
 	}
 
@@ -79,10 +90,9 @@ export class LoadInitialFileService {
 				const files = JSON.parse(decompressedFiles) as FileState[]
 				return files
 			} catch {
-				throw new Error("Files in local storage are invalid.")
+				throw new Error("Files could not be loaded from local storage. Loaded sample files instead.")
 			}
 		}
-		throw new Error("No files found in local storage.")
 	}
 
 	private getLocalStorageFiles() {

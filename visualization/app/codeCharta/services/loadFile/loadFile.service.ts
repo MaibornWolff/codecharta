@@ -56,7 +56,6 @@ export class LoadFileService implements OnDestroy {
 		const recentFile = recentFiles[0]
 		const rootName = this.state.getValue().files.find(f => f.file.fileMeta.fileName === recentFile).file.map.name
 		this.store.dispatch(setStandardByNames({ fileNames: recentFiles }))
-
 		fileRoot.updateRoot(rootName)
 	}
 }

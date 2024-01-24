@@ -63,7 +63,8 @@ export class FileDownloader {
 		}
 
 		if (downloadSettings.includes("Excludes")) {
-			mergedBlacklist.push(...this.getFilteredBlacklist(blacklist, "exclude"))
+			const a = this.getFilteredBlacklist(blacklist, "exclude")
+			mergedBlacklist.push(...a)
 		}
 		return mergedBlacklist
 	}
@@ -82,7 +83,7 @@ export class FileDownloader {
 		return attributeDescriptors
 	}
 
-	private static getFilteredBlacklist(blacklist: BlacklistItem[], type: BlacklistType) {
+	private static getFilteredBlacklist(blacklist: BlacklistItem[], type: BlacklistType): BlacklistItem[] {
 		return blacklist.filter(x => x.type === type)
 	}
 
