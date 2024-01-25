@@ -27,6 +27,7 @@ import { ResetColorRangeEffect } from "./codeCharta/state/store/dynamicSettings/
 import { ResetChosenMetricsEffect } from "./codeCharta/state/effects/resetChosenMetrics/resetChosenMetrics.effect"
 import { ResetSelectedEdgeMetricWhenItDoesntExistAnymoreEffect } from "./codeCharta/state/effects/resetSelectedEdgeMetricWhenItDoesntExistAnymore/resetSelectedEdgeMetricWhenItDoesntExistAnymore.effect"
 import { SetLoadingIndicatorEffect } from "./codeCharta/state/effects/setLoadingIndicator/setLoadingIndicator.effect"
+import { SaveCcStateEffect } from "./codeCharta/state/effects/saveCcState/saveCcState.effect"
 
 @NgModule({
 	imports: [
@@ -47,7 +48,8 @@ import { SetLoadingIndicatorEffect } from "./codeCharta/state/effects/setLoading
 			LinkColorMetricToHeightMetricEffect,
 			ResetSelectedEdgeMetricWhenItDoesntExistAnymoreEffect,
 			UpdateFileSettingsEffect,
-			SetLoadingIndicatorEffect
+			SetLoadingIndicatorEffect,
+			SaveCcStateEffect
 		]),
 		MaterialModule,
 		FormsModule,
