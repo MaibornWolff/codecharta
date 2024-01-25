@@ -58,25 +58,39 @@ export class LoadInitialFileService {
 	private loadFilesFromLocalStorage() {
 		try {
 			const files = this.readFilesFromLocalStorage()
-			if (!files) {
-				this.loadSampleFiles()
+			if (files.length > 0) {
+				this.validateAndApplyFileStates(files)
 			} else {
-				const fileValidationResults = validateFileStates(files)
-				const errorMessages = buildErrorMessages(fileValidationResults)
-				const warningMessages = buildWarningsMessages(fileValidationResults)
-
-				if (errorMessages) {
-					throw new Error(...errorMessages)
-				} else if (warningMessages) {
-					throw new Error(warningMessages.join(""))
-				}
-				this.store.dispatch(setFiles({ value: files }))
-				GlobalSettingsHelper.setGlobalSettingsOfLocalStorageIfExists(this.store, this.state.getValue().appSettings)
+				this.loadSampleFiles()
 			}
 		} catch (error) {
+			const title = "Files could not be loaded from local storage. Loaded sample files instead."
+			const message = (error as Error).message
+			this.dialog.open(ErrorDialogComponent, {
+				data: { title, message }
+			})
 			this.loadSampleFiles()
-			this.showErrorDialog(error as Error, (error as Error).message)
 		}
+	}
+
+	private validateAndApplyFileStates(files: FileState[]) {
+		const fileValidationResults = validateFileStates(files)
+		const errors = fileValidationResults.filter(validationResult => validationResult.errors.length > 0)
+		const errorMessages = buildErrorMessages(fileValidationResults)
+		const warnigns = fileValidationResults.filter(validationResult => validationResult.warnings.length > 0)
+		const warningMessages = buildWarningsMessages(fileValidationResults)
+
+		if (errors.length > 0) {
+			throw new Error(errorMessages.join(""))
+		} else if (warnigns.length > 0) {
+			const title = "Files loaded from local storage contain warnings"
+			const message = warningMessages.join("")
+			this.dialog.open(ErrorDialogComponent, {
+				data: { title, message }
+			})
+		}
+		this.store.dispatch(setFiles({ value: files }))
+		GlobalSettingsHelper.setGlobalSettingsOfLocalStorageIfExists(this.store, this.state.getValue().appSettings)
 	}
 
 	private readFilesFromLocalStorage(): FileState[] {
@@ -93,6 +107,8 @@ export class LoadInitialFileService {
 				throw new Error("Files could not be loaded from local storage. Loaded sample files instead.")
 			}
 		}
+
+		return []
 	}
 
 	private getLocalStorageFiles() {
