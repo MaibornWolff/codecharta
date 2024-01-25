@@ -1,4 +1,3 @@
-import pako from "pako"
 import { Injectable } from "@angular/core"
 import { MatDialog } from "@angular/material/dialog"
 import { HttpClient } from "@angular/common/http"
@@ -13,10 +12,10 @@ import sample1 from "../../assets/sample1.cc.json"
 import sample2 from "../../assets/sample2.cc.json"
 import { ExportCCFile } from "../../codeCharta.api.model"
 import { Store, State } from "@ngrx/store"
-import { FILES_LOCAL_STORAGE_ELEMENT } from "../../../../app/codeCharta/state/effects/updateFileSettings/updateFileSettings.effect"
 import { FileState } from "../../../../app/codeCharta/model/files/files"
 import { validateFileStates } from "../loadFile/fileParser"
 import { buildErrorMessages, buildWarningsMessages } from "../../../../app/codeCharta/util/loadFilesValidationToErrorDialog"
+import { loadCcState } from "app/codeCharta/util/indexedDB/indexedDBWriter"
 
 @Injectable({ providedIn: "root" })
 export class LoadInitialFileService {
@@ -35,7 +34,7 @@ export class LoadInitialFileService {
 		if (fileQueryParametersPresent) {
 			this.loadFilesFromQueryParams()
 		} else {
-			this.loadFilesFromLocalStorage()
+			this.loadFilesFromIndexedDB()
 		}
 	}
 
@@ -55,16 +54,19 @@ export class LoadInitialFileService {
 		}
 	}
 
-	private loadFilesFromLocalStorage() {
+	private async loadFilesFromIndexedDB() {
 		try {
-			const files = this.readFilesFromLocalStorage()
-			if (files.length > 0) {
-				this.validateAndApplyFileStates(files)
+			const state = await loadCcState()
+			if (state) {
+				const files = state.files
+				if (files.length > 0) {
+					this.validateAndApplyFileStates(files)
+				}
 			} else {
 				this.loadSampleFiles()
 			}
 		} catch (error) {
-			const title = "Files could not be loaded from local storage. Loaded sample files instead."
+			const title = "Files could not be loaded from indexeddb. Loaded sample files instead."
 			const message = (error as Error).message
 			this.dialog.open(ErrorDialogComponent, {
 				data: { title, message }
@@ -83,7 +85,7 @@ export class LoadInitialFileService {
 		if (errors.length > 0) {
 			throw new Error(errorMessages.join(""))
 		} else if (warnigns.length > 0) {
-			const title = "Files loaded from local storage contain warnings"
+			const title = "Files loaded from indexeddb contain warnings"
 			const message = warningMessages.join("")
 			this.dialog.open(ErrorDialogComponent, {
 				data: { title, message }
@@ -91,28 +93,6 @@ export class LoadInitialFileService {
 		}
 		this.store.dispatch(setFiles({ value: files }))
 		GlobalSettingsHelper.setGlobalSettingsOfLocalStorageIfExists(this.store, this.state.getValue().appSettings)
-	}
-
-	private readFilesFromLocalStorage(): FileState[] {
-		const localStorageFiles = this.getLocalStorageFiles()
-
-		if (localStorageFiles) {
-			try {
-				const parsedLocalStorageItem = JSON.parse(localStorageFiles)
-				const compressedFiles = parsedLocalStorageItem.files
-				const decompressedFiles = pako.inflate(compressedFiles, { to: "string" })
-				const files = JSON.parse(decompressedFiles) as FileState[]
-				return files
-			} catch {
-				throw new Error("Files could not be loaded from local storage. Loaded sample files instead.")
-			}
-		}
-
-		return []
-	}
-
-	private getLocalStorageFiles() {
-		return localStorage.getItem(FILES_LOCAL_STORAGE_ELEMENT)
 	}
 
 	private loadSampleFiles() {

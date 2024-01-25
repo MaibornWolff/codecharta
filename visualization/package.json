@@ -83,6 +83,7 @@
 		"font-awesome": "^4.7.0",
 		"hotkeys-js": "^3.8.2",
 		"html2canvas": "^1.4.1",
+		"idb": "^8.0.0",
 		"ignore": "^5.1.8",
 		"klona": "^2.0.4",
 		"material-icons": "^1.10.4",

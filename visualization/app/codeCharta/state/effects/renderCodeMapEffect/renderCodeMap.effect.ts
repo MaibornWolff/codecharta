@@ -10,6 +10,7 @@ import { accumulatedDataSelector } from "../../selectors/accumulatedData/accumul
 import { actionsRequiringRerender } from "./actionsRequiringRerender"
 import { setIsLoadingFile } from "../../store/appSettings/isLoadingFile/isLoadingFile.actions"
 import { setIsLoadingMap } from "../../store/appSettings/isLoadingMap/isLoadingMap.actions"
+import { setHoveredNodeId } from "../../store/appStatus/hoveredNodeId/hoveredNodeId.actions"
 
 export const maxFPS = 1000 / 60
 
@@ -23,7 +24,10 @@ export class RenderCodeMapEffect {
 		private codeMapRenderService: CodeMapRenderService
 	) {}
 
-	private actionsRequiringRender$ = this.actions$.pipe(ofType(...actionsRequiringRerender))
+	private actionsRequiringRender$ = this.actions$.pipe(
+		filter(action => action.type !== setHoveredNodeId.type),
+		ofType(...actionsRequiringRerender)
+	)
 
 	renderCodeMap$ = createEffect(
 		() =>
