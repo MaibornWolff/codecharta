@@ -5,26 +5,12 @@ import { getCCFile } from "../../util/fileHelper"
 import { CCFileValidationResult as FileValidationResult, checkErrors, checkWarnings } from "../../util/fileValidator"
 import { NodeDecorator } from "../../util/nodeDecorator"
 
-export function validateFileStates(fileStates: FileState[]) {
-	const fileValidationResults = []
-	for (const fileState of fileStates) {
-		const exportCCFile = getExportCCFile(fileState.file)
-		const fileValidationResult: FileValidationResult = {
-			fileName: fileState.file.fileMeta.fileName,
-			errors: [],
-			warnings: []
-		}
-		fileValidationResult.errors.push(...checkErrors(exportCCFile))
-
-		if (fileValidationResult.errors.length === 0) {
-			fileValidationResult.warnings.push(...checkWarnings(exportCCFile))
-		}
-
-		if (fileValidationResult.errors.length > 0 || fileValidationResult.warnings.length > 0) {
-			fileValidationResults.push(fileValidationResult)
-		}
+export function getNameDataPair(ccFile: CCFile): NameDataPair {
+	return {
+		fileName: ccFile.fileMeta.fileName,
+		fileSize: ccFile.fileMeta.exportedFileSize,
+		content: getExportCCFile(ccFile)
 	}
-	return fileValidationResults
 }
 
 function getExportCCFile(ccFile: CCFile): ExportCCFile {

@@ -10,7 +10,6 @@ import {
 	EdgeMetricData,
 	EdgeVisibility,
 	FileMeta,
-	GlobalSettings,
 	LayoutAlgorithm,
 	MarkedPackage,
 	Node,
@@ -1133,17 +1132,6 @@ export const SCENARIO_WITH_ONLY_HEIGHT: RecursivePartial<Scenario> = {
 		labelSlider: 31,
 		heightSlider: new Vector3(1, 1.8, 1)
 	}
-}
-
-export const GLOBAL_SETTINGS: GlobalSettings = {
-	hideFlatBuildings: true,
-	isWhiteBackground: true,
-	resetCameraIfNewFileIsLoaded: true,
-	experimentalFeaturesEnabled: true,
-	screenshotToClipboardEnabled: false,
-	layoutAlgorithm: LayoutAlgorithm.SquarifiedTreeMap,
-	maxTreeMapFiles: 50,
-	sharpnessMode: SharpnessMode.Standard
 }
 
 export const VALID_NODE_WITH_PATH_AND_EXTENSION: CodeMapNode = {
