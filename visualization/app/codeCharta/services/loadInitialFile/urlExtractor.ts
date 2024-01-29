@@ -23,9 +23,8 @@ export class UrlExtractor {
 	}
 
 	async getFileDataFromQueryParam() {
-		const fileNames: string[] = [...new URLSearchParams(window.location.search).entries()]
-			.filter(([searchParameterName]) => searchParameterName === "file")
-			.map(([, fileName]) => fileName)
+		const queryParameters = new URLSearchParams(window.location.search)
+		const fileNames = queryParameters.getAll("file")
 
 		if (fileNames.length === 0) {
 			throw new Error("Filename is missing")

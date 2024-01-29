@@ -7,7 +7,7 @@ const CCSTATE_STORE_NAME = "ccstate"
 const CCSTATE_PRIMARY_KEY = "id"
 const CCSTATE_STATE_ID = 1001
 
-export async function saveCcState(state: CcState) {
+export async function writeCcState(state: CcState) {
 	const database = await createOrOpenCcStateStore()
 	const tx = database.transaction(CCSTATE_STORE_NAME, "readwrite")
 	await tx.store.put({
@@ -17,7 +17,7 @@ export async function saveCcState(state: CcState) {
 	await tx.done
 }
 
-export async function loadCcState(): Promise<CcState | null> {
+export async function readCcState(): Promise<CcState | null> {
 	const database = await createOrOpenCcStateStore()
 	const record = await database.get(CCSTATE_STORE_NAME, CCSTATE_STATE_ID)
 	return record?.state || null
