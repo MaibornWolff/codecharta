@@ -3,7 +3,7 @@ import { Actions, createEffect, ofType } from "@ngrx/effects"
 import { State } from "@ngrx/store"
 import { CcState } from "app/codeCharta/codeCharta.model"
 import { filter, tap } from "rxjs"
-import { saveCcState } from "app/codeCharta/util/indexedDB/indexedDBWriter"
+import { writeCcState } from "app/codeCharta/util/indexedDB/indexedDBWriter"
 import { actionsRequiringSaveCcState } from "./actionsRequiringSaveCcState"
 import { setHoveredNodeId } from "../../store/appStatus/hoveredNodeId/hoveredNodeId.actions"
 
@@ -18,7 +18,7 @@ export class SaveCcStateEffect {
 				ofType(...actionsRequiringSaveCcState),
 				tap(async () => {
 					const state: CcState = this.state.getValue()
-					await saveCcState(state)
+					await writeCcState(state)
 				})
 			),
 		{ dispatch: false }

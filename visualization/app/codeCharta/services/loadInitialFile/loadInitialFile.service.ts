@@ -1,59 +1,59 @@
+import { HttpClient } from "@angular/common/http"
 import { Injectable } from "@angular/core"
 import { MatDialog } from "@angular/material/dialog"
-import { HttpClient } from "@angular/common/http"
-import { CcState, FileSettings, DynamicSettings, AppSettings } from "../../codeCharta.model"
-import { getCCFiles } from "../../model/files/files.helper"
-import { setDelta, setFiles, setStandard } from "../../state/store/files/files.actions"
-import { ErrorDialogComponent } from "../../ui/dialogs/errorDialog/errorDialog.component"
-import { LoadFileService } from "../loadFile/loadFile.service"
-import { UrlExtractor } from "./urlExtractor"
+import { State, Store } from "@ngrx/store"
+import stringify from "safe-stable-stringify"
+import { setAmountOfTopLabels } from "../../../../app/codeCharta/state/store/appSettings/amountOfTopLabels/amountOfTopLabels.actions"
+import { setColorLabels } from "../../../../app/codeCharta/state/store/appSettings/colorLabels/colorLabels.actions"
+import { setEdgeHeight } from "../../../../app/codeCharta/state/store/appSettings/edgeHeight/edgeHeight.actions"
+import { setScreenshotToClipboardEnabled } from "../../../../app/codeCharta/state/store/appSettings/enableClipboard/screenshotToClipboardEnabled.actions"
+import { setExperimentalFeaturesEnabled } from "../../../../app/codeCharta/state/store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.actions"
+import { setEnableFloorLabels } from "../../../../app/codeCharta/state/store/appSettings/enableFloorLabels/enableFloorLabels.actions"
+import { setHideFlatBuildings } from "../../../../app/codeCharta/state/store/appSettings/hideFlatBuildings/hideFlatBuildings.actions"
+import { setInvertArea } from "../../../../app/codeCharta/state/store/appSettings/invertArea/invertArea.actions"
+import { setInvertHeight } from "../../../../app/codeCharta/state/store/appSettings/invertHeight/invertHeight.actions"
+import { setIsEdgeMetricVisible } from "../../../../app/codeCharta/state/store/appSettings/isEdgeMetricVisible/isEdgeMetricVisible.actions"
+import { setIsColorMetricLinkedToHeightMetricAction } from "../../../../app/codeCharta/state/store/appSettings/isHeightAndColorMetricLinked/isColorMetricLinkedToHeightMetric.actions"
+import { setPresentationMode } from "../../../../app/codeCharta/state/store/appSettings/isPresentationMode/isPresentationMode.actions"
+import { setIsSearchPanelPinned } from "../../../../app/codeCharta/state/store/appSettings/isSearchPanelPinned/isSearchPanelPinned.actions"
+import { setIsWhiteBackground } from "../../../../app/codeCharta/state/store/appSettings/isWhiteBackground/isWhiteBackground.actions"
+import { setLayoutAlgorithm } from "../../../../app/codeCharta/state/store/appSettings/layoutAlgorithm/layoutAlgorithm.actions"
+import { setMapColors } from "../../../../app/codeCharta/state/store/appSettings/mapColors/mapColors.actions"
+import { setMaxTreeMapFiles } from "../../../../app/codeCharta/state/store/appSettings/maxTreeMapFiles/maxTreeMapFiles.actions"
+import { setResetCameraIfNewFileIsLoaded } from "../../../../app/codeCharta/state/store/appSettings/resetCameraIfNewFileIsLoaded/resetCameraIfNewFileIsLoaded.actions"
+import { setScaling } from "../../../../app/codeCharta/state/store/appSettings/scaling/scaling.actions"
+import { setSharpnessMode } from "../../../../app/codeCharta/state/store/appSettings/sharpnessMode/sharpnessMode.actions"
+import { setShowMetricLabelNameValue } from "../../../../app/codeCharta/state/store/appSettings/showMetricLabelNameValue/showMetricLabelNameValue.actions"
+import { setShowMetricLabelNodeName } from "../../../../app/codeCharta/state/store/appSettings/showMetricLabelNodeName/showMetricLabelNodeName.actions"
+import { setShowOnlyBuildingsWithEdges } from "../../../../app/codeCharta/state/store/appSettings/showOnlyBuildingsWithEdges/showOnlyBuildingsWithEdges.actions"
+import { setSortingOrderAscending } from "../../../../app/codeCharta/state/store/appSettings/sortingOrderAscending/sortingOrderAscending.actions"
+import { setAreaMetric } from "../../../../app/codeCharta/state/store/dynamicSettings/areaMetric/areaMetric.actions"
+import { setColorMetric } from "../../../../app/codeCharta/state/store/dynamicSettings/colorMetric/colorMetric.actions"
+import { setColorMode } from "../../../../app/codeCharta/state/store/dynamicSettings/colorMode/colorMode.actions"
+import { setColorRange } from "../../../../app/codeCharta/state/store/dynamicSettings/colorRange/colorRange.actions"
+import { setDistributionMetric } from "../../../../app/codeCharta/state/store/dynamicSettings/distributionMetric/distributionMetric.actions"
+import { setEdgeMetric } from "../../../../app/codeCharta/state/store/dynamicSettings/edgeMetric/edgeMetric.actions"
+import { setAllFocusedNodes } from "../../../../app/codeCharta/state/store/dynamicSettings/focusedNodePath/focusedNodePath.actions"
+import { setHeightMetric } from "../../../../app/codeCharta/state/store/dynamicSettings/heightMetric/heightMetric.actions"
+import { setMargin } from "../../../../app/codeCharta/state/store/dynamicSettings/margin/margin.actions"
+import { setSearchPattern } from "../../../../app/codeCharta/state/store/dynamicSettings/searchPattern/searchPattern.actions"
+import { setSortingOption } from "../../../../app/codeCharta/state/store/dynamicSettings/sortingOption/sortingOption.actions"
+import { setAttributeDescriptors } from "../../../../app/codeCharta/state/store/fileSettings/attributeDescriptors/attributeDescriptors.action"
+import { setAttributeTypes } from "../../../../app/codeCharta/state/store/fileSettings/attributeTypes/attributeTypes.actions"
+import { setBlacklist } from "../../../../app/codeCharta/state/store/fileSettings/blacklist/blacklist.actions"
+import { setEdges } from "../../../../app/codeCharta/state/store/fileSettings/edges/edges.actions"
+import { setMarkedPackages } from "../../../../app/codeCharta/state/store/fileSettings/markedPackages/markedPackages.actions"
+import { readCcState } from "../../../../app/codeCharta/util/indexedDB/indexedDBWriter"
 import sample1 from "../../assets/sample1.cc.json"
 import sample2 from "../../assets/sample2.cc.json"
 import { ExportCCFile } from "../../codeCharta.api.model"
-import { Store, State } from "@ngrx/store"
+import { AppSettings, CcState, DynamicSettings, FileSettings } from "../../codeCharta.model"
+import { getCCFiles, isDeltaState } from "../../model/files/files.helper"
+import { setDelta, setFiles } from "../../state/store/files/files.actions"
+import { ErrorDialogComponent } from "../../ui/dialogs/errorDialog/errorDialog.component"
 import { getNameDataPair } from "../loadFile/fileParser"
-import { loadCcState } from "app/codeCharta/util/indexedDB/indexedDBWriter"
-import stringify from "safe-stable-stringify"
-import { setAttributeTypes } from "app/codeCharta/state/store/fileSettings/attributeTypes/attributeTypes.actions"
-import { setAttributeDescriptors } from "app/codeCharta/state/store/fileSettings/attributeDescriptors/attributeDescriptors.action"
-import { setBlacklist } from "app/codeCharta/state/store/fileSettings/blacklist/blacklist.actions"
-import { setEdges } from "app/codeCharta/state/store/fileSettings/edges/edges.actions"
-import { setMarkedPackages } from "app/codeCharta/state/store/fileSettings/markedPackages/markedPackages.actions"
-import { setAreaMetric } from "app/codeCharta/state/store/dynamicSettings/areaMetric/areaMetric.actions"
-import { setColorMetric } from "app/codeCharta/state/store/dynamicSettings/colorMetric/colorMetric.actions"
-import { setEdgeMetric } from "app/codeCharta/state/store/dynamicSettings/edgeMetric/edgeMetric.actions"
-import { setHeightMetric } from "app/codeCharta/state/store/dynamicSettings/heightMetric/heightMetric.actions"
-import { setMargin } from "app/codeCharta/state/store/dynamicSettings/margin/margin.actions"
-import { setSearchPattern } from "app/codeCharta/state/store/dynamicSettings/searchPattern/searchPattern.actions"
-import { setAllFocusedNodes } from "app/codeCharta/state/store/dynamicSettings/focusedNodePath/focusedNodePath.actions"
-import { setColorRange } from "app/codeCharta/state/store/dynamicSettings/colorRange/colorRange.actions"
-import { setSortingOption } from "app/codeCharta/state/store/dynamicSettings/sortingOption/sortingOption.actions"
-import { setColorMode } from "app/codeCharta/state/store/dynamicSettings/colorMode/colorMode.actions"
-import { setAmountOfTopLabels } from "app/codeCharta/state/store/appSettings/amountOfTopLabels/amountOfTopLabels.actions"
-import { setScaling } from "app/codeCharta/state/store/appSettings/scaling/scaling.actions"
-import { setDistributionMetric } from "app/codeCharta/state/store/dynamicSettings/distributionMetric/distributionMetric.actions"
-import { setEdgeHeight } from "app/codeCharta/state/store/appSettings/edgeHeight/edgeHeight.actions"
-import { setHideFlatBuildings } from "app/codeCharta/state/store/appSettings/hideFlatBuildings/hideFlatBuildings.actions"
-import { setInvertHeight } from "app/codeCharta/state/store/appSettings/invertHeight/invertHeight.actions"
-import { setInvertArea } from "app/codeCharta/state/store/appSettings/invertArea/invertArea.actions"
-import { setIsWhiteBackground } from "app/codeCharta/state/store/appSettings/isWhiteBackground/isWhiteBackground.actions"
-import { setMapColors } from "app/codeCharta/state/store/appSettings/mapColors/mapColors.actions"
-import { setPresentationMode } from "app/codeCharta/state/store/appSettings/isPresentationMode/isPresentationMode.actions"
-import { setShowOnlyBuildingsWithEdges } from "app/codeCharta/state/store/appSettings/showOnlyBuildingsWithEdges/showOnlyBuildingsWithEdges.actions"
-import { setIsEdgeMetricVisible } from "app/codeCharta/state/store/appSettings/isEdgeMetricVisible/isEdgeMetricVisible.actions"
-import { setResetCameraIfNewFileIsLoaded } from "app/codeCharta/state/store/appSettings/resetCameraIfNewFileIsLoaded/resetCameraIfNewFileIsLoaded.actions"
-import { setSortingOrderAscending } from "app/codeCharta/state/store/appSettings/sortingOrderAscending/sortingOrderAscending.actions"
-import { setIsSearchPanelPinned } from "app/codeCharta/state/store/appSettings/isSearchPanelPinned/isSearchPanelPinned.actions"
-import { setShowMetricLabelNameValue } from "app/codeCharta/state/store/appSettings/showMetricLabelNameValue/showMetricLabelNameValue.actions"
-import { setShowMetricLabelNodeName } from "app/codeCharta/state/store/appSettings/showMetricLabelNodeName/showMetricLabelNodeName.actions"
-import { setLayoutAlgorithm } from "app/codeCharta/state/store/appSettings/layoutAlgorithm/layoutAlgorithm.actions"
-import { setMaxTreeMapFiles } from "app/codeCharta/state/store/appSettings/maxTreeMapFiles/maxTreeMapFiles.actions"
-import { setSharpnessMode } from "app/codeCharta/state/store/appSettings/sharpnessMode/sharpnessMode.actions"
-import { setExperimentalFeaturesEnabled } from "app/codeCharta/state/store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.actions"
-import { setScreenshotToClipboardEnabled } from "app/codeCharta/state/store/appSettings/enableClipboard/screenshotToClipboardEnabled.actions"
-import { setColorLabels } from "app/codeCharta/state/store/appSettings/colorLabels/colorLabels.actions"
-import { setIsColorMetricLinkedToHeightMetricAction } from "app/codeCharta/state/store/appSettings/isHeightAndColorMetricLinked/isColorMetricLinkedToHeightMetric.actions"
-import { setEnableFloorLabels } from "app/codeCharta/state/store/appSettings/enableFloorLabels/enableFloorLabels.actions"
+import { LoadFileService } from "../loadFile/loadFile.service"
+import { UrlExtractor } from "./urlExtractor"
 
 @Injectable({ providedIn: "root" })
 export class LoadInitialFileService {
@@ -82,9 +82,27 @@ export class LoadInitialFileService {
 
 	private async loadFilesFromQueryParams() {
 		try {
-			const data = await this.urlUtils.getFileDataFromQueryParam()
-			this.loadFileService.loadFiles(data)
-			this.setRenderStateFromUrl()
+			const urlNameDataPairs = await this.urlUtils.getFileDataFromQueryParam()
+			const savedCcState = await readCcState()
+			if (!savedCcState) {
+				this.setRenderStateFromUrl()
+				this.loadFileService.loadFiles(urlNameDataPairs)
+			} else {
+				const savedFileStates = savedCcState.files
+				const savedNameDataPairs = savedFileStates.map(fileState => getNameDataPair(fileState.file))
+				const urlNameDataPairCheckSums = urlNameDataPairs.map(urlNameDataPair => urlNameDataPair.content.fileChecksum)
+				const savedNameDataPairCheckSums = savedNameDataPairs.map(savedNameDataPair => savedNameDataPair.content.fileChecksum)
+				if (stringify(urlNameDataPairCheckSums) === stringify(savedNameDataPairCheckSums)) {
+					this.loadFileService.loadFiles(savedNameDataPairs)
+					this.store.dispatch(setFiles({ value: savedFileStates }))
+					this.applySettings(savedCcState)
+					this.setRenderStateFromUrlIfDeltaStateNotSaved()
+				} else {
+					this.applySettings(savedCcState)
+					this.loadFileService.loadFiles(urlNameDataPairs)
+					this.setRenderStateFromUrl()
+				}
+			}
 		} catch (error) {
 			const title = this.createTitleErrorDialog(error as Error)
 			const message = "Files could not be loaded from the given file URL parameter. Loaded sample files instead."
@@ -95,15 +113,15 @@ export class LoadInitialFileService {
 
 	private async loadFilesFromIndexedDB() {
 		try {
-			const loadedCcState = await loadCcState()
-			if (!loadedCcState) {
+			const savedCcState = await readCcState()
+			if (!savedCcState) {
 				this.loadSampleFiles()
 			} else {
-				const fileStates = loadedCcState.files
-				const nameDataPairs = fileStates.map(fileState => getNameDataPair(fileState.file))
-				this.loadFileService.loadFiles(nameDataPairs)
-				this.store.dispatch(setFiles({ value: fileStates }))
-				this.applySettings(loadedCcState)
+				const savedFileStates = savedCcState.files
+				const savedNameDataPairs = savedFileStates.map(fileState => getNameDataPair(fileState.file))
+				this.loadFileService.loadFiles(savedNameDataPairs)
+				this.store.dispatch(setFiles({ value: savedFileStates }))
+				this.applySettings(savedCcState)
 			}
 		} catch (error) {
 			const title = "Files could not be loaded from indexeddb. Loaded sample files instead."
@@ -113,7 +131,7 @@ export class LoadInitialFileService {
 		}
 	}
 
-	private applySettings(loadedCcState: CcState) {
+	private async applySettings(loadedCcState: CcState) {
 		const loadedFileSettings = loadedCcState.fileSettings
 		const loadedDynamicSettings = loadedCcState.dynamicSettings
 		const loadedAppSettings = loadedCcState.appSettings
@@ -363,8 +381,15 @@ export class LoadInitialFileService {
 
 		if (renderState === "Delta" && files.length >= 2) {
 			this.store.dispatch(setDelta({ referenceFile: files[0], comparisonFile: files[1] }))
-		} else {
-			this.store.dispatch(setStandard({ files }))
+		}
+	}
+
+	private setRenderStateFromUrlIfDeltaStateNotSaved() {
+		const currentCcStates = this.state.getValue().files
+		const currentFiles = getCCFiles(this.state.getValue().files)
+		const urlRenderState = this.urlUtils.getParameterByName("mode")
+		if (!isDeltaState(currentCcStates) && urlRenderState === "Delta" && currentFiles.length >= 2) {
+			this.store.dispatch(setDelta({ referenceFile: currentFiles[0], comparisonFile: currentFiles[1] }))
 		}
 	}
 }
