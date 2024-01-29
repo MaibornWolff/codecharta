@@ -31,6 +31,29 @@ import { setSortingOption } from "app/codeCharta/state/store/dynamicSettings/sor
 import { setColorMode } from "app/codeCharta/state/store/dynamicSettings/colorMode/colorMode.actions"
 import { setAmountOfTopLabels } from "app/codeCharta/state/store/appSettings/amountOfTopLabels/amountOfTopLabels.actions"
 import { setScaling } from "app/codeCharta/state/store/appSettings/scaling/scaling.actions"
+import { setDistributionMetric } from "app/codeCharta/state/store/dynamicSettings/distributionMetric/distributionMetric.actions"
+import { setEdgeHeight } from "app/codeCharta/state/store/appSettings/edgeHeight/edgeHeight.actions"
+import { setHideFlatBuildings } from "app/codeCharta/state/store/appSettings/hideFlatBuildings/hideFlatBuildings.actions"
+import { setInvertHeight } from "app/codeCharta/state/store/appSettings/invertHeight/invertHeight.actions"
+import { setInvertArea } from "app/codeCharta/state/store/appSettings/invertArea/invertArea.actions"
+import { setIsWhiteBackground } from "app/codeCharta/state/store/appSettings/isWhiteBackground/isWhiteBackground.actions"
+import { setMapColors } from "app/codeCharta/state/store/appSettings/mapColors/mapColors.actions"
+import { setPresentationMode } from "app/codeCharta/state/store/appSettings/isPresentationMode/isPresentationMode.actions"
+import { setShowOnlyBuildingsWithEdges } from "app/codeCharta/state/store/appSettings/showOnlyBuildingsWithEdges/showOnlyBuildingsWithEdges.actions"
+import { setIsEdgeMetricVisible } from "app/codeCharta/state/store/appSettings/isEdgeMetricVisible/isEdgeMetricVisible.actions"
+import { setResetCameraIfNewFileIsLoaded } from "app/codeCharta/state/store/appSettings/resetCameraIfNewFileIsLoaded/resetCameraIfNewFileIsLoaded.actions"
+import { setSortingOrderAscending } from "app/codeCharta/state/store/appSettings/sortingOrderAscending/sortingOrderAscending.actions"
+import { setIsSearchPanelPinned } from "app/codeCharta/state/store/appSettings/isSearchPanelPinned/isSearchPanelPinned.actions"
+import { setShowMetricLabelNameValue } from "app/codeCharta/state/store/appSettings/showMetricLabelNameValue/showMetricLabelNameValue.actions"
+import { setShowMetricLabelNodeName } from "app/codeCharta/state/store/appSettings/showMetricLabelNodeName/showMetricLabelNodeName.actions"
+import { setLayoutAlgorithm } from "app/codeCharta/state/store/appSettings/layoutAlgorithm/layoutAlgorithm.actions"
+import { setMaxTreeMapFiles } from "app/codeCharta/state/store/appSettings/maxTreeMapFiles/maxTreeMapFiles.actions"
+import { setSharpnessMode } from "app/codeCharta/state/store/appSettings/sharpnessMode/sharpnessMode.actions"
+import { setExperimentalFeaturesEnabled } from "app/codeCharta/state/store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.actions"
+import { setScreenshotToClipboardEnabled } from "app/codeCharta/state/store/appSettings/enableClipboard/screenshotToClipboardEnabled.actions"
+import { setColorLabels } from "app/codeCharta/state/store/appSettings/colorLabels/colorLabels.actions"
+import { setIsColorMetricLinkedToHeightMetricAction } from "app/codeCharta/state/store/appSettings/isHeightAndColorMetricLinked/isColorMetricLinkedToHeightMetric.actions"
+import { setEnableFloorLabels } from "app/codeCharta/state/store/appSettings/enableFloorLabels/enableFloorLabels.actions"
 
 @Injectable({ providedIn: "root" })
 export class LoadInitialFileService {
@@ -115,13 +138,45 @@ export class LoadInitialFileService {
 				const currentValue = stringify(value)
 				const loadedValue = stringify(loadedFileSettings[typedKey])
 				if (currentValue !== loadedValue) {
-					this.mapFileSettingsKeyToAction(typedKey, value)
+					this.mapFileSettingToAction(typedKey, loadedFileSettings[typedKey])
 				}
 			}
 		}
 	}
 
-	private mapFileSettingsKeyToAction(key: keyof FileSettings, value: any) {
+	private applyDynamicSettings(loadedDynamicSettings: DynamicSettings) {
+		const currentDynamicSettings = (this.state.getValue() as CcState).dynamicSettings
+		for (const [key, value] of Object.entries(currentDynamicSettings)) {
+			const typedKey = key as keyof DynamicSettings
+			if (!(typedKey in loadedDynamicSettings)) {
+				// TODO: create warnings
+			} else {
+				const currentValue = stringify(value)
+				const loadedValue = stringify(loadedDynamicSettings[typedKey])
+				if (currentValue !== loadedValue) {
+					this.mapDynamicSettingToAction(typedKey, loadedDynamicSettings[typedKey])
+				}
+			}
+		}
+	}
+
+	private applyAppSettings(loadedAppSettings: AppSettings) {
+		const currentAppSettings = (this.state.getValue() as CcState).appSettings
+		for (const [key, value] of Object.entries(currentAppSettings)) {
+			const typedKey = key as keyof AppSettings
+			if (!(typedKey in loadedAppSettings)) {
+				// TODO: create warnings
+			} else {
+				const currentValue = stringify(value)
+				const loadedValue = stringify(loadedAppSettings[typedKey])
+				if (currentValue !== loadedValue) {
+					this.mapAppSettingToAction(typedKey, loadedAppSettings[typedKey])
+				}
+			}
+		}
+	}
+
+	private mapFileSettingToAction(key: keyof FileSettings, value: any) {
 		switch (key) {
 			case "attributeTypes":
 				this.store.dispatch(setAttributeTypes({ value }))
@@ -145,121 +200,135 @@ export class LoadInitialFileService {
 		}
 	}
 
-	private applyDynamicSettings(dynamicSettings: DynamicSettings) {
-		if (this.state.getValue().dynamicSettings.areaMetric !== dynamicSettings.areaMetric) {
-			this.store.dispatch(setAreaMetric({ value: dynamicSettings.areaMetric }))
-		}
-		if (this.state.getValue().dynamicSettings.heightMetric !== dynamicSettings.heightMetric) {
-			this.store.dispatch(setHeightMetric({ value: dynamicSettings.heightMetric }))
-		}
-		if (this.state.getValue().dynamicSettings.edgeMetric !== dynamicSettings.edgeMetric) {
-			this.store.dispatch(setEdgeMetric({ value: dynamicSettings.edgeMetric }))
-		}
-		if (this.state.getValue().dynamicSettings.colorMetric !== dynamicSettings.colorMetric) {
-			this.store.dispatch(setColorMetric({ value: dynamicSettings.colorMetric }))
-		}
-
-		if (stringify(this.state.getValue().dynamicSettings.colorMode) !== stringify(dynamicSettings.colorMode)) {
-			this.store.dispatch(setColorMode({ value: dynamicSettings.colorMode }))
-		}
-		if (stringify(this.state.getValue().dynamicSettings.sortingOption) !== stringify(dynamicSettings.sortingOption)) {
-			this.store.dispatch(setSortingOption({ value: dynamicSettings.sortingOption }))
-		}
-		if (stringify(this.state.getValue().dynamicSettings.colorRange) !== stringify(dynamicSettings.colorRange)) {
-			this.store.dispatch(setColorRange({ value: dynamicSettings.colorRange }))
-		}
-		if (this.state.getValue().dynamicSettings.distributionMetric !== dynamicSettings.colorMetric) {
-			this.store.dispatch(setColorMetric({ value: dynamicSettings.colorMetric }))
-		}
-		// TODO: check correct
-		if (stringify(this.state.getValue().dynamicSettings.focusedNodePath) !== stringify(dynamicSettings.focusedNodePath)) {
-			this.store.dispatch(setAllFocusedNodes({ value: dynamicSettings.focusedNodePath }))
-		}
-		if (this.state.getValue().dynamicSettings.searchPattern !== dynamicSettings.searchPattern) {
-			this.store.dispatch(setSearchPattern({ value: dynamicSettings.searchPattern }))
-		}
-		if (this.state.getValue().dynamicSettings.margin !== dynamicSettings.margin) {
-			this.store.dispatch(setMargin({ value: dynamicSettings.margin }))
+	private mapDynamicSettingToAction(key: keyof DynamicSettings, value: any) {
+		switch (key) {
+			case "areaMetric":
+				this.store.dispatch(setAreaMetric({ value }))
+				break
+			case "heightMetric":
+				this.store.dispatch(setHeightMetric({ value }))
+				break
+			case "edgeMetric":
+				this.store.dispatch(setEdgeMetric({ value }))
+				break
+			case "colorMetric":
+				this.store.dispatch(setColorMetric({ value }))
+				break
+			case "colorMode":
+				this.store.dispatch(setColorMode({ value }))
+				break
+			case "sortingOption":
+				this.store.dispatch(setSortingOption({ value }))
+				break
+			case "colorRange":
+				this.store.dispatch(setColorRange({ value }))
+				break
+			case "distributionMetric":
+				this.store.dispatch(setDistributionMetric({ value }))
+				break
+			case "focusedNodePath":
+				this.store.dispatch(setAllFocusedNodes({ value }))
+				break
+			case "searchPattern":
+				this.store.dispatch(setSearchPattern({ value }))
+				break
+			case "margin":
+				this.store.dispatch(setMargin({ value }))
+				break
+			default: {
+				const exhaustiveCheck: never = key
+				throw new Error(`Unhandled key: ${exhaustiveCheck}`)
+			}
 		}
 	}
 
-	private applyAppSettings(appSettings: AppSettings) {
-		if (this.state.getValue().appSettings.amountOfTopLabels !== appSettings.amountOfTopLabels) {
-			this.store.dispatch(setAmountOfTopLabels({ value: appSettings.amountOfTopLabels }))
-		}
-		if (this.state.getValue().appSettings.amountOfEdgePreviews !== appSettings.amountOfTopLabels) {
-			this.store.dispatch(setAmountOfTopLabels({ value: appSettings.amountOfTopLabels }))
-		}
-		if (this.state.getValue().appSettings.edgeHeight !== appSettings.amountOfTopLabels) {
-			this.store.dispatch(setAmountOfTopLabels({ value: appSettings.amountOfTopLabels }))
-		}
-		if (stringify(this.state.getValue().appSettings.scaling) !== stringify(appSettings.scaling)) {
-			this.store.dispatch(setScaling({ value: appSettings.scaling }))
-		}
-		if (this.state.getValue().appSettings.hideFlatBuildings !== appSettings.amountOfTopLabels) {
-			this.store.dispatch(setAmountOfTopLabels({ value: appSettings.amountOfTopLabels }))
-		}
-		if (this.state.getValue().appSettings.invertHeight !== appSettings.amountOfTopLabels) {
-			this.store.dispatch(setAmountOfTopLabels({ value: appSettings.amountOfTopLabels }))
-		}
-		if (this.state.getValue().appSettings.invertArea !== appSettings.amountOfTopLabels) {
-			this.store.dispatch(setAmountOfTopLabels({ value: appSettings.amountOfTopLabels }))
-		}
-		if (this.state.getValue().appSettings.isWhiteBackground !== appSettings.amountOfTopLabels) {
-			this.store.dispatch(setAmountOfTopLabels({ value: appSettings.amountOfTopLabels }))
-		}
-		if (stringify(this.state.getValue().appSettings.mapColors) !== stringify(appSettings.scaling)) {
-			this.store.dispatch(setScaling({ value: appSettings.scaling }))
-		}
-		if (this.state.getValue().appSettings.isPresentationMode !== appSettings.amountOfTopLabels) {
-			this.store.dispatch(setAmountOfTopLabels({ value: appSettings.amountOfTopLabels }))
-		}
-		if (this.state.getValue().appSettings.showOnlyBuildingsWithEdges !== appSettings.amountOfTopLabels) {
-			this.store.dispatch(setAmountOfTopLabels({ value: appSettings.amountOfTopLabels }))
-		}
-		if (this.state.getValue().appSettings.isEdgeMetricVisible !== appSettings.amountOfTopLabels) {
-			this.store.dispatch(setAmountOfTopLabels({ value: appSettings.amountOfTopLabels }))
-		}
-		if (this.state.getValue().appSettings.resetCameraIfNewFileIsLoaded !== appSettings.amountOfTopLabels) {
-			this.store.dispatch(setAmountOfTopLabels({ value: appSettings.amountOfTopLabels }))
-		}
-		// TODO isLoadingMap: boolean
-		// TODO isLoadingFile: boolean
-		if (this.state.getValue().appSettings.sortingOrderAscending !== appSettings.amountOfTopLabels) {
-			this.store.dispatch(setAmountOfTopLabels({ value: appSettings.amountOfTopLabels }))
-		}
-		if (this.state.getValue().appSettings.isSearchPanelPinned !== appSettings.amountOfTopLabels) {
-			this.store.dispatch(setAmountOfTopLabels({ value: appSettings.amountOfTopLabels }))
-		}
-		if (this.state.getValue().appSettings.showMetricLabelNameValue !== appSettings.amountOfTopLabels) {
-			this.store.dispatch(setAmountOfTopLabels({ value: appSettings.amountOfTopLabels }))
-		}
-		if (this.state.getValue().appSettings.showMetricLabelNodeName !== appSettings.amountOfTopLabels) {
-			this.store.dispatch(setAmountOfTopLabels({ value: appSettings.amountOfTopLabels }))
-		}
-		if (stringify(this.state.getValue().appSettings.layoutAlgorithm) !== stringify(appSettings.scaling)) {
-			this.store.dispatch(setScaling({ value: appSettings.scaling }))
-		}
-		if (this.state.getValue().appSettings.maxTreeMapFiles !== appSettings.amountOfTopLabels) {
-			this.store.dispatch(setAmountOfTopLabels({ value: appSettings.amountOfTopLabels }))
-		}
-		if (stringify(this.state.getValue().appSettings.sharpnessMode) !== stringify(appSettings.scaling)) {
-			this.store.dispatch(setScaling({ value: appSettings.scaling }))
-		}
-		if (this.state.getValue().appSettings.experimentalFeaturesEnabled !== appSettings.amountOfTopLabels) {
-			this.store.dispatch(setAmountOfTopLabels({ value: appSettings.amountOfTopLabels }))
-		}
-		if (this.state.getValue().appSettings.screenshotToClipboardEnabled !== appSettings.amountOfTopLabels) {
-			this.store.dispatch(setAmountOfTopLabels({ value: appSettings.amountOfTopLabels }))
-		}
-		if (stringify(this.state.getValue().appSettings.colorLabels) !== stringify(appSettings.scaling)) {
-			this.store.dispatch(setScaling({ value: appSettings.scaling }))
-		}
-		if (this.state.getValue().appSettings.isColorMetricLinkedToHeightMetric !== appSettings.amountOfTopLabels) {
-			this.store.dispatch(setAmountOfTopLabels({ value: appSettings.amountOfTopLabels }))
-		}
-		if (this.state.getValue().appSettings.isColorMetricLinkedToHeightMetric !== appSettings.amountOfTopLabels) {
-			this.store.dispatch(setAmountOfTopLabels({ value: appSettings.amountOfTopLabels }))
+	private mapAppSettingToAction(key: keyof AppSettings, value: any) {
+		switch (key) {
+			case "amountOfTopLabels":
+				this.store.dispatch(setAmountOfTopLabels({ value }))
+				break
+			case "amountOfEdgePreviews":
+				this.store.dispatch(setAmountOfTopLabels({ value }))
+				break
+			case "edgeHeight":
+				this.store.dispatch(setEdgeHeight({ value }))
+				break
+			case "scaling":
+				this.store.dispatch(setScaling({ value }))
+				break
+			case "hideFlatBuildings":
+				this.store.dispatch(setHideFlatBuildings({ value }))
+				break
+			case "invertHeight":
+				this.store.dispatch(setInvertHeight({ value }))
+				break
+			case "invertArea":
+				this.store.dispatch(setInvertArea({ value }))
+				break
+			case "isWhiteBackground":
+				this.store.dispatch(setIsWhiteBackground({ value }))
+				break
+			case "mapColors":
+				this.store.dispatch(setMapColors({ value }))
+				break
+			case "isPresentationMode":
+				this.store.dispatch(setPresentationMode({ value }))
+				break
+			case "showOnlyBuildingsWithEdges":
+				this.store.dispatch(setShowOnlyBuildingsWithEdges({ value }))
+				break
+			case "isEdgeMetricVisible":
+				this.store.dispatch(setIsEdgeMetricVisible({ value }))
+				break
+			case "resetCameraIfNewFileIsLoaded":
+				this.store.dispatch(setResetCameraIfNewFileIsLoaded({ value }))
+				break
+			case "isLoadingMap":
+				// TODO
+				break
+			case "isLoadingFile":
+				// TODO
+				break
+			case "sortingOrderAscending":
+				this.store.dispatch(setSortingOrderAscending({ value }))
+				break
+			case "isSearchPanelPinned":
+				this.store.dispatch(setIsSearchPanelPinned({ value }))
+				break
+			case "showMetricLabelNameValue":
+				this.store.dispatch(setShowMetricLabelNameValue({ value }))
+				break
+			case "showMetricLabelNodeName":
+				this.store.dispatch(setShowMetricLabelNodeName({ value }))
+				break
+			case "layoutAlgorithm":
+				this.store.dispatch(setLayoutAlgorithm({ value }))
+				break
+			case "maxTreeMapFiles":
+				this.store.dispatch(setMaxTreeMapFiles({ value }))
+				break
+			case "sharpnessMode":
+				this.store.dispatch(setSharpnessMode({ value }))
+				break
+			case "experimentalFeaturesEnabled":
+				this.store.dispatch(setExperimentalFeaturesEnabled({ value }))
+				break
+			case "screenshotToClipboardEnabled":
+				this.store.dispatch(setScreenshotToClipboardEnabled({ value }))
+				break
+			case "colorLabels":
+				this.store.dispatch(setColorLabels({ value }))
+				break
+			case "isColorMetricLinkedToHeightMetric":
+				this.store.dispatch(setIsColorMetricLinkedToHeightMetricAction({ value }))
+				break
+			case "enableFloorLabels":
+				this.store.dispatch(setEnableFloorLabels({ value }))
+				break
+			default: {
+				const exhaustiveCheck: never = key
+				throw new Error(`Unhandled key: ${exhaustiveCheck}`)
+			}
 		}
 	}
 

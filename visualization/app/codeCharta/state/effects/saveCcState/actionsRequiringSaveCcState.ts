@@ -8,7 +8,7 @@ import { setEnableFloorLabels } from "../../store/appSettings/enableFloorLabels/
 import { setHideFlatBuildings } from "../../store/appSettings/hideFlatBuildings/hideFlatBuildings.actions"
 import { setInvertArea } from "../../store/appSettings/invertArea/invertArea.actions"
 import { setInvertHeight } from "../../store/appSettings/invertHeight/invertHeight.actions"
-import { toggleEdgeMetricVisible } from "../../store/appSettings/isEdgeMetricVisible/isEdgeMetricVisible.actions"
+import { setIsEdgeMetricVisible, toggleEdgeMetricVisible } from "../../store/appSettings/isEdgeMetricVisible/isEdgeMetricVisible.actions"
 import {
 	setIsColorMetricLinkedToHeightMetricAction,
 	toggleIsColorMetricLinkedToHeightMetric
@@ -98,6 +98,7 @@ export const actionsRequiringSaveCcState = [
 	invertDeltaColors,
 	setResetCameraIfNewFileIsLoaded,
 	setShowOnlyBuildingsWithEdges,
+	setIsEdgeMetricVisible,
 	toggleEdgeMetricVisible,
 	setIsWhiteBackground,
 	setInvertHeight,
@@ -146,7 +147,7 @@ export const actionsRequiringSaveCcState = [
 	invertStandard,
 	setAll
 
-	// TODO: prop unncessary - dont save appstatus
+	// TODO: prob unncessary - dont save appstatus
 	// setHoveredNodeId,
 	// setSelectedBuildingId,
 	// setRightClickedNodeData
