@@ -48,12 +48,13 @@ import sample1 from "../../assets/sample1.cc.json"
 import sample2 from "../../assets/sample2.cc.json"
 import { ExportCCFile } from "../../codeCharta.api.model"
 import { AppSettings, CcState, DynamicSettings, FileSettings } from "../../codeCharta.model"
-import { getCCFiles, isDeltaState } from "../../model/files/files.helper"
+import { getCCFiles } from "../../model/files/files.helper"
 import { setDelta, setFiles } from "../../state/store/files/files.actions"
 import { ErrorDialogComponent } from "../../ui/dialogs/errorDialog/errorDialog.component"
 import { getNameDataPair } from "../loadFile/fileParser"
-import { LoadFileService } from "../loadFile/loadFile.service"
+import { FILE_VALIDATION_ERROR_MESSAGE, LoadFileService } from "../loadFile/loadFile.service"
 import { UrlExtractor } from "./urlExtractor"
+import { buildHtmlMessage } from "../../util/loadFilesValidationToErrorDialog"
 
 @Injectable({ providedIn: "root" })
 export class LoadInitialFileService {
@@ -82,33 +83,40 @@ export class LoadInitialFileService {
 
 	private async loadFilesFromQueryParams() {
 		try {
-			const urlNameDataPairs = await this.urlUtils.getFileDataFromQueryParam()
 			const savedCcState = await readCcState()
+			const urlNameDataPairs = await this.urlUtils.getFileDataFromQueryParam()
 			if (!savedCcState) {
-				this.setRenderStateFromUrl()
 				this.loadFileService.loadFiles(urlNameDataPairs)
+				this.setRenderStateFromUrl()
+				return
+			}
+
+			const savedFileStates = savedCcState.files
+			const savedNameDataPairs = savedFileStates.map(fileState => getNameDataPair(fileState.file))
+			const urlNameDataPairCheckSums = urlNameDataPairs.map(urlNameDataPair => urlNameDataPair.content.fileChecksum)
+			const savedNameDataPairCheckSums = savedNameDataPairs.map(savedNameDataPair => savedNameDataPair.content.fileChecksum)
+			if (stringify(urlNameDataPairCheckSums) === stringify(savedNameDataPairCheckSums)) {
+				this.loadFileService.loadFiles(savedNameDataPairs)
+				this.store.dispatch(setFiles({ value: savedFileStates }))
+				this.applySettings(savedCcState)
+				this.setRenderStateFromUrl()
 			} else {
-				const savedFileStates = savedCcState.files
-				const savedNameDataPairs = savedFileStates.map(fileState => getNameDataPair(fileState.file))
-				const urlNameDataPairCheckSums = urlNameDataPairs.map(urlNameDataPair => urlNameDataPair.content.fileChecksum)
-				const savedNameDataPairCheckSums = savedNameDataPairs.map(savedNameDataPair => savedNameDataPair.content.fileChecksum)
-				if (stringify(urlNameDataPairCheckSums) === stringify(savedNameDataPairCheckSums)) {
-					this.loadFileService.loadFiles(savedNameDataPairs)
-					this.store.dispatch(setFiles({ value: savedFileStates }))
-					this.applySettings(savedCcState)
-					this.setRenderStateFromUrlIfDeltaStateNotSaved()
-				} else {
-					this.applySettings(savedCcState)
-					this.loadFileService.loadFiles(urlNameDataPairs)
-					this.setRenderStateFromUrl()
-				}
+				this.applySettings(savedCcState)
+				this.loadFileService.loadFiles(urlNameDataPairs)
+				this.setRenderStateFromUrl()
 			}
 		} catch (error) {
-			const title = this.createTitleErrorDialog(error as Error)
-			const message = "Files could not be loaded from the given file URL parameter. Loaded sample files instead."
-			this.showErrorDialog(title, message)
-			this.loadSampleFiles()
+			this.handleErrorLoadFilesFromQueryParams(error as Error)
 		}
+	}
+
+	private handleErrorLoadFilesFromQueryParams(error: Error) {
+		if ((error as Error).message !== FILE_VALIDATION_ERROR_MESSAGE) {
+			const title = "File(s) could not be loaded from the given file URL parameter. Loaded sample files instead."
+			const message = this.createTitleUrlErrorDialog(error as Error)
+			this.showErrorDialog(title, message)
+		}
+		this.loadSampleFiles()
 	}
 
 	private async loadFilesFromIndexedDB() {
@@ -116,82 +124,101 @@ export class LoadInitialFileService {
 			const savedCcState = await readCcState()
 			if (!savedCcState) {
 				this.loadSampleFiles()
-			} else {
-				const savedFileStates = savedCcState.files
-				const savedNameDataPairs = savedFileStates.map(fileState => getNameDataPair(fileState.file))
-				this.loadFileService.loadFiles(savedNameDataPairs)
-				this.store.dispatch(setFiles({ value: savedFileStates }))
-				this.applySettings(savedCcState)
+				return
 			}
+
+			const savedFileStates = savedCcState.files
+			const savedNameDataPairs = savedFileStates.map(fileState => getNameDataPair(fileState.file))
+			this.loadFileService.loadFiles(savedNameDataPairs)
+			this.store.dispatch(setFiles({ value: savedFileStates }))
+			this.applySettings(savedCcState)
 		} catch (error) {
-			const title = "Files could not be loaded from indexeddb. Loaded sample files instead."
+			this.handleErrorLoadFilesFromIndexedDB(error as Error)
+		}
+	}
+
+	private handleErrorLoadFilesFromIndexedDB(error: Error) {
+		if ((error as Error).message !== FILE_VALIDATION_ERROR_MESSAGE) {
+			const title = "File(s) could not be loaded from indexeddb. Loaded sample files instead."
 			const message = (error as Error).message
 			this.showErrorDialog(title, message)
-			this.loadSampleFiles()
+		}
+		this.loadSampleFiles()
+	}
+
+	private async applySettings(savedCcState: CcState) {
+		const savedFileSettings = savedCcState.fileSettings
+		const savedDynamicSettings = savedCcState.dynamicSettings
+		const savedAppSettings = savedCcState.appSettings
+		const missingPropertiesInSavedCcState = []
+		if (savedFileSettings) {
+			const missingFileSettings = this.applyFileSettings(savedFileSettings)
+			missingPropertiesInSavedCcState.push(...missingFileSettings)
+		}
+		if (savedDynamicSettings) {
+			const missingDynamicSettings = this.applyDynamicSettings(savedDynamicSettings)
+			missingPropertiesInSavedCcState.push(...missingDynamicSettings)
+		}
+		if (savedAppSettings) {
+			const missingAppSettings = this.applyAppSettings(savedAppSettings)
+			missingPropertiesInSavedCcState.push(...missingAppSettings)
+		}
+		if (missingPropertiesInSavedCcState.length > 0) {
+			const title = "The following properties could not be loaded from the saved config"
+			const message = this.buildMissingPropertiesMessage(missingPropertiesInSavedCcState)
+			this.showErrorDialog(title, message)
 		}
 	}
 
-	private async applySettings(loadedCcState: CcState) {
-		const loadedFileSettings = loadedCcState.fileSettings
-		const loadedDynamicSettings = loadedCcState.dynamicSettings
-		const loadedAppSettings = loadedCcState.appSettings
-		if (loadedFileSettings) {
-			this.applyFileSettings(loadedFileSettings)
-		}
-		if (loadedDynamicSettings) {
-			this.applyDynamicSettings(loadedDynamicSettings)
-		}
-		if (loadedAppSettings) {
-			this.applyAppSettings(loadedAppSettings)
-		}
-	}
-
-	private applyFileSettings(loadedFileSettings: FileSettings) {
+	private applyFileSettings(savedFileSettings: FileSettings) {
 		const currentFileSettings = (this.state.getValue() as CcState).fileSettings
+		const missingFileSettings = []
 		for (const [key, value] of Object.entries(currentFileSettings)) {
-			const typedKey = key as keyof FileSettings
-			if (!(typedKey in loadedFileSettings)) {
-				// TODO: create warnings
+			if (!(key in savedFileSettings)) {
+				missingFileSettings.push(key)
 			} else {
 				const currentValue = stringify(value)
-				const loadedValue = stringify(loadedFileSettings[typedKey])
+				const loadedValue = stringify(savedFileSettings[key])
 				if (currentValue !== loadedValue) {
-					this.mapFileSettingToAction(typedKey, loadedFileSettings[typedKey])
+					this.mapFileSettingToAction(key as keyof FileSettings, savedFileSettings[key])
 				}
 			}
 		}
+		return missingFileSettings
 	}
 
-	private applyDynamicSettings(loadedDynamicSettings: DynamicSettings) {
+	private applyDynamicSettings(savedDynamicSettings: DynamicSettings) {
 		const currentDynamicSettings = (this.state.getValue() as CcState).dynamicSettings
+		const missingDynamicSettings = []
 		for (const [key, value] of Object.entries(currentDynamicSettings)) {
-			const typedKey = key as keyof DynamicSettings
-			if (!(typedKey in loadedDynamicSettings)) {
-				// TODO: create warnings
+			if (!(key in savedDynamicSettings)) {
+				missingDynamicSettings.push(key)
 			} else {
 				const currentValue = stringify(value)
-				const loadedValue = stringify(loadedDynamicSettings[typedKey])
+				const loadedValue = stringify(savedDynamicSettings[key])
 				if (currentValue !== loadedValue) {
-					this.mapDynamicSettingToAction(typedKey, loadedDynamicSettings[typedKey])
+					this.mapDynamicSettingToAction(key as keyof DynamicSettings, savedDynamicSettings[key])
 				}
 			}
 		}
+		return missingDynamicSettings
 	}
 
-	private applyAppSettings(loadedAppSettings: AppSettings) {
+	private applyAppSettings(savedAppSettings: AppSettings) {
 		const currentAppSettings = (this.state.getValue() as CcState).appSettings
+		const missingAppSettings = []
 		for (const [key, value] of Object.entries(currentAppSettings)) {
-			const typedKey = key as keyof AppSettings
-			if (!(typedKey in loadedAppSettings)) {
-				// TODO: create warnings
+			if (!(key in savedAppSettings)) {
+				missingAppSettings.push(key)
 			} else {
 				const currentValue = stringify(value)
-				const loadedValue = stringify(loadedAppSettings[typedKey])
+				const loadedValue = stringify(savedAppSettings[key])
 				if (currentValue !== loadedValue) {
-					this.mapAppSettingToAction(typedKey, loadedAppSettings[typedKey])
+					this.mapAppSettingToAction(key as keyof AppSettings, savedAppSettings[key])
 				}
 			}
 		}
+		return missingAppSettings
 	}
 
 	private mapFileSettingToAction(key: keyof FileSettings, value: any) {
@@ -302,10 +329,7 @@ export class LoadInitialFileService {
 				this.store.dispatch(setResetCameraIfNewFileIsLoaded({ value }))
 				break
 			case "isLoadingMap":
-				// TODO
-				break
 			case "isLoadingFile":
-				// TODO
 				break
 			case "sortingOrderAscending":
 				this.store.dispatch(setSortingOrderAscending({ value }))
@@ -350,6 +374,11 @@ export class LoadInitialFileService {
 		}
 	}
 
+	private buildMissingPropertiesMessage(missingPropertiesInSavedCcState: string[]) {
+		const warningSymbol = '<i class="fa fa-exclamation-triangle"></i> '
+		return `<h2>Warnings</h2>${buildHtmlMessage(warningSymbol, missingPropertiesInSavedCcState)}`
+	}
+
 	private loadSampleFiles() {
 		this.loadFileService.loadFiles([
 			{ fileName: "sample1.cc.json", fileSize: 3 * 1024, content: sample1 as ExportCCFile },
@@ -363,7 +392,7 @@ export class LoadInitialFileService {
 		})
 	}
 
-	private createTitleErrorDialog(error: Error & { statusText?: string; status?: number }) {
+	private createTitleUrlErrorDialog(error: Error & { statusText?: string; status?: number }) {
 		let title = "Error"
 		if (error.message) {
 			title += ` (${error.message})`
@@ -381,15 +410,6 @@ export class LoadInitialFileService {
 
 		if (renderState === "Delta" && files.length >= 2) {
 			this.store.dispatch(setDelta({ referenceFile: files[0], comparisonFile: files[1] }))
-		}
-	}
-
-	private setRenderStateFromUrlIfDeltaStateNotSaved() {
-		const currentCcStates = this.state.getValue().files
-		const currentFiles = getCCFiles(this.state.getValue().files)
-		const urlRenderState = this.urlUtils.getParameterByName("mode")
-		if (!isDeltaState(currentCcStates) && urlRenderState === "Delta" && currentFiles.length >= 2) {
-			this.store.dispatch(setDelta({ referenceFile: currentFiles[0], comparisonFile: currentFiles[1] }))
 		}
 	}
 }
