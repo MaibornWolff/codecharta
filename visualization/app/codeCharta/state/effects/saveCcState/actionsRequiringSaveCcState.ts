@@ -48,13 +48,13 @@ import { setSortingOption } from "../../store/dynamicSettings/sortingOption/sort
 import { setAttributeDescriptors } from "../../store/fileSettings/attributeDescriptors/attributeDescriptors.action"
 import { setAttributeTypes, updateAttributeType } from "../../store/fileSettings/attributeTypes/attributeTypes.actions"
 import {
-	setBlacklist,
 	addBlacklistItem,
 	addBlacklistItems,
-	removeBlacklistItem
+	removeBlacklistItem,
+	setBlacklist
 } from "../../store/fileSettings/blacklist/blacklist.actions"
-import { setEdges, addEdge, removeEdge } from "../../store/fileSettings/edges/edges.actions"
-import { setMarkedPackages, markPackages, unmarkPackage } from "../../store/fileSettings/markedPackages/markedPackages.actions"
+import { addEdge, removeEdge, setEdges } from "../../store/fileSettings/edges/edges.actions"
+import { markPackages, setMarkedPackages, unmarkPackage } from "../../store/fileSettings/markedPackages/markedPackages.actions"
 import {
 	addFile,
 	invertStandard,
@@ -91,8 +91,6 @@ export const actionsRequiringSaveCcState = [
 	toggleSortingOrderAscending,
 	setIsSearchPanelPinned,
 	toggleIsSearchPanelPinned,
-	// setIsLoadingFile,
-	// setIsLoadingMap,
 	setMapColors,
 	invertColorRange,
 	invertDeltaColors,
@@ -118,7 +116,6 @@ export const actionsRequiringSaveCcState = [
 	toggleIsColorMetricLinkedToHeightMetric,
 	setEnableFloorLabels,
 
-	// triggers a lot of writes
 	setColorMode,
 	setSortingOption,
 	setEdgeMetric,
@@ -146,9 +143,4 @@ export const actionsRequiringSaveCcState = [
 	setStandardByNames,
 	invertStandard,
 	setAll
-
-	// TODO: prob unncessary - dont save appstatus
-	// setHoveredNodeId,
-	// setSelectedBuildingId,
-	// setRightClickedNodeData
 ]
