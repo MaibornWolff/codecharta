@@ -8,14 +8,14 @@ export function loadFilesValidationToErrorDialog(fileValidationResults: CCFileVa
 	}
 }
 
-export function buildErrorMessages(fileValidationResults: CCFileValidationResult[]) {
+function buildErrorMessages(fileValidationResults: CCFileValidationResult[]) {
 	const filesWithErrors = fileValidationResults.filter(validationResult => validationResult.errors.length > 0)
 	return filesWithErrors.length > 0
 		? ["<h2>Errors</h2>", ...filesWithErrors.map(fileWithErrors => buildFileErrorMessage(fileWithErrors))]
 		: []
 }
 
-export function buildWarningsMessages(fileValidationResults: CCFileValidationResult[]) {
+function buildWarningsMessages(fileValidationResults: CCFileValidationResult[]) {
 	const filesWithWarnings = fileValidationResults.filter(validationResult => validationResult.warnings.length > 0)
 	return filesWithWarnings.length > 0
 		? ["<h2>Warnings</h2>", ...filesWithWarnings.map(fileWithWarnings => buildFileWarningMessage(fileWithWarnings))]
