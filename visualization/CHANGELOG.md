@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
+-   Persist uploaded files and applied configuration accross page-reloads [#3486](https://github.com/MaibornWolff/codecharta/pull/3486)
 -   Highlight building on-click of file in explorer [#3488](https://github.com/MaibornWolff/codecharta/pull/3488)
 
 ### Fixed 🐞
