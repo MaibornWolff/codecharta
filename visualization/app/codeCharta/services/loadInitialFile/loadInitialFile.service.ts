@@ -52,9 +52,14 @@ import { getCCFiles } from "../../model/files/files.helper"
 import { setDelta, setFiles } from "../../state/store/files/files.actions"
 import { ErrorDialogComponent } from "../../ui/dialogs/errorDialog/errorDialog.component"
 import { getNameDataPair } from "../loadFile/fileParser"
-import { FILE_VALIDATION_ERROR_MESSAGE, LoadFileService } from "../loadFile/loadFile.service"
+import { NO_FILES_LOADED_ERROR_MESSAGE, LoadFileService } from "../loadFile/loadFile.service"
 import { UrlExtractor } from "./urlExtractor"
 import { buildHtmlMessage } from "../../util/loadFilesValidationToErrorDialog"
+import { setIsLoadingMap } from "../../state/store/appSettings/isLoadingMap/isLoadingMap.actions"
+import { setIsLoadingFile } from "../../state/store/appSettings/isLoadingFile/isLoadingFile.actions"
+
+export const sampleFile1 = { fileName: "sample1.cc.json", fileSize: 3 * 1024, content: sample1 as ExportCCFile }
+export const sampleFile2 = { fileName: "sample2.cc.json", fileSize: 2 * 1024, content: sample2 as ExportCCFile }
 
 @Injectable({ providedIn: "root" })
 export class LoadInitialFileService {
@@ -70,11 +75,7 @@ export class LoadInitialFileService {
 
 	async loadFilesOrSampleFiles() {
 		const isFileQueryParameterPresent = this.checkFileQueryParameterPresent()
-		if (isFileQueryParameterPresent) {
-			this.loadFilesFromQueryParams()
-		} else {
-			this.loadFilesFromIndexedDB()
-		}
+		await (isFileQueryParameterPresent ? this.loadFilesFromQueryParams() : this.loadFilesFromIndexedDB())
 	}
 
 	private checkFileQueryParameterPresent() {
@@ -83,8 +84,8 @@ export class LoadInitialFileService {
 
 	private async loadFilesFromQueryParams() {
 		try {
-			const savedCcState = await readCcState()
 			const urlNameDataPairs = await this.urlUtils.getFileDataFromQueryParam()
+			const savedCcState = await readCcState()
 			if (!savedCcState) {
 				this.loadFileService.loadFiles(urlNameDataPairs)
 				this.setRenderStateFromUrl()
@@ -111,7 +112,7 @@ export class LoadInitialFileService {
 	}
 
 	private handleErrorLoadFilesFromQueryParams(error: Error) {
-		if ((error as Error).message !== FILE_VALIDATION_ERROR_MESSAGE) {
+		if ((error as Error).message !== NO_FILES_LOADED_ERROR_MESSAGE) {
 			const title = "File(s) could not be loaded from the given file URL parameter. Loaded sample files instead."
 			const message = this.createTitleUrlErrorDialog(error as Error)
 			this.showErrorDialog(title, message)
@@ -138,7 +139,7 @@ export class LoadInitialFileService {
 	}
 
 	private handleErrorLoadFilesFromIndexedDB(error: Error) {
-		if ((error as Error).message !== FILE_VALIDATION_ERROR_MESSAGE) {
+		if ((error as Error).message !== NO_FILES_LOADED_ERROR_MESSAGE) {
 			const title = "File(s) could not be loaded from indexeddb. Loaded sample files instead."
 			const message = (error as Error).message
 			this.showErrorDialog(title, message)
@@ -329,7 +330,10 @@ export class LoadInitialFileService {
 				this.store.dispatch(setResetCameraIfNewFileIsLoaded({ value }))
 				break
 			case "isLoadingMap":
+				this.store.dispatch(setIsLoadingMap({ value }))
+				break
 			case "isLoadingFile":
+				this.store.dispatch(setIsLoadingFile({ value }))
 				break
 			case "sortingOrderAscending":
 				this.store.dispatch(setSortingOrderAscending({ value }))
@@ -380,10 +384,7 @@ export class LoadInitialFileService {
 	}
 
 	private loadSampleFiles() {
-		this.loadFileService.loadFiles([
-			{ fileName: "sample1.cc.json", fileSize: 3 * 1024, content: sample1 as ExportCCFile },
-			{ fileName: "sample2.cc.json", fileSize: 2 * 1024, content: sample2 as ExportCCFile }
-		])
+		this.loadFileService.loadFiles([sampleFile1, sampleFile2])
 	}
 
 	private showErrorDialog(title: string, message: string) {

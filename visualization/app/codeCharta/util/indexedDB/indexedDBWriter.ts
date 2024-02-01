@@ -1,11 +1,11 @@
-import { openDB } from "idb"
 import { CcState } from "app/codeCharta/codeCharta.model"
+import { openDB } from "idb"
 
-const DB_NAME = "CodeCharta"
-const DB_VERSION = 1
-const CCSTATE_STORE_NAME = "ccstate"
-const CCSTATE_PRIMARY_KEY = "id"
-const CCSTATE_STATE_ID = 1001
+export const DB_NAME = "CodeCharta"
+export const DB_VERSION = 1
+export const CCSTATE_STORE_NAME = "ccstate"
+export const CCSTATE_PRIMARY_KEY = "id"
+export const CCSTATE_STATE_ID = 1001
 
 export async function writeCcState(state: CcState) {
 	const database = await createOrOpenCcStateStore()

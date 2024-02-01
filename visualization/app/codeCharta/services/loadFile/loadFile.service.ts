@@ -13,7 +13,7 @@ import { enrichFileStatesAndRecentFilesWithValidationResults } from "./fileParse
 import { fileRoot } from "./fileRoot"
 import { Store, State } from "@ngrx/store"
 
-export const FILE_VALIDATION_ERROR_MESSAGE = "File(s) could not be loaded"
+export const NO_FILES_LOADED_ERROR_MESSAGE = "File(s) could not be loaded"
 
 @Injectable({ providedIn: "root" })
 export class LoadFileService implements OnDestroy {
@@ -50,7 +50,7 @@ export class LoadFileService implements OnDestroy {
 		}
 
 		if (recentFiles.length === 0) {
-			throw new Error(FILE_VALIDATION_ERROR_MESSAGE)
+			throw new Error(NO_FILES_LOADED_ERROR_MESSAGE)
 		}
 
 		this.store.dispatch(setFiles({ value: fileStates }))

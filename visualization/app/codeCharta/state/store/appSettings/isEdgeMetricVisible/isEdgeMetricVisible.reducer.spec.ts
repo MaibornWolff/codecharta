@@ -1,4 +1,4 @@
-import { toggleEdgeMetricVisible } from "./isEdgeMetricVisible.actions"
+import { setIsEdgeMetricVisible, toggleEdgeMetricVisible } from "./isEdgeMetricVisible.actions"
 import { isEdgeMetricVisible } from "./isEdgeMetricVisible.reducer"
 
 describe("isEdgeMetricVisible", () => {
@@ -7,5 +7,11 @@ describe("isEdgeMetricVisible", () => {
 		const toggledResult = isEdgeMetricVisible(result, toggleEdgeMetricVisible())
 
 		expect(toggledResult).toBe(!result)
+	})
+
+	it("should set state", () => {
+		const result = isEdgeMetricVisible(false, setIsEdgeMetricVisible({ value: true }))
+
+		expect(result).toBe(true)
 	})
 })
