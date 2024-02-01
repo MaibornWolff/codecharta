@@ -1,4 +1,4 @@
-import { goto } from "../../puppeteer.helper"
+import { clearIndexedDB, goto } from "../../puppeteer.helper"
 import { LogoPageObject } from "./logo.po"
 import packageJson from "../../../package.json"
 
@@ -9,6 +9,10 @@ describe("CodeCharta logo", () => {
 		logo = new LogoPageObject()
 
 		await goto()
+	})
+
+	afterEach(async () => {
+		await clearIndexedDB()
 	})
 
 	it("should have correct version", async () => {

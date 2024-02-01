@@ -1,4 +1,4 @@
-import { goto } from "../../../../puppeteer.helper"
+import { clearIndexedDB, goto } from "../../../../puppeteer.helper"
 import { UploadFileButtonPageObject } from "./uploadFilesButton.po"
 import { FilePanelPageObject } from "../../filePanel/filePanel.po"
 import { ERROR_MESSAGES } from "../../../util/fileValidator"
@@ -16,6 +16,11 @@ describe("UploadFileButton", () => {
 
 		await goto()
 	})
+
+	afterEach(async () => {
+		await clearIndexedDB()
+	})
+	
 	it("should load a valid gameObjects file", async () => {
 		await uploadFileButton.openFiles(["./app/codeCharta/assets/gameObjectsFile.json"])
 
