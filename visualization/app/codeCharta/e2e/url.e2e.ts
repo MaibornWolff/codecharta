@@ -1,4 +1,4 @@
-import { CC_URL, goto } from "../../puppeteer.helper"
+import { CC_URL, clearIndexedDB, goto } from "../../puppeteer.helper"
 import { FilePanelPageObject } from "../ui/filePanel/filePanel.po"
 import sample1 from "../assets/sample1.cc.json"
 import sample3 from "../assets/sample3.cc.json"
@@ -46,6 +46,10 @@ describe("codecharta", () => {
 		filePanel = new FilePanelPageObject()
 
 		await goto()
+	})
+
+	afterEach(async () => {
+		await clearIndexedDB()
 	})
 
 	async function handleErrorDialog() {

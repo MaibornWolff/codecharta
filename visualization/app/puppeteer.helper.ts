@@ -17,3 +17,11 @@ export async function clickButtonOnPageElement(selectorString: string, expectToC
 	await page.waitForSelector(selectorString)
 	await expect(page).toClick(selectorString, expectToClickOptions)
 }
+
+export async function clearIndexedDB() {
+	const client = await page.target().createCDPSession()
+	await client.send("Storage.clearDataForOrigin", {
+		origin: page.url(),
+		storageTypes: "indexeddb"
+	})
+}

@@ -1,4 +1,4 @@
-import { CC_URL, goto } from "../../../puppeteer.helper"
+import { CC_URL, clearIndexedDB, goto } from "../../../puppeteer.helper"
 import { RibbonBarPageObject } from "./ribbonBar.po"
 import { SearchPanelPageObject } from "../searchPanel/searchPanel.po"
 
@@ -20,6 +20,10 @@ describe("RibbonBar", () => {
 		//mapTreeViewLevel = new MapTreeViewLevelPageObject()
 
 		await goto()
+	})
+
+	afterEach(async () => {
+		await clearIndexedDB()
 	})
 
 	/*it("hovering over a folder should display the sum of metric of all children", async () => {
