@@ -20,7 +20,7 @@ describe("changelogDialog", () => {
 	afterEach(async () => {
 		await clearIndexedDB()
 	})
-	
+
 	it("should show entries between the last und newest release version", async () => {
 		const changelogDialog = await page.waitForSelector(".mat-mdc-dialog-container", { timeout: 6000 })
 		const contentElement = await changelogDialog?.waitForSelector(".content")

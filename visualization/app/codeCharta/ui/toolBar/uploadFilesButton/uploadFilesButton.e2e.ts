@@ -20,7 +20,7 @@ describe("UploadFileButton", () => {
 	afterEach(async () => {
 		await clearIndexedDB()
 	})
-	
+
 	it("should load a valid gameObjects file", async () => {
 		await uploadFileButton.openFiles(["./app/codeCharta/assets/gameObjectsFile.json"])
 
