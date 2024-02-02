@@ -7,7 +7,6 @@ import com.varabyte.kotter.foundation.input.input
 import com.varabyte.kotter.foundation.input.onInputChanged
 import com.varabyte.kotter.foundation.input.onInputEntered
 import com.varabyte.kotter.foundation.input.onKeyPressed
-import com.varabyte.kotter.foundation.input.runUntilInputEntered
 import com.varabyte.kotter.foundation.liveVarOf
 import com.varabyte.kotter.foundation.runUntilSignal
 import com.varabyte.kotter.foundation.text.black
@@ -18,23 +17,39 @@ import com.varabyte.kotter.foundation.text.red
 import com.varabyte.kotter.foundation.text.text
 import com.varabyte.kotter.foundation.text.textLine
 import com.varabyte.kotter.runtime.Session
+import de.maibornwolff.codecharta.util.InputHelper
+import java.io.File
 
-fun Session.myPromptInput(message: String, hint: String = ""): String { // todo, add flag to accept empty input or not
+fun Session.myPromptInput(
+        message: String,
+        hint: String = "",
+        allowEmptyInput: Boolean = false,
+        canContainFolders: Boolean = false,
+        invalidInputMessage: String = "Input is invalid!"
+): String {
     var returnValue = ""
+    var isInputValid = true
     section {
-        bold { green { text("? ") }; textLine(message) }
+        bold { green { text("? ") }; text(message); red { textLine(if (isInputValid) "" else "   $invalidInputMessage") } }
         text("> "); input(Completions(hint), initialText = "")
-    }.runUntilInputEntered {
-        onInputEntered { returnValue = input; return@onInputEntered }
+    }.runUntilSignal {
+        onInputChanged { isInputValid = true }
+        onInputEntered {
+            isInputValid = InputHelper.isInputValidAndNotNull(arrayOf(File(input)), canContainFolders)      //TODO maybe refactor so the checking function is parameter of this
+            if ((allowEmptyInput && input.isEmpty()) || (isInputValid && input.isNotEmpty())) {
+                returnValue = input
+                signal()
+            }
+        }
     }
     return returnValue
 }
 
-fun Session.myPromptInputNumber(
-        message: String, hint: String = "",
-        allowEmpty: Boolean = false,
+fun Session.myPromptInputNumber(                                    //should this have a 'default' parameter like in Kinquirer?
+        message: String, hint: String = "",                         //meaning if nothing is put in then that result gets submitted
+        allowEmptyInput: Boolean = false,                           // should floats be allowed or only whole numbers?
         invalidInputMessage: String = "Input is invalid!"
-): String {
+): String {                                                         //TODO: decide which return type this should be (KIinquirer does bigint)
     var returnValue = ""
     var showError = false
     section {
@@ -46,7 +61,7 @@ fun Session.myPromptInputNumber(
     }.runUntilSignal {
         onInputChanged { showError = false; input = input.filter { it.isDigit() } }
         onInputEntered {
-            if (allowEmpty || input.isNotEmpty()) {
+            if (allowEmptyInput || input.isNotEmpty()) {
                 returnValue = input
                 signal()
             } else {
@@ -75,7 +90,7 @@ fun Session.myPromptConfirm(message: String): Boolean {
     return result
 }
 
-fun Session.myPromptList(message: String, choices: List<String>, hint: String = ""): String {
+fun Session.myPromptList(message: String, choices: List<String>, hint: String = ""): String {               // should options disappear after selection?
     var result = ""
     var selection by liveVarOf(0)
     section {
@@ -99,7 +114,7 @@ fun Session.myPromptList(message: String, choices: List<String>, hint: String = 
     return result
 }
 
-fun Session.myPromptCheckbox(message: String, choices: List<String>, hint: String = ""): List<String> {
+fun Session.myPromptCheckbox(message: String, choices: List<String>, hint: String = ""): List<String> {     // should options disappear after selection?
     var result = listOf<String>()
     var pos by liveVarOf(0)
     val selectedElems = liveListOf(MutableList(choices.size) { false })
