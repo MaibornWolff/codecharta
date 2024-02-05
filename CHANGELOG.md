@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Added 🚀
+
+-   Highlight building on-click of file in explorer [#3488](https://github.com/MaibornWolff/codecharta/pull/3488)
+
 ### Fixed 🐞
 
 -   Fix buildings inability to be completely red in delta mode [#3439](https://github.com/MaibornWolff/codecharta/pull/3439)
