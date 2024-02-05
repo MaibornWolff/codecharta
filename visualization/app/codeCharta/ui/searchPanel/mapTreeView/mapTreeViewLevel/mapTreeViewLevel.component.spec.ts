@@ -1,30 +1,29 @@
-import { State } from "@ngrx/store"
-import { MockStore, provideMockStore } from "@ngrx/store/testing"
-import userEvent from "@testing-library/user-event"
 import { TestBed } from "@angular/core/testing"
+import { Store, StoreModule } from "@ngrx/store"
 import { findByText, findByTitle, queryByText, queryByTitle, render, screen, waitFor } from "@testing-library/angular"
+import userEvent from "@testing-library/user-event"
 
-import { searchedNodePathsSelector } from "../../../../state/selectors/searchedNodes/searchedNodePaths.selector"
+import { IdToBuildingService } from "../../../../../../app/codeCharta/services/idToBuilding/idToBuilding.service"
+import * as VisibleFileStatesSelector from "../../../../../../app/codeCharta/state/selectors/visibleFileStates.selector"
+import * as MapColorsSelector from "../../../../../../app/codeCharta/state/store/appSettings/mapColors/mapColors.selector"
+import * as RightClickedNodeDataSelector from "../../../../../../app/codeCharta/state/store/appStatus/rightClickedNodeData/rightClickedNodeData.selector"
+import * as AttributeTypesSelector from "../../../../../../app/codeCharta/state/store/fileSettings/attributeTypes/attributeTypes.selector"
+import * as BlacklistSelector from "../../../../../../app/codeCharta/state/store/fileSettings/blacklist/blacklist.selector"
+import { CodeMapMouseEventService } from "../../../../../../app/codeCharta/ui/codeMap/codeMap.mouseEvent.service"
+import { ThreeRendererService } from "../../../../../../app/codeCharta/ui/codeMap/threeViewer/threeRenderer.service"
+import { ThreeSceneService } from "../../../../../../app/codeCharta/ui/codeMap/threeViewer/threeSceneService"
+import * as SearchedNodePathsSelector from "../../../../state/selectors/searchedNodes/searchedNodePaths.selector"
+import { defaultMapColors } from "../../../../state/store/appSettings/mapColors/mapColors.reducer"
+import { setHoveredNodeId } from "../../../../state/store/appStatus/hoveredNodeId/hoveredNodeId.actions"
+import { defaultRightClickedNodeData } from "../../../../state/store/appStatus/rightClickedNodeData/rightClickedNodeData.reducer"
+import * as AreaMetricSelector from "../../../../state/store/dynamicSettings/areaMetric/areaMetric.selector"
+import { defaultAttributeTypes } from "../../../../state/store/fileSettings/attributeTypes/attributeTypes.reducer"
+import { defaultBlacklist } from "../../../../state/store/fileSettings/blacklist/blacklist.reducer"
+import { appReducers, setStateMiddleware } from "../../../../state/store/state.manager"
 import { MapTreeViewModule } from "../mapTreeView.module"
 import { MapTreeViewLevelComponent } from "./mapTreeViewLevel.component"
 import { rootNode } from "./mocks"
-import { defaultState } from "../../../../state/store/state.manager"
-import { areaMetricSelector } from "../../../../state/store/dynamicSettings/areaMetric/areaMetric.selector"
-import { rightClickedNodeDataSelector } from "../../../../../../app/codeCharta/state/store/appStatus/rightClickedNodeData/rightClickedNodeData.selector"
-import { hoveredNodeIdSelector } from "../../../../../../app/codeCharta/state/store/appStatus/hoveredNodeId/hoveredNodeId.selector"
-import { mapColorsSelector } from "../../../../../../app/codeCharta/state/store/appSettings/mapColors/mapColors.selector"
-import { defaultRightClickedNodeData } from "../../../../../../app/codeCharta/state/store/appStatus/rightClickedNodeData/rightClickedNodeData.reducer"
-import { defaultHoveredNodeId } from "../../../../../../app/codeCharta/state/store/appStatus/hoveredNodeId/hoveredNodeId.reducer"
-import { defaultMapColors } from "../../../../../../app/codeCharta/state/store/appSettings/mapColors/mapColors.reducer"
-import { visibleFileStatesSelector } from "../../../../../../app/codeCharta/state/selectors/visibleFileStates.selector"
-import { blacklistSelector } from "../../../../../../app/codeCharta/state/store/fileSettings/blacklist/blacklist.selector"
-import { defaultBlacklist } from "../../../../../../app/codeCharta/state/store/fileSettings/blacklist/blacklist.reducer"
-import { attributeTypesSelector } from "../../../../../../app/codeCharta/state/store/fileSettings/attributeTypes/attributeTypes.selector"
-import { defaultAttributeTypes } from "../../../../../../app/codeCharta/state/store/fileSettings/attributeTypes/attributeTypes.reducer"
-import { ThreeSceneService } from "../../../../../../app/codeCharta/ui/codeMap/threeViewer/threeSceneService"
-import { CodeMapMouseEventService } from "../../../../../../app/codeCharta/ui/codeMap/codeMap.mouseEvent.service"
-import { ThreeRendererService } from "../../../../../../app/codeCharta/ui/codeMap/threeViewer/threeRenderer.service"
-import { IdToBuildingService } from "../../../../../../app/codeCharta/services/idToBuilding/idToBuilding.service"
+import { CodeMapBuilding } from "../../../codeMap/rendering/codeMapBuilding"
 
 describe("mapTreeViewLevel", () => {
 	const componentProperties = {
@@ -32,35 +31,46 @@ describe("mapTreeViewLevel", () => {
 		node: rootNode
 	}
 
+	const labels = []
+
+	const rootNodeId = componentProperties.node.id
+	const parentLeafId = componentProperties.node.children.find(childNode => childNode.name === "ParentLeaf").id
+	const bigLeafId = componentProperties.node.children.find(childNode => childNode.name === "bigLeaf").id
+	const smallLeafId = componentProperties.node.children.find(childNode => childNode.name === "ParentLeaf").children[0].id
+
+	const rootNodeBuilding = new CodeMapBuilding(rootNodeId, null, null, null)
+	const parentLeafBuilding = new CodeMapBuilding(parentLeafId, null, null, null)
+	const bigLeafBuilding = new CodeMapBuilding(bigLeafId, null, null, null)
+	const smallLeafBuilding = new CodeMapBuilding(smallLeafId, null, null, null)
+
 	beforeEach(() => {
 		TestBed.configureTestingModule({
-			imports: [MapTreeViewModule],
+			imports: [MapTreeViewModule, StoreModule.forRoot(appReducers, { metaReducers: [setStateMiddleware] })],
 			providers: [
-				provideMockStore({
-					selectors: [
-						{ selector: areaMetricSelector, value: "unary" },
-						{ selector: visibleFileStatesSelector, value: [] },
-						{ selector: blacklistSelector, value: defaultBlacklist },
-						{ selector: mapColorsSelector, value: defaultMapColors },
-						{ selector: hoveredNodeIdSelector, value: defaultHoveredNodeId },
-						{ selector: searchedNodePathsSelector, value: new Set<string>() },
-						{ selector: attributeTypesSelector, value: defaultAttributeTypes },
-						{ selector: rightClickedNodeDataSelector, value: defaultRightClickedNodeData }
-					]
-				}),
-				{ provide: State, useValue: { getValue: () => defaultState } },
 				{
 					provide: ThreeSceneService,
 					useValue: {
 						selectBuilding: jest.fn(),
 						clearConstantHighlight: jest.fn(),
-						resetLabel: jest.fn()
+						resetLabel: jest.fn(),
+						labels: { children: labels }
 					}
 				},
 				{
 					provide: IdToBuildingService,
 					useValue: {
-						get: jest.fn()
+						get: jest.fn(id => {
+							switch (id) {
+								case rootNode:
+									return rootNodeBuilding
+								case parentLeafId:
+									return parentLeafBuilding
+								case bigLeafId:
+									return bigLeafBuilding
+								case smallLeafId:
+									return smallLeafBuilding
+							}
+						})
 					}
 				},
 				{
@@ -81,6 +91,14 @@ describe("mapTreeViewLevel", () => {
 				}
 			]
 		})
+
+		jest.spyOn(AreaMetricSelector, "areaMetricSelector").mockReturnValue("unary")
+		jest.spyOn(VisibleFileStatesSelector, "visibleFileStatesSelector").mockReturnValue([])
+		jest.spyOn(BlacklistSelector, "blacklistSelector").mockReturnValue(defaultBlacklist)
+		jest.spyOn(MapColorsSelector, "mapColorsSelector").mockReturnValue(defaultMapColors)
+		jest.spyOn(SearchedNodePathsSelector, "searchedNodePathsSelector").mockReturnValue(new Set<string>())
+		jest.spyOn(AttributeTypesSelector, "attributeTypesSelector").mockReturnValue(defaultAttributeTypes)
+		jest.spyOn(RightClickedNodeDataSelector, "rightClickedNodeDataSelector").mockReturnValue(defaultRightClickedNodeData)
 	})
 
 	afterEach(() => {
@@ -142,19 +160,21 @@ describe("mapTreeViewLevel", () => {
 	})
 
 	it("should show option button on hover and be marked after context menu was opened", async () => {
-		const { container } = await render(MapTreeViewLevelComponent, { componentProperties, excludeComponentDeclaration: true })
-
-		const firstLevelFolder = queryByText(container as HTMLElement, /ParentLeaf/)
-		const optionsButton = queryByText(firstLevelFolder, "Open Node-Context-Menu")
-
-		await waitFor(() => expect(optionsButton).toBeFalsy())
-
-		await userEvent.hover(firstLevelFolder)
-		await waitFor(() => {
-			expect(queryByText(firstLevelFolder, "Open Node-Context-Menu")).not.toBe(null)
+		jest.spyOn(RightClickedNodeDataSelector, "rightClickedNodeDataSelector").mockReturnValue({
+			nodeId: componentProperties.node.children.find(childNode => childNode.name === "ParentLeaf").id,
+			xPositionOfRightClickEvent: null,
+			yPositionOfRightClickEvent: null
 		})
 
-		await userEvent.click(optionsButton)
+		const { container } = await render(MapTreeViewLevelComponent, { componentProperties, excludeComponentDeclaration: true })
+		const firstLevelFolder = container.querySelector("#\\/root\\/ParentLeaf") as HTMLElement
+
+		await waitFor(() => expect(firstLevelFolder.querySelector("cc-map-tree-view-item-option-buttons")).toBeFalsy())
+
+		await userEvent.hover(firstLevelFolder)
+		await waitFor(() => expect(firstLevelFolder.querySelector("cc-map-tree-view-item-option-buttons")).toBeTruthy())
+
+		await userEvent.click(firstLevelFolder.querySelector("cc-map-tree-view-item-option-buttons"))
 
 		const isMarked = container.querySelector("#\\/root\\/ParentLeaf.marked")
 		await waitFor(() => expect(isMarked).toBeTruthy())
@@ -173,19 +193,15 @@ describe("mapTreeViewLevel", () => {
 	})
 
 	it("should make searched items 'tree-search-result'", async () => {
-		searchedNodePathsSelectorMock.mockImplementationOnce(() => new Set(["/root/bigLeaf"]))
-		const { container, detectChanges } = await render(MapTreeViewLevelComponent, {
+		jest.spyOn(SearchedNodePathsSelector, "searchedNodePathsSelector").mockReturnValue(new Set(["/root/bigLeaf"]))
+
+		const { container } = await render(MapTreeViewLevelComponent, {
 			componentProperties,
 			excludeComponentDeclaration: true
 		})
 
-		const store = TestBed.inject(MockStore)
-		store.overrideSelector(searchedNodePathsSelector, new Set(["/root/bigLeaf"]))
-		store.refreshState()
-		detectChanges()
-
 		await waitFor(() => {
-			expect(queryByText(container as HTMLElement, /bigLeaf/).classList).toContain(".tree-search-result")
+			expect(queryByText(container as HTMLElement, /bigLeaf/).classList).toContain("tree-search-result")
 		})
 	})
 
@@ -199,7 +215,9 @@ describe("mapTreeViewLevel", () => {
 	})
 
 	it("should change text color and stop displaying option buttons on hover when area metric is changed to not exist", async () => {
-		const { container, detectChanges } = await render(MapTreeViewLevelComponent, {
+		jest.spyOn(AreaMetricSelector, "areaMetricSelector").mockReturnValue("mcc")
+
+		const { container } = await render(MapTreeViewLevelComponent, {
 			componentProperties,
 			excludeComponentDeclaration: true
 		})
@@ -209,18 +227,51 @@ describe("mapTreeViewLevel", () => {
 
 		await waitFor(() => expect(findByTitle(firstLevelFolder as HTMLElement, "Open Node-Context-Menu")).toBeTruthy())
 
-		const store = TestBed.inject(MockStore)
-		store.overrideSelector(areaMetricSelector, "mcc")
-		store.refreshState()
-		detectChanges()
-
 		await userEvent.hover(firstLevelFolder)
 		const span = await findByText(firstLevelFolder as HTMLElement, /ParentLeaf/)
 		await waitFor(() => expect(queryByTitle(firstLevelFolder as HTMLElement, "Open Node-Context-Menu")).toBeFalsy())
 		await waitFor(() => expect(span.classList).toContain("noAreaMetric"))
 	})
 
-	// it("should select the corresponding building on click of folder or file", async () => {})
+	it("should select the corresponding building on click of folder or file", async () => {
+		const { container } = await render(MapTreeViewLevelComponent, { componentProperties, excludeComponentDeclaration: true })
+		const codeMapMouseEventService = TestBed.inject(CodeMapMouseEventService)
+		const threeSceneService = TestBed.inject(ThreeSceneService)
+		const threeRendererService = TestBed.inject(ThreeRendererService)
+		const firstLevelFolder = container.querySelector("#\\/root\\/ParentLeaf")
 
-	// it("should hover and unhover the corresponding building on hover and hover of folder or file", async () => {})
+		await userEvent.click(firstLevelFolder)
+		await waitFor(() => {
+			expect(codeMapMouseEventService.drawLabelSelectedBuilding).toHaveBeenCalledWith(parentLeafBuilding)
+			expect(threeSceneService.selectBuilding).toHaveBeenCalledWith(parentLeafBuilding)
+			expect(threeSceneService.clearConstantHighlight).toHaveBeenCalledTimes(1)
+			expect(threeRendererService.render).toHaveBeenCalledTimes(1)
+		})
+	})
+
+	it("should hover and unhover the corresponding building on hover and hover of folder or file", async () => {
+		const { container } = await render(MapTreeViewLevelComponent, { componentProperties, excludeComponentDeclaration: true })
+		const codeMapMouseEventService = TestBed.inject(CodeMapMouseEventService)
+		const threeSceneService = TestBed.inject(ThreeSceneService)
+		const store = TestBed.inject(Store)
+		const dispatchSpy = jest.spyOn(store, "dispatch")
+
+		const firstLevelFolder = container.querySelector("#\\/root\\/ParentLeaf")
+
+		await userEvent.hover(firstLevelFolder)
+		await waitFor(() => {
+			expect(codeMapMouseEventService.setLabelHoveredLeaf).toHaveBeenCalledWith(parentLeafBuilding, labels)
+			expect(codeMapMouseEventService.hoverNode).toHaveBeenCalledWith(parentLeafId)
+			expect(dispatchSpy).toHaveBeenCalledWith(setHoveredNodeId({ value: parentLeafId }))
+		})
+
+		await userEvent.unhover(firstLevelFolder)
+
+		await waitFor(() => {
+			expect(threeSceneService.resetLabel).toHaveBeenCalledTimes(1)
+			expect(codeMapMouseEventService.unhoverNode).toHaveBeenCalledTimes(1)
+			expect(codeMapMouseEventService.clearLabelHoveredBuilding).toHaveBeenCalledTimes(1)
+			expect(dispatchSpy).toHaveBeenCalledWith(setHoveredNodeId({ value: null }))
+		})
+	})
 })
