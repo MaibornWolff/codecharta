@@ -12,6 +12,7 @@ export const calculateNodeMetricData = (visibleFileStates: FileState[], blacklis
 		return []
 	}
 
+	const metricValues: Map<string, number[]> = new Map()
 	const metricMaxValues: Map<string, number> = new Map()
 	const metricMinValues: Map<string, number> = new Map()
 
@@ -21,6 +22,11 @@ export const calculateNodeMetricData = (visibleFileStates: FileState[], blacklis
 				for (const metric of Object.keys(node.data.attributes)) {
 					const maxValue = metricMaxValues.get(metric)
 					const minValue = metricMinValues.get(metric)
+
+					if (!metricValues.get(metric)) {
+						metricValues.set(metric, [])
+					}
+					metricValues.get(metric).push(node.data.attributes[metric])
 
 					if (minValue === undefined || minValue >= node.data.attributes[metric]) {
 						metricMinValues.set(metric, node.data.attributes[metric])
@@ -43,11 +49,13 @@ export const calculateNodeMetricData = (visibleFileStates: FileState[], blacklis
 	for (const [key, value] of metricMaxValues) {
 		metricData.push({
 			name: key,
+			values: metricValues.get(key),
 			maxValue: value,
 			minValue: metricMinValues.get(key)
 		})
 	}
 
 	sortByMetricName(metricData)
+
 	return metricData
 }

@@ -6,6 +6,7 @@ export const metricColorRangeSliderValuesSelector = createSelector(
 	selectedColorMetricDataSelector,
 	colorRangeSelector,
 	(colorMetricData, colorRange) => ({
+		values: colorMetricData.values,
 		min: colorMetricData.minValue,
 		max: colorMetricData.maxValue,
 		from: colorRange.from,

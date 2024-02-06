@@ -11,17 +11,18 @@
 	</mat-form-field>
 
 	<div #rangeSliderContainer class="cc-range-slider-slider">
-		<span [style.width.px]="sliderRangePosition.leftEnd" [style.border-bottom-color]="leftColor" class="cc-range-slider-bar"></span>
-		<span
-			[style.width.px]="sliderRangePosition.rightStart - sliderRangePosition.leftEnd"
-			[style.border-bottom-color]="middleColor"
-			class="cc-range-slider-bar"
-		></span>
-		<span
-			[style.width.px]="sliderWidth - sliderRangePosition.rightStart"
-			[style.border-bottom-color]="rightColor"
-			class="cc-range-slider-bar"
-		></span>
+		<!--		TODO: change this after finishing the histogram-->
+		<!--		<span [style.width.px]="sliderRangePosition.leftEnd" [style.border-bottom-color]="leftColor" class="cc-range-slider-bar"></span>-->
+		<!--		<span-->
+		<!--			[style.width.px]="sliderRangePosition.rightStart - sliderRangePosition.leftEnd"-->
+		<!--			[style.border-bottom-color]="middleColor"-->
+		<!--			class="cc-range-slider-bar"-->
+		<!--		></span>-->
+		<!--		<span-->
+		<!--			[style.width.px]="sliderWidth - sliderRangePosition.rightStart"-->
+		<!--			[style.border-bottom-color]="rightColor"-->
+		<!--			class="cc-range-slider-bar"-->
+		<!--		></span>-->
 
 		<div
 			#leftThumb
@@ -35,14 +36,14 @@
 			[style.left.px]="sliderRangePosition.rightStart - thumbRadius"
 			(mousedown)="setCurrentlySliding('rightThumb')"
 		></div>
-		<cc-range-slider-labels
-			[minValue]="minValue"
-			[maxValue]="maxValue"
-			[leftValueLabel]="upcomingLeftValue"
-			[rightValueLabel]="upcomingRightValue"
-			[sliderRangePosition]="sliderRangePosition"
-			[sliderWidth]="sliderWidth"
-		></cc-range-slider-labels>
+		<!--		<cc-range-slider-labels-->
+		<!--			[minValue]="minValue"-->
+		<!--			[maxValue]="maxValue"-->
+		<!--			[leftValueLabel]="upcomingLeftValue"-->
+		<!--			[rightValueLabel]="upcomingRightValue"-->
+		<!--			[sliderRangePosition]="sliderRangePosition"-->
+		<!--			[sliderWidth]="sliderWidth"-->
+		<!--		></cc-range-slider-labels>-->
 	</div>
 
 	<mat-form-field appearance="outline">
