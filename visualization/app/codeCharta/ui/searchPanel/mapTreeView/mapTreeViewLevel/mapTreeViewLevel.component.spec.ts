@@ -3,15 +3,15 @@ import { Store, StoreModule } from "@ngrx/store"
 import { findByText, findByTitle, queryByText, queryByTitle, render, screen, waitFor } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
 
-import { IdToBuildingService } from "../../../../../../app/codeCharta/services/idToBuilding/idToBuilding.service"
-import * as VisibleFileStatesSelector from "../../../../../../app/codeCharta/state/selectors/visibleFileStates.selector"
-import * as MapColorsSelector from "../../../../../../app/codeCharta/state/store/appSettings/mapColors/mapColors.selector"
-import * as RightClickedNodeDataSelector from "../../../../../../app/codeCharta/state/store/appStatus/rightClickedNodeData/rightClickedNodeData.selector"
-import * as AttributeTypesSelector from "../../../../../../app/codeCharta/state/store/fileSettings/attributeTypes/attributeTypes.selector"
-import * as BlacklistSelector from "../../../../../../app/codeCharta/state/store/fileSettings/blacklist/blacklist.selector"
-import { CodeMapMouseEventService } from "../../../../../../app/codeCharta/ui/codeMap/codeMap.mouseEvent.service"
-import { ThreeRendererService } from "../../../../../../app/codeCharta/ui/codeMap/threeViewer/threeRenderer.service"
-import { ThreeSceneService } from "../../../../../../app/codeCharta/ui/codeMap/threeViewer/threeSceneService"
+import { IdToBuildingService } from "../../../../services/idToBuilding/idToBuilding.service"
+import * as VisibleFileStatesSelector from "../../../../state/selectors/visibleFileStates.selector"
+import * as MapColorsSelector from "../../../../state/store/appSettings/mapColors/mapColors.selector"
+import * as RightClickedNodeDataSelector from "../../../../state/store/appStatus/rightClickedNodeData/rightClickedNodeData.selector"
+import * as AttributeTypesSelector from "../../../../state/store/fileSettings/attributeTypes/attributeTypes.selector"
+import * as BlacklistSelector from "../../../../state/store/fileSettings/blacklist/blacklist.selector"
+import { CodeMapMouseEventService } from "../../../codeMap/codeMap.mouseEvent.service"
+import { ThreeRendererService } from "../../../codeMap/threeViewer/threeRenderer.service"
+import { ThreeSceneService } from "../../../codeMap/threeViewer/threeSceneService"
 import * as SearchedNodePathsSelector from "../../../../state/selectors/searchedNodes/searchedNodePaths.selector"
 import { defaultMapColors } from "../../../../state/store/appSettings/mapColors/mapColors.reducer"
 import { setHoveredNodeId } from "../../../../state/store/appStatus/hoveredNodeId/hoveredNodeId.actions"
@@ -249,7 +249,7 @@ describe("mapTreeViewLevel", () => {
 		})
 	})
 
-	it("should hover and unhover the corresponding building on hover and hover of folder or file", async () => {
+	it("should hover and unhover the corresponding building on hover and unhover of folder or file", async () => {
 		const { container } = await render(MapTreeViewLevelComponent, { componentProperties, excludeComponentDeclaration: true })
 		const codeMapMouseEventService = TestBed.inject(CodeMapMouseEventService)
 		const threeSceneService = TestBed.inject(ThreeSceneService)
