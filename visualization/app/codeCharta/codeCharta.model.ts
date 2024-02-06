@@ -251,12 +251,14 @@ export interface EdgeMetricData {
 	name: string
 	maxValue: number
 	minValue: number
+	values: number[]
 }
 
 export interface NodeMetricData {
 	name: string
 	maxValue: number
 	minValue: number
+	values: number[]
 }
 
 export interface MetricData {

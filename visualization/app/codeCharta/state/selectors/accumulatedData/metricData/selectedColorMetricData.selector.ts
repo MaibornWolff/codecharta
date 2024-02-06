@@ -10,6 +10,7 @@ export type MetricMinMax = {
 export const selectedColorMetricDataSelector = createSelector(metricDataSelector, colorMetricSelector, (metricData, colorMetric) => {
 	const data = metricData.nodeMetricData.find(x => x.name === colorMetric)
 	return {
+		values: data?.values ?? [],
 		minValue: data?.minValue ?? 0,
 		maxValue: data?.maxValue ?? 0
 	}
