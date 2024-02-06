@@ -8,10 +8,10 @@ import { areaMetricSelector } from "../../../../state/store/dynamicSettings/area
 import { Store } from "@ngrx/store"
 import { isAreaValid } from "../areaMetricValidPipe.pipe"
 import { setHoveredNodeId } from "../../../../state/store/appStatus/hoveredNodeId/hoveredNodeId.actions"
-import { ThreeSceneService } from "../../../../../../app/codeCharta/ui/codeMap/threeViewer/threeSceneService"
-import { IdToBuildingService } from "../../../../../../app/codeCharta/services/idToBuilding/idToBuilding.service"
-import { ThreeRendererService } from "../../../../../../app/codeCharta/ui/codeMap/threeViewer/threeRenderer.service"
-import { CodeMapMouseEventService } from "../../../../../../app/codeCharta/ui/codeMap/codeMap.mouseEvent.service"
+import { ThreeSceneService } from "../../../codeMap/threeViewer/threeSceneService"
+import { IdToBuildingService } from "../../../../services/idToBuilding/idToBuilding.service"
+import { ThreeRendererService } from "../../../codeMap/threeViewer/threeRenderer.service"
+import { CodeMapMouseEventService } from "../../../codeMap/codeMap.mouseEvent.service"
 
 @Component({
 	selector: "cc-map-tree-view-level",
