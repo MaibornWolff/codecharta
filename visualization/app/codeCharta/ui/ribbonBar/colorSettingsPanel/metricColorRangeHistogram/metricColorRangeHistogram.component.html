@@ -1,4 +1,4 @@
-<cc-range-slider
+<cc-range-histogram
 	[minValue]="(sliderValues$ | async).min"
 	[maxValue]="(sliderValues$ | async).max"
 	[currentLeftValue]="(sliderValues$ | async).from"
@@ -8,4 +8,5 @@
 	[middleColor]="(sliderColors$ | async).middleColor"
 	[rightColor]="(sliderColors$ | async).rightColor"
 	[handleValueChange]="handleValueChange"
-></cc-range-slider>
+	[colorMetric]="colorMetric$ | async"
+></cc-range-histogram>

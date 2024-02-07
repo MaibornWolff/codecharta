@@ -2,7 +2,7 @@ import { createSelector } from "@ngrx/store"
 import { selectedColorMetricDataSelector } from "../../../../../state/selectors/accumulatedData/metricData/selectedColorMetricData.selector"
 import { colorRangeSelector } from "../../../../../state/store/dynamicSettings/colorRange/colorRange.selector"
 
-export const metricColorRangeSliderValuesSelector = createSelector(
+export const metricColorRangeHistogramValuesSelector = createSelector(
 	selectedColorMetricDataSelector,
 	colorRangeSelector,
 	(colorMetricData, colorRange) => ({

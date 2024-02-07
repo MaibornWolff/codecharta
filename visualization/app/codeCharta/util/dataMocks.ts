@@ -1989,15 +1989,15 @@ export const FILE_STATES_JAVA: FileState[] = [
 ]
 
 export const METRIC_DATA: NodeMetricData[] = [
-	{ name: "mcc", maxValue: 100, minValue: 1 },
-	{ name: "rloc", maxValue: 100, minValue: 30 },
-	{ name: "functions", maxValue: 1000, minValue: 10 },
-	{ name: UNARY_METRIC, maxValue: 1, minValue: 1 }
+	{ name: "mcc", maxValue: 100, minValue: 1, values: [1, 100] },
+	{ name: "rloc", maxValue: 100, minValue: 30, values: [30, 100] },
+	{ name: "functions", maxValue: 1000, minValue: 10, values: [10, 1000] },
+	{ name: UNARY_METRIC, maxValue: 1, minValue: 1, values: [1, 1] }
 ]
 
 export const EDGE_METRIC_DATA: EdgeMetricData[] = [
-	{ name: "pairing_rate", maxValue: 10, minValue: 0 },
-	{ name: "average_commits", maxValue: 20, minValue: 0 }
+	{ name: "pairing_rate", maxValue: 10, minValue: 0, values: [0, 10] },
+	{ name: "average_commits", maxValue: 20, minValue: 0, values: [0, 20] }
 ]
 
 export const STATE: CcState = {

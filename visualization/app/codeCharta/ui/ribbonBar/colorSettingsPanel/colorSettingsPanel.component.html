@@ -7,7 +7,7 @@
 	label="Reset thresholds"
 ></cc-reset-settings-button>
 
-<mat-form-field appearance="outline">
+<mat-form-field appearance="outline" class="gradient-mode-selector">
 	<mat-label>Gradient Mode</mat-label>
 	<mat-select [value]="colorMode$ | async" (selectionChange)="handleColorModeChange($event.value)">
 		<div (mousedown)="$event.stopPropagation()">
@@ -39,19 +39,8 @@
 </ng-container>
 <cc-color-picker-for-map-color [mapColorFor]="'selected'"> </cc-color-picker-for-map-color>
 
-<div class="invert-colors">
-	<mat-checkbox
-		*ngIf="!(isDeltaState$ | async)"
-		[checked]="isColorRangeInverted"
-		(change)="handleIsColorRangeInvertedChange($event.checked)"
-		>Invert Colors</mat-checkbox
-	>
-	<mat-checkbox *ngIf="isDeltaState$ | async" [checked]="areDeltaColorsInverted" (change)="handleAreDeltaColorsInverted($event.checked)"
-		>Invert Colors</mat-checkbox
-	>
-</div>
-
-<cc-reset-settings-button
+<div class="color-row">
+	<cc-reset-settings-button
 	[settingsKeys]="
 		(isDeltaState$ | async)
 			? ['appSettings.mapColors.positiveDelta', 'appSettings.mapColors.negativeDelta', 'appSettings.mapColors.selected']
@@ -65,4 +54,16 @@
 	tooltip="Reset color values to default"
 	label="Reset colors"
 	[callback]="resetInvertColorCheckboxes"
-></cc-reset-settings-button>
+	>
+	</cc-reset-settings-button>
+
+	<mat-checkbox
+		*ngIf="!(isDeltaState$ | async)"
+		[checked]="isColorRangeInverted"
+		(change)="handleIsColorRangeInvertedChange($event.checked)"
+		>Invert Colors</mat-checkbox
+	>
+	<mat-checkbox *ngIf="isDeltaState$ | async" [checked]="areDeltaColorsInverted" (change)="handleAreDeltaColorsInverted($event.checked)"
+		>Invert Colors</mat-checkbox
+	>
+</div>
