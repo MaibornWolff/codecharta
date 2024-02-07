@@ -11,6 +11,8 @@ root = pathlib.Path().absolute()
 def is_root_folder():
     return root[-10:] == "codecharta"
 
+def is_visualization(repository):
+  return repository == "Visualization"
 
 def confirm(message, print_message):
     confirm = [{
@@ -47,9 +49,8 @@ def get_latest_changelog_entries(path):
     return new_changelog_section
 
 
-def get_release_post(version, path, repository):
-    prefix_version = ("vis-" if repository == "Visualization" else "ana-")+version
-    release_post_header = f"---\ncategories:\n  - Release\ntags:\n  - gh-pages\n  - {repository.lower()}\n\ntitle: {repository} {version}\n---\n\n"
+def get_release_post(version, prefix_version, path, repository):
+    release_post_header = f"---\ncategories:\n  - Release\ntags:\n  - gh-pages\n  - release\n  - {repository.lower()}\n\ntitle: {repository} version {version}\n---\n\n"
     release_post_headline = "{{page.title}} is live and ready for"+f" [download](https://github.com/MaibornWolff/codecharta/releases/tag/{prefix_version}). This version brings the following:\n\n"
     release_post_content = get_latest_changelog_entries(path)
     return release_post_header + release_post_headline + release_post_content
@@ -125,7 +126,7 @@ questions_repo = [{
 repository = PyInquirer.prompt(questions_repo)["repository"]
 print(f"Releasing a new version for {repository}!")
 
-new_versions = new_versions_vis if(repository == "Visualization") else new_versions_ana
+new_versions = new_versions_vis if(is_visualization(repository)) else new_versions_ana
 new_major_version, new_minor_version, new_patch_version = new_versions
 
 # Get release type and version
@@ -161,9 +162,10 @@ day = date.strftime("%d")
 date_formatted = f"{date.year}-{month}-{day}"
 
 # prepare version for blog post
+new_prefix_version = ("vis-" if is_visualization(repository) else "ana-")+new_version
 new_version_formatted = new_version.replace(".", "_")
 
-if(repository == "Visualization"):
+if(is_visualization(repository)):
   ## Update visualization files
 
   # bump version in package.json in visualization
@@ -218,7 +220,7 @@ release_post = f"{date_formatted}-{new_version_formatted}.md"
 release_post_path = f"{root}/gh-pages/_posts/release/{release_post}"
 
 with open(release_post_path, "w", encoding="utf-8") as fp:
-    fp.write(get_release_post(new_version, changelog_path, repository))
+    fp.write(get_release_post(new_version, new_prefix_version, changelog_path, repository))
 
 # confirm and make a commit and tag it correctly
 message = "Do you want to commit the changes and tag them correctly? WARNING: Commit and Tag need to be undone manually when done unintentionally!"
@@ -227,12 +229,17 @@ confirm(message, printMessage)
 
 quit()
 
-repo.index.add([release_post_path, changelog_path, gradle_properties,
-                analysis_package_json, analysis_package_lock_json, visualization_package_json,
+if is_visualization(repository):
+  repo.index.add([release_post_path, changelog_path,
+                visualization_package_json,
                 visualization_package_lock_json])
-subprocess.run('git commit -a -m "Releasing ' + new_version + '"', shell=True)
-tag = repo.create_tag(new_version, ref="HEAD",
-                      message=f"Releasing {new_version}")
+else
+  repo.index.add([release_post_path, changelog_path, gradle_properties,
+                analysis_package_json, analysis_package_lock_json])
+
+subprocess.run('git commit -a -m "Releasing ' + new_prefix_version + '"', shell=True)
+tag = repo.create_tag(new_prefix_version, ref="HEAD",
+                      message=f"Releasing {new_prefix_version}")
 
 # push
 message = "The release is now committed and tagged but not pushed. In order to finish this release you need to push the commit and tag. Push?"
