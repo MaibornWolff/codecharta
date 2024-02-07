@@ -86,15 +86,15 @@ if not is_root_folder:
 else:
     repo = git.Repo(root)
 
-# Check if there are any uncommitted changes
-# if repo.is_dirty():
-#     print("Please commit your changes first and/or ignore untracked files in git. Aborting.")
-#     quit()
+Check if there are any uncommitted changes
+if repo.is_dirty():
+    print("Please commit your changes first and/or ignore untracked files in git. Aborting.")
+    quit()
 
-# Check if we are on main branch
-# if repo.active_branch.name != "main":
-#     print("You can only release on main branch. Aborting.")
-#     quit()
+Check if we are on main branch
+if repo.active_branch.name != "main":
+    print("You can only release on main branch. Aborting.")
+    quit()
 
 # Get latest tag for visualization and analysis
 all_tags_sorted = sorted(repo.tags, key=lambda t: t.commit.committed_datetime)
@@ -226,8 +226,6 @@ with open(release_post_path, "w", encoding="utf-8") as fp:
 message = "Do you want to commit the changes and tag them correctly? WARNING: Commit and Tag need to be undone manually when done unintentionally!"
 printMessage = "Committing and tagging..."
 confirm(message, printMessage)
-
-quit()
 
 if is_visualization(repository):
   repo.index.add([release_post_path, changelog_path,
