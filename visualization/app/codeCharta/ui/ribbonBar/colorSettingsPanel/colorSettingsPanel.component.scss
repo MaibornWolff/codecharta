@@ -1,28 +1,35 @@
 cc-color-settings-panel {
 	&.cc-metric-settings-panel {
-		mat-form-field {
+		.gradient-mode-selector {
 			width: 100%;
-			margin: 12px 0px;
+			height: 40px;
+			margin: 5px 0px;
 
-			.mat-mdc-text-field-wrapper .mat-mdc-form-field-flex .mat-mdc-form-field-infix {
-				padding: 10px;
-				min-height: 28px;
+		.mat-mdc-text-field-wrapper .mat-mdc-form-field-flex .mat-mdc-form-field-infix {
+			padding: 10px;
+			min-height: 28px;
 
-				.mat-mdc-input-element {
-					min-height: inherit;
-				}
+			.mat-mdc-input-element {
+				min-height: inherit;
 			}
+		}
 
-			.mat-mdc-form-field-subscript-wrapper.mat-mdc-form-field-bottom-align {
-				display: none;
+		.mat-mdc-form-field-subscript-wrapper.mat-mdc-form-field-bottom-align {
+			display: none;
 			}
 		}
 
 		.color-row {
 			display: flex;
 			align-items: center;
-			justify-content: space-between;
-			padding-right: 8px;
 		}
 	}
+}
+
+cc-color-picker-for-map-color {
+	width: 50%;
+}
+
+cc-reset-settings-button {
+	width: 50%;
 }

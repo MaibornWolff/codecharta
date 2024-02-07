@@ -1,20 +1,22 @@
 import { Component, ViewEncapsulation } from "@angular/core"
-import { HandleValueChange } from "./rangeSlider/rangeSlider.component"
+import { HandleValueChange } from "./rangeHistogram/rangeHistogram.component"
 import { setColorRange } from "../../../../state/store/dynamicSettings/colorRange/colorRange.actions"
-import { metricColorRangeSliderColorsSelector } from "./selectors/metricColorRangeSliderColors.selector"
-import { metricColorRangeSliderValuesSelector } from "./selectors/metricColorRangeSliderValues.selector"
+import { metricColorRangeHistogramColorsSelector } from "./selectors/metricColorRangeHistogramColors.selector"
+import { metricColorRangeHistogramValuesSelector } from "./selectors/metricColorRangeHistogramValues.selector"
 import { ColorRange, CcState } from "../../../../codeCharta.model"
 import { debounce } from "../../../../util/debounce"
 import { Store } from "@ngrx/store"
+import { colorMetricSelector } from "../../../../state/store/dynamicSettings/colorMetric/colorMetric.selector"
 
 @Component({
 	selector: "cc-metric-color-range-slider",
-	templateUrl: "./metricColorRangeSlider.component.html",
+	templateUrl: "./metricColorRangeHistogram.component.html",
 	encapsulation: ViewEncapsulation.None
 })
-export class MetricColorRangeSliderComponent {
-	sliderValues$ = this.store.select(metricColorRangeSliderValuesSelector)
-	sliderColors$ = this.store.select(metricColorRangeSliderColorsSelector)
+export class MetricColorRangeHistogramComponent {
+	sliderValues$ = this.store.select(metricColorRangeHistogramValuesSelector)
+	sliderColors$ = this.store.select(metricColorRangeHistogramColorsSelector)
+	colorMetric$ = this.store.select(colorMetricSelector)
 
 	private newLeftValue: null | number = null
 	private newRightValue: null | number = null

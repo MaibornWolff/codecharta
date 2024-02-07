@@ -7,12 +7,30 @@ import { MetricMinMax } from "../../state/selectors/accumulatedData/metricData/s
 export class MapColorLabelPipe implements PipeTransform {
 	transform(metricName: keyof MapColors, colorRange: ColorRange, nodeMetricRange: MetricMinMax): string {
 		switch (metricName) {
-			case "positive":
-				return `${nodeMetricRange.minValue} to < ${this.formatNumber(colorRange.from)}`
-			case "neutral":
-				return `≥ ${this.formatNumber(colorRange.from)} to ≤ ${this.formatNumber(colorRange.to)}`
-			case "negative":
-				return `> ${this.formatNumber(colorRange.to)} to ${this.formatNumber(nodeMetricRange.maxValue)}`
+			case "positive": {
+				const isFromValueEqualMinValue = nodeMetricRange.minValue === colorRange.from
+				const isFromValueEqualMaxValue = nodeMetricRange.maxValue === colorRange.from
+				return isFromValueEqualMinValue
+					? `-`
+					: isFromValueEqualMaxValue
+					? `${nodeMetricRange.minValue} to ${this.formatNumber(colorRange.from)}`
+					: `${nodeMetricRange.minValue} to ${this.formatNumber(colorRange.from - 1)}`
+			}
+			case "neutral": {
+				const isFromValueEqualToValue = colorRange.from === colorRange.to
+				const isToValueEqualMaxValue = colorRange.to === nodeMetricRange.maxValue
+				return isFromValueEqualToValue
+					? `-`
+					: isToValueEqualMaxValue
+					? `${this.formatNumber(colorRange.from)} to ${this.formatNumber(colorRange.to)}`
+					: `${this.formatNumber(colorRange.from)} to ${this.formatNumber(colorRange.to - 1)}`
+			}
+			case "negative": {
+				const isToValueEqualToMaxValue = nodeMetricRange.maxValue === colorRange.to
+				return isToValueEqualToMaxValue
+					? `-`
+					: `${this.formatNumber(colorRange.to)} to ${this.formatNumber(nodeMetricRange.maxValue)}`
+			}
 			case "positiveDelta":
 				return "+Δ positive delta"
 			case "negativeDelta":

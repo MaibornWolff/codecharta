@@ -1,0 +1,69 @@
+rect {
+	// &.overlay {
+	// 	stroke: #888;
+	// }
+
+	&.selection {
+		stroke: none;
+		fill: transparent;
+	}
+}
+
+.slider-value-input-field {
+	width: 50%;
+
+			.mat-mdc-text-field-wrapper {
+				padding: 0px 4px;
+
+				.mat-mdc-form-field-flex {
+					align-self: center;
+
+					.mat-mdc-form-field-infix {
+						padding: 0px 0px;
+						min-height: 40px;
+
+						.mat-mdc-input-element {
+							text-align: center;
+							min-height: inherit;
+						}
+					}
+				}
+			}
+
+			.mat-mdc-form-field-subscript-wrapper.mat-mdc-form-field-bottom-align {
+				display: none;
+			}
+}
+
+#slider-label-left,
+#slider-label-right,
+#x-label,
+#y-label,
+#axis-x,
+#axis-y{
+	font-size: 11px;
+
+	&[text-anchor] {
+		&.end {
+			text-anchor: end;
+		}
+
+		&.start {
+			text-anchor: start;
+		}
+	}
+}
+
+#slider-label-left {
+	font-size: 11px;
+	fill: #888;
+	text-anchor: end;
+	dominant-baseline: hanging;
+}
+
+#slider-label-right {
+	font-size: 11px;
+	fill: #888;
+	text-anchor: start;
+	dominant-baseline: hanging;
+}
