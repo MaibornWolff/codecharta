@@ -233,7 +233,7 @@ if is_visualization(repository):
   repo.index.add([release_post_path, changelog_path,
                 visualization_package_json,
                 visualization_package_lock_json])
-else
+else:
   repo.index.add([release_post_path, changelog_path, gradle_properties,
                 analysis_package_json, analysis_package_lock_json])
 
