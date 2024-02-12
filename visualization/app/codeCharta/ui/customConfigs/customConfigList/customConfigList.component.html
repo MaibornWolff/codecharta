@@ -13,29 +13,39 @@
 		Custom Views allow you to save and upload your individual configurations for certain maps. Find out more about Custom Views in the
 		<a href="https://maibornwolff.github.io/codecharta/docs/custom-view/" target="_blank" rel="noopener noreferrer">documentation</a>.
 	</p>
-	<mat-divider></mat-divider>
 	<div
 		class="no-custom-configs-box"
 		*ngIf="dropDownCustomConfigItemGroups.applicableItems.size === 0 && dropDownCustomConfigItemGroups.nonApplicableItems.size === 0"
 	>
 		It is time to add your first Custom View!
 	</div>
-	<mat-accordion class="custom-config-container" [multi]="true">
+
+	<mat-accordion
+		class="custom-config-container"
+		[multi]="true"
+		*ngIf="dropDownCustomConfigItemGroups.applicableItems.size !== 0 || dropDownCustomConfigItemGroups.nonApplicableItems.size !== 0"
+	>
+		<mat-form-field class="cc-custom-configs-search-field">
+			<i matPrefix class="fa fa-search custom-config-search-icon"></i>
+			<mat-label>{{ searchPlaceholder }} </mat-label>
+			<input matInput type="text" (input)="setSearchTermDebounced($event)" [value]="searchTerm" />
+		</mat-form-field>
 		<cc-custom-config-item-group
 			[customConfigItemGroups]="dropDownCustomConfigItemGroups.applicableItems"
+			[searchTerm]="searchTerm"
 		></cc-custom-config-item-group>
 		<cc-custom-config-item-group
-			*ngIf="!isCollapsed"
-			class="non-applicable-configs-group"
+			*ngIf="!isNonApplicableListCollapsed"
 			[customConfigItemGroups]="dropDownCustomConfigItemGroups.nonApplicableItems"
+			[searchTerm]="searchTerm"
 		></cc-custom-config-item-group>
 		<button
 			class="toggle-non-applicable-configs-button"
 			*ngIf="dropDownCustomConfigItemGroups.nonApplicableItems.size > 0"
 			(click)="toggleNonApplicableCustomConfigsList()"
 		>
-			{{ isCollapsed ? "Show non-applicable Custom Views" : "Hide non-applicable Custom Views" }}
-			<i [ngClass]="isCollapsed ? 'fa fa-angle-down' : 'fa fa-angle-up'"></i>
+			{{ isNonApplicableListCollapsed ? "Show non-applicable Custom Views" : "Hide non-applicable Custom Views" }}
+			<i [ngClass]="isNonApplicableListCollapsed ? 'fa fa-angle-down' : 'fa fa-angle-up'"></i>
 		</button>
 	</mat-accordion>
 </mat-dialog-content>
