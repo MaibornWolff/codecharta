@@ -14,6 +14,7 @@ import { CustomConfigColorSchemaBySelectionMode } from "./customConfigList/custo
 import { FormsModule } from "@angular/forms"
 import { CustomConfigNoteDialogButtonModule } from "./customConfigNoteDialogButton/customConfigNoteDialogButton.module"
 import { TruncateTextPipeModule } from "../../util/pipes/TruncateTextPipeModule"
+import { FilterCustomConfigDataBySearchTermPipe } from "./customConfigList/customConfigItemGroup/customConfigDescription/filterCustomConfigDataBySearchTerm.pipe"
 
 @NgModule({
 	imports: [
@@ -33,7 +34,7 @@ import { TruncateTextPipeModule } from "../../util/pipes/TruncateTextPipeModule"
 		ApplyCustomConfigButtonComponent,
 		CustomConfig2ApplicableMessage,
 		CustomConfig2ApplicableColor,
-
+		FilterCustomConfigDataBySearchTermPipe,
 		CustomConfigColorSchemaBySelectionMode
 	],
 	exports: [CustomConfigsComponent]
