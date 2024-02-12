@@ -11,7 +11,7 @@ export interface CustomConfigItem {
 	name: string
 	assignedMaps: Map<string, string>
 	mapSelectionMode: CustomConfigMapSelectionMode
-	metrics: Pick<PrimaryMetrics, "areaMetric" | "heightMetric" | "colorMetric" | "edgeMetric">
+	metrics: PrimaryMetrics
 	mapColors: CustomConfigColors
 	isApplicable: boolean
 	note?: string
