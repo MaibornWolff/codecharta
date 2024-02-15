@@ -1,4 +1,3 @@
-import "core-js/stable/structured-clone"
 import "fake-indexeddb/auto"
 import { openDB } from "idb"
 import { defaultState } from "../../state/store/state.manager"
