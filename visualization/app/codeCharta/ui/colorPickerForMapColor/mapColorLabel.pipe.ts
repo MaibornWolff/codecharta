@@ -5,12 +5,15 @@ import { MetricMinMax } from "../../state/selectors/accumulatedData/metricData/s
 
 @Pipe({ name: "mapColorLabel" })
 export class MapColorLabelPipe implements PipeTransform {
-	transform(metricName: keyof MapColors, colorRange: ColorRange, nodeMetricRange: MetricMinMax): string {
+	transform(metricName: keyof MapColors, colorRange: ColorRange, nodeMetricRange: MetricMinMax, colorMetric: string): string {
 		switch (metricName) {
 			case "positive": {
+				const isColorMetricUnary = colorMetric === "unary"
 				const isFromValueEqualMinValue = nodeMetricRange.minValue === colorRange.from
 				const isFromValueEqualMaxValue = nodeMetricRange.maxValue === colorRange.from
-				return isFromValueEqualMinValue
+				return isColorMetricUnary
+					? `${nodeMetricRange.minValue} - ${nodeMetricRange.minValue}`
+					: isFromValueEqualMinValue
 					? `-`
 					: isFromValueEqualMaxValue
 					? `${nodeMetricRange.minValue} to ${this.formatNumber(colorRange.from)}`

@@ -1,0 +1,54 @@
+@use "../../../../../material/theme";
+
+cc-metric-color-range-slider {
+	.cc-range-slider-container {
+		display: flex;
+		align-items: center;
+		margin: 0px 10px;
+		mat-form-field {
+			height: 32px;
+
+			.mat-mdc-text-field-wrapper {
+				padding: 0px 4px;
+
+				.mat-mdc-form-field-flex {
+					align-self: center;
+
+					.mat-mdc-form-field-infix {
+						padding: 0px 0px;
+						min-height: 28px;
+
+						.mat-mdc-input-element {
+							min-height: inherit;
+						}
+					}
+				}
+			}
+
+			.mat-mdc-form-field-subscript-wrapper.mat-mdc-form-field-bottom-align {
+				display: none;
+			}
+		}
+
+		.cc-range-slider-slider {
+			flex: 1;
+			margin: 0 8px;
+			position: relative;
+			line-height: 48px;
+
+			.cc-range-slider-bar {
+				display: inline-block;
+				border-bottom-width: 4px;
+				border-bottom-style: solid;
+			}
+
+			.cc-range-slider-slider-thumb {
+				cursor: pointer;
+				position: absolute;
+				top: 20px;
+				border-radius: 100%;
+				border: 7px solid theme.$cc-primary-color;
+			}
+		}
+	}
+}

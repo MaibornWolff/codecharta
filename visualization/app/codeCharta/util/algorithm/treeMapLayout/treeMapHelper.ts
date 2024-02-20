@@ -228,13 +228,13 @@ export function getBuildingColor(
 	const { colorRange, colorMode } = dynamicSettings
 
 	if (colorMode === ColorMode.absolute) {
-		if (metricValue <= colorRange.from) {
+		if (metricValue < colorRange.from || colorRange.from === nodeMetricDataRange.maxValue) {
 			return mapColors.positive
 		}
-		if (metricValue > colorRange.to) {
-			return mapColors.negative
+		if (metricValue < colorRange.to || colorRange.to === nodeMetricDataRange.maxValue) {
+			return mapColors.neutral
 		}
-		return mapColors.neutral
+		return mapColors.negative
 	}
 
 	if (colorMode === ColorMode.trueGradient) {

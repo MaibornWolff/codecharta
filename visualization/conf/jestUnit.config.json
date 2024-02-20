@@ -10,7 +10,8 @@
 	},
 	"transformIgnorePatterns": ["/node_modules/(?!(three|ngx-color/fesm2020|.*\\.mjs$))"],
 	"moduleNameMapper": {
-		"\\CHANGELOG.(md)$": "<rootDir>/mocks/changelogMock.js"
+		"\\CHANGELOG.(md)$": "<rootDir>/mocks/changelogMock.js",
+		"^d3$": "<rootDir>/node_modules/d3/dist/d3.min.js"
 	},
 	"roots": ["<rootDir>/app"],
 	"moduleFileExtensions": ["js", "json", "ts", "mjs"],

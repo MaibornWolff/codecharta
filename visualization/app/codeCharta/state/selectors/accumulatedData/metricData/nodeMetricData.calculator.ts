@@ -56,6 +56,5 @@ export const calculateNodeMetricData = (visibleFileStates: FileState[], blacklis
 	}
 
 	sortByMetricName(metricData)
-
 	return metricData
 }

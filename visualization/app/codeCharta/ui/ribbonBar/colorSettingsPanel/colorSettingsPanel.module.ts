@@ -4,10 +4,11 @@ import { MaterialModule } from "../../../../material/material.module"
 import { ColorPickerForMapColorModule } from "../../colorPickerForMapColor/colorPickerForMapColor.module"
 import { ResetSettingsButtonModule } from "../../resetSettingsButton/resetSettingsButton.module"
 import { ColorSettingsPanelComponent } from "./colorSettingsPanel.component"
-import { MetricColorRangeHistogramModule } from "./metricColorRangeHistogram/metricColorRangeHistogram.module"
+import { MetricColorRangeDiagramModule } from "./metricColorRangeDiagram/metricColorRangeDiagram.module"
+import { MetricColorRangeSliderModule } from "./metricColorRangeSlider/metricColorRangeSlider.module"
 
 @NgModule({
-	imports: [CommonModule, ColorPickerForMapColorModule, MetricColorRangeHistogramModule, ResetSettingsButtonModule, MaterialModule],
+	imports: [CommonModule, ColorPickerForMapColorModule, MetricColorRangeDiagramModule, MetricColorRangeSliderModule, ResetSettingsButtonModule, MaterialModule],
 	declarations: [ColorSettingsPanelComponent],
 	exports: [ColorSettingsPanelComponent]
 })

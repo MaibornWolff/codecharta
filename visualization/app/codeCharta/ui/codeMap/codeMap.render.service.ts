@@ -107,7 +107,9 @@ export class CodeMapRenderService implements OnDestroy {
 		for (const node of sortedNodes) {
 			if (node.isLeaf) {
 				const metric = node.attributes[dynamicSettings.colorMetric]
-				if (metric != null) {
+				if (dynamicSettings.colorMetric === "unary") {
+					this.nodesByColor.positive.push(node)
+				} else if (metric !== null) {
 					if (metric < dynamicSettings.colorRange.from) {
 						this.nodesByColor.positive.push(node)
 					} else if (metric < dynamicSettings.colorRange.to) {

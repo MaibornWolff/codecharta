@@ -38,8 +38,8 @@ describe("loadFileService", () => {
 		validFileContent = clone(TEST_FILE_CONTENT)
 
 		metricData = [
-			{ name: "mcc", maxValue: 1, minValue: 1 },
-			{ name: "rloc", maxValue: 2, minValue: 1 }
+			{ name: "mcc", maxValue: 1, minValue: 1, values: [1, 1] },
+			{ name: "rloc", maxValue: 2, minValue: 1, values: [1, 2] }
 		]
 	})
 
