@@ -6,7 +6,7 @@ dependencies {
     implementation group: 'info.picocli', name: 'picocli', version: picocli_version
     implementation group: 'io.github.microutils', name: 'kotlin-logging', version: kotlin_logging_version
     implementation group: 'com.github.kotlin-inquirer', name: 'kotlin-inquirer', version: kotlin_inquirer_version
-    implementation group: 'com.varabyte.kotter', name: 'kotter-jvm', version: '1.1.1'
+    implementation group: 'com.varabyte.kotter', name: 'kotter-jvm', version: kotter_version
 
     testImplementation group: 'org.jetbrains.kotlin', name: 'kotlin-test', version: kotlin_version
     testImplementation project(path: ':model', configuration: 'testOutput')

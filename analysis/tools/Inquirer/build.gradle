@@ -3,6 +3,6 @@ repositories {
 }
 
 dependencies {
-    implementation group: 'com.varabyte.kotter', name: 'kotter-jvm', version: '1.1.1'
+    implementation group: 'com.varabyte.kotter', name: 'kotter-jvm', version: kotter_version
     implementation project(path: ':model')
 }
