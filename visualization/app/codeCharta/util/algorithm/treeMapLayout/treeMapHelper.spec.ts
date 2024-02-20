@@ -258,28 +258,28 @@ describe("TreeMapHelper", () => {
 					expect(buildNode().color).toBe(state.appSettings.mapColors.positive)
 				})
 
-				it("creates neutral colored building colorMetricValue === colorRangeTo", () => {
-					node.attributes = { validMetricName: state.dynamicSettings.colorRange.to }
+				it("creates neutral colored building colorMetricValue === colorRangeFrom", () => {
+					node.attributes = { validMetricName: state.dynamicSettings.colorRange.from }
 
 					expect(buildNode().color).toBe(state.appSettings.mapColors.neutral)
+				})
+
+				it("creates neutral colored building", () => {
+					node.attributes = { validMetricName: state.dynamicSettings.colorRange.from + 1 }
+
+					expect(buildNode().color).toBe(state.appSettings.mapColors.neutral)
+				})
+
+				it("creates red colored building colorMetricValue === colorRangeTo", () => {
+					node.attributes = { validMetricName: state.dynamicSettings.colorRange.to }
+
+					expect(buildNode().color).toBe(state.appSettings.mapColors.negative)
 				})
 
 				it("creates red colored building colorMetricValue > colorRangeTo", () => {
 					node.attributes = { validMetricName: state.dynamicSettings.colorRange.to + 1 }
 
 					expect(buildNode().color).toBe(state.appSettings.mapColors.negative)
-				})
-
-				it("creates green colored building colorMetricValue === colorRangeFrom", () => {
-					node.attributes = { validMetricName: state.dynamicSettings.colorRange.from }
-
-					expect(buildNode().color).toBe(state.appSettings.mapColors.positive)
-				})
-
-				it("creates yellow colored building", () => {
-					node.attributes = { validMetricName: state.dynamicSettings.colorRange.from + 1 }
-
-					expect(buildNode().color).toBe(state.appSettings.mapColors.neutral)
 				})
 			})
 

@@ -1,8 +1,8 @@
-import { TEST_DELTA_MAP_A, VALID_NODE_WITH_ROOT_UNARY } from "../../../../util/dataMocks"
 import { FileSelectionState, FileState } from "../../../../model/files/files"
-import { NodeDecorator } from "../../../../util/nodeDecorator"
 import { clone } from "../../../../util/clone"
-import { calculateNodeMetricData, UNARY_METRIC } from "./nodeMetricData.calculator"
+import { TEST_DELTA_MAP_A, VALID_NODE_WITH_ROOT_UNARY } from "../../../../util/dataMocks"
+import { NodeDecorator } from "../../../../util/nodeDecorator"
+import { UNARY_METRIC, calculateNodeMetricData } from "./nodeMetricData.calculator"
 
 describe("nodeMetricDataCalculator", () => {
 	let fileState: FileState
@@ -18,10 +18,10 @@ describe("nodeMetricDataCalculator", () => {
 
 	it("should return a sorted array of metricData sorted by name calculated from visibleFileStates", () => {
 		const expected = [
-			{ maxValue: 1000, minValue: 10, name: "functions" },
-			{ maxValue: 100, minValue: 1, name: "mcc" },
-			{ maxValue: 100, minValue: 30, name: "rloc" },
-			{ maxValue: 1, minValue: 1, name: UNARY_METRIC }
+			{ maxValue: 1000, minValue: 10, name: "functions", values: [10, 100, 1000] },
+			{ maxValue: 100, minValue: 1, name: "mcc", values: [1, 100, 10] },
+			{ maxValue: 100, minValue: 30, name: "rloc", values: [100, 30, 70] },
+			{ maxValue: 1, minValue: 1, name: UNARY_METRIC, values: undefined }
 		]
 
 		const result = calculateNodeMetricData([fileState], [])
@@ -31,10 +31,10 @@ describe("nodeMetricDataCalculator", () => {
 
 	it("should ignore blacklisted nodes", () => {
 		const expected = [
-			{ maxValue: 1000, minValue: 100, name: "functions" },
-			{ maxValue: 100, minValue: 10, name: "mcc" },
-			{ maxValue: 70, minValue: 30, name: "rloc" },
-			{ maxValue: 1, minValue: 1, name: UNARY_METRIC }
+			{ maxValue: 1000, minValue: 100, name: "functions", values: [100, 1000] },
+			{ maxValue: 100, minValue: 10, name: "mcc", values: [100, 10] },
+			{ maxValue: 70, minValue: 30, name: "rloc", values: [30, 70] },
+			{ maxValue: 1, minValue: 1, name: UNARY_METRIC, values: undefined }
 		]
 
 		const result = calculateNodeMetricData([fileState], [{ path: "root/big leaf", type: "exclude" }])

@@ -1,12 +1,37 @@
-<cc-metric-color-range-slider *ngIf="!(isDeltaState$ | async)"></cc-metric-color-range-slider>
+<div *ngIf="!(isDeltaState$ | async) && (colorMetric$ | async) !== 'unary'">
+	<cc-metric-color-range-slider
+		[minValue]="(sliderValues$ | async).min"
+		[maxValue]="(sliderValues$ | async).max"
+		[currentLeftValue]="(sliderValues$ | async).from"
+		[currentRightValue]="(sliderValues$ | async).to"
+		[leftColor]="(sliderColors$ | async).leftColor"
+		[middleColor]="(sliderColors$ | async).middleColor"
+		[rightColor]="(sliderColors$ | async).rightColor"
+		[handleValueChange]="handleValueChange"
+	>
+	</cc-metric-color-range-slider>
 
-<cc-reset-settings-button
-	[settingsKeys]="['appSettings.mapColors.positiveDelta', 'appSettings.mapColors.negativeDelta']"
-	[callback]="resetColorRange"
-	tooltip="Reset slider thresholds to default"
-	label="Reset thresholds"
-></cc-reset-settings-button>
+	<cc-reset-settings-button
+		[settingsKeys]="['appSettings.mapColors.positiveDelta', 'appSettings.mapColors.negativeDelta']"
+		[callback]="resetColorRange"
+		tooltip="Reset slider thresholds to default"
+		label="Reset thresholds"
+	></cc-reset-settings-button>
 
+	<cc-metric-color-range-diagram
+		[minValue]="(sliderValues$ | async).min"
+		[maxValue]="(sliderValues$ | async).max"
+		[currentLeftValue]="(sliderValues$ | async).from"
+		[currentRightValue]="(sliderValues$ | async).to"
+		[leftColor]="(sliderColors$ | async).leftColor"
+		[middleColor]="(sliderColors$ | async).middleColor"
+		[rightColor]="(sliderColors$ | async).rightColor"
+		[colorMetric]="colorMetric$ | async"
+		[values]="(sliderValues$ | async).values"
+	></cc-metric-color-range-diagram>
+</div>
+
+<!-- inlcude in div -->
 <mat-form-field appearance="outline" class="gradient-mode-selector">
 	<mat-label>Gradient Mode</mat-label>
 	<mat-select [value]="colorMode$ | async" (selectionChange)="handleColorModeChange($event.value)">
@@ -41,19 +66,19 @@
 
 <div class="color-row">
 	<cc-reset-settings-button
-	[settingsKeys]="
-		(isDeltaState$ | async)
-			? ['appSettings.mapColors.positiveDelta', 'appSettings.mapColors.negativeDelta', 'appSettings.mapColors.selected']
-			: [
-					'appSettings.mapColors.positive',
-					'appSettings.mapColors.negative',
-					'appSettings.mapColors.neutral',
-					'appSettings.mapColors.selected'
-			  ]
-	"
-	tooltip="Reset color values to default"
-	label="Reset colors"
-	[callback]="resetInvertColorCheckboxes"
+		[settingsKeys]="
+			(isDeltaState$ | async)
+				? ['appSettings.mapColors.positiveDelta', 'appSettings.mapColors.negativeDelta', 'appSettings.mapColors.selected']
+				: [
+						'appSettings.mapColors.positive',
+						'appSettings.mapColors.negative',
+						'appSettings.mapColors.neutral',
+						'appSettings.mapColors.selected'
+				  ]
+		"
+		tooltip="Reset color values to default"
+		label="Reset colors"
+		[callback]="resetInvertColorCheckboxes"
 	>
 	</cc-reset-settings-button>
 

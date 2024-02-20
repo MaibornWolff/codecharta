@@ -1,0 +1,3 @@
+describe("MetricColorRangeDiagramComponent", () => {
+	it("", async () => {})
+})
