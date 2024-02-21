@@ -107,24 +107,24 @@ export class LoadInitialFileService {
 				this.setRenderStateFromUrl()
 			}
 		} catch (error) {
-			this.handleErrorLoadFilesFromQueryParams(error as Error)
+			await this.handleErrorLoadFilesFromQueryParams(error as Error)
 		}
 	}
 
-	private handleErrorLoadFilesFromQueryParams(error: Error) {
+	private async handleErrorLoadFilesFromQueryParams(error: Error) {
 		if ((error as Error).message !== NO_FILES_LOADED_ERROR_MESSAGE) {
 			const title = "File(s) could not be loaded from the given file URL parameter. Loaded sample files instead."
 			const message = this.createTitleUrlErrorDialog(error as Error)
 			this.showErrorDialog(title, message)
 		}
-		this.loadSampleFiles()
+		await this.loadSampleFiles()
 	}
 
 	private async loadFilesFromIndexedDB() {
 		try {
 			const savedCcState = await readCcState()
 			if (!savedCcState) {
-				this.loadSampleFiles()
+				await this.loadSampleFiles()
 				return
 			}
 
@@ -134,17 +134,17 @@ export class LoadInitialFileService {
 			this.store.dispatch(setFiles({ value: savedFileStates }))
 			this.applySettings(savedCcState)
 		} catch (error) {
-			this.handleErrorLoadFilesFromIndexedDB(error as Error)
+			await this.handleErrorLoadFilesFromIndexedDB(error as Error)
 		}
 	}
 
-	private handleErrorLoadFilesFromIndexedDB(error: Error) {
+	private async handleErrorLoadFilesFromIndexedDB(error: Error) {
 		if ((error as Error).message !== NO_FILES_LOADED_ERROR_MESSAGE) {
 			const title = "File(s) could not be loaded from indexeddb. Loaded sample files instead."
 			const message = (error as Error).message
 			this.showErrorDialog(title, message)
 		}
-		this.loadSampleFiles()
+		await this.loadSampleFiles()
 	}
 
 	private async applySettings(savedCcState: CcState) {
@@ -383,8 +383,16 @@ export class LoadInitialFileService {
 		return `<h2>Warnings</h2>${buildHtmlMessage(warningSymbol, missingPropertiesInSavedCcState)}`
 	}
 
-	private loadSampleFiles() {
-		this.loadFileService.loadFiles([sampleFile1, sampleFile2])
+	private async loadSampleFiles() {
+		try {
+			const savedCcState = await readCcState()
+			if (savedCcState) {
+				this.applySettings(savedCcState)
+			}
+			this.loadFileService.loadFiles([sampleFile1, sampleFile2])
+		} catch {
+			this.loadFileService.loadFiles([sampleFile1, sampleFile2])
+		}
 	}
 
 	private showErrorDialog(title: string, message: string) {
