@@ -49,7 +49,7 @@ fun Session.myPromptInputNumber(                                    //should thi
         message: String, hint: String = "",                         //meaning if nothing is put in then that result gets submitted
         allowEmptyInput: Boolean = false,                           // should floats be allowed or only whole numbers?
         invalidInputMessage: String = "Input is invalid!"
-): String {                                                         //TODO: decide which return type this should be (KIinquirer does bigint)
+): String {
     var returnValue = ""
     var showError = false
     section {
@@ -114,12 +114,23 @@ fun Session.myPromptList(message: String, choices: List<String>, hint: String = 
     return result
 }
 
-fun Session.myPromptCheckbox(message: String, choices: List<String>, hint: String = ""): List<String> {     // should options disappear after selection?
+fun Session.myPromptCheckbox(
+        message: String,
+        choices: List<String>,
+        allowEmptyInput: Boolean = false,
+        hint: String = "SPACE to select, ENTER to confirm selection"
+): List<String> {
     var result = listOf<String>()
     var pos by liveVarOf(0)
     val selectedElems = liveListOf(MutableList(choices.size) { false })
+    var isInputValid by liveVarOf(true)
     section {
-        green { text("? ") }; text(message); black(isBright = true) { textLine("  $hint") }
+        green { text("? ") }; text(message)
+        if (isInputValid) {
+            black(isBright = true) { textLine(if (allowEmptyInput) "  $hint  (empty selection is allowed)" else "  $hint") }
+        } else {
+            red { textLine("  Empty input is not allowed!") }
+        }
         for (i in choices.indices) {
             cyan(isBright = true) { text(if (i == pos) " ❯ " else "   ") }
             if (selectedElems[i]) {
@@ -130,11 +141,19 @@ fun Session.myPromptCheckbox(message: String, choices: List<String>, hint: Strin
         }
     }.runUntilSignal {
         onKeyPressed {
+            isInputValid = true
             when (key) {
-                Keys.UP -> if (pos> 0) { pos -= 1 }
-                Keys.DOWN -> if (pos <choices.size - 1) { pos += 1 }
+                Keys.UP -> if (pos > 0) { pos -= 1 }
+                Keys.DOWN -> if (pos < choices.size - 1) { pos += 1 }
                 Keys.SPACE -> selectedElems[pos] = !selectedElems[pos]
-                Keys.ENTER -> { result = getSelectedElems(choices, selectedElems); signal() }
+                Keys.ENTER -> {
+                    result = getSelectedElems(choices, selectedElems)
+                    if (allowEmptyInput || result.isNotEmpty()) {
+                        signal()
+                    } else {
+                        isInputValid = false
+                    }
+                }
             }
         }
     }
