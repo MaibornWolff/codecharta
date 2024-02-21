@@ -26,7 +26,7 @@ class ParserDialog {
             var test = listOf<String>()
             session {
                 println("inside tester")
-                myPromptInput("Input a test input:", Paths.get("").toAbsolutePath().toString() + File.separator + "yourInput.cc.json")
+                myPromptInput("Input a test input:", Paths.get("").toAbsolutePath().toString() + File.separator + "yourInput.cc.json", allowEmptyInput = true)
                 myPromptInputNumber("input a test number:", "42")
                 myPromptConfirm("Confirm the test?")
                 myPromptList("select any", listOf("a", "b", "c", "1", "2", "3"))

@@ -28,16 +28,26 @@ fun Session.myPromptInput(
         invalidInputMessage: String = "Input is invalid!"
 ): String {
     var returnValue = ""
-    var isInputValid = true
+    var hintText = hint
+    var isInputValid by liveVarOf(true)
     section {
-        bold { green { text("? ") }; text(message); red { textLine(if (isInputValid) "" else "   $invalidInputMessage") } }
-        text("> "); input(Completions(hint), initialText = "")
+        bold {
+            green { text("? ") }; text(message)
+            if (isInputValid) {
+                black(isBright = true) { textLine(if (allowEmptyInput) "  (empty input is allowed)" else "") }
+            } else {
+                red { textLine(if (returnValue.isEmpty()) "  Empty input is not allowed!" else "  $invalidInputMessage") }
+            }
+        }
+        text("> "); input(Completions(hintText), initialText = "")
     }.runUntilSignal {
         onInputChanged { isInputValid = true }
         onInputEntered {
             isInputValid = InputHelper.isInputValidAndNotNull(arrayOf(File(input)), canContainFolders)      //TODO maybe refactor so the checking function is parameter of this
+            returnValue = input
             if ((allowEmptyInput && input.isEmpty()) || (isInputValid && input.isNotEmpty())) {
-                returnValue = input
+                isInputValid = true
+                hintText = ""
                 signal()
             }
         }
@@ -45,9 +55,9 @@ fun Session.myPromptInput(
     return returnValue
 }
 
-fun Session.myPromptInputNumber(                                    //should this have a 'default' parameter like in Kinquirer?
-        message: String, hint: String = "",                         //meaning if nothing is put in then that result gets submitted
-        allowEmptyInput: Boolean = false,                           // should floats be allowed or only whole numbers?
+fun Session.myPromptInputNumber(
+        message: String, hint: String = "",
+        allowEmptyInput: Boolean = false,
         invalidInputMessage: String = "Input is invalid!"
 ): String {
     var returnValue = ""
@@ -94,7 +104,7 @@ fun Session.myPromptConfirm(message: String): Boolean {
     return result
 }
 
-fun Session.myPromptList(message: String, choices: List<String>, hint: String = ""): String {               // should options disappear after selection?
+fun Session.myPromptList(message: String, choices: List<String>, hint: String = ""): String {
     var result = ""
     var selection by liveVarOf(0)
     section {
@@ -133,7 +143,7 @@ fun Session.myPromptCheckbox(
         if (isInputValid) {
             black(isBright = true) { textLine(if (allowEmptyInput) "  $hint  (empty selection is allowed)" else "  $hint") }
         } else {
-            red { textLine("  Empty input is not allowed!") }
+            red { textLine("  Empty selection is not allowed!") }
         }
         for (i in choices.indices) {
             cyan(isBright = true) { text(if (i == pos) " ❯ " else "   ") }
