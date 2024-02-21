@@ -1,4 +1,4 @@
-import { ExportBlacklistItem, ExportCCFile } from "../../../../app/codeCharta/codeCharta.api.model"
+import { ExportBlacklistItem, ExportCCFile } from "../../codeCharta.api.model"
 import { CCFile, NameDataPair } from "../../codeCharta.model"
 import { FileSelectionState, FileState } from "../../model/files/files"
 import { getCCFile } from "../../util/fileHelper"

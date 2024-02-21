@@ -24,10 +24,9 @@ describe("IndexedDBWriter", () => {
 			const transaction = database.transaction(CCSTATE_STORE_NAME, "readonly")
 			const store = transaction.objectStore(CCSTATE_STORE_NAME)
 			const result = await store.get(CCSTATE_STATE_ID)
+			database.close()
 
 			expect(result.state).toEqual(defaultState)
-
-			database.close()
 		})
 	})
 
@@ -46,7 +45,6 @@ describe("IndexedDBWriter", () => {
 			await store.put({ id: CCSTATE_STATE_ID, state: defaultState })
 			await transaction.done
 			database.close()
-
 			const state = await readCcState()
 
 			expect(state).toEqual(defaultState)
