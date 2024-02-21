@@ -2,7 +2,6 @@ package de.maibornwolff.codecharta.filter.structuremodifier
 
 import com.github.kinquirer.KInquirer
 import com.github.kinquirer.components.promptInput
-import com.github.kinquirer.components.promptList
 import com.varabyte.kotter.foundation.session
 import com.varabyte.kotter.runtime.Session
 import de.maibornwolff.codecharta.tools.inquirer.myPromptCheckbox
@@ -22,14 +21,17 @@ class ParserDialog {
             var result: List<String> = listOf()
 
             // temporary test for kotter methods TODO: remove
+            println("before tester")
+            var test = listOf<String>()
             session {
                 println("inside tester")
                 myPromptInput("Input a test input:", Paths.get("").toAbsolutePath().toString() + File.separator + "yourInput.cc.json")
                 myPromptInputNumber("input a test number:", "42")
                 myPromptConfirm("Confirm the test?")
                 myPromptList("select any", listOf("a", "b", "c", "1", "2", "3"))
-                myPromptCheckbox("select any", listOf("a", "b", "c", "1", "2", "3"))
+                test = myPromptCheckbox("Select all parsers you want to execute:", listOf("a", "b", "c", "1", "2", "3"))
             }
+            println(test)
             println("after tester")
 
             println("test before session")
