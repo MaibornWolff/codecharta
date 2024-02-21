@@ -76,8 +76,12 @@ fun Session.myPromptConfirm(message: String): Boolean {
     var result = true
     var res by liveVarOf(true)
     section {
-        green { text("? ") }; text(message)
-        if (res) textLine(" [Yes] No ") else textLine("  Yes [No]")
+        green { text("? ") }; textLine(message)
+        if (res) {
+            text("> "); cyan { text("[Yes]") }; textLine(" No ")
+        } else {
+            text(">  Yes "); cyan { textLine("[No]") }
+        }
     }.runUntilSignal {
         onKeyPressed {
             when (key) {
