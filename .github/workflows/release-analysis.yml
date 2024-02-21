@@ -49,7 +49,9 @@ jobs:
           package: ./analysis/node-wrapper/package.json
 
       - name: Set env
-        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+        run: |
+          fullVersion="${GITHUB_REF#refs/*/}"
+          echo "RELEASE_VERSION=${fullVersion:4}" >> $GITHUB_ENV
 
       - name: Publish Docker Analysis Image
         uses: elgohr/Publish-Docker-Github-Action@v5
