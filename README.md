@@ -21,6 +21,11 @@
 </p>
 
 <p align="center">
+Latest Release: <br>
+ Analysis <a href="https://github.com/MaibornWolff/codecharta/releases/tag/1.122.0">1.122.0</a> | Visualization <a href="https://github.com/MaibornWolff/codecharta/releases/tag/1.122.0">1.122.0</a>
+</p>
+
+<p align="center">
   <a href="#key-features">Key Features</a> •
   <a href="#experimental-features">Experimental Features</a> •
   <a href="#how-to-use">How To Use</a> •
@@ -106,7 +111,7 @@ Want to have even **more information**? Please check our [news](https://maibornw
 ## About CodeCharta
 
 -   [Releases](https://github.com/MaibornWolff/codecharta/releases)
--   [Changelog](CHANGELOG.md)
+-   [Analysis - Changelog](analysis/CHANGELOG.md) | [Visualization - Changelog](visualization/CHANGELOG.md)
 -   [Contributing](CONTRIBUTING.md)
 -   [Code of Conduct](CODE_OF_CONDUCT.md)
 -   [License](LICENSE.md)
