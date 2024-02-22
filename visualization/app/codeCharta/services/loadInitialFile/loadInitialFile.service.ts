@@ -76,7 +76,7 @@ export class LoadInitialFileService {
 		await (isFileQueryParameterPresent ? this.loadFilesFromQueryParams() : this.loadFilesFromIndexedDB())
 	}
 
-	private checkFileQueryParameterPresent() {
+	checkFileQueryParameterPresent() {
 		return Boolean(this.urlUtils.getParameterByName("file"))
 	}
 
@@ -408,7 +408,7 @@ export class LoadInitialFileService {
 
 	// TODO: Please make sure that this function works fine on Github pages with
 	//  the updated file selection (no more single mode!)
-	private setRenderStateFromUrl() {
+	setRenderStateFromUrl() {
 		const renderState = this.urlUtils.getParameterByName("mode")
 		const files = getCCFiles(this.state.getValue().files)
 

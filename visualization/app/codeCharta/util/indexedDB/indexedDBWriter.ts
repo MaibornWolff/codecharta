@@ -23,6 +23,13 @@ export async function readCcState(): Promise<CcState | null> {
 	return record?.state || null
 }
 
+export async function deleteCcState() {
+	const database = await createOrOpenCcStateStore()
+	const tx = database.transaction(CCSTATE_STORE_NAME, "readwrite")
+	await tx.store.delete(CCSTATE_STATE_ID)
+	await tx.done
+}
+
 async function createOrOpenCcStateStore() {
 	return openDB(DB_NAME, DB_VERSION, {
 		upgrade(database) {
