@@ -15,7 +15,6 @@ import { setInvertHeight } from "../../../../app/codeCharta/state/store/appSetti
 import { setIsEdgeMetricVisible } from "../../../../app/codeCharta/state/store/appSettings/isEdgeMetricVisible/isEdgeMetricVisible.actions"
 import { setIsColorMetricLinkedToHeightMetricAction } from "../../../../app/codeCharta/state/store/appSettings/isHeightAndColorMetricLinked/isColorMetricLinkedToHeightMetric.actions"
 import { setPresentationMode } from "../../../../app/codeCharta/state/store/appSettings/isPresentationMode/isPresentationMode.actions"
-import { setIsSearchPanelPinned } from "../../../../app/codeCharta/state/store/appSettings/isSearchPanelPinned/isSearchPanelPinned.actions"
 import { setIsWhiteBackground } from "../../../../app/codeCharta/state/store/appSettings/isWhiteBackground/isWhiteBackground.actions"
 import { setLayoutAlgorithm } from "../../../../app/codeCharta/state/store/appSettings/layoutAlgorithm/layoutAlgorithm.actions"
 import { setMapColors } from "../../../../app/codeCharta/state/store/appSettings/mapColors/mapColors.actions"
@@ -26,7 +25,6 @@ import { setSharpnessMode } from "../../../../app/codeCharta/state/store/appSett
 import { setShowMetricLabelNameValue } from "../../../../app/codeCharta/state/store/appSettings/showMetricLabelNameValue/showMetricLabelNameValue.actions"
 import { setShowMetricLabelNodeName } from "../../../../app/codeCharta/state/store/appSettings/showMetricLabelNodeName/showMetricLabelNodeName.actions"
 import { setShowOnlyBuildingsWithEdges } from "../../../../app/codeCharta/state/store/appSettings/showOnlyBuildingsWithEdges/showOnlyBuildingsWithEdges.actions"
-import { setSortingOrderAscending } from "../../../../app/codeCharta/state/store/appSettings/sortingOrderAscending/sortingOrderAscending.actions"
 import { setAreaMetric } from "../../../../app/codeCharta/state/store/dynamicSettings/areaMetric/areaMetric.actions"
 import { setColorMetric } from "../../../../app/codeCharta/state/store/dynamicSettings/colorMetric/colorMetric.actions"
 import { setColorMode } from "../../../../app/codeCharta/state/store/dynamicSettings/colorMode/colorMode.actions"
@@ -336,10 +334,7 @@ export class LoadInitialFileService {
 				this.store.dispatch(setIsLoadingFile({ value }))
 				break
 			case "sortingOrderAscending":
-				this.store.dispatch(setSortingOrderAscending({ value }))
-				break
 			case "isSearchPanelPinned":
-				this.store.dispatch(setIsSearchPanelPinned({ value }))
 				break
 			case "showMetricLabelNameValue":
 				this.store.dispatch(setShowMetricLabelNameValue({ value }))
