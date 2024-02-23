@@ -126,6 +126,7 @@ print(f"Last version tag in git for analysis {latest_tag_ana}")
 versions_vis = latest_tag_vis.split(".")
 versions_ana = latest_tag_ana.split(".")
 
+# mmp = major, minor, patch - versions
 mmp_vis = [int(x) for x in versions_vis]
 mmp_ana = [int(x) for x in versions_ana]
 
