@@ -1,4 +1,4 @@
-# Change Log
+# Change Log - Visualization
 
 All notable changes to this project will be documented in this file.
 
@@ -13,7 +13,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
--   Fix metric-gardener-importer crashing on new metric-gardener-json-format [#3496](https://github.com/MaibornWolff/codecharta/pull/3496)
 -   Fix buildings inability to be completely red in delta mode [#3439](https://github.com/MaibornWolff/codecharta/pull/3439)
 -   Fix edge preview in visualization [#3439](https://github.com/MaibornWolff/codecharta/pull/3439)
 -   Fix edges start/end intersecting with building in delta mode [#3439](https://github.com/MaibornWolff/codecharta/pull/3439)
