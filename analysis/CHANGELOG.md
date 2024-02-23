@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Changed
 
--   CodeCharta Analysis from now on will have its own release [#3499](https://github.com/MaibornWolff/codecharta/pull/3499)
+-   CodeCharta Analysis and Visualization now have separate changelogs and releases [#3499](https://github.com/MaibornWolff/codecharta/pull/3499)
 
 ### Fixed 🐞
 
