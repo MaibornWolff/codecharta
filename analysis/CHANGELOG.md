@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Changed
+
+-   CodeCharta Analysis from now on will have its own release [#3499](https://github.com/MaibornWolff/codecharta/pull/3499)
+
 ### Fixed 🐞
 
 -   Fix metric-gardener-importer crashing on new metric-gardener-json-format [#3496](https://github.com/MaibornWolff/codecharta/pull/3496)
