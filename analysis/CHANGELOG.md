@@ -7,8 +7,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
-## [1.122.1] - 2024-02-23
-
 ### Changed
 
 -   CodeCharta Analysis and Visualization now have separate changelogs and releases [#3499](https://github.com/MaibornWolff/codecharta/pull/3499)

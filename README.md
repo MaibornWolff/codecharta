@@ -22,7 +22,7 @@
 
 <p align="center">
 Latest Release: <br>
- Analysis <a href="https://github.com/MaibornWolff/codecharta/releases/tag/ana-1.122.1">1.122.1</a> | Visualization <a href="https://github.com/MaibornWolff/codecharta/releases/tag/1.122.0">1.122.0</a>
+ Analysis <a href="https://github.com/MaibornWolff/codecharta/releases/tag/1.122.0">1.122.0</a> | Visualization <a href="https://github.com/MaibornWolff/codecharta/releases/tag/1.122.0">1.122.0</a>
 </p>
 
 <p align="center">
