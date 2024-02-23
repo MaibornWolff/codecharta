@@ -116,7 +116,7 @@ distributions {
         distributionBaseName  = 'codecharta-analysis'
         contents {
             from { '../LICENSE.md' }
-            from { '../CHANGELOG.md' }
+            from { './CHANGELOG.md' }
 
             // Readmes
             from { 'README.md' }
