@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Changed
+
+-   CodeCharta Visualization from now on will have its own release [#3499](https://github.com/MaibornWolff/codecharta/pull/3499)
+
 ### Added 🚀
 
 -   Highlight building on-click of file in explorer [#3488](https://github.com/MaibornWolff/codecharta/pull/3488)
