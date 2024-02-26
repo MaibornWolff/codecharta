@@ -30,10 +30,12 @@ jobs:
           docker build -t codecharta/codecharta-analysis .
 
       - name: Add Changelog Entries to Release
-        uses: rasmus-saks/release-a-changelog-action@v1.1.0
+        uses: rasmus-saks/release-a-changelog-action@v1.2.0
         with:
           github-token: '${{ secrets.GITHUB_TOKEN }}'
           path: 'analysis/CHANGELOG.md'
+          title-template: 'Analysis release {version}'
+          tag-template: 'ana-{version}'
 
       - name: Upload Release Files to tagged release
         uses: alexellis/upload-assets@0.4.0
