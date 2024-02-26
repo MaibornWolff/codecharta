@@ -83,7 +83,6 @@ def update_readme(readme_path):
     # line_number in array format -> first line = line 0
     for line in fp:
       if line_number == 24:
-        print(line)
         readme_release_links = line.strip("\n").split("|")
         assert(len(readme_release_links)==2)
         entry_to_change = 1 if(is_visualization(repository)) else 0
