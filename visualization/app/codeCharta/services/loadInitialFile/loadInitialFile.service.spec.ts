@@ -24,12 +24,6 @@ import { UrlExtractor } from "./urlExtractor"
 jest.mock("./urlExtractor")
 jest.mock("../../model/files/files.helper")
 jest.mock("../../util/indexedDB/indexedDBWriter")
-jest.mock("../loadFile/fileParser", () => {
-	const originalModule = jest.requireActual("../loadFile/fileParser")
-	return {
-		...originalModule
-	}
-})
 
 describe("LoadInitialFileService", () => {
 	let store: MockStore
@@ -183,10 +177,12 @@ describe("LoadInitialFileService", () => {
 		})
 		it("should load sample files when load files from indexeddb throws error", async () => {
 			jest.mocked(UrlExtractor.prototype.getParameterByName).mockImplementation(() => null)
-			jest.mocked(readCcState).mockImplementation(async () => new Promise(resolve => resolve(defaultState)))
-			jest.mocked(getNameDataPair).mockImplementation(() => {
-				throw new Error("could not get name-data-pair")
-			})
+			jest.mocked(readCcState).mockImplementation(
+				async () =>
+					new Promise(() => {
+						throw new Error("Could not read cc-state")
+					})
+			)
 
 			await loadInitialFileService.loadFilesOrSampleFiles()
 

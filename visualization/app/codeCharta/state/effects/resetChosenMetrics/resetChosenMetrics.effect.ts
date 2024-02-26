@@ -22,7 +22,6 @@ export class ResetChosenMetricsEffect {
 				map(metricData => metricData.nodeMetricData),
 				filter(isAnyMetricAvailable),
 				withLatestFrom(this.store.select(areChosenMetricsAvailableSelector)),
-				filter(([, areChosenMetricsAvailable]) => !areChosenMetricsAvailable),
 				tap(([nodeMetricData]) => {
 					this.store.dispatch(setDistributionMetric({ value: getDefaultDistribution(nodeMetricData) }))
 

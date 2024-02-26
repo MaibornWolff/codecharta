@@ -1,3 +1,0 @@
-describe("ResetStateButtonComponent", () => {
-	beforeEach(() => {})
-})
