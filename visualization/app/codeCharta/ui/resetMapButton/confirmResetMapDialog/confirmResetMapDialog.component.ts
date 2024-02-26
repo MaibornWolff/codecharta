@@ -10,11 +10,11 @@ import { defaultState } from "../../../state/store/state.manager"
 import { deleteCcState } from "../../../util/indexedDB/indexedDBWriter"
 
 @Component({
-	templateUrl: "./confirmResetStateDialog.component.html",
-	styleUrls: ["./confirmResetStateDialog.component.scss"],
+	templateUrl: "./confirmResetMapDialog.component.html",
+	styleUrls: ["./confirmResetMapDialog.component.scss"],
 	encapsulation: ViewEncapsulation.None
 })
-export class ConfirmResetStateDialogComponent {
+export class ConfirmResetMapDialogComponent {
 	private urlUtils = new UrlExtractor(this.httpClient)
 
 	constructor(
@@ -24,7 +24,7 @@ export class ConfirmResetStateDialogComponent {
 		private loadInitialFileService: LoadInitialFileService
 	) {}
 
-	async resetState() {
+	async resetMap() {
 		await deleteCcState()
 
 		this.store.dispatch(setState({ value: defaultState }))

@@ -95,12 +95,13 @@ export class LoadInitialFileService {
 			const urlNameDataPairCheckSums = urlNameDataPairs.map(urlNameDataPair => urlNameDataPair.content.fileChecksum)
 			const savedNameDataPairCheckSums = savedNameDataPairs.map(savedNameDataPair => savedNameDataPair.content.fileChecksum)
 			if (stringify(urlNameDataPairCheckSums) === stringify(savedNameDataPairCheckSums)) {
+				this.applyAppSettings(savedCcState.appSettings)
 				this.loadFileService.loadFiles(savedNameDataPairs)
 				this.store.dispatch(setFiles({ value: savedFileStates }))
-				this.applySettings(savedCcState)
+				this.applyAllSettings(savedCcState)
 				this.setRenderStateFromUrl()
 			} else {
-				this.applySettings(savedCcState)
+				this.applyAllSettings(savedCcState)
 				this.loadFileService.loadFiles(urlNameDataPairs)
 				this.setRenderStateFromUrl()
 			}
@@ -128,9 +129,10 @@ export class LoadInitialFileService {
 
 			const savedFileStates = savedCcState.files
 			const savedNameDataPairs = savedFileStates.map(fileState => getNameDataPair(fileState.file))
+			this.applyAppSettings(savedCcState.appSettings)
 			this.loadFileService.loadFiles(savedNameDataPairs)
 			this.store.dispatch(setFiles({ value: savedFileStates }))
-			this.applySettings(savedCcState)
+			this.applyAllSettings(savedCcState)
 		} catch (error) {
 			await this.handleErrorLoadFilesFromIndexedDB(error as Error)
 		}
@@ -145,7 +147,7 @@ export class LoadInitialFileService {
 		await this.loadSampleFiles()
 	}
 
-	private async applySettings(savedCcState: CcState) {
+	private async applyAllSettings(savedCcState: CcState) {
 		const savedFileSettings = savedCcState.fileSettings
 		const savedDynamicSettings = savedCcState.dynamicSettings
 		const savedAppSettings = savedCcState.appSettings
@@ -382,7 +384,7 @@ export class LoadInitialFileService {
 		try {
 			const savedCcState = await readCcState()
 			if (savedCcState) {
-				this.applySettings(savedCcState)
+				this.applyAllSettings(savedCcState)
 			}
 			this.loadFileService.loadFiles([sampleFile1, sampleFile2])
 		} catch {

@@ -1,5 +1,5 @@
-import changelog from "../../../../../../CHANGELOG.md"
 import { clearIndexedDB, goto } from "../../../../puppeteer.helper"
+import changelog from "../../../../../CHANGELOG.md"
 
 function getSecondLatestCodeChartaVersion() {
 	const versionPattern = /\[(\d+\.\d+\.\d+)]/g
