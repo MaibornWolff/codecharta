@@ -47,10 +47,12 @@ jobs:
           docker build -t codecharta/codecharta-visualization .
 
       - name: Add Changelog Entries to Release
-        uses: rasmus-saks/release-a-changelog-action@v1.1.0
+        uses: rasmus-saks/release-a-changelog-action@v1.2.0
         with:
           github-token: '${{ secrets.GITHUB_TOKEN }}'
           path: 'visualization/CHANGELOG.md'
+          title-template: 'Visualization release {version}'
+          tag-template: 'vis-{version}'
 
       - name: Upload Release Files to tagged release
         uses: alexellis/upload-assets@0.4.0
