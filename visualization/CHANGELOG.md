@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Added 🚀
+
+-   Display diagram of color distribution [#3511](https://github.com/MaibornWolff/codecharta/pull/3511)
+
 ## [1.123.0] - 2024-02-26
 
 ### Changed
