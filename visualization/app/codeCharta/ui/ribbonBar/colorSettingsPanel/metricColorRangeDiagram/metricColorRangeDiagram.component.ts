@@ -1,6 +1,10 @@
 import { Component, Input, OnChanges, ViewEncapsulation } from "@angular/core"
 import * as d3 from "d3"
 
+type VGElement = d3.Selection<SVGSVGElement, unknown, HTMLElement, any>
+type GElement = d3.Selection<SVGGElement, unknown, HTMLElement, any>
+type Scale = d3.ScaleLinear<number, number>
+
 @Component({
 	selector: "cc-metric-color-range-diagram",
 	templateUrl: "./metricColorRangeDiagram.component.html",
@@ -30,58 +34,55 @@ export class MetricColorRangeDiagramComponent implements OnChanges {
 	private yLabelYOffset: number
 	private percentileRanks: { x: number; y: number }[]
 
-	ngOnInit() {
-		this.initializeDiagramDimesions()
-	}
-
 	ngOnChanges() {
 		if (this.values.length > 0) {
 			this.percentileRanks = this.calculatePercentileRanks(this.values)
-			this.displayDiagram()
+			this.renderDiagram()
 		}
 	}
 
-	initializeDiagramDimesions() {
+	private renderDiagram() {
+		this.initializeDiagramDimesions()
+		this.clearDiagramContainer()
+
+		const svg = this.createSvg()
+		const group = this.createGroup(svg)
+
+		const x = this.createXScale()
+		const y = this.createYScale()
+		this.drawAxes(group, x, y)
+		this.drawFrame(group)
+		this.drawLabels(group)
+		this.drawAreas(group, x)
+		this.drawLine(group)
+	}
+
+	private initializeDiagramDimesions() {
 		this.frameWidth = 296
 		this.frameBuffer = 10
 		this.frameHeight = 80
 		this.marginTop = 10
 		this.marginBottom = 10
-		this.marginLeft = 65
-		this.marginRight = 55
+		this.marginLeft = 66
+		this.marginRight = 54
 		this.diagramWidth = this.frameWidth - this.marginLeft - this.marginRight
 		this.diagramHeight = this.frameHeight - this.marginTop - this.marginBottom
 		this.yLabelYOffset = -47
 	}
 
-	displayDiagram() {
-		this.clearDiagramContainer()
-
-		const svg = this.createSvg()
-		const g = this.createGroup(svg)
-
-		const x = this.createXScale()
-		const y = this.createYScale()
-		this.drawAxes(g, x, y)
-		this.drawFrame(g)
-		this.drawLabels(g)
-		this.drawAreas(g, x)
-		this.drawLine(g)
-	}
-
-	clearDiagramContainer() {
+	private clearDiagramContainer() {
 		d3.select("#cc-range-diagram-container").selectAll("*").remove()
 	}
 
-	createSvg() {
+	private createSvg() {
 		return d3.select("#cc-range-diagram-container").append("svg")
 	}
 
-	createGroup(svg) {
+	private createGroup(svg: VGElement) {
 		return svg.append("g").attr("transform", `translate(${this.marginLeft}, ${this.marginTop})`)
 	}
 
-	drawFrame(g) {
+	private drawFrame(g: GElement) {
 		g.append("path")
 			.attr(
 				"d",
@@ -94,7 +95,7 @@ export class MetricColorRangeDiagramComponent implements OnChanges {
 			.attr("stroke-width", "1px")
 	}
 
-	drawAxes(g, x, y) {
+	private drawAxes(g: GElement, x: Scale, y: Scale) {
 		g.append("g")
 			.attr("id", "axis-x")
 			.attr("transform", `translate(0,${this.diagramHeight + this.frameBuffer})`)
@@ -119,21 +120,21 @@ export class MetricColorRangeDiagramComponent implements OnChanges {
 			.attr("color", "#888")
 	}
 
-	createXScale() {
+	private createXScale() {
 		return d3
 			.scaleLinear()
 			.domain(d3.extent(this.percentileRanks, d => d["x"] as number))
 			.range([0, this.diagramWidth])
 	}
 
-	createYScale() {
+	private createYScale() {
 		return d3
 			.scaleLinear()
 			.domain([0, d3.max(this.percentileRanks, d => d["y"] as number)])
 			.range([this.diagramHeight, 0])
 	}
 
-	drawLabels(g) {
+	private drawLabels(g: GElement) {
 		const pathStartY = -this.frameBuffer
 		const pathHeight = this.diagramHeight + 2 * this.frameBuffer
 		const verticalCenter = pathStartY + pathHeight / 2
@@ -158,7 +159,7 @@ export class MetricColorRangeDiagramComponent implements OnChanges {
 			.text(`Quantiles (% of ${this.colorMetric})`)
 	}
 
-	drawAreas(g, x) {
+	private drawAreas(g: GElement, x: Scale) {
 		const leftValue = x(this.calculatePercentileFromMetricValue(this.currentLeftValue))
 		const rightValue = x(this.calculatePercentileFromMetricValue(this.currentRightValue))
 
@@ -190,8 +191,9 @@ export class MetricColorRangeDiagramComponent implements OnChanges {
 			.style("fill-opacity", "0.3")
 	}
 
-	drawLine(g) {
+	private drawLine(g: GElement) {
 		g.append("path")
+			.attr("id", "diagram-path")
 			.datum(this.percentileRanks)
 			.attr("fill", "none")
 			.attr("stroke", "#888")
@@ -199,14 +201,14 @@ export class MetricColorRangeDiagramComponent implements OnChanges {
 			.attr(
 				"d",
 				d3
-					.line()
+					.line<{ x: number; y: number }>()
 					.curve(d3.curveStepBefore)
 					.x(d => this.createXScale()(d["x"]))
 					.y(d => this.createYScale()(d["y"]))
 			)
 	}
 
-	calculatePercentileRanks(array: number[]) {
+	private calculatePercentileRanks(array: number[]) {
 		const uniqueSortedNumbers = [...new Set(array)].sort((a, b) => a - b)
 
 		const totalNumbers = array.length
@@ -221,7 +223,7 @@ export class MetricColorRangeDiagramComponent implements OnChanges {
 		return percentileRanks
 	}
 
-	calculatePercentileFromMetricValue(metricValue: number) {
+	private calculatePercentileFromMetricValue(metricValue: number) {
 		if (metricValue === this.minValue) {
 			return 0
 		}

@@ -227,6 +227,10 @@ export function getBuildingColor(
 
 	const { colorRange, colorMode } = dynamicSettings
 
+	if (dynamicSettings["colorMetric"] === "unary") {
+		return mapColors.positive
+	}
+
 	if (colorMode === ColorMode.absolute) {
 		if (metricValue < colorRange.from || colorRange.from === nodeMetricDataRange.maxValue) {
 			return mapColors.positive
@@ -242,10 +246,10 @@ export function getBuildingColor(
 	}
 
 	if (colorMode === ColorMode.focusedGradient) {
-		return gradientCalculator.getColorByFocusedGradient(mapColors, colorRange, metricValue)
+		return gradientCalculator.getColorByFocusedGradient(mapColors, colorRange, nodeMetricDataRange, metricValue)
 	}
 
-	return gradientCalculator.getColorByWeightedGradient(mapColors, colorRange, metricValue)
+	return gradientCalculator.getColorByWeightedGradient(mapColors, colorRange, nodeMetricDataRange, metricValue)
 }
 
 export const TreeMapHelper = {
