@@ -29,20 +29,19 @@
 		[colorMetric]="colorMetric$ | async"
 		[values]="(sliderValues$ | async).values"
 	></cc-metric-color-range-diagram>
-</div>
 
-<!-- inlcude in div -->
-<mat-form-field appearance="outline" class="gradient-mode-selector">
-	<mat-label>Gradient Mode</mat-label>
-	<mat-select [value]="colorMode$ | async" (selectionChange)="handleColorModeChange($event.value)">
-		<div (mousedown)="$event.stopPropagation()">
-			<mat-option value="absolute">Absolute</mat-option>
-			<mat-option value="focusedGradient">Focused Gradient</mat-option>
-			<mat-option value="weightedGradient">Weighted Gradient</mat-option>
-			<mat-option value="trueGradient">True Gradient</mat-option>
-		</div>
-	</mat-select>
-</mat-form-field>
+	<mat-form-field appearance="outline" class="gradient-mode-selector">
+		<mat-label>Gradient Mode</mat-label>
+		<mat-select [value]="colorMode$ | async" (selectionChange)="handleColorModeChange($event.value)">
+			<div (mousedown)="$event.stopPropagation()">
+				<mat-option value="absolute">Absolute</mat-option>
+				<mat-option value="focusedGradient">Focused Gradient</mat-option>
+				<mat-option value="weightedGradient">Weighted Gradient</mat-option>
+				<mat-option value="trueGradient">True Gradient</mat-option>
+			</div>
+		</mat-select>
+	</mat-form-field>
+</div>
 
 <ng-container *ngIf="!(isDeltaState$ | async)">
 	<div class="color-row">

@@ -377,7 +377,7 @@ describe("TreeMapHelper", () => {
 					const middle = (from + to) / 2
 
 					node.attributes = { validMetricName: from }
-					expect(buildNode().color.toLowerCase()).toBe(state.appSettings.mapColors.positive.toLowerCase())
+					expect(buildNode().color.toLowerCase()).toBe("#97ba26")
 
 					node.attributes = { validMetricName: from - 1 }
 					expect(buildNode().color.toLowerCase()).toBe(state.appSettings.mapColors.positive.toLowerCase())

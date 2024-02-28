@@ -3,18 +3,19 @@ cc-color-settings-panel {
 		.gradient-mode-selector {
 			height: 40px;
 			margin: 5px 10px;
+			width: 243px;
 
-		.mat-mdc-text-field-wrapper .mat-mdc-form-field-flex .mat-mdc-form-field-infix {
-			padding: 10px;
-			min-height: 28px;
+			.mat-mdc-text-field-wrapper .mat-mdc-form-field-flex .mat-mdc-form-field-infix {
+				padding: 10px;
+				min-height: 28px;
 
-			.mat-mdc-input-element {
-				min-height: inherit;
+				.mat-mdc-input-element {
+					min-height: inherit;
+				}
 			}
-		}
 
-		.mat-mdc-form-field-subscript-wrapper.mat-mdc-form-field-bottom-align {
-			display: none;
+			.mat-mdc-form-field-subscript-wrapper.mat-mdc-form-field-bottom-align {
+				display: none;
 			}
 		}
 
