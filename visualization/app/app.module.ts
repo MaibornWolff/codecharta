@@ -28,6 +28,7 @@ import { ResetChosenMetricsEffect } from "./codeCharta/state/effects/resetChosen
 import { ResetSelectedEdgeMetricWhenItDoesntExistAnymoreEffect } from "./codeCharta/state/effects/resetSelectedEdgeMetricWhenItDoesntExistAnymore/resetSelectedEdgeMetricWhenItDoesntExistAnymore.effect"
 import { SetLoadingIndicatorEffect } from "./codeCharta/state/effects/setLoadingIndicator/setLoadingIndicator.effect"
 import { SaveCcStateEffect } from "./codeCharta/state/effects/saveCcState/saveCcState.effect"
+import { SaveMetricsInQueryParametersEffect } from "./codeCharta/state/effects/saveMetricsInQueryParameters/saveMetricsInQueryParameters.effect"
 
 @NgModule({
 	imports: [
@@ -49,7 +50,8 @@ import { SaveCcStateEffect } from "./codeCharta/state/effects/saveCcState/saveCc
 			ResetSelectedEdgeMetricWhenItDoesntExistAnymoreEffect,
 			UpdateFileSettingsEffect,
 			SetLoadingIndicatorEffect,
-			SaveCcStateEffect
+			SaveCcStateEffect,
+			SaveMetricsInQueryParametersEffect
 		]),
 		MaterialModule,
 		FormsModule,
