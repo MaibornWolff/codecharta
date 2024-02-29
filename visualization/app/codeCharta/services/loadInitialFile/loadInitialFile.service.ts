@@ -46,7 +46,10 @@ import sample1 from "../../assets/sample1.cc.json"
 import sample2 from "../../assets/sample2.cc.json"
 import { ExportCCFile } from "../../codeCharta.api.model"
 import { AppSettings, CcState, DynamicSettings, FileSettings, NameDataPair } from "../../codeCharta.model"
+import { FileState } from "../../model/files/files"
 import { getCCFiles } from "../../model/files/files.helper"
+import { MetricQueryParemter } from "../../state/effects/saveMetricsInQueryParameters/saveMetricsInQueryParameters.effect"
+import { metricDataSelector } from "../../state/selectors/accumulatedData/metricData/metricData.selector"
 import { setIsLoadingFile } from "../../state/store/appSettings/isLoadingFile/isLoadingFile.actions"
 import { setIsLoadingMap } from "../../state/store/appSettings/isLoadingMap/isLoadingMap.actions"
 import { setDelta, setFiles } from "../../state/store/files/files.actions"
@@ -55,7 +58,6 @@ import { buildHtmlMessage } from "../../util/loadFilesValidationToErrorDialog"
 import { getNameDataPair } from "../loadFile/fileParser"
 import { LoadFileService, NO_FILES_LOADED_ERROR_MESSAGE } from "../loadFile/loadFile.service"
 import { UrlExtractor } from "./urlExtractor"
-import { FileState } from "../../model/files/files"
 
 export const sampleFile1 = { fileName: "sample1.cc.json", fileSize: 3 * 1024, content: sample1 as ExportCCFile }
 export const sampleFile2 = { fileName: "sample2.cc.json", fileSize: 2 * 1024, content: sample2 as ExportCCFile }
@@ -100,6 +102,7 @@ export class LoadInitialFileService {
 			} else {
 				this.applySettingsFromSavedState(savedCcState, urlNameDataPairs)
 			}
+			this.setMetricsFromUrl()
 			this.setRenderStateFromUrl()
 		} catch (error) {
 			await this.handleErrorLoadFilesFromQueryParams(error as Error)
@@ -427,6 +430,36 @@ export class LoadInitialFileService {
 			title += ` (${error.status}: ${error.statusText})`
 		}
 		return title
+	}
+
+	setMetricsFromUrl() {
+		const areaMetric = this.urlUtils.getParameterByName(MetricQueryParemter.areaMetric)
+		const heightMetric = this.urlUtils.getParameterByName(MetricQueryParemter.heightMetric)
+		const colorMetric = this.urlUtils.getParameterByName(MetricQueryParemter.colorMetric)
+		const edgeMetric = this.urlUtils.getParameterByName(MetricQueryParemter.edgeMetric)
+
+		const state = this.state.getValue() as CcState
+		const nodeMetricData = metricDataSelector(state).nodeMetricData
+		const edgeMetricData = metricDataSelector(state).edgeMetricData
+		if (!nodeMetricData) {
+			return
+		}
+
+		const nodeMetricNames = new Set(nodeMetricData.map(nodeMetric => nodeMetric.name))
+		const edgeMetricNames = edgeMetricData.map(edgeMetric => edgeMetric.name)
+
+		if (areaMetric && nodeMetricNames.has(areaMetric)) {
+			this.store.dispatch(setAreaMetric({ value: areaMetric }))
+		}
+		if (heightMetric && nodeMetricNames.has(heightMetric)) {
+			this.store.dispatch(setHeightMetric({ value: heightMetric }))
+		}
+		if (colorMetric && nodeMetricNames.has(colorMetric)) {
+			this.store.dispatch(setColorMetric({ value: colorMetric }))
+		}
+		if (edgeMetric && edgeMetricNames.includes(edgeMetric)) {
+			this.store.dispatch(setEdgeMetric({ value: edgeMetric }))
+		}
 	}
 
 	// TODO: Please make sure that this function works fine on Github pages with
