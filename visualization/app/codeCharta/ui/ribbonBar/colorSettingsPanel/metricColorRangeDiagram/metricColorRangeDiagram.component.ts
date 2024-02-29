@@ -236,10 +236,8 @@ export class MetricColorRangeDiagramComponent implements OnChanges {
 			if (percentileRank["y"] < metricValue) {
 				maxPercentile = percentileRank["x"]
 			} else {
-				break
+				return maxPercentile
 			}
 		}
-
-		return maxPercentile
 	}
 }

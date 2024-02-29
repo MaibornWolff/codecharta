@@ -11,28 +11,34 @@ export class MapColorLabelPipe implements PipeTransform {
 				const isColorMetricUnary = colorMetric === "unary"
 				const isFromValueEqualMinValue = nodeMetricRange.minValue === colorRange.from
 				const isFromValueEqualMaxValue = nodeMetricRange.maxValue === colorRange.from
-				return isColorMetricUnary
-					? `${nodeMetricRange.minValue} - ${nodeMetricRange.minValue}`
-					: isFromValueEqualMinValue
-					? `-`
-					: isFromValueEqualMaxValue
-					? `${nodeMetricRange.minValue} to ${this.formatNumber(colorRange.from)}`
-					: `${nodeMetricRange.minValue} to ${this.formatNumber(colorRange.from - 1)}`
+				if (isColorMetricUnary) {
+					return `${nodeMetricRange.minValue} - ${nodeMetricRange.maxValue}`
+				}
+				if (isFromValueEqualMinValue) {
+					return `-`
+				}
+				if (isFromValueEqualMaxValue) {
+					return `${nodeMetricRange.minValue} to ${this.formatNumber(colorRange.from)}`
+				}
+				return `${nodeMetricRange.minValue} to ${this.formatNumber(colorRange.from - 1)}`
 			}
 			case "neutral": {
 				const isFromValueEqualToValue = colorRange.from === colorRange.to
 				const isToValueEqualMaxValue = colorRange.to === nodeMetricRange.maxValue
-				return isFromValueEqualToValue
-					? `-`
-					: isToValueEqualMaxValue
-					? `${this.formatNumber(colorRange.from)} to ${this.formatNumber(colorRange.to)}`
-					: `${this.formatNumber(colorRange.from)} to ${this.formatNumber(colorRange.to - 1)}`
+				if (isFromValueEqualToValue) {
+					return `-`
+				}
+				if (isToValueEqualMaxValue) {
+					return `${this.formatNumber(colorRange.from)} to ${this.formatNumber(colorRange.to)}`
+				}
+				return `${this.formatNumber(colorRange.from)} to ${this.formatNumber(colorRange.to - 1)}`
 			}
 			case "negative": {
 				const isToValueEqualToMaxValue = nodeMetricRange.maxValue === colorRange.to
-				return isToValueEqualToMaxValue
-					? `-`
-					: `${this.formatNumber(colorRange.to)} to ${this.formatNumber(nodeMetricRange.maxValue)}`
+				if (isToValueEqualToMaxValue) {
+					return `-`
+				}
+				return `${this.formatNumber(colorRange.to)} to ${this.formatNumber(nodeMetricRange.maxValue)}`
 			}
 			case "positiveDelta":
 				return "+Δ positive delta"
