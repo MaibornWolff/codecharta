@@ -39,12 +39,8 @@ export class ColorSettingsPanelComponent {
 	constructor(private store: Store<CcState>, private State: State<CcState>) {}
 
 	handleValueChange: HandleValueChange = ({ newLeftValue, newRightValue }) => {
-		if (newLeftValue !== undefined) {
-			this.newLeftValue = newLeftValue
-		}
-		if (newRightValue !== undefined) {
-			this.newRightValue = newRightValue
-		}
+		this.newLeftValue = newLeftValue ?? this.newLeftValue
+		this.newRightValue = newRightValue ?? this.newRightValue
 		this.updateColorRangeDebounced()
 	}
 
