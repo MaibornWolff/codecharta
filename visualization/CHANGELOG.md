@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Added 🚀
 
 -   Display diagram of color distribution [#3511](https://github.com/MaibornWolff/codecharta/pull/3511)
+    </br>
+    <img width="300" alt="color-metric-diagram" src="https://github.com/MaibornWolff/codecharta/assets/149768491/0b0e4e6f-e0c2-49b1-b9e8-2d69002338f0">
 
 ## [1.123.0] - 2024-02-26
 
