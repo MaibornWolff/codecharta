@@ -9,7 +9,8 @@ cc-attribute-side-bar {
 		background: white;
 
 		&.expanded {
-			right: 0;
+			display: block;
+			right: 0px;
 		}
 
 		&:before {

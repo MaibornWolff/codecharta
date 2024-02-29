@@ -11,12 +11,17 @@ import { CustomConfigHelper } from "../../../../../util/customConfigHelper"
 import { provideMockStore } from "@ngrx/store/testing"
 import { State } from "@ngrx/store"
 import { defaultState } from "../../../../../state/store/state.manager"
+import { MatDialog, MatDialogRef } from "@angular/material/dialog"
 
 describe("applyCustomConfigButtonComponent", () => {
+	const mockedDialog = { open: jest.fn() }
+	const mockedDialogReference = { close: jest.fn() }
 	beforeEach(() => {
 		TestBed.configureTestingModule({
 			imports: [CustomConfigsModule],
 			providers: [
+				{ provide: MatDialogRef, useValue: mockedDialogReference },
+				{ provide: MatDialog, useValue: mockedDialog },
 				{ provide: ThreeCameraService, useValue: {} },
 				{ provide: ThreeOrbitControlsService, useValue: {} },
 				provideMockStore(),
