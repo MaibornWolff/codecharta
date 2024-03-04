@@ -11,6 +11,7 @@ describe("NodeContextMenu", () => {
 	let codeMap: CodeMapPageObject
 
 	beforeEach(async () => {
+		await jestPuppeteer.resetPage()
 		contextMenu = new NodeContextMenuPageObject()
 		searchPanelModeSelector = new SearchPanelModeSelectorPageObject()
 		mapTreeViewLevel = new MapTreeViewLevelPageObject()
