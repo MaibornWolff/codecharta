@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
     <img width="300" alt="color-metric-diagram" src="https://github.com/MaibornWolff/codecharta/assets/149768491/0b0e4e6f-e0c2-49b1-b9e8-2d69002338f0">
     </br>
 -   Persist uploaded files and applied configuration accross page-reloads [#3486](https://github.com/MaibornWolff/codecharta/pull/3486)
+-   Height, color, edge and area metric can be selected via query parameters [#3513](https://github.com/MaibornWolff/codecharta/pull/3513)
 
 ### Chore 👨‍💻 👩‍💻
 
