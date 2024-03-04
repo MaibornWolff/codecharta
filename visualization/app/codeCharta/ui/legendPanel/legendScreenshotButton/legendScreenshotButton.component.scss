@@ -8,12 +8,14 @@
 	margin: 6px -10px;
 	transition: right 0.3s ease, margin 0.3s ease;
 	z-index: 0;
+	display: none;
 
 	&.disabled {
 		opacity: 0.5;
 	}
 
 	&.visible {
+		display: block;
 		margin: 6px 27px;
 	}
 }
