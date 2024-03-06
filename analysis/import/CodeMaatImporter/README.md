@@ -2,6 +2,13 @@
 
 Generates visualisation data from CodeMaat Temporal Coupling CSV data with header. You can find the analysing tool on GitHub https://github.com/adamtornhill/code-maat
 
+## Metrics
+
+| Metric        | Description                                                            |
+| ------------- | ---------------------------------------------------------------------- |
+| `pairingRate` | percentage value of the chance that given files are committed together |
+| `avgCommits`  | amount of commits in which the given files were included               |
+
 ## Usage
 
 1. Create VCS Log file from your project, e.x. with Git

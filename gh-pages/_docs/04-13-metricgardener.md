@@ -33,12 +33,14 @@ If you want to execute the `metric-gardener`, either with your own installation 
 
 ## Supported Metrics
 
--   mcc
--   functions
--   classes
--   lines_of_code
--   comment_lines
--   real_lines_of_code
+| Metric               | Description                                                                                                                       |
+| -------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| `mcc`                | Maximum cyclic complexity based on paths through the code by McCabe                                                               |
+| `functions`          | Number of functions                                                                                                               |
+| `classes`            | Number of classes                                                                                                                 |
+| `lines_of_code`      | Lines of code including empty lines and comments                                                                                  |
+| `comment_lines`      | Number of lines containing either a comment or commented-out code                                                                 |
+| `real_lines_of_code` | Number of physical lines that contain at least one character which is neither a whitespace nor a tabulation nor part of a comment |
 
 ## Usage of the MetricGardener Importer
 

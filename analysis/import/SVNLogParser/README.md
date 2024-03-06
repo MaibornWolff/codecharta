@@ -2,16 +2,17 @@
 
 Generates visualisation data from svn repository logs. It supports the following metrics per file:
 
-| Metric                 | Description                                                                           |
-| ---------------------- | ------------------------------------------------------------------------------------- |
-| `age_in_weeks`         | age of the file in weeks                                                              |
-| `number_of_commits`    | total number of commits                                                               |
-| `highly_coupled_files` | Number of highly coupled files (>=35% of times modified the same time) with this file |
-| `median_coupled_files` | Median of number of other files that where commited with this file                    |
-| `number_of_renames`    | total number of renames                                                               |
-| `weeks_with_commits`   | weeks with commits                                                                    |
-| `number_of_authors`    | number of authors with commits                                                        |
-| `code_churn`           | code churn, i.e. number of additions plus deletions to file                           |
+| Metric                        | Description                                                                           |
+| ----------------------------- | ------------------------------------------------------------------------------------- |
+| `age_in_weeks`                | age of the file in weeks                                                              |
+| `number_of_authors`           | number of authors with commits                                                        |
+| `number_of_commits`           | total number of commits                                                               |
+| `number_of_renames`           | total number of renames                                                               |
+| `range_of_weeks_with_commits` | average number of weeks between commits                                               |
+| `successive_weeks_of_commits` | number of successive weeks in which the file was included in a commit                 |
+| `weeks_with_commits`          | weeks with commits                                                                    |
+| `highly_coupled_files`        | Number of highly coupled files (>=35% of times modified the same time) with this file |
+| `median_coupled_files`        | Median of number of other files that where commited with this file                    |
 
 Additionally the following Edge Metrics are calculated:
 
