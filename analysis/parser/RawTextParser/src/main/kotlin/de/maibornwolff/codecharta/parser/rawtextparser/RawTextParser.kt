@@ -121,7 +121,7 @@ class RawTextParser(
         logWarningsForInvalidMetrics(projectMetrics)
 
         val pipedProject = ProjectDeserializer.deserializeProject(input)
-        val project = ProjectGenerator().generate(projectMetrics, pipedProject)
+        val project = ProjectGenerator().generate(projectMetrics, maxIndentLvl, pipedProject)
 
         ProjectSerializer.serializeToFileOrStream(project, outputFile, output, compress)
 
