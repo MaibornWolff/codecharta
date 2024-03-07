@@ -87,9 +87,33 @@ open class ProjectBuilder(
         return this
     }
 
-    fun addAttributeDescriptions(descriptions: Map<String, AttributeDescriptor>): ProjectBuilder {
-        attributeDescriptors.putAll(descriptions)
+    fun addAttributeDescriptions(descriptions: Map<String, AttributeDescriptor> = mapOf()): ProjectBuilder {
+        val complementedAttributeDescriptors = descriptions.toMutableMap()
+        val nodeAttributeNames = this.extractNodeAttributeNames()
+        val edgeAttributeNames = this.extractEdgeAttributeNames()
+
+        nodeAttributeNames.forEach { nodeAttributeName ->
+            if (!(complementedAttributeDescriptors.keys.contains(nodeAttributeName))) {
+                addAttributeDescriptorWithEstimatedDirection(nodeAttributeName, complementedAttributeDescriptors)
+            }
+        }
+
+        edgeAttributeNames.forEach { edgeAttributeName ->
+            if (!(complementedAttributeDescriptors.keys.contains(edgeAttributeName))) {
+                addAttributeDescriptorWithEstimatedDirection(edgeAttributeName, complementedAttributeDescriptors)
+            }
+        }
+
+        attributeDescriptors.putAll(complementedAttributeDescriptors)
         return this
+    }
+
+    private fun addAttributeDescriptorWithEstimatedDirection(attributeName: String, complementedAttributeDescriptors: MutableMap<String, AttributeDescriptor>) {
+        complementedAttributeDescriptors[attributeName] = AttributeDescriptor(title=attributeName, direction=estimateDirection(attributeName))
+    }
+
+    private fun estimateDirection(attributeName: String): Int {
+        return -1
     }
 
     private fun removeUnusedAttributeDescriptors() {
@@ -117,6 +141,29 @@ open class ProjectBuilder(
         attributeSet.forEach { attributeDescriptors.remove(it) }
         this.attributeDescriptors = attributeDescriptors
         return
+    }
+
+    private fun extractNodeAttributeNames(): MutableSet<String> {
+        val attributeNames = mutableSetOf<String>()
+
+        fun traverse(node: MutableNode) {
+            attributeNames.addAll(node.attributes.keys)
+            node.children.forEach { child -> traverse(child) }
+        }
+
+        nodes.forEach { node -> traverse(node) }
+
+        return attributeNames
+    }
+
+    private fun extractEdgeAttributeNames(): MutableSet<String> {
+        val attributeNames = mutableSetOf<String>()
+
+        edges.forEach { edge ->
+            attributeNames.addAll(edge.attributes.keys)
+        }
+
+        return attributeNames
     }
 
     override fun toString(): String {

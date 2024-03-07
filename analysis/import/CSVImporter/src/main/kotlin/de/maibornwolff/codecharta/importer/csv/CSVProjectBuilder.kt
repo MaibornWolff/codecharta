@@ -15,8 +15,8 @@ class CSVProjectBuilder(
     private val pathSeparator: Char,
     private val csvDelimiter: Char,
     private val pathColumnName: String = "path",
-    metricNameTranslator: MetricNameTranslator = MetricNameTranslator.TRIVIAL,
-    attributeDescriptors: Map<String, AttributeDescriptor> = mapOf()
+    private val metricNameTranslator: MetricNameTranslator = MetricNameTranslator.TRIVIAL,
+    private val attributeDescriptors: Map<String, AttributeDescriptor> = mapOf()
 ) {
 
     private val logger = KotlinLogging.logger {}
@@ -24,7 +24,6 @@ class CSVProjectBuilder(
     private val includeRows: (Array<String>) -> Boolean = { true }
     private val projectBuilder = ProjectBuilder()
         .withMetricTranslator(metricNameTranslator)
-        .addAttributeDescriptions(attributeDescriptors)
 
     fun parseCSVStream(
         inStream: InputStream
@@ -37,7 +36,7 @@ class CSVProjectBuilder(
     }
 
     fun build(cleanAttributeDescriptors: Boolean = false): Project {
-        return projectBuilder.build(cleanAttributeDescriptors)
+        return projectBuilder.addAttributeDescriptions(this.attributeDescriptors).build(cleanAttributeDescriptors)
     }
 
     private fun parseContent(parser: CsvParser, header: CSVHeader) {
