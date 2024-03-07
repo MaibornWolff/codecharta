@@ -39,11 +39,12 @@
         "description": "Number of statements",
         "hintLowValue": "",
         "hintHighValue": "",
-        "link": "https://github.com/MaibornWolff/codecharta/blob/main/analysis/import/SourceCodeParser/README.md"
+        "link": "https://github.com/MaibornWolff/codecharta/blob/main/analysis/import/SourceCodeParser/README.md",
+        "direction": -1
       }
     },
     "edges": [],
     "blacklist": []
   },
-  "checksum":"191629b098f1f0b94cf44b19c7ac9700"
+  "checksum":"195f2469425335a884be16e87640638a"
 }
