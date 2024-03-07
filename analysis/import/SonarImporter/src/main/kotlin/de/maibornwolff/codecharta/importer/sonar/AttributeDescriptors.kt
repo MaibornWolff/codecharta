@@ -75,6 +75,7 @@ fun getAttributeDescriptors(): Map<String, AttributeDescriptor> {
             "public_api" to AttributeDescriptor(title = "Public API", description = "Public api available", link = metricLink, direction = -1),
             "public_documented_api_density" to AttributeDescriptor(title = "Public Documented API Density", description = "Documented public api available", link = metricLink, direction = 1),
             "public_undocumented_api" to AttributeDescriptor(title = "Public Undocumented API", description = "Undocumented api available", link = metricLink, direction = -1),
+            "pull_request_fixed_issues" to AttributeDescriptor(title = "Pull request fixed issues", description = "Count of issues that would be fixed by the pull request", link = metricLink, direction = 1),
             "reopened_issues" to AttributeDescriptor(title = "Number of Reopened Issues", description = "Total count of issues in the reopened state", link = metricLink, direction = -1),
             "security_hotspots" to AttributeDescriptor(title = "Security Hotspots", description = "Number of security hotspots", link = metricLink, direction = -1),
             "security_hotspots_reviewed" to AttributeDescriptor(title = "Security Hotspots Reviewed", description = "Percentage of reviewed (fixed or safe) security hotspots", link = metricLink, direction = 1),
