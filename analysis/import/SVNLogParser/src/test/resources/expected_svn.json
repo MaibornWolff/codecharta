@@ -95,35 +95,40 @@
         "description": "Number of commits",
         "hintLowValue": "",
         "hintHighValue": "",
-        "link": "https://github.com/MaibornWolff/codecharta/blob/main/analysis/import/SVNLogParser/README.md"
+        "link": "https://github.com/MaibornWolff/codecharta/blob/main/analysis/import/SVNLogParser/README.md",
+        "direction": -1
       },
       "weeks_with_commits": {
         "title": "Weeks with Commits",
         "description": "Number of weeks in which commits occurred",
         "hintLowValue": "",
         "hintHighValue": "",
-        "link": "https://github.com/MaibornWolff/codecharta/blob/main/analysis/import/SVNLogParser/README.md"
+        "link": "https://github.com/MaibornWolff/codecharta/blob/main/analysis/import/SVNLogParser/README.md",
+        "direction": -1
       },
       "number_of_authors": {
         "title": "Number of Authors",
         "description": "Number of authors",
         "hintLowValue": "",
         "hintHighValue": "",
-        "link": "https://github.com/MaibornWolff/codecharta/blob/main/analysis/import/SVNLogParser/README.md"
+        "link": "https://github.com/MaibornWolff/codecharta/blob/main/analysis/import/SVNLogParser/README.md",
+        "direction": -1
       },
       "successive_weeks_with_commits": {
         "title": "Successive Weeks with Commits",
         "description": "Number of successive weeks in which the file was included in a commit",
         "hintLowValue": "",
         "hintHighValue": "",
-        "link": "https://github.com/MaibornWolff/codecharta/blob/main/analysis/import/SVNLogParser/README.md"
+        "link": "https://github.com/MaibornWolff/codecharta/blob/main/analysis/import/SVNLogParser/README.md",
+        "direction": -1
       },
       "range_of_weeks_with_commits": {
         "title": "Week Range of Commits",
         "description": "Average number of weeks between commits",
         "hintLowValue": "",
         "hintHighValue": "",
-        "link": "https://github.com/MaibornWolff/codecharta/blob/main/analysis/import/SVNLogParser/README.md"
+        "link": "https://github.com/MaibornWolff/codecharta/blob/main/analysis/import/SVNLogParser/README.md",
+        "direction": -1
       }
     },
     "blacklist": []

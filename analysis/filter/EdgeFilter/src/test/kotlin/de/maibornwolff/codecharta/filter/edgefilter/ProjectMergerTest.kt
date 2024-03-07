@@ -74,8 +74,8 @@ class ProjectMergerTest {
         )
         val project = EdgeProjectBuilder(originalProject, '/').merge()
         val expectedDescriptors = mapOf<String, AttributeDescriptor>(
-            "Test" to AttributeDescriptor(description = "a", hintLowValue = "b", hintHighValue = "c", link = "d"),
-            "Test2" to AttributeDescriptor(title = "a1", description = "b2", hintLowValue = "c3", hintHighValue = "d4", link = "e5")
+            "Test" to AttributeDescriptor(description = "a", hintLowValue = "b", hintHighValue = "c", link = "d", direction = -1),
+            "Test2" to AttributeDescriptor(title = "a1", description = "b2", hintLowValue = "c3", hintHighValue = "d4", link = "e5", direction = -1)
         )
         assertEquals(project.attributeDescriptors, expectedDescriptors)
     }
