@@ -8,6 +8,8 @@ import de.maibornwolff.codecharta.importer.gitlogparser.parser.LogParserStrategy
 import de.maibornwolff.codecharta.importer.gitlogparser.parser.git.GitLogNumstatRawParserStrategy
 import de.maibornwolff.codecharta.importer.gitlogparser.subcommands.LogScanCommand
 import de.maibornwolff.codecharta.importer.gitlogparser.subcommands.RepoScanCommand
+import de.maibornwolff.codecharta.model.AttributeDescriptor
+import de.maibornwolff.codecharta.model.AttributeGenerator
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
@@ -38,7 +40,7 @@ class GitLogParser(
     private val input: InputStream = System.`in`,
     private val output: PrintStream = System.out,
     private val error: PrintStream = System.err
-) : Callable<Unit>, InteractiveParser, PipeableParser {
+) : Callable<Unit>, InteractiveParser, PipeableParser, AttributeGenerator {
 
     private val inputFormatNames = GIT_LOG_NUMSTAT_RAW_REVERSED
 
@@ -165,5 +167,9 @@ class GitLogParser(
     override fun isApplicable(resourceToBeParsed: String): Boolean {
         println("Checking if GitLogParser is applicable...")
         return ResourceSearchHelper.isFolderDirectlyInGivenDirectory(resourceToBeParsed, ".git")
+    }
+
+    override fun getAttributeDescriptorMaps(): Map<String, AttributeDescriptor> {
+        return getAttributeDescriptors()
     }
 }

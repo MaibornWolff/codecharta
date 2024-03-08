@@ -22,6 +22,7 @@ import de.maibornwolff.codecharta.tools.ccsh.parser.ParserService
 import de.maibornwolff.codecharta.tools.ccsh.parser.repository.PicocliParserRepository
 import de.maibornwolff.codecharta.tools.interactiveparser.util.CodeChartaConstants
 import de.maibornwolff.codecharta.tools.validation.ValidationTool
+import de.maibornwolff.codecharta.util.AttributeGeneratorRegistry
 import mu.KotlinLogging
 import picocli.CommandLine
 import java.util.concurrent.Callable
@@ -84,6 +85,7 @@ class Ccsh : Callable<Unit?> {
 
         @JvmStatic
         fun main(args: Array<String>) {
+            registerAllAttributeGenerators()
             exitProcess(executeCommandLine(args))
         }
 
@@ -230,6 +232,17 @@ class Ccsh : Callable<Unit?> {
                 }
                 return@map sanitizedArg
             }.toTypedArray()
+        }
+        private fun registerAllAttributeGenerators() {
+            AttributeGeneratorRegistry.registerGenerator(RawTextParser())
+            AttributeGeneratorRegistry.registerGenerator(CodeMaatImporter())
+            AttributeGeneratorRegistry.registerGenerator(CSVImporter())
+            AttributeGeneratorRegistry.registerGenerator(GitLogParser())
+            AttributeGeneratorRegistry.registerGenerator(MetricGardenerImporter())
+            AttributeGeneratorRegistry.registerGenerator(SonarImporterMain())
+            AttributeGeneratorRegistry.registerGenerator(SourceCodeParserMain())
+            AttributeGeneratorRegistry.registerGenerator(SVNLogParser())
+            AttributeGeneratorRegistry.registerGenerator(TokeiImporter())
         }
     }
 

@@ -1,5 +1,7 @@
 package de.maibornwolff.codecharta.importer.codemaat
 
+import de.maibornwolff.codecharta.model.AttributeDescriptor
+import de.maibornwolff.codecharta.model.AttributeGenerator
 import de.maibornwolff.codecharta.model.AttributeType
 import de.maibornwolff.codecharta.model.AttributeTypes
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
@@ -21,7 +23,7 @@ import java.util.concurrent.Callable
         footer = [CodeChartaConstants.General.GENERIC_FOOTER]
 )
 class CodeMaatImporter(
-        private val output: PrintStream = System.out) : Callable<Unit>, InteractiveParser {
+        private val output: PrintStream = System.out) : Callable<Unit>, InteractiveParser, AttributeGenerator {
 
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
@@ -59,7 +61,7 @@ class CodeMaatImporter(
         }
 
         val csvProjectBuilder =
-                CSVProjectBuilder(pathSeparator, csvDelimiter, codemaatReplacement, attributeTypes, getAttributeDescriptors())
+                CSVProjectBuilder(pathSeparator, csvDelimiter, codemaatReplacement, attributeTypes, getAttributeDescriptorMaps())
         files.map { it.inputStream() }.forEach<InputStream> { csvProjectBuilder.parseCSVStream(it) }
         val project = csvProjectBuilder.build()
 
@@ -93,5 +95,9 @@ class CodeMaatImporter(
     override fun getDialog(): ParserDialogInterface = ParserDialog
     override fun isApplicable(resourceToBeParsed: String): Boolean {
         return false
+    }
+
+    override fun getAttributeDescriptorMaps(): Map<String, AttributeDescriptor> {
+        return getAttributeDescriptors()
     }
 }

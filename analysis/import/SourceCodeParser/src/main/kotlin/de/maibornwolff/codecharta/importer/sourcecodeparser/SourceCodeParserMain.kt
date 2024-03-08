@@ -3,6 +3,8 @@ package de.maibornwolff.codecharta.importer.sourcecodeparser
 import de.maibornwolff.codecharta.importer.sourcecodeparser.metricwriters.CSVMetricWriter
 import de.maibornwolff.codecharta.importer.sourcecodeparser.metricwriters.JSONMetricWriter
 import de.maibornwolff.codecharta.importer.sourcecodeparser.metricwriters.MetricWriter
+import de.maibornwolff.codecharta.model.AttributeDescriptor
+import de.maibornwolff.codecharta.model.AttributeGenerator
 import de.maibornwolff.codecharta.serialization.FileExtension
 import de.maibornwolff.codecharta.serialization.OutputFileHandler
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
@@ -37,7 +39,7 @@ class SourceCodeParserMain(
         private val output: PrintStream,
         private val input: InputStream = System.`in`,
         private val error: PrintStream = System.err
-) : Callable<Unit>, InteractiveParser, PipeableParser {
+) : Callable<Unit>, InteractiveParser, PipeableParser, AttributeGenerator {
     // we need this constructor because ccsh requires an empty constructor
     constructor() : this(System.out)
 
@@ -168,5 +170,9 @@ class SourceCodeParserMain(
     override fun isApplicable(resourceToBeParsed: String): Boolean {
         println("Checking if SourceCodeParser is applicable...")
         return ResourceSearchHelper.isFileWithOneOrMoreOfEndingsPresent(resourceToBeParsed, listOf(".java"))
+    }
+
+    override fun getAttributeDescriptorMaps(): Map<String, AttributeDescriptor> {
+        return getAttributeDescriptors()
     }
 }

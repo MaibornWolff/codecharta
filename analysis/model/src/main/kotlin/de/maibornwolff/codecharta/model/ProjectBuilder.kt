@@ -1,6 +1,10 @@
 package de.maibornwolff.codecharta.model
 
 import de.maibornwolff.codecharta.translator.MetricNameTranslator
+import de.maibornwolff.codecharta.util.AttributeGeneratorRegistry
+import org.apache.commons.text.similarity.FuzzyScore
+import org.apache.commons.text.similarity.JaroWinklerSimilarity
+import java.util.*
 
 open class ProjectBuilder(
     private val nodes: List<MutableNode> = listOf(MutableNode("root", NodeType.Folder)),
@@ -113,6 +117,10 @@ open class ProjectBuilder(
     }
 
     private fun estimateDirection(attributeName: String): Int {
+        val allAttributeDescriptors = AttributeGeneratorRegistry.getAllAttributeDescriptors()
+        val allAttributeNames = allAttributeDescriptors.keys.distinct()
+        allAttributeNames.forEach { attrName -> println(attrName + " " + JaroWinklerSimilarity().apply(attrName, attributeName)) }
+
         return -1
     }
 

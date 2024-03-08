@@ -6,6 +6,8 @@ import de.maibornwolff.codecharta.importer.svnlogparser.converter.ProjectConvert
 import de.maibornwolff.codecharta.importer.svnlogparser.input.metrics.MetricsFactory
 import de.maibornwolff.codecharta.importer.svnlogparser.parser.LogParserStrategy
 import de.maibornwolff.codecharta.importer.svnlogparser.parser.svn.SVNLogParserStrategy
+import de.maibornwolff.codecharta.model.AttributeDescriptor
+import de.maibornwolff.codecharta.model.AttributeGenerator
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
@@ -36,7 +38,7 @@ class SVNLogParser(
     private val input: InputStream = System.`in`,
     private val output: PrintStream = System.out,
     private val error: PrintStream = System.err
-) : Callable<Unit>, InteractiveParser, PipeableParser {
+) : Callable<Unit>, InteractiveParser, PipeableParser, AttributeGenerator {
 
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
@@ -158,5 +160,9 @@ class SVNLogParser(
     override fun isApplicable(resourceToBeParsed: String): Boolean {
         println("Checking if SVNLogParser is applicable...")
         return ResourceSearchHelper.isFolderDirectlyInGivenDirectory(resourceToBeParsed, ".svn")
+    }
+
+    override fun getAttributeDescriptorMaps(): Map<String, AttributeDescriptor> {
+        return getAttributeDescriptors()
     }
 }

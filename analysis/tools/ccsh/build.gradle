@@ -18,6 +18,7 @@ fi
 
 dependencies {
     implementation group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib', version: kotlin_version
+    implementation project(path: ':model')
 
     def codeMaatImporter = project(':import:CodeMaatImporter')
     def csvImporter = project(':import:CSVImporter')

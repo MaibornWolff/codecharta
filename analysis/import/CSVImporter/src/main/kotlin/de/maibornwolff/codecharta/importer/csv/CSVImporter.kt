@@ -1,5 +1,8 @@
 package de.maibornwolff.codecharta.importer.csv
 
+import de.maibornwolff.codecharta.importer.sourcemonitor.getAttributeDescriptors
+import de.maibornwolff.codecharta.model.AttributeDescriptor
+import de.maibornwolff.codecharta.model.AttributeGenerator
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
@@ -19,7 +22,7 @@ import java.util.concurrent.Callable
 )
 class CSVImporter(
     private val output: PrintStream = System.out
-) : Callable<Unit>, InteractiveParser {
+) : Callable<Unit>, InteractiveParser, AttributeGenerator {
 
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
@@ -73,5 +76,9 @@ class CSVImporter(
     override fun getDialog(): ParserDialogInterface = ParserDialog
     override fun isApplicable(resourceToBeParsed: String): Boolean {
         return false
+    }
+
+    override fun getAttributeDescriptorMaps(): Map<String, AttributeDescriptor> {
+        return getAttributeDescriptors()
     }
 }

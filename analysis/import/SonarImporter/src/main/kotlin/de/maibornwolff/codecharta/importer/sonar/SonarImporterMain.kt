@@ -4,6 +4,8 @@ import de.maibornwolff.codecharta.filter.mergefilter.MergeFilter
 import de.maibornwolff.codecharta.importer.sonar.dataaccess.SonarMeasuresAPIDatasource
 import de.maibornwolff.codecharta.importer.sonar.dataaccess.SonarMetricsAPIDatasource
 import de.maibornwolff.codecharta.importer.sonar.dataaccess.SonarVersionAPIDatasource
+import de.maibornwolff.codecharta.model.AttributeDescriptor
+import de.maibornwolff.codecharta.model.AttributeGenerator
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
@@ -27,7 +29,7 @@ import java.util.concurrent.Callable
 class SonarImporterMain(
     private val input: InputStream = System.`in`,
     private val output: PrintStream = System.out
-) : Callable<Unit>, InteractiveParser {
+) : Callable<Unit>, InteractiveParser, AttributeGenerator {
 
     @CommandLine.Option(
         names = ["-h", "--help"], usageHelp = true, description = [
@@ -140,5 +142,9 @@ class SonarImporterMain(
     private fun isSonarPropertiesFile(inputFile: File): Boolean {
         val searchFile = "sonar-project.properties"
         return (inputFile.isFile && inputFile.name == searchFile)
+    }
+
+    override fun getAttributeDescriptorMaps(): Map<String, AttributeDescriptor> {
+        return getAttributeDescriptors()
     }
 }

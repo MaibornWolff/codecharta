@@ -4,6 +4,8 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import de.maibornwolff.codecharta.importer.metricgardenerimporter.json.MetricGardenerProjectBuilder
 import de.maibornwolff.codecharta.importer.metricgardenerimporter.model.MetricGardenerException
 import de.maibornwolff.codecharta.importer.metricgardenerimporter.model.MetricGardenerNodes
+import de.maibornwolff.codecharta.model.AttributeDescriptor
+import de.maibornwolff.codecharta.model.AttributeGenerator
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
@@ -25,7 +27,7 @@ import java.util.concurrent.Callable
 
 class MetricGardenerImporter(
     private val output: PrintStream = System.out
-) : Callable<Unit>, InteractiveParser {
+) : Callable<Unit>, InteractiveParser, AttributeGenerator {
 
     private val mapper = jacksonObjectMapper()
 
@@ -116,5 +118,9 @@ class MetricGardenerImporter(
         val supportedLanguageFileEndings = getSupportedLanguageFileEndings()
         println("Checking if MetricGardener is applicable...")
         return ResourceSearchHelper.isFileWithOneOrMoreOfEndingsPresent(resourceToBeParsed, supportedLanguageFileEndings)
+    }
+
+    override fun getAttributeDescriptorMaps(): Map<String, AttributeDescriptor> {
+        return getAttributeDescriptors()
     }
 }
