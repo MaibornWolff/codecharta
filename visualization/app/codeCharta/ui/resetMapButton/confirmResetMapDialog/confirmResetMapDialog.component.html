@@ -2,6 +2,12 @@
 	<h2>Confirm reset map to default</h2>
 </mat-toolbar>
 
+<mat-dialog-content>
+	<div class="dialog-content">
+		<p>Uploaded maps, selected metrics and settings are reset to default</p>
+	</div>
+</mat-dialog-content>
+
 <mat-dialog-actions>
 	<button mat-button mat-dialog-close>No</button>
 	<button mat-button (click)="resetMap()" mat-dialog-close cdkFocusInitial>Yes</button>

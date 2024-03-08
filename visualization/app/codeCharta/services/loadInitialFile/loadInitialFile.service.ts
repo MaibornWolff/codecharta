@@ -128,7 +128,7 @@ export class LoadInitialFileService {
 	}
 
 	private showErrorDialogForMissingProperties(missingPropertiesInSavedCcState) {
-		const title = "All properties expect the following were restored successfully."
+		const title = "The previous state could not be fully restored after loading the page. The following properties were not restored."
 		const message = this.buildMissingPropertiesMessage(missingPropertiesInSavedCcState)
 		this.showErrorDialog(title, message)
 	}
@@ -396,7 +396,7 @@ export class LoadInitialFileService {
 
 	private buildMissingPropertiesMessage(missingPropertiesInSavedCcState: string[]) {
 		const warningSymbol = '<i class="fa fa-exclamation-triangle"></i> '
-		return `<h2>Warnings</h2>${buildHtmlMessage(warningSymbol, missingPropertiesInSavedCcState)}`
+		return `${buildHtmlMessage(warningSymbol, missingPropertiesInSavedCcState)}`
 	}
 
 	private async loadSampleFiles() {
