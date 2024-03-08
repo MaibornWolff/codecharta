@@ -5,6 +5,8 @@ import com.google.gson.JsonParser
 import de.maibornwolff.codecharta.importer.tokeiimporter.strategy.ImporterStrategy
 import de.maibornwolff.codecharta.importer.tokeiimporter.strategy.TokeiInnerStrategy
 import de.maibornwolff.codecharta.importer.tokeiimporter.strategy.TokeiTwelveStrategy
+import de.maibornwolff.codecharta.model.AttributeDescriptor
+import de.maibornwolff.codecharta.model.AttributeGenerator
 import de.maibornwolff.codecharta.model.AttributeType
 import de.maibornwolff.codecharta.model.AttributeTypes
 import de.maibornwolff.codecharta.model.ProjectBuilder
@@ -37,7 +39,7 @@ class TokeiImporter(
     private val input: InputStream = System.`in`,
     private val output: PrintStream = System.out,
     private val error: PrintStream = System.err
-) : Callable<Unit>, InteractiveParser, PipeableParser {
+) : Callable<Unit>, InteractiveParser, PipeableParser, AttributeGenerator {
 
     private val logger = KotlinLogging.logger {}
 
@@ -144,5 +146,9 @@ class TokeiImporter(
     override fun getDialog(): ParserDialogInterface = ParserDialog
     override fun isApplicable(resourceToBeParsed: String): Boolean {
         return false
+    }
+
+    override fun getAttributeDescriptorMaps(): Map<String, AttributeDescriptor> {
+        return getAttributeDescriptors()
     }
 }

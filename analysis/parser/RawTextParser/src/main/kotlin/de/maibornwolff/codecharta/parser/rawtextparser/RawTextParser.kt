@@ -1,5 +1,7 @@
 package de.maibornwolff.codecharta.parser.rawtextparser
 
+import de.maibornwolff.codecharta.model.AttributeDescriptor
+import de.maibornwolff.codecharta.model.AttributeGenerator
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
@@ -7,6 +9,7 @@ import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import de.maibornwolff.codecharta.tools.interactiveparser.util.CodeChartaConstants
 import de.maibornwolff.codecharta.tools.pipeableparser.PipeableParser
 import de.maibornwolff.codecharta.tools.pipeableparser.PipeableParserSyncFlag
+import de.maibornwolff.codecharta.util.AttributeGeneratorRegistry
 import de.maibornwolff.codecharta.util.CommaSeparatedParameterPreprocessor
 import de.maibornwolff.codecharta.util.CommaSeparatedStringToListConverter
 import de.maibornwolff.codecharta.util.FileExtensionConverter
@@ -28,7 +31,7 @@ class RawTextParser(
     private val input: InputStream = System.`in`,
     private val output: PrintStream = System.out,
     private val error: PrintStream = System.err,
-) : Callable<Unit>, InteractiveParser, PipeableParser {
+) : Callable<Unit>, InteractiveParser, PipeableParser, AttributeGenerator {
 
     private val logger = KotlinLogging.logger {}
 
@@ -176,5 +179,9 @@ class RawTextParser(
         return fileSearch.asSequence()
                 .filter { it.isFile }
                 .any()
+    }
+
+    override fun getAttributeDescriptorMaps(): Map<String, AttributeDescriptor> {
+        return getAttributeDescriptors(10)
     }
 }
