@@ -25,7 +25,8 @@ fun Session.myPromptInput(
         hint: String = "",
         allowEmptyInput: Boolean = false,
         canContainFolders: Boolean = false,
-        invalidInputMessage: String = "Input is invalid!"
+        invalidInputMessage: String = "Input is invalid!",
+        inputValidator: (String, Boolean) -> Boolean = {_, _ -> true}       //TODO: make this of a type, maybe InputHelper
 ): String {
     var returnValue = ""
     var hintText = hint
@@ -43,7 +44,7 @@ fun Session.myPromptInput(
     }.runUntilSignal {
         onInputChanged { isInputValid = true }
         onInputEntered {
-            isInputValid = InputHelper.isInputValidAndNotNull(arrayOf(File(input)), canContainFolders)      //TODO maybe refactor so the checking function is parameter of this
+            isInputValid = InputHelper.isInputValidAndNotNull(arrayOf(File(input)), canContainFolders)
             returnValue = input
             if ((allowEmptyInput && input.isEmpty()) || (isInputValid && input.isNotEmpty())) {
                 isInputValid = true
@@ -55,27 +56,37 @@ fun Session.myPromptInput(
     return returnValue
 }
 
+//TODO: should the PromptInputNumber be refactored together with PromptInput somehow?
+
 fun Session.myPromptInputNumber(
-        message: String, hint: String = "",
+        message: String,
+        hint: String = "",
         allowEmptyInput: Boolean = false,
         invalidInputMessage: String = "Input is invalid!"
 ): String {
     var returnValue = ""
-    var showError = false
+    var hintText = hint
+    var isInputValid by liveVarOf(true)
     section {
         bold {
             green { text("? ") }; text(message)
-            if (showError) red { textLine(" $invalidInputMessage") } else textLine("")
+            if (isInputValid) {
+                black(isBright = true) { textLine(if (allowEmptyInput) "  (empty input is allowed)" else "") }
+            } else {
+                red { textLine(if (returnValue.isEmpty()) "  Empty input is not allowed!" else "  $invalidInputMessage") }
+            }
         }
-        text("> "); input(Completions(hint), initialText = "")
+        text("> "); input(Completions(hintText), initialText = "")
     }.runUntilSignal {
-        onInputChanged { showError = false; input = input.filter { it.isDigit() } }
+        onInputChanged {isInputValid = true; input = input.filter { it.isDigit() } }
         onInputEntered {
+            // isInputValid = validityCheck...              //damit kann der else fall dann weg
             if (allowEmptyInput || input.isNotEmpty()) {
                 returnValue = input
+                hintText = ""
                 signal()
             } else {
-                showError = true
+                isInputValid = false
             }
         }
     }
@@ -86,7 +97,8 @@ fun Session.myPromptConfirm(message: String): Boolean {
     var result = true
     var res by liveVarOf(true)
     section {
-        green { text("? ") }; textLine(message)
+        green { text("? ") }; text(message)
+        black(isBright = true) { textLine("  (use arrow keys to change selection)") } //TODO: is note this necessary?
         if (res) {
             text("> "); cyan { text("[Yes]") }; textLine(" No ")
         } else {
