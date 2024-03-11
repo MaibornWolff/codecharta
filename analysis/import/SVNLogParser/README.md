@@ -5,6 +5,7 @@ Generates visualisation data from svn repository logs. It supports the following
 | Metric                        | Description                                                                           |
 | ----------------------------- | ------------------------------------------------------------------------------------- |
 | `age_in_weeks`                | age of the file in weeks                                                              |
+| `authors`                     | authors that have worked on a file                                                    |
 | `number_of_authors`           | number of authors with commits                                                        |
 | `number_of_commits`           | total number of commits                                                               |
 | `number_of_renames`           | total number of renames                                                               |
