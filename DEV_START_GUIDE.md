@@ -19,19 +19,19 @@ To work on CodeCharta, please ensure your system includes:
 
 # Install guide
 
-To start contributing to codecharta, first clone the [GitHub repository](https://github.com/MaibornWolff/codecharta) and navigate into it
+To start contributing to CodeCharta, first clone the [GitHub repository](https://github.com/MaibornWolff/codecharta) and navigate into it
 
 ```bash
 # clone the repository
-git clone git@github.com:MaibornWolff/codecharta.git
-# naviagte into the created folder
+git clone https://github.com/MaibornWolff/codecharta.git
+# navigate into the created folder
 cd codecharta
 # install npm dependencies
 npm i
 ```
 
 CodeCharta consists of the two parts analysis and visualization which can be installed and used separately.
-Meaning, it is not necessary to have the visualization installed when only working on the analysis part of codecharta and vice versa.
+Meaning, it is not necessary to have the visualization installed when only working on the analysis part of CodeCharta and vice versa.
 Therefore, this guide includes separate installation guides for both parts.
 
 ## Install Analysis
@@ -45,7 +45,7 @@ cd analysis
 ./gradlew installDist
 ```
 
-With this, the cli-tool is installed. When running `ccsh` however, we still get an error as the command is not accessible. There are three options how it can be used:
+With this, the cli-tool is installed. When running `ccsh` however, we still get an error as the command is not accessible.
 There are three ways in which the cli-tool can be used:
 
 -   Navigate into the folder where the installed shell and batch files are created (`analysis/build/install/codecharta-analysis/bin`) and executing commands from there
@@ -94,7 +94,7 @@ For more information, see the 'Package' section of the [visualisation readme](ht
 
 We mainly use IntelliJ for our development. The project generally works right away, except for two issues that sometimes occur:
 
--   Sometimes when opening the main codecharta folder, the analysis part does not get detected as a module. To solve this, directly open the analysis folder.
+-   Sometimes when opening the main CodeCharta folder, the analysis part does not get detected as a module. To solve this, directly open the analysis folder.
 -   When working on visualization, IntelliJ does not correctly detect our test-suite. To execute tests using the build in runners,
     it is necessary to adjust the Jest-Configuration:
     -   First select 'Edit...' from the 'More actions' menu next to the Runner icon
