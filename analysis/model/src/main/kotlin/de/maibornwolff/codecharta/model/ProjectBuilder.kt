@@ -2,22 +2,20 @@ package de.maibornwolff.codecharta.model
 
 import de.maibornwolff.codecharta.translator.MetricNameTranslator
 import de.maibornwolff.codecharta.util.AttributeGeneratorRegistry
-import org.apache.commons.text.similarity.FuzzyScore
+import org.apache.commons.text.similarity.JaccardSimilarity
 import org.apache.commons.text.similarity.JaroWinklerSimilarity
-import java.util.*
 
-open class ProjectBuilder(
-    private val nodes: List<MutableNode> = listOf(MutableNode("root", NodeType.Folder)),
-    private var edges: MutableList<Edge> = mutableListOf(),
-    private var attributeTypes: MutableMap<String, MutableMap<String, AttributeType>> = mutableMapOf(),
-    private var attributeDescriptors: MutableMap<String, AttributeDescriptor> = mutableMapOf(),
-    private var blacklist: MutableList<BlacklistItem> = mutableListOf()
-    ) {
+open class ProjectBuilder(private val nodes: List<MutableNode> = listOf(MutableNode("root", NodeType.Folder)),
+                          private var edges: MutableList<Edge> = mutableListOf(),
+                          private var attributeTypes: MutableMap<String, MutableMap<String, AttributeType>> = mutableMapOf(),
+                          private var attributeDescriptors: MutableMap<String, AttributeDescriptor> = mutableMapOf(),
+                          private var blacklist: MutableList<BlacklistItem> = mutableListOf()) {
 
     val DUMMY_PROJECT_NAME = ""
 
     init {
-        if (nodes.size != 1) throw IllegalStateException("No unique root node was found, instead ${nodes.size} candidates identified.")
+        if (nodes.size != 1) throw IllegalStateException(
+                "No unique root node was found, instead ${nodes.size} candidates identified.")
     }
 
     val rootNode: MutableNode
@@ -55,22 +53,18 @@ open class ProjectBuilder(
     }
 
     open fun build(cleanAttributeDescriptors: Boolean = false): Project {
-        nodes.flatMap { it.nodes.values }
-            .mapNotNull { it.filterChildren(filterRule, false) }
-            .map { it.translateMetrics(metricNameTranslator, false) }
+        nodes.flatMap { it.nodes.values }.mapNotNull { it.filterChildren(filterRule, false) }
+                .map { it.translateMetrics(metricNameTranslator, false) }
 
         edges.forEach { it.translateMetrics(metricNameTranslator) }
 
         filterEmptyFolders()
-        if (cleanAttributeDescriptors) { removeUnusedAttributeDescriptors() }
-        val project = Project(
-            DUMMY_PROJECT_NAME,
-            nodes.map { it.toNode() }.toList(),
-            edges = edges.toList(),
-            attributeTypes = attributeTypes.toMap(),
-            attributeDescriptors = attributeDescriptors.toMap(),
-            blacklist = blacklist.toList()
-        )
+        if (cleanAttributeDescriptors) {
+            removeUnusedAttributeDescriptors()
+        }
+        val project = Project(DUMMY_PROJECT_NAME, nodes.map { it.toNode() }.toList(), edges = edges.toList(),
+                attributeTypes = attributeTypes.toMap(), attributeDescriptors = attributeDescriptors.toMap(),
+                blacklist = blacklist.toList())
 
         System.err.println()
         System.err.println("Created Project with ${project.size} leaves.")
@@ -112,16 +106,48 @@ open class ProjectBuilder(
         return this
     }
 
-    private fun addAttributeDescriptorWithEstimatedDirection(attributeName: String, complementedAttributeDescriptors: MutableMap<String, AttributeDescriptor>) {
-        complementedAttributeDescriptors[attributeName] = AttributeDescriptor(title=attributeName, direction=estimateDirection(attributeName))
+    private fun addAttributeDescriptorWithEstimatedDirection(
+            nodeAttributeName: String,
+            complementedAttributeDescriptors: MutableMap<String, AttributeDescriptor>
+    ) {
+        complementedAttributeDescriptors[nodeAttributeName] =
+                AttributeDescriptor(title = nodeAttributeName, direction = estimateDirection(nodeAttributeName))
     }
 
-    private fun estimateDirection(attributeName: String): Int {
-        val allAttributeDescriptors = AttributeGeneratorRegistry.getAllAttributeDescriptors()
-        val allAttributeNames = allAttributeDescriptors.keys.distinct()
-        allAttributeNames.forEach { attrName -> println(attrName + " " + JaroWinklerSimilarity().apply(attrName, attributeName)) }
+    private fun estimateDirection(nodeAttributeName: String): Int {
+        val avgSimilarityThreshold = 0.85
+        val attributeDescriptors = AttributeGeneratorRegistry.getAllAttributeDescriptors()
+        val attributeDescriptorNames = attributeDescriptors.keys.distinct()
+
+        val attributeDescriptorNamesByAvgSimilarities = attributeDescriptorNames.associateWith { attributeDescriptorName ->
+            calculateAvgSimilarity(nodeAttributeName, attributeDescriptorName)
+        }
+
+        val attributeDescriptorNameWithMaxAvgSimilarity: Map.Entry<String, Double>? =
+                attributeDescriptorNamesByAvgSimilarities.maxByOrNull { it.value }
+
+        if (attributeDescriptorNameWithMaxAvgSimilarity != null
+            && attributeDescriptorNameWithMaxAvgSimilarity.value >= avgSimilarityThreshold) {
+            val attributeDescriptorWithMaxAvgSimilarity =
+                    attributeDescriptors[attributeDescriptorNameWithMaxAvgSimilarity.key]
+            if (attributeDescriptorWithMaxAvgSimilarity != null) {
+                return attributeDescriptorWithMaxAvgSimilarity.direction
+            }
+        }
+
+        val strippedNodeAttributeName = nodeAttributeName.lowercase().replace("[^a-zäöüß]".toRegex(), "")
+        if (strippedNodeAttributeName in getCodeMetricsPositiveDirectionEnglish()
+            || strippedNodeAttributeName in getCodeMetricsPositiveDirectionGerman()) {
+            return 1
+        }
 
         return -1
+    }
+
+    private fun calculateAvgSimilarity(nodeAttributeName: String, attributeDescriptorName: String): Double {
+        val jacquardSimilarity = JaccardSimilarity().apply(nodeAttributeName, attributeDescriptorName)
+        val jaroWinklerSimilarity = JaroWinklerSimilarity().apply(nodeAttributeName, attributeDescriptorName)
+        return (jacquardSimilarity + jaroWinklerSimilarity) / 2
     }
 
     private fun removeUnusedAttributeDescriptors() {
@@ -142,7 +168,9 @@ open class ProjectBuilder(
         }
         edges.forEach { edge ->
             attributeSet.removeAll(edge.attributes.keys)
-            if (attributeSet.isEmpty()) { return }
+            if (attributeSet.isEmpty()) {
+                return
+            }
         }
 
         val attributeDescriptors = this.attributeDescriptors.toMutableMap()
@@ -172,6 +200,17 @@ open class ProjectBuilder(
         }
 
         return attributeNames
+    }
+
+    private fun getCodeMetricsPositiveDirectionEnglish(): List<String> {
+        return listOf("covered", "coverage", "review", "reviewed", "documentation", "documented", "success",
+                "succeeded", "fix", "fixed", "completion", "complete", "augmentation", "augmented", "enhancement",
+                "enhanced", "improvement", "improved", "added", "addition")
+    }
+
+    private fun getCodeMetricsPositiveDirectionGerman(): List<String> {
+        return listOf("abgedeckt", "abdeckung", "überprüft", "dokumentation", "dokumentiert", "erfolg", "erfolgreich",
+                "beheben", "behoben", "vollständig", "erweitert", "verbessert", "hinzugefügt")
     }
 
     override fun toString(): String {
