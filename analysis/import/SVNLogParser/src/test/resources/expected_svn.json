@@ -129,6 +129,14 @@
         "hintHighValue": "",
         "link": "https://github.com/MaibornWolff/codecharta/blob/main/analysis/import/SVNLogParser/README.md",
         "direction": -1
+      },
+      "authors": {
+        "title": "Authors",
+        "description": "The authors that have worked on a file",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://github.com/MaibornWolff/codecharta/blob/main/analysis/import/SVNLogParser/README.md",
+        "direction": -1
       }
     },
     "blacklist": []
