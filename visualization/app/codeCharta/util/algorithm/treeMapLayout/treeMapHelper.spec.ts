@@ -69,6 +69,21 @@ describe("TreeMapHelper", () => {
 			expect(buildNode()).toMatchSnapshot()
 		})
 
+		it("should invert height when heightmetric indicates a positive direction", () => {
+			state.dynamicSettings.heightMetric = "branch_coverage"
+			state.fileSettings.attributeDescriptors = {
+				branch_coverage: {
+					title: "Branch Coverage",
+					description: "",
+					hintLowValue: "",
+					hintHighValue: "",
+					link: "",
+					direction: 1
+				}
+			}
+			expect(buildNode().height).toBe(maxHeight)
+		})
+
 		it("deltas", () => {
 			squaredNode.data.deltas = {}
 			state.dynamicSettings.heightMetric = "theHeight"

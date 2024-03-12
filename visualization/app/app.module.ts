@@ -1,34 +1,35 @@
+import { HttpClientModule } from "@angular/common/http"
 import { APP_INITIALIZER, NgModule } from "@angular/core"
+import { FormsModule, ReactiveFormsModule } from "@angular/forms"
 import { BrowserModule } from "@angular/platform-browser"
 import { platformBrowserDynamic } from "@angular/platform-browser-dynamic"
-import { HttpClientModule } from "@angular/common/http"
-import { FormsModule, ReactiveFormsModule } from "@angular/forms"
-import { MaterialModule } from "./material/material.module"
 import { EffectsModule } from "@ngrx/effects"
-import { UnfocusNodesEffect } from "./codeCharta/state/effects/unfocusNodes/unfocusNodes.effect"
-import { AddBlacklistItemsIfNotResultsInEmptyMapEffect } from "./codeCharta/state/effects/addBlacklistItemsIfNotResultsInEmptyMap/addBlacklistItemsIfNotResultsInEmptyMap.effect"
-import { dialogs } from "./codeCharta/ui/dialogs/dialogs"
-import { OpenNodeContextMenuEffect } from "./codeCharta/state/effects/nodeContextMenu/openNodeContextMenu.effect"
-import { BlacklistSearchPatternEffect } from "./codeCharta/ui/searchPanel/searchBar/blacklistSearchPattern.effect"
-import { UpdateEdgePreviewsEffect } from "./codeCharta/state/effects/updateEdgePreviews/updateEdgePreviews.effect"
-import { ChangelogDialogModule } from "./codeCharta/ui/dialogs/changelogDialog/changelogDialog.module"
-import { VersionService } from "./codeCharta/services/version/version.service"
-import { RenderCodeMapEffect } from "./codeCharta/state/effects/renderCodeMapEffect/renderCodeMap.effect"
-import { AutoFitCodeMapEffect } from "./codeCharta/state/effects/autoFitCodeMapChange/autoFitCodeMap.effect"
-import { CodeChartaModule } from "./codeCharta/codeCharta.module"
-import { UpdateVisibleTopLabelsEffect } from "./codeCharta/state/effects/updateVisibleTopLabels/updateVisibleTopLabels.effect"
-import { LinkColorMetricToHeightMetricEffect } from "./codeCharta/state/effects/linkColorMetricToHeightMetric/linkColorMetricToHeightMetric.effect"
-import { UpdateFileSettingsEffect } from "./codeCharta/state/effects/updateFileSettings/updateFileSettings.effect"
-import { CodeChartaComponent } from "./codeCharta/codeCharta.component"
-import { NodeContextMenuCardModule } from "./codeCharta/state/effects/nodeContextMenu/nodeContextMenuCard/nodeContextMenuCard.module"
 import { StoreModule } from "@ngrx/store"
-import { appReducers, setStateMiddleware } from "./codeCharta/state/store/state.manager"
-import { ResetColorRangeEffect } from "./codeCharta/state/store/dynamicSettings/colorRange/resetColorRange.effect"
+import { CodeChartaComponent } from "./codeCharta/codeCharta.component"
+import { CodeChartaModule } from "./codeCharta/codeCharta.module"
+import { VersionService } from "./codeCharta/services/version/version.service"
+import { AddBlacklistItemsIfNotResultsInEmptyMapEffect } from "./codeCharta/state/effects/addBlacklistItemsIfNotResultsInEmptyMap/addBlacklistItemsIfNotResultsInEmptyMap.effect"
+import { AutoFitCodeMapEffect } from "./codeCharta/state/effects/autoFitCodeMapChange/autoFitCodeMap.effect"
+import { LinkColorMetricToHeightMetricEffect } from "./codeCharta/state/effects/linkColorMetricToHeightMetric/linkColorMetricToHeightMetric.effect"
+import { NodeContextMenuCardModule } from "./codeCharta/state/effects/nodeContextMenu/nodeContextMenuCard/nodeContextMenuCard.module"
+import { OpenNodeContextMenuEffect } from "./codeCharta/state/effects/nodeContextMenu/openNodeContextMenu.effect"
+import { RenderCodeMapEffect } from "./codeCharta/state/effects/renderCodeMapEffect/renderCodeMap.effect"
 import { ResetChosenMetricsEffect } from "./codeCharta/state/effects/resetChosenMetrics/resetChosenMetrics.effect"
 import { ResetSelectedEdgeMetricWhenItDoesntExistAnymoreEffect } from "./codeCharta/state/effects/resetSelectedEdgeMetricWhenItDoesntExistAnymore/resetSelectedEdgeMetricWhenItDoesntExistAnymore.effect"
-import { SetLoadingIndicatorEffect } from "./codeCharta/state/effects/setLoadingIndicator/setLoadingIndicator.effect"
 import { SaveCcStateEffect } from "./codeCharta/state/effects/saveCcState/saveCcState.effect"
 import { SaveMetricsInQueryParametersEffect } from "./codeCharta/state/effects/saveMetricsInQueryParameters/saveMetricsInQueryParameters.effect"
+import { SetLoadingIndicatorEffect } from "./codeCharta/state/effects/setLoadingIndicator/setLoadingIndicator.effect"
+import { UnfocusNodesEffect } from "./codeCharta/state/effects/unfocusNodes/unfocusNodes.effect"
+import { UpdateEdgePreviewsEffect } from "./codeCharta/state/effects/updateEdgePreviews/updateEdgePreviews.effect"
+import { UpdateFileSettingsEffect } from "./codeCharta/state/effects/updateFileSettings/updateFileSettings.effect"
+import { UpdateMapColorsEffect } from "./codeCharta/state/effects/updateMapColors/updateMapColors.effect"
+import { UpdateVisibleTopLabelsEffect } from "./codeCharta/state/effects/updateVisibleTopLabels/updateVisibleTopLabels.effect"
+import { ResetColorRangeEffect } from "./codeCharta/state/store/dynamicSettings/colorRange/resetColorRange.effect"
+import { appReducers, setStateMiddleware } from "./codeCharta/state/store/state.manager"
+import { ChangelogDialogModule } from "./codeCharta/ui/dialogs/changelogDialog/changelogDialog.module"
+import { dialogs } from "./codeCharta/ui/dialogs/dialogs"
+import { BlacklistSearchPatternEffect } from "./codeCharta/ui/searchPanel/searchBar/blacklistSearchPattern.effect"
+import { MaterialModule } from "./material/material.module"
 
 @NgModule({
 	imports: [
@@ -51,7 +52,8 @@ import { SaveMetricsInQueryParametersEffect } from "./codeCharta/state/effects/s
 			UpdateFileSettingsEffect,
 			SetLoadingIndicatorEffect,
 			SaveCcStateEffect,
-			SaveMetricsInQueryParametersEffect
+			SaveMetricsInQueryParametersEffect,
+			UpdateMapColorsEffect
 		]),
 		MaterialModule,
 		FormsModule,

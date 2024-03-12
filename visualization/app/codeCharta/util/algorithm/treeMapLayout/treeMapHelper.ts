@@ -137,6 +137,16 @@ export function getHeightValue(state: CcState, squaredNode: HierarchyRectangular
 	let heightValue = squaredNode.data.attributes[state.dynamicSettings.heightMetric] || HEIGHT_VALUE_WHEN_METRIC_NOT_FOUND
 	heightValue *= mapSizeResolutionScaling
 
+	const heightMetric = state.dynamicSettings.heightMetric
+	const attributeDescriptors = state.fileSettings.attributeDescriptors
+	const isAttributeDirectionInversed = attributeDescriptors[heightMetric]?.direction === 1
+
+	if (isAttributeDirectionInversed) {
+		if (state.appSettings.invertHeight) {
+			return heightValue
+		}
+		return maxHeight - heightValue
+	}
 	if (state.appSettings.invertHeight) {
 		return maxHeight - heightValue
 	}

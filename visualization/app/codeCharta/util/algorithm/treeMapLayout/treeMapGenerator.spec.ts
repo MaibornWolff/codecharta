@@ -211,5 +211,23 @@ describe("treeMapGenerator", () => {
 
 			expect(actual).toBe(0)
 		})
+
+		it("should invert area when areametric indicates a positive direction", () => {
+			state.dynamicSettings.areaMetric = "branch_coverage"
+			state.fileSettings.attributeDescriptors = {
+				branch_coverage: {
+					title: "Branch Coverage",
+					description: "",
+					hintLowValue: "",
+					hintHighValue: "",
+					link: "",
+					direction: 1
+				}
+			}
+			codeMapNode.children[0].attributes = { branch_coverage: 0.9 }
+			const actual = SquarifiedLayoutGenerator.calculateAreaValue(codeMapNode.children[0], state, 400)
+
+			expect(actual).toBe(400 - 0.9)
+		})
 	})
 })
