@@ -28,6 +28,45 @@ export class Export3DMapButtonComponent {
 		FileDownloader.downloadData(exportedBinaryFile, downloadFileName)
 	}
 
+	private hexToNamedColor(hex: string): string {
+		const colors = {
+			"#820e0e": "red",
+			"#69ae40": "green",
+			"#ddcc00": "yellow"
+		}
+		return colors[hex.toLowerCase()] || hex
+	}
+
+	async downloadOpenScadFile(): Promise<void> {
+		const files = filesSelector(this.state.getValue())
+		const fileName = accumulatedDataSelector(this.state.getValue()).unifiedFileMeta?.fileName
+
+		const sideLength = 206
+		const minLayerHeight = 0.2
+
+		const nodes = this.threeSceneService.getMapMesh().getNodes()
+		const longestSide = Math.max(...nodes.flatMap(node => [node.width, node.length]))
+		const xyScalingFactor = sideLength / longestSide
+
+		const smallestHeight = Math.min(...nodes.map(node => node.height || minLayerHeight))
+		const baseZScalingFactor = minLayerHeight / smallestHeight
+
+		// create an openscad code line for each node that renders the node as a cube with the correct color and translated to the correct position
+		const openscadCode = nodes
+			.map(node => {
+				const color = node.isLeaf ? this.hexToNamedColor(node.color) : "gray"
+				const position = { x: node.x0 * xyScalingFactor, y: node.y0 * xyScalingFactor, z: node.z0 * baseZScalingFactor }
+				const size = { x: node.width * xyScalingFactor, y: node.length * xyScalingFactor, z: node.height * baseZScalingFactor }
+
+				const renderHeight = node.isLeaf ? `max(${minLayerHeight}, ${size.z} * zScale)` : `${size.z}`
+				return `translate([${position.x}, ${position.y}, ${position.z}]) mcolor("${color}") cube([${size.x}, ${size.y}, ${renderHeight}]);`
+			})
+			.join("\n")
+
+		const downloadFileName = `${FileNameHelper.getNewFileName(fileName, isDeltaState(files))}.scad`
+		FileDownloader.downloadData(openscadCode, downloadFileName)
+	}
+
 	async downloadMultipleStlFiles(): Promise<void> {
 		const files = filesSelector(this.state.getValue())
 		const fileName = accumulatedDataSelector(this.state.getValue()).unifiedFileMeta?.fileName
