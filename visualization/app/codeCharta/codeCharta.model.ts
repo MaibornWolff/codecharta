@@ -201,6 +201,7 @@ export interface AttributeDescriptor {
 	hintLowValue: string
 	hintHighValue: string
 	link: string
+	direction?: number
 }
 
 export enum AttributeTypeValue {
