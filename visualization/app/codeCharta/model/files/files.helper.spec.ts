@@ -1,5 +1,6 @@
 import { setupFiles, TEST_DELTA_MAP_A, TEST_DELTA_MAP_B } from "../../util/dataMocks"
 import {
+	createPNGFileName,
 	fileStatesAvailable,
 	getCCFiles,
 	getFileByFileName,
@@ -186,6 +187,65 @@ describe("files", () => {
 			files[0].selectedAs = FileSelectionState.Partial
 
 			expect(fileStatesAvailable(files)).toBeTruthy()
+		})
+	})
+
+	describe("createPNGFileName", () => {
+		it("should create the correct PNG filename for partial state and 'legend' suffix", () => {
+			files[0].selectedAs = FileSelectionState.Partial
+			files[1].selectedAs = FileSelectionState.Partial
+			files[0].file.fileMeta.fileName = "file_a.json"
+			files[1].file.fileMeta.fileName = "file_b.json"
+
+			const result = createPNGFileName(files, "legend")
+
+			const expectedFileName = "file_a_file_b_legend.png"
+			expect(result).toBe(expectedFileName)
+		})
+
+		it("should create the correct PNG filename for delta state and 'map' suffix", () => {
+			files[0].selectedAs = FileSelectionState.Reference
+			files[1].selectedAs = FileSelectionState.Comparison
+			files[0].file.fileMeta.fileName = "file_a.json"
+			files[1].file.fileMeta.fileName = "file_b.json"
+			const result = createPNGFileName(files, "map")
+
+			const expectedFileName = "delta_file_a_file_b_map.png"
+			expect(result).toBe(expectedFileName)
+		})
+
+		it("should cut off a file name when it is longer than 255 characters", () => {
+			files[0].selectedAs = FileSelectionState.Partial
+			files[1].selectedAs = FileSelectionState.Partial
+			files[0].file.fileMeta.fileName = "filename_of_file_a.json"
+			files[1].file.fileMeta.fileName =
+				"filename_of_file_b_Lorem_ipsum_dolor_sit_amet_consectetur_adipiscing_elit_Quisque_tristique_lectus_a_nibh_ullamcorper_aliquam_in_et_orci_Cras_tincidunt_imperdiet_massa_sed_ultricies_Nullam_tristique_congue_nisl_id_lacinia_Praesent_varius_interdum_turpis_eget_eleifend.json"
+
+			const result = createPNGFileName(files, "legend")
+
+			expect(result.length).toBe(255)
+			expect(result).toMatch(/~legend\.png$/)
+		})
+
+		it("should create the correct PNG filename when more than 3 maps are loaded", () => {
+			const multipleFiles = [...files, ...files]
+			multipleFiles[0].selectedAs = FileSelectionState.Partial
+			multipleFiles[3].selectedAs = FileSelectionState.Partial
+			multipleFiles[0].file.fileMeta.fileName = "file_a.json"
+			multipleFiles[3].file.fileMeta.fileName = "file_d.json"
+
+			const result = createPNGFileName(multipleFiles, "legend")
+			const expectedFileName = "file_a_~_file_d_legend.png"
+			expect(result).toBe(expectedFileName)
+		})
+
+		it("should cutoff the cc-json file-extension correctly", () => {
+			files[0].selectedAs = FileSelectionState.Partial
+			files[0].file.fileMeta.fileName = "file_d.cc.json"
+
+			const result = createPNGFileName(files, "legend")
+			const expectedFileName = "file_d_legend.png"
+			expect(result).toBe(expectedFileName)
 		})
 	})
 })

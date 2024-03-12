@@ -21,6 +21,16 @@
 </p>
 
 <p align="center">
+Latest Release: <br>
+ Analysis <a href="https://github.com/MaibornWolff/codecharta/releases/tag/ana-1.122.1">1.122.1</a> | Visualization <a href="https://github.com/MaibornWolff/codecharta/releases/tag/vis-1.123.0">1.123.0</a>
+
+[comment]: ##################################################################################
+[comment]: <DO NOT MOVE THE LINKS TO THE RELEASE FROM LINE 25 OR THE RELEASE SCRIPT WILL CRASH>
+[comment]: ##################################################################################
+
+</p>
+
+<p align="center">
   <a href="#key-features">Key Features</a> •
   <a href="#experimental-features">Experimental Features</a> •
   <a href="#how-to-use">How To Use</a> •
@@ -58,7 +68,7 @@
 
 For using CodeCharta the following needs to be installed on your system:
 
--   Node >= 16
+-   Node >= 18
 -   Java >= 11
 
 ## How To Use
@@ -106,7 +116,7 @@ Want to have even **more information**? Please check our [news](https://maibornw
 ## About CodeCharta
 
 -   [Releases](https://github.com/MaibornWolff/codecharta/releases)
--   [Changelog](CHANGELOG.md)
+-   [Analysis - Changelog](analysis/CHANGELOG.md) | [Visualization - Changelog](visualization/CHANGELOG.md)
 -   [Contributing](CONTRIBUTING.md)
 -   [Code of Conduct](CODE_OF_CONDUCT.md)
 -   [License](LICENSE.md)

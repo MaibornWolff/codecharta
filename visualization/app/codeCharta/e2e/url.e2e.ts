@@ -1,4 +1,4 @@
-import { CC_URL, goto } from "../../puppeteer.helper"
+import { CC_URL, clearIndexedDB, goto } from "../../puppeteer.helper"
 import { FilePanelPageObject } from "../ui/filePanel/filePanel.po"
 import sample1 from "../assets/sample1.cc.json"
 import sample3 from "../assets/sample3.cc.json"
@@ -48,9 +48,13 @@ describe("codecharta", () => {
 		await goto()
 	})
 
+	afterEach(async () => {
+		await clearIndexedDB()
+	})
+
 	async function handleErrorDialog() {
 		const message = await dialogError.getMessage()
-		expect(message).toEqual("One or more files from the given file URL parameter could not be loaded. Loading sample files instead.")
+		expect(message).toEqual("Error (Http failure response for invalid234: 0 Unknown Error)")
 		await page.waitForSelector(".mat-mdc-dialog-container")
 		await dialogError.clickOk()
 	}

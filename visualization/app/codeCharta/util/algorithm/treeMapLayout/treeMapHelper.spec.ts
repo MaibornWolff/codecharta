@@ -258,28 +258,28 @@ describe("TreeMapHelper", () => {
 					expect(buildNode().color).toBe(state.appSettings.mapColors.positive)
 				})
 
-				it("creates neutral colored building colorMetricValue === colorRangeTo", () => {
-					node.attributes = { validMetricName: state.dynamicSettings.colorRange.to }
+				it("creates neutral colored building colorMetricValue === colorRangeFrom", () => {
+					node.attributes = { validMetricName: state.dynamicSettings.colorRange.from }
 
 					expect(buildNode().color).toBe(state.appSettings.mapColors.neutral)
+				})
+
+				it("creates neutral colored building", () => {
+					node.attributes = { validMetricName: state.dynamicSettings.colorRange.from + 1 }
+
+					expect(buildNode().color).toBe(state.appSettings.mapColors.neutral)
+				})
+
+				it("creates red colored building colorMetricValue === colorRangeTo", () => {
+					node.attributes = { validMetricName: state.dynamicSettings.colorRange.to }
+
+					expect(buildNode().color).toBe(state.appSettings.mapColors.negative)
 				})
 
 				it("creates red colored building colorMetricValue > colorRangeTo", () => {
 					node.attributes = { validMetricName: state.dynamicSettings.colorRange.to + 1 }
 
 					expect(buildNode().color).toBe(state.appSettings.mapColors.negative)
-				})
-
-				it("creates green colored building colorMetricValue === colorRangeFrom", () => {
-					node.attributes = { validMetricName: state.dynamicSettings.colorRange.from }
-
-					expect(buildNode().color).toBe(state.appSettings.mapColors.positive)
-				})
-
-				it("creates yellow colored building", () => {
-					node.attributes = { validMetricName: state.dynamicSettings.colorRange.from + 1 }
-
-					expect(buildNode().color).toBe(state.appSettings.mapColors.neutral)
 				})
 			})
 
@@ -377,7 +377,7 @@ describe("TreeMapHelper", () => {
 					const middle = (from + to) / 2
 
 					node.attributes = { validMetricName: from }
-					expect(buildNode().color.toLowerCase()).toBe(state.appSettings.mapColors.positive.toLowerCase())
+					expect(buildNode().color.toLowerCase()).toBe("#97ba26")
 
 					node.attributes = { validMetricName: from - 1 }
 					expect(buildNode().color.toLowerCase()).toBe(state.appSettings.mapColors.positive.toLowerCase())
@@ -435,6 +435,44 @@ describe("TreeMapHelper", () => {
 				type: NodeType.FOLDER
 			}
 			expect(TreeMapHelper.countNodes(root)).toBe(3)
+		})
+	})
+
+	describe("resolve height value", () => {
+		const state = STATE
+		state.dynamicSettings.heightMetric = "rloc"
+		const someNode: CodeMapNode = {
+			deltas: {
+				mcc: 42
+			},
+			name: "",
+			type: NodeType.FILE
+		}
+
+		it("should use MIN_BUILDING_HEIGHT if no delta", () => {
+			const resultHeight = TreeMapHelper.resolveHeightValue(1, 1, someNode, state)
+
+			expect(resultHeight).toBe(TreeMapHelper.MIN_BUILDING_HEIGHT)
+		})
+
+		it("should produce positive height value if big enough", () => {
+			const stateMCC = clone(state)
+			stateMCC.dynamicSettings.heightMetric = "mcc"
+
+			const resultHeightWithDelta = TreeMapHelper.resolveHeightValue(10, 1, someNode, stateMCC)
+			const resultHeightWithoutDelta = TreeMapHelper.resolveHeightValue(10, 1, someNode, state)
+
+			expect(resultHeightWithDelta).toBe(10)
+			expect(resultHeightWithoutDelta).toBe(10)
+		})
+
+		it("should use zero as min height if delta present", () => {
+			state.dynamicSettings.heightMetric = "mcc"
+			const resultHeightZero = TreeMapHelper.resolveHeightValue(0, 1, someNode, state)
+			const resultHeightPositive = TreeMapHelper.resolveHeightValue(10, 1, someNode, state)
+
+			expect(resultHeightZero).toBe(0)
+			expect(resultHeightPositive).toBe(10)
 		})
 	})
 

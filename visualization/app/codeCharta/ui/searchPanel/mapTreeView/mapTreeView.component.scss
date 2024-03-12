@@ -1,3 +1,5 @@
+@use "../../../../material/theme";
+
 cc-map-tree-view {
 	.tree-element-0 {
 		overflow-y: auto;
@@ -16,7 +18,7 @@ cc-map-tree-view {
 		}
 	}
 
-	.tree-leaf .tree-element-label {
+	.tree-element-label {
 		cursor: default;
 	}
 
@@ -84,5 +86,9 @@ cc-map-tree-view {
 				}
 			}
 		}
+	}
+
+	.tree-search-result {
+		background-color: theme.$cc-accent-color;
 	}
 }

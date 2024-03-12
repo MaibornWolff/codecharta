@@ -22,6 +22,7 @@ export interface MetricSuggestionParameters {
 	from: number
 	to: number
 	isOutlier?: boolean
+	outlierThreshold?: number
 }
 
 export function calculateSuspiciousMetrics(metricAssessmentResults: MetricAssessmentResults): MetricSuggestionParameters[] {
@@ -35,6 +36,7 @@ export function calculateSuspiciousMetrics(metricAssessmentResults: MetricAssess
 
 		if (metricAssessmentResults.outliersThresholds.has(metricName)) {
 			noticeableMetricSuggestionLinks.get(metricName).isOutlier = true
+			noticeableMetricSuggestionLinks.get(metricName).outlierThreshold = metricAssessmentResults.outliersThresholds.get(metricName)
 		}
 	}
 

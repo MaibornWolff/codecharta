@@ -1,17 +1,47 @@
-import { NameDataPair } from "../../codeCharta.model"
+import { ExportBlacklistItem, ExportCCFile } from "../../codeCharta.api.model"
+import { CCFile, NameDataPair } from "../../codeCharta.model"
 import { FileSelectionState, FileState } from "../../model/files/files"
 import { getCCFile } from "../../util/fileHelper"
-import { CCFileValidationResult, checkErrors, checkWarnings } from "../../util/fileValidator"
+import { CCFileValidationResult as FileValidationResult, checkErrors, checkWarnings } from "../../util/fileValidator"
 import { NodeDecorator } from "../../util/nodeDecorator"
+
+export function getNameDataPair(ccFile: CCFile): NameDataPair {
+	return {
+		fileName: ccFile.fileMeta.fileName,
+		fileSize: ccFile.fileMeta.exportedFileSize,
+		content: getExportCCFile(ccFile)
+	}
+}
+
+function getExportCCFile(ccFile: CCFile): ExportCCFile {
+	return {
+		projectName: ccFile.fileMeta.projectName,
+		apiVersion: ccFile.fileMeta.apiVersion,
+		fileChecksum: ccFile.fileMeta.fileChecksum,
+		nodes: [ccFile.map],
+		attributeTypes: ccFile.settings.fileSettings.attributeTypes,
+		attributeDescriptors: ccFile.settings.fileSettings.attributeDescriptors,
+		edges: ccFile.settings.fileSettings.edges,
+		markedPackages: ccFile.settings.fileSettings.markedPackages,
+		blacklist: ccFile.settings.fileSettings.blacklist.map(blackListItem => {
+			switch (blackListItem.type) {
+				case "flatten":
+					return { path: blackListItem.path, type: "hide" } as ExportBlacklistItem
+				case "exclude":
+					return { path: blackListItem.path, type: blackListItem.type } as ExportBlacklistItem
+			}
+		})
+	}
+}
 
 export function enrichFileStatesAndRecentFilesWithValidationResults(
 	fileStates: FileState[],
 	recentFiles: string[],
 	nameDataPairs: NameDataPair[],
-	fileValidationResults: CCFileValidationResult[]
+	fileValidationResults: FileValidationResult[]
 ) {
 	for (const nameDataPair of nameDataPairs) {
-		const fileValidationResult: CCFileValidationResult = {
+		const fileValidationResult: FileValidationResult = {
 			fileName: nameDataPair?.fileName,
 			errors: [],
 			warnings: []

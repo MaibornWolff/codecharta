@@ -3,22 +3,20 @@ package de.maibornwolff.codecharta.filter.edgefilter
 import com.github.kinquirer.KInquirer
 import com.github.kinquirer.components.promptInput
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
+import de.maibornwolff.codecharta.util.InputHelper
 import mu.KotlinLogging
 import java.io.File
-import java.nio.file.Paths
 
 private val logger = KotlinLogging.logger {}
 
 class ParserDialog {
     companion object : ParserDialogInterface {
-        private const val EXTENSION = "cc.json"
-
         override fun collectParserArgs(): List<String> {
+            var inputFileName: String
+            do {
+                inputFileName = getInputFileName("cc.json", false)
+            } while (!InputHelper.isInputValidAndNotNull(arrayOf(File(inputFileName)), canInputContainFolders = false))
 
-            val inputFileName = KInquirer.promptInput(
-                    message = "What is the $EXTENSION file that has to be parsed?",
-                    hint = Paths.get("").toAbsolutePath().toString() + File.separator + "yourInput." + EXTENSION
-                                                     )
             logger.info { "File path: $inputFileName" }
 
             val defaultOutputFileName = getOutputFileName(inputFileName)

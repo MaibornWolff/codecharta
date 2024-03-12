@@ -1,0 +1,94 @@
+name: Release Visualization
+
+on:
+  push:
+    tags: 'vis-*.*.*'
+
+jobs:
+  build_project:
+    name: Build Project
+
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install wine
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y wine-stable
+
+      - name: Install zip
+        run: sudo apt-get install -y zip
+
+      - name: Enable analysis execution rights
+        working-directory: ./analysis
+        run: |
+          chmod +x ./gradlew
+
+      - name: Build visualization
+        env:
+          NODE_OPTIONS: "--max_old_space_size=4096"
+        working-directory: ./visualization
+        run: |
+          npm ci
+          npm run test
+          npm run build
+          npm run package
+          docker build -t codecharta/codecharta-visualization .
+
+      - name: Add Changelog Entries to Release
+        uses: rasmus-saks/release-a-changelog-action@v1.2.0
+        with:
+          github-token: '${{ secrets.GITHUB_TOKEN }}'
+          path: 'visualization/CHANGELOG.md'
+          title-template: 'Visualization release {version}'
+          tag-template: 'vis-{version}'
+
+      - name: Upload Release Files to tagged release
+        uses: alexellis/upload-assets@0.4.0
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          asset_paths: '["visualization/dist/packages/*.zip"]'
+
+      - name: Publish visualization npm package
+        uses: JS-DevTools/npm-publish@v2.2.2
+        with:
+          token: ${{ secrets.NPM_TOKEN }}
+          package: ./visualization/package.json
+
+      - name: Set env
+        run: |
+          fullVersion="${GITHUB_REF#refs/*/}"
+          echo "RELEASE_VERSION=${fullVersion:4}" >> $GITHUB_ENV
+
+      - name: Publish Docker Visualization Image
+        uses: elgohr/Publish-Docker-Github-Action@v5
+        with:
+          default_branch: main
+          name: codecharta/codecharta-visualization
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          tags: "latest,${{ env.RELEASE_VERSION }}"
+          workdir: ./visualization
+
+      - name: Create Sample File for Web Demo
+        run: sh ./script/build_demo_file_visualization.sh
+
+      - name: Deploy GH-Pages
+        uses: JamesIves/github-pages-deploy-action@v4.4.3
+        with:
+          token: ${{ secrets.DEPLOY_TOKEN }}
+          branch: gh-pages
+          folder: gh-pages
+          clean: true

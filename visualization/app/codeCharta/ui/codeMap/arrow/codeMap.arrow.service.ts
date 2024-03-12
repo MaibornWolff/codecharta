@@ -102,13 +102,7 @@ export class CodeMapArrowService implements OnDestroy {
 		}
 	}
 
-	addEdgePreview(nodes?: Node[]) {
-		if (!nodes) {
-			return
-		}
-
-		this.map = this.getNodesAsMap(nodes)
-
+	addEdgePreview() {
 		const edges = edgeVisibilitySelector(this.state.getValue())
 
 		for (const edge of edges) {
@@ -123,6 +117,10 @@ export class CodeMapArrowService implements OnDestroy {
 				this.previewMode(curve, edge.visible)
 			}
 		}
+	}
+
+	addEdgeMapBasedOnNodes(nodes: Node[]) {
+		this.map = this.getNodesAsMap(nodes)
 	}
 
 	scale() {

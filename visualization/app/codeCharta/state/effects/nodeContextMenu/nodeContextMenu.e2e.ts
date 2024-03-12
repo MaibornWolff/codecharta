@@ -1,4 +1,4 @@
-import { goto } from "../../../../puppeteer.helper"
+import { clearIndexedDB, goto } from "../../../../puppeteer.helper"
 import { NodeContextMenuPageObject } from "./nodeContextMenu.po"
 import { SearchPanelModeSelectorPageObject } from "../../../ui/searchPanel/searchPanelModeSelector/searchPanelModeSelector.po"
 import { MapTreeViewLevelPageObject } from "../../../ui/searchPanel/mapTreeView/mapTreeView.level.po"
@@ -11,12 +11,17 @@ describe("NodeContextMenu", () => {
 	let codeMap: CodeMapPageObject
 
 	beforeEach(async () => {
+		await jestPuppeteer.resetPage()
 		contextMenu = new NodeContextMenuPageObject()
 		searchPanelModeSelector = new SearchPanelModeSelectorPageObject()
 		mapTreeViewLevel = new MapTreeViewLevelPageObject()
 		codeMap = new CodeMapPageObject()
 
 		await goto()
+	})
+
+	afterEach(async () => {
+		await clearIndexedDB()
 	})
 
 	it("right clicking a folder should open a context menu with color options", async () => {

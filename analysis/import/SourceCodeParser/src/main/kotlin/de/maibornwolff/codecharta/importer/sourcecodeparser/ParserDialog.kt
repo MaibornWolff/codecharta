@@ -6,16 +6,17 @@ import com.github.kinquirer.components.promptInput
 import com.github.kinquirer.components.promptListObject
 import com.github.kinquirer.core.Choice
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
-import java.nio.file.Paths
+import de.maibornwolff.codecharta.util.InputHelper
+import java.io.File
 
 class ParserDialog {
     companion object : ParserDialogInterface {
 
         override fun collectParserArgs(): List<String> {
-            val inputFileName = KInquirer.promptInput(
-                    message = "Which project folder or code file should be parsed?",
-                    default = Paths.get("").toAbsolutePath().toString()
-            )
+            var inputFileName: String
+            do {
+                inputFileName = getInputFileName("Which project folder or code file should be parsed?", "")
+            } while (!InputHelper.isInputValidAndNotNull(arrayOf(File(inputFileName)), canInputContainFolders = true))
 
             val outputFormat = KInquirer.promptListObject(
                     message = "Which output format should be generated?",
@@ -45,7 +46,7 @@ class ParserDialog {
                     message = "Exclude file/folder according to regex pattern? Leave empty to skip.",
                 )
                 if (additionalExclude.isNotBlank()) {
-                    exclude.add("--exclude=" + additionalExclude)
+                    exclude.add("--exclude=$additionalExclude")
                 } else {
                     break
                 }

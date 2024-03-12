@@ -2,14 +2,14 @@ buildscript {
     ext {
         // Dependency versions
         boon_version = '0.34'
-        commons_lang3_version = '3.12.0'
+        commons_lang3_version = '3.14.0'
         gson_version = '2.10.1'
         gradle_module_metadata_maven_plugin = '0.3.0'
         jackson_version = '2.15.2'
         jacoco_version = '0.8.11'
         jaxb_api_version = '2.3.1'
         jersey_version = '2.39.1'
-        json_schema_version = '1.14.3'
+        json_schema_version = '1.14.4'
         json_version = '20190722'
         juniversalchardet_version = '1.0.3'
         kotlin_inquirer_version = '0.1.0'
@@ -17,7 +17,7 @@ buildscript {
         kotlin_version = '1.8.21'
         kotlinx_coroutines_version = '1.7.3'
         picocli_version = '4.7.5'
-        slf4j_version = '2.0.9'
+        slf4j_version = '2.0.12'
         sonar_java_version = '6.8.0.23379'
         sonarqube_version = '4.4.1.3373'
         univocity_parsers_version = '2.9.1'
@@ -31,7 +31,7 @@ buildscript {
 
         mockito_core_version = '3.12.4'
         mockito_kotlin_version = '2.2.0'
-        mockk_version = '1.13.8'
+        mockk_version = '1.13.9'
         wiremock_version = '2.35.1'
     }
 
@@ -116,7 +116,7 @@ distributions {
         distributionBaseName  = 'codecharta-analysis'
         contents {
             from { '../LICENSE.md' }
-            from { '../CHANGELOG.md' }
+            from { 'CHANGELOG.md' }
 
             // Readmes
             from { 'README.md' }

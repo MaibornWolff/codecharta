@@ -1,4 +1,4 @@
-import markdownFile from "../../../../../../CHANGELOG.md"
+import markdownFile from "../../../../../CHANGELOG.md"
 import { Component, Inject, ViewEncapsulation } from "@angular/core"
 import { MAT_DIALOG_DATA } from "@angular/material/dialog"
 import { marked } from "marked"

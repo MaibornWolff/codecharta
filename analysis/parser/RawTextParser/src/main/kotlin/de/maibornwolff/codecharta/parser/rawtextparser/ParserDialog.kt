@@ -5,17 +5,18 @@ import com.github.kinquirer.components.promptConfirm
 import com.github.kinquirer.components.promptInput
 import com.github.kinquirer.components.promptInputNumber
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
+import de.maibornwolff.codecharta.util.InputHelper
+import java.io.File
 import java.math.BigDecimal
-import java.nio.file.Paths
 
 class ParserDialog {
     companion object : ParserDialogInterface {
 
         override fun collectParserArgs(): List<String> {
-            val inputFileName = KInquirer.promptInput(
-                message = "What is the file (.txt) or folder that has to be parsed?",
-                default = Paths.get("").toAbsolutePath().toString()
-            )
+            var inputFileName: String
+            do {
+                inputFileName = getInputFileName("What is the file (.txt) or folder that has to be parsed?", "")
+            } while (!InputHelper.isInputValidAndNotNull(arrayOf(File(inputFileName)), canInputContainFolders = true))
 
             val outputFileName: String = KInquirer.promptInput(
                 message = "What is the name of the output file (leave empty to print to stdout)?",

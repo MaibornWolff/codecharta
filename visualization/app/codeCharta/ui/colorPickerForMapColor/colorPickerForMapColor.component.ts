@@ -6,6 +6,7 @@ import { selectedColorMetricDataSelector } from "../../state/selectors/accumulat
 import { setMapColors } from "../../state/store/appSettings/mapColors/mapColors.actions"
 import { mapColorsSelector } from "../../state/store/appSettings/mapColors/mapColors.selector"
 import { colorRangeSelector } from "../../state/store/dynamicSettings/colorRange/colorRange.selector"
+import { colorMetricSelector } from "../../state/store/dynamicSettings/colorMetric/colorMetric.selector"
 
 @Component({
 	selector: "cc-color-picker-for-map-color",
@@ -15,6 +16,7 @@ import { colorRangeSelector } from "../../state/store/dynamicSettings/colorRange
 export class ColorPickerForMapColorComponent {
 	@Input() mapColorFor: keyof Omit<MapColors, "labelColorAndAlpha" | "markingColors">
 
+	colorMetric$ = this.store.select(colorMetricSelector)
 	mapColors$ = this.store.select(mapColorsSelector)
 	colorRange$ = this.store.select(colorRangeSelector)
 	nodeMetricRange$ = this.store.select(selectedColorMetricDataSelector)

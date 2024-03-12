@@ -1,3 +1,5 @@
+@use "../../../../material/theme";
+
 cc-search-bar {
 	display: inline-block;
 
@@ -16,10 +18,11 @@ cc-search-bar {
 			border-color: lightgrey;
 			outline: 0;
 			font-size: 11pt;
+			height: 24px;
 
 			&:focus {
-				border-width: 0 0 2px;
-				border-color: rgb(0, 150, 136);
+				border-color: theme.$cc-emphasized-color;
+				box-shadow: 0 1px 0 0 theme.$cc-emphasized-color;
 			}
 		}
 
@@ -27,7 +30,6 @@ cc-search-bar {
 			vertical-align: middle;
 			display: inline-block;
 			position: relative;
-			top: -5px;
 			height: 30px;
 		}
 
@@ -35,6 +37,12 @@ cc-search-bar {
 			position: absolute;
 			right: 0;
 			margin: 0;
+			height: 24px;
+			width: 24px;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			top: 0px;
 		}
 	}
 

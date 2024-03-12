@@ -1,8 +1,9 @@
 cc-color-settings-panel {
 	&.cc-metric-settings-panel {
-		mat-form-field {
-			width: 100%;
-			margin: 12px 0px;
+		.gradient-mode-selector {
+			height: 40px;
+			margin: 5px 10px;
+			width: 243px;
 
 			.mat-mdc-text-field-wrapper .mat-mdc-form-field-flex .mat-mdc-form-field-infix {
 				padding: 10px;
@@ -21,8 +22,14 @@ cc-color-settings-panel {
 		.color-row {
 			display: flex;
 			align-items: center;
-			justify-content: space-between;
-			padding-right: 8px;
 		}
 	}
+}
+
+cc-color-picker-for-map-color {
+	width: 50%;
+}
+
+cc-reset-settings-button {
+	width: 50%;
 }

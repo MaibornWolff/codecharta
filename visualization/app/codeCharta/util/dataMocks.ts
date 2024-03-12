@@ -10,7 +10,6 @@ import {
 	EdgeMetricData,
 	EdgeVisibility,
 	FileMeta,
-	GlobalSettings,
 	LayoutAlgorithm,
 	MarkedPackage,
 	Node,
@@ -1122,60 +1121,7 @@ export const FIXED_FOLDERS_NESTED_MIXED_WITH_A_FILE_MAP_FILE: CCFile = {
 
 export const TEST_FILE_WITH_PATHS: CCFile = {
 	fileMeta: FILE_META,
-	map: {
-		name: "root",
-		type: NodeType.FOLDER,
-		path: "/root",
-		attributes: {},
-		isExcluded: false,
-		isFlattened: false,
-		children: [
-			{
-				name: "big leaf",
-				type: NodeType.FILE,
-				path: "/root/big leaf",
-				attributes: { rloc: 100, functions: 10, mcc: 1 },
-				link: "https://www.google.de",
-				isExcluded: false,
-				isFlattened: false
-			},
-			{
-				name: "Parent Leaf",
-				type: NodeType.FOLDER,
-				attributes: {},
-				path: "/root/Parent Leaf",
-				isExcluded: false,
-				isFlattened: false,
-				children: [
-					{
-						name: "small leaf",
-						type: NodeType.FILE,
-						path: "/root/Parent Leaf/small leaf",
-						attributes: { rloc: 30, functions: 100, mcc: 100 },
-						isExcluded: false,
-						isFlattened: false
-					},
-					{
-						name: "other small leaf",
-						type: NodeType.FILE,
-						path: "/root/Parent Leaf/other small leaf",
-						attributes: { rloc: 70, functions: 1000, mcc: 10 },
-						isExcluded: false,
-						isFlattened: false
-					},
-					{
-						name: "empty folder",
-						type: NodeType.FOLDER,
-						path: "/root/Parent Leaf/empty folder",
-						attributes: {},
-						isExcluded: false,
-						isFlattened: false,
-						children: []
-					}
-				]
-			}
-		]
-	},
+	map: VALID_NODE_WITH_PATH,
 	settings: DEFAULT_SETTINGS
 }
 
@@ -1186,17 +1132,6 @@ export const SCENARIO_WITH_ONLY_HEIGHT: RecursivePartial<Scenario> = {
 		labelSlider: 31,
 		heightSlider: new Vector3(1, 1.8, 1)
 	}
-}
-
-export const GLOBAL_SETTINGS: GlobalSettings = {
-	hideFlatBuildings: true,
-	isWhiteBackground: true,
-	resetCameraIfNewFileIsLoaded: true,
-	experimentalFeaturesEnabled: true,
-	screenshotToClipboardEnabled: false,
-	layoutAlgorithm: LayoutAlgorithm.SquarifiedTreeMap,
-	maxTreeMapFiles: 50,
-	sharpnessMode: SharpnessMode.Standard
 }
 
 export const VALID_NODE_WITH_PATH_AND_EXTENSION: CodeMapNode = {
@@ -1268,6 +1203,278 @@ export const VALID_NODE_WITH_PATH_AND_EXTENSION: CodeMapNode = {
 			]
 		}
 	]
+}
+
+export const VALID_BIG_NODE_WITH_DELTAS: CodeMapNode = {
+	name: "root",
+	type: NodeType.FOLDER,
+	attributes: {
+		avgCommits: 0,
+		functions: 131,
+		mcc: 182,
+		pairingRate: 0,
+		rloc: 820,
+		unary: 5
+	},
+	children: [
+		{
+			name: "bigLeaf.ts",
+			type: NodeType.FILE,
+			attributes: {
+				rloc: 120,
+				functions: 10,
+				mcc: 1,
+				unary: 1,
+				avgCommits: 0,
+				pairingRate: 0
+			},
+			link: "https://www.google.de",
+			path: "/root/bigLeaf.ts",
+			deltas: {
+				rloc: 20,
+				functions: 0,
+				mcc: 0,
+				pairingRate: -77,
+				avgCommits: -56,
+				unary: 0
+			},
+			fileCount: {
+				added: 0,
+				removed: 0,
+				changed: 1
+			},
+			isFlattened: false,
+			isExcluded: false,
+			id: 1,
+			edgeAttributes: {
+				avgCommits: {
+					incoming: 1,
+					outgoing: 1
+				},
+				pairingRate: {
+					incoming: 1,
+					outgoing: 1
+				}
+			}
+		},
+		{
+			name: "ParentLeaf",
+			type: NodeType.FOLDER,
+			attributes: {
+				avgCommits: 0,
+				functions: 121,
+				mcc: 181,
+				pairingRate: 0,
+				rloc: 700,
+				unary: 3
+			},
+			children: [
+				{
+					name: "smallLeaf.html",
+					type: NodeType.FILE,
+					attributes: {
+						rloc: 30,
+						functions: 101,
+						mcc: 80,
+						unary: 1,
+						avgCommits: 0,
+						pairingRate: 0
+					},
+					path: "/root/ParentLeaf/smallLeaf.html",
+					deltas: {
+						rloc: 0,
+						functions: 1,
+						mcc: -20,
+						pairingRate: -60,
+						avgCommits: -51,
+						unary: 0
+					},
+					fileCount: {
+						added: 0,
+						removed: 0,
+						changed: 1
+					},
+					isFlattened: false,
+					isExcluded: false,
+					id: 4,
+					edgeAttributes: {
+						avgCommits: {
+							incoming: 2,
+							outgoing: 0
+						},
+						pairingRate: {
+							incoming: 2,
+							outgoing: 0
+						}
+					}
+				},
+				{
+					name: "otherSmallLeaf.ts",
+					type: NodeType.FILE,
+					attributes: {
+						rloc: 70,
+						functions: 10,
+						mcc: 100,
+						unary: 1,
+						avgCommits: 0,
+						pairingRate: 0
+					},
+					path: "/root/ParentLeaf/otherSmallLeaf.ts",
+					deltas: {
+						rloc: 0,
+						functions: -990,
+						mcc: 90,
+						pairingRate: -65,
+						avgCommits: -22,
+						unary: 0
+					},
+					fileCount: {
+						added: 0,
+						removed: 0,
+						changed: 1
+					},
+					isFlattened: false,
+					isExcluded: false,
+					id: 5,
+					edgeAttributes: {
+						avgCommits: {
+							incoming: 0,
+							outgoing: 1
+						},
+						pairingRate: {
+							incoming: 0,
+							outgoing: 1
+						}
+					}
+				},
+				{
+					name: "sample2LeafMergedIn.kt",
+					type: NodeType.FILE,
+					attributes: {
+						rloc: 600,
+						functions: 10,
+						mcc: 1,
+						unary: 1,
+						avgCommits: 0,
+						pairingRate: 0
+					},
+					link: "https://www.google.de",
+					path: "/root/ParentLeaf/sample2LeafMergedIn.kt",
+					deltas: {
+						rloc: 600,
+						functions: 10,
+						mcc: 1,
+						avgCommits: 0,
+						pairingRate: 0,
+						unary: 0
+					},
+					fileCount: {
+						added: 1,
+						removed: 0,
+						changed: 0
+					},
+					isFlattened: false,
+					isExcluded: false,
+					id: 6,
+					edgeAttributes: {}
+				}
+			],
+			path: "/root/ParentLeaf",
+			deltas: {
+				avgCommits: -73,
+				functions: -979,
+				mcc: 71,
+				pairingRate: -62.5,
+				rloc: 600,
+				unary: 0
+			},
+			fileCount: {
+				added: 1,
+				removed: 0,
+				changed: 2
+			},
+			isFlattened: false,
+			isExcluded: false,
+			id: 2,
+			edgeAttributes: {
+				avgCommits: {
+					incoming: 2,
+					outgoing: 1
+				},
+				pairingRate: {
+					incoming: 2,
+					outgoing: 1
+				}
+			}
+		},
+		{
+			name: "sample1OnlyLeaf.scss",
+			type: NodeType.FILE,
+			attributes: {
+				rloc: 0,
+				functions: 0,
+				mcc: 0,
+				pairingRate: 0,
+				avgCommits: 0,
+				unary: 1
+			},
+			link: "https://www.google.de",
+			path: "/root/sample1OnlyLeaf.scss",
+			deltas: {
+				rloc: -400,
+				functions: -10,
+				mcc: -100,
+				pairingRate: -32,
+				avgCommits: -17,
+				unary: 0
+			},
+			fileCount: {
+				added: 0,
+				removed: 1,
+				changed: 0
+			},
+			isFlattened: false,
+			isExcluded: false,
+			id: 3,
+			edgeAttributes: {
+				avgCommits: {
+					incoming: 0,
+					outgoing: 1
+				},
+				pairingRate: {
+					incoming: 0,
+					outgoing: 1
+				}
+			}
+		}
+	],
+	path: "/root",
+	deltas: {
+		avgCommits: -146,
+		functions: -989,
+		mcc: -29,
+		pairingRate: -62.5,
+		rloc: 220,
+		unary: 0
+	},
+	fileCount: {
+		added: 1,
+		removed: 1,
+		changed: 3
+	},
+	isFlattened: false,
+	isExcluded: false,
+	id: 0,
+	edgeAttributes: {
+		avgCommits: {
+			incoming: 3,
+			outgoing: 3
+		},
+		pairingRate: {
+			incoming: 1.5,
+			outgoing: 1
+		}
+	}
 }
 
 export const VALID_NODE_WITH_PATH_AND_DELTAS: CodeMapNode = {
@@ -1488,6 +1695,183 @@ export const TEST_DELTA_MAP_B: CCFile = {
 	settings: DEFAULT_SETTINGS
 }
 
+export const TEST_DELTA_MAP_C: CCFile = {
+	fileMeta: {
+		...DEFAULT_CC_FILE_MOCK.fileMeta,
+		fileName: "fileC",
+		fileChecksum: "md5-delta-fileB"
+	},
+	map: {
+		...DEFAULT_CC_FILE_MOCK.map,
+		children: [
+			{
+				name: "big leaf",
+				type: NodeType.FILE,
+				attributes: { rloc: 20, functions: 10, mcc: 1 },
+				link: "https://www.google.de"
+			},
+			{
+				name: "additional leaf",
+				type: NodeType.FILE,
+				attributes: { rloc: 10, functions: 11, mcc: 5 },
+				link: "https://www.google.de"
+			},
+			{
+				name: "Parent Leaf",
+				type: NodeType.FOLDER,
+				attributes: {},
+				children: [
+					{
+						name: "small leaf",
+						type: NodeType.FILE,
+						attributes: { rloc: 30, functions: 100, mcc: 100, more: 20 }
+					},
+					{
+						name: "other small leaf",
+						type: NodeType.FILE,
+						attributes: { rloc: 70, functions: 1000 }
+					},
+					{
+						name: "big leaf",
+						type: NodeType.FILE,
+						attributes: { rloc: 200, functions: 50, mcc: 30 },
+						link: "https://www.google.de"
+					}
+				]
+			}
+		]
+	},
+	settings: DEFAULT_SETTINGS
+}
+
+export const TEST_DELTA_MAP_D: CCFile = {
+	fileMeta: {
+		...DEFAULT_CC_FILE_MOCK.fileMeta,
+		fileName: "fileD",
+		fileChecksum: "md5-delta-fileB"
+	},
+	map: {
+		...DEFAULT_CC_FILE_MOCK.map,
+		children: [
+			{
+				name: "D file 1",
+				type: NodeType.FILE,
+				attributes: { rloc: 400, functions: 12, mcc: 34 },
+				link: "https://www.google.de"
+			},
+			{
+				name: "D file 2",
+				type: NodeType.FILE,
+				attributes: { rloc: 230, functions: 14, mcc: 9 },
+				link: "https://www.google.de"
+			},
+			{
+				name: "D folder 1",
+				type: NodeType.FOLDER,
+				attributes: {},
+				children: [
+					{
+						name: "D file 1.1",
+						type: NodeType.FILE,
+						attributes: { rloc: 400, functions: 30, mcc: 20, more: 20 }
+					}
+				]
+			}
+		]
+	},
+	settings: DEFAULT_SETTINGS
+}
+
+export const TEST_DELTA_MAP_E: CCFile = {
+	fileMeta: {
+		...DEFAULT_CC_FILE_MOCK.fileMeta,
+		fileName: "fileE",
+		fileChecksum: "md5-delta-fileE"
+	},
+	map: {
+		...DEFAULT_CC_FILE_MOCK.map,
+		children: [
+			{ name: "File which exists in E but not in F", type: NodeType.FILE, attributes: { mcc: 12, rloc: 5 } },
+			{ name: "Folder with different attributes", type: NodeType.FOLDER, attributes: { mcc: 12, rloc: 5 } },
+			{
+				name: "File with same rloc-value and either mcc or functions",
+				type: NodeType.FILE,
+				attributes: { rloc: 400, functions: 12 }
+			},
+			{
+				name: "File without metric changes",
+				type: NodeType.FILE,
+				attributes: { rloc: 271 }
+			},
+			{
+				name: "File with mcc in E, but no attributes in F",
+				type: NodeType.FILE,
+				attributes: { mcc: 2 }
+			},
+			{
+				name: "File without attributes in E, but with functions in F",
+				attributes: {},
+				type: NodeType.FILE
+			},
+			{
+				name: "File with mcc=0 in E, but no attributes in F, which does not count as difference",
+				type: NodeType.FILE,
+				attributes: { mcc: 0 }
+			},
+			{
+				name: "File with mcc and rloc changes",
+				type: NodeType.FILE,
+				attributes: { mcc: 4, rloc: 7 }
+			}
+		]
+	},
+	settings: DEFAULT_SETTINGS
+}
+export const TEST_DELTA_MAP_F: CCFile = {
+	fileMeta: {
+		...DEFAULT_CC_FILE_MOCK.fileMeta,
+		fileName: "fileF",
+		fileChecksum: "md5-delta-fileF"
+	},
+	map: {
+		...DEFAULT_CC_FILE_MOCK.map,
+		children: [
+			{ name: "Folder with different attributes", type: NodeType.FOLDER, attributes: { mcc: 120, rloc: 50 } },
+			{
+				name: "File with same rloc-value and either mcc or functions",
+				type: NodeType.FILE,
+				attributes: { rloc: 400, mcc: 7 }
+			},
+			{
+				name: "File without metric changes",
+				type: NodeType.FILE,
+				attributes: { rloc: 271 }
+			},
+			{
+				name: "File with mcc in E, but no attributes in F",
+				type: NodeType.FILE,
+				attributes: {}
+			},
+			{
+				name: "File without attributes in E, but with functions in F",
+				type: NodeType.FILE,
+				attributes: { functions: 1 }
+			},
+			{
+				name: "File with mcc=0 in E, but no attributes in F, which does not count as difference",
+				type: NodeType.FILE,
+				attributes: {}
+			},
+			{
+				name: "File with mcc and rloc changes",
+				type: NodeType.FILE,
+				attributes: { mcc: 9001, rloc: 9002 } // its over 9000!!!
+			}
+		]
+	},
+	settings: DEFAULT_SETTINGS
+}
+
 export const TEST_FILE_DATA_DOWNLOADED = {
 	projectName: "Sample Project",
 	apiVersion: packageJson.codecharta.apiVersion,
@@ -1593,14 +1977,15 @@ export const FILE_STATES_JAVA: FileState[] = [
 ]
 
 export const METRIC_DATA: NodeMetricData[] = [
-	{ name: "mcc", maxValue: 1, minValue: 1 },
-	{ name: "rloc", maxValue: 2, minValue: 1 },
-	{ name: UNARY_METRIC, maxValue: 1, minValue: 1 }
+	{ name: "mcc", maxValue: 100, minValue: 1, values: [1, 100] },
+	{ name: "rloc", maxValue: 100, minValue: 30, values: [30, 100] },
+	{ name: "functions", maxValue: 1000, minValue: 10, values: [10, 1000] },
+	{ name: UNARY_METRIC, maxValue: 1, minValue: 1, values: [1, 1] }
 ]
 
 export const EDGE_METRIC_DATA: EdgeMetricData[] = [
-	{ name: "pairing_rate", maxValue: 10, minValue: 0 },
-	{ name: "average_commits", maxValue: 20, minValue: 0 }
+	{ name: "pairing_rate", maxValue: 10, minValue: 0, values: [0, 10] },
+	{ name: "average_commits", maxValue: 20, minValue: 0, values: [0, 20] }
 ]
 
 export const STATE: CcState = {
@@ -1672,6 +2057,7 @@ export const STATE: CcState = {
 		isLoadingMap: true,
 		isLoadingFile: true,
 		sortingOrderAscending: false,
+		isSearchPanelPinned: false,
 		showMetricLabelNameValue: true,
 		showMetricLabelNodeName: true,
 		experimentalFeaturesEnabled: false,
@@ -1726,6 +2112,7 @@ export const DEFAULT_STATE: CcState = {
 		isLoadingMap: true,
 		isLoadingFile: true,
 		sortingOrderAscending: true,
+		isSearchPanelPinned: false,
 		showMetricLabelNameValue: false,
 		showMetricLabelNodeName: true,
 		experimentalFeaturesEnabled: false,

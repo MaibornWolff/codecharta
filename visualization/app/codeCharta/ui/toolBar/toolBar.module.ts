@@ -10,6 +10,7 @@ import { PresentationModeButtonModule } from "./presentationModeButton/presentat
 import { ToolBarComponent } from "./toolBar.component"
 import { Export3DMapButtonModule } from "../export3DMapButton/export3DMapButton.module"
 import { LoadingMapProgressSpinnerModule } from "./loadingMapProgressSpinner/loadingMapProgressSpinner.module"
+import { ResetMapButtonModule } from "../resetMapButton/resetMapButton.module"
 
 @NgModule({
 	imports: [
@@ -18,6 +19,7 @@ import { LoadingMapProgressSpinnerModule } from "./loadingMapProgressSpinner/loa
 		ScreenshotButtonModule,
 		CopyToClipboardButtonModule,
 		Export3DMapButtonModule,
+		ResetMapButtonModule,
 		FilePanelModule,
 		HoveredNodePathPanelModule,
 		LoadingMapProgressSpinnerModule,

@@ -31,7 +31,7 @@ describe("colorPickerForMapColor", () => {
 			componentProperties: { mapColorFor: "positive" }
 		})
 
-		const renderedLabel = screen.queryByText("0 to < 21")
+		const renderedLabel = screen.queryByText("0 to 20")
 		expect(renderedLabel).not.toBe(null)
 	})
 })

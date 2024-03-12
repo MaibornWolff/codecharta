@@ -1,4 +1,4 @@
-import { goto } from "../../../../puppeteer.helper"
+import { clearIndexedDB, goto } from "../../../../puppeteer.helper"
 import { EdgeChooserPageObject } from "./edgeChooser.po"
 import { MapTreeViewLevelPageObject } from "../../searchPanel/mapTreeView/mapTreeView.level.po"
 import { SearchPanelPageObject } from "../../searchPanel/searchPanel.po"
@@ -17,6 +17,10 @@ describe("MapTreeViewLevel", () => {
 		searchPanel = new SearchPanelPageObject()
 
 		await goto()
+	})
+
+	afterEach(async () => {
+		await clearIndexedDB()
 	})
 
 	describe("EdgeChooser", () => {

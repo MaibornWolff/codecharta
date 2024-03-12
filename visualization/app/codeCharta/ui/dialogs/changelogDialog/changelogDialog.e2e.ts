@@ -1,5 +1,5 @@
-import { goto } from "../../../../puppeteer.helper"
-import changelog from "../../../../../../CHANGELOG.md"
+import { clearIndexedDB, goto } from "../../../../puppeteer.helper"
+import changelog from "../../../../../CHANGELOG.md"
 
 function getSecondLatestCodeChartaVersion() {
 	const versionPattern = /\[(\d+\.\d+\.\d+)]/g
@@ -16,6 +16,11 @@ describe("changelogDialog", () => {
 		}, version)
 		await goto()
 	})
+
+	afterEach(async () => {
+		await clearIndexedDB()
+	})
+
 	it("should show entries between the last und newest release version", async () => {
 		const changelogDialog = await page.waitForSelector(".mat-mdc-dialog-container", { timeout: 6000 })
 		const contentElement = await changelogDialog?.waitForSelector(".content")

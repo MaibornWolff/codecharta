@@ -82,7 +82,7 @@ export class FileDownloader {
 		return attributeDescriptors
 	}
 
-	private static getFilteredBlacklist(blacklist: BlacklistItem[], type: BlacklistType) {
+	private static getFilteredBlacklist(blacklist: BlacklistItem[], type: BlacklistType): BlacklistItem[] {
 		return blacklist.filter(x => x.type === type)
 	}
 

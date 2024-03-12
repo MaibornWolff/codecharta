@@ -1,4 +1,4 @@
-import { clickButtonOnPageElement, goto } from "../../../puppeteer.helper"
+import { clearIndexedDB, clickButtonOnPageElement, goto } from "../../../puppeteer.helper"
 import { expect } from "@jest/globals"
 import { LegendPanelObject } from "./legendPanel.po"
 import { MapTreeViewLevelPageObject } from "../searchPanel/mapTreeView/mapTreeView.level.po"
@@ -19,6 +19,10 @@ describe("LegendPanel", () => {
 
 		await goto()
 		await setupTest()
+	})
+
+	afterEach(async () => {
+		await clearIndexedDB()
 	})
 
 	async function setupTest() {

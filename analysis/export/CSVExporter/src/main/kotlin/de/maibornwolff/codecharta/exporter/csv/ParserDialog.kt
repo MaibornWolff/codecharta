@@ -4,17 +4,17 @@ import com.github.kinquirer.KInquirer
 import com.github.kinquirer.components.promptInput
 import com.github.kinquirer.components.promptInputNumber
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
+import de.maibornwolff.codecharta.util.InputHelper
 import java.io.File
 import java.math.BigDecimal
-import java.nio.file.Paths
 
 class ParserDialog {
     companion object : ParserDialogInterface {
         override fun collectParserArgs(): List<String> {
-            val inputFileName = KInquirer.promptInput(
-                message = "What is the cc.json file that has to be parsed?",
-                    hint = Paths.get("").toAbsolutePath().toString() + File.separator + "yourInput.cc.json"
-            )
+            var inputFileName: String
+            do {
+                inputFileName = getInputFileName("cc.json", false)
+            } while (!InputHelper.isInputValidAndNotNull(arrayOf(File(inputFileName)), canInputContainFolders = false))
 
             val defaultOutputFileName = getOutputFileName(inputFileName)
             val outputFileName: String = KInquirer.promptInput(

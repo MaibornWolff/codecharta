@@ -1,4 +1,8 @@
-import { Component, ViewEncapsulation } from "@angular/core"
+import { Component, OnInit, ViewEncapsulation } from "@angular/core"
+import { Store } from "@ngrx/store"
+import { CcState } from "app/codeCharta/codeCharta.model"
+import { isSearchPanelPinnedSelector } from "../../state/store/appSettings/isSearchPanelPinned/isSearchPanelPinned.selector"
+import { Subscription } from "rxjs"
 
 export type SearchPanelMode = "minimized" | "treeView" | "blacklist"
 
@@ -8,8 +12,22 @@ export type SearchPanelMode = "minimized" | "treeView" | "blacklist"
 	styleUrls: ["./searchPanel.component.scss"],
 	encapsulation: ViewEncapsulation.None
 })
-export class SearchPanelComponent {
+export class SearchPanelComponent implements OnInit {
 	searchPanelMode: SearchPanelMode = "minimized"
+	isSearchPanelPinned: boolean
+	isSearchPanelPinnedSubscription: Subscription
+
+	constructor(private store: Store<CcState>) {}
+
+	ngOnInit(): void {
+		this.isSearchPanelPinnedSubscription = this.store.select(isSearchPanelPinnedSelector).subscribe(isSearchPanelPinned => {
+			this.isSearchPanelPinned = isSearchPanelPinned
+		})
+	}
+
+	ngOnDestroy(): void {
+		this.isSearchPanelPinnedSubscription.unsubscribe()
+	}
 
 	updateSearchPanelMode = (searchPanelMode: SearchPanelMode) => {
 		this.setSearchPanelMode(this.searchPanelMode === searchPanelMode ? "minimized" : searchPanelMode)
@@ -20,7 +38,7 @@ export class SearchPanelComponent {
 	}
 
 	private closeSearchPanelOnOutsideClick = (event: MouseEvent) => {
-		if (this.isOutside(event)) {
+		if (this.isOutside(event) && !this.isSearchPanelPinned) {
 			this.setSearchPanelMode("minimized")
 		}
 	}

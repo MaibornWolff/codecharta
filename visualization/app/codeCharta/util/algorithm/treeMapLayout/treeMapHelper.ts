@@ -26,7 +26,7 @@ function countNodes(node: { children?: CodeMapNode[] }) {
 	return count
 }
 
-// TODO this function exists twice in the code - please refactore it.
+// TODO this function exists twice in the code - please refactor it.
 function calculateSize(node: CodeMapNode, metricName: string) {
 	let totalSize = node.attributes[metricName] || 0
 
@@ -93,12 +93,12 @@ function buildNodeFrom(
 	const flattened = isNodeFlat(data, state)
 	const heightValue = getHeightValue(state, squaredNode, maxHeight, flattened)
 	const depth = data.path.split("/").length - 2
-	const height = Math.abs(
-		isNodeLeaf ? Math.max(heightScale * heightValue, MIN_BUILDING_HEIGHT) * mapSizeResolutionScaling : FOLDER_HEIGHT
-	)
+	const height = isNodeLeaf ? resolveHeightValue(heightValue, heightScale, data, state) * mapSizeResolutionScaling : FOLDER_HEIGHT
 	const width = x1 - x0
 	const length = y1 - y0
 	const z0 = depth * FOLDER_HEIGHT
+	const heightDelta = (data.deltas?.[state.dynamicSettings.heightMetric] ?? 0) * heightScale * mapSizeResolutionScaling
+	const edgePointHeight = height + (heightDelta < 0 ? Math.abs(heightDelta) : 0)
 
 	return {
 		name: data.name,
@@ -115,15 +115,15 @@ function buildNodeFrom(
 		attributes: data.attributes,
 		edgeAttributes: data.edgeAttributes,
 		deltas: data.deltas,
-		heightDelta: (data.deltas?.[state.dynamicSettings.heightMetric] ?? 0) * heightScale * mapSizeResolutionScaling,
+		heightDelta,
 		visible: isVisible(data, isNodeLeaf, state, flattened),
 		path: data.path,
 		link: data.link,
 		markingColor: getMarkingColor(data, state.fileSettings.markedPackages),
 		flat: flattened,
 		color: getBuildingColor(data, state, selectedColorMetricDataSelector(state), isDeltaState, flattened),
-		incomingEdgePoint: getIncomingEdgePoint(width, height, length, new Vector3(x0, z0, y0), treeMapSize),
-		outgoingEdgePoint: getOutgoingEdgePoint(width, height, length, new Vector3(x0, z0, y0), treeMapSize)
+		incomingEdgePoint: getIncomingEdgePoint(width, edgePointHeight, length, new Vector3(x0, z0, y0), treeMapSize),
+		outgoingEdgePoint: getOutgoingEdgePoint(width, edgePointHeight, length, new Vector3(x0, z0, y0), treeMapSize)
 	}
 }
 
@@ -141,6 +141,11 @@ export function getHeightValue(state: CcState, squaredNode: HierarchyRectangular
 		return maxHeight - heightValue
 	}
 	return heightValue
+}
+
+export function resolveHeightValue(heightValue: number, heightScale: number, data: CodeMapNode, state: CcState): number {
+	const minimalHeight = data.deltas?.[state.dynamicSettings.heightMetric] ? 0 : MIN_BUILDING_HEIGHT
+	return Math.max(Math.abs(heightScale * heightValue), minimalHeight)
 }
 
 export function isVisible(squaredNode: CodeMapNode, isNodeLeaf: boolean, state: CcState, flattened: boolean) {
@@ -222,14 +227,18 @@ export function getBuildingColor(
 
 	const { colorRange, colorMode } = dynamicSettings
 
+	if (dynamicSettings["colorMetric"] === "unary") {
+		return mapColors.positive
+	}
+
 	if (colorMode === ColorMode.absolute) {
-		if (metricValue <= colorRange.from) {
+		if (metricValue < colorRange.from || colorRange.from === nodeMetricDataRange.maxValue) {
 			return mapColors.positive
 		}
-		if (metricValue > colorRange.to) {
-			return mapColors.negative
+		if (metricValue < colorRange.to || colorRange.to === nodeMetricDataRange.maxValue) {
+			return mapColors.neutral
 		}
-		return mapColors.neutral
+		return mapColors.negative
 	}
 
 	if (colorMode === ColorMode.trueGradient) {
@@ -237,10 +246,10 @@ export function getBuildingColor(
 	}
 
 	if (colorMode === ColorMode.focusedGradient) {
-		return gradientCalculator.getColorByFocusedGradient(mapColors, colorRange, metricValue)
+		return gradientCalculator.getColorByFocusedGradient(mapColors, colorRange, nodeMetricDataRange, metricValue)
 	}
 
-	return gradientCalculator.getColorByWeightedGradient(mapColors, colorRange, metricValue)
+	return gradientCalculator.getColorByWeightedGradient(mapColors, colorRange, nodeMetricDataRange, metricValue)
 }
 
 export const TreeMapHelper = {
@@ -250,6 +259,7 @@ export const TreeMapHelper = {
 	calculateSize,
 	buildNodeFrom,
 	isNodeFlat,
+	resolveHeightValue,
 	FOLDER_HEIGHT,
 	MIN_BUILDING_HEIGHT,
 	HEIGHT_VALUE_WHEN_METRIC_NOT_FOUND

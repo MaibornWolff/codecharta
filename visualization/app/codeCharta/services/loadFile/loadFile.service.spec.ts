@@ -38,8 +38,8 @@ describe("loadFileService", () => {
 		validFileContent = clone(TEST_FILE_CONTENT)
 
 		metricData = [
-			{ name: "mcc", maxValue: 1, minValue: 1 },
-			{ name: "rloc", maxValue: 2, minValue: 1 }
+			{ name: "mcc", maxValue: 1, minValue: 1, values: [1, 1] },
+			{ name: "rloc", maxValue: 2, minValue: 1, values: [1, 2] }
 		]
 	})
 
@@ -233,7 +233,7 @@ describe("loadFileService", () => {
 			invalidFileContent.apiVersion = ""
 
 			expect(() => codeChartaService.loadFiles([{ fileName: "FirstFile", content: invalidFileContent, fileSize: 42 }])).toThrow(
-				"No files could be uploaded"
+				"File(s) could not be loaded"
 			)
 			codeChartaService.loadFiles([{ fileName: "FirstFile", content: validFileContent, fileSize: 42 }])
 
@@ -264,7 +264,7 @@ describe("loadFileService", () => {
 				}
 			]
 
-			expect(() => codeChartaService.loadFiles([{ fileName, content: null, fileSize: 0 }])).toThrow("No files could be uploaded")
+			expect(() => codeChartaService.loadFiles([{ fileName, content: null, fileSize: 0 }])).toThrow("File(s) could not be loaded")
 
 			expect(state.getValue().files).toHaveLength(0)
 			expect(dialog.open).toHaveBeenCalledWith(ErrorDialogComponent, { data: loadFilesValidationToErrorDialog(expectedError) })
@@ -280,7 +280,7 @@ describe("loadFileService", () => {
 			]
 
 			expect(() => codeChartaService.loadFiles([{ fileName, fileSize: 42, content: "string" as unknown as ExportCCFile }])).toThrow(
-				"No files could be uploaded"
+				"File(s) could not be loaded"
 			)
 
 			expect(state.getValue().files).toHaveLength(0)
@@ -299,7 +299,7 @@ describe("loadFileService", () => {
 			const invalidFileContent = validFileContent
 			delete invalidFileContent.projectName
 			expect(() => codeChartaService.loadFiles([{ fileName, fileSize: 42, content: invalidFileContent }])).toThrow(
-				"No files could be uploaded"
+				"File(s) could not be loaded"
 			)
 
 			expect(state.getValue().files).toHaveLength(0)
@@ -343,7 +343,7 @@ describe("loadFileService", () => {
 			]
 
 			expect(() => codeChartaService.loadFiles([{ fileName, content: validFileContent, fileSize: 42 }])).toThrow(
-				"No files could be uploaded"
+				"File(s) could not be loaded"
 			)
 
 			expect(dialog.open).toHaveBeenCalledWith(ErrorDialogComponent, { data: loadFilesValidationToErrorDialog(expectedError) })

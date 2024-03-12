@@ -3,7 +3,7 @@ import { CCFileValidationResult } from "./fileValidator"
 export function loadFilesValidationToErrorDialog(fileValidationResults: CCFileValidationResult[]) {
 	const htmlMessages = [...buildErrorMessages(fileValidationResults), ...buildWarningsMessages(fileValidationResults)]
 	return {
-		title: "Something is wrong with the uploaded file(s)",
+		title: "Something is wrong with the loaded file(s)",
 		message: htmlMessages.join("")
 	}
 }
@@ -32,6 +32,6 @@ function buildFileWarningMessage(fileValidationResult: CCFileValidationResult) {
 	return `<p><strong>${fileValidationResult.fileName}:</strong> ${buildHtmlMessage(warningSymbol, fileValidationResult.warnings)}</p>`
 }
 
-function buildHtmlMessage(symbol: string, validationResult: string[]) {
+export function buildHtmlMessage(symbol: string, validationResult: string[]) {
 	return `<p>${validationResult.map(message => symbol + message).join("<br>")}</p>`
 }

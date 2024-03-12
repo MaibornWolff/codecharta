@@ -151,6 +151,7 @@ export interface AppSettings {
 	isLoadingMap: boolean
 	isLoadingFile: boolean
 	sortingOrderAscending: boolean
+	isSearchPanelPinned: boolean
 	showMetricLabelNameValue: boolean
 	showMetricLabelNodeName: boolean
 	layoutAlgorithm: LayoutAlgorithm
@@ -250,12 +251,14 @@ export interface EdgeMetricData {
 	name: string
 	maxValue: number
 	minValue: number
+	values: number[]
 }
 
 export interface NodeMetricData {
 	name: string
 	maxValue: number
 	minValue: number
+	values: number[]
 }
 
 export interface MetricData {
@@ -271,22 +274,6 @@ export interface LocalStorageCustomConfigs {
 export interface LocalStorageScenarios {
 	version: string
 	scenarios: [string, RecursivePartial<Scenario>][]
-}
-
-export interface LocalStorageGlobalSettings {
-	version: string
-	globalSettings: GlobalSettings
-}
-
-export interface GlobalSettings {
-	hideFlatBuildings: boolean
-	isWhiteBackground: boolean
-	resetCameraIfNewFileIsLoaded: boolean
-	experimentalFeaturesEnabled: boolean
-	screenshotToClipboardEnabled: boolean
-	layoutAlgorithm: LayoutAlgorithm
-	maxTreeMapFiles: number
-	sharpnessMode: SharpnessMode
 }
 
 export interface Scenario {

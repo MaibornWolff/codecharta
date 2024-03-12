@@ -1,14 +1,15 @@
 <cc-action-icon
 	*ngIf="isScreenshotToClipboardEnabled$ | async"
 	[icon]="'fa fa-camera'"
-	title="Copy screenshot to clipboard ({{ SCREENSHOT_HOTKEY_TO_CLIPBOARD }}), export it as a file by ({{ SCREENSHOT_HOTKEY_TO_FILE }})"
-	(click)="makeScreenshotToClipBoard()"
+	title="{{ TITLE_CLIPBOARD_BUTTON }}"
+	(click)="makeScreenshotToClipboard()"
+	[class.disabled]="!isWriteToClipboardAllowed"
 >
 </cc-action-icon>
 <cc-action-icon
 	*ngIf="!(isScreenshotToClipboardEnabled$ | async)"
 	[icon]="'fa fa-camera'"
-	title="Export screenshot as file ({{ SCREENSHOT_HOTKEY_TO_FILE }}), copy it to clipboard by ({{ SCREENSHOT_HOTKEY_TO_CLIPBOARD }})"
+	title="{{ TITLE_FILE_BUTTON }}"
 	(click)="makeScreenshotToFile()"
 >
 </cc-action-icon>

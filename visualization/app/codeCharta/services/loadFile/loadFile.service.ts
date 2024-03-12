@@ -13,6 +13,8 @@ import { enrichFileStatesAndRecentFilesWithValidationResults } from "./fileParse
 import { fileRoot } from "./fileRoot"
 import { Store, State } from "@ngrx/store"
 
+export const NO_FILES_LOADED_ERROR_MESSAGE = "File(s) could not be loaded"
+
 @Injectable({ providedIn: "root" })
 export class LoadFileService implements OnDestroy {
 	static readonly CC_FILE_EXTENSION = ".cc.json"
@@ -48,7 +50,7 @@ export class LoadFileService implements OnDestroy {
 		}
 
 		if (recentFiles.length === 0) {
-			throw new Error("No files could be uploaded")
+			throw new Error(NO_FILES_LOADED_ERROR_MESSAGE)
 		}
 
 		this.store.dispatch(setFiles({ value: fileStates }))
@@ -56,7 +58,6 @@ export class LoadFileService implements OnDestroy {
 		const recentFile = recentFiles[0]
 		const rootName = this.state.getValue().files.find(f => f.file.fileMeta.fileName === recentFile).file.map.name
 		this.store.dispatch(setStandardByNames({ fileNames: recentFiles }))
-
 		fileRoot.updateRoot(rootName)
 	}
 }

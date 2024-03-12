@@ -9,10 +9,12 @@ import { MapTreeViewItemIconColorPipe } from "./mapTreeViewItemIcon/mapTreeViewI
 import { MapTreeViewItemNameComponent } from "./mapTreeViewItemName/mapTreeViewItemName.component"
 import { MapTreeViewItemOptionButtonsComponent } from "./mapTreeViewItemOptionButtons/mapTreeViewItemOptionButtons.component"
 import { MapTreeViewLevelComponent } from "./mapTreeViewLevel/mapTreeViewLevel.component"
+import { AreaMetricValidPipe } from "./areaMetricValidPipe.pipe"
 
 @NgModule({
 	imports: [CommonModule],
 	declarations: [
+		AreaMetricValidPipe,
 		MapTreeViewItemIconComponent,
 		MapTreeViewItemNameComponent,
 		MapTreeViewItemOptionButtonsComponent,

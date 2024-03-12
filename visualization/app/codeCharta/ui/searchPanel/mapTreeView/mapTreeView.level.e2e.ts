@@ -1,4 +1,4 @@
-import { goto } from "../../../../puppeteer.helper"
+import { clearIndexedDB, goto } from "../../../../puppeteer.helper"
 import { MapTreeViewLevelPageObject } from "./mapTreeView.level.po"
 import { SearchPanelModeSelectorPageObject } from "../searchPanelModeSelector/searchPanelModeSelector.po"
 import { NodeContextMenuPageObject } from "../../../state/effects/nodeContextMenu/nodeContextMenu.po"
@@ -14,6 +14,10 @@ describe("MapTreeViewLevel", () => {
 		nodeContextMenu = new NodeContextMenuPageObject()
 
 		await goto()
+	})
+
+	afterEach(async () => {
+		await clearIndexedDB()
 	})
 
 	describe("Blacklist", () => {

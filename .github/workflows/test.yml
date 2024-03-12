@@ -20,7 +20,7 @@ jobs:
     - name: Setup Node.js environment
       uses: actions/setup-node@v3
       with:
-        node-version: '16'
+        node-version: '18'
 
     - name: Cache root node modules
       uses: actions/cache@v3
@@ -55,7 +55,7 @@ jobs:
     - name: Setup Node.js environment
       uses: actions/setup-node@v3
       with:
-        node-version: '16'
+        node-version: '18'
 
     - name: Cache node modules
       uses: actions/cache@v3
@@ -99,7 +99,7 @@ jobs:
     - name: Setup Node.js environment
       uses: actions/setup-node@v3
       with:
-        node-version: '16'
+        node-version: '18'
 
     - name: Cache node modules
       uses: actions/cache@v3
@@ -125,7 +125,6 @@ jobs:
 
 
  test_and_sonar_analysis:
-    if: github.actor != 'dependabot[bot]' && github.actor != 'dependabot-preview[bot]'
     name: "Build, Test and Publish Analysis Sonar Results"
     runs-on: ubuntu-latest
     env:
@@ -165,7 +164,6 @@ jobs:
 
  publish_sonar_visualization:
     needs: [build_visualization_test, build_visualization_e2e]
-    if: github.actor != 'dependabot[bot]' && github.actor != 'dependabot-preview[bot]'
     name: "Build and Publish Visualization Sonar Results"
     runs-on: ubuntu-latest
     env:
@@ -182,7 +180,6 @@ jobs:
           path: ./visualization/dist/
 
       - name: SonarCloud Scan
-        if: github.actor != 'dependabot[bot]' && github.actor != 'dependabot-preview[bot]'
         uses: SonarSource/sonarcloud-github-action@v2.0.2
         with:
           projectBaseDir: ./visualization

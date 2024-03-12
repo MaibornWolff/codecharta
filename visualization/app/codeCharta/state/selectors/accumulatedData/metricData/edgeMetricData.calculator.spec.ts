@@ -25,6 +25,19 @@ describe("edgeMetricDataCalculator", () => {
 		expect(edgeMetricData.find(x => x.name === "otherMetric").maxValue).toEqual(1)
 	})
 
+	it("should calculate correct maximum value for edge Metrics", () => {
+		const { edgeMetricData } = calculateEdgeMetricData(fileStates, [])
+
+		expect(edgeMetricData.find(x => x.name === "pairingRate").minValue).toEqual(1)
+		expect(edgeMetricData.find(x => x.name === "otherMetric").minValue).toEqual(1)
+	})
+
+	it("should calculate correct values for edge Metrics", () => {
+		const { edgeMetricData } = calculateEdgeMetricData(fileStates, [])
+
+		expect(edgeMetricData.find(x => x.name === "pairingRate").values).toEqual([1, 2, 1])
+	})
+
 	it("should sort the metrics after calculating them", () => {
 		const { edgeMetricData } = calculateEdgeMetricData(fileStates, [])
 

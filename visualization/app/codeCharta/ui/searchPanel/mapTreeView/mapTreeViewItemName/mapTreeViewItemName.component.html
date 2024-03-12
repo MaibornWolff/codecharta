@@ -1,8 +1,8 @@
 <span
 	class="node-name"
 	[class.flattened]="node.isFlattened"
-	[class.noAreaMetric]="!(node.attributes[areaMetric$ | async] > 0)"
-	[class.angular-green]="(searchedNodePaths$ | async).has(node.path)"
+	[class.noAreaMetric]="!(node | areaMetricValid : (areaMetric$ | async))"
+	[class.tree-search-result]="(searchedNodePaths$ | async).has(node.path)"
 >
 	{{ node.name }}
 </span>

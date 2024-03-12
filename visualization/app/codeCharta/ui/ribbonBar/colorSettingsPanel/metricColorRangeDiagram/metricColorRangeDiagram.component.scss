@@ -1,0 +1,43 @@
+#slider-label-left,
+#slider-label-right,
+#x-label,
+#y-label,
+#axis-x,
+#axis-y {
+	font-size: 11px;
+
+	&[text-anchor] {
+		&.end {
+			text-anchor: end;
+		}
+
+		&.start {
+			text-anchor: start;
+		}
+	}
+}
+
+#slider-label-left {
+	font-size: 11px;
+	fill: #888;
+	text-anchor: end;
+	dominant-baseline: hanging;
+}
+
+#slider-label-right {
+	font-size: 11px;
+	fill: #888;
+	text-anchor: start;
+	dominant-baseline: hanging;
+}
+
+.cc-range-diagram-container {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+
+	svg {
+		width: 100%;
+		height: 130px;
+	}
+}

@@ -138,4 +138,26 @@ describe("SuspiciousMetricsComponent", () => {
 			expect(store.dispatch).toHaveBeenCalledWith(setColorRange({ value: { from: 10, to: 22 } }))
 		})
 	})
+
+	describe("risk-button", () => {
+		it("should set the color range to the correct percentile when very high risk files available", async () => {
+			await render(SuspiciousMetricComponent, {
+				excludeComponentDeclaration: true,
+				componentProperties: {
+					data: {
+						analyzedProgrammingLanguage: "ts",
+						unsuspiciousMetrics: ["rloc"],
+						suspiciousMetricSuggestionLinks: [{ metric: "mcc", from: 10, to: 22, isOutlier: true, outlierThreshold: 120 }],
+						untrackedMetrics: []
+					}
+				}
+			})
+			await userEvent.click(screen.getByTitle("Open Suspicious Metrics Panel"))
+			await userEvent.click(screen.getByTitle("Show very high risk files (90th percentile)"), undefined)
+			const store = TestBed.inject(Store)
+			expect(store.dispatch).toHaveBeenCalledWith(setHeightMetric({ value: "mcc" }))
+			expect(store.dispatch).toHaveBeenCalledWith(setColorMetric({ value: "mcc" }))
+			expect(store.dispatch).toHaveBeenCalledWith(setColorRange({ value: { from: 10, to: 120 } }))
+		})
+	})
 })

@@ -1,8 +1,12 @@
-import { goto } from "./puppeteer.helper"
+import { clearIndexedDB, goto } from "./puppeteer.helper"
 
 describe("app", () => {
 	beforeEach(async () => {
 		await goto()
+	})
+
+	afterEach(async () => {
+		await clearIndexedDB()
 	})
 
 	it("should not have errors in console", async () => {

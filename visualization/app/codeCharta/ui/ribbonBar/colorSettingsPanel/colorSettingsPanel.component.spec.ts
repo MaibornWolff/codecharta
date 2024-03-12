@@ -1,14 +1,16 @@
 import { TestBed } from "@angular/core/testing"
+import { State, Store, StoreModule } from "@ngrx/store"
 import { render, screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
 import { isDeltaStateSelector } from "../../../state/selectors/isDeltaState.selector"
 import { setColorLabels } from "../../../state/store/appSettings/colorLabels/colorLabels.actions"
 import { invertColorRange, invertDeltaColors, setMapColors } from "../../../state/store/appSettings/mapColors/mapColors.actions"
+import { defaultMapColors } from "../../../state/store/appSettings/mapColors/mapColors.reducer"
+import { setColorRange } from "../../../state/store/dynamicSettings/colorRange/colorRange.actions"
+import { appReducers, setStateMiddleware } from "../../../state/store/state.manager"
+import { wait } from "../../../util/testUtils/wait"
 import { ColorSettingsPanelComponent } from "./colorSettingsPanel.component"
 import { ColorSettingsPanelModule } from "./colorSettingsPanel.module"
-import { appReducers, setStateMiddleware } from "../../../state/store/state.manager"
-import { State, Store, StoreModule } from "@ngrx/store"
-import { defaultMapColors } from "../../../state/store/appSettings/mapColors/mapColors.reducer"
 
 jest.mock("../../../state/selectors/isDeltaState.selector", () => ({
 	isDeltaStateSelector: jest.fn()
@@ -68,6 +70,19 @@ describe("colorSettingsPanelComponent", () => {
 
 			await userEvent.click(screen.getByText("Reset colors"))
 			expect(fixture.componentInstance.isColorRangeInverted).toBe(false)
+		})
+
+		it("should update store debounced without loosing an update and track it", async () => {
+			const { fixture } = await render(ColorSettingsPanelComponent, { excludeComponentDeclaration: true })
+			const dispatchSpy = jest.spyOn(TestBed.inject(Store), "dispatch")
+
+			fixture.componentInstance.handleValueChange({ newLeftValue: 10 })
+			fixture.componentInstance.handleValueChange({ newRightValue: 20 })
+
+			expect(dispatchSpy).not.toHaveBeenCalled()
+
+			await wait(400)
+			expect(dispatchSpy).toHaveBeenCalledWith(setColorRange({ value: { from: 10, to: 20 } }))
 		})
 	})
 

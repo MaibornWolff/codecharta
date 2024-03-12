@@ -1,47 +1,133 @@
-import { Component, ViewEncapsulation } from "@angular/core"
-import { HandleValueChange } from "./rangeSlider/rangeSlider.component"
-import { setColorRange } from "../../../../state/store/dynamicSettings/colorRange/colorRange.actions"
-import { metricColorRangeSliderColorsSelector } from "./selectors/metricColorRangeSliderColors.selector"
-import { metricColorRangeSliderValuesSelector } from "./selectors/metricColorRangeSliderValues.selector"
-import { ColorRange, CcState } from "../../../../codeCharta.model"
-import { debounce } from "../../../../util/debounce"
-import { Store } from "@ngrx/store"
+import { Component, ElementRef, Input, OnChanges, SimpleChanges, ViewChild, ViewEncapsulation } from "@angular/core"
+import { calculateSliderRangePosition, SliderRangePosition, updateLeftThumb, updateRightThumb } from "./utils/SliderRangePosition"
+import { parseNumberInput } from "../../../../util/parseNumberInput"
+
+export type HandleValueChange = (changedValue: { newLeftValue?: number; newRightValue?: number }) => void
+export type CurrentlySliding = undefined | "leftThumb" | "rightThumb"
 
 @Component({
 	selector: "cc-metric-color-range-slider",
 	templateUrl: "./metricColorRangeSlider.component.html",
+	styleUrls: ["./metricColorRangeSlider.component.scss"],
 	encapsulation: ViewEncapsulation.None
 })
-export class MetricColorRangeSliderComponent {
-	sliderValues$ = this.store.select(metricColorRangeSliderValuesSelector)
-	sliderColors$ = this.store.select(metricColorRangeSliderColorsSelector)
+export class MetricColorRangeSliderComponent implements OnChanges {
+	@Input() minValue: number
+	@Input() maxValue: number
+	@Input() currentLeftValue: number
+	@Input() currentRightValue: number
+	@Input() leftColor: string
+	@Input() middleColor: string
+	@Input() rightColor: string
+	@Input() handleValueChange: HandleValueChange
+	@Input() sliderWidth = 150
 
-	private newLeftValue: null | number = null
-	private newRightValue: null | number = null
+	@ViewChild("rangeSliderContainer") sliderContainer: ElementRef<HTMLDivElement>
+	@ViewChild("leftThumb") leftThumb: ElementRef<HTMLDivElement>
+	@ViewChild("rightThumb") rightThumb: ElementRef<HTMLDivElement>
 
-	constructor(private store: Store<CcState>) {}
+	sliderRangePosition: SliderRangePosition = { leftEnd: 0, rightStart: 0 }
+	thumbRadius = 7
+	upcomingLeftValue: number
+	upcomingRightValue: number
 
-	handleValueChange: HandleValueChange = ({ newLeftValue, newRightValue }) => {
-		if (newLeftValue !== undefined) {
-			this.newLeftValue = newLeftValue
+	private currentlySliding: CurrentlySliding = undefined
+
+	ngOnChanges(changes: SimpleChanges) {
+		if (!this.currentlySliding) {
+			this.sliderRangePosition = calculateSliderRangePosition({
+				minValue: this.minValue,
+				maxValue: this.maxValue,
+				currentLeftValue: this.currentLeftValue,
+				currentRightValue: this.currentRightValue,
+				sliderWidth: this.sliderWidth
+			})
+			if (changes.currentLeftValue) {
+				this.upcomingLeftValue = this.currentLeftValue
+			}
+			if (changes.currentRightValue) {
+				this.upcomingRightValue = this.currentRightValue
+			}
 		}
-		if (newRightValue !== undefined) {
-			this.newRightValue = newRightValue
-		}
-		this.updateColorRangeDebounced()
 	}
 
-	private updateColorRangeDebounced = debounce(() => {
-		const newColorRange: Partial<ColorRange> = {}
-		if (this.newLeftValue !== null) {
-			newColorRange.from = this.newLeftValue
-		}
-		if (this.newRightValue !== null) {
-			newColorRange.to = this.newRightValue
-		}
-		this.store.dispatch(setColorRange({ value: newColorRange }))
+	setCurrentlySliding(currentlySliding: CurrentlySliding) {
+		this.currentlySliding = currentlySliding
+		switch (this.currentlySliding) {
+			case "leftThumb":
+				document.addEventListener("mousemove", this.handleLeftThumbMoved)
+				this.rightThumb.nativeElement.style.zIndex = "0"
+				this.leftThumb.nativeElement.style.zIndex = "1"
+				this.resetCurrentlySlidingOnNextMouseUp(this.handleLeftThumbMoved)
+				break
 
-		this.newLeftValue = null
-		this.newRightValue = null
-	}, 400)
+			case "rightThumb":
+				document.addEventListener("mousemove", this.handleRightThumbMoved)
+				this.leftThumb.nativeElement.style.zIndex = "0"
+				this.rightThumb.nativeElement.style.zIndex = "1"
+				this.resetCurrentlySlidingOnNextMouseUp(this.handleRightThumbMoved)
+				break
+		}
+	}
+
+	resetCurrentlySlidingOnNextMouseUp = (handler: (event: MouseEvent) => void) => {
+		const mouseUpHandler = () => {
+			this.currentlySliding = undefined
+			document.removeEventListener("mouseup", mouseUpHandler)
+			document.removeEventListener("mousemove", handler)
+		}
+		document.addEventListener("mouseup", mouseUpHandler)
+	}
+
+	handleLeftThumbMoved = (event: MouseEvent) => {
+		const updates = updateLeftThumb({
+			deltaX: event.movementX,
+			thumbScreenX: this.leftThumb.nativeElement.getBoundingClientRect().x,
+			thumbRadius: this.thumbRadius,
+			otherThumbScreenX: this.rightThumb.nativeElement.getBoundingClientRect().x,
+			sliderBoundingClientRectX: this.sliderContainer.nativeElement.getBoundingClientRect().x,
+			sliderWidth: this.sliderWidth,
+			minValue: this.minValue,
+			maxValue: this.maxValue
+		})
+		this.sliderRangePosition = {
+			leftEnd: updates.updatedThumbX,
+			rightStart: this.sliderRangePosition.rightStart
+		}
+		this.upcomingLeftValue = updates.upcomingValue
+		this.handleValueChange({ newLeftValue: updates.upcomingValue })
+	}
+
+	handleRightThumbMoved = (event: MouseEvent) => {
+		const updates = updateRightThumb({
+			deltaX: event.movementX,
+			thumbScreenX: this.rightThumb.nativeElement.getBoundingClientRect().x,
+			thumbRadius: this.thumbRadius,
+			otherThumbScreenX: this.leftThumb.nativeElement.getBoundingClientRect().x,
+			sliderBoundingClientRectX: this.sliderContainer.nativeElement.getBoundingClientRect().x,
+			sliderWidth: this.sliderWidth,
+			minValue: this.minValue,
+			maxValue: this.maxValue
+		})
+		this.sliderRangePosition = {
+			leftEnd: this.sliderRangePosition.leftEnd,
+			rightStart: updates.updatedThumbX
+		}
+		this.upcomingRightValue = updates.upcomingValue
+		this.handleValueChange({ newRightValue: updates.upcomingValue })
+	}
+
+	handleCurrentLeftInputChanged($event: Event) {
+		const newLeftValue = parseNumberInput($event, this.minValue, this.currentRightValue)
+		if (newLeftValue !== this.currentLeftValue) {
+			this.handleValueChange({ newLeftValue })
+		}
+	}
+
+	handleCurrentRightInputChanged($event: Event) {
+		const newRightValue = parseNumberInput($event, this.currentLeftValue, this.maxValue)
+		if (newRightValue !== this.currentRightValue) {
+			this.handleValueChange({ newRightValue })
+		}
+	}
 }
