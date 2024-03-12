@@ -109,7 +109,7 @@ open class ProjectBuilder(private val nodes: List<MutableNode> = listOf(MutableN
     private fun addAttributeDescriptorWithEstimatedDirection(
             nodeAttributeName: String,
             complementedAttributeDescriptors: MutableMap<String, AttributeDescriptor>
-    ) {
+                                                            ) {
         complementedAttributeDescriptors[nodeAttributeName] =
                 AttributeDescriptor(title = nodeAttributeName, direction = estimateDirection(nodeAttributeName))
     }
@@ -119,9 +119,20 @@ open class ProjectBuilder(private val nodes: List<MutableNode> = listOf(MutableN
         val attributeDescriptors = AttributeGeneratorRegistry.getAllAttributeDescriptors()
         val attributeDescriptorNames = attributeDescriptors.keys.distinct()
 
-        val attributeDescriptorNamesByAvgSimilarities = attributeDescriptorNames.associateWith { attributeDescriptorName ->
-            calculateAvgSimilarity(nodeAttributeName, attributeDescriptorName)
+        val strippedNodeAttributeName = nodeAttributeName.lowercase().replace("[^a-zäöüß]".toRegex(), "")
+        if (getCodeMetricsPositiveDirectionEnglish().any { it in strippedNodeAttributeName }
+            && !(getCodeMetricsNegativeDirectionEnglish()).any { it in strippedNodeAttributeName }) {
+            return 1
         }
+        if (getCodeMetricsPositiveDirectionGerman().any { it in strippedNodeAttributeName }
+            && !(getCodeMetricsNegativeDirectionGerman()).any { it in strippedNodeAttributeName }) {
+            return 1
+        }
+
+        val attributeDescriptorNamesByAvgSimilarities =
+                attributeDescriptorNames.associateWith { attributeDescriptorName ->
+                    calculateAvgSimilarity(nodeAttributeName, attributeDescriptorName)
+                }
 
         val attributeDescriptorNameWithMaxAvgSimilarity: Map.Entry<String, Double>? =
                 attributeDescriptorNamesByAvgSimilarities.maxByOrNull { it.value }
@@ -133,12 +144,6 @@ open class ProjectBuilder(private val nodes: List<MutableNode> = listOf(MutableN
             if (attributeDescriptorWithMaxAvgSimilarity != null) {
                 return attributeDescriptorWithMaxAvgSimilarity.direction
             }
-        }
-
-        val strippedNodeAttributeName = nodeAttributeName.lowercase().replace("[^a-zäöüß]".toRegex(), "")
-        if (strippedNodeAttributeName in getCodeMetricsPositiveDirectionEnglish()
-            || strippedNodeAttributeName in getCodeMetricsPositiveDirectionGerman()) {
-            return 1
         }
 
         return -1
@@ -205,12 +210,23 @@ open class ProjectBuilder(private val nodes: List<MutableNode> = listOf(MutableN
     private fun getCodeMetricsPositiveDirectionEnglish(): List<String> {
         return listOf("covered", "coverage", "review", "reviewed", "documentation", "documented", "success",
                 "succeeded", "fix", "fixed", "completion", "complete", "augmentation", "augmented", "enhancement",
-                "enhanced", "improvement", "improved", "added", "addition")
+                "enhanced", "improvement", "improved", "added", "addition", "efficient", "efficiency", "velocity",
+                "reusable", "reusability", "reduced", "reduction")
+    }
+
+    private fun getCodeMetricsNegativeDirectionEnglish(): List<String> {
+        return listOf("unchecked", "uncovered", "not", "failed", "failure", "reopened", "violation", "violated",
+                "duplication", "duplicated", "skipped", "error", "wont")
     }
 
     private fun getCodeMetricsPositiveDirectionGerman(): List<String> {
         return listOf("abgedeckt", "abdeckung", "überprüft", "dokumentation", "dokumentiert", "erfolg", "erfolgreich",
-                "beheben", "behoben", "vollständig", "erweitert", "verbessert", "hinzugefügt")
+                "beheben", "behoben", "vollständig", "erweitert", "verbessert", "hinzugefügt", "effizient", "effizienz",
+                "geschwindigkeit", "wiederverwendbar", "wiederverwendbarkeit")
+    }
+
+    private fun getCodeMetricsNegativeDirectionGerman(): List<String> {
+        return listOf("ungeprüft", "nicht", "gescheitert", "fehler", "wiedereröffnet", "dupliziert", "übersprungen")
     }
 
     override fun toString(): String {
