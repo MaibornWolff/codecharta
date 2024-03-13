@@ -224,7 +224,7 @@ export class CodeMapMouseEventService implements OnDestroy {
 	}
 
 	setLabelHoveredLeaf(codeMapBuilding: CodeMapBuilding, labels: Object3D[]) {
-		if (codeMapBuilding.node.isLeaf) {
+		if (codeMapBuilding?.node?.isLeaf) {
 			const labelForBuilding =
 				this.threeSceneService.getLabelForHoveredNode(codeMapBuilding, labels) ?? this.drawLabelHoveredBuilding(codeMapBuilding)
 			this.threeSceneService.animateLabel(labelForBuilding, this.raycaster, labels)
