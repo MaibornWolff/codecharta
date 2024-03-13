@@ -1,8 +1,8 @@
 import { Vector3 } from "three"
-import { CodeMapNode, Node, CcState } from "../../../codeCharta.model"
+import { CcState, CodeMapNode, Node } from "../../../codeCharta.model"
 import { selectedColorMetricDataSelector } from "../../../state/selectors/accumulatedData/metricData/selectedColorMetricData.selector"
 import { getMarkingColor, isLeaf } from "../../codeMapHelper"
-import { getBuildingColor, getIncomingEdgePoint, isNodeFlat, isVisible, TreeMapHelper, treeMapSize } from "../treeMapLayout/treeMapHelper"
+import { TreeMapHelper, getBuildingColor, getIncomingEdgePoint, isNodeFlat, isVisible, treeMapSize } from "../treeMapLayout/treeMapHelper"
 
 function calculateSize(node: CodeMapNode, metricName: string) {
 	// TODO if it is same as countNodes in treeMapHelper.ts
@@ -36,22 +36,10 @@ function mergeDirectories(node: CodeMapNode, metricName: string): CodeMapNode {
 	return mergedNode
 }
 
-function getHeightValue(s: CcState, squaredNode: CodeMapNode, maxHeight: number, flattened: boolean): number {
-	const heightValue = squaredNode.attributes[s.dynamicSettings.heightMetric] || TreeMapHelper.HEIGHT_VALUE_WHEN_METRIC_NOT_FOUND
-
-	if (flattened) {
-		return TreeMapHelper.MIN_BUILDING_HEIGHT
-	}
-	if (s.appSettings.invertHeight) {
-		return maxHeight - heightValue
-	}
-	return heightValue
-}
-
 function buildNodeFrom(layoutNode: CodeMapNode, heightScale: number, maxHeight: number, s: CcState, isDeltaState: boolean): Node {
 	const isNodeLeaf = !(layoutNode.children && layoutNode.children.length > 0)
 	const flattened: boolean = isNodeFlat(layoutNode, s)
-	const heightValue: number = getHeightValue(s, layoutNode, maxHeight, flattened)
+	const heightValue: number = TreeMapHelper.getHeightValue(s, layoutNode, maxHeight, flattened)
 	const height = Math.abs(
 		isNodeLeaf ? Math.max(heightScale * heightValue, TreeMapHelper.MIN_BUILDING_HEIGHT) : TreeMapHelper.FOLDER_HEIGHT
 	)
