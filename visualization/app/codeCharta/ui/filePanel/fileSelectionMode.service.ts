@@ -15,9 +15,9 @@ export class FileSelectionModeService implements OnDestroy {
 		.select(filesSelector)
 		.pipe(
 			pairwise(),
-			filter(([oldFiles, newFiles]) => isDeltaState(oldFiles) !== isDeltaState(newFiles)),
-			tap(([oldFiles]) => {
-				this.lastSetFilesOfPreviousMode = oldFiles
+			filter(([oldFiles, newFiles]) => isDeltaState(oldFiles) !== isDeltaState(newFiles) || newFiles.length === 0),
+			tap(([oldFiles, newFiles]) => {
+				this.lastSetFilesOfPreviousMode = newFiles.length === 0 ? newFiles : oldFiles
 			})
 		)
 		.subscribe()
