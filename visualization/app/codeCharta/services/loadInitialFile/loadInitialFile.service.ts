@@ -49,12 +49,13 @@ import { AppSettings, CcState, DynamicSettings, FileSettings, NameDataPair } fro
 import { getCCFiles } from "../../model/files/files.helper"
 import { setIsLoadingFile } from "../../state/store/appSettings/isLoadingFile/isLoadingFile.actions"
 import { setIsLoadingMap } from "../../state/store/appSettings/isLoadingMap/isLoadingMap.actions"
-import { setDelta } from "../../state/store/files/files.actions"
+import { setDelta, setFiles } from "../../state/store/files/files.actions"
 import { ErrorDialogComponent } from "../../ui/dialogs/errorDialog/errorDialog.component"
 import { buildHtmlMessage } from "../../util/loadFilesValidationToErrorDialog"
 import { getNameDataPair } from "../loadFile/fileParser"
 import { LoadFileService, NO_FILES_LOADED_ERROR_MESSAGE } from "../loadFile/loadFile.service"
 import { UrlExtractor } from "./urlExtractor"
+import { FileState } from "../../model/files/files"
 
 export const sampleFile1 = { fileName: "sample1.cc.json", fileSize: 3 * 1024, content: sample1 as ExportCCFile }
 export const sampleFile2 = { fileName: "sample2.cc.json", fileSize: 2 * 1024, content: sample2 as ExportCCFile }
@@ -95,7 +96,7 @@ export class LoadInitialFileService {
 			const urlNameDataPairCheckSums = urlNameDataPairs.map(urlNameDataPair => urlNameDataPair.content.fileChecksum)
 			const savedNameDataPairCheckSums = savedNameDataPairs.map(savedNameDataPair => savedNameDataPair.content.fileChecksum)
 			if (stringify(urlNameDataPairCheckSums) === stringify(savedNameDataPairCheckSums)) {
-				this.applySettingsAndFilesFromSavedState(savedCcState, savedNameDataPairs)
+				this.applySettingsAndFilesFromSavedState(savedFileStates, savedCcState, savedNameDataPairs)
 			} else {
 				this.applySettingsFromSavedState(savedCcState, urlNameDataPairs)
 			}
@@ -105,18 +106,19 @@ export class LoadInitialFileService {
 		}
 	}
 
-	private applySettingsAndFilesFromSavedState(savedCcState: CcState, savedNameDataPairs: NameDataPair[]) {
+	private applySettingsAndFilesFromSavedState(savedFileStates: FileState[], savedCcState: CcState, savedNameDataPairs: NameDataPair[]) {
 		const missingPropertiesInSavedCcState = []
 
 		const missingAppSettings = this.applyAppSettings(savedCcState.appSettings)
 		missingPropertiesInSavedCcState.push(...missingAppSettings)
 
 		this.loadFileService.loadFiles(savedNameDataPairs)
+		this.store.dispatch(setFiles({ value: savedFileStates }))
+
 		const missingFileSettings = this.applyFileSettings(savedCcState.fileSettings)
 		missingPropertiesInSavedCcState.push(...missingFileSettings)
 		const missingDynamicSettings = this.applyDynamicSettings(savedCcState.dynamicSettings)
 		missingPropertiesInSavedCcState.push(...missingDynamicSettings)
-
 		if (missingPropertiesInSavedCcState.length > 0) {
 			this.showErrorDialogForMissingProperties(missingPropertiesInSavedCcState)
 		}
@@ -152,7 +154,7 @@ export class LoadInitialFileService {
 
 			const savedFileStates = savedCcState.files
 			const savedNameDataPairs = savedFileStates.map(fileState => getNameDataPair(fileState.file))
-			this.applySettingsAndFilesFromSavedState(savedCcState, savedNameDataPairs)
+			this.applySettingsAndFilesFromSavedState(savedFileStates, savedCcState, savedNameDataPairs)
 		} catch (error) {
 			await this.handleErrorLoadFilesFromIndexedDB(error as Error)
 		}

@@ -11,9 +11,9 @@ import { setAmountOfTopLabels } from "../../state/store/appSettings/amountOfTopL
 import { defaultAppSettings } from "../../state/store/appSettings/appSettings.reducer"
 import { defaultDynamicSettings } from "../../state/store/dynamicSettings/dynamicSettings.reducer"
 import { defaultFileSettings } from "../../state/store/fileSettings/fileSettings.reducer"
-import { setDelta } from "../../state/store/files/files.actions"
+import { setDelta, setFiles } from "../../state/store/files/files.actions"
 import { appReducers, defaultState, setStateMiddleware } from "../../state/store/state.manager"
-import { TEST_DELTA_MAP_A, TEST_DELTA_MAP_B } from "../../util/dataMocks"
+import { FILE_STATES, TEST_DELTA_MAP_A, TEST_DELTA_MAP_B } from "../../util/dataMocks"
 import { readCcState } from "../../util/indexedDB/indexedDBWriter"
 import { getLastAction } from "../../util/testUtils/store.utils"
 import { getNameDataPair } from "../loadFile/fileParser"
@@ -160,14 +160,18 @@ describe("LoadInitialFileService", () => {
 
 	describe("load files from indexeddb", () => {
 		it("should load files from indexeddb when query params do not contain file parameter", async () => {
+			const mockedState = JSON.parse(stringify(defaultState)) as CcState
+			mockedState.files = FILE_STATES
 			jest.mocked(UrlExtractor.prototype.getParameterByName).mockImplementation(() => null)
 			jest.mocked(readCcState).mockImplementation(async () => new Promise(resolve => resolve(defaultState)))
 			const savedFileStates = defaultState.files
 			const savedNameDataPairs = savedFileStates.map(fileState => getNameDataPair(fileState.file))
+			const dispatchSpy = jest.spyOn(store, "dispatch")
 			await loadInitialFileService.loadFilesOrSampleFiles()
 
 			expect(mockedDialog.open).not.toHaveBeenCalled()
 			expect(loadFileService.loadFiles).toHaveBeenCalledWith(savedNameDataPairs)
+			expect(dispatchSpy).toHaveBeenCalledWith(setFiles({ value: savedFileStates }))
 		})
 		it("should load sample-files when indexeddb is empty", async () => {
 			jest.mocked(UrlExtractor.prototype.getParameterByName).mockImplementation(() => null)
