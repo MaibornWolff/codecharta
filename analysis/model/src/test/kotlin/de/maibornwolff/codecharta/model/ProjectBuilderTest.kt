@@ -116,7 +116,7 @@ class ProjectBuilderTest {
         projectBuilder.insertByPath(Path.trivialPath(), secondNode)
         val project = projectBuilder.build()
 
-        //then
+        // then
         assertThat(project.attributeDescriptors).isEqualTo(attributeDescriptors)
         val attributeNames = project.rootNode.children.toList().flatMap { it.attributes.keys }
         attributeNames.forEach { attributeName -> assertThat(attributeDescriptors[attributeName]).isNotNull }
@@ -203,7 +203,6 @@ class ProjectBuilderTest {
         // then
         project.attributeDescriptors.forEach { assertThat(it.value.direction).isEqualTo(-1) }
     }
-
 
     @Test
     fun `it should print the correct content keys`() {

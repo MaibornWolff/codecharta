@@ -120,12 +120,12 @@ open class ProjectBuilder(private val nodes: List<MutableNode> = listOf(MutableN
         val attributeDescriptorNames = attributeDescriptors.keys.distinct()
 
         val strippedNodeAttributeName = nodeAttributeName.lowercase().replace("[^a-zäöüß]".toRegex(), "")
-        if (getCodeMetricsPositiveDirectionEnglish().any { it in strippedNodeAttributeName }
-            && !(getCodeMetricsNegativeDirectionEnglish()).any { it in strippedNodeAttributeName }) {
+        if (getCodeMetricsPositiveDirectionEnglish().any { it in strippedNodeAttributeName } &&
+            !(getCodeMetricsNegativeDirectionEnglish()).any { it in strippedNodeAttributeName }) {
             return 1
         }
-        if (getCodeMetricsPositiveDirectionGerman().any { it in strippedNodeAttributeName }
-            && !(getCodeMetricsNegativeDirectionGerman()).any { it in strippedNodeAttributeName }) {
+        if (getCodeMetricsPositiveDirectionGerman().any { it in strippedNodeAttributeName } &&
+            !(getCodeMetricsNegativeDirectionGerman()).any { it in strippedNodeAttributeName }) {
             return 1
         }
 
@@ -137,8 +137,8 @@ open class ProjectBuilder(private val nodes: List<MutableNode> = listOf(MutableN
         val attributeDescriptorNameWithMaxAvgSimilarity: Map.Entry<String, Double>? =
                 attributeDescriptorNamesByAvgSimilarities.maxByOrNull { it.value }
 
-        if (attributeDescriptorNameWithMaxAvgSimilarity != null
-            && attributeDescriptorNameWithMaxAvgSimilarity.value >= avgSimilarityThreshold) {
+        if (attributeDescriptorNameWithMaxAvgSimilarity != null &&
+            attributeDescriptorNameWithMaxAvgSimilarity.value >= avgSimilarityThreshold) {
             val attributeDescriptorWithMaxAvgSimilarity =
                     attributeDescriptors[attributeDescriptorNameWithMaxAvgSimilarity.key]
             if (attributeDescriptorWithMaxAvgSimilarity != null) {

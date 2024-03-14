@@ -76,4 +76,6 @@ import { MaterialModule } from "./material/material.module"
 })
 export class AppModule {}
 
-platformBrowserDynamic().bootstrapModule(AppModule)
+if (typeof window !== "undefined" && !window["__TEST_ENVIRONMENT__"]) {
+	platformBrowserDynamic().bootstrapModule(AppModule)
+}

@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Added 🚀
+
+-   Auto detect direction of metrics [#3518](https://github.com/MaibornWolff/codecharta/pull/3518)
+
 ## [1.124.1] - 2024-03-18
 
 ### Fixed 🐞

@@ -31,7 +31,7 @@ class ProjectGeneratorTest {
                 .addFileMetrics(filePathTwo, fileMetricsTwo)
 
         // when
-        val project = ProjectGenerator().generate(projectMetrics,10,null)
+        val project = ProjectGenerator().generate(projectMetrics, 10, null)
         val resultFromGenerator = ProjectSerializer.serializeToString(project)
         val resultJSON = JsonParser.parseString(resultFromGenerator)
 
