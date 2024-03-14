@@ -1,4 +1,3 @@
-
 import { Component, ViewEncapsulation } from "@angular/core"
 import packageJson from "../../../../package.json"
 
@@ -9,6 +8,4 @@ import packageJson from "../../../../package.json"
 })
 export class LogoComponent {
 	version = packageJson.version
-
-	constructor() {}
 }
