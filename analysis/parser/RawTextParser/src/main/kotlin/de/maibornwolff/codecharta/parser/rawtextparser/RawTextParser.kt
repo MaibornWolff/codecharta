@@ -9,7 +9,6 @@ import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import de.maibornwolff.codecharta.tools.interactiveparser.util.CodeChartaConstants
 import de.maibornwolff.codecharta.tools.pipeableparser.PipeableParser
 import de.maibornwolff.codecharta.tools.pipeableparser.PipeableParserSyncFlag
-import de.maibornwolff.codecharta.util.AttributeGeneratorRegistry
 import de.maibornwolff.codecharta.util.CommaSeparatedParameterPreprocessor
 import de.maibornwolff.codecharta.util.CommaSeparatedStringToListConverter
 import de.maibornwolff.codecharta.util.FileExtensionConverter

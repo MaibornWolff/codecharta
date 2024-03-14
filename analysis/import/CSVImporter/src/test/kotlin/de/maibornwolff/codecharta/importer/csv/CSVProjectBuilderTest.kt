@@ -23,24 +23,24 @@ class CSVProjectBuilderTest {
         // when
         csvProjectBuilder.parseCSVStream(toInputStream(invalidContent))
         val project = csvProjectBuilder.build()
-        //then
+        // then
         assertEquals(project.rootNode.children.size, 0)
     }
 
     @Test
     fun `it should read the csv content correctly when csv contains unix line-breaks`() {
-        //given
+        // given
         val name = "someName"
         val csvHeader = "someContent,,path"
         val csvRow = "projectName,foo,"
 
-        //when
+        // when
         val csvProjectBuilder = CSVProjectBuilder(pathSeparator = '\\', csvDelimiter = ',')
         csvProjectBuilder.parseCSVStream(toInputStream("$csvHeader\n$csvRow$name"))
         val project = csvProjectBuilder.build()
         val childName = project.rootNode.children.map { it.name }
 
-        //then
+        // then
         assertEquals(childName[0], name)
     }
 
@@ -142,4 +142,3 @@ class CSVProjectBuilderTest {
         assertThat(project.attributeDescriptors["Test"]?.description).isEqualTo("123")
     }
 }
-
