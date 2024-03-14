@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.tools.inquirer
 
+import com.varabyte.kotter.foundation.collections.LiveList
 import com.varabyte.kotter.foundation.collections.liveListOf
 import com.varabyte.kotter.foundation.input.Completions
 import com.varabyte.kotter.foundation.input.Keys
@@ -16,36 +17,26 @@ import com.varabyte.kotter.foundation.text.green
 import com.varabyte.kotter.foundation.text.red
 import com.varabyte.kotter.foundation.text.text
 import com.varabyte.kotter.foundation.text.textLine
+import com.varabyte.kotter.runtime.MainRenderScope
 import com.varabyte.kotter.runtime.Session
-import de.maibornwolff.codecharta.util.InputHelper
-import java.io.File
 
 fun Session.myPromptInput(
         message: String,
         hint: String = "",
         allowEmptyInput: Boolean = false,
-        canContainFolders: Boolean = false,
         invalidInputMessage: String = "Input is invalid!",
-        inputValidator: (String, Boolean) -> Boolean = {_, _ -> true}       //TODO: make this of a type, maybe InputHelper
+        inputValidator: (String) -> Boolean = { true }
 ): String {
-    var returnValue = ""
+    var lastUserInput = ""
     var hintText = hint
     var isInputValid by liveVarOf(true)
     section {
-        bold {
-            green { text("? ") }; text(message)
-            if (isInputValid) {
-                black(isBright = true) { textLine(if (allowEmptyInput) "  (empty input is allowed)" else "") }
-            } else {
-                red { textLine(if (returnValue.isEmpty()) "  Empty input is not allowed!" else "  $invalidInputMessage") }
-            }
-        }
-        text("> "); input(Completions(hintText), initialText = "")
+        drawInput(message, hintText, isInputValid, allowEmptyInput, invalidInputMessage, lastUserInput)
     }.runUntilSignal {
         onInputChanged { isInputValid = true }
         onInputEntered {
-            isInputValid = InputHelper.isInputValidAndNotNull(arrayOf(File(input)), canContainFolders)
-            returnValue = input
+            isInputValid = inputValidator(input)
+            lastUserInput = input
             if ((allowEmptyInput && input.isEmpty()) || (isInputValid && input.isNotEmpty())) {
                 isInputValid = true
                 hintText = ""
@@ -53,81 +44,96 @@ fun Session.myPromptInput(
             }
         }
     }
-    return returnValue
+    return lastUserInput
 }
 
-//TODO: should the PromptInputNumber be refactored together with PromptInput somehow?
+private fun MainRenderScope.drawInput(
+        message: String,
+        hint: String,
+        isInputValid: Boolean,
+        allowEmptyInput: Boolean,
+        invalidInputMessage: String,
+        lastUserInput: String
+) {
+    bold {
+        green { text("? ") }; text(message)
+        if (isInputValid) {
+            black(isBright = true) { textLine(if (allowEmptyInput) "  empty input is allowed" else "") }
+        } else {
+            red { textLine(if (lastUserInput.isEmpty()) "  Empty input is not allowed!" else "  $invalidInputMessage") }
+        }
+    }
+    text("> "); input(Completions(hint), initialText = "")
+}
 
 fun Session.myPromptInputNumber(
         message: String,
         hint: String = "",
         allowEmptyInput: Boolean = false,
-        invalidInputMessage: String = "Input is invalid!"
+        invalidInputMessage: String = "Input is invalid!",
+        inputValidator: (String) -> Boolean = { true }
 ): String {
-    var returnValue = ""
+    var lastUserInput = ""
     var hintText = hint
     var isInputValid by liveVarOf(true)
     section {
-        bold {
-            green { text("? ") }; text(message)
-            if (isInputValid) {
-                black(isBright = true) { textLine(if (allowEmptyInput) "  (empty input is allowed)" else "") }
-            } else {
-                red { textLine(if (returnValue.isEmpty()) "  Empty input is not allowed!" else "  $invalidInputMessage") }
-            }
-        }
-        text("> "); input(Completions(hintText), initialText = "")
+        drawInput(message, hintText, isInputValid, allowEmptyInput, invalidInputMessage, lastUserInput)
     }.runUntilSignal {
         onInputChanged {isInputValid = true; input = input.filter { it.isDigit() } }
         onInputEntered {
-            // isInputValid = validityCheck...              //damit kann der else fall dann weg
-            if (allowEmptyInput || input.isNotEmpty()) {
-                returnValue = input
+            isInputValid = inputValidator(input)
+            lastUserInput = input
+            if ((allowEmptyInput && input.isEmpty()) || (isInputValid && input.isNotEmpty())) {
+                isInputValid = true
                 hintText = ""
                 signal()
-            } else {
-                isInputValid = false
             }
         }
     }
-    return returnValue
+    return lastUserInput
 }
 
-fun Session.myPromptConfirm(message: String): Boolean {
+fun Session.myPromptConfirm(
+        message: String,
+        hint: String = "arrow keys to change selection"
+): Boolean {
     var result = true
-    var res by liveVarOf(true)
+    var choice by liveVarOf(true)
     section {
-        green { text("? ") }; text(message)
-        black(isBright = true) { textLine("  (use arrow keys to change selection)") } //TODO: is note this necessary?
-        if (res) {
-            text("> "); cyan { text("[Yes]") }; textLine(" No ")
-        } else {
-            text(">  Yes "); cyan { textLine("[No]") }
-        }
+        drawConfirm(message, hint, choice)
     }.runUntilSignal {
         onKeyPressed {
+            println(key)
             when (key) {
-                Keys.LEFT -> res = true
-                Keys.RIGHT -> res = false
-                Keys.ENTER -> { result = res; signal() }
+                Keys.LEFT -> choice = true
+                Keys.RIGHT -> choice = false
+                Keys.ENTER -> { result = choice; signal() }
             }
         }
     }
     return result
 }
 
-fun Session.myPromptList(message: String, choices: List<String>, hint: String = ""): String {
+private fun MainRenderScope.drawConfirm(message: String, hint: String, choice: Boolean) {
+    bold {
+        green { text("? ") }; text(message)
+        black(isBright = true) { textLine("  $hint") }
+    }
+    if (choice) {
+        text("> "); cyan { text("[Yes]") }; textLine(" No ")
+    } else {
+        text(">  Yes "); cyan { textLine("[No]") }
+    }
+}
+
+fun Session.myPromptList(
+        message: String,
+        choices: List<String>,
+        hint: String = "arrow keys to move, ENTER to select"): String {
     var result = ""
     var selection by liveVarOf(0)
     section {
-        green { text("? ") }; text(message); black(isBright = true) { textLine("  $hint") }
-        for (i in choices.indices) {
-            if (i == selection) {
-                cyan(isBright = true) { text(" ❯ ") }; cyan { textLine(choices[i]) }
-            } else {
-                textLine("   ${choices[i]}")
-            }
-        }
+        drawList(message, hint, choices, selection)
     }.runUntilSignal {
         onKeyPressed {
             when (key) {
@@ -138,6 +144,22 @@ fun Session.myPromptList(message: String, choices: List<String>, hint: String = 
         }
     }
     return result
+}
+
+private fun MainRenderScope.drawList(
+        message: String,
+        hint: String,
+        choices: List<String>,
+        selection: Int
+) {
+    bold { green { text("? ") }; text(message); black(isBright = true) { textLine("  $hint") } }
+    for (i in choices.indices) {
+        if (i == selection) {
+            cyan(isBright = true) { text(" ❯ ") }; cyan { textLine(choices[i]) }
+        } else {
+            textLine("   ${choices[i]}")
+        }
+    }
 }
 
 fun Session.myPromptCheckbox(
@@ -151,20 +173,7 @@ fun Session.myPromptCheckbox(
     val selectedElems = liveListOf(MutableList(choices.size) { false })
     var isInputValid by liveVarOf(true)
     section {
-        green { text("? ") }; text(message)
-        if (isInputValid) {
-            black(isBright = true) { textLine(if (allowEmptyInput) "  $hint  (empty selection is allowed)" else "  $hint") }
-        } else {
-            red { textLine("  Empty selection is not allowed!") }
-        }
-        for (i in choices.indices) {
-            cyan(isBright = true) { text(if (i == pos) " ❯ " else "   ") }
-            if (selectedElems[i]) {
-                green { text("◉ ") }; cyan { textLine(choices[i]) }
-            } else {
-                textLine("◯ ${choices[i]}")
-            }
-        }
+        drawCheckbox(message, hint, isInputValid, allowEmptyInput, choices, pos, selectedElems)
     }.runUntilSignal {
         onKeyPressed {
             isInputValid = true
@@ -184,6 +193,33 @@ fun Session.myPromptCheckbox(
         }
     }
     return result
+}
+
+private fun MainRenderScope.drawCheckbox(
+        message: String,
+        hint: String,
+        isInputValid: Boolean,
+        allowEmptyInput: Boolean,
+        choices: List<String>,
+        pos: Int,
+        selectedElems: LiveList<Boolean>
+) {
+    bold {
+        green { text("? ") }; text(message)
+        if (isInputValid) {
+            black(isBright = true) { textLine(if (allowEmptyInput) "  $hint  empty selection is allowed" else "  $hint") } //TODO should this als display hint when empty selection is allowed?
+        } else {
+            red { textLine("  Empty selection is not allowed!") }
+        }
+    }
+    for (i in choices.indices) {
+        cyan(isBright = true) { text(if (i == pos) " ❯ " else "   ") }
+        if (selectedElems[i]) {
+            green { text("◉ ") }; cyan { textLine(choices[i]) }
+        } else {
+            textLine("◯ ${choices[i]}")
+        }
+    }
 }
 
 private fun getSelectedElems(choices: List<String>, selection: List<Boolean>): List<String> {

@@ -1,10 +1,19 @@
 package de.maibornwolff.codecharta.tools.inquirer
 
+import com.varabyte.kotter.foundation.input.Keys
+import com.varabyte.kotter.foundation.input.sendKeys
+import com.varabyte.kotterx.test.foundation.testSession
+import com.varabyte.kotterx.test.terminal.lines
+import com.varabyte.kotterx.test.terminal.sendKey
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 
 class InquirerTest {
 
-    // Tests for promptInput
+    // Tests for promptInput TODO: test to correctly display a custom invalidInput message
 
     @Test
     fun `should return user input when no validity checker was specified`() {
@@ -31,6 +40,11 @@ class InquirerTest {
 
     }
 
+    @Test
+    fun `should not accept input and display custom error when an invalidInputMessage and a validity checker were set`() {
+
+    }
+
     // Tests for promptInputNumber
 
     @Test
@@ -49,7 +63,32 @@ class InquirerTest {
 
     @Test
     fun `should return true when no arrow keys were pressed`() {
+        //currently not working
+        var result = false
+        testSession {
+            runBlocking {
+                launch {
+                    delay(1000)
+                    println("key sent")
+                    it.sendKey(13)
+                    println("check for blocking")
+                }
+                result = myPromptConfirm("Unimportant test message")
+            }
+        }
+        Assertions.assertTrue(result)
 
+        var res = ""
+        testSession { terminal ->
+            section {
+                //drawConfirm("test message", true)
+            }.run {
+                this.sendKeys(Keys.ENTER)
+            }
+            res = terminal.lines()[0]
+        }
+        println(res)
+        Assertions.assertEquals(res, "a")
     }
 
     @Test
