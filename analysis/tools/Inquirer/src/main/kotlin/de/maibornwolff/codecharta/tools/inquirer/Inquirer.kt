@@ -35,13 +35,14 @@ fun Session.myPromptInput(
     }.runUntilSignal {
         onInputChanged { isInputValid = true }
         onInputEntered {
-            isInputValid = inputValidator(input)
-            lastUserInput = input
-            if ((allowEmptyInput && input.isEmpty()) || (isInputValid && input.isNotEmpty())) {
+            if ((allowEmptyInput && input.isEmpty()) || (inputValidator(input) && input.isNotEmpty())) {
                 isInputValid = true
                 hintText = ""
                 signal()
+            } else {
+                isInputValid = false
             }
+            lastUserInput = input
         }
     }
     return lastUserInput
@@ -81,13 +82,14 @@ fun Session.myPromptInputNumber(
     }.runUntilSignal {
         onInputChanged {isInputValid = true; input = input.filter { it.isDigit() } }
         onInputEntered {
-            isInputValid = inputValidator(input)
-            lastUserInput = input
-            if ((allowEmptyInput && input.isEmpty()) || (isInputValid && input.isNotEmpty())) {
+            if ((allowEmptyInput && input.isEmpty()) || (inputValidator(input) && input.isNotEmpty())) {
                 isInputValid = true
                 hintText = ""
                 signal()
+            } else {
+                isInputValid = false
             }
+            lastUserInput = input
         }
     }
     return lastUserInput
@@ -207,7 +209,7 @@ private fun MainRenderScope.drawCheckbox(
     bold {
         green { text("? ") }; text(message)
         if (isInputValid) {
-            black(isBright = true) { textLine(if (allowEmptyInput) "  $hint  empty selection is allowed" else "  $hint") } //TODO should this als display hint when empty selection is allowed?
+            black(isBright = true) { textLine(if (allowEmptyInput) "  $hint  empty selection is allowed" else "  $hint") }
         } else {
             red { textLine("  Empty selection is not allowed!") }
         }
