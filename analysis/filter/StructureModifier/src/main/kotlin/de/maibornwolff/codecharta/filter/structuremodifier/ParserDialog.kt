@@ -9,6 +9,7 @@ import de.maibornwolff.codecharta.tools.inquirer.myPromptConfirm
 import de.maibornwolff.codecharta.tools.inquirer.myPromptInput
 import de.maibornwolff.codecharta.tools.inquirer.myPromptInputNumber
 import de.maibornwolff.codecharta.tools.inquirer.myPromptList
+import de.maibornwolff.codecharta.tools.inquirer.util.InputValidator
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import de.maibornwolff.codecharta.util.InputHelper
 import java.io.File
@@ -26,8 +27,17 @@ class ParserDialog {
             var test = listOf<String>()
             session {
                 println("inside tester")
-                myPromptInput("Input a test input:", Paths.get("").toAbsolutePath().toString() + File.separator + "yourInput.cc.json", allowEmptyInput = true)
-                myPromptInputNumber("input a test number:", "42", allowEmptyInput = true)
+                myPromptInput(
+                        "Input a test input:",
+                        Paths.get("").toAbsolutePath().toString() + File.separator + "yourInput.cc.json",
+                        allowEmptyInput = true,
+                        inputValidator = InputValidator.isInputAnExistingFile()
+                )
+                myPromptInputNumber(
+                        "input a test number:",
+                        "42",
+                        inputValidator = InputValidator.isInputBetweenNumbers(0, 5)
+                )
                 myPromptConfirm("Confirm the test?")
                 myPromptList("select any", listOf("a", "b", "c", "1", "2", "3"))
                 test = myPromptCheckbox("Select all parsers you want to execute:", listOf("a", "b", "c", "1", "2", "3"))
@@ -41,8 +51,7 @@ class ParserDialog {
                 do {
                     inputFileName = myPromptInput(
                             message = "What is the cc.json file that has to be modified?",
-                            hint = Paths.get("").toAbsolutePath().toString() + File.separator + "yourInput.cc.json",
-                            canContainFolders = false
+                            hint = Paths.get("").toAbsolutePath().toString() + File.separator + "yourInput.cc.json"
                     )
                 } while (!InputHelper.isInputValidAndNotNull(arrayOf(File(inputFileName)), canInputContainFolders = false))
 
