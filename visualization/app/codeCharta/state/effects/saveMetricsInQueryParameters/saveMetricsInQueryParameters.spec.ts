@@ -6,11 +6,12 @@ import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { waitFor } from "@testing-library/angular"
 import { Subject } from "rxjs"
 import { LoadInitialFileService } from "../../../services/loadInitialFile/loadInitialFile.service"
+import { EDGE_METRIC_DATA, METRIC_DATA } from "../../../util/dataMocks"
 import { metricDataSelector } from "../../selectors/accumulatedData/metricData/metricData.selector"
+import { setColorMetric } from "../../store/dynamicSettings/colorMetric/colorMetric.actions"
 import { setEdgeMetric } from "../../store/dynamicSettings/edgeMetric/edgeMetric.actions"
 import { defaultState } from "../../store/state.manager"
 import { SaveMetricsInQueryParametersEffect } from "./saveMetricsInQueryParameters.effect"
-import { EDGE_METRIC_DATA, METRIC_DATA } from "../../../util/dataMocks"
 
 describe("SaveMetricsInQueryParametersEffect", () => {
 	let actions$: Subject<Action>
@@ -103,10 +104,10 @@ describe("SaveMetricsInQueryParametersEffect", () => {
 	})
 
 	it("should debounce save metrics in query parameters on multiple actions", async () => {
-		actions$.next(setEdgeMetric({ value: "pairingRate" }))
-		actions$.next(setEdgeMetric({ value: "avgCommits" }))
+		actions$.next(setColorMetric({ value: "pairingRate" }))
+		actions$.next(setColorMetric({ value: "avgCommits" }))
 		store.refreshState()
 
-		await waitFor(() => expect(replaceStateSpy).toHaveBeenCalledTimes(3))
+		await waitFor(() => expect(replaceStateSpy).toHaveBeenCalledTimes(4))
 	})
 })
