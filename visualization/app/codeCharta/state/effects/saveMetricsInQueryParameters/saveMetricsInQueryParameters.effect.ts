@@ -50,6 +50,8 @@ export class SaveMetricsInQueryParametersEffect {
 		this.addOrUpdateQueryParameter(MetricQueryParemter.colorMetric, colorMetric)
 		if (isEdgeMetricDefined) {
 			this.addOrUpdateQueryParameter(MetricQueryParemter.edgeMetric, edgeMetric)
+		} else {
+			this.deleteQueryParameterIfExists(MetricQueryParemter.edgeMetric)
 		}
 	}
 
@@ -77,6 +79,24 @@ export class SaveMetricsInQueryParametersEffect {
 
 		newUrl.search = updatedQuery.join("&")
 
+		window.history.replaceState(null, "", newUrl.toString())
+	}
+
+	deleteQueryParameterIfExists(parameterName) {
+		const newUrl = new URL(window.location.href)
+
+		const queryString = newUrl.search.slice(1)
+		const queryParts = queryString.length > 0 ? queryString.split("&") : []
+		const updatedQuery = []
+
+		for (const part of queryParts) {
+			const [key, value] = part.split("=")
+			if (key !== parameterName) {
+				updatedQuery.push(`${key}=${value}`)
+			}
+		}
+
+		newUrl.search = updatedQuery.join("&")
 		window.history.replaceState(null, "", newUrl.toString())
 	}
 }
