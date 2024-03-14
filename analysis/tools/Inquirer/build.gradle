@@ -4,5 +4,10 @@ repositories {
 
 dependencies {
     implementation group: 'com.varabyte.kotter', name: 'kotter-jvm', version: kotter_version
+    implementation group: 'com.varabyte.kotterx', name: 'kotter-test-support-jvm', version: kotter_version
     implementation project(path: ':model')
+}
+
+test {
+    useJUnitPlatform()
 }
