@@ -6,9 +6,14 @@ title: Load map using URL Parameters
 
 # Available URL Parameters
 
-The web application allows the usage of two query parameters in the URL.
+The web application allows the usage of the following query parameters in the URL.
 
 -   The `file` parameter can be used multiple times. Each accepts a file location, which must be reachable through XHR. With multiple `file` parameters you can load more than one map (See examples below)
+-   The following parameters require the file parameter to be used as well.
+    -   The `area` parameter sets the area-metric
+    -   The `height` parameter sets the area-metric
+    -   The `color` parameter sets the area-metric
+    -   The `edge` parameter sets the area-metric
 -   The `mode` parameter can be used to set one of the three different modes: `Single`, `Delta` or `Multiple`.
     -   `Single` will only show the first imported files
     -   `Delta` will show the first two imported files
@@ -31,6 +36,10 @@ Load one file and show as single map
 
 -   `localhost:3000/?file=something.cc.json`
 -   `localhost:3000/?file=something.cc.json&mode=Single`
+
+Load one file and set the area, height and color metrics
+
+-   `localhost:3000/?file=something.cc.json&area=rloc&height=mcc&color=mcc`
 
 Load two different files and by default show first map in single mode
 
