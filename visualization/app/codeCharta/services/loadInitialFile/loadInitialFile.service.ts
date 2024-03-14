@@ -102,10 +102,11 @@ export class LoadInitialFileService {
 			} else {
 				this.applySettingsFromSavedState(savedCcState, urlNameDataPairs)
 			}
-			this.setMetricsFromUrl()
 			this.setRenderStateFromUrl()
 		} catch (error) {
 			await this.handleErrorLoadFilesFromQueryParams(error as Error)
+		} finally {
+			this.setMetricsFromUrl()
 		}
 	}
 
