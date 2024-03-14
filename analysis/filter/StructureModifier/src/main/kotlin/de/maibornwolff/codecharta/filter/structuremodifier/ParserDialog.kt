@@ -24,23 +24,23 @@ class ParserDialog {
 
             // temporary test for kotter methods TODO: remove
             println("before tester")
-            var test = listOf<String>()
+            var test = "a"
             session {
                 println("inside tester")
-                myPromptInput(
+                test = myPromptInput(
                         "Input a test input:",
                         Paths.get("").toAbsolutePath().toString() + File.separator + "yourInput.cc.json",
-                        allowEmptyInput = true,
+                        allowEmptyInput = false,
                         inputValidator = InputValidator.isInputAnExistingFile()
                 )
                 myPromptInputNumber(
                         "input a test number:",
-                        "42",
-                        inputValidator = InputValidator.isInputBetweenNumbers(0, 5)
+                        "42"
+                        //inputValidator = InputValidator.isInputBetweenNumbers(0, 5)
                 )
                 myPromptConfirm("Confirm the test?")
                 myPromptList("select any", listOf("a", "b", "c", "1", "2", "3"))
-                test = myPromptCheckbox("Select all parsers you want to execute:", listOf("a", "b", "c", "1", "2", "3"))
+                myPromptCheckbox("Select all parsers you want to execute:", listOf("a", "b", "c", "1", "2", "3"))
             }
             println(test)
             println("after tester")
