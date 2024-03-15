@@ -31,9 +31,13 @@ export class ConfirmResetMapDialogComponent {
 
 		const isFileQueryParameterPresent = this.loadInitialFileService.checkFileQueryParameterPresent()
 		if (isFileQueryParameterPresent) {
-			const urlNameDataPairs = await this.urlUtils.getFileDataFromQueryParam()
-			this.loadFileService.loadFiles(urlNameDataPairs)
-			this.loadInitialFileService.setRenderStateFromUrl()
+			try {
+				const urlNameDataPairs = await this.urlUtils.getFileDataFromQueryParam()
+				this.loadFileService.loadFiles(urlNameDataPairs)
+				this.loadInitialFileService.setRenderStateFromUrl()
+			} catch {
+				this.loadFileService.loadFiles([sampleFile1, sampleFile2])
+			}
 		} else {
 			this.loadFileService.loadFiles([sampleFile1, sampleFile2])
 		}
