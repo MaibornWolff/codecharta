@@ -1,17 +1,22 @@
 package de.maibornwolff.codecharta.tools.inquirer
 
-import com.varabyte.kotter.foundation.input.Keys
-import com.varabyte.kotter.foundation.input.sendKeys
+import com.varabyte.kotter.foundation.text.black
+import com.varabyte.kotter.foundation.text.bold
+import com.varabyte.kotter.foundation.text.cyan
+import com.varabyte.kotter.foundation.text.green
+import com.varabyte.kotter.foundation.text.text
+import com.varabyte.kotter.foundation.text.textLine
+import com.varabyte.kotter.runtime.internal.ansi.Ansi
 import com.varabyte.kotterx.test.foundation.testSession
-import com.varabyte.kotterx.test.terminal.lines
-import com.varabyte.kotterx.test.terminal.sendKey
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import com.varabyte.kotterx.test.terminal.assertMatches
+import com.varabyte.kotterx.test.terminal.type
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 
 class InquirerTest {
+
+    private val testMessage = "unimportant test message"
+    private val defaultConfirmHint = "arrow keys to change selection"
 
     // Tests for promptInput TODO: test to correctly display a custom invalidInput message
 
@@ -63,32 +68,23 @@ class InquirerTest {
 
     @Test
     fun `should return true when no arrow keys were pressed`() {
-        //currently not working
         var result = false
-        testSession {
-            runBlocking {
-                launch {
-                    delay(1000)
-                    println("key sent")
-                    it.sendKey(13)
-                    println("check for blocking")
-                }
-                result = myPromptConfirm("Unimportant test message")
-            }
-        }
-        Assertions.assertTrue(result)
 
-        var res = ""
         testSession { terminal ->
-            section {
-                //drawConfirm("test message", true)
-            }.run {
-                this.sendKeys(Keys.ENTER)
+            result = myPromptConfirm(testMessage, onInputReady = {
+                terminal.type(Ansi.CtrlChars.ENTER)
+            })
+
+            terminal.assertMatches {
+                bold {
+                    green { text("? ") }; text(testMessage)
+                    black(isBright = true) { textLine("  $defaultConfirmHint") }
+                }
+                text("> "); cyan { text("[Yes]") }; textLine(" No ")
             }
-            res = terminal.lines()[0]
         }
-        println(res)
-        Assertions.assertEquals(res, "a")
+
+        Assertions.assertTrue(result)
     }
 
     @Test
