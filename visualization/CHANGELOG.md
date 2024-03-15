@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
     </br>
 -   Persist uploaded files and applied configuration accross page-reloads [#3486](https://github.com/MaibornWolff/codecharta/pull/3486)
 -   Height, color, edge and area metric can be selected via query parameters [#3513](https://github.com/MaibornWolff/codecharta/pull/3513)
+-   Capturing a screenshot of the map also captures the legend [#3520](https://github.com/MaibornWolff/codecharta/pull/3520)
 
 ### Chore 👨‍💻 👩‍💻
 
