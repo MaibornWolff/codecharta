@@ -97,7 +97,8 @@ fun Session.myPromptInputNumber(
 
 fun Session.myPromptConfirm(
         message: String,
-        hint: String = "arrow keys to change selection"
+        hint: String = "arrow keys to change selection",
+        onInputReady: suspend () -> Unit = {}
 ): Boolean {
     var result = true
     var choice by liveVarOf(true)
@@ -112,6 +113,7 @@ fun Session.myPromptConfirm(
                 Keys.ENTER -> { result = choice; signal() }
             }
         }
+        onInputReady()
     }
     return result
 }
