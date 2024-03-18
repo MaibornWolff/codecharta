@@ -1,4 +1,4 @@
-import { _isHoveredNodeALeaf } from "./isHoveredNodeALeaf.selector"
+import { _isHoveredNodeALeaf } from "./isNodeALeaf.selector"
 
 describe("isHoveredNodeALeafSelector", () => {
 	it("should not throw when there is no given node", () => {
