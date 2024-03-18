@@ -1,9 +1,10 @@
 import { Component, Input, OnInit, ViewEncapsulation } from "@angular/core"
 import { Store } from "@ngrx/store"
-import { Observable } from "rxjs"
-import { AttributeTypes, PrimaryMetrics, CcState } from "../../../codeCharta.model"
+import { Observable, map } from "rxjs"
+import { AttributeTypes, PrimaryMetrics, CcState, Node, CodeMapNode } from "../../../codeCharta.model"
 import { createAttributeTypeSelector } from "./createAttributeTypeSelector.selector"
-import { isHoveredNodeALeafSelector } from "./isNodeALeaf.selector"
+import { NodeSelectionService } from "../nodeSelection.service"
+import { isLeaf } from "../../../util/codeMapHelper"
 
 @Component({
 	selector: "cc-metric-chooser-type",
@@ -14,13 +15,27 @@ export class MetricChooserTypeComponent implements OnInit {
 	@Input() metricFor: keyof PrimaryMetrics
 	@Input() attributeType: keyof AttributeTypes
 
-	isHoveredNodeALeaf$: Observable<boolean>
+	isNodeALeaf$: Observable<boolean>
 	attributeType$: Observable<string>
 
-	constructor(private store: Store<CcState>) {}
+	constructor(private store: Store<CcState>, private nodeSelectionService: NodeSelectionService) {}
 
 	ngOnInit(): void {
-		this.isHoveredNodeALeaf$ = this.store.select(isHoveredNodeALeafSelector)
+		this.isNodeALeaf$ = this.nodeSelectionService.createNodeObservable().pipe(map((node: Node | CodeMapNode) => this.isNodeALeaf(node)))
 		this.attributeType$ = this.store.select(createAttributeTypeSelector(this.attributeType, this.metricFor))
+	}
+
+	private isNodeALeaf = (node: CodeMapNode | Node) => {
+		if (!node) {
+			return
+		}
+		if (this.isNode(node)) {
+			return (node as Node).isLeaf
+		}
+		return isLeaf(node as CodeMapNode)
+	}
+
+	private isNode(node: CodeMapNode | Node) {
+		return "isLeaf" in node
 	}
 }

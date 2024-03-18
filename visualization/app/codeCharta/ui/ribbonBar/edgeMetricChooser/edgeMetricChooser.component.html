@@ -12,7 +12,7 @@
 	<div hoveredInformation class="cc-metric-chooser-hovered-container">
 		<div class="metric-value" *ngIf="hoveredEdgeValue$ | async; let hoveredEdgeValue">
 			<div class="rounded-box">
-				<cc-metric-chooser-type-hovered [attributeType]="'edges'" [metricFor]="'edgeMetric'"></cc-metric-chooser-type-hovered>
+				<cc-metric-chooser-type [attributeType]="'edges'" [metricFor]="'edgeMetric'"></cc-metric-chooser-type>
 				{{ hoveredEdgeValue }}
 			</div>
 		</div>
