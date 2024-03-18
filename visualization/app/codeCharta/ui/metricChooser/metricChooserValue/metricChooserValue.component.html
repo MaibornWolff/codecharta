@@ -1,6 +1,6 @@
 <div class="metric-value" *ngIf="node$ | async; let node">
 	<div class="rounded-box">
-		<cc-metric-chooser-type-hovered [attributeType]="'nodes'" [metricFor]="metricFor"></cc-metric-chooser-type-hovered>
+		<cc-metric-chooser-type [attributeType]="'nodes'" [metricFor]="metricFor"></cc-metric-chooser-type>
 		<span class="value">{{ node.attributes[(primaryMetricNames$ | async)[metricFor]] }}</span>
 	</div>
 	<div
