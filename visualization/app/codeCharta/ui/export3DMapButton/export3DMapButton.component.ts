@@ -9,6 +9,10 @@ import { filesSelector } from "../../state/store/files/files.selector"
 import { BufferAttribute, Mesh } from "three"
 import { State } from "@ngrx/store"
 import { CcState } from "../../codeCharta.model"
+import { primitives } from "@jscad/modeling"
+import { serialize } from "@jscad/3mf-serializer"
+import { colorize, colorNameToRgb } from "@jscad/modeling/src/colors"
+import { strToU8, zipSync } from "fflate"
 
 @Component({
 	selector: "cc-export-threed-map-button",
@@ -35,6 +39,70 @@ export class Export3DMapButtonComponent {
 			"#ddcc00": "yellow"
 		}
 		return colors[hex.toLowerCase()] || hex
+	}
+
+	async download3MFFile(): Promise<void> {
+		const contenttype = `<?xml version="1.0" encoding="UTF-8"?>
+			<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
+				<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
+				<Default Extension="model" ContentType="application/vnd.ms-package.3dmanufacturing-3dmodel+xml"/>
+				<Default Extension="png" ContentType="image/png"/>
+					</Types>`
+		const rels = `<?xml version="1.0" encoding="UTF-8" ?>
+			<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+			  <Relationship Target="/3D/3dmodel.model" Id="rel0" Type="http://schemas.microsoft.com/3dmanufacturing/2013/01/3dmodel">
+			  </Relationship>
+			</Relationships>`
+
+		const files = filesSelector(this.state.getValue())
+		const fileName = accumulatedDataSelector(this.state.getValue()).unifiedFileMeta?.fileName
+
+		const sideLength = 206
+		const minLayerHeight = 0.2
+
+		const nodes = this.threeSceneService.getMapMesh().getNodes()
+		const longestSide = Math.max(...nodes.flatMap(node => [node.width, node.length]))
+		const xyScalingFactor = sideLength / longestSide
+
+		const smallestHeight = Math.min(...nodes.map(node => node.height || minLayerHeight))
+		const baseZScalingFactor = minLayerHeight / smallestHeight
+
+		// create a cube for each node with the correct dimensions and position
+		const geometries = nodes.map(node => {
+			const position = { x: node.x0 * xyScalingFactor, y: node.y0 * xyScalingFactor, z: node.z0 * baseZScalingFactor }
+			const size = { x: node.width * xyScalingFactor, y: node.length * xyScalingFactor, z: node.height * baseZScalingFactor }
+
+			const x = position.x + size.x / 2
+			const y = position.y + size.y / 2
+			const z = position.z + size.z / 2
+
+			const color = node.isLeaf ? this.hexToNamedColor(node.color) : "gray"
+
+			let cuboid = primitives.cuboid({ size: [size.y, size.x, size.z], center: [y, x, z] }) //x and y must be swapped because jscad uses a different coordinate system than the usual slicers
+			cuboid = colorize(colorNameToRgb(color), cuboid)
+			return cuboid
+		})
+		// serialize the geometries into a 3MF file
+		const xml3mf = serialize({ compress: false }, geometries)[0]
+
+		const data = {
+			"3D": {
+				"3dmodel.model": strToU8(xml3mf)
+			},
+			_rels: {
+				".rels": strToU8(rels)
+			},
+			"[Content_Types].xml": strToU8(contenttype)
+		}
+		const options = {
+			comment: "created by CodeCharta"
+		}
+
+		// @ts-ignore
+		const compressed3mf: string = zipSync(data, options).buffer
+
+		const downloadFileName = `${FileNameHelper.getNewFileName(fileName, isDeltaState(files))}.3mf`
+		FileDownloader.downloadData(compressed3mf, downloadFileName)
 	}
 
 	async downloadOpenScadFile(): Promise<void> {
