@@ -51,10 +51,6 @@ describe("screenshotButtonComponent", () => {
 		})
 	})
 
-	// afterEach(() => {
-	// 	jest.resetAllMocks()
-	// })
-
 	it("should copy to clipboard on click, when screenshot to clipboard is enabled", async () => {
 		;(checkWriteToClipboardAllowed as jest.Mock).mockImplementation(() => true)
 
