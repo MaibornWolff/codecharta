@@ -1,20 +1,20 @@
-<div class="metric-value" *ngIf="hoveredNode$ | async; let hoveredNode">
+<div class="metric-value" *ngIf="node$ | async; let node">
 	<div class="rounded-box">
 		<cc-metric-chooser-type-hovered [attributeType]="'nodes'" [metricFor]="metricFor"></cc-metric-chooser-type-hovered>
-		<span class="value">{{ hoveredNode.attributes[(primaryMetricNames$ | async)[metricFor]] }}</span>
+		<span class="value">{{ node.attributes[(primaryMetricNames$ | async)[metricFor]] }}</span>
 	</div>
 	<div
-		*ngIf="hoveredNode.deltas"
+		*ngIf="node.deltas"
 		[style.marginLeft]="'2px'"
 		[style.backgroundColor]="
-			metricFor === 'heightMetric' && hoveredNode.deltas[(primaryMetricNames$ | async)[metricFor]] > 0
+			metricFor === 'heightMetric' && node.deltas[(primaryMetricNames$ | async)[metricFor]] > 0
 				? '#b1d8a8'
-				: hoveredNode.deltas[(primaryMetricNames$ | async)[metricFor]] < 0
+				: node.deltas[(primaryMetricNames$ | async)[metricFor]] < 0
 				? '#ffcccc'
 				: '#e6e6e6'
 		"
 		class="rounded-box value"
 	>
-		&Delta;{{ hoveredNode.deltas[(primaryMetricNames$ | async)[metricFor]] }}
+		&Delta;{{ node.deltas[(primaryMetricNames$ | async)[metricFor]] }}
 	</div>
 </div>
