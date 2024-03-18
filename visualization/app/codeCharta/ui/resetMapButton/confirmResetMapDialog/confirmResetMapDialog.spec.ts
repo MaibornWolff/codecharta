@@ -10,15 +10,18 @@ import { getNameDataPair } from "../../../services/loadFile/fileParser"
 import { LoadFileService } from "../../../services/loadFile/loadFile.service"
 import { LoadInitialFileService, sampleFile1, sampleFile2 } from "../../../services/loadInitialFile/loadInitialFile.service"
 import { UrlExtractor } from "../../../services/loadInitialFile/urlExtractor"
+import { metricDataSelector } from "../../../state/selectors/accumulatedData/metricData/metricData.selector"
 import { setState } from "../../../state/store/state.actions"
 import { defaultState } from "../../../state/store/state.manager"
-import { TEST_DELTA_MAP_A } from "../../../util/dataMocks"
+import { METRIC_DATA, TEST_DELTA_MAP_A } from "../../../util/dataMocks"
 import * as indexedDBWriter from "../../../util/indexedDB/indexedDBWriter"
 import { ResetMapButtonModule } from "../resetMapButton.module"
 import { ConfirmResetMapDialogComponent } from "./confirmResetMapDialog.component"
+import * as resetChosenMetricsEffect from "../../../state/effects/resetChosenMetrics/resetChosenMetrics.effect"
 
 jest.mock("../../../util/indexedDB/indexedDBWriter")
 jest.mock("../../../services/loadInitialFile/urlExtractor")
+jest.mock("../../../state/effects/resetChosenMetrics/resetChosenMetrics.effect")
 
 describe("ConfirmResetMapDialogComponent", () => {
 	const mockedDialog = { open: jest.fn() }
@@ -37,7 +40,14 @@ describe("ConfirmResetMapDialogComponent", () => {
 				},
 				{ provide: LoadFileService, useValue: { loadFiles: jest.fn() } },
 				{ provide: HttpClient, useValue: {} },
-				provideMockStore()
+				provideMockStore({
+					selectors: [
+						{
+							selector: metricDataSelector,
+							value: METRIC_DATA
+						}
+					]
+				})
 			]
 		})
 	})
@@ -55,9 +65,11 @@ describe("ConfirmResetMapDialogComponent", () => {
 
 		const dispatchSpy = jest.spyOn(store, "dispatch")
 		const spyDeleteCcState = jest.spyOn(indexedDBWriter, "deleteCcState")
+		const resetMetricsSpy = jest.spyOn(resetChosenMetricsEffect, "setDefaultMetrics")
 
 		await userEvent.click(screen.getByText("Yes"))
 
+		expect(resetMetricsSpy).toHaveBeenCalled()
 		expect(spyDeleteCcState).toHaveBeenCalled()
 		expect(dispatchSpy).toHaveBeenCalledWith(setState({ value: defaultState }))
 		expect(loadFileService.loadFiles).toHaveBeenCalledWith([sampleFile1, sampleFile2])
@@ -74,6 +86,7 @@ describe("ConfirmResetMapDialogComponent", () => {
 
 		const dispatchSpy = jest.spyOn(store, "dispatch")
 		const spyDeleteCcState = jest.spyOn(indexedDBWriter, "deleteCcState")
+		const resetMetricsSpy = jest.spyOn(resetChosenMetricsEffect, "setDefaultMetrics")
 		jest.spyOn(loadInitialFileService, "checkFileQueryParameterPresent").mockImplementation(() => true)
 		jest.mocked(UrlExtractor.prototype.getFileDataFromQueryParam).mockImplementation(
 			async () => new Promise(resolve => resolve(mockedNameDataPairs))
@@ -81,6 +94,7 @@ describe("ConfirmResetMapDialogComponent", () => {
 
 		await userEvent.click(screen.getByText("Yes"))
 
+		expect(resetMetricsSpy).toHaveBeenCalled()
 		expect(spyDeleteCcState).toHaveBeenCalled()
 		expect(dispatchSpy).toHaveBeenCalledWith(setState({ value: defaultState }))
 		expect(loadFileService.loadFiles).toHaveBeenCalledWith(mockedNameDataPairs)
@@ -92,8 +106,10 @@ describe("ConfirmResetMapDialogComponent", () => {
 
 		const store = TestBed.inject(MockStore)
 		const dispatchSpy = jest.spyOn(store, "dispatch")
+		const resetMetricsSpy = jest.spyOn(resetChosenMetricsEffect, "setDefaultMetrics")
 		await userEvent.click(screen.getByText("No"))
 
 		expect(dispatchSpy).not.toHaveBeenCalled()
+		expect(resetMetricsSpy).not.toHaveBeenCalled()
 	})
 })
