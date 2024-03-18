@@ -3,14 +3,14 @@ import { Store } from "@ngrx/store"
 import { Observable } from "rxjs"
 import { AttributeTypes, PrimaryMetrics, CcState } from "../../../codeCharta.model"
 import { createAttributeTypeSelector } from "./createAttributeTypeSelector.selector"
-import { isHoveredNodeALeafSelector } from "./isHoveredNodeALeaf.selector"
+import { isHoveredNodeALeafSelector } from "./isNodeALeaf.selector"
 
 @Component({
-	selector: "cc-metric-chooser-type-hovered",
-	templateUrl: "./metricChooserTypeHovered.component.html",
+	selector: "cc-metric-chooser-type",
+	templateUrl: "./metricChooserType.component.html",
 	encapsulation: ViewEncapsulation.None
 })
-export class MetricChooserTypeHoveredComponent implements OnInit {
+export class MetricChooserTypeComponent implements OnInit {
 	@Input() metricFor: keyof PrimaryMetrics
 	@Input() attributeType: keyof AttributeTypes
 
