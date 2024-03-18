@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Fixed 🐞
+
+-   Fix metrics being reset on excluding / flattening buildings [#3524](https://github.com/MaibornWolff/codecharta/pull/3524)
+
 ## [1.124.0] - 2024-03-18
 
 ### Added 🚀
