@@ -50,9 +50,7 @@ export class CodeMapRenderService implements OnDestroy {
 
 	render(map: CodeMapNode) {
 		const nodes = this.getNodes(map)
-		const visibleSortedNodes = nodes
-			.filter(node => node.visible && node.length > 0 && node.width > 0)
-			.sort((a, b) => b.height - a.height)
+		const visibleSortedNodes = this.getVisibleNodes(nodes)
 		this.unflattenedNodes = visibleSortedNodes.filter(({ flat }) => !flat)
 
 		this.setNewMapMesh(nodes, visibleSortedNodes)
@@ -76,7 +74,7 @@ export class CodeMapRenderService implements OnDestroy {
 		this.setLabels(this.unflattenedNodes)
 	}
 
-	private getNodes(map: CodeMapNode) {
+	getNodes(map: CodeMapNode) {
 		const state = this.state.getValue() as CcState
 		const nodeMetricData = metricDataSelector(state).nodeMetricData
 		const {
@@ -93,6 +91,10 @@ export class CodeMapRenderService implements OnDestroy {
 			default:
 				return []
 		}
+	}
+
+	getVisibleNodes(nodes: Node[]) {
+		return nodes.filter(node => node.visible && node.length > 0 && node.width > 0).sort((a, b) => b.height - a.height)
 	}
 
 	private getNodesMatchingColorSelector(sortedNodes: Node[]) {

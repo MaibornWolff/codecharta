@@ -13,8 +13,8 @@ const DEFAULT_SUB_FLOOR_LABEL_SCALING = 0.028
 
 export function createTreemapNodes(map: CodeMapNode, state: CcState, metricData: NodeMetricData[], isDeltaState: boolean): Node[] {
 	const mapSizeResolutionScaling = getMapResolutionScaleFactor(state.files)
-	const maxHeight = metricData.find(x => x.name === state.dynamicSettings.heightMetric).maxValue * mapSizeResolutionScaling
-	const maxWidth = metricData.find(x => x.name === state.dynamicSettings.areaMetric).maxValue * mapSizeResolutionScaling
+	const maxHeight = metricData.find(x => x.name === state.dynamicSettings.heightMetric)?.maxValue * mapSizeResolutionScaling
+	const maxWidth = metricData.find(x => x.name === state.dynamicSettings.areaMetric)?.maxValue * mapSizeResolutionScaling
 	const heightScale = (treeMapSize * 2) / maxHeight
 
 	if (hasFixedFolders(map)) {
