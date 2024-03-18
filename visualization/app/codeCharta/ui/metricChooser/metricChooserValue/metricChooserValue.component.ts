@@ -6,18 +6,18 @@ import { hoveredNodeSelector } from "../../../state/selectors/hoveredNode.select
 import { primaryMetricNamesSelector } from "../../../state/selectors/primaryMetrics/primaryMetricNames.selector"
 
 @Component({
-	selector: "cc-metric-chooser-value-hovered",
-	templateUrl: "./metricChooserValueHovered.component.html",
+	selector: "cc-metric-chooser-value",
+	templateUrl: "./metricChooserValue.component.html",
 	encapsulation: ViewEncapsulation.None
 })
-export class MetricChooserValueHoveredComponent {
+export class MetricChooserValueComponent {
 	@Input() metricFor: keyof PrimaryMetrics
 
 	hoveredNode$: Observable<CodeMapNode | undefined>
 	primaryMetricNames$: Observable<PrimaryMetrics>
 
 	constructor(store: Store<CcState>) {
-		this.primaryMetricNames$ = store.select(primaryMetricNamesSelector)
 		this.hoveredNode$ = store.select(hoveredNodeSelector)
+		this.primaryMetricNames$ = store.select(primaryMetricNamesSelector)
 	}
 }

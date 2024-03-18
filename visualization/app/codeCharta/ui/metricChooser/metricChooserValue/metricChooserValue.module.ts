@@ -1,11 +1,11 @@
 import { CommonModule } from "@angular/common"
 import { NgModule } from "@angular/core"
 import { MetricChooserTypeHoveredModule } from "../metricChooserTypeHovered/metricChooserTypeHovered.module"
-import { MetricChooserValueHoveredComponent } from "./metricChooserValueHovered.component"
+import { MetricChooserValueComponent } from "./metricChooserValue.component"
 
 @NgModule({
 	imports: [CommonModule, MetricChooserTypeHoveredModule],
-	declarations: [MetricChooserValueHoveredComponent],
-	exports: [MetricChooserValueHoveredComponent]
+	declarations: [MetricChooserValueComponent],
+	exports: [MetricChooserValueComponent]
 })
-export class MetricChooserValueHoveredModule {}
+export class MetricChooserValueModule {}

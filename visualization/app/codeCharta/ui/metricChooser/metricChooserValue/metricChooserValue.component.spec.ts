@@ -2,15 +2,15 @@ import { TestBed } from "@angular/core/testing"
 import { render, screen } from "@testing-library/angular"
 import { CodeMapNode } from "../../../codeCharta.model"
 import { hoveredNodeSelector } from "../../../state/selectors/hoveredNode.selector"
-import { MetricChooserValueHoveredComponent } from "./metricChooserValueHovered.component"
-import { MetricChooserValueHoveredModule } from "./metricChooserValueHovered.module"
+import { MetricChooserValueComponent } from "./metricChooserValue.component"
+import { MetricChooserValueModule } from "./metricChooserValue.module"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { primaryMetricNamesSelector } from "../../../state/selectors/primaryMetrics/primaryMetricNames.selector"
 
-describe("metricChooserValueHoveredComponent", () => {
+describe("metricChooserValueComponent", () => {
 	beforeEach(() => {
 		TestBed.configureTestingModule({
-			imports: [MetricChooserValueHoveredModule],
+			imports: [MetricChooserValueModule],
 			providers: [
 				provideMockStore({
 					selectors: [
@@ -28,16 +28,19 @@ describe("metricChooserValueHoveredComponent", () => {
 		})
 	})
 
-	it("should display nothing when there is no hovered node", async () => {
-		const { container } = await render(MetricChooserValueHoveredComponent, {
+	it("should display attribute values of top level node when there is no hovered node", async () => {
+		const { detectChanges } = await render(MetricChooserValueComponent, {
 			excludeComponentDeclaration: true,
 			componentProperties: { metricFor: "areaMetric" }
 		})
-		expect(container.textContent).toBe("")
+		const store = TestBed.inject(MockStore)
+		store.refreshState()
+		detectChanges()
+		expect(screen.queryByText("42")).not.toBe(null)
 	})
 
 	it("should display attribute value", async () => {
-		const { detectChanges } = await render(MetricChooserValueHoveredComponent, {
+		const { detectChanges } = await render(MetricChooserValueComponent, {
 			excludeComponentDeclaration: true,
 			componentProperties: { metricFor: "areaMetric" }
 		})
@@ -50,7 +53,7 @@ describe("metricChooserValueHoveredComponent", () => {
 	})
 
 	it("should display zero height delta value in grey", async () => {
-		const { container, detectChanges } = await render(MetricChooserValueHoveredComponent, {
+		const { container, detectChanges } = await render(MetricChooserValueComponent, {
 			excludeComponentDeclaration: true,
 			componentProperties: { metricFor: "heightMetric" }
 		})
@@ -68,7 +71,7 @@ describe("metricChooserValueHoveredComponent", () => {
 	})
 
 	it("should display positive height delta value in green", async () => {
-		const { container, detectChanges } = await render(MetricChooserValueHoveredComponent, {
+		const { container, detectChanges } = await render(MetricChooserValueComponent, {
 			excludeComponentDeclaration: true,
 			componentProperties: { metricFor: "heightMetric" }
 		})
@@ -86,7 +89,7 @@ describe("metricChooserValueHoveredComponent", () => {
 	})
 
 	it("should display negative height delta value in red", async () => {
-		const { container, detectChanges } = await render(MetricChooserValueHoveredComponent, {
+		const { container, detectChanges } = await render(MetricChooserValueComponent, {
 			excludeComponentDeclaration: true,
 			componentProperties: { metricFor: "heightMetric" }
 		})
