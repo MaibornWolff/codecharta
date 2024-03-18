@@ -28,6 +28,7 @@
 	"dependencies": {
 		"@jscad/3mf-serializer": "^2.1.10",
 		"@jscad/modeling": "^2.12.1",
+		"@jscad/svg-deserializer": "^2.5.7",
 		"fflate": "^0.8.2"
 	}
 }
