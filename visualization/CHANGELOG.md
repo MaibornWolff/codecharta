@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
--   Auto detect direction of metrics [#3518](https://github.com/MaibornWolff/codecharta/pull/3518)
+-   Automatically reverse the metric direction for those where higher values indicate better codequality, such as `branch_coverage` [#3518](https://github.com/MaibornWolff/codecharta/pull/3518)
 
 ## [1.124.1] - 2024-03-18
 

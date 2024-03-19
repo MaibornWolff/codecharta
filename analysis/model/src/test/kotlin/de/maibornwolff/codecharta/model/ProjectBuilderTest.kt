@@ -32,7 +32,7 @@ class ProjectBuilderTest {
         projectBuilder.insertByPath(Path.trivialPath(), nodeForInsertion)
         val root = projectBuilder.build().rootNode
 
-        // when
+        // then
         assertThat(root.children).hasSize(1)
         assertThat(root.children.toMutableList()[0].toString()).isEqualTo(nodeForInsertion.toNode().toString())
     }

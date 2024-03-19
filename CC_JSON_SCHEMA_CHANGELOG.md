@@ -55,7 +55,7 @@ export interface Fixed {
 
 ## 1.4
 
--   A new `direction` property has been added to the attribute descriptors, specifying whether higher or lower attribute values indicate better code quality.
+-   An additional `direction` property has been added to the attribute descriptors, specifying whether higher or lower attribute values indicate better code quality.
 
 ```json
 {

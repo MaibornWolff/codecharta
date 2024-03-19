@@ -5,11 +5,13 @@ import de.maibornwolff.codecharta.util.AttributeGeneratorRegistry
 import org.apache.commons.text.similarity.JaccardSimilarity
 import org.apache.commons.text.similarity.JaroWinklerSimilarity
 
-open class ProjectBuilder(private val nodes: List<MutableNode> = listOf(MutableNode("root", NodeType.Folder)),
-                          private var edges: MutableList<Edge> = mutableListOf(),
-                          private var attributeTypes: MutableMap<String, MutableMap<String, AttributeType>> = mutableMapOf(),
-                          private var attributeDescriptors: MutableMap<String, AttributeDescriptor> = mutableMapOf(),
-                          private var blacklist: MutableList<BlacklistItem> = mutableListOf()) {
+open class ProjectBuilder(
+    private val nodes: List<MutableNode> = listOf(MutableNode("root", NodeType.Folder)),
+    private var edges: MutableList<Edge> = mutableListOf(),
+    private var attributeTypes: MutableMap<String, MutableMap<String, AttributeType>> = mutableMapOf(),
+    private var attributeDescriptors: MutableMap<String, AttributeDescriptor> = mutableMapOf(),
+    private var blacklist: MutableList<BlacklistItem> = mutableListOf()
+) {
 
     val DUMMY_PROJECT_NAME = ""
 
@@ -53,7 +55,8 @@ open class ProjectBuilder(private val nodes: List<MutableNode> = listOf(MutableN
     }
 
     open fun build(cleanAttributeDescriptors: Boolean = false): Project {
-        nodes.flatMap { it.nodes.values }.mapNotNull { it.filterChildren(filterRule, false) }
+        nodes.flatMap { it.nodes.values }
+                .mapNotNull { it.filterChildren(filterRule, false) }
                 .map { it.translateMetrics(metricNameTranslator, false) }
 
         edges.forEach { it.translateMetrics(metricNameTranslator) }
@@ -62,9 +65,14 @@ open class ProjectBuilder(private val nodes: List<MutableNode> = listOf(MutableN
         if (cleanAttributeDescriptors) {
             removeUnusedAttributeDescriptors()
         }
-        val project = Project(DUMMY_PROJECT_NAME, nodes.map { it.toNode() }.toList(), edges = edges.toList(),
-                attributeTypes = attributeTypes.toMap(), attributeDescriptors = attributeDescriptors.toMap(),
-                blacklist = blacklist.toList())
+        val project = Project(
+                edges = edges.toList(),
+                blacklist = blacklist.toList(),
+                projectName = DUMMY_PROJECT_NAME,
+                attributeTypes = attributeTypes.toMap(),
+                nodes = nodes.map { it.toNode() }.toList(),
+                attributeDescriptors = attributeDescriptors.toMap()
+        )
 
         System.err.println()
         System.err.println("Created Project with ${project.size} leaves.")
@@ -109,7 +117,7 @@ open class ProjectBuilder(private val nodes: List<MutableNode> = listOf(MutableN
     private fun addAttributeDescriptorWithEstimatedDirection(
             nodeAttributeName: String,
             complementedAttributeDescriptors: MutableMap<String, AttributeDescriptor>
-                                                            ) {
+    ) {
         complementedAttributeDescriptors[nodeAttributeName] =
                 AttributeDescriptor(title = nodeAttributeName, direction = estimateDirection(nodeAttributeName))
     }

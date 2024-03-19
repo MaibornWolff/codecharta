@@ -18,17 +18,17 @@ Things to note:
 
 It supports the following metrics per file:
 
-| Metric                          | Description                                                                           |
-| ------------------------------- | ------------------------------------------------------------------------------------- |
-| `age_in_weeks`                  | age of the file in weeks                                                              |
-| `number_of_authors`             | number of authors with commits                                                        |
-| `number_of_commits`             | total number of commits                                                               |
-| `number_of_renames`             | total number of renames                                                               |
-| `range_of_weeks_with_commits`   | week Range of Commits                                                                 |
-| `successive_weeks_with_commits` | successive Weeks with Commits                                                         |
-| `weeks_with_commits`            | weeks with commits                                                                    |
-| `highly_coupled_files`          | Number of highly coupled files (>=35% of times modified the same time) with this file |
-| `median_coupled_files`          | Median of number of other files that where committed with this file                   |
+| Metric                          | Description                                                         |
+| ------------------------------- | ------------------------------------------------------------------- |
+| `age_in_weeks`                  | The file's age measured in weeks since creation.                    |
+| `number_of_authors`             | The count of distinct authors who have contributed commits.         |
+| `number_of_commits`             | The total commits made to the file.                                 |
+| `number_of_renames`             | How many times the file has been renamed.                           |
+| `range_of_weeks_with_commits`   | The span of weeks during which commits were made.                   |
+| `successive_weeks_with_commits` | Consecutive weeks during which the file received commits.           |
+| `weeks_with_commits`            | The number of weeks in which the file was modified.                 |
+| `highly_coupled_files`          | Files often modified together with this file (35% overlap or more). |
+| `median_coupled_files`          | The median number of files modified in tandem with this file.       |
 
 Additionally, the following Edge Metrics are calculated:
 
