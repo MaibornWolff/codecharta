@@ -8,6 +8,7 @@
 		[middleColor]="(sliderColors$ | async).middleColor"
 		[rightColor]="(sliderColors$ | async).rightColor"
 		[handleValueChange]="handleValueChange"
+		[isAttributeDirectionInversed]="isAttributeDescriptionInversed$ | async"
 	>
 	</cc-metric-color-range-slider>
 
@@ -28,6 +29,7 @@
 		[rightColor]="(sliderColors$ | async).rightColor"
 		[colorMetric]="colorMetric$ | async"
 		[values]="(sliderValues$ | async).values"
+		[isAttributeDirectionInversed]="isAttributeDescriptionInversed$ | async"
 	></cc-metric-color-range-diagram>
 
 	<mat-form-field appearance="outline" class="gradient-mode-selector">
