@@ -23,6 +23,7 @@ class CSVProjectBuilderTest {
         // when
         csvProjectBuilder.parseCSVStream(toInputStream(invalidContent))
         val project = csvProjectBuilder.build()
+
         // then
         assertEquals(project.rootNode.children.size, 0)
     }
@@ -52,7 +53,7 @@ class CSVProjectBuilderTest {
         val csvRow = "projectName,foo,"
 
         // when
-        val csvProjectBuilder = CSVProjectBuilder('\\', ',')
+        val csvProjectBuilder = CSVProjectBuilder(pathSeparator = '\\', csvDelimiter = ',')
         csvProjectBuilder.parseCSVStream(toInputStream("$csvHeader\r\n$csvRow$name"))
         val project = csvProjectBuilder.build()
         val childName = project.rootNode.children.map { it.name }
@@ -62,7 +63,7 @@ class CSVProjectBuilderTest {
     }
 
     @Test
-    fun `it should add a lines with metric values correctly`() {
+    fun `it should add a line with metric values correctly`() {
         // given
         val attributeName = "attributeName"
         val attributeValue = "\"0,1\""
@@ -117,7 +118,7 @@ class CSVProjectBuilderTest {
     }
 
     @Test
-    fun `it should set correct the attribute-descriptors when importing a valid csv file`() {
+    fun `it should correctly set the attribute-descriptors when importing a valid csv file`() {
         // given
         val attributeName = "Test"
         val attributeValue = "10"
