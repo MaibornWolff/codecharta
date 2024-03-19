@@ -1,23 +1,25 @@
 import { TestBed } from "@angular/core/testing"
-import { render, screen } from "@testing-library/angular"
 import { expect } from "@jest/globals"
-import userEvent from "@testing-library/user-event"
-import { ColorMetricChooserComponent } from "./colorMetricChooser.component"
-import { ColorMetricChooserModule } from "./colorMetricChooser.module"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
+import { render, screen } from "@testing-library/angular"
+import userEvent from "@testing-library/user-event"
 import { metricDataSelector } from "../../../state/selectors/accumulatedData/metricData/metricData.selector"
 import { hoveredNodeSelector } from "../../../state/selectors/hoveredNode.selector"
 import { isColorMetricLinkedToHeightMetricSelector } from "../../../state/store/appSettings/isHeightAndColorMetricLinked/isColorMetricLinkedToHeightMetric.selector"
+import { setColorMetric } from "../../../state/store/dynamicSettings/colorMetric/colorMetric.actions"
 import { colorMetricSelector } from "../../../state/store/dynamicSettings/colorMetric/colorMetric.selector"
 import { attributeDescriptorsSelector } from "../../../state/store/fileSettings/attributeDescriptors/attributeDescriptors.selector"
-import { setColorMetric } from "../../../state/store/dynamicSettings/colorMetric/colorMetric.actions"
 import { getLastAction } from "../../../util/testUtils/store.utils"
+import { NodeSelectionService } from "../../metricChooser/nodeSelection.service"
+import { ColorMetricChooserComponent } from "./colorMetricChooser.component"
+import { ColorMetricChooserModule } from "./colorMetricChooser.module"
 
 describe("colorMetricChooserComponent", () => {
 	beforeEach(() => {
 		TestBed.configureTestingModule({
 			imports: [ColorMetricChooserModule],
 			providers: [
+				{ provide: NodeSelectionService, useValue: { createNodeObservable: jest.fn() } },
 				provideMockStore({
 					selectors: [
 						{

@@ -1,16 +1,17 @@
 import { TestBed } from "@angular/core/testing"
-import { render, screen } from "@testing-library/angular"
 import { expect } from "@jest/globals"
-import userEvent from "@testing-library/user-event"
-import { HeightMetricChooserComponent } from "./heightMetricChooser.component"
-import { HeightMetricChooserModule } from "./heightMetricChooser.module"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
+import { render, screen } from "@testing-library/angular"
+import userEvent from "@testing-library/user-event"
 import { metricDataSelector } from "../../../state/selectors/accumulatedData/metricData/metricData.selector"
-import { heightMetricSelector } from "../../../state/store/dynamicSettings/heightMetric/heightMetric.selector"
 import { hoveredNodeSelector } from "../../../state/selectors/hoveredNode.selector"
+import { setHeightMetric } from "../../../state/store/dynamicSettings/heightMetric/heightMetric.actions"
+import { heightMetricSelector } from "../../../state/store/dynamicSettings/heightMetric/heightMetric.selector"
 import { attributeDescriptorsSelector } from "../../../state/store/fileSettings/attributeDescriptors/attributeDescriptors.selector"
 import { getLastAction } from "../../../util/testUtils/store.utils"
-import { setHeightMetric } from "../../../state/store/dynamicSettings/heightMetric/heightMetric.actions"
+import { NodeSelectionService } from "../../metricChooser/nodeSelection.service"
+import { HeightMetricChooserComponent } from "./heightMetricChooser.component"
+import { HeightMetricChooserModule } from "./heightMetricChooser.module"
 
 describe("heightMetricChooserComponent", () => {
 	let store: MockStore
@@ -19,6 +20,7 @@ describe("heightMetricChooserComponent", () => {
 		TestBed.configureTestingModule({
 			imports: [HeightMetricChooserModule],
 			providers: [
+				{ provide: NodeSelectionService, useValue: { createNodeObservable: jest.fn() } },
 				provideMockStore({
 					selectors: [
 						{
