@@ -6,16 +6,20 @@ import { AccumulatedData, accumulatedDataSelector } from "../../state/selectors/
 import { hoveredNodeSelector } from "../../state/selectors/hoveredNode.selector"
 import { dynamicSettingsSelector } from "../../state/store/dynamicSettings/dynamicSettings.selector"
 import { CodeMapRenderService } from "../codeMap/codeMap.render.service"
+import { selectedNodeSelector } from "../../state/selectors/selectedNode.selector"
 
-@Injectable()
+@Injectable({ providedIn: "root" })
 export class NodeSelectionService {
 	constructor(private store: Store<CcState>, private codeMapRenderService: CodeMapRenderService) {}
 
 	createNodeObservable(): Observable<CodeMapNode | Node> {
 		const hoveredNode$ = this.store.select(hoveredNodeSelector)
+		const selectedNode$ = this.store.select(selectedNodeSelector)
 		const topLevelNode$ = this.createTopLevelNodeObservable()
 
-		return combineLatest([hoveredNode$, topLevelNode$]).pipe(map(([hoveredNode, topLevelNode]) => hoveredNode ?? topLevelNode))
+		return combineLatest([hoveredNode$, selectedNode$, topLevelNode$]).pipe(
+			map(([hoveredNode, selectedNode, topLevelNode]) => hoveredNode ?? selectedNode ?? topLevelNode)
+		)
 	}
 
 	private createTopLevelNodeObservable(): Observable<Node> {
@@ -25,7 +29,7 @@ export class NodeSelectionService {
 		)
 	}
 
-	private findTopLevelNode(accumulatedData: AccumulatedData): Node {
+	findTopLevelNode(accumulatedData: AccumulatedData): Node {
 		const nodes = this.codeMapRenderService.getNodes(accumulatedData.unifiedMapNode)
 		const visibleSortedNodes = this.codeMapRenderService.getVisibleNodes(nodes)
 		return visibleSortedNodes.reduce((previous, current) => (previous.attributes.unary > current.attributes.unary ? previous : current))

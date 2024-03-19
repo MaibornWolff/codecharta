@@ -1,22 +1,24 @@
 import { TestBed } from "@angular/core/testing"
-import { render, screen } from "@testing-library/angular"
 import { expect } from "@jest/globals"
-import userEvent from "@testing-library/user-event"
-import { AreaMetricChooserComponent } from "./areaMetricChooser.component"
-import { AreaMetricChooserModule } from "./areaMetricChooser.module"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
+import { render, screen } from "@testing-library/angular"
+import userEvent from "@testing-library/user-event"
 import { metricDataSelector } from "../../../state/selectors/accumulatedData/metricData/metricData.selector"
-import { areaMetricSelector } from "../../../state/store/dynamicSettings/areaMetric/areaMetric.selector"
 import { hoveredNodeSelector } from "../../../state/selectors/hoveredNode.selector"
+import { setAreaMetric } from "../../../state/store/dynamicSettings/areaMetric/areaMetric.actions"
+import { areaMetricSelector } from "../../../state/store/dynamicSettings/areaMetric/areaMetric.selector"
 import { attributeDescriptorsSelector } from "../../../state/store/fileSettings/attributeDescriptors/attributeDescriptors.selector"
 import { getLastAction } from "../../../util/testUtils/store.utils"
-import { setAreaMetric } from "../../../state/store/dynamicSettings/areaMetric/areaMetric.actions"
+import { NodeSelectionService } from "../../metricChooser/nodeSelection.service"
+import { AreaMetricChooserComponent } from "./areaMetricChooser.component"
+import { AreaMetricChooserModule } from "./areaMetricChooser.module"
 
 describe("areaMetricChooserComponent", () => {
 	beforeEach(() => {
 		TestBed.configureTestingModule({
 			imports: [AreaMetricChooserModule],
 			providers: [
+				{ provide: NodeSelectionService, useValue: { createNodeObservable: jest.fn() } },
 				provideMockStore({
 					selectors: [
 						{
