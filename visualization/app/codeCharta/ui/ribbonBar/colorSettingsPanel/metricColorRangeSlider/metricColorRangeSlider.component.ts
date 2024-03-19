@@ -21,6 +21,7 @@ export class MetricColorRangeSliderComponent implements OnChanges {
 	@Input() rightColor: string
 	@Input() handleValueChange: HandleValueChange
 	@Input() sliderWidth = 150
+	@Input() isAttributeDirectionInversed: boolean
 
 	@ViewChild("rangeSliderContainer") sliderContainer: ElementRef<HTMLDivElement>
 	@ViewChild("leftThumb") leftThumb: ElementRef<HTMLDivElement>
