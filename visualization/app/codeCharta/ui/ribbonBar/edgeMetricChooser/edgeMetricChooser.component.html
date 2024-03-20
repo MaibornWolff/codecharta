@@ -9,11 +9,11 @@
 	[type]="'edge'"
 	title="Change edge metric"
 >
-	<div hoveredInformation class="cc-metric-chooser-hovered-container">
-		<div class="metric-value" *ngIf="hoveredEdgeValue$ | async; let hoveredEdgeValue">
+	<div hoveredInformation class="cc-metric-chooser-container">
+		<div class="metric-value" *ngIf="edgeValue$ | async; let edgeValue">
 			<div class="rounded-box">
 				<cc-metric-chooser-type [attributeType]="'edges'" [metricFor]="'edgeMetric'"></cc-metric-chooser-type>
-				{{ hoveredEdgeValue }}
+				{{ edgeValue }}
 			</div>
 		</div>
 	</div>
