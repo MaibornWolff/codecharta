@@ -112,17 +112,14 @@ export class Export3DMapButtonComponent {
 		}
 		*/
 		// serialize the geometries into a 3MF file
-		const geometries = [...map]
-		const xml3mf = serialize({ compress: false }, geometries)[0]
-		const downloadFileName = `${FileNameHelper.getNewFileName(fileName, isDeltaState(files))}.3mf`
+		const { model, modelConfig } = await this.serializeGeometries(map)
 
-		const modelConfig = this.getModelConfig(geometries)
 		// eslint-disable-next-line no-console
-		console.log(modelConfig)
+		console.log(model, modelConfig)
 
 		const data = {
 			"3D": {
-				"3dmodel.model": strToU8(xml3mf)
+				"3dmodel.model": strToU8(model)
 			},
 			_rels: {
 				".rels": strToU8(rels)
@@ -139,7 +136,94 @@ export class Export3DMapButtonComponent {
 		// @ts-ignore
 		const compressed3mf: string = zipSync(data, options).buffer
 
+		const downloadFileName = `${FileNameHelper.getNewFileName(fileName, isDeltaState(files))}.3mf`
 		FileDownloader.downloadData(compressed3mf, downloadFileName)
+	}
+
+	serializeGeometries = async (geometries: Geom3[]): Promise<{ model: string; modelConfig: string }> => {
+		let modelConfig = '<?xml version="1.0" encoding="UTF-8"?>\n<config>\n'
+		modelConfig += ` <object id="1" type="model">\n`
+		modelConfig += `  <metadata type="object" key="name" value="Map"/>\n`
+
+		const colorToExtruder: Map<string, string> = new Map()
+		const single3mf = serialize({ compress: false }, geometries)[0]
+		const parser = new DOMParser()
+		const parsed3mf = parser.parseFromString(single3mf, "application/xml")
+		const objects = parsed3mf.getElementsByTagName("object")
+
+		const allVertices = []
+		const allTriangles = []
+
+		for (const [index, geom3] of geometries.entries()) {
+			const numberOfVerticesAtStart = allVertices.length
+			const numberOfTrianglesAtStart = allTriangles.length
+			const object = objects[index]
+
+			const vertices = object.getElementsByTagName("vertex")
+			for (const vertex of vertices) {
+				const x = vertex.getAttribute("x")
+				const y = vertex.getAttribute("y")
+				const z = vertex.getAttribute("z")
+				allVertices.push(`<vertex x="${x}" y="${y}" z="${z}"/>`)
+			}
+			const triangles = object.getElementsByTagName("triangle")
+			for (const triangle of triangles) {
+				const x = Number.parseInt(triangle.getAttribute("v1")) + numberOfVerticesAtStart
+				const y = Number.parseInt(triangle.getAttribute("v2")) + numberOfVerticesAtStart
+				const z = Number.parseInt(triangle.getAttribute("v3")) + numberOfVerticesAtStart
+				allTriangles.push(`<triangle v1="${x}" v2="${y}" v3="${z}"/>`)
+			}
+
+			modelConfig += `  <volume firstid="${numberOfTrianglesAtStart}" lastid="${allTriangles.length - 1}">\n`
+			const colorString = geom3.color.toString()
+			if (!colorToExtruder.has(colorString)) {
+				colorToExtruder.set(colorString, (colorToExtruder.size + 1).toString())
+			}
+			const extruder = colorToExtruder.get(colorString)
+			modelConfig += `   <metadata type="volume" key="extruder" value="${extruder}"/>\n`
+			modelConfig += `   <metadata type="volume" key="source_object_id" value="${index + 1}"/>\n`
+			modelConfig += `   <metadata type="volume" key="source_volume_id" value="0"/>\n`
+			modelConfig += "  </volume>\n"
+		}
+
+		modelConfig += " </object>\n"
+		modelConfig += "</config>"
+
+		const model = this.buildModel(allVertices, allTriangles)
+
+		return { model, modelConfig }
+	}
+
+	buildModel = (allVertices, allTriangles): string => {
+		let model = '<?xml version="1.0" encoding="UTF-8"?>\n'
+		model +=
+			'<model unit="millimeter" xml:lang="en-US" xmlns="http://schemas.microsoft.com/3dmanufacturing/core/2015/02" xmlns:slic3rpe="http://schemas.slic3r.org/3mf/2017/06">\n'
+		model += ' <metadata name="Application">CodeCharta-JSCAD</metadata>\n'
+		model += " <resources>\n"
+		model += '  <object id="1" type="model">\n'
+		model += "   <mesh>\n"
+
+		model += `    <vertices>\n`
+		for (const vertex of allVertices) {
+			model += `     ${vertex}\n`
+		}
+		model += `    </vertices>\n`
+
+		model += `    <triangles>\n`
+		for (const triangle of allTriangles) {
+			model += `     ${triangle}\n`
+		}
+		model += `    </triangles>\n`
+
+		model += `   </mesh>\n`
+		model += `  </object>\n`
+		model += ` </resources>\n`
+		model += ` <build>\n`
+		model += `  <item objectid="1"/>\n`
+		model += ` </build>\n`
+		model += `</model>`
+
+		return model
 	}
 
 	maps = (xyScalingFactor, zScalingFactor, baseplateHeight): Geom3[] => {
@@ -226,34 +310,6 @@ export class Export3DMapButtonComponent {
 		model = center({ relativeTo: centerPosition }, model)
 		model = colorize(colorNameToRgb(color), model)
 		return model
-	}
-
-	private getModelConfig(geometries: Geom3[]): string {
-		let xmlContent = '<?xml version="1.0" encoding="UTF-8"?>\n<config>\n'
-
-		const colorToExtruder: Map<string, string> = new Map()
-
-		for (const [index, geom3] of geometries.entries()) {
-			const colorString = geom3.color.toString()
-			if (!colorToExtruder.has(colorString)) {
-				colorToExtruder.set(colorString, (colorToExtruder.size + 1).toString())
-			}
-			const extruder = colorToExtruder.get(colorString)
-
-			// Append the object data to the XML content
-			xmlContent += ` <object id="${index + 1}" instances_count="1">\n`
-			xmlContent += `  <metadata type="object" key="extruder" value="${extruder}"/>\n`
-			xmlContent += '  <volume firstid="0" lastid="11">\n'
-			xmlContent += `   <metadata type="volume" key="extruder" value="${extruder}"/>\n`
-			xmlContent += '   <metadata type="volume" key="volume_type" value="ModelPart"/>\n'
-			xmlContent += `   <metadata type="volume" key="source_object_id" value="${index}"/>\n`
-			xmlContent += '   <metadata type="volume" key="source_volume_id" value="0"/>\n'
-			xmlContent += "  </volume>\n"
-			xmlContent += " </object>\n"
-		}
-
-		xmlContent += "</config>"
-		return xmlContent
 	}
 
 	async downloadOpenScadFile(): Promise<void> {
