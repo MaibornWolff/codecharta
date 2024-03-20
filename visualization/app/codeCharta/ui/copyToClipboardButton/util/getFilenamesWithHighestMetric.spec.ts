@@ -1,142 +1,194 @@
 import { NodeType } from "../../../codeCharta.model"
-import { FileToValue, getFilenamesWithHighestMetrics, updateAttributeMap } from "./getFilenamesWithHighestMetrics"
+import { getFilenamesWithHighestMetrics } from "./getFilenamesWithHighestMetrics"
 
-let MAP: Map<string, FileToValue[]>
-
-beforeEach(() => {
-	MAP = new Map<string, FileToValue[]>([
-		[
-			"mcc",
-			[
-				{ filePath: "root/app/file2", value: 500 },
-				{ filePath: "root/app/file3", value: 400 },
-				{ filePath: "root/app/file1", value: 300 },
-				{ filePath: "root/app/file1", value: 200 },
-				{ filePath: "root/app/file1", value: 100 },
-				{ filePath: "root/app/file1", value: 50 },
-				{ filePath: "root/app/file1", value: 20 },
-				{ filePath: "root/app/file1", value: 15 },
-				{ filePath: "root/app/file1", value: 10 },
-				{ filePath: "root/app/file1", value: 5 }
-			]
-		]
-	])
-})
-
-describe("getFilenamesWithHighestMetrics", () => {
-	it("should return a map with keys for exactly two attribute", () => {
-		const resultMap = getFilenamesWithHighestMetrics(BIG_NODE_WITH_TWO_ATTRIBUTES)
-		const mccResults = resultMap.get("mcc")
-		const rlocResults = resultMap.get("rloc")
-
-		expect(resultMap.size).toBe(2)
-		expect(mccResults).toBeTruthy()
-		expect(rlocResults).toBeTruthy()
-	})
-
-	it("should return correct values for rloc and mcc", () => {
-		const resultMap = getFilenamesWithHighestMetrics(BIG_NODE_WITH_TWO_ATTRIBUTES)
-		const mccResults = resultMap.get("mcc")
-		const rlocResults = resultMap.get("rloc")
-
-		expect(rlocResults).toEqual([{ filePath: "root/leaf1", value: 5 }])
-		expect(mccResults).toEqual([
-			{ filePath: "root/leaf1", value: 10 },
-			{ filePath: "root/leaf2", value: 9 },
-			{ filePath: "root/leaf3", value: 8 },
-			{ filePath: "root/leaf4", value: 7 },
-			{ filePath: "root/leaf5", value: 6 },
-			{ filePath: "root/leaf6", value: 5 },
-			{ filePath: "root/leaf7", value: 4 },
-			{ filePath: "root/leaf8", value: 3 },
-			{ filePath: "root/leaf9", value: 2 },
-			{ filePath: "root/leaf10", value: 1 }
-		])
-	})
-
+describe("getFileNamesWithHighestMetrics", () => {
 	it("should ignore folders", () => {
-		const map = getFilenamesWithHighestMetrics(CONTAINS_FOLDER_WITH_ATTRIBUTES)
+		const map = getFilenamesWithHighestMetrics(NODE_FOLDER_TWO_NEGATIVE_ATTRIBUTES, null)
 
 		expect(map.get("rloc")).toBeUndefined()
 		expect(map.get("mcc")).toEqual([{ filePath: "root/file", value: 0 }])
 	})
+
+	it("should return correct map for attributes with negative direction only", () => {
+		const resultMap = getFilenamesWithHighestMetrics(NODE_TWO_NEGATIVE_ATTRIBUTES, null)
+		const mccResults = resultMap.get("mcc")
+		const rlocResults = resultMap.get("rloc")
+
+		expect(resultMap.size).toBe(2)
+		expect(rlocResults).toEqual(rlocResultsExpected)
+		expect(mccResults).toEqual(mccResultsExpected)
+	})
+
+	it("should return correct map for attributes with positiv direction only", () => {
+		const resultMap = getFilenamesWithHighestMetrics(NODE_TWO_POSITIVE_ATTRIBUTES, {
+			branch_coverage: {
+				title: "",
+				description: "",
+				hintLowValue: "",
+				hintHighValue: "",
+				link: "",
+				direction: 1
+			},
+			tests: {
+				title: "",
+				description: "",
+				hintLowValue: "",
+				hintHighValue: "",
+				link: "",
+				direction: 1
+			}
+		})
+		const testsResults = resultMap.get("tests")
+		const branchCoverageResults = resultMap.get("branch_coverage")
+
+		expect(resultMap.size).toBe(2)
+		expect(branchCoverageResults).toEqual(branchCoverageResultsExpected)
+
+		expect(testsResults).toEqual(testsResultsExpected)
+	})
+
+	it("should return correct map for attributes with both positiv and negative direction", () => {
+		const resultMap = getFilenamesWithHighestMetrics(NODE_POSITIVE_NEGATIVE_ATTRIBUTES, {
+			branch_coverage: {
+				title: "",
+				description: "",
+				hintLowValue: "",
+				hintHighValue: "",
+				link: "",
+				direction: 1
+			},
+			tests: {
+				title: "",
+				description: "",
+				hintLowValue: "",
+				hintHighValue: "",
+				link: "",
+				direction: 1
+			}
+		})
+
+		const mccResults = resultMap.get("mcc")
+		const rlocResults = resultMap.get("rloc")
+		const testsResults = resultMap.get("tests")
+		const branchCoverageResults = resultMap.get("branch_coverage")
+
+		expect(resultMap.size).toBe(4)
+		expect(rlocResults).toEqual(rlocResultsExpected)
+		expect(mccResults).toEqual(mccResultsExpected)
+		expect(branchCoverageResults).toEqual(branchCoverageResultsExpected)
+		expect(testsResults).toEqual(testsResultsExpected)
+	})
 })
 
-describe("updateAttributeMap", () => {
-	it("should not add item to attribute if value is lower than old values", () => {
-		updateAttributeMap("mcc", 0, "app/src/lowValueFile", MAP)
-
-		expect(MAP.get("mcc")).not.toContainEqual({ filePath: "app/src/lowValueFile", value: 0 })
-		expect(MAP.get("mcc").length).toBe(10)
-	})
-
-	it("should add item to attribute if value is higher than old values", () => {
-		updateAttributeMap("mcc", 9001, "app/src/highValueFile", MAP)
-
-		expect(MAP.get("mcc")).toContainEqual({ filePath: "app/src/highValueFile", value: 9001 })
-		expect(MAP.get("mcc").length).toBe(10)
-	})
-
-	it("should add attribute and attribute gets item if map is empty", () => {
-		const EMPTY_MAP = new Map<string, FileToValue[]>()
-
-		updateAttributeMap("mcc", 0, "root/app/firstFile", EMPTY_MAP)
-
-		expect(EMPTY_MAP.get("mcc")).toContainEqual({ filePath: "root/app/firstFile", value: 0 })
-		expect(EMPTY_MAP.get("mcc").length).toBe(1)
-	})
-
-	it("should add item to attribute if attribute has only one item", () => {
-		const TINY_MAP = new Map<string, FileToValue[]>([["mcc", [{ filePath: "root/app/firstFile", value: 424_242 }]]])
-
-		updateAttributeMap("mcc", 0, "root/secondFile", TINY_MAP)
-
-		expect(TINY_MAP.get("mcc")).toEqual([
-			{ filePath: "root/app/firstFile", value: 424_242 },
-			{ filePath: "root/secondFile", value: 0 }
-		])
-		expect(TINY_MAP.get("mcc").length).toBe(2)
-	})
-
-	it("should add new attribute and new attribute gets item and old attribute does not change", () => {
-		const oldMcc = MAP.get("mcc")
-
-		updateAttributeMap("rloc", 0, "app/rlocFile", MAP)
-		const newMcc = MAP.get("mcc")
-
-		expect(MAP.get("rloc")).toEqual([{ filePath: "app/rlocFile", value: 0 }])
-		expect(oldMcc).toBe(newMcc)
-		expect(MAP.size).toBe(2)
-	})
-})
-
-const BIG_NODE_WITH_TWO_ATTRIBUTES = {
+const NODE_TWO_NEGATIVE_ATTRIBUTES = {
 	path: "root/",
 	type: NodeType.FOLDER,
 	children: [
 		{
-			path: "folder",
+			path: "folder1",
 			type: NodeType.FOLDER,
 			children: [
-				{ path: "root/leaf2", attributes: { ["mcc"]: 9 }, type: NodeType.FILE },
-				{ path: "root/leaf3", attributes: { ["mcc"]: 8 }, type: NodeType.FILE },
-				{ path: "root/leaf4", attributes: { ["mcc"]: 7 }, type: NodeType.FILE },
-				{ path: "root/leaf5", attributes: { ["mcc"]: 6 }, type: NodeType.FILE },
-				{ path: "root/leaf6", attributes: { ["mcc"]: 5 }, type: NodeType.FILE },
-				{ path: "root/leaf7", attributes: { ["mcc"]: 4 }, type: NodeType.FILE },
-				{ path: "root/leaf8", attributes: { ["mcc"]: 3 }, type: NodeType.FILE },
-				{ path: "root/leaf9", attributes: { ["mcc"]: 2 }, type: NodeType.FILE },
-				{ path: "root/leaf10", attributes: { ["mcc"]: 1 }, type: NodeType.FILE },
-				{ path: "root/leaf11", attributes: { ["mcc"]: 0 }, type: NodeType.FILE }
+				{ path: "root/leaf2", attributes: { ["mcc"]: 9, ["rloc"]: 100 }, type: NodeType.FILE },
+				{ path: "root/leaf3", attributes: { ["mcc"]: 8, ["rloc"]: 99 }, type: NodeType.FILE },
+				{ path: "root/leaf4", attributes: { ["mcc"]: 7, ["rloc"]: 98 }, type: NodeType.FILE },
+				{ path: "root/leaf5", attributes: { ["mcc"]: 6, ["rloc"]: 97 }, type: NodeType.FILE },
+				{ path: "root/leaf6", attributes: { ["mcc"]: 5, ["rloc"]: 96 }, type: NodeType.FILE },
+				{ path: "root/leaf7", attributes: { ["mcc"]: 4, ["rloc"]: 95 }, type: NodeType.FILE },
+				{ path: "root/leaf8", attributes: { ["mcc"]: 3, ["rloc"]: 94 }, type: NodeType.FILE },
+				{ path: "root/leaf9", attributes: { ["mcc"]: 2, ["rloc"]: 93 }, type: NodeType.FILE },
+				{ path: "root/leaf10", attributes: { ["mcc"]: 1, ["rloc"]: 92 }, type: NodeType.FILE },
+				{ path: "root/leaf11", attributes: { ["mcc"]: 0, ["rloc"]: 91 }, type: NodeType.FILE }
 			]
 		},
-		{ path: "root/leaf1", attributes: { ["mcc"]: 10, ["rloc"]: 5 }, type: NodeType.FILE }
+		{ path: "root/leaf1", attributes: { ["mcc"]: 10, ["rloc"]: 93 }, type: NodeType.FILE }
 	]
 }
 
-const CONTAINS_FOLDER_WITH_ATTRIBUTES = {
+const NODE_TWO_POSITIVE_ATTRIBUTES = {
+	path: "root/",
+	type: NodeType.FOLDER,
+	children: [
+		{
+			path: "folder2",
+			type: NodeType.FOLDER,
+			children: [
+				{ path: "root/leaf2", attributes: { ["branch_coverage"]: 9, ["tests"]: 20 }, type: NodeType.FILE },
+				{ path: "root/leaf3", attributes: { ["branch_coverage"]: 8, ["tests"]: 19 }, type: NodeType.FILE },
+				{ path: "root/leaf4", attributes: { ["branch_coverage"]: 7, ["tests"]: 18 }, type: NodeType.FILE },
+				{ path: "root/leaf5", attributes: { ["branch_coverage"]: 6, ["tests"]: 17 }, type: NodeType.FILE },
+				{ path: "root/leaf6", attributes: { ["branch_coverage"]: 5, ["tests"]: 16 }, type: NodeType.FILE },
+				{ path: "root/leaf7", attributes: { ["branch_coverage"]: 4, ["tests"]: 15 }, type: NodeType.FILE },
+				{ path: "root/leaf8", attributes: { ["branch_coverage"]: 3, ["tests"]: 14 }, type: NodeType.FILE },
+				{ path: "root/leaf9", attributes: { ["branch_coverage"]: 2, ["tests"]: 13 }, type: NodeType.FILE },
+				{ path: "root/leaf10", attributes: { ["branch_coverage"]: 1, ["tests"]: 12 }, type: NodeType.FILE },
+				{ path: "root/leaf11", attributes: { ["branch_coverage"]: 0, ["tests"]: 11 }, type: NodeType.FILE }
+			]
+		},
+		{ path: "root/leaf2", attributes: { ["branch_coverage"]: 10, ["tests"]: 5 }, type: NodeType.FILE }
+	]
+}
+
+const NODE_POSITIVE_NEGATIVE_ATTRIBUTES = {
+	path: "root/",
+	type: NodeType.FOLDER,
+	children: [...NODE_TWO_NEGATIVE_ATTRIBUTES.children, ...NODE_TWO_POSITIVE_ATTRIBUTES.children]
+}
+
+const NODE_FOLDER_TWO_NEGATIVE_ATTRIBUTES = {
 	path: "root/",
 	type: NodeType.FOLDER,
 	attributes: { mcc: 111, rloc: 15 },
 	children: [{ path: "root/file", type: NodeType.FILE, attributes: { mcc: 0 }, children: [] }]
 }
+
+const rlocResultsExpected = [
+	{ filePath: "root/leaf2", value: 100 },
+	{ filePath: "root/leaf3", value: 99 },
+	{ filePath: "root/leaf4", value: 98 },
+	{ filePath: "root/leaf5", value: 97 },
+	{ filePath: "root/leaf6", value: 96 },
+	{ filePath: "root/leaf7", value: 95 },
+	{ filePath: "root/leaf8", value: 94 },
+	{ filePath: "root/leaf1", value: 93 },
+	{ filePath: "root/leaf9", value: 93 },
+	{ filePath: "root/leaf10", value: 92 }
+]
+
+const mccResultsExpected = [
+	{ filePath: "root/leaf1", value: 10 },
+	{ filePath: "root/leaf2", value: 9 },
+	{ filePath: "root/leaf3", value: 8 },
+	{ filePath: "root/leaf4", value: 7 },
+	{ filePath: "root/leaf5", value: 6 },
+	{ filePath: "root/leaf6", value: 5 },
+	{ filePath: "root/leaf7", value: 4 },
+	{ filePath: "root/leaf8", value: 3 },
+	{ filePath: "root/leaf9", value: 2 },
+	{ filePath: "root/leaf10", value: 1 }
+]
+
+const branchCoverageResultsExpected = [
+	{ filePath: "root/leaf11", value: 0 },
+	{ filePath: "root/leaf10", value: 1 },
+	{ filePath: "root/leaf9", value: 2 },
+	{ filePath: "root/leaf8", value: 3 },
+	{ filePath: "root/leaf7", value: 4 },
+	{ filePath: "root/leaf6", value: 5 },
+	{ filePath: "root/leaf5", value: 6 },
+	{ filePath: "root/leaf4", value: 7 },
+	{ filePath: "root/leaf3", value: 8 },
+	{ filePath: "root/leaf2", value: 9 }
+]
+
+const testsResultsExpected = [
+	{ filePath: "root/leaf2", value: 5 },
+	{ filePath: "root/leaf11", value: 11 },
+	{ filePath: "root/leaf10", value: 12 },
+	{ filePath: "root/leaf9", value: 13 },
+	{ filePath: "root/leaf8", value: 14 },
+	{ filePath: "root/leaf7", value: 15 },
+	{ filePath: "root/leaf6", value: 16 },
+	{ filePath: "root/leaf5", value: 17 },
+	{ filePath: "root/leaf4", value: 18 },
+	{ filePath: "root/leaf3", value: 19 }
+]
