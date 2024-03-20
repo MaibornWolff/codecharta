@@ -29,7 +29,7 @@ export class NodeSelectionService {
 		)
 	}
 
-	findTopLevelNode(accumulatedData: AccumulatedData): Node {
+	private findTopLevelNode(accumulatedData: AccumulatedData): Node {
 		const nodes = this.codeMapRenderService.getNodes(accumulatedData.unifiedMapNode)
 		const visibleSortedNodes = this.codeMapRenderService.getVisibleNodes(nodes)
 		return visibleSortedNodes.reduce((previous, current) => (previous.attributes.unary > current.attributes.unary ? previous : current))
