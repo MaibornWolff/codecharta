@@ -1,8 +1,9 @@
 import { State } from "@ngrx/store"
+import { CcState } from "../../codeCharta.model"
+import { defaultState } from "../../state/store/state.manager"
 import { CopyToClipboardService } from "./copyToClipboard.service"
 import { buildTextOfFiles } from "./util/clipboardString"
 import { getFilenamesWithHighestMetrics } from "./util/getFilenamesWithHighestMetrics"
-import { CcState } from "../../codeCharta.model"
 
 let service: CopyToClipboardService
 jest.mock("./util/clipboardString", () => {
@@ -14,7 +15,7 @@ jest.mock("./util/getFilenamesWithHighestMetrics", () => {
 
 describe("CopyToClipboardService", () => {
 	beforeEach(() => {
-		const stateStub = {} as unknown as State<CcState>
+		const stateStub = { getValue: jest.fn().mockImplementation(() => defaultState) } as unknown as State<CcState>
 		service = new CopyToClipboardService(stateStub)
 		service["getUnifiedMapNode"] = jest.fn()
 	})
