@@ -22,7 +22,7 @@ import { center, rotateZ, scale } from "@jscad/modeling/src/operations/transform
 import { HttpClient } from "@angular/common/http"
 import { firstValueFrom, timeout } from "rxjs"
 import { Geom2 } from "@jscad/modeling/src/geometries/geom2"
-import { intersect } from "@jscad/modeling/src/operations/booleans"
+import { union } from "@jscad/modeling/src/operations/booleans"
 
 @Component({
 	selector: "cc-export-threed-map-button",
@@ -88,36 +88,37 @@ export class Export3DMapButtonComponent {
 
 		const baseplateHeight = 2 * zScalingFactor
 
-		let geometries = this.maps(xyScalingFactor, zScalingFactor, baseplateHeight)
-		geometries.push(
-			this.baseplate(
-				Math.min(xMaxSideLength, yMaxSideLength),
-				Math.max(xMaxSideLength, yMaxSideLength),
-				baseplateHeight,
-				mapSideOffset
-			)
-		)
+		//const mwLogo : Promise<Geom3> = this.logo("mw_logo.svg", [mapSideOffset+20, Math.min(xMaxSideLength, yMaxSideLength) + mapSideOffset*3, baseplateHeight-minLayerHeight], [0.6, 0.6, 0.6], 180)
 
-		const mwLogo: Promise<Geom3> = this.logo(
-			"mw_logo.svg",
-			[mapSideOffset + 20, Math.min(xMaxSideLength, yMaxSideLength) + mapSideOffset * 3, baseplateHeight - minLayerHeight],
-			[0.6, 0.6, 0.6],
-			180
-		)
-		geometries.push(await mwLogo)
+		const map = this.maps(xyScalingFactor, zScalingFactor, baseplateHeight)
 
-		/*const codeChartaLogo : Promise<Geom3> = this.logo("codecharta_logo.svg", [mapSideOffset, Math.min(xMaxSideLength, yMaxSideLength) + mapSideOffset*3, baseplateHeight], [0.6, 0.6, 0.6], 180)
+		/*
+		const baseplate = this.baseplate(
+			Math.min(xMaxSideLength, yMaxSideLength),
+			Math.max(xMaxSideLength, yMaxSideLength),
+			baseplateHeight,
+			mapSideOffset
+		)*/
+
+		/*
+		const codeChartaLogo : Promise<Geom3> = this.logo("codecharta_logo.svg", [mapSideOffset, Math.min(xMaxSideLength, yMaxSideLength) + mapSideOffset*3, baseplateHeight], [0.6, 0.6, 0.6], 180)
 		geometries.push(await codeChartaLogo)
 
 		const customerLogo : Promise<Geom3> = this.logo("mw_logo.svg", [Math.min(xMaxSideLength, yMaxSideLength) - mapSideOffset, Math.min(xMaxSideLength, yMaxSideLength) + mapSideOffset*3, baseplateHeight], [0.6, 0.6, 0.6], 180)
 		geometries.push(await customerLogo)*/
-
+		/*
 		if (xMaxSideLength > yMaxSideLength) {
 			geometries = geometries.map(geom => rotateZ(Math.PI / 2, geom))
 		}
-
+		*/
 		// serialize the geometries into a 3MF file
+		const geometries = [...map]
 		const xml3mf = serialize({ compress: false }, geometries)[0]
+		const downloadFileName = `${FileNameHelper.getNewFileName(fileName, isDeltaState(files))}.3mf`
+
+		const modelConfig = this.getModelConfig(geometries)
+		// eslint-disable-next-line no-console
+		console.log(modelConfig)
 
 		const data = {
 			"3D": {
@@ -125,6 +126,9 @@ export class Export3DMapButtonComponent {
 			},
 			_rels: {
 				".rels": strToU8(rels)
+			},
+			Metadata: {
+				"Slic3r_PE_model.config": strToU8(modelConfig)
 			},
 			"[Content_Types].xml": strToU8(contenttype)
 		}
@@ -135,7 +139,6 @@ export class Export3DMapButtonComponent {
 		// @ts-ignore
 		const compressed3mf: string = zipSync(data, options).buffer
 
-		const downloadFileName = `${FileNameHelper.getNewFileName(fileName, isDeltaState(files))}.3mf`
 		FileDownloader.downloadData(compressed3mf, downloadFileName)
 	}
 
@@ -167,7 +170,9 @@ export class Export3DMapButtonComponent {
 		}
 
 		const flatBaselate = roundedRectangle({ size: [x, y], roundRadius, center: [x / 2 - mapSideOffset, y / 2 - mapSideOffset] })
-		return extrudeLinear({ height: z }, flatBaselate)
+		let baseplate = extrudeLinear({ height: z }, flatBaselate)
+		baseplate = colorize(colorNameToRgb("gray"), baseplate)
+		return baseplate
 	}
 	/*
 	const print = (txt, x, y, z, size, t, font = "Arial", halign = "left", valign = "baseline") => {
@@ -203,14 +208,14 @@ export class Export3DMapButtonComponent {
 	}
 */
 
-	logo = async (file: string, positionOfUpperLeftCorner: Vec3, size: Vec3, rotate = 0): Promise<Geom3> => {
+	logo = async (file: string, positionOfUpperLeftCorner: Vec3, size: Vec3, rotate = 0, color = "white"): Promise<Geom3> => {
 		const svgData = await firstValueFrom(this.httpClient.get(`codeCharta/assets/${file}`, { responseType: "text" }).pipe(timeout(5000)))
 		const svgModels: Geom2[] = deserialize({ output: "geometry", addMetaData: false, target: "geom2", pathSelfClosed: "trim" }, svgData)
 		const models: Geom3[] = svgModels.map(object => {
 			return extrudeLinear({ height: size[2] }, object)
 		})
 
-		let model: Geom3 = intersect(models) //normally I would have used "union" here - but somehow union and intersect seem to be mistakenly swapped in this library
+		let model: Geom3 = union(models) //normally I would have used "union" here - but somehow union and intersect seem to be mistakenly swapped in this library
 		model = scale([size[0], size[1], 1], model)
 		model = rotateZ((rotate / 180) * Math.PI, model)
 		const centerPosition: Vec3 = [
@@ -219,7 +224,36 @@ export class Export3DMapButtonComponent {
 			positionOfUpperLeftCorner[2] + size[2] / 2
 		]
 		model = center({ relativeTo: centerPosition }, model)
+		model = colorize(colorNameToRgb(color), model)
 		return model
+	}
+
+	private getModelConfig(geometries: Geom3[]): string {
+		let xmlContent = '<?xml version="1.0" encoding="UTF-8"?>\n<config>\n'
+
+		const colorToExtruder: Map<string, string> = new Map()
+
+		for (const [index, geom3] of geometries.entries()) {
+			const colorString = geom3.color.toString()
+			if (!colorToExtruder.has(colorString)) {
+				colorToExtruder.set(colorString, (colorToExtruder.size + 1).toString())
+			}
+			const extruder = colorToExtruder.get(colorString)
+
+			// Append the object data to the XML content
+			xmlContent += ` <object id="${index + 1}" instances_count="1">\n`
+			xmlContent += `  <metadata type="object" key="extruder" value="${extruder}"/>\n`
+			xmlContent += '  <volume firstid="0" lastid="11">\n'
+			xmlContent += `   <metadata type="volume" key="extruder" value="${extruder}"/>\n`
+			xmlContent += '   <metadata type="volume" key="volume_type" value="ModelPart"/>\n'
+			xmlContent += `   <metadata type="volume" key="source_object_id" value="${index}"/>\n`
+			xmlContent += '   <metadata type="volume" key="source_volume_id" value="0"/>\n'
+			xmlContent += "  </volume>\n"
+			xmlContent += " </object>\n"
+		}
+
+		xmlContent += "</config>"
+		return xmlContent
 	}
 
 	async downloadOpenScadFile(): Promise<void> {
