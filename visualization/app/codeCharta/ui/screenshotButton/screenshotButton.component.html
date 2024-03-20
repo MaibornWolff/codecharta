@@ -1,15 +1,45 @@
-<cc-action-icon
-	*ngIf="isScreenshotToClipboardEnabled$ | async"
-	[icon]="'fa fa-camera'"
-	title="{{ TITLE_CLIPBOARD_BUTTON }}"
-	(click)="makeScreenshotToClipboard()"
-	[class.disabled]="!isWriteToClipboardAllowed"
->
-</cc-action-icon>
-<cc-action-icon
-	*ngIf="!(isScreenshotToClipboardEnabled$ | async)"
-	[icon]="'fa fa-camera'"
-	title="{{ TITLE_FILE_BUTTON }}"
-	(click)="makeScreenshotToFile()"
->
-</cc-action-icon>
+<div *ngIf="isScreenshotToClipboardEnabled$ | async" class="screenshot-button-container">
+	<button
+		mat-button
+		class="state-selector-button mode-selector screenshot-button left"
+		[class.current]="true"
+		[class.disabled]="!isWriteToClipboardAllowed"
+		title="{{ TITLE_CLIPBOARD_BUTTON }}"
+		(click)="makeScreenshotToClipboard()"
+	>
+		<i class="fa fa-camera screenshot-icon" aria-hidden="true"></i>
+	</button>
+	<button
+		mat-button
+		class="state-selector-button mode-selector screenshot-button right"
+		[class.current]="true"
+		[class.disabled]="!isWriteToClipboardAllowed"
+		title="{{ TITLE_CLIPBOARD_BUTTON }}"
+		(click)="makeScreenshotToClipboard()"
+	>
+		<i class="fa fa-crop screenshot-icon" aria-hidden="true"></i>
+	</button>
+</div>
+
+<div *ngIf="!(isScreenshotToClipboardEnabled$ | async)" class="screenshot-button-container">
+	<button
+		mat-button
+		class="state-selector-button mode-selector screenshot-button left"
+		[class.current]="true"
+		[class.disabled]="!isWriteToClipboardAllowed"
+		title="{{ TITLE_FILE_BUTTON }}"
+		(click)="makeScreenshotToFile()"
+	>
+		<i class="fa fa-camera screenshot-icon" aria-hidden="true"></i>
+	</button>
+	<button
+		mat-button
+		class="state-selector-button mode-selector screenshot-button right"
+		[class.current]="true"
+		[class.disabled]="!isWriteToClipboardAllowed"
+		title="{{ TITLE_FILE_BUTTON }}"
+		(click)="makeScreenshotToFile()"
+	>
+		<i class="fa fa-crop screenshot-icon" aria-hidden="true"></i>
+	</button>
+</div>

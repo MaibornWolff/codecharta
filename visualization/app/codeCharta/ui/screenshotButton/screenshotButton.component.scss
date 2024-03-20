@@ -1,0 +1,40 @@
+@use "../../../material/theme";
+
+.screenshot-button-container {
+	display: flex;
+}
+
+.state-selector-button {
+	&.mode-selector {
+		height: 24px;
+		width: 44px;
+
+		&.left {
+			border-right: 0.5px solid white;
+		}
+
+		&.right {
+			border-left: 0.5px solid white;
+		}
+
+		&.current {
+			background-color: theme.$cc-primary-color;
+		}
+
+		&:hover {
+			background-color: theme.$cc-emphasized-color;
+		}
+
+		&.disabled {
+			opacity: 0.5;
+		}
+	}
+}
+
+.screenshot-icon {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 14px;
+	padding-bottom: 1px;
+}
