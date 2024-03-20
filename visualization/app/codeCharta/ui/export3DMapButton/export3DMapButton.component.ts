@@ -18,11 +18,11 @@ import { roundedRectangle } from "@jscad/modeling/src/primitives"
 import { extrudeLinear } from "@jscad/modeling/src/operations/extrusions"
 import { Geom3 } from "@jscad/modeling/src/geometries/geom3"
 import { Vec3 } from "@jscad/modeling/src/maths/vec3"
-import { scale, rotateZ, center } from "@jscad/modeling/src/operations/transforms"
+import { center, rotateZ, scale } from "@jscad/modeling/src/operations/transforms"
 import { HttpClient } from "@angular/common/http"
 import { firstValueFrom, timeout } from "rxjs"
 import { Geom2 } from "@jscad/modeling/src/geometries/geom2"
-import { union } from "@jscad/modeling/src/operations/booleans"
+import { intersect } from "@jscad/modeling/src/operations/booleans"
 
 @Component({
 	selector: "cc-export-threed-map-button",
@@ -98,9 +98,19 @@ export class Export3DMapButtonComponent {
 			)
 		)
 
-		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		//const mwLogo : Promise<Geom3> = this.logo("MWLogoMin.svg", [0, 0, 0], 1, 1, 1, 180)
-		//geometries.push(await mwLogo)
+		const mwLogo: Promise<Geom3> = this.logo(
+			"mw_logo.svg",
+			[mapSideOffset + 20, Math.min(xMaxSideLength, yMaxSideLength) + mapSideOffset * 3, baseplateHeight - minLayerHeight],
+			[0.6, 0.6, 0.6],
+			180
+		)
+		geometries.push(await mwLogo)
+
+		/*const codeChartaLogo : Promise<Geom3> = this.logo("codecharta_logo.svg", [mapSideOffset, Math.min(xMaxSideLength, yMaxSideLength) + mapSideOffset*3, baseplateHeight], [0.6, 0.6, 0.6], 180)
+		geometries.push(await codeChartaLogo)
+
+		const customerLogo : Promise<Geom3> = this.logo("mw_logo.svg", [Math.min(xMaxSideLength, yMaxSideLength) - mapSideOffset, Math.min(xMaxSideLength, yMaxSideLength) + mapSideOffset*3, baseplateHeight], [0.6, 0.6, 0.6], 180)
+		geometries.push(await customerLogo)*/
 
 		if (xMaxSideLength > yMaxSideLength) {
 			geometries = geometries.map(geom => rotateZ(Math.PI / 2, geom))
@@ -169,7 +179,7 @@ export class Export3DMapButtonComponent {
 
 	const backside = (thickness = 0.6) => {
 		const back = union(
-			logo("logos/mw-logo-text.svg", -20, 10, 0, thickness),
+			logo("logos/mw_logo_text.svg", -20, 10, 0, thickness),
 			translate([15, 60, 0],
 				union(
 					logo("icons/area.svg", 0, 30-1, 0, 8, 8, thickness),
@@ -193,14 +203,23 @@ export class Export3DMapButtonComponent {
 	}
 */
 
-	logo = async (file: string, position: Vec3, width: number, length: number, height: number, rotate = 0): Promise<Geom3> => {
+	logo = async (file: string, positionOfUpperLeftCorner: Vec3, size: Vec3, rotate = 0): Promise<Geom3> => {
 		const svgData = await firstValueFrom(this.httpClient.get(`codeCharta/assets/${file}`, { responseType: "text" }).pipe(timeout(5000)))
 		const svgModels: Geom2[] = deserialize({ output: "geometry", addMetaData: false, target: "geom2", pathSelfClosed: "trim" }, svgData)
-		const svgModel = union(svgModels)
-		let model: Geom3 = extrudeLinear({ height }, svgModel)
-		model = scale([width, length, 1], model)
+		const models: Geom3[] = svgModels.map(object => {
+			return extrudeLinear({ height: size[2] }, object)
+		})
+
+		let model: Geom3 = intersect(models) //normally I would have used "union" here - but somehow union and intersect seem to be mistakenly swapped in this library
+		model = scale([size[0], size[1], 1], model)
 		model = rotateZ((rotate / 180) * Math.PI, model)
-		return center({ relativeTo: position }, model)
+		const centerPosition: Vec3 = [
+			positionOfUpperLeftCorner[0] - size[0] * 20,
+			positionOfUpperLeftCorner[1],
+			positionOfUpperLeftCorner[2] + size[2] / 2
+		]
+		model = center({ relativeTo: centerPosition }, model)
+		return model
 	}
 
 	async downloadOpenScadFile(): Promise<void> {
