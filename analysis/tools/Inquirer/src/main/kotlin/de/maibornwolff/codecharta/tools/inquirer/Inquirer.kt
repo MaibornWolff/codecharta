@@ -20,12 +20,13 @@ import com.varabyte.kotter.foundation.text.textLine
 import com.varabyte.kotter.runtime.MainRenderScope
 import com.varabyte.kotter.runtime.Session
 
-fun Session.myPromptInput(
+internal fun Session.myPromptInput(
         message: String,
         hint: String = "",
         allowEmptyInput: Boolean = false,
         invalidInputMessage: String = "Input is invalid!",
-        inputValidator: (String) -> Boolean = { true }
+        inputValidator: (String) -> Boolean = { true },
+        onInputReady: suspend () -> Unit
 ): String {
     var lastUserInput = ""
     var hintText = hint
@@ -44,6 +45,7 @@ fun Session.myPromptInput(
             }
             lastUserInput = input
         }
+        onInputReady()
     }
     return lastUserInput
 }
@@ -67,12 +69,13 @@ private fun MainRenderScope.drawInput(
     text("> "); input(Completions(hint), initialText = "")
 }
 
-fun Session.myPromptInputNumber(
+internal fun Session.myPromptInputNumber(
         message: String,
         hint: String = "",
         allowEmptyInput: Boolean = false,
         invalidInputMessage: String = "Input is invalid!",
-        inputValidator: (String) -> Boolean = { true }
+        inputValidator: (String) -> Boolean = { true },
+        onInputReady: suspend () -> Unit
 ): String {
     var lastUserInput = ""
     var hintText = hint
@@ -91,14 +94,15 @@ fun Session.myPromptInputNumber(
             }
             lastUserInput = input
         }
+        onInputReady()
     }
     return lastUserInput
 }
 
-fun Session.myPromptConfirm(
+internal fun Session.myPromptConfirm(
         message: String,
         hint: String = "arrow keys to change selection",
-        onInputReady: suspend () -> Unit = {}
+        onInputReady: suspend () -> Unit
 ): Boolean {
     var result = true
     var choice by liveVarOf(true)
@@ -130,10 +134,12 @@ private fun MainRenderScope.drawConfirm(message: String, hint: String, choice: B
     }
 }
 
-fun Session.myPromptList(
+internal fun Session.myPromptList(
         message: String,
         choices: List<String>,
-        hint: String = "arrow keys to move, ENTER to select"): String {
+        hint: String = "arrow keys to move, ENTER to select",
+        onInputReady: suspend () -> Unit
+): String {
     var result = ""
     var selection by liveVarOf(0)
     section {
@@ -146,6 +152,7 @@ fun Session.myPromptList(
                 Keys.ENTER -> { result = choices[selection]; signal() }
             }
         }
+        onInputReady()
     }
     return result
 }
@@ -166,11 +173,12 @@ private fun MainRenderScope.drawList(
     }
 }
 
-fun Session.myPromptCheckbox(
+internal fun Session.myPromptCheckbox(
         message: String,
         choices: List<String>,
+        hint: String = "SPACE to select, ENTER to confirm selection",
         allowEmptyInput: Boolean = false,
-        hint: String = "SPACE to select, ENTER to confirm selection"
+        onInputReady: suspend () -> Unit
 ): List<String> {
     var result = listOf<String>()
     var pos by liveVarOf(0)
@@ -195,6 +203,7 @@ fun Session.myPromptCheckbox(
                 }
             }
         }
+        onInputReady()
     }
     return result
 }
@@ -232,4 +241,50 @@ private fun getSelectedElems(choices: List<String>, selection: List<Boolean>): L
         if (selection[i]) result.add(choices[i])
     }
     return result
+}
+
+//public API
+
+fun Session.myPromptInput(
+        message: String,
+        hint: String = "",
+        allowEmptyInput: Boolean = false,
+        invalidInputMessage: String = "Input is invalid!",
+        inputValidator: (String) -> Boolean = { true }
+):String {
+    return myPromptInput(message, hint, allowEmptyInput, invalidInputMessage, inputValidator, onInputReady = {})
+}
+
+fun Session.myPromptInputNumber(
+        message: String,
+        hint: String = "",
+        allowEmptyInput: Boolean = false,
+        invalidInputMessage: String = "Input is invalid!",
+        inputValidator: (String) -> Boolean = { true }
+):String {
+    return myPromptInputNumber(message, hint, allowEmptyInput, invalidInputMessage, inputValidator, onInputReady = {})
+}
+
+fun Session.myPromptConfirm(
+        message: String,
+        hint: String = "arrow keys to change selection"
+): Boolean {
+    return myPromptConfirm(message, hint, onInputReady = {})
+}
+
+fun Session.myPromptList(
+        message: String,
+        choices: List<String>,
+        hint: String = "arrow keys to move, ENTER to select"
+): String {
+    return myPromptList(message, choices, hint, onInputReady = {})
+}
+
+fun Session.myPromptCheckbox(
+        message: String,
+        choices: List<String>,
+        allowEmptyInput: Boolean = false,
+        hint: String = "SPACE to select, ENTER to confirm selection"
+): List<String> {
+    return myPromptCheckbox(message, choices, hint, allowEmptyInput, onInputReady = {})
 }
