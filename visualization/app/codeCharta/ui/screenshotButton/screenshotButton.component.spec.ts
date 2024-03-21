@@ -21,7 +21,7 @@ jest.mock("../../../../app/codeCharta/util/clipboard/clipboardWriter", () => {
 jest.mock("html2canvas", () => {
 	return {
 		__esModule: true,
-		default: jest.fn(() => document.createElement("canvas"))
+		default: jest.fn().mockImplementation(() => document.createElement("canvas"))
 	}
 })
 
@@ -51,6 +51,10 @@ describe("screenshotButtonComponent", () => {
 		})
 	})
 
+	afterEach(() => {
+		jest.clearAllMocks()
+	})
+
 	it("should copy to clipboard on click, when screenshot to clipboard is enabled", async () => {
 		;(checkWriteToClipboardAllowed as jest.Mock).mockImplementation(() => true)
 
@@ -58,6 +62,7 @@ describe("screenshotButtonComponent", () => {
 			excludeComponentDeclaration: true
 		})
 
+		const drawImageSpy = jest.spyOn(CanvasRenderingContext2D.prototype, "drawImage")
 		const makeScreenshotToClipboardSpy = jest.spyOn(fixture.componentInstance, "makeScreenshotToClipboard")
 
 		await fixture.componentInstance.makeScreenshotToClipboard()
@@ -65,6 +70,7 @@ describe("screenshotButtonComponent", () => {
 		expect(makeScreenshotToClipboardSpy).toHaveBeenCalledTimes(1)
 		await waitFor(() => {
 			expect(setToClipboard).toHaveBeenCalledTimes(1)
+			expect(drawImageSpy).toHaveBeenCalledTimes(1)
 		})
 	})
 
@@ -77,6 +83,7 @@ describe("screenshotButtonComponent", () => {
 		store.refreshState()
 		detectChanges()
 
+		const drawImageSpy = jest.spyOn(CanvasRenderingContext2D.prototype, "drawImage")
 		const clickDownloadLinkSpy = jest.spyOn(HTMLAnchorElement.prototype, "click").mockImplementation()
 		const makeScreenshotToFileSpy = jest.spyOn(fixture.componentInstance, "makeScreenshotToFile")
 
@@ -85,6 +92,7 @@ describe("screenshotButtonComponent", () => {
 		expect(makeScreenshotToFileSpy).toHaveBeenCalledTimes(1)
 		await waitFor(() => {
 			expect(clickDownloadLinkSpy).toHaveBeenCalledTimes(1)
+			expect(drawImageSpy).toHaveBeenCalledTimes(1)
 		})
 	})
 
