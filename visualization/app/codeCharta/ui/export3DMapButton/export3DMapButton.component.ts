@@ -14,15 +14,17 @@ import { serialize } from "@jscad/3mf-serializer"
 import { deserialize } from "@jscad/svg-deserializer"
 import { colorize, colorNameToRgb } from "@jscad/modeling/src/colors"
 import { strToU8, zipSync } from "fflate"
-import { roundedRectangle } from "@jscad/modeling/src/primitives"
+import { circle, roundedRectangle } from "@jscad/modeling/src/primitives"
 import { extrudeLinear } from "@jscad/modeling/src/operations/extrusions"
 import { Geom3 } from "@jscad/modeling/src/geometries/geom3"
 import { Vec3 } from "@jscad/modeling/src/maths/vec3"
-import { center, rotateZ, scale } from "@jscad/modeling/src/operations/transforms"
+import { center, rotateZ, scale, translate } from "@jscad/modeling/src/operations/transforms"
 import { HttpClient } from "@angular/common/http"
 import { firstValueFrom, timeout } from "rxjs"
-import { Geom2 } from "@jscad/modeling/src/geometries/geom2"
-import { union } from "@jscad/modeling/src/operations/booleans"
+import { intersect, union } from "@jscad/modeling/src/operations/booleans"
+import { vectorText } from "@jscad/modeling/src/text"
+import { hullChain } from "@jscad/modeling/src/operations/hulls"
+import { degToRad } from "@jscad/modeling/src/utils"
 
 @Component({
 	selector: "cc-export-threed-map-button",
@@ -53,7 +55,7 @@ export class Export3DMapButtonComponent {
 
 	async download3MFFile(): Promise<void> {
 		const printerSideLengths = {
-			prusaMk3s: { x: 240, y: 200 },
+			prusaMk3s: { x: 220, y: 200 },
 			bambuA1: { x: 0, y: 0 }
 		}
 
@@ -88,17 +90,23 @@ export class Export3DMapButtonComponent {
 
 		const baseplateHeight = 2 * zScalingFactor
 
-		//const mwLogo : Promise<Geom3> = this.logo("mw_logo.svg", [mapSideOffset+20, Math.min(xMaxSideLength, yMaxSideLength) + mapSideOffset*3, baseplateHeight-minLayerHeight], [0.6, 0.6, 0.6], 180)
-
+		const mwLogo: Geom3 = await this.logo(
+			"mw_logo_min.svg",
+			[mapSideOffset + 20, Math.min(xMaxSideLength, yMaxSideLength) + mapSideOffset * 3, baseplateHeight],
+			[0.6, 0.6, 0.6]
+		)
 		const map = this.maps(xyScalingFactor, zScalingFactor, baseplateHeight)
-
-		/*
 		const baseplate = this.baseplate(
 			Math.min(xMaxSideLength, yMaxSideLength),
 			Math.max(xMaxSideLength, yMaxSideLength),
 			baseplateHeight,
 			mapSideOffset
-		)*/
+		)
+		const testText = this.createText("MW CodeCharta POC", [
+			Math.min(xMaxSideLength, yMaxSideLength) / 2,
+			Math.min(xMaxSideLength, yMaxSideLength) + mapSideOffset * 3,
+			baseplateHeight
+		])
 
 		/*
 		const codeChartaLogo : Promise<Geom3> = this.logo("codecharta_logo.svg", [mapSideOffset, Math.min(xMaxSideLength, yMaxSideLength) + mapSideOffset*3, baseplateHeight], [0.6, 0.6, 0.6], 180)
@@ -106,16 +114,15 @@ export class Export3DMapButtonComponent {
 
 		const customerLogo : Promise<Geom3> = this.logo("mw_logo.svg", [Math.min(xMaxSideLength, yMaxSideLength) - mapSideOffset, Math.min(xMaxSideLength, yMaxSideLength) + mapSideOffset*3, baseplateHeight], [0.6, 0.6, 0.6], 180)
 		geometries.push(await customerLogo)*/
-		/*
+
+		let geometries = [mwLogo, ...map, baseplate, testText]
 		if (xMaxSideLength > yMaxSideLength) {
 			geometries = geometries.map(geom => rotateZ(Math.PI / 2, geom))
 		}
-		*/
 		// serialize the geometries into a 3MF file
-		const { model, modelConfig } = await this.serializeGeometries(map)
+		const { model, modelConfig } = await this.serializeGeometries(geometries)
 
-		// eslint-disable-next-line no-console
-		console.log(model, modelConfig)
+		//const model = serialize({ compress: true }, geometries)[0]
 
 		const data = {
 			"3D": {
@@ -151,31 +158,41 @@ export class Export3DMapButtonComponent {
 		const parsed3mf = parser.parseFromString(single3mf, "application/xml")
 		const objects = parsed3mf.getElementsByTagName("object")
 
-		const allVertices = []
+		const allVertices: Map<string, number> = new Map()
 		const allTriangles = []
 
 		for (const [index, geom3] of geometries.entries()) {
-			const numberOfVerticesAtStart = allVertices.length
 			const numberOfTrianglesAtStart = allTriangles.length
 			const object = objects[index]
-
 			const vertices = object.getElementsByTagName("vertex")
 			for (const vertex of vertices) {
 				const x = vertex.getAttribute("x")
 				const y = vertex.getAttribute("y")
 				const z = vertex.getAttribute("z")
-				allVertices.push(`<vertex x="${x}" y="${y}" z="${z}"/>`)
+				const newVertex = `<vertex x="${x}" y="${y}" z="${z}"/>`
+				if (!allVertices.has(newVertex)) {
+					allVertices.set(newVertex, allVertices.size)
+				}
 			}
 			const triangles = object.getElementsByTagName("triangle")
 			for (const triangle of triangles) {
-				const x = Number.parseInt(triangle.getAttribute("v1")) + numberOfVerticesAtStart
-				const y = Number.parseInt(triangle.getAttribute("v2")) + numberOfVerticesAtStart
-				const z = Number.parseInt(triangle.getAttribute("v3")) + numberOfVerticesAtStart
-				allTriangles.push(`<triangle v1="${x}" v2="${y}" v3="${z}"/>`)
+				const v1 = vertices[Number.parseInt(triangle.getAttribute("v1"))]
+				const vertex1 = `<vertex x="${v1.getAttribute("x")}" y="${v1.getAttribute("y")}" z="${v1.getAttribute("z")}"/>`
+
+				const v2 = vertices[Number.parseInt(triangle.getAttribute("v2"))]
+				const vertex2 = `<vertex x="${v2.getAttribute("x")}" y="${v2.getAttribute("y")}" z="${v2.getAttribute("z")}"/>`
+
+				const v3 = vertices[Number.parseInt(triangle.getAttribute("v3"))]
+				const vertex3 = `<vertex x="${v3.getAttribute("x")}" y="${v3.getAttribute("y")}" z="${v3.getAttribute("z")}"/>`
+
+				allTriangles.push(
+					`<triangle v1="${allVertices.get(vertex1)}" v2="${allVertices.get(vertex2)}" v3="${allVertices.get(vertex3)}"/>`
+				)
 			}
 
 			modelConfig += `  <volume firstid="${numberOfTrianglesAtStart}" lastid="${allTriangles.length - 1}">\n`
-			const colorString = geom3.color.toString()
+			const color = geom3.color
+			const colorString = color === undefined ? "uncolored" : color.toString()
 			if (!colorToExtruder.has(colorString)) {
 				colorToExtruder.set(colorString, (colorToExtruder.size + 1).toString())
 			}
@@ -199,6 +216,7 @@ export class Export3DMapButtonComponent {
 		model +=
 			'<model unit="millimeter" xml:lang="en-US" xmlns="http://schemas.microsoft.com/3dmanufacturing/core/2015/02" xmlns:slic3rpe="http://schemas.slic3r.org/3mf/2017/06">\n'
 		model += ' <metadata name="Application">CodeCharta-JSCAD</metadata>\n'
+		model += ` <metadata name="CreationDate">${new Date().toISOString()}</metadata>\n`
 		model += " <resources>\n"
 		model += '  <object id="1" type="model">\n'
 		model += "   <mesh>\n"
@@ -258,14 +276,28 @@ export class Export3DMapButtonComponent {
 		baseplate = colorize(colorNameToRgb("gray"), baseplate)
 		return baseplate
 	}
-	/*
-	const print = (txt, x, y, z, size, t, font = "Arial", halign = "left", valign = "baseline") => {
-		const txtModel = text({text: txt, height: t, align: halign, valign, font, size});
-		return translate([x, y, z], txtModel);
+
+	createText = (text, position: Vec3, size = 6, height = 1, characterLineWidth = 1.5, color = "white", rotate = 180) => {
+		const lineRadius = characterLineWidth / 2
+		const lineCorner = circle({ radius: lineRadius })
+
+		const lineSegmentPointArrays = vectorText({ height: size, align: "center", input: text }) // line segments for each character
+		const lineSegments = []
+		for (const segmentPoints of lineSegmentPointArrays) {
+			// process the line segment
+			const corners = segmentPoints.map(point => translate(point, lineCorner))
+			lineSegments.push(hullChain(corners))
+		}
+		const message2D = union(lineSegments)
+		let textModel = extrudeLinear({ height }, message2D)
+		textModel = rotateZ(degToRad(rotate), textModel)
+		position[2] = position[2] + height / 2
+		textModel = center({ relativeTo: position }, textModel)
+		textModel = colorize(colorNameToRgb(color), textModel)
+		return textModel
 	}
 
-
-
+	/*
 	const backside = (thickness = 0.6) => {
 		const back = union(
 			logo("logos/mw_logo_text.svg", -20, 10, 0, thickness),
@@ -286,22 +318,18 @@ export class Export3DMapButtonComponent {
 		);
 		return translate([baseplate_x, 0, -0.01], mirror([1,0,0], back));
 	}
+	*/
 
-	const mcolor = (c) => {
-		return (geometry) => color(c, geometry);
-	}
-*/
-
-	logo = async (file: string, positionOfUpperLeftCorner: Vec3, size: Vec3, rotate = 0, color = "white"): Promise<Geom3> => {
+	logo = async (file: string, positionOfUpperLeftCorner: Vec3, size: Vec3, color = "white", rotate = 180): Promise<Geom3> => {
 		const svgData = await firstValueFrom(this.httpClient.get(`codeCharta/assets/${file}`, { responseType: "text" }).pipe(timeout(5000)))
-		const svgModels: Geom2[] = deserialize({ output: "geometry", addMetaData: false, target: "geom2", pathSelfClosed: "trim" }, svgData)
+		const svgModels = deserialize({ output: "geometry", addMetaData: false, target: "geom2", pathSelfClosed: "trim" }, svgData)
 		const models: Geom3[] = svgModels.map(object => {
 			return extrudeLinear({ height: size[2] }, object)
 		})
 
-		let model: Geom3 = union(models) //normally I would have used "union" here - but somehow union and intersect seem to be mistakenly swapped in this library
+		let model: Geom3 = intersect(models) //normally I would have used "union" here - but somehow union and intersect seem to be mistakenly swapped in this library
 		model = scale([size[0], size[1], 1], model)
-		model = rotateZ((rotate / 180) * Math.PI, model)
+		model = rotateZ(degToRad(rotate), model)
 		const centerPosition: Vec3 = [
 			positionOfUpperLeftCorner[0] - size[0] * 20,
 			positionOfUpperLeftCorner[1],
