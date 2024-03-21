@@ -1,27 +1,27 @@
-import { Component, ViewEncapsulation } from "@angular/core"
-import { FileDownloader } from "../../util/fileDownloader"
-import { STLExporter } from "three/examples/jsm/exporters/STLExporter"
-import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
-import { FileNameHelper } from "../../util/fileNameHelper"
-import { isDeltaState } from "../../model/files/files.helper"
-import { accumulatedDataSelector } from "../../state/selectors/accumulatedData/accumulatedData.selector"
-import { filesSelector } from "../../state/store/files/files.selector"
+import {Component, ViewEncapsulation} from "@angular/core"
+import {FileDownloader} from "../../util/fileDownloader"
+import {STLExporter} from "three/examples/jsm/exporters/STLExporter"
+import {ThreeSceneService} from "../codeMap/threeViewer/threeSceneService"
+import {FileNameHelper} from "../../util/fileNameHelper"
+import {isDeltaState} from "../../model/files/files.helper"
+import {accumulatedDataSelector} from "../../state/selectors/accumulatedData/accumulatedData.selector"
+import {filesSelector} from "../../state/store/files/files.selector"
 import {BufferAttribute, Mesh} from "three"
-import { State } from "@ngrx/store"
-import { CcState } from "../../codeCharta.model"
-import { primitives } from "@jscad/modeling"
-import { deserialize } from "@jscad/svg-deserializer"
-import { colorize, colorNameToRgb } from "@jscad/modeling/src/colors"
-import { strToU8, zipSync } from "fflate"
-import { roundedRectangle } from "@jscad/modeling/src/primitives"
-import { extrudeLinear } from "@jscad/modeling/src/operations/extrusions"
-import { Geom3 } from "@jscad/modeling/src/geometries/geom3"
-import { Vec3 } from "@jscad/modeling/src/maths/vec3"
-import { center, rotateZ, scale } from "@jscad/modeling/src/operations/transforms"
-import { HttpClient } from "@angular/common/http"
-import { firstValueFrom, timeout } from "rxjs"
-import { Geom2 } from "@jscad/modeling/src/geometries/geom2"
-import { union } from "@jscad/modeling/src/operations/booleans"
+import {State} from "@ngrx/store"
+import {CcState} from "../../codeCharta.model"
+import {primitives} from "@jscad/modeling"
+import {deserialize} from "@jscad/svg-deserializer"
+import {colorize, colorNameToRgb} from "@jscad/modeling/src/colors"
+import {strToU8, zipSync} from "fflate"
+import {roundedRectangle} from "@jscad/modeling/src/primitives"
+import {extrudeLinear} from "@jscad/modeling/src/operations/extrusions"
+import {Geom3} from "@jscad/modeling/src/geometries/geom3"
+import {Vec3} from "@jscad/modeling/src/maths/vec3"
+import {center, rotateZ, scale} from "@jscad/modeling/src/operations/transforms"
+import {HttpClient} from "@angular/common/http"
+import {firstValueFrom, timeout} from "rxjs"
+import {Geom2} from "@jscad/modeling/src/geometries/geom2"
+import {union} from "@jscad/modeling/src/operations/booleans"
 
 @Component({
 	selector: "cc-export-threed-map-button",
@@ -119,47 +119,103 @@ export class Export3DMapButtonComponent {
 		const allVertices = []
 		const allTriangles = []
 
-		let objectId = 1
-
+		let volumeId = 1
+		const threeMesh: Mesh = this.threeSceneService.getMapMesh().getThreeMesh()
+		const colorNodeGroups: { color: string; vertexIndexes: number[] }[] = []
 
 		scene.traverse((child) => {
-			if (child.isMesh) {
+			if (child.isMesh && child.geometry.attributes.color) {
 				console.log(child)
-				const numberOfTrianglesAtStart = allTriangles.length
-
-				const positionAttribute = child.geometry.attributes.position
-				for (let index = 0; index < positionAttribute.count; index++) {
-					const vertex = `<vertex x="${positionAttribute.getX(index)}" y="${positionAttribute.getY(index)}" z="${positionAttribute.getZ(index)}" />\n`;
-					allVertices.push(vertex)
-				}
-
-				if (!child.geometry.index) {
-					console.warn("No index attribute found. Using position attribute to generate triangles, this could result in open edges.")
-					for (let index = 0; index < positionAttribute.count; index += 3) {
-						const triangle = `<triangle v1="${index}" v2="${index + 1}" v3="${index + 2}" />\n`;
-						allTriangles.push(triangle)
+				// iterate over vertices and group them by color
+				for (let index = 0; index < child.geometry.attributes.color.count; index++) {
+					const colorsArray = [
+						threeMesh.geometry.attributes.color.getX(index),
+						threeMesh.geometry.attributes.color.getY(index),
+						threeMesh.geometry.attributes.color.getZ(index)
+					]
+					// special case for grey tones, unify into one color
+					if (colorsArray[0] === colorsArray[1] && colorsArray[1] === colorsArray[2]) {
+						colorsArray[0] = 0.5
+						colorsArray[1] = 0.5
+						colorsArray[2] = 0.5
 					}
-				} else {
-					const indexAttribute = child.geometry.index;
-					for (let index = 0; index < indexAttribute.count; index += 3) {
-						const triangle = `<triangle v1="${indexAttribute.getX(index)}" v2="${indexAttribute.getX(index + 1)}" v3="${indexAttribute.getX(index + 2)}" />\n`;
-						allTriangles.push(triangle)
+
+					// convert color array to hex color string
+					const color = colorsArray
+						.map(c =>
+							Math.round(c * 255)
+								.toString(16)
+								.padStart(2, "0")
+						)
+						.join("")
+
+					const colorNodeGroup = colorNodeGroups.find(cng => cng.color === color)
+					if (colorNodeGroup) {
+						colorNodeGroup.vertexIndexes.push(index)
+					} else {
+						colorNodeGroups.push({ color, vertexIndexes: [index] })
 					}
 				}
 
-				modelConfig += `  <volume firstid="${numberOfTrianglesAtStart}" lastid="${allTriangles.length - 1}">\n`
+				//join each color group into a single volume inside the model config
+				for(const { color, vertexIndexes } of colorNodeGroups) {
+					console.log(color, vertexIndexes)
+					const triangleCountAtStart = allTriangles.length
+					const verticeCountAtStart = allVertices.length
+					const vertices = []
+					const triangles = []
+					const positionAttribute = child.geometry.attributes.position
+					for (const vertexIndex of vertexIndexes) {
+						const vertex = [
+							positionAttribute.getX(vertexIndex),
+							positionAttribute.getY(vertexIndex),
+							positionAttribute.getZ(vertexIndex)
+						]
+						const vertexString = `<vertex x="${vertex[0]}" y="${vertex[1]}" z="${vertex[2]}"/>\n`
+						vertices.push(vertexString)
+					}
+					const verticeCountAtEnd = verticeCountAtStart + vertices.length - 1
 
-				const colorString = child.material.color ? child.material.color.getHexString() : "no_color";
-				if (!colorToExtruder.has(colorString)) {
-					colorToExtruder.set(colorString, (colorToExtruder.size + 1).toString())
+					if (!child.geometry.index) {
+						console.warn("No index attribute found. Using position attribute to generate triangles, this could result in open edges.")
+						for (let index = 0; index < positionAttribute.count; index += 3) {
+							const triangle = `<triangle v1="${index}" v2="${index + 1}" v3="${index + 2}" />\n`;
+							allTriangles.push(triangle)
+						}
+					} else {
+						const indexAttribute = child.geometry.index;
+						for (let index = 0; index < indexAttribute.count; index += 3) {
+							const index1 = indexAttribute.getX(index)
+							const index2 = indexAttribute.getX(index + 1)
+							const index3 = indexAttribute.getX(index + 2)
+							console.log(index1, index2, index3, verticeCountAtStart, verticeCountAtEnd)
+							if(index1 >= verticeCountAtStart && index1 <= verticeCountAtEnd && index2 >= verticeCountAtStart && index2 <= verticeCountAtEnd && index3 >= verticeCountAtStart && index3 <= verticeCountAtEnd){
+								const triangle = `<triangle v1="${index1}" v2="${index2}" v3="${index3}" />\n`;
+								triangles.push(triangle)
+							}
+						}
+					}
+
+					allVertices.push(...vertices)
+					allTriangles.push(...triangles)
+
+					const startId = triangleCountAtStart
+					const endID = triangleCountAtStart+ triangles.length -1
+
+					modelConfig += `  <volume firstid="${startId}" lastid="${endID}">\n`
+
+					const colorString = color ? color.toString() : "no_color";
+					if (!colorToExtruder.has(colorString)) {
+						colorToExtruder.set(colorString, (colorToExtruder.size + 1).toString())
+					}
+					const extruder = colorToExtruder.get(colorString)
+					modelConfig += `   <metadata type="volume" key="extruder" value="${extruder}"/>\n`
+					modelConfig += `   <metadata type="volume" key="source_object_id" value="1"/>\n`
+					modelConfig += `   <metadata type="volume" key="source_volume_id" value="${volumeId}"/>\n`
+					modelConfig += "  </volume>\n"
+
+					volumeId++;
 				}
-				const extruder = colorToExtruder.get(colorString)
-				modelConfig += `   <metadata type="volume" key="extruder" value="${extruder}"/>\n`
-				modelConfig += `   <metadata type="volume" key="source_object_id" value="${objectId}"/>\n`
-				modelConfig += `   <metadata type="volume" key="source_volume_id" value="0"/>\n`
-				modelConfig += "  </volume>\n"
-
-				objectId++;
 			}
 		});
 
