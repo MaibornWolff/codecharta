@@ -62,6 +62,7 @@ export class ScreenshotButtonComponent {
 		const renderer = this.threeRendererService.renderer
 		const renderSettings = this.saveRenderSettings(renderer)
 		const canvas = await this.buildScreenShotCanvas(renderer)
+
 		const canvasToBlobPromise: Promise<Blob> = new Promise(resolve => canvas.toBlob(resolve))
 		this.applyRenderSettings(renderer, renderSettings)
 		const blob = await canvasToBlobPromise
@@ -115,15 +116,67 @@ export class ScreenshotButtonComponent {
 		const fileExtensionBarHeight = (document.querySelector("cc-file-extension-bar") as HTMLElement)?.offsetHeight
 		const offsetMenuBar = ribbonBarHeight + toolBarHeight + fileExtensionBarHeight
 
-		return html2canvas(document.querySelector("body"), {
+		const canvas = await html2canvas(document.querySelector("body"), {
 			removeContainer: true,
 			backgroundColor: "#00",
 			scrollY: -offsetMenuBar,
 			height: bodyHeight - offsetMenuBar,
 			ignoreElements(element) {
-				return tagsNamesToIgnore.has(element.tagName.toLowerCase()) || idsToIgnore.has(element.id)
+				return (
+					tagsNamesToIgnore.has(element.tagName.toLowerCase()) ||
+					idsToIgnore.has(element.id) ||
+					(element as HTMLElement).style.zIndex === "10000"
+				)
 			}
 		})
+
+		return this.getCroppedCanvas(canvas)
+	}
+
+	private getCroppedCanvas(canvas: HTMLCanvasElement) {
+		const context = canvas.getContext("2d")
+		const width = canvas.width
+		const height = canvas.height
+
+		const imageData = context.getImageData(0, 0, width, height)
+		const data = imageData.data
+
+		let minX = width,
+			minY = height,
+			maxX = 0,
+			maxY = 0
+
+		for (let x = 0; x < width; x++) {
+			for (let y = 0; y < height; y++) {
+				const alpha = data[(width * y + x) * 4 + 3]
+				if (alpha > 0) {
+					minX = Math.min(minX, x)
+					maxX = Math.max(maxX, x)
+					minY = Math.min(minY, y)
+					maxY = Math.max(maxY, y)
+				}
+			}
+		}
+
+		const croppedCanvas = document.createElement("canvas")
+		const croppedContext = croppedCanvas.getContext("2d")
+
+		croppedCanvas.width = maxX - minX + 1
+		croppedCanvas.height = maxY - minY + 1
+
+		croppedContext.drawImage(
+			canvas,
+			minX,
+			minY,
+			croppedCanvas.width,
+			croppedCanvas.height,
+			0,
+			0,
+			croppedCanvas.width,
+			croppedCanvas.height
+		)
+
+		return croppedCanvas
 	}
 
 	private createTitleClipboardButton() {
