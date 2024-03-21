@@ -62,6 +62,7 @@ describe("screenshotButtonComponent", () => {
 			excludeComponentDeclaration: true
 		})
 
+		jest.spyOn(CanvasRenderingContext2D.prototype, "getImageData").mockImplementation(() => createImageData())
 		const drawImageSpy = jest.spyOn(CanvasRenderingContext2D.prototype, "drawImage")
 		const makeScreenshotToClipboardSpy = jest.spyOn(fixture.componentInstance, "makeScreenshotToClipboard")
 
@@ -83,6 +84,7 @@ describe("screenshotButtonComponent", () => {
 		store.refreshState()
 		detectChanges()
 
+		jest.spyOn(CanvasRenderingContext2D.prototype, "getImageData").mockImplementation(() => createImageData())
 		const drawImageSpy = jest.spyOn(CanvasRenderingContext2D.prototype, "drawImage")
 		const clickDownloadLinkSpy = jest.spyOn(HTMLAnchorElement.prototype, "click").mockImplementation()
 		const makeScreenshotToFileSpy = jest.spyOn(fixture.componentInstance, "makeScreenshotToFile")
@@ -115,4 +117,18 @@ describe("screenshotButtonComponent", () => {
 
 function isScreenshotButtonDisabled(container: Element) {
 	return container.querySelector("cc-action-icon").classList.contains("disabled")
+}
+
+function createImageData() {
+	const imageDataArray = new Uint8ClampedArray(4 * 20 * 20)
+	for (let index = 0; index < imageDataArray.length; index += 4) {
+		imageDataArray[index + 3] = Math.random() < 0.5 ? 255 : 0
+	}
+
+	return {
+		data: imageDataArray,
+		width: 100,
+		height: 100,
+		colorSpace: "srgb"
+	} as ImageData
 }
