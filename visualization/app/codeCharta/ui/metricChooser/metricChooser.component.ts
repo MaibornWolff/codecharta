@@ -23,6 +23,8 @@ export class MetricChooserComponent implements OnInit {
 	searchTerm = ""
 	metricData$: Observable<NodeMetricData[] | EdgeMetricData[]>
 	attributeDescriptors$ = this.store.select(attributeDescriptorsSelector)
+	isHovered = false
+	isOpened = false
 
 	constructor(private store: Store<CcState>) {}
 
@@ -37,6 +39,17 @@ export class MetricChooserComponent implements OnInit {
 			this.searchTermInput.nativeElement.focus()
 		} else {
 			this.searchTerm = ""
+		}
+		this.isOpened = opened
+	}
+
+	onMouseEnter() {
+		this.isHovered = true
+	}
+
+	onMouseLeave() {
+		if (!this.isOpened) {
+			this.isHovered = false
 		}
 	}
 }
