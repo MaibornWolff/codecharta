@@ -157,12 +157,14 @@ export class Export3DMapButtonComponent {
 					}
 				}
 
+				const vertices: Map<string, number> = new Map()
+				const vertexIndexMap: Map<number, number> = new Map()
+
 				//join each color group into a single volume inside the model config
 				for(const { color, vertexIndexes } of colorNodeGroups) {
 					console.log(color, vertexIndexes)
 					const triangleCountAtStart = allTriangles.length
-					const verticeCountAtStart = allVertices.length
-					const vertices = []
+					const verticeCountAtStart = vertexIndexMap.size
 					const triangles = []
 					const positionAttribute = child.geometry.attributes.position
 					for (const vertexIndex of vertexIndexes) {
@@ -172,9 +174,15 @@ export class Export3DMapButtonComponent {
 							positionAttribute.getZ(vertexIndex)
 						]
 						const vertexString = `<vertex x="${vertex[0]}" y="${vertex[1]}" z="${vertex[2]}"/>\n`
-						vertices.push(vertexString)
+						if (!vertices.has(vertexString)) {
+							allVertices.push(vertexString)
+							vertices.set(vertexString, allVertices.length - 1)
+							vertexIndexMap.set(vertexIndex, allVertices.length - 1)
+						}else{
+							vertexIndexMap.set(vertexIndex, vertices.get(vertexString))
+						}
 					}
-					const verticeCountAtEnd = verticeCountAtStart + vertices.length - 1
+					const verticeCountAtEnd = vertexIndexMap.size
 
 					if (!child.geometry.index) {
 						console.warn("No index attribute found. Using position attribute to generate triangles, this could result in open edges.")
@@ -188,15 +196,14 @@ export class Export3DMapButtonComponent {
 							const index1 = indexAttribute.getX(index)
 							const index2 = indexAttribute.getX(index + 1)
 							const index3 = indexAttribute.getX(index + 2)
-							console.log(index1, index2, index3, verticeCountAtStart, verticeCountAtEnd)
+
 							if(index1 >= verticeCountAtStart && index1 <= verticeCountAtEnd && index2 >= verticeCountAtStart && index2 <= verticeCountAtEnd && index3 >= verticeCountAtStart && index3 <= verticeCountAtEnd){
-								const triangle = `<triangle v1="${index1}" v2="${index2}" v3="${index3}" />\n`;
+								const triangle = `<triangle v1="${vertexIndexMap.get(index1)}" v2="${vertexIndexMap.get(index2)}" v3="${vertexIndexMap.get(index3)}" />\n`;
 								triangles.push(triangle)
 							}
 						}
 					}
 
-					allVertices.push(...vertices)
 					allTriangles.push(...triangles)
 
 					const startId = triangleCountAtStart
