@@ -16,20 +16,20 @@ Generates visualisation data from [SourceMonitor](http://www.campwoodsw.com/sour
 
 ## Metrics
 
-| Metric                            | Description                                                                                                                       |
-| --------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| `loc`                             | Lines of code including empty lines and comments                                                                                  |
-| `rloc`                            | Number of physical lines that contain at least one character which is neither a whitespace nor a tabulation nor part of a comment |
-| `classes`                         | Number of classes                                                                                                                 |
-| `functions_per_class`             | Number of functions per class                                                                                                     |
-| `average_statements_per_function` | Average number of statements per method                                                                                           |
-| `max_function_mcc`                | Maximum cyclic complexity based on paths through a function by McCabe                                                             |
-| `max_block_depth`                 | Maximum nested block depth found                                                                                                  |
-| `average_block_depth`             | Average nested block depth found                                                                                                  |
-| `average_function_mcc`            | Average cyclic complexity of functions                                                                                            |
-| `sm_percent_branch_statements`    | Percentage of branch statements                                                                                                   |
-| `sm_method_call_statements`       | Number of method call statements                                                                                                  |
-| `sm_percent_lines_with_comments`  | Percentage of code lines that contain comments                                                                                    |
+| Metric                            | Description                                                                                                   |
+| --------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| `loc`                             | Total count of lines in the source code, including lines with whitespace, comments, and actual code.          |
+| `rloc`                            | Count of lines that contain actual code, excluding lines that are only whitespace, comments, or tabulations.  |
+| `classes`                         | The total number of distinct classes defined within the source code.                                          |
+| `functions_per_class`             | Average number of functions (or methods) defined within each class.                                           |
+| `average_statements_per_function` | The mean number of statements within each function across the entire codebase.                                |
+| `max_function_mcc`                | The highest McCabe's cyclomatic complexity found in any single function.                                      |
+| `max_block_depth`                 | The greatest level of nesting of control structures (like loops or conditionals) within any part of the code. |
+| `average_block_depth`             | The average depth of nested control structures across the entire codebase.                                    |
+| `average_function_mcc`            | The mean McCabe's cyclomatic complexity across all functions.                                                 |
+| `sm_percent_branch_statements`    | The percentage of all statements that are branch statements (e.g., if, else, switch, case).                   |
+| `sm_method_call_statements`       | The count of statements in the code that are method or function calls.                                        |
+| `sm_percent_lines_with_comments`  | The percentage of the total lines of code that contain comments.                                              |
 
 ### CSV Import for SourceMonitor
 
