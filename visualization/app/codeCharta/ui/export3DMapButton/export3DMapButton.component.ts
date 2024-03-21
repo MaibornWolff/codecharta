@@ -211,18 +211,20 @@ export class Export3DMapButtonComponent {
 		return { model, modelConfig }
 	}
 
-	buildModel = (allVertices, allTriangles): string => {
+	buildModel = (allVertices: Map<string, number>, allTriangles): string => {
 		let model = '<?xml version="1.0" encoding="UTF-8"?>\n'
 		model +=
 			'<model unit="millimeter" xml:lang="en-US" xmlns="http://schemas.microsoft.com/3dmanufacturing/core/2015/02" xmlns:slic3rpe="http://schemas.slic3r.org/3mf/2017/06">\n'
-		model += ' <metadata name="Application">CodeCharta-JSCAD</metadata>\n'
+		model += ' <metadata name="slic3rpe:Version3mf">1</metadata>'
 		model += ` <metadata name="CreationDate">${new Date().toISOString()}</metadata>\n`
+		model += ' <metadata name="ModificationDate">2024-03-21</metadata>\n'
+		model += ' <metadata name="Application">CodeCharta-JSCAD</metadata>\n'
 		model += " <resources>\n"
 		model += '  <object id="1" type="model">\n'
 		model += "   <mesh>\n"
 
 		model += `    <vertices>\n`
-		for (const vertex of allVertices) {
+		for (const vertex of allVertices.keys()) {
 			model += `     ${vertex}\n`
 		}
 		model += `    </vertices>\n`
