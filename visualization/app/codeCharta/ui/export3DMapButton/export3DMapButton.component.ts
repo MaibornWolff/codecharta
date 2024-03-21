@@ -6,11 +6,10 @@ import { FileNameHelper } from "../../util/fileNameHelper"
 import { isDeltaState } from "../../model/files/files.helper"
 import { accumulatedDataSelector } from "../../state/selectors/accumulatedData/accumulatedData.selector"
 import { filesSelector } from "../../state/store/files/files.selector"
-import { BufferAttribute, Mesh } from "three"
+import {BufferAttribute, Mesh} from "three"
 import { State } from "@ngrx/store"
 import { CcState } from "../../codeCharta.model"
 import { primitives } from "@jscad/modeling"
-import { serialize } from "@jscad/3mf-serializer"
 import { deserialize } from "@jscad/svg-deserializer"
 import { colorize, colorNameToRgb } from "@jscad/modeling/src/colors"
 import { strToU8, zipSync } from "fflate"
@@ -63,11 +62,6 @@ export class Export3DMapButtonComponent {
 				<Default Extension="model" ContentType="application/vnd.ms-package.3dmanufacturing-3dmodel+xml"/>
 				<Default Extension="png" ContentType="image/png"/>
 					</Types>`
-		const rels = `<?xml version="1.0" encoding="UTF-8" ?>
-			<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
-			  <Relationship Target="/3D/3dmodel.model" Id="rel0" Type="http://schemas.microsoft.com/3dmanufacturing/2013/01/3dmodel">
-			  </Relationship>
-			</Relationships>`
 
 		const files = filesSelector(this.state.getValue())
 		const fileName = accumulatedDataSelector(this.state.getValue()).unifiedFileMeta?.fileName
@@ -88,31 +82,9 @@ export class Export3DMapButtonComponent {
 
 		const baseplateHeight = 2 * zScalingFactor
 
-		//const mwLogo : Promise<Geom3> = this.logo("mw_logo.svg", [mapSideOffset+20, Math.min(xMaxSideLength, yMaxSideLength) + mapSideOffset*3, baseplateHeight-minLayerHeight], [0.6, 0.6, 0.6], 180)
-
-		const map = this.maps(xyScalingFactor, zScalingFactor, baseplateHeight)
-
-		/*
-		const baseplate = this.baseplate(
-			Math.min(xMaxSideLength, yMaxSideLength),
-			Math.max(xMaxSideLength, yMaxSideLength),
-			baseplateHeight,
-			mapSideOffset
-		)*/
-
-		/*
-		const codeChartaLogo : Promise<Geom3> = this.logo("codecharta_logo.svg", [mapSideOffset, Math.min(xMaxSideLength, yMaxSideLength) + mapSideOffset*3, baseplateHeight], [0.6, 0.6, 0.6], 180)
-		geometries.push(await codeChartaLogo)
-
-		const customerLogo : Promise<Geom3> = this.logo("mw_logo.svg", [Math.min(xMaxSideLength, yMaxSideLength) - mapSideOffset, Math.min(xMaxSideLength, yMaxSideLength) + mapSideOffset*3, baseplateHeight], [0.6, 0.6, 0.6], 180)
-		geometries.push(await customerLogo)*/
-		/*
-		if (xMaxSideLength > yMaxSideLength) {
-			geometries = geometries.map(geom => rotateZ(Math.PI / 2, geom))
-		}
-		*/
-		// serialize the geometries into a 3MF file
-		const { model, modelConfig } = await this.serializeGeometries(map)
+		console.log(this.threeSceneService.getMapMesh())
+		console.log(this.threeSceneService.getMapMesh().getThreeMesh())
+		const { model, modelConfig } = await this.serializeGeometries(this.threeSceneService.scene)
 
 		// eslint-disable-next-line no-console
 		console.log(model, modelConfig)
@@ -120,9 +92,6 @@ export class Export3DMapButtonComponent {
 		const data = {
 			"3D": {
 				"3dmodel.model": strToU8(model)
-			},
-			_rels: {
-				".rels": strToU8(rels)
 			},
 			Metadata: {
 				"Slic3r_PE_model.config": strToU8(modelConfig)
@@ -140,51 +109,59 @@ export class Export3DMapButtonComponent {
 		FileDownloader.downloadData(compressed3mf, downloadFileName)
 	}
 
-	serializeGeometries = async (geometries: Geom3[]): Promise<{ model: string; modelConfig: string }> => {
+	serializeGeometries = async (scene): Promise<{ model: string; modelConfig: string }> => {
 		let modelConfig = '<?xml version="1.0" encoding="UTF-8"?>\n<config>\n'
 		modelConfig += ` <object id="1" type="model">\n`
 		modelConfig += `  <metadata type="object" key="name" value="Map"/>\n`
 
 		const colorToExtruder: Map<string, string> = new Map()
-		const single3mf = serialize({ compress: false }, geometries)[0]
-		const parser = new DOMParser()
-		const parsed3mf = parser.parseFromString(single3mf, "application/xml")
-		const objects = parsed3mf.getElementsByTagName("object")
 
 		const allVertices = []
 		const allTriangles = []
 
-		for (const [index, geom3] of geometries.entries()) {
-			const numberOfVerticesAtStart = allVertices.length
-			const numberOfTrianglesAtStart = allTriangles.length
-			const object = objects[index]
+		let objectId = 1
 
-			const vertices = object.getElementsByTagName("vertex")
-			for (const vertex of vertices) {
-				const x = vertex.getAttribute("x")
-				const y = vertex.getAttribute("y")
-				const z = vertex.getAttribute("z")
-				allVertices.push(`<vertex x="${x}" y="${y}" z="${z}"/>`)
-			}
-			const triangles = object.getElementsByTagName("triangle")
-			for (const triangle of triangles) {
-				const x = Number.parseInt(triangle.getAttribute("v1")) + numberOfVerticesAtStart
-				const y = Number.parseInt(triangle.getAttribute("v2")) + numberOfVerticesAtStart
-				const z = Number.parseInt(triangle.getAttribute("v3")) + numberOfVerticesAtStart
-				allTriangles.push(`<triangle v1="${x}" v2="${y}" v3="${z}"/>`)
-			}
 
-			modelConfig += `  <volume firstid="${numberOfTrianglesAtStart}" lastid="${allTriangles.length - 1}">\n`
-			const colorString = geom3.color.toString()
-			if (!colorToExtruder.has(colorString)) {
-				colorToExtruder.set(colorString, (colorToExtruder.size + 1).toString())
+		scene.traverse((child) => {
+			if (child.isMesh) {
+				console.log(child)
+				const numberOfTrianglesAtStart = allTriangles.length
+
+				const positionAttribute = child.geometry.attributes.position
+				for (let index = 0; index < positionAttribute.count; index++) {
+					const vertex = `<vertex x="${positionAttribute.getX(index)}" y="${positionAttribute.getY(index)}" z="${positionAttribute.getZ(index)}" />\n`;
+					allVertices.push(vertex)
+				}
+
+				if (!child.geometry.index) {
+					console.warn("No index attribute found. Using position attribute to generate triangles, this could result in open edges.")
+					for (let index = 0; index < positionAttribute.count; index += 3) {
+						const triangle = `<triangle v1="${index}" v2="${index + 1}" v3="${index + 2}" />\n`;
+						allTriangles.push(triangle)
+					}
+				} else {
+					const indexAttribute = child.geometry.index;
+					for (let index = 0; index < indexAttribute.count; index += 3) {
+						const triangle = `<triangle v1="${indexAttribute.getX(index)}" v2="${indexAttribute.getX(index + 1)}" v3="${indexAttribute.getX(index + 2)}" />\n`;
+						allTriangles.push(triangle)
+					}
+				}
+
+				modelConfig += `  <volume firstid="${numberOfTrianglesAtStart}" lastid="${allTriangles.length - 1}">\n`
+
+				const colorString = child.material.color ? child.material.color.getHexString() : "no_color";
+				if (!colorToExtruder.has(colorString)) {
+					colorToExtruder.set(colorString, (colorToExtruder.size + 1).toString())
+				}
+				const extruder = colorToExtruder.get(colorString)
+				modelConfig += `   <metadata type="volume" key="extruder" value="${extruder}"/>\n`
+				modelConfig += `   <metadata type="volume" key="source_object_id" value="${objectId}"/>\n`
+				modelConfig += `   <metadata type="volume" key="source_volume_id" value="0"/>\n`
+				modelConfig += "  </volume>\n"
+
+				objectId++;
 			}
-			const extruder = colorToExtruder.get(colorString)
-			modelConfig += `   <metadata type="volume" key="extruder" value="${extruder}"/>\n`
-			modelConfig += `   <metadata type="volume" key="source_object_id" value="${index + 1}"/>\n`
-			modelConfig += `   <metadata type="volume" key="source_volume_id" value="0"/>\n`
-			modelConfig += "  </volume>\n"
-		}
+		});
 
 		modelConfig += " </object>\n"
 		modelConfig += "</config>"
@@ -205,13 +182,13 @@ export class Export3DMapButtonComponent {
 
 		model += `    <vertices>\n`
 		for (const vertex of allVertices) {
-			model += `     ${vertex}\n`
+			model += `     ${vertex}`
 		}
 		model += `    </vertices>\n`
 
 		model += `    <triangles>\n`
 		for (const triangle of allTriangles) {
-			model += `     ${triangle}\n`
+			model += `     ${triangle}`
 		}
 		model += `    </triangles>\n`
 
