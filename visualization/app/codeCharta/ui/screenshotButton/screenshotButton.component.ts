@@ -15,7 +15,6 @@ import { FileState } from "../../model/files/files"
 @Component({
 	selector: "cc-screenshot-button",
 	templateUrl: "./screenshotButton.component.html",
-	styleUrls: ["./screenshotButton.component.scss"],
 	encapsulation: ViewEncapsulation.None
 })
 export class ScreenshotButtonComponent {
