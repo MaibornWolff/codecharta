@@ -62,7 +62,7 @@ describe("screenshotButtonComponent", () => {
 			excludeComponentDeclaration: true
 		})
 
-		jest.spyOn(CanvasRenderingContext2D.prototype, "getImageData").mockImplementation(() => createImageData())
+		jest.spyOn(CanvasRenderingContext2D.prototype, "getImageData").mockImplementation(() => createMockImageData())
 		const drawImageSpy = jest.spyOn(CanvasRenderingContext2D.prototype, "drawImage")
 		const makeScreenshotToClipboardSpy = jest.spyOn(fixture.componentInstance, "makeScreenshotToClipboard")
 
@@ -71,7 +71,17 @@ describe("screenshotButtonComponent", () => {
 		expect(makeScreenshotToClipboardSpy).toHaveBeenCalledTimes(1)
 		await waitFor(() => {
 			expect(setToClipboard).toHaveBeenCalledTimes(1)
-			expect(drawImageSpy).toHaveBeenCalledTimes(1)
+			expect(drawImageSpy).toHaveBeenCalledWith(
+				expect.anything(),
+				100,
+				50,
+				100,
+				50,
+				expect.any(Number),
+				expect.any(Number),
+				expect.any(Number),
+				expect.any(Number)
+			)
 		})
 	})
 
@@ -84,7 +94,7 @@ describe("screenshotButtonComponent", () => {
 		store.refreshState()
 		detectChanges()
 
-		jest.spyOn(CanvasRenderingContext2D.prototype, "getImageData").mockImplementation(() => createImageData())
+		jest.spyOn(CanvasRenderingContext2D.prototype, "getImageData").mockImplementation(() => createMockImageData())
 		const drawImageSpy = jest.spyOn(CanvasRenderingContext2D.prototype, "drawImage")
 		const clickDownloadLinkSpy = jest.spyOn(HTMLAnchorElement.prototype, "click").mockImplementation()
 		const makeScreenshotToFileSpy = jest.spyOn(fixture.componentInstance, "makeScreenshotToFile")
@@ -94,7 +104,17 @@ describe("screenshotButtonComponent", () => {
 		expect(makeScreenshotToFileSpy).toHaveBeenCalledTimes(1)
 		await waitFor(() => {
 			expect(clickDownloadLinkSpy).toHaveBeenCalledTimes(1)
-			expect(drawImageSpy).toHaveBeenCalledTimes(1)
+			expect(drawImageSpy).toHaveBeenCalledWith(
+				expect.anything(),
+				100,
+				50,
+				100,
+				50,
+				expect.any(Number),
+				expect.any(Number),
+				expect.any(Number),
+				expect.any(Number)
+			)
 		})
 	})
 
@@ -119,16 +139,25 @@ function isScreenshotButtonDisabled(container: Element) {
 	return container.querySelector("cc-action-icon").classList.contains("disabled")
 }
 
-function createImageData() {
-	const imageDataArray = new Uint8ClampedArray(4 * 20 * 20)
-	for (let index = 0; index < imageDataArray.length; index += 4) {
-		imageDataArray[index + 3] = Math.random() < 0.5 ? 255 : 0
+function createMockImageData() {
+	const width = document.createElement("canvas").width
+	const height = document.createElement("canvas").height
+	const imageDataArray = new Uint8ClampedArray(4 * width * height)
+
+	for (let y = 0; y < height; y++) {
+		for (let x = 0; x < width; x++) {
+			const index = (y * width + x) * 4
+			imageDataArray[index] = 0
+			imageDataArray[index + 1] = 0
+			imageDataArray[index + 2] = 0
+
+			if (x >= 100 && x < 200 && y >= 50 && y < 100) {
+				imageDataArray[index + 3] = 255
+			} else {
+				imageDataArray[index + 3] = 0
+			}
+		}
 	}
 
-	return {
-		data: imageDataArray,
-		width: 100,
-		height: 100,
-		colorSpace: "srgb"
-	} as ImageData
+	return new ImageData(imageDataArray, width, height)
 }
