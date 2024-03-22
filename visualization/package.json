@@ -102,8 +102,8 @@
 	},
 	"devDependencies": {
 		"@angular-builders/custom-webpack": "^16.0.1",
-		"@angular-devkit/build-angular": "^16.2.10",
-		"@angular/cli": "^16.2.10",
+		"@angular-devkit/build-angular": "^17.0.0",
+		"@angular/cli": "^17.0.0",
 		"@angular/compiler": "^16.2.12",
 		"@angular/compiler-cli": "^16.2.12",
 		"@babel/plugin-transform-class-static-block": "^7.23.3",
