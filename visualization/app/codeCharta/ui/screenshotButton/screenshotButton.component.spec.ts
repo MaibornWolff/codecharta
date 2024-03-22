@@ -62,7 +62,8 @@ describe("screenshotButtonComponent", () => {
 			excludeComponentDeclaration: true
 		})
 
-		jest.spyOn(CanvasRenderingContext2D.prototype, "getImageData").mockImplementation(() => createMockImageData())
+		const { xStart, yStart, croppedCanvasWidth, croppedCanvasHeight, imageData } = createMockImageData()
+		jest.spyOn(CanvasRenderingContext2D.prototype, "getImageData").mockImplementation(() => imageData)
 		const drawImageSpy = jest.spyOn(CanvasRenderingContext2D.prototype, "drawImage")
 		const makeScreenshotToClipboardSpy = jest.spyOn(fixture.componentInstance, "makeScreenshotToClipboard")
 
@@ -73,10 +74,10 @@ describe("screenshotButtonComponent", () => {
 			expect(setToClipboard).toHaveBeenCalledTimes(1)
 			expect(drawImageSpy).toHaveBeenCalledWith(
 				expect.anything(),
-				100,
-				50,
-				100,
-				50,
+				xStart,
+				yStart,
+				croppedCanvasWidth,
+				croppedCanvasHeight,
 				expect.any(Number),
 				expect.any(Number),
 				expect.any(Number),
@@ -94,7 +95,8 @@ describe("screenshotButtonComponent", () => {
 		store.refreshState()
 		detectChanges()
 
-		jest.spyOn(CanvasRenderingContext2D.prototype, "getImageData").mockImplementation(() => createMockImageData())
+		const { xStart, yStart, croppedCanvasWidth, croppedCanvasHeight, imageData } = createMockImageData()
+		jest.spyOn(CanvasRenderingContext2D.prototype, "getImageData").mockImplementation(() => imageData)
 		const drawImageSpy = jest.spyOn(CanvasRenderingContext2D.prototype, "drawImage")
 		const clickDownloadLinkSpy = jest.spyOn(HTMLAnchorElement.prototype, "click").mockImplementation()
 		const makeScreenshotToFileSpy = jest.spyOn(fixture.componentInstance, "makeScreenshotToFile")
@@ -106,10 +108,10 @@ describe("screenshotButtonComponent", () => {
 			expect(clickDownloadLinkSpy).toHaveBeenCalledTimes(1)
 			expect(drawImageSpy).toHaveBeenCalledWith(
 				expect.anything(),
-				100,
-				50,
-				100,
-				50,
+				xStart,
+				yStart,
+				croppedCanvasWidth,
+				croppedCanvasHeight,
 				expect.any(Number),
 				expect.any(Number),
 				expect.any(Number),
@@ -144,6 +146,13 @@ function createMockImageData() {
 	const height = document.createElement("canvas").height
 	const imageDataArray = new Uint8ClampedArray(4 * width * height)
 
+	const xStart = 100
+	const xEnd = 200
+	const yStart = 50
+	const yEnd = 100
+	const croppedCanvasWidth = xEnd - xStart
+	const croppedCanvasHeight = yEnd - yStart
+
 	for (let y = 0; y < height; y++) {
 		for (let x = 0; x < width; x++) {
 			const index = (y * width + x) * 4
@@ -151,7 +160,7 @@ function createMockImageData() {
 			imageDataArray[index + 1] = 0
 			imageDataArray[index + 2] = 0
 
-			if (x >= 100 && x < 200 && y >= 50 && y < 100) {
+			if (x >= xStart && x < xEnd && y >= yStart && y < yEnd) {
 				imageDataArray[index + 3] = 255
 			} else {
 				imageDataArray[index + 3] = 0
@@ -159,5 +168,5 @@ function createMockImageData() {
 		}
 	}
 
-	return new ImageData(imageDataArray, width, height)
+	return { xStart, yStart, croppedCanvasWidth, croppedCanvasHeight, imageData: new ImageData(imageDataArray, width, height) }
 }
