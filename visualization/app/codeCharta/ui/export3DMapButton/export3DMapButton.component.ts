@@ -1,16 +1,16 @@
-import { Component, ViewEncapsulation } from "@angular/core"
-import { FileDownloader } from "../../util/fileDownloader"
-import { STLExporter } from "three/examples/jsm/exporters/STLExporter"
-import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
-import { FileNameHelper } from "../../util/fileNameHelper"
-import { isDeltaState } from "../../model/files/files.helper"
-import { accumulatedDataSelector } from "../../state/selectors/accumulatedData/accumulatedData.selector"
-import { filesSelector } from "../../state/store/files/files.selector"
-import { BufferAttribute, Mesh } from "three"
-import { State } from "@ngrx/store"
-import { CcState } from "../../codeCharta.model"
-import { HttpClient } from "@angular/common/http"
-import { serialize3mf } from "../../services/3DExports/serialize3mf.service"
+import {Component, ViewEncapsulation} from "@angular/core"
+import {FileDownloader} from "../../util/fileDownloader"
+import {STLExporter} from "three/examples/jsm/exporters/STLExporter"
+import {ThreeSceneService} from "../codeMap/threeViewer/threeSceneService"
+import {FileNameHelper} from "../../util/fileNameHelper"
+import {isDeltaState} from "../../model/files/files.helper"
+import {accumulatedDataSelector} from "../../state/selectors/accumulatedData/accumulatedData.selector"
+import {filesSelector} from "../../state/store/files/files.selector"
+import {BufferAttribute, Mesh} from "three"
+import {State} from "@ngrx/store"
+import {CcState} from "../../codeCharta.model"
+import {HttpClient} from "@angular/common/http"
+import {serialize3mf} from "../../services/3DExports/serialize3mf.service"
 
 @Component({
 	selector: "cc-export-threed-map-button",
@@ -19,7 +19,9 @@ import { serialize3mf } from "../../services/3DExports/serialize3mf.service"
 })
 export class Export3DMapButtonComponent {
 	private stlExporter = new STLExporter()
-	constructor(private httpClient: HttpClient, private state: State<CcState>, private threeSceneService: ThreeSceneService) {}
+
+	constructor(private httpClient: HttpClient, private state: State<CcState>, private threeSceneService: ThreeSceneService) {
+	}
 
 	downloadStlFile() {
 		const files = filesSelector(this.state.getValue())
@@ -63,6 +65,7 @@ export class Export3DMapButtonComponent {
 		const files = filesSelector(this.state.getValue())
 		const fileName = accumulatedDataSelector(this.state.getValue()).unifiedFileMeta?.fileName
 
+		console.log(this.threeSceneService)
 		const compressed3mf = await serialize3mf(this.threeSceneService)
 
 		const downloadFileName = `${FileNameHelper.getNewFileName(fileName, isDeltaState(files))}.3mf`

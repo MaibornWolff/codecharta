@@ -1,16 +1,13 @@
 import { strToU8, zipSync } from "fflate"
-import { Mesh } from "three"
+import { BufferGeometry } from "three"
+import { ThreeSceneService } from "../../ui/codeMap/threeViewer/threeSceneService"
 
-export async function serialize3mf(threeSceneService): Promise<string> {
-	const { model, modelConfig } = await serializeGeometries(threeSceneService)
-
-	const contentType =
-		`<?xml version="1.0" encoding="UTF-8"?>\n` +
-		` <Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">\n` +
-		`  <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>\n` +
-		`  <Default Extension="model" ContentType="application/vnd.ms-package.3dmanufacturing-3dmodel+xml"/>\n` +
-		`  <Default Extension="png" ContentType="image/png"/>\n` +
-		` </Types>`
+export async function serialize3mf(threeSceneService: ThreeSceneService): Promise<string> {
+	const { modelConfig, vertices, triangles } = await serializeGeometriesAndBuildModelConfig(
+		threeSceneService.getMapMesh().getThreeMesh().geometry
+	)
+	const model = buildModel(vertices, triangles)
+	const contentType = buildContentType()
 
 	const data = {
 		"3D": {
@@ -29,141 +26,191 @@ export async function serialize3mf(threeSceneService): Promise<string> {
 	return compressed3mf as unknown as string
 }
 
-async function serializeGeometries(threeSceneService): Promise<{ model: string; modelConfig: string }> {
+function buildContentType(): string {
+	return (
+		`<?xml version="1.0" encoding="UTF-8"?>\n` +
+		` <Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">\n` +
+		`  <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>\n` +
+		`  <Default Extension="model" ContentType="application/vnd.ms-package.3dmanufacturing-3dmodel+xml"/>\n` +
+		`  <Default Extension="png" ContentType="image/png"/>\n` +
+		` </Types>`
+	)
+}
+
+function serializeGeometriesAndBuildModelConfig(geometry: BufferGeometry): {
+	modelConfig: string
+	vertices: string[]
+	triangles: string[]
+} {
+	let modelConfig = buildModelConfigHeader()
+
+	const vertices = []
+	const triangles = []
+	const vertexToNewVertexIndex: Map<string, number> = new Map()
+	const vertexIndexToNewVertexIndex: Map<number, number> = new Map()
+	const colorToExtruder: Map<string, number> = new Map()
+	let volumeCount = 1
+
+	const colorNodeGroups = groupVerticesByColor(geometry)
+
+	for (const { color, vertexIndexes } of colorNodeGroups) {
+		const firstTriangleId = triangles.length
+
+		const { firstVertexId, lastVertexId } = buildVertices(
+			vertices,
+			vertexToNewVertexIndex,
+			vertexIndexToNewVertexIndex,
+			vertexIndexes,
+			geometry
+		)
+
+		buildTriangles(triangles, vertexIndexToNewVertexIndex, geometry, firstVertexId, lastVertexId)
+
+		modelConfig += buildVolume(color, firstTriangleId, triangles.length - 1, colorToExtruder, volumeCount)
+
+		volumeCount++
+	}
+
+	modelConfig += buildModelConfigFooter()
+
+	return { modelConfig, vertices, triangles }
+}
+
+function buildVolume(color, firstTriangleId, lastTriangleId, colorToExtruder, volumeId) {
+	let volume = `  <volume firstid="${firstTriangleId}" lastid="${lastTriangleId}">\n`
+
+	const colorString = color ? color.toString() : "no_color"
+	if (!colorToExtruder.has(colorString)) {
+		colorToExtruder.set(colorString, colorToExtruder.size + 1)
+	}
+	const extruder = colorToExtruder.get(colorString)
+	volume += `   <metadata type="volume" key="name" value="${colorString}"/>\n`
+	volume += `   <metadata type="volume" key="extruder" value="${extruder}"/>\n`
+	volume += `   <metadata type="volume" key="source_object_id" value="1"/>\n`
+	volume += `   <metadata type="volume" key="source_volume_id" value="${volumeId}"/>\n`
+	volume += "  </volume>\n"
+
+	return volume
+}
+
+function buildTriangles(triangles, vertexIndexToNewVertexIndex, geometry, firstVertexId, lastVertexId): void {
+	if (!geometry.index) {
+		console.warn("No index attribute found. Using position attribute to generate triangles, this could result in open edges.")
+		for (let index = 0; index < geometry.attributes.position.count; index += 3) {
+			const triangle = `<triangle v1="${index}" v2="${index + 1}" v3="${index + 2}" />\n`
+			triangles.push(triangle)
+		}
+	} else {
+		const indexAttribute = geometry.index
+		for (let index = 0; index < indexAttribute.count; index += 3) {
+			const index1 = indexAttribute.getX(index)
+			const index2 = indexAttribute.getY(index)
+			const index3 = indexAttribute.getZ(index)
+
+			if (
+				index1 >= firstVertexId &&
+				index1 <= lastVertexId &&
+				index2 >= firstVertexId &&
+				index2 <= lastVertexId &&
+				index3 >= firstVertexId &&
+				index3 <= lastVertexId
+			) {
+				const triangle = `<triangle v1="${vertexIndexToNewVertexIndex.get(index1)}" v2="${vertexIndexToNewVertexIndex.get(
+					index2
+				)}" v3="${vertexIndexToNewVertexIndex.get(index3)}" />\n`
+				triangles.push(triangle)
+			}
+		}
+	}
+}
+
+function buildVertices(
+	vertices,
+	vertexToNewVertexIndex,
+	vertexIndexToNewVertexIndex,
+	vertexIndexes,
+	geometry
+): { firstVertexId: number; lastVertexId: number } {
+	const firstVertexId = vertexIndexToNewVertexIndex.size
+
+	const positionAttribute = geometry.attributes.position
+	for (const vertexIndex of vertexIndexes) {
+		const vertex = [positionAttribute.getX(vertexIndex), positionAttribute.getY(vertexIndex), positionAttribute.getZ(vertexIndex)]
+		const vertexString = `<vertex x="${vertex[0]}" y="${vertex[1]}" z="${vertex[2]}"/>\n`
+		if (!vertexToNewVertexIndex.has(vertexString)) {
+			vertices.push(vertexString)
+			vertexToNewVertexIndex.set(vertexString, vertices.length - 1)
+			vertexIndexToNewVertexIndex.set(vertexIndex, vertices.length - 1)
+		} else {
+			vertexIndexToNewVertexIndex.set(vertexIndex, vertexToNewVertexIndex.get(vertexString))
+		}
+	}
+
+	return { firstVertexId, lastVertexId: vertexIndexToNewVertexIndex.size - 1 }
+}
+
+function buildModelConfigHeader(): string {
 	let modelConfig = '<?xml version="1.0" encoding="UTF-8"?>\n<config>\n'
 	modelConfig += ` <object id="1" type="model">\n`
 	modelConfig += `  <metadata type="object" key="name" value="Map"/>\n`
-
-	const colorToExtruder: Map<string, string> = new Map()
-
-	const allVertices = []
-	const allTriangles = []
-
-	let volumeId = 1
-	const threeMesh: Mesh = threeSceneService.getMapMesh().getThreeMesh()
-	const colorNodeGroups: { color: string; vertexIndexes: number[] }[] = []
-
-	threeSceneService.scene.traverse(child => {
-		if (child.isMesh && child.geometry.attributes.color) {
-			// iterate over vertices and group them by color
-			for (let index = 0; index < child.geometry.attributes.color.count; index++) {
-				const colorsArray = [
-					threeMesh.geometry.attributes.color.getX(index),
-					threeMesh.geometry.attributes.color.getY(index),
-					threeMesh.geometry.attributes.color.getZ(index)
-				]
-				// special case for grey tones, unify into one color
-				if (colorsArray[0] === colorsArray[1] && colorsArray[1] === colorsArray[2]) {
-					colorsArray[0] = 0.5
-					colorsArray[1] = 0.5
-					colorsArray[2] = 0.5
-				}
-
-				// convert color array to hex color string
-				const color = colorsArray
-					.map(c =>
-						Math.round(c * 255)
-							.toString(16)
-							.padStart(2, "0")
-					)
-					.join("")
-
-				const colorNodeGroup = colorNodeGroups.find(cng => cng.color === color)
-				if (colorNodeGroup) {
-					colorNodeGroup.vertexIndexes.push(index)
-				} else {
-					colorNodeGroups.push({ color, vertexIndexes: [index] })
-				}
-			}
-
-			const vertices: Map<string, number> = new Map()
-			const vertexIndexMap: Map<number, number> = new Map()
-
-			//join each color group into a single volume inside the model config
-			for (const { color, vertexIndexes } of colorNodeGroups) {
-				const triangleCountAtStart = allTriangles.length
-				const verticeCountAtStart = vertexIndexMap.size
-				const triangles = []
-				const positionAttribute = child.geometry.attributes.position
-				for (const vertexIndex of vertexIndexes) {
-					const vertex = [
-						positionAttribute.getX(vertexIndex),
-						positionAttribute.getY(vertexIndex),
-						positionAttribute.getZ(vertexIndex)
-					]
-					const vertexString = `<vertex x="${vertex[0]}" y="${vertex[1]}" z="${vertex[2]}"/>\n`
-					if (!vertices.has(vertexString)) {
-						allVertices.push(vertexString)
-						vertices.set(vertexString, allVertices.length - 1)
-						vertexIndexMap.set(vertexIndex, allVertices.length - 1)
-					} else {
-						vertexIndexMap.set(vertexIndex, vertices.get(vertexString))
-					}
-				}
-				const verticeCountAtEnd = vertexIndexMap.size
-
-				if (!child.geometry.index) {
-					console.warn(
-						"No index attribute found. Using position attribute to generate triangles, this could result in open edges."
-					)
-					for (let index = 0; index < positionAttribute.count; index += 3) {
-						const triangle = `<triangle v1="${index}" v2="${index + 1}" v3="${index + 2}" />\n`
-						allTriangles.push(triangle)
-					}
-				} else {
-					const indexAttribute = child.geometry.index
-					for (let index = 0; index < indexAttribute.count; index += 3) {
-						const index1 = indexAttribute.getX(index)
-						const index2 = indexAttribute.getX(index + 1)
-						const index3 = indexAttribute.getX(index + 2)
-
-						if (
-							index1 >= verticeCountAtStart &&
-							index1 <= verticeCountAtEnd &&
-							index2 >= verticeCountAtStart &&
-							index2 <= verticeCountAtEnd &&
-							index3 >= verticeCountAtStart &&
-							index3 <= verticeCountAtEnd
-						) {
-							const triangle = `<triangle v1="${vertexIndexMap.get(index1)}" v2="${vertexIndexMap.get(
-								index2
-							)}" v3="${vertexIndexMap.get(index3)}" />\n`
-							triangles.push(triangle)
-						}
-					}
-				}
-
-				allTriangles.push(...triangles)
-
-				const startId = triangleCountAtStart
-				const endID = triangleCountAtStart + triangles.length - 1
-
-				modelConfig += `  <volume firstid="${startId}" lastid="${endID}">\n`
-
-				const colorString = color ? color.toString() : "no_color"
-				if (!colorToExtruder.has(colorString)) {
-					colorToExtruder.set(colorString, (colorToExtruder.size + 1).toString())
-				}
-				const extruder = colorToExtruder.get(colorString)
-				modelConfig += `   <metadata type="volume" key="extruder" value="${extruder}"/>\n`
-				modelConfig += `   <metadata type="volume" key="source_object_id" value="1"/>\n`
-				modelConfig += `   <metadata type="volume" key="source_volume_id" value="${volumeId}"/>\n`
-				modelConfig += "  </volume>\n"
-
-				volumeId++
-			}
-		}
-	})
-
-	modelConfig += " </object>\n"
-	modelConfig += "</config>"
-
-	const model = buildModel(allVertices, allTriangles)
-
-	return { model, modelConfig }
+	return modelConfig
 }
 
-function buildModel(allVertices, allTriangles): string {
+function buildModelConfigFooter(): string {
+	let modelConfigFooter = " </object>\n"
+	modelConfigFooter += "</config>"
+	return modelConfigFooter
+}
+
+function groupVerticesByColor(geometry: BufferGeometry): { color: string; vertexIndexes: number[] }[] {
+	const colorNodeGroups: { color: string; vertexIndexes: number[] }[] = []
+
+	for (let index = 0; index < geometry.attributes.color.count; index++) {
+		const hexColorString = processColorArray(geometry, index)
+		const colorNodeGroup = colorNodeGroups.find(cng => cng.color === hexColorString)
+
+		if (colorNodeGroup) {
+			colorNodeGroup.vertexIndexes.push(index)
+		} else {
+			colorNodeGroups.push({ color: hexColorString, vertexIndexes: [index] })
+		}
+	}
+
+	return colorNodeGroups
+}
+
+function processColorArray(geometry: BufferGeometry, index: number): string {
+	const colorsArray = [
+		geometry.attributes.color.getX(index),
+		geometry.attributes.color.getY(index),
+		geometry.attributes.color.getZ(index)
+	]
+
+	if (colorsArray[0] === colorsArray[1] && colorsArray[1] === colorsArray[2]) {
+		colorsArray[0] = 0.5
+		colorsArray[1] = 0.5
+		colorsArray[2] = 0.5
+	}
+
+	return colorsArray
+		.map(c =>
+			Math.round(c * 255)
+				.toString(16)
+				.padStart(2, "0")
+		)
+		.join("")
+}
+
+function buildModel(vertices, triangles): string {
+	const modelHeader = buildModelHeader()
+	const verticesString = buildModelVertices(vertices)
+	const trianglesString = buildModelTriangles(triangles)
+	const modelFooter = buildModelFooter()
+
+	return modelHeader + verticesString + trianglesString + modelFooter
+}
+
+function buildModelHeader(): string {
 	let model = '<?xml version="1.0" encoding="UTF-8"?>\n'
 	model +=
 		'<model unit="millimeter" xml:lang="en-US" xmlns="http://schemas.microsoft.com/3dmanufacturing/core/2015/02" xmlns:slic3rpe="http://schemas.slic3r.org/3mf/2017/06">\n'
@@ -171,28 +218,36 @@ function buildModel(allVertices, allTriangles): string {
 	model += " <resources>\n"
 	model += '  <object id="1" type="model">\n'
 	model += "   <mesh>\n"
-
-	model += `    <vertices>\n`
-	for (const vertex of allVertices) {
-		model += `     ${vertex}`
-	}
-	model += `    </vertices>\n`
-
-	model += `    <triangles>\n`
-	for (const triangle of allTriangles) {
-		model += `     ${triangle}`
-	}
-	model += `    </triangles>\n`
-
-	model += `   </mesh>\n`
-	model += `  </object>\n`
-	model += ` </resources>\n`
-	model += ` <build>\n`
-	model += `  <item objectid="1"/>\n`
-	model += ` </build>\n`
-	model += `</model>`
-
 	return model
+}
+
+function buildModelVertices(vertices): string {
+	let verticesString = `    <vertices>\n`
+	for (const vertex of vertices) {
+		verticesString += `     ${vertex}`
+	}
+	verticesString += `    </vertices>\n`
+	return verticesString
+}
+
+function buildModelTriangles(triangles): string {
+	let trianglesString = `    <triangles>\n`
+	for (const triangle of triangles) {
+		trianglesString += `     ${triangle}`
+	}
+	trianglesString += `    </triangles>\n`
+	return trianglesString
+}
+
+function buildModelFooter(): string {
+	let modelFooter = `   </mesh>\n`
+	modelFooter += `  </object>\n`
+	modelFooter += ` </resources>\n`
+	modelFooter += ` <build>\n`
+	modelFooter += `  <item objectid="1"/>\n`
+	modelFooter += ` </build>\n`
+	modelFooter += `</model>`
+	return modelFooter
 }
 
 /*
