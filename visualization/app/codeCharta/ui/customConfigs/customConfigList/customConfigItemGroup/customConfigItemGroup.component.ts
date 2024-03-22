@@ -1,9 +1,10 @@
-import { Component, Input, OnChanges, ViewEncapsulation } from "@angular/core"
+import { Component, Input, OnChanges, SimpleChanges, ViewChild, ViewEncapsulation } from "@angular/core"
 import { CustomConfigHelper } from "../../../../util/customConfigHelper"
 import { CustomConfigItemGroup } from "../../customConfigs.component"
 import { ThreeCameraService } from "../../../codeMap/threeViewer/threeCamera.service"
 import { ThreeOrbitControlsService } from "../../../codeMap/threeViewer/threeOrbitControls.service"
 import { Store } from "@ngrx/store"
+import { MatExpansionPanel } from "@angular/material/expansion"
 
 @Component({
 	selector: "cc-custom-config-item-group",
@@ -13,6 +14,7 @@ import { Store } from "@ngrx/store"
 })
 export class CustomConfigItemGroupComponent implements OnChanges {
 	@Input() customConfigItemGroups: Map<string, CustomConfigItemGroup>
+	@ViewChild("matExpansionPanel") matExpansionPanel: MatExpansionPanel
 	@Input() searchTerm = ""
 	expandedStates: { [key: string]: boolean } = {}
 
@@ -22,7 +24,10 @@ export class CustomConfigItemGroupComponent implements OnChanges {
 		private threeOrbitControlsService: ThreeOrbitControlsService
 	) {}
 
-	ngOnChanges(): void {
+	ngOnChanges(changes: SimpleChanges): void {
+		if (changes.searchTerm && changes.searchTerm.currentValue.length > 0) {
+			this.matExpansionPanel.open()
+		}
 		this.expandedStates = {}
 	}
 
