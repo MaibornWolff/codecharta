@@ -31,7 +31,7 @@ buildscript {
 
         mockito_core_version = '3.12.4'
         mockito_kotlin_version = '2.2.0'
-        mockk_version = '1.13.9'
+        mockk_version = '1.13.10'
         wiremock_version = '2.35.1'
     }
 
