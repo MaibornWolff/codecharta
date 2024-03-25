@@ -11,6 +11,7 @@ import {State} from "@ngrx/store"
 import {CcState} from "../../codeCharta.model"
 import {HttpClient} from "@angular/common/http"
 import {serialize3mf} from "../../services/3DExports/serialize3mf.service"
+import {prepareGeometryForPrinting} from "../../services/3DExports/prepareGeometryForPrinting.service";
 
 @Component({
 	selector: "cc-export-threed-map-button",
@@ -42,31 +43,25 @@ export class Export3DMapButtonComponent {
 	}
 
 	async download3MFFile(): Promise<void> {
-		/*const printerSideLengths = {
-			prusaMk3s: { x: 240, y: 200 },
-			bambuA1: { x: 0, y: 0 }
+		const printerSideLengths = {
+			prusaMk3s: {x: 240, y: 200},
+			bambuA1: {x: 0, y: 0}
 		}
-
 		const printer = "prusaMk3s"
-		const xMaxSideLength = printerSideLengths[printer].x
-		const yMaxSideLength = printerSideLengths[printer].y
-		const mapSideOffset = 2
 
-		const sideLength = Math.min(xMaxSideLength, yMaxSideLength) - mapSideOffset * 2
-		const nodes = this.threeSceneService.getMapMesh().getNodes()
-		const longestSide = Math.max(...nodes.flatMap(node => [node.width, node.length]))
-		const xyScalingFactor = sideLength / longestSide
-
-		const minLayerHeight = 0.2
-		const smallestHeight = Math.min(...nodes.map(node => node.height || minLayerHeight))
-		const zScalingFactor = minLayerHeight / smallestHeight
-
-		const baseplateHeight = 2 * zScalingFactor*/
 		const files = filesSelector(this.state.getValue())
 		const fileName = accumulatedDataSelector(this.state.getValue()).unifiedFileMeta?.fileName
 
-		console.log(this.threeSceneService)
-		const compressed3mf = await serialize3mf(this.threeSceneService)
+		const width = Math.min(printerSideLengths[printer].x, printerSideLengths[printer].y)
+		const geometryOptions = {
+			width,
+			frontText: "CodeCharta",
+			zScale: 1.3
+		}
+		const printMesh = await prepareGeometryForPrinting(this.threeSceneService.getMapMesh().getThreeMesh(), geometryOptions)
+
+		console.log(printMesh)
+		const compressed3mf = await serialize3mf(printMesh)
 
 		const downloadFileName = `${FileNameHelper.getNewFileName(fileName, isDeltaState(files))}.3mf`
 		FileDownloader.downloadData(compressed3mf, downloadFileName)
