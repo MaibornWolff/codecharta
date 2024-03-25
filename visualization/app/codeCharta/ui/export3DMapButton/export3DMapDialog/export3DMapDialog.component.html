@@ -1,0 +1,13 @@
+<mat-toolbar color="primary">3D Print CodeCharta Map</mat-toolbar>
+
+<div class="cc-export-3D-map-dialog-content">
+	<div #rendererContainer></div>
+
+	<button (click)="download3MFFile()" [disabled]="!isPrintMeshLoaded" mat-button title="Download 3MF Button">
+		<span><i class="fa fa-download"></i> Download 3MF</span>
+	</button>
+
+	<button (click)="downloadStlFile()" mat-button title="Download Stl Button">
+		<span><i class="fa fa-download"></i> Download minimal Stl</span>
+	</button>
+</div>

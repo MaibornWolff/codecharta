@@ -1,4 +1,14 @@
-import { BufferGeometry, DoubleSide, ExtrudeGeometry, FontLoader, Mesh, MeshBasicMaterial, Shape, TextGeometry } from "three"
+import {
+	BufferGeometry,
+	DoubleSide,
+	ExtrudeGeometry,
+	Float32BufferAttribute,
+	FontLoader,
+	Mesh,
+	MeshBasicMaterial,
+	Shape,
+	TextGeometry
+} from "three"
 import { SVGLoader } from "three/examples/jsm/loaders/SVGLoader"
 import { BufferGeometryUtils } from "three/examples/jsm/utils/BufferGeometryUtils"
 
@@ -39,6 +49,9 @@ export async function prepareGeometryForPrinting(mapMesh: Mesh, geometryOptions:
 	const mwLogo = await createMWLogo(geometryOptions)
 	printMesh.attach(mwLogo)
 
+	printMesh.rotation.x = -Math.PI / 2
+	printMesh.rotation.z = Math.PI / 2
+	printMesh.scale.set(5, 5, 5)
 	return printMesh
 }
 
@@ -55,6 +68,15 @@ function prepareMap(map: BufferGeometry, geometryOptions): BufferGeometry {
 
 	map.rotateZ(-Math.PI / 2)
 	map.translate(width + geometryOptions.mapSideOffset, 0, geometryOptions.baseplateHeight)
+
+	//TODO: colors need to be grouped here
+	const mapColors = map.attributes.color
+	const newColors = []
+	for (let index = 0; index < mapColors.count; index++) {
+		newColors.push(1 - mapColors.getX(index), 1 - mapColors.getY(index), 1 - mapColors.getZ(index))
+	}
+	map.setAttribute("color", new Float32BufferAttribute(newColors, 3))
+
 	return map
 }
 
@@ -81,7 +103,7 @@ function baseplate(geometryOptions): Mesh {
 	geometry.translate(0, -width, 0)
 
 	// Create the material
-	const material = new MeshBasicMaterial({ color: 0xff_00_00 })
+	const material = new MeshBasicMaterial({ color: 0x66_66_66 })
 
 	// Create the mesh
 	const baseplateMesh = new Mesh(geometry, material)
@@ -100,7 +122,7 @@ async function frontText(geometryOptions): Promise<Mesh> {
 	const y = -geometryOptions.width + textHeight / 2
 	textGeometry.translate(x, y, geometryOptions.baseplateHeight)
 
-	const material = new MeshBasicMaterial({ color: 0x00_00_ff })
+	const material = new MeshBasicMaterial({ color: 0xff_ff_ff })
 	const textMesh = new Mesh(textGeometry, material)
 	textMesh.name = "FrontText"
 	return textMesh
@@ -139,7 +161,7 @@ async function createMWLogo(geometryOptions): Promise<Mesh> {
 		geometryOptions.baseplateHeight
 	)
 
-	const material = new MeshBasicMaterial({ color: 0x00_00_ff, side: DoubleSide })
+	const material = new MeshBasicMaterial({ color: 0xff_ff_ff, side: DoubleSide })
 	const logoMesh = new Mesh(mwLogoGeometry, material)
 	logoMesh.name = "MW Logo"
 	return logoMesh

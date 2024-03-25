@@ -1,12 +1,13 @@
 import { TestBed } from "@angular/core/testing"
 import { State } from "@ngrx/store"
-import { Export3DMapButtonComponent } from "./export3DMapButton.component"
+import { Export3DMapButtonComponent } from "../export3DMapButton.component"
 import { fireEvent, render, screen } from "@testing-library/angular"
-import { Export3DMapButtonModule } from "./export3DMapButton.module"
-import { FileDownloader } from "../../util/fileDownloader"
-import { stubDate } from "../../../../mocks/dateMock.helper"
-import { FILE_STATES } from "../../util/dataMocks"
-import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
+import { Export3DMapButtonModule } from "../export3DMapButton.module"
+import { FileDownloader } from "../../../util/fileDownloader"
+import { stubDate } from "../../../../../mocks/dateMock.helper"
+import { FILE_STATES } from "../../../util/dataMocks"
+import { ThreeSceneService } from "../../codeMap/threeViewer/threeSceneService"
+import { Export3DMapDialogComponent } from "./export3DMapDialog.component"
 
 stubDate(new Date(Date.UTC(2018, 11, 14, 9, 39)))
 const newDate = "2018-12-14_09-39"
@@ -39,7 +40,7 @@ describe("Export3DMapButtonComponent", () => {
 	})
 
 	it("should start download on click", async function () {
-		const { fixture } = await render(Export3DMapButtonComponent, { excludeComponentDeclaration: true })
+		const { fixture } = await render(Export3DMapDialogComponent, { excludeComponentDeclaration: true })
 		// mock download and therefore only verify the Angular binding.
 		// A better approach would be, if the component would only fire an action
 		// and an https://ngrx.io/guide/effects would do the side effect and logic.
