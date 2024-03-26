@@ -9,9 +9,15 @@ import { AfterViewInit, Component, ElementRef, ViewChild, ViewEncapsulation } fr
 import { State } from "@ngrx/store"
 import { CcState } from "../../../codeCharta.model"
 import { ThreeSceneService } from "../../codeMap/threeViewer/threeSceneService"
-import { Mesh, PerspectiveCamera, Scene, WebGLRenderer } from "three"
+import { Color, Mesh, PerspectiveCamera, Scene, WebGLRenderer } from "three"
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
 import { STLExporter } from "three/examples/jsm/exporters/STLExporter"
+
+interface printer {
+	x: number
+	y: number
+	numberOfColors: number
+}
 
 @Component({
 	//selector: 'app-mesh-preview-dialog',
@@ -23,6 +29,14 @@ export class Export3DMapDialogComponent implements AfterViewInit {
 	isPrintMeshLoaded = false
 	private printMesh: Mesh
 
+	printerOptions = ["prusaMk3s", "bambuA1", "prusaXL"]
+	selectedPrinter = "prusaXL"
+	private printers: { [key: string]: printer } = {
+		prusaMk3s: { x: 240, y: 200, numberOfColors: 1 },
+		bambuA1: { x: 0, y: 0, numberOfColors: 4 },
+		prusaXL: { x: 240, y: 200, numberOfColors: 5 }
+	}
+
 	constructor(private state: State<CcState>, private threeSceneService: ThreeSceneService) {}
 
 	ngAfterViewInit() {
@@ -31,6 +45,7 @@ export class Export3DMapDialogComponent implements AfterViewInit {
 
 	async createScene() {
 		const printPreviewScene = this.threeSceneService.scene.clone(true) as Scene
+		printPreviewScene.background = new Color(0xec_ed_dc)
 		const lights = printPreviewScene.children[3]
 		const camera = printPreviewScene.children[4] as PerspectiveCamera
 		printPreviewScene.children = [lights, camera]
@@ -38,6 +53,12 @@ export class Export3DMapDialogComponent implements AfterViewInit {
 
 		await this.updatePrintMesh()
 		printPreviewScene.add(this.printMesh)
+
+		//center the map - do this relative to the size of the map
+		this.printMesh.translateZ(-100)
+		this.printMesh.translateY(500)
+		this.printMesh.translateX(-500)
+		camera.position.set(1000, 700, 1200)
 
 		// Create a new renderer and set its size
 		const renderer = new WebGLRenderer()
@@ -60,13 +81,7 @@ export class Export3DMapDialogComponent implements AfterViewInit {
 	async updatePrintMesh(): Promise<void> {
 		this.isPrintMeshLoaded = false
 
-		const printerSideLengths = {
-			prusaMk3s: { x: 240, y: 200 },
-			bambuA1: { x: 0, y: 0 }
-		}
-		const printer = "prusaMk3s"
-
-		const width = Math.min(printerSideLengths[printer].x, printerSideLengths[printer].y)
+		const width = Math.min(this.printers[this.selectedPrinter].x, this.printers[this.selectedPrinter].y)
 		const geometryOptions = {
 			width,
 			frontText: "CodeCharta",
@@ -78,6 +93,7 @@ export class Export3DMapDialogComponent implements AfterViewInit {
 	}
 
 	async download3MFFile() {
+		//TODO: change extruder mapping
 		const compressed3mf = await serialize3mf(this.printMesh)
 		this.downloadFile(compressed3mf, "3mf")
 	}

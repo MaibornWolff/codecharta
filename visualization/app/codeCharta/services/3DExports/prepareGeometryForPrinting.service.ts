@@ -69,11 +69,26 @@ function prepareMap(map: BufferGeometry, geometryOptions): BufferGeometry {
 	map.rotateZ(-Math.PI / 2)
 	map.translate(width + geometryOptions.mapSideOffset, 0, geometryOptions.baseplateHeight)
 
-	//TODO: colors need to be grouped here
-	const mapColors = map.attributes.color
 	const newColors = []
-	for (let index = 0; index < mapColors.count; index++) {
-		newColors.push(1 - mapColors.getX(index), 1 - mapColors.getY(index), 1 - mapColors.getZ(index))
+
+	for (let index = 0; index < map.attributes.color.count; index++) {
+		const colorR = map.attributes.color.getX(index)
+		const colorG = map.attributes.color.getY(index)
+		const colorB = map.attributes.color.getZ(index)
+		let newColor: number[]
+
+		if (colorR === colorB && colorR === colorG && colorG === colorB) {
+			newColor = [0.5, 0.5, 0.5]
+		} else if (colorR > 0.75 && colorG > 0.75) {
+			newColor = [1, 1, 0]
+		} else if (colorR > 0.45 && colorG < 0.1) {
+			newColor = [1, 0, 0]
+		} else if (colorR < 5 && colorG > 0.6) {
+			newColor = [0, 1, 0]
+		} else {
+			console.error("Unknown color")
+		}
+		newColors.push(...newColor)
 	}
 	map.setAttribute("color", new Float32BufferAttribute(newColors, 3))
 
@@ -103,7 +118,7 @@ function baseplate(geometryOptions): Mesh {
 	geometry.translate(0, -width, 0)
 
 	// Create the material
-	const material = new MeshBasicMaterial({ color: 0x66_66_66 })
+	const material = new MeshBasicMaterial({ color: 0x80_80_80 })
 
 	// Create the mesh
 	const baseplateMesh = new Mesh(geometry, material)
