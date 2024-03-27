@@ -1,11 +1,10 @@
 @use "../../../../material/theme";
 
 .cc-export-3D-map-dialog .mat-mdc-dialog-container {
-	width: 360vw;
 	min-width: 300px;
 
 	#rendererContainer {
-		width: 100px;
-		height: 100px;
+		width: 500px;
+		height: 300px;
 	}
 }

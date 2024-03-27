@@ -4,22 +4,23 @@
 	<div #rendererContainer></div>
 
 	<div class="slider-container">
-		<mat-slider
-			(change)="onScaleChange()"
-			[max]="maxWidth/10"
-			discrete=true
-			min="10"
-			step="0.1">
-			<input #slider [(ngModel)]="wantedWidthInCm" matSliderThumb>
+		<mat-slider (change)="onScaleChange()" [max]="maxWidth / 10" discrete="true" min="10" step="0.1">
+			<input #slider [(ngModel)]="wantedWidthInCm" matSliderThumb />
 		</mat-slider>
 	</div>
 
 	<div>
-		<span>Width: {{(currentWidth / 10).toFixed(1)}}cm (max. {{(maxPrinterX / 10).toFixed(1)}})</span>
-		<br>
-		<span>Depth: {{(depth / 10).toFixed(1)}}cm (max. {{(maxPrinterY / 10).toFixed(1)}})</span>
-		<br>
-		<span>Height: {{(height / 10).toFixed(1)}}cm (max. {{(maxPrinterZ / 10).toFixed(1)}})</span>
+		<span>Width: {{ (currentWidth / 10).toFixed(1) }}cm (max. {{ (maxPrinterX / 10).toFixed(1) }})</span>
+		<br />
+		<span>Depth: {{ (depth / 10).toFixed(1) }}cm (max. {{ (maxPrinterY / 10).toFixed(1) }})</span>
+		<br />
+		<span>Height: {{ (height / 10).toFixed(1) }}cm (max. {{ (maxPrinterZ / 10).toFixed(1) }})</span>
+	</div>
+
+	<div>
+		<mat-form-field>
+			<input matInput [(ngModel)]="frontText" (input)="onFrontTextChange()" />
+		</mat-form-field>
 	</div>
 
 	<button (click)="download3MFFile()" [disabled]="!isPrintMeshLoaded" mat-button title="Download 3MF Button">

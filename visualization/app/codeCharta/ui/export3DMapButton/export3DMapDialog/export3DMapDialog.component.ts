@@ -1,6 +1,6 @@
 import { filesSelector } from "../../../state/store/files/files.selector"
 import { accumulatedDataSelector } from "../../../state/selectors/accumulatedData/accumulatedData.selector"
-import { prepareGeometryForPrinting, updateMapSize } from "../../../services/3DExports/prepareGeometryForPrinting.service"
+import { prepareGeometryForPrinting, updateFrontText, updateMapSize } from "../../../services/3DExports/prepareGeometryForPrinting.service"
 import { serialize3mf } from "../../../services/3DExports/serialize3mf.service"
 import { FileNameHelper } from "../../../util/fileNameHelper"
 import { isDeltaState } from "../../../model/files/files.helper"
@@ -28,6 +28,7 @@ interface printer {
 export class Export3DMapDialogComponent {
 	@ViewChild("rendererContainer") rendererContainer: ElementRef
 	isPrintMeshLoaded = false
+	frontText = "CodeCharta"
 
 	printerOptions = ["prusaMk3s", "bambuA1", "prusaXL"]
 	selectedPrinter = this.printerOptions[0]
@@ -38,9 +39,6 @@ export class Export3DMapDialogComponent {
 	}
 	maxPrinterX: number
 
-	/*
-	test: should test for size
-	 */
 	maxPrinterY: number
 	maxPrinterZ: number
 	maxWidth: number
@@ -67,6 +65,10 @@ export class Export3DMapDialogComponent {
 		updateMapSize(printMesh, this.currentWidth, this.wantedWidthInCm * 10)
 		this.updateCurrentSize(printMesh)
 	}
+	onFrontTextChange() {
+		const printMesh = (this.printPreviewScene as Scene).getObjectByName("PrintMesh") as Mesh
+		updateFrontText(printMesh, this.frontText, this.currentWidth)
+	}
 
 	async createScene() {
 		const printPreviewScene = new Scene()
@@ -83,6 +85,7 @@ export class Export3DMapDialogComponent {
 
 		const camera = new PerspectiveCamera(45, 1.15, 50, 200_000)
 		camera.name = "camera"
+		//camera.position.set(-50, -100, 300)
 		camera.position.set(-this.currentWidth * 0.5, -this.depth, this.height * 3)
 		camera.up = new Vector3(0, 0, 1)
 		printPreviewScene.add(camera)
@@ -105,7 +108,7 @@ export class Export3DMapDialogComponent {
 
 		const geometryOptions = {
 			width: this.wantedWidthInCm * 10,
-			frontText: "CodeCharta"
+			frontText: this.frontText
 		}
 		const printMesh = await prepareGeometryForPrinting(this.threeSceneService.getMapMesh().getThreeMesh(), geometryOptions)
 
