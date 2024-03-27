@@ -26,22 +26,15 @@ export async function prepareGeometryForPrinting(mapMesh: Mesh, geometryOptions:
 	printMesh.name = "PrintMesh"
 	printMesh.clear()
 
-	const oldMapMesh = mapMesh.geometry.clone()
-	oldMapMesh.rotateX(Math.PI / 2)
-	const map = prepareMap(oldMapMesh, geometryOptions)
-	map.rotateZ(-Math.PI / 2)
-	const newMapMesh: Mesh = mapMesh.clone() as Mesh
-	newMapMesh.clear()
-	newMapMesh.geometry = map
-	newMapMesh.name = "Map"
+	const newMapMesh = createMapMesh(mapMesh, geometryOptions)
 	printMesh.add(newMapMesh)
 
-	const baseplateMesh = baseplate(geometryOptions)
+	const baseplateMesh = createBaseplateMesh(geometryOptions)
 	printMesh.add(baseplateMesh)
 
 	if (geometryOptions.frontText) {
 		try {
-			const frontTextMesh = await frontText(geometryOptions)
+			const frontTextMesh = await createFrontText(geometryOptions)
 			printMesh.attach(frontTextMesh)
 		} catch (error) {
 			console.error("Error creating text:", error)
@@ -55,39 +48,38 @@ export async function prepareGeometryForPrinting(mapMesh: Mesh, geometryOptions:
 }
 
 export function updateMapSize(printMesh: Mesh, currentWidth: number, wantedWidth: number) {
-	printMesh.traverse(child => {
+	printMesh.traverse(object => {
+		if (!(object instanceof Mesh)) {
+			return
+		}
+		const child = object as Mesh
 		switch (child.name) {
 			case "Map": {
-				const map = (child as Mesh).geometry
+				const map = child.geometry
 				const scale = (wantedWidth - 2 * mapSideOffset) / (currentWidth - 2 * mapSideOffset)
 				map.scale(scale, scale, scale)
-
 				break
 			}
-			case "Baseplate":
-				printMesh.add(baseplate({ width: wantedWidth }))
-				printMesh.remove(child)
-
+			case "Baseplate": {
+				const baseplateGeometry: BufferGeometry = createBaseplateGeometry({ width: wantedWidth })
+				child.geometry = baseplateGeometry
 				break
-
+			}
 			case "FrontText": {
-				const text = (child as Mesh).geometry
+				const text = child.geometry
 				text.translate(0, -(wantedWidth - currentWidth) / 2, 0)
-
 				break
 			}
 			case "MW Logo": {
-				const logo = (child as Mesh).geometry
+				const logo = child.geometry
 				logo.translate((wantedWidth - currentWidth) / 2, -(wantedWidth - currentWidth) / 2, 0)
-
 				break
 			}
-			// No default
 		}
 	})
 }
 
-function prepareMap(map: BufferGeometry, geometryOptions: GeometryOptions): BufferGeometry {
+function createMapGeometry(map: BufferGeometry, geometryOptions: GeometryOptions): BufferGeometry {
 	const width = geometryOptions.width - 2 * mapSideOffset
 
 	//scale
@@ -123,7 +115,27 @@ function prepareMap(map: BufferGeometry, geometryOptions: GeometryOptions): Buff
 	return map
 }
 
-function baseplate(geometryOptions: GeometryOptions): Mesh {
+function createMapMesh(mapMesh: Mesh, geometryOptions: GeometryOptions): Mesh {
+	const oldMapMesh = mapMesh.geometry.clone()
+	oldMapMesh.rotateX(Math.PI / 2)
+	const map = createMapGeometry(oldMapMesh, geometryOptions)
+	map.rotateZ(-Math.PI / 2)
+	const newMapMesh: Mesh = mapMesh.clone() as Mesh
+	newMapMesh.clear()
+	newMapMesh.geometry = map
+	newMapMesh.name = "Map"
+	return newMapMesh
+}
+
+function createBaseplateMesh(geometryOptions: GeometryOptions): Mesh {
+	const geometry = createBaseplateGeometry(geometryOptions)
+	const material = new MeshBasicMaterial({ color: 0x80_80_80 })
+	const baseplateMesh = new Mesh(geometry, material)
+	baseplateMesh.name = "Baseplate"
+	return baseplateMesh
+}
+
+function createBaseplateGeometry(geometryOptions: GeometryOptions): BufferGeometry {
 	let edgeRadius = 5 // Adjust this value to change the roundness of the corners
 	const maxRoundRadius = Math.sqrt(2 * Math.pow(mapSideOffset, 2)) / (Math.sqrt(2) - 1) - 1
 	if (maxRoundRadius < edgeRadius) {
@@ -143,23 +155,23 @@ function baseplate(geometryOptions: GeometryOptions): Mesh {
 	const geometry = new ExtrudeGeometry(shape, { depth: baseplateHeight, bevelEnabled: false })
 	geometry.translate(-width / 2, -width / 2 - frontTextSize, -baseplateHeight)
 
-	// Create the material
-	const material = new MeshBasicMaterial({ color: 0x80_80_80 })
-
-	// Create the mesh
-	const baseplateMesh = new Mesh(geometry, material)
-	baseplateMesh.name = "Baseplate"
-
-	return baseplateMesh
+	return geometry
 }
 
-async function frontText(geometryOptions: GeometryOptions): Promise<Mesh> {
+export async function updateFrontText(printMesh: Mesh, frontText: string, width) {
+	printMesh.remove(printMesh.getObjectByName("FrontText"))
+	const text = await createFrontText({ frontText, width })
+	printMesh.attach(text)
+}
+
+async function createFrontText(geometryOptions: GeometryOptions): Promise<Mesh> {
 	const textGeometry = await createTextGeometry(geometryOptions.frontText)
+	textGeometry.center()
+
 	//calculate the bounding box of the text
 	textGeometry.computeBoundingBox()
-	const textWidth = textGeometry.boundingBox.max.x - textGeometry.boundingBox.min.x
 	const textDepth = textGeometry.boundingBox.max.y - textGeometry.boundingBox.min.y
-	textGeometry.translate(-textWidth / 2, -textDepth / 2 - (geometryOptions.width - mapSideOffset) / 2, 0)
+	textGeometry.translate(0, -textDepth / 2 - (geometryOptions.width - mapSideOffset) / 2, 0)
 
 	const material = new MeshBasicMaterial({ color: 0xff_ff_ff })
 	const textMesh = new Mesh(textGeometry, material)
