@@ -7,9 +7,9 @@ import { CopyToClipboardService } from "./copyToClipboard.service"
 	encapsulation: ViewEncapsulation.None
 })
 export class CopyToClipboardButtonComponent {
-	constructor(private service: CopyToClipboardService) {}
+	constructor(private copyToClipboardService: CopyToClipboardService) {}
 
 	async copyNamesToClipBoard() {
-		await navigator.clipboard.writeText(this.service.getClipboardText())
+		await navigator.clipboard.writeText(this.copyToClipboardService.getClipboardText())
 	}
 }

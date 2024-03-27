@@ -1,4 +1,5 @@
 <mat-expansion-panel
+	#matExpansionPanel
 	*ngFor="let customConfigItemGroup of customConfigItemGroups | keyvalue"
 	[expanded]="isGroupExpanded(customConfigItemGroup.key) || searchTerm.length > 0"
 >

@@ -9,15 +9,16 @@ import { getFilenamesWithHighestMetrics } from "./util/getFilenamesWithHighestMe
 export class CopyToClipboardService {
 	constructor(private state: State<CcState>) {}
 
+	getClipboardText(): string {
+		const node = this.getUnifiedMapNode()
+		const attributeDescriptors = this.state.getValue().fileSettings.attributeDescriptors
+		const filesByAttribute = getFilenamesWithHighestMetrics(node, attributeDescriptors)
+
+		return buildTextOfFiles(filesByAttribute)
+	}
+
 	private getUnifiedMapNode() {
 		const { unifiedMapNode } = accumulatedDataSelector(this.state.getValue())
 		return unifiedMapNode
-	}
-
-	getClipboardText(): string {
-		const node = this.getUnifiedMapNode()
-		const filesByAttribute = getFilenamesWithHighestMetrics(node)
-
-		return buildTextOfFiles(filesByAttribute)
 	}
 }
