@@ -9,33 +9,35 @@ import {
 	Shape,
 	TextGeometry
 } from "three"
-import { SVGLoader } from "three/examples/jsm/loaders/SVGLoader"
-import { BufferGeometryUtils } from "three/examples/jsm/utils/BufferGeometryUtils"
+import {SVGLoader} from "three/examples/jsm/loaders/SVGLoader"
+import {BufferGeometryUtils} from "three/examples/jsm/utils/BufferGeometryUtils"
+
+const frontTextSize = 12
+const mapSideOffset = 10
+const baseplateHeight = 1
 
 export interface GeometryOptions {
 	width: number
 	frontText?: string
-	zScale?: number
-	mapSideOffset?: number
-	baseplateHeight?: number
 }
 
 export async function prepareGeometryForPrinting(mapMesh: Mesh, geometryOptions: GeometryOptions): Promise<Mesh> {
-	geometryOptions.mapSideOffset = geometryOptions.mapSideOffset || 10
-	geometryOptions.baseplateHeight = geometryOptions.baseplateHeight || 1
-	geometryOptions.zScale = geometryOptions.zScale || 1
-
 	const printMesh: Mesh = new Mesh()
+	printMesh.name = "PrintMesh"
 	printMesh.clear()
 
-	const map = prepareMap(mapMesh.geometry.clone(), geometryOptions)
+	const oldMapMesh = mapMesh.geometry.clone()
+	oldMapMesh.rotateX(Math.PI / 2)
+	const map = prepareMap(oldMapMesh, geometryOptions)
+	map.rotateZ(-Math.PI / 2)
 	const newMapMesh: Mesh = mapMesh.clone() as Mesh
 	newMapMesh.clear()
 	newMapMesh.geometry = map
-	printMesh.attach(newMapMesh)
+	newMapMesh.name = "Map"
+	printMesh.add(newMapMesh)
 
 	const baseplateMesh = baseplate(geometryOptions)
-	printMesh.attach(baseplateMesh)
+	printMesh.add(baseplateMesh)
 
 	if (geometryOptions.frontText) {
 		try {
@@ -49,25 +51,43 @@ export async function prepareGeometryForPrinting(mapMesh: Mesh, geometryOptions:
 	const mwLogo = await createMWLogo(geometryOptions)
 	printMesh.attach(mwLogo)
 
-	printMesh.rotation.x = -Math.PI / 2
-	printMesh.rotation.z = Math.PI / 2
-	printMesh.scale.set(5, 5, 5)
 	return printMesh
 }
 
-function prepareMap(map: BufferGeometry, geometryOptions): BufferGeometry {
-	const width = geometryOptions.width - 2 * geometryOptions.mapSideOffset
+export function updateMapSize(printMesh: Mesh, currentWidth: number, wantedWidth: number) {
+	printMesh.traverse((child) => {
+		if (child.name === "Map") {
+			const map = (child as Mesh).geometry
+			const scale = (wantedWidth - 2 * mapSideOffset) / (currentWidth - 2 * mapSideOffset)
+			map.scale(scale, scale, scale)
+		} else if (child.name === "Baseplate") {
+			/*const baseplate = (child as Mesh).geometry
+			const widthScale = wantedWidth / currentWidth
+			const depthScale = (wantedWidth + mapSideOffset) / (currentWidth + mapSideOffset)
+			baseplate.translate(0, mapSideOffset/2, 0)
+			baseplate.scale(widthScale, depthScale, 1)
+			baseplate.translate(0, -mapSideOffset/2, 0)//*/
+			printMesh.add(baseplate({width: wantedWidth}))
+			printMesh.remove(child)//*/
+		} else if (child.name === "FrontText") {
+			const text = (child as Mesh).geometry
+			text.translate(0, -(wantedWidth - currentWidth) / 2, 0)
+		} else if (child.name === "MW Logo") {
+			const logo = (child as Mesh).geometry
+			logo.translate((wantedWidth - currentWidth) / 2, -(wantedWidth - currentWidth) / 2, 0)
+		}
+	})
+}
 
-	//rotate 90 degrees around x-axis so map is horizontal
-	map.rotateX(Math.PI / 2)
+function prepareMap(map: BufferGeometry, geometryOptions: GeometryOptions): BufferGeometry {
+	const width = geometryOptions.width - 2 * mapSideOffset
 
 	//scale
 	const normalizeFactor = map.boundingBox.max.x
-	const xyScale = width / normalizeFactor
-	map.scale(xyScale, xyScale, geometryOptions.zScale * xyScale)
+	const scale = width / normalizeFactor
+	map.scale(scale, scale, scale)
 
-	map.rotateZ(-Math.PI / 2)
-	map.translate(width + geometryOptions.mapSideOffset, 0, geometryOptions.baseplateHeight)
+	map.translate(-width / 2, width / 2, 0)
 
 	const newColors = []
 
@@ -95,9 +115,7 @@ function prepareMap(map: BufferGeometry, geometryOptions): BufferGeometry {
 	return map
 }
 
-function baseplate(geometryOptions): Mesh {
-	const mapSideOffset = geometryOptions.mapSideOffset
-
+function baseplate(geometryOptions: GeometryOptions): Mesh {
 	let edgeRadius = 5 // Adjust this value to change the roundness of the corners
 	const maxRoundRadius = Math.sqrt(2 * Math.pow(mapSideOffset, 2)) / (Math.sqrt(2) - 1) - 1
 	if (maxRoundRadius < edgeRadius) {
@@ -109,16 +127,16 @@ function baseplate(geometryOptions): Mesh {
 	const width = geometryOptions.width
 
 	shape.absarc(width - edgeRadius, edgeRadius, edgeRadius, Math.PI * 1.5, Math.PI * 2, false)
-	shape.absarc(width - edgeRadius, mapSideOffset + width - edgeRadius, edgeRadius, 0, Math.PI * 0.5, false)
-	shape.absarc(edgeRadius, mapSideOffset + width - edgeRadius, edgeRadius, Math.PI * 0.5, Math.PI, false)
+	shape.absarc(width - edgeRadius, frontTextSize + width - edgeRadius, edgeRadius, 0, Math.PI * 0.5, false)
+	shape.absarc(edgeRadius, frontTextSize + width - edgeRadius, edgeRadius, Math.PI * 0.5, Math.PI, false)
 	shape.absarc(edgeRadius, edgeRadius, edgeRadius, Math.PI, Math.PI * 1.5, false)
 
 	// Create the geometry
-	const geometry = new ExtrudeGeometry(shape, { depth: geometryOptions.baseplateHeight, bevelEnabled: false })
-	geometry.translate(0, -width, 0)
+	const geometry = new ExtrudeGeometry(shape, {depth: baseplateHeight, bevelEnabled: false})
+	geometry.translate(-width / 2, -width / 2 - frontTextSize, -baseplateHeight)
 
 	// Create the material
-	const material = new MeshBasicMaterial({ color: 0x80_80_80 })
+	const material = new MeshBasicMaterial({color: 0x80_80_80})
 
 	// Create the mesh
 	const baseplateMesh = new Mesh(geometry, material)
@@ -127,17 +145,15 @@ function baseplate(geometryOptions): Mesh {
 	return baseplateMesh
 }
 
-async function frontText(geometryOptions): Promise<Mesh> {
+async function frontText(geometryOptions: GeometryOptions): Promise<Mesh> {
 	const textGeometry = await createTextGeometry(geometryOptions.frontText)
 	//calculate the bounding box of the text
 	textGeometry.computeBoundingBox()
 	const textWidth = textGeometry.boundingBox.max.x - textGeometry.boundingBox.min.x
-	const textHeight = textGeometry.boundingBox.max.y - textGeometry.boundingBox.min.y
-	const x = (geometryOptions.width - textWidth) / 2
-	const y = -geometryOptions.width + textHeight / 2
-	textGeometry.translate(x, y, geometryOptions.baseplateHeight)
+	const textDepth = textGeometry.boundingBox.max.y - textGeometry.boundingBox.min.y
+	textGeometry.translate(-textWidth / 2, -textDepth / 2 - (geometryOptions.width - mapSideOffset) / 2, 0)
 
-	const material = new MeshBasicMaterial({ color: 0xff_ff_ff })
+	const material = new MeshBasicMaterial({color: 0xff_ff_ff})
 	const textMesh = new Mesh(textGeometry, material)
 	textMesh.name = "FrontText"
 	return textMesh
@@ -151,7 +167,7 @@ async function createTextGeometry(text: string): Promise<TextGeometry> {
 			function (font) {
 				const textGeometry = new TextGeometry(text, {
 					font,
-					size: 12,
+					size: frontTextSize,
 					height: 1
 				})
 				resolve(textGeometry)
@@ -165,18 +181,19 @@ async function createTextGeometry(text: string): Promise<TextGeometry> {
 	})
 }
 
-async function createMWLogo(geometryOptions): Promise<Mesh> {
+async function createMWLogo(geometryOptions: GeometryOptions): Promise<Mesh> {
 	const mwLogoGeometry = await createSvgGeometry("mw_logo.svg", 1)
 
+	mwLogoGeometry.center()
 	mwLogoGeometry.rotateZ(Math.PI)
 	mwLogoGeometry.scale(0.13, 0.13, 1)
-	mwLogoGeometry.translate(
-		geometryOptions.width + geometryOptions.mapSideOffset + 5,
-		-geometryOptions.width + geometryOptions.mapSideOffset + 43,
-		geometryOptions.baseplateHeight
-	)
 
-	const material = new MeshBasicMaterial({ color: 0xff_ff_ff, side: DoubleSide })
+	mwLogoGeometry.computeBoundingBox()
+	const logoWidth = mwLogoGeometry.boundingBox.max.x - mwLogoGeometry.boundingBox.min.x
+	const logoDepth = mwLogoGeometry.boundingBox.max.y - mwLogoGeometry.boundingBox.min.y
+	mwLogoGeometry.translate(geometryOptions.width / 2 - logoWidth - mapSideOffset, -logoDepth / 2 - (geometryOptions.width - mapSideOffset) / 2, 0)
+
+	const material = new MeshBasicMaterial({color: 0xff_ff_ff, side: DoubleSide})
 	const logoMesh = new Mesh(mwLogoGeometry, material)
 	logoMesh.name = "MW Logo"
 	return logoMesh

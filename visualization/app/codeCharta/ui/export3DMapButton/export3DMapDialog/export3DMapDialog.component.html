@@ -3,6 +3,25 @@
 <div class="cc-export-3D-map-dialog-content">
 	<div #rendererContainer></div>
 
+	<div class="slider-container">
+		<mat-slider
+			(change)="onScaleChange()"
+			[max]="maxWidth/10"
+			discrete=true
+			min="10"
+			step="0.1">
+			<input #slider [(ngModel)]="wantedWidthInCm" matSliderThumb>
+		</mat-slider>
+	</div>
+
+	<div>
+		<span>Width: {{(currentWidth / 10).toFixed(1)}}cm (max. {{(maxPrinterX / 10).toFixed(1)}})</span>
+		<br>
+		<span>Depth: {{(depth / 10).toFixed(1)}}cm (max. {{(maxPrinterY / 10).toFixed(1)}})</span>
+		<br>
+		<span>Height: {{(height / 10).toFixed(1)}}cm (max. {{(maxPrinterZ / 10).toFixed(1)}})</span>
+	</div>
+
 	<button (click)="download3MFFile()" [disabled]="!isPrintMeshLoaded" mat-button title="Download 3MF Button">
 		<span><i class="fa fa-download"></i> Download 3MF</span>
 	</button>
