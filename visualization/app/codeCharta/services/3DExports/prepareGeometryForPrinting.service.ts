@@ -9,8 +9,8 @@ import {
 	Shape,
 	TextGeometry
 } from "three"
-import {SVGLoader} from "three/examples/jsm/loaders/SVGLoader"
-import {BufferGeometryUtils} from "three/examples/jsm/utils/BufferGeometryUtils"
+import { SVGLoader } from "three/examples/jsm/loaders/SVGLoader"
+import { BufferGeometryUtils } from "three/examples/jsm/utils/BufferGeometryUtils"
 
 const frontTextSize = 12
 const mapSideOffset = 10
@@ -55,26 +55,34 @@ export async function prepareGeometryForPrinting(mapMesh: Mesh, geometryOptions:
 }
 
 export function updateMapSize(printMesh: Mesh, currentWidth: number, wantedWidth: number) {
-	printMesh.traverse((child) => {
-		if (child.name === "Map") {
-			const map = (child as Mesh).geometry
-			const scale = (wantedWidth - 2 * mapSideOffset) / (currentWidth - 2 * mapSideOffset)
-			map.scale(scale, scale, scale)
-		} else if (child.name === "Baseplate") {
-			/*const baseplate = (child as Mesh).geometry
-			const widthScale = wantedWidth / currentWidth
-			const depthScale = (wantedWidth + mapSideOffset) / (currentWidth + mapSideOffset)
-			baseplate.translate(0, mapSideOffset/2, 0)
-			baseplate.scale(widthScale, depthScale, 1)
-			baseplate.translate(0, -mapSideOffset/2, 0)//*/
-			printMesh.add(baseplate({width: wantedWidth}))
-			printMesh.remove(child)//*/
-		} else if (child.name === "FrontText") {
-			const text = (child as Mesh).geometry
-			text.translate(0, -(wantedWidth - currentWidth) / 2, 0)
-		} else if (child.name === "MW Logo") {
-			const logo = (child as Mesh).geometry
-			logo.translate((wantedWidth - currentWidth) / 2, -(wantedWidth - currentWidth) / 2, 0)
+	printMesh.traverse(child => {
+		switch (child.name) {
+			case "Map": {
+				const map = (child as Mesh).geometry
+				const scale = (wantedWidth - 2 * mapSideOffset) / (currentWidth - 2 * mapSideOffset)
+				map.scale(scale, scale, scale)
+
+				break
+			}
+			case "Baseplate":
+				printMesh.add(baseplate({ width: wantedWidth }))
+				printMesh.remove(child)
+
+				break
+
+			case "FrontText": {
+				const text = (child as Mesh).geometry
+				text.translate(0, -(wantedWidth - currentWidth) / 2, 0)
+
+				break
+			}
+			case "MW Logo": {
+				const logo = (child as Mesh).geometry
+				logo.translate((wantedWidth - currentWidth) / 2, -(wantedWidth - currentWidth) / 2, 0)
+
+				break
+			}
+			// No default
 		}
 	})
 }
@@ -132,11 +140,11 @@ function baseplate(geometryOptions: GeometryOptions): Mesh {
 	shape.absarc(edgeRadius, edgeRadius, edgeRadius, Math.PI, Math.PI * 1.5, false)
 
 	// Create the geometry
-	const geometry = new ExtrudeGeometry(shape, {depth: baseplateHeight, bevelEnabled: false})
+	const geometry = new ExtrudeGeometry(shape, { depth: baseplateHeight, bevelEnabled: false })
 	geometry.translate(-width / 2, -width / 2 - frontTextSize, -baseplateHeight)
 
 	// Create the material
-	const material = new MeshBasicMaterial({color: 0x80_80_80})
+	const material = new MeshBasicMaterial({ color: 0x80_80_80 })
 
 	// Create the mesh
 	const baseplateMesh = new Mesh(geometry, material)
@@ -153,7 +161,7 @@ async function frontText(geometryOptions: GeometryOptions): Promise<Mesh> {
 	const textDepth = textGeometry.boundingBox.max.y - textGeometry.boundingBox.min.y
 	textGeometry.translate(-textWidth / 2, -textDepth / 2 - (geometryOptions.width - mapSideOffset) / 2, 0)
 
-	const material = new MeshBasicMaterial({color: 0xff_ff_ff})
+	const material = new MeshBasicMaterial({ color: 0xff_ff_ff })
 	const textMesh = new Mesh(textGeometry, material)
 	textMesh.name = "FrontText"
 	return textMesh
@@ -191,9 +199,13 @@ async function createMWLogo(geometryOptions: GeometryOptions): Promise<Mesh> {
 	mwLogoGeometry.computeBoundingBox()
 	const logoWidth = mwLogoGeometry.boundingBox.max.x - mwLogoGeometry.boundingBox.min.x
 	const logoDepth = mwLogoGeometry.boundingBox.max.y - mwLogoGeometry.boundingBox.min.y
-	mwLogoGeometry.translate(geometryOptions.width / 2 - logoWidth - mapSideOffset, -logoDepth / 2 - (geometryOptions.width - mapSideOffset) / 2, 0)
+	mwLogoGeometry.translate(
+		geometryOptions.width / 2 - logoWidth - mapSideOffset,
+		-logoDepth / 2 - (geometryOptions.width - mapSideOffset) / 2,
+		0
+	)
 
-	const material = new MeshBasicMaterial({color: 0xff_ff_ff, side: DoubleSide})
+	const material = new MeshBasicMaterial({ color: 0xff_ff_ff, side: DoubleSide })
 	const logoMesh = new Mesh(mwLogoGeometry, material)
 	logoMesh.name = "MW Logo"
 	return logoMesh

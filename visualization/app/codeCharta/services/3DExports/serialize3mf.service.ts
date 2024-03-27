@@ -1,8 +1,8 @@
-import {strToU8, zipSync} from "fflate"
-import {Mesh, MeshBasicMaterial} from "three"
+import { strToU8, zipSync } from "fflate"
+import { Mesh, MeshBasicMaterial } from "three"
 
 export async function serialize3mf(mesh: Mesh): Promise<string> {
-	const {modelConfig, vertices, triangles} = await serializeMeshAndBuildModelConfig(mesh)
+	const { modelConfig, vertices, triangles } = await serializeMeshAndBuildModelConfig(mesh)
 	const model = buildModel(vertices, triangles)
 	const contentType = buildContentType()
 
@@ -10,7 +10,7 @@ export async function serialize3mf(mesh: Mesh): Promise<string> {
 		"3D": {
 			"3dmodel.model": strToU8(model)
 		},
-		"rels": {
+		rels: {
 			".rels": strToU8(buildRels())
 		},
 		Metadata: {
@@ -27,10 +27,12 @@ export async function serialize3mf(mesh: Mesh): Promise<string> {
 }
 
 function buildRels(): string {
-	return '<?xml version="1.0" encoding="UTF-8"?>' +
+	return (
+		'<?xml version="1.0" encoding="UTF-8"?>' +
 		'   <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' +
 		'   <Relationship Target="/3D/3dmodel.model" Id="rel-1" Type="http://schemas.microsoft.com/3dmanufacturing/2013/01/3dmodel"/>' +
-		'</Relationships>'
+		"</Relationships>"
+	)
 }
 
 function buildContentType(): string {
@@ -57,15 +59,14 @@ function serializeMeshAndBuildModelConfig(mesh: Mesh): {
 	const colorToExtruder: Map<string, number> = new Map()
 	let volumeCount = 1
 
-
-	for (const child of (mesh.children as Mesh[])) {
+	for (const child of mesh.children as Mesh[]) {
 		const colorNodeGroups = groupVerticesByColor(child)
 		const vertexIndexToNewVertexIndex: Map<number, number> = new Map()
 
-		for (const {color, vertexIndexes} of colorNodeGroups) {
+		for (const { color, vertexIndexes } of colorNodeGroups) {
 			const firstTriangleId = triangles.length
 
-			const {firstVertexId, lastVertexId} = buildVertices(
+			const { firstVertexId, lastVertexId } = buildVertices(
 				vertices,
 				vertexToNewVertexIndex,
 				vertexIndexToNewVertexIndex,
@@ -93,7 +94,7 @@ function buildVolume(color: string, firstTriangleId, lastTriangleId, colorToExtr
 		colorToExtruder.set(color, colorToExtruder.size + 1)
 	}
 	const extruder = colorToExtruder.get(color)
-	const volumeName = (name && name !== "") ? name : color
+	const volumeName = name === "Map" ? `${name} 0x${color}` : name
 	volume += `   <metadata type="volume" key="name" value="${volumeName}"/>\n`
 	volume += `   <metadata type="volume" key="extruder" value="${extruder}"/>\n`
 	volume += `   <metadata type="volume" key="source_object_id" value="1"/>\n`
@@ -104,10 +105,11 @@ function buildVolume(color: string, firstTriangleId, lastTriangleId, colorToExtr
 }
 
 function buildTriangles(triangles, vertexIndexToNewVertexIndex, geometry, firstVertexId, lastVertexId): void {
-
 	if (!geometry.index) {
 		for (let index = 0; index < geometry.attributes.position.count; index += 3) {
-			const triangle = `<triangle v1="${vertexIndexToNewVertexIndex.get(index)}" v2="${vertexIndexToNewVertexIndex.get(index + 1)}" v3="${vertexIndexToNewVertexIndex.get(index + 2)}" />\n`
+			const triangle = `<triangle v1="${vertexIndexToNewVertexIndex.get(index)}" v2="${vertexIndexToNewVertexIndex.get(
+				index + 1
+			)}" v3="${vertexIndexToNewVertexIndex.get(index + 2)}" />\n`
 			triangles.push(triangle)
 		}
 	} else {
@@ -152,7 +154,6 @@ function buildVertices(
 			vertices.push(vertexString)
 			vertexToNewVertexIndex.set(vertexString, vertices.length - 1)
 			vertexIndexToNewVertexIndex.set(vertexIndex, vertices.length - 1)
-
 		} else {
 			vertexIndexToNewVertexIndex.set(vertexIndex, vertexToNewVertexIndex.get(vertexString))
 		}
@@ -185,30 +186,26 @@ function groupVerticesByColor(mesh: Mesh): { color: string; vertexIndexes: numbe
 			if (colorNodeGroup) {
 				colorNodeGroup.vertexIndexes.push(index)
 			} else {
-				colorNodeGroups.push({color: hexColorString, vertexIndexes: [index]})
+				colorNodeGroups.push({ color: hexColorString, vertexIndexes: [index] })
 			}
 		}
 	} else {
 		const material = mesh.material as MeshBasicMaterial
 		const hexColorString = material.color.getHexString()
 		const colorNodeGroup = colorNodeGroups.find(cng => cng.color === hexColorString)
-		const indexArray = Array.from({length: mesh.geometry.attributes.position.count}, (_, index) => index)
+		const indexArray = Array.from({ length: mesh.geometry.attributes.position.count }, (_, index) => index)
 
 		if (colorNodeGroup) {
 			colorNodeGroup.vertexIndexes.push(...indexArray)
 		} else {
-			colorNodeGroups.push({color: hexColorString, vertexIndexes: indexArray})
+			colorNodeGroups.push({ color: hexColorString, vertexIndexes: indexArray })
 		}
 	}
 	return colorNodeGroups
 }
 
 function processColorArray(color, index: number): string {
-	const colorsArray = [
-		color.getX(index),
-		color.getY(index),
-		color.getZ(index)
-	]
+	const colorsArray = [color.getX(index), color.getY(index), color.getZ(index)]
 
 	if (colorsArray[0] === colorsArray[1] && colorsArray[1] === colorsArray[2]) {
 		colorsArray[0] = 0.5
