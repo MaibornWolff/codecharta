@@ -13,13 +13,18 @@ import { SVGLoader } from "three/examples/jsm/loaders/SVGLoader"
 import { BufferGeometryUtils } from "three/examples/jsm/utils/BufferGeometryUtils"
 
 const frontTextSize = 12
+const frontTextHeight = 1
 const mapSideOffset = 10
 const baseplateHeight = 1
 const logoSize = 15
 const logoHeight = 1
+const backTextSize = 6
 
 export interface GeometryOptions {
 	width: number
+	areaMetricName: string
+	heightMetricName: string
+	colorMetricName: string
 	frontText?: string
 }
 
@@ -31,20 +36,23 @@ export async function createPrintPreviewMesh(mapMesh: Mesh, geometryOptions: Geo
 	const newMapMesh = createMapMesh(mapMesh, geometryOptions)
 	printMesh.add(newMapMesh)
 
-	const baseplateMesh = createBaseplateMesh(geometryOptions)
+	const baseplateMesh = createBaseplateMesh(geometryOptions.width)
 	printMesh.add(baseplateMesh)
 
 	if (geometryOptions.frontText) {
 		try {
-			const frontTextMesh = await createFrontText(geometryOptions)
+			const frontTextMesh = await createFrontText(geometryOptions.frontText, geometryOptions.width)
 			printMesh.attach(frontTextMesh)
 		} catch (error) {
 			console.error("Error creating text:", error)
 		}
 	}
 
-	const mwLogo = await createMWLogo(geometryOptions)
-	printMesh.attach(mwLogo)
+	const mwLogo = await createFrontMWLogo(geometryOptions)
+	printMesh.add(mwLogo)
+
+	const backTextMesh = await createMetricsMesh(geometryOptions)
+	printMesh.add(backTextMesh)
 
 	return printMesh
 }
@@ -56,6 +64,9 @@ export function updateMapSize(printMesh: Mesh, currentWidth: number, wantedWidth
 		}
 		const child = object as Mesh
 		switch (child.name) {
+			case "PrintMesh":{
+				break
+			}
 			case "Map": {
 				const map = child.geometry
 				const scale = (wantedWidth - 2 * mapSideOffset) / (currentWidth - 2 * mapSideOffset)
@@ -63,7 +74,7 @@ export function updateMapSize(printMesh: Mesh, currentWidth: number, wantedWidth
 				break
 			}
 			case "Baseplate": {
-				const baseplateGeometry: BufferGeometry = createBaseplateGeometry({ width: wantedWidth })
+				const baseplateGeometry: BufferGeometry = createBaseplateGeometry(wantedWidth)
 				child.geometry = baseplateGeometry
 				break
 			}
@@ -72,14 +83,22 @@ export function updateMapSize(printMesh: Mesh, currentWidth: number, wantedWidth
 				text.translate(0, -(wantedWidth - currentWidth) / 2, 0)
 				break
 			}
-			case "MW Logo": {
+			case "Front MW Logo": {
 				const logo = child.geometry
 				logo.translate((wantedWidth - currentWidth) / 2, -(wantedWidth - currentWidth) / 2, 0)
 				break
 			}
-			case "Custom Logo":
+			case "Custom Logo": {
 				updateCustomLogoPosition(child, wantedWidth)
 				break
+			}
+			case "Metric Text": {
+				child.visible = scaleAndCenterMetricText(child, wantedWidth)
+				break
+			}
+			default: {
+				console.warn("Unknown object:", child.name, "Did you forget to add it to the updateMapSize method?")
+			}
 		}
 	})
 }
@@ -114,7 +133,7 @@ export function flipCustomLogo(printMesh: Mesh) {
 
 export async function updateFrontText(printMesh: Mesh, frontText: string, width) {
 	printMesh.remove(printMesh.getObjectByName("FrontText"))
-	const text = await createFrontText({ frontText, width })
+	const text = await createFrontText(frontText, width)
 	printMesh.attach(text)
 }
 
@@ -165,14 +184,14 @@ function createMapGeometry(map: BufferGeometry, geometryOptions: GeometryOptions
 	return map
 }
 
-function createBaseplateMesh(geometryOptions: GeometryOptions): Mesh {
-	const geometry = createBaseplateGeometry(geometryOptions)
+function createBaseplateMesh(width: number): Mesh {
+	const geometry = createBaseplateGeometry(width)
 	const material = new MeshBasicMaterial({ color: 0x80_80_80 })
 	const baseplateMesh = new Mesh(geometry, material)
 	baseplateMesh.name = "Baseplate"
 	return baseplateMesh
 }
-function createBaseplateGeometry(geometryOptions: GeometryOptions): BufferGeometry {
+function createBaseplateGeometry(width: number): BufferGeometry {
 	let edgeRadius = 5 // Adjust this value to change the roundness of the corners
 	const maxRoundRadius = Math.sqrt(2 * Math.pow(mapSideOffset, 2)) / (Math.sqrt(2) - 1) - 1
 	if (maxRoundRadius < edgeRadius) {
@@ -181,7 +200,6 @@ function createBaseplateGeometry(geometryOptions: GeometryOptions): BufferGeomet
 
 	// Create the shape
 	const shape = new Shape()
-	const width = geometryOptions.width
 
 	shape.absarc(width - edgeRadius, edgeRadius, edgeRadius, Math.PI * 1.5, Math.PI * 2, false)
 	shape.absarc(width - edgeRadius, frontTextSize + width - edgeRadius, edgeRadius, 0, Math.PI * 0.5, false)
@@ -195,21 +213,97 @@ function createBaseplateGeometry(geometryOptions: GeometryOptions): BufferGeomet
 	return geometry
 }
 
-async function createFrontText(geometryOptions: GeometryOptions): Promise<Mesh> {
-	const textGeometry = await createTextGeometry(geometryOptions.frontText)
+async function createFrontText(frontText: string, width: number): Promise<Mesh> {
+	const textGeometry = await createTextGeometry(frontText, frontTextSize, frontTextHeight)
 	textGeometry.center()
 
 	//calculate the bounding box of the text
 	textGeometry.computeBoundingBox()
 	const textDepth = textGeometry.boundingBox.max.y - textGeometry.boundingBox.min.y
-	textGeometry.translate(0, -textDepth / 2 - (geometryOptions.width - mapSideOffset) / 2, logoHeight / 2)
+	textGeometry.translate(0, -textDepth / 2 - (width - mapSideOffset) / 2, logoHeight / 2)
 
 	const material = new MeshBasicMaterial({ color: 0xff_ff_ff })
 	const textMesh = new Mesh(textGeometry, material)
 	textMesh.name = "FrontText"
 	return textMesh
 }
-async function createTextGeometry(text: string): Promise<TextGeometry> {
+async function createMetricsMesh(geometryOptions: GeometryOptions): Promise<Mesh> {
+	const areaIcon = "area_icon_for_3D_print.svg"
+	const areaIconScale = 10
+	const areaText = `${geometryOptions.areaMetricName} max. TODO`
+
+	const heightIcon = "height_icon_for_3D_print.svg"
+	const heightIconScale = 12
+	const heightText = `${geometryOptions.heightMetricName} max. TODO`
+
+	const colorIcon = "color_icon_for_3D_print.svg"
+	const colorIconScale = 10
+	const colorText = `${geometryOptions.colorMetricName} 0-from / from-to/ to-max TODO`
+
+	const icons = [areaIcon, heightIcon, colorIcon].map(icon => `codeCharta/assets/${icon}`)
+	const iconScales = [areaIconScale, heightIconScale, colorIconScale]
+	const texts = [areaText, heightText, colorText]
+
+	const backTextGeometries = []
+	for (let index = 0; index < icons.length; index++) {
+		const iconGeometry = await createSvgGeometry(icons[index])
+		const iconScale = iconScales[index]
+
+		iconGeometry.center()
+		iconGeometry.rotateY(Math.PI)
+		iconGeometry.rotateX(Math.PI)
+		iconGeometry.scale(iconScale, iconScale, baseplateHeight / 2)
+
+		iconGeometry.translate(
+			geometryOptions.width / 2 - mapSideOffset,
+			-30 * index,
+			-((baseplateHeight * 3) / 4)
+		)
+		backTextGeometries.push(iconGeometry)
+
+		const text = texts[index]
+		const textGeometry = await createTextGeometry(text, backTextSize, baseplateHeight / 2)
+		textGeometry.rotateY(Math.PI)
+
+		textGeometry.translate(
+			geometryOptions.width / 2 - mapSideOffset - 10,
+			-30 * index + backTextSize / 2,
+			-baseplateHeight / 2
+		)
+
+		backTextGeometries.push(textGeometry)
+	}
+
+	const metricTextGeometry = BufferGeometryUtils.mergeBufferGeometries(backTextGeometries)
+	const material = new MeshBasicMaterial({ color: 0xff_ff_ff, side: DoubleSide })
+	const backTextMesh = new Mesh(metricTextGeometry, material)
+	backTextMesh.name = "Metric Text"
+	backTextMesh.visible = scaleAndCenterMetricText(backTextMesh, geometryOptions.width)
+	return backTextMesh
+}
+function scaleAndCenterMetricText(backTextMesh: Mesh, baseplateWidth: number): boolean {
+	backTextMesh.geometry.computeBoundingBox()
+	const boundingBox = backTextMesh.geometry.boundingBox
+	const width = boundingBox.max.x - boundingBox.min.x
+	const depth = boundingBox.max.y - boundingBox.min.y
+
+	const minPossibleMaxScale = Math.min((baseplateWidth - mapSideOffset * 2) / width, (baseplateWidth - mapSideOffset * 2 + frontTextSize) / depth)
+
+	console.log(baseplateWidth, width, depth, backTextMesh.scale)
+	backTextMesh.scale.set(
+		minPossibleMaxScale,
+		minPossibleMaxScale,
+		backTextMesh.scale.z
+	)
+	console.log(backTextMesh.scale)
+	return minPossibleMaxScale >= 0.75
+}
+
+async function createCodeChartaMesh(geometryOptions: GeometryOptions) {
+
+}
+
+async function createTextGeometry(text: string, size: number, height: number): Promise<TextGeometry> {
 	return new Promise((resolve, reject) => {
 		const loader = new FontLoader()
 		loader.load(
@@ -217,8 +311,9 @@ async function createTextGeometry(text: string): Promise<TextGeometry> {
 			function (font) {
 				const textGeometry = new TextGeometry(text, {
 					font,
-					size: frontTextSize,
-					height: 1
+					size,
+					height,
+
 				})
 				resolve(textGeometry)
 			},
@@ -231,7 +326,7 @@ async function createTextGeometry(text: string): Promise<TextGeometry> {
 	})
 }
 
-async function createMWLogo(geometryOptions: GeometryOptions): Promise<Mesh> {
+async function createFrontMWLogo(geometryOptions: GeometryOptions): Promise<Mesh> {
 	const fileName = "mw_logo.svg"
 	const filePath = `codeCharta/assets/${fileName}`
 
@@ -247,7 +342,7 @@ async function createMWLogo(geometryOptions: GeometryOptions): Promise<Mesh> {
 		logoHeight / 2
 	)
 
-	mwLogoMesh.name = "MW Logo"
+	mwLogoMesh.name = "Front MW Logo"
 	return mwLogoMesh
 }
 async function createSvgMesh(filePath: string, height: number, size: number): Promise<Mesh> {

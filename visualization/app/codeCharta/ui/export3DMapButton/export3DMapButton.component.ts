@@ -1,7 +1,7 @@
 import { Component, ViewEncapsulation } from "@angular/core"
 import { MatDialog } from "@angular/material/dialog"
 import { Export3DMapDialogComponent } from "./export3DMapDialog/export3DMapDialog.component"
-import { Store } from "@ngrx/store"
+import { State } from "@ngrx/store"
 import { CcState, ColorMode } from "../../codeCharta.model"
 import { colorModeSelector } from "../../state/store/dynamicSettings/colorMode/colorMode.selector"
 import { take } from "rxjs"
@@ -13,17 +13,10 @@ import { ErrorDialogComponent } from "../dialogs/errorDialog/errorDialog.compone
 	encapsulation: ViewEncapsulation.None
 })
 export class Export3DMapButtonComponent {
-	constructor(private dialog: MatDialog, private store: Store<CcState>) {}
+	constructor(private dialog: MatDialog, private state: State<CcState>) {}
 
 	export3DMap() {
-		let colorMode: ColorMode
-		this.store
-			.select(colorModeSelector)
-			.pipe(take(1))
-			.subscribe(colorModeObs => {
-				colorMode = colorModeObs
-			})
-
+		const colorMode: ColorMode = this.state.getValue().dynamicSettings.colorMode
 		if (colorMode !== ColorMode.absolute) {
 			this.dialog.open(ErrorDialogComponent, {
 				data: this.buildErrorDialog()
