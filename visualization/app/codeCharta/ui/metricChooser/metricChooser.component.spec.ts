@@ -1,5 +1,5 @@
 import { Component } from "@angular/core"
-import { TestBed } from "@angular/core/testing"
+import { ComponentFixture, TestBed } from "@angular/core/testing"
 import { expect } from "@jest/globals"
 import { render, screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
@@ -11,8 +11,10 @@ import { attributeDescriptorsSelector } from "../../state/store/fileSettings/att
 import { TEST_ATTRIBUTE_DESCRIPTORS_FULL } from "../../util/dataMocks"
 
 describe("metricChooserComponent", () => {
-	beforeEach(() => {
-		TestBed.configureTestingModule({
+	let component: MetricChooserComponent
+	let fixture: ComponentFixture<MetricChooserComponent>
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
 			imports: [MetricChooserModule],
 			providers: [
 				provideMockStore({
@@ -33,7 +35,10 @@ describe("metricChooserComponent", () => {
 					]
 				})
 			]
-		})
+		}).compileComponents()
+		fixture = TestBed.createComponent(MetricChooserComponent)
+		component = fixture.componentInstance
+		fixture.detectChanges()
 	})
 
 	it("should be a select for metrics", async () => {
@@ -166,4 +171,33 @@ describe("metricChooserComponent", () => {
 		// await userEvent.click(options[1])
 		//check if its open
 	})
+
+	it("should display metric sum as ng-content when not hovered", () => {
+		component.hideMetricSum = false
+		fixture.detectChanges()
+		expect(component.hideMetricSum).toBe(false)
+	})
+
+	it("should hide metric sum as ng-content when hovered", () => {
+		component.handleOpenedChanged(true)
+		fixture.detectChanges()
+		expect(component.hideMetricSum).toBe(true)
+	})
+
+	//t('should toggle ng-content visibility on user click', async () => {
+	//	const { fixture, container } = await render(MetricChooserComponent, {
+	//		excludeComponentDeclaration: true,
+	//		componentProperties: {}
+	//	});
+	//	const toggleGroupExpansionSpy = jest.spyOn(fixture.componentInstance, "handleOpenedChanged");
+	//
+	//	const header = queryByRole(container as HTMLElement, "button");
+	//	await userEvent.click(header);
+	//
+	//	fixture.detectChanges();
+	//
+	//	expect(toggleGroupExpansionSpy).toBeCalledTimes(1);
+	//
+	//	expect(fixture.componentInstance.isOpened).toBe(true);
+	//});
 })
