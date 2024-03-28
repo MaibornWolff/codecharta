@@ -7,7 +7,37 @@
 		padding: 16px;
 		max-height: 90vh;
 	}
+	.cc-custom-configs-search-field {
+		width: 100%;
+		font-size: 14px;
 
+		.custom-config-search-icon {
+			color: gray;
+			margin-left: 8px;
+			font-size: 18px;
+		}
+
+		.clear-icon {
+			position: absolute;
+			right: 0;
+			margin: 0;
+			height: 24px;
+			width: 24px;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			top: 0px;
+		}
+
+		.mat-mdc-form-field-subscript-wrapper.mat-mdc-form-field-bottom-align {
+			display: none;
+		}
+
+		.mat-mdc-form-field-infix {
+			margin-left: 6px;
+			display: flex;
+		}
+	}
 	.row {
 		display: flex;
 		justify-content: space-between;

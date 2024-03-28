@@ -1,5 +1,6 @@
 import { Component, ViewEncapsulation } from "@angular/core"
 import { CustomConfigHelperService } from "../customConfigHelper.service"
+import { debounce } from "../../../util/debounce"
 
 @Component({
 	templateUrl: "./customConfigList.component.html",
@@ -7,11 +8,14 @@ import { CustomConfigHelperService } from "../customConfigHelper.service"
 	encapsulation: ViewEncapsulation.None
 })
 export class CustomConfigListComponent {
-	isCollapsed = true
+	searchTerm = ""
+	isNonApplicableListCollapsed = true
+	searchPlaceholder = "Search by name, mode and metrics..."
+	setSearchTermDebounced = debounce((event: Event) => (this.searchTerm = event.target["value"]), 400)
 
 	constructor(public customConfigService: CustomConfigHelperService) {}
 
 	toggleNonApplicableCustomConfigsList() {
-		this.isCollapsed = !this.isCollapsed
+		this.isNonApplicableListCollapsed = !this.isNonApplicableListCollapsed
 	}
 }

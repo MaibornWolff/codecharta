@@ -1,19 +1,19 @@
 import { TestBed } from "@angular/core/testing"
-import { CustomConfigsModule } from "../../customConfigs.module"
-import { render, screen } from "@testing-library/angular"
-import { CustomConfigItemGroupComponent } from "./customConfigItemGroup.component"
-import { CUSTOM_CONFIG_ITEM_GROUPS } from "../../../../util/dataMocks"
+import { MatDialog, MatDialogRef } from "@angular/material/dialog"
+import { expect } from "@jest/globals"
+import { State } from "@ngrx/store"
+import { MockStore, provideMockStore } from "@ngrx/store/testing"
+import { queryByRole, queryByText, render, screen, waitFor } from "@testing-library/angular"
+import userEvent from "@testing-library/user-event"
+import { CustomConfigMapSelectionMode } from "../../../../model/customConfig/customConfig.api.model"
+import { defaultState } from "../../../../state/store/state.manager"
 import { CustomConfigHelper } from "../../../../util/customConfigHelper"
+import { CUSTOM_CONFIG_ITEM_GROUPS } from "../../../../util/dataMocks"
 import { ThreeCameraService } from "../../../codeMap/threeViewer/threeCamera.service"
 import { ThreeOrbitControlsService } from "../../../codeMap/threeViewer/threeOrbitControls.service"
-import userEvent from "@testing-library/user-event"
-import { expect } from "@jest/globals"
-import { CustomConfigMapSelectionMode } from "../../../../model/customConfig/customConfig.api.model"
+import { CustomConfigsModule } from "../../customConfigs.module"
 import { visibleFilesBySelectionModeSelector } from "../../visibleFilesBySelectionMode.selector"
-import { MatDialog, MatDialogRef } from "@angular/material/dialog"
-import { MockStore, provideMockStore } from "@ngrx/store/testing"
-import { State } from "@ngrx/store"
-import { defaultState } from "../../../../state/store/state.manager"
+import { CustomConfigItemGroupComponent } from "./customConfigItemGroup.component"
 
 describe("customConfigItemGroupComponent", () => {
 	let mockedDialog = { open: jest.fn() }
@@ -150,5 +150,107 @@ describe("customConfigItemGroupComponent", () => {
 		expect(applyCustomConfigButton.disabled).toBe(true)
 		expect(editNoteArea.disabled).toBe(false)
 		expect(getComputedStyle(applyCustomConfigButton).color).toBe("rgb(204, 204, 204)")
+	})
+
+	it("should expand custom config item group on toggle expansion", async () => {
+		const customConfigItemGroups = new Map([["File_B_File_C_STANDARD", CUSTOM_CONFIG_ITEM_GROUPS.get("File_B_File_C_STANDARD")]])
+		const { fixture, container } = await render(CustomConfigItemGroupComponent, {
+			excludeComponentDeclaration: true,
+			componentProperties: {
+				expandedStates: {}
+			},
+			componentInputs: {
+				customConfigItemGroups,
+				searchTerm: ""
+			}
+		})
+
+		expect(fixture.componentInstance.isGroupExpanded("Custom View(s) in Standard mode for fileB fileC")).toBeFalsy()
+
+		const header = queryByRole(container as HTMLElement, "button")
+		expect(header).not.toBeNull()
+
+		const toggleGroupExpansionSpy = jest.spyOn(fixture.componentInstance, "toggleGroupExpansion")
+
+		await userEvent.click(header)
+
+		expect(toggleGroupExpansionSpy).toBeCalledTimes(1)
+		waitFor(() => {
+			expect(fixture.componentInstance.isGroupExpanded("Custom View(s) in Standard mode for fileB fileC")).toBeTruthy()
+		})
+	})
+
+	it("should reset expanded states on new searchterm or configitems", async () => {
+		const customConfigItemGroups = new Map([["File_B_File_C_STANDARD", CUSTOM_CONFIG_ITEM_GROUPS.get("File_B_File_C_STANDARD")]])
+		const { rerender, fixture } = await render(CustomConfigItemGroupComponent, {
+			excludeComponentDeclaration: true,
+			componentProperties: {
+				expandedStates: {}
+			},
+			componentInputs: {
+				customConfigItemGroups,
+				searchTerm: ""
+			}
+		})
+
+		waitFor(() => {
+			expect(fixture.componentInstance.isGroupExpanded("Custom View(s) in Standard mode for fileB fileC")).toBeFalsy()
+		})
+
+		await rerender({
+			componentProperties: {
+				expandedStates: {}
+			},
+			componentInputs: {
+				customConfigItemGroups,
+				searchTerm: "rloc"
+			}
+		})
+
+		waitFor(() => {
+			expect(fixture.componentInstance.isGroupExpanded("Custom View(s) in Standard mode for fileB fileC")).toBeTruthy()
+		})
+
+		await rerender({
+			componentProperties: {
+				expandedStates: {}
+			},
+			componentInputs: {
+				customConfigItemGroups,
+				searchTerm: ""
+			}
+		})
+
+		waitFor(() => {
+			expect(fixture.componentInstance.isGroupExpanded("Custom View(s) in Standard mode for fileB fileC")).toBeFalsy()
+		})
+	})
+
+	it("should display no configs found message when searchterm doesnt match any configs", async () => {
+		const customConfigItemGroups = new Map([["File_B_File_C_STANDARD", CUSTOM_CONFIG_ITEM_GROUPS.get("File_B_File_C_STANDARD")]])
+		const { rerender, container } = await render(CustomConfigItemGroupComponent, {
+			excludeComponentDeclaration: true,
+			componentProperties: {
+				expandedStates: {}
+			},
+			componentInputs: {
+				customConfigItemGroups,
+				searchTerm: ""
+			}
+		})
+
+		expect(queryByText(container as HTMLElement, "No configurations found.")).toBeNull()
+
+		await rerender({
+			componentProperties: {
+				expandedStates: {}
+			},
+			componentInputs: {
+				customConfigItemGroups,
+				searchTerm: "non matching searchterm"
+			}
+		})
+
+		expect(queryByText(container as HTMLElement, "No configurations found.")).not.toBeNull()
 	})
 })

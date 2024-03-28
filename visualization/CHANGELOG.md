@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
+-   Add search bar for custom configs [#3529](https://github.com/MaibornWolff/codecharta/pull/3529)
 -   Automatically reverse the metric direction for those where higher values indicate better codequality, such as `branch_coverage` [#3518](https://github.com/MaibornWolff/codecharta/pull/3518)
 -   Display summary metrics for root node as default [#3525](https://github.com/MaibornWolff/codecharta/pull/3525)
 -   Remove whitespace on screenshots [#3527](https://github.com/MaibornWolff/codecharta/pull/3527)
