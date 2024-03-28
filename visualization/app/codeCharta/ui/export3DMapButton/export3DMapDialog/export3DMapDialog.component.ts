@@ -6,19 +6,22 @@ import {
 	createPrintPreviewMesh,
 	rotateCustomLogo,
 	updateFrontText,
-	updateMapSize
+	updateMapSize,
+	GeometryOptions
 } from "../../../services/3DExports/prepareGeometryForPrinting.service"
 import { serialize3mf } from "../../../services/3DExports/serialize3mf.service"
 import { FileNameHelper } from "../../../util/fileNameHelper"
 import { isDeltaState } from "../../../model/files/files.helper"
 import { FileDownloader } from "../../../util/fileDownloader"
 import { Component, ElementRef, ViewChild, ViewEncapsulation } from "@angular/core"
-import { State } from "@ngrx/store"
+import { State, Store } from "@ngrx/store"
 import { CcState } from "../../../codeCharta.model"
 import { ThreeSceneService } from "../../codeMap/threeViewer/threeSceneService"
-import { Box3, Color, Mesh, PerspectiveCamera, Scene, Vector3, WebGLRenderer } from "three"
+import { Box3, Color, Mesh, PerspectiveCamera, Scene, WebGLRenderer } from "three"
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
 import { STLExporter } from "three/examples/jsm/exporters/STLExporter"
+import { take } from "rxjs"
+import { metricTitles } from "../../../util/metric/metricTitles"
 
 interface printer {
 	x: number
@@ -126,20 +129,42 @@ export class Export3DMapDialogComponent {
 		animate()
 
 		this.printPreviewScene = printPreviewScene
+		console.log(printPreviewScene)
 	}
 	async initPrintMesh() {
 		this.isPrintMeshLoaded = false
 
-		const geometryOptions = {
-			width: this.wantedWidthInCm * 10,
-			frontText: this.frontText
-		}
+		const geometryOptions = this.makeGeometryOptions()
 		const printMesh = await createPrintPreviewMesh(this.threeSceneService.getMapMesh().getThreeMesh(), geometryOptions)
 
 		this.makeMapMaxSize(printMesh)
 
 		this.isPrintMeshLoaded = true
 		return printMesh
+	}
+	private makeGeometryOptions(): GeometryOptions {
+		const areaMetric: string = this.state.getValue().dynamicSettings.areaMetric
+		const heightMetric: string = this.state.getValue().dynamicSettings.heightMetric
+		const colorMetric: string = this.state.getValue().dynamicSettings.colorMetric
+
+		const attributeDescriptors = this.state.getValue().fileSettings.attributeDescriptors
+		const fallbackTitles: Map<string, string> = metricTitles
+
+		let areaMetricName = attributeDescriptors[areaMetric]?.title || fallbackTitles.get(areaMetric)
+		let heightMetricName = attributeDescriptors[heightMetric]?.title || fallbackTitles.get(heightMetric)
+		let colorMetricName = attributeDescriptors[colorMetric]?.title || fallbackTitles.get(colorMetric)
+
+		areaMetricName += `\n(${areaMetric}):`
+		heightMetricName += `\n(${heightMetric}):`
+		colorMetricName += `\n(${colorMetric}):`
+
+		return {
+			width: this.wantedWidthInCm * 10,
+			areaMetricName,
+			heightMetricName,
+			colorMetricName,
+			frontText: this.frontText
+		}
 	}
 	private makeMapMaxSize(printMesh: Mesh) {
 		this.updateCurrentSize(printMesh)
@@ -161,9 +186,11 @@ export class Export3DMapDialogComponent {
 
 	private updateCurrentSize(printMesh: Mesh) {
 		const boundingBox = new Box3()
-		printMesh.traverse(child => {
-			boundingBox.expandByObject(child)
-		})
+		for (const child of printMesh.children) {
+			if (child.visible) {
+				boundingBox.expandByObject(child)
+			}
+		}
 		this.currentWidth = boundingBox.max.x - boundingBox.min.x
 		this.depth = boundingBox.max.y - boundingBox.min.y
 		this.height = boundingBox.max.z - boundingBox.min.z
