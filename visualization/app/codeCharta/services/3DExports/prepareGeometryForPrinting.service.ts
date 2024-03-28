@@ -15,13 +15,15 @@ import { BufferGeometryUtils } from "three/examples/jsm/utils/BufferGeometryUtil
 const frontTextSize = 12
 const mapSideOffset = 10
 const baseplateHeight = 1
+const logoSize = 15
+const logoHeight = 1
 
 export interface GeometryOptions {
 	width: number
 	frontText?: string
 }
 
-export async function prepareGeometryForPrinting(mapMesh: Mesh, geometryOptions: GeometryOptions): Promise<Mesh> {
+export async function createPrintPreviewMesh(mapMesh: Mesh, geometryOptions: GeometryOptions): Promise<Mesh> {
 	const printMesh: Mesh = new Mesh()
 	printMesh.name = "PrintMesh"
 	printMesh.clear()
@@ -75,10 +77,58 @@ export function updateMapSize(printMesh: Mesh, currentWidth: number, wantedWidth
 				logo.translate((wantedWidth - currentWidth) / 2, -(wantedWidth - currentWidth) / 2, 0)
 				break
 			}
+			case "Custom Logo":
+				updateCustomLogoPosition(child, wantedWidth)
+				break
 		}
 	})
 }
 
+export async function addCustomLogo(printMesh: Mesh, dataUrl: string, width: number): Promise<void> {
+	const customLogoMesh = await createSvgMesh(dataUrl, logoHeight, logoSize)
+
+	updateCustomLogoPosition(customLogoMesh, width)
+	customLogoMesh.name = "Custom Logo"
+
+	printMesh.attach(customLogoMesh)
+}
+function updateCustomLogoPosition(customLogoMesh: Mesh, width: number) {
+	customLogoMesh.geometry.computeBoundingBox()
+	const boundingBox = customLogoMesh.geometry.boundingBox
+	const logoWidth = boundingBox.max.x - boundingBox.min.x
+	const logoDepth = boundingBox.max.y - boundingBox.min.y
+	customLogoMesh.position.set(-width / 2 + logoWidth + mapSideOffset, -logoDepth / 2 - (width - mapSideOffset) / 2, 0)
+}
+export function rotateCustomLogo(printMesh: Mesh) {
+	const logoMesh = printMesh.getObjectByName("Custom Logo") as Mesh
+	if (logoMesh) {
+		logoMesh.rotateZ(Math.PI / 2) // Rotate 90 degrees
+	}
+}
+export function flipCustomLogo(printMesh: Mesh) {
+	const logoMesh = printMesh.getObjectByName("Custom Logo") as Mesh
+	if (logoMesh) {
+		logoMesh.rotateY(Math.PI) // Rotate 180 degrees
+	}
+}
+
+export async function updateFrontText(printMesh: Mesh, frontText: string, width) {
+	printMesh.remove(printMesh.getObjectByName("FrontText"))
+	const text = await createFrontText({ frontText, width })
+	printMesh.attach(text)
+}
+
+function createMapMesh(mapMesh: Mesh, geometryOptions: GeometryOptions): Mesh {
+	const oldMapMesh = mapMesh.geometry.clone()
+	oldMapMesh.rotateX(Math.PI / 2)
+	const map = createMapGeometry(oldMapMesh, geometryOptions)
+	map.rotateZ(-Math.PI / 2)
+	const newMapMesh: Mesh = mapMesh.clone() as Mesh
+	newMapMesh.clear()
+	newMapMesh.geometry = map
+	newMapMesh.name = "Map"
+	return newMapMesh
+}
 function createMapGeometry(map: BufferGeometry, geometryOptions: GeometryOptions): BufferGeometry {
 	const width = geometryOptions.width - 2 * mapSideOffset
 
@@ -115,18 +165,6 @@ function createMapGeometry(map: BufferGeometry, geometryOptions: GeometryOptions
 	return map
 }
 
-function createMapMesh(mapMesh: Mesh, geometryOptions: GeometryOptions): Mesh {
-	const oldMapMesh = mapMesh.geometry.clone()
-	oldMapMesh.rotateX(Math.PI / 2)
-	const map = createMapGeometry(oldMapMesh, geometryOptions)
-	map.rotateZ(-Math.PI / 2)
-	const newMapMesh: Mesh = mapMesh.clone() as Mesh
-	newMapMesh.clear()
-	newMapMesh.geometry = map
-	newMapMesh.name = "Map"
-	return newMapMesh
-}
-
 function createBaseplateMesh(geometryOptions: GeometryOptions): Mesh {
 	const geometry = createBaseplateGeometry(geometryOptions)
 	const material = new MeshBasicMaterial({ color: 0x80_80_80 })
@@ -134,7 +172,6 @@ function createBaseplateMesh(geometryOptions: GeometryOptions): Mesh {
 	baseplateMesh.name = "Baseplate"
 	return baseplateMesh
 }
-
 function createBaseplateGeometry(geometryOptions: GeometryOptions): BufferGeometry {
 	let edgeRadius = 5 // Adjust this value to change the roundness of the corners
 	const maxRoundRadius = Math.sqrt(2 * Math.pow(mapSideOffset, 2)) / (Math.sqrt(2) - 1) - 1
@@ -158,12 +195,6 @@ function createBaseplateGeometry(geometryOptions: GeometryOptions): BufferGeomet
 	return geometry
 }
 
-export async function updateFrontText(printMesh: Mesh, frontText: string, width) {
-	printMesh.remove(printMesh.getObjectByName("FrontText"))
-	const text = await createFrontText({ frontText, width })
-	printMesh.attach(text)
-}
-
 async function createFrontText(geometryOptions: GeometryOptions): Promise<Mesh> {
 	const textGeometry = await createTextGeometry(geometryOptions.frontText)
 	textGeometry.center()
@@ -178,7 +209,6 @@ async function createFrontText(geometryOptions: GeometryOptions): Promise<Mesh> 
 	textMesh.name = "FrontText"
 	return textMesh
 }
-
 async function createTextGeometry(text: string): Promise<TextGeometry> {
 	return new Promise((resolve, reject) => {
 		const loader = new FontLoader()
@@ -202,29 +232,37 @@ async function createTextGeometry(text: string): Promise<TextGeometry> {
 }
 
 async function createMWLogo(geometryOptions: GeometryOptions): Promise<Mesh> {
-	const mwLogoGeometry = await createSvgGeometry("mw_logo.svg", 1)
+	const fileName = "mw_logo.svg"
+	const filePath = `codeCharta/assets/${fileName}`
 
-	mwLogoGeometry.center()
-	mwLogoGeometry.rotateZ(Math.PI)
-	mwLogoGeometry.scale(0.13, 0.13, 1)
+	const mwLogoMesh = await createSvgMesh(filePath, logoHeight, logoSize)
 
-	mwLogoGeometry.computeBoundingBox()
-	const logoWidth = mwLogoGeometry.boundingBox.max.x - mwLogoGeometry.boundingBox.min.x
-	const logoDepth = mwLogoGeometry.boundingBox.max.y - mwLogoGeometry.boundingBox.min.y
-	mwLogoGeometry.translate(
+	mwLogoMesh.geometry.computeBoundingBox()
+	const boundingBox = mwLogoMesh.geometry.boundingBox
+	const logoWidth = boundingBox.max.x - boundingBox.min.x
+	const logoDepth = boundingBox.max.y - boundingBox.min.y
+	mwLogoMesh.position.set(
 		geometryOptions.width / 2 - logoWidth - mapSideOffset,
 		-logoDepth / 2 - (geometryOptions.width - mapSideOffset) / 2,
 		0
 	)
 
-	const material = new MeshBasicMaterial({ color: 0xff_ff_ff, side: DoubleSide })
-	const logoMesh = new Mesh(mwLogoGeometry, material)
-	logoMesh.name = "MW Logo"
-	return logoMesh
+	mwLogoMesh.name = "MW Logo"
+	return mwLogoMesh
 }
+async function createSvgMesh(filePath: string, height: number, size: number): Promise<Mesh> {
+	const svgGeometry = await createSvgGeometry(filePath)
+	svgGeometry.center()
+	svgGeometry.rotateZ(Math.PI)
+	svgGeometry.rotateY(Math.PI)
+	svgGeometry.scale(size, size, height)
 
-async function createSvgGeometry(fileName: string, depth): Promise<BufferGeometry> {
-	const filePath = `codeCharta/assets/${fileName}`
+	const material = new MeshBasicMaterial({ color: 0xff_ff_ff, side: DoubleSide })
+	const svgMesh = new Mesh(svgGeometry, material)
+	svgMesh.name = "Unnamed SVG Mesh"
+	return svgMesh
+}
+async function createSvgGeometry(filePath: string): Promise<BufferGeometry> {
 	//load the svg file
 	const loader = new SVGLoader()
 	return new Promise((resolve, reject) => {
@@ -239,7 +277,7 @@ async function createSvgGeometry(fileName: string, depth): Promise<BufferGeometr
 
 					for (const shape of shapes) {
 						const geometry = new ExtrudeGeometry(shape, {
-							depth,
+							depth: 1,
 							bevelEnabled: false
 						})
 						geometries.push(geometry)
@@ -247,11 +285,18 @@ async function createSvgGeometry(fileName: string, depth): Promise<BufferGeometr
 				}
 
 				const mergedGeometry = BufferGeometryUtils.mergeBufferGeometries(geometries)
+
+				mergedGeometry.computeBoundingBox()
+				const width = mergedGeometry.boundingBox.max.x - mergedGeometry.boundingBox.min.x
+				const depth = mergedGeometry.boundingBox.max.y - mergedGeometry.boundingBox.min.y
+				const scale = 1 / Math.max(width, depth)
+				mergedGeometry.scale(scale, scale, 1)
+
 				resolve(mergedGeometry)
 			},
 			undefined,
 			function (error) {
-				console.error(`Error loading ${fileName}`)
+				console.error(`Error loading ${filePath}`)
 				reject(error)
 			}
 		)

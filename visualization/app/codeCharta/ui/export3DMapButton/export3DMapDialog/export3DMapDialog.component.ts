@@ -1,6 +1,13 @@
 import { filesSelector } from "../../../state/store/files/files.selector"
 import { accumulatedDataSelector } from "../../../state/selectors/accumulatedData/accumulatedData.selector"
-import { prepareGeometryForPrinting, updateFrontText, updateMapSize } from "../../../services/3DExports/prepareGeometryForPrinting.service"
+import {
+	addCustomLogo,
+	flipCustomLogo,
+	createPrintPreviewMesh,
+	rotateCustomLogo,
+	updateFrontText,
+	updateMapSize
+} from "../../../services/3DExports/prepareGeometryForPrinting.service"
 import { serialize3mf } from "../../../services/3DExports/serialize3mf.service"
 import { FileNameHelper } from "../../../util/fileNameHelper"
 import { isDeltaState } from "../../../model/files/files.helper"
@@ -27,6 +34,8 @@ interface printer {
 })
 export class Export3DMapDialogComponent {
 	@ViewChild("rendererContainer") rendererContainer: ElementRef
+	private printPreviewScene: Scene
+
 	isPrintMeshLoaded = false
 	frontText = "CodeCharta"
 
@@ -38,15 +47,14 @@ export class Export3DMapDialogComponent {
 		prusaXL: { x: 245, y: 200, z: 200, numberOfColors: 5 }
 	}
 	maxPrinterX: number
-
 	maxPrinterY: number
 	maxPrinterZ: number
+
 	maxWidth: number
 	wantedWidthInCm: number
 	currentWidth: number
 	depth: number
 	height: number
-	private printPreviewScene: Scene
 
 	constructor(private state: State<CcState>, private threeSceneService: ThreeSceneService) {
 		this.maxPrinterX = this.printers[this.selectedPrinter].x
@@ -68,6 +76,23 @@ export class Export3DMapDialogComponent {
 	onFrontTextChange() {
 		const printMesh = (this.printPreviewScene as Scene).getObjectByName("PrintMesh") as Mesh
 		updateFrontText(printMesh, this.frontText, this.currentWidth)
+	}
+	onFileSelected(event) {
+		const printMesh = (this.printPreviewScene as Scene).getObjectByName("PrintMesh") as Mesh
+		const file: File = event.target.files[0]
+		if (file) {
+			const reader = new FileReader()
+			reader.readAsDataURL(file)
+			reader.onload = () => {
+				addCustomLogo(printMesh, reader.result as string, this.currentWidth)
+			}
+		}
+	}
+	onRotateLogo() {
+		rotateCustomLogo(this.printPreviewScene.getObjectByName("PrintMesh") as Mesh)
+	}
+	onFlipLogo() {
+		flipCustomLogo(this.printPreviewScene.getObjectByName("PrintMesh") as Mesh)
 	}
 
 	async createScene() {
@@ -102,7 +127,6 @@ export class Export3DMapDialogComponent {
 
 		this.printPreviewScene = printPreviewScene
 	}
-
 	async initPrintMesh() {
 		this.isPrintMeshLoaded = false
 
@@ -110,20 +134,13 @@ export class Export3DMapDialogComponent {
 			width: this.wantedWidthInCm * 10,
 			frontText: this.frontText
 		}
-		const printMesh = await prepareGeometryForPrinting(this.threeSceneService.getMapMesh().getThreeMesh(), geometryOptions)
+		const printMesh = await createPrintPreviewMesh(this.threeSceneService.getMapMesh().getThreeMesh(), geometryOptions)
 
 		this.makeMapMaxSize(printMesh)
 
 		this.isPrintMeshLoaded = true
 		return printMesh
 	}
-
-	async download3MFFile() {
-		//TODO: change extruder mapping
-		const compressed3mf = await serialize3mf(this.printPreviewScene.getObjectByName("PrintMesh") as Mesh)
-		this.downloadFile(compressed3mf, "3mf")
-	}
-
 	private makeMapMaxSize(printMesh: Mesh) {
 		this.updateCurrentSize(printMesh)
 		const widthRatio = this.currentWidth / this.maxPrinterX
@@ -152,13 +169,17 @@ export class Export3DMapDialogComponent {
 		this.height = boundingBox.max.z - boundingBox.min.z
 	}
 
+	async download3MFFile() {
+		//TODO: change extruder mapping
+		const compressed3mf = await serialize3mf(this.printPreviewScene.getObjectByName("PrintMesh") as Mesh)
+		this.downloadFile(compressed3mf, "3mf")
+	}
 	downloadStlFile() {
 		const exportedBinaryFile = new STLExporter().parse(this.threeSceneService.getMapMesh().getThreeMesh(), {
 			binary: true
 		}) as unknown as string
 		this.downloadFile(exportedBinaryFile, "stl")
 	}
-
 	private downloadFile(data: string, fileExtension: string) {
 		const files = filesSelector(this.state.getValue())
 		const fileName = accumulatedDataSelector(this.state.getValue()).unifiedFileMeta?.fileName
