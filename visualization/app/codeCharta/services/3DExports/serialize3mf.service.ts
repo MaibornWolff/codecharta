@@ -60,6 +60,9 @@ function serializeMeshAndBuildModelConfig(mesh: Mesh): {
 	let volumeCount = 1
 
 	for (const child of mesh.children as Mesh[]) {
+		if (!child.visible) {
+			continue
+		}
 		const colorNodeGroups = groupVerticesByColor(child)
 		const vertexIndexToNewVertexIndex: Map<number, number> = new Map()
 
