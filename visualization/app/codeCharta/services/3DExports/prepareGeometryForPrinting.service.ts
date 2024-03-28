@@ -97,7 +97,7 @@ function updateCustomLogoPosition(customLogoMesh: Mesh, width: number) {
 	const boundingBox = customLogoMesh.geometry.boundingBox
 	const logoWidth = boundingBox.max.x - boundingBox.min.x
 	const logoDepth = boundingBox.max.y - boundingBox.min.y
-	customLogoMesh.position.set(-width / 2 + logoWidth + mapSideOffset, -logoDepth / 2 - (width - mapSideOffset) / 2, 0)
+	customLogoMesh.position.set(-width / 2 + logoWidth + mapSideOffset, -logoDepth / 2 - (width - mapSideOffset) / 2, logoHeight / 2)
 }
 export function rotateCustomLogo(printMesh: Mesh) {
 	const logoMesh = printMesh.getObjectByName("Custom Logo") as Mesh
@@ -202,7 +202,7 @@ async function createFrontText(geometryOptions: GeometryOptions): Promise<Mesh> 
 	//calculate the bounding box of the text
 	textGeometry.computeBoundingBox()
 	const textDepth = textGeometry.boundingBox.max.y - textGeometry.boundingBox.min.y
-	textGeometry.translate(0, -textDepth / 2 - (geometryOptions.width - mapSideOffset) / 2, 0)
+	textGeometry.translate(0, -textDepth / 2 - (geometryOptions.width - mapSideOffset) / 2, logoHeight / 2)
 
 	const material = new MeshBasicMaterial({ color: 0xff_ff_ff })
 	const textMesh = new Mesh(textGeometry, material)
@@ -244,7 +244,7 @@ async function createMWLogo(geometryOptions: GeometryOptions): Promise<Mesh> {
 	mwLogoMesh.position.set(
 		geometryOptions.width / 2 - logoWidth - mapSideOffset,
 		-logoDepth / 2 - (geometryOptions.width - mapSideOffset) / 2,
-		0
+		logoHeight / 2
 	)
 
 	mwLogoMesh.name = "MW Logo"
