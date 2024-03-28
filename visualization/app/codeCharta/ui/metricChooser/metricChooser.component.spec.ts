@@ -130,4 +130,40 @@ describe("metricChooserComponent", () => {
 
 		expect(container.lastChild.textContent).toBe("projected hovered information")
 	})
+
+	it("should hide metric sum field when options menu is opened", async () => {
+		//setup
+		// let selectedMetricName = "aMetric"
+		// const { rerender, detectChanges } = await render(MetricChooserComponent, {
+		// 	excludeComponentDeclaration: true,
+		// 	componentProperties: {
+		// 		searchPlaceholder: "search metric (max value)",
+		// 		selectedMetricName,
+		// 		handleMetricChanged: (value: string) => (selectedMetricName = value)
+		// 	}
+		// })
+		// console.log(rerender)
+		// console.log(detectChanges)
+		//
+		// //check if its open at the start
+		// // do with query zeug (wahrschenlich queryByRole oder querySelector?) und dann expect not to be null
+		// // find by class (?) with ng-reflect-metric-for areaMetric
+		// let test = await screen.findAllByText(" Σ ")
+		// console.log(test)
+		//
+		// //open the menu
+		//
+		// await userEvent.click(await screen.findByText("aMetric"))
+		// const options = screen.queryAllByRole("option")
+		//
+		// //check that its not open
+		//
+		//
+		// console.log(rerender)
+		// console.log(detectChanges)
+		//
+		// //close menu
+		// await userEvent.click(options[1])
+		//check if its open
+	})
 })

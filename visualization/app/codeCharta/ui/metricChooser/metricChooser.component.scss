@@ -26,6 +26,10 @@ cc-metric-chooser {
 	}
 }
 
+cc-metric-chooser:hover .metric-value {
+	display: none;
+}
+
 .mat-mdc-select-panel.cc-metric-chooser {
 	margin-top: 16px;
 	overflow: hidden;
