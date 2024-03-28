@@ -17,6 +17,7 @@ export class CustomConfigItemGroupComponent implements OnChanges {
 	@ViewChild("matExpansionPanel") matExpansionPanel: MatExpansionPanel
 	@Input() searchTerm = ""
 	expandedStates: { [key: string]: boolean } = {}
+	manuallyToggled: Set<string> = new Set()
 
 	constructor(
 		private store: Store,
@@ -25,18 +26,30 @@ export class CustomConfigItemGroupComponent implements OnChanges {
 	) {}
 
 	ngOnChanges(changes: SimpleChanges): void {
-		if (changes.searchTerm && changes.searchTerm.currentValue.length > 0) {
-			this.matExpansionPanel.open()
+		if (changes.searchTerm) {
+			if (changes.searchTerm.currentValue.length > 0) {
+				for (const groupKey of Object.keys(this.expandedStates)) {
+					this.expandedStates[groupKey] = true
+				}
+			} else {
+				for (const groupKey of Object.keys(this.expandedStates)) {
+					if (!this.manuallyToggled.has(groupKey)) {
+						this.expandedStates[groupKey] = false
+					}
+				}
+			}
 		}
-		this.expandedStates = {}
 	}
 
 	isGroupExpanded(groupKey: string): boolean {
-		return this.expandedStates[groupKey] || false
+		return this.searchTerm.length > 0
+			? !this.manuallyToggled.has(groupKey) || this.expandedStates[groupKey]
+			: this.expandedStates[groupKey] || false
 	}
 
 	toggleGroupExpansion(groupKey: string): void {
 		this.expandedStates[groupKey] = !this.isGroupExpanded(groupKey)
+		this.manuallyToggled.add(groupKey)
 	}
 	removeCustomConfig(configId: string, groupKey: string) {
 		CustomConfigHelper.deleteCustomConfig(configId)
