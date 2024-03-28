@@ -1,5 +1,5 @@
 import { strToU8, zipSync } from "fflate"
-import { Mesh, MeshBasicMaterial } from "three"
+import { Mesh, MeshBasicMaterial, Vector3 } from "three"
 
 export async function serialize3mf(mesh: Mesh): Promise<string> {
 	const { modelConfig, vertices, triangles } = await serializeMeshAndBuildModelConfig(mesh)
@@ -71,7 +71,7 @@ function serializeMeshAndBuildModelConfig(mesh: Mesh): {
 				vertexToNewVertexIndex,
 				vertexIndexToNewVertexIndex,
 				vertexIndexes,
-				child.geometry
+				child
 			)
 
 			buildTriangles(triangles, vertexIndexToNewVertexIndex, child.geometry, firstVertexId, lastVertexId)
@@ -141,14 +141,20 @@ function buildVertices(
 	vertexToNewVertexIndex,
 	vertexIndexToNewVertexIndex,
 	vertexIndexes,
-	geometry
+	mesh: Mesh
 ): { firstVertexId: number; lastVertexId: number } {
 	const firstVertexId = vertexIndexToNewVertexIndex.size
 
-	const positionAttribute = geometry.attributes.position
+	const positionAttribute = mesh.geometry.attributes.position
 	for (const vertexIndex of vertexIndexes) {
-		const vertex = [positionAttribute.getX(vertexIndex), positionAttribute.getY(vertexIndex), positionAttribute.getZ(vertexIndex)]
-		const vertexString = `<vertex x="${vertex[0]}" y="${vertex[1]}" z="${vertex[2]}"/>\n`
+		const vertex = new Vector3(
+			positionAttribute.getX(vertexIndex),
+			positionAttribute.getY(vertexIndex),
+			positionAttribute.getZ(vertexIndex)
+		)
+		vertex.add(mesh.position)
+
+		const vertexString = `<vertex x="${vertex.x}" y="${vertex.y}" z="${vertex.z}"/>\n`
 
 		if (!vertexToNewVertexIndex.has(vertexString)) {
 			vertices.push(vertexString)
