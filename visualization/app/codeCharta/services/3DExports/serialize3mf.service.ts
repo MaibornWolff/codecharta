@@ -151,9 +151,9 @@ function buildVertices(
 	const positionAttribute = mesh.geometry.attributes.position
 	for (const vertexIndex of vertexIndexes) {
 		const vertex = new Vector3(
-			positionAttribute.getX(vertexIndex),
-			positionAttribute.getY(vertexIndex),
-			positionAttribute.getZ(vertexIndex)
+			positionAttribute.getX(vertexIndex) * mesh.scale.x,
+			positionAttribute.getY(vertexIndex) * mesh.scale.y,
+			positionAttribute.getZ(vertexIndex) * mesh.scale.z
 		)
 		vertex.add(mesh.position)
 
