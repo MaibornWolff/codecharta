@@ -54,6 +54,9 @@ export async function createPrintPreviewMesh(mapMesh: Mesh, geometryOptions: Geo
 	const backTextMesh = await createMetricsMesh(geometryOptions)
 	printMesh.add(backTextMesh)
 
+	const codeChartaMesh = await createCodeChartaMesh(geometryOptions)
+	printMesh.add(codeChartaMesh)
+
 	return printMesh
 }
 
@@ -93,7 +96,11 @@ export function updateMapSize(printMesh: Mesh, currentWidth: number, wantedWidth
 				break
 			}
 			case "Metric Text": {
-				child.visible = scaleAndCenterMetricText(child, wantedWidth)
+				child.visible = scaleAndCenterBack(child, wantedWidth)
+				break
+			}
+			case "CodeCharta Logo": {
+				child.visible = scaleAndCenterBack(child, wantedWidth)
 				break
 			}
 			default: {
@@ -278,10 +285,10 @@ async function createMetricsMesh(geometryOptions: GeometryOptions): Promise<Mesh
 	const material = new MeshBasicMaterial({ color: 0xff_ff_ff, side: DoubleSide })
 	const backTextMesh = new Mesh(metricTextGeometry, material)
 	backTextMesh.name = "Metric Text"
-	backTextMesh.visible = scaleAndCenterMetricText(backTextMesh, geometryOptions.width)
+	backTextMesh.visible = scaleAndCenterBack(backTextMesh, geometryOptions.width)
 	return backTextMesh
 }
-function scaleAndCenterMetricText(backTextMesh: Mesh, baseplateWidth: number): boolean {
+function scaleAndCenterBack(backTextMesh: Mesh, baseplateWidth: number): boolean {
 	backTextMesh.geometry.computeBoundingBox()
 	const boundingBox = backTextMesh.geometry.boundingBox
 	const width = boundingBox.max.x - boundingBox.min.x
@@ -300,7 +307,44 @@ function scaleAndCenterMetricText(backTextMesh: Mesh, baseplateWidth: number): b
 }
 
 async function createCodeChartaMesh(geometryOptions: GeometryOptions) {
+	const logoGeometry = await createCodeChartaLogo(geometryOptions)
+	const textGeometry = await createCodeChartaText(geometryOptions)
+	const logoAndTextGeometry = BufferGeometryUtils.mergeBufferGeometries([logoGeometry, textGeometry])
 
+	const material = new MeshBasicMaterial({ color: 0xff_ff_ff })
+
+	const codeChartaMesh = new Mesh(logoAndTextGeometry, material)
+	codeChartaMesh.name = "CodeCharta Logo"
+	scaleAndCenterBack(codeChartaMesh, geometryOptions.width)
+	return codeChartaMesh
+}
+async function createCodeChartaLogo(geometryOptions: GeometryOptions) {
+	const logoGeometry = await createSvgGeometry("codeCharta/assets/codecharta_logo.svg")
+	logoGeometry.center()
+	logoGeometry.rotateZ(Math.PI)
+
+	const logoScale = 20
+	logoGeometry.scale(logoScale, logoScale, baseplateHeight / 2)
+	logoGeometry.translate(
+		 0,
+		-70,
+		-((baseplateHeight * 3) / 4)
+	)
+
+	return logoGeometry
+}
+async function createCodeChartaText(geometryOptions: GeometryOptions) {
+	const textGeometry = await createTextGeometry("github.com/MaibornWolff/codecharta", backTextSize, baseplateHeight / 2)
+	textGeometry.center()
+	textGeometry.rotateY(Math.PI)
+
+	textGeometry.translate(
+		0,
+		-85,
+		-((baseplateHeight * 3) / 4)
+	)
+
+	return textGeometry
 }
 
 async function createTextGeometry(text: string, size: number, height: number): Promise<TextGeometry> {
