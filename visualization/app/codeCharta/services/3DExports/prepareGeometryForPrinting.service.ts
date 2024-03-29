@@ -271,7 +271,7 @@ async function createMetricsMesh(geometryOptions: GeometryOptions): Promise<Mesh
 
 		iconGeometry.translate(
 			geometryOptions.width / 2 - mapSideOffset,
-			-30 * index,
+			-30 * index - 30,
 			-((baseplateHeight * 3) / 4)
 		)
 		backTextGeometries.push(iconGeometry)
@@ -282,7 +282,7 @@ async function createMetricsMesh(geometryOptions: GeometryOptions): Promise<Mesh
 
 		textGeometry.translate(
 			geometryOptions.width / 2 - mapSideOffset - 10,
-			-30 * index + backTextSize / 2,
+			-30 * index + backTextSize / 2 - 30,
 			-baseplateHeight / 2
 		)
 
@@ -304,13 +304,11 @@ function scaleAndCenterBack(backTextMesh: Mesh, baseplateWidth: number, scaleFac
 
 	const minPossibleMaxScale = Math.min((baseplateWidth - mapSideOffset * 2) / width, (baseplateWidth - mapSideOffset * 2 + frontTextSize) / depth)
 
-	console.log(baseplateWidth, width, depth, backTextMesh.scale)
 	backTextMesh.scale.set(
 		backTextMesh.scale.x * scaleFactor,
 		backTextMesh.scale.y * scaleFactor,
 		backTextMesh.scale.z
 	)
-	console.log(backTextMesh.scale)
 	return minPossibleMaxScale >= 0.75
 }
 
@@ -335,7 +333,7 @@ async function createCodeChartaLogo(geometryOptions: GeometryOptions) {
 	logoGeometry.scale(logoScale, logoScale, baseplateHeight / 2)
 	logoGeometry.translate(
 		 0,
-		-70,
+		30,
 		-((baseplateHeight * 3) / 4)
 	)
 
@@ -348,7 +346,7 @@ async function createCodeChartaText(geometryOptions: GeometryOptions) {
 
 	textGeometry.translate(
 		0,
-		-85,
+		15,
 		-((baseplateHeight * 3) / 4)
 	)
 
@@ -386,7 +384,7 @@ async function createBackMW(geometryOptions: GeometryOptions): Promise<Mesh> {
 	mwLogoGeometry.scale(mwBackLogoScale, mwBackLogoScale, baseplateHeight / 2)
 	mwLogoGeometry.translate(
 		0,
-		geometryOptions.width / 2 - mapSideOffset - mwBackLogoScale/2,
+		geometryOptions.width / 2 - mwBackLogoScale/2,
 		-((baseplateHeight * 3) / 4)
 	)
 

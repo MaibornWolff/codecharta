@@ -128,7 +128,6 @@ export class Export3DMapDialogComponent {
 		animate()
 
 		this.printPreviewScene = printPreviewScene
-		console.log(printPreviewScene)
 	}
 	async initPrintMesh() {
 		this.isPrintMeshLoaded = false
