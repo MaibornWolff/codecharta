@@ -17,10 +17,9 @@ import { Component, ElementRef, ViewChild, ViewEncapsulation } from "@angular/co
 import { State, Store } from "@ngrx/store"
 import { CcState } from "../../../codeCharta.model"
 import { ThreeSceneService } from "../../codeMap/threeViewer/threeSceneService"
-import { Box3, Color, Mesh, PerspectiveCamera, Scene, WebGLRenderer } from "three"
+import { Color, Mesh, PerspectiveCamera, Scene, WebGLRenderer } from "three"
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
 import { STLExporter } from "three/examples/jsm/exporters/STLExporter"
-import { take } from "rxjs"
 import { metricTitles } from "../../../util/metric/metricTitles"
 
 interface printer {
@@ -185,15 +184,17 @@ export class Export3DMapDialogComponent {
 	}
 
 	private updateCurrentSize(printMesh: Mesh) {
-		const boundingBox = new Box3()
-		for (const child of printMesh.children) {
-			if (child.visible) {
-				boundingBox.expandByObject(child)
-			}
-		}
-		this.currentWidth = boundingBox.max.x - boundingBox.min.x
-		this.depth = boundingBox.max.y - boundingBox.min.y
-		this.height = boundingBox.max.z - boundingBox.min.z
+		const baseplate = printMesh.getObjectByName("Baseplate") as Mesh
+		baseplate.geometry.computeBoundingBox()
+		const boundingBoxBaseplate = baseplate.geometry.boundingBox
+
+		const map = printMesh.getObjectByName("Map") as Mesh
+		map.geometry.computeBoundingBox()
+		const boundingBoxMap = map.geometry.boundingBox
+
+		this.currentWidth = boundingBoxBaseplate.max.x - boundingBoxBaseplate.min.x
+		this.depth = boundingBoxBaseplate.max.y - boundingBoxBaseplate.min.y
+		this.height = boundingBoxBaseplate.max.z - boundingBoxBaseplate.min.z + boundingBoxMap.max.z - boundingBoxMap.min.z
 	}
 
 	async download3MFFile() {
