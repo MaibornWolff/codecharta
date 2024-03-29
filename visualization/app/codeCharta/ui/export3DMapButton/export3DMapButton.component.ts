@@ -1,11 +1,12 @@
 import { Component, ViewEncapsulation } from "@angular/core"
 import { MatDialog } from "@angular/material/dialog"
 import { Export3DMapDialogComponent } from "./export3DMapDialog/export3DMapDialog.component"
-import { State } from "@ngrx/store"
+import { State, Store } from "@ngrx/store"
 import { CcState, ColorMode } from "../../codeCharta.model"
 import { colorModeSelector } from "../../state/store/dynamicSettings/colorMode/colorMode.selector"
 import { take } from "rxjs"
 import { ErrorDialogComponent } from "../dialogs/errorDialog/errorDialog.component"
+import { setColorMode } from "../../state/store/dynamicSettings/colorMode/colorMode.actions"
 
 @Component({
 	selector: "cc-export-threed-map-button",
@@ -13,7 +14,7 @@ import { ErrorDialogComponent } from "../dialogs/errorDialog/errorDialog.compone
 	encapsulation: ViewEncapsulation.None
 })
 export class Export3DMapButtonComponent {
-	constructor(private dialog: MatDialog, private state: State<CcState>) {}
+	constructor(private dialog: MatDialog, private state: State<CcState>, private store: Store<CcState>) {}
 
 	export3DMap() {
 		const colorMode: ColorMode = this.state.getValue().dynamicSettings.colorMode
@@ -21,6 +22,8 @@ export class Export3DMapButtonComponent {
 			this.dialog.open(ErrorDialogComponent, {
 				data: this.buildErrorDialog()
 			})
+			//set color mode to absolute like in the following line, when user clicks on "Change" in the error dialog
+			//this.store.dispatch(setColorMode({ value: ColorMode.absolute }))
 		} else {
 			this.dialog.open(Export3DMapDialogComponent, {
 				panelClass: ".cc-export-3D-map-dialog"
@@ -28,12 +31,30 @@ export class Export3DMapButtonComponent {
 		}
 	}
 
-	buildErrorDialog(): { title; message } {
+	buildErrorDialog() {
 		const title = "Map could not be exported"
 		const message =
 			"<p>3D map can only be exported when <strong>color mode</strong> is set to <strong>absolute</strong>.<br>" +
-			'<i class="fa fa-info-circle"></i> You can change this under Color Metric Options.<p>'
+			'<i class="fa fa-info-circle"></i> You can change this under Color Metric Options ' +
+			'or use "Change and continue" to directly change the color mode and continue.<p>'
 
-		return { title, message }
+		const resolveButtonText = "Change and continue"
+		const resolveErrorCallback = () => {
+			this.store.dispatch(setColorMode({ value: ColorMode.absolute }))
+			this.store
+				.select(colorModeSelector)
+				.pipe(take(3))
+				.subscribe(colorMode => {
+					if (colorMode === ColorMode.absolute) {
+						setTimeout(() => {
+							this.dialog.open(Export3DMapDialogComponent, {
+								panelClass: ".cc-export-3D-map-dialog"
+							})
+						}, 100)
+					}
+				})
+		}
+
+		return { title, message, resolveErrorData: { buttonText: resolveButtonText, onResolveErrorClick: resolveErrorCallback } }
 	}
 }
