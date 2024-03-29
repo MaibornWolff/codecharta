@@ -11,6 +11,7 @@ import {
 } from "three"
 import { SVGLoader } from "three/examples/jsm/loaders/SVGLoader"
 import { BufferGeometryUtils } from "three/examples/jsm/utils/BufferGeometryUtils"
+import {Geometry} from "three/examples/jsm/deprecated/Geometry";
 
 const frontTextSize = 12
 const frontTextHeight = 1
@@ -57,6 +58,9 @@ export async function createPrintPreviewMesh(mapMesh: Mesh, geometryOptions: Geo
 	const codeChartaMesh = await createCodeChartaMesh(geometryOptions)
 	printMesh.add(codeChartaMesh)
 
+	const backMWMesh = await createBackMW(geometryOptions)
+	printMesh.add(backMWMesh)
+
 	return printMesh
 }
 
@@ -96,11 +100,15 @@ export function updateMapSize(printMesh: Mesh, currentWidth: number, wantedWidth
 				break
 			}
 			case "Metric Text": {
-				child.visible = scaleAndCenterBack(child, wantedWidth)
+				child.visible = scaleAndCenterBack(child, wantedWidth, (wantedWidth/currentWidth))
 				break
 			}
 			case "CodeCharta Logo": {
-				child.visible = scaleAndCenterBack(child, wantedWidth)
+				child.visible = scaleAndCenterBack(child, wantedWidth, (wantedWidth/currentWidth))
+				break
+			}
+			case "Back MW Logo": {
+				child.visible = scaleAndCenterBack(child, wantedWidth, (wantedWidth/currentWidth))
 				break
 			}
 			default: {
@@ -288,7 +296,7 @@ async function createMetricsMesh(geometryOptions: GeometryOptions): Promise<Mesh
 	backTextMesh.visible = scaleAndCenterBack(backTextMesh, geometryOptions.width)
 	return backTextMesh
 }
-function scaleAndCenterBack(backTextMesh: Mesh, baseplateWidth: number): boolean {
+function scaleAndCenterBack(backTextMesh: Mesh, baseplateWidth: number, scaleFactor = 1): boolean {
 	backTextMesh.geometry.computeBoundingBox()
 	const boundingBox = backTextMesh.geometry.boundingBox
 	const width = boundingBox.max.x - boundingBox.min.x
@@ -298,8 +306,8 @@ function scaleAndCenterBack(backTextMesh: Mesh, baseplateWidth: number): boolean
 
 	console.log(baseplateWidth, width, depth, backTextMesh.scale)
 	backTextMesh.scale.set(
-		minPossibleMaxScale,
-		minPossibleMaxScale,
+		backTextMesh.scale.x * scaleFactor,
+		backTextMesh.scale.y * scaleFactor,
 		backTextMesh.scale.z
 	)
 	console.log(backTextMesh.scale)
@@ -370,9 +378,27 @@ async function createTextGeometry(text: string, size: number, height: number): P
 	})
 }
 
+async function createBackMW(geometryOptions: GeometryOptions): Promise<Mesh> {
+	const mwLogoGeometry = await createSvgGeometry("codeCharta/assets/mw_logo_text.svg")
+	mwLogoGeometry.center()
+	mwLogoGeometry.rotateZ(Math.PI)
+	const mwBackLogoScale = 60
+	mwLogoGeometry.scale(mwBackLogoScale, mwBackLogoScale, baseplateHeight / 2)
+	mwLogoGeometry.translate(
+		0,
+		geometryOptions.width / 2 - mapSideOffset - mwBackLogoScale/2,
+		-((baseplateHeight * 3) / 4)
+	)
+
+	const material = new MeshBasicMaterial({ color: 0xff_ff_ff })
+
+	const backMWMesh = new Mesh(mwLogoGeometry, material)
+	backMWMesh.name = "Back MW Logo"
+	return backMWMesh
+}
+
 async function createFrontMWLogo(geometryOptions: GeometryOptions): Promise<Mesh> {
-	const fileName = "mw_logo.svg"
-	const filePath = `codeCharta/assets/${fileName}`
+	const filePath = `codeCharta/assets/mw_logo.svg`
 
 	const mwLogoMesh = await createSvgMesh(filePath, logoHeight, logoSize)
 
