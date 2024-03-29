@@ -3,5 +3,8 @@
 <div mat-dialog-content [innerHTML]="data.message"></div>
 
 <div mat-dialog-actions align="end">
+	<button *ngIf="data.resolveErrorData" mat-button mat-dialog-close (click)="data.resolveErrorData.onResolveErrorClick()">
+		{{ data.resolveErrorData.buttonText }}
+	</button>
 	<button mat-button mat-dialog-close>OK</button>
 </div>

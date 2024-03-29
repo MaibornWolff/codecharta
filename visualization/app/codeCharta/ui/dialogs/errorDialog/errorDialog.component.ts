@@ -6,5 +6,8 @@ import { MAT_DIALOG_DATA } from "@angular/material/dialog"
 	encapsulation: ViewEncapsulation.None
 })
 export class ErrorDialogComponent {
-	constructor(@Inject(MAT_DIALOG_DATA) public data: { title: string; message: string }) {}
+	constructor(
+		@Inject(MAT_DIALOG_DATA)
+		public data: { title: string; message: string; resolveErrorData?: { buttonText: string; onResolveErrorClick: () => void } }
+	) {}
 }
