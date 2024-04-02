@@ -9,18 +9,20 @@ import {
 	updateMapSize,
 	GeometryOptions
 } from "../../../services/3DExports/prepareGeometryForPrinting.service"
-import { serialize3mf } from "../../../services/3DExports/serialize3mf.service"
 import { FileNameHelper } from "../../../util/fileNameHelper"
 import { isDeltaState } from "../../../model/files/files.helper"
 import { FileDownloader } from "../../../util/fileDownloader"
 import { Component, ElementRef, ViewChild, ViewEncapsulation } from "@angular/core"
 import { State, Store } from "@ngrx/store"
-import { CcState } from "../../../codeCharta.model"
+import { CcState, NodeMetricData } from "../../../codeCharta.model"
 import { ThreeSceneService } from "../../codeMap/threeViewer/threeSceneService"
 import { Color, Mesh, PerspectiveCamera, Scene, WebGLRenderer } from "three"
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
 import { STLExporter } from "three/examples/jsm/exporters/STLExporter"
 import { metricTitles } from "../../../util/metric/metricTitles"
+import { serialize3mf } from "../../../services/3DExports/serialize3mf.service"
+import { map, take } from "rxjs"
+import { metricDataSelector } from "../../../state/selectors/accumulatedData/metricData/metricData.selector"
 
 interface printer {
 	x: number
@@ -58,7 +60,14 @@ export class Export3DMapDialogComponent {
 	depth: number
 	height: number
 
-	constructor(private state: State<CcState>, private threeSceneService: ThreeSceneService) {
+	areaMetric: string
+	heightMetric: string
+	colorMetric: string
+	nodeMetricData: NodeMetricData[]
+
+	constructor(private store: Store<CcState>, private state: State<CcState>, private threeSceneService: ThreeSceneService) {}
+
+	ngOnInit(): void {
 		this.maxPrinterX = this.printers[this.selectedPrinter].x
 		this.maxPrinterY = this.printers[this.selectedPrinter].y
 		this.maxPrinterZ = this.printers[this.selectedPrinter].z
@@ -66,6 +75,21 @@ export class Export3DMapDialogComponent {
 		//this is only an initial guess, needed for calculating the actual map size
 		this.currentWidth = this.maxPrinterX
 		this.wantedWidthInCm = this.maxPrinterX / 10
+
+		this.areaMetric = this.state.getValue().dynamicSettings.areaMetric
+		this.heightMetric = this.state.getValue().dynamicSettings.heightMetric
+		this.colorMetric = this.state.getValue().dynamicSettings.colorMetric
+
+		this.store
+			.select(metricDataSelector)
+			.pipe(map(metricData => metricData.nodeMetricData))
+			.pipe(take(1))
+			.subscribe(
+				nodeMetricData =>
+					(this.nodeMetricData = nodeMetricData.filter(
+						metric => metric.name === this.areaMetric || metric.name === this.heightMetric || metric.name === this.colorMetric
+					))
+			)
 
 		this.createScene()
 	}
@@ -113,8 +137,10 @@ export class Export3DMapDialogComponent {
 		const camera = new PerspectiveCamera(45, 1.15, 50, 200_000)
 		camera.name = "camera"
 		//camera.position.set(-50, -100, 300)
-		camera.position.set(-this.currentWidth * 0.5, -this.depth, this.height * 3)
-		camera.up = new Vector3(0, 0, 1)
+		camera.position.set(0, 0, -300)
+		//camera.position.set(-this.currentWidth * 0.5, -this.depth, this.height * 3)
+		//camera.up = new Vector3(0, 0, 1)
+		printPreviewScene.rotateZ(Math.PI * 2)
 		printPreviewScene.add(camera)
 
 		const controls = new OrbitControls(camera, renderer.domElement)
@@ -141,26 +167,22 @@ export class Export3DMapDialogComponent {
 		return printMesh
 	}
 	private makeGeometryOptions(): GeometryOptions {
-		const areaMetric: string = this.state.getValue().dynamicSettings.areaMetric
-		const heightMetric: string = this.state.getValue().dynamicSettings.heightMetric
-		const colorMetric: string = this.state.getValue().dynamicSettings.colorMetric
-
 		const attributeDescriptors = this.state.getValue().fileSettings.attributeDescriptors
 		const fallbackTitles: Map<string, string> = metricTitles
 
-		let areaMetricName = attributeDescriptors[areaMetric]?.title || fallbackTitles.get(areaMetric)
-		let heightMetricName = attributeDescriptors[heightMetric]?.title || fallbackTitles.get(heightMetric)
-		let colorMetricName = attributeDescriptors[colorMetric]?.title || fallbackTitles.get(colorMetric)
-
-		areaMetricName += `\n(${areaMetric}):`
-		heightMetricName += `\n(${heightMetric}):`
-		colorMetricName += `\n(${colorMetric}):`
+		const areaMetricTitle = attributeDescriptors[this.areaMetric]?.title || fallbackTitles.get(this.areaMetric)
+		const heightMetricTitle = attributeDescriptors[this.heightMetric]?.title || fallbackTitles.get(this.heightMetric)
+		const colorMetricTitle = attributeDescriptors[this.colorMetric]?.title || fallbackTitles.get(this.colorMetric)
 
 		return {
 			width: this.wantedWidthInCm * 10,
-			areaMetricName,
-			heightMetricName,
-			colorMetricName,
+			areaMetricTitle,
+			areaMetricData: this.nodeMetricData.find(metric => metric.name === this.areaMetric),
+			heightMetricTitle,
+			heightMetricData: this.nodeMetricData.find(metric => metric.name === this.heightMetric),
+			colorMetricTitle,
+			colorMetricData: this.nodeMetricData.find(metric => metric.name === this.colorMetric),
+			colorRange: this.state.getValue().dynamicSettings.colorRange,
 			frontText: this.frontText
 		}
 	}

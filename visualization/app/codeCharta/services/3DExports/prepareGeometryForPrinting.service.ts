@@ -11,7 +11,7 @@ import {
 } from "three"
 import { SVGLoader } from "three/examples/jsm/loaders/SVGLoader"
 import { BufferGeometryUtils } from "three/examples/jsm/utils/BufferGeometryUtils"
-import {Geometry} from "three/examples/jsm/deprecated/Geometry";
+import { ColorRange, NodeMetricData } from "../../codeCharta.model"
 
 const frontTextSize = 12
 const frontTextHeight = 1
@@ -23,9 +23,13 @@ const backTextSize = 6
 
 export interface GeometryOptions {
 	width: number
-	areaMetricName: string
-	heightMetricName: string
-	colorMetricName: string
+	areaMetricTitle: string
+	areaMetricData: NodeMetricData
+	heightMetricTitle: string
+	heightMetricData: NodeMetricData
+	colorMetricTitle: string
+	colorMetricData: NodeMetricData
+	colorRange: ColorRange
 	frontText?: string
 }
 
@@ -71,9 +75,9 @@ export function updateMapSize(printMesh: Mesh, currentWidth: number, wantedWidth
 		}
 		const child = object as Mesh
 		switch (child.name) {
-			case "PrintMesh":{
+			case "PrintMesh":
 				break
-			}
+
 			case "Map": {
 				const map = child.geometry
 				const scale = (wantedWidth - 2 * mapSideOffset) / (currentWidth - 2 * mapSideOffset)
@@ -95,25 +99,24 @@ export function updateMapSize(printMesh: Mesh, currentWidth: number, wantedWidth
 				logo.translate((wantedWidth - currentWidth) / 2, -(wantedWidth - currentWidth) / 2, 0)
 				break
 			}
-			case "Custom Logo": {
+			case "Custom Logo":
 				updateCustomLogoPosition(child, wantedWidth)
 				break
-			}
-			case "Metric Text": {
-				child.visible = scaleAndCenterBack(child, wantedWidth, (wantedWidth/currentWidth))
+
+			case "Metric Text":
+				child.visible = scaleAndCenterBack(child, wantedWidth, wantedWidth / currentWidth)
 				break
-			}
-			case "CodeCharta Logo": {
-				child.visible = scaleAndCenterBack(child, wantedWidth, (wantedWidth/currentWidth))
+
+			case "CodeCharta Logo":
+				child.visible = scaleAndCenterBack(child, wantedWidth, wantedWidth / currentWidth)
 				break
-			}
-			case "Back MW Logo": {
-				child.visible = scaleAndCenterBack(child, wantedWidth, (wantedWidth/currentWidth))
+
+			case "Back MW Logo":
+				child.visible = scaleAndCenterBack(child, wantedWidth, wantedWidth / currentWidth)
 				break
-			}
-			default: {
+
+			default:
 				console.warn("Unknown object:", child.name, "Did you forget to add it to the updateMapSize method?")
-			}
 		}
 	})
 }
@@ -245,23 +248,34 @@ async function createFrontText(frontText: string, width: number): Promise<Mesh> 
 async function createMetricsMesh(geometryOptions: GeometryOptions): Promise<Mesh> {
 	const areaIcon = "area_icon_for_3D_print.svg"
 	const areaIconScale = 10
-	const areaText = `${geometryOptions.areaMetricName} max. TODO`
+	const areaText =
+		`${geometryOptions.areaMetricData.name}\n` +
+		`${geometryOptions.areaMetricTitle}\n` +
+		`Value range:  ${geometryOptions.areaMetricData.minValue}-${geometryOptions.areaMetricData.maxValue}`
 
 	const heightIcon = "height_icon_for_3D_print.svg"
 	const heightIconScale = 12
-	const heightText = `${geometryOptions.heightMetricName} max. TODO`
+	const heightText =
+		`${geometryOptions.heightMetricData.name}\n` +
+		`${geometryOptions.heightMetricTitle}\n` +
+		`Value range: ${geometryOptions.heightMetricData.minValue}-${geometryOptions.heightMetricData.maxValue}`
 
 	const colorIcon = "color_icon_for_3D_print.svg"
 	const colorIconScale = 10
-	const colorText = `${geometryOptions.colorMetricName} 0-from / from-to/ to-max TODO`
+	const colorText =
+		`${geometryOptions.colorMetricData.name}\n` +
+		`${geometryOptions.colorMetricTitle}\n` +
+		`Value ranges: ${geometryOptions.colorMetricData.minValue}-${geometryOptions.colorRange.from - 1} /` +
+		` ${geometryOptions.colorRange.from}-${geometryOptions.colorRange.to - 1} /` +
+		` ${geometryOptions.colorRange.to}-${geometryOptions.colorMetricData.maxValue}`
 
 	const icons = [areaIcon, heightIcon, colorIcon].map(icon => `codeCharta/assets/${icon}`)
 	const iconScales = [areaIconScale, heightIconScale, colorIconScale]
 	const texts = [areaText, heightText, colorText]
 
 	const backTextGeometries = []
-	for (let index = 0; index < icons.length; index++) {
-		const iconGeometry = await createSvgGeometry(icons[index])
+	for (const [index, icon] of icons.entries()) {
+		const iconGeometry = await createSvgGeometry(icon)
 		const iconScale = iconScales[index]
 
 		iconGeometry.center()
@@ -269,22 +283,14 @@ async function createMetricsMesh(geometryOptions: GeometryOptions): Promise<Mesh
 		iconGeometry.rotateX(Math.PI)
 		iconGeometry.scale(iconScale, iconScale, baseplateHeight / 2)
 
-		iconGeometry.translate(
-			geometryOptions.width / 2 - mapSideOffset,
-			-30 * index - 30,
-			-((baseplateHeight * 3) / 4)
-		)
+		iconGeometry.translate(geometryOptions.width / 2 - mapSideOffset, -35 * index - 15, -((baseplateHeight * 3) / 4))
 		backTextGeometries.push(iconGeometry)
 
 		const text = texts[index]
 		const textGeometry = await createTextGeometry(text, backTextSize, baseplateHeight / 2)
 		textGeometry.rotateY(Math.PI)
 
-		textGeometry.translate(
-			geometryOptions.width / 2 - mapSideOffset - 10,
-			-30 * index + backTextSize / 2 - 30,
-			-baseplateHeight / 2
-		)
+		textGeometry.translate(geometryOptions.width / 2 - mapSideOffset - 10, -35 * index + backTextSize - 15, -baseplateHeight / 2)
 
 		backTextGeometries.push(textGeometry)
 	}
@@ -302,19 +308,18 @@ function scaleAndCenterBack(backTextMesh: Mesh, baseplateWidth: number, scaleFac
 	const width = boundingBox.max.x - boundingBox.min.x
 	const depth = boundingBox.max.y - boundingBox.min.y
 
-	const minPossibleMaxScale = Math.min((baseplateWidth - mapSideOffset * 2) / width, (baseplateWidth - mapSideOffset * 2 + frontTextSize) / depth)
-
-	backTextMesh.scale.set(
-		backTextMesh.scale.x * scaleFactor,
-		backTextMesh.scale.y * scaleFactor,
-		backTextMesh.scale.z
+	const minPossibleMaxScale = Math.min(
+		(baseplateWidth - mapSideOffset * 2) / width,
+		(baseplateWidth - mapSideOffset * 2 + frontTextSize) / depth
 	)
+
+	backTextMesh.scale.set(backTextMesh.scale.x * scaleFactor, backTextMesh.scale.y * scaleFactor, backTextMesh.scale.z)
 	return minPossibleMaxScale >= 0.75
 }
 
 async function createCodeChartaMesh(geometryOptions: GeometryOptions) {
-	const logoGeometry = await createCodeChartaLogo(geometryOptions)
-	const textGeometry = await createCodeChartaText(geometryOptions)
+	const logoGeometry = await createCodeChartaLogo()
+	const textGeometry = await createCodeChartaText()
 	const logoAndTextGeometry = BufferGeometryUtils.mergeBufferGeometries([logoGeometry, textGeometry])
 
 	const material = new MeshBasicMaterial({ color: 0xff_ff_ff })
@@ -324,31 +329,23 @@ async function createCodeChartaMesh(geometryOptions: GeometryOptions) {
 	scaleAndCenterBack(codeChartaMesh, geometryOptions.width)
 	return codeChartaMesh
 }
-async function createCodeChartaLogo(geometryOptions: GeometryOptions) {
+async function createCodeChartaLogo() {
 	const logoGeometry = await createSvgGeometry("codeCharta/assets/codecharta_logo.svg")
 	logoGeometry.center()
 	logoGeometry.rotateZ(Math.PI)
 
 	const logoScale = 20
 	logoGeometry.scale(logoScale, logoScale, baseplateHeight / 2)
-	logoGeometry.translate(
-		 0,
-		30,
-		-((baseplateHeight * 3) / 4)
-	)
+	logoGeometry.translate(0, 30, -((baseplateHeight * 3) / 4))
 
 	return logoGeometry
 }
-async function createCodeChartaText(geometryOptions: GeometryOptions) {
+async function createCodeChartaText() {
 	const textGeometry = await createTextGeometry("github.com/MaibornWolff/codecharta", backTextSize, baseplateHeight / 2)
 	textGeometry.center()
 	textGeometry.rotateY(Math.PI)
 
-	textGeometry.translate(
-		0,
-		15,
-		-((baseplateHeight * 3) / 4)
-	)
+	textGeometry.translate(0, 15, -((baseplateHeight * 3) / 4))
 
 	return textGeometry
 }
@@ -362,8 +359,7 @@ async function createTextGeometry(text: string, size: number, height: number): P
 				const textGeometry = new TextGeometry(text, {
 					font,
 					size,
-					height,
-
+					height
 				})
 				resolve(textGeometry)
 			},
@@ -382,11 +378,7 @@ async function createBackMW(geometryOptions: GeometryOptions): Promise<Mesh> {
 	mwLogoGeometry.rotateZ(Math.PI)
 	const mwBackLogoScale = 60
 	mwLogoGeometry.scale(mwBackLogoScale, mwBackLogoScale, baseplateHeight / 2)
-	mwLogoGeometry.translate(
-		0,
-		geometryOptions.width / 2 - mwBackLogoScale/2,
-		-((baseplateHeight * 3) / 4)
-	)
+	mwLogoGeometry.translate(0, geometryOptions.width / 2 - mwBackLogoScale / 2, -((baseplateHeight * 3) / 4))
 
 	const material = new MeshBasicMaterial({ color: 0xff_ff_ff })
 

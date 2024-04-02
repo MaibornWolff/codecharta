@@ -22,8 +22,6 @@ export class Export3DMapButtonComponent {
 			this.dialog.open(ErrorDialogComponent, {
 				data: this.buildErrorDialog()
 			})
-			//set color mode to absolute like in the following line, when user clicks on "Change" in the error dialog
-			//this.store.dispatch(setColorMode({ value: ColorMode.absolute }))
 		} else {
 			this.dialog.open(Export3DMapDialogComponent, {
 				panelClass: ".cc-export-3D-map-dialog"
@@ -43,7 +41,7 @@ export class Export3DMapButtonComponent {
 			this.store.dispatch(setColorMode({ value: ColorMode.absolute }))
 			this.store
 				.select(colorModeSelector)
-				.pipe(take(3))
+				.pipe(take(2))
 				.subscribe(colorMode => {
 					if (colorMode === ColorMode.absolute) {
 						setTimeout(() => {
