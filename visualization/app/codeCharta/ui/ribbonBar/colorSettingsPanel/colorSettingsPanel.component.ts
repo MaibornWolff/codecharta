@@ -51,7 +51,7 @@ export class ColorSettingsPanelComponent {
 		return this.colorMetric$.pipe(
 			map(colorMetric => {
 				const attributeDescriptors = this.state.getValue().fileSettings.attributeDescriptors
-				return attributeDescriptors[colorMetric]?.direction === 1 ? true : false
+				return attributeDescriptors[colorMetric]?.direction === 1
 			})
 		)
 	}

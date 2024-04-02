@@ -5,13 +5,13 @@
 <mat-dialog-content>
 	<div class="dialog-content">
 		<mat-form-field>
-			<label>Save individual configurations for your map.</label>
+			<mat-label>Save individual configurations for your map.</mat-label>
 			<input matInput class="custom-config-input" [formControl]="customConfigName" required />
 			<mat-hint align="start">Config View Name</mat-hint>
 			<mat-error *ngIf="customConfigName.invalid">{{ getErrorMessage() }}</mat-error>
 		</mat-form-field>
 		<mat-form-field class="custom-config-note">
-			<label>Provide custom note for configuration (optional)</label>
+			<mat-label>Provide custom note for configuration (optional)</mat-label>
 			<textarea
 				cdkAutosizeMinRows="8"
 				cdkTextareaAutosize
