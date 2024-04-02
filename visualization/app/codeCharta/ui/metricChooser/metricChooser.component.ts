@@ -24,7 +24,6 @@ export class MetricChooserComponent implements OnInit {
 	metricData$: Observable<NodeMetricData[] | EdgeMetricData[]>
 	attributeDescriptors$ = this.store.select(attributeDescriptorsSelector)
 	hideMetricSum = false
-	isOpened = false
 
 	constructor(private store: Store<CcState>) {}
 
@@ -42,6 +41,5 @@ export class MetricChooserComponent implements OnInit {
 			this.searchTerm = ""
 			this.hideMetricSum = false
 		}
-		this.isOpened = opened
 	}
 }
