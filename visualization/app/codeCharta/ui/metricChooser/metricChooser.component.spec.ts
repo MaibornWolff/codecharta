@@ -1,21 +1,22 @@
-import { Component } from "@angular/core"
-import { ComponentFixture, TestBed } from "@angular/core/testing"
+import { Component, ViewChild } from "@angular/core"
+import { TestBed } from "@angular/core/testing"
+import { MatSelectModule } from "@angular/material/select"
 import { expect } from "@jest/globals"
-import { render, screen } from "@testing-library/angular"
-import userEvent from "@testing-library/user-event"
-import { MetricChooserComponent } from "./metricChooser.component"
-import { MetricChooserModule } from "./metricChooser.module"
 import { provideMockStore } from "@ngrx/store/testing"
+import { getByText, queryByText, render, screen, waitFor } from "@testing-library/angular"
+import userEvent from "@testing-library/user-event"
+import { MaterialModule } from "../../../material/material.module"
 import { metricDataSelector } from "../../state/selectors/accumulatedData/metricData/metricData.selector"
 import { attributeDescriptorsSelector } from "../../state/store/fileSettings/attributeDescriptors/attributeDescriptors.selector"
 import { TEST_ATTRIBUTE_DESCRIPTORS_FULL } from "../../util/dataMocks"
+import { MetricChooserComponent } from "./metricChooser.component"
+import { MetricChooserModule } from "./metricChooser.module"
 
 describe("metricChooserComponent", () => {
-	let component: MetricChooserComponent
-	let fixture: ComponentFixture<MetricChooserComponent>
-	beforeEach(async () => {
-		await TestBed.configureTestingModule({
-			imports: [MetricChooserModule],
+	beforeEach(() => {
+		TestBed.configureTestingModule({
+			declarations: [MetricChooserComponent],
+			imports: [MetricChooserModule, MatSelectModule, MaterialModule],
 			providers: [
 				provideMockStore({
 					selectors: [
@@ -35,10 +36,7 @@ describe("metricChooserComponent", () => {
 					]
 				})
 			]
-		}).compileComponents()
-		fixture = TestBed.createComponent(MetricChooserComponent)
-		component = fixture.componentInstance
-		fixture.detectChanges()
+		})
 	})
 
 	it("should be a select for metrics", async () => {
@@ -137,67 +135,35 @@ describe("metricChooserComponent", () => {
 	})
 
 	it("should hide metric sum field when options menu is opened", async () => {
-		//setup
-		// let selectedMetricName = "aMetric"
-		// const { rerender, detectChanges } = await render(MetricChooserComponent, {
-		// 	excludeComponentDeclaration: true,
-		// 	componentProperties: {
-		// 		searchPlaceholder: "search metric (max value)",
-		// 		selectedMetricName,
-		// 		handleMetricChanged: (value: string) => (selectedMetricName = value)
-		// 	}
-		// })
-		// console.log(rerender)
-		// console.log(detectChanges)
-		//
-		// //check if its open at the start
-		// // do with query zeug (wahrschenlich queryByRole oder querySelector?) und dann expect not to be null
-		// // find by class (?) with ng-reflect-metric-for areaMetric
-		// let test = await screen.findAllByText(" Σ ")
-		// console.log(test)
-		//
-		// //open the menu
-		//
-		// await userEvent.click(await screen.findByText("aMetric"))
-		// const options = screen.queryAllByRole("option")
-		//
-		// //check that its not open
-		//
-		//
-		// console.log(rerender)
-		// console.log(detectChanges)
-		//
-		// //close menu
-		// await userEvent.click(options[1])
-		//check if its open
-	})
+		const content = "Projected content"
+		const metricChooserTemplate = `
+			<cc-metric-chooser>
+				<div hoveredInformation class="metric-value">${content}</div>
+			</cc-metric-chooser>
+		`
 
-	it("should display metric sum as ng-content when not hovered", () => {
-		component.hideMetricSum = false
-		fixture.detectChanges()
-		expect(component.hideMetricSum).toBe(false)
-	})
+		@Component({
+			template: metricChooserTemplate
+		})
+		class WrapperComponent {
+			@ViewChild(MetricChooserComponent, { static: true }) metricChooserComponentRef: MetricChooserComponent
+		}
 
-	it("should hide metric sum as ng-content when hovered", () => {
-		component.handleOpenedChanged(true)
-		fixture.detectChanges()
-		expect(component.hideMetricSum).toBe(true)
-	})
+		const { container, fixture } = await render(WrapperComponent, {
+			declarations: [MetricChooserComponent, WrapperComponent]
+		})
 
-	//t('should toggle ng-content visibility on user click', async () => {
-	//	const { fixture, container } = await render(MetricChooserComponent, {
-	//		excludeComponentDeclaration: true,
-	//		componentProperties: {}
-	//	});
-	//	const toggleGroupExpansionSpy = jest.spyOn(fixture.componentInstance, "handleOpenedChanged");
-	//
-	//	const header = queryByRole(container as HTMLElement, "button");
-	//	await userEvent.click(header);
-	//
-	//	fixture.detectChanges();
-	//
-	//	expect(toggleGroupExpansionSpy).toBeCalledTimes(1);
-	//
-	//	expect(fixture.componentInstance.isOpened).toBe(true);
-	//});
+		const metricChooserComponent: MetricChooserComponent = fixture.debugElement.componentInstance.metricChooserComponentRef
+
+		expect(metricChooserComponent).not.toBeNull()
+		await waitFor(() => {
+			expect(getByText(container as HTMLElement, content)).not.toBeNull()
+		})
+
+		metricChooserComponent.handleOpenedChanged(true)
+
+		await waitFor(() => {
+			expect(queryByText(container as HTMLElement, content)).toBeNull()
+		})
+	})
 })
