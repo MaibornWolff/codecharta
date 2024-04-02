@@ -21,7 +21,7 @@ jest.mock("../../../../app/codeCharta/util/clipboard/clipboardWriter", () => {
 jest.mock("html2canvas", () => {
 	return {
 		__esModule: true,
-		default: jest.fn(() => document.createElement("canvas"))
+		default: jest.fn().mockImplementation(() => document.createElement("canvas"))
 	}
 })
 
@@ -51,6 +51,10 @@ describe("screenshotButtonComponent", () => {
 		})
 	})
 
+	afterEach(() => {
+		jest.clearAllMocks()
+	})
+
 	it("should copy to clipboard on click, when screenshot to clipboard is enabled", async () => {
 		;(checkWriteToClipboardAllowed as jest.Mock).mockImplementation(() => true)
 
@@ -58,6 +62,9 @@ describe("screenshotButtonComponent", () => {
 			excludeComponentDeclaration: true
 		})
 
+		const { xStart, yStart, croppedCanvasWidth, croppedCanvasHeight, imageData } = createMockImageData()
+		jest.spyOn(CanvasRenderingContext2D.prototype, "getImageData").mockImplementation(() => imageData)
+		const drawImageSpy = jest.spyOn(CanvasRenderingContext2D.prototype, "drawImage")
 		const makeScreenshotToClipboardSpy = jest.spyOn(fixture.componentInstance, "makeScreenshotToClipboard")
 
 		await fixture.componentInstance.makeScreenshotToClipboard()
@@ -65,6 +72,17 @@ describe("screenshotButtonComponent", () => {
 		expect(makeScreenshotToClipboardSpy).toHaveBeenCalledTimes(1)
 		await waitFor(() => {
 			expect(setToClipboard).toHaveBeenCalledTimes(1)
+			expect(drawImageSpy).toHaveBeenCalledWith(
+				expect.anything(),
+				xStart,
+				yStart,
+				croppedCanvasWidth,
+				croppedCanvasHeight,
+				expect.any(Number),
+				expect.any(Number),
+				expect.any(Number),
+				expect.any(Number)
+			)
 		})
 	})
 
@@ -77,6 +95,9 @@ describe("screenshotButtonComponent", () => {
 		store.refreshState()
 		detectChanges()
 
+		const { xStart, yStart, croppedCanvasWidth, croppedCanvasHeight, imageData } = createMockImageData()
+		jest.spyOn(CanvasRenderingContext2D.prototype, "getImageData").mockImplementation(() => imageData)
+		const drawImageSpy = jest.spyOn(CanvasRenderingContext2D.prototype, "drawImage")
 		const clickDownloadLinkSpy = jest.spyOn(HTMLAnchorElement.prototype, "click").mockImplementation()
 		const makeScreenshotToFileSpy = jest.spyOn(fixture.componentInstance, "makeScreenshotToFile")
 
@@ -85,6 +106,17 @@ describe("screenshotButtonComponent", () => {
 		expect(makeScreenshotToFileSpy).toHaveBeenCalledTimes(1)
 		await waitFor(() => {
 			expect(clickDownloadLinkSpy).toHaveBeenCalledTimes(1)
+			expect(drawImageSpy).toHaveBeenCalledWith(
+				expect.anything(),
+				xStart,
+				yStart,
+				croppedCanvasWidth,
+				croppedCanvasHeight,
+				expect.any(Number),
+				expect.any(Number),
+				expect.any(Number),
+				expect.any(Number)
+			)
 		})
 	})
 
@@ -107,4 +139,34 @@ describe("screenshotButtonComponent", () => {
 
 function isScreenshotButtonDisabled(container: Element) {
 	return container.querySelector("cc-action-icon").classList.contains("disabled")
+}
+
+function createMockImageData() {
+	const width = document.createElement("canvas").width
+	const height = document.createElement("canvas").height
+	const imageDataArray = new Uint8ClampedArray(4 * width * height)
+
+	const xStart = 100
+	const xEnd = 200
+	const yStart = 50
+	const yEnd = 100
+	const croppedCanvasWidth = xEnd - xStart
+	const croppedCanvasHeight = yEnd - yStart
+
+	for (let y = 0; y < height; y++) {
+		for (let x = 0; x < width; x++) {
+			const index = (y * width + x) * 4
+			imageDataArray[index] = 0
+			imageDataArray[index + 1] = 0
+			imageDataArray[index + 2] = 0
+
+			if (x >= xStart && x < xEnd && y >= yStart && y < yEnd) {
+				imageDataArray[index + 3] = 255
+			} else {
+				imageDataArray[index + 3] = 0
+			}
+		}
+	}
+
+	return { xStart, yStart, croppedCanvasWidth, croppedCanvasHeight, imageData: new ImageData(imageDataArray, width, height) }
 }
