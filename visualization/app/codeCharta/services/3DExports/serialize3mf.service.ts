@@ -1,5 +1,5 @@
 import { strToU8, zipSync } from "fflate"
-import { Mesh, MeshBasicMaterial, Vector3 } from "three"
+import { Matrix4, Mesh, MeshBasicMaterial, Vector3 } from "three"
 
 interface Volume {
 	id: number
@@ -99,14 +99,14 @@ function buildModelConfigHeader(): string {
 	return modelConfig
 }
 function buildModelConfigVolumes(volume: Volume) {
-	const modelConfigVolume =
+	return (
 		`  <volume firstid="${volume.firstTriangleId}" lastid="${volume.lastTriangleId}">\n` +
 		`   <metadata type="volume" key="name" value="${volume.name}"/>\n` +
 		`   <metadata type="volume" key="extruder" value="${volume.extruder}"/>\n` +
 		`   <metadata type="volume" key="source_object_id" value="1"/>\n` +
 		`   <metadata type="volume" key="source_volume_id" value="${volume.id}"/>\n` +
 		"  </volume>\n"
-	return modelConfigVolume
+	)
 }
 function buildModelConfigFooter(): string {
 	let modelConfigFooter = " </object>\n"
@@ -147,16 +147,34 @@ function extractMeshData(mesh: Mesh): {
 	const volumeCount = 1
 
 	for (const child of mesh.children as Mesh[]) {
-		if (!child.visible) {
-			continue
-		}
 		extractChildMeshData(child, vertices, triangles, vertexToNewVertexIndex, volumeCount, colorToExtruder, volumes)
 	}
 
 	return { vertices, triangles, volumes }
 }
-function extractChildMeshData(child, vertices, triangles, vertexToNewVertexIndex, volumeCount, colorToExtruder, volumes): void {
-	const colorNodeGroups = groupMeshVerticesByColor(child)
+
+function extractChildMeshData(
+	mesh: Mesh,
+	vertices,
+	triangles,
+	vertexToNewVertexIndex,
+	volumeCount,
+	colorToExtruder,
+	volumes,
+	parentMatrix: Matrix4 = undefined
+): void {
+	if (!mesh.visible) {
+		return
+	}
+	for (const child of mesh.children as Mesh[]) {
+		let parentMatrix = mesh.matrix
+		if (parentMatrix) {
+			parentMatrix = parentMatrix.clone().multiply(mesh.matrix)
+		}
+		extractChildMeshData(child, vertices, triangles, vertexToNewVertexIndex, volumeCount, colorToExtruder, volumes, parentMatrix)
+	}
+
+	const colorNodeGroups = groupMeshVerticesByColor(mesh)
 	const vertexIndexToNewVertexIndex: Map<number, number> = new Map()
 
 	for (const { color, vertexIndexes } of colorNodeGroups) {
@@ -167,12 +185,13 @@ function extractChildMeshData(child, vertices, triangles, vertexToNewVertexIndex
 			vertexToNewVertexIndex,
 			vertexIndexToNewVertexIndex,
 			vertexIndexes,
-			child
+			mesh,
+			parentMatrix
 		)
 
-		constructTriangles(child.geometry, triangles, vertexIndexToNewVertexIndex, firstVertexId, lastVertexId)
+		constructTriangles(mesh.geometry, triangles, vertexIndexToNewVertexIndex, firstVertexId, lastVertexId)
 
-		constructVolume(child, color, firstTriangleId, triangles.length - 1, volumes, volumeCount, colorToExtruder)
+		constructVolume(mesh, color, firstTriangleId, triangles.length - 1, volumes, volumeCount, colorToExtruder)
 		volumeCount++
 	}
 }
@@ -210,7 +229,8 @@ function constructVertices(
 	vertexToNewVertexIndex,
 	vertexIndexToNewVertexIndex,
 	vertexIndexes,
-	mesh: Mesh
+	mesh: Mesh,
+	parentMatrix: Matrix4
 ): { firstVertexId: number; lastVertexId: number } {
 	const firstVertexId = vertexIndexToNewVertexIndex.size
 
@@ -221,6 +241,9 @@ function constructVertices(
 			positionAttribute.getY(vertexIndex) * mesh.scale.y,
 			positionAttribute.getZ(vertexIndex) * mesh.scale.z
 		)
+		if (parentMatrix) {
+			vertex.applyMatrix4(parentMatrix)
+		}
 		vertex.add(mesh.position)
 
 		const vertexString = `<vertex x="${vertex.x}" y="${vertex.y}" z="${vertex.z}"/>\n`
