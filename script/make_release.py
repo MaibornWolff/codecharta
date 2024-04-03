@@ -4,9 +4,13 @@ import in_place
 import pathlib
 import subprocess
 import datetime
+import sys
+import shutil
 
 root = pathlib.Path().absolute()
-
+FORCE = len(sys.argv) == 2 and (sys.argv[1] == "-f" or sys.argv == "--force")
+if FORCE:
+    print("Force mode enabled. Protections disabled!")
 
 def is_root_folder():
     return root[-10:] == "codecharta"
@@ -103,12 +107,12 @@ else:
     repo = git.Repo(root)
 
 # Check if there are any uncommitted changes
-if repo.is_dirty():
+if not FORCE and repo.is_dirty():
     print("Please commit your changes first and/or ignore untracked files in git. Aborting.")
     quit()
 
 # Check if we are on main branch
-if repo.active_branch.name != "main":
+if not FORCE and repo.active_branch.name != "main":
     print("You can only release on main branch. Aborting.")
     quit()
 
@@ -196,6 +200,10 @@ if(is_visualization(repository)):
   changelog_path = f"{root}/visualization/CHANGELOG.md"
   update_changelog(changelog_path)
   print(f"updated {changelog_path}")
+
+  # building webpack
+  subprocess.run('cd visualization && npm ci && npm run build', shell=True)
+  shutil.copy('isualization/dist/webpack/', 'gh-pages/visualization/app/')
 
 else:
   ## Update analysis files
