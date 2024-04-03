@@ -69,7 +69,7 @@ export async function createPrintPreviewMesh(mapMesh: Mesh, geometryOptions: Geo
 }
 
 export function updateMapSize(printMesh: Mesh, currentWidth: number, wantedWidth: number) {
-	printMesh.traverse(object => {
+	for (const object of printMesh.children) {
 		if (!(object instanceof Mesh)) {
 			return
 		}
@@ -117,8 +117,9 @@ export function updateMapSize(printMesh: Mesh, currentWidth: number, wantedWidth
 
 			default:
 				console.warn("Unknown object:", child.name, "Did you forget to add it to the updateMapSize method?")
+				break
 		}
-	})
+	}
 }
 
 export async function addCustomLogo(printMesh: Mesh, dataUrl: string, width: number): Promise<void> {
@@ -251,27 +252,30 @@ async function createMetricsMesh(geometryOptions: GeometryOptions): Promise<Mesh
 	const areaText =
 		`${geometryOptions.areaMetricData.name}\n` +
 		`${geometryOptions.areaMetricTitle}\n` +
-		`Value range:  ${geometryOptions.areaMetricData.minValue}-${geometryOptions.areaMetricData.maxValue}`
+		`Value range:  ${geometryOptions.areaMetricData.minValue} - ${geometryOptions.areaMetricData.maxValue}`
 
 	const heightIcon = "height_icon_for_3D_print.svg"
 	const heightIconScale = 12
 	const heightText =
 		`${geometryOptions.heightMetricData.name}\n` +
 		`${geometryOptions.heightMetricTitle}\n` +
-		`Value range: ${geometryOptions.heightMetricData.minValue}-${geometryOptions.heightMetricData.maxValue}`
+		`Value range: ${geometryOptions.heightMetricData.minValue} - ${geometryOptions.heightMetricData.maxValue}`
 
 	const colorIcon = "color_icon_for_3D_print.svg"
 	const colorIconScale = 10
-	const colorText =
-		`${geometryOptions.colorMetricData.name}\n` +
-		`${geometryOptions.colorMetricTitle}\n` +
-		`Value ranges: ${geometryOptions.colorMetricData.minValue}-${geometryOptions.colorRange.from - 1} /` +
-		` ${geometryOptions.colorRange.from}-${geometryOptions.colorRange.to - 1} /` +
-		` ${geometryOptions.colorRange.to}-${geometryOptions.colorMetricData.maxValue}`
+	const colorTextNameAndTitle = `${geometryOptions.colorMetricData.name}\n` + `${geometryOptions.colorMetricTitle}\n`
+	const colorTextValueRanges = [
+		`Value ranges:`,
+		` ${geometryOptions.colorMetricData.minValue} - ${geometryOptions.colorRange.from - 1}`,
+		` /`,
+		` ${geometryOptions.colorRange.from} - ${geometryOptions.colorRange.to - 1}`,
+		` /`,
+		` ${geometryOptions.colorRange.to} - ${geometryOptions.colorMetricData.maxValue}`
+	]
 
 	const icons = [areaIcon, heightIcon, colorIcon].map(icon => `codeCharta/assets/${icon}`)
 	const iconScales = [areaIconScale, heightIconScale, colorIconScale]
-	const texts = [areaText, heightText, colorText]
+	const whiteTexts = [areaText, heightText, colorTextNameAndTitle]
 
 	const backTextGeometries = []
 	for (const [index, icon] of icons.entries()) {
@@ -286,7 +290,7 @@ async function createMetricsMesh(geometryOptions: GeometryOptions): Promise<Mesh
 		iconGeometry.translate(geometryOptions.width / 2 - mapSideOffset, -35 * index - 15, -((baseplateHeight * 3) / 4))
 		backTextGeometries.push(iconGeometry)
 
-		const text = texts[index]
+		const text = whiteTexts[index]
 		const textGeometry = await createTextGeometry(text, backTextSize, baseplateHeight / 2)
 		textGeometry.rotateY(Math.PI)
 
@@ -295,11 +299,34 @@ async function createMetricsMesh(geometryOptions: GeometryOptions): Promise<Mesh
 		backTextGeometries.push(textGeometry)
 	}
 
+	// Create separate geometries for each part of the colorText and assign different materials to them
+	const colorTextGeometries = []
+	const colors = [0xff_ff_ff, 0x00_ff_00, 0xff_ff_ff, 0xff_ff_00, 0xff_ff_ff, 0xff_00_00] // white, green, white, yellow, white, red
+	let xOffset = geometryOptions.width / 2 - mapSideOffset - 10
+	for (let index = 0; index < colorTextValueRanges.length; index += 1) {
+		const textGeometry = await createTextGeometry(`\n\n${colorTextValueRanges[index]}`, backTextSize, baseplateHeight / 2)
+		textGeometry.rotateY(Math.PI)
+		textGeometry.translate(xOffset, -35 * 2 + backTextSize - 15, -baseplateHeight / 2)
+		const material = new MeshBasicMaterial({ color: colors[index], side: DoubleSide })
+		const textMesh = new Mesh(textGeometry, material)
+		textMesh.name = `Metric Text Part ${index}`
+		colorTextGeometries.push(textMesh)
+
+		if (index !== colorTextValueRanges.length - 1) {
+			textGeometry.computeBoundingBox()
+			xOffset = textGeometry.boundingBox.min.x
+		}
+	}
+
 	const metricTextGeometry = BufferGeometryUtils.mergeBufferGeometries(backTextGeometries)
 	const material = new MeshBasicMaterial({ color: 0xff_ff_ff, side: DoubleSide })
 	const backTextMesh = new Mesh(metricTextGeometry, material)
 	backTextMesh.name = "Metric Text"
 	backTextMesh.visible = scaleAndCenterBack(backTextMesh, geometryOptions.width)
+
+	for (const colorTextGeometry of colorTextGeometries) {
+		backTextMesh.add(colorTextGeometry)
+	}
 	return backTextMesh
 }
 function scaleAndCenterBack(backTextMesh: Mesh, baseplateWidth: number, scaleFactor = 1): boolean {
