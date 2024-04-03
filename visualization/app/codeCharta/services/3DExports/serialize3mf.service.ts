@@ -167,11 +167,11 @@ function extractChildMeshData(
 		return
 	}
 	for (const child of mesh.children as Mesh[]) {
-		let parentMatrix = mesh.matrix
+		let newParentMatrix = mesh.matrix
 		if (parentMatrix) {
-			parentMatrix = parentMatrix.clone().multiply(mesh.matrix)
+			newParentMatrix = parentMatrix.clone().multiply(mesh.matrix)
 		}
-		extractChildMeshData(child, vertices, triangles, vertexToNewVertexIndex, volumeCount, colorToExtruder, volumes, parentMatrix)
+		extractChildMeshData(child, vertices, triangles, vertexToNewVertexIndex, volumeCount, colorToExtruder, volumes, newParentMatrix)
 	}
 
 	const colorToVertexIndices = groupMeshVerticesByColor(mesh)
