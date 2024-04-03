@@ -147,7 +147,9 @@ function extractMeshData(mesh: Mesh): {
 	const volumeCount = 1
 
 	for (const child of mesh.children as Mesh[]) {
-		extractChildMeshData(child, vertices, triangles, vertexToNewVertexIndex, volumeCount, colorToExtruder, volumes)
+		if (child.name === "Map") {
+			extractChildMeshData(child, vertices, triangles, vertexToNewVertexIndex, volumeCount, colorToExtruder, volumes)
+		}
 	}
 
 	return { vertices, triangles, volumes }
@@ -174,10 +176,10 @@ function extractChildMeshData(
 		extractChildMeshData(child, vertices, triangles, vertexToNewVertexIndex, volumeCount, colorToExtruder, volumes, parentMatrix)
 	}
 
-	const colorNodeGroups = groupMeshVerticesByColor(mesh)
+	const colorToVertexIndices = groupMeshVerticesByColor(mesh)
 	const vertexIndexToNewVertexIndex: Map<number, number> = new Map()
 
-	for (const { color, vertexIndexes } of colorNodeGroups) {
+	for (const [color, vertexIndexes] of colorToVertexIndices.entries()) {
 		const firstTriangleId = triangles.length
 
 		const { firstVertexId, lastVertexId } = constructVertices(
@@ -189,39 +191,38 @@ function extractChildMeshData(
 			parentMatrix
 		)
 
-		constructTriangles(mesh.geometry, triangles, vertexIndexToNewVertexIndex, firstVertexId, lastVertexId)
+		constructTriangles(mesh.geometry, triangles, vertexIndexToNewVertexIndex, firstVertexId, lastVertexId, vertexIndexes)
 
 		constructVolume(mesh, color, firstTriangleId, triangles.length - 1, volumes, volumeCount, colorToExtruder)
 		volumeCount++
 	}
 }
-function groupMeshVerticesByColor(mesh: Mesh): { color: string; vertexIndexes: number[] }[] {
-	const colorNodeGroups: { color: string; vertexIndexes: number[] }[] = []
+
+function groupMeshVerticesByColor(mesh: Mesh): Map<string, number[]> {
+	const colorToVertexIndices: Map<string, number[]> = new Map()
 
 	if (mesh.geometry.attributes.color) {
 		for (let index = 0; index < mesh.geometry.attributes.color.count; index++) {
 			const hexColorString = convertColorArrayToHexString(mesh.geometry.attributes.color, index)
-			const colorNodeGroup = colorNodeGroups.find(cng => cng.color === hexColorString)
 
-			if (colorNodeGroup) {
-				colorNodeGroup.vertexIndexes.push(index)
+			if (colorToVertexIndices.has(hexColorString)) {
+				colorToVertexIndices.get(hexColorString).push(index)
 			} else {
-				colorNodeGroups.push({ color: hexColorString, vertexIndexes: [index] })
+				colorToVertexIndices.set(hexColorString, [index])
 			}
 		}
 	} else {
 		const material = mesh.material as MeshBasicMaterial
 		const hexColorString = material.color.getHexString()
-		const colorNodeGroup = colorNodeGroups.find(cng => cng.color === hexColorString)
 		const indexArray = Array.from({ length: mesh.geometry.attributes.position.count }, (_, index) => index)
 
-		if (colorNodeGroup) {
-			colorNodeGroup.vertexIndexes.push(...indexArray)
+		if (colorToVertexIndices.has(hexColorString)) {
+			colorToVertexIndices.get(hexColorString).push(...indexArray)
 		} else {
-			colorNodeGroups.push({ color: hexColorString, vertexIndexes: indexArray })
+			colorToVertexIndices.set(hexColorString, indexArray)
 		}
 	}
-	return colorNodeGroups
+	return colorToVertexIndices
 }
 
 function constructVertices(
@@ -259,7 +260,8 @@ function constructVertices(
 
 	return { firstVertexId, lastVertexId: vertexIndexToNewVertexIndex.size - 1 }
 }
-function constructTriangles(geometry, triangles, vertexIndexToNewVertexIndex, firstVertexId, lastVertexId): void {
+
+function constructTriangles(geometry, triangles, vertexIndexToNewVertexIndex, firstVertexId, lastVertexId, vertexIndexes): void {
 	if (!geometry.index) {
 		for (let index = 0; index < geometry.attributes.position.count; index += 3) {
 			const triangle = `<triangle v1="${vertexIndexToNewVertexIndex.get(index)}" v2="${vertexIndexToNewVertexIndex.get(
@@ -268,23 +270,17 @@ function constructTriangles(geometry, triangles, vertexIndexToNewVertexIndex, fi
 			triangles.push(triangle)
 		}
 	} else {
-		const indexAttribute = geometry.index
-		for (let index = 0; index < indexAttribute.count; index += 3) {
-			const index1 = indexAttribute.getX(index)
-			const index2 = indexAttribute.getY(index)
-			const index3 = indexAttribute.getZ(index)
+		const vertexIndices = geometry.index
+		for (let index = 0; index < vertexIndices.count; index += 3) {
+			const vertexIndex1 = vertexIndices.getX(index)
+			const vertexIndex2 = vertexIndices.getY(index)
+			const vertexIndex3 = vertexIndices.getZ(index)
 
-			if (
-				index1 >= firstVertexId &&
-				index1 <= lastVertexId &&
-				index2 >= firstVertexId &&
-				index2 <= lastVertexId &&
-				index3 >= firstVertexId &&
-				index3 <= lastVertexId
-			) {
-				const triangle = `<triangle v1="${vertexIndexToNewVertexIndex.get(index1)}" v2="${vertexIndexToNewVertexIndex.get(
-					index2
-				)}" v3="${vertexIndexToNewVertexIndex.get(index3)}" />\n`
+			if (vertexIndexes.includes(vertexIndex1) && vertexIndexes.includes(vertexIndex2) && vertexIndexes.includes(vertexIndex3)) {
+				const triangle = `<triangle v1="${vertexIndexToNewVertexIndex.get(vertexIndex1)}" v2="${vertexIndexToNewVertexIndex.get(
+					vertexIndex2
+				)}" v3="${vertexIndexToNewVertexIndex.get(vertexIndex3)}" />\n`
+
 				triangles.push(triangle)
 			}
 		}
