@@ -147,9 +147,7 @@ function extractMeshData(mesh: Mesh): {
 	const volumeCount = 1
 
 	for (const child of mesh.children as Mesh[]) {
-		if (child.name === "Map") {
-			extractChildMeshData(child, vertices, triangles, vertexToNewVertexIndex, volumeCount, colorToExtruder, volumes)
-		}
+		extractChildMeshData(child, vertices, triangles, vertexToNewVertexIndex, volumeCount, colorToExtruder, volumes)
 	}
 
 	return { vertices, triangles, volumes }
