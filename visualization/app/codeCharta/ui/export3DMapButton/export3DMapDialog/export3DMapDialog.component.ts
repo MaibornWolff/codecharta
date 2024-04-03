@@ -1,14 +1,5 @@
 import { filesSelector } from "../../../state/store/files/files.selector"
 import { accumulatedDataSelector } from "../../../state/selectors/accumulatedData/accumulatedData.selector"
-import {
-	addCustomLogo,
-	flipCustomLogo,
-	createPrintPreviewMesh,
-	rotateCustomLogo,
-	updateFrontText,
-	updateMapSize,
-	GeometryOptions
-} from "../../../services/3DExports/prepareGeometryForPrinting.service"
 import { FileNameHelper } from "../../../util/fileNameHelper"
 import { isDeltaState } from "../../../model/files/files.helper"
 import { FileDownloader } from "../../../util/fileDownloader"
@@ -16,13 +7,14 @@ import { Component, ElementRef, ViewChild, ViewEncapsulation } from "@angular/co
 import { State, Store } from "@ngrx/store"
 import { CcState, NodeMetricData } from "../../../codeCharta.model"
 import { ThreeSceneService } from "../../codeMap/threeViewer/threeSceneService"
-import { Color, Mesh, PerspectiveCamera, Scene, WebGLRenderer } from "three"
+import { Color, Mesh, PerspectiveCamera, Scene, Vector3, WebGLRenderer } from "three"
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
 import { STLExporter } from "three/examples/jsm/exporters/STLExporter"
 import { metricTitles } from "../../../util/metric/metricTitles"
 import { serialize3mf } from "../../../services/3DExports/serialize3mf.service"
 import { map, take } from "rxjs"
 import { metricDataSelector } from "../../../state/selectors/accumulatedData/metricData/metricData.selector"
+import { GeometryOptions, preview3DPrintMeshBuilder } from "../../../services/3DExports/preview3DPrintMeshBuilder"
 
 interface printer {
 	x: number
@@ -39,6 +31,7 @@ interface printer {
 export class Export3DMapDialogComponent {
 	@ViewChild("rendererContainer") rendererContainer: ElementRef
 	private printPreviewScene: Scene
+	private previewMeshBuilder: preview3DPrintMeshBuilder
 
 	isPrintMeshLoaded = false
 	frontText = "CodeCharta"
@@ -67,7 +60,10 @@ export class Export3DMapDialogComponent {
 
 	constructor(private store: Store<CcState>, private state: State<CcState>, private threeSceneService: ThreeSceneService) {}
 
-	ngOnInit(): void {
+	async ngOnInit(): Promise<void> {
+		this.previewMeshBuilder = new preview3DPrintMeshBuilder()
+		const initMeshBuilder = this.previewMeshBuilder.initialize()
+
 		this.maxPrinterX = this.printers[this.selectedPrinter].x
 		this.maxPrinterY = this.printers[this.selectedPrinter].y
 		this.maxPrinterZ = this.printers[this.selectedPrinter].z
@@ -91,17 +87,18 @@ export class Export3DMapDialogComponent {
 					))
 			)
 
+		await initMeshBuilder
 		this.createScene()
 	}
 
 	onScaleChange() {
 		const printMesh = (this.printPreviewScene as Scene).getObjectByName("PrintMesh") as Mesh
-		updateMapSize(printMesh, this.currentWidth, this.wantedWidthInCm * 10)
+		this.previewMeshBuilder.updateMapSize(printMesh, this.currentWidth, this.wantedWidthInCm * 10)
 		this.updateCurrentSize(printMesh)
 	}
 	onFrontTextChange() {
 		const printMesh = (this.printPreviewScene as Scene).getObjectByName("PrintMesh") as Mesh
-		updateFrontText(printMesh, this.frontText, this.currentWidth)
+		this.previewMeshBuilder.updateFrontText(printMesh, this.frontText, this.currentWidth)
 	}
 	onFileSelected(event) {
 		const printMesh = (this.printPreviewScene as Scene).getObjectByName("PrintMesh") as Mesh
@@ -110,15 +107,15 @@ export class Export3DMapDialogComponent {
 			const reader = new FileReader()
 			reader.readAsDataURL(file)
 			reader.onload = () => {
-				addCustomLogo(printMesh, reader.result as string, this.currentWidth)
+				this.previewMeshBuilder.addCustomLogo(printMesh, reader.result as string, this.currentWidth)
 			}
 		}
 	}
 	onRotateLogo() {
-		rotateCustomLogo(this.printPreviewScene.getObjectByName("PrintMesh") as Mesh)
+		this.previewMeshBuilder.rotateCustomLogo(this.printPreviewScene.getObjectByName("PrintMesh") as Mesh)
 	}
 	onFlipLogo() {
-		flipCustomLogo(this.printPreviewScene.getObjectByName("PrintMesh") as Mesh)
+		this.previewMeshBuilder.flipCustomLogo(this.printPreviewScene.getObjectByName("PrintMesh") as Mesh)
 	}
 
 	async createScene() {
@@ -136,10 +133,9 @@ export class Export3DMapDialogComponent {
 
 		const camera = new PerspectiveCamera(45, 1.15, 50, 200_000)
 		camera.name = "camera"
-		//camera.position.set(-50, -100, 300)
-		camera.position.set(0, 0, -300)
-		//camera.position.set(-this.currentWidth * 0.5, -this.depth, this.height * 3)
-		//camera.up = new Vector3(0, 0, 1)
+		//camera.position.set(0, 0, -300) //To directly see the backside of the map: uncomment this line and comment the next two lines
+		camera.position.set(-this.currentWidth * 0.2, -this.depth * 1.2, this.height * 5)
+		camera.up = new Vector3(0, 0, 1)
 		printPreviewScene.rotateZ(Math.PI * 2)
 		printPreviewScene.add(camera)
 
@@ -159,7 +155,10 @@ export class Export3DMapDialogComponent {
 		this.isPrintMeshLoaded = false
 
 		const geometryOptions = this.makeGeometryOptions()
-		const printMesh = await createPrintPreviewMesh(this.threeSceneService.getMapMesh().getThreeMesh(), geometryOptions)
+		const printMesh = await this.previewMeshBuilder.createPrintPreviewMesh(
+			this.threeSceneService.getMapMesh().getThreeMesh(),
+			geometryOptions
+		)
 
 		this.makeMapMaxSize(printMesh)
 
@@ -195,7 +194,7 @@ export class Export3DMapDialogComponent {
 		const biggestRatio = Math.max(widthRatio, depthRatio, heightRatio)
 		if (biggestRatio > 1) {
 			this.wantedWidthInCm = Math.floor(this.currentWidth / biggestRatio) / 10
-			updateMapSize(printMesh, this.currentWidth, this.wantedWidthInCm * 10)
+			this.previewMeshBuilder.updateMapSize(printMesh, this.currentWidth, this.wantedWidthInCm * 10)
 			this.updateCurrentSize(printMesh)
 		}
 
