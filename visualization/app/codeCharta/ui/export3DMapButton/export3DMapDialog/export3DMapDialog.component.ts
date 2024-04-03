@@ -39,19 +39,19 @@ export class Export3DMapDialogComponent {
 	printerOptions = ["prusaMk3s", "bambuA1", "prusaXL"]
 	selectedPrinter = this.printerOptions[0]
 	printers: { [key: string]: printer } = {
-		prusaMk3s: { x: 200, y: 200, z: 200, numberOfColors: 1 },
-		bambuA1: { x: 0, y: 0, z: 200, numberOfColors: 4 },
-		prusaXL: { x: 245, y: 200, z: 200, numberOfColors: 5 }
+		prusaMk3s: { x: 245, y: 205, z: 205, numberOfColors: 1 },
+		bambuA1: { x: 251, y: 251, z: 251, numberOfColors: 4 },
+		prusaXL: { x: 355, y: 355, z: 355, numberOfColors: 5 }
 	}
 	maxPrinterX: number
 	maxPrinterY: number
 	maxPrinterZ: number
 
 	maxWidth: number
-	wantedWidthInCm: number
+	wantedWidth: number
 	currentWidth: number
-	depth: number
-	height: number
+	currentDepth: number
+	currentHeight: number
 
 	areaMetric: string
 	heightMetric: string
@@ -64,13 +64,11 @@ export class Export3DMapDialogComponent {
 		this.previewMeshBuilder = new preview3DPrintMeshBuilder()
 		const initMeshBuilder = this.previewMeshBuilder.initialize()
 
-		this.maxPrinterX = this.printers[this.selectedPrinter].x
-		this.maxPrinterY = this.printers[this.selectedPrinter].y
-		this.maxPrinterZ = this.printers[this.selectedPrinter].z
+		this.updateMaxSizes()
 
 		//this is only an initial guess, needed for calculating the actual map size
 		this.currentWidth = this.maxPrinterX
-		this.wantedWidthInCm = this.maxPrinterX / 10
+		this.wantedWidth = this.maxPrinterX
 
 		this.areaMetric = this.state.getValue().dynamicSettings.areaMetric
 		this.heightMetric = this.state.getValue().dynamicSettings.heightMetric
@@ -93,8 +91,8 @@ export class Export3DMapDialogComponent {
 
 	onScaleChange() {
 		const printMesh = (this.printPreviewScene as Scene).getObjectByName("PrintMesh") as Mesh
-		this.previewMeshBuilder.updateMapSize(printMesh, this.currentWidth, this.wantedWidthInCm * 10)
-		this.updateCurrentSize(printMesh)
+		this.previewMeshBuilder.updateMapSize(printMesh, this.currentWidth, this.wantedWidth)
+		this.calculateCurrentSize(printMesh)
 	}
 	onFrontTextChange() {
 		const printMesh = (this.printPreviewScene as Scene).getObjectByName("PrintMesh") as Mesh
@@ -111,11 +109,21 @@ export class Export3DMapDialogComponent {
 			}
 		}
 	}
+
 	onRotateLogo() {
 		this.previewMeshBuilder.rotateCustomLogo(this.printPreviewScene.getObjectByName("PrintMesh") as Mesh)
 	}
+
 	onFlipLogo() {
 		this.previewMeshBuilder.flipCustomLogo(this.printPreviewScene.getObjectByName("PrintMesh") as Mesh)
+	}
+
+	onSelectedPrinterChange(event: any) {
+		this.selectedPrinter = event.value
+		this.updateMaxSizes()
+		this.maxWidth = undefined
+		this.makeMapMaxSize(this.printPreviewScene.getObjectByName("PrintMesh") as Mesh)
+		this.updateCameraPosition(this.printPreviewScene.getObjectByName("camera") as PerspectiveCamera)
 	}
 
 	async createScene() {
@@ -134,7 +142,7 @@ export class Export3DMapDialogComponent {
 		const camera = new PerspectiveCamera(45, 1.15, 50, 200_000)
 		camera.name = "camera"
 		//camera.position.set(0, 0, -300) //To directly see the backside of the map: uncomment this line and comment the next two lines
-		camera.position.set(-this.currentWidth * 0.2, -this.depth * 1.2, this.height * 5)
+		this.updateCameraPosition(camera)
 		camera.up = new Vector3(0, 0, 1)
 		printPreviewScene.rotateZ(Math.PI * 2)
 		printPreviewScene.add(camera)
@@ -151,6 +159,17 @@ export class Export3DMapDialogComponent {
 
 		this.printPreviewScene = printPreviewScene
 	}
+
+	private updateMaxSizes() {
+		this.maxPrinterX = this.printers[this.selectedPrinter].x
+		this.maxPrinterY = this.printers[this.selectedPrinter].y
+		this.maxPrinterZ = this.printers[this.selectedPrinter].z
+	}
+
+	private updateCameraPosition(camera: PerspectiveCamera) {
+		camera.position.set(-this.currentWidth * 0.2, -this.currentDepth * 1.2, this.currentHeight * 5)
+	}
+
 	async initPrintMesh() {
 		this.isPrintMeshLoaded = false
 
@@ -174,7 +193,7 @@ export class Export3DMapDialogComponent {
 		const colorMetricTitle = attributeDescriptors[this.colorMetric]?.title || fallbackTitles.get(this.colorMetric)
 
 		return {
-			width: this.wantedWidthInCm * 10,
+			width: this.wantedWidth,
 			areaMetricTitle,
 			areaMetricData: this.nodeMetricData.find(metric => metric.name === this.areaMetric),
 			heightMetricTitle,
@@ -186,24 +205,23 @@ export class Export3DMapDialogComponent {
 		}
 	}
 	private makeMapMaxSize(printMesh: Mesh) {
-		this.updateCurrentSize(printMesh)
+		this.calculateCurrentSize(printMesh)
 		const widthRatio = this.currentWidth / this.maxPrinterX
-		const depthRatio = this.depth / this.maxPrinterY
-		const heightRatio = this.height / this.maxPrinterZ
+		const depthRatio = this.currentDepth / this.maxPrinterY
+		const heightRatio = this.currentHeight / this.maxPrinterZ
 
 		const biggestRatio = Math.max(widthRatio, depthRatio, heightRatio)
-		if (biggestRatio > 1) {
-			this.wantedWidthInCm = Math.floor(this.currentWidth / biggestRatio) / 10
-			this.previewMeshBuilder.updateMapSize(printMesh, this.currentWidth, this.wantedWidthInCm * 10)
-			this.updateCurrentSize(printMesh)
-		}
+
+		this.wantedWidth = this.currentWidth / biggestRatio
+		this.previewMeshBuilder.updateMapSize(printMesh, this.currentWidth, this.wantedWidth)
+		this.calculateCurrentSize(printMesh)
 
 		if (!this.maxWidth) {
-			this.maxWidth = Math.floor(this.maxPrinterX / biggestRatio)
+			this.maxWidth = this.currentWidth
 		}
 	}
 
-	private updateCurrentSize(printMesh: Mesh) {
+	private calculateCurrentSize(printMesh: Mesh) {
 		const baseplate = printMesh.getObjectByName("Baseplate") as Mesh
 		baseplate.geometry.computeBoundingBox()
 		const boundingBoxBaseplate = baseplate.geometry.boundingBox
@@ -213,8 +231,8 @@ export class Export3DMapDialogComponent {
 		const boundingBoxMap = map.geometry.boundingBox
 
 		this.currentWidth = boundingBoxBaseplate.max.x - boundingBoxBaseplate.min.x
-		this.depth = boundingBoxBaseplate.max.y - boundingBoxBaseplate.min.y
-		this.height = boundingBoxBaseplate.max.z - boundingBoxBaseplate.min.z + boundingBoxMap.max.z - boundingBoxMap.min.z
+		this.currentDepth = boundingBoxBaseplate.max.y - boundingBoxBaseplate.min.y
+		this.currentHeight = boundingBoxBaseplate.max.z - boundingBoxBaseplate.min.z + boundingBoxMap.max.z - boundingBoxMap.min.z
 	}
 
 	async download3MFFile() {
