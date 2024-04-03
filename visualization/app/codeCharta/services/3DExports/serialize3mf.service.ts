@@ -48,7 +48,7 @@ function buildModelHeader(): string {
 	let model = '<?xml version="1.0" encoding="UTF-8"?>\n'
 	model +=
 		'<model unit="millimeter" xml:lang="en-US" xmlns="http://schemas.microsoft.com/3dmanufacturing/core/2015/02" xmlns:slic3rpe="http://schemas.slic3r.org/3mf/2017/06">\n'
-	model += ' <metadata name="Application">CodeCharta-JSCAD</metadata>\n'
+	model += ' <metadata name="Application">PrusaSlicer-2.7.2</metadata>\n'
 	model += " <resources>\n"
 	model += '  <object id="1" type="model">\n'
 	model += "   <mesh>\n"
@@ -94,7 +94,7 @@ function buildModelConfig(volumes: Volume[]): string {
 }
 function buildModelConfigHeader(): string {
 	let modelConfig = '<?xml version="1.0" encoding="UTF-8"?>\n<config>\n'
-	modelConfig += ` <object id="1" type="model">\n`
+	modelConfig += ` <object id="1">\n`
 	modelConfig += `  <metadata type="object" key="name" value="CodeCharta Map"/>\n`
 	return modelConfig
 }
