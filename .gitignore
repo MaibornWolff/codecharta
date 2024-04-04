@@ -6,7 +6,6 @@ auth.txt
 .scannerwork
 
 #gh-pages
-gh-pages/visualization
 gh-pages/vendor
 
 # Created by https://www.gitignore.io/api/intellij,jetbrains,java,code-java,macos,windows,linux,node,angular,grun...
