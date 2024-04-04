@@ -203,7 +203,7 @@ if(is_visualization(repository)):
 
   # building webpack
   subprocess.run('cd visualization && npm ci && npm run build', shell=True)
-  shutil.copy('isualization/dist/webpack/', 'gh-pages/visualization/app/')
+  subprocess.run(f"cp -R 'visualization/dist/webpack/'  'gh-pages/visualization/app/'", shell=True)
 
 else:
   ## Update analysis files
