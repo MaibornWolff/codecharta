@@ -1,19 +1,22 @@
-import { Component } from "@angular/core"
+import { Component, ViewChild } from "@angular/core"
 import { TestBed } from "@angular/core/testing"
+import { MatSelectModule } from "@angular/material/select"
 import { expect } from "@jest/globals"
-import { render, screen } from "@testing-library/angular"
-import userEvent from "@testing-library/user-event"
-import { MetricChooserComponent } from "./metricChooser.component"
-import { MetricChooserModule } from "./metricChooser.module"
 import { provideMockStore } from "@ngrx/store/testing"
+import { getByText, queryByText, render, screen, waitFor } from "@testing-library/angular"
+import userEvent from "@testing-library/user-event"
+import { MaterialModule } from "../../../material/material.module"
 import { metricDataSelector } from "../../state/selectors/accumulatedData/metricData/metricData.selector"
 import { attributeDescriptorsSelector } from "../../state/store/fileSettings/attributeDescriptors/attributeDescriptors.selector"
 import { TEST_ATTRIBUTE_DESCRIPTORS_FULL } from "../../util/dataMocks"
+import { MetricChooserComponent } from "./metricChooser.component"
+import { MetricChooserModule } from "./metricChooser.module"
 
 describe("metricChooserComponent", () => {
 	beforeEach(() => {
 		TestBed.configureTestingModule({
-			imports: [MetricChooserModule],
+			declarations: [MetricChooserComponent],
+			imports: [MetricChooserModule, MatSelectModule, MaterialModule],
 			providers: [
 				provideMockStore({
 					selectors: [
@@ -129,5 +132,38 @@ describe("metricChooserComponent", () => {
 		const { container } = await render(TestMetricChooser)
 
 		expect(container.lastChild.textContent).toBe("projected hovered information")
+	})
+
+	it("should hide metric sum field when options menu is opened", async () => {
+		const content = "Projected content"
+		const metricChooserTemplate = `
+			<cc-metric-chooser>
+				<div hoveredInformation class="metric-value">${content}</div>
+			</cc-metric-chooser>
+		`
+
+		@Component({
+			template: metricChooserTemplate
+		})
+		class WrapperComponent {
+			@ViewChild(MetricChooserComponent, { static: true }) metricChooserComponentRef: MetricChooserComponent
+		}
+
+		const { container, fixture } = await render(WrapperComponent, {
+			declarations: [MetricChooserComponent, WrapperComponent]
+		})
+
+		const metricChooserComponent: MetricChooserComponent = fixture.debugElement.componentInstance.metricChooserComponentRef
+
+		expect(metricChooserComponent).not.toBeNull()
+		await waitFor(() => {
+			expect(getByText(container as HTMLElement, content)).not.toBeNull()
+		})
+
+		metricChooserComponent.handleOpenedChanged(true)
+
+		await waitFor(() => {
+			expect(queryByText(container as HTMLElement, content)).toBeNull()
+		})
 	})
 })
