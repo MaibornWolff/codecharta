@@ -11,6 +11,8 @@
 -   On Windows it is recommended to run the command in `cmd.exe` rather than in a git bash.
 -   Note that you have to add the Changelog notes manually on GitHub (GitHub > Latest (new) release > Edit).
 
+> You can add `-f` or `--force` to disable the protections of the script. You can't release in force mode.
+
 ## Explanation of the script
 
 -   The script will ask you what version you want to increase (major, minor, patch). Read the [Versioning Strategy Guide](https://maibornwolff.github.io/codecharta/docs/versioning/) first.
