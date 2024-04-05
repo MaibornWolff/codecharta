@@ -5,7 +5,6 @@ import pathlib
 import subprocess
 import datetime
 import sys
-import shutil
 
 root = pathlib.Path().absolute()
 FORCE = len(sys.argv) == 2 and (sys.argv[1] == "-f" or sys.argv[1] == "--force")
@@ -205,7 +204,10 @@ if(is_visualization(repository)):
   print(f"updated {changelog_path}")
 
   # building webpack
-  subprocess.run('cd visualization && npm ci && npm run build', shell=True)
+  processInfo = subprocess.run('cd visualization && npm ci && npm run build', shell=True)
+  if(processInfo.returncode != 0):
+     print("Npm ci in visualization was not successfull. Please check the console output.")
+     quit()
   subprocess.run(f"cp -R 'visualization/dist/webpack/'  'gh-pages/visualization/app/'", shell=True)
 
 else:
