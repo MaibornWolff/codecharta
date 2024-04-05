@@ -8,7 +8,7 @@ import sys
 import shutil
 
 root = pathlib.Path().absolute()
-FORCE = len(sys.argv) == 2 and (sys.argv[1] == "-f" or sys.argv == "--force")
+FORCE = len(sys.argv) == 2 and (sys.argv[1] == "-f" or sys.argv[1] == "--force")
 if FORCE:
     print("Force mode enabled. Protections disabled!")
 
