@@ -82,20 +82,23 @@ def update_changelog(changelog_path):
 
 def update_readme(readme_path):
   with in_place.InPlace(readme_path, encoding="utf-8") as fp:
-    line_number = 0
+    release_line = False
 
     # line_number in array format -> first line = line 0
     for line in fp:
-      if line_number == 24:
+      if release_line:
+        assert("Analysis" in line and "Visualization" in line)
         readme_release_links = line.strip("\n").split("|")
         assert(len(readme_release_links)==2)
         entry_to_change = 1 if(is_visualization(repository)) else 0
         new_entry = f' {repository} <a href="https://github.com/MaibornWolff/codecharta/releases/tag/{new_prefix_version}">{new_version}</a> '
         readme_release_links[entry_to_change] = new_entry
         fp.write("|".join(readme_release_links)+"\n")
+        release_line = False
       else:
+        if "Latest Release:" in line:
+          release_line = True
         fp.write(line)
-      line_number = line_number + 1
 
 ### Release Steps
 
