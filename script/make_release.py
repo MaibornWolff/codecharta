@@ -208,7 +208,7 @@ if(is_visualization(repository)):
   if(processInfo.returncode != 0):
      print("Npm ci in visualization was not successfull. Please check the console output.")
      quit()
-  subprocess.run(f"cp -R 'visualization/dist/webpack/'  'gh-pages/visualization/app/'", shell=True)
+  subprocess.run(f"cp -R 'visualization/dist/webpack/.'  'gh-pages/visualization/app/'", shell=True)
 
 else:
   ## Update analysis files
