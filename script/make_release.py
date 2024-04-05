@@ -252,9 +252,7 @@ printMessage = "Committing and tagging..."
 confirm(message, printMessage)
 
 if is_visualization(repository):
-  repo.index.add([release_post_path, readme_path, changelog_path,
-                visualization_package_json,
-                visualization_package_lock_json])
+  repo.git.add(all=True)
 else:
   repo.index.add([release_post_path, readme_path, changelog_path, gradle_properties,
                 analysis_package_json, analysis_package_lock_json])
@@ -262,6 +260,10 @@ else:
 subprocess.run('git commit -a -m "Releasing ' + new_prefix_version + '"', shell=True)
 tag = repo.create_tag(new_prefix_version, ref="HEAD",
                       message=f"Releasing {new_prefix_version}")
+
+if(FORCE):
+  print("Release not allowed in force mode. Quitting...")
+  quit()
 
 # push
 message = "The release is now committed and tagged but not pushed. In order to finish this release you need to push the commit and tag. Push?"
