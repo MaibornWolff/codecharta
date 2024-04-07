@@ -14,12 +14,13 @@ cc-labelled-color-picker {
             width: 18px;
             height: 18px;
 
-            .cc-color-swatch {
-                display: inline-block;
-                width: inherit;
-                height: inherit;
-                border-radius: 2px;
-            }
+			.cc-color-swatch {
+				display: inline-block;
+				width: inherit;
+				height: inherit;
+				border-radius: 2px;
+				border: 1px solid black;
+			}
 
             .cc-color-brush {
                 position: absolute;
