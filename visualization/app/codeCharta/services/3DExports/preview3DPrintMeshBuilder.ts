@@ -174,7 +174,7 @@ export class preview3DPrintMeshBuilder {
 		}
 	}
 
-	updateFrontText(printMesh: Mesh, frontText: string, width) {
+	updateFrontText(printMesh: Mesh) {
 		printMesh.remove(printMesh.getObjectByName("FrontText"))
 		const text = this.createFrontText()
 		printMesh.attach(text)
@@ -239,7 +239,10 @@ export class preview3DPrintMeshBuilder {
 	private createBaseplateMesh(): Mesh {
 		const geometry = this.createBaseplateGeometry()
 		const material = new MeshBasicMaterial({ color: 0x80_80_80 })
-		const baseplateMesh = new Mesh(geometry, material)
+		material.polygonOffset = true
+		material.polygonOffsetUnits = 1
+		material.polygonOffsetFactor = 0.1
+		const baseplateMesh = new Mesh(geometry, material);
 		baseplateMesh.name = "Baseplate"
 		return baseplateMesh
 	}
