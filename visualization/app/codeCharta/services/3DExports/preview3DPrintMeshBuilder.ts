@@ -173,6 +173,12 @@ export class preview3DPrintMeshBuilder {
 			logoMesh.rotateY(Math.PI) // Rotate 180 degrees
 		}
 	}
+	updateLogoColor(printMesh: Mesh, newColor: string) {
+		const logoMesh = printMesh.getObjectByName("Custom Logo") as Mesh;
+		if (logoMesh) {
+			(logoMesh.material as MeshBasicMaterial).color.set(newColor);
+		}
+	}
 
 	updateFrontText(printMesh: Mesh) {
 		printMesh.remove(printMesh.getObjectByName("FrontText"))

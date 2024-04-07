@@ -3,7 +3,7 @@ import { accumulatedDataSelector } from "../../../state/selectors/accumulatedDat
 import { FileNameHelper } from "../../../util/fileNameHelper"
 import { isDeltaState } from "../../../model/files/files.helper"
 import { FileDownloader } from "../../../util/fileDownloader"
-import { Component, ElementRef, ViewChild, ViewEncapsulation } from "@angular/core"
+import {Component, ElementRef, Input, ViewChild, ViewEncapsulation} from "@angular/core"
 import { State, Store } from "@ngrx/store"
 import { CcState, NodeMetricData } from "../../../codeCharta.model"
 import { ThreeSceneService } from "../../codeMap/threeViewer/threeSceneService"
@@ -30,6 +30,8 @@ interface printer {
 })
 export class Export3DMapDialogComponent {
 	@ViewChild("rendererContainer") rendererContainer: ElementRef
+	@Input() logoColor: string = '#ffffff'
+
 	private printPreviewScene: Scene
 	private previewMeshBuilder: preview3DPrintMeshBuilder
 
@@ -124,6 +126,11 @@ export class Export3DMapDialogComponent {
 		this.maxWidth = undefined
 		this.makeMapMaxSize(this.printPreviewScene.getObjectByName("PrintMesh") as Mesh)
 		this.updateCameraPosition(this.printPreviewScene.getObjectByName("camera") as PerspectiveCamera)
+	}
+	onLogoColorChange(newColor: string) {
+		this.logoColor = newColor;
+		const printMesh = this.printPreviewScene.getObjectByName("PrintMesh") as Mesh;
+		this.previewMeshBuilder.updateLogoColor(printMesh, this.logoColor);
 	}
 
 	async createScene() {
