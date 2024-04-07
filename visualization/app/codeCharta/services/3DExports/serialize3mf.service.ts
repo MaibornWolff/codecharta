@@ -1,5 +1,5 @@
 import { strToU8, zipSync } from "fflate"
-import { Matrix4, Mesh, MeshBasicMaterial, Vector3 } from "three"
+import { Float32BufferAttribute, Material, Matrix4, Mesh, MeshBasicMaterial, ShaderMaterial, Vector3 } from "three"
 
 interface Volume {
 	id: number
@@ -198,10 +198,9 @@ function extractChildMeshData(
 
 function groupMeshVerticesByColor(mesh: Mesh): Map<string, number[]> {
 	const colorToVertexIndices: Map<string, number[]> = new Map()
-
 	if (mesh.geometry.attributes.color) {
 		for (let index = 0; index < mesh.geometry.attributes.color.count; index++) {
-			const hexColorString = convertColorArrayToHexString(mesh.geometry.attributes.color, index)
+			const hexColorString = convertColorArrayToHexString(mesh.geometry.attributes.color as Float32BufferAttribute, index)
 
 			if (colorToVertexIndices.has(hexColorString)) {
 				colorToVertexIndices.get(hexColorString).push(index)
@@ -210,8 +209,14 @@ function groupMeshVerticesByColor(mesh: Mesh): Map<string, number[]> {
 			}
 		}
 	} else {
-		const material = mesh.material as MeshBasicMaterial
-		const hexColorString = material.color.getHexString()
+		const material = mesh.material as Material
+		let hexColorString
+		if ((material as MeshBasicMaterial).color) {
+			hexColorString = (material as MeshBasicMaterial).color.getHexString()
+		} else if ((material as ShaderMaterial).isShaderMaterial) {
+			const colorArray = (material as ShaderMaterial).defaultAttributeValues.color
+			hexColorString = convertColorArrayToHexString(colorArray, 0)
+		}
 		const indexArray = Array.from({ length: mesh.geometry.attributes.position.count }, (_, index) => index)
 
 		if (colorToVertexIndices.has(hexColorString)) {
@@ -301,14 +306,15 @@ function constructVolume(child, color, firstTriangleId, lastTriangleId, volumes,
 	volumes.push(volume)
 }
 
-function convertColorArrayToHexString(color, index: number): string {
-	const colorsArray = [color.getX(index), color.getY(index), color.getZ(index)]
-
-	if (colorsArray[0] === colorsArray[1] && colorsArray[1] === colorsArray[2]) {
-		colorsArray[0] = 0.5
-		colorsArray[1] = 0.5
-		colorsArray[2] = 0.5
-	}
+function convertColorArrayToHexString(color: Float32BufferAttribute | number[], index: number): string {
+	const colorsArray: number[] =
+		color instanceof Float32BufferAttribute
+			? [
+					(color as Float32BufferAttribute).getX(index),
+					(color as Float32BufferAttribute).getY(index),
+					(color as Float32BufferAttribute).getZ(index)
+			  ]
+			: [color[index], color[index + 1], color[index + 2]]
 
 	return colorsArray
 		.map(c =>
