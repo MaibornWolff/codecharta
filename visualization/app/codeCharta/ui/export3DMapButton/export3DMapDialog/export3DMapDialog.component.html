@@ -32,17 +32,19 @@
 
 	<div>
 		<input type="file" (change)="onFileSelected($event)" accept=".svg" />
-		<button (click)="onRotateLogo()" mat-button title="Rotate Logo Button">
-			<span><i class="fa fa-rotate-right"></i> Rotate Logo</span>
-		</button>
-		<button (click)="onFlipLogo()" mat-button title="Flip Logo Button">
-			<span><i class="fa fa-arrows-h"></i> Flip Logo</span>
-		</button>
-		<cc-labelled-color-picker
-			[hexColor]="logoColor"
-			(onColorChange)="onLogoColorChange($event)"
-			[labels]="['Color']">
-		</cc-labelled-color-picker>
+		<div [hidden]="!isFileSelected">
+			<button (click)="onRotateLogo()" mat-button title="Rotate Logo Button">
+				<span><i class="fa fa-rotate-right"></i> Rotate Logo</span>
+			</button>
+			<button (click)="onFlipLogo()" mat-button title="Flip Logo Button">
+				<span><i class="fa fa-arrows-h"></i> Flip Logo</span>
+			</button>
+			<cc-labelled-color-picker
+				[hexColor]="logoColor"
+				(onColorChange)="onLogoColorChange($event)"
+				[labels]="['Color']">
+			</cc-labelled-color-picker>
+		</div>
 	</div>
 
 	<button (click)="download3MFFile()" [disabled]="!isPrintMeshLoaded" mat-button title="Download 3MF Button">

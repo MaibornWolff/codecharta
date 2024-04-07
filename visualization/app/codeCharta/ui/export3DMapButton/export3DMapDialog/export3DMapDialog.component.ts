@@ -35,6 +35,7 @@ export class Export3DMapDialogComponent {
 	private printPreviewScene: Scene
 	private previewMeshBuilder: preview3DPrintMeshBuilder
 
+	isFileSelected: boolean = false;
 	isPrintMeshLoaded = false
 	frontText = "CodeCharta"
 
@@ -101,14 +102,17 @@ export class Export3DMapDialogComponent {
 		this.previewMeshBuilder.updateFrontText(printMesh)
 	}
 	onFileSelected(event) {
-		const printMesh = (this.printPreviewScene as Scene).getObjectByName("PrintMesh") as Mesh
-		const file: File = event.target.files[0]
+		const printMesh = this.printPreviewScene.getObjectByName("PrintMesh") as Mesh;
+		const file: File = event.target.files[0];
 		if (file) {
-			const reader = new FileReader()
-			reader.readAsDataURL(file)
+			this.isFileSelected = true; // Set isFileSelected to true when a file is selected
+			const reader = new FileReader();
+			reader.readAsDataURL(file);
 			reader.onload = () => {
-				this.previewMeshBuilder.addCustomLogo(printMesh, reader.result as string)
-			}
+				this.previewMeshBuilder.addCustomLogo(printMesh, reader.result as string);
+			};
+		} else {
+			this.isFileSelected = false; // Set isFileSelected to false when no file is selected
 		}
 	}
 
