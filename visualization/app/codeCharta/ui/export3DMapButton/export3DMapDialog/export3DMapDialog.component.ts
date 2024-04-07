@@ -7,12 +7,12 @@ import { Component, ElementRef, ViewChild, ViewEncapsulation } from "@angular/co
 import { State, Store } from "@ngrx/store"
 import { CcState, NodeMetricData } from "../../../codeCharta.model"
 import { ThreeSceneService } from "../../codeMap/threeViewer/threeSceneService"
-import { Color, Mesh, PerspectiveCamera, Scene, Vector3, WebGLRenderer } from "three"
+import {Color, ShaderMaterial, Mesh, PerspectiveCamera, Scene, Vector3, WebGLRenderer} from "three"
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
 import { STLExporter } from "three/examples/jsm/exporters/STLExporter"
 import { metricTitles } from "../../../util/metric/metricTitles"
 import { serialize3mf } from "../../../services/3DExports/serialize3mf.service"
-import { map, take } from "rxjs"
+import {firstValueFrom, map, take} from "rxjs"
 import { metricDataSelector } from "../../../state/selectors/accumulatedData/metricData/metricData.selector"
 import { GeometryOptions, preview3DPrintMeshBuilder } from "../../../services/3DExports/preview3DPrintMeshBuilder"
 
@@ -61,29 +61,29 @@ export class Export3DMapDialogComponent {
 	constructor(private store: Store<CcState>, private state: State<CcState>, private threeSceneService: ThreeSceneService) {}
 
 	async ngOnInit(): Promise<void> {
-		this.previewMeshBuilder = new preview3DPrintMeshBuilder()
-		const initMeshBuilder = this.previewMeshBuilder.initialize()
-
-		this.updateMaxSizes()
-
-		//this is only an initial guess, needed for calculating the actual map size
-		this.currentWidth = this.maxPrinterX
-		this.wantedWidth = this.maxPrinterX
-
 		this.areaMetric = this.state.getValue().dynamicSettings.areaMetric
 		this.heightMetric = this.state.getValue().dynamicSettings.heightMetric
 		this.colorMetric = this.state.getValue().dynamicSettings.colorMetric
 
-		this.store
-			.select(metricDataSelector)
-			.pipe(map(metricData => metricData.nodeMetricData))
-			.pipe(take(1))
-			.subscribe(
-				nodeMetricData =>
-					(this.nodeMetricData = nodeMetricData.filter(
-						metric => metric.name === this.areaMetric || metric.name === this.heightMetric || metric.name === this.colorMetric
-					))
-			)
+		this.nodeMetricData = await firstValueFrom(
+			this.store
+				.select(metricDataSelector)
+				.pipe(map(metricData => metricData.nodeMetricData))
+		)
+
+		this.nodeMetricData = this.nodeMetricData.filter(
+			metric => metric.name === this.areaMetric || metric.name === this.heightMetric || metric.name === this.colorMetric
+		);
+
+		this.updateMaxSizes()
+		//this is only an initial guess, needed for calculating the actual map size
+		this.currentWidth = this.maxPrinterX
+		this.wantedWidth = this.maxPrinterX
+
+		const geometryOptions = this.makeGeometryOptions()
+		console.log(this.maxPrinterX, geometryOptions)
+		this.previewMeshBuilder = new preview3DPrintMeshBuilder(geometryOptions)
+		const initMeshBuilder = this.previewMeshBuilder.initialize()
 
 		await initMeshBuilder
 		this.createScene()
@@ -105,7 +105,7 @@ export class Export3DMapDialogComponent {
 			const reader = new FileReader()
 			reader.readAsDataURL(file)
 			reader.onload = () => {
-				this.previewMeshBuilder.addCustomLogo(printMesh, reader.result as string, this.currentWidth)
+				this.previewMeshBuilder.addCustomLogo(printMesh, reader.result as string)
 			}
 		}
 	}
@@ -173,10 +173,8 @@ export class Export3DMapDialogComponent {
 	async initPrintMesh() {
 		this.isPrintMeshLoaded = false
 
-		const geometryOptions = this.makeGeometryOptions()
 		const printMesh = await this.previewMeshBuilder.createPrintPreviewMesh(
-			this.threeSceneService.getMapMesh().getThreeMesh(),
-			geometryOptions
+			this.threeSceneService.getMapMesh().getThreeMesh()
 		)
 
 		this.makeMapMaxSize(printMesh)
@@ -201,7 +199,8 @@ export class Export3DMapDialogComponent {
 			colorMetricTitle,
 			colorMetricData: this.nodeMetricData.find(metric => metric.name === this.colorMetric),
 			colorRange: this.state.getValue().dynamicSettings.colorRange,
-			frontText: this.frontText
+			frontText: this.frontText,
+			defaultMaterial: (this.threeSceneService.getMapMesh().getThreeMesh().material[0].clone() as ShaderMaterial)
 		}
 	}
 	private makeMapMaxSize(printMesh: Mesh) {
