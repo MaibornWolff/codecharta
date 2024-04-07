@@ -7,9 +7,10 @@ import {MaterialModule} from "../../../material/material.module"
 import {Export3DMapDialogComponent} from "./export3DMapDialog/export3DMapDialog.component"
 import {MatSliderModule} from "@angular/material/slider";
 import {FormsModule} from "@angular/forms";
+import {LabelledColorPickerModule} from "../labelledColorPicker/labelledColorPicker.module";
 
 @NgModule({
-	imports: [CommonModule, ActionIconModule, HttpClientModule, MaterialModule, MatSliderModule, FormsModule],
+    imports: [CommonModule, ActionIconModule, HttpClientModule, MaterialModule, MatSliderModule, FormsModule, LabelledColorPickerModule],
 	declarations: [Export3DMapButtonComponent, Export3DMapDialogComponent],
 	exports: [Export3DMapButtonComponent]
 })

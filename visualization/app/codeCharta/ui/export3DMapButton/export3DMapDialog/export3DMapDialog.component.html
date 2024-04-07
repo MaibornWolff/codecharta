@@ -38,6 +38,11 @@
 		<button (click)="onFlipLogo()" mat-button title="Flip Logo Button">
 			<span><i class="fa fa-arrows-h"></i> Flip Logo</span>
 		</button>
+		<cc-labelled-color-picker
+			[hexColor]="logoColor"
+			(onColorChange)="onLogoColorChange($event)"
+			[labels]="['Color']">
+		</cc-labelled-color-picker>
 	</div>
 
 	<button (click)="download3MFFile()" [disabled]="!isPrintMeshLoaded" mat-button title="Download 3MF Button">
