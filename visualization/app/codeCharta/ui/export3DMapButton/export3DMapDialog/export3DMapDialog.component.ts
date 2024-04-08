@@ -99,7 +99,7 @@ export class Export3DMapDialogComponent {
 	}
 	onFrontTextChange() {
 		const printMesh = (this.printPreviewScene as Scene).getObjectByName("PrintMesh") as Mesh
-		this.previewMeshBuilder.updateFrontText(printMesh)
+		this.previewMeshBuilder.updateFrontText(printMesh, this.frontText)
 	}
 	onFileSelected(event) {
 		const printMesh = this.printPreviewScene.getObjectByName("PrintMesh") as Mesh;

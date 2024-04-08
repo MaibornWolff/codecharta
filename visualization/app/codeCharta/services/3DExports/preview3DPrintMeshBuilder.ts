@@ -186,7 +186,8 @@ export class preview3DPrintMeshBuilder {
 		}
 	}
 
-	updateFrontText(printMesh: Mesh) {
+	updateFrontText(printMesh: Mesh, newFrontText: string) {
+		this.geometryOptions.frontText = newFrontText
 		printMesh.remove(printMesh.getObjectByName("FrontText"))
 		const text = this.createFrontText()
 		printMesh.attach(text)
