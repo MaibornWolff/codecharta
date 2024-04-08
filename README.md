@@ -56,14 +56,6 @@ Latest Release: <br>
     -   It includes some pre-defined importers for e.g. [SonarQube](https://maibornwolff.github.io/codecharta/docs/sonar-importer), [SourceMonitor](https://maibornwolff.github.io/codecharta/docs/sourcemonitorimporter), [Git](https://maibornwolff.github.io/codecharta/docs/git-log-parser), generic [CSV](https://maibornwolff.github.io/codecharta/docs/csv-importer) data
     -   It also includes commands to [validate]() and [merge]() multiple `.cc.json` files.
 
-## Experimental Features
-
--   **In CodeCharta Visualization:**
-
-    -   **Suspicious Metrics:** Highlight files with suspicious metrics and a _risk profile analysis_ of the code based on the cyclomatic complexity.
-
-> **NOTE:** You can enable them from the settings panel.
-
 ## Requirements
 
 For using CodeCharta the following needs to be installed on your system:
