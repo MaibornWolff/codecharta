@@ -112,20 +112,31 @@ class InquirerTest {
         assertThat(result).isEqualTo("")
     }
 
-    @Test       //TODO: Fix
-    fun `should not accept input and display error when input is empty but empty input is not allowed`() {
-        var result = "not empty"
+    @Test
+    fun `should not accept input and display warning message when input is empty but empty input is not allowed`() {
+        val renderWithWarning = 3
+        var currentRender = 0
 
         testSession { terminal ->
-            result = myPromptInput(testMessage, allowEmptyInput = false,
-                    onInputReady = {
-                        terminal.press(Keys.ENTER)
-
-                        terminal.assertMatches { textLine(/* expected result */) }
-                   }
+            myPromptInput(testMessage, allowEmptyInput = false,
+                onInputReady = {
+                    terminal.press(Keys.ENTER)
+                    terminal.press(Keys.ENTER)
+                    terminal.type("a")
+                    terminal.press(Keys.ENTER)
+               },
+                onRerender = {
+                    currentRender += 1
+                    if (currentRender == renderWithWarning) {
+                        assertThat(terminal.resolveRerenders().stripFormatting()).containsExactly(
+                            "? $testMessage  empty input is not allowed!",
+                            ">  ",
+                            ""
+                        )
+                    }
+                }
             )
         }
-        assertThat(result).isEqualTo("")
     }
 
     @Test

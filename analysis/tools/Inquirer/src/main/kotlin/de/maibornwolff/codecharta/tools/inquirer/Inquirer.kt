@@ -20,19 +20,23 @@ import com.varabyte.kotter.foundation.text.textLine
 import com.varabyte.kotter.runtime.MainRenderScope
 import com.varabyte.kotter.runtime.Session
 
+const val defaultInvalidInput = "Input is invalid!"
+
 internal fun Session.myPromptInput(
         message: String,
         hint: String = "",
         allowEmptyInput: Boolean = false,
-        invalidInputMessage: String = "Input is invalid!",
+        invalidInputMessage: String = defaultInvalidInput,
         inputValidator: (String) -> Boolean = { true },
-        onInputReady: suspend () -> Unit
+        onInputReady: suspend () -> Unit,
+        onRerender: () -> Unit = {}
 ): String {
     var lastUserInput = ""
     var hintText = hint
     var isInputValid by liveVarOf(true)
     section {
         drawInput(message, hintText, isInputValid, allowEmptyInput, invalidInputMessage, lastUserInput)
+        onRerender()
     }.runUntilSignal {
         onInputChanged { isInputValid = true }
         onInputEntered {
@@ -63,7 +67,7 @@ private fun MainRenderScope.drawInput(
         if (isInputValid) {
             black(isBright = true) { textLine(if (allowEmptyInput) "  empty input is allowed" else "") }
         } else {
-            red { textLine(if (lastUserInput.isEmpty()) "  Empty input is not allowed!" else "  $invalidInputMessage") }
+            red { textLine(if (lastUserInput.isEmpty()) "  empty input is not allowed!" else "  $invalidInputMessage") }
         }
     }
     text("> "); input(Completions(hint), initialText = "")
@@ -73,7 +77,7 @@ internal fun Session.myPromptInputNumber(
         message: String,
         hint: String = "",
         allowEmptyInput: Boolean = false,
-        invalidInputMessage: String = "Input is invalid!",
+        invalidInputMessage: String = defaultInvalidInput,
         inputValidator: (String) -> Boolean = { true },
         onInputReady: suspend () -> Unit
 ): String {
@@ -249,17 +253,17 @@ fun Session.myPromptInput(
         message: String,
         hint: String = "",
         allowEmptyInput: Boolean = false,
-        invalidInputMessage: String = "Input is invalid!",
+        invalidInputMessage: String = defaultInvalidInput,
         inputValidator: (String) -> Boolean = { true }
 ):String {
-    return myPromptInput(message, hint, allowEmptyInput, invalidInputMessage, inputValidator, onInputReady = {})
+    return myPromptInput(message, hint, allowEmptyInput, invalidInputMessage, inputValidator, onInputReady = {}, onRerender = {})
 }
 
 fun Session.myPromptInputNumber(
         message: String,
         hint: String = "",
         allowEmptyInput: Boolean = false,
-        invalidInputMessage: String = "Input is invalid!",
+        invalidInputMessage: String = defaultInvalidInput,
         inputValidator: (String) -> Boolean = { true }
 ):String {
     return myPromptInputNumber(message, hint, allowEmptyInput, invalidInputMessage, inputValidator, onInputReady = {})
