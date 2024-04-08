@@ -9,7 +9,8 @@ import {
 	MeshBasicMaterial,
 	ShaderMaterial,
 	Shape,
-	TextGeometry
+	TextGeometry,
+	Vector3
 } from "three"
 import {SVGLoader} from "three/examples/jsm/loaders/SVGLoader"
 import {BufferGeometryUtils} from "three/examples/jsm/utils/BufferGeometryUtils"
@@ -41,11 +42,8 @@ export class preview3DPrintMeshBuilder {
 	private font: Font
 	private geometryOptions: GeometryOptions
 
-	constructor(geometryOptions: GeometryOptions) {
+	async initialize(geometryOptions: GeometryOptions) {
 		this.geometryOptions = geometryOptions
-	}
-
-	async initialize() {
 		const loader = new FontLoader()
 		return new Promise<void>((resolve, reject) => {
 			loader.load(
@@ -63,16 +61,30 @@ export class preview3DPrintMeshBuilder {
 		})
 	}
 
+	calculateMaxWidth(maxSize: Vector3, mapMesh: Mesh): number {
+		const printerWidth = maxSize.x
+		const printerDepth = maxSize.y
+		const printerHeight = maxSize.z
+
+		const widthFromWidth = printerWidth
+		const widthFromDepth = printerDepth - frontTextSize
+		const mapCurrentHeight = mapMesh.geometry.boundingBox.max.z - mapMesh.geometry.boundingBox.min.z
+		const widthFromHeight = (printerHeight - baseplateHeight) * mapMesh.geometry.boundingBox.max.x / mapCurrentHeight + 2 * mapSideOffset
+
+		const maxWidth = Math.min(widthFromWidth, widthFromDepth, widthFromHeight)
+		return maxWidth
+	}
+
 	async createPrintPreviewMesh(mapMesh: Mesh): Promise<Mesh> {
 		const printMesh: Mesh = new Mesh()
 		printMesh.name = "PrintMesh"
 		printMesh.clear()
 
-		const newMapMesh = this.createMapMesh(mapMesh)
-		printMesh.add(newMapMesh)
-
 		const baseplateMesh = this.createBaseplateMesh()
 		printMesh.add(baseplateMesh)
+
+		const newMapMesh = this.createMapMesh(mapMesh)
+		printMesh.add(newMapMesh)
 
 		if (this.geometryOptions.frontText) {
 			try {
@@ -101,14 +113,8 @@ export class preview3DPrintMeshBuilder {
 	updateMapSize(printMesh: Mesh, currentWidth: number, wantedWidth: number) {
 		this.geometryOptions.width = wantedWidth
 		for (const object of printMesh.children) {
-			if (!(object instanceof Mesh)) {
-				return
-			}
 			const child = object as Mesh
 			switch (child.name) {
-				case "PrintMesh":
-					break
-
 				case "Map": {
 					const map = child.geometry
 					const scale = (wantedWidth - 2 * mapSideOffset) / (currentWidth - 2 * mapSideOffset)
@@ -359,14 +365,15 @@ export class preview3DPrintMeshBuilder {
 		// Create the shape
 		const shape = new Shape()
 		const width = this.geometryOptions.width
+		const depth = this.geometryOptions.width + frontTextSize
 
 		shape.absarc(width - edgeRadius, edgeRadius, edgeRadius, Math.PI * 1.5, Math.PI * 2, false)
-		shape.absarc(width - edgeRadius, frontTextSize + width - edgeRadius, edgeRadius, 0, Math.PI * 0.5, false)
-		shape.absarc(edgeRadius, frontTextSize + width - edgeRadius, edgeRadius, Math.PI * 0.5, Math.PI, false)
+		shape.absarc(width - edgeRadius, depth - edgeRadius, edgeRadius, 0, Math.PI * 0.5, false)
+		shape.absarc(edgeRadius, depth - edgeRadius, edgeRadius, Math.PI * 0.5, Math.PI, false)
 		shape.absarc(edgeRadius, edgeRadius, edgeRadius, Math.PI, Math.PI * 1.5, false)
 
 		// Create the geometry
-		const geometry = new ExtrudeGeometry(shape, { depth: baseplateHeight, bevelEnabled: false })
+		const geometry = new ExtrudeGeometry(shape, {depth: baseplateHeight, bevelEnabled: false})
 		geometry.translate(-width / 2, -width / 2 - frontTextSize, -baseplateHeight)
 
 		return geometry

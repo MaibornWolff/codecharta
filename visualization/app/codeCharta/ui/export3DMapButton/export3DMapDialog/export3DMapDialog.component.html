@@ -17,11 +17,14 @@
 	</div>
 
 	<div>
-		<span>Width: {{ (currentWidth / 10).toFixed(1) }}cm (max. {{ (maxPrinterX / 10).toFixed(1) }})</span>
-		<br />
-		<span>Depth: {{ (currentDepth / 10).toFixed(1) }}cm (max. {{ (maxPrinterY / 10).toFixed(1) }})</span>
-		<br />
-		<span>Height: {{ (currentHeight / 10).toFixed(1) }}cm (max. {{ (maxPrinterZ / 10).toFixed(1) }})</span>
+		<span>Width: {{ (currentWidth / 10).toFixed(1) }}cm (max. {{ (printers[selectedPrinter].x / 10).toFixed(1) }}
+			)</span>
+		<br/>
+		<span>Depth: {{ (currentDepth / 10).toFixed(1) }}cm (max. {{ (printers[selectedPrinter].y / 10).toFixed(1) }}
+			)</span>
+		<br/>
+		<span>Height: {{ (currentHeight / 10).toFixed(1) }}cm (max. {{ (printers[selectedPrinter].z / 10).toFixed(1) }}
+			)</span>
 	</div>
 
 	<div>
