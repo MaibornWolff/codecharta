@@ -292,9 +292,9 @@ export class preview3DPrintMeshBuilder {
 					[1, 0, 0]
 			case "Baseplate":
 			case "Area":
-				return numberOfColors == 1 ?
+				return numberOfColors === 1 ?
 					[1, 1, 1] :
-					(numberOfColors == 2 ?
+					(numberOfColors === 2 ?
 						[0, 0, 0] :
 						[0.5, 0.5, 0.5])
 			case "Metric Text":
@@ -307,9 +307,9 @@ export class preview3DPrintMeshBuilder {
 			case "CodeCharta Logo":
 			case "Back MW Logo":
 			case "Front Text":
-				return numberOfColors == 2 ?
+				return numberOfColors === 2 ?
 					[0, 0, 0] :
-					(numberOfColors == 1 ?
+					(numberOfColors === 1 ?
 						[1, 1, 1] :
 						(numberOfColors > 4 ?
 							[1, 1, 1] :
@@ -413,7 +413,8 @@ export class preview3DPrintMeshBuilder {
 		}
 		metricsMesh.name = "Metric Text"
 		this.updateColor(metricsMesh)
-		metricsMesh.visible = this.scale(metricsMesh)
+		const scaleFactor = (this.geometryOptions.width - mapSideOffset * 2) / 200
+		metricsMesh.visible = this.scale(metricsMesh, scaleFactor)
 		if (metricsMesh.visible) {
 			this.xCenterMetricsMesh(metricsMesh)
 		}
@@ -521,7 +522,7 @@ export class preview3DPrintMeshBuilder {
 		return { areaIcon, areaIconScale, areaText }
 	}
 
-	private scale(backTextMesh: Mesh, scaleFactor = 1): boolean {
+	private scale(backTextMesh: Mesh, scaleFactor): boolean {
 		backTextMesh.scale.set(backTextMesh.scale.x * scaleFactor, backTextMesh.scale.y * scaleFactor, backTextMesh.scale.z)
 
 		backTextMesh.geometry.computeBoundingBox()
@@ -547,7 +548,8 @@ export class preview3DPrintMeshBuilder {
 		const codeChartaMesh = new Mesh(logoAndTextGeometry, material)
 		codeChartaMesh.name = "CodeCharta Logo"
 		this.updateColor(codeChartaMesh)
-		this.scale(codeChartaMesh)
+		const scaleFactor = (this.geometryOptions.width - mapSideOffset * 2) / 200
+		this.scale(codeChartaMesh, scaleFactor)
 		return codeChartaMesh
 	}
 
@@ -556,7 +558,7 @@ export class preview3DPrintMeshBuilder {
 		logoGeometry.center()
 		logoGeometry.rotateZ(Math.PI)
 
-		const logoScale = 20
+		const logoScale = 25
 		logoGeometry.scale(logoScale, logoScale, baseplateHeight / 2)
 		logoGeometry.translate(0, 30, -((baseplateHeight * 3) / 4))
 
@@ -581,7 +583,7 @@ export class preview3DPrintMeshBuilder {
 		const mwLogoGeometry = await this.createSvgGeometry("codeCharta/assets/mw_logo_text.svg")
 		mwLogoGeometry.center()
 		mwLogoGeometry.rotateZ(Math.PI)
-		const mwBackLogoScale = 60
+		const mwBackLogoScale = 3 * (this.geometryOptions.width - mapSideOffset * 2) / 10
 		mwLogoGeometry.scale(mwBackLogoScale, mwBackLogoScale, baseplateHeight / 2)
 		mwLogoGeometry.translate(0, this.geometryOptions.width / 2 - mwBackLogoScale / 2, -((baseplateHeight * 3) / 4))
 
@@ -589,7 +591,9 @@ export class preview3DPrintMeshBuilder {
 
 		const backMWMesh = new Mesh(mwLogoGeometry, material)
 		backMWMesh.name = "Back MW Logo"
+
 		this.updateColor(backMWMesh)
+
 		return backMWMesh
 	}
 
