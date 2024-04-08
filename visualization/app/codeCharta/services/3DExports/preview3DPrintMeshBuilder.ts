@@ -551,7 +551,7 @@ export class preview3DPrintMeshBuilder {
 					const geometries: BufferGeometry[] = []
 
 					for (const path of paths) {
-						const shapes = path.toShapes(false, false)
+						const shapes = path.toShapes(false, true)
 
 						for (const shape of shapes) {
 							const geometry = new ExtrudeGeometry(shape, {
