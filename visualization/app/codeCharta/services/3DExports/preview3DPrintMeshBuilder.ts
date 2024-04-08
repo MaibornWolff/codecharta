@@ -1,4 +1,5 @@
 import {
+	Box3,
 	BufferGeometry,
 	Color,
 	DoubleSide,
@@ -86,8 +87,8 @@ export class preview3DPrintMeshBuilder {
 		const mwLogo = await this.createFrontMWLogo()
 		printMesh.add(mwLogo)
 
-		const backTextMesh = await this.createMetricsMesh()
-		printMesh.add(backTextMesh)
+		const metricsMesh = await this.createMetricsMesh()
+		printMesh.add(metricsMesh)
 
 		const codeChartaMesh = await this.createCodeChartaMesh()
 		printMesh.add(codeChartaMesh)
@@ -135,15 +136,18 @@ export class preview3DPrintMeshBuilder {
 					break
 
 				case "Metric Text":
-					child.visible = this.scaleAndCenterBack(child, wantedWidth / currentWidth)
+					child.visible = this.scale(child, wantedWidth / currentWidth)
+					if (child.visible) {
+						this.xCenterMetricsMesh(child)
+					}
 					break
 
 				case "CodeCharta Logo":
-					child.visible = this.scaleAndCenterBack(child, wantedWidth / currentWidth)
+					child.visible = this.scale(child, wantedWidth / currentWidth)
 					break
 
 				case "Back MW Logo":
-					child.visible = this.scaleAndCenterBack(child, wantedWidth / currentWidth)
+					child.visible = this.scale(child, wantedWidth / currentWidth)
 					break
 
 				default:
@@ -307,70 +311,48 @@ export class preview3DPrintMeshBuilder {
 	}
 
 	private async createMetricsMesh(): Promise<Mesh> {
-		const areaIcon = "area_icon_for_3D_print.svg"
-		const areaIconScale = 10
-		const areaText =
-			`${this.geometryOptions.areaMetricData.name}\n` +
-			`${this.geometryOptions.areaMetricTitle}\n` +
-			`Value range:  ${this.geometryOptions.areaMetricData.minValue} - ${this.geometryOptions.areaMetricData.maxValue}`
-
-		const heightIcon = "height_icon_for_3D_print.svg"
-		const heightIconScale = 12
-		const heightText =
-			`${this.geometryOptions.heightMetricData.name}\n` +
-			`${this.geometryOptions.heightMetricTitle}\n` +
-			`Value range: ${this.geometryOptions.heightMetricData.minValue} - ${this.geometryOptions.heightMetricData.maxValue}`
-
-		const colorIcon = "color_icon_for_3D_print.svg"
-		const colorIconScale = 10
-		const colorTextNameAndTitle = `${this.geometryOptions.colorMetricData.name}\n` + `${this.geometryOptions.colorMetricTitle}\n`
-		const colorTextValueRanges = [
-			`Value ranges:`,
-			` ${this.geometryOptions.colorMetricData.minValue} - ${this.geometryOptions.colorRange.from - 1}`,
-			` /`,
-			` ${this.geometryOptions.colorRange.from} - ${this.geometryOptions.colorRange.to - 1}`,
-			` /`,
-			` ${this.geometryOptions.colorRange.to} - ${this.geometryOptions.colorMetricData.maxValue}`
-		]
+		const { areaIcon, areaIconScale, areaText } = this.createAreaAttributes()
+		const { heightIcon, heightIconScale, heightText } = this.createHeightAttributes()
+		const { colorIcon, colorIconScale, colorTextNameAndTitle, colorTextValueRanges } = this.createColorAttributes()
 
 		const icons = [areaIcon, heightIcon, colorIcon].map(icon => `codeCharta/assets/${icon}`)
 		const iconScales = [areaIconScale, heightIconScale, colorIconScale]
 		const whiteTexts = [areaText, heightText, colorTextNameAndTitle]
 
-		const backTextGeometries = []
-		for (const [index, icon] of icons.entries()) {
-			const iconGeometry = await this.createSvgGeometry(icon)
-			const iconScale = iconScales[index]
+		const whiteBackGeometries = await this.createWhiteBackGeometries(icons, iconScales, whiteTexts)
+		const mergedWhiteBackGeometry = BufferGeometryUtils.mergeBufferGeometries(whiteBackGeometries)
 
-			iconGeometry.center()
-			iconGeometry.rotateY(Math.PI)
-			iconGeometry.rotateX(Math.PI)
-			iconGeometry.scale(iconScale, iconScale, baseplateHeight / 2)
+		const material = new MeshBasicMaterial({ color: 0xff_ff_ff, side: DoubleSide })
+		const metricsMesh = new Mesh(mergedWhiteBackGeometry, material)
 
-			iconGeometry.translate(this.geometryOptions.width / 2 - mapSideOffset, -35 * index - 15, -((baseplateHeight * 3) / 4))
-			backTextGeometries.push(iconGeometry)
-
-			const text = whiteTexts[index]
-			const textGeometry = new TextGeometry(text, {
-				font: this.font,
-				size: backTextSize,
-				height: baseplateHeight / 2
-			})
-			textGeometry.rotateY(Math.PI)
-
-			textGeometry.translate(
-				this.geometryOptions.width / 2 - mapSideOffset - 10,
-				-35 * index + backTextSize - 15,
-				-baseplateHeight / 2
-			)
-
-			backTextGeometries.push(textGeometry)
+		const coloredBackTextGeometries = this.createColoredBackTextGeometries(colorTextValueRanges)
+		for (const colorTextGeometry of coloredBackTextGeometries) {
+			metricsMesh.add(colorTextGeometry)
 		}
+		metricsMesh.name = "Metric Text"
+		metricsMesh.visible = this.scale(metricsMesh)
+		if (metricsMesh.visible) {
+			this.xCenterMetricsMesh(metricsMesh)
+		}
+		return metricsMesh
+	}
 
-		// Create separate geometries for each part of the colorText and assign different materials to them
+	private xCenterMetricsMesh(metricsMesh: Mesh) {
+		//compute bounding box of the mesh and center it in the x direction
+		let boundingBox = new Box3()
+		metricsMesh.traverse(child => {
+			if (child instanceof Mesh) {
+				child.geometry.computeBoundingBox()
+				boundingBox = boundingBox.union(child.geometry.boundingBox)
+			}
+		})
+		metricsMesh.position.x = (Math.abs(boundingBox.max.x - boundingBox.min.x) * metricsMesh.scale.x) / 2
+	}
+
+	private createColoredBackTextGeometries(colorTextValueRanges: string[]) {
 		const colorTextGeometries = []
 		const colors = [0xff_ff_ff, 0x00_ff_00, 0xff_ff_ff, 0xff_ff_00, 0xff_ff_ff, 0xff_00_00] // white, green, white, yellow, white, red
-		let xOffset = this.geometryOptions.width / 2 - mapSideOffset - 10
+		let xOffset = -10
 		for (let index = 0; index < colorTextValueRanges.length; index += 1) {
 			const textGeometry = new TextGeometry(`\n\n${colorTextValueRanges[index]}`, {
 				font: this.font,
@@ -389,20 +371,76 @@ export class preview3DPrintMeshBuilder {
 				xOffset = textGeometry.boundingBox.min.x
 			}
 		}
-
-		const metricTextGeometry = BufferGeometryUtils.mergeBufferGeometries(backTextGeometries)
-		const material = new MeshBasicMaterial({ color: 0xff_ff_ff, side: DoubleSide })
-		const backTextMesh = new Mesh(metricTextGeometry, material)
-		backTextMesh.name = "Metric Text"
-		backTextMesh.visible = this.scaleAndCenterBack(backTextMesh)
-
-		for (const colorTextGeometry of colorTextGeometries) {
-			backTextMesh.add(colorTextGeometry)
-		}
-		return backTextMesh
+		return colorTextGeometries
 	}
 
-	private scaleAndCenterBack(backTextMesh: Mesh, scaleFactor = 1): boolean {
+	private async createWhiteBackGeometries(icons: string[], iconScales: number[], whiteTexts: string[]) {
+		const backGeometries = []
+		for (const [index, icon] of icons.entries()) {
+			const iconGeometry = await this.createSvgGeometry(icon)
+			const iconScale = iconScales[index]
+
+			iconGeometry.center()
+			iconGeometry.rotateY(Math.PI)
+			iconGeometry.rotateX(Math.PI)
+			iconGeometry.scale(iconScale, iconScale, baseplateHeight / 2)
+
+			iconGeometry.translate(0, -35 * index - 15, -((baseplateHeight * 3) / 4))
+			backGeometries.push(iconGeometry)
+
+			const text = whiteTexts[index]
+			const textGeometry = new TextGeometry(text, {
+				font: this.font,
+				size: backTextSize,
+				height: baseplateHeight / 2
+			})
+			textGeometry.rotateY(Math.PI)
+
+			textGeometry.translate(-10, -35 * index + backTextSize - 15, -baseplateHeight / 2)
+
+			backGeometries.push(textGeometry)
+		}
+		return backGeometries
+	}
+
+	private createColorAttributes() {
+		const colorIcon = "color_icon_for_3D_print.svg"
+		const colorIconScale = 10
+		const colorTextNameAndTitle = `${this.geometryOptions.colorMetricData.name}\n` + `${this.geometryOptions.colorMetricTitle}\n`
+		const colorTextValueRanges = [
+			`Value ranges:`,
+			` ${this.geometryOptions.colorMetricData.minValue} - ${this.geometryOptions.colorRange.from - 1}`,
+			` /`,
+			` ${this.geometryOptions.colorRange.from} - ${this.geometryOptions.colorRange.to - 1}`,
+			` /`,
+			` ${this.geometryOptions.colorRange.to} - ${this.geometryOptions.colorMetricData.maxValue}`
+		]
+		return { colorIcon, colorIconScale, colorTextNameAndTitle, colorTextValueRanges }
+	}
+
+	private createHeightAttributes() {
+		const heightIcon = "height_icon_for_3D_print.svg"
+		const heightIconScale = 12
+		const heightText =
+			`${this.geometryOptions.heightMetricData.name}\n` +
+			`${this.geometryOptions.heightMetricTitle}\n` +
+			`Value range: ${this.geometryOptions.heightMetricData.minValue} - ${this.geometryOptions.heightMetricData.maxValue}`
+		return { heightIcon, heightIconScale, heightText }
+	}
+
+	private createAreaAttributes() {
+		const areaIcon = "area_icon_for_3D_print.svg"
+		const areaIconScale = 10
+		const areaText =
+			`${this.geometryOptions.areaMetricData.name}\n` +
+			`${this.geometryOptions.areaMetricTitle}\n` +
+			`Value range:  ${this.geometryOptions.areaMetricData.minValue} - ${this.geometryOptions.areaMetricData.maxValue}`
+		return { areaIcon, areaIconScale, areaText }
+	}
+
+	private scale(backTextMesh: Mesh, scaleFactor = 1): boolean {
+		backTextMesh.scale.set(backTextMesh.scale.x * scaleFactor, backTextMesh.scale.y * scaleFactor, backTextMesh.scale.z)
+
 		backTextMesh.geometry.computeBoundingBox()
 		const boundingBox = backTextMesh.geometry.boundingBox
 		const width = boundingBox.max.x - boundingBox.min.x
@@ -413,7 +451,6 @@ export class preview3DPrintMeshBuilder {
 			(this.geometryOptions.width - mapSideOffset * 2 + frontTextSize) / depth
 		)
 
-		backTextMesh.scale.set(backTextMesh.scale.x * scaleFactor, backTextMesh.scale.y * scaleFactor, backTextMesh.scale.z)
 		return minPossibleMaxScale >= 0.75
 	}
 
@@ -426,7 +463,7 @@ export class preview3DPrintMeshBuilder {
 
 		const codeChartaMesh = new Mesh(logoAndTextGeometry, material)
 		codeChartaMesh.name = "CodeCharta Logo"
-		this.scaleAndCenterBack(codeChartaMesh)
+		this.scale(codeChartaMesh)
 		return codeChartaMesh
 	}
 
