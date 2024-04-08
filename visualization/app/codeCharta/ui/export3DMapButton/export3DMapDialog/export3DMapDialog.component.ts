@@ -47,9 +47,6 @@ export class Export3DMapDialogComponent {
 	}
 	selectedPrinter = this.printerOptions[2]
 	private currentNumberOfColors: number
-	maxPrinterX: number
-	maxPrinterY: number
-	maxPrinterZ: number
 
 	maxWidth: number
 	wantedWidth: number
@@ -62,7 +59,14 @@ export class Export3DMapDialogComponent {
 	colorMetric: string
 	nodeMetricData: NodeMetricData[]
 
-	constructor(private store: Store<CcState>, private state: State<CcState>, private threeSceneService: ThreeSceneService) {}
+	constructor(private store: Store<CcState>, private state: State<CcState>, private threeSceneService: ThreeSceneService) {
+		this.previewMeshBuilder = new preview3DPrintMeshBuilder()
+
+		this.maxWidth = this.previewMeshBuilder.calculateMaxWidth(new Vector3(this.printers[this.selectedPrinter].x, this.printers[this.selectedPrinter].y, this.printers[this.selectedPrinter].z), this.threeSceneService.getMapMesh().getThreeMesh())
+		this.currentWidth = this.maxWidth
+		this.wantedWidth = this.maxWidth
+		this.currentNumberOfColors = this.printers[this.selectedPrinter].numberOfColors
+	}
 
 	async ngOnInit(): Promise<void> {
 		this.areaMetric = this.state.getValue().dynamicSettings.areaMetric
@@ -79,14 +83,8 @@ export class Export3DMapDialogComponent {
 			metric => metric.name === this.areaMetric || metric.name === this.heightMetric || metric.name === this.colorMetric
 		);
 
-		this.updateMaxSizes()
-		//this is only an initial guess, needed for calculating the actual map size
-		this.currentWidth = this.maxPrinterX
-		this.wantedWidth = this.maxPrinterX
-
 		const geometryOptions = this.initGeometryOptions()
-		this.previewMeshBuilder = new preview3DPrintMeshBuilder(geometryOptions)
-		const initMeshBuilder = this.previewMeshBuilder.initialize()
+		const initMeshBuilder = this.previewMeshBuilder.initialize(geometryOptions)
 
 		await initMeshBuilder
 		await this.createScene()
@@ -132,8 +130,6 @@ export class Export3DMapDialogComponent {
 			this.previewMeshBuilder.updateNumberOfColors(originalMesh, printMesh, wantedNumberOfColors)
 			this.currentNumberOfColors = wantedNumberOfColors
 		}
-		this.updateMaxSizes()
-		this.maxWidth = undefined
 		this.makeMapMaxSize(this.printPreviewScene.getObjectByName("PrintMesh") as Mesh)
 		this.updateCameraPosition(this.printPreviewScene.getObjectByName("camera") as PerspectiveCamera)
 	}
@@ -177,12 +173,6 @@ export class Export3DMapDialogComponent {
 		this.printPreviewScene = printPreviewScene
 	}
 
-	private updateMaxSizes() {
-		this.maxPrinterX = this.printers[this.selectedPrinter].x
-		this.maxPrinterY = this.printers[this.selectedPrinter].y
-		this.maxPrinterZ = this.printers[this.selectedPrinter].z
-	}
-
 	private updateCameraPosition(camera: PerspectiveCamera) {
 		camera.position.set(-this.currentWidth * 0.2, -this.currentDepth * 1.2, this.currentHeight * 5)
 	}
@@ -194,33 +184,22 @@ export class Export3DMapDialogComponent {
 			this.threeSceneService.getMapMesh().getThreeMesh()
 		)
 
-		this.makeMapMaxSize(printMesh)
+		this.calculateCurrentSize(printMesh)
 
 		this.isPrintMeshLoaded = true
 		return printMesh
 	}
 
 	async download3MFFile() {
-		console.log(this.printPreviewScene.getObjectByName("PrintMesh"))
 		const compressed3mf = await serialize3mf(this.printPreviewScene.getObjectByName("PrintMesh") as Mesh)
 		this.downloadFile(compressed3mf, "3mf")
 	}
 
 	private makeMapMaxSize(printMesh: Mesh) {
-		this.calculateCurrentSize(printMesh)
-		const widthRatio = this.currentWidth / this.maxPrinterX
-		const depthRatio = this.currentDepth / this.maxPrinterY
-		const heightRatio = this.currentHeight / this.maxPrinterZ
-
-		const biggestRatio = Math.max(widthRatio, depthRatio, heightRatio)
-
-		this.wantedWidth = this.currentWidth / biggestRatio
+		this.wantedWidth = this.previewMeshBuilder.calculateMaxWidth(new Vector3(this.printers[this.selectedPrinter].x, this.printers[this.selectedPrinter].y, this.printers[this.selectedPrinter].z), this.threeSceneService.getMapMesh().getThreeMesh())
 		this.previewMeshBuilder.updateMapSize(printMesh, this.currentWidth, this.wantedWidth)
 		this.calculateCurrentSize(printMesh)
-
-		if (!this.maxWidth) {
-			this.maxWidth = this.currentWidth
-		}
+		this.maxWidth = this.currentWidth
 	}
 
 	private calculateCurrentSize(printMesh: Mesh) {
@@ -244,8 +223,6 @@ export class Export3DMapDialogComponent {
 		const areaMetricTitle = attributeDescriptors[this.areaMetric]?.title || fallbackTitles.get(this.areaMetric)
 		const heightMetricTitle = attributeDescriptors[this.heightMetric]?.title || fallbackTitles.get(this.heightMetric)
 		const colorMetricTitle = attributeDescriptors[this.colorMetric]?.title || fallbackTitles.get(this.colorMetric)
-
-		this.currentNumberOfColors = this.printers[this.selectedPrinter].numberOfColors
 
 		return {
 			width: this.wantedWidth,
