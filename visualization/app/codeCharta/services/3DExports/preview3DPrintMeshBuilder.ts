@@ -12,9 +12,9 @@ import {
 	TextGeometry,
 	Vector3
 } from "three"
-import {SVGLoader} from "three/examples/jsm/loaders/SVGLoader"
-import {BufferGeometryUtils} from "three/examples/jsm/utils/BufferGeometryUtils"
-import {ColorRange, NodeMetricData} from "../../codeCharta.model"
+import { SVGLoader } from "three/examples/jsm/loaders/SVGLoader"
+import { BufferGeometryUtils } from "three/examples/jsm/utils/BufferGeometryUtils"
+import { ColorRange, NodeMetricData } from "../../codeCharta.model"
 
 const frontTextSize = 12
 const frontTextHeight = 1
@@ -69,10 +69,10 @@ export class preview3DPrintMeshBuilder {
 		const widthFromWidth = printerWidth
 		const widthFromDepth = printerDepth - frontTextSize
 		const mapCurrentHeight = mapMesh.geometry.boundingBox.max.z - mapMesh.geometry.boundingBox.min.z
-		const widthFromHeight = (printerHeight - baseplateHeight) * mapMesh.geometry.boundingBox.max.x / mapCurrentHeight + 2 * mapSideOffset
+		const widthFromHeight =
+			((printerHeight - baseplateHeight) * mapMesh.geometry.boundingBox.max.x) / mapCurrentHeight + 2 * mapSideOffset
 
-		const maxWidth = Math.min(widthFromWidth, widthFromDepth, widthFromHeight)
-		return maxWidth
+		return Math.min(widthFromWidth, widthFromDepth, widthFromHeight)
 	}
 
 	async createPrintPreviewMesh(mapMesh: Mesh): Promise<Mesh> {
@@ -121,10 +121,10 @@ export class preview3DPrintMeshBuilder {
 					map.scale(scale, scale, scale)
 					break
 				}
-				case "Baseplate": {
+				case "Baseplate":
 					child.geometry = this.createBaseplateGeometry()
 					break
-				}
+
 				case "Front Text": {
 					const text = child.geometry
 					text.translate(0, -(wantedWidth - currentWidth) / 2, 0)
@@ -256,13 +256,17 @@ export class preview3DPrintMeshBuilder {
 			const colorB = mapWithOriginalColors.attributes.color.getZ(index)
 			let newColor: number[]
 
-			if (colorR === colorB && colorR === colorG && colorG === colorB) { //all grey values
+			if (colorR === colorB && colorR === colorG && colorG === colorB) {
+				//all grey values
 				newColor = this.getColorArray("Area")
-			} else if (colorR > 0.75 && colorG > 0.75) { //yellow
+			} else if (colorR > 0.75 && colorG > 0.75) {
+				//yellow
 				newColor = this.getColorArray("Neutral Building")
-			} else if (colorR > 0.45 && colorG < 0.1) { //red
+			} else if (colorR > 0.45 && colorG < 0.1) {
+				//red
 				newColor = this.getColorArray("Negative Building")
-			} else if (colorR < 5 && colorG > 0.6) { //green
+			} else if (colorR < 5 && colorG > 0.6) {
+				//green
 				newColor = this.getColorArray("Positive Building")
 			} else {
 				console.error("Unknown color")
@@ -274,70 +278,78 @@ export class preview3DPrintMeshBuilder {
 
 	private updateColor(mesh: Mesh) {
 		if (mesh.material instanceof MeshBasicMaterial) {
-			const colorArray = this.getColorArray(mesh.name);
-			(mesh.material as MeshBasicMaterial).color.setRGB(colorArray[0], colorArray[1], colorArray[2])
+			const colorArray = this.getColorArray(mesh.name)
+			;(mesh.material as MeshBasicMaterial).color.setRGB(colorArray[0], colorArray[1], colorArray[2])
 		} else if (mesh.material instanceof ShaderMaterial) {
-			(mesh.material as ShaderMaterial).defaultAttributeValues.color = this.getColorArray(mesh.name)
+			;(mesh.material as ShaderMaterial).defaultAttributeValues.color = this.getColorArray(mesh.name)
 		}
 	}
 
 	private getColorArray(partName: string): number[] {
 		const numberOfColors = this.geometryOptions.numberOfColors
-		switch (partName) {
-			case "Positive Building":
-				return numberOfColors < 4 ?
-					[1, 1, 1] :
-					[0, 1, 0]
-			case "Neutral Building":
-				return numberOfColors < 4 ?
-					[1, 1, 1] :
-					[1, 1, 0]
-			case "Negative Building":
-				return numberOfColors < 4 ?
-					[1, 1, 1] :
-					[1, 0, 0]
-			case "Baseplate":
-			case "Area":
-				return numberOfColors === 1 ?
-					[1, 1, 1] :
-					(numberOfColors === 2 ?
-						[0, 0, 0] :
-						[0.5, 0.5, 0.5])
-			case "Metric Text":
-			case "Metric Text Part 0":
-			case "Metric Text Part 2":
-			// @ts-ignore
-			case "Metric Text Part 4":
-				if (numberOfColors < 4) return [0, 0, 1]
-			case "Front MW Logo":
-			case "CodeCharta Logo":
-			case "Back MW Logo":
-			case "Front Text":
-				return numberOfColors === 2 ?
-					[0, 0, 0] :
-					(numberOfColors === 1 ?
-						[1, 1, 1] :
-						(numberOfColors > 4 ?
-							[1, 1, 1] :
-							[1, 1, 0]))
-			case "Metric Text Part 1":
-				return numberOfColors < 4 ?
-					[0, 0, 1] :
-					[0, 1, 0]
-			case "Metric Text Part 3":
-				return numberOfColors < 4 ?
-					[0, 0, 1] :
-					[1, 1, 0]
-			case "Metric Text Part 5":
-				return numberOfColors < 4 ?
-					[0, 0, 1] :
-					[1, 0, 0]
-			default:
-				console.error("Unknown part name:", partName)
-				return [0, 1, 1]
-		}
-	}
 
+		const getBuildingColor = () => (numberOfColors < 4 ? [1, 1, 1] : [0, 1, 0])
+		const getNeutralBuildingColor = () => (numberOfColors < 4 ? [1, 1, 1] : [1, 1, 0])
+		const getNegativeBuildingColor = () => (numberOfColors < 4 ? [1, 1, 1] : [1, 0, 0])
+		const getBaseplateColor = () => {
+			if (numberOfColors === 1) {
+				return [1, 1, 1]
+			}
+			return [0.5, 0.5, 0.5]
+		}
+		const getFrontTextAndLogoColor = () => {
+			if (numberOfColors < 4) {
+				return [1, 1, 1]
+			}
+			if (numberOfColors === 4) {
+				return [1, 1, 0]
+			}
+			return [1, 1, 1]
+		}
+		const getBackTextAndLogoColor = () => {
+			if (numberOfColors === 1) {
+				return [0, 0, 1]
+			}
+			if (numberOfColors < 4) {
+				return [1, 1, 1]
+			}
+			if (numberOfColors === 4) {
+				return [1, 1, 0]
+			}
+			return [1, 1, 1]
+		}
+		const getMetricColorTextColor = (colorWhenMoreThan3: number[]) => {
+			if (numberOfColors < 4) {
+				return [0, 0, 1]
+			}
+			return colorWhenMoreThan3
+		}
+
+		const colorFunctions = {
+			"Positive Building": getBuildingColor,
+			"Neutral Building": getNeutralBuildingColor,
+			"Negative Building": getNegativeBuildingColor,
+			Baseplate: getBaseplateColor,
+			Area: getBaseplateColor,
+			"Front MW Logo": getFrontTextAndLogoColor,
+			"Front Text": getFrontTextAndLogoColor,
+			"CodeCharta Logo": getBackTextAndLogoColor,
+			"Back MW Logo": getBackTextAndLogoColor,
+			"Metric Text": getBackTextAndLogoColor,
+			"Metric Text Part 0": getBackTextAndLogoColor,
+			"Metric Text Part 1": () => getMetricColorTextColor([0, 1, 0]),
+			"Metric Text Part 2": getBackTextAndLogoColor,
+			"Metric Text Part 3": () => getMetricColorTextColor([1, 1, 0]),
+			"Metric Text Part 4": getBackTextAndLogoColor,
+			"Metric Text Part 5": () => getMetricColorTextColor([1, 0, 0])
+		}
+
+		if (partName in colorFunctions) {
+			return colorFunctions[partName]()
+		}
+		console.error("Unknown part name:", partName)
+		return [0, 1, 1]
+	}
 
 	private createBaseplateMesh(): Mesh {
 		const geometry = this.createBaseplateGeometry()
@@ -373,7 +385,7 @@ export class preview3DPrintMeshBuilder {
 		shape.absarc(edgeRadius, edgeRadius, edgeRadius, Math.PI, Math.PI * 1.5, false)
 
 		// Create the geometry
-		const geometry = new ExtrudeGeometry(shape, {depth: baseplateHeight, bevelEnabled: false})
+		const geometry = new ExtrudeGeometry(shape, { depth: baseplateHeight, bevelEnabled: false })
 		geometry.translate(-width / 2, -width / 2 - frontTextSize, -baseplateHeight)
 
 		return geometry
@@ -590,7 +602,7 @@ export class preview3DPrintMeshBuilder {
 		const mwLogoGeometry = await this.createSvgGeometry("codeCharta/assets/mw_logo_text.svg")
 		mwLogoGeometry.center()
 		mwLogoGeometry.rotateZ(Math.PI)
-		const mwBackLogoScale = 3 * (this.geometryOptions.width - mapSideOffset * 2) / 10
+		const mwBackLogoScale = (3 * (this.geometryOptions.width - mapSideOffset * 2)) / 10
 		mwLogoGeometry.scale(mwBackLogoScale, mwBackLogoScale, baseplateHeight / 2)
 		mwLogoGeometry.translate(0, this.geometryOptions.width / 2 - mwBackLogoScale / 2, -((baseplateHeight * 3) / 4))
 
