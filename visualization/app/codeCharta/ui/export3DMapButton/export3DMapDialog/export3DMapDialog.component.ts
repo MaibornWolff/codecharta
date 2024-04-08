@@ -1,20 +1,20 @@
-import { filesSelector } from "../../../state/store/files/files.selector"
-import { accumulatedDataSelector } from "../../../state/selectors/accumulatedData/accumulatedData.selector"
-import { FileNameHelper } from "../../../util/fileNameHelper"
-import { isDeltaState } from "../../../model/files/files.helper"
-import { FileDownloader } from "../../../util/fileDownloader"
+import {filesSelector} from "../../../state/store/files/files.selector"
+import {accumulatedDataSelector} from "../../../state/selectors/accumulatedData/accumulatedData.selector"
+import {FileNameHelper} from "../../../util/fileNameHelper"
+import {isDeltaState} from "../../../model/files/files.helper"
+import {FileDownloader} from "../../../util/fileDownloader"
 import {Component, ElementRef, Input, ViewChild, ViewEncapsulation} from "@angular/core"
-import { State, Store } from "@ngrx/store"
-import { CcState, NodeMetricData } from "../../../codeCharta.model"
-import { ThreeSceneService } from "../../codeMap/threeViewer/threeSceneService"
-import {Color, ShaderMaterial, Mesh, PerspectiveCamera, Scene, Vector3, WebGLRenderer} from "three"
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
-import { STLExporter } from "three/examples/jsm/exporters/STLExporter"
-import { metricTitles } from "../../../util/metric/metricTitles"
-import { serialize3mf } from "../../../services/3DExports/serialize3mf.service"
-import {firstValueFrom, map, take} from "rxjs"
-import { metricDataSelector } from "../../../state/selectors/accumulatedData/metricData/metricData.selector"
-import { GeometryOptions, preview3DPrintMeshBuilder } from "../../../services/3DExports/preview3DPrintMeshBuilder"
+import {State, Store} from "@ngrx/store"
+import {CcState, NodeMetricData} from "../../../codeCharta.model"
+import {ThreeSceneService} from "../../codeMap/threeViewer/threeSceneService"
+import {Color, Mesh, PerspectiveCamera, Scene, ShaderMaterial, Vector3, WebGLRenderer} from "three"
+import {OrbitControls} from "three/examples/jsm/controls/OrbitControls"
+import {STLExporter} from "three/examples/jsm/exporters/STLExporter"
+import {metricTitles} from "../../../util/metric/metricTitles"
+import {serialize3mf} from "../../../services/3DExports/serialize3mf.service"
+import {firstValueFrom, map} from "rxjs"
+import {metricDataSelector} from "../../../state/selectors/accumulatedData/metricData/metricData.selector"
+import {GeometryOptions, preview3DPrintMeshBuilder} from "../../../services/3DExports/preview3DPrintMeshBuilder"
 
 interface printer {
 	x: number
@@ -40,12 +40,13 @@ export class Export3DMapDialogComponent {
 	frontText = "CodeCharta"
 
 	printerOptions = ["prusaMk3s", "bambuA1", "prusaXL"]
-	selectedPrinter = this.printerOptions[0]
 	printers: { [key: string]: printer } = {
-		prusaMk3s: { x: 245, y: 205, z: 205, numberOfColors: 1 },
-		bambuA1: { x: 251, y: 251, z: 251, numberOfColors: 4 },
-		prusaXL: { x: 355, y: 355, z: 355, numberOfColors: 5 }
+		prusaMk3s: {x: 245, y: 205, z: 205, numberOfColors: 1},
+		bambuA1: {x: 251, y: 251, z: 251, numberOfColors: 4},
+		prusaXL: {x: 355, y: 355, z: 355, numberOfColors: 5}
 	}
+	selectedPrinter = this.printerOptions[2]
+	private currentNumberOfColors: number
 	maxPrinterX: number
 	maxPrinterY: number
 	maxPrinterZ: number
@@ -83,13 +84,12 @@ export class Export3DMapDialogComponent {
 		this.currentWidth = this.maxPrinterX
 		this.wantedWidth = this.maxPrinterX
 
-		const geometryOptions = this.makeGeometryOptions()
-		console.log(this.maxPrinterX, geometryOptions)
+		const geometryOptions = this.initGeometryOptions()
 		this.previewMeshBuilder = new preview3DPrintMeshBuilder(geometryOptions)
 		const initMeshBuilder = this.previewMeshBuilder.initialize()
 
 		await initMeshBuilder
-		this.createScene()
+		await this.createScene()
 	}
 
 	onScaleChange() {
@@ -124,8 +124,14 @@ export class Export3DMapDialogComponent {
 		this.previewMeshBuilder.flipCustomLogo(this.printPreviewScene.getObjectByName("PrintMesh") as Mesh)
 	}
 
-	onSelectedPrinterChange(event: any) {
-		this.selectedPrinter = event.value
+	onSelectedPrinterChange() {
+		const wantedNumberOfColors = this.printers[this.selectedPrinter].numberOfColors
+		if (this.currentNumberOfColors !== wantedNumberOfColors) {
+			const printMesh = this.printPreviewScene.getObjectByName("PrintMesh") as Mesh
+			const originalMesh = this.threeSceneService.getMapMesh().getThreeMesh()
+			this.previewMeshBuilder.updateNumberOfColors(originalMesh, printMesh, wantedNumberOfColors)
+			this.currentNumberOfColors = wantedNumberOfColors
+		}
 		this.updateMaxSizes()
 		this.maxWidth = undefined
 		this.makeMapMaxSize(this.printPreviewScene.getObjectByName("PrintMesh") as Mesh)
@@ -134,7 +140,7 @@ export class Export3DMapDialogComponent {
 	onLogoColorChange(newColor: string) {
 		this.logoColor = newColor;
 		const printMesh = this.printPreviewScene.getObjectByName("PrintMesh") as Mesh;
-		this.previewMeshBuilder.updateLogoColor(printMesh, this.logoColor);
+		this.previewMeshBuilder.updateCustomLogoColor(printMesh, this.logoColor);
 	}
 
 	async createScene() {
@@ -193,27 +199,13 @@ export class Export3DMapDialogComponent {
 		this.isPrintMeshLoaded = true
 		return printMesh
 	}
-	private makeGeometryOptions(): GeometryOptions {
-		const attributeDescriptors = this.state.getValue().fileSettings.attributeDescriptors
-		const fallbackTitles: Map<string, string> = metricTitles
 
-		const areaMetricTitle = attributeDescriptors[this.areaMetric]?.title || fallbackTitles.get(this.areaMetric)
-		const heightMetricTitle = attributeDescriptors[this.heightMetric]?.title || fallbackTitles.get(this.heightMetric)
-		const colorMetricTitle = attributeDescriptors[this.colorMetric]?.title || fallbackTitles.get(this.colorMetric)
-
-		return {
-			width: this.wantedWidth,
-			areaMetricTitle,
-			areaMetricData: this.nodeMetricData.find(metric => metric.name === this.areaMetric),
-			heightMetricTitle,
-			heightMetricData: this.nodeMetricData.find(metric => metric.name === this.heightMetric),
-			colorMetricTitle,
-			colorMetricData: this.nodeMetricData.find(metric => metric.name === this.colorMetric),
-			colorRange: this.state.getValue().dynamicSettings.colorRange,
-			frontText: this.frontText,
-			defaultMaterial: (this.threeSceneService.getMapMesh().getThreeMesh().material[0].clone() as ShaderMaterial)
-		}
+	async download3MFFile() {
+		console.log(this.printPreviewScene.getObjectByName("PrintMesh"))
+		const compressed3mf = await serialize3mf(this.printPreviewScene.getObjectByName("PrintMesh") as Mesh)
+		this.downloadFile(compressed3mf, "3mf")
 	}
+
 	private makeMapMaxSize(printMesh: Mesh) {
 		this.calculateCurrentSize(printMesh)
 		const widthRatio = this.currentWidth / this.maxPrinterX
@@ -245,16 +237,38 @@ export class Export3DMapDialogComponent {
 		this.currentHeight = boundingBoxBaseplate.max.z - boundingBoxBaseplate.min.z + boundingBoxMap.max.z - boundingBoxMap.min.z
 	}
 
-	async download3MFFile() {
-		const compressed3mf = await serialize3mf(this.printPreviewScene.getObjectByName("PrintMesh") as Mesh)
-		this.downloadFile(compressed3mf, "3mf")
+	private initGeometryOptions(): GeometryOptions {
+		const attributeDescriptors = this.state.getValue().fileSettings.attributeDescriptors
+		const fallbackTitles: Map<string, string> = metricTitles
+
+		const areaMetricTitle = attributeDescriptors[this.areaMetric]?.title || fallbackTitles.get(this.areaMetric)
+		const heightMetricTitle = attributeDescriptors[this.heightMetric]?.title || fallbackTitles.get(this.heightMetric)
+		const colorMetricTitle = attributeDescriptors[this.colorMetric]?.title || fallbackTitles.get(this.colorMetric)
+
+		this.currentNumberOfColors = this.printers[this.selectedPrinter].numberOfColors
+
+		return {
+			width: this.wantedWidth,
+			areaMetricTitle,
+			areaMetricData: this.nodeMetricData.find(metric => metric.name === this.areaMetric),
+			heightMetricTitle,
+			heightMetricData: this.nodeMetricData.find(metric => metric.name === this.heightMetric),
+			colorMetricTitle,
+			colorMetricData: this.nodeMetricData.find(metric => metric.name === this.colorMetric),
+			colorRange: this.state.getValue().dynamicSettings.colorRange,
+			frontText: this.frontText,
+			defaultMaterial: (this.threeSceneService.getMapMesh().getThreeMesh().material[0].clone() as ShaderMaterial),
+			numberOfColors: this.currentNumberOfColors
+		}
 	}
+
 	downloadStlFile() {
 		const exportedBinaryFile = new STLExporter().parse(this.threeSceneService.getMapMesh().getThreeMesh(), {
 			binary: true
 		}) as unknown as string
 		this.downloadFile(exportedBinaryFile, "stl")
 	}
+
 	private downloadFile(data: string, fileExtension: string) {
 		const files = filesSelector(this.state.getValue())
 		const fileName = accumulatedDataSelector(this.state.getValue()).unifiedFileMeta?.fileName

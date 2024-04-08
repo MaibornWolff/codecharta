@@ -5,7 +5,7 @@
 
 	<mat-form-field>
 		<mat-label>Select Printer</mat-label>
-		<mat-select (selectionChange)="onSelectedPrinterChange($event)" [(value)]="selectedPrinter">
+		<mat-select (selectionChange)="onSelectedPrinterChange()" [(value)]="selectedPrinter">
 			<mat-option *ngFor="let printer of printerOptions" [value]="printer">{{ printer }}</mat-option>
 		</mat-select>
 	</mat-form-field>
