@@ -1,14 +1,16 @@
 import {
-	BufferGeometry, Color,
+	BufferGeometry,
+	Color,
 	DoubleSide,
 	ExtrudeGeometry,
 	Float32BufferAttribute,
 	Font,
-	FontLoader, IUniform, Material,
+	FontLoader,
 	Mesh,
-	MeshBasicMaterial, ShaderMaterial,
+	MeshBasicMaterial,
+	ShaderMaterial,
 	Shape,
-	TextGeometry, UniformsLib, UniformsUtils
+	TextGeometry
 } from "three"
 import { SVGLoader } from "three/examples/jsm/loaders/SVGLoader"
 import { BufferGeometryUtils } from "three/examples/jsm/utils/BufferGeometryUtils"
@@ -174,9 +176,9 @@ export class preview3DPrintMeshBuilder {
 		}
 	}
 	updateLogoColor(printMesh: Mesh, newColor: string) {
-		const logoMesh = printMesh.getObjectByName("Custom Logo") as Mesh;
+		const logoMesh = printMesh.getObjectByName("Custom Logo") as Mesh
 		if (logoMesh) {
-			(logoMesh.material as MeshBasicMaterial).color.set(newColor);
+			;(logoMesh.material as MeshBasicMaterial).color.set(newColor)
 		}
 	}
 
@@ -191,7 +193,11 @@ export class preview3DPrintMeshBuilder {
 		const boundingBox = customLogoMesh.geometry.boundingBox
 		const logoWidth = boundingBox.max.x - boundingBox.min.x
 		const logoDepth = boundingBox.max.y - boundingBox.min.y
-		customLogoMesh.position.set(-this.geometryOptions.width / 2 + logoWidth + mapSideOffset, -logoDepth / 2 - (this.geometryOptions.width - mapSideOffset) / 2, logoHeight / 2)
+		customLogoMesh.position.set(
+			-this.geometryOptions.width / 2 + logoWidth + mapSideOffset,
+			-logoDepth / 2 - (this.geometryOptions.width - mapSideOffset) / 2,
+			logoHeight / 2
+		)
 	}
 
 	private createMapMesh(mapMesh: Mesh): Mesh {
@@ -244,11 +250,16 @@ export class preview3DPrintMeshBuilder {
 
 	private createBaseplateMesh(): Mesh {
 		const geometry = this.createBaseplateGeometry()
-		const material = new MeshBasicMaterial({ color: 0x80_80_80 })
-		material.polygonOffset = true
-		material.polygonOffsetUnits = 1
-		material.polygonOffsetFactor = 0.1
-		const baseplateMesh = new Mesh(geometry, material);
+		//at the moment we use a workaround, so we don't need to calculate color, delta, deltaColor and isHeight
+		//the downside of this workaround is that there can only be one color set for all objects and this color can not be changed after init
+		//if its needed that all objects have ShaderMaterial have a look at geometryGenerator.ts
+		const shaderMaterial = new ShaderMaterial()
+		shaderMaterial.copy(this.geometryOptions.defaultMaterial)
+		shaderMaterial.defaultAttributeValues.color = new Color(0x80_80_80).toArray()
+		shaderMaterial.polygonOffset = true
+		shaderMaterial.polygonOffsetUnits = 1
+		shaderMaterial.polygonOffsetFactor = 0.1
+		const baseplateMesh = new Mesh(geometry, shaderMaterial)
 		baseplateMesh.name = "Baseplate"
 		return baseplateMesh
 	}
@@ -347,7 +358,11 @@ export class preview3DPrintMeshBuilder {
 			})
 			textGeometry.rotateY(Math.PI)
 
-			textGeometry.translate(this.geometryOptions.width / 2 - mapSideOffset - 10, -35 * index + backTextSize - 15, -baseplateHeight / 2)
+			textGeometry.translate(
+				this.geometryOptions.width / 2 - mapSideOffset - 10,
+				-35 * index + backTextSize - 15,
+				-baseplateHeight / 2
+			)
 
 			backTextGeometries.push(textGeometry)
 		}
