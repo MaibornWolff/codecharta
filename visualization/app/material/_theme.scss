@@ -1,7 +1,5 @@
 @use "@angular/material" as mat;
 
-@import "@angular/material/theming";
-
 @include mat.core();
 
 $cc-palette: (
@@ -48,7 +46,7 @@ $cc-theme: mat.define-light-theme(
 	)
 );
 
-$cc-primary-color: mat-color($cc-primary);
+$cc-primary-color: mat.get-color-from-palette($cc-primary);
 $cc-emphasized-color: #0374c9;
 $cc-accent-color: #fc801bab;
 $cc-disabled-color: rgb(204, 204, 204);
