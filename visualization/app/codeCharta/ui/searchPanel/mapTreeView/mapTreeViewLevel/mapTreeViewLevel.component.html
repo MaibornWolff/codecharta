@@ -1,4 +1,5 @@
-<div *ngIf="!node.isExcluded" class="tree-element-{{ depth }} {{ (node | isNodeLeaf) ? 'tree-leaf' : 'tree-parent' }}">
+@if (!node.isExcluded) {
+<div class="tree-element-{{ depth }} {{ (node | isNodeLeaf) ? 'tree-leaf' : 'tree-parent' }}">
 	<div
 		id="{{ node.path }}"
 		class="tree-element-label-{{ depth }} tree-element-label"
@@ -13,19 +14,19 @@
 		<cc-map-tree-view-item-icon [node]="node" [isOpen]="isOpen"></cc-map-tree-view-item-icon>
 		<cc-map-tree-view-item-name [node]="node" [isHovered]="(hoveredNodeId$ | async) === node.id" [unaryValue]="node.attributes.unary">
 		</cc-map-tree-view-item-name>
-
+		@if ((hoveredNodeId$ | async) === node.id && (node | areaMetricValid : (areaMetric$ | async))) {
 		<cc-map-tree-view-item-option-buttons
-			*ngIf="(hoveredNodeId$ | async) === node.id && (node | areaMetricValid : (areaMetric$ | async))"
 			[isFlattened]="node.isFlattened"
 			[openNodeContextMenu]="openNodeContextMenu"
 		></cc-map-tree-view-item-option-buttons>
+		}
 	</div>
-
 	<div class="tree-element-children tree-element-children-{{ depth }}">
-		<ng-container *ngIf="isOpen">
-			<div *ngFor="let childNode of node.children">
-				<cc-map-tree-view-level [node]="childNode" [depth]="depth + 1"></cc-map-tree-view-level>
-			</div>
-		</ng-container>
+		@if (isOpen) { @for (childNode of node.children; track childNode) {
+		<div>
+			<cc-map-tree-view-level [node]="childNode" [depth]="depth + 1"></cc-map-tree-view-level>
+		</div>
+		} }
 	</div>
 </div>
+}

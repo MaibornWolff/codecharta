@@ -8,23 +8,16 @@
 		</div></div
 ></mat-toolbar>
 
-<mat-dialog-content class="content" *ngIf="customConfigService.customConfigItemGroups$ | async; let dropDownCustomConfigItemGroups">
+@if (customConfigService.customConfigItemGroups$ | async; as dropDownCustomConfigItemGroups) {
+<mat-dialog-content class="content">
 	<p class="custom-config-documentation-hint">
 		Custom Views allow you to save and upload your individual configurations for certain maps. Find out more about Custom Views in the
 		<a href="https://maibornwolff.github.io/codecharta/docs/custom-view/" target="_blank" rel="noopener noreferrer">documentation</a>.
 	</p>
-	<div
-		class="no-custom-configs-box"
-		*ngIf="dropDownCustomConfigItemGroups.applicableItems.size === 0 && dropDownCustomConfigItemGroups.nonApplicableItems.size === 0"
-	>
-		It is time to add your first Custom View!
-	</div>
-
-	<mat-accordion
-		class="custom-config-container"
-		[multi]="true"
-		*ngIf="dropDownCustomConfigItemGroups.applicableItems.size !== 0 || dropDownCustomConfigItemGroups.nonApplicableItems.size !== 0"
-	>
+	@if (dropDownCustomConfigItemGroups.applicableItems.size === 0 && dropDownCustomConfigItemGroups.nonApplicableItems.size === 0) {
+	<div class="no-custom-configs-box">It is time to add your first Custom View!</div>
+	} @if (dropDownCustomConfigItemGroups.applicableItems.size !== 0 || dropDownCustomConfigItemGroups.nonApplicableItems.size !== 0) {
+	<mat-accordion class="custom-config-container" [multi]="true">
 		<mat-form-field class="cc-custom-configs-search-field">
 			<i matPrefix class="fa fa-search custom-config-search-icon"></i>
 			<mat-label>{{ searchPlaceholder }} </mat-label>
@@ -34,18 +27,18 @@
 			[customConfigItemGroups]="dropDownCustomConfigItemGroups.applicableItems"
 			[searchTerm]="searchTerm"
 		></cc-custom-config-item-group>
+		@if (!isNonApplicableListCollapsed) {
 		<cc-custom-config-item-group
-			*ngIf="!isNonApplicableListCollapsed"
 			[customConfigItemGroups]="dropDownCustomConfigItemGroups.nonApplicableItems"
 			[searchTerm]="searchTerm"
 		></cc-custom-config-item-group>
-		<button
-			class="toggle-non-applicable-configs-button"
-			*ngIf="dropDownCustomConfigItemGroups.nonApplicableItems.size > 0"
-			(click)="toggleNonApplicableCustomConfigsList()"
-		>
+		} @if (dropDownCustomConfigItemGroups.nonApplicableItems.size > 0) {
+		<button class="toggle-non-applicable-configs-button" (click)="toggleNonApplicableCustomConfigsList()">
 			{{ isNonApplicableListCollapsed ? "Show non-applicable Custom Views" : "Hide non-applicable Custom Views" }}
 			<i [ngClass]="isNonApplicableListCollapsed ? 'fa fa-angle-down' : 'fa fa-angle-up'"></i>
 		</button>
+		}
 	</mat-accordion>
+	}
 </mat-dialog-content>
+}

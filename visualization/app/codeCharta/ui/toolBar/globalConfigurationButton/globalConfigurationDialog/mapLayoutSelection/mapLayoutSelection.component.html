@@ -1,18 +1,21 @@
 <mat-form-field appearance="outline">
 	<mat-label>Map Layout</mat-label>
 	<mat-select [value]="layoutAlgorithm$ | async" (selectionChange)="handleSelectedLayoutAlgorithmChanged($event)">
-		<mat-option *ngFor="let layoutAlgorithm of layoutAlgorithms" [value]="layoutAlgorithm">
+		@for (layoutAlgorithm of layoutAlgorithms; track layoutAlgorithm) {
+		<mat-option [value]="layoutAlgorithm">
 			{{ layoutAlgorithm }}
 		</mat-option>
+		}
 	</mat-select>
 </mat-form-field>
 
+@if ((layoutAlgorithm$ | async) === 'TreeMapStreet') {
 <cc-slider
 	class="cc-tree-maps-max-tree-map-files"
-	*ngIf="(layoutAlgorithm$ | async) === 'TreeMapStreet'"
 	[label]="'Maximum TreeMap Files'"
 	[min]="1"
 	[max]="1000"
 	[value]="maxTreeMapFiles$ | async"
 	[onChange]="handleChangeMaxTreeMapFiles"
 ></cc-slider>
+}

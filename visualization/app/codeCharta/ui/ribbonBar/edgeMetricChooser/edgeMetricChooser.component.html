@@ -1,7 +1,7 @@
 <i class="fa fa-exchange"></i>
 
+@if (edgeMetric$ | async; as edgeMetric) {
 <cc-metric-chooser
-	*ngIf="edgeMetric$ | async; let edgeMetric"
 	[class.is-edge-metric-disabled]="!(isEdgeMetricVisible$ | async)"
 	[selectedMetricName]="edgeMetric"
 	[searchPlaceholder]="'Edge Metric (highest value)'"
@@ -10,11 +10,14 @@
 	title="Change edge metric"
 >
 	<div hoveredInformation class="cc-metric-chooser-container">
-		<div class="metric-value" *ngIf="edgeValue$ | async; let edgeValue">
+		@if (edgeValue$ | async; as edgeValue) {
+		<div class="metric-value">
 			<div class="rounded-box">
 				<cc-metric-chooser-type [attributeType]="'edges'" [metricFor]="'edgeMetric'"></cc-metric-chooser-type>
 				{{ edgeValue }}
 			</div>
 		</div>
+		}
 	</div>
 </cc-metric-chooser>
+}

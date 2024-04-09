@@ -65,13 +65,13 @@
 		></cc-height-settings-panel>
 	</mat-card>
 
-	<mat-card appearance="outlined" *ngIf="!(isDeltaState$ | async)" class="link-color-metric-to-height-metric-card">
+	@if (!(isDeltaState$ | async)) {
+	<mat-card appearance="outlined" class="link-color-metric-to-height-metric-card">
 		<cc-link-color-metric-to-height-metric-button></cc-link-color-metric-to-height-metric-button>
 	</mat-card>
-
+	} @if (!(isDeltaState$ | async)) {
 	<mat-card
 		appearance="outlined"
-		*ngIf="!(isDeltaState$ | async)"
 		id="color-metric-card"
 		class="color-metric-card metric-card"
 		[class.expanded]="panelSelection === 'COLOR_PANEL_OPEN'"
@@ -89,11 +89,12 @@
 			[class.hidden]="panelSelection !== 'COLOR_PANEL_OPEN'"
 		></cc-color-settings-panel>
 	</mat-card>
+	}
 </mat-card>
 
+@if (hasEdgeMetric$ | async) {
 <mat-card
 	appearance="outlined"
-	*ngIf="hasEdgeMetric$ | async"
 	id="edge-metric-card"
 	class="edge-metric-card metric-card"
 	[class.expanded]="panelSelection === 'EDGE_PANEL_OPEN'"
@@ -111,8 +112,8 @@
 		></cc-edge-settings-panel>
 	</div>
 </mat-card>
-
-<mat-card appearance="outlined" *ngIf="isDeltaState$ | async" id="color-settings-card">
+} @if (isDeltaState$ | async) {
+<mat-card appearance="outlined" id="color-settings-card">
 	<div class="delta-color-section" (click)="updatePanelSelection('COLOR_PANEL_OPEN')" title="Show color settings">
 		<i class="fa fa-paint-brush color-icon"></i>
 		Color Settings
@@ -123,3 +124,4 @@
 		[class.hidden]="panelSelection !== 'COLOR_PANEL_OPEN'"
 	></cc-color-settings-panel>
 </mat-card>
+}

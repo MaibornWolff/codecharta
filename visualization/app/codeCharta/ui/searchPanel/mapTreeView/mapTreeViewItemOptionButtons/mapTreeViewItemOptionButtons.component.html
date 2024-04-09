@@ -1,5 +1,7 @@
 <span role="button" class="right-aligned" aria-hidden="true">
-	<i class="flattened fa fa-eye-slash" *ngIf="isFlattened" title="Flattened"></i>
+	@if (isFlattened) {
+	<i class="flattened fa fa-eye-slash" title="Flattened"></i>
+	}
 
 	<div class="small-action-button">
 		<button (click)="openNodeContextMenu($event)" title="Open Node-Context-Menu">

@@ -1,4 +1,5 @@
-<div *ngIf="!(isDeltaState$ | async) && (colorMetric$ | async) !== 'unary'">
+@if (!(isDeltaState$ | async) && (colorMetric$ | async) !== 'unary') {
+<div>
 	<cc-metric-color-range-slider
 		[minValue]="(sliderValues$ | async).min"
 		[maxValue]="(sliderValues$ | async).max"
@@ -11,14 +12,12 @@
 		[isAttributeDirectionInversed]="isAttributeDescriptionInversed$ | async"
 	>
 	</cc-metric-color-range-slider>
-
 	<cc-reset-settings-button
 		[settingsKeys]="['appSettings.mapColors.positiveDelta', 'appSettings.mapColors.negativeDelta']"
 		[callback]="resetColorRange"
 		tooltip="Reset slider thresholds to default"
 		label="Reset thresholds"
 	></cc-reset-settings-button>
-
 	<cc-metric-color-range-diagram
 		[minValue]="(sliderValues$ | async).min"
 		[maxValue]="(sliderValues$ | async).max"
@@ -31,7 +30,6 @@
 		[values]="(sliderValues$ | async).values"
 		[isAttributeDirectionInversed]="isAttributeDescriptionInversed$ | async"
 	></cc-metric-color-range-diagram>
-
 	<mat-form-field appearance="outline" class="gradient-mode-selector">
 		<mat-label>Gradient Mode</mat-label>
 		<mat-select [value]="colorMode$ | async" (selectionChange)="handleColorModeChange($event.value)">
@@ -44,25 +42,23 @@
 		</mat-select>
 	</mat-form-field>
 </div>
-
-<ng-container *ngIf="!(isDeltaState$ | async)">
-	<div class="color-row">
-		<cc-color-picker-for-map-color [mapColorFor]="'positive'"></cc-color-picker-for-map-color>
-		<mat-checkbox [checked]="(colorLabels$ | async).positive" (change)="toggleColorLabel($event, 'positive')">Show labels</mat-checkbox>
-	</div>
-	<div class="color-row">
-		<cc-color-picker-for-map-color [mapColorFor]="'neutral'"></cc-color-picker-for-map-color>
-		<mat-checkbox [checked]="(colorLabels$ | async).neutral" (change)="toggleColorLabel($event, 'neutral')">Show labels</mat-checkbox>
-	</div>
-	<div class="color-row">
-		<cc-color-picker-for-map-color [mapColorFor]="'negative'"></cc-color-picker-for-map-color>
-		<mat-checkbox [checked]="(colorLabels$ | async).negative" (change)="toggleColorLabel($event, 'negative')">Show labels</mat-checkbox>
-	</div>
-</ng-container>
-<ng-container *ngIf="isDeltaState$ | async">
-	<cc-color-picker-for-map-color [mapColorFor]="'positiveDelta'"></cc-color-picker-for-map-color>
-	<cc-color-picker-for-map-color [mapColorFor]="'negativeDelta'"> </cc-color-picker-for-map-color>
-</ng-container>
+} @if (!(isDeltaState$ | async)) {
+<div class="color-row">
+	<cc-color-picker-for-map-color [mapColorFor]="'positive'"></cc-color-picker-for-map-color>
+	<mat-checkbox [checked]="(colorLabels$ | async).positive" (change)="toggleColorLabel($event, 'positive')">Show labels</mat-checkbox>
+</div>
+<div class="color-row">
+	<cc-color-picker-for-map-color [mapColorFor]="'neutral'"></cc-color-picker-for-map-color>
+	<mat-checkbox [checked]="(colorLabels$ | async).neutral" (change)="toggleColorLabel($event, 'neutral')">Show labels</mat-checkbox>
+</div>
+<div class="color-row">
+	<cc-color-picker-for-map-color [mapColorFor]="'negative'"></cc-color-picker-for-map-color>
+	<mat-checkbox [checked]="(colorLabels$ | async).negative" (change)="toggleColorLabel($event, 'negative')">Show labels</mat-checkbox>
+</div>
+} @if (isDeltaState$ | async) {
+<cc-color-picker-for-map-color [mapColorFor]="'positiveDelta'"></cc-color-picker-for-map-color>
+<cc-color-picker-for-map-color [mapColorFor]="'negativeDelta'"> </cc-color-picker-for-map-color>
+}
 <cc-color-picker-for-map-color [mapColorFor]="'selected'"> </cc-color-picker-for-map-color>
 
 <div class="color-row">
@@ -83,13 +79,9 @@
 	>
 	</cc-reset-settings-button>
 
-	<mat-checkbox
-		*ngIf="!(isDeltaState$ | async)"
-		[checked]="isColorRangeInverted"
-		(change)="handleIsColorRangeInvertedChange($event.checked)"
-		>Invert Colors</mat-checkbox
-	>
-	<mat-checkbox *ngIf="isDeltaState$ | async" [checked]="areDeltaColorsInverted" (change)="handleAreDeltaColorsInverted($event.checked)"
-		>Invert Colors</mat-checkbox
-	>
+	@if (!(isDeltaState$ | async)) {
+	<mat-checkbox [checked]="isColorRangeInverted" (change)="handleIsColorRangeInvertedChange($event.checked)">Invert Colors</mat-checkbox>
+	} @if (isDeltaState$ | async) {
+	<mat-checkbox [checked]="areDeltaColorsInverted" (change)="handleAreDeltaColorsInverted($event.checked)">Invert Colors</mat-checkbox>
+	}
 </div>

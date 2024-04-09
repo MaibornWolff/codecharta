@@ -17,7 +17,13 @@
 			</span>
 		</div>
 		<div class="cc-labelled-color-picker-label">
-			<span *ngFor="let label of labels; let last = last"> {{ label }} <br *ngIf="!last" /></span>
+			@for (label of labels; track label; let last = $last) {
+			<span>
+				{{ label }} @if (!last) {
+				<br />
+				}</span
+			>
+			}
 		</div>
 	</div>
 </ng-template>
