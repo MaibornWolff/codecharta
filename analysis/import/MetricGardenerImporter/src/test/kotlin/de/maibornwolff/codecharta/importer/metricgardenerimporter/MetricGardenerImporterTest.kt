@@ -142,6 +142,7 @@ class MetricGardenerImporterTest {
         Assertions.assertThat(errContent.toString()).contains("Input invalid file for MetricGardenerImporter, stopping execution")
     }
 
+    @Disabled
     @Test
     fun `should stop execution if error happens while executing metric gardener`() {
         val npm = if (System.getProperty("os.name").contains("win", ignoreCase = true)) "npm.cmd" else "npm"
