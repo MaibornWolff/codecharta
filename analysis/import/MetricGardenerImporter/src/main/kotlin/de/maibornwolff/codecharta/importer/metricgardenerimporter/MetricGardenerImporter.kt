@@ -78,28 +78,7 @@ class MetricGardenerImporter(
         }
 
         if (!isJsonFile) {
-            println("Direct metric-gardener execution has been temporarily disabled.")
-            return null
-
-//            val tempMgOutput = File.createTempFile("MGOutput", ".json")
-//            tempMgOutput.deleteOnExit()
-//
-//            val npm = if (isWindows()) "npm.cmd" else "npm"
-//            val commandToExecute = listOf(
-//                npm, "exec", "-y", "metric-gardener", "--", "parse",
-//                inputFile!!.absolutePath, "--output-path", tempMgOutput.absolutePath
-//            )
-//            println("Running metric gardener, this might take some time for larger inputs...")
-//            val processExitCode = ProcessBuilder(commandToExecute)
-//                    // Not actively discarding or redirecting the output of MetricGardener loses performance on larger folders
-//                    .redirectOutput(ProcessBuilder.Redirect.DISCARD)
-//                    .redirectError(ProcessBuilder.Redirect.INHERIT)
-//                    .start()
-//                    .waitFor()
-//            inputFile = tempMgOutput
-//            if (processExitCode != 0) {
-//                throw MetricGardenerException("Error while executing metric gardener! Process returned with status $processExitCode.")
-//            }
+            throw IllegalArgumentException("Direct metric-gardener execution has been temporarily disabled.")
         }
         val metricGardenerNodes: MetricGardenerNodes =
             mapper.readValue(inputFile!!.reader(Charset.defaultCharset()), MetricGardenerNodes::class.java)
@@ -109,10 +88,6 @@ class MetricGardenerImporter(
         ProjectSerializer.serializeToFileOrStream(project, outputFile, output, compress)
 
         return null
-    }
-
-    private fun isWindows(): Boolean {
-        return System.getProperty("os.name").contains("win", ignoreCase = true)
     }
 
     override fun getDialog(): ParserDialogInterface = ParserDialog
