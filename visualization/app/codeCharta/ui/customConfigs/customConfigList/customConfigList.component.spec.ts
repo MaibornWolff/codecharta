@@ -3,7 +3,7 @@ import { MatDialog } from "@angular/material/dialog"
 import { expect } from "@jest/globals"
 import { State } from "@ngrx/store"
 import { provideMockStore } from "@ngrx/store/testing"
-import { render, screen } from "@testing-library/angular"
+import { render, screen, waitFor } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
 import { of } from "rxjs"
 import { defaultState } from "../../../state/store/state.manager"
@@ -80,7 +80,7 @@ describe("customConfigListComponent", () => {
 
 		await userEvent.click(screen.queryByText("Show non-applicable Custom Views"))
 
-		expect(container.querySelectorAll("mat-expansion-panel-header").length).toBe(2)
+		await waitFor(() => expect(container.querySelectorAll("mat-expansion-panel-header").length).toBe(2))
 	})
 
 	it("should not show 'non-applicable Custom Views' button when no custom configs are available", async () => {
@@ -128,8 +128,10 @@ describe("customConfigListComponent", () => {
 
 		await userEvent.click(customConfigItemGroupElement)
 
-		expect((screen.getAllByTitle("SampleMap Delta View #1", { exact: false })[1].closest("button") as HTMLButtonElement).disabled).toBe(
-			true
+		await waitFor(() =>
+			expect(
+				(screen.getAllByTitle("SampleMap Delta View #1", { exact: false })[1].closest("button") as HTMLButtonElement).disabled
+			).toBe(true)
 		)
 	})
 

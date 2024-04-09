@@ -51,18 +51,19 @@ describe("metricChooserComponent", () => {
 		})
 
 		await userEvent.click(await screen.findByText("aMetric"))
-		const options = screen.queryAllByRole("option")
-		expect(options[0].textContent).toMatch("aMetric (1)")
-		expect(options[1].textContent).toMatch("bMetric (2)")
-		expect(options[2].textContent).toMatch("cMetric (3)")
-		expect(options[3].textContent).toMatch("fullMetric (42) FullTestDescription")
-		expect(options[3].getAttribute("title")).toMatch(
-			"FullTestTitle (fullMetric):\nFullTestDescription\nHigh Values: FullTestHigh\nLow Values: FullLowValue"
+		await waitFor(() => expect(screen.queryAllByRole("option")[0].textContent).toMatch("aMetric (1)"))
+		await waitFor(() => expect(screen.queryAllByRole("option")[1].textContent).toMatch("bMetric (2)"))
+		await waitFor(() => expect(screen.queryAllByRole("option")[2].textContent).toMatch("cMetric (3)"))
+		await waitFor(() => expect(screen.queryAllByRole("option")[3].textContent).toMatch("fullMetric (42) FullTestDescription"))
+		await waitFor(() =>
+			expect(screen.queryAllByRole("option")[3].getAttribute("title")).toMatch(
+				"FullTestTitle (fullMetric):\nFullTestDescription\nHigh Values: FullTestHigh\nLow Values: FullLowValue"
+			)
 		)
-		expect(options[4].textContent).toMatch("mcc (55)")
-		expect(options[4].getAttribute("title")).toMatch("Cyclomatic Complexity")
+		await waitFor(() => expect(screen.queryAllByRole("option")[4].textContent).toMatch("mcc (55)"))
+		await waitFor(() => expect(screen.queryAllByRole("option")[4].getAttribute("title")).toMatch("Cyclomatic Complexity"))
 
-		await userEvent.click(options[1])
+		await userEvent.click(screen.queryAllByRole("option")[1])
 
 		await rerender({
 			componentProperties: {
@@ -88,17 +89,15 @@ describe("metricChooserComponent", () => {
 		})
 
 		await userEvent.click(await screen.findByText("aMetric"))
-		screen.getByPlaceholderText("search metric (max value)")
-		const searchBox = getSearchBox()
-		expect(document.activeElement).toBe(searchBox)
+		await waitFor(() => expect(screen.getByPlaceholderText("search metric (max value)")).toBeTruthy())
+		expect(document.activeElement).toBe(getSearchBox())
 
 		await userEvent.type(getSearchBox(), "b")
-		const options = screen.queryAllByRole("option")
-		expect(options.length).toBe(1)
-		expect(options[0].textContent).toMatch("bMetric (2)")
+		await waitFor(() => expect(screen.queryAllByRole("option").length).toBe(1))
+		await waitFor(() => expect(screen.queryAllByRole("option")[0].textContent).toMatch("bMetric (2)"))
 
-		await userEvent.click(options[0])
-		expect(screen.queryByRole("listbox")).toBeNull()
+		await userEvent.click(screen.queryAllByRole("option")[0])
+		await waitFor(() => expect(screen.queryByRole("listbox")).toBeNull())
 
 		await rerender({
 			componentProperties: {
@@ -108,7 +107,7 @@ describe("metricChooserComponent", () => {
 			}
 		})
 		await userEvent.click(await screen.findByText("bMetric"))
-		expect(getSearchBox().value).toBe("")
+		await waitFor(() => expect(getSearchBox().value).toBe(""))
 
 		function getSearchBox() {
 			const selectContainer = screen.queryByRole("listbox")
