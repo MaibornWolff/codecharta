@@ -22,7 +22,6 @@ import picocli.CommandLine
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.PrintStream
-import kotlin.test.assertFailsWith
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class MetricGardenerImporterTest {
@@ -177,7 +176,5 @@ class MetricGardenerImporterTest {
         System.setErr(originalErr)
         Assertions.assertThat(errContent.toString())
             .contains("Direct metric-gardener execution has been temporarily disabled.")
-
     }
-
 }
