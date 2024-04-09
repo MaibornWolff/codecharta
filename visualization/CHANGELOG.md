@@ -17,6 +17,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Fixed 🐞
 
 -   Fix small style issues [#3544](https://github.com/MaibornWolff/codecharta/pull/3544)
+### Chore 👨‍💻 👩‍💻
+
+-   Update angular to v17
 
 ## [1.124.1] - 2024-03-18
 
