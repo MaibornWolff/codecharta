@@ -1,20 +1,20 @@
 import { TestbedHarnessEnvironment } from "@angular/cdk/testing/testbed"
 import { TestBed } from "@angular/core/testing"
+import { MatButtonHarness } from "@angular/material/button/testing"
 import { MatDialogRef } from "@angular/material/dialog"
 import { MatInputHarness } from "@angular/material/input/testing"
-import { MatButtonHarness } from "@angular/material/button/testing"
-import { render, screen } from "@testing-library/angular"
+import { State, Store, StoreModule } from "@ngrx/store"
+import { render, screen, waitFor } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
 import { Vector3 } from "three"
 import { setState } from "../../../../state/store/state.actions"
+import { appReducers, setStateMiddleware } from "../../../../state/store/state.manager"
 import { SCENARIO_ATTRIBUTE_CONTENT, STATE } from "../../../../util/dataMocks"
 import { ThreeCameraService } from "../../../codeMap/threeViewer/threeCamera.service"
 import { ThreeOrbitControlsService } from "../../../codeMap/threeViewer/threeOrbitControls.service"
 import { ScenarioHelper } from "../scenarioHelper"
 import { AddCustomScenarioComponent } from "./addCustomScenario.component"
 import { AddCustomScenarioModule } from "./addCustomScenario.module"
-import { appReducers, setStateMiddleware } from "../../../../state/store/state.manager"
-import { State, Store, StoreModule } from "@ngrx/store"
 
 describe("AddCustomScenarioComponent", () => {
 	beforeEach(async () => {
@@ -60,7 +60,7 @@ describe("AddCustomScenarioComponent", () => {
 		expect(await screen.findByText("A Scenario with this name already exists")).toBeTruthy()
 
 		await userEvent.type(scenarioNameInput, "my-custom-scenario")
-		expect(screen.queryByText("A Scenario with this name already exists")).toBeFalsy()
+		await waitFor(() => expect(screen.queryByText("A Scenario with this name already exists")).toBeFalsy())
 	})
 
 	it("should show an error message, when no properties are selected", async () => {

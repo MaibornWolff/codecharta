@@ -1,7 +1,7 @@
 import { TestBed } from "@angular/core/testing"
 import { expect } from "@jest/globals"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
-import { render, screen } from "@testing-library/angular"
+import { render, screen, waitFor } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
 import { metricDataSelector } from "../../../state/selectors/accumulatedData/metricData/metricData.selector"
 import { hoveredNodeSelector } from "../../../state/selectors/hoveredNode.selector"
@@ -48,23 +48,22 @@ describe("colorMetricChooserComponent", () => {
 		expect(screen.getByRole("combobox").getAttribute("aria-disabled")).toBe("false")
 
 		await userEvent.click(await screen.findByText("aMetric"))
-		expect(screen.getByPlaceholderText("Color Metric (highest value)")).not.toBe(null)
-		const options = screen.queryAllByRole("option")
-		expect(options[0].textContent).toMatch("aMetric (1)")
-		expect(options[1].textContent).toMatch("bMetric (2)")
+		await waitFor(() => expect(screen.getByPlaceholderText("Color Metric (highest value)")).not.toBe(null))
+		await waitFor(() => expect(screen.queryAllByRole("option")[0].textContent).toMatch("aMetric (1)"))
+		await waitFor(() => expect(screen.queryAllByRole("option")[1].textContent).toMatch("bMetric (2)"))
 
 		const store = TestBed.inject(MockStore)
-		await userEvent.click(options[1])
+		await userEvent.click(screen.queryAllByRole("option")[1])
 
 		expect(await getLastAction(store)).toEqual(setColorMetric({ value: "bMetric" }))
 		store.overrideSelector(colorMetricSelector, "bMetric")
 		store.refreshState()
 		detectChanges()
 
-		expect(screen.queryByText("aMetric")).toBe(null)
-		expect(screen.queryByText("bMetric")).not.toBe(null)
-		expect(container.querySelector("cc-metric-chooser").getAttribute("title")).toBe("Change color metric")
-		expect(container.querySelector(".fa.fa-paint-brush").getAttribute("style")).toEqual(nonDisabledIconColor)
+		await waitFor(() => expect(screen.queryByText("aMetric")).toBe(null))
+		await waitFor(() => expect(screen.queryByText("bMetric")).not.toBe(null))
+		await waitFor(() => expect(container.querySelector("cc-metric-chooser").getAttribute("title")).toBe("Change color metric"))
+		await waitFor(() => expect(container.querySelector(".fa.fa-paint-brush").getAttribute("style")).toEqual(nonDisabledIconColor))
 	})
 
 	it("should disable metric chooser when height and color metric are linked", async () => {
