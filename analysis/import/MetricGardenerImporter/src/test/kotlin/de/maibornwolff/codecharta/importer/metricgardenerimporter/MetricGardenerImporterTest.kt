@@ -22,6 +22,7 @@ import picocli.CommandLine
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.PrintStream
+import kotlin.test.assertFailsWith
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class MetricGardenerImporterTest {
@@ -147,19 +148,36 @@ class MetricGardenerImporterTest {
     fun `should stop execution if error happens while executing metric gardener`() {
         val npm = if (System.getProperty("os.name").contains("win", ignoreCase = true)) "npm.cmd" else "npm"
         val metricGardenerInvalidCommand = listOf(
-                npm, "exec", "metric-gardener",
-                "--", "parse", "this/path/is/invalid", "-o", "MGout.json"
+            npm, "exec", "metric-gardener",
+            "--", "parse", "this/path/is/invalid", "-o", "MGout.json"
         )
         val metricGardenerInvalidInputProcess = ProcessBuilder(metricGardenerInvalidCommand)
         mockkConstructor(ProcessBuilder::class)
         every { anyConstructed<ProcessBuilder>().start().waitFor() } returns metricGardenerInvalidInputProcess
-                .redirectError(ProcessBuilder.Redirect.DISCARD)
-                .start()
-                .waitFor()
+            .redirectError(ProcessBuilder.Redirect.DISCARD)
+            .start()
+            .waitFor()
 
         System.setErr(PrintStream(errContent))
         CommandLine(MetricGardenerImporter()).execute("src").toString()
         System.setErr(originalErr)
-        Assertions.assertThat(errContent.toString()).contains("Error while executing metric gardener! Process returned with status")
+        Assertions.assertThat(errContent.toString())
+            .contains("Error while executing metric gardener! Process returned with status")
     }
+
+    @Test
+    fun `should stop execution if no MG json is present`() {
+        System.setErr(PrintStream(errContent))
+        main(
+            arrayOf(
+                "src/test/resources/MetricGardenerRawFile.kt", "-nc",
+                "-o=src/test/resources/import-result-mg"
+            )
+        )
+        System.setErr(originalErr)
+        Assertions.assertThat(errContent.toString())
+            .contains("Direct metric-gardener execution has been temporarily disabled.")
+
+    }
+
 }
