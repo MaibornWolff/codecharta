@@ -2,7 +2,6 @@ package de.maibornwolff.codecharta.importer.metricgardenerimporter
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import de.maibornwolff.codecharta.importer.metricgardenerimporter.json.MetricGardenerProjectBuilder
-import de.maibornwolff.codecharta.importer.metricgardenerimporter.model.MetricGardenerException
 import de.maibornwolff.codecharta.importer.metricgardenerimporter.model.MetricGardenerNodes
 import de.maibornwolff.codecharta.model.AttributeDescriptor
 import de.maibornwolff.codecharta.model.AttributeGenerator
@@ -79,25 +78,28 @@ class MetricGardenerImporter(
         }
 
         if (!isJsonFile) {
-            val tempMgOutput = File.createTempFile("MGOutput", ".json")
-            tempMgOutput.deleteOnExit()
+            println("Direct metric-gardener execution has been temporarily disabled.")
+            return null
 
-            val npm = if (isWindows()) "npm.cmd" else "npm"
-            val commandToExecute = listOf(
-                npm, "exec", "-y", "metric-gardener", "--", "parse",
-                inputFile!!.absolutePath, "--output-path", tempMgOutput.absolutePath
-            )
-            println("Running metric gardener, this might take some time for larger inputs...")
-            val processExitCode = ProcessBuilder(commandToExecute)
-                    // Not actively discarding or redirecting the output of MetricGardener loses performance on larger folders
-                    .redirectOutput(ProcessBuilder.Redirect.DISCARD)
-                    .redirectError(ProcessBuilder.Redirect.INHERIT)
-                    .start()
-                    .waitFor()
-            inputFile = tempMgOutput
-            if (processExitCode != 0) {
-                throw MetricGardenerException("Error while executing metric gardener! Process returned with status $processExitCode.")
-            }
+//            val tempMgOutput = File.createTempFile("MGOutput", ".json")
+//            tempMgOutput.deleteOnExit()
+//
+//            val npm = if (isWindows()) "npm.cmd" else "npm"
+//            val commandToExecute = listOf(
+//                npm, "exec", "-y", "metric-gardener", "--", "parse",
+//                inputFile!!.absolutePath, "--output-path", tempMgOutput.absolutePath
+//            )
+//            println("Running metric gardener, this might take some time for larger inputs...")
+//            val processExitCode = ProcessBuilder(commandToExecute)
+//                    // Not actively discarding or redirecting the output of MetricGardener loses performance on larger folders
+//                    .redirectOutput(ProcessBuilder.Redirect.DISCARD)
+//                    .redirectError(ProcessBuilder.Redirect.INHERIT)
+//                    .start()
+//                    .waitFor()
+//            inputFile = tempMgOutput
+//            if (processExitCode != 0) {
+//                throw MetricGardenerException("Error while executing metric gardener! Process returned with status $processExitCode.")
+//            }
         }
         val metricGardenerNodes: MetricGardenerNodes =
             mapper.readValue(inputFile!!.reader(Charset.defaultCharset()), MetricGardenerNodes::class.java)
