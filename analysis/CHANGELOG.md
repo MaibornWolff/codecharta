@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 -   Bump node version from 16 to 18 [#3452](https://github.com/MaibornWolff/codecharta/pull/3452)
 
+### Changed
+
+-   Temporarily disabled metric-gardener on-the-fly execution [#3542](https://github.com/MaibornWolff/codecharta/pull/3542)
+
 ## [1.122.1] - 2024-02-26
 
 ### Changed
