@@ -8,15 +8,19 @@
 		</em>
 	</div>
 
-	<div *ngIf="flattenedItems$ | async; let flattenedItems">
-		<mat-list-item *ngIf="flattenedItems.length === 0">Add pattern via search or node context-menu</mat-list-item>
-
-		<mat-list-item *ngFor="let flattenedItem of flattenedItems" [title]="flattenedItem.path">
+	@if (flattenedItems$ | async; as flattenedItems) {
+	<div>
+		@if (flattenedItems.length === 0) {
+		<mat-list-item>Add pattern via search or node context-menu</mat-list-item>
+		} @for (flattenedItem of flattenedItems; track flattenedItem) {
+		<mat-list-item [title]="flattenedItem.path">
 			<button mat-button (click)="removeBlacklistEntry(flattenedItem)">
 				<em class="fa fa-minus-square" title="Remove list item"></em> {{ flattenedItem.path }}
 			</button>
 		</mat-list-item>
+		}
 	</div>
+	}
 </mat-list>
 
 <mat-list>
@@ -26,13 +30,17 @@
 		</em>
 	</div>
 
-	<div *ngIf="excludedItems$ | async; let excludedItems">
-		<mat-list-item *ngIf="excludedItems.length === 0">Add pattern via search or node context-menu</mat-list-item>
-
-		<mat-list-item *ngFor="let excludedItem of excludedItems" [title]="excludedItem.path">
+	@if (excludedItems$ | async; as excludedItems) {
+	<div>
+		@if (excludedItems.length === 0) {
+		<mat-list-item>Add pattern via search or node context-menu</mat-list-item>
+		} @for (excludedItem of excludedItems; track excludedItem) {
+		<mat-list-item [title]="excludedItem.path">
 			<button mat-button (click)="removeBlacklistEntry(excludedItem)">
 				<em class="fa fa-minus-square" title="Remove list item"></em> {{ excludedItem.path }}
 			</button>
 		</mat-list-item>
+		}
 	</div>
+	}
 </mat-list>

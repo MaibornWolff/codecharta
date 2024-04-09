@@ -1,8 +1,10 @@
 <div class="delta-select-wrapper">
 	<mat-select class="delta-select" [value]="referenceFile$ | async" (selectionChange)="handleDeltaReferenceFileChange($event.value)">
-		<mat-option *ngFor="let file of files$ | async" [value]="file.file">
+		@for (file of files$ | async; track file) {
+		<mat-option [value]="file.file">
 			{{ file.file.fileMeta.fileName | removeExtension }}
 		</mat-option>
+		}
 	</mat-select>
 	<button
 		class="reference-comparison-switch"
@@ -19,9 +21,11 @@
 		[value]="comparisonFile$ | async"
 		(selectionChange)="handleDeltaComparisonFileChange($event.value)"
 	>
-		<mat-option *ngFor="let file of possibleComparisonFiles$ | async" [value]="file.file">
+		@for (file of possibleComparisonFiles$ | async; track file) {
+		<mat-option [value]="file.file">
 			{{ file.file.fileMeta.fileName | removeExtension }}
 		</mat-option>
+		}
 	</mat-select>
 	<div class="pictogram" [style.background]="pictogramBackground$ | async"></div>
 </div>

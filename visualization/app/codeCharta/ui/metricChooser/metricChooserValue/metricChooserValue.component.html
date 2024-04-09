@@ -1,10 +1,11 @@
-<div class="metric-value" *ngIf="node$ | async; let node">
+@if (node$ | async; as node) {
+<div class="metric-value">
 	<div class="rounded-box">
 		<cc-metric-chooser-type [attributeType]="'nodes'" [metricFor]="metricFor"></cc-metric-chooser-type>
 		<span class="value">{{ node.attributes[(primaryMetricNames$ | async)[metricFor]] }}</span>
 	</div>
+	@if (node.deltas) {
 	<div
-		*ngIf="node.deltas"
 		[style.marginLeft]="'2px'"
 		[style.backgroundColor]="
 			metricFor === 'heightMetric' && node.deltas[(primaryMetricNames$ | async)[metricFor]] > 0
@@ -17,4 +18,6 @@
 	>
 		&Delta;{{ node.deltas[(primaryMetricNames$ | async)[metricFor]] }}
 	</div>
+	}
 </div>
+}

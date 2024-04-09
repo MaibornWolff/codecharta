@@ -1,15 +1,11 @@
+@if (isScreenshotToClipboardEnabled$ | async) {
 <cc-action-icon
-	*ngIf="isScreenshotToClipboardEnabled$ | async"
 	[icon]="'fa fa-camera'"
 	title="{{ TITLE_CLIPBOARD_BUTTON }}"
 	(click)="makeScreenshotToClipboard()"
 	[class.disabled]="!isWriteToClipboardAllowed"
 >
 </cc-action-icon>
-<cc-action-icon
-	*ngIf="!(isScreenshotToClipboardEnabled$ | async)"
-	[icon]="'fa fa-camera'"
-	title="{{ TITLE_FILE_BUTTON }}"
-	(click)="makeScreenshotToFile()"
->
-</cc-action-icon>
+} @if (!(isScreenshotToClipboardEnabled$ | async)) {
+<cc-action-icon [icon]="'fa fa-camera'" title="{{ TITLE_FILE_BUTTON }}" (click)="makeScreenshotToFile()"> </cc-action-icon>
+}

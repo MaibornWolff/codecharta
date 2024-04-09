@@ -8,7 +8,9 @@
 			<mat-label>Save individual configurations for your map.</mat-label>
 			<input matInput class="custom-config-input" [formControl]="customConfigName" required />
 			<mat-hint align="start">Config View Name</mat-hint>
-			<mat-error *ngIf="customConfigName.invalid">{{ getErrorMessage() }}</mat-error>
+			@if (customConfigName.invalid) {
+			<mat-error>{{ getErrorMessage() }}</mat-error>
+			}
 		</mat-form-field>
 		<mat-form-field class="custom-config-note">
 			<mat-label>Provide custom note for configuration (optional)</mat-label>

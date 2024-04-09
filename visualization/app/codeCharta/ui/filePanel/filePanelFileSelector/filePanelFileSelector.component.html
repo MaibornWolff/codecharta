@@ -11,9 +11,12 @@
 		<button class="file-select-action-button" (click)="handleSelectZeroFiles()">None</button>
 		<button class="file-select-action-button" (click)="handleInvertSelectedFiles()">Invert</button>
 	</div>
-	<mat-option class="filenames" *ngFor="let file of fileStates" [value]="file.file">
+	@for (file of fileStates; track file) {
+	<mat-option class="filenames" [value]="file.file">
 		{{ file.file.fileMeta.fileName | removeExtension }}
-
-		<cc-remove-file-button *ngIf="fileStates.length > 1" [filename]="file.file.fileMeta.fileName"></cc-remove-file-button>
+		@if (fileStates.length > 1) {
+		<cc-remove-file-button [filename]="file.file.fileMeta.fileName"></cc-remove-file-button>
+		}
 	</mat-option>
+	}
 </mat-select>

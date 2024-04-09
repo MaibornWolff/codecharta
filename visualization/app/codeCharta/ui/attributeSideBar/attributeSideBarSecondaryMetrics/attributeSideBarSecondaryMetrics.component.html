@@ -1,23 +1,23 @@
 <div class="secondary-metrics-wrapper">
 	<div class="metrics-wrapper">
-		<div class="metric-box scrollable-content" *ngIf="attributeDescriptors$ | async as attributeDescriptors">
+		@if (attributeDescriptors$ | async; as attributeDescriptors) {
+		<div class="metric-box scrollable-content">
 			<table class="secondary-metrics" aria-hidden="true">
 				<tr>
 					<th scope="col" colspan="2">Secondary Metrics</th>
 				</tr>
-				<tr
-					*ngFor="let secondaryMetric of secondaryMetrics$ | async"
-					[title]="attributeDescriptors[secondaryMetric.name] | attributeDescriptorTooltip : secondaryMetric.name"
-				>
+				@for (secondaryMetric of secondaryMetrics$ | async; track secondaryMetric) {
+				<tr [title]="attributeDescriptors[secondaryMetric.name] | attributeDescriptorTooltip : secondaryMetric.name">
 					<td class="secondary-metric-box">
 						<div class="secondary-metric-row">
+							@if (showAttributeTypeSelector$ | async) {
 							<cc-attribute-type-selector
-								*ngIf="showAttributeTypeSelector$ | async"
 								class="attribute-type-select"
 								[metricName]="secondaryMetric.name"
 								[metricType]="'nodes'"
 							>
 							</cc-attribute-type-selector>
+							}
 							<span class="metric-value">{{ secondaryMetric.value | number : "1.0-0" }}</span>
 						</div>
 					</td>
@@ -25,21 +25,19 @@
 						<cc-metric-delta-selected [metricName]="secondaryMetric.name"></cc-metric-delta-selected>
 					</td>
 					<td>
-						<a
-							class="metric-name"
-							[href]="link"
-							target="_blank"
-							*ngIf="attributeDescriptors[secondaryMetric.name]?.link as link; else secondaryMetricNoLink"
-						>
+						@if (attributeDescriptors[secondaryMetric.name]?.link; as link) {
+						<a class="metric-name" [href]="link" target="_blank">
 							{{ secondaryMetric.name }}
 							<i class="fa fa-external-link"></i>
 						</a>
-						<ng-template #secondaryMetricNoLink
-							><span class="metric-name">{{ secondaryMetric.name }}</span>
-						</ng-template>
+						} @else {
+						<span class="metric-name">{{ secondaryMetric.name }}</span>
+						}
 					</td>
 				</tr>
+				}
 			</table>
 		</div>
+		}
 	</div>
 </div>

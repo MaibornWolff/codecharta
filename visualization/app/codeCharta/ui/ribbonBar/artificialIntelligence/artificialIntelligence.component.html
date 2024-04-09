@@ -1,4 +1,4 @@
-<ng-container *ngIf="data$ | async; let data">
-	<cc-suspicious-metrics [data]="data"></cc-suspicious-metrics>
-	<cc-high-risk-profile [data]="data"></cc-high-risk-profile>
-</ng-container>
+@if (data$ | async; as data) {
+<cc-suspicious-metrics [data]="data"></cc-suspicious-metrics>
+<cc-high-risk-profile [data]="data"></cc-high-risk-profile>
+}

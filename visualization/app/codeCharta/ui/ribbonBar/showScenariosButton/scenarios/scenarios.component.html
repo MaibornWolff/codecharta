@@ -5,7 +5,8 @@
 
 <mat-divider></mat-divider>
 
-<div *ngFor="let scenario of scenarios" class="cc-row">
+@for (scenario of scenarios; track scenario) {
+<div class="cc-row">
 	<button
 		title="Apply scenario"
 		class="cc-apply-scenario-button"
@@ -14,9 +15,11 @@
 	>
 		{{ scenario.scenarioName }}
 	</button>
-	<span [title]="icon.tooltip" class="cc-scenario-content-icons" *ngFor="let icon of scenario.icons">
+	@for (icon of scenario.icons; track icon) {
+	<span [title]="icon.tooltip" class="cc-scenario-content-icons">
 		<i class="fa {{ icon.faIconClass }}" [class.cc-is-saved]="icon.isSaved"></i>
 	</span>
+	}
 	<button
 		title="Remove custom scenario"
 		class="cc-action-button cc-remove"
@@ -25,3 +28,4 @@
 		<i class="fa fa-minus-square"></i>
 	</button>
 </div>
+}

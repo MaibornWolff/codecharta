@@ -2,8 +2,8 @@
 	<cc-distribution-metric-chooser title="Distribution metric"></cc-distribution-metric-chooser>
 
 	<div class="cc-bar">
+		@for (item of metricDistribution; track item) {
 		<span
-			*ngFor="let item of metricDistribution"
 			[style.width]="item.relativeMetricValue + '%'"
 			[style.background]="item.color"
 			class="cc-bar-section"
@@ -23,6 +23,7 @@
 				{{ showAbsoluteValues ? item.absoluteMetricValue.toLocaleString() : item.relativeMetricValue.toFixed(2) + "%" }}
 			</div>
 		</span>
+		}
 	</div>
 
 	<button class="cc-show-details-button" (click)="toggleShowDetails()">
@@ -31,10 +32,12 @@
 </div>
 
 <div class="cc-distribution-details" [class.cc-hidden]="!showDetails" (click)="toggleShowAbsoluteValues()">
-	<div class="cc-distribution-details-entry" *ngFor="let item of metricDistribution">
+	@for (item of metricDistribution; track item) {
+	<div class="cc-distribution-details-entry">
 		<span class="cc-dot" [style.background]="item.color"></span>{{ item.fileExtension }} :
 		<span class="cc-detail-metric-value">
 			{{ showAbsoluteValues ? item.absoluteMetricValue.toLocaleString() : item.relativeMetricValue.toFixed(2) + "%" }}
 		</span>
 	</div>
+	}
 </div>

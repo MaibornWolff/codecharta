@@ -32,9 +32,9 @@
 	[onChange]="applyDebouncedScalingY"
 ></cc-slider>
 
-<mat-checkbox (change)="setInvertHeight($event)" *ngIf="!(isDeltaState$ | async)" [checked]="invertHeight$ | async">
-	Invert Height
-</mat-checkbox>
+@if (!(isDeltaState$ | async)) {
+<mat-checkbox (change)="setInvertHeight($event)" [checked]="invertHeight$ | async"> Invert Height </mat-checkbox>
+}
 
 <cc-reset-settings-button
 	[settingsKeys]="['appSettings.amountOfTopLabels', 'appSettings.scaling.y', 'appSettings.invertHeight']"

@@ -5,10 +5,12 @@
 	<h2>{{ data.previousVersion }} → {{ data.currentVersion }}</h2>
 
 	<div class="content">
-		<div *ngFor="let change of changes | keyvalue">
+		@for (change of changes | keyvalue; track change) {
+		<div>
 			<h2>{{ change.key }}</h2>
 			<ul [innerHTML]="change.value"></ul>
 		</div>
+		}
 	</div>
 </div>
 

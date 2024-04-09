@@ -4,8 +4,11 @@
 <cc-export-threed-map-button></cc-export-threed-map-button>
 <cc-reset-map-button></cc-reset-map-button>
 
-<cc-file-panel *ngIf="(hoveredNodeId$ | async) === null"></cc-file-panel>
-<cc-hovered-node-path-panel *ngIf="(hoveredNodeId$ | async) !== null"></cc-hovered-node-path-panel>
+@if ((hoveredNodeId$ | async) === null) {
+<cc-file-panel></cc-file-panel>
+} @if ((hoveredNodeId$ | async) !== null) {
+<cc-hovered-node-path-panel></cc-hovered-node-path-panel>
+}
 
 <div class="right-aligned">
 	<cc-loading-map-progress-spinner></cc-loading-map-progress-spinner>
