@@ -44,7 +44,7 @@
 	<cc-area-settings-panel class="cc-metric-settings-panel" [class.hidden]="panelSelection !== 'AREA_PANEL_OPEN'"></cc-area-settings-panel>
 </mat-card>
 
-<mat-card appearance="outlined" id="height-and-color-metric-container">
+<mat-card appearance="outlined" id="height-and-color-metric-container" [class.delta]="isDeltaState$ | async">
 	<mat-card
 		appearance="outlined"
 		id="height-metric-card"
