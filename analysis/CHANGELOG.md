@@ -7,8 +7,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
-## [1.123.0] - 2024-04-10
-
 ### Added 🚀
 
 -   Auto detect direction of metrics - introduces `direction` as a new field in the JSON schema [#3518](https://github.com/MaibornWolff/codecharta/pull/3518)
