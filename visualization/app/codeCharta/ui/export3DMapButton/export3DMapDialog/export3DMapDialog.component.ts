@@ -135,21 +135,20 @@ export class Export3DMapDialogComponent {
 
 	async createScene() {
 		const printPreviewScene = new Scene()
+		printPreviewScene.name = "printPreviewScene"
 		this.printPreviewScene = printPreviewScene
+
 		printPreviewScene.background = new Color(0xec_ed_dc) //TODO: can I somehow get the current background color from the store or something?
 		const lights = this.threeSceneService.scene.clone().children[3]
 		lights.name = "lights"
 		printPreviewScene.add(lights)
-
-		printPreviewScene.name = "printPreviewScene"
 
 		const renderer = new WebGLRenderer()
 		this.rendererContainer.nativeElement.appendChild(renderer.domElement)
 
 		const camera = new PerspectiveCamera(45, 1.15, 50, 200_000)
 		camera.name = "camera"
-
-		printPreviewScene.rotateZ(Math.PI * 2)
+		camera.up = new Vector3(0, 0, 1)
 		printPreviewScene.add(camera)
 
 		const controls = new OrbitControls(camera, renderer.domElement)
@@ -165,12 +164,10 @@ export class Export3DMapDialogComponent {
 		this.previewMesh = new Preview3DPrintMesh()
 		await this.previewMesh.initialize(this.initGeometryOptions())
 		this.currentSize = this.previewMesh.getSize()
-
-		//camera.position.set(0, 0, -300) //To directly see the backside of the map: uncomment this line and comment the next two lines
-		this.updateCameraPosition(camera)
-		camera.up = new Vector3(0, 0, 1)
-
 		printPreviewScene.add(this.previewMesh.getThreeMesh())
+
+		//camera.position.set(0, 0, -this.wantedWidth*1.5) //To directly see the backside of the map: uncomment this line and comment the next line
+		this.updateCameraPosition(camera)
 	}
 
 	private updateCameraPosition(camera: PerspectiveCamera) {
