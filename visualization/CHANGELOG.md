@@ -14,6 +14,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   Display summary metrics for root node as default [#3525](https://github.com/MaibornWolff/codecharta/pull/3525)
 -   Remove whitespace on screenshots [#3527](https://github.com/MaibornWolff/codecharta/pull/3527)
 
+### Fixed 🐞
+
+-   Fix small style issues [#3544](https://github.com/MaibornWolff/codecharta/pull/3544)
+
 ## [1.124.1] - 2024-03-18
 
 ### Fixed 🐞
