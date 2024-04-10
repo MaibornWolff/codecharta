@@ -39,6 +39,15 @@ export interface GeometryOptions {
 	numberOfColors: number
 }
 
+class CustomVisibilityMesh extends Mesh {
+	visibleBecauseOfSize = true
+	visibleBecauseOfColor = true
+
+	updateVisibility(): void {
+		this.visible = this.visibleBecauseOfSize && this.visibleBecauseOfColor
+	}
+}
+
 export class Preview3DPrintMesh {
 	private font: Font
 	private geometryOptions: GeometryOptions
@@ -125,18 +134,18 @@ export class Preview3DPrintMesh {
 					break
 
 				case "Metric Text":
-					child.visible = this.scaleBacktext(child, wantedWidth / currentWidth)
+					this.scaleBacktext(child as CustomVisibilityMesh, wantedWidth / currentWidth)
 					if (child.visible) {
 						this.xCenterMetricsMesh(child)
 					}
 					break
 
 				case "CodeCharta Logo":
-					child.visible = this.scaleBacktext(child, wantedWidth / currentWidth)
+					this.scaleBacktext(child as CustomVisibilityMesh, wantedWidth / currentWidth)
 					break
 
 				case "Back MW Logo":
-					child.visible = this.scaleBacktext(child, wantedWidth / currentWidth)
+					this.scaleBacktext(child as CustomVisibilityMesh, wantedWidth / currentWidth)
 					break
 
 				default:
@@ -297,6 +306,11 @@ export class Preview3DPrintMesh {
 	}
 
 	private updateColor(mesh: Mesh) {
+		if (mesh instanceof CustomVisibilityMesh) {
+			mesh.visibleBecauseOfColor = this.geometryOptions.numberOfColors > 1
+			mesh.updateVisibility()
+		}
+
 		if (mesh.material instanceof MeshBasicMaterial) {
 			const colorArray = this.getColorArray(mesh.name)
 			;(mesh.material as MeshBasicMaterial).color.setRGB(colorArray[0], colorArray[1], colorArray[2])
@@ -444,7 +458,7 @@ export class Preview3DPrintMesh {
 		const mergedWhiteBackGeometry = BufferGeometryUtils.mergeBufferGeometries(whiteBackGeometries)
 
 		const material = new MeshBasicMaterial()
-		const metricsMesh = new Mesh(mergedWhiteBackGeometry, material)
+		const metricsMesh = new CustomVisibilityMesh(mergedWhiteBackGeometry, material)
 
 		const coloredBackTextGeometries = this.createColoredBackTextGeometries(colorTextValueRanges)
 		for (const colorTextGeometry of coloredBackTextGeometries) {
@@ -453,7 +467,7 @@ export class Preview3DPrintMesh {
 		metricsMesh.name = "Metric Text"
 		this.updateColor(metricsMesh)
 		const scaleFactor = (this.geometryOptions.wantedWidth - mapSideOffset * 2) / 200
-		metricsMesh.visible = this.scaleBacktext(metricsMesh, scaleFactor)
+		this.scaleBacktext(metricsMesh, scaleFactor)
 		if (metricsMesh.visible) {
 			this.xCenterMetricsMesh(metricsMesh)
 		}
@@ -561,7 +575,7 @@ export class Preview3DPrintMesh {
 		return { areaIcon, areaIconScale, areaText }
 	}
 
-	private scaleBacktext(backTextMesh: Mesh, scaleFactor): boolean {
+	private scaleBacktext(backTextMesh: CustomVisibilityMesh, scaleFactor) {
 		backTextMesh.scale.set(backTextMesh.scale.x * scaleFactor, backTextMesh.scale.y * scaleFactor, backTextMesh.scale.z)
 
 		backTextMesh.geometry.computeBoundingBox()
@@ -574,7 +588,8 @@ export class Preview3DPrintMesh {
 			(this.geometryOptions.wantedWidth - mapSideOffset * 2 + frontTextSize) / depth
 		)
 
-		return minPossibleMaxScale >= 0.75
+		backTextMesh.visibleBecauseOfSize = minPossibleMaxScale >= 0.75
+		backTextMesh.updateVisibility()
 	}
 
 	private async createCodeChartaMesh() {
@@ -584,7 +599,7 @@ export class Preview3DPrintMesh {
 
 		const material = new MeshBasicMaterial()
 
-		const codeChartaMesh = new Mesh(logoAndTextGeometry, material)
+		const codeChartaMesh = new CustomVisibilityMesh(logoAndTextGeometry, material)
 		codeChartaMesh.name = "CodeCharta Logo"
 		this.updateColor(codeChartaMesh)
 		const scaleFactor = (this.geometryOptions.wantedWidth - mapSideOffset * 2) / 200
@@ -628,7 +643,7 @@ export class Preview3DPrintMesh {
 
 		const material = new MeshBasicMaterial()
 
-		const backMWMesh = new Mesh(mwLogoGeometry, material)
+		const backMWMesh = new CustomVisibilityMesh(mwLogoGeometry, material)
 		backMWMesh.name = "Back MW Logo"
 
 		this.updateColor(backMWMesh)
