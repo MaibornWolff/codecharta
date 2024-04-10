@@ -77,9 +77,8 @@ class MetricGardenerImporter(
             throw IllegalArgumentException("Input invalid file for MetricGardenerImporter, stopping execution...")
         }
 
-        if (!isJsonFile) {
-            throw IllegalArgumentException("Direct metric-gardener execution has been temporarily disabled.")
-        }
+        require(isJsonFile) { "Direct metric-gardener execution has been temporarily disabled." }
+
         val metricGardenerNodes: MetricGardenerNodes =
             mapper.readValue(inputFile!!.reader(Charset.defaultCharset()), MetricGardenerNodes::class.java)
         val metricGardenerProjectBuilder = MetricGardenerProjectBuilder(metricGardenerNodes)
