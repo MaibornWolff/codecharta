@@ -2,7 +2,6 @@ package de.maibornwolff.codecharta.importer.metricgardenerimporter
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import de.maibornwolff.codecharta.importer.metricgardenerimporter.json.MetricGardenerProjectBuilder
-import de.maibornwolff.codecharta.importer.metricgardenerimporter.model.MetricGardenerException
 import de.maibornwolff.codecharta.importer.metricgardenerimporter.model.MetricGardenerNodes
 import de.maibornwolff.codecharta.model.AttributeDescriptor
 import de.maibornwolff.codecharta.model.AttributeGenerator
@@ -78,27 +77,8 @@ class MetricGardenerImporter(
             throw IllegalArgumentException("Input invalid file for MetricGardenerImporter, stopping execution...")
         }
 
-        if (!isJsonFile) {
-            val tempMgOutput = File.createTempFile("MGOutput", ".json")
-            tempMgOutput.deleteOnExit()
+        require(isJsonFile) { "Direct metric-gardener execution has been temporarily disabled." }
 
-            val npm = if (isWindows()) "npm.cmd" else "npm"
-            val commandToExecute = listOf(
-                npm, "exec", "-y", "metric-gardener", "--", "parse",
-                inputFile!!.absolutePath, "--output-path", tempMgOutput.absolutePath
-            )
-            println("Running metric gardener, this might take some time for larger inputs...")
-            val processExitCode = ProcessBuilder(commandToExecute)
-                    // Not actively discarding or redirecting the output of MetricGardener loses performance on larger folders
-                    .redirectOutput(ProcessBuilder.Redirect.DISCARD)
-                    .redirectError(ProcessBuilder.Redirect.INHERIT)
-                    .start()
-                    .waitFor()
-            inputFile = tempMgOutput
-            if (processExitCode != 0) {
-                throw MetricGardenerException("Error while executing metric gardener! Process returned with status $processExitCode.")
-            }
-        }
         val metricGardenerNodes: MetricGardenerNodes =
             mapper.readValue(inputFile!!.reader(Charset.defaultCharset()), MetricGardenerNodes::class.java)
         val metricGardenerProjectBuilder = MetricGardenerProjectBuilder(metricGardenerNodes)
@@ -107,10 +87,6 @@ class MetricGardenerImporter(
         ProjectSerializer.serializeToFileOrStream(project, outputFile, output, compress)
 
         return null
-    }
-
-    private fun isWindows(): Boolean {
-        return System.getProperty("os.name").contains("win", ignoreCase = true)
     }
 
     override fun getDialog(): ParserDialogInterface = ParserDialog
