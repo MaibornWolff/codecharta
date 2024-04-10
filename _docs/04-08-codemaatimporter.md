@@ -14,6 +14,13 @@ The Codemaatimporter, generates visualisation data from CodeMaat Temporal Coupli
 | `-o, --outputFile=<outputFile>` | output File (or empty for stdout)                                 |
 | `-nc, --not-compressed`         | uncompresses outputfile to json format, if format of File is gzip |
 
+## Metrics
+
+| Metric        | Description                                                            |
+| ------------- | ---------------------------------------------------------------------- |
+| `pairingRate` | percentage value of the chance that given files are committed together |
+| `avgCommits`  | amount of commits in which the given files were included               |
+
 ## Usage
 
 1. Create VCS Log file from your project, e.x. with Git

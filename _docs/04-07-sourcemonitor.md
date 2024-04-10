@@ -14,6 +14,23 @@ Generates visualisation data from [SourceMonitor](http://www.campwoodsw.com/sour
 | `-o, --outputFile=<outputFile>` | output File (or empty for stdout)                                 |
 | `-nc, --not-compressed`         | uncompresses outputfile to json format, if format of File is gzip |
 
+## Metrics
+
+| Metric                            | Description                                                                                                   |
+| --------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| `loc`                             | Total count of lines in the source code, including lines with whitespace, comments, and actual code.          |
+| `rloc`                            | Count of lines that contain actual code, excluding lines that are only whitespace, comments, or tabulations.  |
+| `classes`                         | The total number of distinct classes defined within the source code.                                          |
+| `functions_per_class`             | Average number of functions (or methods) defined within each class.                                           |
+| `average_statements_per_function` | The mean number of statements within each function across the entire codebase.                                |
+| `max_function_mcc`                | The highest McCabe's cyclomatic complexity found in any single function.                                      |
+| `max_block_depth`                 | The greatest level of nesting of control structures (like loops or conditionals) within any part of the code. |
+| `average_block_depth`             | The average depth of nested control structures across the entire codebase.                                    |
+| `average_function_mcc`            | The mean McCabe's cyclomatic complexity across all functions.                                                 |
+| `sm_percent_branch_statements`    | The percentage of all statements that are branch statements (e.g., if, else, switch, case).                   |
+| `sm_method_call_statements`       | The count of statements in the code that are method or function calls.                                        |
+| `sm_percent_lines_with_comments`  | The percentage of the total lines of code that contain comments.                                              |
+
 ### CSV Import for SourceMonitor
 
 If you have analyzed your projectBuilder with SourceMonitor and exported the metric data (for classes only) to a csv-file, you may call the command
