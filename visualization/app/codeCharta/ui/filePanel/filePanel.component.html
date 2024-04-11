@@ -1,6 +1,6 @@
 <cc-file-panel-state-buttons></cc-file-panel-state-buttons>
 @if (!(isDeltaState$ | async)) {
 <cc-file-panel-file-selector></cc-file-panel-file-selector>
-} @if (isDeltaState$ | async) {
+} @else {
 <cc-file-panel-delta-selector></cc-file-panel-delta-selector>
 }

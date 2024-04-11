@@ -17,7 +17,7 @@
 		<cc-color-picker-for-map-color [mapColorFor]="'neutral'"></cc-color-picker-for-map-color>
 		<cc-color-picker-for-map-color [mapColorFor]="'negative'"></cc-color-picker-for-map-color>
 	</div>
-	} @if (isDeltaState$ | async) {
+	} @else {
 	<div>
 		<cc-color-picker-for-map-color [mapColorFor]="'positiveDelta'"></cc-color-picker-for-map-color>
 		<cc-color-picker-for-map-color [mapColorFor]="'negativeDelta'"></cc-color-picker-for-map-color>
