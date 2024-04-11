@@ -18,25 +18,24 @@ import com.varabyte.kotter.foundation.text.red
 import com.varabyte.kotter.foundation.text.text
 import com.varabyte.kotter.foundation.text.textLine
 import com.varabyte.kotter.runtime.MainRenderScope
+import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.Session
 
-const val defaultInvalidInput = "Input is invalid!"
+const val defaultInvalidInputMessage = "Input is invalid!"
 
 internal fun Session.myPromptInput(
-        message: String,
-        hint: String = "",
-        allowEmptyInput: Boolean = false,
-        invalidInputMessage: String = defaultInvalidInput,
-        inputValidator: (String) -> Boolean = { true },
-        onInputReady: suspend () -> Unit,
-        onRerender: () -> Unit = {}
+    message: String,
+    hint: String = "",
+    allowEmptyInput: Boolean = false,
+    invalidInputMessage: String = defaultInvalidInputMessage,
+    inputValidator: (String) -> Boolean = { true },
+    onInputReady: suspend RunScope.() -> Unit
 ): String {
     var lastUserInput = ""
     var hintText = hint
     var isInputValid by liveVarOf(true)
     section {
         drawInput(message, hintText, isInputValid, allowEmptyInput, invalidInputMessage, lastUserInput)
-        onRerender()
     }.runUntilSignal {
         onInputChanged { isInputValid = true }
         onInputEntered {
@@ -74,12 +73,12 @@ private fun MainRenderScope.drawInput(
 }
 
 internal fun Session.myPromptInputNumber(
-        message: String,
-        hint: String = "",
-        allowEmptyInput: Boolean = false,
-        invalidInputMessage: String = defaultInvalidInput,
-        inputValidator: (String) -> Boolean = { true },
-        onInputReady: suspend () -> Unit
+    message: String,
+    hint: String = "",
+    allowEmptyInput: Boolean = false,
+    invalidInputMessage: String = defaultInvalidInputMessage,
+    inputValidator: (String) -> Boolean = { true },
+    onInputReady: suspend RunScope.() -> Unit
 ): String {
     var lastUserInput = ""
     var hintText = hint
@@ -250,21 +249,21 @@ private fun getSelectedElems(choices: List<String>, selection: List<Boolean>): L
 //public API
 
 fun Session.myPromptInput(
-        message: String,
-        hint: String = "",
-        allowEmptyInput: Boolean = false,
-        invalidInputMessage: String = defaultInvalidInput,
-        inputValidator: (String) -> Boolean = { true }
+    message: String,
+    hint: String = "",
+    allowEmptyInput: Boolean = false,
+    invalidInputMessage: String = defaultInvalidInputMessage,
+    inputValidator: (String) -> Boolean = { true }
 ):String {
-    return myPromptInput(message, hint, allowEmptyInput, invalidInputMessage, inputValidator, onInputReady = {}, onRerender = {})
+    return myPromptInput(message, hint, allowEmptyInput, invalidInputMessage, inputValidator, onInputReady = {})
 }
 
 fun Session.myPromptInputNumber(
-        message: String,
-        hint: String = "",
-        allowEmptyInput: Boolean = false,
-        invalidInputMessage: String = defaultInvalidInput,
-        inputValidator: (String) -> Boolean = { true }
+    message: String,
+    hint: String = "",
+    allowEmptyInput: Boolean = false,
+    invalidInputMessage: String = defaultInvalidInputMessage,
+    inputValidator: (String) -> Boolean = { true }
 ):String {
     return myPromptInputNumber(message, hint, allowEmptyInput, invalidInputMessage, inputValidator, onInputReady = {})
 }
