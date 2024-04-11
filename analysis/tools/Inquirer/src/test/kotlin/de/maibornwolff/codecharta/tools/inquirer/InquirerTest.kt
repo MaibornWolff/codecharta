@@ -28,6 +28,11 @@ class InquirerTest {
     private val testHint = "this is displayed as the hint for a prompt."
     private val testInvalidInputMessage = "this is displayed as a message for invalid inputs."
 
+    private val emptyInputAllowedMessage = "Empty input is allowed"
+    private val emptyInputNotAllowedMessage = "Empty input is not allowed!"
+    private val emptySelectionAllowedMessage = "Empty selection is allowed"
+    private val emptySelectionNotAllowedMessage = "Empty selection is not allowed!"
+
     private val testChoices = listOf(
             "element 0",
             "element 1",
@@ -38,13 +43,13 @@ class InquirerTest {
     // Tests for promptInput
 
     @Test
-    fun `should correctly apply the text formatting when no user input was typed yet`() { //TODO: change name
+    fun `should correctly apply the text formatting when prompt is first displayed`() {
         testSession { terminal ->
             myPromptInput(testMessage, testHint, true, testInvalidInputMessage, onInputReady = {
                 terminal.assertMatches {
                     bold {
                         green { text("? ") }; text(testMessage)
-                        black(isBright = true) { textLine("  empty input is allowed") }
+                        black(isBright = true) { textLine("  $emptyInputAllowedMessage") }
                     }
                     text("> "); black(isBright = true) { invert { text("${testHint[0]}")}; text("${testHint.drop(1)} ") }
                 }
@@ -82,7 +87,7 @@ class InquirerTest {
 
 
                 assertThat(terminal.resolveRerenders().stripFormatting()).containsExactly(
-                    "? $testMessage  empty input is allowed",
+                    "? $testMessage  $emptyInputAllowedMessage",
                     ">  ",
                     ""
                 )
@@ -101,7 +106,7 @@ class InquirerTest {
                     try {               //TODO: check back if try catch block can be removed after dev answer
                         blockUntilRenderWhen {
                             terminal.resolveRerenders().stripFormatting() == listOf(
-                                "? $testMessage  empty input is not allowed!",
+                                "? $testMessage  $emptyInputNotAllowedMessage",
                                 ">  ",
                                 ""
                             )
@@ -119,7 +124,7 @@ class InquirerTest {
     }
 
     @Test
-    fun `should return valid input when a validity checker was specified and input is valid`() {
+    fun `should return input when a validity checker was specified and input is valid`() {
         var result: String
 
         testSession { terminal ->
@@ -132,7 +137,7 @@ class InquirerTest {
     }
 
     @Test
-    fun `should not accept input and display default warning message when a validity checker was specified but input was invalid`() {
+    fun `should not accept input and display default warning message when input was invalid`() {
         testSession { terminal ->
             myPromptInput(testMessage, allowEmptyInput = false,
                 inputValidator = { input -> input.contains("accepted") },
@@ -161,7 +166,7 @@ class InquirerTest {
     }
 
     @Test
-    fun `should not accept input and display custom warning message when a validity checker was specified but input was invalid`() {
+    fun `should not accept input and display custom warning message when a custom invalid input message was specified and input was invalid`() {
         testSession { terminal ->
             myPromptInput(testMessage, allowEmptyInput = false, invalidInputMessage = testInvalidInputMessage,
                 inputValidator = { input -> input.contains("accepted") },
@@ -207,7 +212,7 @@ class InquirerTest {
     //Tests for promptConfirm
 
     @Test
-    fun `should correctly display all text formatting when all style changing parameters are set`() {
+    fun `should correctly display all text formatting when prompt is first displayed`() {
         testSession { terminal ->
             myPromptConfirm(testMessage, testHint, onInputReady = {
                 terminal.assertMatches {
@@ -374,7 +379,7 @@ class InquirerTest {
             terminal.assertMatches {
                 bold {
                     green { text("? ") }; text(testMessage)
-                    black(isBright = true) { textLine("  $testHint  empty selection is allowed") }
+                    black(isBright = true) { textLine("  $testHint  $emptySelectionAllowedMessage") }
                 }
                 cyan(isBright = true) { text(" ❯ ") }; green { text("◉ ") }; cyan { textLine(testChoices[0]) }
                 for (testItem in testChoices.drop(1)) {
@@ -394,7 +399,7 @@ class InquirerTest {
                 terminal.press(Keys.ENTER)
             })
             assertThat(terminal.resolveRerenders().stripFormatting()).containsExactly(
-                    "? $testMessage  $testHint  empty selection is allowed",
+                    "? $testMessage  $testHint  $emptySelectionAllowedMessage",
                     " ❯ ◯ element 0",
                     "   ◯ element 1",
                     "   ◯ element 2",
@@ -405,9 +410,34 @@ class InquirerTest {
         }
     }
 
-    @Test       //TODO: same problem as for input with the blocking function
-    fun `should not accept input and display hint when selection is empty and the option for empty input was not set`() {
-        assertThat(false).isTrue() //write test
+    @Test
+    fun `should not accept input and display hint when selection is empty and empty input is not allowed`() {
+        testSession { terminal ->
+             myPromptCheckbox(testMessage, testChoices, testHint, allowEmptyInput = false,
+                 onInputReady = {
+                    terminal.press(Keys.ENTER)
+
+                    try {               //TODO: check back if try catch block can be removed after dev answer
+                        blockUntilRenderWhen {
+                            terminal.resolveRerenders().stripFormatting() == listOf(
+                                "? $testMessage  $emptySelectionNotAllowedMessage",
+                                " ❯ ◯ element 0",
+                                "   ◯ element 1",
+                                "   ◯ element 2",
+                                "   ◯ element 3",
+                                ""
+                            )
+                        }
+                    }
+                    catch (ex: TimeoutCancellationException) {
+                        throw AssertionError("Render did not match expected result!\n" + ex.printStackTrace())
+                    }
+
+                    terminal.press(Keys.SPACE)
+                    terminal.press(Keys.ENTER)
+                }
+            )
+        }
     }
 
     @Test
