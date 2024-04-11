@@ -64,9 +64,9 @@ private fun MainRenderScope.drawInput(
     bold {
         green { text("? ") }; text(message)
         if (isInputValid) {
-            black(isBright = true) { textLine(if (allowEmptyInput) "  empty input is allowed" else "") }
+            black(isBright = true) { textLine(if (allowEmptyInput) "  Empty input is allowed" else "") }
         } else {
-            red { textLine(if (lastUserInput.isEmpty()) "  empty input is not allowed!" else "  $invalidInputMessage") }
+            red { textLine(if (lastUserInput.isEmpty()) "  Empty input is not allowed!" else "  $invalidInputMessage") }
         }
     }
     text("> "); input(Completions(hint), initialText = "")
@@ -181,7 +181,7 @@ internal fun Session.myPromptCheckbox(
         choices: List<String>,
         hint: String = "SPACE to select, ENTER to confirm selection",
         allowEmptyInput: Boolean = false,
-        onInputReady: suspend () -> Unit
+        onInputReady: suspend RunScope.() -> Unit
 ): List<String> {
     var result = listOf<String>()
     var pos by liveVarOf(0)
@@ -223,7 +223,7 @@ private fun MainRenderScope.drawCheckbox(
     bold {
         green { text("? ") }; text(message)
         if (isInputValid) {
-            black(isBright = true) { textLine(if (allowEmptyInput) "  $hint  empty selection is allowed" else "  $hint") }
+            black(isBright = true) { textLine(if (allowEmptyInput) "  $hint  Empty selection is allowed" else "  $hint") }
         } else {
             red { textLine("  Empty selection is not allowed!") }
         }
