@@ -11,7 +11,7 @@
 <span class="unary-number">
 	@if (!isHovered) {
 	<span>{{ ((100 * unaryValue) / (rootUnary$ | async)).toFixed(0) }}%</span>
-	} @if (isHovered) {
+	} @else {
 	<span [ngPlural]="unaryValue">
 		{{ unaryValue }}
 		<ng-template ngPluralCase="=1">File</ng-template>

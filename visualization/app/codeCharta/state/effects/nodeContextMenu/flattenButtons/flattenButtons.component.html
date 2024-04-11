@@ -3,7 +3,7 @@
 	<img alt="flattenIcon" class="png-icon" src="codeCharta/assets/flatten.png" />
 	FLATTEN
 </button>
-} @if (codeMapNode?.isFlattened) {
+} @else {
 <button mat-button (click)="unFlattenNode()" title="Show node and children-nodes">
 	<img alt="flattenIcon" class="png-icon" src="codeCharta/assets/flatten.png" />
 	SHOW

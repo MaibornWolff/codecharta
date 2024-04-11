@@ -55,7 +55,7 @@
 	<cc-color-picker-for-map-color [mapColorFor]="'negative'"></cc-color-picker-for-map-color>
 	<mat-checkbox [checked]="(colorLabels$ | async).negative" (change)="toggleColorLabel($event, 'negative')">Show labels</mat-checkbox>
 </div>
-} @if (isDeltaState$ | async) {
+} @else {
 <cc-color-picker-for-map-color [mapColorFor]="'positiveDelta'"></cc-color-picker-for-map-color>
 <cc-color-picker-for-map-color [mapColorFor]="'negativeDelta'"> </cc-color-picker-for-map-color>
 }
@@ -81,7 +81,7 @@
 
 	@if (!(isDeltaState$ | async)) {
 	<mat-checkbox [checked]="isColorRangeInverted" (change)="handleIsColorRangeInvertedChange($event.checked)">Invert Colors</mat-checkbox>
-	} @if (isDeltaState$ | async) {
+	} @else {
 	<mat-checkbox [checked]="areDeltaColorsInverted" (change)="handleAreDeltaColorsInverted($event.checked)">Invert Colors</mat-checkbox>
 	}
 </div>
