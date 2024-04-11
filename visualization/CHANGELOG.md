@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Fixed 🐞
 
 -   Fix small style issues [#3544](https://github.com/MaibornWolff/codecharta/pull/3544)
+-   Fix key handling for selection metrics [#3546](https://github.com/MaibornWolff/codecharta/pull/3546)
 
 ### Chore 👨‍💻 👩‍💻
 
