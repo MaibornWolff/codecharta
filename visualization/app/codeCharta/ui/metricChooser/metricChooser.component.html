@@ -1,5 +1,6 @@
 @if (attributeDescriptors$ | async; as attributeDescriptors) {
 <mat-select
+	#matSelect
 	[panelClass]="'cc-metric-chooser'"
 	[value]="selectedMetricName"
 	(selectionChange)="handleMetricChanged($event.value)"

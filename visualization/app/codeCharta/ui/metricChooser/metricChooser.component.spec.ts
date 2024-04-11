@@ -11,6 +11,7 @@ import { attributeDescriptorsSelector } from "../../state/store/fileSettings/att
 import { TEST_ATTRIBUTE_DESCRIPTORS_FULL } from "../../util/dataMocks"
 import { MetricChooserComponent } from "./metricChooser.component"
 import { MetricChooserModule } from "./metricChooser.module"
+import { ListKeyManager } from "@angular/cdk/a11y"
 
 describe("metricChooserComponent", () => {
 	beforeEach(() => {
@@ -108,6 +109,35 @@ describe("metricChooserComponent", () => {
 		})
 		await userEvent.click(await screen.findByText("bMetric"))
 		await waitFor(() => expect(getSearchBox().value).toBe(""))
+
+		function getSearchBox() {
+			const selectContainer = screen.queryByRole("listbox")
+			return selectContainer.querySelector("input")
+		}
+	})
+
+	it("should set first option active after filtering by searchterm", async () => {
+		let selectedMetricName = "aMetric"
+		await render(MetricChooserComponent, {
+			excludeComponentDeclaration: true,
+			componentProperties: {
+				searchPlaceholder: "search metric (max value)",
+				selectedMetricName,
+				handleMetricChanged: (value: string) => (selectedMetricName = value)
+			}
+		})
+
+		const setActiveItemSpy = jest.spyOn(ListKeyManager.prototype, "setActiveItem")
+		await userEvent.click(await screen.findByText("aMetric"))
+		screen.getByPlaceholderText("search metric (max value)")
+		const searchBox = getSearchBox()
+		expect(document.activeElement).toBe(searchBox)
+
+		await userEvent.type(getSearchBox(), "l")
+		const options = screen.queryAllByRole("option")
+		expect(options.length).toBe(1)
+		expect(options[0].textContent).toMatch(" fullMetric (42) FullTestDescription ")
+		expect(setActiveItemSpy).toHaveBeenCalledWith(0)
 
 		function getSearchBox() {
 			const selectContainer = screen.queryByRole("listbox")
