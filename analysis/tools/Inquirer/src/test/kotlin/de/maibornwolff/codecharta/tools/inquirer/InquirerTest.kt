@@ -5,16 +5,20 @@ import com.varabyte.kotter.foundation.text.black
 import com.varabyte.kotter.foundation.text.bold
 import com.varabyte.kotter.foundation.text.cyan
 import com.varabyte.kotter.foundation.text.green
+import com.varabyte.kotter.foundation.text.invert
 import com.varabyte.kotter.foundation.text.text
 import com.varabyte.kotter.foundation.text.textLine
 import com.varabyte.kotterx.test.foundation.input.press
 import com.varabyte.kotterx.test.foundation.testSession
+import com.varabyte.kotterx.test.runtime.blockUntilRenderWhen
 import com.varabyte.kotterx.test.runtime.stripFormatting
 import com.varabyte.kotterx.test.terminal.assertMatches
 import com.varabyte.kotterx.test.terminal.resolveRerenders
 import com.varabyte.kotterx.test.terminal.type
+import kotlinx.coroutines.TimeoutCancellationException
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import java.lang.AssertionError
 
 class InquirerTest {
 
@@ -31,15 +35,9 @@ class InquirerTest {
             "element 3"
     )
 
-    private fun addBlinkingCursorOnFirstLetter(text: String): String {
-        val ansiEscapeSequenceForInverseMode = "\\e[7m"
-        val ansiResetSequenceForInverseMode = "\\e[27m"
-        return ansiEscapeSequenceForInverseMode + text[0] + ansiResetSequenceForInverseMode + text.drop(1)
-    }
+    // Tests for promptInput
 
-    // Tests for promptInput TODO: test to correctly display a custom invalidInput message
-
-    @Test       //TODO: fix
+    @Test
     fun `should correctly apply the text formatting when no user input was typed yet`() { //TODO: change name
         testSession { terminal ->
             myPromptInput(testMessage, testHint, true, testInvalidInputMessage, onInputReady = {
@@ -48,34 +46,16 @@ class InquirerTest {
                         green { text("? ") }; text(testMessage)
                         black(isBright = true) { textLine("  empty input is allowed") }
                     }
-                    text("> "); black(isBright = true) { text(addBlinkingCursorOnFirstLetter("$testHint ")) }
+                    text("> "); black(isBright = true) { invert { text("${testHint[0]}")}; text("${testHint.drop(1)} ") }
                 }
-
-
                 terminal.press(Keys.ENTER)
             })
         }
-
-//        testSession { terminal ->
-//            myPromptInput(testMessage, testInputHint, true, testInvalidInputMessage, onInputReady = {
-//                assertThat(terminal.resolveRerenders()).containsExactly(
-//                    bold {
-//                        green { text("? ") }; text(testMessage)
-//                        black(isBright = true) { textLine("  empty input is allowed") }
-//                    }
-//                    text("> "); black(isBright = true) { text(addBlinkingCursorOnFirstLetter("$testInputHint ")) }
-//                )
-//
-//
-//                terminal.press(Keys.ENTER)
-//                println(terminal.resolveRerenders())
-//            })
-//        }
     }
 
     @Test
     fun `should return user input when no validity checker was specified`() {
-        var result = ""
+        var result: String
 
         testSession { terminal ->
             result = myPromptInput(testMessage, onInputReady = {
@@ -85,17 +65,16 @@ class InquirerTest {
 
             assertThat(terminal.resolveRerenders().stripFormatting()).containsExactly(
                     "? $testMessage",
-                    "> $testInput ",        //TODO: schauen ob wir das leerzeichen am ende wegbekommen
+                    "> $testInput ",
                     ""
             )
+            assertThat(result).isEqualTo(testInput)
         }
-
-        assertThat(result).isEqualTo(testInput)
     }
 
     @Test
     fun `should return empty input when the option to allow empty input was set`() {
-        var result = "not empty"
+        var result: String
 
         testSession { terminal ->
             result = myPromptInput(testMessage, allowEmptyInput = true, onInputReady = {
@@ -103,37 +82,37 @@ class InquirerTest {
 
 
                 assertThat(terminal.resolveRerenders().stripFormatting()).containsExactly(
-                        "? $testMessage  empty input is allowed",
-                        ">  ",
-                        ""
+                    "? $testMessage  empty input is allowed",
+                    ">  ",
+                    ""
                 )
             })
+            assertThat(result).isEqualTo("")
         }
-        assertThat(result).isEqualTo("")
     }
 
     @Test
-    fun `should not accept input and display warning message when input is empty but empty input is not allowed`() {
-        val renderWithWarning = 3
-        var currentRender = 0
-
+    fun `should not accept empty input and display warning message when empty input is not allowed`() {
         testSession { terminal ->
             myPromptInput(testMessage, allowEmptyInput = false,
                 onInputReady = {
                     terminal.press(Keys.ENTER)
-                    terminal.press(Keys.ENTER)
-                    terminal.type("a")
-                    terminal.press(Keys.ENTER)
-               },
-                onRerender = {
-                    currentRender += 1
-                    if (currentRender == renderWithWarning) {
-                        assertThat(terminal.resolveRerenders().stripFormatting()).containsExactly(
-                            "? $testMessage  empty input is not allowed!",
-                            ">  ",
-                            ""
-                        )
+
+                    try {               //TODO: check back if try catch block can be removed after dev answer
+                        blockUntilRenderWhen {
+                            terminal.resolveRerenders().stripFormatting() == listOf(
+                                "? $testMessage  empty input is not allowed!",
+                                ">  ",
+                                ""
+                            )
+                        }
                     }
+                    catch (ex: TimeoutCancellationException) {
+                        throw AssertionError("Render did not match expected result!\n" + ex.printStackTrace())
+                    }
+
+                    terminal.type("irrelevant non empty input")
+                    terminal.press(Keys.ENTER)
                 }
             )
         }
@@ -141,49 +120,89 @@ class InquirerTest {
 
     @Test
     fun `should return valid input when a validity checker was specified and input is valid`() {
-        var result = ""
-        // mock inputValidator to return true -> or do we just define a new one here?
+        var result: String
 
         testSession { terminal ->
             result = myPromptInput(testMessage, inputValidator = { true }, onInputReady = {
                 terminal.type(testInput)
                 terminal.press(Keys.ENTER)
             })
+            assertThat(result).isEqualTo(testInput)
         }
-        assertThat(result).isEqualTo(testInput)
     }
 
     @Test
-    fun `should not accept input and display error when a validity checker was specified but input was invalid`() {
-        assertThat(false).isTrue() //write test
+    fun `should not accept input and display default warning message when a validity checker was specified but input was invalid`() {
+        testSession { terminal ->
+            myPromptInput(testMessage, allowEmptyInput = false,
+                inputValidator = { input -> input.contains("accepted") },
+                onInputReady = {
+                    terminal.type("x")
+                    terminal.press(Keys.ENTER)
+
+                    try {               //TODO: check back if try catch block can be removed after dev answer
+                        blockUntilRenderWhen {
+                            terminal.resolveRerenders().stripFormatting() == listOf(
+                                "? $testMessage  Input is invalid!",
+                                "> x ",
+                                ""
+                            )
+                        }
+                    }
+                    catch (ex: TimeoutCancellationException) {
+                        throw AssertionError("Render did not match expected result!\n" + ex.printStackTrace())
+                    }
+
+                    terminal.type("accepted")
+                    terminal.press(Keys.ENTER)
+                }
+            )
+        }
     }
 
     @Test
-    fun `should not accept input and display custom error when an invalidInputMessage and a validity checker were set`() {
-        assertThat(false).isTrue() //write test
+    fun `should not accept input and display custom warning message when a validity checker was specified but input was invalid`() {
+        testSession { terminal ->
+            myPromptInput(testMessage, allowEmptyInput = false, invalidInputMessage = testInvalidInputMessage,
+                inputValidator = { input -> input.contains("accepted") },
+                onInputReady = {
+                    terminal.type("x")
+                    terminal.press(Keys.ENTER)
+
+                    try {               //TODO: check back if try catch block can be removed after dev answer
+                        blockUntilRenderWhen {
+                            terminal.resolveRerenders().stripFormatting() == listOf(
+                                "? $testMessage  $testInvalidInputMessage",
+                                "> x ",
+                                ""
+                            )
+                        }
+                    }
+                    catch (ex: TimeoutCancellationException) {
+                        throw AssertionError("Render did not match expected result!\n" + ex.printStackTrace())
+                    }
+
+                    terminal.type("accepted")
+                    terminal.press(Keys.ENTER)
+                }
+            )
+        }
     }
 
-    // Tests for promptInputNumber
+    // Tests for promptInputNumber (mostly covered by above tests already)
 
     @Test
     fun `should ignore all input characters that are not numbers`() {
-        var result = ""
+        var result: String
 
         testSession { terminal ->
             result = myPromptInputNumber(testMessage, onInputReady = {
-                terminal.type("test 1, test 2; test 3.?/%!")
+                terminal.type("test 1, test 2; test 3.?/%!IV")
                 terminal.press(Keys.ENTER)
             })
+            assertThat(result).isEqualTo("123")
         }
-        assertThat(result).isEqualTo("123")
     }
-
-//    @Test
-//    fun `should return empty number input when the option to allow empty input was set`() {
-//
-//    }
-    //TODO: add more tests after refactor
-
 
     //Tests for promptConfirm
 
@@ -205,7 +224,7 @@ class InquirerTest {
 
     @Test
     fun `should return true and display correct state when no arrow keys were pressed`() {
-        var result = false
+        var result: Boolean
 
         testSession { terminal ->
             result = myPromptConfirm(testMessage, onInputReady = {
@@ -217,14 +236,13 @@ class InquirerTest {
                     "> [Yes] No ",
                     ""
             )
+            assertThat(result).isTrue()
         }
-
-        assertThat(result).isTrue()
     }
 
     @Test
     fun `should return false and display correct state when right arrow key was pressed`() {
-        var result = true
+        var result: Boolean
 
         testSession { terminal ->
             result = myPromptConfirm(testMessage, testHint, onInputReady = {
@@ -237,13 +255,13 @@ class InquirerTest {
                     ">  Yes [No]",
                     ""
             )
+            assertThat(result).isFalse()
         }
-        assertThat(result).isFalse()
     }
 
     @Test
     fun `should correctly return when arrow keys were pressed multiple times`() {
-        var result = false
+        var result: Boolean
 
         testSession { terminal ->
             result = myPromptConfirm(testMessage, onInputReady = {
@@ -253,8 +271,8 @@ class InquirerTest {
                 terminal.press(Keys.LEFT)
                 terminal.press(Keys.ENTER)
             })
+            assertThat(result).isTrue()
         }
-        assertThat(result).isTrue()
     }
 
     //Tests for promptList
@@ -273,12 +291,11 @@ class InquirerTest {
                 terminal.press(Keys.ENTER)
             })
         }
-
     }
 
     @Test
     fun `should select the first list option when no arrow keys were pressed`() {
-        var result = ""
+        var result: String
 
         testSession { terminal ->
             result = myPromptList(testMessage, testChoices, onInputReady = {
@@ -293,13 +310,13 @@ class InquirerTest {
                     "   element 3",
                     ""
             )
+            assertThat(result).isEqualTo(testChoices[0])
         }
-        assertThat(result).isEqualTo(testChoices[0])
     }
 
     @Test
     fun `should select the second list option when arrow down was pressed`() {
-        var result = ""
+        var result: String
 
         testSession { terminal ->
             result = myPromptList(testMessage, testChoices, onInputReady = {
@@ -316,13 +333,13 @@ class InquirerTest {
                     "   element 3",
                     ""
             )
+            assertThat(result).isEqualTo(testChoices[1])
         }
-        assertThat(result).isEqualTo(testChoices[1])
     }
 
     @Test
     fun `should select the last list option when arrow down was pressed more often than there are options`() {
-        var result = ""
+        var result: String
 
         testSession { terminal ->
             result = myPromptList(testMessage, testChoices, onInputReady = {
@@ -341,8 +358,8 @@ class InquirerTest {
                     " ❯ element 3",
                     ""
             )
+            assertThat(result).isEqualTo(testChoices.last())
         }
-        assertThat(result).isEqualTo(testChoices.last())
     }
 
     //Tests for promptCheckbox
@@ -369,7 +386,7 @@ class InquirerTest {
 
     @Test
     fun `should return empty input when no input was selected and empty input is allowed`() {
-        var result = listOf("not", "empty")
+        var result: List<String>
         val emptyList = listOf<String>()
 
         testSession { terminal ->
@@ -384,8 +401,8 @@ class InquirerTest {
                     "   ◯ element 3",
                     ""
             )
+            assertThat(result).isEqualTo(emptyList)
         }
-        assertThat(result).isEqualTo(emptyList)
     }
 
     @Test       //TODO: same problem as for input with the blocking function
@@ -395,7 +412,7 @@ class InquirerTest {
 
     @Test
     fun `should select the first checkbox option when no arrow keys were pressed`() {
-        var result = listOf<String>()
+        var result: List<String>
 
         testSession { terminal ->
             result = myPromptCheckbox(testMessage, testChoices, testHint, onInputReady = {
@@ -410,14 +427,13 @@ class InquirerTest {
                     "   ◯ element 3",
                     ""
             )
+            assertThat(result).isEqualTo(listOf(testChoices[0]))
         }
-
-        assertThat(result).isEqualTo(listOf(testChoices[0]))
     }
 
     @Test
     fun `should select the second checkbox option when arrow down was pressed`() {
-        var result = listOf<String>()
+        var result: List<String>
 
         testSession { terminal ->
             result = myPromptCheckbox(testMessage, testChoices, testHint, onInputReady = {
@@ -433,14 +449,13 @@ class InquirerTest {
                     "   ◯ element 3",
                     ""
             )
+            assertThat(result).isEqualTo(listOf(testChoices[1]))
         }
-
-        assertThat(result).isEqualTo(listOf(testChoices[1]))
     }
 
     @Test
     fun `should select last checkbox option when arrow down was pressed more often than there are options`() {
-        var result = listOf<String>()
+        var result: List<String>
 
         testSession { terminal ->
             result = myPromptCheckbox(testMessage, testChoices, testHint, onInputReady = {
@@ -458,14 +473,13 @@ class InquirerTest {
                     " ❯ ◉ element 3",
                     ""
             )
+            assertThat(result).isEqualTo(listOf(testChoices.last()))
         }
-
-        assertThat(result).isEqualTo(listOf(testChoices.last()))
     }
 
     @Test
     fun `should select correct element when selection was made and cursor was moved afterwards`() {
-        var result = listOf<String>()
+        var result: List<String>
 
         testSession { terminal ->
             result = myPromptCheckbox(testMessage, testChoices, testHint, onInputReady = {
@@ -483,14 +497,13 @@ class InquirerTest {
                     "   ◯ element 3",
                     ""
             )
+            assertThat(result).isEqualTo(listOf(testChoices[2]))
         }
-
-        assertThat(result).isEqualTo(listOf(testChoices[2]))
     }
 
     @Test
     fun `should return all selected options when multiple were selected`() {
-        var result = listOf<String>()
+        var result: List<String>
         val elemsToSelect = listOf(testChoices[0], testChoices[1], testChoices[3])
 
         testSession { terminal ->
@@ -514,7 +527,7 @@ class InquirerTest {
                     " ❯ ◉ element 3",
                     ""
             )
+            assertThat(result).isEqualTo(elemsToSelect)
         }
-        assertThat(result).isEqualTo(elemsToSelect)
     }
 }
