@@ -1,6 +1,6 @@
 import { CommonModule } from "@angular/common"
 import { NgModule } from "@angular/core"
-import { DistributionMetricChooserModule } from "./distributionMetricChooser/distributionMetricChooser..module"
+import { DistributionMetricChooserModule } from "./distributionMetricChooser/distributionMetricChooser.module"
 import { FileExtensionBarComponent } from "./fileExtensionBar.component"
 
 @NgModule({
