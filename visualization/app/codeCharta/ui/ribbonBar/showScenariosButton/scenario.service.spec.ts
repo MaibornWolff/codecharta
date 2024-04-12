@@ -1,33 +1,83 @@
+import { TestBed } from "@angular/core/testing"
 import { MatDialog } from "@angular/material/dialog"
+import { State } from "@ngrx/store"
+import { MockStore, provideMockStore } from "@ngrx/store/testing"
+import { CcState } from "../../../codeCharta.model"
+import { codeMapNodesSelector } from "../../../state/selectors/accumulatedData/codeMapNodes.selector"
+import { metricDataSelector } from "../../../state/selectors/accumulatedData/metricData/metricData.selector"
+import { selectedColorMetricDataSelector } from "../../../state/selectors/accumulatedData/metricData/selectedColorMetricData.selector"
+import { setAmountOfEdgePreviews } from "../../../state/store/appSettings/amountOfEdgePreviews/amountOfEdgePreviews.actions"
+import { defaultAmountOfEdgesPreviews } from "../../../state/store/appSettings/amountOfEdgePreviews/amountOfEdgePreviews.reducer"
+import { setAmountOfTopLabels } from "../../../state/store/appSettings/amountOfTopLabels/amountOfTopLabels.actions"
+import { setMapColors } from "../../../state/store/appSettings/mapColors/mapColors.actions"
+import { defaultMapColors } from "../../../state/store/appSettings/mapColors/mapColors.reducer"
+import { setScaling } from "../../../state/store/appSettings/scaling/scaling.actions"
+import { defaultScaling } from "../../../state/store/appSettings/scaling/scaling.reducer"
+import { calculateInitialColorRange } from "../../../state/store/dynamicSettings/colorRange/calculateInitialColorRange"
+import { setColorRange } from "../../../state/store/dynamicSettings/colorRange/colorRange.actions"
+import { setEdgeMetric } from "../../../state/store/dynamicSettings/edgeMetric/edgeMetric.actions"
 import { setState } from "../../../state/store/state.actions"
+import { defaultState } from "../../../state/store/state.manager"
+import { METRIC_DATA } from "../../../util/dataMocks"
 import { ThreeCameraService } from "../../codeMap/threeViewer/threeCamera.service"
 import { ThreeOrbitControlsService } from "../../codeMap/threeViewer/threeOrbitControls.service"
 import { ErrorDialogComponent } from "../../dialogs/errorDialog/errorDialog.component"
 import { ScenarioService } from "./scenario.service"
 import { ScenarioHelper } from "./scenarioHelper"
-import { State, Store } from "@ngrx/store"
-import { CcState } from "../../../codeCharta.model"
 
 describe("scenarioService", () => {
 	let scenarioService: ScenarioService
-	let mockedStore: Store<CcState>
+	let mockedStore: MockStore<CcState>
 	let mockedDialog: MatDialog
 	let mockedThreeCameraService: ThreeCameraService
 	let mockedThreeOrbitControlsService: ThreeOrbitControlsService
+	const initialState: CcState = {
+		fileSettings: undefined,
+		dynamicSettings: undefined,
+		appSettings: undefined,
+		files: [],
+		appStatus: undefined
+	}
+	const selectedColorMetricData = { minValue: 20, maxValue: 120, values: [20, 120] }
+	const metricData = {
+		nodeMetricData: METRIC_DATA,
+		edgeMetricData: []
+	}
 
 	beforeEach(() => {
-		const mockedState = {} as unknown as State<CcState>
-		mockedStore = { dispatch: jest.fn() } as unknown as Store<CcState>
-		mockedDialog = { open: jest.fn() } as unknown as MatDialog
-		mockedThreeCameraService = { setPosition: jest.fn() } as unknown as ThreeCameraService
-		mockedThreeOrbitControlsService = { setControlTarget: jest.fn() } as unknown as ThreeOrbitControlsService
-		scenarioService = new ScenarioService(
-			mockedState,
-			mockedStore,
-			mockedDialog,
-			mockedThreeCameraService,
-			mockedThreeOrbitControlsService
-		)
+		TestBed.configureTestingModule({
+			providers: [
+				ScenarioService,
+				provideMockStore({
+					initialState,
+					selectors: [
+						{
+							selector: codeMapNodesSelector,
+							value: [
+								{
+									name: "sample1.ts"
+								},
+								{
+									name: "sample2.ts"
+								}
+							]
+						},
+						{ selector: selectedColorMetricDataSelector, value: selectedColorMetricData },
+						{ selector: metricDataSelector, value: metricData }
+					]
+				}),
+				{ provide: MatDialog, useValue: { open: jest.fn() } },
+				{ provide: State, useValue: { getValue: () => defaultState } },
+				{ provide: ThreeCameraService, useValue: { setPosition: jest.fn() } },
+				{ provide: ThreeOrbitControlsService, useValue: { setControlTarget: jest.fn() } }
+			]
+		})
+
+		mockedStore = TestBed.inject(MockStore)
+		mockedDialog = TestBed.inject(MatDialog)
+		scenarioService = TestBed.inject(ScenarioService)
+		mockedThreeCameraService = TestBed.inject(ThreeCameraService)
+		mockedThreeOrbitControlsService = TestBed.inject(ThreeOrbitControlsService)
 
 		ScenarioHelper.scenarios.set("Scenario1", {
 			name: "Scenario1",
@@ -40,18 +90,32 @@ describe("scenarioService", () => {
 		})
 	})
 
-	it("should apply a scenario", () => {
-		scenarioService.applyScenario("Scenario1")
-		expect(mockedStore.dispatch).toHaveBeenCalledWith(
-			setState({
-				value: {
-					dynamicSettings: { areaMetric: "rloc", margin: 50 },
-					appSettings: { edgeHeight: 42 }
-				}
-			})
-		)
-		expect(mockedThreeCameraService.setPosition).toHaveBeenCalledWith({ x: 1, y: 1, z: 1 })
-		expect(mockedThreeOrbitControlsService.setControlTarget).toHaveBeenCalledWith({ x: 2, y: 2, z: 2 })
+	describe("apply scenario", () => {
+		it("should apply a scenario", () => {
+			const dispatchSpy = jest.spyOn(mockedStore, "dispatch")
+			scenarioService.applyScenario("Scenario1")
+			expect(dispatchSpy).toHaveBeenCalledWith(
+				setState({
+					value: {
+						dynamicSettings: { areaMetric: "rloc", margin: 50 },
+						appSettings: { edgeHeight: 42 }
+					}
+				})
+			)
+			expect(mockedThreeCameraService.setPosition).toHaveBeenCalledWith({ x: 1, y: 1, z: 1 })
+			expect(mockedThreeOrbitControlsService.setControlTarget).toHaveBeenCalledWith({ x: 2, y: 2, z: 2 })
+		})
+
+		it("should set properties to default if not defined in scenarion", () => {
+			const dispatchSpy = jest.spyOn(mockedStore, "dispatch")
+			scenarioService.applyScenario("Scenario1")
+			expect(dispatchSpy).toHaveBeenCalledWith(setAmountOfTopLabels({ value: 1 }))
+			expect(dispatchSpy).toHaveBeenCalledWith(setMapColors({ value: defaultMapColors }))
+			expect(dispatchSpy).toHaveBeenCalledWith(setScaling({ value: defaultScaling }))
+			expect(dispatchSpy).toHaveBeenCalledWith(setAmountOfEdgePreviews({ value: defaultAmountOfEdgesPreviews }))
+			expect(dispatchSpy).toHaveBeenCalledWith(setColorRange({ value: calculateInitialColorRange(selectedColorMetricData) }))
+			expect(dispatchSpy).toHaveBeenCalledWith(setEdgeMetric({ value: metricData.edgeMetricData[0]?.name }))
+		})
 	})
 
 	describe("removeScenario", () => {
