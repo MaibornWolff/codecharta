@@ -77,7 +77,7 @@ export class MetricChooserComponent implements OnInit {
 
 	handleKeyDown(event: KeyboardEvent) {
 		const { key } = event
-		if (key !== "ArrowDown" && key !== "ArrowUp" && key !== "Enter") {
+		if (key !== "ArrowDown" && key !== "ArrowUp" && key !== "Enter" && key !== "Escape") {
 			event.stopPropagation()
 		}
 	}
