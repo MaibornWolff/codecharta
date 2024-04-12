@@ -6,7 +6,7 @@
 	<mat-form-field>
 		<mat-label>Select Printer</mat-label>
 		<mat-select (selectionChange)="onSelectedPrinterChange()" [(value)]="selectedPrinter">
-			<mat-option *ngFor="let printer of printerOptions" [value]="printer">{{ printer }}</mat-option>
+			<mat-option *ngFor="let printer of printers" [value]="printer">{{ printer.name }}</mat-option>
 		</mat-select>
 	</mat-form-field>
 
@@ -17,11 +17,11 @@
 	</div>
 
 	<div>
-		<span>Width: {{ (currentSize.x / 10).toFixed(1) }}cm (max. {{ (printers[selectedPrinter].x / 10).toFixed(1) }} )</span>
+		<span>Width: {{ (currentSize.x / 10).toFixed(1) }}cm (max. {{ (selectedPrinter.x / 10).toFixed(1) }} )</span>
 		<br />
-		<span>Depth: {{ (currentSize.y / 10).toFixed(1) }}cm (max. {{ (printers[selectedPrinter].y / 10).toFixed(1) }} )</span>
+		<span>Depth: {{ (currentSize.y / 10).toFixed(1) }}cm (max. {{ (selectedPrinter.y / 10).toFixed(1) }} )</span>
 		<br />
-		<span>Height: {{ (currentSize.z / 10).toFixed(1) }}cm (max. {{ (printers[selectedPrinter].z / 10).toFixed(1) }} )</span>
+		<span>Height: {{ (currentSize.z / 10).toFixed(1) }}cm (max. {{ (selectedPrinter.z / 10).toFixed(1) }} )</span>
 	</div>
 
 	<div>
