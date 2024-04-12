@@ -20,6 +20,10 @@ cc-metric-chooser {
 			}
 		}
 	}
+
+	.mat-mdc-select-placeholder {
+		color: black !important;
+	}
 }
 
 cc-metric-chooser:hover .metric-value {
