@@ -41,14 +41,14 @@ export class Export3DMapButtonComponent {
 			this.store.dispatch(setColorMode({ value: ColorMode.absolute }))
 			this.store
 				.select(colorModeSelector)
-				.pipe(take(2))
+				.pipe(take(1))
 				.subscribe(colorMode => {
 					if (colorMode === ColorMode.absolute) {
 						setTimeout(() => {
 							this.dialog.open(Export3DMapDialogComponent, {
 								panelClass: ".cc-export-3D-map-dialog"
 							})
-						}, 100)
+						}, 100) //TODO: find a better way to wait for the colors to update without using setTimeout
 					}
 				})
 		}
