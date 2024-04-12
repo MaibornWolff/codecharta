@@ -10,6 +10,7 @@ import { setHeightMetric } from "../../../../state/store/dynamicSettings/heightM
 import { ArtificialIntelligenceData } from "../selectors/artificialIntelligence.selector"
 import { AREA_METRIC } from "../selectors/util/riskProfileHelper"
 import { MetricSuggestionParameters } from "../selectors/util/suspiciousMetricsHelper"
+import { metricTitles } from "../../../../util/metric/metricTitles"
 
 @Component({
 	selector: "cc-suspicious-metrics",
@@ -22,13 +23,27 @@ export class SuspiciousMetricComponent implements OnChanges {
 		"analyzedProgrammingLanguage" | "unsuspiciousMetrics" | "suspiciousMetricSuggestionLinks" | "untrackedMetrics"
 	>
 	hideBadge = false
+	showSuspiciousMetricInfo = false
 
 	constructor(private store: Store) {}
+
+	getNameAndDescriptionOfMetric(metricName: string): string {
+		const metricDescription = metricTitles.get(metricName)
+		if (metricDescription) {
+			return `${metricName.toUpperCase()} (${metricDescription.toLowerCase()})`
+		}
+		return metricName.toUpperCase()
+	}
 
 	ngOnChanges(changes: SimpleChanges): void {
 		if (changes.data && !dequal(changes.data.previousValue, changes.data.currentValue)) {
 			this.hideBadge = false
 		}
+	}
+
+	togglePopup(event: MouseEvent): void {
+		event.stopPropagation()
+		this.showSuspiciousMetricInfo = !this.showSuspiciousMetricInfo
 	}
 
 	applySuspiciousMetric(metric: MetricSuggestionParameters, markOutlier: boolean) {

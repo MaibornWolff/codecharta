@@ -15,10 +15,15 @@
 
 <mat-menu #menu="matMenu" class="ai-drop-down suspicious-metric-panel">
 	<div>
-		<div class="title">
-			<div>Suspicious Metrics</div>
+		<div class="suspicious-metric-title">
+			<div>
+				Suspicious Metrics
+				<button popovertarget="suspiciousMetricPopover" mat-icon-button (click)="togglePopup($event)">
+					<i matSuffix class="fa fa-info-circle suspicious-metric-info-button"></i>
+				</button>
+			</div>
 		</div>
-		<div class="suspicious-metric">
+		<div id="suspiciousMetricPopover" *ngIf="showSuspiciousMetricInfo" class="suspicious-metric-info-text">
 			This feature compares the values of certain metrics from the loaded cc.json file with metric values of 241 Open Source Java
 			projects. Based on this data suspicious and inconspicuous metrics are identified and corresponding suggestions can be clicked to
 			view them. Be aware that metrics for other programming languages might not be comparable to Java Reference metric values. More
@@ -48,7 +53,7 @@
 				item.metric
 			}} and high risk or very high risk depending on selection"
 		>
-			Suspicious {{ item.metric | uppercase }} Files
+			{{ getNameAndDescriptionOfMetric(item.metric) }}
 		</button>
 
 		<button
@@ -57,6 +62,7 @@
 			(click)="applySuspiciousMetric(item, true)"
 			title="Show very high risk files (90th percentile)"
 		>
+			Highlight Outliers
 			<i class="fa fa-exclamation-triangle"></i>
 		</button>
 	</div>
