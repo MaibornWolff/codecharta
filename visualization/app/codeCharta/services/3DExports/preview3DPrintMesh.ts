@@ -25,7 +25,7 @@ const logoHeight = 1
 const backTextSize = 6
 
 export interface GeometryOptions {
-	mapMesh: Mesh
+	originalMapMesh: Mesh
 	wantedWidth: number
 	areaMetricTitle: string
 	areaMetricData: NodeMetricData
@@ -53,6 +53,17 @@ export class Preview3DPrintMesh {
 	private printMesh: Mesh
 	private currentSize: Vector3
 
+	//Front
+	private mapMesh: Mesh
+	private baseplateMesh: Mesh
+	private frontTextMesh: Mesh
+	private frontMWLogoMesh: Mesh
+	private customLogoMesh: Mesh
+	//Back
+	private codeChartaLogoMesh: Mesh
+	private backMWLogoMesh: Mesh
+	private metricsMesh: Mesh
+
 	async initialize(geometryOptions: GeometryOptions) {
 		this.printMesh = new Mesh()
 		this.printMesh.name = "PrintMesh"
@@ -71,90 +82,95 @@ export class Preview3DPrintMesh {
 	}
 
 	async createPrintPreviewMesh(geometryOptions: GeometryOptions) {
-		const baseplateMesh = this.createBaseplateMesh(
-			geometryOptions.wantedWidth,
-			geometryOptions.defaultMaterial,
-			geometryOptions.numberOfColors
-		)
-		this.printMesh.add(baseplateMesh)
+		this.initBaseplateMesh(geometryOptions.wantedWidth, geometryOptions.defaultMaterial, geometryOptions.numberOfColors)
+		this.printMesh.add(this.baseplateMesh)
 
-		const newMapMesh = this.createMapMesh(geometryOptions.mapMesh, geometryOptions.wantedWidth, geometryOptions.numberOfColors)
-		this.printMesh.add(newMapMesh)
+		this.initMapMesh(geometryOptions.originalMapMesh, geometryOptions.wantedWidth, geometryOptions.numberOfColors)
+		this.printMesh.add(this.mapMesh)
 
 		if (geometryOptions.frontText) {
 			try {
-				const frontTextMesh = this.createFrontText(
-					geometryOptions.frontText,
-					geometryOptions.wantedWidth,
-					geometryOptions.numberOfColors
-				)
-				this.printMesh.attach(frontTextMesh)
+				this.initFrontText(geometryOptions.frontText, geometryOptions.wantedWidth, geometryOptions.numberOfColors)
+				this.printMesh.attach(this.frontTextMesh)
 			} catch (error) {
 				console.error("Error creating text:", error)
 			}
 		}
 
-		const mwLogo = await this.createFrontMWLogo(geometryOptions.wantedWidth, geometryOptions.numberOfColors)
-		this.printMesh.add(mwLogo)
+		await this.initFrontMWLogoMesh(geometryOptions.wantedWidth, geometryOptions.numberOfColors)
+		this.printMesh.add(this.frontMWLogoMesh)
 
-		const metricsMesh = await this.createMetricsMesh(geometryOptions)
-		this.printMesh.add(metricsMesh)
+		await this.initMetricsMesh(geometryOptions)
+		this.printMesh.add(this.metricsMesh)
 
-		const codeChartaMesh = await this.createCodeChartaMesh(geometryOptions.wantedWidth, geometryOptions.numberOfColors)
-		this.printMesh.add(codeChartaMesh)
+		await this.initCodeChartaMesh(geometryOptions.wantedWidth, geometryOptions.numberOfColors)
+		this.printMesh.add(this.codeChartaLogoMesh)
 
-		const backMWMesh = await this.createBackMW(geometryOptions.wantedWidth, geometryOptions.numberOfColors)
-		this.printMesh.add(backMWMesh)
+		await this.initBackMWLogoMesh(geometryOptions.wantedWidth, geometryOptions.numberOfColors)
+		this.printMesh.add(this.backMWLogoMesh)
 	}
 
 	updateMapSize(wantedWidth: number) {
 		const currentWidth = this.currentSize.x
 
-		for (const object of this.printMesh.children) {
-			const child = object as Mesh
-			switch (child.name) {
-				case "Map": {
-					const map = child.geometry
-					const scale = (wantedWidth - 2 * mapSideOffset) / (currentWidth - 2 * mapSideOffset)
-					map.scale(scale, scale, scale)
-					break
-				}
-				case "Baseplate":
-					child.geometry = this.createBaseplateGeometry(wantedWidth)
-					break
-
-				case "Front Text": {
-					const text = child.geometry
-					text.translate(0, -(wantedWidth - currentWidth) / 2, 0)
-					break
-				}
-				case "Front MW Logo": {
-					const logo = child.geometry
-					logo.translate((wantedWidth - currentWidth) / 2, -(wantedWidth - currentWidth) / 2, 0)
-					break
-				}
-				case "Custom Logo":
-					this.updateCustomLogoPosition(child, wantedWidth)
-					break
-
-				case "Metric Text":
-					this.scaleBacktext(child as CustomVisibilityMesh, wantedWidth, wantedWidth / currentWidth)
-					if (child.visible) {
-						this.xCenterMetricsMesh(child)
+		for (const child of this.printMesh.children) {
+			if (child instanceof Mesh) {
+				switch (child.name) {
+					case "Map": {
+						const map = child.geometry
+						const scale = (wantedWidth - 2 * mapSideOffset) / (currentWidth - 2 * mapSideOffset)
+						map.scale(scale, scale, scale)
+						break
 					}
-					break
+					case "Baseplate":
+						child.geometry = this.createBaseplateGeometry(wantedWidth)
+						break
 
-				case "CodeCharta Logo":
-					this.scaleBacktext(child as CustomVisibilityMesh, wantedWidth, wantedWidth / currentWidth)
-					break
+					case "Front Text": {
+						const text = child.geometry
+						text.translate(0, -(wantedWidth - currentWidth) / 2, 0)
+						break
+					}
+					case "Front MW Logo": {
+						const logo = child.geometry
+						logo.translate((wantedWidth - currentWidth) / 2, -(wantedWidth - currentWidth) / 2, 0)
+						break
+					}
+					case "Custom Logo":
+						this.updateCustomLogoPosition(child, wantedWidth)
+						break
 
-				case "Back MW Logo":
-					this.scaleBacktext(child as CustomVisibilityMesh, wantedWidth, wantedWidth / currentWidth)
-					break
+					case "Metric Text":
+						if (child instanceof CustomVisibilityMesh) {
+							this.scaleBacktext(child, wantedWidth, wantedWidth / currentWidth)
+							if (child.visible) {
+								this.xCenterMetricsMesh(child)
+							}
+						} else {
+							console.error("Metric Text is not an instance of CustomVisibilityMesh")
+						}
+						break
 
-				default:
-					console.warn("Unknown object:", child.name, "Did you forget to add it to the updateMapSize method?")
-					break
+					case "CodeCharta Logo":
+						if (child instanceof CustomVisibilityMesh) {
+							this.scaleBacktext(child, wantedWidth, wantedWidth / currentWidth)
+						} else {
+							console.error("CodeCharta Logo is not an instance of CustomVisibilityMesh")
+						}
+						break
+
+					case "Back MW Logo":
+						if (child instanceof CustomVisibilityMesh) {
+							this.scaleBacktext(child, wantedWidth, wantedWidth / currentWidth)
+						} else {
+							console.error("Back MW Logo is not an instance of CustomVisibilityMesh")
+						}
+						break
+
+					default:
+						console.warn("Unknown object:", child.name, "Did you forget to add it to the updateMapSize method?")
+						break
+				}
 			}
 		}
 
@@ -162,10 +178,10 @@ export class Preview3DPrintMesh {
 	}
 
 	updateNumberOfColors(mapWithOriginalColors: Mesh, numberOfColors: number) {
-		this.updateMapColors(mapWithOriginalColors.geometry, (this.printMesh.getObjectByName("Map") as Mesh).geometry, numberOfColors)
+		this.updateMapColors(mapWithOriginalColors.geometry, this.mapMesh.geometry, numberOfColors)
 		this.printMesh.traverse(child => {
-			if (child.name !== "Map" && child.name !== "PrintMesh") {
-				this.updateColor(child as Mesh, numberOfColors)
+			if (child instanceof Mesh && child.name !== "Map" && child.name !== "PrintMesh") {
+				this.updateColor(child, numberOfColors)
 			}
 		})
 	}
@@ -180,30 +196,24 @@ export class Preview3DPrintMesh {
 	}
 
 	rotateCustomLogo() {
-		const logoMesh = this.printMesh.getObjectByName("Custom Logo") as Mesh
-		if (logoMesh) {
-			logoMesh.rotateZ(Math.PI / 2) // Rotate 90 degrees
-		}
+		this.customLogoMesh.rotateZ(Math.PI / 2) // Rotate 90 degrees
 	}
 
 	flipCustomLogo() {
-		const logoMesh = this.printMesh.getObjectByName("Custom Logo") as Mesh
-		if (logoMesh) {
-			logoMesh.rotateY(Math.PI) // Rotate 180 degrees
-		}
+		this.customLogoMesh.rotateY(Math.PI) // Rotate 180 degrees
 	}
 
 	updateCustomLogoColor(newColor: string) {
-		const logoMesh = this.printMesh.getObjectByName("Custom Logo") as Mesh
-		if (logoMesh) {
-			;(logoMesh.material as MeshBasicMaterial).color.set(newColor)
+		if (this.customLogoMesh.material instanceof MeshBasicMaterial) {
+			this.customLogoMesh.material.color.set(newColor)
+		} else {
+			console.error("Custom Logos material is not an instance of MeshBasicMaterial")
 		}
 	}
 
 	updateFrontText(frontText: string) {
-		const frontTextMesh = this.printMesh.getObjectByName("Front Text") as Mesh
-		frontTextMesh.geometry.dispose()
-		frontTextMesh.geometry = this.createFrontTextGeometry(frontText, this.currentSize.x)
+		this.frontTextMesh.geometry.dispose()
+		this.frontTextMesh.geometry = this.createFrontTextGeometry(frontText, this.currentSize.x)
 	}
 
 	private async loadFont() {
@@ -225,13 +235,11 @@ export class Preview3DPrintMesh {
 	}
 
 	private updateCurrentSize() {
-		const baseplate = this.printMesh.getObjectByName("Baseplate") as Mesh
-		baseplate.geometry.computeBoundingBox()
-		const boundingBoxBaseplate = baseplate.geometry.boundingBox
+		this.baseplateMesh.geometry.computeBoundingBox()
+		const boundingBoxBaseplate = this.baseplateMesh.geometry.boundingBox
 
-		const map = this.printMesh.getObjectByName("Map") as Mesh
-		map.geometry.computeBoundingBox()
-		const boundingBoxMap = map.geometry.boundingBox
+		this.mapMesh.geometry.computeBoundingBox()
+		const boundingBoxMap = this.mapMesh.geometry.boundingBox
 
 		const currentWidth = boundingBoxBaseplate.max.x - boundingBoxBaseplate.min.x
 		const currentDepth = boundingBoxBaseplate.max.y - boundingBoxBaseplate.min.y
@@ -251,16 +259,16 @@ export class Preview3DPrintMesh {
 		)
 	}
 
-	private createMapMesh(mapMesh: Mesh, wantedWidth: number, numberOfColors: number): Mesh {
-		const newMapGeometry = mapMesh.geometry.clone()
+	private initMapMesh(originalMapMesh: Mesh, wantedWidth: number, numberOfColors: number) {
+		const newMapGeometry = originalMapMesh.geometry.clone()
 		newMapGeometry.rotateX(Math.PI / 2)
 		this.updateMapGeometry(newMapGeometry, wantedWidth, numberOfColors)
 		newMapGeometry.rotateZ(-Math.PI / 2)
-		const newMapMesh: Mesh = mapMesh.clone() as Mesh
+		const newMapMesh: Mesh = originalMapMesh.clone() as Mesh
 		newMapMesh.clear()
 		newMapMesh.geometry = newMapGeometry
 		newMapMesh.name = "Map"
-		return newMapMesh
+		this.mapMesh = newMapMesh
 	}
 
 	private updateMapGeometry(map: BufferGeometry, wantedWidth: number, numberOfColors: number): BufferGeometry {
@@ -315,9 +323,9 @@ export class Preview3DPrintMesh {
 
 		if (mesh.material instanceof MeshBasicMaterial) {
 			const colorArray = this.getColorArray(mesh.name, numberOfColors)
-			;(mesh.material as MeshBasicMaterial).color.setRGB(colorArray[0], colorArray[1], colorArray[2])
+			mesh.material.color.setRGB(colorArray[0], colorArray[1], colorArray[2])
 		} else if (mesh.material instanceof ShaderMaterial) {
-			;(mesh.material as ShaderMaterial).defaultAttributeValues.color = this.getColorArray(mesh.name, numberOfColors)
+			mesh.material.defaultAttributeValues.color = this.getColorArray(mesh.name, numberOfColors)
 		}
 	}
 
@@ -385,7 +393,7 @@ export class Preview3DPrintMesh {
 		return [0, 1, 1]
 	}
 
-	private createBaseplateMesh(wantedWidth: number, defaultMaterial: ShaderMaterial, numberOfColors: number): Mesh {
+	private initBaseplateMesh(wantedWidth: number, defaultMaterial: ShaderMaterial, numberOfColors: number) {
 		const geometry = this.createBaseplateGeometry(wantedWidth)
 		//at the moment we use a workaround, so we don't need to calculate color, delta, deltaColor and isHeight
 		//the downside of this workaround is that there can only be one default color for all objects
@@ -398,7 +406,7 @@ export class Preview3DPrintMesh {
 		const baseplateMesh = new Mesh(geometry, shaderMaterial)
 		baseplateMesh.name = "Baseplate"
 		this.updateColor(baseplateMesh, numberOfColors)
-		return baseplateMesh
+		this.baseplateMesh = baseplateMesh
 	}
 
 	private createBaseplateGeometry(wantedWidth: number): BufferGeometry {
@@ -425,14 +433,14 @@ export class Preview3DPrintMesh {
 		return geometry
 	}
 
-	private createFrontText(frontText: string, wantedWidth: number, numberOfColors: number): Mesh {
+	private initFrontText(frontText: string, wantedWidth: number, numberOfColors: number) {
 		const textGeometry = this.createFrontTextGeometry(frontText, wantedWidth)
 
 		const material = new MeshBasicMaterial()
 		const textMesh = new Mesh(textGeometry, material)
 		textMesh.name = "Front Text"
 		this.updateColor(textMesh, numberOfColors)
-		return textMesh
+		this.frontTextMesh = textMesh
 	}
 
 	private createFrontTextGeometry(frontText: string, wantedWidth: number) {
@@ -450,7 +458,7 @@ export class Preview3DPrintMesh {
 		return textGeometry
 	}
 
-	private async createMetricsMesh(geometryOptions: GeometryOptions): Promise<Mesh> {
+	private async initMetricsMesh(geometryOptions: GeometryOptions) {
 		const { areaIcon, areaIconScale, areaText } = this.createAreaAttributes(
 			geometryOptions.areaMetricTitle,
 			geometryOptions.areaMetricData
@@ -486,7 +494,7 @@ export class Preview3DPrintMesh {
 		if (metricsMesh.visible) {
 			this.xCenterMetricsMesh(metricsMesh)
 		}
-		return metricsMesh
+		this.metricsMesh = metricsMesh
 	}
 
 	private xCenterMetricsMesh(metricsMesh: Mesh) {
@@ -605,7 +613,7 @@ export class Preview3DPrintMesh {
 		backTextMesh.updateVisibility()
 	}
 
-	private async createCodeChartaMesh(wantedWidth: number, numberOfColors: number): Promise<Mesh> {
+	private async initCodeChartaMesh(wantedWidth: number, numberOfColors: number) {
 		const logoGeometry = await this.createCodeChartaLogo()
 		const textGeometry = this.createCodeChartaText()
 		const logoAndTextGeometry = BufferGeometryUtils.mergeBufferGeometries([logoGeometry, textGeometry])
@@ -617,7 +625,7 @@ export class Preview3DPrintMesh {
 		this.updateColor(codeChartaMesh, numberOfColors)
 		const scaleFactor = (wantedWidth - mapSideOffset * 2) / 200
 		this.scaleBacktext(codeChartaMesh, wantedWidth, scaleFactor)
-		return codeChartaMesh
+		this.codeChartaLogoMesh = codeChartaMesh
 	}
 
 	private async createCodeChartaLogo() {
@@ -646,7 +654,7 @@ export class Preview3DPrintMesh {
 		return textGeometry
 	}
 
-	private async createBackMW(wantedWidth: number, numberOfColors: number): Promise<Mesh> {
+	private async initBackMWLogoMesh(wantedWidth: number, numberOfColors: number) {
 		const mwLogoGeometry = await this.createSvgGeometry("codeCharta/assets/mw_logo_text.svg")
 		mwLogoGeometry.center()
 		mwLogoGeometry.rotateZ(Math.PI)
@@ -661,10 +669,10 @@ export class Preview3DPrintMesh {
 
 		this.updateColor(backMWMesh, numberOfColors)
 
-		return backMWMesh
+		this.backMWLogoMesh = backMWMesh
 	}
 
-	private async createFrontMWLogo(wantedWidth: number, numberOfColors: number): Promise<Mesh> {
+	private async initFrontMWLogoMesh(wantedWidth: number, numberOfColors: number) {
 		const filePath = `codeCharta/assets/mw_logo.svg`
 
 		const mwLogoMesh = await this.createSvgMesh(filePath, logoHeight, logoSize)
@@ -681,7 +689,7 @@ export class Preview3DPrintMesh {
 
 		mwLogoMesh.name = "Front MW Logo"
 		this.updateColor(mwLogoMesh, numberOfColors)
-		return mwLogoMesh
+		this.frontMWLogoMesh = mwLogoMesh
 	}
 
 	private async createSvgMesh(filePath: string, height: number, size: number): Promise<Mesh> {
