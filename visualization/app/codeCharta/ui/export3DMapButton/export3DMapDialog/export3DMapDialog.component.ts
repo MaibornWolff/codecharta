@@ -1,10 +1,10 @@
 import { filesSelector } from "../../../state/store/files/files.selector"
 import { accumulatedDataSelector } from "../../../state/selectors/accumulatedData/accumulatedData.selector"
 import { FileNameHelper } from "../../../util/fileNameHelper"
-import { isDeltaState } from "../../../model/files/files.helper"
+import { getVisibleFileStates, isDeltaState } from "../../../model/files/files.helper"
 import { FileDownloader } from "../../../util/fileDownloader"
 import { Component, ElementRef, Input, ViewChild, ViewEncapsulation } from "@angular/core"
-import { State, Store } from "@ngrx/store"
+import { State } from "@ngrx/store"
 import { CcState, NodeMetricData } from "../../../codeCharta.model"
 import { ThreeSceneService } from "../../codeMap/threeViewer/threeSceneService"
 import { Color, Mesh, PerspectiveCamera, Scene, ShaderMaterial, Vector3, WebGLRenderer } from "three"
@@ -12,13 +12,12 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
 import { STLExporter } from "three/examples/jsm/exporters/STLExporter"
 import { metricTitles } from "../../../util/metric/metricTitles"
 import { serialize3mf } from "../../../services/3DExports/serialize3mf.service"
-import { firstValueFrom, map } from "rxjs"
-import { metricDataSelector } from "../../../state/selectors/accumulatedData/metricData/metricData.selector"
 import {
 	calculateMaxPossibleWidthForPreview3DPrintMesh,
 	GeometryOptions,
 	Preview3DPrintMesh
 } from "../../../services/3DExports/preview3DPrintMesh"
+import { calculateNodeMetricData } from "../../../state/selectors/accumulatedData/metricData/nodeMetricData.calculator"
 
 interface Printer {
 	name: string
@@ -45,9 +44,9 @@ export class Export3DMapDialogComponent {
 	frontText = "CodeCharta"
 
 	printers: Printer[] = [
-		{name: "Prusa MK3S", x: 245, y: 205, z: 205, numberOfColors: 1},
-		{name: "Bambu A1", x: 251, y: 251, z: 251, numberOfColors: 4},
-		{name: "Prusa XL", x: 355, y: 355, z: 355, numberOfColors: 5}
+		{ name: "Prusa MK3S", x: 245, y: 205, z: 205, numberOfColors: 1 },
+		{ name: "Bambu A1", x: 251, y: 251, z: 251, numberOfColors: 4 },
+		{ name: "Prusa XL", x: 355, y: 355, z: 355, numberOfColors: 5 }
 	]
 	selectedPrinter: Printer = this.printers[2]
 	private currentNumberOfColors: number
@@ -56,12 +55,12 @@ export class Export3DMapDialogComponent {
 	wantedWidth: number
 	private previewMesh: Preview3DPrintMesh
 
-	areaMetric: string
-	heightMetric: string
-	colorMetric: string
-	nodeMetricData: NodeMetricData[]
+	private readonly areaMetric: string
+	private readonly heightMetric: string
+	private readonly colorMetric: string
+	private nodeMetricData: NodeMetricData[]
 
-	constructor(private store: Store<CcState>, private state: State<CcState>, private threeSceneService: ThreeSceneService) {
+	constructor(private state: State<CcState>, private threeSceneService: ThreeSceneService) {
 		//console.log(this.threeSceneService)
 		this.maxWidth = calculateMaxPossibleWidthForPreview3DPrintMesh(
 			new Vector3(this.selectedPrinter.x, this.selectedPrinter.y, this.selectedPrinter.z),
@@ -72,19 +71,21 @@ export class Export3DMapDialogComponent {
 		this.wantedWidth = this.maxWidth
 		this.currentNumberOfColors = this.selectedPrinter.numberOfColors
 		this.isPrintMeshLoaded = false
-	}
 
-	ngOnInit() {
 		this.areaMetric = this.state.getValue().dynamicSettings.areaMetric
 		this.heightMetric = this.state.getValue().dynamicSettings.heightMetric
 		this.colorMetric = this.state.getValue().dynamicSettings.colorMetric
 
-		firstValueFrom(this.store.select(metricDataSelector).pipe(map(metricData => metricData.nodeMetricData))).then(nodeMetricData => {
-			this.nodeMetricData = nodeMetricData.filter(
-				metric => metric.name === this.areaMetric || metric.name === this.heightMetric || metric.name === this.colorMetric
-			)
-			this.createScene().then(() => (this.isPrintMeshLoaded = true))
-		})
+		const visibleFileStates = getVisibleFileStates(this.state.getValue().files)
+		const blacklist = this.state.getValue().fileSettings.blacklist
+		const nodeMetricData = calculateNodeMetricData(visibleFileStates, blacklist)
+		this.nodeMetricData = nodeMetricData.filter(
+			metric => metric.name === this.areaMetric || metric.name === this.heightMetric || metric.name === this.colorMetric
+		)
+	}
+
+	ngAfterViewInit() {
+		this.createScene().then(() => (this.isPrintMeshLoaded = true))
 	}
 
 	onScaleChange() {
