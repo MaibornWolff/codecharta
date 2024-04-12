@@ -45,11 +45,15 @@ export class MetricChooserComponent implements OnInit {
 
 	setFirstItemActiveOnSearch(options: QueryList<MatOption>) {
 		const selectedOptions = options.filter(option => option["_selected"])
-		const matchingOptions = options.filter(option => option.value.toLowerCase().startsWith(this.searchTerm.toLowerCase()))
+		const matchingOptions = options
+			.filter(option => option.value.toLowerCase().startsWith(this.searchTerm.toLowerCase()))
+			.sort((a, b) => a.value.localeCompare(b.value))
 		const searchTermExists = this.searchTerm.trim().length > 0
 
 		if (searchTermExists && selectedOptions.length === 0 && matchingOptions.length === 0) {
 			setTimeout(() => this.matSelect._keyManager.setActiveItem(0))
+		} else if (searchTermExists && selectedOptions.length === 0 && matchingOptions.length > 0) {
+			setTimeout(() => this.matSelect._keyManager.setActiveItem(matchingOptions[0]))
 		}
 	}
 
@@ -60,6 +64,13 @@ export class MetricChooserComponent implements OnInit {
 		} else {
 			this.searchTerm = ""
 			this.hideMetricSum = false
+		}
+	}
+
+	handleKeyDown(event: KeyboardEvent) {
+		const { key } = event
+		if (key !== "ArrowDown" && key !== "ArrowUp" && key !== "Enter") {
+			event.stopPropagation()
 		}
 	}
 }

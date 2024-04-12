@@ -1,3 +1,4 @@
+import { ListKeyManager } from "@angular/cdk/a11y"
 import { Component, ViewChild } from "@angular/core"
 import { TestBed } from "@angular/core/testing"
 import { MatSelectModule } from "@angular/material/select"
@@ -11,7 +12,6 @@ import { attributeDescriptorsSelector } from "../../state/store/fileSettings/att
 import { TEST_ATTRIBUTE_DESCRIPTORS_FULL } from "../../util/dataMocks"
 import { MetricChooserComponent } from "./metricChooser.component"
 import { MetricChooserModule } from "./metricChooser.module"
-import { ListKeyManager } from "@angular/cdk/a11y"
 
 describe("metricChooserComponent", () => {
 	beforeEach(() => {
@@ -108,12 +108,7 @@ describe("metricChooserComponent", () => {
 			}
 		})
 		await userEvent.click(await screen.findByText("bMetric"))
-		await waitFor(() => expect(getSearchBox().value).toBe(""))
-
-		function getSearchBox() {
-			const selectContainer = screen.queryByRole("listbox")
-			return selectContainer.querySelector("input")
-		}
+		expect(getSearchBox().value).toBe("")
 	})
 
 	it("should set first option active after filtering by searchterm", async () => {
@@ -138,11 +133,6 @@ describe("metricChooserComponent", () => {
 		expect(options.length).toBe(1)
 		expect(options[0].textContent).toMatch(" fullMetric (42) FullTestDescription ")
 		expect(setActiveItemSpy).toHaveBeenCalledWith(0)
-
-		function getSearchBox() {
-			const selectContainer = screen.queryByRole("listbox")
-			return selectContainer.querySelector("input")
-		}
 	})
 
 	it("should project hoveredInformation as last child", async () => {
@@ -195,4 +185,9 @@ describe("metricChooserComponent", () => {
 			expect(queryByText(container as HTMLElement, content)).toBeNull()
 		})
 	})
+
+	function getSearchBox() {
+		const selectContainer = screen.queryByRole("listbox")
+		return selectContainer.querySelector("input")
+	}
 })

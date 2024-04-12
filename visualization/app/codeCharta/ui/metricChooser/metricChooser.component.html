@@ -10,7 +10,14 @@
 	<mat-select-trigger>{{ selectedMetricName }}</mat-select-trigger>
 	<mat-form-field class="cc-metric-chooser-search-field">
 		<i matPrefix class="fa fa-search search-icon"></i>
-		<input #searchTermInput matInput type="text" [placeholder]="searchPlaceholder" [(ngModel)]="searchTerm" />
+		<input
+			#searchTermInput
+			matInput
+			type="text"
+			[placeholder]="searchPlaceholder"
+			[(ngModel)]="searchTerm"
+			(keydown)="handleKeyDown($event)"
+		/>
 	</mat-form-field>
 	<div class="cc-metric-chooser-option-container">
 		@for (option of metricData$ | async | filterMetricDataBySearchTerm : searchTerm; track option) {
