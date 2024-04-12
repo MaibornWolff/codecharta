@@ -20,7 +20,8 @@ import {
 	Preview3DPrintMesh
 } from "../../../services/3DExports/preview3DPrintMesh"
 
-interface printer {
+interface Printer {
+	name: string
 	x: number
 	y: number
 	z: number
@@ -43,13 +44,12 @@ export class Export3DMapDialogComponent {
 	isPrintMeshLoaded = false
 	frontText = "CodeCharta"
 
-	printerOptions = ["prusaMk3s", "bambuA1", "prusaXL"]
-	printers: { [key: string]: printer } = {
-		prusaMk3s: { x: 245, y: 205, z: 205, numberOfColors: 1 },
-		bambuA1: { x: 251, y: 251, z: 251, numberOfColors: 4 },
-		prusaXL: { x: 355, y: 355, z: 355, numberOfColors: 5 }
-	}
-	selectedPrinter = this.printerOptions[2]
+	printers: Printer[] = [
+		{name: "Prusa MK3S", x: 245, y: 205, z: 205, numberOfColors: 1},
+		{name: "Bambu A1", x: 251, y: 251, z: 251, numberOfColors: 4},
+		{name: "Prusa XL", x: 355, y: 355, z: 355, numberOfColors: 5}
+	]
+	selectedPrinter: Printer = this.printers[2]
 	private currentNumberOfColors: number
 
 	maxWidth: number
@@ -64,17 +64,13 @@ export class Export3DMapDialogComponent {
 	constructor(private store: Store<CcState>, private state: State<CcState>, private threeSceneService: ThreeSceneService) {
 		//console.log(this.threeSceneService)
 		this.maxWidth = calculateMaxPossibleWidthForPreview3DPrintMesh(
-			new Vector3(
-				this.printers[this.selectedPrinter].x,
-				this.printers[this.selectedPrinter].y,
-				this.printers[this.selectedPrinter].z
-			),
+			new Vector3(this.selectedPrinter.x, this.selectedPrinter.y, this.selectedPrinter.z),
 			this.threeSceneService.getMapMesh().getThreeMesh()
 		)
 		this.currentSize = new Vector3()
 		this.currentSize.x = this.maxWidth
 		this.wantedWidth = this.maxWidth
-		this.currentNumberOfColors = this.printers[this.selectedPrinter].numberOfColors
+		this.currentNumberOfColors = this.selectedPrinter.numberOfColors
 		this.isPrintMeshLoaded = false
 	}
 
@@ -95,9 +91,11 @@ export class Export3DMapDialogComponent {
 		this.previewMesh.updateMapSize(this.wantedWidth)
 		this.currentSize = this.previewMesh.getSize()
 	}
+
 	onFrontTextChange() {
 		this.previewMesh.updateFrontText(this.frontText)
 	}
+
 	onFileSelected(event) {
 		const file: File = event.target.files[0]
 		if (file) {
@@ -119,7 +117,7 @@ export class Export3DMapDialogComponent {
 		this.previewMesh.flipCustomLogo()
 	}
 	onSelectedPrinterChange() {
-		const wantedNumberOfColors = this.printers[this.selectedPrinter].numberOfColors
+		const wantedNumberOfColors = this.selectedPrinter.numberOfColors
 		if (this.currentNumberOfColors !== wantedNumberOfColors) {
 			const originalMesh = this.threeSceneService.getMapMesh().getThreeMesh()
 			this.previewMesh.updateNumberOfColors(originalMesh, wantedNumberOfColors)
@@ -181,11 +179,7 @@ export class Export3DMapDialogComponent {
 
 	private makeMapMaxSize() {
 		this.wantedWidth = calculateMaxPossibleWidthForPreview3DPrintMesh(
-			new Vector3(
-				this.printers[this.selectedPrinter].x,
-				this.printers[this.selectedPrinter].y,
-				this.printers[this.selectedPrinter].z
-			),
+			new Vector3(this.selectedPrinter.x, this.selectedPrinter.y, this.selectedPrinter.z),
 			this.threeSceneService.getMapMesh().getThreeMesh()
 		)
 		this.previewMesh.updateMapSize(this.wantedWidth)
