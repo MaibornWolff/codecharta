@@ -50,11 +50,19 @@ export class MetricChooserComponent implements OnInit {
 			.sort((a, b) => a.value.localeCompare(b.value))
 		const searchTermExists = this.searchTerm.trim().length > 0
 
-		if (searchTermExists && selectedOptions.length === 0 && matchingOptions.length === 0) {
-			setTimeout(() => this.matSelect._keyManager.setActiveItem(0))
-		} else if (searchTermExists && selectedOptions.length === 0 && matchingOptions.length > 0) {
-			setTimeout(() => this.matSelect._keyManager.setActiveItem(matchingOptions[0]))
-		}
+		setTimeout(() => {
+			if (searchTermExists && selectedOptions.length === 0 && matchingOptions.length === 0) {
+				this.matSelect._keyManager.setActiveItem(0)
+			} else if (searchTermExists && selectedOptions.length === 0 && matchingOptions.length > 0) {
+				this.matSelect._keyManager.setActiveItem(matchingOptions[0])
+			}
+
+			try {
+				document.querySelector(".mdc-list-item--selected").scrollIntoView()
+			} catch {
+				// ignore
+			}
+		})
 	}
 
 	handleOpenedChanged(opened: boolean) {

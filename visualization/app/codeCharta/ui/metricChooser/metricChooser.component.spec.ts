@@ -108,7 +108,7 @@ describe("metricChooserComponent", () => {
 			}
 		})
 		await userEvent.click(await screen.findByText("bMetric"))
-		expect(getSearchBox().value).toBe("")
+		await waitFor(() => expect(getSearchBox().value).toBe(""))
 	})
 
 	it("should set first option active after filtering by searchterm", async () => {
@@ -124,15 +124,13 @@ describe("metricChooserComponent", () => {
 
 		const setActiveItemSpy = jest.spyOn(ListKeyManager.prototype, "setActiveItem")
 		await userEvent.click(await screen.findByText("aMetric"))
-		screen.getByPlaceholderText("search metric (max value)")
-		const searchBox = getSearchBox()
-		expect(document.activeElement).toBe(searchBox)
+		await waitFor(() => expect(screen.getByPlaceholderText("search metric (max value)")).toBeTruthy())
+		expect(document.activeElement).toBe(getSearchBox())
 
 		await userEvent.type(getSearchBox(), "l")
-		const options = screen.queryAllByRole("option")
-		expect(options.length).toBe(1)
-		expect(options[0].textContent).toMatch(" fullMetric (42) FullTestDescription ")
-		expect(setActiveItemSpy).toHaveBeenCalledWith(0)
+		await waitFor(() => expect(screen.queryAllByRole("option").length).toBe(1))
+		await waitFor(() => expect(screen.queryAllByRole("option")[0].textContent).toMatch(" fullMetric (42) FullTestDescription "))
+		await waitFor(() => expect(setActiveItemSpy).toHaveBeenCalledWith(0))
 	})
 
 	it("should project hoveredInformation as last child", async () => {
