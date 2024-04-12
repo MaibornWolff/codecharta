@@ -202,7 +202,7 @@ export class Export3DMapDialogComponent {
 		const colorMetricTitle = attributeDescriptors[this.colorMetric]?.title || fallbackTitles.get(this.colorMetric)
 
 		return {
-			mapMesh: this.threeSceneService.getMapMesh().getThreeMesh(),
+			originalMapMesh: this.threeSceneService.getMapMesh().getThreeMesh(),
 			wantedWidth: this.wantedWidth,
 			areaMetricTitle,
 			areaMetricData: this.nodeMetricData.find(metric => metric.name === this.areaMetric),
