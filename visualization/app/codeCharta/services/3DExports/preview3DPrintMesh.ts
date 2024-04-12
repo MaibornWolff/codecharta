@@ -754,6 +754,9 @@ export function calculateMaxPossibleWidthForPreview3DPrintMesh(maxSize: Vector3,
 
 	const widthFromWidth = printerWidth
 	const widthFromDepth = printerDepth - frontTextSize
+	if (!mapMesh.geometry.boundingBox) {
+		mapMesh.geometry.computeBoundingBox()
+	}
 	const mapCurrentHeight = mapMesh.geometry.boundingBox.max.z - mapMesh.geometry.boundingBox.min.z
 	const widthFromHeight = ((printerHeight - baseplateHeight) * mapMesh.geometry.boundingBox.max.x) / mapCurrentHeight + 2 * mapSideOffset
 
