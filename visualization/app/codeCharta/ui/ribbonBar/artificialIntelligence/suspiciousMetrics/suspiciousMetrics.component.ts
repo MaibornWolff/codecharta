@@ -24,6 +24,7 @@ export class SuspiciousMetricComponent implements OnChanges {
 	>
 	hideBadge = false
 	showSuspiciousMetricInfo = false
+	isUntrackedMetricsVisible = false
 
 	constructor(private store: Store) {}
 
@@ -35,6 +36,9 @@ export class SuspiciousMetricComponent implements OnChanges {
 		return metricName.toUpperCase()
 	}
 
+	toggleMetricsVisibility(): void {
+		this.isUntrackedMetricsVisible = !this.isUntrackedMetricsVisible
+	}
 	ngOnChanges(changes: SimpleChanges): void {
 		if (changes.data && !dequal(changes.data.previousValue, changes.data.currentValue)) {
 			this.hideBadge = false

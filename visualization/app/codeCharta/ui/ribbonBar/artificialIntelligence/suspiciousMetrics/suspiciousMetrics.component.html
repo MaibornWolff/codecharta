@@ -69,9 +69,12 @@
 
 	<div *ngIf="data.untrackedMetrics.length">
 		<div *ngIf="data.analyzedProgrammingLanguage.length" class="title">
-			Untracked metrics in {{ data.analyzedProgrammingLanguage }} code
+			<button type="button" class="untracked-metrics-button" (click)="toggleMetricsVisibility()">
+				Untracked metrics in {{ data.analyzedProgrammingLanguage }} code
+				<i class="fa fa-caret-down untracked-metrics-icon"></i>
+			</button>
 		</div>
-		<ul>
+		<ul *ngIf="isUntrackedMetricsVisible">
 			<li *ngFor="let untrackedMetric of data.untrackedMetrics">{{ untrackedMetric }}</li>
 		</ul>
 	</div>

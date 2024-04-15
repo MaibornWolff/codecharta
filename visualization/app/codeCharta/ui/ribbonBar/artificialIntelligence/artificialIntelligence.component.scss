@@ -22,6 +22,24 @@ cc-artificial-intelligence {
 		margin-bottom: 8px;
 		font-weight: bold;
 	}
+
+	.untracked-metrics-button {
+		background-color: white;
+		color: black;
+		cursor: pointer;
+		font-weight: bold;
+		padding: 8px;
+		width: 100%;
+		border: none;
+		text-align: left;
+		font-size: 16px;
+	}
+
+	.untracked-metrics-icon {
+		font-size: 18px;
+		padding: 4px;
+	}
+
 	.suspicious-metric-title {
 		font-weight: bold;
 
