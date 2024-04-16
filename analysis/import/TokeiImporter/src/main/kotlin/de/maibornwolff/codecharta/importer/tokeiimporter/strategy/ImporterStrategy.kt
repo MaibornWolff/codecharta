@@ -19,7 +19,7 @@ interface ImporterStrategy {
     }
 
     fun findPathSeparator(name: String): Boolean {
-        val result = Regex("\\\\|/").find(name)
+        val result = Regex("[\\\\|/]").find(name)
         if (result != null) {
             pathSeparator = result.value
             logger.info("Determined ${result.value} as path separator")
