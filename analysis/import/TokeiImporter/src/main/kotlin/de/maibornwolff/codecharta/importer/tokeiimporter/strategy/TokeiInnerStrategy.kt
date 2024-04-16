@@ -9,17 +9,22 @@ import de.maibornwolff.codecharta.importer.tokeiimporter.analysisObject.Stats
 import de.maibornwolff.codecharta.model.MutableNode
 import de.maibornwolff.codecharta.model.PathFactory
 import de.maibornwolff.codecharta.model.ProjectBuilder
+import mu.KLogger
+import mu.KotlinLogging
 
-class TokeiInnerStrategy(rootName: String, pathSeparator: String) : ImporterStrategy {
+class TokeiInnerStrategy(rootName: String, pathSeparator: String, logger: KLogger) : ImporterStrategy {
     override var rootName = ""
     override var pathSeparator = ""
+    override var logger: KLogger = KotlinLogging.logger {}
 
     init {
         this.rootName = rootName
         this.pathSeparator = pathSeparator
+        this.logger = logger
     }
 
     override fun buildCCJson(languageSummaries: JsonObject, projectBuilder: ProjectBuilder) {
+        if (isPathSeparatorArgumentEmpty(pathSeparator)) determinePathSeparator(languageSummaries)
         val gson = Gson()
         for (languageEntry in languageSummaries.entrySet()) {
             val languageAnalysisObject = gson.fromJson(languageEntry.value, AnalysisObject::class.java)
@@ -33,6 +38,19 @@ class TokeiInnerStrategy(rootName: String, pathSeparator: String) : ImporterStra
 
     override fun getLanguageSummaries(root: JsonElement): JsonObject {
         return root.asJsonObject.get(TokeiImporter.TOP_LEVEL_OBJECT).asJsonObject
+    }
+
+    override fun determinePathSeparator(languageSummaries: JsonObject) {
+        val gson = Gson()
+        for (languageEntry in languageSummaries.entrySet()) {
+            val languageAnalysisObject = gson.fromJson(languageEntry.value, AnalysisObject::class.java)
+            if (languageAnalysisObject.hasChildren()) {
+                for (stat in languageAnalysisObject.stats!!) {
+                    if (findPathSeparator(stat.name)) return
+                }
+            }
+        }
+        this.pathSeparator = "/"
     }
 
     private fun addAsNode(stat: Stats, projectBuilder: ProjectBuilder) {

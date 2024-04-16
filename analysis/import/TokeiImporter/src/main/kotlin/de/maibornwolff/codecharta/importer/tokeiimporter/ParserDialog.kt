@@ -27,16 +27,18 @@ class ParserDialog {
                 default = "."
             )
 
-            val pathSeparator = KInquirer.promptInput(
-                message = "Which path separator is used in the path names?",
-                hint = "/",
-                default = "/"
+            var pathSeparator = KInquirer.promptInput(
+                message = "Which path separator is used? Leave empty for auto-detection",
+                hint = "",
+                default = ""
             )
 
             val isCompressed = (outputFileName.isEmpty()) || KInquirer.promptConfirm(
                 message = "Do you want to compress the output file?",
                 default = true
             )
+
+            if (pathSeparator == "\\") pathSeparator = "\\\\"
 
             return listOfNotNull(
                 inputFileName,

@@ -57,8 +57,8 @@ class TokeiImporter(
     @CommandLine.Option(names = ["-r", "--root-name"], description = ["root folder as specified when executing tokei"])
     private var rootName = "."
 
-    @CommandLine.Option(names = ["--path-separator"], description = ["path separator (default = '/')"])
-    private var pathSeparator = "/"
+    @CommandLine.Option(names = ["--path-separator"], description = ["path separator, leave empty for auto-detection (default = '')"])
+    private var pathSeparator = ""
 
     @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File "])
     private var outputFile: String? = null
@@ -93,9 +93,11 @@ class TokeiImporter(
 
         projectBuilder = ProjectBuilder()
         val root = getInput() ?: return null
+        unescapeWindowsPathSeparator()
         runBlocking(Dispatchers.Default) {
             determineImporterStrategy(root)
             val languageSummaries = importerStrategy.getLanguageSummaries(root)
+
             importerStrategy.buildCCJson(languageSummaries, projectBuilder)
         }
         projectBuilder.addAttributeTypes(attributeTypes)
@@ -110,9 +112,9 @@ class TokeiImporter(
     private fun determineImporterStrategy(root: JsonElement) {
         val json = root.asJsonObject
         importerStrategy = if (json.has(TOP_LEVEL_OBJECT)) {
-            TokeiInnerStrategy(rootName, pathSeparator)
+            TokeiInnerStrategy(rootName, pathSeparator, logger)
         } else {
-            TokeiTwelveStrategy(rootName, pathSeparator)
+            TokeiTwelveStrategy(rootName, pathSeparator, logger)
         }
     }
 
@@ -141,6 +143,10 @@ class TokeiImporter(
         }
 
         return root
+    }
+
+    private fun unescapeWindowsPathSeparator() {
+        if (pathSeparator == "\\\\") this.pathSeparator = "\\"
     }
 
     override fun getDialog(): ParserDialogInterface = ParserDialog
