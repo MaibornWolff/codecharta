@@ -24,7 +24,6 @@ import de.maibornwolff.codecharta.tools.interactiveparser.util.CodeChartaConstan
 import de.maibornwolff.codecharta.tools.validation.ValidationTool
 import de.maibornwolff.codecharta.util.AttributeGeneratorRegistry
 import de.maibornwolff.codecharta.util.Logger
-import io.github.oshai.kotlinlogging.KotlinLogging
 import picocli.CommandLine
 import java.util.concurrent.Callable
 import java.util.concurrent.Executors
@@ -57,7 +56,6 @@ import kotlin.system.exitProcess
     versionProvider = Ccsh.ManifestVersionProvider::class,
         footer = [CodeChartaConstants.General.GENERIC_FOOTER]
 )
-
 class Ccsh : Callable<Unit?> {
 
     @CommandLine.Option(
@@ -109,7 +107,8 @@ class Ccsh : Callable<Unit?> {
             val shouldRunConfiguredParsers: Boolean =
                     KInquirer.promptConfirm(
                             message = "Do you want to run all configured parsers now?",
-                            default = true)
+                            default = true
+                    )
 
             return if (shouldRunConfiguredParsers) {
                 executeConfiguredParsers(commandLine, configuredParsers)
@@ -152,13 +151,15 @@ class Ccsh : Callable<Unit?> {
         private fun askAndMergeResults(commandLine: CommandLine): Int {
             val shouldMerge = KInquirer.promptConfirm(
                     message = "Do you want to merge all generated files into one result now?",
-                    default = false)
+                    default = false
+            )
 
             return if (shouldMerge) {
                 val ccJsonFilePath = KInquirer.promptInput(
                         message = "What is the folder path containing all cc.json files?",
                         hint = "If you did not output all cc.json files into the same folder, " +
-                              "you need to manually move them there before trying to merge.")
+                              "you need to manually move them there before trying to merge."
+                )
 
                 val outputFilePath = "$ccJsonFilePath/mergedResult.cc.json"
                 // Default args with input path being the output path as well
@@ -224,8 +225,11 @@ class Ccsh : Callable<Unit?> {
                     var skip = false
                     argument.forEach {
                         if (it == '=') skip = true
-                        if (it.isUpperCase() && !skip) sanitizedArg += "-" + it.lowercaseChar()
-                        else sanitizedArg += it
+                        if (it.isUpperCase() && !skip) {
+                        sanitizedArg += "-" + it.lowercaseChar()
+                        } else {
+                        sanitizedArg += it
+                        }
                     }
                 } else {
                     sanitizedArg = argument

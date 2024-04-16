@@ -2,13 +2,12 @@ package de.maibornwolff.codecharta.parser.rawtextparser.metrics
 
 import de.maibornwolff.codecharta.parser.rawtextparser.FileMetrics
 import de.maibornwolff.codecharta.util.Logger
-import io.github.oshai.kotlinlogging.KotlinLogging
 import java.lang.Integer.min
 
 class IndentationMetric(
     private var maxIndentation: Int,
     private var verbose: Boolean,
-    private var tabWidth: Int,
+    private var tabWidth: Int
 ) : Metric {
     private val spaceIndentations = MutableList(maxIndentation * 8 + 1) { 0 }
     private val tabIndentations = MutableList(maxIndentation + 1) { 0 }

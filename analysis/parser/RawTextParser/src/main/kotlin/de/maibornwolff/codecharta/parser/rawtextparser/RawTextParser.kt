@@ -29,7 +29,7 @@ import java.util.concurrent.Callable
 class RawTextParser(
     private val input: InputStream = System.`in`,
     private val output: PrintStream = System.out,
-    private val error: PrintStream = System.err,
+    private val error: PrintStream = System.err
 ) : Callable<Unit>, InteractiveParser, PipeableParser, AttributeGenerator {
 
     private val DEFAULT_EXCLUDES = arrayOf("/out/", "/build/", "/target/", "/dist/", "/resources/", "/\\..*")

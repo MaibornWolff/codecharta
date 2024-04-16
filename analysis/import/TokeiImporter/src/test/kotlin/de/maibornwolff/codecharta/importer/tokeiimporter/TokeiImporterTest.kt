@@ -176,10 +176,10 @@ class TokeiImporterTest {
     fun `attributeTypes are set`() {
         val cliResult = executeForOutput("", arrayOf("src/test/resources/tokei_pre12_unix_root.json", "-r=foo/bar"))
         val expected = mapOf(
-            "comment_lines" to AttributeType.absolute,
-            "empty_lines" to AttributeType.absolute,
-            "loc" to AttributeType.absolute,
-            "rloc" to AttributeType.absolute
+            "comment_lines" to AttributeType.ABSOLUTE,
+            "empty_lines" to AttributeType.ABSOLUTE,
+            "loc" to AttributeType.ABSOLUTE,
+            "rloc" to AttributeType.ABSOLUTE
                             )
 
         val project = ProjectDeserializer.deserializeProject(cliResult)

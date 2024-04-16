@@ -19,7 +19,6 @@ import de.maibornwolff.codecharta.tools.pipeableparser.PipeableParser
 import de.maibornwolff.codecharta.tools.pipeableparser.PipeableParserSyncFlag
 import de.maibornwolff.codecharta.util.InputHelper
 import de.maibornwolff.codecharta.util.Logger
-import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -42,12 +41,11 @@ class TokeiImporter(
     private val error: PrintStream = System.err
 ) : Callable<Unit>, InteractiveParser, PipeableParser, AttributeGenerator {
 
-
     private val attributeTypes = AttributeTypes(type = "nodes")
-        .add("rloc", AttributeType.absolute)
-        .add("loc", AttributeType.absolute)
-        .add("empty_lines", AttributeType.absolute)
-        .add("comment_lines", AttributeType.absolute)
+        .add("rloc", AttributeType.ABSOLUTE)
+        .add("loc", AttributeType.ABSOLUTE)
+        .add("empty_lines", AttributeType.ABSOLUTE)
+        .add("comment_lines", AttributeType.ABSOLUTE)
 
     private lateinit var projectBuilder: ProjectBuilder
 

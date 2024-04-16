@@ -70,9 +70,9 @@ class ProjectBuilderTest {
     @Test
     fun `it should add the correct attribute-types`() {
         // when
-        val projectBuilder = ProjectBuilder(attributeTypes = mutableMapOf("nodes" to mutableMapOf("nodeMetric" to AttributeType.absolute)))
-        val attributeTypesToAdd = AttributeTypes(mutableMapOf("edgeMetric" to AttributeType.absolute), "edges")
-        val attributeTypesToAddExisting = AttributeTypes(mutableMapOf("nodeMetric2" to AttributeType.relative), "nodes")
+        val projectBuilder = ProjectBuilder(attributeTypes = mutableMapOf("nodes" to mutableMapOf("nodeMetric" to AttributeType.ABSOLUTE)))
+        val attributeTypesToAdd = AttributeTypes(mutableMapOf("edgeMetric" to AttributeType.ABSOLUTE), "edges")
+        val attributeTypesToAddExisting = AttributeTypes(mutableMapOf("nodeMetric2" to AttributeType.RELATIVE), "nodes")
         projectBuilder.addAttributeTypes(attributeTypesToAdd)
         projectBuilder.addAttributeTypes(attributeTypesToAddExisting)
 

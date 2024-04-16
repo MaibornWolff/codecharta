@@ -11,7 +11,9 @@ class PicocliParserRepository : ParserRepository<CommandLine> {
             val parserName = subCommand.commandName
             if (subCommand.commandSpec.userObject() is InteractiveParser) {
                 parserName
-            } else null
+            } else {
+            null
+            }
         }
     }
 
@@ -24,7 +26,9 @@ class PicocliParserRepository : ParserRepository<CommandLine> {
                 val parserDescriptions = subCommand.commandSpec.usageMessage().description()
                 val parserDescription = parserDescriptions[0]
                 "$parserName - $parserDescription"
-            } else null
+            } else {
+            null
+            }
         }
     }
 
@@ -58,7 +62,8 @@ class PicocliParserRepository : ParserRepository<CommandLine> {
     }
 
     override fun getApplicableInteractiveParserNamesWithDescription(
-            inputFile: String, allParsers: List<InteractiveParser>): List<String> {
+            inputFile: String, allParsers: List<InteractiveParser>
+    ): List<String> {
         val applicableParsers = getApplicableParsers(inputFile, allParsers)
         val result = mutableListOf<String>()
         for (parser in applicableParsers) {

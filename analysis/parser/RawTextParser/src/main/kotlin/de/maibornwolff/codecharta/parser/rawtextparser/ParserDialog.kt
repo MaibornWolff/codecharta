@@ -19,7 +19,7 @@ class ParserDialog {
             } while (!InputHelper.isInputValidAndNotNull(arrayOf(File(inputFileName)), canInputContainFolders = true))
 
             val outputFileName: String = KInquirer.promptInput(
-                message = "What is the name of the output file (leave empty to print to stdout)?",
+                message = "What is the name of the output file (leave empty to print to stdout)?"
             )
 
             val isCompressed = (outputFileName.isEmpty()) || KInquirer.promptConfirm(
@@ -60,7 +60,7 @@ class ParserDialog {
                 "--max-indentation-level=$maxIndentationLevel",
                 "--exclude=$exclude",
                 "--file-extensions=$fileExtensions",
-                "--without-default-excludes=$withoutDefaultExcludes",
+                "--without-default-excludes=$withoutDefaultExcludes"
             )
         }
     }
