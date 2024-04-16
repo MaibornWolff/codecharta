@@ -20,7 +20,7 @@ dependencies {
 
 task jarTest(type: Jar, dependsOn: testClasses) {
     from sourceSets.test.output
-    classifier = 'test'
+    archiveClassifier = 'test'
 }
 
 configurations {
