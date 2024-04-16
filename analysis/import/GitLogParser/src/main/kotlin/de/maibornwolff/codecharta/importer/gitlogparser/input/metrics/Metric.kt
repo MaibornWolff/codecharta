@@ -22,7 +22,7 @@ interface Metric {
     }
 
     fun attributeType(): AttributeType {
-        return AttributeType.absolute
+        return AttributeType.ABSOLUTE
     }
 
     fun edgeAttributeType(): AttributeType? {

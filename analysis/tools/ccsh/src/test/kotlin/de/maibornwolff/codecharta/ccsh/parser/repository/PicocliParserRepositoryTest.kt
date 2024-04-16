@@ -62,14 +62,16 @@ class PicocliParserRepositoryTest {
     }
 
     private fun getExpectedParsers(): List<InteractiveParser> {
-        return listOf<InteractiveParser>(CSVExporter(),
+        return listOf<InteractiveParser>(
+        CSVExporter(),
                 EdgeFilter(), MergeFilter(),
                 StructureModifier(), CSVImporter(),
                 SonarImporterMain(), SourceMonitorImporter(),
                 SVNLogParser(), GitLogParser(),
                 SourceCodeParserMain(), CodeMaatImporter(),
                 TokeiImporter(), RawTextParser(),
-                MetricGardenerImporter(), ValidationTool())
+                MetricGardenerImporter(), ValidationTool()
+        )
     }
 
     companion object {
@@ -100,7 +102,8 @@ class PicocliParserRepositoryTest {
                     listOf(TokeiImporter.NAME, " - " + TokeiImporter.DESCRIPTION),
                     listOf(RawTextParser.NAME, " - " + RawTextParser.DESCRIPTION),
                     listOf(ValidationTool.NAME, " - " + ValidationTool.DESCRIPTION),
-                    listOf(MetricGardenerImporter.NAME, " - " + MetricGardenerImporter.DESCRIPTION))
+                    listOf(MetricGardenerImporter.NAME, " - " + MetricGardenerImporter.DESCRIPTION)
+            )
         }
     }
 
@@ -162,7 +165,8 @@ class PicocliParserRepositoryTest {
             val parserNameWithDescription = parserNameWithDescriptionList[0] + parserNameWithDescriptionList[1]
             Assertions.assertTrue(
                     actualParserNamesWithDescription
-                            .contains(parserNameWithDescription))
+                            .contains(parserNameWithDescription)
+            )
         }
     }
 
@@ -176,7 +180,9 @@ class PicocliParserRepositoryTest {
             val parserName = parserNameDescriptionList[0]
             Assertions.assertTrue(
                     expectedParserNames.contains(
-                            picocliParserRepository.extractParserName(parserName)))
+                            picocliParserRepository.extractParserName(parserName)
+                    )
+            )
         }
     }
 

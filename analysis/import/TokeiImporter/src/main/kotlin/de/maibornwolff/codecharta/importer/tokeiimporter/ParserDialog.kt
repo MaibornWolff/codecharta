@@ -45,7 +45,7 @@ class ParserDialog {
                 "--output-file=$outputFileName",
                 "--root-name=$rootName",
                 "--path-separator=$pathSeparator",
-                if (isCompressed) null else "--not-compressed",
+                if (isCompressed) null else "--not-compressed"
             )
         }
     }

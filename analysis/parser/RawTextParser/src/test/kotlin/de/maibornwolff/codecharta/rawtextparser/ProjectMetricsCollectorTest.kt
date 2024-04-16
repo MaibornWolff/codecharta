@@ -80,7 +80,8 @@ class ProjectMetricsCollectorTest {
     @Test
     fun `Should exclude matching files when regex patterns were given`() {
         // when
-        val projectMetrics = ProjectMetricsCollector(File("src/test/resources/sampleproject").absoluteFile,
+        val projectMetrics = ProjectMetricsCollector(
+        File("src/test/resources/sampleproject").absoluteFile,
                 exclude = listOf(".*\\.excluded$", "foobar"),
                 defaultFileExtensions,
                 defaultMetricNames,
@@ -99,7 +100,8 @@ class ProjectMetricsCollectorTest {
     @Test
     fun `Should only include file extensions when they were specified`() {
         // when
-        val projectMetrics = ProjectMetricsCollector(File("src/test/resources/sampleproject").absoluteFile,
+        val projectMetrics = ProjectMetricsCollector(
+        File("src/test/resources/sampleproject").absoluteFile,
                 defaultExclude,
                 fileExtensions = listOf("includedtoo"),
                 defaultMetricNames,
@@ -118,7 +120,8 @@ class ProjectMetricsCollectorTest {
     @Test
     fun `Should include only specified file extensions when multiple are given`() {
         // when
-        val projectMetrics = ProjectMetricsCollector(File("src/test/resources/sampleproject").absoluteFile,
+        val projectMetrics = ProjectMetricsCollector(
+        File("src/test/resources/sampleproject").absoluteFile,
                 defaultExclude,
                 fileExtensions = listOf("included", "includedtoo"),
                 defaultMetricNames,
@@ -138,7 +141,8 @@ class ProjectMetricsCollectorTest {
     @Test
     fun `Should produce empty result when no valid file extensions were given`() {
         // when
-        val projectMetrics = ProjectMetricsCollector(File("src/test/resources/sampleproject").absoluteFile,
+        val projectMetrics = ProjectMetricsCollector(
+        File("src/test/resources/sampleproject").absoluteFile,
                 defaultExclude,
                 fileExtensions = listOf("none"),
                 defaultMetricNames,
@@ -154,7 +158,8 @@ class ProjectMetricsCollectorTest {
     @Test
     fun `Should produce the same result whether the user included a dot in the filetype or not`() {
         // when
-        val resultWithoutDot = ProjectMetricsCollector(File("src/test/resources/sampleproject").absoluteFile,
+        val resultWithoutDot = ProjectMetricsCollector(
+        File("src/test/resources/sampleproject").absoluteFile,
                 defaultExclude,
                 fileExtensions = listOf("included", "includedtoo"),
                 defaultMetricNames,
@@ -162,7 +167,8 @@ class ProjectMetricsCollectorTest {
                 defaultMaxIndentLvl,
                 defaultTabWidth
                                                       ).parseProject()
-        val resultWithDot = ProjectMetricsCollector(File("src/test/resources/sampleproject").absoluteFile,
+        val resultWithDot = ProjectMetricsCollector(
+        File("src/test/resources/sampleproject").absoluteFile,
                 defaultExclude,
                 fileExtensions = listOf(".included", ".includedtoo"),
                 defaultMetricNames,

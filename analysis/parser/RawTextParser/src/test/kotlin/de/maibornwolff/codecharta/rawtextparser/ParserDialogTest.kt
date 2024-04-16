@@ -170,6 +170,7 @@ class ParserDialogTest {
                 Arguments.of("string-value"),
                 Arguments.of(""),
                 Arguments.of("12."),
-                Arguments.of("12.0"))
+                Arguments.of("12.0")
+        )
     }
 }

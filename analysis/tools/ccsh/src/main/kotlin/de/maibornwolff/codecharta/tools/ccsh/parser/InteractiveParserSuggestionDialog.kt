@@ -34,7 +34,8 @@ class InteractiveParserSuggestionDialog {
             val inputFilePath: String = KInquirer.promptInput(
                     message = "Which path should be scanned?",
                     hint = "You can provide a directory path / file path / sonar url.",
-                    default = Paths.get("").toAbsolutePath().toString())
+                    default = Paths.get("").toAbsolutePath().toString()
+            )
 
             val inputFile = File(inputFilePath)
             if (inputFilePath == "" || !isInputFileOrDirectory(inputFile)) {
@@ -56,7 +57,8 @@ class InteractiveParserSuggestionDialog {
         private fun selectToBeExecutedInteractiveParsers(applicableParsers: List<String>): List<String> {
             val selectedParsers = KInquirer.promptCheckbox(
                     message = "Choose from this list of applicable parsers. You can select individual parsers by pressing spacebar.",
-                    choices = applicableParsers)
+                    choices = applicableParsers
+            )
 
             if (selectedParsers.isEmpty()) {
                 Logger.logger.info { "Did not select any parser to be configured!" }

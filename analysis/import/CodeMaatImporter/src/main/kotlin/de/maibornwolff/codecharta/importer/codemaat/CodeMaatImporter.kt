@@ -87,8 +87,8 @@ class CodeMaatImporter(
         get() {
             val type = "edges"
             val attributeTypes = mutableMapOf<String, AttributeType>()
-            attributeTypes["pairingRate"] = AttributeType.relative
-            attributeTypes["avgCommits"] = AttributeType.absolute
+            attributeTypes["pairingRate"] = AttributeType.RELATIVE
+            attributeTypes["avgCommits"] = AttributeType.ABSOLUTE
 
             return AttributeTypes(attributeTypes.toMutableMap(), type)
         }

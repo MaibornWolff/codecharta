@@ -113,7 +113,8 @@ class ParserServiceTest {
 
     @Test
     fun `should start configuration for each selected parser`() {
-        val selectedParserList = listOf("check",
+        val selectedParserList = listOf(
+        "check",
                 "edgefilter",
                 "sonarimport",
                 "svnlogparser",
@@ -127,7 +128,8 @@ class ParserServiceTest {
                 "csvexport",
                 "codemaatimport",
                 "metricgardenerimport",
-                "csvimport")
+                "csvimport"
+        )
 
         val mockPicocliParserRepository = mockParserRepository(selectedParserList[0], emptyList())
 

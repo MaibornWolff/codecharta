@@ -43,7 +43,8 @@ class RawTextParserTest {
         fun provideValidInputFiles(): List<Arguments> {
             return listOf(
                     Arguments.of("src/test/resources/sampleproject"),
-                    Arguments.of("src/test/resources/sampleproject/tabs.included"))
+                    Arguments.of("src/test/resources/sampleproject/tabs.included")
+            )
         }
     }
 

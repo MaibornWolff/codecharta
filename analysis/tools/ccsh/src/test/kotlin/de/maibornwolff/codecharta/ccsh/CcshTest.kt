@@ -77,8 +77,10 @@ class CcshTest {
         } returns -1
     }
 
-    private fun mockInteractiveParserSuggestionDialog(selectedParsers: List<String>,
-                                                      parserArgs: List<List<String>>) {
+    private fun mockInteractiveParserSuggestionDialog(
+    selectedParsers: List<String>,
+                                                      parserArgs: List<List<String>>
+    ) {
         if (selectedParsers.size != parserArgs.size) {
             throw IllegalArgumentException("There must be the same amount of args as parsers!")
         }
@@ -203,8 +205,10 @@ class CcshTest {
         // given
         mockUnsuccessfulParserService()
         val dummyConfiguredParsers =
-                mapOf("dummyParser1" to listOf("dummyArg1", "dummyArg2"),
-                        "dummyParser2" to listOf("dummyArg1", "dummyArg2"))
+                mapOf(
+                "dummyParser1" to listOf("dummyArg1", "dummyArg2"),
+                        "dummyParser2" to listOf("dummyArg1", "dummyArg2")
+                )
 
         // when
         Ccsh.executeConfiguredParsers(cmdLine, dummyConfiguredParsers)

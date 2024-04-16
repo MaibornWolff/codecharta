@@ -144,7 +144,7 @@ class EdgeProjectBuilder(private val project: Project, private val pathSeparator
             var aggregatedAttributeValue =
                 filteredAttribute.sumOf { edge: Edge -> edge.attributes[key].toString().toFloat().toInt() }
 
-            if (attributeType == AttributeType.relative) aggregatedAttributeValue /= filteredAttribute.size
+            if (attributeType == AttributeType.RELATIVE) aggregatedAttributeValue /= filteredAttribute.size
 
             aggregatedAttributes[key] = aggregatedAttributeValue
         }
@@ -157,10 +157,10 @@ class EdgeProjectBuilder(private val project: Project, private val pathSeparator
         if (edgeAttributeTypes.containsKey(key)) {
             // Returning it[key] directly may cause a ClassCastException
             when (edgeAttributeTypes[key].toString()) {
-                "relative" -> return AttributeType.relative
-                "absolute" -> return AttributeType.absolute
+                "relative" -> return AttributeType.RELATIVE
+                "absolute" -> return AttributeType.ABSOLUTE
             }
         }
-        return AttributeType.absolute
+        return AttributeType.ABSOLUTE
     }
 }

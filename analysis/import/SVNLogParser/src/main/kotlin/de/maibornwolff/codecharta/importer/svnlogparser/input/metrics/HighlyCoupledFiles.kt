@@ -71,7 +71,7 @@ class HighlyCoupledFiles : Metric {
     }
 
     override fun edgeAttributeType(): AttributeType? {
-        return AttributeType.absolute
+        return AttributeType.ABSOLUTE
     }
 
     companion object {

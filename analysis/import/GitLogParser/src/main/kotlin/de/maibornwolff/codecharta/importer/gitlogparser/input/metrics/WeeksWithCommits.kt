@@ -25,6 +25,6 @@ class WeeksWithCommits : Metric {
     }
 
     override fun attributeType(): AttributeType {
-        return AttributeType.relative
+        return AttributeType.RELATIVE
     }
 }
