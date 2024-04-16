@@ -19,7 +19,7 @@ buildscript {
         picocli_version = '4.7.5'
         slf4j_version = '2.0.12'
         sonar_java_version = '6.8.0.23379'
-        sonarqube_version = '4.4.1.3373'
+        sonarqube_version = '5.0.0.4638'
         univocity_parsers_version = '2.9.1'
 
         // Test dependency versions
