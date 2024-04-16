@@ -1,7 +1,7 @@
 package de.maibornwolff.codecharta.filter.mergefilter
 
 import de.maibornwolff.codecharta.model.MutableNode
-import mu.KotlinLogging
+import de.maibornwolff.codecharta.util.Logger
 
 /**
  * merges nodes recursively if their paths coincide
@@ -13,12 +13,13 @@ class RecursiveNodeMergerStrategy(ignoreCase: Boolean = false) : NodeMergerStrat
     private var nodesProcessed = 0
     private var nodesMerged = 0
 
-    private val logger = KotlinLogging.logger { }
-
     init {
         mergeConditionSatisfied =
-            if (ignoreCase) { n1: MutableNode, n2: MutableNode -> n1.name.equals(n2.name, ignoreCase = true) }
-            else { n1: MutableNode, n2: MutableNode -> n1.name == n2.name }
+            if (ignoreCase) {
+            { n1: MutableNode, n2: MutableNode -> n1.name.equals(n2.name, ignoreCase = true) }
+            } else {
+            { n1: MutableNode, n2: MutableNode -> n1.name == n2.name }
+            }
     }
 
     override fun mergeNodeLists(nodeLists: List<List<MutableNode>>): List<MutableNode> {
@@ -48,8 +49,8 @@ class RecursiveNodeMergerStrategy(ignoreCase: Boolean = false) : NodeMergerStrat
     }
 
     override fun logMergeStats() {
-        logger.info("$nodesProcessed nodes were processed, ${nodesProcessed - nodesMerged} were added and $nodesMerged were merged")
-        if (nodesMerged == 0) logger.warn("No nodes were merged. Hierarchies may not match up.")
+        Logger.logger.info { "$nodesProcessed nodes were processed, ${nodesProcessed - nodesMerged} were added and $nodesMerged were merged" }
+        if (nodesMerged == 0) Logger.logger.warn { "No nodes were merged. Hierarchies may not match up." }
     }
 
     private fun merge(vararg nodes: MutableNode): MutableNode {

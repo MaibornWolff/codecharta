@@ -44,7 +44,7 @@ class ParserDialog {
                     "--path-column-name=$pathColumnName",
                     "--delimiter=$delimiter",
                     "--path-separator=$pathSeparator",
-                    if (isCompressed) null else "--not-compressed",
+                    if (isCompressed) null else "--not-compressed"
             )
         }
     }

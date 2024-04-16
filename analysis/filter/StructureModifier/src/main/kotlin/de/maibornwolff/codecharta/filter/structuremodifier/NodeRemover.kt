@@ -7,16 +7,14 @@ import de.maibornwolff.codecharta.model.Edge
 import de.maibornwolff.codecharta.model.MutableNode
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.model.ProjectBuilder
-import mu.KotlinLogging
+import de.maibornwolff.codecharta.util.Logger
 
 class NodeRemover(private val project: Project) {
-    private val logger = KotlinLogging.logger {}
-
     fun remove(paths: Array<String>): Project {
         var pathSegments = paths.map { it.removePrefix("/").removeSuffix("/").split("/") }
 
         if (pathSegments.contains(listOf("root"))) {
-            logger.warn("Root node cannot be removed")
+            Logger.logger.warn { "Root node cannot be removed" }
             pathSegments = pathSegments.filter { it != listOf("root") }
         }
 
@@ -34,7 +32,7 @@ class NodeRemover(private val project: Project) {
         for (path in paths) {
             var currentNode = rootNode
             if (path[0] != "root") {
-                logger.warn("Path to node has to start with root: ${path.joinToString("/")}")
+                Logger.logger.warn { "Path to node has to start with root: ${path.joinToString("/")}" }
                 continue
             }
 
@@ -48,7 +46,7 @@ class NodeRemover(private val project: Project) {
                     if (childNode != null) {
                         currentNode = childNode
                     } else {
-                        logger.warn("Path to node not found: ${path.joinToString("/")}")
+                        Logger.logger.warn { "Path to node not found: ${path.joinToString("/")}" }
                         break
                     }
                 }

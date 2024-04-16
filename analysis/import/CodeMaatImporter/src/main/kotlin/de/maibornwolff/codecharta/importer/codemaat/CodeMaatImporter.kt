@@ -23,7 +23,8 @@ import java.util.concurrent.Callable
         footer = [CodeChartaConstants.General.GENERIC_FOOTER]
 )
 class CodeMaatImporter(
-        private val output: PrintStream = System.out) : Callable<Unit>, InteractiveParser, AttributeGenerator {
+        private val output: PrintStream = System.out
+) : Callable<Unit>, InteractiveParser, AttributeGenerator {
 
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false

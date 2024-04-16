@@ -1,8 +1,6 @@
 package de.maibornwolff.codecharta.model
 
-import mu.KotlinLogging
-
-private val logger = KotlinLogging.logger {}
+import de.maibornwolff.codecharta.util.Logger
 
 /**
  * tree structure
@@ -74,7 +72,7 @@ abstract class Tree<T> {
     }
 
     open fun merge(nodes: List<T>): T {
-        logger.warn { "Element already exists, skipping." }
+        Logger.logger.warn { "Element already exists, skipping." }
         return asTreeNode()
     }
 

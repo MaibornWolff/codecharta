@@ -29,8 +29,11 @@ class CSVRow(private val row: Array<String?>, private val header: CSVHeader, pri
     }
 
     private val path =
-        if (row[header.pathColumn] == null) throw IllegalArgumentException("Row has no path information.")
-        else row[header.pathColumn]!!
+        if (row[header.pathColumn] == null) {
+        throw IllegalArgumentException("Row has no path information.")
+        } else {
+        row[header.pathColumn]!!
+        }
 
     private val floatPattern = Pattern.compile("\\d+[,.]?\\d*")
 

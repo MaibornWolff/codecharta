@@ -15,6 +15,6 @@ fun getAttributeDescriptors(): Map<String, AttributeDescriptor> {
         "highly_coupled_files" to AttributeDescriptor(title = "Highly Coupled Files", description = "Number of highly coupled files (>=35% of times modified the same time) with this file", link = ghLink, direction = -1),
         "median_coupled_files" to AttributeDescriptor(title = "Median Coupled Files", description = "Median of number of other files that where committed with this file", link = ghLink, direction = -1),
         "temporal_coupling" to AttributeDescriptor(title = "Temporal Coupling", description = "The degree of temporal coupling between two files (>=35%)", link = ghLink, direction = -1),
-        "authors" to AttributeDescriptor(title = "Authors", description = "The authors that have worked on a file", link = ghLink, direction = -1),
+        "authors" to AttributeDescriptor(title = "Authors", description = "The authors that have worked on a file", link = ghLink, direction = -1)
     )
 }

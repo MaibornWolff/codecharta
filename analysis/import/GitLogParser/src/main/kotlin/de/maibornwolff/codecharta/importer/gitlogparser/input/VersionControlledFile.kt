@@ -35,7 +35,6 @@ class VersionControlledFile internal constructor(
      * registers commits in chronological order
      */
     fun registerCommit(commit: Commit, mod: Modification) {
-
         flagCommitAsMutatedIfNeeded(commit, mod)
 
         metrics.forEach {

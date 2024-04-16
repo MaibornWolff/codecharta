@@ -33,7 +33,6 @@ class ParsingIntegrationTest {
 
     @Test
     fun test_given_list_of_all_files_in_project_when_parsing_corresponding_git_log_then_both_list_contents_are_equal() {
-
         // Git-names in Repo
         val resourceName = "names-in-git-repo.txt"
         val classLoader = javaClass.classLoader

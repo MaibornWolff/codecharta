@@ -24,13 +24,14 @@ class GitLogRawParsingHelper {
             val modificationParts = combinedLineParts.split('\t').toTypedArray()
             val status = Status.byCharacter(modificationParts[0].trim({ it <= ' ' })[0])
             return if (status == Status.RENAMED) {
-
                 Modification(
                     modificationParts[2].trim({ it <= ' ' }),
                     modificationParts[1].trim({ it <= ' ' }),
                     status.toModificationType()
                 )
-            } else Modification(modificationParts[1].trim({ it <= ' ' }), status.toModificationType())
+            } else {
+            Modification(modificationParts[1].trim({ it <= ' ' }), status.toModificationType())
+            }
         }
     }
 }

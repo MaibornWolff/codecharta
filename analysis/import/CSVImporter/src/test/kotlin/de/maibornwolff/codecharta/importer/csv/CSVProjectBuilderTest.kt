@@ -108,7 +108,7 @@ class CSVProjectBuilderTest {
         val csvProjectBuilder = CSVProjectBuilder(
                 pathSeparator = '\\',
                 csvDelimiter = ',',
-                pathColumnName = "File Name",
+                pathColumnName = "File Name"
         )
         csvProjectBuilder.parseCSVStream(this.javaClass.classLoader.getResourceAsStream("sourcemonitor.csv")!!)
         val project = csvProjectBuilder.build()

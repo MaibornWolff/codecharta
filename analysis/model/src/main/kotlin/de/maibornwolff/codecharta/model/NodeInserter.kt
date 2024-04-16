@@ -1,10 +1,8 @@
 package de.maibornwolff.codecharta.model
 
-import mu.KotlinLogging
+import de.maibornwolff.codecharta.util.Logger
 
 object NodeInserter {
-    private val logger = KotlinLogging.logger {}
-
     /**
      * Inserts the node as child of the element at the specified position
      * in the sub-tree spanned by the children of the root node.
@@ -22,14 +20,13 @@ object NodeInserter {
 
                 root.children.add(mergedNode)
 
-                logger.debug {
+                Logger.logger.debug {
                     "Node with name ${node.name} already exists, merging $original and $node to $mergedNode."
                 }
             } else {
                 root.children.add(node)
             }
         } else {
-
             val name = path.head
             val folderNode = getNode(root, name)
                 ?: root.insertNewFolderNode(name).getNodeBy(Path(name)) as MutableNode

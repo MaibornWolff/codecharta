@@ -5,15 +5,13 @@ import com.github.kinquirer.components.promptCheckbox
 import com.github.kinquirer.components.promptInput
 import de.maibornwolff.codecharta.tools.ccsh.Ccsh
 import de.maibornwolff.codecharta.tools.ccsh.parser.repository.PicocliParserRepository
-import mu.KotlinLogging
+import de.maibornwolff.codecharta.util.Logger
 import picocli.CommandLine
 import java.io.File
 import java.nio.file.Paths
 
 class InteractiveParserSuggestionDialog {
     companion object {
-        private val logger = KotlinLogging.logger {}
-
         fun offerAndGetInteractiveParserSuggestionsAndConfigurations(commandLine: CommandLine): Map<String, List<String>> {
             val applicableParsers = getApplicableInteractiveParsers(commandLine)
 
@@ -40,7 +38,7 @@ class InteractiveParserSuggestionDialog {
 
             val inputFile = File(inputFilePath)
             if (inputFilePath == "" || !isInputFileOrDirectory(inputFile)) {
-                logger.error("Specified invalid or empty path to analyze! Aborting...")
+                Logger.logger.error { "Specified invalid or empty path to analyze! Aborting..." }
                 return emptyList()
             }
 
@@ -48,7 +46,7 @@ class InteractiveParserSuggestionDialog {
                     ParserService.getParserSuggestions(commandLine, PicocliParserRepository(), inputFilePath)
 
             if (applicableParsers.isEmpty()) {
-                logger.info(Ccsh.NO_USABLE_PARSER_FOUND_MESSAGE)
+                Logger.logger.info { Ccsh.NO_USABLE_PARSER_FOUND_MESSAGE }
                 return emptyList()
             }
 
@@ -61,7 +59,7 @@ class InteractiveParserSuggestionDialog {
                     choices = applicableParsers)
 
             if (selectedParsers.isEmpty()) {
-                logger.info("Did not select any parser to be configured!")
+                Logger.logger.info { "Did not select any parser to be configured!" }
                 return emptyList()
             }
             return selectedParsers

@@ -6,7 +6,6 @@ dependencies {
     implementation group: 'org.glassfish.jersey.core', name: 'jersey-client', version: jersey_version
     implementation group: 'com.google.code.gson', name: 'gson', version: gson_version
     implementation group: 'info.picocli', name: 'picocli', version: picocli_version
-    implementation group: 'io.github.microutils', name: 'kotlin-logging', version: kotlin_logging_version
     implementation group: 'com.github.kotlin-inquirer', name: 'kotlin-inquirer', version: kotlin_inquirer_version
     implementation group: 'com.fasterxml.jackson', name: 'jackson-base', version: jackson_version
     implementation group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-xml', version: jackson_version

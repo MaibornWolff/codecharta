@@ -9,7 +9,7 @@ import de.maibornwolff.codecharta.tools.interactiveparser.util.CodeChartaConstan
 import de.maibornwolff.codecharta.util.CommaSeparatedParameterPreprocessor
 import de.maibornwolff.codecharta.util.CommaSeparatedStringToListConverter
 import de.maibornwolff.codecharta.util.InputHelper
-import mu.KotlinLogging
+import de.maibornwolff.codecharta.util.Logger
 import picocli.CommandLine
 import java.io.File
 import java.io.InputStream
@@ -60,7 +60,6 @@ class StructureModifier(
     private var moveTo: String? = null
 
     private lateinit var project: Project
-    private val logger = KotlinLogging.logger {}
 
     override val name = NAME
     override val description = DESCRIPTION
@@ -77,7 +76,7 @@ class StructureModifier(
 
     override fun call(): Unit? {
         if (isMoreThanOneActionSpecified()) {
-            logger.error("More than one action specified - aborting execution.")
+            Logger.logger.error { "More than one action specified - aborting execution." }
             return null
         }
 
@@ -122,7 +121,7 @@ class StructureModifier(
             ProjectDeserializer.deserializeProject(input)
         } catch (e: Exception) {
             val sourceName = source!!.name
-            logger.error("$sourceName is not a valid project file and is therefore skipped.")
+            Logger.logger.error { "$sourceName is not a valid project file and is therefore skipped." }
             null
         }
     }

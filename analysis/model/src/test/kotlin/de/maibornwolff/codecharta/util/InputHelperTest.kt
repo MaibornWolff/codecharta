@@ -20,7 +20,8 @@ class InputHelperTest {
         fun provideBooleanValues(): List<Arguments> {
             return listOf(
                     Arguments.of(false),
-                    Arguments.of(true))
+                    Arguments.of(true)
+            )
         }
     }
 
@@ -35,10 +36,12 @@ class InputHelperTest {
         val invalidFile1 = File(invalidFilePath1)
         val invalidFile2 = File(invalidFilePath2)
 
-        val inputFiles = arrayOf(File("src/test/resources/example.cc.json"),
+        val inputFiles = arrayOf(
+        File("src/test/resources/example.cc.json"),
                 File("src/test/resources/example_api_version_1.3.cc.json"),
                 invalidFile1,
-                invalidFile2)
+                invalidFile2
+        )
         try {
             InputHelper.isInputValid(inputFiles, canInputContainFolders)
         } catch (exception: IllegalArgumentException) {
@@ -57,9 +60,11 @@ class InputHelperTest {
     @ParameterizedTest
     @MethodSource("provideBooleanValues")
     fun `should return invalid if input contains one nonexistent file`(canInputContainFolders: Boolean) {
-        val inputFiles = arrayOf(File("src/test/resources/example.cc.json"),
+        val inputFiles = arrayOf(
+        File("src/test/resources/example.cc.json"),
                 File("src/test/resources/example_api_version_1.3.cc.json"),
-                File("src/test/resources/thisDoesNotExist1.json"))
+                File("src/test/resources/thisDoesNotExist1.json")
+        )
 
         val result = InputHelper.isInputValid(inputFiles, canInputContainFolders)
 

@@ -7,11 +7,9 @@ import de.maibornwolff.codecharta.model.Edge
 import de.maibornwolff.codecharta.model.MutableNode
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.model.ProjectBuilder
-import mu.KotlinLogging
+import de.maibornwolff.codecharta.util.Logger
 
 class ProjectMerger(private val projects: List<Project>, private val nodeMerger: NodeMergerStrategy) {
-
-    private val logger = KotlinLogging.logger { }
 
     fun merge(): Project {
         return when {
@@ -50,7 +48,7 @@ class ProjectMerger(private val projects: List<Project>, private val nodeMerger:
 
     private fun getEdgesOfMainAndWarnIfDiscards(): MutableList<Edge> {
         projects.forEachIndexed { i, project ->
-            if (project.edges.isNotEmpty() && i > 0) logger.warn("Edges were not merged. Use recursive strategy to merge edges.")
+            if (project.edges.isNotEmpty() && i > 0) Logger.logger.warn { "Edges were not merged. Use recursive strategy to merge edges." }
         }
         return projects.first().edges.toMutableList()
     }

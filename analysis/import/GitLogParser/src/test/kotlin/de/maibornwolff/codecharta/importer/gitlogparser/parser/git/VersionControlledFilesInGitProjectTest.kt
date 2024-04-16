@@ -19,7 +19,6 @@ class VersionControlledFilesInGitProjectTest {
 
     @Test
     fun test_given_vcf_with_files_not_in_project_remove_not_existing_files() {
-
         vcfList.addFileBy("src/Main.kt")
         vcfList.addFileBy("src/incorrectFile.kt")
 
@@ -38,7 +37,6 @@ class VersionControlledFilesInGitProjectTest {
 
     @Test
     fun test_given_vcf_with_duplicates_then_remove_salt_and_only_keep_most_recent_file() {
-
         vcfList.addFileBy("src/Main.kt")
 
         val oldFile = vcfList.get("src/Main.kt")
@@ -67,7 +65,6 @@ class VersionControlledFilesInGitProjectTest {
 
     @Test
     fun test_given_vcf_with_duplicates_with_second_file_added_deleted_then_delete__second_file() {
-
         vcfList.addFileBy("src/Main.kt")
 
         val keepFile = vcfList.get("src/Main.kt")

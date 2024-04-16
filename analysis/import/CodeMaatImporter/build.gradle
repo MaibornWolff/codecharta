@@ -4,7 +4,6 @@ dependencies {
 
     implementation group: 'com.univocity', name: 'univocity-parsers', version: univocity_parsers_version
     implementation group: 'info.picocli', name: 'picocli', version: picocli_version
-    implementation group: 'io.github.microutils', name: 'kotlin-logging', version: kotlin_logging_version
     implementation group: 'com.github.kotlin-inquirer', name: 'kotlin-inquirer', version: kotlin_inquirer_version
 
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter', version: junit5_version

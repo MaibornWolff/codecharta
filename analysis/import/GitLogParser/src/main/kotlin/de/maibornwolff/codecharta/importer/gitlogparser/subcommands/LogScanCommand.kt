@@ -14,7 +14,6 @@ import java.util.concurrent.Callable
         description = [LogScanCommand.DESCRIPTION],
         footer = [CodeChartaConstants.General.GENERIC_FOOTER]
 )
-
 class LogScanCommand : Callable<Unit>, InteractiveParser {
 
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])

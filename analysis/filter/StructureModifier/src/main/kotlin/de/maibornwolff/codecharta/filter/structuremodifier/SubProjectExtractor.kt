@@ -7,11 +7,10 @@ import de.maibornwolff.codecharta.model.Edge
 import de.maibornwolff.codecharta.model.MutableNode
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.model.ProjectBuilder
-import mu.KotlinLogging
+import de.maibornwolff.codecharta.util.Logger
 
 class SubProjectExtractor(private val project: Project) {
 
-    private val logger = KotlinLogging.logger { }
     private lateinit var path: String
 
     fun extract(path: String): Project {
@@ -32,17 +31,20 @@ class SubProjectExtractor(private val project: Project) {
 
         val currentSearchPattern = extractionPattern.firstOrNull()
         if (currentSearchPattern == node.name) {
-            return if (extractionPattern.size == 1) node.children.toMutableList()
-            else children.map { child ->
+            return if (extractionPattern.size == 1) {
+            node.children.toMutableList()
+            } else {
+            children.map { child ->
                 extractNodes(extractionPattern.drop(1), child)
             }.flatten().toMutableList()
+            }
         }
 
         return extractedNodes
     }
 
     private fun addRoot(nodes: MutableList<MutableNode>): List<MutableNode> {
-        if (nodes.isEmpty()) logger.warn("No nodes with the specified path ($path) were found. The resulting project is therefore empty")
+        if (nodes.isEmpty()) Logger.logger.warn { "No nodes with the specified path ($path) were found. The resulting project is therefore empty" }
 
         val rootNode = project.rootNode.toMutableNode()
         rootNode.children = nodes.toMutableSet()

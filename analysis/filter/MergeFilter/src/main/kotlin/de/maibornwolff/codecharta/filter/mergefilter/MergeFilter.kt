@@ -7,7 +7,7 @@ import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import de.maibornwolff.codecharta.tools.interactiveparser.util.CodeChartaConstants
 import de.maibornwolff.codecharta.util.InputHelper
-import mu.KotlinLogging
+import de.maibornwolff.codecharta.util.Logger
 import picocli.CommandLine
 import java.io.File
 import java.io.PrintStream
@@ -45,8 +45,6 @@ class MergeFilter(
 
     @CommandLine.Option(names = ["--ignore-case"], description = ["ignores case when checking node names"])
     private var ignoreCase = false
-
-    private val logger = KotlinLogging.logger {}
 
     override val name = NAME
     override val description = DESCRIPTION
@@ -89,7 +87,7 @@ class MergeFilter(
                 try {
                     ProjectDeserializer.deserializeProject(input)
                 } catch (e: Exception) {
-                    logger.warn("${it.name} is not a valid project file and is therefore skipped.")
+                    Logger.logger.warn { "${it.name} is not a valid project file and is therefore skipped." }
                     null
                 }
             }

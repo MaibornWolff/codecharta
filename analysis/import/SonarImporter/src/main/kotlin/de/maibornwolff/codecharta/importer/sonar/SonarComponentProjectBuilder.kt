@@ -105,7 +105,9 @@ class SonarComponentProjectBuilder(
             component.key.substring(component.key.lastIndexOf('/') + 1)
         } else if (usePath && component.path != null) {
             component.path.substring(component.path.lastIndexOf('/') + 1)
-        } else component.name ?: component.id
+        } else {
+        component.name ?: component.id
+        }
     }
 
     /**

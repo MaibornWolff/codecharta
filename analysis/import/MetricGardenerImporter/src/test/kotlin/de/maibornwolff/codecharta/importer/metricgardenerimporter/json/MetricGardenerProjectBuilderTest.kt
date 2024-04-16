@@ -10,10 +10,21 @@ import org.junit.jupiter.api.Test
 
 internal class MetricGardenerProjectBuilderTest {
 
-    private val metricGardenerprojectBuilder: MetricGardenerProjectBuilder = MetricGardenerProjectBuilder(MetricGardenerNodes(mutableListOf(MetricGardenerNode("\\test-project\\path1\\test-project.path1.Logic\\Service\\TestService.kt",
+    private val metricGardenerprojectBuilder: MetricGardenerProjectBuilder = MetricGardenerProjectBuilder(
+    MetricGardenerNodes(
+    mutableListOf(
+    MetricGardenerNode(
+    "\\test-project\\path1\\test-project.path1.Logic\\Service\\TestService.kt",
             "File",
-            mapOf("mcc" to 3, "functions" to 3, "classes" to 1, "lines_of_code" to 79, "comment_lines" to 32, "real_lines_of_code" to 40)), MetricGardenerNode("\\test-project\\path1\\test-project.path1.Logic\\Service\\UserLogonService.kt",
-            "File", mapOf("mcc" to 34, "functions" to 8, "classes" to 1, "lines_of_code" to 188, "comment_lines" to 0, "real_lines_of_code" to 155)))))
+            mapOf("mcc" to 3, "functions" to 3, "classes" to 1, "lines_of_code" to 79, "comment_lines" to 32, "real_lines_of_code" to 40)
+    ),
+            MetricGardenerNode(
+            "\\test-project\\path1\\test-project.path1.Logic\\Service\\UserLogonService.kt",
+            "File", mapOf("mcc" to 34, "functions" to 8, "classes" to 1, "lines_of_code" to 188, "comment_lines" to 0, "real_lines_of_code" to 155)
+            )
+    )
+    )
+    )
 
     @Test
     fun whenExtractFileNameFromPathThenSuccess() {

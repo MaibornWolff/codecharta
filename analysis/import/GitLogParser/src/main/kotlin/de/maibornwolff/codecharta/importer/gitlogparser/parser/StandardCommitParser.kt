@@ -22,7 +22,6 @@ class StandardCommitParser : CommitParser {
             // trackName: the key used to find files, corresponds to the files name at its first occurrence, might be salted using _//0_number in case of the spot being already taken
 
             when (it.type) {
-
                 Modification.Type.ADD -> {
                     handleAddModification(versionControlledFilesList, trackName, commit, it)
                 }

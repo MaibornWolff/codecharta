@@ -3,7 +3,7 @@ package de.maibornwolff.codecharta.serialization
 import com.google.gson.GsonBuilder
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.model.ProjectWrapper
-import mu.KotlinLogging
+import de.maibornwolff.codecharta.util.Logger
 import java.io.File
 import java.io.IOException
 import java.io.OutputStream
@@ -17,7 +17,6 @@ import java.util.zip.GZIPOutputStream
 object ProjectSerializer {
 
     private val GSON = GsonBuilder().create()
-    private val logger = KotlinLogging.logger {}
 
     /**
      * This method serializes a Project-Object to json and writes using given writer
@@ -66,7 +65,7 @@ object ProjectSerializer {
         serializeProject(project, stream, compress, isOutputFileSpecified)
         if (isOutputFileSpecified) {
             val absoluteFilePath = OutputFileHandler.checkAndFixFileExtension(File(outputFilePath).absolutePath, compress, FileExtension.JSON)
-            logger.info("Created output file at $absoluteFilePath")
+            Logger.logger.info { "Created output file at $absoluteFilePath" }
         }
     }
 

@@ -43,7 +43,9 @@ class ParserDialog {
         private fun collectInputFileName(isJsonFile: Boolean): String {
             return if (isJsonFile) {
                 getInputFileName("Which MetricGardener json-File do you want to import?", "yourFile.json")
-            } else getInputFileName("What Project do you want to parse?", "")
+            } else {
+            getInputFileName("What Project do you want to parse?", "")
+            }
         }
     }
 }

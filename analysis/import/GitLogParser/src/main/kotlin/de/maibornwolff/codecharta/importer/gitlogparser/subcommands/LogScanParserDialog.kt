@@ -8,7 +8,6 @@ class LogScanParserDialog {
     companion object : ParserDialogInterface {
 
         override fun collectParserArgs(): List<String> {
-
             print("You can generate this file with: git log --numstat --raw --topo-order --reverse -m > git.log")
             var gitLogFile: String
             do {

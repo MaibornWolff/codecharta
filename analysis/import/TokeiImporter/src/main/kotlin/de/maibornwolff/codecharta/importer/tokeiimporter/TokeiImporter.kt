@@ -18,10 +18,11 @@ import de.maibornwolff.codecharta.tools.interactiveparser.util.CodeChartaConstan
 import de.maibornwolff.codecharta.tools.pipeableparser.PipeableParser
 import de.maibornwolff.codecharta.tools.pipeableparser.PipeableParserSyncFlag
 import de.maibornwolff.codecharta.util.InputHelper
+import de.maibornwolff.codecharta.util.Logger
+import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import mu.KotlinLogging
 import picocli.CommandLine
 import java.io.File
 import java.io.IOException
@@ -41,7 +42,6 @@ class TokeiImporter(
     private val error: PrintStream = System.err
 ) : Callable<Unit>, InteractiveParser, PipeableParser, AttributeGenerator {
 
-    private val logger = KotlinLogging.logger {}
 
     private val attributeTypes = AttributeTypes(type = "nodes")
         .add("rloc", AttributeType.absolute)
@@ -136,7 +136,7 @@ class TokeiImporter(
                     if (projectString.isNotEmpty()) {
                         root = JsonParser.parseString(projectString)
                     } else {
-                        logger.error("Neither source file nor piped input found.")
+                        Logger.logger.error { "Neither source file nor piped input found." }
                     }
                 }
             }

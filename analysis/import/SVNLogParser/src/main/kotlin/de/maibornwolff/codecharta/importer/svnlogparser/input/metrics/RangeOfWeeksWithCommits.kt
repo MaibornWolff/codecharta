@@ -23,7 +23,9 @@ class RangeOfWeeksWithCommits : Metric {
     override fun value(): Number {
         return if (weeksWithCommits.size < 1) {
             0
-        } else 1 + CalendarWeek.numberOfWeeksBetween(weeksWithCommits.last(), weeksWithCommits.first())
+        } else {
+        1 + CalendarWeek.numberOfWeeksBetween(weeksWithCommits.last(), weeksWithCommits.first())
+        }
     }
 
     override fun attributeType(): AttributeType {

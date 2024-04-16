@@ -20,14 +20,14 @@ class ParserDialog {
 
             val outputFormat = KInquirer.promptListObject(
                     message = "Which output format should be generated?",
-                    choices = listOf(Choice("CodeCharta JSON", OutputFormat.JSON), Choice("CSV", OutputFormat.CSV)),
+                    choices = listOf(Choice("CodeCharta JSON", OutputFormat.JSON), Choice("CSV", OutputFormat.CSV))
             )
 
             val defaultOutputFilename = if (outputFormat == OutputFormat.JSON) "output.cc.json" else "output.csv"
             val outputFileName: String = KInquirer.promptInput(
                     message = "What is the name of the output file?",
                     hint = defaultOutputFilename,
-                    default = defaultOutputFilename,
+                    default = defaultOutputFilename
             )
 
             val findIssues = KInquirer.promptConfirm(
@@ -43,7 +43,7 @@ class ParserDialog {
             val exclude = mutableListOf<String>()
             while (true) {
                 val additionalExclude = KInquirer.promptInput(
-                    message = "Exclude file/folder according to regex pattern? Leave empty to skip.",
+                    message = "Exclude file/folder according to regex pattern? Leave empty to skip."
                 )
                 if (additionalExclude.isNotBlank()) {
                     exclude.add("--exclude=$additionalExclude")
@@ -67,7 +67,7 @@ class ParserDialog {
                 if (isCompressed) null else "--not-compressed",
                 if (findIssues) null else "--no-issues",
                     if (defaultExcludes) "--default-excludes" else null,
-                    if (isVerbose) "--verbose" else null,
+                    if (isVerbose) "--verbose" else null
             ) + exclude
         }
     }

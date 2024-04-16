@@ -19,7 +19,8 @@ class GitLogParserTest {
                     Arguments.of("src/test/resources/my/empty/repo"),
                     Arguments.of("src/test/resources/this/does/not/exist"),
                     Arguments.of(""),
-                    Arguments.of("src/test/resources/my"))
+                    Arguments.of("src/test/resources/my")
+            )
         }
     }
 
