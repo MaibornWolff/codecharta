@@ -14,6 +14,6 @@ fun getAttributeDescriptors(): Map<String, AttributeDescriptor> {
         "coupling_between_objects" to AttributeDescriptor(title = "Coupling between objects", description = "Coupling between objects", link = npmLink, direction = -1),
         "incoming_dependencies" to AttributeDescriptor(title = "Incoming dependencies", description = "Number of incoming dependencies", link = npmLink, direction = -1),
         "outgoing_dependencies" to AttributeDescriptor(title = "Outgoing dependencies", description = "Number of outgoing dependencies", link = npmLink, direction = -1),
-        "instability" to AttributeDescriptor(title = "Instability", description = "Outgoing Dependencies / (Outgoing Dependencies + Incoming Dependencies)", link = npmLink, direction = -1),
+        "instability" to AttributeDescriptor(title = "Instability", description = "Outgoing Dependencies / (Outgoing Dependencies + Incoming Dependencies)", link = npmLink, direction = -1)
    )
 }

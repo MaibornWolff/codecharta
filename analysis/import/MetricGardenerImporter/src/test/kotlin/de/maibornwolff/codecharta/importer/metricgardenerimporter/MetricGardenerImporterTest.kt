@@ -39,7 +39,8 @@ class MetricGardenerImporterTest {
             return listOf(
                     Arguments.of("src/test/resources/my/supported-multi-language/repo"),
                     Arguments.of("src/test/resources/my/supported-multi-language/repo/dummyFile.js"),
-                    Arguments.of("src/test/resources/my"))
+                    Arguments.of("src/test/resources/my")
+            )
         }
 
         @JvmStatic
@@ -48,7 +49,8 @@ class MetricGardenerImporterTest {
                     Arguments.of("src/test/resources/my/empty/repo"),
                     Arguments.of("src/test/resources/this/does/not/exist"),
                     Arguments.of("src/test/resources/my/non-supported-language/repo"),
-                    Arguments.of(""))
+                    Arguments.of("")
+            )
         }
     }
 

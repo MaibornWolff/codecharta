@@ -16,8 +16,11 @@ open class ProjectBuilder(
     val DUMMY_PROJECT_NAME = ""
 
     init {
-        if (nodes.size != 1) throw IllegalStateException(
-                "No unique root node was found, instead ${nodes.size} candidates identified.")
+        if (nodes.size != 1) {
+        throw IllegalStateException(
+                "No unique root node was found, instead ${nodes.size} candidates identified."
+        )
+        }
     }
 
     val rootNode: MutableNode
@@ -129,11 +132,13 @@ open class ProjectBuilder(
 
         val strippedNodeAttributeName = nodeAttributeName.lowercase().replace("[^a-zäöüß]".toRegex(), "")
         if (getCodeMetricsPositiveDirectionEnglish().any { it in strippedNodeAttributeName } &&
-            !(getCodeMetricsNegativeDirectionEnglish()).any { it in strippedNodeAttributeName }) {
+            !(getCodeMetricsNegativeDirectionEnglish()).any { it in strippedNodeAttributeName }
+        ) {
             return 1
         }
         if (getCodeMetricsPositiveDirectionGerman().any { it in strippedNodeAttributeName } &&
-            !(getCodeMetricsNegativeDirectionGerman()).any { it in strippedNodeAttributeName }) {
+            !(getCodeMetricsNegativeDirectionGerman()).any { it in strippedNodeAttributeName }
+        ) {
             return 1
         }
 
@@ -146,7 +151,8 @@ open class ProjectBuilder(
                 attributeDescriptorNamesByAvgSimilarities.maxByOrNull { it.value }
 
         if (attributeDescriptorNameWithMaxAvgSimilarity != null &&
-            attributeDescriptorNameWithMaxAvgSimilarity.value >= avgSimilarityThreshold) {
+            attributeDescriptorNameWithMaxAvgSimilarity.value >= avgSimilarityThreshold
+        ) {
             val attributeDescriptorWithMaxAvgSimilarity =
                     attributeDescriptors[attributeDescriptorNameWithMaxAvgSimilarity.key]
             if (attributeDescriptorWithMaxAvgSimilarity != null) {
@@ -216,21 +222,27 @@ open class ProjectBuilder(
     }
 
     private fun getCodeMetricsPositiveDirectionEnglish(): List<String> {
-        return listOf("covered", "coverage", "review", "reviewed", "documentation", "documented", "success",
+        return listOf(
+        "covered", "coverage", "review", "reviewed", "documentation", "documented", "success",
                 "succeeded", "fix", "fixed", "completion", "complete", "augmentation", "augmented", "enhancement",
                 "enhanced", "improvement", "improved", "added", "addition", "efficient", "efficiency", "velocity",
-                "reusable", "reusability", "reduced", "reduction")
+                "reusable", "reusability", "reduced", "reduction"
+        )
     }
 
     private fun getCodeMetricsNegativeDirectionEnglish(): List<String> {
-        return listOf("unchecked", "uncovered", "not", "failed", "failure", "reopened", "violation", "violated",
-                "duplication", "duplicated", "skipped", "error", "wont")
+        return listOf(
+        "unchecked", "uncovered", "not", "failed", "failure", "reopened", "violation", "violated",
+                "duplication", "duplicated", "skipped", "error", "wont"
+        )
     }
 
     private fun getCodeMetricsPositiveDirectionGerman(): List<String> {
-        return listOf("abgedeckt", "abdeckung", "überprüft", "dokumentation", "dokumentiert", "erfolg", "erfolgreich",
+        return listOf(
+        "abgedeckt", "abdeckung", "überprüft", "dokumentation", "dokumentiert", "erfolg", "erfolgreich",
                 "beheben", "behoben", "vollständig", "erweitert", "verbessert", "hinzugefügt", "effizient", "effizienz",
-                "geschwindigkeit", "wiederverwendbar", "wiederverwendbarkeit")
+                "geschwindigkeit", "wiederverwendbar", "wiederverwendbarkeit"
+        )
     }
 
     private fun getCodeMetricsNegativeDirectionGerman(): List<String> {

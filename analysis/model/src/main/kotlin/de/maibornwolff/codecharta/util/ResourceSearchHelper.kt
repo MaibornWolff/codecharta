@@ -31,8 +31,10 @@ class ResourceSearchHelper {
                 return false
             }
 
-            println("Given resource did not end with any of the supplied file endings. " +
-                    "Scanning directory `${inputFile.absolutePath}` if it contains a file with any of the supplied file endings.")
+            println(
+            "Given resource did not end with any of the supplied file endings. " +
+                    "Scanning directory `${inputFile.absolutePath}` if it contains a file with any of the supplied file endings."
+            )
             return inputFile.walk()
                     .asSequence()
                     .filter { it.isFile && endsWithAtLeastOne(it.name, toBeCheckedFileEndings) }

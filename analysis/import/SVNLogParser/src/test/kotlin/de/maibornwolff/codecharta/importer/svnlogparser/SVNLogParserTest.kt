@@ -35,7 +35,8 @@ class SVNLogParserTest {
                     Arguments.of("src/test/resources/my/empty/repo"),
                     Arguments.of("src/test/resources/this/does/not/exist"),
                     Arguments.of(""),
-                    Arguments.of("src/test/resources/my"))
+                    Arguments.of("src/test/resources/my")
+            )
         }
     }
 
@@ -60,7 +61,7 @@ class SVNLogParserTest {
         main(
             arrayOf(
                 "src/test/resources/example_svn.log",
-                "--output-file=src/test/resources/svn-analysis.cc.json",
+                "--output-file=src/test/resources/svn-analysis.cc.json"
                    )
             )
         val file = File("src/test/resources/svn-analysis.cc.json.gz")

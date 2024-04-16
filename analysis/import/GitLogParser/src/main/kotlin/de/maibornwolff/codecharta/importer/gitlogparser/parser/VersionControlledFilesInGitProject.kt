@@ -42,14 +42,14 @@ class VersionControlledFilesInGitProject(private val vcFList: MutableMap<String,
             }
 
             trackingNamesPerFilename[elem]?.forEach {
-                if (it != chooseElement)
-                    vcFList.remove(it)
+                if (it != chooseElement) {
+                vcFList.remove(it)
+                }
             }
         }
     }
 
     fun getListOfVCFilesMatchingGitProject(): Set<VersionControlledFile> {
-
         removeSaltFromFilenames()
         val trackingNamesPerFilename = findDuplicates()
         removeDuplicates(trackingNamesPerFilename)

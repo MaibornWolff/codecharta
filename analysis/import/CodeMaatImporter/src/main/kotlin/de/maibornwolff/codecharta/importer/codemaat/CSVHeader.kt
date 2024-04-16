@@ -1,9 +1,8 @@
 package de.maibornwolff.codecharta.importer.codemaat
 
-import mu.KotlinLogging
+import de.maibornwolff.codecharta.util.Logger
 
 class CSVHeader(header: Array<String?>) {
-    private val logger = KotlinLogging.logger {}
 
     private val headerMap: MutableMap<Int, String>
 
@@ -20,8 +19,8 @@ class CSVHeader(header: Array<String?>) {
         headerMap = HashMap()
         for (i in header.indices) {
             when {
-                header[i].isNullOrEmpty() -> logger.warn { "Ignoring column number $i (counting from 0) as it has no column name." }
-                headerMap.containsValue(header[i]) -> logger.warn { "Ignoring column number $i (counting from 0) with column name ${header[i]} as it duplicates a previous column." }
+                header[i].isNullOrEmpty() -> Logger.logger.warn { "Ignoring column number $i (counting from 0) as it has no column name." }
+                headerMap.containsValue(header[i]) -> Logger.logger.warn { "Ignoring column number $i (counting from 0) with column name ${header[i]} as it duplicates a previous column." }
                 else -> headerMap[i] = header[i]!!
             }
         }

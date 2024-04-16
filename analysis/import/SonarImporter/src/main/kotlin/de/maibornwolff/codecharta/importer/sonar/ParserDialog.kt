@@ -4,22 +4,20 @@ import com.github.kinquirer.KInquirer
 import com.github.kinquirer.components.promptConfirm
 import com.github.kinquirer.components.promptInput
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
-import mu.KotlinLogging
+import de.maibornwolff.codecharta.util.Logger
 
 class ParserDialog {
     companion object : ParserDialogInterface {
-    private val logger = KotlinLogging.logger {}
-
         override fun collectParserArgs(): List<String> {
             var hostUrl = collectHostUrl()
             while (hostUrl.isEmpty()) {
-                logger.error("Empty hostUrl is not allowed!")
+                Logger.logger.error { "Empty hostUrl is not allowed!" }
                 hostUrl = collectHostUrl()
             }
 
             var projectKey = collectProjectKey()
             while (projectKey.isEmpty()) {
-                logger.error("Empty projectKey is not allowed!")
+                Logger.logger.error { "Empty projectKey is not allowed!" }
                 projectKey = collectProjectKey()
             }
 
@@ -29,7 +27,7 @@ class ParserDialog {
             )
 
             val outputFileName: String = KInquirer.promptInput(
-                message = "What is the name of the output file?",
+                message = "What is the name of the output file?"
             )
 
             val metrics: String = KInquirer.promptInput(
@@ -54,7 +52,7 @@ class ParserDialog {
                 "--output-file=$outputFileName",
                 if (metrics.isEmpty()) null else "--metrics=${eraseWhitespace(metrics)}",
                 if (isCompressed) null else "--not-compressed",
-                "--merge-modules=$mergeModules",
+                "--merge-modules=$mergeModules"
             )
         }
 

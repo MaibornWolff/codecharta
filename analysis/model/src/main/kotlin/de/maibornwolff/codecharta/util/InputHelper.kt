@@ -1,23 +1,21 @@
 package de.maibornwolff.codecharta.util
 
-import mu.KotlinLogging
 import java.io.File
 
 class InputHelper {
     companion object {
-        private val logger = KotlinLogging.logger {}
-
         /**
          * Checks the same as ´isInputValid(Array<File>, Boolean)`, but additionally checks for nullness in elements in array.
          */
-        fun isInputValidAndNotNull(inputResources: Array<File?>,
-                         canInputContainFolders: Boolean): Boolean {
-
+        fun isInputValidAndNotNull(
+        inputResources: Array<File?>,
+                         canInputContainFolders: Boolean
+        ): Boolean {
             val nonNullInputResources: Array<File>
             try {
                 nonNullInputResources = inputResources.requireNoNulls()
             } catch (e: IllegalArgumentException) {
-                logger.error("Input contained illegal null resource!")
+                Logger.logger.error { "Input contained illegal null resource!" }
                 return false
             }
 
@@ -30,15 +28,17 @@ class InputHelper {
          * If input can not contain folders, no element in the list can be a path to a folder.
          * All elements in the array have to either be existing files or if allowed, folders.
          */
-        fun isInputValid(inputResources: Array<File>,
-                         canInputContainFolders: Boolean): Boolean {
+        fun isInputValid(
+        inputResources: Array<File>,
+                         canInputContainFolders: Boolean
+        ): Boolean {
             return !isInputEmpty(inputResources) &&
                    areInputResourcesValid(inputResources, canInputContainFolders)
         }
 
         private fun isInputEmpty(inputResources: Array<File>): Boolean {
             if (inputResources.isEmpty()) {
-                logger.error("Did not find any input resources!")
+                Logger.logger.error { "Did not find any input resources!" }
                 return true
             }
             return false
@@ -46,7 +46,7 @@ class InputHelper {
 
         private fun isInputEmptyString(inputResource: File): Boolean {
             if (inputResource.name == "") {
-                logger.error("Input empty string for input files/folders, which is not allowed!")
+                Logger.logger.error { "Input empty string for input files/folders, which is not allowed!" }
                 return true
             }
             return false
@@ -54,31 +54,35 @@ class InputHelper {
 
         private fun isInputExistentFolderOrFile(inputResource: File): Boolean {
             if (!(inputResource.isFile || inputResource.isDirectory)) {
-                logger.error("Could not find resource `${ inputResource.path }`!")
+                Logger.logger.error { "Could not find resource `${inputResource.path}`!" }
                 return false
             }
             return true
         }
 
-        private fun isInputValidFolderOrAnyFile(inputResource: File,
-                                                canInputContainFolders: Boolean): Boolean {
+        private fun isInputValidFolderOrAnyFile(
+        inputResource: File,
+                                                canInputContainFolders: Boolean
+        ): Boolean {
             if (canInputContainFolders) {
                 if (inputResource.isDirectory && getFilesInFolder(inputResource).isEmpty()) {
-                    logger.error("The specified path `${ inputResource.path }` exists but is empty!")
+                    Logger.logger.error { "The specified path `${inputResource.path}` exists but is empty!" }
                     return false
                 }
                 return true
             } else {
                 if (inputResource.isDirectory) {
-                    logger.error("Input folder where only files are allowed!")
+                    Logger.logger.error { "Input folder where only files are allowed!" }
                     return false
                 }
                 return true
             }
         }
 
-        private fun areInputResourcesValid(inputResources: Array<File>,
-                                           canInputContainFolders: Boolean): Boolean {
+        private fun areInputResourcesValid(
+        inputResources: Array<File>,
+                                           canInputContainFolders: Boolean
+        ): Boolean {
             var isInputValid = true
 
             // We do not end/break early here, so user is informed about all input faults in one run

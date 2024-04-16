@@ -5,7 +5,6 @@ dependencies {
     implementation group: 'com.univocity', name: 'univocity-parsers', version: univocity_parsers_version
     implementation group: 'info.picocli', name: 'picocli', version: picocli_version
     implementation group: 'io.fastjson', name: 'boon', version: boon_version
-    implementation group: 'io.github.microutils', name: 'kotlin-logging', version: kotlin_logging_version
 
     implementation group: 'org.slf4j', name: 'slf4j-simple', version: slf4j_version
     implementation group: 'com.github.kotlin-inquirer', name: 'kotlin-inquirer', version: kotlin_inquirer_version

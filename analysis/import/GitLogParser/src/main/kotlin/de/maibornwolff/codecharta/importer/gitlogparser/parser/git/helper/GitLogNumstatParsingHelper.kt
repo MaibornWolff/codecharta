@@ -1,12 +1,10 @@
 package de.maibornwolff.codecharta.importer.gitlogparser.parser.git.helper
 
 import de.maibornwolff.codecharta.importer.gitlogparser.input.Modification
-import mu.KotlinLogging
+import de.maibornwolff.codecharta.util.Logger
 
 class GitLogNumstatParsingHelper {
     companion object {
-
-        private val logger = KotlinLogging.logger {}
 
         private const val STANDARD_FILE_LINE_REGEX = "\\d+\\s+\\d+\\s+\\S+\\s*"
         private const val RENAME_FILE_LINE_REGEX = "\\d+\\s+\\d+\\s+\\S*\\S+ => \\S+\\S*\\s*"
@@ -58,7 +56,7 @@ class GitLogNumstatParsingHelper {
                 oldFileName = lineParts[2]
                 newFileName = lineParts[4]
             } else {
-                logger.warn { "Log line could not be parsed$fileLine" }
+                Logger.logger.warn { "Log line could not be parsed$fileLine" }
                 return Modification.EMPTY
             }
 

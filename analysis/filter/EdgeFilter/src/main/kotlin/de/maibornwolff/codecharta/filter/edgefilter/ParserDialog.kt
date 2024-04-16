@@ -4,10 +4,8 @@ import com.github.kinquirer.KInquirer
 import com.github.kinquirer.components.promptInput
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import de.maibornwolff.codecharta.util.InputHelper
-import mu.KotlinLogging
+import de.maibornwolff.codecharta.util.Logger
 import java.io.File
-
-private val logger = KotlinLogging.logger {}
 
 class ParserDialog {
     companion object : ParserDialogInterface {
@@ -17,7 +15,7 @@ class ParserDialog {
                 inputFileName = getInputFileName("cc.json", false)
             } while (!InputHelper.isInputValidAndNotNull(arrayOf(File(inputFileName)), canInputContainFolders = false))
 
-            logger.info { "File path: $inputFileName" }
+            Logger.logger.info { "File path: $inputFileName" }
 
             val defaultOutputFileName = getOutputFileName(inputFileName)
             val outputFileName: String = KInquirer.promptInput(

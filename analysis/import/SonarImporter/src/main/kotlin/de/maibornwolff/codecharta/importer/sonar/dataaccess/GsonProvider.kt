@@ -48,7 +48,6 @@ class GsonProvider<T> : MessageBodyReader<T> {
         httpHeaders: MultivaluedMap<String, String>,
         entityStream: InputStream
     ): T {
-
         InputStreamReader(entityStream, "UTF-8").use { reader -> return gson.fromJson<T>(reader, type) }
     }
 }

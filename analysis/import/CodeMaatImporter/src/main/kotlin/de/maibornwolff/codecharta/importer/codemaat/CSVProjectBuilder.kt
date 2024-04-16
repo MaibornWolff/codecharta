@@ -8,7 +8,7 @@ import de.maibornwolff.codecharta.model.Edge
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.model.ProjectBuilder
 import de.maibornwolff.codecharta.translator.MetricNameTranslator
-import mu.KotlinLogging
+import de.maibornwolff.codecharta.util.Logger
 import java.io.InputStream
 import java.io.InputStreamReader
 import java.nio.charset.StandardCharsets
@@ -20,8 +20,6 @@ class CSVProjectBuilder(
     attributeTypes: AttributeTypes = AttributeTypes(mutableMapOf(), "edges"),
     attributeDescriptors: Map<String, AttributeDescriptor> = mapOf()
 ) {
-
-    private val logger = KotlinLogging.logger {}
 
     private val includeRows: (Array<String>) -> Boolean = { true }
     private val projectBuilder = ProjectBuilder()
@@ -50,7 +48,7 @@ class CSVProjectBuilder(
                     val edge: Edge = csvRow.asEdge()
                     projectBuilder.insertEdge(edge)
                 } catch (e: IllegalArgumentException) {
-                    logger.warn { "Ignoring row due to ${e.message}" }
+                    Logger.logger.warn { "Ignoring row due to ${e.message}" }
                 }
             }
             row = parser.parseNext()

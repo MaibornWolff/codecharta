@@ -10,7 +10,6 @@ class MergeCommitParser : CommitParser {
 
     override fun parse(commit: Commit, versionControlledFilesList: VersionControlledFilesList) {
         commit.modifications.forEach {
-
             val file = versionControlledFilesList.get(it.getTrackName())
             if (file == null || !file.isMutated()) {
                 // Handle mutated files only when a merge commit occurs

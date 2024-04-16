@@ -9,10 +9,10 @@ import de.maibornwolff.codecharta.importer.sonar.model.Qualifier
 import de.maibornwolff.codecharta.importer.sonar.model.Version
 import de.maibornwolff.codecharta.progresstracker.ParsingUnit
 import de.maibornwolff.codecharta.progresstracker.ProgressTracker
+import de.maibornwolff.codecharta.util.Logger
 import io.reactivex.BackpressureStrategy
 import io.reactivex.Flowable
 import io.reactivex.schedulers.Schedulers
-import mu.KotlinLogging
 import java.net.URI
 import java.net.URISyntaxException
 import java.net.URL
@@ -27,7 +27,6 @@ class SonarMeasuresAPIDatasource(
 ) {
 
     private val client: Client = ClientBuilder.newClient()
-    private val logger = KotlinLogging.logger {}
 
     private var measureBatches = 0
     private var processedPages = 0
@@ -62,7 +61,6 @@ class SonarMeasuresAPIDatasource(
     }
 
     private fun getMeasures(componentKey: String, sublist: List<String>): Flowable<Component> {
-
         return Flowable.create(
             { subscriber ->
                 var page = 1
@@ -97,7 +95,7 @@ class SonarMeasuresAPIDatasource(
         }
 
         try {
-            logger.debug { "Getting measures from $measureAPIRequestURI" }
+            Logger.logger.debug { "Getting measures from $measureAPIRequestURI" }
             return request.get(Measures::class.java)
         } catch (e: RuntimeException) {
             throw SonarImporterException("Error requesting $measureAPIRequestURI", e)

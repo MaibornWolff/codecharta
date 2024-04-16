@@ -33,7 +33,7 @@ class ParserDialog {
             return listOfNotNull(
                 inputFileName,
                 "--output-file=$outputFileName",
-                if (isCompressed) null else "--not-compressed",
+                if (isCompressed) null else "--not-compressed"
             )
         }
 

@@ -23,7 +23,6 @@ import java.util.concurrent.Callable
         description = [MetricGardenerImporter.DESCRIPTION],
         footer = [CodeChartaConstants.General.GENERIC_FOOTER]
 )
-
 class MetricGardenerImporter(
     private val output: PrintStream = System.out
 ) : Callable<Unit>, InteractiveParser, AttributeGenerator {

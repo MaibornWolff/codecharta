@@ -1,14 +1,14 @@
 package de.maibornwolff.codecharta.serialization
 
 import de.maibornwolff.codecharta.model.Project
+import io.github.oshai.kotlinlogging.KLogger
+import io.github.oshai.kotlinlogging.KotlinLogging
 import io.mockk.called
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkObject
 import io.mockk.unmockkAll
 import io.mockk.verify
-import mu.KLogger
-import mu.KotlinLogging
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
@@ -38,7 +38,7 @@ class ProjectSerializerTest {
     fun beforeTests() {
         mockkObject(KotlinLogging)
         every { KotlinLogging.logger(any<(() -> Unit)>()) } returns loggerMock
-        every { loggerMock.info(capture(infoMessagesLogged)) } returns Unit
+        every { loggerMock.info { capture<String>(infoMessagesLogged) } } returns Unit
     }
 
     @BeforeEach

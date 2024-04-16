@@ -103,7 +103,8 @@ class MergeFilterTest {
         System.setErr(PrintStream(errContent))
         CommandLine(MergeFilter()).execute(
                 "src/test/resources/mergeFolderTest/file1.cc.json",
-                "src/test/resources/thisDoesNotExist.cc.json").toString()
+                "src/test/resources/thisDoesNotExist.cc.json"
+        ).toString()
         System.setErr(originalErr)
 
         assertThat(errContent.toString()).contains("Input invalid files/folders for MergeFilter, stopping execution")

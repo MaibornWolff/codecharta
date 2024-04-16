@@ -43,8 +43,9 @@ class HighlyCoupledFiles : Metric {
                         coupledFile,
                         mapOf(edgeMetricName() to value.toDouble() / numberOfCommits.toDouble())
                     )
-                } else
-                    null
+                } else {
+                null
+                }
             }
     }
 
@@ -64,7 +65,9 @@ class HighlyCoupledFiles : Metric {
     private fun isHighlyCoupled(value: Int): Boolean {
         return if (value >= MIN_NO_COMMITS_FOR_HIGH_COUPLING) {
             value.toDouble() / numberOfCommits.toDouble() > HIGH_COUPLING_VALUE
-        } else false
+        } else {
+        false
+        }
     }
 
     override fun registerCommit(commit: Commit) {

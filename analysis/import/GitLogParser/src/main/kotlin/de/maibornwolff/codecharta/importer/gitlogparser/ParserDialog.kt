@@ -24,8 +24,11 @@ class ParserDialog {
                 }
 
             val subcommandArguments =
-                if (isLogScan) LogScanCommand().getDialog().collectParserArgs()
-                else RepoScanCommand().getDialog().collectParserArgs()
+                if (isLogScan) {
+                LogScanCommand().getDialog().collectParserArgs()
+                } else {
+                RepoScanCommand().getDialog().collectParserArgs()
+                }
 
             val outputFileName: String = KInquirer.promptInput(
                 message = "What is the name of the output file? If empty, the result will be returned to stdOut",

@@ -8,16 +8,15 @@ import de.maibornwolff.codecharta.model.MutableNode
 import de.maibornwolff.codecharta.model.NodeType
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.model.ProjectBuilder
-import mu.KotlinLogging
+import de.maibornwolff.codecharta.util.Logger
 
 class FolderMover(private val project: Project) {
 
-    private val logger = KotlinLogging.logger { }
     private var toMove: List<MutableNode>? = null
 
     fun move(moveFrom: String?, moveTo: String?): Project? {
         if ((moveFrom.isNullOrEmpty()) || (moveTo.isNullOrEmpty())) {
-            logger.error("In order to move nodes, both source and destination need to be set.")
+            Logger.logger.error { "In order to move nodes, both source and destination need to be set." }
             return null
         }
 
@@ -44,7 +43,7 @@ class FolderMover(private val project: Project) {
         val newStructureList = listOfNotNull(newStructure)
 
         if (toMove == null) {
-            logger.warn("Path to move was not found in project. No nodes are therefore moved")
+            Logger.logger.warn { "Path to move was not found in project. No nodes are therefore moved" }
         } else {
             insertInNewStructure(destinationPath.drop(1), newStructure)
         }
@@ -52,7 +51,6 @@ class FolderMover(private val project: Project) {
     }
 
     private fun removeMovedNodeFromStructure(originPath: List<String>, node: MutableNode): MutableNode? {
-
         return if (originPath.isEmpty() || originPath.first() != node.name) {
             node
         } else if (originPath.size == 1) {
@@ -73,7 +71,7 @@ class FolderMover(private val project: Project) {
                 !(destinationNodeNamesAndType.containsKey(it.name) && destinationNodeNamesAndType[it.name] == it.type)
             }
             if (filteredNodesToMove.size < toMove!!.size) {
-                logger.warn("Some nodes are already available in the target location, they were not moved and discarded instead.")
+                Logger.logger.warn { "Some nodes are already available in the target location, they were not moved and discarded instead." }
             }
             node.children.addAll(filteredNodesToMove)
         } else {

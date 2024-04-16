@@ -13,13 +13,14 @@ buildscript {
         json_version = '20190722'
         juniversalchardet_version = '1.0.3'
         kotlin_inquirer_version = '0.1.0'
-        kotlin_logging_version = '2.1.23'
+        kotlin_logging_version = '6.0.9'
         kotlin_version = '1.9.23'
         kotlinx_coroutines_version = '1.7.3'
         picocli_version = '4.7.5'
         slf4j_version = '2.0.12'
         sonar_java_version = '6.8.0.23379'
         sonarqube_version = '5.0.0.4638'
+        dependency_analysis_version = '1.3.0'
         univocity_parsers_version = '2.9.1'
 
         // Test dependency versions
@@ -27,7 +28,7 @@ buildscript {
         junit5_version = '5.9.3'
         junit_platform_version = '1.9.3'
         jsonassert_version = '1.5.1'
-        ktlint_version = '12.1.0'
+        ktlint_version = '10.3.0'
 
         mockito_core_version = '3.12.4'
         mockito_kotlin_version = '2.2.0'
@@ -51,8 +52,9 @@ buildscript {
 
 plugins {
     id 'distribution'
-    id "org.jlleitschuh.gradle.ktlint" version "${ktlint_version}"
     id 'org.sonarqube' version "${sonarqube_version}"
+    id "org.jlleitschuh.gradle.ktlint" version "${ktlint_version}"
+    id "com.autonomousapps.dependency-analysis" version "${dependency_analysis_version}"
 }
 
 allprojects {
@@ -73,18 +75,13 @@ allprojects {
 
 subprojects {
     apply plugin: 'kotlin'
-    apply plugin: 'kotlin-kapt'
 
     dependencies {
-        implementation group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib', version: kotlin_version
-        implementation group: 'org.jetbrains.kotlin', name: 'kotlin-reflect', version: kotlin_version
+        implementation group: 'io.github.oshai', name: 'kotlin-logging-jvm', version: kotlin_logging_version
         implementation group: 'org.jetbrains.kotlinx', name: 'kotlinx-coroutines-core', version: kotlinx_coroutines_version
-        testImplementation group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib', version: kotlin_version
         testImplementation("org.junit.jupiter:junit-jupiter-api:$junit5_version")
         testImplementation("org.junit.jupiter:junit-jupiter-engine:$junit5_version")
         testImplementation("org.junit.jupiter:junit-jupiter-params:$junit5_version")
-
-        kapt group: 'info.picocli', name: 'picocli-codegen', version: picocli_version
     }
 
     test{
@@ -102,13 +99,6 @@ subprojects {
     kotlin {
         jvmToolchain(11)
     }
-
-    kapt {
-        arguments {
-            arg("project", "${project.group}/${project.name}")
-        }
-    }
-
 }
 
 distributions {

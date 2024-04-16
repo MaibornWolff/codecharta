@@ -6,7 +6,7 @@ import de.maibornwolff.codecharta.model.AttributeDescriptor
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.model.ProjectBuilder
 import de.maibornwolff.codecharta.translator.MetricNameTranslator
-import mu.KotlinLogging
+import de.maibornwolff.codecharta.util.Logger
 import java.io.InputStream
 import java.io.InputStreamReader
 import java.nio.charset.StandardCharsets
@@ -18,8 +18,6 @@ class CSVProjectBuilder(
     private val metricNameTranslator: MetricNameTranslator = MetricNameTranslator.TRIVIAL,
     private val attributeDescriptors: Map<String, AttributeDescriptor> = mapOf()
 ) {
-
-    private val logger = KotlinLogging.logger {}
 
     private val includeRows: (Array<String>) -> Boolean = { true }
     private val projectBuilder = ProjectBuilder()
@@ -64,7 +62,7 @@ class CSVProjectBuilder(
             val row = CSVRow(rawRow, header, pathSeparator)
             projectBuilder.insertByPath(row.pathInTree(), row.asNode())
         } catch (e: IllegalArgumentException) {
-            logger.warn { "Ignoring row ${rawRow.contentToString()} due to: ${e.message}" }
+            Logger.logger.warn { "Ignoring row ${rawRow.contentToString()} due to: ${e.message}" }
         }
     }
 }

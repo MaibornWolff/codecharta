@@ -16,8 +16,8 @@ import de.maibornwolff.codecharta.tools.pipeableparser.PipeableParserSyncFlag
 import de.maibornwolff.codecharta.util.CommaSeparatedParameterPreprocessor
 import de.maibornwolff.codecharta.util.CommaSeparatedStringToListConverter
 import de.maibornwolff.codecharta.util.InputHelper
+import de.maibornwolff.codecharta.util.Logger
 import de.maibornwolff.codecharta.util.ResourceSearchHelper
-import mu.KotlinLogging
 import picocli.CommandLine
 import java.io.BufferedWriter
 import java.io.File
@@ -86,8 +86,6 @@ class SourceCodeParserMain(
 
     override val name = NAME
     override val description = DESCRIPTION
-
-    private val logger = KotlinLogging.logger {}
 
     companion object {
         const val NAME = "sourcecodeparser"
@@ -160,7 +158,7 @@ class SourceCodeParserMain(
             } else {
                 OutputFileHandler.checkAndFixFileExtension(nonNullOutputFile.absolutePath, compress, FileExtension.JSON)
             }
-            logger.info("Created output file at $absoluteFilePath")
+            Logger.logger.info { "Created output file at $absoluteFilePath" }
         }
     }
 

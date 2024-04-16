@@ -10,11 +10,9 @@ import de.maibornwolff.codecharta.model.NodeType
 import de.maibornwolff.codecharta.model.Path
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.model.ProjectBuilder
-import mu.KotlinLogging
+import de.maibornwolff.codecharta.util.Logger
 
 class EdgeProjectBuilder(private val project: Project, private val pathSeparator: Char) {
-    private val logger = KotlinLogging.logger {}
-
     private val projectBuilder = ProjectBuilder(
         listOf(MutableNode("root", NodeType.Folder)),
         mutableListOf(),
@@ -76,7 +74,7 @@ class EdgeProjectBuilder(private val project: Project, private val pathSeparator
         val nodeFilename = nodeEdgeName.split(pathSeparator).reversed().first()
         val nodePath = nodeEdgeName.split(pathSeparator)
         if (nodePath.size <= 1) {
-            logger.error { "The Edge for $nodeEdgeName could not be resolved and therefore was skipped: No parent node was found." }
+            Logger.logger.error { "The Edge for $nodeEdgeName could not be resolved and therefore was skipped: No parent node was found." }
         } else {
             val nodeParentPath = nodePath.subList(2, nodePath.size - 1)
             val node = Node(nodeFilename, NodeType.File)
@@ -100,7 +98,7 @@ class EdgeProjectBuilder(private val project: Project, private val pathSeparator
         try {
             projectBuilder.insertByPath(Path(parentPath), node.toMutableNode())
         } catch (e: IllegalArgumentException) {
-            logger.warn { "Node $node not inserted due to ${e.message}" }
+            Logger.logger.warn { "Node $node not inserted due to ${e.message}" }
         }
     }
 

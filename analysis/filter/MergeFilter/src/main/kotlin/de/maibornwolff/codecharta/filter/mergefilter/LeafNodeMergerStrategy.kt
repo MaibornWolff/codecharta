@@ -2,7 +2,7 @@ package de.maibornwolff.codecharta.filter.mergefilter
 
 import de.maibornwolff.codecharta.model.MutableNode
 import de.maibornwolff.codecharta.model.Path
-import mu.KotlinLogging
+import de.maibornwolff.codecharta.util.Logger
 
 /**
  * merges leafs according to the level of matching of their paths
@@ -13,20 +13,24 @@ class LeafNodeMergerStrategy(private val addMisfittingNodes: Boolean, ignoreCase
 
     private var nodesProcessed = 0
     private var nodesMerged = 0
-    private val logger = KotlinLogging.logger { }
-
     init {
         mergeConditionSatisfied =
-            if (ignoreCase) { n1: MutableNode, n2: MutableNode -> n1.name.equals(n2.name, ignoreCase = true) }
-            else { n1: MutableNode, n2: MutableNode -> n1.name == n2.name }
+            if (ignoreCase) {
+            { n1: MutableNode, n2: MutableNode -> n1.name.equals(n2.name, ignoreCase = true) }
+            } else {
+            { n1: MutableNode, n2: MutableNode -> n1.name == n2.name }
+            }
     }
 
     override fun mergeNodeLists(nodeLists: List<List<MutableNode>>): List<MutableNode> {
-        return if (nodeLists.isEmpty()) listOf()
-        else nodeLists.reduce { mergedNodeList, nextNodeList ->
+        return if (nodeLists.isEmpty()) {
+        listOf()
+        } else {
+        nodeLists.reduce { mergedNodeList, nextNodeList ->
             nextNodeList.fold(mergedNodeList) { accumulatedNodes: List<MutableNode>, nextNode: MutableNode ->
                 mergeNodeIfExistentInList(accumulatedNodes, nextNode)
             }
+        }
         }
     }
 
@@ -36,13 +40,15 @@ class LeafNodeMergerStrategy(private val addMisfittingNodes: Boolean, ignoreCase
             if (mergeConditionSatisfied(existingNode, nextNode)) {
                 nodesMerged++
                 merge(existingNode, nextNode)
-            } else existingNode
+            } else {
+            existingNode
+            }
         }
     }
 
     override fun logMergeStats() {
-        logger.info("$nodesProcessed nodes were processed and $nodesMerged were merged")
-        if (nodesMerged == 0) logger.warn("No nodes were merged. Hierarchies may not match up.")
+        Logger.logger.info { "$nodesProcessed nodes were processed and $nodesMerged were merged" }
+        if (nodesMerged == 0) Logger.logger.warn { "No nodes were merged. Hierarchies may not match up." }
     }
 
     private fun merge(vararg nodes: MutableNode): MutableNode {

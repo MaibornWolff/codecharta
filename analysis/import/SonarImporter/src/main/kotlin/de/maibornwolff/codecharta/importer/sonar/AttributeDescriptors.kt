@@ -100,7 +100,7 @@ fun getAttributeDescriptorsWithPositiveDirection(metricLink: String): Map<String
             "pull_request_fixed_issues" to createAttributeDescriptor("Pull request fixed issues", "Count of issues that would be fixed by the pull request", 1, metricLink),
             "security_hotspots_reviewed" to createAttributeDescriptor("Security Hotspots Reviewed", "Percentage of reviewed (fixed or safe) security hotspots", 1, metricLink),
             "test_success_density" to createAttributeDescriptor("Test Success Density", "Ratio between successful tests and all tests", 1, metricLink),
-            "tests" to createAttributeDescriptor("Number of Tests", "Number of unit tests", 1, metricLink),
+            "tests" to createAttributeDescriptor("Number of Tests", "Number of unit tests", 1, metricLink)
     )
 }
 

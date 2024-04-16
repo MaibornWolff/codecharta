@@ -13,7 +13,7 @@ import de.maibornwolff.codecharta.util.CommaSeparatedParameterPreprocessor
 import de.maibornwolff.codecharta.util.CommaSeparatedStringToListConverter
 import de.maibornwolff.codecharta.util.FileExtensionConverter
 import de.maibornwolff.codecharta.util.InputHelper
-import mu.KotlinLogging
+import de.maibornwolff.codecharta.util.Logger
 import picocli.CommandLine
 import java.io.File
 import java.io.IOException
@@ -31,8 +31,6 @@ class RawTextParser(
     private val output: PrintStream = System.out,
     private val error: PrintStream = System.err,
 ) : Callable<Unit>, InteractiveParser, PipeableParser, AttributeGenerator {
-
-    private val logger = KotlinLogging.logger {}
 
     private val DEFAULT_EXCLUDES = arrayOf("/out/", "/build/", "/target/", "/dist/", "/resources/", "/\\..*")
 
@@ -115,7 +113,7 @@ class RawTextParser(
 
         if (projectMetrics.isEmpty()) {
             println()
-            logger.error("No files with specified file extension(s) were found within the given folder - not generating an output file!")
+            Logger.logger.error { "No files with specified file extension(s) were found within the given folder - not generating an output file!" }
             return null
         }
 
@@ -145,14 +143,14 @@ class RawTextParser(
         }
         if (notFoundFileExtensions.isNotEmpty()) {
             println()
-            notFoundFileExtensions.forEach { logger.warn("The specified file extension '$it' was not found within the given folder!") }
+            notFoundFileExtensions.forEach { Logger.logger.warn { "The specified file extension '$it' was not found within the given folder!" } }
         }
     }
 
     private fun logWarningsForInvalidMetrics(projectMetrics: ProjectMetrics) {
         for (metricName in metricNames) {
             if (!projectMetrics.hasMetric(metricName)) {
-                logger.warn("Metric $metricName is invalid and not included in the output")
+                Logger.logger.warn { "Metric $metricName is invalid and not included in the output" }
             }
         }
     }

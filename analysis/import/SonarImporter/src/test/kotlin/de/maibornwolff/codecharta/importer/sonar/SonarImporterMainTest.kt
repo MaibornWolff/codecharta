@@ -41,7 +41,8 @@ class SonarImporterMainTest {
         fun provideValidURLs(): List<Arguments> {
             return listOf(
                     Arguments.of("https://thisisatesturl.com"),
-                    Arguments.of("http://thisisatesturl.com"))
+                    Arguments.of("http://thisisatesturl.com")
+            )
         }
 
         @JvmStatic
@@ -49,7 +50,8 @@ class SonarImporterMainTest {
             return listOf(
                     Arguments.of("src/test/resources/my/sonar/repo"),
                     Arguments.of("src/test/resources/my/sonar"),
-                    Arguments.of("src/test/resources/my/sonar/repo/sonar-project.properties"))
+                    Arguments.of("src/test/resources/my/sonar/repo/sonar-project.properties")
+            )
         }
 
         @JvmStatic
@@ -59,7 +61,8 @@ class SonarImporterMainTest {
                     Arguments.of("src/test/resources"),
                     Arguments.of("src/test/resources/my/other/sonar-project.properties"),
                     Arguments.of("src/test/resources/this/does/not/exist"),
-                    Arguments.of(""))
+                    Arguments.of("")
+            )
         }
 
         @JvmStatic
@@ -68,7 +71,8 @@ class SonarImporterMainTest {
                 Arguments.of("thisisatesturl.https://"),
                 Arguments.of("thisisatesturl.http://"),
                 Arguments.of("http:/noturl.com"),
-                Arguments.of("www.google.com"))
+                Arguments.of("www.google.com")
+            )
         }
     }
 

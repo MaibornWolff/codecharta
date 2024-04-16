@@ -18,8 +18,9 @@ class MutableNode(
     override var children = childrenList.toMutableSet()
 
     override fun getPathOfChild(child: Tree<MutableNode>): Path {
-        if (!children.contains(child))
-            throw NoSuchElementException("Child $child not contained in MutableNode.")
+        if (!children.contains(child)) {
+        throw NoSuchElementException("Child $child not contained in MutableNode.")
+        }
         return Path(listOf((child.asTreeNode()).name))
     }
 

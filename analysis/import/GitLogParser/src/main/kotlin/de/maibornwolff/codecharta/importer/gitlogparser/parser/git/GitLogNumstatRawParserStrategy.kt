@@ -32,7 +32,9 @@ class GitLogNumstatRawParserStrategy : LogParserStrategy {
             .mapNotNull {
                 if (isFileLine(it)) {
                     parseModification(it)
-                } else null
+                } else {
+                null
+                }
             }
             .groupingBy { it.currentFilename }
             .aggregate { _, aggregatedModification: Modification?, currentModification, _ ->
@@ -64,7 +66,9 @@ class GitLogNumstatRawParserStrategy : LogParserStrategy {
         internal fun parseModification(fileLine: String): Modification {
             return if (fileLine.startsWith(":")) {
                 GitLogRawParsingHelper.parseModification(fileLine)
-            } else GitLogNumstatParsingHelper.parseModification(fileLine)
+            } else {
+            GitLogNumstatParsingHelper.parseModification(fileLine)
+            }
         }
 
         private fun mergeModifications(vararg a: Modification): Modification {
@@ -80,7 +84,6 @@ class GitLogNumstatRawParserStrategy : LogParserStrategy {
             }
 
             if (type == Modification.Type.RENAME) {
-
                 val temporaryModification = a.firstOrNull { modification -> modification.oldFilename.isNotEmpty() }
                 var oldFilename = ""
 

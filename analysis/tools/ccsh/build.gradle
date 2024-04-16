@@ -17,7 +17,6 @@ fi
 '''
 
 dependencies {
-    implementation group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib', version: kotlin_version
     implementation project(path: ':model')
 
     def codeMaatImporter = project(':import:CodeMaatImporter')
@@ -56,7 +55,6 @@ dependencies {
     implementation metricGardenerImporter; testImplementation metricGardenerImporter.sourceSets.test.output
 
     implementation group: 'info.picocli', name: 'picocli', version: picocli_version
-    implementation group: 'io.github.microutils', name: 'kotlin-logging', version: kotlin_logging_version
     implementation "com.github.kotlin-inquirer:kotlin-inquirer:$kotlin_inquirer_version"
 
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter', version: junit5_version

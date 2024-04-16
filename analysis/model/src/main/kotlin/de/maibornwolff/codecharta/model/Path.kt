@@ -31,16 +31,22 @@ data class Path(val edgesList: List<String>) {
      */
     val tail: Path
         get() =
-            if (isSingle) Path.trivialPath()
-            else Path(edgesList.drop(1))
+            if (isSingle) {
+            Path.trivialPath()
+            } else {
+            Path(edgesList.drop(1))
+            }
 
     /**
      * @return parent, i.e. the path without the last edge, if not trivial, trivial element if trivial
      */
     val parent: Path
         get() =
-            if (isSingle) Path.trivialPath()
-            else Path(edgesList.dropLast(1))
+            if (isSingle) {
+            Path.trivialPath()
+            } else {
+            Path(edgesList.dropLast(1))
+            }
 
     /**
      * @param path that will be added after the present path

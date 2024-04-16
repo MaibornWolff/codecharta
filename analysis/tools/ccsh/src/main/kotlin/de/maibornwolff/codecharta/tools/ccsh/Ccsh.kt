@@ -23,7 +23,8 @@ import de.maibornwolff.codecharta.tools.ccsh.parser.repository.PicocliParserRepo
 import de.maibornwolff.codecharta.tools.interactiveparser.util.CodeChartaConstants
 import de.maibornwolff.codecharta.tools.validation.ValidationTool
 import de.maibornwolff.codecharta.util.AttributeGeneratorRegistry
-import mu.KotlinLogging
+import de.maibornwolff.codecharta.util.Logger
+import io.github.oshai.kotlinlogging.KotlinLogging
 import picocli.CommandLine
 import java.util.concurrent.Callable
 import java.util.concurrent.Executors
@@ -79,7 +80,6 @@ class Ccsh : Callable<Unit?> {
     }
 
     companion object {
-        private val logger = KotlinLogging.logger {}
 
         const val NO_USABLE_PARSER_FOUND_MESSAGE = "No usable parser was found for the input file path!"
 
@@ -127,7 +127,7 @@ class Ccsh : Callable<Unit?> {
                     val currentExitCode = executeConfiguredParser(commandLine, configuredParser)
                     if (currentExitCode != 0) {
                         exitCode.set(currentExitCode)
-                        logger.info { "Code: $currentExitCode" }
+                        Logger.logger.info { "Code: $currentExitCode" }
                     }
                 }
             }
@@ -135,16 +135,16 @@ class Ccsh : Callable<Unit?> {
             threadPool.awaitTermination(1, TimeUnit.DAYS)
 
             val finalExitCode = exitCode.get()
-            logger.info { "Code: $finalExitCode" }
+            Logger.logger.info { "Code: $finalExitCode" }
             if (finalExitCode != 0) {
                 return finalExitCode
             }
             // Improvement: Try to extract merge commands before so user does not have to configure merge args?
             if (configuredParsers.size == 1) {
-                logger.info { "Parser was successfully executed." }
+                Logger.logger.info { "Parser was successfully executed." }
                 return 0
             } else {
-                logger.info { "Each parser was successfully executed." }
+                Logger.logger.info { "Each parser was successfully executed." }
                 return askAndMergeResults(commandLine)
             }
         }
@@ -181,11 +181,11 @@ class Ccsh : Callable<Unit?> {
         }
 
         private fun executeConfiguredParser(commandLine: CommandLine, configuredParser: Map.Entry<String, List<String>>): Int {
-            logger.info { "Executing ${configuredParser.key}" }
+            Logger.logger.info { "Executing ${configuredParser.key}" }
             val exitCode = ParserService.executePreconfiguredParser(commandLine, Pair(configuredParser.key, configuredParser.value))
 
             if (exitCode != 0) {
-                logger.info { "Error executing ${configuredParser.key}, code $exitCode" }
+                Logger.logger.info { "Error executing ${configuredParser.key}, code $exitCode" }
             }
 
             return exitCode
@@ -197,7 +197,7 @@ class Ccsh : Callable<Unit?> {
         }
 
         private fun executeInteractiveParser(selectedParser: String, commandLine: CommandLine): Int {
-            logger.info { "Executing $selectedParser" }
+            Logger.logger.info { "Executing $selectedParser" }
             return ParserService.executeSelectedParser(commandLine, selectedParser)
         }
 

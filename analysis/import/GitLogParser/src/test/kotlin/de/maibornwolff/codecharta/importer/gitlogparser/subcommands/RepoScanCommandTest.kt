@@ -31,7 +31,8 @@ class RepoScanCommandTest {
 
         System.setErr(PrintStream(errContent))
         CommandLine(RepoScanCommand()).execute(
-                "--repo-path=thisDoesNotExist").toString()
+                "--repo-path=thisDoesNotExist"
+        ).toString()
         System.setErr(originalErr)
 
         Assertions.assertThat(errContent.toString()).contains("Input invalid file for GitRepoScan, stopping execution")
