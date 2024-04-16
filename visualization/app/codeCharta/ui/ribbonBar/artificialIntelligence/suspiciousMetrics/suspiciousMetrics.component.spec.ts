@@ -107,7 +107,7 @@ describe("SuspiciousMetricsComponent", () => {
 				}
 			})
 			await userEvent.click(screen.getByTitle("Open Suspicious Metrics Panel"))
-			expect(screen.getByText("No programming language was found for analyzing suspicious metrics.")).toBeTruthy()
+			expect(screen.findByText("No programming language was found for analyzing suspicious metrics.")).toBeTruthy()
 			expect(screen.queryByText("Unsuspicious Metrics")).toBe(null)
 			expect(screen.queryByText("Suspicious Metrics in undefined code")).toBe(null)
 		})
@@ -129,9 +129,9 @@ describe("SuspiciousMetricsComponent", () => {
 			expect(screen.getByText("Unsuspicious Metrics in ts code")).not.toBe(null)
 			expect(screen.getByText("rloc")).not.toBe(null)
 			expect(screen.getByText("Suspicious Metrics in ts code")).not.toBe(null)
-			expect(screen.getByText("Suspicious MCC Files")).not.toBe(null)
+			expect(screen.getByText("MCC (cyclomatic complexity)")).not.toBe(null)
 
-			await userEvent.click(screen.getByText("Suspicious MCC Files"), undefined)
+			await userEvent.click(screen.getByText("MCC (cyclomatic complexity)"), undefined)
 			const store = TestBed.inject(Store)
 			expect(store.dispatch).toHaveBeenCalledWith(setHeightMetric({ value: "mcc" }))
 			expect(store.dispatch).toHaveBeenCalledWith(setColorMetric({ value: "mcc" }))
@@ -147,7 +147,15 @@ describe("SuspiciousMetricsComponent", () => {
 					data: {
 						analyzedProgrammingLanguage: "ts",
 						unsuspiciousMetrics: ["rloc"],
-						suspiciousMetricSuggestionLinks: [{ metric: "mcc", from: 10, to: 22, isOutlier: true, outlierThreshold: 120 }],
+						suspiciousMetricSuggestionLinks: [
+							{
+								metric: "mcc",
+								from: 10,
+								to: 22,
+								isOutlier: true,
+								outlierThreshold: 120
+							}
+						],
 						untrackedMetrics: []
 					}
 				}
@@ -158,6 +166,46 @@ describe("SuspiciousMetricsComponent", () => {
 			expect(store.dispatch).toHaveBeenCalledWith(setHeightMetric({ value: "mcc" }))
 			expect(store.dispatch).toHaveBeenCalledWith(setColorMetric({ value: "mcc" }))
 			expect(store.dispatch).toHaveBeenCalledWith(setColorRange({ value: { from: 10, to: 120 } }))
+		})
+	})
+
+	describe("info-button", () => {
+		it("should show the suspicious metrics information by clicking the information button", async () => {
+			await render(SuspiciousMetricComponent, {
+				excludeComponentDeclaration: true,
+				componentProperties: {
+					data: {
+						analyzedProgrammingLanguage: undefined,
+						unsuspiciousMetrics: [],
+						suspiciousMetricSuggestionLinks: [],
+						untrackedMetrics: []
+					}
+				}
+			})
+			await userEvent.click(screen.getByTitle("Open Suspicious Metrics Panel"))
+			expect(screen.queryByTestId("suspiciousMetricPopover")).toBe(null)
+			await userEvent.click(screen.getByTitle("Open Information about Suspicious Metrics"))
+			expect(screen.queryByTestId("suspiciousMetricPopover")).not.toBe(null)
+		})
+	})
+
+	describe("untracked-metrics-button", () => {
+		it("should show the suspicious metrics information by clicking the information button", async () => {
+			await render(SuspiciousMetricComponent, {
+				excludeComponentDeclaration: true,
+				componentProperties: {
+					data: {
+						analyzedProgrammingLanguage: "ts",
+						unsuspiciousMetrics: [],
+						suspiciousMetricSuggestionLinks: [],
+						untrackedMetrics: ["pairingRate", "avgCommits", "unary"]
+					}
+				}
+			})
+			await userEvent.click(screen.getByTitle("Open Suspicious Metrics Panel"))
+			expect(screen.queryByTestId("List of Untracked Metrics in ts Code")).toBe(null)
+			await userEvent.click(screen.queryByTestId("Untracked Metrics"))
+			expect(screen.queryByTestId("List of Untracked Metrics in ts Code")).not.toBe(null)
 		})
 	})
 })

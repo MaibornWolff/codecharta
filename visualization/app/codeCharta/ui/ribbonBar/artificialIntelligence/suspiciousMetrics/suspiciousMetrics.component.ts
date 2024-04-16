@@ -45,8 +45,7 @@ export class SuspiciousMetricComponent implements OnChanges {
 		}
 	}
 
-	togglePopup(event: MouseEvent): void {
-		event.stopPropagation()
+	togglePopup(): void {
 		this.showSuspiciousMetricInfo = !this.showSuspiciousMetricInfo
 	}
 
