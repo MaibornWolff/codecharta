@@ -106,7 +106,7 @@ describe("scenarioService", () => {
 			expect(mockedThreeOrbitControlsService.setControlTarget).toHaveBeenCalledWith({ x: 2, y: 2, z: 2 })
 		})
 
-		it("should set properties to default if not defined in scenarion", () => {
+		it("should set properties to default if not defined in scenario", () => {
 			const dispatchSpy = jest.spyOn(mockedStore, "dispatch")
 			scenarioService.applyScenario("Scenario1")
 			expect(dispatchSpy).toHaveBeenCalledWith(setAmountOfTopLabels({ value: 1 }))
