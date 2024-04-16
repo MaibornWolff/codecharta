@@ -27,25 +27,47 @@ class TokeiImporterTest {
     fun afterTest() {
         unmockkAll()
     }
+
     @Test
     fun `reads tokei from file`() {
         val cliResult = executeForOutput("", arrayOf("src/test/resources/tokei_results.json", "--path-separator=\\"))
 
-        Assertions.assertThat(cliResult).contains(listOf("CHANGELOG.md", "\"loc\":450"))
+        Assertions.assertThat(cliResult).contains(listOf("\"name\":\"CHANGELOG.md\"", "\"loc\":450"))
+    }
+
+    @Test
+    fun `reads tokei from file with double backslash separator to be unescaped`() {
+        val cliResult = executeForOutput("", arrayOf("src/test/resources/tokei_results.json", "--path-separator=\\\\"))
+
+        Assertions.assertThat(cliResult).contains(listOf("\"name\":\"CHANGELOG.md\"", "\"loc\":450"))
+    }
+
+    @Test
+    fun `reads tokei from file without a path given`() {
+        val cliResult = executeForOutput("", arrayOf("src/test/resources/tokei_results.json", "--path-separator="))
+
+        Assertions.assertThat(cliResult).contains(listOf("CHANGELOG.md", "\"loc\":450", "\"name\":\"cli.rs\""))
+    }
+
+    @Test
+    fun `reads tokei 12 from file without a path given`() {
+        val cliResult = executeForOutput("", arrayOf("src/test/resources/tokei_without_inner.json", "--path-separator="))
+
+        Assertions.assertThat(cliResult).contains(listOf("\"name\":\"CHANGELOG.md\"", "\"rloc\":450", "\"name\":\"CHANGELOG.md\""))
     }
 
     @Test
     fun `reads tokei 12 new json scheme from file`() {
         val cliResult = executeForOutput("", arrayOf("src/test/resources/tokei_without_inner.json"))
 
-        Assertions.assertThat(cliResult).contains(listOf("CHANGELOG.md", "\"rloc\":450"))
+        Assertions.assertThat(cliResult).contains(listOf("\"name\":\"CHANGELOG.md\"", "\"rloc\":450"))
     }
 
     @Test
     fun `tokei 12 should include the loc metric`() {
         val cliResult = executeForOutput("", arrayOf("src/test/resources/tokei_without_inner.json"))
 
-        Assertions.assertThat(cliResult).contains(listOf("CHANGELOG.md", "\"loc\":461"))
+        Assertions.assertThat(cliResult).contains(listOf("\"name\":\"CHANGELOG.md\"", "\"loc\":461"))
     }
 
     @Test
@@ -55,7 +77,7 @@ class TokeiImporterTest {
 
         val cliResult = executeForOutput(input)
 
-        Assertions.assertThat(cliResult).contains(listOf("CHANGELOG.md", "\"loc\":450"))
+        Assertions.assertThat(cliResult).contains(listOf("\"name\":\"CHANGELOG.md\"", "\"loc\":450"))
     }
 
     @Test
@@ -95,7 +117,7 @@ class TokeiImporterTest {
             .joinToString(separator = "\n") { it }
         val cliResult = executeForOutput(input, arrayOf("-r=/does/not/exist"))
 
-        Assertions.assertThat(cliResult).contains(listOf("CHANGELOG.md", "\"loc\":450"))
+        Assertions.assertThat(cliResult).contains(listOf("\"name\":\"CHANGELOG.md\"", "\"loc\":450"))
     }
 
     @Test
