@@ -46,14 +46,28 @@ class TokeiImporterTest {
     fun `reads tokei from file without a path given`() {
         val cliResult = executeForOutput("", arrayOf("src/test/resources/tokei_results.json", "--path-separator="))
 
-        Assertions.assertThat(cliResult).contains(listOf("CHANGELOG.md", "\"loc\":450", "\"name\":\"cli.rs\""))
+        Assertions.assertThat(cliResult).contains(listOf("\"name\":\"CHANGELOG.md\"", "\"loc\":450", "\"name\":\"cli.rs\""))
     }
 
     @Test
     fun `reads tokei 12 from file without a path given`() {
         val cliResult = executeForOutput("", arrayOf("src/test/resources/tokei_without_inner.json", "--path-separator="))
 
-        Assertions.assertThat(cliResult).contains(listOf("\"name\":\"CHANGELOG.md\"", "\"rloc\":450", "\"name\":\"CHANGELOG.md\""))
+        Assertions.assertThat(cliResult).contains(listOf("\"name\":\"CHANGELOG.md\"", "\"rloc\":450"))
+    }
+
+    @Test
+    fun `should default to unix path if minimal tokei given`() {
+        val cliResult = executeForOutput("", arrayOf("src/test/resources/tokei_pre11_minimal.json"))
+
+        Assertions.assertThat(cliResult).contains(listOf("\"name\":\"CHANGELOG.md\"", "\"loc\":450"))
+    }
+
+    @Test
+    fun `should default to unix path if minimal tokei 12 given`() {
+        val cliResult = executeForOutput("", arrayOf("src/test/resources/tokei_12_minimal.json"))
+
+        Assertions.assertThat(cliResult).contains(listOf("\"name\":\"CHANGELOG.md\"", "\"rloc\":450"))
     }
 
     @Test
