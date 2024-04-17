@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit
 
 @Timeout(value = 15, unit = TimeUnit.SECONDS)
 class ProjectInputReaderTest {
-    @Test
+@Test
     fun `Should not wait for input when pipeable parser sync flag is not set`() {
         // given
         val line1 = "line1"

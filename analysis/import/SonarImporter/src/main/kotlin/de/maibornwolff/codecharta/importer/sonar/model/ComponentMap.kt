@@ -1,7 +1,7 @@
 package de.maibornwolff.codecharta.importer.sonar.model
 
 class ComponentMap {
-    private val components = mutableMapOf<String, Component>()
+private val components = mutableMapOf<String, Component>()
 
     val componentList: MutableCollection<Component>
         get() = components.values

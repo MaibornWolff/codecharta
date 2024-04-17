@@ -14,12 +14,11 @@ import de.maibornwolff.codecharta.model.ProjectBuilder
 import de.maibornwolff.codecharta.translator.MetricNameTranslator
 
 class SonarComponentProjectBuilder(
-    private val sonarCodeURLLinker: SonarCodeURLLinker = SonarCodeURLLinker.NULL,
-    private val translator: MetricNameTranslator = MetricNameTranslator.TRIVIAL,
-    private val usePath: Boolean = false
-) {
-
-    private var totalComponents = 0
+        private val sonarCodeURLLinker: SonarCodeURLLinker = SonarCodeURLLinker.NULL,
+        private val translator: MetricNameTranslator = MetricNameTranslator.TRIVIAL,
+        private val usePath: Boolean = false,
+                                  ) {
+                                  private var totalComponents = 0
     private var processedComponents = -1
     private val projectBuilder = ProjectBuilder()
     val size: Int
@@ -31,22 +30,21 @@ class SonarComponentProjectBuilder(
 
     fun addComponentMapsAsNodes(components: ComponentMap): SonarComponentProjectBuilder {
         setTotalComponents(components)
-        components.componentList
-            .sortedBy { it.path }
-            .forEach {
-                this.addComponentAsNode(it)
-                logProgress()
-            }
+        components.componentList.sortedBy { it.path }.forEach {
+            this.addComponentAsNode(it)
+            logProgress()
+        }
         return this
     }
 
     fun addComponentAsNode(component: Component): SonarComponentProjectBuilder {
-        val node = MutableNode(
-            createNodeName(component),
-            createNodeTypeFromQualifier(component.qualifier!!),
-            createAttributes(component.measures!!),
-            createLink(component)
-        )
+        val node =
+                MutableNode(
+                        createNodeName(component),
+                        createNodeTypeFromQualifier(component.qualifier!!),
+                        createAttributes(component.measures!!),
+                        createLink(component),
+                           )
         projectBuilder.insertByPath(createParentPath(component), node)
         return this
     }
@@ -57,9 +55,8 @@ class SonarComponentProjectBuilder(
     }
 
     private fun createAttributes(measures: List<Measure>): Map<String, Any> {
-        return measures
-            .filter { this.isMeasureConvertible(it) }
-            .associate { this.convertMetricName(it) to this.convertMetricValue(it) }
+        return measures.filter { this.isMeasureConvertible(it) }
+                .associate { this.convertMetricName(it) to this.convertMetricValue(it) }
     }
 
     private fun convertMetricName(measure: Measure): String {
@@ -106,7 +103,7 @@ class SonarComponentProjectBuilder(
         } else if (usePath && component.path != null) {
             component.path.substring(component.path.lastIndexOf('/') + 1)
         } else {
-        component.name ?: component.id
+            component.name ?: component.id
         }
     }
 

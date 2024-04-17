@@ -14,7 +14,7 @@ import java.io.PrintStream
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class RepoScanCommandTest {
-    private val errContent = ByteArrayOutputStream()
+private val errContent = ByteArrayOutputStream()
     private val originalErr = System.err
 
     @AfterEach
@@ -31,8 +31,8 @@ class RepoScanCommandTest {
 
         System.setErr(PrintStream(errContent))
         CommandLine(RepoScanCommand()).execute(
-                "--repo-path=thisDoesNotExist"
-        ).toString()
+                "--repo-path=thisDoesNotExist",
+                                              ).toString()
         System.setErr(originalErr)
 
         Assertions.assertThat(errContent.toString()).contains("Input invalid file for GitRepoScan, stopping execution")

@@ -18,13 +18,12 @@ import java.util.concurrent.Callable
 @CommandLine.Command(
         name = CSVImporter.NAME,
         description = [CSVImporter.DESCRIPTION],
-        footer = [CodeChartaConstants.General.GENERIC_FOOTER]
-)
+        footer = [CodeChartaConstants.General.GENERIC_FOOTER],
+                    )
 class CSVImporter(
-    private val output: PrintStream = System.out
-) : Callable<Unit>, InteractiveParser, AttributeGenerator {
-
-    @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
+        private val output: PrintStream = System.out,
+                 ) : Callable<Unit>, InteractiveParser, AttributeGenerator {
+                 @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
 
     @CommandLine.Option(names = ["-d", "--delimiter"], description = ["delimiter in csv file"])
@@ -49,7 +48,7 @@ class CSVImporter(
     override val description = DESCRIPTION
 
     companion object {
-        const val NAME = "csvimport"
+    const val NAME = "csvimport"
         const val DESCRIPTION = "generates cc.json from csv with header"
 
         @JvmStatic
@@ -74,6 +73,7 @@ class CSVImporter(
     }
 
     override fun getDialog(): ParserDialogInterface = ParserDialog
+
     override fun isApplicable(resourceToBeParsed: String): Boolean {
         return false
     }

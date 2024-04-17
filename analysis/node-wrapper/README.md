@@ -12,4 +12,5 @@ To run it you can call `ccsh`
 
 # More
 
-Please visit [our github page](https://github.com/MaibornWolff/codecharta/tree/master/analysis) to learn more about CodeCharta
+Please visit [our github page](https://github.com/MaibornWolff/codecharta/tree/master/analysis) to learn more about
+CodeCharta

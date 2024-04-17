@@ -24,17 +24,14 @@ import java.util.concurrent.Callable
 @CommandLine.Command(
         name = RawTextParser.NAME,
         description = [RawTextParser.DESCRIPTION],
-        footer = [CodeChartaConstants.General.GENERIC_FOOTER]
-)
+        footer = [CodeChartaConstants.General.GENERIC_FOOTER],
+                    )
 class RawTextParser(
-    private val input: InputStream = System.`in`,
-    private val output: PrintStream = System.out,
-    private val error: PrintStream = System.err
-) : Callable<Unit>, InteractiveParser, PipeableParser, AttributeGenerator {
-
-    private val DEFAULT_EXCLUDES = arrayOf("/out/", "/build/", "/target/", "/dist/", "/resources/", "/\\..*")
-
-    @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
+        private val input: InputStream = System.`in`,
+        private val output: PrintStream = System.out,
+        private val error: PrintStream = System.err,
+                   ) : Callable<Unit>, InteractiveParser, PipeableParser, AttributeGenerator {
+                   @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
 
     @CommandLine.Option(names = ["--verbose"], description = ["verbose mode"])
@@ -44,12 +41,12 @@ class RawTextParser(
     private var inputFile: File? = null
 
     @CommandLine.Option(
-        names = ["-m", "--metrics"],
-        description = ["comma-separated list of metrics to be computed (all available metrics are computed if not specified) (when using powershell, the list either can't contain spaces or has to be in quotes)"],
-        paramLabel = "metrics",
-        converter = [(CommaSeparatedStringToListConverter::class)],
-        preprocessor = CommaSeparatedParameterPreprocessor::class
-    )
+            names = ["-m", "--metrics"],
+            description = ["comma-separated list of metrics to be computed (all available metrics are computed if not specified) (when using powershell, the list either can't contain spaces or has to be in quotes)"],
+            paramLabel = "metrics",
+            converter = [(CommaSeparatedStringToListConverter::class)],
+            preprocessor = CommaSeparatedParameterPreprocessor::class,
+                       )
     private var metricNames: List<String> = listOf()
 
     @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File (or empty for stdout)"])
@@ -68,33 +65,34 @@ class RawTextParser(
             names = ["-e", "--exclude"],
             description = ["comma-separated list of regex patterns to exclude files/folders"],
             converter = [(CommaSeparatedStringToListConverter::class)],
-            preprocessor = CommaSeparatedParameterPreprocessor::class
-    )
+            preprocessor = CommaSeparatedParameterPreprocessor::class,
+                       )
     private var exclude: List<String> = listOf()
 
     @CommandLine.Option(
-        names = ["-fe", "--file-extensions"],
-        description = ["comma-separated list of file-extensions to parse only those files (default: any)"],
-        converter = [(FileExtensionConverter::class)],
-        preprocessor = CommaSeparatedParameterPreprocessor::class
-    )
+            names = ["-fe", "--file-extensions"],
+            description = ["comma-separated list of file-extensions to parse only those files (default: any)"],
+            converter = [(FileExtensionConverter::class)],
+            preprocessor = CommaSeparatedParameterPreprocessor::class,
+                       )
     private var fileExtensions: List<String> = listOf()
 
     @CommandLine.Option(
-        names = ["--without-default-excludes"],
-        description = ["include build, target, dist, resources and out folders as well as files/folders starting with '.' "]
-    )
+            names = ["--without-default-excludes"],
+            description = ["include build, target, dist, resources and out folders as well as files/folders starting with '.' "],
+                       )
     private var withoutDefaultExcludes = false
 
     override val name = NAME
     override val description = DESCRIPTION
 
     companion object {
-        const val NAME = "rawtextparser"
+    const val NAME = "rawtextparser"
         const val DESCRIPTION = "generates cc.json from projects or source code files"
 
         const val DEFAULT_INDENT_LVL = 10
         const val DEFAULT_TAB_WIDTH = -1
+        private val DEFAULT_EXCLUDES = arrayOf("/out/", "/build/", "/target/", "/dist/", "/resources/", "/\\..*")
     }
 
     @Throws(IOException::class)
@@ -105,15 +103,18 @@ class RawTextParser(
             throw IllegalArgumentException("Input invalid file for RawTextParser, stopping execution...")
         }
 
-        if (!withoutDefaultExcludes) exclude += DEFAULT_EXCLUDES
+        if (!withoutDefaultExcludes) exclude += Companion.DEFAULT_EXCLUDES
 
         val projectMetrics: ProjectMetrics =
-            ProjectMetricsCollector(inputFile!!, exclude, fileExtensions, metricNames, verbose, maxIndentLvl, tabWidth).parseProject()
+                ProjectMetricsCollector(
+                        inputFile!!, exclude, fileExtensions, metricNames, verbose, maxIndentLvl,
+                        tabWidth,
+                                       ).parseProject()
         println()
 
         if (projectMetrics.isEmpty()) {
             println()
-            Logger.logger.error { "No files with specified file extension(s) were found within the given folder - not generating an output file!" }
+            Logger.error { "No files with specified file extension(s) were found within the given folder - not generating an output file!" }
             return null
         }
 
@@ -143,19 +144,20 @@ class RawTextParser(
         }
         if (notFoundFileExtensions.isNotEmpty()) {
             println()
-            notFoundFileExtensions.forEach { Logger.logger.warn { "The specified file extension '$it' was not found within the given folder!" } }
+            notFoundFileExtensions.forEach { Logger.warn { "The specified file extension '$it' was not found within the given folder!" } }
         }
     }
 
     private fun logWarningsForInvalidMetrics(projectMetrics: ProjectMetrics) {
         for (metricName in metricNames) {
             if (!projectMetrics.hasMetric(metricName)) {
-                Logger.logger.warn { "Metric $metricName is invalid and not included in the output" }
+                Logger.warn { "Metric $metricName is invalid and not included in the output" }
             }
         }
     }
 
     override fun getDialog(): ParserDialogInterface = ParserDialog
+
     override fun isApplicable(resourceToBeParsed: String): Boolean {
         println("Checking if RawTextParser is applicable...")
 

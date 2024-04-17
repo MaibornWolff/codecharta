@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test
 import kotlin.test.assertFailsWith
 
 class MetricNameTranslatorTest {
-    @Test
+@Test
     fun `trivial replacer should not replace anything`() {
         val replacer = MetricNameTranslator.TRIVIAL
         val original = "testestest"
@@ -47,13 +47,14 @@ class MetricNameTranslatorTest {
 
     @Test
     fun `replacer should replaceMany`() {
-        val replacer = MetricNameTranslator(
-            mapOf(
-                Pair("this", "oooo"),
-                Pair("that", "iiii"),
-                Pair("bla", "blubb")
-            )
-        )
+        val replacer =
+                MetricNameTranslator(
+                        mapOf(
+                                Pair("this", "oooo"),
+                                Pair("that", "iiii"),
+                                Pair("bla", "blubb"),
+                             ),
+                                    )
 
         val original: Array<String?> = arrayOf("this", "that", "other", null)
         val expected: Array<String?> = arrayOf("oooo", "iiii", "other", null)

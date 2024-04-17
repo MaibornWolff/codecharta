@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test
 import java.time.OffsetDateTime
 
 class LogLineParserTest {
-    private val metricsFactory = mockk<MetricsFactory>()
+private val metricsFactory = mockk<MetricsFactory>()
 
     @BeforeEach
     fun setup() {
@@ -18,8 +18,7 @@ class LogLineParserTest {
     }
 
     @Test
-    fun parseCommit() {
-        // given
+    fun parseCommit() { // given
         val parserStrategy = mockk<LogParserStrategy>()
         val author = "An Author"
         val commitDate = OffsetDateTime.now()

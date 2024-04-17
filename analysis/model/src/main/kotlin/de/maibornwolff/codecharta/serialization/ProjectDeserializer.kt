@@ -11,11 +11,10 @@ import java.io.InputStream
 import java.io.Reader
 
 object ProjectDeserializer {
-    private val GSON = GsonBuilder()
-        .registerTypeAdapter(Node::class.java, NodeJsonDeserializer())
-        .registerTypeAdapter(Project::class.java, ProjectJsonDeserializer())
-        .registerTypeAdapter(ProjectWrapper::class.java, ProjectWrapperJsonDeserializer())
-        .create()
+private val GSON =
+            GsonBuilder().registerTypeAdapter(Node::class.java, NodeJsonDeserializer())
+                    .registerTypeAdapter(Project::class.java, ProjectJsonDeserializer())
+                    .registerTypeAdapter(ProjectWrapper::class.java, ProjectWrapperJsonDeserializer()).create()
 
     fun deserializeProject(reader: Reader): Project {
         val projectWrapper = GSON.fromJson(reader, ProjectWrapper::class.java)
@@ -28,7 +27,8 @@ object ProjectDeserializer {
     }
 
     fun deserializeProject(input: FileInputStream): Project {
-        val projectWrapper = GSON.fromJson(CompressedStreamHandler.wrapInput(input).bufferedReader(), ProjectWrapper::class.java)
+        val projectWrapper =
+                GSON.fromJson(CompressedStreamHandler.wrapInput(input).bufferedReader(), ProjectWrapper::class.java)
         return projectWrapper.data
     }
 
@@ -40,8 +40,12 @@ object ProjectDeserializer {
         return try {
             deserializeProject(projectString)
         } catch (e: Exception) {
-            Logger.logger.error { "Piped input: $projectString" }
-            Logger.logger.error { "The piped input is not a valid project." }
+            Logger.error {
+                "Piped input: $projectString"
+            }
+            Logger.error {
+                "The piped input is not a valid project."
+            }
             null
         }
     }

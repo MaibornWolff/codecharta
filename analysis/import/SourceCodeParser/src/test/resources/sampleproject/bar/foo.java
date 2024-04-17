@@ -1,66 +1,61 @@
-
 package none.that.matters;
 
-import foo;
-
-import javax.jws.WebService;import static blub.sponge;
+import javax.jws.WebService;
 
 /*
  * Longer interface comment
  * that goes over multiple lines
  */
 @WebService
-public interface ComplexInterface
-        extends Interface1, Interface2, Interface3 {
+public interface ComplexInterface extends Interface1, Interface2, Interface3 {
 
-    // constants
-    double E = 2.718282;
+  // constants
+  double E = 2.718282;
 
-    // enums
-    public enum Suit {
-        DIAMONDS (1, "Diamonds"),
-        CLUBS    (2, "Clubs"   ),
-        HEARTS   (3, "Hearts"  ),
-        SPADES   (4, "Spades"  );
+  // static methods
+  static ZoneId getZoneId(String zoneString) {
+    try {
+      return ZoneId.of(zoneString);
+    } catch (DateTimeException e) {
+      System.err.println("Invalid time zone: " + zoneString + "; using default time zone instead.");
+      return ZoneId.systemDefault();
+    }
+  }
 
-        private final int value;
-        private final String text;
+  // methods
+  void turn(Direction direction, double radius, double startSpeed, double endSpeed);
 
-        Suit(int value, String text) {
-            this.value = value;
-            this.text = text;
-        }
+  int changeLanes(Direction direction, double startSpeed, double endSpeed);
 
-        public int value() {return value;}
+  // default methods
+  default boolean didItWork(int i, double x, String s) {
+    return myDeck.sort(Comparator.comparing(Card::getRank)
+      .reversed()
+      .thenComparing(Comparator.comparing(Card::getSuit)));
+  }
 
-        public String text() {return text;}
+  // enums
+  public enum Suit {
+    DIAMONDS(1, "Diamonds"),
+    CLUBS(2, "Clubs"),
+    HEARTS(3, "Hearts"),
+    SPADES(4, "Spades");
+
+    private final int value;
+
+    private final String text;
+
+    Suit(int value, String text) {
+      this.value = value;
+      this.text = text;
     }
 
-    // methods
-    void turn(Direction direction,
-              double radius,
-              double startSpeed,
-              double endSpeed);
-    int changeLanes(Direction direction,
-                    double startSpeed,
-                    double endSpeed);
-
-    // static methods
-    static ZoneId getZoneId (String zoneString) {
-        try {
-            return ZoneId.of(zoneString);
-        } catch (DateTimeException e) {
-            System.err.println("Invalid time zone: " + zoneString +
-                    "; using default time zone instead.");
-            return ZoneId.systemDefault();
-        }
+    public int value() {
+      return value;
     }
 
-    // default methods
-    default boolean didItWork(int i, double x, String s) {
-        return myDeck.sort(
-                Comparator.comparing(Card::getRank)
-                        .reversed()
-                        .thenComparing(Comparator.comparing(Card::getSuit)));
+    public String text() {
+      return text;
     }
+  }
 }

@@ -9,14 +9,12 @@ import java.nio.charset.StandardCharsets
 import kotlin.test.assertEquals
 
 class CSVProjectBuilderTest {
-
-    private fun toInputStream(content: String): InputStream {
+private fun toInputStream(content: String): InputStream {
         return ByteArrayInputStream(content.toByteArray(StandardCharsets.UTF_8))
     }
 
     @Test
-    fun `it should ignore invalid csv content`() {
-        // given
+    fun `it should ignore invalid csv content`() { // given
         val csvProjectBuilder = CSVProjectBuilder(pathSeparator = '\\', csvDelimiter = ',')
         val invalidContent = "head,path\nnoValidContent\n"
 
@@ -29,8 +27,7 @@ class CSVProjectBuilderTest {
     }
 
     @Test
-    fun `it should read the csv content correctly when csv contains unix line-breaks`() {
-        // given
+    fun `it should read the csv content correctly when csv contains unix line-breaks`() { // given
         val name = "someName"
         val csvHeader = "someContent,,path"
         val csvRow = "projectName,foo,"
@@ -46,8 +43,7 @@ class CSVProjectBuilderTest {
     }
 
     @Test
-    fun `it should read the csv content correctly when csv contains windows line-breaks`() {
-        // given
+    fun `it should read the csv content correctly when csv contains windows line-breaks`() { // given
         val name = "someName"
         val csvHeader = "someContent,,path"
         val csvRow = "projectName,foo,"
@@ -63,8 +59,7 @@ class CSVProjectBuilderTest {
     }
 
     @Test
-    fun `it should add a line with metric values correctly`() {
-        // given
+    fun `it should add a line with metric values correctly`() { // given
         val attributeName = "attributeName"
         val attributeValue = "\"0,1\""
         val attributeValueFloat = 0.1
@@ -83,15 +78,15 @@ class CSVProjectBuilderTest {
     }
 
     @Test
-    fun `it should handle a csv-file with a subdirectory structure correctly`() {
-        // given
+    fun `it should handle a csv-file with a subdirectory structure correctly`() { // given
         val directoryName = "someNodeName"
 
         // when
-        val csvProjectBuilder = CSVProjectBuilder(
-                pathSeparator = '\\',
-                csvDelimiter = ','
-        )
+        val csvProjectBuilder =
+                CSVProjectBuilder(
+                        pathSeparator = '\\',
+                        csvDelimiter = ',',
+                                 )
         csvProjectBuilder.parseCSVStream(toInputStream("someContent\n$directoryName\\someFile"))
         val project = csvProjectBuilder.build()
 
@@ -103,13 +98,13 @@ class CSVProjectBuilderTest {
     }
 
     @Test
-    fun `it should read csv files exported from source-monitor correctly`() {
-        // when
-        val csvProjectBuilder = CSVProjectBuilder(
-                pathSeparator = '\\',
-                csvDelimiter = ',',
-                pathColumnName = "File Name"
-        )
+    fun `it should read csv files exported from source-monitor correctly`() { // when
+        val csvProjectBuilder =
+                CSVProjectBuilder(
+                        pathSeparator = '\\',
+                        csvDelimiter = ',',
+                        pathColumnName = "File Name",
+                                 )
         csvProjectBuilder.parseCSVStream(this.javaClass.classLoader.getResourceAsStream("sourcemonitor.csv")!!)
         val project = csvProjectBuilder.build()
 
@@ -118,19 +113,19 @@ class CSVProjectBuilderTest {
     }
 
     @Test
-    fun `it should correctly set the attribute-descriptors when importing a valid csv file`() {
-        // given
+    fun `it should correctly set the attribute-descriptors when importing a valid csv file`() { // given
         val attributeName = "Test"
         val attributeValue = "10"
         val attributeDescriptors = mapOf("Test" to AttributeDescriptor(description = "123", direction = -1))
 
         // when
-        val csvProjectBuilder = CSVProjectBuilder(
-                pathSeparator = '\\',
-                csvDelimiter = ',',
-                pathColumnName = "Non-existent column",
-                attributeDescriptors = attributeDescriptors
-                                                 )
+        val csvProjectBuilder =
+                CSVProjectBuilder(
+                        pathSeparator = '\\',
+                        csvDelimiter = ',',
+                        pathColumnName = "Non-existent column",
+                        attributeDescriptors = attributeDescriptors,
+                                 )
         val csvHeader = "head1,path,head3,head4,$attributeName"
         val csvRow = "invalidValue, 10, invalidValue, 10, $attributeValue"
         csvProjectBuilder.parseCSVStream(toInputStream("$csvHeader\n$csvRow\n"))

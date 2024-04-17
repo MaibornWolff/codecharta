@@ -1,9 +1,12 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser.metrics
 
 class ProjectMetrics {
-    val projectMetrics = mutableMapOf<String, FileMetricMap>()
+val projectMetrics = mutableMapOf<String, FileMetricMap>()
 
-    fun addFileMetricMap(file: String, fileMetricMap: FileMetricMap) {
+    fun addFileMetricMap(
+    file: String,
+    fileMetricMap: FileMetricMap,
+    ) {
         projectMetrics[file] = fileMetricMap
     }
 

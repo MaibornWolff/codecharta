@@ -1,6 +1,7 @@
 # MetricGardener Importer
 
-> Attention: The direct execution of metric-gardener has been temporarily disabled. Please provide the JSON files directly.
+> Attention: The direct execution of metric-gardener has been temporarily disabled. Please provide the JSON files
+> directly.
 
 This importer allows to use metrics calculated by [MetricGardener](https://github.com/MaibornWolff/metric-gardener), a
 multi-language code parser based on [tree-sitter](https://github.com/tree-sitter/tree-sitter). The importer can be used
@@ -13,16 +14,19 @@ our [GitHub Pages](https://maibornwolff.github.io/codecharta/docs/metricgardener
 
 ## Additional Requirements
 
-> Also refer to the [Metric-Gardener GitHub](https://github.com/MaibornWolff/metric-gardener) page, as the requirements can change
+> Also refer to the [Metric-Gardener GitHub](https://github.com/MaibornWolff/metric-gardener) page, as the requirements
+> can change
 
-If you want to execute the `metric-gardener`, either with your own installation or indirectly through the `ccsh`, you need to install the additional requirements listed below:
+If you want to execute the `metric-gardener`, either with your own installation or indirectly through the `ccsh`, you
+need to install the additional requirements listed below:
 
 ### Windows
 
 -   Python
 -   C/C++ compiler toolchain (e.g. Visual Studio Build Tools 2022 with "Desktop development with C++")
 
-> You might need to install additional packages to python depending on its version. Please refer to the node-gyp GitHub page for help.
+> You might need to install additional packages to python depending on its version. Please refer to the node-gyp GitHub
+> page for help.
 
 ### Unix
 

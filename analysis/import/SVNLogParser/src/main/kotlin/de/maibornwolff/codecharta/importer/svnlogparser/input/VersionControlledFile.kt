@@ -6,11 +6,10 @@ import de.maibornwolff.codecharta.model.Edge
 import java.util.Arrays
 
 class VersionControlledFile internal constructor(
-    filename: String,
-    private var metrics: List<Metric>
-) {
-
-    // actual filename
+        filename: String,
+        private var metrics: List<Metric>,
+                                                ) {
+                                                // actual filename
     val actualFilename: String
     val authors = mutableSetOf<String>()
 
@@ -25,9 +24,9 @@ class VersionControlledFile internal constructor(
     constructor(filename: String, metricsFactory: MetricsFactory) : this(filename, metricsFactory.createMetrics())
 
     internal constructor(
-        filename: String,
-        vararg metrics: Metric
-    ) : this(filename, Arrays.asList<Metric>(*metrics))
+            filename: String,
+            vararg metrics: Metric,
+                        ) : this(filename, Arrays.asList<Metric>(*metrics))
 
     init {
         this.filename = filename
@@ -65,14 +64,16 @@ class VersionControlledFile internal constructor(
 
     fun getEdgeList(): List<Edge> {
         val edgeList = mutableListOf<Edge>()
-        metrics.flatMap { it.getEdges() }
-            .forEach { edge ->
-                addEdgeToEdgeList(edge, edgeList)
-            }
+        metrics.flatMap { it.getEdges() }.forEach { edge ->
+            addEdgeToEdgeList(edge, edgeList)
+        }
         return edgeList
     }
 
-    private fun addEdgeToEdgeList(edge: Edge, edgeList: MutableList<Edge>) {
+    private fun addEdgeToEdgeList(
+    edge: Edge,
+    edgeList: MutableList<Edge>,
+    ) {
         edgeList.forEach {
             if (it.toNodeName == edge.toNodeName) {
                 it.attributes.toMutableMap().putAll(edge.attributes)

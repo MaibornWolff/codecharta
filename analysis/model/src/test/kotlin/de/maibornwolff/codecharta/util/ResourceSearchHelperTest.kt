@@ -4,7 +4,7 @@ import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 
 class ResourceSearchHelperTest {
-    // Tests for both functions
+// Tests for both functions
     @Test
     fun `should return false if given directory path does not exist`() {
         val input = "src/test/resources/my/doesNotExist"

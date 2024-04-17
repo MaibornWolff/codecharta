@@ -3,14 +3,13 @@ package de.maibornwolff.codecharta.model
 import javax.naming.OperationNotSupportedException
 
 class Node(
-    val name: String,
-    val type: NodeType? = NodeType.File,
-    val attributes: Map<String, Any> = mapOf(),
-    val link: String? = "",
-    override val children: Set<Node> = setOf()
-) : Tree<Node>() {
-
-    override fun getPathOfChild(child: Tree<Node>): Path {
+        val name: String,
+        val type: NodeType? = NodeType.File,
+        val attributes: Map<String, Any> = mapOf(),
+        val link: String? = "",
+        override val children: Set<Node> = setOf(),
+          ) : Tree<Node>() {
+          override fun getPathOfChild(child: Tree<Node>): Path {
         if (!children.contains(child)) {
             throw NoSuchElementException("Child $child not contained in MutableNode.")
         }
@@ -21,7 +20,10 @@ class Node(
         return "Node(name='$name', type=$type, attributes=$attributes, link=$link, children=$children)"
     }
 
-    override fun insertAt(path: Path, node: Node) {
+    override fun insertAt(
+    path: Path,
+    node: Node,
+    ) {
         throw OperationNotSupportedException("no inserting in immutable nodes")
     }
 
@@ -30,6 +32,11 @@ class Node(
     }
 
     fun toMutableNode(): MutableNode {
-        return MutableNode(name, type, attributes, link, children.map { it.toMutableNode() }.toSet())
+        return MutableNode(
+                name, type, attributes, link,
+                children.map {
+                    it.toMutableNode()
+                }.toSet(),
+                          )
     }
 }

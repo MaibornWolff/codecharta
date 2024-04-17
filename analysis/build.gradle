@@ -84,7 +84,7 @@ subprojects {
         testImplementation("org.junit.jupiter:junit-jupiter-params:$junit5_version")
     }
 
-    test{
+    test {
         testLogging {
             events "passed", "skipped", "failed"
         }
@@ -99,11 +99,15 @@ subprojects {
     kotlin {
         jvmToolchain(11)
     }
+
+    ktlint {
+        additionalEditorconfig.set("max_line_length": "300")
+    }
 }
 
 distributions {
     main {
-        distributionBaseName  = 'codecharta-analysis'
+        distributionBaseName = 'codecharta-analysis'
         contents {
             from { '../LICENSE.md' }
             from { 'CHANGELOG.md' }
@@ -137,8 +141,7 @@ task integrationTest(type: Exec) {
         executable 'cmd'
         workingDir 'test'
         args '/c', "bash -c './golden_test.sh $version'"
-    }
-    else {
+    } else {
         executable 'sh'
         workingDir('test')
         args '-c', "./golden_test.sh $version"
@@ -163,9 +166,9 @@ task jacocoTestReport(type: JacocoReport) {
 }
 
 sonar {
-  properties {
-    property "sonar.coverage.jacoco.xmlReportPaths", "${project.rootDir}/build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml"
-  }
+    properties {
+        property "sonar.coverage.jacoco.xmlReportPaths", "${project.rootDir}/build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml"
+    }
 }
 
 integrationTest.dependsOn build

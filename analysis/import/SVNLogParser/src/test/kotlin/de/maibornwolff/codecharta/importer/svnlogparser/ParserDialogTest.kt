@@ -17,15 +17,13 @@ import java.io.File
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ParserDialogTest {
-
-    @AfterEach
+@AfterEach
     fun afterTest() {
         unmockkAll()
     }
 
     @Test
-    fun `should output correct arguments when valid input is provided`() {
-        // given
+    fun `should output correct arguments when valid input is provided`() { // given
         val fileName = "svn.log"
         val outputFileName = "codecharta.cc.json"
         val isCompressed = false
@@ -58,8 +56,7 @@ class ParserDialogTest {
     }
 
     @Test
-    fun `should prompt user twice for input file when first input file is invalid`() {
-        // given
+    fun `should prompt user twice for input file when first input file is invalid`() { // given
         val invalidInputFileName = ""
         val validInputFileName = "svn.log"
         val outputFileName = "codecharta.cc.json"

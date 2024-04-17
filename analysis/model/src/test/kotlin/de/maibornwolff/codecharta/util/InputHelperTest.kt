@@ -10,18 +10,18 @@ import java.io.File
 import java.io.PrintStream
 
 class InputHelperTest {
-    val outContent = ByteArrayOutputStream()
+val outContent = ByteArrayOutputStream()
     val originalOut = System.out
     val errContent = ByteArrayOutputStream()
     val originalErr = System.err
 
     companion object {
-        @JvmStatic
+    @JvmStatic
         fun provideBooleanValues(): List<Arguments> {
             return listOf(
                     Arguments.of(false),
-                    Arguments.of(true)
-            )
+                    Arguments.of(true),
+                         )
         }
     }
 
@@ -36,12 +36,13 @@ class InputHelperTest {
         val invalidFile1 = File(invalidFilePath1)
         val invalidFile2 = File(invalidFilePath2)
 
-        val inputFiles = arrayOf(
-        File("src/test/resources/example.cc.json"),
-                File("src/test/resources/example_api_version_1.3.cc.json"),
-                invalidFile1,
-                invalidFile2
-        )
+        val inputFiles =
+                arrayOf(
+                        File("src/test/resources/example.cc.json"),
+                        File("src/test/resources/example_api_version_1.3.cc.json"),
+                        invalidFile1,
+                        invalidFile2,
+                       )
         try {
             InputHelper.isInputValid(inputFiles, canInputContainFolders)
         } catch (exception: IllegalArgumentException) {
@@ -51,20 +52,19 @@ class InputHelperTest {
         System.setOut(originalOut)
         System.setErr(originalErr)
 
-        Assertions.assertThat(errContent.toString())
-                .contains("Could not find resource `${invalidFile1.path}`")
-        Assertions.assertThat(errContent.toString())
-                .contains("Could not find resource `${invalidFile2.path}`")
+        Assertions.assertThat(errContent.toString()).contains("Could not find resource `${invalidFile1.path}`")
+        Assertions.assertThat(errContent.toString()).contains("Could not find resource `${invalidFile2.path}`")
     }
 
     @ParameterizedTest
     @MethodSource("provideBooleanValues")
     fun `should return invalid if input contains one nonexistent file`(canInputContainFolders: Boolean) {
-        val inputFiles = arrayOf(
-        File("src/test/resources/example.cc.json"),
-                File("src/test/resources/example_api_version_1.3.cc.json"),
-                File("src/test/resources/thisDoesNotExist1.json")
-        )
+        val inputFiles =
+                arrayOf(
+                        File("src/test/resources/example.cc.json"),
+                        File("src/test/resources/example_api_version_1.3.cc.json"),
+                        File("src/test/resources/thisDoesNotExist1.json"),
+                       )
 
         val result = InputHelper.isInputValid(inputFiles, canInputContainFolders)
 
@@ -81,8 +81,7 @@ class InputHelperTest {
         System.setErr(originalErr)
 
         Assertions.assertThat(result).isFalse()
-        Assertions.assertThat(errContent.toString())
-                .contains("Did not find any input resources!")
+        Assertions.assertThat(errContent.toString()).contains("Did not find any input resources!")
     }
 
     @Test
@@ -98,7 +97,7 @@ class InputHelperTest {
 
         Assertions.assertThat(result).isFalse()
         Assertions.assertThat(errContent.toString())
-                .contains("The specified path `${ emptyTestDirectory.path }` exists but is empty!")
+                .contains("The specified path `${emptyTestDirectory.path}` exists but is empty!")
     }
 
     @ParameterizedTest
@@ -170,8 +169,7 @@ class InputHelperTest {
         System.setErr(originalErr)
 
         Assertions.assertThat(result).isFalse()
-        Assertions.assertThat(errContent.toString())
-                .contains("Input folder where only files are allowed!")
+        Assertions.assertThat(errContent.toString()).contains("Input folder where only files are allowed!")
     }
 
     @ParameterizedTest
@@ -185,8 +183,7 @@ class InputHelperTest {
         System.setErr(originalErr)
 
         Assertions.assertThat(result).isFalse()
-        Assertions.assertThat(errContent.toString())
-                .contains("Input contained illegal null resource!")
+        Assertions.assertThat(errContent.toString()).contains("Input contained illegal null resource!")
     }
 
     @ParameterizedTest

@@ -5,7 +5,7 @@ import java.io.File
 import java.nio.file.Paths
 
 class ProjectTraverser(var root: File, private val exclude: Array<String> = arrayOf()) {
-    private var fileList: MutableList<File> = mutableListOf()
+private var fileList: MutableList<File> = mutableListOf()
     private val analyzerFileLists: MutableMap<String, MutableList<String>> = HashMap()
 
     fun traverse() {
@@ -27,7 +27,7 @@ class ProjectTraverser(var root: File, private val exclude: Array<String> = arra
             val fileName = getRelativeFileName(file.toString())
             val fileExtension = FilenameUtils.getExtension(fileName)
 
-           val fileExtensionEntry = analyzerFileLists[fileExtension]
+            val fileExtensionEntry = analyzerFileLists[fileExtension]
             if (fileExtensionEntry != null) {
                 fileExtensionEntry.add(fileName)
             } else {
@@ -48,9 +48,9 @@ class ProjectTraverser(var root: File, private val exclude: Array<String> = arra
 
     private fun getRelativeFileName(fileName: String): String {
         return root.toPath().toAbsolutePath()
-            .relativize(Paths.get(fileName).toAbsolutePath())
-            .toString()
-            .replace('\\', '/')
+                .relativize(Paths.get(fileName).toAbsolutePath())
+                .toString()
+                .replace('\\', '/')
     }
 
     private fun adjustRootFolderIfRootIsFile() {

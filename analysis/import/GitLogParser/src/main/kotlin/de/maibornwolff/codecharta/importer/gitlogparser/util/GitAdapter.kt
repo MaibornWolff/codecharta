@@ -4,8 +4,7 @@ import java.io.File
 import java.util.concurrent.TimeUnit
 
 class GitAdapter(private val gitDirectory: File, private val fileHandle: File) {
-
-    fun getGitLog() {
+fun getGitLog() {
         val process = ProcessBuilder("git", "log", "--numstat", "--raw", "--topo-order", "--reverse", "-m")
         executeProcess(process)
     }

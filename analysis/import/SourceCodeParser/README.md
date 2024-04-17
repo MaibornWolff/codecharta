@@ -1,6 +1,7 @@
 # Source Code Parser
 
-A parser to generate code metrics from a source code file or a project folder. It generates either a cc.json or a csv file.
+A parser to generate code metrics from a source code file or a project folder. It generates either a cc.json or a csv
+file.
 
 ## Supported languages
 
@@ -74,8 +75,10 @@ The resulting project has the project name specified for the SourceCodeParser.
 
 ## Sonar Plugins
 
-In order to generate the code metrics, the SourceCodeParser uses Sonar plugins. New languages can be added to the Source code parser by writing a class that extends SonarAnalyzer and incorporate the respective Sonar Plugin.
+In order to generate the code metrics, the SourceCodeParser uses Sonar plugins. New languages can be added to the Source
+code parser by writing a class that extends SonarAnalyzer and incorporate the respective Sonar Plugin.
 
 ## License
 
-This program uses the [SonarJava library](https://github.com/SonarSource/sonar-java/), which is licensed under the GNU Lesser General Public Library, version 3.
+This program uses the [SonarJava library](https://github.com/SonarSource/sonar-java/), which is licensed under the GNU
+Lesser General Public Library, version 3.

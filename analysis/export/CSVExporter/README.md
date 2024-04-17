@@ -6,7 +6,8 @@ Generates a CSV file from a cc.json File. The CSV file will have a header as des
 
 `ccsh csvexport <file>` Input file
 
-`--depth-of-hierarchy=<maxHierarchy>` Optional: Defines how many layers of the project structure should be listed. DEFAULT: 10.
+`--depth-of-hierarchy=<maxHierarchy>` Optional: Defines how many layers of the project structure should be listed.
+DEFAULT: 10.
 
 `--output-file=<output> , -o=<output>` Optional: Generates csv file instead of output in CLI.
 

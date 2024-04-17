@@ -5,14 +5,10 @@ import de.maibornwolff.codecharta.parser.rawtextparser.RawTextParser
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.util.InputHelper
+import de.maibornwolff.codecharta.util.Logger
 import io.mockk.every
-import io.mockk.mockk
 import io.mockk.mockkObject
-import io.mockk.slot
 import io.mockk.unmockkAll
-import io.mockk.verify
-import mu.KLogger
-import mu.KotlinLogging
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
@@ -31,24 +27,28 @@ import java.io.PrintStream
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class RawTextParserTest {
-    private val errContent = ByteArrayOutputStream()
+private val errContent = ByteArrayOutputStream()
     private val originalErr = System.err
 
     @AfterEach
     fun afterTest() {
         unmockkAll()
     }
+
     companion object {
-        @JvmStatic
+    @JvmStatic
         fun provideValidInputFiles(): List<Arguments> {
             return listOf(
                     Arguments.of("src/test/resources/sampleproject"),
-                    Arguments.of("src/test/resources/sampleproject/tabs.included")
-            )
+                    Arguments.of("src/test/resources/sampleproject/tabs.included"),
+                         )
         }
     }
 
-    private fun executeForOutput(input: String, args: Array<String>): String {
+    private fun executeForOutput(
+    input: String,
+    args: Array<String>,
+    ): String {
         val inputStream = ByteArrayInputStream(input.toByteArray())
         val outputStream = ByteArrayOutputStream()
         val printStream = PrintStream(outputStream)
@@ -80,7 +80,11 @@ class RawTextParserTest {
         val expectedResultFile = File("src/test/resources/cc_projects/project_4.cc.json").absoluteFile
 
         // when
-        val result = executeForOutput(pipedProject, arrayOf(inputFilePath, "--tab-width=2", "--max-indentation-level=2", "-e=tabs*."))
+        val result =
+        executeForOutput(
+        pipedProject,
+                arrayOf(inputFilePath, "--tab-width=2", "--max-indentation-level=2", "-e=tabs*."),
+        )
 
         // then
         JSONAssert.assertEquals(result, expectedResultFile.readText(), JSONCompareMode.NON_EXTENSIBLE)
@@ -99,9 +103,9 @@ class RawTextParserTest {
 
         // when
         ProjectSerializer.serializeProject(
-            MergeFilter.mergePipedWithCurrentProject(partialProject2, partialProject1),
-            OutputStreamWriter(PrintStream(expected))
-        )
+                MergeFilter.mergePipedWithCurrentProject(partialProject2, partialProject1),
+                OutputStreamWriter(PrintStream(expected)),
+                                          )
         val result = executeForOutput(input, arrayOf(fileToParse))
 
         // then
@@ -160,7 +164,8 @@ class RawTextParserTest {
         CommandLine(RawTextParser()).execute("thisDoesNotExist.cc.json").toString()
 
         // then
-        Assertions.assertThat(errContent.toString()).contains("Input invalid file for RawTextParser, stopping execution")
+        Assertions.assertThat(errContent.toString())
+                .contains("Input invalid file for RawTextParser, stopping execution")
 
         // clean up
         System.setErr(originalErr)
@@ -169,57 +174,53 @@ class RawTextParserTest {
     @Test
     fun `Should not produce an output and notify the user when the only specified extension was not found in the folder`() {
         // given
-        mockkObject(KotlinLogging)
-        val loggerMock = mockk<KLogger>()
-        val lambdaSlot = slot<(() -> Unit)>()
-        val messagesLogged = mutableListOf<String>()
-        every { KotlinLogging.logger(capture(lambdaSlot)) } returns loggerMock
-        every { loggerMock.error(capture(messagesLogged)) } returns Unit
+        val lambdaSlot = mutableListOf<() -> String>()
+        mockkObject(Logger)
+        every { Logger.error(capture(lambdaSlot)) } returns Unit
 
         // when
         val result = executeForOutput("", arrayOf("src/test/resources/sampleproject/", "--file-extensions=invalid"))
 
         // then
         Assertions.assertThat(result).isEmpty()
-        Assertions.assertThat(messagesLogged).contains("No files with specified file extension(s) were found within the given folder - not generating an output file!")
-        verify { loggerMock.error(any<String>()) }
+        Assertions.assertThat(lambdaSlot.any { e -> e().contains("No files with specified file extension(s) were found within the given folder - not generating an output file!") }).isTrue()
     }
 
     @Test
     fun `Should warn the user when one of the specified extensions was not found in the folder`() {
         // given
-        mockkObject(KotlinLogging)
-        val loggerMock = mockk<KLogger>()
-        val lambdaSlot = slot<(() -> Unit)>()
-        val messagesLogged = mutableListOf<String>()
-        every { KotlinLogging.logger(capture(lambdaSlot)) } returns loggerMock
-        every { loggerMock.warn(capture(messagesLogged)) } returns Unit
+        val lambdaSlot = mutableListOf<() -> String>()
+        mockkObject(Logger)
+        every { Logger.warn(capture(lambdaSlot)) } returns Unit
 
         // when
-        val result = executeForOutput("", arrayOf("src/test/resources/sampleproject", "--file-extensions=invalid, included"))
+        val result =
+                executeForOutput("", arrayOf("src/test/resources/sampleproject", "--file-extensions=invalid, included"))
 
         // then
         Assertions.assertThat(result).isNotEmpty()
-        Assertions.assertThat(messagesLogged).contains("The specified file extension 'invalid' was not found within the given folder!")
-        Assertions.assertThat(messagesLogged).doesNotContain("The specified file extension 'included' was not found within the given folder!")
+        Assertions.assertThat(lambdaSlot.any { e -> e().contains("The specified file extension 'invalid' was not found within the given folder!") }).isTrue()
+        Assertions.assertThat(lambdaSlot.any { e -> e().contains("The specified file extension 'included' was not found within the given folder!") }).isTrue()
     }
 
     @Test
     fun `Should not produce an output and notify the user when none of the specified extensions were found in the folder`() {
         // given
-        mockkObject(KotlinLogging)
-        val loggerMock = mockk<KLogger>()
-        val lambdaSlot = slot<(() -> Unit)>()
-        val messagesLogged = mutableListOf<String>()
-        every { KotlinLogging.logger(capture(lambdaSlot)) } returns loggerMock
-        every { loggerMock.error(capture(messagesLogged)) } returns Unit
+
+        val lambdaSlot = mutableListOf<() -> String>()
+        mockkObject(Logger)
+        every { Logger.error(capture(lambdaSlot)) } returns Unit
 
         // when
-        val result = executeForOutput("", arrayOf("src/test/resources/sampleproject/", "--file-extensions=invalid1, invalid2, also_invalid"))
+        val result =
+        executeForOutput(
+        "",
+                arrayOf("src/test/resources/sampleproject/", "--file-extensions=invalid1, invalid2, also_invalid"),
+        )
 
         // then
         Assertions.assertThat(result).isEmpty()
-        Assertions.assertThat(messagesLogged).contains("No files with specified file extension(s) were found within the given folder - not generating an output file!")
+        Assertions.assertThat(lambdaSlot.any { e -> e().contains("No files with specified file extension(s) were found within the given folder - not generating an output file!") }).isTrue()
     }
 
     @Test
@@ -265,18 +266,14 @@ class RawTextParserTest {
         val validMetricName = "IndentationLevel"
         val invalidMetricName = "invalidMetric"
 
-        mockkObject(KotlinLogging)
-        val loggerMock = mockk<KLogger>()
-        val lambdaSlot = slot<(() -> Unit)>()
-        val warningMessagesLogged = mutableListOf<String>()
-        every { KotlinLogging.logger(capture(lambdaSlot)) } returns loggerMock
-        every { loggerMock.warn(capture(warningMessagesLogged)) } returns Unit
+        val lambdaSlot = mutableListOf<() -> String>()
+        mockkObject(Logger)
+        every { Logger.warn(capture(lambdaSlot)) } returns Unit
 
         // when
-        val result = executeForOutput("", arrayOf(inputFilePath, "--metrics=$validMetricName, $invalidMetricName"))
+        executeForOutput("", arrayOf(inputFilePath, "--metrics=$validMetricName, $invalidMetricName"))
 
         // then
-        verify { loggerMock.warn(any<String>()) }
-        Assertions.assertThat(warningMessagesLogged.any { it.contains(invalidMetricName) }).isTrue()
+        Assertions.assertThat(lambdaSlot.any { e -> e().contains(invalidMetricName) }).isTrue()
     }
 }

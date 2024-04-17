@@ -38,15 +38,15 @@
                 "children": []
               },
               {
-                "name":"spaces_5.includedtoo",
-                "type":"File",
+                "name": "spaces_5.includedtoo",
+                "type": "File",
                 "attributes": {
-                  "indentation_level_0+":5.0,
-                  "indentation_level_1+":3.0,
-                  "indentation_level_2+":3.0
+                  "indentation_level_0+": 5.0,
+                  "indentation_level_1+": 3.0,
+                  "indentation_level_2+": 3.0
                 },
-                "link":"",
-                "children":[]
+                "link": "",
+                "children": []
               },
               {
                 "name": "spaces_x_not_included.excluded",

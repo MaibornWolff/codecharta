@@ -1,5 +1,5 @@
 {
-  "checksum":"foo",
+  "checksum": "foo",
   "data": {
     "projectName": "SourceMonitorImporter",
     "apiVersion": "0.1",

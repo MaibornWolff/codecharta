@@ -21,24 +21,23 @@ import java.util.concurrent.Callable
 @CommandLine.Command(
         name = MetricGardenerImporter.NAME,
         description = [MetricGardenerImporter.DESCRIPTION],
-        footer = [CodeChartaConstants.General.GENERIC_FOOTER]
-)
+        footer = [CodeChartaConstants.General.GENERIC_FOOTER],
+                    )
 class MetricGardenerImporter(
-    private val output: PrintStream = System.out
-) : Callable<Unit>, InteractiveParser, AttributeGenerator {
-
-    private val mapper = jacksonObjectMapper()
+        private val output: PrintStream = System.out,
+                            ) : Callable<Unit>, InteractiveParser, AttributeGenerator {
+                            private val mapper = jacksonObjectMapper()
 
     @CommandLine.Option(
-        names = ["-h", "--help"], usageHelp = true,
-        description = ["Specify: path/to/input/folder/or/file -o path/to/outputfile.json"]
-    )
+            names = ["-h", "--help"], usageHelp = true,
+            description = ["Specify: path/to/input/folder/or/file -o path/to/outputfile.json"],
+                       )
     private var help = false
 
     @CommandLine.Parameters(
-        arity = "1", paramLabel = "FOLDER or FILE",
-        description = ["path for project folder or code file"]
-    )
+            arity = "1", paramLabel = "FOLDER or FILE",
+            description = ["path for project folder or code file"],
+                           )
     private var inputFile: File? = null
 
     @CommandLine.Option(names = ["-j", "--is-json-file"], description = ["Input file is a MetricGardener JSON file"])
@@ -54,8 +53,9 @@ class MetricGardenerImporter(
     override val description = DESCRIPTION
 
     companion object {
-        const val NAME = "metricgardenerimport"
-        const val DESCRIPTION = "generates a cc.json file from a project parsed with metric-gardener. " +
+    const val NAME = "metricgardenerimport"
+        const val DESCRIPTION =
+                "generates a cc.json file from a project parsed with metric-gardener. " +
                 "Caution - this parser is still experimental and may take a long time to parse code!"
 
         @JvmStatic
@@ -79,7 +79,7 @@ class MetricGardenerImporter(
         require(isJsonFile) { "Direct metric-gardener execution has been temporarily disabled." }
 
         val metricGardenerNodes: MetricGardenerNodes =
-            mapper.readValue(inputFile!!.reader(Charset.defaultCharset()), MetricGardenerNodes::class.java)
+                mapper.readValue(inputFile!!.reader(Charset.defaultCharset()), MetricGardenerNodes::class.java)
         val metricGardenerProjectBuilder = MetricGardenerProjectBuilder(metricGardenerNodes)
         val project = metricGardenerProjectBuilder.build()
 
@@ -89,10 +89,14 @@ class MetricGardenerImporter(
     }
 
     override fun getDialog(): ParserDialogInterface = ParserDialog
+
     override fun isApplicable(resourceToBeParsed: String): Boolean {
         val supportedLanguageFileEndings = getSupportedLanguageFileEndings()
         println("Checking if MetricGardener is applicable...")
-        return ResourceSearchHelper.isFileWithOneOrMoreOfEndingsPresent(resourceToBeParsed, supportedLanguageFileEndings)
+        return ResourceSearchHelper.isFileWithOneOrMoreOfEndingsPresent(
+                resourceToBeParsed,
+                supportedLanguageFileEndings,
+                                                                       )
     }
 
     override fun getAttributeDescriptorMaps(): Map<String, AttributeDescriptor> {

@@ -6,8 +6,7 @@ import de.maibornwolff.codecharta.model.AttributeType
 import de.maibornwolff.codecharta.model.Edge
 
 class HighlyCoupledFiles : Metric {
-
-    private var fileName: String = ""
+private var fileName: String = ""
     private var numberOfCommits: Long = 0
     private var commits = mutableListOf<Commit>()
     private val simultaneouslyCommittedFiles = mutableMapOf<String, Int>()
@@ -27,38 +26,34 @@ class HighlyCoupledFiles : Metric {
     override fun value(): Number {
         evaluateIfNecessary()
 
-        return simultaneouslyCommittedFiles.values
-            .count { isHighlyCoupled(it) }
-            .toLong()
+        return simultaneouslyCommittedFiles.values.count { isHighlyCoupled(it) }.toLong()
     }
 
     override fun getEdges(): List<Edge> {
         evaluateIfNecessary()
 
-        return simultaneouslyCommittedFiles
-            .mapNotNull { (coupledFile, value) ->
-                if (isHighlyCoupled(value)) {
-                    Edge(
+        return simultaneouslyCommittedFiles.mapNotNull { (coupledFile, value) ->
+            if (isHighlyCoupled(value)) {
+                Edge(
                         fileName,
                         coupledFile,
-                        mapOf(edgeMetricName() to value.toDouble() / numberOfCommits.toDouble())
+                        mapOf(edgeMetricName() to value.toDouble() / numberOfCommits.toDouble()),
                     )
-                } else {
+            } else {
                 null
-                }
             }
+        }
     }
 
     private fun evaluateIfNecessary() {
         if (simultaneouslyCommittedFiles.isNotEmpty()) return
 
         commits.forEach { commit ->
-            commit.modifications
-                .forEach {
-                    if (it.currentFilename != fileName) {
-                        simultaneouslyCommittedFiles.merge(it.currentFilename, 1) { x, y -> x + y }
-                    }
+            commit.modifications.forEach {
+                if (it.currentFilename != fileName) {
+                    simultaneouslyCommittedFiles.merge(it.currentFilename, 1) { x, y -> x + y }
                 }
+            }
         }
     }
 
@@ -66,7 +61,7 @@ class HighlyCoupledFiles : Metric {
         return if (value >= MIN_NO_COMMITS_FOR_HIGH_COUPLING) {
             value.toDouble() / numberOfCommits.toDouble() > HIGH_COUPLING_VALUE
         } else {
-        false
+            false
         }
     }
 
@@ -84,7 +79,7 @@ class HighlyCoupledFiles : Metric {
     }
 
     companion object {
-        private const val HIGH_COUPLING_VALUE = .35
+    private const val HIGH_COUPLING_VALUE = .35
         private const val MIN_NO_COMMITS_FOR_HIGH_COUPLING = 5L
     }
 }

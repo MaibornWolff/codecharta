@@ -3,16 +3,20 @@ package de.maibornwolff.codecharta.importer.tokeiimporter.strategy
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import de.maibornwolff.codecharta.model.ProjectBuilder
-import mu.KLogger
+import de.maibornwolff.codecharta.util.Logger
 
 interface ImporterStrategy {
-    var rootName: String
+var rootName: String
     var pathSeparator: String
-    var logger: KLogger
 
     fun getLanguageSummaries(root: JsonElement): JsonObject
+
     fun determinePathSeparator(languageSummaries: JsonObject)
-    fun buildCCJson(languageSummaries: JsonObject, projectBuilder: ProjectBuilder)
+
+    fun buildCCJson(
+    languageSummaries: JsonObject,
+    projectBuilder: ProjectBuilder,
+    )
 
     fun isPathSeparatorArgumentEmpty(pathSeparator: String): Boolean {
         return pathSeparator.isEmpty()
@@ -22,7 +26,7 @@ interface ImporterStrategy {
         val result = Regex("[\\\\|/]").find(name)
         if (result != null) {
             pathSeparator = result.value
-            logger.info("Determined ${result.value} as path separator")
+            Logger.info { "Determined ${result.value} as path separator" }
             return true
         }
         return false

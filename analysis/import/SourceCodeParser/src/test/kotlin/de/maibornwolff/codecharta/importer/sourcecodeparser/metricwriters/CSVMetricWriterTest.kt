@@ -9,8 +9,7 @@ import java.io.OutputStreamWriter
 import java.io.PrintStream
 
 class CSVMetricWriterTest {
-
-    @Test
+@Test
     fun `empty project no metrics nor files`() {
         val metrics = ProjectMetrics()
         val result = ByteArrayOutputStream()
@@ -56,11 +55,11 @@ class CSVMetricWriterTest {
         CSVMetricWriter(OutputStreamWriter(PrintStream(result))).generate(metrics, allMetrics)
 
         assertThat(result.toString()).isIn(
-            setOf(
-                "file,mcc,rloc\nfoo,2,3\nbar,1,4\n",
-                "file,mcc,rloc\nfoo,2,3\nbar,1,4\n"
-            )
-        )
+                setOf(
+                        "file,mcc,rloc\nfoo,2,3\nbar,1,4\n",
+                        "file,mcc,rloc\nfoo,2,3\nbar,1,4\n",
+                     ),
+                                          )
     }
 
     @Test
@@ -75,7 +74,10 @@ class CSVMetricWriterTest {
         assertThat(result.toString()).isEqualTo("file,foo,bar\nbla,,\n")
     }
 
-    private fun addFileInProject(currentProject: ProjectMetrics, file: String) {
+    private fun addFileInProject(
+    currentProject: ProjectMetrics,
+    file: String,
+    ) {
         currentProject.projectMetrics[file] = FileMetricMap()
     }
 }

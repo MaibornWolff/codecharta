@@ -1,18 +1,15 @@
 package de.maibornwolff.codecharta.importer.gitlogparser.input.metrics
 
 class MetricsFactory {
-
-    private val metricClasses: List<Class<out Metric>>
+private val metricClasses: List<Class<out Metric>>
 
     constructor() {
-        this.metricClasses = createAllMetrics()
-            .map { it.javaClass }
+        this.metricClasses = createAllMetrics().map { it.javaClass }
     }
 
     constructor(metricNames: List<String>) {
-        this.metricClasses = createAllMetrics()
-            .filter { m -> metricNames.contains(m.metricName()) }
-            .map { it.javaClass }
+        this.metricClasses =
+                createAllMetrics().filter { m -> metricNames.contains(m.metricName()) }.map { it.javaClass }
     }
 
     private fun createMetric(clazz: Class<out Metric>): Metric {
@@ -27,25 +24,24 @@ class MetricsFactory {
 
     private fun createAllMetrics(): List<Metric> {
         return listOf(
-            AbsoluteCodeChurn(),
-            AddedLines(),
-            DeletedLines(),
-            NumberOfAuthors(),
-            NumberOfOccurencesInCommits(),
-            RangeOfWeeksWithCommits(),
-            SuccessiveWeeksWithCommits(),
-            WeeksWithCommits(),
-            HighlyCoupledFiles(),
-            MedianCoupledFiles(),
-            AbsoluteCoupledChurn(),
-            AverageCodeChurnPerCommit(),
-            NumberOfRenames(),
-            AgeInWeeks()
-        )
+                AbsoluteCodeChurn(),
+                AddedLines(),
+                DeletedLines(),
+                NumberOfAuthors(),
+                NumberOfOccurencesInCommits(),
+                RangeOfWeeksWithCommits(),
+                SuccessiveWeeksWithCommits(),
+                WeeksWithCommits(),
+                HighlyCoupledFiles(),
+                MedianCoupledFiles(),
+                AbsoluteCoupledChurn(),
+                AverageCodeChurnPerCommit(),
+                NumberOfRenames(),
+                AgeInWeeks(),
+                     )
     }
 
     fun createMetrics(): List<Metric> {
-        return metricClasses
-            .map { createMetric(it) }
+        return metricClasses.map { createMetric(it) }
     }
 }

@@ -4,7 +4,7 @@ import de.maibornwolff.codecharta.importer.gitlogparser.input.Commit
 import de.maibornwolff.codecharta.model.AttributeType
 
 class NumberOfAuthors : Metric {
-    private val authors = mutableSetOf<String>()
+private val authors = mutableSetOf<String>()
 
     override fun description(): String {
         return "Number of Authors: Number of authors that contributed to this file."

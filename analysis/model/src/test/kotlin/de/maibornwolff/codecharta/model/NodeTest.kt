@@ -7,8 +7,7 @@ import org.junit.jupiter.api.Test
 import kotlin.test.assertFailsWith
 
 class NodeTest {
-
-    @Test
+@Test
     fun `getPathOfChild should only return valid children on root with one child`() {
         val childName = "child1"
         val child = MutableNode(childName)
@@ -38,7 +37,7 @@ class NodeTest {
     @Nested
     @DisplayName("NodeTest > with many children")
     inner class LeafNodeTest {
-        val node11 = MutableNode("node11")
+    val node11 = MutableNode("node11")
         val node12 = MutableNode("node12")
         val node1 = MutableNode("node1", NodeType.Folder, childrenList = listOf(node11, node12).toSet())
         val node21 = MutableNode("node21", NodeType.Folder)
@@ -59,10 +58,10 @@ class NodeTest {
 
             assertThat(pathsToLeafs).hasSize(3)
             assertThat(pathsToLeafs).containsExactlyInAnyOrder(
-                Path("node1", "node11"),
-                Path("node1", "node12"),
-                Path("node2", "node21")
-            )
+                    Path("node1", "node11"),
+                    Path("node1", "node12"),
+                    Path("node2", "node21"),
+                                                              )
         }
     }
 }

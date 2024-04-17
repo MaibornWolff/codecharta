@@ -7,11 +7,10 @@ import java.time.OffsetDateTime
 import java.time.ZoneOffset
 
 class RangeOfWeeksWithCommitsTest {
-    private val zoneOffset = ZoneOffset.UTC
+private val zoneOffset = ZoneOffset.UTC
 
     @Test
-    fun initial_value_zero() {
-        // when
+    fun initial_value_zero() { // when
         val metric = RangeOfWeeksWithCommits()
 
         // then
@@ -19,8 +18,7 @@ class RangeOfWeeksWithCommitsTest {
     }
 
     @Test
-    fun single_modification() {
-        // given
+    fun single_modification() { // given
         val metric = RangeOfWeeksWithCommits()
 
         // when
@@ -32,8 +30,7 @@ class RangeOfWeeksWithCommitsTest {
     }
 
     @Test
-    fun additional_modification_in_same_calendar_week() {
-        // given
+    fun additional_modification_in_same_calendar_week() { // given
         val metric = RangeOfWeeksWithCommits()
 
         // when
@@ -47,8 +44,7 @@ class RangeOfWeeksWithCommitsTest {
     }
 
     @Test
-    fun additional_modification_in_successive_calendar_week() {
-        // given
+    fun additional_modification_in_successive_calendar_week() { // given
         val metric = RangeOfWeeksWithCommits()
 
         // when
@@ -62,8 +58,7 @@ class RangeOfWeeksWithCommitsTest {
     }
 
     @Test
-    fun additional_modification_in_non_successive_calendar_week() {
-        // given
+    fun additional_modification_in_non_successive_calendar_week() { // given
         val metric = RangeOfWeeksWithCommits()
 
         // when

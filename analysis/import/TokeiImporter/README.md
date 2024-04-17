@@ -1,7 +1,9 @@
 # Tokei Importer
 
 [Tokei](https://github.com/XAMPPRocky/tokei) is a program that computes basic metrics for your code.
-It supports a large amount of [different languages](https://github.com/XAMPPRocky/tokei?tab=readme-ov-file#supported-languages). The metrics provided are:
+It supports a large amount
+of [different languages](https://github.com/XAMPPRocky/tokei?tab=readme-ov-file#supported-languages). The metrics
+provided are:
 
 -   Lines
 -   Lines of Code

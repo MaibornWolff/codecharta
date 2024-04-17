@@ -8,7 +8,7 @@ import java.io.InputStreamReader
 import java.util.Scanner
 
 object ProjectInputReader {
-    /**
+/**
      * Extracts a JSON string representing a project from the given InputStream.
      * Because piped bash commands run concurrently, a pipeable ccsh-parser sends a sync flag
      * to signal other parsers to check for piped input.
@@ -90,7 +90,10 @@ object ProjectInputReader {
         }
     }
 
-    private fun isSubarray(subarray: ByteArray, buffer: ByteArray): Boolean {
+    private fun isSubarray(
+    subarray: ByteArray,
+    buffer: ByteArray,
+    ): Boolean {
         for (i in 0 until buffer.size - subarray.size + 1) {
             if (buffer.copyOfRange(i, i + subarray.size).contentEquals(subarray)) {
                 return true

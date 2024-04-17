@@ -31,7 +31,8 @@ The names of authors are saved when the --add-author flag is set.
 | --- | ---------- | ------------------------ | -------------- | --------------------- | ------------------- |
 | SVN | SVN_LOG    | `svn log --verbose`      | yes            | yes                   | no                  |
 
-You can also use the bash script anongit which generates an anonymous git log with log format GIT_LOG_NUMSTAT_RAW for usage with CodeCharta.
+You can also use the bash script anongit which generates an anonymous git log with log format GIT_LOG_NUMSTAT_RAW for
+usage with CodeCharta.
 
 ### Executing the SVNLogParser
 

@@ -7,8 +7,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
 class LeafNodeMergerTest {
-
-    @Test
+@Test
     fun `should merge nodes with same name`() {
         val fittingMerger = LeafNodeMergerStrategy(false)
         val node1 = MutableNode("Name", NodeType.File)
@@ -23,8 +22,7 @@ class LeafNodeMergerTest {
         val fittingMerger = LeafNodeMergerStrategy(false)
         val child1 = MutableNode("child1", NodeType.File)
         val child2 = MutableNode("child2", NodeType.Folder)
-        val child1Modified =
-            MutableNode("child1", NodeType.File, mapOf(Pair("someAttribute", 1.0f)), "", setOf())
+        val child1Modified = MutableNode("child1", NodeType.File, mapOf(Pair("someAttribute", 1.0f)), "", setOf())
         val node1 = MutableNode("Name", NodeType.File, mapOf(), "", setOf(child1Modified))
         val node2 = MutableNode("Name", NodeType.File, mapOf(), "", setOf(child1, child2))
 
@@ -92,8 +90,7 @@ class LeafNodeMergerTest {
         val misfittingMerger = LeafNodeMergerStrategy(true)
         val child1 = MutableNode("child1", NodeType.File)
         val child2 = MutableNode("child2", NodeType.Folder)
-        val child1Modified =
-            MutableNode("child1", NodeType.File, mapOf(Pair("someAttribute", 1.0f)), "", setOf())
+        val child1Modified = MutableNode("child1", NodeType.File, mapOf(Pair("someAttribute", 1.0f)), "", setOf())
         val node1 = MutableNode("Name", NodeType.File, mapOf(), "", setOf(child1Modified))
         val node2 = MutableNode("Name", NodeType.File, mapOf(), "", setOf(child1, child2))
 

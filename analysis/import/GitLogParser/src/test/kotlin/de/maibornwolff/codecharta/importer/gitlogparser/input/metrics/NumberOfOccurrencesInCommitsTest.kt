@@ -5,9 +5,8 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 class NumberOfOccurrencesInCommitsTest {
-    @Test
-    fun should_have_initial_value_zero() {
-        // when
+@Test
+    fun should_have_initial_value_zero() { // when
         val metric = NumberOfOccurencesInCommits()
 
         // then
@@ -15,8 +14,7 @@ class NumberOfOccurrencesInCommitsTest {
     }
 
     @Test
-    fun should_increase_by_modification() {
-        // given
+    fun should_increase_by_modification() { // given
         val metric = NumberOfOccurencesInCommits()
 
         // when

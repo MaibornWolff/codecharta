@@ -9,17 +9,16 @@ import de.maibornwolff.codecharta.importer.gitlogparser.input.Modification
  * see "diff-raw status letters" at https://github.com/git/git/blob/35f6318d44379452d8d33e880d8df0267b4a0cd0/diff.h#L326
  */
 internal enum class Status(private val letter: Char) {
-
-    ADDED('A'),
+ADDED('A'),
     COPIED('C'),
     DELETED('D'),
     MODIFIED('M'),
     RENAMED('R'),
     TYPE_CHANGED('T'),
     UNKNOWN('X'),
-    UNMERGED('U');
+    UNMERGED('U'), ;
 
-    fun toModificationType(): Modification.Type {
+fun toModificationType(): Modification.Type {
         return when (this) {
             ADDED -> Modification.Type.ADD
             DELETED -> Modification.Type.DELETE
@@ -34,8 +33,7 @@ internal enum class Status(private val letter: Char) {
     }
 
     companion object {
-
-        val ALL_STATUS_LETTERS: List<Char> = Status.values().map { it.statusLetter() } // sanity check
+    val ALL_STATUS_LETTERS: List<Char> = Status.values().map { it.statusLetter() } // sanity check
 
         fun byCharacter(character: Char): Status {
             return Status.values().firstOrNull { status -> status.letter == character } ?: UNKNOWN

@@ -13,29 +13,29 @@ import java.io.File
 
 class GitLogParserTest {
     companion object {
-        @JvmStatic
+    @JvmStatic
         fun provideInvalidInputFiles(): List<Arguments> {
             return listOf(
                     Arguments.of("src/test/resources/my/empty/repo"),
                     Arguments.of("src/test/resources/this/does/not/exist"),
                     Arguments.of(""),
-                    Arguments.of("src/test/resources/my")
-            )
+                    Arguments.of("src/test/resources/my"),
+                         )
         }
     }
 
     @Test
     fun `should create json uncompressed file repo-scan`() {
         main(
-            arrayOf(
-                "repo-scan",
-                "--repo-path=../../..",
-                "--output-file=src/test/resources/gitlog-analysis-repo.cc.json",
-                "--not-compressed",
-                "--silent=false",
-                "--add-author=false"
+                arrayOf(
+                        "repo-scan",
+                        "--repo-path=../../..",
+                        "--output-file=src/test/resources/gitlog-analysis-repo.cc.json",
+                        "--not-compressed",
+                        "--silent=false",
+                        "--add-author=false",
+                       ),
             )
-        )
         val file = File("src/test/resources/gitlog-analysis-repo.cc.json")
         file.deleteOnExit()
 
@@ -45,15 +45,15 @@ class GitLogParserTest {
     @Test
     fun `should create json uncompressed file log-scan`() {
         main(
-            arrayOf(
-                "log-scan",
-                "--git-log=src/test/resources/codeCharta.log",
-                "--repo-files=src/test/resources/names-in-git-repo.txt",
-                "--output-file=src/test/resources/gitlog-analysis-log.cc.json",
-                "--not-compressed",
-                "--silent=true"
+                arrayOf(
+                        "log-scan",
+                        "--git-log=src/test/resources/codeCharta.log",
+                        "--repo-files=src/test/resources/names-in-git-repo.txt",
+                        "--output-file=src/test/resources/gitlog-analysis-log.cc.json",
+                        "--not-compressed",
+                        "--silent=true",
+                       ),
             )
-        )
         val file = File("src/test/resources/gitlog-analysis-log.cc.json")
         file.deleteOnExit()
         assertTrue(file.exists())
@@ -64,14 +64,14 @@ class GitLogParserTest {
     @Test
     fun `should create json gzip file log-scan`() {
         main(
-            arrayOf(
-                "log-scan",
-                "--git-log=src/test/resources/codeCharta.log",
-                "--repo-files=src/test/resources/names-in-git-repo.txt",
-                "--output-file=src/test/resources/gitlog-analysis.cc.json",
-                "--silent=true"
+                arrayOf(
+                        "log-scan",
+                        "--git-log=src/test/resources/codeCharta.log",
+                        "--repo-files=src/test/resources/names-in-git-repo.txt",
+                        "--output-file=src/test/resources/gitlog-analysis.cc.json",
+                        "--silent=true",
+                       ),
             )
-        )
         val file = File("src/test/resources/gitlog-analysis.cc.json.gz")
         file.deleteOnExit()
 

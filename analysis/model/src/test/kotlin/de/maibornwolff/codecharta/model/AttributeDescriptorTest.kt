@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Assertions.assertNotEquals
 import org.junit.jupiter.api.Test
 
 class AttributeDescriptorTest {
-    private val descriptor = AttributeDescriptor("Description", link = "aLink", direction = -1)
+private val descriptor = AttributeDescriptor("Description", link = "aLink", direction = -1)
 
     @Test
     fun `should store attribute information`() {

@@ -5,7 +5,7 @@ import java.time.format.DateTimeFormatter
 import java.util.Locale
 
 internal object CommitDateParser {
-    const val DATE_ROW_INDICATOR = "Date: "
+const val DATE_ROW_INDICATOR = "Date: "
     private val DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("EEE MMM d HH:mm:ss yyyy ZZZ", Locale.US)
 
     fun parseCommitDate(metadataDateLine: String): OffsetDateTime {

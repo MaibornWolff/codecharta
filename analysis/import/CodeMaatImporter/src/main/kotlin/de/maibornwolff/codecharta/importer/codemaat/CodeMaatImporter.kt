@@ -20,34 +20,42 @@ import java.util.concurrent.Callable
 @CommandLine.Command(
         name = CodeMaatImporter.NAME,
         description = [CodeMaatImporter.DESCRIPTION],
-        footer = [CodeChartaConstants.General.GENERIC_FOOTER]
-)
+        footer = [CodeChartaConstants.General.GENERIC_FOOTER],
+                    )
 class CodeMaatImporter(
-        private val output: PrintStream = System.out
-) : Callable<Unit>, InteractiveParser, AttributeGenerator {
-
-    @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
+        private val output: PrintStream = System.out,
+                      ) : Callable<Unit>, InteractiveParser, AttributeGenerator {
+                      @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
 
     @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File"])
-    private var outputFile: String? = null
+    private var outputFile:
+            String? = null
 
     @CommandLine.Option(names = ["-nc", "--not-compressed"], description = ["save uncompressed output File"])
-    private var compress = true
+    private var compress =
+            true
 
     @CommandLine.Parameters(arity = "1..*", paramLabel = "FILE", description = ["codemaat coupling csv files"])
-    private var files: List<File> = mutableListOf()
+    private var files:
+            List<File> = mutableListOf()
 
-    private val pathSeparator = '/'
+    private val pathSeparator =
+            '/'
 
-    private val csvDelimiter = ','
+    private val csvDelimiter =
+            ','
 
-    override val name = NAME
-    override val description = DESCRIPTION
+    override val name =
+            NAME
+    override val description =
+            DESCRIPTION
 
     companion object {
-        const val NAME = "codemaatimport"
-        const val DESCRIPTION = "generates cc.json from codemaat coupling csv"
+    const val NAME =
+                "codemaatimport"
+        const val DESCRIPTION =
+                "generates cc.json from codemaat coupling csv"
 
         @JvmStatic
         fun main(args: Array<String>) {
@@ -62,19 +70,30 @@ class CodeMaatImporter(
         }
 
         val csvProjectBuilder =
-                CSVProjectBuilder(pathSeparator, csvDelimiter, codemaatReplacement, attributeTypes, getAttributeDescriptorMaps())
-        files.map { it.inputStream() }.forEach<InputStream> { csvProjectBuilder.parseCSVStream(it) }
-        val project = csvProjectBuilder.build()
+                CSVProjectBuilder(
+                        pathSeparator, csvDelimiter, codemaatReplacement, attributeTypes,
+                        getAttributeDescriptorMaps(),
+                                 )
+        files.map {
+            it.inputStream()
+        }.forEach<InputStream> {
+            csvProjectBuilder.parseCSVStream(it)
+        }
+        val project =
+                csvProjectBuilder.build()
 
         ProjectSerializer.serializeToFileOrStream(project, outputFile, output, compress)
 
         return null
     }
 
-    private val codemaatReplacement: MetricNameTranslator
+    private val codemaatReplacement:
+            MetricNameTranslator
         get() {
-            val prefix = ""
-            val replacementMap = mutableMapOf<String, String>()
+            val prefix =
+                    ""
+            val replacementMap =
+                    mutableMapOf<String, String>()
             replacementMap["entity"] = "fromNodename"
             replacementMap["coupled"] = "toNodeName"
             replacementMap["degree"] = "pairingRate"
@@ -83,10 +102,13 @@ class CodeMaatImporter(
             return MetricNameTranslator(replacementMap.toMap(), prefix)
         }
 
-    private val attributeTypes: AttributeTypes
+    private val attributeTypes:
+            AttributeTypes
         get() {
-            val type = "edges"
-            val attributeTypes = mutableMapOf<String, AttributeType>()
+            val type =
+                    "edges"
+            val attributeTypes =
+                    mutableMapOf<String, AttributeType>()
             attributeTypes["pairingRate"] = AttributeType.RELATIVE
             attributeTypes["avgCommits"] = AttributeType.ABSOLUTE
 
@@ -94,6 +116,7 @@ class CodeMaatImporter(
         }
 
     override fun getDialog(): ParserDialogInterface = ParserDialog
+
     override fun isApplicable(resourceToBeParsed: String): Boolean {
         return false
     }

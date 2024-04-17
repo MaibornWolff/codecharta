@@ -14,8 +14,7 @@ import org.junit.jupiter.api.Test
 import java.time.OffsetDateTime
 
 class ProjectConverterTest {
-
-    private val metricsFactory = mockk<MetricsFactory>()
+private val metricsFactory = mockk<MetricsFactory>()
 
     @BeforeEach
     fun setup() {
@@ -28,12 +27,10 @@ class ProjectConverterTest {
 
     @Test
     @Throws(Exception::class)
-    fun canCreateAnEmptyProject() {
-        // given
+    fun canCreateAnEmptyProject() { // given
         val projectConverter = ProjectConverter(true)
         val metricsFactory = MetricsFactory()
-        val vcfList = VersionControlledFilesList(metricsFactory)
-        // when
+        val vcfList = VersionControlledFilesList(metricsFactory) // when
         val project = projectConverter.convert(vcfList, metricsFactory, listOf())
 
         // then
@@ -41,17 +38,16 @@ class ProjectConverterTest {
     }
 
     @Test
-    fun canConvertProjectWithAuthors() {
-        // given
+    fun canConvertProjectWithAuthors() { // given
         val projectConverter = ProjectConverter(true)
         val file1 = VersionControlledFile("File 1", metricsFactory)
         val vcfList = VersionControlledFilesList(metricsFactory)
 
         vcfList.addFileBy("File 1")
         file1.registerCommit(
-            Commit("Author", modificationsByFilename("File 1", "File 2"), OffsetDateTime.now()),
-            Modification.EMPTY
-        )
+                Commit("Author", modificationsByFilename("File 1", "File 2"), OffsetDateTime.now()),
+                Modification.EMPTY,
+                            )
 
         // when
         val project = projectConverter.convert(vcfList, metricsFactory, listOf("File 1"))
@@ -61,17 +57,16 @@ class ProjectConverterTest {
     }
 
     @Test
-    fun canConvertProjectWithoutAuthors() {
-        // given
+    fun canConvertProjectWithoutAuthors() { // given
         val projectConverter = ProjectConverter(false)
         val file1 = VersionControlledFile("File 1", metricsFactory)
         val vcfList = VersionControlledFilesList(metricsFactory)
 
         vcfList.addFileBy("File 1")
         file1.registerCommit(
-            Commit("Author", modificationsByFilename("File 1", "File 2"), OffsetDateTime.now()),
-            Modification.EMPTY
-        )
+                Commit("Author", modificationsByFilename("File 1", "File 2"), OffsetDateTime.now()),
+                Modification.EMPTY,
+                            )
 
         // when
         val project = projectConverter.convert(vcfList, metricsFactory, listOf("File 1"))

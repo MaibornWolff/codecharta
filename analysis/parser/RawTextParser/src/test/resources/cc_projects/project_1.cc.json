@@ -65,6 +65,9 @@
         "hintLowValue": "",
         "hintHighValue": "",
         "link": "",
-      "direction":-1}
-  },"blacklist":[]}
+        "direction": -1
+      }
+    },
+    "blacklist": []
+  }
 }

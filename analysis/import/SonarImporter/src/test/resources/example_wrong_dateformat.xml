@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources>
-    <resource>
-        <id>1366136</id>
-        <key>ubu.gii.dass.poolobject</key>
-        <name>201701poolobject</name>
-        <lname>201701poolobject</lname>
-        <scope>PRJ</scope>
-        <qualifier>TRK</qualifier>
-        <version>0.2</version>
-        <date>2017-01-25T11:49:45</date>
-        <creationDate>2017-01-25T11:49:50</creationDate>
-        <msr>
-            <key>coverage</key>
-            <val>0.0</val>
-            <frmt_val>0.0%</frmt_val>
-        </msr>
-        <msr>
-            <key>ncloc</key>
-            <val>71.0</val>
-            <frmt_val>71</frmt_val>
-        </msr>
-    </resource>
+  <resource>
+    <id>1366136</id>
+    <key>ubu.gii.dass.poolobject</key>
+    <name>201701poolobject</name>
+    <lname>201701poolobject</lname>
+    <scope>PRJ</scope>
+    <qualifier>TRK</qualifier>
+    <version>0.2</version>
+    <date>2017-01-25T11:49:45</date>
+    <creationDate>2017-01-25T11:49:50</creationDate>
+    <msr>
+      <key>coverage</key>
+      <val>0.0</val>
+      <frmt_val>0.0%</frmt_val>
+    </msr>
+    <msr>
+      <key>ncloc</key>
+      <val>71.0</val>
+      <frmt_val>71</frmt_val>
+    </msr>
+  </resource>
 </resources>
