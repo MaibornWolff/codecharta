@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
--   Escaping and un-escaping windows paths, auto-detecting path separator for Unix and Windows paths [#3566](https://github.com/MaibornWolff/codecharta/pull/3566)
+-   Escaping and un-escaping windows paths, auto-detecting path separator for Unix and Windows paths [#3569](https://github.com/MaibornWolff/codecharta/pull/3569)
 
 ## [1.123.0] - 2024-04-10
 
