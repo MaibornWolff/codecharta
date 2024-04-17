@@ -6,20 +6,17 @@ import org.apache.commons.text.similarity.JaccardSimilarity
 import org.apache.commons.text.similarity.JaroWinklerSimilarity
 
 open class ProjectBuilder(
-    private val nodes: List<MutableNode> = listOf(MutableNode("root", NodeType.Folder)),
-    private var edges: MutableList<Edge> = mutableListOf(),
-    private var attributeTypes: MutableMap<String, MutableMap<String, AttributeType>> = mutableMapOf(),
-    private var attributeDescriptors: MutableMap<String, AttributeDescriptor> = mutableMapOf(),
-    private var blacklist: MutableList<BlacklistItem> = mutableListOf()
-) {
-
-    val DUMMY_PROJECT_NAME = ""
-
-    init {
+        private val nodes: List<MutableNode> = listOf(MutableNode("root", NodeType.Folder)),
+        private var edges: MutableList<Edge> = mutableListOf(),
+        private var attributeTypes: MutableMap<String, MutableMap<String, AttributeType>> = mutableMapOf(),
+        private var attributeDescriptors: MutableMap<String, AttributeDescriptor> = mutableMapOf(),
+        private var blacklist: MutableList<BlacklistItem> = mutableListOf(),
+                         ) {
+                         init {
         if (nodes.size != 1) {
-        throw IllegalStateException(
-                "No unique root node was found, instead ${nodes.size} candidates identified."
-        )
+            throw IllegalStateException(
+                    "No unique root node was found, instead ${nodes.size} candidates identified.",
+                                       )
         }
     }
 
@@ -29,7 +26,10 @@ open class ProjectBuilder(
     val size: Int
         get() = rootNode.size
 
-    fun insertByPath(position: Path, node: MutableNode): ProjectBuilder {
+    fun insertByPath(
+    position: Path,
+    node: MutableNode,
+    ): ProjectBuilder {
         rootNode.insertAt(position, node)
         return this
     }
@@ -41,14 +41,20 @@ open class ProjectBuilder(
 
     private var metricNameTranslator: MetricNameTranslator = MetricNameTranslator.TRIVIAL
 
-    private var filterRule: (MutableNode) -> Boolean = { true }
+    private var filterRule: (MutableNode) -> Boolean = {
+        true
+    }
 
     fun withMetricTranslator(metricNameTranslator: MetricNameTranslator): ProjectBuilder {
         this.metricNameTranslator = metricNameTranslator
         return this
     }
 
-    fun withFilter(filterRule: (MutableNode) -> Boolean = { true }): ProjectBuilder {
+    fun withFilter(
+    filterRule: (MutableNode) -> Boolean = {
+                true
+            },
+    ): ProjectBuilder {
         this.filterRule = filterRule
         return this
     }
@@ -58,24 +64,34 @@ open class ProjectBuilder(
     }
 
     open fun build(cleanAttributeDescriptors: Boolean = false): Project {
-        nodes.flatMap { it.nodes.values }
-                .mapNotNull { it.filterChildren(filterRule, false) }
-                .map { it.translateMetrics(metricNameTranslator, false) }
+        nodes.flatMap {
+            it.nodes.values
+        }.mapNotNull {
+            it.filterChildren(filterRule, false)
+        }.map {
+            it.translateMetrics(metricNameTranslator, false)
+        }
 
-        edges.forEach { it.translateMetrics(metricNameTranslator) }
+        edges.forEach {
+            it.translateMetrics(metricNameTranslator)
+        }
 
         filterEmptyFolders()
         if (cleanAttributeDescriptors) {
             removeUnusedAttributeDescriptors()
         }
-        val project = Project(
-                edges = edges.toList(),
-                blacklist = blacklist.toList(),
-                projectName = DUMMY_PROJECT_NAME,
-                attributeTypes = attributeTypes.toMap(),
-                nodes = nodes.map { it.toNode() }.toList(),
-                attributeDescriptors = attributeDescriptors.toMap()
-        )
+        val project =
+                Project(
+                        edges = edges.toList(),
+                        blacklist = blacklist.toList(),
+                        projectName = Companion.DUMMY_PROJECT_NAME,
+                        attributeTypes = attributeTypes.toMap(),
+                        nodes =
+                        nodes.map {
+                            it.toNode()
+                        }.toList(),
+                        attributeDescriptors = attributeDescriptors.toMap(),
+                       )
 
         System.err.println()
         System.err.println("Created Project with ${project.size} leaves.")
@@ -84,7 +100,11 @@ open class ProjectBuilder(
     }
 
     private fun filterEmptyFolders() {
-        nodes.forEach { it.filterChildren({ !it.isEmptyFolder }, true) }
+        nodes.forEach {
+            it.filterChildren({
+                !it.isEmptyFolder
+            }, true)
+        }
     }
 
     fun addAttributeTypes(attributeTypesToAdd: AttributeTypes): ProjectBuilder {
@@ -118,8 +138,8 @@ open class ProjectBuilder(
     }
 
     private fun addAttributeDescriptorWithEstimatedDirection(
-            nodeAttributeName: String,
-            complementedAttributeDescriptors: MutableMap<String, AttributeDescriptor>
+    nodeAttributeName: String,
+    complementedAttributeDescriptors: MutableMap<String, AttributeDescriptor>,
     ) {
         complementedAttributeDescriptors[nodeAttributeName] =
                 AttributeDescriptor(title = nodeAttributeName, direction = estimateDirection(nodeAttributeName))
@@ -131,13 +151,21 @@ open class ProjectBuilder(
         val attributeDescriptorNames = attributeDescriptors.keys.distinct()
 
         val strippedNodeAttributeName = nodeAttributeName.lowercase().replace("[^a-zäöüß]".toRegex(), "")
-        if (getCodeMetricsPositiveDirectionEnglish().any { it in strippedNodeAttributeName } &&
-            !(getCodeMetricsNegativeDirectionEnglish()).any { it in strippedNodeAttributeName }
+        if (getCodeMetricsPositiveDirectionEnglish().any {
+                    it in strippedNodeAttributeName
+                } &&
+            !(getCodeMetricsNegativeDirectionEnglish()).any {
+                it in strippedNodeAttributeName
+            }
         ) {
             return 1
         }
-        if (getCodeMetricsPositiveDirectionGerman().any { it in strippedNodeAttributeName } &&
-            !(getCodeMetricsNegativeDirectionGerman()).any { it in strippedNodeAttributeName }
+        if (getCodeMetricsPositiveDirectionGerman().any {
+                    it in strippedNodeAttributeName
+                } &&
+            !(getCodeMetricsNegativeDirectionGerman()).any {
+                it in strippedNodeAttributeName
+            }
         ) {
             return 1
         }
@@ -148,11 +176,11 @@ open class ProjectBuilder(
                 }
 
         val attributeDescriptorNameWithMaxAvgSimilarity: Map.Entry<String, Double>? =
-                attributeDescriptorNamesByAvgSimilarities.maxByOrNull { it.value }
+                attributeDescriptorNamesByAvgSimilarities.maxByOrNull {
+                    it.value
+                }
 
-        if (attributeDescriptorNameWithMaxAvgSimilarity != null &&
-            attributeDescriptorNameWithMaxAvgSimilarity.value >= avgSimilarityThreshold
-        ) {
+        if (attributeDescriptorNameWithMaxAvgSimilarity != null && attributeDescriptorNameWithMaxAvgSimilarity.value >= avgSimilarityThreshold) {
             val attributeDescriptorWithMaxAvgSimilarity =
                     attributeDescriptors[attributeDescriptorNameWithMaxAvgSimilarity.key]
             if (attributeDescriptorWithMaxAvgSimilarity != null) {
@@ -163,7 +191,10 @@ open class ProjectBuilder(
         return -1
     }
 
-    private fun calculateAvgSimilarity(nodeAttributeName: String, attributeDescriptorName: String): Double {
+    private fun calculateAvgSimilarity(
+    nodeAttributeName: String,
+    attributeDescriptorName: String,
+    ): Double {
         val jacquardSimilarity = JaccardSimilarity().apply(nodeAttributeName, attributeDescriptorName)
         val jaroWinklerSimilarity = JaroWinklerSimilarity().apply(nodeAttributeName, attributeDescriptorName)
         return (jacquardSimilarity + jaroWinklerSimilarity) / 2
@@ -193,7 +224,9 @@ open class ProjectBuilder(
         }
 
         val attributeDescriptors = this.attributeDescriptors.toMutableMap()
-        attributeSet.forEach { attributeDescriptors.remove(it) }
+        attributeSet.forEach {
+            attributeDescriptors.remove(it)
+        }
         this.attributeDescriptors = attributeDescriptors
         return
     }
@@ -223,26 +256,26 @@ open class ProjectBuilder(
 
     private fun getCodeMetricsPositiveDirectionEnglish(): List<String> {
         return listOf(
-        "covered", "coverage", "review", "reviewed", "documentation", "documented", "success",
+                "covered", "coverage", "review", "reviewed", "documentation", "documented", "success",
                 "succeeded", "fix", "fixed", "completion", "complete", "augmentation", "augmented", "enhancement",
                 "enhanced", "improvement", "improved", "added", "addition", "efficient", "efficiency", "velocity",
-                "reusable", "reusability", "reduced", "reduction"
-        )
+                "reusable", "reusability", "reduced", "reduction",
+                     )
     }
 
     private fun getCodeMetricsNegativeDirectionEnglish(): List<String> {
         return listOf(
-        "unchecked", "uncovered", "not", "failed", "failure", "reopened", "violation", "violated",
-                "duplication", "duplicated", "skipped", "error", "wont"
-        )
+                "unchecked", "uncovered", "not", "failed", "failure", "reopened", "violation", "violated",
+                "duplication", "duplicated", "skipped", "error", "wont",
+                     )
     }
 
     private fun getCodeMetricsPositiveDirectionGerman(): List<String> {
         return listOf(
-        "abgedeckt", "abdeckung", "überprüft", "dokumentation", "dokumentiert", "erfolg", "erfolgreich",
+                "abgedeckt", "abdeckung", "überprüft", "dokumentation", "dokumentiert", "erfolg", "erfolgreich",
                 "beheben", "behoben", "vollständig", "erweitert", "verbessert", "hinzugefügt", "effizient", "effizienz",
-                "geschwindigkeit", "wiederverwendbar", "wiederverwendbarkeit"
-        )
+                "geschwindigkeit", "wiederverwendbar", "wiederverwendbarkeit",
+                     )
     }
 
     private fun getCodeMetricsNegativeDirectionGerman(): List<String> {
@@ -251,5 +284,9 @@ open class ProjectBuilder(
 
     override fun toString(): String {
         return "Project{nodes=$nodes, edges=$edges, attributeTypes=$attributeTypes, attributeDescriptors=$attributeDescriptors, blacklist=$blacklist}"
+    }
+
+    companion object {
+    const val DUMMY_PROJECT_NAME = ""
     }
 }

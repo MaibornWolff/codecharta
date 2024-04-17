@@ -2,12 +2,12 @@ package de.maibornwolff.codecharta.filter.structuremodifier
 
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.util.InputHelper
+import de.maibornwolff.codecharta.util.Logger
+import io.github.oshai.kotlinlogging.KLogger
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkObject
 import io.mockk.unmockkAll
-import mu.KLogger
-import mu.KotlinLogging
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
@@ -19,7 +19,7 @@ import java.io.PrintStream
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class StructureModifierTest {
-    private val errContent = ByteArrayOutputStream()
+private val errContent = ByteArrayOutputStream()
     private val originalErr = System.err
 
     @AfterEach
@@ -29,8 +29,7 @@ class StructureModifierTest {
     }
 
     @Test
-    fun `should read project when prodided with input file`() {
-        // when
+    fun `should read project when prodided with input file`() { // when
         val cliResult = executeForOutput("", arrayOf("src/test/resources/sample_project.cc.json", "-r=/does/not/exist"))
 
         // then
@@ -38,10 +37,12 @@ class StructureModifierTest {
     }
 
     @Test
-    fun `should read project when receiving piped input`() {
-        // given
+    fun `should read project when receiving piped input`() { // given
         val inputFilePath = "src/test/resources/sample_project.cc.json"
-        val input = File(inputFilePath).bufferedReader().readLines().joinToString(separator = "") { it }
+        val input =
+                File(inputFilePath).bufferedReader().readLines().joinToString(separator = "") {
+                    it
+                }
 
         // when
         val cliResult = executeForOutput(input, arrayOf("-r=/does/not/exist"))
@@ -51,8 +52,7 @@ class StructureModifierTest {
     }
 
     @Test
-    fun `should not produce output when provided with invalid project file`() {
-        // given
+    fun `should not produce output when provided with invalid project file`() { // given
         System.setErr(PrintStream(errContent))
 
         // when
@@ -66,8 +66,7 @@ class StructureModifierTest {
     }
 
     @Test
-    fun `should return error when given malformed piped input`() {
-        // given
+    fun `should return error when given malformed piped input`() { // given
         val input = "{this: 12}"
         System.setErr(PrintStream(errContent))
 
@@ -82,10 +81,9 @@ class StructureModifierTest {
     }
 
     @Test
-    fun `should set the  root for new subproject when provided with new root`() {
-        // when
+    fun `should set the  root for new subproject when provided with new root`() { // when
         val cliResult =
-            executeForOutput("", arrayOf("src/test/resources/sample_project.cc.json", "-s=/root/src/folder3"))
+                executeForOutput("", arrayOf("src/test/resources/sample_project.cc.json", "-s=/root/src/folder3"))
 
         // then
         assertThat(cliResult).contains("otherFile2.java")
@@ -93,8 +91,7 @@ class StructureModifierTest {
     }
 
     @Test
-    fun `should remove single node when given single folder to remove`() {
-        // when
+    fun `should remove single node when given single folder to remove`() { // when
         val cliResult = executeForOutput("", arrayOf("src/test/resources/sample_project.cc.json", "-r=/root/src"))
 
         // then
@@ -103,12 +100,12 @@ class StructureModifierTest {
     }
 
     @Test
-    fun `should move nodes when move-from flag is specified`() {
-        // when
-        val cliResult = executeForOutput(
-            "",
-            arrayOf("src/test/resources/sample_project.cc.json", "-f=/root/src", "-t=/root/new123")
-        )
+    fun `should move nodes when move-from flag is specified`() { // when
+        val cliResult =
+                executeForOutput(
+                        "",
+                        arrayOf("src/test/resources/sample_project.cc.json", "-f=/root/src", "-t=/root/new123"),
+                                )
 
         // then
         assertThat(cliResult).contains("new123")
@@ -116,8 +113,7 @@ class StructureModifierTest {
     }
 
     @Test
-    fun `should print structure accordingly when print-level is set`() {
-        // when
+    fun `should print structure accordingly when print-level is set`() { // when
         val cliResult = executeForOutput("", arrayOf("src/test/resources/sample_project.cc.json", "-p=2"))
 
         // then
@@ -125,9 +121,12 @@ class StructureModifierTest {
     }
 
     @Test
-    fun `should set root and remove unused descriptors when root specified`() {
-        // when
-        val cliResult = executeForOutput("", arrayOf("src/test/resources/test_attributeDescriptors.json", "-s=/root/AnotherParentLeaf"))
+    fun `should set root and remove unused descriptors when root specified`() { // when
+        val cliResult =
+                executeForOutput(
+                        "",
+                        arrayOf("src/test/resources/test_attributeDescriptors.json", "-s=/root/AnotherParentLeaf"),
+                                )
         val resultProject = ProjectDeserializer.deserializeProject(cliResult)
 
         // then
@@ -136,9 +135,12 @@ class StructureModifierTest {
     }
 
     @Test
-    fun `should remove nodes and unused descriptors when provided with an input file containing unused descriptors`() {
-        // when
-        val cliResult = executeForOutput("", arrayOf("src/test/resources/test_attributeDescriptors.json", "-r=/root/AnotherParentLeaf"))
+    fun `should remove nodes and unused descriptors when provided with an input file containing unused descriptors`() { // when
+        val cliResult =
+                executeForOutput(
+                        "",
+                        arrayOf("src/test/resources/test_attributeDescriptors.json", "-r=/root/AnotherParentLeaf"),
+                                )
         val resultProject = ProjectDeserializer.deserializeProject(cliResult)
 
         // then
@@ -147,8 +149,7 @@ class StructureModifierTest {
     }
 
     @Test
-    fun `should stop execution when input file is invalid`() {
-        // given
+    fun `should stop execution when input file is invalid`() { // given
         mockkObject(InputHelper)
         every {
             InputHelper.isInputValid(any(), any())
@@ -166,14 +167,14 @@ class StructureModifierTest {
     }
 
     @Test
-    fun `should remove all specified nodes when multiple values are provided for the remove flag`() {
-        // given
+    fun `should remove all specified nodes when multiple values are provided for the remove flag`() { // given
         val file1 = "/root/src/main/file1.java"
         val file2 = "/root/src/main/file2.java"
         val nodesToRemove = listOf(file1, file2)
 
         // when
-        val cliResult = executeForOutput("", arrayOf("src/test/resources/sample_project.cc.json", "--remove", "$nodesToRemove"))
+        val cliResult =
+                executeForOutput("", arrayOf("src/test/resources/sample_project.cc.json", "--remove", "$nodesToRemove"))
 
         // then
         assertThat(cliResult).doesNotContain(file1)
@@ -181,40 +182,45 @@ class StructureModifierTest {
     }
 
     @Test
-    fun `should log warning when more than one action is specified`() {
-        // given
+    fun `should log warning when more than one action is specified`() { // given
         val file1 = "/root/src/main/file1.java"
         val file2 = "/root/src/main/file2.java"
         val nodesToRemove = listOf(file1, file2)
 
         val loggerMock = mockk<KLogger>()
         val errorMessagesLogged = mutableListOf<String>()
-        mockkObject(KotlinLogging)
-        every { KotlinLogging.logger(any<(() -> Unit)>()) } returns loggerMock
-        every { loggerMock.error(capture(errorMessagesLogged)) } returns Unit
+        val lambdaSlot = mutableListOf<() -> String>()
+        mockkObject(Logger)
+        every { Logger.error(capture(lambdaSlot)) } returns Unit
 
         // when
-        executeForOutput("", arrayOf("src/test/resources/sample_project.cc.json", "--remove", "$nodesToRemove", "--set-root", "$nodesToRemove"))
+        executeForOutput(
+                "",
+                arrayOf(
+                        "src/test/resources/sample_project.cc.json", "--remove", "$nodesToRemove", "--set-root",
+                        "$nodesToRemove",
+                       ),
+                        )
 
         // then
-        assertThat(errorMessagesLogged).isNotEmpty()
+        assertThat(lambdaSlot.last()().isNotEmpty()).isTrue()
     }
 
     @Test
-    fun `should log error when move-from but not move-to is specified`() {
-        // given
+    fun `should log error when move-from but not move-to is specified`() { // given
         val folderToMove = "/root/src/main"
 
-        val loggerMock = mockk<KLogger>()
-        val errorMessagesLogged = mutableListOf<String>()
-        mockkObject(KotlinLogging)
-        every { KotlinLogging.logger(any<(() -> Unit)>()) } returns loggerMock
-        every { loggerMock.error(capture(errorMessagesLogged)) } returns Unit
+        val lambdaSlot = mutableListOf<() -> String>()
+        mockkObject(Logger)
+        every { Logger.error(capture(lambdaSlot)) } returns Unit
 
         // when
-        executeForOutput("", arrayOf("src/test/resources/sample_project.cc.json", "--move-from", folderToMove, "--move-to", ""))
+        executeForOutput(
+                "",
+                arrayOf("src/test/resources/sample_project.cc.json", "--move-from", folderToMove, "--move-to", ""),
+                        )
 
         // then
-        assertThat(errorMessagesLogged).isNotEmpty()
+        assertThat(lambdaSlot.last()().isNotEmpty()).isTrue()
     }
 }

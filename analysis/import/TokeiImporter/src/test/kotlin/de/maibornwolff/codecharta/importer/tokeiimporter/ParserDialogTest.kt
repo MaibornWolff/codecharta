@@ -17,15 +17,13 @@ import java.io.File
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ParserDialogTest {
-
-    @AfterEach
+@AfterEach
     fun afterTest() {
         unmockkAll()
     }
 
     @Test
-    fun `should output correct arguments when valid input is provided`() {
-        // given
+    fun `should output correct arguments when valid input is provided`() { // given
         val fileName = "in.json"
         val outputFileName = "out.cc.json"
         val rootFolder = "/foo/bar"
@@ -58,8 +56,7 @@ class ParserDialogTest {
     }
 
     @Test
-    fun `should escape a single backslash`() {
-        // given
+    fun `should escape a single backslash`() { // given
         val fileName = "in.json"
         val outputFileName = "out.cc.json"
         val rootFolder = "/foo/bar"
@@ -89,12 +86,12 @@ class ParserDialogTest {
         Assertions.assertThat(parseResult.matchedOption("output-file").getValue<String>().equals(outputFileName))
         Assertions.assertThat(parseResult.matchedOption("not-compressed").getValue<Boolean>()).isEqualTo(isCompressed)
         Assertions.assertThat(parseResult.matchedOption("root-name").getValue<String>()).isEqualTo(rootFolder)
-        Assertions.assertThat(parseResult.matchedOption("path-separator").getValue<String>()).isEqualTo(pathSeparatorEscaped)
+        Assertions.assertThat(parseResult.matchedOption("path-separator").getValue<String>())
+                .isEqualTo(pathSeparatorEscaped)
     }
 
     @Test
-    fun `should not escape a double backslash`() {
-        // given
+    fun `should not escape a double backslash`() { // given
         val fileName = "in.json"
         val outputFileName = "out.cc.json"
         val rootFolder = "/foo/bar"
@@ -127,8 +124,7 @@ class ParserDialogTest {
     }
 
     @Test
-    fun `should prompt user twice for input file when first input file is invalid`() {
-        // given
+    fun `should prompt user twice for input file when first input file is invalid`() { // given
         val invalidInputFileName = ""
         val validInputFileName = "in.json"
         val outputFileName = "out.cc.json"

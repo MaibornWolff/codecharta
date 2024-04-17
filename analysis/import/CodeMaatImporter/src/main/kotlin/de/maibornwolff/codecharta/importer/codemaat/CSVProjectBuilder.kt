@@ -14,22 +14,27 @@ import java.io.InputStreamReader
 import java.nio.charset.StandardCharsets
 
 class CSVProjectBuilder(
-    private val pathSeparator: Char,
-    private val csvDelimiter: Char,
-    metricNameTranslator: MetricNameTranslator = MetricNameTranslator.TRIVIAL,
-    attributeTypes: AttributeTypes = AttributeTypes(mutableMapOf(), "edges"),
-    attributeDescriptors: Map<String, AttributeDescriptor> = mapOf()
-) {
-
-    private val includeRows: (Array<String>) -> Boolean = { true }
-    private val projectBuilder = ProjectBuilder()
-        .withMetricTranslator(metricNameTranslator)
-        .addAttributeTypes(attributeTypes)
-        .addAttributeDescriptions(attributeDescriptors)
+        private val pathSeparator: Char,
+        private val csvDelimiter: Char,
+        metricNameTranslator: MetricNameTranslator = MetricNameTranslator.TRIVIAL,
+        attributeTypes: AttributeTypes = AttributeTypes(mutableMapOf(), "edges"),
+        attributeDescriptors: Map<String, AttributeDescriptor> = mapOf(),
+                       ) {
+                       private val includeRows:
+            (Array<String>) -> Boolean = {
+        true
+    }
+    private val projectBuilder =
+            ProjectBuilder()
+                    .withMetricTranslator(metricNameTranslator)
+                    .addAttributeTypes(attributeTypes)
+                    .addAttributeDescriptions(attributeDescriptors)
 
     fun parseCSVStream(inStream: InputStream): ProjectBuilder {
-        val parser = createParser(inStream)
-        val header = CSVHeader(parser.parseNext())
+        val parser =
+                createParser(inStream)
+        val header =
+                CSVHeader(parser.parseNext())
         parseContent(parser, header)
         parser.stopParsing()
         return projectBuilder
@@ -39,16 +44,25 @@ class CSVProjectBuilder(
         return projectBuilder.build()
     }
 
-    private fun parseContent(parser: CsvParser, header: CSVHeader) {
+    private fun parseContent(
+    parser: CsvParser,
+    header: CSVHeader,
+    ) {
         var row = parser.parseNext()
         while (row != null) {
             if (includeRows(row)) {
                 try {
-                    val csvRow = CSVRow(row, header, pathSeparator)
-                    val edge: Edge = csvRow.asEdge()
+                    val csvRow =
+                            CSVRow(row, header, pathSeparator)
+                    val edge:
+                            Edge = csvRow.asEdge()
                     projectBuilder.insertEdge(edge)
-                } catch (e: IllegalArgumentException) {
-                    Logger.logger.warn { "Ignoring row due to ${e.message}" }
+                } catch (
+                        e: IllegalArgumentException,
+                        ) {
+                    Logger.warn {
+                        "Ignoring row due to ${e.message}"
+                    }
                 }
             }
             row = parser.parseNext()
@@ -56,11 +70,13 @@ class CSVProjectBuilder(
     }
 
     private fun createParser(inStream: InputStream): CsvParser {
-        val parserSettings = CsvParserSettings()
+        val parserSettings =
+                CsvParserSettings()
         parserSettings.format.delimiter = csvDelimiter
         parserSettings.format.lineSeparator = "\n".toCharArray()
 
-        val parser = CsvParser(parserSettings)
+        val parser =
+                CsvParser(parserSettings)
         parser.beginParsing(InputStreamReader(inStream, StandardCharsets.UTF_8))
         return parser
     }

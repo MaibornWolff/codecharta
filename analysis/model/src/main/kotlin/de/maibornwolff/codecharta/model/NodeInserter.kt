@@ -3,7 +3,7 @@ package de.maibornwolff.codecharta.model
 import de.maibornwolff.codecharta.util.Logger
 
 object NodeInserter {
-    /**
+/**
      * Inserts the node as child of the element at the specified position
      * in the sub-tree spanned by the children of the root node.
      *
@@ -11,7 +11,11 @@ object NodeInserter {
      * @param path relative path to parent of new node in root node
      * @param node that has to be inserted
      */
-    fun insertByPath(root: MutableNode, path: Path, node: MutableNode): MutableNode {
+    fun insertByPath(
+root: MutableNode,
+path: Path,
+node: MutableNode,
+): MutableNode {
         if (path.isTrivial) {
             if (rootContainsNodeAlready(root, node)) {
                 val original = getNode(root, node.name)!!
@@ -20,7 +24,7 @@ object NodeInserter {
 
                 root.children.add(mergedNode)
 
-                Logger.logger.debug {
+                Logger.debug {
                     "Node with name ${node.name} already exists, merging $original and $node to $mergedNode."
                 }
             } else {
@@ -28,19 +32,28 @@ object NodeInserter {
             }
         } else {
             val name = path.head
-            val folderNode = getNode(root, name)
-                ?: root.insertNewFolderNode(name).getNodeBy(Path(name)) as MutableNode
+            val folderNode = getNode(root, name) ?: root.insertNewFolderNode(name).getNodeBy(Path(name)) as MutableNode
             insertByPath(folderNode, path.tail, node)
         }
         return root
     }
 
-    private fun getNode(root: MutableNode, name: String): MutableNode? {
-        return root.children.firstOrNull { it.name == name }
+    private fun getNode(
+    root: MutableNode,
+    name: String,
+    ): MutableNode? {
+        return root.children.firstOrNull {
+            it.name == name
+        }
     }
 
-    private fun rootContainsNodeAlready(root: MutableNode, node: MutableNode): Boolean {
-        return root.children.filter { it.name == node.name }.count() > 0
+    private fun rootContainsNodeAlready(
+    root: MutableNode,
+    node: MutableNode,
+    ): Boolean {
+        return root.children.filter {
+            it.name == node.name
+        }.count() > 0
     }
 
     private fun createFolderNode(name: String): MutableNode {

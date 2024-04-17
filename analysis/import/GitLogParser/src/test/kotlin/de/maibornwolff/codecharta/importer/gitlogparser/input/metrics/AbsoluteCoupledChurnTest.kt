@@ -7,14 +7,14 @@ import org.junit.jupiter.api.Test
 import java.time.OffsetDateTime
 
 class AbsoluteCoupledChurnTest {
-
-    private val FILENAME = "filename"
-    private val COUPLED_FILE1 = "coupledfilename1"
-    private val COUPLED_FILE2 = "coupledfilename2"
+    companion object {
+    private const val FILENAME = "filename"
+        private const val COUPLED_FILE1 = "coupledfilename1"
+        private const val COUPLED_FILE2 = "coupledfilename2"
+    }
 
     @Test
-    fun should_have_initial_value_zero() {
-        // when
+    fun should_have_initial_value_zero() { // when
         val metric = AbsoluteCoupledChurn()
 
         // then
@@ -22,8 +22,7 @@ class AbsoluteCoupledChurnTest {
     }
 
     @Test
-    fun should_not_increase_on_commits_of_same_file() {
-        // given
+    fun should_not_increase_on_commits_of_same_file() { // given
         val metric = AbsoluteCoupledChurn()
 
         // when
@@ -34,8 +33,7 @@ class AbsoluteCoupledChurnTest {
     }
 
     @Test
-    fun should_increase_on_commit_of_several_files() {
-        // given
+    fun should_increase_on_commit_of_several_files() { // given
         val metric = AbsoluteCoupledChurn()
 
         // when
@@ -48,8 +46,7 @@ class AbsoluteCoupledChurnTest {
     }
 
     @Test
-    fun should_increase_by_multiple_modification() {
-        // given
+    fun should_increase_by_multiple_modification() { // given
         val metric = AbsoluteCoupledChurn()
 
         // when
@@ -69,9 +66,9 @@ class AbsoluteCoupledChurnTest {
     }
 
     private fun registerModifications(
-        metric: Metric,
-        modification: Modification,
-        vararg otherModifications: Modification
+    metric: Metric,
+    modification: Modification,
+    vararg otherModifications: Modification,
     ) {
         val modificationList = ArrayList(listOf(*otherModifications))
         modificationList.add(modification)

@@ -4,7 +4,12 @@ import picocli.CommandLine
 import java.util.Stack
 
 class CommaSeparatedParameterPreprocessor : CommandLine.IParameterPreprocessor {
-    override fun preprocess(args: Stack<String>?, commandSpec: CommandLine.Model.CommandSpec?, argSpec: CommandLine.Model.ArgSpec?, info: MutableMap<String, Any>?): Boolean {
+override fun preprocess(
+args: Stack<String>?,
+commandSpec: CommandLine.Model.CommandSpec?,
+argSpec: CommandLine.Model.ArgSpec?,
+info: MutableMap<String, Any>?,
+): Boolean {
         if (args.isNullOrEmpty()) return false
 
         val stringBuilder = StringBuilder()

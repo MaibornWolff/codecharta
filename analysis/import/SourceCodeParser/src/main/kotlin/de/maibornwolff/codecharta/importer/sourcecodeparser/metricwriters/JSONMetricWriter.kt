@@ -12,12 +12,18 @@ import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import java.io.OutputStream
 
 class JSONMetricWriter(private val outputStream: OutputStream, private val toCompress: Boolean) : MetricWriter {
-    private val projectBuilder = ProjectBuilder()
+private val projectBuilder = ProjectBuilder()
 
-    override fun generate(projectMetrics: ProjectMetrics, allMetrics: Set<String>, pipedProject: Project?) {
+    override fun generate(
+    projectMetrics: ProjectMetrics,
+    allMetrics: Set<String>,
+    pipedProject: Project?,
+    ) {
         projectMetrics.projectMetrics.forEach { addAsNode(it) }
 
-        var project = projectBuilder.addAttributeDescriptions(getAttributeDescriptors()).build(cleanAttributeDescriptors = true)
+        var project =
+                projectBuilder.addAttributeDescriptions(getAttributeDescriptors())
+                        .build(cleanAttributeDescriptors = true)
         if (pipedProject != null) {
             project = MergeFilter.mergePipedWithCurrentProject(pipedProject, project)
         }
@@ -33,10 +39,11 @@ class JSONMetricWriter(private val outputStream: OutputStream, private val toCom
             fileName = metrics.key.substringAfterLast("/")
         }
 
-        val node = MutableNode(
-            fileName,
-            attributes = metrics.value.fileMetrics
-        )
+        val node =
+                MutableNode(
+                        fileName,
+                        attributes = metrics.value.fileMetrics,
+                           )
         val path = PathFactory.fromFileSystemPath(directory)
         projectBuilder.insertByPath(path, node)
     }

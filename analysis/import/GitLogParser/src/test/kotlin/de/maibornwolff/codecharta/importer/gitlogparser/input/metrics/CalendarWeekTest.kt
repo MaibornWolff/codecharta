@@ -6,12 +6,10 @@ import java.time.OffsetDateTime
 import java.time.ZoneOffset
 
 class CalendarWeekTest {
-
-    private val zoneOffset = ZoneOffset.UTC
+private val zoneOffset = ZoneOffset.UTC
 
     @Test
-    fun canCreateCalendarWeekFromADateTime() {
-        // given
+    fun canCreateCalendarWeekFromADateTime() { // given
         val commitDateTime = OffsetDateTime.of(2016, 4, 2, 12, 0, 0, 0, zoneOffset)
 
         // when
@@ -22,8 +20,7 @@ class CalendarWeekTest {
     }
 
     @Test
-    fun calendarWeekProperlyCalculated_when_dayAtStartOfYear_and_weekInLastYear_and_53WeeksInLastYear() {
-        // given
+    fun calendarWeekProperlyCalculated_when_dayAtStartOfYear_and_weekInLastYear_and_53WeeksInLastYear() { // given
         val commitDateTime = OffsetDateTime.of(2016, 1, 3, 12, 0, 0, 0, zoneOffset)
 
         // when
@@ -34,8 +31,7 @@ class CalendarWeekTest {
     }
 
     @Test
-    fun calendarWeekProperlyCalculated_when_dayAtStartOfYear_and_weekInLastYear_and_52WeeksInLastYear() {
-        // given
+    fun calendarWeekProperlyCalculated_when_dayAtStartOfYear_and_weekInLastYear_and_52WeeksInLastYear() { // given
         val commitDateTime = OffsetDateTime.of(2017, 1, 3, 12, 0, 0, 0, zoneOffset)
 
         // when
@@ -46,8 +42,7 @@ class CalendarWeekTest {
     }
 
     @Test
-    fun calendarWeekProperlyCalculated_when_dayAtEndOfYear_and_weekInNextYear() {
-        // given
+    fun calendarWeekProperlyCalculated_when_dayAtEndOfYear_and_weekInNextYear() { // given
         val commitDateTime = OffsetDateTime.of(2018, 12, 31, 12, 0, 0, 0, zoneOffset)
 
         // when
@@ -58,8 +53,7 @@ class CalendarWeekTest {
     }
 
     @Test
-    fun weeksBetweenCommitsProperlyCalculated_when_52WeeksInYears() {
-        // given
+    fun weeksBetweenCommitsProperlyCalculated_when_52WeeksInYears() { // given
         val commitDateTime2 = OffsetDateTime.of(2018, 1, 11, 12, 0, 0, 0, zoneOffset)
         val commitDateTime3 = OffsetDateTime.of(2017, 12, 13, 12, 0, 0, 0, zoneOffset)
 
@@ -74,8 +68,7 @@ class CalendarWeekTest {
     }
 
     @Test
-    fun weeksBetweenCommitsProperlyCalculated_when_firstWeek_and_53WeeksInOldYear() {
-        // given
+    fun weeksBetweenCommitsProperlyCalculated_when_firstWeek_and_53WeeksInOldYear() { // given
         val commitDateTime2 = OffsetDateTime.of(2021, 1, 11, 12, 0, 0, 0, zoneOffset)
         val commitDateTime3 = OffsetDateTime.of(2020, 12, 13, 12, 0, 0, 0, zoneOffset)
 

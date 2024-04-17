@@ -33,9 +33,9 @@ artifacts {
 
 jacocoTestReport {
     afterEvaluate {
-       getClassDirectories().from(files(classDirectories.files.collect {
+        getClassDirectories().from(files(classDirectories.files.collect {
             fileTree(dir: it,
-                    exclude: ['**/model/**'])
+                exclude: ['**/model/**'])
         }))
     }
 }

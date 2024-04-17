@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test
 import java.util.Stack
 
 class CommaSeparatedParameterPreprocessorTest {
-    @Test
+@Test
     fun `should return false when input is null`() {
         // given
         val input = null

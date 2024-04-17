@@ -9,34 +9,41 @@ import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.model.ProjectBuilder
 import de.maibornwolff.codecharta.util.Logger
 
-class SubProjectExtractor(private val project: Project) {
-
-    private lateinit var path: String
+class SubProjectExtractor(
+        private val project: Project,
+                         ) {
+                         private lateinit var path: String
 
     fun extract(path: String): Project {
         this.path = path
-        val pathSegments = path.removePrefix("/").split("/").filter { it.isNotEmpty() }
+        val pathSegments =
+                path.removePrefix("/").split("/").filter {
+                    it.isNotEmpty()
+                }
         return ProjectBuilder(
-            addRoot(extractNodes(pathSegments, project.rootNode.toMutableNode())),
-            extractEdges(path),
-            copyAttributeTypes(),
-            copyAttributeDescriptors(),
-            copyBlacklist()
-        ).build(cleanAttributeDescriptors = true)
+                addRoot(extractNodes(pathSegments, project.rootNode.toMutableNode())),
+                extractEdges(path),
+                copyAttributeTypes(),
+                copyAttributeDescriptors(),
+                copyBlacklist(),
+                             ).build(cleanAttributeDescriptors = true)
     }
 
-    private fun extractNodes(extractionPattern: List<String>, node: MutableNode): MutableList<MutableNode> {
+    private fun extractNodes(
+    extractionPattern: List<String>,
+    node: MutableNode,
+    ): MutableList<MutableNode> {
         val children: Set<MutableNode> = node.children
         val extractedNodes: MutableList<MutableNode> = mutableListOf()
 
         val currentSearchPattern = extractionPattern.firstOrNull()
         if (currentSearchPattern == node.name) {
             return if (extractionPattern.size == 1) {
-            node.children.toMutableList()
+                node.children.toMutableList()
             } else {
-            children.map { child ->
-                extractNodes(extractionPattern.drop(1), child)
-            }.flatten().toMutableList()
+                children.map { child ->
+                    extractNodes(extractionPattern.drop(1), child)
+                }.flatten().toMutableList()
             }
         }
 
@@ -44,7 +51,11 @@ class SubProjectExtractor(private val project: Project) {
     }
 
     private fun addRoot(nodes: MutableList<MutableNode>): List<MutableNode> {
-        if (nodes.isEmpty()) Logger.logger.warn { "No nodes with the specified path ($path) were found. The resulting project is therefore empty" }
+        if (nodes.isEmpty()) {
+            Logger.warn {
+                "No nodes with the specified path ($path) were found. The resulting project is therefore empty"
+            }
+        }
 
         val rootNode = project.rootNode.toMutableNode()
         rootNode.children = nodes.toMutableSet()
@@ -57,12 +68,13 @@ class SubProjectExtractor(private val project: Project) {
     }
 
     private fun extractRenamedEdgesForPattern(pattern: String): List<Edge> {
-        return project.edges.filter { it.fromNodeName.startsWith(pattern) && it.toNodeName.startsWith(pattern) }
-            .map { edge ->
-                edge.fromNodeName = "/root" + edge.fromNodeName.removePrefix(pattern)
-                edge.toNodeName = "/root" + edge.toNodeName.removePrefix(pattern)
-                edge
-            }
+        return project.edges.filter {
+            it.fromNodeName.startsWith(pattern) && it.toNodeName.startsWith(pattern)
+        }.map { edge ->
+            edge.fromNodeName = "/root" + edge.fromNodeName.removePrefix(pattern)
+            edge.toNodeName = "/root" + edge.toNodeName.removePrefix(pattern)
+            edge
+        }
     }
 
     private fun copyAttributeTypes(): MutableMap<String, MutableMap<String, AttributeType>> {

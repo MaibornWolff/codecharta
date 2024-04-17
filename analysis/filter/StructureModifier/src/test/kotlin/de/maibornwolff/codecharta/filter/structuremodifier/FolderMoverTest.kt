@@ -8,8 +8,7 @@ import org.junit.jupiter.api.Test
 import java.io.File
 
 class FolderMoverTest {
-
-    private lateinit var sampleProject: Project
+private lateinit var sampleProject: Project
 
     @BeforeEach
     fun serializeProject() {
@@ -25,7 +24,11 @@ class FolderMoverTest {
 
         val srcChildren = result!!.rootNode.children.first().children
         Assertions.assertThat(srcChildren.size).isEqualTo(2)
-        Assertions.assertThat(srcChildren.filter { it.name == "folder3" }).isEmpty()
+        Assertions.assertThat(
+                srcChildren.filter {
+                    it.name == "folder3"
+                },
+                             ).isEmpty()
     }
 
     @Test
@@ -53,8 +56,14 @@ class FolderMoverTest {
 
         val result = folderMover.move("/root/src/folder3", "/root/src/test")
 
-        val destinationNode = result!!.rootNode.children.first().children.filter { it.name == "test" }.first()
-        val destinationNodeChildrenName = destinationNode.children.map { it.name }
+        val destinationNode =
+                result!!.rootNode.children.first().children.filter {
+                    it.name == "test"
+                }.first()
+        val destinationNodeChildrenName =
+                destinationNode.children.map {
+                    it.name
+                }
         Assertions.assertThat(destinationNodeChildrenName).containsAll(listOf("otherFile2.java", "otherFile.java"))
     }
 
@@ -64,7 +73,10 @@ class FolderMoverTest {
 
         val result = folderMover.move("/root/src/folder3", "/root/foo")
 
-        val destinationNode = result!!.rootNode.children.filter { it.name == "foo" }.first()
+        val destinationNode =
+                result!!.rootNode.children.filter {
+                    it.name == "foo"
+                }.first()
         val destinationNodeChild = destinationNode.children.first()
         Assertions.assertThat(destinationNode.name).isEqualTo("foo")
         Assertions.assertThat(destinationNodeChild.name).isEqualTo("otherFile2.java")
@@ -125,7 +137,10 @@ class FolderMoverTest {
 
         val result = folderMover.move("/root", "/root/new")
 
-        val destinationNode = result!!.rootNode.children.filter { it.name == "new" }.first()
+        val destinationNode =
+                result!!.rootNode.children.filter {
+                    it.name == "new"
+                }.first()
         val destinationNodeChild = destinationNode.children.first()
         Assertions.assertThat(destinationNode.name).isEqualTo("new")
         Assertions.assertThat(destinationNodeChild.name).isEqualTo("src")
@@ -137,7 +152,10 @@ class FolderMoverTest {
 
         val result = folderMover.move("/root/src", "/root")
 
-        val destinationNode = result!!.rootNode.children.filter { it.name == "main" }.first()
+        val destinationNode =
+                result!!.rootNode.children.filter {
+                    it.name == "main"
+                }.first()
         val destinationNodeChild = destinationNode.children.first()
         Assertions.assertThat(destinationNode.name).isEqualTo("main")
         Assertions.assertThat(destinationNodeChild.name).isEqualTo("file1.java")

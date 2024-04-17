@@ -9,21 +9,20 @@ import de.maibornwolff.codecharta.importer.tokeiimporter.analysisObject.Stats
 import de.maibornwolff.codecharta.model.MutableNode
 import de.maibornwolff.codecharta.model.PathFactory
 import de.maibornwolff.codecharta.model.ProjectBuilder
-import mu.KLogger
-import mu.KotlinLogging
 
-class TokeiInnerStrategy(rootName: String, pathSeparator: String, logger: KLogger) : ImporterStrategy {
-    override var rootName = ""
+class TokeiInnerStrategy(rootName: String, pathSeparator: String) : ImporterStrategy {
+override var rootName = ""
     override var pathSeparator = ""
-    override var logger: KLogger = KotlinLogging.logger {}
 
     init {
         this.rootName = rootName
         this.pathSeparator = pathSeparator
-        this.logger = logger
     }
 
-    override fun buildCCJson(languageSummaries: JsonObject, projectBuilder: ProjectBuilder) {
+    override fun buildCCJson(
+    languageSummaries: JsonObject,
+    projectBuilder: ProjectBuilder,
+    ) {
         if (isPathSeparatorArgumentEmpty(pathSeparator)) determinePathSeparator(languageSummaries)
         val gson = Gson()
         for (languageEntry in languageSummaries.entrySet()) {
@@ -53,20 +52,25 @@ class TokeiInnerStrategy(rootName: String, pathSeparator: String, logger: KLogge
         this.pathSeparator = "/"
     }
 
-    private fun addAsNode(stat: Stats, projectBuilder: ProjectBuilder) {
+    private fun addAsNode(
+    stat: Stats,
+    projectBuilder: ProjectBuilder,
+    ) {
         val sanitizedName = stat.name.removePrefix(rootName).replace(pathSeparator, "/")
         val directory = sanitizedName.substringBeforeLast("/")
         val fileName = sanitizedName.substringAfterLast("/")
 
-        val node = MutableNode(
-            fileName,
-            attributes = mapOf(
-                "empty_lines" to stat.blanks,
-                "rloc" to stat.code,
-                "comment_lines" to stat.comments,
-                "loc" to stat.lines
-            )
-        )
+        val node =
+                MutableNode(
+                        fileName,
+                        attributes =
+                        mapOf(
+                                "empty_lines" to stat.blanks,
+                                "rloc" to stat.code,
+                                "comment_lines" to stat.comments,
+                                "loc" to stat.lines,
+                             ),
+                           )
         val path = PathFactory.fromFileSystemPath(directory)
         projectBuilder.insertByPath(path, node)
     }

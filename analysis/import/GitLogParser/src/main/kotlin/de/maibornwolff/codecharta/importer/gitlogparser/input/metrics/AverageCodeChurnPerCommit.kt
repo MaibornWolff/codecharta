@@ -4,7 +4,7 @@ import de.maibornwolff.codecharta.importer.gitlogparser.input.Modification
 import de.maibornwolff.codecharta.model.AttributeType
 
 class AverageCodeChurnPerCommit : Metric {
-    private var absoluteCodeChurn: Long = 0
+private var absoluteCodeChurn: Long = 0
     private var numberOfNontrivialCommits: Long = 0
 
     override fun description(): String {

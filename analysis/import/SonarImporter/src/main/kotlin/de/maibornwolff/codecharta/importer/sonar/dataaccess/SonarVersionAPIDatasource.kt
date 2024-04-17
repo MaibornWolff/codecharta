@@ -10,8 +10,7 @@ import javax.ws.rs.client.ClientBuilder
 import javax.ws.rs.core.MediaType
 
 class SonarVersionAPIDatasource(private val user: String, private val baseUrl: URL) {
-
-    private val client: Client = ClientBuilder.newClient()
+private val client: Client = ClientBuilder.newClient()
 
     init {
         client.register(ErrorResponseFilter::class.java)
@@ -21,20 +20,19 @@ class SonarVersionAPIDatasource(private val user: String, private val baseUrl: U
     fun getSonarqubeVersion(): Version {
         val versionAPIRequestURI = URI(String.format(VERSION_URL_PATTERN, baseUrl))
 
-        val request = client
-            .target(versionAPIRequestURI)
-            .request(MediaType.TEXT_PLAIN + "; charset=utf-8")
+        val request = client.target(versionAPIRequestURI).request(MediaType.TEXT_PLAIN + "; charset=utf-8")
 
         if (user.isNotEmpty()) {
-            request.header("Authorization", "Basic " + AuthentificationHandler.createAuthTxtBase64Encoded(user))
+            request.header("Authorization", "Basic " + AuthenticationHandler.createAuthTxtBase64Encoded(user))
         }
 
-        val response = try {
-            System.err.println("Fetching SonarQube Version...")
-            request.get(String::class.java)
-        } catch (e: RuntimeException) {
-            throw SonarImporterException("Error requesting $versionAPIRequestURI", e)
-        }
+        val response =
+                try {
+                    System.err.println("Fetching SonarQube Version...")
+                    request.get(String::class.java)
+                } catch (e: RuntimeException) {
+                    throw SonarImporterException("Error requesting $versionAPIRequestURI", e)
+                }
 
         return try {
             val version = Version.parse(response)
@@ -48,7 +46,7 @@ class SonarVersionAPIDatasource(private val user: String, private val baseUrl: U
     }
 
     companion object {
-        private const val VERSION_URL_PATTERN = "%s/api/server/version"
+    private const val VERSION_URL_PATTERN = "%s/api/server/version"
         val DEFAULT_VERSION = Version(8, 9)
     }
 }

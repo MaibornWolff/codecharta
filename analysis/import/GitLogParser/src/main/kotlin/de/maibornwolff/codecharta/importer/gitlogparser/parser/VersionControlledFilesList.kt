@@ -4,8 +4,7 @@ import de.maibornwolff.codecharta.importer.gitlogparser.input.VersionControlledF
 import de.maibornwolff.codecharta.importer.gitlogparser.input.metrics.MetricsFactory
 
 class VersionControlledFilesList(private val metricsFactory: MetricsFactory) {
-
-    private var versionControlledFiles: MutableMap<String, VersionControlledFile> = mutableMapOf()
+private var versionControlledFiles: MutableMap<String, VersionControlledFile> = mutableMapOf()
 
     /**
      * The key of the map is the current name
@@ -56,7 +55,10 @@ class VersionControlledFilesList(private val metricsFactory: MetricsFactory) {
         return versionControlledFiles
     }
 
-    fun rename(oldFileName: String, newFileName: String) {
+    fun rename(
+    oldFileName: String,
+    newFileName: String,
+    ) {
         var newVCFFileName = newFileName
         val possibleConflictName = buildPossibleConflictName(oldFileName)
         val oldestName = retrieveOldestName(possibleConflictName)
@@ -84,7 +86,10 @@ class VersionControlledFilesList(private val metricsFactory: MetricsFactory) {
     }
 
     // File A is called B then A again, this will mess up the currentFilename and oldFilename structure, therefore a special handling is needed
-    private fun isCyclicRename(oldFileName: String, newFileName: String): Boolean {
+    private fun isCyclicRename(
+    oldFileName: String,
+    newFileName: String,
+    ): Boolean {
         return get(oldFileName)!!.containsRename(newFileName)
     }
 
@@ -96,8 +101,7 @@ class VersionControlledFilesList(private val metricsFactory: MetricsFactory) {
         return false
     }
 
-    private fun handleDeletedFileReplacedByRenamedFile(newFileName: String) {
-        // Clear the corresponding maps for file which will be replaced
+    private fun handleDeletedFileReplacedByRenamedFile(newFileName: String) { // Clear the corresponding maps for file which will be replaced
         renamesMap.remove(versionControlledFiles.getValue(newFileName).filename)
         nameConflictsMap.remove(buildPossibleConflictName(newFileName))
 

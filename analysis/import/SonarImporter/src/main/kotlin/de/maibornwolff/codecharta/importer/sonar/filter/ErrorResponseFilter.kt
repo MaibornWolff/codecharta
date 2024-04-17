@@ -15,30 +15,33 @@ import javax.ws.rs.ext.Provider
 
 @Provider
 class ErrorResponseFilter : ClientResponseFilter {
-
-    @Throws(IOException::class)
-    override fun filter(requestContext: ClientRequestContext, responseContext: ClientResponseContext) {
+@Throws(IOException::class)
+    override fun filter(
+requestContext: ClientRequestContext,
+responseContext: ClientResponseContext,
+) {
         val status = Response.Status.fromStatusCode(responseContext.status)
         if (status != Response.Status.OK && responseContext.hasEntity()) {
             val stream = responseContext.entityStream
 
             try {
                 val gson = GsonBuilder().create()
-                val error = gson.fromJson<ErrorResponse>(
-                    InputStreamReader(stream, StandardCharsets.UTF_8),
-                    ErrorResponse::class.java
-                )
+                val error =
+                        gson.fromJson<ErrorResponse>(
+                                InputStreamReader(stream, StandardCharsets.UTF_8),
+                                ErrorResponse::class.java,
+                                                    )
 
                 var message = "Errors: \n"
                 for (errorEntity in error.errors) {
                     message += errorEntity.msg + "\n"
                 }
 
-                Logger.logger.error { message }
+                Logger.error { message }
 
                 throw WebApplicationException(message)
             } catch (e: RuntimeException) {
-                Logger.logger.error { "Error response could not be parsed." }
+                Logger.error { "Error response could not be parsed." }
             }
         }
     }

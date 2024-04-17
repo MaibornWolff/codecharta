@@ -19,27 +19,29 @@ import java.util.concurrent.Callable
 @CommandLine.Command(
         name = StructureModifier.NAME,
         description = [StructureModifier.DESCRIPTION],
-        footer = [CodeChartaConstants.General.GENERIC_FOOTER]
-)
+        footer = [CodeChartaConstants.General.GENERIC_FOOTER],
+                    )
 class StructureModifier(
-    private val input: InputStream = System.`in`,
-    private val output: PrintStream = System.out,
-    private val error: PrintStream = System.err
-) : Callable<Unit?>, InteractiveParser {
-
-    @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
+        private val input: InputStream = System.`in`,
+        private val output: PrintStream = System.out,
+        private val error: PrintStream = System.err,
+                       ) : Callable<Unit?>, InteractiveParser {
+                       @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     var help: Boolean = false
 
     @CommandLine.Parameters(arity = "0..1", paramLabel = "FILE", description = ["input project file"])
     private var source: File? = null
 
-    @CommandLine.Option(names = ["-s", "--set-root"], description = ["path within project to be extracted as the new roo"])
+    @CommandLine.Option(
+            names = ["-s", "--set-root"],
+            description = ["path within project to be extracted as the new roo"],
+                       )
     private var setRoot: String? = null
 
     @CommandLine.Option(
-        names = ["-p", "--print-levels"],
-        description = ["show first x layers of project hierarchy"]
-    )
+            names = ["-p", "--print-levels"],
+            description = ["show first x layers of project hierarchy"],
+                       )
     private var printLevels: Int? = null
 
     @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File (or empty for stdout)"])
@@ -52,8 +54,8 @@ class StructureModifier(
             names = ["-r", "--remove"],
             description = ["comma-separated list of nodes to be removed (when using powershell, the list either can't contain spaces or has to be in quotes)"],
             converter = [(CommaSeparatedStringToListConverter::class)],
-            preprocessor = CommaSeparatedParameterPreprocessor::class
-    )
+            preprocessor = CommaSeparatedParameterPreprocessor::class,
+                       )
     private var remove: Array<String> = arrayOf()
 
     @CommandLine.Option(names = ["-t", "--move-to"], description = ["... move nodes to destination folder"])
@@ -65,18 +67,25 @@ class StructureModifier(
     override val description = DESCRIPTION
 
     companion object {
-        const val NAME = "modify"
+    const val NAME = "modify"
         const val DESCRIPTION = "changes the structure of cc.json files"
 
         @JvmStatic
-        fun mainWithInOut(input: InputStream, output: PrintStream, error: PrintStream, args: Array<String>) {
+        fun mainWithInOut(
+        input: InputStream,
+        output: PrintStream,
+        error: PrintStream,
+        args: Array<String>,
+        ) {
             CommandLine(StructureModifier(input, output, error)).execute(*args)
         }
     }
 
     override fun call(): Unit? {
         if (isMoreThanOneActionSpecified()) {
-            Logger.logger.error { "More than one action specified - aborting execution." }
+            Logger.error {
+                "More than one action specified - aborting execution."
+            }
             return null
         }
 
@@ -121,12 +130,15 @@ class StructureModifier(
             ProjectDeserializer.deserializeProject(input)
         } catch (e: Exception) {
             val sourceName = source!!.name
-            Logger.logger.error { "$sourceName is not a valid project file and is therefore skipped." }
+            Logger.error {
+                "$sourceName is not a valid project file and is therefore skipped."
+            }
             null
         }
     }
 
     override fun getDialog(): ParserDialogInterface = ParserDialog
+
     override fun isApplicable(resourceToBeParsed: String): Boolean {
         return false
     }

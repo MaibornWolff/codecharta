@@ -4,8 +4,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 class NodeInserterTest {
-
-    @Test
+@Test
     fun `root insert should put a node as leaf`() {
         val root = MutableNode("root", NodeType.Folder)
         val nodeForInsertion = MutableNode("insertedNode", NodeType.File)

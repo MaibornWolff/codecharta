@@ -4,8 +4,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 class AttributeTypesTest {
-
-    @Test
+@Test
     fun `should instantiate with correct type`() {
         val result = AttributeTypes(type = "nodes")
 

@@ -19,20 +19,20 @@ import java.math.BigDecimal
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ParserDialogTest {
-
-    @AfterEach
+@AfterEach
     fun afterTest() {
         unmockkAll()
     }
 
     @Test
-    fun `should output correct arguments when print structure is selected`() {
-        // given
+    fun `should output correct arguments when print structure is selected`() { // given
         val inputFolderName = "sampleInputFile"
         val printLevels = BigDecimal(5)
 
         mockkObject(InputHelper)
-        every { InputHelper.isInputValidAndNotNull(any(), any()) } returns true
+        every {
+            InputHelper.isInputValidAndNotNull(any(), any())
+        } returns true
 
         mockkStatic("com.github.kinquirer.components.InputKt")
         every {
@@ -62,14 +62,15 @@ class ParserDialogTest {
     }
 
     @Test
-    fun `should output correct arguments when extract path is selected`() {
-        // given
+    fun `should output correct arguments when extract path is selected`() { // given
         val inputFolderName = "sampleInputFile"
         val pathToBeExtracted = "/root/src/main"
         val outputFileName = "output"
 
         mockkObject(InputHelper)
-        every { InputHelper.isInputValidAndNotNull(any(), any()) } returns true
+        every {
+            InputHelper.isInputValidAndNotNull(any(), any())
+        } returns true
 
         mockkStatic("com.github.kinquirer.components.InputKt")
         every {
@@ -96,15 +97,16 @@ class ParserDialogTest {
     }
 
     @Test
-    fun `should output correct arguments when move nodes is selected`() {
-        // given
+    fun `should output correct arguments when move nodes is selected`() { // given
         val inputFolderName = "sampleInputFile"
         val outputFileName = "output"
         val moveFrom = "/root/src/main/java"
         val moveTo = "/root/src/main/java/subfolder"
 
         mockkObject(InputHelper)
-        every { InputHelper.isInputValidAndNotNull(any(), any()) } returns true
+        every {
+            InputHelper.isInputValidAndNotNull(any(), any())
+        } returns true
 
         mockkStatic("com.github.kinquirer.components.InputKt")
         every {
@@ -131,15 +133,16 @@ class ParserDialogTest {
     }
 
     @Test
-    fun `should output correct arguments when remove nodes is selected`() {
-        // given
+    fun `should output correct arguments when remove nodes is selected`() { // given
         val inputFolderName = "sampleInputFile"
         val outputFileName = "output"
         val nodeToRemove = "/root/src/main/java"
         val nodesToRemove = arrayOf(nodeToRemove)
 
         mockkObject(InputHelper)
-        every { InputHelper.isInputValidAndNotNull(any(), any()) } returns true
+        every {
+            InputHelper.isInputValidAndNotNull(any(), any())
+        } returns true
 
         mockkStatic("com.github.kinquirer.components.InputKt")
         every {
@@ -166,15 +169,16 @@ class ParserDialogTest {
     }
 
     @Test
-    fun `should prompt user twice for input file when first input file is invalid`() {
-        // given
+    fun `should prompt user twice for input file when first input file is invalid`() { // given
         val invalidInputFolderName = ""
         val validInputFolderName = "sampleInputFile"
         val outputFileName = "output"
         val nodeToRemove = "/root/src/main/java"
 
         mockkObject(InputHelper)
-        every { InputHelper.isInputValidAndNotNull(any(), any()) } returns false andThen true
+        every {
+            InputHelper.isInputValidAndNotNull(any(), any())
+        } returns false andThen true
 
         mockkStatic("com.github.kinquirer.components.InputKt")
         every {

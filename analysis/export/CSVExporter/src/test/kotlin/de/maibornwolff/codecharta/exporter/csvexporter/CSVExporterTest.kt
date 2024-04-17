@@ -2,13 +2,10 @@ package de.maibornwolff.codecharta.exporter.csvexporter
 
 import de.maibornwolff.codecharta.exporter.csv.CSVExporter
 import de.maibornwolff.codecharta.util.InputHelper
+import de.maibornwolff.codecharta.util.Logger
 import io.mockk.every
-import io.mockk.mockk
 import io.mockk.mockkObject
 import io.mockk.unmockkAll
-import io.mockk.verify
-import mu.KLogger
-import mu.KotlinLogging
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
@@ -20,7 +17,7 @@ import java.io.PrintStream
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class CSVExporterTest {
-    private var errContent = ByteArrayOutputStream()
+private var errContent = ByteArrayOutputStream()
     private val originalErr = System.err
     private var outContent = ByteArrayOutputStream()
     private val originalOut = System.out
@@ -84,7 +81,8 @@ class CSVExporterTest {
         CommandLine(CSVExporter()).execute(invalidInputFilePath)
 
         // then
-        Assertions.assertThat(errContent.toString()).contains("Invalid input file for CSVExporter, stopping execution...")
+        Assertions.assertThat(errContent.toString())
+                .contains("Invalid input file for CSVExporter, stopping execution...")
 
         // clean up
         System.setErr(originalErr)
@@ -106,7 +104,8 @@ class CSVExporterTest {
         CommandLine(CSVExporter()).execute(validInputFilePath, invalidInputFilePath)
 
         // then
-        Assertions.assertThat(errContent.toString()).contains("Invalid input file for CSVExporter, stopping execution...")
+        Assertions.assertThat(errContent.toString())
+                .contains("Invalid input file for CSVExporter, stopping execution...")
 
         // clean up
         System.setErr(originalErr)
@@ -127,7 +126,8 @@ class CSVExporterTest {
         CommandLine(CSVExporter()).execute(pathToFolder).toString()
 
         // then
-        Assertions.assertThat(errContent.toString()).contains("Invalid input file for CSVExporter, stopping execution...")
+        Assertions.assertThat(errContent.toString())
+                .contains("Invalid input file for CSVExporter, stopping execution...")
 
         // clean up
         System.setErr(originalErr)
@@ -228,8 +228,7 @@ class CSVExporterTest {
     }
 
     @Test
-    fun `should create correct output when depth-of-hierarchy is zero`() {
-        // given
+    fun `should create correct output when depth-of-hierarchy is zero`() { // given
         val filePath = "../../test/data/codecharta/csvexport_input.cc.json"
         val maxHierarchy = 0
         System.setOut(PrintStream(outContent))
@@ -247,8 +246,7 @@ class CSVExporterTest {
     }
 
     @Test
-    fun `should fail to create output when depth-of-hierarchy is negative`() {
-        // given
+    fun `should fail to create output when depth-of-hierarchy is negative`() { // given
         val filePath = "../../test/data/codecharta/csvexport_input.cc.json"
         val maxHierarchy = -1
         System.setErr(PrintStream(errContent))
@@ -264,25 +262,21 @@ class CSVExporterTest {
     }
 
     @Test
-    fun `should log the correct absolute path when output file is specified`() {
-        // given
+    fun `should log the correct absolute path when output file is specified`() { // given
         val inputFilePath = "../../test/data/codecharta/csvexport_input.cc.json"
         val outputFilePath = "src/test/resources/output.csv"
         val absoluteOutputFilePath = File(outputFilePath).absolutePath
         val outputFile = File(outputFilePath)
         outputFile.deleteOnExit()
 
-        val loggerMock = mockk<KLogger>()
-        val infoMessagesLogged = mutableListOf<String>()
-        mockkObject(KotlinLogging)
-        every { KotlinLogging.logger(any<(() -> Unit)>()) } returns loggerMock
-        every { loggerMock.info(capture(infoMessagesLogged)) } returns Unit
+        val lambdaSlot = mutableListOf<() -> String>()
+        mockkObject(Logger)
+        every { Logger.info(capture(lambdaSlot)) } returns Unit
 
         // when
         CommandLine(CSVExporter()).execute(inputFilePath, "-o", outputFilePath)
 
         // then
-        verify { loggerMock.info(any<String>()) }
-        Assertions.assertThat(infoMessagesLogged.any { e -> e.contains(absoluteOutputFilePath) }).isTrue()
+        Assertions.assertThat(lambdaSlot.last()().endsWith(absoluteOutputFilePath)).isTrue()
     }
 }

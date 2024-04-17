@@ -3,7 +3,7 @@ package de.maibornwolff.codecharta.importer.svnlogparser.input.metrics
 import de.maibornwolff.codecharta.importer.svnlogparser.input.Modification
 
 class NumberOfOccurencesInCommits : Metric {
-    private var numberOfOccurrencesInCommits: Long = 0
+private var numberOfOccurrencesInCommits: Long = 0
 
     override fun description(): String {
         return "Number Of Commits: Number of times this file occured in a commit."

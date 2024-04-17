@@ -6,8 +6,7 @@ import java.io.File
 import java.nio.file.Paths
 
 class GitAdapterTest {
-
-    @Test
+@Test
     fun `should produce a gitLog that contains commits`() {
         val gitFile = File.createTempFile("git", ".log")
         gitFile.deleteOnExit()

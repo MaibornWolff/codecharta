@@ -47,13 +47,8 @@ import java.util.Locale
 import kotlin.collections.HashMap
 
 class JavaSonarAnalyzer(verbose: Boolean = false, searchIssues: Boolean = true) : SonarAnalyzer(verbose, searchIssues) {
-
-    override val FILE_EXTENSION = "java"
-    override lateinit var baseDir: File
-    val MAX_FILE_NAME_PRINT_LENGTH = 30
-
-    private val SONAR_VERSION_MAJOR = 8
-    private val SONAR_VERSION_MINOR = 4
+override lateinit var baseDir: File
+    override val fileExtension = "java"
 
     private lateinit var javaClasspath: JavaClasspath
     private lateinit var sonarComponents: SonarComponents
@@ -67,6 +62,13 @@ class JavaSonarAnalyzer(verbose: Boolean = false, searchIssues: Boolean = true) 
     private val originalOut = System.out
     private val parsingUnit = ParsingUnit.Files
     private val progressTracker: ProgressTracker = ProgressTracker()
+
+    companion object {
+        private const val MAX_FILE_NAME_PRINT_LENGTH = 30
+        private const val COMMENTED_OUT_CODE_BLOCKS_RULE_KEY = "S125"
+        private const val SONAR_VERSION_MAJOR = 8
+        private const val SONAR_VERSION_MINOR = 4
+    }
 
     init {
         if (searchIssues) {
@@ -90,7 +92,8 @@ class JavaSonarAnalyzer(verbose: Boolean = false, searchIssues: Boolean = true) 
 
         val activeRulesBuilder = ActiveRulesBuilder()
         rules.forEach {
-            val activeRule = NewActiveRule.Builder().setRuleKey(RuleKey.of(CheckList.REPOSITORY_KEY, it.ruleKey())).build()
+            val activeRule =
+                    NewActiveRule.Builder().setRuleKey(RuleKey.of(CheckList.REPOSITORY_KEY, it.ruleKey())).build()
             activeRulesBuilder.addRule(activeRule)
         }
         activeRules = activeRulesBuilder.build()
@@ -98,11 +101,22 @@ class JavaSonarAnalyzer(verbose: Boolean = false, searchIssues: Boolean = true) 
 
     override fun createContext() {
         sensorContext = SensorContextTester.create(baseDir)
-        sensorContext.setRuntime(SonarRuntimeImpl.forSonarQube(Version.create(SONAR_VERSION_MAJOR, SONAR_VERSION_MINOR), SonarQubeSide.SERVER, SonarEdition.COMMUNITY))
+        sensorContext.setRuntime(
+                SonarRuntimeImpl.forSonarQube(
+                        Version.create(
+                                Companion.SONAR_VERSION_MAJOR,
+                                Companion.SONAR_VERSION_MINOR,
+                                      ),
+                        SonarQubeSide.SERVER, SonarEdition.COMMUNITY,
+                                             ),
+                                )
         javaClasspath = JavaClasspath(mapSettings, sensorContext.fileSystem())
     }
 
-    override fun scanFiles(fileList: List<String>, root: File): ProjectMetrics {
+    override fun scanFiles(
+    fileList: List<String>,
+    root: File,
+    ): ProjectMetrics {
         baseDir = root.absoluteFile
         val projectMetrics = ProjectMetrics()
 
@@ -138,14 +152,15 @@ class JavaSonarAnalyzer(verbose: Boolean = false, searchIssues: Boolean = true) 
     override fun buildSonarComponents() {
         val checkFactory = CheckFactory(this.activeRules)
         val javaTestClasspath = JavaTestClasspath(mapSettings, sensorContext.fileSystem())
-        sonarComponents = SonarComponents(
-            NullFileLinesContextFactory(),
-            sensorContext.fileSystem(),
-            javaClasspath,
-            javaTestClasspath,
-            checkFactory,
-            PostAnalysisIssueFilter()
-        )
+        sonarComponents =
+                SonarComponents(
+                        NullFileLinesContextFactory(),
+                        sensorContext.fileSystem(),
+                        javaClasspath,
+                        javaTestClasspath,
+                        checkFactory,
+                        PostAnalysisIssueFilter(),
+                               )
         sonarComponents.setSensorContext(this.sensorContext)
     }
 
@@ -155,43 +170,49 @@ class JavaSonarAnalyzer(verbose: Boolean = false, searchIssues: Boolean = true) 
 
     private fun getInputFile(fileName: String): InputFile {
         return TestInputFileBuilder.create("moduleKey", fileName)
-            .setModuleBaseDir(baseDir.toPath())
-            .setCharset(StandardCharsets.UTF_8)
-            .setType(InputFile.Type.MAIN)
-            .setLanguage(Java.KEY)
-            .initMetadata(fileContent(File("$baseDir/$fileName"), StandardCharsets.UTF_8))
-            .build()
+                .setModuleBaseDir(baseDir.toPath())
+                .setCharset(StandardCharsets.UTF_8)
+                .setType(InputFile.Type.MAIN)
+                .setLanguage(Java.KEY)
+                .initMetadata(fileContent(File("$baseDir/$fileName"), StandardCharsets.UTF_8))
+                .build()
     }
 
     override fun executeScan() {
         runBlocking {
             launch {
-                val javaSquidSensor = JavaSquidSensor(
-                    sonarComponents,
-                    sensorContext.fileSystem(),
-                    DefaultJavaResourceLocator(javaClasspath),
-                    mapSettings,
-                    NoSonarFilter(),
-                    PostAnalysisIssueFilter()
-                )
+                val javaSquidSensor =
+                        JavaSquidSensor(
+                                sonarComponents,
+                                sensorContext.fileSystem(),
+                                DefaultJavaResourceLocator(javaClasspath),
+                                mapSettings,
+                                NoSonarFilter(),
+                                PostAnalysisIssueFilter(),
+                                       )
                 javaSquidSensor.execute(sensorContext)
             }
         }
     }
 
     private fun retrieveIssues(): HashMap<String, Int> {
-        val issues: HashMap<String, Int> = hashMapOf(
-            "bug" to 0,
-            "vulnerability" to 0,
-            "code_smell" to 0,
-            "security_hotspot" to 0,
-            "sonar_issue_other" to 0
-        )
+        val issues: HashMap<String, Int> =
+                hashMapOf(
+                        "bug" to 0,
+                        "vulnerability" to 0,
+                        "code_smell" to 0,
+                        "security_hotspot" to 0,
+                        "sonar_issue_other" to 0,
+                         )
 
         sensorContext.allIssues().forEach {
             val ruleKey = it.ruleKey().rule()
             val type = issueRepository.rule(ruleKey)?.type().toString().lowercase(Locale.getDefault())
-            if (verbose) System.err.println("Found: $type ${it.ruleKey().rule()} \n with message ${it.primaryLocation().message()}")
+            if (verbose) {
+                System.err.println(
+                        "Found: $type ${it.ruleKey().rule()} \n with message ${it.primaryLocation().message()}",
+                                  )
+            }
             if (issues.containsKey(type)) {
                 issues[type] = issues.getValue(type) + 1
             } else {
@@ -202,7 +223,6 @@ class JavaSonarAnalyzer(verbose: Boolean = false, searchIssues: Boolean = true) 
     }
 
     private fun retrieveAdditionalMetrics(fileName: String): MutableMap<String, Int> {
-        val COMMENTED_OUT_CODE_BLOCKS_RULE_KEY = "S125"
         val additionalMetrics: MutableMap<String, Int> = mutableMapOf()
 
         val tree: Tree
@@ -213,9 +233,10 @@ class JavaSonarAnalyzer(verbose: Boolean = false, searchIssues: Boolean = true) 
             return hashMapOf()
         }
 
-        val commentedOutBlocks = sensorContext.allIssues().filter {
-            it.ruleKey().rule() == COMMENTED_OUT_CODE_BLOCKS_RULE_KEY
-        }
+        val commentedOutBlocks =
+                sensorContext.allIssues().filter {
+                    it.ruleKey().rule() == COMMENTED_OUT_CODE_BLOCKS_RULE_KEY
+                }
         additionalMetrics["commented_out_code_blocks"] = commentedOutBlocks.size
         addMetricsFromVisitors(tree, additionalMetrics)
 
@@ -229,26 +250,42 @@ class JavaSonarAnalyzer(verbose: Boolean = false, searchIssues: Boolean = true) 
         // to handle this. Not doing so might result in a performance issue.
         val classPaths = listOf(File(""))
 
-        val compilationUnitTree = JParser.parse(JParser.MAXIMUM_SUPPORTED_JAVA_VERSION, inputFile.filename(), inputFile.contents(), classPaths)
-        val defaultJavaFileScannerContext = DefaultJavaFileScannerContext(
-            compilationUnitTree,
-            inputFile,
-            null,
-            null,
-            JavaVersionImpl(),
-            true
-        )
+        val compilationUnitTree =
+                JParser.parse(
+                        JParser.MAXIMUM_SUPPORTED_JAVA_VERSION, inputFile.filename(), inputFile.contents(),
+                        classPaths,
+                             )
+        val defaultJavaFileScannerContext =
+                DefaultJavaFileScannerContext(
+                        compilationUnitTree,
+                        inputFile,
+                        null,
+                        null,
+                        JavaVersionImpl(),
+                        true,
+                                             )
 
         return defaultJavaFileScannerContext.tree
     }
 
-    private fun addMetricsFromVisitors(tree: Tree, additionalMetrics: MutableMap<String, Int>) {
+    private fun addMetricsFromVisitors(
+    tree: Tree,
+    additionalMetrics: MutableMap<String, Int>,
+    ) {
         additionalMetrics["max_nesting_level"] = MaxNestingLevelVisitor().getMaxNestingLevel(tree)
     }
 
     private fun printProgressBar(fileName: String) {
         analyzedFiles += 1
-        val currentFile = if (fileName.length > MAX_FILE_NAME_PRINT_LENGTH) ".." + fileName.takeLast(MAX_FILE_NAME_PRINT_LENGTH) else fileName
+        val currentFile =
+                if (fileName.length > Companion.MAX_FILE_NAME_PRINT_LENGTH) {
+                    ".." +
+                    fileName.takeLast(
+                            Companion.MAX_FILE_NAME_PRINT_LENGTH,
+                                     )
+                } else {
+                    fileName
+                }
         progressTracker.updateProgress(totalFiles.toLong(), analyzedFiles.toLong(), parsingUnit.name, currentFile)
 
         if (!verbose) System.setOut(PrintStream(ByteArrayOutputStream()))

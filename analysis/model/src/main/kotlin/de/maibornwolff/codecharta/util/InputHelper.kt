@@ -4,18 +4,20 @@ import java.io.File
 
 class InputHelper {
     companion object {
-        /**
+    /**
          * Checks the same as ´isInputValid(Array<File>, Boolean)`, but additionally checks for nullness in elements in array.
          */
         fun isInputValidAndNotNull(
-        inputResources: Array<File?>,
-                         canInputContainFolders: Boolean
-        ): Boolean {
+    inputResources: Array<File?>,
+    canInputContainFolders: Boolean,
+    ): Boolean {
             val nonNullInputResources: Array<File>
             try {
                 nonNullInputResources = inputResources.requireNoNulls()
             } catch (e: IllegalArgumentException) {
-                Logger.logger.error { "Input contained illegal null resource!" }
+                Logger.error {
+                    "Input contained illegal null resource!"
+                }
                 return false
             }
 
@@ -30,15 +32,16 @@ class InputHelper {
          */
         fun isInputValid(
         inputResources: Array<File>,
-                         canInputContainFolders: Boolean
+        canInputContainFolders: Boolean,
         ): Boolean {
-            return !isInputEmpty(inputResources) &&
-                   areInputResourcesValid(inputResources, canInputContainFolders)
+            return !isInputEmpty(inputResources) && areInputResourcesValid(inputResources, canInputContainFolders)
         }
 
         private fun isInputEmpty(inputResources: Array<File>): Boolean {
             if (inputResources.isEmpty()) {
-                Logger.logger.error { "Did not find any input resources!" }
+                Logger.error {
+                    "Did not find any input resources!"
+                }
                 return true
             }
             return false
@@ -46,7 +49,9 @@ class InputHelper {
 
         private fun isInputEmptyString(inputResource: File): Boolean {
             if (inputResource.name == "") {
-                Logger.logger.error { "Input empty string for input files/folders, which is not allowed!" }
+                Logger.error {
+                    "Input empty string for input files/folders, which is not allowed!"
+                }
                 return true
             }
             return false
@@ -54,7 +59,9 @@ class InputHelper {
 
         private fun isInputExistentFolderOrFile(inputResource: File): Boolean {
             if (!(inputResource.isFile || inputResource.isDirectory)) {
-                Logger.logger.error { "Could not find resource `${inputResource.path}`!" }
+                Logger.error {
+                    "Could not find resource `${inputResource.path}`!"
+                }
                 return false
             }
             return true
@@ -62,17 +69,21 @@ class InputHelper {
 
         private fun isInputValidFolderOrAnyFile(
         inputResource: File,
-                                                canInputContainFolders: Boolean
+        canInputContainFolders: Boolean,
         ): Boolean {
             if (canInputContainFolders) {
                 if (inputResource.isDirectory && getFilesInFolder(inputResource).isEmpty()) {
-                    Logger.logger.error { "The specified path `${inputResource.path}` exists but is empty!" }
+                    Logger.error {
+                        "The specified path `${inputResource.path}` exists but is empty!"
+                    }
                     return false
                 }
                 return true
             } else {
                 if (inputResource.isDirectory) {
-                    Logger.logger.error { "Input folder where only files are allowed!" }
+                    Logger.error {
+                        "Input folder where only files are allowed!"
+                    }
                     return false
                 }
                 return true
@@ -81,7 +92,7 @@ class InputHelper {
 
         private fun areInputResourcesValid(
         inputResources: Array<File>,
-                                           canInputContainFolders: Boolean
+        canInputContainFolders: Boolean,
         ): Boolean {
             var isInputValid = true
 
@@ -113,7 +124,10 @@ class InputHelper {
         }
 
         private fun getFilesInFolder(folder: File): List<File> {
-            val files = folder.walk().filter { !it.name.startsWith(".") && !it.isDirectory }
+            val files =
+                    folder.walk().filter {
+                        !it.name.startsWith(".") && !it.isDirectory
+                    }
             return files.toList()
         }
     }

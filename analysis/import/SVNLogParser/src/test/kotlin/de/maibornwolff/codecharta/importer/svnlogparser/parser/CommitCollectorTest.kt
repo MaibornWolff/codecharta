@@ -9,13 +9,11 @@ import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.assertj.core.api.Assertions.tuple
 import org.junit.jupiter.api.Test
 import java.time.OffsetDateTime
-import java.util.HashSet
 import java.util.function.Function
 import java.util.stream.Stream
 
 class CommitCollectorTest {
-
-    private val metricsFactory = MetricsFactory()
+private val metricsFactory = MetricsFactory()
 
     private fun modificationsByFilename(vararg filenames: String): List<Modification> {
         return filenames.map { Modification(it) }
@@ -27,16 +25,14 @@ class CommitCollectorTest {
         val firstCommit = Commit("TheAuthor", modificationsByFilename("src/Main.java", "src/Util.java"), commitDate)
         val secondCommit = Commit("AnotherAuthor", modificationsByFilename("src/Util.java"), commitDate)
         val commits = Stream.of(firstCommit, secondCommit).collect(CommitCollector.create(metricsFactory))
-        assertThat(commits)
-            .extracting(
+        assertThat(commits).extracting(
                 Function<VersionControlledFile, Any> { it.filename },
                 Function<VersionControlledFile, Any> { f -> f.getMetricValue("number_of_commits") },
-                Function<VersionControlledFile, Any> { it.authors }
-            )
-            .containsExactly(
+                Function<VersionControlledFile, Any> { it.authors },
+                                      ).containsExactly(
                 tuple("src/Main.java", 1L, setOf("TheAuthor")),
-                tuple("src/Util.java", 2L, HashSet(listOf("TheAuthor", "AnotherAuthor")))
-            )
+                tuple("src/Util.java", 2L, HashSet(listOf("TheAuthor", "AnotherAuthor"))),
+                                                       )
     }
 
     @Test
@@ -50,18 +46,16 @@ class CommitCollectorTest {
     fun `collects half empty filelists`() {
         val commit = Commit("TheAuthor", modificationsByFilename("", "src/Main.java"), OffsetDateTime.now())
         val commits = Stream.of(commit).collect(CommitCollector.create(metricsFactory))
-        assertThat(commits)
-            .extracting<String, RuntimeException> { it.filename }
-            .containsExactly("src/Main.java")
+        assertThat(commits).extracting<String, RuntimeException> { it.filename }.containsExactly("src/Main.java")
     }
 
     @Test
     fun doesNotSupportParallelStreams() {
         val commit =
-            Commit("TheAuthor", modificationsByFilename("src/Main.java", "src/Util.java"), OffsetDateTime.now())
+                Commit("TheAuthor", modificationsByFilename("src/Main.java", "src/Util.java"), OffsetDateTime.now())
         val parallelCommitStream = Stream.of(commit, commit).parallel()
         assertThatThrownBy { parallelCommitStream.collect(CommitCollector.create(metricsFactory)) }.isInstanceOf(
-            UnsupportedOperationException::class.java
-        )
+                UnsupportedOperationException::class.java,
+                                                                                                                )
     }
 }

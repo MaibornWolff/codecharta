@@ -6,11 +6,10 @@ import de.maibornwolff.codecharta.model.Edge
 import java.util.Arrays
 
 class VersionControlledFile internal constructor(
-    filename: String,
-    private var metrics: List<Metric>
-) {
-
-    val authors = mutableSetOf<String>()
+        filename: String,
+        private var metrics: List<Metric>,
+                                                ) {
+                                                val authors = mutableSetOf<String>()
     private val renames = mutableSetOf<String>()
 
     // the current filename in a specific revision, might change in history
@@ -34,7 +33,10 @@ class VersionControlledFile internal constructor(
     /**
      * registers commits in chronological order
      */
-    fun registerCommit(commit: Commit, mod: Modification) {
+    fun registerCommit(
+    commit: Commit,
+    mod: Modification,
+    ) {
         flagCommitAsMutatedIfNeeded(commit, mod)
 
         metrics.forEach {
@@ -58,19 +60,21 @@ class VersionControlledFile internal constructor(
 
     fun getEdgeList(): List<Edge> {
         val edgeMap = mutableMapOf<String, Edge>()
-        metrics.flatMap { it.getEdges() }
-            .forEach { edge ->
-                val resolvedEdge = edgeMap[edge.toNodeName]
-                if (resolvedEdge != null) {
-                    edge.attributes.toMutableMap().putAll(edge.attributes)
-                } else {
-                    edgeMap[edge.toNodeName] = edge
-                }
+        metrics.flatMap { it.getEdges() }.forEach { edge ->
+            val resolvedEdge = edgeMap[edge.toNodeName]
+            if (resolvedEdge != null) {
+                edge.attributes.toMutableMap().putAll(edge.attributes)
+            } else {
+                edgeMap[edge.toNodeName] = edge
             }
+        }
         return edgeMap.values.toList()
     }
 
-    private fun flagCommitAsMutatedIfNeeded(commit: Commit, mod: Modification) {
+    private fun flagCommitAsMutatedIfNeeded(
+    commit: Commit,
+    mod: Modification,
+    ) {
         if (this.isDeleted() && (mod.isTypeModify() || mod.isTypeRename())) {
             this.mutate()
         } else if (!commit.isMergeCommit() && !this.isDeleted() && mod.isTypeAdd() && !mod.isInitialAdd()) {

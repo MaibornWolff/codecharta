@@ -12,14 +12,17 @@ import org.junit.jupiter.api.Test
 import kotlin.test.assertFailsWith
 
 class NodeJsonDeserializerTest {
-    private val NAME = "nodeName"
-    private val TYPE = NodeType.Folder
+private val type = NodeType.Folder
     private val nodeClass = MutableNode::class.java
+
+    companion object {
+    private const val NAME = "nodeName"
+    }
 
     fun createMinimalJsonObject(): JsonObject {
         val obj = JsonObject()
         obj.addProperty("name", NAME)
-        obj.addProperty("type", TYPE.toString())
+        obj.addProperty("type", type.toString())
         return obj
     }
 
@@ -71,7 +74,7 @@ class NodeJsonDeserializerTest {
         val node = deserializer.deserialize(obj, nodeClass, null)
 
         assertThat(node.name).isEqualTo(NAME)
-        assertThat(node.type).isEqualTo(TYPE)
+        assertThat(node.type).isEqualTo(type)
         assertThat(node.link).isNull()
         assertThat(node.attributes.size).isEqualTo(0)
         assertThat(node.children.size).isEqualTo(0)

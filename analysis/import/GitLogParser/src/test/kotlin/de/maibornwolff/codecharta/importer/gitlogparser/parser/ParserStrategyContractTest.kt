@@ -9,7 +9,7 @@ import java.time.ZoneOffset
 import java.util.stream.Stream
 
 abstract class ParserStrategyContractTest {
-    private val metricsFactory = MetricsFactory()
+private val metricsFactory = MetricsFactory()
 
     protected abstract val fullCommit: List<String>
 
@@ -21,23 +21,23 @@ abstract class ParserStrategyContractTest {
     fun parsesCommit() {
         val parser = LogLineParser(logParserStrategy, metricsFactory)
         val commit = parser.parseCommit(fullCommit)
-        assertThat(commit)
-            .extracting(
+        assertThat(commit).extracting(
                 java.util.function.Function<Commit, Any> { it.author },
-                java.util.function.Function<Commit, Any> { it.commitDate }
-            )
-            .containsExactly("TheAuthor", OffsetDateTime.of(2017, 5, 9, 19, 57, 57, 0, ZONE_OFFSET))
-        assertThat(commit.fileNameList)
-            .containsExactlyInAnyOrder("src/Added.java", "src/Modified.java", "src/Deleted.java")
+                java.util.function.Function<Commit, Any> { it.commitDate },
+                                     )
+                .containsExactly("TheAuthor", OffsetDateTime.of(2017, 5, 9, 19, 57, 57, 0, ZONE_OFFSET))
+        assertThat(commit.fileNameList).containsExactlyInAnyOrder(
+                "src/Added.java", "src/Modified.java",
+                "src/Deleted.java",
+                                                                 )
     }
 
     @Test
     fun parsesFilesInCommitLines() {
         val modifications = logParserStrategy.parseModifications(fullCommit)
         assertThat(modifications).hasSize(3)
-        assertThat(modifications)
-            .extracting<String, RuntimeException> { it.currentFilename }
-            .containsExactlyInAnyOrder("src/Added.java", "src/Modified.java", "src/Deleted.java")
+        assertThat(modifications).extracting<String, RuntimeException> { it.currentFilename }
+                .containsExactlyInAnyOrder("src/Added.java", "src/Modified.java", "src/Deleted.java")
     }
 
     @Test
@@ -60,7 +60,6 @@ abstract class ParserStrategyContractTest {
     }
 
     companion object {
-
-        private val ZONE_OFFSET = ZoneOffset.ofHours(2)
+    private val ZONE_OFFSET = ZoneOffset.ofHours(2)
     }
 }

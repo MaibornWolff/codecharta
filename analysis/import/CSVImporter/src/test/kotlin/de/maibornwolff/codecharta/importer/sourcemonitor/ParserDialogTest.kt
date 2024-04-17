@@ -17,15 +17,13 @@ import java.io.File
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ParserDialogTest {
-
-    @AfterEach
+@AfterEach
     fun afterTest() {
         unmockkAll()
     }
 
     @Test
-    fun `should output correct arguments`() {
-        // given
+    fun `should output correct arguments`() { // given
         val fileName = "in.csv"
         val outputFileName = "out.cc.json"
         val isCompressed = true
@@ -54,8 +52,7 @@ class ParserDialogTest {
     }
 
     @Test
-    fun `should output correct arguments not compressed`() {
-        // given
+    fun `should output correct arguments not compressed`() { // given
         val fileName = "in.csv"
         val outputFileName = "out.cc.json"
         val isCompressed = false
@@ -84,8 +81,7 @@ class ParserDialogTest {
     }
 
     @Test
-    fun `should prompt user twice for input file when first input file is invalid`() {
-        // given
+    fun `should prompt user twice for input file when first input file is invalid`() { // given
         val validFileName1 = "in1.csv"
         val validFileName2 = "in2.csv"
         val invalidFileName1 = "invalidFileName1"
@@ -111,7 +107,9 @@ class ParserDialogTest {
         val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
 
         // then
-        Assertions.assertThat(parseResult.matchedPositional(0).getValue<ArrayList<File>>()[0].name).isEqualTo(validFileName1)
-        Assertions.assertThat(parseResult.matchedPositional(0).getValue<ArrayList<File>>()[1].name).isEqualTo(validFileName2)
+        Assertions.assertThat(parseResult.matchedPositional(0).getValue<ArrayList<File>>()[0].name)
+                .isEqualTo(validFileName1)
+        Assertions.assertThat(parseResult.matchedPositional(0).getValue<ArrayList<File>>()[1].name)
+                .isEqualTo(validFileName2)
     }
 }

@@ -8,10 +8,12 @@ import java.io.StringReader
 import java.nio.charset.StandardCharsets
 
 class ProjectDeserializerTest {
-    val EXAMPLE_JSON_VERSION_1_0 = "example.cc.json"
-    val EXAMPLE_JSON_VERSION_1_3 = "example_api_version_1.3.cc.json"
-    val EXAMPLE_JSON_GZ_VERSION_1_0 = "example.cc.json.gz"
-    val EXAMPLE_JSON_GZ_VERSION_1_3 = "example_api_version_1.3.cc.json.gz"
+    companion object {
+    private const val EXAMPLE_JSON_VERSION_1_0 = "example.cc.json"
+        private const val EXAMPLE_JSON_VERSION_1_3 = "example_api_version_1.3.cc.json"
+        private const val EXAMPLE_JSON_GZ_VERSION_1_0 = "example.cc.json.gz"
+        private const val EXAMPLE_JSON_GZ_VERSION_1_3 = "example_api_version_1.3.cc.json.gz"
+    }
 
     @Test
     fun `should deserialize project from cc json with api version 1_2 or lower`() {
@@ -109,8 +111,7 @@ class ProjectDeserializerTest {
     }
 
     @Test
-    fun `should not create deserialized project when input is not valid project`() {
-        // given
+    fun `should not create deserialized project when input is not valid project`() { // given
         val invalidInput = "This is \n invalid \t data"
         val inputStream = PipedInputStream()
         val outputStream = PipedOutputStream(inputStream)

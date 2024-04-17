@@ -14,13 +14,12 @@ import java.util.concurrent.Callable
 @CommandLine.Command(
         name = EdgeFilter.NAME,
         description = [EdgeFilter.DESCRIPTION],
-        footer = [CodeChartaConstants.General.GENERIC_FOOTER]
-)
+        footer = [CodeChartaConstants.General.GENERIC_FOOTER],
+                    )
 class EdgeFilter(
-    private val output: PrintStream = System.out
-) : Callable<Unit?>, InteractiveParser {
-
-    @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
+        private val output: PrintStream = System.out,
+                ) : Callable<Unit?>, InteractiveParser {
+                @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     var help: Boolean = false
 
     @CommandLine.Parameters(arity = "1", paramLabel = "FILE", description = ["files to filter"])
@@ -36,7 +35,7 @@ class EdgeFilter(
     override val description = DESCRIPTION
 
     companion object {
-        const val NAME = "edgefilter"
+    const val NAME = "edgefilter"
         const val DESCRIPTION = "aggregates edgeAttributes as nodeAttributes into a new cc.json file"
 
         @JvmStatic
@@ -60,6 +59,7 @@ class EdgeFilter(
     }
 
     override fun getDialog(): ParserDialogInterface = ParserDialog
+
     override fun isApplicable(resourceToBeParsed: String): Boolean {
         return false
     }

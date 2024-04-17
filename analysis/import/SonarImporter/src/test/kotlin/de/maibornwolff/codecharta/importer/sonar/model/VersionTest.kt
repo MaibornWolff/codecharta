@@ -8,8 +8,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
 class VersionTest {
-
-    @Test
+@Test
     fun `should parse a full version`() {
         val result = Version.parse("8.9.0.1234")
 

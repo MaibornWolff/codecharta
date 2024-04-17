@@ -24,8 +24,7 @@ import java.math.BigDecimal
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ParserDialogTest {
-
-    @AfterEach
+@AfterEach
     fun afterTest() {
         unmockkAll()
     }
@@ -69,11 +68,15 @@ class ParserDialogTest {
         Assertions.assertThat(parseResult.matchedOption("output-file").getValue<String>().equals(outputFileName))
         Assertions.assertThat(parseResult.matchedOption("not-compressed").getValue<Boolean>()).isEqualTo(isCompressed)
         Assertions.assertThat(parseResult.matchedOption("metrics").getValue<List<String>>()).isEqualTo(listOf(metrics))
-        Assertions.assertThat(parseResult.matchedOption("max-indentation-level").getValue<Int>()).isEqualTo(maxIndentLvl.toInt())
+        Assertions.assertThat(parseResult.matchedOption("max-indentation-level").getValue<Int>())
+                .isEqualTo(maxIndentLvl.toInt())
         Assertions.assertThat(parseResult.matchedOption("tab-width").getValue<Int>()).isEqualTo(tabWidthValue)
-        Assertions.assertThat(parseResult.matchedOption("file-extensions").getValue<List<String>>()).isEqualTo(listOf<String>())
-        Assertions.assertThat(parseResult.matchedOption("without-default-excludes").getValue<Boolean>()).isEqualTo(withoutDefaultExcludes)
-        Assertions.assertThat(parseResult.matchedOption("verbose").getValue<Boolean>()).isEqualTo(withoutDefaultExcludes)
+        Assertions.assertThat(parseResult.matchedOption("file-extensions").getValue<List<String>>())
+                .isEqualTo(listOf<String>())
+        Assertions.assertThat(parseResult.matchedOption("without-default-excludes").getValue<Boolean>())
+                .isEqualTo(withoutDefaultExcludes)
+        Assertions.assertThat(parseResult.matchedOption("verbose").getValue<Boolean>())
+                .isEqualTo(withoutDefaultExcludes)
         Assertions.assertThat(parseResult.matchedOption("exclude").getValue<List<String>>()).isEqualTo(listOf(exclude))
         Assertions.assertThat(parseResult.matchedPositional(0).getValue<File>().name).isEqualTo(fileName)
     }
@@ -117,11 +120,15 @@ class ParserDialogTest {
         Assertions.assertThat(parseResult.matchedOption("output-file").getValue<String>().equals(outputFileName))
         Assertions.assertThat(parseResult.matchedOption("not-compressed").getValue<Boolean>()).isEqualTo(isCompressed)
         Assertions.assertThat(parseResult.matchedOption("metrics").getValue<List<String>>()).isEqualTo(listOf(metrics))
-        Assertions.assertThat(parseResult.matchedOption("max-indentation-level").getValue<Int>()).isEqualTo(maxIndentLvl.toInt())
+        Assertions.assertThat(parseResult.matchedOption("max-indentation-level").getValue<Int>())
+                .isEqualTo(maxIndentLvl.toInt())
         Assertions.assertThat(parseResult.matchedOption("tab-width").getValue<Int>()).isEqualTo(tabWidthValue)
-        Assertions.assertThat(parseResult.matchedOption("file-extensions").getValue<List<String>>()).isEqualTo(listOf<String>())
-        Assertions.assertThat(parseResult.matchedOption("without-default-excludes").getValue<Boolean>()).isEqualTo(withoutDefaultExcludes)
-        Assertions.assertThat(parseResult.matchedOption("verbose").getValue<Boolean>()).isEqualTo(withoutDefaultExcludes)
+        Assertions.assertThat(parseResult.matchedOption("file-extensions").getValue<List<String>>())
+                .isEqualTo(listOf<String>())
+        Assertions.assertThat(parseResult.matchedOption("without-default-excludes").getValue<Boolean>())
+                .isEqualTo(withoutDefaultExcludes)
+        Assertions.assertThat(parseResult.matchedOption("verbose").getValue<Boolean>())
+                .isEqualTo(withoutDefaultExcludes)
         Assertions.assertThat(parseResult.matchedOption("exclude").getValue<List<String>>()).isEqualTo(listOf(exclude))
         Assertions.assertThat(parseResult.matchedPositional(0).getValue<File>().name).isEqualTo(fileName)
     }
@@ -170,7 +177,7 @@ class ParserDialogTest {
                 Arguments.of("string-value"),
                 Arguments.of(""),
                 Arguments.of("12."),
-                Arguments.of("12.0")
-        )
+                Arguments.of("12.0"),
+                     )
     }
 }

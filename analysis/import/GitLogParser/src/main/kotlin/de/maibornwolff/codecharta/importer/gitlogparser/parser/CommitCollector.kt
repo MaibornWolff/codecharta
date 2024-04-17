@@ -5,10 +5,12 @@ import de.maibornwolff.codecharta.importer.gitlogparser.input.metrics.MetricsFac
 import java.util.stream.Collector
 
 internal class CommitCollector {
+private var commitParsers = listOf(StandardCommitParser(), MergeCommitParser())
 
-    private var commitParsers = listOf(StandardCommitParser(), MergeCommitParser())
-
-    private fun collectCommit(versionControlledFilesList: VersionControlledFilesList, commit: Commit) {
+    private fun collectCommit(
+    versionControlledFilesList: VersionControlledFilesList,
+    commit: Commit,
+    ) {
         commitParsers.forEach {
             if (it.canParse(commit)) {
                 it.parse(commit, versionControlledFilesList)
@@ -18,20 +20,21 @@ internal class CommitCollector {
     }
 
     companion object {
-
-        fun create(metricsFactory: MetricsFactory): Collector<Commit, *, VersionControlledFilesList> {
+    fun create(metricsFactory: MetricsFactory): Collector<Commit, *, VersionControlledFilesList> {
             val collector = CommitCollector()
 
             return Collector.of(
-                { VersionControlledFilesList(metricsFactory) },
-                { versionControlledFiles,
-                    commit ->
-                    collector.collectCommit(versionControlledFiles, commit)
-                },
-                { _, _ ->
-                    throw UnsupportedOperationException("parallel collection of commits not supported")
-                }
-            )
+                    { VersionControlledFilesList(metricsFactory) },
+                    {
+                        versionControlledFiles,
+                        commit,
+                        ->
+                        collector.collectCommit(versionControlledFiles, commit)
+                    },
+                    { _, _ ->
+                        throw UnsupportedOperationException("parallel collection of commits not supported")
+                    },
+                               )
         }
     }
 }

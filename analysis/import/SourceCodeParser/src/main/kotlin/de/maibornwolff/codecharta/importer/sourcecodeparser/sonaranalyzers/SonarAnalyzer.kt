@@ -12,13 +12,14 @@ import java.nio.charset.Charset
 import java.nio.file.Files
 
 abstract class SonarAnalyzer(protected val verbose: Boolean = false, protected val searchIssues: Boolean) {
-
-    protected lateinit var sensorContext: SensorContextTester
+protected lateinit var sensorContext: SensorContextTester
     open lateinit var baseDir: File
+    abstract val fileExtension: String
 
-    abstract val FILE_EXTENSION: String
-
-    open fun scanFiles(fileList: List<String>, root: File): ProjectMetrics {
+    open fun scanFiles(
+    fileList: List<String>,
+    root: File,
+    ): ProjectMetrics {
         baseDir = root.absoluteFile
 
         createContext()
@@ -52,7 +53,10 @@ abstract class SonarAnalyzer(protected val verbose: Boolean = false, protected v
         return fileMetrics
     }
 
-    protected open fun fileContent(file: File, charset: Charset): String {
+    protected open fun fileContent(
+    file: File,
+    charset: Charset,
+    ): String {
         try {
             return String(Files.readAllBytes(file.toPath()), charset)
         } catch (e: IOException) {
@@ -72,7 +76,10 @@ abstract class SonarAnalyzer(protected val verbose: Boolean = false, protected v
     }
 
     protected abstract fun createContext()
+
     protected abstract fun buildSonarComponents()
+
     protected abstract fun addFileToContext(fileName: String)
+
     protected abstract fun executeScan()
 }

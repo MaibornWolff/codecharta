@@ -4,7 +4,7 @@ import de.maibornwolff.codecharta.importer.gitlogparser.input.Commit
 import de.maibornwolff.codecharta.importer.gitlogparser.input.Modification
 
 class AbsoluteCoupledChurn : Metric {
-    private var totalChurn: Long = 0
+private var totalChurn: Long = 0
     private var ownChurn: Long = 0
 
     override fun description(): String {
@@ -20,9 +20,7 @@ class AbsoluteCoupledChurn : Metric {
     }
 
     override fun registerCommit(commit: Commit) {
-        val commitsTotalChurn = commit.modifications
-            .map { it.additions + it.deletions }
-            .sum()
+        val commitsTotalChurn = commit.modifications.map { it.additions + it.deletions }.sum()
 
         totalChurn += commitsTotalChurn
     }

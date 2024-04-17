@@ -6,7 +6,7 @@ import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 
 class ProjectMetricsTest {
-    @Test
+@Test
     fun `Should add metric when provided with valid input`() {
         // given
         val filePath1 = "filePath1"
