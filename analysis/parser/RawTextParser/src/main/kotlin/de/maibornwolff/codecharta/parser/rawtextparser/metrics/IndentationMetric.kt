@@ -59,7 +59,6 @@ class IndentationMetric(
             if (i % tabWidth != 0 && spaceIndentations[i] > 0) {
                 val nextLevel: Int = i / tabWidth + 1
                 spaceIndentations[nextLevel * tabWidth] = spaceIndentations[nextLevel * tabWidth] + spaceIndentations[i]
-                val a = "Corrected mismatching indentations, moved ${spaceIndentations[i]} lines to indentation level $nextLevel+"
                 Logger.warn { "Corrected mismatching indentations, moved ${spaceIndentations[i]} lines to indentation level $nextLevel+" }
                 spaceIndentations[i] = 0
             }
