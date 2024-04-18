@@ -9,7 +9,7 @@ import java.io.InputStreamReader
 
 class ProjectMergerTest {
     companion object {
-    const val TEST_EDGES_JSON_FILE = "coupling.json"
+        private const val TEST_EDGES_JSON_FILE = "coupling.json"
         private const val TEST_EDGES_JSON_FILE_2 = "coupling-empty-nodes.json"
         private const val TEST_EDGES_JSON_FILE_3 = "empty-but-descriptors.json"
     }

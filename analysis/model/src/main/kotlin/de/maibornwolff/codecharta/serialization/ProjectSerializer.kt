@@ -1,6 +1,8 @@
 package de.maibornwolff.codecharta.serialization
 
+import AttributeTypeSerializer
 import com.google.gson.GsonBuilder
+import de.maibornwolff.codecharta.model.AttributeType
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.model.ProjectWrapper
 import de.maibornwolff.codecharta.util.Logger
@@ -15,7 +17,10 @@ import java.util.zip.GZIPOutputStream
  * This class provides static methods and functions to convert a Project-Object to json
  */
 object ProjectSerializer {
-private val GSON = GsonBuilder().create()
+    private val GSON =
+    GsonBuilder()
+            .registerTypeAdapter(AttributeType::class.java, AttributeTypeSerializer())
+            .create()
 
     /**
      * This method serializes a Project-Object to json and writes using given writer

@@ -25,14 +25,14 @@ private val baseDir = File("src/test/resources/max-nesting-level").absoluteFile
                         .setLanguage(Java.KEY)
                         .initMetadata(
                                 String(Files.readAllBytes(File("$baseDir/$fileName").toPath()), StandardCharsets.UTF_8),
-                        )
+                                     )
                         .build()
 
         val compilationUnitTree =
                 JParser.parse(
-                JParser.MAXIMUM_SUPPORTED_JAVA_VERSION, inputFile.filename(), inputFile.contents(),
+                        JParser.MAXIMUM_SUPPORTED_JAVA_VERSION, inputFile.filename(), inputFile.contents(),
                         listOf(File(javaClass.classLoader.getResource("max-nesting-level")!!.file)),
-                )
+                             )
         val defaultJavaFileScannerContext =
                 DefaultJavaFileScannerContext(
                         compilationUnitTree,

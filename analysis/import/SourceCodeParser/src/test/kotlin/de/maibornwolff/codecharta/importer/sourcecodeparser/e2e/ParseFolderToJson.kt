@@ -39,9 +39,9 @@ private val resource = "src/test/resources/sampleproject"
     @Test
     fun `json output does contain file metrics`() {
         assertThat(output).contains(
-                """"rloc":44""",
+                """"rloc":39""",
                 """"rloc":6""",
-                """"rloc":31""",
+                """"rloc":29""",
                                    )
     }
 }

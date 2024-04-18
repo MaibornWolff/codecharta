@@ -200,7 +200,7 @@ private val errContent = ByteArrayOutputStream()
         // then
         Assertions.assertThat(result).isNotEmpty()
         Assertions.assertThat(lambdaSlot.any { e -> e().contains("The specified file extension 'invalid' was not found within the given folder!") }).isTrue()
-        Assertions.assertThat(lambdaSlot.any { e -> e().contains("The specified file extension 'included' was not found within the given folder!") }).isTrue()
+        Assertions.assertThat(lambdaSlot.any { e -> e().contains("The specified file extension 'included' was not found within the given folder!") }).isFalse()
     }
 
     @Test

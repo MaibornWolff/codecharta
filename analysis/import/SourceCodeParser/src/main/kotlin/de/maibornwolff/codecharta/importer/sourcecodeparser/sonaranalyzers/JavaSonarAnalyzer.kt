@@ -44,7 +44,6 @@ import java.io.File
 import java.io.PrintStream
 import java.nio.charset.StandardCharsets
 import java.util.Locale
-import kotlin.collections.HashMap
 
 class JavaSonarAnalyzer(verbose: Boolean = false, searchIssues: Boolean = true) : SonarAnalyzer(verbose, searchIssues) {
 override lateinit var baseDir: File
@@ -64,7 +63,7 @@ override lateinit var baseDir: File
     private val progressTracker: ProgressTracker = ProgressTracker()
 
     companion object {
-        private const val MAX_FILE_NAME_PRINT_LENGTH = 30
+    private const val MAX_FILE_NAME_PRINT_LENGTH = 30
         private const val COMMENTED_OUT_CODE_BLOCKS_RULE_KEY = "S125"
         private const val SONAR_VERSION_MAJOR = 8
         private const val SONAR_VERSION_MINOR = 4

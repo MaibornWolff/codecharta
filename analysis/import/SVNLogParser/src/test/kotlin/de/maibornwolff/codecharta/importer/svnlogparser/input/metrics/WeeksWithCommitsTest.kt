@@ -10,7 +10,8 @@ class WeeksWithCommitsTest {
 private val zoneOffset = ZoneOffset.UTC
 
     @Test
-    fun `initial value zero`() { // when
+    fun `initial value zero`() {
+// when
         val metric = WeeksWithCommits()
 
         // then

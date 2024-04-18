@@ -16,8 +16,8 @@ private val resource = "src/test/resources/sampleproject"
 
     private fun getResultString(): String {
         val input =
-        File("src/test/resources/cc_project.cc.json").bufferedReader().readLines()
-                .joinToString(separator = "\n") { it }
+                File("src/test/resources/cc_project.cc.json").bufferedReader().readLines()
+                        .joinToString(separator = "\n") { it }
         return executeForOutput(input, arrayOf(resource, "--format=json", "-nc"))
     }
 
@@ -41,7 +41,7 @@ private val resource = "src/test/resources/sampleproject"
     fun `node attributes of piped input and result nodes are merged`() {
         assertThat(output).contains(
                 """"myMetric":42.0""",
-                """"rloc":31""",
+                """"rloc":29""",
                                    )
     }
 

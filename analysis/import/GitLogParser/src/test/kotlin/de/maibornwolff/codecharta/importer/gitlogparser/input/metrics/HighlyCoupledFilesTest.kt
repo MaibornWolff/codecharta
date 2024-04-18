@@ -17,7 +17,8 @@ class HighlyCoupledFilesTest {
     }
 
     @Test
-    fun should_have_initial_value_zero() { // when
+    fun should_have_initial_value_zero() {
+// when
         val metric = HighlyCoupledFiles()
 
         // then

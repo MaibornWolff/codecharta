@@ -18,19 +18,6 @@ dependencies {
     testRuntimeOnly group: 'org.jetbrains.kotlin', name: 'kotlin-reflect', version: kotlin_version
 }
 
-task jarTest(type: Jar, dependsOn: testClasses) {
-    from sourceSets.test.output
-    archiveClassifier = 'test'
-}
-
-configurations {
-    testOutput
-}
-
-artifacts {
-    testOutput jarTest
-}
-
 jacocoTestReport {
     afterEvaluate {
         getClassDirectories().from(files(classDirectories.files.collect {

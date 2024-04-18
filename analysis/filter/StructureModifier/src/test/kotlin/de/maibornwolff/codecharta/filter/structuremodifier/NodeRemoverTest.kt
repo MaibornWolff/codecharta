@@ -23,7 +23,8 @@ private lateinit var sampleProject: Project
     }
 
     @Test
-    fun `Should replicate project when non existent path specified`() { // when
+    fun `Should replicate project when non existent path specified`() {
+// when
         val subProjectExtractor = NodeRemover(sampleProject)
         val result = subProjectExtractor.remove(arrayOf("/root/somethig"))
 
@@ -32,7 +33,8 @@ private lateinit var sampleProject: Project
     }
 
     @Test
-    fun `Should keep non affected nodes when removal is specified`() { // when
+    fun `Should keep non affected nodes when removal is specified`() {
+// when
         val subProjectExtractor = NodeRemover(sampleProject)
         val result = subProjectExtractor.remove(arrayOf("/root/src/main"))
         val testFolder = result.rootNode.children.first().children.first()
@@ -42,7 +44,8 @@ private lateinit var sampleProject: Project
     }
 
     @Test
-    fun `Should remove correct nodes when single node is specified for removal`() { // when
+    fun `Should remove correct nodes when single node is specified for removal`() {
+// when
         val subProjectExtractor = NodeRemover(sampleProject)
         val result = subProjectExtractor.remove(arrayOf("/root/src/main"))
         val srcContent = result.rootNode.children.first().children
@@ -57,7 +60,8 @@ private lateinit var sampleProject: Project
     }
 
     @Test
-    fun `Should remove correct nodes when multiple nodes are specified for removal`() { // when
+    fun `Should remove correct nodes when multiple nodes are specified for removal`() {
+// when
         val subProjectExtractor = NodeRemover(sampleProject)
         val result = subProjectExtractor.remove(arrayOf("/root/src/main/file1.java", "root/src/folder3/"))
         val srcContent = result.rootNode.children.first().children
@@ -77,7 +81,8 @@ private lateinit var sampleProject: Project
     }
 
     @Test
-    fun `Should remove affected edges when removal is specified`() { // when
+    fun `Should remove affected edges when removal is specified`() {
+// when
         val subProjectExtractor = NodeRemover(sampleProject)
         val result = subProjectExtractor.remove(arrayOf("/root/foo"))
 
@@ -120,7 +125,8 @@ private lateinit var sampleProject: Project
     }
 
     @Test
-    fun `Should remove correct blacklist items when node removal specified`() { // when
+    fun `Should remove correct blacklist items when node removal specified`() {
+// when
         val subProjectExtractor = NodeRemover(sampleProject)
         val result = subProjectExtractor.remove(arrayOf("/root/foo"))
 

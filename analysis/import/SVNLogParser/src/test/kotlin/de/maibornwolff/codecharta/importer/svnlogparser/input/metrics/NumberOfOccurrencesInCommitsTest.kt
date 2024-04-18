@@ -6,7 +6,8 @@ import org.junit.jupiter.api.Test
 
 class NumberOfOccurrencesInCommitsTest {
 @Test
-    fun `number of occurrences in commits test`() { // when
+    fun `number of occurrences in commits test`() {
+// when
         val metric = NumberOfOccurencesInCommits()
 
         // then

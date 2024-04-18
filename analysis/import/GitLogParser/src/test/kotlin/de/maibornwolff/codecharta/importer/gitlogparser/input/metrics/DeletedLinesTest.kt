@@ -10,7 +10,8 @@ class DeletedLinesTest {
     }
 
     @Test
-    fun should_have_initial_value_zero() { // when
+    fun should_have_initial_value_zero() {
+// when
         val metric = AddedLines()
 
         // then

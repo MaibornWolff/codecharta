@@ -7,7 +7,8 @@ import java.time.OffsetDateTime
 
 class NumberOfAuthorsTest {
 @Test
-    fun `should have initial value zero`() { // when
+    fun `should have initial value zero`() {
+// when
         val metric = NumberOfAuthors()
 
         // then
