@@ -98,7 +98,8 @@ private fun toInputStream(content: String): InputStream {
     }
 
     @Test
-    fun `it should read csv files exported from source-monitor correctly`() { // when
+    fun `it should read csv files exported from source-monitor correctly`() {
+// when
         val csvProjectBuilder =
                 CSVProjectBuilder(
                         pathSeparator = '\\',

@@ -1,6 +1,10 @@
 package de.maibornwolff.codecharta.serialization
 
 import com.google.gson.GsonBuilder
+import de.maibornwolff.codecharta.model.AttributeType
+import de.maibornwolff.codecharta.model.AttributeTypeDeserializer
+import de.maibornwolff.codecharta.model.BlacklistType
+import de.maibornwolff.codecharta.model.BlacklistTypeDeserializer
 import de.maibornwolff.codecharta.model.Node
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.model.ProjectWrapper
@@ -14,6 +18,8 @@ object ProjectDeserializer {
 private val GSON =
             GsonBuilder().registerTypeAdapter(Node::class.java, NodeJsonDeserializer())
                     .registerTypeAdapter(Project::class.java, ProjectJsonDeserializer())
+                    .registerTypeAdapter(BlacklistType::class.java, BlacklistTypeDeserializer())
+                    .registerTypeAdapter(AttributeType::class.java, AttributeTypeDeserializer())
                     .registerTypeAdapter(ProjectWrapper::class.java, ProjectWrapperJsonDeserializer()).create()
 
     fun deserializeProject(reader: Reader): Project {

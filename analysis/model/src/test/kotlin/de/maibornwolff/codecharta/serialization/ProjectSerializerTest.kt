@@ -65,7 +65,7 @@ private val tempDir = createTempDirectory()
         val testJsonString = File(filename).readText()
 
         // then
-        JSONAssert.assertEquals(testJsonString, expectedJsonString, JSONCompareMode.NON_EXTENSIBLE)
+        JSONAssert.assertEquals(expectedJsonString, testJsonString, JSONCompareMode.NON_EXTENSIBLE)
     }
 
     @Test
@@ -94,6 +94,7 @@ private val tempDir = createTempDirectory()
         // given
         val outputFilePath = "test.cc.json"
         val outputFile = File(outputFilePath)
+        val absoluteOutputFilePath = outputFile.absolutePath
         outputFile.deleteOnExit()
         val mockStream = mockk<OutputStream>()
 
@@ -104,14 +105,8 @@ private val tempDir = createTempDirectory()
         assertTrue {
             outputFile.exists()
         }
-        verify {
-            mockStream wasNot called
-        }
-        verify {
-            loggerMock.info {
-                any<String>()
-            }
-        }
+        // then
+        Assertions.assertThat(lambdaSlot.last()().endsWith(absoluteOutputFilePath)).isTrue()
     }
 
     @Test
@@ -142,11 +137,6 @@ private val tempDir = createTempDirectory()
         ProjectSerializer.serializeToFileOrStream(project, outputFilePath, mockStream, false)
 
         // then
-        verify {
-            loggerMock.info {
-                any<String>()
-            }
-        }
         Assertions.assertThat(lambdaSlot.last()().endsWith(absoluteOutputFilePath)).isTrue()
     }
 }

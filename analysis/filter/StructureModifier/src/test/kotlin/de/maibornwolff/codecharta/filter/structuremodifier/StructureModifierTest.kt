@@ -3,9 +3,7 @@ package de.maibornwolff.codecharta.filter.structuremodifier
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.util.InputHelper
 import de.maibornwolff.codecharta.util.Logger
-import io.github.oshai.kotlinlogging.KLogger
 import io.mockk.every
-import io.mockk.mockk
 import io.mockk.mockkObject
 import io.mockk.unmockkAll
 import org.assertj.core.api.Assertions.assertThat
@@ -29,7 +27,8 @@ private val errContent = ByteArrayOutputStream()
     }
 
     @Test
-    fun `should read project when prodided with input file`() { // when
+    fun `should read project when prodided with input file`() {
+// when
         val cliResult = executeForOutput("", arrayOf("src/test/resources/sample_project.cc.json", "-r=/does/not/exist"))
 
         // then
@@ -81,7 +80,8 @@ private val errContent = ByteArrayOutputStream()
     }
 
     @Test
-    fun `should set the  root for new subproject when provided with new root`() { // when
+    fun `should set the  root for new subproject when provided with new root`() {
+// when
         val cliResult =
                 executeForOutput("", arrayOf("src/test/resources/sample_project.cc.json", "-s=/root/src/folder3"))
 
@@ -91,7 +91,8 @@ private val errContent = ByteArrayOutputStream()
     }
 
     @Test
-    fun `should remove single node when given single folder to remove`() { // when
+    fun `should remove single node when given single folder to remove`() {
+// when
         val cliResult = executeForOutput("", arrayOf("src/test/resources/sample_project.cc.json", "-r=/root/src"))
 
         // then
@@ -100,7 +101,8 @@ private val errContent = ByteArrayOutputStream()
     }
 
     @Test
-    fun `should move nodes when move-from flag is specified`() { // when
+    fun `should move nodes when move-from flag is specified`() {
+// when
         val cliResult =
                 executeForOutput(
                         "",
@@ -113,7 +115,8 @@ private val errContent = ByteArrayOutputStream()
     }
 
     @Test
-    fun `should print structure accordingly when print-level is set`() { // when
+    fun `should print structure accordingly when print-level is set`() {
+// when
         val cliResult = executeForOutput("", arrayOf("src/test/resources/sample_project.cc.json", "-p=2"))
 
         // then
@@ -121,7 +124,8 @@ private val errContent = ByteArrayOutputStream()
     }
 
     @Test
-    fun `should set root and remove unused descriptors when root specified`() { // when
+    fun `should set root and remove unused descriptors when root specified`() {
+// when
         val cliResult =
                 executeForOutput(
                         "",
@@ -135,7 +139,8 @@ private val errContent = ByteArrayOutputStream()
     }
 
     @Test
-    fun `should remove nodes and unused descriptors when provided with an input file containing unused descriptors`() { // when
+    fun `should remove nodes and unused descriptors when provided with an input file containing unused descriptors`() {
+// when
         val cliResult =
                 executeForOutput(
                         "",
@@ -187,8 +192,6 @@ private val errContent = ByteArrayOutputStream()
         val file2 = "/root/src/main/file2.java"
         val nodesToRemove = listOf(file1, file2)
 
-        val loggerMock = mockk<KLogger>()
-        val errorMessagesLogged = mutableListOf<String>()
         val lambdaSlot = mutableListOf<() -> String>()
         mockkObject(Logger)
         every { Logger.error(capture(lambdaSlot)) } returns Unit

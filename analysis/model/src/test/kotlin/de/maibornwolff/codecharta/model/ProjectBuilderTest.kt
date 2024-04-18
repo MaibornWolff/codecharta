@@ -23,7 +23,8 @@ class ProjectBuilderTest {
     }
 
     @Test
-    fun `it should insert a new node as child of root when there is no root node `() { // when
+    fun `it should insert a new node as child of root when there is no root node `() {
+// when
         val projectBuilder = ProjectBuilder()
         val nodeForInsertion = MutableNode("someNode", NodeType.File)
         projectBuilder.insertByPath(Path.trivialPath(), nodeForInsertion)
@@ -35,7 +36,8 @@ class ProjectBuilderTest {
     }
 
     @Test
-    fun `it should create a project with root when inserting a new node into a project with root-node`() { // when
+    fun `it should create a project with root when inserting a new node into a project with root-node`() {
+// when
         val root = MutableNode("root", NodeType.Folder)
         val projectBuilder = ProjectBuilder(listOf(root))
 
@@ -50,7 +52,8 @@ class ProjectBuilderTest {
     }
 
     @Test
-    fun `it should filter out empty folders`() { // when
+    fun `it should filter out empty folders`() {
+// when
         val projectBuilder = ProjectBuilder()
         val nodeForInsertion = MutableNode("someNode", NodeType.Folder)
         projectBuilder.insertByPath(Path.trivialPath(), nodeForInsertion)
@@ -63,7 +66,8 @@ class ProjectBuilderTest {
     }
 
     @Test
-    fun `it should add the correct attribute-types`() { // when
+    fun `it should add the correct attribute-types`() {
+// when
         val projectBuilder =
                 ProjectBuilder(
                         attributeTypes = mutableMapOf("nodes" to mutableMapOf("nodeMetric" to AttributeType.ABSOLUTE)),
@@ -75,8 +79,8 @@ class ProjectBuilderTest {
 
         // then
         assertThat(projectBuilder.toString()).contains(
-                "edges={edgeMetric=absolute}",
-                "nodes={nodeMetric=absolute, nodeMetric2=relative}",
+                "edges={edgeMetric=${AttributeType.ABSOLUTE}}",
+                "nodes={nodeMetric=${AttributeType.ABSOLUTE}, nodeMetric2=${AttributeType.RELATIVE}}",
                                                       )
     }
 
@@ -268,7 +272,8 @@ class ProjectBuilderTest {
     }
 
     @Test
-    fun `it should print the correct content keys`() { // when
+    fun `it should print the correct content keys`() {
+// when
         val projectBuilder = ProjectBuilder()
 
         // then

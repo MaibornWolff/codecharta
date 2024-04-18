@@ -191,14 +191,7 @@ class EdgeProjectBuilder(
     }
 
     private fun getAttributeTypeByKey(key: String): AttributeType {
-        val edgeAttributeTypes: MutableMap<String, AttributeType> = project.attributeTypes["edges"] ?: mutableMapOf()
-
-        if (edgeAttributeTypes.containsKey(key)) { // Returning it[key] directly may cause a ClassCastException
-            when (edgeAttributeTypes[key].toString()) {
-                "relative" -> return AttributeType.RELATIVE
-                "absolute" -> return AttributeType.ABSOLUTE
-            }
-        }
-        return AttributeType.ABSOLUTE
+        val edgeAttributeTypes: Map<String, AttributeType> = project.attributeTypes["edges"] ?: return AttributeType.ABSOLUTE
+        return edgeAttributeTypes[key] ?: AttributeType.ABSOLUTE
     }
 }

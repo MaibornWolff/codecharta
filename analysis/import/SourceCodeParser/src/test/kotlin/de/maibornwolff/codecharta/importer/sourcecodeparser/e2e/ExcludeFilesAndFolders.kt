@@ -23,9 +23,9 @@ private val resource = "src/test/resources"
         val outputStream =
                 StreamHelper.retrieveStreamAsString {
                     SourceCodeParserMain.mainWithOutputStream(
-                    it,
+                            it,
                             arrayOf(resource, "-e=/bar/", "-e=/sonar_issues_java/"),
-                    )
+                                                             )
                 }
 
         Assertions.assertThat(outputStream.lines()[0]).doesNotContain(""""name":"bar""")

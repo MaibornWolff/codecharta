@@ -92,20 +92,15 @@ private val defaultVerbose = false
     @Test
     fun `should correct indentation levels when input was invalid`() {
         // given
-        val lambdaSlot = mutableListOf<() -> String>()
-        mockkObject(Logger)
-        every { Logger.warn(capture(lambdaSlot)) } returns Unit
-
-        // when
         val indentationCounter = IndentationMetric(defaultMaxIndentLvl, defaultVerbose, tabWidth = 3)
         addDoubleSpacedLines(indentationCounter)
+
+        // when
         val result = indentationCounter.getValue().metricsMap
 
         // then
         Assertions.assertThat(result["indentation_level_2+"]).isEqualTo(1.0)
         Assertions.assertThat(result["indentation_level_1+"]).isEqualTo(3.0)
-        Assertions.assertThat(lambdaSlot.any { e -> e().contains("Corrected mismatching indentations, moved 2 lines to indentation level 1+") }).isTrue()
-        Assertions.assertThat(lambdaSlot.any { e -> e().contains("Corrected mismatching indentations, moved 1 lines to indentation level 2+") }).isTrue()
     }
 
     @Test

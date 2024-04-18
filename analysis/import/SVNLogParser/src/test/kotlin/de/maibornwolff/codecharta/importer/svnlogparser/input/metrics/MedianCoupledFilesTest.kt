@@ -16,7 +16,8 @@ class MedianCoupledFilesTest {
     }
 
     @Test
-    fun `should have initial value zero`() { // when
+    fun `should have initial value zero`() {
+// when
         val metric = MedianCoupledFiles()
 
         // then

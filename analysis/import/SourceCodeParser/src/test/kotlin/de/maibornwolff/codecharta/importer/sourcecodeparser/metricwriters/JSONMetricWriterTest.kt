@@ -54,8 +54,8 @@ class JSONMetricWriterTest {
 
         val resultJSON = JSONObject(result.toString())
         val leaf =
-        resultJSON.getJSONObject("data").getJSONArray("nodes").getJSONObject(0).getJSONArray("children")
-                .getJSONObject(0)
+                resultJSON.getJSONObject("data").getJSONArray("nodes").getJSONObject(0).getJSONArray("children")
+                        .getJSONObject(0)
         Assertions.assertThat(leaf["type"]).isEqualTo("File")
         Assertions.assertThat(leaf["name"]).isEqualTo("foo.java")
         Assertions.assertThat(leaf.getJSONObject("attributes").length()).isEqualTo(2)

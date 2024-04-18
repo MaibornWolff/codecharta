@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test
 import java.io.InputStreamReader
 import kotlin.test.assertFailsWith
 
-val TEST_JSON_FILE = "test.json"
+const val TEST_JSON_FILE = "test.json"
 
 class ProjectMergerTest {
 private val nodeMergerStrategy = RecursiveNodeMergerStrategy()
@@ -89,14 +89,14 @@ private val nodeMergerStrategy = RecursiveNodeMergerStrategy()
         val projectList = listOf(originalProject1, originalProject2)
         val project = ProjectMerger(projectList, nodeMergerStrategy).merge()
 
-        assertNotEquals(project, originalProject1)
-        assertNotEquals(project, originalProject2)
-        assertEquals(project.sizeOfEdges(), 3)
-        assertEquals(project.sizeOfBlacklist(), 4)
-        assertEquals(project.size, 4)
-        assertEquals(project.attributeTypes["edges"]!!.size, 2)
-        assertEquals(project.attributeTypes["nodes"]!!.size, 4)
-        assertEquals(project.rootNode.children.first().attributes.size, 11)
+        assertNotEquals(originalProject1, project)
+        assertNotEquals(originalProject2, project)
+        assertEquals(3, project.sizeOfEdges())
+        assertEquals(4, project.sizeOfBlacklist())
+        assertEquals(4, project.size)
+        assertEquals(2, project.attributeTypes["edges"]!!.size)
+        assertEquals(4, project.attributeTypes["nodes"]!!.size)
+        assertEquals(11, project.rootNode.children.first().attributes.size)
     }
 
     @Test

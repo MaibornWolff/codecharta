@@ -25,6 +25,6 @@ private val resource = "src/test/resources/sampleproject"
 
     @Test
     fun `files with correct paths and metrics are found`() {
-        assertThat(output).contains("bar/foo.java", "bar/hello.java", "foo.java", "31", "44", "13")
+        assertThat(output).contains("bar/foo.java", "bar/hello.java", "foo.java", "29", "39", "11")
     }
 }

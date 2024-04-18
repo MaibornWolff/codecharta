@@ -10,7 +10,8 @@ class AbsoluteCodeChurnTest {
     }
 
     @Test
-    fun `should have initial value zero`() { // when
+    fun `should have initial value zero`() {
+// when
         val metric = AbsoluteCodeChurn()
 
         // then
