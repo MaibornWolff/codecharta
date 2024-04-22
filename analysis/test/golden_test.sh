@@ -25,6 +25,7 @@ install_codecharta() {
   mkdir -p "${INSTALL_DIR}"
   cp "$1" "${INSTALL_DIR}"
   tar xf "${INSTALL_DIR}/${CC_TAR_NAME}" -C "${INSTALL_DIR}"
+  chmod +r "${INSTALL_DIR}/codecharta-analysis-${CC_VERSION}/bin/ccsh"
   rm "${INSTALL_DIR}/${CC_TAR_NAME}"
 }
 
