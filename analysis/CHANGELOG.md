@@ -12,6 +12,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   Escaping and un-escaping windows paths, auto-detecting path separator for Unix and Windows
     paths [#3569](https://github.com/MaibornWolff/codecharta/pull/3569)
 
+Chore 👨‍💻 👩‍💻
+
+-   Upgrade Gradle to version 8.7, now with support for Java version 21. [#3570](https://github.com/MaibornWolff/codecharta/pull/3570)
+
 ## [1.123.0] - 2024-04-10
 
 ### Added 🚀
