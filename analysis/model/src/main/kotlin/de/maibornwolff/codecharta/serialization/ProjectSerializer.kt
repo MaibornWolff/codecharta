@@ -3,6 +3,8 @@ package de.maibornwolff.codecharta.serialization
 import AttributeTypeSerializer
 import com.google.gson.GsonBuilder
 import de.maibornwolff.codecharta.model.AttributeType
+import de.maibornwolff.codecharta.model.BlacklistType
+import de.maibornwolff.codecharta.model.BlacklistTypeSerializer
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.model.ProjectWrapper
 import de.maibornwolff.codecharta.util.Logger
@@ -19,7 +21,8 @@ import java.util.zip.GZIPOutputStream
 object ProjectSerializer {
     private val GSON =
     GsonBuilder()
-            .registerTypeAdapter(AttributeType::class.java, AttributeTypeSerializer())
+        .registerTypeAdapter(AttributeType::class.java, AttributeTypeSerializer())
+        .registerTypeAdapter(BlacklistType::class.java, BlacklistTypeSerializer())
             .create()
 
     /**
