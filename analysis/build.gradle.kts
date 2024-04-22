@@ -97,13 +97,12 @@ distributions {
 }
 
 tasks.register<Exec>("integrationTest") {
-  standardInput = System.`in`
   if ((System.getProperties().getProperty("os.name") as String).lowercase().contains("windows")) {
     println("In order to run the integration tests a bash script is executed.")
     println("Make sure to use a shell with bash capability (e.g. GitBash) to run this task.")
     executable("cmd")
     workingDir("test")
-    args("/c", "bash -c ./golden_test.sh $version")
+    args("/c", "bash -c './golden_test.sh $version'")
   } else {
     executable("sh")
     workingDir("test")
