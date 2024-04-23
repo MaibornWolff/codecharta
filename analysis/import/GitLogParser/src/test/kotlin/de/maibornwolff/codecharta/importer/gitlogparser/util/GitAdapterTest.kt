@@ -1,5 +1,7 @@
 package de.maibornwolff.codecharta.importer.gitlogparser.util
 
+import org.assertj.core.api.Assertions
+import org.junit.jupiter.api.Assertions.assertThrowsExactly
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import java.io.File
@@ -15,6 +17,20 @@ class GitAdapterTest {
 
         assertTrue(gitFile.exists())
         assertTrue(gitFile.inputStream().bufferedReader().readLine().matches(commitRegex))
+    }
+
+    @Test
+    fun `should throw error with exit code if non-zero`() {
+        val gitFile = File.createTempFile("git", ".log")
+        gitFile.deleteOnExit()
+
+        val assertion = assertThrowsExactly(RuntimeException::class.java) { GitAdapter(File(gitFile.parent), gitFile).getGitLog() }
+        Assertions.assertThat(assertion).hasMessageContainingAll(
+            "Error while executing Git! Command was",
+            "[git, log, --numstat, --raw, --topo-order, --reverse, -m]",
+            "Process returned with exit status",
+            "128"
+        )
     }
 
     @Test
