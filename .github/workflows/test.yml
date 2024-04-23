@@ -151,7 +151,7 @@ jobs:
         run: |
           docker build . -t local-ccsh
           current_version=$(node -pe "require('./node-wrapper/package.json').version")
-          docker run -it -w /src/analysis/test -v $(pwd):/src local-ccsh bash ./golden_test.sh ${current_version} /usr/local/bin/ccsh
+          docker run -w /src/analysis/test -v $(pwd):/src local-ccsh bash ./golden_test.sh ${current_version} /usr/local/bin/ccsh
         working-directory: ${{env.working-directory}}
 
       - name: Setup Java JDK
