@@ -64,7 +64,8 @@ To make it work, add the path to the Git `sh.exe` (which is normally placed here
 
 ### Linting/Formatting
 
--   `gradlew.bat ktlintApplyToIdea` or `./gradlew ktlintApplyToIdea` (tested in IntelliJ)
+-   `gradlew.bat ktLintCheck` or `./gradlew ktLintCheck` to check code style
+-   `gradlew.bat ktLintFormat` or `./gradlew ktLintFormat` to format code
 
 ### Intellij Gradle Integration for Building and Testing
 
