@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+-   Add default Docker user to mitigate `GitLogParser` issues during repo-scan [#3571](https://github.com/MaibornWolff/codecharta/pull/3571)
 -   Escaping and un-escaping windows paths, auto-detecting path separator for Unix and Windows
     paths [#3569](https://github.com/MaibornWolff/codecharta/pull/3569)
 
