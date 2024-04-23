@@ -9,10 +9,12 @@
 <h4 align="center">a beautiful tool to help you visualize and understand code in 3D.</h4>
 
 <p align="center">
-  <a href="">
-    <img src="https://github.com/MaibornWolff/codecharta/actions/workflows/release.yml/badge.svg"
-         alt="Build Status">
-  </a>
+    <a href="https://github.com/MaibornWolff/codecharta/actions/workflows/release-analysis.yml">
+        <img src="https://github.com/MaibornWolff/codecharta/actions/workflows/release-analysis.yml/badge.svg" alt="Release Analysis">
+    </a>
+    <a href="https://github.com/MaibornWolff/codecharta/actions/workflows/release-visualization.yml">
+        <img src="https://github.com/MaibornWolff/codecharta/actions/workflows/release-visualization.yml/badge.svg" alt="Release Visualization">
+    </a>
   <a href="https://sonarcloud.io/dashboard?id=maibornwolff-gmbh_codecharta_analysis">
     <img src="https://sonarcloud.io/api/project_badges/measure?project=maibornwolff-gmbh_codecharta_analysis&metric=alert_status" alt="Quality Gate Analysis"></a>
   <a href="https://sonarcloud.io/dashboard?id=maibornwolff-gmbh_codecharta_visualization">
