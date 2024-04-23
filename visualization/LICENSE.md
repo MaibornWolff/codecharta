@@ -1,4 +1,4 @@
-Copyright (c) 2017, MaibornWolff GmbH
+Copyright (c) 2024, MaibornWolff GmbH
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without

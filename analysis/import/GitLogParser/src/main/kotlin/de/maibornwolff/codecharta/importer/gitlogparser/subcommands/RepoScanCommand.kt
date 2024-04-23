@@ -14,7 +14,7 @@ import java.util.concurrent.Callable
 @CommandLine.Command(
         name = RepoScanCommand.NAME,
         description = [RepoScanCommand.DESCRIPTION],
-        footer = ["Copyright(c) 2022, MaibornWolff GmbH"],
+        footer = ["Copyright(c) 2024, MaibornWolff GmbH"],
                     )
 class RepoScanCommand : Callable<Unit>, InteractiveParser {
 @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
