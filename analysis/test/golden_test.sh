@@ -14,9 +14,16 @@ if [ -z "$1" ]; then
 fi
 
 CC_VERSION=$1
-CC_TAR_NAME="codecharta-analysis-${CC_VERSION}.tar"
-CCSH="${INSTALL_DIR}/codecharta-analysis-${CC_VERSION}/bin/ccsh"
 DATA="data/codecharta"
+if [ -z "$2" ];
+then
+  CC_TAR_NAME="codecharta-analysis-${CC_VERSION}.tar"
+  CCSH="${INSTALL_DIR}/codecharta-analysis-${CC_VERSION}/bin/ccsh"
+else
+  echo "Second argument received. Setting install path to given argument"
+  CCSH="$2"
+  mkdir -p "${INSTALL_DIR}"
+fi
 
 install_codecharta() {
   echo
@@ -227,6 +234,12 @@ run_tests() {
   echo
 }
 
-install_codecharta "../build/distributions/${CC_TAR_NAME}"
+if [ -z "$2" ];
+then
+  install_codecharta "../build/distributions/${CC_TAR_NAME}"
+fi
+
 run_tests "$1"
 deinstall_codecharta
+
+
