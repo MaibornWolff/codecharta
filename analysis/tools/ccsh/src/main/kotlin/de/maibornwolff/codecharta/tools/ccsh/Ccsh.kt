@@ -282,8 +282,10 @@ class Ccsh : Callable<Unit?> {
     object ManifestVersionProvider : CommandLine.IVersionProvider {
     override fun getVersion(): Array<String> {
             return arrayOf(
-                    Ccsh::class.java.`package`.implementationTitle + "\n" + "version \"" + Ccsh::class.java.`package`.implementationVersion + "\"\n" + "Copyright(c) 2022, MaibornWolff GmbH",
-                          )
+                Ccsh::class.java.`package`.implementationTitle + "\n" +
+                    "version \"" + Ccsh::class.java.`package`.implementationVersion + "\"\n" +
+                    "Copyright(c) 2024, MaibornWolff GmbH"
+            )
         }
     }
 }
