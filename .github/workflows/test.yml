@@ -147,6 +147,13 @@ jobs:
           ./gradlew jacocoTestReport
         working-directory: ${{env.working-directory}}
 
+      - name: Docker Test Analysis
+        run: |
+          docker build . -t local-ccsh
+          current_version=$(node -pe "require('./node-wrapper/package.json').version")
+          docker run -it -w /src/analysis/test -v $(pwd):/src local-ccsh bash ./golden_test.sh ${current_version} /usr/local/bin/ccsh
+        working-directory: ${{env.working-directory}}
+
       - name: Setup Java JDK
         uses: actions/setup-java@v3.13.0
         with:
