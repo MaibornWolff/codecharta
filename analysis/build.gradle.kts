@@ -125,12 +125,24 @@ tasks.named<JacocoReport>("jacocoTestReport") {
 
   reports {
     xml.required.set(true)
+    html.required.set(false)
   }
+
+  classDirectories.setFrom(
+    files(
+      classDirectories.files.map {
+        fileTree(it) {
+          exclude("**/AttributeDescriptors**")
+        }
+      },
+    ),
+  )
 }
 
 configure<SonarExtension> {
   properties {
-    property("sonar.coverage.jacoco.xmlReportPaths", "${project.rootDir}/build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml")
+    property("sonar.coverage.jacoco.xmlReportPaths", "${project.rootDir}/build/reports/jacoco/test/jacocoTestReport.xml")
+    property("sonar.exclusions", "**/*AttributeDescriptors*")
   }
 }
 
