@@ -18,6 +18,11 @@ fun getGitLog() {
         process.directory(gitDirectory)
         process.redirectOutput(fileHandle)
         val runningProcess = process.start()
-        runningProcess.waitFor(3, TimeUnit.MINUTES)
+        if (runningProcess.waitFor(3, TimeUnit.MINUTES)) {
+            val exitCode = runningProcess.exitValue()
+            if (exitCode != 0) {
+                throw RuntimeException("Error while executing Git! Command was: ${process.command()}. Process returned with exit status $exitCode.")
+            }
+        }
     }
 }
