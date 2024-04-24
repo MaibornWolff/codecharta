@@ -2,6 +2,10 @@
 set -e
 
 INSTALL_DIR="../build/tmp/goldentest"
+ls -lsa ../
+ls -lsa /
+ls -lsa ../../
+
 
 exit_with_err() {
   echo $1 >&2
