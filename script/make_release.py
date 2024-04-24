@@ -209,6 +209,7 @@ if(is_visualization(repository)):
      print("Npm ci in visualization was not successfull. Please check the console output.")
      quit()
   subprocess.run("rm -rf 'gh-pages/visualization'", shell=True)
+  subprocess.run("mkdir -p 'gh-pages/visualization/app/'", shell=True)
   subprocess.run(f"cp -R 'visualization/dist/webpack/.'  'gh-pages/visualization/app/'", shell=True)
 
 else:
