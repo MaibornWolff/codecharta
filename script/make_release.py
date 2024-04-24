@@ -7,6 +7,8 @@ import datetime
 import sys
 
 root = pathlib.Path().absolute()
+static_side_path = root.joinpath('gh-pages/visualization/app/')
+
 FORCE = len(sys.argv) == 2 and (sys.argv[1] == "-f" or sys.argv[1] == "--force")
 if FORCE:
     print("Force mode enabled. Protections disabled!")
@@ -208,10 +210,9 @@ if(is_visualization(repository)):
   if(processInfo.returncode != 0):
      print("Npm ci in visualization was not successfull. Please check the console output.")
      quit()
-  subprocess.run("rm -rf 'gh-pages/visualization'", shell=True)
-  subprocess.run("mkdir -p 'gh-pages/visualization/app/'", shell=True)
-  subprocess.run(f"cp -R 'visualization/dist/webpack/.'  'gh-pages/visualization/app/'", shell=True)
-
+  subprocess.run(f"rm -rf {str(static_side_path)}", shell=True)
+  static_side_path.mkdir(parents=True)
+  subprocess.run(f"cp -R 'visualization/dist/webpack/.'  {str(static_side_path)}", shell=True)
 else:
   ## Update analysis files
 
