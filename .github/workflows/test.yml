@@ -129,6 +129,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       working-directory: ./analysis
+      project-directory: .
 
     steps:
       - uses: actions/checkout@v3
@@ -152,7 +153,7 @@ jobs:
           docker build . -t local-ccsh
           current_version=$(node -pe "require('./node-wrapper/package.json').version")
           docker run -w /src/analysis/test -v $(pwd):/src local-ccsh bash ./golden_test.sh ${current_version} /usr/local/bin/ccsh
-        working-directory: ${{env.working-directory}}
+        working-directory: ${{env.project-directory}}
 
       - name: Setup Java JDK
         uses: actions/setup-java@v3.13.0
