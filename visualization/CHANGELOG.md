@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [1.125.0] - 2024-04-24
+
 ### Added 🚀
 
 -   Add search bar for custom configs [#3529](https://github.com/MaibornWolff/codecharta/pull/3529)
