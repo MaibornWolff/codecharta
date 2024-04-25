@@ -13,7 +13,7 @@ buildscript {
         json_version = '20190722'
         juniversalchardet_version = '1.0.3'
         kotlin_inquirer_version = '0.1.0'
-        kotlin_logging_version = '2.1.23'
+        kotlin_logging_version = '3.0.5'
         kotlin_version = '1.9.23'
         kotlinx_coroutines_version = '1.7.3'
         picocli_version = '4.7.5'
