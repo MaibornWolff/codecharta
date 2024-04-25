@@ -11,6 +11,7 @@ import { ArtificialIntelligenceData } from "../selectors/artificialIntelligence.
 import { AREA_METRIC } from "../selectors/util/riskProfileHelper"
 import { MetricSuggestionParameters } from "../selectors/util/suspiciousMetricsHelper"
 import { metricTitles } from "../../../../util/metric/metricTitles"
+import { MatDialog } from "@angular/material/dialog"
 
 @Component({
 	selector: "cc-suspicious-metrics",
@@ -23,10 +24,9 @@ export class SuspiciousMetricComponent implements OnChanges {
 		"analyzedProgrammingLanguage" | "unsuspiciousMetrics" | "suspiciousMetricSuggestionLinks" | "untrackedMetrics"
 	>
 	hideBadge = false
-	showSuspiciousMetricInfo = false
 	isUntrackedMetricsVisible = false
 
-	constructor(private store: Store) {}
+	constructor(private store: Store, public dialog: MatDialog) {}
 
 	getNameAndDescriptionOfMetric(metricName: string): string {
 		const metricDescription = metricTitles.get(metricName)
@@ -36,7 +36,8 @@ export class SuspiciousMetricComponent implements OnChanges {
 		return metricName.toUpperCase()
 	}
 
-	toggleMetricsVisibility(): void {
+	toggleMetricsVisibility(event: MouseEvent): void {
+		event.stopPropagation()
 		this.isUntrackedMetricsVisible = !this.isUntrackedMetricsVisible
 	}
 	ngOnChanges(changes: SimpleChanges): void {
@@ -45,8 +46,11 @@ export class SuspiciousMetricComponent implements OnChanges {
 		}
 	}
 
-	togglePopup(): void {
-		this.showSuspiciousMetricInfo = !this.showSuspiciousMetricInfo
+	openDialog(event: MouseEvent): void {
+		event.stopPropagation()
+		this.dialog.open(SuspiciousMetricDialogComponent, {
+			width: "500px"
+		})
 	}
 
 	applySuspiciousMetric(metric: MetricSuggestionParameters, markOutlier: boolean) {
@@ -72,3 +76,10 @@ export class SuspiciousMetricComponent implements OnChanges {
 		)
 	}
 }
+
+@Component({
+	selector: "cc-suspicious-metric-dialog",
+	templateUrl: "./suspiciousMetricDialog.component.html",
+	encapsulation: ViewEncapsulation.None
+})
+export class SuspiciousMetricDialogComponent {}

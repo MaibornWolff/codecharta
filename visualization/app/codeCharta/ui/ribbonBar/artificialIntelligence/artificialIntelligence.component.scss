@@ -16,7 +16,7 @@ cc-artificial-intelligence {
 }
 .mat-mdc-menu-panel.mat-mdc-menu-panel.ai-drop-down {
 	padding: 8px 16px;
-	max-width: 33em;
+	max-width: 50em;
 
 	.title {
 		margin-bottom: 8px;
@@ -53,6 +53,9 @@ cc-artificial-intelligence {
 	.suspicious-metric-info-text {
 		margin-bottom: 8px;
 		font-size: 16px;
+		color: black;
+		line-height: 1.5rem;
+		padding-bottom: 0px;
 	}
 
 	.new-section {

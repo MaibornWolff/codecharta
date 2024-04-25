@@ -1,0 +1,27 @@
+<div id="suspiciousMetricPopover" data-testid="suspiciousMetricPopover">
+	<h2 mat-dialog-title class="title" style="font-size: 16px; font-weight: bold; text-align: center">Suspicious Metrics Information</h2>
+	<mat-dialog-content class="suspicious-metric-info-text" style="color: black; line-height: 1.5rem; padding-bottom: 0px">
+		This feature compares the values of certain metrics from the loaded cc.json file with metric values of 241 Open Source Java
+		projects. Based on this data suspicious and inconspicuous metrics are identified and corresponding suggestions can be clicked to
+		view them. Be aware that metrics for other programming languages might not be comparable to Java Reference metric values. More
+		information can be found here:
+		<a href="https://maibornwolff.github.io/codecharta/docs/suspicious-metrics/">link</a> to How-To article.</mat-dialog-content
+	>
+	<mat-dialog-actions style="display: flex; justify-content: center">
+		<button
+			mat-button
+			mat-dialog-close
+			style="
+				border-radius: 12px;
+				margin-top: 2px;
+				background-color: lightgrey;
+				border-bottom-color: black;
+				font-size: 14px;
+				font-weight: bold;
+				width: 100px;
+			"
+		>
+			Close
+		</button>
+	</mat-dialog-actions>
+</div>
