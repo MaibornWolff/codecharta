@@ -3,6 +3,7 @@
 	[icon]="'fa fa-camera'"
 	title="{{ TITLE_CLIPBOARD_BUTTON }}"
 	(click)="makeScreenshotToClipboard()"
+	(keyup)="makeScreenshotToClipboard()"
 	[class.disabled]="!isWriteToClipboardAllowed"
 >
 </cc-action-icon>
