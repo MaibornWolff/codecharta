@@ -2,7 +2,7 @@ dependencies {
     implementation group: 'com.google.code.gson', name: 'gson', version: gson_version
     implementation group: 'io.github.microutils', name: 'kotlin-logging', version: kotlin_logging_version
     implementation group: 'org.jetbrains.kotlin', name: 'kotlin-reflect', version: kotlin_version
-    implementation group: 'io.github.microutils', name: 'kotlin-logging-jvm', version: '2.1.23'
+    implementation group: 'io.github.microutils', name: 'kotlin-logging-jvm', version: '3.0.5'
     implementation project(':tools:PipeableParser')
 
     implementation group: 'info.picocli', name: 'picocli', version: picocli_version
