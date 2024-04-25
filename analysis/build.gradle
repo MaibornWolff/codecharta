@@ -27,7 +27,7 @@ buildscript {
         junit5_version = '5.9.3'
         junit_platform_version = '1.9.3'
         jsonassert_version = '1.5.1'
-        ktlint_version = '10.3.0'
+        ktlint_version = '12.1.0'
 
         mockito_core_version = '3.12.4'
         mockito_kotlin_version = '2.2.0'
