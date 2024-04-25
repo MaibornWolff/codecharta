@@ -37,7 +37,7 @@ then
   chmod +r "${TEMP_DIR}/codecharta-analysis-${CC_VERSION}/bin/ccsh"
   rm "${TEMP_DIR}/${CC_TAR_NAME}"
 else
-  CCSH="$2"
+  CCSH="$3"
 fi
 
 exit_with_err() {
