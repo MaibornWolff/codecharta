@@ -36,7 +36,7 @@ RUN wget -qO /tmp/sonar-scanner.zip https://binaries.sonarsource.com/Distributio
     cp -r ./jre/ /usr/local/jre; cd /; rm /tmp/sonar-scanner.zip; rm -rf /tmp/sonar-scanner-*-linux;
 
 ARG USERNAME=nonroot-docker-user
-ARG USER_UID=1000
+ARG USER_UID=1001
 ARG USER_GID=$USER_UID
 
 RUN groupadd --gid $USER_GID $USERNAME \

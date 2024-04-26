@@ -28,6 +28,7 @@ else
   ls -lsa ../../../
   cat /etc/passwd
   id
+  groups
 fi
 mkdir -p "${TEMP_DIR}"
 
