@@ -38,7 +38,6 @@ then
   rm "${TEMP_DIR}/${CC_TAR_NAME}"
 else
   CCSH="$3"
-  chmod +r "${CCSH}"
 fi
 
 exit_with_err() {
