@@ -150,9 +150,10 @@ jobs:
 
       - name: Docker Test Analysis
         run: |
+          pwd
           docker build ./analysis -t local-ccsh
           current_version=$(node -pe "require('./analysis/node-wrapper/package.json').version")
-          docker run --user 1001 -w /tmp/cc/analysis/test -v $(pwd):/tmp/cc local-ccsh bash ./golden_test.sh ${current_version} /tmp/tmp-files/ /usr/local/bin/ccsh
+          docker run -w /tmp/cc/analysis/test -v $(pwd):/tmp/cc local-ccsh bash ./golden_test.sh ${current_version} /tmp/tmp-files/ /usr/local/bin/ccsh
         working-directory: ${{env.project-directory}}
 
       - name: Setup Java JDK

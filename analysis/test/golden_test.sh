@@ -23,6 +23,8 @@ then
   TEMP_DIR="../build/tmp/goldentest"
 else
   TEMP_DIR="$2"
+  ls -lsa /usr/local/bin/
+  ls -lsa ../../
 fi
 mkdir -p "${TEMP_DIR}"
 
