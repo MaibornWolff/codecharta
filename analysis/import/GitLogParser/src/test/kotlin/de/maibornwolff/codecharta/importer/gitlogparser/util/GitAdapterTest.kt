@@ -29,7 +29,7 @@ class GitAdapterTest {
             "Error while executing Git! Command was",
             "[git, log, --numstat, --raw, --topo-order, --reverse, -m]",
             "Process returned with exit status",
-            "128"
+            "128",
         )
     }
 
