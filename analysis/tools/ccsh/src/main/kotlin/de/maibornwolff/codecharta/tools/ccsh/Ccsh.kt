@@ -284,7 +284,7 @@ class Ccsh : Callable<Unit?> {
             return arrayOf(
                 Ccsh::class.java.`package`.implementationTitle + "\n" +
                     "version \"" + Ccsh::class.java.`package`.implementationVersion + "\"\n" +
-                    "Copyright(c) 2024, MaibornWolff GmbH"
+                    "Copyright(c) 2024, MaibornWolff GmbH",
             )
         }
     }
