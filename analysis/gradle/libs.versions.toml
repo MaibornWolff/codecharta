@@ -59,7 +59,7 @@ sonar-java-plugin = { group = "org.sonarsource.java", name = "sonar-java-plugin"
 jaxb-api = { group = "javax.xml.bind", name = "jaxb-api", version.ref = "jaxb-api" }
 mockito-kotlin = { group = "com.nhaarman.mockitokotlin2", name = "mockito-kotlin", version.ref = "mockito-kotlin" }
 mockito-core = { group = "org.mockito", name = "mockito-core", version.ref = "mockito-core" }
-commons-text = { group = "org.apache.commons", name = "commons-text", version = "1.10.0" }
+commons-text = { group = "org.apache.commons", name = "commons-text", version = "1.12.0" }
 junit-platform-runner = { group = "org.junit.platform", name = "junit-platform-runner", version.ref = "junit-platform" }
 json-schema = { group = "com.github.everit-org.json-schema", name = "org.everit.json.schema", version.ref = "json-schema" }
 
