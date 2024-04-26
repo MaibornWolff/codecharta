@@ -25,6 +25,9 @@ else
   TEMP_DIR="$2"
   ls -lsa /usr/local/bin/
   ls -lsa ../../
+  ls -lsa ../../../
+  cat /etc/passwd
+  id
 fi
 mkdir -p "${TEMP_DIR}"
 
