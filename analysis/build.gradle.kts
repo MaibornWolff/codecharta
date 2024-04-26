@@ -39,7 +39,7 @@ subprojects {
 
   dependencies {
     implementation("io.github.oshai:kotlin-logging-jvm:6.0.9")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.0")
     testImplementation(rootProject.libs.junit.jupiter.api)
     testImplementation(rootProject.libs.junit.jupiter.engine)
     testImplementation(rootProject.libs.junit.jupiter.params)
