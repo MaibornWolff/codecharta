@@ -2,6 +2,11 @@
 	"extends": ["config:base", ":preserveSemverRanges"],
 	"packageRules": [
 		{
+			"description": "Automerge non-major updates",
+			"matchUpdateTypes": ["minor", "patch"],
+			"automerge": true
+		},
+		{
 			"matchPaths": ["build.gradle"],
 			"matchUpdateTypes": ["minor", "patch", "pin", "digest"],
 			"excludePackageNames": ["org.sonarsource.java:sonar-java-plugin"],
