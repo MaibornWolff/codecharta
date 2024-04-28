@@ -97,7 +97,7 @@
 		"shelljs": "^0.8.4",
 		"three": "^0.126.1",
 		"three-orbit-controls": "^82.1.0",
-		"typescript-json-schema": "0.56.0",
+		"typescript-json-schema": "0.63.0",
 		"zone.js": "^0.14.4"
 	},
 	"devDependencies": {
