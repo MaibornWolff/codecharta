@@ -66,3 +66,22 @@ docker cp codecharta-analysis:/root/junit4.cc.json.gz junit4.cc.json.gz
 To check the name of the container, you can simply type `docker ps`.
 To analyze your code you can follow one of our quick-start guides or check out the in-depth documentation for a certain
 importer.
+
+### Hands-On
+
+Example execution of `codecharta-analysis` from the compose project:
+
+```bash
+docker run -it -v $(pwd):/src -w /src codecharta/codecharta-analysis ccsh gitlogparser repo-scan --repo-path /src -o my-project.cc.json -nc
+
+# Explanation
+# -it = interactive, tty-Terminal: Connects your terminal to the execution of your command
+# -v = virtual-mount: Mount your current working directory inside the container to /src
+#               Hint: You need to mount a absolute path, $(pwd) will print your working directory
+# -w = working-directory:  Starting point of your command, in this case the /src folder where the directory was mounted to
+# codecharta/codecharta-analysis: tag of the image
+# gitlogparser [...] : check the gitlogparser documentation for more info
+```
+
+> Be aware, that by default the user inside the docker image is 'nonroot-docker-user' with an ID of 1000. You may
+> encounter errors with `git` when you try to execute commands inside a repository cloned by a different `UID`
