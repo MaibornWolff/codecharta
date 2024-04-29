@@ -141,6 +141,27 @@ private val outContent = ByteArrayOutputStream()
     }
 
     @Test
+    fun `should show version and copyright when executed with version flag`() {
+        // given
+        mockkObject(ParserService)
+        val outStream = ByteArrayOutputStream()
+        val originalOut = System.out
+        System.setOut(PrintStream(outStream))
+
+        // when
+        val exitCode = Ccsh.executeCommandLine(arrayOf("-v"))
+
+        // then
+        Assertions.assertThat(exitCode).isEqualTo(0)
+        Assertions.assertThat(outStream.toString())
+            .contains(listOf("version", "Copyright(c) 2024, MaibornWolff GmbH\n"))
+        verify(exactly = 0) { ParserService.executePreconfiguredParser(any(), any()) }
+
+        // clean up
+        System.setOut(originalOut)
+    }
+
+    @Test
     fun `should execute parser suggestions and all selected parsers when no options are passed`() {
         // given
         val selectedParsers = listOf("parser1", "parser2")
