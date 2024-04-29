@@ -35,3 +35,6 @@ out
 **/binScripts/**
 gh-pages/vendor
 gh-pages/visualization
+*.gradle.kts
+*.toml
+
