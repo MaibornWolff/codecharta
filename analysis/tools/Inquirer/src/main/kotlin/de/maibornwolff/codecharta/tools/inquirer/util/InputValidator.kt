@@ -1,5 +1,7 @@
 package de.maibornwolff.codecharta.tools.inquirer.util
 
+import java.io.File
+
 class InputValidator {
 
     companion object {
@@ -13,11 +15,14 @@ class InputValidator {
         // sometimes input is list of files (or folders), check if they are all existing files
         // (add more when going through the parsers)
 
-        fun isInputAnExistingFile(): (String) -> Boolean = { input ->
-            true
+        fun isInputAnExistingFile(vararg allowedFiletypes: String): (String) -> Boolean = { input ->
+            val file = File(input)
+            val isFileCorrectType = allowedFiletypes.isEmpty() || allowedFiletypes.any { input.endsWith(it) }
+            file.exists() && file.isFile && isFileCorrectType
         }
 
-        fun isInputAnExistingFileOrFolder(): (String) -> Boolean = { input ->
+        //TODO write this method --- make parameter accept multiple strings
+        fun isInputAnExistingFileOrFolder(filetype: String = ""): (String) -> Boolean = { input ->
             true
         }
 
