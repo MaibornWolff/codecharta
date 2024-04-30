@@ -1,6 +1,7 @@
 package de.maibornwolff.codecharta.tools.inquirer
 
 import com.varabyte.kotter.foundation.input.Keys
+import com.varabyte.kotter.foundation.session
 import com.varabyte.kotter.foundation.text.black
 import com.varabyte.kotter.foundation.text.bold
 import com.varabyte.kotter.foundation.text.cyan
@@ -135,6 +136,19 @@ class InquirerTest {
             assertThat(result).isEqualTo(testInput)
         }
     }
+
+    @Test
+    fun `should return empty input when option to allow empty input was set but the specified validity checker would not allow it`() {
+        var result: String
+
+        testSession { terminal ->
+            result = myPromptInput(testMessage, allowEmptyInput = true, inputValidator = { false }, onInputReady = {
+                terminal.press(Keys.ENTER)
+            })
+            assertThat(result).isEqualTo("")
+        }
+    }
+
 
     @Test
     fun `should not accept input and display default warning message when input was invalid`() {
