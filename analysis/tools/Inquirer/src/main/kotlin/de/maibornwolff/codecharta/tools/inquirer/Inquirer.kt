@@ -23,7 +23,7 @@ import com.varabyte.kotter.runtime.Session
 
 const val defaultInvalidInputMessage = "Input is invalid!"
 
-internal fun Session.myPromptInput(
+fun Session.myPromptInput(
     message: String,
     hint: String = "",
     allowEmptyInput: Boolean = false,
@@ -72,7 +72,7 @@ private fun MainRenderScope.drawInput(
     text("> "); input(Completions(hint), initialText = "")
 }
 
-internal fun Session.myPromptInputNumber(
+fun Session.myPromptInputNumber(
     message: String,
     hint: String = "",
     allowEmptyInput: Boolean = false,
@@ -105,7 +105,7 @@ internal fun Session.myPromptInputNumber(
 internal fun Session.myPromptConfirm(
         message: String,
         hint: String = "arrow keys to change selection",
-        onInputReady: suspend () -> Unit
+        onInputReady: suspend RunScope.() -> Unit
 ): Boolean {
     var result = true
     var choice by liveVarOf(true)
@@ -137,11 +137,11 @@ private fun MainRenderScope.drawConfirm(message: String, hint: String, choice: B
     }
 }
 
-internal fun Session.myPromptList(
+fun Session.myPromptList(
         message: String,
         choices: List<String>,
         hint: String = "arrow keys to move, ENTER to select",
-        onInputReady: suspend () -> Unit
+        onInputReady: suspend RunScope.() -> Unit
 ): String {
     var result = ""
     var selection by liveVarOf(0)
