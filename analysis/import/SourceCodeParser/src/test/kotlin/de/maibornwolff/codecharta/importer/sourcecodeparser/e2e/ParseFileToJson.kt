@@ -22,17 +22,17 @@ class ParseFileToJson {
     }
 
     @Test
-    fun `json output has correct lines of code`() {
+    fun `json output has correct real lines of code`() {
         assertThat(output).containsOnlyOnce("""rloc":29""")
     }
 
     @Test
-    fun `json output has correct real lines of code`() {
-        assertThat(output).containsOnlyOnce("""mcc":6""")
+    fun `json output has correct sonar complexity`() {
+        assertThat(output).containsOnlyOnce("""complexity (formerly mcc)":6""")
     }
 
     @Test
-    fun `json output has correct complexity`() {
+    fun `json output has correct function complexity`() {
         assertThat(output).containsOnlyOnce("""functions":4""")
     }
 }
