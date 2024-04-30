@@ -25,7 +25,8 @@ export class SuspiciousMetricComponent implements OnChanges {
 	>
 	hideBadge = false
 	isUntrackedMetricsVisible = false
-
+	isUnsuspiciuosMetricsVisible = false
+	//, public dialogRef: MatDialogRef<SuspiciousMetricComponent>
 	constructor(private store: Store, public dialog: MatDialog) {}
 
 	getNameAndDescriptionOfMetric(metricName: string): string {
@@ -35,19 +36,26 @@ export class SuspiciousMetricComponent implements OnChanges {
 		}
 		return metricName.toUpperCase()
 	}
-
-	toggleMetricsVisibility(event: MouseEvent): void {
+	closeDialog() {
+		//this.dialogRef.close()
+	}
+	toggleUntrackedMetricsVisibility(event: MouseEvent): void {
 		event.stopPropagation()
 		this.isUntrackedMetricsVisible = !this.isUntrackedMetricsVisible
 	}
+
+	toggleUnsuspiciousMetricsVisibility(event: MouseEvent): void {
+		event.stopPropagation()
+		this.isUnsuspiciuosMetricsVisible = !this.isUnsuspiciuosMetricsVisible
+	}
+
 	ngOnChanges(changes: SimpleChanges): void {
 		if (changes.data && !dequal(changes.data.previousValue, changes.data.currentValue)) {
 			this.hideBadge = false
 		}
 	}
 
-	openDialog(event: MouseEvent): void {
-		event.stopPropagation()
+	openDialog(): void {
 		this.dialog.open(SuspiciousMetricDialogComponent, {
 			width: "500px"
 		})
