@@ -26,7 +26,7 @@ export class SuspiciousMetricComponent implements OnChanges {
 	hideBadge = false
 	isUntrackedMetricsVisible = false
 	isUnsuspiciuosMetricsVisible = false
-	//, public dialogRef: MatDialogRef<SuspiciousMetricComponent>
+
 	constructor(private store: Store, public dialog: MatDialog) {}
 
 	getNameAndDescriptionOfMetric(metricName: string): string {
@@ -36,9 +36,7 @@ export class SuspiciousMetricComponent implements OnChanges {
 		}
 		return metricName.toUpperCase()
 	}
-	closeDialog() {
-		//this.dialogRef.close()
-	}
+
 	toggleUntrackedMetricsVisibility(event: MouseEvent): void {
 		event.stopPropagation()
 		this.isUntrackedMetricsVisible = !this.isUntrackedMetricsVisible
@@ -55,7 +53,8 @@ export class SuspiciousMetricComponent implements OnChanges {
 		}
 	}
 
-	openDialog(): void {
+	openDialog(event: MouseEvent): void {
+		event.stopPropagation()
 		this.dialog.open(SuspiciousMetricDialogComponent, {
 			width: "500px"
 		})

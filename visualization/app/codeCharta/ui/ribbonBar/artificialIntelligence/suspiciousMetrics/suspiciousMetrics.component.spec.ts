@@ -118,7 +118,7 @@ describe("SuspiciousMetricsComponent", () => {
 				componentProperties: {
 					data: {
 						analyzedProgrammingLanguage: "ts",
-						unsuspiciousMetrics: ["rloc"],
+						unsuspiciousMetrics: [],
 						suspiciousMetricSuggestionLinks: [{ metric: "mcc", from: 10, to: 22 }],
 						untrackedMetrics: []
 					}
@@ -126,8 +126,6 @@ describe("SuspiciousMetricsComponent", () => {
 			})
 			await userEvent.click(screen.getByTitle("Open Suspicious Metrics Panel"))
 			expect(screen.queryByText("No programming language was found for analyzing suspicious metrics.")).toBe(null)
-			expect(screen.getByText("Unsuspicious Metrics in ts code")).not.toBe(null)
-			expect(screen.getByText("rloc")).not.toBe(null)
 			expect(screen.getByText("Suspicious Metrics in ts code")).not.toBe(null)
 			expect(screen.getByText("MCC (cyclomatic complexity)")).not.toBe(null)
 
