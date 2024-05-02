@@ -16,10 +16,11 @@ import { SVGLoader } from "three/examples/jsm/loaders/SVGLoader"
 import { BufferGeometryUtils } from "three/examples/jsm/utils/BufferGeometryUtils"
 import { ColorRange, NodeMetricData } from "../../codeCharta.model"
 
+const layerHeight = 0.2
 const frontTextSize = 12
 const frontTextHeight = 1
 const mapSideOffset = 10
-const baseplateHeight = 1
+const baseplateHeight = 1 //should be a multiple of layerHeight
 const logoSize = 15
 const logoHeight = 1
 const backTextSize = 6
@@ -52,6 +53,7 @@ export class Preview3DPrintMesh {
 	private font: Font
 	private printMesh: Mesh
 	private currentSize: Vector3
+	private mapScalingFactorForSnappingHeights: number
 
 	//Front
 	private mapMesh: Mesh
@@ -67,6 +69,7 @@ export class Preview3DPrintMesh {
 	async initialize(geometryOptions: GeometryOptions) {
 		this.printMesh = new Mesh()
 		this.printMesh.name = "PrintMesh"
+		this.mapScalingFactorForSnappingHeights = 1
 
 		await this.loadFont()
 		await this.createPrintPreviewMesh(geometryOptions)
@@ -89,7 +92,7 @@ export class Preview3DPrintMesh {
 		this.initBaseplateMesh(geometryOptions.wantedWidth, geometryOptions.defaultMaterial, geometryOptions.numberOfColors)
 		this.printMesh.add(this.baseplateMesh)
 
-		this.initMapMesh(geometryOptions.originalMapMesh, geometryOptions.wantedWidth, geometryOptions.numberOfColors)
+		this.initMapMesh(geometryOptions)
 		this.printMesh.add(this.mapMesh)
 
 		if (geometryOptions.frontText) {
@@ -124,6 +127,7 @@ export class Preview3DPrintMesh {
 						const map = child.geometry
 						const scale = (wantedWidth - 2 * mapSideOffset) / (currentWidth - 2 * mapSideOffset)
 						map.scale(scale, scale, scale)
+						this.snapHeightsToLayerHeight(map)
 						break
 					}
 					case "Baseplate":
@@ -263,12 +267,12 @@ export class Preview3DPrintMesh {
 		)
 	}
 
-	private initMapMesh(originalMapMesh: Mesh, wantedWidth: number, numberOfColors: number) {
-		const newMapGeometry = originalMapMesh.geometry.clone()
+	private initMapMesh(geometryOptions: GeometryOptions) {
+		const newMapGeometry = geometryOptions.originalMapMesh.geometry.clone()
 		newMapGeometry.rotateX(Math.PI / 2)
-		this.updateMapGeometry(newMapGeometry, wantedWidth, numberOfColors)
+		this.updateMapGeometry(newMapGeometry, geometryOptions.wantedWidth, geometryOptions.numberOfColors)
 		newMapGeometry.rotateZ(-Math.PI / 2)
-		const newMapMesh: Mesh = originalMapMesh.clone() as Mesh
+		const newMapMesh: Mesh = geometryOptions.originalMapMesh.clone() as Mesh
 		newMapMesh.clear()
 		newMapMesh.geometry = newMapGeometry
 		newMapMesh.name = "Map"
@@ -284,9 +288,29 @@ export class Preview3DPrintMesh {
 
 		map.translate(-width / 2, width / 2, 0)
 
+		this.snapHeightsToLayerHeight(map)
 		this.updateMapColors(map, map, numberOfColors)
 
 		return map
+	}
+
+	private snapHeightsToLayerHeight(map: BufferGeometry) {
+		map.scale(1, 1, 1 / this.mapScalingFactorForSnappingHeights)
+
+		const startHeight = map.attributes.position.getZ(0)
+
+		let smallestHeight = Number.POSITIVE_INFINITY
+		for (let index = 0; index < map.attributes.position.count; index++) {
+			const height = Math.abs(map.attributes.position.getZ(index) - startHeight)
+			if (height !== 0 && height < smallestHeight) {
+				smallestHeight = height
+			}
+		}
+
+		const wantedHeight = Math.ceil(smallestHeight / layerHeight) * layerHeight
+		this.mapScalingFactorForSnappingHeights = wantedHeight / smallestHeight
+
+		map.scale(1, 1, this.mapScalingFactorForSnappingHeights)
 	}
 
 	private updateMapColors(mapWithOriginalColors: BufferGeometry, previewMap: BufferGeometry, numberOfColors) {
