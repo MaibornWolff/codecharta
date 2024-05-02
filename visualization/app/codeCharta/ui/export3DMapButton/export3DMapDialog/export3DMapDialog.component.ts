@@ -193,6 +193,13 @@ export class Export3DMapDialogComponent {
 		this.maxWidth = this.currentSize.x
 	}
 
+	downloadStlFile() {
+		const exportedBinaryFile = new STLExporter().parse(this.previewMesh.getMapMesh(), {
+			binary: true
+		}) as unknown as string
+		this.downloadFile(exportedBinaryFile, "stl")
+	}
+
 	private initGeometryOptions(): GeometryOptions {
 		const attributeDescriptors = this.state.getValue().fileSettings.attributeDescriptors
 		const fallbackTitles: Map<string, string> = metricTitles
@@ -215,13 +222,6 @@ export class Export3DMapDialogComponent {
 			defaultMaterial: this.threeSceneService.getMapMesh().getThreeMesh().material[0].clone() as ShaderMaterial,
 			numberOfColors: this.currentNumberOfColors
 		}
-	}
-
-	downloadStlFile() {
-		const exportedBinaryFile = new STLExporter().parse(this.threeSceneService.getMapMesh().getThreeMesh(), {
-			binary: true
-		}) as unknown as string
-		this.downloadFile(exportedBinaryFile, "stl")
 	}
 
 	private downloadFile(data: string, fileExtension: string) {
