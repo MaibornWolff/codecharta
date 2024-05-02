@@ -78,7 +78,8 @@ distributions {
           into("bin") {
             subproject.tasks.findByName("startScripts").let {
               from(it!!.outputs.files) {
-                fileMode = 755
+                // 7-5-5 in binary
+                fileMode = 0b111101101
               }
             }
           }
