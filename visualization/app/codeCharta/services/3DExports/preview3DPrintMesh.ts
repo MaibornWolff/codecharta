@@ -67,8 +67,9 @@ export class Preview3DPrintMesh {
 	private frontMWLogoMesh: Mesh
 	private customLogoMesh: Mesh
 	//Back
-	private codeChartaLogoMesh: Mesh
 	private backMWLogoMesh: Mesh
+	private itsTextMesh: Mesh
+	private codeChartaLogoMesh: Mesh
 	private metricsMesh: Mesh
 
 	async initialize(geometryOptions: GeometryOptions) {
@@ -112,14 +113,17 @@ export class Preview3DPrintMesh {
 		await this.initFrontMWLogoMesh(geometryOptions.wantedWidth, geometryOptions.numberOfColors)
 		this.printMesh.add(this.frontMWLogoMesh)
 
-		await this.initMetricsMesh(geometryOptions)
-		this.printMesh.add(this.metricsMesh)
+		await this.initBackMWLogoMesh(geometryOptions.wantedWidth, geometryOptions.numberOfColors)
+		this.printMesh.add(this.backMWLogoMesh)
+
+		await this.initBackITSTextMesh(geometryOptions.wantedWidth, geometryOptions.numberOfColors)
+		this.printMesh.add(this.itsTextMesh)
 
 		await this.initCodeChartaMesh(geometryOptions.wantedWidth, geometryOptions.numberOfColors)
 		this.printMesh.add(this.codeChartaLogoMesh)
 
-		await this.initBackMWLogoMesh(geometryOptions.wantedWidth, geometryOptions.numberOfColors)
-		this.printMesh.add(this.backMWLogoMesh)
+		await this.initMetricsMesh(geometryOptions)
+		this.printMesh.add(this.metricsMesh)
 	}
 
 	updateMapSize(wantedWidth: number) {
@@ -153,14 +157,19 @@ export class Preview3DPrintMesh {
 						this.updateCustomLogoPosition(child, wantedWidth)
 						break
 
-					case "Metric Text":
+					case "Back MW Logo":
 						if (child instanceof CustomVisibilityMesh) {
 							this.scaleBacktext(child, wantedWidth / currentWidth)
-							if (child.visible) {
-								this.xCenterMetricsMesh(child)
-							}
 						} else {
-							console.error("Metric Text is not an instance of CustomVisibilityMesh")
+							console.error("Back MW Logo is not an instance of CustomVisibilityMesh")
+						}
+						break
+
+					case "ITS Text":
+						if (child instanceof CustomVisibilityMesh) {
+							this.scaleBacktext(child, wantedWidth / currentWidth)
+						} else {
+							console.error("Back MW Logo is not an instance of CustomVisibilityMesh")
 						}
 						break
 
@@ -172,11 +181,14 @@ export class Preview3DPrintMesh {
 						}
 						break
 
-					case "Back MW Logo":
+					case "Metric Text":
 						if (child instanceof CustomVisibilityMesh) {
 							this.scaleBacktext(child, wantedWidth / currentWidth)
+							if (child.visible) {
+								this.xCenterMetricsMesh(child)
+							}
 						} else {
-							console.error("Back MW Logo is not an instance of CustomVisibilityMesh")
+							console.error("Metric Text is not an instance of CustomVisibilityMesh")
 						}
 						break
 
@@ -408,8 +420,9 @@ export class Preview3DPrintMesh {
 			Area: getBaseplateColor,
 			"Front MW Logo": getFrontTextAndLogoColor,
 			"Front Text": getFrontTextAndLogoColor,
-			"CodeCharta Logo": getBackTextAndLogoColor,
 			"Back MW Logo": getBackTextAndLogoColor,
+			"ITS Text": getBackTextAndLogoColor,
+			"CodeCharta Logo": getBackTextAndLogoColor,
 			"Metric Text": getBackTextAndLogoColor,
 			"Metric Text Part 0": getBackTextAndLogoColor,
 			"Metric Text Part 1": () => getMetricColorTextColor([0, 1, 0]),
@@ -422,7 +435,7 @@ export class Preview3DPrintMesh {
 		if (partName in colorFunctions) {
 			return colorFunctions[partName]()
 		}
-		console.error("Unknown part name:", partName)
+		console.warn("Unknown object:", partName, "Did you forget to add it to colorFunctions in the getColorArray method?")
 		return [0, 1, 1]
 	}
 
@@ -552,7 +565,7 @@ export class Preview3DPrintMesh {
 				height: baseplateHeight / 2
 			})
 			textGeometry.rotateY(Math.PI)
-			textGeometry.translate(xOffset, -35 * 2 + backTextSize - 15, -baseplateHeight / 2)
+			textGeometry.translate(xOffset, -35 * 2 + backTextSize - 20, -baseplateHeight / 2)
 			const material = new MeshBasicMaterial()
 			const textMesh = new Mesh(textGeometry, material)
 			textMesh.name = `Metric Text Part ${index}`
@@ -578,7 +591,7 @@ export class Preview3DPrintMesh {
 			iconGeometry.rotateX(Math.PI)
 			iconGeometry.scale(iconScale, iconScale, baseplateHeight / 2)
 
-			iconGeometry.translate(0, -35 * index - 15, -((baseplateHeight * 3) / 4))
+			iconGeometry.translate(0, -35 * index - 20, -((baseplateHeight * 3) / 4))
 			backGeometries.push(iconGeometry)
 
 			const text = whiteTexts[index]
@@ -589,7 +602,7 @@ export class Preview3DPrintMesh {
 			})
 			textGeometry.rotateY(Math.PI)
 
-			textGeometry.translate(-10, -35 * index + backTextSize - 15, -baseplateHeight / 2)
+			textGeometry.translate(-10, -35 * index + backTextSize - 20, -baseplateHeight / 2)
 
 			backGeometries.push(textGeometry)
 		}
@@ -642,7 +655,7 @@ export class Preview3DPrintMesh {
 
 		const material = new MeshBasicMaterial()
 
-		const codeChartaMesh = new CustomVisibilityMesh(logoAndTextGeometry, material, 0.7)
+		const codeChartaMesh = new CustomVisibilityMesh(logoAndTextGeometry, material, 0.8)
 		codeChartaMesh.name = "CodeCharta Logo"
 		this.updateColor(codeChartaMesh, numberOfColors)
 		const scaleFactor = (wantedWidth - mapSideOffset * 2) / 200
@@ -657,7 +670,7 @@ export class Preview3DPrintMesh {
 
 		const logoScale = 25
 		logoGeometry.scale(logoScale, logoScale, baseplateHeight / 2)
-		logoGeometry.translate(0, 30, -((baseplateHeight * 3) / 4))
+		logoGeometry.translate(0, 20, -((baseplateHeight * 3) / 4))
 
 		return logoGeometry
 	}
@@ -671,9 +684,41 @@ export class Preview3DPrintMesh {
 		textGeometry.center()
 		textGeometry.rotateY(Math.PI)
 
-		textGeometry.translate(0, 15, -((baseplateHeight * 3) / 4))
+		textGeometry.translate(0, 5, -((baseplateHeight * 3) / 4))
 
 		return textGeometry
+	}
+
+	private async initBackITSTextMesh(wantedWidth: number, numberOfColors: number) {
+		const ITSNameTextGeometry = new TextGeometry("IT Stabilization & Modernization", {
+			font: this.font,
+			size: backTextSize,
+			height: baseplateHeight / 2
+		})
+		ITSNameTextGeometry.center()
+
+		const ITSUrlTextGeometry = new TextGeometry("maibornwolff.de/service/it-sanierung", {
+			font: this.font,
+			size: backTextSize,
+			height: baseplateHeight / 2
+		})
+		ITSUrlTextGeometry.center()
+		ITSUrlTextGeometry.translate(0, -10, 0)
+
+		const textGeometry = BufferGeometryUtils.mergeBufferGeometries([ITSNameTextGeometry, ITSUrlTextGeometry])
+		textGeometry.rotateY(Math.PI)
+
+		textGeometry.translate(0, 55, -((baseplateHeight * 3) / 4))
+
+		const material = new MeshBasicMaterial()
+
+		const itsTextMesh = new CustomVisibilityMesh(textGeometry, material, 0.7)
+		itsTextMesh.name = "ITS Text"
+		this.updateColor(itsTextMesh, numberOfColors)
+		const scaleFactor = (wantedWidth - mapSideOffset * 2) / 200
+		this.scaleBacktext(itsTextMesh, scaleFactor)
+
+		this.itsTextMesh = itsTextMesh
 	}
 
 	private async initBackMWLogoMesh(wantedWidth: number, numberOfColors: number) {
@@ -682,7 +727,7 @@ export class Preview3DPrintMesh {
 		mwLogoGeometry.rotateZ(Math.PI)
 		const mwBackLogoScale = (3 * (wantedWidth - mapSideOffset * 2)) / 10
 		mwLogoGeometry.scale(mwBackLogoScale, mwBackLogoScale, baseplateHeight / 2)
-		mwLogoGeometry.translate(0, wantedWidth / 2 - mwBackLogoScale / 2, -((baseplateHeight * 3) / 4))
+		mwLogoGeometry.translate(0, wantedWidth / 2 - mwBackLogoScale / 2 + 5, -((baseplateHeight * 3) / 4))
 
 		const material = new MeshBasicMaterial()
 
