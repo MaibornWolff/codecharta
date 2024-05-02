@@ -79,7 +79,7 @@ export class Preview3DPrintMesh {
 
 		await this.loadFont()
 		await this.createPrintPreviewMesh(geometryOptions)
-		this.updateCurrentSize()
+		this.calculateCurrentSize()
 	}
 
 	getThreeMesh(): Mesh {
@@ -126,7 +126,7 @@ export class Preview3DPrintMesh {
 		this.printMesh.add(this.metricsMesh)
 	}
 
-	updateMapSize(wantedWidth: number) {
+	updateSize(wantedWidth: number) {
 		const currentWidth = this.currentSize.x
 
 		for (const child of this.printMesh.children) {
@@ -199,7 +199,7 @@ export class Preview3DPrintMesh {
 			}
 		}
 
-		this.updateCurrentSize()
+		this.calculateCurrentSize()
 	}
 
 	updateNumberOfColors(mapWithOriginalColors: Mesh, numberOfColors: number) {
@@ -259,7 +259,7 @@ export class Preview3DPrintMesh {
 		})
 	}
 
-	private updateCurrentSize() {
+	private calculateCurrentSize() {
 		this.baseplateMesh.geometry.computeBoundingBox()
 		const boundingBoxBaseplate = this.baseplateMesh.geometry.boundingBox
 
