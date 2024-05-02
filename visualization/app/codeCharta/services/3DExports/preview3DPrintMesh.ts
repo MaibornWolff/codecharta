@@ -77,6 +77,10 @@ export class Preview3DPrintMesh {
 		return this.printMesh
 	}
 
+	getMapMesh(): Mesh {
+		return this.mapMesh
+	}
+
 	getSize(): Vector3 {
 		return this.currentSize
 	}
