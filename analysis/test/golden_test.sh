@@ -34,7 +34,6 @@ then
   echo "Installing CodeCharta analysis to ${TEMP_DIR}"
   cp "../build/distributions/${CC_TAR_NAME}" "${TEMP_DIR}"
   tar xf "${TEMP_DIR}/${CC_TAR_NAME}" -C "${TEMP_DIR}"
-  chmod +r "${TEMP_DIR}/codecharta-analysis-${CC_VERSION}/bin/ccsh"
   rm "${TEMP_DIR}/${CC_TAR_NAME}"
 else
   CCSH="$3"
