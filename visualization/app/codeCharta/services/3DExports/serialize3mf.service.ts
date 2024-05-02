@@ -20,7 +20,7 @@ export async function serialize3mf(mesh: Mesh): Promise<string> {
 		"3D": {
 			"3dmodel.model": strToU8(model)
 		},
-		rels: {
+		_rels: {
 			".rels": strToU8(buildRels())
 		},
 		Metadata: {
@@ -94,7 +94,7 @@ function buildModelConfig(volumes: Volume[]): string {
 }
 function buildModelConfigHeader(): string {
 	let modelConfig = '<?xml version="1.0" encoding="UTF-8"?>\n<config>\n'
-	modelConfig += ` <object id="1">\n`
+	modelConfig += ` <object id="1" instances_count="1">\n`
 	modelConfig += `  <metadata type="object" key="name" value="CodeCharta Map"/>\n`
 	return modelConfig
 }
@@ -126,11 +126,10 @@ function buildRels(): string {
 function buildContentType(): string {
 	return (
 		`<?xml version="1.0" encoding="UTF-8"?>\n` +
-		` <Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">\n` +
-		`  <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>\n` +
-		`  <Default Extension="model" ContentType="application/vnd.ms-package.3dmanufacturing-3dmodel+xml"/>\n` +
-		`  <Default Extension="png" ContentType="image/png"/>\n` +
-		` </Types>`
+		`<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">\n` +
+		` <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>\n` +
+		` <Default Extension="model" ContentType="application/vnd.ms-package.3dmanufacturing-3dmodel+xml"/>\n` +
+		`</Types>`
 	)
 }
 
