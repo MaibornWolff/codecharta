@@ -84,8 +84,9 @@ export class Export3DMapDialogComponent {
 		)
 	}
 
-	ngAfterViewInit() {
-		this.createScene().then(() => (this.isPrintMeshLoaded = true))
+	async ngAfterViewInit() {
+		await this.createScene()
+		this.isPrintMeshLoaded = true
 	}
 
 	onScaleChange() {
@@ -142,13 +143,25 @@ export class Export3DMapDialogComponent {
 		lights.name = "lights"
 		printPreviewScene.add(lights)
 
-		const renderer = new WebGLRenderer()
-		this.rendererContainer.nativeElement.appendChild(renderer.domElement)
-
 		const camera = new PerspectiveCamera(45, 1.15, 50, 200_000)
 		camera.name = "camera"
 		camera.up = new Vector3(0, 0, 1)
 		printPreviewScene.add(camera)
+
+		this.initRenderer(printPreviewScene, camera)
+
+		this.previewMesh = new Preview3DPrintMesh()
+		await this.previewMesh.initialize(this.initGeometryOptions())
+		this.currentSize = this.previewMesh.getSize()
+		printPreviewScene.add(this.previewMesh.getThreeMesh())
+
+		//camera.position.set(0, 0, -this.wantedWidth*1.5) //To directly see the backside of the map: uncomment this line and comment the next line
+		this.updateCameraPosition(camera)
+	}
+
+	private initRenderer(printPreviewScene, camera) {
+		const renderer = new WebGLRenderer()
+		this.rendererContainer.nativeElement.appendChild(renderer.domElement)
 
 		const controls = new OrbitControls(camera, renderer.domElement)
 
@@ -159,14 +172,6 @@ export class Export3DMapDialogComponent {
 		}
 
 		animate()
-
-		this.previewMesh = new Preview3DPrintMesh()
-		await this.previewMesh.initialize(this.initGeometryOptions())
-		this.currentSize = this.previewMesh.getSize()
-		printPreviewScene.add(this.previewMesh.getThreeMesh())
-
-		//camera.position.set(0, 0, -this.wantedWidth*1.5) //To directly see the backside of the map: uncomment this line and comment the next line
-		this.updateCameraPosition(camera)
 	}
 
 	private updateCameraPosition(camera: PerspectiveCamera) {
