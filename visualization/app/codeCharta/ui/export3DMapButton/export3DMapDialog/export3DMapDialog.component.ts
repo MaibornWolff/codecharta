@@ -46,7 +46,7 @@ export class Export3DMapDialogComponent {
 	printers: Printer[] = [
 		{ name: "Prusa MK3S", x: 245, y: 205, z: 205, numberOfColors: 1 },
 		{ name: "Bambu A1", x: 251, y: 251, z: 251, numberOfColors: 4 },
-		{ name: "Prusa XL", x: 355, y: 355, z: 355, numberOfColors: 5 }
+		{ name: "Prusa XL", x: 355, y: 335, z: 355, numberOfColors: 5 }
 	]
 	selectedPrinter: Printer = this.printers[2]
 	private currentNumberOfColors: number
