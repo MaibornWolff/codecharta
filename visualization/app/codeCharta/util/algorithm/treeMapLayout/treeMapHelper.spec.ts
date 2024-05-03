@@ -1,5 +1,5 @@
 import { TreeMapHelper } from "./treeMapHelper"
-import { CodeMapNode, ColorMode, EdgeVisibility, NodeType, CcState } from "../../../codeCharta.model"
+import { CcState, CodeMapNode, ColorMode, EdgeVisibility, NodeType } from "../../../codeCharta.model"
 import { CODE_MAP_BUILDING, STATE } from "../../dataMocks"
 import { HierarchyRectangularNode } from "d3-hierarchy"
 import { clone } from "../../clone"
@@ -43,11 +43,12 @@ describe("TreeMapHelper", () => {
             squaredNode = {
                 data: codeMapNode,
                 value: 42,
-                x0: 0,
-                y0: 0,
-                x1: 400,
-                y1: 400
-            } as HierarchyRectangularNode<CodeMapNode>
+                depth: 1,
+				x0: 0,
+				y0: 0,
+				x1: 400,
+				y1: 400
+			} as HierarchyRectangularNode<CodeMapNode>
 
             state = clone(STATE)
             state.dynamicSettings.margin = 15
