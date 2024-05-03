@@ -1,5 +1,5 @@
 import { getMapResolutionScaleFactor, getMarkingColor, isLeaf } from "../../codeMapHelper"
-import { CodeMapNode, ColorMode, Node, CcState } from "../../../codeCharta.model"
+import { CcState, CodeMapNode, ColorMode, Node } from "../../../codeCharta.model"
 import { Vector3 } from "three"
 import { CodeMapBuilding } from "../../../ui/codeMap/rendering/codeMapBuilding"
 import { HierarchyRectangularNode } from "d3-hierarchy"
@@ -96,7 +96,7 @@ function buildNodeFrom(
 	const height = isNodeLeaf ? resolveHeightValue(heightValue, heightScale, data, state) * mapSizeResolutionScaling : FOLDER_HEIGHT
 	const width = x1 - x0
 	const length = y1 - y0
-	const z0 = depth * FOLDER_HEIGHT
+	const z0 = squaredNode.depth * FOLDER_HEIGHT
 	const heightDelta = (data.deltas?.[state.dynamicSettings.heightMetric] ?? 0) * heightScale * mapSizeResolutionScaling
 	const edgePointHeight = height + (heightDelta < 0 ? Math.abs(heightDelta) : 0)
 
