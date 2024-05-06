@@ -19,7 +19,7 @@ class ParserDialog {
             return res
         }
 
-        fun Session.myCollectParserArgs(
+        internal fun Session.myCollectParserArgs(
             fileCallback: suspend RunScope.() -> Unit = {},
             actionCallback: suspend RunScope.() -> Unit = {},
             printCallback: suspend RunScope.() -> Unit = {},
@@ -30,18 +30,15 @@ class ParserDialog {
             outFileCallback: suspend RunScope.() -> Unit = {}
 
             ): List<String> {
-            var inputFileName: String
-            var result: List<String> = listOf()
+            val result: List<String>
 
-            inputFileName = myPromptInput(
+            val inputFileName: String = myPromptInput(
                 message = "What is the cc.json file that should be modified?",
                 hint = Paths.get("").toAbsolutePath().toString() + File.separator + "yourInput.cc.json",
                 invalidInputMessage = "Please input a valid cc.json file!",
                 inputValidator = InputValidator.isInputAnExistingFile("cc.json", "cc.json.gz"),
                 onInputReady = fileCallback
             )
-
-//            return listOf(inputFileName)
 
             val selectedAction: String = myPromptList(
                     message = "Which action do you want to perform?",
@@ -53,10 +50,6 @@ class ParserDialog {
                     ),
                     onInputReady = actionCallback
             )
-
-//            return listOf(selectedAction)
-
-            //TODO: refactor next part to be more readable and do less array/list things
 
             result = when (selectedAction) {
                 StructureModifierAction.PRINT_STRUCTURE.descripton -> listOf(inputFileName, *collectPrintArguments(printCallback))
@@ -71,7 +64,7 @@ class ParserDialog {
     }
 }
 
-private fun Session.collectPrintArguments(printCallback: suspend RunScope.() -> Unit): Array<String> { //diese funktionen als extension vom section scope setzen? können wir sie dann noch private lassen?
+private fun Session.collectPrintArguments(printCallback: suspend RunScope.() -> Unit): Array<String> {
     val printLevels: String = myPromptInputNumber(
         message = "How many print levels do you want to print?", hint = "0",
         onInputReady = printCallback)

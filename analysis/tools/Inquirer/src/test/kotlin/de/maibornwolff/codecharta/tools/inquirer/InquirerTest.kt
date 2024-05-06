@@ -1,7 +1,6 @@
 package de.maibornwolff.codecharta.tools.inquirer
 
 import com.varabyte.kotter.foundation.input.Keys
-import com.varabyte.kotter.foundation.session
 import com.varabyte.kotter.foundation.text.black
 import com.varabyte.kotter.foundation.text.bold
 import com.varabyte.kotter.foundation.text.cyan
