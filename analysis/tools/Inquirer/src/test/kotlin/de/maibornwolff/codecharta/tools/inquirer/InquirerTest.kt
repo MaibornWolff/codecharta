@@ -21,8 +21,7 @@ import org.junit.jupiter.api.Test
 import java.lang.AssertionError
 
 class InquirerTest {
-
-    private val testInput = "this is text to simulate user input."
+private val testInput = "this is text to simulate user input."
 
     private val testMessage = "this test message is displayed as the question."
     private val testHint = "this is displayed as the hint for a prompt."
@@ -33,11 +32,12 @@ class InquirerTest {
     private val emptySelectionAllowedMessage = "Empty selection is allowed"
     private val emptySelectionNotAllowedMessage = "Empty selection is not allowed!"
 
-    private val testChoices = listOf(
+    private val testChoices =
+    listOf(
             "element 0",
             "element 1",
             "element 2",
-            "element 3"
+            "element 3",
     )
 
     // Tests for promptInput
@@ -48,10 +48,15 @@ class InquirerTest {
             myPromptInput(testMessage, testHint, true, testInvalidInputMessage, onInputReady = {
                 terminal.assertMatches {
                     bold {
-                        green { text("? ") }; text(testMessage)
+                        green { text("? ") }
+                        text(testMessage)
                         black(isBright = true) { textLine("  $emptyInputAllowedMessage") }
                     }
-                    text("> "); black(isBright = true) { invert { text("${testHint[0]}")}; text("${testHint.drop(1)} ") }
+                    text("> ")
+                    black(isBright = true) {
+                    invert { text("${testHint[0]}") }
+                    text("${testHint.drop(1)} ")
+                    }
                 }
                 terminal.press(Keys.ENTER)
             })
@@ -63,7 +68,8 @@ class InquirerTest {
         var result: String
 
         testSession { terminal ->
-            result = myPromptInput(testMessage, onInputReady = {
+            result =
+            myPromptInput(testMessage, onInputReady = {
                 terminal.type(testInput)
                 terminal.press(Keys.ENTER)
             })
@@ -71,7 +77,7 @@ class InquirerTest {
             assertThat(terminal.resolveRerenders().stripFormatting()).containsExactly(
                     "? $testMessage",
                     "> $testInput ",
-                    ""
+                    "",
             )
             assertThat(result).isEqualTo(testInput)
         }
@@ -82,14 +88,14 @@ class InquirerTest {
         var result: String
 
         testSession { terminal ->
-            result = myPromptInput(testMessage, allowEmptyInput = true, onInputReady = {
+            result =
+            myPromptInput(testMessage, allowEmptyInput = true, onInputReady = {
                 terminal.press(Keys.ENTER)
-
 
                 assertThat(terminal.resolveRerenders().stripFormatting()).containsExactly(
                     "? $testMessage  $emptyInputAllowedMessage",
                     ">  ",
-                    ""
+                    "",
                 )
             })
             assertThat(result).isEqualTo("")
@@ -99,26 +105,28 @@ class InquirerTest {
     @Test
     fun `should not accept empty input and display warning message when empty input is not allowed`() {
         testSession { terminal ->
-            myPromptInput(testMessage, allowEmptyInput = false,
+            myPromptInput(
+            testMessage, allowEmptyInput = false,
                 onInputReady = {
                     terminal.press(Keys.ENTER)
 
-                    try {               //TODO: check back if try catch block can be removed after dev answer
+                    try {
+                    // TODO: check back if try catch block can be removed after dev answer
                         blockUntilRenderWhen {
-                            terminal.resolveRerenders().stripFormatting() == listOf(
+                            terminal.resolveRerenders().stripFormatting() ==
+                            listOf(
                                 "? $testMessage  $emptyInputNotAllowedMessage",
                                 ">  ",
-                                ""
+                                "",
                             )
                         }
-                    }
-                    catch (ex: TimeoutCancellationException) {
+                    } catch (ex: TimeoutCancellationException) {
                         throw AssertionError("Render did not match expected result!\n" + ex.printStackTrace())
                     }
 
                     terminal.type("irrelevant non empty input")
                     terminal.press(Keys.ENTER)
-                }
+                },
             )
         }
     }
@@ -128,7 +136,8 @@ class InquirerTest {
         var result: String
 
         testSession { terminal ->
-            result = myPromptInput(testMessage, inputValidator = { true }, onInputReady = {
+            result =
+            myPromptInput(testMessage, inputValidator = { true }, onInputReady = {
                 terminal.type(testInput)
                 terminal.press(Keys.ENTER)
             })
@@ -141,39 +150,41 @@ class InquirerTest {
         var result: String
 
         testSession { terminal ->
-            result = myPromptInput(testMessage, allowEmptyInput = true, inputValidator = { false }, onInputReady = {
+            result =
+            myPromptInput(testMessage, allowEmptyInput = true, inputValidator = { false }, onInputReady = {
                 terminal.press(Keys.ENTER)
             })
             assertThat(result).isEqualTo("")
         }
     }
 
-
     @Test
     fun `should not accept input and display default warning message when input was invalid`() {
         testSession { terminal ->
-            myPromptInput(testMessage, allowEmptyInput = false,
+            myPromptInput(
+            testMessage, allowEmptyInput = false,
                 inputValidator = { input -> input.contains("accepted") },
                 onInputReady = {
                     terminal.type("x")
                     terminal.press(Keys.ENTER)
 
-                    try {               //TODO: check back if try catch block can be removed after dev answer
+                    try {
+                    // TODO: check back if try catch block can be removed after dev answer
                         blockUntilRenderWhen {
-                            terminal.resolveRerenders().stripFormatting() == listOf(
+                            terminal.resolveRerenders().stripFormatting() ==
+                            listOf(
                                 "? $testMessage  Input is invalid!",
                                 "> x ",
-                                ""
+                                "",
                             )
                         }
-                    }
-                    catch (ex: TimeoutCancellationException) {
+                    } catch (ex: TimeoutCancellationException) {
                         throw AssertionError("Render did not match expected result!\n" + ex.printStackTrace())
                     }
 
                     terminal.type("accepted")
                     terminal.press(Keys.ENTER)
-                }
+                },
             )
         }
     }
@@ -181,28 +192,30 @@ class InquirerTest {
     @Test
     fun `should not accept input and display custom warning message when a custom invalid input message was specified and input was invalid`() {
         testSession { terminal ->
-            myPromptInput(testMessage, allowEmptyInput = false, invalidInputMessage = testInvalidInputMessage,
+            myPromptInput(
+            testMessage, allowEmptyInput = false, invalidInputMessage = testInvalidInputMessage,
                 inputValidator = { input -> input.contains("accepted") },
                 onInputReady = {
                     terminal.type("x")
                     terminal.press(Keys.ENTER)
 
-                    try {               //TODO: check back if try catch block can be removed after dev answer
+                    try {
+                    // TODO: check back if try catch block can be removed after dev answer
                         blockUntilRenderWhen {
-                            terminal.resolveRerenders().stripFormatting() == listOf(
+                            terminal.resolveRerenders().stripFormatting() ==
+                            listOf(
                                 "? $testMessage  $testInvalidInputMessage",
                                 "> x ",
-                                ""
+                                "",
                             )
                         }
-                    }
-                    catch (ex: TimeoutCancellationException) {
+                    } catch (ex: TimeoutCancellationException) {
                         throw AssertionError("Render did not match expected result!\n" + ex.printStackTrace())
                     }
 
                     terminal.type("accepted")
                     terminal.press(Keys.ENTER)
-                }
+                },
             )
         }
     }
@@ -214,7 +227,8 @@ class InquirerTest {
         var result: String
 
         testSession { terminal ->
-            result = myPromptInputNumber(testMessage, onInputReady = {
+            result =
+            myPromptInputNumber(testMessage, onInputReady = {
                 terminal.type("test 1, test 2; test 3.?/%!IV")
                 terminal.press(Keys.ENTER)
             })
@@ -222,7 +236,7 @@ class InquirerTest {
         }
     }
 
-    //Tests for promptConfirm
+    // Tests for promptConfirm
 
     @Test
     fun `should correctly display all text formatting when prompt is first displayed`() {
@@ -230,10 +244,13 @@ class InquirerTest {
             myPromptConfirm(testMessage, testHint, onInputReady = {
                 terminal.assertMatches {
                     bold {
-                        green { text("? ") }; text(testMessage)
+                        green { text("? ") }
+                        text(testMessage)
                         black(isBright = true) { textLine("  $testHint") }
                     }
-                    text("> "); cyan { text("[Yes]") }; textLine(" No ")
+                    text("> ")
+                    cyan { text("[Yes]") }
+                    textLine(" No ")
                 }
                 terminal.press(Keys.ENTER)
             })
@@ -245,14 +262,15 @@ class InquirerTest {
         var result: Boolean
 
         testSession { terminal ->
-            result = myPromptConfirm(testMessage, onInputReady = {
+            result =
+            myPromptConfirm(testMessage, onInputReady = {
                 terminal.press(Keys.ENTER)
             })
 
             assertThat(terminal.resolveRerenders().stripFormatting()).containsExactly(
                     "? $testMessage  arrow keys to change selection",
                     "> [Yes] No ",
-                    ""
+                    "",
             )
             assertThat(result).isTrue()
         }
@@ -263,7 +281,8 @@ class InquirerTest {
         var result: Boolean
 
         testSession { terminal ->
-            result = myPromptConfirm(testMessage, testHint, onInputReady = {
+            result =
+            myPromptConfirm(testMessage, testHint, onInputReady = {
                 terminal.press(Keys.RIGHT)
                 terminal.press(Keys.ENTER)
             })
@@ -271,7 +290,7 @@ class InquirerTest {
             assertThat(terminal.resolveRerenders().stripFormatting()).containsExactly(
                     "? $testMessage  $testHint",
                     ">  Yes [No]",
-                    ""
+                    "",
             )
             assertThat(result).isFalse()
         }
@@ -282,7 +301,8 @@ class InquirerTest {
         var result: Boolean
 
         testSession { terminal ->
-            result = myPromptConfirm(testMessage, onInputReady = {
+            result =
+            myPromptConfirm(testMessage, onInputReady = {
                 repeat(5) {
                     terminal.press(Keys.RIGHT)
                 }
@@ -293,15 +313,20 @@ class InquirerTest {
         }
     }
 
-    //Tests for promptList
+    // Tests for promptList
 
     @Test
     fun `should display all list options that were specified in the correct format when prompt is first displayed`() {
         testSession { terminal ->
             myPromptList(testMessage, testChoices, testHint, onInputReady = {
                 terminal.assertMatches {
-                    bold { green { text("? ") }; text(testMessage); black(isBright = true) { textLine("  $testHint") } }
-                    cyan(isBright = true) { text(" ❯ ") }; cyan { textLine(testChoices[0]) }
+                    bold {
+                    green { text("? ") }
+                    text(testMessage)
+                    black(isBright = true) { textLine("  $testHint") }
+                    }
+                    cyan(isBright = true) { text(" ❯ ") }
+                    cyan { textLine(testChoices[0]) }
                     for (testItem in testChoices.drop(1)) {
                         textLine("   $testItem")
                     }
@@ -316,7 +341,8 @@ class InquirerTest {
         var result: String
 
         testSession { terminal ->
-            result = myPromptList(testMessage, testChoices, onInputReady = {
+            result =
+            myPromptList(testMessage, testChoices, onInputReady = {
                 terminal.press(Keys.ENTER)
             })
 
@@ -326,7 +352,7 @@ class InquirerTest {
                     "   element 1",
                     "   element 2",
                     "   element 3",
-                    ""
+                    "",
             )
             assertThat(result).isEqualTo(testChoices[0])
         }
@@ -337,10 +363,10 @@ class InquirerTest {
         var result: String
 
         testSession { terminal ->
-            result = myPromptList(testMessage, testChoices, onInputReady = {
+            result =
+            myPromptList(testMessage, testChoices, onInputReady = {
                 terminal.press(Keys.DOWN)
                 terminal.press(Keys.ENTER)
-
             })
 
             assertThat(terminal.resolveRerenders().stripFormatting()).containsExactly(
@@ -349,7 +375,7 @@ class InquirerTest {
                     " ❯ element 1",
                     "   element 2",
                     "   element 3",
-                    ""
+                    "",
             )
             assertThat(result).isEqualTo(testChoices[1])
         }
@@ -360,12 +386,12 @@ class InquirerTest {
         var result: String
 
         testSession { terminal ->
-            result = myPromptList(testMessage, testChoices, onInputReady = {
+            result =
+            myPromptList(testMessage, testChoices, onInputReady = {
                 repeat(6) {
                     terminal.press(Keys.DOWN)
                 }
                 terminal.press(Keys.ENTER)
-
             })
 
             assertThat(terminal.resolveRerenders().stripFormatting()).containsExactly(
@@ -374,13 +400,13 @@ class InquirerTest {
                     "   element 1",
                     "   element 2",
                     " ❯ element 3",
-                    ""
+                    "",
             )
             assertThat(result).isEqualTo(testChoices.last())
         }
     }
 
-    //Tests for promptCheckbox
+    // Tests for promptCheckbox
 
     @Test
     fun `should display all checkbox options that were specified in the correct format when the first option is selected`() {
@@ -391,12 +417,16 @@ class InquirerTest {
             })
             terminal.assertMatches {
                 bold {
-                    green { text("? ") }; text(testMessage)
+                    green { text("? ") }
+                    text(testMessage)
                     black(isBright = true) { textLine("  $testHint  $emptySelectionAllowedMessage") }
                 }
-                cyan(isBright = true) { text(" ❯ ") }; green { text("◉ ") }; cyan { textLine(testChoices[0]) }
+                cyan(isBright = true) { text(" ❯ ") }
+                green { text("◉ ") }
+                cyan { textLine(testChoices[0]) }
                 for (testItem in testChoices.drop(1)) {
-                    cyan(isBright = true) { text("   ") }; textLine("◯ $testItem")
+                    cyan(isBright = true) { text("   ") }
+                    textLine("◯ $testItem")
                 }
             }
         }
@@ -408,7 +438,8 @@ class InquirerTest {
         val emptyList = listOf<String>()
 
         testSession { terminal ->
-            result = myPromptCheckbox(testMessage, testChoices, testHint, allowEmptyInput = true, onInputReady = {
+            result =
+            myPromptCheckbox(testMessage, testChoices, testHint, allowEmptyInput = true, onInputReady = {
                 terminal.press(Keys.ENTER)
             })
             assertThat(terminal.resolveRerenders().stripFormatting()).containsExactly(
@@ -417,7 +448,7 @@ class InquirerTest {
                     "   ◯ element 1",
                     "   ◯ element 2",
                     "   ◯ element 3",
-                    ""
+                    "",
             )
             assertThat(result).isEqualTo(emptyList)
         }
@@ -426,29 +457,31 @@ class InquirerTest {
     @Test
     fun `should not accept input and display hint when selection is empty and empty input is not allowed`() {
         testSession { terminal ->
-             myPromptCheckbox(testMessage, testChoices, testHint, allowEmptyInput = false,
+             myPromptCheckbox(
+             testMessage, testChoices, testHint, allowEmptyInput = false,
                  onInputReady = {
                     terminal.press(Keys.ENTER)
 
-                    try {               //TODO: check back if try catch block can be removed after dev answer
+                    try {
+                    // TODO: check back if try catch block can be removed after dev answer
                         blockUntilRenderWhen {
-                            terminal.resolveRerenders().stripFormatting() == listOf(
+                            terminal.resolveRerenders().stripFormatting() ==
+                            listOf(
                                 "? $testMessage  $emptySelectionNotAllowedMessage",
                                 " ❯ ◯ element 0",
                                 "   ◯ element 1",
                                 "   ◯ element 2",
                                 "   ◯ element 3",
-                                ""
+                                "",
                             )
                         }
-                    }
-                    catch (ex: TimeoutCancellationException) {
+                    } catch (ex: TimeoutCancellationException) {
                         throw AssertionError("Render did not match expected result!\n" + ex.printStackTrace())
                     }
 
                     terminal.press(Keys.SPACE)
                     terminal.press(Keys.ENTER)
-                }
+                },
             )
         }
     }
@@ -458,7 +491,8 @@ class InquirerTest {
         var result: List<String>
 
         testSession { terminal ->
-            result = myPromptCheckbox(testMessage, testChoices, testHint, onInputReady = {
+            result =
+            myPromptCheckbox(testMessage, testChoices, testHint, onInputReady = {
                 terminal.press(Keys.SPACE)
                 terminal.press(Keys.ENTER)
             })
@@ -468,7 +502,7 @@ class InquirerTest {
                     "   ◯ element 1",
                     "   ◯ element 2",
                     "   ◯ element 3",
-                    ""
+                    "",
             )
             assertThat(result).isEqualTo(listOf(testChoices[0]))
         }
@@ -479,7 +513,8 @@ class InquirerTest {
         var result: List<String>
 
         testSession { terminal ->
-            result = myPromptCheckbox(testMessage, testChoices, testHint, onInputReady = {
+            result =
+            myPromptCheckbox(testMessage, testChoices, testHint, onInputReady = {
                 terminal.press(Keys.DOWN)
                 terminal.press(Keys.SPACE)
                 terminal.press(Keys.ENTER)
@@ -490,7 +525,7 @@ class InquirerTest {
                     " ❯ ◉ element 1",
                     "   ◯ element 2",
                     "   ◯ element 3",
-                    ""
+                    "",
             )
             assertThat(result).isEqualTo(listOf(testChoices[1]))
         }
@@ -501,7 +536,8 @@ class InquirerTest {
         var result: List<String>
 
         testSession { terminal ->
-            result = myPromptCheckbox(testMessage, testChoices, testHint, onInputReady = {
+            result =
+            myPromptCheckbox(testMessage, testChoices, testHint, onInputReady = {
                 repeat(6) {
                     terminal.press(Keys.DOWN)
                 }
@@ -514,7 +550,7 @@ class InquirerTest {
                     "   ◯ element 1",
                     "   ◯ element 2",
                     " ❯ ◉ element 3",
-                    ""
+                    "",
             )
             assertThat(result).isEqualTo(listOf(testChoices.last()))
         }
@@ -525,7 +561,8 @@ class InquirerTest {
         var result: List<String>
 
         testSession { terminal ->
-            result = myPromptCheckbox(testMessage, testChoices, testHint, onInputReady = {
+            result =
+            myPromptCheckbox(testMessage, testChoices, testHint, onInputReady = {
                 terminal.press(Keys.DOWN)
                 terminal.press(Keys.DOWN)
                 terminal.press(Keys.SPACE)
@@ -538,7 +575,7 @@ class InquirerTest {
                     " ❯ ◯ element 1",
                     "   ◉ element 2",
                     "   ◯ element 3",
-                    ""
+                    "",
             )
             assertThat(result).isEqualTo(listOf(testChoices[2]))
         }
@@ -550,7 +587,8 @@ class InquirerTest {
         val elemsToSelect = listOf(testChoices[0], testChoices[1], testChoices[3])
 
         testSession { terminal ->
-            result = myPromptCheckbox(testMessage, testChoices, testHint, onInputReady = {
+            result =
+            myPromptCheckbox(testMessage, testChoices, testHint, onInputReady = {
                 terminal.press(Keys.SPACE)
 
                 terminal.press(Keys.DOWN)
@@ -568,7 +606,7 @@ class InquirerTest {
                     "   ◉ element 1",
                     "   ◯ element 2",
                     " ❯ ◉ element 3",
-                    ""
+                    "",
             )
             assertThat(result).isEqualTo(elemsToSelect)
         }
