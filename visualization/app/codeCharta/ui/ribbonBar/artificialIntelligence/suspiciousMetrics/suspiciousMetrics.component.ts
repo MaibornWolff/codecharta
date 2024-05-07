@@ -10,47 +10,83 @@ import { setHeightMetric } from "../../../../state/store/dynamicSettings/heightM
 import { ArtificialIntelligenceData } from "../selectors/artificialIntelligence.selector"
 import { AREA_METRIC } from "../selectors/util/riskProfileHelper"
 import { MetricSuggestionParameters } from "../selectors/util/suspiciousMetricsHelper"
+import { metricTitles } from "../../../../util/metric/metricTitles"
+import { MatDialog } from "@angular/material/dialog"
 
 @Component({
-    selector: "cc-suspicious-metrics",
-    templateUrl: "./suspiciousMetrics.component.html",
-    encapsulation: ViewEncapsulation.None
+	selector: "cc-suspicious-metrics",
+	templateUrl: "./suspiciousMetrics.component.html",
+	encapsulation: ViewEncapsulation.None
 })
 export class SuspiciousMetricComponent implements OnChanges {
-    @Input() data: Pick<
-        ArtificialIntelligenceData,
-        "analyzedProgrammingLanguage" | "unsuspiciousMetrics" | "suspiciousMetricSuggestionLinks" | "untrackedMetrics"
-    >
-    hideBadge = false
+	@Input() data: Pick<
+		ArtificialIntelligenceData,
+		"analyzedProgrammingLanguage" | "unsuspiciousMetrics" | "suspiciousMetricSuggestionLinks" | "untrackedMetrics"
+	>
+	hideBadge = false
+	isUntrackedMetricsVisible = false
+	isUnsuspiciuosMetricsVisible = false
 
-    constructor(private store: Store) {}
+	constructor(private store: Store, public dialog: MatDialog) {}
 
-    ngOnChanges(changes: SimpleChanges): void {
-        if (changes.data && !dequal(changes.data.previousValue, changes.data.currentValue)) {
-            this.hideBadge = false
-        }
-    }
+	getNameAndDescriptionOfMetric(metricName: string): string {
+		const metricDescription = metricTitles.get(metricName)
+		if (metricDescription) {
+			return `${metricName.toUpperCase()} (${metricDescription.toLowerCase()})`
+		}
+		return metricName.toUpperCase()
+	}
 
-    applySuspiciousMetric(metric: MetricSuggestionParameters, markOutlier: boolean) {
-        this.store.dispatch(setAreaMetric({ value: AREA_METRIC }))
-        this.store.dispatch(setHeightMetric({ value: metric.metric }))
-        this.store.dispatch(setColorMetric({ value: metric.metric }))
-        this.store.dispatch(
-            setColorRange({
-                value: {
-                    from: metric.from,
-                    to: markOutlier ? metric.outlierThreshold : metric.to
-                }
-            })
-        )
-        this.store.dispatch(
-            setMapColors({
-                value: {
-                    positive: markOutlier ? "#ffffff" : defaultMapColors.positive,
-                    neutral: markOutlier ? "#ffffff" : defaultMapColors.neutral,
-                    negative: markOutlier ? "#A900C0" : defaultMapColors.negative
-                }
-            })
-        )
-    }
+	toggleUntrackedMetricsVisibility(event: MouseEvent): void {
+		event.stopPropagation()
+		this.isUntrackedMetricsVisible = !this.isUntrackedMetricsVisible
+	}
+
+	toggleUnsuspiciousMetricsVisibility(event: MouseEvent): void {
+		event.stopPropagation()
+		this.isUnsuspiciuosMetricsVisible = !this.isUnsuspiciuosMetricsVisible
+	}
+
+	ngOnChanges(changes: SimpleChanges): void {
+		if (changes.data && !dequal(changes.data.previousValue, changes.data.currentValue)) {
+			this.hideBadge = false
+		}
+	}
+
+	openDialog(event: MouseEvent): void {
+		event.stopPropagation()
+		this.dialog.open(SuspiciousMetricDialogComponent, {
+			width: "500px"
+		})
+	}
+
+	applySuspiciousMetric(metric: MetricSuggestionParameters, markOutlier: boolean) {
+		this.store.dispatch(setAreaMetric({ value: AREA_METRIC }))
+		this.store.dispatch(setHeightMetric({ value: metric.metric }))
+		this.store.dispatch(setColorMetric({ value: metric.metric }))
+		this.store.dispatch(
+			setColorRange({
+				value: {
+					from: metric.from,
+					to: markOutlier ? metric.outlierThreshold : metric.to
+				}
+			})
+		)
+		this.store.dispatch(
+			setMapColors({
+				value: {
+					positive: markOutlier ? "#ffffff" : defaultMapColors.positive,
+					neutral: markOutlier ? "#ffffff" : defaultMapColors.neutral,
+					negative: markOutlier ? "#A900C0" : defaultMapColors.negative
+				}
+			})
+		)
+	}
 }
+
+@Component({
+	selector: "cc-suspicious-metric-dialog",
+	templateUrl: "./suspiciousMetricDialog.component.html",
+	encapsulation: ViewEncapsulation.None
+})
+export class SuspiciousMetricDialogComponent {}
