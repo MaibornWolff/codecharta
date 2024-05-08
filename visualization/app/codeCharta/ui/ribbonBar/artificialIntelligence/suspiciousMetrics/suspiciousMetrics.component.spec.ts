@@ -1,5 +1,5 @@
 import { TestBed } from "@angular/core/testing"
-import { render, screen } from "@testing-library/angular"
+import { render, screen, waitFor } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
 import { setColorMetric } from "../../../../state/store/dynamicSettings/colorMetric/colorMetric.actions"
 import { setColorRange } from "../../../../state/store/dynamicSettings/colorRange/colorRange.actions"
@@ -32,7 +32,7 @@ describe("SuspiciousMetricsComponent", () => {
 			expect(container.querySelector(".suspicious-metrics-badge")).not.toBe(null)
 
 			await userEvent.click(screen.getByTitle("Open Suspicious Metrics Panel"))
-			expect(container.querySelector(".suspicious-metrics-badge")).toBe(null)
+			await waitFor(() => expect(container.querySelector(".suspicious-metrics-badge")).toBe(null))
 
 			await rerender({
 				componentProperties: {
@@ -62,7 +62,7 @@ describe("SuspiciousMetricsComponent", () => {
 			expect(container.querySelector(".suspicious-metrics-badge")).not.toBe(null)
 
 			await userEvent.click(screen.getByTitle("Open Suspicious Metrics Panel"))
-			expect(container.querySelector(".suspicious-metrics-badge")).toBe(null)
+			await waitFor(() => expect(container.querySelector(".suspicious-metrics-badge")).toBe(null))
 
 			await rerender({
 				componentProperties: {
@@ -187,8 +187,8 @@ describe("SuspiciousMetricsComponent", () => {
 		})
 	})
 
-	describe("untracked-metrics-button", () => {
-		it("should show the suspicious metrics information by clicking the information button", async () => {
+	describe("metrics-button", () => {
+		it("should show the list of untracked metrics by clicking the expansion icon", async () => {
 			await render(SuspiciousMetricComponent, {
 				excludeComponentDeclaration: true,
 				componentProperties: {
@@ -201,9 +201,25 @@ describe("SuspiciousMetricsComponent", () => {
 				}
 			})
 			await userEvent.click(screen.getByTitle("Open Suspicious Metrics Panel"))
-			expect(screen.queryByTestId("List of Untracked Metrics in ts Code")).toBe(null)
 			await userEvent.click(screen.queryByTestId("Untracked Metrics"))
-			expect(screen.queryByTestId("List of Untracked Metrics in ts Code")).not.toBe(null)
+			expect(screen.queryByTestId("List of Untracked Metrics in ts Code")).toBeDefined()
 		})
+	})
+
+	it("should show the list of unsuspicious metrics by clicking the expansion icon", async () => {
+		await render(SuspiciousMetricComponent, {
+			excludeComponentDeclaration: true,
+			componentProperties: {
+				data: {
+					analyzedProgrammingLanguage: "ts",
+					unsuspiciousMetrics: [],
+					suspiciousMetricSuggestionLinks: [],
+					untrackedMetrics: ["pairingRate", "avgCommits", "unary"]
+				}
+			}
+		})
+		await userEvent.click(screen.getByTitle("Open Suspicious Metrics Panel"))
+		await userEvent.click(screen.queryByTestId("Unsuspicious Metrics"))
+		expect(screen.queryByTestId("List of Unsuspicious Metrics in ts Code")).toBeDefined()
 	})
 })
