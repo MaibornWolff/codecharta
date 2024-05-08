@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, SimpleChanges, ViewEncapsulation } from "@angular/core"
+import { Component, Input, OnChanges, SimpleChanges, ViewChild, ViewEncapsulation } from "@angular/core"
 import { Store } from "@ngrx/store"
 import { dequal } from "dequal"
 import { setMapColors } from "../../../../state/store/appSettings/mapColors/mapColors.actions"
@@ -12,6 +12,7 @@ import { AREA_METRIC } from "../selectors/util/riskProfileHelper"
 import { MetricSuggestionParameters } from "../selectors/util/suspiciousMetricsHelper"
 import { metricTitles } from "../../../../util/metric/metricTitles"
 import { MatDialog } from "@angular/material/dialog"
+import { MatMenuTrigger } from "@angular/material/menu"
 
 @Component({
 	selector: "cc-suspicious-metrics",
@@ -19,6 +20,7 @@ import { MatDialog } from "@angular/material/dialog"
 	encapsulation: ViewEncapsulation.None
 })
 export class SuspiciousMetricComponent implements OnChanges {
+	@ViewChild(MatMenuTrigger) trigger: MatMenuTrigger
 	@Input() data: Pick<
 		ArtificialIntelligenceData,
 		"analyzedProgrammingLanguage" | "unsuspiciousMetrics" | "suspiciousMetricSuggestionLinks" | "untrackedMetrics"
@@ -37,13 +39,11 @@ export class SuspiciousMetricComponent implements OnChanges {
 		return metricName.toUpperCase()
 	}
 
-	toggleUntrackedMetricsVisibility(event: MouseEvent): void {
-		event.stopPropagation()
+	toggleUntrackedMetricsVisibility(): void {
 		this.isUntrackedMetricsVisible = !this.isUntrackedMetricsVisible
 	}
 
-	toggleUnsuspiciousMetricsVisibility(event: MouseEvent): void {
-		event.stopPropagation()
+	toggleUnsuspiciousMetricsVisibility(): void {
 		this.isUnsuspiciuosMetricsVisible = !this.isUnsuspiciuosMetricsVisible
 	}
 
@@ -53,14 +53,14 @@ export class SuspiciousMetricComponent implements OnChanges {
 		}
 	}
 
-	openDialog(event: MouseEvent): void {
-		event.stopPropagation()
+	openDialog(): void {
 		this.dialog.open(SuspiciousMetricDialogComponent, {
 			width: "500px"
 		})
 	}
 
 	applySuspiciousMetric(metric: MetricSuggestionParameters, markOutlier: boolean) {
+		this.trigger.closeMenu()
 		this.store.dispatch(setAreaMetric({ value: AREA_METRIC }))
 		this.store.dispatch(setHeightMetric({ value: metric.metric }))
 		this.store.dispatch(setColorMetric({ value: metric.metric }))
