@@ -7,6 +7,7 @@ buildscript {
     mavenCentral()
     maven(url = "https://plugins.gradle.org/m2/")
     maven(url = "https://jitpack.io")
+    maven(url = "https://s01.oss.sonatype.org/content/repositories/snapshots/")
   }
 }
 

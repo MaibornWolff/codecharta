@@ -13,6 +13,7 @@ juniversalchardet = "1.0.3"
 kotlin-inquirer = "0.1.0"
 kotlin = "1.9.23"
 kotlinx-coroutines = "1.8.0"
+kotter = "1.1.3-SNAPSHOT"
 picocli = "4.7.5"
 slf4j = "2.0.13"
 sonar-java = "6.8.0.23379"
@@ -38,6 +39,8 @@ slf4j-simple = { group = "org.slf4j", name = "slf4j-simple", version.ref = "slf4
 picocli = { group = "info.picocli", name = "picocli", version.ref = "picocli" }
 univocity-parsers = { group = "com.univocity", name = "univocity-parsers", version.ref = "univocity-parsers" }
 kotlin-inquirer = { group = "com.github.kotlin-inquirer", name = "kotlin-inquirer", version.ref = "kotlin-inquirer" }
+kotter = { group = "com.varabyte.kotter", name = "kotter-jvm", version.ref = "kotter" }
+kotter-test = { group = "com.varabyte.kotterx", name = "kotter-test-support-jvm", version.ref = "kotter" }
 kotlin-test = { group = "org.jetbrains.kotlin", name = "kotlin-test", version.ref = "kotlin" }
 kotlin-reflect = { group = "org.jetbrains.kotlin", name = "kotlin-reflect", version.ref = "kotlin" }
 assertj-core = { group = "org.assertj", name = "assertj-core", version.ref = "assertj" }
