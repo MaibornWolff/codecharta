@@ -56,7 +56,7 @@
 			<div *ngIf="data.analyzedProgrammingLanguage.length" class="title">
 				<button data-testid="Unsuspicious Metrics" class="untracked-metrics-button" (click)="toggleUnsuspiciousMetricsVisibility()">
 					Unsuspicious metrics in {{ data.analyzedProgrammingLanguage }} code
-					<i class="fa fa-caret-down untracked-metrics-icon"></i>
+					<i class="fa fa-caret-up untracked-metrics-icon"></i>
 				</button>
 			</div>
 			<ul data-testid="List of Unsuspicious Metrics in ts Code" *ngIf="isUnsuspiciuosMetricsVisible">
@@ -67,7 +67,7 @@
 			<div *ngIf="data.analyzedProgrammingLanguage.length" class="title">
 				<button data-testid="Untracked Metrics" class="untracked-metrics-button" (click)="toggleUntrackedMetricsVisibility()">
 					Untracked metrics in {{ data.analyzedProgrammingLanguage }} code
-					<i class="fa fa-caret-down untracked-metrics-icon"></i>
+					<i class="fa fa-caret-up untracked-metrics-icon"></i>
 				</button>
 			</div>
 			<ul data-testid="List of Untracked Metrics in ts Code" *ngIf="isUntrackedMetricsVisible">

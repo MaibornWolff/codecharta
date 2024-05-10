@@ -19,7 +19,6 @@ cc-artificial-intelligence {
 	max-width: 50em;
 
 	.title {
-		margin-bottom: 8px;
 		font-weight: bold;
 	}
 
@@ -28,9 +27,9 @@ cc-artificial-intelligence {
 		color: black;
 		cursor: pointer;
 		font-weight: bold;
-		padding: 8px;
 		width: 100%;
 		border: none;
+		padding: 0;
 		text-align: left;
 		font-size: 16px;
 	}
@@ -41,6 +40,7 @@ cc-artificial-intelligence {
 	}
 
 	.suspicious-metric-title {
+		font-size: 20px;
 		font-weight: bold;
 
 		.suspicious-metric-info-button {
@@ -59,7 +59,8 @@ cc-artificial-intelligence {
 	}
 
 	.new-section {
-		margin-top: 16px;
+		margin-top: 4px;
+		margin-bottom: 8px;
 	}
 
 	ul {
@@ -69,7 +70,7 @@ cc-artificial-intelligence {
 
 	&.suspicious-metric-panel .suspicious-metric {
 		&:not(:last-child) {
-			margin-bottom: 12px;
+			margin-bottom: 8px;
 		}
 
 		button {
