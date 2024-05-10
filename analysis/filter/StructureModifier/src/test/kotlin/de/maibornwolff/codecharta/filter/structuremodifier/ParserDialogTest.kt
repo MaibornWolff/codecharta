@@ -4,6 +4,7 @@ import com.varabyte.kotter.foundation.input.Keys
 import com.varabyte.kotterx.test.foundation.input.press
 import com.varabyte.kotterx.test.foundation.testSession
 import com.varabyte.kotterx.test.terminal.type
+import de.maibornwolff.codecharta.filter.structuremodifier.ParserDialog.Companion.callTestFun
 import de.maibornwolff.codecharta.filter.structuremodifier.ParserDialog.Companion.myCollectParserArgs
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -267,6 +268,26 @@ class ParserDialogTest {
 
             // then
             assertThat(parseResult.matchedPositional(0).getValue<File>().path).isEqualTo(sampleProjectPath.toString())
+        }
+    }
+
+    @Test
+    fun `test if calling the function that calls fun1 from here becomes flaky`() {
+        val testString = "Long input that should test if the length has any effect on anything"
+        var result: String
+        testSession { terminal ->
+            result =
+            callTestFun(
+            callback1 = {
+                terminal.type(testString)
+                terminal.press(Keys.ENTER)
+            },
+            callback2 = {
+                terminal.type(testString)
+                terminal.press(Keys.ENTER)
+            },
+            )
+            assertThat(result).isEqualTo(testString + testString)
         }
     }
 }

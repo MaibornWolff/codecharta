@@ -6,6 +6,8 @@ import com.varabyte.kotter.runtime.Session
 import de.maibornwolff.codecharta.tools.inquirer.myPromptInput
 import de.maibornwolff.codecharta.tools.inquirer.myPromptInputNumber
 import de.maibornwolff.codecharta.tools.inquirer.myPromptList
+import de.maibornwolff.codecharta.tools.inquirer.testFun1
+import de.maibornwolff.codecharta.tools.inquirer.testFun2
 import de.maibornwolff.codecharta.tools.inquirer.util.InputValidator
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import java.io.File
@@ -19,6 +21,24 @@ class ParserDialog {
             return res
         }
 
+        fun Session.callTestFun(
+            callback1: suspend RunScope.() -> Unit = {},
+            callback2: suspend RunScope.() -> Unit = {},
+        ): String {
+            val result1: String =
+                testFun1(
+//                    message = "any test meessage",
+                    callback = callback1,
+                )
+            val result2: String =
+                testFun2(
+                    callback = callback2,
+                )
+
+            return result1 + result2
+        }
+
+        // TODO: check if its a problem that this is in a companion object
         internal fun Session.myCollectParserArgs(
         fileCallback: suspend RunScope.() -> Unit = {},
         actionCallback: suspend RunScope.() -> Unit = {},
