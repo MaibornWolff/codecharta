@@ -35,7 +35,7 @@ onInputReady: suspend RunScope.() -> Unit,
     var hintText = hint
     var isInputValid by liveVarOf(true)
     section {
-        drawInput(message, hintText, isInputValid, allowEmptyInput, invalidInputMessage, lastUserInput)
+        drawInput(message, hintText, isInputValid, allowEmptyInput, invalidInputMessage, lastUserInput.isEmpty())
     }.runUntilSignal {
         onInputChanged { isInputValid = true }
         onInputEntered {
@@ -59,7 +59,7 @@ hint: String,
 isInputValid: Boolean,
 allowEmptyInput: Boolean,
 invalidInputMessage: String,
-lastUserInput: String,
+lastInputEmpty: Boolean,
 ) {
     bold {
         green { text("? ") }
@@ -67,7 +67,7 @@ lastUserInput: String,
         if (isInputValid) {
             black(isBright = true) { textLine(if (allowEmptyInput) "  Empty input is allowed" else "") }
         } else {
-            red { textLine(if (lastUserInput.isEmpty()) "  Empty input is not allowed!" else "  $invalidInputMessage") }
+            red { textLine(if (lastInputEmpty) "  Empty input is not allowed!" else "  $invalidInputMessage") }
         }
     }
     text("> ")
@@ -86,7 +86,7 @@ onInputReady: suspend RunScope.() -> Unit,
     var hintText = hint
     var isInputValid by liveVarOf(true)
     section {
-        drawInput(message, hintText, isInputValid, allowEmptyInput, invalidInputMessage, lastUserInput)
+        drawInput(message, hintText, isInputValid, allowEmptyInput, invalidInputMessage, lastUserInput.isEmpty())
     }.runUntilSignal {
         onInputChanged {
         isInputValid = true
@@ -331,4 +331,53 @@ allowEmptyInput: Boolean = false,
 hint: String = "SPACE to select, ENTER to confirm selection",
 ): List<String> {
     return myPromptCheckbox(message, choices, hint, allowEmptyInput, onInputReady = {})
+}
+
+fun MainRenderScope.drawFun(isInputEmpty: Boolean, sleepTimer: Long) {
+    text("text before sleeping; empty input is $isInputEmpty")
+    textLine("; input:")
+    input()
+    Thread.sleep(sleepTimer)
+}
+
+fun Session.testFun1(
+//    message: String,
+    callback: suspend RunScope.() -> Unit): String {
+    var userInput = "-1"
+    var emptyInput by liveVarOf(true)
+    section {
+//        drawInput(
+//            message = message,
+//            hint = "",
+//            isInputValid = true,
+//            allowEmptyInput = false,
+//            invalidInputMessage = "invald",
+//            "a"
+//        )
+        drawFun(emptyInput,0)
+    }.runUntilSignal {
+        onInputChanged { emptyInput = !emptyInput }
+        onInputEntered {
+            signal()
+            userInput = input
+        }
+        callback()
+    }
+    return userInput
+}
+
+fun Session.testFun2(callback: suspend RunScope.() -> Unit): String {
+    var userInput = "-1"
+    var emptyInput by liveVarOf(true)
+    section {
+        drawFun(emptyInput, 0)
+    }.runUntilSignal {
+        onInputChanged { emptyInput = !emptyInput }
+        onInputEntered {
+            signal()
+            userInput = input
+        }
+        callback()
+    }
+    return userInput
 }
