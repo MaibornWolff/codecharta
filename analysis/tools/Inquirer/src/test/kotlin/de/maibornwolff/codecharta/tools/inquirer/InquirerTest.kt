@@ -110,18 +110,13 @@ private val testInput = "this is text to simulate user input."
                 onInputReady = {
                     terminal.press(Keys.ENTER)
 
-                    try {
-                    // TODO: check back if try catch block can be removed after dev answer
-                        blockUntilRenderWhen {
-                            terminal.resolveRerenders().stripFormatting() ==
-                            listOf(
-                                "? $testMessage  $emptyInputNotAllowedMessage",
-                                ">  ",
-                                "",
-                            )
-                        }
-                    } catch (ex: TimeoutCancellationException) {
-                        throw AssertionError("Render did not match expected result!\n" + ex.printStackTrace())
+                    blockUntilRenderWhen {
+                        terminal.resolveRerenders().stripFormatting() ==
+                        listOf(
+                            "? $testMessage  $emptyInputNotAllowedMessage",
+                            ">  ",
+                            "",
+                        )
                     }
 
                     terminal.type("irrelevant non empty input")
@@ -168,18 +163,13 @@ private val testInput = "this is text to simulate user input."
                     terminal.type("x")
                     terminal.press(Keys.ENTER)
 
-                    try {
-                    // TODO: check back if try catch block can be removed after dev answer
-                        blockUntilRenderWhen {
-                            terminal.resolveRerenders().stripFormatting() ==
-                            listOf(
-                                "? $testMessage  Input is invalid!",
-                                "> x ",
-                                "",
-                            )
-                        }
-                    } catch (ex: TimeoutCancellationException) {
-                        throw AssertionError("Render did not match expected result!\n" + ex.printStackTrace())
+                    blockUntilRenderWhen {
+                        terminal.resolveRerenders().stripFormatting() ==
+                        listOf(
+                            "? $testMessage  Input is invalid!",
+                            "> x ",
+                            "",
+                        )
                     }
 
                     terminal.type("accepted")
@@ -199,18 +189,13 @@ private val testInput = "this is text to simulate user input."
                     terminal.type("x")
                     terminal.press(Keys.ENTER)
 
-                    try {
-                    // TODO: check back if try catch block can be removed after dev answer
-                        blockUntilRenderWhen {
-                            terminal.resolveRerenders().stripFormatting() ==
-                            listOf(
-                                "? $testMessage  $testInvalidInputMessage",
-                                "> x ",
-                                "",
-                            )
-                        }
-                    } catch (ex: TimeoutCancellationException) {
-                        throw AssertionError("Render did not match expected result!\n" + ex.printStackTrace())
+                    blockUntilRenderWhen {
+                        terminal.resolveRerenders().stripFormatting() ==
+                        listOf(
+                            "? $testMessage  $testInvalidInputMessage",
+                            "> x ",
+                            "",
+                        )
                     }
 
                     terminal.type("accepted")
@@ -462,21 +447,16 @@ private val testInput = "this is text to simulate user input."
                  onInputReady = {
                     terminal.press(Keys.ENTER)
 
-                    try {
-                    // TODO: check back if try catch block can be removed after dev answer
-                        blockUntilRenderWhen {
-                            terminal.resolveRerenders().stripFormatting() ==
-                            listOf(
-                                "? $testMessage  $emptySelectionNotAllowedMessage",
-                                " ❯ ◯ element 0",
-                                "   ◯ element 1",
-                                "   ◯ element 2",
-                                "   ◯ element 3",
-                                "",
-                            )
-                        }
-                    } catch (ex: TimeoutCancellationException) {
-                        throw AssertionError("Render did not match expected result!\n" + ex.printStackTrace())
+                    blockUntilRenderWhen {
+                        terminal.resolveRerenders().stripFormatting() ==
+                        listOf(
+                            "? $testMessage  $emptySelectionNotAllowedMessage",
+                            " ❯ ◯ element 0",
+                            "   ◯ element 1",
+                            "   ◯ element 2",
+                            "   ◯ element 3",
+                            "",
+                        )
                     }
 
                     terminal.press(Keys.SPACE)
@@ -609,6 +589,22 @@ private val testInput = "this is text to simulate user input."
                     "",
             )
             assertThat(result).isEqualTo(elemsToSelect)
+        }
+    }
+
+    @Test
+    fun `does fun1 only type input after the sleep is complete`() {
+        val testString = "Long input that should test if the length has any effect on anything"
+        var result: String
+        testSession { terminal ->
+            result =
+            testFun1(
+//                message = "ta3dadaFafefa",
+                callback = {
+                terminal.type(testString)
+                terminal.press(Keys.ENTER)
+            })
+            assertThat(result).isEqualTo(testString)
         }
     }
 }
