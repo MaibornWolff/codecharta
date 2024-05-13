@@ -14,11 +14,14 @@ cc-artificial-intelligence {
 		line-height: 10px;
 	}
 }
-.mat-mdc-menu-panel.mat-mdc-menu-panel.ai-drop-down {
-	padding: 8px 16px;
+.mat-mdc-menu-panel.ai-drop-down {
 	max-width: 50em;
 
+	.mat-mdc-menu-content {
+		padding: 0;
+	}
 	.title {
+		padding-left: 10px;
 		font-weight: bold;
 	}
 
@@ -29,9 +32,9 @@ cc-artificial-intelligence {
 		font-weight: bold;
 		width: 100%;
 		border: none;
-		padding: 0;
 		text-align: left;
 		font-size: 16px;
+		padding: 0 0 2px 0;
 	}
 
 	.untracked-metrics-icon {
@@ -42,6 +45,7 @@ cc-artificial-intelligence {
 	.suspicious-metric-title {
 		font-size: 20px;
 		font-weight: bold;
+		padding-left: 10px;
 
 		.suspicious-metric-info-button {
 			font-size: 18px;
@@ -65,16 +69,17 @@ cc-artificial-intelligence {
 
 	ul {
 		margin-block: 0;
-		padding-inline: 32px;
+		padding-bottom: 4px;
 	}
 
 	&.suspicious-metric-panel .suspicious-metric {
 		&:not(:last-child) {
 			margin-bottom: 8px;
+			padding: 0 10px;
 		}
 
 		button {
-			height: 36px;
+			height: 28px;
 			background-color: rgba(230, 230, 230, 0.96);
 			&:hover {
 				background-color: #c8c8c8;
@@ -84,13 +89,13 @@ cc-artificial-intelligence {
 		.metric-button {
 			border-radius: 5px;
 			padding: 0 12px;
-			font-size: 16px;
+			font-size: 12px;
 		}
 
 		.risk-button {
-			border-radius: 0 5px 5px 0;
+			border-radius: 5px;
 			margin-left: 4px;
-			font-size: 16px;
+			font-size: 12px;
 			color: #9c0e6a;
 		}
 	}
