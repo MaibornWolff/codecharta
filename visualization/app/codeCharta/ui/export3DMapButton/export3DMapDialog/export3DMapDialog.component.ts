@@ -30,6 +30,7 @@ interface Printer {
 @Component({
 	selector: "export3DMapDialog.component",
 	templateUrl: "./export3DMapDialog.component.html",
+	styleUrls: ["./export3DMapDialog.component.scss"],
 	encapsulation: ViewEncapsulation.None
 })
 export class Export3DMapDialogComponent {
@@ -44,9 +45,9 @@ export class Export3DMapDialogComponent {
 	frontText = "CodeCharta"
 
 	printers: Printer[] = [
-		{ name: "Prusa MK3S", x: 245, y: 205, z: 205, numberOfColors: 1 },
-		{ name: "Bambu A1", x: 251, y: 251, z: 251, numberOfColors: 4 },
-		{ name: "Prusa XL", x: 355, y: 335, z: 355, numberOfColors: 5 }
+		{ name: "Prusa MK3S (single color)", x: 245, y: 205, z: 205, numberOfColors: 1 },
+		{ name: "BambuLabs A1 + AMS (4 colors)", x: 251, y: 251, z: 251, numberOfColors: 4 },
+		{ name: "Prusa XL (5 colors)", x: 355, y: 335, z: 355, numberOfColors: 5 }
 	]
 	selectedPrinter: Printer = this.printers[2]
 	private currentNumberOfColors: number
@@ -161,6 +162,7 @@ export class Export3DMapDialogComponent {
 
 	private initRenderer(printPreviewScene, camera) {
 		const renderer = new WebGLRenderer()
+		renderer.setSize(600 - 32, 450)
 		this.rendererContainer.nativeElement.appendChild(renderer.domElement)
 
 		const controls = new OrbitControls(camera, renderer.domElement)

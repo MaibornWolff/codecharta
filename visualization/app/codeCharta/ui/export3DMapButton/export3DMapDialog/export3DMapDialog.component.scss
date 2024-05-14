@@ -1,0 +1,25 @@
+@use "../../../../material/theme";
+
+.cc-export-3D-map-dialog .mat-mdc-dialog-container {
+	width: 36vw;
+	min-width: 600px;
+
+	.cc-export-3D-map-dialog-content {
+		padding: 0 16px;
+		display: flex;
+		flex-direction: column;
+		gap: 26px;
+	}
+
+	mat-slider {
+		width: 500px;
+	}
+
+	mat-form-field {
+		margin-bottom: -24px;
+	}
+
+	input[type="file"] {
+		margin-top: 16px;
+	}
+}
