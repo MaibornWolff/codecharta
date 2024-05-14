@@ -24,7 +24,7 @@ export class Export3DMapButtonComponent {
 			})
 		} else {
 			this.dialog.open(Export3DMapDialogComponent, {
-				panelClass: ".cc-export-3D-map-dialog"
+				panelClass: "cc-export-3D-map-dialog"
 			})
 		}
 	}
@@ -46,7 +46,7 @@ export class Export3DMapButtonComponent {
 					if (colorMode === ColorMode.absolute) {
 						setTimeout(() => {
 							this.dialog.open(Export3DMapDialogComponent, {
-								panelClass: ".cc-export-3D-map-dialog"
+								panelClass: "cc-export-3D-map-dialog"
 							})
 						}, 100) //TODO: find a better way to wait for the colors to update without using setTimeout
 					}

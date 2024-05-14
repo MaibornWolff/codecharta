@@ -1,54 +1,64 @@
 <mat-toolbar color="primary">3D Print CodeCharta Map</mat-toolbar>
 
 <div class="cc-export-3D-map-dialog-content">
-	<div #rendererContainer></div>
+	<div class="preview" #rendererContainer></div>
 
-	<mat-form-field>
-		<mat-label>Select Printer</mat-label>
+	<mat-form-field appearance="outline">
+		<mat-label>Printer preset</mat-label>
 		<mat-select (selectionChange)="onSelectedPrinterChange()" [(value)]="selectedPrinter">
 			<mat-option *ngFor="let printer of printers" [value]="printer">{{ printer.name }}</mat-option>
 		</mat-select>
 	</mat-form-field>
 
-	<div class="slider-container">
-		<mat-slider (change)="onScaleChange()" [max]="maxWidth" discrete="true" min="100" step="1">
-			<input #slider [(ngModel)]="wantedWidth" matSliderThumb />
-		</mat-slider>
-	</div>
+	<mat-card appearance="outlined">
+		<mat-card-header>Scale:</mat-card-header>
+		<mat-card-content>
+			<div class="slider-container">
+				<mat-slider (change)="onScaleChange()" [max]="maxWidth" discrete="true" min="100" step="1">
+					<input #slider [(ngModel)]="wantedWidth" matSliderThumb />
+				</mat-slider>
+			</div>
 
-	<div>
-		<span>Width: {{ (currentSize.x / 10).toFixed(1) }}cm (max. {{ (selectedPrinter.x / 10).toFixed(1) }} )</span>
-		<br />
-		<span>Depth: {{ (currentSize.y / 10).toFixed(1) }}cm (max. {{ (selectedPrinter.y / 10).toFixed(1) }} )</span>
-		<br />
-		<span>Height: {{ (currentSize.z / 10).toFixed(1) }}cm (max. {{ (selectedPrinter.z / 10).toFixed(1) }} )</span>
-	</div>
+			<div>
+				<span>Width: {{ (currentSize.x / 10).toFixed(1) }}cm (max. {{ (selectedPrinter.x / 10).toFixed(1) }} )</span>
+				<br />
+				<span>Depth: {{ (currentSize.y / 10).toFixed(1) }}cm (max. {{ (selectedPrinter.y / 10).toFixed(1) }} )</span>
+				<br />
+				<span>Height: {{ (currentSize.z / 10).toFixed(1) }}cm (max. {{ (selectedPrinter.z / 10).toFixed(1) }} )</span>
+			</div>
+		</mat-card-content>
+	</mat-card>
 
-	<div>
-		<mat-form-field>
-			<input matInput [(ngModel)]="frontText" (input)="onFrontTextChange()" />
-		</mat-form-field>
-	</div>
+	<mat-form-field appearance="outline">
+		<mat-label>Bottom center label text</mat-label>
+		<input matInput [(ngModel)]="frontText" (input)="onFrontTextChange()" />
+	</mat-form-field>
 
-	<div>
-		<input type="file" (change)="onFileSelected($event)" accept=".svg" />
-		<div [hidden]="!isFileSelected">
-			<button (click)="onRotateLogo()" mat-button title="Rotate Logo Button">
-				<span><i class="fa fa-rotate-right"></i> Rotate Logo</span>
-			</button>
-			<button (click)="onFlipLogo()" mat-button title="Flip Logo Button">
-				<span><i class="fa fa-arrows-h"></i> Flip Logo</span>
-			</button>
-			<cc-labelled-color-picker [hexColor]="logoColor" (onColorChange)="onLogoColorChange($event)" [labels]="['Color']">
-			</cc-labelled-color-picker>
-		</div>
-	</div>
+	<mat-card appearance="outlined">
+		<mat-card-header>Bottom left logo (SVG):</mat-card-header>
+		<mat-card-content>
+			<input type="file" (change)="onFileSelected($event)" accept=".svg" />
 
-	<button (click)="download3MFFile()" [disabled]="!isPrintMeshLoaded" mat-button title="Download 3MF Button">
-		<span><i class="fa fa-download"></i> Download 3MF</span>
-	</button>
+			<div [hidden]="!isFileSelected">
+				<button (click)="onRotateLogo()" mat-button title="Rotate Logo Button">
+					<span><i class="fa fa-rotate-right"></i> Rotate Logo</span>
+				</button>
+				<button (click)="onFlipLogo()" mat-button title="Flip Logo Button">
+					<span><i class="fa fa-arrows-h"></i> Flip Logo</span>
+				</button>
+				<cc-labelled-color-picker [hexColor]="logoColor" (onColorChange)="onLogoColorChange($event)" [labels]="['Color']">
+				</cc-labelled-color-picker>
+			</div>
+		</mat-card-content>
+	</mat-card>
 
-	<button (click)="downloadStlFile()" mat-button title="Download Stl Button">
-		<span><i class="fa fa-download"></i> Download minimal Stl</span>
-	</button>
+	<mat-dialog-actions align="end">
+		<button (click)="download3MFFile()" [disabled]="!isPrintMeshLoaded" mat-button title="Download 3MF Button">
+			<span><i class="fa fa-download"></i> Download 3MF</span>
+		</button>
+
+		<button (click)="downloadStlFile()" mat-button title="Download Stl Button">
+			<span><i class="fa fa-download"></i> Download minimal STL</span>
+		</button>
+	</mat-dialog-actions>
 </div>

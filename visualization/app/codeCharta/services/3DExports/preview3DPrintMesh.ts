@@ -212,12 +212,12 @@ export class Preview3DPrintMesh {
 	}
 
 	async addCustomLogo(dataUrl: string): Promise<void> {
-		const customLogoMesh = await this.createSvgMesh(dataUrl, logoHeight, logoSize)
+		this.customLogoMesh = await this.createSvgMesh(dataUrl, logoHeight, logoSize)
 
-		this.updateCustomLogoPosition(customLogoMesh, this.currentSize.x)
-		customLogoMesh.name = "Custom Logo"
+		this.updateCustomLogoPosition(this.customLogoMesh, this.currentSize.x)
+		this.customLogoMesh.name = "Custom Logo"
 
-		this.printMesh.attach(customLogoMesh)
+		this.printMesh.attach(this.customLogoMesh)
 	}
 
 	rotateCustomLogo() {
