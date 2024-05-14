@@ -12,8 +12,7 @@ import org.junit.jupiter.api.Test
 import java.time.OffsetDateTime
 
 class ProjectConverterTest {
-
-    private val metricsFactory = mockk<MetricsFactory>()
+private val metricsFactory = mockk<MetricsFactory>()
 
     @BeforeEach
     fun setup() {
@@ -26,8 +25,7 @@ class ProjectConverterTest {
 
     @Test
     @Throws(Exception::class)
-    fun `can create an empty project`() {
-        // given
+    fun `can create an empty project`() { // given
         val projectConverter = ProjectConverter(true)
 
         // when
@@ -38,8 +36,7 @@ class ProjectConverterTest {
     }
 
     @Test
-    fun `can convert project with authors`() {
-        // given
+    fun `can convert project with authors`() { // given
         val projectConverter = ProjectConverter(true)
         val file1 = VersionControlledFile("File 1", metricsFactory)
         file1.registerCommit(Commit("Author", modificationsByFilename("File 1", "File 2"), OffsetDateTime.now()))
@@ -52,8 +49,7 @@ class ProjectConverterTest {
     }
 
     @Test
-    fun `can convert project without authors`() {
-        // given
+    fun `can convert project without authors`() { // given
         val projectConverter = ProjectConverter(false)
         val file1 = VersionControlledFile("File 1", metricsFactory)
         file1.registerCommit(Commit("Author", modificationsByFilename("File 1", "File 2"), OffsetDateTime.now()))
@@ -66,8 +62,7 @@ class ProjectConverterTest {
     }
 
     @Test
-    fun `edges are registered in project`() {
-        // given
+    fun `edges are registered in project`() { // given
         val projectConverter = ProjectConverter(true)
         val metricsFactory = MetricsFactory().createMetrics()
         val file1 = VersionControlledFile("File 1", metricsFactory)

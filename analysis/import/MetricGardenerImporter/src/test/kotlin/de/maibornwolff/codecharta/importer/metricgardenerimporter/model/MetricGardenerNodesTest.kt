@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
 class MetricGardenerNodesTest {
-    private val mapper = jacksonObjectMapper()
+private val mapper = jacksonObjectMapper()
 
     @Test
     fun `Should deserialize node-list when node-list contains valid properties only`() {
@@ -45,8 +45,23 @@ class MetricGardenerNodesTest {
 
         // when
         val metricGardenerNodes = mapper.readValue(json, MetricGardenerNodes::class.java)
-        val metricGardenerNode1 = MetricGardenerNode("\\test-project\\path1\\test-project.path1.Logic\\Service\\TestService.kt", "File", mapOf("mcc" to 3, "functions" to 3, "classes" to 1, "lines_of_code" to 79, "comment_lines" to 32, "real_lines_of_code" to 40))
-        val metricGardenerNode2 = MetricGardenerNode("\\test-project\\path1\\test-project.path1.Logic\\Service\\UserLogonService.kt", "File", mapOf("mcc" to 34, "functions" to 8, "classes" to 1, "lines_of_code" to 188, "comment_lines" to 0, "real_lines_of_code" to 155))
+        val metricGardenerNode1 =
+                MetricGardenerNode(
+                        "\\test-project\\path1\\test-project.path1.Logic\\Service\\TestService.kt", "File",
+                        mapOf(
+                                "mcc" to 3, "functions" to 3, "classes" to 1, "lines_of_code" to 79,
+                                "comment_lines" to 32, "real_lines_of_code" to 40,
+                             ),
+                                  )
+        val metricGardenerNode2 =
+                MetricGardenerNode(
+                        "\\test-project\\path1\\test-project.path1.Logic\\Service\\UserLogonService.kt",
+                        "File",
+                        mapOf(
+                                "mcc" to 34, "functions" to 8, "classes" to 1, "lines_of_code" to 188,
+                                "comment_lines" to 0, "real_lines_of_code" to 155,
+                             ),
+                                  )
         val metricGardenerNodesA = MetricGardenerNodes(mutableListOf(metricGardenerNode1, metricGardenerNode2))
 
         // then
@@ -94,8 +109,23 @@ class MetricGardenerNodesTest {
 
         // when
         val metricGardenerNodes = mapper.readValue(json, MetricGardenerNodes::class.java)
-        val metricGardenerNode1 = MetricGardenerNode("\\test-project\\path1\\test-project.path1.Logic\\Service\\TestService.kt", "File", mapOf("mcc" to 3, "functions" to 3, "classes" to 1, "lines_of_code" to 79, "comment_lines" to 32, "real_lines_of_code" to 40))
-        val metricGardenerNode2 = MetricGardenerNode("\\test-project\\path1\\test-project.path1.Logic\\Service\\UserLogonService.kt", "File", mapOf("mcc" to 34, "functions" to 8, "classes" to 1, "lines_of_code" to 188, "comment_lines" to 0, "real_lines_of_code" to 155))
+        val metricGardenerNode1 =
+                MetricGardenerNode(
+                        "\\test-project\\path1\\test-project.path1.Logic\\Service\\TestService.kt", "File",
+                        mapOf(
+                                "mcc" to 3, "functions" to 3, "classes" to 1, "lines_of_code" to 79,
+                                "comment_lines" to 32, "real_lines_of_code" to 40,
+                             ),
+                                  )
+        val metricGardenerNode2 =
+                MetricGardenerNode(
+                        "\\test-project\\path1\\test-project.path1.Logic\\Service\\UserLogonService.kt",
+                        "File",
+                        mapOf(
+                                "mcc" to 34, "functions" to 8, "classes" to 1, "lines_of_code" to 188,
+                                "comment_lines" to 0, "real_lines_of_code" to 155,
+                             ),
+                                  )
         val metricGardenerNodesA = MetricGardenerNodes(mutableListOf(metricGardenerNode1, metricGardenerNode2))
 
         // then

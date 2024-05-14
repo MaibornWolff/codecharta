@@ -1,12 +1,12 @@
 import { TestBed } from "@angular/core/testing"
-import { render, screen } from "@testing-library/angular"
+import { Store } from "@ngrx/store"
+import { render, screen, waitFor } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
 import { setColorMetric } from "../../../../state/store/dynamicSettings/colorMetric/colorMetric.actions"
 import { setColorRange } from "../../../../state/store/dynamicSettings/colorRange/colorRange.actions"
 import { setHeightMetric } from "../../../../state/store/dynamicSettings/heightMetric/heightMetric.actions"
 import { ArtificialIntelligenceModule } from "../artificialIntelligence.module"
 import { SuspiciousMetricComponent } from "./suspiciousMetrics.component"
-import { Store } from "@ngrx/store"
 
 describe("SuspiciousMetricsComponent", () => {
 	beforeEach(() => {
@@ -32,7 +32,7 @@ describe("SuspiciousMetricsComponent", () => {
 			expect(container.querySelector(".suspicious-metrics-badge")).not.toBe(null)
 
 			await userEvent.click(screen.getByTitle("Open Suspicious Metrics Panel"))
-			expect(container.querySelector(".suspicious-metrics-badge")).toBe(null)
+			await waitFor(() => expect(container.querySelector(".suspicious-metrics-badge")).toBe(null))
 
 			await rerender({
 				componentProperties: {
@@ -62,7 +62,7 @@ describe("SuspiciousMetricsComponent", () => {
 			expect(container.querySelector(".suspicious-metrics-badge")).not.toBe(null)
 
 			await userEvent.click(screen.getByTitle("Open Suspicious Metrics Panel"))
-			expect(container.querySelector(".suspicious-metrics-badge")).toBe(null)
+			await waitFor(() => expect(container.querySelector(".suspicious-metrics-badge")).toBe(null))
 
 			await rerender({
 				componentProperties: {

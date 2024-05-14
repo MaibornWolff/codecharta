@@ -13,7 +13,11 @@ import de.maibornwolff.codecharta.model.Project
 import java.lang.reflect.Type
 
 class ProjectJsonDeserializer : JsonDeserializer<Project> {
-    override fun deserialize(json: JsonElement, typeOfT: Type?, context: JsonDeserializationContext): Project {
+override fun deserialize(
+json: JsonElement,
+typeOfT: Type?,
+context: JsonDeserializationContext,
+): Project {
         val jsonNode = json.asJsonObject
 
         val listOfNodesType = object : TypeToken<List<Node>>() {}.type
@@ -27,16 +31,17 @@ class ProjectJsonDeserializer : JsonDeserializer<Project> {
         val apiVersion = jsonNode.get("apiVersion")?.asString ?: Project.API_VERSION
         val edges = context.deserialize<List<Edge>>(jsonNode.get("edges"), listOfEdgesType) ?: listOf()
         val attributeTypes =
-            context.deserialize<Map<String, MutableMap<String, AttributeType>>>(
-                jsonNode.get("attributeTypes"),
-                mapOfAttributeTypes
-            ) ?: mapOf()
-        val attributeDescriptors = context.deserialize<Map<String, AttributeDescriptor>>(
-            jsonNode.get("attributeDescriptors"),
-            mapOfAttributeDescriptors
-        ) ?: mapOf()
+                context.deserialize<Map<String, MutableMap<String, AttributeType>>>(
+                        jsonNode.get("attributeTypes"),
+                        mapOfAttributeTypes,
+                                                                                   ) ?: mapOf()
+        val attributeDescriptors =
+                context.deserialize<Map<String, AttributeDescriptor>>(
+                        jsonNode.get("attributeDescriptors"),
+                        mapOfAttributeDescriptors,
+                                                                     ) ?: mapOf()
         val blacklist =
-            context.deserialize<List<BlacklistItem>>(jsonNode.get("blacklist"), listOfBlacklistType) ?: listOf()
+                context.deserialize<List<BlacklistItem>>(jsonNode.get("blacklist"), listOfBlacklistType) ?: listOf()
 
         return Project(projectName, nodes, apiVersion, edges, attributeTypes, attributeDescriptors, blacklist)
     }

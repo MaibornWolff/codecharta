@@ -9,10 +9,12 @@
 <h4 align="center">a beautiful tool to help you visualize and understand code in 3D.</h4>
 
 <p align="center">
-  <a href="">
-    <img src="https://github.com/MaibornWolff/codecharta/actions/workflows/release.yml/badge.svg"
-         alt="Build Status">
-  </a>
+    <a href="https://github.com/MaibornWolff/codecharta/actions/workflows/release-analysis.yml">
+        <img src="https://github.com/MaibornWolff/codecharta/actions/workflows/release-analysis.yml/badge.svg" alt="Release Analysis">
+    </a>
+    <a href="https://github.com/MaibornWolff/codecharta/actions/workflows/release-visualization.yml">
+        <img src="https://github.com/MaibornWolff/codecharta/actions/workflows/release-visualization.yml/badge.svg" alt="Release Visualization">
+    </a>
   <a href="https://sonarcloud.io/dashboard?id=maibornwolff-gmbh_codecharta_analysis">
     <img src="https://sonarcloud.io/api/project_badges/measure?project=maibornwolff-gmbh_codecharta_analysis&metric=alert_status" alt="Quality Gate Analysis"></a>
   <a href="https://sonarcloud.io/dashboard?id=maibornwolff-gmbh_codecharta_visualization">
@@ -22,10 +24,10 @@
 
 <p align="center">
 Latest Release: <br>
- Analysis <a href="https://github.com/MaibornWolff/codecharta/releases/tag/ana-1.122.1">1.122.1</a> | Visualization <a href="https://github.com/MaibornWolff/codecharta/releases/tag/vis-1.123.0">1.123.0</a>
+ Analysis <a href="https://github.com/MaibornWolff/codecharta/releases/tag/ana-1.123.0">1.123.0</a> | Visualization <a href="https://github.com/MaibornWolff/codecharta/releases/tag/vis-1.125.0">1.125.0</a>
 
 [comment]: ##################################################################################
-[comment]: <DO NOT MOVE THE LINKS TO THE RELEASE FROM LINE 25 OR THE RELEASE SCRIPT WILL CRASH>
+[comment]: <Ensure that the words 'latest release' are above the line with the links>
 [comment]: ##################################################################################
 
 </p>
@@ -55,14 +57,6 @@ Latest Release: <br>
     -   It generates `.cc.json` files for CC Visualization through a Command-Line-Tool.
     -   It includes some pre-defined importers for e.g. [SonarQube](https://maibornwolff.github.io/codecharta/docs/sonar-importer), [SourceMonitor](https://maibornwolff.github.io/codecharta/docs/sourcemonitorimporter), [Git](https://maibornwolff.github.io/codecharta/docs/git-log-parser), generic [CSV](https://maibornwolff.github.io/codecharta/docs/csv-importer) data
     -   It also includes commands to [validate]() and [merge]() multiple `.cc.json` files.
-
-## Experimental Features
-
--   **In CodeCharta Visualization:**
-
-    -   **Suspicious Metrics:** Highlight files with suspicious metrics and a _risk profile analysis_ of the code based on the cyclomatic complexity.
-
-> **NOTE:** You can enable them from the settings panel.
 
 ## Requirements
 

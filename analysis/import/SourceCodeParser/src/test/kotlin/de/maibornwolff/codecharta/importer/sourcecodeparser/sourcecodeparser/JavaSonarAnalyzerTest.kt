@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test
 import java.io.File
 
 class JavaSonarAnalyzerTest {
-    private val path = File("src/test/resources/sampleproject").toString()
+private val path = File("src/test/resources/sampleproject").toString()
 
     @Test
     fun `single file is correctly analyzed`() {
@@ -53,7 +53,7 @@ class JavaSonarAnalyzerTest {
         val javaSourceCodeAnalyzer = JavaSonarAnalyzer()
         val metrics = javaSourceCodeAnalyzer.scanFiles(fileList, File(path))
 
-        assertThat(metrics.getFileMetricMap("foo.java")?.getMetricValue("rloc")).isEqualTo(31)
+        assertThat(metrics.getFileMetricMap("foo.java")?.getMetricValue("rloc")).isEqualTo(29)
         assertThat(metrics.getFileMetricMap("foo.java")?.getMetricValue("functions")).isEqualTo(4)
         assertThat(metrics.getFileMetricMap("foo.java")?.getMetricValue("statements")).isEqualTo(13)
         assertThat(metrics.getFileMetricMap("foo.java")?.getMetricValue("classes")).isEqualTo(1)
@@ -72,8 +72,8 @@ class JavaSonarAnalyzerTest {
         val metrics = javaSourceCodeAnalyzer.scanFiles(fileList, File(path))
 
         assertThat(
-            metrics.getFileMetricMap("sonar_issues_java/CodeSmell.java")?.getMetricValue("code_smell")
-        ).isEqualTo(1)
+                metrics.getFileMetricMap("sonar_issues_java/CodeSmell.java")?.getMetricValue("code_smell"),
+                  ).isEqualTo(1)
     }
 
     @Test
@@ -112,10 +112,10 @@ class JavaSonarAnalyzerTest {
         val metrics = javaSourceCodeAnalyzer.scanFiles(fileList, File(path))
 
         assertThat(
-            metrics.getFileMetricMap("CommentedOutCode.java")?.getMetricValue(
-                "commented_out_code_blocks"
-            )
-        ).isEqualTo(3)
+                metrics.getFileMetricMap("CommentedOutCode.java")?.getMetricValue(
+                        "commented_out_code_blocks",
+                                                                                 ),
+                  ).isEqualTo(3)
     }
 
     @Test

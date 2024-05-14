@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test
 import java.io.File
 
 class ProjectMetricsCollectorTest {
-    private val defaultExclude = listOf<String>()
+private val defaultExclude = listOf<String>()
     private val defaultFileExtensions = listOf<String>()
     private val defaultMetricNames = listOf<String>()
     private val defaultVerbose = false
@@ -24,15 +24,16 @@ class ProjectMetricsCollectorTest {
     @Test
     fun `Should correctly collect information when given a single file as input`() {
         // when
-        val projectMetrics = ProjectMetricsCollector(
-                File("src/test/resources/sampleproject/tabs.included").absoluteFile,
-                defaultExclude,
-                defaultFileExtensions,
-                defaultMetricNames,
-                defaultVerbose,
-                defaultMaxIndentLvl,
-                defaultTabWidth
-                                            ).parseProject()
+        val projectMetrics =
+                ProjectMetricsCollector(
+                        File("src/test/resources/sampleproject/tabs.included").absoluteFile,
+                        defaultExclude,
+                        defaultFileExtensions,
+                        defaultMetricNames,
+                        defaultVerbose,
+                        defaultMaxIndentLvl,
+                        defaultTabWidth,
+                                       ).parseProject()
 
         // then
         Assertions.assertThat(projectMetrics.metricsMap.size).isEqualTo(1)
@@ -43,15 +44,16 @@ class ProjectMetricsCollectorTest {
     @Test
     fun `Should correctly collect information about all files when a folder was given as input`() {
         // when
-        val projectMetrics = ProjectMetricsCollector(
-                File("src/test/resources/sampleproject").absoluteFile,
-                defaultExclude,
-                defaultFileExtensions,
-                defaultMetricNames,
-                defaultVerbose,
-                defaultMaxIndentLvl,
-                defaultTabWidth
-                                            ).parseProject()
+        val projectMetrics =
+                ProjectMetricsCollector(
+                        File("src/test/resources/sampleproject").absoluteFile,
+                        defaultExclude,
+                        defaultFileExtensions,
+                        defaultMetricNames,
+                        defaultVerbose,
+                        defaultMaxIndentLvl,
+                        defaultTabWidth,
+                                       ).parseProject()
 
         // then
         Assertions.assertThat(projectMetrics.metricsMap.size).isEqualTo(5)
@@ -63,15 +65,16 @@ class ProjectMetricsCollectorTest {
     @Test
     fun `Should not include folders (only files) when given a folder as input`() {
         // when
-        val projectMetrics = ProjectMetricsCollector(
-                File("src/test/resources/sampleproject").absoluteFile,
-                defaultExclude,
-                defaultFileExtensions,
-                defaultMetricNames,
-                defaultVerbose,
-                defaultMaxIndentLvl,
-                defaultTabWidth
-                                                    ).parseProject()
+        val projectMetrics =
+                ProjectMetricsCollector(
+                        File("src/test/resources/sampleproject").absoluteFile,
+                        defaultExclude,
+                        defaultFileExtensions,
+                        defaultMetricNames,
+                        defaultVerbose,
+                        defaultMaxIndentLvl,
+                        defaultTabWidth,
+                                       ).parseProject()
 
         // then
         Assertions.assertThat(projectMetrics.metricsMap).doesNotContainKey("/spaces")
@@ -80,14 +83,16 @@ class ProjectMetricsCollectorTest {
     @Test
     fun `Should exclude matching files when regex patterns were given`() {
         // when
-        val projectMetrics = ProjectMetricsCollector(File("src/test/resources/sampleproject").absoluteFile,
-                exclude = listOf(".*\\.excluded$", "foobar"),
-                defaultFileExtensions,
-                defaultMetricNames,
-                defaultVerbose,
-                defaultMaxIndentLvl,
-                defaultTabWidth
-                                                    ).parseProject()
+        val projectMetrics =
+                ProjectMetricsCollector(
+                        File("src/test/resources/sampleproject").absoluteFile,
+                        exclude = listOf(".*\\.excluded$", "foobar"),
+                        defaultFileExtensions,
+                        defaultMetricNames,
+                        defaultVerbose,
+                        defaultMaxIndentLvl,
+                        defaultTabWidth,
+                                       ).parseProject()
 
         // then
         Assertions.assertThat(projectMetrics.metricsMap.size).isEqualTo(4)
@@ -99,14 +104,16 @@ class ProjectMetricsCollectorTest {
     @Test
     fun `Should only include file extensions when they were specified`() {
         // when
-        val projectMetrics = ProjectMetricsCollector(File("src/test/resources/sampleproject").absoluteFile,
-                defaultExclude,
-                fileExtensions = listOf("includedtoo"),
-                defaultMetricNames,
-                defaultVerbose,
-                defaultMaxIndentLvl,
-                defaultTabWidth
-                                                    ).parseProject()
+        val projectMetrics =
+                ProjectMetricsCollector(
+                        File("src/test/resources/sampleproject").absoluteFile,
+                        defaultExclude,
+                        fileExtensions = listOf("includedtoo"),
+                        defaultMetricNames,
+                        defaultVerbose,
+                        defaultMaxIndentLvl,
+                        defaultTabWidth,
+                                       ).parseProject()
 
         // then
         Assertions.assertThat(projectMetrics.metricsMap.size).isEqualTo(1)
@@ -118,14 +125,16 @@ class ProjectMetricsCollectorTest {
     @Test
     fun `Should include only specified file extensions when multiple are given`() {
         // when
-        val projectMetrics = ProjectMetricsCollector(File("src/test/resources/sampleproject").absoluteFile,
-                defaultExclude,
-                fileExtensions = listOf("included", "includedtoo"),
-                defaultMetricNames,
-                defaultVerbose,
-                defaultMaxIndentLvl,
-                defaultTabWidth
-                                                    ).parseProject()
+        val projectMetrics =
+                ProjectMetricsCollector(
+                        File("src/test/resources/sampleproject").absoluteFile,
+                        defaultExclude,
+                        fileExtensions = listOf("included", "includedtoo"),
+                        defaultMetricNames,
+                        defaultVerbose,
+                        defaultMaxIndentLvl,
+                        defaultTabWidth,
+                                       ).parseProject()
 
         // then
         Assertions.assertThat(projectMetrics.metricsMap.size).isEqualTo(4)
@@ -138,14 +147,16 @@ class ProjectMetricsCollectorTest {
     @Test
     fun `Should produce empty result when no valid file extensions were given`() {
         // when
-        val projectMetrics = ProjectMetricsCollector(File("src/test/resources/sampleproject").absoluteFile,
-                defaultExclude,
-                fileExtensions = listOf("none"),
-                defaultMetricNames,
-                defaultVerbose,
-                defaultMaxIndentLvl,
-                defaultTabWidth
-                                                    ).parseProject()
+        val projectMetrics =
+                ProjectMetricsCollector(
+                        File("src/test/resources/sampleproject").absoluteFile,
+                        defaultExclude,
+                        fileExtensions = listOf("none"),
+                        defaultMetricNames,
+                        defaultVerbose,
+                        defaultMaxIndentLvl,
+                        defaultTabWidth,
+                                       ).parseProject()
 
         // then
         Assertions.assertThat(projectMetrics.metricsMap.size).isEqualTo(0)
@@ -154,22 +165,26 @@ class ProjectMetricsCollectorTest {
     @Test
     fun `Should produce the same result whether the user included a dot in the filetype or not`() {
         // when
-        val resultWithoutDot = ProjectMetricsCollector(File("src/test/resources/sampleproject").absoluteFile,
-                defaultExclude,
-                fileExtensions = listOf("included", "includedtoo"),
-                defaultMetricNames,
-                defaultVerbose,
-                defaultMaxIndentLvl,
-                defaultTabWidth
-                                                      ).parseProject()
-        val resultWithDot = ProjectMetricsCollector(File("src/test/resources/sampleproject").absoluteFile,
-                defaultExclude,
-                fileExtensions = listOf(".included", ".includedtoo"),
-                defaultMetricNames,
-                defaultVerbose,
-                defaultMaxIndentLvl,
-                defaultTabWidth
-                                                   ).parseProject()
+        val resultWithoutDot =
+                ProjectMetricsCollector(
+                        File("src/test/resources/sampleproject").absoluteFile,
+                        defaultExclude,
+                        fileExtensions = listOf("included", "includedtoo"),
+                        defaultMetricNames,
+                        defaultVerbose,
+                        defaultMaxIndentLvl,
+                        defaultTabWidth,
+                                       ).parseProject()
+        val resultWithDot =
+                ProjectMetricsCollector(
+                        File("src/test/resources/sampleproject").absoluteFile,
+                        defaultExclude,
+                        fileExtensions = listOf(".included", ".includedtoo"),
+                        defaultMetricNames,
+                        defaultVerbose,
+                        defaultMaxIndentLvl,
+                        defaultTabWidth,
+                                       ).parseProject()
 
         // then
         Assertions.assertThat(resultWithoutDot == resultWithDot)
@@ -184,15 +199,16 @@ class ProjectMetricsCollectorTest {
         val metricNames = listOf(invalidMetricName)
 
         // when
-        val projectMetrics = ProjectMetricsCollector(
-                inputFile,
-                defaultExclude,
-                defaultFileExtensions,
-                metricNames,
-                defaultVerbose,
-                defaultMaxIndentLvl,
-                defaultTabWidth
-                                                    ).parseProject()
+        val projectMetrics =
+                ProjectMetricsCollector(
+                        inputFile,
+                        defaultExclude,
+                        defaultFileExtensions,
+                        metricNames,
+                        defaultVerbose,
+                        defaultMaxIndentLvl,
+                        defaultTabWidth,
+                                       ).parseProject()
 
         // then
         Assertions.assertThat(projectMetrics.metricsMap.values.stream().allMatch { it.isEmpty() }).isTrue()

@@ -16,10 +16,8 @@ const HEIGHT_SCALING_FACTOR = 0.1
 export class StreetLayoutGenerator {
 	static createStreetLayoutNodes(map: CodeMapNode, state: CcState, metricData: NodeMetricData[], isDeltaState: boolean): Node[] {
 		const mapSizeResolutionScaling = getMapResolutionScaleFactor(state.files)
-		const maxHeight =
-			(metricData.find(x => x.name === state.dynamicSettings.heightMetric).maxValue * mapSizeResolutionScaling) /
-			HEIGHT_SCALING_FACTOR
-		const heightScale = (treeMapSize * 2) / maxHeight
+		const maxHeight = metricData.find(x => x.name === state.dynamicSettings.heightMetric).maxValue * mapSizeResolutionScaling
+		const heightScale = ((treeMapSize * 2) / maxHeight) * HEIGHT_SCALING_FACTOR
 
 		const metricName = state.dynamicSettings.areaMetric
 		const mergedMap = StreetViewHelper.mergeDirectories(map, metricName)

@@ -18,3 +18,7 @@ gradlew.bat text eol=crlf
 *.jpg binary
 *.icns binary
 *.ico binary
+*.eot binary
+*.ttf binary
+*.woff binary
+*.woff2 binary

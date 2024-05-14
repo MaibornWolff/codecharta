@@ -6,9 +6,7 @@ import java.io.File
 
 class LogScanParserDialog {
     companion object : ParserDialogInterface {
-
-        override fun collectParserArgs(): List<String> {
-
+    override fun collectParserArgs(): List<String> {
             print("You can generate this file with: git log --numstat --raw --topo-order --reverse -m > git.log")
             var gitLogFile: String
             do {
@@ -22,9 +20,9 @@ class LogScanParserDialog {
             } while (!InputHelper.isInputValidAndNotNull(arrayOf(File(gitLsFile)), canInputContainFolders = false))
 
             return listOfNotNull(
-                "--git-log=$gitLogFile",
-                "--repo-files=$gitLsFile"
-            )
+                    "--git-log=$gitLogFile",
+                    "--repo-files=$gitLsFile",
+                                )
         }
     }
 }

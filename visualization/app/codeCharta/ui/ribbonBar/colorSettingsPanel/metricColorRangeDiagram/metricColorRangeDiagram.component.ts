@@ -21,6 +21,7 @@ export class MetricColorRangeDiagramComponent implements OnChanges {
 	@Input() leftColor: string
 	@Input() middleColor: string
 	@Input() rightColor: string
+	@Input() isAttributeDirectionInversed: boolean
 
 	private frameWidth: number
 	private frameBuffer: number
@@ -36,7 +37,9 @@ export class MetricColorRangeDiagramComponent implements OnChanges {
 
 	ngOnChanges() {
 		if (this.values.length > 0) {
-			this.percentileRanks = this.calculatePercentileRanks(this.values)
+			this.percentileRanks = this.isAttributeDirectionInversed
+				? this.calculateReversedPercentileRanks(this.values)
+				: this.calculatePercentileRanks(this.values)
 			this.renderDiagram()
 		}
 	}
@@ -128,9 +131,12 @@ export class MetricColorRangeDiagramComponent implements OnChanges {
 	}
 
 	private createYScale() {
+		const domainStandard = [0, d3.max(this.percentileRanks, d => d["y"] as number)]
+		const domainInversed = [d3.max(this.percentileRanks, d => d["y"] as number), 0]
+
 		return d3
 			.scaleLinear()
-			.domain([0, d3.max(this.percentileRanks, d => d["y"] as number)])
+			.domain(this.isAttributeDirectionInversed ? domainInversed : domainStandard)
 			.range([this.diagramHeight, 0])
 	}
 
@@ -160,8 +166,16 @@ export class MetricColorRangeDiagramComponent implements OnChanges {
 	}
 
 	private drawAreas(g: GElement, x: Scale) {
-		const leftValue = x(this.calculatePercentileFromMetricValue(this.currentLeftValue))
-		const rightValue = x(this.calculatePercentileFromMetricValue(this.currentRightValue))
+		const leftValue = x(
+			this.isAttributeDirectionInversed
+				? this.calculateReversedPercentileFromMetricValue(this.currentRightValue)
+				: this.calculatePercentileFromMetricValue(this.currentLeftValue)
+		)
+		const rightValue = x(
+			this.isAttributeDirectionInversed
+				? this.calculateReversedPercentileFromMetricValue(this.currentLeftValue)
+				: this.calculatePercentileFromMetricValue(this.currentRightValue)
+		)
 
 		g.append("rect")
 			.attr("class", "left-area")
@@ -169,7 +183,7 @@ export class MetricColorRangeDiagramComponent implements OnChanges {
 			.attr("y", -this.frameBuffer)
 			.attr("width", leftValue)
 			.attr("height", this.diagramHeight + 2 * this.frameBuffer)
-			.style("fill", this.leftColor)
+			.style("fill", this.isAttributeDirectionInversed ? this.rightColor : this.leftColor)
 			.style("fill-opacity", "0.3")
 
 		g.append("rect")
@@ -187,7 +201,7 @@ export class MetricColorRangeDiagramComponent implements OnChanges {
 			.attr("y", -this.frameBuffer)
 			.attr("width", this.diagramWidth - rightValue)
 			.attr("height", this.diagramHeight + 2 * this.frameBuffer)
-			.style("fill", this.rightColor)
+			.style("fill", this.isAttributeDirectionInversed ? this.leftColor : this.rightColor)
 			.style("fill-opacity", "0.3")
 	}
 
@@ -223,6 +237,21 @@ export class MetricColorRangeDiagramComponent implements OnChanges {
 		return percentileRanks
 	}
 
+	private calculateReversedPercentileRanks(array: number[]) {
+		const uniqueSortedNumbers = [...new Set(array)].sort((a, b) => a - b).reverse()
+
+		const totalNumbers = array.length
+		const percentileRanks = [{ x: 0, y: uniqueSortedNumbers[0] }]
+
+		for (const value of uniqueSortedNumbers) {
+			const countGreaterThanOrEqualToUniqueNumber = array.filter(number_ => number_ >= value).length
+			const percentileRank = (countGreaterThanOrEqualToUniqueNumber / totalNumbers) * 100
+			percentileRanks.push({ x: percentileRank, y: value })
+		}
+
+		return percentileRanks.sort((a, b) => a.x - b.x)
+	}
+
 	private calculatePercentileFromMetricValue(metricValue: number) {
 		if (metricValue === this.minValue) {
 			return 0
@@ -237,6 +266,24 @@ export class MetricColorRangeDiagramComponent implements OnChanges {
 				maxPercentile = percentileRank["x"]
 			} else {
 				return maxPercentile
+			}
+		}
+	}
+
+	private calculateReversedPercentileFromMetricValue(metricValue: number) {
+		if (metricValue === this.maxValue) {
+			return 0
+		}
+		if (metricValue === this.minValue) {
+			return 100
+		}
+
+		let minPercentile = null
+		for (const percentileRank of this.percentileRanks) {
+			if (percentileRank["y"] > metricValue) {
+				minPercentile = percentileRank["x"]
+			} else {
+				return minPercentile
 			}
 		}
 	}

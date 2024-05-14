@@ -4,9 +4,10 @@ package de.maibornwolff.codecharta.model
  * Represents a path in a tree
  * may be seen as multiple edges in the tree of nodes
  */
-data class Path(val edgesList: List<String>) {
-
-    /**
+data class Path(
+        val edgesList: List<String>,
+               ) {
+               /**
      * @return true, if there are no edges in the path
      */
     val isTrivial: Boolean
@@ -18,7 +19,9 @@ data class Path(val edgesList: List<String>) {
     val isSingle: Boolean
         get() = edgesList.size <= 1
 
-    constructor(vararg edges: String) : this(listOf(*edges))
+    constructor(
+            vararg edges: String,
+               ) : this(listOf(*edges))
 
     /**
      * @return first edge in path to node
@@ -31,16 +34,22 @@ data class Path(val edgesList: List<String>) {
      */
     val tail: Path
         get() =
-            if (isSingle) Path.trivialPath()
-            else Path(edgesList.drop(1))
+            if (isSingle) {
+                Path.trivialPath()
+            } else {
+                Path(edgesList.drop(1))
+            }
 
     /**
      * @return parent, i.e. the path without the last edge, if not trivial, trivial element if trivial
      */
     val parent: Path
         get() =
-            if (isSingle) Path.trivialPath()
-            else Path(edgesList.dropLast(1))
+            if (isSingle) {
+                Path.trivialPath()
+            } else {
+                Path(edgesList.dropLast(1))
+            }
 
     /**
      * @param path that will be added after the present path
@@ -59,12 +68,13 @@ data class Path(val edgesList: List<String>) {
         val pathSize = path.edgesList.size
         val minSize = minOf(size, pathSize)
 
-        return (0 until minSize).firstOrNull { this.edgesList[size - (it + 1)] != path.edgesList[pathSize - (it + 1)] } ?: minSize
+        return (0 until minSize).firstOrNull {
+            this.edgesList[size - (it + 1)] != path.edgesList[pathSize - (it + 1)]
+        } ?: minSize
     }
 
     companion object {
-
-        fun trivialPath(): Path {
+    fun trivialPath(): Path {
             return TRIVIAL
         }
 

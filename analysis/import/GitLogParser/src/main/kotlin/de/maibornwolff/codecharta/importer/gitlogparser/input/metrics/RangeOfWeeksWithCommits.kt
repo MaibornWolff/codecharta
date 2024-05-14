@@ -5,8 +5,7 @@ import de.maibornwolff.codecharta.model.AttributeType
 import java.util.TreeSet
 
 class RangeOfWeeksWithCommits : Metric {
-
-    private val weeksWithCommits = TreeSet<CalendarWeek>()
+private val weeksWithCommits = TreeSet<CalendarWeek>()
 
     override fun description(): String {
         return "Range Of Weeks With Commits: Range in Weeks between first and last commit of this file."
@@ -23,10 +22,12 @@ class RangeOfWeeksWithCommits : Metric {
     override fun value(): Number {
         return if (weeksWithCommits.size < 1) {
             0
-        } else 1 + CalendarWeek.numberOfWeeksBetween(weeksWithCommits.last(), weeksWithCommits.first())
+        } else {
+            1 + CalendarWeek.numberOfWeeksBetween(weeksWithCommits.last(), weeksWithCommits.first())
+        }
     }
 
     override fun attributeType(): AttributeType {
-        return AttributeType.relative
+        return AttributeType.RELATIVE
     }
 }

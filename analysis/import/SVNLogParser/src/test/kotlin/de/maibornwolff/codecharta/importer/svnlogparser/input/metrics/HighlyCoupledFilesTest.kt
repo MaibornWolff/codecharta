@@ -10,14 +10,15 @@ import java.util.Arrays
 import java.util.stream.Collectors
 
 class HighlyCoupledFilesTest {
-
-    private val FILENAME = "filename"
-    private val COUPLED_FILE1 = "coupledfilename1"
-    private val COUPLED_FILE2 = "coupledfilename2"
+    companion object {
+    private const val FILENAME = "filename"
+        private const val COUPLED_FILE1 = "coupledfilename1"
+        private const val COUPLED_FILE2 = "coupledfilename2"
+    }
 
     @Test
     fun `should have initial value zero`() {
-        // when
+// when
         val metric = HighlyCoupledFiles()
 
         // then
@@ -26,8 +27,7 @@ class HighlyCoupledFilesTest {
     }
 
     @Test
-    fun `should not increase on commits of same file`() {
-        // given
+    fun `should not increase on commits of same file`() { // given
         val metric = HighlyCoupledFiles()
 
         // when
@@ -39,8 +39,7 @@ class HighlyCoupledFilesTest {
     }
 
     @Test
-    fun `should not increase on one commit of several files`() {
-        // given
+    fun `should not increase on one commit of several files`() { // given
         val metric = HighlyCoupledFiles()
 
         // when
@@ -52,8 +51,7 @@ class HighlyCoupledFilesTest {
     }
 
     @Test
-    fun `should increase on at five commits of same files`() {
-        // given
+    fun `should increase on at five commits of same files`() { // given
         val metric = HighlyCoupledFiles()
         val expectedEdge = Edge("filename", "coupledfilename1", mapOf("temporal_coupling" to 1.0))
 
@@ -68,8 +66,7 @@ class HighlyCoupledFilesTest {
     }
 
     @Test
-    fun should_increase() {
-        // given
+    fun should_increase() { // given
         val metric = HighlyCoupledFiles()
         val expectedEdge = Edge("filename", "coupledfilename1", mapOf("temporal_coupling" to 0.625))
 
@@ -88,17 +85,17 @@ class HighlyCoupledFilesTest {
         assertThat(metric.getEdges()).containsOnly(expectedEdge)
     }
 
-    private fun registerModifications(metric: Metric, vararg filenames: String) {
-        val modificationList = Arrays.stream(filenames)
-            .map<Modification> { Modification(it) }
-            .collect(Collectors.toList())
+    private fun registerModifications(
+    metric: Metric,
+    vararg filenames: String,
+    ) {
+        val modificationList =
+                Arrays.stream(filenames).map<Modification> { Modification(it) }.collect(Collectors.toList())
 
         val commit = Commit("author", modificationList, OffsetDateTime.now())
         metric.registerCommit(commit)
 
-        modificationList.stream()
-            .filter { mod -> FILENAME == mod.filename }
-            .findFirst()
-            .ifPresent { metric.registerModification(it) }
+        modificationList.stream().filter { mod -> FILENAME == mod.filename }.findFirst()
+                .ifPresent { metric.registerModification(it) }
     }
 }

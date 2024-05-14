@@ -1,6 +1,7 @@
 import { Component, ViewEncapsulation } from "@angular/core"
 import { MatCheckboxChange } from "@angular/material/checkbox"
 import { State, Store } from "@ngrx/store"
+import { map } from "rxjs"
 import { CcState, ColorLabelOptions, ColorMode, ColorRange } from "../../../codeCharta.model"
 import { selectedColorMetricDataSelector } from "../../../state/selectors/accumulatedData/metricData/selectedColorMetricData.selector"
 import { isDeltaStateSelector } from "../../../state/selectors/isDeltaState.selector"
@@ -30,18 +31,29 @@ export class ColorSettingsPanelComponent {
 	isDeltaState$ = this.store.select(isDeltaStateSelector)
 	sliderValues$ = this.store.select(metricColorRangeValuesSelector)
 	sliderColors$ = this.store.select(metricColorRangeColorsSelector)
+	isAttributeDescriptionInversed$ = this.checkIsAttributeDirectionReversed()
 	isColorRangeInverted = false
 	areDeltaColorsInverted = false
 
 	private newLeftValue: null | number = null
 	private newRightValue: null | number = null
+	isAttributeDirectionInversed: boolean
 
-	constructor(private store: Store<CcState>, private State: State<CcState>) {}
+	constructor(private store: Store<CcState>, private state: State<CcState>) {}
 
 	handleValueChange: HandleValueChange = ({ newLeftValue, newRightValue }) => {
 		this.newLeftValue = newLeftValue ?? this.newLeftValue
 		this.newRightValue = newRightValue ?? this.newRightValue
 		this.updateColorRangeDebounced()
+	}
+
+	private checkIsAttributeDirectionReversed() {
+		return this.colorMetric$.pipe(
+			map(colorMetric => {
+				const attributeDescriptors = this.state.getValue().fileSettings.attributeDescriptors
+				return attributeDescriptors[colorMetric]?.direction === 1
+			})
+		)
 	}
 
 	private updateColorRangeDebounced = debounce(() => {
@@ -82,7 +94,7 @@ export class ColorSettingsPanelComponent {
 	}
 
 	resetColorRange = () => {
-		const selectedColorMetricData = selectedColorMetricDataSelector(this.State.getValue())
+		const selectedColorMetricData = selectedColorMetricDataSelector(this.state.getValue())
 		this.store.dispatch(setColorRange({ value: calculateInitialColorRange(selectedColorMetricData) }))
 	}
 }

@@ -1,14 +1,14 @@
 package de.maibornwolff.codecharta.serialization
 
 import de.maibornwolff.codecharta.model.Project
+import de.maibornwolff.codecharta.util.Logger
+import io.github.oshai.kotlinlogging.KLogger
 import io.mockk.called
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkObject
 import io.mockk.unmockkAll
 import io.mockk.verify
-import mu.KLogger
-import mu.KotlinLogging
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
@@ -27,23 +27,25 @@ import kotlin.test.assertTrue
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ProjectSerializerTest {
-    private val EXAMPLE_JSON_VERSION_1_3 = "example_api_version_1.3.cc.json"
-    private val tempDir = createTempDirectory()
+private val tempDir = createTempDirectory()
     private val filename = tempDir.absolute().toString() + "test.cc.json"
     private val project = mockk<Project>()
     private val loggerMock = mockk<KLogger>()
-    private val infoMessagesLogged = mutableListOf<String>()
+    private val lambdaSlot = mutableListOf<() -> String>()
+
+    companion object {
+    private const val EXAMPLE_JSON_VERSION_1_3 = "example_api_version_1.3.cc.json"
+    }
 
     @BeforeAll
     fun beforeTests() {
-        mockkObject(KotlinLogging)
-        every { KotlinLogging.logger(any<(() -> Unit)>()) } returns loggerMock
-        every { loggerMock.info(capture(infoMessagesLogged)) } returns Unit
+        mockkObject(Logger)
+        every { Logger.info(capture(lambdaSlot)) } returns Unit
     }
 
     @BeforeEach
     fun beforeTest() {
-        infoMessagesLogged.clear()
+        lambdaSlot.clear()
     }
 
     @AfterAll
@@ -63,7 +65,7 @@ class ProjectSerializerTest {
         val testJsonString = File(filename).readText()
 
         // then
-        JSONAssert.assertEquals(testJsonString, expectedJsonString, JSONCompareMode.NON_EXTENSIBLE)
+        JSONAssert.assertEquals(expectedJsonString, testJsonString, JSONCompareMode.NON_EXTENSIBLE)
     }
 
     @Test
@@ -79,8 +81,12 @@ class ProjectSerializerTest {
         ProjectSerializer.serializeToFileOrStream(project, outputFilePath, mockStream, true)
 
         // then
-        assertTrue { outputFile.exists() }
-        verify { mockStream wasNot called }
+        assertTrue {
+            outputFile.exists()
+        }
+        verify {
+            mockStream wasNot called
+        }
     }
 
     @Test
@@ -88,6 +94,7 @@ class ProjectSerializerTest {
         // given
         val outputFilePath = "test.cc.json"
         val outputFile = File(outputFilePath)
+        val absoluteOutputFilePath = outputFile.absolutePath
         outputFile.deleteOnExit()
         val mockStream = mockk<OutputStream>()
 
@@ -95,9 +102,11 @@ class ProjectSerializerTest {
         ProjectSerializer.serializeToFileOrStream(project, outputFilePath, mockStream, false)
 
         // then
-        assertTrue { outputFile.exists() }
-        verify { mockStream wasNot called }
-        verify { loggerMock.info(any<String>()) }
+        assertTrue {
+            outputFile.exists()
+        }
+        // then
+        Assertions.assertThat(lambdaSlot.last()().endsWith(absoluteOutputFilePath)).isTrue()
     }
 
     @Test
@@ -110,7 +119,9 @@ class ProjectSerializerTest {
         val result = stream.toString("UTF-8")
 
         // then
-        assertTrue { result.startsWith("{") }
+        assertTrue {
+            result.startsWith("{")
+        }
     }
 
     @Test
@@ -126,7 +137,6 @@ class ProjectSerializerTest {
         ProjectSerializer.serializeToFileOrStream(project, outputFilePath, mockStream, false)
 
         // then
-        verify { loggerMock.info(any<String>()) }
-        Assertions.assertThat(infoMessagesLogged.any { e -> e.endsWith(absoluteOutputFilePath) }).isTrue()
+        Assertions.assertThat(lambdaSlot.last()().endsWith(absoluteOutputFilePath)).isTrue()
     }
 }

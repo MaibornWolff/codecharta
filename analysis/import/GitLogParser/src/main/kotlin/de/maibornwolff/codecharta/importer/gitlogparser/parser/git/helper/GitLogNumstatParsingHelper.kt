@@ -1,25 +1,22 @@
 package de.maibornwolff.codecharta.importer.gitlogparser.parser.git.helper
 
 import de.maibornwolff.codecharta.importer.gitlogparser.input.Modification
-import mu.KotlinLogging
+import de.maibornwolff.codecharta.util.Logger
 
 class GitLogNumstatParsingHelper {
     companion object {
-
-        private val logger = KotlinLogging.logger {}
-
-        private const val STANDARD_FILE_LINE_REGEX = "\\d+\\s+\\d+\\s+\\S+\\s*"
+    private const val STANDARD_FILE_LINE_REGEX = "\\d+\\s+\\d+\\s+\\S+\\s*"
         private const val RENAME_FILE_LINE_REGEX = "\\d+\\s+\\d+\\s+\\S*\\S+ => \\S+\\S*\\s*"
         private const val RENAMING_SEPARATOR = "=>"
         private const val STANDARD_FILE_LINE_SPLITTER = "\\s+"
         private const val RENAME_FILE_LINE_SPLITTER = "[{}\\s+]"
 
         fun isFileLine(commitLine: String): Boolean {
-            return commitLine.length >= 5 &&
-                (
-                    commitLine.matches(STANDARD_FILE_LINE_REGEX.toRegex()) ||
-                        commitLine.matches(RENAME_FILE_LINE_REGEX.toRegex())
-                    )
+            return commitLine.length >= 5 && (
+                    commitLine.matches(
+                            STANDARD_FILE_LINE_REGEX.toRegex(),
+                                      ) || commitLine.matches(RENAME_FILE_LINE_REGEX.toRegex())
+                                             )
         }
 
         fun parseModification(fileLine: String): Modification {
@@ -37,8 +34,7 @@ class GitLogNumstatParsingHelper {
         }
 
         private fun parseRenameModification(fileLine: String): Modification {
-            val lineParts = fileLine.split(RENAME_FILE_LINE_SPLITTER.toRegex())
-                .dropLastWhile({ it.isEmpty() })
+            val lineParts = fileLine.split(RENAME_FILE_LINE_SPLITTER.toRegex()).dropLastWhile({ it.isEmpty() })
             val additions = lineParts[0].toLong()
             val deletions = lineParts[1].toLong()
             var oldFileName: String
@@ -58,7 +54,7 @@ class GitLogNumstatParsingHelper {
                 oldFileName = lineParts[2]
                 newFileName = lineParts[4]
             } else {
-                logger.warn { "Log line could not be parsed$fileLine" }
+                Logger.warn { "Log line could not be parsed$fileLine" }
                 return Modification.EMPTY
             }
 
@@ -66,8 +62,7 @@ class GitLogNumstatParsingHelper {
         }
 
         private fun parseStandardModification(fileLine: String): Modification {
-            val lineParts = fileLine.split(STANDARD_FILE_LINE_SPLITTER.toRegex())
-                .dropLastWhile({ it.isEmpty() })
+            val lineParts = fileLine.split(STANDARD_FILE_LINE_SPLITTER.toRegex()).dropLastWhile({ it.isEmpty() })
             val additions = lineParts[0].toLong()
             val deletions = lineParts[1].toLong()
             val filename = lineParts[2]

@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core"
 import { createEffect } from "@ngrx/effects"
 import { Store } from "@ngrx/store"
-import { filter, withLatestFrom, map, distinctUntilChanged } from "rxjs"
+import { distinctUntilChanged, filter, map, withLatestFrom } from "rxjs"
 import { CcState } from "../../../codeCharta.model"
 import { metricDataSelector } from "../../selectors/accumulatedData/metricData/metricData.selector"
 import { setEdgeMetric } from "../../store/dynamicSettings/edgeMetric/edgeMetric.actions"

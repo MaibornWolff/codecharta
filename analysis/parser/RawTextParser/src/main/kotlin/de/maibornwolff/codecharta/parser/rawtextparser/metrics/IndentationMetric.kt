@@ -1,21 +1,19 @@
 package de.maibornwolff.codecharta.parser.rawtextparser.metrics
 
 import de.maibornwolff.codecharta.parser.rawtextparser.FileMetrics
-import mu.KotlinLogging
+import de.maibornwolff.codecharta.util.Logger
 import java.lang.Integer.min
 
 class IndentationMetric(
-    private var maxIndentation: Int,
-    private var verbose: Boolean,
-    private var tabWidth: Int,
-) : Metric {
-    private val logger = KotlinLogging.logger {}
-
-    private val spaceIndentations = MutableList(maxIndentation * 8 + 1) { 0 }
+        private var maxIndentation: Int,
+        private var verbose: Boolean,
+        private var tabWidth: Int,
+                       ) : Metric {
+                       private val spaceIndentations = MutableList(maxIndentation * 8 + 1) { 0 }
     private val tabIndentations = MutableList(maxIndentation + 1) { 0 }
 
     companion object {
-        const val NAME = "IndentationLevel"
+    const val NAME = "IndentationLevel"
     }
 
     // TODO no mixed tab/ space possible at line start?
@@ -51,7 +49,7 @@ class IndentationMetric(
             }
         }
         if (verbose) {
-            logger.info("Assumed tab width to be $tabWidth")
+            Logger.info { "Assumed tab width to be $tabWidth" }
         }
         return tabWidth
     }
@@ -61,7 +59,7 @@ class IndentationMetric(
             if (i % tabWidth != 0 && spaceIndentations[i] > 0) {
                 val nextLevel: Int = i / tabWidth + 1
                 spaceIndentations[nextLevel * tabWidth] = spaceIndentations[nextLevel * tabWidth] + spaceIndentations[i]
-                logger.warn("Corrected mismatching indentations, moved ${spaceIndentations[i]} lines to indentation level $nextLevel+")
+                Logger.warn { "Corrected mismatching indentations, moved ${spaceIndentations[i]} lines to indentation level $nextLevel+" }
                 spaceIndentations[i] = 0
             }
         }

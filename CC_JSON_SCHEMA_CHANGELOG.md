@@ -52,3 +52,22 @@ export interface Fixed {
 	}
 }
 ```
+
+## 1.4
+
+-   An additional `direction` property has been added to the attribute descriptors, specifying whether higher or lower attribute values indicate better code quality.
+
+```json
+{
+	"attributeDescriptors": {
+		"mcc": {
+			"title": "Maximum Cyclic Complexity",
+			"description": "Maximum cyclic complexity based on paths through the code by McCabe",
+			"hintLowValue": "",
+			"hintHighValue": "",
+			"link": "https://www.npmjs.com/package/metric-gardener",
+			"direction": -1
+		}
+	}
+}
+```

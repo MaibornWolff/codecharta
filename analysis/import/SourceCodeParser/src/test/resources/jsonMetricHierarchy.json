@@ -1,66 +1,66 @@
 {
-	"data": {
+  "data": {
     "projectName": "",
-		"nodes": [
-			{
-				"children": [
-					{
-						"children": [
-							{
-								"children": [],
-								"name": "bar.java",
-								"link": "",
-								"attributes": {},
-								"type": "File"
-							},
-							{
-								"children": [
-									{
-										"children": [],
-										"name": "bar2.cpp",
-										"link": "",
-										"attributes": {},
-										"type": "File"
-									}
-								],
-								"name": "foo2",
-								"link": "",
-								"attributes": {},
-								"type": "Folder"
-							}
-						],
-						"name": "foo",
-						"link": "",
-						"attributes": {},
-						"type": "Folder"
-					},
-					{
-						"children": [
-							{
-								"children": [],
-								"name": "bar.java",
-								"link": "",
-								"attributes": {},
-								"type": "File"
-							}
-						],
-						"name": "foo3",
-						"link": "",
-						"attributes": {},
-						"type": "Folder"
-					}
-				],
-				"name": "root",
-				"link": "",
-				"attributes": {},
-				"type": "Folder"
-			}
-		],
-		"apiVersion": "1.3",
-		"attributeTypes": {},
-    "attributeDescriptors":{},
-		"edges": [],
-		"blacklist": []
-	},
-	"checksum": "a039a917c35513932f2ffc81b7ef94fd"
+    "nodes": [
+      {
+        "children": [
+          {
+            "children": [
+              {
+                "children": [],
+                "name": "bar.java",
+                "link": "",
+                "attributes": {},
+                "type": "File"
+              },
+              {
+                "children": [
+                  {
+                    "children": [],
+                    "name": "bar2.cpp",
+                    "link": "",
+                    "attributes": {},
+                    "type": "File"
+                  }
+                ],
+                "name": "foo2",
+                "link": "",
+                "attributes": {},
+                "type": "Folder"
+              }
+            ],
+            "name": "foo",
+            "link": "",
+            "attributes": {},
+            "type": "Folder"
+          },
+          {
+            "children": [
+              {
+                "children": [],
+                "name": "bar.java",
+                "link": "",
+                "attributes": {},
+                "type": "File"
+              }
+            ],
+            "name": "foo3",
+            "link": "",
+            "attributes": {},
+            "type": "Folder"
+          }
+        ],
+        "name": "root",
+        "link": "",
+        "attributes": {},
+        "type": "Folder"
+      }
+    ],
+    "apiVersion": "1.3",
+    "attributeTypes": {},
+    "attributeDescriptors": {},
+    "edges": [],
+    "blacklist": []
+  },
+  "checksum": "a039a917c35513932f2ffc81b7ef94fd"
 }

@@ -10,21 +10,23 @@ import de.maibornwolff.codecharta.model.ProjectBuilder
 import de.maibornwolff.codecharta.translator.MetricNameTranslator
 
 class MetricGardenerProjectBuilder(var metricGardenerNodes: MetricGardenerNodes) : ProjectBuilder() {
-
-    override fun build(): Project {
+override fun build(): Project {
         for (inputNode in metricGardenerNodes.metricGardenerNodes) {
             val node = generateCodeChartaFileNode(inputNode)
             insertByPath(inputNode.getPathWithoutFileName(), node)
         }
         withMetricTranslator(metricGardenReplacement)
         addAttributeDescriptions(
-            getAttributeDescriptors().mapKeys { metricGardenReplacement.translate(it.key) }
-        )
+                getAttributeDescriptors().mapKeys { metricGardenReplacement.translate(it.key) },
+                                )
         return super.build()
     }
 
     fun generateCodeChartaFileNode(metricGardenerNode: MetricGardenerNode): MutableNode {
-        return MutableNode(extractFileNameFromPath(metricGardenerNode.name), NodeType.File, metricGardenerNode.metrics, "", setOf())
+        return MutableNode(
+                extractFileNameFromPath(metricGardenerNode.name), NodeType.File, metricGardenerNode.metrics,
+                "", setOf(),
+                          )
     }
 
     private val metricGardenReplacement: MetricNameTranslator

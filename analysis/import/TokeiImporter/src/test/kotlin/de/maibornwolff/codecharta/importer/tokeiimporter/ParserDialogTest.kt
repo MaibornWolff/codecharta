@@ -17,15 +17,13 @@ import java.io.File
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ParserDialogTest {
-
-    @AfterEach
+@AfterEach
     fun afterTest() {
         unmockkAll()
     }
 
     @Test
-    fun `should output correct arguments when valid input is provided`() {
-        // given
+    fun `should output correct arguments when valid input is provided`() { // given
         val fileName = "in.json"
         val outputFileName = "out.cc.json"
         val rootFolder = "/foo/bar"
@@ -58,8 +56,75 @@ class ParserDialogTest {
     }
 
     @Test
-    fun `should prompt user twice for input file when first input file is invalid`() {
-        // given
+    fun `should escape a single backslash`() { // given
+        val fileName = "in.json"
+        val outputFileName = "out.cc.json"
+        val rootFolder = "/foo/bar"
+        val pathSeparator = "\\"
+        val pathSeparatorEscaped = "\\\\"
+        val isCompressed = false
+
+        mockkObject(InputHelper)
+        every { InputHelper.isInputValidAndNotNull(any(), any()) } returns true
+
+        mockkStatic("com.github.kinquirer.components.InputKt")
+        every {
+            KInquirer.promptInput(any(), any(), any(), any())
+        } returns fileName andThen outputFileName andThen rootFolder andThen pathSeparator
+        mockkStatic("com.github.kinquirer.components.ConfirmKt")
+        every {
+            KInquirer.promptConfirm(any(), any())
+        } returns isCompressed
+
+        // when
+        val parserArguments = ParserDialog.collectParserArgs()
+        val cmdLine = CommandLine(TokeiImporter())
+        val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
+
+        // then
+        Assertions.assertThat(parseResult.matchedPositional(0).getValue<File>().name).isEqualTo(fileName)
+        Assertions.assertThat(parseResult.matchedOption("output-file").getValue<String>().equals(outputFileName))
+        Assertions.assertThat(parseResult.matchedOption("not-compressed").getValue<Boolean>()).isEqualTo(isCompressed)
+        Assertions.assertThat(parseResult.matchedOption("root-name").getValue<String>()).isEqualTo(rootFolder)
+        Assertions.assertThat(parseResult.matchedOption("path-separator").getValue<String>())
+                .isEqualTo(pathSeparatorEscaped)
+    }
+
+    @Test
+    fun `should not escape a double backslash`() { // given
+        val fileName = "in.json"
+        val outputFileName = "out.cc.json"
+        val rootFolder = "/foo/bar"
+        val pathSeparator = "\\\\"
+        val isCompressed = false
+
+        mockkObject(InputHelper)
+        every { InputHelper.isInputValidAndNotNull(any(), any()) } returns true
+
+        mockkStatic("com.github.kinquirer.components.InputKt")
+        every {
+            KInquirer.promptInput(any(), any(), any(), any())
+        } returns fileName andThen outputFileName andThen rootFolder andThen pathSeparator
+        mockkStatic("com.github.kinquirer.components.ConfirmKt")
+        every {
+            KInquirer.promptConfirm(any(), any())
+        } returns isCompressed
+
+        // when
+        val parserArguments = ParserDialog.collectParserArgs()
+        val cmdLine = CommandLine(TokeiImporter())
+        val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
+
+        // then
+        Assertions.assertThat(parseResult.matchedPositional(0).getValue<File>().name).isEqualTo(fileName)
+        Assertions.assertThat(parseResult.matchedOption("output-file").getValue<String>().equals(outputFileName))
+        Assertions.assertThat(parseResult.matchedOption("not-compressed").getValue<Boolean>()).isEqualTo(isCompressed)
+        Assertions.assertThat(parseResult.matchedOption("root-name").getValue<String>()).isEqualTo(rootFolder)
+        Assertions.assertThat(parseResult.matchedOption("path-separator").getValue<String>()).isEqualTo(pathSeparator)
+    }
+
+    @Test
+    fun `should prompt user twice for input file when first input file is invalid`() { // given
         val invalidInputFileName = ""
         val validInputFileName = "in.json"
         val outputFileName = "out.cc.json"

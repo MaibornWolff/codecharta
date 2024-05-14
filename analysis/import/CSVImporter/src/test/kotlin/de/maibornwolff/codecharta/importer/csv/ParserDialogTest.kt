@@ -17,15 +17,13 @@ import java.io.File
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ParserDialogTest {
-
-    @AfterEach
+@AfterEach
     fun afterTest() {
         unmockkAll()
     }
 
     @Test
-    fun `should output correct arguments when valid input is provided`() {
-        // given
+    fun `should output correct arguments when valid input is provided`() { // given
         val fileName = "in.csv"
         val outputFileName = "out.cc.json"
         val pathColumnName = "path"
@@ -52,7 +50,8 @@ class ParserDialogTest {
 
         // then
         Assertions.assertThat(parseResult.matchedOption("output-file").getValue<String>()).isEqualTo(outputFileName)
-        Assertions.assertThat(parseResult.matchedOption("path-column-name").getValue<String>()).isEqualTo(pathColumnName)
+        Assertions.assertThat(parseResult.matchedOption("path-column-name").getValue<String>())
+                .isEqualTo(pathColumnName)
         Assertions.assertThat(parseResult.matchedOption("delimiter").getValue<Char>()).isEqualTo(delimiter[0])
         Assertions.assertThat(parseResult.matchedOption("path-separator").getValue<Char>()).isEqualTo(pathSeparator[0])
         Assertions.assertThat(parseResult.matchedOption("not-compressed").getValue<Boolean>()).isEqualTo(isCompressed)
@@ -60,8 +59,7 @@ class ParserDialogTest {
     }
 
     @Test
-    fun `should output correct arguments when multiple files are provided`() {
-        // given
+    fun `should output correct arguments when multiple files are provided`() { // given
         val fileName = "in.csv"
         val fileName2 = "in2.csv"
         val fileName3 = "in3.csv"
@@ -90,7 +88,8 @@ class ParserDialogTest {
 
         // then
         Assertions.assertThat(parseResult.matchedOption("output-file").getValue<String>()).isEqualTo(outputFileName)
-        Assertions.assertThat(parseResult.matchedOption("path-column-name").getValue<String>()).isEqualTo(pathColumnName)
+        Assertions.assertThat(parseResult.matchedOption("path-column-name").getValue<String>())
+                .isEqualTo(pathColumnName)
         Assertions.assertThat(parseResult.matchedOption("delimiter").getValue<Char>()).isEqualTo(delimiter[0])
         Assertions.assertThat(parseResult.matchedOption("path-separator").getValue<Char>()).isEqualTo(pathSeparator[0])
         Assertions.assertThat(parseResult.matchedOption("not-compressed")).isNull()
@@ -100,8 +99,7 @@ class ParserDialogTest {
     }
 
     @Test
-    fun `should prompt user twice for input file when first input file is invalid`() {
-        // given
+    fun `should prompt user twice for input file when first input file is invalid`() { // given
         val invalidFileName1 = "invalidFileName"
         val invalidFileName2 = "invalidFileName2"
         val validFileName1 = "in.csv"
@@ -114,7 +112,9 @@ class ParserDialogTest {
         val isCompressed = true
 
         mockkObject(InputHelper)
-        every { InputHelper.isInputValidAndNotNull(any(), any()) } returns false andThen true andThen false andThen true andThen true
+        every {
+            InputHelper.isInputValidAndNotNull(any(), any())
+        } returns false andThen true andThen false andThen true andThen true
 
         mockkStatic("com.github.kinquirer.components.InputKt")
         every {
@@ -131,8 +131,11 @@ class ParserDialogTest {
         val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
 
         // then
-        Assertions.assertThat(parseResult.matchedPositional(0).getValue<ArrayList<File>>()[0].name).isEqualTo(validFileName1)
-        Assertions.assertThat(parseResult.matchedPositional(0).getValue<ArrayList<File>>()[1].name).isEqualTo(validFileName2)
-        Assertions.assertThat(parseResult.matchedPositional(0).getValue<ArrayList<File>>()[2].name).isEqualTo(validFileName3)
+        Assertions.assertThat(parseResult.matchedPositional(0).getValue<ArrayList<File>>()[0].name)
+                .isEqualTo(validFileName1)
+        Assertions.assertThat(parseResult.matchedPositional(0).getValue<ArrayList<File>>()[1].name)
+                .isEqualTo(validFileName2)
+        Assertions.assertThat(parseResult.matchedPositional(0).getValue<ArrayList<File>>()[2].name)
+                .isEqualTo(validFileName3)
     }
 }

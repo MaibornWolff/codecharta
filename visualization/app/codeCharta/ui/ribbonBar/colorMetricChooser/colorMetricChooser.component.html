@@ -7,5 +7,5 @@
 	[isDisabled]="isColorMetricLinkedToHeightMetric$ | async"
 	[attr.title]="(isColorMetricLinkedToHeightMetric$ | async) ? 'Currently linked to height metric' : 'Change color metric'"
 >
-	<cc-metric-chooser-value-hovered hoveredInformation [metricFor]="'colorMetric'"></cc-metric-chooser-value-hovered>
+	<cc-metric-chooser-value hoveredInformation [metricFor]="'colorMetric'"></cc-metric-chooser-value>
 </cc-metric-chooser>

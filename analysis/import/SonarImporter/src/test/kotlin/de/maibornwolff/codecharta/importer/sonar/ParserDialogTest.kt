@@ -14,15 +14,13 @@ import picocli.CommandLine
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ParserDialogTest {
-
-    @AfterEach
+@AfterEach
     fun afterTest() {
         unmockkAll()
     }
 
     @Test
-    fun `should output correct arguments when valid input is provided`() {
-        // given
+    fun `should output correct arguments when valid input is provided`() { // given
         val hostUrl = "https://sonar.foo"
         val projectKey = "de.foo:bar"
         val userToken = "c123d456"
@@ -50,14 +48,14 @@ class ParserDialogTest {
         Assertions.assertThat(parseResult.matchedPositional(1).getValue<String>()).isEqualTo(projectKey)
         Assertions.assertThat(parseResult.matchedOption("user-token").getValue<String>()).isEqualTo(userToken)
         Assertions.assertThat(parseResult.matchedOption("output-file").getValue<String>()).isEqualTo(outputFileName)
-        Assertions.assertThat(parseResult.matchedOption("metrics").getValue<ArrayList<String>>()).isEqualTo(listOf("metric1", "metric2"))
+        Assertions.assertThat(parseResult.matchedOption("metrics").getValue<ArrayList<String>>())
+                .isEqualTo(listOf("metric1", "metric2"))
         Assertions.assertThat(parseResult.matchedOption("not-compressed").getValue<Boolean>()).isEqualTo(compress)
         Assertions.assertThat(parseResult.matchedOption("merge-modules").getValue<Boolean>()).isEqualTo(mergeModules)
     }
 
     @Test
-    fun `should omit the metrics flag when metrics are empty`() {
-        // given
+    fun `should omit the metrics flag when metrics are empty`() { // given
         val hostUrl = "https://sonar.foo"
         val projectKey = "de.foo:bar"
         val userToken = "c123d456"
@@ -91,8 +89,7 @@ class ParserDialogTest {
     }
 
     @Test
-    fun `should omit the user-token flag when user-token is empty`() {
-        // given
+    fun `should omit the user-token flag when user-token is empty`() { // given
         val hostUrl = "https://sonar.foo"
         val projectKey = "de.foo:bar"
         val userToken = ""
@@ -120,14 +117,14 @@ class ParserDialogTest {
         Assertions.assertThat(parseResult.matchedPositional(1).getValue<String>()).isEqualTo(projectKey)
         Assertions.assertThat(parseResult.matchedOption("user-token")).isNull()
         Assertions.assertThat(parseResult.matchedOption("output-file").getValue<String>()).isEqualTo(outputFileName)
-        Assertions.assertThat(parseResult.matchedOption("metrics").getValue<ArrayList<String>>()).isEqualTo(listOf("metric1", "metric2"))
+        Assertions.assertThat(parseResult.matchedOption("metrics").getValue<ArrayList<String>>())
+                .isEqualTo(listOf("metric1", "metric2"))
         Assertions.assertThat(parseResult.matchedOption("not-compressed").getValue<Boolean>()).isEqualTo(compress)
         Assertions.assertThat(parseResult.matchedOption("merge-modules").getValue<Boolean>()).isEqualTo(mergeModules)
     }
 
     @Test
-    fun `should prompt user twice for host-url when first host-url is empty`() {
-        // given
+    fun `should prompt user twice for host-url when first host-url is empty`() { // given
         val emptyHostUrl = ""
         val hostUrl = "https://sonar.foo"
         val projectKey = "de.foo:bar"
@@ -156,8 +153,7 @@ class ParserDialogTest {
     }
 
     @Test
-    fun `should prompt user twice for project-key when first project-key is empty`() {
-        // given
+    fun `should prompt user twice for project-key when first project-key is empty`() { // given
         val hostUrl = "https://sonar.foo"
         val emptyProjectKey = ""
         val projectKey = "de.foo:bar"

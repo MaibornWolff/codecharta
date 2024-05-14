@@ -1,10 +1,6 @@
-<mat-expansion-panel
-	[expanded]="isExpanded"
-	(opened)="isExpanded = true"
-	(closed)="isExpanded = false"
-	*ngFor="let customConfigItemGroup of customConfigItemGroups | keyvalue"
->
-	<mat-expansion-panel-header>
+@for (customConfigItemGroup of customConfigItemGroups | keyvalue; track customConfigItemGroup) {
+<mat-expansion-panel #matExpansionPanel [expanded]="isGroupExpanded(customConfigItemGroup.key) || searchTerm.length > 0">
+	<mat-expansion-panel-header (click)="toggleGroupExpansion(customConfigItemGroup.key)">
 		<mat-panel-title class="custom-config-item-group-title">
 			Custom View(s) in
 			<strong> {{ customConfigItemGroup.value.mapSelectionMode | titlecase }} </strong>
@@ -12,7 +8,10 @@
 			{{ customConfigItemGroup.value.mapNames }}
 		</mat-panel-title>
 	</mat-expansion-panel-header>
-	<mat-list *ngFor="let customConfig of customConfigItemGroup.value.customConfigItems">
+	@if (customConfigItemGroup.value.customConfigItems | filterCustomConfigDataBySearchTerm : searchTerm; as filteredCustomConfigs) { @if
+	(filteredCustomConfigs.length > 0) {
+	<mat-list>
+		@for (customConfig of filteredCustomConfigs; track customConfig) {
 		<mat-list-item title="{{ customConfig | customConfig2ApplicableMessage }}">
 			<div class="metrics-box">
 				<p class="config-item-name" title="{{ customConfig.name }}">
@@ -33,10 +32,21 @@
 			</div>
 			<div class="custom-config-action-buttons">
 				<cc-apply-custom-config-button [customConfigItem]="customConfig"></cc-apply-custom-config-button>
-				<button class="remove-button" title="Remove Custom View" (click)="removeCustomConfig(customConfig.id)">
+				<button
+					class="remove-button"
+					title="Remove Custom View"
+					(click)="removeCustomConfig(customConfig.id, customConfigItemGroup.key)"
+				>
 					<i class="fa fa-trash"></i>
 				</button>
 			</div>
 		</mat-list-item>
+		}
 	</mat-list>
+	} @if (filteredCustomConfigs.length === 0) {
+	<div class="no-configs-found-message">
+		<p>No configurations found.</p>
+	</div>
+	} }
 </mat-expansion-panel>
+}

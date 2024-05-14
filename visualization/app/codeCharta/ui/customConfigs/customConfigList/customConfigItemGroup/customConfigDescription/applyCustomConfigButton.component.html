@@ -9,16 +9,18 @@
 		<p class="config-metric"><i class="fa fa-arrows-alt"></i> {{ customConfigItem.metrics.areaMetric }}</p>
 		<p class="config-metric"><i class="fa fa-arrows-v"></i> {{ customConfigItem.metrics.heightMetric }}</p>
 		<p class="config-metric"><i class="fa fa-paint-brush"></i> {{ customConfigItem.metrics.colorMetric }}</p>
-		<p class="config-metric" *ngIf="customConfigItem.metrics.edgeMetric">
-			<i class="fa fa-exchange"></i> {{ customConfigItem.metrics.edgeMetric }}
-		</p>
+		@if (customConfigItem.metrics.edgeMetric) {
+		<p class="config-metric"><i class="fa fa-exchange"></i> {{ customConfigItem.metrics.edgeMetric }}</p>
+		}
 		<div class="color-schema-container">
-			<div class="color-swatch-container" *ngFor="let mapColor of customConfigItem | customConfigColorSchemaBySelectionMode">
+			@for (mapColor of customConfigItem | customConfigColorSchemaBySelectionMode; track mapColor) {
+			<div class="color-swatch-container">
 				<span
 					class="color-swatch"
 					[style.background-color]="customConfigItem.isApplicable ? mapColor : 'rgb(204, 204, 204)'"
 				></span>
 			</div>
+			}
 		</div>
 	</div>
 </button>

@@ -46,10 +46,13 @@ import sample1 from "../../assets/sample1.cc.json"
 import sample2 from "../../assets/sample2.cc.json"
 import { ExportCCFile } from "../../codeCharta.api.model"
 import { AppSettings, CcState, DynamicSettings, FileSettings, NameDataPair } from "../../codeCharta.model"
+import { FileState } from "../../model/files/files"
 import { getCCFiles } from "../../model/files/files.helper"
+import { MetricQueryParemter } from "../../state/effects/saveMetricsInQueryParameters/saveMetricsInQueryParameters.effect"
+import { metricDataSelector } from "../../state/selectors/accumulatedData/metricData/metricData.selector"
 import { setIsLoadingFile } from "../../state/store/appSettings/isLoadingFile/isLoadingFile.actions"
 import { setIsLoadingMap } from "../../state/store/appSettings/isLoadingMap/isLoadingMap.actions"
-import { setDelta } from "../../state/store/files/files.actions"
+import { setDelta, setFiles } from "../../state/store/files/files.actions"
 import { ErrorDialogComponent } from "../../ui/dialogs/errorDialog/errorDialog.component"
 import { buildHtmlMessage } from "../../util/loadFilesValidationToErrorDialog"
 import { getNameDataPair } from "../loadFile/fileParser"
@@ -95,28 +98,31 @@ export class LoadInitialFileService {
 			const urlNameDataPairCheckSums = urlNameDataPairs.map(urlNameDataPair => urlNameDataPair.content.fileChecksum)
 			const savedNameDataPairCheckSums = savedNameDataPairs.map(savedNameDataPair => savedNameDataPair.content.fileChecksum)
 			if (stringify(urlNameDataPairCheckSums) === stringify(savedNameDataPairCheckSums)) {
-				this.applySettingsAndFilesFromSavedState(savedCcState, savedNameDataPairs)
+				this.applySettingsAndFilesFromSavedState(savedFileStates, savedCcState, savedNameDataPairs)
 			} else {
 				this.applySettingsFromSavedState(savedCcState, urlNameDataPairs)
 			}
 			this.setRenderStateFromUrl()
 		} catch (error) {
 			await this.handleErrorLoadFilesFromQueryParams(error as Error)
+		} finally {
+			this.setMetricsFromUrl()
 		}
 	}
 
-	private applySettingsAndFilesFromSavedState(savedCcState: CcState, savedNameDataPairs: NameDataPair[]) {
+	private applySettingsAndFilesFromSavedState(savedFileStates: FileState[], savedCcState: CcState, savedNameDataPairs: NameDataPair[]) {
 		const missingPropertiesInSavedCcState = []
 
 		const missingAppSettings = this.applyAppSettings(savedCcState.appSettings)
 		missingPropertiesInSavedCcState.push(...missingAppSettings)
 
 		this.loadFileService.loadFiles(savedNameDataPairs)
+		this.store.dispatch(setFiles({ value: savedFileStates }))
+
 		const missingFileSettings = this.applyFileSettings(savedCcState.fileSettings)
 		missingPropertiesInSavedCcState.push(...missingFileSettings)
 		const missingDynamicSettings = this.applyDynamicSettings(savedCcState.dynamicSettings)
 		missingPropertiesInSavedCcState.push(...missingDynamicSettings)
-
 		if (missingPropertiesInSavedCcState.length > 0) {
 			this.showErrorDialogForMissingProperties(missingPropertiesInSavedCcState)
 		}
@@ -152,7 +158,7 @@ export class LoadInitialFileService {
 
 			const savedFileStates = savedCcState.files
 			const savedNameDataPairs = savedFileStates.map(fileState => getNameDataPair(fileState.file))
-			this.applySettingsAndFilesFromSavedState(savedCcState, savedNameDataPairs)
+			this.applySettingsAndFilesFromSavedState(savedFileStates, savedCcState, savedNameDataPairs)
 		} catch (error) {
 			await this.handleErrorLoadFilesFromIndexedDB(error as Error)
 		}
@@ -425,6 +431,36 @@ export class LoadInitialFileService {
 			title += ` (${error.status}: ${error.statusText})`
 		}
 		return title
+	}
+
+	setMetricsFromUrl() {
+		const areaMetric = this.urlUtils.getParameterByName(MetricQueryParemter.areaMetric)
+		const heightMetric = this.urlUtils.getParameterByName(MetricQueryParemter.heightMetric)
+		const colorMetric = this.urlUtils.getParameterByName(MetricQueryParemter.colorMetric)
+		const edgeMetric = this.urlUtils.getParameterByName(MetricQueryParemter.edgeMetric)
+
+		const state = this.state.getValue() as CcState
+		const nodeMetricData = metricDataSelector(state).nodeMetricData
+		const edgeMetricData = metricDataSelector(state).edgeMetricData
+		if (!nodeMetricData) {
+			return
+		}
+
+		const nodeMetricNames = new Set(nodeMetricData.map(nodeMetric => nodeMetric.name))
+		const edgeMetricNames = edgeMetricData.map(edgeMetric => edgeMetric.name)
+
+		if (areaMetric && nodeMetricNames.has(areaMetric)) {
+			this.store.dispatch(setAreaMetric({ value: areaMetric }))
+		}
+		if (heightMetric && nodeMetricNames.has(heightMetric)) {
+			this.store.dispatch(setHeightMetric({ value: heightMetric }))
+		}
+		if (colorMetric && nodeMetricNames.has(colorMetric)) {
+			this.store.dispatch(setColorMetric({ value: colorMetric }))
+		}
+		if (edgeMetric && edgeMetricNames.includes(edgeMetric)) {
+			this.store.dispatch(setEdgeMetric({ value: edgeMetric }))
+		}
 	}
 
 	// TODO: Please make sure that this function works fine on Github pages with

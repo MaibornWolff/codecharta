@@ -5,11 +5,15 @@
 -   `pip` command must be installed (it is probably already installed, if you have installed Python).
 -   The python packaging tool must be installed. If not run `pip install pipenv` and then `pipenv install`.
 
+> Be aware, that the current version of analysis must be able to analyse the repository as described in `script/build_demo_file_*.sh`! Do not try to release the visualization, when analysis is broken!
+
 ## Start the automatic release process
 
 -   Call `pipenv run make_release`.
 -   On Windows it is recommended to run the command in `cmd.exe` rather than in a git bash.
 -   Note that you have to add the Changelog notes manually on GitHub (GitHub > Latest (new) release > Edit).
+
+> You can add `-f` or `--force` to disable the protections of the script. You can't release in force mode.
 
 ## Explanation of the script
 

@@ -14,7 +14,7 @@ import java.util.stream.Collector
 import java.util.stream.Stream
 
 class GitLogNumstatRawParserStrategy : LogParserStrategy {
-    override fun creationCommand(): String {
+override fun creationCommand(): String {
         return "git log --numstat --raw --topo-order --reverse -m"
     }
 
@@ -28,21 +28,19 @@ class GitLogNumstatRawParserStrategy : LogParserStrategy {
     }
 
     override fun parseModifications(commitLines: List<String>): List<Modification> {
-        return commitLines
-            .mapNotNull {
-                if (isFileLine(it)) {
-                    parseModification(it)
-                } else null
+        return commitLines.mapNotNull {
+            if (isFileLine(it)) {
+                parseModification(it)
+            } else {
+                null
             }
-            .groupingBy { it.currentFilename }
-            .aggregate { _, aggregatedModification: Modification?, currentModification, _ ->
-                when (aggregatedModification) {
-                    null -> mergeModifications(currentModification)
-                    else -> mergeModifications(aggregatedModification, currentModification)
-                }
-            }
-            .values
-            .toList()
+        }.groupingBy { it.currentFilename }
+                .aggregate { _, aggregatedModification: Modification?, currentModification, _ ->
+                    when (aggregatedModification) {
+                        null -> mergeModifications(currentModification)
+                        else -> mergeModifications(aggregatedModification, currentModification)
+                    }
+                }.values.toList()
     }
 
     override fun parseDate(commitLines: List<String>): OffsetDateTime {
@@ -55,8 +53,8 @@ class GitLogNumstatRawParserStrategy : LogParserStrategy {
     }
 
     companion object {
+    private val GIT_COMMIT_SEPARATOR_TEST = Predicate<String> { logLine -> logLine.startsWith("commit") }
 
-        private val GIT_COMMIT_SEPARATOR_TEST = Predicate<String> { logLine -> logLine.startsWith("commit") }
         private fun isFileLine(commitLine: String): Boolean {
             return GitLogRawParsingHelper.isFileLine(commitLine) || GitLogNumstatParsingHelper.isFileLine(commitLine)
         }
@@ -64,7 +62,9 @@ class GitLogNumstatRawParserStrategy : LogParserStrategy {
         internal fun parseModification(fileLine: String): Modification {
             return if (fileLine.startsWith(":")) {
                 GitLogRawParsingHelper.parseModification(fileLine)
-            } else GitLogNumstatParsingHelper.parseModification(fileLine)
+            } else {
+                GitLogNumstatParsingHelper.parseModification(fileLine)
+            }
         }
 
         private fun mergeModifications(vararg a: Modification): Modification {
@@ -80,7 +80,6 @@ class GitLogNumstatRawParserStrategy : LogParserStrategy {
             }
 
             if (type == Modification.Type.RENAME) {
-
                 val temporaryModification = a.firstOrNull { modification -> modification.oldFilename.isNotEmpty() }
                 var oldFilename = ""
 

@@ -3,9 +3,9 @@ package de.maibornwolff.codecharta.importer.sonar.dataaccess
 import de.maibornwolff.codecharta.importer.sonar.SonarImporterException
 import de.maibornwolff.codecharta.importer.sonar.filter.ErrorResponseFilter
 import de.maibornwolff.codecharta.importer.sonar.model.Metrics
+import de.maibornwolff.codecharta.util.Logger
 import io.reactivex.Flowable
 import io.reactivex.schedulers.Schedulers
-import mu.KotlinLogging
 import org.glassfish.jersey.client.ClientProperties
 import java.net.URL
 import javax.ws.rs.client.Client
@@ -16,27 +16,18 @@ import javax.ws.rs.core.MediaType
  * Requests Data from Sonar Instance through REST-API
  */
 class SonarMetricsAPIDatasource(private val user: String, private val baseUrl: URL?) {
-
-    private val METRICS_URL_PATTERN = "%s/api/metrics/search?f=hidden,decimalScale&p=%s&ps=$PAGE_SIZE"
-    private val TIMEOUT_MS = 5000
-    private val logger = KotlinLogging.logger {}
-
-    private val client: Client
+private val client: Client =
+            ClientBuilder.newClient().property(ClientProperties.CONNECT_TIMEOUT, Companion.TIMEOUT_MS)
+                    .property(ClientProperties.READ_TIMEOUT, Companion.TIMEOUT_MS)
 
     val availableMetricKeys: List<String>
         get() {
             val noPages = numberOfPages
 
-            return Flowable.range(1, noPages)
-                .flatMap { p ->
-                    Flowable.just(p)
-                        .subscribeOn(Schedulers.io())
-                        .map<Metrics>({ this.getAvailableMetrics(it) })
-                }
-                .filter { it.metrics != null }
-                .flatMap { Flowable.fromIterable(it.metrics!!) }
-                .filter({ it.isFloatType })
-                .map<String>({ it.key }).distinct().toSortedList().blockingGet()
+            return Flowable.range(1, noPages).flatMap { p ->
+                Flowable.just(p).subscribeOn(Schedulers.io()).map { this.getAvailableMetrics(it) }
+            }.filter { it.metrics != null }.flatMap { Flowable.fromIterable(it.metrics!!) }.filter { it.isFloatType }
+                    .map { it.key }.distinct().toSortedList().blockingGet()
         }
 
     val numberOfPages: Int
@@ -57,23 +48,19 @@ class SonarMetricsAPIDatasource(private val user: String, private val baseUrl: U
 
     init {
 
-        client = ClientBuilder.newClient()
-            .property(ClientProperties.CONNECT_TIMEOUT, TIMEOUT_MS)
-            .property(ClientProperties.READ_TIMEOUT, TIMEOUT_MS)
         client.register(ErrorResponseFilter::class.java)
         client.register(GsonProvider::class.java)
     }
 
     fun getAvailableMetrics(page: Int): Metrics {
-        val url = String.format(METRICS_URL_PATTERN, baseUrl, page)
-        val request = client.target(url)
-            .request(MediaType.APPLICATION_JSON + "; charset=utf-8")
-        if (!user.isEmpty()) {
-            request.header("Authorization", "Basic " + AuthentificationHandler.createAuthTxtBase64Encoded(user))
+        val url = String.format(Companion.METRICS_URL_PATTERN, baseUrl, page)
+        val request = client.target(url).request(MediaType.APPLICATION_JSON + "; charset=utf-8")
+        if (user.isNotEmpty()) {
+            request.header("Authorization", "Basic " + AuthenticationHandler.createAuthTxtBase64Encoded(user))
         }
 
         try {
-            logger.debug { "Getting measures from $url" }
+            Logger.debug { "Getting measures from $url" }
 
             return request.get(Metrics::class.java)
         } catch (e: RuntimeException) {
@@ -82,6 +69,8 @@ class SonarMetricsAPIDatasource(private val user: String, private val baseUrl: U
     }
 
     companion object {
-        internal const val PAGE_SIZE = 500
+    internal const val PAGE_SIZE = 500
+        private const val METRICS_URL_PATTERN = "%s/api/metrics/search?f=hidden,decimalScale&p=%s&ps=$PAGE_SIZE"
+        private const val TIMEOUT_MS = 5000
     }
 }

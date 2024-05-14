@@ -1,24 +1,16 @@
-<ng-container *ngIf="currentFocusedNodePath$ | async | isNodeFocused : codeMapNode; let isNodeFocused">
-	<ng-container *ngIf="!isNodeFocused.isNodeFocused">
-		<button mat-button (click)="handleFocusNodeClicked()" id="focus-button" title="Only show selected nodes with children-nodes">
-			<i class="fa fa-bullseye"></i> FOCUS
-		</button>
-	</ng-container>
-
-	<ng-container *ngIf="isNodeFocused.isNodeFocused || isNodeFocused.isParentFocused">
-		<button mat-button aria-label="Remove Focus from node" (click)="handleUnfocusNodeClicked()" title="Show previous focused node">
-			<i class="fa fa-bullseye"></i>
-			{{ isNodeFocused.isParentFocused ? "UNFOCUS PARENT" : "UNFOCUS" }}
-		</button>
-		<button
-			mat-button
-			*ngIf="hasPreviousFocusedNodePath$ | async"
-			aria-label="Remove Focus from all nodes"
-			(click)="handleUnfocusAllNodesClicked()"
-			title="Show complete map"
-		>
-			<i class="fa fa-bullseye"></i>
-			UNFOCUS ALL
-		</button>
-	</ng-container>
-</ng-container>
+@if (currentFocusedNodePath$ | async | isNodeFocused : codeMapNode; as isNodeFocused) { @if (!isNodeFocused.isNodeFocused) {
+<button mat-button (click)="handleFocusNodeClicked()" id="focus-button" title="Only show selected nodes with children-nodes">
+	<i class="fa fa-bullseye"></i>
+	FOCUS
+</button>
+} @if (isNodeFocused.isNodeFocused || isNodeFocused.isParentFocused) {
+<button mat-button aria-label="Remove Focus from node" (click)="handleUnfocusNodeClicked()" title="Show previous focused node">
+	<i class="fa fa-bullseye"></i>
+	{{ isNodeFocused.isParentFocused ? "UNFOCUS PARENT" : "UNFOCUS" }}
+</button>
+@if (hasPreviousFocusedNodePath$ | async) {
+<button mat-button aria-label="Remove Focus from all nodes" (click)="handleUnfocusAllNodesClicked()" title="Show complete map">
+	<i class="fa fa-bullseye"></i>
+	UNFOCUS ALL
+</button>
+} } }

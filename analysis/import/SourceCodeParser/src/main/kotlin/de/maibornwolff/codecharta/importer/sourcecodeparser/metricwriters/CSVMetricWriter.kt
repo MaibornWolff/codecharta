@@ -5,14 +5,20 @@ import de.maibornwolff.codecharta.model.Project
 import java.io.Writer
 
 class CSVMetricWriter(private val writer: Writer) : MetricWriter {
-
-    override fun generate(projectMetrics: ProjectMetrics, allMetrics: Set<String>, pipedProject: Project?) {
+override fun generate(
+projectMetrics: ProjectMetrics,
+allMetrics: Set<String>,
+pipedProject: Project?,
+) {
         if (pipedProject != null) {
-            System.err.println("Piped input project is not supported for csv output. Please merge projects and use CSVExporter after instead.")
+            System.err.println(
+                    "Piped input project is not supported for csv output. Please merge projects and use CSVExporter after instead.",
+                              )
         }
 
-        val csvOutput = StringBuilder()
-            .append(generateHeader(allMetrics))
+        val csvOutput =
+                StringBuilder()
+                        .append(generateHeader(allMetrics))
         for (entry in projectMetrics.projectMetrics) {
             val fileName = entry.key
             val fileMetrics = entry.value.fileMetrics

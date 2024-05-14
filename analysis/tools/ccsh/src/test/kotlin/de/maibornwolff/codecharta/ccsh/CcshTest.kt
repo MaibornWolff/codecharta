@@ -6,14 +6,12 @@ import com.github.kinquirer.components.promptInput
 import de.maibornwolff.codecharta.tools.ccsh.Ccsh
 import de.maibornwolff.codecharta.tools.ccsh.parser.InteractiveParserSuggestionDialog
 import de.maibornwolff.codecharta.tools.ccsh.parser.ParserService
+import de.maibornwolff.codecharta.util.Logger
 import io.mockk.every
-import io.mockk.mockk
 import io.mockk.mockkObject
 import io.mockk.mockkStatic
 import io.mockk.unmockkAll
 import io.mockk.verify
-import mu.KLogger
-import mu.KotlinLogging
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
@@ -26,7 +24,7 @@ import java.io.PrintStream
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class CcshTest {
-    private val outContent = ByteArrayOutputStream()
+private val outContent = ByteArrayOutputStream()
     private val originalOut = System.out
     private val errContent = ByteArrayOutputStream()
     private val originalErr = System.err
@@ -77,8 +75,10 @@ class CcshTest {
         } returns -1
     }
 
-    private fun mockInteractiveParserSuggestionDialog(selectedParsers: List<String>,
-                                                      parserArgs: List<List<String>>) {
+    private fun mockInteractiveParserSuggestionDialog(
+    selectedParsers: List<String>,
+    parserArgs: List<List<String>>,
+    ) {
         if (selectedParsers.size != parserArgs.size) {
             throw IllegalArgumentException("There must be the same amount of args as parsers!")
         }
@@ -133,7 +133,28 @@ class CcshTest {
         // then
         Assertions.assertThat(exitCode).isEqualTo(0)
         Assertions.assertThat(outStream.toString())
-            .contains("Usage: ccsh [-hiv] [COMMAND]", "Command Line Interface for CodeCharta analysis")
+                .contains("Usage: ccsh [-hiv] [COMMAND]", "Command Line Interface for CodeCharta analysis")
+        verify(exactly = 0) { ParserService.executePreconfiguredParser(any(), any()) }
+
+        // clean up
+        System.setOut(originalOut)
+    }
+
+    @Test
+    fun `should show version and copyright when executed with version flag`() {
+        // given
+        mockkObject(ParserService)
+        val outStream = ByteArrayOutputStream()
+        val originalOut = System.out
+        System.setOut(PrintStream(outStream))
+
+        // when
+        val exitCode = Ccsh.executeCommandLine(arrayOf("-v"))
+
+        // then
+        Assertions.assertThat(exitCode).isEqualTo(0)
+        Assertions.assertThat(outStream.toString())
+            .contains(listOf("version", "Copyright(c) 2024, MaibornWolff GmbH\n"))
         verify(exactly = 0) { ParserService.executePreconfiguredParser(any(), any()) }
 
         // clean up
@@ -159,8 +180,7 @@ class CcshTest {
         val exitCode = Ccsh.executeCommandLine(emptyArray())
 
         // then
-        Assertions.assertThat(exitCode).isZero
-        // 3 because 2 parsers and the merge in the end
+        Assertions.assertThat(exitCode).isZero // 3 because 2 parsers and the merge in the end
         verify(exactly = 3) { ParserService.executePreconfiguredParser(any(), any()) }
     }
 
@@ -203,8 +223,10 @@ class CcshTest {
         // given
         mockUnsuccessfulParserService()
         val dummyConfiguredParsers =
-                mapOf("dummyParser1" to listOf("dummyArg1", "dummyArg2"),
-                        "dummyParser2" to listOf("dummyArg1", "dummyArg2"))
+                mapOf(
+                        "dummyParser1" to listOf("dummyArg1", "dummyArg2"),
+                        "dummyParser2" to listOf("dummyArg1", "dummyArg2"),
+                     )
 
         // when
         Ccsh.executeConfiguredParsers(cmdLine, dummyConfiguredParsers)
@@ -250,8 +272,7 @@ class CcshTest {
 
         // then
         Assertions.assertThat(exitCode).isEqualTo(0)
-        Assertions.assertThat(errContent.toString())
-                .contains("Executing sonarimport")
+        Assertions.assertThat(errContent.toString()).contains("Executing sonarimport")
     }
 
     @Test
@@ -269,8 +290,7 @@ class CcshTest {
 
         // then
         Assertions.assertThat(exitCode).isZero()
-        Assertions.assertThat(errContent.toString())
-                .contains("Parser was successfully executed.")
+        Assertions.assertThat(errContent.toString()).contains("Parser was successfully executed.")
     }
 
     @Test
@@ -281,13 +301,15 @@ class CcshTest {
         val absoluteOutputFilePath = File(outputFilePath).absolutePath
         val outputFile = File(outputFilePath)
         outputFile.deleteOnExit()
-        val multipleConfiguredParsers = mapOf("dummyParser1" to listOf("dummyArg1", "dummyArg2"), "dummyParser2" to listOf("dummyArg1", "dummyArg2"))
+        val multipleConfiguredParsers =
+                mapOf(
+                        "dummyParser1" to listOf("dummyArg1", "dummyArg2"),
+                        "dummyParser2" to listOf("dummyArg1", "dummyArg2"),
+                     )
 
-        val loggerMock = mockk<KLogger>()
-        val infoMessagesLogged = mutableListOf<String>()
-        mockkObject(KotlinLogging)
-        every { KotlinLogging.logger(any<(() -> Unit)>()) } returns loggerMock
-        every { loggerMock.info(capture(infoMessagesLogged)) } returns Unit
+        val lambdaSlot = mutableListOf<() -> String>()
+        mockkObject(Logger)
+        every { Logger.info(capture(lambdaSlot)) } returns Unit
 
         mockKInquirerConfirm(true)
 
@@ -300,8 +322,7 @@ class CcshTest {
         Ccsh.executeConfiguredParsers(cmdLine, multipleConfiguredParsers)
 
         // then
-        Assertions.assertThat(infoMessagesLogged.any { e -> e.endsWith(absoluteOutputFilePath) }).isTrue()
-        verify { loggerMock.info(any<String>()) }
+        Assertions.assertThat(lambdaSlot.last()().endsWith(absoluteOutputFilePath)).isTrue()
     }
 
     @Test
@@ -315,10 +336,15 @@ class CcshTest {
         sourcecodeOutputFile.deleteOnExit()
 
         val selectedParsers = listOf("rawtextparser", "sourcecodeparser")
-        val args = listOf(
-                listOf(File(folderPath).absolutePath, "--output-file="),
-                listOf(File(folderPath).absolutePath, "--format=JSON", "--output-file=$sourcecodeOutputFilePath", "--no-issues", "--default-excludes", "--not-compressed")
-        )
+        val args =
+                listOf(
+                        listOf(File(folderPath).absolutePath, "--output-file="),
+                        listOf(
+                                File(folderPath).absolutePath, "--format=JSON",
+                                "--output-file=$sourcecodeOutputFilePath", "--no-issues", "--default-excludes",
+                                "--not-compressed",
+                              ),
+                      )
 
         mockInteractiveParserSuggestionDialog(selectedParsers, args)
         mockKInquirerConfirm(true)

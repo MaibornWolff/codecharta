@@ -7,43 +7,74 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Fixed 🐞
+
+-   Add default Docker user to mitigate `GitLogParser` issues during repo-scan [#3571](https://github.com/MaibornWolff/codecharta/pull/3571)
+-   Escaping and un-escaping windows paths, auto-detecting path separator for Unix and Windows
+    paths [#3569](https://github.com/MaibornWolff/codecharta/pull/3569)
+
+Chore 👨‍💻 👩‍💻
+
+-   Upgrade Gradle to version 8.7, now with support for Java version 21. [#3570](https://github.com/MaibornWolff/codecharta/pull/3570)
+
+## [1.123.0] - 2024-04-10
+
+### Added 🚀
+
+-   Auto detect direction of metrics - introduces `direction` as a new field in the JSON
+    schema [#3518](https://github.com/MaibornWolff/codecharta/pull/3518)
+
 ### Chore 👨‍💻 👩‍💻
 
 -   Bump node version from 16 to 18 [#3452](https://github.com/MaibornWolff/codecharta/pull/3452)
+
+### Changed
+
+-   Temporarily disabled metric-gardener on-the-fly
+    execution [#3542](https://github.com/MaibornWolff/codecharta/pull/3542)
 
 ## [1.122.1] - 2024-02-26
 
 ### Changed
 
--   CodeCharta Analysis and Visualization now have separate changelogs and releases [#3499](https://github.com/MaibornWolff/codecharta/pull/3499)
+-   CodeCharta Analysis and Visualization now have separate changelogs and
+    releases [#3499](https://github.com/MaibornWolff/codecharta/pull/3499)
 
 ### Fixed 🐞
 
--   Fix metric-gardener-importer crashing on new metric-gardener-json-format [#3496](https://github.com/MaibornWolff/codecharta/pull/3496)
+-   Fix metric-gardener-importer crashing on new
+    metric-gardener-json-format [#3496](https://github.com/MaibornWolff/codecharta/pull/3496)
 
 ## [1.122.0] - 2024-01-16
 
 ### Added 🚀
 
 -   File explorer can be pinned while analyzing the code-map [#3459](https://github.com/MaibornWolff/codecharta/pull/3459)
--   Validate input file during interactive parser configuration [#3460](https://github.com/MaibornWolff/codecharta/pull/3460)
+-   Validate input file during interactive parser
+    configuration [#3460](https://github.com/MaibornWolff/codecharta/pull/3460)
 -   Add functionality to screenshot legend [#3471](https://github.com/MaibornWolff/codecharta/pull/3471)
 
 ### Changed
 
--   Multiple values for options need to be separated by comma [#3434](https://github.com/MaibornWolff/codecharta/pull/3434)
--   Changed the short-form of the `--no-issues` flag in the SourceCodeParser from `-i` to `-ni` [#3434](https://github.com/MaibornWolff/codecharta/pull/3434)
+-   Multiple values for options need to be separated by
+    comma [#3434](https://github.com/MaibornWolff/codecharta/pull/3434)
+-   Changed the short-form of the `--no-issues` flag in the SourceCodeParser from `-i`
+    to `-ni` [#3434](https://github.com/MaibornWolff/codecharta/pull/3434)
 -   Clarify sonar user token question [#3445](https://github.com/MaibornWolff/codecharta/pull/3445)
--   Changed the `--user` flag to `--user-token` in SonarImporter [#3445](https://github.com/MaibornWolff/codecharta/pull/3445)
--   Changed the interactive dialog of `modify` to prompt user for single action to perform [#3448](https://github.com/MaibornWolff/codecharta/pull/3448)
--   Selected buildings now keep their label until they are unselected [#3465](https://github.com/MaibornWolff/codecharta/pull/3465)
+-   Changed the `--user` flag to `--user-token` in
+    SonarImporter [#3445](https://github.com/MaibornWolff/codecharta/pull/3445)
+-   Changed the interactive dialog of `modify` to prompt user for single action to
+    perform [#3448](https://github.com/MaibornWolff/codecharta/pull/3448)
+-   Selected buildings now keep their label until they are
+    unselected [#3465](https://github.com/MaibornWolff/codecharta/pull/3465)
 
 ### Fixed 🐞
 
 -   Fix saving the number of top-labels in custom configs [#3461](https://github.com/MaibornWolff/codecharta/pull/3461)
 -   Fix parsers crashing after printing output to stdout [#3442](https://github.com/MaibornWolff/codecharta/pull/3442)
 -   Fix removal of nodes with identical names in `modify` [#3446](https://github.com/MaibornWolff/codecharta/pull/3446)
--   Fix the highlighting of very high risk metrics to highlight only matching files [#3454](https://github.com/MaibornWolff/codecharta/pull/3454)
+-   Fix the highlighting of very high risk metrics to highlight only matching
+    files [#3454](https://github.com/MaibornWolff/codecharta/pull/3454)
 
 ## [1.121.1] - 2023-12-08
 
@@ -59,20 +90,29 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Changed
 
--   Changed short form of parameter `--file-extensions` of RawTextParser from `-f` to `-fe` [#3405](https://github.com/MaibornWolff/codecharta/pull/3405)
+-   Changed short form of parameter `--file-extensions` of RawTextParser from `-f`
+    to `-fe` [#3405](https://github.com/MaibornWolff/codecharta/pull/3405)
 -   Update readme and gh-pages for RawTextParser [#3405](https://github.com/MaibornWolff/codecharta/pull/3405)
--   Changed the `--format` flag for csv-output in SourceCodeParser from `table` to `csv` [#3414](https://github.com/MaibornWolff/codecharta/pull/3414)
+-   Changed the `--format` flag for csv-output in SourceCodeParser from `table`
+    to `csv` [#3414](https://github.com/MaibornWolff/codecharta/pull/3414)
 
 ### Fixed 🐞
 
--   Fix RawTextParser producing incorrect output when no (or multiple) file extensions were specified in interactive mode [#3405](https://github.com/MaibornWolff/codecharta/pull/3405)
--   Fix handling of empty inputs for the `--metrics`, `--exclude`, `--file-extensions` flags in the RawTextParser [#3415](https://github.com/MaibornWolff/codecharta/pull/3415)
--   Fix RawTextParser incorrectly setting max indentation level to a predefined value [#3419](https://github.com/MaibornWolff/codecharta/pull/3419)
--   Fix the csv-exporter so that it exports multiple projects instead of just one when multiple projects are specified [#3414](https://github.com/MaibornWolff/codecharta/pull/3414)
+-   Fix RawTextParser producing incorrect output when no (or multiple) file extensions were specified in interactive
+    mode [#3405](https://github.com/MaibornWolff/codecharta/pull/3405)
+-   Fix handling of empty inputs for the `--metrics`, `--exclude`, `--file-extensions` flags in the
+    RawTextParser [#3415](https://github.com/MaibornWolff/codecharta/pull/3415)
+-   Fix RawTextParser incorrectly setting max indentation level to a predefined
+    value [#3419](https://github.com/MaibornWolff/codecharta/pull/3419)
+-   Fix the csv-exporter so that it exports multiple projects instead of just one when multiple projects are
+    specified [#3414](https://github.com/MaibornWolff/codecharta/pull/3414)
 -   Fix file extensions of output files for merged projects [#3421](https://github.com/MaibornWolff/codecharta/pull/3421)
--   Fix the ability for users to accidentally pass invalid metrics to the RawTextParser without it crashing [#3424](https://github.com/MaibornWolff/codecharta/pull/3424)
--   Fix deselected buildings with green/red roof in delta mode do not reset their color roof [#3426](https://github.com/MaibornWolff/codecharta/pull/3426)
--   Fix parser hang issue in interactive mode caused by unintentional "enter" input after the last question [#3422](https://github.com/MaibornWolff/codecharta/pull/3422)
+-   Fix the ability for users to accidentally pass invalid metrics to the RawTextParser without it
+    crashing [#3424](https://github.com/MaibornWolff/codecharta/pull/3424)
+-   Fix deselected buildings with green/red roof in delta mode do not reset their color
+    roof [#3426](https://github.com/MaibornWolff/codecharta/pull/3426)
+-   Fix parser hang issue in interactive mode caused by unintentional "enter" input after the last
+    question [#3422](https://github.com/MaibornWolff/codecharta/pull/3422)
 
 ### Chore ‍👨‍💻 👩‍💻
 
@@ -82,35 +122,47 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Removed 🗑
 
--   Deprecated download button removed (functionality has been replaced by custom views) [#3398](https://github.com/MaibornWolff/codecharta/pull/3398)
--   Remove the 'new' badges from the 'Custom Views' and 'Suspicious Metrics' features as these features are no longer new [#3393](https://github.com/MaibornWolff/codecharta/pull/3399)
+-   Deprecated download button removed (functionality has been replaced by custom
+    views) [#3398](https://github.com/MaibornWolff/codecharta/pull/3398)
+-   Remove the 'new' badges from the 'Custom Views' and 'Suspicious Metrics' features as these features are no longer
+    new [#3393](https://github.com/MaibornWolff/codecharta/pull/3399)
 
 ### Fixed 🐞
 
--   Fix an issue with web demo on Safari showing a white screen and not loading [#3396](https://github.com/MaibornWolff/codecharta/pull/3396)
--   Fix the ability for users to skip the value for tab-width when configuring the rawtextparser and estimate its value [#3404](https://github.com/MaibornWolff/codecharta/pull/3404)
+-   Fix an issue with web demo on Safari showing a white screen and not
+    loading [#3396](https://github.com/MaibornWolff/codecharta/pull/3396)
+-   Fix the ability for users to skip the value for tab-width when configuring the rawtextparser and estimate its
+    value [#3404](https://github.com/MaibornWolff/codecharta/pull/3404)
 
 ### Chore 👨‍💻 👩‍💻
 
--   Add documentation for the installation requirements for metric-gardener [#3395](https://github.com/MaibornWolff/codecharta/pull/3395)
--   Add hints to README (visualization and package) about MacOS arm64 standalone execution [#3395](https://github.com/MaibornWolff/codecharta/pull/3395)
+-   Add documentation for the installation requirements for
+    metric-gardener [#3395](https://github.com/MaibornWolff/codecharta/pull/3395)
+-   Add hints to README (visualization and package) about MacOS arm64 standalone
+    execution [#3395](https://github.com/MaibornWolff/codecharta/pull/3395)
 
 ## [1.120.0] - 2023-11-02
 
 ### Added 🚀
 
--   Only ask to merge results after parser suggestion execution when more than one parser was executed [#3384](https://github.com/MaibornWolff/codecharta/pull/3384)
--   Add the description of each parser to the list of suggested parsers [#3387](https://github.com/MaibornWolff/codecharta/pull/3387)
+-   Only ask to merge results after parser suggestion execution when more than one parser was
+    executed [#3384](https://github.com/MaibornWolff/codecharta/pull/3384)
+-   Add the description of each parser to the list of suggested
+    parsers [#3387](https://github.com/MaibornWolff/codecharta/pull/3387)
 
 ### Changed
 
--   Adjust console output of metric gardener importer to no longer include one line for each processed node [#3386](https://github.com/MaibornWolff/codecharta/pull/3390)
+-   Adjust console output of metric gardener importer to no longer include one line for each processed
+    node [#3386](https://github.com/MaibornWolff/codecharta/pull/3390)
 
 ### Fixed 🐞
 
--   Fix command not found issue for --version and --help in the analysis [#3377](https://github.com/MaibornWolff/codecharta/pull/3377)
--   Fix metric gardener importer getting stuck for large inputs [#3382](https://github.com/MaibornWolff/codecharta/pull/3382)
--   Update docs for ccsh to remove outdated parameters and unify the pages structure [#3333](https://github.com/MaibornWolff/codecharta/pull/3388)
+-   Fix command not found issue for --version and --help in the
+    analysis [#3377](https://github.com/MaibornWolff/codecharta/pull/3377)
+-   Fix metric gardener importer getting stuck for large
+    inputs [#3382](https://github.com/MaibornWolff/codecharta/pull/3382)
+-   Update docs for ccsh to remove outdated parameters and unify the pages
+    structure [#3333](https://github.com/MaibornWolff/codecharta/pull/3388)
 
 ### Chore 👨‍💻 👩‍💻
 
@@ -127,46 +179,61 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
--   Add message outputting which parser is being configured during parser suggestions [#3335](https://github.com/MaibornWolff/codecharta/pull/3335)
--   Add basic validity checking for all input resources (files/folders, url for SonarImporter) [#3325](https://github.com/MaibornWolff/codecharta/pull/3325)
--   Automatically start specific interactive parser when calling parser without args [#3332](https://github.com/MaibornWolff/codecharta/pull/3332)
+-   Add message outputting which parser is being configured during parser
+    suggestions [#3335](https://github.com/MaibornWolff/codecharta/pull/3335)
+-   Add basic validity checking for all input resources (files/folders, url for
+    SonarImporter) [#3325](https://github.com/MaibornWolff/codecharta/pull/3325)
+-   Automatically start specific interactive parser when calling parser without
+    args [#3332](https://github.com/MaibornWolff/codecharta/pull/3332)
 
 ## [1.118.0] - 2023-06-15
 
 ### Added 🚀
 
--   Add metric tooltips that display attribute descriptors and provide hyperlinks in the sidebar to the metric's documentation [#3273](https://github.com/MaibornWolff/codecharta/pull/3273) </br>
+-   Add metric tooltips that display attribute descriptors and provide hyperlinks in the sidebar to the metric's
+    documentation [#3273](https://github.com/MaibornWolff/codecharta/pull/3273) </br>
     <img src="https://user-images.githubusercontent.com/65733509/241383211-d9e8e54b-6b06-45bb-8b99-81cc8e0a4596.png" width="450px"/> <img src="https://github.com/MaibornWolff/codecharta/assets/65733509/0ade9ad4-e60b-4911-aadc-d8142167b21a" width="300px"/>
--   Expand and restructure documentation regarding Docker usage [#3312](https://github.com/MaibornWolff/codecharta/pull/3312)
--   Add current working directories as hint or default value to interactive parser and parser suggestions when asking for input [#3319](https://github.com/MaibornWolff/codecharta/pull/3319)
--   Add helpful status messages when calculating parser suggestions [#3329](https://github.com/MaibornWolff/codecharta/pull/3329)
+-   Expand and restructure documentation regarding Docker
+    usage [#3312](https://github.com/MaibornWolff/codecharta/pull/3312)
+-   Add current working directories as hint or default value to interactive parser and parser suggestions when asking for
+    input [#3319](https://github.com/MaibornWolff/codecharta/pull/3319)
+-   Add helpful status messages when calculating parser
+    suggestions [#3329](https://github.com/MaibornWolff/codecharta/pull/3329)
 
 ### Fixed 🐞
 
 -   Speed up parser suggestions significantly [#3329](https://github.com/MaibornWolff/codecharta/pull/3329)
--   Fix color range reset not triggering on color metric change [#3311](https://github.com/MaibornWolff/codecharta/pull/3311)
+-   Fix color range reset not triggering on color metric
+    change [#3311](https://github.com/MaibornWolff/codecharta/pull/3311)
 
 ## [1.117.0] - 2023-05-19
 
 ### Added 🚀
 
--   Add support for parser suggestions to SVN-, MetricGardener-, RawText- and SourceCodeParser [#3287](https://github.com/MaibornWolff/codecharta/pull/3287)
--   Add semi automatic merging feature after executing multiple parsers [#3287](https://github.com/MaibornWolff/codecharta/pull/3287)
--   Expand developer documentation to include common problems and solutions for them [#3289](https://github.com/MaibornWolff/codecharta/pull/3289)
+-   Add support for parser suggestions to SVN-, MetricGardener-, RawText- and
+    SourceCodeParser [#3287](https://github.com/MaibornWolff/codecharta/pull/3287)
+-   Add semi automatic merging feature after executing multiple
+    parsers [#3287](https://github.com/MaibornWolff/codecharta/pull/3287)
+-   Expand developer documentation to include common problems and solutions for
+    them [#3289](https://github.com/MaibornWolff/codecharta/pull/3289)
 
 ### Fixed 🐞
 
 -   Fix entrypoint for analysis docker image [#3259](https://github.com/MaibornWolff/codecharta/pull/3259)
--   Show again delta of a building which have nothing in common in red or green [#3271](https://github.com/MaibornWolff/codecharta/pull/3271)
+-   Show again delta of a building which have nothing in common in red or
+    green [#3271](https://github.com/MaibornWolff/codecharta/pull/3271)
 -   Always show description of suspicious metrics [#3285](https://github.com/MaibornWolff/codecharta/pull/3285)
--   Show suspicious metrics and risk profile documentation pages in navigation bar [#3290](https://github.com/MaibornWolff/codecharta/pull/3290)
--   Merge filter will now abort execution when an invalid file is specified as input [#3305](https://github.com/MaibornWolff/codecharta/pull/3305)
+-   Show suspicious metrics and risk profile documentation pages in navigation
+    bar [#3290](https://github.com/MaibornWolff/codecharta/pull/3290)
+-   Merge filter will now abort execution when an invalid file is specified as
+    input [#3305](https://github.com/MaibornWolff/codecharta/pull/3305)
 -   Fix formatting issues in docs turning `--` to `–` [#3301](https://github.com/MaibornWolff/codecharta/pull/3301)
 
 ### Changed
 
 -   Adjusted documentation for parser suggestions [#3287](https://github.com/MaibornWolff/codecharta/pull/3287)
--   Make the size of the CodeCharta logo more suitable for any screen size and remove MaibornWolff logo [#3302](https://github.com/MaibornWolff/codecharta/pull/3302)
+-   Make the size of the CodeCharta logo more suitable for any screen size and remove MaibornWolff
+    logo [#3302](https://github.com/MaibornWolff/codecharta/pull/3302)
 
 ### Chore 👨‍💻 👩‍💻
 
@@ -176,14 +243,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
--   Add automatic parser suggestions to recommend usable parsers for a codebase (supports GitLogParser and SonarImporter) when running `ccsh` command [#3275](https://github.com/MaibornWolff/codecharta/pull/3275) </br>
+-   Add automatic parser suggestions to recommend usable parsers for a codebase (supports GitLogParser and SonarImporter)
+    when running `ccsh` command [#3275](https://github.com/MaibornWolff/codecharta/pull/3275) </br>
     ![image](https://user-images.githubusercontent.com/129938897/234309117-c9edd4e7-7c53-4ba7-b849-ec9c3f8f3215.png)
 -   Add documentation subsections for interactive shell and parser suggestions
 
 ### Changed
 
--   Changed default behavior when launching ccsh without arguments to parser suggestions [#3275](https://github.com/MaibornWolff/codecharta/pull/3275)
--   Old interactive parser selection now reachable by passing `-i` or `--interactive` as arguments [#3275](https://github.com/MaibornWolff/codecharta/pull/3275)
+-   Changed default behavior when launching ccsh without arguments to parser
+    suggestions [#3275](https://github.com/MaibornWolff/codecharta/pull/3275)
+-   Old interactive parser selection now reachable by passing `-i` or `--interactive` as
+    arguments [#3275](https://github.com/MaibornWolff/codecharta/pull/3275)
 
 ### Fixed 🐞
 
@@ -193,75 +263,94 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Removed 🗑
 
--   Support for Custom Views created before CodeCharta version 1.110.0 or older is no longer be maintained [#3265](https://github.com/MaibornWolff/codecharta/pull/3265)
+-   Support for Custom Views created before CodeCharta version 1.110.0 or older is no longer be
+    maintained [#3265](https://github.com/MaibornWolff/codecharta/pull/3265)
 
 ### Fixed 🐞
 
 -   Fix the disappearance of the suspicious metrics labels [#3263](https://github.com/MaibornWolff/codecharta/pull/3263)
--   Fix UI components that look different since version 1.115.0 [#3260](https://github.com/MaibornWolff/codecharta/pull/3260)
+-   Fix UI components that look different since version
+    1.115.0 [#3260](https://github.com/MaibornWolff/codecharta/pull/3260)
 -   Show latest release notes in changelog dialog [#3264](https://github.com/MaibornWolff/codecharta/pull/3264)
 
 ## [1.115.0] - 2023-03-30
 
 ### Added 🚀
 
--   Display the CodeCharta logo next to the MaibornWolff logo [#3226](https://github.com/MaibornWolff/codecharta/pull/3226)
--   Tooltip for primary and secondary metrics that displays AttributeDescriptor information in the sidebar [#3239](https://github.com/MaibornWolff/codecharta/pull/3239) </br>
+-   Display the CodeCharta logo next to the MaibornWolff
+    logo [#3226](https://github.com/MaibornWolff/codecharta/pull/3226)
+-   Tooltip for primary and secondary metrics that displays AttributeDescriptor information in the
+    sidebar [#3239](https://github.com/MaibornWolff/codecharta/pull/3239) </br>
     ![image](https://user-images.githubusercontent.com/65733509/227218468-b7d1e1ae-b847-40ab-8513-f3762b8787bb.png)
--   Supports adding note to a custom view, provides a preview and an edit option for notes from the selection menu [#3234](https://github.com/MaibornWolff/codecharta/pull/3234) </br>
+-   Supports adding note to a custom view, provides a preview and an edit option for notes from the selection
+    menu [#3234](https://github.com/MaibornWolff/codecharta/pull/3234) </br>
     ![image](https://user-images.githubusercontent.com/72517530/226942610-9e08d39c-324d-4de3-81d0-4e5da4e589aa.png)
     ![image](https://user-images.githubusercontent.com/72517530/226943152-1bb339bb-c39f-4bf6-a32d-ee8476249f98.png)
 
 ### Changed
 
--   The Suspicious metrics and Risk profile Feature is now also available outside the Experimental Feature Mode [#2963](https://github.com/MaibornWolff/codecharta/pull/2963) </br>
+-   The Suspicious metrics and Risk profile Feature is now also available outside the Experimental Feature
+    Mode [#2963](https://github.com/MaibornWolff/codecharta/pull/2963) </br>
     ![image](https://user-images.githubusercontent.com/47224279/222686442-05d4b83c-04d7-4275-b1eb-4339e8906130.jpg)
 -   Made the background color a bit lighter [#3226](https://github.com/MaibornWolff/codecharta/pull/3226)
 -   Saturate the distribution bar colors [#3226](https://github.com/MaibornWolff/codecharta/pull/3226)
 -   Improve the layout of all metric menus [#3226](https://github.com/MaibornWolff/codecharta/pull/3226)
 -   Improve the layout of the global configuration dialog [#3226](https://github.com/MaibornWolff/codecharta/pull/3226)
 -   Improve the layout of the metric chooser panel [#3226](https://github.com/MaibornWolff/codecharta/pull/3226)
--   Change the primary color to match the color of the CodeCharta logo [#3226](https://github.com/MaibornWolff/codecharta/pull/3226)
--   Improve the docs for suspicious metrics and risk profile feature [#3238](https://github.com/MaibornWolff/codecharta/pull/3238)
+-   Change the primary color to match the color of the CodeCharta
+    logo [#3226](https://github.com/MaibornWolff/codecharta/pull/3226)
+-   Improve the docs for suspicious metrics and risk profile
+    feature [#3238](https://github.com/MaibornWolff/codecharta/pull/3238)
 -   Improve Custom Views Dialog [#3238](https://github.com/MaibornWolff/codecharta/pull/3248)
 
 ### Fixed 🐞
 
--   Unselecting a folder in Presentation Mode leads to console error [#3215](https://github.com/MaibornWolff/codecharta/pull/3215)
+-   Unselecting a folder in Presentation Mode leads to console
+    error [#3215](https://github.com/MaibornWolff/codecharta/pull/3215)
 -   Fix Shrunken FileExplorer's file list on small displays [#3235](https://github.com/MaibornWolff/codecharta/pull/3235)
 -   Fix various margin problems in the UI [#3226](https://github.com/MaibornWolff/codecharta/pull/3226)
--   Fix bumpy animations when moving/turning the map, hover buildings (showing labels and edges) [#3244](https://github.com/MaibornWolff/codecharta/pull/3244)
+-   Fix bumpy animations when moving/turning the map, hover buildings (showing labels and
+    edges) [#3244](https://github.com/MaibornWolff/codecharta/pull/3244)
 
 ### Chore 👨‍💻 👩‍💻
 
--   Upgrade all material UI components to MDC (not using the UI legacy components any more) [#3226](https://github.com/MaibornWolff/codecharta/pull/3226)
+-   Upgrade all material UI components to MDC (not using the UI legacy components any
+    more) [#3226](https://github.com/MaibornWolff/codecharta/pull/3226)
 
 ## [1.114.0] - 2023-01-13
 
 ### Added 🚀
 
--   Add an option to hide floor labels under the Area Metric Options. This recalculates the map. [#3175](https://github.com/MaibornWolff/codecharta/pull/3175)
+-   Add an option to hide floor labels under the Area Metric Options. This recalculates the
+    map. [#3175](https://github.com/MaibornWolff/codecharta/pull/3175)
 
 ### Removed 🗑
 
--   Camera settings for custom views generated with version 1.101.1 and earlier are now ignored. [#3196](https://github.com/MaibornWolff/codecharta/pull/3196)
+-   Camera settings for custom views generated with version 1.101.1 and earlier are now
+    ignored. [#3196](https://github.com/MaibornWolff/codecharta/pull/3196)
 
 ### Fixed 🐞
 
--   Reposition legend panel button again, when attribute sidebar is open [#3183](https://github.com/MaibornWolff/codecharta/pull/3183)
+-   Reposition legend panel button again, when attribute sidebar is
+    open [#3183](https://github.com/MaibornWolff/codecharta/pull/3183)
 
 ### Chore 👨‍💻 👩‍💻
 
--   Add attribute descriptors (metric descriptions) to TokeiImporter and SVNlogParser [#3176](https://github.com/MaibornWolff/codecharta/pull/3176)
+-   Add attribute descriptors (metric descriptions) to TokeiImporter and
+    SVNlogParser [#3176](https://github.com/MaibornWolff/codecharta/pull/3176)
 
 ## [1.113.0] - 2022-12-15
 
 ### Changed
 
--   The Custom Views Feature is now also available outside the Experimental Feature Mode [#3079](https://github.com/MaibornWolff/codecharta/pull/3076) </br>
+-   The Custom Views Feature is now also available outside the Experimental Feature
+    Mode [#3079](https://github.com/MaibornWolff/codecharta/pull/3076) </br>
     ![image](https://user-images.githubusercontent.com/72517530/204557970-0ba31f3b-5209-4707-a2d0-55cc45509f8a.png)
--   Please note that the functionality of downloading cc.json maps will no longer be supported from April 2023. Instead, use the Custom View feature to create and share configurations for different views of your map. [#3079](https://github.com/MaibornWolff/codecharta/pull/3076)
--   Change tooltips in the legend to show the metric description [#3162](https://github.com/MaibornWolff/codecharta/pull/3162) <br/>
+-   Please note that the functionality of downloading cc.json maps will no longer be supported from April 2023. Instead,
+    use the Custom View feature to create and share configurations for different views of your
+    map. [#3079](https://github.com/MaibornWolff/codecharta/pull/3076)
+-   Change tooltips in the legend to show the metric
+    description [#3162](https://github.com/MaibornWolff/codecharta/pull/3162) <br/>
     ![image](https://user-images.githubusercontent.com/27358421/205251507-100b1e1a-d86e-44f3-89cf-f32bf295aabd.png)
 
 ### Chore 👨‍💻 👩‍💻
@@ -273,7 +362,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
--   Reverted PR [#3077](https://github.com/MaibornWolff/codecharta/pull/3077) that introduced a rendering bug, where buildings sizes were not proportional to their area value [#3159](https://github.com/MaibornWolff/codecharta/pull/3159)
+-   Reverted PR [#3077](https://github.com/MaibornWolff/codecharta/pull/3077) that introduced a rendering bug, where
+    buildings sizes were not proportional to their area
+    value [#3159](https://github.com/MaibornWolff/codecharta/pull/3159)
 
 ### Chore 👨‍💻 👩‍💻
 
@@ -284,17 +375,21 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
--   New calculation algorithm for treeMap that accounts for paddings and floor labels [#3077](https://github.com/MaibornWolff/codecharta/pull/3077)
+-   New calculation algorithm for treeMap that accounts for paddings and floor
+    labels [#3077](https://github.com/MaibornWolff/codecharta/pull/3077)
 
 ### Fixed 🐞
 
--   Fix ribbon-bar shadow moving down when search is expanded [#3138](https://github.com/MaibornWolff/codecharta/pull/3138)
--   Fix loading errors of maps containing no programming-language-info [#3144](https://github.com/MaibornWolff/codecharta/pull/3144)
+-   Fix ribbon-bar shadow moving down when search is
+    expanded [#3138](https://github.com/MaibornWolff/codecharta/pull/3138)
+-   Fix loading errors of maps containing no
+    programming-language-info [#3144](https://github.com/MaibornWolff/codecharta/pull/3144)
 
 ### Chore 👨‍💻 👩‍💻
 
 -   Documentation for new treeMap calculation algorithm [#3077](https://github.com/MaibornWolff/codecharta/pull/3077)
--   Add attribute descriptors (metric descriptions) to some filters and importers [#3091](https://github.com/MaibornWolff/codecharta/pull/3091)
+-   Add attribute descriptors (metric descriptions) to some filters and
+    importers [#3091](https://github.com/MaibornWolff/codecharta/pull/3091)
 
 ## [1.111.0] - 2022-11-17
 
@@ -302,17 +397,22 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 -   Add description to every Custom View [#3119](https://github.com/MaibornWolff/codecharta/pull/3119) </br>
     ![image](https://user-images.githubusercontent.com/72517530/201381274-a9a913d5-8f9d-4da6-9f26-6476e194ce3b.png)
--   Highlight files and folders with no area metric or an area metric value of zero in the search panel [#3126](https://github.com/MaibornWolff/codecharta/pull/3126)
+-   Highlight files and folders with no area metric or an area metric value of zero in the search
+    panel [#3126](https://github.com/MaibornWolff/codecharta/pull/3126)
 
 ### Changed
 
--   Be aware, that all Custom Views generated with version 1.110.0 or older will be unusable by April 2023 [#3119](https://github.com/MaibornWolff/codecharta/pull/3119)
+-   Be aware, that all Custom Views generated with version 1.110.0 or older will be unusable by April
+    2023 [#3119](https://github.com/MaibornWolff/codecharta/pull/3119)
 
 ### Fixed 🐞
 
--   Fix Node Context-Menu in Map Tree View opening multiple times [#3135](https://github.com/MaibornWolff/codecharta/pull/3135)
--   Fix crashing on focusing or hovering un-rendered buildings [#3123](https://github.com/MaibornWolff/codecharta/pull/3123)
--   Fix showing changelog entries in the dialog when a new version is available [#3123](https://github.com/MaibornWolff/codecharta/pull/3129)
+-   Fix Node Context-Menu in Map Tree View opening multiple
+    times [#3135](https://github.com/MaibornWolff/codecharta/pull/3135)
+-   Fix crashing on focusing or hovering un-rendered
+    buildings [#3123](https://github.com/MaibornWolff/codecharta/pull/3123)
+-   Fix showing changelog entries in the dialog when a new version is
+    available [#3123](https://github.com/MaibornWolff/codecharta/pull/3129)
 
 ### Chore 👨‍💻 👩‍💻
 
@@ -323,22 +423,32 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Changed
 
--   Custom Views are now applicable even if maps or mode are different. Missing maps or map selection mode is displayed in the tooltip [#3090](https://github.com/MaibornWolff/codecharta/pull/3090)
--   Be aware, that all Custom Views generated with version 1.109.1 or older will be unusable by April 2023 [#3105](https://github.com/MaibornWolff/codecharta/pull/3105)
+-   Custom Views are now applicable even if maps or mode are different. Missing maps or map selection mode is displayed in
+    the tooltip [#3090](https://github.com/MaibornWolff/codecharta/pull/3090)
+-   Be aware, that all Custom Views generated with version 1.109.1 or older will be unusable by April
+    2023 [#3105](https://github.com/MaibornWolff/codecharta/pull/3105)
 
 ### Fixed 🐞
 
 -   Fix broken link to Custom View documentation [#3101](https://github.com/MaibornWolff/codecharta/pull/3101)
--   Don't re-center map after every state change like changing area metric [#3109](https://github.com/MaibornWolff/codecharta/pull/3109)
+-   Don't re-center map after every state change like changing area
+    metric [#3109](https://github.com/MaibornWolff/codecharta/pull/3109)
 
 ### Chore 👨‍💻 👩‍💻
 
--   Adjust Custom View API and maintain old Custom Views until April 2023 [#3105](https://github.com/MaibornWolff/codecharta/pull/3105)
--   Migrate codeMap.render.service, codeMap.label.service, codeMap.mouseEvent.service, codeMap.arrow.service, codeCharta.service, sharpnessMode.service, isLoadingFile.service, scaling.service and experimentalFeaturesEnabled.service to Angular [#3094](https://github.com/MaibornWolff/codecharta/pull/3094)
--   Extract tree map size into a const as this is never changed [3098](https://github.com/MaibornWolff/codecharta/pull/3098)
--   Migrate markedPackages.service, edges.service, blacklist.service, files.service and injector.service [3106](https://github.com/MaibornWolff/codecharta/pull/3106)
--   Refactor out `LoadInitialFileService` and fix with it loose Promise in tests [#3110](https://github.com/MaibornWolff/codecharta/pull/3110)
--   Migrate codeCharta.component, storeService.service and remove AngularJS dual boot from bootstrapping [#3114](https://github.com/MaibornWolff/codecharta/pull/3114)
+-   Adjust Custom View API and maintain old Custom Views until April
+    2023 [#3105](https://github.com/MaibornWolff/codecharta/pull/3105)
+-   Migrate codeMap.render.service, codeMap.label.service, codeMap.mouseEvent.service, codeMap.arrow.service,
+    codeCharta.service, sharpnessMode.service, isLoadingFile.service, scaling.service and
+    experimentalFeaturesEnabled.service to Angular [#3094](https://github.com/MaibornWolff/codecharta/pull/3094)
+-   Extract tree map size into a const as this is never
+    changed [3098](https://github.com/MaibornWolff/codecharta/pull/3098)
+-   Migrate markedPackages.service, edges.service, blacklist.service, files.service and
+    injector.service [3106](https://github.com/MaibornWolff/codecharta/pull/3106)
+-   Refactor out `LoadInitialFileService` and fix with it loose Promise in
+    tests [#3110](https://github.com/MaibornWolff/codecharta/pull/3110)
+-   Migrate codeCharta.component, storeService.service and remove AngularJS dual boot from
+    bootstrapping [#3114](https://github.com/MaibornWolff/codecharta/pull/3114)
 -   Remove obsolete AngularJS dependencies [#3115](https://github.com/MaibornWolff/codecharta/pull/3115)
 
 ## [1.109.1] - 2022-10-12
@@ -359,22 +469,28 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
--   Fix interactive GitLogParser using wrong dialogue with repo-scan subcommand [#3073](https://github.com/MaibornWolff/codecharta/pull/3073)
+-   Fix interactive GitLogParser using wrong dialogue with repo-scan
+    subcommand [#3073](https://github.com/MaibornWolff/codecharta/pull/3073)
 -   Fix CodeCharta Analysis container exiting when detached [#3062](https://github.com/MaibornWolff/codecharta/pull/3062)
--   Fix CodeCharta Analysis container not coming with the sonar-scanner pre-installed [#3062](https://github.com/MaibornWolff/codecharta/pull/3062)
+-   Fix CodeCharta Analysis container not coming with the sonar-scanner
+    pre-installed [#3062](https://github.com/MaibornWolff/codecharta/pull/3062)
 -   Rerender immediately after marking a folder with a color [#3067](https://github.com/MaibornWolff/codecharta/pull/3067)
--   Clicking the 'reset height metric settings' button resets the number of top labels to the dynamic default value [#3066](https://github.com/MaibornWolff/codecharta/pull/3066)
--   Unfocus nodes when changing selected files, which prevents the app from crashing [#3072](https://github.com/MaibornWolff/codecharta/pull/3072)
+-   Clicking the 'reset height metric settings' button resets the number of top labels to the dynamic default
+    value [#3066](https://github.com/MaibornWolff/codecharta/pull/3066)
+-   Unfocus nodes when changing selected files, which prevents the app from
+    crashing [#3072](https://github.com/MaibornWolff/codecharta/pull/3072)
 
 ### Chore 👨‍💻 👩‍💻
 
 -   Update Docker Publish Action in Release Pipeline [#3060](https://github.com/MaibornWolff/codecharta/pull/3060)
 -   Write documentation for docker containers [#3063](https://github.com/MaibornWolff/codecharta/pull/3063)
--   Migrate isAttributeSideBarVisible.service, threeScene.service, threeCamera.service and threeStats.service to Angular [#3068](https://github.com/MaibornWolff/codecharta/pull/3068)
+-   Migrate isAttributeSideBarVisible.service, threeScene.service, threeCamera.service and threeStats.service to
+    Angular [#3068](https://github.com/MaibornWolff/codecharta/pull/3068)
 -   Migrate dialog.service to Angular [#3072](https://github.com/MaibornWolff/codecharta/pull/3072)
 -   Add documentation for new treeMap algorithm [#3077](https://github.com/MaibornWolff/codecharta/pull/3077)
 -   Migrate dialog.service to Angular [#3070](https://github.com/MaibornWolff/codecharta/pull/3070)
--   Migrate FocusedNodePathService, LayoutAlgorithmService, ThreeOrbitControlsService and ThreeViewerService to Angular [#3072](https://github.com/MaibornWolff/codecharta/pull/3072)
+-   Migrate FocusedNodePathService, LayoutAlgorithmService, ThreeOrbitControlsService and ThreeViewerService to
+    Angular [#3072](https://github.com/MaibornWolff/codecharta/pull/3072)
 -   Migrate updateAttributeTypes.service to Angular [#3082](https://github.com/MaibornWolff/codecharta/pull/3082)
 
 ## [1.108.1] - 2022-09-29
@@ -392,29 +508,36 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Removed 🗑
 
--   remove outdated Crococosmo, Understand and Jasome Importer from Analysis including its documentation [#3053](https://github.com/MaibornWolff/codecharta/pull/3053)
+-   remove outdated Crococosmo, Understand and Jasome Importer from Analysis including its
+    documentation [#3053](https://github.com/MaibornWolff/codecharta/pull/3053)
 
 ## [1.107.0] - 2022-09-27
 
 ### Added 🚀
 
--   Add subcommand to GitLogParser to run necessary git commands automatically [#3041](https://github.com/MaibornWolff/codecharta/pull/3041)
+-   Add subcommand to GitLogParser to run necessary git commands
+    automatically [#3041](https://github.com/MaibornWolff/codecharta/pull/3041)
 
 ### Changed
 
--   Change default behaviour of GitLogParser to use new subcommands [#3041](https://github.com/MaibornWolff/codecharta/pull/3041)
--   Set default value for displaying labels 1 per 100 buildings with a maximum of 10 labels [#3046](https://github.com/MaibornWolff/codecharta/pull/3046)
+-   Change default behaviour of GitLogParser to use new
+    subcommands [#3041](https://github.com/MaibornWolff/codecharta/pull/3041)
+-   Set default value for displaying labels 1 per 100 buildings with a maximum of 10
+    labels [#3046](https://github.com/MaibornWolff/codecharta/pull/3046)
 
 ### Fixed 🐞
 
--   Uncheck the box when 'reset invert height' icon is clicked [#3048](https://github.com/MaibornWolff/codecharta/pull/3048)
+-   Uncheck the box when 'reset invert height' icon is
+    clicked [#3048](https://github.com/MaibornWolff/codecharta/pull/3048)
 -   Update ReadMe and GitHub pages for MetricGardener [#3045](https://github.com/MaibornWolff/codecharta/pull/3045)
 
 ### Chore 👨‍💻 👩‍💻
 
--   Migrate codeMap.component to Angular with minor internal improvements [#3049](https://github.com/MaibornWolff/codecharta/pull/3049)
+-   Migrate codeMap.component to Angular with minor internal
+    improvements [#3049](https://github.com/MaibornWolff/codecharta/pull/3049)
 -   Remove threeUpdateCycle.service [#3050](https://github.com/MaibornWolff/codecharta/pull/3050)
--   Migrate metricData.service, edgeMetric.service, nodeMetricData.service and edgeMetricData.service to Angular [#3051](https://github.com/MaibornWolff/codecharta/pull/3051)
+-   Migrate metricData.service, edgeMetric.service, nodeMetricData.service and edgeMetricData.service to
+    Angular [#3051](https://github.com/MaibornWolff/codecharta/pull/3051)
 -   Migrate threeRenderer.service to Angular [#3052](https://github.com/MaibornWolff/codecharta/pull/3052)
 
 ## [1.106.1] - 2022-09-20
@@ -423,70 +546,88 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 -   CC-JSON Files not loaded on Safari browser [#3042](https://github.com/MaibornWolff/codecharta/pull/3042)
 -   Show loading spinners while loading a file [#2980](https://github.com/MaibornWolff/codecharta/pull/2980)
--   Prevent clicking on not opened metric options in ribbon bar [#3029](https://github.com/MaibornWolff/codecharta/pull/3029)
--   Set cursor to pointer on color settings panel of delta mode [#3029](https://github.com/MaibornWolff/codecharta/pull/3029)
+-   Prevent clicking on not opened metric options in ribbon
+    bar [#3029](https://github.com/MaibornWolff/codecharta/pull/3029)
+-   Set cursor to pointer on color settings panel of delta
+    mode [#3029](https://github.com/MaibornWolff/codecharta/pull/3029)
 
 ### Chore 👨‍💻 👩‍💻
 
--   Throttle rendering and migrate codeMap.preRender.service to Angular [#2980](https://github.com/MaibornWolff/codecharta/pull/2980)
+-   Throttle rendering and migrate codeMap.preRender.service to
+    Angular [#2980](https://github.com/MaibornWolff/codecharta/pull/2980)
 
 ## [1.106.0] - 2022-09-13
 
 ### Added 🚀
 
--   Add option to CSVImporter to specify the path column name [#3026](https://github.com/MaibornWolff/codecharta/pull/3026)
+-   Add option to CSVImporter to specify the path column
+    name [#3026](https://github.com/MaibornWolff/codecharta/pull/3026)
 
 ### Changed
 
--   Stop asking the user to compress a file when printing to stdOut [#3024](https://github.com/MaibornWolff/codecharta/pull/3024)
+-   Stop asking the user to compress a file when printing to
+    stdOut [#3024](https://github.com/MaibornWolff/codecharta/pull/3024)
 
 ### Fixed 🐞
 
--   Fix anongit script using the wrong whitespace, causing gitlogparser to fail [#3030](https://github.com/MaibornWolff/codecharta/pull/3030)
--   Reshow suspicious metrics badge when calculated data has changed [#2997](https://github.com/MaibornWolff/codecharta/pull/2997)
+-   Fix anongit script using the wrong whitespace, causing gitlogparser to
+    fail [#3030](https://github.com/MaibornWolff/codecharta/pull/3030)
+-   Reshow suspicious metrics badge when calculated data has
+    changed [#2997](https://github.com/MaibornWolff/codecharta/pull/2997)
 
 ## [1.105.0] - 2022-09-06
 
 ### Added 🚀
 
--   Add an option to run MetricGardener before its parser if requested [#3015](https://github.com/MaibornWolff/codecharta/pull/3015)
+-   Add an option to run MetricGardener before its parser if
+    requested [#3015](https://github.com/MaibornWolff/codecharta/pull/3015)
 -   Add missing documentation for MetricGardener importer [#3016](https://github.com/MaibornWolff/codecharta/pull/3016)
 
 ### Changed
 
--   Increase the size of the close button to simplify closing the attribute sidebar [#3014](https://github.com/MaibornWolff/codecharta/pull/3014)
+-   Increase the size of the close button to simplify closing the attribute
+    sidebar [#3014](https://github.com/MaibornWolff/codecharta/pull/3014)
 
 ### Fixed 🐞
 
--   Fix console error when clicking switch button in delta mode [#3023](https://github.com/MaibornWolff/codecharta/pull/3023)
--   Fix broken images to new document pages about how using SonarQube [#3012](https://github.com/MaibornWolff/codecharta/pull/3012)
+-   Fix console error when clicking switch button in delta
+    mode [#3023](https://github.com/MaibornWolff/codecharta/pull/3023)
+-   Fix broken images to new document pages about how using
+    SonarQube [#3012](https://github.com/MaibornWolff/codecharta/pull/3012)
 
 ### Chore 👨‍💻 👩‍💻
 
 -   Migrate tool bar component to Angular [#3020](https://github.com/MaibornWolff/codecharta/pull/3020)
--   Remove obsolete AngularJS IsPresentationModeService and ShowOnlyBuildingsWithEdgesService [#3005](https://github.com/MaibornWolff/codecharta/pull/3005)
+-   Remove obsolete AngularJS IsPresentationModeService and
+    ShowOnlyBuildingsWithEdgesService [#3005](https://github.com/MaibornWolff/codecharta/pull/3005)
 
 ## [1.104.1] - 2022-08-31
 
 ### Fixed 🐞
 
--   Fix broken links to new document pages about how using SonarQube [#3009](https://github.com/MaibornWolff/codecharta/pull/3009)
+-   Fix broken links to new document pages about how using
+    SonarQube [#3009](https://github.com/MaibornWolff/codecharta/pull/3009)
 
 ## [1.104.0] - 2022-08-31
 
 ### Added 🚀
 
--   Copy-to-Clipboard-Button to paste the top 10 files with highest metric values [#2942](https://github.com/MaibornWolff/codecharta/pull/2942), [#2996](https://github.com/MaibornWolff/codecharta/pull/2995) <br/>
+-   Copy-to-Clipboard-Button to paste the top 10 files with highest metric
+    values [#2942](https://github.com/MaibornWolff/codecharta/pull/2942), [#2996](https://github.com/MaibornWolff/codecharta/pull/2995) <br/>
     ![image](https://user-images.githubusercontent.com/46388280/184089603-ecfa8e31-8241-42a2-9954-2de554347381.png) </br>
     ![image](https://user-images.githubusercontent.com/46388280/184089577-5cd2eec0-5293-4083-b629-0e3c5621047c.png)
 
 ### Fixed 🐞
 
--   Correct file types now get appended to the name of the output file when using the interactive ccsh [#2914](https://github.com/MaibornWolff/codecharta/pull/2914)
--   Fix exit code handling and update integrationTest's golden_test.sh to cover all modules [#2988](https://github.com/MaibornWolff/codecharta/pull/2988)
+-   Correct file types now get appended to the name of the output file when using the interactive
+    ccsh [#2914](https://github.com/MaibornWolff/codecharta/pull/2914)
+-   Fix exit code handling and update integrationTest's golden_test.sh to cover all
+    modules [#2988](https://github.com/MaibornWolff/codecharta/pull/2988)
 -   Fix missing color pickers within edge metric options [#2993](https://github.com/MaibornWolff/codecharta/pull/2993)
--   Fix labels being displayed at an incorrect height and lines being disconnected from labels [#2991](https://github.com/MaibornWolff/codecharta/pull/2991)
--   Provides a list of metrics where no calculation could be performed in relation to a suspicion [#2996](https://github.com/MaibornWolff/codecharta/pull/2996) </br>
+-   Fix labels being displayed at an incorrect height and lines being disconnected from
+    labels [#2991](https://github.com/MaibornWolff/codecharta/pull/2991)
+-   Provides a list of metrics where no calculation could be performed in relation to a
+    suspicion [#2996](https://github.com/MaibornWolff/codecharta/pull/2996) </br>
     ![missing_values_suspicious_metrics](https://user-images.githubusercontent.com/31436472/187439165-77eda080-ceba-4bab-b077-4f6a2d6162b5.png)
 
 ### Chore 👨‍💻 👩‍💻
@@ -503,7 +644,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
--   Fix bug in CompressionStreamHandler's input stream validation, that caused endless blocking reads from System.In [#2987](https://github.com/MaibornWolff/codecharta/pull/2987)
+-   Fix bug in CompressionStreamHandler's input stream validation, that caused endless blocking reads from
+    System.In [#2987](https://github.com/MaibornWolff/codecharta/pull/2987)
 
 ## [1.103.5] - 2022-08-12
 
@@ -514,7 +656,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
--   Add permission to upload-assets action [#2979](https://github.com/MaibornWolff/codecharta/pull/2979), [#2982](https://github.com/MaibornWolff/codecharta/pull/2982)
+-   Add permission to upload-assets
+    action [#2979](https://github.com/MaibornWolff/codecharta/pull/2979), [#2982](https://github.com/MaibornWolff/codecharta/pull/2982)
 
 ### Chore 👨‍💻 👩‍💻
 
@@ -524,14 +667,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
--   Update Ubuntu images package list as part of the wine action [#2976](https://github.com/MaibornWolff/codecharta/pull/2976)
+-   Update Ubuntu images package list as part of the wine
+    action [#2976](https://github.com/MaibornWolff/codecharta/pull/2976)
 
 ## [1.103.2] - 2022-08-10
 
 ### Fixed 🐞
 
 -   Highlight buildings on hover of file extension bar [#2969](https://github.com/MaibornWolff/codecharta/pull/2969)
--   Fix of the npm visualization installation under MacOS by version bumping nwjs [#2974](https://github.com/MaibornWolff/codecharta/pull/2974)
+-   Fix of the npm visualization installation under MacOS by version bumping
+    nwjs [#2974](https://github.com/MaibornWolff/codecharta/pull/2974)
 
 ### Chore 👨‍💻 👩‍💻
 
@@ -541,7 +686,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
--   Change release action script in order to show changelog in release notes [#2970](https://github.com/MaibornWolff/codecharta/pull/2970)
+-   Change release action script in order to show changelog in release
+    notes [#2970](https://github.com/MaibornWolff/codecharta/pull/2970)
 
 ## [1.103.0] - 2022-08-09
 
@@ -559,7 +705,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   Fix release tag [#2954](https://github.com/MaibornWolff/codecharta/pull/2954)
 -   Prevent dark map on unhover [#2959](https://github.com/MaibornWolff/codecharta/pull/2959)
 -   Zoom in/out time [#2959](https://github.com/MaibornWolff/codecharta/pull/2959)
--   Fix webpack build package being corrupt if zipped under linux by changing the compression path [#2934](https://github.com/MaibornWolff/codecharta/pull/2934)
+-   Fix webpack build package being corrupt if zipped under linux by changing the compression
+    path [#2934](https://github.com/MaibornWolff/codecharta/pull/2934)
 
 ### Chore 👨‍💻 👩‍💻
 
@@ -569,12 +716,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Changed
 
--   Changed storing format for camera position within custom views and scenarios. Loading of created custom views or scenarios in old format will stop working in 2023 [2880](https://github.com/MaibornWolff/codecharta/pull/2880)
+-   Changed storing format for camera position within custom views and scenarios. Loading of created custom views or
+    scenarios in old format will stop working in 2023 [2880](https://github.com/MaibornWolff/codecharta/pull/2880)
 -   Add error messages for the user to "Add Scenario Dialog" [#2928](https://github.com/MaibornWolff/codecharta/pull/2928)
 
 ### Added 🚀
 
--   Switch reference and comparison file by button click in delta mode [#2933](https://github.com/MaibornWolff/codecharta/pull/2933)
+-   Switch reference and comparison file by button click in delta
+    mode [#2933](https://github.com/MaibornWolff/codecharta/pull/2933)
     ![image](https://user-images.githubusercontent.com/72517530/182630368-2d2b177d-8b4b-4850-8486-8d9afc7153c5.png)
 -   Add display of changed files in delta mode (changed := metric values changed or list of applied metrics
     changed) [#2890](https://github.com/MaibornWolff/codecharta/pull/2890)
@@ -583,11 +732,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
--   Fix SonarImporter requesting no metrics from SonarQube when the list of metrics was left empty [#2913](https://github.com/MaibornWolff/codecharta/pull/2913)
--   Exclude edge metrics from custom scenarios, when there are no edge metrics available. Before it was impossible to apply those custom configs [#2928](https://github.com/MaibornWolff/codecharta/pull/2928)
--   Fix of NoSuchMethodException due to a call of method `readNBytes()` that is not available in Java 9 with replacement call `read()` [#2930](https://github.com/MaibornWolff/codecharta/pull/2930)
+-   Fix SonarImporter requesting no metrics from SonarQube when the list of metrics was left
+    empty [#2913](https://github.com/MaibornWolff/codecharta/pull/2913)
+-   Exclude edge metrics from custom scenarios, when there are no edge metrics available. Before it was impossible to
+    apply those custom configs [#2928](https://github.com/MaibornWolff/codecharta/pull/2928)
+-   Fix of NoSuchMethodException due to a call of method `readNBytes()` that is not available in Java 9 with replacement
+    call `read()` [#2930](https://github.com/MaibornWolff/codecharta/pull/2930)
 -   Keep selected metrics when excluding buildings [#2935](https://github.com/MaibornWolff/codecharta/pull/2935)
--   Update UI correctly when toggling between standard and delta mode [#2937](https://github.com/MaibornWolff/codecharta/pull/2937)
+-   Update UI correctly when toggling between standard and delta
+    mode [#2937](https://github.com/MaibornWolff/codecharta/pull/2937)
 
 ## [1.101.1] - 2022-07-27
 
@@ -599,20 +752,25 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
--   Transform a metric gardener json file into a code charta json file, that can be correctly visualized [#2675](https://github.com/MaibornWolff/codecharta/pull/2875)
+-   Transform a metric gardener json file into a code charta json file, that can be correctly
+    visualized [#2675](https://github.com/MaibornWolff/codecharta/pull/2875)
 
 ### Changed
 
--   Restore previous selected files when switching back from delta to standard mode [#2891](https://github.com/MaibornWolff/codecharta/pull/2891)
--   Add more metrics that can be preselected when opening a cc.json file [#2907](https://github.com/MaibornWolff/codecharta/pull/2907) [#2908](https://github.com/MaibornWolff/codecharta/pull/2908)
+-   Restore previous selected files when switching back from delta to standard
+    mode [#2891](https://github.com/MaibornWolff/codecharta/pull/2891)
+-   Add more metrics that can be preselected when opening a cc.json
+    file [#2907](https://github.com/MaibornWolff/codecharta/pull/2907) [#2908](https://github.com/MaibornWolff/codecharta/pull/2908)
 
 ### Fixed 🐞
 
--   Let file selection always show what is actual rendered within the map [#2891](https://github.com/MaibornWolff/codecharta/pull/2891)
+-   Let file selection always show what is actual rendered within the
+    map [#2891](https://github.com/MaibornWolff/codecharta/pull/2891)
 
 ### Chore 👨‍💻 👩‍💻
 
--   Improve performance by slightly delaying node-name popups and removing unused functionality [#2897](https://github.com/MaibornWolff/codecharta/pull/2897)
+-   Improve performance by slightly delaying node-name popups and removing unused
+    functionality [#2897](https://github.com/MaibornWolff/codecharta/pull/2897)
 
 ## [1.100.0] - 2022-07-12
 
@@ -622,15 +780,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Changed
 
--   Select matching metric combination based on available metrics [#2862](https://github.com/MaibornWolff/codecharta/pull/2862)
+-   Select matching metric combination based on available
+    metrics [#2862](https://github.com/MaibornWolff/codecharta/pull/2862)
 -   Unify UI of buttons in toolbar [#2857](https://github.com/MaibornWolff/codecharta/pull/2857)
 
 ### Fixed 🐞
 
 -   Fix resetting of color range within color settings panel [#2877](https://github.com/MaibornWolff/codecharta/pull/2877)
--   Fix resetting of colors in delta mode within color settings panel [#2873](https://github.com/MaibornWolff/codecharta/pull/2873)
+-   Fix resetting of colors in delta mode within color settings
+    panel [#2873](https://github.com/MaibornWolff/codecharta/pull/2873)
 -   Restore global settings on page load again [#2878](https://github.com/MaibornWolff/codecharta/pull/2878)
--   Fix 'undefinded' being displayed as a metric description when no description was available [#2883](https://github.com/MaibornWolff/codecharta/pull/2883)
+-   Fix 'undefinded' being displayed as a metric description when no description was
+    available [#2883](https://github.com/MaibornWolff/codecharta/pull/2883)
 -   Fix windows standalone builds [#2881](https://github.com/MaibornWolff/codecharta/pull/2881)
 
 ### Chore 👨‍💻 👩‍💻
@@ -648,13 +809,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
--   Add interactive dialog support for the remaining parsers [#2833](https://github.com/MaibornWolff/codecharta/pull/2833) [#2836](https://github.com/MaibornWolff/codecharta/pull/2836) [#2842](https://github.com/MaibornWolff/codecharta/pull/2842) [#2843](https://github.com/MaibornWolff/codecharta/pull/2843) [#2846](https://github.com/MaibornWolff/codecharta/pull/2846)
+-   Add interactive dialog support for the remaining
+    parsers [#2833](https://github.com/MaibornWolff/codecharta/pull/2833) [#2836](https://github.com/MaibornWolff/codecharta/pull/2836) [#2842](https://github.com/MaibornWolff/codecharta/pull/2842) [#2843](https://github.com/MaibornWolff/codecharta/pull/2843) [#2846](https://github.com/MaibornWolff/codecharta/pull/2846)
 
 ### Fixed 🐞
 
--   Fix analysis bug where importers would get stuck before file output [#2854](https://github.com/MaibornWolff/codecharta/pull/2854)
+-   Fix analysis bug where importers would get stuck before file
+    output [#2854](https://github.com/MaibornWolff/codecharta/pull/2854)
 -   Use correct icon for height metric chooser again [#2851](https://github.com/MaibornWolff/codecharta/pull/2851)
--   Close height metric option instead of making it only invisible on close [#2853](https://github.com/MaibornWolff/codecharta/pull/2853)
+-   Close height metric option instead of making it only invisible on
+    close [#2853](https://github.com/MaibornWolff/codecharta/pull/2853)
 
 ### Chore 👨‍💻 👩‍💻
 
@@ -665,8 +829,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
--   Add missing documentation for ccsh filters and csv exporter [#2831](https://github.com/MaibornWolff/codecharta/pull/2831)
--   Add support for compressed files to all analysis filters and to `check` validation [#2820](https://github.com/MaibornWolff/codecharta/pull/2820)
+-   Add missing documentation for ccsh filters and csv
+    exporter [#2831](https://github.com/MaibornWolff/codecharta/pull/2831)
+-   Add support for compressed files to all analysis filters and to `check`
+    validation [#2820](https://github.com/MaibornWolff/codecharta/pull/2820)
 
 ### Changed
 
@@ -674,7 +840,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
--   Default selected metrics on file changes when default scenario is not applicable [#2828](https://github.com/MaibornWolff/codecharta/pull/2828)
+-   Default selected metrics on file changes when default scenario is not
+    applicable [#2828](https://github.com/MaibornWolff/codecharta/pull/2828)
 
 ### Chore 👨‍💻 👩‍💻
 
@@ -685,39 +852,51 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
--   Add interactive dialog support for the parsers [#2737](https://github.com/MaibornWolff/codecharta/pull/2737) [#2822](https://github.com/MaibornWolff/codecharta/pull/2822) <br>
+-   Add interactive dialog support for the
+    parsers [#2737](https://github.com/MaibornWolff/codecharta/pull/2737) [#2822](https://github.com/MaibornWolff/codecharta/pull/2822) <br>
     ![m](https://user-images.githubusercontent.com/48621967/161549546-1463914e-c223-4912-acb1-db4e357e76c5.png)
 
 ### Changed
 
--   Hide color metric range-slider in color metric options of ribbon bar in delta mode instead of disabling it [#2797](https://github.com/MaibornWolff/codecharta/pull/2797)
--   Display max value of selected distribution metric in file extension bar [#2824](https://github.com/MaibornWolff/codecharta/pull/2824)
--   Display max value of selected metric in all metric chooser of ribbon bar [#2825](https://github.com/MaibornWolff/codecharta/pull/2825)
+-   Hide color metric range-slider in color metric options of ribbon bar in delta mode instead of disabling
+    it [#2797](https://github.com/MaibornWolff/codecharta/pull/2797)
+-   Display max value of selected distribution metric in file extension
+    bar [#2824](https://github.com/MaibornWolff/codecharta/pull/2824)
+-   Display max value of selected metric in all metric chooser of ribbon
+    bar [#2825](https://github.com/MaibornWolff/codecharta/pull/2825)
 
 ### Fixed 🐞
 
 -   Handle invalid input of range-slider correctly [#2797](https://github.com/MaibornWolff/codecharta/pull/2797)
--   Use real color range min value instead of 0 and take color range min value into account for calculating initial first third of positive color [#2797](https://github.com/MaibornWolff/codecharta/pull/2797)
+-   Use real color range min value instead of 0 and take color range min value into account for calculating initial first
+    third of positive color [#2797](https://github.com/MaibornWolff/codecharta/pull/2797)
 -   Fix range-slider in case of min value equal to max value [#2797](https://github.com/MaibornWolff/codecharta/pull/2797)
 
 ### Chore 👨‍💻 👩‍💻
 
--   Track not only changes to color metric options by slider but also by related input field [#2797](https://github.com/MaibornWolff/codecharta/pull/2797)
+-   Track not only changes to color metric options by slider but also by related input
+    field [#2797](https://github.com/MaibornWolff/codecharta/pull/2797)
 -   Migrate center-map-button-component to Angular [#2809](https://github.com/MaibornWolff/codecharta/pull/2809)
--   Migrate the following components to Angular: globalSettingsButton.component, dialog.globalSettings.component, layoutSelection.component, sharpnessModeSelector.component, maxTreeMapFiles.component, maxTreeMapFiles.service, hideFlatBuildings.service, resetCameraIfNewFileIsLoaded.service [#2815](https://github.com/MaibornWolff/codecharta/pull/2815)
+-   Migrate the following components to Angular: globalSettingsButton.component, dialog.globalSettings.component,
+    layoutSelection.component, sharpnessModeSelector.component, maxTreeMapFiles.component, maxTreeMapFiles.service,
+    hideFlatBuildings.service,
+    resetCameraIfNewFileIsLoaded.service [#2815](https://github.com/MaibornWolff/codecharta/pull/2815)
 -   Migrate area-settings-panel-component to Angular [#2821](https://github.com/MaibornWolff/codecharta/pull/2821)
 
 ## [1.96.0] - 2022-05-17
 
 ### Changed
 
--   Remove all mentions of regular `.cc` `.json` `.gz` file extensions from file panel and sidebar [#2793](https://github.com/MaibornWolff/codecharta/pull/2793)
+-   Remove all mentions of regular `.cc` `.json` `.gz` file extensions from file panel and
+    sidebar [#2793](https://github.com/MaibornWolff/codecharta/pull/2793)
 
 ### Fixed 🐞
 
--   Update slider of area metric options correctly on changes of related input field [#2787](https://github.com/MaibornWolff/codecharta/pull/2787)
+-   Update slider of area metric options correctly on changes of related input
+    field [#2787](https://github.com/MaibornWolff/codecharta/pull/2787)
 -   Limit length of labels in legend panel [#2804](https://github.com/MaibornWolff/codecharta/pull/2804)
--   Prevent invalid input for margin in area metric options to be submitted [#2799](https://github.com/MaibornWolff/codecharta/pull/2799)
+-   Prevent invalid input for margin in area metric options to be
+    submitted [#2799](https://github.com/MaibornWolff/codecharta/pull/2799)
 
 ### Chore 👨‍💻 👩‍💻
 
@@ -729,7 +908,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Changed
 
--   Restrict upload in custom views menu to custom views. Custom views uploaded in the custom views menu are now allowed to have an arbitrary file suffix [#2773](https://github.com/MaibornWolff/codecharta/pull/2773)
+-   Restrict upload in custom views menu to custom views. Custom views uploaded in the custom views menu are now allowed
+    to have an arbitrary file suffix [#2773](https://github.com/MaibornWolff/codecharta/pull/2773)
 
 ### Chore 👨‍💻 👩‍💻
 
@@ -737,18 +917,22 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
--   Set files loaded via URL to multiple mode by default when delta mode is not selected [#2769](https://github.com/MaibornWolff/codecharta/pull/2769)
+-   Set files loaded via URL to multiple mode by default when delta mode is not
+    selected [#2769](https://github.com/MaibornWolff/codecharta/pull/2769)
 
 ## [1.95.1] - 2022-04-01
 
 ### Changed
 
--   Display project name as file name (if not empty or blank) for loaded files via URL [#2767](https://github.com/MaibornWolff/codecharta/pull/2767)
+-   Display project name as file name (if not empty or blank) for loaded files via
+    URL [#2767](https://github.com/MaibornWolff/codecharta/pull/2767)
 
 ### Fixed 🐞
 
--   Fixes floor labels being drawn next to the map if margin was changed after map height is unequal to 1 [#2763](https://github.com/MaibornWolff/codecharta/pull/2763)
--   Fixes floor labels being stuck inside folder geometry when scaling [#2766](https://github.com/MaibornWolff/codecharta/pull/2766)
+-   Fixes floor labels being drawn next to the map if margin was changed after map height is unequal to
+    1 [#2763](https://github.com/MaibornWolff/codecharta/pull/2763)
+-   Fixes floor labels being stuck inside folder geometry when
+    scaling [#2766](https://github.com/MaibornWolff/codecharta/pull/2766)
 
 ### Chore 👨‍💻 👩‍💻
 
@@ -758,18 +942,22 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
--   Focused gradient option for color metric. Only applies a gradient between the two set borders. [#2750](https://github.com/MaibornWolff/codecharta/pull/2750)
+-   Focused gradient option for color metric. Only applies a gradient between the two set
+    borders. [#2750](https://github.com/MaibornWolff/codecharta/pull/2750)
 
 ### Changed
 
--   Mark SCMLogParserV2 as stable and deprecate SCMLogParser for Git [2725](https://github.com/MaibornWolff/codecharta/pull/2725)
+-   Mark SCMLogParserV2 as stable and deprecate SCMLogParser for
+    Git [2725](https://github.com/MaibornWolff/codecharta/pull/2725)
     -   Rename SCMLogParserV2 to GitLogParser
     -   Rename SCMLogParser to SVNLogParser and remove git parsing
 
 ### Fixed 🐞
 
--   Set initially correct attribute type of primary edge metric in attribute sidebar [#2731](https://github.com/MaibornWolff/codecharta/issues/2731)
--   Fix switching secondary metrics to median aggregation in attribute sidebar [#2630](https://github.com/MaibornWolff/codecharta/issues/2630)
+-   Set initially correct attribute type of primary edge metric in attribute
+    sidebar [#2731](https://github.com/MaibornWolff/codecharta/issues/2731)
+-   Fix switching secondary metrics to median aggregation in attribute
+    sidebar [#2630](https://github.com/MaibornWolff/codecharta/issues/2630)
 
 ## [1.94.0] - 2022-03-21
 
@@ -780,19 +968,23 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Chore 👨‍💻 👩‍💻
 
--   Migrate add `custom config button` in ribbonbar to Angular [#2736](https://github.com/MaibornWolff/codecharta/pull/2736)
+-   Migrate add `custom config button` in ribbonbar to
+    Angular [#2736](https://github.com/MaibornWolff/codecharta/pull/2736)
 
 ## [1.93.0] - 2022-03-14
 
 ### Added 🚀
 
--   Show amount of added and removed files in attribute sidebar when delta mode is enabled and a folder is selected [#2701](https://github.com/MaibornWolff/codecharta/pull/2701/files) <br>
+-   Show amount of added and removed files in attribute sidebar when delta mode is enabled and a folder is
+    selected [#2701](https://github.com/MaibornWolff/codecharta/pull/2701/files) <br>
     ![xs](https://user-images.githubusercontent.com/72517530/157468180-4e2d052b-63b8-4040-bb22-b633a24d3b8a.png)
 
 ### Changed
 
--   Suspicious metrics and risk profile are calculated for all selected maps [#2721](https://github.com/MaibornWolff/codecharta/pull/2721)
--   Close search panel and ribbon bar dropdowns on every outside click [#2692](https://github.com/MaibornWolff/codecharta/issues/2692)
+-   Suspicious metrics and risk profile are calculated for all selected
+    maps [#2721](https://github.com/MaibornWolff/codecharta/pull/2721)
+-   Close search panel and ribbon bar dropdowns on every outside
+    click [#2692](https://github.com/MaibornWolff/codecharta/issues/2692)
 
 ### Fixed 🐞
 
@@ -814,13 +1006,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 -   Design and add a new CodeChara Logo [#2682](https://github.com/MaibornWolff/codecharta/pull/2682) <br>
     ![xs](https://user-images.githubusercontent.com/48621967/155682925-ecc9fe5d-77de-4927-9c6a-b1059ae9eead.png)
--   Risk profile is now calculated for every occurring programming languages in selected file(s)[#2679](https://github.com/MaibornWolff/codecharta/pull/2679)
+-   Risk profile is now calculated for every occurring programming languages in selected file(
+    s)[#2679](https://github.com/MaibornWolff/codecharta/pull/2679)
 
 ## [1.91.1] - 2022-02-25
 
 ### Fixed 🐞
 
--   Fix loading of files without edge metric never finished [#2680](https://github.com/MaibornWolff/codecharta/issues/2680)
+-   Fix loading of files without edge metric never
+    finished [#2680](https://github.com/MaibornWolff/codecharta/issues/2680)
 
 ## [1.91.0] - 2022-02-21
 
@@ -833,33 +1027,41 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
--   Improve loading times by reducing the size of JavaScript files [#2667](https://github.com/MaibornWolff/codecharta/pull/2667)
--   Fix loading of files without edge metric never finished [#2680](https://github.com/MaibornWolff/codecharta/issues/2680)
+-   Improve loading times by reducing the size of JavaScript
+    files [#2667](https://github.com/MaibornWolff/codecharta/pull/2667)
+-   Fix loading of files without edge metric never
+    finished [#2680](https://github.com/MaibornWolff/codecharta/issues/2680)
 
 ### Chore 👨‍💻 👩‍💻
 
--   Migrate loading gifs to Angular and remove now unused `isLoadingMap.service` [#2668](https://github.com/MaibornWolff/codecharta/pull/2668)
+-   Migrate loading gifs to Angular and remove now
+    unused `isLoadingMap.service` [#2668](https://github.com/MaibornWolff/codecharta/pull/2668)
 
 ## [1.90.0] - 2022-02-15
 
 ### Added 🚀
 
--   Parse and import GameObjects file structure into cc.json on upload [#2646](https://github.com/MaibornWolff/codecharta/pull/2646)
+-   Parse and import GameObjects file structure into cc.json on
+    upload [#2646](https://github.com/MaibornWolff/codecharta/pull/2646)
 
 ### Fixed 🐞
 
--   Fix flaky string comparison possibly due to puppeteer update [#2659](https://github.com/MaibornWolff/codecharta/pull/2659)
+-   Fix flaky string comparison possibly due to puppeteer
+    update [#2659](https://github.com/MaibornWolff/codecharta/pull/2659)
 -   Fix show garbage bin next to the loaded maps [#2647](https://github.com/MaibornWolff/codecharta/pull/2647)
 
 ### Chore 👨‍💻 👩‍💻
 
--   Run standalone version of CodeCharta in Node.js web target (and disable [#1314](https://github.com/MaibornWolff/codecharta/issues/1314)), so that local storage is available [#2637](https://github.com/MaibornWolff/codecharta/pull/2637)
+-   Run standalone version of CodeCharta in Node.js web target (and
+    disable [#1314](https://github.com/MaibornWolff/codecharta/issues/1314)), so that local storage is
+    available [#2637](https://github.com/MaibornWolff/codecharta/pull/2637)
 
 ## [1.89.0] - 2022-02-07
 
 ### Added 🚀
 
--   Add area metric option to invert the amount of area, which is used for the nodes [#2626](https://github.com/MaibornWolff/codecharta/pull/2626)
+-   Add area metric option to invert the amount of area, which is used for the
+    nodes [#2626](https://github.com/MaibornWolff/codecharta/pull/2626)
 -   Add button to clear search field [#2638](https://github.com/MaibornWolff/codecharta/pull/2638) <br>
     ![xs](https://user-images.githubusercontent.com/48218172/151999974-3b8a7cca-52b2-4757-b3c0-e3b2e36ad237.png)
 
@@ -867,11 +1069,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 -   New buttons for selecting attribute types [#2631](https://github.com/MaibornWolff/codecharta/pull/2631)
     ![xs](https://user-images.githubusercontent.com/72517530/151762455-07e47bf5-18aa-4721-a60a-6dfee057e1e5.png)
--   Migrate context menu with slightly new layout touch to Angular. Migrated version prevents rendering outside of view [#1661](https://github.com/MaibornWolff/codecharta/issues/1661)
+-   Migrate context menu with slightly new layout touch to Angular. Migrated version prevents rendering outside of
+    view [#1661](https://github.com/MaibornWolff/codecharta/issues/1661)
 
 ### Fixed 🐞
 
--   Remove delay of keeping a building highlight permanently [#2641](https://github.com/MaibornWolff/codecharta/issues/2641)
+-   Remove delay of keeping a building highlight
+    permanently [#2641](https://github.com/MaibornWolff/codecharta/issues/2641)
 
 ## [1.88.0] - 2022-01-24
 
@@ -880,7 +1084,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   Rename custom configs to custom view [#2625](https://github.com/MaibornWolff/codecharta/pull/2625)
 -   Combine single and multiple mode into standard mode [#2578](https://github.com/MaibornWolff/codecharta/pull/2578)
     ![xs](https://user-images.githubusercontent.com/72517530/150765617-2d66eb78-2c26-45c5-b63b-f84994ed88ab.png)
--   Improve file validation handling and provide more descriptive import messages [#2604](https://github.com/MaibornWolff/codecharta/pull/2604)
+-   Improve file validation handling and provide more descriptive import
+    messages [#2604](https://github.com/MaibornWolff/codecharta/pull/2604)
     ![xs](https://user-images.githubusercontent.com/48621967/150532207-f3b482ed-3a14-43c0-b1a3-80ac4c25d5e0.png)
 
 ### Fixed 🐞
@@ -900,7 +1105,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Fixed 🐞
 
 -   Fix color of selected building in delta mode [#2603](https://github.com/MaibornWolff/codecharta/pull/2603)
--   Fix link to news page when clicking 'Know more' button changelog dialog [#2602](https://github.com/MaibornWolff/codecharta/pull/2602)
+-   Fix link to news page when clicking 'Know more' button changelog
+    dialog [#2602](https://github.com/MaibornWolff/codecharta/pull/2602)
 -   Fix Image not shown in what is new dialog [#2610](https://github.com/MaibornWolff/codecharta/pull/2610)
 
 ## [1.87.0] - 2022-01-11
@@ -911,8 +1117,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Changed
 
--   Remove suspicious metrics from custom map configurations [#2564](https://github.com/MaibornWolff/codecharta/pull/2564).
--   Add 'show/hide non-applicable CustomConfigs' button to Custom Configs menu [#2591](https://github.com/MaibornWolff/codecharta/pull/2591).
+-   Remove suspicious metrics from custom map
+    configurations [#2564](https://github.com/MaibornWolff/codecharta/pull/2564).
+-   Add 'show/hide non-applicable CustomConfigs' button to Custom Configs
+    menu [#2591](https://github.com/MaibornWolff/codecharta/pull/2591).
 
 ## [1.86.0] - 2021-12-20
 
@@ -924,12 +1132,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Changed
 
--   Replace all color pickers in the context of ongoing Angular migration [#2560](https://github.com/MaibornWolff/codecharta/pull/2560).
+-   Replace all color pickers in the context of ongoing Angular
+    migration [#2560](https://github.com/MaibornWolff/codecharta/pull/2560).
 
 ### Fixed 🐞
 
 -   Fix showing names of custom configs properly [#2557](https://github.com/MaibornWolff/codecharta/pull/2557).
--   Fix minor memory leak in context menu for code map buildings [#2565](https://github.com/MaibornWolff/codecharta/issues/2565).
+-   Fix minor memory leak in context menu for code map
+    buildings [#2565](https://github.com/MaibornWolff/codecharta/issues/2565).
 
 ### Chore 👨‍💻 👩‍💻
 
@@ -939,17 +1149,22 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
--   Fix delta values of secondary metrics not shown in delta mode within attribute side bar [#2539](https://github.com/MaibornWolff/codecharta/issues/2539).
+-   Fix delta values of secondary metrics not shown in delta mode within attribute side
+    bar [#2539](https://github.com/MaibornWolff/codecharta/issues/2539).
 -   Use icon tag instead of font awesome icon [#2537](https://github.com/MaibornWolff/codecharta/pull/2537).
 -   Rename text for placeholder of metric chooser [#2547](https://github.com/MaibornWolff/codecharta/pull/2547)
--   Fix attribute type selector of primary edge metric not shown [#2528](https://github.com/MaibornWolff/codecharta/issues/2528).
--   Identical files and files with identical file names but different hashes can be loaded [#2548](https://github.com/MaibornWolff/codecharta/pull/2548)
+-   Fix attribute type selector of primary edge metric not
+    shown [#2528](https://github.com/MaibornWolff/codecharta/issues/2528).
+-   Identical files and files with identical file names but different hashes can be
+    loaded [#2548](https://github.com/MaibornWolff/codecharta/pull/2548)
 
 ### Chore 👨‍💻 👩‍💻
 
--   Remove `secondaryMetrics` from store and remove `secondaryMetrics.service` as the data can be derived from selected node [#2527](https://github.com/MaibornWolff/codecharta/pull/2527).
+-   Remove `secondaryMetrics` from store and remove `secondaryMetrics.service` as the data can be derived from selected
+    node [#2527](https://github.com/MaibornWolff/codecharta/pull/2527).
 -   Migrate `attribute-side-bar-component` to Angular [#2527](https://github.com/MaibornWolff/codecharta/pull/2527).
--   Switch from Webpack 4 Loaders to Asset Module to load icons properly with css-loader 6.x [#2542](https://github.com/MaibornWolff/codecharta/pull/2542).
+-   Switch from Webpack 4 Loaders to Asset Module to load icons properly with css-loader
+    6.x [#2542](https://github.com/MaibornWolff/codecharta/pull/2542).
 
 ### Removed 🗑
 
@@ -965,7 +1180,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Changed
 
--   Improved the UI and usability of the Suspicious Metrics Feature ([#2376](https://github.com/MaibornWolff/codecharta/pull/2494)) <br>
+-   Improved the UI and usability of the Suspicious Metrics
+    Feature ([#2376](https://github.com/MaibornWolff/codecharta/pull/2494)) <br>
     -   The Metrics and the Analysis are now split in two menus <br>
         ![xs](https://user-images.githubusercontent.com/48621967/141795078-bb856f53-1bc3-4c09-8be5-d031899835ae.png)
     -   The Suspicious Metrics are now sorted with the Very High Risk on top <br>
@@ -975,15 +1191,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
--   Fix showing labels when weighted gradient on yellow buildings in color metric options are enabled ([#2511](https://github.com/MaibornWolff/codecharta/pull/2511))
+-   Fix showing labels when weighted gradient on yellow buildings in color metric options are
+    enabled ([#2511](https://github.com/MaibornWolff/codecharta/pull/2511))
 -   Fix rounding of the sum of percentages in risk profile ([#2393](https://github.com/MaibornWolff/codecharta/pull/2516))
 -   Fix legend panel not having a background ([#2422](https://github.com/MaibornWolff/codecharta/pull/2510))
 
 ### Chore 👨‍💻 👩‍💻
 
--   Remove `nodeSearch.service.ts` and `searchedNodePaths` from store as they can be derived from `searchPattern` ([#2495](https://github.com/MaibornWolff/codecharta/pull/2495)).
+-   Remove `nodeSearch.service.ts` and `searchedNodePaths` from store as they can be derived
+    from `searchPattern` ([#2495](https://github.com/MaibornWolff/codecharta/pull/2495)).
 -   Refactor where metric data are calculated ([#2514](https://github.com/MaibornWolff/codecharta/pull/2514)).
--   Migrate `attribute-type-selector-component` to Angular ([#2519](https://github.com/MaibornWolff/codecharta/pull/2519)).
+-   Migrate `attribute-type-selector-component` to
+    Angular ([#2519](https://github.com/MaibornWolff/codecharta/pull/2519)).
 
 ## [1.83.1] - 2021-11-10
 
@@ -995,9 +1214,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
--   Fix unwanted calculations of suspicious metrics when experimental features are disabled ([#2471](https://github.com/MaibornWolff/codecharta/pull/2471))
+-   Fix unwanted calculations of suspicious metrics when experimental features are
+    disabled ([#2471](https://github.com/MaibornWolff/codecharta/pull/2471))
 -   Fix UI issues in the configuration panel ([#2322](https://github.com/maibornwolff/codecharta/issues/2322))
--   Fix tooltip of sorting order button in map tree view showing wrong sorting order ([#2473](https://github.com/maibornwolff/codecharta/issues/2473))
+-   Fix tooltip of sorting order button in map tree view showing wrong sorting
+    order ([#2473](https://github.com/maibornwolff/codecharta/issues/2473))
 
 ### Changed
 
@@ -1007,7 +1228,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
--   Fix what's new section including the last opened version ([#2447](https://github.com/MaibornWolff/codecharta/pull/2453))
+-   Fix what's new section including the last opened
+    version ([#2447](https://github.com/MaibornWolff/codecharta/pull/2453))
 -   Fix unfocus button text not showing correctly ([#2439](https://github.com/MaibornWolff/codecharta/pull/2439))
 
 ### Changed
@@ -1021,16 +1243,20 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   Fix color picker not being usable ([#2439](https://github.com/MaibornWolff/codecharta/pull/2439))
 -   Fix Changelog inconsistencies ([#2425](https://github.com/MaibornWolff/codecharta/pull/2425)) <br>
     ![xl](https://user-images.githubusercontent.com/48621967/135866024-ee06119a-1a62-4912-90df-ac3aa9216608.PNG)
--   Fix memory and performance issues related to drawing labels on floors/folders ([#2348](https://github.com/MaibornWolff/codecharta/issues/2348)).
--   Hides legend block if label description is not available and adds new metric descriptions ([#2377](https://github.com/maibornwolff/codecharta/issues/2377)).
+-   Fix memory and performance issues related to drawing labels on
+    floors/folders ([#2348](https://github.com/MaibornWolff/codecharta/issues/2348)).
+-   Hides legend block if label description is not available and adds new metric
+    descriptions ([#2377](https://github.com/maibornwolff/codecharta/issues/2377)).
 
 ## [1.80.0] - 2021-10-04
 
 ### Added 🚀
 
--   Adds feature to display building colors as a gradients ([#2327](https://github.com/MaibornWolff/codecharta/issues/2327)).
+-   Adds feature to display building colors as a
+    gradients ([#2327](https://github.com/MaibornWolff/codecharta/issues/2327)).
     -   "Weighted Gradient" only mixes colors in a small interval around the preset values.
-    -   "True Gradient" mixes colors from the 0 to the highest value, the two preset color range values determine the balance.
+    -   "True Gradient" mixes colors from the 0 to the highest value, the two preset color range values determine the
+        balance.
     -   "Absolute" represents the old behaviour without gradients. <br>
         ![l](https://user-images.githubusercontent.com/42114276/134924267-245c65c9-2893-43a8-9a0a-17e3182bf15a.JPG)
 
@@ -1043,12 +1269,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
--   Add metric descriptions to the frontend and show a translation next to the entry ([#2330](https://github.com/MaibornWolff/codecharta/issues/2330)) <br>
+-   Add metric descriptions to the frontend and show a translation next to the
+    entry ([#2330](https://github.com/MaibornWolff/codecharta/issues/2330)) <br>
     <img src="https://user-images.githubusercontent.com/31436472/133093437-eaa0efdc-9d8c-49a8-ab21-5c959e232a49.png" width="250px"/>
--   An option has been added to the global settings to enable copying screenshots to clipboard instead of saving them in a file ([#2326](https://github.com/MaibornWolff/codecharta/issues/2326)) <br>
+-   An option has been added to the global settings to enable copying screenshots to clipboard instead of saving them in a
+    file ([#2326](https://github.com/MaibornWolff/codecharta/issues/2326)) <br>
     ![xl](https://user-images.githubusercontent.com/57844849/131342771-a3c637e3-8241-49aa-8d51-71e3a8d38aef.png)
 -   Add changelog guidelines ([#2358](https://github.com/MaibornWolff/codecharta/pull/2358))
--   A changelog dialog with the latest additions to CodeCharta appears on version update ([#1315](https://github.com/MaibornWolff/codecharta/pull/2342)) <br>
+-   A changelog dialog with the latest additions to CodeCharta appears on version
+    update ([#1315](https://github.com/MaibornWolff/codecharta/pull/2342)) <br>
     ![xl](https://user-images.githubusercontent.com/48621967/131360878-a8e1ef40-7f73-4de7-8b3f-4c8dc21448da.PNG)
 
 ### Fixed 🐞
@@ -1058,15 +1287,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Changed
 
--   Changing the background color and remove "outgoing" and "incoming" edges from the legend, if not applicable ([#2330](https://github.com/MaibornWolff/codecharta/issues/2330))
--   Improve the user experience for the AI Feature "Suspicious Metrics and Risk Profiles" and enable it for any programming language ([#2362](https://github.com/MaibornWolff/codecharta/pull/2362)) <br>
+-   Changing the background color and remove "outgoing" and "incoming" edges from the legend, if not
+    applicable ([#2330](https://github.com/MaibornWolff/codecharta/issues/2330))
+-   Improve the user experience for the AI Feature "Suspicious Metrics and Risk Profiles" and enable it for any
+    programming language ([#2362](https://github.com/MaibornWolff/codecharta/pull/2362)) <br>
     ![m](https://user-images.githubusercontent.com/26900540/133250867-adf4583d-9d0e-4f81-b8a7-1407b93d9f40.png)
 
 ## [1.78.0] - 2021-09-06
 
 ### Added 🚀
 
--   A changelog dialog with the latest additions to CodeCharta appears on version update ([#1315](https://github.com/MaibornWolff/codecharta/issues/1315))
+-   A changelog dialog with the latest additions to CodeCharta appears on version
+    update ([#1315](https://github.com/MaibornWolff/codecharta/issues/1315))
 -   Add documentation for SCMLogParserV2 ([#1349](https://github.com/maibornwolff/codecharta/issues/1349))
 
 ### Fixed 🐞
@@ -1083,25 +1315,29 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
--   The "Color Metric Options" panel and "Legend" panel display the maximum value of the selected metric instead of infinite. ([#1520](https://github.com/maibornwolff/codecharta/issues/1520))
+-   The "Color Metric Options" panel and "Legend" panel display the maximum value of the selected metric instead of
+    infinite. ([#1520](https://github.com/maibornwolff/codecharta/issues/1520))
 -   Mark color-section as unimportant in delta mode ([#769](https://github.com/maibornwolff/codecharta/issues/769))
 
 ### Changed
 
 -   Small ui improvements added. ([#1881](https://github.com/MaibornWolff/codecharta/issues/1881))
--   Numbers/Percentages always show in the distribution bar([#1540](https://github.com/MaibornWolff/codecharta/issues/1540))
+-   Numbers/Percentages always show in the distribution
+    bar([#1540](https://github.com/MaibornWolff/codecharta/issues/1540))
     -   Toggle between percentage and absolute numbers by clicking anywhere on the (expanded) distribution bar.
     -   The old expanded distribution bar is now accessible through a button.
 
 ### Fixed 🐞
 
--   It is no longer possible to exclude all files on the map ([#901](https://github.com/MaibornWolff/codecharta/issues/901))
+-   It is no longer possible to exclude all files on the
+    map ([#901](https://github.com/MaibornWolff/codecharta/issues/901))
 
 ## [1.76.0] - 2021-07-13
 
 ### Added 🚀
 
--   Custom metric scenarios which include the 'Color-Metric' (rloc) will now also save any changes made to the color scheme.
+-   Custom metric scenarios which include the 'Color-Metric' (rloc) will now also save any changes made to the color
+    scheme.
 
 ### Fixed 🐞
 
@@ -1111,15 +1347,20 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
--   Imported files are now compressed by default. Use the -nc parameter to uncompress the files. ([#1702](https://github.com/maibornwolff/codecharta/issues/1702))
--   Export the current view as a png image by using "Ctrl+Alt+S" or clicking the corresponding button ([#674](https://github.com/MaibornWolff/codecharta/issues/674))
--   Show only labels of buildings according to a chosen color ([#1347](https://github.com/MaibornWolff/codecharta/issues/1347))
--   New buttons to reset the color hex values and color metric thresholds separately ([#1613](https://github.com/MaibornWolff/codecharta/issues/1613)) <br>
+-   Imported files are now compressed by default. Use the -nc parameter to uncompress the
+    files. ([#1702](https://github.com/maibornwolff/codecharta/issues/1702))
+-   Export the current view as a png image by using "Ctrl+Alt+S" or clicking the corresponding
+    button ([#674](https://github.com/MaibornWolff/codecharta/issues/674))
+-   Show only labels of buildings according to a chosen
+    color ([#1347](https://github.com/MaibornWolff/codecharta/issues/1347))
+-   New buttons to reset the color hex values and color metric thresholds
+    separately ([#1613](https://github.com/MaibornWolff/codecharta/issues/1613)) <br>
     ![l](https://user-images.githubusercontent.com/50167165/121889295-5b071780-cd19-11eb-87ef-aba0ab0c6c09.png)
 
 ### Changed
 
--   Metric aggregations now work as intended and are available from the sidebar when selecting folders ([#1953](https://github.com/MaibornWolff/codecharta/issues/1953))
+-   Metric aggregations now work as intended and are available from the sidebar when selecting
+    folders ([#1953](https://github.com/MaibornWolff/codecharta/issues/1953))
 -   Opening new files does no longer remove old ones.
     -   Already loaded files can be individually removed.
     -   The 'Multiple' view will select the latest files. <br>
@@ -1127,7 +1368,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
--   It is now possible to rotate the map by rotating the view cube ([#353](https://github.com/MaibornWolff/codecharta/issues/353))
+-   It is now possible to rotate the map by rotating the view
+    cube ([#353](https://github.com/MaibornWolff/codecharta/issues/353))
 
 ## [1.74.0] - 2021-05-31
 
@@ -1152,7 +1394,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 -   Excluding in delta mode is broken ([#1578](https://github.com/MaibornWolff/codecharta/issues/1578))
     (Inclusion and exclusion of files using wildcard searches in the flatten and exclude operations)
--   Fix labels and lines missing a connection in some cases([#1716](https://github.com/MaibornWolff/codecharta/issues/1716))
+-   Fix labels and lines missing a connection in some
+    cases([#1716](https://github.com/MaibornWolff/codecharta/issues/1716))
 -   Ribbons resizing when expanding ([#1952](https://github.com/MaibornWolff/codecharta/issues/1952))
 
 ### Chore 👨‍💻 👩‍💻
@@ -1164,7 +1407,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Added 🚀
 
 -   Hints for Global Settings ([#1715](https://github.com/MaibornWolff/codecharta/issues/1715))
--   Indicate total nodes and excluded / flattened nodes in file explorer ([#1880](https://github.com/MaibornWolff/codecharta/issues/1880))
+-   Indicate total nodes and excluded / flattened nodes in file
+    explorer ([#1880](https://github.com/MaibornWolff/codecharta/issues/1880))
 -   Add path to node context menu ([#1667](https://github.com/MaibornWolff/codecharta/issues/1667))
 
 ### Fixed 🐞
@@ -1219,12 +1463,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
--   Added WebGL FXAA antialias & PixelRatio Options in order to achieve better resolution on high dpi displays(https://github.com/MaibornWolff/codecharta/pull/1551).</br></br>
+-   Added WebGL FXAA antialias & PixelRatio Options in order to achieve better resolution on high dpi
+    displays(https://github.com/MaibornWolff/codecharta/pull/1551).</br></br>
     ![option dialog](https://user-images.githubusercontent.com/74670211/106582136-f4404900-6543-11eb-8f5b-5e1ec47457c7.png)
     There are 4 available modes:
     -   **standard mode**: the pixel density is only applied to the small cube with standard browser aliasing
     -   **pixel ratio without aliasing**: no antialiasing is used
-    -   **pixel ration with FXAA**: Nvidia FXAA antialiasing shader is used as an alisaing technique. this has better perfromance the standard browser aliasing aliasing
+    -   **pixel ration with FXAA**: Nvidia FXAA antialiasing shader is used as an alisaing technique. this has better
+        perfromance the standard browser aliasing aliasing
     -   **pixel ration with MSAA**: this is the best aliasing quality, slower then FXAA.
 -   Added GPU Stats (only in dev mode)
 
@@ -1238,26 +1484,34 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Added 🚀
 
 -   A new experimental feature has been added to track anonymous metadata of a currently loaded map.
-    -   Neither the map name nor file names will be tracked but anonymous metric values and statistics like (average, min, max).
-    -   The tracked data will not be sent to a server yet. Instead, it can be downloaded as a json file in the Global Settings for now.
-    -   It is planned to send the anonymous data to a server in the future, so that we can collect tracking data automatically.
+    -   Neither the map name nor file names will be tracked but anonymous metric values and statistics like (average, min,
+        max).
+    -   The tracked data will not be sent to a server yet. Instead, it can be downloaded as a json file in the Global
+        Settings for now.
+    -   It is planned to send the anonymous data to a server in the future, so that we can collect tracking data
+        automatically.
     -   ![example of new feature](https://user-images.githubusercontent.com/26900540/106896300-ac5f2480-66f1-11eb-8096-246d1733c0ee.png)
 
 ### Fixed 🐞
 
 -   Errors occurred in delta mode if names of root folders were different
--   Switching maps in delta mode now shows the differences between the maps ([#1606](https://github.com/maibornwolff/codecharta/issues/1606))
--   Label over hovered building not shown for height Metric value of zero ([#1623](https://github.com/MaibornWolff/codecharta/issues/1623))
+-   Switching maps in delta mode now shows the differences between the
+    maps ([#1606](https://github.com/maibornwolff/codecharta/issues/1606))
+-   Label over hovered building not shown for height Metric value of
+    zero ([#1623](https://github.com/MaibornWolff/codecharta/issues/1623))
 
 ### Chore 👨‍💻 👩‍💻
 
--   CodeChartaStorage class has been introduced to dynamically store values either on disk (standalone version) or in the localStorage (web version). This is the first step to solve [#684](https://github.com/MaibornWolff/codecharta/issues/684).
+-   CodeChartaStorage class has been introduced to dynamically store values either on disk (standalone version) or in the
+    localStorage (web version). This is the first step to
+    solve [#684](https://github.com/MaibornWolff/codecharta/issues/684).
 
 ## [1.67.0] - 2021-01-26
 
 ### Added 🚀
 
--   Allow opening files from local drive by double clicking on the buildings or clicking on their names ([#1314](https://github.com/MaibornWolff/codecharta/issues/1314))
+-   Allow opening files from local drive by double clicking on the buildings or clicking on their
+    names ([#1314](https://github.com/MaibornWolff/codecharta/issues/1314))
     -   Only available in the standalone version!
     -   files are opened in associated third-party applications
     -   web-links are opened in a browser window
@@ -1268,37 +1522,47 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Fixed 🐞
 
 -   fixed wrong max tree map visibility ([#1624](https://github.com/MaibornWolff/codecharta/issues/1624))
--   fixed incorrect label placement on delta maps that share no common nodes ([#1686](https://github.com/MaibornWolff/codecharta/issues/1686))
+-   fixed incorrect label placement on delta maps that share no common
+    nodes ([#1686](https://github.com/MaibornWolff/codecharta/issues/1686))
 
 ## [1.66.0] - 2021-01-18
 
 ### Added 🚀
 
--   Allow color of buildings to be customizable in the ribbon bar and in the legend. Colors of edges are now customizable as well ([#1533](https://github.com/MaibornWolff/codecharta/issues/1533))<br/><br/>
+-   Allow color of buildings to be customizable in the ribbon bar and in the legend. Colors of edges are now customizable
+    as well ([#1533](https://github.com/MaibornWolff/codecharta/issues/1533))<br/><br/>
     ![example of new feature](https://user-images.githubusercontent.com/3596742/103547861-3c1c7380-4ea5-11eb-8df2-541caf65b9df.png)
 
 ### Fixed 🐞
 
 -   Global settings not reverting to default ones ([#1632](https://github.com/MaibornWolff/codecharta/issues/1632))
 -   Maximum treemap files shown in squarified node ([#1624](https://github.com/MaibornWolff/codecharta/issues/1624))
--   Wrong folder names and colors in legend when using the highlight folder feature ([#1555](https://github.com/MaibornWolff/codecharta/issues/1555))
--   Temporary labels are placed at the wrong height for scaled buildings ([#1618](https://github.com/MaibornWolff/codecharta/issues/1618))
--   Visible labels will disappear or placed lower for scaled buildings ([#1619](https://github.com/MaibornWolff/codecharta/issues/1619))
+-   Wrong folder names and colors in legend when using the highlight folder
+    feature ([#1555](https://github.com/MaibornWolff/codecharta/issues/1555))
+-   Temporary labels are placed at the wrong height for scaled
+    buildings ([#1618](https://github.com/MaibornWolff/codecharta/issues/1618))
+-   Visible labels will disappear or placed lower for scaled
+    buildings ([#1619](https://github.com/MaibornWolff/codecharta/issues/1619))
 -   Unnecessary break line for secondary metrics ([#1093](https://github.com/MaibornWolff/codecharta/issues/1093))
 
 ## [1.65.0] - 2020-12-23
 
 ### Added 🚀
 
--   Highlight label while hovering over building, draw a temporary label for hovered buildings that have none ([#1529](https://github.com/MaibornWolff/codecharta/issues/1529))
+-   Highlight label while hovering over building, draw a temporary label for hovered buildings that have
+    none ([#1529](https://github.com/MaibornWolff/codecharta/issues/1529))
 -   Integrated streetlayout ([#904](https://github.com/MaibornWolff/codecharta/issues/904))
     ![cc_street_ccv](https://user-images.githubusercontent.com/63230711/78872405-87eed900-7a49-11ea-984a-c0ef738779b9.png)
-    In street layout file nodes are displayed as buildings and directories are displayed as streets. A street layout has the advantage of a more apparent directory structure and stable positioning of nodes after metric changes.
-    two different Street layout are integrated : - StreetLayout : as described above. - TMStreet : a combination of street layout and squarified layout.
+    In street layout file nodes are displayed as buildings and directories are displayed as streets. A street layout has
+    the advantage of a more apparent directory structure and stable positioning of nodes after metric changes.
+    two different Street layout are integrated : - StreetLayout : as described above. - TMStreet : a combination of street
+    layout and squarified layout.
 
 ### Changed
 
--   The button to see excluded buildings is now merged into the flattened button. Excluded and flattened buildings can now be seen by opening the building with the eye slash icon ([#1543](https://github.com/MaibornWolff/codecharta/issues/1543))
+-   The button to see excluded buildings is now merged into the flattened button. Excluded and flattened buildings can now
+    be seen by opening the building with the eye slash
+    icon ([#1543](https://github.com/MaibornWolff/codecharta/issues/1543))
 
 ### Fixed 🐞
 
@@ -1313,19 +1577,23 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
--   Download and upload Custom Configurations is now possible ([#1472](https://github.com/MaibornWolff/codecharta/issues/1472))
+-   Download and upload Custom Configurations is now
+    possible ([#1472](https://github.com/MaibornWolff/codecharta/issues/1472))
 
     -   Open the Custom Configs menu in the toolbar on top of the map
     -   Next to the `plus` Button you can see two new buttons: Upload and download.
         -   Download: If you already have added Custom Configs you can download them by clicking the download button.
-            -   Custom Configs which are applicable for the currently selected map(s) will be downloaded as `.cc.config.json` files.
+            -   Custom Configs which are applicable for the currently selected map(s) will be downloaded
+                as `.cc.config.json` files.
         -   Upload: Click the upload button and specify your Custom Config file (`<file-name>.cc.config.json`)
             -   Already existing Custom Configs will be skipped.
             -   Different Custom Configs with same names will be renamed.
-            -   Another way to upload your Custom Configs is to upload a `.cc.json` file together with one or multiple `.cc.config.json` files using the default `Load .cc.json map` button in the upper left corner.
+            -   Another way to upload your Custom Configs is to upload a `.cc.json` file together with one or
+                multiple `.cc.config.json` files using the default `Load .cc.json map` button in the upper left corner.
     -   The Configs are stored to the local storage of your browser.
         -   If a limit of `768KB` is exceeded you will see a warning when trying to add a new Custom Config.
-        -   You can click the displayed "download and purge" button to download/backup at least 6 months old Configs and then purge them from the local storage to make space for new ones.
+        -   You can click the displayed "download and purge" button to download/backup at least 6 months old Configs and
+            then purge them from the local storage to make space for new ones.
         -   If we cannot purge any Configs, you might have to do that by your own by deleting specific Configs manually.
 
 ### Changed
@@ -1338,7 +1606,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 -   Re-enabled color selection for folders and on hover ([#1544](https://github.com/MaibornWolff/codecharta/pull/1544))
 -   Labels do not take delta height into account ([#1523](https://github.com/MaibornWolff/codecharta/issues/1523))
--   The calculation of the map resolution scale factor was wrong ([#1491](https://github.com/MaibornWolff/codecharta/issues/1491))
+-   The calculation of the map resolution scale factor was
+    wrong ([#1491](https://github.com/MaibornWolff/codecharta/issues/1491))
     -   The factor is used to decrease the map resolution especially for big maps to avoid performance issues.
     -   Now only the selected maps will be considered for the calculation. Unselected maps will be skipped.
 
@@ -1346,7 +1615,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
--   Add the folder name onto the floor on the first 3 layers to get a better overview of the map ([#1491](https://github.com/MaibornWolff/codecharta/issues/1491))
+-   Add the folder name onto the floor on the first 3 layers to get a better overview of the
+    map ([#1491](https://github.com/MaibornWolff/codecharta/issues/1491))
 -   UX Improvements related to labels allowing for user interaction #1404
     -   Labels can be hovered, hovering their corresponding node
     -   Selecting a label will select the corresponding node
@@ -1380,9 +1650,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   NodeContextMenu now contains option to keep buildings highlighted #1323
 
 -   Fixed Folder algorithm supports nested (parent-child) Fixed Folders #1431
-    1. Define children of a Fixed Folder also as Fixed Folders by adding the `fixedPosition` attribute manually in `.cc.json`.
+    1. Define children of a Fixed Folder also as Fixed Folders by adding the `fixedPosition` attribute manually
+       in `.cc.json`.
     1. All children of a parent Fixed Folder must be fixed.
-    1. Read the how-to guide for further information: https://maibornwolff.github.io/codecharta/how-to/fixate_folders_with_a_custom_cc_json/
+    1. Read the how-to guide for further
+       information: https://maibornwolff.github.io/codecharta/how-to/fixate_folders_with_a_custom_cc_json/
 
 ### Changed
 
@@ -1404,7 +1676,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 -   Distribution metric #1188
 
-    1. set rloc to default distribution metric, showing language percentages for real lines of code, if available. Else set to unary to show language distribution over files
+    1. set rloc to default distribution metric, showing language percentages for real lines of code, if available. Else
+       set to unary to show language distribution over files
 
 -   Improved file sorting in the file overview of the search bar
     -   Numbers are sorted naturally
@@ -1476,8 +1749,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   Improved performance around 300% when parsing CodeCharta
 -   Improved memory usage
 -   Fixed issue with old parser creating incorrect nodes in CodeCharta #871
--   ATTENTION: the parser is experimental, therefore some potential issues might remain, e.g. potentially an unhandled edge case when parsing node
--   To use the new parser a reversed git log is needed, as well as a git file list, refer to `ccsh scmlogparserv2 -h` for additional information
+-   ATTENTION: the parser is experimental, therefore some potential issues might remain, e.g. potentially an unhandled
+    edge case when parsing node
+-   To use the new parser a reversed git log is needed, as well as a git file list, refer to `ccsh scmlogparserv2 -h` for
+    additional information
 
 ### Fixed 🐞
 
@@ -1748,7 +2023,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Changed
 
 -   Selectable metrics will only contain metrics from the visible maps
--   Closing the attribute-side-bar by clicking somewhere in the map will now be triggered on mouse up instead of mouse down
+-   Closing the attribute-side-bar by clicking somewhere in the map will now be triggered on mouse up instead of mouse
+    down
 
 ### Fixed 🐞
 
@@ -2534,7 +2810,8 @@ Fixed release issues
 
 -   padding rendering
 -   minimal building height is 1 to prevent clipping issues
--   fallback values for visualization when no metric is available (area = 1, height = 1, color = grey). Data in data structure will not be changed.
+-   fallback values for visualization when no metric is available (area = 1, height = 1, color = grey). Data in data
+    structure will not be changed.
 
 ## [1.9.1] - 2018-02-20
 
@@ -2558,7 +2835,8 @@ Fixed release issues
 
 ### Changed
 
--   revision chooser moved to settings panel and uses now understandable dropdowns instead of links. Part of the #82 proposals
+-   revision chooser moved to settings panel and uses now understandable dropdowns instead of links. Part of the #82
+    proposals
 
 ## [1.8.0] - 2018-02-20
 
@@ -2576,7 +2854,8 @@ Fixed release issues
 ### Fixed
 
 -   fixed a minor bug
--   canvas mouse event listener are now limited to the canvas dom element. UI events will not trigger the canvas listeners anymore
+-   canvas mouse event listener are now limited to the canvas dom element. UI events will not trigger the canvas listeners
+    anymore
 -   canvas mouse events distinguish now between click and drag. Dragging does not reset selection anymore
 -   slider input #64
 -   rz slider initialization bug
@@ -2820,7 +3099,8 @@ Fixed release issues
 
 ### Changed
 
--   Standard Sonar metric is now complexity,ncloc,functions,duplicated_lines,classes,blocker_violations,generated_lines,bugs,commented_out_code_lines,lines,violations,comment_lines,duplicated_blocks
+-   Standard Sonar metric is now
+    complexity,ncloc,functions,duplicated_lines,classes,blocker_violations,generated_lines,bugs,commented_out_code_lines,lines,violations,comment_lines,duplicated_blocks
 
 ## [1.1.2] - 2017-04-28
 

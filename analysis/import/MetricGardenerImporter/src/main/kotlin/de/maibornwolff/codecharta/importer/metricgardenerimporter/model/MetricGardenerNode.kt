@@ -6,12 +6,11 @@ import de.maibornwolff.codecharta.model.Path
 
 @JsonIgnoreProperties("types")
 class MetricGardenerNode(
-    @JsonProperty("name") var name: String?,
-    @JsonProperty("type") var type: String?,
-    @JsonProperty("metrics") var metrics: Map<String, Any>
+        @JsonProperty("name") var name: String?,
+        @JsonProperty("type") var type: String?,
+        @JsonProperty("metrics") var metrics: Map<String, Any>,
                         ) {
-
-    fun getPathWithoutFileName(): Path {
+                        fun getPathWithoutFileName(): Path {
         if (!name.isNullOrBlank()) {
             return Path(name!!.split("\\").dropLast(1))
         }

@@ -10,8 +10,11 @@ import java.io.File
 import java.io.InputStreamReader
 
 class NodeRemoverTest {
-    private lateinit var sampleProject: Project
-    private val DESCRIPTOR_TEST_PATH = "test_attributeDescriptors.json"
+private lateinit var sampleProject: Project
+
+    companion object {
+    private const val DESCRIPTOR_TEST_PATH = "test_attributeDescriptors.json"
+    }
 
     @BeforeEach
     fun serializeProject() {
@@ -21,7 +24,7 @@ class NodeRemoverTest {
 
     @Test
     fun `Should replicate project when non existent path specified`() {
-        // when
+// when
         val subProjectExtractor = NodeRemover(sampleProject)
         val result = subProjectExtractor.remove(arrayOf("/root/somethig"))
 
@@ -31,7 +34,7 @@ class NodeRemoverTest {
 
     @Test
     fun `Should keep non affected nodes when removal is specified`() {
-        // when
+// when
         val subProjectExtractor = NodeRemover(sampleProject)
         val result = subProjectExtractor.remove(arrayOf("/root/src/main"))
         val testFolder = result.rootNode.children.first().children.first()
@@ -42,45 +45,64 @@ class NodeRemoverTest {
 
     @Test
     fun `Should remove correct nodes when single node is specified for removal`() {
-        // when
+// when
         val subProjectExtractor = NodeRemover(sampleProject)
         val result = subProjectExtractor.remove(arrayOf("/root/src/main"))
         val srcContent = result.rootNode.children.first().children
 
         // then
         Assertions.assertThat(srcContent.size).isEqualTo(2)
-        Assertions.assertThat(srcContent.map { it.name }).doesNotContain("main")
+        Assertions.assertThat(
+                srcContent.map {
+                    it.name
+                },
+                             ).doesNotContain("main")
     }
 
     @Test
     fun `Should remove correct nodes when multiple nodes are specified for removal`() {
-        // when
+// when
         val subProjectExtractor = NodeRemover(sampleProject)
         val result = subProjectExtractor.remove(arrayOf("/root/src/main/file1.java", "root/src/folder3/"))
         val srcContent = result.rootNode.children.first().children
         val mainContent = srcContent.first().children
 
         // then
-        Assertions.assertThat(srcContent.map { it.name }).doesNotContain("folder3")
-        Assertions.assertThat(mainContent.map { it.name }).containsOnly("file2.java")
+        Assertions.assertThat(
+                srcContent.map {
+                    it.name
+                },
+                             ).doesNotContain("folder3")
+        Assertions.assertThat(
+                mainContent.map {
+                    it.name
+                },
+                             ).containsOnly("file2.java")
     }
 
     @Test
     fun `Should remove affected edges when removal is specified`() {
-        // when
+// when
         val subProjectExtractor = NodeRemover(sampleProject)
         val result = subProjectExtractor.remove(arrayOf("/root/foo"))
 
         // then
         Assertions.assertThat(result.edges.size).isEqualTo(1)
         Assertions.assertThat(result.edges.first()).usingRecursiveComparison().isEqualTo(sampleProject.edges.last())
-        Assertions.assertThat(result.edges.map { it.fromNodeName }).doesNotContain("/root/foo")
-        Assertions.assertThat(result.edges.map { it.toNodeName }).doesNotContain("/root/foo")
+        Assertions.assertThat(
+                result.edges.map {
+                    it.fromNodeName
+                },
+                             ).doesNotContain("/root/foo")
+        Assertions.assertThat(
+                result.edges.map {
+                    it.toNodeName
+                },
+                             ).doesNotContain("/root/foo")
     }
 
     @Test
-    fun `Should remove affected edges when multiple removals are specified`() {
-        // given
+    fun `Should remove affected edges when multiple removals are specified`() { // given
         val toExclude = arrayOf("/root/foo/file1", "root/else/")
         val shouldBeExcluded = listOf("/root/foo/file1", "root/else/file1", "root/else")
 
@@ -90,23 +112,34 @@ class NodeRemoverTest {
 
         // then
         Assertions.assertThat(result.edges.size).isEqualTo(2)
-        Assertions.assertThat(result.edges.map { it.fromNodeName }).doesNotContainAnyElementsOf(shouldBeExcluded)
-        Assertions.assertThat(result.edges.map { it.toNodeName }).doesNotContainAnyElementsOf(shouldBeExcluded)
+        Assertions.assertThat(
+                result.edges.map {
+                    it.fromNodeName
+                },
+                             ).doesNotContainAnyElementsOf(shouldBeExcluded)
+        Assertions.assertThat(
+                result.edges.map {
+                    it.toNodeName
+                },
+                             ).doesNotContainAnyElementsOf(shouldBeExcluded)
     }
 
     @Test
     fun `Should remove correct blacklist items when node removal specified`() {
-        // when
+// when
         val subProjectExtractor = NodeRemover(sampleProject)
         val result = subProjectExtractor.remove(arrayOf("/root/foo"))
 
         // then
-        Assertions.assertThat(result.blacklist.map { it.path }).doesNotContainSubsequence("/root/foo")
+        Assertions.assertThat(
+                result.blacklist.map {
+                    it.path
+                },
+                             ).doesNotContainSubsequence("/root/foo")
     }
 
     @Test
-    fun `Should keep attributes when only node removal specified`() {
-        // given
+    fun `Should keep attributes when only node removal specified`() { // given
         val input = InputStreamReader(this.javaClass.classLoader.getResourceAsStream(DESCRIPTOR_TEST_PATH)!!)
         val attributeProject = ProjectDeserializer.deserializeProject(input)
 
@@ -118,8 +151,7 @@ class NodeRemoverTest {
     }
 
     @Test
-    fun `Should remove unused attributeDescriptors when nodes are removed`() {
-        // given
+    fun `Should remove unused attributeDescriptors when nodes are removed`() { // given
         val input = InputStreamReader(this.javaClass.classLoader.getResourceAsStream(DESCRIPTOR_TEST_PATH)!!)
         val attributeProject = ProjectDeserializer.deserializeProject(input)
 
@@ -133,8 +165,7 @@ class NodeRemoverTest {
     }
 
     @Test
-    fun `Should correctly remove node when another node in a different subfolder has the same name`() {
-        // given
+    fun `Should correctly remove node when another node in a different subfolder has the same name`() { // given
         val bufferedReader = File("src/test/resources/merged_project.cc.json").bufferedReader()
         val mergedProject = ProjectDeserializer.deserializeProject(bufferedReader)
         val subProjectExtractor = NodeRemover(mergedProject)
@@ -142,14 +173,26 @@ class NodeRemoverTest {
 
         // when
         val result = subProjectExtractor.remove(arrayOf(pathToRemove))
-        val folderToKeep = result.rootNode.children.find { it.name == "src" }
-                                        ?.children?.find { it.name == "main" }
-                                        ?.children?.find { it.name == "java" }
-                                        ?.children?.find { it.name == "io" }
-        val folderToRemove = result.rootNode.children.find { it.name == "src" }
-                ?.children?.find { it.name == "test" }
-                ?.children?.find { it.name == "java" }
-                ?.children?.find { it.name == "io" }
+        val folderToKeep =
+                result.rootNode.children.find {
+                    it.name == "src"
+                }?.children?.find {
+                    it.name == "main"
+                }?.children?.find {
+                    it.name == "java"
+                }?.children?.find {
+                    it.name == "io"
+                }
+        val folderToRemove =
+                result.rootNode.children.find {
+                    it.name == "src"
+                }?.children?.find {
+                    it.name == "test"
+                }?.children?.find {
+                    it.name == "java"
+                }?.children?.find {
+                    it.name == "io"
+                }
 
         // then
         Assertions.assertThat(folderToKeep).isNotNull()

@@ -1,29 +1,28 @@
 import { TestBed } from "@angular/core/testing"
 import { Store, StoreModule } from "@ngrx/store"
-import { findByText, findByTitle, queryByText, queryByTitle, render, screen, waitFor } from "@testing-library/angular"
+import { findByText, findByTitle, getByText, queryByText, queryByTitle, render, screen, waitFor } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
-
 import { IdToBuildingService } from "../../../../services/idToBuilding/idToBuilding.service"
-import * as VisibleFileStatesSelector from "../../../../state/selectors/visibleFileStates.selector"
-import * as MapColorsSelector from "../../../../state/store/appSettings/mapColors/mapColors.selector"
-import * as RightClickedNodeDataSelector from "../../../../state/store/appStatus/rightClickedNodeData/rightClickedNodeData.selector"
-import * as AttributeTypesSelector from "../../../../state/store/fileSettings/attributeTypes/attributeTypes.selector"
-import * as BlacklistSelector from "../../../../state/store/fileSettings/blacklist/blacklist.selector"
-import { CodeMapMouseEventService } from "../../../codeMap/codeMap.mouseEvent.service"
-import { ThreeRendererService } from "../../../codeMap/threeViewer/threeRenderer.service"
-import { ThreeSceneService } from "../../../codeMap/threeViewer/threeSceneService"
 import * as SearchedNodePathsSelector from "../../../../state/selectors/searchedNodes/searchedNodePaths.selector"
+import * as VisibleFileStatesSelector from "../../../../state/selectors/visibleFileStates.selector"
 import { defaultMapColors } from "../../../../state/store/appSettings/mapColors/mapColors.reducer"
+import * as MapColorsSelector from "../../../../state/store/appSettings/mapColors/mapColors.selector"
 import { setHoveredNodeId } from "../../../../state/store/appStatus/hoveredNodeId/hoveredNodeId.actions"
 import { defaultRightClickedNodeData } from "../../../../state/store/appStatus/rightClickedNodeData/rightClickedNodeData.reducer"
+import * as RightClickedNodeDataSelector from "../../../../state/store/appStatus/rightClickedNodeData/rightClickedNodeData.selector"
 import * as AreaMetricSelector from "../../../../state/store/dynamicSettings/areaMetric/areaMetric.selector"
 import { defaultAttributeTypes } from "../../../../state/store/fileSettings/attributeTypes/attributeTypes.reducer"
+import * as AttributeTypesSelector from "../../../../state/store/fileSettings/attributeTypes/attributeTypes.selector"
 import { defaultBlacklist } from "../../../../state/store/fileSettings/blacklist/blacklist.reducer"
+import * as BlacklistSelector from "../../../../state/store/fileSettings/blacklist/blacklist.selector"
 import { appReducers, setStateMiddleware } from "../../../../state/store/state.manager"
+import { CodeMapMouseEventService } from "../../../codeMap/codeMap.mouseEvent.service"
+import { CodeMapBuilding } from "../../../codeMap/rendering/codeMapBuilding"
+import { ThreeRendererService } from "../../../codeMap/threeViewer/threeRenderer.service"
+import { ThreeSceneService } from "../../../codeMap/threeViewer/threeSceneService"
 import { MapTreeViewModule } from "../mapTreeView.module"
 import { MapTreeViewLevelComponent } from "./mapTreeViewLevel.component"
 import { rootNode } from "./mocks"
-import { CodeMapBuilding } from "../../../codeMap/rendering/codeMapBuilding"
 
 describe("mapTreeViewLevel", () => {
 	const componentProperties = {
@@ -152,11 +151,12 @@ describe("mapTreeViewLevel", () => {
 		const firstLevelFolder = container.querySelector("#\\/root\\/ParentLeaf")
 		await userEvent.click(firstLevelFolder)
 
-		const smallLeaf = container.querySelector("#\\/root\\/ParentLeaf\\/smallLeaf")
-
-		await userEvent.hover(smallLeaf)
-
-		await waitFor(() => expect(smallLeaf.querySelector("cc-map-tree-view-item-option-buttons")).toBeFalsy())
+		await waitFor(() => expect(getByText(container as HTMLElement, "smallLeaf")).toBeTruthy())
+		await waitFor(() =>
+			expect(
+				container.querySelector("#\\/root\\/ParentLeaf\\/smallLeaf").querySelector("cc-map-tree-view-item-option-buttons")
+			).toBeFalsy()
+		)
 	})
 
 	it("should show option button on hover and be marked after context menu was opened", async () => {
@@ -210,8 +210,7 @@ describe("mapTreeViewLevel", () => {
 		const firstLevelFolder = container.querySelector("#\\/root\\/ParentLeaf")
 		await userEvent.click(firstLevelFolder)
 
-		const smallLeaf = await findByText(container as HTMLElement, /smallLeaf/)
-		await waitFor(() => expect(smallLeaf.classList).toContain("noAreaMetric"))
+		await waitFor(() => expect(queryByText(container as HTMLElement, /smallLeaf/).classList).toContain("noAreaMetric"))
 	})
 
 	it("should change text color and stop displaying option buttons on hover when area metric is changed to not exist", async () => {

@@ -1,6 +1,14 @@
 # CodeMaatImporter
 
-Generates visualisation data from CodeMaat Temporal Coupling CSV data with header. You can find the analysing tool on GitHub https://github.com/adamtornhill/code-maat
+Generates visualisation data from CodeMaat Temporal Coupling CSV data with header. You can find the analysing tool on
+GitHub https://github.com/adamtornhill/code-maat
+
+## Metrics
+
+| Metric        | Description                                                            |
+| ------------- | ---------------------------------------------------------------------- |
+| `pairingRate` | percentage value of the chance that given files are committed together |
+| `avgCommits`  | amount of commits in which the given files were included               |
 
 ## Usage
 
@@ -16,11 +24,13 @@ Generates visualisation data from CodeMaat Temporal Coupling CSV data with heade
 
     `ccsh codemaatimport edges.csv -o edges.cc.json`
 
-4. Aggregate edge-attributes and insert them into the appropriate nodes attribute-list with [EdgeFilter](https://github.com/MaibornWolff/codecharta/blob/main/analysis/filter/EdgeFilter/README.md)
+4. Aggregate edge-attributes and insert them into the appropriate nodes attribute-list
+   with [EdgeFilter](https://github.com/MaibornWolff/codecharta/blob/main/analysis/filter/EdgeFilter/README.md)
 
     `ccsh edgefilter edges.cc.json -o visual_edges.cc.json`
 
-5. Merge the coupling data with the project metrics file while using the [MergeFilter](https://github.com/MaibornWolff/codecharta/blob/main/analysis/filter/MergeFilter/README.md)
+5. Merge the coupling data with the project metrics file while using
+   the [MergeFilter](https://github.com/MaibornWolff/codecharta/blob/main/analysis/filter/MergeFilter/README.md)
 
     `ccsh merge visual_edges.cc.json metrics.cc.json -o merged.cc.json`
 

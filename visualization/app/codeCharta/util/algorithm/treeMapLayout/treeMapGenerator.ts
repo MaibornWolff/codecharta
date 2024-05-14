@@ -13,8 +13,8 @@ const DEFAULT_SUB_FLOOR_LABEL_SCALING = 0.028
 
 export function createTreemapNodes(map: CodeMapNode, state: CcState, metricData: NodeMetricData[], isDeltaState: boolean): Node[] {
 	const mapSizeResolutionScaling = getMapResolutionScaleFactor(state.files)
-	const maxHeight = metricData.find(x => x.name === state.dynamicSettings.heightMetric).maxValue * mapSizeResolutionScaling
-	const maxWidth = metricData.find(x => x.name === state.dynamicSettings.areaMetric).maxValue * mapSizeResolutionScaling
+	const maxHeight = metricData.find(x => x.name === state.dynamicSettings.heightMetric)?.maxValue * mapSizeResolutionScaling
+	const maxWidth = metricData.find(x => x.name === state.dynamicSettings.areaMetric)?.maxValue * mapSizeResolutionScaling
 	const heightScale = (treeMapSize * 2) / maxHeight
 
 	if (hasFixedFolders(map)) {
@@ -255,7 +255,7 @@ function isOnlyVisibleInComparisonMap(node: CodeMapNode, dynamicSettings: Dynami
 }
 
 // Only exported for testing.
-export function calculateAreaValue(node: CodeMapNode, { dynamicSettings, appSettings }: CcState, maxWidth: number) {
+export function calculateAreaValue(node: CodeMapNode, { dynamicSettings, appSettings, fileSettings }: CcState, maxWidth: number) {
 	if (node.isExcluded) {
 		return 0
 	}
@@ -265,6 +265,15 @@ export function calculateAreaValue(node: CodeMapNode, { dynamicSettings, appSett
 	}
 
 	if (isLeaf(node) && node.attributes?.[dynamicSettings.areaMetric]) {
+		const areaMetric = dynamicSettings.areaMetric
+		const attributeDescriptors = fileSettings.attributeDescriptors
+		const isAttributeDirectionInversed = attributeDescriptors[areaMetric]?.direction === 1
+
+		if (isAttributeDirectionInversed) {
+			return appSettings.invertArea
+				? node.attributes[dynamicSettings.areaMetric]
+				: maxWidth - node.attributes[dynamicSettings.areaMetric]
+		}
 		return appSettings.invertArea ? maxWidth - node.attributes[dynamicSettings.areaMetric] : node.attributes[dynamicSettings.areaMetric]
 	}
 	return 0

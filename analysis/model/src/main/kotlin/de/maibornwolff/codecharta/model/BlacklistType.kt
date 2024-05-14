@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.model
 
-enum class BlacklistType {
-    exclude, hide
+enum class BlacklistType(val value: String) {
+    EXCLUDE("exclude"),
+    HIDE("hide"),
 }

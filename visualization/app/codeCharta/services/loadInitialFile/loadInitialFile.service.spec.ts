@@ -3,17 +3,24 @@ import { TestBed } from "@angular/core/testing"
 import { MatDialog } from "@angular/material/dialog"
 import { State, StoreModule } from "@ngrx/store"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
+import { waitFor } from "@testing-library/angular"
 import stringify from "safe-stable-stringify"
 import { AppSettings, CcState, DynamicSettings, FileSettings } from "../../codeCharta.model"
 import { FileSelectionState } from "../../model/files/files"
 import { getCCFiles } from "../../model/files/files.helper"
+import { MetricQueryParemter } from "../../state/effects/saveMetricsInQueryParameters/saveMetricsInQueryParameters.effect"
+import { metricDataSelector } from "../../state/selectors/accumulatedData/metricData/metricData.selector"
 import { setAmountOfTopLabels } from "../../state/store/appSettings/amountOfTopLabels/amountOfTopLabels.actions"
 import { defaultAppSettings } from "../../state/store/appSettings/appSettings.reducer"
+import { setAreaMetric } from "../../state/store/dynamicSettings/areaMetric/areaMetric.actions"
+import { setColorMetric } from "../../state/store/dynamicSettings/colorMetric/colorMetric.actions"
 import { defaultDynamicSettings } from "../../state/store/dynamicSettings/dynamicSettings.reducer"
+import { setEdgeMetric } from "../../state/store/dynamicSettings/edgeMetric/edgeMetric.actions"
+import { setHeightMetric } from "../../state/store/dynamicSettings/heightMetric/heightMetric.actions"
 import { defaultFileSettings } from "../../state/store/fileSettings/fileSettings.reducer"
-import { setDelta } from "../../state/store/files/files.actions"
+import { setDelta, setFiles } from "../../state/store/files/files.actions"
 import { appReducers, defaultState, setStateMiddleware } from "../../state/store/state.manager"
-import { TEST_DELTA_MAP_A, TEST_DELTA_MAP_B } from "../../util/dataMocks"
+import { EDGE_METRIC_DATA, FILE_STATES, METRIC_DATA, TEST_DELTA_MAP_A, TEST_DELTA_MAP_B } from "../../util/dataMocks"
 import { readCcState } from "../../util/indexedDB/indexedDBWriter"
 import { getLastAction } from "../../util/testUtils/store.utils"
 import { getNameDataPair } from "../loadFile/fileParser"
@@ -41,7 +48,17 @@ describe("LoadInitialFileService", () => {
 				{ provide: HttpClient, useValue: {} },
 				{ provide: LoadFileService, useValue: { loadFiles: jest.fn() } },
 				{ provide: State, useValue: { getValue: () => defaultState } },
-				provideMockStore()
+				provideMockStore({
+					selectors: [
+						{
+							selector: metricDataSelector,
+							value: {
+								nodeMetricData: null,
+								edgeMetricData: null
+							}
+						}
+					]
+				})
 			]
 		})
 
@@ -156,18 +173,73 @@ describe("LoadInitialFileService", () => {
 			expect(mockedDialog.open).not.toHaveBeenCalled()
 			expect(await getLastAction(store)).toEqual(setDelta({ referenceFile: TEST_DELTA_MAP_A, comparisonFile: TEST_DELTA_MAP_B }))
 		})
+
+		it("should set metrics from query params if metrics are part of url", async () => {
+			const mockedNameDataPairs = [getNameDataPair(TEST_DELTA_MAP_A), getNameDataPair(TEST_DELTA_MAP_B)]
+			const mockedState = JSON.parse(stringify(defaultState)) as CcState
+			mockedState.files = [
+				{
+					file: TEST_DELTA_MAP_A,
+					selectedAs: FileSelectionState.Reference
+				},
+				{
+					file: TEST_DELTA_MAP_B,
+					selectedAs: FileSelectionState.Comparison
+				}
+			]
+			jest.mocked(UrlExtractor.prototype.getFileDataFromQueryParam).mockImplementation(
+				async () => new Promise(resolve => resolve(mockedNameDataPairs))
+			)
+			jest.mocked(readCcState).mockImplementation(async () => new Promise(resolve => resolve(defaultState)))
+			jest.mocked(getCCFiles).mockImplementation(() => mockedState.files.map(state => state.file))
+			jest.mocked(UrlExtractor.prototype.getParameterByName).mockImplementation(parameter => {
+				switch (parameter) {
+					case MetricQueryParemter.areaMetric:
+						return "mcc"
+					case MetricQueryParemter.heightMetric:
+						return "rloc"
+					case MetricQueryParemter.colorMetric:
+						return "functions"
+					case MetricQueryParemter.edgeMetric:
+						return "pairing_rate"
+					default:
+						return "-"
+				}
+			})
+			const dispatchSpy = jest.spyOn(store, "dispatch")
+			store.overrideSelector(metricDataSelector, {
+				nodeMetricData: METRIC_DATA,
+				edgeMetricData: EDGE_METRIC_DATA,
+				nodeEdgeMetricsMap: null
+			})
+			store.refreshState()
+
+			await loadInitialFileService.loadFilesOrSampleFiles()
+
+			expect(loadFileService.loadFiles).toHaveBeenCalledWith(mockedNameDataPairs)
+			expect(mockedDialog.open).not.toHaveBeenCalled()
+
+			await waitFor(() => expect(dispatchSpy).toHaveBeenCalledWith(setAreaMetric({ value: "mcc" })))
+			await waitFor(() => expect(dispatchSpy).toHaveBeenCalledWith(setHeightMetric({ value: "rloc" })))
+			await waitFor(() => expect(dispatchSpy).toHaveBeenCalledWith(setColorMetric({ value: "functions" })))
+			await waitFor(() => expect(dispatchSpy).toHaveBeenCalledWith(setEdgeMetric({ value: "pairing_rate" })))
+		})
 	})
 
 	describe("load files from indexeddb", () => {
 		it("should load files from indexeddb when query params do not contain file parameter", async () => {
+			const mockedState = JSON.parse(stringify(defaultState)) as CcState
+			mockedState.files = FILE_STATES
 			jest.mocked(UrlExtractor.prototype.getParameterByName).mockImplementation(() => null)
 			jest.mocked(readCcState).mockImplementation(async () => new Promise(resolve => resolve(defaultState)))
 			const savedFileStates = defaultState.files
 			const savedNameDataPairs = savedFileStates.map(fileState => getNameDataPair(fileState.file))
+			const dispatchSpy = jest.spyOn(store, "dispatch")
 			await loadInitialFileService.loadFilesOrSampleFiles()
 
 			expect(mockedDialog.open).not.toHaveBeenCalled()
 			expect(loadFileService.loadFiles).toHaveBeenCalledWith(savedNameDataPairs)
+			expect(dispatchSpy).toHaveBeenCalledWith(setFiles({ value: savedFileStates }))
 		})
 		it("should load sample-files when indexeddb is empty", async () => {
 			jest.mocked(UrlExtractor.prototype.getParameterByName).mockImplementation(() => null)

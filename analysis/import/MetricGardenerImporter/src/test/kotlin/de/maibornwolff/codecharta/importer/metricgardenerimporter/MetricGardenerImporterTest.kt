@@ -12,6 +12,7 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.params.ParameterizedTest
@@ -24,7 +25,7 @@ import java.io.PrintStream
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class MetricGardenerImporterTest {
-    val errContent = ByteArrayOutputStream()
+val errContent = ByteArrayOutputStream()
     val originalErr = System.err
 
     @AfterEach
@@ -33,12 +34,13 @@ class MetricGardenerImporterTest {
     }
 
     companion object {
-        @JvmStatic
+    @JvmStatic
         fun provideValidInputFiles(): List<Arguments> {
             return listOf(
                     Arguments.of("src/test/resources/my/supported-multi-language/repo"),
                     Arguments.of("src/test/resources/my/supported-multi-language/repo/dummyFile.js"),
-                    Arguments.of("src/test/resources/my"))
+                    Arguments.of("src/test/resources/my"),
+                         )
         }
 
         @JvmStatic
@@ -47,18 +49,19 @@ class MetricGardenerImporterTest {
                     Arguments.of("src/test/resources/my/empty/repo"),
                     Arguments.of("src/test/resources/this/does/not/exist"),
                     Arguments.of("src/test/resources/my/non-supported-language/repo"),
-                    Arguments.of(""))
+                    Arguments.of(""),
+                         )
         }
     }
 
     @Test
     fun `should create json uncompressed file with attribute Descriptors`() {
         main(
-            arrayOf(
-                "--is-json-file", "src/test/resources/metricgardener-analysis.json", "-nc",
-                "-o=src/test/resources/import-result"
+                arrayOf(
+                        "--is-json-file", "src/test/resources/metricgardener-analysis.json", "-nc",
+                        "-o=src/test/resources/import-result",
+                       ),
             )
-        )
         val file = File("src/test/resources/import-result.cc.json")
         file.deleteOnExit()
         val inputStream = file.inputStream()
@@ -74,25 +77,26 @@ class MetricGardenerImporterTest {
     @Test
     fun `should create json gzip file`() {
         main(
-            arrayOf(
-                "--is-json-file", "src/test/resources/metricgardener-analysis.json",
-                "-o=src/test/resources/import-result"
+                arrayOf(
+                        "--is-json-file", "src/test/resources/metricgardener-analysis.json",
+                        "-o=src/test/resources/import-result",
+                       ),
             )
-        )
         val file = File("src/test/resources/import-result.cc.json.gz")
         file.deleteOnExit()
 
         assertTrue(file.exists())
     }
 
+    @Disabled
     @Test
     fun `should create file when MG needs to run first`() {
         main(
-            arrayOf(
-                "src/test/resources/MetricGardenerRawFile.kt", "-nc",
-                "-o=src/test/resources/import-result-mg"
+                arrayOf(
+                        "src/test/resources/MetricGardenerRawFile.kt", "-nc",
+                        "-o=src/test/resources/import-result-mg",
+                       ),
             )
-        )
         val file = File("src/test/resources/import-result-mg.cc.json")
         file.deleteOnExit()
 
@@ -102,10 +106,10 @@ class MetricGardenerImporterTest {
     @Test
     fun `should create no file when the input file was not specified`() {
         main(
-            arrayOf(
-                "-o=src/test/resources/import-result-empty.json"
+                arrayOf(
+                        "-o=src/test/resources/import-result-empty.json",
+                       ),
             )
-        )
         val file = File("src/test/resources/import-result-empty.cc.json.gz")
         file.deleteOnExit()
         CommandLine(MetricGardenerImporter()).execute()
@@ -137,26 +141,45 @@ class MetricGardenerImporterTest {
         CommandLine(MetricGardenerImporter()).execute("thisDoesNotExist").toString()
         System.setErr(originalErr)
 
-        Assertions.assertThat(errContent.toString()).contains("Input invalid file for MetricGardenerImporter, stopping execution")
+        Assertions.assertThat(errContent.toString())
+                .contains("Input invalid file for MetricGardenerImporter, stopping execution")
     }
 
+    @Disabled
     @Test
     fun `should stop execution if error happens while executing metric gardener`() {
         val npm = if (System.getProperty("os.name").contains("win", ignoreCase = true)) "npm.cmd" else "npm"
-        val metricGardenerInvalidCommand = listOf(
-                npm, "exec", "metric-gardener",
-                "--", "parse", "this/path/is/invalid", "-o", "MGout.json"
-        )
+        val metricGardenerInvalidCommand =
+                listOf(
+                        npm, "exec", "metric-gardener",
+                        "--", "parse", "this/path/is/invalid", "-o", "MGout.json",
+                      )
         val metricGardenerInvalidInputProcess = ProcessBuilder(metricGardenerInvalidCommand)
         mockkConstructor(ProcessBuilder::class)
-        every { anyConstructed<ProcessBuilder>().start().waitFor() } returns metricGardenerInvalidInputProcess
-                .redirectError(ProcessBuilder.Redirect.DISCARD)
-                .start()
-                .waitFor()
+        every { anyConstructed<ProcessBuilder>().start().waitFor() } returns
+                metricGardenerInvalidInputProcess
+                        .redirectError(ProcessBuilder.Redirect.DISCARD)
+                        .start()
+                        .waitFor()
 
         System.setErr(PrintStream(errContent))
         CommandLine(MetricGardenerImporter()).execute("src").toString()
         System.setErr(originalErr)
-        Assertions.assertThat(errContent.toString()).contains("Error while executing metric gardener! Process returned with status")
+        Assertions.assertThat(errContent.toString())
+                .contains("Error while executing metric gardener! Process returned with status")
+    }
+
+    @Test
+    fun `should stop execution if no MG json is present`() {
+        System.setErr(PrintStream(errContent))
+        main(
+                arrayOf(
+                        "src/test/resources/MetricGardenerRawFile.kt", "-nc",
+                        "-o=src/test/resources/import-result-mg",
+                       ),
+            )
+        System.setErr(originalErr)
+        Assertions.assertThat(errContent.toString())
+                .contains("Direct metric-gardener execution has been temporarily disabled.")
     }
 }

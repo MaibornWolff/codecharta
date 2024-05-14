@@ -7,11 +7,16 @@
 	{{ node.name }}
 </span>
 
-<span class="unary-number" *ngIf="!(node | isNodeLeaf)">
-	<span *ngIf="!isHovered">{{ ((100 * unaryValue) / (rootUnary$ | async)).toFixed(0) }}%</span>
-	<span *ngIf="isHovered" [ngPlural]="unaryValue">
+@if (!(node | isNodeLeaf)) {
+<span class="unary-number">
+	@if (!isHovered) {
+	<span>{{ ((100 * unaryValue) / (rootUnary$ | async)).toFixed(0) }}%</span>
+	} @else {
+	<span [ngPlural]="unaryValue">
 		{{ unaryValue }}
 		<ng-template ngPluralCase="=1">File</ng-template>
 		<ng-template ngPluralCase="other">Files</ng-template>
 	</span>
+	}
 </span>
+}

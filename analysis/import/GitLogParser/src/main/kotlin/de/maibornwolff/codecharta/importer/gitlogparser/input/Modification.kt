@@ -1,14 +1,13 @@
 package de.maibornwolff.codecharta.importer.gitlogparser.input
 
 class Modification(
-    val currentFilename: String,
-    val oldFilename: String,
-    val additions: Long,
-    val deletions: Long,
-    val type: Type
-) {
-
-    private var initialAdd = false
+        val currentFilename: String,
+        val oldFilename: String,
+        val additions: Long,
+        val deletions: Long,
+        val type: Type,
+                  ) {
+                  private var initialAdd = false
 
     constructor(filename: String, type: Type) : this(filename, 0, 0, type)
 
@@ -16,19 +15,19 @@ class Modification(
 
     @JvmOverloads
     constructor(filename: String, additions: Long = 0, deletions: Long = 0, type: Type = Type.UNKNOWN) : this(
-        filename,
-        "",
-        additions,
-        deletions,
-        type
-    )
+            filename,
+            "",
+            additions,
+            deletions,
+            type,
+                                                                                                            )
 
     enum class Type {
         ADD,
         DELETE,
         MODIFY,
         RENAME,
-        UNKNOWN
+        UNKNOWN,
     }
 
     fun isTypeDelete(): Boolean {
@@ -60,7 +59,6 @@ class Modification(
     }
 
     companion object {
-
-        val EMPTY = Modification("")
+    val EMPTY = Modification("")
     }
 }

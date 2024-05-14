@@ -4,8 +4,7 @@ import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 
 class StringToListInputConverterTest {
-
-    @Test
+@Test
     fun `should return empty list for null input`() {
         val input = null
 

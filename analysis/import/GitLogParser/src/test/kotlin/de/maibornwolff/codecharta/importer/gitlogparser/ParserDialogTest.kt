@@ -19,8 +19,9 @@ import java.io.File
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ParserDialogTest {
-
-    private val FIRST_ELEMENT = 1
+companion object {
+private const val FIRST_ELEMENT = 1
+    }
 
     @AfterEach
     fun afterTest() {
@@ -28,8 +29,7 @@ class ParserDialogTest {
     }
 
     @Test
-    fun `should output correct arguments when repo-scan is selected`() {
-        // given
+    fun `should output correct arguments when repo-scan is selected`() { // given
         val isLogScan = false
         val pathName = "path/to/repo"
         val outputFileName = "codecharta.cc.json"
@@ -50,7 +50,7 @@ class ParserDialogTest {
         } returns isLogScan andThen isCompressed andThen isSilent andThen addAuthor
 
         // when
-        val parserArguments = ParserDialog.collectParserArgs().drop(FIRST_ELEMENT)
+        val parserArguments = ParserDialog.collectParserArgs().drop(Companion.FIRST_ELEMENT)
         val cmdLine = CommandLine(RepoScanCommand())
         val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
 
@@ -63,8 +63,7 @@ class ParserDialogTest {
     }
 
     @Test
-    fun `should output correct arguments when repo-scan is selected and compress-flag is set`() {
-        // given
+    fun `should output correct arguments when repo-scan is selected and compress-flag is set`() { // given
         val isLogScan = false
         val pathName = "path/to/repo"
         val outputFileName = "codecharta.cc.json"
@@ -85,7 +84,7 @@ class ParserDialogTest {
         } returns isLogScan andThen isCompressed andThen isSilent andThen addAuthor
 
         // when
-        val parserArguments = ParserDialog.collectParserArgs().drop(FIRST_ELEMENT)
+        val parserArguments = ParserDialog.collectParserArgs().drop(Companion.FIRST_ELEMENT)
         val cmdLine = CommandLine(RepoScanCommand())
         val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
 
@@ -98,8 +97,7 @@ class ParserDialogTest {
     }
 
     @Test
-    fun `should output correct arguments when log-scan is selected`() {
-        // given
+    fun `should output correct arguments when log-scan is selected`() { // given
         val isLogScan = true
         val gitLogFileName = "git.log"
         val fileNameList = "file-name-list.txt"
@@ -121,7 +119,7 @@ class ParserDialogTest {
         } returns isLogScan andThen isCompressed andThen isSilent andThen addAuthor
 
         // when
-        val parserArguments = ParserDialog.collectParserArgs().drop(FIRST_ELEMENT)
+        val parserArguments = ParserDialog.collectParserArgs().drop(Companion.FIRST_ELEMENT)
         val cmdLine = CommandLine(LogScanCommand())
         val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
 
@@ -135,8 +133,7 @@ class ParserDialogTest {
     }
 
     @Test
-    fun `should output correct arguments when log-scan is selected and compress-flag is set`() {
-        // given
+    fun `should output correct arguments when log-scan is selected and compress-flag is set`() { // given
         val isLogScan = true
         val gitLogFileName = "git.log"
         val fileNameList = "file-name-list.txt"
@@ -158,7 +155,7 @@ class ParserDialogTest {
         } returns isLogScan andThen isCompressed andThen isSilent andThen addAuthor
 
         // when
-        val parserArguments = ParserDialog.collectParserArgs().drop(FIRST_ELEMENT)
+        val parserArguments = ParserDialog.collectParserArgs().drop(Companion.FIRST_ELEMENT)
         val cmdLine = CommandLine(LogScanCommand())
         val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
 
@@ -172,8 +169,7 @@ class ParserDialogTest {
     }
 
     @Test
-    fun `should prompt user twice for repo-path when first repo-path is invalid`() {
-        // given
+    fun `should prompt user twice for repo-path when first repo-path is invalid`() { // given
         val isLogScan = false
         val repoPathNameEmpty = ""
         val repoPathName = "path/to/repo"
@@ -195,7 +191,7 @@ class ParserDialogTest {
         } returns isLogScan andThen isCompressed andThen isSilent andThen addAuthor
 
         // when
-        val parserArguments = ParserDialog.collectParserArgs().drop(FIRST_ELEMENT)
+        val parserArguments = ParserDialog.collectParserArgs().drop(Companion.FIRST_ELEMENT)
         val cmdLine = CommandLine(RepoScanCommand())
         val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
 
@@ -204,8 +200,7 @@ class ParserDialogTest {
     }
 
     @Test
-    fun `should prompt user twice for input file when first input file is invalid`() {
-        // given
+    fun `should prompt user twice for input file when first input file is invalid`() { // given
         val isLogScan = true
         val gitLogFileNameEmpty = ""
         val gitLogFileName = "git.log"
@@ -229,7 +224,7 @@ class ParserDialogTest {
         } returns isLogScan andThen isCompressed andThen isSilent andThen addAuthor
 
         // when
-        val parserArguments = ParserDialog.collectParserArgs().drop(FIRST_ELEMENT)
+        val parserArguments = ParserDialog.collectParserArgs().drop(Companion.FIRST_ELEMENT)
         val cmdLine = CommandLine(LogScanCommand())
         val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
 

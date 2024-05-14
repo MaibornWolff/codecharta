@@ -4,14 +4,15 @@ import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import picocli.CommandLine
 
 class PicocliParserRepository : ParserRepository<CommandLine> {
-
-    override fun getInteractiveParserNames(dataSource: CommandLine): List<String> {
+override fun getInteractiveParserNames(dataSource: CommandLine): List<String> {
         val subCommands = dataSource.subcommands.values
         return subCommands.mapNotNull { subCommand ->
             val parserName = subCommand.commandName
             if (subCommand.commandSpec.userObject() is InteractiveParser) {
                 parserName
-            } else null
+            } else {
+                null
+            }
         }
     }
 
@@ -24,7 +25,9 @@ class PicocliParserRepository : ParserRepository<CommandLine> {
                 val parserDescriptions = subCommand.commandSpec.usageMessage().description()
                 val parserDescription = parserDescriptions[0]
                 "$parserName - $parserDescription"
-            } else null
+            } else {
+                null
+            }
         }
     }
 
@@ -32,7 +35,10 @@ class PicocliParserRepository : ParserRepository<CommandLine> {
         return parserNameWithDescription.substringBefore(' ')
     }
 
-    override fun getApplicableParsers(inputFile: String, allParsers: List<InteractiveParser>): List<InteractiveParser> {
+    override fun getApplicableParsers(
+    inputFile: String,
+    allParsers: List<InteractiveParser>,
+    ): List<InteractiveParser> {
         val usableParsers = mutableListOf<InteractiveParser>()
 
         for (parser in allParsers) {
@@ -58,7 +64,9 @@ class PicocliParserRepository : ParserRepository<CommandLine> {
     }
 
     override fun getApplicableInteractiveParserNamesWithDescription(
-            inputFile: String, allParsers: List<InteractiveParser>): List<String> {
+    inputFile: String,
+    allParsers: List<InteractiveParser>,
+    ): List<String> {
         val applicableParsers = getApplicableParsers(inputFile, allParsers)
         val result = mutableListOf<String>()
         for (parser in applicableParsers) {
@@ -68,7 +76,10 @@ class PicocliParserRepository : ParserRepository<CommandLine> {
         return result
     }
 
-    override fun getInteractiveParser(dataSource: CommandLine, name: String): InteractiveParser? {
+    override fun getInteractiveParser(
+    dataSource: CommandLine,
+    name: String,
+    ): InteractiveParser? {
         return try {
             val subCommand = dataSource.subcommands.getValue(name)
             val parserObject = subCommand.commandSpec.userObject()

@@ -1,23 +1,26 @@
 package de.maibornwolff.codecharta.serialization
 
 import com.google.gson.GsonBuilder
+import de.maibornwolff.codecharta.model.AttributeType
+import de.maibornwolff.codecharta.model.AttributeTypeDeserializer
+import de.maibornwolff.codecharta.model.BlacklistType
+import de.maibornwolff.codecharta.model.BlacklistTypeDeserializer
 import de.maibornwolff.codecharta.model.Node
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.model.ProjectWrapper
+import de.maibornwolff.codecharta.util.Logger
 import model.src.main.kotlin.de.maibornwolff.codecharta.serialization.NodeJsonDeserializer
-import mu.KotlinLogging
 import java.io.FileInputStream
 import java.io.InputStream
 import java.io.Reader
 
 object ProjectDeserializer {
-    private val logger = KotlinLogging.logger {}
-
-    private val GSON = GsonBuilder()
-        .registerTypeAdapter(Node::class.java, NodeJsonDeserializer())
-        .registerTypeAdapter(Project::class.java, ProjectJsonDeserializer())
-        .registerTypeAdapter(ProjectWrapper::class.java, ProjectWrapperJsonDeserializer())
-        .create()
+private val GSON =
+            GsonBuilder().registerTypeAdapter(Node::class.java, NodeJsonDeserializer())
+                    .registerTypeAdapter(Project::class.java, ProjectJsonDeserializer())
+                    .registerTypeAdapter(BlacklistType::class.java, BlacklistTypeDeserializer())
+                    .registerTypeAdapter(AttributeType::class.java, AttributeTypeDeserializer())
+                    .registerTypeAdapter(ProjectWrapper::class.java, ProjectWrapperJsonDeserializer()).create()
 
     fun deserializeProject(reader: Reader): Project {
         val projectWrapper = GSON.fromJson(reader, ProjectWrapper::class.java)
@@ -30,7 +33,8 @@ object ProjectDeserializer {
     }
 
     fun deserializeProject(input: FileInputStream): Project {
-        val projectWrapper = GSON.fromJson(CompressedStreamHandler.wrapInput(input).bufferedReader(), ProjectWrapper::class.java)
+        val projectWrapper =
+                GSON.fromJson(CompressedStreamHandler.wrapInput(input).bufferedReader(), ProjectWrapper::class.java)
         return projectWrapper.data
     }
 
@@ -42,8 +46,12 @@ object ProjectDeserializer {
         return try {
             deserializeProject(projectString)
         } catch (e: Exception) {
-            logger.error { "Piped input: $projectString" }
-            logger.error { "The piped input is not a valid project." }
+            Logger.error {
+                "Piped input: $projectString"
+            }
+            Logger.error {
+                "The piped input is not a valid project."
+            }
             null
         }
     }

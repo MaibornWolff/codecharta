@@ -30,7 +30,7 @@ describe("focusButton", () => {
 
 		const buttons = container.querySelectorAll("button")
 		expect(buttons.length).toBe(1)
-		expect(buttons[0].textContent).toMatch(" FOCUS ")
+		expect(buttons[0].textContent.trim()).toMatch("FOCUS")
 	})
 
 	it("should render 'focus' and 'unfocus parent' buttons if a parent is focused", async () => {
@@ -46,7 +46,7 @@ describe("focusButton", () => {
 
 		const buttons = container.querySelectorAll("button")
 		expect(buttons.length).toBe(2)
-		expect(buttons[0].textContent).toMatch(" FOCUS ")
+		expect(buttons[0].textContent.trim()).toMatch("FOCUS")
 		expect(buttons[1].textContent).toMatch("UNFOCUS PARENT")
 	})
 

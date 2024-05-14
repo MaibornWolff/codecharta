@@ -1,15 +1,16 @@
-import { Color, WebGLRenderer } from "three"
-import { createPNGFileName } from "../../model/files/files.helper"
-import { ThreeCameraService } from "../codeMap/threeViewer/threeCamera.service"
-import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
-import hotkeys from "hotkeys-js"
-
 import { Component, ViewEncapsulation } from "@angular/core"
-import { screenshotToClipboardEnabledSelector } from "../../state/store/appSettings/enableClipboard/screenshotToClipboardEnabled.selector"
-import { ThreeRendererService } from "../codeMap/threeViewer/threeRenderer.service"
-import { Store, State } from "@ngrx/store"
-import { CcState } from "../../codeCharta.model"
+import { State, Store } from "@ngrx/store"
+import hotkeys from "hotkeys-js"
+import html2canvas from "html2canvas"
+import { Color, WebGLRenderer } from "three"
 import { checkWriteToClipboardAllowed, setToClipboard } from "../../../../app/codeCharta/util/clipboard/clipboardWriter"
+import { CcState } from "../../codeCharta.model"
+import { screenshotToClipboardEnabledSelector } from "../../state/store/appSettings/enableClipboard/screenshotToClipboardEnabled.selector"
+import { ThreeCameraService } from "../codeMap/threeViewer/threeCamera.service"
+import { ThreeRendererService } from "../codeMap/threeViewer/threeRenderer.service"
+import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
+import { createPNGFileName } from "../../model/files/files.helper"
+import { FileState } from "../../model/files/files"
 
 @Component({
 	selector: "cc-screenshot-button",
@@ -45,12 +46,13 @@ export class ScreenshotButtonComponent {
 		})
 	}
 
-	makeScreenshotToFile() {
-		const link = document.createElement("a")
-		const files = this.state.getValue().files
-		link.download = createPNGFileName(files, "map")
-		link.onclick = () => this.downloadScreenshot(link)
-		link.click()
+	async makeScreenshotToFile() {
+		const renderer = this.threeRendererService.renderer
+		const renderSettings = this.saveRenderSettings(renderer)
+		const canvas = await this.buildScreenShotCanvas(renderer)
+
+		this.downloadScreenshot(canvas, this.state.getValue().files)
+		this.applyRenderSettings(renderer, renderSettings)
 	}
 
 	async makeScreenshotToClipboard() {
@@ -59,19 +61,22 @@ export class ScreenshotButtonComponent {
 		}
 		const renderer = this.threeRendererService.renderer
 		const renderSettings = this.saveRenderSettings(renderer)
-		const canvas = this.buildScreenShotCanvas(renderer)
+		const canvas = await this.buildScreenShotCanvas(renderer)
+
 		const canvasToBlobPromise: Promise<Blob> = new Promise(resolve => canvas.toBlob(resolve))
 		this.applyRenderSettings(renderer, renderSettings)
 		const blob = await canvasToBlobPromise
 		await setToClipboard(blob)
 	}
 
-	private downloadScreenshot(link: HTMLAnchorElement) {
-		const renderer = this.threeRendererService.renderer
-		const renderSettings = this.saveRenderSettings(renderer)
-		const canvas = this.buildScreenShotCanvas(renderer)
-		link.href = canvas.toDataURL()
-		this.applyRenderSettings(renderer, renderSettings)
+	private downloadScreenshot(canvas: HTMLCanvasElement, files: FileState[]) {
+		const dataUrl = canvas.toDataURL("image/png")
+		const downloadLink = document.createElement("a")
+		downloadLink.download = createPNGFileName(files, "map")
+		downloadLink.href = dataUrl
+		document.body.appendChild(downloadLink)
+		downloadLink.click()
+		downloadLink.remove()
 	}
 
 	private saveRenderSettings(renderer: WebGLRenderer) {
@@ -88,12 +93,90 @@ export class ScreenshotButtonComponent {
 		renderer.render(this.threeSceneService.scene, this.threeCameraService.camera)
 	}
 
-	private buildScreenShotCanvas(renderer: WebGLRenderer): HTMLCanvasElement {
+	private async buildScreenShotCanvas(renderer: WebGLRenderer): Promise<HTMLCanvasElement> {
 		renderer.setPixelRatio(window.devicePixelRatio)
 		renderer.setClearColor(new Color(0, 0, 0), 0)
 		renderer.render(this.threeSceneService.scene, this.threeCameraService.camera)
-		const canvas = renderer.domElement
-		return canvas
+
+		const tagsNamesToIgnore = new Set([
+			"cc-logo",
+			"cc-tool-bar",
+			"cc-view-cube",
+			"cc-ribbon-bar",
+			"cc-file-extension-bar",
+			"cc-attribute-side-bar",
+			"cc-loading-file-progess-spinner"
+		])
+
+		const idsToIgnore = new Set(["legend-panel-button"])
+
+		const bodyHeight = document.querySelector("body")?.offsetHeight
+		const ribbonBarHeight = (document.querySelector("cc-ribbon-bar") as HTMLElement)?.offsetHeight
+		const toolBarHeight = (document.querySelector("cc-tool-bar") as HTMLElement)?.offsetHeight
+		const fileExtensionBarHeight = (document.querySelector("cc-file-extension-bar") as HTMLElement)?.offsetHeight
+		const offsetMenuBar = ribbonBarHeight + toolBarHeight + fileExtensionBarHeight
+
+		const canvas = await html2canvas(document.querySelector("body"), {
+			removeContainer: true,
+			backgroundColor: "#00",
+			scrollY: -offsetMenuBar,
+			height: bodyHeight - offsetMenuBar,
+			ignoreElements(element) {
+				return (
+					tagsNamesToIgnore.has(element.tagName.toLowerCase()) ||
+					idsToIgnore.has(element.id) ||
+					(element as HTMLElement).style.zIndex === "10000"
+				)
+			}
+		})
+
+		return this.getCroppedCanvas(canvas)
+	}
+
+	private getCroppedCanvas(canvas: HTMLCanvasElement) {
+		const context = canvas.getContext("2d")
+		const width = canvas.width
+		const height = canvas.height
+
+		const imageData = context.getImageData(0, 0, width, height)
+		const data = imageData.data
+
+		let minX = width,
+			minY = height,
+			maxX = 0,
+			maxY = 0
+
+		for (let x = 0; x < width; x++) {
+			for (let y = 0; y < height; y++) {
+				const alpha = data[(width * y + x) * 4 + 3]
+				if (alpha > 0) {
+					minX = Math.min(minX, x)
+					maxX = Math.max(maxX, x)
+					minY = Math.min(minY, y)
+					maxY = Math.max(maxY, y)
+				}
+			}
+		}
+
+		const croppedCanvas = document.createElement("canvas")
+		const croppedContext = croppedCanvas.getContext("2d")
+
+		croppedCanvas.width = maxX - minX + 1
+		croppedCanvas.height = maxY - minY + 1
+
+		croppedContext.drawImage(
+			canvas,
+			minX,
+			minY,
+			croppedCanvas.width,
+			croppedCanvas.height,
+			0,
+			0,
+			croppedCanvas.width,
+			croppedCanvas.height
+		)
+
+		return croppedCanvas
 	}
 
 	private createTitleClipboardButton() {

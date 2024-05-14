@@ -1,8 +1,7 @@
-import { setIsLoadingFile } from "./state/store/appSettings/isLoadingFile/isLoadingFile.actions"
-import packageJson from "../../package.json"
-import { LoadInitialFileService } from "./services/loadInitialFile/loadInitialFile.service"
 import { Component, OnInit, ViewEncapsulation } from "@angular/core"
 import { Store } from "@ngrx/store"
+import { LoadInitialFileService } from "./services/loadInitialFile/loadInitialFile.service"
+import { setIsLoadingFile } from "./state/store/appSettings/isLoadingFile/isLoadingFile.actions"
 
 @Component({
 	selector: "cc-code-charta",
@@ -11,7 +10,6 @@ import { Store } from "@ngrx/store"
 	encapsulation: ViewEncapsulation.None
 })
 export class CodeChartaComponent implements OnInit {
-	version = packageJson.version
 	isInitialized = false
 
 	constructor(private store: Store, private loadInitialFileService: LoadInitialFileService) {}

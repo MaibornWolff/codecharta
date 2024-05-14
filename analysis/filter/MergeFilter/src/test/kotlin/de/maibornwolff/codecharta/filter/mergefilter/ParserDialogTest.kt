@@ -17,8 +17,7 @@ import java.io.File
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ParserDialogTest {
-
-    @AfterEach
+@AfterEach
     fun afterTest() {
         unmockkAll()
     }
@@ -35,7 +34,9 @@ class ParserDialogTest {
         val ignoreCase = false
 
         mockkObject(InputHelper)
-        every { InputHelper.isInputValidAndNotNull(any(), any()) } returns true
+        every {
+            InputHelper.isInputValidAndNotNull(any(), any())
+        } returns true
 
         mockkStatic("com.github.kinquirer.components.InputKt")
         every {
@@ -52,7 +53,11 @@ class ParserDialogTest {
         val parseResult = commandLine.parseArgs(*parserArguments.toTypedArray())
 
         // then
-        Assertions.assertThat(parseResult.matchedPositional(0).getValue<Array<File>>().map { it.name }).isEqualTo(listOf(inputFolderName))
+        Assertions.assertThat(
+                parseResult.matchedPositional(0).getValue<Array<File>>().map {
+                    it.name
+                },
+                             ).isEqualTo(listOf(inputFolderName))
         Assertions.assertThat(parseResult.matchedOption("output-file").getValue<String>()).isEqualTo(outputFileName)
         Assertions.assertThat(parseResult.matchedOption("not-compressed").getValue<Boolean>()).isEqualTo(compress)
         Assertions.assertThat(parseResult.matchedOption("add-missing").getValue<Boolean>()).isEqualTo(addMissing)
@@ -62,8 +67,7 @@ class ParserDialogTest {
     }
 
     @Test
-    fun `should prompt user twice for input file when first input file is invalid`() {
-        // given
+    fun `should prompt user twice for input file when first input file is invalid`() { // given
         val invalidInputFolderName = ""
         val validInputFolderName = "folder"
         val outputFileName = "sampleOutputFile"
@@ -74,7 +78,9 @@ class ParserDialogTest {
         val ignoreCase = false
 
         mockkObject(InputHelper)
-        every { InputHelper.isInputValidAndNotNull(any(), any()) } returns false andThen true
+        every {
+            InputHelper.isInputValidAndNotNull(any(), any())
+        } returns false andThen true
 
         mockkStatic("com.github.kinquirer.components.InputKt")
         every {
@@ -91,6 +97,10 @@ class ParserDialogTest {
         val parseResult = commandLine.parseArgs(*parserArguments.toTypedArray())
 
         // then
-        Assertions.assertThat(parseResult.matchedPositional(0).getValue<Array<File>>().map { it.name }).isEqualTo(listOf(validInputFolderName))
+        Assertions.assertThat(
+                parseResult.matchedPositional(0).getValue<Array<File>>().map {
+                    it.name
+                },
+                             ).isEqualTo(listOf(validInputFolderName))
     }
 }

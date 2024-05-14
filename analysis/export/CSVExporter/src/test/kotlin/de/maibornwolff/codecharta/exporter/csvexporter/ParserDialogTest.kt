@@ -20,8 +20,7 @@ import java.math.BigDecimal
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ParserDialogTest {
-
-    @AfterEach
+@AfterEach
     fun afterTest() {
         unmockkAll()
     }
@@ -30,7 +29,9 @@ class ParserDialogTest {
     fun `should output correct arguments when provided with valid input`() {
         // given
         mockkObject(InputHelper)
-        every { InputHelper.isInputValidAndNotNull(any(), any()) } returns true
+        every {
+            InputHelper.isInputValidAndNotNull(any(), any())
+        } returns true
 
         mockkStatic("com.github.kinquirer.components.InputKt")
         every {
@@ -46,7 +47,8 @@ class ParserDialogTest {
         val parseResult = commandLine.parseArgs(*parserArguments.toTypedArray())
 
         // then
-        Assertions.assertThat(parseResult.matchedPositional(0).getValue<Array<File>>().first().name).isEqualTo("sampleFile.cc.json")
+        Assertions.assertThat(parseResult.matchedPositional(0).getValue<Array<File>>().first().name)
+                .isEqualTo("sampleFile.cc.json")
         Assertions.assertThat(parseResult.matchedOption("output-file").getValue<String>()).isEqualTo("sampleOutputFile")
         Assertions.assertThat(parseResult.matchedOption("depth-of-hierarchy").getValue<Int>()).isEqualTo(5)
     }
@@ -55,7 +57,9 @@ class ParserDialogTest {
     fun `should prompt user twice for input file when first input file is invalid`() {
         // given
         mockkObject(InputHelper)
-        every { InputHelper.isInputValidAndNotNull(any(), any()) } returns false andThen true
+        every {
+            InputHelper.isInputValidAndNotNull(any(), any())
+        } returns false andThen true
 
         mockkStatic("com.github.kinquirer.components.InputKt")
         every {
@@ -71,6 +75,7 @@ class ParserDialogTest {
         val parseResult = commandLine.parseArgs(*parserArguments.toTypedArray())
 
         // then
-        Assertions.assertThat(parseResult.matchedPositional(0).getValue<Array<File>>().first().name).isEqualTo("sampleFile.cc.json")
+        Assertions.assertThat(parseResult.matchedPositional(0).getValue<Array<File>>().first().name)
+                .isEqualTo("sampleFile.cc.json")
     }
 }

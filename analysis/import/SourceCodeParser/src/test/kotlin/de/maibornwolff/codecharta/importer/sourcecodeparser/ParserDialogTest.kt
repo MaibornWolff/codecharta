@@ -19,8 +19,7 @@ import java.io.File
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ParserDialogTest {
-
-    @AfterEach
+@AfterEach
     fun afterTest() {
         unmockkAll()
     }
@@ -63,7 +62,8 @@ class ParserDialogTest {
         Assertions.assertThat(parseResult.matchedOption("output-file").getValue<File>().name).isEqualTo(outputFileName)
         Assertions.assertThat(parseResult.matchedOption("exclude")).isNull()
         Assertions.assertThat(parseResult.matchedOption("no-issues")).isNull()
-        Assertions.assertThat(parseResult.matchedOption("default-excludes").getValue<Boolean>()).isEqualTo(defaultExcludes)
+        Assertions.assertThat(parseResult.matchedOption("default-excludes").getValue<Boolean>())
+                .isEqualTo(defaultExcludes)
         Assertions.assertThat(parseResult.matchedOption("not-compressed").getValue<Boolean>()).isEqualTo(isCompressed)
         Assertions.assertThat(parseResult.matchedOption("verbose").getValue<Boolean>()).isEqualTo(isVerbose)
     }

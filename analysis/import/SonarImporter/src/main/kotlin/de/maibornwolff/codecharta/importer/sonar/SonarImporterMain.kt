@@ -4,6 +4,8 @@ import de.maibornwolff.codecharta.filter.mergefilter.MergeFilter
 import de.maibornwolff.codecharta.importer.sonar.dataaccess.SonarMeasuresAPIDatasource
 import de.maibornwolff.codecharta.importer.sonar.dataaccess.SonarMetricsAPIDatasource
 import de.maibornwolff.codecharta.importer.sonar.dataaccess.SonarVersionAPIDatasource
+import de.maibornwolff.codecharta.model.AttributeDescriptor
+import de.maibornwolff.codecharta.model.AttributeGenerator
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
@@ -22,33 +24,29 @@ import java.util.concurrent.Callable
 @CommandLine.Command(
         name = SonarImporterMain.NAME,
         description = [SonarImporterMain.DESCRIPTION],
-        footer = [CodeChartaConstants.General.GENERIC_FOOTER]
-)
+        footer = [CodeChartaConstants.General.GENERIC_FOOTER],
+                    )
 class SonarImporterMain(
-    private val input: InputStream = System.`in`,
-    private val output: PrintStream = System.out
-) : Callable<Unit>, InteractiveParser {
-
-    @CommandLine.Option(
-        names = ["-h", "--help"], usageHelp = true, description = [
-            "Please locate:\n" +
-                    "-    sonar.host.url=https://sonar.foo\n" +
-                    "-    sonar.login=c123d456\n" +
-                    "-    sonar.projectKey=de.foo:bar\n" +
-                    "That you use to upload your code to sonar.\n" +
-                    "Then execute [sonarimport https://sonar.foo de.foo:bar -u c123d456]"]
-    )
+        private val input: InputStream = System.`in`,
+        private val output: PrintStream = System.out,
+                       ) : Callable<Unit>, InteractiveParser, AttributeGenerator {
+                       @CommandLine.Option(
+            names = ["-h", "--help"], usageHelp = true,
+            description = [
+                "Please locate:\n" + "-    sonar.host.url=https://sonar.foo\n" + "-    sonar.login=c123d456\n" + "-    sonar.projectKey=de.foo:bar\n" + "That you use to upload your code to sonar.\n" + "Then execute [sonarimport https://sonar.foo de.foo:bar -u c123d456]",
+            ],
+                       )
     private var help = false
 
     @CommandLine.Parameters(index = "0", arity = "1", paramLabel = "URL", description = ["url of sonarqube server"])
     private var url: String = "http://localhost"
 
     @CommandLine.Parameters(
-        index = "1",
-        arity = "1..1",
-        paramLabel = "PROJECT_ID",
-        description = ["sonarqube project id"]
-    )
+            index = "1",
+            arity = "1..1",
+            paramLabel = "PROJECT_ID",
+            description = ["sonarqube project id"],
+                           )
     private var projectId = ""
 
     @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File"])
@@ -58,18 +56,21 @@ class SonarImporterMain(
             names = ["-m", "--metrics"],
             description = ["comma-separated list of metrics to import (when using powershell, the list either can't contain spaces or has to be in quotes)"],
             converter = [(CommaSeparatedStringToListConverter::class)],
-            preprocessor = CommaSeparatedParameterPreprocessor::class
-    )
+            preprocessor = CommaSeparatedParameterPreprocessor::class,
+                       )
     private var metrics = mutableListOf<String>()
 
-    @CommandLine.Option(names = ["-u", "--user-token"], description = ["user token for connecting to remote sonar instance"])
+    @CommandLine.Option(
+            names = ["-u", "--user-token"],
+            description = ["user token for connecting to remote sonar instance"],
+                       )
     private var userToken = ""
 
     @CommandLine.Option(
-        names = ["-nc", "--not-compressed"],
-        description = ["save uncompressed output File"],
-        arity = "0"
-    )
+            names = ["-nc", "--not-compressed"],
+            description = ["save uncompressed output File"],
+            arity = "0",
+                       )
     private var compress = true
 
     @CommandLine.Option(names = ["--merge-modules"], description = ["merges modules in multi-module projects"])
@@ -79,7 +80,7 @@ class SonarImporterMain(
     override val description = DESCRIPTION
 
     companion object {
-        const val NAME = "sonarimport"
+    const val NAME = "sonarimport"
         const val DESCRIPTION = "generates cc.json from metric data from SonarQube"
     }
 
@@ -114,6 +115,7 @@ class SonarImporterMain(
     }
 
     override fun getDialog(): ParserDialogInterface = ParserDialog
+
     override fun isApplicable(resourceToBeParsed: String): Boolean {
         println("Checking if SonarImporter is applicable...")
 
@@ -126,11 +128,7 @@ class SonarImporterMain(
             return false
         }
 
-        return inputFile.walk()
-                .maxDepth(2)
-                .asSequence()
-                .filter { isSonarPropertiesFile(it) }
-                .any()
+        return inputFile.walk().maxDepth(2).asSequence().filter { isSonarPropertiesFile(it) }.any()
     }
 
     private fun isUrl(inputString: String): Boolean {
@@ -140,5 +138,9 @@ class SonarImporterMain(
     private fun isSonarPropertiesFile(inputFile: File): Boolean {
         val searchFile = "sonar-project.properties"
         return (inputFile.isFile && inputFile.name == searchFile)
+    }
+
+    override fun getAttributeDescriptorMaps(): Map<String, AttributeDescriptor> {
+        return getAttributeDescriptors()
     }
 }

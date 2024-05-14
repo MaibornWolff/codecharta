@@ -10,8 +10,7 @@ import java.nio.file.Paths
 
 class ParserDialog {
     companion object : ParserDialogInterface {
-
-        private const val EXTENSION = "log"
+    private const val EXTENSION = "log"
 
         override fun collectParserArgs(): List<String> {
             print("You can generate this file with: svn log --verbose > svn.log")
@@ -21,30 +20,33 @@ class ParserDialog {
             } while (!InputHelper.isInputValidAndNotNull(arrayOf(File(inputFileName)), canInputContainFolders = false))
 
             val defaultOutputFileName = getOutputFileName(inputFileName)
-            val outputFileName: String = KInquirer.promptInput(
-                message = "What is the name of the output file?",
-                hint = defaultOutputFileName,
-                default = defaultOutputFileName
-            )
+            val outputFileName: String =
+                    KInquirer.promptInput(
+                            message = "What is the name of the output file?",
+                            hint = defaultOutputFileName,
+                            default = defaultOutputFileName,
+                                         )
 
-            val isCompressed = (outputFileName.isEmpty()) || KInquirer.promptConfirm(
-                message = "Do you want to compress the output file?",
-                default = true
-            )
+            val isCompressed =
+                    (outputFileName.isEmpty()) ||
+                    KInquirer.promptConfirm(
+                            message = "Do you want to compress the output file?",
+                            default = true,
+                                           )
 
             val isSilent: Boolean =
-                KInquirer.promptConfirm(message = "Do you want to suppress command line output?", default = false)
+                    KInquirer.promptConfirm(message = "Do you want to suppress command line output?", default = false)
 
             val addAuthor: Boolean =
-                KInquirer.promptConfirm(message = "Do you want to add authors to every file?", default = false)
+                    KInquirer.promptConfirm(message = "Do you want to add authors to every file?", default = false)
 
             return listOf(
-                inputFileName,
-                "--output-file=$outputFileName",
-                "--not-compressed=$isCompressed",
-                "--silent=$isSilent",
-                "--add-author=$addAuthor"
-            )
+                    inputFileName,
+                    "--output-file=$outputFileName",
+                    "--not-compressed=$isCompressed",
+                    "--silent=$isSilent",
+                    "--add-author=$addAuthor",
+                         )
         }
 
         private fun collectInputFileName(): String {
@@ -53,8 +55,8 @@ class ParserDialog {
             return KInquirer.promptInput(
                     message = "What is the $EXTENSION file that has to be parsed?",
                     hint = defaultInputFilePath,
-                    default = defaultInputFilePath
-            )
+                    default = defaultInputFilePath,
+                                        )
         }
     }
 }

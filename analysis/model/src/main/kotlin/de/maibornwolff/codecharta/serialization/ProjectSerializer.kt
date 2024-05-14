@@ -1,9 +1,13 @@
 package de.maibornwolff.codecharta.serialization
 
+import AttributeTypeSerializer
 import com.google.gson.GsonBuilder
+import de.maibornwolff.codecharta.model.AttributeType
+import de.maibornwolff.codecharta.model.BlacklistType
+import de.maibornwolff.codecharta.model.BlacklistTypeSerializer
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.model.ProjectWrapper
-import mu.KotlinLogging
+import de.maibornwolff.codecharta.util.Logger
 import java.io.File
 import java.io.IOException
 import java.io.OutputStream
@@ -15,9 +19,11 @@ import java.util.zip.GZIPOutputStream
  * This class provides static methods and functions to convert a Project-Object to json
  */
 object ProjectSerializer {
-
-    private val GSON = GsonBuilder().create()
-    private val logger = KotlinLogging.logger {}
+    private val GSON =
+    GsonBuilder()
+        .registerTypeAdapter(AttributeType::class.java, AttributeTypeSerializer())
+        .registerTypeAdapter(BlacklistType::class.java, BlacklistTypeSerializer())
+            .create()
 
     /**
      * This method serializes a Project-Object to json and writes using given writer
@@ -26,7 +32,11 @@ object ProjectSerializer {
      * @param out writer to write serialized object
      */
     @Throws(IOException::class)
-    fun serializeProject(project: Project, out: Writer, writeToFile: Boolean = false) {
+    fun serializeProject(
+    project: Project,
+    out: Writer,
+    writeToFile: Boolean = false,
+    ) {
         val wrappedProject = getWrappedProject(project)
         GSON.toJson(wrappedProject, out)
         out.flush()
@@ -44,7 +54,12 @@ object ProjectSerializer {
      * @param compress whether the output should be GZIP compressed
      */
     @Throws(IOException::class)
-    fun serializeProject(project: Project, out: OutputStream, compress: Boolean, isOutputFileSpecified: Boolean = false) {
+    fun serializeProject(
+    project: Project,
+    out: OutputStream,
+    compress: Boolean,
+    isOutputFileSpecified: Boolean = false,
+    ) {
         val wrappedOut = if (compress && isOutputFileSpecified) GZIPOutputStream(out) else out
         val writer = wrappedOut.bufferedWriter(UTF_8)
         serializeProject(project, writer, isOutputFileSpecified)
@@ -60,13 +75,24 @@ object ProjectSerializer {
      * @param compress whether the output should be GZIP compressed (only respected if written to file)
      */
     @Throws(IOException::class)
-    fun serializeToFileOrStream(project: Project, outputFilePath: String?, fallbackOutputStream: OutputStream, compress: Boolean) {
+    fun serializeToFileOrStream(
+    project: Project,
+    outputFilePath: String?,
+    fallbackOutputStream: OutputStream,
+    compress: Boolean,
+    ) {
         val isOutputFileSpecified = !outputFilePath.isNullOrEmpty()
         val stream = OutputFileHandler.stream(outputFilePath, fallbackOutputStream, compress)
         serializeProject(project, stream, compress, isOutputFileSpecified)
         if (isOutputFileSpecified) {
-            val absoluteFilePath = OutputFileHandler.checkAndFixFileExtension(File(outputFilePath).absolutePath, compress, FileExtension.JSON)
-            logger.info("Created output file at $absoluteFilePath")
+            val absoluteFilePath =
+                    OutputFileHandler.checkAndFixFileExtension(
+                            File(outputFilePath).absolutePath, compress,
+                            FileExtension.JSON,
+                                                              )
+            Logger.info {
+                "Created output file at $absoluteFilePath"
+            }
         }
     }
 

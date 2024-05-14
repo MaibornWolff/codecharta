@@ -18,8 +18,10 @@ import java.io.PrintStream
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class CodeMaatImporterTest {
-    private var errContent = ByteArrayOutputStream()
-    private val originalErr = System.err
+private var errContent =
+            ByteArrayOutputStream()
+    private val originalErr =
+            System.err
 
     @AfterEach
     fun afterTest() {
@@ -30,9 +32,12 @@ class CodeMaatImporterTest {
     @Test
     fun `should create json uncompressed file`() {
         // given
-        val inputFilePath = "src/test/resources/coupling-codemaat.csv"
-        val outputFilePath = "src/test/resources/coupling-codemaat.cc.json"
-        val outputFile = File(outputFilePath)
+        val inputFilePath =
+                "src/test/resources/coupling-codemaat.csv"
+        val outputFilePath =
+                "src/test/resources/coupling-codemaat.cc.json"
+        val outputFile =
+                File(outputFilePath)
         outputFile.deleteOnExit()
 
         // when
@@ -44,10 +49,14 @@ class CodeMaatImporterTest {
     @Test
     fun `should create json gzip file`() {
         // given
-        val inputFilePath = "src/test/resources/coupling-codemaat.csv"
-        val outputFilePath = "src/test/resources/coupling-codemaat.cc.json"
-        val outputFilePathCompressed = "src/test/resources/coupling-codemaat.cc.json.gz"
-        val outputFile = File(outputFilePathCompressed)
+        val inputFilePath =
+                "src/test/resources/coupling-codemaat.csv"
+        val outputFilePath =
+                "src/test/resources/coupling-codemaat.cc.json"
+        val outputFilePathCompressed =
+                "src/test/resources/coupling-codemaat.cc.json.gz"
+        val outputFile =
+                File(outputFilePathCompressed)
         outputFile.deleteOnExit()
 
         // when
@@ -60,9 +69,12 @@ class CodeMaatImporterTest {
     @Test
     fun `should contain expected content`() {
         // given
-        val inputFilePath = "src/test/resources/coupling-codemaat.csv"
-        val outputFilePath = "src/test/resources/coupling-codemaat-content.cc.json"
-        val file = File(outputFilePath)
+        val inputFilePath =
+                "src/test/resources/coupling-codemaat.csv"
+        val outputFilePath =
+                "src/test/resources/coupling-codemaat-content.cc.json"
+        val file =
+                File(outputFilePath)
         file.deleteOnExit()
 
         // when
@@ -79,7 +91,8 @@ class CodeMaatImporterTest {
     @Test
     fun `should stop execution if input file is invalid`() {
         // given
-        val nonExistentInputFilePath = "thisDoesNotExist.cc.json"
+        val nonExistentInputFilePath =
+                "thisDoesNotExist.cc.json"
 
         mockkObject(InputHelper)
         every {

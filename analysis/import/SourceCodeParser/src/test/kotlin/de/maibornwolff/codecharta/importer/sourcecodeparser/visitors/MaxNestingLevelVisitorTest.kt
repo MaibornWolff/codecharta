@@ -14,26 +14,34 @@ import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 
 class MaxNestingLevelVisitorTest {
-    private val baseDir = File("src/test/resources/max-nesting-level").absoluteFile
+private val baseDir = File("src/test/resources/max-nesting-level").absoluteFile
 
     private fun getTree(fileName: String): Tree {
-        val inputFile: InputFile = TestInputFileBuilder.create("moduleKey", fileName)
-            .setModuleBaseDir(baseDir.toPath())
-            .setCharset(StandardCharsets.UTF_8)
-            .setType(InputFile.Type.MAIN)
-            .setLanguage(Java.KEY)
-            .initMetadata(String(Files.readAllBytes(File("$baseDir/$fileName").toPath()), StandardCharsets.UTF_8))
-            .build()
+        val inputFile: InputFile =
+                TestInputFileBuilder.create("moduleKey", fileName)
+                        .setModuleBaseDir(baseDir.toPath())
+                        .setCharset(StandardCharsets.UTF_8)
+                        .setType(InputFile.Type.MAIN)
+                        .setLanguage(Java.KEY)
+                        .initMetadata(
+                                String(Files.readAllBytes(File("$baseDir/$fileName").toPath()), StandardCharsets.UTF_8),
+                                     )
+                        .build()
 
-        val compilationUnitTree = JParser.parse(JParser.MAXIMUM_SUPPORTED_JAVA_VERSION, inputFile.filename(), inputFile.contents(), listOf(File(javaClass.classLoader.getResource("max-nesting-level")!!.file)))
-        val defaultJavaFileScannerContext = DefaultJavaFileScannerContext(
-            compilationUnitTree,
-            inputFile,
-            null,
-            null,
-            JavaVersionImpl(),
-            true
-        )
+        val compilationUnitTree =
+                JParser.parse(
+                        JParser.MAXIMUM_SUPPORTED_JAVA_VERSION, inputFile.filename(), inputFile.contents(),
+                        listOf(File(javaClass.classLoader.getResource("max-nesting-level")!!.file)),
+                             )
+        val defaultJavaFileScannerContext =
+                DefaultJavaFileScannerContext(
+                        compilationUnitTree,
+                        inputFile,
+                        null,
+                        null,
+                        JavaVersionImpl(),
+                        true,
+                                             )
 
         return defaultJavaFileScannerContext.tree
     }

@@ -19,7 +19,8 @@ specific strategy. Currently there are two main strategies:
 
 If files with different project names shoud be merged, a new project name must be specified with -p.
 
-Both strategies will merge the unique list entries for `attributeTypes` and `blacklist`. When invoked with `-h` or `--help` MergeFilter prints its usage.
+Both strategies will merge the unique list entries for `attributeTypes` and `blacklist`. When invoked with `-h`
+or `--help` MergeFilter prints its usage.
 
 ### Examples
 

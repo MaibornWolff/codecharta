@@ -33,3 +33,8 @@ _site
 out
 **/resources/fileStorage/**
 **/binScripts/**
+gh-pages/vendor
+gh-pages/visualization
+*.gradle.kts
+*.toml
+

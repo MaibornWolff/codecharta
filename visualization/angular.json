@@ -53,10 +53,10 @@
 					"builder": "@angular-builders/custom-webpack:dev-server",
 					"configurations": {
 						"production": {
-							"browserTarget": "visualization:build:production"
+							"buildTarget": "visualization:build:production"
 						},
 						"development": {
-							"browserTarget": "visualization:build:development",
+							"buildTarget": "visualization:build:development",
 							"port": 3000,
 							"open": true
 						}

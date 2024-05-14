@@ -6,8 +6,7 @@ import de.maibornwolff.codecharta.model.AttributeType
 import de.maibornwolff.codecharta.model.Edge
 
 interface Metric {
-
-    fun description(): String
+fun description(): String
 
     fun metricName(): String
 
@@ -22,18 +21,16 @@ interface Metric {
     }
 
     fun attributeType(): AttributeType {
-        return AttributeType.absolute
+        return AttributeType.ABSOLUTE
     }
 
     fun edgeAttributeType(): AttributeType? {
         return null
     }
 
-    fun registerModification(modification: Modification) {
-        // defaults to: do nothing
+    fun registerModification(modification: Modification) { // defaults to: do nothing
     }
 
-    fun registerCommit(commit: Commit) {
-        // defaults to: do nothing
+    fun registerCommit(commit: Commit) { // defaults to: do nothing
     }
 }

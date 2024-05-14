@@ -1,13 +1,10 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser
 
 import de.maibornwolff.codecharta.util.InputHelper
+import de.maibornwolff.codecharta.util.Logger
 import io.mockk.every
-import io.mockk.mockk
 import io.mockk.mockkObject
 import io.mockk.unmockkAll
-import io.mockk.verify
-import mu.KLogger
-import mu.KotlinLogging
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
@@ -22,7 +19,7 @@ import java.io.PrintStream
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class SourceCodeParserMainTest {
-    val errContent = ByteArrayOutputStream()
+val errContent = ByteArrayOutputStream()
     val originalErr = System.err
     private val originalOut = System.out
 
@@ -33,12 +30,13 @@ class SourceCodeParserMainTest {
     }
 
     companion object {
-        @JvmStatic
+    @JvmStatic
         fun provideValidInputFiles(): List<Arguments> {
             return listOf(
                     Arguments.of("src/test/resources/my/java/repo"),
                     Arguments.of("src/test/resources/my/java/repo/hello_world.java"),
-                    Arguments.of("src/test/resources/my"))
+                    Arguments.of("src/test/resources/my"),
+                         )
         }
 
         @JvmStatic
@@ -47,7 +45,8 @@ class SourceCodeParserMainTest {
                     Arguments.of("src/test/resources/my/empty/repo"),
                     Arguments.of("src/test/resources/this/does/not/exist"),
                     Arguments.of("src/test/resources/my/non-java/repo"),
-                    Arguments.of(""))
+                    Arguments.of(""),
+                         )
         }
     }
 
@@ -85,7 +84,8 @@ class SourceCodeParserMainTest {
         CommandLine(SourceCodeParserMain()).execute("thisDoesNotExist")
 
         // then
-        Assertions.assertThat(errContent.toString()).contains("Input invalid file for SourceCodeParser, stopping execution")
+        Assertions.assertThat(errContent.toString())
+                .contains("Input invalid file for SourceCodeParser, stopping execution")
 
         // clean up
         System.setErr(originalErr)
@@ -100,18 +100,15 @@ class SourceCodeParserMainTest {
         val outputFile = File(outputFilePath)
         outputFile.deleteOnExit()
 
-        val loggerMock = mockk<KLogger>()
-        val infoMessagesLogged = mutableListOf<String>()
-        mockkObject(KotlinLogging)
-        every { KotlinLogging.logger(any<(() -> Unit)>()) } returns loggerMock
-        every { loggerMock.info(capture(infoMessagesLogged)) } returns Unit
+        val lambdaSlot = mutableListOf<() -> String>()
+        mockkObject(Logger)
+        every { Logger.info(capture(lambdaSlot)) } returns Unit
 
         // when
         CommandLine(SourceCodeParserMain()).execute(inputFilePath, "-o", outputFilePath, "-nc")
 
         // then
-        verify { loggerMock.info(any<String>()) }
-        Assertions.assertThat(infoMessagesLogged.any { e -> e.endsWith(absoluteOutputFilePath) }).isTrue()
+        Assertions.assertThat(lambdaSlot.last()().endsWith(absoluteOutputFilePath)).isTrue()
     }
 
     @Test

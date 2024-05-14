@@ -1,19 +1,23 @@
-import { Component } from "@angular/core"
+import { ListKeyManager } from "@angular/cdk/a11y"
+import { Component, ViewChild } from "@angular/core"
 import { TestBed } from "@angular/core/testing"
+import { MatSelectModule } from "@angular/material/select"
 import { expect } from "@jest/globals"
-import { render, screen } from "@testing-library/angular"
-import userEvent from "@testing-library/user-event"
-import { MetricChooserComponent } from "./metricChooser.component"
-import { MetricChooserModule } from "./metricChooser.module"
 import { provideMockStore } from "@ngrx/store/testing"
+import { getByText, queryByText, render, screen, waitFor } from "@testing-library/angular"
+import userEvent from "@testing-library/user-event"
+import { MaterialModule } from "../../../material/material.module"
 import { metricDataSelector } from "../../state/selectors/accumulatedData/metricData/metricData.selector"
 import { attributeDescriptorsSelector } from "../../state/store/fileSettings/attributeDescriptors/attributeDescriptors.selector"
 import { TEST_ATTRIBUTE_DESCRIPTORS_FULL } from "../../util/dataMocks"
+import { MetricChooserComponent } from "./metricChooser.component"
+import { MetricChooserModule } from "./metricChooser.module"
 
 describe("metricChooserComponent", () => {
 	beforeEach(() => {
 		TestBed.configureTestingModule({
-			imports: [MetricChooserModule],
+			declarations: [MetricChooserComponent],
+			imports: [MetricChooserModule, MatSelectModule, MaterialModule],
 			providers: [
 				provideMockStore({
 					selectors: [
@@ -48,18 +52,19 @@ describe("metricChooserComponent", () => {
 		})
 
 		await userEvent.click(await screen.findByText("aMetric"))
-		const options = screen.queryAllByRole("option")
-		expect(options[0].textContent).toMatch("aMetric (1)")
-		expect(options[1].textContent).toMatch("bMetric (2)")
-		expect(options[2].textContent).toMatch("cMetric (3)")
-		expect(options[3].textContent).toMatch("fullMetric (42) FullTestDescription")
-		expect(options[3].getAttribute("title")).toMatch(
-			"FullTestTitle (fullMetric):\nFullTestDescription\nHigh Values: FullTestHigh\nLow Values: FullLowValue"
+		await waitFor(() => expect(screen.queryAllByRole("option")[0].textContent).toMatch("aMetric (1)"))
+		await waitFor(() => expect(screen.queryAllByRole("option")[1].textContent).toMatch("bMetric (2)"))
+		await waitFor(() => expect(screen.queryAllByRole("option")[2].textContent).toMatch("cMetric (3)"))
+		await waitFor(() => expect(screen.queryAllByRole("option")[3].textContent).toMatch("fullMetric (42) FullTestDescription"))
+		await waitFor(() =>
+			expect(screen.queryAllByRole("option")[3].getAttribute("title")).toMatch(
+				"FullTestTitle (fullMetric):\nFullTestDescription\nHigh Values: FullTestHigh\nLow Values: FullLowValue"
+			)
 		)
-		expect(options[4].textContent).toMatch("mcc (55)")
-		expect(options[4].getAttribute("title")).toMatch("Cyclomatic Complexity")
+		await waitFor(() => expect(screen.queryAllByRole("option")[4].textContent).toMatch("mcc (55)"))
+		await waitFor(() => expect(screen.queryAllByRole("option")[4].getAttribute("title")).toMatch("Cyclomatic Complexity"))
 
-		await userEvent.click(options[1])
+		await userEvent.click(screen.queryAllByRole("option")[1])
 
 		await rerender({
 			componentProperties: {
@@ -85,17 +90,15 @@ describe("metricChooserComponent", () => {
 		})
 
 		await userEvent.click(await screen.findByText("aMetric"))
-		screen.getByPlaceholderText("search metric (max value)")
-		const searchBox = getSearchBox()
-		expect(document.activeElement).toBe(searchBox)
+		await waitFor(() => expect(screen.getByPlaceholderText("search metric (max value)")).toBeTruthy())
+		expect(document.activeElement).toBe(getSearchBox())
 
 		await userEvent.type(getSearchBox(), "b")
-		const options = screen.queryAllByRole("option")
-		expect(options.length).toBe(1)
-		expect(options[0].textContent).toMatch("bMetric (2)")
+		await waitFor(() => expect(screen.queryAllByRole("option").length).toBe(1))
+		await waitFor(() => expect(screen.queryAllByRole("option")[0].textContent).toMatch("bMetric (2)"))
 
-		await userEvent.click(options[0])
-		expect(screen.queryByRole("listbox")).toBeNull()
+		await userEvent.click(screen.queryAllByRole("option")[0])
+		await waitFor(() => expect(screen.queryByRole("listbox")).toBeNull())
 
 		await rerender({
 			componentProperties: {
@@ -105,12 +108,29 @@ describe("metricChooserComponent", () => {
 			}
 		})
 		await userEvent.click(await screen.findByText("bMetric"))
-		expect(getSearchBox().value).toBe("")
+		await waitFor(() => expect(getSearchBox().value).toBe(""))
+	})
 
-		function getSearchBox() {
-			const selectContainer = screen.queryByRole("listbox")
-			return selectContainer.querySelector("input")
-		}
+	it("should set first option active after filtering by searchterm", async () => {
+		let selectedMetricName = "aMetric"
+		await render(MetricChooserComponent, {
+			excludeComponentDeclaration: true,
+			componentProperties: {
+				searchPlaceholder: "search metric (max value)",
+				selectedMetricName,
+				handleMetricChanged: (value: string) => (selectedMetricName = value)
+			}
+		})
+
+		const setActiveItemSpy = jest.spyOn(ListKeyManager.prototype, "setActiveItem")
+		await userEvent.click(await screen.findByText("aMetric"))
+		await waitFor(() => expect(screen.getByPlaceholderText("search metric (max value)")).toBeTruthy())
+		expect(document.activeElement).toBe(getSearchBox())
+
+		await userEvent.type(getSearchBox(), "l")
+		await waitFor(() => expect(screen.queryAllByRole("option").length).toBe(1))
+		await waitFor(() => expect(screen.queryAllByRole("option")[0].textContent).toMatch(" fullMetric (42) FullTestDescription "))
+		await waitFor(() => expect(setActiveItemSpy).toHaveBeenCalledWith(0))
 	})
 
 	it("should project hoveredInformation as last child", async () => {
@@ -130,4 +150,42 @@ describe("metricChooserComponent", () => {
 
 		expect(container.lastChild.textContent).toBe("projected hovered information")
 	})
+
+	it("should hide metric sum field when options menu is opened", async () => {
+		const content = "Projected content"
+		const metricChooserTemplate = `
+			<cc-metric-chooser>
+				<div hoveredInformation class="metric-value">${content}</div>
+			</cc-metric-chooser>
+		`
+
+		@Component({
+			template: metricChooserTemplate
+		})
+		class WrapperComponent {
+			@ViewChild(MetricChooserComponent, { static: true }) metricChooserComponentRef: MetricChooserComponent
+		}
+
+		const { container, fixture } = await render(WrapperComponent, {
+			declarations: [MetricChooserComponent, WrapperComponent]
+		})
+
+		const metricChooserComponent: MetricChooserComponent = fixture.debugElement.componentInstance.metricChooserComponentRef
+
+		expect(metricChooserComponent).not.toBeNull()
+		await waitFor(() => {
+			expect(getByText(container as HTMLElement, content)).not.toBeNull()
+		})
+
+		metricChooserComponent.handleOpenedChanged(true)
+
+		await waitFor(() => {
+			expect(queryByText(container as HTMLElement, content)).toBeNull()
+		})
+	})
+
+	function getSearchBox() {
+		const selectContainer = screen.queryByRole("listbox")
+		return selectContainer.querySelector("input")
+	}
 })

@@ -5,6 +5,8 @@ import com.google.gson.JsonParser
 import de.maibornwolff.codecharta.importer.tokeiimporter.strategy.ImporterStrategy
 import de.maibornwolff.codecharta.importer.tokeiimporter.strategy.TokeiInnerStrategy
 import de.maibornwolff.codecharta.importer.tokeiimporter.strategy.TokeiTwelveStrategy
+import de.maibornwolff.codecharta.model.AttributeDescriptor
+import de.maibornwolff.codecharta.model.AttributeGenerator
 import de.maibornwolff.codecharta.model.AttributeType
 import de.maibornwolff.codecharta.model.AttributeTypes
 import de.maibornwolff.codecharta.model.ProjectBuilder
@@ -16,10 +18,10 @@ import de.maibornwolff.codecharta.tools.interactiveparser.util.CodeChartaConstan
 import de.maibornwolff.codecharta.tools.pipeableparser.PipeableParser
 import de.maibornwolff.codecharta.tools.pipeableparser.PipeableParserSyncFlag
 import de.maibornwolff.codecharta.util.InputHelper
+import de.maibornwolff.codecharta.util.Logger
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import mu.KotlinLogging
 import picocli.CommandLine
 import java.io.File
 import java.io.IOException
@@ -31,21 +33,16 @@ import java.util.concurrent.Callable
 @CommandLine.Command(
         name = TokeiImporter.NAME,
         description = [TokeiImporter.DESCRIPTION],
-        footer = [CodeChartaConstants.General.GENERIC_FOOTER]
-)
+        footer = [CodeChartaConstants.General.GENERIC_FOOTER],
+                    )
 class TokeiImporter(
-    private val input: InputStream = System.`in`,
-    private val output: PrintStream = System.out,
-    private val error: PrintStream = System.err
-) : Callable<Unit>, InteractiveParser, PipeableParser {
-
-    private val logger = KotlinLogging.logger {}
-
-    private val attributeTypes = AttributeTypes(type = "nodes")
-        .add("rloc", AttributeType.absolute)
-        .add("loc", AttributeType.absolute)
-        .add("empty_lines", AttributeType.absolute)
-        .add("comment_lines", AttributeType.absolute)
+        private val input: InputStream = System.`in`,
+        private val output: PrintStream = System.out,
+        private val error: PrintStream = System.err,
+                   ) : Callable<Unit>, InteractiveParser, PipeableParser, AttributeGenerator {
+                   private val attributeTypes =
+            AttributeTypes(type = "nodes").add("rloc", AttributeType.ABSOLUTE).add("loc", AttributeType.ABSOLUTE)
+                    .add("empty_lines", AttributeType.ABSOLUTE).add("comment_lines", AttributeType.ABSOLUTE)
 
     private lateinit var projectBuilder: ProjectBuilder
 
@@ -55,8 +52,11 @@ class TokeiImporter(
     @CommandLine.Option(names = ["-r", "--root-name"], description = ["root folder as specified when executing tokei"])
     private var rootName = "."
 
-    @CommandLine.Option(names = ["--path-separator"], description = ["path separator (default = '/')"])
-    private var pathSeparator = "/"
+    @CommandLine.Option(
+            names = ["--path-separator"],
+            description = ["path separator, leave empty for auto-detection (default = '')"],
+                       )
+    private var pathSeparator = ""
 
     @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File "])
     private var outputFile: String? = null
@@ -73,11 +73,16 @@ class TokeiImporter(
     override val description = DESCRIPTION
 
     companion object {
-        const val NAME = "tokeiimporter"
+    const val NAME = "tokeiimporter"
         const val DESCRIPTION = "generates cc.json from tokei json"
 
         @JvmStatic
-        fun mainWithInOut(input: InputStream, output: PrintStream, error: PrintStream, args: Array<String>) {
+        fun mainWithInOut(
+        input: InputStream,
+        output: PrintStream,
+        error: PrintStream,
+        args: Array<String>,
+        ) {
             CommandLine(TokeiImporter(input, output, error)).setOut(PrintWriter(output)).execute(*args)
         }
 
@@ -91,9 +96,11 @@ class TokeiImporter(
 
         projectBuilder = ProjectBuilder()
         val root = getInput() ?: return null
+        unescapeWindowsPathSeparator()
         runBlocking(Dispatchers.Default) {
             determineImporterStrategy(root)
             val languageSummaries = importerStrategy.getLanguageSummaries(root)
+
             importerStrategy.buildCCJson(languageSummaries, projectBuilder)
         }
         projectBuilder.addAttributeTypes(attributeTypes)
@@ -107,11 +114,12 @@ class TokeiImporter(
 
     private fun determineImporterStrategy(root: JsonElement) {
         val json = root.asJsonObject
-        importerStrategy = if (json.has(TOP_LEVEL_OBJECT)) {
-            TokeiInnerStrategy(rootName, pathSeparator)
-        } else {
-            TokeiTwelveStrategy(rootName, pathSeparator)
-        }
+        importerStrategy =
+                if (json.has(TOP_LEVEL_OBJECT)) {
+                    TokeiInnerStrategy(rootName, pathSeparator)
+                } else {
+                    TokeiTwelveStrategy(rootName, pathSeparator)
+                }
     }
 
     private fun getInput(): JsonElement? {
@@ -132,7 +140,7 @@ class TokeiImporter(
                     if (projectString.isNotEmpty()) {
                         root = JsonParser.parseString(projectString)
                     } else {
-                        logger.error("Neither source file nor piped input found.")
+                        Logger.error { "Neither source file nor piped input found." }
                     }
                 }
             }
@@ -141,8 +149,17 @@ class TokeiImporter(
         return root
     }
 
+    private fun unescapeWindowsPathSeparator() {
+        if (pathSeparator == "\\\\") this.pathSeparator = "\\"
+    }
+
     override fun getDialog(): ParserDialogInterface = ParserDialog
+
     override fun isApplicable(resourceToBeParsed: String): Boolean {
         return false
+    }
+
+    override fun getAttributeDescriptorMaps(): Map<String, AttributeDescriptor> {
+        return getAttributeDescriptors()
     }
 }

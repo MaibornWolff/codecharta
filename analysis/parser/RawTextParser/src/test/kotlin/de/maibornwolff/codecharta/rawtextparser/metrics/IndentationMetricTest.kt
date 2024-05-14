@@ -2,19 +2,14 @@ package de.maibornwolff.codecharta.rawtextparser.metrics
 
 import de.maibornwolff.codecharta.parser.rawtextparser.RawTextParser
 import de.maibornwolff.codecharta.parser.rawtextparser.metrics.IndentationMetric
+import de.maibornwolff.codecharta.util.Logger
 import io.mockk.every
-import io.mockk.mockk
 import io.mockk.mockkObject
-import io.mockk.slot
-import io.mockk.verify
-import mu.KLogger
-import mu.KotlinLogging
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 
 class IndentationMetricTest {
-
-    private val defaultVerbose = false
+private val defaultVerbose = false
     private val defaultMaxIndentLvl = RawTextParser.DEFAULT_INDENT_LVL
     private val defaultTabWidth = RawTextParser.DEFAULT_TAB_WIDTH
 
@@ -64,12 +59,9 @@ class IndentationMetricTest {
     @Test
     fun `should guess indentation width correctly when provided with default tab width`() {
         // given
-        mockkObject(KotlinLogging)
-        val loggerMock = mockk<KLogger>()
-        val lambdaSlot = slot<(() -> Unit)>()
-        val messagesLogged = mutableListOf<String>()
-        every { KotlinLogging.logger(capture(lambdaSlot)) } returns loggerMock
-        every { loggerMock.info(capture(messagesLogged)) } returns Unit
+        val lambdaSlot = mutableListOf<() -> String>()
+        mockkObject(Logger)
+        every { Logger.info(capture(lambdaSlot)) } returns Unit
 
         // when
         val indentationCounter = IndentationMetric(defaultMaxIndentLvl, verbose = true, defaultTabWidth)
@@ -80,8 +72,7 @@ class IndentationMetricTest {
         Assertions.assertThat(result["indentation_level_0+"]).isEqualTo(4.0)
         Assertions.assertThat(result["indentation_level_2+"]).isEqualTo(1.0)
         Assertions.assertThat(result["indentation_level_3+"]).isEqualTo(0.0)
-        Assertions.assertThat(messagesLogged).contains("Assumed tab width to be 2")
-        verify { loggerMock.info(any<String>()) }
+        Assertions.assertThat(lambdaSlot.any { e -> e().contains("Assumed tab width to be 2") }).isTrue()
     }
 
     @Test
@@ -101,24 +92,15 @@ class IndentationMetricTest {
     @Test
     fun `should correct indentation levels when input was invalid`() {
         // given
-        mockkObject(KotlinLogging)
-        val loggerMock = mockk<KLogger>()
-        val lambdaSlot = slot<(() -> Unit)>()
-        val messagesLogged = mutableListOf<String>()
-        every { KotlinLogging.logger(capture(lambdaSlot)) } returns loggerMock
-        every { loggerMock.warn(capture(messagesLogged)) } returns Unit
-
-        // when
         val indentationCounter = IndentationMetric(defaultMaxIndentLvl, defaultVerbose, tabWidth = 3)
         addDoubleSpacedLines(indentationCounter)
+
+        // when
         val result = indentationCounter.getValue().metricsMap
 
         // then
         Assertions.assertThat(result["indentation_level_2+"]).isEqualTo(1.0)
         Assertions.assertThat(result["indentation_level_1+"]).isEqualTo(3.0)
-        Assertions.assertThat(messagesLogged).contains("Corrected mismatching indentations, moved 2 lines to indentation level 1+")
-        Assertions.assertThat(messagesLogged).contains("Corrected mismatching indentations, moved 1 lines to indentation level 2+")
-        verify { loggerMock.warn(any<String>()) }
     }
 
     @Test

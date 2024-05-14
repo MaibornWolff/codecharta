@@ -5,8 +5,7 @@ import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 
 class NumberOfRenamesTest {
-
-    @Test
+@Test
     fun `initial value should be zero`() {
         val metric = NumberOfRenames()
 

@@ -129,6 +129,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       working-directory: ./analysis
+      project-directory: .
 
     steps:
       - uses: actions/checkout@v3
@@ -146,6 +147,13 @@ jobs:
           ./gradlew integrationTest
           ./gradlew jacocoTestReport
         working-directory: ${{env.working-directory}}
+
+      - name: Docker Test Analysis
+        run: |
+          docker build ./analysis -t local-ccsh --build-arg USER_UID=1001
+          current_version=$(node -pe "require('./analysis/node-wrapper/package.json').version")
+          docker run -w /home/nonroot-docker-user/cc/analysis/test -v $(pwd):/home/nonroot-docker-user/cc local-ccsh bash ./golden_test.sh ${current_version} /home/nonroot-docker-user/tmp-files/ /usr/local/bin/ccsh
+        working-directory: ${{env.project-directory}}
 
       - name: Setup Java JDK
         uses: actions/setup-java@v3.13.0

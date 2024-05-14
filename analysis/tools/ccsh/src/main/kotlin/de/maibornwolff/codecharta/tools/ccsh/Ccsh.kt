@@ -22,7 +22,8 @@ import de.maibornwolff.codecharta.tools.ccsh.parser.ParserService
 import de.maibornwolff.codecharta.tools.ccsh.parser.repository.PicocliParserRepository
 import de.maibornwolff.codecharta.tools.interactiveparser.util.CodeChartaConstants
 import de.maibornwolff.codecharta.tools.validation.ValidationTool
-import mu.KotlinLogging
+import de.maibornwolff.codecharta.util.AttributeGeneratorRegistry
+import de.maibornwolff.codecharta.util.Logger
 import picocli.CommandLine
 import java.util.concurrent.Callable
 import java.util.concurrent.Executors
@@ -32,37 +33,35 @@ import kotlin.math.min
 import kotlin.system.exitProcess
 
 @CommandLine.Command(
-    name = "ccsh",
-    description = ["Command Line Interface for CodeCharta analysis"],
-    subcommands = [
-        ValidationTool::class,
-        MergeFilter::class,
-        EdgeFilter::class,
-        StructureModifier::class,
-        CSVImporter::class,
-        SonarImporterMain::class,
-        SourceMonitorImporter::class,
-        SVNLogParser::class,
-        GitLogParser::class,
-        Installer::class,
-        CSVExporter::class,
-        SourceCodeParserMain::class,
-        CodeMaatImporter::class,
-        TokeiImporter::class,
-        RawTextParser::class,
-        MetricGardenerImporter::class
-    ],
-    versionProvider = Ccsh.ManifestVersionProvider::class,
-        footer = [CodeChartaConstants.General.GENERIC_FOOTER]
-)
-
+        name = "ccsh",
+        description = ["Command Line Interface for CodeCharta analysis"],
+        subcommands = [
+            ValidationTool::class,
+            MergeFilter::class,
+            EdgeFilter::class,
+            StructureModifier::class,
+            CSVImporter::class,
+            SonarImporterMain::class,
+            SourceMonitorImporter::class,
+            SVNLogParser::class,
+            GitLogParser::class,
+            Installer::class,
+            CSVExporter::class,
+            SourceCodeParserMain::class,
+            CodeMaatImporter::class,
+            TokeiImporter::class,
+            RawTextParser::class,
+            MetricGardenerImporter::class,
+        ],
+        versionProvider = Ccsh.ManifestVersionProvider::class,
+        footer = [CodeChartaConstants.General.GENERIC_FOOTER],
+                    )
 class Ccsh : Callable<Unit?> {
-
-    @CommandLine.Option(
-        names = ["-v", "--version"],
-        versionHelp = true,
-        description = ["prints version info and exits"]
-    )
+@CommandLine.Option(
+            names = ["-v", "--version"],
+            versionHelp = true,
+            description = ["prints version info and exits"],
+                       )
     var versionRequested: Boolean = false
 
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exit"])
@@ -71,19 +70,17 @@ class Ccsh : Callable<Unit?> {
     @CommandLine.Option(names = ["-i", "--interactive"], description = ["starts interactive parser"])
     var shouldUseInteractiveShell: Boolean = false
 
-    override fun call(): Unit? {
-        // info: always run
+    override fun call(): Unit? { // info: always run
 
         return null
     }
 
     companion object {
-        private val logger = KotlinLogging.logger {}
-
-        const val NO_USABLE_PARSER_FOUND_MESSAGE = "No usable parser was found for the input file path!"
+    const val NO_USABLE_PARSER_FOUND_MESSAGE = "No usable parser was found for the input file path!"
 
         @JvmStatic
         fun main(args: Array<String>) {
+            registerAllAttributeGenerators()
             exitProcess(executeCommandLine(args))
         }
 
@@ -92,14 +89,23 @@ class Ccsh : Callable<Unit?> {
             commandLine.executionStrategy = CommandLine.RunAll()
             return when {
                 args.isEmpty() -> executeParserSuggestions(commandLine)
-                (!isParserKnown(args, commandLine) && !isCommandKnown(args, commandLine) || args.contains("--interactive") || args.contains("-i")) -> selectAndExecuteInteractiveParser(commandLine)
+                (
+                        !isParserKnown(args, commandLine) && !isCommandKnown(args, commandLine) ||
+                        args.contains(
+                                "--interactive",
+                                     ) || args.contains("-i")
+                ) -> selectAndExecuteInteractiveParser(commandLine)
+
                 isParserKnownButWithoutArgs(args, commandLine) -> executeInteractiveParser(args.first(), commandLine)
                 else -> commandLine.execute(*sanitizeArgs(args))
             }
         }
 
         private fun executeParserSuggestions(commandLine: CommandLine): Int {
-            val configuredParsers = InteractiveParserSuggestionDialog.offerAndGetInteractiveParserSuggestionsAndConfigurations(commandLine)
+            val configuredParsers =
+                    InteractiveParserSuggestionDialog.offerAndGetInteractiveParserSuggestionsAndConfigurations(
+                            commandLine,
+                                                                                                              )
             if (configuredParsers.isEmpty()) {
                 return 0
             }
@@ -107,7 +113,8 @@ class Ccsh : Callable<Unit?> {
             val shouldRunConfiguredParsers: Boolean =
                     KInquirer.promptConfirm(
                             message = "Do you want to run all configured parsers now?",
-                            default = true)
+                            default = true,
+                                           )
 
             return if (shouldRunConfiguredParsers) {
                 executeConfiguredParsers(commandLine, configuredParsers)
@@ -116,7 +123,10 @@ class Ccsh : Callable<Unit?> {
             }
         }
 
-        fun executeConfiguredParsers(commandLine: CommandLine, configuredParsers: Map<String, List<String>>): Int {
+        fun executeConfiguredParsers(
+        commandLine: CommandLine,
+        configuredParsers: Map<String, List<String>>,
+        ): Int {
             val exitCode = AtomicInteger(0)
             val numberOfThreadsToBeStarted = min(configuredParsers.size, Runtime.getRuntime().availableProcessors())
             val threadPool = Executors.newFixedThreadPool(numberOfThreadsToBeStarted)
@@ -125,7 +135,7 @@ class Ccsh : Callable<Unit?> {
                     val currentExitCode = executeConfiguredParser(commandLine, configuredParser)
                     if (currentExitCode != 0) {
                         exitCode.set(currentExitCode)
-                        logger.info { "Code: $currentExitCode" }
+                        Logger.info { "Code: $currentExitCode" }
                     }
                 }
             }
@@ -133,33 +143,35 @@ class Ccsh : Callable<Unit?> {
             threadPool.awaitTermination(1, TimeUnit.DAYS)
 
             val finalExitCode = exitCode.get()
-            logger.info { "Code: $finalExitCode" }
+            Logger.info { "Code: $finalExitCode" }
             if (finalExitCode != 0) {
                 return finalExitCode
-            }
-            // Improvement: Try to extract merge commands before so user does not have to configure merge args?
+            } // Improvement: Try to extract merge commands before so user does not have to configure merge args?
             if (configuredParsers.size == 1) {
-                logger.info { "Parser was successfully executed." }
+                Logger.info { "Parser was successfully executed." }
                 return 0
             } else {
-                logger.info { "Each parser was successfully executed." }
+                Logger.info { "Each parser was successfully executed." }
                 return askAndMergeResults(commandLine)
             }
         }
 
         private fun askAndMergeResults(commandLine: CommandLine): Int {
-            val shouldMerge = KInquirer.promptConfirm(
-                    message = "Do you want to merge all generated files into one result now?",
-                    default = false)
+            val shouldMerge =
+                    KInquirer.promptConfirm(
+                            message = "Do you want to merge all generated files into one result now?",
+                            default = false,
+                                           )
 
             return if (shouldMerge) {
-                val ccJsonFilePath = KInquirer.promptInput(
-                        message = "What is the folder path containing all cc.json files?",
-                        hint = "If you did not output all cc.json files into the same folder, " +
-                              "you need to manually move them there before trying to merge.")
+                val ccJsonFilePath =
+                        KInquirer.promptInput(
+                                message = "What is the folder path containing all cc.json files?",
+                                hint = "If you did not output all cc.json files into the same folder, " + "you need to manually move them there before trying to merge.",
+                                             )
 
-                val outputFilePath = "$ccJsonFilePath/mergedResult.cc.json"
-                // Default args with input path being the output path as well
+                val outputFilePath =
+                        "$ccJsonFilePath/mergedResult.cc.json" // Default args with input path being the output path as well
                 val mergeArguments =
                         listOf(
                                 ccJsonFilePath,
@@ -168,7 +180,7 @@ class Ccsh : Callable<Unit?> {
                                 "--add-missing=false",
                                 "--recursive=true",
                                 "--leaf=false",
-                                "--ignore-case=false"
+                                "--ignore-case=false",
                               )
 
                 val map = mapOf(MergeFilter.NAME to mergeArguments)
@@ -178,12 +190,19 @@ class Ccsh : Callable<Unit?> {
             }
         }
 
-        private fun executeConfiguredParser(commandLine: CommandLine, configuredParser: Map.Entry<String, List<String>>): Int {
-            logger.info { "Executing ${configuredParser.key}" }
-            val exitCode = ParserService.executePreconfiguredParser(commandLine, Pair(configuredParser.key, configuredParser.value))
+        private fun executeConfiguredParser(
+        commandLine: CommandLine,
+        configuredParser: Map.Entry<String, List<String>>,
+        ): Int {
+            Logger.info { "Executing ${configuredParser.key}" }
+            val exitCode =
+                    ParserService.executePreconfiguredParser(
+                            commandLine,
+                            Pair(configuredParser.key, configuredParser.value),
+                                                            )
 
             if (exitCode != 0) {
-                logger.info { "Error executing ${configuredParser.key}, code $exitCode" }
+                Logger.info { "Error executing ${configuredParser.key}, code $exitCode" }
             }
 
             return exitCode
@@ -194,24 +213,36 @@ class Ccsh : Callable<Unit?> {
             return executeInteractiveParser(selectedParser, commandLine)
         }
 
-        private fun executeInteractiveParser(selectedParser: String, commandLine: CommandLine): Int {
-            logger.info { "Executing $selectedParser" }
+        private fun executeInteractiveParser(
+        selectedParser: String,
+        commandLine: CommandLine,
+        ): Int {
+            Logger.info { "Executing $selectedParser" }
             return ParserService.executeSelectedParser(commandLine, selectedParser)
         }
 
-        private fun isParserKnown(args: Array<String>, commandLine: CommandLine): Boolean {
+        private fun isParserKnown(
+        args: Array<String>,
+        commandLine: CommandLine,
+        ): Boolean {
             val firstArg = args.first()
             val parserList = commandLine.subcommands.keys
             return parserList.contains(firstArg)
         }
 
-        private fun isCommandKnown(args: Array<String>, commandLine: CommandLine): Boolean {
+        private fun isCommandKnown(
+        args: Array<String>,
+        commandLine: CommandLine,
+        ): Boolean {
             val firstArg = args.first()
             val optionsList = commandLine.commandSpec.options().map { it.names().toMutableList() }.flatten()
             return optionsList.contains(firstArg)
         }
 
-        private fun isParserKnownButWithoutArgs(args: Array<String>, commandLine: CommandLine): Boolean {
+        private fun isParserKnownButWithoutArgs(
+        args: Array<String>,
+        commandLine: CommandLine,
+        ): Boolean {
             return isParserKnown(args, commandLine) && args.size == 1
         }
 
@@ -222,8 +253,11 @@ class Ccsh : Callable<Unit?> {
                     var skip = false
                     argument.forEach {
                         if (it == '=') skip = true
-                        if (it.isUpperCase() && !skip) sanitizedArg += "-" + it.lowercaseChar()
-                        else sanitizedArg += it
+                        if (it.isUpperCase() && !skip) {
+                            sanitizedArg += "-" + it.lowercaseChar()
+                        } else {
+                            sanitizedArg += it
+                        }
                     }
                 } else {
                     sanitizedArg = argument
@@ -231,14 +265,26 @@ class Ccsh : Callable<Unit?> {
                 return@map sanitizedArg
             }.toTypedArray()
         }
+
+        private fun registerAllAttributeGenerators() {
+            AttributeGeneratorRegistry.registerGenerator(RawTextParser())
+            AttributeGeneratorRegistry.registerGenerator(CodeMaatImporter())
+            AttributeGeneratorRegistry.registerGenerator(CSVImporter())
+            AttributeGeneratorRegistry.registerGenerator(GitLogParser())
+            AttributeGeneratorRegistry.registerGenerator(MetricGardenerImporter())
+            AttributeGeneratorRegistry.registerGenerator(SonarImporterMain())
+            AttributeGeneratorRegistry.registerGenerator(SourceCodeParserMain())
+            AttributeGeneratorRegistry.registerGenerator(SVNLogParser())
+            AttributeGeneratorRegistry.registerGenerator(TokeiImporter())
+        }
     }
 
     object ManifestVersionProvider : CommandLine.IVersionProvider {
-        override fun getVersion(): Array<String> {
+    override fun getVersion(): Array<String> {
             return arrayOf(
                 Ccsh::class.java.`package`.implementationTitle + "\n" +
                     "version \"" + Ccsh::class.java.`package`.implementationVersion + "\"\n" +
-                    "Copyright(c) 2022, MaibornWolff GmbH"
+                    "Copyright(c) 2024, MaibornWolff GmbH",
             )
         }
     }
@@ -246,8 +292,7 @@ class Ccsh : Callable<Unit?> {
 
 @CommandLine.Command(name = "install", description = ["[deprecated]: does nothing"])
 class Installer : Callable<Unit?> {
-
-    override fun call(): Unit? {
+override fun call(): Unit? {
         println("[deprecated]: does nothing")
         return null
     }

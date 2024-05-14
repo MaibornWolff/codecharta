@@ -63,4 +63,17 @@ describe("resetChosenMetricsEffect", () => {
 		expect(store.dispatch).toHaveBeenCalledWith(setHeightMetric({ value: "loc" }))
 		expect(store.dispatch).toHaveBeenCalledWith(setColorMetric({ value: "loc" }))
 	})
+
+	it("should do nothing, when chosen metrics are still available", () => {
+		store.overrideSelector(areChosenMetricsAvailableSelector, true)
+		store.overrideSelector(metricDataSelector, {
+			nodeMetricData: [
+				{ name: "rloc", maxValue: 9001 },
+				{ name: "loc", maxValue: 9001 }
+			]
+		} as any)
+		store.refreshState()
+
+		expect(store.dispatch).not.toHaveBeenCalled()
+	})
 })

@@ -9,7 +9,8 @@ Perform one of the following actions at a time:
 -   Print the project hierarchy.
 
 Specifying multiple actions in a single command results in only one being performed.\
-Edges and blacklist entries associated with moved or removed nodes will be adjusted, and all attribute types will be copied.
+Edges and blacklist entries associated with moved or removed nodes will be adjusted, and all attribute types will be
+copied.
 
 ## Usage and Parameters
 

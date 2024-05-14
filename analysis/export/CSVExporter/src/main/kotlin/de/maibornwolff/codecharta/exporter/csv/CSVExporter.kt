@@ -12,7 +12,7 @@ import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import de.maibornwolff.codecharta.tools.interactiveparser.util.CodeChartaConstants
 import de.maibornwolff.codecharta.util.InputHelper
-import mu.KotlinLogging
+import de.maibornwolff.codecharta.util.Logger
 import picocli.CommandLine
 import java.io.BufferedWriter
 import java.io.File
@@ -25,11 +25,10 @@ import java.util.concurrent.Callable
 @CommandLine.Command(
         name = CSVExporter.NAME,
         description = [CSVExporter.DESCRIPTION],
-        footer = [CodeChartaConstants.General.GENERIC_FOOTER]
-)
+        footer = [CodeChartaConstants.General.GENERIC_FOOTER],
+                    )
 class CSVExporter() : Callable<Unit>, InteractiveParser {
-
-    @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
+@CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
 
     @CommandLine.Parameters(arity = "1..*", paramLabel = "FILE", description = ["json files"])
@@ -44,10 +43,8 @@ class CSVExporter() : Callable<Unit>, InteractiveParser {
     override val name = NAME
     override val description = DESCRIPTION
 
-    private val logger = KotlinLogging.logger {}
-
     companion object {
-        const val NAME = "csvexport"
+    const val NAME = "csvexport"
         const val DESCRIPTION = "generates csv file with header"
 
         @JvmStatic
@@ -78,7 +75,10 @@ class CSVExporter() : Callable<Unit>, InteractiveParser {
             outputFile = OutputFileHandler.checkAndFixFileExtension(outputFile, false, FileExtension.CSV)
         }
 
-        val projects = sources.map { ProjectDeserializer.deserializeProject(it.inputStream()) }
+        val projects =
+                sources.map {
+                    ProjectDeserializer.deserializeProject(it.inputStream())
+                }
         projects.forEachIndexed { index, project ->
             val append = index > 0
             writeUsingWriter(project, writer(append))
@@ -86,21 +86,32 @@ class CSVExporter() : Callable<Unit>, InteractiveParser {
 
         if (outputFile.isNotEmpty()) {
             val absoluteFilePath = File(outputFile).absolutePath
-            logger.info("Created output file at $absoluteFilePath")
+            Logger.info {
+                "Created output file at $absoluteFilePath"
+            }
         }
 
         return null
     }
 
-    private fun writeUsingWriter(project: Project, outputWriter: Writer) {
+    private fun writeUsingWriter(
+    project: Project,
+    outputWriter: Writer,
+    ) {
         val settings = CsvWriterSettings()
         val writer = CsvWriter(outputWriter, settings)
 
-        val attributeNames: List<String> = project.rootNode.nodes.flatMap { it.value.attributes.keys }.distinct()
+        val attributeNames: List<String> =
+                project.rootNode.nodes.flatMap {
+                    it.value.attributes.keys
+                }.distinct()
 
-        val header = listOf("path", "name", "type")
-            .plus(attributeNames)
-            .plus(List(maxHierarchy) { "dir$it" })
+        val header =
+                listOf("path", "name", "type").plus(attributeNames).plus(
+                        List(maxHierarchy) {
+                            "dir$it"
+                        },
+                                                                        )
 
         writer.writeHeaders(header)
 
@@ -109,29 +120,43 @@ class CSVExporter() : Callable<Unit>, InteractiveParser {
         writer.close()
     }
 
-    private fun row(path: Path, node: Node, attributeNames: List<String>): List<String> {
+    private fun row(
+    path: Path,
+    node: Node,
+    attributeNames: List<String>,
+    ): List<String> {
         val values: List<String> = node.toAttributeList(attributeNames)
 
-        val rowWithoutDirs = listOf(path.toPath, node.name, node.type.toString())
-            .plus(values)
+        val rowWithoutDirs = listOf(path.toPath, node.name, node.type.toString()).plus(values)
         val dirs = path.edgesList.dropLast(1)
 
         return when {
-            values.distinct().none { it.isNotBlank() } -> listOf()
-            dirs.size < maxHierarchy -> rowWithoutDirs.plus(dirs).plus(
-                List(maxHierarchy - dirs.size) { "" })
+            values.distinct().none {
+                it.isNotBlank()
+            } -> listOf()
+
+            dirs.size < maxHierarchy ->
+                rowWithoutDirs.plus(dirs).plus(
+                        List(maxHierarchy - dirs.size) {
+                            ""
+                        },
+                                              )
+
             else -> rowWithoutDirs.plus(dirs.subList(0, maxHierarchy))
         }
     }
 
     override fun getDialog(): ParserDialogInterface = ParserDialog
+
     override fun isApplicable(resourceToBeParsed: String): Boolean {
         return false
     }
 }
 
 private fun Node.toAttributeList(attributeNames: List<String>): List<String> {
-    return attributeNames.map { this.attributes[it]?.toString() ?: "" }
+    return attributeNames.map {
+        this.attributes[it]?.toString() ?: ""
+    }
 }
 
 private val Path.toPath: String

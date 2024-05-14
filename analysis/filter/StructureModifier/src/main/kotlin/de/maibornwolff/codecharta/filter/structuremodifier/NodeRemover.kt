@@ -7,26 +7,34 @@ import de.maibornwolff.codecharta.model.Edge
 import de.maibornwolff.codecharta.model.MutableNode
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.model.ProjectBuilder
-import mu.KotlinLogging
+import de.maibornwolff.codecharta.util.Logger
 
-class NodeRemover(private val project: Project) {
-    private val logger = KotlinLogging.logger {}
-
-    fun remove(paths: Array<String>): Project {
-        var pathSegments = paths.map { it.removePrefix("/").removeSuffix("/").split("/") }
+class NodeRemover(
+        private val project: Project,
+                 ) {
+                 fun remove(paths: Array<String>): Project {
+        var pathSegments =
+                paths.map {
+                    it.removePrefix("/").removeSuffix("/").split("/")
+                }
 
         if (pathSegments.contains(listOf("root"))) {
-            logger.warn("Root node cannot be removed")
-            pathSegments = pathSegments.filter { it != listOf("root") }
+            Logger.warn {
+                "Root node cannot be removed"
+            }
+            pathSegments =
+                    pathSegments.filter {
+                        it != listOf("root")
+                    }
         }
 
         return ProjectBuilder(
-            removeNodes(pathSegments),
-            removeEdges(paths),
-            copyAttributeTypes(),
-            copyAttributeDescriptors(),
-            removeBlacklistItems(paths)
-        ).build(cleanAttributeDescriptors = true)
+                removeNodes(pathSegments),
+                removeEdges(paths),
+                copyAttributeTypes(),
+                copyAttributeDescriptors(),
+                removeBlacklistItems(paths),
+                             ).build(cleanAttributeDescriptors = true)
     }
 
     private fun removeNodes(paths: List<List<String>>): List<MutableNode> {
@@ -34,7 +42,9 @@ class NodeRemover(private val project: Project) {
         for (path in paths) {
             var currentNode = rootNode
             if (path[0] != "root") {
-                logger.warn("Path to node has to start with root: ${path.joinToString("/")}")
+                Logger.warn {
+                    "Path to node has to start with root: ${path.joinToString("/")}"
+                }
                 continue
             }
 
@@ -42,13 +52,20 @@ class NodeRemover(private val project: Project) {
             for ((index, pathSegment) in pathWithoutRoot.withIndex()) {
                 val isLastSegment = pathWithoutRoot.lastIndex == index
                 if (isLastSegment) {
-                    currentNode.children.removeIf { it.name == pathSegment }
+                    currentNode.children.removeIf {
+                        it.name == pathSegment
+                    }
                 } else {
-                    val childNode: MutableNode? = currentNode.children.find { it.name == pathSegment }
+                    val childNode: MutableNode? =
+                            currentNode.children.find {
+                                it.name == pathSegment
+                            }
                     if (childNode != null) {
                         currentNode = childNode
                     } else {
-                        logger.warn("Path to node not found: ${path.joinToString("/")}")
+                        Logger.warn {
+                            "Path to node not found: ${path.joinToString("/")}"
+                        }
                         break
                     }
                 }
@@ -60,7 +77,12 @@ class NodeRemover(private val project: Project) {
 
     private fun removeEdges(removePatterns: Array<String>): MutableList<Edge> {
         var edges = project.edges
-        removePatterns.forEach { path -> edges = edges.filter { !it.fromNodeName.contains(path) && !it.toNodeName.contains(path) } }
+        removePatterns.forEach { path ->
+            edges =
+                    edges.filter {
+                        !it.fromNodeName.contains(path) && !it.toNodeName.contains(path)
+                    }
+        }
         return edges.toMutableList()
     }
 
@@ -78,7 +100,12 @@ class NodeRemover(private val project: Project) {
 
     private fun removeBlacklistItems(paths: Array<String>): MutableList<BlacklistItem> {
         var blacklist = project.blacklist
-        paths.forEach { path -> blacklist = blacklist.filter { !it.path.contains(path) } }
+        paths.forEach { path ->
+            blacklist =
+                    blacklist.filter {
+                        !it.path.contains(path)
+                    }
+        }
         return blacklist.toMutableList()
     }
 }

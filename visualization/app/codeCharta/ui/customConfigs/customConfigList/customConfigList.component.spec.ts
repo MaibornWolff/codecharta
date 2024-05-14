@@ -1,22 +1,22 @@
 import { TestBed } from "@angular/core/testing"
-import { provideMockStore } from "@ngrx/store/testing"
-import { State } from "@ngrx/store"
-import { CustomConfigsModule } from "../customConfigs.module"
-import { CustomConfigListComponent } from "./customConfigList.component"
-import { render, screen } from "@testing-library/angular"
-import { CustomConfigHelperService } from "../customConfigHelper.service"
-import { of } from "rxjs"
-import { CUSTOM_CONFIG_ITEM_GROUPS } from "../../../util/dataMocks"
-import { DownloadableConfigs } from "../downloadCustomConfigsButton/getDownloadableCustomConfigs"
-import { CustomConfigItemGroup } from "../customConfigs.component"
-import { CustomConfigGroups } from "./getCustomConfigItemGroups"
-import { ThreeCameraService } from "../../codeMap/threeViewer/threeCamera.service"
-import { ThreeSceneService } from "../../codeMap/threeViewer/threeSceneService"
-import { ThreeOrbitControlsService } from "../../codeMap/threeViewer/threeOrbitControls.service"
-import userEvent from "@testing-library/user-event"
-import { expect } from "@jest/globals"
 import { MatDialog } from "@angular/material/dialog"
+import { expect } from "@jest/globals"
+import { State } from "@ngrx/store"
+import { provideMockStore } from "@ngrx/store/testing"
+import { render, screen, waitFor } from "@testing-library/angular"
+import userEvent from "@testing-library/user-event"
+import { of } from "rxjs"
 import { defaultState } from "../../../state/store/state.manager"
+import { CUSTOM_CONFIG_ITEM_GROUPS } from "../../../util/dataMocks"
+import { ThreeCameraService } from "../../codeMap/threeViewer/threeCamera.service"
+import { ThreeOrbitControlsService } from "../../codeMap/threeViewer/threeOrbitControls.service"
+import { ThreeSceneService } from "../../codeMap/threeViewer/threeSceneService"
+import { CustomConfigHelperService } from "../customConfigHelper.service"
+import { CustomConfigItemGroup } from "../customConfigs.component"
+import { CustomConfigsModule } from "../customConfigs.module"
+import { DownloadableConfigs } from "../downloadCustomConfigsButton/getDownloadableCustomConfigs"
+import { CustomConfigListComponent } from "./customConfigList.component"
+import { CustomConfigGroups } from "./getCustomConfigItemGroups"
 
 const mockedCustomConfigHelperService = {
 	customConfigItemGroups$: of({
@@ -80,7 +80,7 @@ describe("customConfigListComponent", () => {
 
 		await userEvent.click(screen.queryByText("Show non-applicable Custom Views"))
 
-		expect(container.querySelectorAll("mat-expansion-panel-header").length).toBe(2)
+		await waitFor(() => expect(container.querySelectorAll("mat-expansion-panel-header").length).toBe(2))
 	})
 
 	it("should not show 'non-applicable Custom Views' button when no custom configs are available", async () => {
@@ -128,8 +128,33 @@ describe("customConfigListComponent", () => {
 
 		await userEvent.click(customConfigItemGroupElement)
 
-		expect((screen.getAllByTitle("SampleMap Delta View #1", { exact: false })[1].closest("button") as HTMLButtonElement).disabled).toBe(
-			true
+		await waitFor(() =>
+			expect(
+				(screen.getAllByTitle("SampleMap Delta View #1", { exact: false })[1].closest("button") as HTMLButtonElement).disabled
+			).toBe(true)
 		)
+	})
+
+	it("should filter custom config items groups correctly", async () => {
+		const customConfigItemGroup = {
+			applicableItems: new Map([["File_B_File_C_STANDARD", CUSTOM_CONFIG_ITEM_GROUPS.get("File_B_File_C_STANDARD")]]),
+			nonApplicableItems: new Map([["File_D_DELTA", CUSTOM_CONFIG_ITEM_GROUPS.get("File_D_DELTA")]])
+		}
+
+		mockedCustomConfigHelperService.customConfigItemGroups$ = of(customConfigItemGroup)
+		const { rerender, container } = await render(CustomConfigListComponent, {
+			componentProperties: {
+				searchTerm: ""
+			},
+			excludeComponentDeclaration: true
+		})
+
+		await userEvent.click(container.querySelector("mat-expansion-panel-header"))
+		expect(container.querySelectorAll("mat-list-item").length).toBe(2)
+
+		await rerender({ componentProperties: { searchTerm: "delta" } })
+
+		await userEvent.click(container.querySelector("mat-expansion-panel-header"))
+		expect(container.querySelectorAll("mat-list-item").length).toBe(0)
 	})
 })

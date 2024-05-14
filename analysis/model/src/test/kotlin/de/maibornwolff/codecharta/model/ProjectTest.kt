@@ -4,7 +4,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 class ProjectTest {
-    @Test
+@Test
     fun `should be compatible with same API Version`() {
         assertThat(Project.isAPIVersionCompatible(Project.API_VERSION)).isTrue
     }

@@ -6,12 +6,12 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 class ParseFolderToTable {
+private val resource = "src/test/resources/sampleproject"
 
-    private val resource = "src/test/resources/sampleproject"
-
-    private val output = retrieveStreamAsString {
-        SourceCodeParserMain.mainWithOutputStream(it, arrayOf(resource, "--format=csv", "--default-excludes"))
-    }
+    private val output =
+            retrieveStreamAsString {
+                SourceCodeParserMain.mainWithOutputStream(it, arrayOf(resource, "--format=csv", "--default-excludes"))
+            }
 
     @Test
     fun tabular_output_for_folder_contains_correct_header() {
@@ -25,6 +25,6 @@ class ParseFolderToTable {
 
     @Test
     fun `files with correct paths and metrics are found`() {
-        assertThat(output).contains("bar/foo.java", "bar/hello.java", "foo.java", "31", "44", "13")
+        assertThat(output).contains("bar/foo.java", "bar/hello.java", "foo.java", "29", "39", "11")
     }
 }

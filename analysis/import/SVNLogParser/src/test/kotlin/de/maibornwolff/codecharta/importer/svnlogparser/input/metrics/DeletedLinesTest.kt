@@ -5,12 +5,13 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 class DeletedLinesTest {
-
-    private val FILENAME = "filename"
+    companion object {
+    private const val FILENAME = "filename"
+    }
 
     @Test
     fun `should have initial value zero`() {
-        // when
+// when
         val metric = AddedLines()
 
         // then
@@ -18,8 +19,7 @@ class DeletedLinesTest {
     }
 
     @Test
-    fun `should not increase by single modification if more additions`() {
-        // given
+    fun `should not increase by single modification if more additions`() { // given
         val metric = DeletedLines()
 
         // when
@@ -30,8 +30,7 @@ class DeletedLinesTest {
     }
 
     @Test
-    fun `should increase by single modification if more deletes`() {
-        // given
+    fun `should increase by single modification if more deletes`() { // given
         val metric = DeletedLines()
 
         // when
@@ -42,8 +41,7 @@ class DeletedLinesTest {
     }
 
     @Test
-    fun `should not increase by multiple modification if more additions`() {
-        // given
+    fun `should not increase by multiple modification if more additions`() { // given
         val metric = DeletedLines()
 
         // when
@@ -57,8 +55,7 @@ class DeletedLinesTest {
     }
 
     @Test
-    fun should_increase_by_multiple_modification_if_more_deletes() {
-        // given
+    fun should_increase_by_multiple_modification_if_more_deletes() { // given
         val metric = DeletedLines()
 
         // when

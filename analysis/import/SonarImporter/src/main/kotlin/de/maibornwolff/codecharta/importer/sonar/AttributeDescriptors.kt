@@ -4,89 +4,445 @@ import de.maibornwolff.codecharta.model.AttributeDescriptor
 
 fun getAttributeDescriptors(): Map<String, AttributeDescriptor> {
     val metricLink = "https://docs.sonarcloud.io/digging-deeper/metric-definitions/"
+    return getAttributeDescriptorsWithNegativeDirection(metricLink) +
+           getAttributeDescriptorsWithPositiveDirection(
+                   metricLink,
+                                                       )
+}
+
+fun getAttributeDescriptorsWithNegativeDirection(metricLink: String): Map<String, AttributeDescriptor> {
     return mapOf(
-        "blocker_violations" to AttributeDescriptor(title = "Blocker Violations", description = "Total count of issues of the severity blocker", link = metricLink),
-        "branch_coverage" to AttributeDescriptor(title = "Branch Coverage", description = "Density of fully covered boolean conditions in flow control structures", link = metricLink),
-        "bugs" to AttributeDescriptor(title = "Number of Bugs", description = "Number of bug issues", link = metricLink),
-        "class_complexity" to AttributeDescriptor(title = "Cyclic Class Complexity", description = "Maximum cyclomatic complexity based on paths through a class by McCabe", link = metricLink),
-        "classes" to AttributeDescriptor(title = "Number of Classes", description = "Number of classes (including nested classes, interfaces, enums and annotations", link = metricLink),
-        "code_smells" to AttributeDescriptor(title = "Code Smells", description = "Total count of code smell issues", link = metricLink),
-        "cognitive_complexity" to AttributeDescriptor(title = "Cognitive Complexity", description = "How hard is it to understand the code's control flow", link = "https://www.sonarsource.com/resources/cognitive-complexity/"),
-        "comment_lines" to AttributeDescriptor(title = "Comment Lines", description = "Number of lines containing either a comment or commented-out code", link = metricLink),
-        "comment_lines_density" to AttributeDescriptor(title = "Comment Density", description = "Density of comment lines in relation to total lines of code", link = metricLink),
-        "complexity" to AttributeDescriptor(title = "Maximum Cyclomatic Complexity", description = "Maximum cyclic complexity based on paths through the code by McCabe", link = metricLink),
-        "complexity_in_classes" to AttributeDescriptor(title = "Class Complexity", description = "Maximum cyclomatic complexity based on paths through a class by McCabe", link = metricLink),
-        "complexity_in_functions" to AttributeDescriptor(title = "Function Complexity", description = "Maximum cyclomatic complexity based on paths through a function by McCabe", link = metricLink),
-        "conditions_to_cover" to AttributeDescriptor(title = "Conditions to Cover", description = "Number of conditions which could be covered by unit tests", link = metricLink),
-        "confirmed_issues" to AttributeDescriptor(title = "Confirmed Issues", description = "Total count of issues in the confirmed state", link = metricLink),
-        "coverage" to AttributeDescriptor(title = "Coverage", description = "Mix of branch and line coverage", link = metricLink),
-        "critical_violations" to AttributeDescriptor(title = "Critical Violations", description = "Total count of issues of the severity critical", link = metricLink),
-        "directories" to AttributeDescriptor(title = "Number of Directories", description = "Number of directories", link = metricLink),
-        "duplicated_blocks" to AttributeDescriptor(title = "Duplicated Blocks", description = "Number of duplicated blocks of lines", link = metricLink),
-        "duplicated_files" to AttributeDescriptor(title = "Duplicated Files", description = "Number of files involved in duplications", link = metricLink),
-        "duplicated_lines" to AttributeDescriptor(title = "Duplicated Lines", description = "Number of lines involved in duplications", link = metricLink),
-        "duplicated_lines_density" to AttributeDescriptor(title = "Duplicated Line Density", description = "Density of duplicated lines", link = metricLink),
-        "false_positive_issues" to AttributeDescriptor(title = "False Positive Issues", description = "Total count of issues marked false positive", link = metricLink),
-        "file_complexity" to AttributeDescriptor(title = "File Complexity", description = "Maximum cyclomatic complexity based on paths through a file by McCabe", link = metricLink),
-        "files" to AttributeDescriptor(title = "Number of Files", description = "Number of files", link = metricLink),
-        "function_complexity" to AttributeDescriptor(title = "Function Complexity", description = "Maximum cyclomatic complexity based on paths through a function by McCabe", link = metricLink),
-        "functions" to AttributeDescriptor(title = "Number of Functions", description = "Number of functions", link = metricLink),
-        "generated_lines" to AttributeDescriptor(title = "Generated Lines", description = "Number of generated lines of code", link = metricLink),
-        "generated_ncloc" to AttributeDescriptor(title = "Generated Real Lines of Code", description = "Number of generated non-empty lines of code", link = metricLink),
-        "info_violations" to AttributeDescriptor(title = "Info Violations", description = "Total count of issues of the severity info", link = metricLink),
-        "line_coverage" to AttributeDescriptor(title = "Line Coverage", description = "Density of fully covered lines of code", link = metricLink),
-        "lines" to AttributeDescriptor(title = "Number of Lines", description = "Number of physical lines (number of carriage returns)", link = metricLink),
-        "lines_to_cover" to AttributeDescriptor(title = "Lines to Cover", description = "Number of lines of code which could be covered by unit tests", link = metricLink),
-        "major_violations" to AttributeDescriptor(title = "Major Violations", description = "Total count of issues of the severity major", link = metricLink),
-        "minor_violations" to AttributeDescriptor(title = "Minor Violations", description = "Total count of issues of the severity minor", link = metricLink),
-        "ncloc" to AttributeDescriptor(title = "Real Lines of Code", description = "Number of physical lines that contain at least one character which is neither a whitespace nor a tabulation nor part of a comment", link = metricLink),
-        "new_blocker_violations" to AttributeDescriptor(title = "New Blocker Violations", description = "Number of issues of the severity blocker raised for the first time in the new code period", link = metricLink),
-        "new_branch_coverage" to AttributeDescriptor(title = "New Branch Coverage", description = "Density of fully covered boolean conditions in flow control structures in new or updated code", link = metricLink),
-        "new_bugs" to AttributeDescriptor(title = "Number of New Bugs", description = "Number of new bug issues", link = metricLink),
-        "new_code_smells" to AttributeDescriptor(title = "New Code Smells", description = "Total count of code smell issues raised for the first time in the new code period", link = metricLink),
-        "new_conditions_to_cover" to AttributeDescriptor(title = "New Conditions to Cover", description = "Number of new/updated conditions which could be covered by unit tests", link = metricLink),
-        "new_coverage" to AttributeDescriptor(title = "New Coverage", description = "Mix of branch and line coverage on new/updated code", link = metricLink),
-        "new_critical_violations" to AttributeDescriptor(title = "New Critical Violations", description = "Number of issues of the severity critical raised for the first time in the new code period", link = metricLink),
-        "new_development_cost" to AttributeDescriptor(title = "New Development Cost", description = "Development cost of new/updated code", link = metricLink),
-        "new_duplicated_blocks" to AttributeDescriptor(title = "New Duplicated Blocks", description = "Number of duplicated blocks of lines in new/updated code", link = metricLink),
-        "new_duplicated_lines" to AttributeDescriptor(title = "New Duplicated Lines", description = "Number of lines involved in duplications in new/updated code", link = metricLink),
-        "new_duplicated_lines_density" to AttributeDescriptor(title = "New Duplicated Lines Density", description = "Density of duplicated lines in new/updated code", link = metricLink),
-        "new_info_violations" to AttributeDescriptor(title = "New Info Violations", description = "Number of issues of the severity info raised for the first time in the new code period", link = metricLink),
-        "new_line_coverage" to AttributeDescriptor(title = "New Line Coverage", description = "Density of fully covered lines of new/updated code", link = metricLink),
-        "new_lines" to AttributeDescriptor(title = "Number of New Lines", description = "Number of new/updated lines of code", link = metricLink),
-        "new_lines_to_cover" to AttributeDescriptor(title = "New Lines to Cover", description = "Number of new/updated lines of code which could be covered by unit tests", link = metricLink),
-        "new_major_violations" to AttributeDescriptor(title = "New Major Violations", description = "Number of issues of the severity major raised for the first time in the new code period", link = metricLink),
-        "new_minor_violations" to AttributeDescriptor(title = "New Minor violations", description = "Number of issues of the severity minor raised for the first time in the new code period", link = metricLink),
-        "new_security_hotspots" to AttributeDescriptor(title = "New Security Hotspots", description = "Number of new security hotspots in the new code period", link = metricLink),
-        "new_security_hotspots_reviewed" to AttributeDescriptor(title = "New Security Hotspots Reviewed", description = "Percentage of reviewed (fixed or safe) security hotspots in new code period", link = metricLink),
-        "new_security_hotspots_reviewed_status" to AttributeDescriptor(title = "New Security Hotspots Reviewed Status", description = "Total number of reviewed security hotspots in new code period", link = metricLink),
-        "new_security_hotspots_to_review_status" to AttributeDescriptor(title = "New Security Hotspots to Review Status", description = "Number of security hotspots to review in new code period", link = metricLink),
-        "new_sqale_debt_ratio" to AttributeDescriptor(title = "New SQale Debt Ratio", description = "Ratio between the cost to develop the software and the cost to fix it in new/updated code", link = metricLink),
-        "new_uncovered_conditions" to AttributeDescriptor(title = "New Uncovered Conditions", description = "Total number of uncovered conditions in new/updated code", link = metricLink),
-        "new_uncovered_lines" to AttributeDescriptor(title = "New Uncovered Lines", description = "Total number of uncovered lines in new/updated code", link = metricLink),
-        "new_violations" to AttributeDescriptor(title = "New Violations", description = "Number of issues raised for the first time in the new code period", link = metricLink),
-        "new_vulnerabilities" to AttributeDescriptor(title = "New Vulnerabilities", description = "Number of new vulnerability issues", link = metricLink),
-        "open_issues" to AttributeDescriptor(title = "Number of Open Issues", description = "Total count of issues in the open state", link = metricLink),
-        "projects" to AttributeDescriptor(title = "Number of Projects", description = "Total number of projects", link = metricLink),
-        "public_api" to AttributeDescriptor(title = "Public API", description = "Public api available", link = metricLink),
-        "public_documented_api_density" to AttributeDescriptor(title = "Public Documented API Density", description = "Documented public api available", link = metricLink),
-        "public_undocumented_api" to AttributeDescriptor(title = "Public Undocumented API", description = "Undocumented api available", link = metricLink),
-        "reopened_issues" to AttributeDescriptor(title = "Number of Reopened Issues", description = "Total count of issues in the reopened state", link = metricLink),
-        "security_hotspots" to AttributeDescriptor(title = "Security Hotspots", description = "Number of security hotspots", link = metricLink),
-        "security_hotspots_reviewed" to AttributeDescriptor(title = "Security Hotspots Reviewed", description = "Percentage of reviewed (fixed or safe) security hotspots", link = metricLink),
-        "security_hotspots_reviewed_status" to AttributeDescriptor(title = "Security Hotspots Reviewed Status", description = "Total number of reviewed security hotspots", link = metricLink),
-        "security_hotspots_to_review_status" to AttributeDescriptor(title = "Security Hotspots to Review Status", description = "Number of security hotspots to review", link = metricLink),
-        "skipped_tests" to AttributeDescriptor(title = "Number of skipped Tests", description = "Number of skipped unit tests", link = metricLink),
-        "sqale_debt_ratio" to AttributeDescriptor(title = "SQale Dept Ratio", description = "Ratio between the cost to develop the software and the cost to fix it", link = metricLink),
-        "statements" to AttributeDescriptor(title = "Number of Statements", description = "Number of statements", link = metricLink),
-        "test_errors" to AttributeDescriptor(title = "Number of Test Errors", description = "Number of unit tests that have failed", link = metricLink),
-        "test_failures" to AttributeDescriptor(title = "Number of Test Failures", description = "Number of unit tests that have failed with an unexpected exception", link = metricLink),
-        "test_success_density" to AttributeDescriptor(title = "Test Success Density", description = "Ratio between successful tests and all tests", link = metricLink),
-        "tests" to AttributeDescriptor(title = "Number of Tests", description = "Number of unit tests", link = metricLink),
-        "uncovered_conditions" to AttributeDescriptor(title = "Uncovered Conditions", description = "Total number of uncovered conditions", link = metricLink),
-        "uncovered_lines" to AttributeDescriptor(title = "Uncovered Lines", description = "Total number of uncovered lines", link = metricLink),
-        "violations" to AttributeDescriptor(title = "Number of Violations", description = "Total count of issues in all states", link = metricLink),
-        "vulnerabilities" to AttributeDescriptor(title = "Number of Vulnerabilities", description = "Number of vulnerability issues", link = metricLink),
-        "wont_fix_issues" to AttributeDescriptor(title = "Number of Won't Fix Issues", description = "Total count of issues in the wont fix state", link = metricLink)
-    )
+            "accepted_issues" to createAttributeDescriptor("Accepted Issues", "Accepted issues", -1, metricLink),
+            "blocker_violations" to
+                    createAttributeDescriptor(
+                            "Blocker Violations",
+                            "Total count of issues of the severity blocker", -1, metricLink,
+                                             ),
+            "bugs" to createAttributeDescriptor("Number of Bugs", "Number of bug issues", -1, metricLink),
+            "class_complexity" to
+                    createAttributeDescriptor(
+                            "Cyclic Class Complexity",
+                            "Maximum cyclomatic complexity based on paths through a class by McCabe", -1, metricLink,
+                                             ),
+            "classes" to
+                    createAttributeDescriptor(
+                            "Number of Classes",
+                            "Number of classes (including nested classes, interfaces, enums and annotations", -1,
+                            metricLink,
+                                             ),
+            "code_smells" to
+                    createAttributeDescriptor(
+                            "Code Smells", "Total count of code smell issues", -1,
+                            metricLink,
+                                             ),
+            "cognitive_complexity" to
+                    createAttributeDescriptor(
+                            "Cognitive Complexity",
+                            "How hard is it to understand the code's control flow", -1,
+                            "https://www.sonarsource.com/resources/cognitive-complexity/",
+                                             ),
+            "comment_lines" to
+                    createAttributeDescriptor(
+                            "Comment Lines",
+                            "Number of lines containing either a comment or commented-out code", -1, metricLink,
+                                             ),
+            "comment_lines_density" to
+                    createAttributeDescriptor(
+                            "Comment Density",
+                            "Density of comment lines in relation to total lines of code", -1, metricLink,
+                                             ),
+            "complexity" to
+                    createAttributeDescriptor(
+                            "Maximum Cyclomatic Complexity",
+                            "Maximum cyclic complexity based on paths through the code by McCabe", -1, metricLink,
+                                             ),
+            "complexity_in_classes" to
+                    createAttributeDescriptor(
+                            "Class Complexity",
+                            "Maximum cyclomatic complexity based on paths through a class by McCabe", -1, metricLink,
+                                             ),
+            "complexity_in_functions" to
+                    createAttributeDescriptor(
+                            "Function Complexity",
+                            "Maximum cyclomatic complexity based on paths through a function by McCabe", -1, metricLink,
+                                             ),
+            "conditions_by_line" to
+                    createAttributeDescriptor(
+                            "Conditions by line", "Number of conditions by line", -1,
+                            metricLink,
+                                             ),
+            "conditions_to_cover" to
+                    createAttributeDescriptor(
+                            "Conditions to Cover",
+                            "Number of conditions which could be covered by unit tests", -1, metricLink,
+                                             ),
+            "confirmed_issues" to
+                    createAttributeDescriptor(
+                            "Confirmed Issues",
+                            "Total count of issues in the confirmed state", -1, metricLink,
+                                             ),
+            "critical_violations" to
+                    createAttributeDescriptor(
+                            "Critical Violations",
+                            "Total count of issues of the severity critical", -1, metricLink,
+                                             ),
+            "directories" to
+                    createAttributeDescriptor(
+                            "Number of Directories", "Number of directories", -1,
+                            metricLink,
+                                             ),
+            "duplicated_blocks" to
+                    createAttributeDescriptor(
+                            "Duplicated Blocks",
+                            "Number of duplicated blocks of lines", -1, metricLink,
+                                             ),
+            "duplicated_files" to
+                    createAttributeDescriptor(
+                            "Duplicated Files",
+                            "Number of files involved in duplications", -1, metricLink,
+                                             ),
+            "duplicated_lines" to
+                    createAttributeDescriptor(
+                            "Duplicated Lines",
+                            "Number of lines involved in duplications", -1, metricLink,
+                                             ),
+            "duplicated_lines_density" to
+                    createAttributeDescriptor(
+                            "Duplicated Line Density",
+                            "Density of duplicated lines", -1, metricLink,
+                                             ),
+            "false_positive_issues" to
+                    createAttributeDescriptor(
+                            "False Positive Issues",
+                            "Total count of issues marked false positive", -1, metricLink,
+                                             ),
+            "file_complexity" to
+                    createAttributeDescriptor(
+                            "File Complexity",
+                            "Maximum cyclomatic complexity based on paths through a file by McCabe", -1, metricLink,
+                                             ),
+            "files" to createAttributeDescriptor("Number of Files", "Number of files", -1, metricLink),
+            "function_complexity" to
+                    createAttributeDescriptor(
+                            "Function Complexity",
+                            "Maximum cyclomatic complexity based on paths through a function by McCabe", -1, metricLink,
+                                             ),
+            "functions" to createAttributeDescriptor("Number of Functions", "Number of functions", -1, metricLink),
+            "generated_lines" to
+                    createAttributeDescriptor(
+                            "Generated Lines", "Number of generated lines of code", -1,
+                            metricLink,
+                                             ),
+            "generated_ncloc" to
+                    createAttributeDescriptor(
+                            "Generated Real Lines of Code",
+                            "Number of generated non-empty lines of code", -1, metricLink,
+                                             ),
+            "high_impact_accepted_issues" to
+                    createAttributeDescriptor(
+                            "High Impact Accepted Issues",
+                            "Accepted issues with high impact", -1, metricLink,
+                                             ),
+            "info_violations" to
+                    createAttributeDescriptor(
+                            "Info Violations",
+                            "Total count of issues of the severity info", -1, metricLink,
+                                             ),
+            "lines" to
+                    createAttributeDescriptor(
+                            "Number of Lines",
+                            "Number of physical lines (number of carriage returns)", -1, metricLink,
+                                             ),
+            "lines_to_cover" to
+                    createAttributeDescriptor(
+                            "Lines to Cover",
+                            "Number of lines of code which could be covered by unit tests", -1, metricLink,
+                                             ),
+            "major_violations" to
+                    createAttributeDescriptor(
+                            "Major Violations",
+                            "Total count of issues of the severity major", -1, metricLink,
+                                             ),
+            "minor_violations" to
+                    createAttributeDescriptor(
+                            "Minor Violations",
+                            "Total count of issues of the severity minor", -1, metricLink,
+                                             ),
+            "ncloc" to
+                    createAttributeDescriptor(
+                            "Real Lines of Code",
+                            "Number of physical lines that contain at least one character which is neither a whitespace nor a tabulation nor part of a comment",
+                            -1, metricLink,
+                                             ),
+            "new_accepted_issues" to
+                    createAttributeDescriptor(
+                            "New Accepted Issues", "New accepted issues", -1,
+                            metricLink,
+                                             ),
+            "new_blocker_violations" to
+                    createAttributeDescriptor(
+                            "New Blocker Violations",
+                            "Number of issues of the severity blocker raised for the first time in the new code period",
+                            -1,
+                            metricLink,
+                                             ),
+            "new_bugs" to createAttributeDescriptor("Number of New Bugs", "Number of new bug issues", -1, metricLink),
+            "new_code_smells" to
+                    createAttributeDescriptor(
+                            "New Code Smells",
+                            "Total count of code smell issues raised for the first time in the new code period", -1,
+                            metricLink,
+                                             ),
+            "new_conditions_to_cover" to
+                    createAttributeDescriptor(
+                            "New Conditions to Cover",
+                            "Number of new/updated conditions which could be covered by unit tests", -1, metricLink,
+                                             ),
+            "new_critical_violations" to
+                    createAttributeDescriptor(
+                            "New Critical Violations",
+                            "Number of issues of the severity critical raised for the first time in the new code period",
+                            -1,
+                            metricLink,
+                                             ),
+            "new_development_cost" to
+                    createAttributeDescriptor(
+                            "New Development Cost",
+                            "Development cost of new/updated code", -1, metricLink,
+                                             ),
+            "new_duplicated_blocks" to
+                    createAttributeDescriptor(
+                            "New Duplicated Blocks",
+                            "Number of duplicated blocks of lines in new/updated code", -1, metricLink,
+                                             ),
+            "new_duplicated_lines" to
+                    createAttributeDescriptor(
+                            "New Duplicated Lines",
+                            "Number of lines involved in duplications in new/updated code", -1, metricLink,
+                                             ),
+            "new_duplicated_lines_density" to
+                    createAttributeDescriptor(
+                            "New Duplicated Lines Density",
+                            "Density of duplicated lines in new/updated code", -1, metricLink,
+                                             ),
+            "new_info_violations" to
+                    createAttributeDescriptor(
+                            "New Info Violations",
+                            "Number of issues of the severity info raised for the first time in the new code period",
+                            -1,
+                            metricLink,
+                                             ),
+            "new_lines" to
+                    createAttributeDescriptor(
+                            "Number of New Lines", "Number of new/updated lines of code", -1,
+                            metricLink,
+                                             ),
+            "new_lines_to_cover" to
+                    createAttributeDescriptor(
+                            "New Lines to Cover",
+                            "Number of new/updated lines of code which could be covered by unit tests", -1, metricLink,
+                                             ),
+            "new_major_violations" to
+                    createAttributeDescriptor(
+                            "New Major Violations",
+                            "Number of issues of the severity major raised for the first time in the new code period",
+                            -1,
+                            metricLink,
+                                             ),
+            "new_minor_violations" to
+                    createAttributeDescriptor(
+                            "New Minor Violations",
+                            "Number of issues of the severity minor raised for the first time in the new code period",
+                            -1,
+                            metricLink,
+                                             ),
+            "new_security_hotspots" to
+                    createAttributeDescriptor(
+                            "New Security Hotspots",
+                            "Number of new security hotspots in the new code period", -1, metricLink,
+                                             ),
+            "new_security_hotspots_reviewed_status" to
+                    createAttributeDescriptor(
+                            "New Security Hotspots Reviewed Status",
+                            "Total number of reviewed security hotspots in new code period", -1, metricLink,
+                                             ),
+            "new_security_hotspots_to_review_status" to
+                    createAttributeDescriptor(
+                            "New Security Hotspots to Review Status",
+                            "Number of security hotspots to review in new code period", -1, metricLink,
+                                             ),
+            "new_sqale_debt_ratio" to
+                    createAttributeDescriptor(
+                            "New SQale Debt Ratio",
+                            "Ratio between the cost to develop the software and the cost to fix it in new/updated code",
+                            -1,
+                            metricLink,
+                                             ),
+            "new_uncovered_conditions" to
+                    createAttributeDescriptor(
+                            "New Uncovered Conditions",
+                            "Total number of uncovered conditions in new/updated code", -1, metricLink,
+                                             ),
+            "new_uncovered_lines" to
+                    createAttributeDescriptor(
+                            "New Uncovered Lines",
+                            "Total number of uncovered lines in new/updated code", -1, metricLink,
+                                             ),
+            "new_violations" to
+                    createAttributeDescriptor(
+                            "New Violations",
+                            "Number of issues raised for the first time in the new code period", -1, metricLink,
+                                             ),
+            "new_vulnerabilities" to
+                    createAttributeDescriptor(
+                            "New Vulnerabilities",
+                            "Number of new vulnerability issues", -1, metricLink,
+                                             ),
+            "open_issues" to
+                    createAttributeDescriptor(
+                            "Number of Open Issues",
+                            "Total count of issues in the open state", -1, metricLink,
+                                             ),
+            "projects" to createAttributeDescriptor("Number of Projects", "Total number of projects", -1, metricLink),
+            "public_api" to createAttributeDescriptor("Public API", "Public api available", -1, metricLink),
+            "public_undocumented_api" to
+                    createAttributeDescriptor(
+                            "Public Undocumented API",
+                            "Undocumented api available", -1, metricLink,
+                                             ),
+            "reopened_issues" to
+                    createAttributeDescriptor(
+                            "Number of Reopened Issues",
+                            "Total count of issues in the reopened state", -1, metricLink,
+                                             ),
+            "security_hotspots" to
+                    createAttributeDescriptor(
+                            "Security Hotspots", "Number of security hotspots", -1,
+                            metricLink,
+                                             ),
+            "security_hotspots_reviewed_status" to
+                    createAttributeDescriptor(
+                            "Security Hotspots Reviewed Status",
+                            "Total number of reviewed security hotspots", -1, metricLink,
+                                             ),
+            "security_hotspots_to_review_status" to
+                    createAttributeDescriptor(
+                            "Security Hotspots to Review Status",
+                            "Number of security hotspots to review", -1, metricLink,
+                                             ),
+            "skipped_tests" to
+                    createAttributeDescriptor(
+                            "Number of skipped Tests", "Number of skipped unit tests", -1,
+                            metricLink,
+                                             ),
+            "sqale_debt_ratio" to
+                    createAttributeDescriptor(
+                            "SQale Debt Ratio",
+                            "Ratio between the cost to develop the software and the cost to fix it", -1, metricLink,
+                                             ),
+            "statements" to createAttributeDescriptor("Number of Statements", "Number of statements", -1, metricLink),
+            "test_errors" to
+                    createAttributeDescriptor(
+                            "Number of Test Errors", "Number of unit tests that have failed",
+                            -1, metricLink,
+                                             ),
+            "test_failures" to
+                    createAttributeDescriptor(
+                            "Number of Test Failures",
+                            "Number of unit tests that have failed with an unexpected exception", -1, metricLink,
+                                             ),
+            "test_failures" to
+                    createAttributeDescriptor(
+                            "Number of Test Failures",
+                            "Number of unit tests that have failed with an unexpected exception", -1, metricLink,
+                                             ),
+            "uncovered_conditions" to
+                    createAttributeDescriptor(
+                            "Uncovered Conditions",
+                            "Total number of uncovered conditions", -1, metricLink,
+                                             ),
+            "uncovered_lines" to
+                    createAttributeDescriptor(
+                            "Uncovered Lines", "Total number of uncovered lines", -1,
+                            metricLink,
+                                             ),
+            "violations" to
+                    createAttributeDescriptor(
+                            "Number of Violations", "Total count of issues in all states", -1,
+                            metricLink,
+                                             ),
+            "vulnerabilities" to
+                    createAttributeDescriptor(
+                            "Number of Vulnerabilities",
+                            "Number of vulnerability issues", -1, metricLink,
+                                             ),
+            "wont_fix_issues" to
+                    createAttributeDescriptor(
+                            "Number of Won't Fix Issues",
+                            "Total count of issues in the wont fix state", -1, metricLink,
+                                             ),
+                )
+}
+
+fun getAttributeDescriptorsWithPositiveDirection(metricLink: String): Map<String, AttributeDescriptor> {
+    return mapOf(
+            "branch_coverage" to
+                    createAttributeDescriptor(
+                            "Branch Coverage",
+                            "Density of fully covered boolean conditions in flow control structures", 1, metricLink,
+                                             ),
+            "coverage" to createAttributeDescriptor("Coverage", "Mix of branch and line coverage", 1, metricLink),
+            "line_coverage" to
+                    createAttributeDescriptor(
+                            "Line Coverage", "Density of fully covered lines of code", 1,
+                            metricLink,
+                                             ),
+            "new_branch_coverage" to
+                    createAttributeDescriptor(
+                            "New Branch Coverage",
+                            "Density of fully covered boolean conditions in flow control structures in new or updated code",
+                            1,
+                            metricLink,
+                                             ),
+            "new_coverage" to
+                    createAttributeDescriptor(
+                            "New Coverage",
+                            "Mix of branch and line coverage on new/updated code", 1, metricLink,
+                                             ),
+            "new_line_coverage" to
+                    createAttributeDescriptor(
+                            "New Line Coverage",
+                            "Density of fully covered lines of new/updated code", 1, metricLink,
+                                             ),
+            "public_documented_api_density" to
+                    createAttributeDescriptor(
+                            "Public Documented API Density",
+                            "Documented public api available", 1, metricLink,
+                                             ),
+            "pull_request_fixed_issues" to
+                    createAttributeDescriptor(
+                            "Pull request fixed issues",
+                            "Count of issues that would be fixed by the pull request", 1, metricLink,
+                                             ),
+            "security_hotspots_reviewed" to
+                    createAttributeDescriptor(
+                            "Security Hotspots Reviewed",
+                            "Percentage of reviewed (fixed or safe) security hotspots", 1, metricLink,
+                                             ),
+            "test_success_density" to
+                    createAttributeDescriptor(
+                            "Test Success Density",
+                            "Ratio between successful tests and all tests", 1, metricLink,
+                                             ),
+            "tests" to createAttributeDescriptor("Number of Tests", "Number of unit tests", 1, metricLink),
+                )
+}
+
+fun createAttributeDescriptor(
+title: String,
+description: String,
+direction: Int,
+link: String,
+): AttributeDescriptor {
+    return AttributeDescriptor(title = title, description = description, link = link, direction = direction)
 }

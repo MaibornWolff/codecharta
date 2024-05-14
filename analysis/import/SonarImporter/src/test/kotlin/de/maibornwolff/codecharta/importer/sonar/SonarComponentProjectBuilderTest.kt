@@ -10,10 +10,8 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
 class SonarComponentProjectBuilderTest {
-
-    @Test
-    fun `should insert a node from file component without key and use name as backup value`() {
-        // given
+@Test
+    fun `should insert a node from file component without key and use name as backup value`() { // given
         val measure = Measure("metric", "50.0")
         val name = "name"
         val component = Component("id", null, name, "path", Qualifier.FIL, listOf(measure).toMutableList())
@@ -29,8 +27,7 @@ class SonarComponentProjectBuilderTest {
     }
 
     @Test
-    fun `should insert a node from file component without key and name and use id as backup value`() {
-        // given
+    fun `should insert a node from file component without key and name and use id as backup value`() { // given
         val measure = Measure("metric", "50.0")
         val id = "id"
         val component = Component(id, null, null, null, Qualifier.FIL, listOf(measure).toMutableList())
@@ -46,8 +43,7 @@ class SonarComponentProjectBuilderTest {
     }
 
     @Test
-    fun `should insert a node from file component`() {
-        // given
+    fun `should insert a node from file component`() { // given
         val metric = "metric"
         val value = "50.0"
         val measure = Measure(metric, value)
@@ -72,8 +68,7 @@ class SonarComponentProjectBuilderTest {
     }
 
     @Test
-    fun `should ignore string measures`() {
-        // given
+    fun `should ignore string measures`() { // given
         val measure = Measure("metric", "bla")
         val component = Component("id", "key", "name", "path", Qualifier.FIL, listOf(measure).toMutableList())
         val projectBuilder = SonarComponentProjectBuilder()
@@ -88,8 +83,7 @@ class SonarComponentProjectBuilderTest {
     }
 
     @Test
-    fun `should insert a file node from its component`() {
-        // given
+    fun `should insert a file node from its component`() { // given
         val component = Component("id", "key", "name", "path", Qualifier.UTS)
         val projectBuilder = SonarComponentProjectBuilder()
 
@@ -103,8 +97,7 @@ class SonarComponentProjectBuilderTest {
     }
 
     @Test
-    fun `should insert a folder node from dir component`() {
-        // given
+    fun `should insert a folder node from dir component`() { // given
         val component = Component("id", "key", "name", "path", Qualifier.DIR)
         val projectBuilder = SonarComponentProjectBuilder()
 
@@ -116,8 +109,7 @@ class SonarComponentProjectBuilderTest {
     }
 
     @Test
-    fun `should insert component from component map`() {
-        // given
+    fun `should insert component from component map`() { // given
         val component = Component("id", "key", "name", "path", Qualifier.FIL)
         val components = ComponentMap()
         components.updateComponent(component)
@@ -131,12 +123,10 @@ class SonarComponentProjectBuilderTest {
     }
 
     @Test
-    fun `should insert component by path if configured`() {
-        // given
+    fun `should insert component by path if configured`() { // given
         val path = "someFileName"
         val component = Component("id", "key", "name", path, Qualifier.FIL)
-        val projectBuilder =
-            SonarComponentProjectBuilder(SonarCodeURLLinker.NULL, MetricNameTranslator.TRIVIAL, true)
+        val projectBuilder = SonarComponentProjectBuilder(SonarCodeURLLinker.NULL, MetricNameTranslator.TRIVIAL, true)
 
         // when
         val project = projectBuilder.addComponentAsNode(component).build()
@@ -152,11 +142,8 @@ class SonarComponentProjectBuilderTest {
     fun `should contain attribute descriptors in project after building`() {
         val path = "someFileName"
         val component = Component("id", "key", "name", path, Qualifier.FIL)
-        val projectBuilder =
-            SonarComponentProjectBuilder(SonarCodeURLLinker.NULL, MetricNameTranslator.TRIVIAL, true)
-        projectBuilder
-            .addComponentAsNode(component)
-            .addAttributeDescriptions(getAttributeDescriptors())
+        val projectBuilder = SonarComponentProjectBuilder(SonarCodeURLLinker.NULL, MetricNameTranslator.TRIVIAL, true)
+        projectBuilder.addComponentAsNode(component).addAttributeDescriptions(getAttributeDescriptors())
 
         val project = projectBuilder.build()
 

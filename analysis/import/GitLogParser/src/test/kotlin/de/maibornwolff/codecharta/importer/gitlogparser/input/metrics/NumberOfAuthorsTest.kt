@@ -6,9 +6,9 @@ import org.junit.jupiter.api.Test
 import java.time.OffsetDateTime
 
 class NumberOfAuthorsTest {
-    @Test
+@Test
     fun should_have_initial_value_zero() {
-        // when
+// when
         val metric = NumberOfAuthors()
 
         // then
@@ -16,8 +16,7 @@ class NumberOfAuthorsTest {
     }
 
     @Test
-    fun should_increase_by_first_author() {
-        // given
+    fun should_increase_by_first_author() { // given
         val metric = NumberOfAuthors()
 
         // when
@@ -28,8 +27,7 @@ class NumberOfAuthorsTest {
     }
 
     @Test
-    fun should_increase_only_once_for_an_author() {
-        // given
+    fun should_increase_only_once_for_an_author() { // given
         val metric = NumberOfAuthors()
 
         // when
@@ -42,8 +40,7 @@ class NumberOfAuthorsTest {
     }
 
     @Test
-    fun should_increase_for_different_author() {
-        // given
+    fun should_increase_for_different_author() { // given
         val metric = NumberOfAuthors()
 
         // when

@@ -8,6 +8,8 @@ import de.maibornwolff.codecharta.importer.gitlogparser.parser.LogParserStrategy
 import de.maibornwolff.codecharta.importer.gitlogparser.parser.git.GitLogNumstatRawParserStrategy
 import de.maibornwolff.codecharta.importer.gitlogparser.subcommands.LogScanCommand
 import de.maibornwolff.codecharta.importer.gitlogparser.subcommands.RepoScanCommand
+import de.maibornwolff.codecharta.model.AttributeDescriptor
+import de.maibornwolff.codecharta.model.AttributeGenerator
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
@@ -31,16 +33,15 @@ import java.util.stream.Stream
 @CommandLine.Command(
         name = GitLogParser.NAME,
         description = [GitLogParser.DESCRIPTION],
-    subcommands = [LogScanCommand::class, RepoScanCommand::class],
-        footer = [CodeChartaConstants.General.GENERIC_FOOTER]
-)
+        subcommands = [LogScanCommand::class, RepoScanCommand::class],
+        footer = [CodeChartaConstants.General.GENERIC_FOOTER],
+                    )
 class GitLogParser(
-    private val input: InputStream = System.`in`,
-    private val output: PrintStream = System.out,
-    private val error: PrintStream = System.err
-) : Callable<Unit>, InteractiveParser, PipeableParser {
-
-    private val inputFormatNames = GIT_LOG_NUMSTAT_RAW_REVERSED
+        private val input: InputStream = System.`in`,
+        private val output: PrintStream = System.out,
+        private val error: PrintStream = System.err,
+                  ) : Callable<Unit>, InteractiveParser, PipeableParser, AttributeGenerator {
+                  private val inputFormatNames = GIT_LOG_NUMSTAT_RAW_REVERSED
 
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
@@ -49,7 +50,7 @@ class GitLogParser(
     override val description = DESCRIPTION
 
     companion object {
-        const val NAME = "gitlogparser"
+    const val NAME = "gitlogparser"
         const val DESCRIPTION = "generates cc.json from git-log files"
 
         @JvmStatic
@@ -78,17 +79,18 @@ class GitLogParser(
 
     private val metricsFactory: MetricsFactory
         get() {
-            val nonChurnMetrics = listOf(
-                "age_in_weeks",
-                "number_of_authors",
-                "number_of_commits",
-                "number_of_renames",
-                "range_of_weeks_with_commits",
-                "successive_weeks_of_commits",
-                "weeks_with_commits",
-                "highly_coupled_files",
-                "median_coupled_files"
-            )
+            val nonChurnMetrics =
+                    listOf(
+                            "age_in_weeks",
+                            "number_of_authors",
+                            "number_of_commits",
+                            "number_of_renames",
+                            "range_of_weeks_with_commits",
+                            "successive_weeks_of_commits",
+                            "weeks_with_commits",
+                            "highly_coupled_files",
+                            "median_coupled_files",
+                          )
 
             return when (inputFormatNames) {
                 GIT_LOG_NUMSTAT_RAW_REVERSED -> MetricsFactory(nonChurnMetrics)
@@ -102,21 +104,22 @@ class GitLogParser(
     }
 
     internal fun buildProject(
-        gitLogFile: File,
-        gitLsFile: File,
-        outputFilePath: String?,
-        addAuthor: Boolean,
-        silent: Boolean,
-        compress: Boolean
+    gitLogFile: File,
+    gitLsFile: File,
+    outputFilePath: String?,
+    addAuthor: Boolean,
+    silent: Boolean,
+    compress: Boolean,
     ) {
-        var project = createProjectFromLog(
-            gitLogFile,
-            gitLsFile,
-            logParserStrategy,
-            metricsFactory,
-            addAuthor,
-            silent
-        )
+        var project =
+                createProjectFromLog(
+                        gitLogFile,
+                        gitLsFile,
+                        logParserStrategy,
+                        metricsFactory,
+                        addAuthor,
+                        silent,
+                                    )
 
         val pipedProject = ProjectDeserializer.deserializeProject(input)
         if (pipedProject != null) {
@@ -142,12 +145,12 @@ class GitLogParser(
     }
 
     private fun createProjectFromLog(
-        gitLogFile: File,
-        gitLsFile: File,
-        parserStrategy: LogParserStrategy,
-        metricsFactory: MetricsFactory,
-        containsAuthors: Boolean,
-        silent: Boolean = false
+    gitLogFile: File,
+    gitLsFile: File,
+    parserStrategy: LogParserStrategy,
+    metricsFactory: MetricsFactory,
+    containsAuthors: Boolean,
+    silent: Boolean = false,
     ): Project {
         val namesInProject = readFileNameListFile(gitLsFile)
         val encoding = guessEncoding(gitLogFile) ?: "UTF-8"
@@ -156,14 +159,19 @@ class GitLogParser(
         val projectConverter = ProjectConverter(containsAuthors)
         val logSizeInByte = gitLogFile.length()
         return GitLogProjectCreator(parserStrategy, metricsFactory, projectConverter, logSizeInByte, silent).parse(
-            lines,
-            namesInProject
-        )
+                lines,
+                namesInProject,
+                                                                                                                  )
     }
 
     override fun getDialog(): ParserDialogInterface = ParserDialog
+
     override fun isApplicable(resourceToBeParsed: String): Boolean {
         println("Checking if GitLogParser is applicable...")
         return ResourceSearchHelper.isFolderDirectlyInGivenDirectory(resourceToBeParsed, ".git")
+    }
+
+    override fun getAttributeDescriptorMaps(): Map<String, AttributeDescriptor> {
+        return getAttributeDescriptors()
     }
 }

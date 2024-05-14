@@ -12,19 +12,18 @@ import java.io.File
 import java.lang.reflect.Field
 
 class ProjectParserTest {
-
-    private fun addMockAnalyzerToProjectParser(projectParser: ProjectParser) {
+private fun addMockAnalyzerToProjectParser(projectParser: ProjectParser) {
         val sonarAnalyzers = projectParser.javaClass.getDeclaredField("sonarAnalyzers") as Field
         sonarAnalyzers.isAccessible = true
 
         val mockAnalyzerJava: SonarAnalyzer = mock()
         whenever(mockAnalyzerJava.scanFiles(any(), any())).thenReturn(createmMockResponseJava())
-        whenever(mockAnalyzerJava.FILE_EXTENSION).thenReturn("java")
+        whenever(mockAnalyzerJava.fileExtension).thenReturn("java")
         projectParser.sonarAnalyzers.add(mockAnalyzerJava)
 
         val mockAnalyzerPython: SonarAnalyzer = mock()
         whenever(mockAnalyzerPython.scanFiles(any(), any())).thenReturn(createmMockResponsePython())
-        whenever(mockAnalyzerPython.FILE_EXTENSION).thenReturn("py")
+        whenever(mockAnalyzerPython.fileExtension).thenReturn("py")
         projectParser.sonarAnalyzers.add(mockAnalyzerPython)
     }
 
@@ -117,11 +116,19 @@ class ProjectParserTest {
         assertThat(projectParser.metricKinds.toString()).contains("functions", "ncloc", "something_else")
     }
 
-    private fun addFileInProject(currentProject: ProjectMetrics, file: String) {
+    private fun addFileInProject(
+    currentProject: ProjectMetrics,
+    file: String,
+    ) {
         currentProject.projectMetrics[file] = FileMetricMap()
     }
 
-    private fun addMetricToFileInProject(currentProject: ProjectMetrics, file: String, metric: String, value: Int) {
+    private fun addMetricToFileInProject(
+    currentProject: ProjectMetrics,
+    file: String,
+    metric: String,
+    value: Int,
+    ) {
         currentProject.projectMetrics[file]?.add(metric, value)
     }
 }

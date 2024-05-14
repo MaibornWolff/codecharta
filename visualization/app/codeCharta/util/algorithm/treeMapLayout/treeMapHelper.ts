@@ -91,7 +91,7 @@ function buildNodeFrom(
 	const { x0, x1, y0, y1, data } = squaredNode
 	const isNodeLeaf = isLeaf(squaredNode)
 	const flattened = isNodeFlat(data, state)
-	const heightValue = getHeightValue(state, squaredNode, maxHeight, flattened)
+	const heightValue = getHeightValue(state, data, maxHeight, flattened)
 	const depth = data.path.split("/").length - 2
 	const height = isNodeLeaf ? resolveHeightValue(heightValue, heightScale, data, state) * mapSizeResolutionScaling : FOLDER_HEIGHT
 	const width = x1 - x0
@@ -127,16 +127,26 @@ function buildNodeFrom(
 	}
 }
 
-export function getHeightValue(state: CcState, squaredNode: HierarchyRectangularNode<CodeMapNode>, maxHeight: number, flattened: boolean) {
+export function getHeightValue(state: CcState, squaredNode: CodeMapNode, maxHeight: number, flattened: boolean) {
 	const mapSizeResolutionScaling = getMapResolutionScaleFactor(state.files)
 
 	if (flattened) {
 		return MIN_BUILDING_HEIGHT
 	}
 
-	let heightValue = squaredNode.data.attributes[state.dynamicSettings.heightMetric] || HEIGHT_VALUE_WHEN_METRIC_NOT_FOUND
+	let heightValue = squaredNode.attributes[state.dynamicSettings.heightMetric] || HEIGHT_VALUE_WHEN_METRIC_NOT_FOUND
 	heightValue *= mapSizeResolutionScaling
 
+	const heightMetric = state.dynamicSettings.heightMetric
+	const attributeDescriptors = state.fileSettings.attributeDescriptors
+	const isAttributeDirectionInversed = attributeDescriptors[heightMetric]?.direction === 1
+
+	if (isAttributeDirectionInversed) {
+		if (state.appSettings.invertHeight) {
+			return heightValue
+		}
+		return maxHeight - heightValue
+	}
 	if (state.appSettings.invertHeight) {
 		return maxHeight - heightValue
 	}
@@ -260,6 +270,7 @@ export const TreeMapHelper = {
 	buildNodeFrom,
 	isNodeFlat,
 	resolveHeightValue,
+	getHeightValue,
 	FOLDER_HEIGHT,
 	MIN_BUILDING_HEIGHT,
 	HEIGHT_VALUE_WHEN_METRIC_NOT_FOUND

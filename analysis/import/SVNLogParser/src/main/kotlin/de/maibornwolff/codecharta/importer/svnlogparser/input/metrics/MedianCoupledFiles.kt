@@ -4,7 +4,7 @@ import de.maibornwolff.codecharta.importer.svnlogparser.input.Commit
 import de.maibornwolff.codecharta.model.AttributeType
 
 class MedianCoupledFiles : Metric {
-    private val numberCommitedFiles = mutableListOf<Int>()
+private val numberCommitedFiles = mutableListOf<Int>()
 
     private fun Iterable<Double>.median(): Double {
         val list = this.sorted()
@@ -35,6 +35,6 @@ class MedianCoupledFiles : Metric {
     }
 
     override fun attributeType(): AttributeType {
-        return AttributeType.relative
+        return AttributeType.RELATIVE
     }
 }

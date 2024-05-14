@@ -6,11 +6,10 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 
 class PathTest {
-
     @Nested
     @DisplayName("PathTest > trivial path")
     inner class TrivialPath {
-        val trivialPath = Path.TRIVIAL
+    val trivialPath = Path.TRIVIAL
 
         @Test
         fun `should behave as expected`() {
@@ -26,7 +25,7 @@ class PathTest {
     @Nested
     @DisplayName("PathTest > non-trivial path of length one")
     inner class NonTrivialPathLengthOne {
-        val edgeName = "bla"
+    val edgeName = "bla"
         val nonTrivialPath = Path(edgeName)
 
         @Test
@@ -72,7 +71,7 @@ class PathTest {
     @Nested
     @DisplayName("Path Test > non-trivial path of length two")
     inner class NonTrivialPathLengthTwo {
-        val firstEdgeName = "first"
+    val firstEdgeName = "first"
         val secondEdgeName = "second"
         val nonTrivialPath = Path(firstEdgeName, secondEdgeName)
         val firstPath = Path(nonTrivialPath.edgesList[0])
@@ -120,28 +119,41 @@ class PathTest {
 
     @Test
     fun `fitting edges from tail with should calculate correctly`() {
-        val paths = listOf(
-            Path(),
-            Path("1"),
-            Path("1", "2"),
-            Path("1", "2", "3"),
-            Path("a"),
-            Path("1", "a"),
-            Path("0", "1", "a"),
-            Path("1", "2", "a"),
-            Path("0", "1", "2", "a")
-        )
+        val paths =
+                listOf(
+                        Path(),
+                        Path("1"),
+                        Path("1", "2"),
+                        Path("1", "2", "3"),
+                        Path("a"),
+                        Path("1", "a"),
+                        Path("0", "1", "a"),
+                        Path("1", "2", "a"),
+                        Path("0", "1", "2", "a"),
+                      )
 
-        assertThat(paths.map { paths[0].fittingEdgesFromTailWith(it) })
-            .isEqualTo(listOf(0, 0, 0, 0, 0, 0, 0, 0, 0))
+        assertThat(
+                paths.map {
+                    paths[0].fittingEdgesFromTailWith(it)
+                },
+                  ).isEqualTo(listOf(0, 0, 0, 0, 0, 0, 0, 0, 0))
 
-        assertThat(paths.map { paths[4].fittingEdgesFromTailWith(it) })
-            .isEqualTo(listOf(0, 0, 0, 0, 1, 1, 1, 1, 1))
+        assertThat(
+                paths.map {
+                    paths[4].fittingEdgesFromTailWith(it)
+                },
+                  ).isEqualTo(listOf(0, 0, 0, 0, 1, 1, 1, 1, 1))
 
-        assertThat(paths.map { paths[5].fittingEdgesFromTailWith(it) })
-            .isEqualTo(listOf(0, 0, 0, 0, 1, 2, 2, 1, 1))
+        assertThat(
+                paths.map {
+                    paths[5].fittingEdgesFromTailWith(it)
+                },
+                  ).isEqualTo(listOf(0, 0, 0, 0, 1, 2, 2, 1, 1))
 
-        assertThat(paths.map { paths[7].fittingEdgesFromTailWith(it) })
-            .isEqualTo(listOf(0, 0, 0, 0, 1, 1, 1, 3, 3))
+        assertThat(
+                paths.map {
+                    paths[7].fittingEdgesFromTailWith(it)
+                },
+                  ).isEqualTo(listOf(0, 0, 0, 0, 1, 1, 1, 3, 3))
     }
 }

@@ -3,7 +3,7 @@ package de.maibornwolff.codecharta.importer.svnlogparser.input.metrics
 import de.maibornwolff.codecharta.importer.svnlogparser.input.Modification
 
 class AbsoluteCodeChurn : Metric {
-    private var accumulatedNumberOfLinesAdded: Long = 0
+private var accumulatedNumberOfLinesAdded: Long = 0
     private var accumulatedNumberOfLinesDeleted: Long = 0
 
     override fun description(): String {

@@ -1,47 +1,72 @@
 {
-	"checksum": "d7cd700b3ca7f1eab8f8061aab6e5c54",
-	"data": {
-		"projectName": "",
-		"apiVersion": "1.3",
-		"nodes": [
-			{
-				"name": "root",
-				"type": "Folder",
-				"attributes": {},
-				"children": [
-					{
-						"name": "bar",
-						"type": "Folder",
-						"attributes": {},
-						"link": "",
-						"children": [
-							{
-								"name": "FooBar.java",
-								"type": "File",
-								"attributes": {
-									"foo": 0.0,
-									"bar": 18.0
-								},
-								"link": "",
-								"children": []
-							}
-						]
-					},
-					{
-						"name": "foo.java",
-						"type": "File",
-						"attributes": {
-							"barx": 42.0,
-							"bar": 18.0
-						},
-						"children": []
-					}
-				]
-			}
-		],
-		"edges": [],
-		"attributeTypes": {},
-    "attributeDescriptors":{},
-		"blacklist": []
-	}
+  "checksum": "51b1a275c2971a5be6de7c441e75201f",
+  "data": {
+    "projectName": "",
+    "nodes": [
+      {
+        "name": "root",
+        "type": "Folder",
+        "attributes": {},
+        "children": [
+          {
+            "name": "bar",
+            "type": "Folder",
+            "attributes": {},
+            "link": "",
+            "children": [
+              {
+                "name": "FooBar.java",
+                "type": "File",
+                "attributes": {
+                  "foo": 0.0,
+                  "bar": 18.0
+                },
+                "link": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "name": "foo.java",
+            "type": "File",
+            "attributes": {
+              "barx": 42.0,
+              "bar": 18.0
+            },
+            "children": []
+          }
+        ]
+      }
+    ],
+    "apiVersion": "1.3",
+    "edges": [],
+    "attributeTypes": {},
+    "attributeDescriptors": {
+      "bar": {
+        "title": "bar",
+        "description": "",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "",
+        "direction": -1
+      },
+      "barx": {
+        "title": "barx",
+        "description": "",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "",
+        "direction": -1
+      },
+      "foo": {
+        "title": "foo",
+        "description": "",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "",
+        "direction": -1
+      }
+    },
+    "blacklist": []
+  }
 }

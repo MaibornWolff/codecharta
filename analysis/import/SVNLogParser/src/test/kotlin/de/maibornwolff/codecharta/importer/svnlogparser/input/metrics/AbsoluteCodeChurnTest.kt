@@ -5,12 +5,13 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 class AbsoluteCodeChurnTest {
-
-    private val FILENAME = "filename"
+    companion object {
+    private const val FILENAME = "filename"
+    }
 
     @Test
     fun `should have initial value zero`() {
-        // when
+// when
         val metric = AbsoluteCodeChurn()
 
         // then
@@ -18,8 +19,7 @@ class AbsoluteCodeChurnTest {
     }
 
     @Test
-    fun `should increase by single modification`() {
-        // given
+    fun `should increase by single modification`() { // given
         val metric = AbsoluteCodeChurn()
 
         // when
@@ -30,8 +30,7 @@ class AbsoluteCodeChurnTest {
     }
 
     @Test
-    fun should_increase_by_multiple_modification() {
-        // given
+    fun should_increase_by_multiple_modification() { // given
         val metric = AbsoluteCodeChurn()
 
         // when

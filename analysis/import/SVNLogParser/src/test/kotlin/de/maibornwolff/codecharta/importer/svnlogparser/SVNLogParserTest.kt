@@ -20,7 +20,7 @@ import java.io.PrintStream
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class SVNLogParserTest {
-    val errContent = ByteArrayOutputStream()
+val errContent = ByteArrayOutputStream()
     val originalErr = System.err
 
     @AfterEach
@@ -29,25 +29,26 @@ class SVNLogParserTest {
     }
 
     companion object {
-        @JvmStatic
+    @JvmStatic
         fun provideInvalidInputFiles(): List<Arguments> {
             return listOf(
                     Arguments.of("src/test/resources/my/empty/repo"),
                     Arguments.of("src/test/resources/this/does/not/exist"),
                     Arguments.of(""),
-                    Arguments.of("src/test/resources/my"))
+                    Arguments.of("src/test/resources/my"),
+                         )
         }
     }
 
     @Test
     fun `should create json uncompressed file`() {
         main(
-            arrayOf(
-                "src/test/resources/example_svn.log",
-                "--output-file=src/test/resources/svn-analysis.cc.json",
-                "--not-compressed",
-                "--silent"
-                   )
+                arrayOf(
+                        "src/test/resources/example_svn.log",
+                        "--output-file=src/test/resources/svn-analysis.cc.json",
+                        "--not-compressed",
+                        "--silent",
+                       ),
             )
         val file = File("src/test/resources/svn-analysis.cc.json")
         file.deleteOnExit()
@@ -58,10 +59,10 @@ class SVNLogParserTest {
     @Test
     fun `should create json gzip file`() {
         main(
-            arrayOf(
-                "src/test/resources/example_svn.log",
-                "--output-file=src/test/resources/svn-analysis.cc.json",
-                   )
+                arrayOf(
+                        "src/test/resources/example_svn.log",
+                        "--output-file=src/test/resources/svn-analysis.cc.json",
+                       ),
             )
         val file = File("src/test/resources/svn-analysis.cc.json.gz")
         file.deleteOnExit()

@@ -1,15 +1,31 @@
 import { Injectable } from "@angular/core"
 import { MatDialog } from "@angular/material/dialog"
-import { ColorRange, MapColors, CcState } from "../../../codeCharta.model"
+import { State, Store } from "@ngrx/store"
+import { first } from "rxjs"
+import { CcState } from "../../../codeCharta.model"
+import { getNumberOfTopLabels } from "../../../state/effects/updateVisibleTopLabels/getNumberOfTopLabels"
+import { codeMapNodesSelector } from "../../../state/selectors/accumulatedData/codeMapNodes.selector"
 import { metricDataSelector } from "../../../state/selectors/accumulatedData/metricData/metricData.selector"
+import { selectedColorMetricDataSelector } from "../../../state/selectors/accumulatedData/metricData/selectedColorMetricData.selector"
+import { setAmountOfEdgePreviews } from "../../../state/store/appSettings/amountOfEdgePreviews/amountOfEdgePreviews.actions"
+import { defaultAmountOfEdgesPreviews } from "../../../state/store/appSettings/amountOfEdgePreviews/amountOfEdgePreviews.reducer"
+import { setAmountOfTopLabels } from "../../../state/store/appSettings/amountOfTopLabels/amountOfTopLabels.actions"
+import { setEdgeHeight } from "../../../state/store/appSettings/edgeHeight/edgeHeight.actions"
+import { defaultEdgeHeight } from "../../../state/store/appSettings/edgeHeight/edgeHeight.reducer"
 import { setMapColors } from "../../../state/store/appSettings/mapColors/mapColors.actions"
+import { defaultMapColors } from "../../../state/store/appSettings/mapColors/mapColors.reducer"
+import { setScaling } from "../../../state/store/appSettings/scaling/scaling.actions"
+import { defaultScaling } from "../../../state/store/appSettings/scaling/scaling.reducer"
+import { calculateInitialColorRange } from "../../../state/store/dynamicSettings/colorRange/calculateInitialColorRange"
 import { setColorRange } from "../../../state/store/dynamicSettings/colorRange/colorRange.actions"
-import { ScenarioHelper } from "./scenarioHelper"
+import { setEdgeMetric } from "../../../state/store/dynamicSettings/edgeMetric/edgeMetric.actions"
+import { setMargin } from "../../../state/store/dynamicSettings/margin/margin.actions"
+import { defaultMargin } from "../../../state/store/dynamicSettings/margin/margin.reducer"
+import { setState } from "../../../state/store/state.actions"
 import { ThreeCameraService } from "../../codeMap/threeViewer/threeCamera.service"
 import { ThreeOrbitControlsService } from "../../codeMap/threeViewer/threeOrbitControls.service"
 import { ErrorDialogComponent } from "../../dialogs/errorDialog/errorDialog.component"
-import { Store, State } from "@ngrx/store"
-import { setState } from "../../../state/store/state.actions"
+import { ScenarioHelper } from "./scenarioHelper"
 
 @Injectable()
 export class ScenarioService {
@@ -29,8 +45,47 @@ export class ScenarioService {
 		const scenario = ScenarioHelper.scenarios.get(name)
 		const scenarioSettings = ScenarioHelper.getScenarioSettings(scenario)
 		this.store.dispatch(setState({ value: scenarioSettings }))
-		this.store.dispatch(setColorRange({ value: scenarioSettings.dynamicSettings.colorRange as ColorRange }))
-		this.store.dispatch(setMapColors({ value: scenarioSettings.appSettings.mapColors as MapColors }))
+
+		if (!scenarioSettings.appSettings.amountOfTopLabels) {
+			this.store
+				.select(codeMapNodesSelector)
+				.pipe(first())
+				.subscribe(codeMapNodes => {
+					const amountOfTopLabels = getNumberOfTopLabels(codeMapNodes)
+					this.store.dispatch(setAmountOfTopLabels({ value: amountOfTopLabels }))
+				})
+		}
+		if (!scenarioSettings.appSettings.mapColors) {
+			this.store.dispatch(setMapColors({ value: defaultMapColors }))
+		}
+		if (!scenarioSettings.appSettings.edgeHeight) {
+			this.store.dispatch(setEdgeHeight({ value: defaultEdgeHeight }))
+		}
+		if (!scenarioSettings.appSettings.amountOfEdgePreviews) {
+			this.store.dispatch(setAmountOfEdgePreviews({ value: defaultAmountOfEdgesPreviews }))
+		}
+		if (!scenarioSettings.appSettings.scaling) {
+			this.store.dispatch(setScaling({ value: defaultScaling }))
+		}
+		if (!scenarioSettings.dynamicSettings.colorRange) {
+			this.store
+				.select(selectedColorMetricDataSelector)
+				.pipe(first())
+				.subscribe(selectedColorMetricData => {
+					this.store.dispatch(setColorRange({ value: calculateInitialColorRange(selectedColorMetricData) }))
+				})
+		}
+		if (!scenarioSettings.dynamicSettings.margin) {
+			this.store.dispatch(setMargin({ value: defaultMargin }))
+		}
+		if (!scenarioSettings.dynamicSettings.edgeMetric) {
+			this.store
+				.select(metricDataSelector)
+				.pipe(first())
+				.subscribe(metricData => {
+					this.store.dispatch(setEdgeMetric({ value: metricData.edgeMetricData[0]?.name }))
+				})
+		}
 
 		if (scenario.camera) {
 			// @ts-ignore -- we know that it is not a partial when it is set

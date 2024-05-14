@@ -5,10 +5,12 @@ import kotlin.test.assertEquals
 import kotlin.test.assertSame
 
 class CompressedStreamHandlerTest {
-    val EXAMPLE_COMPRESSED = "exampleCompressed.txt.gz"
-    val EXAMPLE_UNCOMPRESSED = "exampleUncompressed.txt"
-    val EXAMPLE_EMPTY = "exampleEmpty"
-    val EXAMPLE_ONE_BYTE = "exampleOneByte"
+    companion object {
+    private const val EXAMPLE_COMPRESSED = "exampleCompressed.txt.gz"
+        private const val EXAMPLE_UNCOMPRESSED = "exampleUncompressed.txt"
+        private const val EXAMPLE_EMPTY = "exampleEmpty"
+        private const val EXAMPLE_ONE_BYTE = "exampleOneByte"
+    }
 
     @Test
     fun `should be able to read text from compressed input stream`() {

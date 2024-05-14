@@ -1,5 +1,8 @@
 # MetricGardener Importer
 
+> Attention: The direct execution of metric-gardener has been temporarily disabled. Please provide the JSON files
+> directly.
+
 This importer allows to use metrics calculated by [MetricGardener](https://github.com/MaibornWolff/metric-gardener), a
 multi-language code parser based on [tree-sitter](https://github.com/tree-sitter/tree-sitter). The importer can be used
 to parse files locally or to just import a MetricGardener.json file and convert it into a regular CodeCharta.cc.json
@@ -11,16 +14,19 @@ our [GitHub Pages](https://maibornwolff.github.io/codecharta/docs/metricgardener
 
 ## Additional Requirements
 
-> Also refer to the [Metric-Gardener GitHub](https://github.com/MaibornWolff/metric-gardener) page, as the requirements can change
+> Also refer to the [Metric-Gardener GitHub](https://github.com/MaibornWolff/metric-gardener) page, as the requirements
+> can change
 
-If you want to execute the `metric-gardener`, either with your own installation or indirectly through the `ccsh`, you need to install the additional requirements listed below:
+If you want to execute the `metric-gardener`, either with your own installation or indirectly through the `ccsh`, you
+need to install the additional requirements listed below:
 
 ### Windows
 
 -   Python
 -   C/C++ compiler toolchain (e.g. Visual Studio Build Tools 2022 with "Desktop development with C++")
 
-> You might need to install additional packages to python depending on its version. Please refer to the node-gyp GitHub page for help.
+> You might need to install additional packages to python depending on its version. Please refer to the node-gyp GitHub
+> page for help.
 
 ### Unix
 
@@ -31,12 +37,14 @@ If you want to execute the `metric-gardener`, either with your own installation 
 
 ## Supported Metrics
 
--   mcc
--   functions
--   classes
--   lines_of_code
--   comment_lines
--   real_lines_of_code
+| Metric               | Description                                                                                                                       |
+| -------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| `mcc`                | Maximum cyclic complexity based on paths through the code by McCabe                                                               |
+| `functions`          | Number of functions                                                                                                               |
+| `classes`            | Number of classes                                                                                                                 |
+| `lines_of_code`      | Lines of code including empty lines and comments                                                                                  |
+| `comment_lines`      | Number of lines containing either a comment or commented-out code                                                                 |
+| `real_lines_of_code` | Number of physical lines that contain at least one character which is neither a whitespace nor a tabulation nor part of a comment |
 
 ## Usage of the MetricGardener Importer
 

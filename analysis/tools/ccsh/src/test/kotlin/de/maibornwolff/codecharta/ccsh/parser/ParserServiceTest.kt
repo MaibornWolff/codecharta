@@ -26,8 +26,7 @@ import java.io.PrintStream
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ParserServiceTest {
-
-    private val outContent = ByteArrayOutputStream()
+private val outContent = ByteArrayOutputStream()
     private val originalOut = System.out
     private val cmdLine = CommandLine(Ccsh())
 
@@ -47,25 +46,25 @@ class ParserServiceTest {
     }
 
     companion object {
-        @JvmStatic
+    @JvmStatic
         fun providerParserArguments(): List<Arguments> {
             return listOf(
-                Arguments.of("csvexport"),
-                Arguments.of("edgefilter"),
-                Arguments.of("merge"),
-                Arguments.of("modify"),
-                Arguments.of("codemaatimport"),
-                Arguments.of("csvimport"),
-                Arguments.of("sourcemonitorimport"),
-                Arguments.of("gitlogparser"),
-                Arguments.of("metricgardenerimport"),
-                Arguments.of("sonarimport"),
-                Arguments.of("sourcecodeparser"),
-                Arguments.of("svnlogparser"),
-                Arguments.of("tokeiimporter"),
-                Arguments.of("rawtextparser"),
-                Arguments.of("check")
-            )
+                    Arguments.of("csvexport"),
+                    Arguments.of("edgefilter"),
+                    Arguments.of("merge"),
+                    Arguments.of("modify"),
+                    Arguments.of("codemaatimport"),
+                    Arguments.of("csvimport"),
+                    Arguments.of("sourcemonitorimport"),
+                    Arguments.of("gitlogparser"),
+                    Arguments.of("metricgardenerimport"),
+                    Arguments.of("sonarimport"),
+                    Arguments.of("sourcecodeparser"),
+                    Arguments.of("svnlogparser"),
+                    Arguments.of("tokeiimporter"),
+                    Arguments.of("rawtextparser"),
+                    Arguments.of("check"),
+                         )
         }
     }
 
@@ -75,20 +74,19 @@ class ParserServiceTest {
         val parser = mockParserObject(selectedParser)
 
         val collectedArgs = parser.getDialog().collectParserArgs()
-        val expectedParserCommand = "ccsh " + selectedParser + " " + collectedArgs.map { x -> '"' + x + '"' }.joinToString(" ")
+        val expectedParserCommand =
+                "ccsh " + selectedParser + " " + collectedArgs.map { x -> '"' + x + '"' }.joinToString(" ")
 
         val selectedParserList = listOf(selectedParser)
         val mockPicocliParserRepository = mockParserRepository(selectedParser, emptyList())
 
         ParserService.configureParserSelection(cmdLine, mockPicocliParserRepository, selectedParserList)
 
-        Assertions.assertThat(outContent.toString())
-                .contains(expectedParserCommand)
+        Assertions.assertThat(outContent.toString()).contains(expectedParserCommand)
     }
 
     @Test
-    fun `should output empty list for parser suggestions if no usable parsers were found`() {
-        // Parser name is chosen arbitrarily
+    fun `should output empty list for parser suggestions if no usable parsers were found`() { // Parser name is chosen arbitrarily
         val mockParserRepository = mockParserRepository("check", emptyList())
 
         val usableParsers = ParserService.getParserSuggestions(cmdLine, mockParserRepository, "dummy")
@@ -99,8 +97,7 @@ class ParserServiceTest {
 
     @Test
     fun `should output parser name list of user selected parsers from parser suggestions`() {
-        val expectedUsualParsers = listOf("check", "validate")
-        // Parser name is chosen arbitrarily
+        val expectedUsualParsers = listOf("check", "validate") // Parser name is chosen arbitrarily
         val mockParserRepository = mockParserRepository("check", expectedUsualParsers)
         val actualUsableParsers = ParserService.getParserSuggestions(cmdLine, mockParserRepository, "dummy")
 
@@ -113,25 +110,29 @@ class ParserServiceTest {
 
     @Test
     fun `should start configuration for each selected parser`() {
-        val selectedParserList = listOf("check",
-                "edgefilter",
-                "sonarimport",
-                "svnlogparser",
-                "merge",
-                "gitlogparser",
-                "rawtextparser",
-                "sourcemonitorimport",
-                "tokeiimporter",
-                "sourcecodeparser",
-                "modify",
-                "csvexport",
-                "codemaatimport",
-                "metricgardenerimport",
-                "csvimport")
+        val selectedParserList =
+                listOf(
+                        "check",
+                        "edgefilter",
+                        "sonarimport",
+                        "svnlogparser",
+                        "merge",
+                        "gitlogparser",
+                        "rawtextparser",
+                        "sourcemonitorimport",
+                        "tokeiimporter",
+                        "sourcecodeparser",
+                        "modify",
+                        "csvexport",
+                        "codemaatimport",
+                        "metricgardenerimport",
+                        "csvimport",
+                      )
 
         val mockPicocliParserRepository = mockParserRepository(selectedParserList[0], emptyList())
 
-        val configuredParsers = ParserService.configureParserSelection(cmdLine, mockPicocliParserRepository, selectedParserList)
+        val configuredParsers =
+                ParserService.configureParserSelection(cmdLine, mockPicocliParserRepository, selectedParserList)
 
         Assertions.assertThat(configuredParsers).isNotEmpty
         Assertions.assertThat(configuredParsers).size().isEqualTo(selectedParserList.size)
@@ -199,7 +200,10 @@ class ParserServiceTest {
         return obj
     }
 
-    private fun mockParserRepository(mockParserName: String, usableParsers: List<String>): PicocliParserRepository {
+    private fun mockParserRepository(
+    mockParserName: String,
+    usableParsers: List<String>,
+    ): PicocliParserRepository {
         val obj = mockkClass(PicocliParserRepository::class)
 
         every {

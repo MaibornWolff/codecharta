@@ -1,17 +1,19 @@
-<mat-card appearance="outlined" id="codemap-context-menu" *ngIf="codeMapNode$ | async; let codeMapNode">
-	<div *ngIf="codeMapNode?.children?.length > 0">
+@if (codeMapNode$ | async; as codeMapNode) {
+<mat-card appearance="outlined" id="codemap-context-menu">
+	@if (codeMapNode?.children?.length > 0) {
+	<div>
 		<cc-mark-folder-row></cc-mark-folder-row>
 		<mat-divider></mat-divider>
 	</div>
-
+	}
 	<div class="button-group">
 		<button mat-button disabled="true" title="{{ codeMapNode.path }}">
 			{{ codeMapNode.path | lastPartOfNodePath }}
 		</button>
-
 		<cc-focus-buttons [codeMapNode]="codeMapNode"></cc-focus-buttons>
 		<cc-flatten-buttons [codeMapNode]="codeMapNode"></cc-flatten-buttons>
 		<cc-highlight-buttons [codeMapNode]="codeMapNode"></cc-highlight-buttons>
 		<cc-exclude-button [codeMapNode]="codeMapNode"></cc-exclude-button>
 	</div>
 </mat-card>
+}

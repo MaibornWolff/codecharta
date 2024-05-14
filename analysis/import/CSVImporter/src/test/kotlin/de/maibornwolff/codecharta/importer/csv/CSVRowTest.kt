@@ -8,15 +8,16 @@ import kotlin.test.assertFailsWith
 private const val PATH_SEPARATOR = '\\'
 
 class CSVRowTest {
-    private val header = CSVHeader(arrayOf("head1", "head2", "head3", "path", "attrib", "attrib2", ""))
+private val header = CSVHeader(arrayOf("head1", "head2", "head3", "path", "attrib", "attrib2", ""))
 
     @Test
     fun `path column header should be used as node name`() {
-        val nameExpectedFilenameMap = mapOf(
-            Pair("someNodeName", "someNodeName"),
-            Pair("someDir\\someName", "someName"),
-            Pair("someDir\\anotherDir\\anotherName", "anotherName")
-        )
+        val nameExpectedFilenameMap =
+                mapOf(
+                        Pair("someNodeName", "someNodeName"),
+                        Pair("someDir\\someName", "someName"),
+                        Pair("someDir\\anotherDir\\anotherName", "anotherName"),
+                     )
 
         for (name in nameExpectedFilenameMap.keys) {
             val node = CSVRow(arrayOf("projectName", "blubb2", "blubb3", name), header, PATH_SEPARATOR).asNode()
@@ -26,11 +27,12 @@ class CSVRowTest {
 
     @Test
     fun `path in Tree should be absolute file name from column header`() {
-        val nameExpectedFolderWithFileMap = mapOf(
-            Pair("someNodeName", Path.TRIVIAL),
-            Pair("someDir\\someName", Path(listOf("someDir"))),
-            Pair("someDir\\anotherDir\\anotherName", Path(listOf("someDir", "anotherDir")))
-        )
+        val nameExpectedFolderWithFileMap =
+                mapOf(
+                        Pair("someNodeName", Path.TRIVIAL),
+                        Pair("someDir\\someName", Path(listOf("someDir"))),
+                        Pair("someDir\\anotherDir\\anotherName", Path(listOf("someDir", "anotherDir"))),
+                     )
 
         for (name in nameExpectedFolderWithFileMap.keys) {
             val path = CSVRow(arrayOf("projectName", "blubb2", "blubb3", name), header, PATH_SEPARATOR).pathInTree()

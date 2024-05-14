@@ -13,16 +13,14 @@ import org.junit.jupiter.api.Assertions.assertNotEquals
 import org.junit.jupiter.api.Test
 
 class SonarMeasuresAPIImporterTest {
-
-    private val metrics = listOf("MetricOne", "MetricTwo", "MetricThree")
+private val metrics = listOf("MetricOne", "MetricTwo", "MetricThree")
 
     private var measuresDS: SonarMeasuresAPIDatasource? = mockk()
 
     private var metricsDS: SonarMetricsAPIDatasource = mockk()
 
     @Test
-    fun `should get metrics when metrics given`() {
-        // given
+    fun `should get metrics when metrics given`() { // given
         val sonar = SonarMeasuresAPIImporter(measuresDS, metricsDS)
 
         // when
@@ -33,8 +31,7 @@ class SonarMeasuresAPIImporterTest {
     }
 
     @Test
-    fun `should return metrics from metrics ds when no metric given`() {
-        // given
+    fun `should return metrics from metrics ds when no metric given`() { // given
         val emptyMetrics = listOf<String>()
         every { metricsDS.availableMetricKeys } returns listOf("metricKey")
         val sonar = SonarMeasuresAPIImporter(measuresDS, metricsDS)
@@ -47,8 +44,7 @@ class SonarMeasuresAPIImporterTest {
     }
 
     @Test
-    fun `should return project with node from get project from measure api`() {
-        // given
+    fun `should return project with node from get project from measure api`() { // given
         val projectKey = "testProject"
         val sonar = SonarMeasuresAPIImporter(measuresDS, metricsDS)
         val components = ComponentMap()
@@ -57,8 +53,7 @@ class SonarMeasuresAPIImporterTest {
         every { measuresDS!!.getComponentMap(projectKey, metrics) } returns components
 
         // when
-        val project =
-            sonar.getProjectFromMeasureAPI("testProject", metrics)
+        val project = sonar.getProjectFromMeasureAPI("testProject", metrics)
 
         // then
         assertNotEquals(project, null)
@@ -66,8 +61,7 @@ class SonarMeasuresAPIImporterTest {
     }
 
     @Test
-    fun `should insert no attribute descriptors if requesting unknown metric`() {
-        // given
+    fun `should insert no attribute descriptors if requesting unknown metric`() { // given
         val projectKey = "testProject"
         val sonar = SonarMeasuresAPIImporter(measuresDS, metricsDS)
         val components = ComponentMap()
@@ -76,18 +70,20 @@ class SonarMeasuresAPIImporterTest {
         every { measuresDS!!.getComponentMap(projectKey, metrics) } returns components
 
         // when
-        val project =
-            sonar.getProjectFromMeasureAPI("testProject", metrics)
+        val project = sonar.getProjectFromMeasureAPI("testProject", metrics)
 
         // then
         assertEquals(project.attributeDescriptors.size, 0)
     }
 
     @Test
-    fun `should insert only needed descriptors and should be renamed`() {
-        // given
+    fun `should insert only needed descriptors and should be renamed`() { // given
         val projectKey = "testProject"
-        val sonar = SonarMeasuresAPIImporter(measuresDS, metricsDS, translator = SonarMetricTranslatorFactory.createMetricTranslator())
+        val sonar =
+                SonarMeasuresAPIImporter(
+                        measuresDS, metricsDS,
+                        translator = SonarMetricTranslatorFactory.createMetricTranslator(),
+                                        )
         val components = ComponentMap()
         val measures = mutableListOf(Measure("metric", "1.2"))
         val actualMetricKeys = listOf("bugs", "ncloc")
@@ -95,8 +91,7 @@ class SonarMeasuresAPIImporterTest {
         every { measuresDS!!.getComponentMap(projectKey, actualMetricKeys) } returns components
 
         // when
-        val project =
-            sonar.getProjectFromMeasureAPI("testProject", actualMetricKeys)
+        val project = sonar.getProjectFromMeasureAPI("testProject", actualMetricKeys)
 
         // then translation from bugs -> sonar_bugs ; ncloc -> rloc
         assertEquals(project.attributeDescriptors.size, 2)

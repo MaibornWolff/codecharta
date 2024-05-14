@@ -7,6 +7,34 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [1.125.0] - 2024-04-24
+
+### Added 🚀
+
+-   Add search bar for custom configs [#3529](https://github.com/MaibornWolff/codecharta/pull/3529)
+-   Automatically reverse the metric direction for those where higher values indicate better codequality, such as `branch_coverage` [#3518](https://github.com/MaibornWolff/codecharta/pull/3518)
+-   Display summary metrics for root node as default [#3525](https://github.com/MaibornWolff/codecharta/pull/3525)
+-   Remove whitespace on screenshots [#3527](https://github.com/MaibornWolff/codecharta/pull/3527)
+
+### Fixed 🐞
+
+-   Fix small style issues [#3544](https://github.com/MaibornWolff/codecharta/pull/3544)
+-   Fix key handling for selection metrics [#3546](https://github.com/MaibornWolff/codecharta/pull/3546)
+-   Fix applying default metric templates to ensure options reset correctly [#3560](https://github.com/MaibornWolff/codecharta/pull/3560)
+
+### Chore 👨‍💻 👩‍💻
+
+-   Update angular to v17
+
+## [1.124.1] - 2024-03-18
+
+### Fixed 🐞
+
+-   Fix metrics being reset on excluding / flattening buildings [#3524](https://github.com/MaibornWolff/codecharta/pull/3524)
+-   Take direction of attributes into account when creating the list with highest metrics [#3526](https://github.com/MaibornWolff/codecharta/pull/3526)
+
+## [1.124.0] - 2024-03-18
+
 ### Added 🚀
 
 -   Display diagram of color distribution [#3511](https://github.com/MaibornWolff/codecharta/pull/3511)
@@ -14,6 +42,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
     <img width="300" alt="color-metric-diagram" src="https://github.com/MaibornWolff/codecharta/assets/149768491/0b0e4e6f-e0c2-49b1-b9e8-2d69002338f0">
     </br>
 -   Persist uploaded files and applied configuration accross page-reloads [#3486](https://github.com/MaibornWolff/codecharta/pull/3486)
+-   Height, color, edge and area metric can be selected via query parameters [#3513](https://github.com/MaibornWolff/codecharta/pull/3513)
+-   Capturing a screenshot of the map also captures the legend [#3520](https://github.com/MaibornWolff/codecharta/pull/3520)
 
 ### Chore 👨‍💻 👩‍💻
 

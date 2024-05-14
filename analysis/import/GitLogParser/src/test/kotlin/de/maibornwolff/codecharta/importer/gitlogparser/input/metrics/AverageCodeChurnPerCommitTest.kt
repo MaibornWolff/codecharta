@@ -5,12 +5,13 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 class AverageCodeChurnPerCommitTest {
-
-    private val FILENAME = "filename"
+    companion object {
+    private const val FILENAME = "filename"
+    }
 
     @Test
     fun should_have_initial_value_zero() {
-        // when
+// when
         val metric = AverageCodeChurnPerCommit()
 
         // then
@@ -18,8 +19,7 @@ class AverageCodeChurnPerCommitTest {
     }
 
     @Test
-    fun should_increase_by_single_modification() {
-        // given
+    fun should_increase_by_single_modification() { // given
         val metric = AverageCodeChurnPerCommit()
 
         // when
@@ -30,8 +30,7 @@ class AverageCodeChurnPerCommitTest {
     }
 
     @Test
-    fun should_increase_by_multiple_modification() {
-        // given
+    fun should_increase_by_multiple_modification() { // given
         val metric = AverageCodeChurnPerCommit()
 
         // when

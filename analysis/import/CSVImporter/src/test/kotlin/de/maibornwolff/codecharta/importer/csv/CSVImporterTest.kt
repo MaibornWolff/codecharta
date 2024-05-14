@@ -18,7 +18,7 @@ import java.io.PrintStream
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class CSVImporterTest {
-    val errContent = ByteArrayOutputStream()
+val errContent = ByteArrayOutputStream()
     val originalErr = System.err
 
     @AfterEach
@@ -29,11 +29,11 @@ class CSVImporterTest {
     @Test
     fun `should create json uncompressed file`() {
         main(
-            arrayOf(
-                "src/test/resources/csvimporter.csv", "-nc",
-                "-o=src/test/resources/csvimporter.cc.json"
+                arrayOf(
+                        "src/test/resources/csvimporter.csv", "-nc",
+                        "-o=src/test/resources/csvimporter.cc.json",
+                       ),
             )
-        )
         val file = File("src/test/resources/csvimporter.cc.json")
         file.deleteOnExit()
 
@@ -43,13 +43,13 @@ class CSVImporterTest {
     @Test
     fun `should create a correct json when having a different path column name`() {
         main(
-            arrayOf(
-                "src/test/resources/csvimporter_different_path_column_name.csv", "-nc",
-                "--path-separator=\\",
-                "--path-column-name=File Name",
-                "-o=src/test/resources/csvimporter-path.cc.json"
+                arrayOf(
+                        "src/test/resources/csvimporter_different_path_column_name.csv", "-nc",
+                        "--path-separator=\\",
+                        "--path-column-name=File Name",
+                        "-o=src/test/resources/csvimporter-path.cc.json",
+                       ),
             )
-        )
         val file = File("src/test/resources/csvimporter-path.cc.json")
         val expectedJsonFile = File("src/test/resources/csvimporter_different_path_column_name.cc.json")
         val testJsonString = file.readText()
@@ -71,11 +71,11 @@ class CSVImporterTest {
     @Test
     fun `should contain Lines value of 44`() {
         main(
-            arrayOf(
-                "src/test/resources/csvimporter.csv", "-nc",
-                "-o=src/test/resources/csvimporter-content.cc.json"
+                arrayOf(
+                        "src/test/resources/csvimporter.csv", "-nc",
+                        "-o=src/test/resources/csvimporter-content.cc.json",
+                       ),
             )
-        )
         val file = File("src/test/resources/csvimporter-content.cc.json")
         file.deleteOnExit()
 
@@ -93,7 +93,6 @@ class CSVImporterTest {
         main(arrayOf("thisDoesNotExist.cc.json"))
         System.setErr(originalErr)
 
-        assertThat(errContent.toString())
-                .contains("Input invalid file for CSVImporter, stopping execution")
+        assertThat(errContent.toString()).contains("Input invalid file for CSVImporter, stopping execution")
     }
 }

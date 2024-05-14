@@ -12,27 +12,20 @@ import java.util.stream.Collector
 import java.util.stream.Stream
 
 class SVNLogParserStrategy : LogParserStrategy {
-
-    override fun parseDate(commitLines: List<String>): OffsetDateTime {
-        return commitLines
-            .filter { this.isMetadataLine(it) }
-            .map { this.parseCommitDate(it) }
-            .first()
+override fun parseDate(commitLines: List<String>): OffsetDateTime {
+        return commitLines.filter { this.isMetadataLine(it) }.map { this.parseCommitDate(it) }.first()
     }
 
     private fun parseCommitDate(metadataLine: String): OffsetDateTime {
         val splittedLine =
-            metadataLine.split(("\\" + METADATA_SEPARATOR).toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+                metadataLine.split(("\\" + METADATA_SEPARATOR).toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
         val commitDateAsString =
-            splittedLine[DATE_INDEX_IN_METADATA].trim { it <= ' ' }.replace(" \\(.*\\)".toRegex(), "")
+                splittedLine[DATE_INDEX_IN_METADATA].trim { it <= ' ' }.replace(" \\(.*\\)".toRegex(), "")
         return OffsetDateTime.parse(commitDateAsString, DATE_TIME_FORMATTER)
     }
 
     override fun parseAuthor(commitLines: List<String>): String {
-        return commitLines
-            .filter { this.isMetadataLine(it) }
-            .map { this.parseAuthor(it) }
-            .first()
+        return commitLines.filter { this.isMetadataLine(it) }.map { this.parseAuthor(it) }.first()
     }
 
     private fun isMetadataLine(commitLine: String): Boolean {
@@ -41,14 +34,12 @@ class SVNLogParserStrategy : LogParserStrategy {
 
     private fun parseAuthor(authorLine: String): String {
         val splittedLine =
-            authorLine.split(("\\" + METADATA_SEPARATOR).toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+                authorLine.split(("\\" + METADATA_SEPARATOR).toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
         return splittedLine[AUTHOR_INDEX_IN_METADATA].trim { it <= ' ' }
     }
 
     override fun parseModifications(commitLines: List<String>): List<Modification> {
-        return commitLines
-            .filter { this.isFileLine(it) }
-            .map { this.parseModification(it) }
+        return commitLines.filter { this.isFileLine(it) }.map { this.parseModification(it) }
     }
 
     private fun isFileLine(commitLine: String): Boolean {
@@ -74,7 +65,10 @@ class SVNLogParserStrategy : LogParserStrategy {
         }
     }
 
-    private fun parseStandardModification(filePath: String, status: Status): Modification {
+    private fun parseStandardModification(
+    filePath: String,
+    status: Status,
+    ): Modification {
         return ignoreIfRepresentsFolder(Modification(filePath, status.toModificationType()))
     }
 
@@ -96,24 +90,20 @@ class SVNLogParserStrategy : LogParserStrategy {
     }
 
     companion object {
-
-        private const val RENAME_FILE_LINE_IDENTIFIER = " (from "
+    private const val RENAME_FILE_LINE_IDENTIFIER = " (from "
         private val SVN_COMMIT_SEPARATOR_TEST =
-            Predicate<String> { logLine ->
-                logLine.isNotEmpty() && StringUtils.containsOnly(
-                    logLine,
-                    '-'
-                ) && logLine.length > 70
-            }
+                Predicate<String> { logLine ->
+                    logLine.isNotEmpty() &&
+                    StringUtils.containsOnly(
+                            logLine,
+                            '-',
+                                            ) && logLine.length > 70
+                }
         private val DEFAULT_REPOSITORY_FOLDER_PREFIXES = arrayOf("/branches/", "/tags/", "/trunk/", "/")
-        private val DATE_TIME_FORMATTER = DateTimeFormatterBuilder()
-            .parseCaseInsensitive()
-            .append(DateTimeFormatter.ISO_LOCAL_DATE)
-            .appendLiteral(' ')
-            .append(DateTimeFormatter.ISO_LOCAL_TIME)
-            .appendLiteral(' ')
-            .appendOffset("+HHMM", "")
-            .toFormatter()
+        private val DATE_TIME_FORMATTER =
+                DateTimeFormatterBuilder().parseCaseInsensitive().append(DateTimeFormatter.ISO_LOCAL_DATE)
+                        .appendLiteral(' ').append(DateTimeFormatter.ISO_LOCAL_TIME).appendLiteral(' ')
+                        .appendOffset("+HHMM", "").toFormatter()
         private const val AUTHOR_INDEX_IN_METADATA = 1
         private const val DATE_INDEX_IN_METADATA = 2
         private const val METADATA_SEPARATOR = '|'
@@ -131,16 +121,16 @@ class SVNLogParserStrategy : LogParserStrategy {
         }
 
         private fun removeDefaultRepositoryFolderPrefix(path: String): String {
-            return DEFAULT_REPOSITORY_FOLDER_PREFIXES
-                .firstOrNull { path.startsWith(it) }
-                ?.let { path.substring(it.length) }
-                ?: path
+            return DEFAULT_REPOSITORY_FOLDER_PREFIXES.firstOrNull { path.startsWith(it) }
+                           ?.let { path.substring(it.length) } ?: path
         }
 
         private fun ignoreIfRepresentsFolder(modification: Modification): Modification {
             return if (!modification.filename.contains(".")) {
                 Modification.EMPTY
-            } else modification
+            } else {
+                modification
+            }
         }
     }
 }

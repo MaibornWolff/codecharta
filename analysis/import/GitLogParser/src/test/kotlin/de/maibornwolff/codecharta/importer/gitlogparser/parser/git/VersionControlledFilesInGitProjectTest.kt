@@ -8,8 +8,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 class VersionControlledFilesInGitProjectTest {
-
-    private val metricsFactory = MetricsFactory()
+private val metricsFactory = MetricsFactory()
     private lateinit var vcfList: VersionControlledFilesList
 
     @BeforeEach
@@ -19,26 +18,25 @@ class VersionControlledFilesInGitProjectTest {
 
     @Test
     fun test_given_vcf_with_files_not_in_project_remove_not_existing_files() {
-
         vcfList.addFileBy("src/Main.kt")
         vcfList.addFileBy("src/incorrectFile.kt")
 
         val projectNameList = mutableListOf<String>()
         projectNameList.add("src/Main.kt")
 
-        val versionControlledFilesInGitProject = VersionControlledFilesInGitProject(
-            vcfList.getList(),
-            projectNameList
-        )
+        val versionControlledFilesInGitProject =
+                VersionControlledFilesInGitProject(
+                        vcfList.getList(),
+                        projectNameList,
+                                                  )
         val namesAfterFiltering =
-            versionControlledFilesInGitProject.getListOfVCFilesMatchingGitProject().map { file -> file.filename }
+                versionControlledFilesInGitProject.getListOfVCFilesMatchingGitProject().map { file -> file.filename }
 
         assertThat(namesAfterFiltering).containsExactlyInAnyOrder("src/Main.kt")
     }
 
     @Test
     fun test_given_vcf_with_duplicates_then_remove_salt_and_only_keep_most_recent_file() {
-
         vcfList.addFileBy("src/Main.kt")
 
         val oldFile = vcfList.get("src/Main.kt")
@@ -55,10 +53,11 @@ class VersionControlledFilesInGitProjectTest {
         val projectNameList = mutableListOf<String>()
         projectNameList.add("src/Main.kt")
 
-        val versionControlledFilesInGitProject = VersionControlledFilesInGitProject(
-            vcfList.getList(),
-            projectNameList
-        )
+        val versionControlledFilesInGitProject =
+                VersionControlledFilesInGitProject(
+                        vcfList.getList(),
+                        projectNameList,
+                                                  )
         val namesAfterFiltering = versionControlledFilesInGitProject.getListOfVCFilesMatchingGitProject()
 
         assertThat(namesAfterFiltering).containsExactlyInAnyOrder(vcfFile)
@@ -67,7 +66,6 @@ class VersionControlledFilesInGitProjectTest {
 
     @Test
     fun test_given_vcf_with_duplicates_with_second_file_added_deleted_then_delete__second_file() {
-
         vcfList.addFileBy("src/Main.kt")
 
         val keepFile = vcfList.get("src/Main.kt")
@@ -83,10 +81,11 @@ class VersionControlledFilesInGitProjectTest {
         val projectNameList = mutableListOf<String>()
         projectNameList.add("src/Main.kt")
 
-        val versionControlledFilesInGitProject = VersionControlledFilesInGitProject(
-            vcfList.getList(),
-            projectNameList
-        )
+        val versionControlledFilesInGitProject =
+                VersionControlledFilesInGitProject(
+                        vcfList.getList(),
+                        projectNameList,
+                                                  )
         val namesAfterFiltering = versionControlledFilesInGitProject.getListOfVCFilesMatchingGitProject()
 
         assertThat(namesAfterFiltering).containsExactlyInAnyOrder(keepFile)

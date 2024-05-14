@@ -4,9 +4,14 @@ import in_place
 import pathlib
 import subprocess
 import datetime
+import sys
 
 root = pathlib.Path().absolute()
+static_side_path = root.joinpath('gh-pages/visualization/app/')
 
+FORCE = len(sys.argv) == 2 and (sys.argv[1] == "-f" or sys.argv[1] == "--force")
+if FORCE:
+    print("Force mode enabled. Protections disabled!")
 
 def is_root_folder():
     return root[-10:] == "codecharta"
@@ -78,20 +83,23 @@ def update_changelog(changelog_path):
 
 def update_readme(readme_path):
   with in_place.InPlace(readme_path, encoding="utf-8") as fp:
-    line_number = 0
+    release_line = False
 
     # line_number in array format -> first line = line 0
     for line in fp:
-      if line_number == 24:
+      if release_line:
+        assert("Analysis" in line and "Visualization" in line)
         readme_release_links = line.strip("\n").split("|")
         assert(len(readme_release_links)==2)
         entry_to_change = 1 if(is_visualization(repository)) else 0
         new_entry = f' {repository} <a href="https://github.com/MaibornWolff/codecharta/releases/tag/{new_prefix_version}">{new_version}</a> '
         readme_release_links[entry_to_change] = new_entry
         fp.write("|".join(readme_release_links)+"\n")
+        release_line = False
       else:
+        if "Latest Release:" in line:
+          release_line = True
         fp.write(line)
-      line_number = line_number + 1
 
 ### Release Steps
 
@@ -103,12 +111,12 @@ else:
     repo = git.Repo(root)
 
 # Check if there are any uncommitted changes
-if repo.is_dirty():
+if not FORCE and repo.is_dirty():
     print("Please commit your changes first and/or ignore untracked files in git. Aborting.")
     quit()
 
 # Check if we are on main branch
-if repo.active_branch.name != "main":
+if not FORCE and repo.active_branch.name != "main":
     print("You can only release on main branch. Aborting.")
     quit()
 
@@ -197,6 +205,14 @@ if(is_visualization(repository)):
   update_changelog(changelog_path)
   print(f"updated {changelog_path}")
 
+  # building webpack
+  processInfo = subprocess.run('cd visualization && npm ci && npm run build', shell=True)
+  if(processInfo.returncode != 0):
+     print("Npm ci in visualization was not successfull. Please check the console output.")
+     quit()
+  subprocess.run(f"rm -rf {str(static_side_path)}", shell=True)
+  static_side_path.mkdir(parents=True)
+  subprocess.run(f"cp -R 'visualization/dist/webpack/.'  {str(static_side_path)}", shell=True)
 else:
   ## Update analysis files
 
@@ -244,9 +260,7 @@ printMessage = "Committing and tagging..."
 confirm(message, printMessage)
 
 if is_visualization(repository):
-  repo.index.add([release_post_path, readme_path, changelog_path,
-                visualization_package_json,
-                visualization_package_lock_json])
+  repo.git.add(all=True)
 else:
   repo.index.add([release_post_path, readme_path, changelog_path, gradle_properties,
                 analysis_package_json, analysis_package_lock_json])
@@ -254,6 +268,10 @@ else:
 subprocess.run('git commit -a -m "Releasing ' + new_prefix_version + '"', shell=True)
 tag = repo.create_tag(new_prefix_version, ref="HEAD",
                       message=f"Releasing {new_prefix_version}")
+
+if(FORCE):
+  print("Release not allowed in force mode. Quitting...")
+  quit()
 
 # push
 message = "The release is now committed and tagged but not pushed. In order to finish this release you need to push the commit and tag. Push?"

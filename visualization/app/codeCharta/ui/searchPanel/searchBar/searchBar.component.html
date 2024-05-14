@@ -2,14 +2,11 @@
 
 <div class="ccSearchInput">
 	<input type="text" placeholder="Search: *.js, **/app/*" [value]="searchPattern$ | async" (input)="setSearchPatternDebounced($event)" />
-	<button
-		*ngIf="!(isSearchPatternEmpty$ | async)"
-		(click)="resetSearchPattern()"
-		class="small-action-button clear-icon"
-		data-testid="search-bar-clear-button"
-	>
+	@if (!(isSearchPatternEmpty$ | async)) {
+	<button (click)="resetSearchPattern()" class="small-action-button clear-icon" data-testid="search-bar-clear-button">
 		<i class="fa fa-times"></i>
 	</button>
+	}
 </div>
 
 <button [matMenuTriggerFor]="menu" class="small-action-button" title="Add to Blacklist">

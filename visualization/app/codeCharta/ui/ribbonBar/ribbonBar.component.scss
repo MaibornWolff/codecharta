@@ -17,6 +17,10 @@ cc-ribbon-bar {
 		border: none;
 		flex: 2.5 2.5 0;
 
+		&.delta {
+			flex: 1 1 0;
+		}
+
 		.mat-mdc-card {
 			box-shadow: none;
 		}

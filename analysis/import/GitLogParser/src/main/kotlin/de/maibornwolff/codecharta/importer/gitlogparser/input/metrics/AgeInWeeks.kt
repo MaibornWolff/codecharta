@@ -5,7 +5,7 @@ import de.maibornwolff.codecharta.model.AttributeType
 import java.time.OffsetDateTime
 
 class AgeInWeeks : Metric {
-    private var firstCommit: CalendarWeek = CalendarWeek.forDateTime(OffsetDateTime.now())
+private var firstCommit: CalendarWeek = CalendarWeek.forDateTime(OffsetDateTime.now())
 
     override fun description(): String {
         return "Age in Weeks: Number of Weeks since the creation of the file."
@@ -25,6 +25,6 @@ class AgeInWeeks : Metric {
     }
 
     override fun attributeType(): AttributeType {
-        return AttributeType.relative
+        return AttributeType.RELATIVE
     }
 }

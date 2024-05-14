@@ -4,8 +4,7 @@ import java.io.File
 import java.util.concurrent.TimeUnit
 
 class GitAdapter(private val gitDirectory: File, private val fileHandle: File) {
-
-    fun getGitLog() {
+fun getGitLog() {
         val process = ProcessBuilder("git", "log", "--numstat", "--raw", "--topo-order", "--reverse", "-m")
         executeProcess(process)
     }
@@ -19,6 +18,11 @@ class GitAdapter(private val gitDirectory: File, private val fileHandle: File) {
         process.directory(gitDirectory)
         process.redirectOutput(fileHandle)
         val runningProcess = process.start()
-        runningProcess.waitFor(3, TimeUnit.MINUTES)
+        if (runningProcess.waitFor(3, TimeUnit.MINUTES)) {
+            val exitCode = runningProcess.exitValue()
+            if (exitCode != 0) {
+                throw RuntimeException("Error while executing Git! Command was: ${process.command()}. Process returned with exit status $exitCode.")
+            }
+        }
     }
 }

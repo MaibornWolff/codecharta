@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/angular"
+import { render, screen, waitFor } from "@testing-library/angular"
 import { TestBed } from "@angular/core/testing"
 import { BlacklistSearchPatternEffect } from "./blacklistSearchPattern.effect"
 import { SearchBarComponent } from "./searchBar.component"
@@ -40,7 +40,7 @@ describe("cc-search-bar", () => {
 
 		expect(screen.queryByTestId("search-bar-clear-button")).toBe(null)
 
-		let searchField = screen.getByPlaceholderText("Search: *.js, **/app/*") as HTMLInputElement
+		const searchField = screen.getByPlaceholderText("Search: *.js, **/app/*") as HTMLInputElement
 		await userEvent.type(searchField, "needle", { delay: 1 })
 
 		const clearButton = await screen.findByTestId("search-bar-clear-button")
@@ -49,8 +49,7 @@ describe("cc-search-bar", () => {
 
 		await userEvent.click(clearButton)
 
-		searchField = screen.getByPlaceholderText("Search: *.js, **/app/*")
-		expect(searchField.value).toBe("")
+		await waitFor(() => expect((screen.getByPlaceholderText("Search: *.js, **/app/*") as HTMLInputElement).value).toBe(""))
 		expect(searchPatternSelector(state.getValue())).toBe("")
 	})
 
@@ -58,15 +57,14 @@ describe("cc-search-bar", () => {
 		await render(SearchBarComponent, { excludeComponentDeclaration: true })
 		const state = TestBed.inject(State)
 
-		let searchField = screen.getByPlaceholderText("Search: *.js, **/app/*") as HTMLInputElement
+		const searchField = screen.getByPlaceholderText("Search: *.js, **/app/*") as HTMLInputElement
 		await userEvent.type(searchField, "needle")
 		await screen.findByTestId("search-bar-clear-button")
 		await userEvent.click(screen.getByTitle("Add to Blacklist"))
 
 		await userEvent.click(await screen.findByTestId("search-bar-flatten-button"))
 
-		searchField = screen.getByPlaceholderText("Search: *.js, **/app/*")
-		expect(searchField.value).toBe("")
+		await waitFor(() => expect((screen.getByPlaceholderText("Search: *.js, **/app/*") as HTMLInputElement).value).toBe(""))
 		expect(state.getValue().fileSettings.blacklist[0]).toEqual({ type: "flatten", path: "*needle*" })
 	})
 
@@ -75,15 +73,14 @@ describe("cc-search-bar", () => {
 		await render(SearchBarComponent, { excludeComponentDeclaration: true })
 		const state = TestBed.inject(State)
 
-		let searchField = screen.getByPlaceholderText("Search: *.js, **/app/*") as HTMLInputElement
+		const searchField = screen.getByPlaceholderText("Search: *.js, **/app/*") as HTMLInputElement
 		await userEvent.type(searchField, "needle")
 		await screen.findByTestId("search-bar-clear-button")
 		await userEvent.click(screen.getByTitle("Add to Blacklist"))
 
 		await userEvent.click(await screen.findByTestId("search-bar-exclude-button"))
 
-		searchField = screen.getByPlaceholderText("Search: *.js, **/app/*")
-		expect(searchField.value).toBe("")
+		await waitFor(() => expect((screen.getByPlaceholderText("Search: *.js, **/app/*") as HTMLInputElement).value).toBe(""))
 		expect(state.getValue().fileSettings.blacklist[0]).toEqual({ type: "exclude", path: "*needle*" })
 	})
 })

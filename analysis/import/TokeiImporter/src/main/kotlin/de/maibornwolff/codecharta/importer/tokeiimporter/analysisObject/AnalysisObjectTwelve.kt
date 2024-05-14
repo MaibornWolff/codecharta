@@ -1,14 +1,14 @@
 package de.maibornwolff.codecharta.importer.tokeiimporter.analysisObject
 
 class AnalysisObjectTwelve(
-    val blanks: Int,
-    val code: Int,
-    val comments: Int,
-    val reports: List<Report>,
-    val children: Children,
-    private val inaccurate: Boolean
-) {
-    fun hasChildren(): Boolean {
+        val blanks: Int,
+        val code: Int,
+        val comments: Int,
+        val reports: List<Report>,
+        val children: Children,
+        private val inaccurate: Boolean,
+                          ) {
+                          fun hasChildren(): Boolean {
         return !reports.isNullOrEmpty()
     }
 }
