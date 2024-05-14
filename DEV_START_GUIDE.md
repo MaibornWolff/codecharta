@@ -103,11 +103,11 @@ When opening a pull requests, all tests are executed automatically using GitHub-
 We mainly use IntelliJ for our development. The project generally works right away, but sometimes issues can occur:
 
 -   Sometimes when opening the main CodeCharta folder, the analysis part does not get detected as a module. To solve this, directly open the analysis folder.
--   The integration tests for the analysis can fail due to OS specific problems:
+-   The integration tests for the analysis (`./gradlew integrationTest`) can fail due to OS specific problems:
 
-    -   On windows this may be caused by a missing or unknown `sh` command.
+    -   On **windows** this may be caused by a missing or unknown `sh` command.
         To make it work, add the path to the Git `sh.exe` (which is normally placed here `C:\<path-to-git>\Git\bin`) to your PATH variable.
-    -   For macOS, it is necessary to install the `timeout` command (e.g. using `brew install coreutils`) to execute the integration tests.
+    -   For **macOS**, it is necessary to install the `timeout` command (e.g. using `brew install coreutils`) to execute the integration tests.
 
 -   When working on visualization, IntelliJ does not correctly detect our test-suite. To execute tests using the build in runners,
     it is necessary to adjust the Jest-Configuration:
