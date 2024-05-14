@@ -91,6 +91,6 @@ describe("Export3DMapButtonComponent", () => {
 		jest.runAllTimers()
 
 		expect(store.dispatch).toHaveBeenCalledWith(setColorMode({ value: ColorMode.absolute }))
-		expect(dialog.open).toHaveBeenCalledWith(Export3DMapDialogComponent, { panelClass: ".cc-export-3D-map-dialog" })
+		expect(dialog.open).toHaveBeenCalledWith(Export3DMapDialogComponent, { panelClass: "cc-export-3D-map-dialog" })
 	})
 })
