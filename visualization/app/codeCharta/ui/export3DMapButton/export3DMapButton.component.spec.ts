@@ -43,7 +43,7 @@ describe("Export3DMapButtonComponent", () => {
 		printButton.click()
 
 		expect(dialog.open).toHaveBeenCalledTimes(1)
-		expect(dialog.open).toHaveBeenCalledWith(Export3DMapDialogComponent, { panelClass: ".cc-export-3D-map-dialog" })
+		expect(dialog.open).toHaveBeenCalledWith(Export3DMapDialogComponent, { panelClass: "cc-export-3D-map-dialog" })
 	})
 
 	it("should open the error dialog when color mode is not absolute", async function () {
