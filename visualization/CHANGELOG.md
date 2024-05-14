@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Added 🚀
+
+-   Export multi-material 3MF for 3D printing of maps in color [#3616](https://github.com/MaibornWolff/codecharta/pull/3616)
+
 ### Changed
 
 - IMPORTANT: The sonar complexity will no longer be renamed to MCC! [#3456](https://github.com/MaibornWolff/codecharta/pull/3606)
