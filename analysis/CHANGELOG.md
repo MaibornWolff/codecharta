@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 Chore 👨‍💻 👩‍💻
 
 -   Upgrade Gradle to version 8.7, now with support for Java version 21. [#3570](https://github.com/MaibornWolff/codecharta/pull/3570)
+-   Update docs to include that the `timeout` command is necessary on macOS to run integration tests [#3322](https://github.com/MaibornWolff/codecharta/pull/3615)
 
 ## [1.123.0] - 2024-04-10
 
