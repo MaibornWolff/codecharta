@@ -7,8 +7,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
-## [1.124.0] - 2024-05-15
-
 ### Fixed 🐞
 
 -   Add default Docker user to mitigate `GitLogParser` issues during repo-scan [#3571](https://github.com/MaibornWolff/codecharta/pull/3571)
