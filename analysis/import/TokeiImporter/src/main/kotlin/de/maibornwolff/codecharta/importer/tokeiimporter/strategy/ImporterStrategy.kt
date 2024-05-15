@@ -6,17 +6,14 @@ import de.maibornwolff.codecharta.model.ProjectBuilder
 import de.maibornwolff.codecharta.util.Logger
 
 interface ImporterStrategy {
-var rootName: String
+    var rootName: String
     var pathSeparator: String
 
     fun getLanguageSummaries(root: JsonElement): JsonObject
 
     fun determinePathSeparator(languageSummaries: JsonObject)
 
-    fun buildCCJson(
-    languageSummaries: JsonObject,
-    projectBuilder: ProjectBuilder,
-    )
+    fun buildCCJson(languageSummaries: JsonObject, projectBuilder: ProjectBuilder)
 
     fun isPathSeparatorArgumentEmpty(pathSeparator: String): Boolean {
         return pathSeparator.isEmpty()

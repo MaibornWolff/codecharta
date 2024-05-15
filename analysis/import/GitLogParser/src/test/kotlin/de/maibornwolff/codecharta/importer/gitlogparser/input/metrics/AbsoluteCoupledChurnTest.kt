@@ -8,7 +8,7 @@ import java.time.OffsetDateTime
 
 class AbsoluteCoupledChurnTest {
     companion object {
-    private const val FILENAME = "filename"
+        private const val FILENAME = "filename"
         private const val COUPLED_FILE1 = "coupledfilename1"
         private const val COUPLED_FILE2 = "coupledfilename2"
     }
@@ -66,11 +66,7 @@ class AbsoluteCoupledChurnTest {
         assertThat(metric.value()).isEqualTo(9L)
     }
 
-    private fun registerModifications(
-    metric: Metric,
-    modification: Modification,
-    vararg otherModifications: Modification,
-    ) {
+    private fun registerModifications(metric: Metric, modification: Modification, vararg otherModifications: Modification) {
         val modificationList = ArrayList(listOf(*otherModifications))
         modificationList.add(modification)
 

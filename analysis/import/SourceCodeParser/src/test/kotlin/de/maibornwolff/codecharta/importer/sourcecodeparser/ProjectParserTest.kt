@@ -12,7 +12,7 @@ import java.io.File
 import java.lang.reflect.Field
 
 class ProjectParserTest {
-private fun addMockAnalyzerToProjectParser(projectParser: ProjectParser) {
+    private fun addMockAnalyzerToProjectParser(projectParser: ProjectParser) {
         val sonarAnalyzers = projectParser.javaClass.getDeclaredField("sonarAnalyzers") as Field
         sonarAnalyzers.isAccessible = true
 
@@ -116,19 +116,11 @@ private fun addMockAnalyzerToProjectParser(projectParser: ProjectParser) {
         assertThat(projectParser.metricKinds.toString()).contains("functions", "ncloc", "something_else")
     }
 
-    private fun addFileInProject(
-    currentProject: ProjectMetrics,
-    file: String,
-    ) {
+    private fun addFileInProject(currentProject: ProjectMetrics, file: String) {
         currentProject.projectMetrics[file] = FileMetricMap()
     }
 
-    private fun addMetricToFileInProject(
-    currentProject: ProjectMetrics,
-    file: String,
-    metric: String,
-    value: Int,
-    ) {
+    private fun addMetricToFileInProject(currentProject: ProjectMetrics, file: String, metric: String, value: Int) {
         currentProject.projectMetrics[file]?.add(metric, value)
     }
 }

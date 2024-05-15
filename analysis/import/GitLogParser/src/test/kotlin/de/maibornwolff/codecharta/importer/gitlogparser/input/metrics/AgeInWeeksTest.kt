@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test
 import java.time.OffsetDateTime
 
 class AgeInWeeksTest {
-@Test
+    @Test
     fun `initial value is zero`() {
         val metric = AgeInWeeks()
 

@@ -9,7 +9,7 @@ import java.time.ZoneOffset
 import java.util.stream.Stream
 
 abstract class ParserStrategyContractTest {
-private val metricsFactory = MetricsFactory()
+    private val metricsFactory = MetricsFactory()
 
     protected abstract val fullCommit: List<String>
 
@@ -22,14 +22,15 @@ private val metricsFactory = MetricsFactory()
         val parser = LogLineParser(logParserStrategy, metricsFactory)
         val commit = parser.parseCommit(fullCommit)
         assertThat(commit).extracting(
-                java.util.function.Function<Commit, Any> { it.author },
-                java.util.function.Function<Commit, Any> { it.commitDate },
-                                     )
-                .containsExactly("TheAuthor", OffsetDateTime.of(2017, 5, 9, 19, 57, 57, 0, ZONE_OFFSET))
+            java.util.function.Function<Commit, Any> { it.author },
+            java.util.function.Function<Commit, Any> { it.commitDate }
+        )
+            .containsExactly("TheAuthor", OffsetDateTime.of(2017, 5, 9, 19, 57, 57, 0, ZONE_OFFSET))
         assertThat(commit.fileNameList).containsExactlyInAnyOrder(
-                "src/Added.java", "src/Modified.java",
-                "src/Deleted.java",
-                                                                 )
+            "src/Added.java",
+            "src/Modified.java",
+            "src/Deleted.java"
+        )
     }
 
     @Test
@@ -37,7 +38,7 @@ private val metricsFactory = MetricsFactory()
         val modifications = logParserStrategy.parseModifications(fullCommit)
         assertThat(modifications).hasSize(3)
         assertThat(modifications).extracting<String, RuntimeException> { it.currentFilename }
-                .containsExactlyInAnyOrder("src/Added.java", "src/Modified.java", "src/Deleted.java")
+            .containsExactlyInAnyOrder("src/Added.java", "src/Modified.java", "src/Deleted.java")
     }
 
     @Test
@@ -60,6 +61,6 @@ private val metricsFactory = MetricsFactory()
     }
 
     companion object {
-    private val ZONE_OFFSET = ZoneOffset.ofHours(2)
+        private val ZONE_OFFSET = ZoneOffset.ofHours(2)
     }
 }

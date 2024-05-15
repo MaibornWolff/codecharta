@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test
 import kotlin.test.assertFailsWith
 
 class CSVHeaderTest {
-@Test
+    @Test
     fun `an empty header should throw exception`() {
         assertFailsWith(IllegalArgumentException::class) {
             CSVHeader(arrayOf())

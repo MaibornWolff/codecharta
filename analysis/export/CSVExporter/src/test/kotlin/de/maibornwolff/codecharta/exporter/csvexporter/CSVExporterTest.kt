@@ -17,7 +17,7 @@ import java.io.PrintStream
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class CSVExporterTest {
-private var errContent = ByteArrayOutputStream()
+    private var errContent = ByteArrayOutputStream()
     private val originalErr = System.err
     private var outContent = ByteArrayOutputStream()
     private val originalOut = System.out
@@ -82,7 +82,7 @@ private var errContent = ByteArrayOutputStream()
 
         // then
         Assertions.assertThat(errContent.toString())
-                .contains("Invalid input file for CSVExporter, stopping execution...")
+            .contains("Invalid input file for CSVExporter, stopping execution...")
 
         // clean up
         System.setErr(originalErr)
@@ -105,7 +105,7 @@ private var errContent = ByteArrayOutputStream()
 
         // then
         Assertions.assertThat(errContent.toString())
-                .contains("Invalid input file for CSVExporter, stopping execution...")
+            .contains("Invalid input file for CSVExporter, stopping execution...")
 
         // clean up
         System.setErr(originalErr)
@@ -127,7 +127,7 @@ private var errContent = ByteArrayOutputStream()
 
         // then
         Assertions.assertThat(errContent.toString())
-                .contains("Invalid input file for CSVExporter, stopping execution...")
+            .contains("Invalid input file for CSVExporter, stopping execution...")
 
         // clean up
         System.setErr(originalErr)

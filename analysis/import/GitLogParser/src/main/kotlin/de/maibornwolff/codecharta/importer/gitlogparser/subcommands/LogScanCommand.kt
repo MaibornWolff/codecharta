@@ -10,40 +10,40 @@ import java.io.File
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
-        name = LogScanCommand.NAME,
-        description = [LogScanCommand.DESCRIPTION],
-        footer = [CodeChartaConstants.General.GENERIC_FOOTER],
-                    )
+    name = LogScanCommand.NAME,
+    description = [LogScanCommand.DESCRIPTION],
+    footer = [CodeChartaConstants.General.GENERIC_FOOTER]
+)
 class LogScanCommand : Callable<Unit>, InteractiveParser {
-@CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
+    @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
 
     @CommandLine.Option(
-            names = ["--git-log"],
-            arity = "1",
-            paramLabel = "FILE",
-            required = true,
-            description = ["git-log file to parse"],
-                       )
+        names = ["--git-log"],
+        arity = "1",
+        paramLabel = "FILE",
+        required = true,
+        description = ["git-log file to parse"]
+    )
     private var gitLogFile: File? = null
 
     @CommandLine.Option(
-            names = ["--repo-files"],
-            arity = "1",
-            paramLabel = "FILE",
-            required = true,
-            description = ["list of all file names in current git project"],
-                       )
+        names = ["--repo-files"],
+        arity = "1",
+        paramLabel = "FILE",
+        required = true,
+        description = ["list of all file names in current git project"]
+    )
     private var gitLsFile: File? = null
 
     @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File"])
     private var outputFilePath: String? = null
 
     @CommandLine.Option(
-            names = ["-nc", "--not-compressed"],
-            description = ["save uncompressed output File"],
-            arity = "0",
-                       )
+        names = ["-nc", "--not-compressed"],
+        description = ["save uncompressed output File"],
+        arity = "0"
+    )
     private var compress = true
 
     @CommandLine.Option(names = ["--silent"], description = ["suppress command line output during process"])
@@ -56,7 +56,7 @@ class LogScanCommand : Callable<Unit>, InteractiveParser {
     override val description = DESCRIPTION
 
     companion object {
-    const val NAME = "log-scan"
+        const val NAME = "log-scan"
         const val DESCRIPTION = "git log parser log-scan - generates cc.json from a given git-log file"
     }
 

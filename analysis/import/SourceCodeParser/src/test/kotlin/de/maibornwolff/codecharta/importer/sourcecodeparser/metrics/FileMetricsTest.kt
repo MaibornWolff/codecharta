@@ -5,7 +5,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 class FileMetricsTest {
-lateinit var fileMetricMap: FileMetricMap
+    lateinit var fileMetricMap: FileMetricMap
 
     @BeforeEach
     fun initFileMetricMap() {

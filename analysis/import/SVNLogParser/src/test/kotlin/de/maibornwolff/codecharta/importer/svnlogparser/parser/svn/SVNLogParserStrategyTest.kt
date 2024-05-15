@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test
 import java.util.stream.Stream
 
 class SVNLogParserStrategyTest : ParserStrategyContractTest() {
-private var parserStrategy: SVNLogParserStrategy = SVNLogParserStrategy()
+    private var parserStrategy: SVNLogParserStrategy = SVNLogParserStrategy()
 
     override val fullCommit: List<String>
         get() = FULL_COMMIT
@@ -71,7 +71,7 @@ private var parserStrategy: SVNLogParserStrategy = SVNLogParserStrategy()
     @Test
     fun `accepts svnLog without ending dashes`() {
         val logLinesWithoutEndingDashes =
-                Stream.of("------------------------------------------------------------------------", "commit data")
+            Stream.of("------------------------------------------------------------------------", "commit data")
         val commits = logLinesWithoutEndingDashes.collect(parserStrategy.createLogLineCollector())
         assertThat(commits).hasSize(1)
     }
@@ -87,28 +87,28 @@ private var parserStrategy: SVNLogParserStrategy = SVNLogParserStrategy()
     fun `parses special commit`() {
         val parser = LogLineParser(logParserStrategy, MetricsFactory())
         val commitString =
-                mutableListOf(
-                        "------------------------------------------------------------------------",
-                        "r156657 | dpagam05 | 2017-01-02 03:12:18 +0100 (Mo, 02 Jan 2017) | 1 line",
-                        "Changed paths:",
-                        "    M /src/Modified.java",
-                        "Task | Increased automaticly build number | builduser01",
-                        "------------------------------------------------------------------------",
-                             )
+            mutableListOf(
+                "------------------------------------------------------------------------",
+                "r156657 | dpagam05 | 2017-01-02 03:12:18 +0100 (Mo, 02 Jan 2017) | 1 line",
+                "Changed paths:",
+                "    M /src/Modified.java",
+                "Task | Increased automaticly build number | builduser01",
+                "------------------------------------------------------------------------"
+            )
         val commit = parser.parseCommit(commitString)
         assertThat(commit.filenames).containsExactlyInAnyOrder("src/Modified.java")
     }
 
     companion object {
-    private val FULL_COMMIT =
-                mutableListOf(
-                        "------------------------------------------------------------------------",
-                        "r2 | TheAuthor | 2017-05-09 19:57:57 +0200 (Tue, 9 May 2017) | 1 line",
-                        "Changed paths:",
-                        "   A /trunk/src/Added.java",
-                        "   M /trunk/src/Modified.java",
-                        "   D /trunk/src/Deleted.java",
-                        "the commit message",
-                             )
+        private val FULL_COMMIT =
+            mutableListOf(
+                "------------------------------------------------------------------------",
+                "r2 | TheAuthor | 2017-05-09 19:57:57 +0200 (Tue, 9 May 2017) | 1 line",
+                "Changed paths:",
+                "   A /trunk/src/Added.java",
+                "   M /trunk/src/Modified.java",
+                "   D /trunk/src/Deleted.java",
+                "the commit message"
+            )
     }
 }

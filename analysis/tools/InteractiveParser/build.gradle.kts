@@ -1,7 +1,7 @@
 repositories {
-  mavenCentral()
+    mavenCentral()
 }
 
 dependencies {
-  implementation(libs.kotlin.inquirer)
+    implementation(libs.kotlin.inquirer)
 }

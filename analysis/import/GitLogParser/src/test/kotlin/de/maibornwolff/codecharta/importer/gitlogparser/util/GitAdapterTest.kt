@@ -8,7 +8,7 @@ import java.io.File
 import java.nio.file.Paths
 
 class GitAdapterTest {
-@Test
+    @Test
     fun `should produce a gitLog that contains commits`() {
         val gitFile = File.createTempFile("git", ".log")
         gitFile.deleteOnExit()
@@ -29,7 +29,7 @@ class GitAdapterTest {
             "Error while executing Git! Command was",
             "[git, log, --numstat, --raw, --topo-order, --reverse, -m]",
             "Process returned with exit status",
-            "128",
+            "128"
         )
     }
 

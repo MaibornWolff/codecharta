@@ -5,15 +5,15 @@ import de.maibornwolff.codecharta.util.Logger
 import java.lang.Integer.min
 
 class IndentationMetric(
-        private var maxIndentation: Int,
-        private var verbose: Boolean,
-        private var tabWidth: Int,
-                       ) : Metric {
-                       private val spaceIndentations = MutableList(maxIndentation * 8 + 1) { 0 }
+    private var maxIndentation: Int,
+    private var verbose: Boolean,
+    private var tabWidth: Int
+) : Metric {
+    private val spaceIndentations = MutableList(maxIndentation * 8 + 1) { 0 }
     private val tabIndentations = MutableList(maxIndentation + 1) { 0 }
 
     companion object {
-    const val NAME = "IndentationLevel"
+        const val NAME = "IndentationLevel"
     }
 
     // TODO no mixed tab/ space possible at line start?

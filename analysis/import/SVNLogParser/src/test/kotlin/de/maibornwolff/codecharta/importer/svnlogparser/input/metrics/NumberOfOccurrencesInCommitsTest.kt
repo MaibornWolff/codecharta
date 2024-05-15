@@ -5,7 +5,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 class NumberOfOccurrencesInCommitsTest {
-@Test
+    @Test
     fun `number of occurrences in commits test`() {
 // when
         val metric = NumberOfOccurencesInCommits()

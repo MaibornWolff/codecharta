@@ -10,12 +10,12 @@ import java.io.FileInputStream
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
-        name = ValidationTool.NAME,
-        description = [ValidationTool.DESCRIPTION],
-        footer = [CodeChartaConstants.General.GENERIC_FOOTER],
-                    )
+    name = ValidationTool.NAME,
+    description = [ValidationTool.DESCRIPTION],
+    footer = [CodeChartaConstants.General.GENERIC_FOOTER]
+)
 class ValidationTool : Callable<Unit?>, InteractiveParser {
-@CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
+    @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     var help: Boolean = false
 
     @CommandLine.Parameters(index = "0", arity = "1", paramLabel = "FILE", description = ["file to validate"])
@@ -25,7 +25,7 @@ class ValidationTool : Callable<Unit?>, InteractiveParser {
     override val description = DESCRIPTION
 
     companion object {
-    const val NAME = "check"
+        const val NAME = "check"
         const val DESCRIPTION = "validates cc.json files"
 
         const val SCHEMA_PATH = "cc.json"

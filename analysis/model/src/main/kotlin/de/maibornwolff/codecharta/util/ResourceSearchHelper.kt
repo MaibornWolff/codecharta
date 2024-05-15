@@ -4,10 +4,7 @@ import java.io.File
 
 class ResourceSearchHelper {
     companion object {
-    fun isFolderDirectlyInGivenDirectory(
-    directoryPath: String,
-    toBeSearchedFolder: String,
-    ): Boolean {
+        fun isFolderDirectlyInGivenDirectory(directoryPath: String, toBeSearchedFolder: String): Boolean {
             val inputFile = getFileFromStringIfExists(directoryPath) ?: return false
             if (!inputFile.isDirectory) {
                 return false
@@ -21,10 +18,7 @@ class ResourceSearchHelper {
             }.any()
         }
 
-        fun isFileWithOneOrMoreOfEndingsPresent(
-        resourcePath: String,
-        toBeCheckedFileEndings: List<String>,
-        ): Boolean {
+        fun isFileWithOneOrMoreOfEndingsPresent(resourcePath: String, toBeCheckedFileEndings: List<String>): Boolean {
             val inputFile = getFileFromStringIfExists(resourcePath) ?: return false
             if (inputFile.isFile && endsWithAtLeastOne(inputFile.name, toBeCheckedFileEndings)) {
                 return true
@@ -35,8 +29,8 @@ class ResourceSearchHelper {
             }
 
             println(
-                    "Given resource did not end with any of the supplied file endings. " + "Scanning directory `${inputFile.absolutePath}` if it contains a file with any of the supplied file endings.",
-                   )
+                "Given resource did not end with any of the supplied file endings. " + "Scanning directory `${inputFile.absolutePath}` if it contains a file with any of the supplied file endings."
+            )
             return inputFile.walk().asSequence().filter {
                 it.isFile && endsWithAtLeastOne(it.name, toBeCheckedFileEndings)
             }.any()
@@ -57,17 +51,11 @@ class ResourceSearchHelper {
             return null
         }
 
-        private fun isInputFileNameSearchToken(
-        inputFile: File,
-        searchToken: String,
-        ): Boolean {
+        private fun isInputFileNameSearchToken(inputFile: File, searchToken: String): Boolean {
             return (inputFile.name == searchToken)
         }
 
-        private fun endsWithAtLeastOne(
-        inputString: String,
-        endings: List<String>,
-        ): Boolean {
+        private fun endsWithAtLeastOne(inputString: String, endings: List<String>): Boolean {
             for (ending in endings) {
                 if (inputString.endsWith(ending)) {
                     return true

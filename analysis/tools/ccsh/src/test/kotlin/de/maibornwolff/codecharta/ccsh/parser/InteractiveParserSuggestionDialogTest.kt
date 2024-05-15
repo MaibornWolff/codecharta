@@ -23,7 +23,7 @@ import java.io.PrintStream
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class InteractiveParserSuggestionDialogTest {
-private val outContent = ByteArrayOutputStream()
+    private val outContent = ByteArrayOutputStream()
     private val originalOut = System.out
     private val errorOut = ByteArrayOutputStream()
     private val originalErrorOut = System.err
@@ -59,7 +59,7 @@ private val outContent = ByteArrayOutputStream()
         } returns emptyList()
 
         val usableParsers =
-                InteractiveParserSuggestionDialog.offerAndGetInteractiveParserSuggestionsAndConfigurations(cmdLine)
+            InteractiveParserSuggestionDialog.offerAndGetInteractiveParserSuggestionsAndConfigurations(cmdLine)
 
         Assertions.assertThat(errorOut.toString()).contains(Ccsh.NO_USABLE_PARSER_FOUND_MESSAGE)
         Assertions.assertThat(usableParsers).isNotNull
@@ -86,7 +86,7 @@ private val outContent = ByteArrayOutputStream()
         } returns listOf(parser)
 
         val selectedParsers =
-                InteractiveParserSuggestionDialog.offerAndGetInteractiveParserSuggestionsAndConfigurations(cmdLine)
+            InteractiveParserSuggestionDialog.offerAndGetInteractiveParserSuggestionsAndConfigurations(cmdLine)
 
         Assertions.assertThat(selectedParsers).isNotNull
         Assertions.assertThat(selectedParsers).isEmpty()
@@ -120,7 +120,7 @@ private val outContent = ByteArrayOutputStream()
         } returns mapOf(parserWithoutDescription to configuration)
 
         val configuredParsers =
-                InteractiveParserSuggestionDialog.offerAndGetInteractiveParserSuggestionsAndConfigurations(cmdLine)
+            InteractiveParserSuggestionDialog.offerAndGetInteractiveParserSuggestionsAndConfigurations(cmdLine)
 
         verify { ParserService.configureParserSelection(any(), any(), parserListWithoutDescription) }
 
@@ -139,7 +139,7 @@ private val outContent = ByteArrayOutputStream()
         } returns ""
 
         val selectedParsers =
-                InteractiveParserSuggestionDialog.offerAndGetInteractiveParserSuggestionsAndConfigurations(cmdLine)
+            InteractiveParserSuggestionDialog.offerAndGetInteractiveParserSuggestionsAndConfigurations(cmdLine)
 
         Assertions.assertThat(selectedParsers).isNotNull
         Assertions.assertThat(selectedParsers).isEmpty()
@@ -154,7 +154,7 @@ private val outContent = ByteArrayOutputStream()
         } returns "src/test/resources/does/not/exist"
 
         val selectedParsers =
-                InteractiveParserSuggestionDialog.offerAndGetInteractiveParserSuggestionsAndConfigurations(cmdLine)
+            InteractiveParserSuggestionDialog.offerAndGetInteractiveParserSuggestionsAndConfigurations(cmdLine)
 
         Assertions.assertThat(selectedParsers).isNotNull
         Assertions.assertThat(selectedParsers).isEmpty()

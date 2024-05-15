@@ -3,14 +3,11 @@ package de.maibornwolff.codecharta.importer.gitlogparser.parser
 import de.maibornwolff.codecharta.importer.gitlogparser.input.Commit
 
 class MergeCommitParser : CommitParser {
-override fun canParse(commit: Commit): Boolean {
+    override fun canParse(commit: Commit): Boolean {
         return !commit.isEmpty && commit.isMergeCommit()
     }
 
-    override fun parse(
-    commit: Commit,
-    versionControlledFilesList: VersionControlledFilesList,
-    ) {
+    override fun parse(commit: Commit, versionControlledFilesList: VersionControlledFilesList) {
         commit.modifications.forEach {
             val file = versionControlledFilesList.get(it.getTrackName())
             if (file == null || !file.isMutated()) { // Handle mutated files only when a merge commit occurs
@@ -26,10 +23,14 @@ override fun canParse(commit: Commit): Boolean {
                 file.resetMutation()
             } else {
                 System.err.println(
-                        "\nUnhandled Edge Case in MergeCommit: deleted: %s, mutated: %s, modification type: %s, initalAdd: %s, file: %s".format(
-                                file.isDeleted(), file.isMutated(), it.type, it.isInitialAdd(), file.filename,
-                                                                                                                                               ),
-                                  )
+                    "\nUnhandled Edge Case in MergeCommit: deleted: %s, mutated: %s, modification type: %s, initalAdd: %s, file: %s".format(
+                        file.isDeleted(),
+                        file.isMutated(),
+                        it.type,
+                        it.isInitialAdd(),
+                        file.filename
+                    )
+                )
             }
         }
     }

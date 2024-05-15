@@ -5,7 +5,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 class ProjectMetricsTest {
-private lateinit var projectMetrics: ProjectMetrics
+    private lateinit var projectMetrics: ProjectMetrics
 
     @BeforeEach
     fun initProjectMetrics() {
@@ -65,19 +65,11 @@ private lateinit var projectMetrics: ProjectMetrics
         Assertions.assertThat(listOf("foo", "bar")).contains(result)
     }
 
-    private fun addFileInProject(
-    currentProject: ProjectMetrics,
-    file: String,
-    ) {
+    private fun addFileInProject(currentProject: ProjectMetrics, file: String) {
         currentProject.projectMetrics[file] = FileMetricMap()
     }
 
-    private fun addMetricToFileInProject(
-    currentProject: ProjectMetrics,
-    file: String,
-    metric: String,
-    value: Int,
-    ) {
+    private fun addMetricToFileInProject(currentProject: ProjectMetrics, file: String, metric: String, value: Int) {
         currentProject.projectMetrics[file]?.add(metric, value)
     }
 }

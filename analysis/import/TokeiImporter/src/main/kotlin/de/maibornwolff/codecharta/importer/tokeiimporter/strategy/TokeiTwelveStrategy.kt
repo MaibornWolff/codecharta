@@ -10,7 +10,7 @@ import de.maibornwolff.codecharta.model.PathFactory
 import de.maibornwolff.codecharta.model.ProjectBuilder
 
 class TokeiTwelveStrategy(rootName: String, pathSeparator: String) : ImporterStrategy {
-override var rootName = ""
+    override var rootName = ""
     override var pathSeparator = ""
 
     init {
@@ -18,10 +18,7 @@ override var rootName = ""
         this.pathSeparator = pathSeparator
     }
 
-    override fun buildCCJson(
-    languageSummaries: JsonObject,
-    projectBuilder: ProjectBuilder,
-    ) {
+    override fun buildCCJson(languageSummaries: JsonObject, projectBuilder: ProjectBuilder) {
         if (isPathSeparatorArgumentEmpty(pathSeparator)) determinePathSeparator(languageSummaries)
         val gson = Gson()
         for (languageEntry in languageSummaries.entrySet()) {
@@ -51,25 +48,22 @@ override var rootName = ""
         this.pathSeparator = "/"
     }
 
-    private fun addAsNode(
-    report: Report,
-    projectBuilder: ProjectBuilder,
-    ) {
+    private fun addAsNode(report: Report, projectBuilder: ProjectBuilder) {
         val sanitizedName = report.name.removePrefix(rootName).replace(pathSeparator, "/")
         val directory = sanitizedName.substringBeforeLast("/")
         val fileName = sanitizedName.substringAfterLast("/")
 
         val node =
-                MutableNode(
-                        fileName,
-                        attributes =
-                        mapOf(
-                                "empty_lines" to report.stats.blanks,
-                                "rloc" to report.stats.code,
-                                "comment_lines" to report.stats.comments,
-                                "loc" to report.stats.blanks + report.stats.code + report.stats.comments,
-                             ),
-                           )
+            MutableNode(
+                fileName,
+                attributes =
+                    mapOf(
+                        "empty_lines" to report.stats.blanks,
+                        "rloc" to report.stats.code,
+                        "comment_lines" to report.stats.comments,
+                        "loc" to report.stats.blanks + report.stats.code + report.stats.comments
+                    )
+            )
 
         val path = PathFactory.fromFileSystemPath(directory)
         projectBuilder.insertByPath(path, node)

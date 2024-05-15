@@ -3,7 +3,7 @@ package de.maibornwolff.codecharta.importer.gitlogparser.input.metrics
 import de.maibornwolff.codecharta.importer.gitlogparser.input.Modification
 
 class DeletedLines : Metric {
-private var loc: Long = 0
+    private var loc: Long = 0
 
     override fun description(): String {
         return "Lines Of Code: Added lines for this file."

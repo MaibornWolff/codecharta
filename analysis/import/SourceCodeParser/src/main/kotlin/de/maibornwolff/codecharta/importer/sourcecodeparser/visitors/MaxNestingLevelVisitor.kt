@@ -14,7 +14,7 @@ import org.sonar.plugins.java.api.tree.TryStatementTree
 import org.sonar.plugins.java.api.tree.WhileStatementTree
 
 class MaxNestingLevelVisitor : ComplexityVisitor() {
-private var maxNestingLevel = 0
+    private var maxNestingLevel = 0
     private var currentNestingLevel = 0
 
     fun getMaxNestingLevel(tree: Tree): Int {

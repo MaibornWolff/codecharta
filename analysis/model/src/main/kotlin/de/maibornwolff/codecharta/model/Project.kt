@@ -1,15 +1,15 @@
 package de.maibornwolff.codecharta.model
 
 class Project(
-        val projectName: String,
-        private val nodes: List<Node> = listOf(Node("root", NodeType.Folder)),
-        val apiVersion: String = API_VERSION,
-        val edges: List<Edge> = listOf(),
-        val attributeTypes: Map<String, MutableMap<String, AttributeType>> = mapOf(),
-        val attributeDescriptors: Map<String, AttributeDescriptor> = mapOf(),
-        var blacklist: List<BlacklistItem> = listOf(),
-             ) {
-             init {
+    val projectName: String,
+    private val nodes: List<Node> = listOf(Node("root", NodeType.Folder)),
+    val apiVersion: String = API_VERSION,
+    val edges: List<Edge> = listOf(),
+    val attributeTypes: Map<String, MutableMap<String, AttributeType>> = mapOf(),
+    val attributeDescriptors: Map<String, AttributeDescriptor> = mapOf(),
+    var blacklist: List<BlacklistItem> = listOf()
+) {
+    init {
         if (nodes.size != 1) throw IllegalStateException("no root node present in project")
     }
 
@@ -32,7 +32,7 @@ class Project(
     }
 
     companion object {
-    private const val API_VERSION_MAJOR = "1"
+        private const val API_VERSION_MAJOR = "1"
         private const val API_VERSION_MINOR = "3"
         const val API_VERSION = "$API_VERSION_MAJOR.$API_VERSION_MINOR"
 

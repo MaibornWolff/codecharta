@@ -5,14 +5,11 @@ import de.maibornwolff.codecharta.importer.gitlogparser.input.Modification
 import de.maibornwolff.codecharta.importer.gitlogparser.input.VersionControlledFile
 
 class StandardCommitParser : CommitParser {
-override fun canParse(commit: Commit): Boolean {
+    override fun canParse(commit: Commit): Boolean {
         return !commit.isEmpty && !commit.isMergeCommit()
     }
 
-    override fun parse(
-    commit: Commit,
-    versionControlledFilesList: VersionControlledFilesList,
-    ) {
+    override fun parse(commit: Commit, versionControlledFilesList: VersionControlledFilesList) {
         commit.modifications.forEach {
             if (it.currentFilename.isEmpty()) return@forEach
 
@@ -43,12 +40,7 @@ override fun canParse(commit: Commit): Boolean {
         }
     }
 
-    private fun handleAddModification(
-    versionControlledFilesList: VersionControlledFilesList,
-    trackName: String,
-    commit: Commit,
-    mod: Modification,
-    ) {
+    private fun handleAddModification(versionControlledFilesList: VersionControlledFilesList, trackName: String, commit: Commit, mod: Modification) {
         val file = versionControlledFilesList.get(trackName)
         if (file != null && !file.isDeleted() && mod.currentFilename == file.filename) {
             file.registerCommit(commit, mod)
@@ -59,10 +51,7 @@ override fun canParse(commit: Commit): Boolean {
         }
     }
 
-    private fun handleDeleteModification(
-    versionControlledFilesList: VersionControlledFilesList,
-    trackName: String,
-    ) { // TODO registerCommit() needed? @Ruben do we want to track deleted and then reverted files as author and commit amount
+    private fun handleDeleteModification(versionControlledFilesList: VersionControlledFilesList, trackName: String) { // TODO registerCommit() needed? @Ruben do we want to track deleted and then reverted files as author and commit amount
         // In some cases a file which is deleted by a modification is not present
         // This would cause a NullPointerException
         // We do a safe call to prevent the Parser from crashing (for now).
@@ -70,12 +59,7 @@ override fun canParse(commit: Commit): Boolean {
         versionControlledFilesList.get(trackName)?.markDeleted()
     }
 
-    private fun handleRenameModification(
-    versionControlledFilesList: VersionControlledFilesList,
-    trackName: String,
-    commit: Commit,
-    mod: Modification,
-    ) {
+    private fun handleRenameModification(versionControlledFilesList: VersionControlledFilesList, trackName: String, commit: Commit, mod: Modification) {
         var fileToBeRenamed: VersionControlledFile? = versionControlledFilesList.get(trackName)
 
         if (fileToBeRenamed != null) {
@@ -84,12 +68,7 @@ override fun canParse(commit: Commit): Boolean {
         }
     }
 
-    private fun handleModModification(
-    versionControlledFilesList: VersionControlledFilesList,
-    trackName: String,
-    commit: Commit,
-    mod: Modification,
-    ) { // TODO Do we have to register delete commits if a RENAME OR MODIFY commit follows? (refer line 33)
+    private fun handleModModification(versionControlledFilesList: VersionControlledFilesList, trackName: String, commit: Commit, mod: Modification) { // TODO Do we have to register delete commits if a RENAME OR MODIFY commit follows? (refer line 33)
 
         var file = versionControlledFilesList.get(trackName)
         if (file == null) {

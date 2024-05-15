@@ -17,22 +17,22 @@ import java.nio.file.Files
 import java.nio.file.Paths
 
 class SVNLogProjectCreatorGoldenTest {
-private val svn = "svn"
+    private val svn = "svn"
     private val strategy = SVNLogParserStrategy()
     private val containsAuthors = true
     private val logFilename = "example_svn.log"
     private val expectedProjectFilename = "expected_svn.json"
 
     private val metricsFactory =
-            MetricsFactory(
-                    listOf(
-                            "number_of_authors",
-                            "number_of_commits",
-                            "weeks_with_commits",
-                            "range_of_weeks_with_commits",
-                            "successive_weeks_with_commits",
-                          ),
-                          )
+        MetricsFactory(
+            listOf(
+                "number_of_authors",
+                "number_of_commits",
+                "weeks_with_commits",
+                "range_of_weeks_with_commits",
+                "successive_weeks_with_commits"
+            )
+        )
 
     @Test
     @Throws(Exception::class)
@@ -45,9 +45,9 @@ private val svn = "svn"
         val resource = this.javaClass.classLoader.getResource(logFilename)
         val logStream = Files.lines(Paths.get(resource!!.toURI())) // when
         val svnProject =
-                svnSVNLogProjectCreator.parse(
-                        logStream,
-                                             ) // This step is necessary because the comparison of the attribute map in MutableNode fails if the project is used directly;
+            svnSVNLogProjectCreator.parse(
+                logStream
+            ) // This step is necessary because the comparison of the attribute map in MutableNode fails if the project is used directly;
         val svnProjectForComparison = serializeAndDeserializeProject(svnProject)
 
         // then

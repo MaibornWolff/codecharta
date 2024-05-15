@@ -17,7 +17,7 @@ import java.io.PrintStream
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class EdgeFilterTest {
-val errContent = ByteArrayOutputStream()
+    val errContent = ByteArrayOutputStream()
     val originalErr = System.err
 
     @AfterEach
@@ -28,10 +28,11 @@ val errContent = ByteArrayOutputStream()
     @Test
     fun `should create json uncompressed file`() {
         main(
-                arrayOf(
-                        "src/test/resources/coupling.json", "-o=src/test/resources/output",
-                       ),
+            arrayOf(
+                "src/test/resources/coupling.json",
+                "-o=src/test/resources/output"
             )
+        )
         val file = File("src/test/resources/output.cc.json")
         file.deleteOnExit()
 

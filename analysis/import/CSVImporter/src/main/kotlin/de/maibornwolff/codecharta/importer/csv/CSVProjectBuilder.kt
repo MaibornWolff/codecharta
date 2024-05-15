@@ -12,13 +12,13 @@ import java.io.InputStreamReader
 import java.nio.charset.StandardCharsets
 
 class CSVProjectBuilder(
-        private val pathSeparator: Char,
-        private val csvDelimiter: Char,
-        private val pathColumnName: String = "path",
-        private val metricNameTranslator: MetricNameTranslator = MetricNameTranslator.TRIVIAL,
-        private val attributeDescriptors: Map<String, AttributeDescriptor> = mapOf(),
-                       ) {
-                       private val includeRows: (Array<String>) -> Boolean = { true }
+    private val pathSeparator: Char,
+    private val csvDelimiter: Char,
+    private val pathColumnName: String = "path",
+    private val metricNameTranslator: MetricNameTranslator = MetricNameTranslator.TRIVIAL,
+    private val attributeDescriptors: Map<String, AttributeDescriptor> = mapOf()
+) {
+    private val includeRows: (Array<String>) -> Boolean = { true }
     private val projectBuilder = ProjectBuilder().withMetricTranslator(metricNameTranslator)
 
     fun parseCSVStream(inStream: InputStream): ProjectBuilder {
@@ -33,10 +33,7 @@ class CSVProjectBuilder(
         return projectBuilder.addAttributeDescriptions(this.attributeDescriptors).build(cleanAttributeDescriptors)
     }
 
-    private fun parseContent(
-    parser: CsvParser,
-    header: CSVHeader,
-    ) {
+    private fun parseContent(parser: CsvParser, header: CSVHeader) {
         var row = parser.parseNext()
         while (row != null) {
             if (includeRows(row)) {
@@ -56,10 +53,7 @@ class CSVProjectBuilder(
         return parser
     }
 
-    private fun insertRowInProject(
-    rawRow: Array<String?>,
-    header: CSVHeader,
-    ) {
+    private fun insertRowInProject(rawRow: Array<String?>, header: CSVHeader) {
         try {
             val row = CSVRow(rawRow, header, pathSeparator)
             projectBuilder.insertByPath(row.pathInTree(), row.asNode())

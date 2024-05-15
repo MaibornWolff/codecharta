@@ -6,12 +6,12 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 class ParseFolderToJson {
-private val resource = "src/test/resources/sampleproject"
+    private val resource = "src/test/resources/sampleproject"
 
     private val output =
-            retrieveStreamAsString {
-                SourceCodeParserMain.mainWithOutputStream(it, arrayOf(resource, "--format=json", "-nc"))
-            }
+        retrieveStreamAsString {
+            SourceCodeParserMain.mainWithOutputStream(it, arrayOf(resource, "--format=json", "-nc"))
+        }
 
     @Test
     fun `json output has one root node`() {
@@ -21,27 +21,27 @@ private val resource = "src/test/resources/sampleproject"
     @Test
     fun `json output does not contains source path, because we don't care about that information`() {
         assertThat(output).doesNotContain(
-                """"name":"src"""",
-                """"name":"test"""",
-                """"name":"resources"""",
-                """"name":"sampleproject"""",
-                                         )
+            """"name":"src"""",
+            """"name":"test"""",
+            """"name":"resources"""",
+            """"name":"sampleproject""""
+        )
     }
 
     @Test
     fun `json output does contain files`() {
         assertThat(output).contains(
-                """"name":"foo.java""",
-                """"name":"hello.java""",
-                                   )
+            """"name":"foo.java""",
+            """"name":"hello.java"""
+        )
     }
 
     @Test
     fun `json output does contain file metrics`() {
         assertThat(output).contains(
-                """"rloc":39""",
-                """"rloc":6""",
-                """"rloc":29""",
-                                   )
+            """"rloc":39""",
+            """"rloc":6""",
+            """"rloc":29"""
+        )
     }
 }

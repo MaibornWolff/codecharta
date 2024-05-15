@@ -39,7 +39,7 @@ import java.io.PrintStream
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class PicocliParserRepositoryTest {
-private val outContent = ByteArrayOutputStream()
+    private val outContent = ByteArrayOutputStream()
     private val originalOut = System.out
     private val cmdLine = CommandLine(Ccsh())
 
@@ -62,19 +62,19 @@ private val outContent = ByteArrayOutputStream()
 
     private fun getExpectedParsers(): List<InteractiveParser> {
         return listOf<InteractiveParser>(
-                CSVExporter(),
-                EdgeFilter(), MergeFilter(),
-                StructureModifier(), CSVImporter(),
-                SonarImporterMain(), SourceMonitorImporter(),
-                SVNLogParser(), GitLogParser(),
-                SourceCodeParserMain(), CodeMaatImporter(),
-                TokeiImporter(), RawTextParser(),
-                MetricGardenerImporter(), ValidationTool(),
-                                        )
+            CSVExporter(),
+            EdgeFilter(), MergeFilter(),
+            StructureModifier(), CSVImporter(),
+            SonarImporterMain(), SourceMonitorImporter(),
+            SVNLogParser(), GitLogParser(),
+            SourceCodeParserMain(), CodeMaatImporter(),
+            TokeiImporter(), RawTextParser(),
+            MetricGardenerImporter(), ValidationTool()
+        )
     }
 
     companion object {
-    @JvmStatic
+        @JvmStatic
         fun getArgumentsOfExpectedParserNamesWithDescriptions(): List<Arguments> {
             val expectedParserNamesWithDescriptions = getExpectedParserNamesWithDescription()
             val result = mutableListOf<Arguments>()
@@ -87,22 +87,22 @@ private val outContent = ByteArrayOutputStream()
 
         fun getExpectedParserNamesWithDescription(): List<List<String>> {
             return listOf(
-                    listOf(CSVExporter.NAME, " - " + CSVExporter.DESCRIPTION),
-                    listOf(EdgeFilter.NAME, " - " + EdgeFilter.DESCRIPTION),
-                    listOf(MergeFilter.NAME, " - " + MergeFilter.DESCRIPTION),
-                    listOf(StructureModifier.NAME, " - " + StructureModifier.DESCRIPTION),
-                    listOf(CSVImporter.NAME, " - " + CSVImporter.DESCRIPTION),
-                    listOf(SonarImporterMain.NAME, " - " + SonarImporterMain.DESCRIPTION),
-                    listOf(SourceMonitorImporter.NAME, " - " + SourceMonitorImporter.DESCRIPTION),
-                    listOf(SVNLogParser.NAME, " - " + SVNLogParser.DESCRIPTION),
-                    listOf(GitLogParser.NAME, " - " + GitLogParser.DESCRIPTION),
-                    listOf(SourceCodeParserMain.NAME, " - " + SourceCodeParserMain.DESCRIPTION),
-                    listOf(CodeMaatImporter.NAME, " - " + CodeMaatImporter.DESCRIPTION),
-                    listOf(TokeiImporter.NAME, " - " + TokeiImporter.DESCRIPTION),
-                    listOf(RawTextParser.NAME, " - " + RawTextParser.DESCRIPTION),
-                    listOf(ValidationTool.NAME, " - " + ValidationTool.DESCRIPTION),
-                    listOf(MetricGardenerImporter.NAME, " - " + MetricGardenerImporter.DESCRIPTION),
-                         )
+                listOf(CSVExporter.NAME, " - " + CSVExporter.DESCRIPTION),
+                listOf(EdgeFilter.NAME, " - " + EdgeFilter.DESCRIPTION),
+                listOf(MergeFilter.NAME, " - " + MergeFilter.DESCRIPTION),
+                listOf(StructureModifier.NAME, " - " + StructureModifier.DESCRIPTION),
+                listOf(CSVImporter.NAME, " - " + CSVImporter.DESCRIPTION),
+                listOf(SonarImporterMain.NAME, " - " + SonarImporterMain.DESCRIPTION),
+                listOf(SourceMonitorImporter.NAME, " - " + SourceMonitorImporter.DESCRIPTION),
+                listOf(SVNLogParser.NAME, " - " + SVNLogParser.DESCRIPTION),
+                listOf(GitLogParser.NAME, " - " + GitLogParser.DESCRIPTION),
+                listOf(SourceCodeParserMain.NAME, " - " + SourceCodeParserMain.DESCRIPTION),
+                listOf(CodeMaatImporter.NAME, " - " + CodeMaatImporter.DESCRIPTION),
+                listOf(TokeiImporter.NAME, " - " + TokeiImporter.DESCRIPTION),
+                listOf(RawTextParser.NAME, " - " + RawTextParser.DESCRIPTION),
+                listOf(ValidationTool.NAME, " - " + ValidationTool.DESCRIPTION),
+                listOf(MetricGardenerImporter.NAME, " - " + MetricGardenerImporter.DESCRIPTION)
+            )
         }
     }
 
@@ -137,15 +137,15 @@ private val outContent = ByteArrayOutputStream()
         val unusableParser = mockParserObject("sonarimport", false)
 
         val usableParsers =
-                picocliParserRepository.getApplicableInteractiveParserNamesWithDescription(
-                        "input",
-                        listOf(usableParser, unusableParser),
-                                                                                          )
+            picocliParserRepository.getApplicableInteractiveParserNamesWithDescription(
+                "input",
+                listOf(usableParser, unusableParser)
+            )
 
         Assertions.assertTrue(usableParsers.contains("gitlogparser - generates cc.json from git-log files"))
         Assertions.assertFalse(
-                usableParsers.contains("sonarimport - generates cc.json from metric data from SonarQube"),
-                              )
+            usableParsers.contains("sonarimport - generates cc.json from metric data from SonarQube")
+        )
     }
 
     @ParameterizedTest
@@ -155,7 +155,7 @@ private val outContent = ByteArrayOutputStream()
         val parserNameAndDescription = parserNameWithDescription[0] + parserNameWithDescription[1]
 
         val applicableParser =
-                picocliParserRepository.getApplicableInteractiveParserNamesWithDescription("input", listOf(parser))
+            picocliParserRepository.getApplicableInteractiveParserNamesWithDescription("input", listOf(parser))
 
         Assertions.assertTrue(applicableParser.size == 1)
         Assertions.assertTrue(applicableParser[0] == parserNameAndDescription)
@@ -170,8 +170,8 @@ private val outContent = ByteArrayOutputStream()
         for (parserNameWithDescriptionList in expectedParserNamesWithDescription) {
             val parserNameWithDescription = parserNameWithDescriptionList[0] + parserNameWithDescriptionList[1]
             Assertions.assertTrue(
-                    actualParserNamesWithDescription.contains(parserNameWithDescription),
-                                 )
+                actualParserNamesWithDescription.contains(parserNameWithDescription)
+            )
         }
     }
 
@@ -184,10 +184,10 @@ private val outContent = ByteArrayOutputStream()
         for (parserNameDescriptionList in expectedParserNamesWithDescription) {
             val parserName = parserNameDescriptionList[0]
             Assertions.assertTrue(
-                    expectedParserNames.contains(
-                            picocliParserRepository.extractParserName(parserName),
-                                                ),
-                                 )
+                expectedParserNames.contains(
+                    picocliParserRepository.extractParserName(parserName)
+                )
+            )
         }
     }
 
@@ -197,14 +197,11 @@ private val outContent = ByteArrayOutputStream()
 
         Assertions.assertNull(parserName)
         Assertions.assertTrue(
-                outContent.toString().contains("Could not find the specified parser with the name 'nonexistent'!"),
-                             )
+            outContent.toString().contains("Could not find the specified parser with the name 'nonexistent'!")
+        )
     }
 
-    private fun mockParserObject(
-    name: String,
-    isUsable: Boolean,
-    ): InteractiveParser {
+    private fun mockParserObject(name: String, isUsable: Boolean): InteractiveParser {
         val obj = cmdLine.subcommands[name]!!.commandSpec.userObject() as InteractiveParser
         mockkObject(obj)
         val dialogInterface = mockkClass(ParserDialogInterface::class)

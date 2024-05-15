@@ -17,9 +17,9 @@ class ProjectMergerTest {
     @Test
     fun `should filter edges as node attributes`() {
         val originalProject =
-                ProjectDeserializer.deserializeProject(
-                        InputStreamReader(this.javaClass.classLoader.getResourceAsStream(TEST_EDGES_JSON_FILE)!!),
-                                                      )
+            ProjectDeserializer.deserializeProject(
+                InputStreamReader(this.javaClass.classLoader.getResourceAsStream(TEST_EDGES_JSON_FILE)!!)
+            )
         val project = EdgeProjectBuilder(originalProject, '/').merge()
         val parent1 = getChildByName(project.rootNode.children.toMutableList(), "Parent 1")
         val parent2 = getChildByName(parent1.children.toMutableList(), "Parent 2")
@@ -44,9 +44,9 @@ class ProjectMergerTest {
     @Test
     fun `should filter edges as node attributes with empty nodes list in testfile`() {
         val originalProject =
-                ProjectDeserializer.deserializeProject(
-                        InputStreamReader(this.javaClass.classLoader.getResourceAsStream(TEST_EDGES_JSON_FILE_2)!!),
-                                                      )
+            ProjectDeserializer.deserializeProject(
+                InputStreamReader(this.javaClass.classLoader.getResourceAsStream(TEST_EDGES_JSON_FILE_2)!!)
+            )
         val project = EdgeProjectBuilder(originalProject, '/').merge()
 
         val parent1 = getChildByName(project.rootNode.children.toMutableList(), "Parent 1")
@@ -71,40 +71,34 @@ class ProjectMergerTest {
     @Test
     fun `given a set of attributeDescriptors it should be copied into the new project`() {
         val originalProject =
-                ProjectDeserializer.deserializeProject(
-                        InputStreamReader(this.javaClass.classLoader.getResourceAsStream(TEST_EDGES_JSON_FILE_3)!!),
-                                                      )
+            ProjectDeserializer.deserializeProject(
+                InputStreamReader(this.javaClass.classLoader.getResourceAsStream(TEST_EDGES_JSON_FILE_3)!!)
+            )
         val project = EdgeProjectBuilder(originalProject, '/').merge()
         val expectedDescriptors =
-                mapOf(
-                        "Test" to
-                                AttributeDescriptor(
-                                        description = "a", hintLowValue = "b", hintHighValue = "c",
-                                        link = "d", direction = -1,
-                                                   ),
-                        "Test2" to
-                                AttributeDescriptor(
-                                        title = "a1", description = "b2", hintLowValue = "c3",
-                                        hintHighValue = "d4", link = "e5", direction = -1,
-                                                   ),
-                     )
+            mapOf(
+                "Test" to
+                    AttributeDescriptor(
+                        description = "a", hintLowValue = "b", hintHighValue = "c",
+                        link = "d", direction = -1
+                    ),
+                "Test2" to
+                    AttributeDescriptor(
+                        title = "a1", description = "b2", hintLowValue = "c3",
+                        hintHighValue = "d4", link = "e5", direction = -1
+                    )
+            )
         assertEquals(project.attributeDescriptors, expectedDescriptors)
     }
 }
 
-private fun getChildByName(
-children: List<Node>,
-nodeName: String,
-): Node {
+private fun getChildByName(children: List<Node>, nodeName: String): Node {
     children.forEach {
         if (it.name == nodeName) return it
     }
     return Node(nodeName)
 }
 
-private fun getAttributeValue(
-attributes: Map<String, Any>,
-attributeName: String,
-): Int {
+private fun getAttributeValue(attributes: Map<String, Any>, attributeName: String): Int {
     return attributes.filterKeys { s: String -> s == attributeName }[attributeName].toString().toInt()
 }

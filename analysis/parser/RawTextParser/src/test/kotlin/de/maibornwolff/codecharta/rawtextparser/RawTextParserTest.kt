@@ -27,7 +27,7 @@ import java.io.PrintStream
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class RawTextParserTest {
-private val errContent = ByteArrayOutputStream()
+    private val errContent = ByteArrayOutputStream()
     private val originalErr = System.err
 
     @AfterEach
@@ -36,19 +36,16 @@ private val errContent = ByteArrayOutputStream()
     }
 
     companion object {
-    @JvmStatic
+        @JvmStatic
         fun provideValidInputFiles(): List<Arguments> {
             return listOf(
-                    Arguments.of("src/test/resources/sampleproject"),
-                    Arguments.of("src/test/resources/sampleproject/tabs.included"),
-                         )
+                Arguments.of("src/test/resources/sampleproject"),
+                Arguments.of("src/test/resources/sampleproject/tabs.included")
+            )
         }
     }
 
-    private fun executeForOutput(
-    input: String,
-    args: Array<String>,
-    ): String {
+    private fun executeForOutput(input: String, args: Array<String>): String {
         val inputStream = ByteArrayInputStream(input.toByteArray())
         val outputStream = ByteArrayOutputStream()
         val printStream = PrintStream(outputStream)
@@ -81,10 +78,10 @@ private val errContent = ByteArrayOutputStream()
 
         // when
         val result =
-        executeForOutput(
-        pipedProject,
-                arrayOf(inputFilePath, "--tab-width=2", "--max-indentation-level=2", "-e=tabs*."),
-        )
+            executeForOutput(
+                pipedProject,
+                arrayOf(inputFilePath, "--tab-width=2", "--max-indentation-level=2", "-e=tabs*.")
+            )
 
         // then
         JSONAssert.assertEquals(result, expectedResultFile.readText(), JSONCompareMode.NON_EXTENSIBLE)
@@ -103,9 +100,9 @@ private val errContent = ByteArrayOutputStream()
 
         // when
         ProjectSerializer.serializeProject(
-                MergeFilter.mergePipedWithCurrentProject(partialProject2, partialProject1),
-                OutputStreamWriter(PrintStream(expected)),
-                                          )
+            MergeFilter.mergePipedWithCurrentProject(partialProject2, partialProject1),
+            OutputStreamWriter(PrintStream(expected))
+        )
         val result = executeForOutput(input, arrayOf(fileToParse))
 
         // then
@@ -165,7 +162,7 @@ private val errContent = ByteArrayOutputStream()
 
         // then
         Assertions.assertThat(errContent.toString())
-                .contains("Input invalid file for RawTextParser, stopping execution")
+            .contains("Input invalid file for RawTextParser, stopping execution")
 
         // clean up
         System.setErr(originalErr)
@@ -195,7 +192,7 @@ private val errContent = ByteArrayOutputStream()
 
         // when
         val result =
-                executeForOutput("", arrayOf("src/test/resources/sampleproject", "--file-extensions=invalid, included"))
+            executeForOutput("", arrayOf("src/test/resources/sampleproject", "--file-extensions=invalid, included"))
 
         // then
         Assertions.assertThat(result).isNotEmpty()
@@ -213,10 +210,10 @@ private val errContent = ByteArrayOutputStream()
 
         // when
         val result =
-        executeForOutput(
-        "",
-                arrayOf("src/test/resources/sampleproject/", "--file-extensions=invalid1, invalid2, also_invalid"),
-        )
+            executeForOutput(
+                "",
+                arrayOf("src/test/resources/sampleproject/", "--file-extensions=invalid1, invalid2, also_invalid")
+            )
 
         // then
         Assertions.assertThat(result).isEmpty()

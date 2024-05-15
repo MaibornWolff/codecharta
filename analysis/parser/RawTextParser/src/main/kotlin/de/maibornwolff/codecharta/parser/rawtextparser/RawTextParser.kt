@@ -22,15 +22,15 @@ import java.io.PrintStream
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
-        name = RawTextParser.NAME,
-        description = [RawTextParser.DESCRIPTION],
-        footer = [CodeChartaConstants.General.GENERIC_FOOTER],
-                    )
+    name = RawTextParser.NAME,
+    description = [RawTextParser.DESCRIPTION],
+    footer = [CodeChartaConstants.General.GENERIC_FOOTER]
+)
 class RawTextParser(
-        private val input: InputStream = System.`in`,
-        private val output: PrintStream = System.out,
-        private val error: PrintStream = System.err,
-                   ) : Callable<Unit>, InteractiveParser, PipeableParser, AttributeGenerator {
+    private val input: InputStream = System.`in`,
+    private val output: PrintStream = System.out,
+    private val error: PrintStream = System.err
+) : Callable<Unit>, InteractiveParser, PipeableParser, AttributeGenerator {
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
 
@@ -41,12 +41,12 @@ class RawTextParser(
     private var inputFile: File? = null
 
     @CommandLine.Option(
-            names = ["-m", "--metrics"],
-            description = ["comma-separated list of metrics to be computed (all available metrics are computed if not specified) (when using powershell, the list either can't contain spaces or has to be in quotes)"],
-            paramLabel = "metrics",
-            converter = [(CommaSeparatedStringToListConverter::class)],
-            preprocessor = CommaSeparatedParameterPreprocessor::class,
-                       )
+        names = ["-m", "--metrics"],
+        description = ["comma-separated list of metrics to be computed (all available metrics are computed if not specified) (when using powershell, the list either can't contain spaces or has to be in quotes)"],
+        paramLabel = "metrics",
+        converter = [(CommaSeparatedStringToListConverter::class)],
+        preprocessor = CommaSeparatedParameterPreprocessor::class
+    )
     private var metricNames: List<String> = listOf()
 
     @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File (or empty for stdout)"])
@@ -62,32 +62,32 @@ class RawTextParser(
     private var maxIndentLvl: Int = DEFAULT_INDENT_LVL
 
     @CommandLine.Option(
-            names = ["-e", "--exclude"],
-            description = ["comma-separated list of regex patterns to exclude files/folders"],
-            converter = [(CommaSeparatedStringToListConverter::class)],
-            preprocessor = CommaSeparatedParameterPreprocessor::class,
-                       )
+        names = ["-e", "--exclude"],
+        description = ["comma-separated list of regex patterns to exclude files/folders"],
+        converter = [(CommaSeparatedStringToListConverter::class)],
+        preprocessor = CommaSeparatedParameterPreprocessor::class
+    )
     private var exclude: List<String> = listOf()
 
     @CommandLine.Option(
-            names = ["-fe", "--file-extensions"],
-            description = ["comma-separated list of file-extensions to parse only those files (default: any)"],
-            converter = [(FileExtensionConverter::class)],
-            preprocessor = CommaSeparatedParameterPreprocessor::class,
-                       )
+        names = ["-fe", "--file-extensions"],
+        description = ["comma-separated list of file-extensions to parse only those files (default: any)"],
+        converter = [(FileExtensionConverter::class)],
+        preprocessor = CommaSeparatedParameterPreprocessor::class
+    )
     private var fileExtensions: List<String> = listOf()
 
     @CommandLine.Option(
-            names = ["--without-default-excludes"],
-            description = ["include build, target, dist, resources and out folders as well as files/folders starting with '.' "],
-                       )
+        names = ["--without-default-excludes"],
+        description = ["include build, target, dist, resources and out folders as well as files/folders starting with '.' "]
+    )
     private var withoutDefaultExcludes = false
 
     override val name = NAME
     override val description = DESCRIPTION
 
     companion object {
-    const val NAME = "rawtextparser"
+        const val NAME = "rawtextparser"
         const val DESCRIPTION = "generates cc.json from projects or source code files"
 
         const val DEFAULT_INDENT_LVL = 10
@@ -106,10 +106,15 @@ class RawTextParser(
         if (!withoutDefaultExcludes) exclude += Companion.DEFAULT_EXCLUDES
 
         val projectMetrics: ProjectMetrics =
-                ProjectMetricsCollector(
-                        inputFile!!, exclude, fileExtensions, metricNames, verbose, maxIndentLvl,
-                        tabWidth,
-                                       ).parseProject()
+            ProjectMetricsCollector(
+                inputFile!!,
+                exclude,
+                fileExtensions,
+                metricNames,
+                verbose,
+                maxIndentLvl,
+                tabWidth
+            ).parseProject()
         println()
 
         if (projectMetrics.isEmpty()) {
@@ -176,8 +181,8 @@ class RawTextParser(
 
         val fileSearch = searchFile.walk()
         return fileSearch.asSequence()
-                .filter { it.isFile }
-                .any()
+            .filter { it.isFile }
+            .any()
     }
 
     override fun getAttributeDescriptorMaps(): Map<String, AttributeDescriptor> {

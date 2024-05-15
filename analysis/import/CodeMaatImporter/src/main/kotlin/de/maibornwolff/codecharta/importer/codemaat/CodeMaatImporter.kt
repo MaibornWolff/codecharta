@@ -18,44 +18,44 @@ import java.io.PrintStream
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
-        name = CodeMaatImporter.NAME,
-        description = [CodeMaatImporter.DESCRIPTION],
-        footer = [CodeChartaConstants.General.GENERIC_FOOTER],
-                    )
+    name = CodeMaatImporter.NAME,
+    description = [CodeMaatImporter.DESCRIPTION],
+    footer = [CodeChartaConstants.General.GENERIC_FOOTER]
+)
 class CodeMaatImporter(
-        private val output: PrintStream = System.out,
-                      ) : Callable<Unit>, InteractiveParser, AttributeGenerator {
-                      @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
+    private val output: PrintStream = System.out
+) : Callable<Unit>, InteractiveParser, AttributeGenerator {
+    @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
 
     @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File"])
     private var outputFile:
-            String? = null
+        String? = null
 
     @CommandLine.Option(names = ["-nc", "--not-compressed"], description = ["save uncompressed output File"])
     private var compress =
-            true
+        true
 
     @CommandLine.Parameters(arity = "1..*", paramLabel = "FILE", description = ["codemaat coupling csv files"])
     private var files:
-            List<File> = mutableListOf()
+        List<File> = mutableListOf()
 
     private val pathSeparator =
-            '/'
+        '/'
 
     private val csvDelimiter =
-            ','
+        ','
 
     override val name =
-            NAME
+        NAME
     override val description =
-            DESCRIPTION
+        DESCRIPTION
 
     companion object {
-    const val NAME =
-                "codemaatimport"
+        const val NAME =
+            "codemaatimport"
         const val DESCRIPTION =
-                "generates cc.json from codemaat coupling csv"
+            "generates cc.json from codemaat coupling csv"
 
         @JvmStatic
         fun main(args: Array<String>) {
@@ -70,17 +70,20 @@ class CodeMaatImporter(
         }
 
         val csvProjectBuilder =
-                CSVProjectBuilder(
-                        pathSeparator, csvDelimiter, codemaatReplacement, attributeTypes,
-                        getAttributeDescriptorMaps(),
-                                 )
+            CSVProjectBuilder(
+                pathSeparator,
+                csvDelimiter,
+                codemaatReplacement,
+                attributeTypes,
+                getAttributeDescriptorMaps()
+            )
         files.map {
             it.inputStream()
         }.forEach<InputStream> {
             csvProjectBuilder.parseCSVStream(it)
         }
         val project =
-                csvProjectBuilder.build()
+            csvProjectBuilder.build()
 
         ProjectSerializer.serializeToFileOrStream(project, outputFile, output, compress)
 
@@ -88,12 +91,12 @@ class CodeMaatImporter(
     }
 
     private val codemaatReplacement:
-            MetricNameTranslator
+        MetricNameTranslator
         get() {
             val prefix =
-                    ""
+                ""
             val replacementMap =
-                    mutableMapOf<String, String>()
+                mutableMapOf<String, String>()
             replacementMap["entity"] = "fromNodename"
             replacementMap["coupled"] = "toNodeName"
             replacementMap["degree"] = "pairingRate"
@@ -103,12 +106,12 @@ class CodeMaatImporter(
         }
 
     private val attributeTypes:
-            AttributeTypes
+        AttributeTypes
         get() {
             val type =
-                    "edges"
+                "edges"
             val attributeTypes =
-                    mutableMapOf<String, AttributeType>()
+                mutableMapOf<String, AttributeType>()
             attributeTypes["pairingRate"] = AttributeType.RELATIVE
             attributeTypes["avgCommits"] = AttributeType.ABSOLUTE
 

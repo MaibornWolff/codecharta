@@ -3,21 +3,21 @@ package de.maibornwolff.codecharta.importer.codemaat
 import de.maibornwolff.codecharta.util.Logger
 
 class CSVHeader(
-        header: Array<String?>,
-               ) {
-               private val headerMap:
-            MutableMap<Int, String>
+    header: Array<String?>
+) {
+    private val headerMap:
+        MutableMap<Int, String>
 
     val columnNumbers:
-            Set<Int>
+        Set<Int>
         get() = headerMap.keys
 
     val pathColumn:
-            List<Int>
+        List<Int>
         get() =
             headerMap.keys.filter { i ->
                 headerMap[i].equals("entity", ignoreCase = true) ||
-                headerMap[i].equals("coupled", ignoreCase = true)
+                    headerMap[i].equals("coupled", ignoreCase = true)
             }
 
     init {

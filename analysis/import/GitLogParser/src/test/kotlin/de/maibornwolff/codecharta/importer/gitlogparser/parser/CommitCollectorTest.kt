@@ -13,7 +13,7 @@ import java.time.OffsetDateTime
 import java.util.stream.Stream
 
 class CommitCollectorTest {
-private val metricsFactory = MetricsFactory()
+    private val metricsFactory = MetricsFactory()
 
     private fun modificationsByFilename(vararg filenames: String): List<Modification> {
         return filenames.map { Modification(it, 0, 0, Modification.Type.ADD) }
@@ -31,10 +31,7 @@ private val metricsFactory = MetricsFactory()
         return arrayOf(addCommit, deleteCommit, modifyCommit)
     }
 
-    private fun load_case_add_delete_rename_mutated(
-    testFileName: String,
-    newFileName: String,
-    ): Array<Commit> {
+    private fun load_case_add_delete_rename_mutated(testFileName: String, newFileName: String): Array<Commit> {
         val addModification = Modification(testFileName, Modification.Type.ADD)
         val deleteModification = Modification(testFileName, Modification.Type.DELETE)
         val renameModification = Modification(newFileName, testFileName, Modification.Type.RENAME)
@@ -71,7 +68,7 @@ private val metricsFactory = MetricsFactory()
         val deleteCommit = Commit("Delete $testFileName", listOf(deleteModification), OffsetDateTime.now())
 
         val versionControlledFilesList =
-                Stream.of(addCommit, deleteCommit).collect(CommitCollector.create(metricsFactory))
+            Stream.of(addCommit, deleteCommit).collect(CommitCollector.create(metricsFactory))
 
         assertTrue(versionControlledFilesList.get(testFileName)!!.isDeleted())
     }
@@ -122,7 +119,7 @@ private val metricsFactory = MetricsFactory()
 
         val modifyModification = Modification(testFileName, Modification.Type.MODIFY)
         val mergeCommitModify =
-                Commit("Modify by Merge $testFileName", listOf(modifyModification), OffsetDateTime.now(), true)
+            Commit("Modify by Merge $testFileName", listOf(modifyModification), OffsetDateTime.now(), true)
 
         val arrayOfCommits = commits + arrayOf(mergeCommitModify)
         val versionControlledFilesList2 = Stream.of(*arrayOfCommits).collect(CommitCollector.create(metricsFactory))
@@ -159,7 +156,7 @@ private val metricsFactory = MetricsFactory()
 
         val deleteModification = Modification(testFileName, Modification.Type.DELETE)
         val mergeCommitDelete =
-                Commit("Delete by Merge $testFileName", listOf(deleteModification), OffsetDateTime.now(), true)
+            Commit("Delete by Merge $testFileName", listOf(deleteModification), OffsetDateTime.now(), true)
 
         val arrayOfCommits = commits + arrayOf(mergeCommitDelete)
         val versionControlledFilesList = Stream.of(*arrayOfCommits).collect(CommitCollector.create(metricsFactory))
@@ -185,31 +182,31 @@ private val metricsFactory = MetricsFactory()
     @Test
     fun test_given_empty_vcf_list_when_multiple_commits_then_collect_them() {
         val firstModifications =
-                listOf(
-                        Modification("File1.kt", Modification.Type.ADD),
-                        Modification("File2.kt", Modification.Type.ADD),
-                        Modification("File3.kt", Modification.Type.ADD),
-                        Modification("File4.kt", Modification.Type.ADD),
-                      )
+            listOf(
+                Modification("File1.kt", Modification.Type.ADD),
+                Modification("File2.kt", Modification.Type.ADD),
+                Modification("File3.kt", Modification.Type.ADD),
+                Modification("File4.kt", Modification.Type.ADD)
+            )
         val nextModifications =
-                listOf(
-                        Modification("File3.kt", Modification.Type.MODIFY),
-                        Modification("File4.kt", Modification.Type.MODIFY),
-                        Modification("File5.kt", Modification.Type.ADD),
-                      )
+            listOf(
+                Modification("File3.kt", Modification.Type.MODIFY),
+                Modification("File4.kt", Modification.Type.MODIFY),
+                Modification("File5.kt", Modification.Type.ADD)
+            )
         val lastModifications =
-                listOf(
-                        Modification("File3.kt", Modification.Type.DELETE),
-                        Modification("File5_newName.kt", "File5.kt", Modification.Type.RENAME),
-                      )
+            listOf(
+                Modification("File3.kt", Modification.Type.DELETE),
+                Modification("File5_newName.kt", "File5.kt", Modification.Type.RENAME)
+            )
 
         val firstCommit = Commit("First Commit", firstModifications, OffsetDateTime.now())
         val secondCommit = Commit("Next Commit", nextModifications, OffsetDateTime.now())
         val lastCommit = Commit("Last Commit", lastModifications, OffsetDateTime.now())
 
         val versionControlledFilesList =
-                Stream.of(*arrayOf(firstCommit, secondCommit, lastCommit))
-                        .collect(CommitCollector.create(metricsFactory))
+            Stream.of(*arrayOf(firstCommit, secondCommit, lastCommit))
+                .collect(CommitCollector.create(metricsFactory))
 
         assertInstanceOf(VersionControlledFile::class.java, versionControlledFilesList.get("File2.kt"))
         assertFalse(versionControlledFilesList.get("File1.kt")!!.isDeleted())
@@ -244,7 +241,7 @@ private val metricsFactory = MetricsFactory()
     fun test_given_parallel_commit_stream_when_should_be_parsed_then_break_with_exception() {
         Assertions.assertThrows(UnsupportedOperationException::class.java) {
             val commit =
-                    Commit("TheAuthor", modificationsByFilename("src/Main.java", "src/Util.java"), OffsetDateTime.now())
+                Commit("TheAuthor", modificationsByFilename("src/Main.java", "src/Util.java"), OffsetDateTime.now())
             val parallelCommitStream = Stream.of(commit, commit).parallel()
             parallelCommitStream.collect(CommitCollector.create(metricsFactory))
         }

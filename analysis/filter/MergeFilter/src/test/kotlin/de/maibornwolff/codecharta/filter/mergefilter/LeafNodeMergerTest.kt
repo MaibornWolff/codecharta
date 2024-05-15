@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
 class LeafNodeMergerTest {
-@Test
+    @Test
     fun `should merge nodes with same name`() {
         val fittingMerger = LeafNodeMergerStrategy(false)
         val node1 = MutableNode("Name", NodeType.File)

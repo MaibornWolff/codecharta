@@ -3,7 +3,7 @@ package de.maibornwolff.codecharta.util
 import io.github.oshai.kotlinlogging.KotlinLogging
 
 object Logger {
-private val logger = KotlinLogging.logger {}
+    private val logger = KotlinLogging.logger {}
 
     fun info(value: () -> String) {
         logger.info {

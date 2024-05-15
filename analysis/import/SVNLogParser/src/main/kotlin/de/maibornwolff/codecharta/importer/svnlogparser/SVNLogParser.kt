@@ -30,16 +30,16 @@ import java.util.concurrent.Callable
 import java.util.stream.Stream
 
 @CommandLine.Command(
-        name = SVNLogParser.NAME,
-        description = [SVNLogParser.DESCRIPTION],
-        footer = [CodeChartaConstants.General.GENERIC_FOOTER],
-                    )
+    name = SVNLogParser.NAME,
+    description = [SVNLogParser.DESCRIPTION],
+    footer = [CodeChartaConstants.General.GENERIC_FOOTER]
+)
 class SVNLogParser(
-        private val input: InputStream = System.`in`,
-        private val output: PrintStream = System.out,
-        private val error: PrintStream = System.err,
-                  ) : Callable<Unit>, InteractiveParser, PipeableParser, AttributeGenerator {
-                  @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
+    private val input: InputStream = System.`in`,
+    private val output: PrintStream = System.out,
+    private val error: PrintStream = System.err
+) : Callable<Unit>, InteractiveParser, PipeableParser, AttributeGenerator {
+    @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
 
     @CommandLine.Parameters(arity = "1", paramLabel = "FILE", description = ["file to parse"])
@@ -67,17 +67,17 @@ class SVNLogParser(
     private val metricsFactory: MetricsFactory
         get() {
             val nonChurnMetrics =
-                    listOf(
-                            "age_in_weeks",
-                            "number_of_authors",
-                            "number_of_commits",
-                            "number_of_renames",
-                            "range_of_weeks_with_commits",
-                            "successive_weeks_of_commits",
-                            "weeks_with_commits",
-                            "highly_coupled_files",
-                            "median_coupled_files",
-                          )
+                listOf(
+                    "age_in_weeks",
+                    "number_of_authors",
+                    "number_of_commits",
+                    "number_of_renames",
+                    "range_of_weeks_with_commits",
+                    "successive_weeks_of_commits",
+                    "weeks_with_commits",
+                    "highly_coupled_files",
+                    "median_coupled_files"
+                )
 
             return when (inputFormatNames) {
                 SVN_LOG -> MetricsFactory(nonChurnMetrics)
@@ -85,7 +85,7 @@ class SVNLogParser(
         }
 
     companion object {
-    const val NAME = "svnlogparser"
+        const val NAME = "svnlogparser"
         const val DESCRIPTION = "generates cc.json from svn log file"
 
         @JvmStatic
@@ -118,13 +118,13 @@ class SVNLogParser(
         }
 
         var project =
-                createProjectFromLog(
-                        file!!,
-                        logParserStrategy,
-                        metricsFactory,
-                        addAuthor,
-                        silent,
-                                    )
+            createProjectFromLog(
+                file!!,
+                logParserStrategy,
+                metricsFactory,
+                addAuthor,
+                silent
+            )
 
         val pipedProject = ProjectDeserializer.deserializeProject(input)
         if (pipedProject != null) {
@@ -137,11 +137,11 @@ class SVNLogParser(
     }
 
     private fun createProjectFromLog(
-    pathToLog: File,
-    parserStrategy: LogParserStrategy,
-    metricsFactory: MetricsFactory,
-    containsAuthors: Boolean,
-    silent: Boolean = false,
+        pathToLog: File,
+        parserStrategy: LogParserStrategy,
+        metricsFactory: MetricsFactory,
+        containsAuthors: Boolean,
+        silent: Boolean = false
     ): Project {
         val encoding = guessEncoding(pathToLog) ?: "UTF-8"
         if (!silent) error.println("Assumed encoding $encoding")
@@ -149,12 +149,12 @@ class SVNLogParser(
         val projectConverter = ProjectConverter(containsAuthors)
         val logSizeInByte = file!!.length()
         return SVNLogProjectCreator(
-                parserStrategy,
-                metricsFactory,
-                projectConverter,
-                logSizeInByte,
-                silent,
-                                   ).parse(lines)
+            parserStrategy,
+            metricsFactory,
+            projectConverter,
+            logSizeInByte,
+            silent
+        ).parse(lines)
     }
 
     override fun getDialog(): ParserDialogInterface = ParserDialog

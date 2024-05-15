@@ -4,10 +4,10 @@ import java.math.BigInteger
 import java.security.MessageDigest
 
 class ProjectWrapper(
-        val data: Project,
-        @Transient val projectJson: String,
-                    ) {
-                    private val checksum: String
+    val data: Project,
+    @Transient val projectJson: String
+) {
+    private val checksum: String
 
     init {
         checksum = md5(projectJson)

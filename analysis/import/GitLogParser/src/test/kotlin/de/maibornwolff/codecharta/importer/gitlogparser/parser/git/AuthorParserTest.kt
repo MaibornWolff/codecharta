@@ -4,7 +4,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 class AuthorParserTest {
-@Test
+    @Test
     fun parsesAuthorWithoutEmail() {
         val author = AuthorParser.parseAuthor("Author: TheAuthor")
         assertThat(author).isEqualTo("TheAuthor")

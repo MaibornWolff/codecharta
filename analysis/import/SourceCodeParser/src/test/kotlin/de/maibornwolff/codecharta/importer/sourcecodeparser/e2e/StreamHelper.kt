@@ -5,7 +5,7 @@ import java.io.PrintStream
 
 class StreamHelper {
     companion object {
-    fun retrieveStreamAsString(aMethod: (printStream: PrintStream) -> Unit): String {
+        fun retrieveStreamAsString(aMethod: (printStream: PrintStream) -> Unit): String {
             val baOutputStream = ByteArrayOutputStream()
             val printStream = PrintStream(baOutputStream)
 

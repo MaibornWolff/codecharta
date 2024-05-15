@@ -10,31 +10,31 @@ import de.maibornwolff.codecharta.model.ProjectBuilder
 import de.maibornwolff.codecharta.util.Logger
 
 class NodeRemover(
-        private val project: Project,
-                 ) {
-                 fun remove(paths: Array<String>): Project {
+    private val project: Project
+) {
+    fun remove(paths: Array<String>): Project {
         var pathSegments =
-                paths.map {
-                    it.removePrefix("/").removeSuffix("/").split("/")
-                }
+            paths.map {
+                it.removePrefix("/").removeSuffix("/").split("/")
+            }
 
         if (pathSegments.contains(listOf("root"))) {
             Logger.warn {
                 "Root node cannot be removed"
             }
             pathSegments =
-                    pathSegments.filter {
-                        it != listOf("root")
-                    }
+                pathSegments.filter {
+                    it != listOf("root")
+                }
         }
 
         return ProjectBuilder(
-                removeNodes(pathSegments),
-                removeEdges(paths),
-                copyAttributeTypes(),
-                copyAttributeDescriptors(),
-                removeBlacklistItems(paths),
-                             ).build(cleanAttributeDescriptors = true)
+            removeNodes(pathSegments),
+            removeEdges(paths),
+            copyAttributeTypes(),
+            copyAttributeDescriptors(),
+            removeBlacklistItems(paths)
+        ).build(cleanAttributeDescriptors = true)
     }
 
     private fun removeNodes(paths: List<List<String>>): List<MutableNode> {
@@ -57,9 +57,9 @@ class NodeRemover(
                     }
                 } else {
                     val childNode: MutableNode? =
-                            currentNode.children.find {
-                                it.name == pathSegment
-                            }
+                        currentNode.children.find {
+                            it.name == pathSegment
+                        }
                     if (childNode != null) {
                         currentNode = childNode
                     } else {
@@ -79,9 +79,9 @@ class NodeRemover(
         var edges = project.edges
         removePatterns.forEach { path ->
             edges =
-                    edges.filter {
-                        !it.fromNodeName.contains(path) && !it.toNodeName.contains(path)
-                    }
+                edges.filter {
+                    !it.fromNodeName.contains(path) && !it.toNodeName.contains(path)
+                }
         }
         return edges.toMutableList()
     }
@@ -102,9 +102,9 @@ class NodeRemover(
         var blacklist = project.blacklist
         paths.forEach { path ->
             blacklist =
-                    blacklist.filter {
-                        !it.path.contains(path)
-                    }
+                blacklist.filter {
+                    !it.path.contains(path)
+                }
         }
         return blacklist.toMutableList()
     }

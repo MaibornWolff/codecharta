@@ -15,14 +15,14 @@ import java.io.PrintStream
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
-        name = SourceMonitorImporter.NAME,
-        description = [SourceMonitorImporter.DESCRIPTION],
-        footer = [CodeChartaConstants.General.GENERIC_FOOTER],
-                    )
+    name = SourceMonitorImporter.NAME,
+    description = [SourceMonitorImporter.DESCRIPTION],
+    footer = [CodeChartaConstants.General.GENERIC_FOOTER]
+)
 class SourceMonitorImporter(
-        private val output: PrintStream = System.out,
-                           ) : Callable<Unit>, InteractiveParser {
-                           @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
+    private val output: PrintStream = System.out
+) : Callable<Unit>, InteractiveParser {
+    @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
 
     @CommandLine.Option(names = ["-nc", "--not-compressed"], description = ["save uncompressed output File"])
@@ -42,7 +42,7 @@ class SourceMonitorImporter(
     override val description = DESCRIPTION
 
     companion object {
-    const val NAME = "sourcemonitorimport"
+        const val NAME = "sourcemonitorimport"
         const val DESCRIPTION = "generates cc.json from sourcemonitor csv"
 
         @JvmStatic
@@ -58,10 +58,13 @@ class SourceMonitorImporter(
         }
 
         val csvProjectBuilder =
-                CSVProjectBuilder(
-                        pathSeparator, csvDelimiter, "File Name", sourceMonitorReplacement,
-                        getAttributeDescriptors(),
-                                 )
+            CSVProjectBuilder(
+                pathSeparator,
+                csvDelimiter,
+                "File Name",
+                sourceMonitorReplacement,
+                getAttributeDescriptors()
+            )
         files.map { it.inputStream() }.forEach<InputStream> { csvProjectBuilder.parseCSVStream(it) }
         val project = csvProjectBuilder.build(cleanAttributeDescriptors = true)
 

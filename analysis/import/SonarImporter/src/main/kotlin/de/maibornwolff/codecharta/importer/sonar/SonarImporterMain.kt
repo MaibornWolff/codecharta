@@ -22,55 +22,56 @@ import java.net.URL
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
-        name = SonarImporterMain.NAME,
-        description = [SonarImporterMain.DESCRIPTION],
-        footer = [CodeChartaConstants.General.GENERIC_FOOTER],
-                    )
+    name = SonarImporterMain.NAME,
+    description = [SonarImporterMain.DESCRIPTION],
+    footer = [CodeChartaConstants.General.GENERIC_FOOTER]
+)
 class SonarImporterMain(
-        private val input: InputStream = System.`in`,
-        private val output: PrintStream = System.out,
-                       ) : Callable<Unit>, InteractiveParser, AttributeGenerator {
-                       @CommandLine.Option(
-            names = ["-h", "--help"], usageHelp = true,
-            description = [
-                "Please locate:\n" + "-    sonar.host.url=https://sonar.foo\n" + "-    sonar.login=c123d456\n" + "-    sonar.projectKey=de.foo:bar\n" + "That you use to upload your code to sonar.\n" + "Then execute [sonarimport https://sonar.foo de.foo:bar -u c123d456]",
-            ],
-                       )
+    private val input: InputStream = System.`in`,
+    private val output: PrintStream = System.out
+) : Callable<Unit>, InteractiveParser, AttributeGenerator {
+    @CommandLine.Option(
+        names = ["-h", "--help"],
+        usageHelp = true,
+        description = [
+            "Please locate:\n" + "-    sonar.host.url=https://sonar.foo\n" + "-    sonar.login=c123d456\n" + "-    sonar.projectKey=de.foo:bar\n" + "That you use to upload your code to sonar.\n" + "Then execute [sonarimport https://sonar.foo de.foo:bar -u c123d456]"
+        ]
+    )
     private var help = false
 
     @CommandLine.Parameters(index = "0", arity = "1", paramLabel = "URL", description = ["url of sonarqube server"])
     private var url: String = "http://localhost"
 
     @CommandLine.Parameters(
-            index = "1",
-            arity = "1..1",
-            paramLabel = "PROJECT_ID",
-            description = ["sonarqube project id"],
-                           )
+        index = "1",
+        arity = "1..1",
+        paramLabel = "PROJECT_ID",
+        description = ["sonarqube project id"]
+    )
     private var projectId = ""
 
     @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File"])
     private var outputFile: String? = null
 
     @CommandLine.Option(
-            names = ["-m", "--metrics"],
-            description = ["comma-separated list of metrics to import (when using powershell, the list either can't contain spaces or has to be in quotes)"],
-            converter = [(CommaSeparatedStringToListConverter::class)],
-            preprocessor = CommaSeparatedParameterPreprocessor::class,
-                       )
+        names = ["-m", "--metrics"],
+        description = ["comma-separated list of metrics to import (when using powershell, the list either can't contain spaces or has to be in quotes)"],
+        converter = [(CommaSeparatedStringToListConverter::class)],
+        preprocessor = CommaSeparatedParameterPreprocessor::class
+    )
     private var metrics = mutableListOf<String>()
 
     @CommandLine.Option(
-            names = ["-u", "--user-token"],
-            description = ["user token for connecting to remote sonar instance"],
-                       )
+        names = ["-u", "--user-token"],
+        description = ["user token for connecting to remote sonar instance"]
+    )
     private var userToken = ""
 
     @CommandLine.Option(
-            names = ["-nc", "--not-compressed"],
-            description = ["save uncompressed output File"],
-            arity = "0",
-                       )
+        names = ["-nc", "--not-compressed"],
+        description = ["save uncompressed output File"],
+        arity = "0"
+    )
     private var compress = true
 
     @CommandLine.Option(names = ["--merge-modules"], description = ["merges modules in multi-module projects"])
@@ -80,7 +81,7 @@ class SonarImporterMain(
     override val description = DESCRIPTION
 
     companion object {
-    const val NAME = "sonarimport"
+        const val NAME = "sonarimport"
         const val DESCRIPTION = "generates cc.json from metric data from SonarQube"
     }
 

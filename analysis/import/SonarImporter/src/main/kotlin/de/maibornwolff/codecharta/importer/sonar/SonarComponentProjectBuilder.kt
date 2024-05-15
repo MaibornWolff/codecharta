@@ -14,11 +14,11 @@ import de.maibornwolff.codecharta.model.ProjectBuilder
 import de.maibornwolff.codecharta.translator.MetricNameTranslator
 
 class SonarComponentProjectBuilder(
-        private val sonarCodeURLLinker: SonarCodeURLLinker = SonarCodeURLLinker.NULL,
-        private val translator: MetricNameTranslator = MetricNameTranslator.TRIVIAL,
-        private val usePath: Boolean = false,
-                                  ) {
-                                  private var totalComponents = 0
+    private val sonarCodeURLLinker: SonarCodeURLLinker = SonarCodeURLLinker.NULL,
+    private val translator: MetricNameTranslator = MetricNameTranslator.TRIVIAL,
+    private val usePath: Boolean = false
+) {
+    private var totalComponents = 0
     private var processedComponents = -1
     private val projectBuilder = ProjectBuilder()
     val size: Int
@@ -39,12 +39,12 @@ class SonarComponentProjectBuilder(
 
     fun addComponentAsNode(component: Component): SonarComponentProjectBuilder {
         val node =
-                MutableNode(
-                        createNodeName(component),
-                        createNodeTypeFromQualifier(component.qualifier!!),
-                        createAttributes(component.measures!!),
-                        createLink(component),
-                           )
+            MutableNode(
+                createNodeName(component),
+                createNodeTypeFromQualifier(component.qualifier!!),
+                createAttributes(component.measures!!),
+                createLink(component)
+            )
         projectBuilder.insertByPath(createParentPath(component), node)
         return this
     }
@@ -56,7 +56,7 @@ class SonarComponentProjectBuilder(
 
     private fun createAttributes(measures: List<Measure>): Map<String, Any> {
         return measures.filter { this.isMeasureConvertible(it) }
-                .associate { this.convertMetricName(it) to this.convertMetricValue(it) }
+            .associate { this.convertMetricName(it) to this.convertMetricValue(it) }
     }
 
     private fun convertMetricName(measure: Measure): String {

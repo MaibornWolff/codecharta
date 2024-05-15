@@ -19,7 +19,7 @@ import java.math.BigDecimal
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ParserDialogTest {
-@AfterEach
+    @AfterEach
     fun afterTest() {
         unmockkAll()
     }

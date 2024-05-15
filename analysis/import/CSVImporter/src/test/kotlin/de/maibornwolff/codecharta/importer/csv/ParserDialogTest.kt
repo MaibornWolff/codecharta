@@ -17,7 +17,7 @@ import java.io.File
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ParserDialogTest {
-@AfterEach
+    @AfterEach
     fun afterTest() {
         unmockkAll()
     }
@@ -51,7 +51,7 @@ class ParserDialogTest {
         // then
         Assertions.assertThat(parseResult.matchedOption("output-file").getValue<String>()).isEqualTo(outputFileName)
         Assertions.assertThat(parseResult.matchedOption("path-column-name").getValue<String>())
-                .isEqualTo(pathColumnName)
+            .isEqualTo(pathColumnName)
         Assertions.assertThat(parseResult.matchedOption("delimiter").getValue<Char>()).isEqualTo(delimiter[0])
         Assertions.assertThat(parseResult.matchedOption("path-separator").getValue<Char>()).isEqualTo(pathSeparator[0])
         Assertions.assertThat(parseResult.matchedOption("not-compressed").getValue<Boolean>()).isEqualTo(isCompressed)
@@ -89,7 +89,7 @@ class ParserDialogTest {
         // then
         Assertions.assertThat(parseResult.matchedOption("output-file").getValue<String>()).isEqualTo(outputFileName)
         Assertions.assertThat(parseResult.matchedOption("path-column-name").getValue<String>())
-                .isEqualTo(pathColumnName)
+            .isEqualTo(pathColumnName)
         Assertions.assertThat(parseResult.matchedOption("delimiter").getValue<Char>()).isEqualTo(delimiter[0])
         Assertions.assertThat(parseResult.matchedOption("path-separator").getValue<Char>()).isEqualTo(pathSeparator[0])
         Assertions.assertThat(parseResult.matchedOption("not-compressed")).isNull()
@@ -132,10 +132,10 @@ class ParserDialogTest {
 
         // then
         Assertions.assertThat(parseResult.matchedPositional(0).getValue<ArrayList<File>>()[0].name)
-                .isEqualTo(validFileName1)
+            .isEqualTo(validFileName1)
         Assertions.assertThat(parseResult.matchedPositional(0).getValue<ArrayList<File>>()[1].name)
-                .isEqualTo(validFileName2)
+            .isEqualTo(validFileName2)
         Assertions.assertThat(parseResult.matchedPositional(0).getValue<ArrayList<File>>()[2].name)
-                .isEqualTo(validFileName3)
+            .isEqualTo(validFileName3)
     }
 }

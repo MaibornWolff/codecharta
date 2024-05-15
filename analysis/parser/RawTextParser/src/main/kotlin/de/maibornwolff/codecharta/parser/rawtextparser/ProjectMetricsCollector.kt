@@ -10,15 +10,15 @@ import kotlinx.coroutines.runBlocking
 import java.io.File
 
 class ProjectMetricsCollector(
-        private var root: File,
-        private val exclude: List<String>,
-        private val fileExtensions: List<String>,
-        private val metricNames: List<String>,
-        private val verbose: Boolean,
-        private val maxIndentLvl: Int,
-        private val tabWidth: Int,
-                             ) {
-                             private var totalFiles = 0L
+    private var root: File,
+    private val exclude: List<String>,
+    private val fileExtensions: List<String>,
+    private val metricNames: List<String>,
+    private val verbose: Boolean,
+    private val maxIndentLvl: Int,
+    private val tabWidth: Int
+) {
+    private var totalFiles = 0L
     private var filesParsed = 0L
     private val parsingUnit = ParsingUnit.Files
     private val progressTracker = ProgressTracker()
@@ -30,8 +30,8 @@ class ProjectMetricsCollector(
 
         runBlocking(Dispatchers.Default) {
             val files =
-                    root.walk().asSequence()
-                            .filter { it.isFile }
+                root.walk().asSequence()
+                    .filter { it.isFile }
 
             totalFiles = files.count().toLong()
 
@@ -40,8 +40,8 @@ class ProjectMetricsCollector(
                     val standardizedPath = getStandardizedPath(it)
 
                     if (
-                            !isPathExcluded(standardizedPath) &&
-                            isParsableFileExtension(standardizedPath)
+                        !isPathExcluded(standardizedPath) &&
+                        isParsableFileExtension(standardizedPath)
                     ) {
                         filesParsed++
                         logProgress(it.name, filesParsed)
@@ -82,7 +82,7 @@ class ProjectMetricsCollector(
 
     private fun isParsableFileExtension(path: String): Boolean {
         return fileExtensions.isEmpty() ||
-               fileExtensions.contains(path.substringAfterLast("."))
+            fileExtensions.contains(path.substringAfterLast("."))
     }
 
     private fun isPathExcluded(path: String): Boolean {
@@ -92,8 +92,8 @@ class ProjectMetricsCollector(
     private fun parseFile(file: File): FileMetrics {
         val metrics = createMetricsFromMetricNames()
         file
-                .bufferedReader()
-                .useLines { lines -> lines.forEach { line -> metrics.forEach { it.parseLine(line) } } }
+            .bufferedReader()
+            .useLines { lines -> lines.forEach { line -> metrics.forEach { it.parseLine(line) } } }
 
         if (metrics.isEmpty()) return FileMetrics()
         return metrics.map { it.getValue() }.reduceRight { current: FileMetrics, acc: FileMetrics ->
@@ -105,19 +105,16 @@ class ProjectMetricsCollector(
     private fun getStandardizedPath(file: File): String {
         val normalizedRoot = if (root.isFile) root.parentFile else root
         val relativePath =
-                normalizedRoot.toPath().toAbsolutePath()
-                        .relativize(file.toPath().toAbsolutePath())
-                        .toString()
-                        .replace(File.separatorChar, '/')
-                        .removePrefix("/")
+            normalizedRoot.toPath().toAbsolutePath()
+                .relativize(file.toPath().toAbsolutePath())
+                .toString()
+                .replace(File.separatorChar, '/')
+                .removePrefix("/")
 
         return "/$relativePath"
     }
 
-    private fun logProgress(
-    fileName: String,
-    parsedFiles: Long,
-    ) {
+    private fun logProgress(fileName: String, parsedFiles: Long) {
         progressTracker.updateProgress(totalFiles, parsedFiles, parsingUnit.name, fileName)
     }
 }

@@ -6,7 +6,7 @@ import java.util.stream.Collector
 import java.util.stream.Stream
 
 interface LogParserStrategy {
-fun creationCommand(): String
+    fun creationCommand(): String
 
     fun createLogLineCollector(): Collector<String, *, Stream<List<String>>>
 

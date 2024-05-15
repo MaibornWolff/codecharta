@@ -8,31 +8,31 @@ import de.maibornwolff.codecharta.util.Logger
  * merges leafs according to the level of matching of their paths
  */
 class LeafNodeMergerStrategy(
-        private val addMisfittingNodes: Boolean,
-        ignoreCase: Boolean = false,
-                            ) : NodeMergerStrategy {
-                            private val mergeConditionSatisfied: (MutableNode, MutableNode) -> Boolean
+    private val addMisfittingNodes: Boolean,
+    ignoreCase: Boolean = false
+) : NodeMergerStrategy {
+    private val mergeConditionSatisfied: (MutableNode, MutableNode) -> Boolean
 
     private var nodesProcessed = 0
     private var nodesMerged = 0
 
     init {
         mergeConditionSatisfied =
-                if (ignoreCase) {
-                    {
+            if (ignoreCase) {
+                {
                         n1: MutableNode,
-                        n2: MutableNode,
-                        ->
-                        n1.name.equals(n2.name, ignoreCase = true)
-                    }
-                } else {
-                    {
-                        n1: MutableNode,
-                        n2: MutableNode,
-                        ->
-                        n1.name == n2.name
-                    }
+                        n2: MutableNode
+                    ->
+                    n1.name.equals(n2.name, ignoreCase = true)
                 }
+            } else {
+                {
+                        n1: MutableNode,
+                        n2: MutableNode
+                    ->
+                    n1.name == n2.name
+                }
+            }
     }
 
     override fun mergeNodeLists(nodeLists: List<List<MutableNode>>): List<MutableNode> {
@@ -41,8 +41,8 @@ class LeafNodeMergerStrategy(
         } else {
             nodeLists.reduce { mergedNodeList, nextNodeList ->
                 nextNodeList.fold(mergedNodeList) {
-                    accumulatedNodes: List<MutableNode>,
-                    nextNode: MutableNode,
+                        accumulatedNodes: List<MutableNode>,
+                        nextNode: MutableNode
                     ->
                     mergeNodeIfExistentInList(accumulatedNodes, nextNode)
                 }
@@ -50,10 +50,7 @@ class LeafNodeMergerStrategy(
         }
     }
 
-    private fun mergeNodeIfExistentInList(
-    accumulatedNodes: List<MutableNode>,
-    nextNode: MutableNode,
-    ): List<MutableNode> {
+    private fun mergeNodeIfExistentInList(accumulatedNodes: List<MutableNode>, nextNode: MutableNode): List<MutableNode> {
         nodesProcessed++
         return accumulatedNodes.map { existingNode ->
             if (mergeConditionSatisfied(existingNode, nextNode)) {
@@ -95,11 +92,11 @@ class LeafNodeMergerStrategy(
 
     private fun Set<Path>.findFittingPathOrNull(path: Path): Path? {
         val matchingLeaf =
-                this.filter {
-                    !it.isTrivial
-                }.maxByOrNull {
-                    path.fittingEdgesFromTailWith(it)
-                } ?: path
+            this.filter {
+                !it.isTrivial
+            }.maxByOrNull {
+                path.fittingEdgesFromTailWith(it)
+            } ?: path
         return when {
             path.fittingEdgesFromTailWith(matchingLeaf) == 0 -> null
             else -> matchingLeaf
@@ -108,19 +105,19 @@ class LeafNodeMergerStrategy(
 
     private fun Map<Path, MutableNode>.addAll(nodes: Map<Path, MutableNode>): Map<Path, MutableNode> {
         val newNodes =
-                nodes.filterValues {
-                    it.isLeaf
-                }.mapKeys {
-                    this.keys.findFittingPathOrNull(it.key) ?: replaceMisfittingPath(it.key)
-                }.filterKeys {
-                    !it.isTrivial
-                }
+            nodes.filterValues {
+                it.isLeaf
+            }.mapKeys {
+                this.keys.findFittingPathOrNull(it.key) ?: replaceMisfittingPath(it.key)
+            }.filterKeys {
+                !it.isTrivial
+            }
         val unchangedNodes =
-                this.filterValues {
-                    it.isLeaf
-                }.filterKeys {
-                    !newNodes.keys.contains(it)
-                }
+            this.filterValues {
+                it.isLeaf
+            }.filterKeys {
+                !newNodes.keys.contains(it)
+            }
 
         return newNodes.plus(unchangedNodes).mapValues {
             val tempNode = this[it.key]

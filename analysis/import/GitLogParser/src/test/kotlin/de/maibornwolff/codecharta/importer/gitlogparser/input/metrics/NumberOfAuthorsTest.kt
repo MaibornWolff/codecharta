@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test
 import java.time.OffsetDateTime
 
 class NumberOfAuthorsTest {
-@Test
+    @Test
     fun should_have_initial_value_zero() {
 // when
         val metric = NumberOfAuthors()

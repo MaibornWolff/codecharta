@@ -17,7 +17,7 @@ import java.io.File
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ParserDialogTest {
-@AfterEach
+    @AfterEach
     fun afterTest() {
         unmockkAll()
     }
@@ -54,10 +54,10 @@ class ParserDialogTest {
 
         // then
         Assertions.assertThat(
-                parseResult.matchedPositional(0).getValue<Array<File>>().map {
-                    it.name
-                },
-                             ).isEqualTo(listOf(inputFolderName))
+            parseResult.matchedPositional(0).getValue<Array<File>>().map {
+                it.name
+            }
+        ).isEqualTo(listOf(inputFolderName))
         Assertions.assertThat(parseResult.matchedOption("output-file").getValue<String>()).isEqualTo(outputFileName)
         Assertions.assertThat(parseResult.matchedOption("not-compressed").getValue<Boolean>()).isEqualTo(compress)
         Assertions.assertThat(parseResult.matchedOption("add-missing").getValue<Boolean>()).isEqualTo(addMissing)
@@ -98,9 +98,9 @@ class ParserDialogTest {
 
         // then
         Assertions.assertThat(
-                parseResult.matchedPositional(0).getValue<Array<File>>().map {
-                    it.name
-                },
-                             ).isEqualTo(listOf(validInputFolderName))
+            parseResult.matchedPositional(0).getValue<Array<File>>().map {
+                it.name
+            }
+        ).isEqualTo(listOf(validInputFolderName))
     }
 }

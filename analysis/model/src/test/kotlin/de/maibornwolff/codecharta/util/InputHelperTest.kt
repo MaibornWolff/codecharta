@@ -10,18 +10,18 @@ import java.io.File
 import java.io.PrintStream
 
 class InputHelperTest {
-val outContent = ByteArrayOutputStream()
+    val outContent = ByteArrayOutputStream()
     val originalOut = System.out
     val errContent = ByteArrayOutputStream()
     val originalErr = System.err
 
     companion object {
-    @JvmStatic
+        @JvmStatic
         fun provideBooleanValues(): List<Arguments> {
             return listOf(
-                    Arguments.of(false),
-                    Arguments.of(true),
-                         )
+                Arguments.of(false),
+                Arguments.of(true)
+            )
         }
     }
 
@@ -37,12 +37,12 @@ val outContent = ByteArrayOutputStream()
         val invalidFile2 = File(invalidFilePath2)
 
         val inputFiles =
-                arrayOf(
-                        File("src/test/resources/example.cc.json"),
-                        File("src/test/resources/example_api_version_1.3.cc.json"),
-                        invalidFile1,
-                        invalidFile2,
-                       )
+            arrayOf(
+                File("src/test/resources/example.cc.json"),
+                File("src/test/resources/example_api_version_1.3.cc.json"),
+                invalidFile1,
+                invalidFile2
+            )
         try {
             InputHelper.isInputValid(inputFiles, canInputContainFolders)
         } catch (exception: IllegalArgumentException) {
@@ -60,11 +60,11 @@ val outContent = ByteArrayOutputStream()
     @MethodSource("provideBooleanValues")
     fun `should return invalid if input contains one nonexistent file`(canInputContainFolders: Boolean) {
         val inputFiles =
-                arrayOf(
-                        File("src/test/resources/example.cc.json"),
-                        File("src/test/resources/example_api_version_1.3.cc.json"),
-                        File("src/test/resources/thisDoesNotExist1.json"),
-                       )
+            arrayOf(
+                File("src/test/resources/example.cc.json"),
+                File("src/test/resources/example_api_version_1.3.cc.json"),
+                File("src/test/resources/thisDoesNotExist1.json")
+            )
 
         val result = InputHelper.isInputValid(inputFiles, canInputContainFolders)
 
@@ -97,7 +97,7 @@ val outContent = ByteArrayOutputStream()
 
         Assertions.assertThat(result).isFalse()
         Assertions.assertThat(errContent.toString())
-                .contains("The specified path `${emptyTestDirectory.path}` exists but is empty!")
+            .contains("The specified path `${emptyTestDirectory.path}` exists but is empty!")
     }
 
     @ParameterizedTest
@@ -198,6 +198,6 @@ val outContent = ByteArrayOutputStream()
 
         Assertions.assertThat(result).isFalse()
         Assertions.assertThat(errContent.toString())
-                .contains("Input empty string for input files/folders, which is not allowed!")
+            .contains("Input empty string for input files/folders, which is not allowed!")
     }
 }

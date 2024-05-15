@@ -6,7 +6,7 @@ import java.time.OffsetDateTime
 import java.time.ZoneOffset
 
 class CalendarWeekTest {
-private val zoneOffset = ZoneOffset.UTC
+    private val zoneOffset = ZoneOffset.UTC
 
     @Test
     fun `can create calendar week from aDate time`() { // given

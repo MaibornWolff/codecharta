@@ -16,9 +16,9 @@ import javax.ws.rs.core.MediaType
  * Requests Data from Sonar Instance through REST-API
  */
 class SonarMetricsAPIDatasource(private val user: String, private val baseUrl: URL?) {
-private val client: Client =
-            ClientBuilder.newClient().property(ClientProperties.CONNECT_TIMEOUT, Companion.TIMEOUT_MS)
-                    .property(ClientProperties.READ_TIMEOUT, Companion.TIMEOUT_MS)
+    private val client: Client =
+        ClientBuilder.newClient().property(ClientProperties.CONNECT_TIMEOUT, Companion.TIMEOUT_MS)
+            .property(ClientProperties.READ_TIMEOUT, Companion.TIMEOUT_MS)
 
     val availableMetricKeys: List<String>
         get() {
@@ -27,7 +27,7 @@ private val client: Client =
             return Flowable.range(1, noPages).flatMap { p ->
                 Flowable.just(p).subscribeOn(Schedulers.io()).map { this.getAvailableMetrics(it) }
             }.filter { it.metrics != null }.flatMap { Flowable.fromIterable(it.metrics!!) }.filter { it.isFloatType }
-                    .map { it.key }.distinct().toSortedList().blockingGet()
+                .map { it.key }.distinct().toSortedList().blockingGet()
         }
 
     val numberOfPages: Int
@@ -69,7 +69,7 @@ private val client: Client =
     }
 
     companion object {
-    internal const val PAGE_SIZE = 500
+        internal const val PAGE_SIZE = 500
         private const val METRICS_URL_PATTERN = "%s/api/metrics/search?f=hidden,decimalScale&p=%s&ps=$PAGE_SIZE"
         private const val TIMEOUT_MS = 5000
     }

@@ -6,7 +6,7 @@ import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 
 class AttributeTypesFactoryTest {
-@Test
+    @Test
     fun `gets type for node attributes is correct`() {
         val metrics = MetricsFactory(listOf("added_lines", "age_in_weeks")).createMetrics()
 
@@ -23,7 +23,7 @@ class AttributeTypesFactoryTest {
 
         Assertions.assertThat(attributeTypes.attributeTypes).containsKeys("added_lines", "age_in_weeks")
         Assertions.assertThat(attributeTypes.attributeTypes)
-                .isEqualTo(mapOf("added_lines" to AttributeType.ABSOLUTE, "age_in_weeks" to AttributeType.RELATIVE))
+            .isEqualTo(mapOf("added_lines" to AttributeType.ABSOLUTE, "age_in_weeks" to AttributeType.RELATIVE))
     }
 
     @Test
@@ -42,7 +42,7 @@ class AttributeTypesFactoryTest {
         val attributeTypes = AttributeTypesFactory.createEdgeAttributeTypes(metrics)
 
         Assertions.assertThat(attributeTypes.attributeTypes)
-                .isEqualTo(mapOf("temporal_coupling" to AttributeType.ABSOLUTE))
+            .isEqualTo(mapOf("temporal_coupling" to AttributeType.ABSOLUTE))
     }
 
     @Test

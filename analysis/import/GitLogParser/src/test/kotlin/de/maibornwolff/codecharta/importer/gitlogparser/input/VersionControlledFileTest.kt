@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test
 import java.time.OffsetDateTime
 
 class VersionControlledFileTest {
-@Test
+    @Test
     fun versionControlledFileHoldsInitiallyOnlyTheFilename() { // given
         val metricsFactory = mockk<MetricsFactory>(relaxed = true)
         val filename = "filename"
@@ -34,10 +34,10 @@ class VersionControlledFileTest {
         every { metricsFactory.createMetrics() } returns listOf(metric)
 
         val versionControlledFile =
-                VersionControlledFile(
-                        "filename",
-                        metricsFactory,
-                                     )
+            VersionControlledFile(
+                "filename",
+                metricsFactory
+            )
 
         // when
         val metricsMap = versionControlledFile.metricsMap
@@ -54,10 +54,10 @@ class VersionControlledFileTest {
         val filename = "filename"
         val author = "An Author"
         val versionControlledFile =
-                VersionControlledFile(
-                        filename,
-                        listOf(modificationMetric),
-                                     )
+            VersionControlledFile(
+                filename,
+                listOf(modificationMetric)
+            )
 
         // when
         val modification = Modification(filename)
@@ -72,10 +72,7 @@ class VersionControlledFileTest {
         verify(exactly = 1) { modificationMetric.registerModification(modification) }
     }
 
-    private fun createCommit(
-    author: String,
-    modification: Modification,
-    ): Commit {
+    private fun createCommit(author: String, modification: Modification): Commit {
         return Commit(author, listOf(modification), OffsetDateTime.now())
     }
 }

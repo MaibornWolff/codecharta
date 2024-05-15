@@ -1,7 +1,7 @@
 package de.maibornwolff.codecharta.importer.gitlogparser.parser.git
 
 internal object AuthorParser {
-const val AUTHOR_ROW_INDICATOR = "Author: "
+    const val AUTHOR_ROW_INDICATOR = "Author: "
     private const val AUTHOR_ROW_BEGIN_OF_EMAIL = '<'
 
     fun parseAuthor(authorLine: String): String {

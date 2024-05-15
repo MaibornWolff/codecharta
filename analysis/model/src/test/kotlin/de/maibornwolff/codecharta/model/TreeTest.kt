@@ -9,10 +9,10 @@ import kotlin.test.assertFailsWith
 
 @DisplayName("Tree Test")
 class TreeTest {
-@Nested
+    @Nested
     @DisplayName("Tree Test > a tree of depth 0")
     inner class ZeroDepthTree {
-    val tree = createTree()
+        val tree = createTree()
 
         @Test
         fun `nodes should be only the tree itself`() {
@@ -57,7 +57,7 @@ class TreeTest {
     @Nested
     @DisplayName("Tree Test > a tree of depth 1")
     inner class OneDepthTree {
-    val innerTree = createTree()
+        val innerTree = createTree()
         val pathToInnerTree = Path("bla")
         val tree = createTree(pathToInnerTree, innerTree)
 

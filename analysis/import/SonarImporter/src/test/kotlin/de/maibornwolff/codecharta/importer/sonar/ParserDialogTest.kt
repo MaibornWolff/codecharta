@@ -14,7 +14,7 @@ import picocli.CommandLine
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ParserDialogTest {
-@AfterEach
+    @AfterEach
     fun afterTest() {
         unmockkAll()
     }
@@ -49,7 +49,7 @@ class ParserDialogTest {
         Assertions.assertThat(parseResult.matchedOption("user-token").getValue<String>()).isEqualTo(userToken)
         Assertions.assertThat(parseResult.matchedOption("output-file").getValue<String>()).isEqualTo(outputFileName)
         Assertions.assertThat(parseResult.matchedOption("metrics").getValue<ArrayList<String>>())
-                .isEqualTo(listOf("metric1", "metric2"))
+            .isEqualTo(listOf("metric1", "metric2"))
         Assertions.assertThat(parseResult.matchedOption("not-compressed").getValue<Boolean>()).isEqualTo(compress)
         Assertions.assertThat(parseResult.matchedOption("merge-modules").getValue<Boolean>()).isEqualTo(mergeModules)
     }
@@ -118,7 +118,7 @@ class ParserDialogTest {
         Assertions.assertThat(parseResult.matchedOption("user-token")).isNull()
         Assertions.assertThat(parseResult.matchedOption("output-file").getValue<String>()).isEqualTo(outputFileName)
         Assertions.assertThat(parseResult.matchedOption("metrics").getValue<ArrayList<String>>())
-                .isEqualTo(listOf("metric1", "metric2"))
+            .isEqualTo(listOf("metric1", "metric2"))
         Assertions.assertThat(parseResult.matchedOption("not-compressed").getValue<Boolean>()).isEqualTo(compress)
         Assertions.assertThat(parseResult.matchedOption("merge-modules").getValue<Boolean>()).isEqualTo(mergeModules)
     }

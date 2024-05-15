@@ -14,18 +14,15 @@ import de.maibornwolff.codecharta.model.ProjectBuilder
  * creates Projects from List of VersionControlledFiles
  */
 class ProjectConverter(private val containsAuthors: Boolean) {
-private fun addVersionControlledFile(
-projectBuilder: ProjectBuilder,
-versionControlledFile: VersionControlledFile,
-) {
+    private fun addVersionControlledFile(projectBuilder: ProjectBuilder, versionControlledFile: VersionControlledFile) {
         val attributes = extractAttributes(versionControlledFile)
         val edges = versionControlledFile.getEdgeList()
         val fileName = versionControlledFile.actualFilename.substringAfterLast(PATH_SEPARATOR)
         val newNode = MutableNode(fileName, NodeType.File, attributes, "", mutableSetOf())
         val path =
-                PathFactory.fromFileSystemPath(
-                        versionControlledFile.actualFilename.substringBeforeLast(PATH_SEPARATOR, ""),
-                                              )
+            PathFactory.fromFileSystemPath(
+                versionControlledFile.actualFilename.substringBeforeLast(PATH_SEPARATOR, "")
+            )
         projectBuilder.insertByPath(path, newNode)
         edges.forEach { projectBuilder.insertEdge(addRootToEdgePaths(it)) }
         versionControlledFile.removeMetricsToFreeMemory()
@@ -45,14 +42,11 @@ versionControlledFile: VersionControlledFile,
         return edge
     }
 
-    fun convert(
-    versionControlledFiles: List<VersionControlledFile>,
-    metricsFactory: MetricsFactory,
-    ): Project {
+    fun convert(versionControlledFiles: List<VersionControlledFile>, metricsFactory: MetricsFactory): Project {
         val projectBuilder = ProjectBuilder()
 
         versionControlledFiles.filter { vc -> !vc.markedDeleted() }
-                .forEach { vcFile -> addVersionControlledFile(projectBuilder, vcFile) }
+            .forEach { vcFile -> addVersionControlledFile(projectBuilder, vcFile) }
 
         val metrics = metricsFactory.createMetrics()
         projectBuilder.addAttributeTypes(AttributeTypesFactory.createNodeAttributeTypes(metrics))
@@ -63,7 +57,7 @@ versionControlledFile: VersionControlledFile,
     }
 
     companion object {
-    private const val PATH_SEPARATOR = '/'
+        private const val PATH_SEPARATOR = '/'
         private const val ROOT_PREFIX = "/root/"
     }
 }

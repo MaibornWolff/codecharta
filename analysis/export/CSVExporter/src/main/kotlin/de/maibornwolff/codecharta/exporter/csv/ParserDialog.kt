@@ -10,7 +10,7 @@ import java.math.BigDecimal
 
 class ParserDialog {
     companion object : ParserDialogInterface {
-    override fun collectParserArgs(): List<String> {
+        override fun collectParserArgs(): List<String> {
             var inputFileName: String
             do {
                 inputFileName = getInputFileName("cc.json", false)
@@ -18,23 +18,24 @@ class ParserDialog {
 
             val defaultOutputFileName = getOutputFileName(inputFileName)
             val outputFileName: String =
-                    KInquirer.promptInput(
-                            message = "What is the name of the output file?",
-                            hint = defaultOutputFileName,
-                            default = defaultOutputFileName,
-                                         )
+                KInquirer.promptInput(
+                    message = "What is the name of the output file?",
+                    hint = defaultOutputFileName,
+                    default = defaultOutputFileName
+                )
 
             val maxHierarchy: BigDecimal =
-                    KInquirer.promptInputNumber(
-                            message = "What is the maximum depth of hierarchy", hint = "10",
-                            default = "10",
-                                               )
+                KInquirer.promptInputNumber(
+                    message = "What is the maximum depth of hierarchy",
+                    hint = "10",
+                    default = "10"
+                )
 
             return listOfNotNull(
-                    inputFileName,
-                    "--output-file=$outputFileName",
-                    "--depth-of-hierarchy=$maxHierarchy",
-                                )
+                inputFileName,
+                "--output-file=$outputFileName",
+                "--depth-of-hierarchy=$maxHierarchy"
+            )
         }
     }
 }

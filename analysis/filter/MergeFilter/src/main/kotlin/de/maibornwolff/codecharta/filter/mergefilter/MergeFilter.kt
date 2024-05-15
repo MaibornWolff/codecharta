@@ -14,14 +14,14 @@ import java.io.PrintStream
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
-        name = MergeFilter.NAME,
-        description = [MergeFilter.DESCRIPTION],
-        footer = [CodeChartaConstants.General.GENERIC_FOOTER],
-                    )
+    name = MergeFilter.NAME,
+    description = [MergeFilter.DESCRIPTION],
+    footer = [CodeChartaConstants.General.GENERIC_FOOTER]
+)
 class MergeFilter(
-        private val output: PrintStream = System.out,
-                 ) : Callable<Unit?>, InteractiveParser {
-                 @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
+    private val output: PrintStream = System.out
+) : Callable<Unit?>, InteractiveParser {
+    @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     var help: Boolean = false
 
     @CommandLine.Parameters(arity = "1..*", paramLabel = "FILE or FOLDER", description = ["files to merge"])
@@ -49,17 +49,14 @@ class MergeFilter(
     override val description = DESCRIPTION
 
     companion object {
-    const val NAME = "merge"
+        const val NAME = "merge"
         const val DESCRIPTION = "merges multiple cc.json files"
 
-        fun mergePipedWithCurrentProject(
-        pipedProject: Project,
-        currentProject: Project,
-        ): Project {
+        fun mergePipedWithCurrentProject(pipedProject: Project, currentProject: Project): Project {
             return ProjectMerger(
-                    listOf(pipedProject, currentProject),
-                    RecursiveNodeMergerStrategy(false),
-                                ).merge()
+                listOf(pipedProject, currentProject),
+                RecursiveNodeMergerStrategy(false)
+            ).merge()
         }
 
         @JvmStatic
@@ -70,13 +67,13 @@ class MergeFilter(
 
     override fun call(): Unit? {
         val nodeMergerStrategy =
-                when {
-                    leafStrategySet -> LeafNodeMergerStrategy(addMissingNodes, ignoreCase)
-                    recursiveStrategySet && !leafStrategySet -> RecursiveNodeMergerStrategy(ignoreCase)
-                    else -> throw IllegalArgumentException(
-                            "Only one merging strategy must be set",
-                                                                                              )
-                }
+            when {
+                leafStrategySet -> LeafNodeMergerStrategy(addMissingNodes, ignoreCase)
+                recursiveStrategySet && !leafStrategySet -> RecursiveNodeMergerStrategy(ignoreCase)
+                else -> throw IllegalArgumentException(
+                    "Only one merging strategy must be set"
+                )
+            }
 
         if (!InputHelper.isInputValid(sources, canInputContainFolders = true)) {
             throw IllegalArgumentException("Input invalid files/folders for MergeFilter, stopping execution...")
@@ -84,17 +81,17 @@ class MergeFilter(
         val sourceFiles = InputHelper.getFileListFromValidatedResourceArray(sources)
 
         val srcProjects =
-                sourceFiles.mapNotNull {
-                    val input = it.inputStream()
-                    try {
-                        ProjectDeserializer.deserializeProject(input)
-                    } catch (e: Exception) {
-                        Logger.warn {
-                            "${it.name} is not a valid project file and is therefore skipped."
-                        }
-                        null
+            sourceFiles.mapNotNull {
+                val input = it.inputStream()
+                try {
+                    ProjectDeserializer.deserializeProject(input)
+                } catch (e: Exception) {
+                    Logger.warn {
+                        "${it.name} is not a valid project file and is therefore skipped."
                     }
+                    null
                 }
+            }
 
         val mergedProject = ProjectMerger(srcProjects, nodeMergerStrategy).merge()
 

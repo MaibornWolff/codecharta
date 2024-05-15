@@ -4,7 +4,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 class MetricsFactoryTest {
-@Test
+    @Test
     fun `create metrics should return correct metric`() {
         val metricName = "abs_code_churn"
         val factory = MetricsFactory(listOf(metricName))

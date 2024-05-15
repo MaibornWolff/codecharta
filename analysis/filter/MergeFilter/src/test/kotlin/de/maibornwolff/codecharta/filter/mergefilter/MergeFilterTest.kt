@@ -14,7 +14,7 @@ import java.io.File
 import java.io.PrintStream
 
 class MergeFilterTest {
-val outContent = ByteArrayOutputStream()
+    val outContent = ByteArrayOutputStream()
     val originalOut = System.out
     val errContent = ByteArrayOutputStream()
     val originalErr = System.err
@@ -52,8 +52,9 @@ val outContent = ByteArrayOutputStream()
     fun `should merge all indicated files`() {
         System.setOut(PrintStream(outContent))
         CommandLine(MergeFilter()).execute(
-                "src/test/resources/mergeFolderTest/file1.cc.json", "src/test/resources/mergeFolderTest/file2.cc.json",
-                                          ).toString()
+            "src/test/resources/mergeFolderTest/file1.cc.json",
+            "src/test/resources/mergeFolderTest/file2.cc.json"
+        ).toString()
         System.setOut(originalOut)
         val valueInFile1 = "SourceMonCsvConverterTest.java"
         val valueInFile2 = "SourceMonCsvConverter.java"
@@ -68,11 +69,13 @@ val outContent = ByteArrayOutputStream()
         val inputFile2 = "src/test/resources/test2.json"
 
         main(
-                arrayOf(
-                        inputFile1, inputFile2, "-nc",
-                        "-o=src/test/resources/output",
-                       ),
+            arrayOf(
+                inputFile1,
+                inputFile2,
+                "-nc",
+                "-o=src/test/resources/output"
             )
+        )
         val file = File("src/test/resources/output.cc.json")
         file.deleteOnExit()
 
@@ -82,11 +85,12 @@ val outContent = ByteArrayOutputStream()
     @Test
     fun `should create json gzip file`() {
         main(
-                arrayOf(
-                        "src/test/resources/test.json", "src/test/resources/test2.json",
-                        "-o=src/test/resources/output",
-                       ),
+            arrayOf(
+                "src/test/resources/test.json",
+                "src/test/resources/test2.json",
+                "-o=src/test/resources/output"
             )
+        )
         val file = File("src/test/resources/output.cc.json.gz")
         file.deleteOnExit()
 
@@ -102,9 +106,9 @@ val outContent = ByteArrayOutputStream()
 
         System.setErr(PrintStream(errContent))
         CommandLine(MergeFilter()).execute(
-                "src/test/resources/mergeFolderTest/file1.cc.json",
-                "src/test/resources/thisDoesNotExist.cc.json",
-                                          ).toString()
+            "src/test/resources/mergeFolderTest/file1.cc.json",
+            "src/test/resources/thisDoesNotExist.cc.json"
+        ).toString()
         System.setErr(originalErr)
 
         assertThat(errContent.toString()).contains("Input invalid files/folders for MergeFilter, stopping execution")

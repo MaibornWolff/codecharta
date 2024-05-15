@@ -23,12 +23,12 @@ import java.io.Writer
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
-        name = CSVExporter.NAME,
-        description = [CSVExporter.DESCRIPTION],
-        footer = [CodeChartaConstants.General.GENERIC_FOOTER],
-                    )
+    name = CSVExporter.NAME,
+    description = [CSVExporter.DESCRIPTION],
+    footer = [CodeChartaConstants.General.GENERIC_FOOTER]
+)
 class CSVExporter() : Callable<Unit>, InteractiveParser {
-@CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
+    @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
 
     @CommandLine.Parameters(arity = "1..*", paramLabel = "FILE", description = ["json files"])
@@ -44,7 +44,7 @@ class CSVExporter() : Callable<Unit>, InteractiveParser {
     override val description = DESCRIPTION
 
     companion object {
-    const val NAME = "csvexport"
+        const val NAME = "csvexport"
         const val DESCRIPTION = "generates csv file with header"
 
         @JvmStatic
@@ -76,9 +76,9 @@ class CSVExporter() : Callable<Unit>, InteractiveParser {
         }
 
         val projects =
-                sources.map {
-                    ProjectDeserializer.deserializeProject(it.inputStream())
-                }
+            sources.map {
+                ProjectDeserializer.deserializeProject(it.inputStream())
+            }
         projects.forEachIndexed { index, project ->
             val append = index > 0
             writeUsingWriter(project, writer(append))
@@ -94,24 +94,21 @@ class CSVExporter() : Callable<Unit>, InteractiveParser {
         return null
     }
 
-    private fun writeUsingWriter(
-    project: Project,
-    outputWriter: Writer,
-    ) {
+    private fun writeUsingWriter(project: Project, outputWriter: Writer) {
         val settings = CsvWriterSettings()
         val writer = CsvWriter(outputWriter, settings)
 
         val attributeNames: List<String> =
-                project.rootNode.nodes.flatMap {
-                    it.value.attributes.keys
-                }.distinct()
+            project.rootNode.nodes.flatMap {
+                it.value.attributes.keys
+            }.distinct()
 
         val header =
-                listOf("path", "name", "type").plus(attributeNames).plus(
-                        List(maxHierarchy) {
-                            "dir$it"
-                        },
-                                                                        )
+            listOf("path", "name", "type").plus(attributeNames).plus(
+                List(maxHierarchy) {
+                    "dir$it"
+                }
+            )
 
         writer.writeHeaders(header)
 
@@ -120,11 +117,7 @@ class CSVExporter() : Callable<Unit>, InteractiveParser {
         writer.close()
     }
 
-    private fun row(
-    path: Path,
-    node: Node,
-    attributeNames: List<String>,
-    ): List<String> {
+    private fun row(path: Path, node: Node, attributeNames: List<String>): List<String> {
         val values: List<String> = node.toAttributeList(attributeNames)
 
         val rowWithoutDirs = listOf(path.toPath, node.name, node.type.toString()).plus(values)
@@ -137,10 +130,10 @@ class CSVExporter() : Callable<Unit>, InteractiveParser {
 
             dirs.size < maxHierarchy ->
                 rowWithoutDirs.plus(dirs).plus(
-                        List(maxHierarchy - dirs.size) {
-                            ""
-                        },
-                                              )
+                    List(maxHierarchy - dirs.size) {
+                        ""
+                    }
+                )
 
             else -> rowWithoutDirs.plus(dirs.subList(0, maxHierarchy))
         }

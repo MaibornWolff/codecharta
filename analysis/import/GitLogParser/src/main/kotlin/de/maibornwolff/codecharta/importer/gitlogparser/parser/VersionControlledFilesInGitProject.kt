@@ -3,10 +3,10 @@ package de.maibornwolff.codecharta.importer.gitlogparser.parser
 import de.maibornwolff.codecharta.importer.gitlogparser.input.VersionControlledFile
 
 class VersionControlledFilesInGitProject(
-        private val vcFList: MutableMap<String, VersionControlledFile>,
-        private val filesInGitLog: List<String>,
-                                        ) {
-                                        // TODO salts should not be part of filenames, change logic error
+    private val vcFList: MutableMap<String, VersionControlledFile>,
+    private val filesInGitLog: List<String>
+) {
+    // TODO salts should not be part of filenames, change logic error
     private fun removeSaltFromFilenames() {
         vcFList.values.forEach {
             it.filename = it.filename.substringBefore("_\\0_")
@@ -21,9 +21,9 @@ class VersionControlledFilesInGitProject(
         val trackingNamesPerFilename = mutableMapOf<String, Set<String>>()
         duplicateFilenames.keys.forEach { element ->
             trackingNamesPerFilename[element] =
-                    vcFList.keys.filter {
-                        vcFList[it]?.filename == element
-                    }.toSet()
+                vcFList.keys.filter {
+                    vcFList[it]?.filename == element
+                }.toSet()
         }
         return trackingNamesPerFilename
     }

@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test
 import java.time.OffsetDateTime
 
 class ProjectConverterTest {
-private val metricsFactory = mockk<MetricsFactory>()
+    private val metricsFactory = mockk<MetricsFactory>()
 
     @BeforeEach
     fun setup() {
@@ -45,9 +45,9 @@ private val metricsFactory = mockk<MetricsFactory>()
 
         vcfList.addFileBy("File 1")
         file1.registerCommit(
-                Commit("Author", modificationsByFilename("File 1", "File 2"), OffsetDateTime.now()),
-                Modification.EMPTY,
-                            )
+            Commit("Author", modificationsByFilename("File 1", "File 2"), OffsetDateTime.now()),
+            Modification.EMPTY
+        )
 
         // when
         val project = projectConverter.convert(vcfList, metricsFactory, listOf("File 1"))
@@ -64,9 +64,9 @@ private val metricsFactory = mockk<MetricsFactory>()
 
         vcfList.addFileBy("File 1")
         file1.registerCommit(
-                Commit("Author", modificationsByFilename("File 1", "File 2"), OffsetDateTime.now()),
-                Modification.EMPTY,
-                            )
+            Commit("Author", modificationsByFilename("File 1", "File 2"), OffsetDateTime.now()),
+            Modification.EMPTY
+        )
 
         // when
         val project = projectConverter.convert(vcfList, metricsFactory, listOf("File 1"))

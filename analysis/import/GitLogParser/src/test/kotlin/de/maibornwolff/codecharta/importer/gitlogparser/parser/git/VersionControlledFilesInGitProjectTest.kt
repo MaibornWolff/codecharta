@@ -8,7 +8,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 class VersionControlledFilesInGitProjectTest {
-private val metricsFactory = MetricsFactory()
+    private val metricsFactory = MetricsFactory()
     private lateinit var vcfList: VersionControlledFilesList
 
     @BeforeEach
@@ -25,12 +25,12 @@ private val metricsFactory = MetricsFactory()
         projectNameList.add("src/Main.kt")
 
         val versionControlledFilesInGitProject =
-                VersionControlledFilesInGitProject(
-                        vcfList.getList(),
-                        projectNameList,
-                                                  )
+            VersionControlledFilesInGitProject(
+                vcfList.getList(),
+                projectNameList
+            )
         val namesAfterFiltering =
-                versionControlledFilesInGitProject.getListOfVCFilesMatchingGitProject().map { file -> file.filename }
+            versionControlledFilesInGitProject.getListOfVCFilesMatchingGitProject().map { file -> file.filename }
 
         assertThat(namesAfterFiltering).containsExactlyInAnyOrder("src/Main.kt")
     }
@@ -54,10 +54,10 @@ private val metricsFactory = MetricsFactory()
         projectNameList.add("src/Main.kt")
 
         val versionControlledFilesInGitProject =
-                VersionControlledFilesInGitProject(
-                        vcfList.getList(),
-                        projectNameList,
-                                                  )
+            VersionControlledFilesInGitProject(
+                vcfList.getList(),
+                projectNameList
+            )
         val namesAfterFiltering = versionControlledFilesInGitProject.getListOfVCFilesMatchingGitProject()
 
         assertThat(namesAfterFiltering).containsExactlyInAnyOrder(vcfFile)
@@ -82,10 +82,10 @@ private val metricsFactory = MetricsFactory()
         projectNameList.add("src/Main.kt")
 
         val versionControlledFilesInGitProject =
-                VersionControlledFilesInGitProject(
-                        vcfList.getList(),
-                        projectNameList,
-                                                  )
+            VersionControlledFilesInGitProject(
+                vcfList.getList(),
+                projectNameList
+            )
         val namesAfterFiltering = versionControlledFilesInGitProject.getListOfVCFilesMatchingGitProject()
 
         assertThat(namesAfterFiltering).containsExactlyInAnyOrder(keepFile)

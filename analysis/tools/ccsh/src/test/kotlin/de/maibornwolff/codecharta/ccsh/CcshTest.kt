@@ -24,7 +24,7 @@ import java.io.PrintStream
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class CcshTest {
-private val outContent = ByteArrayOutputStream()
+    private val outContent = ByteArrayOutputStream()
     private val originalOut = System.out
     private val errContent = ByteArrayOutputStream()
     private val originalErr = System.err
@@ -75,10 +75,7 @@ private val outContent = ByteArrayOutputStream()
         } returns -1
     }
 
-    private fun mockInteractiveParserSuggestionDialog(
-    selectedParsers: List<String>,
-    parserArgs: List<List<String>>,
-    ) {
+    private fun mockInteractiveParserSuggestionDialog(selectedParsers: List<String>, parserArgs: List<List<String>>) {
         if (selectedParsers.size != parserArgs.size) {
             throw IllegalArgumentException("There must be the same amount of args as parsers!")
         }
@@ -133,7 +130,7 @@ private val outContent = ByteArrayOutputStream()
         // then
         Assertions.assertThat(exitCode).isEqualTo(0)
         Assertions.assertThat(outStream.toString())
-                .contains("Usage: ccsh [-hiv] [COMMAND]", "Command Line Interface for CodeCharta analysis")
+            .contains("Usage: ccsh [-hiv] [COMMAND]", "Command Line Interface for CodeCharta analysis")
         verify(exactly = 0) { ParserService.executePreconfiguredParser(any(), any()) }
 
         // clean up
@@ -223,10 +220,10 @@ private val outContent = ByteArrayOutputStream()
         // given
         mockUnsuccessfulParserService()
         val dummyConfiguredParsers =
-                mapOf(
-                        "dummyParser1" to listOf("dummyArg1", "dummyArg2"),
-                        "dummyParser2" to listOf("dummyArg1", "dummyArg2"),
-                     )
+            mapOf(
+                "dummyParser1" to listOf("dummyArg1", "dummyArg2"),
+                "dummyParser2" to listOf("dummyArg1", "dummyArg2")
+            )
 
         // when
         Ccsh.executeConfiguredParsers(cmdLine, dummyConfiguredParsers)
@@ -302,10 +299,10 @@ private val outContent = ByteArrayOutputStream()
         val outputFile = File(outputFilePath)
         outputFile.deleteOnExit()
         val multipleConfiguredParsers =
-                mapOf(
-                        "dummyParser1" to listOf("dummyArg1", "dummyArg2"),
-                        "dummyParser2" to listOf("dummyArg1", "dummyArg2"),
-                     )
+            mapOf(
+                "dummyParser1" to listOf("dummyArg1", "dummyArg2"),
+                "dummyParser2" to listOf("dummyArg1", "dummyArg2")
+            )
 
         val lambdaSlot = mutableListOf<() -> String>()
         mockkObject(Logger)
@@ -337,14 +334,17 @@ private val outContent = ByteArrayOutputStream()
 
         val selectedParsers = listOf("rawtextparser", "sourcecodeparser")
         val args =
+            listOf(
+                listOf(File(folderPath).absolutePath, "--output-file="),
                 listOf(
-                        listOf(File(folderPath).absolutePath, "--output-file="),
-                        listOf(
-                                File(folderPath).absolutePath, "--format=JSON",
-                                "--output-file=$sourcecodeOutputFilePath", "--no-issues", "--default-excludes",
-                                "--not-compressed",
-                              ),
-                      )
+                    File(folderPath).absolutePath,
+                    "--format=JSON",
+                    "--output-file=$sourcecodeOutputFilePath",
+                    "--no-issues",
+                    "--default-excludes",
+                    "--not-compressed"
+                )
+            )
 
         mockInteractiveParserSuggestionDialog(selectedParsers, args)
         mockKInquirerConfirm(true)
