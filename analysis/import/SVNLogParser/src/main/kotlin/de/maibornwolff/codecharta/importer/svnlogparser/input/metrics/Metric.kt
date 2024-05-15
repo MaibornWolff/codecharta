@@ -6,7 +6,7 @@ import de.maibornwolff.codecharta.model.AttributeType
 import de.maibornwolff.codecharta.model.Edge
 
 interface Metric {
-fun description(): String
+    fun description(): String
 
     fun metricName(): String
 

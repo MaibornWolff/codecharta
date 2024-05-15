@@ -6,17 +6,17 @@ import org.apache.commons.text.similarity.JaccardSimilarity
 import org.apache.commons.text.similarity.JaroWinklerSimilarity
 
 open class ProjectBuilder(
-        private val nodes: List<MutableNode> = listOf(MutableNode("root", NodeType.Folder)),
-        private var edges: MutableList<Edge> = mutableListOf(),
-        private var attributeTypes: MutableMap<String, MutableMap<String, AttributeType>> = mutableMapOf(),
-        private var attributeDescriptors: MutableMap<String, AttributeDescriptor> = mutableMapOf(),
-        private var blacklist: MutableList<BlacklistItem> = mutableListOf(),
-                         ) {
-                         init {
+    private val nodes: List<MutableNode> = listOf(MutableNode("root", NodeType.Folder)),
+    private var edges: MutableList<Edge> = mutableListOf(),
+    private var attributeTypes: MutableMap<String, MutableMap<String, AttributeType>> = mutableMapOf(),
+    private var attributeDescriptors: MutableMap<String, AttributeDescriptor> = mutableMapOf(),
+    private var blacklist: MutableList<BlacklistItem> = mutableListOf()
+) {
+    init {
         if (nodes.size != 1) {
             throw IllegalStateException(
-                    "No unique root node was found, instead ${nodes.size} candidates identified.",
-                                       )
+                "No unique root node was found, instead ${nodes.size} candidates identified."
+            )
         }
     }
 
@@ -26,10 +26,7 @@ open class ProjectBuilder(
     val size: Int
         get() = rootNode.size
 
-    fun insertByPath(
-    position: Path,
-    node: MutableNode,
-    ): ProjectBuilder {
+    fun insertByPath(position: Path, node: MutableNode): ProjectBuilder {
         rootNode.insertAt(position, node)
         return this
     }
@@ -51,9 +48,9 @@ open class ProjectBuilder(
     }
 
     fun withFilter(
-    filterRule: (MutableNode) -> Boolean = {
-                true
-            },
+        filterRule: (MutableNode) -> Boolean = {
+            true
+        }
     ): ProjectBuilder {
         this.filterRule = filterRule
         return this
@@ -81,17 +78,17 @@ open class ProjectBuilder(
             removeUnusedAttributeDescriptors()
         }
         val project =
-                Project(
-                        edges = edges.toList(),
-                        blacklist = blacklist.toList(),
-                        projectName = Companion.DUMMY_PROJECT_NAME,
-                        attributeTypes = attributeTypes.toMap(),
-                        nodes =
-                        nodes.map {
-                            it.toNode()
-                        }.toList(),
-                        attributeDescriptors = attributeDescriptors.toMap(),
-                       )
+            Project(
+                edges = edges.toList(),
+                blacklist = blacklist.toList(),
+                projectName = Companion.DUMMY_PROJECT_NAME,
+                attributeTypes = attributeTypes.toMap(),
+                nodes =
+                    nodes.map {
+                        it.toNode()
+                    }.toList(),
+                attributeDescriptors = attributeDescriptors.toMap()
+            )
 
         System.err.println()
         System.err.println("Created Project with ${project.size} leaves.")
@@ -137,12 +134,9 @@ open class ProjectBuilder(
         return this
     }
 
-    private fun addAttributeDescriptorWithEstimatedDirection(
-    nodeAttributeName: String,
-    complementedAttributeDescriptors: MutableMap<String, AttributeDescriptor>,
-    ) {
+    private fun addAttributeDescriptorWithEstimatedDirection(nodeAttributeName: String, complementedAttributeDescriptors: MutableMap<String, AttributeDescriptor>) {
         complementedAttributeDescriptors[nodeAttributeName] =
-                AttributeDescriptor(title = nodeAttributeName, direction = estimateDirection(nodeAttributeName))
+            AttributeDescriptor(title = nodeAttributeName, direction = estimateDirection(nodeAttributeName))
     }
 
     private fun estimateDirection(nodeAttributeName: String): Int {
@@ -152,8 +146,8 @@ open class ProjectBuilder(
 
         val strippedNodeAttributeName = nodeAttributeName.lowercase().replace("[^a-zäöüß]".toRegex(), "")
         if (getCodeMetricsPositiveDirectionEnglish().any {
-                    it in strippedNodeAttributeName
-                } &&
+                it in strippedNodeAttributeName
+            } &&
             !(getCodeMetricsNegativeDirectionEnglish()).any {
                 it in strippedNodeAttributeName
             }
@@ -161,8 +155,8 @@ open class ProjectBuilder(
             return 1
         }
         if (getCodeMetricsPositiveDirectionGerman().any {
-                    it in strippedNodeAttributeName
-                } &&
+                it in strippedNodeAttributeName
+            } &&
             !(getCodeMetricsNegativeDirectionGerman()).any {
                 it in strippedNodeAttributeName
             }
@@ -171,18 +165,18 @@ open class ProjectBuilder(
         }
 
         val attributeDescriptorNamesByAvgSimilarities =
-                attributeDescriptorNames.associateWith { attributeDescriptorName ->
-                    calculateAvgSimilarity(nodeAttributeName, attributeDescriptorName)
-                }
+            attributeDescriptorNames.associateWith { attributeDescriptorName ->
+                calculateAvgSimilarity(nodeAttributeName, attributeDescriptorName)
+            }
 
         val attributeDescriptorNameWithMaxAvgSimilarity: Map.Entry<String, Double>? =
-                attributeDescriptorNamesByAvgSimilarities.maxByOrNull {
-                    it.value
-                }
+            attributeDescriptorNamesByAvgSimilarities.maxByOrNull {
+                it.value
+            }
 
         if (attributeDescriptorNameWithMaxAvgSimilarity != null && attributeDescriptorNameWithMaxAvgSimilarity.value >= avgSimilarityThreshold) {
             val attributeDescriptorWithMaxAvgSimilarity =
-                    attributeDescriptors[attributeDescriptorNameWithMaxAvgSimilarity.key]
+                attributeDescriptors[attributeDescriptorNameWithMaxAvgSimilarity.key]
             if (attributeDescriptorWithMaxAvgSimilarity != null) {
                 return attributeDescriptorWithMaxAvgSimilarity.direction
             }
@@ -191,10 +185,7 @@ open class ProjectBuilder(
         return -1
     }
 
-    private fun calculateAvgSimilarity(
-    nodeAttributeName: String,
-    attributeDescriptorName: String,
-    ): Double {
+    private fun calculateAvgSimilarity(nodeAttributeName: String, attributeDescriptorName: String): Double {
         val jacquardSimilarity = JaccardSimilarity().apply(nodeAttributeName, attributeDescriptorName)
         val jaroWinklerSimilarity = JaroWinklerSimilarity().apply(nodeAttributeName, attributeDescriptorName)
         return (jacquardSimilarity + jaroWinklerSimilarity) / 2
@@ -256,26 +247,26 @@ open class ProjectBuilder(
 
     private fun getCodeMetricsPositiveDirectionEnglish(): List<String> {
         return listOf(
-                "covered", "coverage", "review", "reviewed", "documentation", "documented", "success",
-                "succeeded", "fix", "fixed", "completion", "complete", "augmentation", "augmented", "enhancement",
-                "enhanced", "improvement", "improved", "added", "addition", "efficient", "efficiency", "velocity",
-                "reusable", "reusability", "reduced", "reduction",
-                     )
+            "covered", "coverage", "review", "reviewed", "documentation", "documented", "success",
+            "succeeded", "fix", "fixed", "completion", "complete", "augmentation", "augmented", "enhancement",
+            "enhanced", "improvement", "improved", "added", "addition", "efficient", "efficiency", "velocity",
+            "reusable", "reusability", "reduced", "reduction"
+        )
     }
 
     private fun getCodeMetricsNegativeDirectionEnglish(): List<String> {
         return listOf(
-                "unchecked", "uncovered", "not", "failed", "failure", "reopened", "violation", "violated",
-                "duplication", "duplicated", "skipped", "error", "wont",
-                     )
+            "unchecked", "uncovered", "not", "failed", "failure", "reopened", "violation", "violated",
+            "duplication", "duplicated", "skipped", "error", "wont"
+        )
     }
 
     private fun getCodeMetricsPositiveDirectionGerman(): List<String> {
         return listOf(
-                "abgedeckt", "abdeckung", "überprüft", "dokumentation", "dokumentiert", "erfolg", "erfolgreich",
-                "beheben", "behoben", "vollständig", "erweitert", "verbessert", "hinzugefügt", "effizient", "effizienz",
-                "geschwindigkeit", "wiederverwendbar", "wiederverwendbarkeit",
-                     )
+            "abgedeckt", "abdeckung", "überprüft", "dokumentation", "dokumentiert", "erfolg", "erfolgreich",
+            "beheben", "behoben", "vollständig", "erweitert", "verbessert", "hinzugefügt", "effizient", "effizienz",
+            "geschwindigkeit", "wiederverwendbar", "wiederverwendbarkeit"
+        )
     }
 
     private fun getCodeMetricsNegativeDirectionGerman(): List<String> {
@@ -287,6 +278,6 @@ open class ProjectBuilder(
     }
 
     companion object {
-    const val DUMMY_PROJECT_NAME = ""
+        const val DUMMY_PROJECT_NAME = ""
     }
 }

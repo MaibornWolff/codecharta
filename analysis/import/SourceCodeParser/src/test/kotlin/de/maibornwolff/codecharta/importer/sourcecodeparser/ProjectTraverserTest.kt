@@ -5,10 +5,10 @@ import org.junit.jupiter.api.Test
 import java.io.File
 
 class ProjectTraverserTest {
-@Test
+    @Test
     fun `should find correct number of files`() {
         val projectTraverser =
-                ProjectTraverser(File("src/test/resources/sampleproject").absoluteFile, arrayOf("/build/", "/\\..*/"))
+            ProjectTraverser(File("src/test/resources/sampleproject").absoluteFile, arrayOf("/build/", "/\\..*/"))
         projectTraverser.traverse()
         val javaFiles = projectTraverser.getFileListByExtension("java")
         val pythonFiles = projectTraverser.getFileListByExtension("py")
@@ -58,7 +58,7 @@ class ProjectTraverserTest {
     @Test
     fun `should exclude files in multiple ignored folders`() {
         val projectTraverser =
-                ProjectTraverser(File("src/test/resources").absoluteFile, arrayOf("/bar/", "/sonar_issues_java/"))
+            ProjectTraverser(File("src/test/resources").absoluteFile, arrayOf("/bar/", "/sonar_issues_java/"))
         projectTraverser.traverse()
         val javaFiles = projectTraverser.getFileListByExtension("java")
 

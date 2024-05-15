@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
 class AuthenticationHandlerTest {
-@Test
+    @Test
     @Throws(Exception::class)
     fun createAuthWithPassword() {
         val password = "password"
@@ -22,6 +22,6 @@ class AuthenticationHandlerTest {
     }
 
     companion object {
-    private const val USERNAME = "user"
+        private const val USERNAME = "user"
     }
 }

@@ -8,50 +8,50 @@ import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 
 class ParserDialog {
     companion object : ParserDialogInterface {
-    override fun collectParserArgs(): List<String> {
+        override fun collectParserArgs(): List<String> {
             val inputFileNames = ParserDialogHelper.getInputFiles(false)
 
             val outputFileName: String =
-                    KInquirer.promptInput(
-                            message = "What is the name of the output file?",
-                            hint = "output.cc.json",
-                                         )
+                KInquirer.promptInput(
+                    message = "What is the name of the output file?",
+                    hint = "output.cc.json"
+                )
 
             val pathColumnName: String =
-                    KInquirer.promptInput(
-                            message = "What is the name of the path column name?",
-                            default = "path",
-                                         )
+                KInquirer.promptInput(
+                    message = "What is the name of the path column name?",
+                    default = "path"
+                )
 
             val delimiter =
-                    KInquirer.promptInput(
-                            message = "Which column delimiter is used in the CSV file?",
-                            hint = ",",
-                            default = ",",
-                                         )
+                KInquirer.promptInput(
+                    message = "Which column delimiter is used in the CSV file?",
+                    hint = ",",
+                    default = ","
+                )
 
             val pathSeparator =
-                    KInquirer.promptInput(
-                            message = "Which path separator is used in the path names?",
-                            hint = "/",
-                            default = "/",
-                                         )
+                KInquirer.promptInput(
+                    message = "Which path separator is used in the path names?",
+                    hint = "/",
+                    default = "/"
+                )
 
             val isCompressed =
-                    (outputFileName.isEmpty()) ||
+                (outputFileName.isEmpty()) ||
                     KInquirer.promptConfirm(
-                            message = "Do you want to compress the output file?",
-                            default = true,
-                                           )
+                        message = "Do you want to compress the output file?",
+                        default = true
+                    )
 
             return inputFileNames +
-                   listOfNotNull(
-                           "--output-file=$outputFileName",
-                           "--path-column-name=$pathColumnName",
-                           "--delimiter=$delimiter",
-                           "--path-separator=$pathSeparator",
-                           if (isCompressed) null else "--not-compressed",
-                                )
+                listOfNotNull(
+                    "--output-file=$outputFileName",
+                    "--path-column-name=$pathColumnName",
+                    "--delimiter=$delimiter",
+                    "--path-separator=$pathSeparator",
+                    if (isCompressed) null else "--not-compressed"
+                )
         }
     }
 }

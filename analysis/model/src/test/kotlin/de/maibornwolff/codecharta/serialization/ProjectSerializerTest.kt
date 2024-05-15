@@ -27,14 +27,14 @@ import kotlin.test.assertTrue
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ProjectSerializerTest {
-private val tempDir = createTempDirectory()
+    private val tempDir = createTempDirectory()
     private val filename = tempDir.absolute().toString() + "test.cc.json"
     private val project = mockk<Project>()
     private val loggerMock = mockk<KLogger>()
     private val lambdaSlot = mutableListOf<() -> String>()
 
     companion object {
-    private const val EXAMPLE_JSON_VERSION_1_3 = "example_api_version_1.3.cc.json"
+        private const val EXAMPLE_JSON_VERSION_1_3 = "example_api_version_1.3.cc.json"
     }
 
     @BeforeAll

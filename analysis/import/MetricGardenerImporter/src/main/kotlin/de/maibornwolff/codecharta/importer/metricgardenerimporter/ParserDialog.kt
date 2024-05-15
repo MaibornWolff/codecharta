@@ -9,12 +9,12 @@ import java.io.File
 
 class ParserDialog {
     companion object : ParserDialogInterface {
-    override fun collectParserArgs(): List<String> {
+        override fun collectParserArgs(): List<String> {
             val isJsonFile: Boolean =
-                    KInquirer.promptConfirm(
-                            message = "Do you already have a MetricGardener json-File?",
-                            default = false,
-                                           )
+                KInquirer.promptConfirm(
+                    message = "Do you already have a MetricGardener json-File?",
+                    default = false
+                )
 
             var inputFile: String
             do {
@@ -22,24 +22,24 @@ class ParserDialog {
             } while (!InputHelper.isInputValidAndNotNull(arrayOf(File(inputFile)), canInputContainFolders = true))
 
             val outputFileName: String =
-                    KInquirer.promptInput(
-                            message = "What is the name of the output file? If empty, the result will be returned in the terminal",
-                            hint = "path/to/output/filename.cc.json",
-                                         )
+                KInquirer.promptInput(
+                    message = "What is the name of the output file? If empty, the result will be returned in the terminal",
+                    hint = "path/to/output/filename.cc.json"
+                )
 
             val isCompressed =
-                    (outputFileName.isEmpty()) ||
+                (outputFileName.isEmpty()) ||
                     KInquirer.promptConfirm(
-                            message = "Do you want to compress the output file?",
-                            default = true,
-                                           )
+                        message = "Do you want to compress the output file?",
+                        default = true
+                    )
 
             return listOfNotNull(
-                    inputFile,
-                    "--output-file=$outputFileName",
-                    if (isCompressed) null else "--not-compressed",
-                    if (isJsonFile) "--is-json-file" else null,
-                                )
+                inputFile,
+                "--output-file=$outputFileName",
+                if (isCompressed) null else "--not-compressed",
+                if (isJsonFile) "--is-json-file" else null
+            )
         }
 
         private fun collectInputFileName(isJsonFile: Boolean): String {

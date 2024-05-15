@@ -15,11 +15,8 @@ import javax.ws.rs.ext.Provider
 
 @Provider
 class ErrorResponseFilter : ClientResponseFilter {
-@Throws(IOException::class)
-    override fun filter(
-requestContext: ClientRequestContext,
-responseContext: ClientResponseContext,
-) {
+    @Throws(IOException::class)
+    override fun filter(requestContext: ClientRequestContext, responseContext: ClientResponseContext) {
         val status = Response.Status.fromStatusCode(responseContext.status)
         if (status != Response.Status.OK && responseContext.hasEntity()) {
             val stream = responseContext.entityStream
@@ -27,10 +24,10 @@ responseContext: ClientResponseContext,
             try {
                 val gson = GsonBuilder().create()
                 val error =
-                        gson.fromJson<ErrorResponse>(
-                                InputStreamReader(stream, StandardCharsets.UTF_8),
-                                ErrorResponse::class.java,
-                                                    )
+                    gson.fromJson<ErrorResponse>(
+                        InputStreamReader(stream, StandardCharsets.UTF_8),
+                        ErrorResponse::class.java
+                    )
 
                 var message = "Errors: \n"
                 for (errorEntity in error.errors) {

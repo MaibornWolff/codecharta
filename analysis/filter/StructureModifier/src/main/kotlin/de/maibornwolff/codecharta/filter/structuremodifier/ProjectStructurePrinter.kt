@@ -5,18 +5,14 @@ import de.maibornwolff.codecharta.model.Project
 import java.io.PrintStream
 
 class ProjectStructurePrinter(
-        private val project: Project,
-        private val output: PrintStream = System.out,
-                             ) {
-                             fun printProjectStructure(maxDepth: Int) {
+    private val project: Project,
+    private val output: PrintStream = System.out
+) {
+    fun printProjectStructure(maxDepth: Int) {
         printNodeRecursively(maxDepth, 0, project.rootNode.toMutableNode())
     }
 
-    private fun printNodeRecursively(
-    maxDepth: Int,
-    currentDepth: Int,
-    node: MutableNode,
-    ) {
+    private fun printNodeRecursively(maxDepth: Int, currentDepth: Int, node: MutableNode) {
         if (maxDepth < currentDepth) return
 
         output.println("- ".repeat(currentDepth) + node.name)

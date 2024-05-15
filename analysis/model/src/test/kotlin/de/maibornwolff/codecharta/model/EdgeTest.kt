@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Assertions.assertNotEquals
 import org.junit.jupiter.api.Test
 
 internal class EdgeTest {
-private val nodeA = "nodeA"
+    private val nodeA = "nodeA"
     private val nodeB = "nodeB"
     private val attributes = mapOf("testAttribute" to 0, "anotherAttribute" to "42")
     private val edgeFull = Edge(nodeA, nodeB)

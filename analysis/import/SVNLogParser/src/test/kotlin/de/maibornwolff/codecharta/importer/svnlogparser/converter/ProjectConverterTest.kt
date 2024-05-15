@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test
 import java.time.OffsetDateTime
 
 class ProjectConverterTest {
-private val metricsFactory = mockk<MetricsFactory>()
+    private val metricsFactory = mockk<MetricsFactory>()
 
     @BeforeEach
     fun setup() {

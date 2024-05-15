@@ -31,18 +31,18 @@ import java.io.PrintWriter
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
-        name = TokeiImporter.NAME,
-        description = [TokeiImporter.DESCRIPTION],
-        footer = [CodeChartaConstants.General.GENERIC_FOOTER],
-                    )
+    name = TokeiImporter.NAME,
+    description = [TokeiImporter.DESCRIPTION],
+    footer = [CodeChartaConstants.General.GENERIC_FOOTER]
+)
 class TokeiImporter(
-        private val input: InputStream = System.`in`,
-        private val output: PrintStream = System.out,
-        private val error: PrintStream = System.err,
-                   ) : Callable<Unit>, InteractiveParser, PipeableParser, AttributeGenerator {
-                   private val attributeTypes =
-            AttributeTypes(type = "nodes").add("rloc", AttributeType.ABSOLUTE).add("loc", AttributeType.ABSOLUTE)
-                    .add("empty_lines", AttributeType.ABSOLUTE).add("comment_lines", AttributeType.ABSOLUTE)
+    private val input: InputStream = System.`in`,
+    private val output: PrintStream = System.out,
+    private val error: PrintStream = System.err
+) : Callable<Unit>, InteractiveParser, PipeableParser, AttributeGenerator {
+    private val attributeTypes =
+        AttributeTypes(type = "nodes").add("rloc", AttributeType.ABSOLUTE).add("loc", AttributeType.ABSOLUTE)
+            .add("empty_lines", AttributeType.ABSOLUTE).add("comment_lines", AttributeType.ABSOLUTE)
 
     private lateinit var projectBuilder: ProjectBuilder
 
@@ -53,9 +53,9 @@ class TokeiImporter(
     private var rootName = "."
 
     @CommandLine.Option(
-            names = ["--path-separator"],
-            description = ["path separator, leave empty for auto-detection (default = '')"],
-                       )
+        names = ["--path-separator"],
+        description = ["path separator, leave empty for auto-detection (default = '')"]
+    )
     private var pathSeparator = ""
 
     @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File "])
@@ -73,16 +73,11 @@ class TokeiImporter(
     override val description = DESCRIPTION
 
     companion object {
-    const val NAME = "tokeiimporter"
+        const val NAME = "tokeiimporter"
         const val DESCRIPTION = "generates cc.json from tokei json"
 
         @JvmStatic
-        fun mainWithInOut(
-        input: InputStream,
-        output: PrintStream,
-        error: PrintStream,
-        args: Array<String>,
-        ) {
+        fun mainWithInOut(input: InputStream, output: PrintStream, error: PrintStream, args: Array<String>) {
             CommandLine(TokeiImporter(input, output, error)).setOut(PrintWriter(output)).execute(*args)
         }
 
@@ -115,11 +110,11 @@ class TokeiImporter(
     private fun determineImporterStrategy(root: JsonElement) {
         val json = root.asJsonObject
         importerStrategy =
-                if (json.has(TOP_LEVEL_OBJECT)) {
-                    TokeiInnerStrategy(rootName, pathSeparator)
-                } else {
-                    TokeiTwelveStrategy(rootName, pathSeparator)
-                }
+            if (json.has(TOP_LEVEL_OBJECT)) {
+                TokeiInnerStrategy(rootName, pathSeparator)
+            } else {
+                TokeiTwelveStrategy(rootName, pathSeparator)
+            }
     }
 
     private fun getInput(): JsonElement? {

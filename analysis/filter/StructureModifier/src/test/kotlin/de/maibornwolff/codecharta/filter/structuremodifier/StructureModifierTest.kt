@@ -17,7 +17,7 @@ import java.io.PrintStream
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class StructureModifierTest {
-private val errContent = ByteArrayOutputStream()
+    private val errContent = ByteArrayOutputStream()
     private val originalErr = System.err
 
     @AfterEach
@@ -39,9 +39,9 @@ private val errContent = ByteArrayOutputStream()
     fun `should read project when receiving piped input`() { // given
         val inputFilePath = "src/test/resources/sample_project.cc.json"
         val input =
-                File(inputFilePath).bufferedReader().readLines().joinToString(separator = "") {
-                    it
-                }
+            File(inputFilePath).bufferedReader().readLines().joinToString(separator = "") {
+                it
+            }
 
         // when
         val cliResult = executeForOutput(input, arrayOf("-r=/does/not/exist"))
@@ -83,7 +83,7 @@ private val errContent = ByteArrayOutputStream()
     fun `should set the  root for new subproject when provided with new root`() {
 // when
         val cliResult =
-                executeForOutput("", arrayOf("src/test/resources/sample_project.cc.json", "-s=/root/src/folder3"))
+            executeForOutput("", arrayOf("src/test/resources/sample_project.cc.json", "-s=/root/src/folder3"))
 
         // then
         assertThat(cliResult).contains("otherFile2.java")
@@ -104,10 +104,10 @@ private val errContent = ByteArrayOutputStream()
     fun `should move nodes when move-from flag is specified`() {
 // when
         val cliResult =
-                executeForOutput(
-                        "",
-                        arrayOf("src/test/resources/sample_project.cc.json", "-f=/root/src", "-t=/root/new123"),
-                                )
+            executeForOutput(
+                "",
+                arrayOf("src/test/resources/sample_project.cc.json", "-f=/root/src", "-t=/root/new123")
+            )
 
         // then
         assertThat(cliResult).contains("new123")
@@ -127,10 +127,10 @@ private val errContent = ByteArrayOutputStream()
     fun `should set root and remove unused descriptors when root specified`() {
 // when
         val cliResult =
-                executeForOutput(
-                        "",
-                        arrayOf("src/test/resources/test_attributeDescriptors.json", "-s=/root/AnotherParentLeaf"),
-                                )
+            executeForOutput(
+                "",
+                arrayOf("src/test/resources/test_attributeDescriptors.json", "-s=/root/AnotherParentLeaf")
+            )
         val resultProject = ProjectDeserializer.deserializeProject(cliResult)
 
         // then
@@ -142,10 +142,10 @@ private val errContent = ByteArrayOutputStream()
     fun `should remove nodes and unused descriptors when provided with an input file containing unused descriptors`() {
 // when
         val cliResult =
-                executeForOutput(
-                        "",
-                        arrayOf("src/test/resources/test_attributeDescriptors.json", "-r=/root/AnotherParentLeaf"),
-                                )
+            executeForOutput(
+                "",
+                arrayOf("src/test/resources/test_attributeDescriptors.json", "-r=/root/AnotherParentLeaf")
+            )
         val resultProject = ProjectDeserializer.deserializeProject(cliResult)
 
         // then
@@ -179,7 +179,7 @@ private val errContent = ByteArrayOutputStream()
 
         // when
         val cliResult =
-                executeForOutput("", arrayOf("src/test/resources/sample_project.cc.json", "--remove", "$nodesToRemove"))
+            executeForOutput("", arrayOf("src/test/resources/sample_project.cc.json", "--remove", "$nodesToRemove"))
 
         // then
         assertThat(cliResult).doesNotContain(file1)
@@ -198,12 +198,15 @@ private val errContent = ByteArrayOutputStream()
 
         // when
         executeForOutput(
-                "",
-                arrayOf(
-                        "src/test/resources/sample_project.cc.json", "--remove", "$nodesToRemove", "--set-root",
-                        "$nodesToRemove",
-                       ),
-                        )
+            "",
+            arrayOf(
+                "src/test/resources/sample_project.cc.json",
+                "--remove",
+                "$nodesToRemove",
+                "--set-root",
+                "$nodesToRemove"
+            )
+        )
 
         // then
         assertThat(lambdaSlot.last()().isNotEmpty()).isTrue()
@@ -219,9 +222,9 @@ private val errContent = ByteArrayOutputStream()
 
         // when
         executeForOutput(
-                "",
-                arrayOf("src/test/resources/sample_project.cc.json", "--move-from", folderToMove, "--move-to", ""),
-                        )
+            "",
+            arrayOf("src/test/resources/sample_project.cc.json", "--move-from", folderToMove, "--move-to", "")
+        )
 
         // then
         assertThat(lambdaSlot.last()().isNotEmpty()).isTrue()

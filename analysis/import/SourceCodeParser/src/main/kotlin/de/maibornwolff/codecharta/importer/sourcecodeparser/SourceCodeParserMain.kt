@@ -31,16 +31,16 @@ import java.io.Writer
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
-        name = SourceCodeParserMain.NAME,
-        description = [SourceCodeParserMain.DESCRIPTION],
-        footer = [SourceCodeParserMain.FOOTER],
-                    )
+    name = SourceCodeParserMain.NAME,
+    description = [SourceCodeParserMain.DESCRIPTION],
+    footer = [SourceCodeParserMain.FOOTER]
+)
 class SourceCodeParserMain(
-        private val output: PrintStream,
-        private val input: InputStream = System.`in`,
-        private val error: PrintStream = System.err,
-                          ) : Callable<Unit>, InteractiveParser, PipeableParser, AttributeGenerator {
-                          // we need this constructor because ccsh requires an empty constructor
+    private val output: PrintStream,
+    private val input: InputStream = System.`in`,
+    private val error: PrintStream = System.err
+) : Callable<Unit>, InteractiveParser, PipeableParser, AttributeGenerator {
+    // we need this constructor because ccsh requires an empty constructor
     constructor() : this(System.out)
 
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
@@ -50,24 +50,24 @@ class SourceCodeParserMain(
     private var findNoIssues = false
 
     @CommandLine.Option(
-            names = ["-e", "--exclude"],
-            description = ["comma-separated list of regex patterns to exclude files/folders (when using powershell, the list either can't contain spaces or has to be in quotes)"],
-            converter = [(CommaSeparatedStringToListConverter::class)],
-            preprocessor = CommaSeparatedParameterPreprocessor::class,
-                       )
+        names = ["-e", "--exclude"],
+        description = ["comma-separated list of regex patterns to exclude files/folders (when using powershell, the list either can't contain spaces or has to be in quotes)"],
+        converter = [(CommaSeparatedStringToListConverter::class)],
+        preprocessor = CommaSeparatedParameterPreprocessor::class
+    )
     private var exclude: Array<String> = arrayOf()
 
     @CommandLine.Option(
-            names = ["--default-excludes"],
-            description = ["exclude build, target, dist and out folders as well as files/folders starting with '.' "],
-                       )
+        names = ["--default-excludes"],
+        description = ["exclude build, target, dist and out folders as well as files/folders starting with '.' "]
+    )
     private var defaultExcludes = false
 
     @CommandLine.Option(
-            names = ["-f", "--format"],
-            description = ["the format to output (either json or csv)"],
-            converter = [(OutputTypeConverter::class)],
-                       )
+        names = ["-f", "--format"],
+        description = ["the format to output (either json or csv)"],
+        converter = [(OutputTypeConverter::class)]
+    )
     private var outputFormat = OutputFormat.JSON
 
     @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File (or empty for stdout)"])
@@ -86,10 +86,10 @@ class SourceCodeParserMain(
     override val description = DESCRIPTION
 
     companion object {
-    const val NAME = "sourcecodeparser"
+        const val NAME = "sourcecodeparser"
         const val DESCRIPTION = "generates cc.json from source code"
         const val FOOTER =
-                "This program uses the SonarJava, which is licensed under the GNU Lesser General Public Library, version 3.\n" +
+            "This program uses the SonarJava, which is licensed under the GNU Lesser General Public Library, version 3.\n" +
                 CodeChartaConstants.General.GENERIC_FOOTER
 
         @JvmStatic
@@ -98,23 +98,15 @@ class SourceCodeParserMain(
         }
 
         @JvmStatic
-        fun mainWithOutputStream(
-        outputStream: PrintStream,
-        args: Array<String>,
-        ) {
+        fun mainWithOutputStream(outputStream: PrintStream, args: Array<String>) {
             CommandLine(SourceCodeParserMain(outputStream)).execute(*args)
         }
 
         @JvmStatic
-        fun mainWithInOut(
-        outputStream: PrintStream,
-        input: InputStream,
-        error: PrintStream,
-        args: Array<String>,
-        ) {
+        fun mainWithInOut(outputStream: PrintStream, input: InputStream, error: PrintStream, args: Array<String>) {
             CommandLine(SourceCodeParserMain(outputStream, input, error))
-                    .setOut(PrintWriter(outputStream))
-                    .execute(*args)
+                .setOut(PrintWriter(outputStream))
+                .execute(*args)
         }
 
         private val DEFAULT_EXCLUDES = arrayOf("/out/", "/build/", "/target/", "/dist/", "/resources/", "/\\..*")
@@ -163,17 +155,19 @@ class SourceCodeParserMain(
     private fun logOutputFilePath() {
         outputFile?.let { nonNullOutputFile ->
             val absoluteFilePath =
-                    if (outputFormat == OutputFormat.CSV) {
-                        OutputFileHandler.checkAndFixFileExtension(
-                                nonNullOutputFile.absolutePath, false,
-                                FileExtension.CSV,
-                                                                  )
-                    } else {
-                        OutputFileHandler.checkAndFixFileExtension(
-                                nonNullOutputFile.absolutePath, compress,
-                                FileExtension.JSON,
-                                                                  )
-                    }
+                if (outputFormat == OutputFormat.CSV) {
+                    OutputFileHandler.checkAndFixFileExtension(
+                        nonNullOutputFile.absolutePath,
+                        false,
+                        FileExtension.CSV
+                    )
+                } else {
+                    OutputFileHandler.checkAndFixFileExtension(
+                        nonNullOutputFile.absolutePath,
+                        compress,
+                        FileExtension.JSON
+                    )
+                }
             Logger.info { "Created output file at $absoluteFilePath" }
         }
     }

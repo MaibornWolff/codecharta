@@ -19,7 +19,7 @@ import java.io.PrintStream
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class SourceCodeParserMainTest {
-val errContent = ByteArrayOutputStream()
+    val errContent = ByteArrayOutputStream()
     val originalErr = System.err
     private val originalOut = System.out
 
@@ -30,23 +30,23 @@ val errContent = ByteArrayOutputStream()
     }
 
     companion object {
-    @JvmStatic
+        @JvmStatic
         fun provideValidInputFiles(): List<Arguments> {
             return listOf(
-                    Arguments.of("src/test/resources/my/java/repo"),
-                    Arguments.of("src/test/resources/my/java/repo/hello_world.java"),
-                    Arguments.of("src/test/resources/my"),
-                         )
+                Arguments.of("src/test/resources/my/java/repo"),
+                Arguments.of("src/test/resources/my/java/repo/hello_world.java"),
+                Arguments.of("src/test/resources/my")
+            )
         }
 
         @JvmStatic
         fun provideInvalidInputFiles(): List<Arguments> {
             return listOf(
-                    Arguments.of("src/test/resources/my/empty/repo"),
-                    Arguments.of("src/test/resources/this/does/not/exist"),
-                    Arguments.of("src/test/resources/my/non-java/repo"),
-                    Arguments.of(""),
-                         )
+                Arguments.of("src/test/resources/my/empty/repo"),
+                Arguments.of("src/test/resources/this/does/not/exist"),
+                Arguments.of("src/test/resources/my/non-java/repo"),
+                Arguments.of("")
+            )
         }
     }
 
@@ -85,7 +85,7 @@ val errContent = ByteArrayOutputStream()
 
         // then
         Assertions.assertThat(errContent.toString())
-                .contains("Input invalid file for SourceCodeParser, stopping execution")
+            .contains("Input invalid file for SourceCodeParser, stopping execution")
 
         // clean up
         System.setErr(originalErr)

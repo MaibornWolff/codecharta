@@ -11,7 +11,7 @@ import java.util.stream.Collectors
 
 class HighlyCoupledFilesTest {
     companion object {
-    private const val FILENAME = "filename"
+        private const val FILENAME = "filename"
         private const val COUPLED_FILE1 = "coupledfilename1"
         private const val COUPLED_FILE2 = "coupledfilename2"
     }
@@ -85,17 +85,14 @@ class HighlyCoupledFilesTest {
         assertThat(metric.getEdges()).containsOnly(expectedEdge)
     }
 
-    private fun registerModifications(
-    metric: Metric,
-    vararg filenames: String,
-    ) {
+    private fun registerModifications(metric: Metric, vararg filenames: String) {
         val modificationList =
-                Arrays.stream(filenames).map<Modification> { Modification(it) }.collect(Collectors.toList())
+            Arrays.stream(filenames).map<Modification> { Modification(it) }.collect(Collectors.toList())
 
         val commit = Commit("author", modificationList, OffsetDateTime.now())
         metric.registerCommit(commit)
 
         modificationList.stream().filter { mod -> FILENAME == mod.filename }.findFirst()
-                .ifPresent { metric.registerModification(it) }
+            .ifPresent { metric.registerModification(it) }
     }
 }

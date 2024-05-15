@@ -17,7 +17,7 @@ import java.io.File
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ParserDialogTest {
-@AfterEach
+    @AfterEach
     fun afterTest() {
         unmockkAll()
     }
@@ -87,7 +87,7 @@ class ParserDialogTest {
         Assertions.assertThat(parseResult.matchedOption("not-compressed").getValue<Boolean>()).isEqualTo(isCompressed)
         Assertions.assertThat(parseResult.matchedOption("root-name").getValue<String>()).isEqualTo(rootFolder)
         Assertions.assertThat(parseResult.matchedOption("path-separator").getValue<String>())
-                .isEqualTo(pathSeparatorEscaped)
+            .isEqualTo(pathSeparatorEscaped)
     }
 
     @Test

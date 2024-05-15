@@ -6,9 +6,9 @@ import org.junit.jupiter.api.Assertions.assertNotEquals
 import org.junit.jupiter.api.Test
 
 class ErrorResponseTest {
-private val errorResponseFull = ErrorResponse(arrayOf(ErrorEntity("stuff"), ErrorEntity("stuff2")))
+    private val errorResponseFull = ErrorResponse(arrayOf(ErrorEntity("stuff"), ErrorEntity("stuff2")))
     private val errorResponseFullModified =
-            ErrorResponse(arrayOf(ErrorEntity("stuff"), ErrorEntity("stuff2"), ErrorEntity("more stuff")))
+        ErrorResponse(arrayOf(ErrorEntity("stuff"), ErrorEntity("stuff2"), ErrorEntity("more stuff")))
     private val errorResponseFull2 = ErrorResponse(arrayOf(ErrorEntity("stuff"), ErrorEntity("stuff2")))
 
     @Test

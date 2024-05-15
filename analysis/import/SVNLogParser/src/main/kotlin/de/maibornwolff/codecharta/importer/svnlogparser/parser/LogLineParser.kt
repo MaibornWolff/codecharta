@@ -16,19 +16,19 @@ import java.util.stream.Stream
  * Parses log lines and generates VersionControlledFiles from them using specific parserStrategy and metricsFactory
  */
 class LogLineParser(
-        private val parserStrategy: LogParserStrategy,
-        private val metricsFactory: MetricsFactory,
-        private val silent: Boolean = false,
-        private val logSizeInByte: Long = 0,
-                   ) {
-                   private var currentBytesParsed = 0L
+    private val parserStrategy: LogParserStrategy,
+    private val metricsFactory: MetricsFactory,
+    private val silent: Boolean = false,
+    private val logSizeInByte: Long = 0
+) {
+    private var currentBytesParsed = 0L
     private val progressTracker: ProgressTracker = ProgressTracker()
     private val parsingUnit = ParsingUnit.Byte
 
     fun parse(logLines: Stream<String>): List<VersionControlledFile> {
         val parsedFilesOfCommit =
-                logLines.collect(parserStrategy.createLogLineCollector()).map { this.parseCommit(it) }
-                        .filter { !it.isEmpty }.collect(CommitCollector.create(metricsFactory))
+            logLines.collect(parserStrategy.createLogLineCollector()).map { this.parseCommit(it) }
+                .filter { !it.isEmpty }.collect(CommitCollector.create(metricsFactory))
 
         progressTracker.updateProgress(logSizeInByte, logSizeInByte, parsingUnit.name)
 

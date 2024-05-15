@@ -6,11 +6,7 @@ import com.google.gson.JsonElement
 import java.lang.reflect.Type
 
 class BlacklistTypeDeserializer : JsonDeserializer<BlacklistType> {
-    override fun deserialize(
-    json: JsonElement,
-    typeOfT: Type,
-    context: JsonDeserializationContext,
-    ): BlacklistType {
+    override fun deserialize(json: JsonElement, typeOfT: Type, context: JsonDeserializationContext): BlacklistType {
         val typeStr = json.asString
         return BlacklistType.entries.first { it.value.equals(typeStr, ignoreCase = true) }
     }

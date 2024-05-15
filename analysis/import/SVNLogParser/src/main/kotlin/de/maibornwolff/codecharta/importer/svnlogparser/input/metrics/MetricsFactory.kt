@@ -1,7 +1,7 @@
 package de.maibornwolff.codecharta.importer.svnlogparser.input.metrics
 
 class MetricsFactory {
-private val metricClasses: List<Class<out Metric>>
+    private val metricClasses: List<Class<out Metric>>
 
     constructor() {
         this.metricClasses = createAllMetrics().map { it.javaClass }
@@ -9,7 +9,7 @@ private val metricClasses: List<Class<out Metric>>
 
     constructor(metricNames: List<String>) {
         this.metricClasses =
-                createAllMetrics().filter { m -> metricNames.contains(m.metricName()) }.map { it.javaClass }
+            createAllMetrics().filter { m -> metricNames.contains(m.metricName()) }.map { it.javaClass }
     }
 
     private fun createMetric(clazz: Class<out Metric>): Metric {
@@ -24,21 +24,21 @@ private val metricClasses: List<Class<out Metric>>
 
     private fun createAllMetrics(): List<Metric> {
         return listOf(
-                AbsoluteCodeChurn(),
-                AddedLines(),
-                DeletedLines(),
-                NumberOfAuthors(),
-                NumberOfOccurencesInCommits(),
-                RangeOfWeeksWithCommits(),
-                SuccessiveWeeksWithCommits(),
-                WeeksWithCommits(),
-                HighlyCoupledFiles(),
-                MedianCoupledFiles(),
-                AbsoluteCoupledChurn(),
-                AverageCodeChurnPerCommit(),
-                NumberOfRenames(),
-                AgeInWeeks(),
-                     )
+            AbsoluteCodeChurn(),
+            AddedLines(),
+            DeletedLines(),
+            NumberOfAuthors(),
+            NumberOfOccurencesInCommits(),
+            RangeOfWeeksWithCommits(),
+            SuccessiveWeeksWithCommits(),
+            WeeksWithCommits(),
+            HighlyCoupledFiles(),
+            MedianCoupledFiles(),
+            AbsoluteCoupledChurn(),
+            AverageCodeChurnPerCommit(),
+            NumberOfRenames(),
+            AgeInWeeks()
+        )
     }
 
     fun createMetrics(): List<Metric> {

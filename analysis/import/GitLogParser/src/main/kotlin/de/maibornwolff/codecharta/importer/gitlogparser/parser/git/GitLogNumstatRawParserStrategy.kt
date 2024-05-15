@@ -14,7 +14,7 @@ import java.util.stream.Collector
 import java.util.stream.Stream
 
 class GitLogNumstatRawParserStrategy : LogParserStrategy {
-override fun creationCommand(): String {
+    override fun creationCommand(): String {
         return "git log --numstat --raw --topo-order --reverse -m"
     }
 
@@ -35,12 +35,12 @@ override fun creationCommand(): String {
                 null
             }
         }.groupingBy { it.currentFilename }
-                .aggregate { _, aggregatedModification: Modification?, currentModification, _ ->
-                    when (aggregatedModification) {
-                        null -> mergeModifications(currentModification)
-                        else -> mergeModifications(aggregatedModification, currentModification)
-                    }
-                }.values.toList()
+            .aggregate { _, aggregatedModification: Modification?, currentModification, _ ->
+                when (aggregatedModification) {
+                    null -> mergeModifications(currentModification)
+                    else -> mergeModifications(aggregatedModification, currentModification)
+                }
+            }.values.toList()
     }
 
     override fun parseDate(commitLines: List<String>): OffsetDateTime {
@@ -53,7 +53,7 @@ override fun creationCommand(): String {
     }
 
     companion object {
-    private val GIT_COMMIT_SEPARATOR_TEST = Predicate<String> { logLine -> logLine.startsWith("commit") }
+        private val GIT_COMMIT_SEPARATOR_TEST = Predicate<String> { logLine -> logLine.startsWith("commit") }
 
         private fun isFileLine(commitLine: String): Boolean {
             return GitLogRawParsingHelper.isFileLine(commitLine) || GitLogNumstatParsingHelper.isFileLine(commitLine)

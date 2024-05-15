@@ -9,7 +9,7 @@ import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 
 class IndentationMetricTest {
-private val defaultVerbose = false
+    private val defaultVerbose = false
     private val defaultMaxIndentLvl = RawTextParser.DEFAULT_INDENT_LVL
     private val defaultTabWidth = RawTextParser.DEFAULT_TAB_WIDTH
 

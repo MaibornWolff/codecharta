@@ -4,7 +4,7 @@ import de.maibornwolff.codecharta.importer.svnlogparser.input.Commit
 import de.maibornwolff.codecharta.importer.svnlogparser.input.Modification
 
 class AbsoluteCoupledChurn : Metric {
-private var totalChurn: Long = 0
+    private var totalChurn: Long = 0
     private var ownChurn: Long = 0
 
     override fun description(): String {

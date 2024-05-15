@@ -7,11 +7,7 @@ import de.maibornwolff.codecharta.model.ProjectWrapper
 import java.lang.reflect.Type
 
 class ProjectWrapperJsonDeserializer : JsonDeserializer<ProjectWrapper> {
-override fun deserialize(
-json: JsonElement,
-typeOfT: Type?,
-context: JsonDeserializationContext,
-): ProjectWrapper {
+    override fun deserialize(json: JsonElement, typeOfT: Type?, context: JsonDeserializationContext): ProjectWrapper {
         val projectJsonDeserializer = ProjectJsonDeserializer()
         val jsonObject = json.asJsonObject
         val data = jsonObject.get("data")

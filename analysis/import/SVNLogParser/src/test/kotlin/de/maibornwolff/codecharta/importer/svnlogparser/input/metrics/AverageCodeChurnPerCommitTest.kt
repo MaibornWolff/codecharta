@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test
 
 class AverageCodeChurnPerCommitTest {
     companion object {
-    private const val FILENAME = "filename"
+        private const val FILENAME = "filename"
     }
 
     @Test

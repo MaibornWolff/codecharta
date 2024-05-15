@@ -1,18 +1,18 @@
 plugins {
-  id("org.gradle.toolchains.foojay-resolver-convention") version "0.8.0"
+    id("org.gradle.toolchains.foojay-resolver-convention") version "0.8.0"
 }
 
 include("model")
 include("filter:MergeFilter", "filter:EdgeFilter", "filter:StructureModifier")
 include(
-  "import:CSVImporter",
-  "import:SVNLogParser",
-  "import:GitLogParser",
-  "import:SonarImporter",
-  "import:SourceCodeParser",
-  "import:CodeMaatImporter",
-  "import:TokeiImporter",
-  "import:MetricGardenerImporter",
+    "import:CSVImporter",
+    "import:SVNLogParser",
+    "import:GitLogParser",
+    "import:SonarImporter",
+    "import:SourceCodeParser",
+    "import:CodeMaatImporter",
+    "import:TokeiImporter",
+    "import:MetricGardenerImporter"
 )
 include("parser:RawTextParser")
 include("export:CSVExporter")

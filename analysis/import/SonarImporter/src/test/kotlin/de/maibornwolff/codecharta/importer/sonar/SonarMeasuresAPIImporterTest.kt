@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Assertions.assertNotEquals
 import org.junit.jupiter.api.Test
 
 class SonarMeasuresAPIImporterTest {
-private val metrics = listOf("MetricOne", "MetricTwo", "MetricThree")
+    private val metrics = listOf("MetricOne", "MetricTwo", "MetricThree")
 
     private var measuresDS: SonarMeasuresAPIDatasource? = mockk()
 
@@ -80,10 +80,11 @@ private val metrics = listOf("MetricOne", "MetricTwo", "MetricThree")
     fun `should insert only needed descriptors and should be renamed`() { // given
         val projectKey = "testProject"
         val sonar =
-                SonarMeasuresAPIImporter(
-                        measuresDS, metricsDS,
-                        translator = SonarMetricTranslatorFactory.createMetricTranslator(),
-                                        )
+            SonarMeasuresAPIImporter(
+                measuresDS,
+                metricsDS,
+                translator = SonarMetricTranslatorFactory.createMetricTranslator()
+            )
         val components = ComponentMap()
         val measures = mutableListOf(Measure("metric", "1.2"))
         val actualMetricKeys = listOf("bugs", "ncloc")

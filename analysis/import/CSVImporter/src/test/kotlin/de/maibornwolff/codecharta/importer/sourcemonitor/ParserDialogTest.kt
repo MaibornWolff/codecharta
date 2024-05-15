@@ -17,7 +17,7 @@ import java.io.File
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ParserDialogTest {
-@AfterEach
+    @AfterEach
     fun afterTest() {
         unmockkAll()
     }
@@ -108,8 +108,8 @@ class ParserDialogTest {
 
         // then
         Assertions.assertThat(parseResult.matchedPositional(0).getValue<ArrayList<File>>()[0].name)
-                .isEqualTo(validFileName1)
+            .isEqualTo(validFileName1)
         Assertions.assertThat(parseResult.matchedPositional(0).getValue<ArrayList<File>>()[1].name)
-                .isEqualTo(validFileName2)
+            .isEqualTo(validFileName2)
     }
 }

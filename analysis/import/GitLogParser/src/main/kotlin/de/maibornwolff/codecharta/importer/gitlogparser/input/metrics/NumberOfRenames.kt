@@ -3,7 +3,7 @@ package de.maibornwolff.codecharta.importer.gitlogparser.input.metrics
 import de.maibornwolff.codecharta.importer.gitlogparser.input.Modification
 
 class NumberOfRenames : Metric {
-private var numberOfRenames = 0
+    private var numberOfRenames = 0
 
     override fun description(): String {
         return "Number of Renames: The number of times a file was renamed"

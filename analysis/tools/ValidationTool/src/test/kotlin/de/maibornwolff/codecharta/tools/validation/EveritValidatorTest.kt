@@ -17,7 +17,7 @@ import kotlin.test.assertFailsWith
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class EveritValidatorTest {
-val errContent = ByteArrayOutputStream()
+    val errContent = ByteArrayOutputStream()
     val originalErr = System.err
 
     @AfterEach
@@ -84,6 +84,6 @@ val errContent = ByteArrayOutputStream()
         System.setErr(originalErr)
 
         Assertions.assertThat(errContent.toString())
-                .contains("Input invalid file for ValidationTool, stopping execution")
+            .contains("Input invalid file for ValidationTool, stopping execution")
     }
 }

@@ -26,7 +26,7 @@ private const val PORT = 8089
 
 @WireMockTest(httpPort = PORT)
 class SonarImporterMainTest {
-val errContent = ByteArrayOutputStream()
+    val errContent = ByteArrayOutputStream()
     val originalErr = System.err
 
     @AfterEach
@@ -35,67 +35,67 @@ val errContent = ByteArrayOutputStream()
     }
 
     companion object {
-    private const val METRIC_LIST_URL_PATH =
-                "/api/metrics/search?f=hidden,decimalScale&p=1&ps=${SonarMetricsAPIDatasource.PAGE_SIZE}"
+        private const val METRIC_LIST_URL_PATH =
+            "/api/metrics/search?f=hidden,decimalScale&p=1&ps=${SonarMetricsAPIDatasource.PAGE_SIZE}"
 
         @JvmStatic
         fun provideValidURLs(): List<Arguments> {
             return listOf(
-                    Arguments.of("https://thisisatesturl.com"),
-                    Arguments.of("http://thisisatesturl.com"),
-                         )
+                Arguments.of("https://thisisatesturl.com"),
+                Arguments.of("http://thisisatesturl.com")
+            )
         }
 
         @JvmStatic
         fun provideValidInputFiles(): List<Arguments> {
             return listOf(
-                    Arguments.of("src/test/resources/my/sonar/repo"),
-                    Arguments.of("src/test/resources/my/sonar"),
-                    Arguments.of("src/test/resources/my/sonar/repo/sonar-project.properties"),
-                         )
+                Arguments.of("src/test/resources/my/sonar/repo"),
+                Arguments.of("src/test/resources/my/sonar"),
+                Arguments.of("src/test/resources/my/sonar/repo/sonar-project.properties")
+            )
         }
 
         @JvmStatic
         fun provideInvalidInputFiles(): List<Arguments> {
             return listOf(
-                    Arguments.of("src/test/resources/my/other/repo"),
-                    Arguments.of("src/test/resources"),
-                    Arguments.of("src/test/resources/my/other/sonar-project.properties"),
-                    Arguments.of("src/test/resources/this/does/not/exist"),
-                    Arguments.of(""),
-                         )
+                Arguments.of("src/test/resources/my/other/repo"),
+                Arguments.of("src/test/resources"),
+                Arguments.of("src/test/resources/my/other/sonar-project.properties"),
+                Arguments.of("src/test/resources/this/does/not/exist"),
+                Arguments.of("")
+            )
         }
 
         @JvmStatic
         fun provideInvalidURLs(): List<Arguments> {
             return listOf(
-                    Arguments.of("thisisatesturl.https://"),
-                    Arguments.of("thisisatesturl.http://"),
-                    Arguments.of("http:/noturl.com"),
-                    Arguments.of("www.google.com"),
-                         )
+                Arguments.of("thisisatesturl.https://"),
+                Arguments.of("thisisatesturl.http://"),
+                Arguments.of("http:/noturl.com"),
+                Arguments.of("www.google.com")
+            )
         }
     }
 
     @BeforeEach
     fun mockVersionRequest() {
         WireMock.stubFor(
-                WireMock.get(urlEqualTo("/api/server/version")).willReturn(
-                        WireMock.aResponse().withHeader("Content-Type", MediaType.TEXT_PLAIN + "; charset=utf-8")
-                                .withStatus(200).withBody("7.8.0.0"),
-                                                                          ),
-                        )
+            WireMock.get(urlEqualTo("/api/server/version")).willReturn(
+                WireMock.aResponse().withHeader("Content-Type", MediaType.TEXT_PLAIN + "; charset=utf-8")
+                    .withStatus(200).withBody("7.8.0.0")
+            )
+        )
     }
 
     @Test
     @Throws(Exception::class)
     fun `should call correct url with trailing backslash in URL parameter`() {
         WireMock.stubFor(
-                WireMock.get(urlEqualTo(METRIC_LIST_URL_PATH)).willReturn(
-                        WireMock.aResponse().withStatus(200).withHeader("Content-Type", "application/json")
-                                .withBody("{\"metrics\": [],\"total\": 0, \"p\": 0, \"ps\": 0}"),
-                                                                         ),
-                        )
+            WireMock.get(urlEqualTo(METRIC_LIST_URL_PATH)).willReturn(
+                WireMock.aResponse().withStatus(200).withHeader("Content-Type", "application/json")
+                    .withBody("{\"metrics\": [],\"total\": 0, \"p\": 0, \"ps\": 0}")
+            )
+        )
 
         CommandLine(SonarImporterMain()).execute(*arrayOf("http://localhost:8089/", "someproject"))
 
@@ -106,11 +106,11 @@ val errContent = ByteArrayOutputStream()
     @Throws(Exception::class)
     fun `should call correct url without trailing backslash in URL parameter`() {
         WireMock.stubFor(
-                WireMock.get(urlEqualTo(METRIC_LIST_URL_PATH)).willReturn(
-                        WireMock.aResponse().withStatus(200).withHeader("Content-Type", "application/json")
-                                .withBody("{\"metrics\": [],\"total\": 0, \"p\": 0, \"ps\": 0}"),
-                                                                         ),
-                        )
+            WireMock.get(urlEqualTo(METRIC_LIST_URL_PATH)).willReturn(
+                WireMock.aResponse().withStatus(200).withHeader("Content-Type", "application/json")
+                    .withBody("{\"metrics\": [],\"total\": 0, \"p\": 0, \"ps\": 0}")
+            )
+        )
 
         CommandLine(SonarImporterMain()).execute(*arrayOf("http://localhost:8089", "someproject"))
 
@@ -157,8 +157,8 @@ val errContent = ByteArrayOutputStream()
         System.setErr(originalErr)
 
         Assertions.assertTrue(
-                errContent.toString().contains("Input invalid Url or ProjectID for SonarImporter, stopping execution"),
-                             )
+            errContent.toString().contains("Input invalid Url or ProjectID for SonarImporter, stopping execution")
+        )
     }
 
     @Test
@@ -173,8 +173,8 @@ val errContent = ByteArrayOutputStream()
         System.setErr(originalErr)
 
         Assertions.assertTrue(
-                errContent.toString().contains("Input invalid Url or ProjectID for SonarImporter, stopping execution"),
-                             )
+            errContent.toString().contains("Input invalid Url or ProjectID for SonarImporter, stopping execution")
+        )
     }
 
     @Test

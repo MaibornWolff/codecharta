@@ -4,7 +4,7 @@ import de.maibornwolff.codecharta.importer.gitlogparser.input.VersionControlledF
 import de.maibornwolff.codecharta.importer.gitlogparser.input.metrics.MetricsFactory
 
 class VersionControlledFilesList(private val metricsFactory: MetricsFactory) {
-private var versionControlledFiles: MutableMap<String, VersionControlledFile> = mutableMapOf()
+    private var versionControlledFiles: MutableMap<String, VersionControlledFile> = mutableMapOf()
 
     /**
      * The key of the map is the current name
@@ -55,10 +55,7 @@ private var versionControlledFiles: MutableMap<String, VersionControlledFile> = 
         return versionControlledFiles
     }
 
-    fun rename(
-    oldFileName: String,
-    newFileName: String,
-    ) {
+    fun rename(oldFileName: String, newFileName: String) {
         var newVCFFileName = newFileName
         val possibleConflictName = buildPossibleConflictName(oldFileName)
         val oldestName = retrieveOldestName(possibleConflictName)
@@ -86,10 +83,7 @@ private var versionControlledFiles: MutableMap<String, VersionControlledFile> = 
     }
 
     // File A is called B then A again, this will mess up the currentFilename and oldFilename structure, therefore a special handling is needed
-    private fun isCyclicRename(
-    oldFileName: String,
-    newFileName: String,
-    ): Boolean {
+    private fun isCyclicRename(oldFileName: String, newFileName: String): Boolean {
         return get(oldFileName)!!.containsRename(newFileName)
     }
 

@@ -12,11 +12,11 @@ import org.junit.jupiter.api.Test
 import kotlin.test.assertFailsWith
 
 class NodeJsonDeserializerTest {
-private val type = NodeType.Folder
+    private val type = NodeType.Folder
     private val nodeClass = MutableNode::class.java
 
     companion object {
-    private const val NAME = "nodeName"
+        private const val NAME = "nodeName"
     }
 
     fun createMinimalJsonObject(): JsonObject {

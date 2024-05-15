@@ -8,7 +8,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 class VersionControlledFilesListTest {
-private val metricsFactory = MetricsFactory()
+    private val metricsFactory = MetricsFactory()
     private lateinit var vcfList: VersionControlledFilesList
 
     @BeforeEach

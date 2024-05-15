@@ -12,14 +12,14 @@ import java.io.PrintStream
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
-        name = EdgeFilter.NAME,
-        description = [EdgeFilter.DESCRIPTION],
-        footer = [CodeChartaConstants.General.GENERIC_FOOTER],
-                    )
+    name = EdgeFilter.NAME,
+    description = [EdgeFilter.DESCRIPTION],
+    footer = [CodeChartaConstants.General.GENERIC_FOOTER]
+)
 class EdgeFilter(
-        private val output: PrintStream = System.out,
-                ) : Callable<Unit?>, InteractiveParser {
-                @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
+    private val output: PrintStream = System.out
+) : Callable<Unit?>, InteractiveParser {
+    @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     var help: Boolean = false
 
     @CommandLine.Parameters(arity = "1", paramLabel = "FILE", description = ["files to filter"])
@@ -35,7 +35,7 @@ class EdgeFilter(
     override val description = DESCRIPTION
 
     companion object {
-    const val NAME = "edgefilter"
+        const val NAME = "edgefilter"
         const val DESCRIPTION = "aggregates edgeAttributes as nodeAttributes into a new cc.json file"
 
         @JvmStatic

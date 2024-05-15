@@ -5,7 +5,7 @@ import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 
 class FileMetricsTest {
-@Test
+    @Test
     fun `Should add file metric when provided with valid input`() {
         // given
         val key1 = "foo"

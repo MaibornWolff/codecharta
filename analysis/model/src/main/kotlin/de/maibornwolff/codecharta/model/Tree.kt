@@ -21,11 +21,11 @@ abstract class Tree<T> {
     private val treeNodes: Set<TreeNode<T>>
         get() =
             setOf(TreeNode(Path.trivialPath(), asTreeNode())) +
-            children.flatMap { child ->
-                child.treeNodes.map {
-                    TreeNode(getPathOfChild(child).concat(it.path), it.node)
+                children.flatMap { child ->
+                    child.treeNodes.map {
+                        TreeNode(getPathOfChild(child).concat(it.path), it.node)
+                    }
                 }
-            }
 
     val nodes: Map<Path, T>
         get() =
@@ -74,9 +74,9 @@ abstract class Tree<T> {
     abstract fun getPathOfChild(child: Tree<T>): Path
 
     private class TreeNode<out V> internal constructor(
-            internal val path: Path,
-            internal val node: V,
-                                                      )
+        internal val path: Path,
+        internal val node: V
+    )
 
     /**
      * @param path path in tree
@@ -106,8 +106,5 @@ abstract class Tree<T> {
         return this as T
     }
 
-    abstract fun insertAt(
-    path: Path,
-    node: T,
-    )
+    abstract fun insertAt(path: Path, node: T)
 }

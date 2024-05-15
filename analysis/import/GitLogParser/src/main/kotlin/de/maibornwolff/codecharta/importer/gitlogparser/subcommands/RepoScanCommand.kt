@@ -12,29 +12,29 @@ import java.nio.file.Paths
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
-        name = RepoScanCommand.NAME,
-        description = [RepoScanCommand.DESCRIPTION],
-        footer = ["Copyright(c) 2024, MaibornWolff GmbH"],
-                    )
+    name = RepoScanCommand.NAME,
+    description = [RepoScanCommand.DESCRIPTION],
+    footer = ["Copyright(c) 2024, MaibornWolff GmbH"]
+)
 class RepoScanCommand : Callable<Unit>, InteractiveParser {
-@CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
+    @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
 
     @CommandLine.Option(
-            names = ["--repo-path"],
-            arity = "1",
-            paramLabel = "DIRECTORY",
-            description = ["root directory of the repository"],
-                       )
+        names = ["--repo-path"],
+        arity = "1",
+        paramLabel = "DIRECTORY",
+        description = ["root directory of the repository"]
+    )
     private var repoPathName: String? = null
 
     @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File"])
     private var outputFilePath: String? = null
 
     @CommandLine.Option(
-            names = ["-nc", "--not-compressed"],
-            description = ["save uncompressed output File"],
-                       )
+        names = ["-nc", "--not-compressed"],
+        description = ["save uncompressed output File"]
+    )
     private var compress = true
 
     @CommandLine.Option(names = ["--silent"], description = ["suppress command line output during process"])
@@ -47,18 +47,18 @@ class RepoScanCommand : Callable<Unit>, InteractiveParser {
     override val description = DESCRIPTION
 
     companion object {
-    const val NAME = "repo-scan"
+        const val NAME = "repo-scan"
         const val DESCRIPTION =
-                "git log parser repo-scan - generates cc.json from an automatically generated git-log file"
+            "git log parser repo-scan - generates cc.json from an automatically generated git-log file"
     }
 
     override fun call(): Unit? {
         val repoPath: Path
         if (repoPathName == null ||
             !InputHelper.isInputValid(
-                    arrayOf(File(repoPathName!!)),
-                    canInputContainFolders = true,
-                                     )
+                arrayOf(File(repoPathName!!)),
+                canInputContainFolders = true
+            )
         ) {
             throw IllegalArgumentException("Input invalid file for GitRepoScan, stopping execution...")
         } else {

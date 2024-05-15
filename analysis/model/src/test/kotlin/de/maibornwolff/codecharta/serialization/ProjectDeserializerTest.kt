@@ -9,7 +9,7 @@ import java.nio.charset.StandardCharsets
 
 class ProjectDeserializerTest {
     companion object {
-    private const val EXAMPLE_JSON_VERSION_1_0 = "example.cc.json"
+        private const val EXAMPLE_JSON_VERSION_1_0 = "example.cc.json"
         private const val EXAMPLE_JSON_VERSION_1_3 = "example_api_version_1.3.cc.json"
         private const val EXAMPLE_JSON_GZ_VERSION_1_0 = "example.cc.json.gz"
         private const val EXAMPLE_JSON_GZ_VERSION_1_3 = "example_api_version_1.3.cc.json.gz"

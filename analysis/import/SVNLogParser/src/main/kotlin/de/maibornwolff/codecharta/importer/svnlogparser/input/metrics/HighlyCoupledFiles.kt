@@ -6,7 +6,7 @@ import de.maibornwolff.codecharta.model.AttributeType
 import de.maibornwolff.codecharta.model.Edge
 
 class HighlyCoupledFiles : Metric {
-private var fileName: String = ""
+    private var fileName: String = ""
     private var numberOfCommits: Long = 0
     private var commits = mutableListOf<Commit>()
     private val simultaneouslyCommittedFiles = mutableMapOf<String, Int>()
@@ -42,7 +42,7 @@ private var fileName: String = ""
 
         commits.forEach { commit ->
             commit.modifications.filter { it.filename != fileName }
-                    .forEach { simultaneouslyCommittedFiles.merge(it.filename, 1) { x, y -> x + y } }
+                .forEach { simultaneouslyCommittedFiles.merge(it.filename, 1) { x, y -> x + y } }
         }
     }
 
@@ -68,7 +68,7 @@ private var fileName: String = ""
     }
 
     companion object {
-    private const val HIGH_COUPLING_VALUE = .35
+        private const val HIGH_COUPLING_VALUE = .35
         private const val MIN_NO_COMMITS_FOR_HIGH_COUPLING = 5L
     }
 }

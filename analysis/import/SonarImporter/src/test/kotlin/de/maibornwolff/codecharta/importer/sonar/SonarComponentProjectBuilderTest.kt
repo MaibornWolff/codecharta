@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
 class SonarComponentProjectBuilderTest {
-@Test
+    @Test
     fun `should insert a node from file component without key and use name as backup value`() { // given
         val measure = Measure("metric", "50.0")
         val name = "name"

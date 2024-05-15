@@ -18,7 +18,7 @@ import java.io.PrintStream
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class SourceMonitorImporterTest {
-val errContent = ByteArrayOutputStream()
+    val errContent = ByteArrayOutputStream()
     val originalErr = System.err
 
     @AfterEach
@@ -29,12 +29,12 @@ val errContent = ByteArrayOutputStream()
     @Test
     fun `should create json uncompressed file`() {
         main(
-                arrayOf(
-                        "src/test/resources/sourcemonitor.csv",
-                        "-nc",
-                        "-o=src/test/resources/sourcemonitor.cc.json",
-                       ),
+            arrayOf(
+                "src/test/resources/sourcemonitor.csv",
+                "-nc",
+                "-o=src/test/resources/sourcemonitor.cc.json"
             )
+        )
         val file = File("src/test/resources/sourcemonitor.cc.json")
         file.deleteOnExit()
 
@@ -53,12 +53,12 @@ val errContent = ByteArrayOutputStream()
     @Test
     fun `should contain all existing descriptors`() {
         main(
-                arrayOf(
-                        "src/test/resources/sourcemonitor.csv",
-                        "-nc",
-                        "-o=src/test/resources/sourcemonitor.cc.json",
-                       ),
+            arrayOf(
+                "src/test/resources/sourcemonitor.csv",
+                "-nc",
+                "-o=src/test/resources/sourcemonitor.cc.json"
             )
+        )
         val file = File("src/test/resources/sourcemonitor.cc.json")
         val inputStream = file.inputStream()
         val project = ProjectDeserializer.deserializeProject(inputStream)
@@ -79,6 +79,6 @@ val errContent = ByteArrayOutputStream()
         System.setErr(originalErr)
 
         Assertions.assertThat(errContent.toString())
-                .contains("Input invalid file for SourceMonitorImporter, stopping execution")
+            .contains("Input invalid file for SourceMonitorImporter, stopping execution")
     }
 }

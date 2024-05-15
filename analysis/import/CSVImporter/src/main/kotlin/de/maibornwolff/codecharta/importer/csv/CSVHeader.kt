@@ -3,7 +3,7 @@ package de.maibornwolff.codecharta.importer.csv
 import io.github.oshai.kotlinlogging.KotlinLogging
 
 class CSVHeader(private val header: Array<String?>, private val pathColumnName: String = "path") {
-private val logger = KotlinLogging.logger {}
+    private val logger = KotlinLogging.logger {}
 
     private val headerMap: MutableMap<Int, String>
 
@@ -13,7 +13,7 @@ private val logger = KotlinLogging.logger {}
     val pathColumn: Int
         get() =
             headerMap.keys.firstOrNull { i -> headerMap[i].equals(pathColumnName, ignoreCase = true) }
-            ?: headerMap.keys.first()
+                ?: headerMap.keys.first()
 
     init {
         headerMap = HashMap()
@@ -22,8 +22,8 @@ private val logger = KotlinLogging.logger {}
                 header[i].isNullOrEmpty() -> logger.warn { "Ignoring ${i + 1}-th column number due to: Column has no name." }
 
                 headerMap.containsValue(
-                        header[i],
-                                       ) -> logger.warn { "Ignoring ${i + 1}-th column number due to: Column name '${header[i]}' duplicates a previous column." }
+                    header[i]
+                ) -> logger.warn { "Ignoring ${i + 1}-th column number due to: Column name '${header[i]}' duplicates a previous column." }
 
                 else -> headerMap[i] = header[i]!!
             }

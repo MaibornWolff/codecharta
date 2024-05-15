@@ -10,7 +10,7 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
 
 class ProjectBuilderTest {
-@AfterEach
+    @AfterEach
     fun afterTests() {
         unmockkAll()
     }
@@ -69,9 +69,9 @@ class ProjectBuilderTest {
     fun `it should add the correct attribute-types`() {
 // when
         val projectBuilder =
-                ProjectBuilder(
-                        attributeTypes = mutableMapOf("nodes" to mutableMapOf("nodeMetric" to AttributeType.ABSOLUTE)),
-                              )
+            ProjectBuilder(
+                attributeTypes = mutableMapOf("nodes" to mutableMapOf("nodeMetric" to AttributeType.ABSOLUTE))
+            )
         val attributeTypesToAdd = AttributeTypes(mutableMapOf("edgeMetric" to AttributeType.ABSOLUTE), "edges")
         val attributeTypesToAddExisting = AttributeTypes(mutableMapOf("nodeMetric2" to AttributeType.RELATIVE), "nodes")
         projectBuilder.addAttributeTypes(attributeTypesToAdd)
@@ -79,9 +79,9 @@ class ProjectBuilderTest {
 
         // then
         assertThat(projectBuilder.toString()).contains(
-                "edges={edgeMetric=${AttributeType.ABSOLUTE}}",
-                "nodes={nodeMetric=${AttributeType.ABSOLUTE}, nodeMetric2=${AttributeType.RELATIVE}}",
-                                                      )
+            "edges={edgeMetric=${AttributeType.ABSOLUTE}}",
+            "nodes={nodeMetric=${AttributeType.ABSOLUTE}, nodeMetric2=${AttributeType.RELATIVE}}"
+        )
     }
 
     @Test
@@ -89,39 +89,39 @@ class ProjectBuilderTest {
         // given
         val rootNode = MutableNode("root", NodeType.Folder)
         val firstNode =
-                MutableNode(
-                        name = "firstNode",
-                        type = NodeType.File,
-                        attributes = mapOf("firstAttribute" to 1, "secondAttribute" to 2),
-                           )
+            MutableNode(
+                name = "firstNode",
+                type = NodeType.File,
+                attributes = mapOf("firstAttribute" to 1, "secondAttribute" to 2)
+            )
         val secondNode =
-                MutableNode(
-                        name = "secondNode",
-                        type = NodeType.File,
-                        attributes = mapOf("firstAttribute" to 3, "secondAttribute" to 4),
-                           )
+            MutableNode(
+                name = "secondNode",
+                type = NodeType.File,
+                attributes = mapOf("firstAttribute" to 3, "secondAttribute" to 4)
+            )
         val attributeDescriptorFirstAttribute =
-                AttributeDescriptor(
-                        title = "firstAttribute",
-                        description = "description first attribute",
-                                   )
+            AttributeDescriptor(
+                title = "firstAttribute",
+                description = "description first attribute"
+            )
         val attributeDescriptorSecondAttribute =
-                AttributeDescriptor(
-                        title = "secondAttribute",
-                        description = "description second attribute",
-                                   )
+            AttributeDescriptor(
+                title = "secondAttribute",
+                description = "description second attribute"
+            )
         val attributeDescriptors =
-                mutableMapOf(
-                        "firstAttribute" to attributeDescriptorFirstAttribute,
-                        "secondAttribute" to attributeDescriptorSecondAttribute,
-                            )
+            mutableMapOf(
+                "firstAttribute" to attributeDescriptorFirstAttribute,
+                "secondAttribute" to attributeDescriptorSecondAttribute
+            )
 
         // when
         val projectBuilder =
-                ProjectBuilder(
-                        nodes = listOf(rootNode),
-                        attributeDescriptors = attributeDescriptors,
-                              )
+            ProjectBuilder(
+                nodes = listOf(rootNode),
+                attributeDescriptors = attributeDescriptors
+            )
         projectBuilder.insertByPath(Path.trivialPath(), firstNode)
         projectBuilder.insertByPath(Path.trivialPath(), secondNode)
         val project = projectBuilder.build()
@@ -129,9 +129,9 @@ class ProjectBuilderTest {
         // then
         assertThat(project.attributeDescriptors).isEqualTo(attributeDescriptors)
         val attributeNames =
-                project.rootNode.children.toList().flatMap {
-                    it.attributes.keys
-                }
+            project.rootNode.children.toList().flatMap {
+                it.attributes.keys
+            }
         attributeNames.forEach { attributeName -> assertThat(attributeDescriptors[attributeName]).isNotNull }
     }
 
@@ -142,53 +142,53 @@ class ProjectBuilderTest {
         every {
             AttributeGeneratorRegistry.getAllAttributeDescriptors()
         } returns
-                mapOf(
-                        "number_of_tests" to
-                                AttributeDescriptor(
-                                        title = "Number of Tests", description = "", link = "",
-                                        direction = 1,
-                                                   ),
-                        "new_line_coverage" to
-                                AttributeDescriptor(
-                                        title = "New Line Coverage", description = "",
-                                        link = "", direction = 1,
-                                                   ),
-                        "security_hotspots_reviewed" to
-                                AttributeDescriptor(
-                                        title = "Security Hotspots Reviewed",
-                                        description = "", link = "", direction = 1,
-                                                   ),
-                        "tests" to
-                                AttributeDescriptor(
-                                        title = "Test Density", description = "", link = "",
-                                        direction = 1,
-                                                   ),
-                        "wont_fix_issues" to
-                                AttributeDescriptor(
-                                        title = "Number of Won't Fix Issues", description = "",
-                                        link = "", direction = -1,
-                                                   ),
-                     )
+            mapOf(
+                "number_of_tests" to
+                    AttributeDescriptor(
+                        title = "Number of Tests", description = "", link = "",
+                        direction = 1
+                    ),
+                "new_line_coverage" to
+                    AttributeDescriptor(
+                        title = "New Line Coverage", description = "",
+                        link = "", direction = 1
+                    ),
+                "security_hotspots_reviewed" to
+                    AttributeDescriptor(
+                        title = "Security Hotspots Reviewed",
+                        description = "", link = "", direction = 1
+                    ),
+                "tests" to
+                    AttributeDescriptor(
+                        title = "Test Density", description = "", link = "",
+                        direction = 1
+                    ),
+                "wont_fix_issues" to
+                    AttributeDescriptor(
+                        title = "Number of Won't Fix Issues", description = "",
+                        link = "", direction = -1
+                    )
+            )
 
         val rootNode = MutableNode("root", NodeType.Folder)
         val firstNode =
-                MutableNode(
-                        name = "firstNode",
-                        type = NodeType.File,
-                        attributes =
-                        mapOf(
-                                "automated_test_coverage" to 1,
-                                "code_efficiency_index" to 2,
-                                "development_velocity" to 5,
-                                "public_documented_api_density" to 0.5,
-                                "test_success_density" to 0.7,
-                                "tests" to 70,
-                                "new_security_hotspots_reviewed" to 2,
-                                "pull_request_fixed_issues" to 120,
-                                "issues_reviewed" to 150,
-                                "code_reusability_score" to 85,
-                             ),
-                           )
+            MutableNode(
+                name = "firstNode",
+                type = NodeType.File,
+                attributes =
+                    mapOf(
+                        "automated_test_coverage" to 1,
+                        "code_efficiency_index" to 2,
+                        "development_velocity" to 5,
+                        "public_documented_api_density" to 0.5,
+                        "test_success_density" to 0.7,
+                        "tests" to 70,
+                        "new_security_hotspots_reviewed" to 2,
+                        "pull_request_fixed_issues" to 120,
+                        "issues_reviewed" to 150,
+                        "code_reusability_score" to 85
+                    )
+            )
 
         // when
         val projectBuilder = ProjectBuilder(nodes = listOf(rootNode))
@@ -210,53 +210,53 @@ class ProjectBuilderTest {
         every {
             AttributeGeneratorRegistry.getAllAttributeDescriptors()
         } returns
-                mapOf(
-                        "number_of_tests" to
-                                AttributeDescriptor(
-                                        title = "Number of Tests", description = "", link = "",
-                                        direction = 1,
-                                                   ),
-                        "new_line_coverage" to
-                                AttributeDescriptor(
-                                        title = "New Line Coverage", description = "",
-                                        link = "", direction = 1,
-                                                   ),
-                        "security_hotspots_reviewed" to
-                                AttributeDescriptor(
-                                        title = "Security Hotspots Reviewed",
-                                        description = "", link = "", direction = 1,
-                                                   ),
-                        "tests" to
-                                AttributeDescriptor(
-                                        title = "Test Density", description = "", link = "",
-                                        direction = 1,
-                                                   ),
-                        "wont_fix_issues" to
-                                AttributeDescriptor(
-                                        title = "Number of Won't Fix Issues", description = "",
-                                        link = "", direction = -1,
-                                                   ),
-                     )
+            mapOf(
+                "number_of_tests" to
+                    AttributeDescriptor(
+                        title = "Number of Tests", description = "", link = "",
+                        direction = 1
+                    ),
+                "new_line_coverage" to
+                    AttributeDescriptor(
+                        title = "New Line Coverage", description = "",
+                        link = "", direction = 1
+                    ),
+                "security_hotspots_reviewed" to
+                    AttributeDescriptor(
+                        title = "Security Hotspots Reviewed",
+                        description = "", link = "", direction = 1
+                    ),
+                "tests" to
+                    AttributeDescriptor(
+                        title = "Test Density", description = "", link = "",
+                        direction = 1
+                    ),
+                "wont_fix_issues" to
+                    AttributeDescriptor(
+                        title = "Number of Won't Fix Issues", description = "",
+                        link = "", direction = -1
+                    )
+            )
 
         val rootNode = MutableNode("root", NodeType.Folder)
         val firstNode =
-                MutableNode(
-                        name = "firstNode",
-                        type = NodeType.File,
-                        attributes =
-                        mapOf(
-                                "code_duplication_ratio" to 0.8,
-                                "cyclomatic_complexity_per_method" to 2,
-                                "dependency_vulnerabilities" to 4,
-                                "runtime_errors" to 6,
-                                "static_code_analysis_warnings" to 18,
-                                "bugs" to 2,
-                                "code_smells" to 10,
-                                "critical_violations" to 2,
-                                "duplicated_blocks" to 15,
-                                "uncovered_lines" to 85,
-                             ),
-                           )
+            MutableNode(
+                name = "firstNode",
+                type = NodeType.File,
+                attributes =
+                    mapOf(
+                        "code_duplication_ratio" to 0.8,
+                        "cyclomatic_complexity_per_method" to 2,
+                        "dependency_vulnerabilities" to 4,
+                        "runtime_errors" to 6,
+                        "static_code_analysis_warnings" to 18,
+                        "bugs" to 2,
+                        "code_smells" to 10,
+                        "critical_violations" to 2,
+                        "duplicated_blocks" to 15,
+                        "uncovered_lines" to 85
+                    )
+            )
 
         // when
         val projectBuilder = ProjectBuilder(nodes = listOf(rootNode))
@@ -278,8 +278,10 @@ class ProjectBuilderTest {
 
         // then
         assertThat(projectBuilder.toString()).contains(
-                "edges=[]", "attributeTypes={}", "attributeDescriptors={}",
-                "blacklist=[]",
-                                                      )
+            "edges=[]",
+            "attributeTypes={}",
+            "attributeDescriptors={}",
+            "blacklist=[]"
+        )
     }
 }

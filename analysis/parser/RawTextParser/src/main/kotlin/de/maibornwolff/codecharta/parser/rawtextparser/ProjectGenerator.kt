@@ -7,15 +7,11 @@ import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.model.ProjectBuilder
 
 class ProjectGenerator(private val projectBuilder: ProjectBuilder = ProjectBuilder()) {
-fun generate(
-projectMetrics: ProjectMetrics,
-maxIndentLevel: Int,
-pipedProject: Project?,
-): Project {
+    fun generate(projectMetrics: ProjectMetrics, maxIndentLevel: Int, pipedProject: Project?): Project {
         addMetricsAsNodes(projectMetrics.metricsMap)
         var project =
-                projectBuilder.addAttributeDescriptions(getAttributeDescriptors(maxIndentLevel))
-                        .build(cleanAttributeDescriptors = true)
+            projectBuilder.addAttributeDescriptions(getAttributeDescriptors(maxIndentLevel))
+                .build(cleanAttributeDescriptors = true)
 
         if (pipedProject != null) {
             project = MergeFilter.mergePipedWithCurrentProject(pipedProject, project)

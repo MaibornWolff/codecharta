@@ -20,7 +20,7 @@ import java.math.BigDecimal
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ParserDialogTest {
-@AfterEach
+    @AfterEach
     fun afterTest() {
         unmockkAll()
     }
@@ -48,7 +48,7 @@ class ParserDialogTest {
 
         // then
         Assertions.assertThat(parseResult.matchedPositional(0).getValue<Array<File>>().first().name)
-                .isEqualTo("sampleFile.cc.json")
+            .isEqualTo("sampleFile.cc.json")
         Assertions.assertThat(parseResult.matchedOption("output-file").getValue<String>()).isEqualTo("sampleOutputFile")
         Assertions.assertThat(parseResult.matchedOption("depth-of-hierarchy").getValue<Int>()).isEqualTo(5)
     }
@@ -76,6 +76,6 @@ class ParserDialogTest {
 
         // then
         Assertions.assertThat(parseResult.matchedPositional(0).getValue<Array<File>>().first().name)
-                .isEqualTo("sampleFile.cc.json")
+            .isEqualTo("sampleFile.cc.json")
     }
 }

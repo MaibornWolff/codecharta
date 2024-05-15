@@ -5,7 +5,7 @@ import java.io.InputStream
 import java.util.zip.GZIPInputStream
 
 object CompressedStreamHandler {
-fun wrapInput(input: InputStream): InputStream {
+    fun wrapInput(input: InputStream): InputStream {
         if (input.available() == 0) {
             return input
         }

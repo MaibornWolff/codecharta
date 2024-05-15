@@ -10,29 +10,26 @@ import de.maibornwolff.codecharta.model.ProjectBuilder
 import de.maibornwolff.codecharta.util.Logger
 
 class SubProjectExtractor(
-        private val project: Project,
-                         ) {
-                         private lateinit var path: String
+    private val project: Project
+) {
+    private lateinit var path: String
 
     fun extract(path: String): Project {
         this.path = path
         val pathSegments =
-                path.removePrefix("/").split("/").filter {
-                    it.isNotEmpty()
-                }
+            path.removePrefix("/").split("/").filter {
+                it.isNotEmpty()
+            }
         return ProjectBuilder(
-                addRoot(extractNodes(pathSegments, project.rootNode.toMutableNode())),
-                extractEdges(path),
-                copyAttributeTypes(),
-                copyAttributeDescriptors(),
-                copyBlacklist(),
-                             ).build(cleanAttributeDescriptors = true)
+            addRoot(extractNodes(pathSegments, project.rootNode.toMutableNode())),
+            extractEdges(path),
+            copyAttributeTypes(),
+            copyAttributeDescriptors(),
+            copyBlacklist()
+        ).build(cleanAttributeDescriptors = true)
     }
 
-    private fun extractNodes(
-    extractionPattern: List<String>,
-    node: MutableNode,
-    ): MutableList<MutableNode> {
+    private fun extractNodes(extractionPattern: List<String>, node: MutableNode): MutableList<MutableNode> {
         val children: Set<MutableNode> = node.children
         val extractedNodes: MutableList<MutableNode> = mutableListOf()
 

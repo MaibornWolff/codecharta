@@ -20,7 +20,7 @@ import java.io.PrintStream
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class TokeiImporterTest {
-val errContent = ByteArrayOutputStream()
+    val errContent = ByteArrayOutputStream()
     val originalErr = System.err
 
     @AfterEach
@@ -31,7 +31,7 @@ val errContent = ByteArrayOutputStream()
     @Test
     fun `reads tokei from file`() {
         val cliResult =
-                executeForOutput("", arrayOf("src/test/resources/tokei_pre12_windows.json", "--path-separator=\\"))
+            executeForOutput("", arrayOf("src/test/resources/tokei_pre12_windows.json", "--path-separator=\\"))
 
         Assertions.assertThat(cliResult).contains(listOf("\"name\":\"CHANGELOG.md\"", "\"loc\":450"))
     }
@@ -39,7 +39,7 @@ val errContent = ByteArrayOutputStream()
     @Test
     fun `reads tokei from file with double backslash separator to be unescaped`() {
         val cliResult =
-                executeForOutput("", arrayOf("src/test/resources/tokei_pre12_windows.json", "--path-separator=\\\\"))
+            executeForOutput("", arrayOf("src/test/resources/tokei_pre12_windows.json", "--path-separator=\\\\"))
 
         Assertions.assertThat(cliResult).contains(listOf("\"name\":\"CHANGELOG.md\"", "\"loc\":450"))
     }
@@ -47,10 +47,10 @@ val errContent = ByteArrayOutputStream()
     @Test
     fun `reads tokei from file without a path given`() {
         val cliResult =
-                executeForOutput("", arrayOf("src/test/resources/tokei_pre12_windows.json", "--path-separator="))
+            executeForOutput("", arrayOf("src/test/resources/tokei_pre12_windows.json", "--path-separator="))
 
         Assertions.assertThat(cliResult)
-                .contains(listOf("\"name\":\"CHANGELOG.md\"", "\"loc\":450", "\"name\":\"cli.rs\""))
+            .contains(listOf("\"name\":\"CHANGELOG.md\"", "\"loc\":450", "\"name\":\"cli.rs\""))
     }
 
     @Test
@@ -105,8 +105,8 @@ val errContent = ByteArrayOutputStream()
     @Test
     fun `reads tokei piped input`() {
         val input =
-                File("src/test/resources/tokei_pre12_unix_root.json").bufferedReader().readLines()
-                        .joinToString(separator = "") { it }
+            File("src/test/resources/tokei_pre12_unix_root.json").bufferedReader().readLines()
+                .joinToString(separator = "") { it }
 
         val cliResult = executeForOutput(input)
 
@@ -116,8 +116,8 @@ val errContent = ByteArrayOutputStream()
     @Test
     fun `projectStructure is correct`() {
         val input =
-                File("src/test/resources/tokei_pre12_windows.json").bufferedReader().readLines()
-                        .joinToString(separator = "") { it }
+            File("src/test/resources/tokei_pre12_windows.json").bufferedReader().readLines()
+                .joinToString(separator = "") { it }
 
         val cliResult = executeForOutput(input, arrayOf("--path-separator=\\"))
 
@@ -132,8 +132,8 @@ val errContent = ByteArrayOutputStream()
     @Test
     fun `tokei 12 projectStructure is correct`() {
         val input =
-                File("src/test/resources/tokei_12_unix.json").bufferedReader().readLines()
-                        .joinToString(separator = "") { it }
+            File("src/test/resources/tokei_12_unix.json").bufferedReader().readLines()
+                .joinToString(separator = "") { it }
 
         val cliResult = executeForOutput(input)
 
@@ -149,8 +149,8 @@ val errContent = ByteArrayOutputStream()
     @Test
     fun `reads project piped input multiline`() {
         val input =
-                File("src/test/resources/tokei_pre12_windows.json").bufferedReader().readLines()
-                        .joinToString(separator = "\n") { it }
+            File("src/test/resources/tokei_pre12_windows.json").bufferedReader().readLines()
+                .joinToString(separator = "\n") { it }
         val cliResult = executeForOutput(input, arrayOf("-r=/does/not/exist"))
 
         Assertions.assertThat(cliResult).contains(listOf("\"name\":\"CHANGELOG.md\"", "\"loc\":450"))
@@ -167,7 +167,7 @@ val errContent = ByteArrayOutputStream()
     @Test
     fun `handles path separator correctly`() {
         val cliResult =
-                executeForOutput("", arrayOf("src/test/resources/tokei_pre12_windows.json", "--path-separator=\\"))
+            executeForOutput("", arrayOf("src/test/resources/tokei_pre12_windows.json", "--path-separator=\\"))
 
         val project = ProjectDeserializer.deserializeProject(cliResult)
         Assertions.assertThat(project.rootNode.children.toMutableList()[1].name).isEqualTo("foo")
@@ -185,12 +185,12 @@ val errContent = ByteArrayOutputStream()
     fun `attributeTypes are set`() {
         val cliResult = executeForOutput("", arrayOf("src/test/resources/tokei_pre12_unix_root.json", "-r=foo/bar"))
         val expected =
-                mapOf(
-                        "comment_lines" to AttributeType.ABSOLUTE,
-                        "empty_lines" to AttributeType.ABSOLUTE,
-                        "loc" to AttributeType.ABSOLUTE,
-                        "rloc" to AttributeType.ABSOLUTE,
-                     )
+            mapOf(
+                "comment_lines" to AttributeType.ABSOLUTE,
+                "empty_lines" to AttributeType.ABSOLUTE,
+                "loc" to AttributeType.ABSOLUTE,
+                "rloc" to AttributeType.ABSOLUTE
+            )
 
         val project = ProjectDeserializer.deserializeProject(cliResult)
         Assertions.assertThat(project.attributeTypes).containsKey("nodes")
@@ -217,26 +217,17 @@ val errContent = ByteArrayOutputStream()
         System.setErr(originalErr)
 
         Assertions.assertThat(errContent.toString())
-                .contains("Input invalid file for TokeiImporter, stopping execution")
+            .contains("Input invalid file for TokeiImporter, stopping execution")
     }
 }
 
-fun executeForOutput(
-input: String,
-args: Array<String> = emptyArray(),
-) = outputAsString(input) { inputStream, outputStream, errorStream ->
+fun executeForOutput(input: String, args: Array<String> = emptyArray()) = outputAsString(input) { inputStream, outputStream, errorStream ->
     mainWithInOut(inputStream, outputStream, errorStream, args)
 }
 
-fun outputAsString(
-input: String,
-aMethod: (input: InputStream, output: PrintStream, error: PrintStream) -> Unit,
-) = outputAsString(ByteArrayInputStream(input.toByteArray()), aMethod)
+fun outputAsString(input: String, aMethod: (input: InputStream, output: PrintStream, error: PrintStream) -> Unit) = outputAsString(ByteArrayInputStream(input.toByteArray()), aMethod)
 
-fun outputAsString(
-inputStream: InputStream = System.`in`,
-aMethod: (input: InputStream, output: PrintStream, error: PrintStream) -> Unit,
-) = ByteArrayOutputStream().use { baOutputStream ->
+fun outputAsString(inputStream: InputStream = System.`in`, aMethod: (input: InputStream, output: PrintStream, error: PrintStream) -> Unit) = ByteArrayOutputStream().use { baOutputStream ->
     PrintStream(baOutputStream).use { outputStream ->
         aMethod(inputStream, outputStream, System.err)
     }

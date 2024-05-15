@@ -9,22 +9,22 @@ import java.nio.file.Paths
 
 class RepoScanParserDialog {
     companion object : ParserDialogInterface {
-    override fun collectParserArgs(): List<String> {
+        override fun collectParserArgs(): List<String> {
             var repoPath: String
             do {
                 repoPath = collectRepoPath()
             } while (!InputHelper.isInputValidAndNotNull(arrayOf(File(repoPath)), canInputContainFolders = true))
 
             return listOfNotNull(
-                    if (repoPath.isBlank()) null else "--repo-path=$repoPath",
-                                )
+                if (repoPath.isBlank()) null else "--repo-path=$repoPath"
+            )
         }
 
         private fun collectRepoPath(): String {
             return KInquirer.promptInput(
-                    message = "What is the root directory of the git project you want to parse?",
-                    default = Paths.get("").normalize().toAbsolutePath().toString(),
-                                        )
+                message = "What is the root directory of the git project you want to parse?",
+                default = Paths.get("").normalize().toAbsolutePath().toString()
+            )
         }
     }
 }

@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test
 import java.time.OffsetDateTime
 
 class VersionControlledFileTest {
-@Test
+    @Test
     fun `version controlled file holds initially only the filename`() { // given
         val metricsFactory = mockk<MetricsFactory>(relaxed = true)
         val filename = "filename"
@@ -37,10 +37,10 @@ class VersionControlledFileTest {
         every { metricsFactory.createMetrics() } returns listOf(metric)
 
         val versionControlledFile =
-                VersionControlledFile(
-                        "filename",
-                        metricsFactory,
-                                     )
+            VersionControlledFile(
+                "filename",
+                metricsFactory
+            )
 
         // when
         val metricsMap = versionControlledFile.metricsMap
@@ -53,10 +53,10 @@ class VersionControlledFileTest {
     @Test
     fun `throws exception if file is not in commit`() {
         val versionControlledFile =
-                VersionControlledFile(
-                        "filename",
-                        listOf(),
-                                     )
+            VersionControlledFile(
+                "filename",
+                listOf()
+            )
 
         val modification = Modification("anotherFilename")
         val commit = createCommit("An Author", modification)
@@ -73,10 +73,10 @@ class VersionControlledFileTest {
         val filename = "filename"
         val author = "An Author"
         val versionControlledFile =
-                VersionControlledFile(
-                        filename,
-                        listOf(modificationMetric),
-                                     )
+            VersionControlledFile(
+                filename,
+                listOf(modificationMetric)
+            )
 
         // when
         val modification = Modification(filename)
@@ -120,11 +120,11 @@ class VersionControlledFileTest {
 
         // when
         val modifications =
-                listOf(
-                        Modification(filename),
-                        Modification(filename, Modification.Type.DELETE),
-                        Modification(filename),
-                      )
+            listOf(
+                Modification(filename),
+                Modification(filename, Modification.Type.DELETE),
+                Modification(filename)
+            )
         modifications.forEach { mod -> versionControlledFile.registerCommit(createCommit("An Author", mod)) }
 
         // then
@@ -144,11 +144,11 @@ class VersionControlledFileTest {
         // when
         // anti-chronological ordering
         val modifications =
-                listOf(
-                        Modification(filename),
-                        Modification(filename, oldFilename, Modification.Type.RENAME),
-                        Modification(oldFilename),
-                      )
+            listOf(
+                Modification(filename),
+                Modification(filename, oldFilename, Modification.Type.RENAME),
+                Modification(oldFilename)
+            )
         modifications.forEach { mod -> versionControlledFile.registerCommit(createCommit("An Author", mod)) }
 
         // then
@@ -159,10 +159,7 @@ class VersionControlledFileTest {
         verify(exactly = 3) { modificationMetric.registerModification(any()) }
     }
 
-    private fun createCommit(
-    author: String,
-    modification: Modification,
-    ): Commit {
+    private fun createCommit(author: String, modification: Modification): Commit {
         return Commit(author, listOf(modification), OffsetDateTime.now())
     }
 }

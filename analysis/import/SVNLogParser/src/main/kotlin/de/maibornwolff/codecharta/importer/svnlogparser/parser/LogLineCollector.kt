@@ -5,10 +5,7 @@ import java.util.stream.Collector
 import java.util.stream.Stream
 
 class LogLineCollector private constructor(private val isCommitSeparator: Predicate<String>) {
-private fun collectLogLine(
-commits: MutableList<MutableList<String>>,
-logLine: String,
-) {
+    private fun collectLogLine(commits: MutableList<MutableList<String>>, logLine: String) {
         val sanitizedLogLine = sanitizeLogLine(logLine)
         if (isCommitSeparator.test(sanitizedLogLine)) {
             startNewCommit(commits)
@@ -30,15 +27,12 @@ logLine: String,
     private fun assertOneCommitIsPresent(commits: List<List<String>>) {
         if (commits.isEmpty()) {
             throw IllegalArgumentException(
-                    "no commit present, unsupported file encoding, or parallel stream of log lines",
-                                          )
+                "no commit present, unsupported file encoding, or parallel stream of log lines"
+            )
         }
     }
 
-    private fun addToLastCommit(
-    commits: MutableList<MutableList<String>>,
-    logLine: String,
-    ) {
+    private fun addToLastCommit(commits: MutableList<MutableList<String>>, logLine: String) {
         val indexOfLastCommit = commits.size - 1
         val lastCommit = commits[indexOfLastCommit]
         lastCommit.add(logLine)
@@ -49,22 +43,22 @@ logLine: String,
     }
 
     companion object {
-    private const val BOM = "\uFEFF"
+        private const val BOM = "\uFEFF"
 
         fun create(commitSeparatorTest: Predicate<String>): Collector<String, *, Stream<List<String>>> {
             val collector = LogLineCollector(commitSeparatorTest)
             return Collector.of<String, MutableList<MutableList<String>>, Stream<List<String>>>(
-                    { ArrayList() },
-                    { commits, logLine ->
-                        collector.collectLogLine(commits, logLine)
-                    },
-                    { _, _ ->
-                        throw UnsupportedOperationException("parallel collection of commits not supported")
-                    },
-                    {
-                        collector.removeIncompleteCommits(it).map { it.toList() }
-                    },
-                                                                                               )
+                { ArrayList() },
+                { commits, logLine ->
+                    collector.collectLogLine(commits, logLine)
+                },
+                { _, _ ->
+                    throw UnsupportedOperationException("parallel collection of commits not supported")
+                },
+                {
+                    collector.removeIncompleteCommits(it).map { it.toList() }
+                }
+            )
         }
     }
 }

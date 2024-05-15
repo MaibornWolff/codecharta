@@ -10,7 +10,7 @@ import java.util.function.Function
 import java.util.stream.Stream
 
 class GitLogNumstatRawParserStrategyTest : ParserStrategyContractTest() {
-private var parserStrategy: GitLogNumstatRawParserStrategy = GitLogNumstatRawParserStrategy()
+    private var parserStrategy: GitLogNumstatRawParserStrategy = GitLogNumstatRawParserStrategy()
 
     override val fullCommit: List<String>
         get() = FULL_COMMIT
@@ -45,63 +45,63 @@ private var parserStrategy: GitLogNumstatRawParserStrategy = GitLogNumstatRawPar
     @Test
     fun aggregateNumstatAndRaw() {
         val commitLines =
-                listOf(
-                        "commit ca1fe2ba3be4",
-                        "Author: TheAuthor <mail@example.com>",
-                        "Date:   Tue May 9 19:57:57 2017 +0200",
-                        "    the commit message",
-                        "10 0 src/Added.java",
-                        ":100644 100644 afb6ce4... b1c5aa3... A\tsrc/Added.java",
-                      )
+            listOf(
+                "commit ca1fe2ba3be4",
+                "Author: TheAuthor <mail@example.com>",
+                "Date:   Tue May 9 19:57:57 2017 +0200",
+                "    the commit message",
+                "10 0 src/Added.java",
+                ":100644 100644 afb6ce4... b1c5aa3... A\tsrc/Added.java"
+            )
         val modifications = parserStrategy.parseModifications(commitLines)
         assertThat(modifications).hasSize(1)
         val modification = modifications[0]
         assertThat(modification).extracting(
-                Function<Modification, Any> { it.currentFilename },
-                Function<Modification, Any> { it.oldFilename },
-                Function<Modification, Any> { it.type },
-                Function<Modification, Any> { it.additions },
-                Function<Modification, Any> { it.deletions },
-                                           ).containsExactly("src/Added.java", "", Modification.Type.ADD, 10L, 0L)
+            Function<Modification, Any> { it.currentFilename },
+            Function<Modification, Any> { it.oldFilename },
+            Function<Modification, Any> { it.type },
+            Function<Modification, Any> { it.additions },
+            Function<Modification, Any> { it.deletions }
+        ).containsExactly("src/Added.java", "", Modification.Type.ADD, 10L, 0L)
     }
 
     @Test
     fun aggregateNumstatAndRawWithRename() {
         val commitLines =
-                listOf(
-                        "commit ca1fe2ba3be4",
-                        "Author: TheAuthor <mail@example.com>",
-                        "Date:   Tue May 9 19:57:57 2017 +0200",
-                        "    the commit message",
-                        "9 2 src/{RenameOld.java => RenameNew.java}",
-                        ":100644 100644 e7ab6f3... 0c5845c... R079\tsrc/RenameOld.java\tsrc/RenameNew.java",
-                      )
+            listOf(
+                "commit ca1fe2ba3be4",
+                "Author: TheAuthor <mail@example.com>",
+                "Date:   Tue May 9 19:57:57 2017 +0200",
+                "    the commit message",
+                "9 2 src/{RenameOld.java => RenameNew.java}",
+                ":100644 100644 e7ab6f3... 0c5845c... R079\tsrc/RenameOld.java\tsrc/RenameNew.java"
+            )
         val modifications = parserStrategy.parseModifications(commitLines)
         assertThat(modifications).hasSize(1)
         val modification = modifications[0]
         assertThat(modification).extracting(
-                Function<Modification, Any> { it.currentFilename },
-                Function<Modification, Any> { it.oldFilename },
-                Function<Modification, Any> { it.type },
-                Function<Modification, Any> { it.additions },
-                Function<Modification, Any> { it.deletions },
-                                           )
-                .containsExactly("src/RenameNew.java", "src/RenameOld.java", Modification.Type.RENAME, 9L, 2L)
+            Function<Modification, Any> { it.currentFilename },
+            Function<Modification, Any> { it.oldFilename },
+            Function<Modification, Any> { it.type },
+            Function<Modification, Any> { it.additions },
+            Function<Modification, Any> { it.deletions }
+        )
+            .containsExactly("src/RenameNew.java", "src/RenameOld.java", Modification.Type.RENAME, 9L, 2L)
     }
 
     companion object {
-    private val FULL_COMMIT =
-                listOf(
-                        "commit ca1fe2ba3be4",
-                        "Author: TheAuthor <mail@example.com>",
-                        "Date:   Tue May 9 19:57:57 2017 +0200",
-                        "    the commit message",
-                        "10 0 src/Added.java",
-                        "2 1 src/Modified.java",
-                        "0 20 src/Deleted.java",
-                        ":100644 100644 afb6ce4... b1c5aa3... A\tsrc/Added.java",
-                        ":100644 100644 6c30570... 79b6243... M\tsrc/Modified.java",
-                        ":100644 100644 64d6a85... 8c57f3d... D\tsrc/Deleted.java",
-                      )
+        private val FULL_COMMIT =
+            listOf(
+                "commit ca1fe2ba3be4",
+                "Author: TheAuthor <mail@example.com>",
+                "Date:   Tue May 9 19:57:57 2017 +0200",
+                "    the commit message",
+                "10 0 src/Added.java",
+                "2 1 src/Modified.java",
+                "0 20 src/Deleted.java",
+                ":100644 100644 afb6ce4... b1c5aa3... A\tsrc/Added.java",
+                ":100644 100644 6c30570... 79b6243... M\tsrc/Modified.java",
+                ":100644 100644 64d6a85... 8c57f3d... D\tsrc/Deleted.java"
+            )
     }
 }

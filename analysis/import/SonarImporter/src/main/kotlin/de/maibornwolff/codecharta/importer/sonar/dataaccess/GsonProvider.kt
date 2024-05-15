@@ -17,7 +17,7 @@ import javax.ws.rs.ext.Provider
 @Provider
 @Consumes(MediaType.APPLICATION_JSON)
 class GsonProvider<T> : MessageBodyReader<T> {
-private val gson: Gson
+    private val gson: Gson
 
     val uri: UriInfo? = null
 
@@ -27,23 +27,18 @@ private val gson: Gson
         this.gson = builder.create()
     }
 
-    override fun isReadable(
-    type: Class<*>,
-    genericType: Type,
-    annotations: Array<Annotation>,
-    mediaType: MediaType,
-    ): Boolean {
+    override fun isReadable(type: Class<*>, genericType: Type, annotations: Array<Annotation>, mediaType: MediaType): Boolean {
         return true
     }
 
     @Throws(IOException::class, WebApplicationException::class)
     override fun readFrom(
-    type: Class<T>,
-    genericType: Type,
-    annotations: Array<Annotation>,
-    mediaType: MediaType,
-    httpHeaders: MultivaluedMap<String, String>,
-    entityStream: InputStream,
+        type: Class<T>,
+        genericType: Type,
+        annotations: Array<Annotation>,
+        mediaType: MediaType,
+        httpHeaders: MultivaluedMap<String, String>,
+        entityStream: InputStream
     ): T {
         InputStreamReader(entityStream, "UTF-8").use { reader -> return gson.fromJson<T>(reader, type) }
     }

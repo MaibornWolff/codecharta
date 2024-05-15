@@ -16,18 +16,15 @@ import de.maibornwolff.codecharta.model.ProjectBuilder
  * creates Projects from List of VersionControlledFiles
  */
 class ProjectConverter(private val containsAuthors: Boolean) {
-private fun addVersionControlledFile(
-projectBuilder: ProjectBuilder,
-versionControlledFile: VersionControlledFile,
-) {
+    private fun addVersionControlledFile(projectBuilder: ProjectBuilder, versionControlledFile: VersionControlledFile) {
         val attributes = extractAttributes(versionControlledFile)
         val edges = versionControlledFile.getEdgeList()
         val fileName = versionControlledFile.filename.substringAfterLast(PATH_SEPARATOR)
         val newNode = MutableNode(fileName, NodeType.File, attributes, "", mutableSetOf())
         val path =
-                PathFactory.fromFileSystemPath(
-                        versionControlledFile.filename.substringBeforeLast(PATH_SEPARATOR, ""),
-                                              )
+            PathFactory.fromFileSystemPath(
+                versionControlledFile.filename.substringBeforeLast(PATH_SEPARATOR, "")
+            )
 
         projectBuilder.insertByPath(path, newNode)
         edges.forEach {
@@ -39,8 +36,8 @@ versionControlledFile: VersionControlledFile,
     private fun extractAttributes(versionControlledFile: VersionControlledFile): Map<String, Any> {
         return if (containsAuthors) {
             versionControlledFile.metricsMap.plus(
-                    Pair("authors", versionControlledFile.authors),
-                                                 )
+                Pair("authors", versionControlledFile.authors)
+            )
         } else {
             versionControlledFile.metricsMap
         }
@@ -52,11 +49,7 @@ versionControlledFile: VersionControlledFile,
         return edge
     }
 
-    fun convert(
-    versionControlledFiles: VersionControlledFilesList,
-    metricsFactory: MetricsFactory,
-    filesInLog: List<String>,
-    ): Project {
+    fun convert(versionControlledFiles: VersionControlledFilesList, metricsFactory: MetricsFactory, filesInLog: List<String>): Project {
         val projectBuilder = ProjectBuilder()
 
         val vcFList = versionControlledFiles.getList()
@@ -64,7 +57,7 @@ versionControlledFile: VersionControlledFile,
         val versionControlledFilesInGitProject = VersionControlledFilesInGitProject(vcFList, filesInLog)
 
         versionControlledFilesInGitProject.getListOfVCFilesMatchingGitProject().forEach { // TODO Coroutines?
-            vcFile ->
+                vcFile ->
             addVersionControlledFile(projectBuilder, vcFile)
         }
 
@@ -77,7 +70,7 @@ versionControlledFile: VersionControlledFile,
     }
 
     companion object {
-    private const val PATH_SEPARATOR = '/'
+        private const val PATH_SEPARATOR = '/'
         private const val ROOT_PREFIX = "/root/"
     }
 }

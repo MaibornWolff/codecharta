@@ -4,7 +4,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 internal class ComponentMapTest {
-@Test
+    @Test
     fun `updateComponent should update existing values and add new ones`() {
         val identicalKeyCheck = "someKey"
         val measureBase = Measure("someMetric", "42")

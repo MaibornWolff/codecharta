@@ -10,19 +10,19 @@ import de.maibornwolff.codecharta.model.ProjectBuilder
 import de.maibornwolff.codecharta.util.Logger
 
 class ProjectMerger(
-        private val projects: List<Project>,
-        private val nodeMerger: NodeMergerStrategy,
-                   ) {
-                   fun merge(): Project {
+    private val projects: List<Project>,
+    private val nodeMerger: NodeMergerStrategy
+) {
+    fun merge(): Project {
         return when {
             areAllAPIVersionsCompatible() ->
                 ProjectBuilder(
-                        mergeProjectNodes(),
-                        mergeEdges(),
-                        mergeAttributeTypes(),
-                        mergeAttributeDescriptors(),
-                        mergeBlacklist(),
-                              ).build()
+                    mergeProjectNodes(),
+                    mergeEdges(),
+                    mergeAttributeTypes(),
+                    mergeAttributeDescriptors(),
+                    mergeBlacklist()
+                ).build()
 
             else -> throw MergeException("API versions not supported.")
         }
@@ -30,22 +30,22 @@ class ProjectMerger(
 
     private fun areAllAPIVersionsCompatible(): Boolean {
         val unsupportedAPIVersions =
-                projects.map {
-                    it.apiVersion
-                }.filter {
-                    !Project.isAPIVersionCompatible(it)
-                }
+            projects.map {
+                it.apiVersion
+            }.filter {
+                !Project.isAPIVersionCompatible(it)
+            }
 
         return unsupportedAPIVersions.isEmpty()
     }
 
     private fun mergeProjectNodes(): List<MutableNode> {
         val mergedNodes =
-                nodeMerger.mergeNodeLists(
-                        projects.map {
-                            listOf(it.rootNode.toMutableNode())
-                        },
-                                         )
+            nodeMerger.mergeNodeLists(
+                projects.map {
+                    listOf(it.rootNode.toMutableNode())
+                }
+            )
         nodeMerger.logMergeStats()
         return mergedNodes
     }

@@ -5,7 +5,7 @@ import de.maibornwolff.codecharta.util.Logger
 
 class GitLogNumstatParsingHelper {
     companion object {
-    private const val STANDARD_FILE_LINE_REGEX = "\\d+\\s+\\d+\\s+\\S+\\s*"
+        private const val STANDARD_FILE_LINE_REGEX = "\\d+\\s+\\d+\\s+\\S+\\s*"
         private const val RENAME_FILE_LINE_REGEX = "\\d+\\s+\\d+\\s+\\S*\\S+ => \\S+\\S*\\s*"
         private const val RENAMING_SEPARATOR = "=>"
         private const val STANDARD_FILE_LINE_SPLITTER = "\\s+"
@@ -13,10 +13,10 @@ class GitLogNumstatParsingHelper {
 
         fun isFileLine(commitLine: String): Boolean {
             return commitLine.length >= 5 && (
-                    commitLine.matches(
-                            STANDARD_FILE_LINE_REGEX.toRegex(),
-                                      ) || commitLine.matches(RENAME_FILE_LINE_REGEX.toRegex())
-                                             )
+                commitLine.matches(
+                    STANDARD_FILE_LINE_REGEX.toRegex()
+                ) || commitLine.matches(RENAME_FILE_LINE_REGEX.toRegex())
+            )
         }
 
         fun parseModification(fileLine: String): Modification {

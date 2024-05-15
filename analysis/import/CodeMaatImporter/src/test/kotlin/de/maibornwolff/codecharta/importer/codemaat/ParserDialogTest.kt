@@ -18,7 +18,7 @@ import java.io.File
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ParserDialogTest {
-@AfterEach
+    @AfterEach
     fun afterTest() {
         unmockkAll()
     }
@@ -27,11 +27,11 @@ class ParserDialogTest {
     fun `should output correct arguments when valid input is provided`() {
         // given
         val fileName =
-                "cmi"
+            "cmi"
         val outputFileName =
-                "cmi.cc.json"
+            "cmi.cc.json"
         val isCompressed =
-                false
+            false
 
         mockkObject(InputHelper)
         every {
@@ -49,11 +49,11 @@ class ParserDialogTest {
 
         // when
         val parserArguments =
-                ParserDialog.collectParserArgs()
+            ParserDialog.collectParserArgs()
         val cmdLine =
-                CommandLine(CodeMaatImporter())
+            CommandLine(CodeMaatImporter())
         val parseResult =
-                cmdLine.parseArgs(*parserArguments.toTypedArray())
+            cmdLine.parseArgs(*parserArguments.toTypedArray())
 
         // then
         Assertions.assertThat(parseResult.matchedOption("output-file").getValue<String>().equals(outputFileName))
@@ -65,11 +65,11 @@ class ParserDialogTest {
     fun `should output correct arguments when compress flag is set`() {
         // given
         val fileName =
-                "cmi"
+            "cmi"
         val outputFileName =
-                "cmi.cc.json"
+            "cmi.cc.json"
         val isCompressed =
-                true
+            true
 
         mockkObject(InputHelper)
         every {
@@ -87,11 +87,11 @@ class ParserDialogTest {
 
         // when
         val parserArguments =
-                ParserDialog.collectParserArgs()
+            ParserDialog.collectParserArgs()
         val cmdLine =
-                CommandLine(CodeMaatImporter())
+            CommandLine(CodeMaatImporter())
         val parseResult =
-                cmdLine.parseArgs(*parserArguments.toTypedArray())
+            cmdLine.parseArgs(*parserArguments.toTypedArray())
 
         // then
         Assertions.assertThat(parseResult.matchedOption("output-file").getValue<String>().equals(outputFileName))
@@ -103,13 +103,13 @@ class ParserDialogTest {
     fun `should prompt user twice for input file when first input file is invalid`() {
         // given
         val invalidFileName =
-                ""
+            ""
         val validFileName =
-                "cmi"
+            "cmi"
         val outputFileName =
-                "cmi.cc.json"
+            "cmi.cc.json"
         val isCompressed =
-                true
+            true
 
         mockkObject(InputHelper)
         every {
@@ -127,11 +127,11 @@ class ParserDialogTest {
 
         // when
         val parserArguments =
-                ParserDialog.collectParserArgs()
+            ParserDialog.collectParserArgs()
         val cmdLine =
-                CommandLine(CodeMaatImporter())
+            CommandLine(CodeMaatImporter())
         val parseResult =
-                cmdLine.parseArgs(*parserArguments.toTypedArray())
+            cmdLine.parseArgs(*parserArguments.toTypedArray())
 
         // then
         Assertions.assertThat(parseResult.matchedPositional(0).getValue<List<File>>()[0].name).isEqualTo(validFileName)

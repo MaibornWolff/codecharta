@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test
 
 class DeletedLinesTest {
     companion object {
-    private const val FILENAME = "filename"
+        private const val FILENAME = "filename"
     }
 
     @Test

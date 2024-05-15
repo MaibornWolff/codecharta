@@ -10,7 +10,7 @@ import java.io.File
 import java.io.InputStreamReader
 
 class SubProjectExtractorTest {
-private lateinit var sampleProject: Project
+    private lateinit var sampleProject: Project
 
     @BeforeEach
     fun serializeProject() {

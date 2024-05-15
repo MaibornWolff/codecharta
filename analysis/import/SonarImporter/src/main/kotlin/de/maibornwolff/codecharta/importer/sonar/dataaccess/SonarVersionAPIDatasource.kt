@@ -10,7 +10,7 @@ import javax.ws.rs.client.ClientBuilder
 import javax.ws.rs.core.MediaType
 
 class SonarVersionAPIDatasource(private val user: String, private val baseUrl: URL) {
-private val client: Client = ClientBuilder.newClient()
+    private val client: Client = ClientBuilder.newClient()
 
     init {
         client.register(ErrorResponseFilter::class.java)
@@ -27,12 +27,12 @@ private val client: Client = ClientBuilder.newClient()
         }
 
         val response =
-                try {
-                    System.err.println("Fetching SonarQube Version...")
-                    request.get(String::class.java)
-                } catch (e: RuntimeException) {
-                    throw SonarImporterException("Error requesting $versionAPIRequestURI", e)
-                }
+            try {
+                System.err.println("Fetching SonarQube Version...")
+                request.get(String::class.java)
+            } catch (e: RuntimeException) {
+                throw SonarImporterException("Error requesting $versionAPIRequestURI", e)
+            }
 
         return try {
             val version = Version.parse(response)
@@ -46,7 +46,7 @@ private val client: Client = ClientBuilder.newClient()
     }
 
     companion object {
-    private const val VERSION_URL_PATTERN = "%s/api/server/version"
+        private const val VERSION_URL_PATTERN = "%s/api/server/version"
         val DEFAULT_VERSION = Version(8, 9)
     }
 }

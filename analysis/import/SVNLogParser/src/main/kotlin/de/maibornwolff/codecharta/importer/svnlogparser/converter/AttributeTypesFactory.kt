@@ -4,7 +4,7 @@ import de.maibornwolff.codecharta.importer.svnlogparser.input.metrics.Metric
 import de.maibornwolff.codecharta.model.AttributeTypes
 
 object AttributeTypesFactory {
-fun createNodeAttributeTypes(metricList: List<Metric>): AttributeTypes {
+    fun createNodeAttributeTypes(metricList: List<Metric>): AttributeTypes {
         val attributeTypes = AttributeTypes(type = "nodes")
         metricList.forEach { metric ->
             attributeTypes.add(metric.metricName(), metric.attributeType())

@@ -5,7 +5,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 class GitLogRawParsingHelperTest {
-@Test
+    @Test
     fun parsesFilenameFromFileMetadata() {
         val fileMetadata = ":100644 100644 afb6ce4... b1c5aa3... M\tsrc/Main.java"
         val modification = GitLogRawParsingHelper.parseModification(fileMetadata)

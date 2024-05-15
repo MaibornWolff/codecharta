@@ -13,7 +13,7 @@ import java.util.function.Function
 import java.util.stream.Stream
 
 class CommitCollectorTest {
-private val metricsFactory = MetricsFactory()
+    private val metricsFactory = MetricsFactory()
 
     private fun modificationsByFilename(vararg filenames: String): List<Modification> {
         return filenames.map { Modification(it) }
@@ -26,13 +26,13 @@ private val metricsFactory = MetricsFactory()
         val secondCommit = Commit("AnotherAuthor", modificationsByFilename("src/Util.java"), commitDate)
         val commits = Stream.of(firstCommit, secondCommit).collect(CommitCollector.create(metricsFactory))
         assertThat(commits).extracting(
-                Function<VersionControlledFile, Any> { it.filename },
-                Function<VersionControlledFile, Any> { f -> f.getMetricValue("number_of_commits") },
-                Function<VersionControlledFile, Any> { it.authors },
-                                      ).containsExactly(
-                tuple("src/Main.java", 1L, setOf("TheAuthor")),
-                tuple("src/Util.java", 2L, HashSet(listOf("TheAuthor", "AnotherAuthor"))),
-                                                       )
+            Function<VersionControlledFile, Any> { it.filename },
+            Function<VersionControlledFile, Any> { f -> f.getMetricValue("number_of_commits") },
+            Function<VersionControlledFile, Any> { it.authors }
+        ).containsExactly(
+            tuple("src/Main.java", 1L, setOf("TheAuthor")),
+            tuple("src/Util.java", 2L, HashSet(listOf("TheAuthor", "AnotherAuthor")))
+        )
     }
 
     @Test
@@ -52,10 +52,10 @@ private val metricsFactory = MetricsFactory()
     @Test
     fun doesNotSupportParallelStreams() {
         val commit =
-                Commit("TheAuthor", modificationsByFilename("src/Main.java", "src/Util.java"), OffsetDateTime.now())
+            Commit("TheAuthor", modificationsByFilename("src/Main.java", "src/Util.java"), OffsetDateTime.now())
         val parallelCommitStream = Stream.of(commit, commit).parallel()
         assertThatThrownBy { parallelCommitStream.collect(CommitCollector.create(metricsFactory)) }.isInstanceOf(
-                UnsupportedOperationException::class.java,
-                                                                                                                )
+            UnsupportedOperationException::class.java
+        )
     }
 }

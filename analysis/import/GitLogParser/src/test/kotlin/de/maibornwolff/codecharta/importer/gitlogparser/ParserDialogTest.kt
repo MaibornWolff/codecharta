@@ -19,8 +19,8 @@ import java.io.File
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ParserDialogTest {
-companion object {
-private const val FIRST_ELEMENT = 1
+    companion object {
+        private const val FIRST_ELEMENT = 1
     }
 
     @AfterEach

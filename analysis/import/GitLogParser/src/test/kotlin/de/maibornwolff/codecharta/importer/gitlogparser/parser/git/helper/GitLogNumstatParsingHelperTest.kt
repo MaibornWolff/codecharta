@@ -4,7 +4,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 class GitLogNumstatParsingHelperTest {
-@Test
+    @Test
     fun parsesFilenameFromFileMetadata() {
         val fileMetadata = "0 10\t src/Main.java"
         val modification = GitLogNumstatParsingHelper.parseModification(fileMetadata)
@@ -14,8 +14,8 @@ class GitLogNumstatParsingHelperTest {
     @Test
     fun parsesFilenamesFromUnusualFileMetadata() {
         assertThat(GitLogNumstatParsingHelper.parseModification("0\t10\tsrc/Main.java").currentFilename).isEqualTo(
-                "src/Main.java",
-                                                                                                                  )
+            "src/Main.java"
+        )
     }
 
     @Test

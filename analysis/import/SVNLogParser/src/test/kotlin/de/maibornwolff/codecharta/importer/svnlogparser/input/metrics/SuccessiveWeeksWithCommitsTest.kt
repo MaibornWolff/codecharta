@@ -7,7 +7,7 @@ import java.time.OffsetDateTime
 import java.time.ZoneOffset
 
 class SuccessiveWeeksWithCommitsTest {
-private val zoneOffset = ZoneOffset.UTC
+    private val zoneOffset = ZoneOffset.UTC
 
     @Test
     fun `initial value zero`() {

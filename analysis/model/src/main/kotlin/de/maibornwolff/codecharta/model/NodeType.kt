@@ -7,5 +7,5 @@ enum class NodeType {
     Class,
     Interface,
     Method,
-    Unknown,
+    Unknown
 }

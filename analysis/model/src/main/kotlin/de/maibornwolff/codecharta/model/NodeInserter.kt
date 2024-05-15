@@ -11,11 +11,7 @@ object NodeInserter {
      * @param path relative path to parent of new node in root node
      * @param node that has to be inserted
      */
-    fun insertByPath(
-root: MutableNode,
-path: Path,
-node: MutableNode,
-): MutableNode {
+    fun insertByPath(root: MutableNode, path: Path, node: MutableNode): MutableNode {
         if (path.isTrivial) {
             if (rootContainsNodeAlready(root, node)) {
                 val original = getNode(root, node.name)!!
@@ -38,19 +34,13 @@ node: MutableNode,
         return root
     }
 
-    private fun getNode(
-    root: MutableNode,
-    name: String,
-    ): MutableNode? {
+    private fun getNode(root: MutableNode, name: String): MutableNode? {
         return root.children.firstOrNull {
             it.name == name
         }
     }
 
-    private fun rootContainsNodeAlready(
-    root: MutableNode,
-    node: MutableNode,
-    ): Boolean {
+    private fun rootContainsNodeAlready(root: MutableNode, node: MutableNode): Boolean {
         return root.children.filter {
             it.name == node.name
         }.count() > 0

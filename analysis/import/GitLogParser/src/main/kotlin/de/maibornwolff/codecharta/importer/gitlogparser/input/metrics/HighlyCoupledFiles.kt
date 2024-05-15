@@ -6,7 +6,7 @@ import de.maibornwolff.codecharta.model.AttributeType
 import de.maibornwolff.codecharta.model.Edge
 
 class HighlyCoupledFiles : Metric {
-private var fileName: String = ""
+    private var fileName: String = ""
     private var numberOfCommits: Long = 0
     private var commits = mutableListOf<Commit>()
     private val simultaneouslyCommittedFiles = mutableMapOf<String, Int>()
@@ -35,10 +35,10 @@ private var fileName: String = ""
         return simultaneouslyCommittedFiles.mapNotNull { (coupledFile, value) ->
             if (isHighlyCoupled(value)) {
                 Edge(
-                        fileName,
-                        coupledFile,
-                        mapOf(edgeMetricName() to value.toDouble() / numberOfCommits.toDouble()),
-                    )
+                    fileName,
+                    coupledFile,
+                    mapOf(edgeMetricName() to value.toDouble() / numberOfCommits.toDouble())
+                )
             } else {
                 null
             }
@@ -79,7 +79,7 @@ private var fileName: String = ""
     }
 
     companion object {
-    private const val HIGH_COUPLING_VALUE = .35
+        private const val HIGH_COUPLING_VALUE = .35
         private const val MIN_NO_COMMITS_FOR_HIGH_COUPLING = 5L
     }
 }

@@ -6,10 +6,11 @@ import de.maibornwolff.codecharta.importer.sourcecodeparser.sonaranalyzers.Sonar
 import java.io.File
 
 class ProjectParser(
-        private val exclude: Array<String> = arrayOf(), private val verbose: Boolean = false,
-        private val findIssues: Boolean = true,
-                   ) {
-                   var metricKinds: MutableSet<String> = HashSet()
+    private val exclude: Array<String> = arrayOf(),
+    private val verbose: Boolean = false,
+    private val findIssues: Boolean = true
+) {
+    var metricKinds: MutableSet<String> = HashSet()
     var projectMetrics = ProjectMetrics()
     var sonarAnalyzers: MutableList<SonarAnalyzer> = mutableListOf()
 

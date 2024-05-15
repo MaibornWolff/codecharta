@@ -4,7 +4,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 class NodeMergerTest {
-@Test
+    @Test
     fun `NodeMaxAttributeMerger should merge node with the same name`() {
         val name = "Name"
         val type = NodeType.File
@@ -28,14 +28,14 @@ class NodeMergerTest {
         val child2 = MutableNode("child2", NodeType.Folder)
         val child1Modified = MutableNode("child1", NodeType.File, mapOf(Pair("someAttribute", 1.0f)), "", setOf())
         val node1 =
-                MutableNode(
-                        "Name",
-                        NodeType.File,
-                        mapOf(),
-                        "",
-                        setOf(child1Modified),
-                        nodeMergingStrategy = NodeMaxAttributeMerger(),
-                           )
+            MutableNode(
+                "Name",
+                NodeType.File,
+                mapOf(),
+                "",
+                setOf(child1Modified),
+                nodeMergingStrategy = NodeMaxAttributeMerger()
+            )
         val node2 = MutableNode("Name", NodeType.File, mapOf(), "", setOf(child1, child2))
 
         val newNode = node1.merge(listOf(node2))
