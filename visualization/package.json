@@ -52,6 +52,7 @@
     "package:zip": "node script/package-zips.js",
     "lint": "eslint \"app/**/*.ts\"",
     "lint:fix": "npm run lint -- --fix",
+    "lint:checkRules": "npx eslint-config-prettier .eslintrc.js",
     "precommit": "lint-staged",
     "schema:generate": "typescript-json-schema ./app/codeCharta/codeCharta.model.ts ExportCCFile --required --topRef --out app/codeCharta/util/generatedSchema.json"
   },
@@ -121,7 +122,7 @@
     "bestzip": "^2.2.0",
     "electron-packager": "^17.1.2",
     "eslint": "^8.28.0",
-    "eslint-config-prettier": "^8.5.0",
+    "eslint-config-prettier": "^8.10.0",
     "eslint-plugin-unicorn": "^47.0.0",
     "eslint-plugin-unused-imports": "^2.0.0",
     "html-loader": "^4.0.0",

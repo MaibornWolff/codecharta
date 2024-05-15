@@ -43,7 +43,6 @@ module.exports = {
 		"@typescript-eslint/explicit-member-accessibility": ["error", { accessibility: "no-public" }],
 		curly: ["error", "all"],
 		eqeqeq: ["error", "smart"],
-		"linebreak-style": ["error", "unix"],
 		"no-console": ["error", { allow: ["warn", "error"] }],
 		"no-duplicate-imports": "error",
 		"no-else-return": ["error", { allowElseIf: false }],
