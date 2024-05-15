@@ -6,6 +6,6 @@ type Selectable = Pick<FileState, "selectedAs">
 type SelectableFile<File> = Selectable & { file: File }
 
 export const _getReferenceFile = <File>(fileStates: SelectableFile<File>[]) =>
-	fileStates.find(file => file.selectedAs === FileSelectionState.Reference)?.file
+    fileStates.find(file => file.selectedAs === FileSelectionState.Reference)?.file
 
 export const referenceFileSelector = createSelector(filesSelector, _getReferenceFile)

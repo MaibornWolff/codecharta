@@ -5,6 +5,6 @@ import { setState } from "../../util/setState.reducer.factory"
 
 export const defaultAttributeDescriptors: AttributeDescriptors = {}
 export const attributeDescriptors = createReducer(
-	defaultAttributeDescriptors,
-	on(setAttributeDescriptors, setState(defaultAttributeDescriptors))
+    defaultAttributeDescriptors,
+    on(setAttributeDescriptors, setState(defaultAttributeDescriptors))
 )

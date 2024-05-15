@@ -4,8 +4,8 @@ import { CommonModule } from "@angular/common"
 import { MaterialModule } from "../../../material/material.module"
 
 @NgModule({
-	imports: [CommonModule, MaterialModule],
-	declarations: [ResetSettingsButtonComponent],
-	exports: [ResetSettingsButtonComponent]
+    imports: [CommonModule, MaterialModule],
+    declarations: [ResetSettingsButtonComponent],
+    exports: [ResetSettingsButtonComponent]
 })
 export class ResetSettingsButtonModule {}

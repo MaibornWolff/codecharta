@@ -6,12 +6,12 @@ import { defaultIsLoadingFile, isLoadingFile } from "./isLoadingFile/isLoadingFi
 import { defaultIsLoadingMap, isLoadingMap } from "./isLoadingMap/isLoadingMap.reducer"
 import { defaultMapColors, mapColors } from "./mapColors/mapColors.reducer"
 import {
-	defaultResetCameraIfNewFileIsLoaded,
-	resetCameraIfNewFileIsLoaded
+    defaultResetCameraIfNewFileIsLoaded,
+    resetCameraIfNewFileIsLoaded
 } from "./resetCameraIfNewFileIsLoaded/resetCameraIfNewFileIsLoaded.reducer"
 import {
-	defaultShowOnlyBuildingsWithEdges,
-	showOnlyBuildingsWithEdges
+    defaultShowOnlyBuildingsWithEdges,
+    showOnlyBuildingsWithEdges
 } from "./showOnlyBuildingsWithEdges/showOnlyBuildingsWithEdges.reducer"
 import { defaultIsWhiteBackground, isWhiteBackground } from "./isWhiteBackground/isWhiteBackground.reducer"
 import { defaultInvertHeight, invertHeight } from "./invertHeight/invertHeight.reducer"
@@ -22,8 +22,8 @@ import { amountOfEdgePreviews, defaultAmountOfEdgesPreviews } from "./amountOfEd
 import { amountOfTopLabels, defaultAmountOfTopLabels } from "./amountOfTopLabels/amountOfTopLabels.reducer"
 import { defaultIsPresentationMode, isPresentationMode } from "./isPresentationMode/isPresentationMode.reducer"
 import {
-	defaultExperimentalFeaturesEnabled,
-	experimentalFeaturesEnabled
+    defaultExperimentalFeaturesEnabled,
+    experimentalFeaturesEnabled
 } from "./enableExperimentalFeatures/experimentalFeaturesEnabled.reducer"
 import { defaultLayoutAlgorithm, layoutAlgorithm } from "./layoutAlgorithm/layoutAlgorithm.reducer"
 import { defaultMaxTreeMapFiles, maxTreeMapFiles } from "./maxTreeMapFiles/maxTreeMapFiles.reducer"
@@ -32,69 +32,69 @@ import { defaultScreenshotToClipboardEnabled, screenshotToClipboardEnabled } fro
 import { defaultInvertArea, invertArea } from "./invertArea/invertArea.reducer"
 import { defaultIsEdgeMetricVisible, isEdgeMetricVisible } from "./isEdgeMetricVisible/isEdgeMetricVisible.reducer"
 import {
-	defaultIsColorMetricLinkedToHeightMetric,
-	isColorMetricLinkedToHeightMetric
+    defaultIsColorMetricLinkedToHeightMetric,
+    isColorMetricLinkedToHeightMetric
 } from "./isHeightAndColorMetricLinked/isColorMetricLinkedToHeightMetric.reducer"
 import { defaultIsSearchPanelPinned, isSearchPanelPinned } from "./isSearchPanelPinned/isSearchPanelPinned.reducer"
 import { defaultEnableFloorLabels, enableFloorLabels } from "./enableFloorLabels/enableFloorLabels.reducer"
 import { combineReducers } from "@ngrx/store"
 
 export const appSettings = combineReducers({
-	colorLabels,
-	showMetricLabelNodeName,
-	showMetricLabelNameValue,
-	sortingOrderAscending,
-	isSearchPanelPinned,
-	isLoadingFile,
-	isLoadingMap,
-	mapColors,
-	resetCameraIfNewFileIsLoaded,
-	showOnlyBuildingsWithEdges,
-	isEdgeMetricVisible,
-	isWhiteBackground,
-	invertHeight,
-	invertArea,
-	hideFlatBuildings,
-	scaling,
-	edgeHeight,
-	amountOfEdgePreviews,
-	amountOfTopLabels,
-	isPresentationMode,
-	experimentalFeaturesEnabled,
-	screenshotToClipboardEnabled,
-	layoutAlgorithm,
-	maxTreeMapFiles,
-	sharpnessMode,
-	isColorMetricLinkedToHeightMetric,
-	enableFloorLabels
+    colorLabels,
+    showMetricLabelNodeName,
+    showMetricLabelNameValue,
+    sortingOrderAscending,
+    isSearchPanelPinned,
+    isLoadingFile,
+    isLoadingMap,
+    mapColors,
+    resetCameraIfNewFileIsLoaded,
+    showOnlyBuildingsWithEdges,
+    isEdgeMetricVisible,
+    isWhiteBackground,
+    invertHeight,
+    invertArea,
+    hideFlatBuildings,
+    scaling,
+    edgeHeight,
+    amountOfEdgePreviews,
+    amountOfTopLabels,
+    isPresentationMode,
+    experimentalFeaturesEnabled,
+    screenshotToClipboardEnabled,
+    layoutAlgorithm,
+    maxTreeMapFiles,
+    sharpnessMode,
+    isColorMetricLinkedToHeightMetric,
+    enableFloorLabels
 })
 
 export const defaultAppSettings = {
-	colorLabels: defaultColorLabelOptions,
-	showMetricLabelNodeName: defaultShowMetricLabelNodeName,
-	showMetricLabelNameValue: defaultShowMetricLabelNameValue,
-	sortingOrderAscending: defaultSortingOrderAscending,
-	isSearchPanelPinned: defaultIsSearchPanelPinned,
-	isLoadingFile: defaultIsLoadingFile,
-	isLoadingMap: defaultIsLoadingMap,
-	mapColors: defaultMapColors,
-	resetCameraIfNewFileIsLoaded: defaultResetCameraIfNewFileIsLoaded,
-	showOnlyBuildingsWithEdges: defaultShowOnlyBuildingsWithEdges,
-	isEdgeMetricVisible: defaultIsEdgeMetricVisible,
-	isWhiteBackground: defaultIsWhiteBackground,
-	invertHeight: defaultInvertHeight,
-	invertArea: defaultInvertArea,
-	hideFlatBuildings: defaultHideFlatBuildings,
-	scaling: defaultScaling,
-	edgeHeight: defaultEdgeHeight,
-	amountOfEdgePreviews: defaultAmountOfEdgesPreviews,
-	amountOfTopLabels: defaultAmountOfTopLabels,
-	isPresentationMode: defaultIsPresentationMode,
-	experimentalFeaturesEnabled: defaultExperimentalFeaturesEnabled,
-	screenshotToClipboardEnabled: defaultScreenshotToClipboardEnabled,
-	layoutAlgorithm: defaultLayoutAlgorithm,
-	maxTreeMapFiles: defaultMaxTreeMapFiles,
-	sharpnessMode: defaultSharpnessMode,
-	isColorMetricLinkedToHeightMetric: defaultIsColorMetricLinkedToHeightMetric,
-	enableFloorLabels: defaultEnableFloorLabels
+    colorLabels: defaultColorLabelOptions,
+    showMetricLabelNodeName: defaultShowMetricLabelNodeName,
+    showMetricLabelNameValue: defaultShowMetricLabelNameValue,
+    sortingOrderAscending: defaultSortingOrderAscending,
+    isSearchPanelPinned: defaultIsSearchPanelPinned,
+    isLoadingFile: defaultIsLoadingFile,
+    isLoadingMap: defaultIsLoadingMap,
+    mapColors: defaultMapColors,
+    resetCameraIfNewFileIsLoaded: defaultResetCameraIfNewFileIsLoaded,
+    showOnlyBuildingsWithEdges: defaultShowOnlyBuildingsWithEdges,
+    isEdgeMetricVisible: defaultIsEdgeMetricVisible,
+    isWhiteBackground: defaultIsWhiteBackground,
+    invertHeight: defaultInvertHeight,
+    invertArea: defaultInvertArea,
+    hideFlatBuildings: defaultHideFlatBuildings,
+    scaling: defaultScaling,
+    edgeHeight: defaultEdgeHeight,
+    amountOfEdgePreviews: defaultAmountOfEdgesPreviews,
+    amountOfTopLabels: defaultAmountOfTopLabels,
+    isPresentationMode: defaultIsPresentationMode,
+    experimentalFeaturesEnabled: defaultExperimentalFeaturesEnabled,
+    screenshotToClipboardEnabled: defaultScreenshotToClipboardEnabled,
+    layoutAlgorithm: defaultLayoutAlgorithm,
+    maxTreeMapFiles: defaultMaxTreeMapFiles,
+    sharpnessMode: defaultSharpnessMode,
+    isColorMetricLinkedToHeightMetric: defaultIsColorMetricLinkedToHeightMetric,
+    enableFloorLabels: defaultEnableFloorLabels
 }

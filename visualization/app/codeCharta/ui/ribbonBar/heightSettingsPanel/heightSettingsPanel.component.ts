@@ -17,40 +17,40 @@ import { Store } from "@ngrx/store"
 import { CcState } from "../../../codeCharta.model"
 
 @Component({
-	selector: "cc-height-settings-panel",
-	templateUrl: "./heightSettingsPanel.component.html",
-	encapsulation: ViewEncapsulation.None
+    selector: "cc-height-settings-panel",
+    templateUrl: "./heightSettingsPanel.component.html",
+    encapsulation: ViewEncapsulation.None
 })
 export class HeightSettingsPanelComponent {
-	static DEBOUNCE_TIME = 400
+    static DEBOUNCE_TIME = 400
 
-	amountOfTopLabels$ = this.store.select(amountOfTopLabelsSelector)
-	isLabelsSliderDisabled$ = this.store.select(isLabelsSliderDisabledSelector)
-	showMetricLabelNodeName$ = this.store.select(showMetricLabelNodeNameSelector)
-	showMetricLabelNodeValue$ = this.store.select(showMetricLabelNodeValueSelector)
-	scaling$ = this.store.select(scalingSelector)
-	invertHeight$ = this.store.select(invertHeightSelector)
-	isDeltaState$ = this.store.select(isDeltaStateSelector)
+    amountOfTopLabels$ = this.store.select(amountOfTopLabelsSelector)
+    isLabelsSliderDisabled$ = this.store.select(isLabelsSliderDisabledSelector)
+    showMetricLabelNodeName$ = this.store.select(showMetricLabelNodeNameSelector)
+    showMetricLabelNodeValue$ = this.store.select(showMetricLabelNodeValueSelector)
+    scaling$ = this.store.select(scalingSelector)
+    invertHeight$ = this.store.select(invertHeightSelector)
+    isDeltaState$ = this.store.select(isDeltaStateSelector)
 
-	constructor(private store: Store<CcState>) {}
+    constructor(private store: Store<CcState>) {}
 
-	applyDebouncedTopLabels = debounce((amountOfTopLabels: number) => {
-		this.store.dispatch(setAmountOfTopLabels({ value: amountOfTopLabels }))
-	}, HeightSettingsPanelComponent.DEBOUNCE_TIME)
+    applyDebouncedTopLabels = debounce((amountOfTopLabels: number) => {
+        this.store.dispatch(setAmountOfTopLabels({ value: amountOfTopLabels }))
+    }, HeightSettingsPanelComponent.DEBOUNCE_TIME)
 
-	applyDebouncedScalingY = debounce((y: number) => {
-		this.store.dispatch(setScaling({ value: { y } }))
-	}, HeightSettingsPanelComponent.DEBOUNCE_TIME)
+    applyDebouncedScalingY = debounce((y: number) => {
+        this.store.dispatch(setScaling({ value: { y } }))
+    }, HeightSettingsPanelComponent.DEBOUNCE_TIME)
 
-	setShowMetricLabelNodeName(event: MatCheckboxChange) {
-		this.store.dispatch(setShowMetricLabelNodeName({ value: event.checked }))
-	}
+    setShowMetricLabelNodeName(event: MatCheckboxChange) {
+        this.store.dispatch(setShowMetricLabelNodeName({ value: event.checked }))
+    }
 
-	setShowMetricLabelNameValue(event: MatCheckboxChange) {
-		this.store.dispatch(setShowMetricLabelNameValue({ value: event.checked }))
-	}
+    setShowMetricLabelNameValue(event: MatCheckboxChange) {
+        this.store.dispatch(setShowMetricLabelNameValue({ value: event.checked }))
+    }
 
-	setInvertHeight(event: MatCheckboxChange) {
-		this.store.dispatch(setInvertHeight({ value: event.checked }))
-	}
+    setInvertHeight(event: MatCheckboxChange) {
+        this.store.dispatch(setInvertHeight({ value: event.checked }))
+    }
 }

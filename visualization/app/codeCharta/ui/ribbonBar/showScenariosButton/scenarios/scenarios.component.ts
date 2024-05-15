@@ -5,17 +5,20 @@ import { ScenarioItem } from "../scenarioHelper"
 import { AddCustomScenarioComponent } from "../addCustomScenario/addCustomScenario.component"
 
 @Component({
-	selector: "cc-scenarios",
-	templateUrl: "./scenarios.component.html",
-	styleUrls: ["./scenarios.component.scss"],
-	encapsulation: ViewEncapsulation.None
+    selector: "cc-scenarios",
+    templateUrl: "./scenarios.component.html",
+    styleUrls: ["./scenarios.component.scss"],
+    encapsulation: ViewEncapsulation.None
 })
 export class ScenariosComponent {
-	@Input() scenarios: ScenarioItem[] = []
+    @Input() scenarios: ScenarioItem[] = []
 
-	constructor(public scenarioService: ScenarioService, private dialog: MatDialog) {}
+    constructor(
+        public scenarioService: ScenarioService,
+        private dialog: MatDialog
+    ) {}
 
-	addScenario() {
-		this.dialog.open(AddCustomScenarioComponent, { panelClass: "cc-add-custom-scenario" })
-	}
+    addScenario() {
+        this.dialog.open(AddCustomScenarioComponent, { panelClass: "cc-add-custom-scenario" })
+    }
 }

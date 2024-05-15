@@ -5,8 +5,8 @@ import { SliderModule } from "../../../../slider/slider.module"
 import { MapLayoutSelectionComponent } from "./mapLayoutSelection.component"
 
 @NgModule({
-	imports: [CommonModule, MaterialModule, SliderModule],
-	declarations: [MapLayoutSelectionComponent],
-	exports: [MapLayoutSelectionComponent]
+    imports: [CommonModule, MaterialModule, SliderModule],
+    declarations: [MapLayoutSelectionComponent],
+    exports: [MapLayoutSelectionComponent]
 })
 export class MapLayoutSelectionModule {}

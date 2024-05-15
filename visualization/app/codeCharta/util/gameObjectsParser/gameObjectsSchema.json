@@ -1,271 +1,271 @@
 {
-	"$id": "http://example.com/example.json",
-	"$schema": "http://json-schema.org/draft-07/schema",
-	"default": {},
-	"description": "This is the JSON Schema for the GameObjectsPositions structure",
-	"examples": [
-		{
-			"gameObjectPositions": [
-				{
-					"name": "root.analysis.import.SourceCodeParser.src.test.kotlin.de.maibornwolff.codecharta.importer.sourcecodeparser.oop.core.extract.HelloWorldTest",
-					"position": {
-						"x": 69.0,
-						"y": 18.5,
-						"z": 228.5
-					},
-					"scale": {
-						"x": 9.0,
-						"y": 5.0,
-						"z": 9.0
-					}
-				},
-				{
-					"name": "root.analysis.import.SourceCodeParser.src.test.kotlin.de.maibornwolff.codecharta.importer.sourcecodeparser.oop.core.extract.TryCatchFinallyTest",
-					"position": {
-						"x": 66.0,
-						"y": 22.5,
-						"z": 177.5
-					},
-					"scale": {
-						"x": 1.0,
-						"y": 13.0,
-						"z": 1.0
-					}
-				}
-			],
-			"cycles": [
-				{
-					"from": "root.analysis.import.SCMLogParser.src.main.java.de.maibornwolff.codecharta.importer.scmlogparser.SCMLogParser",
-					"to": "root.analysis.import.SCMLogParser.src.main.java.de.maibornwolff.codecharta.importer.scmlogparser.SCMLogParserParameter"
-				}
-			]
-		}
-	],
-	"required": ["gameObjectPositions"],
-	"title": "The root schema",
-	"type": "object",
-	"properties": {
-		"gameObjectPositions": {
-			"$id": "#/properties/gameObjectPositions",
-			"type": "array",
-			"title": "The gameObjectPositions schema",
-			"description": "Defines the position and scale of GameObjects",
-			"default": [],
-			"examples": [
-				[
-					{
-						"name": "root.analysis.import.SourceCodeParser.src.test.kotlin.de.maibornwolff.codecharta.importer.sourcecodeparser.oop.core.extract.HelloWorldTest",
-						"position": {
-							"x": 69.0,
-							"y": 18.5,
-							"z": 228.5
-						},
-						"scale": {
-							"x": 9.0,
-							"y": 5.0,
-							"z": 9.0
-						}
-					},
-					{
-						"name": "root.analysis.import.SourceCodeParser.src.test.kotlin.de.maibornwolff.codecharta.importer.sourcecodeparser.oop.core.extract.SwitchCaseTest",
-						"position": {
-							"x": 65.0,
-							"y": 22.0,
-							"z": 181.0
-						},
-						"scale": {
-							"x": 2.0,
-							"y": 12.0,
-							"z": 2.0
-						}
-					}
-				]
-			],
-			"additionalItems": true,
-			"items": {
-				"$id": "#/properties/gameObjectPositions/items",
-				"anyOf": [
-					{
-						"$id": "#/properties/gameObjectPositions/items/anyOf/0",
-						"type": "object",
-						"title": "The first anyOf schema",
-						"description": "Defines the properties of a GameObject",
-						"default": {},
-						"examples": [
-							{
-								"name": "root.analysis.import.SourceCodeParser.src.test.kotlin.de.maibornwolff.codecharta.importer.sourcecodeparser.oop.core.extract.HelloWorldTest",
-								"position": {
-									"x": 69.0,
-									"y": 18.5,
-									"z": 228.5
-								},
-								"scale": {
-									"x": 9.0,
-									"y": 5.0,
-									"z": 9.0
-								}
-							}
-						],
-						"required": ["name", "position", "scale"],
-						"properties": {
-							"name": {
-								"$id": "#/properties/gameObjectPositions/items/anyOf/0/properties/name",
-								"type": "string",
-								"title": "The name schema",
-								"description": "An explanation about the purpose of this instance.",
-								"default": "",
-								"examples": [
-									"root.analysis.import.SourceCodeParser.src.test.kotlin.de.maibornwolff.codecharta.importer.sourcecodeparser.oop.core.extract.HelloWorldTest"
-								]
-							},
-							"position": {
-								"$id": "#/properties/gameObjectPositions/items/anyOf/0/properties/position",
-								"type": "object",
-								"title": "The position schema",
-								"description": "The position in absolute values",
-								"default": {},
-								"examples": [
-									{
-										"x": 69.0,
-										"y": 18.5,
-										"z": 228.5
-									}
-								],
-								"required": ["x", "y", "z"],
-								"properties": {
-									"x": {
-										"$id": "#/properties/gameObjectPositions/items/anyOf/0/properties/position/properties/x",
-										"type": "number",
-										"title": "The x schema",
-										"description": "x position",
-										"default": 0.0,
-										"examples": [69.0]
-									},
-									"y": {
-										"$id": "#/properties/gameObjectPositions/items/anyOf/0/properties/position/properties/y",
-										"type": "number",
-										"title": "The y schema",
-										"description": "y position",
-										"default": 0.0,
-										"examples": [18.5]
-									},
-									"z": {
-										"$id": "#/properties/gameObjectPositions/items/anyOf/0/properties/position/properties/z",
-										"type": "number",
-										"title": "The z schema",
-										"description": "z position",
-										"default": 0.0,
-										"examples": [228.5]
-									}
-								},
-								"additionalProperties": true
-							},
-							"scale": {
-								"$id": "#/properties/gameObjectPositions/items/anyOf/0/properties/scale",
-								"type": "object",
-								"title": "The scale schema",
-								"description": "The scale of GameObjects",
-								"default": {},
-								"examples": [
-									{
-										"x": 9.0,
-										"y": 5.0,
-										"z": 9.0
-									}
-								],
-								"required": ["x", "y", "z"],
-								"properties": {
-									"x": {
-										"$id": "#/properties/gameObjectPositions/items/anyOf/0/properties/scale/properties/x",
-										"type": "number",
-										"title": "The x schema",
-										"description": "x scale",
-										"default": 0.0,
-										"examples": [9.0]
-									},
-									"y": {
-										"$id": "#/properties/gameObjectPositions/items/anyOf/0/properties/scale/properties/y",
-										"type": "number",
-										"title": "The y schema",
-										"description": "y scale",
-										"default": 0.0,
-										"examples": [5.0]
-									},
-									"z": {
-										"$id": "#/properties/gameObjectPositions/items/anyOf/0/properties/scale/properties/z",
-										"type": "number",
-										"title": "The z schema",
-										"description": "z scale",
-										"default": 0.0,
-										"examples": [9.0]
-									}
-								},
-								"additionalProperties": true
-							}
-						},
-						"additionalProperties": true
-					}
-				]
-			}
-		},
-		"cycles": {
-			"$id": "#/properties/cycles",
-			"type": "array",
-			"title": "The cycles schema",
-			"description": "Defines the cycles between GameObjects",
-			"default": [],
-			"examples": [
-				[
-					{
-						"from": "root.analysis.import.SCMLogParser.src.main.java.de.maibornwolff.codecharta.importer.scmlogparser.SCMLogParser",
-						"to": "root.analysis.import.SCMLogParser.src.main.java.de.maibornwolff.codecharta.importer.scmlogparser.SCMLogParserParameter"
-					}
-				]
-			],
-			"additionalItems": true,
-			"items": {
-				"$id": "#/properties/cycles/items",
-				"anyOf": [
-					{
-						"$id": "#/properties/cycles/items/anyOf/0",
-						"type": "object",
-						"title": "The first anyOf schema",
-						"description": "A cycle between two GameObjects",
-						"default": {},
-						"examples": [
-							{
-								"from": "root.analysis.import.SCMLogParser.src.main.java.de.maibornwolff.codecharta.importer.scmlogparser.SCMLogParser",
-								"to": "root.analysis.import.SCMLogParser.src.main.java.de.maibornwolff.codecharta.importer.scmlogparser.SCMLogParserParameter"
-							}
-						],
-						"required": ["from", "to"],
-						"properties": {
-							"from": {
-								"$id": "#/properties/cycles/items/anyOf/0/properties/from",
-								"type": "string",
-								"title": "The from schema",
-								"description": "from GameObject",
-								"default": "",
-								"examples": [
-									"root.analysis.import.SCMLogParser.src.main.java.de.maibornwolff.codecharta.importer.scmlogparser.SCMLogParser"
-								]
-							},
-							"to": {
-								"$id": "#/properties/cycles/items/anyOf/0/properties/to",
-								"type": "string",
-								"title": "The to schema",
-								"description": "to GameObject",
-								"default": "",
-								"examples": [
-									"root.analysis.import.SCMLogParser.src.main.java.de.maibornwolff.codecharta.importer.scmlogparser.SCMLogParserParameter"
-								]
-							}
-						},
-						"additionalProperties": true
-					}
-				]
-			}
-		}
-	},
-	"additionalProperties": true
+  "$id": "http://example.com/example.json",
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "default": {},
+  "description": "This is the JSON Schema for the GameObjectsPositions structure",
+  "examples": [
+    {
+      "gameObjectPositions": [
+        {
+          "name": "root.analysis.import.SourceCodeParser.src.test.kotlin.de.maibornwolff.codecharta.importer.sourcecodeparser.oop.core.extract.HelloWorldTest",
+          "position": {
+            "x": 69.0,
+            "y": 18.5,
+            "z": 228.5
+          },
+          "scale": {
+            "x": 9.0,
+            "y": 5.0,
+            "z": 9.0
+          }
+        },
+        {
+          "name": "root.analysis.import.SourceCodeParser.src.test.kotlin.de.maibornwolff.codecharta.importer.sourcecodeparser.oop.core.extract.TryCatchFinallyTest",
+          "position": {
+            "x": 66.0,
+            "y": 22.5,
+            "z": 177.5
+          },
+          "scale": {
+            "x": 1.0,
+            "y": 13.0,
+            "z": 1.0
+          }
+        }
+      ],
+      "cycles": [
+        {
+          "from": "root.analysis.import.SCMLogParser.src.main.java.de.maibornwolff.codecharta.importer.scmlogparser.SCMLogParser",
+          "to": "root.analysis.import.SCMLogParser.src.main.java.de.maibornwolff.codecharta.importer.scmlogparser.SCMLogParserParameter"
+        }
+      ]
+    }
+  ],
+  "required": ["gameObjectPositions"],
+  "title": "The root schema",
+  "type": "object",
+  "properties": {
+    "gameObjectPositions": {
+      "$id": "#/properties/gameObjectPositions",
+      "type": "array",
+      "title": "The gameObjectPositions schema",
+      "description": "Defines the position and scale of GameObjects",
+      "default": [],
+      "examples": [
+        [
+          {
+            "name": "root.analysis.import.SourceCodeParser.src.test.kotlin.de.maibornwolff.codecharta.importer.sourcecodeparser.oop.core.extract.HelloWorldTest",
+            "position": {
+              "x": 69.0,
+              "y": 18.5,
+              "z": 228.5
+            },
+            "scale": {
+              "x": 9.0,
+              "y": 5.0,
+              "z": 9.0
+            }
+          },
+          {
+            "name": "root.analysis.import.SourceCodeParser.src.test.kotlin.de.maibornwolff.codecharta.importer.sourcecodeparser.oop.core.extract.SwitchCaseTest",
+            "position": {
+              "x": 65.0,
+              "y": 22.0,
+              "z": 181.0
+            },
+            "scale": {
+              "x": 2.0,
+              "y": 12.0,
+              "z": 2.0
+            }
+          }
+        ]
+      ],
+      "additionalItems": true,
+      "items": {
+        "$id": "#/properties/gameObjectPositions/items",
+        "anyOf": [
+          {
+            "$id": "#/properties/gameObjectPositions/items/anyOf/0",
+            "type": "object",
+            "title": "The first anyOf schema",
+            "description": "Defines the properties of a GameObject",
+            "default": {},
+            "examples": [
+              {
+                "name": "root.analysis.import.SourceCodeParser.src.test.kotlin.de.maibornwolff.codecharta.importer.sourcecodeparser.oop.core.extract.HelloWorldTest",
+                "position": {
+                  "x": 69.0,
+                  "y": 18.5,
+                  "z": 228.5
+                },
+                "scale": {
+                  "x": 9.0,
+                  "y": 5.0,
+                  "z": 9.0
+                }
+              }
+            ],
+            "required": ["name", "position", "scale"],
+            "properties": {
+              "name": {
+                "$id": "#/properties/gameObjectPositions/items/anyOf/0/properties/name",
+                "type": "string",
+                "title": "The name schema",
+                "description": "An explanation about the purpose of this instance.",
+                "default": "",
+                "examples": [
+                  "root.analysis.import.SourceCodeParser.src.test.kotlin.de.maibornwolff.codecharta.importer.sourcecodeparser.oop.core.extract.HelloWorldTest"
+                ]
+              },
+              "position": {
+                "$id": "#/properties/gameObjectPositions/items/anyOf/0/properties/position",
+                "type": "object",
+                "title": "The position schema",
+                "description": "The position in absolute values",
+                "default": {},
+                "examples": [
+                  {
+                    "x": 69.0,
+                    "y": 18.5,
+                    "z": 228.5
+                  }
+                ],
+                "required": ["x", "y", "z"],
+                "properties": {
+                  "x": {
+                    "$id": "#/properties/gameObjectPositions/items/anyOf/0/properties/position/properties/x",
+                    "type": "number",
+                    "title": "The x schema",
+                    "description": "x position",
+                    "default": 0.0,
+                    "examples": [69.0]
+                  },
+                  "y": {
+                    "$id": "#/properties/gameObjectPositions/items/anyOf/0/properties/position/properties/y",
+                    "type": "number",
+                    "title": "The y schema",
+                    "description": "y position",
+                    "default": 0.0,
+                    "examples": [18.5]
+                  },
+                  "z": {
+                    "$id": "#/properties/gameObjectPositions/items/anyOf/0/properties/position/properties/z",
+                    "type": "number",
+                    "title": "The z schema",
+                    "description": "z position",
+                    "default": 0.0,
+                    "examples": [228.5]
+                  }
+                },
+                "additionalProperties": true
+              },
+              "scale": {
+                "$id": "#/properties/gameObjectPositions/items/anyOf/0/properties/scale",
+                "type": "object",
+                "title": "The scale schema",
+                "description": "The scale of GameObjects",
+                "default": {},
+                "examples": [
+                  {
+                    "x": 9.0,
+                    "y": 5.0,
+                    "z": 9.0
+                  }
+                ],
+                "required": ["x", "y", "z"],
+                "properties": {
+                  "x": {
+                    "$id": "#/properties/gameObjectPositions/items/anyOf/0/properties/scale/properties/x",
+                    "type": "number",
+                    "title": "The x schema",
+                    "description": "x scale",
+                    "default": 0.0,
+                    "examples": [9.0]
+                  },
+                  "y": {
+                    "$id": "#/properties/gameObjectPositions/items/anyOf/0/properties/scale/properties/y",
+                    "type": "number",
+                    "title": "The y schema",
+                    "description": "y scale",
+                    "default": 0.0,
+                    "examples": [5.0]
+                  },
+                  "z": {
+                    "$id": "#/properties/gameObjectPositions/items/anyOf/0/properties/scale/properties/z",
+                    "type": "number",
+                    "title": "The z schema",
+                    "description": "z scale",
+                    "default": 0.0,
+                    "examples": [9.0]
+                  }
+                },
+                "additionalProperties": true
+              }
+            },
+            "additionalProperties": true
+          }
+        ]
+      }
+    },
+    "cycles": {
+      "$id": "#/properties/cycles",
+      "type": "array",
+      "title": "The cycles schema",
+      "description": "Defines the cycles between GameObjects",
+      "default": [],
+      "examples": [
+        [
+          {
+            "from": "root.analysis.import.SCMLogParser.src.main.java.de.maibornwolff.codecharta.importer.scmlogparser.SCMLogParser",
+            "to": "root.analysis.import.SCMLogParser.src.main.java.de.maibornwolff.codecharta.importer.scmlogparser.SCMLogParserParameter"
+          }
+        ]
+      ],
+      "additionalItems": true,
+      "items": {
+        "$id": "#/properties/cycles/items",
+        "anyOf": [
+          {
+            "$id": "#/properties/cycles/items/anyOf/0",
+            "type": "object",
+            "title": "The first anyOf schema",
+            "description": "A cycle between two GameObjects",
+            "default": {},
+            "examples": [
+              {
+                "from": "root.analysis.import.SCMLogParser.src.main.java.de.maibornwolff.codecharta.importer.scmlogparser.SCMLogParser",
+                "to": "root.analysis.import.SCMLogParser.src.main.java.de.maibornwolff.codecharta.importer.scmlogparser.SCMLogParserParameter"
+              }
+            ],
+            "required": ["from", "to"],
+            "properties": {
+              "from": {
+                "$id": "#/properties/cycles/items/anyOf/0/properties/from",
+                "type": "string",
+                "title": "The from schema",
+                "description": "from GameObject",
+                "default": "",
+                "examples": [
+                  "root.analysis.import.SCMLogParser.src.main.java.de.maibornwolff.codecharta.importer.scmlogparser.SCMLogParser"
+                ]
+              },
+              "to": {
+                "$id": "#/properties/cycles/items/anyOf/0/properties/to",
+                "type": "string",
+                "title": "The to schema",
+                "description": "to GameObject",
+                "default": "",
+                "examples": [
+                  "root.analysis.import.SCMLogParser.src.main.java.de.maibornwolff.codecharta.importer.scmlogparser.SCMLogParserParameter"
+                ]
+              }
+            },
+            "additionalProperties": true
+          }
+        ]
+      }
+    }
+  },
+  "additionalProperties": true
 }

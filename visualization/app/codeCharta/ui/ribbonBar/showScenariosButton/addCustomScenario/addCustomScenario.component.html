@@ -1,34 +1,35 @@
 <mat-toolbar color="primary">Add Scenario</mat-toolbar>
 
 <div class="cc-add-custom-scenario-content">
-	<mat-form-field class="cc-add-custom-scenario-name-field">
-		<mat-label>Scenario Name</mat-label>
-		<input matInput [formControl]="scenarioName" />
-		@if (scenarioName.invalid) {
-		<mat-error>{{ scenarioName.getError("Error") }}</mat-error>
-		}
-	</mat-form-field>
+    <mat-form-field class="cc-add-custom-scenario-name-field">
+        <mat-label>Scenario Name</mat-label>
+        <input matInput [formControl]="scenarioName" />
+        @if (scenarioName.invalid) {
+            <mat-error>{{ scenarioName.getError("Error") }}</mat-error>
+        }
+    </mat-form-field>
 
-	<p>The scenario includes:</p>
+    <p>The scenario includes:</p>
 
-	<div class="cc-add-custon-scenario-toggles">
-		@for (property of scenarioContent; track property) {
-		<mat-slide-toggle [checked]="property.isSelected" (change)="handleScenarioMetricPropertySelectionChange(property)">
-			{{ property.metricName ? property.metricType + " (" + property.metricName + ")" : property.metricType }}
-		</mat-slide-toggle>
-		} @if (!areAnyScenarioMetricPropertiesSelected) {
-		<mat-error>You cannot create an empty Scenario</mat-error>
-		}
-	</div>
+    <div class="cc-add-custon-scenario-toggles">
+        @for (property of scenarioContent; track property) {
+            <mat-slide-toggle [checked]="property.isSelected" (change)="handleScenarioMetricPropertySelectionChange(property)">
+                {{ property.metricName ? property.metricType + " (" + property.metricName + ")" : property.metricType }}
+            </mat-slide-toggle>
+        }
+        @if (!areAnyScenarioMetricPropertiesSelected) {
+            <mat-error>You cannot create an empty Scenario</mat-error>
+        }
+    </div>
 
-	<div class="cc-add-custom-scenario-buttons">
-		<button
-			mat-button
-			mat-dialog-close
-			[disabled]="scenarioName.invalid || !areAnyScenarioMetricPropertiesSelected"
-			(click)="addCustomScenario()"
-		>
-			ADD
-		</button>
-	</div>
+    <div class="cc-add-custom-scenario-buttons">
+        <button
+            mat-button
+            mat-dialog-close
+            [disabled]="scenarioName.invalid || !areAnyScenarioMetricPropertiesSelected"
+            (click)="addCustomScenario()"
+        >
+            ADD
+        </button>
+    </div>
 </div>

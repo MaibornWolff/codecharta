@@ -10,8 +10,8 @@ import { setInvertArea } from "./invertArea/invertArea.actions"
 import { setInvertHeight } from "./invertHeight/invertHeight.actions"
 import { setIsEdgeMetricVisible, toggleEdgeMetricVisible } from "./isEdgeMetricVisible/isEdgeMetricVisible.actions"
 import {
-	setIsColorMetricLinkedToHeightMetricAction,
-	toggleIsColorMetricLinkedToHeightMetric
+    setIsColorMetricLinkedToHeightMetricAction,
+    toggleIsColorMetricLinkedToHeightMetric
 } from "./isHeightAndColorMetricLinked/isColorMetricLinkedToHeightMetric.actions"
 import { setPresentationMode } from "./isPresentationMode/isPresentationMode.actions"
 import { setIsSearchPanelPinned, toggleIsSearchPanelPinned } from "./isSearchPanelPinned/isSearchPanelPinned.actions"
@@ -28,35 +28,35 @@ import { setShowOnlyBuildingsWithEdges } from "./showOnlyBuildingsWithEdges/show
 import { setSortingOrderAscending, toggleSortingOrderAscending } from "./sortingOrderAscending/sortingOrderAscending.actions"
 
 export const appSettingsActions = [
-	setColorLabels,
-	setShowMetricLabelNodeName,
-	setShowMetricLabelNameValue,
-	setSortingOrderAscending,
-	toggleSortingOrderAscending,
-	setIsSearchPanelPinned,
-	toggleIsSearchPanelPinned,
-	setMapColors,
-	invertColorRange,
-	invertDeltaColors,
-	setResetCameraIfNewFileIsLoaded,
-	setShowOnlyBuildingsWithEdges,
-	setIsEdgeMetricVisible,
-	toggleEdgeMetricVisible,
-	setIsWhiteBackground,
-	setInvertHeight,
-	setInvertArea,
-	setHideFlatBuildings,
-	setScaling,
-	setEdgeHeight,
-	setAmountOfEdgePreviews,
-	setAmountOfTopLabels,
-	setPresentationMode,
-	setExperimentalFeaturesEnabled,
-	setScreenshotToClipboardEnabled,
-	setLayoutAlgorithm,
-	setMaxTreeMapFiles,
-	setSharpnessMode,
-	setIsColorMetricLinkedToHeightMetricAction,
-	toggleIsColorMetricLinkedToHeightMetric,
-	setEnableFloorLabels
+    setColorLabels,
+    setShowMetricLabelNodeName,
+    setShowMetricLabelNameValue,
+    setSortingOrderAscending,
+    toggleSortingOrderAscending,
+    setIsSearchPanelPinned,
+    toggleIsSearchPanelPinned,
+    setMapColors,
+    invertColorRange,
+    invertDeltaColors,
+    setResetCameraIfNewFileIsLoaded,
+    setShowOnlyBuildingsWithEdges,
+    setIsEdgeMetricVisible,
+    toggleEdgeMetricVisible,
+    setIsWhiteBackground,
+    setInvertHeight,
+    setInvertArea,
+    setHideFlatBuildings,
+    setScaling,
+    setEdgeHeight,
+    setAmountOfEdgePreviews,
+    setAmountOfTopLabels,
+    setPresentationMode,
+    setExperimentalFeaturesEnabled,
+    setScreenshotToClipboardEnabled,
+    setLayoutAlgorithm,
+    setMaxTreeMapFiles,
+    setSharpnessMode,
+    setIsColorMetricLinkedToHeightMetricAction,
+    toggleIsColorMetricLinkedToHeightMetric,
+    setEnableFloorLabels
 ]

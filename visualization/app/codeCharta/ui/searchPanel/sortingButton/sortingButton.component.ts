@@ -7,20 +7,20 @@ import { toggleSortingOrderAscending } from "../../../state/store/appSettings/so
 import { sortingOrderAscendingSelector } from "../../../state/store/appSettings/sortingOrderAscending/sortingOrderAscending.selector"
 
 @Component({
-	selector: "cc-sorting-button",
-	templateUrl: "./sortingButton.component.html",
-	encapsulation: ViewEncapsulation.None
+    selector: "cc-sorting-button",
+    templateUrl: "./sortingButton.component.html",
+    encapsulation: ViewEncapsulation.None
 })
 export class SortingButtonComponent implements OnInit {
-	sortingOrderAscending$: Observable<boolean>
+    sortingOrderAscending$: Observable<boolean>
 
-	constructor(private store: Store<CcState>) {}
+    constructor(private store: Store<CcState>) {}
 
-	ngOnInit(): void {
-		this.sortingOrderAscending$ = this.store.select(sortingOrderAscendingSelector)
-	}
+    ngOnInit(): void {
+        this.sortingOrderAscending$ = this.store.select(sortingOrderAscendingSelector)
+    }
 
-	onClick() {
-		this.store.dispatch(toggleSortingOrderAscending())
-	}
+    onClick() {
+        this.store.dispatch(toggleSortingOrderAscending())
+    }
 }

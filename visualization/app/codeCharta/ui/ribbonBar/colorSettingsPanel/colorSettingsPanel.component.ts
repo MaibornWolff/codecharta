@@ -19,82 +19,85 @@ import { metricColorRangeColorsSelector } from "./selectors/metricColorRangeColo
 import { metricColorRangeValuesSelector } from "./selectors/metricColorRangeValues.selector"
 
 @Component({
-	selector: "cc-color-settings-panel",
-	templateUrl: "./colorSettingsPanel.component.html",
-	styleUrls: ["./colorSettingsPanel.component.scss"],
-	encapsulation: ViewEncapsulation.None
+    selector: "cc-color-settings-panel",
+    templateUrl: "./colorSettingsPanel.component.html",
+    styleUrls: ["./colorSettingsPanel.component.scss"],
+    encapsulation: ViewEncapsulation.None
 })
 export class ColorSettingsPanelComponent {
-	colorMode$ = this.store.select(colorModeSelector)
-	colorLabels$ = this.store.select(colorLabelsSelector)
-	colorMetric$ = this.store.select(colorMetricSelector)
-	isDeltaState$ = this.store.select(isDeltaStateSelector)
-	sliderValues$ = this.store.select(metricColorRangeValuesSelector)
-	sliderColors$ = this.store.select(metricColorRangeColorsSelector)
-	isAttributeDescriptionInversed$ = this.checkIsAttributeDirectionReversed()
-	isColorRangeInverted = false
-	areDeltaColorsInverted = false
+    colorMode$ = this.store.select(colorModeSelector)
+    colorLabels$ = this.store.select(colorLabelsSelector)
+    colorMetric$ = this.store.select(colorMetricSelector)
+    isDeltaState$ = this.store.select(isDeltaStateSelector)
+    sliderValues$ = this.store.select(metricColorRangeValuesSelector)
+    sliderColors$ = this.store.select(metricColorRangeColorsSelector)
+    isAttributeDescriptionInversed$ = this.checkIsAttributeDirectionReversed()
+    isColorRangeInverted = false
+    areDeltaColorsInverted = false
 
-	private newLeftValue: null | number = null
-	private newRightValue: null | number = null
-	isAttributeDirectionInversed: boolean
+    private newLeftValue: null | number = null
+    private newRightValue: null | number = null
+    isAttributeDirectionInversed: boolean
 
-	constructor(private store: Store<CcState>, private state: State<CcState>) {}
+    constructor(
+        private store: Store<CcState>,
+        private state: State<CcState>
+    ) {}
 
-	handleValueChange: HandleValueChange = ({ newLeftValue, newRightValue }) => {
-		this.newLeftValue = newLeftValue ?? this.newLeftValue
-		this.newRightValue = newRightValue ?? this.newRightValue
-		this.updateColorRangeDebounced()
-	}
+    handleValueChange: HandleValueChange = ({ newLeftValue, newRightValue }) => {
+        this.newLeftValue = newLeftValue ?? this.newLeftValue
+        this.newRightValue = newRightValue ?? this.newRightValue
+        this.updateColorRangeDebounced()
+    }
 
-	private checkIsAttributeDirectionReversed() {
-		return this.colorMetric$.pipe(
-			map(colorMetric => {
-				const attributeDescriptors = this.state.getValue().fileSettings.attributeDescriptors
-				return attributeDescriptors[colorMetric]?.direction === 1
-			})
-		)
-	}
+    private checkIsAttributeDirectionReversed() {
+        return this.colorMetric$.pipe(
+            map(colorMetric => {
+                const attributeDescriptors = this.state.getValue().fileSettings.attributeDescriptors
+                return attributeDescriptors[colorMetric]?.direction === 1
+            })
+        )
+    }
 
-	private updateColorRangeDebounced = debounce(() => {
-		const newColorRange: Partial<ColorRange> = {}
-		if (this.newLeftValue !== null) {
-			newColorRange.from = this.newLeftValue
-		}
-		if (this.newRightValue !== null) {
-			newColorRange.to = this.newRightValue
-		}
-		this.store.dispatch(setColorRange({ value: newColorRange }))
+    private updateColorRangeDebounced = debounce(() => {
+        const newColorRange: Partial<ColorRange> = {}
+        if (this.newLeftValue !== null) {
+            newColorRange.from = this.newLeftValue
+        }
+        if (this.newRightValue !== null) {
+            newColorRange.to = this.newRightValue
+        }
+        this.store.dispatch(setColorRange({ value: newColorRange }))
 
-		this.newLeftValue = null
-		this.newRightValue = null
-	}, 400)
+        this.newLeftValue = null
+        this.newRightValue = null
+    }, 400)
 
-	handleColorModeChange(gradient: ColorMode) {
-		this.store.dispatch(setColorMode({ value: gradient }))
-	}
+    handleColorModeChange(gradient: ColorMode) {
+        this.store.dispatch(setColorMode({ value: gradient }))
+    }
 
-	toggleColorLabel(change: MatCheckboxChange, colorLabelToToggle: keyof ColorLabelOptions) {
-		this.store.dispatch(setColorLabels({ value: { [colorLabelToToggle]: change.checked } }))
-	}
+    toggleColorLabel(change: MatCheckboxChange, colorLabelToToggle: keyof ColorLabelOptions) {
+        this.store.dispatch(setColorLabels({ value: { [colorLabelToToggle]: change.checked } }))
+    }
 
-	handleIsColorRangeInvertedChange(isColorRangeInverted: boolean) {
-		this.isColorRangeInverted = isColorRangeInverted
-		this.store.dispatch(invertColorRange())
-	}
+    handleIsColorRangeInvertedChange(isColorRangeInverted: boolean) {
+        this.isColorRangeInverted = isColorRangeInverted
+        this.store.dispatch(invertColorRange())
+    }
 
-	handleAreDeltaColorsInverted(areDeltaColorsInverted: boolean) {
-		this.areDeltaColorsInverted = areDeltaColorsInverted
-		this.store.dispatch(invertDeltaColors())
-	}
+    handleAreDeltaColorsInverted(areDeltaColorsInverted: boolean) {
+        this.areDeltaColorsInverted = areDeltaColorsInverted
+        this.store.dispatch(invertDeltaColors())
+    }
 
-	resetInvertColorCheckboxes = () => {
-		this.isColorRangeInverted = false
-		this.areDeltaColorsInverted = false
-	}
+    resetInvertColorCheckboxes = () => {
+        this.isColorRangeInverted = false
+        this.areDeltaColorsInverted = false
+    }
 
-	resetColorRange = () => {
-		const selectedColorMetricData = selectedColorMetricDataSelector(this.state.getValue())
-		this.store.dispatch(setColorRange({ value: calculateInitialColorRange(selectedColorMetricData) }))
-	}
+    resetColorRange = () => {
+        const selectedColorMetricData = selectedColorMetricDataSelector(this.state.getValue())
+        this.store.dispatch(setColorRange({ value: calculateInitialColorRange(selectedColorMetricData) }))
+    }
 }

@@ -1,33 +1,33 @@
 #codemap-context-menu {
-	padding: 12px;
+    padding: 12px;
 
-	.button-group {
-		display: flex;
-		flex-direction: column;
-		gap: 6px;
-		width: 100%;
-	}
+    .button-group {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        width: 100%;
+    }
 
-	.png-icon {
-		width: 17px;
-		height: 17px;
-		margin: 5px auto auto;
-		padding: 0;
-		display: inline-block;
-		background-repeat: no-repeat no-repeat;
-		pointer-events: none;
-	}
+    .png-icon {
+        width: 17px;
+        height: 17px;
+        margin: 5px auto auto;
+        padding: 0;
+        display: inline-block;
+        background-repeat: no-repeat no-repeat;
+        pointer-events: none;
+    }
 
-	[mat-button] {
-		width: 100%;
-		text-align: left;
-		margin: 0;
-		justify-content: left;
-		line-height: 30px;
-		min-height: 30px;
+    [mat-button] {
+        width: 100%;
+        text-align: left;
+        margin: 0;
+        justify-content: left;
+        line-height: 30px;
+        min-height: 30px;
 
-		i {
-			min-width: 15px;
-		}
-	}
+        i {
+            min-width: 15px;
+        }
+    }
 }

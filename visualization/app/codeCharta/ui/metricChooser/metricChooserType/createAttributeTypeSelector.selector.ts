@@ -4,7 +4,7 @@ import { primaryMetricNamesSelector } from "../../../state/selectors/primaryMetr
 import { attributeTypesSelector } from "../../../state/store/fileSettings/attributeTypes/attributeTypes.selector"
 
 export const createAttributeTypeSelector = (metricType: keyof AttributeTypes, metricFor: keyof PrimaryMetrics) =>
-	createSelector(primaryMetricNamesSelector, attributeTypesSelector, (primaryMetricNames, attributeTypes) => {
-		const metricName = primaryMetricNames[metricFor]
-		return attributeTypes[metricType][metricName] === "relative" ? "x͂" : "Σ"
-	})
+    createSelector(primaryMetricNamesSelector, attributeTypesSelector, (primaryMetricNames, attributeTypes) => {
+        const metricName = primaryMetricNames[metricFor]
+        return attributeTypes[metricType][metricName] === "relative" ? "x͂" : "Σ"
+    })

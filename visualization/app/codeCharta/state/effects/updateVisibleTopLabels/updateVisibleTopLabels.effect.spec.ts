@@ -11,68 +11,68 @@ import { getLastAction } from "../../../../codeCharta/util/testUtils/store.utils
 import { setAmountOfTopLabels } from "../../store/appSettings/amountOfTopLabels/amountOfTopLabels.actions"
 
 describe("updateVisibleTopLabelsEffect", () => {
-	let store: MockStore<CcState>
+    let store: MockStore<CcState>
 
-	beforeEach(() => {
-		TestBed.configureTestingModule({
-			imports: [
-				EffectsModule.forRoot([UpdateVisibleTopLabelsEffect]),
-				StoreModule.forRoot(appReducers, { metaReducers: [setStateMiddleware] })
-			],
-			providers: [
-				provideMockStore({
-					selectors: [
-						{
-							selector: visibleFileStatesSelector,
-							value: []
-						},
-						{
-							selector: codeMapNodesSelector,
-							value: [
-								{
-									name: "sample1.ts"
-								},
-								{
-									name: "sample2.ts"
-								}
-							]
-						}
-					]
-				}),
-				{
-					provide: State,
-					useValue: {
-						getValue: () => ({ appSettings: { amountOfTopLabels: 5 } })
-					}
-				}
-			]
-		})
-		store = TestBed.inject(MockStore)
-	})
+    beforeEach(() => {
+        TestBed.configureTestingModule({
+            imports: [
+                EffectsModule.forRoot([UpdateVisibleTopLabelsEffect]),
+                StoreModule.forRoot(appReducers, { metaReducers: [setStateMiddleware] })
+            ],
+            providers: [
+                provideMockStore({
+                    selectors: [
+                        {
+                            selector: visibleFileStatesSelector,
+                            value: []
+                        },
+                        {
+                            selector: codeMapNodesSelector,
+                            value: [
+                                {
+                                    name: "sample1.ts"
+                                },
+                                {
+                                    name: "sample2.ts"
+                                }
+                            ]
+                        }
+                    ]
+                }),
+                {
+                    provide: State,
+                    useValue: {
+                        getValue: () => ({ appSettings: { amountOfTopLabels: 5 } })
+                    }
+                }
+            ]
+        })
+        store = TestBed.inject(MockStore)
+    })
 
-	it("should set amount of top labels to current app-settings when visible file-states are unchanged", async () => {
-		const visibleFileStates = []
+    it("should set amount of top labels to current app-settings when visible file-states are unchanged", async () => {
+        const visibleFileStates = []
 
-		store.overrideSelector(visibleFileStatesSelector, visibleFileStates as ReturnType<typeof visibleFileStatesSelector>)
-		store.refreshState()
+        store.overrideSelector(visibleFileStatesSelector, visibleFileStates as ReturnType<typeof visibleFileStatesSelector>)
+        store.refreshState()
 
-		expect(await getLastAction(store)).toEqual(setAmountOfTopLabels({ value: 5 }))
-	})
+        expect(await getLastAction(store)).toEqual(setAmountOfTopLabels({ value: 5 }))
+    })
 
-	it("should calculate the amount of top labels when visible-file-states are changed", async () => {
-		const visibleFileStates = [
-			{
-				file: {
-					fileMeta: {
-						fileName: "sample1.cc.json"
-					}
-				}
-			}
-		]
+    it("should calculate the amount of top labels when visible-file-states are changed", async () => {
+        const visibleFileStates = [
+            {
+                file: {
+                    fileMeta: {
+                        fileName: "sample1.cc.json"
+                    }
+                }
+            }
+        ]
 
-		store.overrideSelector(visibleFileStatesSelector, visibleFileStates as ReturnType<typeof visibleFileStatesSelector>)
-		store.refreshState()
+        store.overrideSelector(visibleFileStatesSelector, visibleFileStates as ReturnType<typeof visibleFileStatesSelector>)
+        store.refreshState()
 
-		expect(await getLastAction(store)).toEqual(setAmountOfTopLabels({ value: 1 }))
-	})
+        expect(await getLastAction(store)).toEqual(setAmountOfTopLabels({ value: 1 }))
+    })
 })

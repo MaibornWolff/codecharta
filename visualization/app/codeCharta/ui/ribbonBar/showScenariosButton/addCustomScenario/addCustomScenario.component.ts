@@ -9,33 +9,33 @@ import { State } from "@ngrx/store"
 import { CcState } from "../../../../codeCharta.model"
 
 @Component({
-	templateUrl: "./addCustomScenario.component.html",
-	styleUrls: ["./addCustomScenario.component.scss"],
-	encapsulation: ViewEncapsulation.None
+    templateUrl: "./addCustomScenario.component.html",
+    styleUrls: ["./addCustomScenario.component.scss"],
+    encapsulation: ViewEncapsulation.None
 })
 export class AddCustomScenarioComponent {
-	scenarioName = new UntypedFormControl("", [customScenarioNameValidator()])
-	scenarioNameErrorField: string | null = "Scenario name is required"
-	scenarioContent: ScenarioMetricProperty[]
-	areAnyScenarioMetricPropertiesSelected = true
+    scenarioName = new UntypedFormControl("", [customScenarioNameValidator()])
+    scenarioNameErrorField: string | null = "Scenario name is required"
+    scenarioContent: ScenarioMetricProperty[]
+    areAnyScenarioMetricPropertiesSelected = true
 
-	constructor(
-		private state: State<CcState>,
-		threeCameraService: ThreeCameraService,
-		threeOrbitControlsService: ThreeOrbitControlsService
-	) {
-		this.scenarioContent = getInitialScenarioMetricProperties(this.state.getValue(), {
-			camera: threeCameraService.camera.position,
-			cameraTarget: threeOrbitControlsService.controls.target
-		})
-	}
+    constructor(
+        private state: State<CcState>,
+        threeCameraService: ThreeCameraService,
+        threeOrbitControlsService: ThreeOrbitControlsService
+    ) {
+        this.scenarioContent = getInitialScenarioMetricProperties(this.state.getValue(), {
+            camera: threeCameraService.camera.position,
+            cameraTarget: threeOrbitControlsService.controls.target
+        })
+    }
 
-	handleScenarioMetricPropertySelectionChange(scenarioMetricProperty: ScenarioMetricProperty) {
-		scenarioMetricProperty.isSelected = !scenarioMetricProperty.isSelected
-		this.areAnyScenarioMetricPropertiesSelected = this.scenarioContent.some(property => property.isSelected)
-	}
+    handleScenarioMetricPropertySelectionChange(scenarioMetricProperty: ScenarioMetricProperty) {
+        scenarioMetricProperty.isSelected = !scenarioMetricProperty.isSelected
+        this.areAnyScenarioMetricPropertiesSelected = this.scenarioContent.some(property => property.isSelected)
+    }
 
-	addCustomScenario() {
-		ScenarioHelper.addScenario(this.scenarioName.value, this.scenarioContent)
-	}
+    addCustomScenario() {
+        ScenarioHelper.addScenario(this.scenarioName.value, this.scenarioContent)
+    }
 }

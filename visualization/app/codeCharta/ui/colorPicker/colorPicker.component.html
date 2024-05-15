@@ -1,16 +1,16 @@
 <ng-container
-	[ngTemplateOutlet]="triggerTemplate"
-	[ngTemplateOutletContext]="{ isOpen: colorPickerMenuTrigger.menuOpen, isHovered: isHovered }"
+    [ngTemplateOutlet]="triggerTemplate"
+    [ngTemplateOutletContext]="{ isOpen: colorPickerMenuTrigger.menuOpen, isHovered: isHovered }"
 >
 </ng-container>
 
 <span [matMenuTriggerFor]="menu" #colorPickerMenuTrigger="matMenuTrigger"></span>
 <mat-menu #menu="matMenu" class="cc-color-picker-menu" [xPosition]="openXPosition" [hasBackdrop]="false">
-	<color-chrome
-		role="colorpicker"
-		(click)="$event.stopPropagation()"
-		[disableAlpha]="true"
-		[color]="hexColor"
-		(onChangeComplete)="handleChangeComplete($event.color.hex)"
-	></color-chrome>
+    <color-chrome
+        role="colorpicker"
+        (click)="$event.stopPropagation()"
+        [disableAlpha]="true"
+        [color]="hexColor"
+        (onChangeComplete)="handleChangeComplete($event.color.hex)"
+    ></color-chrome>
 </mat-menu>

@@ -14,15 +14,15 @@ export const setDeltaComparison = createAction("SET_DELTA_COMPARISON", props<{ f
 export const setDeltaReference = createAction("SET_DELTA_REFERENCE", props<{ file: CCFile }>())
 export const setDelta = createAction("SET_DELTA", props<{ referenceFile: CCFile; comparisonFile: CCFile }>())
 export const fileActions = [
-	setFiles,
-	addFile,
-	removeFile,
-	setStandard,
-	setStandardByNames,
-	setAll,
-	invertStandard,
-	switchReferenceAndComparison,
-	setDeltaComparison,
-	setDeltaReference,
-	setDelta
+    setFiles,
+    addFile,
+    removeFile,
+    setStandard,
+    setStandardByNames,
+    setAll,
+    invertStandard,
+    switchReferenceAndComparison,
+    setDeltaComparison,
+    setDeltaReference,
+    setDelta
 ]

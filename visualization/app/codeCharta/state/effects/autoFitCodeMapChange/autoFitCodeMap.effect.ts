@@ -12,27 +12,27 @@ import { RenderCodeMapEffect } from "../renderCodeMapEffect/renderCodeMap.effect
 
 @Injectable()
 export class AutoFitCodeMapEffect {
-	constructor(
-		private store: Store<CcState>,
-		private renderCodeMapEffect: RenderCodeMapEffect,
-		private threeOrbitControlsService: ThreeOrbitControlsService
-	) {}
+    constructor(
+        private store: Store<CcState>,
+        private renderCodeMapEffect: RenderCodeMapEffect,
+        private threeOrbitControlsService: ThreeOrbitControlsService
+    ) {}
 
-	autoFitTo$ = createEffect(
-		() =>
-			combineLatest([
-				this.store.select(visibleFileStatesSelector),
-				this.store.select(focusedNodePathSelector),
-				this.store.select(layoutAlgorithmSelector)
-			]).pipe(
-				skip(1), // initial map load is already fitted
-				withLatestFrom(this.store.select(resetCameraIfNewFileIsLoadedSelector)),
-				filter(([, resetCameraIfNewFileIsLoaded]) => resetCameraIfNewFileIsLoaded),
-				switchMap(() => this.renderCodeMapEffect.renderCodeMap$.pipe(take(1))),
-				tap(() => {
-					this.threeOrbitControlsService.autoFitTo()
-				})
-			),
-		{ dispatch: false }
-	)
+    autoFitTo$ = createEffect(
+        () =>
+            combineLatest([
+                this.store.select(visibleFileStatesSelector),
+                this.store.select(focusedNodePathSelector),
+                this.store.select(layoutAlgorithmSelector)
+            ]).pipe(
+                skip(1), // initial map load is already fitted
+                withLatestFrom(this.store.select(resetCameraIfNewFileIsLoadedSelector)),
+                filter(([, resetCameraIfNewFileIsLoaded]) => resetCameraIfNewFileIsLoaded),
+                switchMap(() => this.renderCodeMapEffect.renderCodeMap$.pipe(take(1))),
+                tap(() => {
+                    this.threeOrbitControlsService.autoFitTo()
+                })
+            ),
+        { dispatch: false }
+    )
 }

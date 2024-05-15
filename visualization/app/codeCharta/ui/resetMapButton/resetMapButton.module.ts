@@ -7,8 +7,8 @@ import { ConfirmResetMapDialogComponent } from "./confirmResetMapDialog/confirmR
 import { ResetMapButtonComponent } from "./resetMapButton.component"
 
 @NgModule({
-	imports: [CommonModule, ActionIconModule, MaterialModule, ReactiveFormsModule, FormsModule],
-	declarations: [ResetMapButtonComponent, ConfirmResetMapDialogComponent],
-	exports: [ResetMapButtonComponent]
+    imports: [CommonModule, ActionIconModule, MaterialModule, ReactiveFormsModule, FormsModule],
+    declarations: [ResetMapButtonComponent, ConfirmResetMapDialogComponent],
+    exports: [ResetMapButtonComponent]
 })
 export class ResetMapButtonModule {}

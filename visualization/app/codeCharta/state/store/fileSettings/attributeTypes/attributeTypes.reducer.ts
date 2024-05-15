@@ -5,10 +5,10 @@ import { setState } from "../../util/setState.reducer.factory"
 
 export const defaultAttributeTypes: AttributeTypes = { nodes: {}, edges: {} }
 export const attributeTypes = createReducer(
-	defaultAttributeTypes,
-	on(setAttributeTypes, setState(defaultAttributeTypes)),
-	on(updateAttributeType, (state, action) => ({
-		...state,
-		[action.category]: { ...state[action.category], [action.name]: action.attributeType }
-	}))
+    defaultAttributeTypes,
+    on(setAttributeTypes, setState(defaultAttributeTypes)),
+    on(updateAttributeType, (state, action) => ({
+        ...state,
+        [action.category]: { ...state[action.category], [action.name]: action.attributeType }
+    }))
 )

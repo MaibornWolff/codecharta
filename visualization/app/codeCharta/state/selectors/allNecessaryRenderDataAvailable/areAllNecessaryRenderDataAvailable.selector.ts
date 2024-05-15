@@ -12,28 +12,28 @@ import { areMetricsAvailable } from "./utils/areMetricsAvailable"
 const areFileStatesAvailableSelector = createSelector(filesSelector, files => fileStatesAvailable(files))
 
 export const areChosenMetricsAvailableSelector = createSelector(
-	metricDataSelector,
-	areaMetricSelector,
-	colorMetricSelector,
-	heightMetricSelector,
-	(metricData, areaMetric, colorMetric, heightMetric) =>
-		areMetricsAvailable(metricData.nodeMetricData, [areaMetric, colorMetric, heightMetric])
+    metricDataSelector,
+    areaMetricSelector,
+    colorMetricSelector,
+    heightMetricSelector,
+    (metricData, areaMetric, colorMetric, heightMetric) =>
+        areMetricsAvailable(metricData.nodeMetricData, [areaMetric, colorMetric, heightMetric])
 )
 
 const areDynamicSettingsAvailableSelector = createSelector(dynamicSettingsSelector, dynamicSettings =>
-	areDynamicSettingsAvailable(dynamicSettings)
+    areDynamicSettingsAvailable(dynamicSettings)
 )
 
 export const areAllNecessaryRenderDataAvailableSelector = createSelector(
-	metricDataSelector,
-	areFileStatesAvailableSelector,
-	areChosenMetricsAvailableSelector,
-	areDynamicSettingsAvailableSelector,
-	(metricData, areFileStatesAvailable, areChosenMetricsAvailable, areDynamicSettingsAvailable) => {
-		if (metricData.nodeMetricData === null || !areFileStatesAvailable || !areChosenMetricsAvailable || !areDynamicSettingsAvailable) {
-			return false
-		}
+    metricDataSelector,
+    areFileStatesAvailableSelector,
+    areChosenMetricsAvailableSelector,
+    areDynamicSettingsAvailableSelector,
+    (metricData, areFileStatesAvailable, areChosenMetricsAvailable, areDynamicSettingsAvailable) => {
+        if (metricData.nodeMetricData === null || !areFileStatesAvailable || !areChosenMetricsAvailable || !areDynamicSettingsAvailable) {
+            return false
+        }
 
-		return true
-	}
+        return true
+    }
 )

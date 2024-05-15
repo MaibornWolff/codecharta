@@ -1,4 +1,4 @@
 export type Metric = {
-	name: string
-	value: number
+    name: string
+    value: number
 }

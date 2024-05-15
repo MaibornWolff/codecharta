@@ -4,8 +4,8 @@ import { MaterialModule } from "../../../../material/material.module"
 import { LoadingMapProgressSpinnerComponent } from "./loadingMapProgressSpinner.component"
 
 @NgModule({
-	imports: [CommonModule, MaterialModule],
-	declarations: [LoadingMapProgressSpinnerComponent],
-	exports: [LoadingMapProgressSpinnerComponent]
+    imports: [CommonModule, MaterialModule],
+    declarations: [LoadingMapProgressSpinnerComponent],
+    exports: [LoadingMapProgressSpinnerComponent]
 })
 export class LoadingMapProgressSpinnerModule {}

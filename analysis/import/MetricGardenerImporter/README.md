@@ -22,16 +22,16 @@ need to install the additional requirements listed below:
 
 ### Windows
 
--   Python
--   C/C++ compiler toolchain (e.g. Visual Studio Build Tools 2022 with "Desktop development with C++")
+- Python
+- C/C++ compiler toolchain (e.g. Visual Studio Build Tools 2022 with "Desktop development with C++")
 
 > You might need to install additional packages to python depending on its version. Please refer to the node-gyp GitHub
 > page for help.
 
 ### Unix
 
--   Python
--   C/C++ compiler toolchain
+- Python
+- C/C++ compiler toolchain
 
 > Those tools could be an included in your distribution of linux (or your version of MacOS).
 

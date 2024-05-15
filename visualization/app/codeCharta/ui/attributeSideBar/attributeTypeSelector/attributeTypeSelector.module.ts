@@ -5,8 +5,8 @@ import { AttributeTypeSelectorComponent } from "./attributeTypeSelector.componen
 import { MaterialModule } from "../../../../material/material.module"
 
 @NgModule({
-	imports: [CommonModule, MaterialModule],
-	declarations: [AttributeTypeSelectorComponent],
-	exports: [AttributeTypeSelectorComponent]
+    imports: [CommonModule, MaterialModule],
+    declarations: [AttributeTypeSelectorComponent],
+    exports: [AttributeTypeSelectorComponent]
 })
 export class AttributeTypeSelectorModule {}

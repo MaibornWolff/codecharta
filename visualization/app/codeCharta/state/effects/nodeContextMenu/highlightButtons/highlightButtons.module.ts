@@ -4,8 +4,8 @@ import { MaterialModule } from "../../../../../material/material.module"
 import { HighlightButtonsComponent } from "./highlightButtons.component"
 
 @NgModule({
-	imports: [CommonModule, MaterialModule],
-	declarations: [HighlightButtonsComponent],
-	exports: [HighlightButtonsComponent]
+    imports: [CommonModule, MaterialModule],
+    declarations: [HighlightButtonsComponent],
+    exports: [HighlightButtonsComponent]
 })
 export class HighlightButtonsModule {}

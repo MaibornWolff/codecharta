@@ -1,11 +1,11 @@
 ---
 categories:
-    - ADR
+  - ADR
 tags:
-    - analysis
-    - gradle
-    - node
-    - npm
+  - analysis
+  - gradle
+  - node
+  - npm
 title: "ADR 9: Decide Codecharta-Analysis npm execution"
 ---
 
@@ -32,6 +32,6 @@ accepted 2.
 
 # Consequences
 
--   If npm ever decides to significantly change their folder structure the custom bin-links need to be adapted
--   The use and the copying of the new bin-link scripts present two new potential error points that must be taken into account in new bug reports. So it must be controlled whether the scripts were copied correctly and if these were called correctly.
--   It could happen that users who use highly customized npm environments encounter problems during the installation of codecharta-analysis if directory paths deviate too much from the default
+- If npm ever decides to significantly change their folder structure the custom bin-links need to be adapted
+- The use and the copying of the new bin-link scripts present two new potential error points that must be taken into account in new bug reports. So it must be controlled whether the scripts were copied correctly and if these were called correctly.
+- It could happen that users who use highly customized npm environments encounter problems during the installation of codecharta-analysis if directory paths deviate too much from the default

@@ -53,20 +53,20 @@ Components that export data from visualisation data to other formats.
 
 ## Requirements
 
--   Bash or similar
--   JRE 11+
+- Bash or similar
+- JRE 11+
 
 # Installation methods
 
 You can start with **Codecharta Analysis** on multiple ways:
 
--   [Installation](#installation-via-npm) as a [npm package](#installation-via-npm) (Recommended for users)
--   Use our [Docker Image](#installation-via-docker) to run the analysis in a container
--   Use [docker-compose](https://maibornwolff.github.io/codecharta/docs/docker-containers/) to run the analysis in a
-    complete environment with other needed tools like Sonar and a running CodeCharta Visualization instance to view your
-    city map.
--   Download the SourceCode from the asset section of a release and [extract it](#extract-tar-or-zip-archive)
--   Clone the repository and [build it yourself](#build-it-yourself) (Development)
+- [Installation](#installation-via-npm) as a [npm package](#installation-via-npm) (Recommended for users)
+- Use our [Docker Image](#installation-via-docker) to run the analysis in a container
+- Use [docker-compose](https://maibornwolff.github.io/codecharta/docs/docker-containers/) to run the analysis in a
+  complete environment with other needed tools like Sonar and a running CodeCharta Visualization instance to view your
+  city map.
+- Download the SourceCode from the asset section of a release and [extract it](#extract-tar-or-zip-archive)
+- Clone the repository and [build it yourself](#build-it-yourself) (Development)
 
 ## Installation via npm
 
@@ -85,47 +85,47 @@ We assume that you already installed docker, if not, you have to do that before!
 
 To containerize the analysis, please follow the below listed steps.
 
--   Navigate into the directory you want to analyse with CodeCharta. There are multiple ways to use the docker image:
-    1. Start the docker container and a bash shell in it
-       with `docker run --name codecharta-analysis -it -v $(pwd):$(pwd) -w $(pwd) codecharta/codecharta-analysis bash`.
-       This runs the image, names the container `codecharta-analysis`, mounts the current directory and sets it as the
-       working directory of your container. You can now use the codecharta shell or any other of the tools installed in
-       the container via the command line.
-    2. Start the docker container and directly use some command (like the
-       ccsh): `docker run --name codecharta-analysis -it -v $(pwd):$(pwd) -w $(pwd) codecharta/codecharta-analysis ccsh`.
-       This starts the Ccsh without any commands, which will open an interactive codecharta shell that will guide you
-       through the parsing/analyzing process. The working directory of your Terminal will be used as the working
-       directory of the container.
-    3. Start the docker container and directly use a specific
-       parser: `docker run --name codecharta-analysis -it -v $(pwd):$(pwd) -w $(pwd) codecharta/codecharta-analysis ccsh rawtextparser .`.
-       This starts the RawTextParser in the current working directory in a container.
--   After executing the run command once, you can repeat the same docker configuration
-    with `docker start codecharta-analysis` or you have to change the name or delete the old container if you want
-    to `docker run` a different configuration.
--   After analysing, you can copy any results
-    with `docker cp codecharta-analysis:/your/path/fileName.cc.json fileName.cc.json` to your current working directory (
-    replace `/your/path/` with correct path in container). If this does not work, make sure you assigned the
-    name `codecharta-analysis` to your container, if not use the correct name or container id.
+- Navigate into the directory you want to analyse with CodeCharta. There are multiple ways to use the docker image:
+  1. Start the docker container and a bash shell in it
+     with `docker run --name codecharta-analysis -it -v $(pwd):$(pwd) -w $(pwd) codecharta/codecharta-analysis bash`.
+     This runs the image, names the container `codecharta-analysis`, mounts the current directory and sets it as the
+     working directory of your container. You can now use the codecharta shell or any other of the tools installed in
+     the container via the command line.
+  2. Start the docker container and directly use some command (like the
+     ccsh): `docker run --name codecharta-analysis -it -v $(pwd):$(pwd) -w $(pwd) codecharta/codecharta-analysis ccsh`.
+     This starts the Ccsh without any commands, which will open an interactive codecharta shell that will guide you
+     through the parsing/analyzing process. The working directory of your Terminal will be used as the working
+     directory of the container.
+  3. Start the docker container and directly use a specific
+     parser: `docker run --name codecharta-analysis -it -v $(pwd):$(pwd) -w $(pwd) codecharta/codecharta-analysis ccsh rawtextparser .`.
+     This starts the RawTextParser in the current working directory in a container.
+- After executing the run command once, you can repeat the same docker configuration
+  with `docker start codecharta-analysis` or you have to change the name or delete the old container if you want
+  to `docker run` a different configuration.
+- After analysing, you can copy any results
+  with `docker cp codecharta-analysis:/your/path/fileName.cc.json fileName.cc.json` to your current working directory (
+  replace `/your/path/` with correct path in container). If this does not work, make sure you assigned the
+  name `codecharta-analysis` to your container, if not use the correct name or container id.
 
 ## Extract tar or zip archive
 
--   Download / build package
--   Unzip / untar package in desired destination folder (named CC_INSTALL_DIR)
--   In bash:
-    > ./bin/ccsh -h
--   Activate Bash (TAB) Autocompletion for ccsh command:
-    > source <(./bin/ccsh generate-completion)
-    -   Enter `ccsh` and press `TAB` to see available commands
-    -   Enter `ccsh <ANY-COMMAND> -` and press `TAB` to see available parameters
+- Download / build package
+- Unzip / untar package in desired destination folder (named CC_INSTALL_DIR)
+- In bash:
+  > ./bin/ccsh -h
+- Activate Bash (TAB) Autocompletion for ccsh command:
+  > source <(./bin/ccsh generate-completion)
+  - Enter `ccsh` and press `TAB` to see available commands
+  - Enter `ccsh <ANY-COMMAND> -` and press `TAB` to see available parameters
 
 # Build it yourself
 
 There are some additional requirements if you want to build it yourself:
 
--   NodeJS
--   Metric-Gardener:
--   -   Python
--   -   C/C++ compiler toolchain (e.g. Visual Studio Build Tools 2022 with "Desktop development with C++")
+- NodeJS
+- Metric-Gardener:
+- - Python
+- - C/C++ compiler toolchain (e.g. Visual Studio Build Tools 2022 with "Desktop development with C++")
 
 ## Build
 
@@ -135,11 +135,11 @@ Via gradle:
 
 ## Test
 
--   Unit tests:
+- Unit tests:
 
 > ./gradlew test
 
--   Integration tests:
+- Integration tests:
 
 > ./gradlew integrationTest
 

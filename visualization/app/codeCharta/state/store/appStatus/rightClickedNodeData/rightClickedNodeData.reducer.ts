@@ -4,6 +4,6 @@ import { setRightClickedNodeData } from "./rightClickedNodeData.actions"
 
 export const defaultRightClickedNodeData: CcState["appStatus"]["rightClickedNodeData"] = null
 export const rightClickedNodeData = createReducer(
-	defaultRightClickedNodeData,
-	on(setRightClickedNodeData, (_state, action) => action.value)
+    defaultRightClickedNodeData,
+    on(setRightClickedNodeData, (_state, action) => action.value)
 )

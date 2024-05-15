@@ -2,103 +2,103 @@
 
 $fixedHeight: 35;
 cc-legend-panel {
-	.rotated-button {
-		position: fixed;
-		transform: rotate(90deg);
-		border-radius: 0 0 5px 5px;
-		height: 36px;
-		right: -35px;
-		color: white;
-		user-select: none;
-		background-color: theme.$cc-primary-color;
+    .rotated-button {
+        position: fixed;
+        transform: rotate(90deg);
+        border-radius: 0 0 5px 5px;
+        height: 36px;
+        right: -35px;
+        color: white;
+        user-select: none;
+        background-color: theme.$cc-primary-color;
 
-		&:hover {
-			background-color: theme.$cc-emphasized-color;
-		}
+        &:hover {
+            background-color: theme.$cc-emphasized-color;
+        }
 
-		&.isAttributeSideBarVisible {
-			right: 316px;
-		}
-	}
+        &.isAttributeSideBarVisible {
+            right: 316px;
+        }
+    }
 
-	.panel-button {
-		@extend .rotated-button;
-		margin: 6px 8px;
-		bottom: ($fixedHeight + 20) + px;
-		width: 88px;
-	}
+    .panel-button {
+        @extend .rotated-button;
+        margin: 6px 8px;
+        bottom: ($fixedHeight + 20) + px;
+        width: 88px;
+    }
 
-	.block-wrapper {
-		background-color: white;
-		border: 1px solid #cdcdcd;
-		position: fixed;
-		bottom: $fixedHeight + px;
-		padding: 10px;
-		right: 40px;
-		visibility: hidden;
-		border-radius: 5px;
-		min-width: 200px;
-		max-width: 30%;
+    .block-wrapper {
+        background-color: white;
+        border: 1px solid #cdcdcd;
+        position: fixed;
+        bottom: $fixedHeight + px;
+        padding: 10px;
+        right: 40px;
+        visibility: hidden;
+        border-radius: 5px;
+        min-width: 200px;
+        max-width: 30%;
 
-		&.isAttributeSideBarVisible {
-			right: 390px;
-		}
+        &.isAttributeSideBarVisible {
+            right: 390px;
+        }
 
-		&.visible {
-			visibility: visible;
-		}
+        &.visible {
+            visibility: visible;
+        }
 
-		hr {
-			border-right-style: none;
-			border-left-style: none;
-			border-bottom-style: none;
-			color: #000;
-		}
+        hr {
+            border-right-style: none;
+            border-left-style: none;
+            border-bottom-style: none;
+            color: #000;
+        }
 
-		cc-legend-block {
-			a:link,
-			a:visited {
-				text-decoration: none;
-				color: #000;
-			}
+        cc-legend-block {
+            a:link,
+            a:visited {
+                text-decoration: none;
+                color: #000;
+            }
 
-			a:hover {
-				color: blue;
-				text-decoration: solid;
-				text-decoration-line: underline;
-			}
+            a:hover {
+                color: blue;
+                text-decoration: solid;
+                text-decoration-line: underline;
+            }
 
-			a:active {
-				color: red;
-			}
+            a:active {
+                color: red;
+            }
 
-			i.fa.fa-external-link {
-				font-size: 10px;
-				min-width: 10px;
-				text-align: center;
-			}
+            i.fa.fa-external-link {
+                font-size: 10px;
+                min-width: 10px;
+                text-align: center;
+            }
 
-			span {
-				display: inline-block;
-			}
-		}
+            span {
+                display: inline-block;
+            }
+        }
 
-		.bold {
-			font-weight: 600;
-		}
+        .bold {
+            font-weight: 600;
+        }
 
-		.cc-labelled-color-picker-container > .cc-labelled-color-picker-label {
-			white-space: nowrap;
-			text-overflow: ellipsis;
+        .cc-labelled-color-picker-container > .cc-labelled-color-picker-label {
+            white-space: nowrap;
+            text-overflow: ellipsis;
 
-			/* This tricks the browser into cutting off the beginning instead of the end of the label. However,
+            /* This tricks the browser into cutting off the beginning instead of the end of the label. However,
 			   changing the text direction has side effects, like moving punctuation around.  */
-			direction: rtl;
+            direction: rtl;
 
-			span {
-				/* This should prevent the browser from moving punctuation around.  */
-				unicode-bidi: plaintext;
-			}
-		}
-	}
+            span {
+                /* This should prevent the browser from moving punctuation around.  */
+                unicode-bidi: plaintext;
+            }
+        }
+    }
 }

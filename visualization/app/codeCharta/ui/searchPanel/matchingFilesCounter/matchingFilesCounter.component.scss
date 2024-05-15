@@ -1,55 +1,55 @@
 cc-matching-files-counter {
-	.node-count {
-		background: #eee;
-		color: black;
-		padding: 4px 8px;
-		margin-right: 8px;
-	}
+    .node-count {
+        background: #eee;
+        color: black;
+        padding: 4px 8px;
+        margin-right: 8px;
+    }
 
-	.node-count i {
-		margin-left: 6px;
-	}
+    .node-count i {
+        margin-left: 6px;
+    }
 
-	.box-rounded {
-		display: inline-block;
-		font-weight: normal;
-		line-height: 17px;
-		font-size: 10pt;
-		margin-top: 2px;
-		min-width: 20px;
-		border-radius: 4px;
-		text-align: center;
-	}
+    .box-rounded {
+        display: inline-block;
+        font-weight: normal;
+        line-height: 17px;
+        font-size: 10pt;
+        margin-top: 2px;
+        min-width: 20px;
+        border-radius: 4px;
+        text-align: center;
+    }
 
-	.png-icon-files-counter {
-		width: 19px;
-		height: 16px;
-		margin-left: 6px;
-	}
+    .png-icon-files-counter {
+        width: 19px;
+        height: 16px;
+        margin-left: 6px;
+    }
 
-	cc-thumb-tack-button button {
-		height: 25px;
-		background: #e6e6e6;
-		padding: 1px 8px;
-	}
+    cc-thumb-tack-button button {
+        height: 25px;
+        background: #e6e6e6;
+        padding: 1px 8px;
+    }
 
-	cc-sorting-button button {
-		height: 25px;
-		background: #e6e6e6;
-		padding: 1px 8px;
-	}
+    cc-sorting-button button {
+        height: 25px;
+        background: #e6e6e6;
+        padding: 1px 8px;
+    }
 
-	cc-sorting-option .mat-mdc-select {
-		width: 105px;
-		padding: 2px 8px;
-		font-weight: normal;
-		line-height: 17px;
-		font-size: 10pt;
-	}
+    cc-sorting-option .mat-mdc-select {
+        width: 105px;
+        padding: 2px 8px;
+        font-weight: normal;
+        line-height: 17px;
+        font-size: 10pt;
+    }
 
-	.clickable-component {
-		display: inline-block;
-		color: black;
-		margin-left: -9px;
-	}
+    .clickable-component {
+        display: inline-block;
+        color: black;
+        margin-left: -9px;
+    }
 }

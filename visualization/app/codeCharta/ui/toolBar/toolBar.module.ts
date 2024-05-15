@@ -13,20 +13,20 @@ import { LoadingMapProgressSpinnerModule } from "./loadingMapProgressSpinner/loa
 import { ResetMapButtonModule } from "../resetMapButton/resetMapButton.module"
 
 @NgModule({
-	imports: [
-		CommonModule,
-		UploadFilesButtonModule,
-		ScreenshotButtonModule,
-		CopyToClipboardButtonModule,
-		Export3DMapButtonModule,
-		ResetMapButtonModule,
-		FilePanelModule,
-		HoveredNodePathPanelModule,
-		LoadingMapProgressSpinnerModule,
-		PresentationModeButtonModule,
-		GlobalConfigurationButtonModule
-	],
-	declarations: [ToolBarComponent],
-	exports: [ToolBarComponent]
+    imports: [
+        CommonModule,
+        UploadFilesButtonModule,
+        ScreenshotButtonModule,
+        CopyToClipboardButtonModule,
+        Export3DMapButtonModule,
+        ResetMapButtonModule,
+        FilePanelModule,
+        HoveredNodePathPanelModule,
+        LoadingMapProgressSpinnerModule,
+        PresentationModeButtonModule,
+        GlobalConfigurationButtonModule
+    ],
+    declarations: [ToolBarComponent],
+    exports: [ToolBarComponent]
 })
 export class ToolBarModule {}

@@ -5,22 +5,22 @@ import { VisibleFilesBySelectionMode } from "../visibleFilesBySelectionMode.sele
 export type DownloadableConfigs = Map<string, ExportCustomConfig>
 
 export const getDownloadableCustomConfigs = ({ assignedMaps }: VisibleFilesBySelectionMode): DownloadableConfigs => {
-	const downloadableConfigs: DownloadableConfigs = new Map()
-	const customConfigs = CustomConfigHelper.getCustomConfigs()
+    const downloadableConfigs: DownloadableConfigs = new Map()
+    const customConfigs = CustomConfigHelper.getCustomConfigs()
 
-	for (const [checksum, customConfig] of customConfigs.entries()) {
-		// Only Configs which are applicable for at least one of the uploaded maps should be downloaded.
-		if (isConfigApplicableForUploadedMaps(customConfig.assignedMaps, assignedMaps)) {
-			downloadableConfigs.set(checksum, CustomConfigHelper.createExportCustomConfigFromConfig(customConfig))
-		}
-	}
-	return downloadableConfigs
+    for (const [checksum, customConfig] of customConfigs.entries()) {
+        // Only Configs which are applicable for at least one of the uploaded maps should be downloaded.
+        if (isConfigApplicableForUploadedMaps(customConfig.assignedMaps, assignedMaps)) {
+            downloadableConfigs.set(checksum, CustomConfigHelper.createExportCustomConfigFromConfig(customConfig))
+        }
+    }
+    return downloadableConfigs
 }
 
 function isConfigApplicableForUploadedMaps(
-	assignedMapsOfConfig: MapNamesByChecksum,
-	assignedMapsOfVisibleFiles: MapNamesByChecksum
+    assignedMapsOfConfig: MapNamesByChecksum,
+    assignedMapsOfVisibleFiles: MapNamesByChecksum
 ): boolean {
-	const mapChecksumsOfConfig = [...assignedMapsOfConfig.keys()]
-	return mapChecksumsOfConfig.some(mapChecksumConfig => assignedMapsOfVisibleFiles.has(mapChecksumConfig))
+    const mapChecksumsOfConfig = [...assignedMapsOfConfig.keys()]
+    return mapChecksumsOfConfig.some(mapChecksumConfig => assignedMapsOfVisibleFiles.has(mapChecksumConfig))
 }

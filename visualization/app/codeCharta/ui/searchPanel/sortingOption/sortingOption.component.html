@@ -1,12 +1,12 @@
 <mat-select
-	class="sorting-option-select"
-	title="Sort by"
-	[value]="selectedSortingOption$ | async"
-	(selectionChange)="handleSelectedSortingOptionChanged($event)"
+    class="sorting-option-select"
+    title="Sort by"
+    [value]="selectedSortingOption$ | async"
+    (selectionChange)="handleSelectedSortingOptionChanged($event)"
 >
-	@for (option of sortingOptions; track option) {
-	<mat-option [value]="option">
-		{{ option }}
-	</mat-option>
-	}
+    @for (option of sortingOptions; track option) {
+        <mat-option [value]="option">
+            {{ option }}
+        </mat-option>
+    }
 </mat-select>

@@ -3,7 +3,7 @@ import { mapColorsSelector } from "../../../../state/store/appSettings/mapColors
 import { isDeltaStateSelector } from "../../../../state/selectors/isDeltaState.selector"
 
 export const metricColorRangeColorsSelector = createSelector(mapColorsSelector, isDeltaStateSelector, mapColors => ({
-	leftColor: mapColors.positive,
-	middleColor: mapColors.neutral,
-	rightColor: mapColors.negative
+    leftColor: mapColors.positive,
+    middleColor: mapColors.neutral,
+    rightColor: mapColors.negative
 }))

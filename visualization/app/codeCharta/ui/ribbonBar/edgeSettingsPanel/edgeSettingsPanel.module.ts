@@ -8,8 +8,8 @@ import { EdgeMetricToggleComponent } from "./edgeMetricToggle/edgeMetricToggle.c
 import { EdgeSettingsPanelComponent } from "./edgeSettingsPanel.component"
 
 @NgModule({
-	imports: [CommonModule, ResetSettingsButtonModule, SliderModule, MaterialModule, ColorPickerForMapColorModule],
-	declarations: [EdgeSettingsPanelComponent, EdgeMetricToggleComponent],
-	exports: [EdgeSettingsPanelComponent]
+    imports: [CommonModule, ResetSettingsButtonModule, SliderModule, MaterialModule, ColorPickerForMapColorModule],
+    declarations: [EdgeSettingsPanelComponent, EdgeMetricToggleComponent],
+    exports: [EdgeSettingsPanelComponent]
 })
 export class EdgeSettingsPanelModule {}

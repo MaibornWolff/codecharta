@@ -3,7 +3,7 @@ import { getReadableColorForBackground } from "../../util/color/getReadableColor
 
 @Pipe({ name: "readableColorForBackground" })
 export class ReadableColorForBackgroundPipe {
-	transform(hexColor: string) {
-		return getReadableColorForBackground(hexColor)
-	}
+    transform(hexColor: string) {
+        return getReadableColorForBackground(hexColor)
+    }
 }

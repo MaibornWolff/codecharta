@@ -1,9 +1,9 @@
 ---
 categories:
-    - ADR
+  - ADR
 tags:
-    - analysis
-    - kotlin
+  - analysis
+  - kotlin
 title: "ADR 2: Pick Analysis Stack Language"
 ---
 
@@ -22,7 +22,7 @@ Also it has great interop support with java, which is of great benefit since man
 
 # Consequences
 
--   While similar to Java, Kotlin is different enough to require some getting used to. The transition shouldn't take longer than a couple of weeks though.
--   Not every tool that is available for Java development, is also available in a Kotlin edition.
--   Parts of it might not be production ready and break at unexpected moment. This is ok for our case, because the analysis does not have to be real time and can be restarted.
-    -   On May 17, 2017 [Google announced](https://blog.jetbrains.com/kotlin/2017/05/kotlin-on-android-now-official/) first-class support for Kotlin on Android. This makes the previous point a bit less likely to be true.
+- While similar to Java, Kotlin is different enough to require some getting used to. The transition shouldn't take longer than a couple of weeks though.
+- Not every tool that is available for Java development, is also available in a Kotlin edition.
+- Parts of it might not be production ready and break at unexpected moment. This is ok for our case, because the analysis does not have to be real time and can be restarted.
+  - On May 17, 2017 [Google announced](https://blog.jetbrains.com/kotlin/2017/05/kotlin-on-android-now-official/) first-class support for Kotlin on Android. This makes the previous point a bit less likely to be true.

@@ -5,7 +5,7 @@ import { setState } from "../../util/setState.reducer.factory"
 
 export const defaultSearchPattern = ""
 export const searchPattern = createReducer(
-	defaultSearchPattern,
-	on(setSearchPattern, setState(defaultSearchPattern)),
-	on(setStandard, () => defaultSearchPattern)
+    defaultSearchPattern,
+    on(setSearchPattern, setState(defaultSearchPattern)),
+    on(setStandard, () => defaultSearchPattern)
 )

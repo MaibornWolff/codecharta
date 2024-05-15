@@ -4,8 +4,8 @@ import { fileSettingsActions } from "../../store/fileSettings/fileSettings.actio
 import { fileActions } from "../../store/files/files.actions"
 
 export const actionsRequiringSaveCcState = [
-	[...fileSettingsActions],
-	[...appSettingsActions],
-	[...dynamicSettingsActions],
-	[...fileActions]
+    [...fileSettingsActions],
+    [...appSettingsActions],
+    [...dynamicSettingsActions],
+    [...fileActions]
 ].flat()

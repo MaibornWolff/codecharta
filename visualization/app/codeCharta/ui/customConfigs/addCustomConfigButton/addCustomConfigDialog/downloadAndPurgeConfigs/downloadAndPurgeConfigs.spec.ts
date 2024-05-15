@@ -19,71 +19,71 @@ jest.mock("../downloadAndCollectPurgeableConfigs", () => ({ downloadAndCollectPu
 const mockedDownloadAndCollectPurgeableOldConfigs = jest.mocked(downloadAndCollectPurgeableConfigs)
 
 describe("downloadAndPurgeConfigsComponent", () => {
-	@NgModule({
-		imports: [MaterialModule],
-		providers: [{ provide: InteractivityChecker, useValue: { isFocusable: () => true, isTabbable: () => true } }],
-		declarations: [ErrorDialogComponent, ConfirmationDialogComponent]
-	})
-	class TestModule {}
+    @NgModule({
+        imports: [MaterialModule],
+        providers: [{ provide: InteractivityChecker, useValue: { isFocusable: () => true, isTabbable: () => true } }],
+        declarations: [ErrorDialogComponent, ConfirmationDialogComponent]
+    })
+    class TestModule {}
 
-	beforeEach(() => {
-		document.body.innerHTML = ""
-		TestBed.configureTestingModule({
-			imports: [TestModule]
-		})
-	})
+    beforeEach(() => {
+        document.body.innerHTML = ""
+        TestBed.configureTestingModule({
+            imports: [TestModule]
+        })
+    })
 
-	it("should not show 'DOWNLOAD & PURGE' button when local storage size is valid", async () => {
-		mockedValidateLocalStorageSize.mockReturnValue(true)
-		await render(DownloadAndPurgeConfigsComponent)
+    it("should not show 'DOWNLOAD & PURGE' button when local storage size is valid", async () => {
+        mockedValidateLocalStorageSize.mockReturnValue(true)
+        await render(DownloadAndPurgeConfigsComponent)
 
-		expect(screen.queryByText("DOWNLOAD & PURGE...")).toBe(null)
-	})
+        expect(screen.queryByText("DOWNLOAD & PURGE...")).toBe(null)
+    })
 
-	it("should show 'DOWNLOAD & PURGE' button when local storage size is invalid", async () => {
-		mockedValidateLocalStorageSize.mockReturnValue(false)
-		await render(DownloadAndPurgeConfigsComponent)
+    it("should show 'DOWNLOAD & PURGE' button when local storage size is invalid", async () => {
+        mockedValidateLocalStorageSize.mockReturnValue(false)
+        await render(DownloadAndPurgeConfigsComponent)
 
-		expect(screen.queryByText("DOWNLOAD & PURGE...")).not.toBeNull()
-	})
+        expect(screen.queryByText("DOWNLOAD & PURGE...")).not.toBeNull()
+    })
 
-	it("should show 'Download Error' dialog when download and purge custom views is not possible", async () => {
-		mockedValidateLocalStorageSize.mockReturnValue(false)
-		mockedDownloadAndCollectPurgeableOldConfigs.mockReturnValue(new Set())
-		await render(DownloadAndPurgeConfigsComponent)
+    it("should show 'Download Error' dialog when download and purge custom views is not possible", async () => {
+        mockedValidateLocalStorageSize.mockReturnValue(false)
+        mockedDownloadAndCollectPurgeableOldConfigs.mockReturnValue(new Set())
+        await render(DownloadAndPurgeConfigsComponent)
 
-		await userEvent.click(screen.queryByText("DOWNLOAD & PURGE..."))
+        await userEvent.click(screen.queryByText("DOWNLOAD & PURGE..."))
 
-		expect(screen.queryByText("Download Error")).not.toBeNull()
-	})
+        expect(screen.queryByText("Download Error")).not.toBeNull()
+    })
 
-	describe("ConfirmationDialogComponent", () => {
-		let spyOnDeleteCustomConfigs
+    describe("ConfirmationDialogComponent", () => {
+        let spyOnDeleteCustomConfigs
 
-		beforeEach(() => {
-			mockedValidateLocalStorageSize.mockReturnValue(false)
-			mockedDownloadAndCollectPurgeableOldConfigs.mockReturnValue(new Set([{} as CustomConfig]))
-			spyOnDeleteCustomConfigs = jest.spyOn(CustomConfigHelper, "deleteCustomConfigs").mockImplementation(() => undefined)
-		})
+        beforeEach(() => {
+            mockedValidateLocalStorageSize.mockReturnValue(false)
+            mockedDownloadAndCollectPurgeableOldConfigs.mockReturnValue(new Set([{} as CustomConfig]))
+            spyOnDeleteCustomConfigs = jest.spyOn(CustomConfigHelper, "deleteCustomConfigs").mockImplementation(() => undefined)
+        })
 
-		it("should let user abort purging old custom views", async () => {
-			await render(DownloadAndPurgeConfigsComponent)
+        it("should let user abort purging old custom views", async () => {
+            await render(DownloadAndPurgeConfigsComponent)
 
-			await userEvent.click(screen.queryByText("DOWNLOAD & PURGE..."))
-			expect(screen.queryByText("Confirm to purge old Configs")).not.toBeNull()
-			await userEvent.click(screen.queryByText("CANCEL"))
-			expect(screen.queryByText("CANCEL")).toBeNull()
-			expect(spyOnDeleteCustomConfigs).toHaveBeenCalledTimes(0)
-		})
+            await userEvent.click(screen.queryByText("DOWNLOAD & PURGE..."))
+            expect(screen.queryByText("Confirm to purge old Configs")).not.toBeNull()
+            await userEvent.click(screen.queryByText("CANCEL"))
+            expect(screen.queryByText("CANCEL")).toBeNull()
+            expect(spyOnDeleteCustomConfigs).toHaveBeenCalledTimes(0)
+        })
 
-		it("should let user confirm purging old custom views", async () => {
-			await render(DownloadAndPurgeConfigsComponent)
+        it("should let user confirm purging old custom views", async () => {
+            await render(DownloadAndPurgeConfigsComponent)
 
-			await userEvent.click(screen.queryByText("DOWNLOAD & PURGE..."))
-			expect(screen.queryByText("Confirm to purge old Configs")).not.toBeNull()
-			await userEvent.click(screen.queryByText("OK"))
-			expect(screen.queryByText("OK")).toBeNull()
-			expect(spyOnDeleteCustomConfigs).toHaveBeenCalledTimes(1)
-		})
-	})
+            await userEvent.click(screen.queryByText("DOWNLOAD & PURGE..."))
+            expect(screen.queryByText("Confirm to purge old Configs")).not.toBeNull()
+            await userEvent.click(screen.queryByText("OK"))
+            expect(screen.queryByText("OK")).toBeNull()
+            expect(spyOnDeleteCustomConfigs).toHaveBeenCalledTimes(1)
+        })
+    })
 })

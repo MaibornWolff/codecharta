@@ -6,8 +6,8 @@ import { LabelledColorPickerComponent } from "./labelledColorPicker.component"
 import { ReadableColorForBackgroundPipe } from "./readableColorForBackground.pipe"
 
 @NgModule({
-	imports: [CommonModule, ColorPickerModule],
-	declarations: [LabelledColorPickerComponent, ReadableColorForBackgroundPipe],
-	exports: [LabelledColorPickerComponent]
+    imports: [CommonModule, ColorPickerModule],
+    declarations: [LabelledColorPickerComponent, ReadableColorForBackgroundPipe],
+    exports: [LabelledColorPickerComponent]
 })
 export class LabelledColorPickerModule {}

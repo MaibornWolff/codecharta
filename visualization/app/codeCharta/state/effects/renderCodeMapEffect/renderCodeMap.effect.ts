@@ -15,40 +15,40 @@ export const maxFPS = 1000 / 60
 
 @Injectable()
 export class RenderCodeMapEffect {
-	constructor(
-		private store: Store<CcState>,
-		private actions$: Actions,
-		private uploadFilesService: UploadFilesService,
-		private threeRendererService: ThreeRendererService,
-		private codeMapRenderService: CodeMapRenderService
-	) {}
+    constructor(
+        private store: Store<CcState>,
+        private actions$: Actions,
+        private uploadFilesService: UploadFilesService,
+        private threeRendererService: ThreeRendererService,
+        private codeMapRenderService: CodeMapRenderService
+    ) {}
 
-	private actionsRequiringRender$ = this.actions$.pipe(ofType(...actionsRequiringRerender))
+    private actionsRequiringRender$ = this.actions$.pipe(ofType(...actionsRequiringRerender))
 
-	renderCodeMap$ = createEffect(
-		() =>
-			combineLatest([this.store.select(accumulatedDataSelector), this.actionsRequiringRender$]).pipe(
-				filter(([accumulatedData]) => Boolean(accumulatedData.unifiedMapNode)),
-				throttleTime(maxFPS, asyncScheduler, { leading: false, trailing: true }),
-				tap(([accumulatedData]) => {
-					this.codeMapRenderService.render(accumulatedData.unifiedMapNode)
-					this.codeMapRenderService.scaleMap()
-					this.threeRendererService.render()
-				}),
-				share()
-			),
-		{ dispatch: false }
-	)
+    renderCodeMap$ = createEffect(
+        () =>
+            combineLatest([this.store.select(accumulatedDataSelector), this.actionsRequiringRender$]).pipe(
+                filter(([accumulatedData]) => Boolean(accumulatedData.unifiedMapNode)),
+                throttleTime(maxFPS, asyncScheduler, { leading: false, trailing: true }),
+                tap(([accumulatedData]) => {
+                    this.codeMapRenderService.render(accumulatedData.unifiedMapNode)
+                    this.codeMapRenderService.scaleMap()
+                    this.threeRendererService.render()
+                }),
+                share()
+            ),
+        { dispatch: false }
+    )
 
-	removeLoadingIndicatorAfterRender$ = createEffect(
-		() =>
-			this.renderCodeMap$.pipe(
-				filter(() => !this.uploadFilesService.isUploading),
-				tap(() => {
-					this.store.dispatch(setIsLoadingFile({ value: false }))
-					this.store.dispatch(setIsLoadingMap({ value: false }))
-				})
-			),
-		{ dispatch: false }
-	)
+    removeLoadingIndicatorAfterRender$ = createEffect(
+        () =>
+            this.renderCodeMap$.pipe(
+                filter(() => !this.uploadFilesService.isUploading),
+                tap(() => {
+                    this.store.dispatch(setIsLoadingFile({ value: false }))
+                    this.store.dispatch(setIsLoadingMap({ value: false }))
+                })
+            ),
+        { dispatch: false }
+    )
 }

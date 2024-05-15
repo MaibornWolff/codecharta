@@ -4,41 +4,44 @@ import { IdToBuildingService } from "../../../../services/idToBuilding/idToBuild
 import { ThreeSceneService } from "../../../../ui/codeMap/threeViewer/threeSceneService"
 
 @Component({
-	selector: "cc-highlight-buttons",
-	templateUrl: "./highlightButtons.component.html",
-	encapsulation: ViewEncapsulation.None
+    selector: "cc-highlight-buttons",
+    templateUrl: "./highlightButtons.component.html",
+    encapsulation: ViewEncapsulation.None
 })
 export class HighlightButtonsComponent implements OnChanges {
-	@Input() codeMapNode: Pick<CodeMapNode, "id">
+    @Input() codeMapNode: Pick<CodeMapNode, "id">
 
-	isHighlighted: boolean
+    isHighlighted: boolean
 
-	constructor(private threeSceneService: ThreeSceneService, private idToBuilding: IdToBuildingService) {}
+    constructor(
+        private threeSceneService: ThreeSceneService,
+        private idToBuilding: IdToBuildingService
+    ) {}
 
-	ngOnChanges(changes: SimpleChanges): void {
-		if (changes.codeMapNode) {
-			this.isHighlighted = this.calculateIsHighlighted()
-		}
-	}
+    ngOnChanges(changes: SimpleChanges): void {
+        if (changes.codeMapNode) {
+            this.isHighlighted = this.calculateIsHighlighted()
+        }
+    }
 
-	addNodeToConstantHighlight() {
-		this.threeSceneService.addNodeAndChildrenToConstantHighlight(this.codeMapNode)
-	}
+    addNodeToConstantHighlight() {
+        this.threeSceneService.addNodeAndChildrenToConstantHighlight(this.codeMapNode)
+    }
 
-	removeNodeFromConstantHighlight() {
-		this.threeSceneService.removeNodeAndChildrenFromConstantHighlight(this.codeMapNode)
-	}
+    removeNodeFromConstantHighlight() {
+        this.threeSceneService.removeNodeAndChildrenFromConstantHighlight(this.codeMapNode)
+    }
 
-	private calculateIsHighlighted() {
-		if (!this.codeMapNode) {
-			return false
-		}
+    private calculateIsHighlighted() {
+        if (!this.codeMapNode) {
+            return false
+        }
 
-		const codeMapBuilding = this.idToBuilding.get(this.codeMapNode.id)
-		if (!codeMapBuilding) {
-			return false
-		}
+        const codeMapBuilding = this.idToBuilding.get(this.codeMapNode.id)
+        if (!codeMapBuilding) {
+            return false
+        }
 
-		return this.threeSceneService.getConstantHighlight().has(codeMapBuilding.id)
-	}
+        return this.threeSceneService.getConstantHighlight().has(codeMapBuilding.id)
+    }
 }

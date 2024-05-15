@@ -1,72 +1,77 @@
 <button [matMenuTriggerFor]="menu" title="Open Suspicious Metrics Panel" class="cc-ribbon-bar-menu-button" (click)="hideBadge = true">
-	<i class="fa fa-exclamation-triangle"></i>
-	@if ( !hideBadge && (data.analyzedProgrammingLanguage !== undefined || data.suspiciousMetricSuggestionLinks.length ||
-	data.unsuspiciousMetrics.length) ) {
-	<span class="suspicious-metrics-badge">
-		{{ data.suspiciousMetricSuggestionLinks.length }}
-	</span>
-	}
+    <i class="fa fa-exclamation-triangle"></i>
+    @if (
+        !hideBadge &&
+        (data.analyzedProgrammingLanguage !== undefined || data.suspiciousMetricSuggestionLinks.length || data.unsuspiciousMetrics.length)
+    ) {
+        <span class="suspicious-metrics-badge">
+            {{ data.suspiciousMetricSuggestionLinks.length }}
+        </span>
+    }
 </button>
 
 <mat-menu #menu="matMenu" class="ai-drop-down suspicious-metric-panel">
-	<div>
-		<div class="title">
-			<div>Suspicious Metrics</div>
-		</div>
-		<div class="suspicious-metric">
-			This feature compares the values of certain metrics from the loaded cc.json file with metric values of 241 Open Source Java
-			projects. Based on this data suspicious and inconspicuous metrics are identified and corresponding suggestions can be clicked to
-			view them. Be aware that metrics for other programming languages might not be comparable to Java Reference metric values. More
-			information can be found here:
-			<a href="https://maibornwolff.github.io/codecharta/docs/suspicious-metrics/">link</a> to How-To article.
-		</div>
-		@if (data.unsuspiciousMetrics.length) {
-		<div class="title">
-			{{
-				data.analyzedProgrammingLanguage?.length
-					? "Unsuspicious Metrics in " + data.analyzedProgrammingLanguage + " code"
-					: "Unsuspicious Metrics"
-			}}
-		</div>
-		}
-		<ul>
-			@for (unsuspiciousMetric of data.unsuspiciousMetrics; track unsuspiciousMetric) {
-			<li>{{ unsuspiciousMetric }}</li>
-			}
-		</ul>
-	</div>
+    <div>
+        <div class="title">
+            <div>Suspicious Metrics</div>
+        </div>
+        <div class="suspicious-metric">
+            This feature compares the values of certain metrics from the loaded cc.json file with metric values of 241 Open Source Java
+            projects. Based on this data suspicious and inconspicuous metrics are identified and corresponding suggestions can be clicked to
+            view them. Be aware that metrics for other programming languages might not be comparable to Java Reference metric values. More
+            information can be found here:
+            <a href="https://maibornwolff.github.io/codecharta/docs/suspicious-metrics/">link</a> to How-To article.
+        </div>
+        @if (data.unsuspiciousMetrics.length) {
+            <div class="title">
+                {{
+                    data.analyzedProgrammingLanguage?.length
+                        ? "Unsuspicious Metrics in " + data.analyzedProgrammingLanguage + " code"
+                        : "Unsuspicious Metrics"
+                }}
+            </div>
+        }
+        <ul>
+            @for (unsuspiciousMetric of data.unsuspiciousMetrics; track unsuspiciousMetric) {
+                <li>{{ unsuspiciousMetric }}</li>
+            }
+        </ul>
+    </div>
 
-	@if (data.suspiciousMetricSuggestionLinks.length) {
-	<div class="title new-section">Suspicious Metrics in {{ data.analyzedProgrammingLanguage }} code</div>
-	} @for (item of data.suspiciousMetricSuggestionLinks; track item) {
-	<div class="suspicious-metric">
-		<button
-			class="metric-button"
-			(click)="applySuspiciousMetric(item, false)"
-			title="Apply Map Configuration to show files with suspicious metric {{
-				item.metric
-			}} and high risk or very high risk depending on selection"
-		>
-			Suspicious {{ item.metric | uppercase }} Files
-		</button>
-		@if (item.isOutlier) {
-		<button class="risk-button" (click)="applySuspiciousMetric(item, true)" title="Show very high risk files (90th percentile)">
-			<i class="fa fa-exclamation-triangle"></i>
-		</button>
-		}
-	</div>
-	} @if (data.untrackedMetrics.length) {
-	<div>
-		@if (data.analyzedProgrammingLanguage.length) {
-		<div class="title">Untracked metrics in {{ data.analyzedProgrammingLanguage }} code</div>
-		}
-		<ul>
-			@for (untrackedMetric of data.untrackedMetrics; track untrackedMetric) {
-			<li>{{ untrackedMetric }}</li>
-			}
-		</ul>
-	</div>
-	} @if (data.analyzedProgrammingLanguage === undefined) {
-	<div>No programming language was found for analyzing suspicious metrics.</div>
-	}
+    @if (data.suspiciousMetricSuggestionLinks.length) {
+        <div class="title new-section">Suspicious Metrics in {{ data.analyzedProgrammingLanguage }} code</div>
+    }
+    @for (item of data.suspiciousMetricSuggestionLinks; track item) {
+        <div class="suspicious-metric">
+            <button
+                class="metric-button"
+                (click)="applySuspiciousMetric(item, false)"
+                title="Apply Map Configuration to show files with suspicious metric {{
+                    item.metric
+                }} and high risk or very high risk depending on selection"
+            >
+                Suspicious {{ item.metric | uppercase }} Files
+            </button>
+            @if (item.isOutlier) {
+                <button class="risk-button" (click)="applySuspiciousMetric(item, true)" title="Show very high risk files (90th percentile)">
+                    <i class="fa fa-exclamation-triangle"></i>
+                </button>
+            }
+        </div>
+    }
+    @if (data.untrackedMetrics.length) {
+        <div>
+            @if (data.analyzedProgrammingLanguage.length) {
+                <div class="title">Untracked metrics in {{ data.analyzedProgrammingLanguage }} code</div>
+            }
+            <ul>
+                @for (untrackedMetric of data.untrackedMetrics; track untrackedMetric) {
+                    <li>{{ untrackedMetric }}</li>
+                }
+            </ul>
+        </div>
+    }
+    @if (data.analyzedProgrammingLanguage === undefined) {
+        <div>No programming language was found for analyzing suspicious metrics.</div>
+    }
 </mat-menu>

@@ -11,88 +11,88 @@ import { CodeMapRenderService } from "../codeMap/codeMap.render.service"
 import { NodeSelectionService } from "./nodeSelection.service"
 
 describe("LoadInitialFileService", () => {
-	let store
-	let nodeSelectionService: NodeSelectionService
-	beforeEach(() => {
-		TestBed.configureTestingModule({
-			providers: [
-				{ provide: HttpClient, useValue: {} },
-				{ provide: State, useValue: { getValue: () => null } },
-				{
-					provide: CodeMapRenderService,
-					useValue: {
-						getNodes: jest.fn().mockImplementation(() => TEST_NODES),
-						getVisibleNodes: jest.fn().mockImplementation(input => input)
-					}
-				},
-				provideMockStore({
-					selectors: [
-						{
-							selector: hoveredNodeSelector,
-							value: null
-						},
-						{
-							selector: selectedNodeSelector,
-							value: null
-						},
-						{
-							selector: accumulatedDataSelector,
-							value: null
-						}
-					]
-				})
-			]
-		})
+    let store
+    let nodeSelectionService: NodeSelectionService
+    beforeEach(() => {
+        TestBed.configureTestingModule({
+            providers: [
+                { provide: HttpClient, useValue: {} },
+                { provide: State, useValue: { getValue: () => null } },
+                {
+                    provide: CodeMapRenderService,
+                    useValue: {
+                        getNodes: jest.fn().mockImplementation(() => TEST_NODES),
+                        getVisibleNodes: jest.fn().mockImplementation(input => input)
+                    }
+                },
+                provideMockStore({
+                    selectors: [
+                        {
+                            selector: hoveredNodeSelector,
+                            value: null
+                        },
+                        {
+                            selector: selectedNodeSelector,
+                            value: null
+                        },
+                        {
+                            selector: accumulatedDataSelector,
+                            value: null
+                        }
+                    ]
+                })
+            ]
+        })
 
-		store = TestBed.inject(MockStore)
-		nodeSelectionService = TestBed.inject(NodeSelectionService)
-	})
+        store = TestBed.inject(MockStore)
+        nodeSelectionService = TestBed.inject(NodeSelectionService)
+    })
 
-	afterEach(() => {
-		jest.clearAllMocks()
-	})
+    afterEach(() => {
+        jest.clearAllMocks()
+    })
 
-	it("should return hoverednode if hoverednode available", done => {
-		store.setState(defaultState)
-		store.overrideSelector(accumulatedDataSelector, {
-			unifiedMapNode: TEST_DELTA_MAP_A.map,
-			unifiedFileMeta: null
-		})
-		store.overrideSelector(hoveredNodeSelector, VALID_NODE)
-		store.refreshState()
+    it("should return hoverednode if hoverednode available", done => {
+        store.setState(defaultState)
+        store.overrideSelector(accumulatedDataSelector, {
+            unifiedMapNode: TEST_DELTA_MAP_A.map,
+            unifiedFileMeta: null
+        })
+        store.overrideSelector(hoveredNodeSelector, VALID_NODE)
+        store.refreshState()
 
-		nodeSelectionService.createNodeObservable().subscribe(node => {
-			expect(node).toEqual(VALID_NODE)
-			done()
-		})
-	})
+        nodeSelectionService.createNodeObservable().subscribe(node => {
+            expect(node).toEqual(VALID_NODE)
+            done()
+        })
+    })
 
-	it("should return selectedNode if selectedNode available and hoverednode not available", done => {
-		store.setState(defaultState)
-		store.overrideSelector(accumulatedDataSelector, {
-			unifiedMapNode: TEST_DELTA_MAP_A.map,
-			unifiedFileMeta: null
-		})
-		store.overrideSelector(selectedNodeSelector, VALID_NODE)
-		store.refreshState()
+    it("should return selectedNode if selectedNode available and hoverednode not available", done => {
+        store.setState(defaultState)
+        store.overrideSelector(accumulatedDataSelector, {
+            unifiedMapNode: TEST_DELTA_MAP_A.map,
+            unifiedFileMeta: null
+        })
+        store.overrideSelector(selectedNodeSelector, VALID_NODE)
+        store.refreshState()
 
-		nodeSelectionService.createNodeObservable().subscribe(node => {
-			expect(node).toEqual(VALID_NODE)
-			done()
-		})
-	})
+        nodeSelectionService.createNodeObservable().subscribe(node => {
+            expect(node).toEqual(VALID_NODE)
+            done()
+        })
+    })
 
-	it("should return toplevelnode if both selectedNode and hoverednode are not available", done => {
-		store.setState(defaultState)
-		store.overrideSelector(accumulatedDataSelector, {
-			unifiedMapNode: TEST_DELTA_MAP_A.map,
-			unifiedFileMeta: null
-		})
-		store.refreshState()
+    it("should return toplevelnode if both selectedNode and hoverednode are not available", done => {
+        store.setState(defaultState)
+        store.overrideSelector(accumulatedDataSelector, {
+            unifiedMapNode: TEST_DELTA_MAP_A.map,
+            unifiedFileMeta: null
+        })
+        store.refreshState()
 
-		nodeSelectionService.createNodeObservable().subscribe(node => {
-			expect(node).toEqual(TEST_NODE_LEAF)
-			done()
-		})
-	})
+        nodeSelectionService.createNodeObservable().subscribe(node => {
+            expect(node).toEqual(TEST_NODE_LEAF)
+            done()
+        })
+    })
 })

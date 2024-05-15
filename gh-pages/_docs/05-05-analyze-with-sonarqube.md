@@ -17,8 +17,8 @@ see also [SonarQube Docs](https://docs.sonarqube.org/latest/setup/get-started-2-
    `C:\sonarqube\bin\windows-x86-xx\StartSonar.bat` on Windows or
    `/opt/sonarqube/bin/[OS]/sonar.sh` on Linux/MacOS
 4. Open `localhost:9000` in your browser and log in with
-    - login: admin
-    - password: admin
+   - login: admin
+   - password: admin
 
 #### Install SonarScanner
 
@@ -33,10 +33,10 @@ You can also run SonarQube with Docker, for further information read [here](http
 1. Download and install [Docker Desktop](https://docs.docker.com/desktop/install/windows-install/) if not already present on your system
 2. [Download](https://hub.docker.com/_/sonarqube/) the latest version of SonarQube Docker Image
 3. Start the Sonar Server with the following command:
-    > `$ docker run -d --name sonarqube -e SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true -p 9000:9000 sonarqube:latest`
+   > `$ docker run -d --name sonarqube -e SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true -p 9000:9000 sonarqube:latest`
 4. Open `localhost:9000` in your browser and log in with
-    - login: admin
-    - password: admin
+   - login: admin
+   - password: admin
 
 #### Install SonarScanner CLI
 

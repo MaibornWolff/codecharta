@@ -3,8 +3,8 @@ import { NgModule } from "@angular/core"
 import { HoveredNodePathPanelComponent } from "./hoveredNodePathPanel.component"
 
 @NgModule({
-	imports: [CommonModule],
-	declarations: [HoveredNodePathPanelComponent],
-	exports: [HoveredNodePathPanelComponent]
+    imports: [CommonModule],
+    declarations: [HoveredNodePathPanelComponent],
+    exports: [HoveredNodePathPanelComponent]
 })
 export class HoveredNodePathPanelModule {}

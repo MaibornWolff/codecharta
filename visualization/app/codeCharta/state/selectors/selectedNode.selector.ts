@@ -3,5 +3,5 @@ import { selectedBuildingIdSelector } from "../store/appStatus/selectedBuildingI
 import { idToNodeSelector } from "./accumulatedData/idToNode.selector"
 
 export const selectedNodeSelector = createSelector(selectedBuildingIdSelector, idToNodeSelector, (selectedBuildingId, idToNode) =>
-	idToNode?.get(selectedBuildingId)
+    idToNode?.get(selectedBuildingId)
 )

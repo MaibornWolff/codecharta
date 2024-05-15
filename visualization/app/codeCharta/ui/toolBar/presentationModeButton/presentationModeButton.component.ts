@@ -6,20 +6,23 @@ import { setPresentationMode } from "../../../state/store/appSettings/isPresenta
 import { isPresentationModeSelector } from "../../../state/store/appSettings/isPresentationMode/isPresentationMode.selector"
 
 @Component({
-	selector: "cc-presentation-mode-button",
-	templateUrl: "./presentationModeButton.component.html",
-	styleUrls: ["./presentationModeButton.component.scss"],
-	encapsulation: ViewEncapsulation.None
+    selector: "cc-presentation-mode-button",
+    templateUrl: "./presentationModeButton.component.html",
+    styleUrls: ["./presentationModeButton.component.scss"],
+    encapsulation: ViewEncapsulation.None
 })
 export class PresentationModeButtonComponent {
-	isPresentationModeEnabled$ = this.store.select(isPresentationModeSelector)
+    isPresentationModeEnabled$ = this.store.select(isPresentationModeSelector)
 
-	constructor(private readonly store: Store<CcState>, private elementReference: ElementRef) {}
+    constructor(
+        private readonly store: Store<CcState>,
+        private elementReference: ElementRef
+    ) {}
 
-	setPresentationModeEnabled(event: MatSlideToggleChange) {
-		this.store.dispatch(setPresentationMode({ value: event.checked }))
-		this.elementReference.nativeElement.querySelector("mat-slide-toggle").classList.remove("cdk-focused")
-		this.elementReference.nativeElement.querySelector("mat-slide-toggle").classList.remove("cdk-program-focused")
-		this.elementReference.nativeElement.querySelector("mat-slide-toggle").classList.remove("mat-mdc-slide-toggle-focused")
-	}
+    setPresentationModeEnabled(event: MatSlideToggleChange) {
+        this.store.dispatch(setPresentationMode({ value: event.checked }))
+        this.elementReference.nativeElement.querySelector("mat-slide-toggle").classList.remove("cdk-focused")
+        this.elementReference.nativeElement.querySelector("mat-slide-toggle").classList.remove("cdk-program-focused")
+        this.elementReference.nativeElement.querySelector("mat-slide-toggle").classList.remove("mat-mdc-slide-toggle-focused")
+    }
 }

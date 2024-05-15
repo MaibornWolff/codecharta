@@ -8,22 +8,22 @@ import { setState } from "../../util/setState.reducer.factory"
 
 export const defaultMarkedPackages: MarkedPackage[] = []
 export const markedPackages = createReducer(
-	defaultMarkedPackages,
-	on(setMarkedPackages, setState(defaultMarkedPackages)),
-	on(markPackages, (state, action) => {
-		const markedPackagesMap = new Map(state.map(entry => [entry.path, entry]))
+    defaultMarkedPackages,
+    on(setMarkedPackages, setState(defaultMarkedPackages)),
+    on(markPackages, (state, action) => {
+        const markedPackagesMap = new Map(state.map(entry => [entry.path, entry]))
 
-		for (const markedPackage of action.packages) {
-			addMarkedPackage(markedPackagesMap, markedPackage)
-		}
+        for (const markedPackage of action.packages) {
+            addMarkedPackage(markedPackagesMap, markedPackage)
+        }
 
-		return [...markedPackagesMap.values()]
-	}),
-	on(unmarkPackage, (state, action) => {
-		const indexOfPackageToBeUnmarked = findIndexOfMarkedPackageOrParent(state, action.path)
-		if (indexOfPackageToBeUnmarked !== -1) {
-			return removeEntryAtIndexFromArray(state, indexOfPackageToBeUnmarked)
-		}
-		return state
-	})
+        return [...markedPackagesMap.values()]
+    }),
+    on(unmarkPackage, (state, action) => {
+        const indexOfPackageToBeUnmarked = findIndexOfMarkedPackageOrParent(state, action.path)
+        if (indexOfPackageToBeUnmarked !== -1) {
+            return removeEntryAtIndexFromArray(state, indexOfPackageToBeUnmarked)
+        }
+        return state
+    })
 )

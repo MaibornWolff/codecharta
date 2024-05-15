@@ -4,8 +4,8 @@ import { MaterialModule } from "../../../../../../material/material.module"
 import { DisplayQualitySelectionComponent } from "./displayQualitySelection.component"
 
 @NgModule({
-	imports: [CommonModule, MaterialModule],
-	declarations: [DisplayQualitySelectionComponent],
-	exports: [DisplayQualitySelectionComponent]
+    imports: [CommonModule, MaterialModule],
+    declarations: [DisplayQualitySelectionComponent],
+    exports: [DisplayQualitySelectionComponent]
 })
 export class DisplayQualitySelectionModule {}

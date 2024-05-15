@@ -64,413 +64,413 @@ export const sampleFile2 = { fileName: "sample2.cc.json", fileSize: 2 * 1024, co
 
 @Injectable({ providedIn: "root" })
 export class LoadInitialFileService {
-	private urlUtils = new UrlExtractor(this.httpClient)
+    private urlUtils = new UrlExtractor(this.httpClient)
 
-	constructor(
-		private store: Store,
-		private state: State<CcState>,
-		private dialog: MatDialog,
-		private loadFileService: LoadFileService,
-		private httpClient: HttpClient
-	) {}
+    constructor(
+        private store: Store,
+        private state: State<CcState>,
+        private dialog: MatDialog,
+        private loadFileService: LoadFileService,
+        private httpClient: HttpClient
+    ) {}
 
-	async loadFilesOrSampleFiles() {
-		const isFileQueryParameterPresent = this.checkFileQueryParameterPresent()
-		await (isFileQueryParameterPresent ? this.loadFilesFromQueryParams() : this.loadFilesFromIndexedDB())
-	}
+    async loadFilesOrSampleFiles() {
+        const isFileQueryParameterPresent = this.checkFileQueryParameterPresent()
+        await (isFileQueryParameterPresent ? this.loadFilesFromQueryParams() : this.loadFilesFromIndexedDB())
+    }
 
-	checkFileQueryParameterPresent() {
-		return Boolean(this.urlUtils.getParameterByName("file"))
-	}
+    checkFileQueryParameterPresent() {
+        return Boolean(this.urlUtils.getParameterByName("file"))
+    }
 
-	private async loadFilesFromQueryParams() {
-		try {
-			const urlNameDataPairs = await this.urlUtils.getFileDataFromQueryParam()
-			const savedCcState = await readCcState()
-			if (!savedCcState) {
-				this.loadFileService.loadFiles(urlNameDataPairs)
-				this.setRenderStateFromUrl()
-				return
-			}
+    private async loadFilesFromQueryParams() {
+        try {
+            const urlNameDataPairs = await this.urlUtils.getFileDataFromQueryParam()
+            const savedCcState = await readCcState()
+            if (!savedCcState) {
+                this.loadFileService.loadFiles(urlNameDataPairs)
+                this.setRenderStateFromUrl()
+                return
+            }
 
-			const savedFileStates = savedCcState.files
-			const savedNameDataPairs = savedFileStates.map(fileState => getNameDataPair(fileState.file))
-			const urlNameDataPairCheckSums = urlNameDataPairs.map(urlNameDataPair => urlNameDataPair.content.fileChecksum)
-			const savedNameDataPairCheckSums = savedNameDataPairs.map(savedNameDataPair => savedNameDataPair.content.fileChecksum)
-			if (stringify(urlNameDataPairCheckSums) === stringify(savedNameDataPairCheckSums)) {
-				this.applySettingsAndFilesFromSavedState(savedFileStates, savedCcState, savedNameDataPairs)
-			} else {
-				this.applySettingsFromSavedState(savedCcState, urlNameDataPairs)
-			}
-			this.setRenderStateFromUrl()
-		} catch (error) {
-			await this.handleErrorLoadFilesFromQueryParams(error as Error)
-		} finally {
-			this.setMetricsFromUrl()
-		}
-	}
+            const savedFileStates = savedCcState.files
+            const savedNameDataPairs = savedFileStates.map(fileState => getNameDataPair(fileState.file))
+            const urlNameDataPairCheckSums = urlNameDataPairs.map(urlNameDataPair => urlNameDataPair.content.fileChecksum)
+            const savedNameDataPairCheckSums = savedNameDataPairs.map(savedNameDataPair => savedNameDataPair.content.fileChecksum)
+            if (stringify(urlNameDataPairCheckSums) === stringify(savedNameDataPairCheckSums)) {
+                this.applySettingsAndFilesFromSavedState(savedFileStates, savedCcState, savedNameDataPairs)
+            } else {
+                this.applySettingsFromSavedState(savedCcState, urlNameDataPairs)
+            }
+            this.setRenderStateFromUrl()
+        } catch (error) {
+            await this.handleErrorLoadFilesFromQueryParams(error as Error)
+        } finally {
+            this.setMetricsFromUrl()
+        }
+    }
 
-	private applySettingsAndFilesFromSavedState(savedFileStates: FileState[], savedCcState: CcState, savedNameDataPairs: NameDataPair[]) {
-		const missingPropertiesInSavedCcState = []
+    private applySettingsAndFilesFromSavedState(savedFileStates: FileState[], savedCcState: CcState, savedNameDataPairs: NameDataPair[]) {
+        const missingPropertiesInSavedCcState = []
 
-		const missingAppSettings = this.applyAppSettings(savedCcState.appSettings)
-		missingPropertiesInSavedCcState.push(...missingAppSettings)
+        const missingAppSettings = this.applyAppSettings(savedCcState.appSettings)
+        missingPropertiesInSavedCcState.push(...missingAppSettings)
 
-		this.loadFileService.loadFiles(savedNameDataPairs)
-		this.store.dispatch(setFiles({ value: savedFileStates }))
+        this.loadFileService.loadFiles(savedNameDataPairs)
+        this.store.dispatch(setFiles({ value: savedFileStates }))
 
-		const missingFileSettings = this.applyFileSettings(savedCcState.fileSettings)
-		missingPropertiesInSavedCcState.push(...missingFileSettings)
-		const missingDynamicSettings = this.applyDynamicSettings(savedCcState.dynamicSettings)
-		missingPropertiesInSavedCcState.push(...missingDynamicSettings)
-		if (missingPropertiesInSavedCcState.length > 0) {
-			this.showErrorDialogForMissingProperties(missingPropertiesInSavedCcState)
-		}
-	}
+        const missingFileSettings = this.applyFileSettings(savedCcState.fileSettings)
+        missingPropertiesInSavedCcState.push(...missingFileSettings)
+        const missingDynamicSettings = this.applyDynamicSettings(savedCcState.dynamicSettings)
+        missingPropertiesInSavedCcState.push(...missingDynamicSettings)
+        if (missingPropertiesInSavedCcState.length > 0) {
+            this.showErrorDialogForMissingProperties(missingPropertiesInSavedCcState)
+        }
+    }
 
-	private applySettingsFromSavedState(savedCcState: CcState, urlNameDataPairs: NameDataPair[]) {
-		this.applyAllSettings(savedCcState)
-		this.loadFileService.loadFiles(urlNameDataPairs)
-	}
+    private applySettingsFromSavedState(savedCcState: CcState, urlNameDataPairs: NameDataPair[]) {
+        this.applyAllSettings(savedCcState)
+        this.loadFileService.loadFiles(urlNameDataPairs)
+    }
 
-	private showErrorDialogForMissingProperties(missingPropertiesInSavedCcState) {
-		const title = "The previous state could not be fully restored after loading the page. The following properties were not restored."
-		const message = this.buildMissingPropertiesMessage(missingPropertiesInSavedCcState)
-		this.showErrorDialog(title, message)
-	}
+    private showErrorDialogForMissingProperties(missingPropertiesInSavedCcState) {
+        const title = "The previous state could not be fully restored after loading the page. The following properties were not restored."
+        const message = this.buildMissingPropertiesMessage(missingPropertiesInSavedCcState)
+        this.showErrorDialog(title, message)
+    }
 
-	private async handleErrorLoadFilesFromQueryParams(error: Error) {
-		if ((error as Error).message !== NO_FILES_LOADED_ERROR_MESSAGE) {
-			const title = "File(s) could not be loaded from the given file URL parameter. Loaded sample files instead."
-			const message = this.createTitleUrlErrorDialog(error as Error)
-			this.showErrorDialog(title, message)
-		}
-		await this.loadSampleFiles()
-	}
+    private async handleErrorLoadFilesFromQueryParams(error: Error) {
+        if ((error as Error).message !== NO_FILES_LOADED_ERROR_MESSAGE) {
+            const title = "File(s) could not be loaded from the given file URL parameter. Loaded sample files instead."
+            const message = this.createTitleUrlErrorDialog(error as Error)
+            this.showErrorDialog(title, message)
+        }
+        await this.loadSampleFiles()
+    }
 
-	private async loadFilesFromIndexedDB() {
-		try {
-			const savedCcState = await readCcState()
-			if (!savedCcState) {
-				await this.loadSampleFiles()
-				return
-			}
+    private async loadFilesFromIndexedDB() {
+        try {
+            const savedCcState = await readCcState()
+            if (!savedCcState) {
+                await this.loadSampleFiles()
+                return
+            }
 
-			const savedFileStates = savedCcState.files
-			const savedNameDataPairs = savedFileStates.map(fileState => getNameDataPair(fileState.file))
-			this.applySettingsAndFilesFromSavedState(savedFileStates, savedCcState, savedNameDataPairs)
-		} catch (error) {
-			await this.handleErrorLoadFilesFromIndexedDB(error as Error)
-		}
-	}
+            const savedFileStates = savedCcState.files
+            const savedNameDataPairs = savedFileStates.map(fileState => getNameDataPair(fileState.file))
+            this.applySettingsAndFilesFromSavedState(savedFileStates, savedCcState, savedNameDataPairs)
+        } catch (error) {
+            await this.handleErrorLoadFilesFromIndexedDB(error as Error)
+        }
+    }
 
-	private async handleErrorLoadFilesFromIndexedDB(error: Error) {
-		if ((error as Error).message !== NO_FILES_LOADED_ERROR_MESSAGE) {
-			const title = "Previously loaded files and settings could not be restored. Loaded sample files instead."
-			const message = (error as Error).message
-			this.showErrorDialog(title, message)
-		}
-		await this.loadSampleFiles()
-	}
+    private async handleErrorLoadFilesFromIndexedDB(error: Error) {
+        if ((error as Error).message !== NO_FILES_LOADED_ERROR_MESSAGE) {
+            const title = "Previously loaded files and settings could not be restored. Loaded sample files instead."
+            const message = (error as Error).message
+            this.showErrorDialog(title, message)
+        }
+        await this.loadSampleFiles()
+    }
 
-	private async applyAllSettings(savedCcState: CcState) {
-		const savedFileSettings = savedCcState.fileSettings
-		const savedDynamicSettings = savedCcState.dynamicSettings
-		const savedAppSettings = savedCcState.appSettings
-		const missingPropertiesInSavedCcState = []
-		if (savedFileSettings) {
-			const missingFileSettings = this.applyFileSettings(savedFileSettings)
-			missingPropertiesInSavedCcState.push(...missingFileSettings)
-		}
-		if (savedDynamicSettings) {
-			const missingDynamicSettings = this.applyDynamicSettings(savedDynamicSettings)
-			missingPropertiesInSavedCcState.push(...missingDynamicSettings)
-		}
-		if (savedAppSettings) {
-			const missingAppSettings = this.applyAppSettings(savedAppSettings)
-			missingPropertiesInSavedCcState.push(...missingAppSettings)
-		}
-		if (missingPropertiesInSavedCcState.length > 0) {
-			this.showErrorDialogForMissingProperties(missingPropertiesInSavedCcState)
-		}
-	}
+    private async applyAllSettings(savedCcState: CcState) {
+        const savedFileSettings = savedCcState.fileSettings
+        const savedDynamicSettings = savedCcState.dynamicSettings
+        const savedAppSettings = savedCcState.appSettings
+        const missingPropertiesInSavedCcState = []
+        if (savedFileSettings) {
+            const missingFileSettings = this.applyFileSettings(savedFileSettings)
+            missingPropertiesInSavedCcState.push(...missingFileSettings)
+        }
+        if (savedDynamicSettings) {
+            const missingDynamicSettings = this.applyDynamicSettings(savedDynamicSettings)
+            missingPropertiesInSavedCcState.push(...missingDynamicSettings)
+        }
+        if (savedAppSettings) {
+            const missingAppSettings = this.applyAppSettings(savedAppSettings)
+            missingPropertiesInSavedCcState.push(...missingAppSettings)
+        }
+        if (missingPropertiesInSavedCcState.length > 0) {
+            this.showErrorDialogForMissingProperties(missingPropertiesInSavedCcState)
+        }
+    }
 
-	private applyFileSettings(savedFileSettings: FileSettings) {
-		const currentFileSettings = (this.state.getValue() as CcState).fileSettings
-		const missingFileSettings = []
-		for (const [key, value] of Object.entries(currentFileSettings)) {
-			if (!(key in savedFileSettings)) {
-				missingFileSettings.push(key)
-			} else {
-				const currentValue = stringify(value)
-				const loadedValue = stringify(savedFileSettings[key])
-				if (currentValue !== loadedValue) {
-					this.mapFileSettingToAction(key as keyof FileSettings, savedFileSettings[key])
-				}
-			}
-		}
-		return missingFileSettings
-	}
+    private applyFileSettings(savedFileSettings: FileSettings) {
+        const currentFileSettings = (this.state.getValue() as CcState).fileSettings
+        const missingFileSettings = []
+        for (const [key, value] of Object.entries(currentFileSettings)) {
+            if (!(key in savedFileSettings)) {
+                missingFileSettings.push(key)
+            } else {
+                const currentValue = stringify(value)
+                const loadedValue = stringify(savedFileSettings[key])
+                if (currentValue !== loadedValue) {
+                    this.mapFileSettingToAction(key as keyof FileSettings, savedFileSettings[key])
+                }
+            }
+        }
+        return missingFileSettings
+    }
 
-	private applyDynamicSettings(savedDynamicSettings: DynamicSettings) {
-		const currentDynamicSettings = (this.state.getValue() as CcState).dynamicSettings
-		const missingDynamicSettings = []
-		for (const [key, value] of Object.entries(currentDynamicSettings)) {
-			if (!(key in savedDynamicSettings)) {
-				missingDynamicSettings.push(key)
-			} else {
-				const currentValue = stringify(value)
-				const loadedValue = stringify(savedDynamicSettings[key])
-				if (currentValue !== loadedValue) {
-					this.mapDynamicSettingToAction(key as keyof DynamicSettings, savedDynamicSettings[key])
-				}
-			}
-		}
-		return missingDynamicSettings
-	}
+    private applyDynamicSettings(savedDynamicSettings: DynamicSettings) {
+        const currentDynamicSettings = (this.state.getValue() as CcState).dynamicSettings
+        const missingDynamicSettings = []
+        for (const [key, value] of Object.entries(currentDynamicSettings)) {
+            if (!(key in savedDynamicSettings)) {
+                missingDynamicSettings.push(key)
+            } else {
+                const currentValue = stringify(value)
+                const loadedValue = stringify(savedDynamicSettings[key])
+                if (currentValue !== loadedValue) {
+                    this.mapDynamicSettingToAction(key as keyof DynamicSettings, savedDynamicSettings[key])
+                }
+            }
+        }
+        return missingDynamicSettings
+    }
 
-	private applyAppSettings(savedAppSettings: AppSettings) {
-		const currentAppSettings = (this.state.getValue() as CcState).appSettings
-		const missingAppSettings = []
-		for (const [key, value] of Object.entries(currentAppSettings)) {
-			if (!(key in savedAppSettings)) {
-				missingAppSettings.push(key)
-			} else {
-				const currentValue = stringify(value)
-				const loadedValue = stringify(savedAppSettings[key])
-				if (currentValue !== loadedValue) {
-					this.mapAppSettingToAction(key as keyof AppSettings, savedAppSettings[key])
-				}
-			}
-		}
-		return missingAppSettings
-	}
+    private applyAppSettings(savedAppSettings: AppSettings) {
+        const currentAppSettings = (this.state.getValue() as CcState).appSettings
+        const missingAppSettings = []
+        for (const [key, value] of Object.entries(currentAppSettings)) {
+            if (!(key in savedAppSettings)) {
+                missingAppSettings.push(key)
+            } else {
+                const currentValue = stringify(value)
+                const loadedValue = stringify(savedAppSettings[key])
+                if (currentValue !== loadedValue) {
+                    this.mapAppSettingToAction(key as keyof AppSettings, savedAppSettings[key])
+                }
+            }
+        }
+        return missingAppSettings
+    }
 
-	private mapFileSettingToAction(key: keyof FileSettings, value: any) {
-		switch (key) {
-			case "attributeTypes":
-				this.store.dispatch(setAttributeTypes({ value }))
-				break
-			case "attributeDescriptors":
-				this.store.dispatch(setAttributeDescriptors({ value }))
-				break
-			case "blacklist":
-				this.store.dispatch(setBlacklist({ value }))
-				break
-			case "edges":
-				this.store.dispatch(setEdges({ value }))
-				break
-			case "markedPackages":
-				this.store.dispatch(setMarkedPackages({ value }))
-				break
-			default: {
-				const exhaustiveCheck: never = key
-				throw new Error(`Unhandled key: ${exhaustiveCheck}`)
-			}
-		}
-	}
+    private mapFileSettingToAction(key: keyof FileSettings, value: any) {
+        switch (key) {
+            case "attributeTypes":
+                this.store.dispatch(setAttributeTypes({ value }))
+                break
+            case "attributeDescriptors":
+                this.store.dispatch(setAttributeDescriptors({ value }))
+                break
+            case "blacklist":
+                this.store.dispatch(setBlacklist({ value }))
+                break
+            case "edges":
+                this.store.dispatch(setEdges({ value }))
+                break
+            case "markedPackages":
+                this.store.dispatch(setMarkedPackages({ value }))
+                break
+            default: {
+                const exhaustiveCheck: never = key
+                throw new Error(`Unhandled key: ${exhaustiveCheck}`)
+            }
+        }
+    }
 
-	private mapDynamicSettingToAction(key: keyof DynamicSettings, value: any) {
-		switch (key) {
-			case "areaMetric":
-				this.store.dispatch(setAreaMetric({ value }))
-				break
-			case "heightMetric":
-				this.store.dispatch(setHeightMetric({ value }))
-				break
-			case "edgeMetric":
-				this.store.dispatch(setEdgeMetric({ value }))
-				break
-			case "colorMetric":
-				this.store.dispatch(setColorMetric({ value }))
-				break
-			case "colorMode":
-				this.store.dispatch(setColorMode({ value }))
-				break
-			case "sortingOption":
-				this.store.dispatch(setSortingOption({ value }))
-				break
-			case "colorRange":
-				this.store.dispatch(setColorRange({ value }))
-				break
-			case "distributionMetric":
-				this.store.dispatch(setDistributionMetric({ value }))
-				break
-			case "focusedNodePath":
-				this.store.dispatch(setAllFocusedNodes({ value }))
-				break
-			case "searchPattern":
-				this.store.dispatch(setSearchPattern({ value }))
-				break
-			case "margin":
-				this.store.dispatch(setMargin({ value }))
-				break
-			default: {
-				const exhaustiveCheck: never = key
-				throw new Error(`Unhandled key: ${exhaustiveCheck}`)
-			}
-		}
-	}
+    private mapDynamicSettingToAction(key: keyof DynamicSettings, value: any) {
+        switch (key) {
+            case "areaMetric":
+                this.store.dispatch(setAreaMetric({ value }))
+                break
+            case "heightMetric":
+                this.store.dispatch(setHeightMetric({ value }))
+                break
+            case "edgeMetric":
+                this.store.dispatch(setEdgeMetric({ value }))
+                break
+            case "colorMetric":
+                this.store.dispatch(setColorMetric({ value }))
+                break
+            case "colorMode":
+                this.store.dispatch(setColorMode({ value }))
+                break
+            case "sortingOption":
+                this.store.dispatch(setSortingOption({ value }))
+                break
+            case "colorRange":
+                this.store.dispatch(setColorRange({ value }))
+                break
+            case "distributionMetric":
+                this.store.dispatch(setDistributionMetric({ value }))
+                break
+            case "focusedNodePath":
+                this.store.dispatch(setAllFocusedNodes({ value }))
+                break
+            case "searchPattern":
+                this.store.dispatch(setSearchPattern({ value }))
+                break
+            case "margin":
+                this.store.dispatch(setMargin({ value }))
+                break
+            default: {
+                const exhaustiveCheck: never = key
+                throw new Error(`Unhandled key: ${exhaustiveCheck}`)
+            }
+        }
+    }
 
-	private mapAppSettingToAction(key: keyof AppSettings, value: any) {
-		switch (key) {
-			case "amountOfTopLabels":
-				this.store.dispatch(setAmountOfTopLabels({ value }))
-				break
-			case "amountOfEdgePreviews":
-				this.store.dispatch(setAmountOfTopLabels({ value }))
-				break
-			case "edgeHeight":
-				this.store.dispatch(setEdgeHeight({ value }))
-				break
-			case "scaling":
-				this.store.dispatch(setScaling({ value }))
-				break
-			case "hideFlatBuildings":
-				this.store.dispatch(setHideFlatBuildings({ value }))
-				break
-			case "invertHeight":
-				this.store.dispatch(setInvertHeight({ value }))
-				break
-			case "invertArea":
-				this.store.dispatch(setInvertArea({ value }))
-				break
-			case "isWhiteBackground":
-				this.store.dispatch(setIsWhiteBackground({ value }))
-				break
-			case "mapColors":
-				this.store.dispatch(setMapColors({ value }))
-				break
-			case "isPresentationMode":
-				this.store.dispatch(setPresentationMode({ value }))
-				break
-			case "showOnlyBuildingsWithEdges":
-				this.store.dispatch(setShowOnlyBuildingsWithEdges({ value }))
-				break
-			case "isEdgeMetricVisible":
-				this.store.dispatch(setIsEdgeMetricVisible({ value }))
-				break
-			case "resetCameraIfNewFileIsLoaded":
-				this.store.dispatch(setResetCameraIfNewFileIsLoaded({ value }))
-				break
-			case "isLoadingMap":
-				this.store.dispatch(setIsLoadingMap({ value }))
-				break
-			case "isLoadingFile":
-				this.store.dispatch(setIsLoadingFile({ value }))
-				break
-			case "sortingOrderAscending":
-			case "isSearchPanelPinned":
-				// ignore settings for the file-explorer
-				break
-			case "showMetricLabelNameValue":
-				this.store.dispatch(setShowMetricLabelNameValue({ value }))
-				break
-			case "showMetricLabelNodeName":
-				this.store.dispatch(setShowMetricLabelNodeName({ value }))
-				break
-			case "layoutAlgorithm":
-				this.store.dispatch(setLayoutAlgorithm({ value }))
-				break
-			case "maxTreeMapFiles":
-				this.store.dispatch(setMaxTreeMapFiles({ value }))
-				break
-			case "sharpnessMode":
-				this.store.dispatch(setSharpnessMode({ value }))
-				break
-			case "experimentalFeaturesEnabled":
-				this.store.dispatch(setExperimentalFeaturesEnabled({ value }))
-				break
-			case "screenshotToClipboardEnabled":
-				this.store.dispatch(setScreenshotToClipboardEnabled({ value }))
-				break
-			case "colorLabels":
-				this.store.dispatch(setColorLabels({ value }))
-				break
-			case "isColorMetricLinkedToHeightMetric":
-				this.store.dispatch(setIsColorMetricLinkedToHeightMetricAction({ value }))
-				break
-			case "enableFloorLabels":
-				this.store.dispatch(setEnableFloorLabels({ value }))
-				break
-			default: {
-				const exhaustiveCheck: never = key
-				throw new Error(`Unhandled key: ${exhaustiveCheck}`)
-			}
-		}
-	}
+    private mapAppSettingToAction(key: keyof AppSettings, value: any) {
+        switch (key) {
+            case "amountOfTopLabels":
+                this.store.dispatch(setAmountOfTopLabels({ value }))
+                break
+            case "amountOfEdgePreviews":
+                this.store.dispatch(setAmountOfTopLabels({ value }))
+                break
+            case "edgeHeight":
+                this.store.dispatch(setEdgeHeight({ value }))
+                break
+            case "scaling":
+                this.store.dispatch(setScaling({ value }))
+                break
+            case "hideFlatBuildings":
+                this.store.dispatch(setHideFlatBuildings({ value }))
+                break
+            case "invertHeight":
+                this.store.dispatch(setInvertHeight({ value }))
+                break
+            case "invertArea":
+                this.store.dispatch(setInvertArea({ value }))
+                break
+            case "isWhiteBackground":
+                this.store.dispatch(setIsWhiteBackground({ value }))
+                break
+            case "mapColors":
+                this.store.dispatch(setMapColors({ value }))
+                break
+            case "isPresentationMode":
+                this.store.dispatch(setPresentationMode({ value }))
+                break
+            case "showOnlyBuildingsWithEdges":
+                this.store.dispatch(setShowOnlyBuildingsWithEdges({ value }))
+                break
+            case "isEdgeMetricVisible":
+                this.store.dispatch(setIsEdgeMetricVisible({ value }))
+                break
+            case "resetCameraIfNewFileIsLoaded":
+                this.store.dispatch(setResetCameraIfNewFileIsLoaded({ value }))
+                break
+            case "isLoadingMap":
+                this.store.dispatch(setIsLoadingMap({ value }))
+                break
+            case "isLoadingFile":
+                this.store.dispatch(setIsLoadingFile({ value }))
+                break
+            case "sortingOrderAscending":
+            case "isSearchPanelPinned":
+                // ignore settings for the file-explorer
+                break
+            case "showMetricLabelNameValue":
+                this.store.dispatch(setShowMetricLabelNameValue({ value }))
+                break
+            case "showMetricLabelNodeName":
+                this.store.dispatch(setShowMetricLabelNodeName({ value }))
+                break
+            case "layoutAlgorithm":
+                this.store.dispatch(setLayoutAlgorithm({ value }))
+                break
+            case "maxTreeMapFiles":
+                this.store.dispatch(setMaxTreeMapFiles({ value }))
+                break
+            case "sharpnessMode":
+                this.store.dispatch(setSharpnessMode({ value }))
+                break
+            case "experimentalFeaturesEnabled":
+                this.store.dispatch(setExperimentalFeaturesEnabled({ value }))
+                break
+            case "screenshotToClipboardEnabled":
+                this.store.dispatch(setScreenshotToClipboardEnabled({ value }))
+                break
+            case "colorLabels":
+                this.store.dispatch(setColorLabels({ value }))
+                break
+            case "isColorMetricLinkedToHeightMetric":
+                this.store.dispatch(setIsColorMetricLinkedToHeightMetricAction({ value }))
+                break
+            case "enableFloorLabels":
+                this.store.dispatch(setEnableFloorLabels({ value }))
+                break
+            default: {
+                const exhaustiveCheck: never = key
+                throw new Error(`Unhandled key: ${exhaustiveCheck}`)
+            }
+        }
+    }
 
-	private buildMissingPropertiesMessage(missingPropertiesInSavedCcState: string[]) {
-		const warningSymbol = '<i class="fa fa-exclamation-triangle"></i> '
-		return `${buildHtmlMessage(warningSymbol, missingPropertiesInSavedCcState)}`
-	}
+    private buildMissingPropertiesMessage(missingPropertiesInSavedCcState: string[]) {
+        const warningSymbol = '<i class="fa fa-exclamation-triangle"></i> '
+        return `${buildHtmlMessage(warningSymbol, missingPropertiesInSavedCcState)}`
+    }
 
-	private async loadSampleFiles() {
-		try {
-			const savedCcState = await readCcState()
-			if (savedCcState) {
-				this.applyAllSettings(savedCcState)
-			}
-			this.loadFileService.loadFiles([sampleFile1, sampleFile2])
-		} catch {
-			this.loadFileService.loadFiles([sampleFile1, sampleFile2])
-		}
-	}
+    private async loadSampleFiles() {
+        try {
+            const savedCcState = await readCcState()
+            if (savedCcState) {
+                this.applyAllSettings(savedCcState)
+            }
+            this.loadFileService.loadFiles([sampleFile1, sampleFile2])
+        } catch {
+            this.loadFileService.loadFiles([sampleFile1, sampleFile2])
+        }
+    }
 
-	private showErrorDialog(title: string, message: string) {
-		this.dialog.open(ErrorDialogComponent, {
-			data: { title, message }
-		})
-	}
+    private showErrorDialog(title: string, message: string) {
+        this.dialog.open(ErrorDialogComponent, {
+            data: { title, message }
+        })
+    }
 
-	private createTitleUrlErrorDialog(error: Error & { statusText?: string; status?: number }) {
-		let title = "Error"
-		if (error.message) {
-			title += ` (${error.message})`
-		} else if (error.statusText && error.status) {
-			title += ` (${error.status}: ${error.statusText})`
-		}
-		return title
-	}
+    private createTitleUrlErrorDialog(error: Error & { statusText?: string; status?: number }) {
+        let title = "Error"
+        if (error.message) {
+            title += ` (${error.message})`
+        } else if (error.statusText && error.status) {
+            title += ` (${error.status}: ${error.statusText})`
+        }
+        return title
+    }
 
-	setMetricsFromUrl() {
-		const areaMetric = this.urlUtils.getParameterByName(MetricQueryParemter.areaMetric)
-		const heightMetric = this.urlUtils.getParameterByName(MetricQueryParemter.heightMetric)
-		const colorMetric = this.urlUtils.getParameterByName(MetricQueryParemter.colorMetric)
-		const edgeMetric = this.urlUtils.getParameterByName(MetricQueryParemter.edgeMetric)
+    setMetricsFromUrl() {
+        const areaMetric = this.urlUtils.getParameterByName(MetricQueryParemter.areaMetric)
+        const heightMetric = this.urlUtils.getParameterByName(MetricQueryParemter.heightMetric)
+        const colorMetric = this.urlUtils.getParameterByName(MetricQueryParemter.colorMetric)
+        const edgeMetric = this.urlUtils.getParameterByName(MetricQueryParemter.edgeMetric)
 
-		const state = this.state.getValue() as CcState
-		const nodeMetricData = metricDataSelector(state).nodeMetricData
-		const edgeMetricData = metricDataSelector(state).edgeMetricData
-		if (!nodeMetricData) {
-			return
-		}
+        const state = this.state.getValue() as CcState
+        const nodeMetricData = metricDataSelector(state).nodeMetricData
+        const edgeMetricData = metricDataSelector(state).edgeMetricData
+        if (!nodeMetricData) {
+            return
+        }
 
-		const nodeMetricNames = new Set(nodeMetricData.map(nodeMetric => nodeMetric.name))
-		const edgeMetricNames = edgeMetricData.map(edgeMetric => edgeMetric.name)
+        const nodeMetricNames = new Set(nodeMetricData.map(nodeMetric => nodeMetric.name))
+        const edgeMetricNames = edgeMetricData.map(edgeMetric => edgeMetric.name)
 
-		if (areaMetric && nodeMetricNames.has(areaMetric)) {
-			this.store.dispatch(setAreaMetric({ value: areaMetric }))
-		}
-		if (heightMetric && nodeMetricNames.has(heightMetric)) {
-			this.store.dispatch(setHeightMetric({ value: heightMetric }))
-		}
-		if (colorMetric && nodeMetricNames.has(colorMetric)) {
-			this.store.dispatch(setColorMetric({ value: colorMetric }))
-		}
-		if (edgeMetric && edgeMetricNames.includes(edgeMetric)) {
-			this.store.dispatch(setEdgeMetric({ value: edgeMetric }))
-		}
-	}
+        if (areaMetric && nodeMetricNames.has(areaMetric)) {
+            this.store.dispatch(setAreaMetric({ value: areaMetric }))
+        }
+        if (heightMetric && nodeMetricNames.has(heightMetric)) {
+            this.store.dispatch(setHeightMetric({ value: heightMetric }))
+        }
+        if (colorMetric && nodeMetricNames.has(colorMetric)) {
+            this.store.dispatch(setColorMetric({ value: colorMetric }))
+        }
+        if (edgeMetric && edgeMetricNames.includes(edgeMetric)) {
+            this.store.dispatch(setEdgeMetric({ value: edgeMetric }))
+        }
+    }
 
-	// TODO: Please make sure that this function works fine on Github pages with
-	//  the updated file selection (no more single mode!)
-	setRenderStateFromUrl() {
-		const renderState = this.urlUtils.getParameterByName("mode")
-		const files = getCCFiles(this.state.getValue().files)
+    // TODO: Please make sure that this function works fine on Github pages with
+    //  the updated file selection (no more single mode!)
+    setRenderStateFromUrl() {
+        const renderState = this.urlUtils.getParameterByName("mode")
+        const files = getCCFiles(this.state.getValue().files)
 
-		if (renderState === "Delta" && files.length >= 2) {
-			this.store.dispatch(setDelta({ referenceFile: files[0], comparisonFile: files[1] }))
-		}
-	}
+        if (renderState === "Delta" && files.length >= 2) {
+            this.store.dispatch(setDelta({ referenceFile: files[0], comparisonFile: files[1] }))
+        }
+    }
 }

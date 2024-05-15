@@ -9,15 +9,15 @@ import { edgeMetricSelector } from "../../store/dynamicSettings/edgeMetric/edgeM
 
 @Injectable()
 export class ResetSelectedEdgeMetricWhenItDoesntExistAnymoreEffect {
-	constructor(private store: Store<CcState>) {}
+    constructor(private store: Store<CcState>) {}
 
-	resetSelectedEdgeMetricWhenItDoesntExistAnymore$ = createEffect(() =>
-		this.store.select(metricDataSelector).pipe(
-			withLatestFrom(this.store.select(edgeMetricSelector)),
-			filter(([metricData, selectedEdgeMetric]) => !metricData.edgeMetricData.some(metric => metric.name === selectedEdgeMetric)),
-			map(([metricData]) => metricData.edgeMetricData[0]?.name),
-			distinctUntilChanged(),
-			map(newEdgeMetric => setEdgeMetric({ value: newEdgeMetric }))
-		)
-	)
+    resetSelectedEdgeMetricWhenItDoesntExistAnymore$ = createEffect(() =>
+        this.store.select(metricDataSelector).pipe(
+            withLatestFrom(this.store.select(edgeMetricSelector)),
+            filter(([metricData, selectedEdgeMetric]) => !metricData.edgeMetricData.some(metric => metric.name === selectedEdgeMetric)),
+            map(([metricData]) => metricData.edgeMetricData[0]?.name),
+            distinctUntilChanged(),
+            map(newEdgeMetric => setEdgeMetric({ value: newEdgeMetric }))
+        )
+    )
 }

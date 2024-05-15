@@ -4,7 +4,7 @@ import { setState } from "../../util/setState.reducer.factory"
 
 export const defaultIsSearchPanelPinned = false
 export const isSearchPanelPinned = createReducer(
-	defaultIsSearchPanelPinned,
-	on(setIsSearchPanelPinned, setState(defaultIsSearchPanelPinned)),
-	on(toggleIsSearchPanelPinned, state => !state)
+    defaultIsSearchPanelPinned,
+    on(setIsSearchPanelPinned, setState(defaultIsSearchPanelPinned)),
+    on(toggleIsSearchPanelPinned, state => !state)
 )

@@ -4,6 +4,6 @@ import { setState } from "../../util/setState.reducer.factory"
 
 export const defaultShowMetricLabelNodeName = true
 export const showMetricLabelNodeName = createReducer(
-	defaultShowMetricLabelNodeName,
-	on(setShowMetricLabelNodeName, setState(defaultShowMetricLabelNodeName))
+    defaultShowMetricLabelNodeName,
+    on(setShowMetricLabelNodeName, setState(defaultShowMetricLabelNodeName))
 )

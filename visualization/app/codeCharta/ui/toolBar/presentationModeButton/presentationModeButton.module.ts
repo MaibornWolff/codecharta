@@ -4,8 +4,8 @@ import { MaterialModule } from "../../../../material/material.module"
 import { PresentationModeButtonComponent } from "./presentationModeButton.component"
 
 @NgModule({
-	imports: [CommonModule, MaterialModule],
-	declarations: [PresentationModeButtonComponent],
-	exports: [PresentationModeButtonComponent]
+    imports: [CommonModule, MaterialModule],
+    declarations: [PresentationModeButtonComponent],
+    exports: [PresentationModeButtonComponent]
 })
 export class PresentationModeButtonModule {}

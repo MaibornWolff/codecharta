@@ -32,50 +32,50 @@ import { BlacklistSearchPatternEffect } from "./codeCharta/ui/searchPanel/search
 import { MaterialModule } from "./material/material.module"
 
 @NgModule({
-	imports: [
-		BrowserModule,
-		HttpClientModule,
-		StoreModule.forRoot(appReducers, { metaReducers: [setStateMiddleware] }),
-		EffectsModule.forRoot([
-			UnfocusNodesEffect,
-			AddBlacklistItemsIfNotResultsInEmptyMapEffect,
-			OpenNodeContextMenuEffect,
-			BlacklistSearchPatternEffect,
-			ResetColorRangeEffect,
-			ResetChosenMetricsEffect,
-			UpdateEdgePreviewsEffect,
-			RenderCodeMapEffect,
-			AutoFitCodeMapEffect,
-			UpdateVisibleTopLabelsEffect,
-			LinkColorMetricToHeightMetricEffect,
-			ResetSelectedEdgeMetricWhenItDoesntExistAnymoreEffect,
-			UpdateFileSettingsEffect,
-			SetLoadingIndicatorEffect,
-			SaveCcStateEffect,
-			SaveMetricsInQueryParametersEffect,
-			UpdateMapColorsEffect
-		]),
-		MaterialModule,
-		FormsModule,
-		ReactiveFormsModule,
-		ChangelogDialogModule,
-		CodeChartaModule,
-		NodeContextMenuCardModule
-	],
-	providers: [
-		VersionService,
-		{
-			provide: APP_INITIALIZER,
-			useFactory: (config: VersionService) => () => config.synchronizeLocalCodeChartaVersion(),
-			deps: [VersionService],
-			multi: true
-		}
-	],
-	declarations: [...dialogs],
-	bootstrap: [CodeChartaComponent]
+    imports: [
+        BrowserModule,
+        HttpClientModule,
+        StoreModule.forRoot(appReducers, { metaReducers: [setStateMiddleware] }),
+        EffectsModule.forRoot([
+            UnfocusNodesEffect,
+            AddBlacklistItemsIfNotResultsInEmptyMapEffect,
+            OpenNodeContextMenuEffect,
+            BlacklistSearchPatternEffect,
+            ResetColorRangeEffect,
+            ResetChosenMetricsEffect,
+            UpdateEdgePreviewsEffect,
+            RenderCodeMapEffect,
+            AutoFitCodeMapEffect,
+            UpdateVisibleTopLabelsEffect,
+            LinkColorMetricToHeightMetricEffect,
+            ResetSelectedEdgeMetricWhenItDoesntExistAnymoreEffect,
+            UpdateFileSettingsEffect,
+            SetLoadingIndicatorEffect,
+            SaveCcStateEffect,
+            SaveMetricsInQueryParametersEffect,
+            UpdateMapColorsEffect
+        ]),
+        MaterialModule,
+        FormsModule,
+        ReactiveFormsModule,
+        ChangelogDialogModule,
+        CodeChartaModule,
+        NodeContextMenuCardModule
+    ],
+    providers: [
+        VersionService,
+        {
+            provide: APP_INITIALIZER,
+            useFactory: (config: VersionService) => () => config.synchronizeLocalCodeChartaVersion(),
+            deps: [VersionService],
+            multi: true
+        }
+    ],
+    declarations: [...dialogs],
+    bootstrap: [CodeChartaComponent]
 })
 export class AppModule {}
 
 if (typeof window !== "undefined" && !window["__TEST_ENVIRONMENT__"]) {
-	platformBrowserDynamic().bootstrapModule(AppModule)
+    platformBrowserDynamic().bootstrapModule(AppModule)
 }

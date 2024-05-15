@@ -17,47 +17,51 @@ export const NO_FILES_LOADED_ERROR_MESSAGE = "File(s) could not be loaded"
 
 @Injectable({ providedIn: "root" })
 export class LoadFileService implements OnDestroy {
-	static readonly CC_FILE_EXTENSION = ".cc.json"
+    static readonly CC_FILE_EXTENSION = ".cc.json"
 
-	referenceFileSubscription = this.store
-		.select(referenceFileSelector)
-		.pipe(
-			tap(newReferenceFile => {
-				if (newReferenceFile) {
-					fileRoot.updateRoot(newReferenceFile.map.name)
-				}
-			})
-		)
-		.subscribe()
+    referenceFileSubscription = this.store
+        .select(referenceFileSelector)
+        .pipe(
+            tap(newReferenceFile => {
+                if (newReferenceFile) {
+                    fileRoot.updateRoot(newReferenceFile.map.name)
+                }
+            })
+        )
+        .subscribe()
 
-	constructor(private store: Store<CcState>, private state: State<CcState>, private dialog: MatDialog) {}
+    constructor(
+        private store: Store<CcState>,
+        private state: State<CcState>,
+        private dialog: MatDialog
+    ) {}
 
-	ngOnDestroy(): void {
-		this.referenceFileSubscription.unsubscribe()
-	}
+    ngOnDestroy(): void {
+        this.referenceFileSubscription.unsubscribe()
+    }
 
-	loadFiles(nameDataPairs: NameDataPair[]) {
-		const fileStates: FileState[] = clone(this.state.getValue().files)
-		const recentFiles: string[] = []
-		const fileValidationResults: CCFileValidationResult[] = []
+    loadFiles(nameDataPairs: NameDataPair[]) {
+        const fileStates: FileState[] = clone(this.state.getValue().files)
+        const recentFiles: string[] = []
+        const fileValidationResults: CCFileValidationResult[] = []
 
-		enrichFileStatesAndRecentFilesWithValidationResults(fileStates, recentFiles, nameDataPairs, fileValidationResults)
+        enrichFileStatesAndRecentFilesWithValidationResults(fileStates, recentFiles, nameDataPairs, fileValidationResults)
 
-		if (fileValidationResults.length > 0) {
-			this.dialog.open(ErrorDialogComponent, {
-				data: loadFilesValidationToErrorDialog(fileValidationResults)
-			})
-		}
+        if (fileValidationResults.length > 0) {
+            this.dialog.open(ErrorDialogComponent, {
+                data: loadFilesValidationToErrorDialog(fileValidationResults)
+            })
+        }
 
-		if (recentFiles.length === 0) {
-			throw new Error(NO_FILES_LOADED_ERROR_MESSAGE)
-		}
+        if (recentFiles.length === 0) {
+            throw new Error(NO_FILES_LOADED_ERROR_MESSAGE)
+        }
 
-		this.store.dispatch(setFiles({ value: fileStates }))
+        this.store.dispatch(setFiles({ value: fileStates }))
 
-		const recentFile = recentFiles[0]
-		const rootName = this.state.getValue().files.find(f => f.file.fileMeta.fileName === recentFile).file.map.name
-		this.store.dispatch(setStandardByNames({ fileNames: recentFiles }))
-		fileRoot.updateRoot(rootName)
-	}
+        const recentFile = recentFiles[0]
+        const rootName = this.state.getValue().files.find(f => f.file.fileMeta.fileName === recentFile).file.map.name
+        this.store.dispatch(setStandardByNames({ fileNames: recentFiles }))
+        fileRoot.updateRoot(rootName)
+    }
 }

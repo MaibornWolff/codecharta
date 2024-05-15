@@ -1,20 +1,26 @@
 <p class="cc-node-path">
-	@if (node) {
-	<span class="file-path">
-		{{ node.path }}
-		@if (node.children?.length && fileCount$ | async; as fileCount) {
-		<span class="cc-node-file-count">
-			(
-			{{ fileCount.all }} {{ fileCount.all === 1 ? "file" : "files" }}
-			@if (node.children?.length && (isDeltaMode$ | async)) {
-			<span class="cc-node-file-count">
-				| <span class="added-files" title="Number of added files"> Δ{{ fileCount.added }}</span> |
-				<span class="removed-files" title="Number of removed files"> Δ{{ fileCount.removed > 0 ? -fileCount.removed : 0 }}</span> |
-				<span class="files-with-metric-changes" title="Number of files with metric changes"> Δ{{ fileCount.changed }}</span>
-			</span>
-			})
-		</span>
-		}
-	</span>
-	}
+    @if (node) {
+        <span class="file-path">
+            {{ node.path }}
+            @if (node.children?.length && fileCount$ | async; as fileCount) {
+                <span class="cc-node-file-count">
+                    (
+                    {{ fileCount.all }} {{ fileCount.all === 1 ? "file" : "files" }}
+                    @if (node.children?.length && (isDeltaMode$ | async)) {
+                        <span class="cc-node-file-count">
+                            | <span class="added-files" title="Number of added files"> Δ{{ fileCount.added }}</span> |
+                            <span class="removed-files" title="Number of removed files">
+                                Δ{{ fileCount.removed > 0 ? -fileCount.removed : 0 }}</span
+                            >
+                            |
+                            <span class="files-with-metric-changes" title="Number of files with metric changes">
+                                Δ{{ fileCount.changed }}</span
+                            >
+                        </span>
+                    }
+                    )
+                </span>
+            }
+        </span>
+    }
 </p>

@@ -4,10 +4,10 @@ import { CustomConfigMapSelectionMode } from "../../../../../model/customConfig/
 
 @Pipe({ name: "customConfigColorSchemaBySelectionMode" })
 export class CustomConfigColorSchemaBySelectionMode implements PipeTransform {
-	transform(customConfig: CustomConfigItem): string[] {
-		const { mapColors, mapSelectionMode } = customConfig
-		return mapSelectionMode === CustomConfigMapSelectionMode.MULTIPLE
-			? [mapColors.positive, mapColors.neutral, mapColors.negative, mapColors.selected]
-			: [mapColors.positiveDelta, mapColors.negativeDelta, mapColors.selected]
-	}
+    transform(customConfig: CustomConfigItem): string[] {
+        const { mapColors, mapSelectionMode } = customConfig
+        return mapSelectionMode === CustomConfigMapSelectionMode.MULTIPLE
+            ? [mapColors.positive, mapColors.neutral, mapColors.negative, mapColors.selected]
+            : [mapColors.positiveDelta, mapColors.negativeDelta, mapColors.selected]
+    }
 }

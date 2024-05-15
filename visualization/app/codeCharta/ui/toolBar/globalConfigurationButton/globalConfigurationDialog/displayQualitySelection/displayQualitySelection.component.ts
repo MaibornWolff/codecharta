@@ -5,17 +5,17 @@ import { setSharpnessMode } from "../../../../../state/store/appSettings/sharpne
 import { sharpnessModeSelector } from "../../../../../state/store/appSettings/sharpnessMode/sharpnessMode.selector"
 
 @Component({
-	selector: "cc-display-quality-selection",
-	templateUrl: "./displayQualitySelection.component.html",
-	encapsulation: ViewEncapsulation.None
+    selector: "cc-display-quality-selection",
+    templateUrl: "./displayQualitySelection.component.html",
+    encapsulation: ViewEncapsulation.None
 })
 export class DisplayQualitySelectionComponent {
-	sharpnessModes = Object.values(SharpnessMode)
-	sharpnessMode$ = this.store.select(sharpnessModeSelector)
+    sharpnessModes = Object.values(SharpnessMode)
+    sharpnessMode$ = this.store.select(sharpnessModeSelector)
 
-	constructor(private store: Store<CcState>) {}
+    constructor(private store: Store<CcState>) {}
 
-	handleSelectedSharpnessModeChanged(event: { value: SharpnessMode }) {
-		this.store.dispatch(setSharpnessMode({ value: event.value }))
-	}
+    handleSelectedSharpnessModeChanged(event: { value: SharpnessMode }) {
+        this.store.dispatch(setSharpnessMode({ value: event.value }))
+    }
 }

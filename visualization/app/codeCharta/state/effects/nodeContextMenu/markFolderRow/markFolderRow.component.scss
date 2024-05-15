@@ -1,31 +1,35 @@
 cc-mark-folder-row {
-	.row {
-		display: flex;
-	}
+    .row {
+        display: flex;
+    }
 
-	:hover {
-		cursor: pointer;
-	}
+    :hover {
+        cursor: pointer;
+    }
 
-	.colorButton {
-		width: 32px;
-		height: 32px;
+    .colorButton {
+        width: 32px;
+        height: 32px;
 
-		i {
-			font-size: 25px;
-			display: block;
-			color: red;
-			text-shadow: -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white;
-		}
-	}
+        i {
+            font-size: 25px;
+            display: block;
+            color: red;
+            text-shadow:
+                -1px 0 white,
+                0 1px white,
+                1px 0 white,
+                0 -1px white;
+        }
+    }
 
-	cc-color-picker {
-		width: 32px;
-		height: 32px;
+    cc-color-picker {
+        width: 32px;
+        height: 32px;
 
-		.cc-color-picker-trigger {
-			font-size: 25px;
-			margin-top: 8px;
-		}
-	}
+        .cc-color-picker-trigger {
+            font-size: 25px;
+            margin-top: 8px;
+        }
+    }
 }

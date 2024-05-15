@@ -1,22 +1,22 @@
 <div class="primary-metric-box">
-	<div class="primary-metric-row">
-		<i [class]="iconName"></i>
-		@if (showAttributeTypeSelector$ | async) {
-		<cc-attribute-type-selector
-			class="attribute-type-select"
-			[metricName]="metric.name"
-			[metricType]="'nodes'"
-		></cc-attribute-type-selector>
-		}
-		<span class="primary-metric-value">{{ metric.value | number : "1.0-0" }}</span>
-	</div>
-	<cc-metric-delta-selected [metricName]="metric.name"></cc-metric-delta-selected>
-	@if (metricLink; as link) {
-	<a class="metric-name" [href]="link" target="_blank">
-		{{ metric.name }}
-		<i class="fa fa-external-link"></i>
-	</a>
-	} @else {
-	<span class="metric-name">{{ metric.name }}</span>
-	}
+    <div class="primary-metric-row">
+        <i [class]="iconName"></i>
+        @if (showAttributeTypeSelector$ | async) {
+            <cc-attribute-type-selector
+                class="attribute-type-select"
+                [metricName]="metric.name"
+                [metricType]="'nodes'"
+            ></cc-attribute-type-selector>
+        }
+        <span class="primary-metric-value">{{ metric.value | number: "1.0-0" }}</span>
+    </div>
+    <cc-metric-delta-selected [metricName]="metric.name"></cc-metric-delta-selected>
+    @if (metricLink; as link) {
+        <a class="metric-name" [href]="link" target="_blank">
+            {{ metric.name }}
+            <i class="fa fa-external-link"></i>
+        </a>
+    } @else {
+        <span class="metric-name">{{ metric.name }}</span>
+    }
 </div>

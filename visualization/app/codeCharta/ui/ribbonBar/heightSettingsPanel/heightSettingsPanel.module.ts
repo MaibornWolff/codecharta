@@ -6,8 +6,8 @@ import { SliderModule } from "../../slider/slider.module"
 import { HeightSettingsPanelComponent } from "./heightSettingsPanel.component"
 
 @NgModule({
-	imports: [CommonModule, MaterialModule, SliderModule, ResetSettingsButtonModule],
-	declarations: [HeightSettingsPanelComponent],
-	exports: [HeightSettingsPanelComponent]
+    imports: [CommonModule, MaterialModule, SliderModule, ResetSettingsButtonModule],
+    declarations: [HeightSettingsPanelComponent],
+    exports: [HeightSettingsPanelComponent]
 })
 export class HeightSettingsPanelModule {}

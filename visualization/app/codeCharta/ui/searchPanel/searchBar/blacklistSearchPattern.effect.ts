@@ -10,62 +10,62 @@ import { addBlacklistItems, addBlacklistItemsIfNotResultsInEmptyMap } from "../.
 import { parseBlacklistItems } from "./utils/parseBlacklistItems"
 
 type BlacklistSearchPatternAction = {
-	type: "BlacklistSearchPatternAction"
-	action: { type: BlacklistType }
+    type: "BlacklistSearchPatternAction"
+    action: { type: BlacklistType }
 }
 
 export const blacklistSearchPattern = (type: BlacklistType): BlacklistSearchPatternAction => ({
-	type: "BlacklistSearchPatternAction",
-	action: { type }
+    type: "BlacklistSearchPatternAction",
+    action: { type }
 })
 
 @Injectable()
 export class BlacklistSearchPatternEffect {
-	constructor(
-		private actions$: Actions,
-		private store: Store<CcState>,
-		private addBlacklistItemsIfNotResultsInEmptyMapEffect: AddBlacklistItemsIfNotResultsInEmptyMapEffect
-	) {}
+    constructor(
+        private actions$: Actions,
+        private store: Store<CcState>,
+        private addBlacklistItemsIfNotResultsInEmptyMapEffect: AddBlacklistItemsIfNotResultsInEmptyMapEffect
+    ) {}
 
-	private searchPattern2BlacklistItems$ = this.actions$.pipe(
-		ofType<BlacklistSearchPatternAction>("BlacklistSearchPatternAction"),
-		withLatestFrom(this.store.select(searchPatternSelector)),
-		map(([blacklistSearchPatternAction, searchPattern]) => ({
-			type: blacklistSearchPatternAction.action.type,
-			blacklistItems: parseBlacklistItems(blacklistSearchPatternAction.action.type, searchPattern)
-		})),
-		share()
-	)
+    private searchPattern2BlacklistItems$ = this.actions$.pipe(
+        ofType<BlacklistSearchPatternAction>("BlacklistSearchPatternAction"),
+        withLatestFrom(this.store.select(searchPatternSelector)),
+        map(([blacklistSearchPatternAction, searchPattern]) => ({
+            type: blacklistSearchPatternAction.action.type,
+            blacklistItems: parseBlacklistItems(blacklistSearchPatternAction.action.type, searchPattern)
+        })),
+        share()
+    )
 
-	flattenSearchPattern$ = createEffect(
-		() =>
-			this.searchPattern2BlacklistItems$.pipe(
-				filter(searchPattern2BlacklistItems => searchPattern2BlacklistItems.type === "flatten"),
-				tap(searchPattern2BlacklistItems => {
-					this.store.dispatch(addBlacklistItems({ items: searchPattern2BlacklistItems.blacklistItems }))
-					this.store.dispatch(setSearchPattern({ value: "" }))
-				})
-			),
-		{ dispatch: false }
-	)
+    flattenSearchPattern$ = createEffect(
+        () =>
+            this.searchPattern2BlacklistItems$.pipe(
+                filter(searchPattern2BlacklistItems => searchPattern2BlacklistItems.type === "flatten"),
+                tap(searchPattern2BlacklistItems => {
+                    this.store.dispatch(addBlacklistItems({ items: searchPattern2BlacklistItems.blacklistItems }))
+                    this.store.dispatch(setSearchPattern({ value: "" }))
+                })
+            ),
+        { dispatch: false }
+    )
 
-	excludeSearchPattern$ = createEffect(() =>
-		this.searchPattern2BlacklistItems$.pipe(
-			filter(searchPattern2BlacklistItems => searchPattern2BlacklistItems.type === "exclude"),
-			tap(() => {
-				this.addBlacklistItemsIfNotResultsInEmptyMapEffect.doBlacklistItemsResultInEmptyMap$
-					.pipe(
-						take(1),
-						filter(doBlacklistItemsResultInEmptyMap => !doBlacklistItemsResultInEmptyMap.resultsInEmptyMap),
-						tap(() => {
-							this.store.dispatch(setSearchPattern({ value: "" }))
-						})
-					)
-					.subscribe()
-			}),
-			map(searchPattern2BlacklistItems =>
-				addBlacklistItemsIfNotResultsInEmptyMap({ items: searchPattern2BlacklistItems.blacklistItems })
-			)
-		)
-	)
+    excludeSearchPattern$ = createEffect(() =>
+        this.searchPattern2BlacklistItems$.pipe(
+            filter(searchPattern2BlacklistItems => searchPattern2BlacklistItems.type === "exclude"),
+            tap(() => {
+                this.addBlacklistItemsIfNotResultsInEmptyMapEffect.doBlacklistItemsResultInEmptyMap$
+                    .pipe(
+                        take(1),
+                        filter(doBlacklistItemsResultInEmptyMap => !doBlacklistItemsResultInEmptyMap.resultsInEmptyMap),
+                        tap(() => {
+                            this.store.dispatch(setSearchPattern({ value: "" }))
+                        })
+                    )
+                    .subscribe()
+            }),
+            map(searchPattern2BlacklistItems =>
+                addBlacklistItemsIfNotResultsInEmptyMap({ items: searchPattern2BlacklistItems.blacklistItems })
+            )
+        )
+    )
 }

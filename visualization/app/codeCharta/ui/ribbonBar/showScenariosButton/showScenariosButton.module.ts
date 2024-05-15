@@ -7,9 +7,9 @@ import { ScenariosComponent } from "./scenarios/scenarios.component"
 import { ShowScenariosButtonComponent } from "./showScenariosButton.component"
 
 @NgModule({
-	imports: [CommonModule, MaterialModule, AddCustomScenarioModule],
-	providers: [ScenarioService],
-	declarations: [ShowScenariosButtonComponent, ScenariosComponent],
-	exports: [ShowScenariosButtonComponent]
+    imports: [CommonModule, MaterialModule, AddCustomScenarioModule],
+    providers: [ScenarioService],
+    declarations: [ShowScenariosButtonComponent, ScenariosComponent],
+    exports: [ShowScenariosButtonComponent]
 })
 export class ShowScenariosButtonModule {}

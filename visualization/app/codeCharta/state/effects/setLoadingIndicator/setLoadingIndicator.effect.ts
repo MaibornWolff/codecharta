@@ -8,19 +8,19 @@ import { setIsLoadingMap } from "../../store/appSettings/isLoadingMap/isLoadingM
 
 @Injectable()
 export class SetLoadingIndicatorEffect {
-	constructor(private actions$: Actions) {}
+    constructor(private actions$: Actions) {}
 
-	setIsLoadingFile$ = createEffect(() =>
-		this.actions$.pipe(
-			ofType(...fileActions),
-			map(() => setIsLoadingFile({ value: true }))
-		)
-	)
+    setIsLoadingFile$ = createEffect(() =>
+        this.actions$.pipe(
+            ofType(...fileActions),
+            map(() => setIsLoadingFile({ value: true }))
+        )
+    )
 
-	setIsLoadingMap$ = createEffect(() =>
-		this.actions$.pipe(
-			ofType(...actionsRequiringRerender),
-			map(() => setIsLoadingMap({ value: true }))
-		)
-	)
+    setIsLoadingMap$ = createEffect(() =>
+        this.actions$.pipe(
+            ofType(...actionsRequiringRerender),
+            map(() => setIsLoadingMap({ value: true }))
+        )
+    )
 }

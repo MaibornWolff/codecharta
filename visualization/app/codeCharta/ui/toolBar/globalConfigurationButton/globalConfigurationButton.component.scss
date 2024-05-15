@@ -1,63 +1,63 @@
 @use "../../../../material/theme";
 
 cc-global-configuration-button button {
-	margin: 0;
-	padding: 0;
+    margin: 0;
+    padding: 0;
 
-	cc-action-icon {
-		margin-left: 12px;
-	}
+    cc-action-icon {
+        margin-left: 12px;
+    }
 
-	&:hover cc-action-icon {
-		background-color: theme.$cc-emphasized-color;
-	}
+    &:hover cc-action-icon {
+        background-color: theme.$cc-emphasized-color;
+    }
 }
 
 .cc-global-configuration-dialog .mat-mdc-dialog-container {
-	width: 36vw;
-	min-width: 600px;
+    width: 36vw;
+    min-width: 600px;
 
-	.cc-global-configuration-dialog-content {
-		padding: 0 16px;
-		display: flex;
-		flex-direction: column;
-		gap: 26px;
-	}
+    .cc-global-configuration-dialog-content {
+        padding: 0 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 26px;
+    }
 
-	cc-map-layout-selection,
-	cc-display-quality-selection {
-		> mat-form-field {
-			width: 100%;
+    cc-map-layout-selection,
+    cc-display-quality-selection {
+        > mat-form-field {
+            width: 100%;
 
-			.mat-mdc-form-field-subscript-wrapper.mat-mdc-form-field-bottom-align {
-				display: none;
-			}
-		}
+            .mat-mdc-form-field-subscript-wrapper.mat-mdc-form-field-bottom-align {
+                display: none;
+            }
+        }
 
-		.cc-tree-maps-max-tree-map-files {
-			display: inline-block;
-			padding-left: 16px;
-		}
-	}
+        .cc-tree-maps-max-tree-map-files {
+            display: inline-block;
+            padding-left: 16px;
+        }
+    }
 
-	.cc-global-configuration-toggle-option {
-		display: flex;
-		flex-direction: column;
-		gap: inherit;
-	}
+    .cc-global-configuration-toggle-option {
+        display: flex;
+        flex-direction: column;
+        gap: inherit;
+    }
 
-	.cc-global-configuration-links-list {
-		display: flex;
-		gap: 16px;
+    .cc-global-configuration-links-list {
+        display: flex;
+        gap: 16px;
 
-		.weblink {
-			display: block;
-			color: rgba(0, 0, 0, 0.870588);
-			text-decoration: none;
+        .weblink {
+            display: block;
+            color: rgba(0, 0, 0, 0.870588);
+            text-decoration: none;
 
-			.fa {
-				margin: 8px;
-			}
-		}
-	}
+            .fa {
+                margin: 8px;
+            }
+        }
+    }
 }

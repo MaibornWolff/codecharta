@@ -1,87 +1,92 @@
-@if (!(isDeltaState$ | async) && (colorMetric$ | async) !== 'unary') {
-<div>
-	<cc-metric-color-range-slider
-		[minValue]="(sliderValues$ | async).min"
-		[maxValue]="(sliderValues$ | async).max"
-		[currentLeftValue]="(sliderValues$ | async).from"
-		[currentRightValue]="(sliderValues$ | async).to"
-		[leftColor]="(sliderColors$ | async).leftColor"
-		[middleColor]="(sliderColors$ | async).middleColor"
-		[rightColor]="(sliderColors$ | async).rightColor"
-		[handleValueChange]="handleValueChange"
-		[isAttributeDirectionInversed]="isAttributeDescriptionInversed$ | async"
-	>
-	</cc-metric-color-range-slider>
-	<cc-reset-settings-button
-		[settingsKeys]="['appSettings.mapColors.positiveDelta', 'appSettings.mapColors.negativeDelta']"
-		[callback]="resetColorRange"
-		tooltip="Reset slider thresholds to default"
-		label="Reset thresholds"
-	></cc-reset-settings-button>
-	<cc-metric-color-range-diagram
-		[minValue]="(sliderValues$ | async).min"
-		[maxValue]="(sliderValues$ | async).max"
-		[currentLeftValue]="(sliderValues$ | async).from"
-		[currentRightValue]="(sliderValues$ | async).to"
-		[leftColor]="(sliderColors$ | async).leftColor"
-		[middleColor]="(sliderColors$ | async).middleColor"
-		[rightColor]="(sliderColors$ | async).rightColor"
-		[colorMetric]="colorMetric$ | async"
-		[values]="(sliderValues$ | async).values"
-		[isAttributeDirectionInversed]="isAttributeDescriptionInversed$ | async"
-	></cc-metric-color-range-diagram>
-	<mat-form-field appearance="outline" class="gradient-mode-selector">
-		<mat-label>Gradient Mode</mat-label>
-		<mat-select [value]="colorMode$ | async" (selectionChange)="handleColorModeChange($event.value)">
-			<div (mousedown)="$event.stopPropagation()">
-				<mat-option value="absolute">Absolute</mat-option>
-				<mat-option value="focusedGradient">Focused Gradient</mat-option>
-				<mat-option value="weightedGradient">Weighted Gradient</mat-option>
-				<mat-option value="trueGradient">True Gradient</mat-option>
-			</div>
-		</mat-select>
-	</mat-form-field>
-</div>
-} @if (!(isDeltaState$ | async)) {
-<div class="color-row">
-	<cc-color-picker-for-map-color [mapColorFor]="'positive'"></cc-color-picker-for-map-color>
-	<mat-checkbox [checked]="(colorLabels$ | async).positive" (change)="toggleColorLabel($event, 'positive')">Show labels</mat-checkbox>
-</div>
-<div class="color-row">
-	<cc-color-picker-for-map-color [mapColorFor]="'neutral'"></cc-color-picker-for-map-color>
-	<mat-checkbox [checked]="(colorLabels$ | async).neutral" (change)="toggleColorLabel($event, 'neutral')">Show labels</mat-checkbox>
-</div>
-<div class="color-row">
-	<cc-color-picker-for-map-color [mapColorFor]="'negative'"></cc-color-picker-for-map-color>
-	<mat-checkbox [checked]="(colorLabels$ | async).negative" (change)="toggleColorLabel($event, 'negative')">Show labels</mat-checkbox>
-</div>
+@if (!(isDeltaState$ | async) && (colorMetric$ | async) !== "unary") {
+    <div>
+        <cc-metric-color-range-slider
+            [minValue]="(sliderValues$ | async).min"
+            [maxValue]="(sliderValues$ | async).max"
+            [currentLeftValue]="(sliderValues$ | async).from"
+            [currentRightValue]="(sliderValues$ | async).to"
+            [leftColor]="(sliderColors$ | async).leftColor"
+            [middleColor]="(sliderColors$ | async).middleColor"
+            [rightColor]="(sliderColors$ | async).rightColor"
+            [handleValueChange]="handleValueChange"
+            [isAttributeDirectionInversed]="isAttributeDescriptionInversed$ | async"
+        >
+        </cc-metric-color-range-slider>
+        <cc-reset-settings-button
+            [settingsKeys]="['appSettings.mapColors.positiveDelta', 'appSettings.mapColors.negativeDelta']"
+            [callback]="resetColorRange"
+            tooltip="Reset slider thresholds to default"
+            label="Reset thresholds"
+        ></cc-reset-settings-button>
+        <cc-metric-color-range-diagram
+            [minValue]="(sliderValues$ | async).min"
+            [maxValue]="(sliderValues$ | async).max"
+            [currentLeftValue]="(sliderValues$ | async).from"
+            [currentRightValue]="(sliderValues$ | async).to"
+            [leftColor]="(sliderColors$ | async).leftColor"
+            [middleColor]="(sliderColors$ | async).middleColor"
+            [rightColor]="(sliderColors$ | async).rightColor"
+            [colorMetric]="colorMetric$ | async"
+            [values]="(sliderValues$ | async).values"
+            [isAttributeDirectionInversed]="isAttributeDescriptionInversed$ | async"
+        ></cc-metric-color-range-diagram>
+        <mat-form-field appearance="outline" class="gradient-mode-selector">
+            <mat-label>Gradient Mode</mat-label>
+            <mat-select [value]="colorMode$ | async" (selectionChange)="handleColorModeChange($event.value)">
+                <div (mousedown)="$event.stopPropagation()">
+                    <mat-option value="absolute">Absolute</mat-option>
+                    <mat-option value="focusedGradient">Focused Gradient</mat-option>
+                    <mat-option value="weightedGradient">Weighted Gradient</mat-option>
+                    <mat-option value="trueGradient">True Gradient</mat-option>
+                </div>
+            </mat-select>
+        </mat-form-field>
+    </div>
+}
+@if (!(isDeltaState$ | async)) {
+    <div class="color-row">
+        <cc-color-picker-for-map-color [mapColorFor]="'positive'"></cc-color-picker-for-map-color>
+        <mat-checkbox [checked]="(colorLabels$ | async).positive" (change)="toggleColorLabel($event, 'positive')">Show labels</mat-checkbox>
+    </div>
+    <div class="color-row">
+        <cc-color-picker-for-map-color [mapColorFor]="'neutral'"></cc-color-picker-for-map-color>
+        <mat-checkbox [checked]="(colorLabels$ | async).neutral" (change)="toggleColorLabel($event, 'neutral')">Show labels</mat-checkbox>
+    </div>
+    <div class="color-row">
+        <cc-color-picker-for-map-color [mapColorFor]="'negative'"></cc-color-picker-for-map-color>
+        <mat-checkbox [checked]="(colorLabels$ | async).negative" (change)="toggleColorLabel($event, 'negative')">Show labels</mat-checkbox>
+    </div>
 } @else {
-<cc-color-picker-for-map-color [mapColorFor]="'positiveDelta'"></cc-color-picker-for-map-color>
-<cc-color-picker-for-map-color [mapColorFor]="'negativeDelta'"> </cc-color-picker-for-map-color>
+    <cc-color-picker-for-map-color [mapColorFor]="'positiveDelta'"></cc-color-picker-for-map-color>
+    <cc-color-picker-for-map-color [mapColorFor]="'negativeDelta'"> </cc-color-picker-for-map-color>
 }
 <cc-color-picker-for-map-color [mapColorFor]="'selected'"> </cc-color-picker-for-map-color>
 
 <div class="color-row">
-	<cc-reset-settings-button
-		[settingsKeys]="
-			(isDeltaState$ | async)
-				? ['appSettings.mapColors.positiveDelta', 'appSettings.mapColors.negativeDelta', 'appSettings.mapColors.selected']
-				: [
-						'appSettings.mapColors.positive',
-						'appSettings.mapColors.negative',
-						'appSettings.mapColors.neutral',
-						'appSettings.mapColors.selected'
-				  ]
-		"
-		tooltip="Reset color values to default"
-		label="Reset colors"
-		[callback]="resetInvertColorCheckboxes"
-	>
-	</cc-reset-settings-button>
+    <cc-reset-settings-button
+        [settingsKeys]="
+            (isDeltaState$ | async)
+                ? ['appSettings.mapColors.positiveDelta', 'appSettings.mapColors.negativeDelta', 'appSettings.mapColors.selected']
+                : [
+                      'appSettings.mapColors.positive',
+                      'appSettings.mapColors.negative',
+                      'appSettings.mapColors.neutral',
+                      'appSettings.mapColors.selected'
+                  ]
+        "
+        tooltip="Reset color values to default"
+        label="Reset colors"
+        [callback]="resetInvertColorCheckboxes"
+    >
+    </cc-reset-settings-button>
 
-	@if (!(isDeltaState$ | async)) {
-	<mat-checkbox [checked]="isColorRangeInverted" (change)="handleIsColorRangeInvertedChange($event.checked)">Invert Colors</mat-checkbox>
-	} @else {
-	<mat-checkbox [checked]="areDeltaColorsInverted" (change)="handleAreDeltaColorsInverted($event.checked)">Invert Colors</mat-checkbox>
-	}
+    @if (!(isDeltaState$ | async)) {
+        <mat-checkbox [checked]="isColorRangeInverted" (change)="handleIsColorRangeInvertedChange($event.checked)"
+            >Invert Colors</mat-checkbox
+        >
+    } @else {
+        <mat-checkbox [checked]="areDeltaColorsInverted" (change)="handleAreDeltaColorsInverted($event.checked)"
+            >Invert Colors</mat-checkbox
+        >
+    }
 </div>

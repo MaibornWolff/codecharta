@@ -6,8 +6,8 @@ import { MaterialModule } from "../../../material/material.module"
 import { ColorPickerComponent } from "./colorPicker.component"
 
 @NgModule({
-	imports: [CommonModule, ColorChromeModule, MaterialModule],
-	declarations: [ColorPickerComponent],
-	exports: [ColorPickerComponent]
+    imports: [CommonModule, ColorChromeModule, MaterialModule],
+    declarations: [ColorPickerComponent],
+    exports: [ColorPickerComponent]
 })
 export class ColorPickerModule {}

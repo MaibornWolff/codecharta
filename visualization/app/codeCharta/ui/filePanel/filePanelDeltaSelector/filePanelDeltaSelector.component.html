@@ -1,31 +1,31 @@
 <div class="delta-select-wrapper">
-	<mat-select class="delta-select" [value]="referenceFile$ | async" (selectionChange)="handleDeltaReferenceFileChange($event.value)">
-		@for (file of files$ | async; track file) {
-		<mat-option [value]="file.file">
-			{{ file.file.fileMeta.fileName | removeExtension }}
-		</mat-option>
-		}
-	</mat-select>
-	<button
-		class="reference-comparison-switch"
-		[disabled]="(comparisonFile$ | async) === undefined"
-		(click)="switchReferenceAndComparison()"
-		title="Switch reference and comparison file"
-	>
-		<i class="fa fa-arrows-h"></i>
-	</button>
+    <mat-select class="delta-select" [value]="referenceFile$ | async" (selectionChange)="handleDeltaReferenceFileChange($event.value)">
+        @for (file of files$ | async; track file) {
+            <mat-option [value]="file.file">
+                {{ file.file.fileMeta.fileName | removeExtension }}
+            </mat-option>
+        }
+    </mat-select>
+    <button
+        class="reference-comparison-switch"
+        [disabled]="(comparisonFile$ | async) === undefined"
+        (click)="switchReferenceAndComparison()"
+        title="Switch reference and comparison file"
+    >
+        <i class="fa fa-arrows-h"></i>
+    </button>
 
-	<mat-select
-		class="delta-select"
-		placeholder="select comparison file"
-		[value]="comparisonFile$ | async"
-		(selectionChange)="handleDeltaComparisonFileChange($event.value)"
-	>
-		@for (file of possibleComparisonFiles$ | async; track file) {
-		<mat-option [value]="file.file">
-			{{ file.file.fileMeta.fileName | removeExtension }}
-		</mat-option>
-		}
-	</mat-select>
-	<div class="pictogram" [style.background]="pictogramBackground$ | async"></div>
+    <mat-select
+        class="delta-select"
+        placeholder="select comparison file"
+        [value]="comparisonFile$ | async"
+        (selectionChange)="handleDeltaComparisonFileChange($event.value)"
+    >
+        @for (file of possibleComparisonFiles$ | async; track file) {
+            <mat-option [value]="file.file">
+                {{ file.file.fileMeta.fileName | removeExtension }}
+            </mat-option>
+        }
+    </mat-select>
+    <div class="pictogram" [style.background]="pictogramBackground$ | async"></div>
 </div>

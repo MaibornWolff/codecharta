@@ -14,51 +14,51 @@ import { HeightMetricChooserComponent } from "./heightMetricChooser.component"
 import { HeightMetricChooserModule } from "./heightMetricChooser.module"
 
 describe("heightMetricChooserComponent", () => {
-	let store: MockStore
+    let store: MockStore
 
-	beforeEach(() => {
-		TestBed.configureTestingModule({
-			imports: [HeightMetricChooserModule],
-			providers: [
-				{ provide: NodeSelectionService, useValue: { createNodeObservable: jest.fn() } },
-				provideMockStore({
-					selectors: [
-						{
-							selector: metricDataSelector,
-							value: {
-								nodeMetricData: [
-									{ name: "aMetric", maxValue: 1 },
-									{ name: "bMetric", maxValue: 2 }
-								]
-							}
-						},
-						{ selector: heightMetricSelector, value: "aMetric" },
-						{ selector: hoveredNodeSelector, value: null },
-						{ selector: attributeDescriptorsSelector, value: {} }
-					]
-				})
-			]
-		})
-	})
+    beforeEach(() => {
+        TestBed.configureTestingModule({
+            imports: [HeightMetricChooserModule],
+            providers: [
+                { provide: NodeSelectionService, useValue: { createNodeObservable: jest.fn() } },
+                provideMockStore({
+                    selectors: [
+                        {
+                            selector: metricDataSelector,
+                            value: {
+                                nodeMetricData: [
+                                    { name: "aMetric", maxValue: 1 },
+                                    { name: "bMetric", maxValue: 2 }
+                                ]
+                            }
+                        },
+                        { selector: heightMetricSelector, value: "aMetric" },
+                        { selector: hoveredNodeSelector, value: null },
+                        { selector: attributeDescriptorsSelector, value: {} }
+                    ]
+                })
+            ]
+        })
+    })
 
-	it("should be a select for height metric", async () => {
-		const { detectChanges } = await render(HeightMetricChooserComponent, { excludeComponentDeclaration: true })
-		store = TestBed.inject(MockStore)
+    it("should be a select for height metric", async () => {
+        const { detectChanges } = await render(HeightMetricChooserComponent, { excludeComponentDeclaration: true })
+        store = TestBed.inject(MockStore)
 
-		await userEvent.click(await screen.findByText("aMetric"))
-		await waitFor(() => expect(screen.getByPlaceholderText("Height Metric (highest value)")).not.toBe(null))
+        await userEvent.click(await screen.findByText("aMetric"))
+        await waitFor(() => expect(screen.getByPlaceholderText("Height Metric (highest value)")).not.toBe(null))
 
-		const options = screen.queryAllByRole("option")
-		expect(options[0].textContent).toMatch("aMetric (1)")
-		expect(options[1].textContent).toMatch("bMetric (2)")
-		await userEvent.click(options[1])
+        const options = screen.queryAllByRole("option")
+        expect(options[0].textContent).toMatch("aMetric (1)")
+        expect(options[1].textContent).toMatch("bMetric (2)")
+        await userEvent.click(options[1])
 
-		expect(await getLastAction(store)).toEqual(setHeightMetric({ value: "bMetric" }))
-		store.overrideSelector(heightMetricSelector, "bMetric")
-		store.refreshState()
-		detectChanges()
+        expect(await getLastAction(store)).toEqual(setHeightMetric({ value: "bMetric" }))
+        store.overrideSelector(heightMetricSelector, "bMetric")
+        store.refreshState()
+        detectChanges()
 
-		await waitFor(() => expect(screen.queryByText("aMetric")).toBe(null))
-		await waitFor(() => expect(screen.queryByText("bMetric")).not.toBe(null))
-	})
+        await waitFor(() => expect(screen.queryByText("aMetric")).toBe(null))
+        await waitFor(() => expect(screen.queryByText("bMetric")).not.toBe(null))
+    })
 })

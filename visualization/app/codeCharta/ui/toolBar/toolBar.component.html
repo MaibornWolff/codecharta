@@ -5,13 +5,13 @@
 <cc-reset-map-button></cc-reset-map-button>
 
 @if ((hoveredNodeId$ | async) === null) {
-<cc-file-panel></cc-file-panel>
+    <cc-file-panel></cc-file-panel>
 } @else {
-<cc-hovered-node-path-panel></cc-hovered-node-path-panel>
+    <cc-hovered-node-path-panel></cc-hovered-node-path-panel>
 }
 
 <div class="right-aligned">
-	<cc-loading-map-progress-spinner></cc-loading-map-progress-spinner>
-	<cc-presentation-mode-button></cc-presentation-mode-button>
-	<cc-global-configuration-button></cc-global-configuration-button>
+    <cc-loading-map-progress-spinner></cc-loading-map-progress-spinner>
+    <cc-presentation-mode-button></cc-presentation-mode-button>
+    <cc-global-configuration-button></cc-global-configuration-button>
 </div>

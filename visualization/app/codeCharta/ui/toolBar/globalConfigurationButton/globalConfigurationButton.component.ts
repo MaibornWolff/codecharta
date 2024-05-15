@@ -3,17 +3,17 @@ import { MatDialog } from "@angular/material/dialog"
 import { GlobalConfigurationDialogComponent } from "./globalConfigurationDialog/globalConfigurationDialog.component"
 
 @Component({
-	selector: "cc-global-configuration-button",
-	templateUrl: "./globalConfigurationButton.component.html",
-	styleUrls: ["./globalConfigurationButton.component.scss"],
-	encapsulation: ViewEncapsulation.None
+    selector: "cc-global-configuration-button",
+    templateUrl: "./globalConfigurationButton.component.html",
+    styleUrls: ["./globalConfigurationButton.component.scss"],
+    encapsulation: ViewEncapsulation.None
 })
 export class GlobalConfigurationButtonComponent {
-	constructor(private dialog: MatDialog) {}
+    constructor(private dialog: MatDialog) {}
 
-	showGlobalConfiguration() {
-		this.dialog.open(GlobalConfigurationDialogComponent, {
-			panelClass: "cc-global-configuration-dialog"
-		})
-	}
+    showGlobalConfiguration() {
+        this.dialog.open(GlobalConfigurationDialogComponent, {
+            panelClass: "cc-global-configuration-dialog"
+        })
+    }
 }

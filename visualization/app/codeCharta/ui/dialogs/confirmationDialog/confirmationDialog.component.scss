@@ -1,17 +1,17 @@
 .cc-confirmation-dialog .mat-mdc-dialog-container {
-	.confirmation-message {
-		padding: 10px;
-	}
+    .confirmation-message {
+        padding: 10px;
+    }
 
-	.mat-mdc-dialog-actions {
-		justify-content: flex-end;
+    .mat-mdc-dialog-actions {
+        justify-content: flex-end;
 
-		.mat-mdc-button {
-			background-color: rgba(138, 132, 132, 0.08);
+        .mat-mdc-button {
+            background-color: rgba(138, 132, 132, 0.08);
 
-			&.submit-button {
-				color: rgb(0, 150, 136);
-			}
-		}
-	}
+            &.submit-button {
+                color: rgb(0, 150, 136);
+            }
+        }
+    }
 }

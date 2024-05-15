@@ -8,23 +8,23 @@ import { searchedNodePathsSelector } from "../../../../state/selectors/searchedN
 import { areaMetricSelector } from "../../../../state/store/dynamicSettings/areaMetric/areaMetric.selector"
 
 @Component({
-	selector: "cc-map-tree-view-item-name",
-	templateUrl: "./mapTreeViewItemName.component.html",
-	encapsulation: ViewEncapsulation.None
+    selector: "cc-map-tree-view-item-name",
+    templateUrl: "./mapTreeViewItemName.component.html",
+    encapsulation: ViewEncapsulation.None
 })
 export class MapTreeViewItemNameComponent {
-	@Input() node: CodeMapNode
-	@Input() isHovered: boolean
-	@Input() unaryValue: number
-	@Input() unaryPercentage: number
+    @Input() node: CodeMapNode
+    @Input() isHovered: boolean
+    @Input() unaryValue: number
+    @Input() unaryPercentage: number
 
-	searchedNodePaths$: Observable<Set<string>>
-	rootUnary$: Observable<number>
-	areaMetric$: Observable<string>
+    searchedNodePaths$: Observable<Set<string>>
+    rootUnary$: Observable<number>
+    areaMetric$: Observable<string>
 
-	constructor(store: Store<CcState>) {
-		this.searchedNodePaths$ = store.select(searchedNodePathsSelector)
-		this.rootUnary$ = store.select(rootUnarySelector)
-		this.areaMetric$ = store.select(areaMetricSelector)
-	}
+    constructor(store: Store<CcState>) {
+        this.searchedNodePaths$ = store.select(searchedNodePathsSelector)
+        this.rootUnary$ = store.select(rootUnarySelector)
+        this.areaMetric$ = store.select(areaMetricSelector)
+    }
 }

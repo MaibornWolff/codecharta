@@ -14,22 +14,22 @@ import { RemoveExtensionPipeModule } from "../../util/pipes/RemoveExtensionPipeM
 import { AttributeDescriptorTooltipPipeModule } from "../../util/pipes/AttributeDescriptorTooltipPipeModule"
 
 @NgModule({
-	imports: [
-		CommonModule,
-		MaterialModule,
-		AttributeTypeSelectorModule,
-		MetricDeltaSelectedModule,
-		RemoveExtensionPipeModule,
-		AttributeDescriptorTooltipPipeModule
-	],
-	declarations: [
-		AttributeSideBarComponent,
-		AttributeSideBarHeaderSectionComponent,
-		NodePathComponent,
-		AttributeSideBarPrimaryMetricsComponent,
-		AttributeSideBarPrimaryMetricComponent,
-		AttributeSideBarSecondaryMetricsComponent
-	],
-	exports: [AttributeSideBarComponent]
+    imports: [
+        CommonModule,
+        MaterialModule,
+        AttributeTypeSelectorModule,
+        MetricDeltaSelectedModule,
+        RemoveExtensionPipeModule,
+        AttributeDescriptorTooltipPipeModule
+    ],
+    declarations: [
+        AttributeSideBarComponent,
+        AttributeSideBarHeaderSectionComponent,
+        NodePathComponent,
+        AttributeSideBarPrimaryMetricsComponent,
+        AttributeSideBarPrimaryMetricComponent,
+        AttributeSideBarSecondaryMetricsComponent
+    ],
+    exports: [AttributeSideBarComponent]
 })
 export class AttributeSideBarModule {}

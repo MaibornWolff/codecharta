@@ -1,67 +1,67 @@
 @if (attributeDescriptors$ | async; as attributeDescriptors) {
-<div class="metric-box">
-	@if (primaryMetrics$ | async; as primaryMetrics) {
-	<table class="primary-metrics" aria-hidden="true">
-		<th scope="col">Primary Metrics</th>
-		<tr>
-			<td [title]="attributeDescriptors[primaryMetrics.area.name] | attributeDescriptorTooltip : primaryMetrics.area.name">
-				<cc-attribute-side-bar-primary-metric
-					[iconName]="'fa fa-arrows-alt'"
-					[metric]="primaryMetrics.area"
-					[metricLink]="attributeDescriptors[primaryMetrics.area.name]?.link"
-				></cc-attribute-side-bar-primary-metric>
-			</td>
-			<td [title]="attributeDescriptors[primaryMetrics.height.name] | attributeDescriptorTooltip : primaryMetrics.height.name">
-				<cc-attribute-side-bar-primary-metric
-					[iconName]="'fa fa-arrows-v'"
-					[metric]="primaryMetrics.height"
-					[metricLink]="attributeDescriptors[primaryMetrics.height.name]?.link"
-				></cc-attribute-side-bar-primary-metric>
-			</td>
-		</tr>
-		<tr>
-			<td [title]="attributeDescriptors[primaryMetrics.color.name] | attributeDescriptorTooltip : primaryMetrics.color.name">
-				<cc-attribute-side-bar-primary-metric
-					[iconName]="'fa fa-paint-brush'"
-					[metric]="primaryMetrics.color"
-					[metricLink]="attributeDescriptors[primaryMetrics.color.name]?.link"
-				></cc-attribute-side-bar-primary-metric>
-			</td>
-			@if (primaryMetrics.edge; as edge) {
-			<td [title]="attributeDescriptors[edge.name] | attributeDescriptorTooltip : edge.name">
-				<div class="primary-metric-box">
-					<div class="primary-metric-row">
-						<i class="fa fa-exchange"></i>
-						@if (showAttributeTypeSelector$ | async) {
-						<cc-attribute-type-selector
-							class="attribute-type-select"
-							[metricName]="edge.name"
-							[metricType]="'edges'"
-						></cc-attribute-type-selector>
-						}
-						<span>
-							{{ edge.incoming | number : "1.0-0" }}
-							<span>/</span>
-							{{ edge.outgoing | number : "1.0-0" }}
-						</span>
-					</div>
-					@if (attributeDescriptors[edge.name]?.link; as link) {
-					<a class="metric-name" [href]="link" target="_blank">
-						{{ edge.name }} (in/out)
-						<i class="fa fa-external-link"></i>
-					</a>
-					} @else {
-					<span class="metric-name">{{ edge.name }} (in/out)</span>
-					}
-				</div>
-			</td>
-			} @else {
-			<td>
-				<span class="metric-name">No edge metric available</span>
-			</td>
-			}
-		</tr>
-	</table>
-	}
-</div>
+    <div class="metric-box">
+        @if (primaryMetrics$ | async; as primaryMetrics) {
+            <table class="primary-metrics" aria-hidden="true">
+                <th scope="col">Primary Metrics</th>
+                <tr>
+                    <td [title]="attributeDescriptors[primaryMetrics.area.name] | attributeDescriptorTooltip: primaryMetrics.area.name">
+                        <cc-attribute-side-bar-primary-metric
+                            [iconName]="'fa fa-arrows-alt'"
+                            [metric]="primaryMetrics.area"
+                            [metricLink]="attributeDescriptors[primaryMetrics.area.name]?.link"
+                        ></cc-attribute-side-bar-primary-metric>
+                    </td>
+                    <td [title]="attributeDescriptors[primaryMetrics.height.name] | attributeDescriptorTooltip: primaryMetrics.height.name">
+                        <cc-attribute-side-bar-primary-metric
+                            [iconName]="'fa fa-arrows-v'"
+                            [metric]="primaryMetrics.height"
+                            [metricLink]="attributeDescriptors[primaryMetrics.height.name]?.link"
+                        ></cc-attribute-side-bar-primary-metric>
+                    </td>
+                </tr>
+                <tr>
+                    <td [title]="attributeDescriptors[primaryMetrics.color.name] | attributeDescriptorTooltip: primaryMetrics.color.name">
+                        <cc-attribute-side-bar-primary-metric
+                            [iconName]="'fa fa-paint-brush'"
+                            [metric]="primaryMetrics.color"
+                            [metricLink]="attributeDescriptors[primaryMetrics.color.name]?.link"
+                        ></cc-attribute-side-bar-primary-metric>
+                    </td>
+                    @if (primaryMetrics.edge; as edge) {
+                        <td [title]="attributeDescriptors[edge.name] | attributeDescriptorTooltip: edge.name">
+                            <div class="primary-metric-box">
+                                <div class="primary-metric-row">
+                                    <i class="fa fa-exchange"></i>
+                                    @if (showAttributeTypeSelector$ | async) {
+                                        <cc-attribute-type-selector
+                                            class="attribute-type-select"
+                                            [metricName]="edge.name"
+                                            [metricType]="'edges'"
+                                        ></cc-attribute-type-selector>
+                                    }
+                                    <span>
+                                        {{ edge.incoming | number: "1.0-0" }}
+                                        <span>/</span>
+                                        {{ edge.outgoing | number: "1.0-0" }}
+                                    </span>
+                                </div>
+                                @if (attributeDescriptors[edge.name]?.link; as link) {
+                                    <a class="metric-name" [href]="link" target="_blank">
+                                        {{ edge.name }} (in/out)
+                                        <i class="fa fa-external-link"></i>
+                                    </a>
+                                } @else {
+                                    <span class="metric-name">{{ edge.name }} (in/out)</span>
+                                }
+                            </div>
+                        </td>
+                    } @else {
+                        <td>
+                            <span class="metric-name">No edge metric available</span>
+                        </td>
+                    }
+                </tr>
+            </table>
+        }
+    </div>
 }

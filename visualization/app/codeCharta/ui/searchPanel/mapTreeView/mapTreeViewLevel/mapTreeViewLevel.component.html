@@ -1,32 +1,38 @@
 @if (!node.isExcluded) {
-<div class="tree-element-{{ depth }} {{ (node | isNodeLeaf) ? 'tree-leaf' : 'tree-parent' }}">
-	<div
-		id="{{ node.path }}"
-		class="tree-element-label-{{ depth }} tree-element-label"
-		[class.hovered]="(hoveredNodeId$ | async) === node.id"
-		[class.marked]="(rightClickedNodeData$ | async)?.nodeId === node.id"
-		(mouseenter)="onMouseEnter()"
-		(mouseleave)="onMouseLeave()"
-		(click)="onClick()"
-		(contextmenu)="openNodeContextMenu($event)"
-		[title]="(node | areaMetricValid : (areaMetric$ | async)) ? '' : 'No Node Area for Chosen Metric'"
-	>
-		<cc-map-tree-view-item-icon [node]="node" [isOpen]="isOpen"></cc-map-tree-view-item-icon>
-		<cc-map-tree-view-item-name [node]="node" [isHovered]="(hoveredNodeId$ | async) === node.id" [unaryValue]="node.attributes.unary">
-		</cc-map-tree-view-item-name>
-		@if ((hoveredNodeId$ | async) === node.id && (node | areaMetricValid : (areaMetric$ | async))) {
-		<cc-map-tree-view-item-option-buttons
-			[isFlattened]="node.isFlattened"
-			[openNodeContextMenu]="openNodeContextMenu"
-		></cc-map-tree-view-item-option-buttons>
-		}
-	</div>
-	<div class="tree-element-children tree-element-children-{{ depth }}">
-		@if (isOpen) { @for (childNode of node.children; track childNode) {
-		<div>
-			<cc-map-tree-view-level [node]="childNode" [depth]="depth + 1"></cc-map-tree-view-level>
-		</div>
-		} }
-	</div>
-</div>
+    <div class="tree-element-{{ depth }} {{ (node | isNodeLeaf) ? 'tree-leaf' : 'tree-parent' }}">
+        <div
+            id="{{ node.path }}"
+            class="tree-element-label-{{ depth }} tree-element-label"
+            [class.hovered]="(hoveredNodeId$ | async) === node.id"
+            [class.marked]="(rightClickedNodeData$ | async)?.nodeId === node.id"
+            (mouseenter)="onMouseEnter()"
+            (mouseleave)="onMouseLeave()"
+            (click)="onClick()"
+            (contextmenu)="openNodeContextMenu($event)"
+            [title]="(node | areaMetricValid: (areaMetric$ | async)) ? '' : 'No Node Area for Chosen Metric'"
+        >
+            <cc-map-tree-view-item-icon [node]="node" [isOpen]="isOpen"></cc-map-tree-view-item-icon>
+            <cc-map-tree-view-item-name
+                [node]="node"
+                [isHovered]="(hoveredNodeId$ | async) === node.id"
+                [unaryValue]="node.attributes.unary"
+            >
+            </cc-map-tree-view-item-name>
+            @if ((hoveredNodeId$ | async) === node.id && (node | areaMetricValid: (areaMetric$ | async))) {
+                <cc-map-tree-view-item-option-buttons
+                    [isFlattened]="node.isFlattened"
+                    [openNodeContextMenu]="openNodeContextMenu"
+                ></cc-map-tree-view-item-option-buttons>
+            }
+        </div>
+        <div class="tree-element-children tree-element-children-{{ depth }}">
+            @if (isOpen) {
+                @for (childNode of node.children; track childNode) {
+                    <div>
+                        <cc-map-tree-view-level [node]="childNode" [depth]="depth + 1"></cc-map-tree-view-level>
+                    </div>
+                }
+            }
+        </div>
+    </div>
 }

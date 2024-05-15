@@ -4,6 +4,6 @@ import { setState } from "../../util/setState.reducer.factory"
 
 export const defaultExperimentalFeaturesEnabled = false
 export const experimentalFeaturesEnabled = createReducer(
-	defaultExperimentalFeaturesEnabled,
-	on(setExperimentalFeaturesEnabled, setState(defaultExperimentalFeaturesEnabled))
+    defaultExperimentalFeaturesEnabled,
+    on(setExperimentalFeaturesEnabled, setState(defaultExperimentalFeaturesEnabled))
 )

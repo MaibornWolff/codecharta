@@ -12,45 +12,45 @@ import { AREA_METRIC } from "../selectors/util/riskProfileHelper"
 import { MetricSuggestionParameters } from "../selectors/util/suspiciousMetricsHelper"
 
 @Component({
-	selector: "cc-suspicious-metrics",
-	templateUrl: "./suspiciousMetrics.component.html",
-	encapsulation: ViewEncapsulation.None
+    selector: "cc-suspicious-metrics",
+    templateUrl: "./suspiciousMetrics.component.html",
+    encapsulation: ViewEncapsulation.None
 })
 export class SuspiciousMetricComponent implements OnChanges {
-	@Input() data: Pick<
-		ArtificialIntelligenceData,
-		"analyzedProgrammingLanguage" | "unsuspiciousMetrics" | "suspiciousMetricSuggestionLinks" | "untrackedMetrics"
-	>
-	hideBadge = false
+    @Input() data: Pick<
+        ArtificialIntelligenceData,
+        "analyzedProgrammingLanguage" | "unsuspiciousMetrics" | "suspiciousMetricSuggestionLinks" | "untrackedMetrics"
+    >
+    hideBadge = false
 
-	constructor(private store: Store) {}
+    constructor(private store: Store) {}
 
-	ngOnChanges(changes: SimpleChanges): void {
-		if (changes.data && !dequal(changes.data.previousValue, changes.data.currentValue)) {
-			this.hideBadge = false
-		}
-	}
+    ngOnChanges(changes: SimpleChanges): void {
+        if (changes.data && !dequal(changes.data.previousValue, changes.data.currentValue)) {
+            this.hideBadge = false
+        }
+    }
 
-	applySuspiciousMetric(metric: MetricSuggestionParameters, markOutlier: boolean) {
-		this.store.dispatch(setAreaMetric({ value: AREA_METRIC }))
-		this.store.dispatch(setHeightMetric({ value: metric.metric }))
-		this.store.dispatch(setColorMetric({ value: metric.metric }))
-		this.store.dispatch(
-			setColorRange({
-				value: {
-					from: metric.from,
-					to: markOutlier ? metric.outlierThreshold : metric.to
-				}
-			})
-		)
-		this.store.dispatch(
-			setMapColors({
-				value: {
-					positive: markOutlier ? "#ffffff" : defaultMapColors.positive,
-					neutral: markOutlier ? "#ffffff" : defaultMapColors.neutral,
-					negative: markOutlier ? "#A900C0" : defaultMapColors.negative
-				}
-			})
-		)
-	}
+    applySuspiciousMetric(metric: MetricSuggestionParameters, markOutlier: boolean) {
+        this.store.dispatch(setAreaMetric({ value: AREA_METRIC }))
+        this.store.dispatch(setHeightMetric({ value: metric.metric }))
+        this.store.dispatch(setColorMetric({ value: metric.metric }))
+        this.store.dispatch(
+            setColorRange({
+                value: {
+                    from: metric.from,
+                    to: markOutlier ? metric.outlierThreshold : metric.to
+                }
+            })
+        )
+        this.store.dispatch(
+            setMapColors({
+                value: {
+                    positive: markOutlier ? "#ffffff" : defaultMapColors.positive,
+                    neutral: markOutlier ? "#ffffff" : defaultMapColors.neutral,
+                    negative: markOutlier ? "#A900C0" : defaultMapColors.negative
+                }
+            })
+        )
+    }
 }

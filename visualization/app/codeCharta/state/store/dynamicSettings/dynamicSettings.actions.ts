@@ -12,19 +12,19 @@ import { setSearchPattern } from "./searchPattern/searchPattern.actions"
 import { setSortingOption } from "./sortingOption/sortingOption.actions"
 
 export const dynamicSettingsActions = [
-	setColorMode,
-	setSortingOption,
-	setEdgeMetric,
-	setColorRange,
-	setMargin,
-	setSearchPattern,
-	setStandard,
-	setAllFocusedNodes,
-	unfocusAllNodes,
-	focusNode,
-	unfocusNode,
-	setHeightMetric,
-	setDistributionMetric,
-	setColorMetric,
-	setAreaMetric
+    setColorMode,
+    setSortingOption,
+    setEdgeMetric,
+    setColorRange,
+    setMargin,
+    setSearchPattern,
+    setStandard,
+    setAllFocusedNodes,
+    unfocusAllNodes,
+    focusNode,
+    unfocusNode,
+    setHeightMetric,
+    setDistributionMetric,
+    setColorMetric,
+    setAreaMetric
 ]

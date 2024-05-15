@@ -1,13 +1,13 @@
 @if (node) {
-<i class="close-icon fa fa-times" (click)="closeSideBar()"></i>
-@if (node.link) {
-<div data-testid="file-link" matTooltip="{{ node.link }}" [matTooltipShowDelay]="200" class="node-name">
-	<a class="node-link" href="{{ node.link }}" target="_blank" rel="noopener noreferrer">
-		<h2>{{ node.name }}&nbsp;</h2>
-		<i class="fa fa-external-link"></i>
-	</a>
-</div>
-}
-<p class="node-origin">{{ fileName | removeExtension }}</p>
-<cc-node-path [node]="node"></cc-node-path>
+    <i class="close-icon fa fa-times" (click)="closeSideBar()"></i>
+    @if (node.link) {
+        <div data-testid="file-link" matTooltip="{{ node.link }}" [matTooltipShowDelay]="200" class="node-name">
+            <a class="node-link" href="{{ node.link }}" target="_blank" rel="noopener noreferrer">
+                <h2>{{ node.name }}&nbsp;</h2>
+                <i class="fa fa-external-link"></i>
+            </a>
+        </div>
+    }
+    <p class="node-origin">{{ fileName | removeExtension }}</p>
+    <cc-node-path [node]="node"></cc-node-path>
 }

@@ -10,8 +10,8 @@ import { LastPartOfNodePathPipe } from "./lastPartOfNodePath.pipe"
 import { NodeContextMenuCardComponent } from "./nodeContextMenuCard.component"
 
 @NgModule({
-	imports: [CommonModule, MaterialModule, FlattenButtonsModule, FocusButtonsModule, HighlightButtonsModule, MarkFolderRowModule],
-	declarations: [NodeContextMenuCardComponent, LastPartOfNodePathPipe, ExcludeButtonComponent],
-	exports: [NodeContextMenuCardComponent]
+    imports: [CommonModule, MaterialModule, FlattenButtonsModule, FocusButtonsModule, HighlightButtonsModule, MarkFolderRowModule],
+    declarations: [NodeContextMenuCardComponent, LastPartOfNodePathPipe, ExcludeButtonComponent],
+    exports: [NodeContextMenuCardComponent]
 })
 export class NodeContextMenuCardModule {}

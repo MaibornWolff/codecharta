@@ -1,20 +1,25 @@
-@if (attributeDescriptors$ | async; as attributeDescriptors) { @if (attributeDescriptors[metricName]?.title; as descriptorTitle) {
-<ng-container class="legend-block">
-	<div [title]="attributeDescriptors[metricName] | attributeDescriptorTooltip : metricName">
-		{{ metricSpecification }} metric: @if (attributeDescriptors[metricName].link; as link) {
-		<a [href]="link" target="_blank">
-			<span class="bold">{{ descriptorTitle }}</span> ({{ metricName }}) <i class="fa fa-external-link"></i>
-		</a>
-		} @else {
-		<span class="bold">{{ descriptorTitle }}</span> ({{ metricName }}) }
-	</div>
-</ng-container>
-} @else {
-<div>
-	{{ metricSpecification }} metric: @if (fallbackTitles.get(metricName); as metricTitle) { <span class="bold">{{ metricTitle }}</span> ({{
-		metricName
-	}}) } @else {
-	<span class="bold"> {{ metricName }} </span>
-	}
-</div>
-} }
+@if (attributeDescriptors$ | async; as attributeDescriptors) {
+    @if (attributeDescriptors[metricName]?.title; as descriptorTitle) {
+        <ng-container class="legend-block">
+            <div [title]="attributeDescriptors[metricName] | attributeDescriptorTooltip: metricName">
+                {{ metricSpecification }} metric:
+                @if (attributeDescriptors[metricName].link; as link) {
+                    <a [href]="link" target="_blank">
+                        <span class="bold">{{ descriptorTitle }}</span> ({{ metricName }}) <i class="fa fa-external-link"></i>
+                    </a>
+                } @else {
+                    <span class="bold">{{ descriptorTitle }}</span> ({{ metricName }})
+                }
+            </div>
+        </ng-container>
+    } @else {
+        <div>
+            {{ metricSpecification }} metric:
+            @if (fallbackTitles.get(metricName); as metricTitle) {
+                <span class="bold">{{ metricTitle }}</span> ({{ metricName }})
+            } @else {
+                <span class="bold"> {{ metricName }} </span>
+            }
+        </div>
+    }
+}

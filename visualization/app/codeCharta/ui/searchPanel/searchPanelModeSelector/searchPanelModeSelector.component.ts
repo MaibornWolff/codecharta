@@ -6,18 +6,18 @@ import { Store } from "@ngrx/store"
 import { CcState } from "../../../codeCharta.model"
 
 @Component({
-	selector: "cc-search-panel-mode-selector",
-	templateUrl: "./searchPanelModeSelector.component.html",
-	styleUrls: ["./searchPanelModeSelector.component.scss"],
-	encapsulation: ViewEncapsulation.None
+    selector: "cc-search-panel-mode-selector",
+    templateUrl: "./searchPanelModeSelector.component.html",
+    styleUrls: ["./searchPanelModeSelector.component.scss"],
+    encapsulation: ViewEncapsulation.None
 })
 export class SearchPanelModeSelectorComponent {
-	@Input() searchPanelMode: SearchPanelMode
-	@Input() updateSearchPanelMode: (SearchPanelMode: SearchPanelMode) => void
+    @Input() searchPanelMode: SearchPanelMode
+    @Input() updateSearchPanelMode: (SearchPanelMode: SearchPanelMode) => void
 
-	hideBlacklistItemsIndicator$: Observable<boolean>
+    hideBlacklistItemsIndicator$: Observable<boolean>
 
-	constructor(store: Store<CcState>) {
-		this.hideBlacklistItemsIndicator$ = store.select(hideBlacklistItemsIndicatorSelector)
-	}
+    constructor(store: Store<CcState>) {
+        this.hideBlacklistItemsIndicator$ = store.select(hideBlacklistItemsIndicatorSelector)
+    }
 }

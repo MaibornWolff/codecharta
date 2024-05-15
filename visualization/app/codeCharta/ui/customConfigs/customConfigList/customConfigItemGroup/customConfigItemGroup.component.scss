@@ -1,38 +1,38 @@
 @use "../../../../../material/theme";
 
 cc-custom-config-item-group {
-	.custom-config-item-group-title {
-		color: theme.$cc-font-color;
-		display: inline-block;
-	}
+    .custom-config-item-group-title {
+        color: theme.$cc-font-color;
+        display: inline-block;
+    }
 
-	div {
-		.metrics-box {
-			margin-top: 10px;
-		}
+    div {
+        .metrics-box {
+            margin-top: 10px;
+        }
 
-		.custom-config-note {
-			display: flex;
-			flex-wrap: wrap;
-			align-items: center;
-			margin-top: 5px;
-		}
+        .custom-config-note {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            margin-top: 5px;
+        }
 
-		.custom-config-action-buttons {
-			display: flex;
-			align-items: center;
-			margin-bottom: 5px;
-		}
-	}
+        .custom-config-action-buttons {
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+    }
 
-	p {
-		font-size: 15px;
-		margin: 0;
-		white-space: pre-line;
+    p {
+        font-size: 15px;
+        margin: 0;
+        white-space: pre-line;
 
-		&.custom-config-note-content {
-			margin-right: 7px;
-			font-size: 13px;
-		}
-	}
+        &.custom-config-note-content {
+            margin-right: 7px;
+            font-size: 13px;
+        }
+    }
 }

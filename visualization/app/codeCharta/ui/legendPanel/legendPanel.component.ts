@@ -9,22 +9,25 @@ import { edgeMetricSelector } from "../../state/store/dynamicSettings/edgeMetric
 import { Component, ViewEncapsulation } from "@angular/core"
 
 @Component({
-	selector: "cc-legend-panel",
-	templateUrl: "./legendPanel.component.html",
-	styleUrls: ["./legendPanel.component.scss"],
-	encapsulation: ViewEncapsulation.None
+    selector: "cc-legend-panel",
+    templateUrl: "./legendPanel.component.html",
+    styleUrls: ["./legendPanel.component.scss"],
+    encapsulation: ViewEncapsulation.None
 })
 export class LegendPanelComponent {
-	isLegendVisible = false
-	isDeltaState$ = this.store.select(isDeltaStateSelector)
-	heightMetric$ = this.store.select(heightMetricSelector)
-	areaMetric$ = this.store.select(areaMetricSelector)
-	colorMetric$ = this.store.select(colorMetricSelector)
-	edgeMetric$ = this.store.select(edgeMetricSelector)
+    isLegendVisible = false
+    isDeltaState$ = this.store.select(isDeltaStateSelector)
+    heightMetric$ = this.store.select(heightMetricSelector)
+    areaMetric$ = this.store.select(areaMetricSelector)
+    colorMetric$ = this.store.select(colorMetricSelector)
+    edgeMetric$ = this.store.select(edgeMetricSelector)
 
-	constructor(private store: Store<CcState>, public isAttributeSideBarVisibleService: IsAttributeSideBarVisibleService) {}
+    constructor(
+        private store: Store<CcState>,
+        public isAttributeSideBarVisibleService: IsAttributeSideBarVisibleService
+    ) {}
 
-	toggleIsLegendVisible() {
-		this.isLegendVisible = !this.isLegendVisible
-	}
+    toggleIsLegendVisible() {
+        this.isLegendVisible = !this.isLegendVisible
+    }
 }

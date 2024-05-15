@@ -3,7 +3,7 @@ import { setIsEdgeMetricVisible, toggleEdgeMetricVisible } from "./isEdgeMetricV
 
 export const defaultIsEdgeMetricVisible = true
 export const isEdgeMetricVisible = createReducer(
-	defaultIsEdgeMetricVisible,
-	on(setIsEdgeMetricVisible, (_state, action) => action.value),
-	on(toggleEdgeMetricVisible, state => !state)
+    defaultIsEdgeMetricVisible,
+    on(setIsEdgeMetricVisible, (_state, action) => action.value),
+    on(toggleEdgeMetricVisible, state => !state)
 )

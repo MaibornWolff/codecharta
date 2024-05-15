@@ -9,25 +9,25 @@ import { colorRangeSelector } from "../../state/store/dynamicSettings/colorRange
 import { colorMetricSelector } from "../../state/store/dynamicSettings/colorMetric/colorMetric.selector"
 
 @Component({
-	selector: "cc-color-picker-for-map-color",
-	templateUrl: "./colorPickerForMapColor.component.html",
-	encapsulation: ViewEncapsulation.None
+    selector: "cc-color-picker-for-map-color",
+    templateUrl: "./colorPickerForMapColor.component.html",
+    encapsulation: ViewEncapsulation.None
 })
 export class ColorPickerForMapColorComponent {
-	@Input() mapColorFor: keyof Omit<MapColors, "labelColorAndAlpha" | "markingColors">
+    @Input() mapColorFor: keyof Omit<MapColors, "labelColorAndAlpha" | "markingColors">
 
-	colorMetric$ = this.store.select(colorMetricSelector)
-	mapColors$ = this.store.select(mapColorsSelector)
-	colorRange$ = this.store.select(colorRangeSelector)
-	nodeMetricRange$ = this.store.select(selectedColorMetricDataSelector)
+    colorMetric$ = this.store.select(colorMetricSelector)
+    mapColors$ = this.store.select(mapColorsSelector)
+    colorRange$ = this.store.select(colorRangeSelector)
+    nodeMetricRange$ = this.store.select(selectedColorMetricDataSelector)
 
-	constructor(private store: Store<CcState>) {}
+    constructor(private store: Store<CcState>) {}
 
-	handleColorChange(newHexColor: string) {
-		this.store.dispatch(
-			setMapColors({
-				value: { [this.mapColorFor]: newHexColor }
-			})
-		)
-	}
+    handleColorChange(newHexColor: string) {
+        this.store.dispatch(
+            setMapColors({
+                value: { [this.mapColorFor]: newHexColor }
+            })
+        )
+    }
 }

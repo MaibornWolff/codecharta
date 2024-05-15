@@ -7,29 +7,29 @@ import { getFilenamesWithHighestMetrics } from "./util/getFilenamesWithHighestMe
 
 let service: CopyToClipboardService
 jest.mock("./util/clipboardString", () => {
-	return { buildTextOfFiles: jest.fn().mockReturnValue("Magic Monday") }
+    return { buildTextOfFiles: jest.fn().mockReturnValue("Magic Monday") }
 })
 jest.mock("./util/getFilenamesWithHighestMetrics", () => {
-	return { getFilenamesWithHighestMetrics: jest.fn() }
+    return { getFilenamesWithHighestMetrics: jest.fn() }
 })
 
 describe("CopyToClipboardService", () => {
-	beforeEach(() => {
-		const stateStub = { getValue: jest.fn().mockImplementation(() => defaultState) } as unknown as State<CcState>
-		service = new CopyToClipboardService(stateStub)
-		service["getUnifiedMapNode"] = jest.fn()
-	})
+    beforeEach(() => {
+        const stateStub = { getValue: jest.fn().mockImplementation(() => defaultState) } as unknown as State<CcState>
+        service = new CopyToClipboardService(stateStub)
+        service["getUnifiedMapNode"] = jest.fn()
+    })
 
-	describe("getClipboardText", () => {
-		it("should call functions to convert state and to build text", () => {
-			const stateConverterMock = getFilenamesWithHighestMetrics
-			const buildTextMock = buildTextOfFiles
+    describe("getClipboardText", () => {
+        it("should call functions to convert state and to build text", () => {
+            const stateConverterMock = getFilenamesWithHighestMetrics
+            const buildTextMock = buildTextOfFiles
 
-			const clipboardText = service.getClipboardText()
+            const clipboardText = service.getClipboardText()
 
-			expect(clipboardText).toBe("Magic Monday")
-			expect(stateConverterMock).toHaveBeenCalled()
-			expect(buildTextMock).toHaveBeenCalled()
-		})
-	})
+            expect(clipboardText).toBe("Magic Monday")
+            expect(stateConverterMock).toHaveBeenCalled()
+            expect(buildTextMock).toHaveBeenCalled()
+        })
+    })
 })

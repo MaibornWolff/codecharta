@@ -2,9 +2,9 @@ import { resetCameraIfNewFileIsLoaded } from "./resetCameraIfNewFileIsLoaded.red
 import { setResetCameraIfNewFileIsLoaded } from "./resetCameraIfNewFileIsLoaded.actions"
 
 describe("resetCameraIfNewFileIsLoaded", () => {
-	it("should set new resetCameraIfNewFileIsLoaded", () => {
-		const result = resetCameraIfNewFileIsLoaded(true, setResetCameraIfNewFileIsLoaded({ value: false }))
+    it("should set new resetCameraIfNewFileIsLoaded", () => {
+        const result = resetCameraIfNewFileIsLoaded(true, setResetCameraIfNewFileIsLoaded({ value: false }))
 
-		expect(result).toBeFalsy()
-	})
+        expect(result).toBeFalsy()
+    })
 })

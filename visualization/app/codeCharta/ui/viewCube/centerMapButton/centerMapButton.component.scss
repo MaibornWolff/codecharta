@@ -1,23 +1,23 @@
 @use "../../../../material/theme";
 
 cc-center-map-button {
-	button {
-		position: absolute;
-		right: 15px;
-		width: 36px;
-		height: 36px;
-		font-size: 28px;
-		border-radius: 100%;
-		color: white;
-		background-color: theme.$cc-primary-color;
+    button {
+        position: absolute;
+        right: 15px;
+        width: 36px;
+        height: 36px;
+        font-size: 28px;
+        border-radius: 100%;
+        color: white;
+        background-color: theme.$cc-primary-color;
 
-		i {
-			margin-top: 2px;
-		}
+        i {
+            margin-top: 2px;
+        }
 
-		&:hover {
-			cursor: pointer;
-			color: #eee;
-		}
-	}
+        &:hover {
+            cursor: pointer;
+            color: #eee;
+        }
+    }
 }

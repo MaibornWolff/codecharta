@@ -4,13 +4,13 @@ import { defaultRightClickedNodeData, rightClickedNodeData } from "./rightClicke
 import { defaultSelectedBuildingId, selectedBuildingId } from "./selectedBuildingId/selectedBuildingId.reducer"
 
 export const appStatus = combineReducers({
-	hoveredNodeId,
-	selectedBuildingId,
-	rightClickedNodeData
+    hoveredNodeId,
+    selectedBuildingId,
+    rightClickedNodeData
 })
 
 export const defaultAppStatus = {
-	hoveredNodeId: defaultHoveredNodeId,
-	selectedBuildingId: defaultSelectedBuildingId,
-	rightClickedNodeData: defaultRightClickedNodeData
+    hoveredNodeId: defaultHoveredNodeId,
+    selectedBuildingId: defaultSelectedBuildingId,
+    rightClickedNodeData: defaultRightClickedNodeData
 }

@@ -4,8 +4,8 @@ import { MaterialModule } from "../../../material/material.module"
 import { SliderComponent } from "./slider.component"
 
 @NgModule({
-	imports: [MaterialModule, CommonModule],
-	declarations: [SliderComponent],
-	exports: [SliderComponent]
+    imports: [MaterialModule, CommonModule],
+    declarations: [SliderComponent],
+    exports: [SliderComponent]
 })
 export class SliderModule {}

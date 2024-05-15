@@ -26,8 +26,8 @@ See also [SonarQube Docs](https://docs.sonarqube.org/latest/setup/get-started-2-
 
 Open `localhost:9000` in your browser and log in with
 
--   login: admin
--   password: admin
+- login: admin
+- password: admin
 
 Simply follow the steps for a manual, local project under Linux. You can also [check our tutorial for SonarQube](
 {{site.baseurl}}{% link _docs/05-05-analyze-with-sonarqube.md %})
@@ -49,12 +49,12 @@ See also [CodeCharta Analysis]({{site.baseurl}}{% link _docs/05-01-analysis.md %
 Almost all tools the ccsh can import data from are included in the container, so you can get started immediately.
 Installed are:
 
--   CodeCharta Shell `ccsh`
--   Git `git`
--   Tokei `tokei`
--   CodeMaat `java -jar /opt/codemaat/codemaat.jar`
--   MetricGardener `metric-gardener`
--   SonarScanner `sonar-scanner`
+- CodeCharta Shell `ccsh`
+- Git `git`
+- Tokei `tokei`
+- CodeMaat `java -jar /opt/codemaat/codemaat.jar`
+- MetricGardener `metric-gardener`
+- SonarScanner `sonar-scanner`
 
 Once you have your .cc.json file ready, you can copy it to your machine.
 This is how the command could look like if I want to copy a file from the container to my current working directory:

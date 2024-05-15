@@ -6,8 +6,8 @@ import { FocusButtonsComponent } from "./focusButtons.component"
 import { IsNodeFocusedPipe } from "./isNodeFocused.pipe"
 
 @NgModule({
-	imports: [CommonModule, MaterialModule],
-	declarations: [FocusButtonsComponent, IsNodeFocusedPipe],
-	exports: [FocusButtonsComponent]
+    imports: [CommonModule, MaterialModule],
+    declarations: [FocusButtonsComponent, IsNodeFocusedPipe],
+    exports: [FocusButtonsComponent]
 })
 export class FocusButtonsModule {}

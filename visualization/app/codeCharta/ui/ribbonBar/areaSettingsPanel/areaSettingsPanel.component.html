@@ -1,18 +1,18 @@
 <div class="options">
-	<cc-slider
-		title="Amount of space between buildings in percent"
-		label="Margin"
-		[value]="margin$ | async"
-		[onChange]="applyDebouncedMargin"
-		[min]="1"
-		[max]="100"
-	></cc-slider>
-	<mat-checkbox [checked]="enableFloorLabels$ | async" (change)="setEnableFloorLabel($event)">Enable Floor Labels</mat-checkbox>
-	<mat-checkbox [checked]="isInvertedArea$ | async" (change)="toggleInvertingArea($event)">Invert Area</mat-checkbox>
+    <cc-slider
+        title="Amount of space between buildings in percent"
+        label="Margin"
+        [value]="margin$ | async"
+        [onChange]="applyDebouncedMargin"
+        [min]="1"
+        [max]="100"
+    ></cc-slider>
+    <mat-checkbox [checked]="enableFloorLabels$ | async" (change)="setEnableFloorLabel($event)">Enable Floor Labels</mat-checkbox>
+    <mat-checkbox [checked]="isInvertedArea$ | async" (change)="toggleInvertingArea($event)">Invert Area</mat-checkbox>
 
-	<cc-reset-settings-button
-		[settingsKeys]="['dynamicSettings.margin', 'appSettings.invertArea', 'appSettings.enableFloorLabels']"
-		tooltip="Reset area metric settings to their defaults"
-		label="Reset area metric settings"
-	></cc-reset-settings-button>
+    <cc-reset-settings-button
+        [settingsKeys]="['dynamicSettings.margin', 'appSettings.invertArea', 'appSettings.enableFloorLabels']"
+        tooltip="Reset area metric settings to their defaults"
+        label="Reset area metric settings"
+    ></cc-reset-settings-button>
 </div>

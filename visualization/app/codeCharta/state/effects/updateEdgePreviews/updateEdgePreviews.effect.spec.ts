@@ -11,41 +11,41 @@ import { isEdgeMetricVisibleSelector } from "../../store/appSettings/isEdgeMetri
 import { getLastAction } from "../../../util/testUtils/store.utils"
 
 describe("updateEdgePreviewsEffect", () => {
-	let actions$: Subject<Action>
-	let store: MockStore
+    let actions$: Subject<Action>
+    let store: MockStore
 
-	beforeEach(() => {
-		actions$ = new Subject()
-		TestBed.configureTestingModule({
-			imports: [EffectsModule.forRoot([UpdateEdgePreviewsEffect])],
-			providers: [
-				provideMockStore({
-					selectors: [
-						{ selector: edgeMetricSelector, value: "loc" },
-						{ selector: isEdgeMetricVisibleSelector, value: false }
-					]
-				}),
-				provideMockActions(() => actions$)
-			]
-		})
-		store = TestBed.inject(MockStore)
-	})
+    beforeEach(() => {
+        actions$ = new Subject()
+        TestBed.configureTestingModule({
+            imports: [EffectsModule.forRoot([UpdateEdgePreviewsEffect])],
+            providers: [
+                provideMockStore({
+                    selectors: [
+                        { selector: edgeMetricSelector, value: "loc" },
+                        { selector: isEdgeMetricVisibleSelector, value: false }
+                    ]
+                }),
+                provideMockActions(() => actions$)
+            ]
+        })
+        store = TestBed.inject(MockStore)
+    })
 
-	afterEach(() => {
-		actions$.complete()
-	})
+    afterEach(() => {
+        actions$.complete()
+    })
 
-	it("should set isEdgeMetricVisible to true on edgeMetric change, if it was false", async () => {
-		store.overrideSelector(edgeMetricSelector, "rloc")
-		store.refreshState()
+    it("should set isEdgeMetricVisible to true on edgeMetric change, if it was false", async () => {
+        store.overrideSelector(edgeMetricSelector, "rloc")
+        store.refreshState()
 
-		expect(await getLastAction(store)).toEqual(toggleEdgeMetricVisible())
-	})
+        expect(await getLastAction(store)).toEqual(toggleEdgeMetricVisible())
+    })
 
-	it("should not set isEdgeMetricVisible to false on edgeMetric change, if it was true", async () => {
-		store.overrideSelector(isEdgeMetricVisibleSelector, true)
-		store.overrideSelector(edgeMetricSelector, "rloc")
-		store.refreshState()
-		expect(await getLastAction(store)).toEqual({ type: "@ngrx/effects/init" })
-	})
+    it("should not set isEdgeMetricVisible to false on edgeMetric change, if it was true", async () => {
+        store.overrideSelector(isEdgeMetricVisibleSelector, true)
+        store.overrideSelector(edgeMetricSelector, "rloc")
+        store.refreshState()
+        expect(await getLastAction(store)).toEqual({ type: "@ngrx/effects/init" })
+    })
 })

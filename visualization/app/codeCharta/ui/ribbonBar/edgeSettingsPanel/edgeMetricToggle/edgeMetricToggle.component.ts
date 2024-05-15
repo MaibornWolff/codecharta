@@ -6,20 +6,20 @@ import { Store } from "@ngrx/store"
 import { CcState } from "../../../../codeCharta.model"
 
 @Component({
-	selector: "cc-edge-metric-toggle",
-	templateUrl: "./edgeMetricToggle.component.html",
-	encapsulation: ViewEncapsulation.None
+    selector: "cc-edge-metric-toggle",
+    templateUrl: "./edgeMetricToggle.component.html",
+    encapsulation: ViewEncapsulation.None
 })
 export class EdgeMetricToggleComponent implements OnInit {
-	isEdgeMetricVisible$: Observable<boolean>
+    isEdgeMetricVisible$: Observable<boolean>
 
-	constructor(private store: Store<CcState>) {}
+    constructor(private store: Store<CcState>) {}
 
-	ngOnInit(): void {
-		this.isEdgeMetricVisible$ = this.store.select(isEdgeMetricVisibleSelector)
-	}
+    ngOnInit(): void {
+        this.isEdgeMetricVisible$ = this.store.select(isEdgeMetricVisibleSelector)
+    }
 
-	toggleEdgeMetric() {
-		this.store.dispatch(toggleEdgeMetricVisible())
-	}
+    toggleEdgeMetric() {
+        this.store.dispatch(toggleEdgeMetricVisible())
+    }
 }

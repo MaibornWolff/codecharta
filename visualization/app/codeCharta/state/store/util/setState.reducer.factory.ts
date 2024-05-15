@@ -7,11 +7,11 @@
 import { Action } from "@ngrx/store"
 
 export const setState =
-	<T>(defaultValue: T) =>
-	(_state: T, action: Action & { value: T }) =>
-		action.value === undefined ? defaultValue : action.value
+    <T>(defaultValue: T) =>
+    (_state: T, action: Action & { value: T }) =>
+        action.value === undefined ? defaultValue : action.value
 
 export const mergeState =
-	<T>(defaultValue: T) =>
-	(state: T, action: Action & { value: Partial<T> }): T =>
-		action.value === undefined ? defaultValue : { ...state, ...action.value }
+    <T>(defaultValue: T) =>
+    (state: T, action: Action & { value: Partial<T> }): T =>
+        action.value === undefined ? defaultValue : { ...state, ...action.value }

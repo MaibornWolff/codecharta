@@ -25,31 +25,31 @@ In order to reduce the amount of time spent on repetitive work such as creating 
 
 Currently, we support the creation of:
 
--   state service
--   ui-component
--   util static class
--   redux property
--   redux sub-reducer
+- state service
+- ui-component
+- util static class
+- redux property
+- redux sub-reducer
 
 ### Other Technologies
 
--   [Typescript]({{site.baseurl}}{% link _posts/adr/2017-09-03-ADR_7_pick_visualization_language.md %})
--   npm
--   AngularJs 1.x, specifically what are Components, Services
--   Jest (Unit Tests)
--   Puppeteer (E2E Tests)
--   ESLint
--   ThreeJs for 3d visualization
--   d3 for tree map algorithm and tree hierarchy (parent-child relations)
--   Webpack
--   electron
--   Redux
+- [Typescript]({{site.baseurl}}{% link _posts/adr/2017-09-03-ADR_7_pick_visualization_language.md %})
+- npm
+- AngularJs 1.x, specifically what are Components, Services
+- Jest (Unit Tests)
+- Puppeteer (E2E Tests)
+- ESLint
+- ThreeJs for 3d visualization
+- d3 for tree map algorithm and tree hierarchy (parent-child relations)
+- Webpack
+- electron
+- Redux
 
 ### Important Concepts
 
--   Dependency Injection
--   Observer Pattern (`.subscribe(...)`)
--   2D Squarified TreeMap
+- Dependency Injection
+- Observer Pattern (`.subscribe(...)`)
+- 2D Squarified TreeMap
 
 ### Building
 
@@ -57,15 +57,15 @@ There are 3 possible ways to build and run the application. You can run it as a 
 
 > Note that the `build` command requires unix tools on path, so on Windows add them to it or use the bash shell
 
--   Development: `npm run dev`
--   Standalone: `npm run build` -> `npm start`
--   Web: `npm run build` -> Move the created content to a nginx server for example
+- Development: `npm run dev`
+- Standalone: `npm run build` -> `npm start`
+- Web: `npm run build` -> Move the created content to a nginx server for example
 
 ### Testing
 
--   Unit-Tests: `npm test`
--   E2E-Tests: `npm run build && npm run e2e`
--   For IntelliJ: Run -> Edit Configurations -> Templates -> Jest -> Add configuration file -> Select `jest.config.json` -> Add CLI argument `--env=jsdom`
+- Unit-Tests: `npm test`
+- E2E-Tests: `npm run build && npm run e2e`
+- For IntelliJ: Run -> Edit Configurations -> Templates -> Jest -> Add configuration file -> Select `jest.config.json` -> Add CLI argument `--env=jsdom`
 
 For more test options check the `package.json`
 

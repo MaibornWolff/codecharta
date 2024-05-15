@@ -6,22 +6,22 @@
 
 ## Jump to Section
 
--   [Installation](#installation)
--   [Development Tasks](#tasks)
--   [Testing](#testing)
--   [JSON structure](#json-structure)
--   [License](LICENSE.md)
+- [Installation](#installation)
+- [Development Tasks](#tasks)
+- [Testing](#testing)
+- [JSON structure](#json-structure)
+- [License](LICENSE.md)
 
 # Installation
 
 You can start with **Codecharta Visualization** on multiple ways:
 
--   Installation as a [npm package](#npm-package) (Recommended for users)
--   Run an operating system specific [standalone](#run-a-standalone)
--   Build it yourself from the github [repository](#build-it-yourself) (Development)
--   Use [docker-compose](https://maibornwolff.github.io/codecharta/docs/docker-containers/) to run this with other needed tools like a Sonar instance or analyzing tools of codecharta-analysis.
--   Use our [Dockerfile](#run-in-docker-container) to run the visualization in a container
--   Try out the [online version](https://maibornwolff.github.io/codecharta/visualization/app/index.html?file=codecharta.cc.json&file=codecharta_analysis.cc.json)
+- Installation as a [npm package](#npm-package) (Recommended for users)
+- Run an operating system specific [standalone](#run-a-standalone)
+- Build it yourself from the github [repository](#build-it-yourself) (Development)
+- Use [docker-compose](https://maibornwolff.github.io/codecharta/docs/docker-containers/) to run this with other needed tools like a Sonar instance or analyzing tools of codecharta-analysis.
+- Use our [Dockerfile](#run-in-docker-container) to run the visualization in a container
+- Try out the [online version](https://maibornwolff.github.io/codecharta/visualization/app/index.html?file=codecharta.cc.json&file=codecharta_analysis.cc.json)
 
 > Be aware, that if you are on Apple Silicon, you may run into problems with the standalone and build versions
 
@@ -40,8 +40,8 @@ $ codecharta-visualization
 
 ## Run a standalone
 
--   Download the correct standalone version for your OS from the [latest release page](https://github.com/MaibornWolff/codecharta/releases) under 'Assets'
--   Extract & run the application
+- Download the correct standalone version for your OS from the [latest release page](https://github.com/MaibornWolff/codecharta/releases) under 'Assets'
+- Extract & run the application
 
 ### MacOS
 
@@ -50,8 +50,8 @@ $ codecharta-visualization
 
 > If you are using an M1 or similar (arm64) architectures you might need to do additional steps, because the OS might flag the executable as damaged, if it is downloaded and from an unverified developer:
 
--   Remove the 'downloaded' attributes from the OS:
-    `$ xattr -cr codecharta-visualization.app/`
+- Remove the 'downloaded' attributes from the OS:
+  `$ xattr -cr codecharta-visualization.app/`
 
 ## Build it yourself
 
@@ -161,8 +161,8 @@ We assume that you already installed docker, if not, you have to do that before!
 
 To containerize the visualization, please follow the below listed steps.
 
--   Start the docker container: `docker run -d -p 9000:80 codecharta/codecharta-visualization`. This detaches the container and exposes port 80 on the container and port 9000 on the host.
--   Open `localhost:9000` in your browser and you can already use the visualization, upload `cc.json` files and play around!
+- Start the docker container: `docker run -d -p 9000:80 codecharta/codecharta-visualization`. This detaches the container and exposes port 80 on the container and port 9000 on the host.
+- Open `localhost:9000` in your browser and you can already use the visualization, upload `cc.json` files and play around!
 
 # JSON structure
 

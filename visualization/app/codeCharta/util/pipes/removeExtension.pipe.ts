@@ -4,7 +4,7 @@ import { FileNameHelper } from "../fileNameHelper"
 
 @Pipe({ name: "removeExtension" })
 export class RemoveExtensionPipe implements PipeTransform {
-	transform(fileName: string): string {
-		return FileNameHelper.withoutCCExtension(fileName)
-	}
+    transform(fileName: string): string {
+        return FileNameHelper.withoutCCExtension(fileName)
+    }
 }

@@ -5,13 +5,13 @@ import { isPatternBlacklisted } from "../utils/isPatternBlacklisted"
 import { isSearchPatternEmptySelector } from "./isSearchPatternEmpty.selector"
 
 export const isExcludePatternDisabledSelector = createSelector(
-	searchPatternSelector,
-	isSearchPatternEmptySelector,
-	blacklistSelector,
-	(searchPattern, isSearchPatternEmpty, blacklist) => {
-		if (isSearchPatternEmpty) {
-			return true
-		}
-		return isPatternBlacklisted(blacklist, "exclude", searchPattern)
-	}
+    searchPatternSelector,
+    isSearchPatternEmptySelector,
+    blacklistSelector,
+    (searchPattern, isSearchPatternEmpty, blacklist) => {
+        if (isSearchPatternEmpty) {
+            return true
+        }
+        return isPatternBlacklisted(blacklist, "exclude", searchPattern)
+    }
 )

@@ -10,35 +10,35 @@ import { provideMockActions } from "@ngrx/effects/testing"
 import { provideMockStore } from "@ngrx/store/testing"
 
 describe("OpenNodeContextMenuEffect", () => {
-	let openSpy
-	let actions$: Subject<Action>
+    let openSpy
+    let actions$: Subject<Action>
 
-	beforeEach(async () => {
-		openSpy = jest.fn()
-		actions$ = new Subject<Action>()
-		TestBed.configureTestingModule({
-			imports: [EffectsModule.forRoot([OpenNodeContextMenuEffect])],
-			providers: [
-				{ provide: NodeContextMenuService, useValue: { open: openSpy } },
-				provideMockStore(),
-				provideMockActions(() => actions$)
-			]
-		})
-		await TestBed.inject(ApplicationInitStatus).donePromise
-	})
+    beforeEach(async () => {
+        openSpy = jest.fn()
+        actions$ = new Subject<Action>()
+        TestBed.configureTestingModule({
+            imports: [EffectsModule.forRoot([OpenNodeContextMenuEffect])],
+            providers: [
+                { provide: NodeContextMenuService, useValue: { open: openSpy } },
+                provideMockStore(),
+                provideMockActions(() => actions$)
+            ]
+        })
+        await TestBed.inject(ApplicationInitStatus).donePromise
+    })
 
-	afterEach(() => {
-		actions$.complete()
-	})
+    afterEach(() => {
+        actions$.complete()
+    })
 
-	it("should ignore empty rightClickedNodeData", () => {
-		actions$.next(setRightClickedNodeData(null))
-		expect(openSpy).not.toHaveBeenCalled()
-	})
+    it("should ignore empty rightClickedNodeData", () => {
+        actions$.next(setRightClickedNodeData(null))
+        expect(openSpy).not.toHaveBeenCalled()
+    })
 
-	it("should open node context menu", () => {
-		actions$.next(setRightClickedNodeData({ value: { nodeId: 1, xPositionOfRightClickEvent: 2, yPositionOfRightClickEvent: 3 } }))
-		expect(openSpy).toHaveBeenCalledTimes(1)
-		expect(openSpy).toHaveBeenCalledWith(2, 3)
-	})
+    it("should open node context menu", () => {
+        actions$.next(setRightClickedNodeData({ value: { nodeId: 1, xPositionOfRightClickEvent: 2, yPositionOfRightClickEvent: 3 } }))
+        expect(openSpy).toHaveBeenCalledTimes(1)
+        expect(openSpy).toHaveBeenCalledWith(2, 3)
+    })
 })
