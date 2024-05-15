@@ -21,29 +21,29 @@ For the analysis there is an XML file containing a few style rules for your IDE,
 
 In GitHub Actions, we defined stages, which group different jobs. Inside a stage, all jobs run in parallel. There is no data persistence between stages, so we have to rebuild our application in each stage. The CI consists of the following stages:
 
--   Testing (which runs on every push on an active PR)
--   Sonar Analysis (which runs on every push on an active PR after testing to ensure code quality metrics are met)
--   Deploy (run by `make_release.py`)
+- Testing (which runs on every push on an active PR)
+- Sonar Analysis (which runs on every push on an active PR after testing to ensure code quality metrics are met)
+- Deploy (run by `make_release.py`)
 
 All workflow files can be found under `.github/workflows`
 
 ### Testing
 
--   Runs Unit and E2E/UI-Tests
--   Workflow: `test.yml`
+- Runs Unit and E2E/UI-Tests
+- Workflow: `test.yml`
 
 ### Sonar
 
--   Publishes Sonar-Analysis-Results to [Sonarcloud.io](https://sonarcloud.io) and displays code-quality of the current PR
--   Workflow: `test.yml`
+- Publishes Sonar-Analysis-Results to [Sonarcloud.io](https://sonarcloud.io) and displays code-quality of the current PR
+- Workflow: `test.yml`
 
 ### Deploy
 
--   Deploys the application in a docker container to the github-pages
--   Publishes the new version on npm
--   Publishes a docker container on [Docker Hub](https://hub.docker.com/r/codecharta/codecharta-visualization)
+- Deploys the application in a docker container to the github-pages
+- Publishes the new version on npm
+- Publishes a docker container on [Docker Hub](https://hub.docker.com/r/codecharta/codecharta-visualization)
 
--   Workflow: `release.yml`
+- Workflow: `release.yml`
 
 # Common Issues
 

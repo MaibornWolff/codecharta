@@ -1,48 +1,48 @@
 <div
-	id="legend-panel"
-	class="block-wrapper"
-	[class.visible]="isLegendVisible"
-	[class.isAttributeSideBarVisible]="isAttributeSideBarVisibleService.isOpen"
+    id="legend-panel"
+    class="block-wrapper"
+    [class.visible]="isLegendVisible"
+    [class.isAttributeSideBarVisible]="isAttributeSideBarVisibleService.isOpen"
 >
-	@if (!(isDeltaState$ | async)) {
-	<div>
-		<cc-legend-block [metricName]="areaMetric$ | async" metricSpecification="Area"></cc-legend-block>
-		<cc-legend-block [metricName]="heightMetric$ | async" metricSpecification="Height"></cc-legend-block>
-		@if (edgeMetric$ | async; as edgeMetric) {
-		<cc-legend-block [metricName]="edgeMetric" metricSpecification="Edge"></cc-legend-block>
-		}
-		<hr />
-		<cc-legend-block [metricName]="colorMetric$ | async" metricSpecification="Color"></cc-legend-block>
-		<cc-color-picker-for-map-color [mapColorFor]="'positive'"></cc-color-picker-for-map-color>
-		<cc-color-picker-for-map-color [mapColorFor]="'neutral'"></cc-color-picker-for-map-color>
-		<cc-color-picker-for-map-color [mapColorFor]="'negative'"></cc-color-picker-for-map-color>
-	</div>
-	} @else {
-	<div>
-		<cc-color-picker-for-map-color [mapColorFor]="'positiveDelta'"></cc-color-picker-for-map-color>
-		<cc-color-picker-for-map-color [mapColorFor]="'negativeDelta'"></cc-color-picker-for-map-color>
-	</div>
-	}
+    @if (!(isDeltaState$ | async)) {
+        <div>
+            <cc-legend-block [metricName]="areaMetric$ | async" metricSpecification="Area"></cc-legend-block>
+            <cc-legend-block [metricName]="heightMetric$ | async" metricSpecification="Height"></cc-legend-block>
+            @if (edgeMetric$ | async; as edgeMetric) {
+                <cc-legend-block [metricName]="edgeMetric" metricSpecification="Edge"></cc-legend-block>
+            }
+            <hr />
+            <cc-legend-block [metricName]="colorMetric$ | async" metricSpecification="Color"></cc-legend-block>
+            <cc-color-picker-for-map-color [mapColorFor]="'positive'"></cc-color-picker-for-map-color>
+            <cc-color-picker-for-map-color [mapColorFor]="'neutral'"></cc-color-picker-for-map-color>
+            <cc-color-picker-for-map-color [mapColorFor]="'negative'"></cc-color-picker-for-map-color>
+        </div>
+    } @else {
+        <div>
+            <cc-color-picker-for-map-color [mapColorFor]="'positiveDelta'"></cc-color-picker-for-map-color>
+            <cc-color-picker-for-map-color [mapColorFor]="'negativeDelta'"></cc-color-picker-for-map-color>
+        </div>
+    }
 
-	<hr />
-	<cc-color-picker-for-map-color [mapColorFor]="'selected'"></cc-color-picker-for-map-color>
+    <hr />
+    <cc-color-picker-for-map-color [mapColorFor]="'selected'"></cc-color-picker-for-map-color>
 
-	@if (edgeMetric$ | async) {
-	<hr />
-	<cc-color-picker-for-map-color [mapColorFor]="'outgoingEdge'"></cc-color-picker-for-map-color>
-	<cc-color-picker-for-map-color [mapColorFor]="'incomingEdge'"></cc-color-picker-for-map-color>
-	}
+    @if (edgeMetric$ | async) {
+        <hr />
+        <cc-color-picker-for-map-color [mapColorFor]="'outgoingEdge'"></cc-color-picker-for-map-color>
+        <cc-color-picker-for-map-color [mapColorFor]="'incomingEdge'"></cc-color-picker-for-map-color>
+    }
 
-	<cc-legend-marked-packages></cc-legend-marked-packages>
+    <cc-legend-marked-packages></cc-legend-marked-packages>
 </div>
 
 <button
-	id="legend-panel-button"
-	color="primary"
-	class="panel-button"
-	(click)="toggleIsLegendVisible()"
-	[class.isAttributeSideBarVisible]="isAttributeSideBarVisibleService.isOpen"
-	title="{{ isLegendVisible ? 'Hide panel' : 'Show panel' }}"
+    id="legend-panel-button"
+    color="primary"
+    class="panel-button"
+    (click)="toggleIsLegendVisible()"
+    [class.isAttributeSideBarVisible]="isAttributeSideBarVisibleService.isOpen"
+    title="{{ isLegendVisible ? 'Hide panel' : 'Show panel' }}"
 >
-	LEGEND
+    LEGEND
 </button>

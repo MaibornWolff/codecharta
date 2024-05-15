@@ -9,52 +9,52 @@ import { Store, StoreModule } from "@ngrx/store"
 import { appReducers, setStateMiddleware } from "../../../state/store/state.manager"
 
 describe("heightSettingsPanelComponent", () => {
-	beforeEach(() => {
-		TestBed.configureTestingModule({
-			imports: [HeightSettingsPanelModule, StoreModule.forRoot(appReducers, { metaReducers: [setStateMiddleware] })]
-		})
-	})
+    beforeEach(() => {
+        TestBed.configureTestingModule({
+            imports: [HeightSettingsPanelModule, StoreModule.forRoot(appReducers, { metaReducers: [setStateMiddleware] })]
+        })
+    })
 
-	it("should disable amount of top labels slider when there are colorLabels", async () => {
-		const { detectChanges } = await render(HeightSettingsPanelComponent, { excludeComponentDeclaration: true })
-		const store = TestBed.inject(Store)
-		store.dispatch(
-			setColorLabels({
-				value: {
-					positive: true,
-					negative: false,
-					neutral: false
-				}
-			})
-		)
-		detectChanges()
+    it("should disable amount of top labels slider when there are colorLabels", async () => {
+        const { detectChanges } = await render(HeightSettingsPanelComponent, { excludeComponentDeclaration: true })
+        const store = TestBed.inject(Store)
+        store.dispatch(
+            setColorLabels({
+                value: {
+                    positive: true,
+                    negative: false,
+                    neutral: false
+                }
+            })
+        )
+        detectChanges()
 
-		const amountOfTopLabelsSlider = screen.getByTitle("Disabled because color labels are used")
-		const matSlider = amountOfTopLabelsSlider.querySelector("mat-slider")
-		expect(matSlider.getAttribute("ng-reflect-disabled")).toBe("true")
-	})
+        const amountOfTopLabelsSlider = screen.getByTitle("Disabled because color labels are used")
+        const matSlider = amountOfTopLabelsSlider.querySelector("mat-slider")
+        expect(matSlider.getAttribute("ng-reflect-disabled")).toBe("true")
+    })
 
-	it("should enable amount of top labels slider when there are no colorLabels", async () => {
-		await render(HeightSettingsPanelComponent, { excludeComponentDeclaration: true })
+    it("should enable amount of top labels slider when there are no colorLabels", async () => {
+        await render(HeightSettingsPanelComponent, { excludeComponentDeclaration: true })
 
-		const amountOfTopLabelsSlider = screen.getByTitle("Display the labels of the 1 highest buildings")
-		const matSlider = amountOfTopLabelsSlider.querySelector("mat-slider")
+        const amountOfTopLabelsSlider = screen.getByTitle("Display the labels of the 1 highest buildings")
+        const matSlider = amountOfTopLabelsSlider.querySelector("mat-slider")
 
-		expect(matSlider.getAttribute("ng-reflect-disabled")).toBe("false")
-	})
+        expect(matSlider.getAttribute("ng-reflect-disabled")).toBe("false")
+    })
 
-	it("should not display invertHeight-checkbox when being in delta mode", async () => {
-		const { detectChanges } = await render(HeightSettingsPanelComponent, { excludeComponentDeclaration: true })
-		const store = TestBed.inject(Store)
-		store.dispatch(addFile({ file: TEST_FILE_DATA }))
-		store.dispatch(setDelta({ referenceFile: TEST_FILE_DATA, comparisonFile: TEST_FILE_DATA }))
-		detectChanges()
+    it("should not display invertHeight-checkbox when being in delta mode", async () => {
+        const { detectChanges } = await render(HeightSettingsPanelComponent, { excludeComponentDeclaration: true })
+        const store = TestBed.inject(Store)
+        store.dispatch(addFile({ file: TEST_FILE_DATA }))
+        store.dispatch(setDelta({ referenceFile: TEST_FILE_DATA, comparisonFile: TEST_FILE_DATA }))
+        detectChanges()
 
-		expect(screen.queryByText("Invert Height")).toBe(null)
-	})
+        expect(screen.queryByText("Invert Height")).toBe(null)
+    })
 
-	it("should display invertHeight-checkbox when not being in delta mode", async () => {
-		await render(HeightSettingsPanelComponent, { excludeComponentDeclaration: true })
-		expect(screen.queryByText("Invert Height")).not.toBe(null)
-	})
+    it("should display invertHeight-checkbox when not being in delta mode", async () => {
+        await render(HeightSettingsPanelComponent, { excludeComponentDeclaration: true })
+        expect(screen.queryByText("Invert Height")).not.toBe(null)
+    })
 })

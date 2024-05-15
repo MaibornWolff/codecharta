@@ -6,27 +6,27 @@ import { CustomConfigHelperService } from "../customConfigHelper.service"
 import { Subscription } from "rxjs"
 
 @Component({
-	selector: "cc-download-custom-configs-button",
-	templateUrl: "./downloadCustomConfigsButton.component.html",
-	encapsulation: ViewEncapsulation.None
+    selector: "cc-download-custom-configs-button",
+    templateUrl: "./downloadCustomConfigsButton.component.html",
+    encapsulation: ViewEncapsulation.None
 })
 export class DownloadCustomConfigsButtonComponent implements OnInit, OnDestroy {
-	downloadableConfigs: DownloadableConfigs
-	subscription: Subscription
+    downloadableConfigs: DownloadableConfigs
+    subscription: Subscription
 
-	constructor(private downloadCustomConfigService: CustomConfigHelperService) {}
+    constructor(private downloadCustomConfigService: CustomConfigHelperService) {}
 
-	ngOnInit(): void {
-		this.subscription = this.downloadCustomConfigService.downloadableCustomConfigs$.subscribe(downloadableConfigs => {
-			this.downloadableConfigs = downloadableConfigs
-		})
-	}
+    ngOnInit(): void {
+        this.subscription = this.downloadCustomConfigService.downloadableCustomConfigs$.subscribe(downloadableConfigs => {
+            this.downloadableConfigs = downloadableConfigs
+        })
+    }
 
-	ngOnDestroy(): void {
-		this.subscription.unsubscribe()
-	}
+    ngOnDestroy(): void {
+        this.subscription.unsubscribe()
+    }
 
-	downloadPreloadedCustomConfigs() {
-		downloadCustomConfigs(this.downloadableConfigs)
-	}
+    downloadPreloadedCustomConfigs() {
+        downloadCustomConfigs(this.downloadableConfigs)
+    }
 }

@@ -3,10 +3,10 @@
 The StructureModifier modifies .cc.json files.\
 Perform one of the following actions at a time:
 
--   Remove nodes from a project, excluding them and their children.
--   Set a node as the root, making it the root of the resulting sub-project.
--   Move nodes within the project, transferring all children of the source node to the destination node.
--   Print the project hierarchy.
+- Remove nodes from a project, excluding them and their children.
+- Set a node as the root, making it the root of the resulting sub-project.
+- Move nodes within the project, transferring all children of the source node to the destination node.
+- Print the project hierarchy.
 
 Specifying multiple actions in a single command results in only one being performed.\
 Edges and blacklist entries associated with moved or removed nodes will be adjusted, and all attribute types will be

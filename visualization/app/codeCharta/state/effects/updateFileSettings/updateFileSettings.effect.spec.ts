@@ -11,39 +11,39 @@ import { UpdateFileSettingsEffect } from "./updateFileSettings.effect"
 import { getLastAction } from "../../../util/testUtils/store.utils"
 
 describe("UpdateFileSettingsEffect", () => {
-	let actions$: Subject<Action>
+    let actions$: Subject<Action>
 
-	beforeEach(async () => {
-		actions$ = new Subject()
-		TestBed.configureTestingModule({
-			imports: [EffectsModule.forRoot([UpdateFileSettingsEffect])],
-			providers: [
-				{ provide: State, useValue: { getValue: () => ({ files: [] }) } },
-				provideMockStore(),
-				provideMockActions(() => actions$)
-			]
-		})
-	})
+    beforeEach(async () => {
+        actions$ = new Subject()
+        TestBed.configureTestingModule({
+            imports: [EffectsModule.forRoot([UpdateFileSettingsEffect])],
+            providers: [
+                { provide: State, useValue: { getValue: () => ({ files: [] }) } },
+                provideMockStore(),
+                provideMockActions(() => actions$)
+            ]
+        })
+    })
 
-	afterEach(() => {
-		actions$.complete()
-	})
+    afterEach(() => {
+        actions$.complete()
+    })
 
-	it("should update fileSettings when files have changed", async () => {
-		const store = TestBed.inject(MockStore)
-		actions$.next(setFiles({ value: [] }))
-		expect(await getLastAction(store)).toEqual(
-			setState({
-				value: {
-					fileSettings: {
-						edges: [],
-						markedPackages: [],
-						blacklist: [],
-						attributeTypes: { edges: {}, nodes: {} },
-						attributeDescriptors: {}
-					}
-				}
-			})
-		)
-	})
+    it("should update fileSettings when files have changed", async () => {
+        const store = TestBed.inject(MockStore)
+        actions$.next(setFiles({ value: [] }))
+        expect(await getLastAction(store)).toEqual(
+            setState({
+                value: {
+                    fileSettings: {
+                        edges: [],
+                        markedPackages: [],
+                        blacklist: [],
+                        attributeTypes: { edges: {}, nodes: {} },
+                        attributeDescriptors: {}
+                    }
+                }
+            })
+        )
+    })
 })

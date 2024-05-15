@@ -1,29 +1,29 @@
 @use "../../../material/theme";
 
 cc-reset-settings-button {
-	button {
-		color: theme.$cc-primary-color;
-		background: none;
-		align-items: center;
-		display: flex;
-		gap: 4px;
-		margin: 0;
-		padding: 0;
+    button {
+        color: theme.$cc-primary-color;
+        background: none;
+        align-items: center;
+        display: flex;
+        gap: 4px;
+        margin: 0;
+        padding: 0;
 
-		.fa {
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			height: 40px;
-			width: 40px;
-			font-size: 18px;
-		}
+        .fa {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 40px;
+            width: 40px;
+            font-size: 18px;
+        }
 
-		&:hover {
-			.fa {
-				border-radius: 100%;
-				background-color: rgba(158, 158, 158, 0.2);
-			}
-		}
-	}
+        &:hover {
+            .fa {
+                border-radius: 100%;
+                background-color: rgba(158, 158, 158, 0.2);
+            }
+        }
+    }
 }

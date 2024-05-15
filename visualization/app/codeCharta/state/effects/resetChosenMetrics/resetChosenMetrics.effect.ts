@@ -14,32 +14,32 @@ import { defaultNMetrics, isAnyMetricAvailable, preselectCombination } from "./u
 
 @Injectable()
 export class ResetChosenMetricsEffect {
-	constructor(private store: Store<CcState>) {}
+    constructor(private store: Store<CcState>) {}
 
-	resetChosenDistributionMetric$ = createEffect(
-		() =>
-			this.store.select(metricDataSelector).pipe(
-				map(metricData => metricData.nodeMetricData),
-				filter(isAnyMetricAvailable),
-				withLatestFrom(this.store.select(areChosenMetricsAvailableSelector)),
-				filter(([, areChosenMetricsAvailable]) => !areChosenMetricsAvailable),
-				tap(([nodeMetricData]) => {
-					setDefaultMetrics(this.store, nodeMetricData)
-				})
-			),
-		{ dispatch: false }
-	)
+    resetChosenDistributionMetric$ = createEffect(
+        () =>
+            this.store.select(metricDataSelector).pipe(
+                map(metricData => metricData.nodeMetricData),
+                filter(isAnyMetricAvailable),
+                withLatestFrom(this.store.select(areChosenMetricsAvailableSelector)),
+                filter(([, areChosenMetricsAvailable]) => !areChosenMetricsAvailable),
+                tap(([nodeMetricData]) => {
+                    setDefaultMetrics(this.store, nodeMetricData)
+                })
+            ),
+        { dispatch: false }
+    )
 }
 
 export function setDefaultMetrics(store: Store<CcState>, nodeMetricData: NodeMetricData[]) {
-	store.dispatch(setDistributionMetric({ value: getDefaultDistribution(nodeMetricData) }))
+    store.dispatch(setDistributionMetric({ value: getDefaultDistribution(nodeMetricData) }))
 
-	let [defaultedAreaMetric, defaultedHeightMetric, defaultedColorMetric] = preselectCombination(nodeMetricData)
-	if (!defaultedAreaMetric || !defaultedHeightMetric || !defaultedColorMetric) {
-		;[defaultedAreaMetric, defaultedHeightMetric, defaultedColorMetric] = defaultNMetrics(nodeMetricData, 3)
-	}
+    let [defaultedAreaMetric, defaultedHeightMetric, defaultedColorMetric] = preselectCombination(nodeMetricData)
+    if (!defaultedAreaMetric || !defaultedHeightMetric || !defaultedColorMetric) {
+        ;[defaultedAreaMetric, defaultedHeightMetric, defaultedColorMetric] = defaultNMetrics(nodeMetricData, 3)
+    }
 
-	store.dispatch(setAreaMetric({ value: defaultedAreaMetric }))
-	store.dispatch(setHeightMetric({ value: defaultedHeightMetric }))
-	store.dispatch(setColorMetric({ value: defaultedColorMetric }))
+    store.dispatch(setAreaMetric({ value: defaultedAreaMetric }))
+    store.dispatch(setHeightMetric({ value: defaultedHeightMetric }))
+    store.dispatch(setColorMetric({ value: defaultedColorMetric }))
 }

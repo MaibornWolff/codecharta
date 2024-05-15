@@ -4,19 +4,22 @@ import { LoadInitialFileService } from "./services/loadInitialFile/loadInitialFi
 import { setIsLoadingFile } from "./state/store/appSettings/isLoadingFile/isLoadingFile.actions"
 
 @Component({
-	selector: "cc-code-charta",
-	templateUrl: "./codeCharta.component.html",
-	styleUrls: ["./codeCharta.component.scss"],
-	encapsulation: ViewEncapsulation.None
+    selector: "cc-code-charta",
+    templateUrl: "./codeCharta.component.html",
+    styleUrls: ["./codeCharta.component.scss"],
+    encapsulation: ViewEncapsulation.None
 })
 export class CodeChartaComponent implements OnInit {
-	isInitialized = false
+    isInitialized = false
 
-	constructor(private store: Store, private loadInitialFileService: LoadInitialFileService) {}
+    constructor(
+        private store: Store,
+        private loadInitialFileService: LoadInitialFileService
+    ) {}
 
-	async ngOnInit(): Promise<void> {
-		this.store.dispatch(setIsLoadingFile({ value: true }))
-		await this.loadInitialFileService.loadFilesOrSampleFiles()
-		this.isInitialized = true
-	}
+    async ngOnInit(): Promise<void> {
+        this.store.dispatch(setIsLoadingFile({ value: true }))
+        await this.loadInitialFileService.loadFilesOrSampleFiles()
+        this.isInitialized = true
+    }
 }

@@ -12,29 +12,29 @@ import { areaMetric, defaultAreaMetric } from "./areaMetric/areaMetric.reducer"
 import { combineReducers } from "@ngrx/store"
 
 export const dynamicSettings = combineReducers({
-	colorMode,
-	sortingOption,
-	edgeMetric,
-	colorRange,
-	margin,
-	searchPattern,
-	focusedNodePath,
-	heightMetric,
-	distributionMetric,
-	colorMetric,
-	areaMetric
+    colorMode,
+    sortingOption,
+    edgeMetric,
+    colorRange,
+    margin,
+    searchPattern,
+    focusedNodePath,
+    heightMetric,
+    distributionMetric,
+    colorMetric,
+    areaMetric
 })
 
 export const defaultDynamicSettings = {
-	colorMode: defaultColorMode,
-	sortingOption: defaultSortingOption,
-	edgeMetric: defaultEdgeMetric,
-	colorRange: defaultColorRange,
-	margin: defaultMargin,
-	searchPattern: defaultSearchPattern,
-	focusedNodePath: defaultFocusedNodePath,
-	heightMetric: defaultHeightMetric,
-	distributionMetric: defaultDistributionMetric,
-	colorMetric: defaultColorMetric,
-	areaMetric: defaultAreaMetric
+    colorMode: defaultColorMode,
+    sortingOption: defaultSortingOption,
+    edgeMetric: defaultEdgeMetric,
+    colorRange: defaultColorRange,
+    margin: defaultMargin,
+    searchPattern: defaultSearchPattern,
+    focusedNodePath: defaultFocusedNodePath,
+    heightMetric: defaultHeightMetric,
+    distributionMetric: defaultDistributionMetric,
+    colorMetric: defaultColorMetric,
+    areaMetric: defaultAreaMetric
 }

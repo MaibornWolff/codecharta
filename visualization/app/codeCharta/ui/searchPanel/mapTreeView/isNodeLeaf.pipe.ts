@@ -5,7 +5,7 @@ import { isLeaf } from "../../../util/codeMapHelper"
 
 @Pipe({ name: "isNodeLeaf" })
 export class IsNodeLeafPipe implements PipeTransform {
-	transform(value: CodeMapNode): boolean {
-		return isLeaf(value)
-	}
+    transform(value: CodeMapNode): boolean {
+        return isLeaf(value)
+    }
 }

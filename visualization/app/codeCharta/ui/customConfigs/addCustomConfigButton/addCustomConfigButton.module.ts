@@ -8,8 +8,8 @@ import { DownloadAndPurgeConfigsComponent } from "./addCustomConfigDialog/downlo
 import { CustomConfigNoteDialogButtonModule } from "../customConfigNoteDialogButton/customConfigNoteDialogButton.module"
 
 @NgModule({
-	imports: [MaterialModule, ReactiveFormsModule, FormsModule, CommonModule, CustomConfigNoteDialogButtonModule],
-	declarations: [AddCustomConfigButtonComponent, AddCustomConfigDialogComponent, DownloadAndPurgeConfigsComponent],
-	exports: [AddCustomConfigButtonComponent]
+    imports: [MaterialModule, ReactiveFormsModule, FormsModule, CommonModule, CustomConfigNoteDialogButtonModule],
+    declarations: [AddCustomConfigButtonComponent, AddCustomConfigDialogComponent, DownloadAndPurgeConfigsComponent],
+    exports: [AddCustomConfigButtonComponent]
 })
 export class AddCustomConfigButtonModule {}

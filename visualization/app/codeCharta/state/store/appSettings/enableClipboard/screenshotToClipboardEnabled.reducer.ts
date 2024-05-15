@@ -4,6 +4,6 @@ import { setState } from "../../util/setState.reducer.factory"
 
 export const defaultScreenshotToClipboardEnabled = false
 export const screenshotToClipboardEnabled = createReducer(
-	defaultScreenshotToClipboardEnabled,
-	on(setScreenshotToClipboardEnabled, setState(defaultScreenshotToClipboardEnabled))
+    defaultScreenshotToClipboardEnabled,
+    on(setScreenshotToClipboardEnabled, setState(defaultScreenshotToClipboardEnabled))
 )

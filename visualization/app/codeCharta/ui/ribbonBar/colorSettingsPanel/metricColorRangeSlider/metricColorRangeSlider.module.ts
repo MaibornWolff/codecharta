@@ -5,8 +5,8 @@ import { RangeSliderLabelsComponent } from "./rangeSliderLabels/rangeSliderLabel
 import { MetricColorRangeSliderComponent } from "./metricColorRangeSlider.component"
 
 @NgModule({
-	imports: [CommonModule, MaterialModule],
-	declarations: [MetricColorRangeSliderComponent, RangeSliderLabelsComponent],
-	exports: [MetricColorRangeSliderComponent]
+    imports: [CommonModule, MaterialModule],
+    declarations: [MetricColorRangeSliderComponent, RangeSliderLabelsComponent],
+    exports: [MetricColorRangeSliderComponent]
 })
 export class MetricColorRangeSliderModule {}

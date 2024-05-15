@@ -1,52 +1,52 @@
 cc-apply-custom-config-button {
-	display: flex;
-	flex: 1;
+    display: flex;
+    flex: 1;
 
-	button {
-		flex-direction: row;
-		width: 100%;
-		margin: 0;
+    button {
+        flex-direction: row;
+        width: 100%;
+        margin: 0;
 
-		&:disabled {
-			cursor: default;
-		}
+        &:disabled {
+            cursor: default;
+        }
 
-		.config-metric-list {
-			display: flex;
-			flex-wrap: wrap;
-			gap: 10px;
-		}
+        .config-metric-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
 
-		p {
-			white-space: nowrap;
-			text-overflow: ellipsis;
-			overflow: hidden;
-			font-size: 15px;
-			margin: 0;
-			text-align: left;
+        p {
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            font-size: 15px;
+            margin: 0;
+            text-align: left;
 
-			&.config-name {
-				flex: 1 1 auto;
-				width: 100%;
-			}
+            &.config-name {
+                flex: 1 1 auto;
+                width: 100%;
+            }
 
-			&.config-metric {
-				flex: 0 0 9em;
-			}
-		}
+            &.config-metric {
+                flex: 0 0 9em;
+            }
+        }
 
-		.color-schema-container {
-			display: flex;
-			align-items: center;
-			gap: 2px;
+        .color-schema-container {
+            display: flex;
+            align-items: center;
+            gap: 2px;
 
-			.color-swatch-container {
-				.color-swatch {
-					display: inline-block;
-					width: 16px;
-					height: 16px;
-				}
-			}
-		}
-	}
+            .color-swatch-container {
+                .color-swatch {
+                    display: inline-block;
+                    width: 16px;
+                    height: 16px;
+                }
+            }
+        }
+    }
 }

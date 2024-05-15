@@ -7,22 +7,22 @@ import { isAreaValid } from "../areaMetricValidPipe.pipe"
 
 @Pipe({ name: "mapTreeViewItemIconColor", pure: false })
 export class MapTreeViewItemIconColorPipe implements PipeTransform {
-	static readonly defaultColor = "#000000"
-	static readonly areMetricZeroColor = "#BDBDBD"
+    static readonly defaultColor = "#000000"
+    static readonly areMetricZeroColor = "#BDBDBD"
 
-	constructor(private state: State<CcState>) {}
+    constructor(private state: State<CcState>) {}
 
-	transform(value: CodeMapNode): string | undefined {
-		const { areaMetric } = this.state.getValue().dynamicSettings
+    transform(value: CodeMapNode): string | undefined {
+        const { areaMetric } = this.state.getValue().dynamicSettings
 
-		if (!isAreaValid(value, areaMetric)) {
-			return MapTreeViewItemIconColorPipe.areMetricZeroColor
-		}
-		if (isLeaf(value)) {
-			return undefined
-		}
+        if (!isAreaValid(value, areaMetric)) {
+            return MapTreeViewItemIconColorPipe.areMetricZeroColor
+        }
+        if (isLeaf(value)) {
+            return undefined
+        }
 
-		const markingColor = getMarkingColor(value, this.state.getValue().fileSettings.markedPackages)
-		return markingColor || MapTreeViewItemIconColorPipe.defaultColor
-	}
+        const markingColor = getMarkingColor(value, this.state.getValue().fileSettings.markedPackages)
+        return markingColor || MapTreeViewItemIconColorPipe.defaultColor
+    }
 }

@@ -7,20 +7,20 @@ import { setSortingOption } from "../../../state/store/dynamicSettings/sortingOp
 import { sortingOrderSelector } from "../../../state/store/dynamicSettings/sortingOption/sortingOrder.selector"
 
 @Component({
-	selector: "cc-sorting-option",
-	templateUrl: "./sortingOption.component.html",
-	styleUrls: ["./sortingOption.component.scss"],
-	encapsulation: ViewEncapsulation.None
+    selector: "cc-sorting-option",
+    templateUrl: "./sortingOption.component.html",
+    styleUrls: ["./sortingOption.component.scss"],
+    encapsulation: ViewEncapsulation.None
 })
 export class SortingOptionComponent {
-	sortingOptions = Object.values(SortingOption)
-	selectedSortingOption$: Observable<SortingOption>
+    sortingOptions = Object.values(SortingOption)
+    selectedSortingOption$: Observable<SortingOption>
 
-	constructor(private store: Store<CcState>) {
-		this.selectedSortingOption$ = store.select(sortingOrderSelector)
-	}
+    constructor(private store: Store<CcState>) {
+        this.selectedSortingOption$ = store.select(sortingOrderSelector)
+    }
 
-	handleSelectedSortingOptionChanged(event) {
-		this.store.dispatch(setSortingOption(event.value))
-	}
+    handleSelectedSortingOptionChanged(event) {
+        this.store.dispatch(setSortingOption(event.value))
+    }
 }

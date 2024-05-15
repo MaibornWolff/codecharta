@@ -20,30 +20,30 @@ import { MatSliderModule } from "@angular/material/slider"
 import { MatSlideToggleModule } from "@angular/material/slide-toggle"
 
 const materialModules = [
-	MatSelectModule,
-	MatMenuModule,
-	MatButtonModule,
-	MatDividerModule,
-	MatTooltipModule,
-	MatDialogModule,
-	MatCardModule,
-	MatButtonToggleModule,
-	MatDialogModule,
-	MatCheckboxModule,
-	MatToolbarModule,
-	MatFormFieldModule,
-	MatInputModule,
-	MatProgressSpinnerModule,
-	MatListModule,
-	MatExpansionModule,
-	MatSliderModule,
-	MatSlideToggleModule,
-	NoopAnimationsModule,
-	FormsModule
+    MatSelectModule,
+    MatMenuModule,
+    MatButtonModule,
+    MatDividerModule,
+    MatTooltipModule,
+    MatDialogModule,
+    MatCardModule,
+    MatButtonToggleModule,
+    MatDialogModule,
+    MatCheckboxModule,
+    MatToolbarModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatProgressSpinnerModule,
+    MatListModule,
+    MatExpansionModule,
+    MatSliderModule,
+    MatSlideToggleModule,
+    NoopAnimationsModule,
+    FormsModule
 ]
 
 @NgModule({
-	imports: [NoopAnimationsModule, materialModules],
-	exports: [materialModules]
+    imports: [NoopAnimationsModule, materialModules],
+    exports: [materialModules]
 })
 export class MaterialModule {}

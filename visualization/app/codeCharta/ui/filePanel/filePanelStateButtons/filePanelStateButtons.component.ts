@@ -5,12 +5,15 @@ import { isDeltaStateSelector } from "../../../state/selectors/isDeltaState.sele
 import { FileSelectionModeService } from "../fileSelectionMode.service"
 
 @Component({
-	selector: "cc-file-panel-state-buttons",
-	templateUrl: "./filePanelStateButtons.component.html",
-	encapsulation: ViewEncapsulation.None
+    selector: "cc-file-panel-state-buttons",
+    templateUrl: "./filePanelStateButtons.component.html",
+    encapsulation: ViewEncapsulation.None
 })
 export class FilePanelStateButtonsComponent {
-	isDeltaState$ = this.store.select(isDeltaStateSelector)
+    isDeltaState$ = this.store.select(isDeltaStateSelector)
 
-	constructor(private store: Store<CcState>, public fileSelectionModeService: FileSelectionModeService) {}
+    constructor(
+        private store: Store<CcState>,
+        public fileSelectionModeService: FileSelectionModeService
+    ) {}
 }

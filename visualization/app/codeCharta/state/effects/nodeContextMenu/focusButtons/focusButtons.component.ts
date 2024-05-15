@@ -8,27 +8,27 @@ import { focusNode, unfocusAllNodes, unfocusNode } from "../../../store/dynamicS
 import { focusedNodePathSelector } from "../../../store/dynamicSettings/focusedNodePath/focusedNodePath.selector"
 
 @Component({
-	selector: "cc-focus-buttons",
-	templateUrl: "./focusButtons.component.html",
-	encapsulation: ViewEncapsulation.None
+    selector: "cc-focus-buttons",
+    templateUrl: "./focusButtons.component.html",
+    encapsulation: ViewEncapsulation.None
 })
 export class FocusButtonsComponent {
-	@Input() codeMapNode: Pick<CodeMapNode, "path">
+    @Input() codeMapNode: Pick<CodeMapNode, "path">
 
-	currentFocusedNodePath$ = this.store.select(currentFocusedNodePathSelector)
-	hasPreviousFocusedNodePath$ = this.store.select(focusedNodePathSelector).pipe(map(focusedNodePaths => focusedNodePaths.length > 1))
+    currentFocusedNodePath$ = this.store.select(currentFocusedNodePathSelector)
+    hasPreviousFocusedNodePath$ = this.store.select(focusedNodePathSelector).pipe(map(focusedNodePaths => focusedNodePaths.length > 1))
 
-	constructor(private store: Store<CcState>) {}
+    constructor(private store: Store<CcState>) {}
 
-	handleFocusNodeClicked() {
-		this.store.dispatch(focusNode({ value: this.codeMapNode.path }))
-	}
+    handleFocusNodeClicked() {
+        this.store.dispatch(focusNode({ value: this.codeMapNode.path }))
+    }
 
-	handleUnfocusNodeClicked() {
-		this.store.dispatch(unfocusNode())
-	}
+    handleUnfocusNodeClicked() {
+        this.store.dispatch(unfocusNode())
+    }
 
-	handleUnfocusAllNodesClicked() {
-		this.store.dispatch(unfocusAllNodes())
-	}
+    handleUnfocusAllNodesClicked() {
+        this.store.dispatch(unfocusAllNodes())
+    }
 }

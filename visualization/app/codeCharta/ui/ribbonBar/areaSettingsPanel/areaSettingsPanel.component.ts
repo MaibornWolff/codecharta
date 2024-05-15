@@ -11,29 +11,29 @@ import { Store } from "@ngrx/store"
 import { CcState } from "../../../codeCharta.model"
 
 @Component({
-	selector: "cc-area-settings-panel",
-	templateUrl: "./areaSettingsPanel.component.html",
-	styleUrls: ["./areaSettingsPanel.component.scss"],
-	encapsulation: ViewEncapsulation.None
+    selector: "cc-area-settings-panel",
+    templateUrl: "./areaSettingsPanel.component.html",
+    styleUrls: ["./areaSettingsPanel.component.scss"],
+    encapsulation: ViewEncapsulation.None
 })
 export class AreaSettingsPanelComponent {
-	static DEBOUNCE_TIME = 400
+    static DEBOUNCE_TIME = 400
 
-	margin$ = this.store.select(marginSelector)
-	enableFloorLabels$ = this.store.select(enableFloorLabelsSelector)
-	isInvertedArea$ = this.store.select(invertAreaSelector)
+    margin$ = this.store.select(marginSelector)
+    enableFloorLabels$ = this.store.select(enableFloorLabelsSelector)
+    isInvertedArea$ = this.store.select(invertAreaSelector)
 
-	constructor(private store: Store<CcState>) {}
+    constructor(private store: Store<CcState>) {}
 
-	applyDebouncedMargin = debounce((margin: number) => {
-		this.store.dispatch(setMargin({ value: margin }))
-	}, AreaSettingsPanelComponent.DEBOUNCE_TIME)
+    applyDebouncedMargin = debounce((margin: number) => {
+        this.store.dispatch(setMargin({ value: margin }))
+    }, AreaSettingsPanelComponent.DEBOUNCE_TIME)
 
-	setEnableFloorLabel(event: MatCheckboxChange) {
-		this.store.dispatch(setEnableFloorLabels({ value: event.checked }))
-	}
+    setEnableFloorLabel(event: MatCheckboxChange) {
+        this.store.dispatch(setEnableFloorLabels({ value: event.checked }))
+    }
 
-	toggleInvertingArea(event: MatCheckboxChange) {
-		this.store.dispatch(setInvertArea({ value: event.checked }))
-	}
+    toggleInvertingArea(event: MatCheckboxChange) {
+        this.store.dispatch(setInvertArea({ value: event.checked }))
+    }
 }

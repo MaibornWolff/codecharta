@@ -5,8 +5,8 @@ import { MetricChooserTypeModule } from "../../metricChooser/metricChooserType/m
 import { EdgeMetricChooserComponent } from "./edgeMetricChooser.component"
 
 @NgModule({
-	imports: [CommonModule, MetricChooserModule, MetricChooserTypeModule],
-	declarations: [EdgeMetricChooserComponent],
-	exports: [EdgeMetricChooserComponent]
+    imports: [CommonModule, MetricChooserModule, MetricChooserTypeModule],
+    declarations: [EdgeMetricChooserComponent],
+    exports: [EdgeMetricChooserComponent]
 })
 export class EdgeMetricChooserModule {}

@@ -1,16 +1,17 @@
 @if (matchingFileCounters$ | async; as matchingFileCounters) {
-<span class="box-rounded node-count" title="Files matching search pattern"
-	>{{ matchingFileCounters.fileCount }}<i class="fa fa-file"></i
-></span>
-<span class="box-rounded node-count" style="display: inline-flex" title="Files flattened"
-	>{{ matchingFileCounters.flattenCount }}<img alt="flattenIcon" class="fa png-icon-files-counter" src="codeCharta/assets/flatten.png" />
-</span>
-<span class="box-rounded node-count" title="Files excluded">{{ matchingFileCounters.excludeCount }}<i class="fa fa-ban"></i></span>
-<div class="clickable-component">
-	<cc-thumb-tack-button></cc-thumb-tack-button>
-</div>
-<div class="clickable-component">
-	<cc-sorting-button></cc-sorting-button>
-	<cc-sorting-option></cc-sorting-option>
-</div>
+    <span class="box-rounded node-count" title="Files matching search pattern"
+        >{{ matchingFileCounters.fileCount }}<i class="fa fa-file"></i
+    ></span>
+    <span class="box-rounded node-count" style="display: inline-flex" title="Files flattened"
+        >{{ matchingFileCounters.flattenCount
+        }}<img alt="flattenIcon" class="fa png-icon-files-counter" src="codeCharta/assets/flatten.png" />
+    </span>
+    <span class="box-rounded node-count" title="Files excluded">{{ matchingFileCounters.excludeCount }}<i class="fa fa-ban"></i></span>
+    <div class="clickable-component">
+        <cc-thumb-tack-button></cc-thumb-tack-button>
+    </div>
+    <div class="clickable-component">
+        <cc-sorting-button></cc-sorting-button>
+        <cc-sorting-option></cc-sorting-option>
+    </div>
 }

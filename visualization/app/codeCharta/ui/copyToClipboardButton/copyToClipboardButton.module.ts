@@ -5,9 +5,9 @@ import { CopyToClipboardService } from "./copyToClipboard.service"
 import { CopyToClipboardButtonComponent } from "./copyToClipboardButton.component"
 
 @NgModule({
-	imports: [CommonModule, ActionIconModule],
-	declarations: [CopyToClipboardButtonComponent],
-	exports: [CopyToClipboardButtonComponent],
-	providers: [CopyToClipboardService]
+    imports: [CommonModule, ActionIconModule],
+    declarations: [CopyToClipboardButtonComponent],
+    exports: [CopyToClipboardButtonComponent],
+    providers: [CopyToClipboardService]
 })
 export class CopyToClipboardButtonModule {}

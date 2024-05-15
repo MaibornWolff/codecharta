@@ -16,110 +16,110 @@ import { EdgeMetricChooserComponent } from "./edgeMetricChooser.component"
 import { EdgeMetricChooserModule } from "./edgeMetricChooser.module"
 
 describe("edgeMetricChooserComponent", () => {
-	beforeEach(() => {
-		TestBed.configureTestingModule({
-			imports: [EdgeMetricChooserModule],
-			providers: [
-				{ provide: NodeSelectionService, useValue: { createNodeObservable: () => of(VALID_NODES_WITH_ID) } },
-				provideMockStore({
-					selectors: [
-						{
-							selector: metricDataSelector,
-							value: {
-								edgeMetricData: [
-									{ name: "aMetric", maxValue: 1 },
-									{ name: "bMetric", maxValue: 2 }
-								]
-							}
-						},
-						{ selector: edgeMetricSelector, value: "aMetric" },
-						{ selector: isEdgeMetricVisibleSelector, value: true },
-						{ selector: attributeDescriptorsSelector, value: {} }
-					]
-				})
-			]
-		})
-	})
+    beforeEach(() => {
+        TestBed.configureTestingModule({
+            imports: [EdgeMetricChooserModule],
+            providers: [
+                { provide: NodeSelectionService, useValue: { createNodeObservable: () => of(VALID_NODES_WITH_ID) } },
+                provideMockStore({
+                    selectors: [
+                        {
+                            selector: metricDataSelector,
+                            value: {
+                                edgeMetricData: [
+                                    { name: "aMetric", maxValue: 1 },
+                                    { name: "bMetric", maxValue: 2 }
+                                ]
+                            }
+                        },
+                        { selector: edgeMetricSelector, value: "aMetric" },
+                        { selector: isEdgeMetricVisibleSelector, value: true },
+                        { selector: attributeDescriptorsSelector, value: {} }
+                    ]
+                })
+            ]
+        })
+    })
 
-	describe("edgeMetricChooser", () => {
-		it("should be a select for edge metric", async () => {
-			const { detectChanges } = await render(EdgeMetricChooserComponent, { excludeComponentDeclaration: true })
+    describe("edgeMetricChooser", () => {
+        it("should be a select for edge metric", async () => {
+            const { detectChanges } = await render(EdgeMetricChooserComponent, { excludeComponentDeclaration: true })
 
-			await userEvent.click(await screen.findByText("aMetric"))
-			await waitFor(() => expect(screen.getByPlaceholderText("Edge Metric (highest value)")).toBeTruthy())
-			await waitFor(() => expect(screen.queryAllByRole("option")[0].textContent).toMatch("aMetric (1)"))
-			await waitFor(() => expect(screen.queryAllByRole("option")[1].textContent).toMatch("bMetric (2)"))
+            await userEvent.click(await screen.findByText("aMetric"))
+            await waitFor(() => expect(screen.getByPlaceholderText("Edge Metric (highest value)")).toBeTruthy())
+            await waitFor(() => expect(screen.queryAllByRole("option")[0].textContent).toMatch("aMetric (1)"))
+            await waitFor(() => expect(screen.queryAllByRole("option")[1].textContent).toMatch("bMetric (2)"))
 
-			const store = TestBed.inject(MockStore)
-			await userEvent.click(screen.queryAllByRole("option")[1])
-			expect(await getLastAction(store)).toEqual(setEdgeMetric({ value: "bMetric" }))
+            const store = TestBed.inject(MockStore)
+            await userEvent.click(screen.queryAllByRole("option")[1])
+            expect(await getLastAction(store)).toEqual(setEdgeMetric({ value: "bMetric" }))
 
-			store.overrideSelector(edgeMetricSelector, "bMetric")
-			store.refreshState()
-			detectChanges()
+            store.overrideSelector(edgeMetricSelector, "bMetric")
+            store.refreshState()
+            detectChanges()
 
-			await waitFor(() => expect(screen.queryByText("aMetric")).toBeFalsy())
-			await waitFor(() => expect(screen.queryByText("bMetric")).toBeTruthy())
-		})
+            await waitFor(() => expect(screen.queryByText("aMetric")).toBeFalsy())
+            await waitFor(() => expect(screen.queryByText("bMetric")).toBeTruthy())
+        })
 
-		it("should reflect edge metric's visibility in its class name", async () => {
-			const { container, detectChanges } = await render(EdgeMetricChooserComponent, { excludeComponentDeclaration: true })
+        it("should reflect edge metric's visibility in its class name", async () => {
+            const { container, detectChanges } = await render(EdgeMetricChooserComponent, { excludeComponentDeclaration: true })
 
-			let metricChoser = container.querySelector("cc-metric-chooser")
-			expect(metricChoser.classList.contains("is-edge-metric-disabled")).toBe(false)
-			const store = TestBed.inject(MockStore)
-			store.overrideSelector(isEdgeMetricVisibleSelector, false)
-			store.refreshState()
-			detectChanges()
+            let metricChoser = container.querySelector("cc-metric-chooser")
+            expect(metricChoser.classList.contains("is-edge-metric-disabled")).toBe(false)
+            const store = TestBed.inject(MockStore)
+            store.overrideSelector(isEdgeMetricVisibleSelector, false)
+            store.refreshState()
+            detectChanges()
 
-			metricChoser = container.querySelector("cc-metric-chooser")
-			expect(metricChoser.classList.contains("is-edge-metric-disabled")).toBe(true)
-		})
-	})
+            metricChoser = container.querySelector("cc-metric-chooser")
+            expect(metricChoser.classList.contains("is-edge-metric-disabled")).toBe(true)
+        })
+    })
 
-	describe("edgeValue", () => {
-		it("should return null when there is no node hovered", async () => {
-			TestBed.overrideProvider(NodeSelectionService, {
-				useValue: { createNodeObservable: jest.fn().mockReturnValue(of(null)) }
-			})
+    describe("edgeValue", () => {
+        it("should return null when there is no node hovered", async () => {
+            TestBed.overrideProvider(NodeSelectionService, {
+                useValue: { createNodeObservable: jest.fn().mockReturnValue(of(null)) }
+            })
 
-			const { fixture } = await render(EdgeMetricChooserComponent, { excludeComponentDeclaration: true })
-			const edgeValue = await firstValueFrom(fixture.componentInstance.edgeValue$)
-			expect(edgeValue).toBe(null)
-		})
+            const { fixture } = await render(EdgeMetricChooserComponent, { excludeComponentDeclaration: true })
+            const edgeValue = await firstValueFrom(fixture.componentInstance.edgeValue$)
+            expect(edgeValue).toBe(null)
+        })
 
-		it("should return null if node has no edge attributes for given metric", async () => {
-			const { fixture } = await render(EdgeMetricChooserComponent, { excludeComponentDeclaration: true })
-			const edgeValue = await firstValueFrom(fixture.componentInstance.edgeValue$)
-			expect(edgeValue).toBe(null)
-		})
+        it("should return null if node has no edge attributes for given metric", async () => {
+            const { fixture } = await render(EdgeMetricChooserComponent, { excludeComponentDeclaration: true })
+            const edgeValue = await firstValueFrom(fixture.componentInstance.edgeValue$)
+            expect(edgeValue).toBe(null)
+        })
 
-		it("should format edge values to locale string", async () => {
-			TestBed.overrideProvider(NodeSelectionService, {
-				useValue: {
-					createNodeObservable: jest
-						.fn()
-						.mockReturnValue(of({ edgeAttributes: { aMetric: { incoming: 3.141_59, outgoing: 2 } } }))
-				}
-			})
+        it("should format edge values to locale string", async () => {
+            TestBed.overrideProvider(NodeSelectionService, {
+                useValue: {
+                    createNodeObservable: jest
+                        .fn()
+                        .mockReturnValue(of({ edgeAttributes: { aMetric: { incoming: 3.141_59, outgoing: 2 } } }))
+                }
+            })
 
-			const { fixture } = await render(EdgeMetricChooserComponent, { excludeComponentDeclaration: true })
-			const edgeValue = await firstValueFrom(fixture.componentInstance.edgeValue$)
-			expect(edgeValue).toBe("3.142 / 2")
-		})
+            const { fixture } = await render(EdgeMetricChooserComponent, { excludeComponentDeclaration: true })
+            const edgeValue = await firstValueFrom(fixture.componentInstance.edgeValue$)
+            expect(edgeValue).toBe("3.142 / 2")
+        })
 
-		it("should format not existing values to '-'", async () => {
-			TestBed.overrideProvider(NodeSelectionService, {
-				useValue: {
-					createNodeObservable: jest
-						.fn()
-						.mockReturnValue(of({ edgeAttributes: { aMetric: { incoming: undefined, outgoing: 2 } } }))
-				}
-			})
+        it("should format not existing values to '-'", async () => {
+            TestBed.overrideProvider(NodeSelectionService, {
+                useValue: {
+                    createNodeObservable: jest
+                        .fn()
+                        .mockReturnValue(of({ edgeAttributes: { aMetric: { incoming: undefined, outgoing: 2 } } }))
+                }
+            })
 
-			const { fixture } = await render(EdgeMetricChooserComponent, { excludeComponentDeclaration: true })
-			const edgeValue = await firstValueFrom(fixture.componentInstance.edgeValue$)
-			expect(edgeValue).toBe("- / 2")
-		})
-	})
+            const { fixture } = await render(EdgeMetricChooserComponent, { excludeComponentDeclaration: true })
+            const edgeValue = await firstValueFrom(fixture.componentInstance.edgeValue$)
+            expect(edgeValue).toBe("- / 2")
+        })
+    })
 })

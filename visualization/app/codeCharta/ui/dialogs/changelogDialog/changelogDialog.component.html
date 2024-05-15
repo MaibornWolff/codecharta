@@ -1,20 +1,20 @@
 <mat-toolbar color="primary">Changelog</mat-toolbar>
 
 <div mat-dialog-content>
-	<h1>What is new in CodeCharta?</h1>
-	<h2>{{ data.previousVersion }} → {{ data.currentVersion }}</h2>
+    <h1>What is new in CodeCharta?</h1>
+    <h2>{{ data.previousVersion }} → {{ data.currentVersion }}</h2>
 
-	<div class="content">
-		@for (change of changes | keyvalue; track change) {
-		<div>
-			<h2>{{ change.key }}</h2>
-			<ul [innerHTML]="change.value"></ul>
-		</div>
-		}
-	</div>
+    <div class="content">
+        @for (change of changes | keyvalue; track change) {
+            <div>
+                <h2>{{ change.key }}</h2>
+                <ul [innerHTML]="change.value"></ul>
+            </div>
+        }
+    </div>
 </div>
 
 <div mat-dialog-actions>
-	<a href="https://maibornwolff.github.io/codecharta/news/" target="_blank" rel="noopener noreferrer">Know more</a>
-	<button mat-button [mat-dialog-close]="true" cdkFocusInitial>CLOSE</button>
+    <a href="https://maibornwolff.github.io/codecharta/news/" target="_blank" rel="noopener noreferrer">Know more</a>
+    <button mat-button [mat-dialog-close]="true" cdkFocusInitial>CLOSE</button>
 </div>

@@ -1,30 +1,30 @@
 <div #minLabel class="cc-range-slider-label" [style.left.px]="0" [style.visibility]="hideMinLabel ? 'hidden' : 'visible'">
-	{{ minValue }}
+    {{ minValue }}
 </div>
 <div
-	#currentLeftLabel
-	class="cc-range-slider-label"
-	[style.left.px]="currentLeftLabelLeftPosition"
-	[style.visibility]="doLeftRightLabelOverlap ? 'hidden' : 'visible'"
+    #currentLeftLabel
+    class="cc-range-slider-label"
+    [style.left.px]="currentLeftLabelLeftPosition"
+    [style.visibility]="doLeftRightLabelOverlap ? 'hidden' : 'visible'"
 >
-	{{ leftValueLabel }}
+    {{ leftValueLabel }}
 </div>
 <div
-	#currentRightLabel
-	class="cc-range-slider-label"
-	[style.left.px]="currentRightLabelLeftPosition"
-	[style.visibility]="doLeftRightLabelOverlap ? 'hidden' : 'visible'"
+    #currentRightLabel
+    class="cc-range-slider-label"
+    [style.left.px]="currentRightLabelLeftPosition"
+    [style.visibility]="doLeftRightLabelOverlap ? 'hidden' : 'visible'"
 >
-	{{ rightValueLabel }}
+    {{ rightValueLabel }}
 </div>
 <div
-	#combinedCurrentLeftRightLabel
-	class="cc-range-slider-label"
-	[style.left.px]="combinedCurrentLeftRightLabelLeftPosition"
-	[style.visibility]="doLeftRightLabelOverlap ? 'visible' : 'hidden'"
+    #combinedCurrentLeftRightLabel
+    class="cc-range-slider-label"
+    [style.left.px]="combinedCurrentLeftRightLabelLeftPosition"
+    [style.visibility]="doLeftRightLabelOverlap ? 'visible' : 'hidden'"
 >
-	{{ leftValueLabel }} - {{ rightValueLabel }}
+    {{ leftValueLabel }} - {{ rightValueLabel }}
 </div>
 <div #maxLabel class="cc-range-slider-label" [style.right.px]="0" [style.visibility]="hideMaxLabel ? 'hidden' : 'visible'">
-	{{ maxValue }}
+    {{ maxValue }}
 </div>

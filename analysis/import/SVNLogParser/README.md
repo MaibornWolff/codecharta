@@ -47,7 +47,7 @@ The resulting project has the project name specified for the SVNLogParser.
 
 ### Example using SVN
 
--   `cd <my_svn_project>`
--   `svn log --verbose > svn.log`
--   `./ccsh svnlogparser svn.log -o output.cc.json`
--   load `output.cc.json` in visualization
+- `cd <my_svn_project>`
+- `svn log --verbose > svn.log`
+- `./ccsh svnlogparser svn.log -o output.cc.json`
+- load `output.cc.json` in visualization

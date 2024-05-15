@@ -8,7 +8,7 @@ import { CcState } from "../../../codeCharta.model"
 
 @Injectable()
 export class UnfocusNodesEffect {
-	constructor(private store: Store<CcState>) {}
+    constructor(private store: Store<CcState>) {}
 
-	unfocusNodes$ = createEffect(() => this.store.select(visibleFileStatesSelector).pipe(map(() => unfocusAllNodes())))
+    unfocusNodes$ = createEffect(() => this.store.select(visibleFileStatesSelector).pipe(map(() => unfocusAllNodes())))
 }

@@ -3,9 +3,9 @@ import { clone } from "../clone"
 import { parseGameObjectsFile } from "./gameObjectsImporter"
 
 describe("GameObjectsImporter", () => {
-	it("should parse gameObjects json to cc.json", function () {
-		const gameObjectsFile = clone(TEST_GAMEOBJECTS_FILE)
+    it("should parse gameObjects json to cc.json", function () {
+        const gameObjectsFile = clone(TEST_GAMEOBJECTS_FILE)
 
-		expect(parseGameObjectsFile(JSON.stringify(gameObjectsFile))).toMatchSnapshot()
-	})
+        expect(parseGameObjectsFile(JSON.stringify(gameObjectsFile))).toMatchSnapshot()
+    })
 })

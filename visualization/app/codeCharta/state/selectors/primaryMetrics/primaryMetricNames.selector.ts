@@ -6,14 +6,14 @@ import { edgeMetricSelector } from "../../../state/store/dynamicSettings/edgeMet
 import { heightMetricSelector } from "../../../state/store/dynamicSettings/heightMetric/heightMetric.selector"
 
 export const primaryMetricNamesSelector = createSelector(
-	areaMetricSelector,
-	heightMetricSelector,
-	colorMetricSelector,
-	edgeMetricSelector,
-	(areaMetric, heightMetric, colorMetric, edgeMetric) => ({
-		areaMetric,
-		heightMetric,
-		colorMetric,
-		edgeMetric
-	})
+    areaMetricSelector,
+    heightMetricSelector,
+    colorMetricSelector,
+    edgeMetricSelector,
+    (areaMetric, heightMetric, colorMetric, edgeMetric) => ({
+        areaMetric,
+        heightMetric,
+        colorMetric,
+        edgeMetric
+    })
 )

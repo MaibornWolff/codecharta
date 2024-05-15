@@ -1,43 +1,43 @@
 <div class="secondary-metrics-wrapper">
-	<div class="metrics-wrapper">
-		@if (attributeDescriptors$ | async; as attributeDescriptors) {
-		<div class="metric-box scrollable-content">
-			<table class="secondary-metrics" aria-hidden="true">
-				<tr>
-					<th scope="col" colspan="2">Secondary Metrics</th>
-				</tr>
-				@for (secondaryMetric of secondaryMetrics$ | async; track secondaryMetric) {
-				<tr [title]="attributeDescriptors[secondaryMetric.name] | attributeDescriptorTooltip : secondaryMetric.name">
-					<td class="secondary-metric-box">
-						<div class="secondary-metric-row">
-							@if (showAttributeTypeSelector$ | async) {
-							<cc-attribute-type-selector
-								class="attribute-type-select"
-								[metricName]="secondaryMetric.name"
-								[metricType]="'nodes'"
-							>
-							</cc-attribute-type-selector>
-							}
-							<span class="metric-value">{{ secondaryMetric.value | number : "1.0-0" }}</span>
-						</div>
-					</td>
-					<td class="delta-value-box" [hidden]="!(showDeltaValue$ | async)">
-						<cc-metric-delta-selected [metricName]="secondaryMetric.name"></cc-metric-delta-selected>
-					</td>
-					<td>
-						@if (attributeDescriptors[secondaryMetric.name]?.link; as link) {
-						<a class="metric-name" [href]="link" target="_blank">
-							{{ secondaryMetric.name }}
-							<i class="fa fa-external-link"></i>
-						</a>
-						} @else {
-						<span class="metric-name">{{ secondaryMetric.name }}</span>
-						}
-					</td>
-				</tr>
-				}
-			</table>
-		</div>
-		}
-	</div>
+    <div class="metrics-wrapper">
+        @if (attributeDescriptors$ | async; as attributeDescriptors) {
+            <div class="metric-box scrollable-content">
+                <table class="secondary-metrics" aria-hidden="true">
+                    <tr>
+                        <th scope="col" colspan="2">Secondary Metrics</th>
+                    </tr>
+                    @for (secondaryMetric of secondaryMetrics$ | async; track secondaryMetric) {
+                        <tr [title]="attributeDescriptors[secondaryMetric.name] | attributeDescriptorTooltip: secondaryMetric.name">
+                            <td class="secondary-metric-box">
+                                <div class="secondary-metric-row">
+                                    @if (showAttributeTypeSelector$ | async) {
+                                        <cc-attribute-type-selector
+                                            class="attribute-type-select"
+                                            [metricName]="secondaryMetric.name"
+                                            [metricType]="'nodes'"
+                                        >
+                                        </cc-attribute-type-selector>
+                                    }
+                                    <span class="metric-value">{{ secondaryMetric.value | number: "1.0-0" }}</span>
+                                </div>
+                            </td>
+                            <td class="delta-value-box" [hidden]="!(showDeltaValue$ | async)">
+                                <cc-metric-delta-selected [metricName]="secondaryMetric.name"></cc-metric-delta-selected>
+                            </td>
+                            <td>
+                                @if (attributeDescriptors[secondaryMetric.name]?.link; as link) {
+                                    <a class="metric-name" [href]="link" target="_blank">
+                                        {{ secondaryMetric.name }}
+                                        <i class="fa fa-external-link"></i>
+                                    </a>
+                                } @else {
+                                    <span class="metric-name">{{ secondaryMetric.name }}</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </table>
+            </div>
+        }
+    </div>
 </div>

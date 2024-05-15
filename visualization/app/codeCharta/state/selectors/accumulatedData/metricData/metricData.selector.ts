@@ -5,8 +5,8 @@ import { calculateEdgeMetricData } from "./edgeMetricData.calculator"
 import { calculateNodeMetricData } from "./nodeMetricData.calculator"
 
 export const metricDataSelector = createSelector(visibleFileStatesSelector, blacklistSelector, (visibleFileStates, blacklist) => {
-	return {
-		nodeMetricData: calculateNodeMetricData(visibleFileStates, blacklist),
-		...calculateEdgeMetricData(visibleFileStates, blacklist)
-	}
+    return {
+        nodeMetricData: calculateNodeMetricData(visibleFileStates, blacklist),
+        ...calculateEdgeMetricData(visibleFileStates, blacklist)
+    }
 })

@@ -1,5 +1,5 @@
 export type Edge = {
-	name: string
-	incoming: number | undefined
-	outgoing: number | undefined
+    name: string
+    incoming: number | undefined
+    outgoing: number | undefined
 }

@@ -9,48 +9,48 @@ import { appReducers, setStateMiddleware } from "../../state/store/state.manager
 import { CcState } from "../../codeCharta.model"
 
 describe("FileSelectionModeService", () => {
-	let fileSelectionModeService: FileSelectionModeService
-	let store: Store<CcState>
-	let state: State<CcState>
+    let fileSelectionModeService: FileSelectionModeService
+    let store: Store<CcState>
+    let state: State<CcState>
 
-	beforeEach(() => {
-		TestBed.configureTestingModule({
-			imports: [StoreModule.forRoot(appReducers, { metaReducers: [setStateMiddleware] })]
-		})
-		store = TestBed.inject(Store)
-		state = TestBed.inject(State)
-		store.dispatch(addFile({ file: TEST_FILE_DATA }))
-		store.dispatch(addFile({ file: TEST_FILE_DATA_JAVA }))
-		store.dispatch(setStandard({ files: [TEST_FILE_DATA] }))
+    beforeEach(() => {
+        TestBed.configureTestingModule({
+            imports: [StoreModule.forRoot(appReducers, { metaReducers: [setStateMiddleware] })]
+        })
+        store = TestBed.inject(Store)
+        state = TestBed.inject(State)
+        store.dispatch(addFile({ file: TEST_FILE_DATA }))
+        store.dispatch(addFile({ file: TEST_FILE_DATA_JAVA }))
+        store.dispatch(setStandard({ files: [TEST_FILE_DATA] }))
 
-		fileSelectionModeService = new FileSelectionModeService(store, state)
-	})
+        fileSelectionModeService = new FileSelectionModeService(store, state)
+    })
 
-	it("should set first selected file as reference, when there was no reference file before", () => {
-		fileSelectionModeService.toggle()
-		expect(referenceFileSelector(state.getValue())).toBe(TEST_FILE_DATA)
-	})
+    it("should set first selected file as reference, when there was no reference file before", () => {
+        fileSelectionModeService.toggle()
+        expect(referenceFileSelector(state.getValue())).toBe(TEST_FILE_DATA)
+    })
 
-	it("should restore previous files on toggle", () => {
-		let fileStates = state.getValue().files
-		expect(fileStates[0].selectedAs).toBe(FileSelectionState.Partial)
-		expect(fileStates[1].selectedAs).toBe(FileSelectionState.None)
+    it("should restore previous files on toggle", () => {
+        let fileStates = state.getValue().files
+        expect(fileStates[0].selectedAs).toBe(FileSelectionState.Partial)
+        expect(fileStates[1].selectedAs).toBe(FileSelectionState.None)
 
-		fileSelectionModeService.toggle()
-		store.dispatch(setDelta({ referenceFile: TEST_FILE_DATA_JAVA, comparisonFile: TEST_FILE_DATA }))
+        fileSelectionModeService.toggle()
+        store.dispatch(setDelta({ referenceFile: TEST_FILE_DATA_JAVA, comparisonFile: TEST_FILE_DATA }))
 
-		fileSelectionModeService.toggle()
-		fileStates = state.getValue().files
-		expect(fileStates[0].selectedAs).toBe(FileSelectionState.Partial)
-		expect(fileStates[1].selectedAs).toBe(FileSelectionState.None)
-	})
+        fileSelectionModeService.toggle()
+        fileStates = state.getValue().files
+        expect(fileStates[0].selectedAs).toBe(FileSelectionState.Partial)
+        expect(fileStates[1].selectedAs).toBe(FileSelectionState.None)
+    })
 
-	it("should not restore a removed file when toggling back to delta mode", () => {
-		fileSelectionModeService.toggle()
-		store.dispatch(setDelta({ referenceFile: TEST_FILE_DATA_JAVA, comparisonFile: TEST_FILE_DATA }))
-		fileSelectionModeService.toggle()
-		store.dispatch(removeFile({ fileName: TEST_FILE_DATA_JAVA.fileMeta.fileName }))
-		fileSelectionModeService.toggle()
-		expect(referenceFileSelector(state.getValue())).toBe(TEST_FILE_DATA)
-	})
+    it("should not restore a removed file when toggling back to delta mode", () => {
+        fileSelectionModeService.toggle()
+        store.dispatch(setDelta({ referenceFile: TEST_FILE_DATA_JAVA, comparisonFile: TEST_FILE_DATA }))
+        fileSelectionModeService.toggle()
+        store.dispatch(removeFile({ fileName: TEST_FILE_DATA_JAVA.fileMeta.fileName }))
+        fileSelectionModeService.toggle()
+        expect(referenceFileSelector(state.getValue())).toBe(TEST_FILE_DATA)
+    })
 })

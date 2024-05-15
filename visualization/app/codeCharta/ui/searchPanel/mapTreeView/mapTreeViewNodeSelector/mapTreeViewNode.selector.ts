@@ -7,11 +7,11 @@ import { sortingOrderSelector } from "../../../../state/store/dynamicSettings/so
 import { sortNode } from "./sortNode"
 
 export const mapTreeViewNodeSelector = createSelector(
-	accumulatedDataSelector,
-	sortingOrderSelector,
-	sortingOrderAscendingSelector,
-	(accumulatedData, sortingOrder, sortingOrderAscending) => {
-		// use cloned map as it is sorted inline
-		return sortNode(klona(accumulatedData.unifiedMapNode), sortingOrder, sortingOrderAscending)
-	}
+    accumulatedDataSelector,
+    sortingOrderSelector,
+    sortingOrderAscendingSelector,
+    (accumulatedData, sortingOrder, sortingOrderAscending) => {
+        // use cloned map as it is sorted inline
+        return sortNode(klona(accumulatedData.unifiedMapNode), sortingOrder, sortingOrderAscending)
+    }
 )

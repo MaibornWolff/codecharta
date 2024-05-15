@@ -1,43 +1,43 @@
 <cc-slider
-	class="cc-height-settings-panel-row"
-	[disabled]="isLabelsSliderDisabled$ | async"
-	[title]="
-		(isLabelsSliderDisabled$ | async)
-			? 'Disabled because color labels are used'
-			: 'Display the labels of the ' + (amountOfTopLabels$ | async) + ' highest buildings'
-	"
-	label="Labels"
-	[min]="0"
-	[max]="50"
-	[value]="amountOfTopLabels$ | async"
-	[onChange]="applyDebouncedTopLabels"
+    class="cc-height-settings-panel-row"
+    [disabled]="isLabelsSliderDisabled$ | async"
+    [title]="
+        (isLabelsSliderDisabled$ | async)
+            ? 'Disabled because color labels are used'
+            : 'Display the labels of the ' + (amountOfTopLabels$ | async) + ' highest buildings'
+    "
+    label="Labels"
+    [min]="0"
+    [max]="50"
+    [value]="amountOfTopLabels$ | async"
+    [onChange]="applyDebouncedTopLabels"
 ></cc-slider>
 
 <mat-checkbox [checked]="showMetricLabelNodeName$ | async" (change)="setShowMetricLabelNodeName($event)"
-	>Show label node names
+    >Show label node names
 </mat-checkbox>
 
 <mat-checkbox [checked]="showMetricLabelNodeValue$ | async" (change)="setShowMetricLabelNameValue($event)"
-	>Show label node metrics
+    >Show label node metrics
 </mat-checkbox>
 
 <cc-slider
-	class="cc-height-settings-panel-row"
-	title="Height"
-	label="Height"
-	[step]="1"
-	[min]="1"
-	[max]="5"
-	[value]="(scaling$ | async).y"
-	[onChange]="applyDebouncedScalingY"
+    class="cc-height-settings-panel-row"
+    title="Height"
+    label="Height"
+    [step]="1"
+    [min]="1"
+    [max]="5"
+    [value]="(scaling$ | async).y"
+    [onChange]="applyDebouncedScalingY"
 ></cc-slider>
 
 @if (!(isDeltaState$ | async)) {
-<mat-checkbox (change)="setInvertHeight($event)" [checked]="invertHeight$ | async"> Invert Height </mat-checkbox>
+    <mat-checkbox (change)="setInvertHeight($event)" [checked]="invertHeight$ | async"> Invert Height </mat-checkbox>
 }
 
 <cc-reset-settings-button
-	[settingsKeys]="['appSettings.amountOfTopLabels', 'appSettings.scaling.y', 'appSettings.invertHeight']"
-	tooltip="Reset height metric settings to their defaults"
-	label="Reset height metric settings"
+    [settingsKeys]="['appSettings.amountOfTopLabels', 'appSettings.scaling.y', 'appSettings.invertHeight']"
+    tooltip="Reset height metric settings to their defaults"
+    label="Reset height metric settings"
 ></cc-reset-settings-button>

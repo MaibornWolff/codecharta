@@ -6,8 +6,8 @@ import { SliderModule } from "../../slider/slider.module"
 import { ResetSettingsButtonModule } from "../../resetSettingsButton/resetSettingsButton.module"
 
 @NgModule({
-	imports: [CommonModule, MaterialModule, SliderModule, ResetSettingsButtonModule],
-	declarations: [AreaSettingsPanelComponent],
-	exports: [AreaSettingsPanelComponent]
+    imports: [CommonModule, MaterialModule, SliderModule, ResetSettingsButtonModule],
+    declarations: [AreaSettingsPanelComponent],
+    exports: [AreaSettingsPanelComponent]
 })
 export class AreaSettingsPanelModule {}

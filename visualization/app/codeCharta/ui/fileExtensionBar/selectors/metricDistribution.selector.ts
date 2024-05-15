@@ -4,8 +4,8 @@ import { distributionMetricSelector } from "../../../state/store/dynamicSettings
 import { FileExtensionCalculator } from "./fileExtensionCalculator"
 
 export const metricDistributionSelector = createSelector(
-	accumulatedDataSelector,
-	distributionMetricSelector,
-	(accumulatedData, distributionMetric) =>
-		FileExtensionCalculator.getMetricDistribution(accumulatedData.unifiedMapNode, distributionMetric)
+    accumulatedDataSelector,
+    distributionMetricSelector,
+    (accumulatedData, distributionMetric) =>
+        FileExtensionCalculator.getMetricDistribution(accumulatedData.unifiedMapNode, distributionMetric)
 )

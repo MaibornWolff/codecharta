@@ -70,4 +70,4 @@ The resulting project has the project name specified for the SVNLogParser.
 - ./ccsh svnlogparser svn.log -o output.cc.json
 ```
 
--   Then load `output.cc.json` in visualization
+- Then load `output.cc.json` in visualization

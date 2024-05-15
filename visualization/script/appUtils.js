@@ -12,15 +12,15 @@ $ xattr -cr codecharta-visualization.app/
 `
 
 function cleanDirectory(dir) {
-	fs.rmSync(dir, { recursive: true, force: true })
-	fs.mkdirSync(dir, { recursive: true })
+    fs.rmSync(dir, { recursive: true, force: true })
+    fs.mkdirSync(dir, { recursive: true })
 }
 
 function createDarwinArmREADME(filePath) {
-	fs.writeFileSync(filePath, readmeInfo, { encoding: "utf-8" })
+    fs.writeFileSync(filePath, readmeInfo, { encoding: "utf-8" })
 }
 
 module.exports = {
-	cleanDirectory,
-	createDarwinArmREADME
+    cleanDirectory,
+    createDarwinArmREADME
 }

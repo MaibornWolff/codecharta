@@ -1,18 +1,18 @@
 import { Component, EventEmitter, Input, Output, ViewEncapsulation } from "@angular/core"
 
 @Component({
-	selector: "cc-labelled-color-picker",
-	templateUrl: "./labelledColorPicker.component.html",
-	styleUrls: ["./labelledColorPicker.component.scss"],
-	encapsulation: ViewEncapsulation.None
+    selector: "cc-labelled-color-picker",
+    templateUrl: "./labelledColorPicker.component.html",
+    styleUrls: ["./labelledColorPicker.component.scss"],
+    encapsulation: ViewEncapsulation.None
 })
 export class LabelledColorPickerComponent {
-	@Input() hexColor: string
-	@Input() labels: string[]
+    @Input() hexColor: string
+    @Input() labels: string[]
 
-	@Output() onColorChange = new EventEmitter<string>()
+    @Output() onColorChange = new EventEmitter<string>()
 
-	handleColorChange(hexColor: string) {
-		this.onColorChange.emit(hexColor)
-	}
+    handleColorChange(hexColor: string) {
+        this.onColorChange.emit(hexColor)
+    }
 }

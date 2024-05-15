@@ -8,8 +8,8 @@ import { GlobalConfigurationDialogComponent } from "./globalConfigurationDialog/
 import { MapLayoutSelectionModule } from "./globalConfigurationDialog/mapLayoutSelection/mapLayoutSelection.module"
 
 @NgModule({
-	imports: [MaterialModule, ResetSettingsButtonModule, MapLayoutSelectionModule, DisplayQualitySelectionModule, ActionIconModule],
-	declarations: [GlobalConfigurationButtonComponent, GlobalConfigurationDialogComponent],
-	exports: [GlobalConfigurationButtonComponent]
+    imports: [MaterialModule, ResetSettingsButtonModule, MapLayoutSelectionModule, DisplayQualitySelectionModule, ActionIconModule],
+    declarations: [GlobalConfigurationButtonComponent, GlobalConfigurationDialogComponent],
+    exports: [GlobalConfigurationButtonComponent]
 })
 export class GlobalConfigurationButtonModule {}

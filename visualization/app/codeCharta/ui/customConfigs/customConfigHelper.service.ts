@@ -9,15 +9,15 @@ import { CcState } from "../../codeCharta.model"
 
 @Injectable()
 export class CustomConfigHelperService {
-	readonly downloadableCustomConfigs$ = combineLatest([
-		this.store.select(visibleFilesBySelectionModeSelector),
-		CustomConfigHelper.customConfigChange$
-	]).pipe(map(([visibleFilesBySelectionMode]) => getDownloadableCustomConfigs(visibleFilesBySelectionMode)))
+    readonly downloadableCustomConfigs$ = combineLatest([
+        this.store.select(visibleFilesBySelectionModeSelector),
+        CustomConfigHelper.customConfigChange$
+    ]).pipe(map(([visibleFilesBySelectionMode]) => getDownloadableCustomConfigs(visibleFilesBySelectionMode)))
 
-	readonly customConfigItemGroups$ = combineLatest([
-		this.store.select(visibleFilesBySelectionModeSelector),
-		CustomConfigHelper.customConfigChange$
-	]).pipe(map(([visibleFilesBySelectionMode]) => getCustomConfigItemGroups(visibleFilesBySelectionMode)))
+    readonly customConfigItemGroups$ = combineLatest([
+        this.store.select(visibleFilesBySelectionModeSelector),
+        CustomConfigHelper.customConfigChange$
+    ]).pipe(map(([visibleFilesBySelectionMode]) => getCustomConfigItemGroups(visibleFilesBySelectionMode)))
 
-	constructor(private store: Store<CcState>) {}
+    constructor(private store: Store<CcState>) {}
 }

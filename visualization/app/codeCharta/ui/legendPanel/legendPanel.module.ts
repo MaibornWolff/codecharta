@@ -9,8 +9,8 @@ import { ColorPickerForMapColorModule } from "../colorPickerForMapColor/colorPic
 import { AttributeDescriptorTooltipPipeModule } from "../../util/pipes/AttributeDescriptorTooltipPipeModule"
 
 @NgModule({
-	declarations: [LegendPanelComponent, LegendBlockComponent],
-	exports: [LegendPanelComponent],
-	imports: [CommonModule, MaterialModule, LegendMarkedPackagesModule, ColorPickerForMapColorModule, AttributeDescriptorTooltipPipeModule]
+    declarations: [LegendPanelComponent, LegendBlockComponent],
+    exports: [LegendPanelComponent],
+    imports: [CommonModule, MaterialModule, LegendMarkedPackagesModule, ColorPickerForMapColorModule, AttributeDescriptorTooltipPipeModule]
 })
 export class LegendPanelModule {}

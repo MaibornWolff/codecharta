@@ -8,39 +8,39 @@ import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { getLastAction } from "../../../util/testUtils/store.utils"
 
 describe("ResetSelectedEdgeMetricWhenItDoesntExistAnymoreEffect", () => {
-	let store: MockStore
+    let store: MockStore
 
-	beforeEach(async () => {
-		TestBed.configureTestingModule({
-			imports: [EffectsModule.forRoot([ResetSelectedEdgeMetricWhenItDoesntExistAnymoreEffect])],
-			providers: [
-				provideMockStore({
-					selectors: [
-						{ selector: edgeMetricSelector, value: "avgCommits" },
-						{ selector: metricDataSelector, value: { edgeMetricData: [{ name: "avgCommits" }, { name: "pairingRate" }] } }
-					]
-				})
-			]
-		})
-		store = TestBed.inject(MockStore)
-	})
+    beforeEach(async () => {
+        TestBed.configureTestingModule({
+            imports: [EffectsModule.forRoot([ResetSelectedEdgeMetricWhenItDoesntExistAnymoreEffect])],
+            providers: [
+                provideMockStore({
+                    selectors: [
+                        { selector: edgeMetricSelector, value: "avgCommits" },
+                        { selector: metricDataSelector, value: { edgeMetricData: [{ name: "avgCommits" }, { name: "pairingRate" }] } }
+                    ]
+                })
+            ]
+        })
+        store = TestBed.inject(MockStore)
+    })
 
-	it("should reset selected edge metric to first available, when current isn't available anymore", async () => {
-		store.overrideSelector(metricDataSelector, { edgeMetricData: [{ name: "pairingRate" }] } as ReturnType<typeof metricDataSelector>)
-		store.refreshState()
-		expect(await getLastAction(store)).toEqual(setEdgeMetric({ value: "pairingRate" }))
-	})
+    it("should reset selected edge metric to first available, when current isn't available anymore", async () => {
+        store.overrideSelector(metricDataSelector, { edgeMetricData: [{ name: "pairingRate" }] } as ReturnType<typeof metricDataSelector>)
+        store.refreshState()
+        expect(await getLastAction(store)).toEqual(setEdgeMetric({ value: "pairingRate" }))
+    })
 
-	it("should do nothing, when current selected edge metric is still available", async () => {
-		store.overrideSelector(metricDataSelector, { edgeMetricData: [{ name: "avgCommits" }] } as ReturnType<typeof metricDataSelector>)
-		store.refreshState()
-		expect(await getLastAction(store)).toEqual({ type: "@ngrx/effects/init" })
-	})
+    it("should do nothing, when current selected edge metric is still available", async () => {
+        store.overrideSelector(metricDataSelector, { edgeMetricData: [{ name: "avgCommits" }] } as ReturnType<typeof metricDataSelector>)
+        store.refreshState()
+        expect(await getLastAction(store)).toEqual({ type: "@ngrx/effects/init" })
+    })
 
-	it("should set set edge metric to undefined, when there is no edge metric available", async () => {
-		store.overrideSelector(edgeMetricSelector, "pairingRate")
-		store.overrideSelector(metricDataSelector, { edgeMetricData: [] } as ReturnType<typeof metricDataSelector>)
-		store.refreshState()
-		expect(await getLastAction(store)).toEqual(setEdgeMetric(undefined))
-	})
+    it("should set set edge metric to undefined, when there is no edge metric available", async () => {
+        store.overrideSelector(edgeMetricSelector, "pairingRate")
+        store.overrideSelector(metricDataSelector, { edgeMetricData: [] } as ReturnType<typeof metricDataSelector>)
+        store.refreshState()
+        expect(await getLastAction(store)).toEqual(setEdgeMetric(undefined))
+    })
 })

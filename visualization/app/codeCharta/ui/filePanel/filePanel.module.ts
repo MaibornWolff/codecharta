@@ -11,15 +11,15 @@ import { FilePanelComponent } from "./filePanel.component"
 import { RemoveExtensionPipeModule } from "../../util/pipes/RemoveExtensionPipeModule"
 
 @NgModule({
-	imports: [CommonModule, MaterialModule, FormsModule, RemoveExtensionPipeModule],
-	declarations: [
-		FilePanelDeltaSelectorComponent,
-		FilePanelFileSelectorComponent,
-		FilePanelStateButtonsComponent,
-		RemoveFileButtonComponent,
-		FilePanelComponent
-	],
-	providers: [FileSelectionModeService],
-	exports: [FilePanelComponent]
+    imports: [CommonModule, MaterialModule, FormsModule, RemoveExtensionPipeModule],
+    declarations: [
+        FilePanelDeltaSelectorComponent,
+        FilePanelFileSelectorComponent,
+        FilePanelStateButtonsComponent,
+        RemoveFileButtonComponent,
+        FilePanelComponent
+    ],
+    providers: [FileSelectionModeService],
+    exports: [FilePanelComponent]
 })
 export class FilePanelModule {}

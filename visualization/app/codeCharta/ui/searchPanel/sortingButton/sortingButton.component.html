@@ -1,7 +1,7 @@
 <button
-	class="box-rounded submenu-button"
-	(click)="onClick()"
-	title="Toggle sort order (currently {{ (sortingOrderAscending$ | async) ? 'ascending' : 'descending' }})"
+    class="box-rounded submenu-button"
+    (click)="onClick()"
+    title="Toggle sort order (currently {{ (sortingOrderAscending$ | async) ? 'ascending' : 'descending' }})"
 >
-	<i [className]="(sortingOrderAscending$ | async) ? 'fa fa-sort-amount-asc' : 'fa fa-sort-amount-desc'"></i>
+    <i [className]="(sortingOrderAscending$ | async) ? 'fa fa-sort-amount-asc' : 'fa fa-sort-amount-desc'"></i>
 </button>

@@ -1,23 +1,23 @@
 cc-blacklist-panel {
-	.header-text {
-		display: inline-block;
-		margin: 0 0.25em 0 0;
-	}
+    .header-text {
+        display: inline-block;
+        margin: 0 0.25em 0 0;
+    }
 
-	mat-list.mat-mdc-list.mat-mdc-list-base mat-list-item {
-		border-top: 1px solid rgba(0, 0, 0, 0.12);
+    mat-list.mat-mdc-list.mat-mdc-list-base mat-list-item {
+        border-top: 1px solid rgba(0, 0, 0, 0.12);
 
-		.mdc-list-item__content {
-			padding: 0;
+        .mdc-list-item__content {
+            padding: 0;
 
-			button {
-				width: 100%;
-				text-align: start;
+            button {
+                width: 100%;
+                text-align: start;
 
-				.fa {
-					padding-right: 8px;
-				}
-			}
-		}
-	}
+                .fa {
+                    padding-right: 8px;
+                }
+            }
+        }
+    }
 }

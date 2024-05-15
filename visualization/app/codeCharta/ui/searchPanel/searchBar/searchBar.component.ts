@@ -10,30 +10,30 @@ import { debounce } from "../../../util/debounce"
 import { Store } from "@ngrx/store"
 
 @Component({
-	selector: "cc-search-bar",
-	templateUrl: "./searchBar.component.html",
-	styleUrls: ["./searchBar.component.scss"],
-	encapsulation: ViewEncapsulation.None
+    selector: "cc-search-bar",
+    templateUrl: "./searchBar.component.html",
+    styleUrls: ["./searchBar.component.scss"],
+    encapsulation: ViewEncapsulation.None
 })
 export class SearchBarComponent {
-	searchPattern$ = this.store.select(searchPatternSelector)
-	isSearchPatternEmpty$ = this.store.select(isSearchPatternEmptySelector)
-	isFlattenPatternDisabled$ = this.store.select(isFlattenPatternDisabledSelector)
-	isExcludePatternDisabled$ = this.store.select(isExcludePatternDisabledSelector)
-	setSearchPatternDebounced = debounce((event: Event) => this.setSearchPattern(event), 400)
+    searchPattern$ = this.store.select(searchPatternSelector)
+    isSearchPatternEmpty$ = this.store.select(isSearchPatternEmptySelector)
+    isFlattenPatternDisabled$ = this.store.select(isFlattenPatternDisabledSelector)
+    isExcludePatternDisabled$ = this.store.select(isExcludePatternDisabledSelector)
+    setSearchPatternDebounced = debounce((event: Event) => this.setSearchPattern(event), 400)
 
-	constructor(private store: Store<CcState>) {}
+    constructor(private store: Store<CcState>) {}
 
-	setSearchPattern(event: Event) {
-		const eventTarget = event.target as HTMLInputElement
-		this.store.dispatch(setSearchPattern({ value: eventTarget.value }))
-	}
+    setSearchPattern(event: Event) {
+        const eventTarget = event.target as HTMLInputElement
+        this.store.dispatch(setSearchPattern({ value: eventTarget.value }))
+    }
 
-	resetSearchPattern() {
-		this.store.dispatch(setSearchPattern({ value: "" }))
-	}
+    resetSearchPattern() {
+        this.store.dispatch(setSearchPattern({ value: "" }))
+    }
 
-	blacklistSearchPattern(type: BlacklistType) {
-		this.store.dispatch(blacklistSearchPattern(type))
-	}
+    blacklistSearchPattern(type: BlacklistType) {
+        this.store.dispatch(blacklistSearchPattern(type))
+    }
 }

@@ -1,13 +1,13 @@
 import { clone } from "./clone"
 
 describe("clone", () => {
-	it("should clone a javascript object", () => {
-		const object = { x: 1, y: 2 }
+    it("should clone a javascript object", () => {
+        const object = { x: 1, y: 2 }
 
-		const actual = clone(object)
+        const actual = clone(object)
 
-		expect(actual).toEqual(object)
-		object.x = 2
-		expect(actual).not.toEqual(object)
-	})
+        expect(actual).toEqual(object)
+        object.x = 2
+        expect(actual).not.toEqual(object)
+    })
 })

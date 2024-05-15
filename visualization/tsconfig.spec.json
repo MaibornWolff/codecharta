@@ -1,7 +1,7 @@
 {
-	"extends": "./tsconfig.json",
-	"compilerOptions": {
-		"esModuleInterop": true,
-		"target": "ES2015"
-	}
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "target": "ES2015"
+  }
 }

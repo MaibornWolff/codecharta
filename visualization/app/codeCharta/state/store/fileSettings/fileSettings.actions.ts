@@ -5,17 +5,17 @@ import { setEdges, addEdge, removeEdge } from "./edges/edges.actions"
 import { setMarkedPackages, markPackages, unmarkPackage } from "./markedPackages/markedPackages.actions"
 
 export const fileSettingsActions = [
-	setMarkedPackages,
-	markPackages,
-	unmarkPackage,
-	setEdges,
-	addEdge,
-	removeEdge,
-	setAttributeTypes,
-	updateAttributeType,
-	setAttributeDescriptors,
-	setBlacklist,
-	addBlacklistItem,
-	addBlacklistItems,
-	removeBlacklistItem
+    setMarkedPackages,
+    markPackages,
+    unmarkPackage,
+    setEdges,
+    addEdge,
+    removeEdge,
+    setAttributeTypes,
+    updateAttributeType,
+    setAttributeDescriptors,
+    setBlacklist,
+    addBlacklistItem,
+    addBlacklistItems,
+    removeBlacklistItem
 ]

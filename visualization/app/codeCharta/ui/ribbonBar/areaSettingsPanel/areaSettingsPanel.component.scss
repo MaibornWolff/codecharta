@@ -1,19 +1,19 @@
 cc-area-settings-panel {
-	text-align: left;
-	max-height: 300px;
+    text-align: left;
+    max-height: 300px;
 
-	.options {
-		display: flex;
-		flex-direction: column;
+    .options {
+        display: flex;
+        flex-direction: column;
 
-		.margin-option {
-			position: relative;
+        .margin-option {
+            position: relative;
 
-			cc-reset-settings-button {
-				position: absolute;
-				top: -20%;
-				left: 20%;
-			}
-		}
-	}
+            cc-reset-settings-button {
+                position: absolute;
+                top: -20%;
+                left: 20%;
+            }
+        }
+    }
 }

@@ -9,28 +9,28 @@ import { getLastAction } from "../../../../../util/testUtils/store.utils"
 import { setSharpnessMode } from "../../../../../state/store/appSettings/sharpnessMode/sharpnessMode.actions"
 
 describe("DisplayQualitySelectionComponent", () => {
-	beforeEach(() => {
-		TestBed.configureTestingModule({
-			imports: [DisplayQualitySelectionModule],
-			providers: [
-				provideMockStore({
-					selectors: [{ selector: sharpnessModeSelector, value: SharpnessMode.Standard }]
-				})
-			]
-		})
-	})
+    beforeEach(() => {
+        TestBed.configureTestingModule({
+            imports: [DisplayQualitySelectionModule],
+            providers: [
+                provideMockStore({
+                    selectors: [{ selector: sharpnessModeSelector, value: SharpnessMode.Standard }]
+                })
+            ]
+        })
+    })
 
-	it("should change display quality selection", async () => {
-		const { detectChanges } = await render(DisplayQualitySelectionComponent, { excludeComponentDeclaration: true })
-		const store = TestBed.inject(MockStore)
-		detectChanges()
+    it("should change display quality selection", async () => {
+        const { detectChanges } = await render(DisplayQualitySelectionComponent, { excludeComponentDeclaration: true })
+        const store = TestBed.inject(MockStore)
+        detectChanges()
 
-		const initialDisplayQualitySelection = screen.getByText("High")
+        const initialDisplayQualitySelection = screen.getByText("High")
 
-		fireEvent.click(initialDisplayQualitySelection)
-		const anotherDisplayQualityOption = screen.getByText("Low")
-		fireEvent.click(anotherDisplayQualityOption)
-		await waitForElementToBeRemoved(() => screen.getByRole("listbox"))
-		expect(await getLastAction(store)).toEqual(setSharpnessMode({ value: SharpnessMode.PixelRatioNoAA }))
-	})
+        fireEvent.click(initialDisplayQualitySelection)
+        const anotherDisplayQualityOption = screen.getByText("Low")
+        fireEvent.click(anotherDisplayQualityOption)
+        await waitForElementToBeRemoved(() => screen.getByRole("listbox"))
+        expect(await getLastAction(store)).toEqual(setSharpnessMode({ value: SharpnessMode.PixelRatioNoAA }))
+    })
 })

@@ -6,17 +6,17 @@ import { isDeltaStateSelector } from "../../../../state/selectors/isDeltaState.s
 import { fileCountSelector } from "./fileCountSelector"
 
 @Component({
-	selector: "cc-node-path",
-	templateUrl: "./nodePath.component.html",
-	encapsulation: ViewEncapsulation.None
+    selector: "cc-node-path",
+    templateUrl: "./nodePath.component.html",
+    encapsulation: ViewEncapsulation.None
 })
 export class NodePathComponent {
-	@Input() node?: Pick<CodeMapNode, "path" | "children">
-	fileCount$: Observable<FileCount | undefined>
-	isDeltaMode$: Observable<boolean>
+    @Input() node?: Pick<CodeMapNode, "path" | "children">
+    fileCount$: Observable<FileCount | undefined>
+    isDeltaMode$: Observable<boolean>
 
-	constructor(store: Store<CcState>) {
-		this.fileCount$ = store.select(fileCountSelector)
-		this.isDeltaMode$ = store.select(isDeltaStateSelector)
-	}
+    constructor(store: Store<CcState>) {
+        this.fileCount$ = store.select(fileCountSelector)
+        this.isDeltaMode$ = store.select(isDeltaStateSelector)
+    }
 }

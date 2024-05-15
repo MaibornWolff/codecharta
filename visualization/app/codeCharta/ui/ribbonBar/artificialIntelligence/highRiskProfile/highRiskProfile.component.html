@@ -1,60 +1,62 @@
 <button [matMenuTriggerFor]="menu" title="Open High Risk Profile" class="cc-ribbon-bar-menu-button">
-	<i class="fa fa-bar-chart"></i>
+    <i class="fa fa-bar-chart"></i>
 </button>
 
 <mat-menu #menu="matMenu" class="ai-drop-down high-risk-profile">
-	@if (data.riskProfile !== undefined) {
-	<div class="title">
-		<div>Risk Profile</div>
-	</div>
-	<div class="suspicious-metrics-summary">
-		The Risk Profile gives a quick overview about the complexity and risk structure of the code base. It tells you how much of the code
-		is placed in files associated with low/high risk in means of maintainability. The separation of code in risk classes like low or
-		high complexity is based on Java reference metric values and therefore may be inaccurate for other programming languages. More
-		information can be found here:
-		<a href="https://maibornwolff.github.io/codecharta/docs/risk-profile/">link</a> to How-To article.
-	</div>
-	<div class="title">
-		<div>Calculations are always based on mcc (cyclomatic complexity)</div>
-	</div>
-	<div class="suspicious-metrics-summary">
-		<ul>
-			<li>{{ data.riskProfile.lowRisk }}% of overall code is in files with low complexity</li>
-			<li>{{ data.riskProfile.moderateRisk }}% of overall code is in files with moderate complexity</li>
-			<li>{{ data.riskProfile.highRisk }}% of overall code is in files with high complexity</li>
-			<li>{{ data.riskProfile.veryHighRisk }}% of overall code is in files with extreme complexity</li>
-		</ul>
-	</div>
-	<div class="risk-profiles">
-		<div
-			[ccRiskProfileBar]="data.riskProfile.lowRisk"
-			title="Low Risk ({{ data.riskProfile.lowRisk }}% of code)"
-			class="risk-profile low-risk"
-		>
-			{{ data.riskProfile.lowRisk }}%
-		</div>
-		<div
-			[ccRiskProfileBar]="data.riskProfile.moderateRisk"
-			title="Moderate Risk ({{ data.riskProfile.moderateRisk }}% of code)"
-			class="risk-profile moderate-risk"
-		>
-			{{ data.riskProfile.moderateRisk }}%
-		</div>
-		<div
-			[ccRiskProfileBar]="data.riskProfile.highRisk"
-			title="High Risk ({{ data.riskProfile.highRisk }}% of code)"
-			class="risk-profile high-risk"
-		>
-			{{ data.riskProfile.highRisk }}%
-		</div>
-		<div
-			[ccRiskProfileBar]="data.riskProfile.veryHighRisk"
-			title="Very High Risk ({{ data.riskProfile.veryHighRisk }}% of code)"
-			class="risk-profile very-high-risk"
-		>
-			{{ data.riskProfile.veryHighRisk }}%
-		</div>
-	</div>
-	} @if (data.riskProfile === undefined) { Could not calculate Risk Profile. Metrics rloc(Real lines of code) and mcc(Cyclomatic
-	complexity) not available. }
+    @if (data.riskProfile !== undefined) {
+        <div class="title">
+            <div>Risk Profile</div>
+        </div>
+        <div class="suspicious-metrics-summary">
+            The Risk Profile gives a quick overview about the complexity and risk structure of the code base. It tells you how much of the
+            code is placed in files associated with low/high risk in means of maintainability. The separation of code in risk classes like
+            low or high complexity is based on Java reference metric values and therefore may be inaccurate for other programming languages.
+            More information can be found here:
+            <a href="https://maibornwolff.github.io/codecharta/docs/risk-profile/">link</a> to How-To article.
+        </div>
+        <div class="title">
+            <div>Calculations are always based on mcc (cyclomatic complexity)</div>
+        </div>
+        <div class="suspicious-metrics-summary">
+            <ul>
+                <li>{{ data.riskProfile.lowRisk }}% of overall code is in files with low complexity</li>
+                <li>{{ data.riskProfile.moderateRisk }}% of overall code is in files with moderate complexity</li>
+                <li>{{ data.riskProfile.highRisk }}% of overall code is in files with high complexity</li>
+                <li>{{ data.riskProfile.veryHighRisk }}% of overall code is in files with extreme complexity</li>
+            </ul>
+        </div>
+        <div class="risk-profiles">
+            <div
+                [ccRiskProfileBar]="data.riskProfile.lowRisk"
+                title="Low Risk ({{ data.riskProfile.lowRisk }}% of code)"
+                class="risk-profile low-risk"
+            >
+                {{ data.riskProfile.lowRisk }}%
+            </div>
+            <div
+                [ccRiskProfileBar]="data.riskProfile.moderateRisk"
+                title="Moderate Risk ({{ data.riskProfile.moderateRisk }}% of code)"
+                class="risk-profile moderate-risk"
+            >
+                {{ data.riskProfile.moderateRisk }}%
+            </div>
+            <div
+                [ccRiskProfileBar]="data.riskProfile.highRisk"
+                title="High Risk ({{ data.riskProfile.highRisk }}% of code)"
+                class="risk-profile high-risk"
+            >
+                {{ data.riskProfile.highRisk }}%
+            </div>
+            <div
+                [ccRiskProfileBar]="data.riskProfile.veryHighRisk"
+                title="Very High Risk ({{ data.riskProfile.veryHighRisk }}% of code)"
+                class="risk-profile very-high-risk"
+            >
+                {{ data.riskProfile.veryHighRisk }}%
+            </div>
+        </div>
+    }
+    @if (data.riskProfile === undefined) {
+        Could not calculate Risk Profile. Metrics rloc(Real lines of code) and mcc(Cyclomatic complexity) not available.
+    }
 </mat-menu>

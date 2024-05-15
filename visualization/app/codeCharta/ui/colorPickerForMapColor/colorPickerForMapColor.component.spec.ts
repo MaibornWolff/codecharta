@@ -10,28 +10,28 @@ import { colorRangeSelector } from "../../state/store/dynamicSettings/colorRange
 import { selectedColorMetricDataSelector } from "../../state/selectors/accumulatedData/metricData/selectedColorMetricData.selector"
 
 describe("colorPickerForMapColor", () => {
-	beforeEach(() => {
-		TestBed.configureTestingModule({
-			imports: [ColorPickerForMapColorModule],
-			providers: [
-				provideMockStore({
-					selectors: [
-						{ selector: mapColorsSelector, value: defaultMapColors },
-						{ selector: colorRangeSelector, value: { from: 21, to: 100 } },
-						{ selector: selectedColorMetricDataSelector, value: { minValue: 0, maxValue: 100 } }
-					]
-				})
-			]
-		})
-	})
+    beforeEach(() => {
+        TestBed.configureTestingModule({
+            imports: [ColorPickerForMapColorModule],
+            providers: [
+                provideMockStore({
+                    selectors: [
+                        { selector: mapColorsSelector, value: defaultMapColors },
+                        { selector: colorRangeSelector, value: { from: 21, to: 100 } },
+                        { selector: selectedColorMetricDataSelector, value: { minValue: 0, maxValue: 100 } }
+                    ]
+                })
+            ]
+        })
+    })
 
-	it("should render correctly", async () => {
-		await render(ColorPickerForMapColorComponent, {
-			excludeComponentDeclaration: true,
-			componentProperties: { mapColorFor: "positive" }
-		})
+    it("should render correctly", async () => {
+        await render(ColorPickerForMapColorComponent, {
+            excludeComponentDeclaration: true,
+            componentProperties: { mapColorFor: "positive" }
+        })
 
-		const renderedLabel = screen.queryByText("0 to 20")
-		expect(renderedLabel).not.toBe(null)
-	})
+        const renderedLabel = screen.queryByText("0 to 20")
+        expect(renderedLabel).not.toBe(null)
+    })
 })

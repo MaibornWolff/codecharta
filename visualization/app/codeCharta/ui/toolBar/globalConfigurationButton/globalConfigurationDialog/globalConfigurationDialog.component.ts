@@ -14,35 +14,35 @@ import { setResetCameraIfNewFileIsLoaded } from "../../../../state/store/appSett
 import { resetCameraIfNewFileIsLoadedSelector } from "../../../../state/store/appSettings/resetCameraIfNewFileIsLoaded/resetCameraIfNewFileIsLoaded.selector"
 
 @Component({
-	templateUrl: "./globalConfigurationDialog.component.html",
-	encapsulation: ViewEncapsulation.None
+    templateUrl: "./globalConfigurationDialog.component.html",
+    encapsulation: ViewEncapsulation.None
 })
 export class GlobalConfigurationDialogComponent {
-	screenshotToClipboardEnabled$ = this.store.select(screenshotToClipboardEnabledSelector)
-	experimentalFeaturesEnabled$ = this.store.select(experimentalFeaturesEnabledSelector)
-	isWhiteBackground$ = this.store.select(isWhiteBackgroundSelector)
-	hideFlatBuildings$ = this.store.select(hideFlatBuildingsSelector)
-	resetCameraIfNewFileIsLoaded$ = this.store.select(resetCameraIfNewFileIsLoadedSelector)
+    screenshotToClipboardEnabled$ = this.store.select(screenshotToClipboardEnabledSelector)
+    experimentalFeaturesEnabled$ = this.store.select(experimentalFeaturesEnabledSelector)
+    isWhiteBackground$ = this.store.select(isWhiteBackgroundSelector)
+    hideFlatBuildings$ = this.store.select(hideFlatBuildingsSelector)
+    resetCameraIfNewFileIsLoaded$ = this.store.select(resetCameraIfNewFileIsLoadedSelector)
 
-	constructor(private store: Store<CcState>) {}
+    constructor(private store: Store<CcState>) {}
 
-	handleResetCameraIfNewFileIsLoadedChanged(event: MatSlideToggleChange) {
-		this.store.dispatch(setResetCameraIfNewFileIsLoaded({ value: event.checked }))
-	}
+    handleResetCameraIfNewFileIsLoadedChanged(event: MatSlideToggleChange) {
+        this.store.dispatch(setResetCameraIfNewFileIsLoaded({ value: event.checked }))
+    }
 
-	handleHideFlatBuildingsChanged(event: MatSlideToggleChange) {
-		this.store.dispatch(setHideFlatBuildings({ value: event.checked }))
-	}
+    handleHideFlatBuildingsChanged(event: MatSlideToggleChange) {
+        this.store.dispatch(setHideFlatBuildings({ value: event.checked }))
+    }
 
-	handleIsWhiteBackgroundChanged(event: MatSlideToggleChange) {
-		this.store.dispatch(setIsWhiteBackground({ value: event.checked }))
-	}
+    handleIsWhiteBackgroundChanged(event: MatSlideToggleChange) {
+        this.store.dispatch(setIsWhiteBackground({ value: event.checked }))
+    }
 
-	handleExperimentalFeaturesEnabledChanged(event: MatSlideToggleChange) {
-		this.store.dispatch(setExperimentalFeaturesEnabled({ value: event.checked }))
-	}
+    handleExperimentalFeaturesEnabledChanged(event: MatSlideToggleChange) {
+        this.store.dispatch(setExperimentalFeaturesEnabled({ value: event.checked }))
+    }
 
-	handleScreenshotToClipboardEnabledChanged(event: MatSlideToggleChange) {
-		this.store.dispatch(setScreenshotToClipboardEnabled({ value: event.checked }))
-	}
+    handleScreenshotToClipboardEnabledChanged(event: MatSlideToggleChange) {
+        this.store.dispatch(setScreenshotToClipboardEnabled({ value: event.checked }))
+    }
 }

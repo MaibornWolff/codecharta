@@ -6,10 +6,10 @@ import { getMissingCustomConfigModeAndMaps } from "./getMissingCustomConfigModeA
 
 @Pipe({ name: "customConfig2ApplicableColor" })
 export class CustomConfig2ApplicableColor implements PipeTransform {
-	constructor(private state: State<CcState>) {}
+    constructor(private state: State<CcState>) {}
 
-	transform(customConfig: CustomConfigItem): string {
-		const { mapSelectionMode, mapNames } = getMissingCustomConfigModeAndMaps(customConfig, this.state.getValue())
-		return mapNames.length > 0 || mapSelectionMode.length > 0 ? "rgb(204, 204, 204)" : "rgba(0, 0, 0, 0.87)"
-	}
+    transform(customConfig: CustomConfigItem): string {
+        const { mapSelectionMode, mapNames } = getMissingCustomConfigModeAndMaps(customConfig, this.state.getValue())
+        return mapNames.length > 0 || mapSelectionMode.length > 0 ? "rgb(204, 204, 204)" : "rgba(0, 0, 0, 0.87)"
+    }
 }

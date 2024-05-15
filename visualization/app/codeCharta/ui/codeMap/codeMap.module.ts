@@ -5,8 +5,8 @@ import { CodeMapComponent } from "./codeMap.component"
 import { AttributeSideBarModule } from "../attributeSideBar/attributeSideBar.module"
 
 @NgModule({
-	imports: [CommonModule, ViewCubeModule, AttributeSideBarModule],
-	declarations: [CodeMapComponent],
-	exports: [CodeMapComponent]
+    imports: [CommonModule, ViewCubeModule, AttributeSideBarModule],
+    declarations: [CodeMapComponent],
+    exports: [CodeMapComponent]
 })
 export class CodeMapModule {}

@@ -4,8 +4,8 @@ import { MaterialModule } from "../../../../../material/material.module"
 import { FlattenButtonsComponent } from "./flattenButtons.component"
 
 @NgModule({
-	imports: [CommonModule, MaterialModule],
-	declarations: [FlattenButtonsComponent],
-	exports: [FlattenButtonsComponent]
+    imports: [CommonModule, MaterialModule],
+    declarations: [FlattenButtonsComponent],
+    exports: [FlattenButtonsComponent]
 })
 export class FlattenButtonsModule {}

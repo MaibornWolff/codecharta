@@ -6,21 +6,21 @@ import { ThreeOrbitControlsService } from "../../../../codeMap/threeViewer/three
 import { Store } from "@ngrx/store"
 
 @Component({
-	selector: "cc-apply-custom-config-button",
-	templateUrl: "./applyCustomConfigButton.component.html",
-	styleUrls: ["./applyCustomConfigButton.component.scss"],
-	encapsulation: ViewEncapsulation.None
+    selector: "cc-apply-custom-config-button",
+    templateUrl: "./applyCustomConfigButton.component.html",
+    styleUrls: ["./applyCustomConfigButton.component.scss"],
+    encapsulation: ViewEncapsulation.None
 })
 export class ApplyCustomConfigButtonComponent {
-	@Input() customConfigItem: CustomConfigItem
+    @Input() customConfigItem: CustomConfigItem
 
-	constructor(
-		private store: Store,
-		private threeCameraService: ThreeCameraService,
-		private threeOrbitControlsService: ThreeOrbitControlsService
-	) {}
+    constructor(
+        private store: Store,
+        private threeCameraService: ThreeCameraService,
+        private threeOrbitControlsService: ThreeOrbitControlsService
+    ) {}
 
-	applyCustomConfig() {
-		CustomConfigHelper.applyCustomConfig(this.customConfigItem.id, this.store, this.threeCameraService, this.threeOrbitControlsService)
-	}
+    applyCustomConfig() {
+        CustomConfigHelper.applyCustomConfig(this.customConfigItem.id, this.store, this.threeCameraService, this.threeOrbitControlsService)
+    }
 }

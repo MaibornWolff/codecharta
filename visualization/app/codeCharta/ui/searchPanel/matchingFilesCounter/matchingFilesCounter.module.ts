@@ -8,8 +8,8 @@ import { ThumbTackButtonComponent } from "../thumbTackButton/thumbTackButton.com
 import { MatchingFilesCounterComponent } from "./matchingFilesCounter.component"
 
 @NgModule({
-	imports: [CommonModule, MaterialModule],
-	declarations: [MatchingFilesCounterComponent, SortingButtonComponent, SortingOptionComponent, ThumbTackButtonComponent],
-	exports: [MatchingFilesCounterComponent]
+    imports: [CommonModule, MaterialModule],
+    declarations: [MatchingFilesCounterComponent, SortingButtonComponent, SortingOptionComponent, ThumbTackButtonComponent],
+    exports: [MatchingFilesCounterComponent]
 })
 export class MatchingFilesCounterModule {}

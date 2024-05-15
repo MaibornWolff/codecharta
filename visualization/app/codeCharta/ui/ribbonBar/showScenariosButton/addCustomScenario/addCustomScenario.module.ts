@@ -5,7 +5,7 @@ import { MaterialModule } from "../../../../../material/material.module"
 import { AddCustomScenarioComponent } from "./addCustomScenario.component"
 
 @NgModule({
-	imports: [CommonModule, FormsModule, ReactiveFormsModule, MaterialModule],
-	declarations: [AddCustomScenarioComponent]
+    imports: [CommonModule, FormsModule, ReactiveFormsModule, MaterialModule],
+    declarations: [AddCustomScenarioComponent]
 })
 export class AddCustomScenarioModule {}

@@ -5,16 +5,16 @@ import { setDistributionMetric } from "../../../state/store/dynamicSettings/dist
 import { distributionMetricSelector } from "../../../state/store/dynamicSettings/distributionMetric/distributionMetric.selector"
 
 @Component({
-	selector: "cc-distribution-metric-chooser",
-	templateUrl: "./distributionMetricChooser.component.html",
-	encapsulation: ViewEncapsulation.None
+    selector: "cc-distribution-metric-chooser",
+    templateUrl: "./distributionMetricChooser.component.html",
+    encapsulation: ViewEncapsulation.None
 })
 export class DistributionMetricChooserComponent {
-	distributionMetric$ = this.store.select(distributionMetricSelector)
+    distributionMetric$ = this.store.select(distributionMetricSelector)
 
-	constructor(private store: Store<CcState>) {}
+    constructor(private store: Store<CcState>) {}
 
-	handleDistributionMetricChanged(value: string) {
-		this.store.dispatch(setDistributionMetric({ value }))
-	}
+    handleDistributionMetricChanged(value: string) {
+        this.store.dispatch(setDistributionMetric({ value }))
+    }
 }

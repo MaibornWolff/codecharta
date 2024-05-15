@@ -10,12 +10,12 @@ import { heightMetricSelector } from "../../store/dynamicSettings/heightMetric/h
 
 @Injectable()
 export class LinkColorMetricToHeightMetricEffect {
-	constructor(private store: Store<CcState>) {}
+    constructor(private store: Store<CcState>) {}
 
-	linkHeightAndColorMetric$ = createEffect(() =>
-		combineLatest([this.store.select(heightMetricSelector), this.store.select(isColorMetricLinkedToHeightMetricSelector)]).pipe(
-			filter(([, isColorMetricLinkedToHeightMetric]) => isColorMetricLinkedToHeightMetric),
-			map(([heightMetric]) => setColorMetric({ value: heightMetric }))
-		)
-	)
+    linkHeightAndColorMetric$ = createEffect(() =>
+        combineLatest([this.store.select(heightMetricSelector), this.store.select(isColorMetricLinkedToHeightMetricSelector)]).pipe(
+            filter(([, isColorMetricLinkedToHeightMetric]) => isColorMetricLinkedToHeightMetric),
+            map(([heightMetric]) => setColorMetric({ value: heightMetric }))
+        )
+    )
 }

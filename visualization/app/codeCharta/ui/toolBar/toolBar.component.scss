@@ -1,24 +1,24 @@
 @use "../../../material/theme";
 
 cc-tool-bar {
-	display: flex;
-	gap: 8px;
-	padding-left: 8px;
-	align-items: center;
-	background-color: #f0f0f0;
-	height: 35px;
-	border-bottom: 1px solid #cdcdcd;
+    display: flex;
+    gap: 8px;
+    padding-left: 8px;
+    align-items: center;
+    background-color: #f0f0f0;
+    height: 35px;
+    border-bottom: 1px solid #cdcdcd;
 
-	.right-aligned {
-		position: absolute;
-		right: 4px;
-		display: inline-flex;
-		align-items: center;
-		width: 400px;
-		justify-content: space-between;
-	}
+    .right-aligned {
+        position: absolute;
+        right: 4px;
+        display: inline-flex;
+        align-items: center;
+        width: 400px;
+        justify-content: space-between;
+    }
 
-	span {
-		font-size: 10pt;
-	}
+    span {
+        font-size: 10pt;
+    }
 }

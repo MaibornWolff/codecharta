@@ -17,24 +17,24 @@ import { MaterialModule } from "../../../material/material.module"
 import { LinkColorMetricToHeightMetricButtonModule } from "./linkColorMetricToHeightMetricButton/linkColorMetricToHeightMetricButton.module"
 
 @NgModule({
-	imports: [
-		CommonModule,
-		MaterialModule,
-		SearchPanelModule,
-		ShowScenariosButtonModule,
-		CustomConfigsModule,
-		ArtificialIntelligenceModule,
-		AreaMetricChooserModule,
-		AreaSettingsPanelModule,
-		HeightSettingsPanelModule,
-		HeightMetricChooserModule,
-		LinkColorMetricToHeightMetricButtonModule,
-		ColorMetricChooserModule,
-		ColorSettingsPanelModule,
-		EdgeMetricChooserModule,
-		EdgeSettingsPanelModule
-	],
-	declarations: [RibbonBarComponent],
-	exports: [RibbonBarComponent]
+    imports: [
+        CommonModule,
+        MaterialModule,
+        SearchPanelModule,
+        ShowScenariosButtonModule,
+        CustomConfigsModule,
+        ArtificialIntelligenceModule,
+        AreaMetricChooserModule,
+        AreaSettingsPanelModule,
+        HeightSettingsPanelModule,
+        HeightMetricChooserModule,
+        LinkColorMetricToHeightMetricButtonModule,
+        ColorMetricChooserModule,
+        ColorSettingsPanelModule,
+        EdgeMetricChooserModule,
+        EdgeSettingsPanelModule
+    ],
+    declarations: [RibbonBarComponent],
+    exports: [RibbonBarComponent]
 })
 export class RibbonBarModule {}

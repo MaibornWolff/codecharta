@@ -10,20 +10,20 @@ import { secondaryMetricsSelector } from "./secondaryMetrics.selector"
 import { attributeDescriptorsSelector } from "../../../state/store/fileSettings/attributeDescriptors/attributeDescriptors.selector"
 
 @Component({
-	selector: "cc-attribute-side-bar-secondary-metrics",
-	templateUrl: "./attributeSideBarSecondaryMetrics.component.html",
-	encapsulation: ViewEncapsulation.None
+    selector: "cc-attribute-side-bar-secondary-metrics",
+    templateUrl: "./attributeSideBarSecondaryMetrics.component.html",
+    encapsulation: ViewEncapsulation.None
 })
 export class AttributeSideBarSecondaryMetricsComponent {
-	secondaryMetrics$: Observable<Metric[]>
-	showAttributeTypeSelector$: Observable<boolean>
-	showDeltaValue$: Observable<boolean>
-	attributeDescriptors$: Observable<AttributeDescriptors>
+    secondaryMetrics$: Observable<Metric[]>
+    showAttributeTypeSelector$: Observable<boolean>
+    showDeltaValue$: Observable<boolean>
+    attributeDescriptors$: Observable<AttributeDescriptors>
 
-	constructor(private store: Store<CcState>) {
-		this.secondaryMetrics$ = this.store.select(secondaryMetricsSelector)
-		this.showAttributeTypeSelector$ = this.store.select(showAttributeTypeSelectorSelector)
-		this.showDeltaValue$ = this.store.select(showDeltaValueSelector)
-		this.attributeDescriptors$ = this.store.select(attributeDescriptorsSelector)
-	}
+    constructor(private store: Store<CcState>) {
+        this.secondaryMetrics$ = this.store.select(secondaryMetricsSelector)
+        this.showAttributeTypeSelector$ = this.store.select(showAttributeTypeSelectorSelector)
+        this.showDeltaValue$ = this.store.select(showDeltaValueSelector)
+        this.attributeDescriptors$ = this.store.select(attributeDescriptorsSelector)
+    }
 }

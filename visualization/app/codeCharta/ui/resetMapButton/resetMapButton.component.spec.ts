@@ -7,20 +7,20 @@ import { AddCustomConfigButtonModule } from "../customConfigs/addCustomConfigBut
 import { ResetMapButtonComponent } from "./resetMapButton.component"
 
 describe("ResetMapButtonComponent", () => {
-	beforeEach(async () => {
-		TestBed.configureTestingModule({
-			imports: [AddCustomConfigButtonModule]
-		})
-	})
+    beforeEach(async () => {
+        TestBed.configureTestingModule({
+            imports: [AddCustomConfigButtonModule]
+        })
+    })
 
-	it("should let a user save a custom config", async () => {
-		const { fixture } = await render(ResetMapButtonComponent, { excludeComponentDeclaration: true })
-		const loader = TestbedHarnessEnvironment.documentRootLoader(fixture)
-		let currentlyOpenedDialogs = await loader.getAllHarnesses(MatDialogHarness)
-		expect(currentlyOpenedDialogs.length).toBe(0)
+    it("should let a user save a custom config", async () => {
+        const { fixture } = await render(ResetMapButtonComponent, { excludeComponentDeclaration: true })
+        const loader = TestbedHarnessEnvironment.documentRootLoader(fixture)
+        let currentlyOpenedDialogs = await loader.getAllHarnesses(MatDialogHarness)
+        expect(currentlyOpenedDialogs.length).toBe(0)
 
-		await userEvent.click(screen.getByTitle("Reset map to default"))
-		currentlyOpenedDialogs = await loader.getAllHarnesses(MatDialogHarness)
-		expect(currentlyOpenedDialogs.length).toBe(1)
-	})
+        await userEvent.click(screen.getByTitle("Reset map to default"))
+        currentlyOpenedDialogs = await loader.getAllHarnesses(MatDialogHarness)
+        expect(currentlyOpenedDialogs.length).toBe(1)
+    })
 })

@@ -5,15 +5,15 @@ import { CcState } from "../../../codeCharta.model"
 import { MatchingFilesCounter, matchingFilesCounterSelector } from "./selectors/matchingFilesCounter.selector"
 
 @Component({
-	selector: "cc-matching-files-counter",
-	templateUrl: "./matchingFilesCounter.component.html",
-	styleUrls: ["./matchingFilesCounter.component.scss"],
-	encapsulation: ViewEncapsulation.None
+    selector: "cc-matching-files-counter",
+    templateUrl: "./matchingFilesCounter.component.html",
+    styleUrls: ["./matchingFilesCounter.component.scss"],
+    encapsulation: ViewEncapsulation.None
 })
 export class MatchingFilesCounterComponent {
-	matchingFileCounters$: Observable<MatchingFilesCounter>
+    matchingFileCounters$: Observable<MatchingFilesCounter>
 
-	constructor(store: Store<CcState>) {
-		this.matchingFileCounters$ = store.select(matchingFilesCounterSelector)
-	}
+    constructor(store: Store<CcState>) {
+        this.matchingFileCounters$ = store.select(matchingFilesCounterSelector)
+    }
 }

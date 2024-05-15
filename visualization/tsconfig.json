@@ -1,32 +1,32 @@
 {
-	"compileOnSave": false,
-	"compilerOptions": {
-		"baseUrl": "./",
-		"outDir": "./dist/out-tsc",
-		"forceConsistentCasingInFileNames": true,
-		"strict": true,
-		"noFallthroughCasesInSwitch": true,
-		"noImplicitReturns": false,
-		"strictNullChecks": false,
-		"skipLibCheck": true,
-		"noImplicitAny": false,
-		"resolveJsonModule": true,
-		"allowSyntheticDefaultImports": true,
-		"strictPropertyInitialization": false,
-		"sourceMap": true,
-		"declaration": false,
-		"downlevelIteration": true,
-		"experimentalDecorators": true,
-		"moduleResolution": "node",
-		"importHelpers": true,
-		"target": "ES2022",
-		"module": "es2022",
-		"lib": ["es2022", "dom", "dom.iterable"],
-		"useDefineForClassFields": false
-	},
-	"angularCompilerOptions": {
-		"strictInjectionParameters": true,
-		"strictInputAccessModifiers": true,
-		"strictTemplates": true
-	}
+  "compileOnSave": false,
+  "compilerOptions": {
+    "baseUrl": "./",
+    "outDir": "./dist/out-tsc",
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitReturns": false,
+    "strictNullChecks": false,
+    "skipLibCheck": true,
+    "noImplicitAny": false,
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
+    "strictPropertyInitialization": false,
+    "sourceMap": true,
+    "declaration": false,
+    "downlevelIteration": true,
+    "experimentalDecorators": true,
+    "moduleResolution": "node",
+    "importHelpers": true,
+    "target": "ES2022",
+    "module": "es2022",
+    "lib": ["es2022", "dom", "dom.iterable"],
+    "useDefineForClassFields": false
+  },
+  "angularCompilerOptions": {
+    "strictInjectionParameters": true,
+    "strictInputAccessModifiers": true,
+    "strictTemplates": true
+  }
 }

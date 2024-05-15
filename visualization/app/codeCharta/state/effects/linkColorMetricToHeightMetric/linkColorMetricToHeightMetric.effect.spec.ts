@@ -11,41 +11,41 @@ import { provideMockActions } from "@ngrx/effects/testing"
 import { getLastAction } from "../../../util/testUtils/store.utils"
 
 describe("linkHeightAndColorMetricEffect", () => {
-	let actions$: BehaviorSubject<Action>
-	let store: MockStore
+    let actions$: BehaviorSubject<Action>
+    let store: MockStore
 
-	beforeEach(() => {
-		actions$ = new BehaviorSubject({ type: "" })
-		TestBed.configureTestingModule({
-			imports: [EffectsModule.forRoot([LinkColorMetricToHeightMetricEffect])],
-			providers: [
-				provideMockStore({
-					selectors: [
-						{ selector: heightMetricSelector, value: "loc" },
-						{ selector: isColorMetricLinkedToHeightMetricSelector, value: true }
-					]
-				}),
-				provideMockActions(() => actions$)
-			]
-		})
-		store = TestBed.inject(MockStore)
-	})
+    beforeEach(() => {
+        actions$ = new BehaviorSubject({ type: "" })
+        TestBed.configureTestingModule({
+            imports: [EffectsModule.forRoot([LinkColorMetricToHeightMetricEffect])],
+            providers: [
+                provideMockStore({
+                    selectors: [
+                        { selector: heightMetricSelector, value: "loc" },
+                        { selector: isColorMetricLinkedToHeightMetricSelector, value: true }
+                    ]
+                }),
+                provideMockActions(() => actions$)
+            ]
+        })
+        store = TestBed.inject(MockStore)
+    })
 
-	afterEach(() => {
-		actions$.complete()
-	})
+    afterEach(() => {
+        actions$.complete()
+    })
 
-	it("should not set color metric when height metric changes but height and color metric are not linked", async () => {
-		store.overrideSelector(isColorMetricLinkedToHeightMetricSelector, false)
-		store.refreshState()
-		store.overrideSelector(heightMetricSelector, "rloc")
-		store.refreshState()
-		expect(await getLastAction(store)).toEqual({ type: "@ngrx/effects/init" })
-	})
+    it("should not set color metric when height metric changes but height and color metric are not linked", async () => {
+        store.overrideSelector(isColorMetricLinkedToHeightMetricSelector, false)
+        store.refreshState()
+        store.overrideSelector(heightMetricSelector, "rloc")
+        store.refreshState()
+        expect(await getLastAction(store)).toEqual({ type: "@ngrx/effects/init" })
+    })
 
-	it("should set color metric to the same height metric when height metric changes and height and color metric are linked", async () => {
-		store.overrideSelector(heightMetricSelector, "rloc")
-		store.refreshState()
-		expect(await getLastAction(store)).toEqual(setColorMetric({ value: "rloc" }))
-	})
+    it("should set color metric to the same height metric when height metric changes and height and color metric are linked", async () => {
+        store.overrideSelector(heightMetricSelector, "rloc")
+        store.refreshState()
+        expect(await getLastAction(store)).toEqual(setColorMetric({ value: "rloc" }))
+    })
 })

@@ -6,8 +6,8 @@ import { setState } from "../../util/setState.reducer.factory"
 
 export const defaultEdges: Edge[] = []
 export const edges = createReducer(
-	defaultEdges,
-	on(setEdges, setState(defaultEdges)),
-	on(addEdge, (state, action) => addItemToArray(state, action.edge)),
-	on(removeEdge, (state, action) => removeItemFromArray(state, action.edge))
+    defaultEdges,
+    on(setEdges, setState(defaultEdges)),
+    on(addEdge, (state, action) => addItemToArray(state, action.edge)),
+    on(removeEdge, (state, action) => removeItemFromArray(state, action.edge))
 )

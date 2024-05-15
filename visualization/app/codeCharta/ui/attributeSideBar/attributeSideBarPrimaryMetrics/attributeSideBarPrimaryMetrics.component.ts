@@ -8,18 +8,18 @@ import { AttributeDescriptors, CcState } from "../../../codeCharta.model"
 import { attributeDescriptorsSelector } from "../../../state/store/fileSettings/attributeDescriptors/attributeDescriptors.selector"
 
 @Component({
-	selector: "cc-attribute-side-bar-primary-metrics",
-	templateUrl: "./attributeSideBarPrimaryMetrics.component.html",
-	encapsulation: ViewEncapsulation.None
+    selector: "cc-attribute-side-bar-primary-metrics",
+    templateUrl: "./attributeSideBarPrimaryMetrics.component.html",
+    encapsulation: ViewEncapsulation.None
 })
 export class AttributeSideBarPrimaryMetricsComponent {
-	primaryMetrics$: Observable<PrimaryMetrics>
-	showAttributeTypeSelector$: Observable<boolean>
-	attributeDescriptors$: Observable<AttributeDescriptors>
+    primaryMetrics$: Observable<PrimaryMetrics>
+    showAttributeTypeSelector$: Observable<boolean>
+    attributeDescriptors$: Observable<AttributeDescriptors>
 
-	constructor(private store: Store<CcState>) {
-		this.primaryMetrics$ = this.store.select(primaryMetricsSelector)
-		this.showAttributeTypeSelector$ = this.store.select(showAttributeTypeSelectorSelector)
-		this.attributeDescriptors$ = this.store.select(attributeDescriptorsSelector)
-	}
+    constructor(private store: Store<CcState>) {
+        this.primaryMetrics$ = this.store.select(primaryMetricsSelector)
+        this.showAttributeTypeSelector$ = this.store.select(showAttributeTypeSelectorSelector)
+        this.attributeDescriptors$ = this.store.select(attributeDescriptorsSelector)
+    }
 }

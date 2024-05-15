@@ -1,6 +1,6 @@
 ---
 categories:
-    - How-to
+  - How-to
 title: Fixate folders using a custom cc.json
 ---
 
@@ -37,77 +37,77 @@ The property values must be numbers in the range between 0 and 100. They represe
 
 ```json
 {
-	"projectName": "example-project",
-	"apiVersion": "1.2",
-	"nodes": [
-		{
-			"name": "root",
-			"type": "Folder",
-			"attributes": {},
-			"children": [
-				{
-					"name": "folder_1_red",
-					"type": "Folder",
-					"attributes": {},
-					"children": [],
-					"fixedPosition": {
-						"left": 10,
-						"top": 10,
-						"width": 30,
-						"height": 20
-					}
-				},
-				{
-					"name": "folder_2_orange",
-					"type": "Folder",
-					"attributes": {},
-					"children": [],
-					"fixedPosition": {
-						"left": 50,
-						"top": 10,
-						"width": 40,
-						"height": 20
-					}
-				},
-				{
-					"name": "folder_3_blue",
-					"type": "Folder",
-					"attributes": {},
-					"children": [],
-					"fixedPosition": {
-						"left": 10,
-						"top": 40,
-						"width": 20,
-						"height": 50
-					}
-				},
-				{
-					"name": "folder_4_green",
-					"type": "Folder",
-					"attributes": {},
-					"children": [],
-					"fixedPosition": {
-						"left": 40,
-						"top": 40,
-						"width": 50,
-						"height": 20
-					}
-				},
-				{
-					"name": "folder_5_magenta",
-					"type": "Folder",
-					"attributes": {},
-					"children": [],
-					"fixedPosition": {
-						"left": 40,
-						"top": 70,
-						"width": 50,
-						"height": 20
-					}
-				}
-			]
-		}
-	]
+  "projectName": "example-project",
+  "apiVersion": "1.2",
+  "nodes": [
+    {
+      "name": "root",
+      "type": "Folder",
+      "attributes": {},
+      "children": [
+        {
+          "name": "folder_1_red",
+          "type": "Folder",
+          "attributes": {},
+          "children": [],
+          "fixedPosition": {
+            "left": 10,
+            "top": 10,
+            "width": 30,
+            "height": 20
+          }
+        },
+        {
+          "name": "folder_2_orange",
+          "type": "Folder",
+          "attributes": {},
+          "children": [],
+          "fixedPosition": {
+            "left": 50,
+            "top": 10,
+            "width": 40,
+            "height": 20
+          }
+        },
+        {
+          "name": "folder_3_blue",
+          "type": "Folder",
+          "attributes": {},
+          "children": [],
+          "fixedPosition": {
+            "left": 10,
+            "top": 40,
+            "width": 20,
+            "height": 50
+          }
+        },
+        {
+          "name": "folder_4_green",
+          "type": "Folder",
+          "attributes": {},
+          "children": [],
+          "fixedPosition": {
+            "left": 40,
+            "top": 40,
+            "width": 50,
+            "height": 20
+          }
+        },
+        {
+          "name": "folder_5_magenta",
+          "type": "Folder",
+          "attributes": {},
+          "children": [],
+          "fixedPosition": {
+            "left": 40,
+            "top": 70,
+            "width": 50,
+            "height": 20
+          }
+        }
+      ]
+    }
+  ]
 }
 ```
 
@@ -124,90 +124,90 @@ A fixed child will be positioned relatively to its parent.
 
 ```json
 {
-	"projectName": "Sample Fix",
-	"apiVersion": "1.2",
-	"nodes": [
-		{
-			"name": "root",
-			"type": "Folder",
-			"attributes": {},
-			"children": [
-				{
-					"name": "folder_1_red",
-					"type": "Folder",
-					"attributes": {},
-					"children": [
-						{
-							"name": "folder_1.1_red",
-							"type": "Folder",
-							"attributes": {},
-							"children": [
-								{
-									"name": "red_child_1.1.file",
-									"type": "File",
-									"attributes": {
-										"rloc": 12.0
-									}
-								}
-							],
-							"fixedPosition": {
-								"left": 10,
-								"top": 10,
-								"width": 80,
-								"height": 50
-							}
-						},
-						{
-							"name": "folder_1.2_red",
-							"type": "Folder",
-							"attributes": {},
-							"children": [
-								{
-									"name": "red_child_1.2.file",
-									"type": "File",
-									"attributes": {
-										"rloc": 6.0
-									}
-								}
-							],
-							"fixedPosition": {
-								"left": 80,
-								"top": 70,
-								"width": 10,
-								"height": 10
-							}
-						}
-					],
-					"fixedPosition": {
-						"left": 10,
-						"top": 10,
-						"width": 40,
-						"height": 60
-					}
-				},
-				{
-					"name": "folder_2_orange",
-					"type": "Folder",
-					"attributes": {},
-					"children": [
-						{
-							"name": "orange.file",
-							"type": "File",
-							"attributes": {
-								"rloc": 10.0
-							}
-						}
-					],
-					"fixedPosition": {
-						"left": 10,
-						"top": 80,
-						"width": 50,
-						"height": 10
-					}
-				}
-			]
-		}
-	]
+  "projectName": "Sample Fix",
+  "apiVersion": "1.2",
+  "nodes": [
+    {
+      "name": "root",
+      "type": "Folder",
+      "attributes": {},
+      "children": [
+        {
+          "name": "folder_1_red",
+          "type": "Folder",
+          "attributes": {},
+          "children": [
+            {
+              "name": "folder_1.1_red",
+              "type": "Folder",
+              "attributes": {},
+              "children": [
+                {
+                  "name": "red_child_1.1.file",
+                  "type": "File",
+                  "attributes": {
+                    "rloc": 12.0
+                  }
+                }
+              ],
+              "fixedPosition": {
+                "left": 10,
+                "top": 10,
+                "width": 80,
+                "height": 50
+              }
+            },
+            {
+              "name": "folder_1.2_red",
+              "type": "Folder",
+              "attributes": {},
+              "children": [
+                {
+                  "name": "red_child_1.2.file",
+                  "type": "File",
+                  "attributes": {
+                    "rloc": 6.0
+                  }
+                }
+              ],
+              "fixedPosition": {
+                "left": 80,
+                "top": 70,
+                "width": 10,
+                "height": 10
+              }
+            }
+          ],
+          "fixedPosition": {
+            "left": 10,
+            "top": 10,
+            "width": 40,
+            "height": 60
+          }
+        },
+        {
+          "name": "folder_2_orange",
+          "type": "Folder",
+          "attributes": {},
+          "children": [
+            {
+              "name": "orange.file",
+              "type": "File",
+              "attributes": {
+                "rloc": 10.0
+              }
+            }
+          ],
+          "fixedPosition": {
+            "left": 10,
+            "top": 80,
+            "width": 50,
+            "height": 10
+          }
+        }
+      ]
+    }
+  ]
 }
 ```
 
@@ -215,8 +215,8 @@ A fixed child will be positioned relatively to its parent.
 
 The following rules apply in order to build a valid custom `.cc.json`:
 
--   The values of `left`, `top`, `width` and `height` must be in range of `[0, 100]
--   The value `left + width` or `top + height` must be in a range of `[0, 100]`.
--   Folders may not overlap.
--   Leaving space between folders (for visibility reasons) is recommended.
--   All children of the root folder require the `fixedPosition` attribute.
+- The values of `left`, `top`, `width` and `height` must be in range of `[0, 100]
+- The value `left + width` or `top + height` must be in a range of `[0, 100]`.
+- Folders may not overlap.
+- Leaving space between folders (for visibility reasons) is recommended.
+- All children of the root folder require the `fixedPosition` attribute.

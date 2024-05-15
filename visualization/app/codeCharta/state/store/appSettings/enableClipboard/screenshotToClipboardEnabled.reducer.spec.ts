@@ -2,9 +2,9 @@ import { setScreenshotToClipboardEnabled } from "./screenshotToClipboardEnabled.
 import { screenshotToClipboardEnabled } from "./screenshotToClipboardEnabled.reducer"
 
 describe("screenshotToClipboardEnabled", () => {
-	it("should set new screenshotToClipboardEnabled", () => {
-		const result = screenshotToClipboardEnabled(false, setScreenshotToClipboardEnabled({ value: true }))
+    it("should set new screenshotToClipboardEnabled", () => {
+        const result = screenshotToClipboardEnabled(false, setScreenshotToClipboardEnabled({ value: true }))
 
-		expect(result).toBeTruthy()
-	})
+        expect(result).toBeTruthy()
+    })
 })

@@ -1,22 +1,22 @@
 {
-	"collectCoverage": true,
-	"rootDir": "./../",
-	"coverageDirectory": "<rootDir>/dist/coverage",
-	"collectCoverageFrom": ["<rootDir>/app/**/*.ts", "!**/node_modules/**"],
-	"coveragePathIgnorePatterns": ["\\.(spec|e2e|po)\\.ts$", "<rootDir>/app/puppeteer.helper.ts"],
-	"preset": "jest-preset-angular",
-	"transform": {
-		"\\.glsl$": "<rootDir>/mocks/fileTransformer.js"
-	},
-	"transformIgnorePatterns": ["/node_modules/(?!(three|ngx-color/fesm2020|.*\\.mjs$))"],
-	"moduleNameMapper": {
-		"\\CHANGELOG.(md)$": "<rootDir>/mocks/changelogMock.js",
-		"^d3$": "<rootDir>/node_modules/d3/dist/d3.min.js"
-	},
-	"roots": ["<rootDir>/app"],
-	"moduleFileExtensions": ["js", "json", "ts", "mjs"],
-	"moduleDirectories": ["node_modules", "<rootDir>/app"],
-	"setupFiles": ["<rootDir>/mocks/localStorageMock.js"],
-	"setupFilesAfterEnv": ["<rootDir>/conf/setupJestUnit.ts", "jest-canvas-mock"],
-	"testEnvironment": "jsdom"
+  "collectCoverage": true,
+  "rootDir": "./../",
+  "coverageDirectory": "<rootDir>/dist/coverage",
+  "collectCoverageFrom": ["<rootDir>/app/**/*.ts", "!**/node_modules/**"],
+  "coveragePathIgnorePatterns": ["\\.(spec|e2e|po)\\.ts$", "<rootDir>/app/puppeteer.helper.ts"],
+  "preset": "jest-preset-angular",
+  "transform": {
+    "\\.glsl$": "<rootDir>/mocks/fileTransformer.js"
+  },
+  "transformIgnorePatterns": ["/node_modules/(?!(three|ngx-color/fesm2020|.*\\.mjs$))"],
+  "moduleNameMapper": {
+    "\\CHANGELOG.(md)$": "<rootDir>/mocks/changelogMock.js",
+    "^d3$": "<rootDir>/node_modules/d3/dist/d3.min.js"
+  },
+  "roots": ["<rootDir>/app"],
+  "moduleFileExtensions": ["js", "json", "ts", "mjs"],
+  "moduleDirectories": ["node_modules", "<rootDir>/app"],
+  "setupFiles": ["<rootDir>/mocks/localStorageMock.js"],
+  "setupFilesAfterEnv": ["<rootDir>/conf/setupJestUnit.ts", "jest-canvas-mock"],
+  "testEnvironment": "jsdom"
 }

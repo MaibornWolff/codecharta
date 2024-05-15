@@ -6,17 +6,17 @@ import { attributeDescriptors, defaultAttributeDescriptors } from "./attributeDe
 import { combineReducers } from "@ngrx/store"
 
 export const fileSettings = combineReducers({
-	markedPackages,
-	edges,
-	attributeTypes,
-	attributeDescriptors,
-	blacklist
+    markedPackages,
+    edges,
+    attributeTypes,
+    attributeDescriptors,
+    blacklist
 })
 
 export const defaultFileSettings = {
-	markedPackages: defaultMarkedPackages,
-	edges: defaultEdges,
-	attributeTypes: defaultAttributeTypes,
-	attributeDescriptors: defaultAttributeDescriptors,
-	blacklist: defaultBlacklist
+    markedPackages: defaultMarkedPackages,
+    edges: defaultEdges,
+    attributeTypes: defaultAttributeTypes,
+    attributeDescriptors: defaultAttributeDescriptors,
+    blacklist: defaultBlacklist
 }

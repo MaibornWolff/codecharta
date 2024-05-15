@@ -17,26 +17,26 @@ import { TruncateTextPipeModule } from "../../util/pipes/TruncateTextPipeModule"
 import { FilterCustomConfigDataBySearchTermPipe } from "./customConfigList/customConfigItemGroup/customConfigDescription/filterCustomConfigDataBySearchTerm.pipe"
 
 @NgModule({
-	imports: [
-		MaterialModule,
-		CommonModule,
-		CustomConfigNoteDialogButtonModule,
-		UploadCustomConfigButtonModule,
-		AddCustomConfigButtonModule,
-		DownloadCustomConfigButtonModule,
-		FormsModule,
-		TruncateTextPipeModule
-	],
-	declarations: [
-		CustomConfigsComponent,
-		CustomConfigListComponent,
-		CustomConfigItemGroupComponent,
-		ApplyCustomConfigButtonComponent,
-		CustomConfig2ApplicableMessage,
-		CustomConfig2ApplicableColor,
-		FilterCustomConfigDataBySearchTermPipe,
-		CustomConfigColorSchemaBySelectionMode
-	],
-	exports: [CustomConfigsComponent]
+    imports: [
+        MaterialModule,
+        CommonModule,
+        CustomConfigNoteDialogButtonModule,
+        UploadCustomConfigButtonModule,
+        AddCustomConfigButtonModule,
+        DownloadCustomConfigButtonModule,
+        FormsModule,
+        TruncateTextPipeModule
+    ],
+    declarations: [
+        CustomConfigsComponent,
+        CustomConfigListComponent,
+        CustomConfigItemGroupComponent,
+        ApplyCustomConfigButtonComponent,
+        CustomConfig2ApplicableMessage,
+        CustomConfig2ApplicableColor,
+        FilterCustomConfigDataBySearchTermPipe,
+        CustomConfigColorSchemaBySelectionMode
+    ],
+    exports: [CustomConfigsComponent]
 })
 export class CustomConfigsModule {}

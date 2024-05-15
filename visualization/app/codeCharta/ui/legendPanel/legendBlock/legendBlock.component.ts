@@ -5,15 +5,15 @@ import { Store } from "@ngrx/store"
 import { metricTitles } from "../../../util/metric/metricTitles"
 
 @Component({
-	selector: "cc-legend-block",
-	templateUrl: "./legendBlock.component.html",
-	encapsulation: ViewEncapsulation.None
+    selector: "cc-legend-block",
+    templateUrl: "./legendBlock.component.html",
+    encapsulation: ViewEncapsulation.None
 })
 export class LegendBlockComponent {
-	@Input() metricName: string
-	@Input() metricSpecification: string
-	attributeDescriptors$ = this.store.select(attributeDescriptorsSelector)
-	fallbackTitles: Map<string, string> = metricTitles
+    @Input() metricName: string
+    @Input() metricSpecification: string
+    attributeDescriptors$ = this.store.select(attributeDescriptorsSelector)
+    fallbackTitles: Map<string, string> = metricTitles
 
-	constructor(private store: Store<CcState>) {}
+    constructor(private store: Store<CcState>) {}
 }

@@ -1,9 +1,10 @@
 @if (hasMarkedPackages$ | async) {
-<hr />
-@for (markedPackage of markedPackagesMap$ | async | keyvalue : sortMarkedPackagesMap; track trackMarkedPackage($index, markedPackage)) {
-<cc-labelled-color-picker
-	[hexColor]="markedPackage.key"
-	[labels]="markedPackage.value"
-	(onColorChange)="handleColorChange($event, markedPackage.value)"
-></cc-labelled-color-picker>
-} }
+    <hr />
+    @for (markedPackage of markedPackagesMap$ | async | keyvalue: sortMarkedPackagesMap; track trackMarkedPackage($index, markedPackage)) {
+        <cc-labelled-color-picker
+            [hexColor]="markedPackage.key"
+            [labels]="markedPackage.value"
+            (onColorChange)="handleColorChange($event, markedPackage.value)"
+        ></cc-labelled-color-picker>
+    }
+}

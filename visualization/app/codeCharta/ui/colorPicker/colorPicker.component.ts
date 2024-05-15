@@ -2,46 +2,46 @@ import { Component, EventEmitter, HostListener, Input, Output, TemplateRef, View
 import { MatMenuTrigger, MenuPositionX } from "@angular/material/menu"
 
 @Component({
-	selector: "cc-color-picker",
-	templateUrl: "./colorPicker.component.html",
-	encapsulation: ViewEncapsulation.None
+    selector: "cc-color-picker",
+    templateUrl: "./colorPicker.component.html",
+    encapsulation: ViewEncapsulation.None
 })
 export class ColorPickerComponent {
-	@Input() hexColor: string
-	@Input() openXPosition: MenuPositionX = "after"
-	@Input() triggerTemplate: TemplateRef<unknown>
+    @Input() hexColor: string
+    @Input() openXPosition: MenuPositionX = "after"
+    @Input() triggerTemplate: TemplateRef<unknown>
 
-	@Output() onColorChange = new EventEmitter<string>()
+    @Output() onColorChange = new EventEmitter<string>()
 
-	@ViewChild("colorPickerMenuTrigger") colorPickerMenuTrigger: MatMenuTrigger
+    @ViewChild("colorPickerMenuTrigger") colorPickerMenuTrigger: MatMenuTrigger
 
-	isHovered = false
+    isHovered = false
 
-	private isClickInside = false
+    private isClickInside = false
 
-	handleChangeComplete(hexColor: string) {
-		this.onColorChange.emit(hexColor)
-	}
+    handleChangeComplete(hexColor: string) {
+        this.onColorChange.emit(hexColor)
+    }
 
-	@HostListener("mouseenter") onMouseEnter() {
-		this.isHovered = true
-	}
+    @HostListener("mouseenter") onMouseEnter() {
+        this.isHovered = true
+    }
 
-	@HostListener("mouseleave") onMouseLeave() {
-		this.isHovered = false
-	}
+    @HostListener("mouseleave") onMouseLeave() {
+        this.isHovered = false
+    }
 
-	@HostListener("click") onClick() {
-		this.isClickInside = true
-		this.colorPickerMenuTrigger.openMenu()
-	}
+    @HostListener("click") onClick() {
+        this.isClickInside = true
+        this.colorPickerMenuTrigger.openMenu()
+    }
 
-	@HostListener("document:click")
-	handleDocumentClick() {
-		if (!this.isClickInside && this.colorPickerMenuTrigger.menuOpen) {
-			this.colorPickerMenuTrigger.closeMenu()
-		}
+    @HostListener("document:click")
+    handleDocumentClick() {
+        if (!this.isClickInside && this.colorPickerMenuTrigger.menuOpen) {
+            this.colorPickerMenuTrigger.closeMenu()
+        }
 
-		this.isClickInside = false
-	}
+        this.isClickInside = false
+    }
 }

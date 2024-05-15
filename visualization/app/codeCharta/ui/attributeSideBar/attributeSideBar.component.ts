@@ -8,14 +8,17 @@ import { Store } from "@ngrx/store"
 import { CcState } from "../../codeCharta.model"
 
 @Component({
-	selector: "cc-attribute-side-bar",
-	templateUrl: "./attributeSideBar.component.html",
-	styleUrls: ["./attributeSideBar.component.scss"],
-	encapsulation: ViewEncapsulation.None
+    selector: "cc-attribute-side-bar",
+    templateUrl: "./attributeSideBar.component.html",
+    styleUrls: ["./attributeSideBar.component.scss"],
+    encapsulation: ViewEncapsulation.None
 })
 export class AttributeSideBarComponent {
-	selectedNode$ = this.store.select(selectedNodeSelector)
-	fileName$ = this.store.select(accumulatedDataSelector).pipe(map(accumulatedData => accumulatedData.unifiedFileMeta?.fileName ?? ""))
+    selectedNode$ = this.store.select(selectedNodeSelector)
+    fileName$ = this.store.select(accumulatedDataSelector).pipe(map(accumulatedData => accumulatedData.unifiedFileMeta?.fileName ?? ""))
 
-	constructor(public isAttributeSideBarVisibleService: IsAttributeSideBarVisibleService, private store: Store<CcState>) {}
+    constructor(
+        public isAttributeSideBarVisibleService: IsAttributeSideBarVisibleService,
+        private store: Store<CcState>
+    ) {}
 }

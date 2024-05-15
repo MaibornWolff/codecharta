@@ -1,32 +1,32 @@
 @use "../../../../material/theme";
 
 .cc-confirm-reset-map-dialog .mat-mdc-dialog-container {
-	padding: 0;
-	width: 500px;
-	overflow: hidden;
+    padding: 0;
+    width: 500px;
+    overflow: hidden;
 
-	mat-toolbar {
-		&.header {
-			background-color: theme.$cc-primary-color;
-			h2 {
-				color: white;
-			}
-		}
-	}
+    mat-toolbar {
+        &.header {
+            background-color: theme.$cc-primary-color;
+            h2 {
+                color: white;
+            }
+        }
+    }
 
-	.mat-mdc-dialog-actions {
-		margin: 0;
-		padding: 0 8px;
-		position: relative;
-		display: flex;
-		justify-content: right;
+    .mat-mdc-dialog-actions {
+        margin: 0;
+        padding: 0 8px;
+        position: relative;
+        display: flex;
+        justify-content: right;
 
-		.mat-mdc-button {
-			padding: 0 8px;
-			margin: 8px 0 8px 8px;
-			color: theme.$cc-primary-color;
-			background-color: rgba(138, 132, 132, 0.08);
-			bottom: 0;
-		}
-	}
+        .mat-mdc-button {
+            padding: 0 8px;
+            margin: 8px 0 8px 8px;
+            color: theme.$cc-primary-color;
+            background-color: rgba(138, 132, 132, 0.08);
+            bottom: 0;
+        }
+    }
 }

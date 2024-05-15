@@ -4,8 +4,8 @@ import { MetricChooserTypeModule } from "../metricChooserType/metricChooserType.
 import { MetricChooserValueComponent } from "./metricChooserValue.component"
 
 @NgModule({
-	imports: [CommonModule, MetricChooserTypeModule],
-	declarations: [MetricChooserValueComponent],
-	exports: [MetricChooserValueComponent]
+    imports: [CommonModule, MetricChooserTypeModule],
+    declarations: [MetricChooserValueComponent],
+    exports: [MetricChooserValueComponent]
 })
 export class MetricChooserValueModule {}

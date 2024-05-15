@@ -45,36 +45,36 @@ Latest Release: <br>
 
 ## Key Features
 
--   [CodeCharta Visualization](https://maibornwolff.github.io/codecharta/docs/visualization/):
+- [CodeCharta Visualization](https://maibornwolff.github.io/codecharta/docs/visualization/):
 
-    -   CC visualizes code bases as 3D cities, so that you can understand it - view the [Web Demo](https://maibornwolff.github.io/codecharta/visualization/app/index.html?file=codecharta.cc.json.gz&file=codecharta_analysis.cc.json.gz).
-    -   It uses code metrics from `.cc.json` files.
-    -   The imported files are validated using JSON Schema as defined in [generatedSchema.json](/visualization/app/codeCharta/util/generatedSchema.json).
-    -   You can change the way the file is displayed and save and later load it as a [Custom View](https://maibornwolff.github.io/codecharta/docs/custom-view/).
+  - CC visualizes code bases as 3D cities, so that you can understand it - view the [Web Demo](https://maibornwolff.github.io/codecharta/visualization/app/index.html?file=codecharta.cc.json.gz&file=codecharta_analysis.cc.json.gz).
+  - It uses code metrics from `.cc.json` files.
+  - The imported files are validated using JSON Schema as defined in [generatedSchema.json](/visualization/app/codeCharta/util/generatedSchema.json).
+  - You can change the way the file is displayed and save and later load it as a [Custom View](https://maibornwolff.github.io/codecharta/docs/custom-view/).
 
--   [CodeCharta Analysis](https://maibornwolff.github.io/codecharta/docs/analysis/):
-    -   CC Analysis is used to calculate or to import metrics from third party tools for a code base.
-    -   It generates `.cc.json` files for CC Visualization through a Command-Line-Tool.
-    -   It includes some pre-defined importers for e.g. [SonarQube](https://maibornwolff.github.io/codecharta/docs/sonar-importer), [SourceMonitor](https://maibornwolff.github.io/codecharta/docs/sourcemonitorimporter), [Git](https://maibornwolff.github.io/codecharta/docs/git-log-parser), generic [CSV](https://maibornwolff.github.io/codecharta/docs/csv-importer) data
-    -   It also includes commands to [validate]() and [merge]() multiple `.cc.json` files.
+- [CodeCharta Analysis](https://maibornwolff.github.io/codecharta/docs/analysis/):
+  - CC Analysis is used to calculate or to import metrics from third party tools for a code base.
+  - It generates `.cc.json` files for CC Visualization through a Command-Line-Tool.
+  - It includes some pre-defined importers for e.g. [SonarQube](https://maibornwolff.github.io/codecharta/docs/sonar-importer), [SourceMonitor](https://maibornwolff.github.io/codecharta/docs/sourcemonitorimporter), [Git](https://maibornwolff.github.io/codecharta/docs/git-log-parser), generic [CSV](https://maibornwolff.github.io/codecharta/docs/csv-importer) data
+  - It also includes commands to [validate]() and [merge]() multiple `.cc.json` files.
 
 ## Requirements
 
 For using CodeCharta the following needs to be installed on your system:
 
--   Node >= 18
--   Java >= 11
+- Node >= 18
+- Java >= 11
 
 ## How To Use
 
 ### How to use **Visualization**?
 
--   **Online:** You can try the [web visualization](https://maibornwolff.github.io/codecharta/visualization/app/index.html?file=codecharta.cc.json&file=codecharta_analysis.cc.json) without any installation and explore the CodeCharta code (shown by default).
--   **Local:** See [here](visualization/README.md).
+- **Online:** You can try the [web visualization](https://maibornwolff.github.io/codecharta/visualization/app/index.html?file=codecharta.cc.json&file=codecharta_analysis.cc.json) without any installation and explore the CodeCharta code (shown by default).
+- **Local:** See [here](visualization/README.md).
 
 ### How to use **Analysis**?
 
--   Analysis is split into different parsers that generate `.cc.json` files. To run these parsers you need the [CodeCharta Shell](https://maibornwolff.github.io/codecharta/docs/ccsh/).
+- Analysis is split into different parsers that generate `.cc.json` files. To run these parsers you need the [CodeCharta Shell](https://maibornwolff.github.io/codecharta/docs/ccsh/).
 
 In this example we will generate a `.cc.json` from [JUnit4](https://github.com/junit-team/junit4) using the [Source Code Parser](https://maibornwolff.github.io/codecharta/docs/source-code-parser) (that parses java projects).
 
@@ -101,19 +101,19 @@ Want to have even **more information**? Please check our [news](https://maibornw
 
 ## Further Information
 
--   [Docs](https://maibornwolff.github.io/codecharta/)
--   [Quickstart Guide](https://maibornwolff.github.io/codecharta/docs/quick-start-guide/)
--   [Coverage](https://maibornwolff.github.io/codecharta/visualization/coverage/lcov-report/)
--   [Sonarqube Visualization](https://sonarcloud.io/project/overview?id=maibornwolff-gmbh_codecharta_visualization)
--   [Sonarqube Analysis](https://sonarcloud.io/project/overview?id=maibornwolff-gmbh_codecharta_analysis)
+- [Docs](https://maibornwolff.github.io/codecharta/)
+- [Quickstart Guide](https://maibornwolff.github.io/codecharta/docs/quick-start-guide/)
+- [Coverage](https://maibornwolff.github.io/codecharta/visualization/coverage/lcov-report/)
+- [Sonarqube Visualization](https://sonarcloud.io/project/overview?id=maibornwolff-gmbh_codecharta_visualization)
+- [Sonarqube Analysis](https://sonarcloud.io/project/overview?id=maibornwolff-gmbh_codecharta_analysis)
 
 ## About CodeCharta
 
--   [Releases](https://github.com/MaibornWolff/codecharta/releases)
--   [Analysis - Changelog](analysis/CHANGELOG.md) | [Visualization - Changelog](visualization/CHANGELOG.md)
--   [Contributing](CONTRIBUTING.md)
--   [Code of Conduct](CODE_OF_CONDUCT.md)
--   [License](LICENSE.md)
+- [Releases](https://github.com/MaibornWolff/codecharta/releases)
+- [Analysis - Changelog](analysis/CHANGELOG.md) | [Visualization - Changelog](visualization/CHANGELOG.md)
+- [Contributing](CONTRIBUTING.md)
+- [Code of Conduct](CODE_OF_CONDUCT.md)
+- [License](LICENSE.md)
 
 ## License
 

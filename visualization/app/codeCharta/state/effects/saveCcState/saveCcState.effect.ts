@@ -9,19 +9,22 @@ import { setHoveredNodeId } from "../../store/appStatus/hoveredNodeId/hoveredNod
 
 @Injectable()
 export class SaveCcStateEffect {
-	constructor(private actions$: Actions, private state: State<CcState>) {}
+    constructor(
+        private actions$: Actions,
+        private state: State<CcState>
+    ) {}
 
-	saveCcState$ = createEffect(
-		() =>
-			this.actions$.pipe(
-				filter(action => action.type !== setHoveredNodeId.type),
-				ofType(...actionsRequiringSaveCcState),
-				debounceTime(500),
-				tap(async () => {
-					const state: CcState = this.state.getValue()
-					await writeCcState(state)
-				})
-			),
-		{ dispatch: false }
-	)
+    saveCcState$ = createEffect(
+        () =>
+            this.actions$.pipe(
+                filter(action => action.type !== setHoveredNodeId.type),
+                ofType(...actionsRequiringSaveCcState),
+                debounceTime(500),
+                tap(async () => {
+                    const state: CcState = this.state.getValue()
+                    await writeCcState(state)
+                })
+            ),
+        { dispatch: false }
+    )
 }

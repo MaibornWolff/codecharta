@@ -4,8 +4,8 @@ import { MaterialModule } from "../../../../material/material.module"
 import { SearchBarComponent } from "./searchBar.component"
 
 @NgModule({
-	imports: [CommonModule, MaterialModule],
-	declarations: [SearchBarComponent],
-	exports: [SearchBarComponent]
+    imports: [CommonModule, MaterialModule],
+    declarations: [SearchBarComponent],
+    exports: [SearchBarComponent]
 })
 export class SearchBarModule {}

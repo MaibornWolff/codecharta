@@ -6,6 +6,6 @@ export const addBlacklistItem = createAction("ADD_BLACKLIST_ITEM", props<{ item:
 export const addBlacklistItems = createAction("ADD_BLACKLIST_ITEMS", props<{ items: BlacklistItem[] }>())
 export const removeBlacklistItem = createAction("REMOVE_BLACKLIST_ITEM", props<{ item: BlacklistItem }>())
 export const addBlacklistItemsIfNotResultsInEmptyMap = createAction(
-	"ADD_BLACKLIST_ITEMS_IF_NOT_RESULTS_IN_EMPTY_MAP",
-	props<{ items: BlacklistItem[] }>()
+    "ADD_BLACKLIST_ITEMS_IF_NOT_RESULTS_IN_EMPTY_MAP",
+    props<{ items: BlacklistItem[] }>()
 )

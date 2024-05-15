@@ -4,6 +4,6 @@ import { setState } from "../../util/setState.reducer.factory"
 
 export const defaultResetCameraIfNewFileIsLoaded = true
 export const resetCameraIfNewFileIsLoaded = createReducer(
-	defaultResetCameraIfNewFileIsLoaded,
-	on(setResetCameraIfNewFileIsLoaded, setState(defaultResetCameraIfNewFileIsLoaded))
+    defaultResetCameraIfNewFileIsLoaded,
+    on(setResetCameraIfNewFileIsLoaded, setState(defaultResetCameraIfNewFileIsLoaded))
 )

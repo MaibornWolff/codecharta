@@ -12,18 +12,18 @@ import { MapTreeViewLevelComponent } from "./mapTreeViewLevel/mapTreeViewLevel.c
 import { AreaMetricValidPipe } from "./areaMetricValidPipe.pipe"
 
 @NgModule({
-	imports: [CommonModule],
-	declarations: [
-		AreaMetricValidPipe,
-		MapTreeViewItemIconComponent,
-		MapTreeViewItemNameComponent,
-		MapTreeViewItemOptionButtonsComponent,
-		MapTreeViewLevelComponent,
-		MapTreeViewComponent,
-		IsNodeLeafPipe,
-		MapTreeViewItemIconClassPipe,
-		MapTreeViewItemIconColorPipe
-	],
-	exports: [MapTreeViewComponent]
+    imports: [CommonModule],
+    declarations: [
+        AreaMetricValidPipe,
+        MapTreeViewItemIconComponent,
+        MapTreeViewItemNameComponent,
+        MapTreeViewItemOptionButtonsComponent,
+        MapTreeViewLevelComponent,
+        MapTreeViewComponent,
+        IsNodeLeafPipe,
+        MapTreeViewItemIconClassPipe,
+        MapTreeViewItemIconColorPipe
+    ],
+    exports: [MapTreeViewComponent]
 })
 export class MapTreeViewModule {}

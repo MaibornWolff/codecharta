@@ -1,47 +1,47 @@
 {
-	"extends": ["config:base", ":preserveSemverRanges"],
-	"packageRules": [
-		{
-			"description": "Automerge non-major updates",
-			"matchUpdateTypes": ["minor", "patch"],
-			"automerge": true
-		},
-		{
-			"matchPaths": ["build.gradle"],
-			"matchUpdateTypes": ["minor", "patch", "pin", "digest"],
-			"excludePackageNames": ["org.sonarsource.java:sonar-java-plugin"],
-			"groupName": "gradle dependencies not Major update",
-			"enabled": true
-		},
-		{
-			"matchPaths": ["package.json"],
-			"matchUpdateTypes": ["minor", "patch", "pin", "digest"],
-			"excludePackageNames": ["three", "@types/three"],
-			"groupName": "npm dependencies not Major update",
-			"enabled": true
-		},
-		{
-			"matchPackageNames": [
-				"JamesIves/github-pages-deploy-action",
-				"SonarSource/sonarcloud-github-action",
-				"actions/setup-java",
-				"alexellis/upload-assets",
-				"gradle",
-				"hmarr/auto-approve-action",
-				"nginx",
-				"pascalgn/automerge-action",
-				"ruby"
-			],
-			"matchUpdateTypes": ["minor", "patch", "pin", "digest"],
-			"groupName": "other updates",
-			"enabled": true
-		},
-		{
-			"matchPackageNames": ["@types/three", "org.sonarsource.java:sonar-java-plugin", "three"],
-			"groupName": "Almost always breaking changes",
-			"enabled": false
-		}
-	],
-	"timezone": "Europe/Berlin",
-	"schedule": ["on the 2nd and 4th day instance on sunday after 9pm"]
+  "extends": ["config:base", ":preserveSemverRanges"],
+  "packageRules": [
+    {
+      "description": "Automerge non-major updates",
+      "matchUpdateTypes": ["minor", "patch"],
+      "automerge": true
+    },
+    {
+      "matchPaths": ["build.gradle"],
+      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
+      "excludePackageNames": ["org.sonarsource.java:sonar-java-plugin"],
+      "groupName": "gradle dependencies not Major update",
+      "enabled": true
+    },
+    {
+      "matchPaths": ["package.json"],
+      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
+      "excludePackageNames": ["three", "@types/three"],
+      "groupName": "npm dependencies not Major update",
+      "enabled": true
+    },
+    {
+      "matchPackageNames": [
+        "JamesIves/github-pages-deploy-action",
+        "SonarSource/sonarcloud-github-action",
+        "actions/setup-java",
+        "alexellis/upload-assets",
+        "gradle",
+        "hmarr/auto-approve-action",
+        "nginx",
+        "pascalgn/automerge-action",
+        "ruby"
+      ],
+      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
+      "groupName": "other updates",
+      "enabled": true
+    },
+    {
+      "matchPackageNames": ["@types/three", "org.sonarsource.java:sonar-java-plugin", "three"],
+      "groupName": "Almost always breaking changes",
+      "enabled": false
+    }
+  ],
+  "timezone": "Europe/Berlin",
+  "schedule": ["on the 2nd and 4th day instance on sunday after 9pm"]
 }

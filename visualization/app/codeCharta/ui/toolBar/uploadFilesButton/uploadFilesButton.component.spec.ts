@@ -5,15 +5,15 @@ import { UploadFilesButtonModule } from "./uploadFilesButton.module"
 import { UploadFilesService } from "./uploadFiles.service"
 
 describe("uploadFilesButtonComponent", () => {
-	beforeEach(() => {
-		TestBed.configureTestingModule({
-			imports: [UploadFilesButtonModule],
-			providers: [{ provide: UploadFilesService, useValue: {} }]
-		})
-	})
+    beforeEach(() => {
+        TestBed.configureTestingModule({
+            imports: [UploadFilesButtonModule],
+            providers: [{ provide: UploadFilesService, useValue: {} }]
+        })
+    })
 
-	it("should render", async () => {
-		await render(UploadFilesButtonComponent, { excludeComponentDeclaration: true })
-		expect(screen.getByRole("button")).toBeTruthy()
-	})
+    it("should render", async () => {
+        await render(UploadFilesButtonComponent, { excludeComponentDeclaration: true })
+        expect(screen.getByRole("button")).toBeTruthy()
+    })
 })

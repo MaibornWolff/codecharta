@@ -12,35 +12,39 @@ import { CcState } from "../../../codeCharta.model"
 
 @Injectable()
 export class AddBlacklistItemsIfNotResultsInEmptyMapEffect {
-	constructor(private actions$: Actions, private store: Store<CcState>, private dialog: MatDialog) {}
+    constructor(
+        private actions$: Actions,
+        private store: Store<CcState>,
+        private dialog: MatDialog
+    ) {}
 
-	doBlacklistItemsResultInEmptyMap$ = this.actions$.pipe(
-		ofType(addBlacklistItemsIfNotResultsInEmptyMap),
-		withLatestFrom(this.store.select(visibleFileStatesSelector), this.store.select(blacklistSelector)),
-		map(([action, visibleFiles, blacklist]) => ({
-			items: action.items,
-			resultsInEmptyMap: resultsInEmptyMap(visibleFiles, blacklist, action.items)
-		})),
-		share()
-	)
+    doBlacklistItemsResultInEmptyMap$ = this.actions$.pipe(
+        ofType(addBlacklistItemsIfNotResultsInEmptyMap),
+        withLatestFrom(this.store.select(visibleFileStatesSelector), this.store.select(blacklistSelector)),
+        map(([action, visibleFiles, blacklist]) => ({
+            items: action.items,
+            resultsInEmptyMap: resultsInEmptyMap(visibleFiles, blacklist, action.items)
+        })),
+        share()
+    )
 
-	showErrorDialogIfBlacklistItemsResultInEmptyMap$ = createEffect(
-		() =>
-			this.doBlacklistItemsResultInEmptyMap$.pipe(
-				filter(event => event.resultsInEmptyMap),
-				tap(() => {
-					this.dialog.open(ErrorDialogComponent, {
-						data: { title: "Blacklist Error", message: "Excluding all buildings is not possible." }
-					})
-				})
-			),
-		{ dispatch: false }
-	)
+    showErrorDialogIfBlacklistItemsResultInEmptyMap$ = createEffect(
+        () =>
+            this.doBlacklistItemsResultInEmptyMap$.pipe(
+                filter(event => event.resultsInEmptyMap),
+                tap(() => {
+                    this.dialog.open(ErrorDialogComponent, {
+                        data: { title: "Blacklist Error", message: "Excluding all buildings is not possible." }
+                    })
+                })
+            ),
+        { dispatch: false }
+    )
 
-	addBlacklistItems$ = createEffect(() =>
-		this.doBlacklistItemsResultInEmptyMap$.pipe(
-			filter(event => !event.resultsInEmptyMap),
-			map(event => addBlacklistItems({ items: event.items }))
-		)
-	)
+    addBlacklistItems$ = createEffect(() =>
+        this.doBlacklistItemsResultInEmptyMap$.pipe(
+            filter(event => !event.resultsInEmptyMap),
+            map(event => addBlacklistItems({ items: event.items }))
+        )
+    )
 }

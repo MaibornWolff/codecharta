@@ -4,8 +4,8 @@ import { NgModule } from "@angular/core"
 import { CommonModule } from "@angular/common"
 
 @NgModule({
-	imports: [CommonModule],
-	declarations: [ViewCubeComponent, CenterMapButtonComponent],
-	exports: [ViewCubeComponent]
+    imports: [CommonModule],
+    declarations: [ViewCubeComponent, CenterMapButtonComponent],
+    exports: [ViewCubeComponent]
 })
 export class ViewCubeModule {}

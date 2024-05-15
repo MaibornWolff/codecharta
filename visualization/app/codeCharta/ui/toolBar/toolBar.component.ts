@@ -5,14 +5,14 @@ import { Store } from "@ngrx/store"
 import { CcState } from "../../codeCharta.model"
 
 @Component({
-	selector: "cc-tool-bar",
-	templateUrl: "./toolBar.component.html",
-	styleUrls: ["./toolBar.component.scss"],
-	encapsulation: ViewEncapsulation.None
+    selector: "cc-tool-bar",
+    templateUrl: "./toolBar.component.html",
+    styleUrls: ["./toolBar.component.scss"],
+    encapsulation: ViewEncapsulation.None
 })
 export class ToolBarComponent {
-	hoveredNodeId$ = this.store.select(hoveredNodeIdSelector)
-	experimentalFeaturesEnabled$ = this.store.select(experimentalFeaturesEnabledSelector)
+    hoveredNodeId$ = this.store.select(hoveredNodeIdSelector)
+    experimentalFeaturesEnabled$ = this.store.select(experimentalFeaturesEnabledSelector)
 
-	constructor(private store: Store<CcState>) {}
+    constructor(private store: Store<CcState>) {}
 }

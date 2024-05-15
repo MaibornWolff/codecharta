@@ -1,43 +1,43 @@
 <div class="cc-distribution">
-	<cc-distribution-metric-chooser title="Distribution metric"></cc-distribution-metric-chooser>
+    <cc-distribution-metric-chooser title="Distribution metric"></cc-distribution-metric-chooser>
 
-	<div class="cc-bar">
-		@for (item of metricDistribution; track item) {
-		<span
-			[style.width]="item.relativeMetricValue + '%'"
-			[style.background]="item.color"
-			class="cc-bar-section"
-			(click)="toggleShowAbsoluteValues()"
-		>
-			<div
-				class="cc-bar-section-text"
-				(mouseover)="onHoverFileExtensionBar(item.fileExtension)"
-				(mouseleave)="onUnhoverFileExtensionBar()"
-				title="{{
-					item.fileExtension.toString() +
-						' ' +
-						(showAbsoluteValues ? item.absoluteMetricValue.toFixed(0) : item.relativeMetricValue.toFixed(2) + '%')
-				}}"
-			>
-				{{ item.relativeMetricValue >= item.fileExtension.length / 2 + 1 ? item.fileExtension : "" }}
-				{{ showAbsoluteValues ? item.absoluteMetricValue.toLocaleString() : item.relativeMetricValue.toFixed(2) + "%" }}
-			</div>
-		</span>
-		}
-	</div>
+    <div class="cc-bar">
+        @for (item of metricDistribution; track item) {
+            <span
+                [style.width]="item.relativeMetricValue + '%'"
+                [style.background]="item.color"
+                class="cc-bar-section"
+                (click)="toggleShowAbsoluteValues()"
+            >
+                <div
+                    class="cc-bar-section-text"
+                    (mouseover)="onHoverFileExtensionBar(item.fileExtension)"
+                    (mouseleave)="onUnhoverFileExtensionBar()"
+                    title="{{
+                        item.fileExtension.toString() +
+                            ' ' +
+                            (showAbsoluteValues ? item.absoluteMetricValue.toFixed(0) : item.relativeMetricValue.toFixed(2) + '%')
+                    }}"
+                >
+                    {{ item.relativeMetricValue >= item.fileExtension.length / 2 + 1 ? item.fileExtension : "" }}
+                    {{ showAbsoluteValues ? item.absoluteMetricValue.toLocaleString() : item.relativeMetricValue.toFixed(2) + "%" }}
+                </div>
+            </span>
+        }
+    </div>
 
-	<button class="cc-show-details-button" (click)="toggleShowDetails()">
-		<i class="fa {{ showDetails ? 'fa-caret-up' : 'fa-caret-down' }}"></i>
-	</button>
+    <button class="cc-show-details-button" (click)="toggleShowDetails()">
+        <i class="fa {{ showDetails ? 'fa-caret-up' : 'fa-caret-down' }}"></i>
+    </button>
 </div>
 
 <div class="cc-distribution-details" [class.cc-hidden]="!showDetails" (click)="toggleShowAbsoluteValues()">
-	@for (item of metricDistribution; track item) {
-	<div class="cc-distribution-details-entry">
-		<span class="cc-dot" [style.background]="item.color"></span>{{ item.fileExtension }} :
-		<span class="cc-detail-metric-value">
-			{{ showAbsoluteValues ? item.absoluteMetricValue.toLocaleString() : item.relativeMetricValue.toFixed(2) + "%" }}
-		</span>
-	</div>
-	}
+    @for (item of metricDistribution; track item) {
+        <div class="cc-distribution-details-entry">
+            <span class="cc-dot" [style.background]="item.color"></span>{{ item.fileExtension }} :
+            <span class="cc-detail-metric-value">
+                {{ showAbsoluteValues ? item.absoluteMetricValue.toLocaleString() : item.relativeMetricValue.toFixed(2) + "%" }}
+            </span>
+        </div>
+    }
 </div>

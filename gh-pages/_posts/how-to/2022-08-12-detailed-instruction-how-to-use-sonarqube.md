@@ -1,9 +1,9 @@
 ---
 categories:
-    - How-to
+  - How-to
 tags:
-    - sonarimport
-    - analysis
+  - sonarimport
+  - analysis
 title: Detailed instruction of how to use SonarQube 9.4
 ---
 
@@ -12,14 +12,14 @@ title: Detailed instruction of how to use SonarQube 9.4
 1. Clone [CodeCharta](https://github.com/MaibornWolff/codecharta) from GitHub
 2. [Download](https://www.sonarqube.org/downloads/) SonarQube 9.4 \
    ![download sonarqube]({{site.baseurl}}/assets/images/docs/how-to/download_sonarqube_9_4.png)
-    1. Extract the downloaded zip file, jump into the folder and navigate to bin/windows-x86-64/ or any other OS
-    2. double-click on `StartSonar.bat` file
-    3. Wait until the terminal says `SonarQube is operational`
+   1. Extract the downloaded zip file, jump into the folder and navigate to bin/windows-x86-64/ or any other OS
+   2. double-click on `StartSonar.bat` file
+   3. Wait until the terminal says `SonarQube is operational`
 3. [Download](https://docs.sonarqube.org/latest/analysis/scan/sonarscanner/) the version 4.7 of SonarScanner \
    ![download_sonarscanner]({{site.baseurl}}/assets/images/docs/how-to/download_sonarscanner.png)
-    1. Extract the downloaded zip file
-    2. Add the `bin` directory of the sonar-scanner folder to the `%PATH%` environment variable
-    3. To test if sonar-scanner works globally execute `sonar-scanner.bat -h` in your terminal
+   1. Extract the downloaded zip file
+   2. Add the `bin` directory of the sonar-scanner folder to the `%PATH%` environment variable
+   3. To test if sonar-scanner works globally execute `sonar-scanner.bat -h` in your terminal
 4. Open http://localhost:9000
 5. Login with admin/admin \
    ![login sonarqube]({{site.baseurl}}/assets/images/docs/how-to/login_sonarqube.png)

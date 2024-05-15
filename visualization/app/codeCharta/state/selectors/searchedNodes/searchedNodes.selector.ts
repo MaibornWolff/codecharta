@@ -4,5 +4,5 @@ import { accumulatedDataSelector } from "../accumulatedData/accumulatedData.sele
 import { createSelector } from "@ngrx/store"
 
 export const searchedNodesSelector = createSelector(accumulatedDataSelector, searchPatternSelector, (accumulatedData, searchPattern) =>
-	getNodesByGitignorePath(accumulatedData.unifiedMapNode, searchPattern)
+    getNodesByGitignorePath(accumulatedData.unifiedMapNode, searchPattern)
 )

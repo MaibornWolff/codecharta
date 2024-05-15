@@ -8,22 +8,22 @@ import { maxTreeMapFilesSelector } from "../../../../../state/store/appSettings/
 import { debounce } from "../../../../../util/debounce"
 
 @Component({
-	selector: "cc-map-layout-selection",
-	templateUrl: "./mapLayoutSelection.component.html",
-	encapsulation: ViewEncapsulation.None
+    selector: "cc-map-layout-selection",
+    templateUrl: "./mapLayoutSelection.component.html",
+    encapsulation: ViewEncapsulation.None
 })
 export class MapLayoutSelectionComponent {
-	layoutAlgorithms = Object.values(LayoutAlgorithm)
-	layoutAlgorithm$ = this.store.select(layoutAlgorithmSelector)
-	maxTreeMapFiles$ = this.store.select(maxTreeMapFilesSelector)
+    layoutAlgorithms = Object.values(LayoutAlgorithm)
+    layoutAlgorithm$ = this.store.select(layoutAlgorithmSelector)
+    maxTreeMapFiles$ = this.store.select(maxTreeMapFilesSelector)
 
-	constructor(private store: Store<CcState>) {}
+    constructor(private store: Store<CcState>) {}
 
-	handleSelectedLayoutAlgorithmChanged(event: { value: LayoutAlgorithm }) {
-		this.store.dispatch(setLayoutAlgorithm({ value: event.value }))
-	}
+    handleSelectedLayoutAlgorithmChanged(event: { value: LayoutAlgorithm }) {
+        this.store.dispatch(setLayoutAlgorithm({ value: event.value }))
+    }
 
-	handleChangeMaxTreeMapFiles = debounce((maxTreeMapFiles: number) => {
-		this.store.dispatch(setMaxTreeMapFiles({ value: maxTreeMapFiles }))
-	}, 400)
+    handleChangeMaxTreeMapFiles = debounce((maxTreeMapFiles: number) => {
+        this.store.dispatch(setMaxTreeMapFiles({ value: maxTreeMapFiles }))
+    }, 400)
 }

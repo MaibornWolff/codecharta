@@ -1,17 +1,17 @@
 cc-search-panel-mode-selector {
-	mat-button-toggle-group {
-		height: 100%;
-		align-items: center;
-		font-size: 12px;
-	}
+    mat-button-toggle-group {
+        height: 100%;
+        align-items: center;
+        font-size: 12px;
+    }
 
-	.has-blacklist-items-indicator {
-		position: absolute;
-		margin-left: 18px;
-		margin-top: -32px;
-		border-radius: 50%;
-		background-color: red;
-		width: 5px;
-		height: 5px;
-	}
+    .has-blacklist-items-indicator {
+        position: absolute;
+        margin-left: 18px;
+        margin-top: -32px;
+        border-radius: 50%;
+        background-color: red;
+        width: 5px;
+        height: 5px;
+    }
 }

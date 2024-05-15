@@ -6,8 +6,8 @@ import { ColorPickerForMapColorComponent } from "./colorPickerForMapColor.compon
 import { MapColorLabelPipe } from "./mapColorLabel.pipe"
 
 @NgModule({
-	imports: [CommonModule, LabelledColorPickerModule],
-	declarations: [ColorPickerForMapColorComponent, MapColorLabelPipe],
-	exports: [ColorPickerForMapColorComponent]
+    imports: [CommonModule, LabelledColorPickerModule],
+    declarations: [ColorPickerForMapColorComponent, MapColorLabelPipe],
+    exports: [ColorPickerForMapColorComponent]
 })
 export class ColorPickerForMapColorModule {}

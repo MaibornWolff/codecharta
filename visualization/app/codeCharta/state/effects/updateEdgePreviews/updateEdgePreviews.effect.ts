@@ -9,13 +9,13 @@ import { CcState } from "../../../codeCharta.model"
 
 @Injectable()
 export class UpdateEdgePreviewsEffect {
-	constructor(private store: Store<CcState>) {}
+    constructor(private store: Store<CcState>) {}
 
-	resetIsEdgeMetricVisible$ = createEffect(() =>
-		this.store.select(edgeMetricSelector).pipe(
-			withLatestFrom(this.store.select(isEdgeMetricVisibleSelector)),
-			filter(([, isEdgeMetricVisible]) => !isEdgeMetricVisible),
-			map(() => toggleEdgeMetricVisible())
-		)
-	)
+    resetIsEdgeMetricVisible$ = createEffect(() =>
+        this.store.select(edgeMetricSelector).pipe(
+            withLatestFrom(this.store.select(isEdgeMetricVisibleSelector)),
+            filter(([, isEdgeMetricVisible]) => !isEdgeMetricVisible),
+            map(() => toggleEdgeMetricVisible())
+        )
+    )
 }

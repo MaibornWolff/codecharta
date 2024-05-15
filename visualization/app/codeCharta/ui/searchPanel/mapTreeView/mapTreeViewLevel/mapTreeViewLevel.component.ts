@@ -14,82 +14,82 @@ import { ThreeRendererService } from "../../../codeMap/threeViewer/threeRenderer
 import { CodeMapMouseEventService } from "../../../codeMap/codeMap.mouseEvent.service"
 
 @Component({
-	selector: "cc-map-tree-view-level",
-	templateUrl: "./mapTreeViewLevel.component.html",
-	encapsulation: ViewEncapsulation.None
+    selector: "cc-map-tree-view-level",
+    templateUrl: "./mapTreeViewLevel.component.html",
+    encapsulation: ViewEncapsulation.None
 })
 export class MapTreeViewLevelComponent implements OnInit {
-	@Input() node: CodeMapNode
-	@Input() depth: number
+    @Input() node: CodeMapNode
+    @Input() depth: number
 
-	hoveredNodeId$ = this.store.select(hoveredNodeIdSelector)
-	rightClickedNodeData$ = this.store.select(rightClickedNodeDataSelector)
-	areaMetric$ = this.store.select(areaMetricSelector)
+    hoveredNodeId$ = this.store.select(hoveredNodeIdSelector)
+    rightClickedNodeData$ = this.store.select(rightClickedNodeDataSelector)
+    areaMetric$ = this.store.select(areaMetricSelector)
 
-	isOpen = false
+    isOpen = false
 
-	areMetricValid = false
+    areMetricValid = false
 
-	constructor(
-		private store: Store<CcState>,
-		private threeSceneService: ThreeSceneService,
-		private idToBuildingService: IdToBuildingService,
-		private threeRendererService: ThreeRendererService,
-		private codeMapMouseEventService: CodeMapMouseEventService
-	) {}
+    constructor(
+        private store: Store<CcState>,
+        private threeSceneService: ThreeSceneService,
+        private idToBuildingService: IdToBuildingService,
+        private threeRendererService: ThreeRendererService,
+        private codeMapMouseEventService: CodeMapMouseEventService
+    ) {}
 
-	ngOnInit(): void {
-		// open root folder initially
-		this.isOpen = this.depth === 0
-	}
+    ngOnInit(): void {
+        // open root folder initially
+        this.isOpen = this.depth === 0
+    }
 
-	onMouseEnter() {
-		const building = this.idToBuildingService.get(this.node.id)
-		const labels = this.threeSceneService.labels?.children
-		this.codeMapMouseEventService.setLabelHoveredLeaf(building, labels)
-		this.codeMapMouseEventService.hoverNode(this.node.id)
-		this.store.dispatch(setHoveredNodeId({ value: this.node.id }))
-	}
+    onMouseEnter() {
+        const building = this.idToBuildingService.get(this.node.id)
+        const labels = this.threeSceneService.labels?.children
+        this.codeMapMouseEventService.setLabelHoveredLeaf(building, labels)
+        this.codeMapMouseEventService.hoverNode(this.node.id)
+        this.store.dispatch(setHoveredNodeId({ value: this.node.id }))
+    }
 
-	onMouseLeave() {
-		this.threeSceneService.resetLabel()
-		this.codeMapMouseEventService.unhoverNode()
-		this.codeMapMouseEventService.clearLabelHoveredBuilding()
-		this.store.dispatch(setHoveredNodeId({ value: null }))
-	}
+    onMouseLeave() {
+        this.threeSceneService.resetLabel()
+        this.codeMapMouseEventService.unhoverNode()
+        this.codeMapMouseEventService.clearLabelHoveredBuilding()
+        this.store.dispatch(setHoveredNodeId({ value: null }))
+    }
 
-	onClick() {
-		this.isOpen = !this.isOpen
-		const building = this.idToBuildingService.get(this.node.id)
-		this.codeMapMouseEventService.drawLabelSelectedBuilding(building)
-		this.threeSceneService.selectBuilding(building)
-		this.threeSceneService.clearConstantHighlight()
-		this.threeRendererService.render()
-	}
+    onClick() {
+        this.isOpen = !this.isOpen
+        const building = this.idToBuildingService.get(this.node.id)
+        this.codeMapMouseEventService.drawLabelSelectedBuilding(building)
+        this.threeSceneService.selectBuilding(building)
+        this.threeSceneService.clearConstantHighlight()
+        this.threeRendererService.render()
+    }
 
-	openNodeContextMenu = $event => {
-		$event.preventDefault()
-		$event.stopPropagation()
+    openNodeContextMenu = $event => {
+        $event.preventDefault()
+        $event.stopPropagation()
 
-		this.areaMetric$.subscribe(areaMetricName => (this.areMetricValid = isAreaValid(this.node, areaMetricName))).unsubscribe()
+        this.areaMetric$.subscribe(areaMetricName => (this.areMetricValid = isAreaValid(this.node, areaMetricName))).unsubscribe()
 
-		if (this.areMetricValid) {
-			this.store.dispatch(
-				setRightClickedNodeData({
-					value: {
-						nodeId: this.node.id,
-						xPositionOfRightClickEvent: $event.clientX,
-						yPositionOfRightClickEvent: $event.clientY
-					}
-				})
-			)
+        if (this.areMetricValid) {
+            this.store.dispatch(
+                setRightClickedNodeData({
+                    value: {
+                        nodeId: this.node.id,
+                        xPositionOfRightClickEvent: $event.clientX,
+                        yPositionOfRightClickEvent: $event.clientY
+                    }
+                })
+            )
 
-			document.querySelector(".tree-element-0").addEventListener("scroll", this.scrollFunction)
-		}
-	}
+            document.querySelector(".tree-element-0").addEventListener("scroll", this.scrollFunction)
+        }
+    }
 
-	private scrollFunction = () => {
-		this.store.dispatch(setRightClickedNodeData({ value: null }))
-		document.querySelector(".tree-element-0").removeEventListener("scroll", this.scrollFunction)
-	}
+    private scrollFunction = () => {
+        this.store.dispatch(setRightClickedNodeData({ value: null }))
+        document.querySelector(".tree-element-0").removeEventListener("scroll", this.scrollFunction)
+    }
 }

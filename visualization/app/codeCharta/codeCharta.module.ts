@@ -10,17 +10,17 @@ import { RibbonBarModule } from "./ui/ribbonBar/ribbonBar.module"
 import { ToolBarModule } from "./ui/toolBar/toolBar.module"
 
 @NgModule({
-	imports: [
-		LogoModule,
-		CommonModule,
-		CodeMapModule,
-		LegendPanelModule,
-		RibbonBarModule,
-		ToolBarModule,
-		FileExtensionBarModule,
-		LoadingFileProgressSpinnerModule
-	],
-	declarations: [CodeChartaComponent],
-	exports: [CodeChartaComponent]
+    imports: [
+        LogoModule,
+        CommonModule,
+        CodeMapModule,
+        LegendPanelModule,
+        RibbonBarModule,
+        ToolBarModule,
+        FileExtensionBarModule,
+        LoadingFileProgressSpinnerModule
+    ],
+    declarations: [CodeChartaComponent],
+    exports: [CodeChartaComponent]
 })
 export class CodeChartaModule {}

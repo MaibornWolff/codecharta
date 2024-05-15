@@ -5,8 +5,8 @@ import { LabelledColorPickerModule } from "../../labelledColorPicker/labelledCol
 import { LegendMarkedPackagesComponent } from "./legendMarkedPackages.component"
 
 @NgModule({
-	imports: [CommonModule, LabelledColorPickerModule],
-	declarations: [LegendMarkedPackagesComponent],
-	exports: [LegendMarkedPackagesComponent]
+    imports: [CommonModule, LabelledColorPickerModule],
+    declarations: [LegendMarkedPackagesComponent],
+    exports: [LegendMarkedPackagesComponent]
 })
 export class LegendMarkedPackagesModule {}

@@ -29,88 +29,88 @@ import { ScenarioHelper } from "./scenarioHelper"
 
 @Injectable()
 export class ScenarioService {
-	constructor(
-		private state: State<CcState>,
-		private store: Store<CcState>,
-		private dialog: MatDialog,
-		private threeCameraService: ThreeCameraService,
-		private threeOrbitControlsService: ThreeOrbitControlsService
-	) {}
+    constructor(
+        private state: State<CcState>,
+        private store: Store<CcState>,
+        private dialog: MatDialog,
+        private threeCameraService: ThreeCameraService,
+        private threeOrbitControlsService: ThreeOrbitControlsService
+    ) {}
 
-	getScenarios() {
-		return ScenarioHelper.getScenarioItems(metricDataSelector(this.state.getValue()))
-	}
+    getScenarios() {
+        return ScenarioHelper.getScenarioItems(metricDataSelector(this.state.getValue()))
+    }
 
-	applyScenario(name: string) {
-		const scenario = ScenarioHelper.scenarios.get(name)
-		const scenarioSettings = ScenarioHelper.getScenarioSettings(scenario)
-		this.store.dispatch(setState({ value: scenarioSettings }))
+    applyScenario(name: string) {
+        const scenario = ScenarioHelper.scenarios.get(name)
+        const scenarioSettings = ScenarioHelper.getScenarioSettings(scenario)
+        this.store.dispatch(setState({ value: scenarioSettings }))
 
-		if (!scenarioSettings.appSettings.amountOfTopLabels) {
-			this.store
-				.select(codeMapNodesSelector)
-				.pipe(first())
-				.subscribe(codeMapNodes => {
-					const amountOfTopLabels = getNumberOfTopLabels(codeMapNodes)
-					this.store.dispatch(setAmountOfTopLabels({ value: amountOfTopLabels }))
-				})
-		}
-		if (!scenarioSettings.appSettings.mapColors) {
-			this.store.dispatch(setMapColors({ value: defaultMapColors }))
-		}
-		if (!scenarioSettings.appSettings.edgeHeight) {
-			this.store.dispatch(setEdgeHeight({ value: defaultEdgeHeight }))
-		}
-		if (!scenarioSettings.appSettings.amountOfEdgePreviews) {
-			this.store.dispatch(setAmountOfEdgePreviews({ value: defaultAmountOfEdgesPreviews }))
-		}
-		if (!scenarioSettings.appSettings.scaling) {
-			this.store.dispatch(setScaling({ value: defaultScaling }))
-		}
-		if (!scenarioSettings.dynamicSettings.colorRange) {
-			this.store
-				.select(selectedColorMetricDataSelector)
-				.pipe(first())
-				.subscribe(selectedColorMetricData => {
-					this.store.dispatch(setColorRange({ value: calculateInitialColorRange(selectedColorMetricData) }))
-				})
-		}
-		if (!scenarioSettings.dynamicSettings.margin) {
-			this.store.dispatch(setMargin({ value: defaultMargin }))
-		}
-		if (!scenarioSettings.dynamicSettings.edgeMetric) {
-			this.store
-				.select(metricDataSelector)
-				.pipe(first())
-				.subscribe(metricData => {
-					this.store.dispatch(setEdgeMetric({ value: metricData.edgeMetricData[0]?.name }))
-				})
-		}
+        if (!scenarioSettings.appSettings.amountOfTopLabels) {
+            this.store
+                .select(codeMapNodesSelector)
+                .pipe(first())
+                .subscribe(codeMapNodes => {
+                    const amountOfTopLabels = getNumberOfTopLabels(codeMapNodes)
+                    this.store.dispatch(setAmountOfTopLabels({ value: amountOfTopLabels }))
+                })
+        }
+        if (!scenarioSettings.appSettings.mapColors) {
+            this.store.dispatch(setMapColors({ value: defaultMapColors }))
+        }
+        if (!scenarioSettings.appSettings.edgeHeight) {
+            this.store.dispatch(setEdgeHeight({ value: defaultEdgeHeight }))
+        }
+        if (!scenarioSettings.appSettings.amountOfEdgePreviews) {
+            this.store.dispatch(setAmountOfEdgePreviews({ value: defaultAmountOfEdgesPreviews }))
+        }
+        if (!scenarioSettings.appSettings.scaling) {
+            this.store.dispatch(setScaling({ value: defaultScaling }))
+        }
+        if (!scenarioSettings.dynamicSettings.colorRange) {
+            this.store
+                .select(selectedColorMetricDataSelector)
+                .pipe(first())
+                .subscribe(selectedColorMetricData => {
+                    this.store.dispatch(setColorRange({ value: calculateInitialColorRange(selectedColorMetricData) }))
+                })
+        }
+        if (!scenarioSettings.dynamicSettings.margin) {
+            this.store.dispatch(setMargin({ value: defaultMargin }))
+        }
+        if (!scenarioSettings.dynamicSettings.edgeMetric) {
+            this.store
+                .select(metricDataSelector)
+                .pipe(first())
+                .subscribe(metricData => {
+                    this.store.dispatch(setEdgeMetric({ value: metricData.edgeMetricData[0]?.name }))
+                })
+        }
 
-		if (scenario.camera) {
-			// @ts-ignore -- we know that it is not a partial when it is set
-			this.threeCameraService.setPosition(scenario.camera.camera)
-			// @ts-ignore -- we know that it is not a partial when it is set
-			this.threeOrbitControlsService.setControlTarget(scenario.camera.cameraTarget)
-		}
-	}
+        if (scenario.camera) {
+            // @ts-ignore -- we know that it is not a partial when it is set
+            this.threeCameraService.setPosition(scenario.camera.camera)
+            // @ts-ignore -- we know that it is not a partial when it is set
+            this.threeOrbitControlsService.setControlTarget(scenario.camera.cameraTarget)
+        }
+    }
 
-	removeScenario(name) {
-		if (name !== "Complexity") {
-			ScenarioHelper.deleteScenario(name)
-			this.dialog.open(ErrorDialogComponent, {
-				data: {
-					title: "Info",
-					message: `${name} deleted.`
-				}
-			})
-		} else {
-			this.dialog.open(ErrorDialogComponent, {
-				data: {
-					title: "Error",
-					message: `${name} cannot be deleted as it is the default Scenario.`
-				}
-			})
-		}
-	}
+    removeScenario(name) {
+        if (name !== "Complexity") {
+            ScenarioHelper.deleteScenario(name)
+            this.dialog.open(ErrorDialogComponent, {
+                data: {
+                    title: "Info",
+                    message: `${name} deleted.`
+                }
+            })
+        } else {
+            this.dialog.open(ErrorDialogComponent, {
+                data: {
+                    title: "Error",
+                    message: `${name} cannot be deleted as it is the default Scenario.`
+                }
+            })
+        }
+    }
 }

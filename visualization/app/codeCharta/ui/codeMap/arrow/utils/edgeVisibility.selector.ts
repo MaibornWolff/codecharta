@@ -6,12 +6,12 @@ import { clone } from "../../../../util/clone"
 import { setEdgeVisibility } from "./setEdgeVisibility"
 
 export const edgeVisibilitySelector = createSelector(
-	edgePreviewNodesSelector,
-	edgesSelector,
-	edgeMetricSelector,
-	(edgePreviewNodes, edges, edgeMetric) => {
-		const edgeVisibility = clone(edges)
-		setEdgeVisibility(edgePreviewNodes, edgeVisibility, edgeMetric)
-		return edgeVisibility
-	}
+    edgePreviewNodesSelector,
+    edgesSelector,
+    edgeMetricSelector,
+    (edgePreviewNodes, edges, edgeMetric) => {
+        const edgeVisibility = clone(edges)
+        setEdgeVisibility(edgePreviewNodes, edgeVisibility, edgeMetric)
+        return edgeVisibility
+    }
 )

@@ -7,8 +7,8 @@ import { CustomConfigNoteDialogComponent } from "./customConfigNoteDialog/custom
 import { A11yModule } from "@angular/cdk/a11y"
 
 @NgModule({
-	imports: [MaterialModule, ReactiveFormsModule, FormsModule, CommonModule, A11yModule],
-	declarations: [CustomConfigNoteDialogButtonComponent, CustomConfigNoteDialogComponent],
-	exports: [CustomConfigNoteDialogButtonComponent]
+    imports: [MaterialModule, ReactiveFormsModule, FormsModule, CommonModule, A11yModule],
+    declarations: [CustomConfigNoteDialogButtonComponent, CustomConfigNoteDialogComponent],
+    exports: [CustomConfigNoteDialogButtonComponent]
 })
 export class CustomConfigNoteDialogButtonModule {}

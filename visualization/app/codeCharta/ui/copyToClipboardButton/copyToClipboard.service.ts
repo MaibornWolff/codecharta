@@ -7,18 +7,18 @@ import { getFilenamesWithHighestMetrics } from "./util/getFilenamesWithHighestMe
 
 @Injectable()
 export class CopyToClipboardService {
-	constructor(private state: State<CcState>) {}
+    constructor(private state: State<CcState>) {}
 
-	getClipboardText(): string {
-		const node = this.getUnifiedMapNode()
-		const attributeDescriptors = this.state.getValue().fileSettings.attributeDescriptors
-		const filesByAttribute = getFilenamesWithHighestMetrics(node, attributeDescriptors)
+    getClipboardText(): string {
+        const node = this.getUnifiedMapNode()
+        const attributeDescriptors = this.state.getValue().fileSettings.attributeDescriptors
+        const filesByAttribute = getFilenamesWithHighestMetrics(node, attributeDescriptors)
 
-		return buildTextOfFiles(filesByAttribute)
-	}
+        return buildTextOfFiles(filesByAttribute)
+    }
 
-	private getUnifiedMapNode() {
-		const { unifiedMapNode } = accumulatedDataSelector(this.state.getValue())
-		return unifiedMapNode
-	}
+    private getUnifiedMapNode() {
+        const { unifiedMapNode } = accumulatedDataSelector(this.state.getValue())
+        return unifiedMapNode
+    }
 }

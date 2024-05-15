@@ -7,8 +7,8 @@ import { RiskProfileBarDirective } from "./highRiskProfile/riskProfileBar.direct
 import { SuspiciousMetricComponent } from "./suspiciousMetrics/suspiciousMetrics.component"
 
 @NgModule({
-	imports: [CommonModule, MaterialModule],
-	declarations: [ArtificialIntelligenceComponent, HighRiskProfileComponent, SuspiciousMetricComponent, RiskProfileBarDirective],
-	exports: [ArtificialIntelligenceComponent]
+    imports: [CommonModule, MaterialModule],
+    declarations: [ArtificialIntelligenceComponent, HighRiskProfileComponent, SuspiciousMetricComponent, RiskProfileBarDirective],
+    exports: [ArtificialIntelligenceComponent]
 })
 export class ArtificialIntelligenceModule {}

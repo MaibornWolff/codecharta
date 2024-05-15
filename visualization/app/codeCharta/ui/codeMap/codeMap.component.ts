@@ -9,38 +9,38 @@ import { Store } from "@ngrx/store"
 import { CcState } from "../../codeCharta.model"
 
 @Component({
-	selector: "cc-code-map",
-	templateUrl: "./codeMap.component.html",
-	styleUrls: ["./codeMap.component.scss"],
-	encapsulation: ViewEncapsulation.None
+    selector: "cc-code-map",
+    templateUrl: "./codeMap.component.html",
+    styleUrls: ["./codeMap.component.scss"],
+    encapsulation: ViewEncapsulation.None
 })
 export class CodeMapComponent implements AfterViewInit, OnDestroy {
-	isLoadingFile$ = this.store.select(isLoadingFileSelector)
-	restartOnSharpnessModeChangesSubscription = this.store
-		.select(sharpnessModeSelector)
-		.pipe(
-			skip(1),
-			tap(() => {
-				this.threeViewerService.restart(this.elementReference.nativeElement.querySelector("#codeMap"))
-				this.codeMapMouseEventService.start()
-			})
-		)
-		.subscribe()
+    isLoadingFile$ = this.store.select(isLoadingFileSelector)
+    restartOnSharpnessModeChangesSubscription = this.store
+        .select(sharpnessModeSelector)
+        .pipe(
+            skip(1),
+            tap(() => {
+                this.threeViewerService.restart(this.elementReference.nativeElement.querySelector("#codeMap"))
+                this.codeMapMouseEventService.start()
+            })
+        )
+        .subscribe()
 
-	constructor(
-		public isAttributeSideBarVisibleService: IsAttributeSideBarVisibleService,
-		private store: Store<CcState>,
-		private threeViewerService: ThreeViewerService,
-		private codeMapMouseEventService: CodeMapMouseEventService,
-		private elementReference: ElementRef
-	) {}
+    constructor(
+        public isAttributeSideBarVisibleService: IsAttributeSideBarVisibleService,
+        private store: Store<CcState>,
+        private threeViewerService: ThreeViewerService,
+        private codeMapMouseEventService: CodeMapMouseEventService,
+        private elementReference: ElementRef
+    ) {}
 
-	ngAfterViewInit(): void {
-		this.threeViewerService.init(this.elementReference.nativeElement.querySelector("#codeMap"))
-		this.codeMapMouseEventService.start()
-	}
+    ngAfterViewInit(): void {
+        this.threeViewerService.init(this.elementReference.nativeElement.querySelector("#codeMap"))
+        this.codeMapMouseEventService.start()
+    }
 
-	ngOnDestroy(): void {
-		this.restartOnSharpnessModeChangesSubscription.unsubscribe()
-	}
+    ngOnDestroy(): void {
+        this.restartOnSharpnessModeChangesSubscription.unsubscribe()
+    }
 }
