@@ -4,8 +4,8 @@ root = true
 # - prettier: https://github.com/prettier/prettier/issues/15255#issuecomment-1801339582
 # EsLint will respect the prettier settings, but does not apply them. This is by design
 # - to verify that the eslint rules do not interfere with the eslint setting use npm run lint:checkRules in visualization
-#
-
+# lint-stages in visualization
+# - will be executed through husky's pre-commit hook, running the linter on all stages files in visualization
 
 [*]
 charset = utf-8
@@ -24,4 +24,22 @@ indent_size = 2
 
 [*.json]
 indent_size = 2
+
+[*.{kt,kts}]
+ktlint_code_style = ktlint_official
+ij_kotlin_code_style_defaults = KOTLIN_OFFICIAL
+ktlint_function_signature_body_expression_wrapping = default
+ktlint_function_signature_rule_force_multiline_when_parameter_count_greater_or_equal_than = 5
+ktlint_class_signature_rule_force_multiline_when_parameter_count_greater_or_equal_than = 5
+ktlint_chain_method_rule_force_multiline_when_chain_operator_count_greater_or_equal_than = 5
+ktlint_argument_list_wrapping_ignore_when_parameter_count_greater_or_equal_than = 8
+no-empty-class-body = disabled
+no-unit-return = disabled
+ij_kotlin_allow_trailing_comma_on_call_site = false
+ij_kotlin_allow_trailing_comma = false
+
+#  Disable wildcard imports entirely
+ij_kotlin_name_count_to_use_star_import = 2147483647
+ij_kotlin_name_count_to_use_star_import_for_members = 2147483647
+ij_kotlin_packages_to_use_import_on_demand = unset
 
