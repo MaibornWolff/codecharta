@@ -66,3 +66,56 @@ docker cp codecharta-analysis:/root/junit4.cc.json.gz junit4.cc.json.gz
 To check the name of the container, you can simply type `docker ps`.
 To analyze your code you can follow one of our quick-start guides or check out the in-depth documentation for a certain
 importer.
+
+### Hands-On
+
+Example execution of `codecharta-analysis` from the compose project:
+
+```bash
+docker run -it -v $(pwd):/src -w /src codecharta/codecharta-analysis ccsh gitlogparser repo-scan --repo-path /src -o my-project.cc.json -nc
+
+# Explanation
+# -it = interactive, tty-Terminal: Connects your terminal to the execution of your command
+# -v = virtual-mount: Mount your current working directory inside the container to /src
+#               Hint: You need to mount a absolute path, $(pwd) will print your working directory
+# -w = working-directory:  Starting point of your command, in this case the /src folder where the directory was mounted to
+# codecharta/codecharta-analysis: tag of the image
+# gitlogparser [...] : check the gitlogparser documentation for more info
+```
+
+> Be aware, that by default the user inside the docker image is 'ubuntu' with an ID of 1000. You may
+> encounter errors with `git` when you try to execute commands inside a repository cloned by a different `UID`
+
+> For **macOS users**, it is necessary to add `--user=501:dialout` Before the image name. Why? because docker on mac is fun :)
+
+### Build it yourself
+
+You can also build a docker image from the locally installed instance of codecharta. To do this, you would execute the following commands:
+
+```bash
+# to build the container you need to navigate into the analysis folder
+cd analysis
+
+# makes a clean build to ensure everything will be built correctly
+./gradlew clean build
+
+# builds the docker container with an image name of your choice
+docker build . -t your-image-name
+
+# executes bash inside of the created container
+docker run -it your-image-name bash
+
+# to run the docker container with your current working directory mounted into it,
+# you can alternatively run this
+docker run -it -v $(pwd):/src -w /src your-image-name bash
+```
+
+There is also the option to customize the used docker user during the build.
+This will create a new user with the given name and IDs.
+
+```bash
+#USER_ADD: set it to any value to to add a new user
+#USERNAME: the name of the user to be created
+#USER_ID: the ID that is used for the new user and for its group
+docker build ./analysis -t local-ccsh --build-arg USER_ADD=true --build-arg USER_ID=1001 --build-arg USERNAME=your_name
+```

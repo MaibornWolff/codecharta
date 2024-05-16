@@ -79,7 +79,7 @@
 		"d3": "^7.8.5",
 		"d3-hierarchy": "^2.0.0",
 		"dequal": "^2.0.3",
-		"electron": "27.3.9",
+		"electron": "27.3.11",
 		"fake-indexeddb": "^4.0.2",
 		"font-awesome": "^4.7.0",
 		"hotkeys-js": "^3.8.2",
@@ -97,7 +97,7 @@
 		"shelljs": "^0.8.4",
 		"three": "^0.126.1",
 		"three-orbit-controls": "^82.1.0",
-		"typescript-json-schema": "0.56.0",
+		"typescript-json-schema": "0.63.0",
 		"zone.js": "^0.14.4"
 	},
 	"devDependencies": {
