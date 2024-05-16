@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [1.125.0] - 2024-05-16
+
 ### Changed
 
 -   Update GH-Pages and dev guide on how to use our docker images [#3621](https://github.com/MaibornWolff/codecharta/pull/3621/files)
