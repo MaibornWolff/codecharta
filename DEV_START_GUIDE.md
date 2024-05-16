@@ -98,6 +98,10 @@ For the visualisation, we utilize Jest and puppeteer for unit- and e2e-tests. To
 
 When opening a pull requests, all tests are executed automatically using GitHub-actions and a branch can only be merged if all tests are successful. However, it is highly recommended to test changes before pushing them!
 
+# Docker
+
+For deployment and usage of the docker images, check out our documentation page [here](https://maibornwolff.github.io/codecharta/docs/docker-containers/).
+
 # Troubleshooting
 
 We mainly use IntelliJ for our development. The project generally works right away, but sometimes issues can occur:
