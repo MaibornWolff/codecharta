@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Changed
+
+-   Update GH-Pages and dev guide on how to use our docker images [#3621](https://github.com/MaibornWolff/codecharta/pull/3621/files)
+
 ### Fixed 🐞
 
 -   Add default Docker user to mitigate `GitLogParser` issues during repo-scan [#3571](https://github.com/MaibornWolff/codecharta/pull/3571)
