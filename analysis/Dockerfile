@@ -2,7 +2,7 @@ FROM sapmachine:11.0.23
 
 ARG USER_ADD
 ARG USER_ID=1000
-ARG USER_GID=$USER_UID
+ARG USER_GID=$USER_ID
 ARG USERNAME=ubuntu
 
 COPY ./build/distributions/codecharta-analysis-*.tar /usr/local/
