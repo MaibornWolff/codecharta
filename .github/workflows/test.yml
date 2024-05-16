@@ -151,9 +151,10 @@ jobs:
       - name: Docker Test Analysis
         run: |
           user_instance="docker_runner"
-          docker build ./analysis -t local-ccsh --build-arg USER_ADD=true --build-arg USER_ID=1001 --build-arg USERNAME=${user_instance}
+          docker build ./analysis -t local-ccsh --build-arg USER_ADD=true --build-arg USER_ID=1001 --build-arg USERNAME=${user_instance} --no-cache
           current_version=$(node -pe "require('./analysis/node-wrapper/package.json').version")
           docker run -w /home/${user_instance}/cc/analysis/test -v $(pwd):/home/${user_instance}/cc local-ccsh bash ./golden_test.sh ${current_version} /home/${user_instance}/tmp-files/ /usr/local/bin/ccsh
+          docker build ./analysis -t local-ccsh --no-cache
         working-directory: ${{env.project-directory}}
 
       - name: Setup Java JDK
