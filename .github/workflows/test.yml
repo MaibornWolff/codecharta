@@ -150,7 +150,7 @@ jobs:
 
       - name: Docker Test Analysis
         run: |
-          docker build ./analysis -t local-ccsh --build-arg USER_ADD=true USER_ID=1001
+          docker build ./analysis -t local-ccsh --build-arg USER_ADD=true --build-arg USER_ID=1001
           current_version=$(node -pe "require('./analysis/node-wrapper/package.json').version")
           docker run -w /home/ubuntu/cc/analysis/test -v $(pwd):/home/ubuntu/cc local-ccsh bash ./golden_test.sh ${current_version} /home/ubuntu/tmp-files/ /usr/local/bin/ccsh
         working-directory: ${{env.project-directory}}
