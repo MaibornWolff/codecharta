@@ -54,7 +54,7 @@ Components that export data from visualisation data to other formats.
 ## Requirements
 
 - Bash or similar
-- JRE 11+
+- Java >= 11, <= 21
 
 # Installation methods
 
