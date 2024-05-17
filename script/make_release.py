@@ -5,6 +5,7 @@ import pathlib
 import subprocess
 import datetime
 import sys
+import json
 
 root = pathlib.Path().absolute()
 static_side_path = root.joinpath('gh-pages/visualization/app/')
@@ -32,7 +33,7 @@ def confirm(message, print_message):
         print(print_message)
     else:
         print("Aborting.")
-        quit()
+        quit(1)
 
 
 def get_latest_changelog_entries(path):
@@ -101,24 +102,39 @@ def update_readme(readme_path):
           release_line = True
         fp.write(line)
 
+def verify_git_tags(latest_tag_analysis, latest_tag_visualization):
+    analysis_package_json_file = open("analysis/node-wrapper/package.json","r",encoding="utf-8")
+    analysis_json = json.load(analysis_package_json_file)
+    visualization_package_json_file = open("visualization/package.json","r",encoding="utf-8")
+    visualization_json = json.load(visualization_package_json_file)
+
+    if (latest_tag_analysis != analysis_json["version"]):
+      print("Latest Analysis tag [{}] does not match package.json version [{}]! Aborting...".format(latest_tag_analysis, analysis_json["version"]))
+      print("Please make sure, that there are no unreleased tags remote or locally.")
+      quit(1)
+    if (latest_tag_visualization != visualization_json["version"]):
+      print("Latest Visualization tag [{}] does not match package.json version [{}]! Aborting...".format(latest_tag_visualization, visualization_json["version"]))
+      print("Please make sure, that there are no unreleased tags remote or locally.")
+      quit(1)
+
 ### Release Steps
 
 # Check if we're on project root folder
 if not is_root_folder:
     print("Please execute this script from the project root folder. Aborting.")
-    quit()
+    quit(1)
 else:
     repo = git.Repo(root)
 
 # Check if there are any uncommitted changes
 if not FORCE and repo.is_dirty():
     print("Please commit your changes first and/or ignore untracked files in git. Aborting.")
-    quit()
+    quit(1)
 
 # Check if we are on main branch
 if not FORCE and repo.active_branch.name != "main":
     print("You can only release on main branch. Aborting.")
-    quit()
+    quit(1)
 
 # Get latest tag for visualization and analysis
 all_tags_sorted = sorted(repo.tags, key=lambda t: t.commit.committed_datetime)
@@ -126,6 +142,7 @@ tags_vis = [tag for tag in all_tags_sorted if tag.name.startswith("vis-")]
 tags_ana = [tag for tag in all_tags_sorted if tag.name.startswith("ana-")]
 latest_tag_vis = tags_vis[-1].name[4:] if len(tags_vis) else all_tags_sorted[-1].name
 latest_tag_ana = tags_ana[-1].name[4:] if len(tags_ana) else all_tags_sorted[-1].name
+verify_git_tags(latest_tag_ana, latest_tag_vis)
 print(f"Last version tag in git for visualization: {latest_tag_vis}")
 print(f"Last version tag in git for analysis {latest_tag_ana}")
 
@@ -165,7 +182,7 @@ questions = [{
 release_type = PyInquirer.prompt(questions)["version"]
 
 if release_type is None:
-    quit()
+    quit(1)
 elif release_type == "Major":
     new_version = new_major_version
 elif release_type == "Minor":
@@ -209,7 +226,7 @@ if(is_visualization(repository)):
   processInfo = subprocess.run('cd visualization && npm ci && npm run build', shell=True)
   if(processInfo.returncode != 0):
      print("Npm ci in visualization was not successfull. Please check the console output.")
-     quit()
+     quit(1)
   subprocess.run(f"rm -rf {str(static_side_path)}", shell=True)
   static_side_path.mkdir(parents=True)
   subprocess.run(f"cp -R 'visualization/dist/webpack/.'  {str(static_side_path)}", shell=True)
@@ -271,7 +288,7 @@ tag = repo.create_tag(new_prefix_version, ref="HEAD",
 
 if(FORCE):
   print("Release not allowed in force mode. Quitting...")
-  quit()
+  quit(1)
 
 # push
 message = "The release is now committed and tagged but not pushed. In order to finish this release you need to push the commit and tag. Push?"
