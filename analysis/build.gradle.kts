@@ -1,5 +1,4 @@
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
-import org.jlleitschuh.gradle.ktlint.KtlintExtension
 import org.sonarqube.gradle.SonarExtension
 
 buildscript {
@@ -58,10 +57,6 @@ subprojects {
 
     configure<KotlinJvmProjectExtension> {
         jvmToolchain(11)
-    }
-
-    configure<KtlintExtension> {
-        additionalEditorconfig.set(mutableMapOf("max_line_length" to "300"))
     }
 }
 
