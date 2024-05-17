@@ -1,5 +1,10 @@
 FROM sapmachine:11.0.23
 
+ARG USER_ADD
+ARG USER_ID=1000
+ARG USER_GID=$USER_ID
+ARG USERNAME=ubuntu
+
 COPY ./build/distributions/codecharta-analysis-*.tar /usr/local/
 
 RUN cd /usr/local; \
@@ -34,12 +39,11 @@ RUN wget -qO /tmp/sonar-scanner.zip https://binaries.sonarsource.com/Distributio
     mkdir --parents /usr/local/conf ; cp ./conf/sonar-scanner.properties /usr/local/conf/; \
     cp -r ./jre/ /usr/local/jre; cd /; rm /tmp/sonar-scanner.zip; rm -rf /tmp/sonar-scanner-*-linux;
 
-ARG USERNAME=nonroot-docker-user
-ARG USER_UID=1000
-ARG USER_GID=$USER_UID
 
-RUN groupadd --gid $USER_GID $USERNAME \
-    && useradd --uid $USER_UID --gid $USER_GID -m $USERNAME;
+RUN if [ -n "$USER_ADD" ]; then \
+      groupadd --gid $USER_GID $USERNAME \
+          && useradd --uid $USER_ID --gid $USER_GID -m $USERNAME; \
+    fi
 
 USER $USERNAME
 

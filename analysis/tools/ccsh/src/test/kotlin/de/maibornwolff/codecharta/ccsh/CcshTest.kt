@@ -153,8 +153,8 @@ private val outContent = ByteArrayOutputStream()
 
         // then
         Assertions.assertThat(exitCode).isEqualTo(0)
-        Assertions.assertThat(outStream.toString())
-            .contains(listOf("version", "Copyright(c) 2024, MaibornWolff GmbH\n"))
+        // The actual printed version is null, as well as the package name, as it is not set for this test class
+        Assertions.assertThat(outStream.toString()).contains("version", "Copyright(c) 2024, MaibornWolff GmbH")
         verify(exactly = 0) { ParserService.executePreconfiguredParser(any(), any()) }
 
         // clean up

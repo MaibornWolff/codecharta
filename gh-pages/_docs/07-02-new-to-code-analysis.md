@@ -60,6 +60,8 @@ A simple way to only import the analysis is to clone the whole repository and th
 The integration tests might fail on windows, because of a missing or unknown `sh` command.
 To make it work, add the path to the Git `sh.exe` (which is normally placed here `C:\<path-to-git>\Git\bin`) to your PATH variable.
 
+If the integration tests fail on macOS, it is likely because the `timeout` command is not installed. This is necessary for the integration test and can be installed e.g. with `brew install coreutils`.
+
 **If you want to run the JUnit tests with the IntelliJ-Runner, make sure to go to `File -> Settings ->Build,Execution, Deployment -> Build Tools -> Gradle` and select `Run test using: IntelliJ IDEA`**
 
 ### Linting/Formatting

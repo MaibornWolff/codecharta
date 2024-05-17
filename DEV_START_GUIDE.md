@@ -90,18 +90,6 @@ npm run start
 You can also directly build a distributable package (.zip) of the standalone client for your system.
 For more information, see the 'Package' section of the [visualisation readme](https://github.com/MaibornWolff/codecharta/tree/main/visualization#package).
 
-# IntelliJ setup
-
-We mainly use IntelliJ for our development. The project generally works right away, except for two issues that sometimes occur:
-
--   Sometimes when opening the main CodeCharta folder, the analysis part does not get detected as a module. To solve this, directly open the analysis folder.
--   When working on visualization, IntelliJ does not correctly detect our test-suite. To execute tests using the build in runners,
-    it is necessary to adjust the Jest-Configuration:
-    -   First select 'Edit...' from the 'More actions' menu next to the Runner icon
-    -   Inside there, select 'Edit configuration templates...' at the bottom left
-    -   Select 'Jest' and set 'jestUnit.config.json' as the configuration file as well as adding the Jest option '--env=jsdom'
-    -   After clicking apply, IntelliJ should e able to execute all visualisation tests
-
 # Testing
 
 The analysis and visualisation parts are tested separately with different tools. \
@@ -109,6 +97,28 @@ For the analysis, we use gradle for testing, linting and formatting. More inform
 For the visualisation, we utilize Jest and puppeteer for unit- and e2e-tests. To run all unit tests, execute `npm test`. More information about e2e-tests can be found [here](https://maibornwolff.github.io/codecharta/dev-guide/e2e-testing-with-puppeteer/).
 
 When opening a pull requests, all tests are executed automatically using GitHub-actions and a branch can only be merged if all tests are successful. However, it is highly recommended to test changes before pushing them!
+
+# Docker
+
+For deployment and usage of the docker images, check out our documentation page [here](https://maibornwolff.github.io/codecharta/docs/docker-containers/).
+
+# Troubleshooting
+
+We mainly use IntelliJ for our development. The project generally works right away, but sometimes issues can occur:
+
+-   Sometimes when opening the main CodeCharta folder, the analysis part does not get detected as a module. To solve this, directly open the analysis folder.
+-   The integration tests for the analysis (`./gradlew integrationTest`) can fail due to OS specific problems:
+
+    -   On **windows** this may be caused by a missing or unknown `sh` command.
+        To make it work, add the path to the Git `sh.exe` (which is normally placed here `C:\<path-to-git>\Git\bin`) to your PATH variable.
+    -   For **macOS**, it is necessary to install the `timeout` command (e.g. using `brew install coreutils`) to execute the integration tests.
+
+-   When working on visualization, IntelliJ does not correctly detect our test-suite. To execute tests using the build in runners,
+    it is necessary to adjust the Jest-Configuration:
+    -   First select 'Edit...' from the 'More actions' menu next to the Runner icon
+    -   Inside there, select 'Edit configuration templates...' at the bottom left
+    -   Select 'Jest' and set 'jestUnit.config.json' as the configuration file as well as adding the Jest option '--env=jsdom'
+    -   After clicking apply, IntelliJ should e able to execute all visualisation tests
 
 # Documentation structure
 
