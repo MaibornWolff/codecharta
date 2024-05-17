@@ -136,8 +136,8 @@ if not FORCE and repo.active_branch.name != "main":
     print("You can only release on main branch. Aborting.")
     quit(1)
 
-# Pull changes to ensure we are up to date
-repo.remotes.origin.pull()
+# Fetch updates, to ensure the status is UPTODATE (4)
+assert(repo.remotes.origin.fetch()[0].flags == 4)
 
 # Get latest tag for visualization and analysis
 all_tags_sorted = sorted(repo.tags, key=lambda t: t.commit.committed_datetime)
