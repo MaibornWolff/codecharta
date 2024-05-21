@@ -14,6 +14,22 @@ cc-artificial-intelligence {
 		line-height: 10px;
 	}
 }
+
+.suspicious-metric-info-text {
+	color: black;
+	line-height: 1.5rem;
+	padding-bottom: 0px;
+}
+.button-mat-dialog {
+	border-radius: 12px;
+	margin-top: 2px;
+	background-color: lightgrey;
+	border-bottom-color: black;
+	font-size: 14px;
+	font-weight: bold;
+	width: 100px;
+}
+
 .mat-mdc-menu-panel.ai-drop-down {
 	max-width: 50em;
 
@@ -34,7 +50,7 @@ cc-artificial-intelligence {
 		border: none;
 		text-align: left;
 		font-size: 16px;
-		padding: 0 0 2px 0;
+		padding: 0 0 6px 0;
 	}
 
 	.untracked-metrics-icon {
@@ -56,7 +72,7 @@ cc-artificial-intelligence {
 
 	.suspicious-metric-info-text {
 		margin-bottom: 8px;
-		font-size: 16px;
+		font-size: 40px;
 		color: black;
 		line-height: 1.5rem;
 		padding-bottom: 0px;
@@ -78,7 +94,7 @@ cc-artificial-intelligence {
 			padding: 0 10px;
 		}
 
-		button {
+		mat-button-toggle {
 			height: 28px;
 			background-color: rgba(230, 230, 230, 0.96);
 			&:hover {
@@ -88,16 +104,26 @@ cc-artificial-intelligence {
 
 		.metric-button {
 			border-radius: 5px;
-			padding: 0 12px;
 			font-size: 12px;
 		}
 
 		.risk-button {
 			border-radius: 5px;
-			margin-left: 4px;
+			margin-left: 1px;
 			font-size: 12px;
 			color: #9c0e6a;
 		}
+	}
+	.mat-button-toggle-group-appearance-standard {
+		border: solid 0px;
+	}
+
+	.mat-button-toggle-appearance-standard .mat-button-toggle-label-content {
+		padding: 0 12px;
+		line-height: 2.5;
+		display: flex;
+		justify-content: center;
+		align-items: center;
 	}
 
 	&.high-risk-profile {
