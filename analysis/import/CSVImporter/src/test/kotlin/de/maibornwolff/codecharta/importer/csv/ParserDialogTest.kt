@@ -1,3 +1,5 @@
+@file:Suppress("ktlint:standard:max-line-length")
+
 package de.maibornwolff.codecharta.importer.csv
 
 import com.github.kinquirer.KInquirer

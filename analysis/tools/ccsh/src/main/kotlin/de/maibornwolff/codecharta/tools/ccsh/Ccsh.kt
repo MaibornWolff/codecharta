@@ -164,7 +164,8 @@ class Ccsh : Callable<Unit?> {
                 val ccJsonFilePath =
                     KInquirer.promptInput(
                         message = "What is the folder path containing all cc.json files?",
-                        hint = "If you did not output all cc.json files into the same folder, " + "you need to manually move them there before trying to merge."
+                        hint = "If you did not output all cc.json files into the same folder, " +
+                            "you need to manually move them there before trying to merge."
                     )
 
                 val outputFilePath =

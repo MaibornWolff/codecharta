@@ -45,13 +45,22 @@ class PipedInputStream {
         )
     }
 
-    private fun executeForOutput(input: String, args: Array<String> = emptyArray()) = outputAsString(input) { inputStream, outputStream, errorStream ->
+    private fun executeForOutput(input: String, args: Array<String> = emptyArray()) = outputAsString(
+        input
+    ) { inputStream, outputStream, errorStream ->
         mainWithInOut(outputStream, inputStream, errorStream, args)
     }
 
-    private fun outputAsString(input: String, aMethod: (input: InputStream, output: PrintStream, error: PrintStream) -> Unit) = outputAsString(ByteArrayInputStream(input.toByteArray()), aMethod)
+    private fun outputAsString(input: String, aMethod: (input: InputStream, output: PrintStream, error: PrintStream) -> Unit) =
+        outputAsString(
+            ByteArrayInputStream(input.toByteArray()),
+            aMethod
+        )
 
-    private fun outputAsString(inputStream: InputStream = System.`in`, aMethod: (input: InputStream, output: PrintStream, error: PrintStream) -> Unit) = ByteArrayOutputStream().use { baOutputStream ->
+    private fun outputAsString(
+        inputStream: InputStream = System.`in`,
+        aMethod: (input: InputStream, output: PrintStream, error: PrintStream) -> Unit
+    ) = ByteArrayOutputStream().use { baOutputStream ->
         PrintStream(baOutputStream).use { outputStream ->
             aMethod(inputStream, outputStream, System.err)
         }

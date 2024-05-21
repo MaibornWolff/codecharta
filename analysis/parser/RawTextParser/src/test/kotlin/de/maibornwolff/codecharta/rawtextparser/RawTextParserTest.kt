@@ -180,7 +180,14 @@ class RawTextParserTest {
 
         // then
         Assertions.assertThat(result).isEmpty()
-        Assertions.assertThat(lambdaSlot.any { e -> e().contains("No files with specified file extension(s) were found within the given folder - not generating an output file!") }).isTrue()
+        Assertions.assertThat(
+            lambdaSlot.any {
+                    e ->
+                e().contains(
+                    "No files with specified file extension(s) were found within the given folder - not generating an output file!"
+                )
+            }
+        ).isTrue()
     }
 
     @Test
@@ -196,8 +203,18 @@ class RawTextParserTest {
 
         // then
         Assertions.assertThat(result).isNotEmpty()
-        Assertions.assertThat(lambdaSlot.any { e -> e().contains("The specified file extension 'invalid' was not found within the given folder!") }).isTrue()
-        Assertions.assertThat(lambdaSlot.any { e -> e().contains("The specified file extension 'included' was not found within the given folder!") }).isFalse()
+        Assertions.assertThat(
+            lambdaSlot.any {
+                    e ->
+                e().contains("The specified file extension 'invalid' was not found within the given folder!")
+            }
+        ).isTrue()
+        Assertions.assertThat(
+            lambdaSlot.any {
+                    e ->
+                e().contains("The specified file extension 'included' was not found within the given folder!")
+            }
+        ).isFalse()
     }
 
     @Test
@@ -217,7 +234,14 @@ class RawTextParserTest {
 
         // then
         Assertions.assertThat(result).isEmpty()
-        Assertions.assertThat(lambdaSlot.any { e -> e().contains("No files with specified file extension(s) were found within the given folder - not generating an output file!") }).isTrue()
+        Assertions.assertThat(
+            lambdaSlot.any {
+                    e ->
+                e().contains(
+                    "No files with specified file extension(s) were found within the given folder - not generating an output file!"
+                )
+            }
+        ).isTrue()
     }
 
     @Test

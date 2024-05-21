@@ -1,3 +1,5 @@
+@file:Suppress("ktlint:standard:max-line-length")
+
 package de.maibornwolff.codecharta.importer.sonar
 
 import de.maibornwolff.codecharta.model.AttributeDescriptor

@@ -38,7 +38,8 @@ fun getAttributeDescriptors(): Map<String, AttributeDescriptor> {
         "real_lines_of_code" to
             AttributeDescriptor(
                 title = "Real Lines of Code",
-                description = "Number of physical lines that contain at least one character which is neither a whitespace nor a tabulation nor part of a comment",
+                description = "Number of physical lines that contain at least one character" +
+                    " which is neither a whitespace nor a tabulation nor part of a comment",
                 link = npmLink, direction = -1
             ),
         "coupling_between_objects" to

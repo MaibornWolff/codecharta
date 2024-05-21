@@ -134,7 +134,10 @@ open class ProjectBuilder(
         return this
     }
 
-    private fun addAttributeDescriptorWithEstimatedDirection(nodeAttributeName: String, complementedAttributeDescriptors: MutableMap<String, AttributeDescriptor>) {
+    private fun addAttributeDescriptorWithEstimatedDirection(
+        nodeAttributeName: String,
+        complementedAttributeDescriptors: MutableMap<String, AttributeDescriptor>
+    ) {
         complementedAttributeDescriptors[nodeAttributeName] =
             AttributeDescriptor(title = nodeAttributeName, direction = estimateDirection(nodeAttributeName))
     }
@@ -174,7 +177,9 @@ open class ProjectBuilder(
                 it.value
             }
 
-        if (attributeDescriptorNameWithMaxAvgSimilarity != null && attributeDescriptorNameWithMaxAvgSimilarity.value >= avgSimilarityThreshold) {
+        if (attributeDescriptorNameWithMaxAvgSimilarity != null &&
+            attributeDescriptorNameWithMaxAvgSimilarity.value >= avgSimilarityThreshold
+        ) {
             val attributeDescriptorWithMaxAvgSimilarity =
                 attributeDescriptors[attributeDescriptorNameWithMaxAvgSimilarity.key]
             if (attributeDescriptorWithMaxAvgSimilarity != null) {
@@ -274,7 +279,11 @@ open class ProjectBuilder(
     }
 
     override fun toString(): String {
-        return "Project{nodes=$nodes, edges=$edges, attributeTypes=$attributeTypes, attributeDescriptors=$attributeDescriptors, blacklist=$blacklist}"
+        return "Project{nodes=$nodes," +
+            " edges=$edges," +
+            " attributeTypes=$attributeTypes," +
+            " attributeDescriptors=$attributeDescriptors," +
+            " blacklist=$blacklist}"
     }
 
     companion object {

@@ -225,11 +225,15 @@ fun executeForOutput(input: String, args: Array<String> = emptyArray()) = output
     mainWithInOut(inputStream, outputStream, errorStream, args)
 }
 
-fun outputAsString(input: String, aMethod: (input: InputStream, output: PrintStream, error: PrintStream) -> Unit) = outputAsString(ByteArrayInputStream(input.toByteArray()), aMethod)
+fun outputAsString(input: String, aMethod: (input: InputStream, output: PrintStream, error: PrintStream) -> Unit) = outputAsString(
+    ByteArrayInputStream(input.toByteArray()),
+    aMethod
+)
 
-fun outputAsString(inputStream: InputStream = System.`in`, aMethod: (input: InputStream, output: PrintStream, error: PrintStream) -> Unit) = ByteArrayOutputStream().use { baOutputStream ->
-    PrintStream(baOutputStream).use { outputStream ->
-        aMethod(inputStream, outputStream, System.err)
+fun outputAsString(inputStream: InputStream = System.`in`, aMethod: (input: InputStream, output: PrintStream, error: PrintStream) -> Unit) =
+    ByteArrayOutputStream().use { baOutputStream ->
+        PrintStream(baOutputStream).use { outputStream ->
+            aMethod(inputStream, outputStream, System.err)
+        }
+        baOutputStream.toString()
     }
-    baOutputStream.toString()
-}
