@@ -169,6 +169,9 @@ The analysis does not get automatically linted on commit.
 
 ## Editor Setup
 
+> It is a good idea to check, if there are any plugins version of ours tools available for your code editor. Those plugins usually enable a
+> non-intrusive code linting on save, which can really help with code style, and avoids commits, solely focused on formatting.
+
 ### IntelliJ Idea
 
 For analysis the code style is based on the official `Kotlin Coding Conventions`. This baseline can be set in the configuration.
