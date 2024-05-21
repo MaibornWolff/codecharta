@@ -4,8 +4,8 @@
 
 CodeCharta consists of two separate parts:
 
--   The [analysis](https://maibornwolff.github.io/codecharta/docs/analysis/) which is a cli-tool that generates a `.cc.json file` file.
--   The [visualization](https://maibornwolff.github.io/codecharta/docs/visualization/) that consumes said file and visualises it in form of a tree map. The visualization has both a desktop client and a [web version](https://maibornwolff.github.io/codecharta/visualization/app/index.html?file=codecharta.cc.json.gz&file=codecharta_analysis.cc.json.gz).
+- The [analysis](https://maibornwolff.github.io/codecharta/docs/analysis/) which is a cli-tool that generates a `.cc.json file` file.
+- The [visualization](https://maibornwolff.github.io/codecharta/docs/visualization/) that consumes said file and visualises it in form of a tree map. The visualization has both a desktop client and a [web version](https://maibornwolff.github.io/codecharta/visualization/app/index.html?file=codecharta.cc.json.gz&file=codecharta_analysis.cc.json.gz).
 
 Both parts are in active development, meaning as a developer you can contribute to both.
 
@@ -13,9 +13,9 @@ Both parts are in active development, meaning as a developer you can contribute 
 
 To work on CodeCharta, please ensure your system includes:
 
--   Git
--   Java >= 11
--   Node >= 18
+- Git
+- Java >= 11, <= 21
+- Node >= 18
 
 # Install guide
 
@@ -48,11 +48,11 @@ cd analysis
 With this, the cli-tool is installed. When running `ccsh` however, we still get an error as the command is not accessible.
 There are three ways in which the cli-tool can be used:
 
--   Navigate into the folder where the installed shell and batch files are created (`analysis/build/install/codecharta-analysis/bin`) and executing commands from there
--   Call the ccsh with the relative path to the current location. E.g. in the analysis folder with `./build/install/codecharta-analysis/bin/ccsh`
--   Add the installed shell or batch files to the path to make it globally accessible. This can be done by adding the shell or batch file to the path of your terminal.
-    As this process is specific to each terminal, we cannot include instructions here, but searching for "{name-of-console} add to path" should result in fitting instructions.
-    This solution is recommended, as it is the most effort in the short term but the most comfortable in the long run.
+- Navigate into the folder where the installed shell and batch files are created (`analysis/build/install/codecharta-analysis/bin`) and executing commands from there
+- Call the ccsh with the relative path to the current location. E.g. in the analysis folder with `./build/install/codecharta-analysis/bin/ccsh`
+- Add the installed shell or batch files to the path to make it globally accessible. This can be done by adding the shell or batch file to the path of your terminal.
+  As this process is specific to each terminal, we cannot include instructions here, but searching for "{name-of-console} add to path" should result in fitting instructions.
+  This solution is recommended, as it is the most effort in the short term but the most comfortable in the long run.
 
 ## Install Visualisation
 
@@ -129,6 +129,49 @@ Each relevant part of the project that requires explanation includes a README fi
 If this is not the case, feel free to open an issue, so it will be added.
 Additionally, for the analysis, the ccsh-command, as well as every parser includes a `-h` flag to show further information about its usages.
 For more information about the CodeChart Shell and individual parsers, click [here](https://maibornwolff.github.io/codecharta/docs/ccsh/).
+
+# Code Style
+
+The basic code format is defined through the `.editorconfig`. If possible the other formatting tools check out those rules.
+Editors like VSC and IntelliJ Idea are able to apply those basic settings as well.
+
+## Analysis
+
+In the analysis our code style is applied through `gradle`:
+
+```bash
+# verify code style
+./gradlew ktlintCheck
+# format code style
+./gradlew ktlintFormat
+```
+
+The tool _KTlint_ is added to gradle via a plugin. _KTlint_ is a linter and a formatting tool, with rules defined in the `.editorconfig`.
+
+## Visualization
+
+In the visualization we use two tools in combination: _Prettier_ and _EsLint_ with some plugins.
+
+_Prettier_ uses `.editorconfig` for baseline configuration, together with the `prettier: {...}` section in our `visualization/package.json`.
+
+_EsLint_ is configured inside `visualization/` via `.eslintrc.js`. It respects the formatting applied through _Prettier_ as defined by the last
+entry in the `extends` array inside the configuration. Important is, that _EsLint_ does not format the code according to _Prettier_, _Prettier_
+itself does the formating after _EsLint_ ran through. _EsLint_ is more focused on **Code Quality**, not on **Code Style**.
+
+## Commits: Linting on Staged Files
+
+Your code should be automatically checked and formatted for code style and quality before commiting. To ensure this works as expected run
+`npm i` in the root directory and in `visualization/`. This command installs _Husky_, which is our tool for Git Hooks.
+On commit the `.husky/pre-commit.sh` gets executed, which runs _Pretty-Quick_ (Prettier extension) on staged files as well as _Lint-Staged_ in
+visualization. _Lint-Staged_ runs a given linter (in this case _EsLint_) on staged files, as defined inside the package.json `lint-staged: {...}`.
+
+The analysis does not get automatically linted on commit.
+
+## Editor Setup
+
+### IntelliJ Idea
+
+For analysis the code style is based on the official `Kotlin Coding Conventions`. This baseline can be set in the configuration.
 
 # Contributing
 

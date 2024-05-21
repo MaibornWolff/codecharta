@@ -169,3 +169,7 @@ To containerize the visualization, please follow the below listed steps.
 [Example Data](/visualization/app/codeCharta/assets/sample1.cc.json)
 
 [JSON Schema](/visualization/app/codeCharta/util/generatedSchema.json)
+
+## Code Style
+
+Please check out the [DEV_START_GUIDE](../DEV_START_GUIDE.md).

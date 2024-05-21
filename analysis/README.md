@@ -145,11 +145,7 @@ Via gradle:
 
 ## Code Style
 
-In order to keep the code style consistent, an XML-file containing the settings used for this project can be found
-in `intellij-resources`.
-
-Please import these settings in `File > Settings > Editor > Code Style`, and make sure you have ticked the box to
-reformat code before committing.
+Please check out the [DEV_START_GUIDE](../DEV_START_GUIDE.md).
 
 ## License
 
