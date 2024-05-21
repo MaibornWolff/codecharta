@@ -75,7 +75,7 @@ describe("nodePathComponent", () => {
         store.refreshState()
         detectChanges()
 
-        expect(container.textContent.replaceAll(/\s+/g, " ")).toContain("some/folder ( 2 files | Δ1 | Δ-2 | Δ3)")
+        expect(container.textContent.replaceAll(/\s+/g, " ")).toContain("some/folder ( 2 files | Δ1 | Δ-2 | Δ3 )")
     })
 
     it("should display amount of files with correct english grammar, when an empty folder is selected and delta mode is enabled", async () => {
