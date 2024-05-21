@@ -121,3 +121,7 @@ To unify the appearance of all commit messages we only accept commit messages us
 - If there are no Pull Requests associated to your change, link an issue.
 - The image should always have a width and/or a height attribute.
   - Example: width=”350px”
+
+## Recommended Setup
+
+If you have any questions about the project setup, check out the [Dev-Start-Guide](DEV_START_GUIDE.md)!
