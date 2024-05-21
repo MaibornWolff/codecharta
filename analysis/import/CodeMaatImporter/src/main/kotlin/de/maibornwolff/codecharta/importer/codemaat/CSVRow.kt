@@ -10,7 +10,8 @@ class CSVRow(
     init {
         if (row.size <= header.pathColumn.size) {
             throw IllegalArgumentException(
-                "Row " + row.contentToString() + " has no column containing the file path. Should be in one of " + header.pathColumn + " columns."
+                "Row " + row.contentToString() +
+                    " has no column containing the file path. Should be in one of " + header.pathColumn + " columns."
             )
         }
     }

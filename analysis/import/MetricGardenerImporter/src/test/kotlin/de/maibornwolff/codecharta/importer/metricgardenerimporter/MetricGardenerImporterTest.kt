@@ -122,7 +122,9 @@ class MetricGardenerImporterTest {
 
     @ParameterizedTest
     @MethodSource("provideValidInputFiles")
-    fun `should be identified as applicable for given directory path containing a file of a supported language`(resourceToBeParsed: String) {
+    fun `should be identified as applicable for given directory path containing a file of a supported language`(
+        resourceToBeParsed: String
+    ) {
         val isUsable = MetricGardenerImporter().isApplicable(resourceToBeParsed)
         Assertions.assertThat(isUsable).isTrue()
     }

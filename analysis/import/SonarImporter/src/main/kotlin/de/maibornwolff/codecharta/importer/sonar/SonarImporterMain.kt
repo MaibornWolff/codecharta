@@ -34,7 +34,12 @@ class SonarImporterMain(
         names = ["-h", "--help"],
         usageHelp = true,
         description = [
-            "Please locate:\n" + "-    sonar.host.url=https://sonar.foo\n" + "-    sonar.login=c123d456\n" + "-    sonar.projectKey=de.foo:bar\n" + "That you use to upload your code to sonar.\n" + "Then execute [sonarimport https://sonar.foo de.foo:bar -u c123d456]"
+            "Please locate:\n" +
+                "-    sonar.host.url=https://sonar.foo\n" +
+                "-    sonar.login=c123d456\n" +
+                "-    sonar.projectKey=de.foo:bar\n" +
+                "That you use to upload your code to sonar.\n" +
+                "Then execute [sonarimport https://sonar.foo de.foo:bar -u c123d456]"
         ]
     )
     private var help = false
@@ -55,7 +60,10 @@ class SonarImporterMain(
 
     @CommandLine.Option(
         names = ["-m", "--metrics"],
-        description = ["comma-separated list of metrics to import (when using powershell, the list either can't contain spaces or has to be in quotes)"],
+        description = [
+            "comma-separated list of metrics to import " +
+                "(when using powershell, the list either can't contain spaces or has to be in quotes)"
+        ],
         converter = [(CommaSeparatedStringToListConverter::class)],
         preprocessor = CommaSeparatedParameterPreprocessor::class
     )

@@ -42,7 +42,10 @@ class RawTextParser(
 
     @CommandLine.Option(
         names = ["-m", "--metrics"],
-        description = ["comma-separated list of metrics to be computed (all available metrics are computed if not specified) (when using powershell, the list either can't contain spaces or has to be in quotes)"],
+        description = [
+            "comma-separated list of metrics to be computed (all available metrics are computed if not specified) " +
+                "(when using powershell, the list either can't contain spaces or has to be in quotes)"
+        ],
         paramLabel = "metrics",
         converter = [(CommaSeparatedStringToListConverter::class)],
         preprocessor = CommaSeparatedParameterPreprocessor::class

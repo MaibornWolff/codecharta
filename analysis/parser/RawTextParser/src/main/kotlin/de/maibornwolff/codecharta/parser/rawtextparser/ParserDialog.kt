@@ -68,7 +68,8 @@ class ParserDialog {
 
             val withoutDefaultExcludes: Boolean =
                 KInquirer.promptConfirm(
-                    message = "Do you want to include build, target, dist, resources and out folders as well as files/folders starting with '.'?",
+                    message = "Do you want to include build, target, dist, resources" +
+                        " and out folders as well as files/folders starting with '.'?",
                     default = false
                 )
 

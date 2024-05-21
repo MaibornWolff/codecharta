@@ -13,7 +13,8 @@ fun getAttributeDescriptors(): Map<String, AttributeDescriptor> {
         "rloc" to
             AttributeDescriptor(
                 title = "Real Lines of Code",
-                description = "Number of physical lines that contain at least one character which is neither a whitespace nor a tabulation nor part of a comment",
+                description = "Number of physical lines that contain at least one character" +
+                    " which is neither a whitespace nor a tabulation nor part of a comment",
                 link = ghLink, direction = -1
             ),
         "comment_lines" to

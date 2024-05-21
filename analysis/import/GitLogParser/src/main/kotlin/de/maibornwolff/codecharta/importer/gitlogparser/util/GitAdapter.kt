@@ -21,7 +21,9 @@ class GitAdapter(private val gitDirectory: File, private val fileHandle: File) {
         if (runningProcess.waitFor(3, TimeUnit.MINUTES)) {
             val exitCode = runningProcess.exitValue()
             if (exitCode != 0) {
-                throw RuntimeException("Error while executing Git! Command was: ${process.command()}. Process returned with exit status $exitCode.")
+                throw RuntimeException(
+                    "Error while executing Git! Command was: ${process.command()}. Process returned with exit status $exitCode."
+                )
             }
         }
     }

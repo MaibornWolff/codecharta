@@ -35,14 +35,19 @@ class ParserDialogHelper {
 
         private fun getInputFileName(isSourceMonitor: Boolean): String {
             return KInquirer.promptInput(
-                message = if (isSourceMonitor) "What is the SourceMonitor CSV file that has to be parsed?" else "Please specify the name of the first CSV file to be parsed.",
+                message = if (isSourceMonitor) {
+                    "What is the SourceMonitor CSV file that has to be parsed?"
+                } else {
+                    "Please specify the name of the first CSV file to be parsed."
+                },
                 hint = Paths.get("").toAbsolutePath().toString() + File.separator + "yourInput.csv"
             )
         }
 
         private fun collectAdditionalFile(): String {
             return KInquirer.promptInput(
-                message = "If you want to parse additional CSV files, specify the name of the next file. Otherwise, leave this field empty to skip."
+                message = "If you want to parse additional CSV files, specify the name of the next file." +
+                    " Otherwise, leave this field empty to skip."
             )
         }
     }

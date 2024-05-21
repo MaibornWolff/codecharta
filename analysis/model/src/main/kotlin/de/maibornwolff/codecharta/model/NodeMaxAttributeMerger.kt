@@ -81,9 +81,10 @@ class NodeMaxAttributeMerger(
         }
     }
 
-    private fun <K, V : Any> Map<K, V>.mergeReduce(other: Map<K, V>, reduce: (V, V) -> V = { _, b -> b }): Map<K, V> = this.toMutableMap().apply {
-        other.forEach {
-            merge(it.key, it.value, reduce)
+    private fun <K, V : Any> Map<K, V>.mergeReduce(other: Map<K, V>, reduce: (V, V) -> V = { _, b -> b }): Map<K, V> =
+        this.toMutableMap().apply {
+            other.forEach {
+                merge(it.key, it.value, reduce)
+            }
         }
-    }
 }
