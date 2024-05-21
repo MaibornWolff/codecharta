@@ -32,7 +32,7 @@ class LogLineCollector private constructor(private val isCommitSeparator: Predic
         }
     }
 
-    private fun addToLastCommit(commits: MutableList<MutableList<String>>, logLine: String) {
+    private fun addToLastCommit(commits: List<MutableList<String>>, logLine: String) {
         val indexOfLastCommit = commits.size - 1
         val lastCommit = commits[indexOfLastCommit]
         lastCommit.add(logLine)

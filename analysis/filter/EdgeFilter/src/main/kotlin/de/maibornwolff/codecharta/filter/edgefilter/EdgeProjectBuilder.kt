@@ -92,7 +92,7 @@ class EdgeProjectBuilder(
         }
     }
 
-    private fun insertEdgeAttributesIntoNodes(nodes: Set<Node>, parentPath: MutableList<String> = mutableListOf()) {
+    private fun insertEdgeAttributesIntoNodes(nodes: Set<Node>, parentPath: List<String> = listOf()) {
         nodes.forEach {
             val node = Node(it.name, it.type, getAttributes(it, parentPath), it.link)
             insertNodeInProjectBuilder(node, parentPath.toList())
@@ -147,7 +147,7 @@ class EdgeProjectBuilder(
         return attributeKeys
     }
 
-    private fun getAggregatedAttributes(listOfAttributes: MutableList<String>, filteredEdges: List<Edge>): MutableMap<String, Any> {
+    private fun getAggregatedAttributes(listOfAttributes: List<String>, filteredEdges: List<Edge>): MutableMap<String, Any> {
         val aggregatedAttributes: MutableMap<String, Any> = mutableMapOf()
 
         listOfAttributes.forEach { key: String ->
