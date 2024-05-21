@@ -1,4 +1,5 @@
 @file:Suppress("ktlint:standard:max-line-length")
+
 package de.maibornwolff.codecharta.rawtextparser
 
 import com.github.kinquirer.KInquirer
