@@ -82,6 +82,7 @@
     "dequal": "^2.0.3",
     "electron": "27.3.11",
     "fake-indexeddb": "^4.0.2",
+    "fflate": "^0.8.2",
     "font-awesome": "^4.7.0",
     "hotkeys-js": "^3.8.2",
     "html2canvas": "^1.4.1",
