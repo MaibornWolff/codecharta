@@ -11,86 +11,86 @@ import { ColorMode } from "../../codeCharta.model"
 import { of } from "rxjs"
 
 describe("Export3DMapButtonComponent", () => {
-	beforeEach(() => {
-		TestBed.configureTestingModule({
-			imports: [Export3DMapButtonModule],
-			providers: [
-				{ provide: State, useValue: {} },
-				{ provide: Store, useValue: {} }
-			]
-		})
-	})
+    beforeEach(() => {
+        TestBed.configureTestingModule({
+            imports: [Export3DMapButtonModule],
+            providers: [
+                { provide: State, useValue: {} },
+                { provide: Store, useValue: {} }
+            ]
+        })
+    })
 
-	it("should render the button", async function () {
-		await render(Export3DMapButtonComponent, { excludeComponentDeclaration: true })
-		const exportButton = screen.getByRole("button")
-		expect(exportButton).not.toBe(null)
-	})
+    it("should render the button", async function () {
+        await render(Export3DMapButtonComponent, { excludeComponentDeclaration: true })
+        const exportButton = screen.getByRole("button")
+        expect(exportButton).not.toBe(null)
+    })
 
-	it("should open the export dialog when button is clicked with color mode absolute", async function () {
-		const state = { getValue: () => ({ dynamicSettings: { colorMode: "absolute" } }) }
-		const dialog = { open: jest.fn() }
+    it("should open the export dialog when button is clicked with color mode absolute", async function () {
+        const state = { getValue: () => ({ dynamicSettings: { colorMode: "absolute" } }) }
+        const dialog = { open: jest.fn() }
 
-		await render(Export3DMapButtonComponent, {
-			excludeComponentDeclaration: true,
-			providers: [
-				{ provide: State, useValue: state },
-				{ provide: MatDialog, useValue: dialog }
-			]
-		})
+        await render(Export3DMapButtonComponent, {
+            excludeComponentDeclaration: true,
+            providers: [
+                { provide: State, useValue: state },
+                { provide: MatDialog, useValue: dialog }
+            ]
+        })
 
-		const printButton = screen.getByRole("button")
-		printButton.click()
+        const printButton = screen.getByRole("button")
+        printButton.click()
 
-		expect(dialog.open).toHaveBeenCalledTimes(1)
-		expect(dialog.open).toHaveBeenCalledWith(Export3DMapDialogComponent, { panelClass: "cc-export-3D-map-dialog" })
-	})
+        expect(dialog.open).toHaveBeenCalledTimes(1)
+        expect(dialog.open).toHaveBeenCalledWith(Export3DMapDialogComponent, { panelClass: "cc-export-3D-map-dialog" })
+    })
 
-	it("should open the error dialog when color mode is not absolute", async function () {
-		const state = { getValue: jest.fn(() => ({ dynamicSettings: { colorMode: "relative" } })) }
-		const dialog = { open: jest.fn() }
+    it("should open the error dialog when color mode is not absolute", async function () {
+        const state = { getValue: jest.fn(() => ({ dynamicSettings: { colorMode: "relative" } })) }
+        const dialog = { open: jest.fn() }
 
-		const { fixture } = await render(Export3DMapButtonComponent, {
-			excludeComponentDeclaration: true,
-			providers: [
-				{ provide: State, useValue: state },
-				{ provide: MatDialog, useValue: dialog }
-			]
-		})
+        const { fixture } = await render(Export3DMapButtonComponent, {
+            excludeComponentDeclaration: true,
+            providers: [
+                { provide: State, useValue: state },
+                { provide: MatDialog, useValue: dialog }
+            ]
+        })
 
-		const errorDialogData = fixture.componentInstance.buildErrorDialog()
-		const mockedBuildErrorDialog = jest.spyOn(fixture.componentInstance, "buildErrorDialog").mockReturnValue(errorDialogData)
+        const errorDialogData = fixture.componentInstance.buildErrorDialog()
+        const mockedBuildErrorDialog = jest.spyOn(fixture.componentInstance, "buildErrorDialog").mockReturnValue(errorDialogData)
 
-		const printButton = screen.getByRole("button")
-		printButton.click()
+        const printButton = screen.getByRole("button")
+        printButton.click()
 
-		expect(mockedBuildErrorDialog).toHaveBeenCalledTimes(1)
-		expect(dialog.open).toHaveBeenCalledTimes(1)
-		expect(dialog.open).toHaveBeenCalledWith(ErrorDialogComponent, { data: errorDialogData })
-	})
+        expect(mockedBuildErrorDialog).toHaveBeenCalledTimes(1)
+        expect(dialog.open).toHaveBeenCalledTimes(1)
+        expect(dialog.open).toHaveBeenCalledWith(ErrorDialogComponent, { data: errorDialogData })
+    })
 
-	it("should switch to absolute color mode and open the export dialog when user changes color mode directly", async function () {
-		const state = { getValue: () => ({ dynamicSettings: { colorMode: "relative" } }) }
-		const store = { dispatch: jest.fn(), select: jest.fn(() => of(ColorMode.absolute)) } // Mock Store
-		const dialog = { open: jest.fn() }
+    it("should switch to absolute color mode and open the export dialog when user changes color mode directly", async function () {
+        const state = { getValue: () => ({ dynamicSettings: { colorMode: "relative" } }) }
+        const store = { dispatch: jest.fn(), select: jest.fn(() => of(ColorMode.absolute)) } // Mock Store
+        const dialog = { open: jest.fn() }
 
-		const { fixture } = await render(Export3DMapButtonComponent, {
-			excludeComponentDeclaration: true,
-			providers: [
-				{ provide: State, useValue: state },
-				{ provide: Store, useValue: store },
-				{ provide: MatDialog, useValue: dialog }
-			]
-		})
+        const { fixture } = await render(Export3DMapButtonComponent, {
+            excludeComponentDeclaration: true,
+            providers: [
+                { provide: State, useValue: state },
+                { provide: Store, useValue: store },
+                { provide: MatDialog, useValue: dialog }
+            ]
+        })
 
-		const errorDialogData = fixture.componentInstance.buildErrorDialog()
-		dialog.open(ErrorDialogComponent, { data: errorDialogData })
+        const errorDialogData = fixture.componentInstance.buildErrorDialog()
+        dialog.open(ErrorDialogComponent, { data: errorDialogData })
 
-		jest.useFakeTimers()
-		await errorDialogData.resolveErrorData.onResolveErrorClick()
-		jest.runAllTimers()
+        jest.useFakeTimers()
+        await errorDialogData.resolveErrorData.onResolveErrorClick()
+        jest.runAllTimers()
 
-		expect(store.dispatch).toHaveBeenCalledWith(setColorMode({ value: ColorMode.absolute }))
-		expect(dialog.open).toHaveBeenCalledWith(Export3DMapDialogComponent, { panelClass: "cc-export-3D-map-dialog" })
-	})
+        expect(store.dispatch).toHaveBeenCalledWith(setColorMode({ value: ColorMode.absolute }))
+        expect(dialog.open).toHaveBeenCalledWith(Export3DMapDialogComponent, { panelClass: "cc-export-3D-map-dialog" })
+    })
 })

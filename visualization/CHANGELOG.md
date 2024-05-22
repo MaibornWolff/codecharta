@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
--   Export multi-material 3MF for 3D printing of maps in color [#3616](https://github.com/MaibornWolff/codecharta/pull/3616)
+- Export multi-material 3MF for 3D printing of maps in color [#3616](https://github.com/MaibornWolff/codecharta/pull/3616)
 
 ### Changed
 

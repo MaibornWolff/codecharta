@@ -44,11 +44,11 @@ describe("TreeMapHelper", () => {
                 data: codeMapNode,
                 value: 42,
                 depth: 1,
-				x0: 0,
-				y0: 0,
-				x1: 400,
-				y1: 400
-			} as HierarchyRectangularNode<CodeMapNode>
+                x0: 0,
+                y0: 0,
+                x1: 400,
+                y1: 400
+            } as HierarchyRectangularNode<CodeMapNode>
 
             state = clone(STATE)
             state.dynamicSettings.margin = 15

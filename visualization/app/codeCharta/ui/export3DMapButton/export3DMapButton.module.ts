@@ -10,8 +10,8 @@ import { FormsModule } from "@angular/forms"
 import { LabelledColorPickerModule } from "../labelledColorPicker/labelledColorPicker.module"
 
 @NgModule({
-	imports: [CommonModule, ActionIconModule, HttpClientModule, MaterialModule, MatSliderModule, FormsModule, LabelledColorPickerModule],
-	declarations: [Export3DMapButtonComponent, Export3DMapDialogComponent],
-	exports: [Export3DMapButtonComponent]
+    imports: [CommonModule, ActionIconModule, HttpClientModule, MaterialModule, MatSliderModule, FormsModule, LabelledColorPickerModule],
+    declarations: [Export3DMapButtonComponent, Export3DMapDialogComponent],
+    exports: [Export3DMapButtonComponent]
 })
 export class Export3DMapButtonModule {}
