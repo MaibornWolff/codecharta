@@ -1,0 +1,25 @@
+<div *ngIf="data.suspiciousMetricSuggestionLinks.length" class="title new-section">
+	Suspicious Metrics in {{ data.analyzedProgrammingLanguage }} code
+</div>
+<div class="suspicious-metric" *ngFor="let item of data.suspiciousMetricSuggestionLinks">
+	<mat-button-toggle-group>
+		<mat-button-toggle
+			class="metric-button"
+			(click)="applySuspiciousMetric(item, false)"
+			title="Apply Map Configuration to show files with suspicious metric {{
+				item.metric
+			}} and high risk or very high risk depending on selection"
+		>
+			{{ getNameAndDescriptionOfMetric(item.metric) }}
+		</mat-button-toggle>
+		<mat-button-toggle
+			*ngIf="item.isOutlier"
+			class="risk-button"
+			(click)="applySuspiciousMetric(item, true)"
+			title="Show very high risk files (90th percentile)"
+		>
+			Highlight Outliers
+			<i class="fa fa-exclamation-triangle"></i>
+		</mat-button-toggle>
+	</mat-button-toggle-group>
+</div>

@@ -5,7 +5,7 @@ import { setColorMetric } from "../../../../state/store/dynamicSettings/colorMet
 import { setColorRange } from "../../../../state/store/dynamicSettings/colorRange/colorRange.actions"
 import { setHeightMetric } from "../../../../state/store/dynamicSettings/heightMetric/heightMetric.actions"
 import { ArtificialIntelligenceModule } from "../artificialIntelligence.module"
-import { SuspiciousMetricComponent } from "./suspiciousMetrics.component"
+import { SuspiciousMetricsComponent } from "./suspiciousMetrics.component"
 import { Store } from "@ngrx/store"
 
 describe("SuspiciousMetricsComponent", () => {
@@ -18,7 +18,7 @@ describe("SuspiciousMetricsComponent", () => {
 
 	describe("badge", () => {
 		it("should show initially and hide on first click, but show again when data has changed", async () => {
-			const { container, rerender } = await render(SuspiciousMetricComponent, {
+			const { container, rerender } = await render(SuspiciousMetricsComponent, {
 				excludeComponentDeclaration: true,
 				componentProperties: {
 					data: {
@@ -48,7 +48,7 @@ describe("SuspiciousMetricsComponent", () => {
 		})
 
 		it("should show initially and hide on first click, but not show again when new data has same values", async () => {
-			const { container, rerender } = await render(SuspiciousMetricComponent, {
+			const { container, rerender } = await render(SuspiciousMetricsComponent, {
 				excludeComponentDeclaration: true,
 				componentProperties: {
 					data: {
@@ -78,7 +78,7 @@ describe("SuspiciousMetricsComponent", () => {
 		})
 
 		it("should not show when nothing was analyzed", async () => {
-			const { container } = await render(SuspiciousMetricComponent, {
+			const { container } = await render(SuspiciousMetricsComponent, {
 				excludeComponentDeclaration: true,
 				componentProperties: {
 					data: {
@@ -95,7 +95,7 @@ describe("SuspiciousMetricsComponent", () => {
 
 	describe("panel", () => {
 		it("should explain when there was nothing analyzed", async () => {
-			await render(SuspiciousMetricComponent, {
+			await render(SuspiciousMetricsComponent, {
 				excludeComponentDeclaration: true,
 				componentProperties: {
 					data: {
@@ -113,7 +113,7 @@ describe("SuspiciousMetricsComponent", () => {
 		})
 
 		it("should render with some analyses", async () => {
-			await render(SuspiciousMetricComponent, {
+			await render(SuspiciousMetricsComponent, {
 				excludeComponentDeclaration: true,
 				componentProperties: {
 					data: {
@@ -139,7 +139,7 @@ describe("SuspiciousMetricsComponent", () => {
 
 	describe("risk-button", () => {
 		it("should set the color range to the correct percentile when very high risk files available", async () => {
-			await render(SuspiciousMetricComponent, {
+			await render(SuspiciousMetricsComponent, {
 				excludeComponentDeclaration: true,
 				componentProperties: {
 					data: {
@@ -169,7 +169,7 @@ describe("SuspiciousMetricsComponent", () => {
 
 	describe("info-button", () => {
 		it("should show the suspicious metrics information by clicking the information button", async () => {
-			await render(SuspiciousMetricComponent, {
+			await render(SuspiciousMetricsComponent, {
 				excludeComponentDeclaration: true,
 				componentProperties: {
 					data: {
@@ -189,7 +189,7 @@ describe("SuspiciousMetricsComponent", () => {
 
 	describe("metrics-button", () => {
 		it("should show the list of untracked metrics by clicking the expansion icon", async () => {
-			await render(SuspiciousMetricComponent, {
+			await render(SuspiciousMetricsComponent, {
 				excludeComponentDeclaration: true,
 				componentProperties: {
 					data: {
@@ -207,7 +207,7 @@ describe("SuspiciousMetricsComponent", () => {
 	})
 
 	it("should show the list of unsuspicious metrics by clicking the expansion icon", async () => {
-		await render(SuspiciousMetricComponent, {
+		await render(SuspiciousMetricsComponent, {
 			excludeComponentDeclaration: true,
 			componentProperties: {
 				data: {
