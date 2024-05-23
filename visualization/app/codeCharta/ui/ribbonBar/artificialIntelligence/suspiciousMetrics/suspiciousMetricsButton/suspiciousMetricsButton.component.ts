@@ -1,8 +1,8 @@
 import { Component, Input, OnChanges, SimpleChanges, ViewChild, AfterViewInit } from "@angular/core"
 import { dequal } from "dequal"
-import { ArtificialIntelligenceData } from "../selectors/artificialIntelligence.selector"
+import { ArtificialIntelligenceData } from "../../selectors/artificialIntelligence.selector"
 import { MatMenu } from "@angular/material/menu"
-import { SuspiciousMetricsMenuComponent } from "./suspiciousMetricsMenu.component"
+import { SuspiciousMetricsMenuComponent } from "../suspiciousMetricsMenu/suspiciousMetricsMenu.component"
 
 @Component({
 	selector: "cc-suspicious-metrics-button",
