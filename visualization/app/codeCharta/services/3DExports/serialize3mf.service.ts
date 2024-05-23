@@ -11,17 +11,17 @@ interface Volume {
 }
 
 export async function serialize3mf(mesh: Mesh): Promise<string> {
-    const { vertices, triangles, volumes } = await extractMeshData(mesh)
-    const model = buildModel(vertices, triangles)
-    const modelConfig = buildModelConfig(volumes)
-    const contentType = buildContentType()
+    const { vertices, triangles, volumes } = extractMeshData(mesh)
+    const model = getXMLModel(vertices, triangles)
+    const modelConfig = getXMLModelConfig(volumes)
+    const contentType = getXMLContentType()
 
     const data = {
         "3D": {
             "3dmodel.model": strToU8(model)
         },
         _rels: {
-            ".rels": strToU8(buildRels())
+            ".rels": strToU8(getXMLRels())
         },
         Metadata: {
             "Slic3r_PE_model.config": strToU8(modelConfig)
@@ -36,25 +36,27 @@ export async function serialize3mf(mesh: Mesh): Promise<string> {
     return compressed3mf as unknown as string
 }
 
-function buildModel(vertices, triangles): string {
-    const modelHeader = buildModelHeader()
-    const verticesString = buildModelVertices(vertices)
-    const trianglesString = buildModelTriangles(triangles)
-    const modelFooter = buildModelFooter()
+function getXMLModel(vertices: string[], triangles: string[]): string {
+    const modelHeader = getXMLModelHeader()
+    const verticesString = getXMLModelVertices(vertices)
+    const trianglesString = getXMLModelTriangles(triangles)
+    const modelFooter = getXMLModelFooter()
 
     return modelHeader + verticesString + trianglesString + modelFooter
 }
-function buildModelHeader(): string {
-    let model = '<?xml version="1.0" encoding="UTF-8"?>\n'
-    model +=
-        '<model unit="millimeter" xml:lang="en-US" xmlns="http://schemas.microsoft.com/3dmanufacturing/core/2015/02" xmlns:slic3rpe="http://schemas.slic3r.org/3mf/2017/06">\n'
-    model += ' <metadata name="Application">PrusaSlicer-2.7.2</metadata>\n'
-    model += " <resources>\n"
-    model += '  <object id="1" type="model">\n'
-    model += "   <mesh>\n"
+
+function getXMLModelHeader(): string {
+    const model =
+        '<?xml version="1.0" encoding="UTF-8"?>\n' +
+        '<model unit="millimeter" xml:lang="en-US" xmlns="http://schemas.microsoft.com/3dmanufacturing/core/2015/02" xmlns:slic3rpe="http://schemas.slic3r.org/3mf/2017/06">\n' +
+        ' <metadata name="Application">PrusaSlicer-2.7.2</metadata>\n' +
+        " <resources>\n" +
+        '  <object id="1" type="model">\n' +
+        "   <mesh>\n"
     return model
 }
-function buildModelVertices(vertices): string {
+
+function getXMLModelVertices(vertices): string {
     let verticesString = `    <vertices>\n`
     for (const vertex of vertices) {
         verticesString += `     ${vertex}`
@@ -62,7 +64,8 @@ function buildModelVertices(vertices): string {
     verticesString += `    </vertices>\n`
     return verticesString
 }
-function buildModelTriangles(triangles): string {
+
+function getXMLModelTriangles(triangles): string {
     let trianglesString = `    <triangles>\n`
     for (const triangle of triangles) {
         trianglesString += `     ${triangle}`
@@ -70,35 +73,33 @@ function buildModelTriangles(triangles): string {
     trianglesString += `    </triangles>\n`
     return trianglesString
 }
-function buildModelFooter(): string {
-    let modelFooter = `   </mesh>\n`
-    modelFooter += `  </object>\n`
-    modelFooter += ` </resources>\n`
-    modelFooter += ` <build>\n`
-    modelFooter += `  <item objectid="1"/>\n`
-    modelFooter += ` </build>\n`
-    modelFooter += `</model>`
+
+function getXMLModelFooter(): string {
+    const modelFooter =
+        `   </mesh>\n` + `  </object>\n` + ` </resources>\n` + ` <build>\n` + `  <item objectid="1"/>\n` + ` </build>\n` + `</model>`
     return modelFooter
 }
 
-function buildModelConfig(volumes: Volume[]): string {
-    let modelConfig = buildModelConfigHeader()
+function getXMLModelConfig(volumes: Volume[]): string {
+    let modelConfig = getXMLModelConfigHeader()
 
     for (const volume of volumes) {
-        modelConfig += buildModelConfigVolumes(volume)
+        modelConfig += getXMLModelConfigVolumes(volume)
     }
 
-    modelConfig += buildModelConfigFooter()
+    modelConfig += getXMLModelConfigFooter()
 
     return modelConfig
 }
-function buildModelConfigHeader(): string {
+
+function getXMLModelConfigHeader(): string {
     let modelConfig = '<?xml version="1.0" encoding="UTF-8"?>\n<config>\n'
     modelConfig += ` <object id="1" instances_count="1">\n`
     modelConfig += `  <metadata type="object" key="name" value="CodeCharta Map"/>\n`
     return modelConfig
 }
-function buildModelConfigVolumes(volume: Volume) {
+
+function getXMLModelConfigVolumes(volume: Volume) {
     return (
         `  <volume firstid="${volume.firstTriangleId}" lastid="${volume.lastTriangleId}">\n` +
         `   <metadata type="volume" key="name" value="${volume.name}"/>\n` +
@@ -108,13 +109,14 @@ function buildModelConfigVolumes(volume: Volume) {
         "  </volume>\n"
     )
 }
-function buildModelConfigFooter(): string {
+
+function getXMLModelConfigFooter(): string {
     let modelConfigFooter = " </object>\n"
     modelConfigFooter += "</config>"
     return modelConfigFooter
 }
 
-function buildRels(): string {
+function getXMLRels(): string {
     return (
         '<?xml version="1.0" encoding="UTF-8"?>' +
         '   <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' +
@@ -123,7 +125,7 @@ function buildRels(): string {
     )
 }
 
-function buildContentType(): string {
+function getXMLContentType(): string {
     return (
         `<?xml version="1.0" encoding="UTF-8"?>\n` +
         `<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">\n` +
@@ -288,6 +290,7 @@ function constructTriangles(geometry, triangles, vertexIndexToNewVertexIndex, fi
         }
     }
 }
+
 function constructVolume(child, color, firstTriangleId, lastTriangleId, volumes, volumeCount, colorToExtruder): void {
     if (!colorToExtruder.has(color)) {
         colorToExtruder.set(color, colorToExtruder.size + 1)
