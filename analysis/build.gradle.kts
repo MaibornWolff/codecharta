@@ -93,6 +93,8 @@ distributions {
 }
 
 tasks.register<Exec>("integrationTest") {
+    group = "verification"
+    description = "Runs our golden test script."
     if ((System.getProperties().getProperty("os.name") as String).lowercase().contains("windows")) {
         println("In order to run the integration tests a bash script is executed.")
         println("Make sure to use a shell with bash capability (e.g. GitBash) to run this task.")
