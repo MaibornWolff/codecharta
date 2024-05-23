@@ -1,7 +1,10 @@
 import { strToU8, zipSync } from "fflate"
 import { Float32BufferAttribute, Material, Matrix4, Mesh, MeshBasicMaterial, ShaderMaterial, Vector3 } from "three"
+import { getXMLrelationships, getXMLcontentType } from "./generateXML/build3mfStatics"
+import { getXMLmodelConfig } from "./generateXML/build3mfModelConfig"
+import { getXMLmodel } from "./generateXML/build3mfModel"
 
-interface Volume {
+export interface Volume {
     id: number
     name: string
     color: string
@@ -12,16 +15,17 @@ interface Volume {
 
 export async function serialize3mf(mesh: Mesh): Promise<string> {
     const { vertices, triangles, volumes } = extractMeshData(mesh)
-    const model = getXMLModel(vertices, triangles)
-    const modelConfig = getXMLModelConfig(volumes)
-    const contentType = getXMLContentType()
+    const model = getXMLmodel(vertices, triangles)
+    const modelConfig = getXMLmodelConfig(volumes)
+    const contentType = getXMLcontentType()
+    const relationships = getXMLrelationships()
 
     const data = {
         "3D": {
             "3dmodel.model": strToU8(model)
         },
         _rels: {
-            ".rels": strToU8(getXMLRels())
+            ".rels": strToU8(relationships)
         },
         Metadata: {
             "Slic3r_PE_model.config": strToU8(modelConfig)
@@ -34,105 +38,6 @@ export async function serialize3mf(mesh: Mesh): Promise<string> {
 
     const compressed3mf = zipSync(data, options).buffer
     return compressed3mf as unknown as string
-}
-
-function getXMLModel(vertices: string[], triangles: string[]): string {
-    const modelHeader = getXMLModelHeader()
-    const verticesString = getXMLModelVertices(vertices)
-    const trianglesString = getXMLModelTriangles(triangles)
-    const modelFooter = getXMLModelFooter()
-
-    return modelHeader + verticesString + trianglesString + modelFooter
-}
-
-function getXMLModelHeader(): string {
-    const model =
-        '<?xml version="1.0" encoding="UTF-8"?>\n' +
-        '<model unit="millimeter" xml:lang="en-US" xmlns="http://schemas.microsoft.com/3dmanufacturing/core/2015/02" xmlns:slic3rpe="http://schemas.slic3r.org/3mf/2017/06">\n' +
-        ' <metadata name="Application">PrusaSlicer-2.7.2</metadata>\n' +
-        " <resources>\n" +
-        '  <object id="1" type="model">\n' +
-        "   <mesh>\n"
-    return model
-}
-
-function getXMLModelVertices(vertices): string {
-    let verticesString = `    <vertices>\n`
-    for (const vertex of vertices) {
-        verticesString += `     ${vertex}`
-    }
-    verticesString += `    </vertices>\n`
-    return verticesString
-}
-
-function getXMLModelTriangles(triangles): string {
-    let trianglesString = `    <triangles>\n`
-    for (const triangle of triangles) {
-        trianglesString += `     ${triangle}`
-    }
-    trianglesString += `    </triangles>\n`
-    return trianglesString
-}
-
-function getXMLModelFooter(): string {
-    const modelFooter =
-        `   </mesh>\n` + `  </object>\n` + ` </resources>\n` + ` <build>\n` + `  <item objectid="1"/>\n` + ` </build>\n` + `</model>`
-    return modelFooter
-}
-
-function getXMLModelConfig(volumes: Volume[]): string {
-    let modelConfig = getXMLModelConfigHeader()
-
-    for (const volume of volumes) {
-        modelConfig += getXMLModelConfigVolumes(volume)
-    }
-
-    modelConfig += getXMLModelConfigFooter()
-
-    return modelConfig
-}
-
-function getXMLModelConfigHeader(): string {
-    let modelConfig = '<?xml version="1.0" encoding="UTF-8"?>\n<config>\n'
-    modelConfig += ` <object id="1" instances_count="1">\n`
-    modelConfig += `  <metadata type="object" key="name" value="CodeCharta Map"/>\n`
-    return modelConfig
-}
-
-function getXMLModelConfigVolumes(volume: Volume) {
-    return (
-        `  <volume firstid="${volume.firstTriangleId}" lastid="${volume.lastTriangleId}">\n` +
-        `   <metadata type="volume" key="name" value="${volume.name}"/>\n` +
-        `   <metadata type="volume" key="extruder" value="${volume.extruder}"/>\n` +
-        `   <metadata type="volume" key="source_object_id" value="1"/>\n` +
-        `   <metadata type="volume" key="source_volume_id" value="${volume.id}"/>\n` +
-        "  </volume>\n"
-    )
-}
-
-function getXMLModelConfigFooter(): string {
-    let modelConfigFooter = " </object>\n"
-    modelConfigFooter += "</config>"
-    return modelConfigFooter
-}
-
-function getXMLRels(): string {
-    return (
-        '<?xml version="1.0" encoding="UTF-8"?>' +
-        '   <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' +
-        '   <Relationship Target="/3D/3dmodel.model" Id="rel-1" Type="http://schemas.microsoft.com/3dmanufacturing/2013/01/3dmodel"/>' +
-        "</Relationships>"
-    )
-}
-
-function getXMLContentType(): string {
-    return (
-        `<?xml version="1.0" encoding="UTF-8"?>\n` +
-        `<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">\n` +
-        ` <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>\n` +
-        ` <Default Extension="model" ContentType="application/vnd.ms-package.3dmanufacturing-3dmodel+xml"/>\n` +
-        `</Types>`
-    )
 }
 
 function extractMeshData(mesh: Mesh): {
@@ -251,7 +156,7 @@ function constructVertices(
         }
         vertex.add(mesh.position)
 
-        const vertexString = `<vertex x="${vertex.x}" y="${vertex.y}" z="${vertex.z}"/>\n`
+        const vertexString = `<vertex x="${vertex.x}" y="${vertex.y}" z="${vertex.z}"/>`
 
         if (!vertexToNewVertexIndex.has(vertexString)) {
             vertices.push(vertexString)
@@ -270,7 +175,7 @@ function constructTriangles(geometry, triangles, vertexIndexToNewVertexIndex, fi
         for (let index = 0; index < geometry.attributes.position.count; index += 3) {
             const triangle = `<triangle v1="${vertexIndexToNewVertexIndex.get(index)}" v2="${vertexIndexToNewVertexIndex.get(
                 index + 1
-            )}" v3="${vertexIndexToNewVertexIndex.get(index + 2)}" />\n`
+            )}" v3="${vertexIndexToNewVertexIndex.get(index + 2)}" />`
             triangles.push(triangle)
         }
     } else {
@@ -283,7 +188,7 @@ function constructTriangles(geometry, triangles, vertexIndexToNewVertexIndex, fi
             if (vertexIndexes.includes(vertexIndex1) && vertexIndexes.includes(vertexIndex2) && vertexIndexes.includes(vertexIndex3)) {
                 const triangle = `<triangle v1="${vertexIndexToNewVertexIndex.get(vertexIndex1)}" v2="${vertexIndexToNewVertexIndex.get(
                     vertexIndex2
-                )}" v3="${vertexIndexToNewVertexIndex.get(vertexIndex3)}" />\n`
+                )}" v3="${vertexIndexToNewVertexIndex.get(vertexIndex3)}" />`
 
                 triangles.push(triangle)
             }
