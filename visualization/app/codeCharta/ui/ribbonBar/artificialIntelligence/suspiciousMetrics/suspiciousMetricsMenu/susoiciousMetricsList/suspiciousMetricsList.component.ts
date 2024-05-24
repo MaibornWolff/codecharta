@@ -1,15 +1,14 @@
-import { Component, Input, ViewChild } from "@angular/core"
-import { metricTitles } from "../../../../../util/metric/metricTitles"
-import { MetricSuggestionParameters } from "../../selectors/util/suspiciousMetricsHelper"
-import { setAreaMetric } from "../../../../../state/store/dynamicSettings/areaMetric/areaMetric.actions"
-import { AREA_METRIC } from "../../selectors/util/riskProfileHelper"
-import { setHeightMetric } from "../../../../../state/store/dynamicSettings/heightMetric/heightMetric.actions"
-import { setColorMetric } from "../../../../../state/store/dynamicSettings/colorMetric/colorMetric.actions"
-import { setColorRange } from "../../../../../state/store/dynamicSettings/colorRange/colorRange.actions"
-import { setMapColors } from "../../../../../state/store/appSettings/mapColors/mapColors.actions"
-import { defaultMapColors } from "../../../../../state/store/appSettings/mapColors/mapColors.reducer"
-import { MatMenuTrigger } from "@angular/material/menu"
-import { ArtificialIntelligenceData } from "../../selectors/artificialIntelligence.selector"
+import { Component, EventEmitter, Input, Output } from "@angular/core"
+import { metricTitles } from "../../../../../../util/metric/metricTitles"
+import { MetricSuggestionParameters } from "../../../selectors/util/suspiciousMetricsHelper"
+import { setAreaMetric } from "../../../../../../state/store/dynamicSettings/areaMetric/areaMetric.actions"
+import { AREA_METRIC } from "../../../selectors/util/riskProfileHelper"
+import { setHeightMetric } from "../../../../../../state/store/dynamicSettings/heightMetric/heightMetric.actions"
+import { setColorMetric } from "../../../../../../state/store/dynamicSettings/colorMetric/colorMetric.actions"
+import { setColorRange } from "../../../../../../state/store/dynamicSettings/colorRange/colorRange.actions"
+import { setMapColors } from "../../../../../../state/store/appSettings/mapColors/mapColors.actions"
+import { defaultMapColors } from "../../../../../../state/store/appSettings/mapColors/mapColors.reducer"
+import { ArtificialIntelligenceData } from "../../../selectors/artificialIntelligence.selector"
 import { Store } from "@ngrx/store"
 import { MatDialog } from "@angular/material/dialog"
 
@@ -18,7 +17,7 @@ import { MatDialog } from "@angular/material/dialog"
 	templateUrl: "./suspiciousMetricsList.component.html"
 })
 export class SuspiciousMetricsListComponent {
-	@ViewChild(MatMenuTrigger) trigger: MatMenuTrigger
+	@Output() menuClosed = new EventEmitter<void>()
 	@Input() data: Pick<
 		ArtificialIntelligenceData,
 		"analyzedProgrammingLanguage" | "unsuspiciousMetrics" | "suspiciousMetricSuggestionLinks" | "untrackedMetrics"
@@ -26,7 +25,7 @@ export class SuspiciousMetricsListComponent {
 	constructor(private store: Store, public dialog: MatDialog) {}
 
 	applySuspiciousMetric(metric: MetricSuggestionParameters, markOutlier: boolean) {
-		//this.trigger.closeMenu()
+		this.menuClosed.emit()
 		this.store.dispatch(setAreaMetric({ value: AREA_METRIC }))
 		this.store.dispatch(setHeightMetric({ value: metric.metric }))
 		this.store.dispatch(setColorMetric({ value: metric.metric }))

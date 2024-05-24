@@ -2,9 +2,9 @@ import { NgModule } from "@angular/core"
 import { SuspiciousMetricsComponent } from "./suspiciousMetrics.component"
 import { SuspiciousMetricsButtonComponent } from "./suspiciousMetricsButton/suspiciousMetricsButton.component"
 import { SuspiciousMetricsMenuComponent } from "./suspiciousMetricsMenu/suspiciousMetricsMenu.component"
-import { SuspiciousMetricsListComponent } from "./susoiciousMetricsList/suspiciousMetricsList.component"
-import { UntrackedMetricsListComponent } from "./untrackedMetricsList/untrackedMetricsList.component"
-import { SuspiciousMetricsDialogComponent } from "./suspiciousMetricsDialog/suspiciousMetricsDialog.component"
+import { SuspiciousMetricsListComponent } from "./suspiciousMetricsMenu/susoiciousMetricsList/suspiciousMetricsList.component"
+import { UntrackedMetricsListComponent } from "./suspiciousMetricsMenu/untrackedMetricsList/untrackedMetricsList.component"
+import { SuspiciousMetricsDialogComponent } from "./suspiciousMetricsMenu/suspiciousMetricsDialog/suspiciousMetricsDialog.component"
 import { CommonModule } from "@angular/common"
 import { MaterialModule } from "../../../../../material/material.module"
 import { MatDialogModule } from "@angular/material/dialog"
@@ -12,6 +12,7 @@ import { MatButtonToggleModule } from "@angular/material/button-toggle"
 import { MatButtonModule } from "@angular/material/button"
 import { MatIconModule } from "@angular/material/icon"
 import { MatMenuModule } from "@angular/material/menu"
+import { UnsuspiciousMetricsListComponent } from "./suspiciousMetricsMenu/unsuspiciousMetricsList/unsuspiciousMetricsList.component"
 
 @NgModule({
 	imports: [
@@ -31,7 +32,8 @@ import { MatMenuModule } from "@angular/material/menu"
 		SuspiciousMetricsListComponent,
 		UntrackedMetricsListComponent,
 		SuspiciousMetricsDialogComponent,
-		SuspiciousMetricsComponent
+		SuspiciousMetricsComponent,
+		UnsuspiciousMetricsListComponent
 	],
 	exports: [SuspiciousMetricsComponent]
 })
