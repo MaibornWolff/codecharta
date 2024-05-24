@@ -1,8 +1,8 @@
 <div *ngIf="data.suspiciousMetricSuggestionLinks.length" class="title new-section">
 	Suspicious Metrics in {{ data.analyzedProgrammingLanguage }} code
 </div>
-<div class="suspicious-metric" *ngFor="let item of data.suspiciousMetricSuggestionLinks">
-	<mat-button-toggle-group>
+<div *ngFor="let item of data.suspiciousMetricSuggestionLinks">
+	<mat-button-toggle-group class="suspicious-metric">
 		<mat-button-toggle
 			class="metric-button"
 			(click)="applySuspiciousMetric(item, false)"
