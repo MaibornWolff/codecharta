@@ -1,5 +1,5 @@
 import { Component, Input } from "@angular/core"
-import { ArtificialIntelligenceData } from "../../selectors/artificialIntelligence.selector"
+import { ArtificialIntelligenceData } from "../../../selectors/artificialIntelligence.selector"
 
 @Component({
 	selector: "cc-untracked-metrics-list",
@@ -11,14 +11,9 @@ export class UntrackedMetricsListComponent {
 		"analyzedProgrammingLanguage" | "unsuspiciousMetrics" | "suspiciousMetricSuggestionLinks" | "untrackedMetrics"
 	>
 
-	isUnsuspiciuosMetricsVisible = false
 	isUntrackedMetricsVisible = false
 
 	toggleUntrackedMetricsVisibility(): void {
 		this.isUntrackedMetricsVisible = !this.isUntrackedMetricsVisible
-	}
-
-	toggleUnsuspiciousMetricsVisibility(): void {
-		this.isUnsuspiciuosMetricsVisible = !this.isUnsuspiciuosMetricsVisible
 	}
 }

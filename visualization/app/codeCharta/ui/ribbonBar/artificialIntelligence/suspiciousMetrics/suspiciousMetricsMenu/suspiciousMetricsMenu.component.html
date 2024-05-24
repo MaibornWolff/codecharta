@@ -13,7 +13,8 @@
 				</button>
 			</div>
 		</div>
-		<cc-suspicious-metrics-list [data]="data"></cc-suspicious-metrics-list>
+		<cc-suspicious-metrics-list [data]="data" (menuClosed)="closeMenu()"></cc-suspicious-metrics-list>
+		<cc-unsuspicious-metrics-list [data]="data"></cc-unsuspicious-metrics-list>
 		<cc-untracked-metrics-list [data]="data"></cc-untracked-metrics-list>
 	</div>
 </mat-menu>

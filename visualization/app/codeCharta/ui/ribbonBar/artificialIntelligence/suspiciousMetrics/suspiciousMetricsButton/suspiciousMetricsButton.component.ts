@@ -15,7 +15,7 @@ export class SuspiciousMetricsButtonComponent implements OnChanges, AfterViewIni
 		"analyzedProgrammingLanguage" | "unsuspiciousMetrics" | "suspiciousMetricSuggestionLinks" | "untrackedMetrics"
 	>
 
-	menu: MatMenu
+	@Input() menu: MatMenu
 
 	hideBadge = false
 

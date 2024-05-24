@@ -2,7 +2,7 @@ import { Component, Input, ViewChild } from "@angular/core"
 import { MatMenu, MatMenuTrigger } from "@angular/material/menu"
 import { ArtificialIntelligenceData } from "../../selectors/artificialIntelligence.selector"
 import { MatDialog } from "@angular/material/dialog"
-import { SuspiciousMetricsDialogComponent } from "../suspiciousMetricsDialog/suspiciousMetricsDialog.component"
+import { SuspiciousMetricsDialogComponent } from "./suspiciousMetricsDialog/suspiciousMetricsDialog.component"
 
 @Component({
 	selector: "cc-suspicious-metrics-menu",
@@ -11,7 +11,6 @@ import { SuspiciousMetricsDialogComponent } from "../suspiciousMetricsDialog/sus
 export class SuspiciousMetricsMenuComponent {
 	@ViewChild(MatMenuTrigger) menuTrigger: MatMenuTrigger
 	@ViewChild(MatMenu) menu: MatMenu
-	//@ViewChild("menu", { static: true }) menu: MatMenu
 	@Input() data: Pick<
 		ArtificialIntelligenceData,
 		"analyzedProgrammingLanguage" | "unsuspiciousMetrics" | "suspiciousMetricSuggestionLinks" | "untrackedMetrics"
@@ -23,5 +22,13 @@ export class SuspiciousMetricsMenuComponent {
 		this.dialog.open(SuspiciousMetricsDialogComponent, {
 			width: "500px"
 		})
+	}
+
+	closeMenu(): void {
+		if (this.menuTrigger) {
+			this.menuTrigger.closeMenu()
+		} else {
+			console.error("menuTrigger is not defined")
+		}
 	}
 }

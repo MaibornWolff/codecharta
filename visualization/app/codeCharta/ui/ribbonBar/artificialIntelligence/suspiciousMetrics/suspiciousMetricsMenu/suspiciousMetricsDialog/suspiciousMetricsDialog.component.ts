@@ -1,5 +1,5 @@
 import { Component, Input, ViewEncapsulation } from "@angular/core"
-import { ArtificialIntelligenceData } from "../../selectors/artificialIntelligence.selector"
+import { ArtificialIntelligenceData } from "../../../selectors/artificialIntelligence.selector"
 
 @Component({
 	selector: "cc-suspicious-metric-dialog",

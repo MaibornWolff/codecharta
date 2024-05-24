@@ -1,14 +1,3 @@
-<div *ngIf="data.unsuspiciousMetrics.length">
-	<div *ngIf="data.analyzedProgrammingLanguage.length" class="title">
-		<button data-testid="Unsuspicious Metrics" class="untracked-metrics-button" (click)="toggleUnsuspiciousMetricsVisibility()">
-			Unsuspicious metrics in {{ data.analyzedProgrammingLanguage }} code
-			<i class="fa" [ngClass]="{ 'fa-caret-down': !isUnsuspiciuosMetricsVisible, 'fa-caret-up': isUnsuspiciuosMetricsVisible }"></i>
-		</button>
-	</div>
-	<ul data-testid="List of Unsuspicious Metrics in ts Code" *ngIf="isUnsuspiciuosMetricsVisible">
-		<li *ngFor="let unsuspiciousMetric of data.unsuspiciousMetrics">{{ unsuspiciousMetric }}</li>
-	</ul>
-</div>
 <div *ngIf="data.untrackedMetrics.length">
 	<div *ngIf="data.analyzedProgrammingLanguage.length" class="title">
 		<button data-testid="Untracked Metrics" class="untracked-metrics-button" (click)="toggleUntrackedMetricsVisibility()">
