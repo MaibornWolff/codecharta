@@ -1,7 +1,7 @@
-<div *ngIf="data.suspiciousMetricSuggestionLinks.length" class="title new-section">
-	Suspicious Metrics in {{ data.analyzedProgrammingLanguage }} code
-</div>
-<div *ngFor="let item of data.suspiciousMetricSuggestionLinks">
+@if (data.suspiciousMetricSuggestionLinks.length) {
+<div class="title new-section">Suspicious Metrics in {{ data.analyzedProgrammingLanguage }} code</div>
+} @for (item of data.suspiciousMetricSuggestionLinks; track item) {
+<div>
 	<mat-button-toggle-group class="suspicious-metric">
 		<mat-button-toggle
 			class="metric-button"
@@ -12,8 +12,9 @@
 		>
 			{{ getNameAndDescriptionOfMetric(item.metric) }}
 		</mat-button-toggle>
+
+		@if(item.isOutlier) {
 		<mat-button-toggle
-			*ngIf="item.isOutlier"
 			class="risk-button"
 			(click)="applySuspiciousMetric(item, true)"
 			title="Show very high risk files (90th percentile)"
@@ -21,5 +22,7 @@
 			Highlight Outliers
 			<i class="fa fa-exclamation-triangle"></i>
 		</mat-button-toggle>
+		}
 	</mat-button-toggle-group>
 </div>
+}

@@ -1,12 +1,16 @@
-<div *ngIf="data.untrackedMetrics.length">
-	<div *ngIf="data.analyzedProgrammingLanguage.length" class="title">
-		<button data-testid="Untracked Metrics" class="untracked-metrics-button" (click)="toggleUntrackedMetricsVisibility()">
-			Untracked metrics in {{ data.analyzedProgrammingLanguage }} code
-			<i class="fa" [ngClass]="{ 'fa-caret-down': !isUntrackedMetricsVisible, 'fa-caret-up': isUntrackedMetricsVisible }"></i>
-		</button>
-	</div>
-	<ul data-testid="List of Untracked Metrics in ts Code" *ngIf="isUntrackedMetricsVisible">
-		<li *ngFor="let untrackedMetric of data.untrackedMetrics">{{ untrackedMetric }}</li>
-	</ul>
-	<div *ngIf="data.analyzedProgrammingLanguage === undefined">No programming language was found for analyzing suspicious metrics.</div>
+@if(data.untrackedMetrics.length){ @if(data.analyzedProgrammingLanguage.length){
+<div class="title">
+	<button data-testid="Untracked Metrics" class="untracked-metrics-button" (click)="toggleUntrackedMetricsVisibility()">
+		Untracked metrics in {{ data.analyzedProgrammingLanguage }} code
+		<i class="fa" [ngClass]="{ 'fa-caret-down': !isUntrackedMetricsVisible, 'fa-caret-up': isUntrackedMetricsVisible }"></i>
+	</button>
 </div>
+} @if(isUntrackedMetricsVisible){
+<ul data-testid="List of Untracked Metrics in ts Code">
+	@for(untrackedMetric of data.untrackedMetrics; track untrackedMetric){
+	<li>{{ untrackedMetric }}</li>
+	}
+</ul>
+} @if(data.analyzedProgrammingLanguage === undefined){
+<div>No programming language was found for analyzing suspicious metrics.</div>
+} }
