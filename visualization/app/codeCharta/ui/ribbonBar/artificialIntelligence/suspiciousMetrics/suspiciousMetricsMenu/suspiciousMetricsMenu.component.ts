@@ -11,6 +11,7 @@ import { SuspiciousMetricsDialogComponent } from "./suspiciousMetricsDialog/susp
 export class SuspiciousMetricsMenuComponent {
 	@ViewChild(MatMenuTrigger) menuTrigger: MatMenuTrigger
 	@ViewChild(MatMenu) menu: MatMenu
+	@Input() matMenuTriggerReference: MatMenuTrigger
 	@Input() data: Pick<
 		ArtificialIntelligenceData,
 		"analyzedProgrammingLanguage" | "unsuspiciousMetrics" | "suspiciousMetricSuggestionLinks" | "untrackedMetrics"
@@ -22,13 +23,5 @@ export class SuspiciousMetricsMenuComponent {
 		this.dialog.open(SuspiciousMetricsDialogComponent, {
 			width: "500px"
 		})
-	}
-
-	closeMenu(): void {
-		if (this.menuTrigger) {
-			this.menuTrigger.closeMenu()
-		} else {
-			console.error("menuTrigger is not defined")
-		}
 	}
 }

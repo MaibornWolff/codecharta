@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from "@angular/core"
+import { Component, Input } from "@angular/core"
 import { metricTitles } from "../../../../../../util/metric/metricTitles"
 import { MetricSuggestionParameters } from "../../../selectors/util/suspiciousMetricsHelper"
 import { setAreaMetric } from "../../../../../../state/store/dynamicSettings/areaMetric/areaMetric.actions"
@@ -11,13 +11,14 @@ import { defaultMapColors } from "../../../../../../state/store/appSettings/mapC
 import { ArtificialIntelligenceData } from "../../../selectors/artificialIntelligence.selector"
 import { Store } from "@ngrx/store"
 import { MatDialog } from "@angular/material/dialog"
+import { MatMenuTrigger } from "@angular/material/menu"
 
 @Component({
 	selector: "cc-suspicious-metrics-list",
 	templateUrl: "./suspiciousMetricsList.component.html"
 })
 export class SuspiciousMetricsListComponent {
-	@Output() menuClosed = new EventEmitter<void>()
+	@Input() matMenuTriggerReference: MatMenuTrigger
 	@Input() data: Pick<
 		ArtificialIntelligenceData,
 		"analyzedProgrammingLanguage" | "unsuspiciousMetrics" | "suspiciousMetricSuggestionLinks" | "untrackedMetrics"
@@ -25,7 +26,6 @@ export class SuspiciousMetricsListComponent {
 	constructor(private store: Store, public dialog: MatDialog) {}
 
 	applySuspiciousMetric(metric: MetricSuggestionParameters, markOutlier: boolean) {
-		this.menuClosed.emit()
 		this.store.dispatch(setAreaMetric({ value: AREA_METRIC }))
 		this.store.dispatch(setHeightMetric({ value: metric.metric }))
 		this.store.dispatch(setColorMetric({ value: metric.metric }))
@@ -46,6 +46,7 @@ export class SuspiciousMetricsListComponent {
 				}
 			})
 		)
+		this.matMenuTriggerReference.closeMenu()
 	}
 
 	getNameAndDescriptionOfMetric(metricName: string): string {
