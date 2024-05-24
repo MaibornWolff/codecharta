@@ -1,6 +1,5 @@
 import { NgModule } from "@angular/core"
 import { SuspiciousMetricsComponent } from "./suspiciousMetrics.component"
-import { SuspiciousMetricsButtonComponent } from "./suspiciousMetricsButton/suspiciousMetricsButton.component"
 import { SuspiciousMetricsMenuComponent } from "./suspiciousMetricsMenu/suspiciousMetricsMenu.component"
 import { SuspiciousMetricsListComponent } from "./suspiciousMetricsMenu/susoiciousMetricsList/suspiciousMetricsList.component"
 import { UntrackedMetricsListComponent } from "./suspiciousMetricsMenu/untrackedMetricsList/untrackedMetricsList.component"
@@ -27,7 +26,6 @@ import { UnsuspiciousMetricsListComponent } from "./suspiciousMetricsMenu/unsusp
 		MatDialogModule
 	],
 	declarations: [
-		SuspiciousMetricsButtonComponent,
 		SuspiciousMetricsMenuComponent,
 		SuspiciousMetricsListComponent,
 		UntrackedMetricsListComponent,
