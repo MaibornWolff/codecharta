@@ -8,8 +8,8 @@ import { MatDialogModule } from "@angular/material/dialog"
 import { SuspiciousMetricsModule } from "./suspiciousMetrics/suspiciousMetrics.module"
 
 @NgModule({
-	imports: [CommonModule, MaterialModule, MatDialogModule, SuspiciousMetricsModule],
-	declarations: [ArtificialIntelligenceComponent, HighRiskProfileComponent, RiskProfileBarDirective],
-	exports: [ArtificialIntelligenceComponent]
+    imports: [CommonModule, MaterialModule, MatDialogModule, SuspiciousMetricsModule],
+    declarations: [ArtificialIntelligenceComponent, HighRiskProfileComponent, RiskProfileBarDirective],
+    exports: [ArtificialIntelligenceComponent]
 })
 export class ArtificialIntelligenceModule {}

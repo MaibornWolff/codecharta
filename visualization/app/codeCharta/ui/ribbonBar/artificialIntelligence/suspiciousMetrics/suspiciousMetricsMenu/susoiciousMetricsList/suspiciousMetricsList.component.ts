@@ -14,46 +14,49 @@ import { MatDialog } from "@angular/material/dialog"
 import { MatMenuTrigger } from "@angular/material/menu"
 
 @Component({
-	selector: "cc-suspicious-metrics-list",
-	templateUrl: "./suspiciousMetricsList.component.html"
+    selector: "cc-suspicious-metrics-list",
+    templateUrl: "./suspiciousMetricsList.component.html"
 })
 export class SuspiciousMetricsListComponent {
-	@Input() matMenuTriggerReference: MatMenuTrigger
-	@Input() data: Pick<
-		ArtificialIntelligenceData,
-		"analyzedProgrammingLanguage" | "unsuspiciousMetrics" | "suspiciousMetricSuggestionLinks" | "untrackedMetrics"
-	>
-	constructor(private store: Store, public dialog: MatDialog) {}
+    @Input() matMenuTriggerReference: MatMenuTrigger
+    @Input() data: Pick<
+        ArtificialIntelligenceData,
+        "analyzedProgrammingLanguage" | "unsuspiciousMetrics" | "suspiciousMetricSuggestionLinks" | "untrackedMetrics"
+    >
+    constructor(
+        private store: Store,
+        public dialog: MatDialog
+    ) {}
 
-	applySuspiciousMetric(metric: MetricSuggestionParameters, markOutlier: boolean) {
-		this.store.dispatch(setAreaMetric({ value: AREA_METRIC }))
-		this.store.dispatch(setHeightMetric({ value: metric.metric }))
-		this.store.dispatch(setColorMetric({ value: metric.metric }))
-		this.store.dispatch(
-			setColorRange({
-				value: {
-					from: metric.from,
-					to: markOutlier ? metric.outlierThreshold : metric.to
-				}
-			})
-		)
-		this.store.dispatch(
-			setMapColors({
-				value: {
-					positive: markOutlier ? "#ffffff" : defaultMapColors.positive,
-					neutral: markOutlier ? "#ffffff" : defaultMapColors.neutral,
-					negative: markOutlier ? "#A900C0" : defaultMapColors.negative
-				}
-			})
-		)
-		this.matMenuTriggerReference.closeMenu()
-	}
+    applySuspiciousMetric(metric: MetricSuggestionParameters, markOutlier: boolean) {
+        this.store.dispatch(setAreaMetric({ value: AREA_METRIC }))
+        this.store.dispatch(setHeightMetric({ value: metric.metric }))
+        this.store.dispatch(setColorMetric({ value: metric.metric }))
+        this.store.dispatch(
+            setColorRange({
+                value: {
+                    from: metric.from,
+                    to: markOutlier ? metric.outlierThreshold : metric.to
+                }
+            })
+        )
+        this.store.dispatch(
+            setMapColors({
+                value: {
+                    positive: markOutlier ? "#ffffff" : defaultMapColors.positive,
+                    neutral: markOutlier ? "#ffffff" : defaultMapColors.neutral,
+                    negative: markOutlier ? "#A900C0" : defaultMapColors.negative
+                }
+            })
+        )
+        this.matMenuTriggerReference.closeMenu()
+    }
 
-	getNameAndDescriptionOfMetric(metricName: string): string {
-		const metricDescription = metricTitles.get(metricName)
-		if (metricDescription) {
-			return `${metricName.toUpperCase()} (${metricDescription.toLowerCase()})`
-		}
-		return metricName.toUpperCase()
-	}
+    getNameAndDescriptionOfMetric(metricName: string): string {
+        const metricDescription = metricTitles.get(metricName)
+        if (metricDescription) {
+            return `${metricName.toUpperCase()} (${metricDescription.toLowerCase()})`
+        }
+        return metricName.toUpperCase()
+    }
 }
