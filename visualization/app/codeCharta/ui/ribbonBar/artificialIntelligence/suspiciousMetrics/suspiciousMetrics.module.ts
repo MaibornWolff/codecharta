@@ -14,25 +14,25 @@ import { MatMenuModule } from "@angular/material/menu"
 import { UnsuspiciousMetricsListComponent } from "./suspiciousMetricsMenu/unsuspiciousMetricsList/unsuspiciousMetricsList.component"
 
 @NgModule({
-	imports: [
-		CommonModule,
-		MaterialModule,
-		MatDialogModule,
-		CommonModule,
-		MatMenuModule,
-		MatIconModule,
-		MatButtonModule,
-		MatButtonToggleModule,
-		MatDialogModule
-	],
-	declarations: [
-		SuspiciousMetricsMenuComponent,
-		SuspiciousMetricsListComponent,
-		UntrackedMetricsListComponent,
-		SuspiciousMetricsDialogComponent,
-		SuspiciousMetricsComponent,
-		UnsuspiciousMetricsListComponent
-	],
-	exports: [SuspiciousMetricsComponent]
+    imports: [
+        CommonModule,
+        MaterialModule,
+        MatDialogModule,
+        CommonModule,
+        MatMenuModule,
+        MatIconModule,
+        MatButtonModule,
+        MatButtonToggleModule,
+        MatDialogModule
+    ],
+    declarations: [
+        SuspiciousMetricsMenuComponent,
+        SuspiciousMetricsListComponent,
+        UntrackedMetricsListComponent,
+        SuspiciousMetricsDialogComponent,
+        SuspiciousMetricsComponent,
+        UnsuspiciousMetricsListComponent
+    ],
+    exports: [SuspiciousMetricsComponent]
 })
 export class SuspiciousMetricsModule {}
