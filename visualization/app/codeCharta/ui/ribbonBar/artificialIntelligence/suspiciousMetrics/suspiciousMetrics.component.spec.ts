@@ -126,10 +126,10 @@ describe("SuspiciousMetricsComponent", () => {
             })
             await userEvent.click(screen.getByTitle("Open Suspicious Metrics Panel"))
             expect(screen.queryByText("No programming language was found for analyzing suspicious metrics.")).toBe(null)
-            expect(screen.getByText("Suspicious Metrics in ts code")).not.toBe(null)
-            expect(screen.getByText("MCC (cyclomatic complexity)")).not.toBe(null)
+            expect(screen.getByTitle("Suspicious Metrics in this .ts code")).not.toBe(null)
+            expect(screen.getByTitle("MCC (cyclomatic complexity)")).not.toBe(null)
 
-            await userEvent.click(screen.getByText("MCC (cyclomatic complexity)"), undefined)
+            await userEvent.click(screen.getByText("Apply preset"), undefined)
             const store = TestBed.inject(Store)
             expect(store.dispatch).toHaveBeenCalledWith(setHeightMetric({ value: "mcc" }))
             expect(store.dispatch).toHaveBeenCalledWith(setColorMetric({ value: "mcc" }))
