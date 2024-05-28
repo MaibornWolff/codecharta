@@ -7,17 +7,17 @@
         <div class="title">
             <div>Risk Profile</div>
         </div>
-        <div class="suspicious-metrics-summary">
+        <div class="text-content">
             The Risk Profile gives a quick overview about the complexity and risk structure of the code base. It tells you how much of the
             code is placed in files associated with low/high risk in means of maintainability. The separation of code in risk classes like
             low or high complexity is based on Java reference metric values and therefore may be inaccurate for other programming languages.
             More information can be found here:
-            <a href="https://maibornwolff.github.io/codecharta/docs/risk-profile/">link</a> to How-To article.
+            <a target="_blank" href="https://maibornwolff.github.io/codecharta/docs/risk-profile/">How-To Article</a>
         </div>
-        <div class="title">
-            <div>Calculations are always based on mcc (cyclomatic complexity)</div>
+        <div class="sub-title">
+            <div><i class="fa fa-lightbulb-o"></i> Calculations are always based on cyclomatic complexity!</div>
         </div>
-        <div class="suspicious-metrics-summary">
+        <div class="text-content">
             <ul>
                 <li>{{ data.riskProfile.lowRisk }}% of overall code is in files with low complexity</li>
                 <li>{{ data.riskProfile.moderateRisk }}% of overall code is in files with moderate complexity</li>

@@ -1,0 +1,35 @@
+.ai-drop-down.high-risk-profile {
+    border: 2px solid red;
+
+    .risk-button {
+    }
+
+    .risk-button-outliers {
+    }
+
+    .untracked-metrics-button {
+        background-color: white;
+        color: black;
+        cursor: pointer;
+        font-weight: bold;
+        width: 100%;
+        border: none;
+        text-align: left;
+        font-size: 16px;
+        padding: 0 0 6px 0;
+    }
+
+    .untracked-metrics-icon {
+        font-size: 18px;
+        padding: 4px;
+    }
+
+    .info-button {
+        font-size: 16px;
+    }
+
+    ul {
+        margin-block: 0;
+        padding-bottom: 4px;
+    }
+}

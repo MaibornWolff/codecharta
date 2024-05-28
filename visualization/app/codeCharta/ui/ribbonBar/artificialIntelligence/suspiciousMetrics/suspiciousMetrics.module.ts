@@ -7,11 +7,12 @@ import { SuspiciousMetricsDialogComponent } from "./suspiciousMetricsMenu/suspic
 import { CommonModule } from "@angular/common"
 import { MaterialModule } from "../../../../../material/material.module"
 import { MatDialogModule } from "@angular/material/dialog"
-import { MatButtonToggleModule } from "@angular/material/button-toggle"
 import { MatButtonModule } from "@angular/material/button"
 import { MatIconModule } from "@angular/material/icon"
 import { MatMenuModule } from "@angular/material/menu"
 import { UnsuspiciousMetricsListComponent } from "./suspiciousMetricsMenu/unsuspiciousMetricsList/unsuspiciousMetricsList.component"
+import { MatButtonToggleGroup } from "@angular/material/button-toggle"
+import { TruncateTextPipeModule } from "../../../../util/pipes/TruncateTextPipeModule"
 
 @NgModule({
     imports: [
@@ -22,8 +23,9 @@ import { UnsuspiciousMetricsListComponent } from "./suspiciousMetricsMenu/unsusp
         MatMenuModule,
         MatIconModule,
         MatButtonModule,
-        MatButtonToggleModule,
-        MatDialogModule
+        MatDialogModule,
+        MatButtonToggleGroup,
+        TruncateTextPipeModule
     ],
     declarations: [
         SuspiciousMetricsMenuComponent,

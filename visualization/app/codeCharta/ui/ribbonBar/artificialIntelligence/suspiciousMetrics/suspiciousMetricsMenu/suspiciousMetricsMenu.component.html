@@ -1,15 +1,17 @@
 <div (click)="$event.stopPropagation()">
-    <div class="suspicious-metric-title">
-        <div>
+    <div>
+        <div class="title">
             Suspicious Metrics
-            <button
-                title="Open Information about Suspicious Metrics"
-                popovertarget="suspiciousMetricPopover"
-                mat-icon-button
-                (click)="openDialog()"
-            >
-                <i matSuffix class="fa fa-info-circle suspicious-metric-info-button"></i>
-            </button>
+            <div>
+                <button
+                    title="Open Information about Suspicious Metrics"
+                    popovertarget="suspiciousMetricPopover"
+                    mat-button
+                    (click)="openDialog()"
+                >
+                    <i matSuffix class="fa fa-question-circle-o info-button"></i>
+                </button>
+            </div>
         </div>
     </div>
     <cc-suspicious-metrics-list [data]="data" [matMenuTriggerReference]="matMenuTriggerReference"></cc-suspicious-metrics-list>

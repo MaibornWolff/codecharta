@@ -1,0 +1,33 @@
+.ai-drop-down.high-risk-profile {
+    ul {
+        margin: 0;
+    }
+
+    .risk-profiles {
+        margin: 0 -10px -10px;
+        display: flex;
+        .risk-profile {
+            height: 36px;
+            text-align: center;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .low-risk {
+            background-color: #5cb34d;
+        }
+
+        .moderate-risk {
+            background-color: #eef432;
+        }
+
+        .high-risk {
+            background-color: #cc2900;
+        }
+
+        .very-high-risk {
+            background-color: #9c0e6a;
+        }
+    }
+}
