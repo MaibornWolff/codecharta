@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Changed
+
+- IMPORTANT: The sonar complexity will no longer be renamed to MCC! [#3456](https://github.com/MaibornWolff/codecharta/pull/3606)
+
 ## [1.125.0] - 2024-05-16
 
 ### Changed
