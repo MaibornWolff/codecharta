@@ -1,20 +1,20 @@
 <div (click)="$event.stopPropagation()">
     <div>
+        <div class="title">Suspicious Metrics</div>
         <div class="title">
-            Suspicious Metrics
-            <div>
-                <button
-                    title="Open Information about Suspicious Metrics"
-                    popovertarget="suspiciousMetricPopover"
-                    mat-button
-                    (click)="openDialog()"
-                >
-                    <i matSuffix class="fa fa-question-circle-o info-button"></i>
-                </button>
-            </div>
+            <button
+                title="Open Information about Suspicious Metrics"
+                popovertarget="suspiciousMetricPopover"
+                (click)="openDialog()"
+                class="title-button"
+            >
+                <i matSuffix class="fa fa-question-circle-o info-button"></i>
+            </button>
         </div>
     </div>
-    <cc-suspicious-metrics-list [data]="data" [matMenuTriggerReference]="matMenuTriggerReference"></cc-suspicious-metrics-list>
-    <cc-unsuspicious-metrics-list [data]="data" [matMenuTriggerReference]="matMenuTriggerReference"></cc-unsuspicious-metrics-list>
-    <cc-untracked-metrics-list [data]="data" [matMenuTriggerReference]="matMenuTriggerReference"></cc-untracked-metrics-list>
+    <div class="suspicious-menu-content-wrapper">
+        <cc-suspicious-metrics-list [data]="data" [matMenuTriggerReference]="matMenuTriggerReference"></cc-suspicious-metrics-list>
+        <cc-unsuspicious-metrics-list [data]="data" [matMenuTriggerReference]="matMenuTriggerReference"></cc-unsuspicious-metrics-list>
+        <cc-untracked-metrics-list [data]="data" [matMenuTriggerReference]="matMenuTriggerReference"></cc-untracked-metrics-list>
+    </div>
 </div>

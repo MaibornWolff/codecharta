@@ -59,4 +59,12 @@ export class SuspiciousMetricsListComponent {
         }
         return metricName.toUpperCase()
     }
+
+    getDescriptionOfMetric(metricName: string): string {
+        const metricDescription = metricTitles.get(metricName)
+        if (metricDescription) {
+            return `${metricDescription.toLowerCase()}`
+        }
+        return ``
+    }
 }

@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, SimpleChanges, ViewChild, AfterViewInit } from "@angular/core"
+import { Component, Input, OnChanges, SimpleChanges, ViewChild, AfterViewInit, ViewEncapsulation } from "@angular/core"
 import { dequal } from "dequal"
 import { ArtificialIntelligenceData } from "../selectors/artificialIntelligence.selector"
 import { MatMenu, MatMenuTrigger } from "@angular/material/menu"
@@ -7,7 +7,8 @@ import { SuspiciousMetricsMenuComponent } from "./suspiciousMetricsMenu/suspicio
 @Component({
     selector: "cc-suspicious-metrics",
     templateUrl: "./suspiciousMetrics.component.html",
-    styleUrl: "./suspiciousMetrics.component.scss"
+    styleUrl: "./suspiciousMetrics.component.scss",
+    encapsulation: ViewEncapsulation.None
 })
 export class SuspiciousMetricsComponent implements OnChanges, AfterViewInit {
     @ViewChild(SuspiciousMetricsMenuComponent) menuComponent: SuspiciousMetricsMenuComponent
