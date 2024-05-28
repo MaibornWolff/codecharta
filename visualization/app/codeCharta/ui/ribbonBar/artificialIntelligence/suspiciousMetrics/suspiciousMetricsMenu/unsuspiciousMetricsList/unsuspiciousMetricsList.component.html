@@ -1,17 +1,19 @@
 @if (data.unsuspiciousMetrics.length) {
     @if (data.analyzedProgrammingLanguage.length) {
-        <div class="title">
+        <div class="subtitle">
             <button data-testid="Unsuspicious Metrics" class="untracked-metrics-button" (click)="toggleUnsuspiciousMetricsVisibility()">
-                Unsuspicious metrics in {{ data.analyzedProgrammingLanguage }} code
-                <i
-                    class="fa"
-                    [ngClass]="{ 'fa-caret-down': !isUnsuspiciuosMetricsVisible, 'fa-caret-up': isUnsuspiciuosMetricsVisible }"
-                ></i>
+                <span class="untracked-unsus-icon-span">
+                    <i
+                        class="fa"
+                        [ngClass]="{ 'fa-caret-right': !isUnsuspiciuosMetricsVisible, 'fa-caret-down': isUnsuspiciuosMetricsVisible }"
+                    ></i>
+                </span>
+                Unsuspicious metrics in this <code>.{{ data.analyzedProgrammingLanguage }}</code> code
             </button>
         </div>
     }
     @if (isUnsuspiciuosMetricsVisible) {
-        <ul data-testid="List of Unsuspicious Metrics in ts Code">
+        <ul data-testid="List of Unsuspicious Metrics in ts Code" class="text-content">
             @for (unsuspiciousMetric of data.unsuspiciousMetrics; track unsuspiciousMetric) {
                 <li>{{ unsuspiciousMetric }}</li>
             }

@@ -1,6 +1,16 @@
 .ai-drop-down.suspicious-metric-panel {
     scrollbar-gutter: stable;
 
+    code {
+        background: rgba(230, 230, 230, 0.96);
+        font-size: 16px;
+    }
+
+    ul.text-content {
+        margin: 0;
+        padding-left: 26px;
+    }
+
     .suspicious-menu-content-wrapper {
         border: 3px solid lightgray;
         border-radius: 10px;
@@ -16,21 +26,21 @@
         text-overflow: ellipsis;
     }
 
+    .untracked-unsus-icon-span {
+        display: inline-block;
+        width: 10px;
+        font-size: 16px;
+    }
+
     .untracked-metrics-button {
         background-color: white;
         color: black;
         cursor: pointer;
-        font-weight: bold;
         width: 100%;
         border: none;
         text-align: left;
         font-size: 16px;
         padding: 0 0 6px 0;
-    }
-
-    .untracked-metrics-icon {
-        font-size: 18px;
-        padding: 4px;
     }
 
     .title {
