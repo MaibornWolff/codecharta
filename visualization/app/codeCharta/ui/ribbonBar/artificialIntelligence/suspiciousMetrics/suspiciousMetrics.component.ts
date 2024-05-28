@@ -6,7 +6,8 @@ import { SuspiciousMetricsMenuComponent } from "./suspiciousMetricsMenu/suspicio
 
 @Component({
     selector: "cc-suspicious-metrics",
-    templateUrl: "./suspiciousMetrics.component.html"
+    templateUrl: "./suspiciousMetrics.component.html",
+    styleUrl: "./suspiciousMetrics.component.scss"
 })
 export class SuspiciousMetricsComponent implements OnChanges, AfterViewInit {
     @ViewChild(SuspiciousMetricsMenuComponent) menuComponent: SuspiciousMetricsMenuComponent

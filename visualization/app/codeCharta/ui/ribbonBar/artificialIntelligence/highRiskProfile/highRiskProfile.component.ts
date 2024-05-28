@@ -4,6 +4,7 @@ import { ArtificialIntelligenceData } from "../selectors/artificialIntelligence.
 @Component({
     selector: "cc-high-risk-profile",
     templateUrl: "./highRiskProfile.component.html",
+    styleUrl: "./highRiskProfile.component.scss",
     encapsulation: ViewEncapsulation.None
 })
 export class HighRiskProfileComponent {

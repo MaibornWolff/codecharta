@@ -1,3 +1,18 @@
 .mat-mdc-dialog-container {
     min-width: 320px;
+
+    .cc-dialog {
+        &.suspicious-metric-dialog {
+            .title {
+                font-size: 16px;
+                font-weight: bold;
+                text-align: center;
+            }
+
+            .info-text {
+                line-height: 1.5rem;
+                padding-bottom: 0px;
+            }
+        }
+    }
 }
