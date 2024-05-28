@@ -4,35 +4,36 @@
     </div>
 }
 
-<table class="text-content">
+<table class="text-content" cellspacing="4px">
     @for (item of data.suspiciousMetricSuggestionLinks; track item) {
         <tr>
             <td></td>
             <td title="{{ getNameAndDescriptionOfMetric(item.metric) }}">
-                {{ getNameAndDescriptionOfMetric(item.metric) | truncateText: 35 }}
+                <b>{{ item.metric | truncateText: 40 }}</b
+                ><br />
+                <span class="sub-sub-title">{{ getDescriptionOfMetric(item.metric) }}</span>
             </td>
             <td>
                 <mat-button-toggle-group>
                     <mat-button-toggle
-                        class="metric-button"
                         (click)="applySuspiciousMetric(item, false)"
                         title="Apply Map Configuration to show files with suspicious metric {{
                             item.metric
                         }} and high risk or very high risk depending on selection"
                     >
-                        Apply preset <i class="fa fa-arrows-v"></i> <i class="fa fa-paint-brush"></i>
+                        Apply preset&nbsp;<i class="fa fa-arrows-v"></i>&nbsp;<i class="fa fa-paint-brush"></i>
                     </mat-button-toggle>
                     @if (item.isOutlier) {
                         <mat-button-toggle
-                            class="risk-button"
+                            class="risk-button-outliers"
                             (click)="applySuspiciousMetric(item, true)"
                             title="Show very high risk files (90th percentile)"
                         >
-                            Outliers <i class="fa fa-exclamation-triangle"></i>
+                            High-Risk&nbsp;<i class="fa fa-exclamation-triangle"></i>
                         </mat-button-toggle>
                     } @else {
-                        <mat-button-toggle class="risk-button risk-button-outliers" title="No high risk profile detected" disabled>
-                            Outliers <i class="fa fa-exclamation-triangle"></i>
+                        <mat-button-toggle title="No high risk profile detected" disabled>
+                            High-Risk&nbsp;<i class="fa fa-exclamation-triangle"></i>
                         </mat-button-toggle>
                     }
                 </mat-button-toggle-group>
