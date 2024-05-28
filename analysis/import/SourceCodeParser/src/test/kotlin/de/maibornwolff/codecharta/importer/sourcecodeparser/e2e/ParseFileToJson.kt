@@ -28,7 +28,7 @@ class ParseFileToJson {
 
     @Test
     fun `json output has correct sonar complexity`() {
-        assertThat(output).containsOnlyOnce("""complexity (formerly mcc)":6""")
+        assertThat(output).containsOnlyOnce("""complexity":6""")
     }
 
     @Test
