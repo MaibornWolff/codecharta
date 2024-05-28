@@ -4,14 +4,15 @@
     .cc-dialog {
         &.suspicious-metric-dialog {
             .title {
-                font-size: 16px;
+                font-size: 20px;
                 font-weight: bold;
                 text-align: center;
             }
 
             .info-text {
-                line-height: 1.5rem;
+                font-size: 14px;
                 padding-bottom: 0px;
+                color: black;
             }
         }
     }

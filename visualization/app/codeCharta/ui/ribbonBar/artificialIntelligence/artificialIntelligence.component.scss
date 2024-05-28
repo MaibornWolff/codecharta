@@ -1,3 +1,4 @@
+@use "../../../../material/theme";
 cc-artificial-intelligence {
     display: flex;
     justify-content: center;
@@ -18,8 +19,6 @@ cc-artificial-intelligence {
 .button-mat-dialog {
     border-radius: 12px;
     margin-top: 2px;
-    background-color: lightgrey;
-    border-bottom-color: black;
     font-size: 14px;
     font-weight: bold;
     width: 100px;
@@ -36,6 +35,7 @@ cc-artificial-intelligence {
     .title {
         font-size: 20px;
         font-weight: bold;
+        margin-bottom: 8px;
     }
 
     .subtitle {
