@@ -43,9 +43,9 @@ describe("RibbonBar", () => {
         await page.click("cc-suspicious-metrics")
         const suspiciousMetricsMenu = await page.waitForSelector(".mat-mdc-menu-panel.mat-mdc-menu-panel.ai-drop-down")
         expect(suspiciousMetricsMenu).toBeTruthy()
-        let titleElement = await suspiciousMetricsMenu.waitForSelector(".title")
+        let titleElement = await suspiciousMetricsMenu.waitForSelector(".sub-title")
         let titleContent = await titleElement.evaluate(element => element.textContent)
-        expect(titleContent.trim()).toBe("Suspicious Metrics in ts code")
+        expect(titleContent.trim()).toBe("Suspicious Metrics in this .ts code")
 
         await page.click("cc-code-charta #codeMap")
         await page.click("cc-high-risk-profile")
