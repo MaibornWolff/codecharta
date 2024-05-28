@@ -47,15 +47,21 @@
         display: inline-block;
     }
 
-    .title-button {
+    .title-button-container {
+        display: inline-flex;
+        align-items: center;
+        cursor: pointer;
+        width: 24px;
+        height: 24px;
+        border-radius: 100%;
+        background-color: #1b9cfc;
         margin-left: 8px;
-        width: 45px;
-        height: 22px;
-        line-height: 24px;
-        display: inline-block;
     }
 
-    .info-button {
+    .title-button {
+        display: inline-block;
+        margin: auto;
+        color: white;
         font-size: 16px;
     }
 
