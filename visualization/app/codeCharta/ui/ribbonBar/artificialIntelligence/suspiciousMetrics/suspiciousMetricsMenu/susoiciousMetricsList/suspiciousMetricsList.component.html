@@ -2,40 +2,44 @@
     <div class="sub-title" title="Suspicious Metrics in this .{{ data.analyzedProgrammingLanguage }} code">
         Suspicious Metrics in this <code>.{{ data.analyzedProgrammingLanguage }}</code> code
     </div>
-}
 
-<div class="text-content grid-container-suspicious">
-    @for (item of data.suspiciousMetricSuggestionLinks; track item) {
-        <div id="spacer"></div>
-        <div title="{{ getNameAndDescriptionOfMetric(item.metric) }}">
-            <b>{{ item.metric | truncateText: 40 }}</b
-            ><br />
-            <span class="sub-sub-title">{{ getDescriptionOfMetric(item.metric) }}</span>
-        </div>
-        <div>
-            <mat-button-toggle-group>
-                <mat-button-toggle
-                    (click)="applySuspiciousMetric(item, false)"
-                    title="Apply Map Configuration to show files with suspicious metric {{
-                        item.metric
-                    }} and high risk or very high risk depending on selection"
-                >
-                    Apply preset&nbsp;<i class="fa fa-arrows-v"></i>&nbsp;<i class="fa fa-paint-brush"></i>
-                </mat-button-toggle>
-                @if (item.isOutlier) {
+    <div class="text-content grid-container-suspicious">
+        @for (item of data.suspiciousMetricSuggestionLinks; track item) {
+            <div id="spacer"></div>
+            <div title="{{ getNameAndDescriptionOfMetric(item.metric) }}">
+                <b>{{ item.metric | truncateText: 40 }}</b
+                ><br />
+                <span class="sub-sub-title">{{ getDescriptionOfMetric(item.metric) }}</span>
+            </div>
+            <div>
+                <mat-button-toggle-group>
                     <mat-button-toggle
-                        class="risk-button-outliers"
-                        (click)="applySuspiciousMetric(item, true)"
-                        title="Show very high risk files (90th percentile)"
+                        (click)="applySuspiciousMetric(item, false)"
+                        title="Apply Map Configuration to show files with suspicious metric {{
+                            item.metric
+                        }} and high risk or very high risk depending on selection"
                     >
-                        High-Risk&nbsp;<i class="fa fa-exclamation-triangle"></i>
+                        Apply preset&nbsp;<i class="fa fa-arrows-v"></i>&nbsp;<i class="fa fa-paint-brush"></i>
                     </mat-button-toggle>
-                } @else {
-                    <mat-button-toggle title="No high risk profile detected" disabled>
-                        High-Risk&nbsp;<i class="fa fa-exclamation-triangle"></i>
-                    </mat-button-toggle>
-                }
-            </mat-button-toggle-group>
-        </div>
-    }
-</div>
+                    @if (item.isOutlier) {
+                        <mat-button-toggle
+                            class="risk-button-outliers"
+                            (click)="applySuspiciousMetric(item, true)"
+                            title="Show very high risk files (90th percentile)"
+                        >
+                            High-Risk&nbsp;<i class="fa fa-exclamation-triangle"></i>
+                        </mat-button-toggle>
+                    } @else {
+                        <mat-button-toggle title="No high risk profile detected" disabled>
+                            High-Risk&nbsp;<i class="fa fa-exclamation-triangle"></i>
+                        </mat-button-toggle>
+                    }
+                </mat-button-toggle-group>
+            </div>
+        }
+    </div>
+} @else {
+    <div class="sub-title-not-text-content sub-title" title="Suspicious Metrics in this .{{ data.analyzedProgrammingLanguage }} code">
+        No Suspicious Metrics in this <code>.{{ data.analyzedProgrammingLanguage }}</code> code found!
+    </div>
+}
