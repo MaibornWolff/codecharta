@@ -36,10 +36,10 @@ fun getAttributeDescriptors(): Map<String, AttributeDescriptor> {
                 link = ghLink,
                 direction = -1
             ),
-        "mcc" to
+        "complexity" to
             AttributeDescriptor(
-                title = "Maximum Cyclic Complexity",
-                description = "Maximum cyclic complexity based on paths through the code by McCabe",
+                title = "Cyclomatic Complexity",
+                description = "Cyclomatic complexity based on paths through the code by McCabe",
                 link = ghLink,
                 direction = -1
             ),
