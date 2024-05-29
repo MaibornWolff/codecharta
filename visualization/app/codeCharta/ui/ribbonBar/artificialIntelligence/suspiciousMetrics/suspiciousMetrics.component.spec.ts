@@ -126,7 +126,7 @@ describe("SuspiciousMetricsComponent", () => {
             })
             await userEvent.click(screen.getByTitle("Open Suspicious Metrics Panel"))
             expect(screen.queryByText("No programming language was found for analyzing suspicious metrics.")).toBe(null)
-            expect(screen.getByTitle("Suspicious Metrics in this .ts code")).not.toBe(null)
+            expect(screen.getByTitle("Suspicious Metrics in .ts code")).not.toBe(null)
             expect(screen.getByTitle("MCC (cyclomatic complexity)")).not.toBe(null)
 
             await userEvent.click(screen.getByText("Apply preset"), undefined)
