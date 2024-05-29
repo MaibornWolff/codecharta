@@ -1,5 +1,5 @@
 <div (click)="$event.stopPropagation()">
-    <div>
+    <div class="title-container">
         <div class="title">Suspicious Metrics</div>
         <div class="title title-button-container">
             <i
@@ -11,6 +11,7 @@
             ></i>
         </div>
     </div>
+
     <div class="suspicious-menu-content-wrapper">
         <cc-suspicious-metrics-list [data]="data" [matMenuTriggerReference]="matMenuTriggerReference"></cc-suspicious-metrics-list>
         <cc-unsuspicious-metrics-list [data]="data" [matMenuTriggerReference]="matMenuTriggerReference"></cc-unsuspicious-metrics-list>

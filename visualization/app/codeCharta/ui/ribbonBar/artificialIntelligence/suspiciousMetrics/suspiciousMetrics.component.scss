@@ -1,3 +1,5 @@
+@use "../../../../../material/theme";
+
 .ai-drop-down.suspicious-metric-panel {
     scrollbar-gutter: stable;
 
@@ -7,10 +9,11 @@
     }
 
     .grid-container-suspicious {
-        display: inline-grid;
+        display: grid;
         column-gap: 4px;
         row-gap: 8px;
         grid-template-columns: auto auto auto;
+        place-items: center left;
 
         #spacer {
             width: 14px;
@@ -19,11 +22,15 @@
         &.text-content {
             padding-top: 16px;
         }
+
+        .fa-exclamation-triangle.risk-button-active {
+            color: #9c0e6a;
+        }
     }
 
     ul.text-content {
         margin: 0;
-        padding-left: 26px;
+        padding-left: 18px;
     }
 
     .suspicious-menu-content-wrapper {
@@ -42,6 +49,7 @@
         display: inline-block;
         width: 10px;
         font-size: 16px;
+        text-align: center;
     }
 
     .untracked-metrics-button {
@@ -66,8 +74,12 @@
         width: 24px;
         height: 24px;
         border-radius: 100%;
-        background-color: #1b9cfc;
+        background-color: theme.$cc-primary-color;
         margin-left: 8px;
+
+        &:hover {
+            background-color: theme.$cc-emphasized-color;
+        }
     }
 
     .title-button {
@@ -92,7 +104,8 @@
     mat-button-toggle {
         height: 35px;
         background-color: rgba(230, 230, 230, 0.96);
-        &:hover {
+
+        &:enabled:hover {
             background-color: #c8c8c8;
         }
     }

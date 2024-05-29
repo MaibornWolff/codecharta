@@ -65,6 +65,6 @@ export class SuspiciousMetricsListComponent {
         if (metricDescription) {
             return `${metricDescription.toLowerCase()}`
         }
-        return ``
+        return ""
     }
 }
