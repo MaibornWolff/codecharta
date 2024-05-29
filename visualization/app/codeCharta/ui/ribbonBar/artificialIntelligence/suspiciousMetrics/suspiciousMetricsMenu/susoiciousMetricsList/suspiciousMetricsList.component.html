@@ -1,15 +1,17 @@
 @if (data.suspiciousMetricSuggestionLinks.length) {
     <div class="sub-title" title="Suspicious Metrics in this .{{ data.analyzedProgrammingLanguage }} code">
-        Suspicious Metrics in this <code>.{{ data.analyzedProgrammingLanguage }}</code> code
+        Suspicious Metrics in <code>.{{ data.analyzedProgrammingLanguage }}</code> code
     </div>
 
     <div class="text-content grid-container-suspicious">
         @for (item of data.suspiciousMetricSuggestionLinks; track item) {
             <div id="spacer"></div>
             <div title="{{ getNameAndDescriptionOfMetric(item.metric) }}">
-                <b>{{ item.metric | truncateText: 40 }}</b
-                ><br />
-                <span class="sub-sub-title">{{ getDescriptionOfMetric(item.metric) }}</span>
+                <b>{{ item.metric | truncateText: 40 }}</b>
+                @if (getDescriptionOfMetric(item.metric)) {
+                    <br />
+                    <span class="sub-sub-title">{{ getDescriptionOfMetric(item.metric) }}</span>
+                }
             </div>
             <div>
                 <mat-button-toggle-group>
@@ -22,12 +24,8 @@
                         Apply preset&nbsp;<i class="fa fa-arrows-v"></i>&nbsp;<i class="fa fa-paint-brush"></i>
                     </mat-button-toggle>
                     @if (item.isOutlier) {
-                        <mat-button-toggle
-                            class="risk-button-outliers"
-                            (click)="applySuspiciousMetric(item, true)"
-                            title="Show very high risk files (90th percentile)"
-                        >
-                            High-Risk&nbsp;<i class="fa fa-exclamation-triangle"></i>
+                        <mat-button-toggle (click)="applySuspiciousMetric(item, true)" title="Show very high risk files (90th percentile)">
+                            High-Risk&nbsp;<i class="fa fa-exclamation-triangle risk-button-active"></i>
                         </mat-button-toggle>
                     } @else {
                         <mat-button-toggle title="No high risk profile detected" disabled>
@@ -40,6 +38,6 @@
     </div>
 } @else {
     <div class="sub-title-not-text-content sub-title" title="Suspicious Metrics in this .{{ data.analyzedProgrammingLanguage }} code">
-        No Suspicious Metrics in this <code>.{{ data.analyzedProgrammingLanguage }}</code> code found!
+        No Suspicious Metrics in <code>.{{ data.analyzedProgrammingLanguage }}</code> code found!
     </div>
 }
