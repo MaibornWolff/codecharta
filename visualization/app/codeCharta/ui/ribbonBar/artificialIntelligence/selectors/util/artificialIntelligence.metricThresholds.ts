@@ -20,7 +20,7 @@ export const metricThresholdsByLanguage: MetricThresholdsByLanguage = {
         //  that means that 241 heterogeneous open source projects were included in the benchmark:
         //  e.g. young and old (2-10 years) old projects, projects with few lines of code or with quite a lot
         //  on this basis thresholds were derived
-        mcc: {
+        complexity: {
             percentile70: 48,
             percentile80: 71,
             percentile90: 117,
@@ -78,7 +78,7 @@ export const metricThresholdsByLanguage: MetricThresholdsByLanguage = {
     miscellaneous: {
         // No derived Thresholds for other programming languages than java
         // Just use empirical thresholds
-        mcc: {
+        complexity: {
             percentile70: 50,
             percentile80: 70,
             percentile90: 120,

@@ -9,7 +9,7 @@ export interface RiskProfile {
     veryHighRisk: number
 }
 
-export const HEIGHT_METRIC = "mcc"
+export const HEIGHT_METRIC = "complexity"
 export const AREA_METRIC = "rloc"
 export const EXCLUDED_FILE_EXTENSION = new Set(["html", "sass", "css", "scss", "txt", "md", "json", undefined])
 
