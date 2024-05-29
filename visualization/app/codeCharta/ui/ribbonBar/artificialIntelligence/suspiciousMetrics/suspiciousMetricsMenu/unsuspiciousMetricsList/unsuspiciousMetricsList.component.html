@@ -1,8 +1,8 @@
 @if (data.unsuspiciousMetrics.length) {
     @if (data.analyzedProgrammingLanguage.length) {
         <div class="sub-title">
-            <button data-testid="Unsuspicious Metrics" class="untracked-metrics-button" (click)="toggleUnsuspiciousMetricsVisibility()">
-                <span class="untracked-unsus-icon-span">
+            <button data-testid="Unsuspicious Metrics" class="show-metrics-button" (click)="toggleUnsuspiciousMetricsVisibility()">
+                <span class="caret-icon-span">
                     <i
                         class="fa"
                         [ngClass]="{ 'fa-caret-right': !isUnsuspiciuosMetricsVisible, 'fa-caret-down': isUnsuspiciuosMetricsVisible }"

@@ -23,10 +23,16 @@ export class SuspiciousMetricsListComponent {
         ArtificialIntelligenceData,
         "analyzedProgrammingLanguage" | "unsuspiciousMetrics" | "suspiciousMetricSuggestionLinks" | "untrackedMetrics"
     >
+    isSuspiciuosMetricsVisible = true
+
     constructor(
         private store: Store,
         public dialog: MatDialog
     ) {}
+
+    toggleSuspiciousMetricsVisibility(): void {
+        this.isSuspiciuosMetricsVisible = !this.isSuspiciuosMetricsVisible
+    }
 
     applySuspiciousMetric(metric: MetricSuggestionParameters, markOutlier: boolean) {
         this.store.dispatch(setAreaMetric({ value: AREA_METRIC }))
