@@ -4,40 +4,38 @@
     </div>
 }
 
-<table class="text-content" cellspacing="4px">
+<div class="text-content grid-container-suspicious">
     @for (item of data.suspiciousMetricSuggestionLinks; track item) {
-        <tr>
-            <td></td>
-            <td title="{{ getNameAndDescriptionOfMetric(item.metric) }}">
-                <b>{{ item.metric | truncateText: 40 }}</b
-                ><br />
-                <span class="sub-sub-title">{{ getDescriptionOfMetric(item.metric) }}</span>
-            </td>
-            <td>
-                <mat-button-toggle-group>
+        <div id="spacer"></div>
+        <div title="{{ getNameAndDescriptionOfMetric(item.metric) }}">
+            <b>{{ item.metric | truncateText: 40 }}</b
+            ><br />
+            <span class="sub-sub-title">{{ getDescriptionOfMetric(item.metric) }}</span>
+        </div>
+        <div>
+            <mat-button-toggle-group>
+                <mat-button-toggle
+                    (click)="applySuspiciousMetric(item, false)"
+                    title="Apply Map Configuration to show files with suspicious metric {{
+                        item.metric
+                    }} and high risk or very high risk depending on selection"
+                >
+                    Apply preset&nbsp;<i class="fa fa-arrows-v"></i>&nbsp;<i class="fa fa-paint-brush"></i>
+                </mat-button-toggle>
+                @if (item.isOutlier) {
                     <mat-button-toggle
-                        (click)="applySuspiciousMetric(item, false)"
-                        title="Apply Map Configuration to show files with suspicious metric {{
-                            item.metric
-                        }} and high risk or very high risk depending on selection"
+                        class="risk-button-outliers"
+                        (click)="applySuspiciousMetric(item, true)"
+                        title="Show very high risk files (90th percentile)"
                     >
-                        Apply preset&nbsp;<i class="fa fa-arrows-v"></i>&nbsp;<i class="fa fa-paint-brush"></i>
+                        High-Risk&nbsp;<i class="fa fa-exclamation-triangle"></i>
                     </mat-button-toggle>
-                    @if (item.isOutlier) {
-                        <mat-button-toggle
-                            class="risk-button-outliers"
-                            (click)="applySuspiciousMetric(item, true)"
-                            title="Show very high risk files (90th percentile)"
-                        >
-                            High-Risk&nbsp;<i class="fa fa-exclamation-triangle"></i>
-                        </mat-button-toggle>
-                    } @else {
-                        <mat-button-toggle title="No high risk profile detected" disabled>
-                            High-Risk&nbsp;<i class="fa fa-exclamation-triangle"></i>
-                        </mat-button-toggle>
-                    }
-                </mat-button-toggle-group>
-            </td>
-        </tr>
+                } @else {
+                    <mat-button-toggle title="No high risk profile detected" disabled>
+                        High-Risk&nbsp;<i class="fa fa-exclamation-triangle"></i>
+                    </mat-button-toggle>
+                }
+            </mat-button-toggle-group>
+        </div>
     }
-</table>
+</div>
