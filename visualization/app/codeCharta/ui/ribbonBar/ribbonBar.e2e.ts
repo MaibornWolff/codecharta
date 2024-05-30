@@ -45,7 +45,7 @@ describe("RibbonBar", () => {
         expect(suspiciousMetricsMenu).toBeTruthy()
         let titleElement = await suspiciousMetricsMenu.waitForSelector(".sub-title")
         let titleContent = await titleElement.evaluate(element => element.textContent)
-        expect(titleContent.trim()).toBe("Suspicious Metrics in this .ts code")
+        expect(titleContent.trim()).toBe("Suspicious Metrics in .ts code")
 
         await page.click("cc-code-charta #codeMap")
         await page.click("cc-high-risk-profile")
