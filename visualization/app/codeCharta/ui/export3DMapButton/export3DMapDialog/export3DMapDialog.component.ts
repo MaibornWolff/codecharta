@@ -35,6 +35,7 @@ interface Printer {
 })
 export class Export3DMapDialogComponent {
     @ViewChild("rendererContainer") rendererContainer: ElementRef
+    @ViewChild("fileInput") fileInput: ElementRef
     @Input() logoColor = "#ffffff"
 
     private printPreviewScene: Scene
@@ -122,6 +123,13 @@ export class Export3DMapDialogComponent {
     onFlipLogo() {
         this.previewMesh.flipCustomLogo()
     }
+
+    onRemoveLogo() {
+        this.isFileSelected = false
+        this.fileInput.nativeElement.value = ""
+        this.previewMesh.removeCustomLogo()
+    }
+
     onSelectedPrinterChange() {
         const wantedNumberOfColors = this.selectedPrinter.numberOfColors
         if (this.currentNumberOfColors !== wantedNumberOfColors) {
@@ -132,6 +140,7 @@ export class Export3DMapDialogComponent {
         this.makeMapMaxSize()
         this.updateCameraPosition(this.printPreviewScene.getObjectByName("camera") as PerspectiveCamera)
     }
+
     onLogoColorChange(newColor: string) {
         this.logoColor = newColor
         this.previewMesh.updateCustomLogoColor(this.logoColor)

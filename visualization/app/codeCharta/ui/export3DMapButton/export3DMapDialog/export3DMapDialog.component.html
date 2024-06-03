@@ -43,7 +43,11 @@
     <mat-card appearance="outlined">
         <mat-card-header>Bottom left logo (SVG):</mat-card-header>
         <mat-card-content>
-            <input type="file" (change)="onFileSelected($event)" accept=".svg" />
+            <input #fileInput type="file" (change)="onFileSelected($event)" accept=".svg" />
+
+            <button (click)="onRemoveLogo()" [hidden]="!isFileSelected" mat-button title="Remove Logo Button">
+                <span><i class="fa fa-times"></i> Remove Logo</span>
+            </button>
 
             <div [hidden]="!isFileSelected">
                 <button (click)="onRotateLogo()" mat-button title="Rotate Logo Button">

@@ -222,6 +222,10 @@ export class Preview3DPrintMesh {
         this.customLogoMesh.rotateY(Math.PI) // Rotate 180 degrees
     }
 
+    removeCustomLogo() {
+        this.printMesh.remove(this.customLogoMesh)
+    }
+
     updateCustomLogoColor(newColor: string) {
         if (this.customLogoMesh.material instanceof MeshBasicMaterial) {
             this.customLogoMesh.material.color.set(newColor)
