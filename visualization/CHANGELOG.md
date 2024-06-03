@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [1.126.0] - 2024-06-03
+
 ### Added 🚀
 
 - Overhaul the Suspicious Metrics menu [#3612](https://github.com/MaibornWolff/codecharta/pull/3612)
