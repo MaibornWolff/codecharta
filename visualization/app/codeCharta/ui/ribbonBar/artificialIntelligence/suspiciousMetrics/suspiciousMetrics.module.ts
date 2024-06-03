@@ -13,6 +13,7 @@ import { MatMenuModule } from "@angular/material/menu"
 import { UnsuspiciousMetricsListComponent } from "./suspiciousMetricsMenu/unsuspiciousMetricsList/unsuspiciousMetricsList.component"
 import { MatButtonToggleGroup } from "@angular/material/button-toggle"
 import { TruncateTextPipeModule } from "../../../../util/pipes/TruncateTextPipeModule"
+import { ActionIconModule } from "../../../actionIcon/actionIcon.module"
 
 @NgModule({
     imports: [
@@ -25,6 +26,7 @@ import { TruncateTextPipeModule } from "../../../../util/pipes/TruncateTextPipeM
         MatButtonModule,
         MatDialogModule,
         MatButtonToggleGroup,
+        ActionIconModule,
         TruncateTextPipeModule
     ],
     declarations: [
