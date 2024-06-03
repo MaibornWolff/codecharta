@@ -119,7 +119,10 @@ describe("SuspiciousMetricsComponent", () => {
                     data: {
                         analyzedProgrammingLanguage: "ts",
                         unsuspiciousMetrics: ["rloc"],
-                        suspiciousMetricSuggestionLinks: [{ metric: "mcc", from: 10, to: 22 }],
+                        suspiciousMetricSuggestionLinks: [
+                            { metric: "mcc", from: 10, to: 22 },
+                            { metric: "code_smell", from: 5, to: 9 }
+                        ],
                         untrackedMetrics: []
                     }
                 }
@@ -128,9 +131,14 @@ describe("SuspiciousMetricsComponent", () => {
             expect(screen.queryByText("No programming language was found for analyzing suspicious metrics.")).toBe(null)
             expect(screen.getByTitle("Suspicious Metrics in .ts code")).not.toBe(null)
             expect(screen.getByTitle("MCC (cyclomatic complexity)")).not.toBe(null)
+            expect(screen.getByTitle("MCC (cyclomatic complexity)").getElementsByClassName("sub-sub-title")).toHaveLength(1)
+            expect(screen.getByText("cyclomatic complexity")).not.toBe(null)
+            expect(screen.getByTitle("CODE_SMELL")).not.toBe(null)
+            expect(screen.getByTitle("CODE_SMELL").getElementsByClassName("sub-sub-title")).toHaveLength(0)
+
             expect(screen.getByTestId("Unsuspicious Metrics")).not.toBe(null)
 
-            await userEvent.click(screen.getByText("Apply preset"), undefined)
+            await userEvent.click(screen.getAllByText("Apply preset")[0], undefined)
             const store = TestBed.inject(Store)
             expect(store.dispatch).toHaveBeenCalledWith(setHeightMetric({ value: "mcc" }))
             expect(store.dispatch).toHaveBeenCalledWith(setColorMetric({ value: "mcc" }))
