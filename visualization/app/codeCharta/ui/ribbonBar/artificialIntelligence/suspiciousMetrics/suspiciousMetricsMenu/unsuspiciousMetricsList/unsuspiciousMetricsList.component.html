@@ -1,7 +1,12 @@
 @if (data.unsuspiciousMetrics.length) {
     @if (data.analyzedProgrammingLanguage.length) {
         <div class="sub-title">
-            <button data-testid="Unsuspicious Metrics" class="show-metrics-button" (click)="toggleUnsuspiciousMetricsVisibility()">
+            <button
+                data-testid="Unsuspicious Metrics"
+                class="show-metrics-button"
+                (click)="toggleUnsuspiciousMetricsVisibility()"
+                title="Show/Hide Unsuspicious Metrics"
+            >
                 <span class="caret-icon-span">
                     <i
                         class="fa"
