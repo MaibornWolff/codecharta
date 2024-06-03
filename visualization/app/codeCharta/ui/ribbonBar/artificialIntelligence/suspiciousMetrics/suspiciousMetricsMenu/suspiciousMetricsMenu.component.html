@@ -1,15 +1,12 @@
 <div (click)="$event.stopPropagation()">
     <div>
         <div class="title">Suspicious Metrics</div>
-        <div class="title title-button-container">
-            <i
-                class="fa fa-question-circle-o title-button"
-                role="button"
-                title="Open Information about Suspicious Metrics"
-                popovertarget="suspiciousMetricPopover"
-                (click)="openDialog()"
-            ></i>
-        </div>
+        <cc-action-icon
+            icon="fa fa-question-circle-o"
+            title="Open Information about Suspicious Metrics"
+            (click)="openDialog()"
+            popovertarget="suspiciousMetricPopover"
+        ></cc-action-icon>
     </div>
 
     <div class="suspicious-menu-content-wrapper">
