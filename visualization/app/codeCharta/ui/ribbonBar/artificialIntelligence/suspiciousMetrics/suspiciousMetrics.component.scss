@@ -67,26 +67,8 @@
         display: inline-block;
     }
 
-    .title-button-container {
-        display: inline-flex;
-        align-items: center;
-        cursor: pointer;
-        width: 24px;
-        height: 24px;
-        border-radius: 100%;
-        background-color: theme.$cc-primary-color;
-        margin-left: 8px;
-
-        &:hover {
-            background-color: theme.$cc-emphasized-color;
-        }
-    }
-
-    .title-button {
-        display: inline-block;
-        margin: auto;
-        color: white;
-        font-size: 16px;
+    cc-action-icon {
+        margin-left: 6px;
     }
 
     .sub-title-not-text-content {
