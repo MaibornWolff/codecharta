@@ -121,7 +121,7 @@ cd codecharta-visualization
 
 > If you are using an M1 or similar (arm64) architectures you might need to do additional steps, because the OS might flag the executable as damaged, if it is downloaded and from an unverified developer:
 
--   Remove the 'downloaded' attributes from the OS:
+- Remove the 'downloaded' attributes from the OS:
 
 ```bash
 xattr -cr codecharta-visualization.app/

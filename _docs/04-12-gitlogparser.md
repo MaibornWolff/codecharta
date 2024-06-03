@@ -14,7 +14,7 @@ renaming actions on feature branches.
 
 Things to note:
 
--   File deletions that get reverted later on are ignored by this parser.
+- File deletions that get reverted later on are ignored by this parser.
 
 It supports the following metrics per file:
 
@@ -60,8 +60,8 @@ The resulting project has the project name specified for the GitLogParser.
 
 #### Executing the repo-scan subcommand
 
--   `ccsh gitlogparser repo-scan --repo-path <path_to_my_git_project> -o output.cc.json.gz`
--   load `output.cc.json.gz` in visualization
+- `ccsh gitlogparser repo-scan --repo-path <path_to_my_git_project> -o output.cc.json.gz`
+- load `output.cc.json.gz` in visualization
 
 ### Manual creation of required files | log-scan
 
@@ -98,8 +98,8 @@ Please make sure to execute this command in the root folder of your repository.
 
 #### Executing the log-scan subcommand
 
--   `cd <my_git_project>`
--   `git log --numstat --raw --topo-order --reverse -m > git.log` (or `anongit > git.log`)
--   `git ls-files > file-name-list.txt`
--   `ccsh gitlogparser log-scan --git-log git.log --repo-files file-name-list.txt -o output.cc.json.gz`
--   load `output.cc.json.gz` in visualization
+- `cd <my_git_project>`
+- `git log --numstat --raw --topo-order --reverse -m > git.log` (or `anongit > git.log`)
+- `git ls-files > file-name-list.txt`
+- `ccsh gitlogparser log-scan --git-log git.log --repo-files file-name-list.txt -o output.cc.json.gz`
+- load `output.cc.json.gz` in visualization

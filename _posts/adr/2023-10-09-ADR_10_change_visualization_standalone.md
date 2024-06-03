@@ -1,14 +1,14 @@
 ---
 categories:
-    - ADR
+  - ADR
 tags:
-    - visualization
-    - nw
-    - nwjs
-    - electron
-    - npm
-    - standalone
-    - package
+  - visualization
+  - nw
+  - nwjs
+  - electron
+  - npm
+  - standalone
+  - package
 title: "ADR 10: Change Visualization Standalone -  Electron & NW.JS"
 ---
 
@@ -17,10 +17,10 @@ For this standalone use-case (like a desktop app without an installer) there are
 
 NW is used for the most releases including and prior to version `1.119.1`, but itself and its _packagers_ are the source of isssues regulary.
 
--   [NW app completly unusable in release version](https://github.com/nwjs/nw.js/issues/7963)
--   [Dependency not available anymore](https://github.com/MaibornWolff/codecharta/pull/3314), so CodeCharta could not be installed
--   [Pheonix builder stops working with new nw-versions](https://github.com/MaibornWolff/codecharta/issues/1266)
--   [Swap to nwjs-builder](https://github.com/MaibornWolff/codecharta/issues/2823), because pheonix was not maintained anymore
+- [NW app completly unusable in release version](https://github.com/nwjs/nw.js/issues/7963)
+- [Dependency not available anymore](https://github.com/MaibornWolff/codecharta/pull/3314), so CodeCharta could not be installed
+- [Pheonix builder stops working with new nw-versions](https://github.com/MaibornWolff/codecharta/issues/1266)
+- [Swap to nwjs-builder](https://github.com/MaibornWolff/codecharta/issues/2823), because pheonix was not maintained anymore
 
 To avoid these issues there are two options:
 
