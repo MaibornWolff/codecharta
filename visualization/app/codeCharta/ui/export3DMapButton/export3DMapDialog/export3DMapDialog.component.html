@@ -6,7 +6,13 @@
     <mat-form-field appearance="outline">
         <mat-label>Printer preset</mat-label>
         <mat-select (selectionChange)="onSelectedPrinterChange()" [(value)]="selectedPrinter">
-            <mat-option *ngFor="let printer of printers" [value]="printer">{{ printer.name }}</mat-option>
+            <mat-select-trigger> {{ selectedPrinter.name }} </mat-select-trigger>
+            <mat-option *ngFor="let printer of printers" [value]="printer"
+                >{{ printer.name }}
+                <span class="cc-printer-specs">
+                    (x: {{ printer.x }}cm, y: {{ printer.y }}cm, z: {{ printer.z }}cm, colors {{ printer.numberOfColors }} )</span
+                >
+            </mat-option>
         </mat-select>
     </mat-form-field>
 
@@ -31,7 +37,7 @@
 
     <mat-form-field appearance="outline">
         <mat-label>Bottom center label text</mat-label>
-        <input matInput [(ngModel)]="frontText" (input)="onFrontTextChange()" />
+        <input matInput [(ngModel)]="frontText" (input)="onFrontTextChange()" [placeholder]="'CodeCharta'" />
     </mat-form-field>
 
     <mat-card appearance="outlined">
@@ -57,7 +63,7 @@
             <span><i class="fa fa-download"></i> Download 3MF</span>
         </button>
 
-        <button (click)="downloadStlFile()" mat-button title="Download Stl Button">
+        <button (click)="downloadStlFile()" [disabled]="!isPrintMeshLoaded" mat-button title="Download Stl Button">
             <span><i class="fa fa-download"></i> Download minimal STL</span>
         </button>
     </mat-dialog-actions>

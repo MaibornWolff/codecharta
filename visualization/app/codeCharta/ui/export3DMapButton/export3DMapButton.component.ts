@@ -9,7 +9,7 @@ import { ErrorDialogComponent } from "../dialogs/errorDialog/errorDialog.compone
 import { setColorMode } from "../../state/store/dynamicSettings/colorMode/colorMode.actions"
 
 @Component({
-    selector: "cc-export-threed-map-button",
+    selector: "cc-export-3d-map-button",
     templateUrl: "./export3DMapButton.component.html",
     encapsulation: ViewEncapsulation.None
 })

@@ -7,7 +7,7 @@ import { Component, ElementRef, Input, ViewChild, ViewEncapsulation } from "@ang
 import { State } from "@ngrx/store"
 import { CcState, NodeMetricData } from "../../../codeCharta.model"
 import { ThreeSceneService } from "../../codeMap/threeViewer/threeSceneService"
-import { Color, Mesh, PerspectiveCamera, Scene, ShaderMaterial, Vector3, WebGLRenderer } from "three"
+import { Color, Mesh, PerspectiveCamera, Scene, ShaderMaterial, Vector2, Vector3, WebGLRenderer } from "three"
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
 import { STLExporter } from "three/examples/jsm/exporters/STLExporter"
 import { metricTitles } from "../../../util/metric/metricTitles"
@@ -42,11 +42,11 @@ export class Export3DMapDialogComponent {
 
     isFileSelected = false
     isPrintMeshLoaded = false
-    frontText = "CodeCharta"
+    frontText: string
 
     printers: Printer[] = [
         { name: "Prusa MK3S (single color)", x: 245, y: 205, z: 205, numberOfColors: 1 },
-        { name: "BambuLabs A1 + AMS (4 colors)", x: 251, y: 251, z: 251, numberOfColors: 4 },
+        { name: "BambuLab A1 + AMS Lite", x: 251, y: 251, z: 251, numberOfColors: 4 },
         { name: "Prusa XL (5 colors)", x: 355, y: 335, z: 355, numberOfColors: 5 }
     ]
     selectedPrinter: Printer = this.printers[2]
@@ -165,7 +165,11 @@ export class Export3DMapDialogComponent {
 
     private initRenderer(printPreviewScene, camera) {
         const renderer = new WebGLRenderer()
-        renderer.setSize(600 - 32, 450)
+        const currentSize = new Vector2()
+        renderer.getSize(currentSize)
+        const containerWidth = this.rendererContainer.nativeElement.offsetWidth
+        const containerHeight = currentSize.y * (containerWidth / currentSize.x)
+        renderer.setSize(containerWidth, containerHeight, true)
         this.rendererContainer.nativeElement.appendChild(renderer.domElement)
 
         const controls = new OrbitControls(camera, renderer.domElement)
@@ -180,7 +184,7 @@ export class Export3DMapDialogComponent {
     }
 
     private updateCameraPosition(camera: PerspectiveCamera) {
-        camera.position.set(-this.currentSize.x * 0.2, -this.currentSize.y * 1.2, this.currentSize.z * 5)
+        camera.position.set(-this.currentSize.x * 0.2, -this.currentSize.y * 1.2, this.currentSize.z * 3)
     }
 
     async download3MFFile() {

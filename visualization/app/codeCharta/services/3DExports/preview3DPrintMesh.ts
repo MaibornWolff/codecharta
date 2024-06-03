@@ -101,14 +101,8 @@ export class Preview3DPrintMesh {
         this.initMapMesh(geometryOptions)
         this.printMesh.add(this.mapMesh)
 
-        if (geometryOptions.frontText) {
-            try {
-                this.initFrontText(geometryOptions.frontText, geometryOptions.wantedWidth, geometryOptions.numberOfColors)
-                this.printMesh.attach(this.frontTextMesh)
-            } catch (error) {
-                console.error("Error creating text:", error)
-            }
-        }
+        this.initFrontText(geometryOptions.frontText, geometryOptions.wantedWidth, geometryOptions.numberOfColors)
+        this.printMesh.attach(this.frontTextMesh)
 
         await this.initFrontMWLogoMesh(geometryOptions.wantedWidth, geometryOptions.numberOfColors)
         this.printMesh.add(this.frontMWLogoMesh)
@@ -490,6 +484,10 @@ export class Preview3DPrintMesh {
     }
 
     private createFrontTextGeometry(frontText: string, wantedWidth: number) {
+        if (frontText === undefined) {
+            frontText = "CodeCharta"
+        }
+
         const textGeometry = new TextGeometry(frontText, {
             font: this.font,
             size: frontTextSize,
