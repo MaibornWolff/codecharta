@@ -39,7 +39,7 @@ Load one file and show as single map
 
 Load one file and set the area, height and color metrics
 
-- `localhost:3000/?file=something.cc.json&area=rloc&height=mcc&color=mcc`
+- `localhost:3000/?file=something.cc.json&area=rloc&height=complexity&color=complexity`
 
 Load two different files and by default show first map in single mode
 
