@@ -14,7 +14,7 @@ file.
 - functions
 - statements
 - comment_lines
-- mcc: McCabe Complexity / Cyclomatic complexity
+- complexity (Cyclomatic complexity)
 - cognitive_complexity
 - commented_out_code_blocks
 - max_nesting_level
