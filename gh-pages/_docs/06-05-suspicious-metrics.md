@@ -10,7 +10,7 @@ This feature will find the suspicious metrics in a code base and provides option
 It compares the values of certain metrics from the loaded cc.json file with metric values of 241 Open Source Java projects.
 Based on this data suspicious, inconspicuous and untracked metrics are identified and corresponding suggestions can be clicked (see following Screenshot) to automatically view them in the map.
 
-![Suspicious Metrics]({{site.baseurl}}/assets/images/docs/how-to/suspicious-metrics.PNG)
+![Suspicious Metrics]({{site.baseurl}}/assets/images/docs/how-to/suspicious-metrics.png)
 
 The suspicious metrics in the shown screenshot provide buttons for three metrics to be clicked for visualizing affected code files.
 The small warning icon button can also be clicked. It expresses that there are some files that are considered as outliers in terms of statistically significant high metric values
