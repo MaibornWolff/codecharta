@@ -1,7 +1,14 @@
 import { NodeMetricData, RecursivePartial, Settings } from "../../../../codeCharta.model"
 
 const sizeMetrics = ["rloc", "real_lines_of_code", "loc", "lines_of_code", "lines", "statements", "functions"]
-const complexityMetrics = ["mcc", "cognitive_complexity", "sonar_cognitive_complexity", "max_nesting_level", "indentation_level"]
+const complexityMetrics = [
+    "complexity",
+    "mcc",
+    "cognitive_complexity",
+    "sonar_cognitive_complexity",
+    "max_nesting_level",
+    "indentation_level"
+]
 
 export function isAnyMetricAvailable<T extends Pick<NodeMetricData, "maxValue">[]>(metricData: T) {
     return metricData.some(x => x.maxValue > 0)
