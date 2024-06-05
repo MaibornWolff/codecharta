@@ -7,24 +7,24 @@ import de.maibornwolff.codecharta.model.AttributeDescriptor
 fun getAttributeDescriptors(): Map<String, AttributeDescriptor> {
     val metricLink = "https://docs.sonarcloud.io/digging-deeper/metric-definitions/"
     return getAttributeDescriptorsWithNegativeDirection(metricLink) +
-        getAttributeDescriptorsWithPositiveDirection(
-            metricLink
-        )
+        getAttributeDescriptorsWithPositiveDirection(metricLink)
 }
 
 fun getAttributeDescriptorsWithNegativeDirection(metricLink: String): Map<String, AttributeDescriptor> {
     return mapOf(
-        "accepted_issues" to createAttributeDescriptor("Accepted Issues", "Accepted issues", -1, metricLink),
+        "accepted_issues" to
+            createAttributeDescriptor("Accepted Issues", "Accepted issues", -1, metricLink),
         "blocker_violations" to
             createAttributeDescriptor(
                 "Blocker Violations",
                 "Total count of issues of the severity blocker", -1, metricLink
             ),
-        "bugs" to createAttributeDescriptor("Number of Bugs", "Number of bug issues", -1, metricLink),
+        "bugs" to
+            createAttributeDescriptor("Number of Bugs", "Number of bugs", -1, metricLink),
         "class_complexity" to
             createAttributeDescriptor(
-                "Cyclic Class Complexity",
-                "Maximum cyclomatic complexity based on paths through a class by McCabe", -1, metricLink
+                "Complexity per class",
+                "Average cyclomatic complexity of classes", -1, metricLink
             ),
         "classes" to
             createAttributeDescriptor(
@@ -40,7 +40,7 @@ fun getAttributeDescriptorsWithNegativeDirection(metricLink: String): Map<String
         "cognitive_complexity" to
             createAttributeDescriptor(
                 "Cognitive Complexity",
-                "How hard is it to understand the code's control flow", -1,
+                "A sonar excluside metric to measure how hard is it to understand the control flow of code", -1,
                 "https://www.sonarsource.com/resources/cognitive-complexity/"
             ),
         "comment_lines" to
@@ -50,23 +50,24 @@ fun getAttributeDescriptorsWithNegativeDirection(metricLink: String): Map<String
             ),
         "comment_lines_density" to
             createAttributeDescriptor(
-                "Comment Density",
+                "Comment line Density",
                 "Density of comment lines in relation to total lines of code", -1, metricLink
             ),
         "complexity" to
             createAttributeDescriptor(
-                "Maximum Cyclomatic Complexity",
-                "Maximum cyclic complexity based on paths through the code by McCabe", -1, metricLink
+                "Cyclomatic Complexity",
+                "Cyclomatic complexity based on the number of paths through the code (similar but not equal to McCabe complexity)",
+                -1, metricLink
             ),
         "complexity_in_classes" to
             createAttributeDescriptor(
                 "Class Complexity",
-                "Maximum cyclomatic complexity based on paths through a class by McCabe", -1, metricLink
+                "Cyclomatic complexity of classes", -1, metricLink
             ),
         "complexity_in_functions" to
             createAttributeDescriptor(
                 "Function Complexity",
-                "Maximum cyclomatic complexity based on paths through a function by McCabe", -1, metricLink
+                "Cyclomatic complexity of functions", -1, metricLink
             ),
         "conditions_by_line" to
             createAttributeDescriptor(
@@ -120,19 +121,21 @@ fun getAttributeDescriptorsWithNegativeDirection(metricLink: String): Map<String
             ),
         "file_complexity" to
             createAttributeDescriptor(
-                "File Complexity",
-                "Maximum cyclomatic complexity based on paths through a file by McCabe", -1, metricLink
+                "Complexity per file",
+                "Average cyclomatic complexity of files", -1, metricLink
             ),
-        "files" to createAttributeDescriptor("Number of Files", "Number of files", -1, metricLink),
+        "files" to
+            createAttributeDescriptor("Number of Files", "Number of files", -1, metricLink),
         "function_complexity" to
             createAttributeDescriptor(
-                "Function Complexity",
-                "Maximum cyclomatic complexity based on paths through a function by McCabe", -1, metricLink
+                "Complexity per function",
+                "Average cyclomatic complexity of functions", -1, metricLink
             ),
-        "functions" to createAttributeDescriptor("Number of Functions", "Number of functions", -1, metricLink),
+        "functions" to
+            createAttributeDescriptor("Number of Functions", "Number of functions", -1, metricLink),
         "generated_lines" to
             createAttributeDescriptor(
-                "Generated Lines", "Number of generated lines of code", -1,
+                "Generated Lines", "Number of generated lines of code (includes comments and empty lines)", -1,
                 metricLink
             ),
         "generated_ncloc" to
@@ -153,7 +156,7 @@ fun getAttributeDescriptorsWithNegativeDirection(metricLink: String): Map<String
         "lines" to
             createAttributeDescriptor(
                 "Number of Lines",
-                "Number of physical lines (number of carriage returns)", -1, metricLink
+                "Number of code lines (number of carriage returns)", -1, metricLink
             ),
         "lines_to_cover" to
             createAttributeDescriptor(
@@ -173,7 +176,7 @@ fun getAttributeDescriptorsWithNegativeDirection(metricLink: String): Map<String
         "ncloc" to
             createAttributeDescriptor(
                 "Real Lines of Code",
-                "Number of physical lines that contain at least one character which is neither a whitespace nor a tabulation nor part of a comment",
+                "Number of code lines that contain at least one character which is neither a whitespace nor a tabulation nor part of a comment",
                 -1, metricLink
             ),
         "new_accepted_issues" to
@@ -183,53 +186,54 @@ fun getAttributeDescriptorsWithNegativeDirection(metricLink: String): Map<String
             ),
         "new_blocker_violations" to
             createAttributeDescriptor(
-                "New Blocker Violations",
+                "Blocker Violations on new code",
                 "Number of issues of the severity blocker raised for the first time in the new code period",
                 -1,
                 metricLink
             ),
-        "new_bugs" to createAttributeDescriptor("Number of New Bugs", "Number of new bug issues", -1, metricLink),
+        "new_bugs" to
+            createAttributeDescriptor("Number of New Bugs", "Number of new bug issues", -1, metricLink),
         "new_code_smells" to
             createAttributeDescriptor(
-                "New Code Smells",
+                "Code Smells on new code",
                 "Total count of code smell issues raised for the first time in the new code period", -1,
                 metricLink
             ),
         "new_conditions_to_cover" to
             createAttributeDescriptor(
-                "New Conditions to Cover",
+                "Conditions to Cover on new code",
                 "Number of new/updated conditions which could be covered by unit tests", -1, metricLink
             ),
         "new_critical_violations" to
             createAttributeDescriptor(
-                "New Critical Violations",
+                "Critical Violations on new code",
                 "Number of issues of the severity critical raised for the first time in the new code period",
                 -1,
                 metricLink
             ),
         "new_development_cost" to
             createAttributeDescriptor(
-                "New Development Cost",
+                "Development Cost on new code",
                 "Development cost of new/updated code", -1, metricLink
             ),
         "new_duplicated_blocks" to
             createAttributeDescriptor(
-                "New Duplicated Blocks",
+                "Duplicated Blocks on new code",
                 "Number of duplicated blocks of lines in new/updated code", -1, metricLink
             ),
         "new_duplicated_lines" to
             createAttributeDescriptor(
-                "New Duplicated Lines",
+                "Duplicated Lines on new code",
                 "Number of lines involved in duplications in new/updated code", -1, metricLink
             ),
         "new_duplicated_lines_density" to
             createAttributeDescriptor(
-                "New Duplicated Lines Density",
+                "Duplicated Lines Density on new code",
                 "Density of duplicated lines in new/updated code", -1, metricLink
             ),
         "new_info_violations" to
             createAttributeDescriptor(
-                "New Info Violations",
+                "Info Violations on new code",
                 "Number of issues of the severity info raised for the first time in the new code period",
                 -1,
                 metricLink
@@ -241,63 +245,63 @@ fun getAttributeDescriptorsWithNegativeDirection(metricLink: String): Map<String
             ),
         "new_lines_to_cover" to
             createAttributeDescriptor(
-                "New Lines to Cover",
+                "Lines to Cover on new code",
                 "Number of new/updated lines of code which could be covered by unit tests", -1, metricLink
             ),
         "new_major_violations" to
             createAttributeDescriptor(
-                "New Major Violations",
+                "Major Violations on new code",
                 "Number of issues of the severity major raised for the first time in the new code period",
                 -1,
                 metricLink
             ),
         "new_minor_violations" to
             createAttributeDescriptor(
-                "New Minor Violations",
+                "Minor Violations on new code",
                 "Number of issues of the severity minor raised for the first time in the new code period",
                 -1,
                 metricLink
             ),
         "new_security_hotspots" to
             createAttributeDescriptor(
-                "New Security Hotspots",
+                "Security Hotspots on new code",
                 "Number of new security hotspots in the new code period", -1, metricLink
             ),
         "new_security_hotspots_reviewed_status" to
             createAttributeDescriptor(
-                "New Security Hotspots Reviewed Status",
+                "Security Hotspots Reviewed Status on new code",
                 "Total number of reviewed security hotspots in new code period", -1, metricLink
             ),
         "new_security_hotspots_to_review_status" to
             createAttributeDescriptor(
-                "New Security Hotspots to Review Status",
+                "Security Hotspots to Review Status on new code",
                 "Number of security hotspots to review in new code period", -1, metricLink
             ),
         "new_sqale_debt_ratio" to
             createAttributeDescriptor(
-                "New SQale Debt Ratio",
-                "Ratio between the cost to develop the software and the cost to fix it in new/updated code",
+                "Technical Debt Ratio on New Code",
+                "Technical Debt Ratio of new/changed code.",
                 -1,
                 metricLink
             ),
         "new_uncovered_conditions" to
             createAttributeDescriptor(
-                "New Uncovered Conditions",
+                "Uncovered Conditions on new code",
                 "Total number of uncovered conditions in new/updated code", -1, metricLink
             ),
         "new_uncovered_lines" to
             createAttributeDescriptor(
-                "New Uncovered Lines",
+                "Uncovered Lines on new code",
                 "Total number of uncovered lines in new/updated code", -1, metricLink
             ),
         "new_violations" to
             createAttributeDescriptor(
-                "New Violations",
+                "Issues on new code",
                 "Number of issues raised for the first time in the new code period", -1, metricLink
             ),
         "new_vulnerabilities" to
             createAttributeDescriptor(
-                "New Vulnerabilities",
+                "Vulnerabilities on new code",
                 "Number of new vulnerability issues", -1, metricLink
             ),
         "open_issues" to
@@ -305,12 +309,14 @@ fun getAttributeDescriptorsWithNegativeDirection(metricLink: String): Map<String
                 "Number of Open Issues",
                 "Total count of issues in the open state", -1, metricLink
             ),
-        "projects" to createAttributeDescriptor("Number of Projects", "Total number of projects", -1, metricLink),
-        "public_api" to createAttributeDescriptor("Public API", "Public api available", -1, metricLink),
+        "projects" to
+            createAttributeDescriptor("Number of Projects", "Total number of projects", -1, metricLink),
+        "public_api" to
+            createAttributeDescriptor("Public API", "Public api available", -1, metricLink),
         "public_undocumented_api" to
             createAttributeDescriptor(
                 "Public Undocumented API",
-                "Undocumented api available", -1, metricLink
+                "Public undocumented classes, functions and variables available", -1, metricLink
             ),
         "reopened_issues" to
             createAttributeDescriptor(
@@ -339,24 +345,20 @@ fun getAttributeDescriptorsWithNegativeDirection(metricLink: String): Map<String
             ),
         "sqale_debt_ratio" to
             createAttributeDescriptor(
-                "SQale Debt Ratio",
-                "Ratio between the cost to develop the software and the cost to fix it", -1, metricLink
+                "Technical Debt Ratio",
+                "Ratio of the actual technical debt compared to the estimated cost to develop the whole source code from scratch",
+                -1, metricLink
             ),
         "statements" to createAttributeDescriptor("Number of Statements", "Number of statements", -1, metricLink),
         "test_errors" to
             createAttributeDescriptor(
-                "Number of Test Errors", "Number of unit tests that have failed",
+                "Number of Test Errors", "Number of unit tests that have thrown errors",
                 -1, metricLink
             ),
         "test_failures" to
             createAttributeDescriptor(
                 "Number of Test Failures",
-                "Number of unit tests that have failed with an unexpected exception", -1, metricLink
-            ),
-        "test_failures" to
-            createAttributeDescriptor(
-                "Number of Test Failures",
-                "Number of unit tests that have failed with an unexpected exception", -1, metricLink
+                "Number of unit test failures", -1, metricLink
             ),
         "uncovered_conditions" to
             createAttributeDescriptor(
@@ -393,7 +395,8 @@ fun getAttributeDescriptorsWithPositiveDirection(metricLink: String): Map<String
                 "Branch Coverage",
                 "Density of fully covered boolean conditions in flow control structures", 1, metricLink
             ),
-        "coverage" to createAttributeDescriptor("Coverage", "Mix of branch and line coverage", 1, metricLink),
+        "coverage" to
+            createAttributeDescriptor("Test Coverage", "Mix of branch and line coverage", 1, metricLink),
         "line_coverage" to
             createAttributeDescriptor(
                 "Line Coverage", "Density of fully covered lines of code", 1,
@@ -401,25 +404,25 @@ fun getAttributeDescriptorsWithPositiveDirection(metricLink: String): Map<String
             ),
         "new_branch_coverage" to
             createAttributeDescriptor(
-                "New Branch Coverage",
+                "Branch Coverage on new code (%)",
                 "Density of fully covered boolean conditions in flow control structures in new or updated code",
                 1,
                 metricLink
             ),
         "new_coverage" to
             createAttributeDescriptor(
-                "New Coverage",
-                "Mix of branch and line coverage on new/updated code", 1, metricLink
+                "Coverage on new code",
+                "Coverage of new/changed code", 1, metricLink
             ),
         "new_line_coverage" to
             createAttributeDescriptor(
-                "New Line Coverage",
+                "Line Coverage on new code",
                 "Density of fully covered lines of new/updated code", 1, metricLink
             ),
         "public_documented_api_density" to
             createAttributeDescriptor(
-                "Public Documented API Density",
-                "Documented public api available", 1, metricLink
+                "Public Documented API Density (%)",
+                "Public documented classes and functions balanced by rloc", 1, metricLink
             ),
         "pull_request_fixed_issues" to
             createAttributeDescriptor(
