@@ -87,11 +87,11 @@ class SourceMonitorImporter(
             replacementMap["Average Statements per Method"] = "average_statements_per_function"
             replacementMap["Line Number of Most Complex Method*"] = ""
             replacementMap["Name of Most Complex Method*"] = ""
-            replacementMap["Maximum Complexity*"] = "max_function_mcc"
+            replacementMap["Maximum Complexity*"] = "max_function_complexity"
             replacementMap["Line Number of Deepest Block"] = ""
             replacementMap["Maximum Block Depth"] = "max_block_depth"
             replacementMap["Average Block Depth"] = "average_block_depth"
-            replacementMap["Average Complexity*"] = "average_function_mcc"
+            replacementMap["Average Complexity*"] = "average_function_complexity"
 
             for (i in 0..9) {
                 replacementMap["Statements at block level $i"] = "statements_at_level_$i"
