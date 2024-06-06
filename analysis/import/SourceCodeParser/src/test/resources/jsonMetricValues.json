@@ -10,7 +10,7 @@
             "link": "",
             "attributes": {
               "rloc": 3,
-              "mcc": 2
+              "complexity": 2
             },
             "type": "File"
           },
@@ -20,7 +20,7 @@
             "link": "",
             "attributes": {
               "rloc": 4,
-              "mcc": 1
+              "complexity": 1
             },
             "type": "File"
           }
@@ -36,23 +36,23 @@
     "attributeDescriptors": {
       "rloc": {
         "title": "Real Lines of Code",
-        "description": "Number of physical lines that contain at least one character which is neither a whitespace nor a tabulation nor part of a comment",
+        "description": "Number of code lines that contain at least one character which is neither a whitespace nor a tabulation nor part of a comment",
         "hintLowValue": "",
         "hintHighValue": "",
         "link": "https://github.com/MaibornWolff/codecharta/blob/main/analysis/import/SourceCodeParser/README.md",
         "direction": -1
       },
-      "mcc": {
-        "title": "Maximum Cyclic Complexity",
-        "description": "Maximum cyclic complexity based on paths through the code by McCabe",
+      "complexity": {
+        "title": "Cyclomatic Complexity",
+        "description": "Cyclomatic complexity based on the number of paths through the code",
         "hintLowValue": "",
         "hintHighValue": "",
-        "link": "https://github.com/MaibornWolff/codecharta/blob/main/analysis/import/SourceCodeParser/README.md",
+        "link": "https://docs.sonarsource.com/sonarqube/latest/user-guide/metric-definitions/",
         "direction": -1
       }
     },
     "edges": [],
     "blacklist": []
   },
-  "checksum": "5b67cc6953676a64797e0de2edd7f15d"
+  "checksum": "7e877aaaff4cfb113f71c15c3bb6eca5"
 }

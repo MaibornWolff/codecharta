@@ -29,8 +29,8 @@ class JSONMetricWriterTest {
     @Test
     fun `node metrics are correct and attributes descriptors are included`() {
         val expectedResultFile = File("src/test/resources/jsonMetricValues.json").absoluteFile
-        val fileMetrics1 = FileMetricMap().add("mcc", 2).add("rloc", 3)
-        val fileMetrics2 = FileMetricMap().add("mcc", 1).add("rloc", 4)
+        val fileMetrics1 = FileMetricMap().add("complexity", 2).add("rloc", 3)
+        val fileMetrics2 = FileMetricMap().add("complexity", 1).add("rloc", 4)
         val metrics = ProjectMetrics()
         metrics.addFileMetricMap("foo.java", fileMetrics1)
         metrics.addFileMetricMap("bar.kt", fileMetrics2)
