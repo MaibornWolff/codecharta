@@ -208,25 +208,25 @@ export const VALID_NODE_JAVA: CodeMapNode = {
                     name: "file1.java",
                     path: "/root/src/main/file1.java",
                     type: NodeType.FILE,
-                    attributes: { rloc: 70, functions: 1000, mcc: 10, loc: 2000 }
+                    attributes: { rloc: 70, functions: 1000, complexity: 10, loc: 2000 }
                 },
                 {
                     name: "file2.java",
                     path: "/root/src/main/file2.java",
                     type: NodeType.FILE,
-                    attributes: { rloc: 55, functions: 100, mcc: 40, loc: 100 }
+                    attributes: { rloc: 55, functions: 100, complexity: 40, loc: 100 }
                 },
                 {
                     name: "file3.java",
                     path: "/root/src/main/file3.java",
                     type: NodeType.FILE,
-                    attributes: { rloc: 45, functions: 1, mcc: 70, loc: 1 }
+                    attributes: { rloc: 45, functions: 1, complexity: 70, loc: 1 }
                 },
                 {
                     name: "readme",
                     path: "/root/src/main/readme",
                     type: NodeType.FILE,
-                    attributes: { rloc: 200, functions: 1, mcc: 70, loc: 1 }
+                    attributes: { rloc: 200, functions: 1, complexity: 70, loc: 1 }
                 }
             ]
         },
@@ -240,7 +240,7 @@ export const VALID_NODE_JAVA: CodeMapNode = {
                     name: "otherFile.java",
                     path: "/root/src/test/otherFile.java",
                     type: NodeType.FILE,
-                    attributes: { rloc: 100, functions: 10, mcc: 100 }
+                    attributes: { rloc: 100, functions: 10, complexity: 100 }
                 }
             ]
         }
