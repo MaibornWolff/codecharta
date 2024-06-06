@@ -94,6 +94,7 @@
     "ngx-color": "^7.3.3",
     "pako": "^2.0.4",
     "percent-round": "^2.2.1",
+    "qrcode": "^1.5.3",
     "rxjs": "^7.5.1",
     "safe-stable-stringify": "^2.4.3",
     "shelljs": "^0.8.4",

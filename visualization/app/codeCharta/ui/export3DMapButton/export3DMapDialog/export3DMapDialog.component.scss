@@ -16,6 +16,16 @@
         gap: 26px;
     }
 
+    .QrCodeCardContent {
+        gap: 26px;
+        margin-right: 16px;
+
+        mat-form-field {
+            display: flex;
+            flex-direction: column;
+        }
+    }
+
     mat-slider {
         width: 95%;
     }

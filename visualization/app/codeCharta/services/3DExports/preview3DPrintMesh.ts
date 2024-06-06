@@ -1,5 +1,6 @@
 import {
     Box3,
+    BoxGeometry,
     BufferGeometry,
     ExtrudeGeometry,
     Float32BufferAttribute,
@@ -15,6 +16,7 @@ import {
 import { SVGLoader } from "three/examples/jsm/loaders/SVGLoader"
 import { BufferGeometryUtils } from "three/examples/jsm/utils/BufferGeometryUtils"
 import { ColorRange, NodeMetricData } from "../../codeCharta.model"
+import * as QRCode from "qrcode"
 
 const layerHeight = 0.2
 const frontTextSize = 12
@@ -35,7 +37,8 @@ export interface GeometryOptions {
     colorMetricTitle: string
     colorMetricData: NodeMetricData
     colorRange: ColorRange
-    frontText?: string
+    frontText: string
+    qrCodeText: string
     defaultMaterial: ShaderMaterial
     numberOfColors: number
 }
@@ -43,14 +46,15 @@ export interface GeometryOptions {
 class CustomVisibilityMesh extends Mesh {
     minScale: number
     visibleBecauseOfColor = true
+    manualVisibility = true
 
-    constructor(geometry: BufferGeometry, material: MeshBasicMaterial, minScale: number) {
+    constructor(minScale: number, geometry?: BufferGeometry, material?: MeshBasicMaterial) {
         super(geometry, material)
         this.minScale = minScale
     }
 
     updateVisibility(): void {
-        this.visible = this.scale.x >= this.minScale && this.visibleBecauseOfColor
+        this.visible = this.scale.x >= this.minScale && this.visibleBecauseOfColor && this.manualVisibility
     }
 }
 
@@ -67,10 +71,11 @@ export class Preview3DPrintMesh {
     private frontMWLogoMesh: Mesh
     private customLogoMesh: Mesh
     //Back
-    private backMWLogoMesh: Mesh
-    private itsTextMesh: Mesh
-    private codeChartaLogoMesh: Mesh
-    private metricsMesh: Mesh
+    private backMWLogoMesh: CustomVisibilityMesh
+    private itsTextMesh: CustomVisibilityMesh
+    private qrCodeMesh: CustomVisibilityMesh
+    private codeChartaLogoMesh: CustomVisibilityMesh
+    private metricsMesh: CustomVisibilityMesh
 
     async initialize(geometryOptions: GeometryOptions) {
         this.printMesh = new Mesh()
@@ -113,6 +118,9 @@ export class Preview3DPrintMesh {
         await this.initBackITSTextMesh(geometryOptions.wantedWidth, geometryOptions.numberOfColors)
         this.printMesh.add(this.itsTextMesh)
 
+        await this.initQRCodeMesh(geometryOptions.qrCodeText, geometryOptions.wantedWidth, geometryOptions.numberOfColors)
+        this.printMesh.add(this.qrCodeMesh)
+
         await this.initCodeChartaMesh(geometryOptions.wantedWidth, geometryOptions.numberOfColors)
         this.printMesh.add(this.codeChartaLogoMesh)
 
@@ -120,8 +128,9 @@ export class Preview3DPrintMesh {
         this.printMesh.add(this.metricsMesh)
     }
 
-    updateSize(wantedWidth: number) {
+    updateSize(wantedWidth: number): boolean {
         const currentWidth = this.currentSize.x
+        let qrCodeVisible = this.qrCodeMesh.manualVisibility
 
         for (const child of this.printMesh.children) {
             if (child instanceof Mesh) {
@@ -167,6 +176,19 @@ export class Preview3DPrintMesh {
                         }
                         break
 
+                    case "QrCode":
+                        if (child instanceof CustomVisibilityMesh) {
+                            this.positionQrCodeMesh(child, wantedWidth)
+                            if (wantedWidth < 280) {
+                                this.qrCodeMesh.manualVisibility = false
+                                this.qrCodeMesh.updateVisibility()
+                                qrCodeVisible = false
+                            }
+                        } else {
+                            console.error("QrCode is not an instance of CustomVisibilityMesh")
+                        }
+                        break
+
                     case "CodeCharta Logo":
                         if (child instanceof CustomVisibilityMesh) {
                             this.scaleBacktext(child, wantedWidth / currentWidth)
@@ -194,6 +216,7 @@ export class Preview3DPrintMesh {
         }
 
         this.calculateCurrentSize()
+        return qrCodeVisible
     }
 
     updateNumberOfColors(mapWithOriginalColors: Mesh, numberOfColors: number) {
@@ -427,7 +450,8 @@ export class Preview3DPrintMesh {
             "Metric Text Part 2": getBackTextAndLogoColor,
             "Metric Text Part 3": () => getMetricColorTextColor([1, 1, 0]),
             "Metric Text Part 4": getBackTextAndLogoColor,
-            "Metric Text Part 5": () => getMetricColorTextColor([1, 0, 0])
+            "Metric Text Part 5": () => getMetricColorTextColor([1, 0, 0]),
+            QrCode: getBackTextAndLogoColor
         }
 
         if (partName in colorFunctions) {
@@ -506,6 +530,58 @@ export class Preview3DPrintMesh {
         return textGeometry
     }
 
+    private async initQRCodeMesh(qrCodeText: string, wantedWidth: number, numberOfColors: number) {
+        const qrCodeGeometry = await this.createQrCodeGeometry(qrCodeText)
+        const qrCodeMesh = new CustomVisibilityMesh(1, qrCodeGeometry)
+        qrCodeMesh.name = "QrCode"
+        qrCodeMesh.manualVisibility = false
+        this.positionQrCodeMesh(qrCodeMesh, wantedWidth)
+        this.updateColor(qrCodeMesh, numberOfColors)
+        this.qrCodeMesh = qrCodeMesh
+    }
+
+    private positionQrCodeMesh(qrCodeMesh: Mesh, wantedWidth: number) {
+        qrCodeMesh.position.x = wantedWidth / 2 - mapSideOffset
+        qrCodeMesh.position.y = wantedWidth / 2 - mapSideOffset
+    }
+
+    private async createQrCodeGeometry(text: string) {
+        const canvas = document.createElement("canvas")
+        await QRCode.toCanvas(canvas, text, { errorCorrectionLevel: "M" })
+
+        const context = canvas.getContext("2d")
+        const imageData = context.getImageData(0, 0, canvas.width, canvas.height)
+        const data = imageData.data
+
+        const qrCodeGeometries: BufferGeometry[] = []
+        const pixelSize = 50 / imageData.width
+
+        // Loop over each pixel in the image
+        for (let y = 0; y < imageData.height; y++) {
+            for (let x = 0; x < imageData.width; x++) {
+                const index = (y * imageData.width + x) * 4
+                if (data[index] !== 0) {
+                    const geometry = new BoxGeometry(pixelSize, pixelSize, baseplateHeight / 2)
+                    geometry.translate(-x * pixelSize, -y * pixelSize, (-baseplateHeight * 3) / 4)
+                    qrCodeGeometries.push(geometry)
+                }
+            }
+        }
+
+        const qrCodeGeometry = BufferGeometryUtils.mergeBufferGeometries(qrCodeGeometries)
+        return qrCodeGeometry
+    }
+
+    async updateQrCodeText(qrCodeText: string): Promise<void> {
+        this.qrCodeMesh.geometry = await this.createQrCodeGeometry(qrCodeText)
+        return
+    }
+
+    updateQrCodeVisibility(qrCodeVisible: boolean) {
+        this.qrCodeMesh.manualVisibility = qrCodeVisible
+        this.qrCodeMesh.updateVisibility()
+    }
+
     private async initMetricsMesh(geometryOptions: GeometryOptions) {
         const { areaIcon, areaIconScale, areaText } = this.createAreaAttributes(
             geometryOptions.areaMetricTitle,
@@ -529,7 +605,7 @@ export class Preview3DPrintMesh {
         const mergedWhiteBackGeometry = BufferGeometryUtils.mergeBufferGeometries(whiteBackGeometries)
 
         const material = new MeshBasicMaterial()
-        const metricsMesh = new CustomVisibilityMesh(mergedWhiteBackGeometry, material, 1)
+        const metricsMesh = new CustomVisibilityMesh(1, mergedWhiteBackGeometry, material)
 
         const coloredBackTextGeometries = this.createColoredBackTextGeometries(colorTextValueRanges, geometryOptions.numberOfColors)
         for (const colorTextGeometry of coloredBackTextGeometries) {
@@ -657,7 +733,7 @@ export class Preview3DPrintMesh {
 
         const material = new MeshBasicMaterial()
 
-        const codeChartaMesh = new CustomVisibilityMesh(logoAndTextGeometry, material, 0.8)
+        const codeChartaMesh = new CustomVisibilityMesh(0.8, logoAndTextGeometry, material)
         codeChartaMesh.name = "CodeCharta Logo"
         this.updateColor(codeChartaMesh, numberOfColors)
         const scaleFactor = (wantedWidth - mapSideOffset * 2) / 200
@@ -714,7 +790,7 @@ export class Preview3DPrintMesh {
 
         const material = new MeshBasicMaterial()
 
-        const itsTextMesh = new CustomVisibilityMesh(textGeometry, material, 0.7)
+        const itsTextMesh = new CustomVisibilityMesh(0.7, textGeometry, material)
         itsTextMesh.name = "ITS Text"
         this.updateColor(itsTextMesh, numberOfColors)
         const scaleFactor = (wantedWidth - mapSideOffset * 2) / 200
@@ -733,7 +809,7 @@ export class Preview3DPrintMesh {
 
         const material = new MeshBasicMaterial()
 
-        const backMWMesh = new CustomVisibilityMesh(mwLogoGeometry, material, 0.3)
+        const backMWMesh = new CustomVisibilityMesh(0.3, mwLogoGeometry, material)
         backMWMesh.name = "Back MW Logo"
 
         this.updateColor(backMWMesh, numberOfColors)
