@@ -4,6 +4,8 @@ package de.maibornwolff.codecharta.importer.sonar
 
 import de.maibornwolff.codecharta.model.AttributeDescriptor
 
+// sonar provides descriptions for all metrics via their api here: https://sonarcloud.io/api/metrics/search?p=1&ps=500
+
 fun getAttributeDescriptors(): Map<String, AttributeDescriptor> {
     val metricLink = "https://docs.sonarcloud.io/digging-deeper/metric-definitions/"
     return getAttributeDescriptorsWithNegativeDirection(metricLink) +
