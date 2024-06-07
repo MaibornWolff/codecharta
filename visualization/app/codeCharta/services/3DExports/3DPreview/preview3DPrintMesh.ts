@@ -350,8 +350,10 @@ export class Preview3DPrintMesh {
         const boundingBox = logoMesh.geometry.boundingBox
         const logoWidth = boundingBox.max.x - boundingBox.min.x
         const logoDepth = boundingBox.max.y - boundingBox.min.y
-        const xPosition = wantedWidth / 2 - logoWidth - mapSideOffset
-        logoMesh.position.set(xPosition * (rightSide ? 1 : -1), -logoDepth / 2 - wantedWidth / 2, frontPrintDepth / 2)
+        const xPosition = wantedWidth / 2 - logoWidth - mapSideOffset * (rightSide ? 1 : -1)
+        let yPosition = -logoDepth / 2 - wantedWidth / 2 + frontTextSize / 1.75
+        yPosition += this.secondRowMesh.visible ? secondRowTextSize / 1.75 : 0
+        logoMesh.position.set(xPosition, yPosition, frontPrintDepth / 2)
     }
 
     private initMapMesh(geometryOptions: GeometryOptions) {
