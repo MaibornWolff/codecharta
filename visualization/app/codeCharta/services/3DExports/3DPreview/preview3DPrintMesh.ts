@@ -15,7 +15,7 @@ import {
 } from "three"
 import { SVGLoader } from "three/examples/jsm/loaders/SVGLoader"
 import { BufferGeometryUtils } from "three/examples/jsm/utils/BufferGeometryUtils"
-import { ColorRange, NodeMetricData } from "../../codeCharta.model"
+import { ColorRange, NodeMetricData } from "../../../codeCharta.model"
 import * as QRCode from "qrcode"
 
 const layerHeight = 0.2

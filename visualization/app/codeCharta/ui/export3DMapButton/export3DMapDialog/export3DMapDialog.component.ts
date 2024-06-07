@@ -16,7 +16,7 @@ import {
     calculateMaxPossibleWidthForPreview3DPrintMesh,
     GeometryOptions,
     Preview3DPrintMesh
-} from "../../../services/3DExports/preview3DPrintMesh"
+} from "../../../services/3DExports/3DPreview/preview3DPrintMesh"
 import { calculateNodeMetricData } from "../../../state/selectors/accumulatedData/metricData/nodeMetricData.calculator"
 import { MatSlideToggleChange } from "@angular/material/slide-toggle"
 
