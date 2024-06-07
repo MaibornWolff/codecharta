@@ -28,6 +28,11 @@ interface Printer {
     numberOfColors: number
 }
 
+interface CustomVisibilityItem {
+    isVisible: boolean
+    text: string
+}
+
 @Component({
     selector: "export3DMapDialog.component",
     templateUrl: "./export3DMapDialog.component.html",
@@ -44,9 +49,16 @@ export class Export3DMapDialogComponent {
 
     isFileSelected = false
     isPrintMeshLoaded = false
-    isQrCodeVisible = false
     frontText: string
-    qrCodeText: string
+
+    secondRow = {
+        isVisible: false,
+        text: new Date().toLocaleDateString()
+    }
+    qrCode: CustomVisibilityItem = {
+        isVisible: false,
+        text: "maibornwolff.de/service/it-sanierung"
+    }
 
     printers: Printer[] = [
         { name: "Prusa MK3S (single color)", x: 245, y: 205, z: 205, numberOfColors: 1 },
@@ -80,8 +92,6 @@ export class Export3DMapDialogComponent {
         this.currentNumberOfColors = this.selectedPrinter.numberOfColors
         this.isPrintMeshLoaded = false
 
-        this.qrCodeText = "maibornwolff.de/service/it-sanierung"
-
         this.areaMetric = this.state.getValue().dynamicSettings.areaMetric
         this.heightMetric = this.state.getValue().dynamicSettings.heightMetric
         this.colorMetric = this.state.getValue().dynamicSettings.colorMetric
@@ -100,7 +110,7 @@ export class Export3DMapDialogComponent {
     }
 
     onScaleChange() {
-        this.isQrCodeVisible = this.previewMesh.updateSize(this.wantedWidth)
+        this.qrCode.isVisible = this.previewMesh.updateSize(this.wantedWidth)
         this.currentSize = this.previewMesh.getSize()
     }
 
@@ -152,25 +162,35 @@ export class Export3DMapDialogComponent {
     }
 
     onQrCodeTextChange() {
-        this.isPrintMeshLoaded = false
-        if (this.qrCodeText === "") {
-            this.isQrCodeVisible = false
-            this.previewMesh.updateQrCodeVisibility(this.isQrCodeVisible)
-            this.isPrintMeshLoaded = true
-            return
-        }
-
-        this.previewMesh.updateQrCodeText(this.qrCodeText).then(() => {
-            this.isPrintMeshLoaded = true
-        })
+        this.onTextChange(this.qrCode)
+        this.previewMesh.updateQrCodeText(this.qrCode.text)
+        this.previewMesh.updateQrCodeVisibility(this.qrCode.isVisible)
     }
     onQrCodeVisibilityChange(event: MatSlideToggleChange) {
-        this.isQrCodeVisible = event.checked
-        if (this.isQrCodeVisible && this.qrCodeText === "") {
-            this.qrCodeText = "maibornwolff.de/service/it-sanierung"
-        }
-        this.previewMesh.updateQrCodeVisibility(this.isQrCodeVisible)
+        this.qrCode.isVisible = event.checked
+        this.previewMesh.updateQrCodeVisibility(this.qrCode.isVisible)
     }
+
+    onSecondRowTextChange() {
+        this.onTextChange(this.secondRow)
+        this.previewMesh.updateSecondRowText(this.secondRow.text)
+        this.previewMesh.updateSecondRowVisibility(this.secondRow.isVisible)
+    }
+    onSecondRowVisibilityChange(event: MatSlideToggleChange) {
+        this.secondRow.isVisible = event.checked
+        this.previewMesh.updateSecondRowVisibility(this.secondRow.isVisible)
+    }
+
+    private onTextChange(item: CustomVisibilityItem) {
+        if (item.text === "") {
+            item.isVisible = false
+            return
+        }
+        if (!item.isVisible) {
+            item.isVisible = true
+        }
+    }
+
     async createScene() {
         const printPreviewScene = new Scene()
         printPreviewScene.name = "printPreviewScene"
@@ -193,8 +213,8 @@ export class Export3DMapDialogComponent {
         this.currentSize = this.previewMesh.getSize()
         printPreviewScene.add(this.previewMesh.getThreeMesh())
 
-        camera.position.set(0, 0, -this.wantedWidth * 1.5) //To directly see the backside of the map: uncomment this line and comment the next line
-        //this.updateCameraPosition(camera)
+        //camera.position.set(0, 0, -this.wantedWidth * 1.5) //To directly see the backside of the map: uncomment this line and comment the next line
+        this.updateCameraPosition(camera)
     }
 
     private initRenderer(printPreviewScene, camera) {
@@ -231,7 +251,7 @@ export class Export3DMapDialogComponent {
             new Vector3(this.selectedPrinter.x, this.selectedPrinter.y, this.selectedPrinter.z),
             this.threeSceneService.getMapMesh().getThreeMesh()
         )
-        this.isQrCodeVisible = this.previewMesh.updateSize(this.wantedWidth)
+        this.qrCode.isVisible = this.previewMesh.updateSize(this.wantedWidth)
         this.currentSize = this.previewMesh.getSize()
         this.maxWidth = this.currentSize.x
     }
@@ -262,7 +282,8 @@ export class Export3DMapDialogComponent {
             colorMetricData: this.nodeMetricData.find(metric => metric.name === this.colorMetric),
             colorRange: this.state.getValue().dynamicSettings.colorRange,
             frontText: this.frontText,
-            qrCodeText: this.qrCodeText,
+            secondRowText: this.secondRow.text,
+            qrCodeText: this.qrCode.text,
             defaultMaterial: this.threeSceneService.getMapMesh().getThreeMesh().material[0].clone() as ShaderMaterial,
             numberOfColors: this.currentNumberOfColors
         }

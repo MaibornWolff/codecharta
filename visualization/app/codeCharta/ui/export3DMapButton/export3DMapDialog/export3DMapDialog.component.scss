@@ -3,20 +3,19 @@
 .cc-export-3D-map-dialog .mat-mdc-dialog-container {
     width: 36vw;
     min-width: 600px;
-
-    .preview {
-        padding: 16px 0;
-        margin-bottom: -16px;
-    }
+    height: 95vh;
 
     .cc-export-3D-map-dialog-content {
-        padding: 0 16px;
         display: flex;
         flex-direction: column;
-        gap: 26px;
+        padding: 16px 16px;
+        gap: 16px;
+        overflow-y: auto;
+        max-height: calc(70vh - 200px);
+        flex-grow: 1;
     }
 
-    .QrCodeCardContent {
+    .ManualVisibilityContent {
         gap: 26px;
         margin-right: 16px;
 

@@ -1,77 +1,92 @@
 <mat-toolbar color="primary">3D Print CodeCharta Map</mat-toolbar>
 
-<div class="cc-export-3D-map-dialog-content">
+<div class="cc-export-3D-map-dialog">
     <div class="preview" #rendererContainer></div>
 
-    <mat-form-field appearance="outline">
-        <mat-label>Printer preset</mat-label>
-        <mat-select (selectionChange)="onSelectedPrinterChange()" [(value)]="selectedPrinter">
-            <mat-select-trigger> {{ selectedPrinter.name }} </mat-select-trigger>
-            <mat-option *ngFor="let printer of printers" [value]="printer"
-                >{{ printer.name }}
-                <span class="cc-printer-specs">
-                    (x: {{ printer.x }}cm, y: {{ printer.y }}cm, z: {{ printer.z }}cm, colors {{ printer.numberOfColors }} )</span
-                >
-            </mat-option>
-        </mat-select>
-    </mat-form-field>
+    <mat-dialog-content class="cc-export-3D-map-dialog-content" appearance="outline">
+        <mat-form-field appearance="outline">
+            <mat-label>Printer preset</mat-label>
+            <mat-select (selectionChange)="onSelectedPrinterChange()" [(value)]="selectedPrinter">
+                <mat-select-trigger> {{ selectedPrinter.name }} </mat-select-trigger>
+                <mat-option *ngFor="let printer of printers" [value]="printer"
+                    >{{ printer.name }}
+                    <span class="cc-printer-specs">
+                        (x: {{ printer.x }}cm, y: {{ printer.y }}cm, z: {{ printer.z }}cm, colors {{ printer.numberOfColors }} )</span
+                    >
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
 
-    <mat-card appearance="outlined">
-        <mat-card-header>Scale:</mat-card-header>
-        <mat-card-content>
-            <div class="slider-container">
-                <mat-slider (change)="onScaleChange()" [max]="maxWidth" discrete="true" min="100" step="1">
-                    <input #slider [(ngModel)]="wantedWidth" matSliderThumb />
-                </mat-slider>
-            </div>
+        <mat-card appearance="outlined">
+            <mat-card-header>Scale:</mat-card-header>
+            <mat-card-content>
+                <div class="slider-container">
+                    <mat-slider (change)="onScaleChange()" [max]="maxWidth" discrete="true" min="100" step="1">
+                        <input #slider [(ngModel)]="wantedWidth" matSliderThumb />
+                    </mat-slider>
+                </div>
 
-            <div>
-                <span>Width: {{ (currentSize.x / 10).toFixed(1) }}cm (max. {{ (selectedPrinter.x / 10).toFixed(1) }} )</span>
-                <br />
-                <span>Depth: {{ (currentSize.y / 10).toFixed(1) }}cm (max. {{ (selectedPrinter.y / 10).toFixed(1) }} )</span>
-                <br />
-                <span>Height: {{ (currentSize.z / 10).toFixed(1) }}cm (max. {{ (selectedPrinter.z / 10).toFixed(1) }} )</span>
-            </div>
-        </mat-card-content>
-    </mat-card>
+                <div>
+                    <span>Width: {{ (currentSize.x / 10).toFixed(1) }}cm (max. {{ (selectedPrinter.x / 10).toFixed(1) }} )</span>
+                    <br />
+                    <span>Depth: {{ (currentSize.y / 10).toFixed(1) }}cm (max. {{ (selectedPrinter.y / 10).toFixed(1) }} )</span>
+                    <br />
+                    <span>Height: {{ (currentSize.z / 10).toFixed(1) }}cm (max. {{ (selectedPrinter.z / 10).toFixed(1) }} )</span>
+                </div>
+            </mat-card-content>
+        </mat-card>
 
-    <mat-form-field appearance="outline">
-        <mat-label>Bottom center label text</mat-label>
-        <input matInput [(ngModel)]="frontText" (input)="onFrontTextChange()" [placeholder]="'CodeCharta'" />
-    </mat-form-field>
+        <mat-form-field appearance="outline">
+            <mat-label>Bottom center label text</mat-label>
+            <input matInput [(ngModel)]="frontText" (input)="onFrontTextChange()" [placeholder]="'CodeCharta'" />
+        </mat-form-field>
 
-    <mat-card appearance="outlined">
-        <mat-card-header>QR-Code</mat-card-header>
-        <mat-slide-toggle [checked]="isQrCodeVisible" (change)="onQrCodeVisibilityChange($event)"> Show QR-Code </mat-slide-toggle>
-        <mat-card-content class="QrCodeCardContent">
-            <mat-form-field [hidden]="isQrCodeVisible" appearance="outline">
-                <mat-label>QR-Code text</mat-label>
-                <input matInput [(ngModel)]="qrCodeText" (input)="onQrCodeTextChange()" />
-            </mat-form-field>
-        </mat-card-content>
-    </mat-card>
+        <mat-card appearance="outlined">
+            <mat-card-header>Second row center text</mat-card-header>
+            <mat-slide-toggle [checked]="secondRow.isVisible" (change)="onSecondRowVisibilityChange($event)">
+                Show second row text
+            </mat-slide-toggle>
+            <mat-card-content class="ManualVisibilityContent">
+                <mat-form-field [hidden]="secondRow.isVisible" appearance="outline">
+                    <mat-label>Text</mat-label>
+                    <input matInput [(ngModel)]="secondRow.text" (input)="onSecondRowTextChange()" />
+                </mat-form-field>
+            </mat-card-content>
+        </mat-card>
 
-    <mat-card appearance="outlined">
-        <mat-card-header>Bottom left logo (SVG):</mat-card-header>
-        <mat-card-content>
-            <input #fileInput type="file" (change)="onFileSelected($event)" accept=".svg" />
+        <mat-card appearance="outlined">
+            <mat-card-header>QR-Code</mat-card-header>
+            <mat-slide-toggle [checked]="qrCode.isVisible" (change)="onQrCodeVisibilityChange($event)"> Show QR-Code </mat-slide-toggle>
+            <mat-card-content class="ManualVisibilityContent">
+                <mat-form-field [hidden]="qrCode.isVisible" appearance="outline">
+                    <mat-label>QR-Code text</mat-label>
+                    <input matInput [(ngModel)]="qrCode.text" (input)="onQrCodeTextChange()" />
+                </mat-form-field>
+            </mat-card-content>
+        </mat-card>
 
-            <button (click)="onRemoveLogo()" [hidden]="!isFileSelected" mat-button title="Remove Logo Button">
-                <span><i class="fa fa-times"></i> Remove Logo</span>
-            </button>
+        <mat-card appearance="outlined">
+            <mat-card-header>Bottom left logo (SVG):</mat-card-header>
+            <mat-card-content>
+                <input #fileInput type="file" (change)="onFileSelected($event)" accept=".svg" />
 
-            <div [hidden]="!isFileSelected">
-                <button (click)="onRotateLogo()" mat-button title="Rotate Logo Button">
-                    <span><i class="fa fa-rotate-right"></i> Rotate Logo</span>
+                <button (click)="onRemoveLogo()" [hidden]="!isFileSelected" mat-button title="Remove Logo Button">
+                    <span><i class="fa fa-times"></i> Remove Logo</span>
                 </button>
-                <button (click)="onFlipLogo()" mat-button title="Flip Logo Button">
-                    <span><i class="fa fa-arrows-h"></i> Flip Logo</span>
-                </button>
-                <cc-labelled-color-picker [hexColor]="logoColor" (onColorChange)="onLogoColorChange($event)" [labels]="['Color']">
-                </cc-labelled-color-picker>
-            </div>
-        </mat-card-content>
-    </mat-card>
+
+                <div [hidden]="!isFileSelected">
+                    <button (click)="onRotateLogo()" mat-button title="Rotate Logo Button">
+                        <span><i class="fa fa-rotate-right"></i> Rotate Logo</span>
+                    </button>
+                    <button (click)="onFlipLogo()" mat-button title="Flip Logo Button">
+                        <span><i class="fa fa-arrows-h"></i> Flip Logo</span>
+                    </button>
+                    <cc-labelled-color-picker [hexColor]="logoColor" (onColorChange)="onLogoColorChange($event)" [labels]="['Color']">
+                    </cc-labelled-color-picker>
+                </div>
+            </mat-card-content>
+        </mat-card>
+    </mat-dialog-content>
 
     <mat-dialog-actions align="end">
         <button (click)="download3MFFile()" [disabled]="!isPrintMeshLoaded" mat-button title="Download 3MF Button">
