@@ -44,7 +44,7 @@ export interface GeometryOptions {
     numberOfColors: number
 }
 
-class CustomVisibilityMesh extends Mesh {
+class ManualVisibilityMesh extends Mesh {
     minScale: number
     private visibleBecauseOfColor = true
     manualVisibility = true
@@ -80,14 +80,14 @@ export class Preview3DPrintMesh {
     private baseplateMesh: Mesh
     private frontTextMesh: Mesh
     private frontMWLogoMesh: Mesh
-    private secondRowMesh: CustomVisibilityMesh
+    private secondRowMesh: ManualVisibilityMesh
     private customLogoMesh: Mesh
     //Back
-    private backMWLogoMesh: CustomVisibilityMesh
-    private itsTextMesh: CustomVisibilityMesh
-    private qrCodeMesh: CustomVisibilityMesh
-    private codeChartaLogoMesh: CustomVisibilityMesh
-    private metricsMesh: CustomVisibilityMesh
+    private backMWLogoMesh: ManualVisibilityMesh
+    private itsTextMesh: ManualVisibilityMesh
+    private qrCodeMesh: ManualVisibilityMesh
+    private codeChartaLogoMesh: ManualVisibilityMesh
+    private metricsMesh: ManualVisibilityMesh
 
     async initialize(geometryOptions: GeometryOptions) {
         this.printMesh = new Mesh()
@@ -180,23 +180,23 @@ export class Preview3DPrintMesh {
                         break
 
                     case "Back MW Logo":
-                        if (child instanceof CustomVisibilityMesh) {
+                        if (child instanceof ManualVisibilityMesh) {
                             this.scaleBacktext(child, wantedWidth / currentWidth)
                         } else {
-                            console.error("Back MW Logo is not an instance of CustomVisibilityMesh")
+                            console.error("Back MW Logo is not an instance of ManualVisibilityMesh")
                         }
                         break
 
                     case "ITS Text":
-                        if (child instanceof CustomVisibilityMesh) {
+                        if (child instanceof ManualVisibilityMesh) {
                             this.scaleBacktext(child, wantedWidth / currentWidth)
                         } else {
-                            console.error("Back MW Logo is not an instance of CustomVisibilityMesh")
+                            console.error("Back MW Logo is not an instance of ManualVisibilityMesh")
                         }
                         break
 
                     case "QrCode":
-                        if (child instanceof CustomVisibilityMesh) {
+                        if (child instanceof ManualVisibilityMesh) {
                             this.positionQrCodeMesh(child, wantedWidth)
                             if (wantedWidth < 280) {
                                 this.qrCodeMesh.manualVisibility = false
@@ -204,26 +204,26 @@ export class Preview3DPrintMesh {
                                 qrCodeVisible = false
                             }
                         } else {
-                            console.error("QrCode is not an instance of CustomVisibilityMesh")
+                            console.error("QrCode is not an instance of ManualVisibilityMesh")
                         }
                         break
 
                     case "CodeCharta Logo":
-                        if (child instanceof CustomVisibilityMesh) {
+                        if (child instanceof ManualVisibilityMesh) {
                             this.scaleBacktext(child, wantedWidth / currentWidth)
                         } else {
-                            console.error("CodeCharta Logo is not an instance of CustomVisibilityMesh")
+                            console.error("CodeCharta Logo is not an instance of ManualVisibilityMesh")
                         }
                         break
 
                     case "Metric Text":
-                        if (child instanceof CustomVisibilityMesh) {
+                        if (child instanceof ManualVisibilityMesh) {
                             this.scaleBacktext(child, wantedWidth / currentWidth)
                             if (child.visible) {
                                 this.xCenterMetricsMesh(child)
                             }
                         } else {
-                            console.error("Metric Text is not an instance of CustomVisibilityMesh")
+                            console.error("Metric Text is not an instance of ManualVisibilityMesh")
                         }
                         break
 
@@ -431,7 +431,7 @@ export class Preview3DPrintMesh {
     }
 
     private updateColor(mesh: Mesh, numberOfColors: number) {
-        if (mesh instanceof CustomVisibilityMesh) {
+        if (mesh instanceof ManualVisibilityMesh) {
             mesh.updateVisibilityBecauseOfColor(numberOfColors)
         }
 
@@ -591,7 +591,7 @@ export class Preview3DPrintMesh {
         )
 
         const material = new MeshBasicMaterial()
-        const textMesh = new CustomVisibilityMesh(textGeometry, material, 1, false, 1)
+        const textMesh = new ManualVisibilityMesh(textGeometry, material, 1, false, 1)
         textMesh.name = "Second Row Text"
         this.updateColor(textMesh, numberOfColors)
         this.secondRowMesh = textMesh
@@ -599,7 +599,7 @@ export class Preview3DPrintMesh {
 
     private async initQRCodeMesh(qrCodeText: string, wantedWidth: number, numberOfColors: number) {
         const qrCodeGeometry = await this.createQrCodeGeometry(qrCodeText)
-        const qrCodeMesh = new CustomVisibilityMesh(qrCodeGeometry, undefined, 0.1)
+        const qrCodeMesh = new ManualVisibilityMesh(qrCodeGeometry, undefined, 0.1)
         qrCodeMesh.name = "QrCode"
         qrCodeMesh.manualVisibility = false
         this.positionQrCodeMesh(qrCodeMesh, wantedWidth)
@@ -613,6 +613,10 @@ export class Preview3DPrintMesh {
     }
 
     private async createQrCodeGeometry(text: string) {
+        if (!text || text.length === 0) {
+            return new BufferGeometry()
+        }
+
         const canvas = document.createElement("canvas")
         await QRCode.toCanvas(canvas, text, { errorCorrectionLevel: "M" })
 
@@ -672,7 +676,7 @@ export class Preview3DPrintMesh {
         const mergedWhiteBackGeometry = BufferGeometryUtils.mergeBufferGeometries(whiteBackGeometries)
 
         const material = new MeshBasicMaterial()
-        const metricsMesh = new CustomVisibilityMesh(mergedWhiteBackGeometry, material, 1)
+        const metricsMesh = new ManualVisibilityMesh(mergedWhiteBackGeometry, material, 1)
 
         const coloredBackTextGeometries = this.createColoredBackTextGeometries(colorTextValueRanges, geometryOptions.numberOfColors)
         for (const colorTextGeometry of coloredBackTextGeometries) {
@@ -787,7 +791,7 @@ export class Preview3DPrintMesh {
         return { areaIcon, areaIconScale, areaText }
     }
 
-    private scaleBacktext(backTextMesh: CustomVisibilityMesh, scaleFactor: number) {
+    private scaleBacktext(backTextMesh: ManualVisibilityMesh, scaleFactor: number) {
         backTextMesh.scale.set(backTextMesh.scale.x * scaleFactor, backTextMesh.scale.y * scaleFactor, backTextMesh.scale.z)
 
         backTextMesh.updateVisibility()
@@ -800,7 +804,7 @@ export class Preview3DPrintMesh {
 
         const material = new MeshBasicMaterial()
 
-        const codeChartaMesh = new CustomVisibilityMesh(logoAndTextGeometry, material, 0.8)
+        const codeChartaMesh = new ManualVisibilityMesh(logoAndTextGeometry, material, 0.8)
         codeChartaMesh.name = "CodeCharta Logo"
         this.updateColor(codeChartaMesh, numberOfColors)
         const scaleFactor = (wantedWidth - mapSideOffset * 2) / 200
@@ -857,7 +861,7 @@ export class Preview3DPrintMesh {
 
         const material = new MeshBasicMaterial()
 
-        const itsTextMesh = new CustomVisibilityMesh(textGeometry, material, 0.7)
+        const itsTextMesh = new ManualVisibilityMesh(textGeometry, material, 0.7)
         itsTextMesh.name = "ITS Text"
         this.updateColor(itsTextMesh, numberOfColors)
         const scaleFactor = (wantedWidth - mapSideOffset * 2) / 200
@@ -876,7 +880,7 @@ export class Preview3DPrintMesh {
 
         const material = new MeshBasicMaterial()
 
-        const backMWMesh = new CustomVisibilityMesh(mwLogoGeometry, material, 0.3)
+        const backMWMesh = new ManualVisibilityMesh(mwLogoGeometry, material, 0.3)
         backMWMesh.name = "Back MW Logo"
 
         this.updateColor(backMWMesh, numberOfColors)

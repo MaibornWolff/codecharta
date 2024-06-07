@@ -28,9 +28,11 @@ interface Printer {
     numberOfColors: number
 }
 
-interface CustomVisibilityItem {
+interface ManualVisibilityItem {
+    readonly defaultText: string
+    readonly name: string
     isVisible: boolean
-    text: string
+    currentText?: string
 }
 
 @Component({
@@ -52,12 +54,16 @@ export class Export3DMapDialogComponent {
     frontText: string
 
     secondRow = {
+        defaultText: new Date().toLocaleDateString(),
+        name: "Second Row Text",
         isVisible: false,
-        text: new Date().toLocaleDateString()
+        currentText: undefined
     }
-    qrCode: CustomVisibilityItem = {
+    qrCode: ManualVisibilityItem = {
+        defaultText: "maibornwolff.de/service/it-sanierung",
+        name: "QrCode",
         isVisible: false,
-        text: "maibornwolff.de/service/it-sanierung"
+        currentText: undefined
     }
 
     printers: Printer[] = [
@@ -91,6 +97,9 @@ export class Export3DMapDialogComponent {
         this.wantedWidth = this.maxWidth
         this.currentNumberOfColors = this.selectedPrinter.numberOfColors
         this.isPrintMeshLoaded = false
+
+        this.secondRow.currentText = this.secondRow.defaultText
+        this.qrCode.currentText = this.qrCode.defaultText
 
         this.areaMetric = this.state.getValue().dynamicSettings.areaMetric
         this.heightMetric = this.state.getValue().dynamicSettings.heightMetric
@@ -163,7 +172,7 @@ export class Export3DMapDialogComponent {
 
     onQrCodeTextChange() {
         this.onTextChange(this.qrCode)
-        this.previewMesh.updateQrCodeText(this.qrCode.text)
+        this.previewMesh.updateQrCodeText(this.qrCode.currentText)
         this.previewMesh.updateQrCodeVisibility(this.qrCode.isVisible)
     }
     onQrCodeVisibilityChange(event: MatSlideToggleChange) {
@@ -173,7 +182,7 @@ export class Export3DMapDialogComponent {
 
     onSecondRowTextChange() {
         this.onTextChange(this.secondRow)
-        this.previewMesh.updateSecondRowText(this.secondRow.text)
+        this.previewMesh.updateSecondRowText(this.secondRow.currentText)
         this.previewMesh.updateSecondRowVisibility(this.secondRow.isVisible)
     }
     onSecondRowVisibilityChange(event: MatSlideToggleChange) {
@@ -181,8 +190,8 @@ export class Export3DMapDialogComponent {
         this.previewMesh.updateSecondRowVisibility(this.secondRow.isVisible)
     }
 
-    private onTextChange(item: CustomVisibilityItem) {
-        if (item.text === "") {
+    private onTextChange(item: ManualVisibilityItem) {
+        if (item.currentText === "") {
             item.isVisible = false
             return
         }
@@ -282,8 +291,8 @@ export class Export3DMapDialogComponent {
             colorMetricData: this.nodeMetricData.find(metric => metric.name === this.colorMetric),
             colorRange: this.state.getValue().dynamicSettings.colorRange,
             frontText: this.frontText,
-            secondRowText: this.secondRow.text,
-            qrCodeText: this.qrCode.text,
+            secondRowText: this.secondRow.currentText,
+            qrCodeText: this.qrCode.currentText,
             defaultMaterial: this.threeSceneService.getMapMesh().getThreeMesh().material[0].clone() as ShaderMaterial,
             numberOfColors: this.currentNumberOfColors
         }
