@@ -23,7 +23,7 @@ describe("SuspiciousMetricsComponent", () => {
                 componentProperties: {
                     data: {
                         analyzedProgrammingLanguage: "ts",
-                        unsuspiciousMetrics: ["rloc", "mcc"],
+                        unsuspiciousMetrics: ["rloc", "complexity"],
                         suspiciousMetricSuggestionLinks: [],
                         untrackedMetrics: []
                     }
@@ -53,7 +53,7 @@ describe("SuspiciousMetricsComponent", () => {
                 componentProperties: {
                     data: {
                         analyzedProgrammingLanguage: "ts",
-                        unsuspiciousMetrics: ["rloc", "mcc"],
+                        unsuspiciousMetrics: ["rloc", "complexity"],
                         suspiciousMetricSuggestionLinks: [],
                         untrackedMetrics: []
                     }
@@ -68,7 +68,7 @@ describe("SuspiciousMetricsComponent", () => {
                 componentProperties: {
                     data: {
                         analyzedProgrammingLanguage: "ts",
-                        unsuspiciousMetrics: ["rloc", "mcc"],
+                        unsuspiciousMetrics: ["rloc", "complexity"],
                         suspiciousMetricSuggestionLinks: [],
                         untrackedMetrics: []
                     }
@@ -156,7 +156,7 @@ describe("SuspiciousMetricsComponent", () => {
                         unsuspiciousMetrics: ["rloc"],
                         suspiciousMetricSuggestionLinks: [
                             {
-                                metric: "mcc",
+                                metric: "complexity",
                                 from: 10,
                                 to: 22,
                                 isOutlier: true,
@@ -170,8 +170,8 @@ describe("SuspiciousMetricsComponent", () => {
             await userEvent.click(screen.getByTitle("Open Suspicious Metrics Panel"))
             await userEvent.click(screen.getByTitle("Show very high risk files (90th percentile)"), undefined)
             const store = TestBed.inject(Store)
-            expect(store.dispatch).toHaveBeenCalledWith(setHeightMetric({ value: "mcc" }))
-            expect(store.dispatch).toHaveBeenCalledWith(setColorMetric({ value: "mcc" }))
+            expect(store.dispatch).toHaveBeenCalledWith(setHeightMetric({ value: "complexity" }))
+            expect(store.dispatch).toHaveBeenCalledWith(setColorMetric({ value: "complexity" }))
             expect(store.dispatch).toHaveBeenCalledWith(setColorRange({ value: { from: 10, to: 120 } }))
         })
     })
