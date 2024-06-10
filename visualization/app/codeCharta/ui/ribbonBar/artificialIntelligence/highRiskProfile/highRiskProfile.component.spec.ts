@@ -59,7 +59,12 @@ describe("HighRiskProfileComponent", () => {
 
         expect(
             screen.getByText(
-                "Could not calculate Risk Profile. Metrics rloc(Real lines of code) and mcc(Cyclomatic complexity) not available."
+                "Could not calculate Risk Profile. At least one of the metrics rloc (real lines of code) or complexity (cyclomatic complexity) is not available."
+            )
+        ).toBeTruthy()
+        expect(
+            screen.getByText(
+                "Be aware that complexity was previously named mcc. Old maps which still contain mcc instead of complexity need to be regenerated for the risk profile to work."
             )
         ).toBeTruthy()
     })
@@ -80,7 +85,12 @@ describe("HighRiskProfileComponent", () => {
 
         expect(
             screen.getByText(
-                "Could not calculate Risk Profile. Metrics rloc(Real lines of code) and mcc(Cyclomatic complexity) not available."
+                "Could not calculate Risk Profile. At least one of the metrics rloc (real lines of code) or complexity (cyclomatic complexity) is not available."
+            )
+        ).toBeTruthy()
+        expect(
+            screen.getByText(
+                "Be aware that complexity was previously named mcc. Old maps which still contain mcc instead of complexity need to be regenerated for the risk profile to work."
             )
         ).toBeTruthy()
     })
