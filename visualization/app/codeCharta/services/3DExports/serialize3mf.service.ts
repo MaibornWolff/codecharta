@@ -231,3 +231,7 @@ function convertColorArrayToHexString(color: Float32BufferAttribute | number[], 
         )
         .join("")
 }
+
+export const exportedForTesting = {
+    convertColorArrayToHexString
+}
