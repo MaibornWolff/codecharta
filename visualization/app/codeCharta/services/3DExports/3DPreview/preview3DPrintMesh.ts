@@ -17,6 +17,9 @@ import { SVGLoader } from "three/examples/jsm/loaders/SVGLoader"
 import { BufferGeometryUtils } from "three/examples/jsm/utils/BufferGeometryUtils"
 import { ColorRange, NodeMetricData } from "../../../codeCharta.model"
 import * as QRCode from "qrcode"
+import { ManualVisibilityMesh } from "./manualVisibilityMesh"
+import { BackMWLogoMesh } from "./backMWLogoMesh"
+import { BaseplateMesh } from "./baseplateMesh"
 
 const layerHeight = 0.2
 const frontTextSize = 8
@@ -44,31 +47,6 @@ export interface GeometryOptions {
     numberOfColors: number
 }
 
-class ManualVisibilityMesh extends Mesh {
-    minScale: number
-    private visibleBecauseOfColor = true
-    manualVisibility = true
-    minNumberOfColors: number
-
-    constructor(geometry: BufferGeometry, material: MeshBasicMaterial, minScale?: number, manualVisibility = true, minNumberOfColors = 2) {
-        super(geometry, material)
-        this.minScale = minScale
-        this.manualVisibility = manualVisibility
-        this.minNumberOfColors = minNumberOfColors
-    }
-
-    updateVisibilityBecauseOfColor(numberOfColors: number): void {
-        this.visibleBecauseOfColor = numberOfColors >= this.minNumberOfColors
-        this.updateVisibility()
-    }
-
-    updateVisibility(): void {
-        this.visible = this.minScale
-            ? this.scale.x >= this.minScale && this.visibleBecauseOfColor && this.manualVisibility
-            : this.visibleBecauseOfColor && this.manualVisibility
-    }
-}
-
 export class Preview3DPrintMesh {
     private font: Font
     private printMesh: Mesh
@@ -77,13 +55,13 @@ export class Preview3DPrintMesh {
 
     //Front
     private mapMesh: Mesh
-    private baseplateMesh: Mesh
+    private baseplateMesh: BaseplateMesh
     private frontTextMesh: Mesh
     private frontMWLogoMesh: Mesh
     private secondRowMesh: ManualVisibilityMesh
     private customLogoMesh: Mesh
     //Back
-    private backMWLogoMesh: ManualVisibilityMesh
+    private backMWLogoMesh: BackMWLogoMesh
     private itsTextMesh: ManualVisibilityMesh
     private qrCodeMesh: ManualVisibilityMesh
     private codeChartaLogoMesh: ManualVisibilityMesh
@@ -112,7 +90,8 @@ export class Preview3DPrintMesh {
     }
 
     async createPrintPreviewMesh(geometryOptions: GeometryOptions) {
-        this.initBaseplateMesh(geometryOptions.wantedWidth, geometryOptions.defaultMaterial, geometryOptions.numberOfColors)
+        this.baseplateMesh = new BaseplateMesh()
+        this.baseplateMesh.init({wantedWidth: geometryOptions.wantedWidth, mapSideOffset, baseplateHeight, secondRowVisible: false, frontTextSize, secondRowTextSize}, geometryOptions.numberOfColors, geometryOptions.defaultMaterial)
         this.printMesh.add(this.baseplateMesh)
 
         this.initMapMesh(geometryOptions)
@@ -143,7 +122,7 @@ export class Preview3DPrintMesh {
         this.printMesh.add(this.metricsMesh)
     }
 
-    updateSize(wantedWidth: number): boolean {
+    async updateSize(wantedWidth: number): Promise<boolean> {
         const currentWidth = this.currentSize.x
         let qrCodeVisible = this.qrCodeMesh.manualVisibility
 
@@ -158,7 +137,7 @@ export class Preview3DPrintMesh {
                         break
                     }
                     case "Baseplate":
-                        child.geometry = this.createBaseplateGeometry(wantedWidth, this.secondRowMesh.visible)
+                        await this.baseplateMesh.onSizeChange({ wantedWidth, secondRowVisible: this.secondRowMesh.visible , mapSideOffset, baseplateHeight, frontTextSize, secondRowTextSize })
                         break
 
                     case "Front Text": {
@@ -289,7 +268,7 @@ export class Preview3DPrintMesh {
 
         this.secondRowMesh.manualVisibility = isSecondRowVisible
         this.secondRowMesh.updateVisibility()
-        this.baseplateMesh.geometry = this.createBaseplateGeometry(this.currentSize.x, isSecondRowVisible)
+        this.baseplateMesh.onSizeChange({ wantedWidth: this.currentSize.x, secondRowVisible: isSecondRowVisible, mapSideOffset, baseplateHeight, frontTextSize, secondRowTextSize })
 
         this.updateFrontLogoSize(this.frontMWLogoMesh)
         this.updateFrontLogoSize(this.customLogoMesh)
@@ -333,15 +312,12 @@ export class Preview3DPrintMesh {
     }
 
     private calculateCurrentSize() {
-        this.baseplateMesh.geometry.computeBoundingBox()
-        const boundingBoxBaseplate = this.baseplateMesh.geometry.boundingBox
-
         this.mapMesh.geometry.computeBoundingBox()
         const boundingBoxMap = this.mapMesh.geometry.boundingBox
 
-        const currentWidth = boundingBoxBaseplate.max.x - boundingBoxBaseplate.min.x
-        const currentDepth = boundingBoxBaseplate.max.y - boundingBoxBaseplate.min.y
-        const currentHeight = boundingBoxBaseplate.max.z - boundingBoxBaseplate.min.z + boundingBoxMap.max.z - boundingBoxMap.min.z
+        const currentWidth = this.baseplateMesh.getWidth()
+        const currentDepth = this.baseplateMesh.getDepth()
+        const currentHeight = this.baseplateMesh.getHeight() + boundingBoxMap.max.z - boundingBoxMap.min.z
         this.currentSize = new Vector3(currentWidth, currentDepth, currentHeight)
     }
 
@@ -510,47 +486,6 @@ export class Preview3DPrintMesh {
         }
         console.warn("Unknown object:", partName, "Did you forget to add it to colorFunctions in the getColorArray method?")
         return [0, 1, 1]
-    }
-
-    private initBaseplateMesh(wantedWidth: number, defaultMaterial: ShaderMaterial, numberOfColors: number) {
-        const geometry = this.createBaseplateGeometry(wantedWidth, false)
-        //at the moment we use a workaround, so we don't need to calculate color, delta, deltaColor and isHeight
-        //the downside of this workaround is that there can only be one default color for all objects
-        //if its needed that all objects have ShaderMaterial have a look at geometryGenerator.ts
-        const shaderMaterial = new ShaderMaterial()
-        shaderMaterial.copy(defaultMaterial)
-        shaderMaterial.polygonOffset = true
-        shaderMaterial.polygonOffsetUnits = 1
-        shaderMaterial.polygonOffsetFactor = 0.1
-        const baseplateMesh = new Mesh(geometry, shaderMaterial)
-        baseplateMesh.name = "Baseplate"
-        this.updateColor(baseplateMesh, numberOfColors)
-        this.baseplateMesh = baseplateMesh
-    }
-
-    private createBaseplateGeometry(wantedWidth: number, secondRowVisible: boolean): BufferGeometry {
-        let edgeRadius = 5 // Adjust this value to change the roundness of the corners
-        const maxRoundRadius = Math.sqrt(2 * Math.pow(mapSideOffset, 2)) / (Math.sqrt(2) - 1) - 1
-        if (maxRoundRadius < edgeRadius) {
-            edgeRadius = maxRoundRadius
-        }
-
-        // Create the shape
-        const shape = new Shape()
-        const width = wantedWidth
-        const additionalSecondRowDepth = secondRowVisible ? secondRowTextSize * 1.5 : 0
-        const depth = wantedWidth + frontTextSize + additionalSecondRowDepth
-
-        shape.absarc(width - edgeRadius, edgeRadius, edgeRadius, Math.PI * 1.5, Math.PI * 2, false)
-        shape.absarc(width - edgeRadius, depth - edgeRadius, edgeRadius, 0, Math.PI * 0.5, false)
-        shape.absarc(edgeRadius, depth - edgeRadius, edgeRadius, Math.PI * 0.5, Math.PI, false)
-        shape.absarc(edgeRadius, edgeRadius, edgeRadius, Math.PI, Math.PI * 1.5, false)
-
-        // Create the geometry
-        const geometry = new ExtrudeGeometry(shape, { depth: baseplateHeight, bevelEnabled: false })
-        geometry.translate(-width / 2, -width / 2 - frontTextSize - additionalSecondRowDepth, -baseplateHeight)
-
-        return geometry
     }
 
     private initFrontText(frontText: string, wantedWidth: number, numberOfColors: number) {
@@ -873,21 +808,8 @@ export class Preview3DPrintMesh {
     }
 
     private async initBackMWLogoMesh(wantedWidth: number, numberOfColors: number) {
-        const mwLogoGeometry = await this.createSvgGeometry("codeCharta/assets/mw_logo_text.svg")
-        mwLogoGeometry.center()
-        mwLogoGeometry.rotateZ(Math.PI)
-        const mwBackLogoScale = (3 * (wantedWidth - mapSideOffset * 2)) / 10
-        mwLogoGeometry.scale(mwBackLogoScale, mwBackLogoScale, baseplateHeight / 2)
-        mwLogoGeometry.translate(0, wantedWidth / 2 - mwBackLogoScale / 2 + 5, -((baseplateHeight * 3) / 4))
-
-        const material = new MeshBasicMaterial()
-
-        const backMWMesh = new ManualVisibilityMesh(mwLogoGeometry, material, 0.3)
-        backMWMesh.name = "Back MW Logo"
-
-        this.updateColor(backMWMesh, numberOfColors)
-
-        this.backMWLogoMesh = backMWMesh
+        this.backMWLogoMesh = new BackMWLogoMesh()
+        await this.backMWLogoMesh.init(wantedWidth, mapSideOffset, baseplateHeight, numberOfColors)
     }
 
     private async initFrontMWLogoMesh(wantedWidth: number, numberOfColors: number) {

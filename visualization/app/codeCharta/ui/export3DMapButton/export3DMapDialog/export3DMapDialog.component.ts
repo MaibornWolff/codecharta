@@ -119,7 +119,9 @@ export class Export3DMapDialogComponent {
     }
 
     onScaleChange() {
-        this.qrCode.isVisible = this.previewMesh.updateSize(this.wantedWidth)
+        this.previewMesh.updateSize(this.wantedWidth).then((qrCodeVisible: boolean) => {
+            this.qrCode.isVisible = qrCodeVisible
+        })
         this.currentSize = this.previewMesh.getSize()
     }
 
@@ -260,7 +262,9 @@ export class Export3DMapDialogComponent {
             new Vector3(this.selectedPrinter.x, this.selectedPrinter.y, this.selectedPrinter.z),
             this.threeSceneService.getMapMesh().getThreeMesh()
         )
-        this.qrCode.isVisible = this.previewMesh.updateSize(this.wantedWidth)
+        this.previewMesh.updateSize(this.wantedWidth).then((qrCodeVisible: boolean) => {
+            this.qrCode.isVisible = qrCodeVisible
+        });
         this.currentSize = this.previewMesh.getSize()
         this.maxWidth = this.currentSize.x
     }
