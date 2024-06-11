@@ -1,14 +1,14 @@
 import { CreateGeometryStrategy } from "../CreateGeometryStrategies/createGeometryStrategy"
 import { GeometryOptions } from "../preview3DPrintMesh"
-import { SizeChangeStrategy, SizeChangeStrategyParameters } from "./sizeChangeStrategy"
+import { SizeChangeStrategy } from "./sizeChangeStrategy"
+import { GeneralMesh } from "../MeshModels/generalMesh"
 
-export interface SizeChangeCreateStrategyParameters extends SizeChangeStrategyParameters {
-    createGeometryStrategy: CreateGeometryStrategy
-}
 export class SizeChangeCreateStrategy implements SizeChangeStrategy {
-    async execute(geometryOptions: GeometryOptions, { createGeometryStrategy, mesh }: SizeChangeCreateStrategyParameters): Promise<void> {
+    constructor(private createGeometryStrategy: CreateGeometryStrategy) {}
+
+    async execute(geometryOptions: GeometryOptions, _: number, mesh: GeneralMesh): Promise<void> {
         mesh.boundingBoxCalculated = false
-        createGeometryStrategy.create(geometryOptions).then(geometry => {
+        this.createGeometryStrategy.create(geometryOptions).then(geometry => {
             mesh.geometry = geometry
         })
         return

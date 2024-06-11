@@ -21,7 +21,7 @@ import { ManualVisibilityMesh } from "./MeshModels/manualVisibilityMesh"
 import { BackMWLogoMesh } from "./MeshModels/backMWLogoMesh"
 import { BaseplateMesh } from "./MeshModels/baseplateMesh"
 import { BackBelowLogoTextMesh } from "./MeshModels/backBelowLogoTextMesh"
-import { QrCodeMesh } from "./MeshModels/qrCodeMesh"
+import { QRCodeMesh } from "./MeshModels/QRCodeMesh"
 import { CodeChartaLogoMesh } from "./MeshModels/codeChartaLogoMesh"
 import { CodeChartaTextMesh } from "./MeshModels/codeChartaTextMesh"
 
@@ -67,7 +67,7 @@ export class Preview3DPrintMesh {
     //Back
     private backMWLogoMesh: BackMWLogoMesh
     private itsTextMesh: BackBelowLogoTextMesh
-    private qrCodeMesh: QrCodeMesh
+    private qrCodeMesh: QRCodeMesh
     private codeChartaLogoMesh: CodeChartaLogoMesh
     private codeChartaTextMesh: CodeChartaTextMesh
     private metricsMesh: ManualVisibilityMesh
@@ -119,7 +119,7 @@ export class Preview3DPrintMesh {
         this.itsTextMesh = await new BackBelowLogoTextMesh(this.font).init(this.geometryOptions)
         this.printMesh.add(this.itsTextMesh)
 
-        this.qrCodeMesh = await new QrCodeMesh().init(this.geometryOptions)
+        this.qrCodeMesh = await new QRCodeMesh().init(this.geometryOptions)
         this.printMesh.add(this.qrCodeMesh)
 
         this.codeChartaLogoMesh = await new CodeChartaLogoMesh().init(this.geometryOptions)
@@ -173,16 +173,9 @@ export class Preview3DPrintMesh {
                         this.updateFrontLogoPosition(child, wantedWidth, false)
                         break
 
-                    case "QrCode":
-                        if (child instanceof ManualVisibilityMesh) {
-                            this.qrCodeMesh.changeSize(this.geometryOptions, currentWidth)
-                            if (wantedWidth < 280) {
-                                this.qrCodeMesh.setManualVisibility(false)
-                                qrCodeVisible = false
-                            }
-                        } else {
-                            console.error("QrCode is not an instance of ManualVisibilityMesh")
-                        }
+                    case "QRCode":
+                        await this.qrCodeMesh.changeSize(this.geometryOptions, currentWidth)
+                        qrCodeVisible = this.qrCodeMesh.visible
                         break
 
                     case "Metric Text":
@@ -471,7 +464,7 @@ export class Preview3DPrintMesh {
             "Metric Text Part 3": () => getMetricColorTextColor([1, 1, 0]),
             "Metric Text Part 4": getBackTextAndLogoColor,
             "Metric Text Part 5": () => getMetricColorTextColor([1, 0, 0]),
-            QrCode: getBackTextAndLogoColor
+            QRCode: getBackTextAndLogoColor
         }
 
         if (partName in colorFunctions) {

@@ -1,7 +1,7 @@
 /* eslint-disable unused-imports/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { GeneralMesh } from "./generalMesh"
-import { SizeChangeCreateStrategy, SizeChangeCreateStrategyParameters } from "../SizeChangeStrategies/sizeChangeCreateStrategy"
+import { SizeChangeCreateStrategy } from "../SizeChangeStrategies/sizeChangeCreateStrategy"
 import { CreateBaseplateGeometryStrategy } from "../CreateGeometryStrategies/createBaseplateGeometryStrategy"
 import { GeometryOptions } from "../preview3DPrintMesh"
 import { ShaderMaterial } from "three"
@@ -10,8 +10,9 @@ export class BaseplateMesh extends GeneralMesh {
     private readonly createBaseplateGeometryStrategy: CreateBaseplateGeometryStrategy
 
     constructor() {
-        super(new SizeChangeCreateStrategy())
-        this.createBaseplateGeometryStrategy = new CreateBaseplateGeometryStrategy()
+        const createBaseplateGeometryStrategy = new CreateBaseplateGeometryStrategy()
+        super(new SizeChangeCreateStrategy(createBaseplateGeometryStrategy))
+        this.createBaseplateGeometryStrategy = createBaseplateGeometryStrategy
         this.name = "Baseplate"
     }
 
@@ -37,11 +38,7 @@ export class BaseplateMesh extends GeneralMesh {
     }
 
     async changeSize(geometryOptions: GeometryOptions, oldWidth: number): Promise<void> {
-        return this.sizeChangeStrategy.execute(geometryOptions, {
-            oldWidth,
-            mesh: this,
-            createGeometryStrategy: this.createBaseplateGeometryStrategy
-        } as SizeChangeCreateStrategyParameters)
+        return this.sizeChangeStrategy.execute(geometryOptions, oldWidth, this)
     }
 
     changeColor(numberOfColors: number) {

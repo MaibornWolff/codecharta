@@ -6,11 +6,11 @@ import { GeometryOptions } from "../preview3DPrintMesh"
 import { GeneralMesh } from "./generalMesh"
 import { SizeChangeScaleStrategy } from "../SizeChangeStrategies/sizeChangeScaleStrategy"
 
-export class ManualVisibilityMesh extends GeneralMesh {
-    private currentNumberOfColors: number
-    private manualVisibility: boolean
-    private readonly minScale: number
-    private readonly minNumberOfColors: number
+export class ManualVisibilityMesh extends GeneralMesh { //TODO: split into two classes
+    currentNumberOfColors: number
+    manualVisibility: boolean
+    readonly minScale: number
+    readonly minNumberOfColors: number
 
     constructor(
         manualVisibility = true,
@@ -26,6 +26,10 @@ export class ManualVisibilityMesh extends GeneralMesh {
         this.minNumberOfColors = minNumberOfColors
         this.geometry = geometry
         this.material = material
+    }
+
+    setSizeChangeStrategy(sizeChangeStrategy: SizeChangeScaleStrategy): void { //TODO: delete this function and integrate into constructor
+        this.sizeChangeStrategy = sizeChangeStrategy
     }
 
     setManualVisibility(manualVisibility: boolean): void {
@@ -49,10 +53,7 @@ export class ManualVisibilityMesh extends GeneralMesh {
     }
 
     async changeSize(geometryOptions: GeometryOptions, oldWidth: number): Promise<void> {
-        await this.sizeChangeStrategy.execute(geometryOptions, {
-            oldWidth,
-            mesh: this
-        })
+        await this.sizeChangeStrategy.execute(geometryOptions, oldWidth, this)
         this.updateVisibility()
     }
 

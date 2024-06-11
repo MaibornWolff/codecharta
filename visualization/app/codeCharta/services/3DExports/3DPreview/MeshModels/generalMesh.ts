@@ -40,6 +40,10 @@ export abstract class GeneralMesh extends Mesh {
             this.setCurrentNumberOfColors(numberOfColors)
         }
 
+        if(this.name === "QRCode") {
+            console.log("QRCode")
+        }
+
         if (this.material instanceof MeshBasicMaterial) {
             const colorArray = this.getColorArray(this.name, numberOfColors)
             this.material.color.setRGB(colorArray[0], colorArray[1], colorArray[2])
@@ -105,7 +109,7 @@ export abstract class GeneralMesh extends Mesh {
             "Metric Text Part 3": () => getMetricColorTextColor([1, 1, 0]),
             "Metric Text Part 4": getBackTextAndLogoColor,
             "Metric Text Part 5": () => getMetricColorTextColor([1, 0, 0]),
-            QrCode: getBackTextAndLogoColor
+            "QRCode": getBackTextAndLogoColor
         }
 
         if (partName in colorFunctions) {
