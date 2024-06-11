@@ -17,11 +17,11 @@ import {
 import { SVGLoader } from "three/examples/jsm/loaders/SVGLoader"
 import { BufferGeometryUtils } from "three/examples/jsm/utils/BufferGeometryUtils"
 import { ColorRange, NodeMetricData } from "../../../codeCharta.model"
-import * as QRCode from "qrcode"
 import { ManualVisibilityMesh } from "./MeshModels/manualVisibilityMesh"
 import { BackMWLogoMesh } from "./MeshModels/backMWLogoMesh"
 import { BaseplateMesh } from "./MeshModels/baseplateMesh"
 import { BackBelowLogoTextMesh } from "./MeshModels/backBelowLogoTextMesh"
+import { QrCodeMesh } from "./MeshModels/qrCodeMesh"
 
 export interface GeometryOptions {
     originalMapMesh: Mesh
@@ -65,7 +65,7 @@ export class Preview3DPrintMesh {
     //Back
     private backMWLogoMesh: BackMWLogoMesh
     private itsTextMesh: BackBelowLogoTextMesh
-    private qrCodeMesh: ManualVisibilityMesh
+    private qrCodeMesh: QrCodeMesh
     private codeChartaLogoMesh: ManualVisibilityMesh
     private metricsMesh: ManualVisibilityMesh
 
@@ -116,7 +116,7 @@ export class Preview3DPrintMesh {
         this.itsTextMesh = await new BackBelowLogoTextMesh(this.font).init(this.geometryOptions)
         this.printMesh.add(this.itsTextMesh)
 
-        await this.initQRCodeMesh(this.geometryOptions.qrCodeText, this.geometryOptions.width, this.geometryOptions.numberOfColors)
+        this.qrCodeMesh = await new QrCodeMesh().init(this.geometryOptions)
         this.printMesh.add(this.qrCodeMesh)
 
         await this.initCodeChartaMesh(this.geometryOptions.width, this.geometryOptions.numberOfColors)
@@ -129,7 +129,7 @@ export class Preview3DPrintMesh {
     async updateSize(wantedWidth: number): Promise<boolean> {
         this.geometryOptions.width = wantedWidth
         const currentWidth = this.currentSize.x
-        let qrCodeVisible = this.qrCodeMesh.manualVisibility
+        let qrCodeVisible = this.qrCodeMesh.getManualVisibility()
 
         await this.baseplateMesh.changeSize(this.geometryOptions, currentWidth)
         await this.backMWLogoMesh.changeSize(this.geometryOptions, currentWidth)
@@ -167,10 +167,9 @@ export class Preview3DPrintMesh {
 
                     case "QrCode":
                         if (child instanceof ManualVisibilityMesh) {
-                            this.positionQrCodeMesh(child, wantedWidth)
+                            this.qrCodeMesh.changeSize(this.geometryOptions, currentWidth)
                             if (wantedWidth < 280) {
-                                this.qrCodeMesh.manualVisibility = false
-                                this.qrCodeMesh.updateVisibility()
+                                this.qrCodeMesh.setManualVisibility(false)
                                 qrCodeVisible = false
                             }
                         } else {
@@ -256,8 +255,7 @@ export class Preview3DPrintMesh {
             return
         }
 
-        this.secondRowMesh.manualVisibility = isSecondRowVisible
-        this.secondRowMesh.updateVisibility()
+        this.secondRowMesh.setManualVisibility(isSecondRowVisible)
         this.geometryOptions.secondRowVisible = isSecondRowVisible
         this.baseplateMesh.changeSize(this.geometryOptions, this.geometryOptions.width)
 
@@ -405,7 +403,7 @@ export class Preview3DPrintMesh {
 
     private updateColor(mesh: Mesh, numberOfColors: number) {
         if (mesh instanceof ManualVisibilityMesh) {
-            mesh.updateVisibilityBecauseOfColor(numberOfColors)
+            mesh.setCurrentNumberOfColors(numberOfColors)
         }
 
         if (mesh.material instanceof MeshBasicMaterial) {
@@ -533,60 +531,13 @@ export class Preview3DPrintMesh {
         this.secondRowMesh = textMesh
     }
 
-    private async initQRCodeMesh(qrCodeText: string, wantedWidth: number, numberOfColors: number) {
-        const qrCodeGeometry = await this.createQrCodeGeometry(qrCodeText)
-        const qrCodeMesh = new ManualVisibilityMesh(true, 2, 0.1, qrCodeGeometry, undefined)
-        qrCodeMesh.name = "QrCode"
-        qrCodeMesh.manualVisibility = false
-        this.positionQrCodeMesh(qrCodeMesh, wantedWidth)
-        this.updateColor(qrCodeMesh, numberOfColors)
-        this.qrCodeMesh = qrCodeMesh
-    }
-
-    private positionQrCodeMesh(qrCodeMesh: Mesh, wantedWidth: number) {
-        qrCodeMesh.position.x = wantedWidth / 2 - this.geometryOptions.mapSideOffset
-        qrCodeMesh.position.y = wantedWidth / 2 - this.geometryOptions.mapSideOffset
-    }
-
-    private async createQrCodeGeometry(text: string) {
-        if (!text || text.length === 0) {
-            return new BufferGeometry()
-        }
-
-        const canvas = document.createElement("canvas")
-        await QRCode.toCanvas(canvas, text, { errorCorrectionLevel: "M" })
-
-        const context = canvas.getContext("2d")
-        const imageData = context.getImageData(0, 0, canvas.width, canvas.height)
-        const data = imageData.data
-
-        const qrCodeGeometries: BufferGeometry[] = []
-        const pixelSize = 50 / imageData.width
-
-        // Loop over each pixel in the image
-        for (let y = 0; y < imageData.height; y++) {
-            for (let x = 0; x < imageData.width; x++) {
-                const index = (y * imageData.width + x) * 4
-                if (data[index] !== 0) {
-                    const geometry = new BoxGeometry(pixelSize, pixelSize, this.geometryOptions.baseplateHeight / 2)
-                    geometry.translate(-x * pixelSize, -y * pixelSize, (-this.geometryOptions.baseplateHeight * 3) / 4)
-                    qrCodeGeometries.push(geometry)
-                }
-            }
-        }
-
-        const qrCodeGeometry = BufferGeometryUtils.mergeBufferGeometries(qrCodeGeometries)
-        return qrCodeGeometry
-    }
-
     async updateQrCodeText(qrCodeText: string): Promise<void> {
-        this.qrCodeMesh.geometry = await this.createQrCodeGeometry(qrCodeText)
-        return
+        this.geometryOptions.qrCodeText = qrCodeText
+        this.qrCodeMesh.changeText(this.geometryOptions)
     }
 
     updateQrCodeVisibility(qrCodeVisible: boolean) {
-        this.qrCodeMesh.manualVisibility = qrCodeVisible
-        this.qrCodeMesh.updateVisibility()
+        this.qrCodeMesh.setManualVisibility(qrCodeVisible)
     }
 
     private async initMetricsMesh(geometryOptions: GeometryOptions) {

@@ -7,10 +7,10 @@ import { GeneralMesh } from "./generalMesh"
 import { SizeChangeScaleStrategy } from "../SizeChangeStrategies/sizeChangeScaleStrategy"
 
 export class ManualVisibilityMesh extends GeneralMesh {
-    minScale: number
-    private visibleBecauseOfColor = true
-    manualVisibility = true
-    minNumberOfColors: number
+    private currentNumberOfColors: number
+    private manualVisibility: boolean
+    private readonly minScale: number
+    private readonly minNumberOfColors: number
 
     constructor(
         manualVisibility = true,
@@ -28,15 +28,24 @@ export class ManualVisibilityMesh extends GeneralMesh {
         this.material = material
     }
 
-    updateVisibilityBecauseOfColor(numberOfColors: number): void {
-        this.visibleBecauseOfColor = numberOfColors >= this.minNumberOfColors
+    setManualVisibility(manualVisibility: boolean): void {
+        this.manualVisibility = manualVisibility
+        this.updateVisibility()
+    }
+    getManualVisibility(): boolean {
+        return this.manualVisibility
+    }
+
+    setCurrentNumberOfColors(numberOfColors: number): void {
+        this.currentNumberOfColors = numberOfColors
         this.updateVisibility()
     }
 
-    updateVisibility(): void {
+    updateVisibility(): void { //TODO: make private
+        const visibleBecauseOfColor = this.currentNumberOfColors ? this.currentNumberOfColors >= this.minNumberOfColors : true
         this.visible = this.minScale
-            ? this.scale.x >= this.minScale && this.visibleBecauseOfColor && this.manualVisibility
-            : this.visibleBecauseOfColor && this.manualVisibility
+            ? this.scale.x >= this.minScale && visibleBecauseOfColor && this.manualVisibility
+            : visibleBecauseOfColor && this.manualVisibility
     }
 
     async changeSize(geometryOptions: GeometryOptions, oldWidth: number): Promise<void> {

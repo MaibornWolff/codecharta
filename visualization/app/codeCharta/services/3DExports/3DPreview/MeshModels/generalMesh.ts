@@ -37,7 +37,7 @@ export abstract class GeneralMesh extends Mesh {
 
     changeColor(numberOfColors: number) {
         if (this instanceof ManualVisibilityMesh) {
-            this.updateVisibilityBecauseOfColor(numberOfColors)
+            this.setCurrentNumberOfColors(numberOfColors)
         }
 
         if (this.material instanceof MeshBasicMaterial) {
