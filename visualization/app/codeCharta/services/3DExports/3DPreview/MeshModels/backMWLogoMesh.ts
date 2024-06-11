@@ -11,18 +11,16 @@ export class BackMWLogoMesh extends ManualVisibilityMesh {
     }
 
     async init(geometryOptions: GeometryOptions): Promise<BackMWLogoMesh> {
-        const createSvgStrategy = new CreateSvgGeometryStrategy({ filePath: "codeCharta/assets/mw_logo_text.svg" })
+        const createSvgStrategy = new CreateSvgGeometryStrategy("codeCharta/assets/mw_logo_text.svg" )
         const mwLogoGeometry = await createSvgStrategy.create(geometryOptions)
         mwLogoGeometry.center()
         mwLogoGeometry.rotateZ(Math.PI)
         const mwBackLogoScale = (3 * (geometryOptions.width - geometryOptions.mapSideOffset * 2)) / 10
         mwLogoGeometry.scale(mwBackLogoScale, mwBackLogoScale, geometryOptions.baseplateHeight / 2)
         mwLogoGeometry.translate(0, geometryOptions.width / 2 - mwBackLogoScale / 2 + 5, -((geometryOptions.baseplateHeight * 3) / 4))
-
-        const material = new MeshBasicMaterial()
-
         this.geometry = mwLogoGeometry
-        this.material = material
+
+        this.material = new MeshBasicMaterial()
 
         this.changeColor(geometryOptions.numberOfColors)
 

@@ -21,6 +21,7 @@ import * as QRCode from "qrcode"
 import { ManualVisibilityMesh } from "./MeshModels/manualVisibilityMesh"
 import { BackMWLogoMesh } from "./MeshModels/backMWLogoMesh"
 import { BaseplateMesh } from "./MeshModels/baseplateMesh"
+import { BackBelowLogoTextMesh } from "./MeshModels/backBelowLogoTextMesh"
 
 export interface GeometryOptions {
     originalMapMesh: Mesh
@@ -63,7 +64,7 @@ export class Preview3DPrintMesh {
     private customLogoMesh: Mesh
     //Back
     private backMWLogoMesh: BackMWLogoMesh
-    private itsTextMesh: ManualVisibilityMesh
+    private itsTextMesh: BackBelowLogoTextMesh
     private qrCodeMesh: ManualVisibilityMesh
     private codeChartaLogoMesh: ManualVisibilityMesh
     private metricsMesh: ManualVisibilityMesh
@@ -94,7 +95,8 @@ export class Preview3DPrintMesh {
     }
 
     async createPrintPreviewMesh() {
-        await this.createBaseplateMesh()
+        this.baseplateMesh = await new BaseplateMesh().init(this.geometryOptions)
+        this.printMesh.add(this.baseplateMesh)
 
         this.initMapMesh(this.geometryOptions)
         this.printMesh.add(this.mapMesh)
@@ -111,7 +113,7 @@ export class Preview3DPrintMesh {
         await this.initBackMWLogoMesh()
         this.printMesh.add(this.backMWLogoMesh)
 
-        await this.initBackITSTextMesh(this.geometryOptions.width, this.geometryOptions.numberOfColors)
+        this.itsTextMesh = await new BackBelowLogoTextMesh(this.font).init(this.geometryOptions)
         this.printMesh.add(this.itsTextMesh)
 
         await this.initQRCodeMesh(this.geometryOptions.qrCodeText, this.geometryOptions.width, this.geometryOptions.numberOfColors)
@@ -124,12 +126,6 @@ export class Preview3DPrintMesh {
         this.printMesh.add(this.metricsMesh)
     }
 
-    private async createBaseplateMesh() {
-        this.baseplateMesh = new BaseplateMesh()
-        this.baseplateMesh.init(this.geometryOptions)
-        this.printMesh.add(this.baseplateMesh)
-    }
-
     async updateSize(wantedWidth: number): Promise<boolean> {
         this.geometryOptions.width = wantedWidth
         const currentWidth = this.currentSize.x
@@ -137,6 +133,7 @@ export class Preview3DPrintMesh {
 
         await this.baseplateMesh.changeSize(this.geometryOptions, currentWidth)
         await this.backMWLogoMesh.changeSize(this.geometryOptions, currentWidth)
+        await this.itsTextMesh.changeSize(this.geometryOptions, currentWidth)
 
         for (const child of this.printMesh.children) {
             if (child instanceof Mesh) {
@@ -166,14 +163,6 @@ export class Preview3DPrintMesh {
 
                     case "Custom Logo":
                         this.updateFrontLogoPosition(child, wantedWidth, false)
-                        break
-
-                    case "ITS Text":
-                        if (child instanceof ManualVisibilityMesh) {
-                            this.scaleBacktext(child, wantedWidth / currentWidth)
-                        } else {
-                            console.error("Back MW Logo is not an instance of ManualVisibilityMesh")
-                        }
                         break
 
                     case "QrCode":
@@ -783,38 +772,6 @@ export class Preview3DPrintMesh {
         textGeometry.translate(0, 5, -((this.geometryOptions.baseplateHeight * 3) / 4))
 
         return textGeometry
-    }
-
-    private async initBackITSTextMesh(wantedWidth: number, numberOfColors: number) {
-        const ITSNameTextGeometry = new TextGeometry("IT Stabilization & Modernization", {
-            font: this.font,
-            size: this.geometryOptions.backTextSize,
-            height: this.geometryOptions.baseplateHeight / 2
-        })
-        ITSNameTextGeometry.center()
-
-        const ITSUrlTextGeometry = new TextGeometry("maibornwolff.de/service/it-sanierung", {
-            font: this.font,
-            size: this.geometryOptions.backTextSize,
-            height: this.geometryOptions.baseplateHeight / 2
-        })
-        ITSUrlTextGeometry.center()
-        ITSUrlTextGeometry.translate(0, -10, 0)
-
-        const textGeometry = BufferGeometryUtils.mergeBufferGeometries([ITSNameTextGeometry, ITSUrlTextGeometry])
-        textGeometry.rotateY(Math.PI)
-
-        textGeometry.translate(0, 55, -((this.geometryOptions.baseplateHeight * 3) / 4))
-
-        const material = new MeshBasicMaterial()
-
-        const itsTextMesh = new ManualVisibilityMesh(true, 2, 0.7, textGeometry, material)
-        itsTextMesh.name = "ITS Text"
-        this.updateColor(itsTextMesh, numberOfColors)
-        const scaleFactor = (wantedWidth - this.geometryOptions.mapSideOffset * 2) / 200
-        this.scaleBacktext(itsTextMesh, scaleFactor)
-
-        this.itsTextMesh = itsTextMesh
     }
 
     private async initBackMWLogoMesh() {

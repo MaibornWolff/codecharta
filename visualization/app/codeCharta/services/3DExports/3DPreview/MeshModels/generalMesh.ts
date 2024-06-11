@@ -8,13 +8,12 @@ export abstract class GeneralMesh extends Mesh {
     boundingBoxCalculated = false
 
     constructor(
-        public createGeometryStrategy: CreateGeometryStrategy,
         public sizeChangeStrategy: SizeChangeStrategy
     ) {
         super()
     }
 
-    abstract init(geometryOptions: GeometryOptions): void
+    abstract init(geometryOptions: GeometryOptions): Promise<GeneralMesh>
     abstract changeSize(geometryOptions: GeometryOptions, oldWidth: number): Promise<void>
 
     getWidth(): number {

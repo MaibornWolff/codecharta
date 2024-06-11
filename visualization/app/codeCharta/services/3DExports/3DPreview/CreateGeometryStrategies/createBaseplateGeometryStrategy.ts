@@ -1,12 +1,8 @@
-import { CreateGeometryStrategy, CreateGeometryStrategyParameters } from "./createGeometryStrategy"
+import { CreateGeometryStrategy } from "./createGeometryStrategy"
 import { BufferGeometry, ExtrudeGeometry, Shape } from "three"
 import { GeometryOptions } from "../preview3DPrintMesh"
 
 export class CreateBaseplateGeometryStrategy extends CreateGeometryStrategy {
-    constructor(createGeometryStrategyParameters: CreateGeometryStrategyParameters) {
-        super(createGeometryStrategyParameters)
-    }
-
     async create(geometryOptions: GeometryOptions): Promise<BufferGeometry> {
         const { width, secondRowVisible, mapSideOffset, baseplateHeight, frontTextSize, secondRowTextSize } = geometryOptions
         let edgeRadius = 5 // Adjust this value to change the roundness of the corners
