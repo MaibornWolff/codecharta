@@ -1,5 +1,5 @@
 import { strToU8, zipSync } from "fflate"
-import { Float32BufferAttribute, Material, Matrix4, Mesh, MeshBasicMaterial, ShaderMaterial, Vector3 } from "three"
+import { BufferGeometry, Float32BufferAttribute, Material, Matrix4, Mesh, MeshBasicMaterial, ShaderMaterial, Vector3 } from "three"
 import { getXMLrelationships, getXMLcontentType } from "./generateXML/build3mfStatics"
 import { getXMLmodelConfig } from "./generateXML/build3mfModelConfig"
 import { getXMLmodel } from "./generateXML/build3mfModel"
@@ -61,12 +61,12 @@ function extractMeshData(mesh: Mesh): {
 
 function extractChildMeshData(
     mesh: Mesh,
-    vertices,
-    triangles,
-    vertexToNewVertexIndex,
-    volumeCount,
-    colorToExtruder,
-    volumes,
+    vertices: string[],
+    triangles: string[],
+    vertexToNewVertexIndex: Map<string, number>,
+    volumeCount: number,
+    colorToExtruder: Map<string, number>,
+    volumes: Volume[],
     parentMatrix: Matrix4 = undefined
 ): void {
     if (!mesh.visible) {
@@ -116,7 +116,7 @@ function groupMeshVerticesByColor(mesh: Mesh): Map<string, number[]> {
         }
     } else {
         const material = mesh.material as Material
-        let hexColorString
+        let hexColorString: string
         if ((material as MeshBasicMaterial).color) {
             hexColorString = (material as MeshBasicMaterial).color.getHexString()
         } else if ((material as ShaderMaterial).isShaderMaterial) {
@@ -135,10 +135,10 @@ function groupMeshVerticesByColor(mesh: Mesh): Map<string, number[]> {
 }
 
 function constructVertices(
-    vertices,
-    vertexToNewVertexIndex,
-    vertexIndexToNewVertexIndex,
-    vertexIndexes,
+    vertices: string[],
+    vertexToNewVertexIndex: Map<string, number>,
+    vertexIndexToNewVertexIndex: Map<number, number>,
+    vertexIndexes: number[],
     mesh: Mesh,
     parentMatrix: Matrix4
 ): { firstVertexId: number; lastVertexId: number } {
@@ -170,7 +170,14 @@ function constructVertices(
     return { firstVertexId, lastVertexId: vertexIndexToNewVertexIndex.size - 1 }
 }
 
-function constructTriangles(geometry, triangles, vertexIndexToNewVertexIndex, firstVertexId, lastVertexId, vertexIndexes): void {
+function constructTriangles(
+    geometry: BufferGeometry,
+    triangles: string[],
+    vertexIndexToNewVertexIndex: Map<number, number>,
+    firstVertexId: number,
+    lastVertexId: number,
+    vertexIndexes: number[]
+): void {
     if (!geometry.index) {
         for (let index = 0; index < geometry.attributes.position.count; index += 3) {
             const triangle = `<triangle v1="${vertexIndexToNewVertexIndex.get(index)}" v2="${vertexIndexToNewVertexIndex.get(
@@ -196,7 +203,15 @@ function constructTriangles(geometry, triangles, vertexIndexToNewVertexIndex, fi
     }
 }
 
-function constructVolume(child, color, firstTriangleId, lastTriangleId, volumes, volumeCount, colorToExtruder): void {
+function constructVolume(
+    child: Mesh,
+    color: string,
+    firstTriangleId: number,
+    lastTriangleId: number,
+    volumes: Volume[],
+    volumeCount: number,
+    colorToExtruder: Map<string, number>
+): void {
     if (!colorToExtruder.has(color)) {
         colorToExtruder.set(color, colorToExtruder.size + 1)
     }
