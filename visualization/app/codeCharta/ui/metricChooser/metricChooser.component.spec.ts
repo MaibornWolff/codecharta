@@ -61,7 +61,7 @@ describe("metricChooserComponent", () => {
                 "FullTestTitle (fullMetric):\nFullTestDescription\nHigh Values: FullTestHigh\nLow Values: FullLowValue"
             )
         )
-        await waitFor(() => expect(screen.queryAllByRole("option")[4].textContent).toMatch("complexity (55)"))
+        await waitFor(() => expect(screen.queryAllByRole("option")[4].textContent).toMatch("complexity (formerly mcc) (55)"))
         await waitFor(() => expect(screen.queryAllByRole("option")[4].getAttribute("title")).toMatch("Cyclomatic Complexity"))
 
         await userEvent.click(screen.queryAllByRole("option")[1])
