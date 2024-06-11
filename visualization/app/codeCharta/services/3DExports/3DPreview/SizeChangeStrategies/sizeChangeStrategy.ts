@@ -2,6 +2,7 @@ import { GeometryOptions } from "../preview3DPrintMesh"
 import { GeneralMesh } from "../MeshModels/generalMesh"
 
 export interface SizeChangeStrategyParameters {
+    oldWidth: number
     mesh: GeneralMesh
 }
 export abstract class SizeChangeStrategy {

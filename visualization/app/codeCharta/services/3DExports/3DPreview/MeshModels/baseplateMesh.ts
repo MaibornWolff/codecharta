@@ -32,8 +32,9 @@ export class BaseplateMesh extends GeneralMesh {
 
     async changeSize(geometryOptions: GeometryOptions, oldWidth: number): Promise<void> {
         return this.sizeChangeStrategy.execute(geometryOptions, {
-            createGeometryStrategy: this.createGeometryStrategy,
-            mesh: this
+            oldWidth,
+            mesh: this,
+            createGeometryStrategy: this.createGeometryStrategy
         } as SizeChangeCreateStrategyParameters)
     }
 
