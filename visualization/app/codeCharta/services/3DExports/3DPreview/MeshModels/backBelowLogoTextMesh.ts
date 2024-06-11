@@ -35,7 +35,6 @@ export class BackBelowLogoTextMesh extends ManualVisibilityMesh {
         this.material = new MeshBasicMaterial()
 
         this.changeColor(geometryOptions.numberOfColors)
-        //width / oldWidth = (geometryOptions.width - geometryOptions.mapSideOffset * 2) / 200
         const oldWidth = 200 * geometryOptions.width / (geometryOptions.width - geometryOptions.mapSideOffset * 2)
         this.changeSize(geometryOptions, oldWidth)
 

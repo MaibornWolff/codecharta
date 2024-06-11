@@ -22,6 +22,8 @@ import { BackMWLogoMesh } from "./MeshModels/backMWLogoMesh"
 import { BaseplateMesh } from "./MeshModels/baseplateMesh"
 import { BackBelowLogoTextMesh } from "./MeshModels/backBelowLogoTextMesh"
 import { QrCodeMesh } from "./MeshModels/qrCodeMesh"
+import { CodeChartaLogoMesh } from "./MeshModels/codeChartaLogoMesh"
+import { CodeChartaTextMesh } from "./MeshModels/codeChartaTextMesh"
 
 export interface GeometryOptions {
     originalMapMesh: Mesh
@@ -66,7 +68,8 @@ export class Preview3DPrintMesh {
     private backMWLogoMesh: BackMWLogoMesh
     private itsTextMesh: BackBelowLogoTextMesh
     private qrCodeMesh: QrCodeMesh
-    private codeChartaLogoMesh: ManualVisibilityMesh
+    private codeChartaLogoMesh: CodeChartaLogoMesh
+    private codeChartaTextMesh: CodeChartaTextMesh
     private metricsMesh: ManualVisibilityMesh
 
     private geometryOptions: GeometryOptions
@@ -119,8 +122,11 @@ export class Preview3DPrintMesh {
         this.qrCodeMesh = await new QrCodeMesh().init(this.geometryOptions)
         this.printMesh.add(this.qrCodeMesh)
 
-        await this.initCodeChartaMesh(this.geometryOptions.width, this.geometryOptions.numberOfColors)
+        this.codeChartaLogoMesh = await new CodeChartaLogoMesh().init(this.geometryOptions)
         this.printMesh.add(this.codeChartaLogoMesh)
+
+        this.codeChartaTextMesh = await new CodeChartaTextMesh(this.font).init(this.geometryOptions)
+        this.printMesh.add(this.codeChartaTextMesh)
 
         await this.initMetricsMesh(this.geometryOptions)
         this.printMesh.add(this.metricsMesh)
@@ -134,6 +140,8 @@ export class Preview3DPrintMesh {
         await this.baseplateMesh.changeSize(this.geometryOptions, currentWidth)
         await this.backMWLogoMesh.changeSize(this.geometryOptions, currentWidth)
         await this.itsTextMesh.changeSize(this.geometryOptions, currentWidth)
+        await this.codeChartaLogoMesh.changeSize(this.geometryOptions, currentWidth)
+        await this.codeChartaTextMesh.changeSize(this.geometryOptions, currentWidth)
 
         for (const child of this.printMesh.children) {
             if (child instanceof Mesh) {
@@ -174,14 +182,6 @@ export class Preview3DPrintMesh {
                             }
                         } else {
                             console.error("QrCode is not an instance of ManualVisibilityMesh")
-                        }
-                        break
-
-                    case "CodeCharta Logo":
-                        if (child instanceof ManualVisibilityMesh) {
-                            this.scaleBacktext(child, wantedWidth / currentWidth)
-                        } else {
-                            console.error("CodeCharta Logo is not an instance of ManualVisibilityMesh")
                         }
                         break
 
@@ -682,47 +682,6 @@ export class Preview3DPrintMesh {
         backTextMesh.scale.set(backTextMesh.scale.x * scaleFactor, backTextMesh.scale.y * scaleFactor, backTextMesh.scale.z)
 
         backTextMesh.updateVisibility()
-    }
-
-    private async initCodeChartaMesh(wantedWidth: number, numberOfColors: number) {
-        const logoGeometry = await this.createCodeChartaLogo()
-        const textGeometry = this.createCodeChartaText()
-        const logoAndTextGeometry = BufferGeometryUtils.mergeBufferGeometries([logoGeometry, textGeometry])
-
-        const material = new MeshBasicMaterial()
-
-        const codeChartaMesh = new ManualVisibilityMesh(true, 2, 0.8, logoAndTextGeometry, material)
-        codeChartaMesh.name = "CodeCharta Logo"
-        this.updateColor(codeChartaMesh, numberOfColors)
-        const scaleFactor = (wantedWidth - this.geometryOptions.mapSideOffset * 2) / 200
-        this.scaleBacktext(codeChartaMesh, scaleFactor)
-        this.codeChartaLogoMesh = codeChartaMesh
-    }
-
-    private async createCodeChartaLogo() {
-        const logoGeometry = await this.createSvgGeometry("codeCharta/assets/codecharta_logo.svg")
-        logoGeometry.center()
-        logoGeometry.rotateZ(Math.PI)
-
-        const logoScale = 25
-        logoGeometry.scale(logoScale, logoScale, this.geometryOptions.baseplateHeight / 2)
-        logoGeometry.translate(0, 20, -((this.geometryOptions.baseplateHeight * 3) / 4))
-
-        return logoGeometry
-    }
-
-    private createCodeChartaText() {
-        const textGeometry = new TextGeometry("github.com/MaibornWolff/codecharta", {
-            font: this.font,
-            size: this.geometryOptions.backTextSize,
-            height: this.geometryOptions.baseplateHeight / 2
-        })
-        textGeometry.center()
-        textGeometry.rotateY(Math.PI)
-
-        textGeometry.translate(0, 5, -((this.geometryOptions.baseplateHeight * 3) / 4))
-
-        return textGeometry
     }
 
     private async initBackMWLogoMesh() {
