@@ -190,7 +190,7 @@ export class Export3DMapDialogComponent {
         this.previewMesh.updateQrCodeVisibility(this.qrCode.isVisible)
     }
     onQrCodeVisibilityChange(event: MatSlideToggleChange) {
-        if(this.qrCode.isVisible !== event.checked) {
+        if (this.qrCode.isVisible !== event.checked) {
             this.qrCode.isVisible = event.checked
             this.previewMesh.updateQrCodeVisibility(this.qrCode.isVisible)
         }
@@ -202,7 +202,7 @@ export class Export3DMapDialogComponent {
         this.previewMesh.updateSecondRowVisibility(this.secondRow.isVisible)
     }
     onSecondRowVisibilityChange(event: MatSlideToggleChange) {
-        if(this.secondRow.isVisible === event.checked) {
+        if (this.secondRow.isVisible !== event.checked) {
             this.secondRow.isVisible = event.checked
             this.previewMesh.updateSecondRowVisibility(this.secondRow.isVisible)
         }
