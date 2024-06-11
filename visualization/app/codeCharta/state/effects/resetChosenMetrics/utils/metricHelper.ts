@@ -5,6 +5,7 @@ const complexityMetrics = [
     "complexity",
     "mcc",
     "cognitive_complexity",
+    "sonar_complexity",
     "sonar_cognitive_complexity",
     "max_nesting_level",
     "indentation_level"
