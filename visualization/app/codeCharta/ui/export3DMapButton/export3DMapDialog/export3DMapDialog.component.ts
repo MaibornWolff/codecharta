@@ -83,6 +83,15 @@ export class Export3DMapDialogComponent {
     private readonly colorMetric: string
     private nodeMetricData: NodeMetricData[]
 
+    private readonly layerHeight = 0.2
+    private readonly frontTextSize = 8
+    private readonly secondRowTextSize = 6
+    private readonly frontPrintDepth = 0.6
+    private readonly mapSideOffset = 10
+    private readonly baseplateHeight = 1 //should be a multiple of layerHeight
+    private readonly logoSize = 10
+    private readonly backTextSize = 6
+
     constructor(
         private state: State<CcState>,
         private threeSceneService: ThreeSceneService
@@ -90,7 +99,10 @@ export class Export3DMapDialogComponent {
         //console.log(this.threeSceneService)
         this.maxWidth = calculateMaxPossibleWidthForPreview3DPrintMesh(
             new Vector3(this.selectedPrinter.x, this.selectedPrinter.y, this.selectedPrinter.z),
-            this.threeSceneService.getMapMesh().getThreeMesh()
+            this.threeSceneService.getMapMesh().getThreeMesh(),
+            this.frontTextSize,
+            this.baseplateHeight,
+            this.mapSideOffset
         )
         this.currentSize = new Vector3()
         this.currentSize.x = this.maxWidth
@@ -224,7 +236,7 @@ export class Export3DMapDialogComponent {
         this.currentSize = this.previewMesh.getSize()
         printPreviewScene.add(this.previewMesh.getThreeMesh())
 
-        //camera.position.set(0, 0, -this.wantedWidth * 1.5) //To directly see the backside of the map: uncomment this line and comment the next line
+        //camera.position.set(0, 0, -this.width * 1.5) //To directly see the backside of the map: uncomment this line and comment the next line
         this.updateCameraPosition(camera)
     }
 
@@ -260,7 +272,10 @@ export class Export3DMapDialogComponent {
     private makeMapMaxSize() {
         this.wantedWidth = calculateMaxPossibleWidthForPreview3DPrintMesh(
             new Vector3(this.selectedPrinter.x, this.selectedPrinter.y, this.selectedPrinter.z),
-            this.threeSceneService.getMapMesh().getThreeMesh()
+            this.threeSceneService.getMapMesh().getThreeMesh(),
+            this.frontTextSize,
+            this.baseplateHeight,
+            this.mapSideOffset
         )
         this.previewMesh.updateSize(this.wantedWidth).then((qrCodeVisible: boolean) => {
             this.qrCode.isVisible = qrCodeVisible
@@ -286,7 +301,7 @@ export class Export3DMapDialogComponent {
 
         return {
             originalMapMesh: this.threeSceneService.getMapMesh().getThreeMesh(),
-            wantedWidth: this.wantedWidth,
+            width: this.wantedWidth,
             areaMetricTitle,
             areaMetricData: this.nodeMetricData.find(metric => metric.name === this.areaMetric),
             heightMetricTitle,
@@ -296,9 +311,18 @@ export class Export3DMapDialogComponent {
             colorRange: this.state.getValue().dynamicSettings.colorRange,
             frontText: this.frontText,
             secondRowText: this.secondRow.currentText,
+            secondRowVisible: this.secondRow.isVisible,
             qrCodeText: this.qrCode.currentText,
             defaultMaterial: this.threeSceneService.getMapMesh().getThreeMesh().material[0].clone() as ShaderMaterial,
-            numberOfColors: this.currentNumberOfColors
+            numberOfColors: this.currentNumberOfColors,
+            layerHeight: this.layerHeight,
+            frontTextSize: this.frontTextSize,
+            secondRowTextSize: this.secondRowTextSize,
+            frontPrintDepth: this.frontPrintDepth,
+            mapSideOffset: this.mapSideOffset,
+            baseplateHeight: this.baseplateHeight,
+            logoSize: this.logoSize,
+            backTextSize: this.backTextSize
         }
     }
 

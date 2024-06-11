@@ -1,15 +1,18 @@
 import { Mesh, MeshBasicMaterial, ShaderMaterial } from "three"
 import { ManualVisibilityMesh } from "./manualVisibilityMesh"
-import { CreateGeometryStrategyParams } from "./CreateGeometryStrategies/createGeometryStrategy"
+import { CreateGeometryStrategy } from "./CreateGeometryStrategies/createGeometryStrategy"
+import { SizeChangeStrategy } from "./SizeChangeStrategies/sizeChangeStrategy"
+import { GeometryOptions } from "./preview3DPrintMesh"
 
 export abstract class GeneralMesh extends Mesh {
-    private boundingBoxCalculated = false
+    boundingBoxCalculated = false
 
-    onSizeChange(createGeometryStrategyParams: CreateGeometryStrategyParams): Promise<void> {
-        this.boundingBoxCalculated = false
-        return this.onSizeChangeStrategy(createGeometryStrategyParams)
+    constructor(public createGeometryStrategy: CreateGeometryStrategy, public sizeChangeStrategy: SizeChangeStrategy) {
+        super()
     }
-    abstract onSizeChangeStrategy(createGeometryStrategyParams: CreateGeometryStrategyParams) : Promise<void>;
+
+    abstract init(geometryOptions: GeometryOptions): void
+    abstract changeSize(geometryOptions: GeometryOptions, oldWidth: number): Promise<void>;
 
     getWidth(): number {
         this.updateBoundingBox()
@@ -30,16 +33,16 @@ export abstract class GeneralMesh extends Mesh {
         }
     }
 
-    updateColor(mesh: Mesh, numberOfColors: number) {
-        if (mesh instanceof ManualVisibilityMesh) {
-            mesh.updateVisibilityBecauseOfColor(numberOfColors)
+    changeColor(numberOfColors: number) {
+        if (this instanceof ManualVisibilityMesh) {
+            this.updateVisibilityBecauseOfColor(numberOfColors)
         }
 
-        if (mesh.material instanceof MeshBasicMaterial) {
-            const colorArray = this.getColorArray(mesh.name, numberOfColors)
-            mesh.material.color.setRGB(colorArray[0], colorArray[1], colorArray[2])
-        } else if (mesh.material instanceof ShaderMaterial) {
-            mesh.material.defaultAttributeValues.color = this.getColorArray(mesh.name, numberOfColors)
+        if (this.material instanceof MeshBasicMaterial) {
+            const colorArray = this.getColorArray(this.name, numberOfColors)
+            this.material.color.setRGB(colorArray[0], colorArray[1], colorArray[2])
+        } else if (this.material instanceof ShaderMaterial) {
+            this.material.defaultAttributeValues.color = this.getColorArray(this.name, numberOfColors)
         }
     }
 

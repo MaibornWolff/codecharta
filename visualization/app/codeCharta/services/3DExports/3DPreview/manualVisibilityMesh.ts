@@ -1,6 +1,7 @@
-import { BufferGeometry, Mesh, MeshBasicMaterial } from "three"
+import { BufferGeometry, MeshBasicMaterial } from "three"
+import { GeometryOptions } from "./preview3DPrintMesh"
 import { GeneralMesh } from "./generalMesh"
-import { CreateGeometryStrategyParams } from "./CreateGeometryStrategies/createGeometryStrategy"
+import { SizeChangeScaleStrategy } from "./SizeChangeStrategies/sizeChangeScaleStrategy"
 
 export class ManualVisibilityMesh extends GeneralMesh {
     minScale: number
@@ -9,10 +10,14 @@ export class ManualVisibilityMesh extends GeneralMesh {
     minNumberOfColors: number
 
     constructor(geometry?: BufferGeometry, material?: MeshBasicMaterial, minScale?: number, manualVisibility = true, minNumberOfColors = 2) {
-        super(geometry, material)
+        const createGeometryStrategy = undefined
+        const sizeChangeStrategy = new SizeChangeScaleStrategy()
+        super(createGeometryStrategy, sizeChangeStrategy)
         this.minScale = minScale
         this.manualVisibility = manualVisibility
         this.minNumberOfColors = minNumberOfColors
+        this.geometry = geometry
+        this.material = material
     }
 
     updateVisibilityBecauseOfColor(numberOfColors: number): void {
@@ -26,7 +31,10 @@ export class ManualVisibilityMesh extends GeneralMesh {
             : this.visibleBecauseOfColor && this.manualVisibility
     }
 
-    onSizeChangeStrategy(createGeometryStrategyParams: CreateGeometryStrategyParams): Promise<void> {
-        return Promise.resolve()
+    changeSize(geometryOptions: GeometryOptions, oldWidth: number): Promise<void> {
+        return Promise.resolve(undefined)
+    }
+
+    init(geometryOptions: GeometryOptions): void {
     }
 }

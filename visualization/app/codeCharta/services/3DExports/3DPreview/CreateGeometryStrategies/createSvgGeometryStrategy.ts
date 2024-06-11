@@ -1,13 +1,20 @@
 import { BufferGeometry, ExtrudeGeometry } from "three"
 import { SVGLoader } from "three/examples/jsm/loaders/SVGLoader"
 import { BufferGeometryUtils } from "three/examples/jsm/utils/BufferGeometryUtils"
-import { CreateGeometryStrategy, CreateGeometryStrategyParams } from "./createGeometryStrategy"
+import { CreateGeometryStrategy, CreateGeometryStrategyParameters } from "./createGeometryStrategy"
+import { GeometryOptions } from "../preview3DPrintMesh"
 
-export interface CreateSvgGeometryStrategyParams extends CreateGeometryStrategyParams {
+export interface CreateSvgGeometryStrategyParameters extends CreateGeometryStrategyParameters {
     filePath: string;
 }
-export class CreateSvgGeometryStrategy implements CreateGeometryStrategy {
-    async create({ filePath } : CreateSvgGeometryStrategyParams): Promise<BufferGeometry> {
+export class CreateSvgGeometryStrategy extends CreateGeometryStrategy {
+
+    constructor(public createSvgGeometryStrategyParameters: CreateSvgGeometryStrategyParameters) {
+        super(createSvgGeometryStrategyParameters)
+    }
+
+    async create(geometryOptions: GeometryOptions): Promise<BufferGeometry> {
+        const { filePath } = this.createSvgGeometryStrategyParameters
         const loader = new SVGLoader()
         return new Promise((resolve, reject) => {
             loader.load(
