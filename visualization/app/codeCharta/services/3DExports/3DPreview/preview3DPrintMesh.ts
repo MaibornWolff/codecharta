@@ -24,6 +24,7 @@ import { BackBelowLogoTextMesh } from "./MeshModels/backBelowLogoTextMesh"
 import { QRCodeMesh } from "./MeshModels/QRCodeMesh"
 import { CodeChartaLogoMesh } from "./MeshModels/codeChartaLogoMesh"
 import { CodeChartaTextMesh } from "./MeshModels/codeChartaTextMesh"
+import { SecondRowTextMesh } from "./MeshModels/secondRowTextMesh"
 
 export interface GeometryOptions {
     originalMapMesh: Mesh
@@ -62,7 +63,7 @@ export class Preview3DPrintMesh {
     private baseplateMesh: BaseplateMesh
     private frontTextMesh: Mesh
     private frontMWLogoMesh: Mesh
-    private secondRowMesh: ManualVisibilityMesh
+    private secondRowMesh: SecondRowTextMesh
     private customLogoMesh: Mesh
     //Back
     private backMWLogoMesh: BackMWLogoMesh
@@ -107,8 +108,8 @@ export class Preview3DPrintMesh {
         this.initFrontText(this.geometryOptions.frontText, this.geometryOptions.width, this.geometryOptions.numberOfColors)
         this.printMesh.attach(this.frontTextMesh)
 
-        this.initSecondRowText(this.geometryOptions.secondRowText, this.geometryOptions.width, this.geometryOptions.numberOfColors)
-        this.printMesh.attach(this.secondRowMesh)
+        this.secondRowMesh = await new SecondRowTextMesh(this.font, this.geometryOptions).init(this.geometryOptions)
+        this.printMesh.add(this.secondRowMesh)
 
         await this.initFrontMWLogoMesh(this.geometryOptions.width, this.geometryOptions.numberOfColors)
         this.printMesh.add(this.frontMWLogoMesh)
@@ -138,6 +139,7 @@ export class Preview3DPrintMesh {
         let qrCodeVisible = this.qrCodeMesh.getManualVisibility()
 
         await this.baseplateMesh.changeSize(this.geometryOptions, currentWidth)
+        await this.secondRowMesh.changeSize(this.geometryOptions, currentWidth)
         await this.backMWLogoMesh.changeSize(this.geometryOptions, currentWidth)
         await this.itsTextMesh.changeSize(this.geometryOptions, currentWidth)
         await this.codeChartaLogoMesh.changeSize(this.geometryOptions, currentWidth)
@@ -156,11 +158,6 @@ export class Preview3DPrintMesh {
                     }
 
                     case "Front Text": {
-                        const text = child.geometry
-                        text.translate(0, -(wantedWidth - currentWidth) / 2, 0)
-                        break
-                    }
-                    case "Second Row Text": {
                         const text = child.geometry
                         text.translate(0, -(wantedWidth - currentWidth) / 2, 0)
                         break
@@ -247,13 +244,22 @@ export class Preview3DPrintMesh {
         if (this.secondRowMesh.visible === isSecondRowVisible) {
             return
         }
-
         this.secondRowMesh.setManualVisibility(isSecondRowVisible)
         this.geometryOptions.secondRowVisible = isSecondRowVisible
         this.baseplateMesh.changeSize(this.geometryOptions, this.geometryOptions.width)
 
         this.updateFrontLogoSize(this.frontMWLogoMesh)
         this.updateFrontLogoSize(this.customLogoMesh)
+    }
+
+    updateSecondRowText(secondRowText: string) {
+        this.secondRowMesh.geometry.dispose()
+        this.secondRowMesh.geometry = this.createFrontTextGeometry(
+            secondRowText,
+            this.currentSize.x,
+            this.geometryOptions.secondRowTextSize,
+            this.geometryOptions.frontTextSize + this.geometryOptions.secondRowTextSize / 2
+        )
     }
 
     private updateFrontLogoSize(logoMesh: Mesh) {
@@ -267,16 +273,6 @@ export class Preview3DPrintMesh {
                 this.secondRowMesh.visible ? -this.geometryOptions.secondRowTextSize : this.geometryOptions.secondRowTextSize
             )
         }
-    }
-
-    updateSecondRowText(secondRowText: string) {
-        this.secondRowMesh.geometry.dispose()
-        this.secondRowMesh.geometry = this.createFrontTextGeometry(
-            secondRowText,
-            this.currentSize.x,
-            this.geometryOptions.secondRowTextSize,
-            this.geometryOptions.frontTextSize + this.geometryOptions.secondRowTextSize / 2
-        )
     }
 
     private async loadFont() {
@@ -507,21 +503,6 @@ export class Preview3DPrintMesh {
             this.geometryOptions.frontPrintDepth / 2
         )
         return textGeometry
-    }
-
-    private initSecondRowText(secondRowText: string, wantedWidth: number, numberOfColors: number) {
-        const textGeometry = this.createFrontTextGeometry(
-            secondRowText,
-            wantedWidth,
-            this.geometryOptions.secondRowTextSize,
-            this.geometryOptions.frontTextSize + this.geometryOptions.secondRowTextSize / 2
-        )
-
-        const material = new MeshBasicMaterial()
-        const textMesh = new ManualVisibilityMesh(false, 1, 1, textGeometry, material)
-        textMesh.name = "Second Row Text"
-        this.updateColor(textMesh, numberOfColors)
-        this.secondRowMesh = textMesh
     }
 
     async updateQrCodeText(qrCodeText: string): Promise<void> {

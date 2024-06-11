@@ -40,10 +40,6 @@ export abstract class GeneralMesh extends Mesh {
             this.setCurrentNumberOfColors(numberOfColors)
         }
 
-        if(this.name === "QRCode") {
-            console.log("QRCode")
-        }
-
         if (this.material instanceof MeshBasicMaterial) {
             const colorArray = this.getColorArray(this.name, numberOfColors)
             this.material.color.setRGB(colorArray[0], colorArray[1], colorArray[2])
