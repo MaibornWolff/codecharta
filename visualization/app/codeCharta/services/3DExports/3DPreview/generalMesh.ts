@@ -7,12 +7,15 @@ import { GeometryOptions } from "./preview3DPrintMesh"
 export abstract class GeneralMesh extends Mesh {
     boundingBoxCalculated = false
 
-    constructor(public createGeometryStrategy: CreateGeometryStrategy, public sizeChangeStrategy: SizeChangeStrategy) {
+    constructor(
+        public createGeometryStrategy: CreateGeometryStrategy,
+        public sizeChangeStrategy: SizeChangeStrategy
+    ) {
         super()
     }
 
     abstract init(geometryOptions: GeometryOptions): void
-    abstract changeSize(geometryOptions: GeometryOptions, oldWidth: number): Promise<void>;
+    abstract changeSize(geometryOptions: GeometryOptions, oldWidth: number): Promise<void>
 
     getWidth(): number {
         this.updateBoundingBox()

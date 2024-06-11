@@ -5,10 +5,9 @@ import { CreateGeometryStrategy, CreateGeometryStrategyParameters } from "./crea
 import { GeometryOptions } from "../preview3DPrintMesh"
 
 export interface CreateSvgGeometryStrategyParameters extends CreateGeometryStrategyParameters {
-    filePath: string;
+    filePath: string
 }
 export class CreateSvgGeometryStrategy extends CreateGeometryStrategy {
-
     constructor(public createSvgGeometryStrategyParameters: CreateSvgGeometryStrategyParameters) {
         super(createSvgGeometryStrategyParameters)
     }

@@ -279,7 +279,7 @@ export class Export3DMapDialogComponent {
         )
         this.previewMesh.updateSize(this.wantedWidth).then((qrCodeVisible: boolean) => {
             this.qrCode.isVisible = qrCodeVisible
-        });
+        })
         this.currentSize = this.previewMesh.getSize()
         this.maxWidth = this.currentSize.x
     }

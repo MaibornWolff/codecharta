@@ -122,12 +122,11 @@ export class Preview3DPrintMesh {
         this.printMesh.add(this.metricsMesh)
     }
 
-    private async createBaseplateMesh(){
+    private async createBaseplateMesh() {
         this.baseplateMesh = new BaseplateMesh()
-        this.baseplateMesh.init(this.geometryOptions);
+        this.baseplateMesh.init(this.geometryOptions)
         this.printMesh.add(this.baseplateMesh)
     }
-
 
     async updateSize(wantedWidth: number): Promise<boolean> {
         this.geometryOptions.width = wantedWidth
@@ -141,7 +140,8 @@ export class Preview3DPrintMesh {
                 switch (child.name) {
                     case "Map": {
                         const map = child.geometry
-                        const scale = (wantedWidth - 2 * this.geometryOptions.mapSideOffset) / (currentWidth - 2 * this.geometryOptions.mapSideOffset)
+                        const scale =
+                            (wantedWidth - 2 * this.geometryOptions.mapSideOffset) / (currentWidth - 2 * this.geometryOptions.mapSideOffset)
                         map.scale(scale, scale, scale)
                         this.snapHeightsToLayerHeight(map)
                         break
@@ -284,10 +284,14 @@ export class Preview3DPrintMesh {
 
     private updateFrontLogoSize(logoMesh: Mesh) {
         if (logoMesh) {
-            const scale = this.secondRowMesh.visible ? (this.geometryOptions.frontTextSize + this.geometryOptions.secondRowTextSize) / this.geometryOptions.frontTextSize : 1
+            const scale = this.secondRowMesh.visible
+                ? (this.geometryOptions.frontTextSize + this.geometryOptions.secondRowTextSize) / this.geometryOptions.frontTextSize
+                : 1
             logoMesh.scale.x = scale
             logoMesh.scale.y = scale
-            logoMesh.translateY(this.secondRowMesh.visible ? -this.geometryOptions.secondRowTextSize : this.geometryOptions.secondRowTextSize)
+            logoMesh.translateY(
+                this.secondRowMesh.visible ? -this.geometryOptions.secondRowTextSize : this.geometryOptions.secondRowTextSize
+            )
         }
     }
 
@@ -523,7 +527,11 @@ export class Preview3DPrintMesh {
         //calculate the bounding box of the text
         textGeometry.computeBoundingBox()
         const textDepth = textGeometry.boundingBox.max.y - textGeometry.boundingBox.min.y
-        textGeometry.translate(0, -textDepth / 2 - (wantedWidth - this.geometryOptions.mapSideOffset) / 2 - yOffset, this.geometryOptions.frontPrintDepth / 2)
+        textGeometry.translate(
+            0,
+            -textDepth / 2 - (wantedWidth - this.geometryOptions.mapSideOffset) / 2 - yOffset,
+            this.geometryOptions.frontPrintDepth / 2
+        )
         return textGeometry
     }
 
@@ -895,7 +903,13 @@ export class Preview3DPrintMesh {
     }
 }
 
-export function calculateMaxPossibleWidthForPreview3DPrintMesh(maxSize: Vector3, mapMesh: Mesh, frontTextSize: number, baseplateHeight: number, mapSideOffset: number): number {
+export function calculateMaxPossibleWidthForPreview3DPrintMesh(
+    maxSize: Vector3,
+    mapMesh: Mesh,
+    frontTextSize: number,
+    baseplateHeight: number,
+    mapSideOffset: number
+): number {
     const printerWidth = maxSize.x
     const printerDepth = maxSize.y
     const printerHeight = maxSize.z

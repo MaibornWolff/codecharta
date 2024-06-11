@@ -9,7 +9,13 @@ export class ManualVisibilityMesh extends GeneralMesh {
     manualVisibility = true
     minNumberOfColors: number
 
-    constructor(geometry?: BufferGeometry, material?: MeshBasicMaterial, minScale?: number, manualVisibility = true, minNumberOfColors = 2) {
+    constructor(
+        geometry?: BufferGeometry,
+        material?: MeshBasicMaterial,
+        minScale?: number,
+        manualVisibility = true,
+        minNumberOfColors = 2
+    ) {
         const createGeometryStrategy = undefined
         const sizeChangeStrategy = new SizeChangeScaleStrategy()
         super(createGeometryStrategy, sizeChangeStrategy)
@@ -35,6 +41,5 @@ export class ManualVisibilityMesh extends GeneralMesh {
         return Promise.resolve(undefined)
     }
 
-    init(geometryOptions: GeometryOptions): void {
-    }
+    init(geometryOptions: GeometryOptions): void {}
 }

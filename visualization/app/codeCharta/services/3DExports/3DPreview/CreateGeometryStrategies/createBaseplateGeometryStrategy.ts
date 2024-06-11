@@ -3,13 +3,12 @@ import { BufferGeometry, ExtrudeGeometry, Shape } from "three"
 import { GeometryOptions } from "../preview3DPrintMesh"
 
 export class CreateBaseplateGeometryStrategy extends CreateGeometryStrategy {
-
     constructor(createGeometryStrategyParameters: CreateGeometryStrategyParameters) {
         super(createGeometryStrategyParameters)
     }
 
     async create(geometryOptions: GeometryOptions): Promise<BufferGeometry> {
-        const {width, secondRowVisible, mapSideOffset, baseplateHeight, frontTextSize, secondRowTextSize} = geometryOptions
+        const { width, secondRowVisible, mapSideOffset, baseplateHeight, frontTextSize, secondRowTextSize } = geometryOptions
         let edgeRadius = 5 // Adjust this value to change the roundness of the corners
         const maxRoundRadius = Math.sqrt(2 * Math.pow(mapSideOffset, 2)) / (Math.sqrt(2) - 1) - 1
         if (maxRoundRadius < edgeRadius) {
@@ -30,6 +29,6 @@ export class CreateBaseplateGeometryStrategy extends CreateGeometryStrategy {
         const geometry = new ExtrudeGeometry(shape, { depth: baseplateHeight, bevelEnabled: false })
         geometry.translate(-width / 2, -width / 2 - frontTextSize - additionalSecondRowDepth, -baseplateHeight)
 
-        return geometry;
+        return geometry
     }
 }

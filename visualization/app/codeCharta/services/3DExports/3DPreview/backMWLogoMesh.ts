@@ -4,13 +4,19 @@ import { CreateSvgGeometryStrategy } from "./CreateGeometryStrategies/createSvgG
 import { GeometryOptions } from "./preview3DPrintMesh"
 
 export class BackMWLogoMesh extends ManualVisibilityMesh {
-    constructor(geometry?: BufferGeometry, material?: MeshBasicMaterial, minScale?: number, manualVisibility = true, minNumberOfColors = 2) {
+    constructor(
+        geometry?: BufferGeometry,
+        material?: MeshBasicMaterial,
+        minScale?: number,
+        manualVisibility = true,
+        minNumberOfColors = 2
+    ) {
         super(geometry, material, minScale, manualVisibility, minNumberOfColors)
         this.name = "Back MW Logo"
     }
 
     async init(geometryOptions: GeometryOptions): Promise<BackMWLogoMesh> {
-        const createSvgStrategy = new CreateSvgGeometryStrategy({...geometryOptions, filePath:"codeCharta/assets/mw_logo_text.svg"})
+        const createSvgStrategy = new CreateSvgGeometryStrategy({ ...geometryOptions, filePath: "codeCharta/assets/mw_logo_text.svg" })
         const mwLogoGeometry = await createSvgStrategy.create(geometryOptions)
         mwLogoGeometry.center()
         mwLogoGeometry.rotateZ(Math.PI)
@@ -27,6 +33,4 @@ export class BackMWLogoMesh extends ManualVisibilityMesh {
 
         return this
     }
-
-
 }

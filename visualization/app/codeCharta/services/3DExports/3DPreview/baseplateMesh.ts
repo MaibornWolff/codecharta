@@ -1,20 +1,17 @@
 import { GeneralMesh } from "./generalMesh"
 import { ShaderMaterial } from "three"
 import { SizeChangeCreateStrategy, SizeChangeCreateStrategyParameters } from "./SizeChangeStrategies/sizeChangeCreateStrategy"
-import {
-    CreateBaseplateGeometryStrategy,
-} from "./CreateGeometryStrategies/createBaseplateGeometryStrategy"
+import { CreateBaseplateGeometryStrategy } from "./CreateGeometryStrategies/createBaseplateGeometryStrategy"
 import { GeometryOptions } from "./preview3DPrintMesh"
 
 export class BaseplateMesh extends GeneralMesh {
-
     constructor() {
         super(new CreateBaseplateGeometryStrategy({}), new SizeChangeCreateStrategy())
         this.name = "Baseplate"
     }
 
     init(geometryOptions: GeometryOptions) {
-        this.createGeometryStrategy.create(geometryOptions).then((geometry) => {
+        this.createGeometryStrategy.create(geometryOptions).then(geometry => {
             this.geometry = geometry
         })
 
@@ -32,13 +29,14 @@ export class BaseplateMesh extends GeneralMesh {
     }
 
     async changeSize(geometryOptions: GeometryOptions, oldWidth: number): Promise<void> {
-        return this.sizeChangeStrategy.execute(geometryOptions,{
+        return this.sizeChangeStrategy.execute(geometryOptions, {
             createGeometryStrategy: this.createGeometryStrategy,
-            mesh: this,
+            mesh: this
         } as SizeChangeCreateStrategyParameters)
     }
 
     changeColor(numberOfColors: number) {
-        (this.material as ShaderMaterial).defaultAttributeValues.color = numberOfColors === 1 ? [1, 1, 1] : [0.5, 0.5, 0.5]
+        const shaderMaterial = this.material as ShaderMaterial
+        shaderMaterial.defaultAttributeValues.color = numberOfColors === 1 ? [1, 1, 1] : [0.5, 0.5, 0.5]
     }
 }

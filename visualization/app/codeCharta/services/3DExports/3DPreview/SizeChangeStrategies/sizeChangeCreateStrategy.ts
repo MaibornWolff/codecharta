@@ -2,7 +2,7 @@ import { CreateGeometryStrategy } from "../CreateGeometryStrategies/createGeomet
 import { GeometryOptions } from "../preview3DPrintMesh"
 import { SizeChangeStrategy, SizeChangeStrategyParameters } from "./sizeChangeStrategy"
 
-export interface SizeChangeCreateStrategyParameters extends SizeChangeStrategyParameters{
+export interface SizeChangeCreateStrategyParameters extends SizeChangeStrategyParameters {
     createGeometryStrategy: CreateGeometryStrategy
 }
 export class SizeChangeCreateStrategy implements SizeChangeStrategy {
@@ -11,6 +11,6 @@ export class SizeChangeCreateStrategy implements SizeChangeStrategy {
         createGeometryStrategy.create(geometryOptions).then(geometry => {
             mesh.geometry = geometry
         })
-        return;
+        return
     }
 }
