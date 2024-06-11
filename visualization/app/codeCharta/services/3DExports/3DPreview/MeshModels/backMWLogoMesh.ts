@@ -1,7 +1,7 @@
 import { ManualVisibilityMesh } from "./manualVisibilityMesh"
 import { BufferGeometry, MeshBasicMaterial } from "three"
-import { CreateSvgGeometryStrategy } from "./CreateGeometryStrategies/createSvgGeometryStrategy"
-import { GeometryOptions } from "./preview3DPrintMesh"
+import { CreateSvgGeometryStrategy } from "../CreateGeometryStrategies/createSvgGeometryStrategy"
+import { GeometryOptions } from "../preview3DPrintMesh"
 
 export class BackMWLogoMesh extends ManualVisibilityMesh {
     constructor(

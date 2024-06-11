@@ -2,9 +2,9 @@
 /* eslint-disable unused-imports/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { BufferGeometry, MeshBasicMaterial } from "three"
-import { GeometryOptions } from "./preview3DPrintMesh"
+import { GeometryOptions } from "../preview3DPrintMesh"
 import { GeneralMesh } from "./generalMesh"
-import { SizeChangeScaleStrategy } from "./SizeChangeStrategies/sizeChangeScaleStrategy"
+import { SizeChangeScaleStrategy } from "../SizeChangeStrategies/sizeChangeScaleStrategy"
 
 export class ManualVisibilityMesh extends GeneralMesh {
     minScale: number

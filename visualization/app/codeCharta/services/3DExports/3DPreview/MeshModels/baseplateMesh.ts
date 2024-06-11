@@ -2,9 +2,9 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { GeneralMesh } from "./generalMesh"
 import { ShaderMaterial } from "three"
-import { SizeChangeCreateStrategy, SizeChangeCreateStrategyParameters } from "./SizeChangeStrategies/sizeChangeCreateStrategy"
-import { CreateBaseplateGeometryStrategy } from "./CreateGeometryStrategies/createBaseplateGeometryStrategy"
-import { GeometryOptions } from "./preview3DPrintMesh"
+import { SizeChangeCreateStrategy, SizeChangeCreateStrategyParameters } from "../SizeChangeStrategies/sizeChangeCreateStrategy"
+import { CreateBaseplateGeometryStrategy } from "../CreateGeometryStrategies/createBaseplateGeometryStrategy"
+import { GeometryOptions } from "../preview3DPrintMesh"
 
 export class BaseplateMesh extends GeneralMesh {
     constructor() {

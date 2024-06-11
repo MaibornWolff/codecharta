@@ -18,9 +18,9 @@ import { SVGLoader } from "three/examples/jsm/loaders/SVGLoader"
 import { BufferGeometryUtils } from "three/examples/jsm/utils/BufferGeometryUtils"
 import { ColorRange, NodeMetricData } from "../../../codeCharta.model"
 import * as QRCode from "qrcode"
-import { ManualVisibilityMesh } from "./manualVisibilityMesh"
-import { BackMWLogoMesh } from "./backMWLogoMesh"
-import { BaseplateMesh } from "./baseplateMesh"
+import { ManualVisibilityMesh } from "./MeshModels/manualVisibilityMesh"
+import { BackMWLogoMesh } from "./MeshModels/backMWLogoMesh"
+import { BaseplateMesh } from "./MeshModels/baseplateMesh"
 
 export interface GeometryOptions {
     originalMapMesh: Mesh

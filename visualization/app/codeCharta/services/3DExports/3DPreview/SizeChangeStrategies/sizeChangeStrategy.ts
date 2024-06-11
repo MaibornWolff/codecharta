@@ -1,5 +1,5 @@
 import { GeometryOptions } from "../preview3DPrintMesh"
-import { GeneralMesh } from "../generalMesh"
+import { GeneralMesh } from "../MeshModels/generalMesh"
 
 export interface SizeChangeStrategyParameters {
     mesh: GeneralMesh

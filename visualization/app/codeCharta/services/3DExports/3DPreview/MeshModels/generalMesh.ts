@@ -1,8 +1,8 @@
 import { Mesh, MeshBasicMaterial, ShaderMaterial } from "three"
 import { ManualVisibilityMesh } from "./manualVisibilityMesh"
-import { CreateGeometryStrategy } from "./CreateGeometryStrategies/createGeometryStrategy"
-import { SizeChangeStrategy } from "./SizeChangeStrategies/sizeChangeStrategy"
-import { GeometryOptions } from "./preview3DPrintMesh"
+import { CreateGeometryStrategy } from "../CreateGeometryStrategies/createGeometryStrategy"
+import { SizeChangeStrategy } from "../SizeChangeStrategies/sizeChangeStrategy"
+import { GeometryOptions } from "../preview3DPrintMesh"
 
 export abstract class GeneralMesh extends Mesh {
     boundingBoxCalculated = false
