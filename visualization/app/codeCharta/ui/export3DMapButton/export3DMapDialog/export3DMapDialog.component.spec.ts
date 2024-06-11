@@ -38,7 +38,7 @@ describe("Export3DMapDialogComponent", () => {
         const threeSceneService = TestBed.inject(ThreeSceneService)
 
         const updateNumberOfColorsMock = jest.fn()
-        const updateSizeMock = jest.fn()
+        const updateSizeMock = jest.fn().mockReturnValue(new Promise(resolve => resolve(false)))
         const getSizeMock = jest.fn().mockReturnValue(new Vector3(10, 10, 10))
         Object.defineProperty(component, "previewMesh", {
             value: {
