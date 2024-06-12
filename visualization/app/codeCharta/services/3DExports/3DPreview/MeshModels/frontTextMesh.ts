@@ -1,6 +1,6 @@
 import { GeometryOptions } from "../preview3DPrintMesh"
 import { Font } from "three"
-import { CreateFrontTextGeometryStrategyOptions } from "../CreateGeometryStrategies/createFrontTextGeometryStrategy"
+import { CreateFrontTextGeometryStrategyOptions } from "../CreateGeometryStrategies/createTextGeometryStrategy"
 import { TextMesh } from "./textMesh"
 import { SizeChangeTranslateStrategy } from "../SizeChangeStrategies/sizeChangeTranslateStrategy"
 

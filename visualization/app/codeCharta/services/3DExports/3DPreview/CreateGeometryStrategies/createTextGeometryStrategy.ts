@@ -12,7 +12,7 @@ export interface CreateFrontTextGeometryStrategyOptions extends CreateGeometrySt
     alignIfMultipleLines?: "center" | "left"
 }
 
-export class CreateFrontTextGeometryStrategy implements CreateGeometryStrategy {
+export class CreateTextGeometryStrategy implements CreateGeometryStrategy {
     async create(
         geometryOptions: GeometryOptions,
         createFrontTextGeometryStrategyOptions: CreateFrontTextGeometryStrategyOptions

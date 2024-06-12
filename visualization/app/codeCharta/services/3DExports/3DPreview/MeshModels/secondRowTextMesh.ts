@@ -1,7 +1,7 @@
 import { GeometryOptions } from "../preview3DPrintMesh"
 import { Font } from "three"
 import { TextMesh } from "./textMesh"
-import { CreateFrontTextGeometryStrategyOptions } from "../CreateGeometryStrategies/createFrontTextGeometryStrategy"
+import { CreateFrontTextGeometryStrategyOptions } from "../CreateGeometryStrategies/createTextGeometryStrategy"
 import { SizeChangeTranslateStrategy } from "../SizeChangeStrategies/sizeChangeTranslateStrategy"
 
 export class SecondRowTextMesh extends TextMesh {

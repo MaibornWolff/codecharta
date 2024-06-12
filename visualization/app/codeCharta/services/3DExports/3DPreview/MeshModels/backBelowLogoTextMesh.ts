@@ -1,7 +1,7 @@
 import { GeometryOptions } from "../preview3DPrintMesh"
 import { Font } from "three"
 import { SizeChangeScaleStrategy } from "../SizeChangeStrategies/sizeChangeScaleStrategy"
-import { CreateFrontTextGeometryStrategyOptions } from "../CreateGeometryStrategies/createFrontTextGeometryStrategy"
+import { CreateFrontTextGeometryStrategyOptions } from "../CreateGeometryStrategies/createTextGeometryStrategy"
 import { TextMesh } from "./textMesh"
 
 export class BackBelowLogoTextMesh extends TextMesh {

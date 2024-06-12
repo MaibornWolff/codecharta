@@ -1,15 +1,12 @@
 import { ManualVisibilityMesh } from "./manualVisibilityMesh"
 import { GeometryOptions } from "../preview3DPrintMesh"
 import { MeshBasicMaterial } from "three"
-import {
-    CreateFrontTextGeometryStrategy,
-    CreateFrontTextGeometryStrategyOptions
-} from "../CreateGeometryStrategies/createFrontTextGeometryStrategy"
+import { CreateTextGeometryStrategy, CreateFrontTextGeometryStrategyOptions } from "../CreateGeometryStrategies/createTextGeometryStrategy"
 import { SizeChangeTranslateStrategy } from "../SizeChangeStrategies/sizeChangeTranslateStrategy"
 import { DefaultPrintColorChangeStrategy } from "../ColorChangeStrategies/defaultPrintColorChangeStrategy"
 
 export abstract class TextMesh extends ManualVisibilityMesh {
-    readonly createFrontTextGeometryStrategy: CreateFrontTextGeometryStrategy
+    readonly createFrontTextGeometryStrategy: CreateTextGeometryStrategy
 
     constructor(
         sizeChangeStrategy: SizeChangeTranslateStrategy,
@@ -19,7 +16,7 @@ export abstract class TextMesh extends ManualVisibilityMesh {
         minScale: number
     ) {
         super(sizeChangeStrategy, new DefaultPrintColorChangeStrategy(), manualVisibility, minNumberOfColors, minScale)
-        this.createFrontTextGeometryStrategy = new CreateFrontTextGeometryStrategy()
+        this.createFrontTextGeometryStrategy = new CreateTextGeometryStrategy()
     }
 
     async init(geometryOptions: GeometryOptions): Promise<TextMesh> {

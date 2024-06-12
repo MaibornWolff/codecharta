@@ -2,7 +2,7 @@ import { GeometryOptions } from "../preview3DPrintMesh"
 import { Font } from "three"
 import { SizeChangeScaleStrategy } from "../SizeChangeStrategies/sizeChangeScaleStrategy"
 import { TextMesh } from "./textMesh"
-import { CreateFrontTextGeometryStrategyOptions } from "../CreateGeometryStrategies/createFrontTextGeometryStrategy"
+import { CreateFrontTextGeometryStrategyOptions } from "../CreateGeometryStrategies/createTextGeometryStrategy"
 
 export class CodeChartaTextMesh extends TextMesh {
     constructor(font: Font, geometryOptions: GeometryOptions) {
