@@ -1,3 +1,5 @@
+/* eslint-disable unused-imports/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { GeneralMesh } from "./generalMesh"
 import { ShaderMaterial } from "three"
 import { SizeChangeCreateStrategy, SizeChangeCreateStrategyParameters } from "./SizeChangeStrategies/sizeChangeCreateStrategy"

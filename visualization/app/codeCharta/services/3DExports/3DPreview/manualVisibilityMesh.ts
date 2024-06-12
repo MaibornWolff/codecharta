@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-empty-function */
+/* eslint-disable unused-imports/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { BufferGeometry, MeshBasicMaterial } from "three"
 import { GeometryOptions } from "./preview3DPrintMesh"
 import { GeneralMesh } from "./generalMesh"
@@ -37,8 +40,8 @@ export class ManualVisibilityMesh extends GeneralMesh {
             : this.visibleBecauseOfColor && this.manualVisibility
     }
 
-    changeSize(geometryOptions: GeometryOptions, oldWidth: number): Promise<void> {
-        return Promise.resolve(undefined)
+    async changeSize(geometryOptions: GeometryOptions, oldWidth: number): Promise<void> {
+        return undefined
     }
 
     init(geometryOptions: GeometryOptions): void {}
