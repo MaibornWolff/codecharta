@@ -25,6 +25,7 @@ import { CodeChartaLogoMesh } from "./MeshModels/codeChartaLogoMesh"
 import { CodeChartaTextMesh } from "./MeshModels/codeChartaTextMesh"
 import { SecondRowTextMesh } from "./MeshModels/secondRowTextMesh"
 import { QRCodeMesh } from "./MeshModels/qrCodeMesh"
+import { MetricDescriptionsMesh } from "./MeshModels/metricDescriptionsMesh"
 
 export interface GeometryOptions {
     originalMapMesh: Mesh
@@ -129,7 +130,7 @@ export class Preview3DPrintMesh {
         this.codeChartaTextMesh = await new CodeChartaTextMesh(this.font).init(this.geometryOptions)
         this.printMesh.add(this.codeChartaTextMesh)
 
-        await this.initMetricsMesh(this.geometryOptions)
+        this.metricsMesh = await new MetricDescriptionsMesh(this.font).init(this.geometryOptions)
         this.printMesh.add(this.metricsMesh)
     }
 
@@ -144,6 +145,7 @@ export class Preview3DPrintMesh {
         await this.itsTextMesh.changeSize(this.geometryOptions, currentWidth)
         await this.codeChartaLogoMesh.changeSize(this.geometryOptions, currentWidth)
         await this.codeChartaTextMesh.changeSize(this.geometryOptions, currentWidth)
+        await this.metricsMesh.changeSize(this.geometryOptions, currentWidth)
 
         for (const child of this.printMesh.children) {
             if (child instanceof Mesh) {
@@ -173,17 +175,6 @@ export class Preview3DPrintMesh {
                     case "QRCode":
                         await this.qrCodeMesh.changeSize(this.geometryOptions, currentWidth)
                         qrCodeVisible = this.qrCodeMesh.visible
-                        break
-
-                    case "Metric Text":
-                        if (child instanceof ManualVisibilityMesh) {
-                            this.scaleBacktext(child, wantedWidth / currentWidth)
-                            if (child.visible) {
-                                this.xCenterMetricsMesh(child)
-                            }
-                        } else {
-                            console.error("Metric Text is not an instance of ManualVisibilityMesh")
-                        }
                         break
 
                     default:
@@ -512,144 +503,6 @@ export class Preview3DPrintMesh {
 
     updateQrCodeVisibility(qrCodeVisible: boolean) {
         this.qrCodeMesh.setManualVisibility(qrCodeVisible)
-    }
-
-    private async initMetricsMesh(geometryOptions: GeometryOptions) {
-        const { areaIcon, areaIconScale, areaText } = this.createAreaAttributes(
-            this.geometryOptions.areaMetricTitle,
-            this.geometryOptions.areaMetricData
-        )
-        const { heightIcon, heightIconScale, heightText } = this.createHeightAttributes(
-            this.geometryOptions.heightMetricTitle,
-            this.geometryOptions.heightMetricData
-        )
-        const { colorIcon, colorIconScale, colorTextNameAndTitle, colorTextValueRanges } = this.createColorAttributes(
-            this.geometryOptions.colorMetricTitle,
-            this.geometryOptions.colorMetricData,
-            this.geometryOptions.colorRange
-        )
-
-        const icons = [areaIcon, heightIcon, colorIcon].map(icon => `codeCharta/assets/${icon}`)
-        const iconScales = [areaIconScale, heightIconScale, colorIconScale]
-        const whiteTexts = [areaText, heightText, colorTextNameAndTitle]
-
-        const whiteBackGeometries = await this.createWhiteBackGeometries(icons, iconScales, whiteTexts)
-        const mergedWhiteBackGeometry = BufferGeometryUtils.mergeBufferGeometries(whiteBackGeometries)
-
-        const material = new MeshBasicMaterial()
-        const metricsMesh = new ManualVisibilityMesh(true, 2, 1, mergedWhiteBackGeometry, material)
-
-        const coloredBackTextGeometries = this.createColoredBackTextGeometries(colorTextValueRanges, this.geometryOptions.numberOfColors)
-        for (const colorTextGeometry of coloredBackTextGeometries) {
-            metricsMesh.add(colorTextGeometry)
-        }
-        metricsMesh.name = "Metric Text"
-        this.updateColor(metricsMesh, this.geometryOptions.numberOfColors)
-        const scaleFactor = (this.geometryOptions.width - this.geometryOptions.mapSideOffset * 2) / 200
-        this.scaleBacktext(metricsMesh, scaleFactor)
-        if (metricsMesh.visible) {
-            this.xCenterMetricsMesh(metricsMesh)
-        }
-        this.metricsMesh = metricsMesh
-    }
-
-    private xCenterMetricsMesh(metricsMesh: Mesh) {
-        //compute bounding box of the mesh and center it in the x direction
-        let boundingBox = new Box3()
-        metricsMesh.traverse(child => {
-            if (child instanceof Mesh) {
-                child.geometry.computeBoundingBox()
-                boundingBox = boundingBox.union(child.geometry.boundingBox)
-            }
-        })
-        metricsMesh.position.x = (Math.abs(boundingBox.max.x - boundingBox.min.x) * metricsMesh.scale.x) / 2
-    }
-
-    private createColoredBackTextGeometries(colorTextValueRanges: string[], numberOfColors: number) {
-        const colorTextGeometries = []
-        let xOffset = -10
-        for (let index = 0; index < colorTextValueRanges.length; index += 1) {
-            const textGeometry = new TextGeometry(`\n\n${colorTextValueRanges[index]}`, {
-                font: this.font,
-                size: this.geometryOptions.backTextSize,
-                height: this.geometryOptions.baseplateHeight / 2
-            })
-            textGeometry.rotateY(Math.PI)
-            textGeometry.translate(xOffset, -35 * 2 + this.geometryOptions.backTextSize - 20, -this.geometryOptions.baseplateHeight / 2)
-            const material = new MeshBasicMaterial()
-            const textMesh = new Mesh(textGeometry, material)
-            textMesh.name = `Metric Text Part ${index}`
-            this.updateColor(textMesh, numberOfColors)
-            colorTextGeometries.push(textMesh)
-
-            if (index !== colorTextValueRanges.length - 1) {
-                textGeometry.computeBoundingBox()
-                xOffset = textGeometry.boundingBox.min.x
-            }
-        }
-        return colorTextGeometries
-    }
-
-    private async createWhiteBackGeometries(icons: string[], iconScales: number[], whiteTexts: string[]) {
-        const backGeometries = []
-        for (const [index, icon] of icons.entries()) {
-            const iconGeometry = await this.createSvgGeometry(icon)
-            const iconScale = iconScales[index]
-
-            iconGeometry.center()
-            iconGeometry.rotateY(Math.PI)
-            iconGeometry.rotateX(Math.PI)
-            iconGeometry.scale(iconScale, iconScale, this.geometryOptions.baseplateHeight / 2)
-
-            iconGeometry.translate(0, -35 * index - 20, -((this.geometryOptions.baseplateHeight * 3) / 4))
-            backGeometries.push(iconGeometry)
-
-            const text = whiteTexts[index]
-            const textGeometry = new TextGeometry(text, {
-                font: this.font,
-                size: this.geometryOptions.backTextSize,
-                height: this.geometryOptions.baseplateHeight / 2
-            })
-            textGeometry.rotateY(Math.PI)
-
-            textGeometry.translate(-10, -35 * index + this.geometryOptions.backTextSize - 20, -this.geometryOptions.baseplateHeight / 2)
-
-            backGeometries.push(textGeometry)
-        }
-        return backGeometries
-    }
-
-    private createColorAttributes(colorMetricTitle: string, colorMetricData: NodeMetricData, colorRange: ColorRange) {
-        const colorIcon = "color_icon_for_3D_print.svg"
-        const colorIconScale = 10
-        const colorTextNameAndTitle = `${colorMetricData.name}\n` + `${colorMetricTitle}\n`
-        const colorTextValueRanges = [
-            `Value ranges:`,
-            ` ${colorMetricData.minValue} - ${colorRange.from - 1}`,
-            ` /`,
-            ` ${colorRange.from} - ${colorRange.to - 1}`,
-            ` /`,
-            ` ${colorRange.to} - ${colorMetricData.maxValue}`
-        ]
-        return { colorIcon, colorIconScale, colorTextNameAndTitle, colorTextValueRanges }
-    }
-
-    private createHeightAttributes(heightMetricTitle: string, heightMetricData: NodeMetricData) {
-        const heightIcon = "height_icon_for_3D_print.svg"
-        const heightIconScale = 12
-        const heightText =
-            `${heightMetricData.name}\n` +
-            `${heightMetricTitle}\n` +
-            `Value range: ${heightMetricData.minValue} - ${heightMetricData.maxValue}`
-        return { heightIcon, heightIconScale, heightText }
-    }
-
-    private createAreaAttributes(areaMetricTitle: string, areaMetricData: NodeMetricData) {
-        const areaIcon = "area_icon_for_3D_print.svg"
-        const areaIconScale = 10
-        const areaText =
-            `${areaMetricData.name}\n` + `${areaMetricTitle}\n` + `Value range:  ${areaMetricData.minValue} - ${areaMetricData.maxValue}`
-        return { areaIcon, areaIconScale, areaText }
     }
 
     private scaleBacktext(backTextMesh: ManualVisibilityMesh, scaleFactor: number) {
