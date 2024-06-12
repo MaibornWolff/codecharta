@@ -25,6 +25,7 @@ import { SecondRowTextMesh } from "./MeshModels/secondRowTextMesh"
 import { MetricDescriptionsMesh } from "./MeshModels/metricDescriptionsMesh"
 import { GeneralMesh } from "./MeshModels/generalMesh"
 import { QrCodeMesh } from "./MeshModels/qrCodeMesh"
+import { FronTextMesh } from "./MeshModels/fronTextMesh"
 
 export interface GeometryOptions {
     originalMapMesh: Mesh
@@ -61,7 +62,7 @@ export class Preview3DPrintMesh {
     //Front
     private mapMesh: Mesh
     private baseplateMesh: BaseplateMesh
-    private frontTextMesh: Mesh
+    private frontTextMesh: FronTextMesh
     private frontMWLogoMesh: Mesh
     private secondRowMesh: SecondRowTextMesh
     private customLogoMesh: Mesh
@@ -104,7 +105,7 @@ export class Preview3DPrintMesh {
         this.initMapMesh(this.geometryOptions)
         this.printMesh.add(this.mapMesh)
 
-        this.initFrontText(this.geometryOptions.frontText, this.geometryOptions.width, this.geometryOptions.numberOfColors)
+        this.frontTextMesh = await new FronTextMesh(this.font, this.geometryOptions).init(this.geometryOptions)
         this.printMesh.add(this.frontTextMesh)
 
         this.secondRowMesh = await new SecondRowTextMesh(this.font, this.geometryOptions).init(this.geometryOptions)
@@ -143,13 +144,13 @@ export class Preview3DPrintMesh {
         await this.codeChartaLogoMesh.changeSize(this.geometryOptions, oldWidth)
         await this.codeChartaTextMesh.changeSize(this.geometryOptions, oldWidth)
         await this.metricsMesh.changeSize(this.geometryOptions, oldWidth)
+        await this.frontTextMesh.changeSize(this.geometryOptions, oldWidth)
 
         const map = this.mapMesh.geometry
         const scale = (wantedWidth - 2 * this.geometryOptions.mapSideOffset) / (oldWidth - 2 * this.geometryOptions.mapSideOffset)
         map.scale(scale, scale, scale)
         this.snapHeightsToLayerHeight(map)
 
-        this.frontTextMesh.geometry.translate(0, -(wantedWidth - oldWidth) / 2, 0)
         this.updateFrontLogoPosition(this.frontMWLogoMesh, wantedWidth, true)
         if (this.customLogoMesh) {
             this.updateFrontLogoPosition(this.customLogoMesh, wantedWidth, false)
@@ -438,19 +439,6 @@ export class Preview3DPrintMesh {
         }
         console.warn("Unknown object:", partName, "Did you forget to add it to colorFunctions in the getColorArray method?")
         return [0, 1, 1]
-    }
-
-    private initFrontText(frontText: string, wantedWidth: number, numberOfColors: number) {
-        if (frontText === undefined) {
-            frontText = "CodeCharta"
-        }
-        const textGeometry = this.createFrontTextGeometry(frontText, wantedWidth, this.geometryOptions.frontTextSize)
-
-        const material = new MeshBasicMaterial()
-        const textMesh = new Mesh(textGeometry, material)
-        textMesh.name = "Front Text"
-        this.updateColor(textMesh, numberOfColors)
-        this.frontTextMesh = textMesh
     }
 
     private createFrontTextGeometry(text: string, wantedWidth: number, textSize: number, yOffset = 0) {

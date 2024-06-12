@@ -8,7 +8,7 @@ import {
 import { SizeChangeTranslateStrategy } from "../SizeChangeStrategies/sizeChangeTranslateStrategy"
 import { DefaultPrintColorChangeStrategy } from "../ColorChangeStrategies/defaultPrintColorChangeStrategy"
 
-export class SecondRowTextMesh extends ManualVisibilityMesh {
+export class FronTextMesh extends ManualVisibilityMesh {
     private readonly createFrontTextGeometryStrategy: CreateFrontTextGeometryStrategy
     private readonly createFrontTextGeometryOptions: CreateFrontTextGeometryStrategyOptions
 
@@ -16,19 +16,22 @@ export class SecondRowTextMesh extends ManualVisibilityMesh {
         public font: Font,
         geometryOptions: GeometryOptions
     ) {
-        super(new SizeChangeTranslateStrategy(), new DefaultPrintColorChangeStrategy(), false, 1, 0)
-        const yOffset = geometryOptions.frontTextSize + geometryOptions.secondRowTextSize / 2
+        super(new SizeChangeTranslateStrategy(), new DefaultPrintColorChangeStrategy(), true, 1, 0)
+        this.name = "Front Text"
         this.createFrontTextGeometryStrategy = new CreateFrontTextGeometryStrategy()
-        this.name = "Second Row Text"
+        let text = geometryOptions.frontText
+        if (!text) {
+            text = "CodeCharta"
+        }
         this.createFrontTextGeometryOptions = {
             font,
-            text: geometryOptions.secondRowText,
-            yOffset,
-            textSize: geometryOptions.secondRowTextSize
+            text,
+            yOffset: 0,
+            textSize: geometryOptions.frontTextSize
         }
     }
 
-    async init(geometryOptions: GeometryOptions): Promise<SecondRowTextMesh> {
+    async init(geometryOptions: GeometryOptions): Promise<FronTextMesh> {
         this.geometry = await this.createFrontTextGeometryStrategy.create(geometryOptions, this.createFrontTextGeometryOptions)
 
         this.material = new MeshBasicMaterial()

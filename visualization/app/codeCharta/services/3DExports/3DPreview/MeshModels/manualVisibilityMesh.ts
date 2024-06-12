@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 /* eslint-disable unused-imports/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { BufferGeometry, MeshBasicMaterial } from "three"
 import { GeometryOptions } from "../preview3DPrintMesh"
 import { GeneralMesh } from "./generalMesh"
 import { SizeChangeScaleStrategyOptions } from "../SizeChangeStrategies/sizeChangeScaleStrategy"
@@ -20,16 +19,12 @@ export abstract class ManualVisibilityMesh extends GeneralMesh {
         colorChangeStrategy: ColorChangeStrategy,
         manualVisibility = true,
         minNumberOfColors = 2,
-        minScale?: number,
-        geometry?: BufferGeometry,
-        material?: MeshBasicMaterial
+        minScale: number
     ) {
         super(sizeChangeStrategy, colorChangeStrategy)
         this.minScale = minScale
         this.manualVisibility = manualVisibility
         this.minNumberOfColors = minNumberOfColors
-        this.geometry = geometry
-        this.material = material
     }
 
     setManualVisibility(manualVisibility: boolean): void {
