@@ -1,12 +1,15 @@
 import { BufferGeometry, Font, TextGeometry } from "three"
 import { CreateGeometryStrategy, CreateGeometryStrategyOptions } from "./createGeometryStrategy"
 import { GeometryOptions } from "../preview3DPrintMesh"
+import { BufferGeometryUtils } from "three/examples/jsm/utils/BufferGeometryUtils"
 
 export interface CreateFrontTextGeometryStrategyOptions extends CreateGeometryStrategyOptions {
     font: Font
     text: string
-    yOffset: number
     textSize: number
+    side: "front" | "back"
+    yPosition: number
+    alignIfMultipleLines?: "center" | "left"
 }
 
 export class CreateFrontTextGeometryStrategy implements CreateGeometryStrategy {
@@ -14,30 +17,53 @@ export class CreateFrontTextGeometryStrategy implements CreateGeometryStrategy {
         geometryOptions: GeometryOptions,
         createFrontTextGeometryStrategyOptions: CreateFrontTextGeometryStrategyOptions
     ): Promise<BufferGeometry> {
-        const { font, text, yOffset, textSize } = createFrontTextGeometryStrategyOptions
+        const { font, side, text, yPosition, textSize, alignIfMultipleLines } = createFrontTextGeometryStrategyOptions
         if (!text) {
             return new Promise(resolve => {
                 resolve(new BufferGeometry())
             })
         }
-        const textGeometry = new TextGeometry(text, {
-            font,
-            size: textSize,
-            height: geometryOptions.frontPrintDepth
-        })
-        textGeometry.center()
+        const textGeometry =
+            alignIfMultipleLines === "center" && text.includes("\n")
+                ? this.createMultilineCenteredTextGeometry(text, font, textSize, geometryOptions.printHeight)
+                : new TextGeometry(text, {
+                      font,
+                      size: textSize,
+                      height: geometryOptions.printHeight
+                  })
 
-        //calculate the bounding box of the text
+        textGeometry.center()
+        if (side === "back") {
+            textGeometry.rotateY(Math.PI)
+        }
+
         textGeometry.computeBoundingBox()
         const textDepth = textGeometry.boundingBox.max.y - textGeometry.boundingBox.min.y
         textGeometry.translate(
             0,
-            -textDepth / 2 - (geometryOptions.width - geometryOptions.mapSideOffset) / 2 - yOffset,
-            geometryOptions.frontPrintDepth / 2
+            -textDepth / 2 + yPosition,
+            side === "front" ? geometryOptions.printHeight / 2 : -geometryOptions.printHeight
         )
 
         return new Promise(resolve => {
             resolve(textGeometry)
         })
+    }
+
+    private createMultilineCenteredTextGeometry(text: string, font: Font, size: number, height: number) {
+        const lines = text.split("\n")
+        const lineGeometries: BufferGeometry[] = []
+        for (const [index, line] of lines.entries()) {
+            const lineGeometry = new TextGeometry(line, {
+                font,
+                size,
+                height
+            })
+            lineGeometry.center()
+            lineGeometry.translate(0, -index * size * 1.5, 0)
+            lineGeometries.push(lineGeometry)
+        }
+
+        return BufferGeometryUtils.mergeBufferGeometries(lineGeometries)
     }
 }

@@ -322,7 +322,7 @@ export class Export3DMapDialogComponent {
             layerHeight: this.layerHeight,
             frontTextSize: this.frontTextSize,
             secondRowTextSize: this.secondRowTextSize,
-            frontPrintDepth: this.frontPrintDepth,
+            printHeight: this.frontPrintDepth,
             mapSideOffset: this.mapSideOffset,
             baseplateHeight: this.baseplateHeight,
             logoSize: this.logoSize,

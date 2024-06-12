@@ -25,7 +25,7 @@ import { SecondRowTextMesh } from "./MeshModels/secondRowTextMesh"
 import { MetricDescriptionsMesh } from "./MeshModels/metricDescriptionsMesh"
 import { GeneralMesh } from "./MeshModels/generalMesh"
 import { QrCodeMesh } from "./MeshModels/qrCodeMesh"
-import { FronTextMesh } from "./MeshModels/fronTextMesh"
+import { FrontTextMesh } from "./MeshModels/frontTextMesh"
 
 export interface GeometryOptions {
     originalMapMesh: Mesh
@@ -46,7 +46,7 @@ export interface GeometryOptions {
     frontTextSize: number
     secondRowTextSize: number
     secondRowVisible: boolean
-    frontPrintDepth: number
+    printHeight: number
     mapSideOffset: number
     baseplateHeight: number
     logoSize: number
@@ -62,7 +62,7 @@ export class Preview3DPrintMesh {
     //Front
     private mapMesh: Mesh
     private baseplateMesh: BaseplateMesh
-    private frontTextMesh: FronTextMesh
+    private frontTextMesh: FrontTextMesh
     private frontMWLogoMesh: Mesh
     private secondRowMesh: SecondRowTextMesh
     private customLogoMesh: Mesh
@@ -105,7 +105,7 @@ export class Preview3DPrintMesh {
         this.initMapMesh(this.geometryOptions)
         this.printMesh.add(this.mapMesh)
 
-        this.frontTextMesh = await new FronTextMesh(this.font, this.geometryOptions).init(this.geometryOptions)
+        this.frontTextMesh = await new FrontTextMesh(this.font, this.geometryOptions).init(this.geometryOptions)
         this.printMesh.add(this.frontTextMesh)
 
         this.secondRowMesh = await new SecondRowTextMesh(this.font, this.geometryOptions).init(this.geometryOptions)
@@ -117,7 +117,7 @@ export class Preview3DPrintMesh {
         await this.initBackMWLogoMesh()
         this.printMesh.add(this.backMWLogoMesh)
 
-        this.itsTextMesh = await new BackBelowLogoTextMesh(this.font).init(this.geometryOptions)
+        this.itsTextMesh = await new BackBelowLogoTextMesh(this.font, this.geometryOptions).init(this.geometryOptions)
         this.printMesh.add(this.itsTextMesh)
 
         this.qrCodeMesh = await new QrCodeMesh().init(this.geometryOptions)
@@ -126,7 +126,7 @@ export class Preview3DPrintMesh {
         this.codeChartaLogoMesh = await new CodeChartaLogoMesh().init(this.geometryOptions)
         this.printMesh.add(this.codeChartaLogoMesh)
 
-        this.codeChartaTextMesh = await new CodeChartaTextMesh(this.font).init(this.geometryOptions)
+        this.codeChartaTextMesh = await new CodeChartaTextMesh(this.font, this.geometryOptions).init(this.geometryOptions)
         this.printMesh.add(this.codeChartaTextMesh)
 
         this.metricsMesh = await new MetricDescriptionsMesh(this.font).init(this.geometryOptions)
@@ -177,7 +177,7 @@ export class Preview3DPrintMesh {
     }
 
     async addCustomLogo(dataUrl: string): Promise<void> {
-        this.customLogoMesh = await this.createSvgMesh(dataUrl, this.geometryOptions.frontPrintDepth, this.geometryOptions.logoSize)
+        this.customLogoMesh = await this.createSvgMesh(dataUrl, this.geometryOptions.printHeight, this.geometryOptions.logoSize)
 
         this.updateFrontLogoPosition(this.customLogoMesh, this.currentSize.x, false)
         this.updateFrontLogoSize(this.customLogoMesh)
@@ -282,7 +282,7 @@ export class Preview3DPrintMesh {
         const xPosition = wantedWidth / 2 - logoWidth - this.geometryOptions.mapSideOffset * (rightSide ? 1 : -1)
         let yPosition = -logoDepth / 2 - wantedWidth / 2 + this.geometryOptions.frontTextSize / 1.75
         yPosition += this.secondRowMesh.visible ? this.geometryOptions.secondRowTextSize / 1.75 : 0
-        logoMesh.position.set(xPosition, yPosition, this.geometryOptions.frontPrintDepth / 2)
+        logoMesh.position.set(xPosition, yPosition, this.geometryOptions.printHeight / 2)
     }
 
     private initMapMesh(geometryOptions: GeometryOptions) {
@@ -448,7 +448,7 @@ export class Preview3DPrintMesh {
         const textGeometry = new TextGeometry(text, {
             font: this.font,
             size: textSize,
-            height: this.geometryOptions.frontPrintDepth
+            height: this.geometryOptions.printHeight
         })
         textGeometry.center()
 
@@ -458,7 +458,7 @@ export class Preview3DPrintMesh {
         textGeometry.translate(
             0,
             -textDepth / 2 - (wantedWidth - this.geometryOptions.mapSideOffset) / 2 - yOffset,
-            this.geometryOptions.frontPrintDepth / 2
+            this.geometryOptions.printHeight / 2
         )
         return textGeometry
     }
@@ -480,7 +480,7 @@ export class Preview3DPrintMesh {
     private async initFrontMWLogoMesh(wantedWidth: number, numberOfColors: number) {
         const filePath = `codeCharta/assets/mw_logo.svg`
 
-        const mwLogoMesh = await this.createSvgMesh(filePath, this.geometryOptions.frontPrintDepth, this.geometryOptions.logoSize)
+        const mwLogoMesh = await this.createSvgMesh(filePath, this.geometryOptions.printHeight, this.geometryOptions.logoSize)
 
         mwLogoMesh.geometry.computeBoundingBox()
         const boundingBox = mwLogoMesh.geometry.boundingBox
@@ -489,7 +489,7 @@ export class Preview3DPrintMesh {
         mwLogoMesh.position.set(
             wantedWidth / 2 - logoWidth - this.geometryOptions.mapSideOffset,
             -logoDepth / 2 - (wantedWidth - this.geometryOptions.mapSideOffset) / 2,
-            this.geometryOptions.frontPrintDepth / 2
+            this.geometryOptions.printHeight / 2
         )
 
         mwLogoMesh.name = "Front MW Logo"

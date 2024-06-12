@@ -1,6 +1,6 @@
 import { ManualVisibilityMesh } from "./manualVisibilityMesh"
 import { GeometryOptions } from "../preview3DPrintMesh"
-import { Font, MeshBasicMaterial } from "three"
+import { MeshBasicMaterial } from "three"
 import {
     CreateFrontTextGeometryStrategy,
     CreateFrontTextGeometryStrategyOptions
@@ -8,30 +8,21 @@ import {
 import { SizeChangeTranslateStrategy } from "../SizeChangeStrategies/sizeChangeTranslateStrategy"
 import { DefaultPrintColorChangeStrategy } from "../ColorChangeStrategies/defaultPrintColorChangeStrategy"
 
-export class FronTextMesh extends ManualVisibilityMesh {
-    private readonly createFrontTextGeometryStrategy: CreateFrontTextGeometryStrategy
-    private readonly createFrontTextGeometryOptions: CreateFrontTextGeometryStrategyOptions
+export abstract class TextMesh extends ManualVisibilityMesh {
+    readonly createFrontTextGeometryStrategy: CreateFrontTextGeometryStrategy
 
     constructor(
-        public font: Font,
-        geometryOptions: GeometryOptions
+        sizeChangeStrategy: SizeChangeTranslateStrategy,
+        public createFrontTextGeometryOptions: CreateFrontTextGeometryStrategyOptions,
+        manualVisibility: boolean,
+        minNumberOfColors: number,
+        minScale: number
     ) {
-        super(new SizeChangeTranslateStrategy(), new DefaultPrintColorChangeStrategy(), true, 1, 0)
-        this.name = "Front Text"
+        super(sizeChangeStrategy, new DefaultPrintColorChangeStrategy(), manualVisibility, minNumberOfColors, minScale)
         this.createFrontTextGeometryStrategy = new CreateFrontTextGeometryStrategy()
-        let text = geometryOptions.frontText
-        if (!text) {
-            text = "CodeCharta"
-        }
-        this.createFrontTextGeometryOptions = {
-            font,
-            text,
-            yOffset: 0,
-            textSize: geometryOptions.frontTextSize
-        }
     }
 
-    async init(geometryOptions: GeometryOptions): Promise<FronTextMesh> {
+    async init(geometryOptions: GeometryOptions): Promise<TextMesh> {
         this.geometry = await this.createFrontTextGeometryStrategy.create(geometryOptions, this.createFrontTextGeometryOptions)
 
         this.material = new MeshBasicMaterial()

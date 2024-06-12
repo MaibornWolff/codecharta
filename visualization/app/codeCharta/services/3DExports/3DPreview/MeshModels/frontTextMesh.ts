@@ -1,20 +1,23 @@
 import { GeometryOptions } from "../preview3DPrintMesh"
 import { Font } from "three"
-import { TextMesh } from "./textMesh"
 import { CreateFrontTextGeometryStrategyOptions } from "../CreateGeometryStrategies/createFrontTextGeometryStrategy"
+import { TextMesh } from "./textMesh"
 import { SizeChangeTranslateStrategy } from "../SizeChangeStrategies/sizeChangeTranslateStrategy"
 
-export class SecondRowTextMesh extends TextMesh {
+export class FrontTextMesh extends TextMesh {
     constructor(font: Font, geometryOptions: GeometryOptions) {
-        const yOffset = geometryOptions.frontTextSize + geometryOptions.secondRowTextSize / 2
+        let text = geometryOptions.frontText
+        if (!text) {
+            text = "CodeCharta"
+        }
         const createFrontTextGeometryOptions: CreateFrontTextGeometryStrategyOptions = {
             font,
-            text: geometryOptions.secondRowText,
             side: "front",
-            yPosition: -(geometryOptions.width - geometryOptions.mapSideOffset) / 2 - yOffset,
-            textSize: geometryOptions.secondRowTextSize
+            text,
+            yPosition: -(geometryOptions.width - geometryOptions.mapSideOffset) / 2,
+            textSize: geometryOptions.frontTextSize
         }
-        super(new SizeChangeTranslateStrategy(), createFrontTextGeometryOptions, false, 1, 0)
-        this.name = "Second Row Text"
+        super(new SizeChangeTranslateStrategy(), createFrontTextGeometryOptions, true, 1, 0)
+        this.name = "Front Text"
     }
 }

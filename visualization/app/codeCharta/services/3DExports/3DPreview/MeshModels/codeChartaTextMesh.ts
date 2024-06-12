@@ -1,35 +1,28 @@
-import { ManualVisibilityMesh } from "./manualVisibilityMesh"
 import { GeometryOptions } from "../preview3DPrintMesh"
-import { Font, MeshBasicMaterial, TextGeometry } from "three"
-import { DefaultPrintColorChangeStrategy } from "../ColorChangeStrategies/defaultPrintColorChangeStrategy"
+import { Font } from "three"
 import { SizeChangeScaleStrategy } from "../SizeChangeStrategies/sizeChangeScaleStrategy"
+import { TextMesh } from "./textMesh"
+import { CreateFrontTextGeometryStrategyOptions } from "../CreateGeometryStrategies/createFrontTextGeometryStrategy"
 
-export class CodeChartaTextMesh extends ManualVisibilityMesh {
-    constructor(public font: Font) {
-        super(new SizeChangeScaleStrategy(), new DefaultPrintColorChangeStrategy(), true, 2, 0.7)
-        this.name = "Back MW Logo"
+export class CodeChartaTextMesh extends TextMesh {
+    constructor(font: Font, geometryOptions: GeometryOptions) {
+        const createFrontTextGeometryOptions: CreateFrontTextGeometryStrategyOptions = {
+            font,
+            text: "github.com/MaibornWolff/codecharta",
+            side: "back",
+            yPosition: 15, //TODO: make relative
+            textSize: geometryOptions.backTextSize
+        }
+        super(new SizeChangeScaleStrategy(), createFrontTextGeometryOptions, true, 2, 0.7)
+        this.name = "CodeCharta Logo"
     }
 
     async init(geometryOptions: GeometryOptions): Promise<CodeChartaTextMesh> {
-        const textGeometry = new TextGeometry("github.com/MaibornWolff/codecharta", {
-            font: this.font,
-            size: geometryOptions.backTextSize,
-            height: geometryOptions.baseplateHeight / 2
-        })
-        textGeometry.center()
-        textGeometry.rotateY(Math.PI)
+        await super.init(geometryOptions)
 
-        textGeometry.translate(0, 5, -((geometryOptions.baseplateHeight * 3) / 4))
-        this.geometry = textGeometry
-
-        this.material = new MeshBasicMaterial()
-
-        this.changeColor(geometryOptions.numberOfColors)
         const oldWidth = (200 * geometryOptions.width) / (geometryOptions.width - geometryOptions.mapSideOffset * 2)
         this.changeSize(geometryOptions, oldWidth)
 
-        return new Promise(resolve => {
-            resolve(this)
-        })
+        return this
     }
 }
