@@ -3,7 +3,7 @@
 .cc-export-3D-map-dialog .mat-mdc-dialog-container {
     width: 36vw;
     min-width: 600px;
-    height: 95vh;
+    max-height: 95vh;
 
     .cc-export-3D-map-dialog-content {
         display: flex;
