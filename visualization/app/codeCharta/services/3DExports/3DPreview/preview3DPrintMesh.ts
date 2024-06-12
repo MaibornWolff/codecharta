@@ -21,10 +21,10 @@ import { ManualVisibilityMesh } from "./MeshModels/manualVisibilityMesh"
 import { BackMWLogoMesh } from "./MeshModels/backMWLogoMesh"
 import { BaseplateMesh } from "./MeshModels/baseplateMesh"
 import { BackBelowLogoTextMesh } from "./MeshModels/backBelowLogoTextMesh"
-import { QRCodeMesh } from "./MeshModels/QRCodeMesh"
 import { CodeChartaLogoMesh } from "./MeshModels/codeChartaLogoMesh"
 import { CodeChartaTextMesh } from "./MeshModels/codeChartaTextMesh"
 import { SecondRowTextMesh } from "./MeshModels/secondRowTextMesh"
+import { QRCodeMesh } from "./MeshModels/qrCodeMesh"
 
 export interface GeometryOptions {
     originalMapMesh: Mesh
