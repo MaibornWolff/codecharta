@@ -1,19 +1,28 @@
 import { BufferGeometry, Font, TextGeometry } from "three"
-import { CreateGeometryStrategy } from "./createGeometryStrategy"
+import { CreateGeometryStrategy, CreateGeometryStrategyOptions } from "./createGeometryStrategy"
 import { GeometryOptions } from "../preview3DPrintMesh"
 
-export class CreateFrontTextGeometryStrategy extends CreateGeometryStrategy {
-    constructor(private font: Font, private text: string, private yOffset: number, private textSize: number){
-        super()
-    }
+export interface CreateFrontTextGeometryStrategyOptions extends CreateGeometryStrategyOptions {
+    font: Font
+    text: string
+    yOffset: number
+    textSize: number
+}
 
-    create(geometryOptions: GeometryOptions): Promise<BufferGeometry> {
-        if (!this.text) {
-            this.text = ""
+export class CreateFrontTextGeometryStrategy implements CreateGeometryStrategy {
+    async create(
+        geometryOptions: GeometryOptions,
+        createFrontTextGeometryStrategyOptions: CreateFrontTextGeometryStrategyOptions
+    ): Promise<BufferGeometry> {
+        const { font, text, yOffset, textSize } = createFrontTextGeometryStrategyOptions
+        if (!text) {
+            return new Promise(resolve => {
+                resolve(new BufferGeometry())
+            })
         }
-        const textGeometry = new TextGeometry(this.text, {
-            font: this.font,
-            size: this.textSize,
+        const textGeometry = new TextGeometry(text, {
+            font,
+            size: textSize,
             height: geometryOptions.frontPrintDepth
         })
         textGeometry.center()
@@ -23,7 +32,7 @@ export class CreateFrontTextGeometryStrategy extends CreateGeometryStrategy {
         const textDepth = textGeometry.boundingBox.max.y - textGeometry.boundingBox.min.y
         textGeometry.translate(
             0,
-            -textDepth / 2 - (geometryOptions.width - geometryOptions.mapSideOffset) / 2 - this.yOffset,
+            -textDepth / 2 - (geometryOptions.width - geometryOptions.mapSideOffset) / 2 - yOffset,
             geometryOptions.frontPrintDepth / 2
         )
 

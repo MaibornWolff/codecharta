@@ -1,6 +1,4 @@
-import { Mesh, MeshBasicMaterial, ShaderMaterial } from "three"
-import { ManualVisibilityMesh } from "./manualVisibilityMesh"
-import { CreateGeometryStrategy } from "../CreateGeometryStrategies/createGeometryStrategy"
+import { Mesh } from "three"
 import { SizeChangeStrategy } from "../SizeChangeStrategies/sizeChangeStrategy"
 import { GeometryOptions } from "../preview3DPrintMesh"
 import { ColorChangeStrategy } from "../ColorChangeStrategies/colorChangeStrategy"

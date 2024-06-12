@@ -32,7 +32,7 @@ describe("Preview3DPrintMesh", () => {
     let preview3DPrintMesh: Preview3DPrintMesh
 
     beforeEach(() => {
-        preview3DPrintMesh = new Preview3DPrintMesh()
+        preview3DPrintMesh = new Preview3DPrintMesh(undefined)
     })
 
     it("should load font without error", async () => {

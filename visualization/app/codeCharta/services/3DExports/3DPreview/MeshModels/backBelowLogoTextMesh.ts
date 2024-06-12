@@ -3,15 +3,15 @@ import { GeometryOptions } from "../preview3DPrintMesh"
 import { Font, MeshBasicMaterial, TextGeometry } from "three"
 import { BufferGeometryUtils } from "three/examples/jsm/utils/BufferGeometryUtils"
 import { DefaultPrintColorChangeStrategy } from "../ColorChangeStrategies/defaultPrintColorChangeStrategy"
+import { SizeChangeScaleStrategy } from "../SizeChangeStrategies/sizeChangeScaleStrategy"
 
 export class BackBelowLogoTextMesh extends ManualVisibilityMesh {
-
     constructor(public font: Font) {
-        super(new DefaultPrintColorChangeStrategy(), true, 2, 0.7)
+        super(new SizeChangeScaleStrategy(), new DefaultPrintColorChangeStrategy(), true, 2, 0.7)
         this.name = "Back MW Logo"
     }
 
-    init(geometryOptions: GeometryOptions): Promise<BackBelowLogoTextMesh> {
+    async init(geometryOptions: GeometryOptions): Promise<BackBelowLogoTextMesh> {
         const ITSNameTextGeometry = new TextGeometry("IT Stabilization & Modernization", {
             font: this.font,
             size: geometryOptions.backTextSize,
@@ -36,7 +36,7 @@ export class BackBelowLogoTextMesh extends ManualVisibilityMesh {
         this.material = new MeshBasicMaterial()
 
         this.changeColor(geometryOptions.numberOfColors)
-        const oldWidth = 200 * geometryOptions.width / (geometryOptions.width - geometryOptions.mapSideOffset * 2)
+        const oldWidth = (200 * geometryOptions.width) / (geometryOptions.width - geometryOptions.mapSideOffset * 2)
         this.changeSize(geometryOptions, oldWidth)
 
         return new Promise(resolve => {

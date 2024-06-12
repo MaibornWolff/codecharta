@@ -1,12 +1,17 @@
 import { GeometryOptions } from "../preview3DPrintMesh"
-import { SizeChangeStrategy } from "./sizeChangeStrategy"
-import { GeneralMesh } from "../MeshModels/generalMesh"
+import { SizeChangeStrategy, SizeChangeStrategyOptions } from "./sizeChangeStrategy"
 
+export interface SizeChangeFixPositionStrategyOptions extends SizeChangeStrategyOptions {
+    xPositionFunction: (geometryOptions: GeometryOptions) => number
+    yPositionFunction: (geometryOptions: GeometryOptions) => number
+}
 export class SizeChangeFixPositionStrategy implements SizeChangeStrategy {
-    constructor(private xPositionFunction: (geometryOptions: GeometryOptions) => number, private yPositionFunction: (geometryOptions: GeometryOptions) => number){}
-
-    async execute(geometryOptions: GeometryOptions, _: number, mesh: GeneralMesh): Promise<void> {
-        mesh.position.x = this.xPositionFunction(geometryOptions)
-        mesh.position.y = this.yPositionFunction(geometryOptions)
+    async execute(
+        geometryOptions: GeometryOptions,
+        sizeChangeFixPositionStrategyOptions: SizeChangeFixPositionStrategyOptions
+    ): Promise<void> {
+        const { mesh, xPositionFunction, yPositionFunction } = sizeChangeFixPositionStrategyOptions
+        mesh.position.x = xPositionFunction(geometryOptions)
+        mesh.position.y = yPositionFunction(geometryOptions)
     }
 }

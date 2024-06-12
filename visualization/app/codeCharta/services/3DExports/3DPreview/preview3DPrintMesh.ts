@@ -1,8 +1,6 @@
 /* eslint-disable unused-imports/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import {
-    Box3,
-    BoxGeometry,
     BufferGeometry,
     ExtrudeGeometry,
     Float32BufferAttribute,
@@ -24,9 +22,9 @@ import { BackBelowLogoTextMesh } from "./MeshModels/backBelowLogoTextMesh"
 import { CodeChartaLogoMesh } from "./MeshModels/codeChartaLogoMesh"
 import { CodeChartaTextMesh } from "./MeshModels/codeChartaTextMesh"
 import { SecondRowTextMesh } from "./MeshModels/secondRowTextMesh"
-import { QRCodeMesh } from "./MeshModels/qrCodeMesh"
 import { MetricDescriptionsMesh } from "./MeshModels/metricDescriptionsMesh"
 import { GeneralMesh } from "./MeshModels/generalMesh"
+import { QrCodeMesh } from "./MeshModels/qrCodeMesh"
 
 export interface GeometryOptions {
     originalMapMesh: Mesh
@@ -70,7 +68,7 @@ export class Preview3DPrintMesh {
     //Back
     private backMWLogoMesh: BackMWLogoMesh
     private itsTextMesh: BackBelowLogoTextMesh
-    private qrCodeMesh: QRCodeMesh
+    private qrCodeMesh: QrCodeMesh
     private codeChartaLogoMesh: CodeChartaLogoMesh
     private codeChartaTextMesh: CodeChartaTextMesh
     private metricsMesh: MetricDescriptionsMesh
@@ -121,7 +119,7 @@ export class Preview3DPrintMesh {
         this.itsTextMesh = await new BackBelowLogoTextMesh(this.font).init(this.geometryOptions)
         this.printMesh.add(this.itsTextMesh)
 
-        this.qrCodeMesh = await new QRCodeMesh().init(this.geometryOptions)
+        this.qrCodeMesh = await new QrCodeMesh().init(this.geometryOptions)
         this.printMesh.add(this.qrCodeMesh)
 
         this.codeChartaLogoMesh = await new CodeChartaLogoMesh().init(this.geometryOptions)
@@ -137,9 +135,8 @@ export class Preview3DPrintMesh {
     async updateSize(wantedWidth: number): Promise<boolean> {
         this.geometryOptions.width = wantedWidth
         const oldWidth = this.currentSize.x
-        let qrCodeVisible = this.qrCodeMesh.getManualVisibility()
 
-        await this.baseplateMesh.changeSize(this.geometryOptions, oldWidth)
+        await this.baseplateMesh.changeSize(this.geometryOptions)
         await this.secondRowMesh.changeSize(this.geometryOptions, oldWidth)
         await this.backMWLogoMesh.changeSize(this.geometryOptions, oldWidth)
         await this.itsTextMesh.changeSize(this.geometryOptions, oldWidth)
@@ -148,33 +145,31 @@ export class Preview3DPrintMesh {
         await this.metricsMesh.changeSize(this.geometryOptions, oldWidth)
 
         const map = this.mapMesh.geometry
-        const scale =
-            (wantedWidth - 2 * this.geometryOptions.mapSideOffset) / (oldWidth - 2 * this.geometryOptions.mapSideOffset)
+        const scale = (wantedWidth - 2 * this.geometryOptions.mapSideOffset) / (oldWidth - 2 * this.geometryOptions.mapSideOffset)
         map.scale(scale, scale, scale)
         this.snapHeightsToLayerHeight(map)
 
         this.frontTextMesh.geometry.translate(0, -(wantedWidth - oldWidth) / 2, 0)
         this.updateFrontLogoPosition(this.frontMWLogoMesh, wantedWidth, true)
-        if(this.customLogoMesh)
+        if (this.customLogoMesh) {
             this.updateFrontLogoPosition(this.customLogoMesh, wantedWidth, false)
+        }
 
-        await this.qrCodeMesh.changeSize(this.geometryOptions, oldWidth)
-        qrCodeVisible = this.qrCodeMesh.visible
+        await this.qrCodeMesh.changeSize(this.geometryOptions)
+        const qrCodeVisible = this.qrCodeMesh.visible
 
         this.calculateCurrentSize()
         return qrCodeVisible
     }
 
     updateNumberOfColors(mapWithOriginalColors: Mesh, numberOfColors: number) {
-        console.log("updateNumberOfColors")
         this.updateMapColors(mapWithOriginalColors.geometry, this.mapMesh.geometry, numberOfColors)
         this.printMesh.traverse(child => {
             if (child instanceof Mesh && child.name !== "Map" && child.name !== "PrintMesh") {
-                if(child instanceof GeneralMesh){
+                if (child instanceof GeneralMesh) {
                     child.changeColor(numberOfColors)
-                }
-                else {
-                    this.updateColor(child, numberOfColors)
+                } else {
+                    this.updateColor(child, numberOfColors) //TODO: delete this
                 }
             }
         })
@@ -221,7 +216,7 @@ export class Preview3DPrintMesh {
         }
         this.secondRowMesh.setManualVisibility(isSecondRowVisible)
         this.geometryOptions.secondRowVisible = isSecondRowVisible
-        this.baseplateMesh.changeSize(this.geometryOptions, this.geometryOptions.width)
+        this.baseplateMesh.changeSize(this.geometryOptions)
 
         this.updateFrontLogoSize(this.frontMWLogoMesh)
         this.updateFrontLogoSize(this.customLogoMesh)
@@ -290,11 +285,11 @@ export class Preview3DPrintMesh {
     }
 
     private initMapMesh(geometryOptions: GeometryOptions) {
-        const newMapGeometry = this.geometryOptions.originalMapMesh.geometry.clone()
+        const newMapGeometry = geometryOptions.originalMapMesh.geometry.clone()
         newMapGeometry.rotateX(Math.PI / 2)
-        this.updateMapGeometry(newMapGeometry, this.geometryOptions.width, this.geometryOptions.numberOfColors)
+        this.updateMapGeometry(newMapGeometry, geometryOptions.width, geometryOptions.numberOfColors)
         newMapGeometry.rotateZ(-Math.PI / 2)
-        const newMapMesh: Mesh = this.geometryOptions.originalMapMesh.clone() as Mesh
+        const newMapMesh: Mesh = geometryOptions.originalMapMesh.clone() as Mesh
         newMapMesh.clear()
         newMapMesh.geometry = newMapGeometry
         newMapMesh.name = "Map"

@@ -1,9 +1,11 @@
 import { GeometryOptions } from "../preview3DPrintMesh"
-import { SizeChangeStrategy } from "./sizeChangeStrategy"
-import { GeneralMesh } from "../MeshModels/generalMesh"
+import { SizeChangeStrategy, SizeChangeStrategyOptions } from "./sizeChangeStrategy"
 
+export interface SizeChangeTranslateStrategyOptions extends SizeChangeStrategyOptions {
+    oldWidth: number
+}
 export class SizeChangeTranslateStrategy implements SizeChangeStrategy {
-    async execute({ width }: GeometryOptions, oldWidth: number, mesh : GeneralMesh): Promise<void> {
-        mesh.geometry.translate(0, -(width - oldWidth) / 2, 0)
+    async execute({ width }: GeometryOptions, sizeChangeTranslateStrategyOptions: SizeChangeTranslateStrategyOptions): Promise<void> {
+        sizeChangeTranslateStrategyOptions.mesh.geometry.translate(0, -(width - sizeChangeTranslateStrategyOptions.oldWidth) / 2, 0)
     }
 }

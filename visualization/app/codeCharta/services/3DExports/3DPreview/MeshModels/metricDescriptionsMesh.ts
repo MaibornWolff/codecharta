@@ -3,13 +3,13 @@ import { GeometryOptions } from "../preview3DPrintMesh"
 import { Box3, Font, Mesh, MeshBasicMaterial, TextGeometry } from "three"
 import { BufferGeometryUtils } from "three/examples/jsm/utils/BufferGeometryUtils"
 import { ColorRange, NodeMetricData } from "../../../../codeCharta.model"
-import { CreateSvgGeometryStrategy } from "../CreateGeometryStrategies/createSvgGeometryStrategy"
+import { CreateSvgGeometryStrategy, CreateSvgGeometryStrategyOptions } from "../CreateGeometryStrategies/createSvgGeometryStrategy"
 import { DefaultPrintColorChangeStrategy } from "../ColorChangeStrategies/defaultPrintColorChangeStrategy"
+import { SizeChangeScaleStrategy } from "../SizeChangeStrategies/sizeChangeScaleStrategy"
 
 export class MetricDescriptionsMesh extends ManualVisibilityMesh {
-
     constructor(public font: Font) {
-        super(new DefaultPrintColorChangeStrategy(), true, 2, 1)
+        super(new SizeChangeScaleStrategy(), new DefaultPrintColorChangeStrategy(), true, 2, 1)
         this.name = "Metric Text"
     }
 
@@ -41,13 +41,11 @@ export class MetricDescriptionsMesh extends ManualVisibilityMesh {
             this.add(colorTextGeometry)
         }
 
-        const mergedWhiteBackGeometry = BufferGeometryUtils.mergeBufferGeometries(whiteBackGeometries)
-        this.geometry = mergedWhiteBackGeometry
+        this.geometry = BufferGeometryUtils.mergeBufferGeometries(whiteBackGeometries)
 
-        console.log(this)
         this.changeColor(geometryOptions.numberOfColors)
 
-        const scaleFactor = 200 * geometryOptions.width / (geometryOptions.width - geometryOptions.mapSideOffset * 2)
+        const scaleFactor = (200 * geometryOptions.width) / (geometryOptions.width - geometryOptions.mapSideOffset * 2)
         this.changeSize(geometryOptions, scaleFactor)
         if (this.visible) {
             this.xCenterMetricsMesh(this)
@@ -96,8 +94,10 @@ export class MetricDescriptionsMesh extends ManualVisibilityMesh {
     private async createWhiteBackGeometries(geometryOptions: GeometryOptions, icons: string[], iconScales: number[], whiteTexts: string[]) {
         const backGeometries = []
         for (const [index, icon] of icons.entries()) {
-            const createSvgGeometryStrategy = new CreateSvgGeometryStrategy(icon)
-            const iconGeometry = await createSvgGeometryStrategy.create(geometryOptions)
+            const createSvgGeometryStrategy = new CreateSvgGeometryStrategy()
+            const iconGeometry = await createSvgGeometryStrategy.create(geometryOptions, {
+                filePath: icon
+            } as CreateSvgGeometryStrategyOptions)
             const iconScale = iconScales[index]
 
             iconGeometry.center()

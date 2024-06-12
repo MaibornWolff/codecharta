@@ -4,16 +4,19 @@
 import { BufferGeometry, MeshBasicMaterial } from "three"
 import { GeometryOptions } from "../preview3DPrintMesh"
 import { GeneralMesh } from "./generalMesh"
-import { SizeChangeScaleStrategy } from "../SizeChangeStrategies/sizeChangeScaleStrategy"
+import { SizeChangeScaleStrategyOptions } from "../SizeChangeStrategies/sizeChangeScaleStrategy"
 import { ColorChangeStrategy } from "../ColorChangeStrategies/colorChangeStrategy"
+import { SizeChangeStrategy } from "../SizeChangeStrategies/sizeChangeStrategy"
 
-export abstract class ManualVisibilityMesh extends GeneralMesh { //TODO: split into two classes
+export abstract class ManualVisibilityMesh extends GeneralMesh {
+    //TODO: split into two classes
     currentNumberOfColors: number
     manualVisibility: boolean
     readonly minScale: number
     readonly minNumberOfColors: number
 
     constructor(
+        sizeChangeStrategy: SizeChangeStrategy,
         colorChangeStrategy: ColorChangeStrategy,
         manualVisibility = true,
         minNumberOfColors = 2,
@@ -21,7 +24,6 @@ export abstract class ManualVisibilityMesh extends GeneralMesh { //TODO: split i
         geometry?: BufferGeometry,
         material?: MeshBasicMaterial
     ) {
-        const sizeChangeStrategy = new SizeChangeScaleStrategy()
         super(sizeChangeStrategy, colorChangeStrategy)
         this.minScale = minScale
         this.manualVisibility = manualVisibility
@@ -30,16 +32,9 @@ export abstract class ManualVisibilityMesh extends GeneralMesh { //TODO: split i
         this.material = material
     }
 
-    setSizeChangeStrategy(sizeChangeStrategy: SizeChangeScaleStrategy): void { //TODO: delete this function and integrate into constructor
-        this.sizeChangeStrategy = sizeChangeStrategy
-    }
-
     setManualVisibility(manualVisibility: boolean): void {
         this.manualVisibility = manualVisibility
         this.updateVisibility()
-    }
-    getManualVisibility(): boolean {
-        return this.manualVisibility
     }
 
     setCurrentNumberOfColors(numberOfColors: number): void {
@@ -47,7 +42,8 @@ export abstract class ManualVisibilityMesh extends GeneralMesh { //TODO: split i
         this.updateVisibility()
     }
 
-    private updateVisibility(): void {
+    updateVisibility(): void {
+        //TODO: make private
         const visibleBecauseOfColor = this.currentNumberOfColors ? this.currentNumberOfColors >= this.minNumberOfColors : true
         this.visible = this.minScale
             ? this.scale.x >= this.minScale && visibleBecauseOfColor && this.manualVisibility
@@ -55,7 +51,7 @@ export abstract class ManualVisibilityMesh extends GeneralMesh { //TODO: split i
     }
 
     async changeSize(geometryOptions: GeometryOptions, oldWidth: number): Promise<void> {
-        await this.sizeChangeStrategy.execute(geometryOptions, oldWidth, this)
+        await this.sizeChangeStrategy.execute(geometryOptions, { mesh: this, oldWidth } as SizeChangeScaleStrategyOptions)
         this.updateVisibility()
     }
 

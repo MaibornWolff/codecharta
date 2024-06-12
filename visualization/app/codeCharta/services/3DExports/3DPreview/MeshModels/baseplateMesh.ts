@@ -1,7 +1,5 @@
-/* eslint-disable unused-imports/no-unused-vars */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { GeneralMesh } from "./generalMesh"
-import { SizeChangeCreateStrategy } from "../SizeChangeStrategies/sizeChangeCreateStrategy"
+import { SizeChangeCreateStrategy, SizeChangeCreateStrategyOptions } from "../SizeChangeStrategies/sizeChangeCreateStrategy"
 import { CreateBaseplateGeometryStrategy } from "../CreateGeometryStrategies/createBaseplateGeometryStrategy"
 import { GeometryOptions } from "../preview3DPrintMesh"
 import { ShaderMaterial } from "three"
@@ -11,13 +9,12 @@ export class BaseplateMesh extends GeneralMesh {
     private readonly createBaseplateGeometryStrategy: CreateBaseplateGeometryStrategy
 
     constructor() {
-        const createBaseplateGeometryStrategy = new CreateBaseplateGeometryStrategy()
-        super(new SizeChangeCreateStrategy(createBaseplateGeometryStrategy), new BaseplateColorChangeStrategy())
-        this.createBaseplateGeometryStrategy = createBaseplateGeometryStrategy
+        super(new SizeChangeCreateStrategy(), new BaseplateColorChangeStrategy())
+        this.createBaseplateGeometryStrategy = new CreateBaseplateGeometryStrategy()
         this.name = "Baseplate"
     }
 
-    init(geometryOptions: GeometryOptions): Promise<BaseplateMesh> {
+    async init(geometryOptions: GeometryOptions): Promise<BaseplateMesh> {
         this.createBaseplateGeometryStrategy.create(geometryOptions).then(geometry => {
             this.geometry = geometry
         })
@@ -38,7 +35,10 @@ export class BaseplateMesh extends GeneralMesh {
         })
     }
 
-    async changeSize(geometryOptions: GeometryOptions, oldWidth: number): Promise<void> {
-        return this.sizeChangeStrategy.execute(geometryOptions, oldWidth, this)
+    async changeSize(geometryOptions: GeometryOptions): Promise<void> {
+        return this.sizeChangeStrategy.execute(geometryOptions, {
+            mesh: this,
+            createGeometryStrategy: this.createBaseplateGeometryStrategy
+        } as SizeChangeCreateStrategyOptions)
     }
 }

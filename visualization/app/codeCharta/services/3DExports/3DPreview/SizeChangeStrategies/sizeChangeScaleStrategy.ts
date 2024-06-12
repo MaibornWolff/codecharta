@@ -1,9 +1,12 @@
 import { GeometryOptions } from "../preview3DPrintMesh"
-import { SizeChangeStrategy } from "./sizeChangeStrategy"
-import { GeneralMesh } from "../MeshModels/generalMesh"
+import { SizeChangeStrategy, SizeChangeStrategyOptions } from "./sizeChangeStrategy"
 
+export interface SizeChangeScaleStrategyOptions extends SizeChangeStrategyOptions {
+    oldWidth: number
+}
 export class SizeChangeScaleStrategy implements SizeChangeStrategy {
-    async execute({ width }: GeometryOptions, oldWidth: number, mesh: GeneralMesh): Promise<void> {
+    async execute({ width }: GeometryOptions, sizeChangeScaleStrategyOptions: SizeChangeScaleStrategyOptions): Promise<void> {
+        const { mesh, oldWidth } = sizeChangeScaleStrategyOptions
         const scaleFactor = width / oldWidth
         mesh.scale.set(mesh.scale.x * scaleFactor, mesh.scale.y * scaleFactor, mesh.scale.z)
     }

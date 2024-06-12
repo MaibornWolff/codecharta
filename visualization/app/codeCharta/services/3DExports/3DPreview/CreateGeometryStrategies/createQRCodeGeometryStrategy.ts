@@ -4,8 +4,8 @@ import { CreateGeometryStrategy } from "./createGeometryStrategy"
 import { GeometryOptions } from "../preview3DPrintMesh"
 import * as QRCode from "qrcode"
 
-export class CreateQRCodeStrategy extends CreateGeometryStrategy {
-    async create(geometryOptions: GeometryOptions) : Promise<BufferGeometry> {
+export class CreateQRCodeGeometryStrategy implements CreateGeometryStrategy {
+    async create(geometryOptions: GeometryOptions): Promise<BufferGeometry> {
         if (!geometryOptions.qrCodeText || geometryOptions.qrCodeText.length === 0) {
             return new BufferGeometry()
         }
@@ -32,7 +32,6 @@ export class CreateQRCodeStrategy extends CreateGeometryStrategy {
             }
         }
 
-        const qrCodeGeometry = BufferGeometryUtils.mergeBufferGeometries(qrCodeGeometries)
-        return qrCodeGeometry
+        return BufferGeometryUtils.mergeBufferGeometries(qrCodeGeometries)
     }
 }
