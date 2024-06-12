@@ -4,15 +4,18 @@ import { Box3, Font, Mesh, MeshBasicMaterial, TextGeometry } from "three"
 import { BufferGeometryUtils } from "three/examples/jsm/utils/BufferGeometryUtils"
 import { ColorRange, NodeMetricData } from "../../../../codeCharta.model"
 import { CreateSvgGeometryStrategy } from "../CreateGeometryStrategies/createSvgGeometryStrategy"
+import { DefaultPrintColorChangeStrategy } from "../ColorChangeStrategies/defaultPrintColorChangeStrategy"
 
 export class MetricDescriptionsMesh extends ManualVisibilityMesh {
 
     constructor(public font: Font) {
-        super(true, 2, 1)
+        super(new DefaultPrintColorChangeStrategy(), true, 2, 1)
         this.name = "Metric Text"
     }
 
     async init(geometryOptions: GeometryOptions): Promise<MetricDescriptionsMesh> {
+        this.material = new MeshBasicMaterial()
+
         const { areaIcon, areaIconScale, areaText } = this.createAreaAttributes(
             geometryOptions.areaMetricTitle,
             geometryOptions.areaMetricData
@@ -40,9 +43,10 @@ export class MetricDescriptionsMesh extends ManualVisibilityMesh {
 
         const mergedWhiteBackGeometry = BufferGeometryUtils.mergeBufferGeometries(whiteBackGeometries)
         this.geometry = mergedWhiteBackGeometry
-        this.material = new MeshBasicMaterial()
 
+        console.log(this)
         this.changeColor(geometryOptions.numberOfColors)
+
         const scaleFactor = 200 * geometryOptions.width / (geometryOptions.width - geometryOptions.mapSideOffset * 2)
         this.changeSize(geometryOptions, scaleFactor)
         if (this.visible) {

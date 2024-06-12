@@ -3,13 +3,14 @@ import { GeometryOptions } from "../preview3DPrintMesh"
 import { CreateQRCodeStrategy } from "../CreateGeometryStrategies/createQRCodeStrategy"
 import { MeshBasicMaterial } from "three/src/materials/MeshBasicMaterial"
 import { SizeChangeFixPositionStrategy } from "../SizeChangeStrategies/sizeChangeFixPositionStrategy"
+import { DefaultPrintColorChangeStrategy } from "../ColorChangeStrategies/defaultPrintColorChangeStrategy"
 
 export class QRCodeMesh extends ManualVisibilityMesh {
     private readonly createQRCodeStrategy: CreateQRCodeStrategy
 
     constructor(
     ) {
-        super(false, 2, 1)
+        super(new DefaultPrintColorChangeStrategy(), false, 2, 1)
         const positionFunction = (geometryOptions: GeometryOptions) => geometryOptions.width / 2 - geometryOptions.mapSideOffset
         this.setSizeChangeStrategy(new SizeChangeFixPositionStrategy(positionFunction, positionFunction))
         this.createQRCodeStrategy = new CreateQRCodeStrategy()

@@ -2,11 +2,12 @@ import { ManualVisibilityMesh } from "./manualVisibilityMesh"
 import { CreateSvgGeometryStrategy } from "../CreateGeometryStrategies/createSvgGeometryStrategy"
 import { GeometryOptions } from "../preview3DPrintMesh"
 import { MeshBasicMaterial } from "three"
+import { DefaultPrintColorChangeStrategy } from "../ColorChangeStrategies/defaultPrintColorChangeStrategy"
 
 export class BackMWLogoMesh extends ManualVisibilityMesh {
     constructor(
     ) {
-        super(true, 2, 0.2)
+        super(new DefaultPrintColorChangeStrategy(), true, 2, 0.2)
         this.name = "Back MW Logo"
     }
 

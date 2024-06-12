@@ -2,12 +2,12 @@ import { ManualVisibilityMesh } from "./manualVisibilityMesh"
 import { CreateSvgGeometryStrategy } from "../CreateGeometryStrategies/createSvgGeometryStrategy"
 import { GeometryOptions } from "../preview3DPrintMesh"
 import { MeshBasicMaterial } from "three"
-import { BufferGeometryUtils } from "three/examples/jsm/utils/BufferGeometryUtils"
+import { DefaultPrintColorChangeStrategy } from "../ColorChangeStrategies/defaultPrintColorChangeStrategy"
 
 export class CodeChartaLogoMesh extends ManualVisibilityMesh {
     constructor(
     ) {
-        super(true, 2, 0.8)
+        super(new DefaultPrintColorChangeStrategy(), true, 2, 0.8)
         this.name = "CodeCharta Logo"
     }
 

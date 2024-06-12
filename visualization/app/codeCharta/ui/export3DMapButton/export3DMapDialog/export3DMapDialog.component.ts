@@ -235,8 +235,8 @@ export class Export3DMapDialogComponent {
 
         this.initRenderer(printPreviewScene, camera)
 
-        this.previewMesh = new Preview3DPrintMesh()
-        await this.previewMesh.initialize(this.initGeometryOptions())
+        this.previewMesh = new Preview3DPrintMesh(this.initGeometryOptions())
+        await this.previewMesh.initialize()
         this.currentSize = this.previewMesh.getSize()
         printPreviewScene.add(this.previewMesh.getThreeMesh())
 

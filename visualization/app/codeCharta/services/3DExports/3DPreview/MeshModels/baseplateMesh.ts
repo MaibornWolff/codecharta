@@ -5,13 +5,14 @@ import { SizeChangeCreateStrategy } from "../SizeChangeStrategies/sizeChangeCrea
 import { CreateBaseplateGeometryStrategy } from "../CreateGeometryStrategies/createBaseplateGeometryStrategy"
 import { GeometryOptions } from "../preview3DPrintMesh"
 import { ShaderMaterial } from "three"
+import { BaseplateColorChangeStrategy } from "../ColorChangeStrategies/baseplateColorChangeStrategy"
 
 export class BaseplateMesh extends GeneralMesh {
     private readonly createBaseplateGeometryStrategy: CreateBaseplateGeometryStrategy
 
     constructor() {
         const createBaseplateGeometryStrategy = new CreateBaseplateGeometryStrategy()
-        super(new SizeChangeCreateStrategy(createBaseplateGeometryStrategy))
+        super(new SizeChangeCreateStrategy(createBaseplateGeometryStrategy), new BaseplateColorChangeStrategy())
         this.createBaseplateGeometryStrategy = createBaseplateGeometryStrategy
         this.name = "Baseplate"
     }
@@ -39,10 +40,5 @@ export class BaseplateMesh extends GeneralMesh {
 
     async changeSize(geometryOptions: GeometryOptions, oldWidth: number): Promise<void> {
         return this.sizeChangeStrategy.execute(geometryOptions, oldWidth, this)
-    }
-
-    changeColor(numberOfColors: number) {
-        const shaderMaterial = this.material as ShaderMaterial
-        shaderMaterial.defaultAttributeValues.color = numberOfColors === 1 ? [1, 1, 1] : [0.5, 0.5, 0.5]
     }
 }

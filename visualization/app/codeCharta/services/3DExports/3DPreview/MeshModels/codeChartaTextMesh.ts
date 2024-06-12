@@ -1,11 +1,12 @@
 import { ManualVisibilityMesh } from "./manualVisibilityMesh"
 import { GeometryOptions } from "../preview3DPrintMesh"
 import { Font, MeshBasicMaterial, TextGeometry } from "three"
+import { DefaultPrintColorChangeStrategy } from "../ColorChangeStrategies/defaultPrintColorChangeStrategy"
 
 export class CodeChartaTextMesh extends ManualVisibilityMesh {
 
     constructor(public font: Font) {
-        super(true, 2, 0.7)
+        super(new DefaultPrintColorChangeStrategy(), true, 2, 0.7)
         this.name = "Back MW Logo"
     }
 

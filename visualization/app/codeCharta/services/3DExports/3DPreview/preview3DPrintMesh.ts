@@ -26,6 +26,7 @@ import { CodeChartaTextMesh } from "./MeshModels/codeChartaTextMesh"
 import { SecondRowTextMesh } from "./MeshModels/secondRowTextMesh"
 import { QRCodeMesh } from "./MeshModels/qrCodeMesh"
 import { MetricDescriptionsMesh } from "./MeshModels/metricDescriptionsMesh"
+import { GeneralMesh } from "./MeshModels/generalMesh"
 
 export interface GeometryOptions {
     originalMapMesh: Mesh
@@ -72,16 +73,15 @@ export class Preview3DPrintMesh {
     private qrCodeMesh: QRCodeMesh
     private codeChartaLogoMesh: CodeChartaLogoMesh
     private codeChartaTextMesh: CodeChartaTextMesh
-    private metricsMesh: ManualVisibilityMesh
+    private metricsMesh: MetricDescriptionsMesh
 
-    private geometryOptions: GeometryOptions
-
-    async initialize(geometryOptions: GeometryOptions) {
+    constructor(private geometryOptions: GeometryOptions) {
         this.printMesh = new Mesh()
         this.printMesh.name = "PrintMesh"
         this.mapScalingFactorForSnappingHeights = 1
-        this.geometryOptions = geometryOptions
+    }
 
+    async initialize() {
         await this.loadFont()
         await this.createPrintPreviewMesh()
         this.calculateCurrentSize()
@@ -107,7 +107,7 @@ export class Preview3DPrintMesh {
         this.printMesh.add(this.mapMesh)
 
         this.initFrontText(this.geometryOptions.frontText, this.geometryOptions.width, this.geometryOptions.numberOfColors)
-        this.printMesh.attach(this.frontTextMesh)
+        this.printMesh.add(this.frontTextMesh)
 
         this.secondRowMesh = await new SecondRowTextMesh(this.font, this.geometryOptions).init(this.geometryOptions)
         this.printMesh.add(this.secondRowMesh)
@@ -136,62 +136,46 @@ export class Preview3DPrintMesh {
 
     async updateSize(wantedWidth: number): Promise<boolean> {
         this.geometryOptions.width = wantedWidth
-        const currentWidth = this.currentSize.x
+        const oldWidth = this.currentSize.x
         let qrCodeVisible = this.qrCodeMesh.getManualVisibility()
 
-        await this.baseplateMesh.changeSize(this.geometryOptions, currentWidth)
-        await this.secondRowMesh.changeSize(this.geometryOptions, currentWidth)
-        await this.backMWLogoMesh.changeSize(this.geometryOptions, currentWidth)
-        await this.itsTextMesh.changeSize(this.geometryOptions, currentWidth)
-        await this.codeChartaLogoMesh.changeSize(this.geometryOptions, currentWidth)
-        await this.codeChartaTextMesh.changeSize(this.geometryOptions, currentWidth)
-        await this.metricsMesh.changeSize(this.geometryOptions, currentWidth)
+        await this.baseplateMesh.changeSize(this.geometryOptions, oldWidth)
+        await this.secondRowMesh.changeSize(this.geometryOptions, oldWidth)
+        await this.backMWLogoMesh.changeSize(this.geometryOptions, oldWidth)
+        await this.itsTextMesh.changeSize(this.geometryOptions, oldWidth)
+        await this.codeChartaLogoMesh.changeSize(this.geometryOptions, oldWidth)
+        await this.codeChartaTextMesh.changeSize(this.geometryOptions, oldWidth)
+        await this.metricsMesh.changeSize(this.geometryOptions, oldWidth)
 
-        for (const child of this.printMesh.children) {
-            if (child instanceof Mesh) {
-                switch (child.name) {
-                    case "Map": {
-                        const map = child.geometry
-                        const scale =
-                            (wantedWidth - 2 * this.geometryOptions.mapSideOffset) / (currentWidth - 2 * this.geometryOptions.mapSideOffset)
-                        map.scale(scale, scale, scale)
-                        this.snapHeightsToLayerHeight(map)
-                        break
-                    }
+        const map = this.mapMesh.geometry
+        const scale =
+            (wantedWidth - 2 * this.geometryOptions.mapSideOffset) / (oldWidth - 2 * this.geometryOptions.mapSideOffset)
+        map.scale(scale, scale, scale)
+        this.snapHeightsToLayerHeight(map)
 
-                    case "Front Text": {
-                        const text = child.geometry
-                        text.translate(0, -(wantedWidth - currentWidth) / 2, 0)
-                        break
-                    }
-                    case "Front MW Logo":
-                        this.updateFrontLogoPosition(child, wantedWidth, true)
-                        break
+        this.frontTextMesh.geometry.translate(0, -(wantedWidth - oldWidth) / 2, 0)
+        this.updateFrontLogoPosition(this.frontMWLogoMesh, wantedWidth, true)
+        if(this.customLogoMesh)
+            this.updateFrontLogoPosition(this.customLogoMesh, wantedWidth, false)
 
-                    case "Custom Logo":
-                        this.updateFrontLogoPosition(child, wantedWidth, false)
-                        break
-
-                    case "QRCode":
-                        await this.qrCodeMesh.changeSize(this.geometryOptions, currentWidth)
-                        qrCodeVisible = this.qrCodeMesh.visible
-                        break
-
-                    default:
-                        break
-                }
-            }
-        }
+        await this.qrCodeMesh.changeSize(this.geometryOptions, oldWidth)
+        qrCodeVisible = this.qrCodeMesh.visible
 
         this.calculateCurrentSize()
         return qrCodeVisible
     }
 
     updateNumberOfColors(mapWithOriginalColors: Mesh, numberOfColors: number) {
+        console.log("updateNumberOfColors")
         this.updateMapColors(mapWithOriginalColors.geometry, this.mapMesh.geometry, numberOfColors)
         this.printMesh.traverse(child => {
             if (child instanceof Mesh && child.name !== "Map" && child.name !== "PrintMesh") {
-                this.updateColor(child, numberOfColors)
+                if(child instanceof GeneralMesh){
+                    child.changeColor(numberOfColors)
+                }
+                else {
+                    this.updateColor(child, numberOfColors)
+                }
             }
         })
     }
@@ -503,12 +487,6 @@ export class Preview3DPrintMesh {
 
     updateQrCodeVisibility(qrCodeVisible: boolean) {
         this.qrCodeMesh.setManualVisibility(qrCodeVisible)
-    }
-
-    private scaleBacktext(backTextMesh: ManualVisibilityMesh, scaleFactor: number) {
-        backTextMesh.scale.set(backTextMesh.scale.x * scaleFactor, backTextMesh.scale.y * scaleFactor, backTextMesh.scale.z)
-
-        backTextMesh.updateVisibility()
     }
 
     private async initBackMWLogoMesh() {

@@ -5,14 +5,16 @@ import { BufferGeometry, MeshBasicMaterial } from "three"
 import { GeometryOptions } from "../preview3DPrintMesh"
 import { GeneralMesh } from "./generalMesh"
 import { SizeChangeScaleStrategy } from "../SizeChangeStrategies/sizeChangeScaleStrategy"
+import { ColorChangeStrategy } from "../ColorChangeStrategies/colorChangeStrategy"
 
-export class ManualVisibilityMesh extends GeneralMesh { //TODO: split into two classes
+export abstract class ManualVisibilityMesh extends GeneralMesh { //TODO: split into two classes
     currentNumberOfColors: number
     manualVisibility: boolean
     readonly minScale: number
     readonly minNumberOfColors: number
 
     constructor(
+        colorChangeStrategy: ColorChangeStrategy,
         manualVisibility = true,
         minNumberOfColors = 2,
         minScale?: number,
@@ -20,7 +22,7 @@ export class ManualVisibilityMesh extends GeneralMesh { //TODO: split into two c
         material?: MeshBasicMaterial
     ) {
         const sizeChangeStrategy = new SizeChangeScaleStrategy()
-        super(sizeChangeStrategy)
+        super(sizeChangeStrategy, colorChangeStrategy)
         this.minScale = minScale
         this.manualVisibility = manualVisibility
         this.minNumberOfColors = minNumberOfColors
@@ -45,7 +47,7 @@ export class ManualVisibilityMesh extends GeneralMesh { //TODO: split into two c
         this.updateVisibility()
     }
 
-    updateVisibility(): void { //TODO: make private
+    private updateVisibility(): void {
         const visibleBecauseOfColor = this.currentNumberOfColors ? this.currentNumberOfColors >= this.minNumberOfColors : true
         this.visible = this.minScale
             ? this.scale.x >= this.minScale && visibleBecauseOfColor && this.manualVisibility
@@ -57,9 +59,8 @@ export class ManualVisibilityMesh extends GeneralMesh { //TODO: split into two c
         this.updateVisibility()
     }
 
-    init(geometryOptions: GeometryOptions): Promise<GeneralMesh> {
-        return new Promise(resolve => {
-            resolve(this)
-        })
+    changeColor(numberOfColors: number) {
+        this.setCurrentNumberOfColors(numberOfColors)
+        this.colorChangeStrategy.execute(numberOfColors, this)
     }
 }
