@@ -28,4 +28,8 @@ export abstract class TextMesh extends ManualVisibilityMesh {
 
         return this
     }
+
+    updateText(geometryOptions: GeometryOptions) {
+        //TODO: implement
+    }
 }

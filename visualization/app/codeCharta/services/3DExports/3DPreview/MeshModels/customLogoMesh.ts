@@ -12,7 +12,7 @@ export class CustomLogoMesh extends GeneralMesh {
     }
 
     async init(geometryOptions: GeometryOptions): Promise<CustomLogoMesh> {
-        const createSvgStrategy = new CreateSvgGeometryStrategy()
+       const createSvgStrategy = new CreateSvgGeometryStrategy()
         const size = (geometryOptions.frontTextSize * geometryOptions.width) / 200
         this.geometry = await createSvgStrategy.create(geometryOptions, {
             filePath: this.filePath,
@@ -41,7 +41,7 @@ export class CustomLogoMesh extends GeneralMesh {
     }
 
     setColor(color: string) {
-        ;(this.material as MeshBasicMaterial).color.set(color)
+        (this.material as MeshBasicMaterial).color.set(color)
     }
 
     rotate() {

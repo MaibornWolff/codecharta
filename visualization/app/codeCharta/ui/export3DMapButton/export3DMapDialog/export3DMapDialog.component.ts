@@ -171,8 +171,7 @@ export class Export3DMapDialogComponent {
     onSelectedPrinterChange() {
         const wantedNumberOfColors = this.selectedPrinter.numberOfColors
         if (this.currentNumberOfColors !== wantedNumberOfColors) {
-            const originalMesh = this.threeSceneService.getMapMesh().getThreeMesh()
-            this.previewMesh.updateNumberOfColors(originalMesh, wantedNumberOfColors)
+            this.previewMesh.updateNumberOfColors(wantedNumberOfColors)
             this.currentNumberOfColors = wantedNumberOfColors
         }
         this.makeMapMaxSize()
