@@ -10,7 +10,7 @@ export class CodeChartaTextMesh extends TextMesh {
             font,
             text: "github.com/MaibornWolff/codecharta",
             side: "back",
-            yPosition: 15, //TODO: make relative
+            yPosition: 5, //TODO: make relative
             textSize: geometryOptions.backTextSize
         }
         super(new SizeChangeScaleStrategy(), createFrontTextGeometryOptions, true, 2, 0.7)

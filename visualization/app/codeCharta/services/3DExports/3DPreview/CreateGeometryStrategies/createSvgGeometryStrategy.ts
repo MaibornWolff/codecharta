@@ -8,6 +8,10 @@ import { GeometryOptions } from "../preview3DPrintMesh"
 
 export interface CreateSvgGeometryStrategyOptions extends CreateGeometryStrategyOptions {
     filePath: string
+    size: number
+    xPosition: number
+    yPosition: number
+    side: "front" | "back"
 }
 export class CreateSvgGeometryStrategy implements CreateGeometryStrategy {
     async create(
@@ -28,7 +32,7 @@ export class CreateSvgGeometryStrategy implements CreateGeometryStrategy {
 
                         for (const shape of shapes) {
                             const geometry = new ExtrudeGeometry(shape, {
-                                depth: 1,
+                                depth: geometryOptions.printHeight,
                                 bevelEnabled: false
                             })
                             geometries.push(geometry)
@@ -40,8 +44,21 @@ export class CreateSvgGeometryStrategy implements CreateGeometryStrategy {
                     mergedGeometry.computeBoundingBox()
                     const width = mergedGeometry.boundingBox.max.x - mergedGeometry.boundingBox.min.x
                     const depth = mergedGeometry.boundingBox.max.y - mergedGeometry.boundingBox.min.y
-                    const scale = 1 / Math.max(width, depth)
+                    const scale = createSvgGeometryStrategyOptions.size / Math.max(width, depth)
                     mergedGeometry.scale(scale, scale, 1)
+
+                    mergedGeometry.center()
+                    if (createSvgGeometryStrategyOptions.side === "back") {
+                        mergedGeometry.rotateZ(Math.PI)
+                    } else {
+                        mergedGeometry.rotateZ(Math.PI)
+                        mergedGeometry.rotateY(Math.PI)
+                    }
+                    mergedGeometry.translate(
+                        createSvgGeometryStrategyOptions.xPosition,
+                        createSvgGeometryStrategyOptions.yPosition,
+                        createSvgGeometryStrategyOptions.side === "front" ? geometryOptions.printHeight : -geometryOptions.printHeight * 2
+                    )
 
                     resolve(mergedGeometry)
                 },

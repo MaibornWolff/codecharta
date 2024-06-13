@@ -26,6 +26,7 @@ import { MetricDescriptionsMesh } from "./MeshModels/metricDescriptionsMesh"
 import { GeneralMesh } from "./MeshModels/generalMesh"
 import { QrCodeMesh } from "./MeshModels/qrCodeMesh"
 import { FrontTextMesh } from "./MeshModels/frontTextMesh"
+import { FrontMWLogoMesh } from "./MeshModels/frontMWLogoMesh"
 
 export interface GeometryOptions {
     originalMapMesh: Mesh
@@ -63,7 +64,7 @@ export class Preview3DPrintMesh {
     private mapMesh: Mesh
     private baseplateMesh: BaseplateMesh
     private frontTextMesh: FrontTextMesh
-    private frontMWLogoMesh: Mesh
+    private frontMWLogoMesh: FrontMWLogoMesh
     private secondRowMesh: SecondRowTextMesh
     private customLogoMesh: Mesh
     //Back
@@ -111,7 +112,7 @@ export class Preview3DPrintMesh {
         this.secondRowMesh = await new SecondRowTextMesh(this.font, this.geometryOptions).init(this.geometryOptions)
         this.printMesh.add(this.secondRowMesh)
 
-        await this.initFrontMWLogoMesh(this.geometryOptions.width, this.geometryOptions.numberOfColors)
+        this.frontMWLogoMesh = await new FrontMWLogoMesh().init(this.geometryOptions)
         this.printMesh.add(this.frontMWLogoMesh)
 
         await this.initBackMWLogoMesh()
@@ -145,13 +146,13 @@ export class Preview3DPrintMesh {
         await this.codeChartaTextMesh.changeSize(this.geometryOptions, oldWidth)
         await this.metricsMesh.changeSize(this.geometryOptions, oldWidth)
         await this.frontTextMesh.changeSize(this.geometryOptions, oldWidth)
+        await this.frontMWLogoMesh.changeSize(this.geometryOptions, oldWidth)
 
         const map = this.mapMesh.geometry
         const scale = (wantedWidth - 2 * this.geometryOptions.mapSideOffset) / (oldWidth - 2 * this.geometryOptions.mapSideOffset)
         map.scale(scale, scale, scale)
         this.snapHeightsToLayerHeight(map)
 
-        this.updateFrontLogoPosition(this.frontMWLogoMesh, wantedWidth, true)
         if (this.customLogoMesh) {
             this.updateFrontLogoPosition(this.customLogoMesh, wantedWidth, false)
         }
@@ -475,26 +476,6 @@ export class Preview3DPrintMesh {
     private async initBackMWLogoMesh() {
         this.backMWLogoMesh = new BackMWLogoMesh()
         await this.backMWLogoMesh.init(this.geometryOptions)
-    }
-
-    private async initFrontMWLogoMesh(wantedWidth: number, numberOfColors: number) {
-        const filePath = `codeCharta/assets/mw_logo.svg`
-
-        const mwLogoMesh = await this.createSvgMesh(filePath, this.geometryOptions.printHeight, this.geometryOptions.logoSize)
-
-        mwLogoMesh.geometry.computeBoundingBox()
-        const boundingBox = mwLogoMesh.geometry.boundingBox
-        const logoWidth = boundingBox.max.x - boundingBox.min.x
-        const logoDepth = boundingBox.max.y - boundingBox.min.y
-        mwLogoMesh.position.set(
-            wantedWidth / 2 - logoWidth - this.geometryOptions.mapSideOffset,
-            -logoDepth / 2 - (wantedWidth - this.geometryOptions.mapSideOffset) / 2,
-            this.geometryOptions.printHeight / 2
-        )
-
-        mwLogoMesh.name = "Front MW Logo"
-        this.updateColor(mwLogoMesh, numberOfColors)
-        this.frontMWLogoMesh = mwLogoMesh
     }
 
     private async createSvgMesh(filePath: string, height: number, size: number): Promise<Mesh> {

@@ -42,7 +42,7 @@ export class CreateTextGeometryStrategy implements CreateGeometryStrategy {
         textGeometry.translate(
             0,
             -textDepth / 2 + yPosition,
-            side === "front" ? geometryOptions.printHeight / 2 : -geometryOptions.printHeight
+            side === "front" ? geometryOptions.printHeight / 2 : -geometryOptions.printHeight - 0.1
         )
 
         return new Promise(resolve => {

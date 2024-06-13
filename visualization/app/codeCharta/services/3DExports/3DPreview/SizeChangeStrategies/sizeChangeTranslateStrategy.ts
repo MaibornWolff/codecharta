@@ -3,9 +3,16 @@ import { SizeChangeStrategy, SizeChangeStrategyOptions } from "./sizeChangeStrat
 
 export interface SizeChangeTranslateStrategyOptions extends SizeChangeStrategyOptions {
     oldWidth: number
+    xPosition: "center" | "left" | "right"
 }
 export class SizeChangeTranslateStrategy implements SizeChangeStrategy {
     async execute({ width }: GeometryOptions, sizeChangeTranslateStrategyOptions: SizeChangeTranslateStrategyOptions): Promise<void> {
-        sizeChangeTranslateStrategyOptions.mesh.geometry.translate(0, -(width - sizeChangeTranslateStrategyOptions.oldWidth) / 2, 0)
+        let xChange = 0
+        if (sizeChangeTranslateStrategyOptions.xPosition === "left") {
+            xChange = -(width - sizeChangeTranslateStrategyOptions.oldWidth) / 2
+        } else if (sizeChangeTranslateStrategyOptions.xPosition === "right") {
+            xChange = (width - sizeChangeTranslateStrategyOptions.oldWidth) / 2
+        }
+        sizeChangeTranslateStrategyOptions.mesh.geometry.translate(xChange, -(width - sizeChangeTranslateStrategyOptions.oldWidth) / 2, 0)
     }
 }
