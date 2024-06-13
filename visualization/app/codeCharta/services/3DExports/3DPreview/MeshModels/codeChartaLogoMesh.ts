@@ -14,17 +14,18 @@ export class CodeChartaLogoMesh extends ManualVisibilityMesh {
     async init(geometryOptions: GeometryOptions): Promise<CodeChartaLogoMesh> {
         const createSvgStrategy = new CreateSvgGeometryStrategy()
         const size = geometryOptions.width / 6
-        const xPosition = 0
-        const yPosition = geometryOptions.width / 5.5 - size / 2
         this.geometry = await createSvgStrategy.create(geometryOptions, {
             filePath: "codeCharta/assets/codecharta_logo.svg",
             size,
-            xPosition,
-            yPosition,
             side: "back"
         })
 
         this.material = new MeshBasicMaterial()
+
+        const xPosition = 0
+        const yPosition = geometryOptions.width / 5.5 - size / 2
+        const zPosition = -geometryOptions.printHeight * 2
+        this.position.set(xPosition, yPosition, zPosition)
 
         this.changeColor(geometryOptions.numberOfColors)
 

@@ -9,8 +9,6 @@ import { GeometryOptions } from "../preview3DPrintMesh"
 export interface CreateSvgGeometryStrategyOptions extends CreateGeometryStrategyOptions {
     filePath: string
     size: number
-    xPosition: number
-    yPosition: number
     side: "front" | "back"
 }
 export class CreateSvgGeometryStrategy implements CreateGeometryStrategy {
@@ -54,11 +52,6 @@ export class CreateSvgGeometryStrategy implements CreateGeometryStrategy {
                         mergedGeometry.rotateZ(Math.PI)
                         mergedGeometry.rotateY(Math.PI)
                     }
-                    mergedGeometry.translate(
-                        createSvgGeometryStrategyOptions.xPosition,
-                        createSvgGeometryStrategyOptions.yPosition,
-                        createSvgGeometryStrategyOptions.side === "front" ? geometryOptions.printHeight : -geometryOptions.printHeight * 2
-                    )
 
                     resolve(mergedGeometry)
                 },

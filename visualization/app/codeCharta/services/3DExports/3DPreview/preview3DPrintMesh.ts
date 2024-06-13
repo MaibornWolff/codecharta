@@ -2,7 +2,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import {
     BufferGeometry,
-    ExtrudeGeometry,
     Float32BufferAttribute,
     Font,
     FontLoader,
@@ -12,8 +11,6 @@ import {
     TextGeometry,
     Vector3
 } from "three"
-import { SVGLoader } from "three/examples/jsm/loaders/SVGLoader"
-import { BufferGeometryUtils } from "three/examples/jsm/utils/BufferGeometryUtils"
 import { ColorRange, NodeMetricData } from "../../../codeCharta.model"
 import { ManualVisibilityMesh } from "./MeshModels/manualVisibilityMesh"
 import { BackMWLogoMesh } from "./MeshModels/backMWLogoMesh"
@@ -27,6 +24,7 @@ import { GeneralMesh } from "./MeshModels/generalMesh"
 import { QrCodeMesh } from "./MeshModels/qrCodeMesh"
 import { FrontTextMesh } from "./MeshModels/frontTextMesh"
 import { FrontMWLogoMesh } from "./MeshModels/frontMWLogoMesh"
+import { CustomLogoMesh } from "./MeshModels/customLogoMesh"
 
 export interface GeometryOptions {
     originalMapMesh: Mesh
@@ -66,7 +64,7 @@ export class Preview3DPrintMesh {
     private frontTextMesh: FrontTextMesh
     private frontMWLogoMesh: FrontMWLogoMesh
     private secondRowMesh: SecondRowTextMesh
-    private customLogoMesh: Mesh
+    private customLogoMesh: CustomLogoMesh
     //Back
     private backMWLogoMesh: BackMWLogoMesh
     private itsTextMesh: BackBelowLogoTextMesh
@@ -115,7 +113,7 @@ export class Preview3DPrintMesh {
         this.frontMWLogoMesh = await new FrontMWLogoMesh().init(this.geometryOptions)
         this.printMesh.add(this.frontMWLogoMesh)
 
-        await this.initBackMWLogoMesh()
+        this.backMWLogoMesh = await new BackMWLogoMesh().init(this.geometryOptions)
         this.printMesh.add(this.backMWLogoMesh)
 
         this.itsTextMesh = await new BackBelowLogoTextMesh(this.font, this.geometryOptions).init(this.geometryOptions)
@@ -154,7 +152,7 @@ export class Preview3DPrintMesh {
         this.snapHeightsToLayerHeight(map)
 
         if (this.customLogoMesh) {
-            this.updateFrontLogoPosition(this.customLogoMesh, wantedWidth, false)
+            await this.customLogoMesh.changeSize(this.geometryOptions, oldWidth)
         }
 
         await this.qrCodeMesh.changeSize(this.geometryOptions)
@@ -178,21 +176,16 @@ export class Preview3DPrintMesh {
     }
 
     async addCustomLogo(dataUrl: string): Promise<void> {
-        this.customLogoMesh = await this.createSvgMesh(dataUrl, this.geometryOptions.printHeight, this.geometryOptions.logoSize)
-
-        this.updateFrontLogoPosition(this.customLogoMesh, this.currentSize.x, false)
-        this.updateFrontLogoSize(this.customLogoMesh)
-        this.customLogoMesh.name = "Custom Logo"
-
-        this.printMesh.attach(this.customLogoMesh)
+        this.customLogoMesh = await new CustomLogoMesh(dataUrl).init(this.geometryOptions)
+        this.printMesh.add(this.customLogoMesh)
     }
 
     rotateCustomLogo() {
-        this.customLogoMesh.rotateZ(Math.PI / 2) // Rotate 90 degrees
+        this.customLogoMesh.rotate()
     }
 
     flipCustomLogo() {
-        this.customLogoMesh.rotateY(Math.PI) // Rotate 180 degrees
+        this.customLogoMesh.flip()
     }
 
     removeCustomLogo() {
@@ -200,11 +193,7 @@ export class Preview3DPrintMesh {
     }
 
     updateCustomLogoColor(newColor: string) {
-        if (this.customLogoMesh.material instanceof MeshBasicMaterial) {
-            this.customLogoMesh.material.color.set(newColor)
-        } else {
-            console.error("Custom Logos material is not an instance of MeshBasicMaterial")
-        }
+        this.customLogoMesh.setColor(newColor)
     }
 
     updateFrontText(frontText: string) {
@@ -273,17 +262,6 @@ export class Preview3DPrintMesh {
         const currentDepth = this.baseplateMesh.getDepth()
         const currentHeight = this.baseplateMesh.getHeight() + boundingBoxMap.max.z - boundingBoxMap.min.z
         this.currentSize = new Vector3(currentWidth, currentDepth, currentHeight)
-    }
-
-    private updateFrontLogoPosition(logoMesh: Mesh, wantedWidth: number, rightSide: boolean) {
-        logoMesh.geometry.computeBoundingBox()
-        const boundingBox = logoMesh.geometry.boundingBox
-        const logoWidth = boundingBox.max.x - boundingBox.min.x
-        const logoDepth = boundingBox.max.y - boundingBox.min.y
-        const xPosition = wantedWidth / 2 - logoWidth - this.geometryOptions.mapSideOffset * (rightSide ? 1 : -1)
-        let yPosition = -logoDepth / 2 - wantedWidth / 2 + this.geometryOptions.frontTextSize / 1.75
-        yPosition += this.secondRowMesh.visible ? this.geometryOptions.secondRowTextSize / 1.75 : 0
-        logoMesh.position.set(xPosition, yPosition, this.geometryOptions.printHeight / 2)
     }
 
     private initMapMesh(geometryOptions: GeometryOptions) {
@@ -471,65 +449,6 @@ export class Preview3DPrintMesh {
 
     updateQrCodeVisibility(qrCodeVisible: boolean) {
         this.qrCodeMesh.setManualVisibility(qrCodeVisible)
-    }
-
-    private async initBackMWLogoMesh() {
-        this.backMWLogoMesh = new BackMWLogoMesh()
-        await this.backMWLogoMesh.init(this.geometryOptions)
-    }
-
-    private async createSvgMesh(filePath: string, height: number, size: number): Promise<Mesh> {
-        const svgGeometry = await this.createSvgGeometry(filePath)
-        svgGeometry.center()
-        svgGeometry.rotateZ(Math.PI)
-        svgGeometry.rotateY(Math.PI)
-        svgGeometry.scale(size, size, height)
-
-        const material = new MeshBasicMaterial()
-        const svgMesh = new Mesh(svgGeometry, material)
-        svgMesh.name = "Unnamed SVG Mesh"
-        return svgMesh
-    }
-
-    private async createSvgGeometry(filePath: string): Promise<BufferGeometry> {
-        //load the svg file
-        const loader = new SVGLoader()
-        return new Promise((resolve, reject) => {
-            loader.load(
-                filePath,
-                function (data) {
-                    const paths = data.paths
-                    const geometries: BufferGeometry[] = []
-
-                    for (const path of paths) {
-                        const shapes = path.toShapes(false, true)
-
-                        for (const shape of shapes) {
-                            const geometry = new ExtrudeGeometry(shape, {
-                                depth: 1,
-                                bevelEnabled: false
-                            })
-                            geometries.push(geometry)
-                        }
-                    }
-
-                    const mergedGeometry = BufferGeometryUtils.mergeBufferGeometries(geometries)
-
-                    mergedGeometry.computeBoundingBox()
-                    const width = mergedGeometry.boundingBox.max.x - mergedGeometry.boundingBox.min.x
-                    const depth = mergedGeometry.boundingBox.max.y - mergedGeometry.boundingBox.min.y
-                    const scale = 1 / Math.max(width, depth)
-                    mergedGeometry.scale(scale, scale, 1)
-
-                    resolve(mergedGeometry)
-                },
-                undefined,
-                function (error) {
-                    console.error(`Error loading ${filePath}`)
-                    reject(error)
-                }
-            )
-        })
     }
 }
 
