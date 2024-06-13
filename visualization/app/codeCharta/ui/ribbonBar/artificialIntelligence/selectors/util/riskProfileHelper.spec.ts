@@ -64,4 +64,21 @@ describe("riskProfileHelper", () => {
 
         expect(actualRiskProfile).toEqual(expectedRiskProfile)
     })
+
+    it("should calculate risk profile when first available metric (complexity) is not defined for the map", () => {
+        const actualRlocRisk: RiskProfile = { lowRisk: 0, moderateRisk: 0, highRisk: 0, veryHighRisk: 0 }
+        const fileExtension = "java"
+        const nodes: CodeMapNode[] = [
+            { name: "javaFile1", type: NodeType.FILE, attributes: { rloc: 1, mcc: 48 } },
+            { name: "javaFile2", type: NodeType.FILE, attributes: { rloc: 10, mcc: 71 } },
+            { name: "javaFile3", type: NodeType.FILE, attributes: { rloc: 100, mcc: 117 } },
+            { name: "javaFile4", type: NodeType.FILE, attributes: { rloc: 1000, mcc: 191 } }
+        ]
+
+        for (const node of nodes) {
+            aggregateRiskProfile(node, actualRlocRisk, fileExtension)
+        }
+
+        expect(actualRlocRisk).toEqual({ lowRisk: 1, moderateRisk: 10, highRisk: 100, veryHighRisk: 1000 })
+    })
 })

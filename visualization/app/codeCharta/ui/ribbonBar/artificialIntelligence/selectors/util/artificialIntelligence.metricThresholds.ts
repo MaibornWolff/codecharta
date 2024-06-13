@@ -26,6 +26,12 @@ export const metricThresholdsByLanguage: MetricThresholdsByLanguage = {
             percentile90: 117,
             percentile95: 191
         },
+        mcc: {
+            percentile70: 48,
+            percentile80: 71,
+            percentile90: 117,
+            percentile95: 191
+        },
         rloc: {
             percentile70: 365,
             percentile80: 554,
@@ -79,6 +85,12 @@ export const metricThresholdsByLanguage: MetricThresholdsByLanguage = {
         // No derived Thresholds for other programming languages than java
         // Just use empirical thresholds
         complexity: {
+            percentile70: 50,
+            percentile80: 70,
+            percentile90: 120,
+            percentile95: 190
+        },
+        mcc: {
             percentile70: 50,
             percentile80: 70,
             percentile90: 120,
