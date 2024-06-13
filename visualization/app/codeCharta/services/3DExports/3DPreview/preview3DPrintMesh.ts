@@ -1,16 +1,6 @@
 /* eslint-disable unused-imports/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import {
-    BufferGeometry,
-    Float32BufferAttribute,
-    Font,
-    FontLoader,
-    Mesh,
-    MeshBasicMaterial,
-    ShaderMaterial,
-    TextGeometry,
-    Vector3
-} from "three"
+import { Font, FontLoader, Mesh, MeshBasicMaterial, ShaderMaterial, TextGeometry, Vector3 } from "three"
 import { ColorRange, NodeMetricData } from "../../../codeCharta.model"
 import { ManualVisibilityMesh } from "./MeshModels/manualVisibilityMesh"
 import { BackMWLogoMesh } from "./MeshModels/backMWLogoMesh"
@@ -25,6 +15,7 @@ import { QrCodeMesh } from "./MeshModels/qrCodeMesh"
 import { FrontTextMesh } from "./MeshModels/frontTextMesh"
 import { FrontMWLogoMesh } from "./MeshModels/frontMWLogoMesh"
 import { CustomLogoMesh } from "./MeshModels/customLogoMesh"
+import { MapMesh } from "./MeshModels/mapMesh"
 
 export interface GeometryOptions {
     originalMapMesh: Mesh
@@ -56,10 +47,9 @@ export class Preview3DPrintMesh {
     private font: Font
     private printMesh: Mesh
     private currentSize: Vector3
-    private mapScalingFactorForSnappingHeights: number
 
     //Front
-    private mapMesh: Mesh
+    private mapMesh: MapMesh
     private baseplateMesh: BaseplateMesh
     private frontTextMesh: FrontTextMesh
     private frontMWLogoMesh: FrontMWLogoMesh
@@ -76,7 +66,6 @@ export class Preview3DPrintMesh {
     constructor(private geometryOptions: GeometryOptions) {
         this.printMesh = new Mesh()
         this.printMesh.name = "PrintMesh"
-        this.mapScalingFactorForSnappingHeights = 1
     }
 
     async initialize() {
@@ -101,7 +90,7 @@ export class Preview3DPrintMesh {
         this.baseplateMesh = await new BaseplateMesh().init(this.geometryOptions)
         this.printMesh.add(this.baseplateMesh)
 
-        this.initMapMesh(this.geometryOptions)
+        this.mapMesh = await new MapMesh().init(this.geometryOptions)
         this.printMesh.add(this.mapMesh)
 
         this.frontTextMesh = await new FrontTextMesh(this.font, this.geometryOptions).init(this.geometryOptions)
@@ -145,11 +134,7 @@ export class Preview3DPrintMesh {
         await this.metricsMesh.changeSize(this.geometryOptions, oldWidth)
         await this.frontTextMesh.changeSize(this.geometryOptions, oldWidth)
         await this.frontMWLogoMesh.changeSize(this.geometryOptions, oldWidth)
-
-        const map = this.mapMesh.geometry
-        const scale = (wantedWidth - 2 * this.geometryOptions.mapSideOffset) / (oldWidth - 2 * this.geometryOptions.mapSideOffset)
-        map.scale(scale, scale, scale)
-        this.snapHeightsToLayerHeight(map)
+        await this.mapMesh.changeSize(this.geometryOptions, oldWidth)
 
         if (this.customLogoMesh) {
             await this.customLogoMesh.changeSize(this.geometryOptions, oldWidth)
@@ -163,9 +148,8 @@ export class Preview3DPrintMesh {
     }
 
     updateNumberOfColors(mapWithOriginalColors: Mesh, numberOfColors: number) {
-        this.updateMapColors(mapWithOriginalColors.geometry, this.mapMesh.geometry, numberOfColors)
         this.printMesh.traverse(child => {
-            if (child instanceof Mesh && child.name !== "Map" && child.name !== "PrintMesh") {
+            if (child instanceof Mesh && child.name !== "PrintMesh") {
                 if (child instanceof GeneralMesh) {
                     child.changeColor(numberOfColors)
                 } else {
@@ -262,82 +246,6 @@ export class Preview3DPrintMesh {
         const currentDepth = this.baseplateMesh.getDepth()
         const currentHeight = this.baseplateMesh.getHeight() + boundingBoxMap.max.z - boundingBoxMap.min.z
         this.currentSize = new Vector3(currentWidth, currentDepth, currentHeight)
-    }
-
-    private initMapMesh(geometryOptions: GeometryOptions) {
-        const newMapGeometry = geometryOptions.originalMapMesh.geometry.clone()
-        newMapGeometry.rotateX(Math.PI / 2)
-        this.updateMapGeometry(newMapGeometry, geometryOptions.width, geometryOptions.numberOfColors)
-        newMapGeometry.rotateZ(-Math.PI / 2)
-        const newMapMesh: Mesh = geometryOptions.originalMapMesh.clone() as Mesh
-        newMapMesh.clear()
-        newMapMesh.geometry = newMapGeometry
-        newMapMesh.name = "Map"
-        this.mapMesh = newMapMesh
-    }
-
-    private updateMapGeometry(map: BufferGeometry, wantedWidth: number, numberOfColors: number): BufferGeometry {
-        const width = wantedWidth - 2 * this.geometryOptions.mapSideOffset
-
-        const normalizeFactor = map.boundingBox.max.x
-        const scale = width / normalizeFactor
-        map.scale(scale, scale, scale)
-
-        map.translate(-width / 2, width / 2, 0)
-
-        this.snapHeightsToLayerHeight(map)
-        this.updateMapColors(map, map, numberOfColors)
-
-        return map
-    }
-
-    private snapHeightsToLayerHeight(map: BufferGeometry) {
-        map.scale(1, 1, 1 / this.mapScalingFactorForSnappingHeights)
-
-        const startHeight = map.attributes.position.getZ(0)
-
-        let smallestHeight = Number.POSITIVE_INFINITY
-        for (let index = 0; index < map.attributes.position.count; index++) {
-            const height = Math.abs(map.attributes.position.getZ(index) - startHeight)
-            if (height !== 0 && height < smallestHeight) {
-                smallestHeight = height
-            }
-        }
-
-        const wantedHeight = Math.ceil(smallestHeight / this.geometryOptions.layerHeight) * this.geometryOptions.layerHeight
-        this.mapScalingFactorForSnappingHeights = wantedHeight / smallestHeight
-
-        map.scale(1, 1, this.mapScalingFactorForSnappingHeights)
-    }
-
-    private updateMapColors(mapWithOriginalColors: BufferGeometry, previewMap: BufferGeometry, numberOfColors) {
-        const newColors = []
-
-        for (let index = 0; index < mapWithOriginalColors.attributes.color.count; index++) {
-            const colorR = mapWithOriginalColors.attributes.color.getX(index)
-            const colorG = mapWithOriginalColors.attributes.color.getY(index)
-            const colorB = mapWithOriginalColors.attributes.color.getZ(index)
-            let newColor: number[]
-
-            if (colorR === colorB && colorR === colorG && colorG === colorB) {
-                //all grey values
-                newColor = this.getColorArray("Area", numberOfColors)
-            } else if (colorR > 0.75 && colorG > 0.75) {
-                //yellow
-                newColor = this.getColorArray("Neutral Building", numberOfColors)
-            } else if (colorR > 0.45 && colorG < 0.1) {
-                //red
-                newColor = this.getColorArray("Negative Building", numberOfColors)
-            } else if (colorR < 5 && colorG > 0.6) {
-                //green
-                newColor = this.getColorArray("Positive Building", numberOfColors)
-            } else {
-                console.error("Unknown color")
-                newColor = [1, 1, 1]
-            }
-            newColors.push(...newColor)
-        }
-        previewMap.setAttribute("color", new Float32BufferAttribute(newColors, 3))
     }
 
     private updateColor(mesh: Mesh, numberOfColors: number) {
