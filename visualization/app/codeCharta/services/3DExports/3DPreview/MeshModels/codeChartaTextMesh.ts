@@ -14,7 +14,7 @@ export class CodeChartaTextMesh extends TextMesh {
             textSize: geometryOptions.backTextSize
         }
         super(new SizeChangeScaleStrategy(), createFrontTextGeometryOptions, true, 2, 0.7)
-        this.name = "CodeCharta Logo"
+        this.name = "CodeChartaText"
     }
 
     async init(geometryOptions: GeometryOptions): Promise<CodeChartaTextMesh> {

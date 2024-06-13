@@ -10,7 +10,7 @@ import { SizeChangeScaleStrategy } from "../SizeChangeStrategies/sizeChangeScale
 export class MetricDescriptionsMesh extends ManualVisibilityMesh {
     constructor(public font: Font) {
         super(new SizeChangeScaleStrategy(), new DefaultPrintColorChangeStrategy(), true, 2, 1)
-        this.name = "Metric Text"
+        this.name = "MetricDescriptions"
     }
 
     async init(geometryOptions: GeometryOptions): Promise<MetricDescriptionsMesh> {

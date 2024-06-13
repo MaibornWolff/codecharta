@@ -15,7 +15,7 @@ export class BackBelowLogoTextMesh extends TextMesh {
             alignIfMultipleLines: "center"
         }
         super(new SizeChangeScaleStrategy(), createFrontTextGeometryOptions, true, 2, 0.7)
-        this.name = "Back MW Logo"
+        this.name = "BackBelowLogoText"
     }
 
     async init(geometryOptions: GeometryOptions): Promise<BackBelowLogoTextMesh> {

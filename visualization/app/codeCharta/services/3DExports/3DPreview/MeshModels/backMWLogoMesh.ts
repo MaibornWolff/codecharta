@@ -8,7 +8,7 @@ import { SizeChangeScaleStrategy } from "../SizeChangeStrategies/sizeChangeScale
 export class BackMWLogoMesh extends ManualVisibilityMesh {
     constructor() {
         super(new SizeChangeScaleStrategy(), new DefaultPrintColorChangeStrategy(), true, 2, 0.2)
-        this.name = "Back MW Logo"
+        this.name = "BackMWLogo"
     }
 
     async init(geometryOptions: GeometryOptions): Promise<BackMWLogoMesh> {

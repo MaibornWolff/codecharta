@@ -8,7 +8,7 @@ import { GeneralMesh } from "./generalMesh"
 export class CustomLogoMesh extends GeneralMesh {
     constructor(private filePath: string) {
         super(new SizeChangeTranslateStrategy(), new DefaultPrintColorChangeStrategy())
-        this.name = "Custom Logo"
+        this.name = "CustomLogo"
     }
 
     async init(geometryOptions: GeometryOptions): Promise<CustomLogoMesh> {

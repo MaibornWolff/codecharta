@@ -8,7 +8,7 @@ import { GeneralMesh } from "./generalMesh"
 export class FrontMWLogoMesh extends GeneralMesh {
     constructor() {
         super(new SizeChangeTranslateStrategy(), new DefaultPrintColorChangeStrategy())
-        this.name = "Front MW Logo"
+        this.name = "FrontMWLogo"
     }
 
     async init(geometryOptions: GeometryOptions): Promise<FrontMWLogoMesh> {

@@ -15,6 +15,6 @@ export class SecondRowTextMesh extends TextMesh {
             textSize: geometryOptions.secondRowTextSize
         }
         super(new SizeChangeTranslateStrategy(), createFrontTextGeometryOptions, false, 1, 0)
-        this.name = "Second Row Text"
+        this.name = "SecondRowText"
     }
 }

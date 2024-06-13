@@ -8,7 +8,7 @@ export class FrontTextMesh extends TextMesh {
     constructor(font: Font, geometryOptions: GeometryOptions) {
         let text = geometryOptions.frontText
         if (!text) {
-            text = "CodeCharta"
+            text = "FrontText"
         }
         const createFrontTextGeometryOptions: CreateFrontTextGeometryStrategyOptions = {
             font,
