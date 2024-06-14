@@ -30,7 +30,6 @@ export abstract class TextMesh extends ManualVisibilityMesh {
     }
 
     updateText(geometryOptions: GeometryOptions) {
-        //TODO: implement
-        geometryOptions.secondRowTextSize
+        geometryOptions.frontText = String(geometryOptions.frontText) //TODO: remove this line and implement this method
     }
 }
