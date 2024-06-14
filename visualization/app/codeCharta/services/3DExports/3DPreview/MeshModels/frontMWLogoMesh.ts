@@ -7,7 +7,7 @@ import { FrontLogo } from "./frontLogo"
 
 export class FrontMWLogoMesh extends FrontLogo {
     constructor() {
-        super(new SizeChangeTranslateStrategy(), new DefaultPrintColorChangeStrategy())
+        super(new SizeChangeTranslateStrategy(), new DefaultPrintColorChangeStrategy(), "right")
         this.name = "FrontMWLogo"
     }
 

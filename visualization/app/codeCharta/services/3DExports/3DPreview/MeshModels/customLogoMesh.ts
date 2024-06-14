@@ -7,7 +7,7 @@ import { FrontLogo } from "./frontLogo"
 
 export class CustomLogoMesh extends FrontLogo {
     constructor(private filePath: string) {
-        super(new SizeChangeTranslateStrategy(), new DefaultPrintColorChangeStrategy())
+        super(new SizeChangeTranslateStrategy(), new DefaultPrintColorChangeStrategy(), "left")
         this.name = "CustomLogo"
     }
 
