@@ -31,5 +31,6 @@ export abstract class TextMesh extends ManualVisibilityMesh {
 
     updateText(geometryOptions: GeometryOptions) {
         //TODO: implement
+        geometryOptions.secondRowTextSize
     }
 }

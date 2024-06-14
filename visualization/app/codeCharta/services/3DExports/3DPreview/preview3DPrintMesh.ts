@@ -46,7 +46,7 @@ export class Preview3DPrintMesh {
     private printMesh: Mesh
     private currentSize: Vector3
 
-    private childrenMeshes: Map<string, GeneralMesh>;
+    private childrenMeshes: Map<string, GeneralMesh>
 
     constructor(private geometryOptions: GeometryOptions) {
         this.printMesh = new Mesh()
@@ -122,7 +122,7 @@ export class Preview3DPrintMesh {
         this.geometryOptions.width = wantedWidth
         const oldWidth = this.currentSize.x
 
-        for(const mesh of this.childrenMeshes.values()) {
+        for (const mesh of this.childrenMeshes.values()) {
             await mesh.changeSize(this.geometryOptions, oldWidth)
         }
 
@@ -132,14 +132,14 @@ export class Preview3DPrintMesh {
 
     updateNumberOfColors(numberOfColors: number) {
         this.geometryOptions.numberOfColors = numberOfColors
-        for(const mesh of this.childrenMeshes.values()) {
+        for (const mesh of this.childrenMeshes.values()) {
             mesh.changeColor(numberOfColors)
         }
     }
 
     async addCustomLogo(dataUrl: string): Promise<void> {
-        if(this.childrenMeshes.has("CustomLogo")) {
-           this.removeCustomLogo()
+        if (this.childrenMeshes.has("CustomLogo")) {
+            this.removeCustomLogo()
         }
 
         const customLogoMesh = await new CustomLogoMesh(dataUrl).init(this.geometryOptions)
@@ -148,11 +148,13 @@ export class Preview3DPrintMesh {
     }
 
     rotateCustomLogo() {
-        (this.childrenMeshes.get("CustomLogo") as CustomLogoMesh).rotate()
+        const customLogoMesh = this.childrenMeshes.get("CustomLogo") as CustomLogoMesh
+        customLogoMesh.rotate()
     }
 
     flipCustomLogo() {
-        (this.childrenMeshes.get("CustomLogo") as CustomLogoMesh).flip()
+        const customLogoMesh = this.childrenMeshes.get("CustomLogo") as CustomLogoMesh
+        customLogoMesh.flip()
     }
 
     removeCustomLogo() {
@@ -161,11 +163,12 @@ export class Preview3DPrintMesh {
     }
 
     updateCustomLogoColor(newColor: string) {
-        (this.childrenMeshes.get("CustomLogo") as CustomLogoMesh).setColor(newColor)
+        const customLogoMesh = this.childrenMeshes.get("CustomLogo") as CustomLogoMesh
+        customLogoMesh.setColor(newColor)
     }
 
     updateFrontText(frontText: string) {
-        this.geometryOptions.frontText = frontText;
+        this.geometryOptions.frontText = frontText
         const frontTextMesh = this.childrenMeshes.get("FrontText") as FrontTextMesh
         frontTextMesh.updateText(this.geometryOptions)
     }
@@ -183,27 +186,13 @@ export class Preview3DPrintMesh {
         this.geometryOptions.secondRowVisible = isSecondRowVisible
         baseplateMesh.changeSize(this.geometryOptions)
 
-        this.updateFrontLogoSize(frontMWLogoMesh) //TODO: move to class
-        this.updateFrontLogoSize(customLogoMesh)
+        frontMWLogoMesh.changeRelativeSize(this.geometryOptions, isSecondRowVisible)
+        customLogoMesh?.changeRelativeSize(this.geometryOptions, isSecondRowVisible)
     }
 
     updateSecondRowText(secondRowText: string) {
-        this.geometryOptions.secondRowText = secondRowText;
-        (this.childrenMeshes.get("SecondRowText") as TextMesh).updateText(this.geometryOptions)
-    }
-
-    private updateFrontLogoSize(logoMesh: Mesh) {
-        if (logoMesh) {
-            const secondRowMesh = this.childrenMeshes.get("SecondRowText") as SecondRowTextMesh
-            const scale = secondRowMesh.visible
-                ? (this.geometryOptions.frontTextSize + this.geometryOptions.secondRowTextSize) / this.geometryOptions.frontTextSize
-                : 1
-            logoMesh.scale.x = scale
-            logoMesh.scale.y = scale
-            logoMesh.translateY(
-                secondRowMesh.visible ? -this.geometryOptions.secondRowTextSize : this.geometryOptions.secondRowTextSize
-            )
-        }
+        this.geometryOptions.secondRowText = secondRowText
+        ;(this.childrenMeshes.get("SecondRowText") as TextMesh).updateText(this.geometryOptions)
     }
 
     private async loadFont() {

@@ -3,9 +3,9 @@ import { GeometryOptions } from "../preview3DPrintMesh"
 import { MeshBasicMaterial } from "three"
 import { DefaultPrintColorChangeStrategy } from "../ColorChangeStrategies/defaultPrintColorChangeStrategy"
 import { SizeChangeTranslateStrategy, SizeChangeTranslateStrategyOptions } from "../SizeChangeStrategies/sizeChangeTranslateStrategy"
-import { GeneralMesh } from "./generalMesh"
+import { FrontLogo } from "./frontLogo"
 
-export class FrontMWLogoMesh extends GeneralMesh {
+export class FrontMWLogoMesh extends FrontLogo {
     constructor() {
         super(new SizeChangeTranslateStrategy(), new DefaultPrintColorChangeStrategy())
         this.name = "FrontMWLogo"

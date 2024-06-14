@@ -3,16 +3,16 @@ import { GeometryOptions } from "../preview3DPrintMesh"
 import { MeshBasicMaterial } from "three"
 import { DefaultPrintColorChangeStrategy } from "../ColorChangeStrategies/defaultPrintColorChangeStrategy"
 import { SizeChangeTranslateStrategy, SizeChangeTranslateStrategyOptions } from "../SizeChangeStrategies/sizeChangeTranslateStrategy"
-import { GeneralMesh } from "./generalMesh"
+import { FrontLogo } from "./frontLogo"
 
-export class CustomLogoMesh extends GeneralMesh {
+export class CustomLogoMesh extends FrontLogo {
     constructor(private filePath: string) {
         super(new SizeChangeTranslateStrategy(), new DefaultPrintColorChangeStrategy())
         this.name = "CustomLogo"
     }
 
     async init(geometryOptions: GeometryOptions): Promise<CustomLogoMesh> {
-       const createSvgStrategy = new CreateSvgGeometryStrategy()
+        const createSvgStrategy = new CreateSvgGeometryStrategy()
         const size = (geometryOptions.frontTextSize * geometryOptions.width) / 200
         this.geometry = await createSvgStrategy.create(geometryOptions, {
             filePath: this.filePath,
@@ -41,7 +41,7 @@ export class CustomLogoMesh extends GeneralMesh {
     }
 
     setColor(color: string) {
-        (this.material as MeshBasicMaterial).color.set(color)
+        ;(this.material as MeshBasicMaterial).color.set(color)
     }
 
     rotate() {
