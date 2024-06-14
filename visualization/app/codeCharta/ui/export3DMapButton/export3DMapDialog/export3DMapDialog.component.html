@@ -49,7 +49,7 @@
             <mat-card-content class="ManualVisibilityContent">
                 <mat-form-field [hidden]="secondRow.isVisible" appearance="outline">
                     <mat-label>Text</mat-label>
-                    <input matInput [(ngModel)]="secondRow.currentText" (input)="onSecondRowTextChange()" />
+                    <input matInput id="secondRowInput" [(ngModel)]="secondRow.currentText" (input)="onSecondRowTextChange()" />
                 </mat-form-field>
             </mat-card-content>
         </mat-card>

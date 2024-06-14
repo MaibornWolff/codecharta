@@ -17,6 +17,15 @@ describe("Export3DMapDialogComponent", () => {
     let getSizeMock: jest.Mock
     let updateFrontTextMock: jest.Mock
     let cameraMock: any
+    let updateSecondRowTextMock: jest.Mock
+    let updateSecondRowVisibilityMock: jest.Mock
+    let updateQrCodeTextMock: jest.Mock
+    let updateQrCodeVisibilityMock: jest.Mock
+    let addCustomLogoMock: jest.Mock
+    let removeCustomLogoMock: jest.Mock
+    let rotateCustomLogoMock: jest.Mock
+    let flipCustomLogoMock: jest.Mock
+    let updateCustomLogoColorMock: jest.Mock
 
     beforeEach(() => {
         codeMapMesh = new CodeMapMesh(TEST_NODES, DEFAULT_STATE, false)
@@ -29,6 +38,15 @@ describe("Export3DMapDialogComponent", () => {
         updateFrontTextMock = jest.fn()
         updateSizeMock = jest.fn().mockReturnValue(new Promise(resolve => resolve(false)))
         getSizeMock = jest.fn().mockReturnValue(new Vector3(10, 10, 10))
+        updateSecondRowTextMock = jest.fn()
+        updateSecondRowVisibilityMock = jest.fn()
+        updateQrCodeTextMock = jest.fn()
+        updateQrCodeVisibilityMock = jest.fn()
+        addCustomLogoMock = jest.fn()
+        removeCustomLogoMock = jest.fn()
+        rotateCustomLogoMock = jest.fn()
+        flipCustomLogoMock = jest.fn()
+        updateCustomLogoColorMock = jest.fn()
         cameraMock = {
             position: {
                 set: jest.fn()
@@ -54,6 +72,15 @@ describe("Export3DMapDialogComponent", () => {
                 updateSize: updateSizeMock,
                 getSize: getSizeMock,
                 updateFrontText: updateFrontTextMock,
+                updateSecondRowText: updateSecondRowTextMock,
+                updateSecondRowVisibility: updateSecondRowVisibilityMock,
+                updateQrCodeText: updateQrCodeTextMock,
+                updateQrCodeVisibility: updateQrCodeVisibilityMock,
+                addCustomLogo: addCustomLogoMock,
+                removeCustomLogo: removeCustomLogoMock,
+                rotateCustomLogo: rotateCustomLogoMock,
+                flipCustomLogo: flipCustomLogoMock,
+                updateCustomLogoColor: updateCustomLogoColorMock,
                 printMesh: { traverse: jest.fn() },
                 mapMesh: { geometry: {} },
                 updateMapColors: jest.fn(),
@@ -124,5 +151,150 @@ describe("Export3DMapDialogComponent", () => {
 
         expect(component.frontText).toBe("CodeCharta Map 3D Print")
         expect(updateFrontTextMock).toHaveBeenCalledWith("CodeCharta Map 3D Print")
+    })
+
+    it("should update second row text when input changes", async () => {
+        const { component, fixture } = await setup()
+        component.secondRow = {
+            defaultText: "Default Text",
+            name: "Second Row Text",
+            isVisible: true,
+            currentText: "Updated Second Row Text"
+        }
+        fixture.detectChanges()
+        const input = fixture.nativeElement.querySelector("#secondRowInput")
+        expect(input).not.toBeNull()
+
+        input.value = "Updated Second Row Text"
+        fireEvent.input(input)
+        fixture.detectChanges()
+
+        component.onSecondRowTextChange()
+
+        expect(component.secondRow.currentText).toBe("Updated Second Row Text")
+        expect(updateSecondRowTextMock).toHaveBeenCalledWith("Updated Second Row Text")
+        expect(updateSecondRowVisibilityMock).toHaveBeenCalledWith(true)
+    })
+
+    it("should update second row visibility when slide toggle changes", async () => {
+        const { component, fixture } = await setup()
+
+        component.secondRow = {
+            defaultText: "Default Text",
+            name: "Second Row Text",
+            isVisible: true,
+            currentText: "Initial Text"
+        }
+        fixture.detectChanges()
+
+        const slideToggle = fixture.nativeElement.querySelector("mat-slide-toggle")
+        expect(slideToggle).not.toBeNull()
+
+        fireEvent.click(slideToggle)
+        fixture.detectChanges()
+
+        expect(component.secondRow.isVisible).toBe(false)
+        expect(updateSecondRowVisibilityMock).toHaveBeenCalledWith(false)
+    })
+
+    it("should update QR-Code text when input changes", async () => {
+        const { component, fixture } = await setup()
+
+        component.qrCode = {
+            defaultText: "Default QR-Code Text",
+            name: "QR-Code",
+            isVisible: true,
+            currentText: "Updated QR-Code Text"
+        }
+        fixture.detectChanges()
+
+        const input = fixture.nativeElement.querySelector("input[matInput]")
+        expect(input).not.toBeNull()
+
+        fireEvent.input(input, { target: { value: "Updated QR-Code Text" } })
+        fixture.detectChanges()
+
+        expect(component.qrCode.currentText).toBe("Updated QR-Code Text")
+        expect(updateQrCodeTextMock).toHaveBeenCalledWith("Updated QR-Code Text")
+        expect(updateQrCodeVisibilityMock).toHaveBeenCalledWith(true)
+    })
+
+    it("should update QR-Code visibility when slide toggle changes", async () => {
+        const { component, fixture } = await setup()
+
+        component.qrCode = {
+            defaultText: "Default QR-Code Text",
+            name: "QR-Code",
+            isVisible: true,
+            currentText: "Initial QR-Code Text"
+        }
+        fixture.detectChanges()
+
+        const slideToggle = fixture.nativeElement.querySelector("mat-slide-toggle")
+        expect(slideToggle).not.toBeNull()
+
+        fireEvent.click(slideToggle)
+        fixture.detectChanges()
+
+        expect(component.qrCode.isVisible).toBe(false)
+        expect(updateQrCodeVisibilityMock).toHaveBeenCalledWith(false)
+    })
+    it("should add custom logo when file is selected", async () => {
+        const { component, fixture } = await setup()
+
+        const fileInput = fixture.nativeElement.querySelector('input[type="file"]')
+        expect(fileInput).not.toBeNull()
+
+        const file = new File(["<svg></svg>"], "logo.svg", { type: "image/svg+xml" })
+        fireEvent.change(fileInput, { target: { files: [file] } })
+
+        expect(component.isFileSelected).toBe(true)
+        expect(addCustomLogoMock).toHaveBeenCalled()
+    })
+
+    it("should remove logo when remove button is clicked", async () => {
+        const { component, fixture } = await setup()
+
+        component.isFileSelected = true
+        fixture.detectChanges()
+
+        const removeButton = fixture.nativeElement.querySelector('button[title="Remove Logo Button"]')
+        expect(removeButton).not.toBeNull()
+        fireEvent.click(removeButton)
+
+        expect(component.isFileSelected).toBe(false)
+        expect(removeCustomLogoMock).toHaveBeenCalled()
+    })
+
+    it("should rotate logo when rotate button is clicked", async () => {
+        const { component, fixture } = await setup()
+
+        component.isFileSelected = true
+        fixture.detectChanges()
+        const rotateButton = fixture.nativeElement.querySelector('button[title="Rotate Logo Button"]')
+        expect(rotateButton).not.toBeNull()
+        fireEvent.click(rotateButton)
+        expect(rotateCustomLogoMock).toHaveBeenCalled()
+    })
+
+    it("should flip logo when flip button is clicked", async () => {
+        const { component, fixture } = await setup()
+        component.isFileSelected = true
+        fixture.detectChanges()
+
+        const flipButton = fixture.nativeElement.querySelector('button[title="Flip Logo Button"]')
+        expect(flipButton).not.toBeNull()
+        fireEvent.click(flipButton)
+        expect(flipCustomLogoMock).toHaveBeenCalled()
+    })
+
+    it("should update logo color when color picker changes", async () => {
+        const { component, fixture } = await setup()
+        component.isFileSelected = true
+        fixture.detectChanges()
+        const colorPicker = fixture.nativeElement.querySelector("cc-labelled-color-picker")
+        expect(colorPicker).not.toBeNull()
+        fireEvent.change(colorPicker, { target: { value: "#ff0000" } })
+        expect(updateCustomLogoColorMock).toHaveBeenCalledWith("#ff0000")
     })
 })
