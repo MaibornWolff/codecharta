@@ -122,9 +122,7 @@ export class Preview3DPrintMesh {
         this.geometryOptions.width = wantedWidth
         const oldWidth = this.currentSize.x
 
-        for (const mesh of this.childrenMeshes.values()) {
-            await mesh.changeSize(this.geometryOptions, oldWidth)
-        }
+        await Promise.all([...this.childrenMeshes.values()].map(async mesh => mesh.changeSize(this.geometryOptions, oldWidth)))
 
         this.calculateCurrentSize()
         return this.childrenMeshes.get("QRCode").visible
