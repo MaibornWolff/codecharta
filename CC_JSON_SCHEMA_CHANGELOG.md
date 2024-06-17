@@ -60,9 +60,9 @@ export interface Fixed {
 ```json
 {
   "attributeDescriptors": {
-    "mcc": {
-      "title": "Maximum Cyclic Complexity",
-      "description": "Maximum cyclic complexity based on paths through the code by McCabe",
+    "complexity": {
+      "title": "Cyclomatic Complexity",
+      "description": "Maximum cyclomatic complexity based on the number of paths through the code",
       "hintLowValue": "",
       "hintHighValue": "",
       "link": "https://www.npmjs.com/package/metric-gardener",

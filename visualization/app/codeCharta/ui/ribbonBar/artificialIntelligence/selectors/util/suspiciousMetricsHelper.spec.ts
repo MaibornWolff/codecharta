@@ -78,14 +78,14 @@ describe("suspiciousMetricsHelper", () => {
 
     it("should set unsuspicious metrics of main programming language", () => {
         const metricValuesByLanguage: MetricValuesByLanguage = {
-            java: { mcc: [10, 20, 30, 48], rloc: [100, 200, 300, 365] },
+            java: { complexity: [10, 20, 30, 48], rloc: [100, 200, 300, 365] },
             ts: { functions: [10, 20, 30, 48], rloc: [100, 200, 300, 365] }
         }
 
         const actualAssessmentResults: MetricAssessmentResults = findGoodAndBadMetrics(metricValuesByLanguage, "java")
 
         expect(actualAssessmentResults.unsuspiciousMetrics).toEqual([
-            `mcc (${metricTitles.get("mcc")})`,
+            `complexity (${metricTitles.get("complexity")})`,
             `rloc (${metricTitles.get("rloc")})`
         ])
     })

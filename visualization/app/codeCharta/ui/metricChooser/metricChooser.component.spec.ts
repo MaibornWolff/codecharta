@@ -29,7 +29,7 @@ describe("metricChooserComponent", () => {
                                     { name: "bMetric", maxValue: 2 },
                                     { name: "cMetric", maxValue: 3 },
                                     { name: "fullMetric", maxValue: 42 },
-                                    { name: "mcc", maxValue: 55 }
+                                    { name: "complexity", maxValue: 55 }
                                 ]
                             }
                         },
@@ -61,7 +61,7 @@ describe("metricChooserComponent", () => {
                 "FullTestTitle (fullMetric):\nFullTestDescription\nHigh Values: FullTestHigh\nLow Values: FullLowValue"
             )
         )
-        await waitFor(() => expect(screen.queryAllByRole("option")[4].textContent).toMatch("mcc (55)"))
+        await waitFor(() => expect(screen.queryAllByRole("option")[4].textContent).toMatch("complexity  (formerly mcc) (55)"))
         await waitFor(() => expect(screen.queryAllByRole("option")[4].getAttribute("title")).toMatch("Cyclomatic Complexity"))
 
         await userEvent.click(screen.queryAllByRole("option")[1])
@@ -127,7 +127,7 @@ describe("metricChooserComponent", () => {
         await waitFor(() => expect(screen.getByPlaceholderText("search metric (max value)")).toBeTruthy())
         expect(document.activeElement).toBe(getSearchBox())
 
-        await userEvent.type(getSearchBox(), "l")
+        await userEvent.type(getSearchBox(), "ll")
         await waitFor(() => expect(screen.queryAllByRole("option").length).toBe(1))
         await waitFor(() => expect(screen.queryAllByRole("option")[0].textContent).toMatch(" fullMetric (42) FullTestDescription "))
         await waitFor(() => expect(setActiveItemSpy).toHaveBeenCalledWith(0))

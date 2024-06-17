@@ -2,7 +2,7 @@ import {
     AREA_METRIC,
     aggregateRiskProfile,
     EXCLUDED_FILE_EXTENSION,
-    HEIGHT_METRIC,
+    HEIGHT_METRICS,
     RiskProfile,
     getPercentagesOfRiskProfile
 } from "./util/riskProfileHelper"
@@ -48,7 +48,7 @@ export const calculate = (
     const numberOfFilesByLanguage = new Map<string, number>()
     const rlocRisk = { lowRisk: 0, moderateRisk: 0, highRisk: 0, veryHighRisk: 0 }
     let totalRloc = 0
-    let totalMcc = 0
+    let totalComplexity = 0
     const metricValuesByLanguage: MetricValuesByLanguage = {}
 
     for (const { data } of hierarchy(accumulatedData.unifiedMapNode)) {
@@ -59,14 +59,15 @@ export const calculate = (
             setMetricValuesByLanguage(data, metricValuesByLanguage, fileExtension)
 
             if (isFileValid(data, fileExtension)) {
+                const firstDefinedMetric = HEIGHT_METRICS.find(metric => data.attributes[metric] !== undefined)
+                totalComplexity += data.attributes[firstDefinedMetric]
                 totalRloc += data.attributes[AREA_METRIC]
-                totalMcc += data.attributes[HEIGHT_METRIC]
                 aggregateRiskProfile(data, rlocRisk, fileExtension)
             }
         }
     }
 
-    if (totalRloc > 0 && totalMcc > 0) {
+    if (totalRloc > 0 && totalComplexity > 0) {
         artificialIntelligenceViewModel.riskProfile = getPercentagesOfRiskProfile(rlocRisk)
     }
 
@@ -89,7 +90,7 @@ function getFileExtension(fileName: string) {
 
 function isFileValid(node: CodeMapNode, fileExtension: string) {
     return (
-        node.attributes[HEIGHT_METRIC] !== undefined &&
+        HEIGHT_METRICS.some(metric => node.attributes[metric] !== undefined) &&
         node.attributes[AREA_METRIC] !== undefined &&
         !EXCLUDED_FILE_EXTENSION.has(fileExtension)
     )

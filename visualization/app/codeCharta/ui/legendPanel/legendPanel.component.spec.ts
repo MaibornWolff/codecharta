@@ -23,7 +23,7 @@ describe("LegendPanelController", () => {
             providers: [
                 provideMockStore({
                     selectors: [
-                        { selector: heightMetricSelector, value: "mcc" },
+                        { selector: heightMetricSelector, value: "complexity" },
                         { selector: areaMetricSelector, value: "loc" },
                         { selector: colorMetricSelector, value: "rloc" },
                         { selector: colorRangeSelector, value: { from: 21, to: 42, max: 9001 } },
@@ -64,7 +64,7 @@ describe("LegendPanelController", () => {
 
         const metricDescriptions = container.querySelectorAll("cc-legend-block")
         expect(metricDescriptions[0].textContent).toMatch("Area metric: Lines of Code (loc)")
-        expect(metricDescriptions[1].textContent).toMatch("Height metric: Cyclomatic Complexity (mcc)")
+        expect(metricDescriptions[1].textContent).toMatch("Height metric: Cyclomatic Complexity (complexity)")
         expect(metricDescriptions[2].textContent).toMatch("Color metric: Real Lines of Code (rloc)")
     })
 
@@ -73,11 +73,17 @@ describe("LegendPanelController", () => {
         const store = TestBed.inject(MockStore)
         const metricLink = "https://rl.oc"
         store.overrideSelector(isDeltaStateSelector, false)
-        const mccAttributeDescriptor = {
-            mcc: { title: "MCC_Title", description: "MCC_description", hintLowValue: "MCC_lowValue", hintHighValue: "", link: "" }
+        const complexityAttributeDescriptor = {
+            complexity: {
+                title: "COMPLEXITY_Title",
+                description: "COMPLEXITY_description",
+                hintLowValue: "COMPLEXITY_lowValue",
+                hintHighValue: "",
+                link: ""
+            }
         }
         store.overrideSelector(attributeDescriptorsSelector, {
-            ...mccAttributeDescriptor,
+            ...complexityAttributeDescriptor,
             rloc: { title: "RLOC_Title", description: "RLOC_Description", hintLowValue: "", hintHighValue: "", link: metricLink }
         })
         store.refreshState()
@@ -87,9 +93,9 @@ describe("LegendPanelController", () => {
 
         const metricDescriptions = container.querySelectorAll("cc-legend-block")
         expect(metricDescriptions[0].textContent).toMatch("Area metric: Lines of Code (loc)")
-        expect(metricDescriptions[1].textContent).toMatch("Height metric: MCC_Title (mcc)")
+        expect(metricDescriptions[1].textContent).toMatch("Height metric: COMPLEXITY_Title (complexity)")
         expect(metricDescriptions[1].firstElementChild.getAttribute("title")).toMatch(
-            "MCC_Title (mcc):\nMCC_description\nLow Values: MCC_lowValue"
+            "COMPLEXITY_Title (complexity):\nCOMPLEXITY_description\nLow Values: COMPLEXITY_lowValue"
         )
         expect(metricDescriptions[1].querySelector("a")).toBeNull()
         expect(metricDescriptions[2].textContent).toMatch("Color metric: RLOC_Title (rloc)")

@@ -61,7 +61,6 @@ abstract class SonarAnalyzer(protected val verbose: Boolean = false, protected v
     protected open fun translateMetricNames(metricKey: String): String {
         return when (metricKey) {
             "commented_out_code_lines" -> "commented_out_loc"
-            "complexity" -> "mcc"
             "function_complexity" -> "average_function_mcc"
             "lines" -> "loc"
             "ncloc" -> "rloc"

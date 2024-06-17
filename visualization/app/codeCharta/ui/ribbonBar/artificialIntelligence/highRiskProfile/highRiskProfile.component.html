@@ -15,7 +15,7 @@
             >.
         </div>
         <div class="sub-title">
-            <div><i class="fa fa-lightbulb-o"></i> Calculations are always based on cyclomatic complexity!</div>
+            <div><i class="fa fa-lightbulb-o"></i> Calculations are based on an available complexity metric</div>
         </div>
         <div class="text-content">
             <ul>
@@ -57,6 +57,14 @@
         </div>
     }
     @if (data.riskProfile === undefined) {
-        Could not calculate Risk Profile. Metrics rloc(Real lines of code) and mcc(Cyclomatic complexity) not available.
+        <span>
+            Could not calculate Risk Profile. At least one of the metrics rloc (real lines of code) or complexity (cyclomatic complexity) is
+            not available.
+        </span>
+        <br /><br />
+        <span>
+            Be aware that complexity was previously named mcc. Old maps which still contain mcc instead of complexity need to be regenerated
+            for the risk profile to work.
+        </span>
     }
 </mat-menu>
