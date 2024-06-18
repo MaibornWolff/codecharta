@@ -1,7 +1,11 @@
 import { ColorChangeStrategy } from "./colorChangeStrategy"
 
-export class DefaultPrintColorChangeStrategy implements ColorChangeStrategy {
+export class BackPrintColorChangeStrategy implements ColorChangeStrategy {
     execute(numberOfColors, mesh) {
+        if (numberOfColors <= 1) {
+            return false
+        }
+
         let colorArray
         if (numberOfColors < 4) {
             colorArray = [1, 1, 1]
@@ -11,5 +15,6 @@ export class DefaultPrintColorChangeStrategy implements ColorChangeStrategy {
             colorArray = [1, 1, 1]
         }
         mesh.material.color.setRGB(colorArray[0], colorArray[1], colorArray[2])
+        return true
     }
 }

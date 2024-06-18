@@ -18,11 +18,11 @@ export abstract class GeneralMesh extends Mesh {
     }
 
     abstract init(geometryOptions: GeometryOptions): Promise<GeneralMesh>
-    changeColor(numberOfColors: number): void {
+    updateColor(numberOfColors: number): void {
         this.colorChangeStrategy.execute(numberOfColors, this)
         for (const child of this.children) {
             if (child instanceof GeneralMesh) {
-                child.changeColor(numberOfColors)
+                child.updateColor(numberOfColors)
             }
         }
     }

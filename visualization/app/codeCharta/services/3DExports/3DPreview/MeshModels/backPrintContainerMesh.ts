@@ -1,6 +1,6 @@
 import { GeometryOptions } from "../preview3DPrintMesh"
 import { GeneralMesh, GeneralSizeChangeMesh } from "./generalMesh"
-import { DefaultPrintColorChangeStrategy } from "../ColorChangeStrategies/defaultPrintColorChangeStrategy"
+import { BackPrintColorChangeStrategy } from "../ColorChangeStrategies/backPrintColorChangeStrategy"
 import { BackMWLogoMesh } from "./backMWLogoMesh"
 import { BackBelowLogoTextMesh } from "./backBelowLogoTextMesh"
 import { QrCodeMesh } from "./qrCodeMesh"
@@ -14,7 +14,7 @@ export class BackPrintContainerMesh extends GeneralMesh implements GeneralSizeCh
     private childrenMeshes: Map<string, CustomVisibilityMesh>
 
     constructor(private font: Font) {
-        const colorChangeStrategy = new DefaultPrintColorChangeStrategy()
+        const colorChangeStrategy = new BackPrintColorChangeStrategy()
         super("BackPrintContainer", colorChangeStrategy)
     }
 

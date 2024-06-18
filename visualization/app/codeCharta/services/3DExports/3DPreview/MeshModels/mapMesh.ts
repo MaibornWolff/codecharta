@@ -1,6 +1,6 @@
 import { CustomVisibilityMesh } from "./customVisibilityMesh"
 import { GeometryOptions } from "../preview3DPrintMesh"
-import { DefaultPrintColorChangeStrategy } from "../ColorChangeStrategies/defaultPrintColorChangeStrategy"
+import { BackPrintColorChangeStrategy } from "../ColorChangeStrategies/backPrintColorChangeStrategy"
 import { BufferAttribute, BufferGeometry, Float32BufferAttribute, InterleavedBufferAttribute, Mesh } from "three"
 
 export class MapMesh extends CustomVisibilityMesh {
@@ -8,7 +8,7 @@ export class MapMesh extends CustomVisibilityMesh {
     private originalColors: BufferAttribute | InterleavedBufferAttribute
 
     constructor() {
-        super("Map", new DefaultPrintColorChangeStrategy(), 1, false, 2)
+        super("Map", new BackPrintColorChangeStrategy(), 1, false)
         this.mapScalingFactorForSnappingHeights = 1 //TODO: remove this scaling. Instead round when serializing
     }
 
@@ -97,7 +97,7 @@ export class MapMesh extends CustomVisibilityMesh {
         this.snapHeightsToLayerHeight(geometryOptions, this.geometry)
         return
     }
-    changeColor(numberOfColors: number) {
+    updateColor(numberOfColors: number) {
         this.updateMapColors(this.originalColors, this.geometry, numberOfColors)
     }
 }

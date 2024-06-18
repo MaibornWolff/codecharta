@@ -2,20 +2,19 @@ import { CustomVisibilityMesh } from "./customVisibilityMesh"
 import { GeometryOptions } from "../preview3DPrintMesh"
 import { MeshBasicMaterial } from "three"
 import { CreateTextGeometryStrategy, CreateTextGeometryStrategyOptions } from "../CreateGeometryStrategies/createTextGeometryStrategy"
-import { DefaultPrintColorChangeStrategy } from "../ColorChangeStrategies/defaultPrintColorChangeStrategy"
+import { BackPrintColorChangeStrategy } from "../ColorChangeStrategies/backPrintColorChangeStrategy"
 
 export class TextMesh extends CustomVisibilityMesh {
     readonly createTextGeometryStrategy: CreateTextGeometryStrategy
 
     constructor(
         name: string,
-        colorChangeStrategy = new DefaultPrintColorChangeStrategy(),
+        colorChangeStrategy = new BackPrintColorChangeStrategy(),
         minScale: number,
         manualVisibility: boolean,
-        minNumberOfColors: number,
         public createTextGeometryOptions: CreateTextGeometryStrategyOptions
     ) {
-        super(name, colorChangeStrategy, minScale, manualVisibility, minNumberOfColors)
+        super(name, colorChangeStrategy, minScale, manualVisibility)
         this.createTextGeometryStrategy = new CreateTextGeometryStrategy()
     }
 
@@ -24,7 +23,7 @@ export class TextMesh extends CustomVisibilityMesh {
 
         this.material = new MeshBasicMaterial()
 
-        this.changeColor(geometryOptions.numberOfColors)
+        this.updateColor(geometryOptions.numberOfColors)
 
         return this
     }

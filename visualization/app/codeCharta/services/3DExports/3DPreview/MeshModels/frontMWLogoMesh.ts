@@ -1,13 +1,12 @@
 import { CreateSvgGeometryStrategy } from "../CreateGeometryStrategies/createSvgGeometryStrategy"
 import { GeometryOptions } from "../preview3DPrintMesh"
 import { MeshBasicMaterial } from "three"
-import { DefaultPrintColorChangeStrategy } from "../ColorChangeStrategies/defaultPrintColorChangeStrategy"
 import { FrontLogo } from "./frontLogo"
 import { GeneralSizeChangeMesh } from "./generalMesh"
 
 export class FrontMWLogoMesh extends FrontLogo implements GeneralSizeChangeMesh {
     constructor(name: string) {
-        super(name, new DefaultPrintColorChangeStrategy(), "right")
+        super(name, "right")
     }
 
     async init(geometryOptions: GeometryOptions): Promise<FrontMWLogoMesh> {
@@ -26,7 +25,7 @@ export class FrontMWLogoMesh extends FrontLogo implements GeneralSizeChangeMesh 
         const zPosition = geometryOptions.printHeight
         this.position.set(xPosition, yPosition, zPosition)
 
-        this.changeColor(geometryOptions.numberOfColors)
+        this.updateColor(geometryOptions.numberOfColors)
 
         return this
     }

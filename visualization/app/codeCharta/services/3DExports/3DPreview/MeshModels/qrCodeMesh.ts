@@ -2,13 +2,13 @@ import { CustomVisibilityMesh } from "./customVisibilityMesh"
 import { GeometryOptions } from "../preview3DPrintMesh"
 import { CreateQRCodeGeometryStrategy } from "../CreateGeometryStrategies/createQRCodeGeometryStrategy"
 import { MeshBasicMaterial } from "three/src/materials/MeshBasicMaterial"
-import { DefaultPrintColorChangeStrategy } from "../ColorChangeStrategies/defaultPrintColorChangeStrategy"
+import { BackPrintColorChangeStrategy } from "../ColorChangeStrategies/backPrintColorChangeStrategy"
 
 export class QrCodeMesh extends CustomVisibilityMesh {
     private readonly createQRCodeStrategy: CreateQRCodeGeometryStrategy
 
     constructor(name: string) {
-        super(name, new DefaultPrintColorChangeStrategy(), 1, false, 2)
+        super(name, new BackPrintColorChangeStrategy(), 1, false)
         this.createQRCodeStrategy = new CreateQRCodeGeometryStrategy()
     }
 
@@ -18,7 +18,7 @@ export class QrCodeMesh extends CustomVisibilityMesh {
 
         this.material = new MeshBasicMaterial()
 
-        this.changeColor(geometryOptions.numberOfColors)
+        this.updateColor(geometryOptions.numberOfColors)
 
         return this
     }

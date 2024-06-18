@@ -2,11 +2,11 @@ import { CustomVisibilityMesh } from "./customVisibilityMesh"
 import { CreateSvgGeometryStrategy } from "../CreateGeometryStrategies/createSvgGeometryStrategy"
 import { GeometryOptions } from "../preview3DPrintMesh"
 import { MeshBasicMaterial } from "three"
-import { DefaultPrintColorChangeStrategy } from "../ColorChangeStrategies/defaultPrintColorChangeStrategy"
+import { BackPrintColorChangeStrategy } from "../ColorChangeStrategies/backPrintColorChangeStrategy"
 
 export class BackMWLogoMesh extends CustomVisibilityMesh {
     constructor(name: string) {
-        super(name, new DefaultPrintColorChangeStrategy(), 120, true, 2)
+        super(name, new BackPrintColorChangeStrategy(), 120, true)
         this.name = "BackMWLogo"
     }
 
@@ -26,7 +26,7 @@ export class BackMWLogoMesh extends CustomVisibilityMesh {
         const zPosition = -geometryOptions.baseplateHeight + geometryOptions.printHeight / 2
         this.position.set(xPosition, yPosition, zPosition)
 
-        this.changeColor(geometryOptions.numberOfColors)
+        this.updateColor(geometryOptions.numberOfColors)
 
         return this
     }

@@ -2,7 +2,7 @@ import { CustomVisibilityMesh } from "./customVisibilityMesh"
 import { CreateSvgGeometryStrategy } from "../CreateGeometryStrategies/createSvgGeometryStrategy"
 import { GeometryOptions } from "../preview3DPrintMesh"
 import { BufferGeometry, Font, MeshBasicMaterial } from "three"
-import { DefaultPrintColorChangeStrategy } from "../ColorChangeStrategies/defaultPrintColorChangeStrategy"
+import { BackPrintColorChangeStrategy } from "../ColorChangeStrategies/backPrintColorChangeStrategy"
 import { BufferGeometryUtils } from "three/examples/jsm/utils/BufferGeometryUtils"
 import { CreateTextGeometryStrategy } from "../CreateGeometryStrategies/createTextGeometryStrategy"
 import { NodeMetricData } from "../../../../codeCharta.model"
@@ -22,10 +22,9 @@ export class MetricDescriptionBlockMesh extends CustomVisibilityMesh {
     constructor(
         public metricDescriptionBlockOptions: MetricDescriptionBlockOptions,
         public font: Font,
-        private yOffset: number,
-        minNumberOfColors = 2
+        private yOffset: number
     ) {
-        super(metricDescriptionBlockOptions.name, new DefaultPrintColorChangeStrategy(), 200, true, minNumberOfColors)
+        super(metricDescriptionBlockOptions.name, new BackPrintColorChangeStrategy(), 200, true)
         this.createSvgGeometryStrategy = new CreateSvgGeometryStrategy()
         this.createTextGeometryStrategy = new CreateTextGeometryStrategy()
     }
@@ -41,7 +40,7 @@ export class MetricDescriptionBlockMesh extends CustomVisibilityMesh {
 
         this.position.y = -0.15 + this.yOffset
 
-        this.changeColor(geometryOptions.numberOfColors)
+        this.updateColor(geometryOptions.numberOfColors)
 
         return this
     }

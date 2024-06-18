@@ -27,7 +27,7 @@ export class BaseplateMesh extends GeneralMesh implements GeneralSizeChangeMesh 
         shaderMaterial.polygonOffsetFactor = 0.1
         this.material = shaderMaterial
 
-        this.changeColor(geometryOptions.numberOfColors)
+        this.updateColor(geometryOptions.numberOfColors)
         return new Promise(resolve => {
             resolve(this)
         })

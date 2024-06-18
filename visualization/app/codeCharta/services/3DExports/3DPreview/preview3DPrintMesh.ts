@@ -99,7 +99,7 @@ export class Preview3DPrintMesh {
         this.geometryOptions.numberOfColors = numberOfColors
         for (const mesh of this.printMesh.children) {
             if (mesh instanceof GeneralMesh) {
-                mesh.changeColor(numberOfColors)
+                mesh.updateColor(numberOfColors)
             }
         }
     }

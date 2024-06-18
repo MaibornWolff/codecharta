@@ -2,7 +2,7 @@ import { GeometryOptions } from "../preview3DPrintMesh"
 import { Font } from "three"
 import { CreateTextGeometryStrategyOptions } from "../CreateGeometryStrategies/createTextGeometryStrategy"
 import { TextMesh } from "./textMesh"
-import { DefaultPrintColorChangeStrategy } from "../ColorChangeStrategies/defaultPrintColorChangeStrategy"
+import { FrontPrintColorChangeStrategy } from "../ColorChangeStrategies/frontPrintColorChangeStrategy"
 
 export class FrontTextMesh extends TextMesh {
     constructor(name: string, font: Font, geometryOptions: GeometryOptions) {
@@ -19,7 +19,7 @@ export class FrontTextMesh extends TextMesh {
             textSize: geometryOptions.frontTextSize,
             align: "center"
         }
-        super(name, new DefaultPrintColorChangeStrategy(), 0, true, 1, createFrontTextGeometryOptions)
+        super(name, new FrontPrintColorChangeStrategy(), 0, true, createFrontTextGeometryOptions)
         this.name = "Front Text"
     }
 }

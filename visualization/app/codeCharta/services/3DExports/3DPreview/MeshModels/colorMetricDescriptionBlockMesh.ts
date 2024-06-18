@@ -1,6 +1,6 @@
 import { GeometryOptions } from "../preview3DPrintMesh"
 import { Font } from "three"
-import { DefaultPrintColorChangeStrategy } from "../ColorChangeStrategies/defaultPrintColorChangeStrategy"
+import { BackPrintColorChangeStrategy } from "../ColorChangeStrategies/backPrintColorChangeStrategy"
 import { CreateTextGeometryStrategy, CreateTextGeometryStrategyOptions } from "../CreateGeometryStrategies/createTextGeometryStrategy"
 import { ColorRange } from "../../../../codeCharta.model"
 import { MetricDescriptionBlockMesh, MetricDescriptionBlockOptions } from "./metricDescriptionBlockMesh"
@@ -15,7 +15,7 @@ interface ColorMetricDescriptionBlockOptions extends MetricDescriptionBlockOptio
 
 export class ColorMetricDescriptionBlockMesh extends MetricDescriptionBlockMesh {
     constructor(colorMetricDescriptionBlockOptions: ColorMetricDescriptionBlockOptions, font: Font, yOffset: number) {
-        super(colorMetricDescriptionBlockOptions, font, yOffset, 2)
+        super(colorMetricDescriptionBlockOptions, font, yOffset)
     }
 
     async init(geometryOptions: GeometryOptions): Promise<ColorMetricDescriptionBlockMesh> {
@@ -30,7 +30,7 @@ export class ColorMetricDescriptionBlockMesh extends MetricDescriptionBlockMesh 
     }
 
     async createTextGeometry(createTextGeometryStrategy: CreateTextGeometryStrategy, text: string, geometryOptions: GeometryOptions) {
-        const textGeometry = await createTextGeometryStrategy.create(geometryOptions, {
+        return createTextGeometryStrategy.create(geometryOptions, {
             font: this.font,
             text,
             side: "back",
@@ -38,13 +38,10 @@ export class ColorMetricDescriptionBlockMesh extends MetricDescriptionBlockMesh 
             yPosition: 0.015,
             align: "left"
         })
-        return textGeometry
     }
 
     getText() {
-        const colorTextNameAndTitle =
-            `${this.metricDescriptionBlockOptions.nodeMetricData.name}\n` + `${this.metricDescriptionBlockOptions.title}\n`
-        return colorTextNameAndTitle
+        return `${this.metricDescriptionBlockOptions.nodeMetricData.name}\n` + `${this.metricDescriptionBlockOptions.title}\n`
     }
 
     private async createColoredBackTextChildren(geometryOptions: GeometryOptions) {
@@ -59,11 +56,11 @@ export class ColorMetricDescriptionBlockMesh extends MetricDescriptionBlockMesh 
             `${colorMetricDescriptionBlockOptions.colorRange.to} - ${colorMetricDescriptionBlockOptions.nodeMetricData.maxValue}`
         ]
         const colorChangeStrategies = [
-            new DefaultPrintColorChangeStrategy(),
+            new BackPrintColorChangeStrategy(),
             new PositivePrintColorChangeStrategy(),
-            new DefaultPrintColorChangeStrategy(),
+            new BackPrintColorChangeStrategy(),
             new NeutralPrintColorChangeStrategy(),
-            new DefaultPrintColorChangeStrategy(),
+            new BackPrintColorChangeStrategy(),
             new NegativePrintColorChangeStrategy()
         ]
         let xOffset = 0.05
@@ -78,10 +75,10 @@ export class ColorMetricDescriptionBlockMesh extends MetricDescriptionBlockMesh 
                 align: "left"
             }
 
-            const textMesh = await new TextMesh(name, colorChangeStrategies[index], 200, true, 4, createTextGeometryStrategyOptions).init(
+            const textMesh = await new TextMesh(name, colorChangeStrategies[index], 200, true, createTextGeometryStrategyOptions).init(
                 geometryOptions
             )
-            this.changeColor(geometryOptions.numberOfColors) //TODO adjust
+            this.updateColor(geometryOptions.numberOfColors)
             colorTextGeometries.push(textMesh)
 
             if (index !== colorTextValueRanges.length - 1) {

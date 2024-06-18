@@ -1,6 +1,6 @@
 import { GeometryOptions } from "../preview3DPrintMesh"
 import { GeneralMesh, GeneralSizeChangeMesh } from "./generalMesh"
-import { DefaultPrintColorChangeStrategy } from "../ColorChangeStrategies/defaultPrintColorChangeStrategy"
+import { BackPrintColorChangeStrategy } from "../ColorChangeStrategies/backPrintColorChangeStrategy"
 import { Font } from "three"
 import { FrontTextMesh } from "./frontTextMesh"
 import { SecondRowTextMesh } from "./secondRowTextMesh"
@@ -12,7 +12,7 @@ export class FrontPrintContainerMesh extends GeneralMesh implements GeneralSizeC
     private childrenMeshes: Map<string, GeneralMesh>
 
     constructor(private font: Font) {
-        const colorChangeStrategy = new DefaultPrintColorChangeStrategy()
+        const colorChangeStrategy = new BackPrintColorChangeStrategy()
         super("FrontPrintContainer", colorChangeStrategy)
     }
 
