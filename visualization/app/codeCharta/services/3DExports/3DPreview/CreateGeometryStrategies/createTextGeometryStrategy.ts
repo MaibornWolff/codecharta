@@ -6,11 +6,11 @@ import { BufferGeometryUtils } from "three/examples/jsm/utils/BufferGeometryUtil
 export interface CreateTextGeometryStrategyOptions extends CreateGeometryStrategyOptions {
     font: Font
     text: string
-    textSize: number
     side: "front" | "back"
     xPosition: number
     yPosition: number
     align: "center" | "left"
+    textSize?: number
 }
 
 export class CreateTextGeometryStrategy implements CreateGeometryStrategy {
@@ -18,9 +18,13 @@ export class CreateTextGeometryStrategy implements CreateGeometryStrategy {
         geometryOptions: GeometryOptions,
         createTextGeometryStrategyOptions: CreateTextGeometryStrategyOptions
     ): Promise<BufferGeometry> {
-        const { font, side, text, xPosition, yPosition, textSize, align } = createTextGeometryStrategyOptions
+        const { font, side, text, xPosition, yPosition, align } = createTextGeometryStrategyOptions
         if (!text) {
             return new BufferGeometry()
+        }
+        let { textSize } = createTextGeometryStrategyOptions
+        if (!textSize) {
+            textSize = 0.025
         }
         const textGeometry =
             align === "center" && text.includes("\n")
@@ -40,6 +44,7 @@ export class CreateTextGeometryStrategy implements CreateGeometryStrategy {
         const textWidth = textGeometry.boundingBox.max.x - textGeometry.boundingBox.min.x
         const xPositionOffset = align === "center" ? 0 : textWidth / 2
         const xPositionDirection = side === "front" ? 1 : -1
+
         textGeometry.translate(
             xPositionDirection * (xPositionOffset + xPosition),
             yPosition,

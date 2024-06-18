@@ -1,16 +1,16 @@
 import { GeneralMesh } from "./generalMesh"
 import { ColorChangeStrategy } from "../ColorChangeStrategies/colorChangeStrategy"
 
-export abstract class ManualVisibilityMesh extends GeneralMesh {
-    //TODO: split into two classes
+export abstract class CustomVisibilityMesh extends GeneralMesh {
     currentNumberOfColors: number
+    currentWidth: number
     manualVisibility: boolean
-    readonly minScale: number
+    readonly minWidth: number
     readonly minNumberOfColors: number
 
-    constructor(name: string, colorChangeStrategy: ColorChangeStrategy, minScale: number, manualVisibility = true, minNumberOfColors = 2) {
+    constructor(name: string, colorChangeStrategy: ColorChangeStrategy, minScale = 1, manualVisibility = true, minNumberOfColors = 2) {
         super(name, colorChangeStrategy)
-        this.minScale = minScale
+        this.minWidth = minScale
         this.manualVisibility = manualVisibility
         this.minNumberOfColors = minNumberOfColors
     }
@@ -25,12 +25,16 @@ export abstract class ManualVisibilityMesh extends GeneralMesh {
         this.updateVisibility()
     }
 
+    setCurrentWidth(width: number): void {
+        this.currentWidth = width
+        this.updateVisibility()
+    }
+
     updateVisibility(): void {
         //TODO: make private
         const visibleBecauseOfColor = this.currentNumberOfColors ? this.currentNumberOfColors >= this.minNumberOfColors : true
-        this.visible = this.minScale
-            ? this.scale.x >= this.minScale && visibleBecauseOfColor && this.manualVisibility
-            : visibleBecauseOfColor && this.manualVisibility
+        const visibleBecauseOfWidth = this.currentWidth ? this.currentWidth >= this.minWidth : true
+        this.visible = this.manualVisibility && visibleBecauseOfColor && visibleBecauseOfWidth
     }
 
     changeColor(numberOfColors: number) {

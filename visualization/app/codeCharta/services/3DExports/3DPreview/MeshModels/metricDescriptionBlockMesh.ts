@@ -1,7 +1,7 @@
-import { ManualVisibilityMesh } from "./manualVisibilityMesh"
+import { CustomVisibilityMesh } from "./customVisibilityMesh"
 import { CreateSvgGeometryStrategy } from "../CreateGeometryStrategies/createSvgGeometryStrategy"
 import { GeometryOptions } from "../preview3DPrintMesh"
-import { Font, MeshBasicMaterial } from "three"
+import { BufferGeometry, Font, MeshBasicMaterial } from "three"
 import { DefaultPrintColorChangeStrategy } from "../ColorChangeStrategies/defaultPrintColorChangeStrategy"
 import { BufferGeometryUtils } from "three/examples/jsm/utils/BufferGeometryUtils"
 import { CreateTextGeometryStrategy } from "../CreateGeometryStrategies/createTextGeometryStrategy"
@@ -15,7 +15,10 @@ export interface MetricDescriptionBlockOptions {
     nodeMetricData: NodeMetricData
 }
 
-export class MetricDescriptionBlockMesh extends ManualVisibilityMesh {
+export class MetricDescriptionBlockMesh extends CustomVisibilityMesh {
+    private readonly createSvgGeometryStrategy: CreateSvgGeometryStrategy
+    private readonly createTextGeometryStrategy: CreateTextGeometryStrategy
+
     constructor(
         public metricDescriptionBlockOptions: MetricDescriptionBlockOptions,
         public font: Font,
@@ -23,48 +26,59 @@ export class MetricDescriptionBlockMesh extends ManualVisibilityMesh {
         minNumberOfColors = 2
     ) {
         super(metricDescriptionBlockOptions.name, new DefaultPrintColorChangeStrategy(), 0.8, true, minNumberOfColors)
+        this.createSvgGeometryStrategy = new CreateSvgGeometryStrategy()
+        this.createTextGeometryStrategy = new CreateTextGeometryStrategy()
     }
 
     async init(geometryOptions: GeometryOptions): Promise<MetricDescriptionBlockMesh> {
-        const createSvgStrategy = new CreateSvgGeometryStrategy()
-        const iconGeometry = await createSvgStrategy.create(geometryOptions, {
-            filePath: `codeCharta/assets/${this.metricDescriptionBlockOptions.iconFilename}`,
-            size: this.metricDescriptionBlockOptions.iconScale,
-            side: "back"
-        })
-        iconGeometry.translate(0, 0, -geometryOptions.baseplateHeight + geometryOptions.printHeight / 2)
+        const iconGeometry = await this.createIconGeometry(this.createSvgGeometryStrategy, geometryOptions)
 
-        const createTextGeometryStrategy = new CreateTextGeometryStrategy()
-        const text = this.getText()
-        const textGeometry = await createTextGeometryStrategy.create(geometryOptions, {
-            font: this.font,
-            text,
-            side: "back",
-            xPosition: 10,
-            yPosition: 0,
-            textSize: geometryOptions.backTextSize,
-            align: "left"
-        })
+        const textGeometry = await this.createTextGeometry(this.createTextGeometryStrategy, this.getText(), geometryOptions)
 
         this.geometry = BufferGeometryUtils.mergeBufferGeometries([iconGeometry, textGeometry])
 
         this.material = new MeshBasicMaterial()
 
-        const xPosition = 0
-        const yPosition = -geometryOptions.width / 6.5 + this.yOffset
-        const zPosition = 0
-        this.position.set(xPosition, yPosition, zPosition)
+        this.position.y = -0.15 + this.yOffset
 
         this.changeColor(geometryOptions.numberOfColors)
 
         return this
     }
 
-    getText() {
-        const text =
+    async createTextGeometry(
+        createTextGeometryStrategy: CreateTextGeometryStrategy,
+        text: string,
+        geometryOptions: GeometryOptions
+    ): Promise<BufferGeometry> {
+        return createTextGeometryStrategy.create(geometryOptions, {
+            font: this.font,
+            text,
+            side: "back",
+            xPosition: 0.05,
+            yPosition: 0,
+            align: "left"
+        })
+    }
+
+    private async createIconGeometry(
+        createSvgGeometryStrategy: CreateSvgGeometryStrategy,
+        geometryOptions: GeometryOptions
+    ): Promise<BufferGeometry> {
+        const iconGeometry = await createSvgGeometryStrategy.create(geometryOptions, {
+            filePath: `codeCharta/assets/${this.metricDescriptionBlockOptions.iconFilename}`,
+            size: this.metricDescriptionBlockOptions.iconScale,
+            side: "back"
+        })
+        iconGeometry.translate(0, 0, -geometryOptions.baseplateHeight + geometryOptions.printHeight / 2)
+        return iconGeometry
+    }
+
+    getText(): string {
+        return (
             `${this.metricDescriptionBlockOptions.nodeMetricData.name}\n` +
             `${this.metricDescriptionBlockOptions.title}\n` +
             `Value range: ${this.metricDescriptionBlockOptions.nodeMetricData.minValue} - ${this.metricDescriptionBlockOptions.nodeMetricData.maxValue}`
-        return text
+        )
     }
 }

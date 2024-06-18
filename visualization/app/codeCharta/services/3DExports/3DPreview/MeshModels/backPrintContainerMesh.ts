@@ -8,9 +8,10 @@ import { CodeChartaLogoMesh } from "./codeChartaLogoMesh"
 import { CodeChartaTextMesh } from "./codeChartaTextMesh"
 import { MetricDescriptionsContainerMesh } from "./metricDescriptionsContainerMesh"
 import { Font } from "three"
+import { CustomVisibilityMesh } from "./customVisibilityMesh"
 
 export class BackPrintContainerMesh extends GeneralMesh implements GeneralSizeChangeMesh {
-    private childrenMeshes: Map<string, GeneralMesh>
+    private childrenMeshes: Map<string, CustomVisibilityMesh>
 
     constructor(private font: Font) {
         const colorChangeStrategy = new DefaultPrintColorChangeStrategy()
@@ -18,12 +19,12 @@ export class BackPrintContainerMesh extends GeneralMesh implements GeneralSizeCh
     }
 
     async init(geometryOptions: GeometryOptions): Promise<BackPrintContainerMesh> {
-        this.childrenMeshes = new Map<string, GeneralMesh>()
+        this.childrenMeshes = new Map<string, CustomVisibilityMesh>()
         this.childrenMeshes.set("BackMWLogo", new BackMWLogoMesh("BackMWLogo"))
-        this.childrenMeshes.set("BackBelowLogoText", new BackBelowLogoTextMesh("BackBelowLogoText", this.font, geometryOptions))
+        this.childrenMeshes.set("BackBelowLogoText", new BackBelowLogoTextMesh("BackBelowLogoText", this.font))
         this.childrenMeshes.set("QrCode", new QrCodeMesh("QrCode"))
         this.childrenMeshes.set("CodeChartaLogo", new CodeChartaLogoMesh("CodeChartaLogo"))
-        this.childrenMeshes.set("CodeChartaText", new CodeChartaTextMesh("CodeChartaText", this.font, geometryOptions))
+        this.childrenMeshes.set("CodeChartaText", new CodeChartaTextMesh("CodeChartaText", this.font))
         this.childrenMeshes.set("MetricDescriptions", new MetricDescriptionsContainerMesh("MetricDescriptions", this.font))
 
         await Promise.all(
@@ -33,12 +34,16 @@ export class BackPrintContainerMesh extends GeneralMesh implements GeneralSizeCh
             })
         )
 
+        this.changeSize(geometryOptions, 1)
         return this
     }
 
     async changeSize(geometryOptions: GeometryOptions, oldWidth: number): Promise<void> {
         const scaleFactor = geometryOptions.width / oldWidth
         this.scale.set(this.scale.x * scaleFactor, this.scale.y * scaleFactor, this.scale.z)
+        for (const mesh of this.childrenMeshes.values()) {
+            mesh.setCurrentWidth(geometryOptions.width)
+        }
     }
 
     isQRCodeVisible(): boolean {

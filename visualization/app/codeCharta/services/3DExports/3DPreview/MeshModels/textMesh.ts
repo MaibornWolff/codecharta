@@ -1,10 +1,10 @@
-import { ManualVisibilityMesh } from "./manualVisibilityMesh"
+import { CustomVisibilityMesh } from "./customVisibilityMesh"
 import { GeometryOptions } from "../preview3DPrintMesh"
 import { MeshBasicMaterial } from "three"
 import { CreateTextGeometryStrategy, CreateTextGeometryStrategyOptions } from "../CreateGeometryStrategies/createTextGeometryStrategy"
 import { DefaultPrintColorChangeStrategy } from "../ColorChangeStrategies/defaultPrintColorChangeStrategy"
 
-export class TextMesh extends ManualVisibilityMesh {
+export class TextMesh extends CustomVisibilityMesh {
     readonly createTextGeometryStrategy: CreateTextGeometryStrategy
 
     constructor(

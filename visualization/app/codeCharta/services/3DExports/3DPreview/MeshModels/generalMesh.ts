@@ -6,7 +6,7 @@ export interface GeneralSizeChangeMesh {
     changeSize(geometryOptions: GeometryOptions, oldWidth: number): Promise<void>
 }
 export abstract class GeneralMesh extends Mesh {
-    boundingBoxCalculated = false
+    boundingBoxCalculated: boolean
 
     constructor(
         name: string,
@@ -14,6 +14,7 @@ export abstract class GeneralMesh extends Mesh {
     ) {
         super()
         this.name = name
+        this.boundingBoxCalculated = false
     }
 
     abstract init(geometryOptions: GeometryOptions): Promise<GeneralMesh>

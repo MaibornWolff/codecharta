@@ -1,10 +1,10 @@
-import { ManualVisibilityMesh } from "./manualVisibilityMesh"
+import { CustomVisibilityMesh } from "./customVisibilityMesh"
 import { GeometryOptions } from "../preview3DPrintMesh"
 import { CreateQRCodeGeometryStrategy } from "../CreateGeometryStrategies/createQRCodeGeometryStrategy"
 import { MeshBasicMaterial } from "three/src/materials/MeshBasicMaterial"
 import { DefaultPrintColorChangeStrategy } from "../ColorChangeStrategies/defaultPrintColorChangeStrategy"
 
-export class QrCodeMesh extends ManualVisibilityMesh {
+export class QrCodeMesh extends CustomVisibilityMesh {
     private readonly createQRCodeStrategy: CreateQRCodeGeometryStrategy
 
     constructor(name: string) {

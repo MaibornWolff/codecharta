@@ -1,9 +1,9 @@
-import { ManualVisibilityMesh } from "./manualVisibilityMesh"
+import { CustomVisibilityMesh } from "./customVisibilityMesh"
 import { GeometryOptions } from "../preview3DPrintMesh"
 import { DefaultPrintColorChangeStrategy } from "../ColorChangeStrategies/defaultPrintColorChangeStrategy"
 import { BufferAttribute, BufferGeometry, Float32BufferAttribute, InterleavedBufferAttribute, Mesh } from "three"
 
-export class MapMesh extends ManualVisibilityMesh {
+export class MapMesh extends CustomVisibilityMesh {
     private mapScalingFactorForSnappingHeights: number
     private originalColors: BufferAttribute | InterleavedBufferAttribute
 

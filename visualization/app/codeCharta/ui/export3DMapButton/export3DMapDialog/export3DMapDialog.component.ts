@@ -324,8 +324,7 @@ export class Export3DMapDialogComponent {
             printHeight: this.frontPrintDepth,
             mapSideOffset: this.mapSideOffset,
             baseplateHeight: this.baseplateHeight,
-            logoSize: this.logoSize,
-            backTextSize: this.backTextSize
+            logoSize: this.logoSize
         }
     }
 

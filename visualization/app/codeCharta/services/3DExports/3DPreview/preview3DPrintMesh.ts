@@ -29,7 +29,6 @@ export interface GeometryOptions {
     mapSideOffset: number
     baseplateHeight: number
     logoSize: number
-    backTextSize: number
 }
 
 export class Preview3DPrintMesh {

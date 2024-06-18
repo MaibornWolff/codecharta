@@ -1,7 +1,7 @@
 import { GeometryOptions } from "../preview3DPrintMesh"
 import { Font } from "three"
 import { DefaultPrintColorChangeStrategy } from "../ColorChangeStrategies/defaultPrintColorChangeStrategy"
-import { CreateTextGeometryStrategyOptions } from "../CreateGeometryStrategies/createTextGeometryStrategy"
+import { CreateTextGeometryStrategy, CreateTextGeometryStrategyOptions } from "../CreateGeometryStrategies/createTextGeometryStrategy"
 import { ColorRange } from "../../../../codeCharta.model"
 import { MetricDescriptionBlockMesh, MetricDescriptionBlockOptions } from "./metricDescriptionBlockMesh"
 import { TextMesh } from "./textMesh"
@@ -29,6 +29,18 @@ export class ColorMetricDescriptionBlockMesh extends MetricDescriptionBlockMesh 
         return this
     }
 
+    async createTextGeometry(createTextGeometryStrategy: CreateTextGeometryStrategy, text: string, geometryOptions: GeometryOptions) {
+        const textGeometry = await createTextGeometryStrategy.create(geometryOptions, {
+            font: this.font,
+            text,
+            side: "back",
+            xPosition: 0.05,
+            yPosition: 0.015,
+            align: "left"
+        })
+        return textGeometry
+    }
+
     getText() {
         const colorTextNameAndTitle =
             `${this.metricDescriptionBlockOptions.nodeMetricData.name}\n` + `${this.metricDescriptionBlockOptions.title}\n`
@@ -54,16 +66,15 @@ export class ColorMetricDescriptionBlockMesh extends MetricDescriptionBlockMesh 
             new DefaultPrintColorChangeStrategy(),
             new NegativePrintColorChangeStrategy()
         ]
-        let xOffset = 10
+        let xOffset = 0.05
         for (let index = 0; index < colorTextValueRanges.length; index += 1) {
-            const name = `Metric Text Part ${index}`
+            const name = `ColorMetricLastLine${index}`
             const createTextGeometryStrategyOptions: CreateTextGeometryStrategyOptions = {
                 font: this.font,
                 text: colorTextValueRanges[index],
                 side: "back",
                 xPosition: xOffset,
-                yPosition: -12,
-                textSize: geometryOptions.backTextSize,
+                yPosition: -0.045,
                 align: "left"
             }
 
@@ -74,7 +85,7 @@ export class ColorMetricDescriptionBlockMesh extends MetricDescriptionBlockMesh 
             colorTextGeometries.push(textMesh)
 
             if (index !== colorTextValueRanges.length - 1) {
-                xOffset += textMesh.getWidth() + 3
+                xOffset += textMesh.getWidth() + 0.03
             }
         }
         return colorTextGeometries

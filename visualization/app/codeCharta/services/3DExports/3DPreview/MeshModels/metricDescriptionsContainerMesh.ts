@@ -1,11 +1,11 @@
-import { ManualVisibilityMesh } from "./manualVisibilityMesh"
+import { CustomVisibilityMesh } from "./customVisibilityMesh"
 import { GeometryOptions } from "../preview3DPrintMesh"
-import { Box3, Font, Mesh } from "three"
+import { Font, Mesh } from "three"
 import { DefaultPrintColorChangeStrategy } from "../ColorChangeStrategies/defaultPrintColorChangeStrategy"
 import { MetricDescriptionBlockMesh } from "./metricDescriptionBlockMesh"
 import { ColorMetricDescriptionBlockMesh } from "./colorMetricDescriptionBlockMesh"
 
-export class MetricDescriptionsContainerMesh extends ManualVisibilityMesh {
+export class MetricDescriptionsContainerMesh extends CustomVisibilityMesh {
     constructor(
         name: string,
         public font: Font
@@ -20,33 +20,33 @@ export class MetricDescriptionsContainerMesh extends ManualVisibilityMesh {
 
         const heightMetricBlock = await new MetricDescriptionBlockMesh(
             {
-                name: "heigth",
+                name: "HeigthMetricBlock",
                 title: geometryOptions.heightMetricTitle,
                 iconFilename: heightIcon,
                 iconScale: heightIconScale,
                 nodeMetricData: geometryOptions.heightMetricData
             },
             this.font,
-            30
+            0.05
         ).init(geometryOptions)
         this.add(heightMetricBlock)
 
         const areaMetricBlock = await new MetricDescriptionBlockMesh(
             {
-                name: "area",
+                name: "AreaMetricBlock",
                 title: geometryOptions.areaMetricTitle,
                 iconFilename: areaIcon,
                 iconScale: areaIconScale,
                 nodeMetricData: geometryOptions.areaMetricData
             },
             this.font,
-            0
+            -0.1
         ).init(geometryOptions)
         this.add(areaMetricBlock)
 
         const colorMetricBlock = await new ColorMetricDescriptionBlockMesh(
             {
-                name: "color",
+                name: "ColorMetricBlock",
                 title: geometryOptions.colorMetricTitle,
                 iconFilename: colorIcon,
                 iconScale: colorIconScale,
@@ -54,43 +54,43 @@ export class MetricDescriptionsContainerMesh extends ManualVisibilityMesh {
                 colorRange: geometryOptions.colorRange
             },
             this.font,
-            -30
+            -0.25
         ).init(geometryOptions)
         this.add(colorMetricBlock)
 
-        if (this.visible) {
-            this.xCenterMetricsMesh(this)
-        }
+        this.centerMetricsMeshInXDirection()
+
         return this
     }
 
-    private xCenterMetricsMesh(metricsMesh: Mesh) {
-        //compute bounding box of the mesh and center it in the x direction
-        let boundingBox = new Box3()
-        metricsMesh.traverse(child => {
-            if (child instanceof Mesh) {
+    private centerMetricsMeshInXDirection() {
+        const x = { min: Number.POSITIVE_INFINITY, max: Number.NEGATIVE_INFINITY }
+        this.traverse(child => {
+            if (child instanceof Mesh && child.visible) {
                 child.geometry.computeBoundingBox()
-                boundingBox = boundingBox.union(child.geometry.boundingBox)
+                const { min, max } = child.geometry.boundingBox
+                x.min = Math.min(x.min, min.x)
+                x.max = Math.max(x.max, max.x)
             }
         })
-        metricsMesh.position.x = (Math.abs(boundingBox.max.x - boundingBox.min.x) * metricsMesh.scale.x) / 2
+        this.position.x = (x.max - x.min) / 2
     }
 
     private createColorAttributes() {
         const colorIcon = "color_icon_for_3D_print.svg"
-        const colorIconScale = 10
+        const colorIconScale = 0.075
         return { colorIcon, colorIconScale }
     }
 
     private createHeightAttributes() {
         const heightIcon = "height_icon_for_3D_print.svg"
-        const heightIconScale = 12
+        const heightIconScale = 0.09
         return { heightIcon, heightIconScale }
     }
 
     private createAreaAttributes() {
         const areaIcon = "area_icon_for_3D_print.svg"
-        const areaIconScale = 10
+        const areaIconScale = 0.075
         return { areaIcon, areaIconScale }
     }
 }
