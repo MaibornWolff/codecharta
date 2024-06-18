@@ -9,11 +9,11 @@ export class TextMesh extends CustomVisibilityMesh {
 
     constructor(
         name: string,
-        public createTextGeometryOptions: CreateTextGeometryStrategyOptions,
+        colorChangeStrategy = new DefaultPrintColorChangeStrategy(),
+        minScale: number,
         manualVisibility: boolean,
         minNumberOfColors: number,
-        minScale: number,
-        colorChangeStrategy = new DefaultPrintColorChangeStrategy()
+        public createTextGeometryOptions: CreateTextGeometryStrategyOptions
     ) {
         super(name, colorChangeStrategy, minScale, manualVisibility, minNumberOfColors)
         this.createTextGeometryStrategy = new CreateTextGeometryStrategy()

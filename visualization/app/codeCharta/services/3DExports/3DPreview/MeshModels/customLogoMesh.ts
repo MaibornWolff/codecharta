@@ -35,7 +35,8 @@ export class CustomLogoMesh extends FrontLogo implements GeneralSizeChangeMesh {
     }
 
     setColor(color: string) {
-        ;(this.material as MeshBasicMaterial).color.set(color)
+        const material = this.material as MeshBasicMaterial
+        material.color.set(color)
     }
 
     rotate() {

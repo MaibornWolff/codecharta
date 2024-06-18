@@ -1,6 +1,7 @@
 import { Font } from "three"
 import { CreateTextGeometryStrategyOptions } from "../CreateGeometryStrategies/createTextGeometryStrategy"
 import { TextMesh } from "./textMesh"
+import { DefaultPrintColorChangeStrategy } from "../ColorChangeStrategies/defaultPrintColorChangeStrategy"
 
 export class BackBelowLogoTextMesh extends TextMesh {
     constructor(name: string, font: Font) {
@@ -12,6 +13,6 @@ export class BackBelowLogoTextMesh extends TextMesh {
             yPosition: 0.23,
             align: "center"
         }
-        super(name, createFrontTextGeometryOptions, true, 2, 0.7)
+        super(name, new DefaultPrintColorChangeStrategy(), 200, true, 2, createFrontTextGeometryOptions)
     }
 }

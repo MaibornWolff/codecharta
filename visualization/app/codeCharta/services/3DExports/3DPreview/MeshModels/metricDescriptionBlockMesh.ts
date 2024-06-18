@@ -25,7 +25,7 @@ export class MetricDescriptionBlockMesh extends CustomVisibilityMesh {
         private yOffset: number,
         minNumberOfColors = 2
     ) {
-        super(metricDescriptionBlockOptions.name, new DefaultPrintColorChangeStrategy(), 0.8, true, minNumberOfColors)
+        super(metricDescriptionBlockOptions.name, new DefaultPrintColorChangeStrategy(), 200, true, minNumberOfColors)
         this.createSvgGeometryStrategy = new CreateSvgGeometryStrategy()
         this.createTextGeometryStrategy = new CreateTextGeometryStrategy()
     }

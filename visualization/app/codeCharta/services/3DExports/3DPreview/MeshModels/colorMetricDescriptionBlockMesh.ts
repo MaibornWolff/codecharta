@@ -78,7 +78,7 @@ export class ColorMetricDescriptionBlockMesh extends MetricDescriptionBlockMesh 
                 align: "left"
             }
 
-            const textMesh = await new TextMesh(name, createTextGeometryStrategyOptions, true, 4, 0.8, colorChangeStrategies[index]).init(
+            const textMesh = await new TextMesh(name, colorChangeStrategies[index], 200, true, 4, createTextGeometryStrategyOptions).init(
                 geometryOptions
             )
             this.changeColor(geometryOptions.numberOfColors) //TODO adjust

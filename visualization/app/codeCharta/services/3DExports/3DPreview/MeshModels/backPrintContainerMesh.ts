@@ -41,9 +41,11 @@ export class BackPrintContainerMesh extends GeneralMesh implements GeneralSizeCh
     async changeSize(geometryOptions: GeometryOptions, oldWidth: number): Promise<void> {
         const scaleFactor = geometryOptions.width / oldWidth
         this.scale.set(this.scale.x * scaleFactor, this.scale.y * scaleFactor, this.scale.z)
-        for (const mesh of this.childrenMeshes.values()) {
-            mesh.setCurrentWidth(geometryOptions.width)
-        }
+        this.traverse(mesh => {
+            if (mesh instanceof CustomVisibilityMesh) {
+                mesh.setCurrentWidth(geometryOptions.width)
+            }
+        })
     }
 
     isQRCodeVisible(): boolean {

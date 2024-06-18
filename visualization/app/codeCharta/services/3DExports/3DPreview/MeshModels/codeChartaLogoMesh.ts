@@ -6,7 +6,7 @@ import { DefaultPrintColorChangeStrategy } from "../ColorChangeStrategies/defaul
 
 export class CodeChartaLogoMesh extends CustomVisibilityMesh {
     constructor(name: string) {
-        super(name, new DefaultPrintColorChangeStrategy(), 0.8, true, 2)
+        super(name, new DefaultPrintColorChangeStrategy(), 180, true, 2)
     }
 
     async init(geometryOptions: GeometryOptions): Promise<CodeChartaLogoMesh> {

@@ -6,7 +6,7 @@ import { DefaultPrintColorChangeStrategy } from "../ColorChangeStrategies/defaul
 
 export class BackMWLogoMesh extends CustomVisibilityMesh {
     constructor(name: string) {
-        super(name, new DefaultPrintColorChangeStrategy(), 0.2, true, 2)
+        super(name, new DefaultPrintColorChangeStrategy(), 120, true, 2)
         this.name = "BackMWLogo"
     }
 
