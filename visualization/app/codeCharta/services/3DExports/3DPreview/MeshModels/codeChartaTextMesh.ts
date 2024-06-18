@@ -5,7 +5,7 @@ import { TextMesh } from "./textMesh"
 import { CreateTextGeometryStrategyOptions } from "../CreateGeometryStrategies/createTextGeometryStrategy"
 
 export class CodeChartaTextMesh extends TextMesh {
-    constructor(font: Font, geometryOptions: GeometryOptions) {
+    constructor(name: string, font: Font, geometryOptions: GeometryOptions) {
         const createFrontTextGeometryOptions: CreateTextGeometryStrategyOptions = {
             font,
             text: "github.com/MaibornWolff/codecharta",
@@ -15,7 +15,7 @@ export class CodeChartaTextMesh extends TextMesh {
             textSize: geometryOptions.backTextSize,
             align: "center"
         }
-        super(new SizeChangeScaleStrategy(), createFrontTextGeometryOptions, true, 2, 0.7)
+        super(name, new SizeChangeScaleStrategy(), createFrontTextGeometryOptions, true, 2, 0.7)
         this.name = "CodeChartaText"
     }
 

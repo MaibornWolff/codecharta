@@ -5,16 +5,18 @@ import { ColorChangeStrategy } from "../ColorChangeStrategies/colorChangeStrateg
 
 export abstract class FrontLogo extends GeneralMesh {
     constructor(
+        name: string,
         sizeChangeStrategy: SizeChangeStrategy,
         colorChangeStrategy: ColorChangeStrategy,
         private alignment: "right" | "left"
     ) {
-        super(sizeChangeStrategy, colorChangeStrategy)
+        super(name, sizeChangeStrategy, colorChangeStrategy)
     }
 
-    changeRelativeSize(geometryOptions: GeometryOptions, secondRowMeshVisible: boolean) {
+    changeRelativeSize(geometryOptions: GeometryOptions) {
         const oldWidth = this.getWidth()
         this.boundingBoxCalculated = false
+        const secondRowMeshVisible = geometryOptions.secondRowVisible
         const scale = secondRowMeshVisible
             ? (geometryOptions.frontTextSize + geometryOptions.secondRowTextSize) / geometryOptions.frontTextSize
             : 1

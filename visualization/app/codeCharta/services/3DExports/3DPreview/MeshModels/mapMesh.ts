@@ -9,9 +9,8 @@ export class MapMesh extends ManualVisibilityMesh {
     private originalColors: BufferAttribute | InterleavedBufferAttribute
 
     constructor() {
-        super(new SizeChangeFixPositionStrategy(), new DefaultPrintColorChangeStrategy(), 1, false, 2)
-        this.name = "Map"
-        this.mapScalingFactorForSnappingHeights = 1
+        super("Map", new SizeChangeFixPositionStrategy(), new DefaultPrintColorChangeStrategy(), 1, false, 2)
+        this.mapScalingFactorForSnappingHeights = 1 //TODO: remove this scaling. Instead round when serializing
     }
 
     async init(geometryOptions: GeometryOptions): Promise<MapMesh> {

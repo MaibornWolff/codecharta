@@ -7,9 +7,11 @@ import { MetricDescriptionBlockMesh } from "./metricDescriptionBlockMesh"
 import { ColorMetricDescriptionBlockMesh } from "./colorMetricDescriptionBlockMesh"
 
 export class MetricDescriptionsMesh extends ManualVisibilityMesh {
-    constructor(public font: Font) {
-        super(new SizeChangeScaleStrategy(), new DefaultPrintColorChangeStrategy(), 1, true, 2)
-        this.name = "MetricDescriptions"
+    constructor(
+        name: string,
+        public font: Font
+    ) {
+        super(name, new SizeChangeScaleStrategy(), new DefaultPrintColorChangeStrategy(), 1, true, 2)
     }
 
     async init(geometryOptions: GeometryOptions): Promise<MetricDescriptionsMesh> {

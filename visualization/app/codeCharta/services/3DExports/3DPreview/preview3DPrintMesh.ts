@@ -1,19 +1,10 @@
 import { Font, FontLoader, Mesh, ShaderMaterial, Vector3 } from "three"
 import { ColorRange, NodeMetricData } from "../../../codeCharta.model"
-import { BackMWLogoMesh } from "./MeshModels/backMWLogoMesh"
 import { BaseplateMesh } from "./MeshModels/baseplateMesh"
-import { BackBelowLogoTextMesh } from "./MeshModels/backBelowLogoTextMesh"
-import { CodeChartaLogoMesh } from "./MeshModels/codeChartaLogoMesh"
-import { CodeChartaTextMesh } from "./MeshModels/codeChartaTextMesh"
-import { SecondRowTextMesh } from "./MeshModels/secondRowTextMesh"
-import { MetricDescriptionsMesh } from "./MeshModels/metricDescriptionsMesh"
 import { GeneralMesh } from "./MeshModels/generalMesh"
-import { QrCodeMesh } from "./MeshModels/qrCodeMesh"
-import { FrontTextMesh } from "./MeshModels/frontTextMesh"
-import { FrontMWLogoMesh } from "./MeshModels/frontMWLogoMesh"
-import { CustomLogoMesh } from "./MeshModels/customLogoMesh"
 import { MapMesh } from "./MeshModels/mapMesh"
-import { TextMesh } from "./MeshModels/textMesh"
+import { BackPrintContainerMesh } from "./MeshModels/backPrintContainerMesh"
+import { FrontPrintContainerMesh } from "./MeshModels/frontPrintContainerMesh"
 
 export interface GeometryOptions {
     originalMapMesh: Mesh
@@ -42,15 +33,19 @@ export interface GeometryOptions {
 }
 
 export class Preview3DPrintMesh {
+    //TODO: rename to PrintPreview
     private font: Font
     private printMesh: Mesh
     private currentSize: Vector3
-    private childrenMeshes: Map<string, GeneralMesh>
+
+    private mapMesh: MapMesh
+    private baseplateMesh: BaseplateMesh
+    private frontPrintContainerMesh: FrontPrintContainerMesh
+    private backPrintContainerMesh: BackPrintContainerMesh
 
     constructor(private geometryOptions: GeometryOptions) {
         this.printMesh = new Mesh()
-        this.printMesh.name = "PrintMesh"
-        this.childrenMeshes = new Map<string, GeneralMesh>()
+        this.printMesh.name = "PrintMesh" //TODO: rename to PrintPreview
     }
 
     async initialize() {
@@ -64,7 +59,7 @@ export class Preview3DPrintMesh {
     }
 
     getMapMesh(): Mesh {
-        return this.childrenMeshes.get("Map")
+        return this.mapMesh
     }
 
     getSize(): Vector3 {
@@ -72,124 +67,80 @@ export class Preview3DPrintMesh {
     }
 
     async createPrintPreviewMesh() {
-        const baseplateMesh = await new BaseplateMesh().init(this.geometryOptions)
-        this.printMesh.add(baseplateMesh)
-        this.childrenMeshes.set(baseplateMesh.name, baseplateMesh)
+        this.baseplateMesh = await new BaseplateMesh().init(this.geometryOptions)
+        this.printMesh.add(this.baseplateMesh)
 
-        const mapMesh = await new MapMesh().init(this.geometryOptions)
-        this.printMesh.add(mapMesh)
-        this.childrenMeshes.set(mapMesh.name, mapMesh)
+        this.mapMesh = await new MapMesh().init(this.geometryOptions)
+        this.printMesh.add(this.mapMesh)
 
-        const frontTextMesh = await new FrontTextMesh(this.font, this.geometryOptions).init(this.geometryOptions)
-        this.printMesh.add(frontTextMesh)
-        this.childrenMeshes.set(frontTextMesh.name, frontTextMesh)
+        this.frontPrintContainerMesh = await new FrontPrintContainerMesh(this.font).init(this.geometryOptions)
+        this.printMesh.add(this.frontPrintContainerMesh)
 
-        const secondRowMesh = await new SecondRowTextMesh(this.font, this.geometryOptions).init(this.geometryOptions)
-        this.printMesh.add(secondRowMesh)
-        this.childrenMeshes.set(secondRowMesh.name, secondRowMesh)
-
-        const frontMWLogoMesh = await new FrontMWLogoMesh().init(this.geometryOptions)
-        this.printMesh.add(frontMWLogoMesh)
-        this.childrenMeshes.set(frontMWLogoMesh.name, frontMWLogoMesh)
-
-        const backMWLogoMesh = await new BackMWLogoMesh().init(this.geometryOptions)
-        this.printMesh.add(backMWLogoMesh)
-        this.childrenMeshes.set(backMWLogoMesh.name, backMWLogoMesh)
-
-        const itsTextMesh = await new BackBelowLogoTextMesh(this.font, this.geometryOptions).init(this.geometryOptions)
-        this.printMesh.add(itsTextMesh)
-        this.childrenMeshes.set(itsTextMesh.name, itsTextMesh)
-
-        const qrCodeMesh = await new QrCodeMesh().init(this.geometryOptions)
-        this.printMesh.add(qrCodeMesh)
-        this.childrenMeshes.set(qrCodeMesh.name, qrCodeMesh)
-
-        const codeChartaLogoMesh = await new CodeChartaLogoMesh().init(this.geometryOptions)
-        this.printMesh.add(codeChartaLogoMesh)
-        this.childrenMeshes.set(codeChartaLogoMesh.name, codeChartaLogoMesh)
-
-        const codeChartaTextMesh = await new CodeChartaTextMesh(this.font, this.geometryOptions).init(this.geometryOptions)
-        this.printMesh.add(codeChartaTextMesh)
-        this.childrenMeshes.set(codeChartaTextMesh.name, codeChartaTextMesh)
-
-        const metricsMesh = await new MetricDescriptionsMesh(this.font).init(this.geometryOptions)
-        this.printMesh.add(metricsMesh)
-        this.childrenMeshes.set(metricsMesh.name, metricsMesh)
+        this.backPrintContainerMesh = await new BackPrintContainerMesh(this.font).init(this.geometryOptions)
+        this.printMesh.add(this.backPrintContainerMesh)
     }
 
     async updateSize(wantedWidth: number): Promise<boolean> {
         this.geometryOptions.width = wantedWidth
         const oldWidth = this.currentSize.x
 
-        await Promise.all([...this.childrenMeshes.values()].map(async mesh => mesh.changeSize(this.geometryOptions, oldWidth)))
+        await Promise.all(
+            [...this.printMesh.children].map(async mesh => {
+                if (mesh instanceof GeneralMesh) {
+                    mesh.changeSize(this.geometryOptions, oldWidth)
+                }
+            })
+        )
 
         this.calculateCurrentSize()
-        return this.childrenMeshes.get("QRCode").visible
+        return this.backPrintContainerMesh.isQRCodeVisible()
     }
 
     updateNumberOfColors(numberOfColors: number) {
         this.geometryOptions.numberOfColors = numberOfColors
-        for (const mesh of this.childrenMeshes.values()) {
-            mesh.changeColor(numberOfColors)
+        for (const mesh of this.printMesh.children) {
+            if (mesh instanceof GeneralMesh) {
+                mesh.changeColor(numberOfColors)
+            }
         }
     }
 
     async addCustomLogo(dataUrl: string): Promise<void> {
-        if (this.childrenMeshes.has("CustomLogo")) {
-            this.removeCustomLogo()
-        }
-
-        const customLogoMesh = await new CustomLogoMesh(dataUrl).init(this.geometryOptions)
-        this.printMesh.add(customLogoMesh)
-        this.childrenMeshes.set(customLogoMesh.name, customLogoMesh)
+        this.frontPrintContainerMesh.addCustomLogo(dataUrl, this.geometryOptions)
     }
 
     rotateCustomLogo() {
-        const customLogoMesh = this.childrenMeshes.get("CustomLogo") as CustomLogoMesh
-        customLogoMesh.rotate()
+        this.frontPrintContainerMesh.rotateCustomLogo()
     }
 
     flipCustomLogo() {
-        const customLogoMesh = this.childrenMeshes.get("CustomLogo") as CustomLogoMesh
-        customLogoMesh.flip()
+        this.frontPrintContainerMesh.flipCustomLogo()
     }
 
     removeCustomLogo() {
-        this.printMesh.remove(this.childrenMeshes.get("CustomLogo"))
-        this.childrenMeshes.delete("CustomLogo")
+        this.frontPrintContainerMesh.removeCustomLogo()
     }
 
     updateCustomLogoColor(newColor: string) {
-        const customLogoMesh = this.childrenMeshes.get("CustomLogo") as CustomLogoMesh
-        customLogoMesh.setColor(newColor)
+        this.frontPrintContainerMesh.updateCustomLogoColor(newColor)
     }
 
     updateFrontText(frontText: string) {
-        this.geometryOptions.frontText = frontText
-        const frontTextMesh = this.childrenMeshes.get("FrontText") as FrontTextMesh
-        frontTextMesh.updateText(this.geometryOptions)
+        this.frontPrintContainerMesh.updateFrontText(frontText, this.geometryOptions)
     }
 
     updateSecondRowVisibility(isSecondRowVisible: boolean) {
-        const baseplateMesh = this.childrenMeshes.get("Baseplate") as BaseplateMesh
-        const frontMWLogoMesh = this.childrenMeshes.get("FrontMWLogo") as FrontMWLogoMesh
-        const secondRowMesh = this.childrenMeshes.get("SecondRowText") as SecondRowTextMesh
-        const customLogoMesh = this.childrenMeshes.get("CustomLogo") as CustomLogoMesh
-
-        if (secondRowMesh.visible === isSecondRowVisible) {
+        if (this.geometryOptions.secondRowVisible === isSecondRowVisible) {
             return
         }
-        secondRowMesh.setManualVisibility(isSecondRowVisible)
         this.geometryOptions.secondRowVisible = isSecondRowVisible
-        baseplateMesh.changeSize(this.geometryOptions)
 
-        frontMWLogoMesh.changeRelativeSize(this.geometryOptions, isSecondRowVisible)
-        customLogoMesh?.changeRelativeSize(this.geometryOptions, isSecondRowVisible)
+        this.frontPrintContainerMesh.updateSecondRowVisibility(this.geometryOptions)
+        this.baseplateMesh.changeSize(this.geometryOptions)
     }
 
     updateSecondRowText(secondRowText: string) {
-        this.geometryOptions.secondRowText = secondRowText
-        ;(this.childrenMeshes.get("SecondRowText") as TextMesh).updateText(this.geometryOptions)
+        this.frontPrintContainerMesh.updateSecondRowText(secondRowText, this.geometryOptions)
     }
 
     private async loadFont() {
@@ -211,23 +162,18 @@ export class Preview3DPrintMesh {
     }
 
     private calculateCurrentSize() {
-        const mapMesh = this.childrenMeshes.get("Map") as MapMesh
-        const baseplateMesh = this.childrenMeshes.get("Baseplate") as BaseplateMesh
-        const currentWidth = baseplateMesh.getWidth()
-        const currentDepth = baseplateMesh.getDepth()
-        const currentHeight = baseplateMesh.getHeight() + mapMesh.getHeight()
+        const currentWidth = this.baseplateMesh.getWidth()
+        const currentDepth = this.baseplateMesh.getDepth()
+        const currentHeight = this.baseplateMesh.getHeight() + this.mapMesh.getHeight()
         this.currentSize = new Vector3(currentWidth, currentDepth, currentHeight)
     }
 
     async updateQrCodeText(qrCodeText: string): Promise<void> {
-        this.geometryOptions.qrCodeText = qrCodeText
-        const qrCodeMesh = this.childrenMeshes.get("QRCode") as QrCodeMesh
-        qrCodeMesh.changeText(this.geometryOptions)
+        this.backPrintContainerMesh.updateQrCodeText(qrCodeText, this.geometryOptions)
     }
 
     updateQrCodeVisibility(qrCodeVisible: boolean) {
-        const qrCodeMesh = this.childrenMeshes.get("QRCode") as QrCodeMesh
-        qrCodeMesh.setManualVisibility(qrCodeVisible)
+        this.backPrintContainerMesh.updateQrCodeVisibility(qrCodeVisible)
     }
 }
 

@@ -3,14 +3,19 @@ import { SizeChangeStrategy } from "../SizeChangeStrategies/sizeChangeStrategy"
 import { GeometryOptions } from "../preview3DPrintMesh"
 import { ColorChangeStrategy } from "../ColorChangeStrategies/colorChangeStrategy"
 
+export interface GeneralSizeChangeMesh {
+    changeSize(geometryOptions: GeometryOptions, oldWidth: number): Promise<void>
+}
 export abstract class GeneralMesh extends Mesh {
     boundingBoxCalculated = false
 
     constructor(
+        name: string,
         public sizeChangeStrategy: SizeChangeStrategy,
         public colorChangeStrategy: ColorChangeStrategy
     ) {
         super()
+        this.name = name
     }
 
     abstract init(geometryOptions: GeometryOptions): Promise<GeneralMesh>

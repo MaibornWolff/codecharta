@@ -5,7 +5,7 @@ import { CreateTextGeometryStrategyOptions } from "../CreateGeometryStrategies/c
 import { TextMesh } from "./textMesh"
 
 export class BackBelowLogoTextMesh extends TextMesh {
-    constructor(font: Font, geometryOptions: GeometryOptions) {
+    constructor(name: string, font: Font, geometryOptions: GeometryOptions) {
         const createFrontTextGeometryOptions: CreateTextGeometryStrategyOptions = {
             font,
             text: "IT Stabilization & Modernization\nmaibornwolff.de/service/it-sanierung",
@@ -15,7 +15,7 @@ export class BackBelowLogoTextMesh extends TextMesh {
             textSize: geometryOptions.backTextSize,
             align: "center"
         }
-        super(new SizeChangeScaleStrategy(), createFrontTextGeometryOptions, true, 2, 0.7)
+        super(name, new SizeChangeScaleStrategy(), createFrontTextGeometryOptions, true, 2, 0.7)
         this.name = "BackBelowLogoText"
     }
 

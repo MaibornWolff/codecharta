@@ -6,8 +6,8 @@ import { DefaultPrintColorChangeStrategy } from "../ColorChangeStrategies/defaul
 import { SizeChangeScaleStrategy } from "../SizeChangeStrategies/sizeChangeScaleStrategy"
 
 export class BackMWLogoMesh extends ManualVisibilityMesh {
-    constructor() {
-        super(new SizeChangeScaleStrategy(), new DefaultPrintColorChangeStrategy(), 0.2, true, 2)
+    constructor(name: string) {
+        super(name, new SizeChangeScaleStrategy(), new DefaultPrintColorChangeStrategy(), 0.2, true, 2)
         this.name = "BackMWLogo"
     }
 
@@ -24,7 +24,7 @@ export class BackMWLogoMesh extends ManualVisibilityMesh {
 
         const xPosition = 0
         const yPosition = geometryOptions.width / 2 - geometryOptions.mapSideOffset / 2 - size / 2 + 13
-        const zPosition = -geometryOptions.printHeight * 2
+        const zPosition = -geometryOptions.baseplateHeight + geometryOptions.printHeight / 2
         this.position.set(xPosition, yPosition, zPosition)
 
         this.changeColor(geometryOptions.numberOfColors)

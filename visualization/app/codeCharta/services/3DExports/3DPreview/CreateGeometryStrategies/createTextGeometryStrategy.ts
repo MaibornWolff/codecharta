@@ -43,7 +43,7 @@ export class CreateTextGeometryStrategy implements CreateGeometryStrategy {
         textGeometry.translate(
             xPositionDirection * (xPositionOffset + xPosition),
             yPosition,
-            side === "front" ? geometryOptions.printHeight / 2 : -geometryOptions.printHeight - 0.1
+            side === "front" ? geometryOptions.printHeight / 2 : -geometryOptions.baseplateHeight + geometryOptions.printHeight / 2
         )
 
         return textGeometry

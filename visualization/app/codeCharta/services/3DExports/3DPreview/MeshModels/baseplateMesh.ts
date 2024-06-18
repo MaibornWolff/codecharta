@@ -1,17 +1,16 @@
-import { GeneralMesh } from "./generalMesh"
+import { GeneralMesh, GeneralSizeChangeMesh } from "./generalMesh"
 import { SizeChangeCreateStrategy, SizeChangeCreateStrategyOptions } from "../SizeChangeStrategies/sizeChangeCreateStrategy"
 import { CreateBaseplateGeometryStrategy } from "../CreateGeometryStrategies/createBaseplateGeometryStrategy"
 import { GeometryOptions } from "../preview3DPrintMesh"
 import { ShaderMaterial } from "three"
 import { BaseplateColorChangeStrategy } from "../ColorChangeStrategies/baseplateColorChangeStrategy"
 
-export class BaseplateMesh extends GeneralMesh {
+export class BaseplateMesh extends GeneralMesh implements GeneralSizeChangeMesh {
     private readonly createBaseplateGeometryStrategy: CreateBaseplateGeometryStrategy
 
     constructor() {
-        super(new SizeChangeCreateStrategy(), new BaseplateColorChangeStrategy())
+        super("Baseplate", new SizeChangeCreateStrategy(), new BaseplateColorChangeStrategy())
         this.createBaseplateGeometryStrategy = new CreateBaseplateGeometryStrategy()
-        this.name = "Baseplate"
     }
 
     async init(geometryOptions: GeometryOptions): Promise<BaseplateMesh> {

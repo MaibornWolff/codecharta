@@ -5,18 +5,19 @@ import { CreateTextGeometryStrategyOptions } from "../CreateGeometryStrategies/c
 import { SizeChangeTranslateStrategy } from "../SizeChangeStrategies/sizeChangeTranslateStrategy"
 
 export class SecondRowTextMesh extends TextMesh {
-    constructor(font: Font, geometryOptions: GeometryOptions) {
-        const yOffset = geometryOptions.frontTextSize + geometryOptions.secondRowTextSize / 2
+    constructor(name: string, font: Font, geometryOptions: GeometryOptions) {
         const createFrontTextGeometryOptions: CreateTextGeometryStrategyOptions = {
             font,
             text: geometryOptions.secondRowText,
             side: "front",
             xPosition: 0,
-            yPosition: -(geometryOptions.width - geometryOptions.mapSideOffset) / 2 - yOffset,
+            yPosition:
+                -(geometryOptions.width - geometryOptions.mapSideOffset) / 2 -
+                geometryOptions.frontTextSize -
+                geometryOptions.secondRowTextSize,
             textSize: geometryOptions.secondRowTextSize,
             align: "center"
         }
-        super(new SizeChangeTranslateStrategy(), createFrontTextGeometryOptions, false, 1, 0)
-        this.name = "SecondRowText"
+        super(name, new SizeChangeTranslateStrategy(), createFrontTextGeometryOptions, false, 1, 0)
     }
 }

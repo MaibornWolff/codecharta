@@ -15,13 +15,14 @@ export abstract class ManualVisibilityMesh extends GeneralMesh {
     readonly minNumberOfColors: number
 
     constructor(
+        name: string,
         sizeChangeStrategy: SizeChangeStrategy,
         colorChangeStrategy: ColorChangeStrategy,
         minScale: number,
         manualVisibility = true,
         minNumberOfColors = 2
     ) {
-        super(sizeChangeStrategy, colorChangeStrategy)
+        super(name, sizeChangeStrategy, colorChangeStrategy)
         this.minScale = minScale
         this.manualVisibility = manualVisibility
         this.minNumberOfColors = minNumberOfColors

@@ -5,7 +5,7 @@ import { TextMesh } from "./textMesh"
 import { SizeChangeTranslateStrategy } from "../SizeChangeStrategies/sizeChangeTranslateStrategy"
 
 export class FrontTextMesh extends TextMesh {
-    constructor(font: Font, geometryOptions: GeometryOptions) {
+    constructor(name: string, font: Font, geometryOptions: GeometryOptions) {
         let text = geometryOptions.frontText
         if (!text) {
             text = "FrontText"
@@ -15,11 +15,11 @@ export class FrontTextMesh extends TextMesh {
             side: "front",
             text,
             xPosition: 0,
-            yPosition: -(geometryOptions.width - geometryOptions.mapSideOffset) / 2,
+            yPosition: -(geometryOptions.width - geometryOptions.mapSideOffset) / 2 - geometryOptions.frontTextSize / 2,
             textSize: geometryOptions.frontTextSize,
             align: "center"
         }
-        super(new SizeChangeTranslateStrategy(), createFrontTextGeometryOptions, true, 1, 0)
+        super(name, new SizeChangeTranslateStrategy(), createFrontTextGeometryOptions, true, 1, 0)
         this.name = "Front Text"
     }
 }

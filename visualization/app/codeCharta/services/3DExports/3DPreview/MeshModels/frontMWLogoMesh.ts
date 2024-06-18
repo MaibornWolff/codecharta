@@ -6,9 +6,8 @@ import { SizeChangeTranslateStrategy, SizeChangeTranslateStrategyOptions } from 
 import { FrontLogo } from "./frontLogo"
 
 export class FrontMWLogoMesh extends FrontLogo {
-    constructor() {
-        super(new SizeChangeTranslateStrategy(), new DefaultPrintColorChangeStrategy(), "right")
-        this.name = "FrontMWLogo"
+    constructor(name: string) {
+        super(name, new SizeChangeTranslateStrategy(), new DefaultPrintColorChangeStrategy(), "right")
     }
 
     async init(geometryOptions: GeometryOptions): Promise<FrontMWLogoMesh> {

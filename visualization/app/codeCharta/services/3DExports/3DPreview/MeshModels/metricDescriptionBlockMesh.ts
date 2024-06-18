@@ -18,12 +18,19 @@ export interface MetricDescriptionBlockOptions {
 
 export class MetricDescriptionBlockMesh extends ManualVisibilityMesh {
     constructor(
-        private metricDescriptionBlockOptions: MetricDescriptionBlockOptions,
-        private font: Font,
-        private yOffset: number
+        public metricDescriptionBlockOptions: MetricDescriptionBlockOptions,
+        public font: Font,
+        private yOffset: number,
+        minNumberOfColors = 2
     ) {
-        super(new SizeChangeScaleStrategy(), new DefaultPrintColorChangeStrategy(), 0.8, true, 2)
-        this.name = metricDescriptionBlockOptions.name
+        super(
+            metricDescriptionBlockOptions.name,
+            new SizeChangeScaleStrategy(),
+            new DefaultPrintColorChangeStrategy(),
+            0.8,
+            true,
+            minNumberOfColors
+        )
     }
 
     async init(geometryOptions: GeometryOptions): Promise<MetricDescriptionBlockMesh> {
@@ -33,6 +40,7 @@ export class MetricDescriptionBlockMesh extends ManualVisibilityMesh {
             size: this.metricDescriptionBlockOptions.iconScale,
             side: "back"
         })
+        iconGeometry.translate(0, 0, -geometryOptions.baseplateHeight + geometryOptions.printHeight / 2)
 
         const createTextGeometryStrategy = new CreateTextGeometryStrategy()
         const text = this.getText()
@@ -52,7 +60,7 @@ export class MetricDescriptionBlockMesh extends ManualVisibilityMesh {
 
         const xPosition = 0
         const yPosition = -geometryOptions.width / 6.5 + this.yOffset
-        const zPosition = -geometryOptions.printHeight * 2
+        const zPosition = 0
         this.position.set(xPosition, yPosition, zPosition)
 
         this.changeColor(geometryOptions.numberOfColors)

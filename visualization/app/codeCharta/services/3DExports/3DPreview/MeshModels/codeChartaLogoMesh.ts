@@ -6,9 +6,8 @@ import { DefaultPrintColorChangeStrategy } from "../ColorChangeStrategies/defaul
 import { SizeChangeScaleStrategy } from "../SizeChangeStrategies/sizeChangeScaleStrategy"
 
 export class CodeChartaLogoMesh extends ManualVisibilityMesh {
-    constructor() {
-        super(new SizeChangeScaleStrategy(), new DefaultPrintColorChangeStrategy(), 0.8, true, 2)
-        this.name = "CodeChartaLogo"
+    constructor(name: string) {
+        super(name, new SizeChangeScaleStrategy(), new DefaultPrintColorChangeStrategy(), 0.8, true, 2)
     }
 
     async init(geometryOptions: GeometryOptions): Promise<CodeChartaLogoMesh> {
@@ -24,7 +23,7 @@ export class CodeChartaLogoMesh extends ManualVisibilityMesh {
 
         const xPosition = 0
         const yPosition = geometryOptions.width / 5.5 - size / 2
-        const zPosition = -geometryOptions.printHeight * 2
+        const zPosition = -geometryOptions.baseplateHeight + geometryOptions.printHeight / 2
         this.position.set(xPosition, yPosition, zPosition)
 
         this.changeColor(geometryOptions.numberOfColors)
