@@ -7,7 +7,7 @@ import { SizeChangeScaleStrategy } from "../SizeChangeStrategies/sizeChangeScale
 
 export class CodeChartaLogoMesh extends ManualVisibilityMesh {
     constructor() {
-        super(new SizeChangeScaleStrategy(), new DefaultPrintColorChangeStrategy(), true, 2, 0.8)
+        super(new SizeChangeScaleStrategy(), new DefaultPrintColorChangeStrategy(), 0.8, true, 2)
         this.name = "CodeChartaLogo"
     }
 

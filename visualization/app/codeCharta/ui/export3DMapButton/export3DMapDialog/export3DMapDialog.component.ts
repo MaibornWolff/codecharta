@@ -239,8 +239,8 @@ export class Export3DMapDialogComponent {
         this.currentSize = this.previewMesh.getSize()
         printPreviewScene.add(this.previewMesh.getThreeMesh())
 
-        //camera.position.set(0, 0, -this.width * 1.5) //To directly see the backside of the map: uncomment this line and comment the next line
-        this.updateCameraPosition(camera)
+        camera.position.set(0, 0, -this.wantedWidth * 1.5) //To directly see the backside of the map: uncomment this line and comment the next line
+        //this.updateCameraPosition(camera)
     }
 
     private initRenderer(printPreviewScene, camera) {

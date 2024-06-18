@@ -9,7 +9,7 @@ export class MapMesh extends ManualVisibilityMesh {
     private originalColors: BufferAttribute | InterleavedBufferAttribute
 
     constructor() {
-        super(new SizeChangeFixPositionStrategy(), new DefaultPrintColorChangeStrategy(), false, 2, 1)
+        super(new SizeChangeFixPositionStrategy(), new DefaultPrintColorChangeStrategy(), 1, false, 2)
         this.name = "Map"
         this.mapScalingFactorForSnappingHeights = 1
     }

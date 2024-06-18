@@ -7,7 +7,7 @@ import { SizeChangeScaleStrategy } from "../SizeChangeStrategies/sizeChangeScale
 
 export class BackMWLogoMesh extends ManualVisibilityMesh {
     constructor() {
-        super(new SizeChangeScaleStrategy(), new DefaultPrintColorChangeStrategy(), true, 2, 0.2)
+        super(new SizeChangeScaleStrategy(), new DefaultPrintColorChangeStrategy(), 0.2, true, 2)
         this.name = "BackMWLogo"
     }
 

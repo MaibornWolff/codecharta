@@ -10,7 +10,7 @@ export class QrCodeMesh extends ManualVisibilityMesh {
     private readonly positionFunction: (geometryOptions: GeometryOptions) => number
 
     constructor() {
-        super(new SizeChangeFixPositionStrategy(), new DefaultPrintColorChangeStrategy(), false, 2, 1)
+        super(new SizeChangeFixPositionStrategy(), new DefaultPrintColorChangeStrategy(), 1, false, 2)
         this.createQRCodeStrategy = new CreateQRCodeGeometryStrategy()
         this.name = "QRCode"
         this.positionFunction = (geometryOptions: GeometryOptions) => geometryOptions.width / 2 - geometryOptions.mapSideOffset

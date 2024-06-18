@@ -17,6 +17,11 @@ export abstract class GeneralMesh extends Mesh {
     abstract changeSize(geometryOptions: GeometryOptions, oldWidth: number): Promise<void>
     changeColor(numberOfColors: number): void {
         this.colorChangeStrategy.execute(numberOfColors, this)
+        for (const child of this.children) {
+            if (child instanceof GeneralMesh) {
+                child.changeColor(numberOfColors)
+            }
+        }
     }
 
     getWidth(): number {

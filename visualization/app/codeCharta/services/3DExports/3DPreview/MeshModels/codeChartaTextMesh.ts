@@ -2,16 +2,18 @@ import { GeometryOptions } from "../preview3DPrintMesh"
 import { Font } from "three"
 import { SizeChangeScaleStrategy } from "../SizeChangeStrategies/sizeChangeScaleStrategy"
 import { TextMesh } from "./textMesh"
-import { CreateFrontTextGeometryStrategyOptions } from "../CreateGeometryStrategies/createTextGeometryStrategy"
+import { CreateTextGeometryStrategyOptions } from "../CreateGeometryStrategies/createTextGeometryStrategy"
 
 export class CodeChartaTextMesh extends TextMesh {
     constructor(font: Font, geometryOptions: GeometryOptions) {
-        const createFrontTextGeometryOptions: CreateFrontTextGeometryStrategyOptions = {
+        const createFrontTextGeometryOptions: CreateTextGeometryStrategyOptions = {
             font,
             text: "github.com/MaibornWolff/codecharta",
             side: "back",
-            yPosition: 5, //TODO: make relative
-            textSize: geometryOptions.backTextSize
+            xPosition: 0,
+            yPosition: 0, //TODO: make relative
+            textSize: geometryOptions.backTextSize,
+            align: "center"
         }
         super(new SizeChangeScaleStrategy(), createFrontTextGeometryOptions, true, 2, 0.7)
         this.name = "CodeChartaText"

@@ -45,7 +45,6 @@ export class Preview3DPrintMesh {
     private font: Font
     private printMesh: Mesh
     private currentSize: Vector3
-
     private childrenMeshes: Map<string, GeneralMesh>
 
     constructor(private geometryOptions: GeometryOptions) {

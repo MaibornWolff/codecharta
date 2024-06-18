@@ -1,26 +1,26 @@
 import { ManualVisibilityMesh } from "./manualVisibilityMesh"
 import { GeometryOptions } from "../preview3DPrintMesh"
 import { MeshBasicMaterial } from "three"
-import { CreateTextGeometryStrategy, CreateFrontTextGeometryStrategyOptions } from "../CreateGeometryStrategies/createTextGeometryStrategy"
+import { CreateTextGeometryStrategy, CreateTextGeometryStrategyOptions } from "../CreateGeometryStrategies/createTextGeometryStrategy"
 import { SizeChangeTranslateStrategy } from "../SizeChangeStrategies/sizeChangeTranslateStrategy"
 import { DefaultPrintColorChangeStrategy } from "../ColorChangeStrategies/defaultPrintColorChangeStrategy"
 
 export abstract class TextMesh extends ManualVisibilityMesh {
-    readonly createFrontTextGeometryStrategy: CreateTextGeometryStrategy
+    readonly createTextGeometryStrategy: CreateTextGeometryStrategy
 
     constructor(
         sizeChangeStrategy: SizeChangeTranslateStrategy,
-        public createFrontTextGeometryOptions: CreateFrontTextGeometryStrategyOptions,
+        public createTextGeometryOptions: CreateTextGeometryStrategyOptions,
         manualVisibility: boolean,
         minNumberOfColors: number,
         minScale: number
     ) {
-        super(sizeChangeStrategy, new DefaultPrintColorChangeStrategy(), manualVisibility, minNumberOfColors, minScale)
-        this.createFrontTextGeometryStrategy = new CreateTextGeometryStrategy()
+        super(sizeChangeStrategy, new DefaultPrintColorChangeStrategy(), minScale, manualVisibility, minNumberOfColors)
+        this.createTextGeometryStrategy = new CreateTextGeometryStrategy()
     }
 
     async init(geometryOptions: GeometryOptions): Promise<TextMesh> {
-        this.geometry = await this.createFrontTextGeometryStrategy.create(geometryOptions, this.createFrontTextGeometryOptions)
+        this.geometry = await this.createTextGeometryStrategy.create(geometryOptions, this.createTextGeometryOptions)
 
         this.material = new MeshBasicMaterial()
 
@@ -29,7 +29,8 @@ export abstract class TextMesh extends ManualVisibilityMesh {
         return this
     }
 
-    updateText(geometryOptions: GeometryOptions) {
-        geometryOptions.frontText = String(geometryOptions.frontText) //TODO: remove this line and implement this method
+    async updateText(geometryOptions: GeometryOptions) {
+        this.geometry = await this.createTextGeometryStrategy.create(geometryOptions, this.createTextGeometryOptions)
+        this.boundingBoxCalculated = false
     }
 }

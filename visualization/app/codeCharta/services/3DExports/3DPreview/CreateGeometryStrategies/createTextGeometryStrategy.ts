@@ -3,28 +3,27 @@ import { CreateGeometryStrategy, CreateGeometryStrategyOptions } from "./createG
 import { GeometryOptions } from "../preview3DPrintMesh"
 import { BufferGeometryUtils } from "three/examples/jsm/utils/BufferGeometryUtils"
 
-export interface CreateFrontTextGeometryStrategyOptions extends CreateGeometryStrategyOptions {
+export interface CreateTextGeometryStrategyOptions extends CreateGeometryStrategyOptions {
     font: Font
     text: string
     textSize: number
     side: "front" | "back"
+    xPosition: number
     yPosition: number
-    alignIfMultipleLines?: "center" | "left"
+    align: "center" | "left"
 }
 
 export class CreateTextGeometryStrategy implements CreateGeometryStrategy {
     async create(
         geometryOptions: GeometryOptions,
-        createFrontTextGeometryStrategyOptions: CreateFrontTextGeometryStrategyOptions
+        createTextGeometryStrategyOptions: CreateTextGeometryStrategyOptions
     ): Promise<BufferGeometry> {
-        const { font, side, text, yPosition, textSize, alignIfMultipleLines } = createFrontTextGeometryStrategyOptions
+        const { font, side, text, xPosition, yPosition, textSize, align } = createTextGeometryStrategyOptions
         if (!text) {
-            return new Promise(resolve => {
-                resolve(new BufferGeometry())
-            })
+            return new BufferGeometry()
         }
         const textGeometry =
-            alignIfMultipleLines === "center" && text.includes("\n")
+            align === "center" && text.includes("\n")
                 ? this.createMultilineCenteredTextGeometry(text, font, textSize, geometryOptions.printHeight)
                 : new TextGeometry(text, {
                       font,
@@ -38,16 +37,16 @@ export class CreateTextGeometryStrategy implements CreateGeometryStrategy {
         }
 
         textGeometry.computeBoundingBox()
-        const textDepth = textGeometry.boundingBox.max.y - textGeometry.boundingBox.min.y
+        const textWidth = textGeometry.boundingBox.max.x - textGeometry.boundingBox.min.x
+        const xPositionOffset = align === "center" ? 0 : textWidth / 2
+        const xPositionDirection = side === "front" ? 1 : -1
         textGeometry.translate(
-            0,
-            -textDepth / 2 + yPosition,
+            xPositionDirection * (xPositionOffset + xPosition),
+            yPosition,
             side === "front" ? geometryOptions.printHeight / 2 : -geometryOptions.printHeight - 0.1
         )
 
-        return new Promise(resolve => {
-            resolve(textGeometry)
-        })
+        return textGeometry
     }
 
     private createMultilineCenteredTextGeometry(text: string, font: Font, size: number, height: number) {

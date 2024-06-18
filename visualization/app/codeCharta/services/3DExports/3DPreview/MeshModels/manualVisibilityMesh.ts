@@ -17,9 +17,9 @@ export abstract class ManualVisibilityMesh extends GeneralMesh {
     constructor(
         sizeChangeStrategy: SizeChangeStrategy,
         colorChangeStrategy: ColorChangeStrategy,
+        minScale: number,
         manualVisibility = true,
-        minNumberOfColors = 2,
-        minScale: number
+        minNumberOfColors = 2
     ) {
         super(sizeChangeStrategy, colorChangeStrategy)
         this.minScale = minScale
@@ -53,5 +53,10 @@ export abstract class ManualVisibilityMesh extends GeneralMesh {
     changeColor(numberOfColors: number) {
         this.setCurrentNumberOfColors(numberOfColors)
         this.colorChangeStrategy.execute(numberOfColors, this)
+        for (const child of this.children) {
+            if (child instanceof GeneralMesh) {
+                child.changeColor(numberOfColors)
+            }
+        }
     }
 }

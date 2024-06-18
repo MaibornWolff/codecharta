@@ -1,18 +1,19 @@
 import { GeometryOptions } from "../preview3DPrintMesh"
 import { Font } from "three"
 import { SizeChangeScaleStrategy } from "../SizeChangeStrategies/sizeChangeScaleStrategy"
-import { CreateFrontTextGeometryStrategyOptions } from "../CreateGeometryStrategies/createTextGeometryStrategy"
+import { CreateTextGeometryStrategyOptions } from "../CreateGeometryStrategies/createTextGeometryStrategy"
 import { TextMesh } from "./textMesh"
 
 export class BackBelowLogoTextMesh extends TextMesh {
     constructor(font: Font, geometryOptions: GeometryOptions) {
-        const createFrontTextGeometryOptions: CreateFrontTextGeometryStrategyOptions = {
+        const createFrontTextGeometryOptions: CreateTextGeometryStrategyOptions = {
             font,
             text: "IT Stabilization & Modernization\nmaibornwolff.de/service/it-sanierung",
             side: "back",
-            yPosition: 60, //TODO: make relative
+            xPosition: 0,
+            yPosition: 50, //TODO: make relative
             textSize: geometryOptions.backTextSize,
-            alignIfMultipleLines: "center"
+            align: "center"
         }
         super(new SizeChangeScaleStrategy(), createFrontTextGeometryOptions, true, 2, 0.7)
         this.name = "BackBelowLogoText"
