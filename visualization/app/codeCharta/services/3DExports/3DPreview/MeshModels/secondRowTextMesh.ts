@@ -11,10 +11,7 @@ export class SecondRowTextMesh extends TextMesh {
             text: geometryOptions.secondRowText,
             side: "front",
             xPosition: 0,
-            yPosition:
-                -(geometryOptions.width - geometryOptions.mapSideOffset) / 2 -
-                geometryOptions.frontTextSize -
-                geometryOptions.secondRowTextSize,
+            yPosition: -geometryOptions.secondRowTextSize,
             textSize: geometryOptions.secondRowTextSize,
             align: "center"
         }

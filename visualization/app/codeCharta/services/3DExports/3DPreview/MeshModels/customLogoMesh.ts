@@ -24,9 +24,13 @@ export class CustomLogoMesh extends FrontLogo implements GeneralSizeChangeMesh {
         this.material = new MeshBasicMaterial()
 
         const xPosition = -geometryOptions.width / 2 + size / 2 + geometryOptions.mapSideOffset / 2
-        const yPosition = -geometryOptions.width / 2 - geometryOptions.mapSideOffset / 2 + size / 2
+        const yPosition = size / 2
         const zPosition = geometryOptions.printHeight
         this.position.set(xPosition, yPosition, zPosition)
+
+        if (geometryOptions.secondRowVisible) {
+            this.changeRelativeSize(geometryOptions)
+        }
 
         this.updateColor(geometryOptions.numberOfColors)
 

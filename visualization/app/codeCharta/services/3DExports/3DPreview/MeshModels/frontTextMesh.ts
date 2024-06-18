@@ -15,7 +15,7 @@ export class FrontTextMesh extends TextMesh {
             side: "front",
             text,
             xPosition: 0,
-            yPosition: -(geometryOptions.width - geometryOptions.mapSideOffset) / 2 - geometryOptions.frontTextSize / 2,
+            yPosition: geometryOptions.frontTextSize / 2,
             textSize: geometryOptions.frontTextSize,
             align: "center"
         }

@@ -29,6 +29,8 @@ export class FrontPrintContainerMesh extends GeneralMesh implements GeneralSizeC
             })
         )
 
+        this.position.y = -geometryOptions.width / 2 - geometryOptions.mapSideOffset / 2
+
         return this
     }
 
@@ -36,7 +38,6 @@ export class FrontPrintContainerMesh extends GeneralMesh implements GeneralSizeC
         if (this.childrenMeshes.has("CustomLogo")) {
             this.removeCustomLogo()
         }
-
         const customLogoMesh = await new CustomLogoMesh("CustomLogo", dataUrl).init(geometryOptions)
         this.add(customLogoMesh)
         this.childrenMeshes.set(customLogoMesh.name, customLogoMesh)
