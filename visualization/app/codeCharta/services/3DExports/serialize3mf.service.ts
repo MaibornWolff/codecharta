@@ -107,7 +107,7 @@ function groupMeshVerticesByColor(mesh: Mesh): Map<string, number[]> {
                 colorToVertexIndices.set(hexColorString, [index])
             }
         }
-    } else {
+    } else if (mesh.geometry.attributes.position) {
         const material = mesh.material as Material
         let hexColorString: string
         if ((material as MeshBasicMaterial).color) {
@@ -138,14 +138,16 @@ function constructVertices(
     const positionAttribute = mesh.geometry.attributes.position
     for (const vertexIndex of vertexIndexes) {
         const vertex = new Vector3(
-            positionAttribute.getX(vertexIndex) * mesh.scale.x,
-            positionAttribute.getY(vertexIndex) * mesh.scale.y,
-            positionAttribute.getZ(vertexIndex) * mesh.scale.z
+            positionAttribute.getX(vertexIndex),
+            positionAttribute.getY(vertexIndex),
+            positionAttribute.getZ(vertexIndex)
         )
+
+        vertex.applyMatrix4(mesh.matrix)
+
         if (parentMatrix) {
             vertex.applyMatrix4(parentMatrix)
         }
-        vertex.add(mesh.position)
 
         const vertexString = `<vertex x="${vertex.x}" y="${vertex.y}" z="${vertex.z}"/>`
 
