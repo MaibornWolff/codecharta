@@ -1,5 +1,4 @@
 import { Mesh } from "three"
-import { SizeChangeStrategy } from "../SizeChangeStrategies/sizeChangeStrategy"
 import { GeometryOptions } from "../preview3DPrintMesh"
 import { ColorChangeStrategy } from "../ColorChangeStrategies/colorChangeStrategy"
 
@@ -11,7 +10,6 @@ export abstract class GeneralMesh extends Mesh {
 
     constructor(
         name: string,
-        public sizeChangeStrategy: SizeChangeStrategy,
         public colorChangeStrategy: ColorChangeStrategy
     ) {
         super()
@@ -19,7 +17,6 @@ export abstract class GeneralMesh extends Mesh {
     }
 
     abstract init(geometryOptions: GeometryOptions): Promise<GeneralMesh>
-    abstract changeSize(geometryOptions: GeometryOptions, oldWidth: number): Promise<void>
     changeColor(numberOfColors: number): void {
         this.colorChangeStrategy.execute(numberOfColors, this)
         for (const child of this.children) {
@@ -41,6 +38,11 @@ export abstract class GeneralMesh extends Mesh {
         this.updateBoundingBox()
         return this.geometry.boundingBox.max.y - this.geometry.boundingBox.min.y
     }
+
+    isGeneralSizeChangeMesh(): this is GeneralSizeChangeMesh {
+        return "changeSize" in this
+    }
+
     private updateBoundingBox() {
         if (!this.boundingBoxCalculated) {
             this.geometry.computeBoundingBox()

@@ -2,17 +2,17 @@ import { CreateSvgGeometryStrategy } from "../CreateGeometryStrategies/createSvg
 import { GeometryOptions } from "../preview3DPrintMesh"
 import { MeshBasicMaterial } from "three"
 import { DefaultPrintColorChangeStrategy } from "../ColorChangeStrategies/defaultPrintColorChangeStrategy"
-import { SizeChangeTranslateStrategy, SizeChangeTranslateStrategyOptions } from "../SizeChangeStrategies/sizeChangeTranslateStrategy"
 import { FrontLogo } from "./frontLogo"
+import { GeneralSizeChangeMesh } from "./generalMesh"
 
-export class FrontMWLogoMesh extends FrontLogo {
+export class FrontMWLogoMesh extends FrontLogo implements GeneralSizeChangeMesh {
     constructor(name: string) {
-        super(name, new SizeChangeTranslateStrategy(), new DefaultPrintColorChangeStrategy(), "right")
+        super(name, new DefaultPrintColorChangeStrategy(), "right")
     }
 
     async init(geometryOptions: GeometryOptions): Promise<FrontMWLogoMesh> {
         const createSvgStrategy = new CreateSvgGeometryStrategy()
-        const size = (geometryOptions.frontTextSize * geometryOptions.width) / 200
+        const size = (geometryOptions.frontTextSize * geometryOptions.width) / 250
         this.geometry = await createSvgStrategy.create(geometryOptions, {
             filePath: "codeCharta/assets/mw_logo.svg",
             size,
@@ -31,11 +31,8 @@ export class FrontMWLogoMesh extends FrontLogo {
         return this
     }
 
-    async changeSize(geometryOptions: GeometryOptions, oldWidth: number): Promise<void> {
-        return this.sizeChangeStrategy.execute(geometryOptions, {
-            mesh: this,
-            oldWidth,
-            xPosition: "right"
-        } as SizeChangeTranslateStrategyOptions)
+    async changeSize(geometryOptions: GeometryOptions, oldWidth: number) {
+        this.position.x += (geometryOptions.width - oldWidth) / 2
+        return
     }
 }

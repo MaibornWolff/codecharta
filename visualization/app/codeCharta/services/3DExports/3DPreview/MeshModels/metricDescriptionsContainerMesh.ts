@@ -1,22 +1,19 @@
 import { ManualVisibilityMesh } from "./manualVisibilityMesh"
 import { GeometryOptions } from "../preview3DPrintMesh"
-import { Box3, Font, Mesh, MeshBasicMaterial } from "three"
+import { Box3, Font, Mesh } from "three"
 import { DefaultPrintColorChangeStrategy } from "../ColorChangeStrategies/defaultPrintColorChangeStrategy"
-import { SizeChangeScaleStrategy } from "../SizeChangeStrategies/sizeChangeScaleStrategy"
 import { MetricDescriptionBlockMesh } from "./metricDescriptionBlockMesh"
 import { ColorMetricDescriptionBlockMesh } from "./colorMetricDescriptionBlockMesh"
 
-export class MetricDescriptionsMesh extends ManualVisibilityMesh {
+export class MetricDescriptionsContainerMesh extends ManualVisibilityMesh {
     constructor(
         name: string,
         public font: Font
     ) {
-        super(name, new SizeChangeScaleStrategy(), new DefaultPrintColorChangeStrategy(), 1, true, 2)
+        super(name, new DefaultPrintColorChangeStrategy(), 1, true, 2)
     }
 
-    async init(geometryOptions: GeometryOptions): Promise<MetricDescriptionsMesh> {
-        this.material = new MeshBasicMaterial()
-
+    async init(geometryOptions: GeometryOptions): Promise<MetricDescriptionsContainerMesh> {
         const { areaIcon, areaIconScale } = this.createAreaAttributes()
         const { heightIcon, heightIconScale } = this.createHeightAttributes()
         const { colorIcon, colorIconScale } = this.createColorAttributes()
@@ -61,8 +58,6 @@ export class MetricDescriptionsMesh extends ManualVisibilityMesh {
         ).init(geometryOptions)
         this.add(colorMetricBlock)
 
-        const scaleFactor = (200 * geometryOptions.width) / (geometryOptions.width - geometryOptions.mapSideOffset * 2)
-        this.changeSize(geometryOptions, scaleFactor)
         if (this.visible) {
             this.xCenterMetricsMesh(this)
         }

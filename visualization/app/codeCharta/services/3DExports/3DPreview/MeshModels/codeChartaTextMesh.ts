@@ -1,6 +1,5 @@
 import { GeometryOptions } from "../preview3DPrintMesh"
 import { Font } from "three"
-import { SizeChangeScaleStrategy } from "../SizeChangeStrategies/sizeChangeScaleStrategy"
 import { TextMesh } from "./textMesh"
 import { CreateTextGeometryStrategyOptions } from "../CreateGeometryStrategies/createTextGeometryStrategy"
 
@@ -15,16 +14,7 @@ export class CodeChartaTextMesh extends TextMesh {
             textSize: geometryOptions.backTextSize,
             align: "center"
         }
-        super(name, new SizeChangeScaleStrategy(), createFrontTextGeometryOptions, true, 2, 0.7)
+        super(name, createFrontTextGeometryOptions, true, 2, 0.7)
         this.name = "CodeChartaText"
-    }
-
-    async init(geometryOptions: GeometryOptions): Promise<CodeChartaTextMesh> {
-        await super.init(geometryOptions)
-
-        const oldWidth = (200 * geometryOptions.width) / (geometryOptions.width - geometryOptions.mapSideOffset * 2)
-        this.changeSize(geometryOptions, oldWidth)
-
-        return this
     }
 }

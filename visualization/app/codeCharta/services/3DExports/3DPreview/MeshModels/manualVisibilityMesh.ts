@@ -1,11 +1,5 @@
-/* eslint-disable @typescript-eslint/no-empty-function */
-/* eslint-disable unused-imports/no-unused-vars */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import { GeometryOptions } from "../preview3DPrintMesh"
 import { GeneralMesh } from "./generalMesh"
-import { SizeChangeScaleStrategyOptions } from "../SizeChangeStrategies/sizeChangeScaleStrategy"
 import { ColorChangeStrategy } from "../ColorChangeStrategies/colorChangeStrategy"
-import { SizeChangeStrategy } from "../SizeChangeStrategies/sizeChangeStrategy"
 
 export abstract class ManualVisibilityMesh extends GeneralMesh {
     //TODO: split into two classes
@@ -14,15 +8,8 @@ export abstract class ManualVisibilityMesh extends GeneralMesh {
     readonly minScale: number
     readonly minNumberOfColors: number
 
-    constructor(
-        name: string,
-        sizeChangeStrategy: SizeChangeStrategy,
-        colorChangeStrategy: ColorChangeStrategy,
-        minScale: number,
-        manualVisibility = true,
-        minNumberOfColors = 2
-    ) {
-        super(name, sizeChangeStrategy, colorChangeStrategy)
+    constructor(name: string, colorChangeStrategy: ColorChangeStrategy, minScale: number, manualVisibility = true, minNumberOfColors = 2) {
+        super(name, colorChangeStrategy)
         this.minScale = minScale
         this.manualVisibility = manualVisibility
         this.minNumberOfColors = minNumberOfColors
@@ -44,11 +31,6 @@ export abstract class ManualVisibilityMesh extends GeneralMesh {
         this.visible = this.minScale
             ? this.scale.x >= this.minScale && visibleBecauseOfColor && this.manualVisibility
             : visibleBecauseOfColor && this.manualVisibility
-    }
-
-    async changeSize(geometryOptions: GeometryOptions, oldWidth: number): Promise<void> {
-        await this.sizeChangeStrategy.execute(geometryOptions, { mesh: this, oldWidth } as SizeChangeScaleStrategyOptions)
-        this.updateVisibility()
     }
 
     changeColor(numberOfColors: number) {

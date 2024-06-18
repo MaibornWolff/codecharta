@@ -1,5 +1,4 @@
 import { GeneralMesh, GeneralSizeChangeMesh } from "./generalMesh"
-import { SizeChangeCreateStrategy, SizeChangeCreateStrategyOptions } from "../SizeChangeStrategies/sizeChangeCreateStrategy"
 import { CreateBaseplateGeometryStrategy } from "../CreateGeometryStrategies/createBaseplateGeometryStrategy"
 import { GeometryOptions } from "../preview3DPrintMesh"
 import { ShaderMaterial } from "three"
@@ -9,7 +8,7 @@ export class BaseplateMesh extends GeneralMesh implements GeneralSizeChangeMesh 
     private readonly createBaseplateGeometryStrategy: CreateBaseplateGeometryStrategy
 
     constructor() {
-        super("Baseplate", new SizeChangeCreateStrategy(), new BaseplateColorChangeStrategy())
+        super("Baseplate", new BaseplateColorChangeStrategy())
         this.createBaseplateGeometryStrategy = new CreateBaseplateGeometryStrategy()
     }
 
@@ -35,9 +34,9 @@ export class BaseplateMesh extends GeneralMesh implements GeneralSizeChangeMesh 
     }
 
     async changeSize(geometryOptions: GeometryOptions): Promise<void> {
-        return this.sizeChangeStrategy.execute(geometryOptions, {
-            mesh: this,
-            createGeometryStrategy: this.createBaseplateGeometryStrategy
-        } as SizeChangeCreateStrategyOptions)
+        this.boundingBoxCalculated = false
+        this.createBaseplateGeometryStrategy.create(geometryOptions).then(geometry => {
+            this.geometry = geometry
+        })
     }
 }

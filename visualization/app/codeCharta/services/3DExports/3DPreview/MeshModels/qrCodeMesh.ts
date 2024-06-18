@@ -2,17 +2,14 @@ import { ManualVisibilityMesh } from "./manualVisibilityMesh"
 import { GeometryOptions } from "../preview3DPrintMesh"
 import { CreateQRCodeGeometryStrategy } from "../CreateGeometryStrategies/createQRCodeGeometryStrategy"
 import { MeshBasicMaterial } from "three/src/materials/MeshBasicMaterial"
-import { SizeChangeFixPositionStrategy, SizeChangeFixPositionStrategyOptions } from "../SizeChangeStrategies/sizeChangeFixPositionStrategy"
 import { DefaultPrintColorChangeStrategy } from "../ColorChangeStrategies/defaultPrintColorChangeStrategy"
 
 export class QrCodeMesh extends ManualVisibilityMesh {
     private readonly createQRCodeStrategy: CreateQRCodeGeometryStrategy
-    private readonly positionFunction: (geometryOptions: GeometryOptions) => number
 
     constructor(name: string) {
-        super(name, new SizeChangeFixPositionStrategy(), new DefaultPrintColorChangeStrategy(), 1, false, 2)
+        super(name, new DefaultPrintColorChangeStrategy(), 1, false, 2)
         this.createQRCodeStrategy = new CreateQRCodeGeometryStrategy()
-        this.positionFunction = (geometryOptions: GeometryOptions) => geometryOptions.width / 2 - geometryOptions.mapSideOffset
     }
 
     async init(geometryOptions: GeometryOptions): Promise<QrCodeMesh> {
@@ -27,11 +24,9 @@ export class QrCodeMesh extends ManualVisibilityMesh {
     }
 
     async changeSize(geometryOptions: GeometryOptions): Promise<void> {
-        await this.sizeChangeStrategy.execute(geometryOptions, {
-            mesh: this,
-            xPositionFunction: this.positionFunction,
-            yPositionFunction: this.positionFunction
-        } as SizeChangeFixPositionStrategyOptions)
+        const positionFunction = (geometryOptions: GeometryOptions) => geometryOptions.width / 2 - geometryOptions.mapSideOffset
+        this.position.x = positionFunction(geometryOptions)
+        this.position.y = positionFunction(geometryOptions)
         super.updateVisibility()
     }
 

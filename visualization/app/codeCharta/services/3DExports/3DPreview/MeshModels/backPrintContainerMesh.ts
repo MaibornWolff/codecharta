@@ -1,24 +1,20 @@
 import { GeometryOptions } from "../preview3DPrintMesh"
 import { GeneralMesh, GeneralSizeChangeMesh } from "./generalMesh"
-import { SizeChangeScaleStrategy, SizeChangeScaleStrategyOptions } from "../SizeChangeStrategies/sizeChangeScaleStrategy"
 import { DefaultPrintColorChangeStrategy } from "../ColorChangeStrategies/defaultPrintColorChangeStrategy"
 import { BackMWLogoMesh } from "./backMWLogoMesh"
 import { BackBelowLogoTextMesh } from "./backBelowLogoTextMesh"
 import { QrCodeMesh } from "./qrCodeMesh"
 import { CodeChartaLogoMesh } from "./codeChartaLogoMesh"
 import { CodeChartaTextMesh } from "./codeChartaTextMesh"
-import { MetricDescriptionsMesh } from "./metricDescriptionsMesh"
+import { MetricDescriptionsContainerMesh } from "./metricDescriptionsContainerMesh"
 import { Font } from "three"
 
 export class BackPrintContainerMesh extends GeneralMesh implements GeneralSizeChangeMesh {
     private childrenMeshes: Map<string, GeneralMesh>
 
-    //TODO: make it that the child meshes of this mesh do not need to scale
-
     constructor(private font: Font) {
-        const sizeChangeStrategy = new SizeChangeScaleStrategy()
         const colorChangeStrategy = new DefaultPrintColorChangeStrategy()
-        super("BackPrintContainer", sizeChangeStrategy, colorChangeStrategy)
+        super("BackPrintContainer", colorChangeStrategy)
     }
 
     async init(geometryOptions: GeometryOptions): Promise<BackPrintContainerMesh> {
@@ -28,7 +24,7 @@ export class BackPrintContainerMesh extends GeneralMesh implements GeneralSizeCh
         this.childrenMeshes.set("QrCode", new QrCodeMesh("QrCode"))
         this.childrenMeshes.set("CodeChartaLogo", new CodeChartaLogoMesh("CodeChartaLogo"))
         this.childrenMeshes.set("CodeChartaText", new CodeChartaTextMesh("CodeChartaText", this.font, geometryOptions))
-        this.childrenMeshes.set("MetricDescriptions", new MetricDescriptionsMesh("MetricDescriptions", this.font))
+        this.childrenMeshes.set("MetricDescriptions", new MetricDescriptionsContainerMesh("MetricDescriptions", this.font))
 
         await Promise.all(
             [...this.childrenMeshes.values()].map(async mesh => {
@@ -41,8 +37,8 @@ export class BackPrintContainerMesh extends GeneralMesh implements GeneralSizeCh
     }
 
     async changeSize(geometryOptions: GeometryOptions, oldWidth: number): Promise<void> {
-        this.sizeChangeStrategy.execute(geometryOptions, { mesh: this, oldWidth } as SizeChangeScaleStrategyOptions)
-        return
+        const scaleFactor = geometryOptions.width / oldWidth
+        this.scale.set(this.scale.x * scaleFactor, this.scale.y * scaleFactor, this.scale.z)
     }
 
     isQRCodeVisible(): boolean {

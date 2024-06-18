@@ -1,16 +1,14 @@
 import { GeometryOptions } from "../preview3DPrintMesh"
 import { GeneralMesh } from "./generalMesh"
-import { SizeChangeStrategy } from "../SizeChangeStrategies/sizeChangeStrategy"
 import { ColorChangeStrategy } from "../ColorChangeStrategies/colorChangeStrategy"
 
 export abstract class FrontLogo extends GeneralMesh {
     constructor(
         name: string,
-        sizeChangeStrategy: SizeChangeStrategy,
         colorChangeStrategy: ColorChangeStrategy,
         private alignment: "right" | "left"
     ) {
-        super(name, sizeChangeStrategy, colorChangeStrategy)
+        super(name, colorChangeStrategy)
     }
 
     changeRelativeSize(geometryOptions: GeometryOptions) {

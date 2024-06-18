@@ -3,7 +3,6 @@ import { CreateSvgGeometryStrategy } from "../CreateGeometryStrategies/createSvg
 import { GeometryOptions } from "../preview3DPrintMesh"
 import { Font, MeshBasicMaterial } from "three"
 import { DefaultPrintColorChangeStrategy } from "../ColorChangeStrategies/defaultPrintColorChangeStrategy"
-import { SizeChangeScaleStrategy } from "../SizeChangeStrategies/sizeChangeScaleStrategy"
 import { BufferGeometryUtils } from "three/examples/jsm/utils/BufferGeometryUtils"
 import { CreateTextGeometryStrategy } from "../CreateGeometryStrategies/createTextGeometryStrategy"
 import { NodeMetricData } from "../../../../codeCharta.model"
@@ -23,14 +22,7 @@ export class MetricDescriptionBlockMesh extends ManualVisibilityMesh {
         private yOffset: number,
         minNumberOfColors = 2
     ) {
-        super(
-            metricDescriptionBlockOptions.name,
-            new SizeChangeScaleStrategy(),
-            new DefaultPrintColorChangeStrategy(),
-            0.8,
-            true,
-            minNumberOfColors
-        )
+        super(metricDescriptionBlockOptions.name, new DefaultPrintColorChangeStrategy(), 0.8, true, minNumberOfColors)
     }
 
     async init(geometryOptions: GeometryOptions): Promise<MetricDescriptionBlockMesh> {

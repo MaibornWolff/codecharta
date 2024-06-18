@@ -1,6 +1,5 @@
 import { ManualVisibilityMesh } from "./manualVisibilityMesh"
 import { GeometryOptions } from "../preview3DPrintMesh"
-import { SizeChangeFixPositionStrategy } from "../SizeChangeStrategies/sizeChangeFixPositionStrategy"
 import { DefaultPrintColorChangeStrategy } from "../ColorChangeStrategies/defaultPrintColorChangeStrategy"
 import { BufferAttribute, BufferGeometry, Float32BufferAttribute, InterleavedBufferAttribute, Mesh } from "three"
 
@@ -9,7 +8,7 @@ export class MapMesh extends ManualVisibilityMesh {
     private originalColors: BufferAttribute | InterleavedBufferAttribute
 
     constructor() {
-        super("Map", new SizeChangeFixPositionStrategy(), new DefaultPrintColorChangeStrategy(), 1, false, 2)
+        super("Map", new DefaultPrintColorChangeStrategy(), 1, false, 2)
         this.mapScalingFactorForSnappingHeights = 1 //TODO: remove this scaling. Instead round when serializing
     }
 

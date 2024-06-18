@@ -2,7 +2,6 @@ import { GeometryOptions } from "../preview3DPrintMesh"
 import { Font } from "three"
 import { CreateTextGeometryStrategyOptions } from "../CreateGeometryStrategies/createTextGeometryStrategy"
 import { TextMesh } from "./textMesh"
-import { SizeChangeTranslateStrategy } from "../SizeChangeStrategies/sizeChangeTranslateStrategy"
 
 export class FrontTextMesh extends TextMesh {
     constructor(name: string, font: Font, geometryOptions: GeometryOptions) {
@@ -19,7 +18,7 @@ export class FrontTextMesh extends TextMesh {
             textSize: geometryOptions.frontTextSize,
             align: "center"
         }
-        super(name, new SizeChangeTranslateStrategy(), createFrontTextGeometryOptions, true, 1, 0)
+        super(name, createFrontTextGeometryOptions, true, 1, 0)
         this.name = "Front Text"
     }
 }

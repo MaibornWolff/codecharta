@@ -2,15 +2,15 @@ import { CreateSvgGeometryStrategy } from "../CreateGeometryStrategies/createSvg
 import { GeometryOptions } from "../preview3DPrintMesh"
 import { MeshBasicMaterial } from "three"
 import { DefaultPrintColorChangeStrategy } from "../ColorChangeStrategies/defaultPrintColorChangeStrategy"
-import { SizeChangeTranslateStrategy, SizeChangeTranslateStrategyOptions } from "../SizeChangeStrategies/sizeChangeTranslateStrategy"
 import { FrontLogo } from "./frontLogo"
+import { GeneralSizeChangeMesh } from "./generalMesh"
 
-export class CustomLogoMesh extends FrontLogo {
+export class CustomLogoMesh extends FrontLogo implements GeneralSizeChangeMesh {
     constructor(
         name: string,
         private filePath: string
     ) {
-        super(name, new SizeChangeTranslateStrategy(), new DefaultPrintColorChangeStrategy(), "left")
+        super(name, new DefaultPrintColorChangeStrategy(), "left")
     }
 
     async init(geometryOptions: GeometryOptions): Promise<CustomLogoMesh> {
@@ -34,14 +34,6 @@ export class CustomLogoMesh extends FrontLogo {
         return this
     }
 
-    async changeSize(geometryOptions: GeometryOptions, oldWidth: number): Promise<void> {
-        return this.sizeChangeStrategy.execute(geometryOptions, {
-            mesh: this,
-            oldWidth,
-            xPosition: "left"
-        } as SizeChangeTranslateStrategyOptions)
-    }
-
     setColor(color: string) {
         ;(this.material as MeshBasicMaterial).color.set(color)
     }
@@ -52,5 +44,10 @@ export class CustomLogoMesh extends FrontLogo {
 
     flip() {
         this.geometry.rotateY(Math.PI)
+    }
+
+    async changeSize(geometryOptions: GeometryOptions, oldWidth: number) {
+        this.position.x -= (geometryOptions.width - oldWidth) / 2
+        return
     }
 }

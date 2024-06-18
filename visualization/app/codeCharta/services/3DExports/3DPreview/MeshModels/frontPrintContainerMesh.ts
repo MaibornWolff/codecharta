@@ -1,20 +1,19 @@
 import { GeometryOptions } from "../preview3DPrintMesh"
 import { GeneralMesh, GeneralSizeChangeMesh } from "./generalMesh"
-import { SizeChangeScaleStrategy, SizeChangeScaleStrategyOptions } from "../SizeChangeStrategies/sizeChangeScaleStrategy"
 import { DefaultPrintColorChangeStrategy } from "../ColorChangeStrategies/defaultPrintColorChangeStrategy"
 import { Font } from "three"
 import { FrontTextMesh } from "./frontTextMesh"
 import { SecondRowTextMesh } from "./secondRowTextMesh"
 import { FrontMWLogoMesh } from "./frontMWLogoMesh"
 import { CustomLogoMesh } from "./customLogoMesh"
+import { FrontLogo } from "./frontLogo"
 
 export class FrontPrintContainerMesh extends GeneralMesh implements GeneralSizeChangeMesh {
     private childrenMeshes: Map<string, GeneralMesh>
 
     constructor(private font: Font) {
-        const sizeChangeStrategy = new SizeChangeScaleStrategy()
         const colorChangeStrategy = new DefaultPrintColorChangeStrategy()
-        super("FrontPrintContainer", sizeChangeStrategy, colorChangeStrategy)
+        super("FrontPrintContainer", colorChangeStrategy)
     }
 
     async init(geometryOptions: GeometryOptions): Promise<FrontPrintContainerMesh> {
@@ -70,8 +69,12 @@ export class FrontPrintContainerMesh extends GeneralMesh implements GeneralSizeC
     }
 
     async changeSize(geometryOptions: GeometryOptions, oldWidth: number): Promise<void> {
-        this.sizeChangeStrategy.execute(geometryOptions, { mesh: this, oldWidth } as SizeChangeScaleStrategyOptions)
-        return
+        this.position.y -= (geometryOptions.width - oldWidth) / 2
+        for (const mesh of this.childrenMeshes.values()) {
+            if (mesh instanceof FrontLogo && mesh.isGeneralSizeChangeMesh()) {
+                mesh.changeSize(geometryOptions, oldWidth)
+            }
+        }
     }
 
     updateSecondRowText(secondRowText: string, geometryOptions: GeometryOptions) {

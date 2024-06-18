@@ -86,7 +86,7 @@ export class Preview3DPrintMesh {
 
         await Promise.all(
             [...this.printMesh.children].map(async mesh => {
-                if (mesh instanceof GeneralMesh) {
+                if (mesh instanceof GeneralMesh && mesh.isGeneralSizeChangeMesh()) {
                     mesh.changeSize(this.geometryOptions, oldWidth)
                 }
             })

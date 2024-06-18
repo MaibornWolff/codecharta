@@ -3,11 +3,10 @@ import { CreateSvgGeometryStrategy } from "../CreateGeometryStrategies/createSvg
 import { GeometryOptions } from "../preview3DPrintMesh"
 import { MeshBasicMaterial } from "three"
 import { DefaultPrintColorChangeStrategy } from "../ColorChangeStrategies/defaultPrintColorChangeStrategy"
-import { SizeChangeScaleStrategy } from "../SizeChangeStrategies/sizeChangeScaleStrategy"
 
 export class CodeChartaLogoMesh extends ManualVisibilityMesh {
     constructor(name: string) {
-        super(name, new SizeChangeScaleStrategy(), new DefaultPrintColorChangeStrategy(), 0.8, true, 2)
+        super(name, new DefaultPrintColorChangeStrategy(), 0.8, true, 2)
     }
 
     async init(geometryOptions: GeometryOptions): Promise<CodeChartaLogoMesh> {
