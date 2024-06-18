@@ -1,6 +1,6 @@
-import { GeometryOptions } from "../preview3DPrintMesh"
-import { GeneralMesh } from "./generalMesh"
-import { FrontPrintColorChangeStrategy } from "../ColorChangeStrategies/frontPrintColorChangeStrategy"
+import { GeometryOptions } from "../../preview3DPrintMesh"
+import { GeneralMesh } from "../generalMesh"
+import { FrontPrintColorChangeStrategy } from "../../ColorChangeStrategies/frontPrintColorChangeStrategy"
 
 export abstract class FrontLogo extends GeneralMesh {
     constructor(

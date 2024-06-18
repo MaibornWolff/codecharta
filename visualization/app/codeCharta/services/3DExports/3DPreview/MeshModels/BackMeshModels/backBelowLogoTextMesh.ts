@@ -1,7 +1,7 @@
 import { Font } from "three"
-import { CreateTextGeometryStrategyOptions } from "../CreateGeometryStrategies/createTextGeometryStrategy"
-import { TextMesh } from "./textMesh"
-import { BackPrintColorChangeStrategy } from "../ColorChangeStrategies/backPrintColorChangeStrategy"
+import { CreateTextGeometryStrategyOptions } from "../../CreateGeometryStrategies/createTextGeometryStrategy"
+import { TextMesh } from "../textMesh"
+import { BackPrintColorChangeStrategy } from "../../ColorChangeStrategies/backPrintColorChangeStrategy"
 
 export class BackBelowLogoTextMesh extends TextMesh {
     constructor(name: string, font: Font) {

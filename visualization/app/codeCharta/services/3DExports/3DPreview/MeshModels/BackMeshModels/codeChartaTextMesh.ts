@@ -1,7 +1,7 @@
 import { Font } from "three"
-import { TextMesh } from "./textMesh"
-import { CreateTextGeometryStrategyOptions } from "../CreateGeometryStrategies/createTextGeometryStrategy"
-import { BackPrintColorChangeStrategy } from "../ColorChangeStrategies/backPrintColorChangeStrategy"
+import { TextMesh } from "../textMesh"
+import { CreateTextGeometryStrategyOptions } from "../../CreateGeometryStrategies/createTextGeometryStrategy"
+import { BackPrintColorChangeStrategy } from "../../ColorChangeStrategies/backPrintColorChangeStrategy"
 
 export class CodeChartaTextMesh extends TextMesh {
     constructor(name: string, font: Font) {

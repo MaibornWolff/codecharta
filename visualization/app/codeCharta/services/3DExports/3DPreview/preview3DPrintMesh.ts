@@ -3,8 +3,8 @@ import { ColorRange, NodeMetricData } from "../../../codeCharta.model"
 import { BaseplateMesh } from "./MeshModels/baseplateMesh"
 import { GeneralMesh } from "./MeshModels/generalMesh"
 import { MapMesh } from "./MeshModels/mapMesh"
-import { BackPrintContainerMesh } from "./MeshModels/backPrintContainerMesh"
-import { FrontPrintContainerMesh } from "./MeshModels/frontPrintContainerMesh"
+import { BackPrintContainerMesh } from "./MeshModels/BackMeshModels/backPrintContainerMesh"
+import { FrontPrintContainerMesh } from "./MeshModels/FrontMeshModels/frontPrintContainerMesh"
 
 export interface GeometryOptions {
     originalMapMesh: Mesh

@@ -1,8 +1,8 @@
-import { CustomVisibilityMesh } from "./customVisibilityMesh"
-import { GeometryOptions } from "../preview3DPrintMesh"
-import { CreateQRCodeGeometryStrategy } from "../CreateGeometryStrategies/createQRCodeGeometryStrategy"
+import { CustomVisibilityMesh } from "../customVisibilityMesh"
+import { GeometryOptions } from "../../preview3DPrintMesh"
+import { CreateQRCodeGeometryStrategy } from "../../CreateGeometryStrategies/createQRCodeGeometryStrategy"
 import { MeshBasicMaterial } from "three/src/materials/MeshBasicMaterial"
-import { BackPrintColorChangeStrategy } from "../ColorChangeStrategies/backPrintColorChangeStrategy"
+import { BackPrintColorChangeStrategy } from "../../ColorChangeStrategies/backPrintColorChangeStrategy"
 
 export class QrCodeMesh extends CustomVisibilityMesh {
     private readonly createQRCodeStrategy: CreateQRCodeGeometryStrategy

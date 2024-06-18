@@ -1,8 +1,8 @@
-import { CreateSvgGeometryStrategy } from "../CreateGeometryStrategies/createSvgGeometryStrategy"
-import { GeometryOptions } from "../preview3DPrintMesh"
+import { CreateSvgGeometryStrategy } from "../../CreateGeometryStrategies/createSvgGeometryStrategy"
+import { GeometryOptions } from "../../preview3DPrintMesh"
 import { MeshBasicMaterial } from "three"
 import { FrontLogo } from "./frontLogo"
-import { GeneralSizeChangeMesh } from "./generalMesh"
+import { GeneralSizeChangeMesh } from "../generalMesh"
 
 export class CustomLogoMesh extends FrontLogo implements GeneralSizeChangeMesh {
     constructor(

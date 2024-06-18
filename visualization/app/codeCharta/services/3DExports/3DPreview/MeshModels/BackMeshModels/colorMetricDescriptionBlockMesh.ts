@@ -1,13 +1,13 @@
-import { GeometryOptions } from "../preview3DPrintMesh"
+import { GeometryOptions } from "../../preview3DPrintMesh"
 import { Font } from "three"
-import { BackPrintColorChangeStrategy } from "../ColorChangeStrategies/backPrintColorChangeStrategy"
-import { CreateTextGeometryStrategy, CreateTextGeometryStrategyOptions } from "../CreateGeometryStrategies/createTextGeometryStrategy"
-import { ColorRange } from "../../../../codeCharta.model"
+import { BackPrintColorChangeStrategy } from "../../ColorChangeStrategies/backPrintColorChangeStrategy"
+import { CreateTextGeometryStrategy, CreateTextGeometryStrategyOptions } from "../../CreateGeometryStrategies/createTextGeometryStrategy"
+import { ColorRange } from "../../../../../codeCharta.model"
 import { MetricDescriptionBlockMesh, MetricDescriptionBlockOptions } from "./metricDescriptionBlockMesh"
-import { TextMesh } from "./textMesh"
-import { PositivePrintColorChangeStrategy } from "../ColorChangeStrategies/positivePrintColorChangeStrategy"
-import { NeutralPrintColorChangeStrategy } from "../ColorChangeStrategies/neutralPrintColorChangeStrategy"
-import { NegativePrintColorChangeStrategy } from "../ColorChangeStrategies/negativePrintColorChangeStrategy"
+import { TextMesh } from "../textMesh"
+import { PositivePrintColorChangeStrategy } from "../../ColorChangeStrategies/positivePrintColorChangeStrategy"
+import { NeutralPrintColorChangeStrategy } from "../../ColorChangeStrategies/neutralPrintColorChangeStrategy"
+import { NegativePrintColorChangeStrategy } from "../../ColorChangeStrategies/negativePrintColorChangeStrategy"
 
 interface ColorMetricDescriptionBlockOptions extends MetricDescriptionBlockOptions {
     colorRange: ColorRange

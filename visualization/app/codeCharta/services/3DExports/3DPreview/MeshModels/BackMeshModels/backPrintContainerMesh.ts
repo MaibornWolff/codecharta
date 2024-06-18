@@ -1,6 +1,6 @@
-import { GeometryOptions } from "../preview3DPrintMesh"
-import { GeneralMesh, GeneralSizeChangeMesh } from "./generalMesh"
-import { BackPrintColorChangeStrategy } from "../ColorChangeStrategies/backPrintColorChangeStrategy"
+import { GeometryOptions } from "../../preview3DPrintMesh"
+import { GeneralMesh, GeneralSizeChangeMesh } from "../generalMesh"
+import { BackPrintColorChangeStrategy } from "../../ColorChangeStrategies/backPrintColorChangeStrategy"
 import { BackMWLogoMesh } from "./backMWLogoMesh"
 import { BackBelowLogoTextMesh } from "./backBelowLogoTextMesh"
 import { QrCodeMesh } from "./qrCodeMesh"
@@ -8,7 +8,7 @@ import { CodeChartaLogoMesh } from "./codeChartaLogoMesh"
 import { CodeChartaTextMesh } from "./codeChartaTextMesh"
 import { MetricDescriptionsContainerMesh } from "./metricDescriptionsContainerMesh"
 import { Font } from "three"
-import { CustomVisibilityMesh } from "./customVisibilityMesh"
+import { CustomVisibilityMesh } from "../customVisibilityMesh"
 
 export class BackPrintContainerMesh extends GeneralMesh implements GeneralSizeChangeMesh {
     private childrenMeshes: Map<string, CustomVisibilityMesh>

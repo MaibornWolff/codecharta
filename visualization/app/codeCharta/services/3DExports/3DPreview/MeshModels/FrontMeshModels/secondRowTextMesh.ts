@@ -1,8 +1,8 @@
-import { GeometryOptions } from "../preview3DPrintMesh"
+import { GeometryOptions } from "../../preview3DPrintMesh"
 import { Font } from "three"
-import { TextMesh } from "./textMesh"
-import { CreateTextGeometryStrategyOptions } from "../CreateGeometryStrategies/createTextGeometryStrategy"
-import { FrontPrintColorChangeStrategy } from "../ColorChangeStrategies/frontPrintColorChangeStrategy"
+import { TextMesh } from "../textMesh"
+import { CreateTextGeometryStrategyOptions } from "../../CreateGeometryStrategies/createTextGeometryStrategy"
+import { FrontPrintColorChangeStrategy } from "../../ColorChangeStrategies/frontPrintColorChangeStrategy"
 
 export class SecondRowTextMesh extends TextMesh {
     constructor(name: string, font: Font, geometryOptions: GeometryOptions) {

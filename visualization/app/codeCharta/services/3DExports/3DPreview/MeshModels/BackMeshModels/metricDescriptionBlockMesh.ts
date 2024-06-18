@@ -1,11 +1,11 @@
-import { CustomVisibilityMesh } from "./customVisibilityMesh"
-import { CreateSvgGeometryStrategy } from "../CreateGeometryStrategies/createSvgGeometryStrategy"
-import { GeometryOptions } from "../preview3DPrintMesh"
+import { CustomVisibilityMesh } from "../customVisibilityMesh"
+import { CreateSvgGeometryStrategy } from "../../CreateGeometryStrategies/createSvgGeometryStrategy"
+import { GeometryOptions } from "../../preview3DPrintMesh"
 import { BufferGeometry, Font, MeshBasicMaterial } from "three"
-import { BackPrintColorChangeStrategy } from "../ColorChangeStrategies/backPrintColorChangeStrategy"
+import { BackPrintColorChangeStrategy } from "../../ColorChangeStrategies/backPrintColorChangeStrategy"
 import { BufferGeometryUtils } from "three/examples/jsm/utils/BufferGeometryUtils"
-import { CreateTextGeometryStrategy } from "../CreateGeometryStrategies/createTextGeometryStrategy"
-import { NodeMetricData } from "../../../../codeCharta.model"
+import { CreateTextGeometryStrategy } from "../../CreateGeometryStrategies/createTextGeometryStrategy"
+import { NodeMetricData } from "../../../../../codeCharta.model"
 
 export interface MetricDescriptionBlockOptions {
     name: string

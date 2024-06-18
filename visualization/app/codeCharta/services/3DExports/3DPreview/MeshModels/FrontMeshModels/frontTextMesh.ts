@@ -1,8 +1,8 @@
-import { GeometryOptions } from "../preview3DPrintMesh"
+import { GeometryOptions } from "../../preview3DPrintMesh"
 import { Font } from "three"
-import { CreateTextGeometryStrategyOptions } from "../CreateGeometryStrategies/createTextGeometryStrategy"
-import { TextMesh } from "./textMesh"
-import { FrontPrintColorChangeStrategy } from "../ColorChangeStrategies/frontPrintColorChangeStrategy"
+import { CreateTextGeometryStrategyOptions } from "../../CreateGeometryStrategies/createTextGeometryStrategy"
+import { TextMesh } from "../textMesh"
+import { FrontPrintColorChangeStrategy } from "../../ColorChangeStrategies/frontPrintColorChangeStrategy"
 
 export class FrontTextMesh extends TextMesh {
     constructor(name: string, font: Font, geometryOptions: GeometryOptions) {

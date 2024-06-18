@@ -1,7 +1,7 @@
-import { CustomVisibilityMesh } from "./customVisibilityMesh"
-import { GeometryOptions } from "../preview3DPrintMesh"
+import { CustomVisibilityMesh } from "../customVisibilityMesh"
+import { GeometryOptions } from "../../preview3DPrintMesh"
 import { Font, Mesh } from "three"
-import { BackPrintColorChangeStrategy } from "../ColorChangeStrategies/backPrintColorChangeStrategy"
+import { BackPrintColorChangeStrategy } from "../../ColorChangeStrategies/backPrintColorChangeStrategy"
 import { MetricDescriptionBlockMesh } from "./metricDescriptionBlockMesh"
 import { ColorMetricDescriptionBlockMesh } from "./colorMetricDescriptionBlockMesh"
 
