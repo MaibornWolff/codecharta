@@ -1,7 +1,38 @@
-import { BufferAttribute, BufferGeometry, Float32BufferAttribute, Mesh } from "three"
+import { BufferAttribute, BufferGeometry, Float32BufferAttribute, Matrix4, Mesh } from "three"
 import { Volume, exportedForTesting } from "./serialize3mf.service"
 
 describe("serialize3mf service", () => {
+    describe("constructVertices", () => {
+        const { constructVertices } = exportedForTesting
+
+        let vertices: string[]
+        let vertexToNewVertexIndex: Map<string, number>
+        let vertexIndexToNewVertexIndex: Map<number, number>
+        let vertexIndexes: number[]
+        let testMesh: Mesh
+        let parentMatrix: Matrix4
+
+        const testVertexPositions = [0, 0, 0, 2, 0, 0, 0, 2, 0]
+
+        beforeEach(() => {
+            vertices = []
+            vertexToNewVertexIndex = new Map()
+            vertexIndexToNewVertexIndex = new Map()
+            vertexIndexes = [0, 1, 2]
+            testMesh = new Mesh()
+            testMesh.geometry.attributes["position"] = new BufferAttribute(new Float32Array(testVertexPositions), 3, false)
+        })
+
+        it("should create correct vertex entries", () => {
+            constructVertices(vertices, vertexToNewVertexIndex, vertexIndexToNewVertexIndex, vertexIndexes, testMesh, parentMatrix)
+
+            expect(vertices).toHaveLength(3)
+            expect(vertexIndexToNewVertexIndex.size).toBe(3)
+            expect(vertexToNewVertexIndex.size).toBe(3)
+            expect([...vertexToNewVertexIndex.keys()].toString()).toBe(vertices.toString())
+        })
+    })
+
     describe("constructTriangles", () => {
         const { constructTriangles } = exportedForTesting
 
