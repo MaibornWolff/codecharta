@@ -1,7 +1,85 @@
-import { Float32BufferAttribute, Mesh } from "three"
+import { BufferAttribute, BufferGeometry, Float32BufferAttribute, Mesh } from "three"
 import { Volume, exportedForTesting } from "./serialize3mf.service"
 
 describe("serialize3mf service", () => {
+    describe("constructTriangles", () => {
+        const { constructTriangles } = exportedForTesting
+
+        let testGeometry: BufferGeometry
+        let triangles: string[]
+        let vertexIndexToNewVertexIndex: Map<number, number>
+        let vertexIndexes: number[]
+        let vertexPositionArray: Float32Array
+
+        const expectedTriangleIndexes = [
+            [0, 1, 2],
+            [0, 1, 5],
+            [1, 2, 5],
+            [2, 0, 5]
+        ]
+
+        beforeEach(() => {
+            testGeometry = new BufferGeometry()
+            triangles = []
+            vertexIndexToNewVertexIndex = new Map([
+                [0, 0],
+                [1, 1],
+                [2, 2],
+                [3, 0],
+                [4, 1],
+                [5, 5],
+                [6, 1],
+                [7, 2],
+                [8, 5],
+                [9, 2],
+                [10, 0],
+                [11, 5]
+            ])
+            vertexIndexes = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+            vertexPositionArray = new Float32Array(Array.from({ length: vertexIndexes.length * 3 }).keys())
+        })
+
+        it("should add triangles without index correctly", () => {
+            testGeometry.attributes["position"] = new BufferAttribute(vertexPositionArray, 3, false)
+
+            constructTriangles(testGeometry, triangles, vertexIndexToNewVertexIndex, vertexIndexes)
+
+            expect(triangles).toHaveLength(4)
+
+            let testStep = 0
+            for (const expectedSubset of expectedTriangleIndexes) {
+                for (const vertexNumber of [`"${expectedSubset[0]}"`, `"${expectedSubset[1]}"`, `"${expectedSubset[2]}"`]) {
+                    expect(triangles[testStep]).toContain(vertexNumber)
+                }
+                testStep++
+            }
+        })
+
+        it("should add triangles with index correctly", () => {
+            testGeometry.index = new BufferAttribute(new Uint32Array(vertexIndexes), 1)
+
+            constructTriangles(testGeometry, triangles, vertexIndexToNewVertexIndex, vertexIndexes)
+
+            expect(triangles).toHaveLength(4)
+
+            let testStep = 0
+            for (const expectedSubset of expectedTriangleIndexes) {
+                for (const vertexNumber of [`"${expectedSubset[0]}"`, `"${expectedSubset[1]}"`, `"${expectedSubset[2]}"`]) {
+                    expect(triangles[testStep]).toContain(vertexNumber)
+                }
+                testStep++
+            }
+        })
+
+        it("should not add any triangles to list if there are not present in lookup", () => {
+            testGeometry.index = new BufferAttribute(new Uint32Array(vertexIndexes), 1)
+            const reducedIndex = [1, 2, 3, 5, 6, 7]
+            constructTriangles(testGeometry, triangles, vertexIndexToNewVertexIndex, reducedIndex)
+
+            expect(triangles).toHaveLength(0)
+        })
+    })
+
     describe("constructVolume", () => {
         const { constructVolume } = exportedForTesting
 

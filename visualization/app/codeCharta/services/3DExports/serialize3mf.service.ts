@@ -86,16 +86,9 @@ function extractChildMeshData(
     for (const [color, vertexIndexes] of colorToVertexIndices.entries()) {
         const firstTriangleId = triangles.length
 
-        const { firstVertexId, lastVertexId } = constructVertices(
-            vertices,
-            vertexToNewVertexIndex,
-            vertexIndexToNewVertexIndex,
-            vertexIndexes,
-            mesh,
-            parentMatrix
-        )
+        constructVertices(vertices, vertexToNewVertexIndex, vertexIndexToNewVertexIndex, vertexIndexes, mesh, parentMatrix)
 
-        constructTriangles(mesh.geometry, triangles, vertexIndexToNewVertexIndex, firstVertexId, lastVertexId, vertexIndexes)
+        constructTriangles(mesh.geometry, triangles, vertexIndexToNewVertexIndex, vertexIndexes)
 
         constructVolume(mesh, color, firstTriangleId, triangles.length - 1, volumes, volumeCount, colorToExtruder)
         volumeCount++
@@ -141,9 +134,7 @@ function constructVertices(
     vertexIndexes: number[],
     mesh: Mesh,
     parentMatrix: Matrix4
-): { firstVertexId: number; lastVertexId: number } {
-    const firstVertexId = vertexIndexToNewVertexIndex.size
-
+) {
     const positionAttribute = mesh.geometry.attributes.position
     for (const vertexIndex of vertexIndexes) {
         const vertex = new Vector3(
@@ -167,19 +158,17 @@ function constructVertices(
         }
     }
 
-    return { firstVertexId, lastVertexId: vertexIndexToNewVertexIndex.size - 1 }
+    return
 }
 
 function constructTriangles(
     geometry: BufferGeometry,
     triangles: string[],
     vertexIndexToNewVertexIndex: Map<number, number>,
-    firstVertexId: number,
-    lastVertexId: number,
     vertexIndexes: number[]
 ): void {
     if (!geometry.index) {
-        for (let index = 0; index < geometry.attributes.position.count; index += 3) {
+        for (let index = 0; index < vertexIndexToNewVertexIndex.size; index += 3) {
             const triangle = `<triangle v1="${vertexIndexToNewVertexIndex.get(index)}" v2="${vertexIndexToNewVertexIndex.get(
                 index + 1
             )}" v3="${vertexIndexToNewVertexIndex.get(index + 2)}" />`
@@ -248,6 +237,7 @@ function convertColorArrayToHexString(color: Float32BufferAttribute | number[], 
 }
 
 export const exportedForTesting = {
+    constructTriangles,
     constructVolume,
     convertColorArrayToHexString
 }
