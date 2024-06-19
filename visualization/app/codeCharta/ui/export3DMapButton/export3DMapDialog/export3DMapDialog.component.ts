@@ -271,7 +271,7 @@ export class Export3DMapDialogComponent {
     }
 
     async download3MFFile() {
-        const compressed3mf = await serialize3mf(this.printPreviewScene.getObjectByName("PrintMesh") as Mesh, this.layerHeight)
+        const compressed3mf = await serialize3mf(this.printPreviewScene.getObjectByName("PrintMesh") as Mesh)
         this.downloadFile(compressed3mf, "3mf")
     }
 

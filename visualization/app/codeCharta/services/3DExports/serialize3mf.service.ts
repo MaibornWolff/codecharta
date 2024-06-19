@@ -13,8 +13,8 @@ export interface Volume {
     lastTriangleId: number
 }
 
-export async function serialize3mf(mesh: Mesh, layerHeight: number): Promise<string> {
-    const { vertices, triangles, volumes } = extractMeshData(mesh, layerHeight)
+export async function serialize3mf(mesh: Mesh): Promise<string> {
+    const { vertices, triangles, volumes } = extractMeshData(mesh)
     const model = getXMLmodel(vertices, triangles)
     const modelConfig = getXMLmodelConfig(volumes)
     const contentType = getXMLcontentType()
@@ -40,10 +40,7 @@ export async function serialize3mf(mesh: Mesh, layerHeight: number): Promise<str
     return compressed3mf as unknown as string
 }
 
-function extractMeshData(
-    mesh: Mesh,
-    layerHeight: number
-): {
+function extractMeshData(mesh: Mesh): {
     vertices: string[]
     triangles: string[]
     volumes: Volume[]
@@ -56,7 +53,7 @@ function extractMeshData(
     const volumeCount = 1
 
     for (const child of mesh.children as Mesh[]) {
-        extractChildMeshData(child, vertices, triangles, vertexToNewVertexIndex, volumeCount, colorToExtruder, volumes, layerHeight)
+        extractChildMeshData(child, vertices, triangles, vertexToNewVertexIndex, volumeCount, colorToExtruder, volumes)
     }
 
     return { vertices, triangles, volumes }
@@ -70,7 +67,6 @@ function extractChildMeshData(
     volumeCount: number,
     colorToExtruder: Map<string, number>,
     volumes: Volume[],
-    layerHeight: number,
     parentMatrix: Matrix4 = undefined
 ): void {
     if (!mesh.visible) {
@@ -81,17 +77,7 @@ function extractChildMeshData(
         if (parentMatrix) {
             newParentMatrix = parentMatrix.clone().multiply(mesh.matrix)
         }
-        extractChildMeshData(
-            child,
-            vertices,
-            triangles,
-            vertexToNewVertexIndex,
-            volumeCount,
-            colorToExtruder,
-            volumes,
-            layerHeight,
-            newParentMatrix
-        )
+        extractChildMeshData(child, vertices, triangles, vertexToNewVertexIndex, volumeCount, colorToExtruder, volumes, newParentMatrix)
     }
 
     const colorToVertexIndices = groupMeshVerticesByColor(mesh)
@@ -100,7 +86,7 @@ function extractChildMeshData(
     for (const [color, vertexIndexes] of colorToVertexIndices.entries()) {
         const firstTriangleId = triangles.length
 
-        constructVertices(vertices, vertexToNewVertexIndex, vertexIndexToNewVertexIndex, vertexIndexes, mesh, layerHeight, parentMatrix)
+        constructVertices(vertices, vertexToNewVertexIndex, vertexIndexToNewVertexIndex, vertexIndexes, mesh, parentMatrix)
 
         constructTriangles(mesh.geometry, triangles, vertexIndexToNewVertexIndex, vertexIndexes)
 
@@ -147,7 +133,6 @@ function constructVertices(
     vertexIndexToNewVertexIndex: Map<number, number>,
     vertexIndexes: number[],
     mesh: Mesh,
-    layerHeight: number,
     parentMatrix: Matrix4
 ) {
     const positionAttribute = mesh.geometry.attributes.position
@@ -163,8 +148,6 @@ function constructVertices(
         if (parentMatrix) {
             vertex.applyMatrix4(parentMatrix)
         }
-
-        //vertex.z = Math.floor(vertex.z / layerHeight) * layerHeight
 
         const vertexString = `<vertex x="${vertex.x}" y="${vertex.y}" z="${vertex.z}"/>`
 
