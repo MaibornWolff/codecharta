@@ -4,12 +4,10 @@ import { BackPrintColorChangeStrategy } from "../ColorChangeStrategies/backPrint
 import { BufferAttribute, BufferGeometry, Float32BufferAttribute, InterleavedBufferAttribute, Mesh } from "three"
 
 export class MapMesh extends CustomVisibilityMesh {
-    private mapScalingFactorForSnappingHeights: number
     private originalColors: BufferAttribute | InterleavedBufferAttribute
 
     constructor() {
         super("Map", new BackPrintColorChangeStrategy(), 1, false)
-        this.mapScalingFactorForSnappingHeights = 1 //TODO: remove this scaling. Instead round when serializing
     }
 
     async init(geometryOptions: GeometryOptions): Promise<MapMesh> {
@@ -33,7 +31,6 @@ export class MapMesh extends CustomVisibilityMesh {
 
         map.translate(-width / 2, width / 2, 0)
 
-        this.snapHeightsToLayerHeight(geometryOptions, map)
         this.updateMapColors(this.originalColors, map, geometryOptions.numberOfColors)
 
         return map
@@ -72,29 +69,9 @@ export class MapMesh extends CustomVisibilityMesh {
         previewMap.setAttribute("color", new Float32BufferAttribute(newColors, 3))
     }
 
-    private snapHeightsToLayerHeight(geometryOptions: GeometryOptions, map: BufferGeometry) {
-        map.scale(1, 1, 1 / this.mapScalingFactorForSnappingHeights)
-
-        const startHeight = map.attributes.position.getZ(0)
-
-        let smallestHeight = Number.POSITIVE_INFINITY
-        for (let index = 0; index < map.attributes.position.count; index++) {
-            const height = Math.abs(map.attributes.position.getZ(index) - startHeight)
-            if (height !== 0 && height < smallestHeight) {
-                smallestHeight = height
-            }
-        }
-
-        const wantedHeight = Math.ceil(smallestHeight / geometryOptions.layerHeight) * geometryOptions.layerHeight
-        this.mapScalingFactorForSnappingHeights = wantedHeight / smallestHeight
-
-        map.scale(1, 1, this.mapScalingFactorForSnappingHeights)
-    }
-
     async changeSize(geometryOptions: GeometryOptions, oldWidth: number): Promise<void> {
         const scale = (geometryOptions.width - 2 * geometryOptions.mapSideOffset) / (oldWidth - 2 * geometryOptions.mapSideOffset)
         this.geometry.scale(scale, scale, scale)
-        this.snapHeightsToLayerHeight(geometryOptions, this.geometry)
         return
     }
     updateColor(numberOfColors: number) {

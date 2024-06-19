@@ -22,7 +22,7 @@ export class FrontMWLogoMesh extends FrontLogo implements GeneralSizeChangeMesh 
 
         const xPosition = geometryOptions.width / 2 - size / 2 - geometryOptions.mapSideOffset / 2
         const yPosition = size / 2
-        const zPosition = geometryOptions.printHeight
+        const zPosition = geometryOptions.printHeight / 2
         this.position.set(xPosition, yPosition, zPosition)
 
         if (geometryOptions.secondRowVisible) {

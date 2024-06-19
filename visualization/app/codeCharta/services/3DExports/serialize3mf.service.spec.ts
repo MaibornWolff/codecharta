@@ -9,6 +9,7 @@ describe("serialize3mf service", () => {
         let vertexToNewVertexIndex: Map<string, number>
         let vertexIndexToNewVertexIndex: Map<number, number>
         let vertexIndexes: number[]
+        let layerHeight: number
         let testMesh: Mesh
         let parentMatrix: Matrix4
 
@@ -19,12 +20,21 @@ describe("serialize3mf service", () => {
             vertexToNewVertexIndex = new Map()
             vertexIndexToNewVertexIndex = new Map()
             vertexIndexes = [0, 1, 2]
+            layerHeight = 0.2
             testMesh = new Mesh()
             testMesh.geometry.attributes["position"] = new BufferAttribute(new Float32Array(testVertexPositions), 3, false)
         })
 
         it("should create correct vertex entries", () => {
-            constructVertices(vertices, vertexToNewVertexIndex, vertexIndexToNewVertexIndex, vertexIndexes, testMesh, parentMatrix)
+            constructVertices(
+                vertices,
+                vertexToNewVertexIndex,
+                vertexIndexToNewVertexIndex,
+                vertexIndexes,
+                testMesh,
+                layerHeight,
+                parentMatrix
+            )
 
             expect(vertices).toHaveLength(3)
             expect(vertexIndexToNewVertexIndex.size).toBe(3)
