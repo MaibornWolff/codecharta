@@ -1,16 +1,16 @@
-import { CustomVisibilityMesh } from "../customVisibilityMesh"
 import { GeometryOptions } from "../../preview3DPrintMesh"
 import { Font, Mesh } from "three"
 import { BackPrintColorChangeStrategy } from "../../ColorChangeStrategies/backPrintColorChangeStrategy"
 import { MetricDescriptionBlockMesh } from "./metricDescriptionBlockMesh"
 import { ColorMetricDescriptionBlockMesh } from "./colorMetricDescriptionBlockMesh"
+import { GeneralMesh } from "../generalMesh"
 
-export class MetricDescriptionsContainerMesh extends CustomVisibilityMesh {
+export class MetricDescriptionsContainerMesh extends GeneralMesh {
     constructor(
         name: string,
         public font: Font
     ) {
-        super(name, new BackPrintColorChangeStrategy(), 1, true)
+        super(name, new BackPrintColorChangeStrategy())
     }
 
     async init(geometryOptions: GeometryOptions): Promise<MetricDescriptionsContainerMesh> {

@@ -72,6 +72,7 @@ function extractChildMeshData(
     if (!mesh.visible) {
         return
     }
+
     for (const child of mesh.children as Mesh[]) {
         let newParentMatrix = mesh.matrix
         if (parentMatrix) {
@@ -136,13 +137,13 @@ function constructVertices(
     parentMatrix: Matrix4
 ) {
     const positionAttribute = mesh.geometry.attributes.position
+
     for (const vertexIndex of vertexIndexes) {
         const vertex = new Vector3(
             positionAttribute.getX(vertexIndex),
             positionAttribute.getY(vertexIndex),
             positionAttribute.getZ(vertexIndex)
         )
-
         vertex.applyMatrix4(mesh.matrix)
 
         if (parentMatrix) {

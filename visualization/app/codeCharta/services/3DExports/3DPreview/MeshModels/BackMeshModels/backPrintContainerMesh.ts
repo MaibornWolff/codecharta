@@ -11,7 +11,7 @@ import { Font } from "three"
 import { CustomVisibilityMesh } from "../customVisibilityMesh"
 
 export class BackPrintContainerMesh extends GeneralMesh implements GeneralSizeChangeMesh {
-    private childrenMeshes: Map<string, CustomVisibilityMesh>
+    private childrenMeshes: Map<string, GeneralMesh>
 
     constructor(private font: Font) {
         const colorChangeStrategy = new BackPrintColorChangeStrategy()
@@ -19,13 +19,16 @@ export class BackPrintContainerMesh extends GeneralMesh implements GeneralSizeCh
     }
 
     async init(geometryOptions: GeometryOptions): Promise<BackPrintContainerMesh> {
-        this.childrenMeshes = new Map<string, CustomVisibilityMesh>()
+        this.childrenMeshes = new Map<string, GeneralMesh>()
         this.childrenMeshes.set("BackMWLogo", new BackMWLogoMesh("BackMWLogo"))
         this.childrenMeshes.set("BackBelowLogoText", new BackBelowLogoTextMesh("BackBelowLogoText", this.font))
         this.childrenMeshes.set("QrCode", new QrCodeMesh("QrCode"))
         this.childrenMeshes.set("CodeChartaLogo", new CodeChartaLogoMesh("CodeChartaLogo"))
         this.childrenMeshes.set("CodeChartaText", new CodeChartaTextMesh("CodeChartaText", this.font))
-        this.childrenMeshes.set("MetricDescriptions", new MetricDescriptionsContainerMesh("MetricDescriptions", this.font))
+        this.childrenMeshes.set(
+            "MetricDescriptionsContainer",
+            new MetricDescriptionsContainerMesh("MetricDescriptionsContainer", this.font)
+        )
 
         await Promise.all(
             [...this.childrenMeshes.values()].map(async mesh => {
