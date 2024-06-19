@@ -23,8 +23,7 @@ export abstract class CustomVisibilityMesh extends GeneralMesh {
         this.updateVisibility()
     }
 
-    updateVisibility(): void {
-        //TODO: make private
+    private updateVisibility(): void {
         const visibleBecauseOfWidth = this.currentWidth ? this.currentWidth >= this.minWidth : true
         this.visible = this.manualVisibility && this.visibleBecauseOfColor && visibleBecauseOfWidth
     }

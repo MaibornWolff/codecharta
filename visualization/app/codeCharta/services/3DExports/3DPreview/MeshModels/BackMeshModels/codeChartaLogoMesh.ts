@@ -1,7 +1,6 @@
 import { CustomVisibilityMesh } from "../customVisibilityMesh"
 import { CreateSvgGeometryStrategy } from "../../CreateGeometryStrategies/createSvgGeometryStrategy"
 import { GeometryOptions } from "../../preview3DPrintMesh"
-import { MeshBasicMaterial } from "three"
 import { BackPrintColorChangeStrategy } from "../../ColorChangeStrategies/backPrintColorChangeStrategy"
 
 export class CodeChartaLogoMesh extends CustomVisibilityMesh {
@@ -17,8 +16,6 @@ export class CodeChartaLogoMesh extends CustomVisibilityMesh {
             size,
             side: "back"
         })
-
-        this.material = new MeshBasicMaterial()
 
         const xPosition = 0
         const yPosition = 0.18 - size / 2

@@ -1,7 +1,7 @@
 import { CustomVisibilityMesh } from "../customVisibilityMesh"
 import { CreateSvgGeometryStrategy } from "../../CreateGeometryStrategies/createSvgGeometryStrategy"
 import { GeometryOptions } from "../../preview3DPrintMesh"
-import { BufferGeometry, Font, MeshBasicMaterial } from "three"
+import { BufferGeometry, Font } from "three"
 import { BackPrintColorChangeStrategy } from "../../ColorChangeStrategies/backPrintColorChangeStrategy"
 import { BufferGeometryUtils } from "three/examples/jsm/utils/BufferGeometryUtils"
 import { CreateTextGeometryStrategy } from "../../CreateGeometryStrategies/createTextGeometryStrategy"
@@ -35,8 +35,6 @@ export class MetricDescriptionBlockMesh extends CustomVisibilityMesh {
         const textGeometry = await this.createTextGeometry(this.createTextGeometryStrategy, this.getText(), geometryOptions)
 
         this.geometry = BufferGeometryUtils.mergeBufferGeometries([iconGeometry, textGeometry])
-
-        this.material = new MeshBasicMaterial()
 
         this.position.y = -0.15 + this.yOffset
 

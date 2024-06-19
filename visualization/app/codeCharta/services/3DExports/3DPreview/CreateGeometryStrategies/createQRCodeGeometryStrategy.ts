@@ -18,15 +18,15 @@ export class CreateQRCodeGeometryStrategy implements CreateGeometryStrategy {
         const data = imageData.data
 
         const qrCodeGeometries: BufferGeometry[] = []
-        const pixelSize = 50 / imageData.width
+        const pixelSize = 0.15 / imageData.width
 
         // Loop over each pixel in the image
         for (let y = 0; y < imageData.height; y++) {
             for (let x = 0; x < imageData.width; x++) {
                 const index = (y * imageData.width + x) * 4
                 if (data[index] !== 0) {
-                    const geometry = new BoxGeometry(pixelSize, pixelSize, geometryOptions.baseplateHeight / 2)
-                    geometry.translate(-x * pixelSize, -y * pixelSize, (-geometryOptions.baseplateHeight * 3) / 4)
+                    const geometry = new BoxGeometry(pixelSize, pixelSize, geometryOptions.printHeight)
+                    geometry.translate(-x * pixelSize, -y * pixelSize, 0)
                     qrCodeGeometries.push(geometry)
                 }
             }

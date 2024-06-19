@@ -1,4 +1,4 @@
-import { Mesh } from "three"
+import { Mesh, MeshBasicMaterial } from "three"
 import { GeometryOptions } from "../preview3DPrintMesh"
 import { ColorChangeStrategy } from "../ColorChangeStrategies/colorChangeStrategy"
 
@@ -15,6 +15,7 @@ export abstract class GeneralMesh extends Mesh {
         super()
         this.name = name
         this.boundingBoxCalculated = false
+        this.material = new MeshBasicMaterial()
     }
 
     abstract init(geometryOptions: GeometryOptions): Promise<GeneralMesh>

@@ -1,6 +1,5 @@
 import { CustomVisibilityMesh } from "./customVisibilityMesh"
 import { GeometryOptions } from "../preview3DPrintMesh"
-import { MeshBasicMaterial } from "three"
 import { CreateTextGeometryStrategy, CreateTextGeometryStrategyOptions } from "../CreateGeometryStrategies/createTextGeometryStrategy"
 import { BackPrintColorChangeStrategy } from "../ColorChangeStrategies/backPrintColorChangeStrategy"
 
@@ -20,8 +19,6 @@ export class TextMesh extends CustomVisibilityMesh {
 
     async init(geometryOptions: GeometryOptions): Promise<TextMesh> {
         this.geometry = await this.createTextGeometryStrategy.create(geometryOptions, this.createTextGeometryOptions)
-
-        this.material = new MeshBasicMaterial()
 
         this.updateColor(geometryOptions.numberOfColors)
 
