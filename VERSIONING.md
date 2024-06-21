@@ -1,9 +1,4 @@
----
-permalink: /docs/versioning/
-title: "Versioning"
----
-
-TODO: write script that copies the VERSIONING.md to here
+# Versioning
 
 The CodeCharta version number is inspired by [Semantic Versioning 2.0.0](https://semver.org/spec/v2.0.0.html). The format is BREAKING.FEATURE.HOTFIX. We increment the
 

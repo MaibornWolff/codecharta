@@ -3,8 +3,6 @@ permalink: /docs/new-to-code-analysis/
 title: "New to Analysis?"
 ---
 
-TODO: Delete this file and all references
-
 # Getting started with Analysis
 
 The analysis is a CLI to import, export or filter from all kind of resources.
@@ -32,9 +30,9 @@ A simple way to only import the analysis is to clone the whole repository and th
 
 ### Technologies
 
-- [Kotlin]({{site.baseurl}}{% link _posts/adr/2017-01-02-ADR_2_pick_analysis_language.md %})
+- Kotlin
 - Gradle
-- [PicoCli]({{site.baseurl}}{% link _posts/adr/2017-01-02-ADR_5_pick_analysis_cli_library.md %})
+- PicoCli
 - JUnit
 - Assertj
 - MockK
@@ -43,8 +41,8 @@ A simple way to only import the analysis is to clone the whole repository and th
 
 ### Concepts
 
-- [Pipes and filters architecture]({{site.baseurl}}{% link _posts/adr/2017-01-02-ADR_4_decide_analysis_architecture.md %})
-- Shared nothing importers.
+- Pipes and filters architecture
+- Shared nothing importers
 
 ## Other
 

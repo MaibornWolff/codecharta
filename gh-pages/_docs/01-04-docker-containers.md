@@ -20,6 +20,19 @@ docker-compose.yml
 All containers share a volume for the quick transfer of files. You can find it under /mnt/data in each container.
 Please note that you will need to copy finished cc.json files to **your** hard-drive to open them in Visualization.
 
+[//]: # "TODO: change this to an how to run docker containers, not only for vis"
+
+# Docker Hub Install
+
+The visualization is [published to Docker Hub](https://hub.docker.com/r/codecharta/codecharta-visualization).
+
+## Visualization
+
+```bash
+# run visualization with
+docker run -p 80:8080 codecharta/codecharta-visualization
+```
+
 ### Sonar
 
 See also [SonarQube Docs](https://docs.sonarqube.org/latest/setup/get-started-2-minutes/)

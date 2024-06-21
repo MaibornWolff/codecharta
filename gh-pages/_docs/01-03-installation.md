@@ -6,32 +6,54 @@ toc: true
 toc_label: "Jump to Section"
 ---
 
-CodeCharta consists of the two parts analysis and visualization which can be installed and used separately. The analysis programm we can install is the Codecharta shell (ccsh). The visualization program is the desktop version of the [the web visualization]({{site.web_visualization_link}}).
+CodeCharta consists of the two parts analysis and visualization which can be installed and used separately. The analysis programm is the Codecharta shell (ccsh) CLI-tool which is used to generate metrics from code in form of cc.json files. The visualization program is used to display these generated cc.json files. Note that desktop visualization has the same features as the [web visualization]({{site.web_visualization_link}}), meaning if you are planing to just use the visualization, everything can be done in the web version. The desktop program is only for convenience.
 
-We use npm to distribute [both](https://www.npmjs.com/package/codecharta-analysis) [programs](https://www.npmjs.com/package/codecharta-visualization) because it is very convenient and has a wide install base. Only the visualization uses node. The analysis is a command-line interface that requires a Java Virtual Machine (JVM). Please make sure that you have [Node](https://nodejs.org/en/) and npm installed as well as Java.
+We use npm to distribute both programs ([analysis](https://www.npmjs.com/package/codecharta-analysis) and [visualisation](https://www.npmjs.com/package/codecharta-visualization)) because it is very convenient and has a wide install base. Only the visualization uses node. The analysis is a command-line interface that requires a Java Virtual Machine (JVM).
 
 If you are on Windows we recommend installing Git and use the bundled Git Bash to make the scripts easily transferable.
 
-> Note: This guide explains how to **use** codecharta, if you want to **develop** on it checkout the [*New to Code*]({{site.baseurl}}{% link _docs/07-01-new-to-code.md %}) sections and corresponding READMEs.
+This guide describes how to install CodeCharta locally. CodeCharta can also be installed via docker, which is covered [here]({{site.baseurl}}{% link _docs/01-04-docker-containers.md %}).
+
+# Prerequisites
+
+Installation of CodeCharta requires your system to have:
+
+- Java (>=11, <=21)
+- [Node](https://nodejs.org/en/) (>=18)
+- npm (comes with Node)
 
 # Global Install with npm (recommended)
 
+Both parts of CodeCharta are essentially separate pieces of software, so they are also installed separately.
+
 ## Analysis
 
+To install the analysis part of CodeCharta, simple open a terminal and enter:
+
 ```bash
-# Install
 npm i -g codecharta-analysis
-# Explore ccsh
+```
+
+To test if your installation was successful, you can run the following commands:
+
+```bash
+# Open the help of the main codecharta shell
 ccsh -h
-# then explore a specific importer
+# Open the help for a specific parser (each parser has its own help)
 ccsh sourcecodeparser -h
 ```
 
 ## Desktop Visualization
 
+To install the visualisation part of CodeCharta, simple open a terminal and enter:
+
 ```bash
-# Install
 npm i -g codecharta-visualization
+```
+
+After sucessful installation, the desktop visualisation can be started with:
+
+```bash
 # and start
 codecharta-visualization
 ```
@@ -81,20 +103,9 @@ cd node_modules/codecharta-visualization
 npm start
 ```
 
-# Docker Hub Install
+# Download from Github Release
 
-The visualization is [published to Docker Hub](https://hub.docker.com/r/codecharta/codecharta-visualization).
-
-## Visualization
-
-```bash
-# run visualization with
-docker run -p 80:8080 codecharta/codecharta-visualization
-```
-
-# Github Release
-
-Download the [latest release](https://github.com/MaibornWolff/codecharta/releases) of CodeCharta (codecharta-analysis and codecharta-visualization) and unpack them to a folder of your choice. The visualization bundles an operation system (OS)-specific runtime. Since the analysis runs on the JVM it only has a single `.tar`, no matter what OS you use.
+Download the [latest release](https://github.com/MaibornWolff/codecharta/releases) of CodeCharta (codecharta-analysis and codecharta-visualization) and unpack them to a folder of your choice. The visualization bundles an operating system (OS)-specific runtime. Since the analysis runs on the JVM it only has a single `.tar`, no matter what OS you use. With this method, no additional installation is necessary. Both the ccsh and the visualization can be executed directly.
 
 ## Analysis
 
@@ -116,13 +127,15 @@ cd codecharta-visualization
 
 ### MacOS
 
-> If you get an error on MacOS because of a missing license, try this [apple support article](https://support.apple.com/en-gb/guide/mac-help/mh40616/12.0/mac/12.0) <br>
+> If you get an error on MacOS because of a missing license, try this [apple support article](https://support.apple.com/en-gb/guide/mac-help/mh40616/12.0/mac/12.0). <br>
 > You may be required to give the application executable rights
 
-> If you are using an M1 or similar (arm64) architectures you might need to do additional steps, because the OS might flag the executable as damaged, if it is downloaded and from an unverified developer:
+> If you are using an M1 or similar (arm64) architectures you might need to do additional steps, because the OS might flag the executable as damaged, if it is downloaded and from an unverified developer.
 
-- Remove the 'downloaded' attributes from the OS:
+- This can be solved by removing the 'downloaded' attributes from the OS by executing:
 
 ```bash
 xattr -cr codecharta-visualization.app/
 ```
+
+After this, you should be able to execute the visualization.
