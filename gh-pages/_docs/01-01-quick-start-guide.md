@@ -9,26 +9,15 @@ toc_label: "Jump to Section"
 
 CodeCharta consists of two separate parts: [analysis]({{site.baseurl}}{% link _docs/05-01-analysis.md %}) that generates a `.cc.json` file and [visualization]({{site.baseurl}}{% link _docs/06-01-visualization.md %}) that consumes said file.
 
-> Please note that CodeCharta only runs on your client. No `.cc.json` that you analyze or visualize will ever leave your computer unless you distribute it yourself.
+> Please note that CodeCharta runs only on your client. No `.cc.json` that you analyze or visualize will ever leave your computer unless you distribute it yourself.
 
 You can [try the web visualization]({{site.web_visualization_link}}) immediately and explore CodeCharta Code in CodeCharta. No downloads necessary, though we do provide a [desktop client]({{site.baseurl}}{% link _docs/01-03-installation.md %}) for your convenience. The visualization interface is explained [here]({{site.baseurl}}{% link _docs/06-01-visualization.md %}) and if you want to explore another code base from the default one, you can use one of the files from the [showcase]({{site.baseurl}}{% link _pages/showcase.md %}).
 
 However, if you want to **generate your own** `.cc.json`, you should read this guide first.
 
-# Prerequisites
+For this guide we assume you already installed CodeCharta. If you have not, please check out our [install guide]({{site.baseurl}}{% link _docs/01-03-installation.md %}).
 
-Please make sure that you have:
-
-- Java installed
-- [Node](https://nodejs.org/en/) and npm installed
-- CodeCharta installed
-
-There are several ways to [install CodeCharta]({{site.baseurl}}{% link _docs/01-03-installation.md %}). For this tutorial we'll assume you installed it globally via npm:
-
-```bash
-npm i -g codecharta-analysis
-npm i -g codecharta-visualization
-```
+[//]: # "TODO: find what to add here"
 
 # 5 min Java Metrics Quickstart
 

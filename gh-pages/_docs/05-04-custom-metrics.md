@@ -3,9 +3,11 @@ permalink: /docs/custom-metrics/
 title: "Custom Metrics"
 ---
 
-`ccsh` supplies a lot of metrics out of the box. Should that not match your need there are two general ways to add new metrics to CodeCharta. The more expensive way is to add a new importer, generate a new `.cc.json` and then merge that with your existing `.cc.json`. You should take a look at the [reference]({{site.baseurl}}{% link _docs/07-01-new-to-code.md %}) if you are interested in this.
+The various parsers of the `ccsh` supply a large variety of different metrics out of the box. In case these not match your need, there are two general ways to add new metrics to CodeCharta.
 
-However, there is an easier way if your metric is available in CSV form because we have an importer for such data.
+The more 'expensive' way is to add a new importer, generate a new `.cc.json` and then merge that with your existing `.cc.json`. If you are interested in this, please get in contact with us by creating a new [issue](https://github.com/MaibornWolff/codecharta/issues) in GitHub.
+
+However, there is an easier way if your metric data is available in CSV form because we have an importer for such data. All the importer needs is the file name (including path to it to depict the folder structure) and the different metrics. This makes it possible to display various metrics, independently of how they were generated.
 
 # Custom Metric CSV Import
 
@@ -17,19 +19,21 @@ File.js,4,500
 service/Service1.ts,40,20
 ```
 
-You can transform that file into a `.cc.json` via command-line:
+You can transform that file into a `.cc.json` with our [CSV Importer]({{site.baseurl}}{% link _docs/04-07-csvimporter.md %}) via command-line:
 
 ```
 ccsh csvimport newmetrics.csv -o newmetrics.cc.json
 ```
 
-This will result in a new file which you can merge into your existing `standardmetrics.cc.json` files via:
+This will result in a new file called `newmetrics.cc.json` which can be used as is or merged into existing `standardmetrics.cc.json` files. For example to merge this `newmetrics.cc.json` with a file called `standardmetrics.cc.json`, execute:
 
 ```
 ccsh merge newmetrics.cc.json standardmetrics.cc.json -o mergedmetrics.cc.json
 ```
 
-If you are interested the `newmetrics.cc.json` looks like this:
+Both the `newmetrics.cc.json` and the `standardmetrics.cc.json` files are valid cc.json files that can be used in our visualisation.
+
+If you are interested in how a cc.json file for custom metrics looks like, here is what the `newmetrics.cc.json` looks like:
 
 ```json
 {
