@@ -95,7 +95,7 @@ $ ccsh sourcecodeparser junit4 -p junit4 -o junit4.source.cc.json
 
 Have a **bug**, a **feature** request or any question? Please open [a new issue](https://github.com/MaibornWolff/codecharta/issues/new). Feedback is always welcome.
 
-Want to have even **more information**? Please check our [news](https://maibornwolff.github.io/codecharta/news/).
+Want to have even **more information**? Please check our [documentation](https://maibornwolff.github.io/codecharta/) and [news](https://maibornwolff.github.io/codecharta/news/).
 
 ## Further Information
 
