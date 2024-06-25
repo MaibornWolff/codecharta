@@ -63,10 +63,10 @@ export class FrontPrintContainerMesh extends GeneralMesh implements GeneralSizeC
         customLogoMesh.setColor(newColor)
     }
 
-    updateFrontText(frontText: string, geometryOptions: GeometryOptions) {
-        geometryOptions.frontText = frontText
+    async updateFrontText(frontText: string, geometryOptions: GeometryOptions) {
         const frontTextMesh = this.childrenMeshes.get("FrontText") as FrontTextMesh
-        frontTextMesh.updateText(geometryOptions)
+        frontTextMesh.updateTextGeometryOptions(frontText)
+        await frontTextMesh.updateText(geometryOptions)
     }
 
     async changeSize(geometryOptions: GeometryOptions, oldWidth: number): Promise<void> {
@@ -78,10 +78,10 @@ export class FrontPrintContainerMesh extends GeneralMesh implements GeneralSizeC
         }
     }
 
-    updateSecondRowText(secondRowText: string, geometryOptions: GeometryOptions) {
-        geometryOptions.secondRowText = secondRowText
+    async updateSecondRowText(secondRowText: string, geometryOptions: GeometryOptions) {
         const secondRowTextMesh = this.childrenMeshes.get("SecondRowText") as SecondRowTextMesh
-        secondRowTextMesh.updateText(geometryOptions)
+        secondRowTextMesh.updateTextGeometryOptions(secondRowText)
+        await secondRowTextMesh.updateText(geometryOptions)
     }
 
     updateSecondRowVisibility(geometryOptions: GeometryOptions) {

@@ -29,4 +29,8 @@ export class TextMesh extends CustomVisibilityMesh {
         this.geometry = await this.createTextGeometryStrategy.create(geometryOptions, this.createTextGeometryOptions)
         this.boundingBoxCalculated = false
     }
+
+    updateTextGeometryOptions(text: string) {
+        this.createTextGeometryOptions.text = text
+    }
 }

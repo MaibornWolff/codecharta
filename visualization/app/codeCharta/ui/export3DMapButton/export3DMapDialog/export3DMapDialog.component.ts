@@ -59,7 +59,7 @@ export class Export3DMapDialogComponent {
         isVisible: false,
         currentText: undefined
     }
-    qrCode: ManualVisibilityItem = {
+    qrCode = {
         defaultText: "maibornwolff.de/service/it-sanierung",
         name: "QrCode",
         isVisible: false,
@@ -91,10 +91,7 @@ export class Export3DMapDialogComponent {
     private readonly baseplateHeight = 1 //should be a multiple of layerHeight
     private readonly logoSize = 10
 
-    constructor(
-        private state: State<CcState>,
-        private threeSceneService: ThreeSceneService
-    ) {
+    constructor(private state: State<CcState>, private threeSceneService: ThreeSceneService) {
         //console.log(this.threeSceneService)
         this.maxWidth = calculateMaxPossibleWidthForPreview3DPrintMesh(
             new Vector3(this.selectedPrinter.x, this.selectedPrinter.y, this.selectedPrinter.z),
@@ -238,11 +235,11 @@ export class Export3DMapDialogComponent {
         this.currentSize = this.previewMesh.getSize()
         printPreviewScene.add(this.previewMesh.getThreeMesh())
 
-        camera.position.set(
+        /*camera.position.set(
             0,
             0,
             -this.wantedWidth * 1.5
-        ) /*To directly see the backside of the map: uncomment this line and comment the next line
+        ) //To directly see the backside of the map: uncomment this line and comment the next line*/
         this.updateCameraPosition(camera) //*/
     }
 

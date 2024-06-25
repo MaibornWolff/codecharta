@@ -58,7 +58,7 @@ export class BackPrintContainerMesh extends GeneralMesh implements GeneralSizeCh
     async updateQrCodeText(qrCodeText: string, geometryOptions: GeometryOptions): Promise<void> {
         geometryOptions.qrCodeText = qrCodeText
         const qrCodeMesh = this.childrenMeshes.get("QrCode") as QrCodeMesh
-        qrCodeMesh.changeText(geometryOptions)
+        await qrCodeMesh.changeText(geometryOptions)
     }
 
     updateQrCodeVisibility(qrCodeVisible: boolean) {

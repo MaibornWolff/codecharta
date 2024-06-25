@@ -138,8 +138,8 @@ export class Preview3DPrintMesh {
         this.baseplateMesh.changeSize(this.geometryOptions)
     }
 
-    updateSecondRowText(secondRowText: string) {
-        this.frontPrintContainerMesh.updateSecondRowText(secondRowText, this.geometryOptions)
+    async updateSecondRowText(secondRowText: string) {
+        await this.frontPrintContainerMesh.updateSecondRowText(secondRowText, this.geometryOptions)
     }
 
     private async loadFont() {
@@ -168,7 +168,7 @@ export class Preview3DPrintMesh {
     }
 
     async updateQrCodeText(qrCodeText: string): Promise<void> {
-        this.backPrintContainerMesh.updateQrCodeText(qrCodeText, this.geometryOptions)
+        await this.backPrintContainerMesh.updateQrCodeText(qrCodeText, this.geometryOptions)
     }
 
     updateQrCodeVisibility(qrCodeVisible: boolean) {
