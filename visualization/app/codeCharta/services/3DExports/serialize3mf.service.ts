@@ -1,5 +1,15 @@
 import { strToU8, zipSync } from "fflate"
-import { BufferGeometry, Float32BufferAttribute, Material, Matrix4, Mesh, MeshBasicMaterial, ShaderMaterial, Vector3 } from "three"
+import {
+    BufferAttribute,
+    BufferGeometry,
+    Float32BufferAttribute,
+    Material,
+    Matrix4,
+    Mesh,
+    MeshBasicMaterial,
+    ShaderMaterial,
+    Vector3
+} from "three"
 import { getXMLrelationships, getXMLcontentType } from "./generateXML/build3mfStatics"
 import { getXMLmodelConfig } from "./generateXML/build3mfModelConfig"
 import { getXMLmodel } from "./generateXML/build3mfModel"
@@ -118,12 +128,7 @@ function groupMeshVerticesByColor(mesh: Mesh): Map<string, number[]> {
             hexColorString = convertColorArrayToHexString(colorArray, 0)
         }
         const indexArray = Array.from({ length: mesh.geometry.attributes.position.count }, (_, index) => index)
-
-        if (colorToVertexIndices.has(hexColorString)) {
-            colorToVertexIndices.get(hexColorString).push(...indexArray)
-        } else {
-            colorToVertexIndices.set(hexColorString, indexArray)
-        }
+        colorToVertexIndices.set(hexColorString, indexArray)
     }
     return colorToVertexIndices
 }
@@ -222,7 +227,7 @@ function constructVolume(
 
 function convertColorArrayToHexString(color: Float32BufferAttribute | number[], index: number): string {
     const colorsArray: number[] =
-        color instanceof Float32BufferAttribute
+        color instanceof BufferAttribute
             ? [
                   (color as Float32BufferAttribute).getX(index),
                   (color as Float32BufferAttribute).getY(index),
@@ -240,6 +245,7 @@ function convertColorArrayToHexString(color: Float32BufferAttribute | number[], 
 }
 
 export const exportedForTesting = {
+    groupMeshVerticesByColor,
     constructVertices,
     constructTriangles,
     constructVolume,

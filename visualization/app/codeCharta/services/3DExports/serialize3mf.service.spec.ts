@@ -1,7 +1,114 @@
-import { BufferAttribute, BufferGeometry, Float32BufferAttribute, Matrix4, Mesh } from "three"
-import { Volume, exportedForTesting } from "./serialize3mf.service"
+import {
+    BufferAttribute,
+    BufferGeometry,
+    Float32BufferAttribute,
+    Matrix4,
+    Mesh,
+    MeshBasicMaterial,
+    ObjectLoader,
+    ShaderMaterial
+} from "three"
+import { Volume, exportedForTesting, serialize3mf } from "./serialize3mf.service"
+import { readFileSync } from "fs"
+import { strFromU8, unzipSync } from "fflate"
+import { resolve } from "node:path"
+import { XMLParser, XMLValidator } from "fast-xml-parser"
 
 describe("serialize3mf service", () => {
+    describe("serialize3mf", () => {
+        const minimalExamplePath = resolve(__dirname, "../../resources/minimalScene.json")
+
+        it("should produce a valid set of xml files", async () => {
+            const threeObjectLoader = new ObjectLoader()
+            const xmlParser = new XMLParser({ removeNSPrefix: false, ignoreAttributes: false, parseAttributeValue: true })
+
+            const jsonScene = JSON.parse(readFileSync(minimalExamplePath, { encoding: "utf8" }))
+            const mesh = threeObjectLoader.parse(jsonScene).getObjectByName("PrintMesh") as Mesh
+
+            const output = await serialize3mf(mesh)
+            const unzipOutput = unzipSync(new Uint8Array(output as unknown as ArrayBufferLike))
+            const xmlData3D = xmlParser.parse(strFromU8(unzipOutput["3D/3dmodel.model"]))
+            const xmlDataMeta = xmlParser.parse(strFromU8(unzipOutput["Metadata/Slic3r_PE_model.config"]))
+            const stringDataRels = strFromU8(unzipOutput["_rels/.rels"])
+            const stringDataContentTypes = strFromU8(unzipOutput["[Content_Types].xml"])
+
+            // Debug export, write parsed test data to file, to slice it
+            // writeFileSync(resolve(__dirname, "../../resources/minimalSceneOutputBufferAttribute.zip"), new Uint8Array(output as unknown as ArrayBufferLike))
+
+            expect(XMLValidator.validate(stringDataRels)).toBe(true)
+            expect(XMLValidator.validate(stringDataContentTypes)).toBe(true)
+
+            let volumeIDcheck = 0
+            for (const currentVolume of xmlDataMeta["config"]["object"]["volume"]) {
+                expect(currentVolume["@_firstid"] <= currentVolume["@_lastid"]).toBeTruthy()
+                expect(currentVolume["@_firstid"]).toBe(volumeIDcheck)
+                volumeIDcheck = currentVolume["@_lastid"] + 1
+            }
+
+            let maxTriangleID = 0
+            for (const triangle of xmlData3D["model"]["resources"]["object"]["mesh"]["triangles"]["triangle"]) {
+                maxTriangleID = Math.max(triangle["@_v1"], triangle["@_v2"], triangle["@_v3"], maxTriangleID)
+            }
+            expect(xmlData3D["model"]["resources"]["object"]["mesh"]["vertices"]["vertex"]).toHaveLength(maxTriangleID + 1)
+        })
+    })
+
+    describe("groupMeshVerticesByColor", () => {
+        const { groupMeshVerticesByColor } = exportedForTesting
+        let testMesh: Mesh
+        const testColorArray = [1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 1]
+        const testPositionArray = [0, 0, 0, 0, 0, 2]
+
+        beforeEach(() => {
+            testMesh = new Mesh()
+        })
+
+        it("should create correct map if attributes color is present", () => {
+            testMesh.geometry.setAttribute("color", new Float32BufferAttribute(testColorArray, 3))
+
+            const colorToIndices = groupMeshVerticesByColor(testMesh)
+
+            const expectedResult = ["ff0000", "00ff00", "0000ff"]
+            let expectedResultCounter = 0
+
+            for (const colorString of expectedResult) {
+                expect(colorToIndices.get(colorString)).toHaveLength(2)
+                expect(colorToIndices.get(colorString)).toEqual([expectedResultCounter, expectedResultCounter + 3])
+                expectedResultCounter++
+            }
+        })
+
+        it("should create correct map if only material present", () => {
+            testMesh.geometry.setAttribute("position", new Float32BufferAttribute(testPositionArray, 3))
+            testMesh.material = new MeshBasicMaterial({ color: 0xff_00_00 })
+
+            const colorToIndicies = groupMeshVerticesByColor(testMesh)
+
+            expect(colorToIndicies.get("ff0000")).toHaveLength(2)
+            expect(colorToIndicies.get("ff0000")).toEqual([0, 1])
+        })
+
+        it("should create correct map if only material present", () => {
+            testMesh.geometry.setAttribute("position", new Float32BufferAttribute(testPositionArray, 3))
+            testMesh.material = new MeshBasicMaterial({ color: 0xff_00_00 })
+
+            const colorToIndicies = groupMeshVerticesByColor(testMesh)
+
+            expect(colorToIndicies.get("ff0000")).toHaveLength(2)
+            expect(colorToIndicies.get("ff0000")).toEqual([0, 1])
+        })
+
+        it("should create correct map if only material present", () => {
+            testMesh.geometry.setAttribute("position", new Float32BufferAttribute(testPositionArray, 3))
+            testMesh.material = new ShaderMaterial()
+
+            const colorToIndicies = groupMeshVerticesByColor(testMesh)
+
+            expect(colorToIndicies.get("ffffff")).toHaveLength(2)
+            expect(colorToIndicies.get("ffffff")).toEqual([0, 1])
+        })
+    })
+
     describe("constructVertices", () => {
         const { constructVertices } = exportedForTesting
 
@@ -9,7 +116,6 @@ describe("serialize3mf service", () => {
         let vertexToNewVertexIndex: Map<string, number>
         let vertexIndexToNewVertexIndex: Map<number, number>
         let vertexIndexes: number[]
-        let layerHeight: number
         let testMesh: Mesh
         let parentMatrix: Matrix4
 
@@ -20,26 +126,69 @@ describe("serialize3mf service", () => {
             vertexToNewVertexIndex = new Map()
             vertexIndexToNewVertexIndex = new Map()
             vertexIndexes = [0, 1, 2]
-            layerHeight = 0.2
             testMesh = new Mesh()
-            testMesh.geometry.attributes["position"] = new BufferAttribute(new Float32Array(testVertexPositions), 3, false)
+            testMesh.geometry.attributes["position"] = new BufferAttribute(new Float32Array(testVertexPositions), 3)
+            testMesh.matrix.makeScale(2, 2, 2)
+            parentMatrix = new Matrix4()
         })
 
         it("should create correct vertex entries", () => {
-            constructVertices(
-                vertices,
-                vertexToNewVertexIndex,
-                vertexIndexToNewVertexIndex,
-                vertexIndexes,
-                testMesh,
-                layerHeight,
-                parentMatrix
-            )
+            constructVertices(vertices, vertexToNewVertexIndex, vertexIndexToNewVertexIndex, vertexIndexes, testMesh, parentMatrix)
 
             expect(vertices).toHaveLength(3)
             expect(vertexIndexToNewVertexIndex.size).toBe(3)
             expect(vertexToNewVertexIndex.size).toBe(3)
             expect([...vertexToNewVertexIndex.keys()].toString()).toBe(vertices.toString())
+            const expectedPositions = [
+                [0, 0, 0],
+                [4, 0, 0],
+                [0, 4, 0]
+            ]
+            for (const xyzPos of expectedPositions) {
+                expect(vertices).toContain(`<vertex x="${xyzPos[0]}" y="${xyzPos[1]}" z="${xyzPos[2]}"/>`)
+            }
+        })
+
+        it("should apply parent matrix if present", () => {
+            parentMatrix = new Matrix4()
+            parentMatrix.setPosition(1, 1, 1)
+
+            constructVertices(vertices, vertexToNewVertexIndex, vertexIndexToNewVertexIndex, vertexIndexes, testMesh, parentMatrix)
+
+            expect(vertices).toHaveLength(3)
+            expect(vertexIndexToNewVertexIndex.size).toBe(3)
+            expect(vertexToNewVertexIndex.size).toBe(3)
+            expect([...vertexToNewVertexIndex.keys()].toString()).toBe(vertices.toString())
+            const expectedPositions = [
+                [1, 1, 1],
+                [5, 1, 1],
+                [1, 5, 1]
+            ]
+            for (const xyzPos of expectedPositions) {
+                expect(vertices).toContain(`<vertex x="${xyzPos[0]}" y="${xyzPos[1]}" z="${xyzPos[2]}"/>`)
+            }
+        })
+
+        it("should not add new entries to indexLookup but vertexLookup if repeated information", () => {
+            const testDoubleVertexPositions = [...testVertexPositions, ...testVertexPositions]
+            const doubleMesh = new Mesh()
+            doubleMesh.geometry.attributes["position"] = new BufferAttribute(new Float32Array(testDoubleVertexPositions), 3)
+            const longerIndex = [1, 2, 3, 4, 5, 6]
+
+            constructVertices(vertices, vertexToNewVertexIndex, vertexIndexToNewVertexIndex, longerIndex, doubleMesh, parentMatrix)
+
+            expect(vertices).toHaveLength(3)
+            expect(vertexIndexToNewVertexIndex.size).toBe(6)
+            expect(vertexToNewVertexIndex.size).toBe(3)
+            expect([...vertexToNewVertexIndex.keys()].toString()).toBe(vertices.toString())
+            const expectedPositions = [
+                [0, 0, 0],
+                [2, 0, 0],
+                [0, 2, 0]
+            ]
+            for (const xyzPos of expectedPositions) {
+                expect(vertices).toContain(`<vertex x="${xyzPos[0]}" y="${xyzPos[1]}" z="${xyzPos[2]}"/>`)
+            }
         })
     })
 
