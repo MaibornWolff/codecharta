@@ -245,6 +245,7 @@ function convertColorArrayToHexString(color: Float32BufferAttribute | number[], 
 }
 
 export const exportedForTesting = {
+    extractChildMeshData,
     groupMeshVerticesByColor,
     constructVertices,
     constructTriangles,

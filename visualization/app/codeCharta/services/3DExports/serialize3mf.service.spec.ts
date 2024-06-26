@@ -6,7 +6,8 @@ import {
     Mesh,
     MeshBasicMaterial,
     ObjectLoader,
-    ShaderMaterial
+    ShaderMaterial,
+    Uint16BufferAttribute
 } from "three"
 import { Volume, exportedForTesting, serialize3mf } from "./serialize3mf.service"
 import { readFileSync } from "fs"
@@ -50,6 +51,207 @@ describe("serialize3mf service", () => {
                 maxTriangleID = Math.max(triangle["@_v1"], triangle["@_v2"], triangle["@_v3"], maxTriangleID)
             }
             expect(xmlData3D["model"]["resources"]["object"]["mesh"]["vertices"]["vertex"]).toHaveLength(maxTriangleID + 1)
+        })
+    })
+
+    describe("extractChildMeshData", () => {
+        const { extractChildMeshData } = exportedForTesting
+
+        let testMesh: Mesh
+        let vertices: string[]
+        let triangles: string[]
+        let vertexToNewVertexIndex: Map<string, number>
+        let volumeCount: number
+        let colorToExtruder: Map<string, number>
+        let volumes: Volume[]
+        let parentMatrix: Matrix4
+
+        const testPositionArray = [
+            0,
+            0,
+            0,
+            2,
+            0,
+            0,
+            2,
+            2,
+            0,
+            0,
+            0,
+            0,
+            0,
+            2,
+            0,
+            2,
+            2,
+            0, // 1
+            0,
+            0,
+            0,
+            2,
+            0,
+            0,
+            0,
+            0,
+            2,
+            0,
+            0,
+            0,
+            2,
+            0,
+            0,
+            2,
+            0,
+            2, // 2
+            2,
+            0,
+            0,
+            2,
+            2,
+            0,
+            2,
+            0,
+            2,
+            2,
+            2,
+            0,
+            2,
+            2,
+            2,
+            2,
+            0,
+            2, // 3
+            2,
+            2,
+            0,
+            2,
+            2,
+            2,
+            0,
+            2,
+            0,
+            0,
+            2,
+            2,
+            2,
+            2,
+            2,
+            0,
+            2,
+            0, // 4
+            0,
+            2,
+            2,
+            0,
+            0,
+            2,
+            0,
+            2,
+            0,
+            0,
+            0,
+            0,
+            0,
+            2,
+            0,
+            0,
+            0,
+            2, // 5
+            0,
+            0,
+            2,
+            2,
+            0,
+            2,
+            0,
+            2,
+            2,
+            2,
+            0,
+            2,
+            2,
+            2,
+            2,
+            0,
+            2,
+            2 // 6
+        ]
+
+        const testPositionArrayReduces = [
+            [0, 0, 0],
+            [2, 0, 0],
+            [2, 2, 0],
+            [0, 2, 0],
+            [0, 0, 2],
+            [2, 0, 2],
+            [2, 2, 2],
+            [0, 2, 2]
+        ]
+
+        beforeEach(() => {
+            testMesh = new Mesh()
+            testMesh.geometry.setAttribute("position", new Float32BufferAttribute(testPositionArray, 3))
+            vertices = []
+            triangles = []
+            vertexToNewVertexIndex = new Map()
+            volumeCount = 1
+            colorToExtruder = new Map()
+            volumes = []
+            parentMatrix = new Matrix4()
+        })
+
+        it("should not return if mesh not visible", () => {
+            testMesh.material = new ShaderMaterial()
+            testMesh.visible = false
+            extractChildMeshData(testMesh, vertices, triangles, vertexToNewVertexIndex, volumeCount, colorToExtruder, volumes, parentMatrix)
+
+            expect(vertices).toHaveLength(0)
+            expect(triangles).toHaveLength(0)
+            expect(vertexToNewVertexIndex.size).toBe(0)
+            expect(colorToExtruder.size).toBe(0)
+            expect(volumes).toHaveLength(0)
+        })
+
+        it("should add entries to data collection", () => {
+            testMesh.material = new ShaderMaterial()
+            extractChildMeshData(testMesh, vertices, triangles, vertexToNewVertexIndex, volumeCount, colorToExtruder, volumes, parentMatrix)
+
+            expect(vertices).toHaveLength(8)
+            expect(triangles).toHaveLength(12)
+            expect(vertexToNewVertexIndex.size).toBe(8)
+            expect(volumeCount).toBe(1)
+            expect(colorToExtruder.size).toBe(1)
+            expect(volumes).toHaveLength(1)
+            expect(volumes[0].lastTriangleId).toBe(11)
+            for (const xyzPos of testPositionArrayReduces) {
+                expect(vertices).toContain(`<vertex x="${xyzPos[0]}" y="${xyzPos[1]}" z="${xyzPos[2]}"/>`)
+            }
+        })
+
+        it("should add children to data collection", () => {
+            const childMesh = new Mesh()
+            const childPositionArray = [0, 0, 2, 2, 0, 2, 0, 2, 2, 0, 0, 4]
+            const childGeometryIndexArray = [0, 1, 2, 0, 1, 3, 1, 2, 3, 2, 0, 3]
+            childMesh.geometry.setAttribute("position", new Float32BufferAttribute(childPositionArray, 3))
+            childMesh.geometry.setIndex(new Uint16BufferAttribute(childGeometryIndexArray, 1))
+            childMesh.material = new MeshBasicMaterial({ color: 0xc0_ff_ee })
+            testMesh.material = new ShaderMaterial()
+            testMesh.children = [childMesh]
+            testMesh.matrix.makeScale(2, 2, 2)
+            parentMatrix = parentMatrix.makeTranslation(1, 1, 1)
+            extractChildMeshData(testMesh, vertices, triangles, vertexToNewVertexIndex, volumeCount, colorToExtruder, volumes, parentMatrix)
+
+            expect(vertices).toHaveLength(9)
+            expect(triangles).toHaveLength(16)
+            expect(vertexToNewVertexIndex.size).toBe(9)
+            expect(volumeCount).toBe(1) // TODO: verify this number
+            expect(colorToExtruder.size).toBe(2)
+            expect(colorToExtruder.keys()).toContain("c0ffee")
+            expect(colorToExtruder.keys()).toContain("ffffff")
+            expect(volumes).toHaveLength(2)
+            expect(volumes[0].lastTriangleId).toBe(3)
+            expect(volumes[1].lastTriangleId).toBe(15)
+            expect(volumes[1].firstTriangleId).toBe(4)
         })
     })
 
@@ -127,7 +329,7 @@ describe("serialize3mf service", () => {
             vertexIndexToNewVertexIndex = new Map()
             vertexIndexes = [0, 1, 2]
             testMesh = new Mesh()
-            testMesh.geometry.attributes["position"] = new BufferAttribute(new Float32Array(testVertexPositions), 3)
+            testMesh.geometry.attributes["position"] = new Float32BufferAttribute(testVertexPositions, 3)
             testMesh.matrix.makeScale(2, 2, 2)
             parentMatrix = new Matrix4()
         })
@@ -172,7 +374,7 @@ describe("serialize3mf service", () => {
         it("should not add new entries to indexLookup but vertexLookup if repeated information", () => {
             const testDoubleVertexPositions = [...testVertexPositions, ...testVertexPositions]
             const doubleMesh = new Mesh()
-            doubleMesh.geometry.attributes["position"] = new BufferAttribute(new Float32Array(testDoubleVertexPositions), 3)
+            doubleMesh.geometry.attributes["position"] = new Float32BufferAttribute(testDoubleVertexPositions, 3)
             const longerIndex = [1, 2, 3, 4, 5, 6]
 
             constructVertices(vertices, vertexToNewVertexIndex, vertexIndexToNewVertexIndex, longerIndex, doubleMesh, parentMatrix)
