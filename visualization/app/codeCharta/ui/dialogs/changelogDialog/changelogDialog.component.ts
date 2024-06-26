@@ -18,8 +18,10 @@ export class ChangelogDialogComponent {
     private getChangelogChanges() {
         const parsedMarkdownFile = marked.parse(markdownFile, { headerIds: false })
         let changelogLines = parsedMarkdownFile.split("\n")
+
         const currentVersionFirstLine = this.findVersionLine(changelogLines, this.data.currentVersion)
         const lastOpenedVersionFirstLine = this.findVersionLine(changelogLines, this.data.previousVersion)
+
         //Add 1 to keep the version line so that it detects the end of the last set of changes
         changelogLines = changelogLines.slice(currentVersionFirstLine, lastOpenedVersionFirstLine + 1)
         const titles = ["Added 🚀", "Fixed 🐞", "Changed", "Removed 🗑", "Chore 👨‍💻 👩‍💻"]
@@ -27,15 +29,18 @@ export class ChangelogDialogComponent {
         for (const title of titles) {
             const titlePattern = new RegExp(`<h3>${title}</h3>`)
             const titleLinesIndexes = this.getAllIndexes(changelogLines, titlePattern)
+
             const changelogTypes: string[] = []
             for (const lineIndex of titleLinesIndexes) {
                 // Add 2 to remove the headline and the <ul> tag
                 const start = lineIndex + 2
                 const end = this.findEndChangesLine(changelogLines, lineIndex)
+
                 for (const changeLine of changelogLines.slice(start, end)) {
                     changelogTypes.push(`${changeLine}<br>`)
                 }
             }
+
             if (changelogTypes.length > 0) {
                 changes[title] = changelogTypes.join("\n")
             }
