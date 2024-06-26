@@ -132,7 +132,7 @@
     "jest-puppeteer": "^10.0.1",
     "lint-staged": "^13.0.0",
     "marked": "^4.3.0",
-    "puppeteer": "^19.11.1",
+    "puppeteer": "^22.11.2",
     "ts-jest": "^29.0.5",
     "typescript": "^5.2.2",
     "webpack-glsl-loader": "^1.0.1"
