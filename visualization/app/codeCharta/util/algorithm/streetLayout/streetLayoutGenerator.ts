@@ -99,7 +99,7 @@ export class StreetLayoutGenerator {
     private static calculateHeightScale(map: CodeMapNode, treeMapSize: number, maxHeight: number): number {
         // Constants to control the curve and scaling
         const linearCoefficient = 0.0001
-        const rootCoefficient = 0.03
+        const rootCoefficient = 0.01
 
         // Calculate linear and square root components
         const linearComponent = linearCoefficient * map.attributes.unary
