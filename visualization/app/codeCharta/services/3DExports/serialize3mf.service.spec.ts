@@ -54,18 +54,12 @@ describe("serialize3mf service", () => {
         })
     })
 
-    describe("extractChildMeshData", () => {
-        const { extractChildMeshData } = exportedForTesting
-
-        let testMesh: Mesh
+    describe("extractMesh...", () => {
         let vertices: string[]
         let triangles: string[]
-        let vertexToNewVertexIndex: Map<string, number>
-        let volumeCount: number
-        let colorToExtruder: Map<string, number>
         let volumes: Volume[]
-        let parentMatrix: Matrix4
 
+        let testMesh: Mesh
         const side1 = [0, 0, 0, 2, 0, 0, 2, 2, 0, 0, 0, 0, 0, 2, 0, 2, 2, 0]
         const side2 = [0, 0, 0, 2, 0, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 2, 0, 2]
         const side3 = [2, 0, 0, 2, 2, 0, 2, 0, 2, 2, 2, 0, 2, 2, 2, 2, 0, 2]
@@ -73,8 +67,11 @@ describe("serialize3mf service", () => {
         const side5 = [0, 2, 2, 0, 0, 2, 0, 2, 0, 0, 0, 0, 0, 2, 0, 0, 0, 2]
         const side6 = [0, 0, 2, 2, 0, 2, 0, 2, 2, 2, 0, 2, 2, 2, 2, 0, 2, 2]
         const testPositionArray = [side1, side2, side3, side4, side5, side6].flat(2)
+        let anotherTestMesh: Mesh
+        const anotherTestMeshPositionArray = [0, 0, 2, 2, 0, 2, 0, 2, 2, 0, 0, 4]
+        const anotherTestMeshGeometryIndexArray = [0, 1, 2, 0, 1, 3, 1, 2, 3, 2, 0, 3]
 
-        const testPositionArrayReduces = [
+        const testPositionArrayReduced = [
             [0, 0, 0],
             [2, 0, 0],
             [2, 2, 0],
@@ -86,69 +83,142 @@ describe("serialize3mf service", () => {
         ]
 
         beforeEach(() => {
-            testMesh = new Mesh()
-            testMesh.geometry.setAttribute("position", new Float32BufferAttribute(testPositionArray, 3))
             vertices = []
             triangles = []
-            vertexToNewVertexIndex = new Map()
-            volumeCount = 1
-            colorToExtruder = new Map()
             volumes = []
-            parentMatrix = new Matrix4()
+
+            testMesh = new Mesh()
+            testMesh.geometry.setAttribute("position", new Float32BufferAttribute(testPositionArray, 3))
+            testMesh.material = new ShaderMaterial()
+
+            anotherTestMesh = new Mesh()
+            anotherTestMesh.geometry.setAttribute("position", new Float32BufferAttribute(anotherTestMeshPositionArray, 3))
+            anotherTestMesh.geometry.setIndex(new Uint16BufferAttribute(anotherTestMeshGeometryIndexArray, 1))
+            anotherTestMesh.material = new MeshBasicMaterial({ color: 0xc0_ff_ee })
         })
 
-        it("should not return if mesh not visible", () => {
-            testMesh.material = new ShaderMaterial()
-            testMesh.visible = false
-            extractChildMeshData(testMesh, vertices, triangles, vertexToNewVertexIndex, volumeCount, colorToExtruder, volumes, parentMatrix)
+        describe("extractMeshData", () => {
+            const { extractMeshData } = exportedForTesting
 
-            expect(vertices).toHaveLength(0)
-            expect(triangles).toHaveLength(0)
-            expect(vertexToNewVertexIndex.size).toBe(0)
-            expect(colorToExtruder.size).toBe(0)
-            expect(volumes).toHaveLength(0)
+            it("should return correct triplet", () => {
+                const rootMesh = new Mesh()
+                rootMesh.children = [testMesh, anotherTestMesh]
+
+                const { vertices, triangles, volumes } = extractMeshData(rootMesh)
+
+                expect(vertices).toHaveLength(9)
+                expect(volumes).toHaveLength(2)
+                expect(volumes[0].lastTriangleId).toBe(11)
+                expect(volumes[1].firstTriangleId).toBe(12)
+                expect(volumes[1].lastTriangleId).toBe(15)
+                expect(triangles).toHaveLength(16)
+
+                for (const xyzPos of [...testPositionArrayReduced, [0, 0, 4]]) {
+                    expect(vertices).toContain(`<vertex x="${xyzPos[0]}" y="${xyzPos[1]}" z="${xyzPos[2]}"/>`)
+                }
+            })
         })
 
-        it("should add entries to data collection", () => {
-            testMesh.material = new ShaderMaterial()
-            extractChildMeshData(testMesh, vertices, triangles, vertexToNewVertexIndex, volumeCount, colorToExtruder, volumes, parentMatrix)
+        describe("extractChildMeshData", () => {
+            const { extractChildMeshData } = exportedForTesting
 
-            expect(vertices).toHaveLength(8)
-            expect(triangles).toHaveLength(12)
-            expect(vertexToNewVertexIndex.size).toBe(8)
-            expect(volumeCount).toBe(1)
-            expect(colorToExtruder.size).toBe(1)
-            expect(volumes).toHaveLength(1)
-            expect(volumes[0].lastTriangleId).toBe(11)
-            for (const xyzPos of testPositionArrayReduces) {
-                expect(vertices).toContain(`<vertex x="${xyzPos[0]}" y="${xyzPos[1]}" z="${xyzPos[2]}"/>`)
-            }
-        })
+            let vertexToNewVertexIndex: Map<string, number>
+            let colorToExtruder: Map<string, number>
 
-        it("should add children to data collection", () => {
-            const childMesh = new Mesh()
-            const childPositionArray = [0, 0, 2, 2, 0, 2, 0, 2, 2, 0, 0, 4]
-            const childGeometryIndexArray = [0, 1, 2, 0, 1, 3, 1, 2, 3, 2, 0, 3]
-            childMesh.geometry.setAttribute("position", new Float32BufferAttribute(childPositionArray, 3))
-            childMesh.geometry.setIndex(new Uint16BufferAttribute(childGeometryIndexArray, 1))
-            childMesh.material = new MeshBasicMaterial({ color: 0xc0_ff_ee })
-            testMesh.material = new ShaderMaterial()
-            testMesh.children = [childMesh]
-            testMesh.matrix.makeScale(2, 2, 2)
-            parentMatrix = parentMatrix.makeTranslation(1, 1, 1)
-            extractChildMeshData(testMesh, vertices, triangles, vertexToNewVertexIndex, volumeCount, colorToExtruder, volumes, parentMatrix)
+            let volumeCount: number
 
-            expect(vertices).toHaveLength(9)
-            expect(triangles).toHaveLength(16)
-            expect(vertexToNewVertexIndex.size).toBe(9)
-            expect(volumeCount).toBe(1) // TODO: verify this number
-            expect(colorToExtruder.size).toBe(2)
-            expect(colorToExtruder.keys()).toContain("c0ffee")
-            expect(colorToExtruder.keys()).toContain("ffffff")
-            expect(volumes).toHaveLength(2)
-            expect(volumes[0].lastTriangleId).toBe(3)
-            expect(volumes[1].lastTriangleId).toBe(15)
-            expect(volumes[1].firstTriangleId).toBe(4)
+            let parentMatrix: Matrix4
+
+            const testPositionArrayChildAndMatrix = [
+                [1, 1, 1],
+                [1, 1, 9],
+                [5, 5, 5]
+            ]
+
+            beforeEach(() => {
+                vertexToNewVertexIndex = new Map()
+                colorToExtruder = new Map()
+
+                volumeCount = 1
+
+                parentMatrix = new Matrix4()
+            })
+
+            it("should not return if mesh not visible", () => {
+                testMesh.visible = false
+                extractChildMeshData(
+                    testMesh,
+                    vertices,
+                    triangles,
+                    vertexToNewVertexIndex,
+                    volumeCount,
+                    colorToExtruder,
+                    volumes,
+                    parentMatrix
+                )
+
+                expect(vertices).toHaveLength(0)
+                expect(triangles).toHaveLength(0)
+                expect(vertexToNewVertexIndex.size).toBe(0)
+                expect(colorToExtruder.size).toBe(0)
+                expect(volumes).toHaveLength(0)
+            })
+
+            it("should add entries to data collection", () => {
+                extractChildMeshData(
+                    testMesh,
+                    vertices,
+                    triangles,
+                    vertexToNewVertexIndex,
+                    volumeCount,
+                    colorToExtruder,
+                    volumes,
+                    parentMatrix
+                )
+
+                expect(vertices).toHaveLength(8)
+                expect(triangles).toHaveLength(12)
+                expect(vertexToNewVertexIndex.size).toBe(8)
+                expect(volumeCount).toBe(1)
+                expect(colorToExtruder.size).toBe(1)
+                expect(volumes).toHaveLength(1)
+                expect(volumes[0].lastTriangleId).toBe(11)
+                for (const xyzPos of testPositionArrayReduced) {
+                    expect(vertices).toContain(`<vertex x="${xyzPos[0]}" y="${xyzPos[1]}" z="${xyzPos[2]}"/>`)
+                }
+            })
+
+            it("should add children to data collection", () => {
+                testMesh.children = [anotherTestMesh]
+                testMesh.matrix.makeScale(2, 2, 2)
+                parentMatrix = parentMatrix.makeTranslation(1, 1, 1)
+
+                extractChildMeshData(
+                    testMesh,
+                    vertices,
+                    triangles,
+                    vertexToNewVertexIndex,
+                    volumeCount,
+                    colorToExtruder,
+                    volumes,
+                    parentMatrix
+                )
+
+                expect(vertices).toHaveLength(9)
+                expect(triangles).toHaveLength(16)
+                expect(vertexToNewVertexIndex.size).toBe(9)
+                expect(volumeCount).toBe(1) // TODO: verify this number
+                expect(colorToExtruder.size).toBe(2)
+                expect(colorToExtruder.keys()).toContain("c0ffee")
+                expect(colorToExtruder.keys()).toContain("ffffff")
+                expect(volumes).toHaveLength(2)
+                expect(volumes[0].lastTriangleId).toBe(3)
+                expect(volumes[1].lastTriangleId).toBe(15)
+                expect(volumes[1].firstTriangleId).toBe(4)
+                for (const xyzPos of testPositionArrayChildAndMatrix) {
+                    expect(vertices).toContain(`<vertex x="${xyzPos[0]}" y="${xyzPos[1]}" z="${xyzPos[2]}"/>`)
+                }
+            })
         })
     })
 
