@@ -1,4 +1,4 @@
-import { CodeMapNode, Node, CcState, NodeMetricData, LayoutAlgorithm } from "../../../codeCharta.model"
+import { CcState, CodeMapNode, LayoutAlgorithm, Node, NodeMetricData } from "../../../codeCharta.model"
 import BoundingBox from "./boundingBox"
 import VerticalStreet from "./verticalStreet"
 import HorizontalStreet from "./horizontalStreet"
@@ -6,18 +6,16 @@ import House from "./house"
 import TreeMap from "./treeMap"
 import { Vector2 } from "three"
 import { StreetOrientation } from "./street"
-import { getMapResolutionScaleFactor, isPathBlacklisted, isLeaf } from "../../codeMapHelper"
+import { getMapResolutionScaleFactor, isLeaf, isPathBlacklisted } from "../../codeMapHelper"
 import { StreetViewHelper } from "./streetViewHelper"
 import SquarifiedTreeMap from "./squarifiedTreeMap"
 import { treeMapSize } from "../treeMapLayout/treeMapHelper"
 
 const MARGIN_SCALING_FACTOR = 0.02
-const HEIGHT_SCALING_FACTOR = 0.1
 export class StreetLayoutGenerator {
     static createStreetLayoutNodes(map: CodeMapNode, state: CcState, metricData: NodeMetricData[], isDeltaState: boolean): Node[] {
         const mapSizeResolutionScaling = getMapResolutionScaleFactor(state.files)
         const maxHeight = metricData.find(x => x.name === state.dynamicSettings.heightMetric).maxValue * mapSizeResolutionScaling
-        const heightScale = ((treeMapSize * 2) / maxHeight) * HEIGHT_SCALING_FACTOR
 
         const metricName = state.dynamicSettings.areaMetric
         const mergedMap = StreetViewHelper.mergeDirectories(map, metricName)
@@ -29,7 +27,13 @@ export class StreetLayoutGenerator {
         const layoutNodes = rootStreet.layout(margin, new Vector2(0, 0))
 
         return layoutNodes.map(streetLayoutNode => {
-            return StreetViewHelper.buildNodeFrom(streetLayoutNode as CodeMapNode, heightScale, maxHeight, state, isDeltaState)
+            return StreetViewHelper.buildNodeFrom(
+                streetLayoutNode as CodeMapNode,
+                this.calculateHeightScale(map, treeMapSize, maxHeight),
+                maxHeight,
+                state,
+                isDeltaState
+            )
         })
     }
 
@@ -90,5 +94,18 @@ export class StreetLayoutGenerator {
             totalFileNodes += isLeaf(child) ? 1 : StreetLayoutGenerator.countFileDescendants(child)
         }
         return totalFileNodes
+    }
+
+    private static calculateHeightScale(map: CodeMapNode, treeMapSize: number, maxHeight: number): number {
+        // Constants to control the curve and scaling
+        const linearCoefficient = 0.0001
+        const rootCoefficient = 0.03
+
+        // Calculate linear and square root components
+        const linearComponent = linearCoefficient * map.attributes.unary
+        const rootComponent = Math.sqrt(map.attributes.unary) * rootCoefficient
+
+        // Combine both components for the height scale calculation
+        return ((treeMapSize * 2) / maxHeight) * (linearComponent + rootComponent)
     }
 }
