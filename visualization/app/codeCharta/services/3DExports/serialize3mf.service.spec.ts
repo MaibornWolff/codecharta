@@ -60,8 +60,9 @@ describe("serialize3mf service", () => {
         let volumes: Volume[]
 
         let testMesh: Mesh
-        const side1 = [0, 0, 0, 2, 0, 0, 2, 2, 0, 0, 0, 0, 0, 2, 0, 2, 2, 0]
-        const side2 = [0, 0, 0, 2, 0, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 2, 0, 2]
+        //                     |        |        |        |        |
+        const side1 = [0, 0, 0, 2, 0, 0, 2, 2, 0, 0, 0, 0, 2, 2, 0, 0, 2, 0]
+        const side2 = [0, 0, 0, 2, 0, 0, 0, 0, 2, 2, 0, 2, 2, 0, 0, 0, 0, 2]
         const side3 = [2, 0, 0, 2, 2, 0, 2, 0, 2, 2, 2, 0, 2, 2, 2, 2, 0, 2]
         const side4 = [2, 2, 0, 2, 2, 2, 0, 2, 0, 0, 2, 2, 2, 2, 2, 0, 2, 0]
         const side5 = [0, 2, 2, 0, 0, 2, 0, 2, 0, 0, 0, 0, 0, 2, 0, 0, 0, 2]
@@ -70,6 +71,7 @@ describe("serialize3mf service", () => {
         let anotherTestMesh: Mesh
         const anotherTestMeshPositionArray = [0, 0, 2, 2, 0, 2, 0, 2, 2, 0, 0, 4]
         const anotherTestMeshGeometryIndexArray = [0, 1, 2, 0, 1, 3, 1, 2, 3, 2, 0, 3]
+        let rootMesh: Mesh
 
         const testPositionArrayReduced = [
             [0, 0, 0],
@@ -95,15 +97,48 @@ describe("serialize3mf service", () => {
             anotherTestMesh.geometry.setAttribute("position", new Float32BufferAttribute(anotherTestMeshPositionArray, 3))
             anotherTestMesh.geometry.setIndex(new Uint16BufferAttribute(anotherTestMeshGeometryIndexArray, 1))
             anotherTestMesh.material = new MeshBasicMaterial({ color: 0xc0_ff_ee })
+
+            rootMesh = new Mesh()
+            rootMesh.children = [testMesh, anotherTestMesh]
+        })
+
+        it("serialize3mf test run on model data", async () => {
+            const xmlParser = new XMLParser({ removeNSPrefix: false, ignoreAttributes: false, parseAttributeValue: true })
+
+            const result = await serialize3mf(rootMesh)
+
+            // Debug export, write fake model data, to slice it
+            // writeFileSync(resolve(__dirname, "../../resources/fakeData.3mf"), new Uint8Array(result as unknown as ArrayBufferLike))
+
+            const unzipOutput = unzipSync(new Uint8Array(result as unknown as ArrayBufferLike))
+            const xmlData3D = xmlParser.parse(strFromU8(unzipOutput["3D/3dmodel.model"]))
+            const xmlDataMeta = xmlParser.parse(strFromU8(unzipOutput["Metadata/Slic3r_PE_model.config"]))
+            const stringDataRels = strFromU8(unzipOutput["_rels/.rels"])
+            const stringDataContentTypes = strFromU8(unzipOutput["[Content_Types].xml"])
+
+            expect(XMLValidator.validate(stringDataRels)).toBe(true)
+            expect(XMLValidator.validate(stringDataContentTypes)).toBe(true)
+
+            let volumeIDcheck = 0
+            for (const currentVolume of xmlDataMeta["config"]["object"]["volume"]) {
+                expect(currentVolume["@_firstid"] <= currentVolume["@_lastid"]).toBeTruthy()
+                expect(currentVolume["@_firstid"]).toBe(volumeIDcheck)
+                volumeIDcheck = currentVolume["@_lastid"] + 1
+            }
+
+            let maxTriangleID = 0
+            for (const triangle of xmlData3D["model"]["resources"]["object"]["mesh"]["triangles"]["triangle"]) {
+                maxTriangleID = Math.max(triangle["@_v1"], triangle["@_v2"], triangle["@_v3"], maxTriangleID)
+            }
+            expect(xmlData3D["model"]["resources"]["object"]["mesh"]["triangles"]["triangle"]).toHaveLength(16)
+            expect(xmlData3D["model"]["resources"]["object"]["mesh"]["vertices"]["vertex"]).toHaveLength(maxTriangleID + 1)
+            expect(xmlData3D["model"]["resources"]["object"]["mesh"]["vertices"]["vertex"]).toHaveLength(9)
         })
 
         describe("extractMeshData", () => {
             const { extractMeshData } = exportedForTesting
 
             it("should return correct triplet", () => {
-                const rootMesh = new Mesh()
-                rootMesh.children = [testMesh, anotherTestMesh]
-
                 const { vertices, triangles, volumes } = extractMeshData(rootMesh)
 
                 expect(vertices).toHaveLength(9)
