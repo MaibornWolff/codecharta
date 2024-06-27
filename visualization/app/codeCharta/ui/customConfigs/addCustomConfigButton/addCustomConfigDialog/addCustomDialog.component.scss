@@ -1,19 +1,6 @@
-@use "../../../../../material/theme";
+@use "variables";
 
 .cc-add-custom-config-dialog .mat-mdc-dialog-container {
-    padding: 0;
-    width: 500px;
-    overflow: hidden;
-
-    mat-toolbar {
-        &.header {
-            background-color: theme.$cc-primary-color;
-            h2 {
-                color: white;
-            }
-        }
-    }
-
     .dialog-content {
         mat-form-field {
             width: 100%;
@@ -62,11 +49,8 @@
             }
 
             &.add-custom-config-button {
-                color: theme.$cc-primary-color;
+                color: variables.$cc-primary-color;
                 background-color: rgba(138, 132, 132, 0.08);
-                position: absolute;
-                right: 16px;
-                bottom: 0;
             }
 
             &.add-custom-config-button[disabled] {
