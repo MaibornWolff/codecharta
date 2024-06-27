@@ -31,7 +31,10 @@
             "customWebpackConfig": {
               "path": "conf/webpack.config.js"
             },
-            "scripts": []
+            "scripts": [],
+            "stylePreprocessorOptions": {
+              "includePaths": ["app/material"]
+            }
           },
           "configurations": {
             "production": {
