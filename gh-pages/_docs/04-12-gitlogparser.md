@@ -3,20 +3,12 @@ permalink: /docs/git-log-parser
 title: "Git Log Parser"
 ---
 
-# GitLogParser
+**Category**: Parser (takes in git-log file and generates cc.json)
 
-Generates visualisation data from git repository logs and repository file list.
+This parser generates visualisation data from git repository logs and repository file list.
+It specializes in tracking file changes across different file-versions on different feature-branches and then the merged main. Furthermore, special care is taken not to display non-existent files that might show up in normal Git histories due to renaming actions on feature branches. It is to note, that file deletions that get reverted later on are ignored by this parser.
 
-This parser specializes in tracking file changes across different file-versions on different feature-branches and then
-the merged main.
-Furthermore, special care is taken not to display non-existent files that might show up in normal Git histories due to
-renaming actions on feature branches.
-
-Things to note:
-
-- File deletions that get reverted later on are ignored by this parser.
-
-It supports the following metrics per file:
+## Supported Metrics
 
 | Metric                          | Description                                                         |
 | ------------------------------- | ------------------------------------------------------------------- |
@@ -37,6 +29,38 @@ Additionally, the following Edge Metrics are calculated:
 | `temporal_coupling` | The degree of temporal coupling between two files (>=35%) |
 
 The names of authors are saved when the --add-author flag is set.
+
+## Usage and Parameters
+
+As this parser can generate metrics based on a given git-log file or given a git repository (where the git-log is then generated on the fly), some parameters are only available in the log-scan mode or the repo-scan mode.
+
+| Parameters                          | Description                                                                         |
+| ----------------------------------- | ----------------------------------------------------------------------------------- |
+| `log-scan`                          | use log-scan mode - generates cc.json from a given git-log file                     |
+| `repo-scan`                         | use repo-scan mode - generates cc.json from an automatically generated git-log file |
+| `--add-author`                      | add an array of authors to every file                                               |
+| `--git-log=FILE`                    | git-log file to parse (only available for log-scan mode!)                           |
+| `-h, --help`                        | displays help and exits                                                             |
+| `-nc, --not-compressed`             | save uncompressed output File                                                       |
+| `-o, --outputFile=<outputFilePath>` | output File (or empty for stdout)                                                   |
+| `--repo-files=FILE `                | list of all file names in current git project (only available for log-scan mode!)   |
+| `--repo-path=DIRECTORY`             | root directory of the repository (only available for repo-scan mode!)               |
+| `--silent`                          | suppress command line output during process                                         |
+
+```
+Usage:
+ccsh gitlogparser [-h] [COMMAND]
+
+Usage for log-scan mode:
+ccsh gitlogparser log-scan [-h] [--add-author] [-nc] [--silent]
+                                --git-log=FILE [-o=<outputFilePath>]
+                                --repo-files=FILE
+
+Usage for repo-scan mode:
+ccsh gitlogparser repo-scan [-h] [--add-author] [-nc] [--silent]
+                            [-o=<outputFilePath>] [--repo-path=DIRECTORY]
+
+```
 
 ## Scan a local git repository on your machine
 
@@ -98,8 +122,11 @@ Please make sure to execute this command in the root folder of your repository.
 
 #### Executing the log-scan subcommand
 
-- `cd <my_git_project>`
-- `git log --numstat --raw --topo-order --reverse -m > git.log` (or `anongit > git.log`)
-- `git ls-files > file-name-list.txt`
-- `ccsh gitlogparser log-scan --git-log git.log --repo-files file-name-list.txt -o output.cc.json.gz`
-- load `output.cc.json.gz` in visualization
+```
+cd <my_git_project>
+git log --numstat --raw --topo-order --reverse -m > git.log (or anongit > git.log)
+git ls-files > file-name-list.txt
+ccsh gitlogparser log-scan --git-log git.log --repo-files file-name-list.txt -o output.cc.json.gz
+```
+
+load `output.cc.json.gz` in visualization

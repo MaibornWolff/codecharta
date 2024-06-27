@@ -3,9 +3,11 @@ permalink: /docs/svn-log-parser
 title: "SVN Log Parser"
 ---
 
-# SVNLogParser - Status: stable/deprecated for git
+**Category**: Parser (takes in svn logs and outputs cc.json)
 
 The SVN-Log-Parser generates visualisation data from repository SVN logs. It supports the following metrics per file:
+
+## Supported Metrics
 
 | Metric                          | Description                                                         |
 | ------------------------------- | ------------------------------------------------------------------- |
@@ -20,7 +22,7 @@ The SVN-Log-Parser generates visualisation data from repository SVN logs. It sup
 | `highly_coupled_files`          | Files often modified together with this file (35% overlap or more). |
 | `median_coupled_files`          | The median number of files modified in tandem with this file.       |
 
-Additionally the following Edge Metrics are calculated:
+Additionally, the following Edge Metrics are calculated:
 
 | Metric              | Description                                               |
 | ------------------- | --------------------------------------------------------- |
@@ -28,7 +30,7 @@ Additionally the following Edge Metrics are calculated:
 
 The names of authors are saved when the --add-author flag is set.
 
-## Usage
+## Usage and Parameters
 
 ### Creating the repository log for metric generation
 
@@ -51,7 +53,8 @@ The names of authors are saved when the --add-author flag is set.
 Standard usage:
 
 ```
-ccsh svnlogparser <log_file>
+Usage: ccsh svnlogparser [-h] [--add-author] [-nc] [--silent] [-o=<outputFile>]
+                         FILE
 ```
 
 The result is written as JSON to standard out or into an output file (if specified by `-o` option).
@@ -59,7 +62,7 @@ The result is written as JSON to standard out or into an output file (if specifi
 If a project is piped into the [SourceCodeParser]({{site.baseurl}}{% link _docs/04-02-sourcecodeparser.md %}), the results and the piped project are merged.
 The resulting project has the project name specified for the SVNLogParser.
 
-### Example using SVN
+## Examples
 
 ```bash
 # navigate to the project folder
@@ -67,7 +70,5 @@ The resulting project has the project name specified for the SVNLogParser.
 # create svn log file
 - svn log --verbose > svn.log
 # create cc.json file
-- ./ccsh svnlogparser svn.log -o output.cc.json
+- ccsh svnlogparser svn.log -o output.cc.json
 ```
-
-- Then load `output.cc.json` in visualization

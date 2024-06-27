@@ -3,15 +3,21 @@ permalink: /docs/raw-text-parser
 title: "Raw Text Parser"
 ---
 
+**Category**: Parser (takes in source code and outputs cc.json)
+
 This parser analyzes code regardless of the programming language used to generate the metrics described below.
 
-## Metrics
+## Supported Languages
+
+- any (only considers the raw text)
+
+## Supported Metrics
 
 - Indentation Level: The number of lines of code of a file, with a certain indentation level or higher.
 
 ## Usage and Parameters
 
-| Parameter                                 | description                                                                                          |
+| Parameter                                 | Description                                                                                          |
 | ----------------------------------------- | ---------------------------------------------------------------------------------------------------- |
 | `FILE or FOLDER`                          | file/project to parseProject                                                                         |
 | `-e, --exclude=<exclude>`                 | comma-separated list of regex patterns to exclude files/folders                                      |

@@ -3,9 +3,11 @@ permalink: /docs/source-code-parser
 title: "Source Code Parser"
 ---
 
+**Category**: Parser (takes in source code and outputs cc.json)
+
 The Source-Code-Parser is parser to generate code metrics from a source code file or a project folder. It generates either a cc.json or a csv file.
 
-## Supported languages
+## Supported Languages
 
 - Java
 
@@ -28,7 +30,7 @@ The Source-Code-Parser is parser to generate code metrics from a source code fil
 
 ## Usage and Parameters
 
-| Parameter                        | description                                                                            |
+| Parameter                        | Description                                                                            |
 | -------------------------------- | -------------------------------------------------------------------------------------- |
 | `FOLDER or FILE`                 | project folder or code file                                                            |
 | `--default-excludes`             | exclude build, target, dist and out folders as well as files/folders starting with '.' |
@@ -46,30 +48,24 @@ Usage: ccsh sourcecodeparser [-h] [--default-excludes] [-nc] [-ni] [--verbose]
                              [-e=<exclude>]... FOLDER or FILE
 ```
 
-## Run
+## Examples
 
 The SourceCodeParser can analyze either a single file or a project folder; here are some sample commands:
 
 ```
-./ccsh sourcecodeparser src/test/resources -o foo.cc.json
+ccsh sourcecodeparser src/test/resources -o foo.cc.json
 ```
 
-or
-
 ```
-./ccsh sourcecodeparser src/test/resources/foo.java -o foo.cc.json
+ccsh sourcecodeparser src/test/resources/foo.java -o foo.cc.json
 ```
 
-or
-
 ```
-./ccsh sourcecodeparser src/test/resources -o foo.cc.json --default-excludes -e=something -e=/.*\.foo -f=table
+ccsh sourcecodeparser src/test/resources -o foo.cc.json --default-excludes -e=something -e=/.*\.foo -f=table
 ```
 
-or
-
 ```
-./ccsh sourcecodeparser src/test/resources -o foo.cc.json -f=table -i
+ccsh sourcecodeparser src/test/resources -o foo.cc.json -f=table -i
 ```
 
 If a project is piped into the SourceCodeParser, the results and the piped project are merged.
