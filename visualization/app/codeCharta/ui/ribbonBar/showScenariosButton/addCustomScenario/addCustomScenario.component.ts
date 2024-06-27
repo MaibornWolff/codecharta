@@ -1,4 +1,4 @@
-import { Component, ViewEncapsulation } from "@angular/core"
+import { Component } from "@angular/core"
 import { UntypedFormControl } from "@angular/forms"
 import { ScenarioHelper, ScenarioMetricProperty } from "../scenarioHelper"
 import { ThreeCameraService } from "../../../codeMap/threeViewer/threeCamera.service"
@@ -10,8 +10,7 @@ import { CcState } from "../../../../codeCharta.model"
 
 @Component({
     templateUrl: "./addCustomScenario.component.html",
-    styleUrls: ["./addCustomScenario.component.scss"],
-    encapsulation: ViewEncapsulation.None
+    styleUrls: ["./addCustomScenario.component.scss"]
 })
 export class AddCustomScenarioComponent {
     scenarioName = new UntypedFormControl("", [customScenarioNameValidator()])

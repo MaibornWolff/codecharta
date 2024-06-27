@@ -1,22 +1,31 @@
-.cc-add-custom-scenario .mat-mdc-dialog-container {
-    width: 50vw;
+@import "variables";
 
-    .cc-add-custom-scenario-content {
-        .cc-add-custon-scenario-toggles {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            mat-slide-toggle {
-                display: block;
-            }
-        }
-        .cc-add-custom-scenario-name-field {
-            width: 75%;
-        }
+// TODO: Apply this globally (See issue: https://github.com/MaibornWolff/codecharta/issues/3654)
+mat-dialog-actions {
+    $button-background-color: #f6f5f5;
 
-        .cc-add-custom-scenario-buttons {
-            display: flex;
-            justify-content: flex-end;
+    --mdc-filled-button-label-text-color: #{$cc-primary-color};
+    --mdc-filled-button-container-color: #{$button-background-color};
+    --mdc-filled-button-disabled-container-color: #{$button-background-color};
+}
+
+// TODO: Apply this globally (See issue: https://github.com/MaibornWolff/codecharta/issues/3654)
+mat-dialog-content {
+    mat-form-field {
+        width: 100%;
+    }
+
+    .cc-add-custon-scenario-toggles {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        mat-slide-toggle {
+            display: block;
         }
+    }
+
+    .cc-add-custom-scenario-buttons {
+        display: flex;
+        justify-content: flex-end;
     }
 }
