@@ -1,4 +1,4 @@
-@use "../../../../../material/theme";
+@use "variables";
 
 cc-metric-color-range-slider {
     .cc-range-slider-container {
@@ -47,7 +47,7 @@ cc-metric-color-range-slider {
                 position: absolute;
                 top: 20px;
                 border-radius: 100%;
-                border: 7px solid theme.$cc-primary-color;
+                border: 7px solid variables.$cc-primary-color;
             }
         }
     }

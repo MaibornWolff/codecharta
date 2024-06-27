@@ -1,4 +1,4 @@
-@use "../../../../material/theme";
+@use "variables";
 
 cc-search-bar {
     display: inline-block;
@@ -21,8 +21,8 @@ cc-search-bar {
             height: 24px;
 
             &:focus {
-                border-color: theme.$cc-emphasized-color;
-                box-shadow: 0 1px 0 0 theme.$cc-emphasized-color;
+                border-color: variables.$cc-emphasized-color;
+                box-shadow: 0 1px 0 0 variables.$cc-emphasized-color;
             }
         }
 

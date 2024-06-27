@@ -1,4 +1,4 @@
-@use "../../../../../material/theme";
+@use "variables";
 
 .mat-mdc-menu-panel.cc-scenarios-menu {
     width: 420px;
@@ -38,7 +38,7 @@
             align-items: center;
 
             &.cc-add {
-                background-color: theme.$cc-primary-color;
+                background-color: variables.$cc-primary-color;
             }
 
             &.cc-remove {

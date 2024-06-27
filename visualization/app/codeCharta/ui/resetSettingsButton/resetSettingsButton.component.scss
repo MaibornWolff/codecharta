@@ -1,8 +1,8 @@
-@use "../../../material/theme";
+@use "variables";
 
 cc-reset-settings-button {
     button {
-        color: theme.$cc-primary-color;
+        color: variables.$cc-primary-color;
         background: none;
         align-items: center;
         display: flex;

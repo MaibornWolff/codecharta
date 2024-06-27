@@ -1,4 +1,4 @@
-@use "../../../../material/theme";
+@use "variables";
 
 cc-download-custom-configs-button {
     button {
@@ -6,7 +6,7 @@ cc-download-custom-configs-button {
         height: 48px;
         width: 100%;
         margin: 0;
-        background-color: theme.$cc-primary-color;
+        background-color: variables.$cc-primary-color;
         vertical-align: middle;
 
         &:disabled {

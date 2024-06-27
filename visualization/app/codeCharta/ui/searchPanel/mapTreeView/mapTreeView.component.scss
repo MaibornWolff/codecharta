@@ -1,4 +1,4 @@
-@use "../../../../material/theme";
+@use "variables";
 
 cc-map-tree-view {
     .tree-element-0 {
@@ -89,6 +89,6 @@ cc-map-tree-view {
     }
 
     .tree-search-result {
-        background-color: theme.$cc-accent-color;
+        background-color: variables.$cc-accent-color;
     }
 }
