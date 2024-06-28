@@ -10,7 +10,7 @@ export enum StreetOrientation {
 
 export default abstract class Street extends BoundingBox {
     streetRect: Rectangle | undefined
-    protected spacer = 2
+    protected spacer = 1
     private maxStreetThickness = 8
     private rootStreetThickness = 20
     protected abstract depth: number
