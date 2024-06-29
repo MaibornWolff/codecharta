@@ -2,7 +2,7 @@ import BoundingBox from "./boundingBox"
 import Rectangle from "./rectangle"
 import HorizontalStreet, { HorizontalOrientation } from "./horizontalStreet"
 import Street from "./street"
-import { CodeMapNode } from "../../../codeCharta.model"
+import { CodeMapNode, NodeType } from "../../../codeCharta.model"
 import { StreetViewHelper } from "./streetViewHelper"
 import { Vector2 } from "three"
 
@@ -12,11 +12,12 @@ export enum VerticalOrientation {
 }
 
 export default class VerticalStreet extends Street {
-    private children: BoundingBox[] = []
+    protected children: BoundingBox[] = []
     protected leftRow: BoundingBox[] = []
     protected rightRow: BoundingBox[] = []
     orientation: VerticalOrientation
     protected depth: number
+    private _origin: Vector2
 
     constructor(node: CodeMapNode, children: BoundingBox[], depth: number, orientation: VerticalOrientation = VerticalOrientation.UP) {
         super(node)
@@ -80,7 +81,7 @@ export default class VerticalStreet extends Street {
             value: metricValue,
             rect: this.streetRect,
             zOffset: 0
-        } as CodeMapNode
+        }
     }
 
     private layoutRightRow(origin: Vector2, maxLeftWidth: number, margin: number): CodeMapNode[] {
@@ -121,12 +122,28 @@ export default class VerticalStreet extends Street {
         return sum
     }
 
-    protected splitChildrenToRows(children: BoundingBox[]) {
+    protected sortChildrenByType(children: BoundingBox[]): void {
+        children.sort((a, b) => {
+            // Unterscheiden zwischen File und Folder
+            if (a.node.type === b.node.type) {
+                return 0 // Keine Änderung in der Reihenfolge, wenn beide Nodes denselben Typ haben
+            }
+            if (a.node.type === NodeType.FILE) {
+                return -1 // a ist ein File, b ist ein Folder, a soll vor b kommen
+            }
+            return 1 // a ist ein Folder, b ist ein File, b soll vor a kommen
+        })
+    }
+    protected splitChildrenToRows(children: BoundingBox[]): void {
+        // Zuerst die Kinder nach Typ sortieren
+        this.sortChildrenByType(children)
+
         const totalLength = this.getLength(children)
         let sum = 0
 
         for (const child of children) {
             if (sum < totalLength / 2) {
+                // Handhabung, falls spezifische Anweisungen basierend auf dem Typ notwendig sind
                 if (child instanceof HorizontalStreet) {
                     child.orientation = HorizontalOrientation.LEFT
                 }
@@ -148,6 +165,42 @@ export default class VerticalStreet extends Street {
 
     private getMaxWidth(boxes: BoundingBox[]): number {
         return boxes.reduce((max, n) => Math.max(max, n.width), Number.MIN_VALUE)
+    }
+
+    private getMaxEffectiveWidth(boxes: BoundingBox[]): number {
+        if (boxes.length === 0) {
+            return 0
+        }
+
+        //let minX = Number.POSITIVE_INFINITY;
+        //let maxX = Number.NEGATIVE_INFINITY;
+
+        // Find actual min and max X considering position and width
+        /*for (const box of boxes) {
+            minX = Math.min(minX, box.x);
+            maxX = Math.max(maxX, box.x + box.width);
+        }*/
+
+        //return maxX - minX;  // the effective width used
+    }
+
+    private getCorners(
+        origin: Vector2,
+        box: BoundingBox
+    ): {
+        bottomFrontLeft: { x: number; y: number }
+        bottomFrontRight: { x: number; y: number }
+        bottomBackLeft: { x: number; y: number }
+        bottomBackRight: { x: number; y: number }
+    } {
+        this._origin = origin
+
+        return {
+            bottomFrontLeft: { x: origin.x, y: origin.y },
+            bottomFrontRight: { x: origin.x + box.width, y: origin.y },
+            bottomBackLeft: { x: origin.x, y: origin.y + box.width },
+            bottomBackRight: { x: origin.x + box.width, y: origin.y + box.width }
+        }
     }
 
     protected calculateStreetOverhang(streetOrigin: Vector2): number {

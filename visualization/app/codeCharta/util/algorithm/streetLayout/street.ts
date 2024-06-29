@@ -10,8 +10,9 @@ export enum StreetOrientation {
 
 export default abstract class Street extends BoundingBox {
     streetRect: Rectangle | undefined
-    protected spacer = 2
-    private maxStreetThickness = 10
+    protected spacer = 1
+    private maxStreetThickness = 8
+    private rootStreetThickness = 20
     protected abstract depth: number
 
     protected abstract layoutStreet(origin: Vector2, maxNodeSideLength: number): CodeMapNode
@@ -20,6 +21,9 @@ export default abstract class Street extends BoundingBox {
     protected abstract rearrangeRows(): void
 
     protected getStreetThickness(): number {
-        return this.maxStreetThickness / (this.depth + 1)
+        const pathParts = this.node.path.split("/")
+        const isDirectChildOfRoot = this.node.path.startsWith("/root/") && pathParts.length === 3 && pathParts[2] !== ""
+
+        return this.node.path === "/root" || isDirectChildOfRoot ? this.rootStreetThickness : this.maxStreetThickness / (this.depth + 1)
     }
 }
