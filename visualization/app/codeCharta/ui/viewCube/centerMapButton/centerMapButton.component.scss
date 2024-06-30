@@ -1,4 +1,4 @@
-@use "../../../../material/theme";
+@use "variables";
 
 cc-center-map-button {
     button {
@@ -9,7 +9,7 @@ cc-center-map-button {
         font-size: 28px;
         border-radius: 100%;
         color: white;
-        background-color: theme.$cc-primary-color;
+        background-color: variables.$cc-primary-color;
 
         i {
             margin-top: 2px;

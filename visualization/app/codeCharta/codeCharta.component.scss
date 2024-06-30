@@ -1,4 +1,4 @@
-@use "../material/theme";
+@use "variables";
 @import "../mixins.scss";
 
 cc-code-charta {
@@ -95,7 +95,7 @@ cc-code-charta {
         }
 
         &.current:hover {
-            background-color: theme.$cc-emphasized-color !important;
+            background-color: variables.$cc-emphasized-color !important;
         }
     }
 }

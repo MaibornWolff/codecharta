@@ -1,4 +1,4 @@
-@use "app/material/theme";
+@use "variables";
 
 cc-custom-config-note-dialog {
     .custom-config-note-dialog-container {
@@ -19,12 +19,12 @@ cc-custom-config-note-dialog {
         button {
             padding: 12px;
             margin: 0 0 0 10px;
-            color: theme.$cc-primary-color;
+            color: variables.$cc-primary-color;
             background-color: rgba(138, 132, 132, 0.08);
 
             &:hover {
                 background-color: rgba(0, 0, 0, 0.05);
-                color: theme.$cc-primary-color;
+                color: variables.$cc-primary-color;
             }
         }
     }

@@ -1,4 +1,4 @@
-@use "../../../../material/theme";
+@use "variables";
 
 cc-global-configuration-button button {
     margin: 0;
@@ -9,14 +9,11 @@ cc-global-configuration-button button {
     }
 
     &:hover cc-action-icon {
-        background-color: theme.$cc-emphasized-color;
+        background-color: variables.$cc-emphasized-color;
     }
 }
 
 .cc-global-configuration-dialog .mat-mdc-dialog-container {
-    width: 36vw;
-    min-width: 600px;
-
     .cc-global-configuration-dialog-content {
         padding: 0 16px;
         display: flex;

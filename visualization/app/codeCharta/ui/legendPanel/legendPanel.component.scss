@@ -1,4 +1,4 @@
-@use "../../../material/theme";
+@use "variables";
 
 $fixedHeight: 35;
 cc-legend-panel {
@@ -10,10 +10,10 @@ cc-legend-panel {
         right: -35px;
         color: white;
         user-select: none;
-        background-color: theme.$cc-primary-color;
+        background-color: variables.$cc-primary-color;
 
         &:hover {
-            background-color: theme.$cc-emphasized-color;
+            background-color: variables.$cc-emphasized-color;
         }
 
         &.isAttributeSideBarVisible {
