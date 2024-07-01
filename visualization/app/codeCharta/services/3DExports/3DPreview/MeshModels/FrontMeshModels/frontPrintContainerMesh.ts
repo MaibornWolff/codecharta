@@ -69,7 +69,7 @@ export class FrontPrintContainerMesh extends GeneralMesh implements GeneralSizeC
         await frontTextMesh.updateText(geometryOptions)
     }
 
-    async changeSize(geometryOptions: GeometryOptions, oldWidth: number): Promise<void> {
+    changeSize(geometryOptions: GeometryOptions, oldWidth: number): void {
         this.position.y -= (geometryOptions.width - oldWidth) / 2
         for (const mesh of this.childrenMeshes.values()) {
             if (mesh instanceof FrontLogo && mesh.isGeneralSizeChangeMesh()) {

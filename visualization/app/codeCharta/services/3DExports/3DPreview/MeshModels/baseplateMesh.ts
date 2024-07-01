@@ -33,7 +33,7 @@ export class BaseplateMesh extends GeneralMesh implements GeneralSizeChangeMesh 
         })
     }
 
-    async changeSize(geometryOptions: GeometryOptions): Promise<void> {
+    changeSize(geometryOptions: GeometryOptions): void {
         this.boundingBoxCalculated = false
         this.createBaseplateGeometryStrategy.create(geometryOptions).then(geometry => {
             this.geometry = geometry

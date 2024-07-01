@@ -3,7 +3,7 @@ import { GeometryOptions } from "../preview3DPrintMesh"
 import { ColorChangeStrategy } from "../ColorChangeStrategies/colorChangeStrategy"
 
 export interface GeneralSizeChangeMesh {
-    changeSize(geometryOptions: GeometryOptions, oldWidth: number): Promise<void>
+    changeSize(geometryOptions: GeometryOptions, oldWidth: number): void
 }
 export abstract class GeneralMesh extends Mesh {
     boundingBoxCalculated: boolean

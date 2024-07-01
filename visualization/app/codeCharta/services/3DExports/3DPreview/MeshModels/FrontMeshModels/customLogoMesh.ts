@@ -48,7 +48,7 @@ export class CustomLogoMesh extends FrontLogo implements GeneralSizeChangeMesh {
         this.geometry.rotateY(Math.PI)
     }
 
-    async changeSize(geometryOptions: GeometryOptions, oldWidth: number) {
+    changeSize(geometryOptions: GeometryOptions, oldWidth: number): void {
         this.position.x -= (geometryOptions.width - oldWidth) / 2
         return
     }

@@ -41,7 +41,7 @@ export class BackPrintContainerMesh extends GeneralMesh implements GeneralSizeCh
         return this
     }
 
-    async changeSize(geometryOptions: GeometryOptions, oldWidth: number): Promise<void> {
+    changeSize(geometryOptions: GeometryOptions, oldWidth: number): void {
         const scaleFactor = geometryOptions.width / oldWidth
         this.scale.set(this.scale.x * scaleFactor, this.scale.y * scaleFactor, this.scale.z)
         this.traverse(mesh => {
