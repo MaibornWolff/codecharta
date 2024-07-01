@@ -12,7 +12,7 @@ GitHub https://github.com/adamtornhill/code-maat
 
 ## Usage
 
-1. Create VCS Log file from your project, e.x. with Git
+1. Create VCS Log file from your project, e.g. with Git
 
    `git log --pretty=format:'[%h] %an %ad %s' --since=<YYYY/MM/DD> --date=short --numstat > project.log`
 

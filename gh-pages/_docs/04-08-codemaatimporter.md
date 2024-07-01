@@ -29,7 +29,7 @@ Usage: ccsh codemaatimport [-h] [-nc] [-o=<outputFile>] FILE...
 
 ## Example
 
-1. Create VCS Log file from your project, e.x. with Git
+1. Create VCS Log file from your project, e.g. with Git
 
    ````bash
    git log --pretty=format:'[%h] %an %ad %s' --since=<YYYY/MM/DD> --date=short --numstat > project.log ```
