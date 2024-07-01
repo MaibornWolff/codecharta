@@ -3,14 +3,15 @@ import { ColorChangeStrategy } from "../ColorChangeStrategies/colorChangeStrateg
 
 export abstract class CustomVisibilityMesh extends GeneralMesh {
     currentWidth: number
-    manualVisibility: boolean
     visibleBecauseOfColor: boolean
-    readonly minWidth: number
 
-    constructor(name: string, colorChangeStrategy: ColorChangeStrategy, minScale = 1, manualVisibility = true) {
+    constructor(
+        name: string,
+        colorChangeStrategy: ColorChangeStrategy,
+        public minWidth = 1,
+        public manualVisibility = true
+    ) {
         super(name, colorChangeStrategy)
-        this.minWidth = minScale
-        this.manualVisibility = manualVisibility
     }
 
     setManualVisibility(manualVisibility: boolean): void {
