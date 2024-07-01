@@ -1,66 +1,96 @@
 import { TestBed } from "@angular/core/testing"
-import { State } from "@ngrx/store"
+import { State, Store } from "@ngrx/store"
 import { Export3DMapButtonComponent } from "./export3DMapButton.component"
-import { fireEvent, render, screen } from "@testing-library/angular"
+import { render, screen } from "@testing-library/angular"
 import { Export3DMapButtonModule } from "./export3DMapButton.module"
-import { FileDownloader } from "../../util/fileDownloader"
-import { stubDate } from "../../../../mocks/dateMock.helper"
-import { FILE_STATES } from "../../util/dataMocks"
-import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
-
-stubDate(new Date(Date.UTC(2018, 11, 14, 9, 39)))
-const newDate = "2018-12-14_09-39"
-
-const mockFileStates = FILE_STATES
-
-jest.mock("../../state/store/files/files.selector", () => ({
-    filesSelector: () => mockFileStates
-}))
-
-jest.mock("../../state/selectors/accumulatedData/accumulatedData.selector", () => ({
-    accumulatedDataSelector: () => ({
-        unifiedFileMeta: { fileName: "sample" }
-    })
-}))
-
-jest.mock("three/examples/jsm/exporters/STLExporter", () => ({
-    STLExporter: jest.fn(() => ({ parse: jest.fn().mockImplementation(() => null) }))
-}))
+import { MatDialog } from "@angular/material/dialog"
+import { Export3DMapDialogComponent } from "./export3DMapDialog/export3DMapDialog.component"
+import { ErrorDialogComponent } from "../dialogs/errorDialog/errorDialog.component"
+import { setColorMode } from "../../state/store/dynamicSettings/colorMode/colorMode.actions"
+import { ColorMode } from "../../codeCharta.model"
+import { of } from "rxjs"
 
 describe("Export3DMapButtonComponent", () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
             imports: [Export3DMapButtonModule],
             providers: [
-                { provide: ThreeSceneService, useValue: { getMapMesh: () => ({ getThreeMesh: jest.fn() }) } },
-                { provide: State, useValue: { getValue: () => ({}) } }
+                { provide: State, useValue: {} },
+                { provide: Store, useValue: {} }
             ]
         })
     })
 
-    it("should start download on click", async function () {
-        const { fixture } = await render(Export3DMapButtonComponent, { excludeComponentDeclaration: true })
-        // mock download and therefore only verify the Angular binding.
-        // A better approach would be, if the component would only fire an action
-        // and an https://ngrx.io/guide/effects would do the side effect and logic.
-        // Then we could test the logic in the effect without mocking a lot
-        // and the component wouldn't need to know anything about store values
-        const mockedDownload = jest.spyOn(fixture.componentInstance, "downloadStlFile").mockImplementation(() => null)
-
-        const downloadButton = screen.getByRole("button")
-        expect(downloadButton).not.toBe(null)
-
-        fireEvent.click(downloadButton)
-        expect(mockedDownload).toHaveBeenCalledTimes(1)
-    })
-    it("should download STL file with the right file name", async function () {
+    it("should render the button", async function () {
         await render(Export3DMapButtonComponent, { excludeComponentDeclaration: true })
-        const downloadButton = screen.getByRole("button")
+        const exportButton = screen.getByRole("button")
+        expect(exportButton).not.toBe(null)
+    })
 
-        const downloadData = jest.spyOn(FileDownloader, "downloadData").mockImplementation(() => null)
+    it("should open the export dialog when button is clicked with color mode absolute", async function () {
+        const state = { getValue: () => ({ dynamicSettings: { colorMode: "absolute" } }) }
+        const dialog = { open: jest.fn() }
 
-        fireEvent.click(downloadButton)
+        await render(Export3DMapButtonComponent, {
+            excludeComponentDeclaration: true,
+            providers: [
+                { provide: State, useValue: state },
+                { provide: MatDialog, useValue: dialog }
+            ]
+        })
 
-        expect(downloadData).toHaveBeenCalledWith(null, `sample_${newDate}.stl`)
+        const printButton = screen.getByRole("button")
+        printButton.click()
+
+        expect(dialog.open).toHaveBeenCalledTimes(1)
+        expect(dialog.open).toHaveBeenCalledWith(Export3DMapDialogComponent, { panelClass: "cc-export-3D-map-dialog" })
+    })
+
+    it("should open the error dialog when color mode is not absolute", async function () {
+        const state = { getValue: jest.fn(() => ({ dynamicSettings: { colorMode: "relative" } })) }
+        const dialog = { open: jest.fn() }
+
+        const { fixture } = await render(Export3DMapButtonComponent, {
+            excludeComponentDeclaration: true,
+            providers: [
+                { provide: State, useValue: state },
+                { provide: MatDialog, useValue: dialog }
+            ]
+        })
+
+        const errorDialogData = fixture.componentInstance.buildErrorDialog()
+        const mockedBuildErrorDialog = jest.spyOn(fixture.componentInstance, "buildErrorDialog").mockReturnValue(errorDialogData)
+
+        const printButton = screen.getByRole("button")
+        printButton.click()
+
+        expect(mockedBuildErrorDialog).toHaveBeenCalledTimes(1)
+        expect(dialog.open).toHaveBeenCalledTimes(1)
+        expect(dialog.open).toHaveBeenCalledWith(ErrorDialogComponent, { data: errorDialogData })
+    })
+
+    it("should switch to absolute color mode and open the export dialog when user changes color mode directly", async function () {
+        const state = { getValue: () => ({ dynamicSettings: { colorMode: "relative" } }) }
+        const store = { dispatch: jest.fn(), select: jest.fn(() => of(ColorMode.absolute)) } // Mock Store
+        const dialog = { open: jest.fn() }
+
+        const { fixture } = await render(Export3DMapButtonComponent, {
+            excludeComponentDeclaration: true,
+            providers: [
+                { provide: State, useValue: state },
+                { provide: Store, useValue: store },
+                { provide: MatDialog, useValue: dialog }
+            ]
+        })
+
+        const errorDialogData = fixture.componentInstance.buildErrorDialog()
+        dialog.open(ErrorDialogComponent, { data: errorDialogData })
+
+        jest.useFakeTimers()
+        await errorDialogData.resolveErrorData.onResolveErrorClick()
+        jest.runAllTimers()
+
+        expect(store.dispatch).toHaveBeenCalledWith(setColorMode({ value: ColorMode.absolute }))
+        expect(dialog.open).toHaveBeenCalledWith(Export3DMapDialogComponent, { panelClass: "cc-export-3D-map-dialog" })
     })
 })
