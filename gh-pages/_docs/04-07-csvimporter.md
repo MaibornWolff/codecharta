@@ -5,7 +5,7 @@ title: "CSV Importer"
 
 **Category**: Importer (takes in CSV and outputs cc.json)
 
-The CSV importer generates visualisation data from CSV data with header, e.g. from [SourceMonitor](http://www.campwoodsw.com/sourcemonitor.html).
+The CSV importer generates visualisation data from generic CSV data with header. How this CSV was generated does not matter, as long as it meets the following requirements:
 
 _Conventions for csv input:_
 

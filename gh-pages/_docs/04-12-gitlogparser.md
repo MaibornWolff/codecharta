@@ -3,10 +3,9 @@ permalink: /docs/git-log-parser
 title: "Git Log Parser"
 ---
 
-**Category**: Parser (takes in git-log file and generates cc.json)
+**Category**: Parser (takes in git-log file (or git repository) and generates cc.json)
 
-This parser generates visualisation data from git repository logs and repository file list.
-It specializes in tracking file changes across different file-versions on different feature-branches and then the merged main. Furthermore, special care is taken not to display non-existent files that might show up in normal Git histories due to renaming actions on feature branches. It is to note, that file deletions that get reverted later on are ignored by this parser.
+This parser generates visualisation data from a git repository log and a repository files list or direct access to a git repository. It specializes in tracking file changes across different file-versions on different feature-branches and then the merged main. Furthermore, special care is taken not to display non-existent files that might show up in normal Git histories due to renaming actions on feature branches. It is to note, that file deletions that get reverted later on are ignored by this parser.
 
 ## Supported Metrics
 
@@ -64,7 +63,7 @@ ccsh gitlogparser repo-scan [-h] [--add-author] [-nc] [--silent]
 
 ## Scan a local git repository on your machine
 
-### Creating required files on the fly | repo-scan
+### Creating required files on the fly with repo-scan
 
 See `ccsh gitlogparser repo-scan -h` for help. Standard usage:
 
@@ -87,7 +86,7 @@ The resulting project has the project name specified for the GitLogParser.
 - `ccsh gitlogparser repo-scan --repo-path <path_to_my_git_project> -o output.cc.json.gz`
 - load `output.cc.json.gz` in visualization
 
-### Manual creation of required files | log-scan
+### Manual creation of required files with log-scan
 
 See `ccsh gitlogparser log-scan -h` for help. Standard usage:
 
