@@ -103,6 +103,10 @@ cd node_modules/codecharta-visualization
 npm start
 ```
 
+# Docker Hub
+
+Both the analysis and the visualization are published as repositories on docker hub ([analysis](https://hub.docker.com/r/codecharta/codecharta-analysis) & [visualization](https://hub.docker.com/r/codecharta/codecharta-visualization)). For users familiar with docker, this is the easiest way to install CodeCharta. For more information about our containers, refer to [docker containers]({{site.baseurl}}{% link _docs/01-04-docker-containers.md %}).
+
 # Download from Github Release
 
 Download the [latest release](https://github.com/MaibornWolff/codecharta/releases) of CodeCharta (codecharta-analysis and codecharta-visualization) and unpack them to a folder of your choice. The visualization bundles an operating system (OS)-specific runtime. Since the analysis runs on the JVM it only has a single `.tar`, no matter what OS you use. With this method, no additional installation is necessary. Both the ccsh and the visualization can be executed directly.
