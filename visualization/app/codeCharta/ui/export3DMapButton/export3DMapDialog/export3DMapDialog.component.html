@@ -38,7 +38,7 @@
 
         <mat-form-field appearance="outline">
             <mat-label>Bottom center label text</mat-label>
-            <input matInput [(ngModel)]="frontText" (input)="onFrontTextChange()" [placeholder]="'CodeCharta'" />
+            <input data-testid="frontText" matInput [(ngModel)]="frontText" (input)="onFrontTextChange()" [placeholder]="'CodeCharta'" />
         </mat-form-field>
 
         <mat-card appearance="outlined">
