@@ -1,9 +1,4 @@
----
-permalink: /docs/new-to-code-visualization/
-title: "New to Visualization?"
----
-
-# Visualization
+# New to Visualization
 
 The visualization opens a cc.json and displays a city-like landscape based on the folder structure.
 
@@ -13,11 +8,11 @@ We use Redux to manage our state. This way we have a single state that allows us
 
 This chart shows the correct way to update the viewModel of a controller.
 
-![redux]({{site.baseurl}}/assets/images/docs/reference/redux-flow.png)
+![redux](../gh-pages/assets/images/docs/reference/redux-flow.png)
 
 This chart shows the data flow in our architecture when a new cc.json is opened.
 
-![new-file-imported]({{site.baseurl}}/assets/images/docs/reference/loading-a-new-file-flow.png)
+![new-file-imported](../gh-pages/assets/images/docs/reference/loading-a-new-file-flow.png)
 
 ### PlopJS
 
@@ -33,7 +28,7 @@ Currently, we support the creation of:
 
 ### Other Technologies
 
-- [Typescript]({{site.baseurl}}{% link _posts/adr/2017-09-03-ADR_7_pick_visualization_language.md %})
+- Typescript
 - npm
 - AngularJs 1.x, specifically what are Components, Services
 - Jest (Unit Tests)
