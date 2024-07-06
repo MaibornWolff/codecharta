@@ -1,9 +1,10 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing"
-import { FormsModule } from "@angular/forms"
 import { By } from "@angular/platform-browser"
 import { Export3DMapDialogComponent } from "./export3DMapDialog.component"
 import { State } from "@ngrx/store"
 import { ThreeSceneService } from "../../codeMap/threeViewer/threeSceneService"
+import { Export3DMapButtonModule } from "../export3DMapButton.module"
+import { MatSlideToggleChange } from "@angular/material/slide-toggle"
 
 class MockState {
     getValue() {
@@ -50,7 +51,7 @@ describe("Export3DMapDialogComponent", () => {
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             declarations: [Export3DMapDialogComponent],
-            imports: [FormsModule],
+            imports: [Export3DMapButtonModule],
             providers: [
                 { provide: State, useClass: MockState },
                 { provide: ThreeSceneService, useClass: MockThreeSceneService }
@@ -62,11 +63,21 @@ describe("Export3DMapDialogComponent", () => {
         fixture = TestBed.createComponent(Export3DMapDialogComponent)
         component = fixture.componentInstance
         fixture.detectChanges()
+
+        component.onFrontTextChange = function () {
+            this.frontText = inputElement.value
+        }
+        component.onSecondRowTextChange = function () {
+            this.secondRow.currentText = inputElement.value
+            this.secondRow.isVisible = Boolean(this.secondRow.currentText)
+        }
+        component.onSecondRowVisibilityChange = function (event: MatSlideToggleChange) {
+            this.secondRow.isVisible = event.checked
+        }
     })
 
     it("should update front text when input changes", () => {
         inputElement = fixture.debugElement.query(By.css('[data-testid="frontText"]')).nativeElement
-
         expect(inputElement).toBeTruthy()
 
         const frontTextInput = "FrontText"
@@ -74,5 +85,44 @@ describe("Export3DMapDialogComponent", () => {
         inputElement.dispatchEvent(new Event("input"))
         fixture.detectChanges()
         expect(component.frontText).toBe(frontTextInput)
+    })
+
+    it("should update second row text when input changes", () => {
+        inputElement = fixture.debugElement.query(By.css('[data-testid="secondRowText"]')).nativeElement
+        expect(inputElement).toBeTruthy()
+
+        const secondRowTextInput = "SecondRowText"
+        inputElement.value = secondRowTextInput
+        inputElement.dispatchEvent(new Event("input"))
+        fixture.detectChanges()
+        expect(component.secondRow.currentText).toBe(secondRowTextInput)
+    })
+
+    it("should set secondRow isVisible to true when input changes", () => {
+        expect(component.secondRow.isVisible).toBeFalsy()
+
+        inputElement = fixture.debugElement.query(By.css('[data-testid="secondRowText"]')).nativeElement
+        expect(inputElement).toBeTruthy()
+
+        const secondRowTextInput = "SecondRowText"
+        inputElement.value = secondRowTextInput
+        inputElement.dispatchEvent(new Event("input"))
+        fixture.detectChanges()
+
+        expect(component.secondRow.isVisible).toBeTruthy()
+    })
+
+    it("should set secondRow isVisible to true when the slide toggle is clicked", () => {
+        expect(component.secondRow.isVisible).toBeFalsy()
+
+        const slideToggleDebugElement = fixture.debugElement.query(By.css('[data-testid="secondRowToggle"]'))
+        const slideToggle = slideToggleDebugElement.nativeElement
+        expect(slideToggle).toBeTruthy()
+
+        const event = new MatSlideToggleChange(slideToggleDebugElement.componentInstance, true)
+        slideToggleDebugElement.triggerEventHandler("change", event)
+        fixture.detectChanges()
+
+        expect(component.secondRow.isVisible).toBeTruthy()
     })
 })

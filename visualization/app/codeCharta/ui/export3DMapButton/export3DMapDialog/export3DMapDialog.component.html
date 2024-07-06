@@ -38,18 +38,18 @@
 
         <mat-form-field appearance="outline">
             <mat-label>Bottom center label text</mat-label>
-            <input data-testid="frontText" matInput [(ngModel)]="frontText" (input)="onFrontTextChange()" [placeholder]="'CodeCharta'" />
+            <input matInput data-testid="frontText" [(ngModel)]="frontText" (input)="onFrontTextChange()" [placeholder]="'CodeCharta'" />
         </mat-form-field>
 
         <mat-card appearance="outlined">
             <mat-card-header>Second row center text</mat-card-header>
-            <mat-slide-toggle [checked]="secondRow.isVisible" (change)="onSecondRowVisibilityChange($event)">
+            <mat-slide-toggle data-testid="secondRowToggle" [checked]="secondRow.isVisible" (change)="onSecondRowVisibilityChange($event)">
                 Show second row text
             </mat-slide-toggle>
             <mat-card-content class="ManualVisibilityContent">
                 <mat-form-field [hidden]="secondRow.isVisible" appearance="outline">
                     <mat-label>Text</mat-label>
-                    <input matInput id="secondRowInput" [(ngModel)]="secondRow.currentText" (input)="onSecondRowTextChange()" />
+                    <input matInput data-testid="secondRowText" [(ngModel)]="secondRow.currentText" (input)="onSecondRowTextChange()" />
                 </mat-form-field>
             </mat-card-content>
         </mat-card>
