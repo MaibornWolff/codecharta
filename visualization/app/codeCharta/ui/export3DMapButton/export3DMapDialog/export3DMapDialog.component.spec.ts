@@ -81,6 +81,19 @@ describe("Export3DMapDialogComponent", () => {
         component.onQrCodeVisibilityChange = function (event: MatSlideToggleChange) {
             this.qrCode.isVisible = event.checked
         }
+        component.printers = [
+            { name: "Prusa MK3S (single color)", x: 245, y: 205, z: 205, numberOfColors: 1 },
+            { name: "BambuLab A1 + AMS Lite", x: 251, y: 251, z: 251, numberOfColors: 4 },
+            { name: "Prusa XL (5 colors)", x: 355, y: 335, z: 355, numberOfColors: 5 }
+        ]
+        component.selectedPrinter = component.printers[2]
+
+        component.onSelectedPrinterChange = function () {
+            this.selectedPrinter = this.printers.find(printer => printer.name === this.selectedPrinter.name)
+        }
+        component.onRemoveLogo = function () {
+            this.isFileSelected = false
+        }
     })
 
     it("should update front text when input changes", () => {
@@ -168,5 +181,77 @@ describe("Export3DMapDialogComponent", () => {
         fixture.detectChanges()
 
         expect(component.qrCode.isVisible).toBeTruthy()
+    })
+    it("should change selectedPrinter when a new printer is selected", () => {
+        const selectPrinter = fixture.debugElement.query(By.css('[data-testid="selectPrinter"]')).nativeElement
+        expect(selectPrinter).toBeTruthy()
+
+        selectPrinter.click()
+        fixture.detectChanges()
+
+        const selectedPrinterOptions = fixture.debugElement.queryAll(By.css('[data-testid="selectedPrinter"]'))
+        expect(selectedPrinterOptions.length).toBe(3)
+
+        selectedPrinterOptions[1].nativeElement.click()
+        fixture.detectChanges()
+
+        expect(component.selectedPrinter).toBe(component.printers[1])
+    })
+    it("should set scale correctly when the slider is changed", () => {
+        const sliderDebugElement = fixture.debugElement.query(By.css("mat-slider"))
+        expect(sliderDebugElement).toBeTruthy()
+        const sliderInputElement = sliderDebugElement.query(By.css("input")).nativeElement
+        expect(sliderInputElement).toBeTruthy()
+
+        sliderInputElement.value = 150
+        sliderInputElement.dispatchEvent(new Event("input"))
+        sliderInputElement.dispatchEvent(new Event("change"))
+        fixture.detectChanges()
+
+        expect(component.wantedWidth).toBe(150)
+    })
+    it("should set isFileSelected to true when a file is selected", () => {
+        const inputDebugElement = fixture.debugElement.query(By.css('input[type="file"]'))
+        expect(inputDebugElement).toBeTruthy()
+        const inputElement = inputDebugElement.nativeElement
+        expect(inputElement).toBeTruthy()
+
+        const file = new File([""], "test.svg", { type: "image/svg+xml" })
+
+        const event = new Event("change")
+        Object.defineProperty(event, "target", { writable: false, value: { files: [file] } })
+
+        inputElement.dispatchEvent(event)
+        fixture.detectChanges()
+
+        expect(component.isFileSelected).toBeTruthy()
+    })
+
+    it("should set isFileSelected to false when the logo is removed", () => {
+        component.isFileSelected = true
+        fixture.detectChanges()
+
+        const removeButtonDebugElement = fixture.debugElement.query(By.css('button[title="Remove Logo Button"]'))
+        removeButtonDebugElement.triggerEventHandler("click", null)
+        fixture.detectChanges()
+
+        expect(component.isFileSelected).toBeFalsy()
+    })
+    it('should call download3MFFile when the "Download 3MF" button is clicked', () => {
+        const download3MFButtonDebugElement = fixture.debugElement.query(By.css('button[title="Download 3MF Button"]'))
+        expect(download3MFButtonDebugElement).toBeTruthy()
+        download3MFButtonDebugElement.triggerEventHandler("click", null)
+        fixture.detectChanges()
+
+        expect(component.download3MFFile).toBeTruthy()
+    })
+
+    it('should call downloadStlFile when the "Download minimal STL" button is clicked', () => {
+        const downloadStlButtonDebugElement = fixture.debugElement.query(By.css('button[title="Download Stl Button"]'))
+        expect(downloadStlButtonDebugElement).toBeTruthy()
+        downloadStlButtonDebugElement.triggerEventHandler("click", null)
+        fixture.detectChanges()
+
+        expect(component.downloadStlFile).toBeTruthy()
     })
 })

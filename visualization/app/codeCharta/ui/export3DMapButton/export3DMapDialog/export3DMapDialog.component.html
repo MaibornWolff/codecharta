@@ -6,9 +6,9 @@
     <mat-dialog-content class="cc-export-3D-map-dialog-content" appearance="outline">
         <mat-form-field appearance="outline">
             <mat-label>Printer preset</mat-label>
-            <mat-select (selectionChange)="onSelectedPrinterChange()" [(value)]="selectedPrinter">
+            <mat-select data-testid="selectPrinter" (selectionChange)="onSelectedPrinterChange()" [(value)]="selectedPrinter">
                 <mat-select-trigger> {{ selectedPrinter.name }} </mat-select-trigger>
-                <mat-option *ngFor="let printer of printers" [value]="printer"
+                <mat-option data-testid="selectedPrinter" *ngFor="let printer of printers" [value]="printer"
                     >{{ printer.name }}
                     <span class="cc-printer-specs">
                         (x: {{ printer.x }}cm, y: {{ printer.y }}cm, z: {{ printer.z }}cm, colors {{ printer.numberOfColors }} )</span
@@ -21,7 +21,7 @@
             <mat-card-header>Scale:</mat-card-header>
             <mat-card-content>
                 <div class="slider-container">
-                    <mat-slider (change)="onScaleChange()" [max]="maxWidth" discrete="true" min="100" step="1">
+                    <mat-slider data-testid="onScaleChange" (change)="onScaleChange()" [max]="maxWidth" discrete="true" min="100" step="1">
                         <input #slider [(ngModel)]="wantedWidth" matSliderThumb />
                     </mat-slider>
                 </div>
