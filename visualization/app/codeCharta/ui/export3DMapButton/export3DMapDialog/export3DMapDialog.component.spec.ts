@@ -74,6 +74,13 @@ describe("Export3DMapDialogComponent", () => {
         component.onSecondRowVisibilityChange = function (event: MatSlideToggleChange) {
             this.secondRow.isVisible = event.checked
         }
+        component.onQrCodeTextChange = function () {
+            this.qrCode.currentText = inputElement.value
+            this.qrCode.isVisible = Boolean(this.qrCode.currentText)
+        }
+        component.onQrCodeVisibilityChange = function (event: MatSlideToggleChange) {
+            this.qrCode.isVisible = event.checked
+        }
     })
 
     it("should update front text when input changes", () => {
@@ -124,5 +131,42 @@ describe("Export3DMapDialogComponent", () => {
         fixture.detectChanges()
 
         expect(component.secondRow.isVisible).toBeTruthy()
+    })
+    it("should update qrCode text when input changes", () => {
+        inputElement = fixture.debugElement.query(By.css('[data-testid="qrCodeText"]')).nativeElement
+        expect(inputElement).toBeTruthy()
+
+        const qrCodeText = "qrCodeText"
+        inputElement.value = qrCodeText
+        inputElement.dispatchEvent(new Event("input"))
+        fixture.detectChanges()
+        expect(component.qrCode.currentText).toBe(qrCodeText)
+    })
+
+    it("should set qrCode isVisible to true when input changes", () => {
+        expect(component.qrCode.isVisible).toBeFalsy()
+
+        inputElement = fixture.debugElement.query(By.css('[data-testid="qrCodeText"]')).nativeElement
+        expect(inputElement).toBeTruthy()
+
+        const qrCodeText = "qrCodeText"
+        inputElement.value = qrCodeText
+        inputElement.dispatchEvent(new Event("input"))
+        fixture.detectChanges()
+
+        expect(component.qrCode.isVisible).toBeTruthy()
+    })
+    it("should set qrCode isVisible to true when the slide toggle is clicked", () => {
+        expect(component.qrCode.isVisible).toBeFalsy()
+
+        const slideToggleDebugElement = fixture.debugElement.query(By.css('[data-testid="qrCodeToggle"]'))
+        const slideToggle = slideToggleDebugElement.nativeElement
+        expect(slideToggle).toBeTruthy()
+
+        const event = new MatSlideToggleChange(slideToggleDebugElement.componentInstance, true)
+        slideToggleDebugElement.triggerEventHandler("change", event)
+        fixture.detectChanges()
+
+        expect(component.qrCode.isVisible).toBeTruthy()
     })
 })

@@ -56,11 +56,13 @@
 
         <mat-card appearance="outlined">
             <mat-card-header>QR-Code</mat-card-header>
-            <mat-slide-toggle [checked]="qrCode.isVisible" (change)="onQrCodeVisibilityChange($event)"> Show QR-Code </mat-slide-toggle>
+            <mat-slide-toggle data-testid="qrCodeToggle" [checked]="qrCode.isVisible" (change)="onQrCodeVisibilityChange($event)">
+                Show QR-Code
+            </mat-slide-toggle>
             <mat-card-content class="ManualVisibilityContent">
                 <mat-form-field [hidden]="qrCode.isVisible" appearance="outline">
                     <mat-label>QR-Code text</mat-label>
-                    <input matInput [(ngModel)]="qrCode.currentText" (input)="onQrCodeTextChange()" />
+                    <input matInput data-testid="qrCodeText" [(ngModel)]="qrCode.currentText" (input)="onQrCodeTextChange()" />
                 </mat-form-field>
             </mat-card-content>
         </mat-card>
