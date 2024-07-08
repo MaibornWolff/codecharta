@@ -1,4 +1,4 @@
-import { CcState, CodeMapNode, LayoutAlgorithm, Node, NodeMetricData } from "../../../codeCharta.model"
+import { CcState, CodeMapNode, LayoutAlgorithm, Node, NodeMetricData, NodeType } from "../../../codeCharta.model"
 import BoundingBox from "./boundingBox"
 import VerticalStreet from "./verticalStreet"
 import HorizontalStreet from "./horizontalStreet"
@@ -20,7 +20,7 @@ export class StreetLayoutGenerator {
         const metricName = state.dynamicSettings.areaMetric
         const mergedMap = StreetViewHelper.mergeDirectories(map, metricName)
         const maxTreeMapFiles = state.appSettings.maxTreeMapFiles
-        const childBoxes = this.createBoxes(mergedMap, metricName, state, StreetOrientation.Vertical, 0, maxTreeMapFiles)
+        const childBoxes = this.createBoxes(mergedMap, metricName, state, StreetOrientation.Vertical, 1, maxTreeMapFiles)
         const rootStreet = new HorizontalStreet(mergedMap, childBoxes, 0)
         rootStreet.calculateDimension(metricName)
         const margin = state.dynamicSettings.margin * MARGIN_SCALING_FACTOR
@@ -55,6 +55,16 @@ export class StreetLayoutGenerator {
                 children.push(new House(child))
                 continue
             }
+            if (child.type === NodeType.FOLDER && child.children && child.children.length < 5) {
+                for (const file of child.children) {
+                    if (file.type === NodeType.FILE) {
+                        file.isExcluded = true
+                    }
+                }
+            }
+            if (this.areAllChildrenNodesExcluded(child)) {
+                continue
+            }
 
             const layoutAlgorithm = state.appSettings.layoutAlgorithm
             const fileDescendants = StreetLayoutGenerator.countFileDescendants(child)
@@ -76,6 +86,15 @@ export class StreetLayoutGenerator {
             }
         }
         return children
+    }
+
+    private static areAllChildrenNodesExcluded(child: CodeMapNode): boolean {
+        for (let index = 0; index < child.children.length; index++) {
+            if (!child.children[index].isExcluded) {
+                return false
+            }
+        }
+        return true
     }
 
     private static createStreet(node: CodeMapNode, orientation: StreetOrientation, children: BoundingBox[], depth: number) {

@@ -165,11 +165,15 @@ export default class HorizontalStreet extends Street {
      * @param children children of the current node
      */
     protected splitChildrenToRows(children: BoundingBox[]): void {
-        const totalLength = this.getLength(children)
+        let totalLength = 0
         let sum = 0
 
         for (const child of children) {
-            if (sum < totalLength / 2) {
+            totalLength += child.width
+        }
+
+        for (const child of children) {
+            if (sum <= totalLength / 2) {
                 this.topRow.push(child)
                 sum += child.width
             } else {
