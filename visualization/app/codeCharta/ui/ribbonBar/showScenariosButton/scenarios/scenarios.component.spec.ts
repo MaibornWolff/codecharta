@@ -3,7 +3,7 @@ import { MatDialog } from "@angular/material/dialog"
 import { getByText, getByTitle, render, screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
 import { SCENARIO_ITEMS } from "../../../../util/dataMocks"
-import { AddCustomScenarioComponent } from "../addCustomScenario/addCustomScenario.component"
+import { AddCustomScenarioDialogComponent } from "../addCustomScenarioDialog/addCustomScenarioDialog.component"
 import { ScenarioService } from "../scenario.service"
 import { ShowScenariosButtonModule } from "../showScenariosButton.module"
 import { ScenariosComponent } from "./scenarios.component"
@@ -31,7 +31,7 @@ describe("scenariosComponent", () => {
 
         await userEvent.click(screen.getByTitle("Create a custom scenario"))
 
-        expect(dialog.open).toHaveBeenCalledWith(AddCustomScenarioComponent, { panelClass: "cc-add-custom-scenario" })
+        expect(dialog.open).toHaveBeenCalledWith(AddCustomScenarioDialogComponent, { panelClass: "cc-add-custom-scenario" })
     })
 
     it("should render scenarios correctly", async () => {

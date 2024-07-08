@@ -13,13 +13,13 @@ import { SCENARIO_ATTRIBUTE_CONTENT, STATE } from "../../../../util/dataMocks"
 import { ThreeCameraService } from "../../../codeMap/threeViewer/threeCamera.service"
 import { ThreeOrbitControlsService } from "../../../codeMap/threeViewer/threeOrbitControls.service"
 import { ScenarioHelper } from "../scenarioHelper"
-import { AddCustomScenarioComponent } from "./addCustomScenario.component"
-import { AddCustomScenarioModule } from "./addCustomScenario.module"
+import { AddCustomScenarioDialogComponent } from "./addCustomScenarioDialog.component"
+import { AddCustomScenarioDialogModule } from "./addCustomScenarioDialog.module"
 
 describe("AddCustomScenarioComponent", () => {
     beforeEach(async () => {
         return TestBed.configureTestingModule({
-            imports: [AddCustomScenarioModule, StoreModule.forRoot(appReducers, { metaReducers: [setStateMiddleware] })],
+            imports: [AddCustomScenarioDialogModule, StoreModule.forRoot(appReducers, { metaReducers: [setStateMiddleware] })],
             providers: [
                 { provide: ThreeCameraService, useValue: { camera: { position: new Vector3(0, 300, 1000) } } },
                 { provide: ThreeOrbitControlsService, useValue: { controls: { target: new Vector3(177, 0, 299) } } },
@@ -31,7 +31,7 @@ describe("AddCustomScenarioComponent", () => {
 
     it("should enable the user to add a custom scenario, with all properties set initially", async () => {
         ScenarioHelper.addScenario = jest.fn()
-        const { fixture } = await render(AddCustomScenarioComponent, { excludeComponentDeclaration: true })
+        const { fixture } = await render(AddCustomScenarioDialogComponent, { excludeComponentDeclaration: true })
         const loader = TestbedHarnessEnvironment.loader(fixture)
 
         const closeDialog = TestBed.inject(MatDialogRef).close
@@ -49,7 +49,7 @@ describe("AddCustomScenarioComponent", () => {
 
     it("should validate scenario's name", async () => {
         ScenarioHelper.isScenarioExisting = (name: string) => name === "I-already-exist"
-        const { container } = await render(AddCustomScenarioComponent, { excludeComponentDeclaration: true })
+        const { container } = await render(AddCustomScenarioDialogComponent, { excludeComponentDeclaration: true })
 
         const scenarioNameInput = container.querySelector("input")
         await userEvent.click(scenarioNameInput)
@@ -64,7 +64,7 @@ describe("AddCustomScenarioComponent", () => {
     })
 
     it("should show an error message, when no properties are selected", async () => {
-        const { detectChanges } = await render(AddCustomScenarioComponent, { excludeComponentDeclaration: true })
+        const { detectChanges } = await render(AddCustomScenarioDialogComponent, { excludeComponentDeclaration: true })
         const store = TestBed.inject(Store)
         store.dispatch(setState({ value: STATE }))
         detectChanges()
