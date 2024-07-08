@@ -48,21 +48,14 @@ export class StreetLayoutGenerator {
         const children: BoundingBox[] = []
         const areaMetric = state.dynamicSettings.areaMetric
         for (let child of node.children) {
-            if (isPathBlacklisted(child.path, state.fileSettings.blacklist, "exclude")) {
-                continue
-            }
             if (isLeaf(child)) {
                 children.push(new House(child))
                 continue
             }
-            if (child.type === NodeType.FOLDER && child.children && child.children.length < 5) {
-                for (const file of child.children) {
-                    if (file.type === NodeType.FILE) {
-                        file.isExcluded = true
-                    }
-                }
+            if (this.hasFewerThanFiveNonDirectoryFiles(child)) {
+                continue
             }
-            if (this.areAllChildrenNodesExcluded(child)) {
+            if (isPathBlacklisted(child.path, state.fileSettings.blacklist, "exclude")) {
                 continue
             }
 
@@ -88,13 +81,17 @@ export class StreetLayoutGenerator {
         return children
     }
 
-    private static areAllChildrenNodesExcluded(child: CodeMapNode): boolean {
-        for (let index = 0; index < child.children.length; index++) {
-            if (!child.children[index].isExcluded) {
-                return false
+    private static hasFewerThanFiveNonDirectoryFiles(node: CodeMapNode): boolean {
+        let nonDirectoryFileCount = 0
+        for (const child of node.children) {
+            if (child.type === NodeType.FOLDER) {
+                return false // Skip node if it contains files
+            }
+            if (child.type === NodeType.FILE) {
+                nonDirectoryFileCount++
             }
         }
-        return true
+        return nonDirectoryFileCount < 5
     }
 
     private static createStreet(node: CodeMapNode, orientation: StreetOrientation, children: BoundingBox[], depth: number) {
