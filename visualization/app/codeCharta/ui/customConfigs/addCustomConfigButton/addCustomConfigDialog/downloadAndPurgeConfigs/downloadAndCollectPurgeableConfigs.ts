@@ -1,5 +1,5 @@
-import { CustomConfig, ExportCustomConfig } from "../../../../model/customConfig/customConfig.api.model"
-import { CustomConfigHelper } from "../../../../util/customConfigHelper"
+import { CustomConfig, ExportCustomConfig } from "../../../../../model/customConfig/customConfig.api.model"
+import { CustomConfigHelper } from "../../../../../util/customConfigHelper"
 
 const customConfigAgeLimitInMonths = 6
 

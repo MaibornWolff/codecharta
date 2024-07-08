@@ -3,16 +3,19 @@
 </mat-toolbar>
 
 <mat-dialog-content>
-    <div class="dialog-content">
+    <p>
         <mat-form-field>
             <mat-label>Save individual configurations for your map.</mat-label>
             <input matInput class="custom-config-input" [formControl]="customConfigName" required />
-            <mat-hint align="start">Config View Name</mat-hint>
+            <mat-hint>Config View Name</mat-hint>
             @if (customConfigName.invalid) {
                 <mat-error>{{ getErrorMessage() }}</mat-error>
             }
         </mat-form-field>
-        <mat-form-field class="custom-config-note">
+    </p>
+
+    <p>
+        <mat-form-field>
             <mat-label>Provide custom note for configuration (optional)</mat-label>
             <textarea
                 cdkAutosizeMinRows="8"
@@ -22,14 +25,21 @@
                 [(ngModel)]="customConfigNote"
                 required
             ></textarea>
-            <mat-hint align="start">Config Note</mat-hint>
+            <mat-hint>Config Note</mat-hint>
         </mat-form-field>
-    </div>
+    </p>
 </mat-dialog-content>
 
 <mat-dialog-actions>
     <cc-download-and-purge-configs></cc-download-and-purge-configs>
-    <button mat-button class="add-custom-config-button" (click)="addCustomConfig()" mat-dialog-close [disabled]="customConfigName.invalid">
+
+    <button
+        mat-flat-button
+        mat-dialog-close
+        class="add-custom-config-button"
+        (click)="addCustomConfig()"
+        [disabled]="customConfigName.invalid"
+    >
         ADD
     </button>
 </mat-dialog-actions>
