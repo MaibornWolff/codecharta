@@ -2,11 +2,10 @@
 
 // TODO: Apply this globally (See issue: https://github.com/MaibornWolff/codecharta/issues/3654)
 mat-dialog-actions {
-    $button-background-color: #f6f5f5;
-
     --mdc-filled-button-label-text-color: #{$cc-primary-color};
-    --mdc-filled-button-container-color: #{$button-background-color};
-    --mdc-filled-button-disabled-container-color: #{$button-background-color};
+    --mdc-text-button-label-text-color: #{cc-primary-color};
+    --mdc-filled-button-container-color: var(--mdc-filled-text-field-container-color);
+    --mdc-filled-button-disabled-container-color: var(--mdc-filled-text-field-container-color);
 }
 
 // TODO: Apply this globally (See issue: https://github.com/MaibornWolff/codecharta/issues/3654)
