@@ -1,3 +1,5 @@
+@use "variables";
+
 mat-dialog-container {
     .cc-dialog {
         &.suspicious-metric-dialog {
@@ -13,5 +15,12 @@ mat-dialog-container {
                 color: black;
             }
         }
+    }
+
+    mat-dialog-actions {
+        --mdc-filled-button-label-text-color: #{variables.$cc-primary-color};
+        --mdc-text-button-label-text-color: #{variables.$cc-primary-color};
+        --mdc-filled-button-container-color: var(--mdc-filled-text-field-container-color);
+        --mdc-filled-button-disabled-container-color: var(--mdc-filled-text-field-container-color);
     }
 }

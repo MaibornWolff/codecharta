@@ -12,10 +12,10 @@ import { CustomConfig } from "../../../../../model/customConfig/customConfig.api
 import { CustomConfigHelper } from "../../../../../util/customConfigHelper"
 import { InteractivityChecker } from "@angular/cdk/a11y"
 
-jest.mock("../validateLocalStorageSize", () => ({ validateLocalStorageSize: jest.fn() }))
+jest.mock("./validateLocalStorageSize", () => ({ validateLocalStorageSize: jest.fn() }))
 const mockedValidateLocalStorageSize = jest.mocked(validateLocalStorageSize)
 
-jest.mock("../downloadAndCollectPurgeableConfigs", () => ({ downloadAndCollectPurgeableConfigs: jest.fn() }))
+jest.mock("./downloadAndCollectPurgeableConfigs", () => ({ downloadAndCollectPurgeableConfigs: jest.fn() }))
 const mockedDownloadAndCollectPurgeableOldConfigs = jest.mocked(downloadAndCollectPurgeableConfigs)
 
 describe("downloadAndPurgeConfigsComponent", () => {

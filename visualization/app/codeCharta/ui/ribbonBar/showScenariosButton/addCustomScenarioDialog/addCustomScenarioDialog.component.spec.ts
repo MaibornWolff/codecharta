@@ -63,7 +63,7 @@ describe("AddCustomScenarioComponent", () => {
         await waitFor(() => expect(screen.queryByText("A Scenario with this name already exists")).toBeFalsy())
     })
 
-    it("should show an error message, when no properties are selected", async () => {
+    it("should show an error message when no properties are selected", async () => {
         const { detectChanges } = await render(AddCustomScenarioDialogComponent, { excludeComponentDeclaration: true })
         const store = TestBed.inject(Store)
         store.dispatch(setState({ value: STATE }))
@@ -74,6 +74,7 @@ describe("AddCustomScenarioComponent", () => {
         await userEvent.click(screen.getByText("Height-Metric (mcc)"))
         await userEvent.click(screen.getByText("Color-Metric (mcc)"))
         await userEvent.click(screen.getByText("Edge-Metric (pairingRate)"))
-        expect(await screen.findByText("You cannot create an empty Scenario")).toBeTruthy()
+
+        await waitFor(() => expect(screen.findByText("You cannot create an empty Scenario")).toBeTruthy())
     })
 })
