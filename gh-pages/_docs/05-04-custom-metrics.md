@@ -1,6 +1,6 @@
 ---
 permalink: /docs/custom-metrics/
-title: "Custom Metrics"
+title: "Using Custom Metrics"
 ---
 
 The various parsers of the `ccsh` supply a large variety of different metrics out of the box. In case these not match your need, there are two general ways to add new metrics to CodeCharta.

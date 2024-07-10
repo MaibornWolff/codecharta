@@ -6,28 +6,22 @@ main:
       url: /showcase/
     - title: "News"
       url: /news/
+    - title: "Releases"
+      url: categories/#release
 
 # docs navigation bar
 docs:
     - title: Getting Started
       children:
+          - title: "Overview"
+            url: /docs/overview/
           - title: "Quick-Start Guide"
             url: /docs/quick-start-guide/
           - title: "Installation"
             url: /docs/installation/
           - title: "Docker Containers"
             url: /docs/docker-containers/
-          - title: "Versioning"
-            url: /docs/versioning/
-          - title: "Price"
-            url: /docs/price/
-          - title: "Feedback"
-            url: /docs/feedback/
 
-    - title: How-Tos
-      children:
-          - title: "How-Tos"
-            url: categories/#how-to
     - title: Analysis
       children:
           - title: "Analysis"
@@ -41,7 +35,7 @@ docs:
           - title: "Analyze with SonarQube"
             url: /docs/analyze-with-sonarqube/
 
-    - title: Analysing-Tools
+    - title: (Analysing-Tools)
       children:
           - title: "Source Code Parser"
             url: /docs/source-code-parser
@@ -70,8 +64,6 @@ docs:
             url: /docs/visualization/
           - title: "User Controls"
             url: /docs/user-controls/
-          - title: "Timeline"
-            url: /docs/timeline/
           - title: "Custom View"
             url: /docs/custom-view/
           - title: "Suspicious metrics"
@@ -79,16 +71,20 @@ docs:
           - title: "Risk profile"
             url: /docs/risk-profile/
 
-    - title: Reference
+    - title: How-Tos
       children:
-          - title: "New to this Code?"
-            url: /docs/new-to-code/
-          - title: "New to Analysis?"
-            url: /docs/new-to-code-analysis/
-          - title: "New to Visualization?"
-            url: /docs/new-to-code-visualization/
+          - title: "How-Tos"
+            url: categories/#how-to
 
-    - title: Meta
+    - title: About
       children:
           - title: "License"
             url: /docs/license/
+          - title: "Versioning"
+            url: /docs/versioning/
+          - title: "Feedback"
+            url: /docs/feedback/
+          - title: "Price"
+            url: /docs/price/
+          - title: "(Timeline)"
+            url: /docs/timeline/

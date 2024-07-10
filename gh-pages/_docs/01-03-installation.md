@@ -3,6 +3,7 @@ permalink: /docs/installation/
 title: "Installation"
 
 toc: true
+toc_sticky: true
 toc_label: "Jump to Section"
 ---
 
@@ -43,7 +44,7 @@ ccsh -h
 ccsh sourcecodeparser -h
 ```
 
-## Desktop Visualization
+## Visualization (Desktop Version)
 
 To install the visualisation part of CodeCharta, simple open a terminal and enter:
 
@@ -57,6 +58,8 @@ After sucessful installation, the desktop visualisation can be started with:
 # and start
 codecharta-visualization
 ```
+
+> Note that the visualization also has a web version with the same features, which can be viewed [here]({{site.web_visualization_link}}).
 
 # Local Install with npm
 
@@ -132,11 +135,11 @@ cd codecharta-visualization
 ### MacOS
 
 > If you get an error on MacOS because of a missing license, try this [apple support article](https://support.apple.com/en-gb/guide/mac-help/mh40616/12.0/mac/12.0). <br>
-> You may be required to give the application executable rights
+> You may be required to give the application executable rights.
 
-> If you are using an M1 or similar (arm64) architectures you might need to do additional steps, because the OS might flag the executable as damaged, if it is downloaded and from an unverified developer.
+If you are using an M1 or similar (arm64) architectures you might need to do additional steps, because the OS might flag the executable as damaged, if it is downloaded and from an unverified developer.
 
-- This can be solved by removing the 'downloaded' attributes from the OS by executing:
+This can be solved by removing the 'downloaded' attributes from the OS by executing:
 
 ```bash
 xattr -cr codecharta-visualization.app/
