@@ -3,6 +3,7 @@ permalink: /docs/analysis/
 title: "Analysis"
 
 toc: true
+toc_sticky: true
 toc_label: "Jump to Section"
 ---
 

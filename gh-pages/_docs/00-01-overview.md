@@ -4,6 +4,7 @@ title: "User Documentation"
 excerpt: "Overview of all sections of user docs."
 
 toc: true
+toc_sticky: true
 toc_label: "Jump to Section"
 ---
 
@@ -25,11 +26,11 @@ We also provide docker containers for both parts of CodeCharta. Documentation fo
 
 # Analysis-specific docs
 
-A summary of what the analysis part of CodeCharta does can be found [here]({{site.baseurl}}{% link _docs/05-01-analysis.md %}).
+Generally, the analysis part of CodeCharta is used to generate metrics from code. For more information refer to the [analysis page]({{site.baseurl}}{% link _docs/05-01-analysis.md %}). If you want to learn how to use the CLI-tool of the analysis, check out the [CodeCharta Shell page]({{site.baseurl}}{% link _docs/05-03-ccsh.md %}). The CodeCharta Shell consists of a variety of different tools, which each have their own page in "analysis tools". We also go into detail about our views on metrics [here]({{site.baseurl}}{% link _docs/05-02-metrics.md %}) and how you can use custom metrics in CodeCharta [here]({{site.baseurl}}{% link _docs/05-04-custom-metrics.md %}).
 
-## All available parsers
+# Visualization-specific docs
 
-# Visualisation-specific docs
+The visualization part of CodeCharta displays code files as buildings of a city where their area, height and color represent different metrics. To quickly try it out, you can view the [web visualization]({{site.web_visualization_link}}). You can learn more about the visualization [here]({{site.baseurl}}{% link _docs/06-01-visualization.md %}) or view the controls [here]({{site.baseurl}}{% link _docs/06-02-user-controls.md %}). The visualization also includes three features that can make it easier to analyze code. These are [custom views]({{site.baseurl}}{% link _docs/06-04-custom-view.md %}), which serve as presets for display configurations, the [suspicious metrics]({{site.baseurl}}{% link _docs/06-05-suspicious-metrics.md %}), which highlight higher than usual metrics and the [risk profile]({{site.baseurl}}{% link _docs/06-06-risk-profile.md %}), which gives a quick overview of the codes' complexity.
 
 # How-Tos
 
@@ -38,17 +39,15 @@ We provide several how to articles, that describe how to perform different tasks
 For example, [this article]({{site.baseurl}}{% link _posts/how-to/2022-08-12-detailed-instruction-how-to-use-sonarqube.md %}) describes how to set up SonarQube and use our
 sonar-importer to visualize the generate metrics.
 
-[//]: # "TODO: find out how to link the how to section"
-
-Click [here]({{site.baseurl}}{% link _posts/how-to/2022-08-12-detailed-instruction-how-to-use-sonarqube.md %}) to see all available How To articles.
+Click [here]({{site.baseurl}}{% link _pages/category-archive.md %}#how-to) to see all available How-To articles.
 
 # Changelog
 
 Changelogs are kept separate for the Analysis and the Visualisation.
 
-A list of analysis changelogs can be found {here TODO: add link to changelogs with analysis tag}
-A list of visualisation changelogs can be found {here TODO: add link to changelogs with visualisation tag}
-A combined list of all changelogs sorted by date can be found {here TODO: add link for all with changelog tag}
+A list of analysis changelogs can be found {here TODO: add link to changelogs with analysis tag}\
+A list of visualisation changelogs can be found {here TODO: add link to changelogs with visualisation tag}\
+A combined list of all changelogs sorted by date can be found [here]({{site.baseurl}}{% link _pages/category-archive.md %}#release)
 
 # About
 
