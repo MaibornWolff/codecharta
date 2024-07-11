@@ -1,4 +1,4 @@
-import { CodeMapNode, Node, CcState, NodeMetricData, LayoutAlgorithm } from "../../../codeCharta.model"
+import { CcState, CodeMapNode, LayoutAlgorithm, Node, NodeMetricData } from "../../../codeCharta.model"
 import BoundingBox from "./boundingBox"
 import VerticalStreet from "./verticalStreet"
 import HorizontalStreet from "./horizontalStreet"
@@ -6,7 +6,7 @@ import House from "./house"
 import TreeMap from "./treeMap"
 import { Vector2 } from "three"
 import { StreetOrientation } from "./street"
-import { getMapResolutionScaleFactor, isPathBlacklisted, isLeaf } from "../../codeMapHelper"
+import { getMapResolutionScaleFactor, isLeaf, isPathBlacklisted } from "../../codeMapHelper"
 import { StreetViewHelper } from "./streetViewHelper"
 import SquarifiedTreeMap from "./squarifiedTreeMap"
 import { treeMapSize } from "../treeMapLayout/treeMapHelper"
@@ -20,7 +20,7 @@ export class StreetLayoutGenerator {
         const metricName = state.dynamicSettings.areaMetric
         const mergedMap = StreetViewHelper.mergeDirectories(map, metricName)
         const maxTreeMapFiles = state.appSettings.maxTreeMapFiles
-        const childBoxes = this.createBoxes(mergedMap, metricName, state, StreetOrientation.Vertical, 0, maxTreeMapFiles)
+        const childBoxes = this.createBoxes(mergedMap, metricName, state, StreetOrientation.Vertical, 1, maxTreeMapFiles)
         const rootStreet = new HorizontalStreet(mergedMap, childBoxes, 0)
         rootStreet.calculateDimension(metricName)
         const margin = state.dynamicSettings.margin * MARGIN_SCALING_FACTOR
@@ -48,11 +48,11 @@ export class StreetLayoutGenerator {
         const children: BoundingBox[] = []
         const areaMetric = state.dynamicSettings.areaMetric
         for (let child of node.children) {
-            if (isPathBlacklisted(child.path, state.fileSettings.blacklist, "exclude")) {
-                continue
-            }
             if (isLeaf(child)) {
                 children.push(new House(child))
+                continue
+            }
+            if (isPathBlacklisted(child.path, state.fileSettings.blacklist, "exclude")) {
                 continue
             }
 

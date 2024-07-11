@@ -13,10 +13,11 @@ export enum HorizontalOrientation {
 
 export default class HorizontalStreet extends Street {
     protected children: BoundingBox[] = []
-    protected node: CodeMapNode
+    node: CodeMapNode
     protected topRow: BoundingBox[] = []
     protected bottomRow: BoundingBox[] = []
     orientation: HorizontalOrientation
+    protected depth: number
 
     constructor(node: CodeMapNode, children: BoundingBox[], orientation: HorizontalOrientation = HorizontalOrientation.RIGHT) {
         super(node)
@@ -39,7 +40,7 @@ export default class HorizontalStreet extends Street {
         // TODO Add a comment what the following calculations are doing.
         this.metricValue = StreetViewHelper.calculateSize(this.node, metricName)
         this.width = Math.max(this.getLength(this.topRow), this.getLength(this.bottomRow))
-        this.height = this.getMaxHeight(this.topRow) + this.getStreetThickness() + this.getMaxHeight(this.bottomRow) + 2 * this.spacer
+        this.height = this.getMaxHeight(this.topRow) + this.getStreetThickness() + this.getMaxHeight(this.bottomRow) + this.spacer
     }
 
     layout(margin: number, origin: Vector2): CodeMapNode[] {
@@ -125,7 +126,7 @@ export default class HorizontalStreet extends Street {
     /**
      * Calculates y-coordinate of street.
      * @param origin origin of local coordinate system
-     * @param maxLeftWidth highest node in topRow
+     * @param maxTopHeight highest node in topRow
      */
     private calculateStreetOffsetY(origin: Vector2, maxTopHeight: number): number {
         return origin.y + this.spacer + maxTopHeight

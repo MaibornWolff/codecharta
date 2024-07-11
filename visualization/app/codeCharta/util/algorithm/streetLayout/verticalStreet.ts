@@ -2,7 +2,7 @@ import BoundingBox from "./boundingBox"
 import Rectangle from "./rectangle"
 import HorizontalStreet, { HorizontalOrientation } from "./horizontalStreet"
 import Street from "./street"
-import { CodeMapNode } from "../../../codeCharta.model"
+import { CodeMapNode, NodeType } from "../../../codeCharta.model"
 import { StreetViewHelper } from "./streetViewHelper"
 import { Vector2 } from "three"
 
@@ -16,8 +16,9 @@ export default class VerticalStreet extends Street {
     protected leftRow: BoundingBox[] = []
     protected rightRow: BoundingBox[] = []
     orientation: VerticalOrientation
+    private _origin: Vector2
 
-    constructor(node: CodeMapNode, children: BoundingBox[], orientation: VerticalOrientation = VerticalOrientation.UP) {
+    constructor(node: CodeMapNode, children: BoundingBox[], depth: number, orientation: VerticalOrientation = VerticalOrientation.UP) {
         super(node)
         this.children = children
         this.orientation = orientation
@@ -121,12 +122,18 @@ export default class VerticalStreet extends Street {
 
     protected sortChildrenByType(children: BoundingBox[]): void {
         children.sort((a, b) => {
-            return a.getNode().type === b.getNode().type ? 0 : a.getNode().type === "File" ? -1 : 1
+            if (a.node.type === b.node.type) {
+                return 0
+            }
+            if (a.node.type === NodeType.FILE) {
+                return -1
+            }
+            return 1
         })
     }
-
-    protected splitChildrenToRows(children: BoundingBox[]) {
+    protected splitChildrenToRows(children: BoundingBox[]): void {
         this.sortChildrenByType(children)
+
         let totalLength = 0
         let sum = 0
 
