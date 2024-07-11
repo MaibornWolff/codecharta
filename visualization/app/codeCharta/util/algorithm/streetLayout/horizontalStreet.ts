@@ -19,15 +19,9 @@ export default class HorizontalStreet extends Street {
     orientation: HorizontalOrientation
     protected depth: number
 
-    constructor(
-        node: CodeMapNode,
-        children: BoundingBox[],
-        depth: number,
-        orientation: HorizontalOrientation = HorizontalOrientation.RIGHT
-    ) {
+    constructor(node: CodeMapNode, children: BoundingBox[], orientation: HorizontalOrientation = HorizontalOrientation.RIGHT) {
         super(node)
         this.children = children
-        this.depth = depth
         this.orientation = orientation
     }
 

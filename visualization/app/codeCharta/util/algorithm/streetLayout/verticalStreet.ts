@@ -16,13 +16,11 @@ export default class VerticalStreet extends Street {
     protected leftRow: BoundingBox[] = []
     protected rightRow: BoundingBox[] = []
     orientation: VerticalOrientation
-    protected depth: number
     private _origin: Vector2
 
     constructor(node: CodeMapNode, children: BoundingBox[], depth: number, orientation: VerticalOrientation = VerticalOrientation.UP) {
         super(node)
         this.children = children
-        this.depth = depth
         this.orientation = orientation
     }
 

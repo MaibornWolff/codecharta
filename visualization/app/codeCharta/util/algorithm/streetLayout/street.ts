@@ -11,8 +11,6 @@ export enum StreetOrientation {
 export default abstract class Street extends BoundingBox {
     streetRect: Rectangle | undefined
     protected spacer = 2
-    private maxStreetThickness = 8
-    protected abstract depth: number
 
     protected abstract layoutStreet(origin: Vector2, maxNodeSideLength: number): CodeMapNode
     protected abstract splitChildrenToRows(children: BoundingBox[]): void
