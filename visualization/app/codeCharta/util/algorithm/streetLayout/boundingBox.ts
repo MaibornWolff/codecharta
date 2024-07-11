@@ -13,6 +13,10 @@ export default abstract class BoundingBox {
         this.node = node
     }
 
+    getNode() {
+        return this.node
+    }
+
     abstract calculateDimension(metricName: string): void
     abstract layout(margin: number, origin: Vector2): CodeMapNode[]
 

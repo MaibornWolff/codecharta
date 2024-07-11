@@ -7,7 +7,7 @@ export default abstract class Treemap extends BoundingBox {
     protected treeMapNodes: CodeMapNode[] = []
     protected metricName: string
 
-    constructor(rootNode: CodeMapNode) {
+    protected constructor(rootNode: CodeMapNode) {
         super(rootNode)
     }
 

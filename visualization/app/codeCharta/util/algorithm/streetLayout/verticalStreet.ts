@@ -12,16 +12,14 @@ export enum VerticalOrientation {
 }
 
 export default class VerticalStreet extends Street {
-    private children: BoundingBox[] = []
+    protected children: BoundingBox[] = []
     protected leftRow: BoundingBox[] = []
     protected rightRow: BoundingBox[] = []
     orientation: VerticalOrientation
-    protected depth: number
 
-    constructor(node: CodeMapNode, children: BoundingBox[], depth: number, orientation: VerticalOrientation = VerticalOrientation.UP) {
+    constructor(node: CodeMapNode, children: BoundingBox[], orientation: VerticalOrientation = VerticalOrientation.UP) {
         super(node)
         this.children = children
-        this.depth = depth
         this.orientation = orientation
     }
 
@@ -80,7 +78,7 @@ export default class VerticalStreet extends Street {
             value: metricValue,
             rect: this.streetRect,
             zOffset: 0
-        } as CodeMapNode
+        }
     }
 
     private layoutRightRow(origin: Vector2, maxLeftWidth: number, margin: number): CodeMapNode[] {
@@ -121,12 +119,23 @@ export default class VerticalStreet extends Street {
         return sum
     }
 
+    protected sortChildrenByType(children: BoundingBox[]): void {
+        children.sort((a, b) => {
+            return a.getNode().type === b.getNode().type ? 0 : a.getNode().type === "File" ? -1 : 1
+        })
+    }
+
     protected splitChildrenToRows(children: BoundingBox[]) {
-        const totalLength = this.getLength(children)
+        this.sortChildrenByType(children)
+        let totalLength = 0
         let sum = 0
 
         for (const child of children) {
-            if (sum < totalLength / 2) {
+            totalLength += child.height
+        }
+
+        for (const child of children) {
+            if (sum <= totalLength / 2) {
                 if (child instanceof HorizontalStreet) {
                     child.orientation = HorizontalOrientation.LEFT
                 }
