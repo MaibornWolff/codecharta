@@ -56,7 +56,7 @@ def get_latest_changelog_entries(path):
 
 
 def get_release_post(version, prefix_version, path, repository):
-    release_post_header = f"---\ncategories:\n  - Release\ntags:\n  - gh-pages\n  - release\n  - {repository.lower()}\n\ntitle: {repository} version {version}\n---\n\n"
+    release_post_header = f"---\ncategories:\n  - Release\n  - Release-{repository}\ntags:\n  - gh-pages\n  - release\n  - {repository.lower()}\n\ntitle: {repository} version {version}\n---\n\n"
     release_post_headline = "{{page.title}} is live and ready for"+f" [download](https://github.com/MaibornWolff/codecharta/releases/tag/{prefix_version}). \nThis version brings the following:\n\n"
     release_post_content = get_latest_changelog_entries(path)
     return release_post_header + release_post_headline + release_post_content
