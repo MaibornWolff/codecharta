@@ -1,4 +1,4 @@
-import { CcState, CodeMapNode, LayoutAlgorithm, Node, NodeMetricData, NodeType } from "../../../codeCharta.model"
+import { CcState, CodeMapNode, LayoutAlgorithm, Node, NodeMetricData } from "../../../codeCharta.model"
 import BoundingBox from "./boundingBox"
 import VerticalStreet from "./verticalStreet"
 import HorizontalStreet from "./horizontalStreet"
@@ -19,9 +19,8 @@ export class StreetLayoutGenerator {
 
         const metricName = state.dynamicSettings.areaMetric
         const mergedMap = StreetViewHelper.mergeDirectories(map, metricName)
-        const fileCount = StreetLayoutGenerator.countAllFiles(map)
         const maxTreeMapFiles = state.appSettings.maxTreeMapFiles
-        const childBoxes = this.createBoxes(mergedMap, metricName, state, StreetOrientation.Vertical, 1, maxTreeMapFiles, fileCount)
+        const childBoxes = this.createBoxes(mergedMap, metricName, state, StreetOrientation.Vertical, 1, maxTreeMapFiles)
         const rootStreet = new HorizontalStreet(mergedMap, childBoxes, 0)
         rootStreet.calculateDimension(metricName)
         const margin = state.dynamicSettings.margin * MARGIN_SCALING_FACTOR
@@ -44,8 +43,7 @@ export class StreetLayoutGenerator {
         state: CcState,
         orientation: StreetOrientation,
         depth: number,
-        maxTreeMapFiles: number,
-        fileCount: number
+        maxTreeMapFiles: number
     ): BoundingBox[] {
         const children: BoundingBox[] = []
         const areaMetric = state.dynamicSettings.areaMetric
@@ -55,9 +53,6 @@ export class StreetLayoutGenerator {
                 continue
             }
             if (isPathBlacklisted(child.path, state.fileSettings.blacklist, "exclude")) {
-                continue
-            }
-            if (this.hasFewerThanFiveNonDirectoryFiles(child) && fileCount > 500) {
                 continue
             }
 
@@ -74,44 +69,13 @@ export class StreetLayoutGenerator {
                     state,
                     1 - orientation,
                     depth + 1,
-                    maxTreeMapFiles,
-                    fileCount
+                    maxTreeMapFiles
                 )
                 const street = StreetLayoutGenerator.createStreet(child, orientation, streetChildren, depth)
                 children.push(street)
             }
         }
         return children
-    }
-
-    private static hasFewerThanFiveNonDirectoryFiles(node: CodeMapNode): boolean {
-        let nonDirectoryFileCount = 0
-        for (const child of node.children) {
-            if (child.type === NodeType.FOLDER) {
-                return false // Skip node if it contains files
-            }
-            if (child.type === NodeType.FILE) {
-                nonDirectoryFileCount++
-            }
-        }
-        return nonDirectoryFileCount < 5
-    }
-
-    private static countAllFiles(node: CodeMapNode): number {
-        let fileCount = 0
-
-        function traverse(node: CodeMapNode) {
-            for (const child of node.children) {
-                if (child.type === NodeType.FILE) {
-                    fileCount++
-                } else if (child.type === NodeType.FOLDER) {
-                    traverse(child) // Recursively count files in subdirectories
-                }
-            }
-        }
-
-        traverse(node)
-        return fileCount
     }
 
     private static createStreet(node: CodeMapNode, orientation: StreetOrientation, children: BoundingBox[], depth: number) {
