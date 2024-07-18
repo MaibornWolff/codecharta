@@ -1,7 +1,7 @@
 import { AmbientLight, Box3, BufferGeometry, DirectionalLight, Group, Line, Material, Object3D, Raycaster, Scene, Vector3 } from "three"
 import { CodeMapMesh } from "../rendering/codeMapMesh"
 import { CodeMapBuilding } from "../rendering/codeMapBuilding"
-import { CodeMapNode, Node, CcState } from "../../../codeCharta.model"
+import { CodeMapNode, LayoutAlgorithm, Node, CcState } from "../../../codeCharta.model"
 import { hierarchy } from "d3-hierarchy"
 import { ColorConverter } from "../../../util/color/colorConverter"
 import { FloorLabelDrawer } from "./floorLabels/floorLabelDrawer"
@@ -82,10 +82,10 @@ export class ThreeSceneService implements OnDestroy {
     private initFloorLabels(nodes: Node[]) {
         this.floorLabelPlanes.clear()
 
-        /* const { layoutAlgorithm, enableFloorLabels } = this.state.getValue().appSettings
+        const { layoutAlgorithm, enableFloorLabels } = this.state.getValue().appSettings
         if (layoutAlgorithm !== LayoutAlgorithm.SquarifiedTreeMap || !enableFloorLabels) {
             return
-        }*/
+        }
 
         const rootNode = this.getRootNode(nodes)
         if (!rootNode) {
