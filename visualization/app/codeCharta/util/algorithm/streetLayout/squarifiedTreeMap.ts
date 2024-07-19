@@ -15,12 +15,12 @@ export default class SquarifiedTreeMap extends Treemap {
     layout(margin: number, origin: Vector2 = new Vector2(0, 0)): CodeMapNode[] {
         const rectangle = this.createMarginatedRectangle(origin)
         const rootNode: CodeMapNode = {
-            ...this.node,
+            ...this.mapNode,
             value: this.metricValue,
             rect: rectangle,
             zOffset: 0
         }
-        const children = this.node.children.filter(child => TreeMapHelper.calculateSize(child, this.metricName) > 0)
+        const children = this.mapNode.children.filter(child => TreeMapHelper.calculateSize(child, this.metricName) > 0)
 
         this.treeMapNodes.push(rootNode)
 

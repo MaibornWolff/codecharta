@@ -13,7 +13,7 @@ export enum HorizontalOrientation {
 
 export default class HorizontalStreet extends Street {
     protected children: BoundingBox[] = []
-    node: CodeMapNode
+    mapNode: CodeMapNode
     protected topRow: BoundingBox[] = []
     protected bottomRow: BoundingBox[] = []
     orientation: HorizontalOrientation
@@ -38,7 +38,7 @@ export default class HorizontalStreet extends Street {
         this.rearrangeRows()
 
         // TODO Add a comment what the following calculations are doing.
-        this.metricValue = StreetViewHelper.calculateSize(this.node, metricName)
+        this.metricValue = StreetViewHelper.calculateSize(this.mapNode, metricName)
         this.width = Math.max(this.getLength(this.topRow), this.getLength(this.bottomRow))
         this.height = this.getMaxHeight(this.topRow) + this.getStreetThickness() + this.getMaxHeight(this.bottomRow) + this.spacer
     }
@@ -84,7 +84,7 @@ export default class HorizontalStreet extends Street {
         this.streetRect = new Rectangle(streetOrigin, streetWidth, this.getStreetThickness())
 
         return {
-            ...this.node,
+            ...this.mapNode,
             value: this.metricValue,
             rect: this.streetRect,
             zOffset: 0
