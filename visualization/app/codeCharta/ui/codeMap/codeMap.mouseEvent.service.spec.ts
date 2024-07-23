@@ -19,6 +19,7 @@ import { State, Store } from "@ngrx/store"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { defaultState } from "../../state/store/state.manager"
 import { CODE_MAP_BUILDING, CODE_MAP_BUILDING_TS_NODE, CONSTANT_HIGHLIGHT, TEST_FILE_WITH_PATHS, TEST_NODES } from "../../util/dataMocks"
+import { expect } from "@jest/globals"
 
 jest.mock("../../state/selectors/accumulatedData/idToNode.selector", () => ({
     idToNodeSelector: jest.fn()
@@ -137,7 +138,9 @@ describe("codeMapMouseEventService", () => {
         threeCameraService = codeMapMouseEventService["threeCameraService"] = jest.fn().mockReturnValue({
             camera: {
                 updateMatrixWorld: jest.fn()
-            }
+            },
+            zoomIn: jest.fn(),
+            zoomOut: jest.fn()
         })()
     }
 
@@ -908,6 +911,24 @@ describe("codeMapMouseEventService", () => {
             expect(codeMapMouseEventService["drawLabelSelectedBuilding"]).toHaveBeenCalledTimes(2)
             expect(codeMapMouseEventService["clearTemporaryLabel"]).not.toHaveBeenCalled()
             expect(codeMapMouseEventService["labelSelectedBuilding"]).toEqual(referenceLabel)
+        })
+    })
+
+    describe("handleWheelEvent", () => {
+        it("should zoom in", () => {
+            const wheelEvent = new WheelEvent("wheel", { deltaY: -100, clientX: 50, clientY: 50 })
+            codeMapMouseEventService.handleWheelEvent(wheelEvent)
+
+            expect(threeCameraService.zoomIn).toHaveBeenCalled()
+            expect(threeRendererService.render).toHaveBeenCalled()
+        })
+
+        it("should zoom out", () => {
+            const wheelEvent = new WheelEvent("wheel", { deltaY: 100, clientX: 50, clientY: 50 })
+            codeMapMouseEventService.handleWheelEvent(wheelEvent)
+
+            expect(threeCameraService.zoomOut).toHaveBeenCalled()
+            expect(threeRendererService.render).toHaveBeenCalled()
         })
     })
 })
