@@ -244,7 +244,7 @@ export class Export3DMapDialogComponent {
     }
 
     private initRenderer(printPreviewScene, camera) {
-        const renderer = new WebGLRenderer()
+        const renderer = this.getGL()
         const currentSize = new Vector2()
         renderer.getSize(currentSize)
         const containerWidth = this.rendererContainer.nativeElement.offsetWidth
@@ -261,6 +261,10 @@ export class Export3DMapDialogComponent {
         }
 
         animate()
+    }
+
+    getGL() {
+        return new WebGLRenderer()
     }
 
     private updateCameraPosition(camera: PerspectiveCamera) {
