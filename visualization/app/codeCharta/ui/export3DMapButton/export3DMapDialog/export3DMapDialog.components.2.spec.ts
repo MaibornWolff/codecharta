@@ -1,31 +1,35 @@
-import { render, screen } from "@testing-library/angular"
-import { Export3DMapDialogComponent } from "./export3DMapDialog.component"
-import userEvent from "@testing-library/user-event"
 import { State } from "@ngrx/store"
+import { render, screen } from "@testing-library/angular"
+import userEvent from "@testing-library/user-event"
+import { AmbientLight, DirectionalLight, Font, Group, Scene, Shape, Vector2, Vector3, WebGLRenderer } from "three"
+import font from "three/examples/fonts/helvetiker_regular.typeface.json"
+import { Preview3DPrintMesh } from "../../../services/3DExports/3DPreview/preview3DPrintMesh"
 import { defaultState } from "../../../state/store/state.manager"
-import { ThreeSceneService } from "../../codeMap/threeViewer/threeSceneService"
 import { DEFAULT_STATE, TEST_NODES } from "../../../util/dataMocks"
 import { CodeMapMesh } from "../../codeMap/rendering/codeMapMesh"
+import { ThreeSceneService } from "../../codeMap/threeViewer/threeSceneService"
 import { Export3DMapButtonModule } from "../export3DMapButton.module"
-import { AmbientLight, DirectionalLight, Group, Scene, Vector2, Vector3, WebGLRenderer } from "three"
-import { Preview3DPrintMesh } from "../../../services/3DExports/3DPreview/preview3DPrintMesh"
+import { Export3DMapDialogComponent } from "./export3DMapDialog.component"
 
-
-// jest.mock("three", () => {
-//     const originalModule = jest.requireActual("three")
-
-//     // Mock FontLoader class
-//     originalModule.FontLoader = jest.fn().mockImplementation(() => {
-//         return {
-//             load: jest.fn((url, onLoad) => {
-//                 console.log(url)
-//                 const mockFont = {} // Replace this with a mock font object if needed
-//                 onLoad(mockFont)
-//             })
-//         }
-//     })
-//     return originalModule
-// })
+jest.mock('three/examples/jsm/loaders/SVGLoader', () => {
+    return {
+      SVGLoader: jest.fn().mockImplementation(() => {
+        return {
+          load: (url: string, onLoad: Function, onProgress?: Function, onError?: Function) => {
+            // Mock a scenario where the SVG loads successfully
+            const mockSVGData = {
+              paths: [
+                {
+                  toShapes: jest.fn().mockReturnValue([new Shape()]),
+                },
+              ],
+            };
+            onLoad(mockSVGData);
+          },
+        };
+      }),
+    };
+  });
 
 describe("Export3DMapDialogComponent2", () => {
     let codeMapMesh: CodeMapMesh
@@ -140,7 +144,7 @@ describe("Export3DMapDialogComponent2", () => {
         await userEvent.click(selectElement)
         detectChanges()
         //const options = debugElement.query(By.css('[data-testid="selectedPrinter"]'))
-        const options = screen.queryAllByTitle("Click to select this printer")
+        const options = screen.getAllByTestId("selectedPrinter")
 
         expect(options).toHaveLength(3)
 

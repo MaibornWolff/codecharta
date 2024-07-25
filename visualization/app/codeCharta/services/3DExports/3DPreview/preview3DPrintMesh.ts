@@ -5,6 +5,7 @@ import { GeneralMesh } from "./MeshModels/generalMesh"
 import { MapMesh } from "./MeshModels/mapMesh"
 import { BackPrintContainerMesh } from "./MeshModels/BackMeshModels/backPrintContainerMesh"
 import { FrontPrintContainerMesh } from "./MeshModels/FrontMeshModels/frontPrintContainerMesh"
+import font from "three/examples/fonts/helvetiker_regular.typeface.json"
 
 export interface GeometryOptions {
     originalMapMesh: Mesh
@@ -33,7 +34,6 @@ export interface GeometryOptions {
 
 export class Preview3DPrintMesh {
     //TODO: rename to PrintPreview
-    private font: Font
     private printMesh: Mesh
     private currentSize: Vector3
 
@@ -48,7 +48,6 @@ export class Preview3DPrintMesh {
     }
 
     async initialize() {
-        await this.loadFont()
         await this.createPrintPreviewMesh()
         this.calculateCurrentSize()
     }
@@ -72,10 +71,10 @@ export class Preview3DPrintMesh {
         this.mapMesh = await new MapMesh().init(this.geometryOptions)
         this.printMesh.add(this.mapMesh)
 
-        this.frontPrintContainerMesh = await new FrontPrintContainerMesh(this.font).init(this.geometryOptions)
+        this.frontPrintContainerMesh = await new FrontPrintContainerMesh(new Font(font)).init(this.geometryOptions)
         this.printMesh.add(this.frontPrintContainerMesh)
 
-        this.backPrintContainerMesh = await new BackPrintContainerMesh(this.font).init(this.geometryOptions)
+        this.backPrintContainerMesh = await new BackPrintContainerMesh(new Font(font)).init(this.geometryOptions)
         this.printMesh.add(this.backPrintContainerMesh)
     }
 
@@ -141,25 +140,7 @@ export class Preview3DPrintMesh {
     async updateSecondRowText(secondRowText: string) {
         await this.frontPrintContainerMesh.updateSecondRowText(secondRowText, this.geometryOptions)
     }
-
-    private async loadFont() {
-        const loader = new FontLoader()
-        return new Promise<void>((resolve, reject) => {
-            loader.load(
-                "codeCharta/assets/helvetiker_regular.typeface.json",
-                loadedFont => {
-                    this.font = loadedFont
-                    resolve()
-                },
-                undefined,
-                function (error) {
-                    console.error("Error loading font:", error)
-                    reject(error)
-                }
-            )
-        })
-    }
-
+   
     private calculateCurrentSize() {
         const currentWidth = this.baseplateMesh.getWidth()
         const currentDepth = this.baseplateMesh.getDepth()
