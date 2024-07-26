@@ -5,7 +5,7 @@ export class PositivePrintColorChangeStrategy implements ColorChangeStrategy {
         if (numberOfColors < 4) {
             return false
         }
-        const colorArray = numberOfColors >= 4 ? [0, 1, 0] : [1, 1, 1]
+        const colorArray = [0, 1, 0]
         mesh.material.color.setRGB(colorArray[0], colorArray[1], colorArray[2])
         return true
     }
