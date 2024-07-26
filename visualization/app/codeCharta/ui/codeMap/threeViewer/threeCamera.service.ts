@@ -6,7 +6,7 @@ export class ThreeCameraService {
     static VIEW_ANGLE = 45
     static NEAR = 50
     static FAR = 200_000 //TODO optimize renderer for far objects
-    static readonly MAX_ZOOM_Factor = 30
+    static readonly MAX_ZOOM_Factor = 50
     static readonly MIN_ZOOM_Factor = 0.1
     static readonly ZOOM_STEP = 0.1
     camera: PerspectiveCamera
