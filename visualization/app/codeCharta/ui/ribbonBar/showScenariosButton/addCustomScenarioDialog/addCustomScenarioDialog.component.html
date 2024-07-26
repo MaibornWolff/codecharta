@@ -3,27 +3,25 @@
 </mat-toolbar>
 
 <mat-dialog-content>
-    <div class="dialog-content">
-        <mat-form-field class="cc-add-custom-scenario-name-field">
+    <p>
+        <mat-form-field subscriptSizing="dynamic">
             <mat-label>Scenario Name</mat-label>
             <input matInput [formControl]="scenarioName" />
             @if (scenarioName.invalid) {
                 <mat-error>{{ scenarioName.getError("Error") }}</mat-error>
             }
         </mat-form-field>
-
-        <p>The scenario includes:</p>
-
-        <div class="cc-add-custon-scenario-toggles">
-            @for (property of scenarioContent; track property) {
-                <mat-slide-toggle [checked]="property.isSelected" (change)="handleScenarioMetricPropertySelectionChange(property)">
-                    {{ property.metricName ? property.metricType + " (" + property.metricName + ")" : property.metricType }}
-                </mat-slide-toggle>
-            }
-            @if (!areAnyScenarioMetricPropertiesSelected) {
-                <mat-error>You cannot create an empty Scenario.</mat-error>
-            }
-        </div>
+    </p>
+    <p>The scenario includes:</p>
+    <div class="cc-add-custom-scenario-toggles">
+        @for (property of scenarioContent; track property) {
+            <mat-slide-toggle [checked]="property.isSelected" (change)="handleScenarioMetricPropertySelectionChange(property)">
+                {{ property.metricName ? property.metricType + " (" + property.metricName + ")" : property.metricType }}
+            </mat-slide-toggle>
+        }
+        @if (!areAnyScenarioMetricPropertiesSelected) {
+            <mat-error>You cannot create an empty Scenario.</mat-error>
+        }
     </div>
 </mat-dialog-content>
 
