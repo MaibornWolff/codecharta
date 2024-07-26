@@ -285,12 +285,7 @@ export class CodeMapLabelService {
     private setLabelSize(sprite: Sprite, label: InternalLabel, labelWidth: number = sprite.material.map.image.width) {
         const mapCenter = new Box3().setFromObject(this.threeSceneService.mapGeometry).getBoundingSphere(new Sphere()).center
         if (this.threeCameraService.camera) {
-            const cameraPosition = new Vector3(
-                this.threeCameraService.camera.position.x / this.threeCameraService.camera.zoom,
-                this.threeCameraService.camera.position.y / this.threeCameraService.camera.zoom,
-                this.threeCameraService.camera.position.z / this.threeCameraService.camera.zoom
-            )
-            const distance = cameraPosition.distanceTo(mapCenter)
+            const distance = this.threeCameraService.camera.position.distanceTo(mapCenter) / this.threeCameraService.camera.zoom
             if (label !== null) {
                 this.lineCount = label.lineCount
             }
