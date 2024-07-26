@@ -41,6 +41,7 @@ export class CodeMapLabelService {
     ) {
         this.labels = new Array<InternalLabel>()
         this.threeOrbitControlsService.subscribe("onCameraChanged", () => this.onCameraChanged())
+        this.threeCameraService.subscribe("onCameraZoomChanged", () => this.onCameraChanged())
     }
 
     // Labels need to be scaled according to map or it will clip + looks bad
@@ -284,7 +285,12 @@ export class CodeMapLabelService {
     private setLabelSize(sprite: Sprite, label: InternalLabel, labelWidth: number = sprite.material.map.image.width) {
         const mapCenter = new Box3().setFromObject(this.threeSceneService.mapGeometry).getBoundingSphere(new Sphere()).center
         if (this.threeCameraService.camera) {
-            const distance = this.threeCameraService.camera.position.distanceTo(mapCenter)
+            const cameraPosition = new Vector3(
+                this.threeCameraService.camera.position.x / this.threeCameraService.camera.zoom,
+                this.threeCameraService.camera.position.y / this.threeCameraService.camera.zoom,
+                this.threeCameraService.camera.position.z / this.threeCameraService.camera.zoom
+            )
+            const distance = cameraPosition.distanceTo(mapCenter)
             if (label !== null) {
                 this.lineCount = label.lineCount
             }

@@ -1,5 +1,10 @@
 import { Injectable } from "@angular/core"
 import { PerspectiveCamera, Vector3 } from "three"
+import { EventEmitter } from "../../../util/EventEmitter"
+
+type CameraChangeEvents = {
+    onCameraZoomChanged: (data: { camera: PerspectiveCamera }) => void
+}
 
 @Injectable({ providedIn: "root" })
 export class ThreeCameraService {
@@ -8,7 +13,8 @@ export class ThreeCameraService {
     static FAR = 200_000 //TODO optimize renderer for far objects
     static readonly MAX_ZOOM_Factor = 50
     static readonly MIN_ZOOM_Factor = 0.1
-    static readonly ZOOM_STEP = 0.1
+    static readonly ZOOM_STEP = 0.25
+    private eventEmitter = new EventEmitter<CameraChangeEvents>()
     camera: PerspectiveCamera
     zoomFactor: number
 
@@ -27,6 +33,7 @@ export class ThreeCameraService {
     setZoomFactor(zoomFactor: number) {
         this.camera.zoom = zoomFactor
         this.zoomFactor = zoomFactor
+        this.eventEmitter.emit("onCameraZoomChanged", { camera: this.camera })
         this.camera.updateProjectionMatrix()
     }
 
@@ -36,5 +43,11 @@ export class ThreeCameraService {
 
     zoomOut() {
         this.setZoomFactor(Math.max(this.zoomFactor - ThreeCameraService.ZOOM_STEP, ThreeCameraService.MIN_ZOOM_Factor))
+    }
+
+    subscribe<Key extends keyof CameraChangeEvents>(key: Key, callback: CameraChangeEvents[Key]) {
+        this.eventEmitter.on(key, data => {
+            callback(data)
+        })
     }
 }
