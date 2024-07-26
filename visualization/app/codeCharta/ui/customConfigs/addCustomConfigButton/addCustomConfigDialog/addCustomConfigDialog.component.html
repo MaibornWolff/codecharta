@@ -13,7 +13,6 @@
             }
         </mat-form-field>
     </p>
-
     <p>
         <mat-form-field>
             <mat-label>Provide custom note for configuration (optional)</mat-label>
@@ -24,7 +23,8 @@
                 class="custom-config-input"
                 [(ngModel)]="customConfigNote"
                 required
-            ></textarea>
+            >
+            </textarea>
             <mat-hint>Config Note</mat-hint>
         </mat-form-field>
     </p>
@@ -33,13 +33,5 @@
 <mat-dialog-actions>
     <cc-download-and-purge-configs></cc-download-and-purge-configs>
 
-    <button
-        mat-flat-button
-        mat-dialog-close
-        class="add-custom-config-button"
-        (click)="addCustomConfig()"
-        [disabled]="customConfigName.invalid"
-    >
-        ADD
-    </button>
+    <button mat-flat-button mat-dialog-close (click)="addCustomConfig()" [disabled]="customConfigName.invalid">ADD</button>
 </mat-dialog-actions>
