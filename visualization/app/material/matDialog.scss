@@ -1,5 +1,11 @@
 @use "variables";
 
+mat-dialog-content {
+    mat-form-field {
+        width: 100%;
+    }
+}
+
 mat-dialog-container {
     .cc-dialog {
         &.suspicious-metric-dialog {

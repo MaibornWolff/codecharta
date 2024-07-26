@@ -1,18 +1,9 @@
-@import "variables";
+.cc-add-custom-scenario-toggles {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
 
-// TODO: Apply this globally (See issue: https://github.com/MaibornWolff/codecharta/issues/3654)
-mat-dialog-content {
-    mat-form-field {
-        width: 100%;
-    }
-
-    .cc-add-custon-scenario-toggles {
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-
-        mat-slide-toggle {
-            display: block;
-        }
-    }
+mat-slide-toggle {
+    display: block;
 }

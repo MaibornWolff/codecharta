@@ -9,8 +9,7 @@ import { CcState } from "../../../../codeCharta.model"
 import { State } from "@ngrx/store"
 
 @Component({
-    templateUrl: "./addCustomConfigDialog.component.html",
-    styleUrls: ["./addCustomConfigDialog.component.scss"]
+    templateUrl: "./addCustomConfigDialog.component.html"
 })
 export class AddCustomConfigDialogComponent implements OnInit {
     customConfigName: UntypedFormControl
