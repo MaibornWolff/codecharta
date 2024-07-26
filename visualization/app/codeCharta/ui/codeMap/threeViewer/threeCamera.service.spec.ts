@@ -45,8 +45,8 @@ describe("ThreeCameraService", () => {
         it("should change zoomFactor correctly", () => {
             jest.spyOn(threeCameraService, "setZoomFactor") // Spy on setZoomFactor
             threeCameraService.zoomIn()
-            expect(threeCameraService.camera.zoom).toEqual(1.1)
-            expect(threeCameraService.setZoomFactor).toHaveBeenCalledWith(1.1)
+            expect(threeCameraService.camera.zoom).toEqual(1.25)
+            expect(threeCameraService.setZoomFactor).toHaveBeenCalledWith(1.25)
         })
 
         it("should not exceed MAX_ZOOM_FACTOR", () => {
@@ -67,8 +67,8 @@ describe("ThreeCameraService", () => {
         it("should change zoomFactor correctly", () => {
             jest.spyOn(threeCameraService, "setZoomFactor")
             threeCameraService.zoomOut()
-            expect(threeCameraService.camera.zoom).toEqual(0.9)
-            expect(threeCameraService.setZoomFactor).toHaveBeenCalledWith(0.9)
+            expect(threeCameraService.camera.zoom).toEqual(0.75)
+            expect(threeCameraService.setZoomFactor).toHaveBeenCalledWith(0.75)
         })
 
         it("should not fall behind MIN_ZOOM_FACTOR", () => {
