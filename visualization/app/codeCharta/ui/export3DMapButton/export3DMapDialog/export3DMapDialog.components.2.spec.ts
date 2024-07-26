@@ -11,25 +11,25 @@ import { ThreeSceneService } from "../../codeMap/threeViewer/threeSceneService"
 import { Export3DMapButtonModule } from "../export3DMapButton.module"
 import { Export3DMapDialogComponent } from "./export3DMapDialog.component"
 
-jest.mock('three/examples/jsm/loaders/SVGLoader', () => {
+jest.mock("three/examples/jsm/loaders/SVGLoader", () => {
     return {
-      SVGLoader: jest.fn().mockImplementation(() => {
-        return {
-          load: (url: string, onLoad: Function, onProgress?: Function, onError?: Function) => {
-            // Mock a scenario where the SVG loads successfully
-            const mockSVGData = {
-              paths: [
-                {
-                  toShapes: jest.fn().mockReturnValue([new Shape()]),
-                },
-              ],
-            };
-            onLoad(mockSVGData);
-          },
-        };
-      }),
-    };
-  });
+        SVGLoader: jest.fn().mockImplementation(() => {
+            return {
+                load: (url: string, onLoad: Function, onProgress?: Function, onError?: Function) => {
+                    // Mock a scenario where the SVG loads successfully
+                    const mockSVGData = {
+                        paths: [
+                            {
+                                toShapes: jest.fn().mockReturnValue([new Shape()])
+                            }
+                        ]
+                    }
+                    onLoad(mockSVGData)
+                }
+            }
+        })
+    }
+})
 
 describe("Export3DMapDialogComponent2", () => {
     let codeMapMesh: CodeMapMesh
@@ -114,10 +114,6 @@ describe("Export3DMapDialogComponent2", () => {
         }
 
         const webGLMockInDialog = jest.spyOn(Export3DMapDialogComponent.prototype, "getGL").mockReturnValue(mockedWebGLRenderer())
-
-
-
-
     })
 
     async function setup() {
@@ -153,7 +149,5 @@ describe("Export3DMapDialogComponent2", () => {
 
         const scale = screen.getByTestId("scale").innerHTML
         console.log("scale", scale)
-
-
     })
 })

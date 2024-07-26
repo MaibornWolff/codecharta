@@ -140,7 +140,7 @@ export class Preview3DPrintMesh {
     async updateSecondRowText(secondRowText: string) {
         await this.frontPrintContainerMesh.updateSecondRowText(secondRowText, this.geometryOptions)
     }
-   
+
     private calculateCurrentSize() {
         const currentWidth = this.baseplateMesh.getWidth()
         const currentDepth = this.baseplateMesh.getDepth()

@@ -91,7 +91,10 @@ export class Export3DMapDialogComponent {
     private readonly baseplateHeight = 1 //should be a multiple of layerHeight
     private readonly logoSize = 10
 
-    constructor(private state: State<CcState>, private threeSceneService: ThreeSceneService) {
+    constructor(
+        private state: State<CcState>,
+        private threeSceneService: ThreeSceneService
+    ) {
         //console.log(this.threeSceneService)
         this.maxWidth = calculateMaxPossibleWidthForPreview3DPrintMesh(
             new Vector3(this.selectedPrinter.x, this.selectedPrinter.y, this.selectedPrinter.z),
