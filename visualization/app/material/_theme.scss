@@ -5,9 +5,14 @@
 
 :root {
     --mat-dialog-container-min-width: 500px;
+    --mat-dialog-actions-alignment: flex-end;
+
     --mat-toolbar-container-background-color: #{$cc-primary-color};
     --mat-toolbar-container-text-color: #fff;
-    --mat-dialog-actions-alignment: flex-end;
+
+    --exceed-local-storage-message-text-color: #b02929;
+    --exceed-local-storage-button-text-color: #ffffff;
+    --exceed-local-storage-button-background-color: #b02929;
 
     // HACK: For the lack of a better way to change the checkmark colors directly in theme
     .mat-mdc-checkbox.mat-accent {
