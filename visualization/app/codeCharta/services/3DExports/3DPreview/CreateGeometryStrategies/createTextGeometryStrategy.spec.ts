@@ -1,11 +1,11 @@
 import { BufferGeometry, Font } from "three"
-import { GeometryOptions } from "../preview3DPrintMesh"
 import { CreateTextGeometryStrategy, CreateTextGeometryStrategyOptions } from "./createTextGeometryStrategy"
+import { GeometryOptions } from "../preview3DPrintMesh"
+import HelvetikerFont from "three/examples/fonts/helvetiker_regular.typeface.json"
 
 jest.mock("three/examples/jsm/utils/BufferGeometryUtils", () => ({
     BufferGeometryUtils: {
         mergeBufferGeometries: jest.fn(geometries => {
-            // Mock implementation of mergeBufferGeometries
             const merged = new BufferGeometry()
             merged.userData.geometries = geometries // Store original geometries for testing
             return merged
@@ -19,7 +19,7 @@ describe("CreateTextGeometryStrategy", () => {
 
     beforeEach(() => {
         strategy = new CreateTextGeometryStrategy()
-        font = new Font(font)
+        font = new Font(HelvetikerFont)
         jest.clearAllMocks()
     })
 
@@ -42,8 +42,6 @@ describe("CreateTextGeometryStrategy", () => {
         const geometry = await strategy.create(geometryOptions, createTextGeometryStrategyOptions)
 
         expect(geometry).toBeInstanceOf(BufferGeometry)
-
-        // Check the resulting geometry attributes against a snapshot
         expect(geometry.attributes).toMatchSnapshot()
     })
 
@@ -66,8 +64,6 @@ describe("CreateTextGeometryStrategy", () => {
         const geometry = await strategy.create(geometryOptions, createTextGeometryStrategyOptions)
 
         expect(geometry).toBeInstanceOf(BufferGeometry)
-
-        // Check the resulting geometry attributes against a snapshot
         expect(geometry.attributes).toMatchSnapshot()
     })
 
@@ -90,8 +86,6 @@ describe("CreateTextGeometryStrategy", () => {
         const geometry = await strategy.create(geometryOptions, createTextGeometryStrategyOptions)
 
         expect(geometry).toBeInstanceOf(BufferGeometry)
-
-        // Check the resulting geometry attributes against a snapshot
         expect(geometry.attributes).toMatchSnapshot()
     })
 })

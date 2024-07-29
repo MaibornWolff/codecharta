@@ -20,18 +20,14 @@ describe("CreateSvgGeometryStrategy", () => {
             side: "front"
         } as unknown as CreateSvgGeometryStrategyOptions
 
-        // Example SVG path data
         const svgData = `
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
                 <path d="M10 10 H 90 V 90 H 10 L 10 10" />
             </svg>
         `
 
-        // Use SVGLoader to parse the SVG string
         const loader = new SVGLoader()
         const svg = loader.parse(svgData)
-
-        // Mock the load method to return parsed SVG data
         jest.spyOn(SVGLoader.prototype, "load").mockImplementation((url, onLoad) => {
             onLoad(svg)
         })
@@ -52,18 +48,14 @@ describe("CreateSvgGeometryStrategy", () => {
             side: "back"
         } as unknown as CreateSvgGeometryStrategyOptions
 
-        // Example SVG path data
         const svgData = `
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
                 <path d="M10 10 H 90 V 90 H 10 L 10 10" />
             </svg>
         `
 
-        // Use SVGLoader to parse the SVG string
         const loader = new SVGLoader()
         const svg = loader.parse(svgData)
-
-        // Mock the load method to return parsed SVG data
         jest.spyOn(SVGLoader.prototype, "load").mockImplementation((url, onLoad) => {
             onLoad(svg)
         })
