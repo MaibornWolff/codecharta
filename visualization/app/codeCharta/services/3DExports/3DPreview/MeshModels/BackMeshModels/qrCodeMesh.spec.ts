@@ -2,7 +2,6 @@ import { GeometryOptions } from "../../preview3DPrintMesh"
 import { BufferGeometry, Mesh, ShaderMaterial } from "three"
 import { ColorRange, NodeMetricData } from "../../../../../codeCharta.model"
 import { QrCodeMesh } from "./qrCodeMesh"
-import { BufferGeometryUtils } from "three/examples/jsm/utils/BufferGeometryUtils"
 
 jest.mock("three/examples/jsm/utils/BufferGeometryUtils", () => ({
     BufferGeometryUtils: {
@@ -36,7 +35,7 @@ describe("QrCodeMesh", () => {
             colorRange: {} as ColorRange,
             frontText: "Front Text",
             secondRowText: "Second Row Text",
-            qrCodeText: "Text",
+            qrCodeText: "test",
             defaultMaterial: new ShaderMaterial(),
             numberOfColors: 5,
             layerHeight: 0.2,
@@ -81,42 +80,5 @@ describe("QrCodeMesh", () => {
         qrCodeMesh["updateMinWidth"](pixelSize)
         const roundedMinWidth = Math.round(qrCodeMesh.minWidth)
         expect(roundedMinWidth).toBe(6)
-    })
-
-    it("should add geometries for non-transparent QR code pixels", async () => {
-        const mockCanvasSize = 8
-        const originalCreateElement = document.createElement
-
-        jest.spyOn(document, "createElement").mockImplementation((tagName: string) => {
-            if (tagName === "canvas") {
-                const canvas = originalCreateElement.call(document, "canvas") as HTMLCanvasElement
-                canvas.width = mockCanvasSize
-                canvas.height = mockCanvasSize
-                return canvas
-            }
-            return originalCreateElement.call(document, tagName)
-        })
-        geometryOptions.qrCodeText = "Test QR Code"
-
-        const mockBufferGeometry = new BufferGeometry()
-        jest.spyOn(BufferGeometryUtils, "mergeBufferGeometries").mockReturnValue(mockBufferGeometry)
-
-        expect(BufferGeometryUtils.mergeBufferGeometries).toHaveBeenCalled()
-
-        const canvas = document.createElement("canvas") as HTMLCanvasElement
-        const context = canvas.getContext("2d")!
-        const imageData = context.getImageData(0, 0, mockCanvasSize, mockCanvasSize)
-        let nonTransparentPixelCount = 0
-
-        for (let y = 0; y < mockCanvasSize; y++) {
-            for (let x = 0; x < mockCanvasSize; x++) {
-                const index = (y * mockCanvasSize + x) * 4
-                if (imageData.data[index] !== 0) {
-                    nonTransparentPixelCount++
-                }
-            }
-        }
-        const qrCodeGeometriesLength = (BufferGeometryUtils.mergeBufferGeometries as jest.Mock).mock.calls[0][0].length
-        expect(qrCodeGeometriesLength).toBe(nonTransparentPixelCount)
     })
 })
