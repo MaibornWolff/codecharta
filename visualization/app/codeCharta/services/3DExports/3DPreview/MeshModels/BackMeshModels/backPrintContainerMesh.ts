@@ -65,4 +65,7 @@ export class BackPrintContainerMesh extends GeneralMesh implements GeneralSizeCh
         const qrCodeMesh = this.childrenMeshes.get("QrCode") as QrCodeMesh
         qrCodeMesh.setManualVisibility(qrCodeVisible)
     }
+    getChildrenMeshes(): Map<string, GeneralMesh> {
+        return this.childrenMeshes
+    }
 }
