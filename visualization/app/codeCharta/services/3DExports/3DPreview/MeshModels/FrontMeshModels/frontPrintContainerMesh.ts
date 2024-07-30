@@ -94,4 +94,8 @@ export class FrontPrintContainerMesh extends GeneralMesh implements GeneralSizeC
         frontMWLogoMesh.changeRelativeSize(geometryOptions)
         customLogoMesh?.changeRelativeSize(geometryOptions)
     }
+
+    getChildrenMeshes(): Map<string, GeneralMesh> {
+        return this.childrenMeshes
+    }
 }
