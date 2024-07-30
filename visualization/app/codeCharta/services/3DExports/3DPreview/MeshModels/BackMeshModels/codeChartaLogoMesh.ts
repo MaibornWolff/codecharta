@@ -1,17 +1,19 @@
-import { CustomVisibilityMesh } from "../customVisibilityMesh"
+import { BackPrintColorChangeStrategy } from "../../ColorChangeStrategies/backPrintColorChangeStrategy"
 import { CreateSvgGeometryStrategy } from "../../CreateGeometryStrategies/createSvgGeometryStrategy"
 import { GeometryOptions } from "../../preview3DPrintMesh"
-import { BackPrintColorChangeStrategy } from "../../ColorChangeStrategies/backPrintColorChangeStrategy"
+import { CustomVisibilityMesh } from "../customVisibilityMesh"
 
 export class CodeChartaLogoMesh extends CustomVisibilityMesh {
-    constructor(name: string) {
+    private createSvgStrategy: CreateSvgGeometryStrategy
+
+    constructor(name: string, createSvgStrategy: CreateSvgGeometryStrategy = new CreateSvgGeometryStrategy()) {
         super(name, new BackPrintColorChangeStrategy(), 180, true)
+        this.createSvgStrategy = createSvgStrategy
     }
 
     async init(geometryOptions: GeometryOptions): Promise<CodeChartaLogoMesh> {
-        const createSvgStrategy = new CreateSvgGeometryStrategy()
         const size = 0.17
-        this.geometry = await createSvgStrategy.create(geometryOptions, {
+        this.geometry = await this.createSvgStrategy.create(geometryOptions, {
             filePath: "codeCharta/assets/codecharta_logo.svg",
             size,
             side: "back"
