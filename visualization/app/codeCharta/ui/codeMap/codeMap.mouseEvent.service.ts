@@ -454,10 +454,8 @@ export class CodeMapMouseEventService implements OnDestroy {
 
     handleWheelEvent(event: WheelEvent) {
         if (event.deltaY < 0) {
-            // scroll up
             this.threeCameraService.zoomIn()
         } else {
-            // scroll down
             this.threeCameraService.zoomOut()
         }
         this.threeRendererService.render()
