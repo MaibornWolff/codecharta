@@ -61,7 +61,7 @@ describe("CodeMapLabelService", () => {
     }
 
     function rebuild() {
-        codeMapLabelService = new CodeMapLabelService(state, store, threeCameraService, threeSceneService, threeOrbitControlsService)
+        codeMapLabelService = new CodeMapLabelService(state, threeCameraService, threeSceneService, threeOrbitControlsService)
     }
 
     function withMockedThreeCameraService() {
