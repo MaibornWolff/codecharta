@@ -1,13 +1,9 @@
-@use "../../../../material/theme";
+@use "variables";
 
 .cc-confirm-reset-map-dialog .mat-mdc-dialog-container {
-    padding: 0;
-    width: 500px;
-    overflow: hidden;
-
     mat-toolbar {
         &.header {
-            background-color: theme.$cc-primary-color;
+            background-color: variables.$cc-primary-color;
             h2 {
                 color: white;
             }
@@ -24,7 +20,7 @@
         .mat-mdc-button {
             padding: 0 8px;
             margin: 8px 0 8px 8px;
-            color: theme.$cc-primary-color;
+            color: variables.$cc-primary-color;
             background-color: rgba(138, 132, 132, 0.08);
             bottom: 0;
         }

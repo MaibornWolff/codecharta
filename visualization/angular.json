@@ -28,10 +28,14 @@
             "inlineStyleLanguage": "sass",
             "assets": ["app/codeCharta/assets"],
             "styles": ["app/app.scss", "material-icons/iconfont/material-icons.css"],
+            "stylePreprocessorOptions": {
+              "includePaths": ["app/material"]
+            },
             "customWebpackConfig": {
               "path": "conf/webpack.config.js"
             },
-            "scripts": []
+            "scripts": [],
+            "allowedCommonJsDependencies": ["ajv", "color-convert", "html2canvas", "ignore", "md5", "three-orbit-controls"]
           },
           "configurations": {
             "production": {
