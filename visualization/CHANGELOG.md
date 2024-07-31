@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Fixed 🐞
+
+- Zooming doesn't affect the camera position [#3147](https://github.com/MaibornWolff/codecharta/pull/3665)
+- Fix the issue where the map disappears after excessive zooming out.[#3147](https://github.com/MaibornWolff/codecharta/pull/3665)
+
 ### Added 🚀
 
 - Export multi-material 3MF for 3D printing of maps in color [#3616](https://github.com/MaibornWolff/codecharta/pull/3616)

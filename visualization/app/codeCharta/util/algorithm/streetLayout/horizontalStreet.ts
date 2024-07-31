@@ -12,22 +12,16 @@ export enum HorizontalOrientation {
 }
 
 export default class HorizontalStreet extends Street {
-    private children: BoundingBox[] = []
-    protected node: CodeMapNode
+    protected children: BoundingBox[] = []
+    node: CodeMapNode
     protected topRow: BoundingBox[] = []
     protected bottomRow: BoundingBox[] = []
     orientation: HorizontalOrientation
     protected depth: number
 
-    constructor(
-        node: CodeMapNode,
-        children: BoundingBox[],
-        depth: number,
-        orientation: HorizontalOrientation = HorizontalOrientation.RIGHT
-    ) {
+    constructor(node: CodeMapNode, children: BoundingBox[], orientation: HorizontalOrientation = HorizontalOrientation.RIGHT) {
         super(node)
         this.children = children
-        this.depth = depth
         this.orientation = orientation
     }
 
@@ -46,7 +40,7 @@ export default class HorizontalStreet extends Street {
         // TODO Add a comment what the following calculations are doing.
         this.metricValue = StreetViewHelper.calculateSize(this.node, metricName)
         this.width = Math.max(this.getLength(this.topRow), this.getLength(this.bottomRow))
-        this.height = this.getMaxHeight(this.topRow) + this.getStreetThickness() + this.getMaxHeight(this.bottomRow) + 2 * this.spacer
+        this.height = this.getMaxHeight(this.topRow) + this.getStreetThickness() + this.getMaxHeight(this.bottomRow) + this.spacer
     }
 
     layout(margin: number, origin: Vector2): CodeMapNode[] {
@@ -132,7 +126,7 @@ export default class HorizontalStreet extends Street {
     /**
      * Calculates y-coordinate of street.
      * @param origin origin of local coordinate system
-     * @param maxLeftWidth highest node in topRow
+     * @param maxTopHeight highest node in topRow
      */
     private calculateStreetOffsetY(origin: Vector2, maxTopHeight: number): number {
         return origin.y + this.spacer + maxTopHeight
@@ -165,11 +159,15 @@ export default class HorizontalStreet extends Street {
      * @param children children of the current node
      */
     protected splitChildrenToRows(children: BoundingBox[]): void {
-        const totalLength = this.getLength(children)
+        let totalLength = 0
         let sum = 0
 
         for (const child of children) {
-            if (sum < totalLength / 2) {
+            totalLength += child.width
+        }
+
+        for (const child of children) {
+            if (sum <= totalLength / 2) {
                 this.topRow.push(child)
                 sum += child.width
             } else {

@@ -36,10 +36,10 @@ function mergeDirectories(node: CodeMapNode, metricName: string): CodeMapNode {
     return mergedNode
 }
 
-function buildNodeFrom(layoutNode: CodeMapNode, heightScale: number, maxHeight: number, s: CcState, isDeltaState: boolean): Node {
+function buildNodeFrom(layoutNode: CodeMapNode, heightScale: number, maxHeight: number, state: CcState, isDeltaState: boolean): Node {
     const isNodeLeaf = !(layoutNode.children && layoutNode.children.length > 0)
-    const flattened: boolean = isNodeFlat(layoutNode, s)
-    const heightValue: number = TreeMapHelper.getHeightValue(s, layoutNode, maxHeight, flattened)
+    const flattened: boolean = isNodeFlat(layoutNode, state)
+    const heightValue: number = TreeMapHelper.getHeightValue(state, layoutNode, maxHeight, flattened)
     const height = Math.abs(
         isNodeLeaf ? Math.max(heightScale * heightValue, TreeMapHelper.MIN_BUILDING_HEIGHT) : TreeMapHelper.FOLDER_HEIGHT
     )
@@ -64,15 +64,15 @@ function buildNodeFrom(layoutNode: CodeMapNode, heightScale: number, maxHeight: 
         attributes: layoutNode.attributes,
         edgeAttributes: layoutNode.edgeAttributes,
         deltas: layoutNode.deltas,
-        heightDelta: layoutNode.deltas?.[s.dynamicSettings.heightMetric]
-            ? heightScale * layoutNode.deltas[s.dynamicSettings.heightMetric]
+        heightDelta: layoutNode.deltas?.[state.dynamicSettings.heightMetric]
+            ? heightScale * layoutNode.deltas[state.dynamicSettings.heightMetric]
             : 0,
-        visible: isVisible(layoutNode, isNodeLeaf, s, flattened),
+        visible: isVisible(layoutNode, isNodeLeaf, state, flattened),
         path: layoutNode.path,
         link: layoutNode.link,
-        markingColor: getMarkingColor(layoutNode, s.fileSettings.markedPackages),
+        markingColor: getMarkingColor(layoutNode, state.fileSettings.markedPackages),
         flat: flattened,
-        color: getBuildingColor(layoutNode, s, selectedColorMetricDataSelector(s), isDeltaState, flattened),
+        color: getBuildingColor(layoutNode, state, selectedColorMetricDataSelector(state), isDeltaState, flattened),
         incomingEdgePoint: getIncomingEdgePoint(layoutNode.rect.width, height, length, new Vector3(x0, z0, y0), treeMapSize),
         outgoingEdgePoint: getIncomingEdgePoint(layoutNode.rect.width, height, length, new Vector3(x0, z0, y0), treeMapSize)
     }

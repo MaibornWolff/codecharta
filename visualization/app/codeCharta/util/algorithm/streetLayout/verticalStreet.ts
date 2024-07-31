@@ -2,7 +2,7 @@ import BoundingBox from "./boundingBox"
 import Rectangle from "./rectangle"
 import HorizontalStreet, { HorizontalOrientation } from "./horizontalStreet"
 import Street from "./street"
-import { CodeMapNode } from "../../../codeCharta.model"
+import { CodeMapNode, NodeType } from "../../../codeCharta.model"
 import { StreetViewHelper } from "./streetViewHelper"
 import { Vector2 } from "three"
 
@@ -12,16 +12,15 @@ export enum VerticalOrientation {
 }
 
 export default class VerticalStreet extends Street {
-    private children: BoundingBox[] = []
+    protected children: BoundingBox[] = []
     protected leftRow: BoundingBox[] = []
     protected rightRow: BoundingBox[] = []
     orientation: VerticalOrientation
-    protected depth: number
+    private _origin: Vector2
 
     constructor(node: CodeMapNode, children: BoundingBox[], depth: number, orientation: VerticalOrientation = VerticalOrientation.UP) {
         super(node)
         this.children = children
-        this.depth = depth
         this.orientation = orientation
     }
 
@@ -80,7 +79,7 @@ export default class VerticalStreet extends Street {
             value: metricValue,
             rect: this.streetRect,
             zOffset: 0
-        } as CodeMapNode
+        }
     }
 
     private layoutRightRow(origin: Vector2, maxLeftWidth: number, margin: number): CodeMapNode[] {
@@ -121,12 +120,29 @@ export default class VerticalStreet extends Street {
         return sum
     }
 
-    protected splitChildrenToRows(children: BoundingBox[]) {
-        const totalLength = this.getLength(children)
+    protected sortChildrenByType(children: BoundingBox[]): void {
+        children.sort((a, b) => {
+            if (a.node.type === b.node.type) {
+                return 0
+            }
+            if (a.node.type === NodeType.FILE) {
+                return -1
+            }
+            return 1
+        })
+    }
+    protected splitChildrenToRows(children: BoundingBox[]): void {
+        this.sortChildrenByType(children)
+
+        let totalLength = 0
         let sum = 0
 
         for (const child of children) {
-            if (sum < totalLength / 2) {
+            totalLength += child.height
+        }
+
+        for (const child of children) {
+            if (sum <= totalLength / 2) {
                 if (child instanceof HorizontalStreet) {
                     child.orientation = HorizontalOrientation.LEFT
                 }
