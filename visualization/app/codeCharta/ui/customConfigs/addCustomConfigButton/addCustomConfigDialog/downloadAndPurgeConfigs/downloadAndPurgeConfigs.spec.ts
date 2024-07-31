@@ -1,4 +1,4 @@
-import { validateLocalStorageSize } from "../validateLocalStorageSize"
+import { validateLocalStorageSize } from "./validateLocalStorageSize"
 import { DownloadAndPurgeConfigsComponent } from "./downloadAndPurgeConfigs.component"
 import { render, screen } from "@testing-library/angular"
 import { TestBed } from "@angular/core/testing"
@@ -7,15 +7,15 @@ import userEvent from "@testing-library/user-event"
 import { ConfirmationDialogComponent } from "../../../../dialogs/confirmationDialog/confirmationDialog.component"
 import { NgModule } from "@angular/core"
 import { ErrorDialogComponent } from "../../../../dialogs/errorDialog/errorDialog.component"
-import { downloadAndCollectPurgeableConfigs } from "../downloadAndCollectPurgeableConfigs"
+import { downloadAndCollectPurgeableConfigs } from "./downloadAndCollectPurgeableConfigs"
 import { CustomConfig } from "../../../../../model/customConfig/customConfig.api.model"
 import { CustomConfigHelper } from "../../../../../util/customConfigHelper"
 import { InteractivityChecker } from "@angular/cdk/a11y"
 
-jest.mock("../validateLocalStorageSize", () => ({ validateLocalStorageSize: jest.fn() }))
+jest.mock("./validateLocalStorageSize", () => ({ validateLocalStorageSize: jest.fn() }))
 const mockedValidateLocalStorageSize = jest.mocked(validateLocalStorageSize)
 
-jest.mock("../downloadAndCollectPurgeableConfigs", () => ({ downloadAndCollectPurgeableConfigs: jest.fn() }))
+jest.mock("./downloadAndCollectPurgeableConfigs", () => ({ downloadAndCollectPurgeableConfigs: jest.fn() }))
 const mockedDownloadAndCollectPurgeableOldConfigs = jest.mocked(downloadAndCollectPurgeableConfigs)
 
 describe("downloadAndPurgeConfigsComponent", () => {

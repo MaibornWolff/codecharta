@@ -1,8 +1,8 @@
-@use "../../../../../material/theme";
+@use "variables";
 
 cc-custom-config-item-group {
     .custom-config-item-group-title {
-        color: theme.$cc-font-color;
+        color: variables.$cc-font-color;
         display: inline-block;
     }
 

@@ -1,15 +1,15 @@
-import { Component, OnInit, ViewEncapsulation } from "@angular/core"
+import { Component, OnInit } from "@angular/core"
 import { ErrorDialogComponent } from "../../../../dialogs/errorDialog/errorDialog.component"
 import { ConfirmationDialogComponent } from "../../../../dialogs/confirmationDialog/confirmationDialog.component"
 import { CustomConfigHelper } from "../../../../../util/customConfigHelper"
 import { MatDialog } from "@angular/material/dialog"
-import { validateLocalStorageSize } from "../validateLocalStorageSize"
-import { downloadAndCollectPurgeableConfigs } from "../downloadAndCollectPurgeableConfigs"
+import { validateLocalStorageSize } from "./validateLocalStorageSize"
+import { downloadAndCollectPurgeableConfigs } from "./downloadAndCollectPurgeableConfigs"
 
 @Component({
     selector: "cc-download-and-purge-configs",
     templateUrl: "./downloadAndPurgeConfigs.component.html",
-    encapsulation: ViewEncapsulation.None
+    styleUrl: "./downloadAndPurgeConfigs.component.scss"
 })
 export class DownloadAndPurgeConfigsComponent implements OnInit {
     isLocalStorageSizeValid = true

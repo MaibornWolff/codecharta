@@ -1,0 +1,37 @@
+<mat-toolbar class="header" xmlns="http://www.w3.org/1999/html">
+    <h2>Add Scenario</h2>
+</mat-toolbar>
+
+<mat-dialog-content>
+    <p>
+        <mat-form-field subscriptSizing="dynamic">
+            <mat-label>Scenario Name</mat-label>
+            <input matInput [formControl]="scenarioName" />
+            @if (scenarioName.invalid) {
+                <mat-error>{{ scenarioName.getError("Error") }}</mat-error>
+            }
+        </mat-form-field>
+    </p>
+    <p>The scenario includes:</p>
+    <div class="cc-add-custom-scenario-toggles">
+        @for (property of scenarioContent; track property) {
+            <mat-slide-toggle [checked]="property.isSelected" (change)="handleScenarioMetricPropertySelectionChange(property)">
+                {{ property.metricName ? property.metricType + " (" + property.metricName + ")" : property.metricType }}
+            </mat-slide-toggle>
+        }
+        @if (!areAnyScenarioMetricPropertiesSelected) {
+            <mat-error>You cannot create an empty Scenario.</mat-error>
+        }
+    </div>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+    <button
+        mat-flat-button
+        mat-dialog-close
+        [disabled]="scenarioName.invalid || !areAnyScenarioMetricPropertiesSelected"
+        (click)="addCustomScenario()"
+    >
+        ADD
+    </button>
+</mat-dialog-actions>

@@ -2,10 +2,10 @@ import { CommonModule } from "@angular/common"
 import { NgModule } from "@angular/core"
 import { FormsModule, ReactiveFormsModule } from "@angular/forms"
 import { MaterialModule } from "../../../../../material/material.module"
-import { AddCustomScenarioComponent } from "./addCustomScenario.component"
+import { AddCustomScenarioDialogComponent } from "./addCustomScenarioDialog.component"
 
 @NgModule({
     imports: [CommonModule, FormsModule, ReactiveFormsModule, MaterialModule],
-    declarations: [AddCustomScenarioComponent]
+    declarations: [AddCustomScenarioDialogComponent]
 })
-export class AddCustomScenarioModule {}
+export class AddCustomScenarioDialogModule {}
