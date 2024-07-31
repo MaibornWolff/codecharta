@@ -128,4 +128,16 @@ describe("FrontPrintContainerMesh", () => {
             expect(customLogoMesh.changeRelativeSize).toHaveBeenCalledWith(geometryOptions)
         }
     })
+
+    it("should remove the custom logo", async () => {
+        const frontPrintContainerMesh = new FrontPrintContainerMesh(font)
+        await frontPrintContainerMesh.init(geometryOptions)
+
+        const dataUrl = "data:image/png;base64,someBase64String"
+        await frontPrintContainerMesh.addCustomLogo(dataUrl, geometryOptions)
+
+        frontPrintContainerMesh.removeCustomLogo()
+
+        expect(frontPrintContainerMesh.getChildrenMeshes().has("CustomLogo")).toBe(false)
+    })
 })
