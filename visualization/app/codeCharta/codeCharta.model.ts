@@ -381,4 +381,5 @@ export interface AppStatus {
         xPositionOfRightClickEvent: number
         yPositionOfRightClickEvent: number
     } | null
+    cameraZoomFactor: number
 }

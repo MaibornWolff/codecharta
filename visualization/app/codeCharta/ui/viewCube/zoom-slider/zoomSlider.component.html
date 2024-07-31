@@ -1,0 +1,6 @@
+<div class="zoom-slider">
+    <button class="zoom-button" (click)="zoomOut()">-</button>
+    <input type="range" id="zoomRange" step="10" min="25" max="500" [value]="zoomFactor" (input)="onInput($event)" />
+    <button class="zoom-button" (click)="zoomIn()">+</button>
+    <span id="zoomValue">{{ zoomFactor.toFixed(0) }}%</span>
+</div>
