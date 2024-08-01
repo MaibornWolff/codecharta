@@ -33,22 +33,33 @@ export interface GeometryOptions {
 }
 
 export class Preview3DPrintMesh {
-    //TODO: rename to PrintPreview
     private printMesh: Mesh
     private currentSize: Vector3
 
-    private mapMesh: MapMesh
-    private baseplateMesh: BaseplateMesh
-    private frontPrintContainerMesh: FrontPrintContainerMesh
-    private backPrintContainerMesh: BackPrintContainerMesh
-
-    constructor(private geometryOptions: GeometryOptions) {
+    constructor(
+        private geometryOptions: GeometryOptions,
+        private frontPrintContainerMesh: FrontPrintContainerMesh = new FrontPrintContainerMesh(new Font(font)),
+        private backPrintContainerMesh: BackPrintContainerMesh = new BackPrintContainerMesh(new Font(font)),
+        private baseplateMesh: BaseplateMesh = new BaseplateMesh(),
+        private mapMesh: MapMesh = new MapMesh()
+    ) {
         this.printMesh = new Mesh()
         this.printMesh.name = "PrintMesh" //TODO: rename to PrintPreview
     }
 
     async initialize() {
-        await this.createPrintPreviewMesh()
+        this.baseplateMesh = await this.baseplateMesh.init(this.geometryOptions)
+        this.printMesh.add(this.baseplateMesh)
+
+        this.mapMesh = await this.mapMesh.init(this.geometryOptions)
+        this.printMesh.add(this.mapMesh)
+
+        this.frontPrintContainerMesh = await this.frontPrintContainerMesh.init(this.geometryOptions)
+        this.printMesh.add(this.frontPrintContainerMesh)
+
+        this.backPrintContainerMesh = await this.backPrintContainerMesh.init(this.geometryOptions)
+        this.printMesh.add(this.backPrintContainerMesh)
+
         this.calculateCurrentSize()
     }
 
@@ -62,20 +73,6 @@ export class Preview3DPrintMesh {
 
     getSize(): Vector3 {
         return this.currentSize
-    }
-
-    async createPrintPreviewMesh() {
-        this.baseplateMesh = await new BaseplateMesh().init(this.geometryOptions)
-        this.printMesh.add(this.baseplateMesh)
-
-        this.mapMesh = await new MapMesh().init(this.geometryOptions)
-        this.printMesh.add(this.mapMesh)
-
-        this.frontPrintContainerMesh = await new FrontPrintContainerMesh(new Font(font)).init(this.geometryOptions)
-        this.printMesh.add(this.frontPrintContainerMesh)
-
-        this.backPrintContainerMesh = await new BackPrintContainerMesh(new Font(font)).init(this.geometryOptions)
-        this.printMesh.add(this.backPrintContainerMesh)
     }
 
     async updateSize(wantedWidth: number): Promise<boolean> {
