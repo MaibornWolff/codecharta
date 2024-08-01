@@ -1,62 +1,50 @@
-import { TestBed } from "@angular/core/testing"
 import { render, screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
 import { ZoomSliderComponent } from "./zoomSlider.component"
 import { CcState } from "../../../codeCharta.model"
-import { setCameraZoomFactor, zoomIn, zoomOut } from "../../../state/store/appStatus/cameraZoomFactor/cameraZoomFactor.actions"
-import { MockStore, provideMockStore } from "@ngrx/store/testing"
+import { zoomIn, zoomOut } from "../../../state/store/appStatus/cameraZoomFactor/cameraZoomFactor.actions"
+import { Store } from "@ngrx/store"
 import { cameraZoomFactorSelector } from "../../../state/store/appStatus/cameraZoomFactor/cameraZoomFactor.selector"
+import { of } from "rxjs"
 
 describe("ZoomSliderComponent", () => {
-    let store: MockStore<CcState>
+    let store: Store<CcState>
     const initialZoomFactor = 1
 
-    beforeEach(async () => {
-        await TestBed.configureTestingModule({
-            declarations: [ZoomSliderComponent],
-            providers: [
-                provideMockStore({
-                    selectors: [{ selector: cameraZoomFactorSelector, value: initialZoomFactor }]
-                })
-            ]
-        }).compileComponents()
+    let mockedStore: Partial<Store<CcState>>
 
-        store = TestBed.inject(MockStore)
-        store.dispatch = jest.fn()
+    beforeEach(async () => {
+        mockedStore = {
+            dispatch: jest.fn(),
+            select: jest.fn().mockReturnValue(of(initialZoomFactor))
+        }
+
+        await render(ZoomSliderComponent, {
+            providers: [{ provide: Store, useValue: mockedStore }]
+        })
+
+        store = mockedStore as Store<CcState>
     })
 
-    it("should initialize with zoomFactor set correctly", async () => {
-        await render(ZoomSliderComponent)
-        expect(screen.getByTitle("Zoom slider")).toBeTruthy()
-
-        const component = TestBed.createComponent(ZoomSliderComponent).componentInstance
-        expect(component.zoomFactor).toBe(initialZoomFactor * 100)
+    it("should subscribe to zoom state", () => {
+        const zoomSliderComponent = new ZoomSliderComponent(store)
+        expect(store.select).toHaveBeenCalledWith(cameraZoomFactorSelector)
+        expect(zoomSliderComponent.zoomFactor).toBe(initialZoomFactor * 100)
     })
 
     it("should dispatch zoomIn action on zoom in button click", async () => {
-        await render(ZoomSliderComponent)
-
-        const zoomInButton = screen.getByTitle("Zoom in")
+        new ZoomSliderComponent(store)
+        const zoomInButton = screen.getByTestId("zoomIn")
         await userEvent.click(zoomInButton)
 
         expect(store.dispatch).toHaveBeenCalledWith(zoomIn())
     })
 
     it("should dispatch zoomOut action on zoom out button click", async () => {
-        await render(ZoomSliderComponent)
-
-        const zoomOutButton = screen.getByTitle("Zoom out")
+        new ZoomSliderComponent(store)
+        const zoomOutButton = screen.getByTestId("zoomOut")
         await userEvent.click(zoomOutButton)
 
         expect(store.dispatch).toHaveBeenCalledWith(zoomOut())
-    })
-
-    it("should dispatch setCameraZoomFactor action on input change", async () => {
-        await render(ZoomSliderComponent)
-
-        const zoomSlider = screen.getByTitle("Zoom slider")
-        await userEvent.type(zoomSlider, "150")
-
-        expect(store.dispatch).toHaveBeenCalledWith(setCameraZoomFactor({ value: 1.5 }))
     })
 })

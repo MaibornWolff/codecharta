@@ -10,14 +10,13 @@ import { Action } from "@ngrx/store"
 import { EffectsModule } from "@ngrx/effects"
 import { MatDialog } from "@angular/material/dialog"
 import { getLastAction } from "../../../../util/testUtils/store.utils"
+import { setCameraZoomFactor } from "./cameraZoomFactor.actions"
 
 describe("cameraZoomFactorEffect", () => {
     const mockedDialog = { open: jest.fn() }
     let actions$: BehaviorSubject<Action>
     let store: MockStore
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     let threeCameraService: ThreeCameraService
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     let threeRendererService: ThreeRendererService
 
     beforeEach(() => {
@@ -54,5 +53,11 @@ describe("cameraZoomFactorEffect", () => {
         actions$.next({ type: "whatever" })
         expect(await getLastAction(store)).toEqual({ type: "@ngrx/effects/init" })
         expect(mockedDialog.open).not.toHaveBeenCalled()
+    })
+
+    it("should call setZoomFactor and rerender", () => {
+        actions$.next(setCameraZoomFactor({ value: 1 }))
+        expect(threeCameraService.setZoomFactor).toHaveBeenCalledWith(1)
+        expect(threeRendererService.render).toHaveBeenCalled()
     })
 })

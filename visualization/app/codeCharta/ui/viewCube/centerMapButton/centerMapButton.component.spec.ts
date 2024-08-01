@@ -1,4 +1,3 @@
-import { TestBed } from "@angular/core/testing"
 import { render, screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
 import { ThreeOrbitControlsService } from "../../codeMap/threeViewer/threeOrbitControls.service"
@@ -6,23 +5,29 @@ import { CenterMapButtonComponent } from "./centerMapButton.component"
 import { Store } from "@ngrx/store"
 import { CcState } from "../../../codeCharta.model"
 import { setCameraZoomFactor } from "../../../state/store/appStatus/cameraZoomFactor/cameraZoomFactor.actions"
-import { MockStore, provideMockStore } from "@ngrx/store/testing"
 
 describe("CenterMapButtonComponent", () => {
-    const threeOrbitControlsService = { autoFitTo: jest.fn() }
+    const threeOrbitControlsService = { autoFitTo: jest.fn() } as unknown as ThreeOrbitControlsService
     let store: Store<CcState>
+    let mockedStore: Partial<Store<CcState>>
 
-    beforeEach(() => {
+    beforeEach(async () => {
         threeOrbitControlsService.autoFitTo = jest.fn()
-        TestBed.configureTestingModule({
-            providers: [provideMockStore(), { provide: ThreeOrbitControlsService, useValue: threeOrbitControlsService }]
+        mockedStore = {
+            dispatch: jest.fn()
+        }
+
+        await render(CenterMapButtonComponent, {
+            providers: [
+                { provide: ThreeOrbitControlsService, useValue: threeOrbitControlsService },
+                { provide: Store, useValue: mockedStore }
+            ]
         })
-        store = TestBed.inject(MockStore)
-        store.dispatch = jest.fn()
+        store = mockedStore as Store<CcState>
     })
 
     it("should call autoFitTo of threeOrbitControlsService on click", async () => {
-        await render(CenterMapButtonComponent)
+        new CenterMapButtonComponent(threeOrbitControlsService, store)
 
         await userEvent.click(screen.getByTitle("Center map"))
 
