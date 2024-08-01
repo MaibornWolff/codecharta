@@ -31,14 +31,13 @@ RUN curl -sL https://deb.nodesource.com/setup_18.x -o /tmp/nodesource_setup.sh; 
     bash /tmp/nodesource_setup.sh; \
     apt-get install nodejs make gcc build-essential -y;
 
-RUN wget -qO /tmp/sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.7.0.2747-linux.zip; \
+RUN wget -qO /tmp/sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-6.1.0.4477-linux-x64.zip; \
     apt-get install unzip -y; \
-    cd /tmp ; unzip sonar-scanner.zip; cd sonar-scanner-*-linux; \
+    cd /tmp ; unzip sonar-scanner.zip; cd sonar-scanner-*-linux-x64; \
     cp ./bin/sonar-scanner /usr/local/bin/; \
     cp ./lib/sonar-scanner-cli-*.jar /usr/local/lib/; \
     mkdir --parents /usr/local/conf ; cp ./conf/sonar-scanner.properties /usr/local/conf/; \
-    cp -r ./jre/ /usr/local/jre; cd /; rm /tmp/sonar-scanner.zip; rm -rf /tmp/sonar-scanner-*-linux;
-
+    cp -r ./jre/ /usr/local/jre; cd /; rm /tmp/sonar-scanner.zip; rm -rf /tmp/sonar-scanner-*-linux-x64;
 
 RUN if [ -n "$USER_ADD" ]; then \
       groupadd --gid $USER_GID $USERNAME \
