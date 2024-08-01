@@ -2,7 +2,7 @@ import { Component, Input, ViewEncapsulation } from "@angular/core"
 import { MatDialog } from "@angular/material/dialog"
 import { ScenarioService } from "../scenario.service"
 import { ScenarioItem } from "../scenarioHelper"
-import { AddCustomScenarioComponent } from "../addCustomScenario/addCustomScenario.component"
+import { AddCustomScenarioDialogComponent } from "../addCustomScenarioDialog/addCustomScenarioDialog.component"
 
 @Component({
     selector: "cc-scenarios",
@@ -19,6 +19,6 @@ export class ScenariosComponent {
     ) {}
 
     addScenario() {
-        this.dialog.open(AddCustomScenarioComponent, { panelClass: "cc-add-custom-scenario" })
+        this.dialog.open(AddCustomScenarioDialogComponent, { panelClass: "cc-add-custom-scenario" })
     }
 }

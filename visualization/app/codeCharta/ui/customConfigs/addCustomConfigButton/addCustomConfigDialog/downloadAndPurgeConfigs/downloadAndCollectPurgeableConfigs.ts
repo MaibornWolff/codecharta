@@ -1,5 +1,5 @@
-import { CustomConfig, ExportCustomConfig } from "../../../../model/customConfig/customConfig.api.model"
-import { CustomConfigHelper } from "../../../../util/customConfigHelper"
+import { CustomConfig, ExportCustomConfig } from "../../../../../model/customConfig/customConfig.api.model"
+import { CustomConfigHelper } from "../../../../../util/customConfigHelper"
 
 const customConfigAgeLimitInMonths = 6
 
@@ -8,7 +8,8 @@ export function downloadAndCollectPurgeableConfigs() {
     const customConfigs = CustomConfigHelper.getCustomConfigs()
 
     const downloadableConfigs: Map<string, ExportCustomConfig> = new Map()
-    const daysPerMonth = 30
+
+    const millisecondsPerMonth = 1000 * 60 * 60 * 24 * 30
 
     for (const [key, value] of customConfigs.entries()) {
         if (value?.creationTime === undefined) {
@@ -17,7 +18,7 @@ export function downloadAndCollectPurgeableConfigs() {
         }
 
         // Download e.g. 6 month old or older Configs.
-        const ageInMonth = (Date.now() - value.creationTime) / (1000 * 60 * 60 * 24 * daysPerMonth)
+        const ageInMonth = (Date.now() - value.creationTime) / millisecondsPerMonth
         if (ageInMonth >= customConfigAgeLimitInMonths) {
             downloadableConfigs.set(key, CustomConfigHelper.createExportCustomConfigFromConfig(value))
             purgeableConfigs.add(value)
