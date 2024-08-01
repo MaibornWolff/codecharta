@@ -1,0 +1,20 @@
+.cc-global-configuration-dialog-content {
+    display: flex;
+    flex-direction: column;
+    gap: 26px;
+}
+
+.cc-global-configuration-links-list {
+    display: flex;
+    gap: 16px;
+
+    .weblink {
+        display: block;
+        color: rgba(0, 0, 0, 0.870588);
+        text-decoration: none;
+
+        .fa {
+            margin: 8px;
+        }
+    }
+}
