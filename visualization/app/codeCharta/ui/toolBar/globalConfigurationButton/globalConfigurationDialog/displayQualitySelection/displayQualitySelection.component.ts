@@ -1,4 +1,4 @@
-import { Component, ViewEncapsulation } from "@angular/core"
+import { Component } from "@angular/core"
 import { Store } from "@ngrx/store"
 import { SharpnessMode, CcState } from "../../../../../codeCharta.model"
 import { setSharpnessMode } from "../../../../../state/store/appSettings/sharpnessMode/sharpnessMode.actions"
@@ -6,8 +6,7 @@ import { sharpnessModeSelector } from "../../../../../state/store/appSettings/sh
 
 @Component({
     selector: "cc-display-quality-selection",
-    templateUrl: "./displayQualitySelection.component.html",
-    encapsulation: ViewEncapsulation.None
+    templateUrl: "./displayQualitySelection.component.html"
 })
 export class DisplayQualitySelectionComponent {
     sharpnessModes = Object.values(SharpnessMode)

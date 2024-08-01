@@ -1,4 +1,4 @@
-import { Component, ViewEncapsulation } from "@angular/core"
+import { Component } from "@angular/core"
 import { MatSlideToggleChange } from "@angular/material/slide-toggle"
 import { Store } from "@ngrx/store"
 import { CcState } from "../../../../codeCharta.model"
@@ -15,7 +15,7 @@ import { resetCameraIfNewFileIsLoadedSelector } from "../../../../state/store/ap
 
 @Component({
     templateUrl: "./globalConfigurationDialog.component.html",
-    encapsulation: ViewEncapsulation.None
+    styleUrls: ["./globalConfigurationDialog.component.scss"]
 })
 export class GlobalConfigurationDialogComponent {
     screenshotToClipboardEnabled$ = this.store.select(screenshotToClipboardEnabledSelector)

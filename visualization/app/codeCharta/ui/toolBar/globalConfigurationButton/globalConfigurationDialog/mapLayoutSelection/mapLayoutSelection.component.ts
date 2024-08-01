@@ -1,4 +1,4 @@
-import { Component, ViewEncapsulation } from "@angular/core"
+import { Component } from "@angular/core"
 import { Store } from "@ngrx/store"
 import { LayoutAlgorithm, CcState } from "../../../../../codeCharta.model"
 import { setLayoutAlgorithm } from "../../../../../state/store/appSettings/layoutAlgorithm/layoutAlgorithm.actions"
@@ -9,8 +9,7 @@ import { debounce } from "../../../../../util/debounce"
 
 @Component({
     selector: "cc-map-layout-selection",
-    templateUrl: "./mapLayoutSelection.component.html",
-    encapsulation: ViewEncapsulation.None
+    templateUrl: "./mapLayoutSelection.component.html"
 })
 export class MapLayoutSelectionComponent {
     layoutAlgorithms = Object.values(LayoutAlgorithm)
