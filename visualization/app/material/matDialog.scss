@@ -1,6 +1,12 @@
-.mat-mdc-dialog-container {
-    min-width: 320px;
+@use "variables";
 
+mat-dialog-content {
+    mat-form-field {
+        width: 100%;
+    }
+}
+
+mat-dialog-container {
     .cc-dialog {
         &.suspicious-metric-dialog {
             .title {
@@ -11,9 +17,16 @@
 
             .info-text {
                 font-size: 14px;
-                padding-bottom: 0px;
+                padding-bottom: 0;
                 color: black;
             }
         }
+    }
+
+    mat-dialog-actions {
+        --mdc-filled-button-label-text-color: #{variables.$cc-primary-color};
+        --mdc-text-button-label-text-color: #{variables.$cc-primary-color};
+        --mdc-filled-button-container-color: var(--mdc-filled-text-field-container-color);
+        --mdc-filled-button-disabled-container-color: var(--mdc-filled-text-field-container-color);
     }
 }

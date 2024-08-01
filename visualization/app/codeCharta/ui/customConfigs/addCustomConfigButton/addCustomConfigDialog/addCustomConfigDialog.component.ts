@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation } from "@angular/core"
+import { Component, OnInit } from "@angular/core"
 import { UntypedFormControl, Validators, AbstractControl, ValidatorFn } from "@angular/forms"
 import { CustomConfigHelper } from "../../../../util/customConfigHelper"
 import { buildCustomConfigFromState } from "../../../../util/customConfigBuilder"
@@ -9,9 +9,7 @@ import { CcState } from "../../../../codeCharta.model"
 import { State } from "@ngrx/store"
 
 @Component({
-    templateUrl: "./addCustomConfigDialog.component.html",
-    styleUrls: ["./addCustomDialog.component.scss"],
-    encapsulation: ViewEncapsulation.None
+    templateUrl: "./addCustomConfigDialog.component.html"
 })
 export class AddCustomConfigDialogComponent implements OnInit {
     customConfigName: UntypedFormControl

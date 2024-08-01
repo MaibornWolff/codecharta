@@ -1,4 +1,4 @@
-@use "../../../../material/theme";
+@use "variables";
 
 .cc-changelog-dialog .mat-mdc-dialog-container {
     [mat-dialog-content] {
@@ -26,7 +26,7 @@
         justify-content: flex-end;
 
         a {
-            color: theme.$cc-primary-color;
+            color: variables.$cc-primary-color;
         }
 
         button {
