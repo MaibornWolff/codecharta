@@ -1,12 +1,13 @@
-<mat-toolbar color="primary">Global Configuration</mat-toolbar>
+<mat-toolbar class="header" xmlns="http://www.w3.org/1999/html">
+    <h2>Global Configuration</h2>
+</mat-toolbar>
 
-<div class="cc-global-configuration-dialog-content">
-    <div class="cc-global-configuration-align-right"></div>
+<mat-dialog-content>
+    <div class="cc-global-configuration-dialog-content">
+        <cc-map-layout-selection></cc-map-layout-selection>
 
-    <cc-map-layout-selection></cc-map-layout-selection>
-    <cc-display-quality-selection></cc-display-quality-selection>
+        <cc-display-quality-selection></cc-display-quality-selection>
 
-    <div class="cc-global-configuration-toggle-option">
         <mat-slide-toggle [checked]="hideFlatBuildings$ | async" (change)="handleHideFlatBuildingsChanged($event)">
             Hide Flattened Buildings
         </mat-slide-toggle>
@@ -22,33 +23,37 @@
         <mat-slide-toggle [checked]="screenshotToClipboardEnabled$ | async" (change)="handleScreenshotToClipboardEnabledChanged($event)">
             Screenshot to clipboard
         </mat-slide-toggle>
+
+        <cc-reset-settings-button
+            [settingsKeys]="[
+                'appSettings.hideFlatBuildings',
+                'appSettings.isWhiteBackground',
+                'appSettings.resetCameraIfNewFileIsLoaded',
+                'appSettings.layoutAlgorithm',
+                'appSettings.maxTreeMapFiles'
+            ]"
+            tooltip="Reset global settings to their defaults"
+            label="Reset global settings"
+        ></cc-reset-settings-button>
+
+        <div class="cc-global-configuration-links-list">
+            <a
+                class="weblink"
+                href="https://github.com/MaibornWolff/codecharta/blob/main/README.md"
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+                <em class="fa fa-external-link icon-link"></em>How-to
+            </a>
+            <a class="weblink" href="https://github.com/MaibornWolff/codecharta/" target="_blank" rel="noopener noreferrer">
+                <em class="fa fa-external-link icon-link"></em>Github
+            </a>
+            <a class="weblink" href="https://github.com/MaibornWolff/codecharta/wiki" target="_blank" rel="noopener noreferrer">
+                <em class="fa fa-external-link icon-link"></em>Wiki
+            </a>
+        </div>
     </div>
-
-    <cc-reset-settings-button
-        [settingsKeys]="[
-            'appSettings.hideFlatBuildings',
-            'appSettings.isWhiteBackground',
-            'appSettings.resetCameraIfNewFileIsLoaded',
-            'appSettings.layoutAlgorithm',
-            'appSettings.maxTreeMapFiles'
-        ]"
-        tooltip="Reset global settings to their defaults"
-        label="Reset global settings"
-    ></cc-reset-settings-button>
-
-    <div class="cc-global-configuration-links-list">
-        <a class="weblink" href="https://github.com/MaibornWolff/codecharta/blob/main/README.md" target="_blank" rel="noopener noreferrer">
-            <em class="fa fa-external-link icon-link"></em>How-to
-        </a>
-        <a class="weblink" href="https://github.com/MaibornWolff/codecharta/" target="_blank" rel="noopener noreferrer">
-            <em class="fa fa-external-link icon-link"></em>Github
-        </a>
-        <a class="weblink" href="https://github.com/MaibornWolff/codecharta/wiki" target="_blank" rel="noopener noreferrer">
-            <em class="fa fa-external-link icon-link"></em>Wiki
-        </a>
-    </div>
-
-    <mat-dialog-actions align="end">
-        <button mat-button mat-dialog-close cdkFocusInitial>Close</button>
-    </mat-dialog-actions>
-</div>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+    <button mat-flat-button mat-dialog-close>Close</button>
+</mat-dialog-actions>
