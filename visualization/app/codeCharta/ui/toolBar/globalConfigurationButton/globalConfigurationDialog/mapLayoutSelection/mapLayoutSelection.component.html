@@ -1,4 +1,4 @@
-<mat-form-field appearance="outline">
+<mat-form-field appearance="outline" subscriptSizing="dynamic">
     <mat-label>Map Layout</mat-label>
     <mat-select [value]="layoutAlgorithm$ | async" (selectionChange)="handleSelectedLayoutAlgorithmChanged($event)">
         @for (layoutAlgorithm of layoutAlgorithms; track layoutAlgorithm) {

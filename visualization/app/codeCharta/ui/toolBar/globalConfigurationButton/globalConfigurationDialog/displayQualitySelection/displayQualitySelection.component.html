@@ -1,4 +1,4 @@
-<mat-form-field appearance="outline">
+<mat-form-field appearance="outline" subscriptSizing="dynamic">
     <mat-label>Display Quality</mat-label>
     <mat-select [value]="sharpnessMode$ | async" (selectionChange)="handleSelectedSharpnessModeChanged($event)">
         @for (sharpnessMode of sharpnessModes; track sharpnessMode) {
