@@ -10,7 +10,7 @@ import { ThreeCameraService } from "../../../../ui/codeMap/threeViewer/threeCame
 import { CodeMapLabelService } from "../../../../ui/codeMap/codeMap.label.service"
 
 @Injectable()
-export class cameraZoomFactorEffect {
+export class CameraZoomFactorEffect {
     constructor(
         private actions$: Actions,
         private store: Store<CcState>,

@@ -2,7 +2,7 @@ import { TestBed } from "@angular/core/testing"
 import { provideMockActions } from "@ngrx/effects/testing"
 import { provideMockStore, MockStore } from "@ngrx/store/testing"
 import { BehaviorSubject } from "rxjs"
-import { cameraZoomFactorEffect } from "./cameraZoomFactor.effect"
+import { CameraZoomFactorEffect } from "./camera-zoom-factor-effect.service"
 import { ThreeRendererService } from "../../../../ui/codeMap/threeViewer/threeRenderer.service"
 import { ThreeCameraService } from "../../../../ui/codeMap/threeViewer/threeCamera.service"
 import { cameraZoomFactorSelector } from "./cameraZoomFactor.selector"
@@ -13,7 +13,7 @@ import { getLastAction } from "../../../../util/testUtils/store.utils"
 import { setCameraZoomFactor } from "./cameraZoomFactor.actions"
 import { CodeMapLabelService } from "../../../../ui/codeMap/codeMap.label.service"
 
-describe("cameraZoomFactorEffect", () => {
+describe("CameraZoomFactorEffect", () => {
     const mockedDialog = { open: jest.fn() }
     let actions$: BehaviorSubject<Action>
     let store: MockStore
@@ -26,7 +26,7 @@ describe("cameraZoomFactorEffect", () => {
         mockedDialog.open = jest.fn()
 
         TestBed.configureTestingModule({
-            imports: [EffectsModule.forRoot([cameraZoomFactorEffect])],
+            imports: [EffectsModule.forRoot([CameraZoomFactorEffect])],
             providers: [
                 { provide: MatDialog, useValue: mockedDialog },
                 { provide: ThreeRendererService, useValue: { render: jest.fn() } },
