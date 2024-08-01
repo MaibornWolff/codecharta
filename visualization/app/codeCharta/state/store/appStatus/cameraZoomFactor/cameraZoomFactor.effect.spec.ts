@@ -11,6 +11,7 @@ import { EffectsModule } from "@ngrx/effects"
 import { MatDialog } from "@angular/material/dialog"
 import { getLastAction } from "../../../../util/testUtils/store.utils"
 import { setCameraZoomFactor } from "./cameraZoomFactor.actions"
+import { CodeMapLabelService } from "../../../../ui/codeMap/codeMap.label.service"
 
 describe("cameraZoomFactorEffect", () => {
     const mockedDialog = { open: jest.fn() }
@@ -18,6 +19,7 @@ describe("cameraZoomFactorEffect", () => {
     let store: MockStore
     let threeCameraService: ThreeCameraService
     let threeRendererService: ThreeRendererService
+    let codeMapLabelService: CodeMapLabelService
 
     beforeEach(() => {
         actions$ = new BehaviorSubject({ type: "" })
@@ -29,6 +31,7 @@ describe("cameraZoomFactorEffect", () => {
                 { provide: MatDialog, useValue: mockedDialog },
                 { provide: ThreeRendererService, useValue: { render: jest.fn() } },
                 { provide: ThreeCameraService, useValue: { setZoomFactor: jest.fn() } },
+                { provide: CodeMapLabelService, useValue: { onCameraChanged: jest.fn() } },
                 provideMockStore({
                     selectors: [
                         {
@@ -43,6 +46,7 @@ describe("cameraZoomFactorEffect", () => {
         store = TestBed.inject(MockStore)
         threeCameraService = TestBed.inject(ThreeCameraService)
         threeRendererService = TestBed.inject(ThreeRendererService)
+        codeMapLabelService = TestBed.inject(CodeMapLabelService)
     })
 
     afterEach(() => {
@@ -58,6 +62,7 @@ describe("cameraZoomFactorEffect", () => {
     it("should call setZoomFactor and rerender", () => {
         actions$.next(setCameraZoomFactor({ value: 1 }))
         expect(threeCameraService.setZoomFactor).toHaveBeenCalledWith(1)
+        expect(codeMapLabelService.onCameraChanged).toHaveBeenCalled()
         expect(threeRendererService.render).toHaveBeenCalled()
     })
 })

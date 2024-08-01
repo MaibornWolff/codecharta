@@ -7,6 +7,7 @@ import { ThreeRendererService } from "../../../../ui/codeMap/threeViewer/threeRe
 import { setCameraZoomFactor, zoomIn, zoomOut } from "./cameraZoomFactor.actions"
 import { cameraZoomFactorSelector } from "./cameraZoomFactor.selector"
 import { ThreeCameraService } from "../../../../ui/codeMap/threeViewer/threeCamera.service"
+import { CodeMapLabelService } from "../../../../ui/codeMap/codeMap.label.service"
 
 @Injectable()
 export class cameraZoomFactorEffect {
@@ -14,7 +15,8 @@ export class cameraZoomFactorEffect {
         private actions$: Actions,
         private store: Store<CcState>,
         private threeRendererService: ThreeRendererService,
-        private threeCameraService: ThreeCameraService
+        private threeCameraService: ThreeCameraService,
+        private codeMapLabelService: CodeMapLabelService
     ) {}
 
     setZoom = createEffect(
@@ -25,6 +27,7 @@ export class cameraZoomFactorEffect {
                 // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 tap(([action, zoom]) => {
                     this.threeCameraService.setZoomFactor(zoom)
+                    this.codeMapLabelService.onCameraChanged()
                     this.threeRendererService.render()
                 })
             ),

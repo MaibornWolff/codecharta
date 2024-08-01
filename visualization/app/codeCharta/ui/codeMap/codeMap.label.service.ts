@@ -6,9 +6,8 @@ import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { ColorConverter } from "../../util/color/colorConverter"
 import { Injectable } from "@angular/core"
 import { treeMapSize } from "../../util/algorithm/treeMapLayout/treeMapHelper"
-import { State, Store } from "@ngrx/store"
+import { State } from "@ngrx/store"
 import { defaultMapColors } from "../../state/store/appSettings/mapColors/mapColors.reducer"
-import { cameraZoomFactorSelector } from "../../state/store/appStatus/cameraZoomFactor/cameraZoomFactor.selector"
 
 interface InternalLabel {
     sprite: Sprite
@@ -36,14 +35,12 @@ export class CodeMapLabelService {
 
     constructor(
         private state: State<CcState>,
-        private store: Store<CcState>,
         private threeCameraService: ThreeCameraService,
         private threeSceneService: ThreeSceneService,
         private threeOrbitControlsService: ThreeOrbitControlsService
     ) {
         this.labels = new Array<InternalLabel>()
         this.threeOrbitControlsService.subscribe("onCameraChanged", () => this.onCameraChanged())
-        this.store.select(cameraZoomFactorSelector).subscribe(() => this.onCameraChanged())
     }
 
     // Labels need to be scaled according to map or it will clip + looks bad
