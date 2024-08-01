@@ -24,6 +24,8 @@ services:
         build: analysis/.
         volumes:
             - shared-volume:/mnt/data
+        environment:
+            - SONAR_HOST=http://sonar:9000
 
 volumes:
     shared-volume: {}
