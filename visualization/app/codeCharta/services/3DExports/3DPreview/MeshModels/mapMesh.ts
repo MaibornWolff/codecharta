@@ -14,8 +14,10 @@ export class MapMesh extends CustomVisibilityMesh {
         this.material = (geometryOptions.originalMapMesh.clone() as Mesh).material
         this.originalColors = geometryOptions.originalMapMesh.geometry.attributes.color
         const newMapGeometry = geometryOptions.originalMapMesh.geometry.clone()
+        newMapGeometry.computeBoundingBox()
         newMapGeometry.rotateX(Math.PI / 2)
         this.updateMapGeometry(geometryOptions, newMapGeometry)
+        newMapGeometry.computeBoundingBox() // Ensure the bounding box is computed again after transformations
         newMapGeometry.rotateZ(-Math.PI / 2)
         this.geometry = newMapGeometry
 
