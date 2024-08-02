@@ -4,17 +4,15 @@ import { CreateTextGeometryStrategy, CreateTextGeometryStrategyOptions } from ".
 import { BackPrintColorChangeStrategy } from "../ColorChangeStrategies/backPrintColorChangeStrategy"
 
 export class TextMesh extends CustomVisibilityMesh {
-    readonly createTextGeometryStrategy: CreateTextGeometryStrategy
-
     constructor(
         name: string,
         colorChangeStrategy = new BackPrintColorChangeStrategy(),
         minScale: number,
         manualVisibility: boolean,
-        public createTextGeometryOptions: CreateTextGeometryStrategyOptions
+        public createTextGeometryOptions: CreateTextGeometryStrategyOptions,
+        private createTextGeometryStrategy = new CreateTextGeometryStrategy()
     ) {
         super(name, colorChangeStrategy, minScale, manualVisibility)
-        this.createTextGeometryStrategy = new CreateTextGeometryStrategy()
     }
 
     async init(geometryOptions: GeometryOptions): Promise<TextMesh> {
