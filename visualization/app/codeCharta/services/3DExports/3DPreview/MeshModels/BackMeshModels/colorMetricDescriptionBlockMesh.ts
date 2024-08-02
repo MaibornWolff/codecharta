@@ -9,7 +9,7 @@ import { PositivePrintColorChangeStrategy } from "../../ColorChangeStrategies/po
 import { NeutralPrintColorChangeStrategy } from "../../ColorChangeStrategies/neutralPrintColorChangeStrategy"
 import { NegativePrintColorChangeStrategy } from "../../ColorChangeStrategies/negativePrintColorChangeStrategy"
 
-interface ColorMetricDescriptionBlockOptions extends MetricDescriptionBlockOptions {
+export interface ColorMetricDescriptionBlockOptions extends MetricDescriptionBlockOptions {
     colorRange: ColorRange
 }
 
