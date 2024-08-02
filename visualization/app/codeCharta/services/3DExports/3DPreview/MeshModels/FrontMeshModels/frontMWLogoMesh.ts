@@ -1,4 +1,4 @@
-import { CreateSvgGeometryStrategy } from "../../CreateGeometryStrategies/createSvgGeometryStrategy"
+import { CreateSvgGeometryStrategy } from "./../../CreateGeometryStrategies/createSvgGeometryStrategy"
 import { GeometryOptions } from "../../preview3DPrintMesh"
 import { FrontLogo } from "./frontLogo"
 import { GeneralSizeChangeMesh } from "../generalMesh"
@@ -8,10 +8,9 @@ export class FrontMWLogoMesh extends FrontLogo implements GeneralSizeChangeMesh 
         super(name, "right")
     }
 
-    async init(geometryOptions: GeometryOptions): Promise<FrontMWLogoMesh> {
-        const createSvgStrategy = new CreateSvgGeometryStrategy()
+    async init(geometryOptions: GeometryOptions, createSvgGeometryStrategy = new CreateSvgGeometryStrategy()): Promise<FrontMWLogoMesh> {
         const size = (geometryOptions.frontTextSize * geometryOptions.width) / 250
-        this.geometry = await createSvgStrategy.create(geometryOptions, {
+        this.geometry = await createSvgGeometryStrategy.create(geometryOptions, {
             filePath: "codeCharta/assets/mw_logo.svg",
             size,
             side: "front"
