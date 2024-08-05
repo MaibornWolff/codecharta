@@ -69,7 +69,7 @@ export class ThreeOrbitControlsService {
         return Math.sqrt(Math.pow(distanceToCamera, 2) + Math.pow(distanceToCamera, 2))
     }
 
-    private focusCameraViewToCenter(boundingSphere: Sphere) {
+    focusCameraViewToCenter(boundingSphere: Sphere) {
         const boundingSphereCenter: Vector3 = boundingSphere.center.clone()
 
         boundingSphereCenter.setY(0)

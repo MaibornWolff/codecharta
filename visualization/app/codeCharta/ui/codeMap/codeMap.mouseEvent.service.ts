@@ -7,7 +7,7 @@ import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { ThreeRendererService } from "./threeViewer/threeRenderer.service"
 import { isPathHiddenOrExcluded } from "../../util/codeMapHelper"
 import { hierarchy } from "d3-hierarchy"
-import { Intersection, Object3D, Raycaster } from "three"
+import { Intersection, Object3D, Raycaster, Vector3 } from "three"
 import { CodeMapLabelService } from "./codeMap.label.service"
 import { ThreeViewerService } from "./threeViewer/threeViewer.service"
 import { setHoveredNodeId } from "../../state/store/appStatus/hoveredNodeId/hoveredNodeId.actions"
@@ -46,6 +46,7 @@ export class CodeMapMouseEventService implements OnDestroy {
     private intersectedBuilding: CodeMapBuilding
 
     private mouse: Coordinates = { x: 0, y: 0 }
+    private mouse3D: Vector3 = new Vector3(0, 0, 0)
     private oldMouse: Coordinates = { x: 0, y: 0 }
     private mouseOnLastClick: Coordinates = { x: 0, y: 0 }
     private isGrabbing = false
@@ -192,7 +193,6 @@ export class CodeMapMouseEventService implements OnDestroy {
                 if (camera.isPerspectiveCamera) {
                     this.raycaster.setFromCamera(mouseCoordinates, camera)
                 }
-
                 const hoveredLabel = this.calculateHoveredLabel(labels)
 
                 if (hoveredLabel) {
@@ -204,6 +204,12 @@ export class CodeMapMouseEventService implements OnDestroy {
                     nodeNameHoveredLabel !== ""
                         ? mapMesh.getBuildingByPath(nodeNameHoveredLabel)
                         : mapMesh.checkMouseRayMeshIntersection(mouseCoordinates, camera)
+
+                if (this.intersectedBuilding !== undefined) {
+                    this.raycaster.ray.intersectBox(this.intersectedBuilding?.boundingBox, this.mouse3D)
+                } else {
+                    mapMesh.getThreeMesh().geometry.boundingBox.getCenter(this.mouse3D)
+                }
 
                 const from = this.threeSceneService.getHighlightedBuilding()
                 const to = this.intersectedBuilding
@@ -424,7 +430,7 @@ export class CodeMapMouseEventService implements OnDestroy {
         }
     }
 
-    private transformHTMLToSceneCoordinates(): Coordinates {
+    transformHTMLToSceneCoordinates(): Coordinates {
         const {
             renderer,
             renderer: { domElement }
@@ -459,6 +465,9 @@ export class CodeMapMouseEventService implements OnDestroy {
         } else {
             this.store.dispatch(zoomOut())
         }
-        this.threeRendererService.render()
+    }
+
+    getmouse3D() {
+        return this.mouse3D
     }
 }
