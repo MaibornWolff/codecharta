@@ -33,7 +33,7 @@
                     <br />
                     <span>Depth: {{ (currentSize.y / 10).toFixed(1) }}cm (max. {{ (selectedPrinter.y / 10).toFixed(1) }} )</span>
                     <br />
-                    <span>Height: {{ (currentSize.z / 10).toFixed(1) }}cm (max. {{ (selectedPrinter.z / 10).toFixed(1) }} )</span>
+                    <span>Height: {{ (currentSize.z / 10).toFixed(1) }}cm (max. {{ (selectedPrinter.z / 10).toFixed(1) }})</span>
                 </div>
             </mat-card-content>
         </mat-card>
@@ -45,10 +45,15 @@
 
         <mat-card appearance="outlined">
             <mat-card-header>Second row center text</mat-card-header>
-            <mat-slide-toggle data-testid="secondRowToggle" [checked]="secondRow.isVisible" (change)="onSecondRowVisibilityChange($event)">
-                Show second row text
-            </mat-slide-toggle>
+
             <mat-card-content class="ManualVisibilityContent">
+                <mat-slide-toggle
+                    data-testid="secondRowToggle"
+                    [checked]="secondRow.isVisible"
+                    (change)="onSecondRowVisibilityChange($event)"
+                >
+                    Show second row text
+                </mat-slide-toggle>
                 <mat-form-field [hidden]="secondRow.isVisible" appearance="outline">
                     <mat-label>Text</mat-label>
                     <input matInput data-testid="secondRowText" [(ngModel)]="secondRow.currentText" (input)="onSecondRowTextChange()" />
@@ -58,10 +63,10 @@
 
         <mat-card appearance="outlined">
             <mat-card-header>QR-Code</mat-card-header>
-            <mat-slide-toggle data-testid="qrCodeToggle" [checked]="qrCode.isVisible" (change)="onQrCodeVisibilityChange($event)">
-                Show QR-Code
-            </mat-slide-toggle>
             <mat-card-content class="ManualVisibilityContent">
+                <mat-slide-toggle data-testid="qrCodeToggle" [checked]="qrCode.isVisible" (change)="onQrCodeVisibilityChange($event)">
+                    Show QR-Code
+                </mat-slide-toggle>
                 <mat-form-field [hidden]="qrCode.isVisible" appearance="outline">
                     <mat-label>QR-Code text</mat-label>
                     <input matInput data-testid="qrCodeText" [(ngModel)]="qrCode.currentText" (input)="onQrCodeTextChange()" />
