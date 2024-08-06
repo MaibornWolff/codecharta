@@ -3,8 +3,7 @@
 import { State } from "@ngrx/store"
 import { render, screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
-import { AmbientLight, BufferGeometry, DirectionalLight, Group, Scene, Shape, Vector2, Vector3, WebGLRenderer } from "three"
-import { Preview3DPrintMesh } from "../../../services/3DExports/3DPreview/preview3DPrintMesh"
+import { AmbientLight, BufferGeometry, DirectionalLight, Group, Scene, Shape, Vector2, WebGLRenderer } from "three"
 import { DEFAULT_SETTINGS, DEFAULT_STATE, FILE_META, TEST_NODES } from "../../../util/dataMocks"
 import { CodeMapMesh } from "../../codeMap/rendering/codeMapMesh"
 import { ThreeSceneService } from "../../codeMap/threeViewer/threeSceneService"
@@ -143,8 +142,6 @@ describe("Export3DMapDialogComponent2", () => {
     })
 
     async function setup() {
-        jest.spyOn(Preview3DPrintMesh.prototype, "getSize").mockReturnValue(new Vector3(10, 10, 10))
-
         const renderObject = await render(Export3DMapDialogComponent, {
             imports: [Export3DMapButtonModule],
             providers: [
@@ -159,19 +156,24 @@ describe("Export3DMapDialogComponent2", () => {
 
     it("should update printer stats", async () => {
         const dut = await setup()
-        const { fixture, debugElement, detectChanges } = dut
+        const { detectChanges } = dut
+
+        let scale = screen.getByTestId("printSizeOverview").innerHTML
+        expect(scale).toContain("max. 35.5")
+        expect(scale).toContain("max. 33.5")
 
         const selectElement = screen.getByTestId("selectPrinter")
         await userEvent.click(selectElement)
         detectChanges()
 
         const options = screen.getAllByTestId("selectedPrinter")
-
         expect(options).toHaveLength(3)
 
         await userEvent.click(options[0])
         detectChanges()
 
-        const scale = screen.getByTestId("scale").innerHTML
+        scale = screen.getByTestId("scale").innerHTML
+        expect(scale).toContain("max. 24.5")
+        expect(scale).toContain("max. 20.5")
     })
 })
