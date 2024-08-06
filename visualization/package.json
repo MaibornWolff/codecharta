@@ -74,6 +74,7 @@
     "@angular/platform-browser-dynamic": "^17.3.3",
     "@ngrx/effects": "^17.1.1",
     "@ngrx/store": "^17.1.1",
+    "@tweenjs/tween.js": "^25.0.0",
     "@types/d3": "^7.4.3",
     "ajv": "^6.12.6",
     "color-convert": "^2.0.1",
