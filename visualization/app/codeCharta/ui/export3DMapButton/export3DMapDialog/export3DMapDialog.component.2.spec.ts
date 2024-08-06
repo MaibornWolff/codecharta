@@ -5,12 +5,14 @@ import { render, screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
 import { AmbientLight, BufferGeometry, DirectionalLight, Group, Scene, Shape, Vector2, Vector3, WebGLRenderer } from "three"
 import { Preview3DPrintMesh } from "../../../services/3DExports/3DPreview/preview3DPrintMesh"
-import { DEFAULT_STATE, TEST_NODES } from "../../../util/dataMocks"
+import { DEFAULT_SETTINGS, DEFAULT_STATE, FILE_META, TEST_NODES } from "../../../util/dataMocks"
 import { CodeMapMesh } from "../../codeMap/rendering/codeMapMesh"
 import { ThreeSceneService } from "../../codeMap/threeViewer/threeSceneService"
 import { Export3DMapButtonModule } from "../export3DMapButton.module"
 import { Export3DMapDialogComponent } from "./export3DMapDialog.component"
 import { QrCodeMesh } from "../../../services/3DExports/3DPreview/MeshModels/BackMeshModels/qrCodeMesh"
+import { FileSelectionState, FileState } from "../../../model/files/files"
+import { CCFile, CodeMapNode, ColorMode, NodeType } from "../../../codeCharta.model"
 
 jest.mock("three/examples/jsm/loaders/SVGLoader", () => {
     return {
@@ -32,25 +34,33 @@ jest.mock("three/examples/jsm/loaders/SVGLoader", () => {
     }
 })
 
-class MockState {
-    getValue() {
-        return {
-            dynamicSettings: {
-                areaMetric: "loc",
-                heightMetric: "rloc",
-                colorMetric: "mcc"
-            },
-            files: [],
-            fileSettings: {
-                attributeTypes: { nodes: {}, edges: {} },
-                attributeDescriptors: {},
-                blacklist: [],
-                edges: [],
-                markedPackages: []
-            }
+// get state and files lines up
+
+const TestNodeMap: CodeMapNode = {
+    name: "root",
+    attributes: { a: 20, b: 15, mcc: 5 },
+    type: NodeType.FOLDER,
+    isExcluded: false,
+    isFlattened: false,
+    children: [
+        {
+            name: "big leaf.ts",
+            path: "root/big leaf.ts",
+            type: NodeType.FILE,
+            attributes: { a: 20, b: 15, mcc: 20 }
         }
-    }
+    ]
 }
+
+const TestState = { ...DEFAULT_STATE }
+TestState.dynamicSettings.areaMetric = "a"
+TestState.dynamicSettings.heightMetric = "b"
+TestState.dynamicSettings.colorMetric = "mcc"
+TestState.dynamicSettings.colorRange = { from: 4, to: 8 }
+TestState.dynamicSettings.colorMode = ColorMode.absolute
+const TestFile: CCFile = { fileMeta: FILE_META, map: TestNodeMap, settings: DEFAULT_SETTINGS }
+const TestFileSTate: FileState = { file: TestFile, selectedAs: FileSelectionState.Partial }
+TestState.files = [TestFileSTate]
 
 describe("Export3DMapDialogComponent2", () => {
     let codeMapMesh: CodeMapMesh
@@ -107,7 +117,7 @@ describe("Export3DMapDialogComponent2", () => {
     }
 
     beforeEach(() => {
-        codeMapMesh = new CodeMapMesh(TEST_NODES, DEFAULT_STATE, false)
+        codeMapMesh = new CodeMapMesh(TEST_NODES, TestState, false)
         lightScene = new Scene()
         const lightGroup = new Group()
 
@@ -138,7 +148,7 @@ describe("Export3DMapDialogComponent2", () => {
         const renderObject = await render(Export3DMapDialogComponent, {
             imports: [Export3DMapButtonModule],
             providers: [
-                { provide: State, useClass: MockState },
+                { provide: State, useValue: { getValue: () => TestState } },
                 { provide: ThreeSceneService, useValue: threeSceneServiceMock }
             ],
             excludeComponentDeclaration: true
@@ -147,7 +157,7 @@ describe("Export3DMapDialogComponent2", () => {
         return renderObject
     }
 
-    it.skip("should update printer stats", async () => {
+    it("should update printer stats", async () => {
         const dut = await setup()
         const { fixture, debugElement, detectChanges } = dut
 
