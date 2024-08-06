@@ -172,8 +172,51 @@ describe("Export3DMapDialogComponent2", () => {
         await userEvent.click(options[0])
         detectChanges()
 
-        scale = screen.getByTestId("scale").innerHTML
+        scale = screen.getByTestId("printSizeOverview").innerHTML
         expect(scale).toContain("max. 24.5")
         expect(scale).toContain("max. 20.5")
+    })
+
+    it("should update front text when input changes", async () => {
+        const { fixture } = await setup()
+        const inputElement = screen.getByTestId("frontText") as HTMLInputElement
+        expect(inputElement).toBeTruthy()
+
+        const frontTextInput = "Test Front Text"
+        await userEvent.type(inputElement, frontTextInput)
+        fixture.detectChanges()
+        expect(inputElement.value).toBe(frontTextInput)
+    })
+
+    it("should update second row text when input changes", async () => {
+        const { fixture } = await setup()
+        const toggleElement = screen.getByTestId("secondRowToggle") as HTMLInputElement
+        await userEvent.click(toggleElement)
+
+        const inputElement = screen.getByTestId("secondRowText") as HTMLInputElement
+        expect(inputElement).toBeTruthy()
+
+        const secondRowTextInput = "Test Second Row Text"
+        expect(inputElement.value).toBe(new Date().toLocaleDateString())
+        await userEvent.clear(inputElement)
+        await userEvent.type(inputElement, secondRowTextInput)
+        fixture.detectChanges()
+        expect(inputElement.value).toBe(secondRowTextInput)
+    })
+
+    it("should update QR code text when input changes", async () => {
+        const { fixture } = await setup()
+        const toggleElement = screen.getByTestId("qrCodeToggle") as HTMLInputElement
+        await userEvent.click(toggleElement)
+
+        const inputElement = screen.getByTestId("qrCodeText") as HTMLInputElement
+        expect(inputElement).toBeTruthy()
+
+        expect(inputElement.value).toBe("maibornwolff.de/service/it-sanierung")
+        await userEvent.clear(inputElement)
+        const qrCodeTextInput = "Test QR Code"
+        await userEvent.type(inputElement, qrCodeTextInput)
+        fixture.detectChanges()
+        expect(inputElement.value).toBe(qrCodeTextInput)
     })
 })
