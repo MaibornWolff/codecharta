@@ -26,6 +26,7 @@ import { ThreeCameraService } from "../../codeMap/threeViewer/threeCamera.servic
 import { ThreeOrbitControlsService } from "../../codeMap/threeViewer/threeOrbitControls.service"
 import { ErrorDialogComponent } from "../../dialogs/errorDialog/errorDialog.component"
 import { ScenarioHelper } from "./scenarioHelper"
+import { setCameraZoomFactor } from "../../../state/store/appStatus/cameraZoomFactor/cameraZoomFactor.actions"
 
 @Injectable()
 export class ScenarioService {
@@ -90,6 +91,7 @@ export class ScenarioService {
         if (scenario.camera) {
             // @ts-ignore -- we know that it is not a partial when it is set
             this.threeCameraService.setPosition(scenario.camera.camera)
+            this.store.dispatch(setCameraZoomFactor({ value: scenario.camera.zoom }))
             // @ts-ignore -- we know that it is not a partial when it is set
             this.threeOrbitControlsService.setControlTarget(scenario.camera.cameraTarget)
         }
