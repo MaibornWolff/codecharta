@@ -1,105 +1,117 @@
-import { TestBed } from "@angular/core/testing"
+import { TestBed, fakeAsync, tick } from "@angular/core/testing"
 import { BehaviorSubject } from "rxjs"
+import { setCameraZoomFactor, zoomIn, zoomOut } from "./cameraZoomFactor.actions"
 import { CameraZoomFactorEffect } from "./cameraZoomFactor.effect"
+import { Action } from "@ngrx/store"
+import { EffectsModule } from "@ngrx/effects"
+import { provideMockActions } from "@ngrx/effects/testing"
+import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { ThreeRendererService } from "../../../../ui/codeMap/threeViewer/threeRenderer.service"
 import { ThreeCameraService } from "../../../../ui/codeMap/threeViewer/threeCamera.service"
 import { CodeMapLabelService } from "../../../../ui/codeMap/codeMap.label.service"
 import { CodeMapMouseEventService } from "../../../../ui/codeMap/codeMap.mouseEvent.service"
 import { ThreeOrbitControlsService } from "../../../../ui/codeMap/threeViewer/threeOrbitControls.service"
-import { ThreeSceneService } from "../../../../ui/codeMap/threeViewer/threeSceneService"
-import { EffectsModule } from "@ngrx/effects"
-import { Action } from "@ngrx/store"
-import { MockStore, provideMockStore } from "@ngrx/store/testing"
-import { provideMockActions } from "@ngrx/effects/testing"
+import { Vector3 } from "three"
 import { cameraZoomFactorSelector } from "./cameraZoomFactor.selector"
-import { setCameraZoomFactor, zoomIn, zoomOut } from "./cameraZoomFactor.actions"
-import { CcState } from "../../../../codeCharta.model"
-import { PerspectiveCamera } from "three"
 
 describe("CameraZoomFactorEffect", () => {
     let actions$: BehaviorSubject<Action>
-    let store: MockStore<CcState>
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    let effect: CameraZoomFactorEffect
-    let threeRendererService: Partial<ThreeRendererService>
-    let threeCameraService: Partial<ThreeCameraService>
-    let codeMapLabelService: Partial<CodeMapLabelService>
-    let codeMapMouseEventService: Partial<CodeMapMouseEventService>
-    let threeOrbitControlsService: Partial<ThreeOrbitControlsService>
-    let threeSceneService: Partial<ThreeSceneService>
+    let threeCameraService: ThreeCameraService
+    let threeRendererService: ThreeRendererService
+    let threeOrbitControlsService: ThreeOrbitControlsService
+    let codeMapLabelService: CodeMapLabelService
 
     beforeEach(() => {
-        actions$ = new BehaviorSubject<Action>({ type: "" })
-
-        threeRendererService = { render: jest.fn() }
-        threeCameraService = {
-            setZoomFactor: jest.fn(),
-            camera: new PerspectiveCamera() // Initialize camera correctly
-        }
-        codeMapLabelService = { onCameraChanged: jest.fn() }
-        codeMapMouseEventService = { getmouse3D: jest.fn().mockReturnValue({ clone: jest.fn().mockReturnValue({}) }) }
-        // @ts-ignore
-        threeOrbitControlsService = { controls: { target: { copy: jest.fn() }, update: jest.fn() } }
-        threeSceneService = {}
+        actions$ = new BehaviorSubject({ type: "" })
 
         TestBed.configureTestingModule({
             imports: [EffectsModule.forRoot([CameraZoomFactorEffect])],
             providers: [
+                {
+                    provide: ThreeRendererService,
+                    useValue: { render: jest.fn() }
+                },
+                {
+                    provide: ThreeCameraService,
+                    useValue: {
+                        camera: { zoom: 1 },
+                        setZoomFactor: jest.fn()
+                    }
+                },
+                {
+                    provide: CodeMapLabelService,
+                    useValue: { onCameraChanged: jest.fn() }
+                },
+                {
+                    provide: ThreeOrbitControlsService,
+                    useValue: {
+                        controls: {
+                            target: new Vector3().clone(),
+                            update: jest.fn(),
+                            copy: jest.fn()
+                        }
+                    }
+                },
+                {
+                    provide: CodeMapMouseEventService,
+                    useValue: { getMouse3D: jest.fn().mockReturnValue(new Vector3().clone()) }
+                },
                 provideMockStore({
-                    selectors: [{ selector: cameraZoomFactorSelector, value: 1 }]
+                    selectors: [
+                        {
+                            selector: cameraZoomFactorSelector,
+                            value: 1
+                        }
+                    ]
                 }),
-                provideMockActions(() => actions$),
-                { provide: ThreeRendererService, useValue: threeRendererService },
-                { provide: ThreeCameraService, useValue: threeCameraService },
-                { provide: CodeMapLabelService, useValue: codeMapLabelService },
-                { provide: CodeMapMouseEventService, useValue: codeMapMouseEventService },
-                { provide: ThreeOrbitControlsService, useValue: threeOrbitControlsService },
-                { provide: ThreeSceneService, useValue: threeSceneService }
+                provideMockActions(() => actions$)
             ]
         })
-
-        store = TestBed.inject(MockStore)
-        effect = TestBed.inject(CameraZoomFactorEffect)
+        TestBed.inject(MockStore)
+        threeCameraService = TestBed.inject(ThreeCameraService)
+        threeRendererService = TestBed.inject(ThreeRendererService)
+        threeOrbitControlsService = TestBed.inject(ThreeOrbitControlsService)
+        codeMapLabelService = TestBed.inject(CodeMapLabelService)
+        TestBed.inject(CodeMapMouseEventService)
     })
 
     afterEach(() => {
         actions$.complete()
+        jest.clearAllMocks()
     })
 
-    it("should set the camera zoom when setCameraZoomFactor action is dispatched", done => {
-        actions$.next(setCameraZoomFactor({ value: 2 }))
+    it("should handle setCameraZoomFactor action", fakeAsync(() => {
+        const expectedZoom = 1.5
 
-        setTimeout(() => {
-            expect(threeCameraService.setZoomFactor).toHaveBeenCalledWith(2)
-            expect(threeRendererService.render).toHaveBeenCalled()
-            expect(codeMapLabelService.onCameraChanged).toHaveBeenCalled()
-            done()
-        }, 0)
-    })
+        actions$.next(setCameraZoomFactor({ value: expectedZoom }))
 
-    it("should set the camera zoom when zoomIn action is dispatched", done => {
-        store.overrideSelector(cameraZoomFactorSelector, 2)
-        store.refreshState()
+        tick(300) // duration of the animation
+
+        expect(threeCameraService.setZoomFactor).toHaveBeenCalled()
+        expect(threeRendererService.render).toHaveBeenCalled()
+        expect(codeMapLabelService.onCameraChanged).toHaveBeenCalled()
+        expect(threeOrbitControlsService.controls.update).toHaveBeenCalled()
+    }))
+
+    it("should handle zoomIn action", fakeAsync(() => {
         actions$.next(zoomIn())
 
-        setTimeout(() => {
-            expect(threeCameraService.setZoomFactor).toHaveBeenCalledWith(3)
-            expect(threeRendererService.render).toHaveBeenCalled()
-            expect(codeMapLabelService.onCameraChanged).toHaveBeenCalled()
-            done()
-        }, 0)
-    })
+        tick(300)
 
-    it("should set the camera zoom when zoomOut action is dispatched", done => {
-        store.overrideSelector(cameraZoomFactorSelector, 2)
-        store.refreshState()
+        expect(threeCameraService.setZoomFactor).toHaveBeenCalled()
+        expect(threeRendererService.render).toHaveBeenCalled()
+        expect(codeMapLabelService.onCameraChanged).toHaveBeenCalled()
+        expect(threeOrbitControlsService.controls.update).toHaveBeenCalled()
+    }))
+
+    it("should handle zoomOut action", fakeAsync(() => {
         actions$.next(zoomOut())
 
-        setTimeout(() => {
-            expect(threeCameraService.setZoomFactor).toHaveBeenCalledWith(1)
-            expect(threeRendererService.render).toHaveBeenCalled()
-            expect(codeMapLabelService.onCameraChanged).toHaveBeenCalled()
-            done()
-        }, 0)
-    })
+        tick(300)
+
+        expect(threeCameraService.setZoomFactor).toHaveBeenCalled()
+        expect(threeRendererService.render).toHaveBeenCalled()
+        expect(codeMapLabelService.onCameraChanged).toHaveBeenCalled()
+        expect(threeOrbitControlsService.controls.update).toHaveBeenCalled()
+    }))
 })

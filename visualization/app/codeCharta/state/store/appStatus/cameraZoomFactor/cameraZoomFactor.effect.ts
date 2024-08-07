@@ -11,7 +11,7 @@ import { ThreeCameraService } from "../../../../ui/codeMap/threeViewer/threeCame
 import { CodeMapLabelService } from "../../../../ui/codeMap/codeMap.label.service"
 import { CodeMapMouseEventService } from "../../../../ui/codeMap/codeMap.mouseEvent.service"
 import { ThreeOrbitControlsService } from "../../../../ui/codeMap/threeViewer/threeOrbitControls.service"
-import { Vector3, Euler } from "three"
+import { Vector3 } from "three"
 
 @Injectable()
 export class CameraZoomFactorEffect {
@@ -33,26 +33,21 @@ export class CameraZoomFactorEffect {
                 withLatestFrom(this.store.select(cameraZoomFactorSelector)),
                 // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 switchMap(([action, targetZoom]) => {
-                    const targetFocusPoint = this.codeMapMouseEventService.getmouse3D().clone()
+                    const targetFocusPoint = this.codeMapMouseEventService.getMouse3D().clone()
                     const initialZoom = this.threeCameraService.camera.zoom
-                    const initialRotation = this.threeCameraService.camera.rotation.clone()
-                    return this.smoothZoomAndFocus(targetZoom, initialZoom, targetFocusPoint, initialRotation)
+                    const initialFocusPoint = this.threeOrbitControlsService.controls.target.clone()
+                    return this.smoothZoomAndFocus(targetZoom, initialZoom, targetFocusPoint, initialFocusPoint)
                 })
             ),
         { dispatch: false }
     )
 
-    private smoothZoomAndFocus(targetZoom: number, initialZoom: number, targetFocusPoint: Vector3, initialRotation: Euler) {
-        const duration = 500 // Duration of the animation in milliseconds
+    private smoothZoomAndFocus(targetZoom: number, initialZoom: number, targetFocusPoint: Vector3, initialFocusPoint: Vector3) {
+        const duration = 300 // Duration of the animation in milliseconds
         const frameRate = 60 // Frames per second
         const frameInterval = 1000 / frameRate
         const zoomDifference = targetZoom - initialZoom
         const totalFrames = duration / frameInterval
-
-        const camera = this.threeCameraService.camera
-
-        const targetDirection = new Vector3().subVectors(targetFocusPoint, camera.position).normalize()
-        const targetEuler = new Euler().setFromVector3(targetDirection)
 
         function easeInOutCubic(t: number): number {
             return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2
@@ -62,27 +57,24 @@ export class CameraZoomFactorEffect {
             interval(frameInterval).pipe(
                 map(frame => {
                     if (frame >= totalFrames) {
-                        return { zoom: targetZoom, rotation: targetEuler }
+                        return { zoom: targetZoom, focusPoint: targetFocusPoint }
                     }
                     const progress = easeInOutCubic(frame / totalFrames)
 
                     const interpolatedZoom = initialZoom + zoomDifference * progress
-                    const interpolatedRotation = new Euler(
-                        initialRotation.x + (targetEuler.x - initialRotation.x) * progress,
-                        initialRotation.y + (targetEuler.y - initialRotation.y) * progress,
-                        initialRotation.z + (targetEuler.z - initialRotation.z) * progress
-                    )
+                    const interpolatedFocusPoint = new Vector3().lerpVectors(initialFocusPoint, targetFocusPoint, progress)
 
-                    return { zoom: interpolatedZoom, rotation: interpolatedRotation }
+                    return { zoom: interpolatedZoom, focusPoint: interpolatedFocusPoint.clone() }
                 }),
                 takeWhile(({ zoom }) => zoom !== targetZoom, true),
-                tap(({ zoom, rotation }) => {
+                tap(({ zoom, focusPoint }) => {
                     const controls = this.threeOrbitControlsService.controls
 
                     this.threeCameraService.setZoomFactor(zoom)
-                    camera.rotation.copy(rotation)
-                    controls.target.copy(targetFocusPoint)
+
+                    controls.target.copy(focusPoint)
                     controls.update()
+
                     this.codeMapLabelService.onCameraChanged()
                     this.threeRendererService.render()
                 })

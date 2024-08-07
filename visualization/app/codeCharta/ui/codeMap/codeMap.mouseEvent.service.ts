@@ -109,6 +109,7 @@ export class CodeMapMouseEventService implements OnDestroy {
         const debouncedHandleWheelEvent = debounce(this.handleWheelEvent.bind(this), 1)
         this.threeRendererService.renderer.domElement.addEventListener("wheel", debouncedHandleWheelEvent)
         this.viewCubeMouseEvents.subscribe("viewCubeEventPropagation", this.onViewCubeEventPropagation)
+        this.threeSceneService.getMapMesh().getThreeMesh().geometry.boundingBox.getCenter(this.mouse3D)
     }
 
     hoverNode(id: number) {
@@ -467,7 +468,7 @@ export class CodeMapMouseEventService implements OnDestroy {
         }
     }
 
-    getmouse3D() {
+    getMouse3D() {
         return this.mouse3D
     }
 }
