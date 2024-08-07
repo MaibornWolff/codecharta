@@ -11,8 +11,7 @@ import { ThreeCameraService } from "../../../../ui/codeMap/threeViewer/threeCame
 import { CodeMapLabelService } from "../../../../ui/codeMap/codeMap.label.service"
 import { CodeMapMouseEventService } from "../../../../ui/codeMap/codeMap.mouseEvent.service"
 import { ThreeOrbitControlsService } from "../../../../ui/codeMap/threeViewer/threeOrbitControls.service"
-import { ThreeSceneService } from "../../../../ui/codeMap/threeViewer/threeSceneService"
-import { Vector3 } from "three"
+import { Vector3, Euler } from "three"
 
 @Injectable()
 export class CameraZoomFactorEffect {
@@ -24,7 +23,6 @@ export class CameraZoomFactorEffect {
         private codeMapLabelService: CodeMapLabelService,
         private codeMapMouseEventService: CodeMapMouseEventService,
         private threeOrbitControlsService: ThreeOrbitControlsService,
-        private threeSceneService: ThreeSceneService,
         private ngZone: NgZone
     ) {}
 
@@ -37,55 +35,54 @@ export class CameraZoomFactorEffect {
                 switchMap(([action, targetZoom]) => {
                     const targetFocusPoint = this.codeMapMouseEventService.getmouse3D().clone()
                     const initialZoom = this.threeCameraService.camera.zoom
-                    return this.smoothZoomAndFocus(targetZoom, initialZoom, targetFocusPoint)
+                    const initialRotation = this.threeCameraService.camera.rotation.clone()
+                    return this.smoothZoomAndFocus(targetZoom, initialZoom, targetFocusPoint, initialRotation)
                 })
             ),
         { dispatch: false }
     )
 
-    private smoothZoomAndFocus(targetZoom: number, initialZoom: number, targetFocusPoint: Vector3) {
+    private smoothZoomAndFocus(targetZoom: number, initialZoom: number, targetFocusPoint: Vector3, initialRotation: Euler) {
         const duration = 500 // Duration of the animation in milliseconds
         const frameRate = 60 // Frames per second
         const frameInterval = 1000 / frameRate
         const zoomDifference = targetZoom - initialZoom
         const totalFrames = duration / frameInterval
 
-        // Capture the current camera's direction vector
-        const initialDirection = new Vector3()
-        this.threeCameraService.camera.getWorldDirection(initialDirection)
+        const camera = this.threeCameraService.camera
 
-        // Calculate the direction vector towards the target focus point
-        const targetDirection = targetFocusPoint.clone().sub(this.threeCameraService.camera.position).normalize()
+        const targetDirection = new Vector3().subVectors(targetFocusPoint, camera.position).normalize()
+        const targetEuler = new Euler().setFromVector3(targetDirection)
+
+        function easeInOutCubic(t: number): number {
+            return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2
+        }
 
         return this.ngZone.runOutsideAngular(() =>
             interval(frameInterval).pipe(
                 map(frame => {
                     if (frame >= totalFrames) {
-                        return { zoom: targetZoom, focusPoint: targetFocusPoint }
+                        return { zoom: targetZoom, rotation: targetEuler }
                     }
+                    const progress = easeInOutCubic(frame / totalFrames)
 
-                    const progress = frame / totalFrames
                     const interpolatedZoom = initialZoom + zoomDifference * progress
+                    const interpolatedRotation = new Euler(
+                        initialRotation.x + (targetEuler.x - initialRotation.x) * progress,
+                        initialRotation.y + (targetEuler.y - initialRotation.y) * progress,
+                        initialRotation.z + (targetEuler.z - initialRotation.z) * progress
+                    )
 
-                    // Linearly interpolate between the initial and target direction vectors
-                    const interpolatedDirection = new Vector3().lerpVectors(initialDirection, targetDirection, progress).normalize()
-
-                    // Calculate the new focus point based on the interpolated direction
-                    const interpolatedFocusPoint = this.threeCameraService.camera.position.clone().add(interpolatedDirection)
-
-                    return { zoom: interpolatedZoom, focusPoint: interpolatedFocusPoint }
+                    return { zoom: interpolatedZoom, rotation: interpolatedRotation }
                 }),
                 takeWhile(({ zoom }) => zoom !== targetZoom, true),
-                tap(({ zoom, focusPoint }) => {
-                    const camera = this.threeCameraService.camera
+                tap(({ zoom, rotation }) => {
                     const controls = this.threeOrbitControlsService.controls
 
-                    // Update camera zoom and lookAt the interpolated focus point
-                    camera.zoom = zoom
-                    camera.lookAt(focusPoint)
-                    camera.updateProjectionMatrix()
-
-                    controls.target.copy(focusPoint) // Ensure controls' target is updated
+                    this.threeCameraService.setZoomFactor(zoom)
+                    camera.rotation.copy(rotation)
+                    controls.target.copy(targetFocusPoint)
+                    controls.update()
                     this.codeMapLabelService.onCameraChanged()
                     this.threeRendererService.render()
                 })
