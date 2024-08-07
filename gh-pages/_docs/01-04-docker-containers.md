@@ -1,6 +1,10 @@
 ---
 permalink: /docs/docker-containers/
 title: "Docker Containers"
+
+toc: true
+toc_sticky: true
+toc_label: "Jump to Section"
 ---
 
 CodeCharta also comes as a full Docker environment, where all supported tools come pre-installed. To start all
@@ -33,7 +37,7 @@ The visualization is [published to Docker Hub](https://hub.docker.com/r/codechar
 docker run -p 80:8080 codecharta/codecharta-visualization
 ```
 
-### Sonar
+## Sonar
 
 See also [SonarQube Docs](https://docs.sonarqube.org/latest/setup/get-started-2-minutes/)
 
@@ -46,14 +50,14 @@ Simply follow the steps for a manual, local project under Linux. You can also [c
 {{site.baseurl}}{% link _docs/05-05-analyze-with-sonarqube.md %})
 The sonar-scanner is already pre-installed in our analysis container.
 
-### codecharta-visualization
+## codecharta-visualization
 
 See also [CodeCharta Visualization]({{site.baseurl}}{% link _docs/06-01-visualization.md %})
 
 Open `localhost:9001` in your browser and open any file you want from your hard drive. To open files you have created in
 the analysis container, copy them over using `docker cp`
 
-### codecharta-analysis
+## codecharta-analysis
 
 See also [CodeCharta Analysis]({{site.baseurl}}{% link _docs/05-01-analysis.md %})
 
@@ -97,9 +101,9 @@ docker run -it -v $(pwd):/src -w /src codecharta/codecharta-analysis ccsh gitlog
 > Be aware, that by default the user inside the docker image is 'ubuntu' with an ID of 1000. You may
 > encounter errors with `git` when you try to execute commands inside a repository cloned by a different `UID`
 
-> For **macOS users**, it is necessary to add `--user=501:dialout` Before the image name. Why? because docker on mac is fun :)
+> For **macOS users**, it is necessary to add `--user=501:dialout` Before the image name. Why? Because docker on mac is fun :)
 
-### Build it yourself
+## Build it yourself
 
 You can also build a docker image from the locally installed instance of codecharta. To do this, you would execute the following commands:
 

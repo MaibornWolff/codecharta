@@ -45,8 +45,8 @@ Click [here]({{site.baseurl}}{% link _pages/category-archive.md %}#how-to) to se
 
 Changelogs are kept separate for the Analysis and the Visualisation.
 
-A list of analysis changelogs can be found {here TODO: add link to changelogs with analysis tag}\
-A list of visualisation changelogs can be found {here TODO: add link to changelogs with visualisation tag}\
+A list of analysis changelogs can be found [here]({{site.baseurl}}{% link _pages/category-archive.md %}#release-analysis)\
+A list of visualisation changelogs can be found [here]({{site.baseurl}}{% link _pages/category-archive.md %}#release-visualization)\
 A combined list of all changelogs sorted by date can be found [here]({{site.baseurl}}{% link _pages/category-archive.md %}#release)
 
 # About
