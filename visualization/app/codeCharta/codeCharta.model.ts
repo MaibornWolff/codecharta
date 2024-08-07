@@ -296,6 +296,7 @@ export interface Scenario {
     camera: {
         camera: Vector3
         cameraTarget: Vector3
+        zoom: number
     }
     edge: {
         edgeMetric: string
@@ -381,4 +382,5 @@ export interface AppStatus {
         xPositionOfRightClickEvent: number
         yPositionOfRightClickEvent: number
     } | null
+    cameraZoomFactor: number
 }

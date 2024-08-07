@@ -41,7 +41,6 @@ export class CodeMapLabelService {
     ) {
         this.labels = new Array<InternalLabel>()
         this.threeOrbitControlsService.subscribe("onCameraChanged", () => this.onCameraChanged())
-        this.threeCameraService.subscribe("onCameraZoomChanged", () => this.onCameraChanged())
     }
 
     // Labels need to be scaled according to map or it will clip + looks bad
