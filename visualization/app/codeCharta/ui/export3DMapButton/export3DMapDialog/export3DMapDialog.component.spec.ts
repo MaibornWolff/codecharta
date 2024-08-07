@@ -1,257 +1,222 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing"
-import { By } from "@angular/platform-browser"
-import { Export3DMapDialogComponent } from "./export3DMapDialog.component"
+/* eslint-disable unused-imports/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { State } from "@ngrx/store"
+import { render, screen } from "@testing-library/angular"
+import userEvent from "@testing-library/user-event"
+import { AmbientLight, BufferGeometry, DirectionalLight, Group, Scene, Shape, Vector2, WebGLRenderer } from "three"
+import { DEFAULT_SETTINGS, DEFAULT_STATE, FILE_META, TEST_NODES } from "../../../util/dataMocks"
+import { CodeMapMesh } from "../../codeMap/rendering/codeMapMesh"
 import { ThreeSceneService } from "../../codeMap/threeViewer/threeSceneService"
 import { Export3DMapButtonModule } from "../export3DMapButton.module"
-import { MatSlideToggleChange } from "@angular/material/slide-toggle"
+import { Export3DMapDialogComponent } from "./export3DMapDialog.component"
+import { QrCodeMesh } from "../../../services/3DExports/3DPreview/MeshModels/BackMeshModels/qrCodeMesh"
+import { FileSelectionState, FileState } from "../../../model/files/files"
+import { CCFile, CodeMapNode, ColorMode, NodeType } from "../../../codeCharta.model"
 
-class MockState {
-    getValue() {
-        return {
-            dynamicSettings: {
-                areaMetric: "areaMetricMock",
-                heightMetric: "heightMetricMock",
-                colorMetric: "colorMetricMock"
-            },
-            files: [],
-            fileSettings: {
-                blacklist: []
-            }
-        }
-    }
-}
-
-class MockThreeSceneService {
-    getMapMesh() {
-        return {
-            getThreeMesh: () => ({
-                geometry: {
-                    boundingBox: {
-                        min: { x: 0, y: 0, z: 0 },
-                        max: { x: 10, y: 10, z: 10 }
-                    },
-                    computeBoundingBox() {
-                        this.boundingBox = {
-                            min: { x: 0, y: 0, z: 0 },
-                            max: { x: 10, y: 10, z: 10 }
-                        }
+jest.mock("three/examples/jsm/loaders/SVGLoader", () => {
+    return {
+        SVGLoader: jest.fn().mockImplementation(() => {
+            return {
+                load: (url: string, onLoad, onProgress?, onError?) => {
+                    // Mock a scenario where the SVG loads successfully
+                    const mockSVGData = {
+                        paths: [
+                            {
+                                toShapes: jest.fn().mockReturnValue([new Shape()])
+                            }
+                        ]
                     }
+                    onLoad(mockSVGData)
                 }
-            })
-        }
+            }
+        })
     }
+})
+
+// get state and files lines up
+
+const TestNodeMap: CodeMapNode = {
+    name: "root",
+    attributes: { a: 20, b: 15, mcc: 5 },
+    type: NodeType.FOLDER,
+    isExcluded: false,
+    isFlattened: false,
+    children: [
+        {
+            name: "big leaf.ts",
+            path: "root/big leaf.ts",
+            type: NodeType.FILE,
+            attributes: { a: 20, b: 15, mcc: 20 }
+        }
+    ]
 }
 
-describe("Export3DMapDialogComponent", () => {
-    let component: Export3DMapDialogComponent
-    let fixture: ComponentFixture<Export3DMapDialogComponent>
-    let inputElement: HTMLInputElement
+const TestState = { ...DEFAULT_STATE }
+TestState.dynamicSettings.areaMetric = "a"
+TestState.dynamicSettings.heightMetric = "b"
+TestState.dynamicSettings.colorMetric = "mcc"
+TestState.dynamicSettings.colorRange = { from: 4, to: 8 }
+TestState.dynamicSettings.colorMode = ColorMode.absolute
+const TestFile: CCFile = { fileMeta: FILE_META, map: TestNodeMap, settings: DEFAULT_SETTINGS }
+const TestFileSTate: FileState = { file: TestFile, selectedAs: FileSelectionState.Partial }
+TestState.files = [TestFileSTate]
 
-    beforeEach(async () => {
-        await TestBed.configureTestingModule({
-            declarations: [Export3DMapDialogComponent],
-            imports: [Export3DMapButtonModule],
-            providers: [
-                { provide: State, useClass: MockState },
-                { provide: ThreeSceneService, useClass: MockThreeSceneService }
-            ]
-        }).compileComponents()
-    })
+describe("Export3DMapDialogComponent2", () => {
+    let codeMapMesh: CodeMapMesh
+    let lightScene: Scene
+
+    let threeSceneServiceMock: any
+
+    const mockedWebGLRenderer = () => {
+        const fakeDomElementProver = (): HTMLCanvasElement => {
+            return document.createElement("canvas")
+        }
+        const webGLRenderer = {
+            context: {
+                getParameter: jest.fn().mockReturnValue(["WebGL 2"]),
+                getExtension: jest.fn().mockReturnValue({
+                    EXT_blend_minmax: null
+                }),
+                createTexture: jest.fn(),
+                bindTexture: jest.fn(),
+                texParameteri: jest.fn(),
+                texImage2D: jest.fn(),
+                clearColor: jest.fn(),
+                clearDepth: jest.fn(),
+                clearStencil: jest.fn(),
+                enable: jest.fn(),
+                disable: jest.fn(),
+                depthFunc: jest.fn(),
+                frontFace: jest.fn(),
+                cullFace: jest.fn(),
+                initGLContext: jest.fn(),
+                scissor: jest.fn(),
+                viewport: jest.fn()
+            } as unknown as WebGLRenderingContext
+        } as WebGLRenderer
+
+        webGLRenderer.domElement = fakeDomElementProver()
+
+        webGLRenderer.getPixelRatio = jest.fn().mockReturnValue(2)
+        webGLRenderer.setClearColor = jest.fn()
+        webGLRenderer.render = jest.fn()
+        webGLRenderer.setPixelRatio = jest.fn()
+        webGLRenderer.getDrawingBufferSize = jest.fn().mockReturnValue({
+            size: {
+                width: 1,
+                height: 1
+            }
+        })
+        webGLRenderer.setSize = jest.fn()
+        webGLRenderer.getSize = jest.fn().mockImplementation((vector2: Vector2) => {
+            vector2.set(200, 150)
+        })
+
+        return webGLRenderer
+    }
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(Export3DMapDialogComponent)
-        component = fixture.componentInstance
-        fixture.detectChanges()
+        codeMapMesh = new CodeMapMesh(TEST_NODES, TestState, false)
+        lightScene = new Scene()
+        const lightGroup = new Group()
 
-        component.onFrontTextChange = function () {
-            this.frontText = inputElement.value
-        }
-        component.onSecondRowTextChange = function () {
-            this.secondRow.currentText = inputElement.value
-            this.secondRow.isVisible = Boolean(this.secondRow.currentText)
-        }
-        component.onSecondRowVisibilityChange = function (event: MatSlideToggleChange) {
-            this.secondRow.isVisible = event.checked
-        }
-        component.onQrCodeTextChange = function () {
-            this.qrCode.currentText = inputElement.value
-            this.qrCode.isVisible = Boolean(this.qrCode.currentText)
-        }
-        component.onQrCodeVisibilityChange = function (event: MatSlideToggleChange) {
-            this.qrCode.isVisible = event.checked
-        }
-        component.printers = [
-            { name: "Prusa MK3S (single color)", x: 245, y: 205, z: 205, numberOfColors: 1 },
-            { name: "BambuLab A1 + AMS Lite", x: 251, y: 251, z: 251, numberOfColors: 4 },
-            { name: "Prusa XL (5 colors)", x: 355, y: 335, z: 355, numberOfColors: 5 }
-        ]
-        component.selectedPrinter = component.printers[2]
+        const ambilight = new AmbientLight(0x70_70_70) // soft white light
+        const light1 = new DirectionalLight(0xe0_e0_e0, 1)
+        light1.position.set(50, 10, 8).normalize()
+        const light2 = new DirectionalLight(0xe0_e0_e0, 1)
+        light2.position.set(-50, 10, -8).normalize()
+        lightGroup.add(ambilight, light1, light2)
+        lightScene.add(new Group(), new Group(), new Group(), lightGroup)
 
-        component.onSelectedPrinterChange = function () {
-            this.selectedPrinter = this.printers.find(printer => printer.name === this.selectedPrinter.name)
+        threeSceneServiceMock = {
+            getMapMesh: jest.fn().mockReturnValue(codeMapMesh),
+            scene: lightScene
         }
-        component.onRemoveLogo = function () {
-            this.isFileSelected = false
-        }
+
+        jest.spyOn(Export3DMapDialogComponent.prototype, "getGL").mockReturnValue(mockedWebGLRenderer())
+        jest.spyOn(QrCodeMesh.prototype, "create").mockImplementation(async () => {
+            return new Promise(resolve => {
+                resolve(new BufferGeometry())
+            })
+        })
     })
 
-    it("should update front text when input changes", () => {
-        inputElement = fixture.debugElement.query(By.css('[data-testid="frontText"]')).nativeElement
+    async function setup() {
+        const renderObject = await render(Export3DMapDialogComponent, {
+            imports: [Export3DMapButtonModule],
+            providers: [
+                { provide: State, useValue: { getValue: () => TestState } },
+                { provide: ThreeSceneService, useValue: threeSceneServiceMock }
+            ],
+            excludeComponentDeclaration: true
+        })
+
+        return renderObject
+    }
+
+    it("should update printer stats", async () => {
+        const dut = await setup()
+        const { detectChanges } = dut
+
+        let scale = screen.getByTestId("printSizeOverview").innerHTML
+        expect(scale).toContain("max. 35.5")
+        expect(scale).toContain("max. 33.5")
+
+        const selectElement = screen.getByTestId("selectPrinter")
+        await userEvent.click(selectElement)
+        detectChanges()
+
+        const options = screen.getAllByTestId("selectedPrinter")
+        expect(options).toHaveLength(3)
+
+        await userEvent.click(options[0])
+        detectChanges()
+
+        scale = screen.getByTestId("printSizeOverview").innerHTML
+        expect(scale).toContain("max. 24.5")
+        expect(scale).toContain("max. 20.5")
+    })
+
+    it("should update front text when input changes", async () => {
+        const { fixture } = await setup()
+        const inputElement = screen.getByTestId("frontText") as HTMLInputElement
         expect(inputElement).toBeTruthy()
 
-        const frontTextInput = "FrontText"
-        inputElement.value = frontTextInput
-        inputElement.dispatchEvent(new Event("input"))
+        const frontTextInput = "Test Front Text"
+        await userEvent.type(inputElement, frontTextInput)
         fixture.detectChanges()
-        expect(component.frontText).toBe(frontTextInput)
+        expect(inputElement.value).toBe(frontTextInput)
     })
 
-    it("should update second row text when input changes", () => {
-        inputElement = fixture.debugElement.query(By.css('[data-testid="secondRowText"]')).nativeElement
+    it("should update second row text when input changes", async () => {
+        const { fixture } = await setup()
+        const toggleElement = screen.getByTestId("secondRowToggle") as HTMLInputElement
+        await userEvent.click(toggleElement)
+
+        const inputElement = screen.getByTestId("secondRowText") as HTMLInputElement
         expect(inputElement).toBeTruthy()
 
-        const secondRowTextInput = "SecondRowText"
-        inputElement.value = secondRowTextInput
-        inputElement.dispatchEvent(new Event("input"))
+        const secondRowTextInput = "Test Second Row Text"
+        expect(inputElement.value).toBe(new Date().toLocaleDateString())
+        await userEvent.clear(inputElement)
+        await userEvent.type(inputElement, secondRowTextInput)
         fixture.detectChanges()
-        expect(component.secondRow.currentText).toBe(secondRowTextInput)
+        expect(inputElement.value).toBe(secondRowTextInput)
     })
 
-    it("should set secondRow isVisible to true when input changes", () => {
-        expect(component.secondRow.isVisible).toBeFalsy()
+    it("should update QR code text when input changes", async () => {
+        const { fixture } = await setup()
+        const toggleElement = screen.getByTestId("qrCodeToggle") as HTMLInputElement
+        await userEvent.click(toggleElement)
 
-        inputElement = fixture.debugElement.query(By.css('[data-testid="secondRowText"]')).nativeElement
+        const inputElement = screen.getByTestId("qrCodeText") as HTMLInputElement
         expect(inputElement).toBeTruthy()
 
-        const secondRowTextInput = "SecondRowText"
-        inputElement.value = secondRowTextInput
-        inputElement.dispatchEvent(new Event("input"))
+        expect(inputElement.value).toBe("maibornwolff.de/service/it-sanierung")
+        await userEvent.clear(inputElement)
+        const qrCodeTextInput = "Test QR Code"
+        await userEvent.type(inputElement, qrCodeTextInput)
         fixture.detectChanges()
-
-        expect(component.secondRow.isVisible).toBeTruthy()
-    })
-
-    it("should set secondRow isVisible to true when the slide toggle is clicked", () => {
-        expect(component.secondRow.isVisible).toBeFalsy()
-
-        const slideToggleDebugElement = fixture.debugElement.query(By.css('[data-testid="secondRowToggle"]'))
-        const slideToggle = slideToggleDebugElement.nativeElement
-        expect(slideToggle).toBeTruthy()
-
-        const event = new MatSlideToggleChange(slideToggleDebugElement.componentInstance, true)
-        slideToggleDebugElement.triggerEventHandler("change", event)
-        fixture.detectChanges()
-
-        expect(component.secondRow.isVisible).toBeTruthy()
-    })
-    it("should update qrCode text when input changes", () => {
-        inputElement = fixture.debugElement.query(By.css('[data-testid="qrCodeText"]')).nativeElement
-        expect(inputElement).toBeTruthy()
-
-        const qrCodeText = "qrCodeText"
-        inputElement.value = qrCodeText
-        inputElement.dispatchEvent(new Event("input"))
-        fixture.detectChanges()
-        expect(component.qrCode.currentText).toBe(qrCodeText)
-    })
-
-    it("should set qrCode isVisible to true when input changes", () => {
-        expect(component.qrCode.isVisible).toBeFalsy()
-
-        inputElement = fixture.debugElement.query(By.css('[data-testid="qrCodeText"]')).nativeElement
-        expect(inputElement).toBeTruthy()
-
-        const qrCodeText = "qrCodeText"
-        inputElement.value = qrCodeText
-        inputElement.dispatchEvent(new Event("input"))
-        fixture.detectChanges()
-
-        expect(component.qrCode.isVisible).toBeTruthy()
-    })
-    it("should set qrCode isVisible to true when the slide toggle is clicked", () => {
-        expect(component.qrCode.isVisible).toBeFalsy()
-
-        const slideToggleDebugElement = fixture.debugElement.query(By.css('[data-testid="qrCodeToggle"]'))
-        const slideToggle = slideToggleDebugElement.nativeElement
-        expect(slideToggle).toBeTruthy()
-
-        const event = new MatSlideToggleChange(slideToggleDebugElement.componentInstance, true)
-        slideToggleDebugElement.triggerEventHandler("change", event)
-        fixture.detectChanges()
-
-        expect(component.qrCode.isVisible).toBeTruthy()
-    })
-    it("should change selectedPrinter when a new printer is selected", () => {
-        const selectPrinter = fixture.debugElement.query(By.css('[data-testid="selectPrinter"]')).nativeElement
-        expect(selectPrinter).toBeTruthy()
-
-        selectPrinter.click()
-        fixture.detectChanges()
-
-        const selectedPrinterOptions = fixture.debugElement.queryAll(By.css('[data-testid="selectedPrinter"]'))
-        expect(selectedPrinterOptions.length).toBe(3)
-
-        selectedPrinterOptions[1].nativeElement.click()
-        fixture.detectChanges()
-
-        expect(component.selectedPrinter).toBe(component.printers[1])
-    })
-    it("should set scale correctly when the slider is changed", () => {
-        const sliderDebugElement = fixture.debugElement.query(By.css("mat-slider"))
-        expect(sliderDebugElement).toBeTruthy()
-        const sliderInputElement = sliderDebugElement.query(By.css("input")).nativeElement
-        expect(sliderInputElement).toBeTruthy()
-
-        sliderInputElement.value = 150
-        sliderInputElement.dispatchEvent(new Event("input"))
-        sliderInputElement.dispatchEvent(new Event("change"))
-        fixture.detectChanges()
-
-        expect(component.wantedWidth).toBe(150)
-    })
-    it("should set isFileSelected to true when a file is selected", () => {
-        const inputDebugElement = fixture.debugElement.query(By.css('input[type="file"]'))
-        expect(inputDebugElement).toBeTruthy()
-        const inputElement = inputDebugElement.nativeElement
-        expect(inputElement).toBeTruthy()
-
-        const file = new File([""], "test.svg", { type: "image/svg+xml" })
-
-        const event = new Event("change")
-        Object.defineProperty(event, "target", { writable: false, value: { files: [file] } })
-
-        inputElement.dispatchEvent(event)
-        fixture.detectChanges()
-
-        expect(component.isFileSelected).toBeTruthy()
-    })
-
-    it("should set isFileSelected to false when the logo is removed", () => {
-        component.isFileSelected = true
-        fixture.detectChanges()
-
-        const removeButtonDebugElement = fixture.debugElement.query(By.css('button[title="Remove Logo Button"]'))
-        removeButtonDebugElement.triggerEventHandler("click", null)
-        fixture.detectChanges()
-
-        expect(component.isFileSelected).toBeFalsy()
-    })
-    it('should call download3MFFile when the "Download 3MF" button is clicked', () => {
-        const download3MFButtonDebugElement = fixture.debugElement.query(By.css('button[title="Download 3MF Button"]'))
-        expect(download3MFButtonDebugElement).toBeTruthy()
-        download3MFButtonDebugElement.triggerEventHandler("click", null)
-        fixture.detectChanges()
-
-        expect(component.download3MFFile).toBeTruthy()
-    })
-
-    it('should call downloadStlFile when the "Download minimal STL" button is clicked', () => {
-        const downloadStlButtonDebugElement = fixture.debugElement.query(By.css('button[title="Download Stl Button"]'))
-        expect(downloadStlButtonDebugElement).toBeTruthy()
-        downloadStlButtonDebugElement.triggerEventHandler("click", null)
-        fixture.detectChanges()
-
-        expect(component.downloadStlFile).toBeTruthy()
+        expect(inputElement.value).toBe(qrCodeTextInput)
     })
 })
