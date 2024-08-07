@@ -1,6 +1,8 @@
 import { Component, ViewEncapsulation } from "@angular/core"
 import { ThreeOrbitControlsService } from "../../codeMap/threeViewer/threeOrbitControls.service"
-import { ThreeCameraService } from "../../codeMap/threeViewer/threeCamera.service"
+import { Store } from "@ngrx/store"
+import { setCameraZoomFactor } from "../../../state/store/appStatus/cameraZoomFactor/cameraZoomFactor.actions"
+import { CcState } from "../../../codeCharta.model"
 
 @Component({
     selector: "cc-center-map-button",
@@ -11,11 +13,11 @@ import { ThreeCameraService } from "../../codeMap/threeViewer/threeCamera.servic
 export class CenterMapButtonComponent {
     constructor(
         private threeOrbitControlsService: ThreeOrbitControlsService,
-        private threeCameraService: ThreeCameraService
+        private store: Store<CcState>
     ) {}
 
     centerMap() {
         this.threeOrbitControlsService.autoFitTo()
-        this.threeCameraService.setZoomFactor(1)
+        this.store.dispatch(setCameraZoomFactor({ value: 1 }))
     }
 }
