@@ -16,7 +16,7 @@ The Source-Code-Parser is parser to generate code metrics from a source code fil
 - functions
 - statements
 - comment_lines
-- mcc: McCabe Complexity / Cyclomatic complexity
+- complexity (cyclomatic complexity)
 - cognitive_complexity
 - commented_out_code_blocks
 - max_nesting_level

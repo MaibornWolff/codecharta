@@ -10,7 +10,6 @@ internal object SonarMetricTranslatorFactory {
         replacementMap["accessors"] = "accessors"
         replacementMap["commented_out_code_lines"] = "commented_out_loc"
         replacementMap["comment_lines"] = "comment_lines"
-        replacementMap["complexity"] = "mcc"
         replacementMap["function_complexity"] = "average_function_mcc"
         replacementMap["branch_coverage"] = "branch_coverage"
         replacementMap["functions"] = "functions"

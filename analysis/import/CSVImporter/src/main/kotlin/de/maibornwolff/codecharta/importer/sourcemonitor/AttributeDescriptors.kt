@@ -13,7 +13,7 @@ fun getAttributeDescriptors(): Map<String, AttributeDescriptor> {
     descriptors["rloc"] =
         AttributeDescriptor(
             title = "Real Lines of Code",
-            description = "Number of physical lines that contain" +
+            description = "Number of code lines that contain" +
                 " at least one character which is neither a whitespace nor a tabulation nor part of a comment",
             link = ghLink, direction = -1
         )
@@ -30,12 +30,12 @@ fun getAttributeDescriptors(): Map<String, AttributeDescriptor> {
     descriptors["average_statements_per_function"] =
         AttributeDescriptor(
             title = "Average Statements per Function",
-            description = "Average number of statements per method", link = ghLink, direction = -1
+            description = "Average number of statements per function", link = ghLink, direction = -1
         )
-    descriptors["max_function_mcc"] =
+    descriptors["max_function_complexity"] =
         AttributeDescriptor(
-            title = "Function Complexity",
-            description = "Maximum cyclic complexity based on paths through a function by McCabe",
+            title = "Maximum Function Complexity",
+            description = "Maximum cyclomatic complexity based on the number of paths through a function",
             link = ghLink,
             direction = -1
         )
@@ -49,10 +49,11 @@ fun getAttributeDescriptors(): Map<String, AttributeDescriptor> {
             title = "Average Block Depth", description = "Average nested block depth found",
             link = ghLink, direction = -1
         )
-    descriptors["average_function_mcc"] =
+    descriptors["average_function_complexity"] =
         AttributeDescriptor(
-            title = "Average Cyclic Complexity",
-            description = "Average cyclic complexity of functions", link = ghLink, direction = -1
+            title = "Average Function Complexity",
+            description = "Average cyclomatic complexity based on the number of paths through a function",
+            link = ghLink, direction = -1
         )
     descriptors["sm_percent_branch_statements"] =
         AttributeDescriptor(

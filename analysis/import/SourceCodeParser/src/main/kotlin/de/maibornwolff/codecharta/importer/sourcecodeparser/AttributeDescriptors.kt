@@ -10,13 +10,13 @@ fun getAttributeDescriptors(): Map<String, AttributeDescriptor> {
         "rloc" to
             AttributeDescriptor(
                 title = "Real Lines of Code",
-                description = "Number of physical lines that contain at least one character which is neither a whitespace nor a tabulation nor part of a comment",
+                description = "Number of code lines that contain at least one character which is neither a whitespace nor a tabulation nor part of a comment",
                 link = ghLink, direction = -1
             ),
         "classes" to
             AttributeDescriptor(
                 title = "Number of Classes",
-                description = "Number of classes (including nested classes, interfaces, enums and annotations",
+                description = "Number of classes (including nested classes, interfaces, enums and annotations)",
                 link = ghLink, direction = -1
             ),
         "functions" to
@@ -36,11 +36,11 @@ fun getAttributeDescriptors(): Map<String, AttributeDescriptor> {
                 link = ghLink,
                 direction = -1
             ),
-        "mcc" to
+        "complexity" to
             AttributeDescriptor(
-                title = "Maximum Cyclic Complexity",
-                description = "Maximum cyclic complexity based on paths through the code by McCabe",
-                link = ghLink,
+                title = "Cyclomatic Complexity",
+                description = "Cyclomatic complexity based on the number of paths through the code",
+                link = "https://docs.sonarsource.com/sonarqube/latest/user-guide/metric-definitions/",
                 direction = -1
             ),
         "cognitive_complexity" to

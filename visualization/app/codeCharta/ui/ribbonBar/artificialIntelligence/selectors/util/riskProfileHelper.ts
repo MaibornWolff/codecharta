@@ -9,14 +9,15 @@ export interface RiskProfile {
     veryHighRisk: number
 }
 
-export const HEIGHT_METRIC = "mcc"
+export const HEIGHT_METRICS = ["complexity", "sonar_complexity", "mcc"]
 export const AREA_METRIC = "rloc"
 export const EXCLUDED_FILE_EXTENSION = new Set(["html", "sass", "css", "scss", "txt", "md", "json", undefined])
 
 export function aggregateRiskProfile(node: CodeMapNode, rlocRisk: RiskProfile, fileExtension: string) {
+    const riskMetric = HEIGHT_METRICS.find(metric => node.attributes[metric] !== undefined)
     const languageSpecificThresholds = getAssociatedMetricThresholds(fileExtension)
-    const thresholds = languageSpecificThresholds[HEIGHT_METRIC]
-    const nodeMetricValue = node.attributes[HEIGHT_METRIC]
+    const thresholds = languageSpecificThresholds[riskMetric]
+    const nodeMetricValue = node.attributes[riskMetric]
     const nodeRlocValue = node.attributes[AREA_METRIC]
 
     if (nodeMetricValue <= thresholds.percentile70) {

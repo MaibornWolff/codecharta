@@ -1,4 +1,5 @@
-@use "../../../../material/theme";
+@use "variables";
+
 .file-select {
     &.mat-mdc-select-panel {
         min-width: max-content;
@@ -23,7 +24,7 @@
 
             &:hover {
                 background-color: rgba(0, 0, 0, 0.05);
-                color: theme.$cc-primary-color;
+                color: variables.$cc-primary-color;
             }
 
             &.file-select-action-button {

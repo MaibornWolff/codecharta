@@ -23,6 +23,11 @@
             @for (option of metricData$ | async | filterMetricDataBySearchTerm: searchTerm; track option) {
                 <mat-option [value]="option.name" [title]="attributeDescriptors[option.name] | attributeDescriptorTooltip: option.name">
                     {{ option.name }}
+
+                    @if (option.name == "complexity" || option.name == "sonar_complexity") {
+                        (formerly mcc)
+                    }
+
                     <span class="metric-max-value">({{ option.maxValue }})</span><br />
                     @if (attributeDescriptors[option.name]?.description; as descriptorSubtitle) {
                         <span class="metric-subtitle">

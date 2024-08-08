@@ -7,7 +7,7 @@ export default abstract class Treemap extends BoundingBox {
     protected treeMapNodes: CodeMapNode[] = []
     protected metricName: string
 
-    constructor(rootNode: CodeMapNode) {
+    protected constructor(rootNode: CodeMapNode) {
         super(rootNode)
     }
 
@@ -15,7 +15,7 @@ export default abstract class Treemap extends BoundingBox {
 
     calculateDimension(metricName: string): void {
         this.metricName = metricName
-        this.metricValue = TreeMapHelper.calculateSize(this.node, metricName)
+        this.metricValue = TreeMapHelper.calculateSize(this.mapNode, metricName)
         this.width = Math.sqrt(this.metricValue)
         this.height = Math.sqrt(this.metricValue)
     }

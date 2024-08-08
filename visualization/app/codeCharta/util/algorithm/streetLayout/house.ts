@@ -9,14 +9,14 @@ export default class House extends BoundingBox {
     }
 
     calculateDimension(metricName: string): void {
-        this.metricValue = StreetViewHelper.calculateSize(this.node, metricName)
+        this.metricValue = StreetViewHelper.calculateSize(this.mapNode, metricName)
         const size = Math.sqrt(this.metricValue)
         this.width = this.height = size
     }
 
     layout(_, origin: Vector2): CodeMapNode[] {
         const layoutNode: CodeMapNode = {
-            ...this.node,
+            ...this.mapNode,
             value: this.metricValue,
             rect: this.createMarginatedRectangle(origin),
             zOffset: 0

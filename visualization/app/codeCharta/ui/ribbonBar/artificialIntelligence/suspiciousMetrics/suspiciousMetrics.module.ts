@@ -1,7 +1,7 @@
 import { NgModule } from "@angular/core"
 import { SuspiciousMetricsComponent } from "./suspiciousMetrics.component"
 import { SuspiciousMetricsMenuComponent } from "./suspiciousMetricsMenu/suspiciousMetricsMenu.component"
-import { SuspiciousMetricsListComponent } from "./suspiciousMetricsMenu/susoiciousMetricsList/suspiciousMetricsList.component"
+import { SuspiciousMetricsListComponent } from "./suspiciousMetricsMenu/suspiciousMetricsList/suspiciousMetricsList.component"
 import { UntrackedMetricsListComponent } from "./suspiciousMetricsMenu/untrackedMetricsList/untrackedMetricsList.component"
 import { SuspiciousMetricsDialogComponent } from "./suspiciousMetricsMenu/suspiciousMetricsDialog/suspiciousMetricsDialog.component"
 import { CommonModule } from "@angular/common"

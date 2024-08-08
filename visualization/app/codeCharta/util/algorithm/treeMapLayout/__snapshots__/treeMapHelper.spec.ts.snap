@@ -23,7 +23,7 @@ exports[`TreeMapHelper build node deltas 1`] = `
   "isLeaf": true,
   "length": 400,
   "link": undefined,
-  "mapNodeDepth": undefined,
+  "mapNodeDepth": 1,
   "markingColor": undefined,
   "name": "Anode",
   "outgoingEdgePoint": Vector3 {
@@ -61,7 +61,7 @@ exports[`TreeMapHelper build node invertHeight 1`] = `
   "isLeaf": true,
   "length": 400,
   "link": undefined,
-  "mapNodeDepth": undefined,
+  "mapNodeDepth": 1,
   "markingColor": undefined,
   "name": "Anode",
   "outgoingEdgePoint": Vector3 {
@@ -99,7 +99,7 @@ exports[`TreeMapHelper build node minimal 1`] = `
   "isLeaf": true,
   "length": 400,
   "link": undefined,
-  "mapNodeDepth": undefined,
+  "mapNodeDepth": 1,
   "markingColor": undefined,
   "name": "Anode",
   "outgoingEdgePoint": Vector3 {
@@ -137,7 +137,7 @@ exports[`TreeMapHelper build node should set lowest possible height caused by ot
   "isLeaf": true,
   "length": 400,
   "link": undefined,
-  "mapNodeDepth": undefined,
+  "mapNodeDepth": 1,
   "markingColor": undefined,
   "name": "Anode",
   "outgoingEdgePoint": Vector3 {
