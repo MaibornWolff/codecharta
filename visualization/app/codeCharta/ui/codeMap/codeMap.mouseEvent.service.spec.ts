@@ -76,7 +76,16 @@ describe("codeMapMouseEventService", () => {
                 buildings: [codeMapBuilding]
             }),
             checkMouseRayMeshIntersection: jest.fn(),
-            getThreeMesh: jest.fn().mockReturnValue({ geometry: { boundingBox: { getCenter: jest.fn() } } })
+            getThreeMesh: jest.fn().mockReturnValue({
+                geometry: {
+                    boundingBox: {
+                        getCenter: jest.fn(),
+                        min: { x: 0, y: 0, z: 0 },
+                        max: { x: 1, y: 1, z: 1 }
+                    }
+                }
+            }),
+            getBuildingByPath: jest.fn()
         })
         threeSceneService.getSelectedBuilding = jest.fn().mockReturnValue(CODE_MAP_BUILDING)
         threeSceneService.getHighlightedBuilding = jest.fn().mockReturnValue(CODE_MAP_BUILDING)
@@ -140,9 +149,7 @@ describe("codeMapMouseEventService", () => {
         threeCameraService = codeMapMouseEventService["threeCameraService"] = jest.fn().mockReturnValue({
             camera: {
                 updateMatrixWorld: jest.fn()
-            },
-            zoomIn: jest.fn(),
-            zoomOut: jest.fn()
+            }
         })()
     }
 
@@ -157,7 +164,15 @@ describe("codeMapMouseEventService", () => {
                     buildings: [codeMapBuilding]
                 }),
                 checkMouseRayMeshIntersection: jest.fn(),
-                getThreeMesh: jest.fn().mockReturnValue({ geometry: { boundingBox: { getCenter: jest.fn() } } })
+                getThreeMesh: jest.fn().mockReturnValue({
+                    geometry: {
+                        boundingBox: {
+                            getCenter: jest.fn(),
+                            min: { x: 0, y: 0, z: 0 },
+                            max: { x: 1, y: 1, z: 1 }
+                        }
+                    }
+                })
             }),
             clearHighlight: jest.fn(),
             highlightSingleBuilding: jest.fn(),
@@ -373,7 +388,15 @@ describe("codeMapMouseEventService", () => {
             })
             threeSceneService.getMapMesh = jest.fn().mockReturnValue({
                 checkMouseRayMeshIntersection: jest.fn(),
-                getThreeMesh: jest.fn().mockReturnValue({ geometry: { boundingBox: { getCenter: jest.fn() } } })
+                getThreeMesh: jest.fn().mockReturnValue({
+                    geometry: {
+                        boundingBox: {
+                            getCenter: jest.fn(),
+                            min: { x: 0, y: 0, z: 0 },
+                            max: { x: 1, y: 1, z: 1 }
+                        }
+                    }
+                })
             })
             codeMapMouseEventService["transformHTMLToSceneCoordinates"] = jest.fn().mockReturnValue({ x: 0, y: 1 })
 
@@ -764,6 +787,13 @@ describe("codeMapMouseEventService", () => {
             codeMapMouseEventService.updateHovering = jest.fn()
             codeMapMouseEventService.onDocumentMouseMove(event)
             expect(codeMapMouseEventService.updateHovering).toHaveBeenCalled()
+        })
+
+        it("should call updateMouse3DCoordinates when moving the mouse", () => {
+            const event = { clientX: 10, clientY: 10 } as MouseEvent
+            codeMapMouseEventService["updateMouse3DCoordinates"] = jest.fn()
+            codeMapMouseEventService.onDocumentMouseMove(event)
+            expect(codeMapMouseEventService.updateMouse3DCoordinates).toHaveBeenCalled()
         })
     })
 

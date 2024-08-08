@@ -109,7 +109,6 @@ export class CodeMapMouseEventService implements OnDestroy {
         const debouncedHandleWheelEvent = debounce(this.handleWheelEvent.bind(this), 1)
         this.threeRendererService.renderer.domElement.addEventListener("wheel", debouncedHandleWheelEvent)
         this.viewCubeMouseEvents.subscribe("viewCubeEventPropagation", this.onViewCubeEventPropagation)
-        this.threeSceneService.getMapMesh().getThreeMesh().geometry.boundingBox.getCenter(this.mouse3D)
     }
 
     hoverNode(id: number) {
@@ -206,12 +205,6 @@ export class CodeMapMouseEventService implements OnDestroy {
                         ? mapMesh.getBuildingByPath(nodeNameHoveredLabel)
                         : mapMesh.checkMouseRayMeshIntersection(mouseCoordinates, camera)
 
-                if (this.intersectedBuilding !== undefined) {
-                    this.raycaster.ray.intersectBox(this.intersectedBuilding?.boundingBox, this.mouse3D)
-                } else {
-                    mapMesh.getThreeMesh().geometry.boundingBox.getCenter(this.mouse3D)
-                }
-
                 const from = this.threeSceneService.getHighlightedBuilding()
                 const to = this.intersectedBuilding
 
@@ -224,6 +217,28 @@ export class CodeMapMouseEventService implements OnDestroy {
                         this.setLabelHoveredLeaf(to, labels)
                         this.hoverBuilding(to)
                     }
+                }
+            }
+        }
+    }
+
+    updateMouse3DCoordinates() {
+        const mapMesh = this.threeSceneService.getMapMesh()
+        if (mapMesh) {
+            this.threeCameraService.camera.updateMatrixWorld(false)
+
+            const mouseCoordinates = this.transformHTMLToSceneCoordinates()
+            const camera = this.threeCameraService.camera
+
+            if (camera.isPerspectiveCamera) {
+                this.raycaster.setFromCamera(mouseCoordinates, camera)
+            }
+
+            const boundingBox = mapMesh.getThreeMesh().geometry.boundingBox
+            if (boundingBox) {
+                const intersect = this.raycaster.ray.intersectBox(boundingBox, this.mouse3D)
+                if (intersect === null) {
+                    boundingBox.getCenter(this.mouse3D)
                 }
             }
         }
@@ -300,6 +315,7 @@ export class CodeMapMouseEventService implements OnDestroy {
         this.mouse.x = event.clientX
         this.mouse.y = event.clientY
         this.updateHovering()
+        this.updateMouse3DCoordinates()
         this.viewCubeMouseEvents.propagateMovement()
     }
 

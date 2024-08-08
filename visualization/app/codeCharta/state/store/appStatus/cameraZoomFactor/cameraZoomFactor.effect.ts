@@ -1,7 +1,7 @@
 import { Injectable, NgZone } from "@angular/core"
 import { Actions, createEffect, ofType } from "@ngrx/effects"
-import { interval } from "rxjs"
-import { map, switchMap, takeWhile, tap, withLatestFrom } from "rxjs/operators"
+import { Observable } from "rxjs"
+import { switchMap, withLatestFrom } from "rxjs/operators"
 import { Store } from "@ngrx/store"
 import { CcState } from "../../../../codeCharta.model"
 import { ThreeRendererService } from "../../../../ui/codeMap/threeViewer/threeRenderer.service"
@@ -43,42 +43,43 @@ export class CameraZoomFactorEffect {
     )
 
     private smoothZoomAndFocus(targetZoom: number, initialZoom: number, targetFocusPoint: Vector3, initialFocusPoint: Vector3) {
-        const duration = 300 // Duration of the animation in milliseconds
-        const frameRate = 60 // Frames per second
-        const frameInterval = 1000 / frameRate
-        const zoomDifference = targetZoom - initialZoom
-        const totalFrames = duration / frameInterval
+        const duration = 500 // Duration of the animation in milliseconds
 
         function easeInOutCubic(t: number): number {
             return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2
         }
 
-        return this.ngZone.runOutsideAngular(() =>
-            interval(frameInterval).pipe(
-                map(frame => {
-                    if (frame >= totalFrames) {
-                        return { zoom: targetZoom, focusPoint: targetFocusPoint }
-                    }
-                    const progress = easeInOutCubic(frame / totalFrames)
+        return new Observable<void>(observer => {
+            const startTime = performance.now()
+            const frameHandler = (currentTime: number) => {
+                const elapsed = currentTime - startTime
+                const progressTime = elapsed / duration
+                const progress = Math.min(easeInOutCubic(progressTime), 1)
 
-                    const interpolatedZoom = initialZoom + zoomDifference * progress
-                    const interpolatedFocusPoint = new Vector3().lerpVectors(initialFocusPoint, targetFocusPoint, progress)
+                const zoom = initialZoom + (targetZoom - initialZoom) * progress
+                const focusPoint = new Vector3().lerpVectors(initialFocusPoint, targetFocusPoint, progress)
 
-                    return { zoom: interpolatedZoom, focusPoint: interpolatedFocusPoint.clone() }
-                }),
-                takeWhile(({ zoom }) => zoom !== targetZoom, true),
-                tap(({ zoom, focusPoint }) => {
+                if (progress >= 1) {
+                    observer.complete()
+                    return
+                }
+
+                this.ngZone.runOutsideAngular(() => {
                     const controls = this.threeOrbitControlsService.controls
-
                     this.threeCameraService.setZoomFactor(zoom)
-
                     controls.target.copy(focusPoint)
                     controls.update()
 
                     this.codeMapLabelService.onCameraChanged()
                     this.threeRendererService.render()
                 })
-            )
-        )
+
+                requestAnimationFrame(frameHandler)
+            }
+
+            requestAnimationFrame(frameHandler)
+
+            return () => observer.complete()
+        })
     }
 }
