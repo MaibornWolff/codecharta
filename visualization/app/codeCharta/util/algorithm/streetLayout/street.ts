@@ -18,12 +18,12 @@ export default abstract class Street extends BoundingBox {
     protected abstract rearrangeRows(): void
 
     protected getStreetThickness(): number {
-        const pathParts = this.node.path.split("/")
-        const isDirectChildOfRoot = this.node.path.startsWith("/root/") && pathParts.length === 3 && pathParts[2] !== ""
+        const pathParts = this.mapNode.path.split("/")
+        const isDirectChildOfRoot = this.mapNode.path.startsWith("/root/") && pathParts.length === 3 && pathParts[2] !== ""
 
-        return this.node.path === "/root" || isDirectChildOfRoot
-            ? this.calculateRootStreetThickness(this.node)
-            : this.calculateNonRootThickness(this.node)
+        return this.mapNode.path === "/root" || isDirectChildOfRoot
+            ? this.calculateRootStreetThickness(this.mapNode)
+            : this.calculateNonRootThickness(this.mapNode)
     }
 
     protected calculateNonRootThickness(node: CodeMapNode): number {

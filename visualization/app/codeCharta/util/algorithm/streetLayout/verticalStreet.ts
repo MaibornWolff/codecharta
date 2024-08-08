@@ -33,7 +33,7 @@ export default class VerticalStreet extends Street {
 
         // TODO refactor it - seems to be very similar to horizontalStreet.ts
         // TODO add a comment what the calculations are doing and why
-        this.metricValue = StreetViewHelper.calculateSize(this.node, metricName)
+        this.metricValue = StreetViewHelper.calculateSize(this.mapNode, metricName)
         this.width = this.getMaxWidth(this.leftRow) + this.getStreetThickness() + this.getMaxWidth(this.rightRow) + 2 * this.spacer
         this.height = Math.max(this.getLength(this.leftRow), this.getLength(this.rightRow))
     }
@@ -75,7 +75,7 @@ export default class VerticalStreet extends Street {
         this.streetRect = new Rectangle(streetOrigin, this.getStreetThickness(), streetHeight)
 
         return {
-            ...this.node,
+            ...this.mapNode,
             value: metricValue,
             rect: this.streetRect,
             zOffset: 0
@@ -122,10 +122,10 @@ export default class VerticalStreet extends Street {
 
     protected sortChildrenByType(children: BoundingBox[]): void {
         children.sort((a, b) => {
-            if (a.node.type === b.node.type) {
+            if (a.mapNode.type === b.mapNode.type) {
                 return 0
             }
-            if (a.node.type === NodeType.FILE) {
+            if (a.mapNode.type === NodeType.FILE) {
                 return -1
             }
             return 1

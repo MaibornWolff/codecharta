@@ -15,7 +15,7 @@ describe("house", () => {
     describe("layout", () => {
         it("should return array of layoutNode", () => {
             const layoutNode: CodeMapNode = {
-                ...house["node"],
+                ...house["mapNode"],
                 value: house["metricValue"],
                 rect: house["createMarginatedRectangle"](new Vector2(2, 3)),
                 zOffset: 0
