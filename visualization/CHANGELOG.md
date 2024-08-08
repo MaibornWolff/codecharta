@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 - Zooming doesn't affect the camera position [#3147](https://github.com/MaibornWolff/codecharta/pull/3665)
 - Fix the issue where the map disappears after excessive zooming out.[#3147](https://github.com/MaibornWolff/codecharta/pull/3665)
+- Fix visualization standalone electron build by bumping the version to 29 [#3681](https://github.com/MaibornWolff/codecharta/pull/3681)
 
 ### Added 🚀
 
