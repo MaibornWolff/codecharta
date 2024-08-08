@@ -30,7 +30,7 @@ import { ChangelogDialogModule } from "./codeCharta/ui/dialogs/changelogDialog/c
 import { dialogs } from "./codeCharta/ui/dialogs/dialogs"
 import { BlacklistSearchPatternEffect } from "./codeCharta/ui/searchPanel/searchBar/blacklistSearchPattern.effect"
 import { MaterialModule } from "./material/material.module"
-import { CameraZoomFactorEffect } from "./codeCharta/state/store/appStatus/cameraZoomFactor/camera-zoom-factor-effect.service"
+import { CameraZoomFactorEffect } from "./codeCharta/state/store/appStatus/cameraZoomFactor/cameraZoomFactor.effect"
 
 @NgModule({
     imports: [
