@@ -18,4 +18,9 @@ export class ThreeCameraService {
         this.camera.position.set(position.x, position.y, position.z)
         this.camera.lookAt(0, 0, 0)
     }
+
+    setZoomFactor(zoomFactor: number) {
+        this.camera.zoom = zoomFactor
+        this.camera.updateProjectionMatrix()
+    }
 }

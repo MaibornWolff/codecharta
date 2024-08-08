@@ -1,7 +1,7 @@
 @if (!isLocalStorageSizeValid) {
     <span class="exceed-local-storage-message">Do you want to download and then purge old unused Configs to make space for new ones?</span>
     <button
-        mat-button
+        mat-flat-button
         class="exceed-local-storage-button"
         (click)="showPurgeConfirmDialog()"
         title="Download old unused Custom Views as a backup file and then delete them in the browser."

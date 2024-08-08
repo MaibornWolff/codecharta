@@ -80,7 +80,7 @@ export const VALID_EDGES: Edge[] = [
 
 const DEFAULT_ROOT: CodeMapNode = { name: "root", attributes: {}, type: NodeType.FOLDER, isExcluded: false, isFlattened: false }
 
-const DEFAULT_SETTINGS = {
+export const DEFAULT_SETTINGS = {
     fileSettings: {
         attributeTypes: { nodes: {}, edges: {} },
         attributeDescriptors: {},
@@ -2070,7 +2070,8 @@ export const STATE: CcState = {
     appStatus: {
         hoveredNodeId: null,
         selectedBuildingId: null,
-        rightClickedNodeData: null
+        rightClickedNodeData: null,
+        cameraZoomFactor: 1
     }
 }
 
@@ -2148,7 +2149,8 @@ export const DEFAULT_STATE: CcState = {
     appStatus: {
         hoveredNodeId: null,
         selectedBuildingId: null,
-        rightClickedNodeData: null
+        rightClickedNodeData: null,
+        cameraZoomFactor: 1
     }
 }
 

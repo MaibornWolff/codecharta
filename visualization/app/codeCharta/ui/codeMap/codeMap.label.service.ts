@@ -284,7 +284,7 @@ export class CodeMapLabelService {
     private setLabelSize(sprite: Sprite, label: InternalLabel, labelWidth: number = sprite.material.map.image.width) {
         const mapCenter = new Box3().setFromObject(this.threeSceneService.mapGeometry).getBoundingSphere(new Sphere()).center
         if (this.threeCameraService.camera) {
-            const distance = this.threeCameraService.camera.position.distanceTo(mapCenter)
+            const distance = this.threeCameraService.camera.position.distanceTo(mapCenter) / this.threeCameraService.camera.zoom
             if (label !== null) {
                 this.lineCount = label.lineCount
             }

@@ -46,7 +46,7 @@ exports[`treeMapGenerator create Treemap nodes create map with fixed root childr
     "id": undefined,
     "incomingEdgePoint": Vector3 {
       "x": 573.9063558965418,
-      "y": 4,
+      "y": 2,
       "z": 1.9713612693307425,
     },
     "isLeaf": false,
@@ -57,7 +57,7 @@ exports[`treeMapGenerator create Treemap nodes create map with fixed root childr
     "name": "src",
     "outgoingEdgePoint": Vector3 {
       "x": 573.9063558965418,
-      "y": 4,
+      "y": 2,
       "z": 441.9213571364162,
     },
     "path": "/root/src",
@@ -65,6 +65,39 @@ exports[`treeMapGenerator create Treemap nodes create map with fixed root childr
     "width": 559.9363583762905,
     "x0": 543.9381767083966,
     "y0": 31.996363335788033,
+    "z0": 0,
+  },
+  {
+    "attributes": {},
+    "color": "#666666",
+    "deltas": undefined,
+    "depth": 2,
+    "edgeAttributes": undefined,
+    "flat": false,
+    "height": 2,
+    "heightDelta": 0,
+    "id": undefined,
+    "incomingEdgePoint": Vector3 {
+      "x": 525.2624826332633,
+      "y": 4,
+      "z": -45.46907918221834,
+    },
+    "isLeaf": false,
+    "length": 577.5393712380569,
+    "link": undefined,
+    "mapNodeDepth": 1,
+    "markingColor": undefined,
+    "name": "main",
+    "outgoingEdgePoint": Vector3 {
+      "x": 525.2624826332633,
+      "y": 4,
+      "z": 243.3006064368101,
+    },
+    "path": "/root/src/main",
+    "visible": true,
+    "width": 425.5866131729499,
+    "x0": 562.4691760467883,
+    "y0": 60.146078008267445,
     "z0": 2,
   },
   {
@@ -78,41 +111,8 @@ exports[`treeMapGenerator create Treemap nodes create map with fixed root childr
     "heightDelta": 0,
     "id": undefined,
     "incomingEdgePoint": Vector3 {
-      "x": 525.2624826332633,
-      "y": 6,
-      "z": -45.46907918221834,
-    },
-    "isLeaf": false,
-    "length": 577.5393712380569,
-    "link": undefined,
-    "mapNodeDepth": 1,
-    "markingColor": undefined,
-    "name": "main",
-    "outgoingEdgePoint": Vector3 {
-      "x": 525.2624826332633,
-      "y": 6,
-      "z": 243.3006064368101,
-    },
-    "path": "/root/src/main",
-    "visible": true,
-    "width": 425.5866131729499,
-    "x0": 562.4691760467883,
-    "y0": 60.146078008267445,
-    "z0": 4,
-  },
-  {
-    "attributes": {},
-    "color": "#666666",
-    "deltas": undefined,
-    "depth": 2,
-    "edgeAttributes": undefined,
-    "flat": false,
-    "height": 2,
-    "heightDelta": 0,
-    "id": undefined,
-    "incomingEdgePoint": Vector3 {
       "x": 418.8658293400258,
-      "y": 6,
+      "y": 4,
       "z": 524.7909021581415,
     },
     "isLeaf": false,
@@ -123,7 +123,7 @@ exports[`treeMapGenerator create Treemap nodes create map with fixed root childr
     "name": "test",
     "outgoingEdgePoint": Vector3 {
       "x": 631.6591359265008,
-      "y": 6,
+      "y": 4,
       "z": 524.7909021581415,
     },
     "path": "/root/src/test",
@@ -131,6 +131,41 @@ exports[`treeMapGenerator create Treemap nodes create map with fixed root childr
     "width": 425.5866131729499,
     "x0": 562.4691760467883,
     "y0": 665.8351639188037,
+    "z0": 2,
+  },
+  {
+    "attributes": {
+      "rloc": 80,
+    },
+    "color": "#666666",
+    "deltas": undefined,
+    "depth": 3,
+    "edgeAttributes": undefined,
+    "flat": false,
+    "height": 500,
+    "heightDelta": 0,
+    "id": undefined,
+    "incomingEdgePoint": Vector3 {
+      "x": 405.20886889011734,
+      "y": 504,
+      "z": -31.394221845978677,
+    },
+    "isLeaf": true,
+    "length": 521.2399418930979,
+    "link": undefined,
+    "mapNodeDepth": 2,
+    "markingColor": undefined,
+    "name": "file1.java",
+    "outgoingEdgePoint": Vector3 {
+      "x": 405.20886889011734,
+      "y": 504,
+      "z": 229.22574910057028,
+    },
+    "path": "/root/src/main/file1.java",
+    "visible": true,
+    "width": 148.41738700987446,
+    "x0": 581.0001753851801,
+    "y0": 88.29579268074686,
     "z0": 4,
   },
   {
@@ -146,43 +181,8 @@ exports[`treeMapGenerator create Treemap nodes create map with fixed root childr
     "heightDelta": 0,
     "id": undefined,
     "incomingEdgePoint": Vector3 {
-      "x": 405.20886889011734,
-      "y": 506,
-      "z": -31.394221845978677,
-    },
-    "isLeaf": true,
-    "length": 521.2399418930979,
-    "link": undefined,
-    "mapNodeDepth": 2,
-    "markingColor": undefined,
-    "name": "file1.java",
-    "outgoingEdgePoint": Vector3 {
-      "x": 405.20886889011734,
-      "y": 506,
-      "z": 229.22574910057028,
-    },
-    "path": "/root/src/main/file1.java",
-    "visible": true,
-    "width": 148.41738700987446,
-    "x0": 581.0001753851801,
-    "y0": 88.29579268074686,
-    "z0": 6,
-  },
-  {
-    "attributes": {
-      "rloc": 80,
-    },
-    "color": "#666666",
-    "deltas": undefined,
-    "depth": 3,
-    "edgeAttributes": undefined,
-    "flat": false,
-    "height": 500,
-    "heightDelta": 0,
-    "id": undefined,
-    "incomingEdgePoint": Vector3 {
       "x": 572.1572552383834,
-      "y": 506,
+      "y": 504,
       "z": -31.394221845978677,
     },
     "isLeaf": true,
@@ -193,7 +193,7 @@ exports[`treeMapGenerator create Treemap nodes create map with fixed root childr
     "name": "file2.java",
     "outgoingEdgePoint": Vector3 {
       "x": 572.1572552383834,
-      "y": 506,
+      "y": 504,
       "z": 229.22574910057028,
     },
     "path": "/root/src/main/file2.java",
@@ -201,7 +201,7 @@ exports[`treeMapGenerator create Treemap nodes create map with fixed root childr
     "width": 148.41738700987423,
     "x0": 747.9485617334464,
     "y0": 88.29579268074686,
-    "z0": 6,
+    "z0": 4,
   },
   {
     "attributes": {
@@ -217,7 +217,7 @@ exports[`treeMapGenerator create Treemap nodes create map with fixed root childr
     "id": undefined,
     "incomingEdgePoint": Vector3 {
       "x": 409.8416187247152,
-      "y": 506,
+      "y": 504,
       "z": 524.7909021581415,
     },
     "isLeaf": true,
@@ -228,7 +228,7 @@ exports[`treeMapGenerator create Treemap nodes create map with fixed root childr
     "name": "otherFile.java",
     "outgoingEdgePoint": Vector3 {
       "x": 567.5245054037854,
-      "y": 506,
+      "y": 504,
       "z": 524.7909021581415,
     },
     "path": "/root/src/test/otherFile.java",
@@ -236,7 +236,7 @@ exports[`treeMapGenerator create Treemap nodes create map with fixed root childr
     "width": 315.36577335814036,
     "x0": 581.0001753851801,
     "y0": 693.9848785912832,
-    "z0": 6,
+    "z0": 4,
   },
   {
     "attributes": {},
@@ -250,7 +250,7 @@ exports[`treeMapGenerator create Treemap nodes create map with fixed root childr
     "id": undefined,
     "incomingEdgePoint": Vector3 {
       "x": 269.94090420655556,
-      "y": 4,
+      "y": 2,
       "z": 949.8636250920512,
     },
     "isLeaf": false,
@@ -261,7 +261,7 @@ exports[`treeMapGenerator create Treemap nodes create map with fixed root childr
     "name": "resources",
     "outgoingEdgePoint": Vector3 {
       "x": 669.895445903906,
-      "y": 4,
+      "y": 2,
       "z": 949.8636250920512,
     },
     "path": "/root/resources",
@@ -269,7 +269,7 @@ exports[`treeMapGenerator create Treemap nodes create map with fixed root childr
     "width": 799.9090833947009,
     "x0": 319.9636333578803,
     "y0": 959.890900073641,
-    "z0": 2,
+    "z0": 0,
   },
   {
     "attributes": {},
@@ -283,7 +283,7 @@ exports[`treeMapGenerator create Treemap nodes create map with fixed root childr
     "id": undefined,
     "incomingEdgePoint": Vector3 {
       "x": 125.9572691955094,
-      "y": 6,
+      "y": 2,
       "z": 767.4843540780594,
     },
     "isLeaf": false,
@@ -294,7 +294,7 @@ exports[`treeMapGenerator create Treemap nodes create map with fixed root childr
     "name": "textFiles",
     "outgoingEdgePoint": Vector3 {
       "x": 205.9481775349795,
-      "y": 6,
+      "y": 2,
       "z": 767.4843540780594,
     },
     "path": "/root/resources/textFiles",
@@ -302,7 +302,7 @@ exports[`treeMapGenerator create Treemap nodes create map with fixed root childr
     "width": 159.98181667894022,
     "x0": 335.96181502577434,
     "y0": 969.4898090743774,
-    "z0": 4,
+    "z0": 0,
   },
   {
     "attributes": {
@@ -318,7 +318,7 @@ exports[`treeMapGenerator create Treemap nodes create map with fixed root childr
     "id": undefined,
     "incomingEdgePoint": Vector3 {
       "x": 136.71370419310023,
-      "y": 506,
+      "y": 502,
       "z": 746.8286837673206,
     },
     "isLeaf": true,
@@ -329,7 +329,7 @@ exports[`treeMapGenerator create Treemap nodes create map with fixed root childr
     "name": "file.txt",
     "outgoingEdgePoint": Vector3 {
       "x": 136.71370419310023,
-      "y": 506,
+      "y": 502,
       "z": 788.1400243887982,
     },
     "path": "/root/resources/textFiles/file.txt",
@@ -337,7 +337,7 @@ exports[`treeMapGenerator create Treemap nodes create map with fixed root childr
     "width": 79.22643039397042,
     "x0": 347.100488996115,
     "y0": 976.1730134565818,
-    "z0": 6,
+    "z0": 2,
   },
   {
     "attributes": {},
@@ -351,7 +351,7 @@ exports[`treeMapGenerator create Treemap nodes create map with fixed root childr
     "id": undefined,
     "incomingEdgePoint": Vector3 {
       "x": 581.905446730489,
-      "y": 6,
+      "y": 2,
       "z": 1074.6494421016246,
     },
     "isLeaf": false,
@@ -362,7 +362,7 @@ exports[`treeMapGenerator create Treemap nodes create map with fixed root childr
     "name": "tables",
     "outgoingEdgePoint": Vector3 {
       "x": 773.8836267452172,
-      "y": 6,
+      "y": 2,
       "z": 1074.6494421016246,
     },
     "path": "/root/resources/tables",
@@ -370,7 +370,7 @@ exports[`treeMapGenerator create Treemap nodes create map with fixed root childr
     "width": 383.9563600294564,
     "x0": 735.9163567231249,
     "y0": 1209.4625340927876,
-    "z0": 4,
+    "z0": 0,
   },
   {
     "attributes": {
@@ -386,7 +386,7 @@ exports[`treeMapGenerator create Treemap nodes create map with fixed root childr
     "id": undefined,
     "incomingEdgePoint": Vector3 {
       "x": 529.6481930903258,
-      "y": 506,
+      "y": 502,
       "z": 988.4108716704753,
     },
     "isLeaf": true,
@@ -397,7 +397,7 @@ exports[`treeMapGenerator create Treemap nodes create map with fixed root childr
     "name": "table1.xlsx",
     "outgoingEdgePoint": Vector3 {
       "x": 529.6481930903258,
-      "y": 506,
+      "y": 502,
       "z": 1028.1199899768649,
     },
     "path": "/root/resources/tables/table1.xlsx",
@@ -405,7 +405,7 @@ exports[`treeMapGenerator create Treemap nodes create map with fixed root childr
     "width": 57.15107798609233,
     "x0": 751.0726540972796,
     "y0": 1218.5563125172805,
-    "z0": 6,
+    "z0": 2,
   },
   {
     "attributes": {
@@ -421,7 +421,7 @@ exports[`treeMapGenerator create Treemap nodes create map with fixed root childr
     "id": undefined,
     "incomingEdgePoint": Vector3 {
       "x": 601.955568450573,
-      "y": 506,
+      "y": 502,
       "z": 988.4108716704753,
     },
     "isLeaf": true,
@@ -432,7 +432,7 @@ exports[`treeMapGenerator create Treemap nodes create map with fixed root childr
     "name": "table2.xlsx",
     "outgoingEdgePoint": Vector3 {
       "x": 601.955568450573,
-      "y": 506,
+      "y": 502,
       "z": 1028.1199899768649,
     },
     "path": "/root/resources/tables/table2.xlsx",
@@ -440,7 +440,7 @@ exports[`treeMapGenerator create Treemap nodes create map with fixed root childr
     "width": 57.15107798609233,
     "x0": 823.3800294575268,
     "y0": 1218.5563125172805,
-    "z0": 6,
+    "z0": 2,
   },
   {
     "attributes": {
@@ -456,7 +456,7 @@ exports[`treeMapGenerator create Treemap nodes create map with fixed root childr
     "id": undefined,
     "incomingEdgePoint": Vector3 {
       "x": 674.2629438108202,
-      "y": 506,
+      "y": 502,
       "z": 988.4108716704753,
     },
     "isLeaf": true,
@@ -467,7 +467,7 @@ exports[`treeMapGenerator create Treemap nodes create map with fixed root childr
     "name": "table3.xlsx",
     "outgoingEdgePoint": Vector3 {
       "x": 674.2629438108202,
-      "y": 506,
+      "y": 502,
       "z": 1028.1199899768649,
     },
     "path": "/root/resources/tables/table3.xlsx",
@@ -475,7 +475,7 @@ exports[`treeMapGenerator create Treemap nodes create map with fixed root childr
     "width": 57.15107798609233,
     "x0": 895.687404817774,
     "y0": 1218.5563125172805,
-    "z0": 6,
+    "z0": 2,
   },
   {
     "attributes": {
@@ -491,7 +491,7 @@ exports[`treeMapGenerator create Treemap nodes create map with fixed root childr
     "id": undefined,
     "incomingEdgePoint": Vector3 {
       "x": 746.5703191710675,
-      "y": 506,
+      "y": 502,
       "z": 988.4108716704753,
     },
     "isLeaf": true,
@@ -502,7 +502,7 @@ exports[`treeMapGenerator create Treemap nodes create map with fixed root childr
     "name": "table4.xlsx",
     "outgoingEdgePoint": Vector3 {
       "x": 746.5703191710675,
-      "y": 506,
+      "y": 502,
       "z": 1028.1199899768649,
     },
     "path": "/root/resources/tables/table4.xlsx",
@@ -510,7 +510,7 @@ exports[`treeMapGenerator create Treemap nodes create map with fixed root childr
     "width": 57.151077986092446,
     "x0": 967.9947801780212,
     "y0": 1218.5563125172805,
-    "z0": 6,
+    "z0": 2,
   },
   {
     "attributes": {
@@ -526,7 +526,7 @@ exports[`treeMapGenerator create Treemap nodes create map with fixed root childr
     "id": undefined,
     "incomingEdgePoint": Vector3 {
       "x": 533.4372674338645,
-      "y": 506,
+      "y": 502,
       "z": 1074.6494421016246,
     },
     "isLeaf": true,
@@ -537,7 +537,7 @@ exports[`treeMapGenerator create Treemap nodes create map with fixed root childr
     "name": "table5.xlsx",
     "outgoingEdgePoint": Vector3 {
       "x": 598.1664941070343,
-      "y": 506,
+      "y": 502,
       "z": 1074.6494421016246,
     },
     "path": "/root/resources/tables/table5.xlsx",
@@ -545,7 +545,7 @@ exports[`treeMapGenerator create Treemap nodes create map with fixed root childr
     "width": 129.45845334633952,
     "x0": 751.0726540972796,
     "y0": 1307.0683275545528,
-    "z0": 6,
+    "z0": 2,
   },
   {
     "attributes": {
@@ -561,7 +561,7 @@ exports[`treeMapGenerator create Treemap nodes create map with fixed root childr
     "id": undefined,
     "incomingEdgePoint": Vector3 {
       "x": 533.4372674338645,
-      "y": 506,
+      "y": 502,
       "z": 1118.9054496202607,
     },
     "isLeaf": true,
@@ -572,7 +572,7 @@ exports[`treeMapGenerator create Treemap nodes create map with fixed root childr
     "name": "table6.xlsx",
     "outgoingEdgePoint": Vector3 {
       "x": 598.1664941070343,
-      "y": 506,
+      "y": 502,
       "z": 1118.9054496202607,
     },
     "path": "/root/resources/tables/table6.xlsx",
@@ -580,7 +580,7 @@ exports[`treeMapGenerator create Treemap nodes create map with fixed root childr
     "width": 129.45845334633952,
     "x0": 751.0726540972796,
     "y0": 1351.3243350731889,
-    "z0": 6,
+    "z0": 2,
   },
   {
     "attributes": {
@@ -596,7 +596,7 @@ exports[`treeMapGenerator create Treemap nodes create map with fixed root childr
     "id": undefined,
     "incomingEdgePoint": Vector3 {
       "x": 533.4372674338645,
-      "y": 506,
+      "y": 502,
       "z": 1163.1614571388968,
     },
     "isLeaf": true,
@@ -607,7 +607,7 @@ exports[`treeMapGenerator create Treemap nodes create map with fixed root childr
     "name": "table7.xlsx",
     "outgoingEdgePoint": Vector3 {
       "x": 598.1664941070343,
-      "y": 506,
+      "y": 502,
       "z": 1163.1614571388968,
     },
     "path": "/root/resources/tables/table7.xlsx",
@@ -615,7 +615,7 @@ exports[`treeMapGenerator create Treemap nodes create map with fixed root childr
     "width": 129.45845334633952,
     "x0": 751.0726540972796,
     "y0": 1395.5803425918252,
-    "z0": 6,
+    "z0": 2,
   },
   {
     "attributes": {
@@ -631,7 +631,7 @@ exports[`treeMapGenerator create Treemap nodes create map with fixed root childr
     "id": undefined,
     "incomingEdgePoint": Vector3 {
       "x": 674.2629438108202,
-      "y": 506,
+      "y": 502,
       "z": 1076.9228867077477,
     },
     "isLeaf": true,
@@ -642,7 +642,7 @@ exports[`treeMapGenerator create Treemap nodes create map with fixed root childr
     "name": "table8.xlsx",
     "outgoingEdgePoint": Vector3 {
       "x": 674.2629438108202,
-      "y": 506,
+      "y": 502,
       "z": 1116.6320050141373,
     },
     "path": "/root/resources/tables/table8.xlsx",
@@ -650,7 +650,7 @@ exports[`treeMapGenerator create Treemap nodes create map with fixed root childr
     "width": 57.15107798609233,
     "x0": 895.687404817774,
     "y0": 1307.0683275545528,
-    "z0": 6,
+    "z0": 2,
   },
   {
     "attributes": {
@@ -666,7 +666,7 @@ exports[`treeMapGenerator create Treemap nodes create map with fixed root childr
     "id": undefined,
     "incomingEdgePoint": Vector3 {
       "x": 746.5703191710675,
-      "y": 506,
+      "y": 502,
       "z": 1076.9228867077477,
     },
     "isLeaf": true,
@@ -677,7 +677,7 @@ exports[`treeMapGenerator create Treemap nodes create map with fixed root childr
     "name": "table9.xlsx",
     "outgoingEdgePoint": Vector3 {
       "x": 746.5703191710675,
-      "y": 506,
+      "y": 502,
       "z": 1116.6320050141373,
     },
     "path": "/root/resources/tables/table9.xlsx",
@@ -685,7 +685,7 @@ exports[`treeMapGenerator create Treemap nodes create map with fixed root childr
     "width": 57.151077986092446,
     "x0": 967.9947801780212,
     "y0": 1307.0683275545528,
-    "z0": 6,
+    "z0": 2,
   },
   {
     "attributes": {
@@ -701,7 +701,7 @@ exports[`treeMapGenerator create Treemap nodes create map with fixed root childr
     "id": undefined,
     "incomingEdgePoint": Vector3 {
       "x": 678.0520181543588,
-      "y": 506,
+      "y": 502,
       "z": 1163.1614571388968,
     },
     "isLeaf": true,
@@ -712,7 +712,7 @@ exports[`treeMapGenerator create Treemap nodes create map with fixed root childr
     "name": "table10.xlsx",
     "outgoingEdgePoint": Vector3 {
       "x": 742.7812448275288,
-      "y": 506,
+      "y": 502,
       "z": 1163.1614571388968,
     },
     "path": "/root/resources/tables/table10.xlsx",
@@ -720,7 +720,7 @@ exports[`treeMapGenerator create Treemap nodes create map with fixed root childr
     "width": 129.45845334633964,
     "x0": 895.687404817774,
     "y0": 1395.5803425918252,
-    "z0": 6,
+    "z0": 2,
   },
 ]
 `;
@@ -771,7 +771,7 @@ exports[`treeMapGenerator create Treemap nodes create map with fixed root childr
     "id": undefined,
     "incomingEdgePoint": Vector3 {
       "x": 103.64675298172571,
-      "y": 4,
+      "y": 2,
       "z": 44.70562748477144,
     },
     "isLeaf": false,
@@ -782,7 +782,7 @@ exports[`treeMapGenerator create Treemap nodes create map with fixed root childr
     "name": "folder_1_red",
     "outgoingEdgePoint": Vector3 {
       "x": 103.64675298172571,
-      "y": 4,
+      "y": 2,
       "z": 398.35238046649715,
     },
     "path": "/root/folder_1_red",
@@ -790,7 +790,7 @@ exports[`treeMapGenerator create Treemap nodes create map with fixed root childr
     "width": 471.5290039756343,
     "x0": 117.88225099390857,
     "y0": 117.88225099390857,
-    "z0": 2,
+    "z0": 0,
   },
   {
     "attributes": {},
@@ -804,7 +804,7 @@ exports[`treeMapGenerator create Treemap nodes create map with fixed root childr
     "id": undefined,
     "incomingEdgePoint": Vector3 {
       "x": 9.340952186598855,
-      "y": 6,
+      "y": 2,
       "z": 115.43497808111658,
     },
     "isLeaf": false,
@@ -815,7 +815,7 @@ exports[`treeMapGenerator create Treemap nodes create map with fixed root childr
     "name": "folder_1.1_red",
     "outgoingEdgePoint": Vector3 {
       "x": 197.95255377685257,
-      "y": 6,
+      "y": 2,
       "z": 115.43497808111658,
     },
     "path": "/root/folder_1_red/folder_1.1_red",
@@ -823,7 +823,7 @@ exports[`treeMapGenerator create Treemap nodes create map with fixed root childr
     "width": 377.2232031805074,
     "x0": 165.035151391472,
     "y0": 188.6116015902537,
-    "z0": 4,
+    "z0": 0,
   },
   {
     "attributes": {
@@ -839,7 +839,7 @@ exports[`treeMapGenerator create Treemap nodes create map with fixed root childr
     "id": undefined,
     "incomingEdgePoint": Vector3 {
       "x": 47.02358606639942,
-      "y": 506,
+      "y": 502,
       "z": 38.1266350786847,
     },
     "isLeaf": true,
@@ -850,7 +850,7 @@ exports[`treeMapGenerator create Treemap nodes create map with fixed root childr
     "name": "red_child_1.1.file",
     "outgoingEdgePoint": Vector3 {
       "x": 47.02358606639942,
-      "y": 506,
+      "y": 502,
       "z": 192.74332108354835,
     },
     "path": "/root/folder_1_red/folder_1.1_red/red_child_1.1.file",
@@ -858,7 +858,7 @@ exports[`treeMapGenerator create Treemap nodes create map with fixed root childr
     "width": 220.83540884293956,
     "x0": 186.60588164492964,
     "y0": 210.81829207625287,
-    "z0": 6,
+    "z0": 2,
   },
   {
     "attributes": {},
@@ -872,7 +872,7 @@ exports[`treeMapGenerator create Treemap nodes create map with fixed root childr
     "id": undefined,
     "incomingEdgePoint": Vector3 {
       "x": 268.6819043731977,
-      "y": 6,
+      "y": 2,
       "z": 380.6700428174109,
     },
     "isLeaf": false,
@@ -883,7 +883,7 @@ exports[`treeMapGenerator create Treemap nodes create map with fixed root childr
     "name": "folder_1.2_red",
     "outgoingEdgePoint": Vector3 {
       "x": 268.6819043731977,
-      "y": 6,
+      "y": 2,
       "z": 416.0347181155834,
     },
     "path": "/root/folder_1_red/folder_1.2_red",
@@ -891,7 +891,7 @@ exports[`treeMapGenerator create Treemap nodes create map with fixed root childr
     "width": 47.152900397563485,
     "x0": 495.10545417441597,
     "y0": 612.9877051683246,
-    "z0": 4,
+    "z0": 0,
   },
   {
     "attributes": {
@@ -907,7 +907,7 @@ exports[`treeMapGenerator create Treemap nodes create map with fixed root childr
     "id": undefined,
     "incomingEdgePoint": Vector3 {
       "x": 259.73975385173287,
-      "y": 506,
+      "y": 502,
       "z": 383.2249429664008,
     },
     "isLeaf": true,
@@ -918,7 +918,7 @@ exports[`treeMapGenerator create Treemap nodes create map with fixed root childr
     "name": "red_child_1.2.file",
     "outgoingEdgePoint": Vector3 {
       "x": 259.73975385173287,
-      "y": 506,
+      "y": 502,
       "z": 413.4798179665935,
     },
     "path": "/root/folder_1_red/folder_1.2_red/red_child_1.2.file",
@@ -926,7 +926,7 @@ exports[`treeMapGenerator create Treemap nodes create map with fixed root childr
     "width": 22.455532290660585,
     "x0": 498.5119877064026,
     "y0": 618.0975054663045,
-    "z0": 6,
+    "z0": 2,
   },
   {
     "attributes": {},
@@ -940,7 +940,7 @@ exports[`treeMapGenerator create Treemap nodes create map with fixed root childr
     "id": undefined,
     "incomingEdgePoint": Vector3 {
       "x": 15.235064736294305,
-      "y": 4,
+      "y": 2,
       "z": 751.9991334482229,
     },
     "isLeaf": false,
@@ -951,7 +951,7 @@ exports[`treeMapGenerator create Treemap nodes create map with fixed root childr
     "name": "folder_2_orange",
     "outgoingEdgePoint": Vector3 {
       "x": 309.9406922210658,
-      "y": 4,
+      "y": 2,
       "z": 751.9991334482229,
     },
     "path": "/root/folder_2_orange",
@@ -959,7 +959,7 @@ exports[`treeMapGenerator create Treemap nodes create map with fixed root childr
     "width": 589.4112549695429,
     "x0": 117.88225099390857,
     "y0": 943.0580079512686,
-    "z0": 2,
+    "z0": 0,
   },
   {
     "attributes": {
@@ -2111,7 +2111,7 @@ exports[`treeMapGenerator create Treemap nodes should build the tree map with va
     "id": undefined,
     "incomingEdgePoint": Vector3 {
       "x": 44.996117974981104,
-      "y": 4,
+      "y": 2,
       "z": -53.33592135001261,
     },
     "isLeaf": false,
@@ -2122,7 +2122,7 @@ exports[`treeMapGenerator create Treemap nodes should build the tree map with va
     "name": "folder_1",
     "outgoingEdgePoint": Vector3 {
       "x": 477.6570910049534,
-      "y": 4,
+      "y": 2,
       "z": -53.33592135001261,
     },
     "path": "/root/folder_1",
@@ -2130,7 +2130,7 @@ exports[`treeMapGenerator create Treemap nodes should build the tree map with va
     "width": 865.3219460599446,
     "x0": 78.66563145999496,
     "y0": 78.66563145999496,
-    "z0": 2,
+    "z0": 0,
   },
   {
     "attributes": {
@@ -2146,7 +2146,7 @@ exports[`treeMapGenerator create Treemap nodes should build the tree map with va
     "id": undefined,
     "incomingEdgePoint": Vector3 {
       "x": -148.69924406541247,
-      "y": 504,
+      "y": 502,
       "z": -105.40679575220194,
     },
     "isLeaf": true,
@@ -2157,7 +2157,7 @@ exports[`treeMapGenerator create Treemap nodes should build the tree map with va
     "name": "children_1",
     "outgoingEdgePoint": Vector3 {
       "x": -148.69924406541247,
-      "y": 504,
+      "y": 502,
       "z": -1.2650469478232935,
     },
     "path": "/root/folder_1/children_1",
@@ -2165,7 +2165,7 @@ exports[`treeMapGenerator create Treemap nodes should build the tree map with va
     "width": 0,
     "x0": 101.30075593458751,
     "y0": 92.52232984560875,
-    "z0": 4,
+    "z0": 2,
   },
   {
     "attributes": {
@@ -2181,7 +2181,7 @@ exports[`treeMapGenerator create Treemap nodes should build the tree map with va
     "id": undefined,
     "incomingEdgePoint": Vector3 {
       "x": -148.69924406541247,
-      "y": 504,
+      "y": 502,
       "z": -105.40679575220194,
     },
     "isLeaf": true,
@@ -2192,7 +2192,7 @@ exports[`treeMapGenerator create Treemap nodes should build the tree map with va
     "name": "children_2",
     "outgoingEdgePoint": Vector3 {
       "x": -148.69924406541247,
-      "y": 504,
+      "y": 502,
       "z": -1.2650469478232935,
     },
     "path": "/root/folder_1/children_2",
@@ -2200,7 +2200,7 @@ exports[`treeMapGenerator create Treemap nodes should build the tree map with va
     "width": 0,
     "x0": 101.30075593458751,
     "y0": 92.52232984560875,
-    "z0": 4,
+    "z0": 2,
   },
   {
     "attributes": {
@@ -2216,7 +2216,7 @@ exports[`treeMapGenerator create Treemap nodes should build the tree map with va
     "id": undefined,
     "incomingEdgePoint": Vector3 {
       "x": -148.69924406541247,
-      "y": 504,
+      "y": 502,
       "z": -105.40679575220194,
     },
     "isLeaf": true,
@@ -2227,7 +2227,7 @@ exports[`treeMapGenerator create Treemap nodes should build the tree map with va
     "name": "children_3",
     "outgoingEdgePoint": Vector3 {
       "x": -148.69924406541247,
-      "y": 504,
+      "y": 502,
       "z": -1.2650469478232935,
     },
     "path": "/root/folder_1/children_3",
@@ -2235,7 +2235,7 @@ exports[`treeMapGenerator create Treemap nodes should build the tree map with va
     "width": 0,
     "x0": 101.30075593458751,
     "y0": 92.52232984560875,
-    "z0": 4,
+    "z0": 2,
   },
   {
     "attributes": {},
@@ -2249,7 +2249,7 @@ exports[`treeMapGenerator create Treemap nodes should build the tree map with va
     "id": undefined,
     "incomingEdgePoint": Vector3 {
       "x": 25.329710109982358,
-      "y": 4,
+      "y": 2,
       "z": 339.99223594996226,
     },
     "isLeaf": false,
@@ -2260,7 +2260,7 @@ exports[`treeMapGenerator create Treemap nodes should build the tree map with va
     "name": "folder_2",
     "outgoingEdgePoint": Vector3 {
       "x": 25.329710109982358,
-      "y": 4,
+      "y": 2,
       "z": 733.3203932499371,
     },
     "path": "/root/folder_2",
@@ -2268,7 +2268,7 @@ exports[`treeMapGenerator create Treemap nodes should build the tree map with va
     "width": 393.3281572999748,
     "x0": 78.66563145999496,
     "y0": 393.3281572999748,
-    "z0": 2,
+    "z0": 0,
   },
   {
     "attributes": {
@@ -2284,7 +2284,7 @@ exports[`treeMapGenerator create Treemap nodes should build the tree map with va
     "id": undefined,
     "incomingEdgePoint": Vector3 {
       "x": -159.20384879153147,
-      "y": 504,
+      "y": 502,
       "z": 362.44962486027134,
     },
     "isLeaf": true,
@@ -2295,7 +2295,7 @@ exports[`treeMapGenerator create Treemap nodes should build the tree map with va
     "name": "children_4",
     "outgoingEdgePoint": Vector3 {
       "x": -159.20384879153147,
-      "y": 504,
+      "y": 502,
       "z": 710.8630043396279,
     },
     "path": "/root/folder_2/children_4",
@@ -2303,7 +2303,7 @@ exports[`treeMapGenerator create Treemap nodes should build the tree map with va
     "width": 0,
     "x0": 90.79615120846853,
     "y0": 438.2429351205931,
-    "z0": 4,
+    "z0": 2,
   },
   {
     "attributes": {
@@ -2319,7 +2319,7 @@ exports[`treeMapGenerator create Treemap nodes should build the tree map with va
     "id": undefined,
     "incomingEdgePoint": Vector3 {
       "x": -159.20384879153147,
-      "y": 504,
+      "y": 502,
       "z": 362.44962486027134,
     },
     "isLeaf": true,
@@ -2330,7 +2330,7 @@ exports[`treeMapGenerator create Treemap nodes should build the tree map with va
     "name": "children_5",
     "outgoingEdgePoint": Vector3 {
       "x": -159.20384879153147,
-      "y": 504,
+      "y": 502,
       "z": 710.8630043396279,
     },
     "path": "/root/folder_2/children_5",
@@ -2338,7 +2338,7 @@ exports[`treeMapGenerator create Treemap nodes should build the tree map with va
     "width": 0,
     "x0": 90.79615120846853,
     "y0": 438.2429351205931,
-    "z0": 4,
+    "z0": 2,
   },
   {
     "attributes": {},
@@ -2352,7 +2352,7 @@ exports[`treeMapGenerator create Treemap nodes should build the tree map with va
     "id": undefined,
     "incomingEdgePoint": Vector3 {
       "x": 497.3234988699522,
-      "y": 4,
+      "y": 2,
       "z": 339.99223594996226,
     },
     "isLeaf": false,
@@ -2363,7 +2363,7 @@ exports[`treeMapGenerator create Treemap nodes should build the tree map with va
     "name": "folder_3",
     "outgoingEdgePoint": Vector3 {
       "x": 497.3234988699522,
-      "y": 4,
+      "y": 2,
       "z": 733.3203932499371,
     },
     "path": "/root/folder_3",
@@ -2371,7 +2371,7 @@ exports[`treeMapGenerator create Treemap nodes should build the tree map with va
     "width": 393.3281572999748,
     "x0": 550.6594202199648,
     "y0": 393.3281572999748,
-    "z0": 2,
+    "z0": 0,
   },
   {
     "attributes": {
@@ -2387,7 +2387,7 @@ exports[`treeMapGenerator create Treemap nodes should build the tree map with va
     "id": undefined,
     "incomingEdgePoint": Vector3 {
       "x": 312.7899399684384,
-      "y": 504,
+      "y": 502,
       "z": 362.44962486027134,
     },
     "isLeaf": true,
@@ -2398,7 +2398,7 @@ exports[`treeMapGenerator create Treemap nodes should build the tree map with va
     "name": "children_6",
     "outgoingEdgePoint": Vector3 {
       "x": 312.7899399684384,
-      "y": 504,
+      "y": 502,
       "z": 710.8630043396279,
     },
     "path": "/root/folder_3/children_6",
@@ -2406,7 +2406,7 @@ exports[`treeMapGenerator create Treemap nodes should build the tree map with va
     "width": 0,
     "x0": 562.7899399684384,
     "y0": 438.2429351205931,
-    "z0": 4,
+    "z0": 2,
   },
   {
     "attributes": {
@@ -2422,7 +2422,7 @@ exports[`treeMapGenerator create Treemap nodes should build the tree map with va
     "id": undefined,
     "incomingEdgePoint": Vector3 {
       "x": 312.7899399684384,
-      "y": 504,
+      "y": 502,
       "z": 362.44962486027134,
     },
     "isLeaf": true,
@@ -2433,7 +2433,7 @@ exports[`treeMapGenerator create Treemap nodes should build the tree map with va
     "name": "children_7",
     "outgoingEdgePoint": Vector3 {
       "x": 312.7899399684384,
-      "y": 504,
+      "y": 502,
       "z": 710.8630043396279,
     },
     "path": "/root/folder_3/children_7",
@@ -2441,7 +2441,7 @@ exports[`treeMapGenerator create Treemap nodes should build the tree map with va
     "width": 0,
     "x0": 562.7899399684384,
     "y0": 438.2429351205931,
-    "z0": 4,
+    "z0": 2,
   },
   {
     "attributes": {},
@@ -2455,7 +2455,7 @@ exports[`treeMapGenerator create Treemap nodes should build the tree map with va
     "id": undefined,
     "incomingEdgePoint": Vector3 {
       "x": 851.3188404399295,
-      "y": 4,
+      "y": 2,
       "z": 182.66097302997227,
     },
     "isLeaf": false,
@@ -2466,7 +2466,7 @@ exports[`treeMapGenerator create Treemap nodes should build the tree map with va
     "name": "folder_4",
     "outgoingEdgePoint": Vector3 {
       "x": 851.3188404399295,
-      "y": 4,
+      "y": 2,
       "z": 890.6516561699268,
     },
     "path": "/root/folder_4",
@@ -2474,7 +2474,7 @@ exports[`treeMapGenerator create Treemap nodes should build the tree map with va
     "width": 157.33126291998997,
     "x0": 1022.6532089799346,
     "y0": 78.66563145999496,
-    "z0": 2,
+    "z0": 0,
   },
   {
     "attributes": {
@@ -2490,7 +2490,7 @@ exports[`treeMapGenerator create Treemap nodes should build the tree map with va
     "id": undefined,
     "incomingEdgePoint": Vector3 {
       "x": 777.7510760043235,
-      "y": 504,
+      "y": 502,
       "z": 218.78708634748725,
     },
     "isLeaf": true,
@@ -2501,7 +2501,7 @@ exports[`treeMapGenerator create Treemap nodes should build the tree map with va
     "name": "children_8",
     "outgoingEdgePoint": Vector3 {
       "x": 777.7510760043235,
-      "y": 504,
+      "y": 502,
       "z": 854.5255428524116,
     },
     "path": "/root/folder_4/children_8",
@@ -2509,7 +2509,7 @@ exports[`treeMapGenerator create Treemap nodes should build the tree map with va
     "width": 0,
     "x0": 1027.7510760043235,
     "y0": 150.91785809502508,
-    "z0": 4,
+    "z0": 2,
   },
   {
     "attributes": {
@@ -2525,7 +2525,7 @@ exports[`treeMapGenerator create Treemap nodes should build the tree map with va
     "id": undefined,
     "incomingEdgePoint": Vector3 {
       "x": 777.7510760043235,
-      "y": 504,
+      "y": 502,
       "z": 218.78708634748725,
     },
     "isLeaf": true,
@@ -2536,7 +2536,7 @@ exports[`treeMapGenerator create Treemap nodes should build the tree map with va
     "name": "children_9",
     "outgoingEdgePoint": Vector3 {
       "x": 777.7510760043235,
-      "y": 504,
+      "y": 502,
       "z": 854.5255428524116,
     },
     "path": "/root/folder_4/children_9",
@@ -2544,7 +2544,7 @@ exports[`treeMapGenerator create Treemap nodes should build the tree map with va
     "width": 0,
     "x0": 1027.7510760043235,
     "y0": 150.91785809502508,
-    "z0": 4,
+    "z0": 2,
   },
   {
     "attributes": {},
@@ -2558,7 +2558,7 @@ exports[`treeMapGenerator create Treemap nodes should build the tree map with va
     "id": undefined,
     "incomingEdgePoint": Vector3 {
       "x": 1126.6485505499118,
-      "y": 4,
+      "y": 2,
       "z": 182.66097302997227,
     },
     "isLeaf": false,
@@ -2569,7 +2569,7 @@ exports[`treeMapGenerator create Treemap nodes should build the tree map with va
     "name": "folder_5",
     "outgoingEdgePoint": Vector3 {
       "x": 1126.6485505499118,
-      "y": 4,
+      "y": 2,
       "z": 890.6516561699268,
     },
     "path": "/root/folder_5",
@@ -2577,7 +2577,7 @@ exports[`treeMapGenerator create Treemap nodes should build the tree map with va
     "width": 235.99689437998495,
     "x0": 1258.6501033599193,
     "y0": 78.66563145999496,
-    "z0": 2,
+    "z0": 0,
   },
   {
     "attributes": {
@@ -2593,7 +2593,7 @@ exports[`treeMapGenerator create Treemap nodes should build the tree map with va
     "id": undefined,
     "incomingEdgePoint": Vector3 {
       "x": 1016.1699973678749,
-      "y": 504,
+      "y": 502,
       "z": 218.78708634748725,
     },
     "isLeaf": true,
@@ -2604,7 +2604,7 @@ exports[`treeMapGenerator create Treemap nodes should build the tree map with va
     "name": "children_10",
     "outgoingEdgePoint": Vector3 {
       "x": 1016.1699973678749,
-      "y": 504,
+      "y": 502,
       "z": 854.5255428524116,
     },
     "path": "/root/folder_5/children_10",
@@ -2612,7 +2612,7 @@ exports[`treeMapGenerator create Treemap nodes should build the tree map with va
     "width": 0,
     "x0": 1266.1699973678749,
     "y0": 150.91785809502508,
-    "z0": 4,
+    "z0": 2,
   },
   {
     "attributes": {
@@ -2628,7 +2628,7 @@ exports[`treeMapGenerator create Treemap nodes should build the tree map with va
     "id": undefined,
     "incomingEdgePoint": Vector3 {
       "x": 1016.1699973678749,
-      "y": 504,
+      "y": 502,
       "z": 218.78708634748725,
     },
     "isLeaf": true,
@@ -2639,7 +2639,7 @@ exports[`treeMapGenerator create Treemap nodes should build the tree map with va
     "name": "children_11",
     "outgoingEdgePoint": Vector3 {
       "x": 1016.1699973678749,
-      "y": 504,
+      "y": 502,
       "z": 854.5255428524116,
     },
     "path": "/root/folder_5/children_11",
@@ -2647,7 +2647,7 @@ exports[`treeMapGenerator create Treemap nodes should build the tree map with va
     "width": 0,
     "x0": 1266.1699973678749,
     "y0": 150.91785809502508,
-    "z0": 4,
+    "z0": 2,
   },
   {
     "attributes": {},
@@ -2661,7 +2661,7 @@ exports[`treeMapGenerator create Treemap nodes should build the tree map with va
     "id": undefined,
     "incomingEdgePoint": Vector3 {
       "x": 44.996117974981075,
-      "y": 4,
+      "y": 2,
       "z": 1126.6485505499118,
     },
     "isLeaf": false,
@@ -2672,7 +2672,7 @@ exports[`treeMapGenerator create Treemap nodes should build the tree map with va
     "name": "folder_6",
     "outgoingEdgePoint": Vector3 {
       "x": 477.6570910049534,
-      "y": 4,
+      "y": 2,
       "z": 1126.6485505499118,
     },
     "path": "/root/folder_6",
@@ -2680,6 +2680,41 @@ exports[`treeMapGenerator create Treemap nodes should build the tree map with va
     "width": 865.3219460599445,
     "x0": 78.66563145999496,
     "y0": 1258.6501033599193,
+    "z0": 0,
+  },
+  {
+    "attributes": {
+      "custom_metric": 1,
+    },
+    "color": "#666666",
+    "deltas": undefined,
+    "depth": 2,
+    "edgeAttributes": undefined,
+    "flat": false,
+    "height": 500,
+    "heightDelta": 0,
+    "id": undefined,
+    "incomingEdgePoint": Vector3 {
+      "x": -146.99316282345984,
+      "y": 502,
+      "z": 1075.169220962871,
+    },
+    "isLeaf": true,
+    "length": 205.9173183481637,
+    "link": undefined,
+    "mapNodeDepth": 1,
+    "markingColor": undefined,
+    "name": "children_12",
+    "outgoingEdgePoint": Vector3 {
+      "x": -146.99316282345984,
+      "y": 502,
+      "z": 1178.1278801369529,
+    },
+    "path": "/root/folder_6/children_12",
+    "visible": true,
+    "width": 0,
+    "x0": 103.00683717654016,
+    "y0": 1273.68989137583,
     "z0": 2,
   },
   {
@@ -2696,42 +2731,7 @@ exports[`treeMapGenerator create Treemap nodes should build the tree map with va
     "id": undefined,
     "incomingEdgePoint": Vector3 {
       "x": -146.99316282345984,
-      "y": 504,
-      "z": 1075.169220962871,
-    },
-    "isLeaf": true,
-    "length": 205.9173183481637,
-    "link": undefined,
-    "mapNodeDepth": 1,
-    "markingColor": undefined,
-    "name": "children_12",
-    "outgoingEdgePoint": Vector3 {
-      "x": -146.99316282345984,
-      "y": 504,
-      "z": 1178.1278801369529,
-    },
-    "path": "/root/folder_6/children_12",
-    "visible": true,
-    "width": 0,
-    "x0": 103.00683717654016,
-    "y0": 1273.68989137583,
-    "z0": 4,
-  },
-  {
-    "attributes": {
-      "custom_metric": 1,
-    },
-    "color": "#666666",
-    "deltas": undefined,
-    "depth": 2,
-    "edgeAttributes": undefined,
-    "flat": false,
-    "height": 500,
-    "heightDelta": 0,
-    "id": undefined,
-    "incomingEdgePoint": Vector3 {
-      "x": -146.99316282345984,
-      "y": 504,
+      "y": 502,
       "z": 1075.169220962871,
     },
     "isLeaf": true,
@@ -2742,7 +2742,7 @@ exports[`treeMapGenerator create Treemap nodes should build the tree map with va
     "name": "children_13",
     "outgoingEdgePoint": Vector3 {
       "x": -146.99316282345984,
-      "y": 504,
+      "y": 502,
       "z": 1178.1278801369529,
     },
     "path": "/root/folder_6/children_13",
@@ -2750,7 +2750,7 @@ exports[`treeMapGenerator create Treemap nodes should build the tree map with va
     "width": 0,
     "x0": 103.00683717654016,
     "y0": 1273.68989137583,
-    "z0": 4,
+    "z0": 2,
   },
 ]
 `;

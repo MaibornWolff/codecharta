@@ -1,5 +1,6 @@
 import { PerspectiveCamera, Vector3 } from "three"
 import { ThreeCameraService } from "./threeCamera.service"
+import { expect } from "@jest/globals"
 
 describe("ThreeCameraService", () => {
     let threeCameraService: ThreeCameraService
@@ -25,6 +26,13 @@ describe("ThreeCameraService", () => {
         it("should set camera position correctly", () => {
             threeCameraService.setPosition(new Vector3(1, 2, 3))
             expect(threeCameraService.camera.position).toEqual({ x: 1, y: 2, z: 3 })
+        })
+    })
+
+    describe("setZoomFactor", () => {
+        it("should set zoomFactor correctly", () => {
+            threeCameraService.setZoomFactor(2)
+            expect(threeCameraService.camera.zoom).toEqual(2)
         })
     })
 })
