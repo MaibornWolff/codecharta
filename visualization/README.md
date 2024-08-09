@@ -77,7 +77,7 @@ After cloning the repository and running the `npm` installation as described abo
 
 Build the project in `dist/webpack`. The produced files are required if you want to [package](#package) the application or [start](#start) the standalone version.
 
-> Additional files are copied inside the webpack, which are required to execute the electron standalone via npm (run) start
+> Additional files are copied inside the webpack, which are required to execute the electron standalone via npm (run) start.
 > Note that the `build` command requires unix tools on path, so on Windows add them to it or use the bash shell
 
 ```bash
@@ -163,12 +163,6 @@ To containerize the visualization, please follow the below listed steps.
 
 - Start the docker container: `docker run -d -p 9000:80 codecharta/codecharta-visualization`. This detaches the container and exposes port 80 on the container and port 9000 on the host.
 - Open `localhost:9000` in your browser and you can already use the visualization, upload `cc.json` files and play around!
-
-# JSON structure
-
-[Example Data](/visualization/app/codeCharta/assets/sample1.cc.json)
-
-[JSON Schema](/visualization/app/codeCharta/util/generatedSchema.json)
 
 ## Code Style
 
