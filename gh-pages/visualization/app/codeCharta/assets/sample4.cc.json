@@ -11,7 +11,7 @@
         {
           "name": "aLeaf.ts",
           "type": "File",
-          "attributes": { "rloc": 120, "functions": 10, "complexity": 1 },
+          "attributes": { "rloc": 120, "functions": 10, "mcc": 1 },
           "link": "http://www.google.de"
         },
         {
@@ -22,17 +22,17 @@
             {
               "name": "smallLeafOne.html",
               "type": "File",
-              "attributes": { "rloc": 100, "functions": 28, "complexity": 80 }
+              "attributes": { "rloc": 100, "functions": 28, "mcc": 80 }
             },
             {
               "name": "smallLeafTwo.ts",
               "type": "File",
-              "attributes": { "rloc": 300, "functions": 5, "complexity": 150 }
+              "attributes": { "rloc": 300, "functions": 5, "mcc": 150 }
             },
             {
               "name": "smallLeafThree.ts",
               "type": "File",
-              "attributes": { "rloc": 50, "functions": 5, "complexity": 150 }
+              "attributes": { "rloc": 50, "functions": 5, "mcc": 150 }
             }
           ]
         }
@@ -40,6 +40,6 @@
     }
   ],
   "attributeTypes": {
-    "nodes": { "rloc": "absolute", "functions": "absolute", "complexity": "absolute" }
+    "nodes": { "rloc": "absolute", "functions": "absolute", "mcc": "absolute" }
   }
 }

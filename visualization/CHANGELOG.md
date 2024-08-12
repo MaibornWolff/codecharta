@@ -7,8 +7,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
-## [1.127.0] - 2024-08-12
-
 ### Fixed 🐞
 
 - Zooming doesn't affect the camera position [#3147](https://github.com/MaibornWolff/codecharta/pull/3665)

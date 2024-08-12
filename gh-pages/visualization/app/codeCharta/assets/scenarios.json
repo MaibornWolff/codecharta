@@ -5,8 +5,8 @@
       "appSettings": { },
       "dynamicSettings": {
         "areaMetric": "rloc",
-        "heightMetric": "complexity",
-        "colorMetric": "complexity",
+        "heightMetric": "mcc",
+        "colorMetric": "mcc",
         "distributionMetric": "rloc"
       }
     }
@@ -29,7 +29,7 @@
       "appSettings": { },
       "dynamicSettings": {
         "areaMetric": "rloc",
-        "heightMetric": "complexity",
+        "heightMetric": "mcc",
         "colorMetric": "line_coverage",
         "distributionMetric": "rloc"
       }
