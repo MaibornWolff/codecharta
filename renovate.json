@@ -26,10 +26,9 @@
         "SonarSource/sonarcloud-github-action",
         "actions/setup-java",
         "alexellis/upload-assets",
+        "rasmus-saks/release-a-changelog-action",
         "gradle",
-        "hmarr/auto-approve-action",
         "nginx",
-        "pascalgn/automerge-action",
         "ruby"
       ],
       "matchUpdateTypes": ["minor", "patch", "pin", "digest"],

@@ -7,6 +7,13 @@
 
 > Be aware, that the current version of analysis must be able to analyse the repository as described in `script/build_demo_file_*.sh`! Do not try to release the visualization, when analysis is broken!
 
+## Manual checks
+
+Before you continue with the release, you should check the following things:
+
+For both releases, Analysis must be in a working state, as the code from the repository will be analyzed for the release.
+For the Visualization release, the project must be built, so it is advisable to manually install the dependencies, build and package the project locally beforehand for testing. You can find the required commands in the `package.json`.
+
 ## Start the automatic release process
 
 - Call `pipenv run make_release`.
