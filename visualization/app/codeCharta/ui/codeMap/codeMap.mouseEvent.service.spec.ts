@@ -19,7 +19,6 @@ import { State, Store } from "@ngrx/store"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { defaultState } from "../../state/store/state.manager"
 import { CODE_MAP_BUILDING, CODE_MAP_BUILDING_TS_NODE, CONSTANT_HIGHLIGHT, TEST_FILE_WITH_PATHS, TEST_NODES } from "../../util/dataMocks"
-import { expect } from "@jest/globals"
 
 jest.mock("../../state/selectors/accumulatedData/idToNode.selector", () => ({
     idToNodeSelector: jest.fn()
@@ -138,9 +137,7 @@ describe("codeMapMouseEventService", () => {
         threeCameraService = codeMapMouseEventService["threeCameraService"] = jest.fn().mockReturnValue({
             camera: {
                 updateMatrixWorld: jest.fn()
-            },
-            zoomIn: jest.fn(),
-            zoomOut: jest.fn()
+            }
         })()
     }
 
