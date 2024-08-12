@@ -913,22 +913,4 @@ describe("codeMapMouseEventService", () => {
             expect(codeMapMouseEventService["labelSelectedBuilding"]).toEqual(referenceLabel)
         })
     })
-
-    describe("handleWheelEvent", () => {
-        it("should zoom in", () => {
-            const wheelEvent = new WheelEvent("wheel", { deltaY: -100, clientX: 50, clientY: 50 })
-            codeMapMouseEventService.handleWheelEvent(wheelEvent)
-
-            expect(threeCameraService.zoomIn).toHaveBeenCalled()
-            expect(threeRendererService.render).toHaveBeenCalled()
-        })
-
-        it("should zoom out", () => {
-            const wheelEvent = new WheelEvent("wheel", { deltaY: 100, clientX: 50, clientY: 50 })
-            codeMapMouseEventService.handleWheelEvent(wheelEvent)
-
-            expect(threeCameraService.zoomOut).toHaveBeenCalled()
-            expect(threeRendererService.render).toHaveBeenCalled()
-        })
-    })
 })

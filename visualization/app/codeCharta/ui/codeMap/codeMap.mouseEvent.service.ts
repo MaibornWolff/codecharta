@@ -452,12 +452,7 @@ export class CodeMapMouseEventService implements OnDestroy {
         }
     }
 
-    handleWheelEvent(event: WheelEvent) {
-        if (event.deltaY < 0) {
-            //this.threeCameraService.zoomIn()
-        } else {
-            //this.threeCameraService.zoomOut()
-        }
+    handleWheelEvent() {
         this.threeRendererService.render()
     }
 }

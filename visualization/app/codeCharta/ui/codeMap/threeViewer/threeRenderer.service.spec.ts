@@ -3,7 +3,7 @@ import { Camera, Scene, Vector2, WebGLRenderer } from "three"
 import { Store, StoreModule } from "@ngrx/store"
 // eslint-disable-next-line no-duplicate-imports
 import * as three from "three"
-import { WEBGL } from "three/examples/jsm/WebGL"
+import WEBGL from "three/examples/jsm/capabilities/WebGL"
 import { SharpnessMode } from "../../../codeCharta.model"
 import { setSharpnessMode } from "../../../state/store/appSettings/sharpnessMode/sharpnessMode.actions"
 import { CustomComposer } from "../rendering/postprocessor/customComposer"
@@ -70,7 +70,7 @@ describe("threeRendererService", () => {
                     scissor: jest.fn(),
                     viewport: jest.fn()
                 } as unknown as WebGLRenderingContext
-            } as WebGLRenderer
+            } as unknown as WebGLRenderer
 
             webGLRenderer.domElement = {
                 addEventListener: jest.fn((event, callback) => {

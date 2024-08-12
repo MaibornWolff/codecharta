@@ -1,4 +1,5 @@
-import { Font, Mesh, ShaderMaterial, Vector3 } from "three"
+import { Mesh, ShaderMaterial, Vector3 } from "three"
+import { Font } from "three/examples/jsm/loaders/FontLoader"
 import { BackPrintContainerMesh } from "./MeshModels/BackMeshModels/backPrintContainerMesh"
 import { BaseplateMesh } from "./MeshModels/baseplateMesh"
 import { FrontPrintContainerMesh } from "./MeshModels/FrontMeshModels/frontPrintContainerMesh"

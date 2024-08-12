@@ -191,7 +191,7 @@ describe("ThreeStatsService", () => {
         it("should remove dom Element", () => {
             threeStatsService.destroy()
 
-            expect(threeStatsService.stats.domElement.remove).toHaveBeenCalled()
+            expect(threeStatsService.stats.dom.remove).toHaveBeenCalled()
         })
     })
 })
