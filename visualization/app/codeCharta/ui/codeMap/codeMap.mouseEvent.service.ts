@@ -20,7 +20,6 @@ import { visibleFileStatesSelector } from "../../state/selectors/visibleFileStat
 import { blacklistSelector } from "../../state/store/fileSettings/blacklist/blacklist.selector"
 import { debounce } from "../../util/debounce"
 import { Store, State } from "@ngrx/store"
-import { zoomIn, zoomOut } from "../../state/store/appStatus/cameraZoomFactor/cameraZoomFactor.actions"
 
 interface Coordinates {
     x: number
@@ -455,9 +454,9 @@ export class CodeMapMouseEventService implements OnDestroy {
 
     handleWheelEvent(event: WheelEvent) {
         if (event.deltaY < 0) {
-            this.store.dispatch(zoomIn())
+            this.threeCameraService.zoomIn()
         } else {
-            this.store.dispatch(zoomOut())
+            this.threeCameraService.zoomOut()
         }
         this.threeRendererService.render()
     }

@@ -20,7 +20,6 @@ import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { defaultState } from "../../state/store/state.manager"
 import { CODE_MAP_BUILDING, CODE_MAP_BUILDING_TS_NODE, CONSTANT_HIGHLIGHT, TEST_FILE_WITH_PATHS, TEST_NODES } from "../../util/dataMocks"
 import { expect } from "@jest/globals"
-import { zoomIn, zoomOut } from "../../state/store/appStatus/cameraZoomFactor/cameraZoomFactor.actions"
 
 jest.mock("../../state/selectors/accumulatedData/idToNode.selector", () => ({
     idToNodeSelector: jest.fn()
@@ -93,7 +92,7 @@ describe("codeMapMouseEventService", () => {
         idToBuildingService = TestBed.inject(IdToBuildingService)
         codeMapLabelService = TestBed.inject(CodeMapLabelService)
         codeMapLabelService["threeSceneService"] = threeSceneService
-        store.dispatch = jest.fn()
+
         codeMapBuilding = klona(CODE_MAP_BUILDING)
         document.body.style.cursor = CursorType.Default
     }
@@ -919,13 +918,17 @@ describe("codeMapMouseEventService", () => {
         it("should zoom in", () => {
             const wheelEvent = new WheelEvent("wheel", { deltaY: -100, clientX: 50, clientY: 50 })
             codeMapMouseEventService.handleWheelEvent(wheelEvent)
-            expect(store.dispatch).toHaveBeenLastCalledWith(zoomIn())
+
+            expect(threeCameraService.zoomIn).toHaveBeenCalled()
+            expect(threeRendererService.render).toHaveBeenCalled()
         })
 
         it("should zoom out", () => {
             const wheelEvent = new WheelEvent("wheel", { deltaY: 100, clientX: 50, clientY: 50 })
             codeMapMouseEventService.handleWheelEvent(wheelEvent)
-            expect(store.dispatch).toHaveBeenLastCalledWith(zoomOut())
+
+            expect(threeCameraService.zoomOut).toHaveBeenCalled()
+            expect(threeRendererService.render).toHaveBeenCalled()
         })
     })
 })

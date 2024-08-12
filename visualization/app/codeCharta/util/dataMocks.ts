@@ -2070,8 +2070,7 @@ export const STATE: CcState = {
     appStatus: {
         hoveredNodeId: null,
         selectedBuildingId: null,
-        rightClickedNodeData: null,
-        cameraZoomFactor: 1
+        rightClickedNodeData: null
     }
 }
 
@@ -2149,8 +2148,7 @@ export const DEFAULT_STATE: CcState = {
     appStatus: {
         hoveredNodeId: null,
         selectedBuildingId: null,
-        rightClickedNodeData: null,
-        cameraZoomFactor: 1
+        rightClickedNodeData: null
     }
 }
 
