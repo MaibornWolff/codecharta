@@ -1,6 +1,10 @@
 ---
 permalink: /docs/source-code-parser
 title: "Source Code Parser"
+
+toc: true
+toc_sticky: true
+toc_label: "Jump to Section"
 ---
 
 **Category**: Parser (takes in source code and outputs cc.json)

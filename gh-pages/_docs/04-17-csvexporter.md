@@ -1,6 +1,10 @@
 ---
 permalink: /docs/csv-exporter
 title: "CSV Exporter"
+
+toc: true
+toc_sticky: true
+toc_label: "Jump to Section"
 ---
 
 **Category**: Exporter (takes in cc.json and outputs .csv)
@@ -18,12 +22,12 @@ _Conventions for csv output:_
 
 ## Usage and Parameters
 
-| Parameters                            | Description                       |
-| ------------------------------------- | --------------------------------- |
-| `--depth-of-hierarchy=<maxHierarchy>` | depth of the hierarchy            |
-| `FILE`                                | files to filter                   |
-| `-h, --help`                          | displays help and exits           |
-| `-o, --outputFile=<outputFile>`       | output File (or empty for stdout) |
+| Parameters                            | Description                                                                     |
+| ------------------------------------- | ------------------------------------------------------------------------------- |
+| `--depth-of-hierarchy=<maxHierarchy>` | Defines how many layers of the project structure should be listed (DEFAULT: 10) |
+| `FILE`                                | Input file                                                                      |
+| `-h, --help`                          | Displays help and exits                                                         |
+| `-o, --outputFile=<outputFile>`       | Output File (or empty for stdout)                                               |
 
 ```
 ccsh csvexport [-h] [--depth-of-hierarchy=<maxHierarchy>]
@@ -32,17 +36,19 @@ ccsh csvexport [-h] [--depth-of-hierarchy=<maxHierarchy>]
 
 ## Examples
 
+Basic example with output in CLI:
+
 ```
 ccsh csvexport visual.cc.json
 ```
+
+This examples takes the rather large looking `sample1.cc.json` (see below) and converts it into a more compact format:
 
 ```
 ccsh csvexport sample1.cc.json -o sample1.csv
 ```
 
-This above examples takes the rather large looking `sample1.cc.json` (see below) and converts it into a more compact format like this:
-
-**CSV Output:**
+**CSV Output (`sample1.csv`):**
 
 ```
 path,name,type,rloc,functions,mcc,pairingRate,avgCommits,dir0,dir1,dir2,dir3,dir4,dir5,dir6,dir7,dir8,dir9
@@ -52,7 +58,7 @@ ParentLeaf/smallLeaf.html,smallLeaf.html,File,30.0,100.0,100.0,60.0,51.0,ParentL
 ParentLeaf/otherSmallLeaf.ts,otherSmallLeaf.ts,File,70.0,1000.0,10.0,65.0,22.0,ParentLeaf,,,,,,,,,
 ```
 
-**CC.JSON Input:**
+**cc.json Input (`sample1.cc.json`):**
 
 ```
 {

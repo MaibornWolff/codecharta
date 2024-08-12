@@ -1,11 +1,17 @@
 ---
 permalink: /docs/git-log-parser
 title: "Git Log Parser"
+
+toc: true
+toc_sticky: true
+toc_label: "Jump to Section"
 ---
 
 **Category**: Parser (takes in git-log file (or git repository) and generates cc.json)
 
-This parser generates visualisation data from a git repository log and a repository files list or direct access to a git repository. It specializes in tracking file changes across different file-versions on different feature-branches and then the merged main. Furthermore, special care is taken not to display non-existent files that might show up in normal Git histories due to renaming actions on feature branches. It is to note, that file deletions that get reverted later on are ignored by this parser.
+This parser generates visualisation data from a git repository log and a repository files list or direct access to a git repository.
+
+This parser specializes in tracking file changes across different file-versions on different feature-branches and then the merged main. Furthermore, special care is taken not to display non-existent files that might show up in normal Git histories due to renaming actions on feature branches. It is to note, that file deletions that get reverted later on are ignored by this parser.
 
 ## Supported Metrics
 
@@ -27,7 +33,7 @@ Additionally, the following Edge Metrics are calculated:
 | ------------------- | --------------------------------------------------------- |
 | `temporal_coupling` | The degree of temporal coupling between two files (>=35%) |
 
-The names of authors are saved when the --add-author flag is set.
+The names of authors are saved when the `--add-author` flag is set.
 
 ## Usage and Parameters
 

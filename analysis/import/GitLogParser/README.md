@@ -1,17 +1,14 @@
-# GitLogParser
+# Git-Log Parser
 
-Generates visualization data from git repository logs and repository file list.
+---
 
-This parser specializes in tracking file changes across different file-versions on different feature-branches and then
-the merged main.
-Furthermore, special care is taken not to display non-existent files that might show up in normal Git histories due to
-renaming actions on feature branches.
+**Category**: Parser (takes in git-log file (or git repository) and generates cc.json)
 
-Things to note:
+This parser generates visualisation data from a git repository log and a repository files list or direct access to a git repository.
 
-- File deletions that get reverted later on are ignored by this parser.
+This parser specializes in tracking file changes across different file-versions on different feature-branches and then the merged main. Furthermore, special care is taken not to display non-existent files that might show up in normal Git histories due to renaming actions on feature branches. It is to note, that file deletions that get reverted later on are ignored by this parser.
 
-It supports the following metrics per file:
+## Supported Metrics
 
 | Metric                          | Description                                                         |
 | ------------------------------- | ------------------------------------------------------------------- |
@@ -31,15 +28,49 @@ Additionally, the following Edge Metrics are calculated:
 | ------------------- | --------------------------------------------------------- |
 | `temporal_coupling` | The degree of temporal coupling between two files (>=35%) |
 
-The names of authors are saved when the --add-author flag is set.
+The names of authors are saved when the `--add-author` flag is set.
+
+## Usage and Parameters
+
+As this parser can generate metrics based on a given git-log file or given a git repository (where the git-log is then generated on the fly), some parameters are only available in the log-scan mode or the repo-scan mode.
+
+| Parameters                          | Description                                                                         |
+| ----------------------------------- | ----------------------------------------------------------------------------------- |
+| `log-scan`                          | use log-scan mode - generates cc.json from a given git-log file                     |
+| `repo-scan`                         | use repo-scan mode - generates cc.json from an automatically generated git-log file |
+| `--add-author`                      | add an array of authors to every file                                               |
+| `--git-log=FILE`                    | git-log file to parse (only available for log-scan mode!)                           |
+| `-h, --help`                        | displays help and exits                                                             |
+| `-nc, --not-compressed`             | save uncompressed output File                                                       |
+| `-o, --outputFile=<outputFilePath>` | output File (or empty for stdout)                                                   |
+| `--repo-files=FILE `                | list of all file names in current git project (only available for log-scan mode!)   |
+| `--repo-path=DIRECTORY`             | root directory of the repository (only available for repo-scan mode!)               |
+| `--silent`                          | suppress command line output during process                                         |
+
+```
+Usage:
+ccsh gitlogparser [-h] [COMMAND]
+
+Usage for log-scan mode:
+ccsh gitlogparser log-scan [-h] [--add-author] [-nc] [--silent]
+                                --git-log=FILE [-o=<outputFilePath>]
+                                --repo-files=FILE
+
+Usage for repo-scan mode:
+ccsh gitlogparser repo-scan [-h] [--add-author] [-nc] [--silent]
+                            [-o=<outputFilePath>] [--repo-path=DIRECTORY]
+
+```
 
 ## Scan a local git repository on your machine
 
-### Creating required files on the fly | repo-scan
+### Creating required files on the fly with repo-scan
 
 See `ccsh gitlogparser repo-scan -h` for help. Standard usage:
 
-> `ccsh gitlogparser repo-scan --repo-path <path>`
+```
+ccsh gitlogparser repo-scan --repo-path <path>
+```
 
 With the sub command `repo-scan` you can parse a local git repository on your disk. During scanning a git log of the
 repository in the current working directory (or from the directory specified by repo-path) is created in your
@@ -56,11 +87,13 @@ The resulting project has the project name specified for the GitLogParser.
 - `ccsh gitlogparser repo-scan --repo-path <path_to_my_git_project> -o output.cc.json.gz`
 - load `output.cc.json.gz` in visualization
 
-### Manual creation of required files | log-scan
+### Manual creation of required files with log-scan
 
 See `ccsh gitlogparser log-scan -h` for help. Standard usage:
 
-> `ccsh gitlogparser log-scan --git-log <path> --repo-files <path>`
+```
+ccsh gitlogparser log-scan --git-log <path> --repo-files <path>
+```
 
 With the sub command `log-scan`, an existing git log and file name list are used for parsing.
 
@@ -81,14 +114,19 @@ which generates a git log with anonymized authors for usage with CodeCharta.
 
 #### Creating the git files list of the repository for metric generation
 
-> `git ls-files > file-name-list.txt`
+```
+git ls-files > file-name-list.txt
+```
 
 Please make sure to execute this command in the root folder of your repository.
 
 #### Executing the log-scan subcommand
 
-- `cd <my_git_project>`
-- `git log --numstat --raw --topo-order --reverse -m > git.log` (or `anongit > git.log`)
-- `git ls-files > file-name-list.txt`
-- `ccsh gitlogparser log-scan --git-log git.log --repo-files file-name-list.txt -o output.cc.json.gz`
-- load `output.cc.json.gz` in visualization
+```
+cd <my_git_project>
+git log --numstat --raw --topo-order --reverse -m > git.log (or anongit > git.log)
+git ls-files > file-name-list.txt
+ccsh gitlogparser log-scan --git-log git.log --repo-files file-name-list.txt -o output.cc.json.gz
+```
+
+load `output.cc.json.gz` in visualization

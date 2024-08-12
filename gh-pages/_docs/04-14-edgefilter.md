@@ -1,6 +1,10 @@
 ---
 permalink: /docs/edge-filter
 title: "Edge Filter"
+
+toc: true
+toc_sticky: true
+toc_label: "Jump to Section"
 ---
 
 **Category**: Filter (takes in cc.json and outputs cc.json)

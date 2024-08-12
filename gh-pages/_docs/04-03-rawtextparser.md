@@ -1,11 +1,15 @@
 ---
 permalink: /docs/raw-text-parser
 title: "Raw Text Parser"
+
+toc: true
+toc_sticky: true
+toc_label: "Jump to Section"
 ---
 
 **Category**: Parser (takes in source code and outputs cc.json)
 
-This parser analyzes code regardless of the programming language used to generate the metrics described below.
+This parser analyzes code, regardless of the programming language, to generate the metrics described below.
 
 ## Supported Languages
 
@@ -40,8 +44,6 @@ Usage: ccsh rawtextparser [-h] [-nc] [--verbose] [--without-default-excludes]
                           [-m=metrics]... FILE or FOLDER
 ```
 
-generates cc.json from projects or source code files
-
 ## Examples
 
 The RawTextParser can analyze either a single file or a project folder; here are some sample commands:
@@ -58,5 +60,5 @@ ccsh rawtextparser foo.txt --max-indentation-level=6 tab-width=4 --metrics=Inden
 ccsh rawtextparser foo -o out.cc.json --exclude=*.html --exclude=bar
 ```
 
-If a project is piped into the [SourceCodeParser]({{site.baseurl}}{% link _docs/04-02-sourcecodeparser.md %}) , the results and the piped project are merged.
-The resulting project has the project name specified for the SourceCodeParser.
+If a project is piped into the RawTextParser, the results and the piped project are merged.
+The resulting project has the project name specified for the RawTextParser.
