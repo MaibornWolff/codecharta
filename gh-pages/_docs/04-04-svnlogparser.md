@@ -1,6 +1,10 @@
 ---
 permalink: /docs/svn-log-parser
 title: "SVN Log Parser"
+
+toc: true
+toc_sticky: true
+toc_label: "Jump to Section"
 ---
 
 **Category**: Parser (takes in svn logs and outputs cc.json)
@@ -28,29 +32,19 @@ Additionally, the following Edge Metrics are calculated:
 | ------------------- | --------------------------------------------------------- |
 | `temporal_coupling` | The degree of temporal coupling between two files (>=35%) |
 
-The names of authors are saved when the --add-author flag is set.
+The names of authors are saved when the `--add-author` flag is set.
 
 ## Usage and Parameters
 
-### Creating the repository log for metric generation
-
-| SCM | Log format | Command for log creation | tracks renames | ignores deleted files | supports code churn |
-| --- | ---------- | ------------------------ | -------------- | --------------------- | ------------------- |
-| SVN | SVN_LOG    | `svn log --verbose`      | yes            | yes                   | no                  |
-
-### Executing the SVNLogParser
-
-| Parameter                       | description                                                       |
-| ------------------------------- | ----------------------------------------------------------------- |
-| `FILE`                          | file to parse                                                     |
-| `--add-author`                  | add an array of authors to every file                             |
-| `--silent`                      | suppress command line output during process                       |
-| `-h, --help`                    | displays help                                                     |
-| `-o, --outputFile=<outputFile>` | output File (or empty for stdout)                                 |
-| `-nc, --not-compressed`         | uncompresses outputfile to json format, if format of File is gzip |
-| `-log, --logfile`               | gives loghelp                                                     |
-
-Standard usage:
+| Parameter                       | Description                                 |
+| ------------------------------- | ------------------------------------------- |
+| `FILE`                          | file to parse                               |
+| `--add-author`                  | add an array of authors to every file       |
+| `--silent`                      | suppress command line output during process |
+| `-h, --help`                    | displays help                               |
+| `-o, --outputFile=<outputFile>` | output File (or empty for stdout)           |
+| `-nc, --not-compressed`         | safe uncompressed output file               |
+| `-log, --logfile`               | gives loghelp                               |
 
 ```
 Usage: ccsh svnlogparser [-h] [--add-author] [-nc] [--silent] [-o=<outputFile>]
@@ -59,8 +53,16 @@ Usage: ccsh svnlogparser [-h] [--add-author] [-nc] [--silent] [-o=<outputFile>]
 
 The result is written as JSON to standard out or into an output file (if specified by `-o` option).
 
-If a project is piped into the [SourceCodeParser]({{site.baseurl}}{% link _docs/04-02-sourcecodeparser.md %}), the results and the piped project are merged.
+If a project is piped into the SVNLogParser, the results and the piped project are merged.
 The resulting project has the project name specified for the SVNLogParser.
+
+### Using SVN to create the repository log for metric generation
+
+| SCM | Log format | Command for log creation | tracks renames | ignores deleted files | supports code churn |
+| --- | ---------- | ------------------------ | -------------- | --------------------- | ------------------- |
+| SVN | SVN_LOG    | `svn log --verbose`      | yes            | yes                   | no                  |
+
+Executing this command generates the log file that can be used by the SVN-log parser. You can also use the bash script anongit which generates an anonymous git log with log format GIT_LOG_NUMSTAT_RAW for usage with CodeCharta.
 
 ## Examples
 

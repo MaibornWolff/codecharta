@@ -1,6 +1,10 @@
 ---
 permalink: /docs/merge-filter
 title: "Merge Filter"
+
+toc: true
+toc_sticky: true
+toc_label: "Jump to Section"
 ---
 
 **Category**: Filter (takes in multiple cc.json files and outputs single cc.json)
@@ -47,4 +51,4 @@ ccsh merge file1.cc.json ../foo/file2.cc.json -o=test.cc.json --leaf --add-missi
 ccsh merge file1.cc.json ../foo/ -o=test.cc.json
 ```
 
-This last example inputs the folder foo, which will result in all project files in that folder being merged with file1.cc.json.
+This last example inputs the folder foo, which will result in all project files in that folder being merged with the reference file (file1.cc.json).

@@ -1,6 +1,10 @@
 ---
 permalink: /docs/metricgardener-importer
 title: "MetricGardener Importer"
+
+toc: true
+toc_sticky: true
+toc_label: "Jump to Section"
 ---
 
 > Attention: The direct execution of metric-gardener has been temporarily disabled.
@@ -55,13 +59,13 @@ Usage: ccsh metricgardenerimport [-hj] [-nc] [-o=<outputFile>] FOLDER or FILE
 
 ## Examples
 
-### Create a CodeCharta json file from local source code (metric-gardener is executed internally on the fly):
+Create a CodeCharta json file from local source code (metric-gardener is executed internally on the fly):
 
 ```
 ccsh metricgardenerimport /path/to/source/code -o outfile.cc.json
 ```
 
-### Create a CodeCharta json file by importing a given metric-gardener json file (run MetricGardener yourself):
+Create a CodeCharta json file by importing a given metric-gardener json file (run MetricGardener yourself):
 
 For this MetricGardener needs to be installed on your system. Install it with `npm i -g metric-gardener`
 
