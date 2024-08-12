@@ -1,4 +1,5 @@
-import { Font, Mesh, ShaderMaterial, Vector3 } from "three"
+import { Mesh, ShaderMaterial, Vector3 } from "three"
+import { Font } from "three/examples/jsm/loaders/FontLoader"
 import { ColorRange, NodeMetricData } from "../../../codeCharta.model"
 import { BaseplateMesh } from "./MeshModels/baseplateMesh"
 import { GeneralMesh } from "./MeshModels/generalMesh"

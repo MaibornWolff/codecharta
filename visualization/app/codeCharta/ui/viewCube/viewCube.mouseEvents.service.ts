@@ -2,10 +2,7 @@ import { hierarchy } from "d3-hierarchy"
 import { CodeMapMouseEventService, CursorType } from "../codeMap/codeMap.mouseEvent.service"
 import { Group, Mesh, PerspectiveCamera, Raycaster, Vector2, WebGLRenderer } from "three"
 import { isLeaf } from "../../util/codeMapHelper"
-// eslint-disable-next-line no-duplicate-imports
-import * as Three from "three"
-import oc from "three-orbit-controls"
-import type { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
 import { ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitControls.service"
 import { Injectable } from "@angular/core"
 import { EventEmitter } from "../../util/EventEmitter"
@@ -43,10 +40,8 @@ export class ViewCubeMouseEventsService {
     }
 
     private initOrbitalControl(camera: PerspectiveCamera, renderer: WebGLRenderer) {
-        const orbitControls = oc(Three)
-        this.controls = new orbitControls(camera, renderer.domElement) as unknown as OrbitControls
+        this.controls = new OrbitControls(camera, renderer.domElement)
         this.controls.enableZoom = false
-        this.controls.enableKeys = false
         this.controls.enablePan = false
         this.controls.rotateSpeed = 1
     }

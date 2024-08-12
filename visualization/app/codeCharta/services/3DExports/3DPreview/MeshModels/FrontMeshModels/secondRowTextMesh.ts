@@ -1,5 +1,5 @@
 import { GeometryOptions } from "../../preview3DPrintMesh"
-import { Font } from "three"
+import { Font } from "three/examples/jsm/loaders/FontLoader"
 import { TextMesh } from "../textMesh"
 import { CreateTextGeometryStrategyOptions } from "../../CreateGeometryStrategies/createTextGeometryStrategy"
 import { FrontPrintColorChangeStrategy } from "../../ColorChangeStrategies/frontPrintColorChangeStrategy"

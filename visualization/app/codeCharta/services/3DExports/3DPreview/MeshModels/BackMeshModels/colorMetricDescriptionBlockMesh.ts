@@ -1,5 +1,5 @@
 import { GeometryOptions } from "../../preview3DPrintMesh"
-import { Font } from "three"
+import { Font } from "three/examples/jsm/loaders/FontLoader"
 import { BackPrintColorChangeStrategy } from "../../ColorChangeStrategies/backPrintColorChangeStrategy"
 import { CreateTextGeometryStrategy, CreateTextGeometryStrategyOptions } from "../../CreateGeometryStrategies/createTextGeometryStrategy"
 import { ColorRange } from "../../../../../codeCharta.model"

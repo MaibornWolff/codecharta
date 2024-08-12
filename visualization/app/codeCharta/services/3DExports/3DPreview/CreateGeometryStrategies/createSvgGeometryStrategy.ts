@@ -1,8 +1,8 @@
 import { BufferGeometry, ExtrudeGeometry } from "three"
 import { SVGLoader } from "three/examples/jsm/loaders/SVGLoader"
-import { BufferGeometryUtils } from "three/examples/jsm/utils/BufferGeometryUtils"
 import { CreateGeometryStrategy, CreateGeometryStrategyOptions } from "./createGeometryStrategy"
 import { GeometryOptions } from "../preview3DPrintMesh"
+import { mergeBufferGeometries } from "three/examples/jsm/utils/BufferGeometryUtils"
 
 export interface CreateSvgGeometryStrategyOptions extends CreateGeometryStrategyOptions {
     filePath: string
@@ -24,7 +24,7 @@ export class CreateSvgGeometryStrategy implements CreateGeometryStrategy {
                     const geometries: BufferGeometry[] = []
 
                     for (const path of paths) {
-                        const shapes = path.toShapes(false, true)
+                        const shapes = path.toShapes(true)
 
                         for (const shape of shapes) {
                             const geometry = new ExtrudeGeometry(shape, {
@@ -35,7 +35,7 @@ export class CreateSvgGeometryStrategy implements CreateGeometryStrategy {
                         }
                     }
 
-                    const mergedGeometry = BufferGeometryUtils.mergeBufferGeometries(geometries)
+                    const mergedGeometry = mergeBufferGeometries(geometries)
 
                     mergedGeometry.computeBoundingBox()
                     const width = mergedGeometry.boundingBox.max.x - mergedGeometry.boundingBox.min.x

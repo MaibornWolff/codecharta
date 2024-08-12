@@ -61,13 +61,13 @@ export class ThreeViewerService {
 
     onFocusIn = event => {
         if (event.target.nodeName === "INPUT") {
-            this.threeOrbitControlsService.controls.enableKeys = false
+            // this.threeOrbitControlsService.controls.enableKeys = false
         }
     }
 
     onFocusOut = event => {
         if (event.target.nodeName === "INPUT") {
-            this.threeOrbitControlsService.controls.enableKeys = true
+            // this.threeOrbitControlsService.controls.enableKeys = true
         }
     }
 

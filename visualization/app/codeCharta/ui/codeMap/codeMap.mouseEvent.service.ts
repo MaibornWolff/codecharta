@@ -7,7 +7,7 @@ import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { ThreeRendererService } from "./threeViewer/threeRenderer.service"
 import { isPathHiddenOrExcluded } from "../../util/codeMapHelper"
 import { hierarchy } from "d3-hierarchy"
-import { Intersection, Object3D, Raycaster } from "three"
+import { Intersection, Object3D, Raycaster, Vector2 } from "three"
 import { CodeMapLabelService } from "./codeMap.label.service"
 import { ThreeViewerService } from "./threeViewer/threeViewer.service"
 import { setHoveredNodeId } from "../../state/store/appStatus/hoveredNodeId/hoveredNodeId.actions"
@@ -189,7 +189,7 @@ export class CodeMapMouseEventService implements OnDestroy {
                 const camera = this.threeCameraService.camera
 
                 if (camera.isPerspectiveCamera) {
-                    this.raycaster.setFromCamera(mouseCoordinates, camera)
+                    this.raycaster.setFromCamera(mouseCoordinates as Vector2, camera)
                 }
 
                 const hoveredLabel = this.calculateHoveredLabel(labels)
@@ -454,9 +454,9 @@ export class CodeMapMouseEventService implements OnDestroy {
 
     handleWheelEvent(event: WheelEvent) {
         if (event.deltaY < 0) {
-            this.threeCameraService.zoomIn()
+            //this.threeCameraService.zoomIn()
         } else {
-            this.threeCameraService.zoomOut()
+            //this.threeCameraService.zoomOut()
         }
         this.threeRendererService.render()
     }
