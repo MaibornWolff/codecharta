@@ -44,8 +44,6 @@ the analysis container, copy them over using `docker cp`
 
 See also [CodeCharta Analysis]({{site.baseurl}}{% link _docs/05-01-analysis.md %})
 
-> Attention: The direct execution of metric-gardener has been temporarily disabled. It is not included.
-
 Almost all tools the ccsh can import data from are included in the container, so you can get started immediately.
 Installed are:
 
