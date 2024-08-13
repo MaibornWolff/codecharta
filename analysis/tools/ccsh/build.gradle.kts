@@ -13,7 +13,7 @@ dependencies {
     val projects =
         listOf(
             ":import:CodeMaatImporter", ":import:CSVImporter", ":filter:StructureModifier",
-            ":parser:SVNLogParser", ":import:SonarImporter", ":import:SourceCodeParser",
+            ":parser:SVNLogParser", ":import:SonarImporter", ":parser:SourceCodeParser",
             ":import:TokeiImporter", ":filter:MergeFilter", ":filter:EdgeFilter",
             ":tools:ValidationTool", ":export:CSVExporter", ":parser:GitLogParser",
             ":parser:RawTextParser", ":tools:InteractiveParser", ":tools:PipeableParser",
