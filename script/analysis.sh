@@ -3,17 +3,15 @@
 # Run SonarScanner in the container and capture output
 run_sonarscanner() {
     echo "🔍 Running SonarScanner..."
-    scanner_output=$(docker run --rm --network $NETWORK_NAME \
-      -e SONAR_HOST_URL="$CONTAINER_SONAR_URL" \
-      -e SONAR_LOGIN="$token" \
+    docker run --rm \
+      --network $NETWORK_NAME \
       -v "$PROJECT_BASEDIR:/usr/src" \
       sonarsource/sonar-scanner-cli \
       sonar-scanner \
       -Dsonar.projectKey=$PROJECT_KEY \
-      -Dsonar.sources=/usr/src 2>&1)
-
-    # Display the output for debugging
-    echo "$scanner_output"
+      -Dsonar.sources=/usr/src \
+      -Dsonar.token=$token \
+      -Dsonar.host.url="$CONTAINER_SONAR_URL"
 
     if [ $? -ne 0 ]; then
         echo "❌ SonarScanner analysis failed."
@@ -31,7 +29,7 @@ run_codecharta_analysis() {
       -v "$PROJECT_BASEDIR:$PROJECT_BASEDIR" \
       -w "$PROJECT_BASEDIR" \
       codecharta/codecharta-analysis \
-      ccsh sonarimport "$CONTAINER_SONAR_URL" "$PROJECT_KEY" "--user-token=$token" "--output-file=./sonar.cc.json" "--merge-modules=false"
+      ccsh sonarimport "$CONTAINER_SONAR_URL" "$PROJECT_KEY" "--user-token=$token" "--output-file=sonar.cc.json" "--merge-modules=false"
 
     if [ $? -ne 0 ]; then
         echo "❌ CodeCharta analysis failed."

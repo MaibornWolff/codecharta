@@ -39,9 +39,9 @@ change_default_password() {
     echo "🔑 Checking if the default password needs to be changed..."
     
     # Attempt to authenticate with the default password
-    response=$(curl -u $DEFAULT_SONAR_USER:$DEFAULT_SONAR_PASSWORD -X GET -s "$HOST_SONAR_URL/api/authentication/validate")
+    response=$(curl -X GET -s "$HOST_SONAR_URL/api/authentication/validate")
     is_valid=$(echo "$response" | jq -r '.valid')
-
+    echo "Response: $response"
     if [ "$is_valid" == "false" ]; then
         echo "🔄 Changing default password..."
         response=$(curl -u $DEFAULT_SONAR_USER:$DEFAULT_SONAR_PASSWORD -X POST -s \
@@ -59,19 +59,64 @@ change_default_password() {
     fi
 }
 
-# Function to generate a token for SonarScanner
+# Function to check if a token is valid
+is_valid_token() {
+    local token=$1
+    if [[ "$token" =~ ^squ_[0-9a-f]{40}$ ]]; then
+        return 0  # Valid token
+    else
+        return 1  # Invalid token
+    fi
+}
+
+# Function to check if a token exists (but note: SonarQube does not return the token value once created)
+token_exists() {
+    response=$(curl -u $SONAR_USER:$SONAR_PASSWORD -X GET -s "$HOST_SONAR_URL/api/user_tokens/search")
+    
+    # Directly parse the response to check if the token exists
+    existing_token_name=$(echo "$response" | jq -r ".userTokens[] | select(.name == \"$SONARQUBE_TOKEN_NAME\") | .name")
+
+    if [[ "$existing_token_name" == "$SONARQUBE_TOKEN_NAME" ]]; then
+        return 0  # Token exists
+    else
+        return 1  # Token does not exist
+    fi
+}
+
+# Function to generate a token for SonarScanner only if it doesn't already exist
 generate_token() {
-    echo "🔑 Generating token..."
-    response=$(curl -u $SONAR_USER:$SONAR_PASSWORD -X POST -s -w "\n%{http_code}" "$HOST_SONAR_URL/api/user_tokens/generate?name=$TOKEN_NAME")
-    http_status=$(echo "$response" | tail -n1)
-    response_body=$(echo "$response" | head -n-1)
-    check_response $http_status "$response_body" "Token generation failed."
-    token=$(echo "$response_body" | jq -r '.token')
-    if [[ -z "$token" || "$token" == "null" ]]; then
-        echo "❌ Failed to generate token."
+    if [[ -n "$SONARQUBE_TOKEN" ]]; then
+        echo "ℹ️ Using predefined token."
+        token=$SONARQUBE_TOKEN
+        if ! is_valid_token "$token"; then
+            echo "❌ Predefined token is invalid."
+            exit 1
+        fi
+        return
+    fi
+
+    echo "🔍 Checking if token '$SONARQUBE_TOKEN_NAME' already exists..."
+
+    # Check if the token exists
+    if token_exists; then
+        echo "❌ Token '$SONARQUBE_TOKEN_NAME' already exists. Cannot retrieve the value after generation."
         exit 1
     fi
+
+    # If the token does not exist, generate a new one
+    echo "🔑 Generating token..."
+    response=$(curl -u $SONAR_USER:$SONAR_PASSWORD -X POST -s "$HOST_SONAR_URL/api/user_tokens/generate?name=$SONARQUBE_TOKEN_NAME")
+    
+    # Extract the newly generated token from the response
+    token=$(echo "$response" | jq -r '.token')
+
+    # Since this is a new token, ensure it follows the correct format
+    if ! is_valid_token "$token"; then
+        echo "❌ Failed to generate a valid token."
+        exit 1
+    fi
+
     echo "✅ Token generated: $token"
     echo "Token response:"
-    echo "$response_body" | jq '.'
+    echo "$response" | jq '.'
 }
