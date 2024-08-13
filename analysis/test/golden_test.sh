@@ -134,10 +134,10 @@ check_metricgardener() {
   "${CCSH}" metricgardenerimport "${DATA}/metricgardener.json" -o "${ACTUAL_METRICGARDENER_JSON}" --is-json-file
   validate "${ACTUAL_METRICGARDENER_JSON}.cc.json.gz"
 
-  # echo " -- expect MetricGardenerImporter to produce valid cc.json file when no MG.json was available"
-  # ACTUAL_METRICGARDENER_JSON2="${TEMP_DIR}/actual_metricgardenerparser2"
-  # "${CCSH}" metricgardenerimport "${DATA}/metric-gardener-Example" -o "${ACTUAL_METRICGARDENER_JSON2}"
-  # validate "${ACTUAL_METRICGARDENER_JSON2}.cc.json.gz"
+  echo " -- expect MetricGardenerImporter to produce valid cc.json file when no MG.json was available"
+  ACTUAL_METRICGARDENER_JSON2="${TEMP_DIR}/actual_metricgardenerparser2"
+  "${CCSH}" metricgardenerimport "${DATA}/metric-gardener-Example" -o "${ACTUAL_METRICGARDENER_JSON2}"
+  validate "${ACTUAL_METRICGARDENER_JSON2}.cc.json.gz"
 }
 
 check_sonar() {
