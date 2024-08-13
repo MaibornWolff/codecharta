@@ -17,7 +17,7 @@ dependencies {
             ":import:TokeiImporter", ":filter:MergeFilter", ":filter:EdgeFilter",
             ":tools:ValidationTool", ":export:CSVExporter", ":parser:GitLogParser",
             ":parser:RawTextParser", ":tools:InteractiveParser", ":tools:PipeableParser",
-            ":import:MetricGardenerImporter"
+            ":import:MetricGardenerImporter", ":import:SourceMonitorImporter"
         )
 
     projects.forEach {
