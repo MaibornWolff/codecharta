@@ -1,18 +1,43 @@
-package de.maibornwolff.codecharta.importer.util
+package de.maibornwolff.codecharta.importer.sourcemonitor
 
 import com.github.kinquirer.KInquirer
+import com.github.kinquirer.components.promptConfirm
 import com.github.kinquirer.components.promptInput
+import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import de.maibornwolff.codecharta.util.InputHelper
 import java.io.File
 import java.nio.file.Paths
 
-class ParserDialogHelper {
-    companion object {
-        fun getInputFiles(isSourceMonitor: Boolean): MutableList<String> {
+class ParserDialog {
+    companion object : ParserDialogInterface {
+        override fun collectParserArgs(): List<String> {
+            val inputFileNames = getInputFiles()
+
+            val outputFileName: String =
+                KInquirer.promptInput(
+                    message = "What is the name of the output file?",
+                    hint = "output.cc.json"
+                )
+
+            val isCompressed =
+                (outputFileName.isEmpty()) ||
+                    KInquirer.promptConfirm(
+                        message = "Do you want to compress the output file?",
+                        default = true
+                    )
+
+            return inputFileNames +
+                listOfNotNull(
+                    "--output-file=$outputFileName",
+                    if (isCompressed) null else "--not-compressed"
+                )
+        }
+
+        private fun getInputFiles(): MutableList<String> {
             val inputFileNames = mutableListOf<String>()
             var firstFile: String
             do {
-                firstFile = getInputFileName(isSourceMonitor)
+                firstFile = getInputFileName()
             } while (!InputHelper.isInputValidAndNotNull(arrayOf(File(firstFile)), canInputContainFolders = false))
 
             inputFileNames.add(firstFile)
@@ -33,13 +58,9 @@ class ParserDialogHelper {
             return inputFileNames
         }
 
-        private fun getInputFileName(isSourceMonitor: Boolean): String {
+        private fun getInputFileName(): String {
             return KInquirer.promptInput(
-                message = if (isSourceMonitor) {
-                    "What is the SourceMonitor CSV file that has to be parsed?"
-                } else {
-                    "Please specify the name of the first CSV file to be parsed."
-                },
+                message = "What is the SourceMonitor CSV file that has to be parsed?",
                 hint = Paths.get("").toAbsolutePath().toString() + File.separator + "yourInput.csv"
             )
         }

@@ -8,6 +8,7 @@ include(
     "import:CSVImporter",
     "import:SonarImporter",
     "import:CodeMaatImporter",
+    "import:SourceMonitorImporter",
     "import:TokeiImporter",
     "import:MetricGardenerImporter"
 )
