@@ -49,6 +49,6 @@ If you use SonarQube locally, an example command would look like the following:
 ccsh sonarimport "http://localhost:9000/" "CodeCharta" "--user=squ_12345" "--output-file=output" "--merge-modules=false"
 ```
 
-For a more detailed example, please check out [this article]({{site.baseurl}}{% link _docs/05-05-analyze-with-sonarqube.md %}).
+For a more detailed example, please check out [this article]({{site.baseurl}}{% link _docs/02-05-analyze-with-sonarqube.md %}).
 
 If a project is piped into the SonarImporter, the results and the piped project are merged. The resulting project has the project name specified for the SonarImporter.

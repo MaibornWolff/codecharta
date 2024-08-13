@@ -19,7 +19,7 @@ File.js,4,500
 service/Service1.ts,40,20
 ```
 
-You can transform that file into a `.cc.json` with our [CSV Importer]({{site.baseurl}}{% link _docs/04-07-csvimporter.md %}) via command-line:
+You can transform that file into a `.cc.json` with our [CSV Importer]({{site.baseurl}}{% link _docs/03-07-csvimporter.md %}) via command-line:
 
 ```
 ccsh csvimport newmetrics.csv -o newmetrics.cc.json

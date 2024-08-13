@@ -16,7 +16,7 @@ Metrics are really bad as targets however.
 
 It is really easy to increase the line coverage by writing tests **without** asserts for all class methods. If we are evaluated or paid based on the amount of coverage we generate, we'll do that and the metric will cease to be a good metric. Job accomplished, the patient is dead.
 
-However, as long as we have a shared understanding and don't abuse metrics we can gain a lot of valuable insight from them. An excerpt of the metrics we find quite valuable are listed below. If you want to add your own metrics you should take a look at adding [custom metrics]({{site.baseurl}}{% link _docs/05-04-custom-metrics.md %}).
+However, as long as we have a shared understanding and don't abuse metrics we can gain a lot of valuable insight from them. An excerpt of the metrics we find quite valuable are listed below. If you want to add your own metrics you should take a look at adding [custom metrics]({{site.baseurl}}{% link _docs/02-04-custom-metrics.md %}).
 
 ## Some Valuable Metrics
 
@@ -27,4 +27,4 @@ However, as long as we have a shared understanding and don't abuse metrics we ca
 - avg_code_churn: the average number of lines added or removed from this file. A file that is heavily edited is worth another look, because it might mean this file is an coordination problem. Can be extracted from [SCM (Source Control Management)](https://en.wikipedia.org/wiki/Version_control) like Git or SVN.
 - number_of_authors: the number of authors that have edited this file. A file that is heavily edited by many different people is worth another look, because it might mean this file is an coordination problem. Can be extracted from [SCM (Source Control Management)](https://en.wikipedia.org/wiki/Version_control) like Git or SVN.
 
-There are, however, a lot more metrics that can be generated. The [analysis section]({{site.baseurl}}{% link _docs/05-01-analysis.md %}) features a list of all available tools. You can click on each tool to see which metrics it can generate.
+There are, however, a lot more metrics that can be generated. The [analysis section]({{site.baseurl}}{% link _docs/02-01-analysis.md %}) features a list of all available tools. You can click on each tool to see which metrics it can generate.
