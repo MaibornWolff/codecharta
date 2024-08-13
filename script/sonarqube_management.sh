@@ -83,7 +83,7 @@ cleanup_previous_project_and_token() {
     fi
 
     # Revoke token
-    response=$(curl -u $SONAR_USER:$SONAR_PASSWORD -X POST -s -w "\n%{http_code}" "$HOST_SONAR_URL/api/user_tokens/revoke?name=$TOKEN_NAME")
+    response=$(curl -u $SONAR_USER:$SONAR_PASSWORD -X POST -s -w "\n%{http_code}" "$HOST_SONAR_URL/api/user_tokens/revoke?name=$SONARQUBE_TOKEN_NAME")
     http_status=$(echo "$response" | tail -n1)
     response_body=$(echo "$response" | head -n-1)
     if [ "$http_status" -eq 404 ]; then
@@ -97,17 +97,36 @@ cleanup_previous_project_and_token() {
     fi
 }
 
-# Create SonarQube project
+# Create SonarQube project only if it doesn't already exist
 create_sonarqube_project() {
+    echo "🔍 Checking if project '$PROJECT_KEY' already exists in SonarQube..."
+
+    # Check if the project already exists
+    response=$(curl -u $SONAR_USER:$SONAR_PASSWORD -X GET -s -w "\n%{http_code}" "$HOST_SONAR_URL/api/projects/search?projects=$PROJECT_KEY")
+    http_status=$(echo "$response" | tail -n1)
+    response_body=$(echo "$response" | head -n-1)
+    
+    if [[ "$http_status" -eq 200 && $(echo "$response_body" | jq -r '.components | length') -gt 0 ]]; then
+        echo "ℹ️ Project '$PROJECT_KEY' already exists. Skipping creation."
+        return
+    elif [[ "$http_status" -eq 404 ]]; then
+        echo "❌ Failed: Unable to check if the project exists. The endpoint may be incorrect or deprecated."
+        echo "Response: $response_body"
+        exit 1
+    fi
+
+    # If the project does not exist, create it
     echo "🚀 Creating project in SonarQube..."
     response=$(curl -u $SONAR_USER:$SONAR_PASSWORD -X POST -s -w "\n%{http_code}" "$HOST_SONAR_URL/api/projects/create?project=$PROJECT_KEY&name=$PROJECT_NAME")
     http_status=$(echo "$response" | tail -n1)
     response_body=$(echo "$response" | head -n-1)
+
     if [[ "$http_status" -eq 404 ]]; then
         echo "❌ Failed: Project creation failed. The endpoint may be incorrect or deprecated."
         echo "Response: $response_body"
         exit 1
     fi
+
     check_response $http_status "$response_body" "Project creation failed."
     echo "✅ Project created successfully."
     echo "Project creation response:"

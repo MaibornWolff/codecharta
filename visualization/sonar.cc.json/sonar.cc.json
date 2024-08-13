@@ -1,0 +1,685 @@
+{
+  "data": {
+    "projectName": "",
+    "nodes": [{ "name": "root", "type": "Folder", "attributes": {}, "link": "", "children": [] }],
+    "apiVersion": "1.3",
+    "edges": [],
+    "attributeTypes": {},
+    "attributeDescriptors": {
+      "sonar_accepted_issues": {
+        "title": "Accepted Issues",
+        "description": "Accepted issues",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://docs.sonarcloud.io/digging-deeper/metric-definitions/",
+        "direction": -1
+      },
+      "sonar_blocker_violations": {
+        "title": "Blocker Violations",
+        "description": "Total count of issues of the severity blocker",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://docs.sonarcloud.io/digging-deeper/metric-definitions/",
+        "direction": -1
+      },
+      "sonar_bugs": {
+        "title": "Number of Bugs",
+        "description": "Number of bug issues",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://docs.sonarcloud.io/digging-deeper/metric-definitions/",
+        "direction": -1
+      },
+      "sonar_class_complexity": {
+        "title": "Cyclic Class Complexity",
+        "description": "Maximum cyclomatic complexity based on paths through a class by McCabe",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://docs.sonarcloud.io/digging-deeper/metric-definitions/",
+        "direction": -1
+      },
+      "sonar_classes": {
+        "title": "Number of Classes",
+        "description": "Number of classes (including nested classes, interfaces, enums and annotations",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://docs.sonarcloud.io/digging-deeper/metric-definitions/",
+        "direction": -1
+      },
+      "sonar_code_smells": {
+        "title": "Code Smells",
+        "description": "Total count of code smell issues",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://docs.sonarcloud.io/digging-deeper/metric-definitions/",
+        "direction": -1
+      },
+      "sonar_cognitive_complexity": {
+        "title": "Cognitive Complexity",
+        "description": "How hard is it to understand the code\u0027s control flow",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://www.sonarsource.com/resources/cognitive-complexity/",
+        "direction": -1
+      },
+      "comment_lines": {
+        "title": "Comment Lines",
+        "description": "Number of lines containing either a comment or commented-out code",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://docs.sonarcloud.io/digging-deeper/metric-definitions/",
+        "direction": -1
+      },
+      "sonar_comment_lines_density": {
+        "title": "Comment Density",
+        "description": "Density of comment lines in relation to total lines of code",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://docs.sonarcloud.io/digging-deeper/metric-definitions/",
+        "direction": -1
+      },
+      "mcc": {
+        "title": "Maximum Cyclomatic Complexity",
+        "description": "Maximum cyclic complexity based on paths through the code by McCabe",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://docs.sonarcloud.io/digging-deeper/metric-definitions/",
+        "direction": -1
+      },
+      "sonar_complexity_in_classes": {
+        "title": "Class Complexity",
+        "description": "Maximum cyclomatic complexity based on paths through a class by McCabe",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://docs.sonarcloud.io/digging-deeper/metric-definitions/",
+        "direction": -1
+      },
+      "sonar_complexity_in_functions": {
+        "title": "Function Complexity",
+        "description": "Maximum cyclomatic complexity based on paths through a function by McCabe",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://docs.sonarcloud.io/digging-deeper/metric-definitions/",
+        "direction": -1
+      },
+      "sonar_conditions_to_cover": {
+        "title": "Conditions to Cover",
+        "description": "Number of conditions which could be covered by unit tests",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://docs.sonarcloud.io/digging-deeper/metric-definitions/",
+        "direction": -1
+      },
+      "sonar_confirmed_issues": {
+        "title": "Confirmed Issues",
+        "description": "Total count of issues in the confirmed state",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://docs.sonarcloud.io/digging-deeper/metric-definitions/",
+        "direction": -1
+      },
+      "sonar_critical_violations": {
+        "title": "Critical Violations",
+        "description": "Total count of issues of the severity critical",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://docs.sonarcloud.io/digging-deeper/metric-definitions/",
+        "direction": -1
+      },
+      "sonar_duplicated_blocks": {
+        "title": "Duplicated Blocks",
+        "description": "Number of duplicated blocks of lines",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://docs.sonarcloud.io/digging-deeper/metric-definitions/",
+        "direction": -1
+      },
+      "sonar_duplicated_files": {
+        "title": "Duplicated Files",
+        "description": "Number of files involved in duplications",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://docs.sonarcloud.io/digging-deeper/metric-definitions/",
+        "direction": -1
+      },
+      "sonar_duplicated_lines": {
+        "title": "Duplicated Lines",
+        "description": "Number of lines involved in duplications",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://docs.sonarcloud.io/digging-deeper/metric-definitions/",
+        "direction": -1
+      },
+      "sonar_duplicated_lines_density": {
+        "title": "Duplicated Line Density",
+        "description": "Density of duplicated lines",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://docs.sonarcloud.io/digging-deeper/metric-definitions/",
+        "direction": -1
+      },
+      "sonar_false_positive_issues": {
+        "title": "False Positive Issues",
+        "description": "Total count of issues marked false positive",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://docs.sonarcloud.io/digging-deeper/metric-definitions/",
+        "direction": -1
+      },
+      "sonar_file_complexity": {
+        "title": "File Complexity",
+        "description": "Maximum cyclomatic complexity based on paths through a file by McCabe",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://docs.sonarcloud.io/digging-deeper/metric-definitions/",
+        "direction": -1
+      },
+      "sonar_files": {
+        "title": "Number of Files",
+        "description": "Number of files",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://docs.sonarcloud.io/digging-deeper/metric-definitions/",
+        "direction": -1
+      },
+      "average_function_mcc": {
+        "title": "Function Complexity",
+        "description": "Maximum cyclomatic complexity based on paths through a function by McCabe",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://docs.sonarcloud.io/digging-deeper/metric-definitions/",
+        "direction": -1
+      },
+      "functions": {
+        "title": "Number of Functions",
+        "description": "Number of functions",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://docs.sonarcloud.io/digging-deeper/metric-definitions/",
+        "direction": -1
+      },
+      "sonar_generated_lines": {
+        "title": "Generated Lines",
+        "description": "Number of generated lines of code",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://docs.sonarcloud.io/digging-deeper/metric-definitions/",
+        "direction": -1
+      },
+      "sonar_generated_ncloc": {
+        "title": "Generated Real Lines of Code",
+        "description": "Number of generated non-empty lines of code",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://docs.sonarcloud.io/digging-deeper/metric-definitions/",
+        "direction": -1
+      },
+      "sonar_high_impact_accepted_issues": {
+        "title": "High Impact Accepted Issues",
+        "description": "Accepted issues with high impact",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://docs.sonarcloud.io/digging-deeper/metric-definitions/",
+        "direction": -1
+      },
+      "sonar_info_violations": {
+        "title": "Info Violations",
+        "description": "Total count of issues of the severity info",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://docs.sonarcloud.io/digging-deeper/metric-definitions/",
+        "direction": -1
+      },
+      "loc": {
+        "title": "Number of Lines",
+        "description": "Number of physical lines (number of carriage returns)",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://docs.sonarcloud.io/digging-deeper/metric-definitions/",
+        "direction": -1
+      },
+      "sonar_lines_to_cover": {
+        "title": "Lines to Cover",
+        "description": "Number of lines of code which could be covered by unit tests",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://docs.sonarcloud.io/digging-deeper/metric-definitions/",
+        "direction": -1
+      },
+      "sonar_major_violations": {
+        "title": "Major Violations",
+        "description": "Total count of issues of the severity major",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://docs.sonarcloud.io/digging-deeper/metric-definitions/",
+        "direction": -1
+      },
+      "sonar_minor_violations": {
+        "title": "Minor Violations",
+        "description": "Total count of issues of the severity minor",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://docs.sonarcloud.io/digging-deeper/metric-definitions/",
+        "direction": -1
+      },
+      "rloc": {
+        "title": "Real Lines of Code",
+        "description": "Number of physical lines that contain at least one character which is neither a whitespace nor a tabulation nor part of a comment",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://docs.sonarcloud.io/digging-deeper/metric-definitions/",
+        "direction": -1
+      },
+      "sonar_new_accepted_issues": {
+        "title": "New Accepted Issues",
+        "description": "New accepted issues",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://docs.sonarcloud.io/digging-deeper/metric-definitions/",
+        "direction": -1
+      },
+      "sonar_new_blocker_violations": {
+        "title": "New Blocker Violations",
+        "description": "Number of issues of the severity blocker raised for the first time in the new code period",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://docs.sonarcloud.io/digging-deeper/metric-definitions/",
+        "direction": -1
+      },
+      "sonar_new_bugs": {
+        "title": "Number of New Bugs",
+        "description": "Number of new bug issues",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://docs.sonarcloud.io/digging-deeper/metric-definitions/",
+        "direction": -1
+      },
+      "sonar_new_code_smells": {
+        "title": "New Code Smells",
+        "description": "Total count of code smell issues raised for the first time in the new code period",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://docs.sonarcloud.io/digging-deeper/metric-definitions/",
+        "direction": -1
+      },
+      "sonar_new_conditions_to_cover": {
+        "title": "New Conditions to Cover",
+        "description": "Number of new/updated conditions which could be covered by unit tests",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://docs.sonarcloud.io/digging-deeper/metric-definitions/",
+        "direction": -1
+      },
+      "sonar_new_critical_violations": {
+        "title": "New Critical Violations",
+        "description": "Number of issues of the severity critical raised for the first time in the new code period",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://docs.sonarcloud.io/digging-deeper/metric-definitions/",
+        "direction": -1
+      },
+      "sonar_new_development_cost": {
+        "title": "New Development Cost",
+        "description": "Development cost of new/updated code",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://docs.sonarcloud.io/digging-deeper/metric-definitions/",
+        "direction": -1
+      },
+      "sonar_new_duplicated_blocks": {
+        "title": "New Duplicated Blocks",
+        "description": "Number of duplicated blocks of lines in new/updated code",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://docs.sonarcloud.io/digging-deeper/metric-definitions/",
+        "direction": -1
+      },
+      "sonar_new_duplicated_lines": {
+        "title": "New Duplicated Lines",
+        "description": "Number of lines involved in duplications in new/updated code",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://docs.sonarcloud.io/digging-deeper/metric-definitions/",
+        "direction": -1
+      },
+      "sonar_new_duplicated_lines_density": {
+        "title": "New Duplicated Lines Density",
+        "description": "Density of duplicated lines in new/updated code",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://docs.sonarcloud.io/digging-deeper/metric-definitions/",
+        "direction": -1
+      },
+      "sonar_new_info_violations": {
+        "title": "New Info Violations",
+        "description": "Number of issues of the severity info raised for the first time in the new code period",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://docs.sonarcloud.io/digging-deeper/metric-definitions/",
+        "direction": -1
+      },
+      "sonar_new_lines": {
+        "title": "Number of New Lines",
+        "description": "Number of new/updated lines of code",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://docs.sonarcloud.io/digging-deeper/metric-definitions/",
+        "direction": -1
+      },
+      "sonar_new_lines_to_cover": {
+        "title": "New Lines to Cover",
+        "description": "Number of new/updated lines of code which could be covered by unit tests",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://docs.sonarcloud.io/digging-deeper/metric-definitions/",
+        "direction": -1
+      },
+      "sonar_new_major_violations": {
+        "title": "New Major Violations",
+        "description": "Number of issues of the severity major raised for the first time in the new code period",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://docs.sonarcloud.io/digging-deeper/metric-definitions/",
+        "direction": -1
+      },
+      "sonar_new_minor_violations": {
+        "title": "New Minor Violations",
+        "description": "Number of issues of the severity minor raised for the first time in the new code period",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://docs.sonarcloud.io/digging-deeper/metric-definitions/",
+        "direction": -1
+      },
+      "sonar_new_security_hotspots": {
+        "title": "New Security Hotspots",
+        "description": "Number of new security hotspots in the new code period",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://docs.sonarcloud.io/digging-deeper/metric-definitions/",
+        "direction": -1
+      },
+      "sonar_new_security_hotspots_reviewed_status": {
+        "title": "New Security Hotspots Reviewed Status",
+        "description": "Total number of reviewed security hotspots in new code period",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://docs.sonarcloud.io/digging-deeper/metric-definitions/",
+        "direction": -1
+      },
+      "sonar_new_security_hotspots_to_review_status": {
+        "title": "New Security Hotspots to Review Status",
+        "description": "Number of security hotspots to review in new code period",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://docs.sonarcloud.io/digging-deeper/metric-definitions/",
+        "direction": -1
+      },
+      "sonar_new_sqale_debt_ratio": {
+        "title": "New SQale Debt Ratio",
+        "description": "Ratio between the cost to develop the software and the cost to fix it in new/updated code",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://docs.sonarcloud.io/digging-deeper/metric-definitions/",
+        "direction": -1
+      },
+      "sonar_new_uncovered_conditions": {
+        "title": "New Uncovered Conditions",
+        "description": "Total number of uncovered conditions in new/updated code",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://docs.sonarcloud.io/digging-deeper/metric-definitions/",
+        "direction": -1
+      },
+      "sonar_new_uncovered_lines": {
+        "title": "New Uncovered Lines",
+        "description": "Total number of uncovered lines in new/updated code",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://docs.sonarcloud.io/digging-deeper/metric-definitions/",
+        "direction": -1
+      },
+      "sonar_new_violations": {
+        "title": "New Violations",
+        "description": "Number of issues raised for the first time in the new code period",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://docs.sonarcloud.io/digging-deeper/metric-definitions/",
+        "direction": -1
+      },
+      "sonar_new_vulnerabilities": {
+        "title": "New Vulnerabilities",
+        "description": "Number of new vulnerability issues",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://docs.sonarcloud.io/digging-deeper/metric-definitions/",
+        "direction": -1
+      },
+      "sonar_open_issues": {
+        "title": "Number of Open Issues",
+        "description": "Total count of issues in the open state",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://docs.sonarcloud.io/digging-deeper/metric-definitions/",
+        "direction": -1
+      },
+      "sonar_projects": {
+        "title": "Number of Projects",
+        "description": "Total number of projects",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://docs.sonarcloud.io/digging-deeper/metric-definitions/",
+        "direction": -1
+      },
+      "public_api": {
+        "title": "Public API",
+        "description": "Public api available",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://docs.sonarcloud.io/digging-deeper/metric-definitions/",
+        "direction": -1
+      },
+      "sonar_public_undocumented_api": {
+        "title": "Public Undocumented API",
+        "description": "Undocumented api available",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://docs.sonarcloud.io/digging-deeper/metric-definitions/",
+        "direction": -1
+      },
+      "sonar_reopened_issues": {
+        "title": "Number of Reopened Issues",
+        "description": "Total count of issues in the reopened state",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://docs.sonarcloud.io/digging-deeper/metric-definitions/",
+        "direction": -1
+      },
+      "sonar_security_hotspots": {
+        "title": "Security Hotspots",
+        "description": "Number of security hotspots",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://docs.sonarcloud.io/digging-deeper/metric-definitions/",
+        "direction": -1
+      },
+      "sonar_security_hotspots_reviewed_status": {
+        "title": "Security Hotspots Reviewed Status",
+        "description": "Total number of reviewed security hotspots",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://docs.sonarcloud.io/digging-deeper/metric-definitions/",
+        "direction": -1
+      },
+      "sonar_security_hotspots_to_review_status": {
+        "title": "Security Hotspots to Review Status",
+        "description": "Number of security hotspots to review",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://docs.sonarcloud.io/digging-deeper/metric-definitions/",
+        "direction": -1
+      },
+      "sonar_skipped_tests": {
+        "title": "Number of skipped Tests",
+        "description": "Number of skipped unit tests",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://docs.sonarcloud.io/digging-deeper/metric-definitions/",
+        "direction": -1
+      },
+      "sonar_sqale_debt_ratio": {
+        "title": "SQale Debt Ratio",
+        "description": "Ratio between the cost to develop the software and the cost to fix it",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://docs.sonarcloud.io/digging-deeper/metric-definitions/",
+        "direction": -1
+      },
+      "statements": {
+        "title": "Number of Statements",
+        "description": "Number of statements",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://docs.sonarcloud.io/digging-deeper/metric-definitions/",
+        "direction": -1
+      },
+      "sonar_test_errors": {
+        "title": "Number of Test Errors",
+        "description": "Number of unit tests that have failed",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://docs.sonarcloud.io/digging-deeper/metric-definitions/",
+        "direction": -1
+      },
+      "sonar_test_failures": {
+        "title": "Number of Test Failures",
+        "description": "Number of unit tests that have failed with an unexpected exception",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://docs.sonarcloud.io/digging-deeper/metric-definitions/",
+        "direction": -1
+      },
+      "sonar_uncovered_conditions": {
+        "title": "Uncovered Conditions",
+        "description": "Total number of uncovered conditions",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://docs.sonarcloud.io/digging-deeper/metric-definitions/",
+        "direction": -1
+      },
+      "sonar_uncovered_lines": {
+        "title": "Uncovered Lines",
+        "description": "Total number of uncovered lines",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://docs.sonarcloud.io/digging-deeper/metric-definitions/",
+        "direction": -1
+      },
+      "sonar_violations": {
+        "title": "Number of Violations",
+        "description": "Total count of issues in all states",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://docs.sonarcloud.io/digging-deeper/metric-definitions/",
+        "direction": -1
+      },
+      "sonar_vulnerabilities": {
+        "title": "Number of Vulnerabilities",
+        "description": "Number of vulnerability issues",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://docs.sonarcloud.io/digging-deeper/metric-definitions/",
+        "direction": -1
+      },
+      "branch_coverage": {
+        "title": "Branch Coverage",
+        "description": "Density of fully covered boolean conditions in flow control structures",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://docs.sonarcloud.io/digging-deeper/metric-definitions/",
+        "direction": 1
+      },
+      "sonar_coverage": {
+        "title": "Coverage",
+        "description": "Mix of branch and line coverage",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://docs.sonarcloud.io/digging-deeper/metric-definitions/",
+        "direction": 1
+      },
+      "line_coverage": {
+        "title": "Line Coverage",
+        "description": "Density of fully covered lines of code",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://docs.sonarcloud.io/digging-deeper/metric-definitions/",
+        "direction": 1
+      },
+      "sonar_new_branch_coverage": {
+        "title": "New Branch Coverage",
+        "description": "Density of fully covered boolean conditions in flow control structures in new or updated code",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://docs.sonarcloud.io/digging-deeper/metric-definitions/",
+        "direction": 1
+      },
+      "sonar_new_coverage": {
+        "title": "New Coverage",
+        "description": "Mix of branch and line coverage on new/updated code",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://docs.sonarcloud.io/digging-deeper/metric-definitions/",
+        "direction": 1
+      },
+      "sonar_new_line_coverage": {
+        "title": "New Line Coverage",
+        "description": "Density of fully covered lines of new/updated code",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://docs.sonarcloud.io/digging-deeper/metric-definitions/",
+        "direction": 1
+      },
+      "sonar_public_documented_api_density": {
+        "title": "Public Documented API Density",
+        "description": "Documented public api available",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://docs.sonarcloud.io/digging-deeper/metric-definitions/",
+        "direction": 1
+      },
+      "sonar_pull_request_fixed_issues": {
+        "title": "Pull request fixed issues",
+        "description": "Count of issues that would be fixed by the pull request",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://docs.sonarcloud.io/digging-deeper/metric-definitions/",
+        "direction": 1
+      },
+      "sonar_security_hotspots_reviewed": {
+        "title": "Security Hotspots Reviewed",
+        "description": "Percentage of reviewed (fixed or safe) security hotspots",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://docs.sonarcloud.io/digging-deeper/metric-definitions/",
+        "direction": 1
+      },
+      "sonar_test_success_density": {
+        "title": "Test Success Density",
+        "description": "Ratio between successful tests and all tests",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://docs.sonarcloud.io/digging-deeper/metric-definitions/",
+        "direction": 1
+      },
+      "sonar_tests": {
+        "title": "Number of Tests",
+        "description": "Number of unit tests",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://docs.sonarcloud.io/digging-deeper/metric-definitions/",
+        "direction": 1
+      }
+    },
+    "blacklist": []
+  },
+  "checksum": "6dbbc2977053a514edf15510aa35f34e"
+}
