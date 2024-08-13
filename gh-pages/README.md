@@ -11,9 +11,9 @@ The generated docs can be viewed locally before being pushed to GitHub (see belo
 1. [Install Ruby](https://www.ruby-lang.org/en/documentation/installation/) version 2.7.0 or above (check with `ruby -v`). Please be aware, that some OS come with an old Ruby version. [Rubyenv](https://github.com/rbenv/rbenv#installation) did wonders for me (you can skip these steps if you use rbenv already or have some other way to acquire ruby):
    - `brew install rbenv`
    - Add `eval "$(rbenv init -)"` to the `~/.bash_profile`, `~/.bashrc`, `~/.zshrc` etc. dependent on your shell OR execute
-     - `PATH="$HOME/.rbenv/bin:$PATH"` and `eval "$(rbenv init -)"` - Bash
-     - `export PATH="$HOME/.rbenv/bin:$PATH"` and `eval "$(rbenv init - zsh)"` - Zsh
-     - `setenv PATH $HOME/.rbenv/bin:$PATH` and `eval 'rbenv init - csh'` - C-Shell etc.
+     - For Bash: `PATH="$HOME/.rbenv/bin:$PATH"` and `eval "$(rbenv init -)"`
+     - For Zsh: `export PATH="$HOME/.rbenv/bin:$PATH"` and `eval "$(rbenv init - zsh)"`
+     - For C-Shell: `setenv PATH $HOME/.rbenv/bin:$PATH` and `eval 'rbenv init - csh'` etc.
    - Close terminal
    - Make sure that `~/.rbenv/shims/ruby` appears before `/usr/bin` in the PATH by running `echo $PATH`
    - `which ruby` should now point to `~/.rbenv/shims/ruby`
