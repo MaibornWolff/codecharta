@@ -177,5 +177,4 @@ class MetricGardenerImporterTest {
         Assertions.assertThat(errContent.toString())
             .contains("Error while executing metric gardener! Process returned with status")
     }
-
 }
