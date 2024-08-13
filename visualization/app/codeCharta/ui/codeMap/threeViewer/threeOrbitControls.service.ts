@@ -113,10 +113,8 @@ export class ThreeOrbitControlsService {
     init(domElement: HTMLCanvasElement) {
         const OrbitControls = oc(Three)
         this.controls = new OrbitControls(this.threeCameraService.camera, domElement) as unknown as OrbitControlsType
-        this.controls.enableZoom = false
         this.controls.addEventListener("change", () => {
             this.onInput(this.threeCameraService.camera)
-            this.threeRendererService.render()
         })
     }
 
