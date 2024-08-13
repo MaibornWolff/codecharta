@@ -20,14 +20,14 @@ The main focus is the city-style map. Each building in it has the attributes **s
 - height ![]({{site.baseurl}}/assets/images/vendor/fontawesome/arrows-alt-v-solid-white.svg){: width="10px"}=_complexity (cyclomatic complexity)_
 - color ![]({{site.baseurl}}/assets/images/vendor/fontawesome/paint-brush-solid-white.svg){: width="20px"}=_complexity (cyclomatic complexity)_
 
-> Note that the available metrics are tied to the cc.json used to load the map. Depending on which parser of our [ccsh tool]({{site.baseurl}}{% link _docs/05-03-ccsh.md %}) was used to generate the map, different metrics might be available.
-> For more information on what these names mean and which parsers produce which metrics, view the [list of available tools]({{site.baseurl}}{% link _docs/05-01-analysis.md %}#available-tools) in analysis.
+> Note that the available metrics are tied to the cc.json used to load the map. Depending on which parser of our [ccsh tool]({{site.baseurl}}{% link _docs/02-03-ccsh.md %}) was used to generate the map, different metrics might be available.
+> For more information on what these names mean and which parsers produce which metrics, view the [list of available tools]({{site.baseurl}}{% link _docs/02-01-analysis.md %}#available-tools) in analysis.
 
 # Exploring Code with CodeCharta
 
 Let us take a look at how CodeChart can be used to explore code metrics by playing around with the [web visualization]({{site.web_visualization_link}}).
 
-After you open it, you will see a map similar to the screenshot above. You can rotate the map by holding left-click and move the map by holding right-click. For more detailed controls, see [User Controls]({{site.baseurl}}{% link _docs/06-02-user-controls.md %}).
+After you open it, you will see a map similar to the screenshot above. You can rotate the map by holding left-click and move the map by holding right-click. For more detailed controls, see [User Controls]({{site.baseurl}}{% link _docs/04-02-user-controls.md %}).
 
 After clicking on a building of your choice (maybe one of the big red ones looks interesting) you will see the filename, the path to the file, the currently selected metrics (called primary metrics) and all available metrics (secondary metrics). Now we can see all kinds of numbers, but what can we do with them?
 

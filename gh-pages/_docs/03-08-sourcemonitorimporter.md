@@ -75,7 +75,7 @@ If SourceMonitor is installed in a different directory the script must be change
 
 ### General CSV Import
 
-You may use the [CSVImporter]({{site.baseurl}}{% link _docs/04-07-csvimporter.md %}) to import general CSV files.
+You may use the [CSVImporter]({{site.baseurl}}{% link _docs/03-07-csvimporter.md %}) to import general CSV files.
 
 ## Example
 

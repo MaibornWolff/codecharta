@@ -63,7 +63,7 @@ For further information read [here](https://docs.sonarqube.org/latest/project-ad
 
 ## Extract project metrics from Sonar Server
 
-To visualize your project metrics created by Sonar use CodeCharta's [sonar importer]({{site.baseurl}}{% link _docs/04-05-sonarimporter.md %}) to generate a `cc.json` file.
+To visualize your project metrics created by Sonar use CodeCharta's [sonar importer]({{site.baseurl}}{% link _docs/03-05-sonarimporter.md %}) to generate a `cc.json` file.
 
 ## Beginner's Guide for using SonarQube
 
