@@ -117,6 +117,13 @@ generate_token() {
     fi
 
     echo "✅ Token generated: $token"
-    echo "Token response:"
-    echo "$response" | jq '.'
+    # echo "Token response:"
+    # echo "$response" | jq '.'
+}
+
+urlencode() {
+    local raw_str="$1"
+    local encoded_str
+    encoded_str=$(jq -rn --arg v "$raw_str" '$v|@uri')
+    echo "$encoded_str"
 }

@@ -51,21 +51,21 @@ NETWORK_NAME="sonarnet"
 SONAR_CONTAINER_NAME="sonarqube"
 
 RUN_PROJECT_CLEANUP=true  # Set to true to delete the existing SonarQube project
-RUN_FINAL_CLEANUP=false   # Set to true to perform final cleanup of Docker containers and networks
 RUN_SONAR_SCANNER=true    # Set to false to skip running SonarScanner
-WAIT_TIME=60              # Time in seconds to wait after running SonarScanner
+RUN_FINAL_CLEANUP=false   # Set to true to perform final cleanup of Docker containers and networks
+WAIT_TIME=120              # Time in seconds to wait after running SonarScanner
 
 # If skip prompt mode is not enabled, prompt for important variables with defaults
 if [ "$SKIP_PROMPT" = false ]; then
     # PROJECT_KEY: A unique identifier for the project in SonarQube.
-    # Default is set to 'test_key'.
-    read -p "🔑 Enter the Project Key (default: test_key): " PROJECT_KEY
-    PROJECT_KEY=${PROJECT_KEY:-test_key}
+    # Default is set to 'maibornwolff-gmbh_codecharta_visualization'.
+    read -p "🔑 Enter the Project Key (default: maibornwolff-gmbh_codecharta_visualization): " PROJECT_KEY
+    PROJECT_KEY=${PROJECT_KEY:-maibornwolff-gmbh_codecharta_visualization}
 
     # PROJECT_NAME: The name of the project in SonarQube.
-    # Default is set to 'test_project'.
-    read -p "📛 Enter the Project Name (default: test_project): " PROJECT_NAME
-    PROJECT_NAME=${PROJECT_NAME:-test_project}
+    # Default is set to 'CodeCharta Visualization'.
+    read -p "📛 Enter the Project Name (default: CodeCharta Visualization): " PROJECT_NAME
+    PROJECT_NAME=${PROJECT_NAME:-CodeCharta Visualization}
 
     # NEW_SONAR_PASSWORD: The new password to set for the SonarQube admin user.
     # If the default 'admin' password is still in use, the script will change it to this value.
@@ -79,11 +79,14 @@ if [ "$SKIP_PROMPT" = false ]; then
     PROJECT_BASEDIR=${PROJECT_BASEDIR:-$(pwd)/visualization}
 else
     # Default values if skip prompt is enabled
-    PROJECT_KEY="test_key"
-    PROJECT_NAME="test_project"
+    PROJECT_KEY="maibornwolff-gmbh_codecharta_visualization"
+    PROJECT_NAME="CodeCharta Visualization"
     NEW_SONAR_PASSWORD="newadminpassword"
     PROJECT_BASEDIR="$(pwd)/visualization"
 fi
+# URL-encode PROJECT_KEY and PROJECT_NAME
+ENCODED_PROJECT_KEY=$(urlencode "$PROJECT_KEY")
+ENCODED_PROJECT_NAME=$(urlencode "$PROJECT_NAME")
 
 # Run the steps
 ensure_sonarqube_running

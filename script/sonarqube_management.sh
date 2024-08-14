@@ -43,7 +43,7 @@ ensure_sonarqube_running() {
 
     # Wait for SonarQube to be ready only after a new container is created
     echo "⏳ Waiting for SonarQube to be ready..."
-    sleep 60  # Adjust this sleep time as needed to allow SonarQube to fully start
+    sleep 120  # Adjust this sleep time as needed to allow SonarQube to fully start
 }
 
 reset_sonarqube_password() {
@@ -116,7 +116,7 @@ cleanup_previous_project() {
     echo "🧹 Cleaning up previous SonarQube project..."
 
     # Delete project
-    response=$(curl -u $SONAR_USER:$SONAR_PASSWORD -X POST -s -w "\n%{http_code}" "$HOST_SONAR_URL/api/projects/delete?project=$PROJECT_KEY")
+    response=$(curl -u $SONAR_USER:$SONAR_PASSWORD -X POST -s -w "\n%{http_code}" "$HOST_SONAR_URL/api/projects/delete?project=$ENCODED_PROJECT_KEY")
     http_status=$(echo "$response" | tail -n1)
     response_body=$(echo "$response" | head -n-1)
     if [ "$http_status" -eq 404 ]; then
@@ -170,7 +170,7 @@ create_sonarqube_project() {
 
     # If the project does not exist, create it
     echo "🚀 Creating project in SonarQube..."
-    response=$(curl -u $SONAR_USER:$SONAR_PASSWORD -X POST -s -w "\n%{http_code}" "$HOST_SONAR_URL/api/projects/create?project=$PROJECT_KEY&name=$PROJECT_NAME")
+    response=$(curl -u $SONAR_USER:$SONAR_PASSWORD -X POST -s -w "\n%{http_code}" "$HOST_SONAR_URL/api/projects/create?project=$ENCODED_PROJECT_KEY&name=$ENCODED_PROJECT_NAME")
     http_status=$(echo "$response" | tail -n1)
     response_body=$(echo "$response" | head -n-1)
 
@@ -182,6 +182,6 @@ create_sonarqube_project() {
 
     check_response $http_status "$response_body" "Project creation failed."
     echo "✅ Project created successfully."
-    echo "Project creation response:"
-    echo "$response_body" | jq '.'
+    # echo "Project creation response:"
+    # echo "$response_body" | jq '.'
 }
