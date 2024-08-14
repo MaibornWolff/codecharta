@@ -4,6 +4,7 @@
 DIR="${BASH_SOURCE%/*}"
 if [[ ! -d "$DIR" ]]; then DIR="$PWD"; fi
 
+. "$DIR/dependency_checker.sh"
 . "$DIR/helpers.sh"
 . "$DIR/cleanup.sh"
 . "$DIR/sonarqube_management.sh"
