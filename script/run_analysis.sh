@@ -24,9 +24,10 @@ OUTPUT_PATH="$(pwd)/output"              # Directory for the output
 NETWORK_NAME="sonarnet"
 SONAR_CONTAINER_NAME="sonarqube"
 
-RUN_CLEANUP=false        # Set to false to skip cleanup
-RUN_SONAR_SCANNER=true  # Set to false to skip running SonarScanner
-WAIT_TIME=60            # Time in seconds to wait after running SonarScanner
+RUN_PROJECT_CLEANUP=true  # Set to true to delete the existing SonarQube project
+RUN_FINAL_CLEANUP=false    # Set to true to perform final cleanup of Docker containers and networks
+RUN_SONAR_SCANNER=true     # Set to false to skip running SonarScanner
+WAIT_TIME=60               # Time in seconds to wait after running SonarScanner
 
 # Run the steps
 ensure_sonarqube_running
@@ -34,10 +35,13 @@ ensure_sonarqube_running
 # Conditionally reset password
 reset_sonarqube_password
 
-# Conditionally clean up previous project and token
-if $RUN_CLEANUP; then
-    cleanup_previous_project_and_token
+# Conditionally clean up previous project
+if $RUN_PROJECT_CLEANUP; then
+    cleanup_previous_project
 fi
+
+# Always revoke the existing token
+revoke_token
 
 # Create the project and generate the token
 create_sonarqube_project
@@ -56,6 +60,6 @@ fi
 run_codecharta_analysis
 
 # Final cleanup if enabled
-if $RUN_CLEANUP; then
+if $RUN_FINAL_CLEANUP; then
     cleanup
 fi

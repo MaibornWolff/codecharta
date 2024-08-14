@@ -52,27 +52,42 @@ reset_sonarqube_password() {
     # Attempt to log in with the default password to check if it's still active
     response=$(curl -u $DEFAULT_SONAR_USER:$DEFAULT_SONAR_PASSWORD -X GET -s -w "%{http_code}" "$HOST_SONAR_URL/api/authentication/validate")
     http_status="${response: -3}"
-    is_valid=$(echo "$response" | jq -r '.valid')
+    response_body="${response::-3}"
 
-    if [ "$http_status" == "200" ] && [ "$is_valid" == "true" ]; then
-        echo "✅ Default credentials are valid. Proceeding to change the password..."
-        change_default_password
-    else
-        echo "ℹ️ Default credentials are not in use. Checking the new password..."
-
-        # Attempt to log in with the new password
-        response=$(curl -u $DEFAULT_SONAR_USER:$NEW_SONAR_PASSWORD -X GET -s -w "%{http_code}" "$HOST_SONAR_URL/api/authentication/validate")
-        http_status="${response: -3}"
-        is_valid=$(echo "$response" | jq -r '.valid')
+    # Check if the response is valid JSON before parsing
+    if echo "$response_body" | jq -e . >/dev/null 2>&1; then
+        is_valid=$(echo "$response_body" | jq -r '.valid')
 
         if [ "$http_status" == "200" ] && [ "$is_valid" == "true" ]; then
-            echo "✅ New password is valid. Proceeding with it."
-            SONAR_USER=$DEFAULT_SONAR_USER
-            SONAR_PASSWORD=$NEW_SONAR_PASSWORD
+            echo "✅ Default credentials are valid. Proceeding to change the password..."
+            change_default_password
         else
-            echo "❌ The new password is invalid. Please update the NEW_SONAR_PASSWORD in the script."
-            exit 1
+            echo "ℹ️ Default credentials are not in use. Checking the new password..."
+
+            # Attempt to log in with the new password
+            response=$(curl -u $DEFAULT_SONAR_USER:$NEW_SONAR_PASSWORD -X GET -s -w "%{http_code}" "$HOST_SONAR_URL/api/authentication/validate")
+            http_status="${response: -3}"
+            response_body="${response::-3}"
+
+            if echo "$response_body" | jq -e . >/dev/null 2>&1; then
+                is_valid=$(echo "$response_body" | jq -r '.valid')
+
+                if [ "$http_status" == "200" ] && [ "$is_valid" == "true" ]; then
+                    echo "✅ New password is valid. Proceeding with it."
+                    SONAR_USER=$DEFAULT_SONAR_USER
+                    SONAR_PASSWORD=$NEW_SONAR_PASSWORD
+                else
+                    echo "❌ The new password is invalid. Please update the NEW_SONAR_PASSWORD in the script."
+                    exit 1
+                fi
+            else
+                echo "❌ Failed to parse the response when checking the new password."
+                exit 1
+            fi
         fi
+    else
+        echo "❌ Failed to parse the response when checking the default password."
+        exit 1
     fi
 }
 
@@ -83,6 +98,7 @@ change_default_password() {
         "$HOST_SONAR_URL/api/users/change_password")
 
     http_status="${response: -3}"
+    response_body="${response::-3}"
 
     if [ "$http_status" == "200" ] || [ "$http_status" == "204" ]; then
         echo "✅ Password has been successfully changed to the new password."
@@ -90,14 +106,14 @@ change_default_password() {
         SONAR_PASSWORD=$NEW_SONAR_PASSWORD
     else
         echo "❌ Failed to change the password. HTTP status code: $http_status"
-        echo "Response body: ${response::-3}"
         exit 1
     fi
 }
 
-# Cleanup previous SonarQube project and token
-cleanup_previous_project_and_token() {
-    echo "🧹 Cleaning up previous SonarQube project and token..."
+
+# Cleanup previous SonarQube project
+cleanup_previous_project() {
+    echo "🧹 Cleaning up previous SonarQube project..."
 
     # Delete project
     response=$(curl -u $SONAR_USER:$SONAR_PASSWORD -X POST -s -w "\n%{http_code}" "$HOST_SONAR_URL/api/projects/delete?project=$PROJECT_KEY")
@@ -112,6 +128,11 @@ cleanup_previous_project_and_token() {
         check_response $http_status "$response_body" "Project deletion failed."
         echo "✅ Project deleted successfully."
     fi
+}
+
+# Revoke the existing SonarQube token
+revoke_token() {
+    echo "🧹 Revoking existing SonarQube token..."
 
     # Revoke token
     response=$(curl -u $SONAR_USER:$SONAR_PASSWORD -X POST -s -w "\n%{http_code}" "$HOST_SONAR_URL/api/user_tokens/revoke?name=$SONARQUBE_TOKEN_NAME")
@@ -127,6 +148,7 @@ cleanup_previous_project_and_token() {
         echo "✅ Token revoked successfully."
     fi
 }
+
 
 # Create SonarQube project only if it doesn't already exist
 create_sonarqube_project() {
