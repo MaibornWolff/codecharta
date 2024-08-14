@@ -24,7 +24,7 @@ OUTPUT_PATH="$(pwd)/output"              # Directory for the output
 NETWORK_NAME="sonarnet"
 SONAR_CONTAINER_NAME="sonarqube"
 
-RUN_CLEANUP=true        # Set to false to skip cleanup
+RUN_CLEANUP=false        # Set to false to skip cleanup
 RUN_SONAR_SCANNER=true  # Set to false to skip running SonarScanner
 WAIT_TIME=60            # Time in seconds to wait after running SonarScanner
 
