@@ -12,7 +12,6 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.params.ParameterizedTest
@@ -91,7 +90,6 @@ class MetricGardenerImporterTest {
         assertTrue(file.exists())
     }
 
-    @Disabled
     @Test
     fun `should create file when MG needs to run first`() {
         main(
@@ -151,7 +149,6 @@ class MetricGardenerImporterTest {
             .contains("Input invalid file for MetricGardenerImporter, stopping execution")
     }
 
-    @Disabled
     @Test
     fun `should stop execution if error happens while executing metric gardener`() {
         val npm = if (System.getProperty("os.name").contains("win", ignoreCase = true)) "npm.cmd" else "npm"
@@ -179,20 +176,5 @@ class MetricGardenerImporterTest {
         System.setErr(originalErr)
         Assertions.assertThat(errContent.toString())
             .contains("Error while executing metric gardener! Process returned with status")
-    }
-
-    @Test
-    fun `should stop execution if no MG json is present`() {
-        System.setErr(PrintStream(errContent))
-        main(
-            arrayOf(
-                "src/test/resources/MetricGardenerRawFile.kt",
-                "-nc",
-                "-o=src/test/resources/import-result-mg"
-            )
-        )
-        System.setErr(originalErr)
-        Assertions.assertThat(errContent.toString())
-            .contains("Direct metric-gardener execution has been temporarily disabled.")
     }
 }

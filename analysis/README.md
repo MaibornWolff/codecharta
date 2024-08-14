@@ -12,8 +12,6 @@ CodeCharta analysis tools generally follow the pipes and filters architecture pr
 
 Components that import data from an external source, e.g. SonarQube, and generate visualisation data.
 
-> Attention: The direct execution of metric-gardener has been temporarily disabled.
-
 | Source             | Project                                                                          |
 | ------------------ | -------------------------------------------------------------------------------- |
 | CodeMaat CSV       | [CodeMaatImporter](import/CodeMaatImporter/README.md)                            |

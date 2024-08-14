@@ -1,8 +1,5 @@
 # MetricGardener Importer
 
-> Attention: The direct execution of metric-gardener has been temporarily disabled. Please provide the JSON files
-> directly.
-
 This importer allows to use metrics calculated by [MetricGardener](https://github.com/MaibornWolff/metric-gardener), a
 multi-language code parser based on [tree-sitter](https://github.com/tree-sitter/tree-sitter). The importer can be used
 to parse files locally or to just import a MetricGardener.json file and convert it into a regular CodeCharta.cc.json
