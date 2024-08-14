@@ -1,6 +1,6 @@
 import { TestBed } from "@angular/core/testing"
 import { StoreModule } from "@ngrx/store"
-import { ThreeOrbitControlsService } from "./threeOrbitControls.service"
+import { ThreeMapControlsService } from "./threeMapControls.service"
 import { ThreeCameraService } from "./threeCamera.service"
 import { ThreeSceneService } from "./threeSceneService"
 import { BoxGeometry, Group, Mesh, PerspectiveCamera, Vector3 } from "three"
@@ -10,7 +10,7 @@ import { wait } from "../../../util/testUtils/wait"
 import { appReducers, setStateMiddleware } from "../../../state/store/state.manager"
 
 describe("ThreeOrbitControlsService", () => {
-    let threeOrbitControlsService: ThreeOrbitControlsService
+    let threeOrbitControlsService: ThreeMapControlsService
     let threeCameraService: ThreeCameraService
     let threeSceneService: ThreeSceneService
     let threeRendererService: ThreeRendererService
@@ -56,7 +56,7 @@ describe("ThreeOrbitControlsService", () => {
     }
 
     function rebuildService() {
-        threeOrbitControlsService = new ThreeOrbitControlsService(threeCameraService, threeSceneService, threeRendererService)
+        threeOrbitControlsService = new ThreeMapControlsService(threeCameraService, threeSceneService, threeRendererService)
     }
 
     it("rotateCameraInVectorDirection ", () => {

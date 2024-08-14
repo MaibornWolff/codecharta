@@ -3,7 +3,7 @@ import { Store } from "@ngrx/store"
 import { createEffect } from "@ngrx/effects"
 import { switchMap, filter, skip, take, tap, combineLatest, withLatestFrom } from "rxjs"
 import { CcState } from "../../../codeCharta.model"
-import { ThreeOrbitControlsService } from "../../../ui/codeMap/threeViewer/threeOrbitControls.service"
+import { ThreeMapControlsService } from "../../../ui/codeMap/threeViewer/threeMapControls.service"
 import { visibleFileStatesSelector } from "../../selectors/visibleFileStates.selector"
 import { layoutAlgorithmSelector } from "../../store/appSettings/layoutAlgorithm/layoutAlgorithm.selector"
 import { resetCameraIfNewFileIsLoadedSelector } from "../../store/appSettings/resetCameraIfNewFileIsLoaded/resetCameraIfNewFileIsLoaded.selector"
@@ -15,7 +15,7 @@ export class AutoFitCodeMapEffect {
     constructor(
         private store: Store<CcState>,
         private renderCodeMapEffect: RenderCodeMapEffect,
-        private threeOrbitControlsService: ThreeOrbitControlsService
+        private threeOrbitControlsService: ThreeMapControlsService
     ) {}
 
     autoFitTo$ = createEffect(

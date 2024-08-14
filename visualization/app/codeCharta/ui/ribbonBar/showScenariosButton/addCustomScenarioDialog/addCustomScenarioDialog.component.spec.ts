@@ -11,7 +11,7 @@ import { setState } from "../../../../state/store/state.actions"
 import { appReducers, setStateMiddleware } from "../../../../state/store/state.manager"
 import { SCENARIO_ATTRIBUTE_CONTENT, STATE } from "../../../../util/dataMocks"
 import { ThreeCameraService } from "../../../codeMap/threeViewer/threeCamera.service"
-import { ThreeOrbitControlsService } from "../../../codeMap/threeViewer/threeOrbitControls.service"
+import { ThreeMapControlsService } from "../../../codeMap/threeViewer/threeMapControls.service"
 import { ScenarioHelper } from "../scenarioHelper"
 import { AddCustomScenarioDialogComponent } from "./addCustomScenarioDialog.component"
 import { AddCustomScenarioDialogModule } from "./addCustomScenarioDialog.module"
@@ -22,7 +22,7 @@ describe("AddCustomScenarioComponent", () => {
             imports: [AddCustomScenarioDialogModule, StoreModule.forRoot(appReducers, { metaReducers: [setStateMiddleware] })],
             providers: [
                 { provide: ThreeCameraService, useValue: { camera: { position: new Vector3(0, 300, 1000) } } },
-                { provide: ThreeOrbitControlsService, useValue: { controls: { target: new Vector3(177, 0, 299) } } },
+                { provide: ThreeMapControlsService, useValue: { controls: { target: new Vector3(177, 0, 299) } } },
                 { provide: MatDialogRef, useValue: { close: jest.fn() } },
                 { provide: State, useValue: { getValue: () => STATE } }
             ]

@@ -2,7 +2,7 @@ import { Component, Input, OnChanges, SimpleChanges, ViewChild, ViewEncapsulatio
 import { CustomConfigHelper } from "../../../../util/customConfigHelper"
 import { CustomConfigItemGroup } from "../../customConfigs.component"
 import { ThreeCameraService } from "../../../codeMap/threeViewer/threeCamera.service"
-import { ThreeOrbitControlsService } from "../../../codeMap/threeViewer/threeOrbitControls.service"
+import { ThreeMapControlsService } from "../../../codeMap/threeViewer/threeMapControls.service"
 import { Store } from "@ngrx/store"
 import { MatExpansionPanel } from "@angular/material/expansion"
 
@@ -22,7 +22,7 @@ export class CustomConfigItemGroupComponent implements OnChanges {
     constructor(
         private store: Store,
         private threeCameraService: ThreeCameraService,
-        private threeOrbitControlsService: ThreeOrbitControlsService
+        private threeOrbitControlsService: ThreeMapControlsService
     ) {}
 
     ngOnChanges(changes: SimpleChanges): void {

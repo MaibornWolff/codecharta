@@ -6,7 +6,7 @@ import { CustomConfigHelper } from "../../../../util/customConfigHelper"
 import userEvent from "@testing-library/user-event"
 import { Vector3 } from "three"
 import { ThreeCameraService } from "../../../codeMap/threeViewer/threeCamera.service"
-import { ThreeOrbitControlsService } from "../../../codeMap/threeViewer/threeOrbitControls.service"
+import { ThreeMapControlsService } from "../../../codeMap/threeViewer/threeMapControls.service"
 import { MatDialog } from "@angular/material/dialog"
 import { provideMockStore } from "@ngrx/store/testing"
 import { defaultState } from "../../../../state/store/state.manager"
@@ -22,7 +22,7 @@ describe("addCustomConfigDialogComponent", () => {
             providers: [
                 { provide: MatDialog, useValue: mockedDialog },
                 { provide: ThreeCameraService, useValue: { camera: { position: new Vector3(0, 300, 1000) } } },
-                { provide: ThreeOrbitControlsService, useValue: { controls: { target: new Vector3(0, 0, 0) } } },
+                { provide: ThreeMapControlsService, useValue: { controls: { target: new Vector3(0, 0, 0) } } },
                 provideMockStore(),
                 { provide: State, useValue: { getValue: () => defaultState } }
             ]

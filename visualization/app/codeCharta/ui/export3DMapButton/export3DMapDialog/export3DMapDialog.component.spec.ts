@@ -93,7 +93,7 @@ describe("Export3DMapDialogComponent2", () => {
                 scissor: jest.fn(),
                 viewport: jest.fn()
             } as unknown as WebGLRenderingContext
-        } as WebGLRenderer
+        } as unknown as WebGLRenderer
 
         webGLRenderer.domElement = fakeDomElementProver()
 

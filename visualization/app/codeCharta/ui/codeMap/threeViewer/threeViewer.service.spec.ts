@@ -3,7 +3,7 @@ import { provideMockStore } from "@ngrx/store/testing"
 import { State } from "@ngrx/store"
 import { ThreeSceneService } from "./threeSceneService"
 import { ThreeCameraService } from "./threeCamera.service"
-import { ThreeOrbitControlsService } from "./threeOrbitControls.service"
+import { ThreeMapControlsService } from "./threeMapControls.service"
 import { ThreeRendererService } from "./threeRenderer.service"
 import { ThreeViewerService } from "./threeViewer.service"
 import { PerspectiveCamera, Scene, Vector3, WebGLRenderer } from "three"
@@ -15,7 +15,7 @@ describe("ThreeViewerService", () => {
     let threeViewerService: ThreeViewerService
     let threeSceneService: ThreeSceneService
     let threeCameraService: ThreeCameraService
-    let threeOrbitControlsService: ThreeOrbitControlsService
+    let threeOrbitControlsService: ThreeMapControlsService
     let threeRendererService: ThreeRendererService
     let threeStatsService: ThreeStatsService
 
@@ -37,7 +37,7 @@ describe("ThreeViewerService", () => {
     function restartSystem() {
         threeSceneService = TestBed.inject(ThreeSceneService)
         threeCameraService = TestBed.inject(ThreeCameraService)
-        threeOrbitControlsService = TestBed.inject(ThreeOrbitControlsService)
+        threeOrbitControlsService = TestBed.inject(ThreeMapControlsService)
         threeRendererService = TestBed.inject(ThreeRendererService)
         threeStatsService = TestBed.inject(ThreeStatsService)
     }
@@ -64,7 +64,10 @@ describe("ThreeViewerService", () => {
         threeRendererService.composer = { dispose: jest.fn() } as unknown as CustomComposer
         threeRendererService.renderer.getContext = jest.fn()
         threeRendererService.renderer.setPixelRatio = jest.fn()
-        threeOrbitControlsService.controls = { enableKeys: null } as unknown as OrbitControls
+        threeOrbitControlsService.controls = {
+            listenToKeyEvents: jest.fn(),
+            stopListenToKeyEvents: jest.fn()
+        } as unknown as OrbitControls
         threeOrbitControlsService.controls.update = jest.fn()
         threeSceneService.scene = { position: new Vector3(1, 2, 3) } as Scene
         threeSceneService.scene.add = jest.fn()
@@ -175,38 +178,24 @@ describe("ThreeViewerService", () => {
     describe("onFocusIn", () => {
         beforeEach(() => {
             mockThreeJs()
-            //threeOrbitControlsService.controls.enableKeys = true
-        })
-
-        it("should set controls.enableKeys to true", () => {
-            threeViewerService.onFocusIn({ target: { nodeName: "INPUT" } })
-
-            //expect(threeOrbitControlsService.controls.enableKeys).toBeFalsy()
         })
 
         it("should not set controls.enableKeys to true", () => {
             threeViewerService.onFocusIn({ target: { nodeName: "NOT_INPUT" } })
 
-            //expect(threeOrbitControlsService.controls.enableKeys).toBeTruthy()
+            expect(threeOrbitControlsService.controls.listenToKeyEvents).toHaveBeenCalled()
         })
     })
 
     describe("onFocusOut", () => {
         beforeEach(() => {
             mockThreeJs()
-            //threeOrbitControlsService.controls.enableKeys = false
-        })
-
-        it("should set controls.enableKeys to true", () => {
-            threeViewerService.onFocusOut({ target: { nodeName: "INPUT" } })
-
-            //expect(threeOrbitControlsService.controls.enableKeys).toBeTruthy()
         })
 
         it("should not set controls.enableKeys to true", () => {
             threeViewerService.onFocusOut({ target: { nodeName: "NOT_INPUT" } })
 
-            //expect(threeOrbitControlsService.controls.enableKeys).toBeFalsy()
+            expect(threeOrbitControlsService.controls.stopListenToKeyEvents).toHaveBeenCalled()
         })
     })
 

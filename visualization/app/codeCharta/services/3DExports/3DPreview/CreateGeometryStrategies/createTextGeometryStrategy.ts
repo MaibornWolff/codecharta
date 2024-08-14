@@ -3,7 +3,7 @@ import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry"
 import { Font } from "three/examples/jsm/loaders/FontLoader"
 import { CreateGeometryStrategy, CreateGeometryStrategyOptions } from "./createGeometryStrategy"
 import { GeometryOptions } from "../preview3DPrintMesh"
-import { mergeBufferGeometries } from "three/examples/jsm/utils/BufferGeometryUtils"
+import * as BufferGeometryUtils from "three/examples/jsm/utils/BufferGeometryUtils.js"
 
 export interface CreateTextGeometryStrategyOptions extends CreateGeometryStrategyOptions {
     font: Font
@@ -70,6 +70,6 @@ export class CreateTextGeometryStrategy implements CreateGeometryStrategy {
             lineGeometries.push(lineGeometry)
         }
 
-        return mergeBufferGeometries(lineGeometries)
+        return BufferGeometryUtils.mergeBufferGeometries(lineGeometries)
     }
 }

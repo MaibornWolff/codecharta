@@ -14,7 +14,7 @@ type CameraChangeEvents = {
 }
 
 @Injectable({ providedIn: "root" })
-export class ThreeOrbitControlsService {
+export class ThreeMapControlsService {
     static CAMERA_CHANGED_EVENT_NAME = "camera-changed"
 
     controls: OrbitControlsType

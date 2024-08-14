@@ -2,7 +2,7 @@ import { Component, Input, ViewEncapsulation } from "@angular/core"
 import { CustomConfigItem } from "../../../customConfigs.component"
 import { CustomConfigHelper } from "../../../../../util/customConfigHelper"
 import { ThreeCameraService } from "../../../../codeMap/threeViewer/threeCamera.service"
-import { ThreeOrbitControlsService } from "../../../../codeMap/threeViewer/threeOrbitControls.service"
+import { ThreeMapControlsService } from "../../../../codeMap/threeViewer/threeMapControls.service"
 import { Store } from "@ngrx/store"
 
 @Component({
@@ -17,7 +17,7 @@ export class ApplyCustomConfigButtonComponent {
     constructor(
         private store: Store,
         private threeCameraService: ThreeCameraService,
-        private threeOrbitControlsService: ThreeOrbitControlsService
+        private threeOrbitControlsService: ThreeMapControlsService
     ) {}
 
     applyCustomConfig() {

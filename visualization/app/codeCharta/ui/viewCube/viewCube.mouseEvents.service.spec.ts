@@ -1,5 +1,5 @@
 import { Group, Mesh, PerspectiveCamera, Vector2, WebGLRenderer } from "three"
-import { ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitControls.service"
+import { ThreeMapControlsService } from "../codeMap/threeViewer/threeMapControls.service"
 import { ViewCubeMouseEventsService } from "./viewCube.mouseEvents.service"
 // eslint-disable-next-line no-duplicate-imports
 import * as Three from "three"
@@ -9,7 +9,7 @@ import { CursorType } from "../codeMap/codeMap.mouseEvent.service"
 
 describe("ViewCubeMouseEventsService", () => {
     let viewCubeMouseEventsService: ViewCubeMouseEventsService
-    let threeOrbitControlsService: ThreeOrbitControlsService
+    let threeOrbitControlsService: ThreeMapControlsService
     let webGLRenderer: WebGLRenderer
 
     beforeEach(() => {
@@ -36,7 +36,8 @@ describe("ViewCubeMouseEventsService", () => {
                 cullFace: jest.fn(),
                 initGLContext: jest.fn(),
                 scissor: jest.fn(),
-                viewport: jest.fn()
+                viewport: jest.fn(),
+                getContextAttributes: jest.fn()
             } as unknown as WebGLRenderingContext
         })
 
@@ -71,7 +72,6 @@ describe("ViewCubeMouseEventsService", () => {
             const orbitControls = oc(Three)
             const expectedControls = new orbitControls(camera, webGLRenderer.domElement) as unknown as OrbitControls
             expectedControls.enableZoom = false
-            expectedControls.enableKeys = false
             expectedControls.enablePan = false
             expectedControls.rotateSpeed = 1
 

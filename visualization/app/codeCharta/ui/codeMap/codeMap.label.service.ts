@@ -1,6 +1,6 @@
 import { Sprite, Vector3, Box3, Sphere, LineBasicMaterial, Line, BufferGeometry, LinearFilter, Texture, SpriteMaterial, Color } from "three"
 import { LayoutAlgorithm, Node, CcState } from "../../codeCharta.model"
-import { ThreeOrbitControlsService } from "./threeViewer/threeOrbitControls.service"
+import { ThreeMapControlsService } from "./threeViewer/threeMapControls.service"
 import { ThreeCameraService } from "./threeViewer/threeCamera.service"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { ColorConverter } from "../../util/color/colorConverter"
@@ -37,7 +37,7 @@ export class CodeMapLabelService {
         private state: State<CcState>,
         private threeCameraService: ThreeCameraService,
         private threeSceneService: ThreeSceneService,
-        private threeOrbitControlsService: ThreeOrbitControlsService
+        private threeOrbitControlsService: ThreeMapControlsService
     ) {
         this.labels = new Array<InternalLabel>()
         this.threeOrbitControlsService.subscribe("onCameraChanged", () => this.onCameraChanged())

@@ -104,8 +104,10 @@ export class CodeMapMouseEventService implements OnDestroy {
         this.threeRendererService.renderer.domElement.addEventListener("dblclick", () => this.onDocumentDoubleClick())
         this.threeRendererService.renderer.domElement.addEventListener("mouseleave", event => this.onDocumentMouseLeave(event))
         this.threeRendererService.renderer.domElement.addEventListener("mouseenter", () => this.onDocumentMouseEnter())
-        const debouncedHandleWheelEvent = debounce(this.handleWheelEvent.bind(this), 1)
-        this.threeRendererService.renderer.domElement.addEventListener("wheel", debouncedHandleWheelEvent)
+        this.threeRendererService.renderer.domElement.addEventListener(
+            "wheel",
+            debounce(() => this.threeRendererService.render())
+        )
         this.viewCubeMouseEvents.subscribe("viewCubeEventPropagation", this.onViewCubeEventPropagation)
     }
 
@@ -450,9 +452,5 @@ export class CodeMapMouseEventService implements OnDestroy {
         if (updateStore) {
             this.store.dispatch(setHoveredNodeId({ value: null }))
         }
-    }
-
-    handleWheelEvent() {
-        this.threeRendererService.render()
     }
 }

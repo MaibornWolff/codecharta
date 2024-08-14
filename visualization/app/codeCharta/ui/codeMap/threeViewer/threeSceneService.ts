@@ -382,10 +382,10 @@ export class ThreeSceneService implements OnDestroy {
 
     initLights() {
         const ambilight = new AmbientLight(0x70_70_70) // soft white light
-        const light1 = new DirectionalLight(0xe0_e0_e0, 1)
+        const light1 = new DirectionalLight(0xe0_e0_e0, 1.5)
         light1.position.set(50, 10, 8).normalize()
 
-        const light2 = new DirectionalLight(0xe0_e0_e0, 1)
+        const light2 = new DirectionalLight(0xe0_e0_e0, 1.5)
         light2.position.set(-50, 10, -8).normalize()
 
         this.lights.add(ambilight)

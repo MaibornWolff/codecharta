@@ -23,7 +23,7 @@ import { setAmountOfTopLabels } from "../../state/store/appSettings/amountOfTopL
 import { setHeightMetric } from "../../state/store/dynamicSettings/heightMetric/heightMetric.actions"
 import { setShowMetricLabelNameValue } from "../../state/store/appSettings/showMetricLabelNameValue/showMetricLabelNameValue.actions"
 import { setShowMetricLabelNodeName } from "../../state/store/appSettings/showMetricLabelNodeName/showMetricLabelNodeName.actions"
-import { ThreeOrbitControlsService } from "./threeViewer/threeOrbitControls.service"
+import { ThreeMapControlsService } from "./threeViewer/threeMapControls.service"
 import { State, Store, StoreModule } from "@ngrx/store"
 import { appReducers, setStateMiddleware } from "../../state/store/state.manager"
 
@@ -33,7 +33,7 @@ describe("CodeMapLabelService", () => {
     let threeCameraService: ThreeCameraService
     let threeSceneService: ThreeSceneService
     let codeMapLabelService: CodeMapLabelService
-    let threeOrbitControlsService: ThreeOrbitControlsService
+    let threeOrbitControlsService: ThreeMapControlsService
     let createElementOrigin
     let sampleLeaf: Node
     let otherSampleLeaf: Node
@@ -57,7 +57,7 @@ describe("CodeMapLabelService", () => {
         state = TestBed.inject(State)
         threeCameraService = TestBed.inject(ThreeCameraService)
         threeSceneService = TestBed.inject(ThreeSceneService)
-        threeOrbitControlsService = TestBed.inject(ThreeOrbitControlsService)
+        threeOrbitControlsService = TestBed.inject(ThreeMapControlsService)
     }
 
     function rebuild() {

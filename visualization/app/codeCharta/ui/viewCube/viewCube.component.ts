@@ -12,7 +12,7 @@ import {
     WebGLRenderer
 } from "three"
 import { ViewCubemeshGenerator } from "./viewCube.meshGenerator"
-import { ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitControls.service"
+import { ThreeMapControlsService } from "../codeMap/threeViewer/threeMapControls.service"
 import { ViewCubeMouseEventsService } from "./viewCube.mouseEvents.service"
 import { Component, ElementRef, OnInit, ViewEncapsulation } from "@angular/core"
 
@@ -41,7 +41,7 @@ export class ViewCubeComponent implements OnInit {
 
     constructor(
         private elementReference: ElementRef,
-        private threeOrbitControlsService: ThreeOrbitControlsService,
+        private threeOrbitControlsService: ThreeMapControlsService,
         private viewCubeMouseEvents: ViewCubeMouseEventsService
     ) {}
 
@@ -229,11 +229,11 @@ export class ViewCubeComponent implements OnInit {
 
     private initLights() {
         this.lights = new Group()
-        const ambilight = new AmbientLight(0x70_70_70, 1.2) // soft white light
-        const light1 = new DirectionalLight(0xe0_e0_e0, 0.4)
+        const ambilight = new AmbientLight(0x70_70_70, 2.8) // soft white light
+        const light1 = new DirectionalLight(0xe0_e0_e0, 1.8)
         light1.position.set(50, 10, 8).normalize()
 
-        const light2 = new DirectionalLight(0xe0_e0_e0, 0.4)
+        const light2 = new DirectionalLight(0xe0_e0_e0, 1.8)
         light2.position.set(-50, 10, -8).normalize()
 
         this.lights.add(ambilight)

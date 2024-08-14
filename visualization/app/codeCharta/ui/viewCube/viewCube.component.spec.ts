@@ -1,4 +1,4 @@
-import { ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitControls.service"
+import { ThreeMapControlsService } from "../codeMap/threeViewer/threeMapControls.service"
 import { ViewCubeMouseEventsService } from "./viewCube.mouseEvents.service"
 import { PerspectiveCamera } from "three/src/cameras/PerspectiveCamera"
 import { ThreeCameraService } from "../codeMap/threeViewer/threeCamera.service"
@@ -8,11 +8,11 @@ import { ViewCubeComponent } from "./viewCube.component"
 
 describe("ViewCubeComponent", () => {
     let viewCubeComponent: ViewCubeComponent
-    let threeOrbitControlsService: ThreeOrbitControlsService
+    let threeOrbitControlsService: ThreeMapControlsService
     let viewCubeMouseEventsService: ViewCubeMouseEventsService
 
     beforeEach(() => {
-        threeOrbitControlsService = {} as ThreeOrbitControlsService
+        threeOrbitControlsService = {} as ThreeMapControlsService
         viewCubeMouseEventsService = { init: jest.fn() } as unknown as ViewCubeMouseEventsService
         threeOrbitControlsService.controls = {
             target: new Vector3(1, 2, 3)

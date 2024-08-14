@@ -3,7 +3,7 @@ import { CodeMapMouseEventService, CursorType } from "../codeMap/codeMap.mouseEv
 import { Group, Mesh, PerspectiveCamera, Raycaster, Vector2, WebGLRenderer } from "three"
 import { isLeaf } from "../../util/codeMapHelper"
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
-import { ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitControls.service"
+import { ThreeMapControlsService } from "../codeMap/threeViewer/threeMapControls.service"
 import { Injectable } from "@angular/core"
 import { EventEmitter } from "../../util/EventEmitter"
 
@@ -25,7 +25,7 @@ export class ViewCubeMouseEventsService {
     private controls: OrbitControls
     private isDragging = false
 
-    constructor(private threeOrbitControlsService: ThreeOrbitControlsService) {}
+    constructor(private threeOrbitControlsService: ThreeMapControlsService) {}
 
     init(cubeGroup: Group, camera: PerspectiveCamera, renderer: WebGLRenderer) {
         this.cubeGroup = cubeGroup

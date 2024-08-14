@@ -1,5 +1,5 @@
 import { Clock, WebGLRenderer, WebGLRenderTarget } from "three"
-import { Pass } from "three/examples/jsm/postprocessing/Pass"
+import { Pass, FullScreenQuad } from "three/examples/jsm/postprocessing/Pass"
 import { CustomComposer } from "./customComposer"
 
 describe("CustomComposer", () => {
@@ -128,10 +128,10 @@ describe("CustomComposer", () => {
     })
 
     describe("dispose", () => {
-        let fullScreenQuad: Pass.FullScreenQuad
+        let fullScreenQuad: FullScreenQuad
 
         beforeAll(() => {
-            fullScreenQuad = new Pass.FullScreenQuad()
+            fullScreenQuad = new FullScreenQuad()
             fullScreenQuad["fsQuad"] = {
                 material: {
                     dispose: jest.fn()
