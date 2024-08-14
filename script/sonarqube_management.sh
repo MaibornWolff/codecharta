@@ -45,22 +45,53 @@ ensure_sonarqube_running() {
     echo "⏳ Waiting for SonarQube to be ready..."
     sleep 60  # Adjust this sleep time as needed to allow SonarQube to fully start
 }
-# Step 2: Reset the password if needed
+
 reset_sonarqube_password() {
+    echo "🔍 Testing SonarQube credentials: Username='$DEFAULT_SONAR_USER', Password='$DEFAULT_SONAR_PASSWORD'"
+
     # Attempt to log in with the default password to check if it's still active
-    response=$(curl -u $DEFAULT_SONAR_USER:$DEFAULT_SONAR_PASSWORD -X GET -s "$HOST_SONAR_URL/api/authentication/validate")
+    response=$(curl -u $DEFAULT_SONAR_USER:$DEFAULT_SONAR_PASSWORD -X GET -s -w "%{http_code}" "$HOST_SONAR_URL/api/authentication/validate")
+    http_status="${response: -3}"
     is_valid=$(echo "$response" | jq -r '.valid')
 
-    if [ "$is_valid" == "false" ]; then
-        # The default password is still active, so we need to change it
-        echo "🔄 Changing default SonarQube password..."
+    if [ "$http_status" == "200" ] && [ "$is_valid" == "true" ]; then
+        echo "✅ Default credentials are valid. Proceeding to change the password..."
         change_default_password
+    else
+        echo "ℹ️ Default credentials are not in use. Checking the new password..."
+
+        # Attempt to log in with the new password
+        response=$(curl -u $DEFAULT_SONAR_USER:$NEW_SONAR_PASSWORD -X GET -s -w "%{http_code}" "$HOST_SONAR_URL/api/authentication/validate")
+        http_status="${response: -3}"
+        is_valid=$(echo "$response" | jq -r '.valid')
+
+        if [ "$http_status" == "200" ] && [ "$is_valid" == "true" ]; then
+            echo "✅ New password is valid. Proceeding with it."
+            SONAR_USER=$DEFAULT_SONAR_USER
+            SONAR_PASSWORD=$NEW_SONAR_PASSWORD
+        else
+            echo "❌ The new password is invalid. Please update the NEW_SONAR_PASSWORD in the script."
+            exit 1
+        fi
+    fi
+}
+
+# Function to change the default password to a new password
+change_default_password() {
+    response=$(curl -u $DEFAULT_SONAR_USER:$DEFAULT_SONAR_PASSWORD -X POST -s -w "%{http_code}" \
+        -d "login=$DEFAULT_SONAR_USER&previousPassword=$DEFAULT_SONAR_PASSWORD&password=$NEW_SONAR_PASSWORD" \
+        "$HOST_SONAR_URL/api/users/change_password")
+
+    http_status="${response: -3}"
+
+    if [ "$http_status" == "200" ] || [ "$http_status" == "204" ]; then
+        echo "✅ Password has been successfully changed to the new password."
         SONAR_USER=$DEFAULT_SONAR_USER
         SONAR_PASSWORD=$NEW_SONAR_PASSWORD
     else
-        echo "ℹ️ Default password is not active, using existing credentials."
-        SONAR_USER=$DEFAULT_SONAR_USER
-        SONAR_PASSWORD=$DEFAULT_SONAR_PASSWORD
+        echo "❌ Failed to change the password. HTTP status code: $http_status"
+        echo "Response body: ${response::-3}"
+        exit 1
     fi
 }
 
