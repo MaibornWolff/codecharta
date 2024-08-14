@@ -35,7 +35,7 @@ export class MetricDescriptionBlockMesh extends CustomVisibilityMesh {
 
         const textGeometry = await this.createTextGeometry(this.createTextGeometryStrategy, this.getText(), geometryOptions)
 
-        this.geometry = BufferGeometryUtils.mergeBufferGeometries([iconGeometry, textGeometry])
+        this.geometry = BufferGeometryUtils.mergeGeometries([iconGeometry, textGeometry])
 
         this.position.y = -0.15 + this.yOffset
 

@@ -4,16 +4,6 @@ import { CreateTextGeometryStrategy, CreateTextGeometryStrategyOptions } from ".
 import { GeometryOptions } from "../preview3DPrintMesh"
 import HelvetikerFont from "three/examples/fonts/helvetiker_regular.typeface.json"
 
-jest.mock("three/examples/jsm/utils/BufferGeometryUtils", () => ({
-    BufferGeometryUtils: {
-        mergeBufferGeometries: jest.fn(geometries => {
-            const merged = new BufferGeometry()
-            merged.userData.geometries = geometries // Store original geometries for testing
-            return merged
-        })
-    }
-}))
-
 describe("CreateTextGeometryStrategy", () => {
     let strategy: CreateTextGeometryStrategy
     let font: Font

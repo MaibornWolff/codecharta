@@ -54,7 +54,7 @@ export class QrCodeMesh extends CustomVisibilityMesh {
 
         this.updateMinWidth(pixelSize)
 
-        return BufferGeometryUtils.mergeBufferGeometries(qrCodeGeometries)
+        return BufferGeometryUtils.mergeGeometries(qrCodeGeometries)
     }
 
     private updateMinWidth(pixelSize: number) {

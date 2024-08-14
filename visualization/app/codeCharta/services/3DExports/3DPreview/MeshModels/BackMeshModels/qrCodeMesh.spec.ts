@@ -5,7 +5,7 @@ import { QrCodeMesh } from "./qrCodeMesh"
 
 jest.mock("three/examples/jsm/utils/BufferGeometryUtils", () => ({
     BufferGeometryUtils: {
-        mergeBufferGeometries: jest.fn(() => new BufferGeometry())
+        mergeGeometries: jest.fn(() => new BufferGeometry())
     }
 }))
 

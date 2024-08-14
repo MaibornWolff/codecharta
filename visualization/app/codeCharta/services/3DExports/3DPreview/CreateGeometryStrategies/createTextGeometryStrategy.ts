@@ -70,6 +70,6 @@ export class CreateTextGeometryStrategy implements CreateGeometryStrategy {
             lineGeometries.push(lineGeometry)
         }
 
-        return BufferGeometryUtils.mergeBufferGeometries(lineGeometries)
+        return BufferGeometryUtils.mergeGeometries(lineGeometries)
     }
 }

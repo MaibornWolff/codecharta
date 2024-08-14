@@ -35,7 +35,7 @@ export class CreateSvgGeometryStrategy implements CreateGeometryStrategy {
                         }
                     }
 
-                    const mergedGeometry = BufferGeometryUtils.mergeBufferGeometries(geometries)
+                    const mergedGeometry = BufferGeometryUtils.mergeGeometries(geometries)
 
                     mergedGeometry.computeBoundingBox()
                     const width = mergedGeometry.boundingBox.max.x - mergedGeometry.boundingBox.min.x
