@@ -8,9 +8,9 @@ import { ThreeMapControlsService } from "../../codeMap/threeViewer/threeMapContr
     encapsulation: ViewEncapsulation.None
 })
 export class CenterMapButtonComponent {
-    constructor(private threeOrbitControlsService: ThreeMapControlsService) {}
+    constructor(private threeMapControlsService: ThreeMapControlsService) {}
 
     centerMap() {
-        this.threeOrbitControlsService.autoFitTo()
+        this.threeMapControlsService.autoFitTo()
     }
 }

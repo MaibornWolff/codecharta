@@ -33,7 +33,7 @@ describe("CodeMapLabelService", () => {
     let threeCameraService: ThreeCameraService
     let threeSceneService: ThreeSceneService
     let codeMapLabelService: CodeMapLabelService
-    let threeOrbitControlsService: ThreeMapControlsService
+    let threeMapControlsService: ThreeMapControlsService
     let createElementOrigin
     let sampleLeaf: Node
     let otherSampleLeaf: Node
@@ -57,11 +57,11 @@ describe("CodeMapLabelService", () => {
         state = TestBed.inject(State)
         threeCameraService = TestBed.inject(ThreeCameraService)
         threeSceneService = TestBed.inject(ThreeSceneService)
-        threeOrbitControlsService = TestBed.inject(ThreeMapControlsService)
+        threeMapControlsService = TestBed.inject(ThreeMapControlsService)
     }
 
     function rebuild() {
-        codeMapLabelService = new CodeMapLabelService(state, threeCameraService, threeSceneService, threeOrbitControlsService)
+        codeMapLabelService = new CodeMapLabelService(state, threeCameraService, threeSceneService, threeMapControlsService)
     }
 
     function withMockedThreeCameraService() {

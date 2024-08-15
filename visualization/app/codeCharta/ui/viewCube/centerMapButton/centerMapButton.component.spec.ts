@@ -5,20 +5,20 @@ import { ThreeMapControlsService } from "../../codeMap/threeViewer/threeMapContr
 import { CenterMapButtonComponent } from "./centerMapButton.component"
 
 describe("CenterMapButtonComponent", () => {
-    const threeOrbitControlsService = { autoFitTo: jest.fn() }
+    const threeMapControlsService = { autoFitTo: jest.fn() }
 
     beforeEach(() => {
-        threeOrbitControlsService.autoFitTo = jest.fn()
+        threeMapControlsService.autoFitTo = jest.fn()
         TestBed.configureTestingModule({
-            providers: [{ provide: ThreeMapControlsService, useValue: threeOrbitControlsService }]
+            providers: [{ provide: ThreeMapControlsService, useValue: threeMapControlsService }]
         })
     })
 
-    it("should call autoFitTo of threeOrbitControlsService on click", async () => {
+    it("should call autoFitTo of threeMapControlsService on click", async () => {
         await render(CenterMapButtonComponent)
 
         await userEvent.click(screen.getByTitle("Center map"))
 
-        expect(threeOrbitControlsService.autoFitTo).toHaveBeenCalled()
+        expect(threeMapControlsService.autoFitTo).toHaveBeenCalled()
     })
 })

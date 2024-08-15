@@ -25,7 +25,7 @@ export class ViewCubeMouseEventsService {
     private controls: OrbitControls
     private isDragging = false
 
-    constructor(private threeOrbitControlsService: ThreeMapControlsService) {}
+    constructor(private threeMapControlsService: ThreeMapControlsService) {}
 
     init(cubeGroup: Group, camera: PerspectiveCamera, renderer: WebGLRenderer) {
         this.cubeGroup = cubeGroup
@@ -107,7 +107,7 @@ export class ViewCubeMouseEventsService {
     propagateMovement() {
         if (this.isDragging) {
             const vec3 = this.camera.position
-            this.threeOrbitControlsService.rotateCameraInVectorDirection(-vec3.x, -vec3.y, -vec3.z)
+            this.threeMapControlsService.rotateCameraInVectorDirection(-vec3.x, -vec3.y, -vec3.z)
         }
         return this.isDragging
     }

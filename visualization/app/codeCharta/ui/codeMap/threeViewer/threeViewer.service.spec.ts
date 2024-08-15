@@ -168,20 +168,20 @@ describe("ThreeViewerService", () => {
     })
 
     describe("onFocusIn", () => {
-        it("should enable key event listener", () => {
+        it("should disable key event listener", () => {
             const inputEvent = { target: { nodeName: "INPUT" } }
             threeViewerService.onFocusIn(inputEvent as any)
 
-            expect(threeMapControlsService.controls.listenToKeyEvents).toHaveBeenCalledWith(window)
+            expect(threeMapControlsService.controls.stopListenToKeyEvents).toHaveBeenCalled()
         })
     })
 
     describe("onFocusOut", () => {
-        it("should disable key event listener", () => {
+        it("should enable key event listener", () => {
             const inputEvent = { target: { nodeName: "INPUT" } }
             threeViewerService.onFocusOut(inputEvent as any)
 
-            expect(threeMapControlsService.controls.stopListenToKeyEvents).toHaveBeenCalled()
+            expect(threeMapControlsService.controls.listenToKeyEvents).toHaveBeenCalledWith(window)
         })
     })
 

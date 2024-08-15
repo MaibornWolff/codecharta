@@ -15,7 +15,7 @@ export class AutoFitCodeMapEffect {
     constructor(
         private store: Store<CcState>,
         private renderCodeMapEffect: RenderCodeMapEffect,
-        private threeOrbitControlsService: ThreeMapControlsService
+        private threeMapControlsService: ThreeMapControlsService
     ) {}
 
     autoFitTo$ = createEffect(
@@ -30,7 +30,7 @@ export class AutoFitCodeMapEffect {
                 filter(([, resetCameraIfNewFileIsLoaded]) => resetCameraIfNewFileIsLoaded),
                 switchMap(() => this.renderCodeMapEffect.renderCodeMap$.pipe(take(1))),
                 tap(() => {
-                    this.threeOrbitControlsService.autoFitTo()
+                    this.threeMapControlsService.autoFitTo()
                 })
             ),
         { dispatch: false }

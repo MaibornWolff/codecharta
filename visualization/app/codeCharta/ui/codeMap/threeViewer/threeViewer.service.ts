@@ -61,13 +61,13 @@ export class ThreeViewerService {
 
     onFocusIn = event => {
         if (event.target.nodeName === "INPUT") {
-            this.threeMapControlsService.controls.listenToKeyEvents(window)
+            this.threeMapControlsService.controls.stopListenToKeyEvents()
         }
     }
 
     onFocusOut = event => {
         if (event.target.nodeName === "INPUT") {
-            this.threeMapControlsService.controls.stopListenToKeyEvents()
+            this.threeMapControlsService.controls.listenToKeyEvents(window)
         }
     }
 

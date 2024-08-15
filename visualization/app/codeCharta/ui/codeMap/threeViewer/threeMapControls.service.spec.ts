@@ -9,7 +9,7 @@ import { wait } from "../../../util/testUtils/wait"
 import { appReducers, setStateMiddleware } from "../../../state/store/state.manager"
 import { MapControls } from "three/examples/jsm/controls/MapControls"
 
-describe("ThreeOrbitControlsService", () => {
+describe("ThreeMapControlsService", () => {
     let threeMapControlsService: ThreeMapControlsService
     let threeCameraService: ThreeCameraService
     let threeSceneService: ThreeSceneService

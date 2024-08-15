@@ -447,7 +447,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Migrate dialog.service to Angular [#3072](https://github.com/MaibornWolff/codecharta/pull/3072)
 - Add documentation for new treeMap algorithm [#3077](https://github.com/MaibornWolff/codecharta/pull/3077)
 - Migrate dialog.service to Angular [#3070](https://github.com/MaibornWolff/codecharta/pull/3070)
-- Migrate FocusedNodePathService, LayoutAlgorithmService, ThreeMapControlsService and ThreeViewerService to Angular [#3072](https://github.com/MaibornWolff/codecharta/pull/3072)
+- Migrate FocusedNodePathService, LayoutAlgorithmService, ThreeOrbitControlsService and ThreeViewerService to Angular [#3072](https://github.com/MaibornWolff/codecharta/pull/3072)
 - Migrate updateAttributeTypes.service to Angular [#3082](https://github.com/MaibornWolff/codecharta/pull/3082)
 
 ## [1.108.1] - 2022-09-29

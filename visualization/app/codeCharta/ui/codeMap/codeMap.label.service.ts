@@ -37,10 +37,10 @@ export class CodeMapLabelService {
         private state: State<CcState>,
         private threeCameraService: ThreeCameraService,
         private threeSceneService: ThreeSceneService,
-        private threeOrbitControlsService: ThreeMapControlsService
+        private threeMapControlsService: ThreeMapControlsService
     ) {
         this.labels = new Array<InternalLabel>()
-        this.threeOrbitControlsService.subscribe("onCameraChanged", () => this.onCameraChanged())
+        this.threeMapControlsService.subscribe("onCameraChanged", () => this.onCameraChanged())
     }
 
     // Labels need to be scaled according to map or it will clip + looks bad

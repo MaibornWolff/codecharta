@@ -41,7 +41,7 @@ export class ViewCubeComponent implements OnInit {
 
     constructor(
         private elementReference: ElementRef,
-        private threeOrbitControlsService: ThreeMapControlsService,
+        private threeMapControlsService: ThreeMapControlsService,
         private viewCubeMouseEvents: ViewCubeMouseEventsService
     ) {}
 
@@ -54,7 +54,7 @@ export class ViewCubeComponent implements OnInit {
         this.initCamera()
         this.viewCubeMouseEvents.init(this.cubeGroup, this.camera, this.renderer)
 
-        this.threeOrbitControlsService.subscribe("onCameraChanged", this.onCameraChanged)
+        this.threeMapControlsService.subscribe("onCameraChanged", this.onCameraChanged)
         this.viewCubeMouseEvents.subscribe("viewCubeHoveredEvent", this.onCubeHovered)
         this.viewCubeMouseEvents.subscribe("viewCubeUnHoveredEvent", this.onCubeUnhovered)
         this.viewCubeMouseEvents.subscribe("viewCubeClicked", this.onCubeClicked)
@@ -97,7 +97,7 @@ export class ViewCubeComponent implements OnInit {
     }
 
     private calculateCameraPosition(camera: PerspectiveCamera) {
-        const codeMapTargetVector = this.threeOrbitControlsService.controls.target.clone()
+        const codeMapTargetVector = this.threeMapControlsService.controls.target.clone()
         const codeMapCameraPosition = camera.position.clone()
         return codeMapCameraPosition.sub(codeMapTargetVector).normalize().multiplyScalar(3)
     }
@@ -139,90 +139,90 @@ export class ViewCubeComponent implements OnInit {
     onCubeClicked = (data: { cube: Mesh }) => {
         switch (data.cube) {
             case this.cubeDefinition.front.top.middle:
-                this.threeOrbitControlsService.rotateCameraInVectorDirection(0, -1, -1)
+                this.threeMapControlsService.rotateCameraInVectorDirection(0, -1, -1)
                 break
             case this.cubeDefinition.front.top.left:
-                this.threeOrbitControlsService.rotateCameraInVectorDirection(1, -1, -1)
+                this.threeMapControlsService.rotateCameraInVectorDirection(1, -1, -1)
                 break
             case this.cubeDefinition.front.top.right:
-                this.threeOrbitControlsService.rotateCameraInVectorDirection(-1, -1, -1)
+                this.threeMapControlsService.rotateCameraInVectorDirection(-1, -1, -1)
                 break
 
             case this.cubeDefinition.front.middle.middle:
-                this.threeOrbitControlsService.rotateCameraInVectorDirection(0, 0, 0)
+                this.threeMapControlsService.rotateCameraInVectorDirection(0, 0, 0)
                 break
             case this.cubeDefinition.front.middle.left:
-                this.threeOrbitControlsService.rotateCameraInVectorDirection(1, 0, -1)
+                this.threeMapControlsService.rotateCameraInVectorDirection(1, 0, -1)
                 break
             case this.cubeDefinition.front.middle.right:
-                this.threeOrbitControlsService.rotateCameraInVectorDirection(-1, 0, -1)
+                this.threeMapControlsService.rotateCameraInVectorDirection(-1, 0, -1)
                 break
 
             case this.cubeDefinition.front.bottom.middle:
-                this.threeOrbitControlsService.rotateCameraInVectorDirection(0, 1, -1)
+                this.threeMapControlsService.rotateCameraInVectorDirection(0, 1, -1)
                 break
             case this.cubeDefinition.front.bottom.left:
-                this.threeOrbitControlsService.rotateCameraInVectorDirection(1, 1, -1)
+                this.threeMapControlsService.rotateCameraInVectorDirection(1, 1, -1)
                 break
             case this.cubeDefinition.front.bottom.right:
-                this.threeOrbitControlsService.rotateCameraInVectorDirection(-1, 1, -1)
+                this.threeMapControlsService.rotateCameraInVectorDirection(-1, 1, -1)
                 break
 
             case this.cubeDefinition.middle.middle.right:
-                this.threeOrbitControlsService.rotateCameraInVectorDirection(-1, 0, 0)
+                this.threeMapControlsService.rotateCameraInVectorDirection(-1, 0, 0)
                 break
             case this.cubeDefinition.middle.top.right:
-                this.threeOrbitControlsService.rotateCameraInVectorDirection(-1, -1, 0)
+                this.threeMapControlsService.rotateCameraInVectorDirection(-1, -1, 0)
                 break
             case this.cubeDefinition.middle.bottom.right:
-                this.threeOrbitControlsService.rotateCameraInVectorDirection(-1, 1, 0)
+                this.threeMapControlsService.rotateCameraInVectorDirection(-1, 1, 0)
                 break
 
             case this.cubeDefinition.middle.middle.left:
-                this.threeOrbitControlsService.rotateCameraInVectorDirection(1, 0, 0)
+                this.threeMapControlsService.rotateCameraInVectorDirection(1, 0, 0)
                 break
             case this.cubeDefinition.middle.top.left:
-                this.threeOrbitControlsService.rotateCameraInVectorDirection(1, -1, 0)
+                this.threeMapControlsService.rotateCameraInVectorDirection(1, -1, 0)
                 break
             case this.cubeDefinition.middle.bottom.left:
-                this.threeOrbitControlsService.rotateCameraInVectorDirection(1, 1, 0)
+                this.threeMapControlsService.rotateCameraInVectorDirection(1, 1, 0)
                 break
 
             case this.cubeDefinition.middle.top.middle:
-                this.threeOrbitControlsService.rotateCameraInVectorDirection(0, -1, 0)
+                this.threeMapControlsService.rotateCameraInVectorDirection(0, -1, 0)
                 break
             case this.cubeDefinition.middle.bottom.middle:
-                this.threeOrbitControlsService.rotateCameraInVectorDirection(0, 1, 0)
+                this.threeMapControlsService.rotateCameraInVectorDirection(0, 1, 0)
                 break
 
             case this.cubeDefinition.back.top.middle:
-                this.threeOrbitControlsService.rotateCameraInVectorDirection(0, -1, 1)
+                this.threeMapControlsService.rotateCameraInVectorDirection(0, -1, 1)
                 break
             case this.cubeDefinition.back.top.left:
-                this.threeOrbitControlsService.rotateCameraInVectorDirection(1, -1, 1)
+                this.threeMapControlsService.rotateCameraInVectorDirection(1, -1, 1)
                 break
             case this.cubeDefinition.back.top.right:
-                this.threeOrbitControlsService.rotateCameraInVectorDirection(-1, -1, 1)
+                this.threeMapControlsService.rotateCameraInVectorDirection(-1, -1, 1)
                 break
 
             case this.cubeDefinition.back.middle.middle:
-                this.threeOrbitControlsService.rotateCameraInVectorDirection(0, 0, 1)
+                this.threeMapControlsService.rotateCameraInVectorDirection(0, 0, 1)
                 break
             case this.cubeDefinition.back.middle.left:
-                this.threeOrbitControlsService.rotateCameraInVectorDirection(-1, 0, 1)
+                this.threeMapControlsService.rotateCameraInVectorDirection(-1, 0, 1)
                 break
             case this.cubeDefinition.back.middle.right:
-                this.threeOrbitControlsService.rotateCameraInVectorDirection(1, 0, 1)
+                this.threeMapControlsService.rotateCameraInVectorDirection(1, 0, 1)
                 break
 
             case this.cubeDefinition.back.bottom.middle:
-                this.threeOrbitControlsService.rotateCameraInVectorDirection(0, 1, 1)
+                this.threeMapControlsService.rotateCameraInVectorDirection(0, 1, 1)
                 break
             case this.cubeDefinition.back.bottom.left:
-                this.threeOrbitControlsService.rotateCameraInVectorDirection(-1, 1, 1)
+                this.threeMapControlsService.rotateCameraInVectorDirection(-1, 1, 1)
                 break
             case this.cubeDefinition.back.bottom.right:
-                this.threeOrbitControlsService.rotateCameraInVectorDirection(1, 1, 1)
+                this.threeMapControlsService.rotateCameraInVectorDirection(1, 1, 1)
                 break
         }
     }
