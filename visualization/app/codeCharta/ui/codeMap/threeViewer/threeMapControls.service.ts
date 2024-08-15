@@ -2,7 +2,6 @@ import { ThreeCameraService } from "./threeCamera.service"
 import { Injectable } from "@angular/core"
 import { Box3, Mesh, MeshNormalMaterial, PerspectiveCamera, Vector3, Sphere, BoxGeometry } from "three"
 import { ThreeSceneService } from "./threeSceneService"
-import { OrbitControls as OrbitControlsType } from "three/examples/jsm/controls/OrbitControls"
 // TODO remove this old orbital control and use the jsm examples oneW
 // eslint-disable-next-line no-duplicate-imports
 import { MapControls } from "three/examples/jsm/controls/MapControls"
@@ -17,7 +16,7 @@ type CameraChangeEvents = {
 export class ThreeMapControlsService {
     static CAMERA_CHANGED_EVENT_NAME = "camera-changed"
 
-    controls: OrbitControlsType
+    controls: MapControls
     private eventEmitter = new EventEmitter<CameraChangeEvents>()
 
     constructor(
@@ -109,7 +108,7 @@ export class ThreeMapControlsService {
     }
 
     init(domElement: HTMLCanvasElement) {
-        this.controls = new MapControls(this.threeCameraService.camera, domElement) as unknown as OrbitControlsType
+        this.controls = new MapControls(this.threeCameraService.camera, domElement)
         this.controls.zoomToCursor = true
         this.controls.addEventListener("change", () => {
             this.onInput(this.threeCameraService.camera)

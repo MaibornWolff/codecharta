@@ -15,7 +15,8 @@ describe("CustomComposer", () => {
             info: {
                 render: {},
                 memory: {}
-            }
+            },
+            getPixelRatio: jest.fn().mockReturnValue(1)
         } as unknown as WebGLRenderer
 
         renderTarget = {

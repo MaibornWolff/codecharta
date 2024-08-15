@@ -4,9 +4,7 @@ import { ColorRange, NodeMetricData } from "../../../../../codeCharta.model"
 import { QrCodeMesh } from "./qrCodeMesh"
 
 jest.mock("three/examples/jsm/utils/BufferGeometryUtils", () => ({
-    BufferGeometryUtils: {
-        mergeGeometries: jest.fn(() => new BufferGeometry())
-    }
+    mergeGeometries: jest.fn(() => new BufferGeometry())
 }))
 
 jest.mock("qrcode", () => ({

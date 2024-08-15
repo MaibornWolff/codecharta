@@ -1,8 +1,6 @@
 import { TestBed } from "@angular/core/testing"
-import { Camera, Scene, Vector2, WebGLRenderer } from "three"
+import { Scene, Vector2, WebGLRenderer, WebGLInfo, WebGLRenderTarget, Texture, Camera } from "three"
 import { Store, StoreModule } from "@ngrx/store"
-// eslint-disable-next-line no-duplicate-imports
-import * as three from "three"
 import WEBGL from "three/examples/jsm/capabilities/WebGL"
 import { SharpnessMode } from "../../../codeCharta.model"
 import { setSharpnessMode } from "../../../state/store/appSettings/sharpnessMode/sharpnessMode.actions"
@@ -11,6 +9,40 @@ import { ThreeRendererService } from "./threeRenderer.service"
 import * as composer from "../rendering/postprocessor/customComposer"
 import { setIsWhiteBackground } from "../../../state/store/appSettings/isWhiteBackground/isWhiteBackground.actions"
 import { appReducers, setStateMiddleware } from "../../../state/store/state.manager"
+
+jest.mock("three", () => {
+    const originalThree = jest.requireActual("three")
+    return {
+        ...originalThree,
+        WebGLRenderer: jest.fn(() => ({
+            domElement: {
+                addEventListener: jest.fn(),
+                getBoundingClientRect: jest.fn(() => ({ left: 20, top: 20 })),
+                width: 100,
+                height: 100
+            },
+            getPixelRatio: jest.fn(() => 2),
+            setPixelRatio: jest.fn(),
+            setSize: jest.fn(),
+            render: jest.fn(),
+            getDrawingBufferSize: jest.fn(() => new Vector2(1, 1)),
+            info: {
+                render: { triangles: 1 } as WebGLInfo["render"],
+                memory: { geom: 1 } as unknown as WebGLInfo["memory"]
+            }
+        }))
+    }
+})
+
+jest.mock("../rendering/postprocessor/customComposer", () => ({
+    CustomComposer: jest.fn().mockImplementation(() => ({
+        setSize: jest.fn(),
+        addPass: jest.fn(),
+        render: jest.fn(),
+        getInfo: jest.fn().mockReturnValue({ triangles: 0 }),
+        getMemoryInfo: jest.fn().mockReturnValue({ geom: 0 })
+    }))
+}))
 
 describe("threeRendererService", () => {
     let threeRendererService: ThreeRendererService
@@ -26,17 +58,8 @@ describe("threeRendererService", () => {
         store.dispatch(setSharpnessMode({ value: value ? SharpnessMode.PixelRatioFXAA : SharpnessMode.Standard }))
     }
 
-    const setWebGl2 = value => {
-        jest.spyOn(WEBGL, "isWebGL2Available").mockImplementationOnce(() => {
-            return value
-        })
-    }
-
-    const spyOnComposer = () => {
-        return jest.spyOn(composer, "CustomComposer").mockReturnValue({
-            setSize: jest.fn(),
-            addPass: jest.fn()
-        } as unknown as CustomComposer)
+    const setWebGl2 = (value: boolean) => {
+        jest.spyOn(WEBGL, "isWebGL2Available").mockReturnValue(value)
     }
 
     beforeEach(() => {
@@ -46,85 +69,18 @@ describe("threeRendererService", () => {
         })
         store = TestBed.inject(Store)
 
-        const mockedWebGLRenderer = () => {
-            const eventMap = {}
-            const webGLRenderer = {
-                context: {
-                    getParameter: jest.fn().mockReturnValue(["WebGL 2"]),
-                    getExtension: jest.fn().mockReturnValue({
-                        EXT_blend_minmax: null
-                    }),
-                    createTexture: jest.fn(),
-                    bindTexture: jest.fn(),
-                    texParameteri: jest.fn(),
-                    texImage2D: jest.fn(),
-                    clearColor: jest.fn(),
-                    clearDepth: jest.fn(),
-                    clearStencil: jest.fn(),
-                    enable: jest.fn(),
-                    disable: jest.fn(),
-                    depthFunc: jest.fn(),
-                    frontFace: jest.fn(),
-                    cullFace: jest.fn(),
-                    initGLContext: jest.fn(),
-                    scissor: jest.fn(),
-                    viewport: jest.fn()
-                } as unknown as WebGLRenderingContext
-            } as unknown as WebGLRenderer
-
-            webGLRenderer.domElement = {
-                addEventListener: jest.fn((event, callback) => {
-                    eventMap[event] = callback
-                }),
-                getBoundingClientRect: jest.fn().mockReturnValue({ left: 20, top: 20 }),
-                width: 100,
-                height: 100
-            } as unknown as HTMLCanvasElement
-
-            webGLRenderer.getPixelRatio = jest.fn().mockReturnValue(2)
-            webGLRenderer.setClearColor = jest.fn()
-            webGLRenderer.render = jest.fn()
-            webGLRenderer.setPixelRatio = jest.fn()
-            webGLRenderer.getDrawingBufferSize = jest.fn().mockReturnValue({
-                size: {
-                    width: 1,
-                    height: 1
-                }
-            })
-            webGLRenderer.setSize = jest.fn()
-
-            return webGLRenderer
-        }
-
-        jest.spyOn(three, "WebGLRenderer").mockImplementation(() => {
-            return mockedWebGLRenderer()
-        })
-
         threeRendererService = TestBed.inject(ThreeRendererService)
-        threeRendererService.composer = {
-            render: jest.fn(),
-            setSize: jest.fn(),
-            addPass: jest.fn(),
-            getInfo: jest.fn().mockReturnValue({
-                triangles: 0
-            }),
-            getMemoryInfo: jest.fn().mockReturnValue({
-                geom: 0
-            })
-        } as unknown as CustomComposer
-        threeRendererService.renderer = {
-            ...mockedWebGLRenderer(),
-            info: {
-                render: { triangles: 1 },
-                memory: { geom: 1 }
-            }
-        } as unknown as WebGLRenderer
+        threeRendererService.composer = new CustomComposer(
+            new WebGLRenderer(),
+            new WebGLRenderTarget<Texture>()
+        ) as unknown as CustomComposer
+        threeRendererService.renderer = new WebGLRenderer() as unknown as WebGLRenderer
         threeRendererService["setBackgroundColorToState"] = jest.fn()
     })
 
     describe("init", () => {
         it("should call initGL", () => {
-            threeRendererService["initGL"] = jest.fn()
+            jest.spyOn(threeRendererService as any, "initGL").mockImplementation()
             threeRendererService.init(10, 20, new Scene(), new Camera())
             expect(threeRendererService["initGL"]).toHaveBeenCalledWith(10, 20)
         })
@@ -144,7 +100,7 @@ describe("threeRendererService", () => {
 
     describe("initGL", () => {
         it("should call setGLOptions", () => {
-            threeRendererService["setGLOptions"] = jest.fn()
+            jest.spyOn(threeRendererService as any, "setGLOptions").mockImplementation()
             threeRendererService["initGL"](10, 20)
             expect(threeRendererService["setGLOptions"]).toHaveBeenCalled()
         })
@@ -154,23 +110,23 @@ describe("threeRendererService", () => {
             setWebGl2(true)
 
             threeRendererService["initGL"](1, 1)
-            expect(threeRendererService.renderer["getDrawingBufferSize"]).toHaveBeenCalledWith(expect.any(Vector2))
+            expect(threeRendererService.renderer.getDrawingBufferSize).toHaveBeenCalledWith(expect.any(Vector2))
         })
 
         it("should generate custom composer with render target when webgl2 is available and FXAA is true", () => {
             setFXAA(true)
             setWebGl2(true)
 
-            const customComposer = spyOnComposer()
+            const customComposer = jest.spyOn(composer, "CustomComposer")
             threeRendererService["initGL"](1, 1)
             expect(customComposer).toHaveBeenCalled()
         })
 
-        it("should generate customcomposer with no render target when webgl2 is not available and FXAA is true", () => {
+        it("should generate custom composer with no render target when webgl2 is not available and FXAA is true", () => {
             setFXAA(true)
             setWebGl2(false)
 
-            const customComposer = spyOnComposer()
+            const customComposer = jest.spyOn(composer, "CustomComposer")
             threeRendererService["initGL"](1, 1)
             expect(customComposer).toHaveBeenCalled()
         })
@@ -178,13 +134,13 @@ describe("threeRendererService", () => {
         it("should call renderer setPixelRatio when pixelRatio is true", () => {
             setPixelRatio(true)
             threeRendererService["initGL"](1, 1)
-            expect(threeRendererService.renderer["setPixelRatio"]).toHaveBeenCalled()
+            expect(threeRendererService.renderer.setPixelRatio).toHaveBeenCalled()
         })
 
-        it("should not call renderer setPixelRatio when pixelRatio is true", () => {
+        it("should not call renderer setPixelRatio when pixelRatio is false", () => {
             setPixelRatio(false)
             threeRendererService["initGL"](1, 1)
-            expect(threeRendererService.renderer["setPixelRatio"]).not.toHaveBeenCalled()
+            expect(threeRendererService.renderer.setPixelRatio).not.toHaveBeenCalled()
         })
 
         it("should call renderer setSize", () => {
@@ -193,7 +149,7 @@ describe("threeRendererService", () => {
         })
 
         it("should call initComposer when enableFXAA is true", () => {
-            threeRendererService["initComposer"] = jest.fn()
+            jest.spyOn(threeRendererService as any, "initComposer").mockImplementation()
             store.dispatch(setSharpnessMode({ value: SharpnessMode.PixelRatioFXAA }))
 
             threeRendererService["initGL"](1, 1)
@@ -201,7 +157,7 @@ describe("threeRendererService", () => {
         })
 
         it("should not call initComposer when enableFXAA is false", () => {
-            threeRendererService["initComposer"] = jest.fn()
+            jest.spyOn(threeRendererService as any, "initComposer").mockImplementation()
             store.dispatch(setSharpnessMode({ value: SharpnessMode.Standard }))
 
             threeRendererService["initGL"](1, 1)
@@ -220,7 +176,7 @@ describe("threeRendererService", () => {
             expect(ThreeRendererService.setPixelRatio).toBe(false)
         })
 
-        it("should call and set the pixel ration with no AA options", () => {
+        it("should call and set the pixel ratio with no AA options", () => {
             store.dispatch(setSharpnessMode({ value: SharpnessMode.PixelRatioNoAA }))
 
             threeRendererService["setGLOptions"]()
@@ -230,7 +186,7 @@ describe("threeRendererService", () => {
             expect(ThreeRendererService.setPixelRatio).toBe(true)
         })
 
-        it("should call and set the pixel ration with FXAA options", () => {
+        it("should call and set the pixel ratio with FXAA options", () => {
             store.dispatch(setSharpnessMode({ value: SharpnessMode.PixelRatioFXAA }))
 
             threeRendererService["setGLOptions"]()
@@ -240,7 +196,7 @@ describe("threeRendererService", () => {
             expect(ThreeRendererService.setPixelRatio).toBe(true)
         })
 
-        it("should call and set the pixel ration with AA options", () => {
+        it("should call and set the pixel ratio with AA options", () => {
             store.dispatch(setSharpnessMode({ value: SharpnessMode.PixelRatioAA }))
 
             threeRendererService["setGLOptions"]()
@@ -315,7 +271,7 @@ describe("threeRendererService", () => {
             expect(render).not.toHaveBeenCalled()
         })
 
-        it("should not call composer render when renderer is undefined and FXAA is disabled", () => {
+        it("should not call composer render when composer is undefined and FXAA is enabled", () => {
             setFXAA(true)
             const render = jest.spyOn(threeRendererService.composer, "render")
             threeRendererService.composer = undefined
