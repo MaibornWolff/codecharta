@@ -17,7 +17,7 @@ import { XMLParser, XMLValidator } from "fast-xml-parser"
 
 describe("serialize3mf service", () => {
     describe("serialize3mf", () => {
-        const minimalExamplePath = resolve(__dirname, "../../resources/minimalScene.json")
+        const minimalExamplePath = resolve(__dirname, "../../resources/minimalSceneRemovedTextGeometry.json")
 
         it("should produce a valid set of xml files", async () => {
             const threeObjectLoader = new ObjectLoader()
