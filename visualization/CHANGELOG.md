@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Chore 👨‍💻 👩‍💻
+
+- Update Three.js to version 0.156.0 [#3693](https://github.com/MaibornWolff/codecharta/pull/3693)
+
+### Changed
+
+- Change OrbitControls to MapControls for improved map navigation [#3693](https://github.com/MaibornWolff/codecharta/pull/3693)
+
+### Added 🚀
+
+- Add feature to zoom at the mouse cursor [#3693](https://github.com/MaibornWolff/codecharta/pull/3693)
+
 ## [1.127.1] - 2024-08-12
 
 ### Fixed 🐞
