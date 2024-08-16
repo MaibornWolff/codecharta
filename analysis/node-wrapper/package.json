@@ -11,6 +11,9 @@
   },
   "name": "codecharta-analysis",
   "version": "1.126.0",
+  "engines": {
+    "node": ">=20"
+  },
   "description": "MaibornWolff CodeCharta Analysis Tools",
   "scripts": {
     "prepare": "rm -rf ../build/install/codecharta-analysis public && ../gradlew -p .. installDist && cp -R ../build/install/codecharta-analysis public",

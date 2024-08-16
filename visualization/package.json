@@ -12,7 +12,7 @@
   "name": "codecharta-visualization",
   "version": "1.127.1",
   "engines": {
-    "node": ">=18"
+    "node": ">=20"
   },
   "description": "MaibornWolff CodeCharta",
   "files": [
