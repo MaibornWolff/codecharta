@@ -10,7 +10,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Chore 👨‍💻 👩‍💻
 
 - Bump node version from 18 to 20 [#3690](https://github.com/MaibornWolff/codecharta/pull/3690)
-- Update Three.js to version 0.156.0 [#3693](https://github.com/MaibornWolff/codecharta/pull/3693)
 
 ### Changed
 

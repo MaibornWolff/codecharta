@@ -265,7 +265,7 @@ export class ThreeSceneService implements OnDestroy {
         const endPoint = new Vector3(hoveredLabel.position.x, hoveredLabel.position.y, hoveredLabel.position.z)
 
         const pointsBufferGeometry = this.highlightedLine.geometry as BufferGeometry
-        const pointsArray = pointsBufferGeometry.attributes.position.array as unknown as Array<number>
+        const pointsArray = [...pointsBufferGeometry.attributes.position.array]
 
         const geometry = new BufferGeometry().setFromPoints([new Vector3(pointsArray[0], pointsArray[1], pointsArray[2]), endPoint])
 

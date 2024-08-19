@@ -26,7 +26,7 @@ describe("CopyToClipboardButtonComponent", () => {
     it("should use a get-text-method of service and write resulting text to clipboard", async () => {
         await component.copyNamesToClipBoard()
 
-        expect(getClipboardTextMock).toBeCalled()
-        expect(writeToClipboardMock).toBeCalledWith("Magic Monday")
+        expect(getClipboardTextMock).toHaveBeenCalled()
+        expect(writeToClipboardMock).toHaveBeenCalledWith("Magic Monday")
     })
 })

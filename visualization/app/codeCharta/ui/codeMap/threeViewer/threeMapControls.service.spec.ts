@@ -67,8 +67,8 @@ describe("ThreeMapControlsService", () => {
 
         threeMapControlsService.rotateCameraInVectorDirection(vector.x, vector.y, vector.z)
 
-        expect(threeSceneService.scene.add).toBeCalled()
-        expect(threeSceneService.scene.remove).toBeCalled()
+        expect(threeSceneService.scene.add).toHaveBeenCalled()
+        expect(threeSceneService.scene.remove).toHaveBeenCalled()
 
         expect(threeCameraService.camera.position).toMatchSnapshot()
     })
@@ -98,7 +98,7 @@ describe("ThreeMapControlsService", () => {
             threeMapControlsService.autoFitTo()
             await wait(0)
 
-            expect(threeCameraService.camera.lookAt).toBeCalledWith(threeMapControlsService.controls.target)
+            expect(threeCameraService.camera.lookAt).toHaveBeenCalledWith(threeMapControlsService.controls.target)
         })
 
         it("should auto fit map to its original value ", async () => {
@@ -107,8 +107,8 @@ describe("ThreeMapControlsService", () => {
             threeMapControlsService.autoFitTo()
             await wait(0)
 
-            expect(threeMapControlsService.controls.update).toBeCalled()
-            expect(threeCameraService.camera.updateProjectionMatrix).toBeCalled()
+            expect(threeMapControlsService.controls.update).toHaveBeenCalled()
+            expect(threeCameraService.camera.updateProjectionMatrix).toHaveBeenCalled()
         })
     })
 })

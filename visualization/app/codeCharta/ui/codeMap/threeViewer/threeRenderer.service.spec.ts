@@ -211,19 +211,19 @@ describe("threeRendererService", () => {
         it("should call renderer getPixelRatio", () => {
             threeRendererService["initComposer"]()
 
-            expect(threeRendererService.renderer.getPixelRatio).toBeCalled()
+            expect(threeRendererService.renderer.getPixelRatio).toHaveBeenCalled()
         })
 
         it("should call composer setSize", () => {
             threeRendererService["initComposer"]()
 
-            expect(threeRendererService.composer.setSize).toBeCalled()
+            expect(threeRendererService.composer.setSize).toHaveBeenCalled()
         })
 
         it("should call composer addPass", () => {
             threeRendererService["initComposer"]()
 
-            expect(threeRendererService.composer.addPass).toBeCalled()
+            expect(threeRendererService.composer.addPass).toHaveBeenCalled()
         })
     })
 
@@ -232,7 +232,7 @@ describe("threeRendererService", () => {
             setFXAA(true)
 
             const info = threeRendererService.getInfo()
-            expect(threeRendererService.composer.getInfo).toBeCalled()
+            expect(threeRendererService.composer.getInfo).toHaveBeenCalled()
             expect(info).toStrictEqual({ triangles: 0 })
         })
 
@@ -249,7 +249,7 @@ describe("threeRendererService", () => {
             setFXAA(true)
 
             const info = threeRendererService.getMemoryInfo()
-            expect(threeRendererService.composer.getMemoryInfo).toBeCalled()
+            expect(threeRendererService.composer.getMemoryInfo).toHaveBeenCalled()
             expect(info).toStrictEqual({ geom: 0 })
         })
 

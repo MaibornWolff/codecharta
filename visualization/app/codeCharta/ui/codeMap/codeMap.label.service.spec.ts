@@ -500,19 +500,19 @@ describe("CodeMapLabelService", () => {
         it("should dispose material", () => {
             codeMapLabelService["disposeSprite"](sprite)
 
-            expect(sprite.material.dispose).toBeCalled()
+            expect(sprite.material.dispose).toHaveBeenCalled()
         })
 
         it("should dispose material map texture", () => {
             codeMapLabelService["disposeSprite"](sprite)
 
-            expect(sprite.material.map.dispose).toBeCalled()
+            expect(sprite.material.map.dispose).toHaveBeenCalled()
         })
 
         it("should dispose sprite geometry", () => {
             codeMapLabelService["disposeSprite"](sprite)
 
-            expect(sprite.geometry.dispose).toBeCalled()
+            expect(sprite.geometry.dispose).toHaveBeenCalled()
         })
     })
 
@@ -525,13 +525,13 @@ describe("CodeMapLabelService", () => {
         it("should dispose material", () => {
             codeMapLabelService["disposeLine"](line)
 
-            expect(line.material.dispose).toBeCalled()
+            expect(line.material.dispose).toHaveBeenCalled()
         })
 
         it("should dispose geometry", () => {
             codeMapLabelService["disposeLine"](line)
 
-            expect(line.geometry.dispose).toBeCalled()
+            expect(line.geometry.dispose).toHaveBeenCalled()
         })
     })
 
@@ -545,7 +545,7 @@ describe("CodeMapLabelService", () => {
 
             codeMapLabelService.dispose([spriteElement, spriteElement])
 
-            expect(codeMapLabelService["disposeSprite"]).toBeCalledTimes(2)
+            expect(codeMapLabelService["disposeSprite"]).toHaveBeenCalledTimes(2)
         })
 
         it("should call disposeLine two times", () => {
@@ -553,7 +553,7 @@ describe("CodeMapLabelService", () => {
 
             codeMapLabelService.dispose([lineElement, lineElement])
 
-            expect(codeMapLabelService["disposeLine"]).toBeCalledTimes(2)
+            expect(codeMapLabelService["disposeLine"]).toHaveBeenCalledTimes(2)
         })
 
         it("should call disposeSprite two times when InternalLabel[] is set", () => {
@@ -561,7 +561,7 @@ describe("CodeMapLabelService", () => {
 
             codeMapLabelService.dispose([internalLabel, internalLabel])
 
-            expect(codeMapLabelService["disposeSprite"]).toBeCalledTimes(2)
+            expect(codeMapLabelService["disposeSprite"]).toHaveBeenCalledTimes(2)
         })
 
         it("should call disposeLine two times when InternalLabel[] is set", () => {
@@ -569,7 +569,7 @@ describe("CodeMapLabelService", () => {
 
             codeMapLabelService.dispose([internalLabel, internalLabel])
 
-            expect(codeMapLabelService["disposeLine"]).toBeCalledTimes(2)
+            expect(codeMapLabelService["disposeLine"]).toHaveBeenCalledTimes(2)
         })
     })
 })

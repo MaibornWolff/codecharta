@@ -92,19 +92,19 @@ describe("CustomComposer", () => {
         it("should call getDelta", () => {
             customComposer.render()
 
-            expect(customComposer.clock.getDelta).toBeCalled()
+            expect(customComposer.clock.getDelta).toHaveBeenCalled()
         })
 
         it("should not call getDelta when delta time is available", () => {
             customComposer.render(1)
 
-            expect(customComposer.clock.getDelta).not.toBeCalled()
+            expect(customComposer.clock.getDelta).not.toHaveBeenCalled()
         })
 
         it("should call renderer getRenderTarget", () => {
             customComposer.render()
 
-            expect(renderer.getRenderTarget).toBeCalled()
+            expect(renderer.getRenderTarget).toHaveBeenCalled()
         })
 
         it("should call swapBuffers when needSwap is active", () => {
@@ -124,7 +124,7 @@ describe("CustomComposer", () => {
         it("should call renderer setRenderTarget", () => {
             customComposer.render()
 
-            expect(renderer.setRenderTarget).toBeCalled()
+            expect(renderer.setRenderTarget).toHaveBeenCalled()
         })
     })
 
@@ -150,8 +150,8 @@ describe("CustomComposer", () => {
 
             customComposer.dispose()
 
-            expect(fullScreenQuad["fsQuad"].material.dispose).not.toBeCalled()
-            expect(fullScreenQuad["fsQuad"]._mesh.geometry.dispose).not.toBeCalled()
+            expect(fullScreenQuad["fsQuad"].material.dispose).not.toHaveBeenCalled()
+            expect(fullScreenQuad["fsQuad"]._mesh.geometry.dispose).not.toHaveBeenCalled()
         })
 
         it("should call dispose only once", () => {
@@ -164,8 +164,8 @@ describe("CustomComposer", () => {
 
             customComposer.dispose()
 
-            expect(fullScreenQuad["fsQuad"].material.dispose).toBeCalled()
-            expect(fullScreenQuad["fsQuad"]._mesh.geometry.dispose).toBeCalled()
+            expect(fullScreenQuad["fsQuad"].material.dispose).toHaveBeenCalled()
+            expect(fullScreenQuad["fsQuad"]._mesh.geometry.dispose).toHaveBeenCalled()
         })
     })
 })
