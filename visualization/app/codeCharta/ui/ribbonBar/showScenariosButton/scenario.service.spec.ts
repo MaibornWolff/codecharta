@@ -20,7 +20,7 @@ import { setState } from "../../../state/store/state.actions"
 import { defaultState } from "../../../state/store/state.manager"
 import { METRIC_DATA } from "../../../util/dataMocks"
 import { ThreeCameraService } from "../../codeMap/threeViewer/threeCamera.service"
-import { ThreeOrbitControlsService } from "../../codeMap/threeViewer/threeOrbitControls.service"
+import { ThreeMapControlsService } from "../../codeMap/threeViewer/threeMapControls.service"
 import { ErrorDialogComponent } from "../../dialogs/errorDialog/errorDialog.component"
 import { ScenarioService } from "./scenario.service"
 import { ScenarioHelper } from "./scenarioHelper"
@@ -30,7 +30,7 @@ describe("scenarioService", () => {
     let mockedStore: MockStore<CcState>
     let mockedDialog: MatDialog
     let mockedThreeCameraService: ThreeCameraService
-    let mockedThreeOrbitControlsService: ThreeOrbitControlsService
+    let mockedThreeOrbitControlsService: ThreeMapControlsService
     const initialState: CcState = {
         fileSettings: undefined,
         dynamicSettings: undefined,
@@ -69,7 +69,7 @@ describe("scenarioService", () => {
                 { provide: MatDialog, useValue: { open: jest.fn() } },
                 { provide: State, useValue: { getValue: () => defaultState } },
                 { provide: ThreeCameraService, useValue: { setPosition: jest.fn() } },
-                { provide: ThreeOrbitControlsService, useValue: { setControlTarget: jest.fn() } }
+                { provide: ThreeMapControlsService, useValue: { setControlTarget: jest.fn() } }
             ]
         })
 
@@ -77,7 +77,7 @@ describe("scenarioService", () => {
         mockedDialog = TestBed.inject(MatDialog)
         scenarioService = TestBed.inject(ScenarioService)
         mockedThreeCameraService = TestBed.inject(ThreeCameraService)
-        mockedThreeOrbitControlsService = TestBed.inject(ThreeOrbitControlsService)
+        mockedThreeOrbitControlsService = TestBed.inject(ThreeMapControlsService)
 
         ScenarioHelper.scenarios.set("Scenario1", {
             name: "Scenario1",

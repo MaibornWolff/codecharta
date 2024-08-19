@@ -1,44 +1,47 @@
 import { Group, Mesh, PerspectiveCamera, Vector2, WebGLRenderer } from "three"
-import { ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitControls.service"
+import { ThreeMapControlsService } from "../codeMap/threeViewer/threeMapControls.service"
 import { ViewCubeMouseEventsService } from "./viewCube.mouseEvents.service"
-// eslint-disable-next-line no-duplicate-imports
-import * as Three from "three"
-import oc from "three-orbit-controls"
-import type { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
 import { CursorType } from "../codeMap/codeMap.mouseEvent.service"
+
+jest.mock("three", () => ({
+    ...jest.requireActual("three"),
+    WebGLRenderer: jest.fn().mockImplementation(() => ({
+        domElement: {
+            addEventListener: jest.fn(),
+            getBoundingClientRect: () => ({
+                left: 0,
+                top: 0,
+                width: 100,
+                height: 100
+            })
+        },
+        getPixelRatio: jest.fn().mockReturnValue(2),
+        context: {
+            getParameter: jest.fn().mockReturnValue(["WebGL 2"]),
+            getExtension: jest.fn().mockReturnValue({}),
+            alpha: true
+        }
+    })),
+    PerspectiveCamera: jest.fn().mockImplementation(() => ({}))
+}))
+
+jest.mock("three/examples/jsm/controls/OrbitControls", () => {
+    return {
+        OrbitControls: jest.fn()
+    }
+})
 
 describe("ViewCubeMouseEventsService", () => {
     let viewCubeMouseEventsService: ViewCubeMouseEventsService
-    let threeOrbitControlsService: ThreeOrbitControlsService
+    let threeMapControlsService: ThreeMapControlsService
     let webGLRenderer: WebGLRenderer
 
     beforeEach(() => {
-        viewCubeMouseEventsService = new ViewCubeMouseEventsService(threeOrbitControlsService)
+        viewCubeMouseEventsService = new ViewCubeMouseEventsService(threeMapControlsService)
 
         const eventMap = {}
-        webGLRenderer = new WebGLRenderer({
-            context: {
-                getParameter: jest.fn().mockReturnValue(["WebGL 2"]),
-                getExtension: jest.fn().mockReturnValue({
-                    EXT_blend_minmax: null
-                }),
-                createTexture: jest.fn(),
-                bindTexture: jest.fn(),
-                texParameteri: jest.fn(),
-                texImage2D: jest.fn(),
-                clearColor: jest.fn(),
-                clearDepth: jest.fn(),
-                clearStencil: jest.fn(),
-                enable: jest.fn(),
-                disable: jest.fn(),
-                depthFunc: jest.fn(),
-                frontFace: jest.fn(),
-                cullFace: jest.fn(),
-                initGLContext: jest.fn(),
-                scissor: jest.fn(),
-                viewport: jest.fn()
-            } as unknown as WebGLRenderingContext
-        })
+        webGLRenderer = new WebGLRenderer()
 
         webGLRenderer.domElement = {
             addEventListener: jest.fn((event, callback) => {
@@ -68,10 +71,8 @@ describe("ViewCubeMouseEventsService", () => {
     describe("initOrbitalControl", () => {
         it("should initialize controls with parameters", () => {
             const camera = new PerspectiveCamera()
-            const orbitControls = oc(Three)
-            const expectedControls = new orbitControls(camera, webGLRenderer.domElement) as unknown as OrbitControls
+            const expectedControls = new OrbitControls(camera, webGLRenderer.domElement)
             expectedControls.enableZoom = false
-            expectedControls.enableKeys = false
             expectedControls.enablePan = false
             expectedControls.rotateSpeed = 1
 
@@ -88,27 +89,27 @@ describe("ViewCubeMouseEventsService", () => {
             viewCubeMouseEventsService["initRendererEventListeners"](webGLRenderer)
         })
         it("should add mousemove listener", () => {
-            expect(webGLRenderer.domElement.addEventListener).toBeCalledWith("mousemove", expect.any(Function))
+            expect(webGLRenderer.domElement.addEventListener).toHaveBeenCalledWith("mousemove", expect.any(Function))
         })
 
         it("should add mouseup listener", () => {
-            expect(webGLRenderer.domElement.addEventListener).toBeCalledWith("mouseup", expect.any(Function))
+            expect(webGLRenderer.domElement.addEventListener).toHaveBeenCalledWith("mouseup", expect.any(Function))
         })
 
         it("should add mousedown listener", () => {
-            expect(webGLRenderer.domElement.addEventListener).toBeCalledWith("mousedown", expect.any(Function))
+            expect(webGLRenderer.domElement.addEventListener).toHaveBeenCalledWith("mousedown", expect.any(Function))
         })
 
         it("should add dblclick listener", () => {
-            expect(webGLRenderer.domElement.addEventListener).toBeCalledWith("dblclick", expect.any(Function))
+            expect(webGLRenderer.domElement.addEventListener).toHaveBeenCalledWith("dblclick", expect.any(Function))
         })
 
         it("should add mouseleave listener", () => {
-            expect(webGLRenderer.domElement.addEventListener).toBeCalledWith("mouseleave", expect.any(Function))
+            expect(webGLRenderer.domElement.addEventListener).toHaveBeenCalledWith("mouseleave", expect.any(Function))
         })
 
         it("should add mouseenter listener", () => {
-            expect(webGLRenderer.domElement.addEventListener).toBeCalledWith("mouseenter", expect.any(Function))
+            expect(webGLRenderer.domElement.addEventListener).toHaveBeenCalledWith("mouseenter", expect.any(Function))
         })
     })
 
@@ -225,7 +226,7 @@ describe("ViewCubeMouseEventsService", () => {
             const mouseEvent = new MouseEvent("mousedown", { clientX: 1, clientY: 2 })
             viewCubeMouseEventsService["onDocumentMouseMove"](mouseEvent)
 
-            expect(viewCubeMouseEventsService["triggerViewCubeUnhoverEvent"]).toBeCalled()
+            expect(viewCubeMouseEventsService["triggerViewCubeUnhoverEvent"]).toHaveBeenCalled()
         })
 
         it("should call triggerViewCubeUnhoverEvent when currentlyHovered and cube intersection are not same", () => {
@@ -236,7 +237,7 @@ describe("ViewCubeMouseEventsService", () => {
             const mouseEvent = new MouseEvent("mousedown", { clientX: 1, clientY: 2 })
             viewCubeMouseEventsService["onDocumentMouseMove"](mouseEvent)
 
-            expect(viewCubeMouseEventsService["triggerViewCubeUnhoverEvent"]).toBeCalled()
+            expect(viewCubeMouseEventsService["triggerViewCubeUnhoverEvent"]).toHaveBeenCalled()
         })
 
         it("should call triggerViewCubeHoverEvent when not currentlyHovered and cube intersection was found", () => {
@@ -248,7 +249,7 @@ describe("ViewCubeMouseEventsService", () => {
             const mouseEvent = new MouseEvent("mousedown", { clientX: 1, clientY: 2 })
             viewCubeMouseEventsService["onDocumentMouseMove"](mouseEvent)
 
-            expect(viewCubeMouseEventsService["triggerViewCubeHoverEvent"]).toBeCalledWith(mockedCube)
+            expect(viewCubeMouseEventsService["triggerViewCubeHoverEvent"]).toHaveBeenCalledWith(mockedCube)
         })
     })
 

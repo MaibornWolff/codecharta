@@ -5,7 +5,7 @@ import { expect } from "@jest/globals"
 import { ApplyCustomConfigButtonComponent } from "./applyCustomConfigButton.component"
 import { CustomConfigsModule } from "../../../customConfigs.module"
 import { ThreeCameraService } from "../../../../codeMap/threeViewer/threeCamera.service"
-import { ThreeOrbitControlsService } from "../../../../codeMap/threeViewer/threeOrbitControls.service"
+import { ThreeMapControlsService } from "../../../../codeMap/threeViewer/threeMapControls.service"
 import { CUSTOM_CONFIG_ITEM_GROUPS } from "../../../../../util/dataMocks"
 import { CustomConfigHelper } from "../../../../../util/customConfigHelper"
 import { provideMockStore } from "@ngrx/store/testing"
@@ -23,7 +23,7 @@ describe("applyCustomConfigButtonComponent", () => {
                 { provide: MatDialogRef, useValue: mockedDialogReference },
                 { provide: MatDialog, useValue: mockedDialog },
                 { provide: ThreeCameraService, useValue: {} },
-                { provide: ThreeOrbitControlsService, useValue: {} },
+                { provide: ThreeMapControlsService, useValue: {} },
                 provideMockStore(),
                 { provide: State, useValue: { getValue: () => defaultState } }
             ]

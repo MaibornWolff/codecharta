@@ -3,7 +3,8 @@ import { GeometryOptions } from "../preview3DPrintMesh"
 import { CreateTextGeometryStrategy, CreateTextGeometryStrategyOptions } from "../CreateGeometryStrategies/createTextGeometryStrategy"
 import { BackPrintColorChangeStrategy } from "../ColorChangeStrategies/backPrintColorChangeStrategy"
 import { TextMesh } from "./textMesh"
-import { BufferGeometry, Font, Mesh, ShaderMaterial } from "three"
+import { BufferGeometry, Mesh, ShaderMaterial } from "three"
+import { Font } from "three/examples/jsm/loaders/FontLoader"
 
 jest.mock("../CreateGeometryStrategies/createTextGeometryStrategy")
 

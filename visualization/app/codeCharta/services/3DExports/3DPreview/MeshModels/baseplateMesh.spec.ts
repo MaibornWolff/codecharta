@@ -43,7 +43,6 @@ describe("BaseplateMesh", () => {
     it("should initialize and set geometry and material", async () => {
         const baseplateMesh = new BaseplateMesh(createBaseplateGeometryStrategy)
         await baseplateMesh.init(geometryOptions)
-
         expect(createBaseplateGeometryStrategy.create).toHaveBeenCalledWith(geometryOptions)
         expect(baseplateMesh.geometry).toBeInstanceOf(BufferGeometry)
         expect(baseplateMesh.material).toBeInstanceOf(ShaderMaterial)

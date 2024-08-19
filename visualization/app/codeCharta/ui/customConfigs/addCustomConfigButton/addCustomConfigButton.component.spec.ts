@@ -7,7 +7,7 @@ import userEvent from "@testing-library/user-event"
 import { CustomConfigHelper } from "../../../util/customConfigHelper"
 import { Vector3 } from "three"
 import { ThreeCameraService } from "../../codeMap/threeViewer/threeCamera.service"
-import { ThreeOrbitControlsService } from "../../codeMap/threeViewer/threeOrbitControls.service"
+import { ThreeMapControlsService } from "../../codeMap/threeViewer/threeMapControls.service"
 import { TestbedHarnessEnvironment } from "@angular/cdk/testing/testbed"
 import { MatDialogHarness } from "@angular/material/dialog/testing"
 import { defaultState } from "../../../state/store/state.manager"
@@ -18,7 +18,7 @@ describe("addCustomConfigButtonComponent", () => {
             imports: [AddCustomConfigButtonModule],
             providers: [
                 { provide: ThreeCameraService, useValue: { camera: { position: new Vector3(0, 300, 1000) } } },
-                { provide: ThreeOrbitControlsService, useValue: { controls: { target: new Vector3(0, 0, 0) } } },
+                { provide: ThreeMapControlsService, useValue: { controls: { target: new Vector3(0, 0, 0) } } },
                 { provide: State, useValue: { getValue: () => defaultState } }
             ]
         })

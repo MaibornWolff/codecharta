@@ -2,7 +2,7 @@ import { CodeChartaTextMesh } from "./codeChartaTextMesh"
 import { TextMesh } from "../textMesh"
 import { BackPrintColorChangeStrategy } from "../../ColorChangeStrategies/backPrintColorChangeStrategy"
 import helvetiker from "three/examples/fonts/helvetiker_regular.typeface.json"
-import { Font } from "three"
+import { Font } from "three/examples/jsm/loaders/FontLoader"
 
 jest.mock("../textMesh", () => {
     return {

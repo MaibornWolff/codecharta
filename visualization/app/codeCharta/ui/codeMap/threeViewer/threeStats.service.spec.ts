@@ -4,18 +4,27 @@ import { WebGLRenderer } from "three/src/renderers/WebGLRenderer"
 import { WebGLInfo } from "three/src/renderers/webgl/WebGLInfo"
 
 jest.mock("three/examples/jsm/libs/stats.module", () => {
+    function MockedPanel(name: any, foregroundColor: any, backgroundColor: any) {
+        return {
+            update: jest.fn(),
+            name,
+            foregroundColor,
+            backgroundColor
+        }
+    }
+
     function MockedStats() {
         return {
             addPanel: jest.fn(),
             showPanel: jest.fn(),
             update: jest.fn(),
-            domElement: {
+            dom: {
                 style: {} as CSSStyleDeclaration,
                 remove: jest.fn()
             } as unknown as HTMLDivElement
         }
     }
-    MockedStats.Panel = () => ({})
+    MockedStats.Panel = MockedPanel
     return {
         __esModule: true,
         default: MockedStats
@@ -191,7 +200,7 @@ describe("ThreeStatsService", () => {
         it("should remove dom Element", () => {
             threeStatsService.destroy()
 
-            expect(threeStatsService.stats.domElement.remove).toHaveBeenCalled()
+            expect(threeStatsService.stats.dom.remove).toHaveBeenCalled()
         })
     })
 })

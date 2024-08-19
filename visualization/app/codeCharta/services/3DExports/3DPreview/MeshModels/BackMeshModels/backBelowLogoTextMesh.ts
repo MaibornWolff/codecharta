@@ -1,4 +1,4 @@
-import { Font } from "three"
+import { Font } from "three/examples/jsm/loaders/FontLoader"
 import { CreateTextGeometryStrategyOptions } from "../../CreateGeometryStrategies/createTextGeometryStrategy"
 import { TextMesh } from "../textMesh"
 import { BackPrintColorChangeStrategy } from "../../ColorChangeStrategies/backPrintColorChangeStrategy"

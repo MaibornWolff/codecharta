@@ -1,9 +1,10 @@
-import { BufferGeometry, Font } from "three"
+import { BufferGeometry } from "three"
+import { Font } from "three/examples/jsm/loaders/FontLoader"
 import { GeometryOptions } from "../../preview3DPrintMesh"
 import { CreateSvgGeometryStrategy } from "../../CreateGeometryStrategies/createSvgGeometryStrategy"
 import { CreateTextGeometryStrategy } from "../../CreateGeometryStrategies/createTextGeometryStrategy"
 import { MetricDescriptionBlockMesh, MetricDescriptionBlockOptions } from "./metricDescriptionBlockMesh"
-import { BufferGeometryUtils } from "three/examples/jsm/utils/BufferGeometryUtils"
+import * as BufferGeometryUtils from "three/examples/jsm/utils/BufferGeometryUtils"
 
 jest.mock("../../CreateGeometryStrategies/createSvgGeometryStrategy")
 jest.mock("../../CreateGeometryStrategies/createTextGeometryStrategy")
@@ -36,7 +37,7 @@ describe("MetricDescriptionBlockMesh", () => {
         }
         ;(CreateSvgGeometryStrategy.prototype.create as jest.Mock).mockResolvedValue(new BufferGeometry())
         ;(CreateTextGeometryStrategy.prototype.create as jest.Mock).mockResolvedValue(new BufferGeometry())
-        ;(BufferGeometryUtils.mergeBufferGeometries as jest.Mock).mockReturnValue(new BufferGeometry())
+        ;(BufferGeometryUtils.mergeGeometries as jest.Mock).mockReturnValue(new BufferGeometry())
     })
 
     it("should initialize and set geometry and position", async () => {
@@ -45,7 +46,7 @@ describe("MetricDescriptionBlockMesh", () => {
 
         await metricDescriptionBlockMesh.init(geometryOptions)
 
-        expect(BufferGeometryUtils.mergeBufferGeometries).toHaveBeenCalled()
+        expect(BufferGeometryUtils.mergeGeometries).toHaveBeenCalled()
         expect(metricDescriptionBlockMesh.geometry).toBeInstanceOf(BufferGeometry)
         expect(metricDescriptionBlockMesh.position.y).toBe(-0.15 + yOffset)
     })

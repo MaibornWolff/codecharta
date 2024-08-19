@@ -22,11 +22,11 @@ export class ThreeStatsService {
 
     init = (canvasElement: Element) => {
         if (this.isDevelopmentMode) {
-            this.stats = Stats()
+            this.stats = new Stats()
 
-            this.stats.domElement.style.position = "absolute"
-            this.stats.domElement.style.left = "0"
-            this.stats.domElement.style.top = "0"
+            this.stats.dom.style.position = "absolute"
+            this.stats.dom.style.left = "0"
+            this.stats.dom.style.top = "0"
 
             canvasElement.append(this.stats.dom)
 
@@ -41,10 +41,10 @@ export class ThreeStatsService {
     }
 
     private generateStatPanels = () => {
-        this.trianglesPanel = { panel: this.stats.addPanel(Stats.Panel("triangles", "#ff8", "#221")), maxHeight: 0 }
-        this.glCallsPanel = { panel: this.stats.addPanel(Stats.Panel("calls", "#f8f", "#212")), maxHeight: 0 }
-        this.geometryMemoryPanel = { panel: this.stats.addPanel(Stats.Panel("geo. mem", "#f08", "#221")), maxHeight: 0 }
-        this.textureMemoryPanel = { panel: this.stats.addPanel(Stats.Panel("tex. mem", "#0f8", "#221")), maxHeight: 0 }
+        this.trianglesPanel = { panel: this.stats.addPanel(new Stats.Panel("triangles", "#ff8", "#221")), maxHeight: 0 }
+        this.glCallsPanel = { panel: this.stats.addPanel(new Stats.Panel("calls", "#f8f", "#212")), maxHeight: 0 }
+        this.geometryMemoryPanel = { panel: this.stats.addPanel(new Stats.Panel("geo. mem", "#f08", "#221")), maxHeight: 0 }
+        this.textureMemoryPanel = { panel: this.stats.addPanel(new Stats.Panel("tex. mem", "#0f8", "#221")), maxHeight: 0 }
 
         this.stats.showPanel(3)
     }
@@ -82,7 +82,7 @@ export class ThreeStatsService {
 
     destroy = () => {
         if (this.isDevelopmentMode) {
-            this.stats.domElement.remove()
+            this.stats.dom.remove()
         }
     }
 }

@@ -3,7 +3,7 @@ import { UntypedFormControl, Validators, AbstractControl, ValidatorFn } from "@a
 import { CustomConfigHelper } from "../../../../util/customConfigHelper"
 import { buildCustomConfigFromState } from "../../../../util/customConfigBuilder"
 import { ThreeCameraService } from "../../../codeMap/threeViewer/threeCamera.service"
-import { ThreeOrbitControlsService } from "../../../codeMap/threeViewer/threeOrbitControls.service"
+import { ThreeMapControlsService } from "../../../codeMap/threeViewer/threeMapControls.service"
 import { VisibleFilesBySelectionMode, visibleFilesBySelectionModeSelector } from "../../visibleFilesBySelectionMode.selector"
 import { CcState } from "../../../../codeCharta.model"
 import { State } from "@ngrx/store"
@@ -18,7 +18,7 @@ export class AddCustomConfigDialogComponent implements OnInit {
     constructor(
         private state: State<CcState>,
         private threeCameraService: ThreeCameraService,
-        private threeOrbitControlsService: ThreeOrbitControlsService
+        private threeOrbitControlsService: ThreeMapControlsService
     ) {}
 
     ngOnInit(): void {

@@ -1,16 +1,16 @@
 import { TestBed } from "@angular/core/testing"
 import { StoreModule } from "@ngrx/store"
-import { ThreeOrbitControlsService } from "./threeOrbitControls.service"
+import { ThreeMapControlsService } from "./threeMapControls.service"
 import { ThreeCameraService } from "./threeCamera.service"
 import { ThreeSceneService } from "./threeSceneService"
 import { BoxGeometry, Group, Mesh, PerspectiveCamera, Vector3 } from "three"
-import type { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
 import { ThreeRendererService } from "./threeRenderer.service"
 import { wait } from "../../../util/testUtils/wait"
 import { appReducers, setStateMiddleware } from "../../../state/store/state.manager"
+import { MapControls } from "three/examples/jsm/controls/MapControls"
 
-describe("ThreeOrbitControlsService", () => {
-    let threeOrbitControlsService: ThreeOrbitControlsService
+describe("ThreeMapControlsService", () => {
+    let threeMapControlsService: ThreeMapControlsService
     let threeCameraService: ThreeCameraService
     let threeSceneService: ThreeSceneService
     let threeRendererService: ThreeRendererService
@@ -49,26 +49,26 @@ describe("ThreeOrbitControlsService", () => {
     }
 
     function withMockedControlService() {
-        threeOrbitControlsService.controls = {
+        threeMapControlsService.controls = {
             target: new Vector3(1, 1, 1)
-        } as unknown as OrbitControls
-        threeOrbitControlsService.controls.update = jest.fn()
+        } as unknown as MapControls
+        threeMapControlsService.controls.update = jest.fn()
     }
 
     function rebuildService() {
-        threeOrbitControlsService = new ThreeOrbitControlsService(threeCameraService, threeSceneService, threeRendererService)
+        threeMapControlsService = new ThreeMapControlsService(threeCameraService, threeSceneService, threeRendererService)
     }
 
     it("rotateCameraInVectorDirection ", () => {
-        threeOrbitControlsService.controls = {
+        threeMapControlsService.controls = {
             target: new Vector3(0, 0, 0)
-        } as unknown as OrbitControls
+        } as unknown as MapControls
         const vector = { x: 0, y: 1, z: 0 }
 
-        threeOrbitControlsService.rotateCameraInVectorDirection(vector.x, vector.y, vector.z)
+        threeMapControlsService.rotateCameraInVectorDirection(vector.x, vector.y, vector.z)
 
-        expect(threeSceneService.scene.add).toBeCalled()
-        expect(threeSceneService.scene.remove).toBeCalled()
+        expect(threeSceneService.scene.add).toHaveBeenCalled()
+        expect(threeSceneService.scene.remove).toHaveBeenCalled()
 
         expect(threeCameraService.camera.position).toMatchSnapshot()
     })
@@ -76,9 +76,9 @@ describe("ThreeOrbitControlsService", () => {
     describe("setControlTarget", () => {
         it("should set the controlTarget to the store cameraTarget", () => {
             const result: Vector3 = new Vector3(1, 1, 1)
-            threeOrbitControlsService.setControlTarget(new Vector3(1, 1, 1))
+            threeMapControlsService.setControlTarget(new Vector3(1, 1, 1))
 
-            expect(threeOrbitControlsService.controls.target).toEqual(result)
+            expect(threeMapControlsService.controls.target).toEqual(result)
         })
     })
 
@@ -86,7 +86,7 @@ describe("ThreeOrbitControlsService", () => {
         it("should auto fit map to its origin value ", async () => {
             threeCameraService.camera.position.set(0, 0, 0)
 
-            threeOrbitControlsService.autoFitTo()
+            threeMapControlsService.autoFitTo()
             await wait(0)
 
             expect(threeCameraService.camera.position).toEqual(vector)
@@ -95,20 +95,20 @@ describe("ThreeOrbitControlsService", () => {
         it("should call an control update", async () => {
             threeCameraService.camera.lookAt = jest.fn()
 
-            threeOrbitControlsService.autoFitTo()
+            threeMapControlsService.autoFitTo()
             await wait(0)
 
-            expect(threeCameraService.camera.lookAt).toBeCalledWith(threeOrbitControlsService.controls.target)
+            expect(threeCameraService.camera.lookAt).toHaveBeenCalledWith(threeMapControlsService.controls.target)
         })
 
         it("should auto fit map to its original value ", async () => {
             threeCameraService.camera.updateProjectionMatrix = jest.fn()
 
-            threeOrbitControlsService.autoFitTo()
+            threeMapControlsService.autoFitTo()
             await wait(0)
 
-            expect(threeOrbitControlsService.controls.update).toBeCalled()
-            expect(threeCameraService.camera.updateProjectionMatrix).toBeCalled()
+            expect(threeMapControlsService.controls.update).toHaveBeenCalled()
+            expect(threeCameraService.camera.updateProjectionMatrix).toHaveBeenCalled()
         })
     })
 })

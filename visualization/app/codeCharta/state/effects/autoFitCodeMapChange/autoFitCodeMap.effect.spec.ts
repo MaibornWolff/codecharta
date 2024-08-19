@@ -1,6 +1,6 @@
 import { TestBed } from "@angular/core/testing"
 import { BehaviorSubject, Subject } from "rxjs"
-import { ThreeOrbitControlsService } from "../../../ui/codeMap/threeViewer/threeOrbitControls.service"
+import { ThreeMapControlsService } from "../../../ui/codeMap/threeViewer/threeMapControls.service"
 import { visibleFileStatesSelector } from "../../selectors/visibleFileStates.selector"
 import { layoutAlgorithmSelector } from "../../store/appSettings/layoutAlgorithm/layoutAlgorithm.selector"
 import { resetCameraIfNewFileIsLoadedSelector } from "../../store/appSettings/resetCameraIfNewFileIsLoaded/resetCameraIfNewFileIsLoaded.selector"
@@ -36,7 +36,7 @@ describe("autoFitCodeMapOnFileSelectionChangeEffect", () => {
                     ]
                 }),
                 provideMockActions(() => actions$),
-                { provide: ThreeOrbitControlsService, useValue: { autoFitTo: mockedAutoFitTo } }
+                { provide: ThreeMapControlsService, useValue: { autoFitTo: mockedAutoFitTo } }
             ]
         })
         store = TestBed.inject(MockStore)

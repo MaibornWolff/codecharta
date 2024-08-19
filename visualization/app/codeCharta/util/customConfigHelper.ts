@@ -10,7 +10,7 @@ import {
 import { FileNameHelper } from "./fileNameHelper"
 import { FileDownloader } from "./fileDownloader"
 import { ThreeCameraService } from "../ui/codeMap/threeViewer/threeCamera.service"
-import { ThreeOrbitControlsService } from "../ui/codeMap/threeViewer/threeOrbitControls.service"
+import { ThreeMapControlsService } from "../ui/codeMap/threeViewer/threeMapControls.service"
 import { BehaviorSubject } from "rxjs"
 import { VisibleFilesBySelectionMode } from "../ui/customConfigs/visibleFilesBySelectionMode.selector"
 import { Store } from "@ngrx/store"
@@ -193,7 +193,7 @@ export class CustomConfigHelper {
         configId: string,
         store: Store,
         threeCameraService: ThreeCameraService,
-        threeOrbitControlsService: ThreeOrbitControlsService
+        threeOrbitControlsService: ThreeMapControlsService
     ) {
         const customConfig = this.getCustomConfigSettings(configId)
         store.dispatch(setState({ value: customConfig.stateSettings }))

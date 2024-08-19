@@ -20,6 +20,11 @@ describe("serialize3mf service", () => {
         const minimalExamplePath = resolve(__dirname, "../../resources/minimalScene.json")
 
         it("should produce a valid set of xml files", async () => {
+            // NOTE:
+            // This test does not cover the entire scene, as the ObjectLoader no longer supports TextGeometry.
+            // TextGeometry objects have been removed from the JSON locates in "/resources/minimalScene.json"
+            // to prevent parsing errors. For further details, refer to the discussion on the Three.js
+            // issue tracker: https://github.com/mrdoob/three.js/issues/9905
             const threeObjectLoader = new ObjectLoader()
             const xmlParser = new XMLParser({ removeNSPrefix: false, ignoreAttributes: false, parseAttributeValue: true })
 
