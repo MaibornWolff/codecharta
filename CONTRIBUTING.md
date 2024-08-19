@@ -11,6 +11,10 @@ Things that increase the chance that a pull request will be accepted:
 - Write a good commit message and include the issue number at the end `#123`.
 - Update the CHANGELOG.md with any changes/additions made
 
+When merging pull requests we prefer to rebase instead of a squash merge, as this results in a cleaner commit history that makes it easier to detect bugs.
+
+> During development on other branches, make sure to always rebase on top of the most current changes on the main branch so that the commits stay in the right order and do not produce as many merge conflicts when closing the pull request
+
 This project is bound by a [Code of Conduct](CODE_OF_CONDUCT.md).
 
 ## Naming conventions
@@ -76,7 +80,7 @@ To unify the appearance of all commit messages we only accept commit messages us
 ### Pull Requests
 
 - Follow the given template when opening the PR
-- Name the PR like its branch name (e.x. `Tech/123/my branch name`). The name is usually created by GitHub automatically
+- Name the PR like its branch name (e.g. `Tech/123/my branch name`). The name is usually created by GitHub automatically
 - Add the correct labels
 - The PR Assignee is only used by the reviewer to see who is reviewing it
 

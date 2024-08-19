@@ -6,7 +6,7 @@
   <br>
 </h1>
 
-<h4 align="center">a beautiful tool to help you visualize and understand code in 3D.</h4>
+<h4 align="center">a tool to help you visualize and understand code in 3D.</h4>
 
 <p align="center">
     <a href="https://github.com/MaibornWolff/codecharta/actions/workflows/release-analysis.yml">
@@ -34,7 +34,6 @@ Latest Release: <br>
 
 <p align="center">
   <a href="#key-features">Key Features</a> •
-  <a href="#experimental-features">Experimental Features</a> •
   <a href="#how-to-use">How To Use</a> •
   <a href="#feedback">Feedback</a> •
   <a href="#further-information">Further Info</a> •
@@ -95,7 +94,7 @@ $ ccsh sourcecodeparser junit4 -p junit4 -o junit4.source.cc.json
 
 Have a **bug**, a **feature** request or any question? Please open [a new issue](https://github.com/MaibornWolff/codecharta/issues/new). Feedback is always welcome.
 
-Want to have even **more information**? Please check our [news](https://maibornwolff.github.io/codecharta/news/).
+Want to have even **more information**? Please check our [documentation](https://maibornwolff.github.io/codecharta/) and [news](https://maibornwolff.github.io/codecharta/news/).
 
 ## Further Information
 
