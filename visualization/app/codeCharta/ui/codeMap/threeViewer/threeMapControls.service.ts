@@ -50,6 +50,11 @@ export class ThreeMapControlsService {
             this.focusCameraViewToCenter(boundingSphere)
             this.threeRendererService.render()
             this.onInput(this.threeCameraService.camera)
+
+            const scale = 1.3 // object size / display size
+
+            this.controls.maxDistance = length * 4
+            this.controls.minDistance = boundingSphere.radius / (10 * scale)
         })
     }
 
