@@ -74,11 +74,3 @@ cc-metric-chooser:hover .metric-value {
         }
     }
 }
-.cdk-overlay-pane:not(.mat-mdc-select-panel-above) .mdc-menu-surface.mat-mdc-select-panel {
-    position: absolute;
-    width: 300px;
-    max-height: 216px;
-    right: 0;
-    top: 72px;
-    padding: 0;
-}

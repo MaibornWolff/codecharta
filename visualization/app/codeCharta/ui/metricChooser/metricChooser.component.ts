@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, OnInit, QueryList, ViewChild, ViewChildren, ViewEncapsulation } from "@angular/core"
+import { Component, ElementRef, Input, OnInit, QueryList, ViewChild, ViewChildren } from "@angular/core"
 import { map, Observable } from "rxjs"
 import { EdgeMetricData, NodeMetricData, CcState } from "../../codeCharta.model"
 import { metricDataSelector } from "../../state/selectors/accumulatedData/metricData/metricData.selector"
@@ -13,7 +13,6 @@ type MetricChooserType = "node" | "edge"
     selector: "cc-metric-chooser",
     templateUrl: "./metricChooser.component.html",
     styleUrls: ["./metricChooser.component.scss"],
-    encapsulation: ViewEncapsulation.None
 })
 export class MetricChooserComponent implements OnInit {
     @Input() selectedMetricName: string

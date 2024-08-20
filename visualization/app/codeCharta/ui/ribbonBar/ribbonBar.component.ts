@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewEncapsulation } from "@angular/core"
+import { Component, OnDestroy, OnInit } from "@angular/core"
 import { experimentalFeaturesEnabledSelector } from "../../state/store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.selector"
 import { isDeltaStateSelector } from "../../state/selectors/isDeltaState.selector"
 import { map } from "rxjs"
@@ -12,7 +12,6 @@ type PanelSelection = "NONE" | "AREA_PANEL_OPEN" | "HEIGHT_PANEL_OPEN" | "COLOR_
     selector: "cc-ribbon-bar",
     templateUrl: "./ribbonBar.component.html",
     styleUrls: ["./ribbonBar.component.scss"],
-    encapsulation: ViewEncapsulation.None
 })
 export class RibbonBarComponent implements OnInit, OnDestroy {
     panelSelection: PanelSelection = "NONE"

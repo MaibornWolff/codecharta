@@ -7,7 +7,6 @@ import { EdgeMetricChooserModule } from "./edgeMetricChooser/edgeMetricChooser.m
 import { ShowScenariosButtonModule } from "./showScenariosButton/showScenariosButton.module"
 import { EdgeSettingsPanelModule } from "./edgeSettingsPanel/edgeSettingsPanel.module"
 import { ArtificialIntelligenceModule } from "./artificialIntelligence/artificialIntelligence.module"
-import { SearchPanelModule } from "../searchPanel/searchPanel.module"
 import { AreaSettingsPanelModule } from "./areaSettingsPanel/areaSettingsPanel.module"
 import { CustomConfigsModule } from "../customConfigs/customConfigs.module"
 import { HeightSettingsPanelModule } from "./heightSettingsPanel/heightSettingsPanel.module"
@@ -15,6 +14,7 @@ import { ColorSettingsPanelModule } from "./colorSettingsPanel/colorSettingsPane
 import { CommonModule } from "@angular/common"
 import { MaterialModule } from "../../../material/material.module"
 import { LinkColorMetricToHeightMetricButtonModule } from "./linkColorMetricToHeightMetricButton/linkColorMetricToHeightMetricButton.module"
+import { SearchPanelModule } from "./searchPanel/searchPanel.module"
 
 @NgModule({
     imports: [
