@@ -5,6 +5,7 @@ import { ThreeSceneService } from "./threeSceneService"
 import { MapControls } from "three/examples/jsm/controls/MapControls"
 import { ThreeRendererService } from "./threeRenderer.service"
 import { EventEmitter } from "../../../util/EventEmitter"
+import { BehaviorSubject } from "rxjs"
 
 type CameraChangeEvents = {
     onCameraChanged: (data: { camera: PerspectiveCamera }) => void
@@ -13,9 +14,12 @@ type CameraChangeEvents = {
 @Injectable({ providedIn: "root" })
 export class ThreeMapControlsService {
     static CAMERA_CHANGED_EVENT_NAME = "camera-changed"
+    MAX_ZOOM = 200
+    MIN_ZOOM = 10
 
     controls: MapControls
     private eventEmitter = new EventEmitter<CameraChangeEvents>()
+    zoomPercentage$ = new BehaviorSubject<number>(100)
 
     constructor(
         private threeCameraService: ThreeCameraService,
@@ -55,6 +59,8 @@ export class ThreeMapControlsService {
 
             this.controls.maxDistance = length * 4
             this.controls.minDistance = boundingSphere.radius / (10 * scale)
+
+            this.setZoomPercentage(100)
         })
     }
 
@@ -116,8 +122,10 @@ export class ThreeMapControlsService {
         this.controls.listenToKeyEvents(window)
         this.controls.addEventListener("change", () => {
             this.onInput(this.threeCameraService.camera)
+            this.updateZoomPercentage()
             this.threeRendererService.render()
         })
+        this.updateZoomPercentage()
     }
 
     onInput(camera: PerspectiveCamera) {
@@ -129,5 +137,43 @@ export class ThreeMapControlsService {
         this.eventEmitter.on(key, data => {
             callback(data)
         })
+    }
+
+    private getZoomPercentage(distance: number): number {
+        const min = this.controls.minDistance
+        const max = this.controls.maxDistance
+
+        if (distance <= min) {
+            return this.MAX_ZOOM
+        } // Maximum zoom (closest)
+        if (distance >= max) {
+            return this.MIN_ZOOM
+        } // Minimum zoom (farthest)
+
+        const range = max - min
+        return this.MAX_ZOOM - ((distance - min) / range) * (this.MAX_ZOOM - this.MIN_ZOOM) // Adjusted range to fit 10-500
+    }
+
+    private getDistanceFromZoomPercentage(percentage: number): number {
+        const min = this.controls.minDistance
+        const max = this.controls.maxDistance
+        const range = max - min
+
+        return min + ((this.MAX_ZOOM - percentage) / (this.MAX_ZOOM - this.MIN_ZOOM)) * range
+    }
+
+    updateZoomPercentage() {
+        const distance = this.threeCameraService.camera.position.distanceTo(this.controls.target)
+        const zoomFactor = this.getZoomPercentage(distance)
+        this.zoomPercentage$.next(zoomFactor)
+    }
+
+    setZoomPercentage(zoom: number) {
+        const newDistance = this.getDistanceFromZoomPercentage(zoom)
+        const direction = new Vector3().subVectors(this.threeCameraService.camera.position, this.controls.target).normalize()
+        this.threeCameraService.camera.position.copy(this.controls.target).add(direction.multiplyScalar(newDistance))
+        this.controls.update()
+
+        this.zoomPercentage$.next(zoom)
     }
 }
