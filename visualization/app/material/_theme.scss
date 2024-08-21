@@ -11,10 +11,6 @@
     --mat-toolbar-container-text-color: #fff;
     --mat-text-button-horizontal-padding: 8px;
 
-    --exceed-local-storage-message-text-color: #b02929;
-    --exceed-local-storage-button-text-color: #ffffff;
-    --exceed-local-storage-button-background-color: #b02929;
-
     // HACK: For the lack of a better way to change the checkmark colors directly in theme
     .mat-mdc-checkbox.mat-accent {
         --mdc-checkbox-selected-checkmark-color: #fff !important;
