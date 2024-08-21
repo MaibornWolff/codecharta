@@ -10,5 +10,5 @@
         (input)="onInput($event)"
     />
     <button class="zoom-button" data-testid="zoomIn" (click)="zoomIn()">+</button>
-    <span id="zoomValue">{{ zoomPercentage.toFixed(0) }}%</span>
+    <span id="zoomValue">{{ zoomPercentage?.toFixed(0) }}%</span>
 </div>
