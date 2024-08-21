@@ -139,22 +139,22 @@ export class ThreeMapControlsService {
         })
     }
 
-    private getZoomPercentage(distance: number): number {
+    getZoomPercentage(distance: number): number {
         const min = this.controls.minDistance
         const max = this.controls.maxDistance
 
         if (distance <= min) {
             return this.MAX_ZOOM
-        } // Maximum zoom (closest)
+        }
         if (distance >= max) {
             return this.MIN_ZOOM
-        } // Minimum zoom (farthest)
+        }
 
         const range = max - min
-        return this.MAX_ZOOM - ((distance - min) / range) * (this.MAX_ZOOM - this.MIN_ZOOM) // Adjusted range to fit 10-500
+        return this.MAX_ZOOM - ((distance - min) / range) * (this.MAX_ZOOM - this.MIN_ZOOM)
     }
 
-    private getDistanceFromZoomPercentage(percentage: number): number {
+    getDistanceFromZoomPercentage(percentage: number): number {
         const min = this.controls.minDistance
         const max = this.controls.maxDistance
         const range = max - min

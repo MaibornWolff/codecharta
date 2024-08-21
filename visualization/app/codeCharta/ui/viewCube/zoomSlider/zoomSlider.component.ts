@@ -7,15 +7,15 @@ import { ThreeMapControlsService } from "../../codeMap/threeViewer/threeMapContr
     styleUrls: ["./zoomSlider.component.scss"]
 })
 export class ZoomSliderComponent {
-    zoomPercentage: number
+    zoomPercentage = 100
     maxZoom: number
     minZoom: number
 
     constructor(private threeMapControlsService: ThreeMapControlsService) {
         this.maxZoom = this.threeMapControlsService.MAX_ZOOM
         this.minZoom = this.threeMapControlsService.MIN_ZOOM
-        this.threeMapControlsService.zoomPercentage$.subscribe(zoomFactor => {
-            this.zoomPercentage = zoomFactor
+        this.threeMapControlsService.zoomPercentage$.subscribe(zoom => {
+            this.zoomPercentage = zoom
         })
     }
 
