@@ -1,5 +1,11 @@
 @use "variables";
 
+:host {
+    .standard-select {
+        width: 200px;
+    }
+}
+
 .file-select {
     &.mat-mdc-select-panel {
         min-width: max-content;

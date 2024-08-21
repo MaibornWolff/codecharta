@@ -1,0 +1,23 @@
+@use "variables";
+
+.state-selector-button {
+    &.mode-selector {
+        height: 24px;
+        width: 66px;
+        background-color: #ffffff;
+
+        &.middle {
+            border-left: 1px solid rgba(230, 230, 230, 0.96);
+            border-right: 1px solid rgba(230, 230, 230, 0.96);
+        }
+
+        &.current {
+            background-color: variables.$cc-primary-color;
+            color: #ffffff;
+        }
+
+        &.current:hover {
+            background-color: variables.$cc-primary-color;
+        }
+    }
+}
