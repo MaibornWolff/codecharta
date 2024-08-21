@@ -1,23 +1,30 @@
 @use "variables";
 
 .state-selector-button {
-    &.mode-selector {
-        height: 24px;
-        width: 66px;
-        background-color: #ffffff;
+    height: 24px;
+    width: 66px;
+    margin: 0;
+    padding: 0;
+    background-color: #ffffff;
 
-        &.middle {
-            border-left: 1px solid rgba(230, 230, 230, 0.96);
-            border-right: 1px solid rgba(230, 230, 230, 0.96);
-        }
+    &:hover {
+        background-color: rgba(230, 230, 230, 0.96);
+    }
 
-        &.current {
-            background-color: variables.$cc-primary-color;
-            color: #ffffff;
-        }
+    &.left {
+        border-radius: 5px 0 0 5px;
+    }
 
-        &.current:hover {
-            background-color: variables.$cc-primary-color;
-        }
+    &.right {
+        border-radius: 0 5px 5px 0;
+    }
+
+    &.current {
+        background-color: variables.$cc-primary-color;
+        color: #ffffff;
+    }
+
+    &.current:hover {
+        background-color: variables.$cc-primary-color;
     }
 }
