@@ -7,17 +7,22 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
-### Chore 👨‍💻 👩‍💻
+### Added 🚀
 
-- Bump node version from 18 to 20 [#3690](https://github.com/MaibornWolff/codecharta/pull/3690)
+- Add feature to zoom at the mouse cursor [#3693](https://github.com/MaibornWolff/codecharta/pull/3693)
+- Add a zoom slider under the cube, allowing to zoom in and out while always displaying the current zoom factor. [#3697](https://github.com/MaibornWolff/codecharta/pull/3697)
+
+### Fixed 🐞
+
+- Fix issue where zooming out too much makes the map disappear and zooming in too much causes you to go through the map. [#3697](https://github.com/MaibornWolff/codecharta/pull/3697)
 
 ### Changed
 
 - Change OrbitControls to MapControls for improved map navigation [#3693](https://github.com/MaibornWolff/codecharta/pull/3693)
 
-### Added 🚀
+### Chore 👨‍💻 👩‍💻
 
-- Add feature to zoom at the mouse cursor [#3693](https://github.com/MaibornWolff/codecharta/pull/3693)
+- Bump node version from 18 to 20 [#3690](https://github.com/MaibornWolff/codecharta/pull/3690)
 
 ## [1.127.1] - 2024-08-12
 

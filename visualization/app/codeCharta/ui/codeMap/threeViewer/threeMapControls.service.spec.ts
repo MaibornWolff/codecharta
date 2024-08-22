@@ -8,6 +8,7 @@ import { ThreeRendererService } from "./threeRenderer.service"
 import { wait } from "../../../util/testUtils/wait"
 import { appReducers, setStateMiddleware } from "../../../state/store/state.manager"
 import { MapControls } from "three/examples/jsm/controls/MapControls"
+import { take } from "rxjs"
 
 describe("ThreeMapControlsService", () => {
     let threeMapControlsService: ThreeMapControlsService
@@ -50,7 +51,9 @@ describe("ThreeMapControlsService", () => {
 
     function withMockedControlService() {
         threeMapControlsService.controls = {
-            target: new Vector3(1, 1, 1)
+            target: new Vector3(1, 1, 1),
+            minDistance: 100,
+            maxDistance: 1_000_000
         } as unknown as MapControls
         threeMapControlsService.controls.update = jest.fn()
     }
@@ -89,7 +92,7 @@ describe("ThreeMapControlsService", () => {
             threeMapControlsService.autoFitTo()
             await wait(0)
 
-            expect(threeCameraService.camera.position).toEqual(vector)
+            expect(threeCameraService.camera.position).toEqual(new Vector3(8.724_905_929_183_022, 8.724_905_929_183_022, 0))
         })
 
         it("should call an control update", async () => {
@@ -109,6 +112,39 @@ describe("ThreeMapControlsService", () => {
 
             expect(threeMapControlsService.controls.update).toHaveBeenCalled()
             expect(threeCameraService.camera.updateProjectionMatrix).toHaveBeenCalled()
+        })
+    })
+
+    describe("setZoomPercentage", () => {
+        beforeEach(() => {
+            rebuildService()
+            withMockedControlService()
+        })
+
+        it("should set the correct zoom percentage and emit it", async () => {
+            const initialZoom = 50
+
+            threeMapControlsService.setZoomPercentage(initialZoom)
+
+            let actualZoomPercentage
+            threeMapControlsService.zoomPercentage$.pipe(take(1)).subscribe(zoomPercentage => (actualZoomPercentage = zoomPercentage))
+
+            expect(actualZoomPercentage).toBe(initialZoom)
+        })
+    })
+
+    describe("updateZoomPercentage", () => {
+        it("should update the zoom percentage correctly", () => {
+            threeCameraService.camera.position.set(0, 0, 500_000)
+            threeMapControlsService.updateZoomPercentage()
+
+            const distance = threeCameraService.camera.position.length()
+            const expectedZoomPercentage = threeMapControlsService.getZoomPercentage(distance)
+
+            let actualZoomPercentage
+            threeMapControlsService.zoomPercentage$.pipe(take(1)).subscribe(zoomPercentage => (actualZoomPercentage = zoomPercentage))
+
+            expect(actualZoomPercentage).toBeCloseTo(expectedZoomPercentage)
         })
     })
 })
