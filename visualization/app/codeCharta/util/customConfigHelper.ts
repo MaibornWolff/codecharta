@@ -14,6 +14,7 @@ import { ThreeMapControlsService } from "../ui/codeMap/threeViewer/threeMapContr
 import { BehaviorSubject } from "rxjs"
 import { VisibleFilesBySelectionMode } from "../ui/customConfigs/visibleFilesBySelectionMode.selector"
 import { Store } from "@ngrx/store"
+import { ThreeRendererService } from "../ui/codeMap/threeViewer/threeRenderer.service"
 
 export const CUSTOM_CONFIG_FILE_EXTENSION = ".cc.config.json"
 const CUSTOM_CONFIGS_LOCAL_STORAGE_VERSION = "1.0.1"
@@ -192,13 +193,14 @@ export class CustomConfigHelper {
         configId: string,
         store: Store,
         threeCameraService: ThreeCameraService,
-        threeOrbitControlsService: ThreeMapControlsService
+        threeOrbitControlsService: ThreeMapControlsService,
+        threeRendererService: ThreeRendererService
     ) {
         const customConfig = this.getCustomConfigSettings(configId)
-
         if (customConfig.camera) {
             threeCameraService.setPosition(customConfig.camera.camera)
             threeOrbitControlsService.setControlTarget(customConfig.camera.cameraTarget)
         }
+        threeRendererService.render()
     }
 }
