@@ -8,7 +8,7 @@ $base-color: rgb(115, 115, 115);
     width: 150px;
     position: absolute;
     top: 190px;
-    right: 20px;
+    right: 2vw;
     margin: 10px;
 
     .zoom-button,
@@ -32,7 +32,7 @@ input[type="range"] {
     color: $base-color;
     width: 100px;
     height: 3px;
-    background: grey;
+    background: $base-color;
     outline: none;
     opacity: 0.7;
     transition: opacity 0.2s;
@@ -42,14 +42,14 @@ input[type="range"] {
         appearance: none;
         width: 3px;
         height: 10px;
-        background: grey;
+        background: $base-color;
         cursor: pointer;
     }
 
     &::-moz-range-thumb {
         width: 3px;
         height: 10px;
-        background: grey;
+        background: $base-color;
         cursor: pointer;
     }
 }
