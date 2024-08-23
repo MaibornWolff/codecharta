@@ -1,10 +1,8 @@
-<i class="fa fa-arrows-alt"></i>
-
 <cc-metric-chooser
+    icon="fa-arrows-alt"
+    metricFor="areaMetric"
     [selectedMetricName]="areaMetric$ | async"
-    [searchPlaceholder]="'Area Metric (highest value)'"
+    searchPlaceholder="Area Metric (highest value)"
     [handleMetricChanged]="handleAreaMetricChanged"
     title="Change area metric"
->
-    <cc-metric-chooser-value hoveredInformation [metricFor]="'areaMetric'"></cc-metric-chooser-value>
-</cc-metric-chooser>
+></cc-metric-chooser>

@@ -1,6 +1,6 @@
 import { Component, ElementRef, Input, OnInit, QueryList, ViewChild, ViewChildren } from "@angular/core"
 import { map, Observable } from "rxjs"
-import { EdgeMetricData, NodeMetricData, CcState } from "../../codeCharta.model"
+import { EdgeMetricData, NodeMetricData, CcState, PrimaryMetrics } from "../../codeCharta.model"
 import { metricDataSelector } from "../../state/selectors/accumulatedData/metricData/metricData.selector"
 import { attributeDescriptorsSelector } from "../../state/store/fileSettings/attributeDescriptors/attributeDescriptors.selector"
 import { Store } from "@ngrx/store"
@@ -15,6 +15,8 @@ type MetricChooserType = "node" | "edge"
     styleUrls: ["./metricChooser.component.scss"],
 })
 export class MetricChooserComponent implements OnInit {
+    @Input() metricFor?: keyof PrimaryMetrics
+    @Input() icon?: string
     @Input() selectedMetricName: string
     @Input() searchPlaceholder: string
     @Input() handleMetricChanged: (newSelectedMetricName: string) => void

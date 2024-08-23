@@ -1,11 +1,19 @@
 @use "variables";
 
 :host {
+    display: flex;
     width: 100%;
 
-    &:hover .metric-value {
-        display: none;
+    &:hover {
+        cc-metric-chooser-value,
+        .cc-metric-chooser-container {
+            display: none;
+        }
     }
+}
+
+i.fa {
+    padding-right: 8px;
 }
 
 cc-metric-chooser-value,
@@ -13,24 +21,13 @@ cc-metric-chooser-value,
     position: absolute;
     top: 10%;
     right: 28px;
-
-    .metric-value {
-        height: 25px;
-
-        .rounded-box {
-            background-color: #e6e6e6;
-            border-radius: 2px;
-            padding: 2px 5px;
-            display: inline-block;
-        }
-    }
 }
 
 .mat-mdc-select-placeholder {
     color: black !important;
 }
 
-.mat-mdc-select-panel.cc-metric-chooser {
+.cc-metric-chooser {
     .cc-metric-chooser-search-field {
         position: fixed;
         top: 98px;

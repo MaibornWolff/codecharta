@@ -1,4 +1,4 @@
-import { Component, Input, ViewEncapsulation } from "@angular/core"
+import { Component, Input } from "@angular/core"
 import { Store } from "@ngrx/store"
 import { Observable } from "rxjs"
 import { CcState, CodeMapNode, Node, PrimaryMetrics } from "../../../codeCharta.model"
@@ -8,7 +8,7 @@ import { NodeSelectionService } from "../nodeSelection.service"
 @Component({
     selector: "cc-metric-chooser-value",
     templateUrl: "./metricChooserValue.component.html",
-    encapsulation: ViewEncapsulation.None
+    styleUrl: "./metricChooserValue.component.scss"
 })
 export class MetricChooserValueComponent {
     @Input() metricFor: keyof PrimaryMetrics

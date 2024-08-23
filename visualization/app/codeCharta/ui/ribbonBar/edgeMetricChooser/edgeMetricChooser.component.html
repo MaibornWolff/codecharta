@@ -1,7 +1,6 @@
-<i class="fa fa-exchange"></i>
-
 @if (edgeMetric$ | async; as edgeMetric) {
     <cc-metric-chooser
+        icon="fa-exchange"
         [class.is-edge-metric-disabled]="!(isEdgeMetricVisible$ | async)"
         [selectedMetricName]="edgeMetric"
         [searchPlaceholder]="'Edge Metric (highest value)'"

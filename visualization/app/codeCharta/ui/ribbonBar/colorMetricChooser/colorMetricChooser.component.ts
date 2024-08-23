@@ -13,8 +13,6 @@ import { CcState } from "../../../codeCharta.model"
 export class ColorMetricChooserComponent {
     colorMetric$ = this.store.select(colorMetricSelector)
     isColorMetricLinkedToHeightMetric$ = this.store.select(isColorMetricLinkedToHeightMetricSelector)
-    nonDisabledColor = "rgba(0, 0, 0, 0.38)"
-    disabledColor = "rgba(68,68,68, 1)"
 
     constructor(private store: Store<CcState>) {}
 
