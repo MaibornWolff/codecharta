@@ -58,6 +58,7 @@ import { buildHtmlMessage } from "../../util/loadFilesValidationToErrorDialog"
 import { getNameDataPair } from "../loadFile/fileParser"
 import { LoadFileService, NO_FILES_LOADED_ERROR_MESSAGE } from "../loadFile/loadFile.service"
 import { UrlExtractor } from "./urlExtractor"
+import { setSafeReload } from "../../state/store/appSettings/safeReload/safeReload.actions"
 
 export const sampleFile1 = { fileName: "sample1.cc.json", fileSize: 3 * 1024, content: sample1 as ExportCCFile }
 export const sampleFile2 = { fileName: "sample2.cc.json", fileSize: 2 * 1024, content: sample2 as ExportCCFile }
@@ -392,6 +393,9 @@ export class LoadInitialFileService {
                 break
             case "enableFloorLabels":
                 this.store.dispatch(setEnableFloorLabels({ value }))
+                break
+            case "safeReload":
+                this.store.dispatch(setSafeReload({ value }))
                 break
             default: {
                 const exhaustiveCheck: never = key
