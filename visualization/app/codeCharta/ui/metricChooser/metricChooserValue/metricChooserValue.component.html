@@ -1,7 +1,7 @@
 @if (node$ | async; as node) {
     <div class="metric-value">
         <div class="rounded-box">
-            <cc-metric-chooser-type [attributeType]="'nodes'" [metricFor]="metricFor"></cc-metric-chooser-type>
+            <cc-metric-chooser-type [metricFor]="metricFor"></cc-metric-chooser-type>
             <span class="value">{{ node.attributes[(primaryMetricNames$ | async)[metricFor]] }}</span>
         </div>
         @if (node.deltas) {

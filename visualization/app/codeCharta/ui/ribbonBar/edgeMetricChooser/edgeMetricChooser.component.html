@@ -1,22 +1,12 @@
 @if (edgeMetric$ | async; as edgeMetric) {
     <cc-metric-chooser
         icon="fa-exchange"
+        metricFor="edgeMetric"
+        type="edge"
+        title="Change edge metric"
         [class.is-edge-metric-disabled]="!(isEdgeMetricVisible$ | async)"
         [selectedMetricName]="edgeMetric"
         [searchPlaceholder]="'Edge Metric (highest value)'"
         [handleMetricChanged]="handleEdgeMetricChanged"
-        [type]="'edge'"
-        title="Change edge metric"
-    >
-        <div hoveredInformation class="cc-metric-chooser-container">
-            @if (edgeValue$ | async; as edgeValue) {
-                <div class="metric-value">
-                    <div class="rounded-box">
-                        <cc-metric-chooser-type [attributeType]="'edges'" [metricFor]="'edgeMetric'"></cc-metric-chooser-type>
-                        {{ edgeValue }}
-                    </div>
-                </div>
-            }
-        </div>
-    </cc-metric-chooser>
+    ></cc-metric-chooser>
 }
