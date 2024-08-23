@@ -29,6 +29,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Fixed 🐞
 
 - Revert [#3655](https://github.com/MaibornWolff/codecharta/pull/3665) as we implement new navigation methods
+- Camera perspective is correctly adopted from the custom configuration[#3194](https://github.com/MaibornWolff/codecharta/pull/3194)
 
 ## [1.127.0] - 2024-08-12
 
