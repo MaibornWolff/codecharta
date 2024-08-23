@@ -26,6 +26,7 @@ import { setShowMetricLabelNameValue } from "./showMetricLabelNameValue/showMetr
 import { setShowMetricLabelNodeName } from "./showMetricLabelNodeName/showMetricLabelNodeName.actions"
 import { setShowOnlyBuildingsWithEdges } from "./showOnlyBuildingsWithEdges/showOnlyBuildingsWithEdges.actions"
 import { setSortingOrderAscending, toggleSortingOrderAscending } from "./sortingOrderAscending/sortingOrderAscending.actions"
+import { setSafeReload } from "./safeReload/safeReload.actions"
 
 export const appSettingsActions = [
     setColorLabels,
@@ -58,5 +59,6 @@ export const appSettingsActions = [
     setSharpnessMode,
     setIsColorMetricLinkedToHeightMetricAction,
     toggleIsColorMetricLinkedToHeightMetric,
-    setEnableFloorLabels
+    setEnableFloorLabels,
+    setSafeReload
 ]
