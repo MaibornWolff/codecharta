@@ -1,33 +1,33 @@
 @use "variables";
 
-cc-metric-chooser {
+:host {
     width: 100%;
 
-    cc-metric-chooser-value,
-    .cc-metric-chooser-container {
-        position: absolute;
-        top: 10%;
-        right: 28px;
-
-        .metric-value {
-            height: 25px;
-
-            .rounded-box {
-                background-color: #e6e6e6;
-                border-radius: 2px;
-                padding: 2px 5px;
-                display: inline-block;
-            }
-        }
-    }
-
-    .mat-mdc-select-placeholder {
-        color: black !important;
+    &:hover .metric-value {
+        display: none;
     }
 }
 
-cc-metric-chooser:hover .metric-value {
-    display: none;
+cc-metric-chooser-value,
+.cc-metric-chooser-container {
+    position: absolute;
+    top: 10%;
+    right: 28px;
+
+    .metric-value {
+        height: 25px;
+
+        .rounded-box {
+            background-color: #e6e6e6;
+            border-radius: 2px;
+            padding: 2px 5px;
+            display: inline-block;
+        }
+    }
+}
+
+.mat-mdc-select-placeholder {
+    color: black !important;
 }
 
 .mat-mdc-select-panel.cc-metric-chooser {
