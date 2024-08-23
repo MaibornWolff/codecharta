@@ -22,7 +22,7 @@ export class ThreeViewerService {
 
         const camera = this.threeCameraService.camera
         const scene = this.threeSceneService.scene
-        camera.lookAt(scene.position)
+        //camera.lookAt(scene.position)
         scene.add(camera)
         this.threeRendererService.init(window.innerWidth, window.innerHeight, scene, camera)
         this.threeStatsService.init(target)
