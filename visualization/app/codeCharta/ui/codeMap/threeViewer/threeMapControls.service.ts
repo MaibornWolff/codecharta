@@ -43,6 +43,9 @@ export class ThreeMapControlsService {
     autoFitTo() {
         setTimeout(() => {
             const boundingSphere = this.getBoundingSphere()
+            if (boundingSphere.radius === -1) {
+                return
+            }
 
             const length = this.cameraPerspectiveLengthCalculation(boundingSphere)
             const cameraReference = this.threeCameraService.camera

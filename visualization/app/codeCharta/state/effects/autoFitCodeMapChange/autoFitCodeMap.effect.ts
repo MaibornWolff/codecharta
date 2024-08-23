@@ -9,13 +9,15 @@ import { layoutAlgorithmSelector } from "../../store/appSettings/layoutAlgorithm
 import { resetCameraIfNewFileIsLoadedSelector } from "../../store/appSettings/resetCameraIfNewFileIsLoaded/resetCameraIfNewFileIsLoaded.selector"
 import { focusedNodePathSelector } from "../../store/dynamicSettings/focusedNodePath/focusedNodePath.selector"
 import { RenderCodeMapEffect } from "../renderCodeMapEffect/renderCodeMap.effect"
+import { ThreeCameraService } from "../../../ui/codeMap/threeViewer/threeCamera.service"
 
 @Injectable()
 export class AutoFitCodeMapEffect {
     constructor(
         private store: Store<CcState>,
         private renderCodeMapEffect: RenderCodeMapEffect,
-        private threeMapControlsService: ThreeMapControlsService
+        private threeMapControlsService: ThreeMapControlsService,
+        private threeCameraService: ThreeCameraService
     ) {}
 
     autoFitTo$ = createEffect(
