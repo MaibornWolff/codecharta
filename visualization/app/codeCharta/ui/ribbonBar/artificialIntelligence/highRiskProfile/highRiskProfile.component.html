@@ -1,6 +1,5 @@
-<button [matMenuTriggerFor]="menu" title="Open High Risk Profile" class="cc-ribbon-bar-menu-button">
-    <i class="fa fa-bar-chart"></i>
-</button>
+<cc-ribbon-bar-menu-button title="Open High Risk Profile" icon="fa-bar-chart" [matMenuTriggerFor]="menu">
+</cc-ribbon-bar-menu-button>
 
 <mat-menu #menu="matMenu" class="ai-drop-down high-risk-profile">
     @if (data.riskProfile !== undefined) {

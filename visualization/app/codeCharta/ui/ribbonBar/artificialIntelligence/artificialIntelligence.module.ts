@@ -6,9 +6,10 @@ import { HighRiskProfileComponent } from "./highRiskProfile/highRiskProfile.comp
 import { RiskProfileBarDirective } from "./highRiskProfile/riskProfileBar.directive"
 import { MatDialogModule } from "@angular/material/dialog"
 import { SuspiciousMetricsModule } from "./suspiciousMetrics/suspiciousMetrics.module"
+import { RibbonBarMenuButtonModule } from "../ribbonBarMenuButton/ribbonBarMenuButton.module"
 
 @NgModule({
-    imports: [CommonModule, MaterialModule, MatDialogModule, SuspiciousMetricsModule],
+    imports: [CommonModule, MaterialModule, MatDialogModule, SuspiciousMetricsModule, RibbonBarMenuButtonModule],
     declarations: [ArtificialIntelligenceComponent, HighRiskProfileComponent, RiskProfileBarDirective],
     exports: [ArtificialIntelligenceComponent]
 })
