@@ -1,7 +1,7 @@
 [versions]
 kotlin-logging = "6.0.9"
 boon = "0.34"
-commons-lang3 = "3.14.0"
+commons-lang3 = "3.16.0"
 gson = "2.10.1"
 jackson = "2.17.2"
 jacoco = "0.8.11"
