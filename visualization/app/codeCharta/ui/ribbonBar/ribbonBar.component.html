@@ -1,5 +1,5 @@
 <ng-template #colorPanel>
-    <cc-ribbon-bar-panel title="Color Metric Options" [separator]="true">
+    <cc-ribbon-bar-panel class="ribbon-bar-panel-wide" title="Color Metric Options" [separator]="true">
         <cc-color-metric-chooser></cc-color-metric-chooser>
 
         <cc-ribbon-bar-panel-settings>
@@ -22,7 +22,7 @@
     <cc-artificial-intelligence></cc-artificial-intelligence>
 </cc-ribbon-bar-panel>
 
-<cc-ribbon-bar-panel title="Area Metric Options" [separator]="true">
+<cc-ribbon-bar-panel class="ribbon-bar-panel-wide" title="Area Metric Options" [separator]="true">
     <cc-area-metric-chooser></cc-area-metric-chooser>
 
     <cc-ribbon-bar-panel-settings>
@@ -30,26 +30,24 @@
     </cc-ribbon-bar-panel-settings>
 </cc-ribbon-bar-panel>
 
-<mat-card appearance="outlined" id="height-and-color-metric-container" [class.delta]="isDeltaState$ | async">
-    <cc-ribbon-bar-panel title="Height Metric Options" [separator]="true">
-        <cc-height-metric-chooser></cc-height-metric-chooser>
+<cc-ribbon-bar-panel class="ribbon-bar-panel-wide" title="Height Metric Options" [separator]="true">
+    <cc-height-metric-chooser></cc-height-metric-chooser>
 
-        <cc-ribbon-bar-panel-settings>
-            <cc-height-settings-panel class="cc-metric-settings-panel"></cc-height-settings-panel>
-        </cc-ribbon-bar-panel-settings>
-    </cc-ribbon-bar-panel>
+    <cc-ribbon-bar-panel-settings>
+        <cc-height-settings-panel class="cc-metric-settings-panel"></cc-height-settings-panel>
+    </cc-ribbon-bar-panel-settings>
+</cc-ribbon-bar-panel>
 
-    @if (!(isDeltaState$ | async)) {
-        <mat-card appearance="outlined" class="link-color-metric-to-height-metric-card">
-            <cc-link-color-metric-to-height-metric-button></cc-link-color-metric-to-height-metric-button>
-        </mat-card>
+@if (!(isDeltaState$ | async)) {
+    <mat-card appearance="outlined" class="color-height-metric-link">
+        <cc-link-color-metric-to-height-metric-button></cc-link-color-metric-to-height-metric-button>
+    </mat-card>
 
-        <ng-container *ngTemplateOutlet="colorPanel"></ng-container>
-    }
-</mat-card>
+    <ng-container *ngTemplateOutlet="colorPanel"></ng-container>
+}
 
 @if (hasEdgeMetric$ | async) {
-    <cc-ribbon-bar-panel title="Edge Metric Options">
+    <cc-ribbon-bar-panel class="ribbon-bar-panel-wide" title="Edge Metric Options">
         <cc-edge-metric-chooser></cc-edge-metric-chooser>
 
         <cc-ribbon-bar-panel-settings>

@@ -1,11 +1,11 @@
 import { NgModule } from "@angular/core"
 import { RibbonBarPanelComponent } from "./ribbonBarPanel.component"
 import { MaterialModule } from "app/material/material.module"
-import { RibbonBarPanelExpandableContentComponent } from "./ribbonBarPanelExpandableComponent"
+import { RibbonBarPanelSettingsComponent } from "./ribbonBarPanelSettingsComponent"
 
 @NgModule({
     imports: [MaterialModule],
-    declarations: [RibbonBarPanelComponent, RibbonBarPanelExpandableContentComponent],
-    exports: [RibbonBarPanelComponent, RibbonBarPanelExpandableContentComponent]
+    declarations: [RibbonBarPanelComponent, RibbonBarPanelSettingsComponent],
+    exports: [RibbonBarPanelComponent, RibbonBarPanelSettingsComponent]
 })
 export class RibbonBarPanelModule {}

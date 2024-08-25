@@ -4,11 +4,11 @@
             <ng-content></ng-content>
         </div>
 
-        @if (title || expandableContent) {
-            <div class="section-title" (click)="onSectionTitleClick()">
+        @if (title || hasSettings) {
+            <div #toggle class="section-title" (click)="toggleSettings()">
                 {{ title }}
 
-                @if (expandableContent) {
+                @if (hasSettings) {
                     <i [class]="'fa fa-angle-' + (expanded ? 'up' : 'down')"></i>
                 }
             </div>
