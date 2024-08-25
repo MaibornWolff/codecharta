@@ -5,8 +5,7 @@
     width: 100%;
 
     &:hover {
-        cc-metric-chooser-value,
-        .cc-metric-chooser-container {
+        cc-metric-chooser-value {
             display: none;
         }
     }
@@ -16,8 +15,7 @@ i.fa {
     padding-right: 8px;
 }
 
-cc-metric-chooser-value,
-.cc-metric-chooser-container {
+cc-metric-chooser-value {
     position: absolute;
     top: 10%;
     right: 28px;

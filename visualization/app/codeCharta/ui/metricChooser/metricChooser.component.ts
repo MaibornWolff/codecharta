@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, OnInit, QueryList, ViewChild, ViewChildren } from "@angular/core"
+import { Component, ElementRef, HostBinding, Input, OnInit, QueryList, ViewChild, ViewChildren } from "@angular/core"
 import { map, Observable } from "rxjs"
 import { EdgeMetricData, NodeMetricData, CcState, PrimaryMetrics } from "../../codeCharta.model"
 import { metricDataSelector } from "../../state/selectors/accumulatedData/metricData/metricData.selector"
@@ -28,6 +28,8 @@ export class MetricChooserComponent implements OnInit {
     searchTerm = ""
     metricData$: Observable<NodeMetricData[] | EdgeMetricData[]>
     attributeDescriptors$ = this.store.select(attributeDescriptorsSelector)
+
+    @HostBinding('class.hide-metric-value')
     hideMetricSum = false
 
     constructor(private store: Store<CcState>) {}

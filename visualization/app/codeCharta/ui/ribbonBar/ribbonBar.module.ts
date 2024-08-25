@@ -15,6 +15,7 @@ import { CommonModule } from "@angular/common"
 import { MaterialModule } from "../../../material/material.module"
 import { LinkColorMetricToHeightMetricButtonModule } from "./linkColorMetricToHeightMetricButton/linkColorMetricToHeightMetricButton.module"
 import { SearchPanelModule } from "./searchPanel/searchPanel.module"
+import { RibbonBarPanelModule } from "./ribbonBarPanel/ribbonBarPanel.module"
 
 @NgModule({
     imports: [
@@ -32,7 +33,8 @@ import { SearchPanelModule } from "./searchPanel/searchPanel.module"
         ColorMetricChooserModule,
         ColorSettingsPanelModule,
         EdgeMetricChooserModule,
-        EdgeSettingsPanelModule
+        EdgeSettingsPanelModule,
+        RibbonBarPanelModule
     ],
     declarations: [RibbonBarComponent],
     exports: [RibbonBarComponent]

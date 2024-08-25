@@ -12,7 +12,6 @@ $border: 1px solid #cdcdcd;
     width: 100%;
 }
 
-
 #height-and-color-metric-container {
     display: flex;
     flex-wrap: nowrap;
@@ -200,29 +199,6 @@ mat-card.scenario-card {
     min-width: 100px;
 }
 
-cc-area-metric-chooser,
-cc-height-metric-chooser,
-cc-color-metric-chooser,
-cc-edge-metric-chooser {
-    display: flex;
-    align-items: center;
-    margin: auto;
-
-    i {
-        margin-right: 8px;
-    }
-}
-
-.cdk-overlay-pane:not(.mat-mdc-select-panel-above) .mdc-menu-surface.mat-mdc-select-panel {
-    position: absolute;
-    width: 300px;
-    max-height: 216px;
-    right: 0;
-    top: 72px;
-    padding: 0;
-}
-
-
 .cc-metric-settings-panel {
     display: flex;
     flex-direction: column;
@@ -242,12 +218,12 @@ cc-edge-metric-chooser {
     font-size: 0.9em;
     transition: max-height 200ms ease-in-out;
 
-    &.hidden {
-        max-height: 0;
-        pointer-events: none;
-        opacity: 0;
-        transition:
-            opacity 0ms 200ms,
-            max-height 200ms ease-in-out;
-    }
+    // &.hidden {
+    //     max-height: 0;
+    //     pointer-events: none;
+    //     opacity: 0;
+    //     transition:
+    //         opacity 0ms 200ms,
+    //         max-height 200ms ease-in-out;
+    // }
 }

@@ -1,0 +1,19 @@
+<mat-card appearance="outlined">
+    <div class="section">
+        <div class="section-header">
+            <ng-content></ng-content>
+        </div>
+
+        @if (title || expandableContent) {
+            <div class="section-title" (click)="onSectionTitleClick()">
+                {{ title }}
+
+                @if (expandableContent) {
+                    <i [class]="'fa fa-angle-' + (expanded ? 'up' : 'down')"></i>
+                }
+            </div>
+        }
+    </div>
+
+    <ng-content select="cc-ribbon-bar-panel-settings"></ng-content>
+</mat-card>

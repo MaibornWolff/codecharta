@@ -1,0 +1,63 @@
+$heightExpanded: 195;
+$heightCollapsed: 46;
+$border: 1px solid #cdcdcd;
+
+mat-card {
+    padding: 0 5px;
+    height: $heightCollapsed + px;
+    border-radius: 0;
+    border-top: $border;
+    flex: 1 1 0;
+
+    @at-root :host:not(.expanded) & {
+        overflow: hidden;
+    }
+}
+
+.section {
+    .section-header {
+        margin: 0 5px 0 5px;
+        height: 31px;
+        color: #444444;
+        overflow: hidden;
+        padding: 5px;
+    }
+
+    .section-title {
+        font-size: 8pt;
+        color: gray;
+        text-align: center;
+        transition: background-color 0.4s;
+        border-bottom: 1px solid transparent;
+
+        @at-root :host.separator & {
+            border-top: 1px solid rgba(0, 0, 0, 0.12);
+        }
+
+        @at-root :host.expandable &:hover {
+            background-color: #e0e0e0;
+            cursor: pointer;
+        }
+    }
+}
+// mat-card,
+// .section .section-header,
+// .section .section-body,
+// .section-body cc-reset-settings-button button {
+//     transition: height 0.1s ease;
+// }
+
+// mat-card.custom-configs-card,
+// mat-card.ai-card {
+//     max-width: 120px;
+//     min-width: 120px;
+// }
+// mat-card.link-color-metric-to-height-metric-card {
+//     display: flex;
+//     justify-content: center;
+//     flex-grow: 0;
+// }
+// mat-card.scenario-card {
+//     max-width: 100px;
+//     min-width: 100px;
+// }
