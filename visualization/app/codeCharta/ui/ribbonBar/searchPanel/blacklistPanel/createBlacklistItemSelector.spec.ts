@@ -1,4 +1,4 @@
-import { BlacklistItem } from "../../../codeCharta.model"
+import { BlacklistItem } from "../../../../codeCharta.model"
 import { _getFilteredAndSortedItems } from "./createBlacklistItemSelector"
 
 describe("createBlacklistItemSelector _getItems", () => {

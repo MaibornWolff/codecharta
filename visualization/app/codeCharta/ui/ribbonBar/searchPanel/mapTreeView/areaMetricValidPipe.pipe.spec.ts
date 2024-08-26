@@ -1,4 +1,4 @@
-import { CodeMapNode } from "../../../codeCharta.model"
+import { CodeMapNode } from "../../../../codeCharta.model"
 import { AreaMetricValidPipe } from "./areaMetricValidPipe.pipe"
 
 describe("AreaMetricValidPipe", () => {

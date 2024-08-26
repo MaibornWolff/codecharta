@@ -1,6 +1,6 @@
 import { State } from "@ngrx/store"
-import { CcState, CodeMapNode } from "../../../../codeCharta.model"
-import * as codeMapHelper from "../../../../util/codeMapHelper"
+import { CcState, CodeMapNode } from "../../../../../codeCharta.model"
+import * as codeMapHelper from "../../../../../util/codeMapHelper"
 import { MapTreeViewItemIconColorPipe } from "./mapTreeViewItemIconColor.pipe"
 
 describe("MapTreeViewItemIconColorPipe", () => {

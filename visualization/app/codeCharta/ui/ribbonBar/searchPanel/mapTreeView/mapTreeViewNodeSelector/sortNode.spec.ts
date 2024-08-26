@@ -6,8 +6,8 @@ import {
     VALID_NODE_WITH_MULTIPLE_FOLDERS_REVERSED,
     VALID_NODE_WITH_MULTIPLE_FOLDERS_SORTED_BY_NAME,
     VALID_NODE_WITH_MULTIPLE_FOLDERS_SORTED_BY_UNARY
-} from "../../../../util/dataMocks"
-import { SortingOption } from "../../../../codeCharta.model"
+} from "../../../../../util/dataMocks"
+import { SortingOption } from "../../../../../codeCharta.model"
 import { sortNode } from "./sortNode"
 
 describe("sortNode", () => {

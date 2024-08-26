@@ -2,10 +2,10 @@ import { TestBed } from "@angular/core/testing"
 import { MatSelectModule } from "@angular/material/select"
 import { fireEvent, render, screen, getByText, waitForElementToBeRemoved } from "@testing-library/angular"
 
-import { SortingOption } from "../../../codeCharta.model"
+import { SortingOption } from "../../../../codeCharta.model"
 import { SortingOptionComponent } from "./sortingOption.component"
 import { provideMockStore } from "@ngrx/store/testing"
-import { sortingOrderSelector } from "../../../state/store/dynamicSettings/sortingOption/sortingOrder.selector"
+import { sortingOrderSelector } from "../../../../state/store/dynamicSettings/sortingOption/sortingOrder.selector"
 
 describe("SortingOptionComponent", () => {
     beforeEach(() => {

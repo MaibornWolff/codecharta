@@ -1,4 +1,4 @@
-import { NodeType, CodeMapNode, BlacklistItem } from "../../../../codeCharta.model"
+import { NodeType, CodeMapNode, BlacklistItem } from "../../../../../codeCharta.model"
 import { _calculateMatchingFilesCounter } from "./matchingFilesCounter.selector"
 
 describe("matchingFilesCounterSelector", () => {

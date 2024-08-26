@@ -3,7 +3,7 @@ import { fireEvent, render } from "@testing-library/angular"
 import { SearchPanelComponent } from "./searchPanel.component"
 import { SearchPanelModule } from "./searchPanel.module"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
-import { isSearchPanelPinnedSelector } from "../../state/store/appSettings/isSearchPanelPinned/isSearchPanelPinned.selector"
+import { isSearchPanelPinnedSelector } from "../../../state/store/appSettings/isSearchPanelPinned/isSearchPanelPinned.selector"
 
 describe("SearchPanelComponent", () => {
     describe("opening and closing of search panel", () => {

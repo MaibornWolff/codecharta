@@ -1,4 +1,4 @@
-import { CodeMapNode } from "../../../../codeCharta.model"
+import { CodeMapNode } from "../../../../../codeCharta.model"
 import { MapTreeViewItemIconClassPipe } from "./mapTreeViewItemIconClass.pipe"
 
 describe("MapTreeViewItemIconClassPipe", () => {

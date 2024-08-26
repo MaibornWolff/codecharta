@@ -1,8 +1,8 @@
 import { fireEvent, render, screen } from "@testing-library/angular"
 
-import { sortingOrderAscendingSelector } from "../../../state/store/appSettings/sortingOrderAscending/sortingOrderAscending.selector"
+import { sortingOrderAscendingSelector } from "../../../../state/store/appSettings/sortingOrderAscending/sortingOrderAscending.selector"
 import { SortingButtonComponent } from "./sortingButton.component"
-import { toggleSortingOrderAscending } from "../../../state/store/appSettings/sortingOrderAscending/sortingOrderAscending.actions"
+import { toggleSortingOrderAscending } from "../../../../state/store/appSettings/sortingOrderAscending/sortingOrderAscending.actions"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { TestBed } from "@angular/core/testing"
 

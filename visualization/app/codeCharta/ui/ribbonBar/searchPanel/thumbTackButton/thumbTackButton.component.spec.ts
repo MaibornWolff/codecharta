@@ -3,8 +3,8 @@ import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { TestBed } from "@angular/core/testing"
 
 import { ThumbTackButtonComponent } from "./thumbTackButton.component"
-import { isSearchPanelPinnedSelector } from "../../../state/store/appSettings/isSearchPanelPinned/isSearchPanelPinned.selector"
-import { toggleIsSearchPanelPinned } from "../../../state/store/appSettings/isSearchPanelPinned/isSearchPanelPinned.actions"
+import { isSearchPanelPinnedSelector } from "../../../../state/store/appSettings/isSearchPanelPinned/isSearchPanelPinned.selector"
+import { toggleIsSearchPanelPinned } from "../../../../state/store/appSettings/isSearchPanelPinned/isSearchPanelPinned.actions"
 
 describe("ThumbTackButtonComponent", () => {
     it("should toggle isSearchPanelPinned on click", async () => {

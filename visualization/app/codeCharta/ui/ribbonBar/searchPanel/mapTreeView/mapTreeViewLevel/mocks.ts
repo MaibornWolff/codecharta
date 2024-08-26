@@ -1,4 +1,4 @@
-import { NodeType } from "../../../../codeCharta.model"
+import { NodeType } from "../../../../../codeCharta.model"
 
 export const rootNode = {
     name: "root",

@@ -30,7 +30,7 @@
             [values]="(sliderValues$ | async).values"
             [isAttributeDirectionInversed]="isAttributeDescriptionInversed$ | async"
         ></cc-metric-color-range-diagram>
-        <mat-form-field appearance="outline" class="gradient-mode-selector">
+        <mat-form-field appearance="outline" class="gradient-mode-selector" subscriptSizing="dynamic">
             <mat-label>Gradient Mode</mat-label>
             <mat-select [value]="colorMode$ | async" (selectionChange)="handleColorModeChange($event.value)">
                 <div (mousedown)="$event.stopPropagation()">

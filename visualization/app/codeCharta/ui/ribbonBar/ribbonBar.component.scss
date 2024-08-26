@@ -26,22 +26,14 @@ mat-card.color-height-metric-link {
     border-top: 1px solid #cdcdcd;
 }
 
-.cc-metric-settings-panel {
-    display: flex;
-    flex-direction: column;
-    position: absolute;
-    top: 45px;
-    left: 0;
-    padding: 8px;
-    width: 100%;
-    background: white;
-    border: 1px solid #b5b5b5;
-    box-shadow:
-        0 1px 3px 0 rgba(0, 0, 0, 0.2),
-        0 1px 1px 0 rgba(0, 0, 0, 0.14),
-        0 2px 1px -1px rgba(0, 0, 0, 0.12);
-    overflow: hidden;
-    opacity: 1;
-    font-size: 0.9em;
-    transition: max-height 200ms ease-in-out;
+cc-ribbon-bar-panel {
+    cc-ribbon-bar-panel-settings {
+        font-size: 0.9em;
+    }
+
+    &:last-child cc-ribbon-bar-panel-settings {
+        left: auto;
+        right: 0;
+    }
 }
+

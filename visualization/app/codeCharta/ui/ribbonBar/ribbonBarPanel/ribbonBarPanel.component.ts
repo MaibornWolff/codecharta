@@ -1,11 +1,19 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, ContentChild, ElementRef, HostBinding, Input, OnDestroy, ViewChild } from "@angular/core"
-import { RibbonBarPanelSettingsComponent } from "./ribbonBarPanelSettingsComponent"
+import {
+    AfterViewInit,
+    Component,
+    ContentChild,
+    ElementRef,
+    HostBinding,
+    Input,
+    OnDestroy,
+    ViewChild
+} from "@angular/core"
+import { RibbonBarPanelSettingsComponent } from "./ribbonBarPanelSettings.component"
 
 @Component({
     selector: "cc-ribbon-bar-panel",
     templateUrl: "./ribbonBarPanel.component.html",
     styleUrl: "./ribbonBarPanel.component.scss",
-    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RibbonBarPanelComponent implements AfterViewInit, OnDestroy {
     @Input() title?: string
@@ -17,23 +25,23 @@ export class RibbonBarPanelComponent implements AfterViewInit, OnDestroy {
     @ContentChild(RibbonBarPanelSettingsComponent, {
         read: ElementRef<HTMLElement>
     })
-    settingsRef?: ElementRef<HTMLElement>
+    private settingsRef?: ElementRef<HTMLElement>
 
-    @ViewChild('toggle')
-    toggleSettingsRef!: ElementRef<HTMLElement>;
+    @ViewChild("toggle")
+    private toggleSettingsRef!: ElementRef<HTMLElement>
 
     @HostBinding("class.expanded")
     expanded = false
 
     @HostBinding("class.expandable")
-    get hasSettings () {
+    get hasSettings() {
         return Boolean(this.settingsRef)
     }
 
-    mouseDownListener?: (event: MouseEvent) => void
+    private mouseDownListener?: (event: MouseEvent) => void
 
     ngAfterViewInit(): void {
-        this.mouseDownListener = (event: MouseEvent) =>  this.collapseOnOutsideClick(event);
+        this.mouseDownListener = (event: MouseEvent) => this.collapseOnOutsideClick(event)
         document.addEventListener("mousedown", this.mouseDownListener)
     }
     ngOnDestroy(): void {
@@ -43,13 +51,15 @@ export class RibbonBarPanelComponent implements AfterViewInit, OnDestroy {
     }
 
     toggleSettings() {
-        this.expanded = !this.expanded;
+        this.expanded = !this.expanded
     }
 
     private collapseOnOutsideClick(event: MouseEvent) {
-        const clickedSettingsElement = this.settingsRef?.nativeElement?.contains(event.target as Node);
-        const clickedSettingsToggleElement = this.toggleSettingsRef?.nativeElement.contains(event.target as Node);
-        
+        const target = event.target as Node
+
+        const clickedSettingsElement = this.settingsRef?.nativeElement?.contains(target) ?? false
+        const clickedSettingsToggleElement = this.toggleSettingsRef.nativeElement.contains(target)
+
         if (!clickedSettingsElement && !clickedSettingsToggleElement) {
             this.expanded = false
         }

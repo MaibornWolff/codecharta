@@ -1,14 +1,14 @@
 import { TestBed } from "@angular/core/testing"
 import { MatDialog } from "@angular/material/dialog"
 import { first, Subject } from "rxjs"
-import { AddBlacklistItemsIfNotResultsInEmptyMapEffect } from "../../../state/effects/addBlacklistItemsIfNotResultsInEmptyMap/addBlacklistItemsIfNotResultsInEmptyMap.effect"
+import { AddBlacklistItemsIfNotResultsInEmptyMapEffect } from "../../../../state/effects/addBlacklistItemsIfNotResultsInEmptyMap/addBlacklistItemsIfNotResultsInEmptyMap.effect"
 import { blacklistSearchPattern, BlacklistSearchPatternEffect } from "./blacklistSearchPattern.effect"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
-import { searchPatternSelector } from "../../../state/store/dynamicSettings/searchPattern/searchPattern.selector"
+import { searchPatternSelector } from "../../../../state/store/dynamicSettings/searchPattern/searchPattern.selector"
 import { provideMockActions } from "@ngrx/effects/testing"
 import { Action } from "@ngrx/store"
-import { addBlacklistItemsIfNotResultsInEmptyMap } from "../../../state/store/fileSettings/blacklist/blacklist.actions"
-import { setSearchPattern } from "../../../state/store/dynamicSettings/searchPattern/searchPattern.actions"
+import { addBlacklistItemsIfNotResultsInEmptyMap } from "../../../../state/store/fileSettings/blacklist/blacklist.actions"
+import { setSearchPattern } from "../../../../state/store/dynamicSettings/searchPattern/searchPattern.actions"
 
 describe("BlacklistSearchPatternEffect", () => {
     let effect: BlacklistSearchPatternEffect

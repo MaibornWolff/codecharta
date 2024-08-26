@@ -1,12 +1,12 @@
 import { TestBed } from "@angular/core/testing"
 import { render, screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
-import { MaterialModule } from "../../../../material/material.module"
-import { removeBlacklistItem } from "../../../state/store/fileSettings/blacklist/blacklist.actions"
+import { MaterialModule } from "../../../../../material/material.module"
+import { removeBlacklistItem } from "../../../../state/store/fileSettings/blacklist/blacklist.actions"
 import { BlacklistPanelComponent } from "./blacklistPanel.component"
 import { Store } from "@ngrx/store"
 import { BehaviorSubject } from "rxjs"
-import { BlacklistItem } from "../../../codeCharta.model"
+import { BlacklistItem } from "../../../../codeCharta.model"
 
 const placeholderText = "Add pattern via search or node context-menu"
 

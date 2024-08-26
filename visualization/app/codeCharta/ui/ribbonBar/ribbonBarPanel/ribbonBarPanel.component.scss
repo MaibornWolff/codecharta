@@ -1,12 +1,8 @@
-$heightExpanded: 195;
-$heightCollapsed: 46;
-$border: 1px solid #cdcdcd;
-
 mat-card {
     padding: 0 5px;
-    height: $heightCollapsed + px;
+    height: 46px;
     border-radius: 0;
-    border-top: $border;
+    border-top: 1px solid #cdcdcd;
     flex: 1 1 0;
 
     @at-root :host:not(.expanded) & {
@@ -29,6 +25,7 @@ mat-card {
         text-align: center;
         transition: background-color 0.4s;
         border-bottom: 1px solid transparent;
+        white-space: nowrap;
 
         @at-root :host.separator & {
             border-top: 1px solid rgba(0, 0, 0, 0.12);
@@ -40,24 +37,3 @@ mat-card {
         }
     }
 }
-// mat-card,
-// .section .section-header,
-// .section .section-body,
-// .section-body cc-reset-settings-button button {
-//     transition: height 0.1s ease;
-// }
-
-// mat-card.custom-configs-card,
-// mat-card.ai-card {
-//     max-width: 120px;
-//     min-width: 120px;
-// }
-// mat-card.link-color-metric-to-height-metric-card {
-//     display: flex;
-//     justify-content: center;
-//     flex-grow: 0;
-// }
-// mat-card.scenario-card {
-//     max-width: 100px;
-//     min-width: 100px;
-// }
