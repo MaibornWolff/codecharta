@@ -1,11 +1,11 @@
 import {
-    AfterViewInit,
     Component,
     ContentChild,
     ElementRef,
     HostBinding,
     Input,
     OnDestroy,
+    OnInit,
     ViewChild
 } from "@angular/core"
 import { RibbonBarPanelSettingsComponent } from "./ribbonBarPanelSettings.component"
@@ -15,7 +15,7 @@ import { RibbonBarPanelSettingsComponent } from "./ribbonBarPanelSettings.compon
     templateUrl: "./ribbonBarPanel.component.html",
     styleUrl: "./ribbonBarPanel.component.scss",
 })
-export class RibbonBarPanelComponent implements AfterViewInit, OnDestroy {
+export class RibbonBarPanelComponent implements OnInit, OnDestroy {
     @Input() title?: string
 
     @HostBinding("class.separator")
@@ -42,7 +42,7 @@ export class RibbonBarPanelComponent implements AfterViewInit, OnDestroy {
 
     private mouseDownListener?: (event: MouseEvent) => void
 
-    ngAfterViewInit(): void {
+    ngOnInit(): void {
         this.mouseDownListener = (event: MouseEvent) => this.collapseOnOutsideClick(event)
         document.addEventListener("mousedown", this.mouseDownListener)
     }

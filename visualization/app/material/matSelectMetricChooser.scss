@@ -5,6 +5,7 @@
         width: auto !important;
         min-width: 210px;
     }
+
     // HACK: metricChooserComponent uses this to style matSelect dropdown
     &:has(.cc-metric-chooser) {
         width: 300px !important;
