@@ -5,6 +5,7 @@ import { ThreeCameraService } from "../../../codeMap/threeViewer/threeCamera.ser
 import { ThreeMapControlsService } from "../../../codeMap/threeViewer/threeMapControls.service"
 import { Store } from "@ngrx/store"
 import { MatExpansionPanel } from "@angular/material/expansion"
+import { ThreeRendererService } from "../../../codeMap/threeViewer/threeRenderer.service"
 
 @Component({
     selector: "cc-custom-config-item-group",
@@ -22,7 +23,8 @@ export class CustomConfigItemGroupComponent implements OnChanges {
     constructor(
         private store: Store,
         private threeCameraService: ThreeCameraService,
-        private threeOrbitControlsService: ThreeMapControlsService
+        private threeOrbitControlsService: ThreeMapControlsService,
+        private threeRendererService: ThreeRendererService
     ) {}
 
     ngOnChanges(changes: SimpleChanges): void {
@@ -57,6 +59,12 @@ export class CustomConfigItemGroupComponent implements OnChanges {
     }
 
     applyCustomConfig(configId: string) {
-        CustomConfigHelper.applyCustomConfig(configId, this.store, this.threeCameraService, this.threeOrbitControlsService)
+        CustomConfigHelper.applyCustomConfig(
+            configId,
+            this.store,
+            this.threeCameraService,
+            this.threeOrbitControlsService,
+            this.threeRendererService
+        )
     }
 }
