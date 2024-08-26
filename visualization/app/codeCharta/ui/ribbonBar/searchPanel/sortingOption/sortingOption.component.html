@@ -2,6 +2,7 @@
     class="sorting-option-select"
     title="Sort by"
     [value]="selectedSortingOption$ | async"
+    panelClass="cc-sorting-option"
     (selectionChange)="handleSelectedSortingOptionChanged($event)"
 >
     @for (option of sortingOptions; track option) {

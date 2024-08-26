@@ -1,53 +1,58 @@
 @use "variables";
 
-// HACK: metricChooserComponent uses this to style matSelect dropdown
-.cdk-overlay-pane:has(.cc-metric-chooser) {
-  width: 300px !important;
+.cdk-overlay-pane {
+    &:has(.cc-sorting-option) {
+        width: auto !important;
+        min-width: 210px;
+    }
+    // HACK: metricChooserComponent uses this to style matSelect dropdown
+    &:has(.cc-metric-chooser) {
+        width: 300px !important;
 
-  .mat-mdc-select-panel {
-    padding: 0;
-  }
+        .mat-mdc-select-panel {
+            padding: 0;
+        }
 
-  .cc-metric-chooser {
-    .cc-metric-chooser-search-field {
-        width: 100%;
-        font-size: 14px;
-        box-shadow:
-            0px 5px 5px -3px rgba(0, 0, 0, 0.2),
-            0px 8px 10px 1px rgba(0, 0, 0, 0.14),
-            0px 3px 14px 2px rgba(0, 0, 0, 0.12);
-  
-        .search-icon {
-            color: variables.$cc-primary-color;
-            margin-left: 8px;
-            font-size: 18px;
-        }
-  
-        .mat-mdc-form-field-subscript-wrapper.mat-mdc-form-field-bottom-align {
-            display: none;
-        }
-  
-        .mat-mdc-form-field-infix {
-            margin-left: 6px;
-            display: flex;
+        .cc-metric-chooser {
+            .cc-metric-chooser-search-field {
+                width: 100%;
+                font-size: 14px;
+                box-shadow:
+                    0px 5px 5px -3px rgba(0, 0, 0, 0.2),
+                    0px 8px 10px 1px rgba(0, 0, 0, 0.14),
+                    0px 3px 14px 2px rgba(0, 0, 0, 0.12);
+
+                .search-icon {
+                    color: variables.$cc-primary-color;
+                    margin-left: 8px;
+                    font-size: 18px;
+                }
+
+                .mat-mdc-form-field-subscript-wrapper.mat-mdc-form-field-bottom-align {
+                    display: none;
+                }
+
+                .mat-mdc-form-field-infix {
+                    margin-left: 6px;
+                    display: flex;
+                }
+            }
+
+            .cc-metric-chooser-option-container {
+                font-size: 16px;
+
+                mat-option .metric-max-value {
+                    color: #ccc;
+                }
+
+                mat-option .metric-subtitle {
+                    color: #999;
+                    font-size: 11px;
+                    overflow: hidden;
+                    white-space: nowrap;
+                    text-overflow: ellipsis;
+                }
+            }
         }
     }
-  
-    .cc-metric-chooser-option-container {
-        font-size: 16px;
-  
-        mat-option .metric-max-value {
-            color: #ccc;
-        }
-  
-        mat-option .metric-subtitle {
-            color: #999;
-            font-size: 11px;
-            overflow: hidden;
-            white-space: nowrap;
-            text-overflow: ellipsis;
-        }
-    }
-  }
 }
-

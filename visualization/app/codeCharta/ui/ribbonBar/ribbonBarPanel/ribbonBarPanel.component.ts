@@ -31,7 +31,9 @@ export class RibbonBarPanelComponent implements AfterViewInit, OnDestroy {
     private toggleSettingsRef!: ElementRef<HTMLElement>
 
     @HostBinding("class.expanded")
-    expanded = false
+    isExpanded = false
+
+    isPinned = false
 
     @HostBinding("class.expandable")
     get hasSettings() {
@@ -51,17 +53,23 @@ export class RibbonBarPanelComponent implements AfterViewInit, OnDestroy {
     }
 
     toggleSettings() {
-        this.expanded = !this.expanded
+        this.isExpanded = !this.isExpanded
     }
 
     private collapseOnOutsideClick(event: MouseEvent) {
+        if (this.isPinned) {
+            return;
+        }
+    
         const target = event.target as Node
 
+        const overlayPaneElement = document.querySelector('.cdk-overlay-container');
+        const clickedWithinOverlayPane = overlayPaneElement ? overlayPaneElement.contains(target) : false;
         const clickedSettingsElement = this.settingsRef?.nativeElement?.contains(target) ?? false
         const clickedSettingsToggleElement = this.toggleSettingsRef.nativeElement.contains(target)
 
-        if (!clickedSettingsElement && !clickedSettingsToggleElement) {
-            this.expanded = false
+        if (!clickedWithinOverlayPane && !clickedSettingsElement && !clickedSettingsToggleElement) {
+            this.isExpanded = false
         }
     }
 }
