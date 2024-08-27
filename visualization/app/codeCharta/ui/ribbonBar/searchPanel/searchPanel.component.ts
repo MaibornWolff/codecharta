@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from "@angular/core"
+import { Component, OnDestroy, OnInit, ViewChild } from "@angular/core"
 import { Store } from "@ngrx/store"
 import { CcState } from "../../../../codeCharta/codeCharta.model"
 import { isSearchPanelPinnedSelector } from "../../../state/store/appSettings/isSearchPanelPinned/isSearchPanelPinned.selector"
@@ -12,13 +12,13 @@ export type SearchPanelMode = "treeView" | "blacklist"
     templateUrl: "./searchPanel.component.html",
     styleUrls: ["./searchPanel.component.scss"]
 })
-export class SearchPanelComponent implements OnInit {
+export class SearchPanelComponent implements OnInit, OnDestroy {
     searchPanelMode: SearchPanelMode = "treeView"
     isSearchPanelPinned: boolean
     isSearchPanelPinnedSubscription: Subscription
 
     @ViewChild(RibbonBarPanelComponent)
-    private panelRef!: RibbonBarPanelComponent;
+    private panelRef!: RibbonBarPanelComponent
 
     constructor(private readonly store: Store<CcState>) {}
 
@@ -33,7 +33,7 @@ export class SearchPanelComponent implements OnInit {
     }
 
     openSearchPanel() {
-        this.panelRef.toggleSettings();
+        this.panelRef.toggleSettings()
     }
 
     updateSearchPanelMode = (searchPanelMode: SearchPanelMode) => {
