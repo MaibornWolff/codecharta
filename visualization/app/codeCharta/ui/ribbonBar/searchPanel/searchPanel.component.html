@@ -1,4 +1,4 @@
-<cc-ribbon-bar-panel title="File/Node Explorer">
+<cc-ribbon-bar-panel title="File/Node Explorer" [isPinned]="isSearchPanelPinned">
     <cc-search-bar (click)="openSearchPanel()"></cc-search-bar>
     <cc-search-panel-mode-selector
         [searchPanelMode]="searchPanelMode"
@@ -7,7 +7,7 @@
 
     <cc-ribbon-bar-panel-settings>
         <cc-blacklist-panel [hidden]="searchPanelMode !== 'blacklist'"></cc-blacklist-panel>
-        <cc-matching-files-counter (pinClick)="onPinClick()" [hidden]="searchPanelMode !== 'treeView'"></cc-matching-files-counter>
+        <cc-matching-files-counter [hidden]="searchPanelMode !== 'treeView'"></cc-matching-files-counter>
         <cc-map-tree-view [hidden]="searchPanelMode !== 'treeView'"></cc-map-tree-view>
     </cc-ribbon-bar-panel-settings>
 </cc-ribbon-bar-panel>

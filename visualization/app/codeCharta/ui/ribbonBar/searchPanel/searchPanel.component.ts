@@ -36,10 +36,6 @@ export class SearchPanelComponent implements OnInit {
         this.panelRef.toggleSettings();
     }
 
-    onPinClick() {
-        this.panelRef.isPinned = !this.panelRef.isPinned;
-    }
-
     updateSearchPanelMode = (searchPanelMode: SearchPanelMode) => {
         this.searchPanelMode = searchPanelMode
     }

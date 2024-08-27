@@ -35,7 +35,7 @@ describe(RibbonBarPanelComponent.name, () => {
                 expect(panel.classList).not.toContain("expanded")
             })
 
-            it("should open when clicked on section title bar", async () => {
+            it("should open when clicked on section title", async () => {
                 await userEvent.click(panel.querySelector(".section-title"))
                 await waitFor(() => expect(panel.classList).toContain("expanded"))
             })

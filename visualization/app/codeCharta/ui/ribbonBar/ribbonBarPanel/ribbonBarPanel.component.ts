@@ -33,6 +33,7 @@ export class RibbonBarPanelComponent implements OnInit, OnDestroy {
     @HostBinding("class.expanded")
     isExpanded = false
 
+    @Input()
     isPinned = false
 
     @HostBinding("class.expandable")
