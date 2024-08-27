@@ -1,5 +1,4 @@
 import { provideMockStore } from "@ngrx/store/testing"
-import { RibbonBarComponent } from "../ribbonBar.component"
 import { RibbonBarPanelModule } from "./ribbonBarPanel.module"
 import { render, waitFor } from "@testing-library/angular"
 import { TestBed } from "@angular/core/testing"
@@ -7,7 +6,7 @@ import { RibbonBarPanelSettingsComponent } from "./ribbonBarPanelSettings.compon
 import { RibbonBarPanelComponent } from "./ribbonBarPanel.component"
 import userEvent from "@testing-library/user-event"
 
-describe(RibbonBarComponent.name, () => {
+describe(RibbonBarPanelComponent.name, () => {
     describe("with expandable settings", () => {
         let panel: Element
 
