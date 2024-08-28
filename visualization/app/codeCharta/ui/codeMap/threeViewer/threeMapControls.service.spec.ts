@@ -3,7 +3,7 @@ import { StoreModule } from "@ngrx/store"
 import { ThreeMapControlsService } from "./threeMapControls.service"
 import { ThreeCameraService } from "./threeCamera.service"
 import { ThreeSceneService } from "./threeSceneService"
-import { BoxGeometry, Group, Mesh, PerspectiveCamera, Vector3 } from "three"
+import { BoxGeometry, Group, Mesh, MOUSE, PerspectiveCamera, Vector3 } from "three"
 import { ThreeRendererService } from "./threeRenderer.service"
 import { wait } from "../../../util/testUtils/wait"
 import { appReducers, setStateMiddleware } from "../../../state/store/state.manager"
@@ -56,11 +56,34 @@ describe("ThreeMapControlsService", () => {
             maxDistance: 1_000_000
         } as unknown as MapControls
         threeMapControlsService.controls.update = jest.fn()
+        threeMapControlsService.controls.addEventListener = jest.fn()
     }
 
     function rebuildService() {
         threeMapControlsService = new ThreeMapControlsService(threeCameraService, threeSceneService, threeRendererService)
     }
+
+    describe("init", () => {
+        it("should initialize MapControls and set up event listeners correctly", () => {
+            const domElement = document.createElement("canvas")
+            withMockedThreeCameraService()
+            const addEventListenerMock = jest.fn()
+            jest.spyOn(MapControls.prototype, "addEventListener").mockImplementation(addEventListenerMock)
+
+            const mockMapControls = new MapControls(threeCameraService.camera, domElement)
+
+            threeMapControlsService.controls = mockMapControls
+
+            threeMapControlsService.init(domElement)
+
+            expect(threeMapControlsService.controls).toBeDefined()
+            expect(threeMapControlsService.controls.mouseButtons.LEFT).toBe(MOUSE.ROTATE)
+            expect(threeMapControlsService.controls.mouseButtons.MIDDLE).toBe(MOUSE.DOLLY)
+            expect(threeMapControlsService.controls.mouseButtons.RIGHT).toBe(MOUSE.PAN)
+            expect(threeMapControlsService.controls.zoomToCursor).toBe(true)
+            expect(addEventListenerMock).toHaveBeenCalledWith("change", expect.any(Function))
+        })
+    })
 
     it("rotateCameraInVectorDirection ", () => {
         threeMapControlsService.controls = {
