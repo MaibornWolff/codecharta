@@ -90,7 +90,7 @@ export class ThreeMapControlsService {
         this.threeCameraService.camera.updateProjectionMatrix()
     }
 
-    private getBoundingSphere() {
+    getBoundingSphere() {
         return new Box3().setFromObject(this.threeSceneService.mapGeometry).getBoundingSphere(new Sphere())
     }
 
