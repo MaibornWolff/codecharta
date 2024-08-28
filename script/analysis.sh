@@ -29,16 +29,12 @@ run_codecharta_analysis() {
       -v "$PROJECT_BASEDIR:$PROJECT_BASEDIR" \
       -w "$PROJECT_BASEDIR" \
       codecharta/codecharta-analysis \
-      ccsh sonarimport "$CONTAINER_SONAR_URL" "$PROJECT_KEY" "--user-token=$token" "--output-file=sonar.cc.json" "--merge-modules=false"
+      ccsh sonarimport "$CONTAINER_SONAR_URL" "$PROJECT_KEY" "--user-token=$token" "--output-file=$PROJECT_BASEDIR/sonar.cc.json" "--merge-modules=false"
 
     if [ $? -ne 0 ]; then
         echo "❌ CodeCharta analysis failed."
         exit 1
     fi
 
-    echo "✅ CodeCharta analysis complete. Output stored in $OUTPUT_PATH"
-
-    # List the contents of the output directory for verification
-    echo "Contents of $OUTPUT_PATH:"
-    ls -l "$OUTPUT_PATH"
+    echo "✅ CodeCharta analysis complete. Output stored in $PROJECT_BASEDIR/sonar.cc.json.gz"
 }
