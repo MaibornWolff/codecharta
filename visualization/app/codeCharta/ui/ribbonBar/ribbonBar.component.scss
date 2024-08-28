@@ -37,3 +37,9 @@ cc-ribbon-bar-panel {
     }
 }
 
+.color-settings-header {
+    display: flex;
+    gap: 8px;
+    line-height: 24px;
+    align-items: baseline;
+}

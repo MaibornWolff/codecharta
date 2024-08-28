@@ -1,13 +1,3 @@
-<ng-template #colorPanel>
-    <cc-ribbon-bar-panel class="ribbon-bar-panel-wide" title="Color Metric Options" [separator]="true">
-        <cc-color-metric-chooser></cc-color-metric-chooser>
-
-        <cc-ribbon-bar-panel-settings>
-            <cc-color-settings-panel class="cc-metric-settings-panel"></cc-color-settings-panel>
-        </cc-ribbon-bar-panel-settings>
-    </cc-ribbon-bar-panel>
-</ng-template>
-
 <cc-search-panel></cc-search-panel>
 
 <cc-ribbon-bar-panel title="Metric Templates">
@@ -43,11 +33,17 @@
         <cc-link-color-metric-to-height-metric-button></cc-link-color-metric-to-height-metric-button>
     </mat-card>
 
-    <ng-container *ngTemplateOutlet="colorPanel"></ng-container>
+    <cc-ribbon-bar-panel class="ribbon-bar-panel-wide" title="Color Metric Options" [separator]="true">
+        <cc-color-metric-chooser></cc-color-metric-chooser>
+
+        <cc-ribbon-bar-panel-settings>
+            <cc-color-settings-panel class="cc-metric-settings-panel"></cc-color-settings-panel>
+        </cc-ribbon-bar-panel-settings>
+    </cc-ribbon-bar-panel>
 }
 
 @if (hasEdgeMetric$ | async) {
-    <cc-ribbon-bar-panel class="ribbon-bar-panel-wide" title="Edge Metric Options">
+    <cc-ribbon-bar-panel class="ribbon-bar-panel-wide" title="Edge Metric Options" [separator]="true">
         <cc-edge-metric-chooser></cc-edge-metric-chooser>
 
         <cc-ribbon-bar-panel-settings>
@@ -57,5 +53,13 @@
 }
 
 @if (isDeltaState$ | async) {
-    <ng-container *ngTemplateOutlet="colorPanel"></ng-container>
+    <cc-ribbon-bar-panel class="ribbon-bar-panel-wide" [separator]="true" [isHeaderExpandable]="true">
+        <div toggleHeader class="color-settings-header">
+            <i class="fa fa-paint-brush color-icon"></i>
+            <span>Color Settings</span>
+        </div>
+        <cc-ribbon-bar-panel-settings>
+            <cc-color-settings-panel class="cc-metric-settings-panel"></cc-color-settings-panel>
+        </cc-ribbon-bar-panel-settings>
+    </cc-ribbon-bar-panel>
 }

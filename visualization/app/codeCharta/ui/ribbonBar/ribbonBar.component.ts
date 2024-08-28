@@ -1,5 +1,4 @@
 import { Component } from "@angular/core"
-import { experimentalFeaturesEnabledSelector } from "../../state/store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.selector"
 import { isDeltaStateSelector } from "../../state/selectors/isDeltaState.selector"
 import { map } from "rxjs"
 import { metricDataSelector } from "../../state/selectors/accumulatedData/metricData/metricData.selector"
@@ -9,12 +8,11 @@ import { CcState } from "../../codeCharta.model"
 @Component({
     selector: "cc-ribbon-bar",
     templateUrl: "./ribbonBar.component.html",
-    styleUrls: ["./ribbonBar.component.scss"],
+    styleUrls: ["./ribbonBar.component.scss"]
 })
 export class RibbonBarComponent {
-    experimentalFeaturesEnabled$ = this.store.select(experimentalFeaturesEnabledSelector)
     isDeltaState$ = this.store.select(isDeltaStateSelector)
     hasEdgeMetric$ = this.store.select(metricDataSelector).pipe(map(metricData => metricData.edgeMetricData.length > 0))
-    
+
     constructor(private readonly store: Store<CcState>) {}
 }

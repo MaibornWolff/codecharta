@@ -1,19 +1,10 @@
-import {
-    Component,
-    ContentChild,
-    ElementRef,
-    HostBinding,
-    Input,
-    OnDestroy,
-    OnInit,
-    ViewChild
-} from "@angular/core"
+import { Component, ContentChild, ElementRef, HostBinding, Input, OnDestroy, OnInit, ViewChild } from "@angular/core"
 import { RibbonBarPanelSettingsComponent } from "./ribbonBarPanelSettings.component"
 
 @Component({
     selector: "cc-ribbon-bar-panel",
     templateUrl: "./ribbonBarPanel.component.html",
-    styleUrl: "./ribbonBarPanel.component.scss",
+    styleUrl: "./ribbonBarPanel.component.scss"
 })
 export class RibbonBarPanelComponent implements OnInit, OnDestroy {
     @Input() title?: string
@@ -30,8 +21,14 @@ export class RibbonBarPanelComponent implements OnInit, OnDestroy {
     @ViewChild("toggle")
     private toggleSettingsRef!: ElementRef<HTMLElement>
 
+    @ViewChild("toggleHeader")
+    private toggleHeaderRef!: ElementRef<HTMLElement>
+
     @HostBinding("class.expanded")
     isExpanded = false
+
+    @Input()
+    isHeaderExpandable = false
 
     @Input()
     isPinned = false
@@ -59,17 +56,18 @@ export class RibbonBarPanelComponent implements OnInit, OnDestroy {
 
     private collapseOnOutsideClick(event: MouseEvent) {
         if (this.isPinned) {
-            return;
+            return
         }
-    
+
         const target = event.target as Node
 
-        const overlayPaneElement = document.querySelector('.cdk-overlay-container');
-        const clickedWithinOverlayPane = overlayPaneElement ? overlayPaneElement.contains(target) : false;
+        const overlayPaneElement = document.querySelector(".cdk-overlay-container")
+        const clickedWithinOverlayPane = overlayPaneElement ? overlayPaneElement.contains(target) : false
         const clickedSettingsElement = this.settingsRef?.nativeElement?.contains(target) ?? false
         const clickedSettingsToggleElement = this.toggleSettingsRef.nativeElement.contains(target)
+        const clickedHeaderToggleElement = this.toggleHeaderRef.nativeElement.contains(target)
 
-        if (!clickedWithinOverlayPane && !clickedSettingsElement && !clickedSettingsToggleElement) {
+        if (!clickedWithinOverlayPane && !clickedSettingsElement && !clickedSettingsToggleElement && !clickedHeaderToggleElement) {
             this.isExpanded = false
         }
     }

@@ -1,8 +1,14 @@
 <mat-card appearance="outlined">
     <div class="section">
-        <div class="section-header">
-            <ng-content></ng-content>
-        </div>
+        @if (isHeaderExpandable) {
+            <div #toggleHeader class="section-header" (click)="toggleSettings()">
+                <ng-content select="[toggleHeader]"></ng-content>
+            </div>
+        } @else {
+            <div class="section-header">
+                <ng-content></ng-content>
+            </div>
+        }
 
         @if (title || hasSettings) {
             <div #toggle class="section-title" (click)="toggleSettings()">
