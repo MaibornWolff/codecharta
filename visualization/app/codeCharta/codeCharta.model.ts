@@ -162,7 +162,6 @@ export interface AppSettings {
     colorLabels: ColorLabelOptions
     isColorMetricLinkedToHeightMetric: boolean
     enableFloorLabels: boolean
-    safeReload: boolean
 }
 
 export interface MapColors {

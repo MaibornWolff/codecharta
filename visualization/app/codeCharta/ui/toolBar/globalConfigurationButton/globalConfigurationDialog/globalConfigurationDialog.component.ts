@@ -12,8 +12,6 @@ import { setIsWhiteBackground } from "../../../../state/store/appSettings/isWhit
 import { isWhiteBackgroundSelector } from "../../../../state/store/appSettings/isWhiteBackground/isWhiteBackground.selector"
 import { setResetCameraIfNewFileIsLoaded } from "../../../../state/store/appSettings/resetCameraIfNewFileIsLoaded/resetCameraIfNewFileIsLoaded.actions"
 import { resetCameraIfNewFileIsLoadedSelector } from "../../../../state/store/appSettings/resetCameraIfNewFileIsLoaded/resetCameraIfNewFileIsLoaded.selector"
-import { safeReloadSelector } from "../../../../state/store/appSettings/safeReload/safeReload.selector"
-import { setSafeReload } from "../../../../state/store/appSettings/safeReload/safeReload.actions"
 
 @Component({
     templateUrl: "./globalConfigurationDialog.component.html",
@@ -25,7 +23,6 @@ export class GlobalConfigurationDialogComponent {
     isWhiteBackground$ = this.store.select(isWhiteBackgroundSelector)
     hideFlatBuildings$ = this.store.select(hideFlatBuildingsSelector)
     resetCameraIfNewFileIsLoaded$ = this.store.select(resetCameraIfNewFileIsLoadedSelector)
-    safeReload = this.store.select(safeReloadSelector)
 
     constructor(private store: Store<CcState>) {}
 
@@ -47,9 +44,5 @@ export class GlobalConfigurationDialogComponent {
 
     handleScreenshotToClipboardEnabledChanged(event: MatSlideToggleChange) {
         this.store.dispatch(setScreenshotToClipboardEnabled({ value: event.checked }))
-    }
-
-    handleSafeReloadChanged(event: MatSlideToggleChange) {
-        this.store.dispatch(setSafeReload({ value: event.checked }))
     }
 }

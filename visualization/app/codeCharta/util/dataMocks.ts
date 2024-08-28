@@ -2064,8 +2064,7 @@ export const STATE: CcState = {
         screenshotToClipboardEnabled: false,
         layoutAlgorithm: LayoutAlgorithm.SquarifiedTreeMap,
         sharpnessMode: SharpnessMode.Standard,
-        maxTreeMapFiles: 200,
-        safeReload: false
+        maxTreeMapFiles: 200
     },
     files: [],
     appStatus: {
@@ -2120,8 +2119,7 @@ export const DEFAULT_STATE: CcState = {
         screenshotToClipboardEnabled: false,
         layoutAlgorithm: LayoutAlgorithm.SquarifiedTreeMap,
         sharpnessMode: SharpnessMode.Standard,
-        maxTreeMapFiles: 100,
-        safeReload: false
+        maxTreeMapFiles: 100
     },
     dynamicSettings: {
         areaMetric: null,

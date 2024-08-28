@@ -22,7 +22,6 @@
         <mat-slide-toggle [checked]="screenshotToClipboardEnabled$ | async" (change)="handleScreenshotToClipboardEnabledChanged($event)">
             Screenshot to clipboard
         </mat-slide-toggle>
-        <mat-slide-toggle [checked]="safeReload | async" (change)="handleSafeReloadChanged($event)"> Safe reload </mat-slide-toggle>
     </div>
 
     <cc-reset-settings-button

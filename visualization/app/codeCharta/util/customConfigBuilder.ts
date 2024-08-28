@@ -89,8 +89,7 @@ function initializeAppSettings(target: CustomConfig) {
             positive: "",
             positiveDelta: "",
             selected: ""
-        },
-        safeReload: false
+        }
     }
 }
 

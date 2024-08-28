@@ -37,7 +37,6 @@ import {
 } from "./isHeightAndColorMetricLinked/isColorMetricLinkedToHeightMetric.reducer"
 import { defaultIsSearchPanelPinned, isSearchPanelPinned } from "./isSearchPanelPinned/isSearchPanelPinned.reducer"
 import { defaultEnableFloorLabels, enableFloorLabels } from "./enableFloorLabels/enableFloorLabels.reducer"
-import { defaultSafeReload, safeReload } from "./safeReload/safeReload.reducer"
 import { combineReducers } from "@ngrx/store"
 
 export const appSettings = combineReducers({
@@ -67,8 +66,7 @@ export const appSettings = combineReducers({
     maxTreeMapFiles,
     sharpnessMode,
     isColorMetricLinkedToHeightMetric,
-    enableFloorLabels,
-    safeReload
+    enableFloorLabels
 })
 
 export const defaultAppSettings = {
@@ -98,6 +96,5 @@ export const defaultAppSettings = {
     maxTreeMapFiles: defaultMaxTreeMapFiles,
     sharpnessMode: defaultSharpnessMode,
     isColorMetricLinkedToHeightMetric: defaultIsColorMetricLinkedToHeightMetric,
-    enableFloorLabels: defaultEnableFloorLabels,
-    safeReload: defaultSafeReload
+    enableFloorLabels: defaultEnableFloorLabels
 }
