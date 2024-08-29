@@ -53,6 +53,12 @@ describe("RibbonBarComponent", () => {
             expect(container.querySelector("cc-color-metric-chooser")).not.toBe(null)
             expect(container.querySelector("cc-link-color-metric-to-height-metric-button")).not.toBe(null)
         })
+
+        it("should show cc-color-settings-panel when in delta mode", async () => {
+            mockedIsDeltaStateSelector.mockImplementation(() => true)
+            const { container } = await render(RibbonBarComponent, { excludeComponentDeclaration: true })
+            expect(container.querySelector("cc-color-settings-panel")).not.toBe(null)
+        })
     })
 
     describe("edge metric chooser", () => {
