@@ -1,7 +1,6 @@
 import { TestBed } from "@angular/core/testing"
 import { StoreModule } from "@ngrx/store"
-import { render, screen, waitFor } from "@testing-library/angular"
-import userEvent from "@testing-library/user-event"
+import { render, screen } from "@testing-library/angular"
 import { EdgeMetricData } from "../../codeCharta.model"
 import { metricDataSelector } from "../../state/selectors/accumulatedData/metricData/metricData.selector"
 import { isDeltaStateSelector } from "../../state/selectors/isDeltaState.selector"
@@ -37,38 +36,6 @@ describe("RibbonBarComponent", () => {
         TestBed.configureTestingModule({
             imports: [RibbonBarModule, StoreModule.forRoot(appReducers, { metaReducers: [setStateMiddleware] })],
             providers: [{ provide: CodeMapMouseEventService, useValue: jest.fn() }]
-        })
-    })
-
-    describe("panel sections", () => {
-        it("should toggle panel section", async () => {
-            const { container } = await render(RibbonBarComponent, { excludeComponentDeclaration: true })
-            expect(container.querySelector("cc-area-settings-panel").classList).toContain("hidden")
-
-            await userEvent.click(screen.getByText("Area Metric Options"))
-            await waitFor(() => expect(container.querySelector("cc-area-settings-panel").classList).not.toContain("hidden"))
-
-            await userEvent.click(screen.getByText("Area Metric Options"))
-            await waitFor(() => expect(container.querySelector("cc-area-settings-panel").classList).toContain("hidden"))
-        })
-
-        it("should close on outside clicks", async () => {
-            const { container } = await render(RibbonBarComponent, { excludeComponentDeclaration: true })
-
-            await userEvent.click(screen.getByText("Area Metric Options"))
-            await waitFor(() => expect(container.querySelector("cc-area-settings-panel").classList).not.toContain("hidden"))
-
-            await userEvent.click(document.body)
-            await waitFor(() => expect(container.querySelector("cc-area-settings-panel").classList).toContain("hidden"))
-        })
-
-        it("should detect clicks within panel selections and not close itself", async () => {
-            const { fixture } = await render(RibbonBarComponent, { excludeComponentDeclaration: true })
-            const mouseEvent = {
-                composedPath: () => [{ nodeName: "CC-COLOR-SETTINGS-PANEL" }]
-            } as unknown as MouseEvent
-            const isClickOutside = fixture.componentInstance["isOutside"](mouseEvent)
-            expect(isClickOutside).toBe(false)
         })
     })
 

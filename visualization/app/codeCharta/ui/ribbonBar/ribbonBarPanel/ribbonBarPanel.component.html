@@ -2,7 +2,7 @@
     <div class="section">
         @if (isHeaderExpandable) {
             <div #toggleHeader class="section-header" (click)="toggleSettings()">
-                <ng-content select="[toggleHeader]"></ng-content>
+                <ng-content select=".toggleHeader"></ng-content>
             </div>
         } @else {
             <div class="section-header">

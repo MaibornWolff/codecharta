@@ -65,7 +65,7 @@ export class RibbonBarPanelComponent implements OnInit, OnDestroy {
         const clickedWithinOverlayPane = overlayPaneElement ? overlayPaneElement.contains(target) : false
         const clickedSettingsElement = this.settingsRef?.nativeElement?.contains(target) ?? false
         const clickedSettingsToggleElement = this.toggleSettingsRef.nativeElement.contains(target)
-        const clickedHeaderToggleElement = this.toggleHeaderRef.nativeElement.contains(target)
+        const clickedHeaderToggleElement = this.toggleHeaderRef?.nativeElement.contains(target)
 
         if (!clickedWithinOverlayPane && !clickedSettingsElement && !clickedSettingsToggleElement && !clickedHeaderToggleElement) {
             this.isExpanded = false

@@ -16,11 +16,15 @@ describe(RibbonBarPanelComponent.name, () => {
                 providers: [RibbonBarPanelComponent, RibbonBarPanelSettingsComponent, provideMockStore()]
             })
             const { container } = await render(
-                `<cc-ribbon-bar-panel>
-                  <cc-ribbon-bar-panel-settings></cc-ribbon-bar-panel-settings>
-                </cc-ribbon-bar-panel>`,
+                `<cc-ribbon-bar-panel [isHeaderExpandable]="false">
+                            <div></div>
+                            <cc-ribbon-bar-panel-settings></cc-ribbon-bar-panel-settings>
+                         </cc-ribbon-bar-panel>`,
                 {
-                    excludeComponentDeclaration: true
+                    excludeComponentDeclaration: true,
+                    componentInputs: {
+                        isHeaderExpandable: false
+                    }
                 }
             )
             panel = container.querySelector("cc-ribbon-bar-panel")
@@ -47,8 +51,108 @@ describe(RibbonBarPanelComponent.name, () => {
                 await waitFor(() => expect(panel.classList).not.toContain("expanded"))
             })
         })
+    })
 
-        describe("closing on outside clicks", () => {
+    it("renders expandable header when isHeaderExpandable is true", async () => {
+        TestBed.configureTestingModule({
+            imports: [RibbonBarPanelModule],
+            providers: [RibbonBarPanelComponent, RibbonBarPanelSettingsComponent, provideMockStore()]
+        })
+        const { container } = await render(
+            `<cc-ribbon-bar-panel [isHeaderExpandable]="true">
+            <div class="toggleHeader"></div>
+            <cc-ribbon-bar-panel-settings></cc-ribbon-bar-panel-settings>
+         </cc-ribbon-bar-panel>`,
+            {
+                excludeComponentDeclaration: true
+            }
+        )
+
+        const toggleHeader = container.querySelector(".toggleHeader")
+        expect(toggleHeader).toBeTruthy()
+    })
+
+    it("renders non-expandable header when isHeaderExpandable is false", async () => {
+        TestBed.configureTestingModule({
+            imports: [RibbonBarPanelModule],
+            providers: [RibbonBarPanelComponent, RibbonBarPanelSettingsComponent, provideMockStore()]
+        })
+        const { container } = await render(
+            `<cc-ribbon-bar-panel [isHeaderExpandable]="false">
+            <div></div>
+            <cc-ribbon-bar-panel-settings></cc-ribbon-bar-panel-settings>
+         </cc-ribbon-bar-panel>`,
+            {
+                excludeComponentDeclaration: true,
+                componentInputs: {
+                    isHeaderExpandable: false
+                }
+            }
+        )
+        const sectionHeader = container.querySelector(".section-header")
+        expect(sectionHeader).toBeTruthy()
+    })
+
+    it("should be open when clicked on section header", async () => {
+        TestBed.configureTestingModule({
+            imports: [RibbonBarPanelModule],
+            providers: [RibbonBarPanelComponent, RibbonBarPanelSettingsComponent, provideMockStore()]
+        })
+        const { container } = await render(
+            `<cc-ribbon-bar-panel [isHeaderExpandable]="true">
+            <div class="toggleHeader"></div>
+            <cc-ribbon-bar-panel-settings></cc-ribbon-bar-panel-settings>
+         </cc-ribbon-bar-panel>`,
+            {
+                excludeComponentDeclaration: true
+            }
+        )
+        await userEvent.click(container.querySelector(".section-header"))
+        const panel = container.querySelector("cc-ribbon-bar-panel")
+        await waitFor(() => expect(panel.classList).toContain("expanded"))
+    })
+
+    it("should not open when clicked on non-expandable header", async () => {
+        TestBed.configureTestingModule({
+            imports: [RibbonBarPanelModule],
+            providers: [RibbonBarPanelComponent, RibbonBarPanelSettingsComponent, provideMockStore()]
+        })
+        const { container } = await render(
+            `<cc-ribbon-bar-panel>
+            <div></div>
+            <cc-ribbon-bar-panel-settings></cc-ribbon-bar-panel-settings>
+         </cc-ribbon-bar-panel>`,
+            {
+                excludeComponentDeclaration: true
+            }
+        )
+        await userEvent.click(container.querySelector(".section-header"))
+        const panel = container.querySelector("cc-ribbon-bar-panel")
+        await waitFor(() => expect(panel.classList).not.toContain("expanded"))
+    })
+
+    describe("closing on outside clicks", () => {
+        let panel: Element
+
+        beforeEach(async () => {
+            TestBed.configureTestingModule({
+                imports: [RibbonBarPanelModule],
+                providers: [RibbonBarPanelComponent, RibbonBarPanelSettingsComponent, provideMockStore()]
+            })
+            const { container } = await render(
+                `<cc-ribbon-bar-panel [isHeaderExpandable]="false">
+                            <div></div>
+                            <cc-ribbon-bar-panel-settings></cc-ribbon-bar-panel-settings>
+                         </cc-ribbon-bar-panel>`,
+                {
+                    excludeComponentDeclaration: true,
+                    componentInputs: {
+                        isHeaderExpandable: false
+                    }
+                }
+            )
+            panel = container.querySelector("cc-ribbon-bar-panel")
+
             it("should subscribe to mousedown events when opening", () => {
                 const addEventListenerSpy = jest.spyOn(document, "addEventListener")
                 const panel = TestBed.inject(RibbonBarPanelComponent)
