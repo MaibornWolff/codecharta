@@ -139,44 +139,41 @@ describe(RibbonBarPanelComponent.name, () => {
                             <cc-ribbon-bar-panel-settings></cc-ribbon-bar-panel-settings>
                          </cc-ribbon-bar-panel>`,
                 {
-                    excludeComponentDeclaration: true,
-                    componentInputs: {
-                        isHeaderExpandable: false
-                    }
+                    excludeComponentDeclaration: true
                 }
             )
             panel = container.querySelector("cc-ribbon-bar-panel")
+        })
 
-            it("should subscribe to mousedown events when opening", () => {
-                const addEventListenerSpy = jest.spyOn(document, "addEventListener")
-                const panel = TestBed.inject(RibbonBarPanelComponent)
-                panel.ngOnInit()
-                expect(addEventListenerSpy).toHaveBeenCalledWith("mousedown", expect.any(Function))
-            })
+        it("should subscribe to mousedown events when opening", () => {
+            const addEventListenerSpy = jest.spyOn(document, "addEventListener")
+            const panel = TestBed.inject(RibbonBarPanelComponent)
+            panel.ngOnInit()
+            expect(addEventListenerSpy).toHaveBeenCalledWith("mousedown", expect.any(Function))
+        })
 
-            it("should unsubscribe mousedown events when destroyed", () => {
-                const removeEventListenerSpy = jest.spyOn(document, "removeEventListener")
-                const panel = TestBed.inject(RibbonBarPanelComponent)
-                panel.ngOnInit()
-                panel.ngOnDestroy()
-                expect(removeEventListenerSpy).toHaveBeenCalledWith("mousedown", expect.any(Function))
-            })
+        it("should unsubscribe mousedown events when destroyed", () => {
+            const removeEventListenerSpy = jest.spyOn(document, "removeEventListener")
+            const panel = TestBed.inject(RibbonBarPanelComponent)
+            panel.ngOnInit()
+            panel.ngOnDestroy()
+            expect(removeEventListenerSpy).toHaveBeenCalledWith("mousedown", expect.any(Function))
+        })
 
-            it("should close on outside clicks", async () => {
-                await userEvent.click(panel.querySelector(".section-title"))
-                await waitFor(() => expect(panel.classList).toContain("expanded"))
+        it("should close on outside clicks", async () => {
+            await userEvent.click(panel.querySelector(".section-title"))
+            await waitFor(() => expect(panel.classList).toContain("expanded"))
 
-                await userEvent.click(document.body)
-                await waitFor(() => expect(panel.classList).not.toContain("expanded"))
-            })
+            await userEvent.click(document.body)
+            await waitFor(() => expect(panel.classList).not.toContain("expanded"))
+        })
 
-            it("should not close when clicking inside", async () => {
-                await userEvent.click(panel.querySelector(".section-title"))
-                await waitFor(() => expect(panel.classList).toContain("expanded"))
+        it("should not close when clicking inside", async () => {
+            await userEvent.click(panel.querySelector(".section-title"))
+            await waitFor(() => expect(panel.classList).toContain("expanded"))
 
-                await userEvent.click(panel.querySelector("cc-ribbon-bar-panel-settings"))
-                await waitFor(() => expect(panel.classList).toContain("expanded"))
-            })
+            await userEvent.click(panel.querySelector("cc-ribbon-bar-panel-settings"))
+            await waitFor(() => expect(panel.classList).toContain("expanded"))
         })
     })
 })
