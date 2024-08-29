@@ -21,10 +21,7 @@ describe(RibbonBarPanelComponent.name, () => {
                             <cc-ribbon-bar-panel-settings></cc-ribbon-bar-panel-settings>
                          </cc-ribbon-bar-panel>`,
                 {
-                    excludeComponentDeclaration: true,
-                    componentInputs: {
-                        isHeaderExpandable: false
-                    }
+                    excludeComponentDeclaration: true
                 }
             )
             panel = container.querySelector("cc-ribbon-bar-panel")
@@ -83,10 +80,7 @@ describe(RibbonBarPanelComponent.name, () => {
             <cc-ribbon-bar-panel-settings></cc-ribbon-bar-panel-settings>
          </cc-ribbon-bar-panel>`,
             {
-                excludeComponentDeclaration: true,
-                componentInputs: {
-                    isHeaderExpandable: false
-                }
+                excludeComponentDeclaration: true
             }
         )
         const sectionHeader = container.querySelector(".section-header")
