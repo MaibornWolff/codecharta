@@ -49,9 +49,9 @@ OUTPUT_PATH="$(pwd)/output"
 NETWORK_NAME="sonarnet"
 SONAR_CONTAINER_NAME="sonarqube"
 
-RUN_PROJECT_CLEANUP=true  # Set to true to delete the existing SonarQube project
+RUN_PROJECT_CLEANUP=false  # Set to true to delete the existing SonarQube project
 RUN_SONAR_SCANNER=true    # Set to false to skip running SonarScanner
-RUN_FINAL_CLEANUP=true   # Set to true to perform final cleanup of Docker containers and networks
+RUN_FINAL_CLEANUP=false   # Set to true to perform final cleanup of Docker containers and networks
 WAIT_TIME=60              # Time in seconds to wait after running SonarScanner
 
 # If skip prompt mode is not enabled, prompt for important variables with defaults
