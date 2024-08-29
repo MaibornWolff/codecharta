@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostBinding, Input, OnInit, QueryList, ViewChild, ViewChildren } from "@angular/core"
+import { AfterViewInit, Component, ElementRef, HostBinding, Input, OnInit, QueryList, ViewChild, ViewChildren } from "@angular/core"
 import { map, Observable } from "rxjs"
 import { EdgeMetricData, NodeMetricData, CcState, PrimaryMetrics } from "../../codeCharta.model"
 import { metricDataSelector } from "../../state/selectors/accumulatedData/metricData/metricData.selector"
@@ -12,9 +12,9 @@ type MetricChooserType = "node" | "edge"
 @Component({
     selector: "cc-metric-chooser",
     templateUrl: "./metricChooser.component.html",
-    styleUrls: ["./metricChooser.component.scss"],
+    styleUrls: ["./metricChooser.component.scss"]
 })
-export class MetricChooserComponent implements OnInit {
+export class MetricChooserComponent implements OnInit, AfterViewInit {
     @Input() metricFor?: keyof PrimaryMetrics
     @Input() icon?: string
     @Input() selectedMetricName: string
@@ -29,7 +29,7 @@ export class MetricChooserComponent implements OnInit {
     metricData$: Observable<NodeMetricData[] | EdgeMetricData[]>
     attributeDescriptors$ = this.store.select(attributeDescriptorsSelector)
 
-    @HostBinding('class.hide-metric-value')
+    @HostBinding("class.hide-metric-value")
     hideMetricSum = false
 
     constructor(private store: Store<CcState>) {}
