@@ -12,6 +12,8 @@
 
         .mat-mdc-select-panel {
             padding: 0;
+            overflow: visible;
+            max-height: none;
         }
 
         .cc-metric-chooser {
@@ -41,6 +43,8 @@
 
             .cc-metric-chooser-option-container {
                 font-size: 16px;
+                max-height: 230px;
+                overflow: auto;
 
                 mat-option .metric-max-value {
                     color: #ccc;
