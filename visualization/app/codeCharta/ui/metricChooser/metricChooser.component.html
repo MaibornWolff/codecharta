@@ -41,6 +41,10 @@
         </div>
     </mat-select>
 }
-@if (metricFor && !hideMetricSum) {
-    <cc-metric-chooser-value [metricFor]="metricFor"></cc-metric-chooser-value>
+@if (metricFor) {
+    @if (!hideMetricSum) {
+        <cc-metric-chooser-value [metricFor]="metricFor"></cc-metric-chooser-value>
+    }
+} @else {
+    <ng-content></ng-content>
 }

@@ -12,7 +12,7 @@ import { State, Store, StoreModule } from "@ngrx/store"
 import { appReducers, setStateMiddleware } from "../../../../state/store/state.manager"
 import { EffectsModule } from "@ngrx/effects"
 
-jest.mock("../../../state/effects/addBlacklistItemsIfNotResultsInEmptyMap/resultsInEmptyMap", () => ({
+jest.mock("../../../../state/effects/addBlacklistItemsIfNotResultsInEmptyMap/resultsInEmptyMap", () => ({
     resultsInEmptyMap: jest.fn()
 }))
 
