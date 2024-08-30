@@ -145,7 +145,6 @@ describe("ThreeMapControlsService", () => {
             await wait(0)
 
             expect(threeCameraService.camera.position).toEqual(new Vector3(0, 0, 0))
-            //expect(threeRendererService.render).not.toHaveBeenCalled()
         })
     })
 
