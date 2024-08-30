@@ -7,7 +7,7 @@
         (openedChange)="handleOpenedChanged($event)"
         [disabled]="isDisabled"
     >
-        <mat-select-trigger> <i *ngIf="icon" [class]="'fa ' + icon"></i>{{ selectedMetricName }} </mat-select-trigger>
+        <mat-select-trigger><i *ngIf="icon" [class]="'fa ' + icon"></i>{{ selectedMetricName }}</mat-select-trigger>
 
         <mat-form-field class="cc-metric-chooser-search-field">
             <i matPrefix class="fa fa-search search-icon"></i>
@@ -41,10 +41,10 @@
         </div>
     </mat-select>
 }
-@if (metricFor) {
-    @if (!hideMetricSum) {
+@if (!hideMetricSum) {
+    @if (metricFor) {
         <cc-metric-chooser-value [metricFor]="metricFor"></cc-metric-chooser-value>
+    } @else {
+        <ng-content></ng-content>
     }
-} @else {
-    <ng-content></ng-content>
 }
