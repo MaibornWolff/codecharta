@@ -23,4 +23,16 @@ export class MetricChooserValueComponent {
         this.node$ = this.nodeSelectionService.createNodeObservable()
         this.primaryMetricNames$ = this.store.select(primaryMetricNamesSelector)
     }
+
+    calculateBackgroundColor(delta: number): string {
+        if (this.metricFor === "heightMetric" && delta > 0) {
+            return "#b1d8a8"
+        }
+
+        if (delta < 0) {
+            return "#ffcccc"
+        }
+
+        return "#e6e6e6"
+    }
 }
