@@ -84,4 +84,10 @@ describe("autoFitCodeMapOnFileSelectionChangeEffect", () => {
         mockedRenderCodeMap$.next(undefined)
         expect(mockedAutoFitTo).toHaveBeenCalledTimes(1)
     })
+
+    it("should auto fit map if resetCameraIfNewFileIsLoadedSelector is set to false when starting ", () => {
+        actions$.next({ type: "StartWithGlobalOption:resetCameraIfNewFileIsLoadedSetToFalse" })
+        mockedRenderCodeMap$.next(undefined)
+        expect(mockedAutoFitTo).toHaveBeenCalledTimes(1)
+    })
 })

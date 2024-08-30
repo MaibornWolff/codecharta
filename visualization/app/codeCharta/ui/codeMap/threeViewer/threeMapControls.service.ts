@@ -1,6 +1,6 @@
 import { ThreeCameraService } from "./threeCamera.service"
 import { Injectable } from "@angular/core"
-import { Box3, Mesh, MeshNormalMaterial, PerspectiveCamera, Vector3, Sphere, BoxGeometry } from "three"
+import { Box3, Mesh, MeshNormalMaterial, PerspectiveCamera, Vector3, Sphere, BoxGeometry, MOUSE } from "three"
 import { ThreeSceneService } from "./threeSceneService"
 import { MapControls } from "three/examples/jsm/controls/MapControls"
 import { ThreeRendererService } from "./threeRenderer.service"
@@ -43,6 +43,9 @@ export class ThreeMapControlsService {
     autoFitTo() {
         setTimeout(() => {
             const boundingSphere = this.getBoundingSphere()
+            if (boundingSphere.radius === -1) {
+                return
+            }
 
             const length = this.cameraPerspectiveLengthCalculation(boundingSphere)
             const cameraReference = this.threeCameraService.camera
@@ -87,7 +90,7 @@ export class ThreeMapControlsService {
         this.threeCameraService.camera.updateProjectionMatrix()
     }
 
-    private getBoundingSphere() {
+    getBoundingSphere() {
         return new Box3().setFromObject(this.threeSceneService.mapGeometry).getBoundingSphere(new Sphere())
     }
 
@@ -118,6 +121,11 @@ export class ThreeMapControlsService {
 
     init(domElement: HTMLCanvasElement) {
         this.controls = new MapControls(this.threeCameraService.camera, domElement)
+        this.controls.mouseButtons = {
+            LEFT: MOUSE.ROTATE,
+            MIDDLE: MOUSE.DOLLY,
+            RIGHT: MOUSE.PAN
+        }
         this.controls.zoomToCursor = true
         this.controls.listenToKeyEvents(window)
         this.controls.addEventListener("change", () => {
