@@ -20,6 +20,7 @@ export class ThreeMapControlsService {
     controls: MapControls
     private eventEmitter = new EventEmitter<CameraChangeEvents>()
     zoomPercentage$ = new BehaviorSubject<number>(100)
+    positionBeforeFocus: Vector3
 
     constructor(
         private threeCameraService: ThreeCameraService,
@@ -183,5 +184,67 @@ export class ThreeMapControlsService {
         this.controls.update()
 
         this.zoomPercentage$.next(zoom)
+    }
+
+    focusOnNode(nodePath: string) {
+        this.positionBeforeFocus = this.threeCameraService.camera.position.clone()
+        const mapMesh = this.threeSceneService.getMapMesh()
+        const node = mapMesh.getBuildingByPath(nodePath)
+        const boundingBox = node.boundingBox.clone()
+        const boundingSphere = boundingBox.getBoundingSphere(new Sphere())
+        this.animateCameraTransition(boundingSphere, 1000)
+    }
+
+    unfocusNode() {
+        const defaultPosition = this.positionBeforeFocus
+        this.animateCameraTransition({ center: this.controls.target, radius: defaultPosition.length() } as Sphere, 1000) // 1000ms duration for the transition
+    }
+
+    private animateCameraTransition(boundingSphere: Sphere, duration: number) {
+        const { center, radius } = boundingSphere
+
+        const startPos = this.threeCameraService.camera.position.clone()
+        const endPos = this.calculateCameraEndPosition(center, radius)
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const direction = endPos.clone().sub(startPos).normalize()
+        const startTime = performance.now()
+
+        const animate = (currentTime: number) => {
+            const elapsedTime = currentTime - startTime
+            const t = Math.min(elapsedTime / duration, 1)
+
+            const newPosition = new Vector3().lerpVectors(startPos, endPos, t)
+            this.moveCameraToPosition(newPosition, center, false)
+
+            if (t < 1) {
+                requestAnimationFrame(animate)
+            }
+        }
+
+        requestAnimationFrame(animate)
+    }
+
+    private calculateCameraEndPosition(center: Vector3, radius: number): Vector3 {
+        const currentCameraPosition = this.threeCameraService.camera.position.clone()
+        const direction = this.controls.target.clone().sub(currentCameraPosition).normalize()
+        const distance = this.cameraPerspectiveLengthCalculation({ center, radius } as Sphere)
+
+        return center.clone().sub(direction.multiplyScalar(distance))
+    }
+
+    private moveCameraToPosition(position: Vector3, target: Vector3, render = true) {
+        const camera = this.threeCameraService.camera
+
+        camera.position.copy(position)
+        camera.lookAt(target)
+
+        this.controls.target.copy(target)
+        this.controls.update()
+
+        if (render) {
+            this.threeRendererService.render()
+        }
+
+        this.onInput(camera)
     }
 }
