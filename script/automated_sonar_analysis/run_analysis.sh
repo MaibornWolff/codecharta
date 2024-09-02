@@ -8,10 +8,9 @@ if [[ ! -d "$DIR" ]]; then DIR="$PWD"; fi
 . "$DIR/helpers.sh"
 . "$DIR/cleanup.sh"
 . "$DIR/sonarqube_management.sh"
-. "$DIR/analysis.sh"
+. "$DIR/analysers.sh"
 
-#!/bin/bash
-
+# Introductory message explaining the script's purpose
 echo -e "🔧 Welcome to the SonarQube & CodeCharta Automation Script 🔧"
 echo -e "------------------------------------------------------------"
 echo -e "This script automates the process of:"
@@ -38,6 +37,21 @@ while getopts ":s" opt; do
   esac
 done
 
+# Default values for important variables
+
+# PROJECT_KEY: A unique identifier for the project in SonarQube.
+PROJECT_KEY="maibornwolff-gmbh_codecharta_visualization"
+
+# PROJECT_NAME: The name of the project in SonarQube.
+PROJECT_NAME="CodeCharta Visualization"
+
+# NEW_SONAR_PASSWORD: The new password to set for the SonarQube admin user.
+# If the default 'admin' password is still in use, the script will change it to this value.
+NEW_SONAR_PASSWORD="newadminpassword"
+
+# PROJECT_BASEDIR: The directory containing the source code to be analyzed.
+PROJECT_BASEDIR="$(pwd)/visualization/app"
+
 # Other variables with default values
 HOST_SONAR_URL="http://localhost:9000"   # URL used by the host machine to access the SonarQube server
 CONTAINER_SONAR_URL="http://sonarqube:9000"  # URL used by other Docker containers to access the SonarQube server
@@ -51,38 +65,25 @@ SONAR_CONTAINER_NAME="sonarqube"
 
 RUN_PROJECT_CLEANUP=true  # Set to true to delete the existing SonarQube project
 RUN_SONAR_SCANNER=true    # Set to false to skip running SonarScanner
-RUN_FINAL_CLEANUP=true   # Set to true to perform final cleanup of Docker containers and networks
+RUN_FINAL_CLEANUP=true    # Set to true to perform final cleanup of Docker containers and networks
 WAIT_TIME=60              # Time in seconds to wait after running SonarScanner
 
 # If skip prompt mode is not enabled, prompt for important variables with defaults
 if [ "$SKIP_PROMPT" = false ]; then
-    # PROJECT_KEY: A unique identifier for the project in SonarQube.
-    # Default is set to 'maibornwolff-gmbh_codecharta_visualization'.
-    read -p "🔑 Enter the Project Key (default: maibornwolff-gmbh_codecharta_visualization): " PROJECT_KEY
-    PROJECT_KEY=${PROJECT_KEY:-maibornwolff-gmbh_codecharta_visualization}
+    # Allow the user to override the default values if desired
+    read -p "🔑 Enter the Project Key (default: $PROJECT_KEY): " input
+    PROJECT_KEY=${input:-$PROJECT_KEY}
 
-    # PROJECT_NAME: The name of the project in SonarQube.
-    # Default is set to 'CodeCharta Visualization'.
-    read -p "📛 Enter the Project Name (default: CodeCharta Visualization): " PROJECT_NAME
-    PROJECT_NAME=${PROJECT_NAME:-CodeCharta Visualization}
+    read -p "📛 Enter the Project Name (default: $PROJECT_NAME): " input
+    PROJECT_NAME=${input:-$PROJECT_NAME}
 
-    # NEW_SONAR_PASSWORD: The new password to set for the SonarQube admin user.
-    # If the default 'admin' password is still in use, the script will change it to this value.
-    # Default is set to 'newadminpassword'.
-    read -p "🔒 Enter the new password for the SonarQube admin user (default: newadminpassword): " NEW_SONAR_PASSWORD
-    NEW_SONAR_PASSWORD=${NEW_SONAR_PASSWORD:-newadminpassword}
+    read -p "🔒 Enter the new password for the SonarQube admin user (default: $NEW_SONAR_PASSWORD): " input
+    NEW_SONAR_PASSWORD=${input:-$NEW_SONAR_PASSWORD}
 
-    # PROJECT_BASEDIR: The directory containing the source code to be analyzed.
-    # Default is the 'visualization' directory within the current working directory.
-    read -p "📁 Enter the directory path to be scanned (default: $(pwd)/visualization/app): " PROJECT_BASEDIR
-    PROJECT_BASEDIR=${PROJECT_BASEDIR:-$(pwd)/visualization/app}
-else
-    # Default values if skip prompt is enabled
-    PROJECT_KEY="maibornwolff-gmbh_codecharta_visualization"
-    PROJECT_NAME="CodeCharta Visualization"
-    NEW_SONAR_PASSWORD="newadminpassword"
-    PROJECT_BASEDIR="$(pwd)/visualization/app"
+    read -p "📁 Enter the directory path to be scanned (default: $PROJECT_BASEDIR): " input
+    PROJECT_BASEDIR=${input:-$PROJECT_BASEDIR}
 fi
+
 # URL-encode PROJECT_KEY and PROJECT_NAME
 ENCODED_PROJECT_KEY=$(urlencode "$PROJECT_KEY")
 ENCODED_PROJECT_NAME=$(urlencode "$PROJECT_NAME")
@@ -93,7 +94,7 @@ ensure_sonarqube_running
 # Conditionally reset password
 reset_sonarqube_password
 
-# Conditionally clean up previous project
+# Conditionally clean up the previous project
 if $RUN_PROJECT_CLEANUP; then
     cleanup_previous_project
 fi
