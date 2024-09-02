@@ -49,9 +49,9 @@ OUTPUT_PATH="$(pwd)/output"
 NETWORK_NAME="sonarnet"
 SONAR_CONTAINER_NAME="sonarqube"
 
-RUN_PROJECT_CLEANUP=false  # Set to true to delete the existing SonarQube project
+RUN_PROJECT_CLEANUP=true  # Set to true to delete the existing SonarQube project
 RUN_SONAR_SCANNER=true    # Set to false to skip running SonarScanner
-RUN_FINAL_CLEANUP=false   # Set to true to perform final cleanup of Docker containers and networks
+RUN_FINAL_CLEANUP=true   # Set to true to perform final cleanup of Docker containers and networks
 WAIT_TIME=60              # Time in seconds to wait after running SonarScanner
 
 # If skip prompt mode is not enabled, prompt for important variables with defaults
@@ -74,14 +74,14 @@ if [ "$SKIP_PROMPT" = false ]; then
 
     # PROJECT_BASEDIR: The directory containing the source code to be analyzed.
     # Default is the 'visualization' directory within the current working directory.
-    read -p "📁 Enter the directory path to be scanned (default: $(pwd)/visualization): " PROJECT_BASEDIR
-    PROJECT_BASEDIR=${PROJECT_BASEDIR:-$(pwd)/visualization}
+    read -p "📁 Enter the directory path to be scanned (default: $(pwd)/visualization/app): " PROJECT_BASEDIR
+    PROJECT_BASEDIR=${PROJECT_BASEDIR:-$(pwd)/visualization/app}
 else
     # Default values if skip prompt is enabled
     PROJECT_KEY="maibornwolff-gmbh_codecharta_visualization"
     PROJECT_NAME="CodeCharta Visualization"
     NEW_SONAR_PASSWORD="newadminpassword"
-    PROJECT_BASEDIR="$(pwd)/visualization"
+    PROJECT_BASEDIR="$(pwd)/visualization/app"
 fi
 # URL-encode PROJECT_KEY and PROJECT_NAME
 ENCODED_PROJECT_KEY=$(urlencode "$PROJECT_KEY")
