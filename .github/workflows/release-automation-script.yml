@@ -5,7 +5,6 @@ on:
     types: [published]
   workflow_dispatch: 
   push:
-
 jobs:
   build-linux:
     runs-on: ubuntu-latest
@@ -21,19 +20,20 @@ jobs:
 
       - name: Compile the script for Linux
         run: |
-          shc -f automated_sonar_analysis/sonar_analysis.sh -o automated_sonar_analysis/sonar_analysis_linux
+          shc -f script/automated_sonar_analysis/sonar_analysis.sh -o script/automated_sonar_analysis/sonar_analysis_linux
 
-      - name: Create a ZIP archive of the script
+      - name: Create a ZIP archive of the source code
         run: |
-          zip -r automated_sonar_analysis_linux.zip automated_sonar_analysis/
+          cd script/automated_sonar_analysis
+          zip -r automated_sonar_analysis_source.zip ./*
 
       - name: Attach assets to the release
         id: upload-release-linux
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            automated_sonar_analysis_linux.zip
-            automated_sonar_analysis/sonar_analysis_linux
+            script/automated_sonar_analysis/automated_sonar_analysis_source.zip
+            script/automated_sonar_analysis/sonar_analysis_linux
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -50,13 +50,13 @@ jobs:
 
       - name: Compile the script for macOS
         run: |
-          shc -f automated_sonar_analysis/sonar_analysis.sh -o automated_sonar_analysis/sonar_analysis_macos
+          shc -f script/automated_sonar_analysis/sonar_analysis.sh -o script/automated_sonar_analysis/sonar_analysis_macos
 
       - name: Attach macOS executable to the release
         id: upload-release-macos
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            automated_sonar_analysis/sonar_analysis_macos
+            script/automated_sonar_analysis/sonar_analysis_macos
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
