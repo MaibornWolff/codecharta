@@ -29,6 +29,8 @@ mat-card.color-height-metric-link {
 cc-ribbon-bar-panel {
     cc-ribbon-bar-panel-settings {
         font-size: 0.9em;
+        left: 0;
+        right: auto;
     }
 
     &:last-child cc-ribbon-bar-panel-settings {

@@ -1,9 +1,9 @@
 :host {
     display: flex;
-    width: 300px;
     flex-direction: column;
     padding: 6px;
     position: absolute;
+    max-width: 400px;
     left: 6px;
     top: 45px;
     background: white;
