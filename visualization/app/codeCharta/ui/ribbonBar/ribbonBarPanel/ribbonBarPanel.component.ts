@@ -1,4 +1,4 @@
-import { Component, ContentChild, ElementRef, HostBinding, Input, OnDestroy, OnInit, ViewChild } from "@angular/core"
+import { Component, ContentChild, ElementRef, EventEmitter, HostBinding, Input, OnDestroy, OnInit, Output, ViewChild } from "@angular/core"
 import { RibbonBarPanelSettingsComponent } from "./ribbonBarPanelSettings.component"
 
 @Component({
@@ -38,6 +38,9 @@ export class RibbonBarPanelComponent implements OnInit, OnDestroy {
         return Boolean(this.settingsRef)
     }
 
+    @Output()
+    onToggleSettings = new EventEmitter<boolean>()
+
     private mouseDownListener?: (event: MouseEvent) => void
 
     ngOnInit(): void {
@@ -52,6 +55,7 @@ export class RibbonBarPanelComponent implements OnInit, OnDestroy {
 
     toggleSettings() {
         this.isExpanded = !this.isExpanded
+        this.onToggleSettings.emit(this.isExpanded)
     }
 
     private collapseOnOutsideClick(event: MouseEvent) {
@@ -65,7 +69,7 @@ export class RibbonBarPanelComponent implements OnInit, OnDestroy {
         const clickedWithinOverlayPane = overlayPaneElement ? overlayPaneElement.contains(target) : false
         const clickedSettingsElement = this.settingsRef?.nativeElement?.contains(target) ?? false
         const clickedSettingsToggleElement = this.toggleSettingsRef.nativeElement.contains(target)
-        const clickedHeaderToggleElement = this.toggleHeaderRef?.nativeElement.contains(target)
+        const clickedHeaderToggleElement = this.toggleHeaderRef?.nativeElement.contains(target) ?? false
 
         if (!clickedWithinOverlayPane && !clickedSettingsElement && !clickedSettingsToggleElement && !clickedHeaderToggleElement) {
             this.isExpanded = false

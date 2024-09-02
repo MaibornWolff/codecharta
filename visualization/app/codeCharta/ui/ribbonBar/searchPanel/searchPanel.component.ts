@@ -5,7 +5,7 @@ import { isSearchPanelPinnedSelector } from "../../../state/store/appSettings/is
 import { Subscription } from "rxjs"
 import { RibbonBarPanelComponent } from "../ribbonBarPanel/ribbonBarPanel.component"
 
-export type SearchPanelMode = "treeView" | "blacklist"
+export type SearchPanelMode = "treeView" | "blacklist" | "minimized"
 
 @Component({
     selector: "cc-search-panel",
@@ -13,7 +13,7 @@ export type SearchPanelMode = "treeView" | "blacklist"
     styleUrls: ["./searchPanel.component.scss"]
 })
 export class SearchPanelComponent implements OnInit, OnDestroy {
-    searchPanelMode: SearchPanelMode = "treeView"
+    searchPanelMode: SearchPanelMode = "minimized"
     isSearchPanelPinned: boolean
     isSearchPanelPinnedSubscription: Subscription
 
@@ -32,11 +32,12 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
         this.isSearchPanelPinnedSubscription.unsubscribe()
     }
 
-    openSearchPanel() {
-        this.panelRef.toggleSettings()
+    updateSearchPanelMode = (searchPanelMode: SearchPanelMode) => {
+        this.searchPanelMode = this.searchPanelMode === searchPanelMode ? "minimized" : searchPanelMode
+        this.panelRef.isExpanded = this.searchPanelMode !== "minimized"
     }
 
-    updateSearchPanelMode = (searchPanelMode: SearchPanelMode) => {
-        this.searchPanelMode = searchPanelMode
+    onToggleSettings($event: boolean) {
+        this.searchPanelMode = $event ? "treeView" : "minimized"
     }
 }
