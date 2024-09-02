@@ -94,7 +94,7 @@ export class CodeMapRenderService implements OnDestroy {
     }
 
     getVisibleNodes(nodes: Node[]) {
-        return nodes.filter(node => node.visible && node.length > 0 && node.width > 0).sort((a, b) => b.height - a.height)
+        return nodes.filter(node => node.length > 0 && node.width > 0).sort((a, b) => b.height - a.height)
     }
 
     private getNodesMatchingColorSelector(sortedNodes: Node[]) {
