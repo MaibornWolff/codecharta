@@ -1,15 +1,14 @@
 @use "variables";
 
-:host {
-    .standard-select {
-        width: 200px;
-    }
+.cc-standard-select {
+    width: 200px;
 }
 
-.file-select {
-    &.mat-mdc-select-panel {
-        min-width: max-content;
-        padding: 0;
+.cdk-overlay-pane {
+    &:has(.cc-file-select) {
+        .mat-mdc-select-panel {
+            padding: 0;
+        }
 
         .mat-mdc-option .mdc-list-item__primary-text {
             flex: 1;
@@ -18,30 +17,21 @@
             align-items: center;
         }
 
-        .file-selection-actions {
+        .cc-file-selection-actions {
             display: flex;
-        }
 
-        button {
-            width: 100%;
-            font-size: 16px;
-            margin: 0;
-            background-color: transparent;
+            .cc-file-select-action-button {
+                button {
+                    width: 100%;
+                    font-size: 16px;
+                    margin: 0;
+                    background-color: transparent;
+                    padding: 15px 10px;
 
-            &:hover {
-                background-color: rgba(0, 0, 0, 0.05);
-                color: variables.$cc-primary-color;
-            }
-
-            &.file-select-action-button {
-                padding: 15px 10px;
-            }
-
-            &.remove-button {
-                padding: 8px 10px;
-
-                &:hover {
-                    border-radius: 50%;
+                    &:hover {
+                        background-color: rgba(0, 0, 0, 0.05);
+                        color: variables.$cc-primary-color;
+                    }
                 }
             }
         }
