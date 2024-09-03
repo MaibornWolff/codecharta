@@ -30,6 +30,7 @@ import { ChangelogDialogModule } from "./codeCharta/ui/dialogs/changelogDialog/c
 import { dialogs } from "./codeCharta/ui/dialogs/dialogs"
 import { BlacklistSearchPatternEffect } from "./codeCharta/ui/searchPanel/searchBar/blacklistSearchPattern.effect"
 import { MaterialModule } from "./material/material.module"
+import { FocusEffects } from "./codeCharta/state/store/dynamicSettings/focusedNodePath/focus.effect"
 
 @NgModule({
     imports: [
@@ -53,7 +54,8 @@ import { MaterialModule } from "./material/material.module"
             SetLoadingIndicatorEffect,
             SaveCcStateEffect,
             SaveMetricsInQueryParametersEffect,
-            UpdateMapColorsEffect
+            UpdateMapColorsEffect,
+            FocusEffects
         ]),
         MaterialModule,
         FormsModule,
