@@ -1,18 +1,19 @@
 <mat-select
-    panelClass="file-select"
+    panelClass="cc-file-select"
+    panelWidth="300px"
     [(value)]="selectedFilesInUI"
     (selectionChange)="handleSelectedFilesChanged($event.value)"
     (openedChange)="handleOpenedChanged($event)"
-    class="standard-select"
+    class="cc-standard-select"
     multiple
 >
-    <div class="file-selection-actions">
-        <button class="file-select-action-button" (click)="handleSelectAllFiles()">All</button>
-        <button class="file-select-action-button" (click)="handleSelectZeroFiles()">None</button>
-        <button class="file-select-action-button" (click)="handleInvertSelectedFiles()">Invert</button>
+    <div class="cc-file-selection-actions">
+        <button class="cc-file-select-action-button" (click)="handleSelectAllFiles()">All</button>
+        <button class="cc-file-select-action-button" (click)="handleSelectZeroFiles()">None</button>
+        <button class="cc-file-select-action-button" (click)="handleInvertSelectedFiles()">Invert</button>
     </div>
     @for (file of fileStates; track file) {
-        <mat-option class="filenames" [value]="file.file">
+        <mat-option class="cc-file-name" [value]="file.file">
             {{ file.file.fileMeta.fileName | removeExtension }}
             @if (fileStates.length > 1) {
                 <cc-remove-file-button [filename]="file.file.fileMeta.fileName"></cc-remove-file-button>
