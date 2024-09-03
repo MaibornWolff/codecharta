@@ -14,4 +14,10 @@ cc-search-panel-mode-selector {
         width: 5px;
         height: 5px;
     }
+
+    .mat-button-toggle-checked {
+        .mat-pseudo-checkbox {
+            display: none;
+        }
+    }
 }
