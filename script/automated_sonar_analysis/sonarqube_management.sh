@@ -14,7 +14,6 @@ ensure_network_exists() {
     fi
 }
 
-# Step 1: Ensure the SonarQube container is running
 ensure_sonarqube_running() {
     # Ensure the Docker network exists before running the container
     ensure_network_exists
@@ -42,7 +41,7 @@ ensure_sonarqube_running() {
     docker run -d --name $SONAR_CONTAINER_NAME --network $NETWORK_NAME -p 9000:9000 sonarqube:community
 
     # Wait for SonarQube to be ready only after a new container is created
-    echo "⏳ Waiting for SonarQube to be ready..."
+    echo "⏳ Waiting for 120 seconds to esnure SonarQube is ready..."
     sleep 120  # Adjust this sleep time as needed to allow SonarQube to fully start
 }
 
@@ -92,7 +91,6 @@ reset_sonarqube_password() {
     fi
 }
 
-# Function to change the default password to a new password
 change_default_password() {
     response=$(curl -u $DEFAULT_SONAR_USER:$DEFAULT_SONAR_PASSWORD -X POST -s -w "\n%{http_code}" \
         -d "login=$DEFAULT_SONAR_USER&previousPassword=$DEFAULT_SONAR_PASSWORD&password=$NEW_SONAR_PASSWORD" \
@@ -112,7 +110,6 @@ change_default_password() {
 }
 
 
-# Cleanup previous SonarQube project
 cleanup_previous_project() {
     echo "🧹 Cleaning up previous SonarQube project..."
 
@@ -131,7 +128,6 @@ cleanup_previous_project() {
     fi
 }
 
-# Revoke the existing SonarQube token
 revoke_token() {
     echo "🧹 Revoking existing SonarQube token..."
 
@@ -183,6 +179,5 @@ create_sonarqube_project() {
 
     check_response $http_status "$response_body" "Project creation failed."
     echo "✅ Project created successfully."
-    # echo "Project creation response:"
-    # echo "$response_body" | jq '.'
+
 }

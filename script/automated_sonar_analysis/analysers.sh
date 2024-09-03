@@ -3,13 +3,12 @@
 # Run SonarScanner in the container and capture output
 run_sonarscanner() {
     echo "🔍 Running SonarScanner..."
-    docker run --rm \
+    docker run --rm -it \
       --network $NETWORK_NAME \
       -v "$PROJECT_BASEDIR:/usr/src" \
+      -w /usr/src \
       sonarsource/sonar-scanner-cli \
       sonar-scanner \
-      -Dsonar.projectKey=$PROJECT_KEY \
-      -Dsonar.sources=/usr/src \
       -Dsonar.token=$token \
       -Dsonar.host.url="$CONTAINER_SONAR_URL"
 

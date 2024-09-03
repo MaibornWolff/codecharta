@@ -50,7 +50,7 @@ PROJECT_NAME="CodeCharta Visualization"
 NEW_SONAR_PASSWORD="newadminpassword"
 
 # PROJECT_BASEDIR: The directory containing the source code to be analyzed.
-PROJECT_BASEDIR="$(pwd)/visualization/app"
+PROJECT_BASEDIR="$(cd "$(dirname "$DIR")/../visualization" && pwd)"
 
 # Other variables with default values
 HOST_SONAR_URL="http://localhost:9000"   # URL used by the host machine to access the SonarQube server
@@ -59,7 +59,6 @@ DEFAULT_SONAR_USER="admin"
 DEFAULT_SONAR_PASSWORD="admin"
 SONARQUBE_TOKEN_NAME="codecharta_token"
 SONARQUBE_TOKEN=""
-OUTPUT_PATH="$(pwd)/output"
 NETWORK_NAME="sonarnet"
 SONAR_CONTAINER_NAME="sonarqube"
 
