@@ -3,7 +3,7 @@ import { StoreModule } from "@ngrx/store"
 import { ThreeMapControlsService } from "./threeMapControls.service"
 import { ThreeCameraService } from "./threeCamera.service"
 import { ThreeSceneService } from "./threeSceneService"
-import { BoxGeometry, Group, Mesh, PerspectiveCamera, Vector3 } from "three"
+import { BoxGeometry, Group, Mesh, MOUSE, PerspectiveCamera, Sphere, Vector3 } from "three"
 import { ThreeRendererService } from "./threeRenderer.service"
 import { wait } from "../../../util/testUtils/wait"
 import { appReducers, setStateMiddleware } from "../../../state/store/state.manager"
@@ -56,11 +56,34 @@ describe("ThreeMapControlsService", () => {
             maxDistance: 1_000_000
         } as unknown as MapControls
         threeMapControlsService.controls.update = jest.fn()
+        threeMapControlsService.controls.addEventListener = jest.fn()
     }
 
     function rebuildService() {
         threeMapControlsService = new ThreeMapControlsService(threeCameraService, threeSceneService, threeRendererService)
     }
+
+    describe("init", () => {
+        it("should initialize MapControls and set up event listeners correctly", () => {
+            const domElement = document.createElement("canvas")
+            withMockedThreeCameraService()
+            const addEventListenerMock = jest.fn()
+            jest.spyOn(MapControls.prototype, "addEventListener").mockImplementation(addEventListenerMock)
+
+            const mockMapControls = new MapControls(threeCameraService.camera, domElement)
+
+            threeMapControlsService.controls = mockMapControls
+
+            threeMapControlsService.init(domElement)
+
+            expect(threeMapControlsService.controls).toBeDefined()
+            expect(threeMapControlsService.controls.mouseButtons.LEFT).toBe(MOUSE.ROTATE)
+            expect(threeMapControlsService.controls.mouseButtons.MIDDLE).toBe(MOUSE.DOLLY)
+            expect(threeMapControlsService.controls.mouseButtons.RIGHT).toBe(MOUSE.PAN)
+            expect(threeMapControlsService.controls.zoomToCursor).toBe(true)
+            expect(addEventListenerMock).toHaveBeenCalledWith("change", expect.any(Function))
+        })
+    })
 
     it("rotateCameraInVectorDirection ", () => {
         threeMapControlsService.controls = {
@@ -113,6 +136,16 @@ describe("ThreeMapControlsService", () => {
             expect(threeMapControlsService.controls.update).toHaveBeenCalled()
             expect(threeCameraService.camera.updateProjectionMatrix).toHaveBeenCalled()
         })
+
+        it("should return early if boundingSphere.radius is -1", async () => {
+            jest.spyOn(threeMapControlsService, "getBoundingSphere").mockReturnValue(new Sphere())
+            threeCameraService.camera.position.set(0, 0, 0)
+
+            threeMapControlsService.autoFitTo()
+            await wait(0)
+
+            expect(threeCameraService.camera.position).toEqual(new Vector3(0, 0, 0))
+        })
     })
 
     describe("setZoomPercentage", () => {
@@ -145,6 +178,32 @@ describe("ThreeMapControlsService", () => {
             threeMapControlsService.zoomPercentage$.pipe(take(1)).subscribe(zoomPercentage => (actualZoomPercentage = zoomPercentage))
 
             expect(actualZoomPercentage).toBeCloseTo(expectedZoomPercentage)
+        })
+    })
+
+    describe("getZoomPercentage", () => {
+        beforeEach(() => {
+            threeMapControlsService.controls.minDistance = 100
+            threeMapControlsService.controls.maxDistance = 1000
+            threeMapControlsService.MAX_ZOOM = 200
+            threeMapControlsService.MIN_ZOOM = 10
+        })
+
+        it("should return MAX_ZOOM if distance is less than or equal to minDistance", () => {
+            expect(threeMapControlsService.getZoomPercentage(50)).toBe(200)
+            expect(threeMapControlsService.getZoomPercentage(100)).toBe(200)
+        })
+
+        it("should return MIN_ZOOM if distance is greater than or equal to maxDistance", () => {
+            expect(threeMapControlsService.getZoomPercentage(1000)).toBe(10)
+            expect(threeMapControlsService.getZoomPercentage(1500)).toBe(10)
+        })
+
+        it("should return a zoom percentage between MIN_ZOOM and MAX_ZOOM for a distance within the min and max range", () => {
+            const result = threeMapControlsService.getZoomPercentage(550) // Middle of the range
+
+            expect(result).toBeGreaterThan(10)
+            expect(result).toBeLessThan(200)
         })
     })
 })

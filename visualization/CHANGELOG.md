@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Fixed 🐞
 
 - Fix issue where zooming out too much makes the map disappear and zooming in too much causes you to go through the map. [#3697](https://github.com/MaibornWolff/codecharta/pull/3697)
+- Camera perspective is correctly adopted from the custom configuration[#3698](https://github.com/MaibornWolff/codecharta/pull/3698)
+- Fix camera behavior when `Reset Camera when changing map` option is deactivated [#3699](https://github.com/MaibornWolff/codecharta/pull/3699)
 
 ### Changed
 
@@ -29,7 +31,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Fixed 🐞
 
 - Revert [#3655](https://github.com/MaibornWolff/codecharta/pull/3665) as we implement new navigation methods
-- Camera perspective is correctly adopted from the custom configuration[#3194](https://github.com/MaibornWolff/codecharta/pull/3194)
 
 ## [1.127.0] - 2024-08-12
 

@@ -113,6 +113,9 @@ export class LoadInitialFileService {
     private applySettingsAndFilesFromSavedState(savedFileStates: FileState[], savedCcState: CcState, savedNameDataPairs: NameDataPair[]) {
         const missingPropertiesInSavedCcState = []
 
+        if (!savedCcState.appSettings.resetCameraIfNewFileIsLoaded) {
+            this.store.dispatch({ type: "StartWithGlobalOption:resetCameraIfNewFileIsLoadedSetToFalse" })
+        }
         const missingAppSettings = this.applyAppSettings(savedCcState.appSettings)
         missingPropertiesInSavedCcState.push(...missingAppSettings)
 
