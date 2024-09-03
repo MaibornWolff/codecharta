@@ -50,9 +50,9 @@ reset_sonarqube_password() {
     echo "🔍 Testing SonarQube credentials: Username='$DEFAULT_SONAR_USER', Password='$DEFAULT_SONAR_PASSWORD'"
 
     # Attempt to log in with the default password to check if it's still active
-    response=$(curl -u $DEFAULT_SONAR_USER:$DEFAULT_SONAR_PASSWORD -X GET -s -w "%{http_code}" "$HOST_SONAR_URL/api/authentication/validate")
-    http_status="${response: -3}"
-    response_body="${response::-3}"
+    response=$(curl -u $DEFAULT_SONAR_USER:$DEFAULT_SONAR_PASSWORD -X GET -s -w "\n%{http_code}" "$HOST_SONAR_URL/api/authentication/validate")
+    http_status=$(echo "$response" | tail -n1)   
+    response_body=$(echo "$response" | head -n -1) 
 
     # Check if the response is valid JSON before parsing
     if echo "$response_body" | jq -e . >/dev/null 2>&1; then
@@ -65,9 +65,10 @@ reset_sonarqube_password() {
             echo "ℹ️ Default credentials are not in use. Checking the new password..."
 
             # Attempt to log in with the new password
-            response=$(curl -u $DEFAULT_SONAR_USER:$NEW_SONAR_PASSWORD -X GET -s -w "%{http_code}" "$HOST_SONAR_URL/api/authentication/validate")
-            http_status="${response: -3}"
-            response_body="${response::-3}"
+            response=$(curl -u $DEFAULT_SONAR_USER:$NEW_SONAR_PASSWORD -X GET -s -w "\n%{http_code}" "$HOST_SONAR_URL/api/authentication/validate")
+
+            http_status=$(echo "$response" | tail -n1)   
+            response_body=$(echo "$response" | head -n -1) 
 
             if echo "$response_body" | jq -e . >/dev/null 2>&1; then
                 is_valid=$(echo "$response_body" | jq -r '.valid')
@@ -93,12 +94,12 @@ reset_sonarqube_password() {
 
 # Function to change the default password to a new password
 change_default_password() {
-    response=$(curl -u $DEFAULT_SONAR_USER:$DEFAULT_SONAR_PASSWORD -X POST -s -w "%{http_code}" \
+    response=$(curl -u $DEFAULT_SONAR_USER:$DEFAULT_SONAR_PASSWORD -X POST -s -w "\n%{http_code}" \
         -d "login=$DEFAULT_SONAR_USER&previousPassword=$DEFAULT_SONAR_PASSWORD&password=$NEW_SONAR_PASSWORD" \
         "$HOST_SONAR_URL/api/users/change_password")
 
-    http_status="${response: -3}"
-    response_body="${response::-3}"
+    http_status=$(echo "$response" | tail -n1)   
+    response_body=$(echo "$response" | head -n -1) 
 
     if [ "$http_status" == "200" ] || [ "$http_status" == "204" ]; then
         echo "✅ Password has been successfully changed to the new password."
@@ -118,7 +119,7 @@ cleanup_previous_project() {
     # Delete project
     response=$(curl -u $SONAR_USER:$SONAR_PASSWORD -X POST -s -w "\n%{http_code}" "$HOST_SONAR_URL/api/projects/delete?project=$ENCODED_PROJECT_KEY")
     http_status=$(echo "$response" | tail -n1)
-    response_body=$(echo "$response" | head -n-1)
+    response_body=$(echo "$response" | head -n -1)
     if [ "$http_status" -eq 404 ]; then
         echo "ℹ️ Project not found, skipping deletion."
     elif [ -z "$http_status" ]; then
@@ -137,7 +138,7 @@ revoke_token() {
     # Revoke token
     response=$(curl -u $SONAR_USER:$SONAR_PASSWORD -X POST -s -w "\n%{http_code}" "$HOST_SONAR_URL/api/user_tokens/revoke?name=$SONARQUBE_TOKEN_NAME")
     http_status=$(echo "$response" | tail -n1)
-    response_body=$(echo "$response" | head -n-1)
+    response_body=$(echo "$response" | head -n -1)
     if [ "$http_status" -eq 404 ]; then
         echo "ℹ️ Token not found, skipping revocation."
     elif [ -z "$http_status" ]; then
@@ -157,7 +158,7 @@ create_sonarqube_project() {
     # Check if the project already exists
     response=$(curl -u $SONAR_USER:$SONAR_PASSWORD -X GET -s -w "\n%{http_code}" "$HOST_SONAR_URL/api/projects/search?projects=$PROJECT_KEY")
     http_status=$(echo "$response" | tail -n1)
-    response_body=$(echo "$response" | head -n-1)
+    response_body=$(echo "$response" | head -n -1)
     
     if [[ "$http_status" -eq 200 && $(echo "$response_body" | jq -r '.components | length') -gt 0 ]]; then
         echo "ℹ️ Project '$PROJECT_KEY' already exists. Skipping creation."
@@ -172,7 +173,7 @@ create_sonarqube_project() {
     echo "🚀 Creating project in SonarQube..."
     response=$(curl -u $SONAR_USER:$SONAR_PASSWORD -X POST -s -w "\n%{http_code}" "$HOST_SONAR_URL/api/projects/create?project=$ENCODED_PROJECT_KEY&name=$ENCODED_PROJECT_NAME")
     http_status=$(echo "$response" | tail -n1)
-    response_body=$(echo "$response" | head -n-1)
+    response_body=$(echo "$response" | head -n -1)
 
     if [[ "$http_status" -eq 404 ]]; then
         echo "❌ Failed: Project creation failed. The endpoint may be incorrect or deprecated."
