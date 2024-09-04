@@ -1,5 +1,5 @@
 mat-card {
-    padding: 0 5px;
+    padding: 0;
     height: 46px;
     border-radius: 0;
     border-top: 1px solid #cdcdcd;
@@ -26,6 +26,7 @@ mat-card {
         transition: background-color 0.4s;
         border-bottom: 1px solid transparent;
         white-space: nowrap;
+        margin: 0 5px;
 
         @at-root :host.separator & {
             border-top: 1px solid rgba(0, 0, 0, 0.12);
