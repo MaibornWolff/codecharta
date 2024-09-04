@@ -4,11 +4,6 @@ export class SearchPanelModeSelectorPageObject {
     async toggleTreeView() {
         const wasOpen = await this.isTreeViewOpen()
         await clickButtonOnPageElement("#tree-view")
-
-        await (wasOpen
-            ? page.waitForSelector(".search-panel-card", { visible: false })
-            : page.waitForSelector(".search-panel-card.expanded"))
-
         return !wasOpen
     }
 
@@ -16,8 +11,8 @@ export class SearchPanelModeSelectorPageObject {
         await page.waitForSelector("#tree-view")
         const treeViewClassNames = await page.$eval("#tree-view", element => element.className)
 
-        await page.waitForSelector(".search-panel-card")
-        const searchPanelClassNames = await page.$eval(".search-panel-card", element => element.className)
+        await page.waitForSelector("cc-search-panel cc-ribbon-bar-panel")
+        const searchPanelClassNames = await page.$eval("cc-search-panel cc-ribbon-bar-panel", element => element.className)
 
         return treeViewClassNames.includes("current") && searchPanelClassNames.includes("expanded")
     }

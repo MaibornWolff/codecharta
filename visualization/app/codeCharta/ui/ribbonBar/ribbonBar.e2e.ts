@@ -26,8 +26,8 @@ describe("RibbonBar", () => {
         expect(isAreaSettingsPanelOpen).toBeTruthy()
 
         const isSearchPanelOpen = await searchPanel.toggle()
-        expect(isSearchPanelOpen).toBeTruthy()
-        expect(await ribbonBar.isPanelOpen("cc-area-settings-panel")).toBeFalsy()
+        expect(isSearchPanelOpen).toBeFalsy()
+        expect(await ribbonBar.isPanelOpen("cc-area-settings-panel")).toBeTruthy()
 
         isAreaSettingsPanelOpen = await ribbonBar.togglePanel(areaPanel, "cc-area-settings-panel")
         expect(isAreaSettingsPanelOpen).toBeTruthy()

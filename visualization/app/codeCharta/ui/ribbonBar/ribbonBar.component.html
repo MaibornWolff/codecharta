@@ -1,18 +1,18 @@
 <cc-search-panel></cc-search-panel>
 
-<cc-ribbon-bar-panel title="Metric Templates">
+<cc-ribbon-bar-panel id="scenario-card" title="Metric Templates">
     <cc-show-scenarios-button></cc-show-scenarios-button>
 </cc-ribbon-bar-panel>
 
-<cc-ribbon-bar-panel title="Custom Views">
+<cc-ribbon-bar-panel id="custom-configs-card" title="Custom Views">
     <cc-custom-configs></cc-custom-configs>
 </cc-ribbon-bar-panel>
 
-<cc-ribbon-bar-panel title="Suspicious Metrics">
+<cc-ribbon-bar-panel id="ai-card" title="Suspicious Metrics">
     <cc-artificial-intelligence></cc-artificial-intelligence>
 </cc-ribbon-bar-panel>
 
-<cc-ribbon-bar-panel class="ribbon-bar-panel-wide" title="Area Metric Options" [separator]="true">
+<cc-ribbon-bar-panel id="area-metric-card" class="ribbon-bar-panel-wide" title="Area Metric Options" [separator]="true">
     <cc-area-metric-chooser></cc-area-metric-chooser>
 
     <cc-ribbon-bar-panel-settings>
@@ -20,7 +20,7 @@
     </cc-ribbon-bar-panel-settings>
 </cc-ribbon-bar-panel>
 
-<cc-ribbon-bar-panel class="ribbon-bar-panel-wide" title="Height Metric Options" [separator]="true">
+<cc-ribbon-bar-panel id="height-metric-card" class="ribbon-bar-panel-wide" title="Height Metric Options" [separator]="true">
     <cc-height-metric-chooser></cc-height-metric-chooser>
 
     <cc-ribbon-bar-panel-settings>
@@ -33,7 +33,7 @@
         <cc-link-color-metric-to-height-metric-button></cc-link-color-metric-to-height-metric-button>
     </mat-card>
 
-    <cc-ribbon-bar-panel class="ribbon-bar-panel-wide" title="Color Metric Options" [separator]="true">
+    <cc-ribbon-bar-panel id="color-metric-card" class="ribbon-bar-panel-wide" title="Color Metric Options" [separator]="true">
         <cc-color-metric-chooser></cc-color-metric-chooser>
 
         <cc-ribbon-bar-panel-settings>
@@ -43,7 +43,7 @@
 }
 
 @if (hasEdgeMetric$ | async) {
-    <cc-ribbon-bar-panel class="ribbon-bar-panel-wide" title="Edge Metric Options" [separator]="true">
+    <cc-ribbon-bar-panel id="edge-metric-card" class="ribbon-bar-panel-wide" title="Edge Metric Options" [separator]="true">
         <cc-edge-metric-chooser></cc-edge-metric-chooser>
 
         <cc-ribbon-bar-panel-settings>
@@ -53,7 +53,7 @@
 }
 
 @if (isDeltaState$ | async) {
-    <cc-ribbon-bar-panel class="ribbon-bar-panel-wide" [separator]="true" [isHeaderExpandable]="true">
+    <cc-ribbon-bar-panel id="color-settings-card" class="ribbon-bar-panel-wide" [separator]="true" [isHeaderExpandable]="true">
         <div class="color-settings-header toggleHeader">
             <i class="fa fa-paint-brush color-icon"></i>
             <span>Color Settings</span>
