@@ -10,7 +10,7 @@ ensure_network_exists() {
             exit 1
         fi
     else
-        echo "ℹ️ Docker network $NETWORK_NAME already exists."
+        echo "❗️ Docker network $NETWORK_NAME already exists."
     fi
 }
 
@@ -22,7 +22,7 @@ ensure_sonarqube_running() {
     if [ "$existing_container" ]; then
         running_container=$(docker ps -q -f name=$SONAR_CONTAINER_NAME)
         if [ "$running_container" ]; then
-            echo "ℹ️ SonarQube container is already running."
+            echo "❗️ SonarQube container is already running."
             wait_for_sonarqube_ready
             return
         else
@@ -91,7 +91,7 @@ reset_sonarqube_password() {
             echo "✅ Default credentials are valid. Proceeding to change the password..."
             change_default_password
         else
-            echo "ℹ️ Default credentials are not in use. Checking the new password..."
+            echo "❗️ Default credentials are not in use. Checking the new password..."
 
             # Attempt to log in with the new password
             response=$(curl -u $DEFAULT_SONAR_USER:$NEW_SONAR_PASSWORD -X GET -s -w "\n%{http_code}" "$HOST_SONAR_URL/api/authentication/validate")
@@ -148,7 +148,7 @@ cleanup_previous_project() {
     http_status=$(echo "$response" | tail -1)
     response_body=$(echo "$response" | head -1)
     if [ "$http_status" -eq 404 ]; then
-        echo "ℹ️ Project not found, skipping deletion."
+        echo "❗️ Project not found, skipping deletion."
     elif [ -z "$http_status" ]; then
         echo "❌ Failed to connect to SonarQube. Ensure that SonarQube is running and accessible at $HOST_SONAR_URL."
         exit 1
@@ -166,7 +166,7 @@ revoke_token() {
     http_status=$(echo "$response" | tail -1)
     response_body=$(echo "$response" | head -1)
     if [ "$http_status" -eq 404 ]; then
-        echo "ℹ️ Token not found, skipping revocation."
+        echo "❗️ Token not found, skipping revocation."
     elif [ -z "$http_status" ]; then
         echo "❌ Failed to connect to SonarQube. Ensure that SonarQube is running and accessible at $HOST_SONAR_URL."
         exit 1
@@ -187,7 +187,7 @@ create_sonarqube_project() {
     response_body=$(echo "$response" | head -1)
     
     if [[ "$http_status" -eq 200 && $(echo "$response_body" | jq -r '.components | length') -gt 0 ]]; then
-        echo "ℹ️ Project '$PROJECT_KEY' already exists. Skipping creation."
+        echo "❗️ Project '$PROJECT_KEY' already exists. Skipping creation."
         return
     elif [[ "$http_status" -eq 404 ]]; then
         echo "❌ Failed: Unable to check if the project exists. The endpoint may be incorrect or deprecated."

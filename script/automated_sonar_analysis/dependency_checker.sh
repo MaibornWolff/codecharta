@@ -93,27 +93,44 @@ docker_pull_image() {
             exit 1
         fi
     else
-        echo "ℹ️ Docker image '$image' is already available locally."
+        echo "❗️ Docker image '$image' is already available locally."
     fi
 }
 
-# Function to ensure all necessary Docker images are available
+# Function to check if images exist locally and pull only if needed
 check_docker_images() {
-    echo "❗️ The script needs to pull the following Docker images if they are not already available:"
-    echo "  - sonarsource/sonar-scanner-cli"
-    echo "  - codecharta/codecharta-analysis"
-    echo "  - sonarqube:community"
-    
+    local images=("sonarsource/sonar-scanner-cli" "codecharta/codecharta-analysis" "sonarqube:community")
+    local missing_images=()
+
+    # Check if the required images are present locally
+    for image in "${images[@]}"; do
+        if ! docker image inspect "$image" >/dev/null 2>&1; then
+            missing_images+=("$image")
+        else
+            echo "✅ Docker image '$image' is already available locally."
+        fi
+    done
+
+    # If no missing images, skip the prompt
+    if [ ${#missing_images[@]} -eq 0 ]; then
+        return
+    fi
+
+    # If there are missing images, prompt the user to pull them
+    echo "❗️ The script needs to pull the following Docker images:"
+    for img in "${missing_images[@]}"; do
+        echo "  - $img"
+    done
+
     read -p "❓ Do you want to proceed with pulling these images? [Y/n]: " -n 1 -r
     echo    # move to a new line
-    # Default to 'Y' if the user presses Enter
     if [[ $REPLY =~ ^[Nn]$ ]]; then
         echo "🚫 Image pulling canceled. The script cannot proceed without these images."
         exit 1
     else
-        docker_pull_image "sonarsource/sonar-scanner-cli"
-        docker_pull_image "codecharta/codecharta-analysis"
-        docker_pull_image "sonarqube:community"
+        for img in "${missing_images[@]}"; do
+            docker_pull_image "$img"
+        done
     fi
 }
 

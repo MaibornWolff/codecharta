@@ -55,7 +55,7 @@ change_default_password() {
             exit 1
         fi
     else
-        echo "ℹ️ Default password does not need to be changed or has already been changed."
+        echo "❗️ Default password does not need to be changed or has already been changed."
     fi
 }
 
@@ -86,7 +86,7 @@ token_exists() {
 # Function to generate a token for SonarScanner only if it doesn't already exist
 generate_token() {
     if [[ -n "$SONARQUBE_TOKEN" ]]; then
-        echo "ℹ️ Using predefined token."
+        echo "❗️ Using predefined token."
         token=$SONARQUBE_TOKEN
         if ! is_valid_token "$token"; then
             echo "❌ Predefined token is invalid."
