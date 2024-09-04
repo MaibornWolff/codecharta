@@ -6,6 +6,6 @@ import { Component, Input } from "@angular/core"
     styleUrl: "./roundedBox.component.scss"
 })
 export class RoundedBoxComponent {
-  @Input()
-  backgroundColor?: string;
+    @Input()
+    backgroundColor?: string
 }

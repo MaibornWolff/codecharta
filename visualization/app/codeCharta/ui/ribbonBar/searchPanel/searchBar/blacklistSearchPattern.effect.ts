@@ -6,7 +6,10 @@ import { BlacklistType, CcState } from "../../../../codeCharta.model"
 import { AddBlacklistItemsIfNotResultsInEmptyMapEffect } from "../../../../state/effects/addBlacklistItemsIfNotResultsInEmptyMap/addBlacklistItemsIfNotResultsInEmptyMap.effect"
 import { setSearchPattern } from "../../../../state/store/dynamicSettings/searchPattern/searchPattern.actions"
 import { searchPatternSelector } from "../../../../state/store/dynamicSettings/searchPattern/searchPattern.selector"
-import { addBlacklistItems, addBlacklistItemsIfNotResultsInEmptyMap } from "../../../../state/store/fileSettings/blacklist/blacklist.actions"
+import {
+    addBlacklistItems,
+    addBlacklistItemsIfNotResultsInEmptyMap
+} from "../../../../state/store/fileSettings/blacklist/blacklist.actions"
 import { parseBlacklistItems } from "./utils/parseBlacklistItems"
 
 type BlacklistSearchPatternAction = {

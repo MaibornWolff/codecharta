@@ -7,7 +7,7 @@ import { CcState } from "../../../codeCharta.model"
 
 @Component({
     selector: "cc-color-metric-chooser",
-    templateUrl: "./colorMetricChooser.component.html",
+    templateUrl: "./colorMetricChooser.component.html"
 })
 export class ColorMetricChooserComponent {
     colorMetric$ = this.store.select(colorMetricSelector)
