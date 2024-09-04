@@ -3,10 +3,6 @@
 .cdk-overlay-pane:has(.cc-file-select) {
     width: 300px !important;
 
-    .mat-mdc-select-panel {
-        padding: 0;
-    }
-
     .mat-mdc-option .mdc-list-item__primary-text {
         flex: 1;
         display: flex;
