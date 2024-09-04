@@ -1,6 +1,6 @@
 import { CC_URL, clearIndexedDB, goto } from "../../../puppeteer.helper"
 import { RibbonBarPageObject } from "./ribbonBar.po"
-import { SearchPanelPageObject } from "../searchPanel/searchPanel.po"
+import { SearchPanelPageObject } from "./searchPanel/searchPanel.po"
 
 describe("RibbonBar", () => {
     const sampleMap = `sample3.cc.json`
