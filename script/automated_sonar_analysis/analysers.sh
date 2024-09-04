@@ -16,8 +16,37 @@ run_sonarscanner() {
         echo "❌ SonarScanner analysis failed."
         exit 1
     fi
+    
     echo "✅ SonarScanner analysis complete."
+    
+    interval=2          # Check every 5 seconds
+    waited=0
+    echo "⏳ Waiting for the data to be fully uploaded to SonarQube..."
+
+    while true; do
+        response=$(curl -s -u $SONAR_USER:$SONAR_PASSWORD -w "\n%{http_code}" "$HOST_SONAR_URL/api/ce/component?component=$PROJECT_KEY")
+        
+        http_status=$(echo "$response" | tail -1)
+        response_body=$(echo "$response" | head -1)
+
+        check_response "$http_status" "$response_body" "SonarQube data processing failed."
+
+        status=$(echo "$response_body" | jq -r '.current.status')
+
+        if [ "$status" == "SUCCESS" ]; then
+            echo -e "\n✅ Data has been fully uploaded and processed by SonarQube!"
+            break
+        elif [ "$waited" -ge "$TIMEOUT_PERIOD" ]; then
+            echo -e "\n❌ SonarQube did not finish processing the data within $TIMEOUT_PERIOD seconds."
+            exit 1
+        fi
+
+        echo -n "."
+        sleep "$interval"
+        waited=$((waited + interval))
+    done
 }
+
 
 # Run CodeCharta analysis using docker run
 run_codecharta_analysis() {

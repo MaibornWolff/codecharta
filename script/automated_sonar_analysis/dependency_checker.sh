@@ -16,7 +16,7 @@ prompt_install() {
     echo    # move to a new line
     # Default to 'Y' if the user presses Enter
     if [[ $REPLY =~ ^[Nn]$ ]]; then
-        echo "⚠️ Installation of $command was canceled by the user."
+        echo "🚨 Installation of $command was canceled by the user."
         exit 1
     else
         eval "$install_command"
@@ -42,7 +42,7 @@ install_jq() {
         if command_exists apt-get; then
             install_jq_ubuntu
         else
-            echo "⚠️ Unsupported Linux distribution. Please install jq manually."
+            echo "🚨 Unsupported Linux distribution. Please install jq manually."
             exit 1
         fi
     elif [[ "$OSTYPE" == "darwin"* ]]; then
@@ -50,12 +50,12 @@ install_jq() {
         if command_exists brew; then
             install_jq_macos
         else
-            echo "⚠️ Homebrew is not installed. Please install Homebrew first."
+            echo "🚨 Homebrew is not installed. Please install Homebrew first."
             echo "💻 Visit https://brew.sh/ for installation instructions."
             exit 1
         fi
     else
-        echo "⚠️ Unsupported OS."
+        echo "🚨 Unsupported OS."
         exit 1
     fi
 }

@@ -15,7 +15,6 @@ ensure_network_exists() {
 }
 
 ensure_sonarqube_running() {
-    # Ensure the Docker network exists before running the container
     ensure_network_exists
 
     # Check if the SonarQube container is already running with the correct settings
@@ -24,25 +23,56 @@ ensure_sonarqube_running() {
         running_container=$(docker ps -q -f name=$SONAR_CONTAINER_NAME)
         if [ "$running_container" ]; then
             echo "ℹ️ SonarQube container is already running."
+            wait_for_sonarqube_ready
             return
         else
-            echo "⚠️ SonarQube container exists but is not running. Starting it..."
+            echo "🚨 SonarQube container exists but is not running. Starting it..."
             docker start $SONAR_CONTAINER_NAME
             if [ $? -ne 0 ]; then
                 echo "❌ Failed to start existing SonarQube container."
                 exit 1
             fi
+            wait_for_sonarqube_ready
             return
         fi
     fi
 
-    # If no container exists, create and start a new one
     echo "🚀 Starting SonarQube container..."
     docker run -d --name $SONAR_CONTAINER_NAME --network $NETWORK_NAME -p 9000:9000 sonarqube:community
 
-    # Wait for SonarQube to be ready only after a new container is created
-    echo "⏳ Waiting for 120 seconds to ensure SonarQube is ready..."
-    sleep 120  # Adjust this sleep time as needed to allow SonarQube to fully start
+    wait_for_sonarqube_ready
+}
+
+wait_for_sonarqube_ready() {
+    echo "⏳ Waiting for SonarQube to be ready..."
+
+    local check_interval=2     # Time to wait between each check (in seconds)
+    local elapsed_time=0        # Track the total elapsed time
+    local response
+    local sonarqube_status
+
+    while [ $elapsed_time -lt $TIMEOUT_PERIOD ]; do
+        response=$(curl -s -w "\n%{http_code}" "$HOST_SONAR_URL/api/system/status")
+
+        http_status=$(echo "$response" | tail -1)
+        response_body=$(echo "$response" | head -1)
+
+        check_response "$http_status" "$response_body" "Checking SonarQube readiness failed."
+
+        sonarqube_status=$(echo "$response_body" | jq -r '.status')
+
+        if [ "$sonarqube_status" == "UP" ]; then
+            echo -e "\n✅ SonarQube is ready!"
+            return
+        else
+            echo -n "."
+            sleep $check_interval
+            elapsed_time=$((elapsed_time + check_interval))
+        fi
+    done
+
+    echo "❌ SonarQube did not become ready within $timeout_period seconds."
+    exit 1
 }
 
 reset_sonarqube_password() {
@@ -179,5 +209,4 @@ create_sonarqube_project() {
 
     check_response $http_status "$response_body" "Project creation failed."
     echo "✅ Project created successfully."
-
 }

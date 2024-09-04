@@ -1,6 +1,7 @@
 #!/bin/bash
 
-# Import the necessary helper scripts
+### Import helper functions and scripts #######################################
+
 DIR="${BASH_SOURCE%/*}"
 if [[ ! -d "$DIR" ]]; then DIR="$PWD"; fi
 
@@ -9,6 +10,43 @@ if [[ ! -d "$DIR" ]]; then DIR="$PWD"; fi
 . "$DIR/cleanup.sh"
 . "$DIR/sonarqube_management.sh"
 . "$DIR/analysers.sh"
+
+### Configuration #############################################################
+
+# PROJECT_KEY: A unique identifier for the project in SonarQube.
+PROJECT_KEY="maibornwolff-gmbh_codecharta_visualization"
+
+# PROJECT_NAME: The name of the project in SonarQube.
+PROJECT_NAME="CodeCharta Visualization"
+
+# NEW_SONAR_PASSWORD: The new password to set for the SonarQube admin user.
+# If the default 'admin' password is still in use, the script will change it to this value.
+NEW_SONAR_PASSWORD="newadminpassword"
+
+# PROJECT_BASEDIR: The directory containing the source code to be analyzed.
+PROJECT_BASEDIR="$(cd "$(dirname "$DIR")/../visualization" && pwd)"
+
+# Other variables with default values
+HOST_SONAR_URL="http://localhost:9000"   # URL used by the host machine to access the SonarQube server
+CONTAINER_SONAR_URL="http://sonarqube:9000"  # URL used by other Docker containers to access the SonarQube server
+DEFAULT_SONAR_USER="admin"
+DEFAULT_SONAR_PASSWORD="admin"
+SONARQUBE_TOKEN_NAME="codecharta_token"
+SONARQUBE_TOKEN=""
+NETWORK_NAME="sonarnet"
+SONAR_CONTAINER_NAME="sonarqube"
+
+# Set to true to delete the existing SonarQube project
+RUN_PROJECT_CLEANUP=true
+# Set to true to run SonarScanner
+RUN_SONAR_SCANNER=true    
+# Set to true to run the final cleanup of Docker containers and networks
+RUN_FINAL_CLEANUP=false    
+# Timeout period in seconds for waiting on SonarQube data processing and startup
+TIMEOUT_PERIOD=10000         
+
+
+### Main Script ###############################################################
 
 # Introductory message explaining the script's purpose
 echo -e "🔧 Welcome to the SonarQube & CodeCharta Automation Script 🔧"
@@ -36,36 +74,6 @@ while getopts ":s" opt; do
       ;;
   esac
 done
-
-# Default values for important variables
-
-# PROJECT_KEY: A unique identifier for the project in SonarQube.
-PROJECT_KEY="maibornwolff-gmbh_codecharta_visualization"
-
-# PROJECT_NAME: The name of the project in SonarQube.
-PROJECT_NAME="CodeCharta Visualization"
-
-# NEW_SONAR_PASSWORD: The new password to set for the SonarQube admin user.
-# If the default 'admin' password is still in use, the script will change it to this value.
-NEW_SONAR_PASSWORD="newadminpassword"
-
-# PROJECT_BASEDIR: The directory containing the source code to be analyzed.
-PROJECT_BASEDIR="$(cd "$(dirname "$DIR")/../visualization" && pwd)"
-
-# Other variables with default values
-HOST_SONAR_URL="http://localhost:9000"   # URL used by the host machine to access the SonarQube server
-CONTAINER_SONAR_URL="http://sonarqube:9000"  # URL used by other Docker containers to access the SonarQube server
-DEFAULT_SONAR_USER="admin"
-DEFAULT_SONAR_PASSWORD="admin"
-SONARQUBE_TOKEN_NAME="codecharta_token"
-SONARQUBE_TOKEN=""
-NETWORK_NAME="sonarnet"
-SONAR_CONTAINER_NAME="sonarqube"
-
-RUN_PROJECT_CLEANUP=true  # Set to true to delete the existing SonarQube project
-RUN_SONAR_SCANNER=true    # Set to false to skip running SonarScanner
-RUN_FINAL_CLEANUP=true    # Set to true to perform final cleanup of Docker containers and networks
-WAIT_TIME=60              # Time in seconds to wait after running SonarScanner
 
 # If skip prompt mode is not enabled, prompt for important variables with defaults
 if [ "$SKIP_PROMPT" = false ]; then
@@ -108,10 +116,6 @@ generate_token
 # Conditionally run the SonarScanner
 if $RUN_SONAR_SCANNER; then
     run_sonarscanner
-
-    # Wait for the data to be fully uploaded to SonarQube
-    echo "⏳ Waiting for $WAIT_TIME seconds to ensure data is uploaded to SonarQube..."
-    sleep $WAIT_TIME
 fi
 
 # Run the CodeCharta analysis
