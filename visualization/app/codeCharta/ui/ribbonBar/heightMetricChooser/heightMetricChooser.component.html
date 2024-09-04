@@ -1,10 +1,8 @@
-<i class="fa fa-arrows-v"></i>
-
 <cc-metric-chooser
+    icon="fa-arrows-v"
+    metricFor="heightMetric"
     [selectedMetricName]="heightMetric$ | async"
-    [searchPlaceholder]="'Height Metric (highest value)'"
+    searchPlaceholder="Height Metric (highest value)"
     [handleMetricChanged]="handleHeightMetricChanged"
     title="Change height metric"
->
-    <cc-metric-chooser-value hoveredInformation [metricFor]="'heightMetric'"></cc-metric-chooser-value>
-</cc-metric-chooser>
+></cc-metric-chooser>

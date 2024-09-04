@@ -1,11 +1,11 @@
-import { Component, Input, ViewEncapsulation } from "@angular/core"
+import { Component, Input } from "@angular/core"
 import { Store } from "@ngrx/store"
 import { removeFile } from "../../../../state/store/files/files.actions"
 
 @Component({
     selector: "cc-remove-file-button",
     templateUrl: "./removeFileButton.component.html",
-    encapsulation: ViewEncapsulation.None
+    styleUrls: ["/removeFileButton.component.scss"]
 })
 export class RemoveFileButtonComponent {
     @Input() filename: string

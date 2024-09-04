@@ -1,11 +1,10 @@
-<button
+<cc-ribbon-bar-menu-button
+    icon="fa-exclamation-triangle"
+    [title]="'Open Suspicious Metrics Panel'"
     [matMenuTriggerFor]="menu"
-    title="Open Suspicious Metrics Panel"
-    class="cc-ribbon-bar-menu-button"
-    (click)="hideBadge = true"
     #matMenuTrigger="matMenuTrigger"
+    (click)="hideBadge = true"
 >
-    <i class="fa fa-exclamation-triangle"></i>
     @if (
         !hideBadge &&
         (data.analyzedProgrammingLanguage !== undefined || data.suspiciousMetricSuggestionLinks.length || data.unsuspiciousMetrics.length)
@@ -14,7 +13,7 @@
             {{ data.suspiciousMetricSuggestionLinks.length }}
         </span>
     }
-</button>
+</cc-ribbon-bar-menu-button>
 <mat-menu #menu="matMenu" class="ai-drop-down suspicious-metric-panel">
     <cc-suspicious-metrics-menu [data]="data" [matMenuTriggerReference]="this.matMenuTrigger"></cc-suspicious-metrics-menu>
 </mat-menu>

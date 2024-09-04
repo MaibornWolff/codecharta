@@ -25,6 +25,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Chore 👨‍💻 👩‍💻
 
 - Bump node version from 18 to 20 [#3690](https://github.com/MaibornWolff/codecharta/pull/3690)
+- Enabled view encapsulation for Global Configuration dialog, Ribbon Bar and File Panel [#3712](https://github.com/MaibornWolff/codecharta/pull/3712)
 
 ## [1.127.1] - 2024-08-12
 

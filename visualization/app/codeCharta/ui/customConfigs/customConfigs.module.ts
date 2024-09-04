@@ -15,6 +15,7 @@ import { FormsModule } from "@angular/forms"
 import { CustomConfigNoteDialogButtonModule } from "./customConfigNoteDialogButton/customConfigNoteDialogButton.module"
 import { TruncateTextPipeModule } from "../../util/pipes/TruncateTextPipeModule"
 import { FilterCustomConfigDataBySearchTermPipe } from "./customConfigList/customConfigItemGroup/customConfigDescription/filterCustomConfigDataBySearchTerm.pipe"
+import { RibbonBarMenuButtonModule } from "../ribbonBar/ribbonBarMenuButton/ribbonBarMenuButton.module"
 
 @NgModule({
     imports: [
@@ -25,7 +26,8 @@ import { FilterCustomConfigDataBySearchTermPipe } from "./customConfigList/custo
         AddCustomConfigButtonModule,
         DownloadCustomConfigButtonModule,
         FormsModule,
-        TruncateTextPipeModule
+        TruncateTextPipeModule,
+        RibbonBarMenuButtonModule
     ],
     declarations: [
         CustomConfigsComponent,
