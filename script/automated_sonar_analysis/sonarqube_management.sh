@@ -44,36 +44,39 @@ ensure_sonarqube_running() {
 }
 
 wait_for_sonarqube_ready() {
-    echo "⏳ Waiting for SonarQube to be ready..."
+    # Start spinner in the background with a custom message
+    start_spinner "⏳ Checking SonarQube status..." &
+    spinner_pid=$!
 
     local check_interval=2     # Time to wait between each check (in seconds)
-    local elapsed_time=0        # Track the total elapsed time
+    local elapsed_time=0       # Track the total elapsed time
     local response
     local sonarqube_status
 
     while [ $elapsed_time -lt $TIMEOUT_PERIOD ]; do
         response=$(curl -s -w "\n%{http_code}" "$HOST_SONAR_URL/api/system/status")
 
-        http_status=$(echo "$response" | tail -1)
-        response_body=$(echo "$response" | head -1)
-
-        check_response "$http_status" "$response_body" "Checking SonarQube readiness failed."
+        http_status=$(echo "$response" | tail -n1)
+        response_body=$(echo "$response" | head -n1)
 
         sonarqube_status=$(echo "$response_body" | jq -r '.status')
 
         if [ "$sonarqube_status" == "UP" ]; then
-            echo -e "\n✅ SonarQube is ready!"
+            stop_spinner "$spinner_pid"  # Stop spinner if SonarQube is ready
+            echo -e "\n✅ SonarQube is ready!"  # Green success message
             return
-        else
-            echo -n "."
-            sleep $check_interval
-            elapsed_time=$((elapsed_time + check_interval))
         fi
+
+        sleep $check_interval
+        elapsed_time=$((elapsed_time + check_interval))
     done
 
-    echo "❌ SonarQube did not become ready within $timeout_period seconds."
+    # If the loop ends without success, stop the spinner and show an error message
+    stop_spinner "$spinner_pid"
+    echo -e "\n❌ SonarQube did not become ready within $TIMEOUT_PERIOD seconds."  # Red error message
     exit 1
 }
+
 
 reset_sonarqube_password() {
     echo "🔍 Testing SonarQube credentials: Username='$DEFAULT_SONAR_USER', Password='$DEFAULT_SONAR_PASSWORD'"

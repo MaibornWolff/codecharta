@@ -117,8 +117,7 @@ generate_token() {
     fi
 
     echo "✅ Token generated: $token"
-    # echo "Token response:"
-    # echo "$response" | jq '.'
+
 }
 
 urlencode() {
@@ -127,3 +126,23 @@ urlencode() {
     encoded_str=$(jq -rn --arg v "$raw_str" '$v|@uri')
     echo "$encoded_str"
 }
+
+start_spinner() {
+    local message=$1  # The message to display next to the spinner
+    local spinner="⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏"  # Spinner animation frames
+    local spinner_length=${#spinner}
+    local i=0  # Spinner index
+
+    while :; do
+        i=$(( (i+1) % spinner_length ))  # Loop through spinner characters
+        echo -ne "\r\033[1;33m$message ${spinner:i:1} \033[0m"  # Yellow text with spinner
+        sleep 0.1  # Small delay between character updates (controls speed)
+    done
+}
+
+stop_spinner() {
+    kill "$1"  # Kill the spinner process
+    wait "$1" 2>/dev/null  # Wait for the spinner to stop and suppress errors
+    echo -ne "\r\033[0m"  # Reset any terminal color/formatting and clear line
+}
+
