@@ -1,4 +1,16 @@
-import { Component, ContentChild, ElementRef, EventEmitter, HostBinding, Input, OnDestroy, OnInit, Output, ViewChild } from "@angular/core"
+import {
+    Component,
+    ContentChild,
+    ElementRef,
+    EventEmitter,
+    HostBinding,
+    Input,
+    OnDestroy,
+    OnInit,
+    Output,
+    ViewChild,
+    ViewContainerRef
+} from "@angular/core"
 import { RibbonBarPanelSettingsComponent } from "./ribbonBarPanelSettings.component"
 
 @Component({
@@ -8,6 +20,7 @@ import { RibbonBarPanelSettingsComponent } from "./ribbonBarPanelSettings.compon
 })
 export class RibbonBarPanelComponent implements OnInit, OnDestroy {
     @Input() title?: string
+    @Input() collapseOnPanelClick = true
 
     @HostBinding("class.separator")
     @Input()
@@ -43,10 +56,13 @@ export class RibbonBarPanelComponent implements OnInit, OnDestroy {
 
     private mouseDownListener?: (event: MouseEvent) => void
 
+    constructor(private readonly viewReference: ViewContainerRef) {}
+
     ngOnInit(): void {
         this.mouseDownListener = (event: MouseEvent) => this.collapseOnOutsideClick(event)
         document.addEventListener("mousedown", this.mouseDownListener)
     }
+
     ngOnDestroy(): void {
         if (this.mouseDownListener) {
             document.removeEventListener("mousedown", this.mouseDownListener)
@@ -66,12 +82,21 @@ export class RibbonBarPanelComponent implements OnInit, OnDestroy {
         const target = event.target as Node
 
         const overlayPaneElement = document.querySelector(".cdk-overlay-container")
+
+        const clickedPanel = this.viewReference.element.nativeElement.contains(target)
         const clickedWithinOverlayPane = overlayPaneElement ? overlayPaneElement.contains(target) : false
         const clickedSettingsElement = this.settingsRef?.nativeElement?.contains(target) ?? false
         const clickedSettingsToggleElement = this.toggleSettingsRef.nativeElement.contains(target)
         const clickedHeaderToggleElement = this.toggleHeaderRef?.nativeElement.contains(target) ?? false
 
-        if (!clickedWithinOverlayPane && !clickedSettingsElement && !clickedSettingsToggleElement && !clickedHeaderToggleElement) {
+        const shouldCollapse =
+            !clickedWithinOverlayPane &&
+            !clickedSettingsElement &&
+            !clickedSettingsToggleElement &&
+            !clickedHeaderToggleElement &&
+            (!clickedPanel || this.collapseOnPanelClick)
+
+        if (shouldCollapse) {
             this.isExpanded = false
         }
     }

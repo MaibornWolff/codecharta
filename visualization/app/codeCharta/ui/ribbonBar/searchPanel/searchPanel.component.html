@@ -1,5 +1,5 @@
-<cc-ribbon-bar-panel title="File/Node Explorer" [isPinned]="isSearchPanelPinned" (onToggleSettings)="onToggleSettings($event)">
-    <cc-search-bar (click)="updateSearchPanelMode('treeView')"></cc-search-bar>
+<cc-ribbon-bar-panel title="File/Node Explorer" [isPinned]="isSearchPanelPinned" (onToggleSettings)="onToggleSettings($event)" [collapseOnPanelClick]="false">
+    <cc-search-bar (click)="openSearchPanel()"></cc-search-bar>
     <cc-search-panel-mode-selector
         [searchPanelMode]="searchPanelMode"
         [updateSearchPanelMode]="updateSearchPanelMode"

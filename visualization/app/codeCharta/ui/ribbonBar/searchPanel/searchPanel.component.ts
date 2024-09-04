@@ -37,6 +37,11 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
         this.panelRef.isExpanded = this.searchPanelMode !== "minimized"
     }
 
+    openSearchPanel() {
+        this.searchPanelMode = "treeView"
+        this.panelRef.isExpanded = true;
+    }
+
     onToggleSettings($event: boolean) {
         this.searchPanelMode = $event ? "treeView" : "minimized"
     }

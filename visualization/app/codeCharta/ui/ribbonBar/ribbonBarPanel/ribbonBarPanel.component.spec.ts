@@ -5,6 +5,7 @@ import { TestBed } from "@angular/core/testing"
 import { RibbonBarPanelSettingsComponent } from "./ribbonBarPanelSettings.component"
 import { RibbonBarPanelComponent } from "./ribbonBarPanel.component"
 import userEvent from "@testing-library/user-event"
+import { ViewContainerRef } from "@angular/core"
 
 describe(RibbonBarPanelComponent.name, () => {
     describe("with expandable settings", () => {
@@ -131,7 +132,7 @@ describe(RibbonBarPanelComponent.name, () => {
         beforeEach(async () => {
             TestBed.configureTestingModule({
                 imports: [RibbonBarPanelModule],
-                providers: [RibbonBarPanelComponent, RibbonBarPanelSettingsComponent, provideMockStore()]
+                providers: [RibbonBarPanelComponent, RibbonBarPanelSettingsComponent, provideMockStore(), ViewContainerRef]
             })
             const { container } = await render(
                 `<cc-ribbon-bar-panel [isHeaderExpandable]="false">
