@@ -60,4 +60,10 @@
             }
         }
     }
+
+    &:has(.cc-file-select) {
+        .mat-mdc-select-panel {
+            padding: 0;
+        }
+    }
 }

@@ -3,37 +3,3 @@
 .cc-standard-select {
     width: 200px;
 }
-
-.cdk-overlay-pane {
-    &:has(.cc-file-select) {
-        .mat-mdc-select-panel {
-            padding: 0;
-        }
-
-        .mat-mdc-option .mdc-list-item__primary-text {
-            flex: 1;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .cc-file-selection-actions {
-            display: flex;
-
-            .cc-file-select-action-button {
-                button {
-                    width: 100%;
-                    font-size: 16px;
-                    margin: 0;
-                    background-color: transparent;
-                    padding: 15px 10px;
-
-                    &:hover {
-                        background-color: rgba(0, 0, 0, 0.05);
-                        color: variables.$cc-primary-color;
-                    }
-                }
-            }
-        }
-    }
-}
