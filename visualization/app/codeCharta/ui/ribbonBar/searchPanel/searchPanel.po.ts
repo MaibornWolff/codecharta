@@ -1,4 +1,4 @@
-import { clickButtonOnPageElement } from "../../../puppeteer.helper"
+import { clickButtonOnPageElement } from "../../../../puppeteer.helper"
 
 export class SearchPanelPageObject {
     private EXPANDED = "expanded"
