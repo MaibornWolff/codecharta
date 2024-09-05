@@ -1,4 +1,4 @@
-import { Component, ViewEncapsulation } from "@angular/core"
+import { Component } from "@angular/core"
 import { MatDialog } from "@angular/material/dialog"
 import { Export3DMapDialogComponent } from "./export3DMapDialog/export3DMapDialog.component"
 import { State, Store } from "@ngrx/store"
@@ -10,8 +10,7 @@ import { setColorMode } from "../../state/store/dynamicSettings/colorMode/colorM
 
 @Component({
     selector: "cc-export-3d-map-button",
-    templateUrl: "./export3DMapButton.component.html",
-    encapsulation: ViewEncapsulation.None
+    templateUrl: "./export3DMapButton.component.html"
 })
 export class Export3DMapButtonComponent {
     constructor(

@@ -3,7 +3,8 @@
     (change)="setPresentationModeEnabled($event)"
     [title]="(isPresentationModeEnabled$ | async) ? 'Disable flashlight hover effect' : 'Enable flashlight hover effect'"
     aria-label="Presentation Mode Toggle"
+    class="cc-presentation-mode-button"
 >
     <i class="presentation-mode-icon fa fa-television"></i>
-    Presentation Mode
+    <span>Presentation Mode</span>
 </mat-slide-toggle>

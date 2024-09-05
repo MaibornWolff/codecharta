@@ -5,6 +5,11 @@
     gap: 12px;
 }
 
+.delta-select {
+    width: 200px;
+    font-size: 10pt;
+}
+
 .reference-comparison-switch {
     background-color: variables.$cc-primary-color;
     margin: 0;
@@ -39,8 +44,4 @@
     border-radius: 2px;
     align-self: center;
     vertical-align: bottom;
-}
-
-.delta-select {
-    width: 200px;
 }

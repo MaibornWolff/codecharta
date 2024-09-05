@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewEncapsulation } from "@angular/core"
+import { Component, ElementRef } from "@angular/core"
 import { MatSlideToggleChange } from "@angular/material/slide-toggle"
 import { Store } from "@ngrx/store"
 import { CcState } from "../../../codeCharta.model"
@@ -8,8 +8,7 @@ import { isPresentationModeSelector } from "../../../state/store/appSettings/isP
 @Component({
     selector: "cc-presentation-mode-button",
     templateUrl: "./presentationModeButton.component.html",
-    styleUrls: ["./presentationModeButton.component.scss"],
-    encapsulation: ViewEncapsulation.None
+    styleUrls: ["./presentationModeButton.component.scss"]
 })
 export class PresentationModeButtonComponent {
     isPresentationModeEnabled$ = this.store.select(isPresentationModeSelector)
