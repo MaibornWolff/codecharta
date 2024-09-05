@@ -1,3 +1,12 @@
+---
+categories:
+  - How-to
+tags:
+  - sonarimport
+  - analysis
+title: Automated SonarQube Analysis
+---
+
 # SonarQube & CodeCharta Automation Script
 
 ## Overview
@@ -53,11 +62,13 @@ You can choose to use default values or provide custom configurations when runni
 ### Default Execution
 
 ```bash
+git clone https://github.com/MaibornWolff/codecharta.git
 ./script/automated_sonar_analysis/run_analysis.sh
 ```
 
 ### Skip Prompts
 
 ```bash
+git clone https://github.com/MaibornWolff/codecharta.git
 ./script/automated_sonar_analysis/run_analysis.sh -s
 ```
