@@ -82,6 +82,19 @@ check_docker() {
     fi
 }
 
+# Function to check if Docker Daemon is running
+check_docker_daemon() {
+    if docker info >/dev/null 2>&1; then
+        echo "✅ Docker Daemon is running."
+    else
+        echo "❌ Docker Daemon is not running."
+        echo "💻 Please start Docker Daemon manually."
+        echo "🔗 Visit https://docs.docker.com/config/daemon/ for more information."
+        exit 1
+    fi
+}
+
+
 # Function to ensure Docker images are pulled
 docker_pull_image() {
     local image=$1
@@ -137,6 +150,7 @@ check_docker_images() {
 # Run the checks for jq and Docker
 check_jq
 check_docker
+check_docker_daemon
 
 # Check for required Docker images
 check_docker_images
