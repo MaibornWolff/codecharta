@@ -27,6 +27,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Bump node version from 18 to 20 [#3690](https://github.com/MaibornWolff/codecharta/pull/3690)
 - Enabled view encapsulation for Global Configuration dialog, Ribbon Bar and File Panel [#3712](https://github.com/MaibornWolff/codecharta/pull/3712)
 - Enabled view encapsulation for Slider [#3713](https://github.com/MaibornWolff/codecharta/pull/3713)
+- Enabled view encapsulation for the Toolbar [#3713](https://github.com/MaibornWolff/codecharta/pull/3715)
 
 ## [1.127.1] - 2024-08-12
 
