@@ -1,4 +1,4 @@
-import { Component, Input, ViewEncapsulation } from "@angular/core"
+import { Component, Input } from "@angular/core"
 import { CcState } from "../../../codeCharta.model"
 import { attributeDescriptorsSelector } from "../../../state/store/fileSettings/attributeDescriptors/attributeDescriptors.selector"
 import { Store } from "@ngrx/store"
@@ -7,7 +7,7 @@ import { metricTitles } from "../../../util/metric/metricTitles"
 @Component({
     selector: "cc-legend-block",
     templateUrl: "./legendBlock.component.html",
-    encapsulation: ViewEncapsulation.None
+    styleUrls: ["./legendBlock.component.scss"]
 })
 export class LegendBlockComponent {
     @Input() metricName: string
