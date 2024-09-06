@@ -1,3 +1,29 @@
+:host {
+    .metric-box,
+    .metrics-wrapper {
+        i.fa.fa-external-link {
+            font-size: 10px;
+            min-width: 10px;
+            text-align: center;
+        }
+
+        a:link,
+        a:visited {
+            text-decoration: none;
+        }
+
+        a:hover {
+            color: blue;
+            text-decoration: solid;
+            text-decoration-line: underline;
+        }
+
+        a:active {
+            color: red;
+        }
+    }
+}
+
 .metric-box {
     border-radius: 5px;
     background-color: #f0f0f0;
@@ -43,13 +69,6 @@
                 flex-wrap: wrap;
                 gap: 5px;
             }
-            .metric-name {
-                margin-top: 5px;
-            }
-
-            .primary-metric-value {
-                margin-right: -5px;
-            }
 
             i.fa {
                 font-size: 12pt;
@@ -78,6 +97,17 @@
                 flex-wrap: nowrap;
             }
         }
+
+        .metric-name {
+            color: grey;
+            word-break: break-word;
+            vertical-align: middle;
+            margin-top: 5px;
+        }
+
+        .delta-value-box {
+            vertical-align: middle;
+        }
     }
 }
 
@@ -86,45 +116,4 @@
     align-items: center;
     flex-wrap: wrap;
     gap: 5px;
-}
-
-.metric-name {
-    color: grey;
-    word-break: break-word;
-    vertical-align: middle;
-}
-
-.delta-value-box {
-    vertical-align: middle;
-}
-
-cc-metric-delta-selected:has(span) {
-    margin-top: 5px;
-}
-
-cc-attribute-side-bar-primary-metrics,
-cc-attribute-side-bar-secondary-metrics {
-    .metric-box,
-    .metrics-wrapper {
-        i.fa.fa-external-link {
-            font-size: 10px;
-            min-width: 10px;
-            text-align: center;
-        }
-
-        a:link,
-        a:visited {
-            text-decoration: none;
-        }
-
-        a:hover {
-            color: blue;
-            text-decoration: solid;
-            text-decoration-line: underline;
-        }
-
-        a:active {
-            color: red;
-        }
-    }
 }
