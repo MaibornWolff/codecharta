@@ -3,7 +3,7 @@ import { StoreModule } from "@ngrx/store"
 import { ThreeMapControlsService } from "./threeMapControls.service"
 import { ThreeCameraService } from "./threeCamera.service"
 import { ThreeSceneService } from "./threeSceneService"
-import { BoxGeometry, Group, Mesh, MOUSE, PerspectiveCamera, Sphere, Vector3 } from "three"
+import { Box3, BoxGeometry, Group, Mesh, MOUSE, PerspectiveCamera, Sphere, Vector3 } from "three"
 import { ThreeRendererService } from "./threeRenderer.service"
 import { wait } from "../../../util/testUtils/wait"
 import { appReducers, setStateMiddleware } from "../../../state/store/state.manager"
@@ -200,10 +200,68 @@ describe("ThreeMapControlsService", () => {
         })
 
         it("should return a zoom percentage between MIN_ZOOM and MAX_ZOOM for a distance within the min and max range", () => {
-            const result = threeMapControlsService.getZoomPercentage(550) // Middle of the range
+            const result = threeMapControlsService.getZoomPercentage(550)
 
             expect(result).toBeGreaterThan(10)
             expect(result).toBeLessThan(200)
+        })
+    })
+
+    describe("focusOnNode", () => {
+        it("should set positionBeforeFocus and call animateCameraTransition", () => {
+            const nodePath = "testNodePath"
+            const mockNode = {
+                boundingBox: new Box3(new Vector3(0, 0, 0), new Vector3(10, 10, 10))
+            }
+            jest.spyOn(threeSceneService, "getMapMesh").mockReturnValue({
+                getBuildingByPath: () => mockNode
+            } as any)
+
+            jest.spyOn(threeMapControlsService, "animateCameraTransition")
+
+            threeMapControlsService.focusOnNode(nodePath)
+
+            expect(threeMapControlsService.positionBeforeFocus).toEqual(threeCameraService.camera.position.clone())
+            const expectedBoundingSphere = mockNode.boundingBox.getBoundingSphere(new Sphere())
+            expect(threeMapControlsService.animateCameraTransition).toHaveBeenCalledWith(expectedBoundingSphere, 1000)
+        })
+    })
+
+    describe("unfocusNode", () => {
+        it("should restore positionBeforeFocus and call animateCameraTransition", () => {
+            const mockVectorBeforeFocus = new Vector3(1, 1, 1)
+            threeMapControlsService.positionBeforeFocus = mockVectorBeforeFocus
+
+            jest.spyOn(threeMapControlsService, "animateCameraTransition")
+
+            threeMapControlsService.unfocusNode()
+
+            const expectedSphere = {
+                center: threeMapControlsService.controls.target.clone(),
+                radius: mockVectorBeforeFocus.distanceTo(threeMapControlsService.controls.target)
+            } as Sphere
+
+            expect(threeMapControlsService.animateCameraTransition).toHaveBeenCalledWith(expectedSphere, 1000)
+        })
+    })
+
+    describe("animateCameraTransition", () => {
+        it("should animate camera transition correctly", async () => {
+            const boundingSphere = new Sphere(new Vector3(5, 5, 5), 10)
+            const spyCalculateCameraEndPosition = jest
+                .spyOn<any, any>(threeMapControlsService, "calculateCameraEndPosition")
+                .mockReturnValue(new Vector3(20, 20, 20))
+            const spyMoveCameraToPosition = jest.spyOn<any, any>(threeMapControlsService, "moveCameraToPosition")
+
+            jest.useFakeTimers()
+
+            ;(threeMapControlsService as any).animateCameraTransition(boundingSphere, 1000)
+
+            jest.advanceTimersByTime(1000)
+
+            expect(spyCalculateCameraEndPosition).toHaveBeenCalled()
+            expect(spyMoveCameraToPosition).toHaveBeenCalled()
+            jest.useRealTimers()
         })
     })
 })

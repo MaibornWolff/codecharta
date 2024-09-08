@@ -190,28 +190,27 @@ export class ThreeMapControlsService {
         this.positionBeforeFocus = this.threeCameraService.camera.position.clone()
         const mapMesh = this.threeSceneService.getMapMesh()
         const node = mapMesh.getBuildingByPath(nodePath)
-        const boundingBox = node.boundingBox.clone()
-        const boundingSphere = boundingBox.getBoundingSphere(new Sphere())
+        const boundingSphere = node.boundingBox.getBoundingSphere(new Sphere())
 
-        const duration = 1000 // Transition duration
+        const duration = 1000
         this.animateCameraTransition(boundingSphere, duration)
     }
 
     unfocusNode() {
-        const defaultPosition = this.positionBeforeFocus.clone() // Clone to ensure it's not modified
+        const defaultPosition = this.positionBeforeFocus.clone()
         const endCameraState = {
             center: this.controls.target.clone(),
             radius: defaultPosition.distanceTo(this.controls.target)
         } as Sphere
 
-        this.animateCameraTransition(endCameraState, 1000) // 1000ms duration for the transition
+        this.animateCameraTransition(endCameraState, 1000)
     }
 
-    private animateCameraTransition(boundingSphere: Sphere, duration: number) {
+    animateCameraTransition(boundingSphere: Sphere, duration: number) {
         const { center, radius } = boundingSphere
 
         const startPos = this.threeCameraService.camera.position.clone()
-        const endPos = this.calculateCameraEndPosition(center, radius, true) // Apply flag for focusing
+        const endPos = this.calculateCameraEndPosition(center, radius, true)
 
         const startTime = performance.now()
 
@@ -232,10 +231,9 @@ export class ThreeMapControlsService {
 
     private calculateCameraEndPosition(center: Vector3, radius: number, isFocusing: boolean): Vector3 {
         const currentCameraPosition = this.threeCameraService.camera.position.clone()
-        const direction = this.controls.target.clone().sub(currentCameraPosition).normalize() // Get the proper direction
+        const direction = this.controls.target.clone().sub(currentCameraPosition).normalize()
 
-        // Calculate the appropriate distance while ensuring the object fits in the viewport
-        const distance = this.cameraPerspectiveLengthCalculation({ center, radius } as Sphere) * (isFocusing ? 1.5 : 1)
+        const distance = this.cameraPerspectiveLengthCalculation({ center, radius } as Sphere) * (isFocusing ? 1.8 : 1)
 
         return center.clone().sub(direction.multiplyScalar(distance))
     }
