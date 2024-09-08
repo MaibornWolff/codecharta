@@ -146,3 +146,112 @@ stop_spinner() {
     echo -ne "\r\033[0m"  # Reset any terminal color/formatting and clear line
 }
 
+show_menu() {
+    declare -i num_args;
+    declare -a options preselected;
+
+    # Unpack options array
+    num_args=$1; shift
+    while (( num_args-- > 0 )); do
+        options+=( "$1" )
+        shift
+    done
+    
+    # Unpack preselected array
+    num_args=$1; shift
+    while (( num_args-- > 0 )); do
+        preselected+=( "$1" )
+        shift
+    done
+
+    local selected=()
+    local cursor=0
+    local n_options=${#options[@]}
+
+    # Set preselected options
+    for i in "${preselected[@]}"; do
+        selected[$i]="1"
+    done
+
+    # Switch to alternate screen buffer
+    tput smcup
+    tput clear  # Clear the alternate screen
+
+    # Save the current cursor position
+    tput sc
+
+    # Display the menu and interact with the user
+    while true; do
+        # Move the cursor back to the initial position
+        tput rc  # Restore the cursor position to where the menu starts
+        tput ed  # Clear everything below the cursor
+
+        echo -e "\n\e[1;36m✨ Use\e[1;33m ⬆️  \ ⬇️ \e[1;36m to navigate, \e[1;33m[␣ SPACE]\e[1;36m to select/deselect, and \e[1;33m[⏎ ENTER]\e[1;36m to confirm your choices. ✨\e[0m\n"
+        # Redraw the menu
+        for i in "${!options[@]}"; do
+            if [ "$i" -eq "$cursor" ]; then
+                if [[ "${selected[i]}" == "1" ]]; then
+                    # Hovered & selected option
+                    echo -e "-> \e[1;32m[✔] ${options[i]}\e[0m"  # Bold green for both hovered and selected
+                else
+                    # Hovered option (not selected)
+                    echo -e "-> \e[1;33m[ ] ${options[i]}\e[0m"  # Bold yellow for hovered
+                fi
+            else
+                if [[ "${selected[i]}" == "1" ]]; then
+                    # Selected option (not hovered)
+                    echo -e "   \e[32m[✔] ${options[i]}\e[0m"  # Regular green for selected
+                else
+                    # Neither hovered nor selected
+                    echo -e "   [ ] ${options[i]}"  # Regular for non-selected, non-hovered
+                fi
+            fi
+        done
+
+        # Read key input
+        IFS= read -rsn1 key
+
+        if [[ $key == "" ]]; then
+            # Enter key pressed, break out of loop
+            break
+        elif [[ $key == " " ]]; then
+            # Space bar pressed, toggle selection
+            if [[ "${selected[cursor]}" == "1" ]]; then
+                selected[cursor]=""
+            else
+                selected[cursor]="1"
+            fi
+        elif [[ $key == $'\x1b' ]]; then
+            # Handle arrow keys
+            read -rsn2 key
+            if [[ $key == "[A" ]]; then
+                # Up arrow
+                ((cursor--))
+                if [ $cursor -lt 0 ]; then
+                    cursor=$((n_options - 1))
+                fi
+            elif [[ $key == "[B" ]]; then
+                # Down arrow
+                ((cursor++))
+                if [ $cursor -ge $n_options ]; then
+                    cursor=0
+                fi
+            fi
+        fi
+    done
+
+    # Store the selected options in a global array
+    selected_options=()  # Clear any previous selections
+    for i in "${!options[@]}"; do
+        if [[ "${selected[i]}" == "1" ]]; then
+            selected_options+=("${options[i]}")
+        fi
+    done
+
+    # Restore the terminal to its original state
+    tput rmcup
+}
+
+# options=("Option 1" "Option 2" "Option 3" "Option 4")
+# preselected=(0 2)  # Preselect Option 1 and Option 3
+# show_menu "${#options[@]}" "${options[@]}" "${#preselected[@]}" "${preselected[@]}"

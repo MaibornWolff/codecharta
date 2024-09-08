@@ -43,7 +43,7 @@ RUN_SONAR_SCANNER=true
 # Set to true to run the final cleanup of Docker containers and networks
 RUN_FINAL_CLEANUP=false    
 # Timeout period in seconds for waiting on SonarQube data processing and startup
-TIMEOUT_PERIOD=10000         
+TIMEOUT_PERIOD=10000
 
 
 ### Main Script ###############################################################
@@ -95,33 +95,48 @@ fi
 ENCODED_PROJECT_KEY=$(urlencode "$PROJECT_KEY")
 ENCODED_PROJECT_NAME=$(urlencode "$PROJECT_NAME")
 
-# Run the steps
-ensure_sonarqube_running
+# Present a menu to the user to select which steps to run
+steps=("Ensure SonarQube Running" "Reset SonarQube Password" "Clean Up Previous Project" "Revoke Token" "Create Project and Generate Token" "Run SonarScanner" "Run CodeCharta Analysis" "Final Cleanup")
 
-# Conditionally reset password
-reset_sonarqube_password
+preselected_indices=(0 1 2 3 4 5 6 7)  # By default, all steps are preselected
 
-# Conditionally clean up the previous project
-if $RUN_PROJECT_CLEANUP; then
-    cleanup_previous_project
-fi
+# Call the `show_menu` function from helpers.sh
+show_menu "${#steps[@]}" "${steps[@]}" "${#preselected_indices[@]}" "${preselected_indices[@]}"
 
-# Always revoke the existing token
-revoke_token
+# Now selected_options array contains the selected items
+selected_steps=("${selected_options[@]}")
+echo -e "\nRunning:"
+for i in "${!selected_options[@]}"; do
+    echo "  $((i + 1))) ${selected_options[i]}"
+done
 
-# Create the project and generate the token
-create_sonarqube_project
-generate_token
-
-# Conditionally run the SonarScanner
-if $RUN_SONAR_SCANNER; then
-    run_sonarscanner
-fi
-
-# Run the CodeCharta analysis
-run_codecharta_analysis
-
-# Final cleanup if enabled
-if $RUN_FINAL_CLEANUP; then
-    cleanup
-fi
+# Execute the steps based on user selection
+for step in "${selected_steps[@]}"; do
+    case $step in
+        "Ensure SonarQube Running")
+            ensure_sonarqube_running
+            ;;
+        "Reset SonarQube Password")
+            reset_sonarqube_password
+            ;;
+        "Clean Up Previous Project")
+            cleanup_previous_project
+            ;;
+        "Revoke Token")
+            revoke_token
+            ;;
+        "Create Project and Generate Token")
+            create_sonarqube_project
+            generate_token
+            ;;
+        "Run SonarScanner")
+            run_sonarscanner
+            ;;
+        "Run CodeCharta Analysis")
+            run_codecharta_analysis
+            ;;
+        "Final Cleanup")
+            cleanup
+            ;;
+    esac
+done
