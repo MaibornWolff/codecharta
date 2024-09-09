@@ -38,7 +38,7 @@ jobs:
           tag-template: 'ana-{version}'
 
       - name: Upload Release Files to tagged release
-        uses: alexellis/upload-assets@0.4.0
+        uses: alexellis/upload-assets@0.4.1
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:
@@ -69,7 +69,7 @@ jobs:
         run: sh ./script/build_demo_file_analysis.sh
 
       - name: Deploy GH-Pages
-        uses: JamesIves/github-pages-deploy-action@v4.4.3
+        uses: JamesIves/github-pages-deploy-action@v4.6.4
         with:
           token: ${{ secrets.DEPLOY_TOKEN }}
           branch: gh-pages
