@@ -11,9 +11,9 @@ if [[ ! -d "$DIR" ]]; then DIR="$PWD"; fi
 . "$DIR/sonarqube_management.sh"
 . "$DIR/analysers.sh"
 
-### Configuration #############################################################
+### Default Configuration #####################################################
 
-# PROJECT_KEY: A unique identifier for the project in SonarQube.
+# Default values for various variables
 PROJECT_KEY="maibornwolff-gmbh_codecharta_visualization"
 
 # PROJECT_NAME: The name of the project in SonarQube.
@@ -39,61 +39,130 @@ SONAR_CONTAINER_NAME="sonarqube"
 # Set to true to delete the existing SonarQube project
 RUN_PROJECT_CLEANUP=true
 # Set to true to run SonarScanner
-RUN_SONAR_SCANNER=true    
+RUN_SONAR_SCANNER=true
 # Set to true to run the final cleanup of Docker containers and networks
-RUN_FINAL_CLEANUP=false    
+RUN_FINAL_CLEANUP=false
 # Timeout period in seconds for waiting on SonarQube data processing and startup
 TIMEOUT_PERIOD=10000
 
+# Flags to check if specific options were passed
+FLAG_PROJECT_KEY=false
+FLAG_PROJECT_NAME=false
+FLAG_NEW_SONAR_PASSWORD=false
+FLAG_PROJECT_BASEDIR=false
+FLAG_HOST_SONAR_URL=false
+FLAG_SONARQUBE_TOKEN_NAME=false
+
+### Help Message ##############################################################
+
+show_help() {
+    echo "Usage: ${0##*/} [-k <project_key>] [-n <project_name>] [-p <new_password>] [-d <project_basedir>] [-u <host_sonar_url>] [-t <sonar_token_name>] [-s] [-h]"
+    echo ""
+    echo "Options:"
+    echo "  -k <project_key>         Set the project key (default: $PROJECT_KEY)"
+    echo "  -n <project_name>        Set the project name (default: $PROJECT_NAME)"
+    echo "  -p <new_password>        Set the new SonarQube admin password (default: $NEW_SONAR_PASSWORD)"
+    echo "  -d <project_basedir>     Set the directory to be scanned (default: $PROJECT_BASEDIR)"
+    echo "  -u <host_sonar_url>      Set the host SonarQube URL (default: $HOST_SONAR_URL)"
+    echo "  -t <sonar_token_name>    Set the SonarQube token name (default: $SONARQUBE_TOKEN_NAME)"
+    echo "  -s                      Skip all prompts and use default values or passed flags"
+    echo "  -h                      Show this help message and exit"
+}
+
+### Parse Flags ###############################################################
+
+while getopts ":k:n:p:d:u:t:sh" opt; do
+  case ${opt} in
+    k ) # Project Key
+      PROJECT_KEY=$OPTARG
+      FLAG_PROJECT_KEY=true
+      ;;
+    n ) # Project Name
+      PROJECT_NAME=$OPTARG
+      FLAG_PROJECT_NAME=true
+      ;;
+    p ) # SonarQube admin password
+      NEW_SONAR_PASSWORD=$OPTARG
+      FLAG_NEW_SONAR_PASSWORD=true
+      ;;
+    d ) # Project Base Directory
+      PROJECT_BASEDIR=$OPTARG
+      FLAG_PROJECT_BASEDIR=true
+      ;;
+    u ) # Host Sonar URL
+      HOST_SONAR_URL=$OPTARG
+      FLAG_HOST_SONAR_URL=true
+      ;;
+    t ) # SonarQube token name
+      SONARQUBE_TOKEN_NAME=$OPTARG
+      FLAG_SONARQUBE_TOKEN_NAME=true
+      ;;
+    s ) # Skip all prompts
+      SKIP_PROMPT=true
+      ;;
+    h ) # Show help
+      show_help
+      exit 0
+      ;;
+    \? ) # Invalid option
+      echo "Invalid option: -$OPTARG" 1>&2
+      show_help
+      exit 1
+      ;;
+    : ) # Missing argument
+      echo "Option -$OPTARG requires an argument." 1>&2
+      show_help
+      exit 1
+      ;;
+  esac
+done
 
 ### Main Script ###############################################################
 
-# Introductory message explaining the script's purpose
 echo -e "🔧 Welcome to the SonarQube & CodeCharta Automation Script 🔧"
 echo -e "------------------------------------------------------------"
 echo -e "This script automates the process of:"
 echo -e "1. Setting up a SonarQube project and resetting the default 'admin' password if needed."
 echo -e "2. Running SonarScanner to analyze your project's source code."
 echo -e "3. Conducting a CodeCharta analysis of the scanned data."
-echo -e "\nYou can choose to provide custom values for the project configuration or use the defaults."
-echo -e "To skip the prompts and use all default values, run the script with the -s flag."
-echo -e "If the default 'admin' password is still in use, the script will change it to the new password you provide."
-echo -e "Note: This is only relevant for users who do not already have an instance of SonarQube running."
 echo -e "------------------------------------------------------------\n"
 
-# Check for skip prompt flag
-SKIP_PROMPT=false
-while getopts ":s" opt; do
-  case ${opt} in
-    s )
-      SKIP_PROMPT=true
-      ;;
-    \? )
-      echo "Invalid option: -$OPTARG" 1>&2
-      exit 1
-      ;;
-  esac
-done
 
-# If skip prompt mode is not enabled, prompt for important variables with defaults
-if [ "$SKIP_PROMPT" = false ]; then
-    # Allow the user to override the default values if desired
-    read -p "🔑 Enter the Project Key (default: $PROJECT_KEY): " input
-    PROJECT_KEY=${input:-$PROJECT_KEY}
+# Prompt for important variables only if they weren't provided via flags
+if [ "$SKIP_PROMPT" != true ]; then
+    if [ "$FLAG_PROJECT_KEY" = false ]; then
+        read -p "🔑 Enter the Project Key (default: $PROJECT_KEY): " input
+        PROJECT_KEY=${input:-$PROJECT_KEY}
+    fi
 
-    read -p "📛 Enter the Project Name (default: $PROJECT_NAME): " input
-    PROJECT_NAME=${input:-$PROJECT_NAME}
+    if [ "$FLAG_PROJECT_NAME" = false ]; then
+        read -p "📛 Enter the Project Name (default: $PROJECT_NAME): " input
+        PROJECT_NAME=${input:-$PROJECT_NAME}
+    fi
 
-    read -p "🔒 Enter the new password for the SonarQube admin user (default: $NEW_SONAR_PASSWORD): " input
-    NEW_SONAR_PASSWORD=${input:-$NEW_SONAR_PASSWORD}
+    if [ "$FLAG_NEW_SONAR_PASSWORD" = false ]; then
+        read -p "🔒 Enter the new password for the SonarQube admin user (default: $NEW_SONAR_PASSWORD): " input
+        NEW_SONAR_PASSWORD=${input:-$NEW_SONAR_PASSWORD}
+    fi
 
-    read -p "📁 Enter the directory path to be scanned (default: $PROJECT_BASEDIR): " input
-    PROJECT_BASEDIR=${input:-$PROJECT_BASEDIR}
+    if [ "$FLAG_PROJECT_BASEDIR" = false ]; then
+        read -p "📁 Enter the directory path to be scanned (default: $PROJECT_BASEDIR): " input
+        PROJECT_BASEDIR=${input:-$PROJECT_BASEDIR}
+    fi
 fi
 
 # URL-encode PROJECT_KEY and PROJECT_NAME
 ENCODED_PROJECT_KEY=$(urlencode "$PROJECT_KEY")
 ENCODED_PROJECT_NAME=$(urlencode "$PROJECT_NAME")
+
+# Build reusable command
+cmd="./${0##*/}"
+cmd+=" -k \"$PROJECT_KEY\""
+cmd+=" -n \"$PROJECT_NAME\""
+cmd+=" -p \"$NEW_SONAR_PASSWORD\""
+cmd+=" -d \"$PROJECT_BASEDIR\""
+cmd+=" -u \"$HOST_SONAR_URL\""
+cmd+=" -t \"$SONARQUBE_TOKEN_NAME\""
 
 # Present a menu to the user to select which steps to run
 steps=("Ensure SonarQube Running" "Reset SonarQube Password" "Clean Up Previous Project" "Revoke Token" "Create Project and Generate Token" "Run SonarScanner" "Run CodeCharta Analysis" "Final Cleanup")
@@ -109,6 +178,10 @@ echo -e "\nRunning:"
 for i in "${!selected_options[@]}"; do
     echo "  $((i + 1))) ${selected_options[i]}"
 done
+
+### Run the steps #############################################################
+
+check_dependencies
 
 # Execute the steps based on user selection
 for step in "${selected_steps[@]}"; do
@@ -140,3 +213,8 @@ for step in "${selected_steps[@]}"; do
             ;;
     esac
 done
+
+### Print Reusable Command ####################################################
+
+echo -e "\nTo run this script again without prompts, use the following command:"
+echo "$cmd"

@@ -8,7 +8,7 @@ This script automates the setup and analysis processes for SonarQube and CodeCha
 2. **Source Code Analysis**: Runs SonarScanner to analyze the project's source code.
 3. **CodeCharta Analysis**: Performs a CodeCharta analysis based on the scanned data.
 
-You can choose to use default values or provide custom configurations when running the script. To skip prompts and use default values, use the `-s` flag.
+You can choose to use default values or provide custom configurations when running the script. To skip prompts and use default values, use the `-s` flag. After execution, the script will print a reusable command with the provided configurations, which you can use next time to skip prompts.
 
 ## Configuration Variables
 
@@ -37,8 +37,9 @@ You can choose to use default values or provide custom configurations when runni
    - Project Name
    - SonarQube Admin Password
    - Directory Path for Scanning
-3. **Encode Project Key and Name**: URL-encodes the project key and name for safe usage.
-4. **Run Steps**:
+3. **Build and Display Reusable Command**: After gathering inputs (whether via flags or prompts), the script builds a reusable command reflecting the provided configurations and prints it at the end for future use.
+4. **Encode Project Key and Name**: URL-encodes the project key and name for safe usage.
+5. **Run Steps**:
    - Ensure SonarQube is running.
    - Reset SonarQube admin password (if required).
    - Clean up the previous SonarQube project (if configured).
@@ -61,3 +62,31 @@ You can choose to use default values or provide custom configurations when runni
 ```bash
 ./script/automated_sonar_analysis/run_analysis.sh -s
 ```
+
+### Custom Execution with Flags
+
+You can provide flags to customize the execution. For example:
+
+```bash
+./script/automated_sonar_analysis/run_analysis.sh -k "custom_project_key" -n "Custom Project Name" -p "new_password" -d "/path/to/codebase"
+```
+
+### Reusable Command
+
+After running the script, it will display a command you can use to execute the script with the same parameters without prompting next time. This allows for easy reuse of the configurations you provided during the first run.
+
+Example reusable command generated:
+
+```bash
+./script/automated_sonar_analysis/run_analysis.sh -k "custom_project_key" -n "Custom Project Name" -p "new_password" -d "/path/to/codebase" -u "http://localhost:9000" -t "codecharta_token"
+```
+
+This command will automatically use the values you previously provided, making future executions more efficient.
+
+### Key Points:
+
+- The documentation is structured using `#`, `##`, and `###` headers to clearly delineate sections.
+- Code blocks for execution examples are formatted using triple backticks (` ```bash `) to ensure they are displayed correctly.
+- Each command example is displayed cleanly without breaking Markdown rendering.
+
+This format provides clarity and ease of use for the script users.

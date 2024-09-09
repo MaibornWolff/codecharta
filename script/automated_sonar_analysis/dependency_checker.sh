@@ -147,12 +147,14 @@ check_docker_images() {
     fi
 }
 
-# Run the checks for jq and Docker
-check_jq
-check_docker
-check_docker_daemon
+check_dependencies () {
+    # Run the checks for jq and Docker
+    check_jq
+    check_docker
+    check_docker_daemon
 
-# Check for required Docker images
-check_docker_images
+    # Check for required Docker images
+    check_docker_images
 
-echo "🎉 All dependencies are installed and required Docker images are available."
+    echo "🎉 All dependencies are installed and required Docker images are available."
+}
