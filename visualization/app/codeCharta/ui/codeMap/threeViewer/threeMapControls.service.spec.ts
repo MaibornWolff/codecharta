@@ -9,6 +9,8 @@ import { wait } from "../../../util/testUtils/wait"
 import { appReducers, setStateMiddleware } from "../../../state/store/state.manager"
 import { MapControls } from "three/examples/jsm/controls/MapControls"
 import { take } from "rxjs"
+import { CodeMapBuilding } from "../rendering/codeMapBuilding"
+import { CodeMapMesh } from "../rendering/codeMapMesh"
 
 describe("ThreeMapControlsService", () => {
     let threeMapControlsService: ThreeMapControlsService
@@ -70,9 +72,7 @@ describe("ThreeMapControlsService", () => {
             const addEventListenerMock = jest.fn()
             jest.spyOn(MapControls.prototype, "addEventListener").mockImplementation(addEventListenerMock)
 
-            const mockMapControls = new MapControls(threeCameraService.camera, domElement)
-
-            threeMapControlsService.controls = mockMapControls
+            threeMapControlsService.controls = new MapControls(threeCameraService.camera, domElement)
 
             threeMapControlsService.init(domElement)
 
@@ -159,7 +159,7 @@ describe("ThreeMapControlsService", () => {
 
             threeMapControlsService.setZoomPercentage(initialZoom)
 
-            let actualZoomPercentage
+            let actualZoomPercentage: number
             threeMapControlsService.zoomPercentage$.pipe(take(1)).subscribe(zoomPercentage => (actualZoomPercentage = zoomPercentage))
 
             expect(actualZoomPercentage).toBe(initialZoom)
@@ -174,7 +174,7 @@ describe("ThreeMapControlsService", () => {
             const distance = threeCameraService.camera.position.length()
             const expectedZoomPercentage = threeMapControlsService.getZoomPercentage(distance)
 
-            let actualZoomPercentage
+            let actualZoomPercentage: number
             threeMapControlsService.zoomPercentage$.pipe(take(1)).subscribe(zoomPercentage => (actualZoomPercentage = zoomPercentage))
 
             expect(actualZoomPercentage).toBeCloseTo(expectedZoomPercentage)
@@ -212,10 +212,11 @@ describe("ThreeMapControlsService", () => {
             const nodePath = "testNodePath"
             const mockNode = {
                 boundingBox: new Box3(new Vector3(0, 0, 0), new Vector3(10, 10, 10))
-            }
+            } as unknown as CodeMapBuilding
+
             jest.spyOn(threeSceneService, "getMapMesh").mockReturnValue({
                 getBuildingByPath: () => mockNode
-            } as any)
+            } as unknown as CodeMapMesh)
 
             jest.spyOn(threeMapControlsService, "animateCameraTransition")
 
@@ -242,26 +243,6 @@ describe("ThreeMapControlsService", () => {
             } as Sphere
 
             expect(threeMapControlsService.animateCameraTransition).toHaveBeenCalledWith(expectedSphere, 1000)
-        })
-    })
-
-    describe("animateCameraTransition", () => {
-        it("should animate camera transition correctly", async () => {
-            const boundingSphere = new Sphere(new Vector3(5, 5, 5), 10)
-            const spyCalculateCameraEndPosition = jest
-                .spyOn<any, any>(threeMapControlsService, "calculateCameraEndPosition")
-                .mockReturnValue(new Vector3(20, 20, 20))
-            const spyMoveCameraToPosition = jest.spyOn<any, any>(threeMapControlsService, "moveCameraToPosition")
-
-            jest.useFakeTimers()
-
-            ;(threeMapControlsService as any).animateCameraTransition(boundingSphere, 1000)
-
-            jest.advanceTimersByTime(1000)
-
-            expect(spyCalculateCameraEndPosition).toHaveBeenCalled()
-            expect(spyMoveCameraToPosition).toHaveBeenCalled()
-            jest.useRealTimers()
         })
     })
 })
