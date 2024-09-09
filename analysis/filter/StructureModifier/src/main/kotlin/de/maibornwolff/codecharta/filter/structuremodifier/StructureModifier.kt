@@ -44,6 +44,10 @@ class StructureModifier(
     )
     private var printLevels: Int? = null
 
+    @CommandLine.Option(names = ["--rename-mcc"], arity = "0..1", description = ["rename the mcc metric to complexity. " +
+        "Optionally specify 'sonar' for it to be renamed to sonar_complexity"])
+    private var renameMcc: String? = null
+
     @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File (or empty for stdout)"])
     private var outputFile: String? = null
 
@@ -96,6 +100,14 @@ class StructureModifier(
             }
 
             setRoot != null -> project = SubProjectExtractor(project).extract(setRoot!!)
+            renameMcc != null -> { project =
+                if (renameMcc == "sonar") {
+                    MetricRenamer(project, "sonar_complexity").rename()
+                } else if (renameMcc == "") {
+                    MetricRenamer(project).rename()
+                } else throw IllegalArgumentException("Invalid value for rename flag, stopping execution...")
+
+            }
             remove.isNotEmpty() -> project = NodeRemover(project).remove(remove)
             moveFrom != null -> project = FolderMover(project).move(moveFrom, moveTo) ?: return null
         }
