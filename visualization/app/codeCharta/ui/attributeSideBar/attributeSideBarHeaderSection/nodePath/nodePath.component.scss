@@ -1,4 +1,3 @@
-.node-origin,
 .cc-node-path {
     color: grey;
     margin: 5px 0;
@@ -25,14 +24,4 @@
             color: rgb(14, 46, 255);
         }
     }
-}
-
-.node-name,
-.node-origin,
-.node-path {
-    word-break: break-all;
-    -webkit-user-select: text;
-    -moz-user-select: text;
-    -ms-user-select: text;
-    user-select: text;
 }
