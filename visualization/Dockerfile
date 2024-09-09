@@ -1,3 +1,3 @@
-FROM nginx:1.25.3-alpine
+FROM nginx:1.27.1-alpine
 
 COPY ./dist/webpack /usr/share/nginx/html
