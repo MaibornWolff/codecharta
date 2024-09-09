@@ -18,14 +18,16 @@
                   "name": "file1.java",
                   "type": "File",
                   "attributes": {
-                    "nloc": 80.0
+                    "nloc": 80.0,
+                    "mcc": 1
                   }
                 },
                 {
                   "name": "file2.java",
                   "type": "File",
                   "attributes": {
-                    "nloc": 80.0
+                    "nloc": 80.0,
+                    "mcc": 2
                   }
                 }
               ]
@@ -38,7 +40,8 @@
                   "name": "otherFile.java",
                   "type": "File",
                   "attributes": {
-                    "nloc": 80.0
+                    "nloc": 80.0,
+                    "mcc": 3
                   }
                 }
               ]
@@ -51,7 +54,8 @@
                   "name": "otherFile2.java",
                   "type": "File",
                   "attributes": {
-                    "nloc": 80.0
+                    "nloc": 80.0,
+                    "mcc": 80.0
                   }
                 }
               ]

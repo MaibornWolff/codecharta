@@ -13,7 +13,7 @@ class NodeRemoverTest {
     private lateinit var sampleProject: Project
 
     companion object {
-        private const val DESCRIPTOR_TEST_PATH = "test_attributeDescriptors.json"
+        private const val DESCRIPTOR_TEST_PATH = "test_attributeDescriptors.cc.json"
     }
 
     @BeforeEach
