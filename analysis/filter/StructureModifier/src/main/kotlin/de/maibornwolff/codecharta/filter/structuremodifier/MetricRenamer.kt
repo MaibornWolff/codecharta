@@ -9,8 +9,8 @@ import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.model.ProjectBuilder
 
 class MetricRenamer(
-    private val project: Project
-    //TODO: add newName as val here
+    private val project: Project,
+    private val newName: String = "complexity"
 ) {
     fun rename(): Project {
         val updatedRoot = renameMCCRecursivelyInNodes(project.rootNode.toMutableNode())
@@ -34,7 +34,7 @@ class MetricRenamer(
             if (mccValue == null) {
                 throw NullPointerException("Input file contains null value for a node attribute! Please ensure the input is a valid cc.json file.")
             }
-            updatedAttributes["complexity"] = mccValue
+            updatedAttributes[newName] = mccValue
 
             node.attributes = updatedAttributes
         }
@@ -55,7 +55,7 @@ class MetricRenamer(
         if (mccType == null) {
             throw NullPointerException("Input file contains null value for an attribute type! Please ensure the input is a valid cc.json file.")
         }
-        nodeAttributes["complexity"] = mccType
+        nodeAttributes[newName] = mccType
 
         return attributeTypes
     }
@@ -70,7 +70,7 @@ class MetricRenamer(
 
             throw NullPointerException("Input file contains null value for an attribute descriptor! Please ensure the input is a valid cc.json file.")
         }
-        updatedAttributeDescriptors["complexity"] = mccDescriptor
+        updatedAttributeDescriptors[newName] = mccDescriptor
         return updatedAttributeDescriptors
     }
 
