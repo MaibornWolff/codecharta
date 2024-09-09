@@ -27,7 +27,7 @@ class MetricRenamerTest {
     }
 
     @Test
-    fun `should rename all occurrences of mcc in the projects nodes when the project contains this metric`() {
+    fun `should rename all occurrences of mcc in the projects nodes to complexity when the project contains this metric`() {
         val bufferedReader = File("src/test/resources/sample_project.cc.json").bufferedReader()
         val sampleProject = ProjectDeserializer.deserializeProject(bufferedReader)
 
@@ -63,6 +63,15 @@ class MetricRenamerTest {
 
         Assertions.assertThat(result.attributeDescriptors.containsKey("mcc")).isFalse()
         Assertions.assertThat(result.attributeDescriptors.containsKey("ymcc")).isTrue()
+    }
+
+    @Test
+    fun `should rename mcc to sonar_complexity when specified`() {
+        val result = MetricRenamer(attributeDescriptorsProject, "sonar_complexity").rename()
+
+        Assertions.assertThat(doesAttributeExistInNode(result.rootNode.toMutableNode(), "mcc")).isFalse()
+        Assertions.assertThat(doesAttributeExistInNode(result.rootNode.toMutableNode(), "complexity")).isFalse()
+        Assertions.assertThat(doesAttributeExistInNode(result.rootNode.toMutableNode(), "sonar_complexity")).isTrue()
     }
 
     @Test   //TODO: revisit
