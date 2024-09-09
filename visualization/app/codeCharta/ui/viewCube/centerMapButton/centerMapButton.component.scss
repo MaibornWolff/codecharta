@@ -1,6 +1,6 @@
 @use "variables";
 
-cc-center-map-button {
+:host {
     button {
         position: absolute;
         right: 15px;
@@ -17,7 +17,7 @@ cc-center-map-button {
 
         &:hover {
             cursor: pointer;
-            color: #eee;
+            background-color: variables.$cc-emphasized-color;
         }
     }
 }
