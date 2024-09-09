@@ -129,7 +129,7 @@ class StructureModifierTest {
         val cliResult =
             executeForOutput(
                 "",
-                arrayOf("src/test/resources/test_attributeDescriptors.json", "-s=/root/AnotherParentLeaf")
+                arrayOf("src/test/resources/test_attributeDescriptors.cc.json", "-s=/root/AnotherParentLeaf")
             )
         val resultProject = ProjectDeserializer.deserializeProject(cliResult)
 
@@ -144,7 +144,7 @@ class StructureModifierTest {
         val cliResult =
             executeForOutput(
                 "",
-                arrayOf("src/test/resources/test_attributeDescriptors.json", "-r=/root/AnotherParentLeaf")
+                arrayOf("src/test/resources/test_attributeDescriptors.cc.json", "-r=/root/AnotherParentLeaf")
             )
         val resultProject = ProjectDeserializer.deserializeProject(cliResult)
 
