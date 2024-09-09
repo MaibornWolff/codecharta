@@ -1,0 +1,11 @@
+:host {
+    transition: right 0.3s ease;
+    position: absolute;
+    z-index: 11;
+    right: 0;
+    top: 10px;
+
+    &.sideBarVisible {
+        right: 350px;
+    }
+}
