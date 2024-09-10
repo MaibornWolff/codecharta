@@ -24,7 +24,7 @@ class NodeRemoverTest {
 
     @Test
     fun `Should replicate project when non existent path specified`() {
-// when
+        // when
         val subProjectExtractor = NodeRemover(sampleProject)
         val result = subProjectExtractor.remove(arrayOf("/root/somethig"))
 
@@ -34,7 +34,7 @@ class NodeRemoverTest {
 
     @Test
     fun `Should keep non affected nodes when removal is specified`() {
-// when
+        // when
         val subProjectExtractor = NodeRemover(sampleProject)
         val result = subProjectExtractor.remove(arrayOf("/root/src/main"))
         val testFolder = result.rootNode.children.first().children.first()
@@ -45,7 +45,7 @@ class NodeRemoverTest {
 
     @Test
     fun `Should remove correct nodes when single node is specified for removal`() {
-// when
+        // when
         val subProjectExtractor = NodeRemover(sampleProject)
         val result = subProjectExtractor.remove(arrayOf("/root/src/main"))
         val srcContent = result.rootNode.children.first().children
@@ -61,7 +61,7 @@ class NodeRemoverTest {
 
     @Test
     fun `Should remove correct nodes when multiple nodes are specified for removal`() {
-// when
+        // when
         val subProjectExtractor = NodeRemover(sampleProject)
         val result = subProjectExtractor.remove(arrayOf("/root/src/main/file1.java", "root/src/folder3/"))
         val srcContent = result.rootNode.children.first().children
@@ -82,7 +82,7 @@ class NodeRemoverTest {
 
     @Test
     fun `Should remove affected edges when removal is specified`() {
-// when
+        // when
         val subProjectExtractor = NodeRemover(sampleProject)
         val result = subProjectExtractor.remove(arrayOf("/root/foo"))
 
@@ -102,7 +102,8 @@ class NodeRemoverTest {
     }
 
     @Test
-    fun `Should remove affected edges when multiple removals are specified`() { // given
+    fun `Should remove affected edges when multiple removals are specified`() {
+        // given
         val toExclude = arrayOf("/root/foo/file1", "root/else/")
         val shouldBeExcluded = listOf("/root/foo/file1", "root/else/file1", "root/else")
 
@@ -126,7 +127,7 @@ class NodeRemoverTest {
 
     @Test
     fun `Should remove correct blacklist items when node removal specified`() {
-// when
+        // when
         val subProjectExtractor = NodeRemover(sampleProject)
         val result = subProjectExtractor.remove(arrayOf("/root/foo"))
 
@@ -139,7 +140,8 @@ class NodeRemoverTest {
     }
 
     @Test
-    fun `Should keep attributes when only node removal specified`() { // given
+    fun `Should keep attributes when only node removal specified`() {
+        // given
         val input = InputStreamReader(this.javaClass.classLoader.getResourceAsStream(DESCRIPTOR_TEST_PATH)!!)
         val attributeProject = ProjectDeserializer.deserializeProject(input)
 
@@ -151,7 +153,8 @@ class NodeRemoverTest {
     }
 
     @Test
-    fun `Should remove unused attributeDescriptors when nodes are removed`() { // given
+    fun `Should remove unused attributeDescriptors when nodes are removed`() {
+        // given
         val input = InputStreamReader(this.javaClass.classLoader.getResourceAsStream(DESCRIPTOR_TEST_PATH)!!)
         val attributeProject = ProjectDeserializer.deserializeProject(input)
 
@@ -165,7 +168,8 @@ class NodeRemoverTest {
     }
 
     @Test
-    fun `Should correctly remove node when another node in a different subfolder has the same name`() { // given
+    fun `Should correctly remove node when another node in a different subfolder has the same name`() {
+        // given
         val bufferedReader = File("src/test/resources/merged_project.cc.json").bufferedReader()
         val mergedProject = ProjectDeserializer.deserializeProject(bufferedReader)
         val subProjectExtractor = NodeRemover(mergedProject)

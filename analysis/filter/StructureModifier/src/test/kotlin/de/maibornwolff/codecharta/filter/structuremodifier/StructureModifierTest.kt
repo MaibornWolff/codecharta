@@ -240,7 +240,7 @@ class StructureModifierTest {
     @Test
     fun `should rename mcc to complexity when rename flag is specified`() {
         //when
-        val cliResult = executeForOutput("", arrayOf("src/test/resources/sample_project.cc.json", "--rename-mcc"))
+        val cliResult = executeForOutput("", arrayOf("src/test/resources/merged_project.cc.json", "--rename-mcc"))
 
         //then
         assertThat(cliResult).doesNotContain("mcc")
@@ -251,7 +251,7 @@ class StructureModifierTest {
     @Test
     fun `should rename mcc to sonar_complexity when rename flag is specified with sonar option`() {
         //when
-        val cliResult = executeForOutput("", arrayOf("src/test/resources/sample_project.cc.json", "--rename-mcc=sonar"))
+        val cliResult = executeForOutput("", arrayOf("src/test/resources/merged_project.cc.json", "--rename-mcc=sonar"))
 
         //then
         assertThat(cliResult).doesNotContain("mcc")
@@ -264,7 +264,7 @@ class StructureModifierTest {
         System.setErr(PrintStream(errContent))
 
         // when
-        executeForOutput("", arrayOf("src/test/resources/sample_project.cc.json", "--rename-mcc=invalid"))
+        executeForOutput("", arrayOf("src/test/resources/merged_project.cc.json", "--rename-mcc=invalid"))
 
         // then
         assertThat(errContent.toString()).contains("Invalid value for rename flag, stopping execution...")
