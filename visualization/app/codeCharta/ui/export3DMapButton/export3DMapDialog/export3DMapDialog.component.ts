@@ -3,7 +3,7 @@ import { accumulatedDataSelector } from "../../../state/selectors/accumulatedDat
 import { FileNameHelper } from "../../../util/fileNameHelper"
 import { getVisibleFileStates, isDeltaState } from "../../../model/files/files.helper"
 import { FileDownloader } from "../../../util/fileDownloader"
-import { Component, ElementRef, Input, ViewChild, ViewEncapsulation } from "@angular/core"
+import { Component, ElementRef, Input, ViewChild } from "@angular/core"
 import { State } from "@ngrx/store"
 import { CcState, NodeMetricData } from "../../../codeCharta.model"
 import { ThreeSceneService } from "../../codeMap/threeViewer/threeSceneService"
@@ -38,8 +38,7 @@ interface ManualVisibilityItem {
 @Component({
     selector: "export3DMapDialog.component",
     templateUrl: "./export3DMapDialog.component.html",
-    styleUrls: ["./export3DMapDialog.component.scss"],
-    encapsulation: ViewEncapsulation.None
+    styleUrls: ["./export3DMapDialog.component.scss"]
 })
 export class Export3DMapDialogComponent {
     @ViewChild("rendererContainer") rendererContainer: ElementRef
