@@ -52,6 +52,7 @@ export class ThreeMapControlsService {
             const cameraReference = this.threeCameraService.camera
 
             cameraReference.position.set(length, length, boundingSphere.center.z)
+            this.positionBeforeFocus = new Vector3(length, length, boundingSphere.center.z)
 
             this.controls.update()
 
@@ -186,27 +187,57 @@ export class ThreeMapControlsService {
         this.zoomPercentage$.next(zoom)
     }
 
-    focusOnNode(nodePath: string) {
+    focusNode(nodePath: string) {
         this.positionBeforeFocus = this.threeCameraService.camera.position.clone()
         const mapMesh = this.threeSceneService.getMapMesh()
         const node = mapMesh.getBuildingByPath(nodePath)
         const boundingSphere = node.boundingBox.getBoundingSphere(new Sphere())
 
-        const duration = 1000
-        this.animateCameraTransition(boundingSphere, duration)
+        this.ensureProperDistanceAndFocus(boundingSphere)
     }
 
-    unfocusNode() {
-        const defaultPosition = this.positionBeforeFocus.clone()
-        const endCameraState = {
-            center: this.controls.target.clone(),
-            radius: defaultPosition.distanceTo(this.controls.target)
-        } as Sphere
+    unfocusNode(callback?: () => void): void {
+        if (!this.positionBeforeFocus) {
+            return
+        }
 
-        this.animateCameraTransition(endCameraState, 1000)
+        const startPos = this.threeCameraService.camera.position.clone()
+        const endPos = this.positionBeforeFocus.clone()
+        const startTime = performance.now()
+        const duration = 1000 // 1 second for the transition
+
+        const animate = (currentTime: number) => {
+            const elapsedTime = currentTime - startTime
+            const t = Math.min(elapsedTime / duration, 1)
+
+            const newPosition = new Vector3().lerpVectors(startPos, endPos, t)
+            this.moveCameraToPosition(newPosition, this.controls.target, false)
+
+            if (t < 1) {
+                requestAnimationFrame(animate)
+            } else if (callback) {
+                callback()
+            }
+        }
+
+        requestAnimationFrame(animate)
     }
 
-    animateCameraTransition(boundingSphere: Sphere, duration: number) {
+    private ensureProperDistanceAndFocus(boundingSphere: Sphere) {
+        const currentDistance = this.threeCameraService.camera.position.distanceTo(boundingSphere.center)
+        const requiredDistance = this.cameraPerspectiveLengthCalculation(boundingSphere) * 1.8
+
+        if (currentDistance < requiredDistance) {
+            const zoomOutPosition = this.calculateCameraEndPosition(boundingSphere.center, boundingSphere.radius, false)
+            this.animateCameraTransition({ center: zoomOutPosition, radius: requiredDistance } as Sphere, 500, () => {
+                this.animateCameraTransition(boundingSphere, 1000)
+            })
+        } else {
+            this.animateCameraTransition(boundingSphere, 1000)
+        }
+    }
+
+    private animateCameraTransition(boundingSphere: Sphere, duration: number, callback?: () => void) {
         const { center, radius } = boundingSphere
 
         const startPos = this.threeCameraService.camera.position.clone()
@@ -223,6 +254,8 @@ export class ThreeMapControlsService {
 
             if (t < 1) {
                 requestAnimationFrame(animate)
+            } else if (callback) {
+                callback()
             }
         }
 
