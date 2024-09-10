@@ -30,24 +30,24 @@ class MetricRenamerTest {
 
     @Test
     fun `should rename all occurrences of mcc in the projects nodes to complexity when the project contains this metric`() {
-        //given
+        // given
         val bufferedReader = File("src/test/resources/merged_project.cc.json").bufferedReader()
         val sampleProject = ProjectDeserializer.deserializeProject(bufferedReader)
 
-        //when
+        // when
         val result = MetricRenamer(sampleProject).rename()
 
-        //then
+        // then
         Assertions.assertThat(doesAttributeExistInNode(result.rootNode.toMutableNode(), "mcc")).isFalse()
         Assertions.assertThat(doesAttributeExistInNode(result.rootNode.toMutableNode(), "complexity")).isTrue()
     }
 
     @Test
     fun `should rename all occurrences of mcc in the attributeDescriptors and attributeTypes when it is present`() {
-        //when
+        // when
         val result = MetricRenamer(attributeDescriptorsProject).rename()
 
-        //then
+        // then
         val attributeTypeNodes = result.attributeTypes["nodes"]!!
         Assertions.assertThat(attributeTypeNodes.containsKey("mcc")).isFalse()
         Assertions.assertThat(attributeTypeNodes.containsKey("complexity")).isTrue()
@@ -56,13 +56,12 @@ class MetricRenamerTest {
         Assertions.assertThat(result.attributeDescriptors.containsKey("complexity")).isTrue()
     }
 
-
     @Test
     fun `should not rename other metrics that contain mcc as part of their name`() {
-        //when
+        // when
         val result = MetricRenamer(attributeDescriptorsProject).rename()
 
-        //then
+        // then
         Assertions.assertThat(doesAttributeExistInNode(result.rootNode.toMutableNode(), "mcc")).isFalse()
         Assertions.assertThat(doesAttributeExistInNode(result.rootNode.toMutableNode(), "ymcc")).isTrue()
 
@@ -76,10 +75,10 @@ class MetricRenamerTest {
 
     @Test
     fun `should rename mcc to sonar_complexity when specified`() {
-        //when
+        // when
         val result = MetricRenamer(attributeDescriptorsProject, "sonar_complexity").rename()
 
-        //then
+        // then
         Assertions.assertThat(doesAttributeExistInNode(result.rootNode.toMutableNode(), "mcc")).isFalse()
         Assertions.assertThat(doesAttributeExistInNode(result.rootNode.toMutableNode(), "complexity")).isFalse()
         Assertions.assertThat(doesAttributeExistInNode(result.rootNode.toMutableNode(), "sonar_complexity")).isTrue()
@@ -87,19 +86,18 @@ class MetricRenamerTest {
 
     @Test
     fun `should print info and not alter file when the input file did not contain mcc metric`() {
-        //given
+        // given
         val outContent = ByteArrayOutputStream()
         System.setOut(PrintStream(outContent))
 
         val bufferedReader = File("src/test/resources/sample_project.cc.json").bufferedReader()
         val sampleProject = ProjectDeserializer.deserializeProject(bufferedReader)
 
-        //when
+        // when
         val result = MetricRenamer(sampleProject).rename()
 
-        //then
+        // then
         Assertions.assertThat(outContent.toString()).contains("INFO: Project has not been altered as no MCC metric was found!")
         Assertions.assertThat(result).isEqualTo(sampleProject)
     }
-
 }
