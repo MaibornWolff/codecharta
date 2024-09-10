@@ -9,7 +9,6 @@ import { wait } from "../../../util/testUtils/wait"
 import { appReducers, setStateMiddleware } from "../../../state/store/state.manager"
 import { MapControls } from "three/examples/jsm/controls/MapControls"
 import { take } from "rxjs"
-import { CodeMapBuilding } from "../rendering/codeMapBuilding"
 import { CodeMapMesh } from "../rendering/codeMapMesh"
 
 describe("ThreeMapControlsService", () => {
@@ -207,42 +206,65 @@ describe("ThreeMapControlsService", () => {
         })
     })
 
-    describe("focusOnNode", () => {
-        it("should set positionBeforeFocus and call animateCameraTransition", () => {
-            const nodePath = "testNodePath"
+    describe("focusNode", () => {
+        beforeEach(() => {
+            withMockedThreeSceneService()
+            withMockedControlService()
+        })
+
+        it("should save the current camera position and focus on the specified node", async () => {
+            const nodePath = "some/node/path"
+            const mockNodeBoundingSphere = new Sphere(new Vector3(10, 10, 10), 8.660_254_037_844_387)
+            const mockNodeBoundingBox = new Box3().setFromCenterAndSize(new Vector3(10, 10, 10), new Vector3(10, 10, 10))
+
             const mockNode = {
-                boundingBox: new Box3(new Vector3(0, 0, 0), new Vector3(10, 10, 10))
-            } as unknown as CodeMapBuilding
+                boundingBox: mockNodeBoundingBox,
+                boundingSphere: {
+                    getBoundingSphere: jest.fn().mockReturnValue(mockNodeBoundingSphere)
+                }
+            }
 
-            jest.spyOn(threeSceneService, "getMapMesh").mockReturnValue({
-                getBuildingByPath: () => mockNode
-            } as unknown as CodeMapMesh)
+            const mockMapMesh = {
+                getBuildingByPath: jest.fn().mockReturnValue(mockNode)
+            }
 
-            jest.spyOn(threeMapControlsService, "animateCameraTransition")
+            jest.spyOn(threeSceneService, "getMapMesh").mockReturnValue(mockMapMesh as unknown as CodeMapMesh)
 
-            threeMapControlsService.focusOnNode(nodePath)
+            const spyEnsureProperDistanceAndFocus = jest.spyOn(threeMapControlsService as never, "ensureProperDistanceAndFocus")
+
+            threeMapControlsService.focusNode(nodePath)
 
             expect(threeMapControlsService.positionBeforeFocus).toEqual(threeCameraService.camera.position.clone())
-            const expectedBoundingSphere = mockNode.boundingBox.getBoundingSphere(new Sphere())
-            expect(threeMapControlsService.animateCameraTransition).toHaveBeenCalledWith(expectedBoundingSphere, 1000)
+            expect(mockMapMesh.getBuildingByPath).toHaveBeenCalledWith(nodePath)
+            await wait(0)
+            expect(spyEnsureProperDistanceAndFocus).toHaveBeenCalledWith(mockNodeBoundingSphere)
         })
     })
 
     describe("unfocusNode", () => {
-        it("should restore positionBeforeFocus and call animateCameraTransition", () => {
-            const mockVectorBeforeFocus = new Vector3(1, 1, 1)
-            threeMapControlsService.positionBeforeFocus = mockVectorBeforeFocus
+        beforeEach(() => {
+            withMockedControlService()
+        })
 
-            jest.spyOn(threeMapControlsService, "animateCameraTransition")
+        it("should move the camera back to positionBeforeFocus if defined", async () => {
+            const previousPosition = new Vector3(0, 0, 100)
+            threeMapControlsService.positionBeforeFocus = previousPosition.clone()
+            threeCameraService.camera.position.set(10, 10, 10)
 
             threeMapControlsService.unfocusNode()
+            await wait(1100)
 
-            const expectedSphere = {
-                center: threeMapControlsService.controls.target.clone(),
-                radius: mockVectorBeforeFocus.distanceTo(threeMapControlsService.controls.target)
-            } as Sphere
+            expect(threeCameraService.camera.position).toEqual(previousPosition)
+        })
 
-            expect(threeMapControlsService.animateCameraTransition).toHaveBeenCalledWith(expectedSphere, 1000)
+        it("should not move the camera if positionBeforeFocus is not defined", async () => {
+            threeMapControlsService.positionBeforeFocus = undefined
+            const initialPosition = threeCameraService.camera.position.clone()
+
+            threeMapControlsService.unfocusNode()
+            await wait(1100)
+
+            expect(threeCameraService.camera.position).toEqual(initialPosition)
         })
     })
 })

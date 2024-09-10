@@ -1,11 +1,13 @@
 import { Injectable } from "@angular/core"
 import { Actions, createEffect, ofType } from "@ngrx/effects"
-import { tap, withLatestFrom } from "rxjs"
-import { focusNode, unfocusAllNodes, unfocusNode } from "./focusedNodePath.actions"
-import { ThreeMapControlsService } from "../../../../ui/codeMap/threeViewer/threeMapControls.service"
+import { pairwise, startWith, tap, withLatestFrom } from "rxjs"
+import { focusNode, unfocusAllNodes, unfocusNode } from "../../store/dynamicSettings/focusedNodePath/focusedNodePath.actions"
+import { ThreeMapControlsService } from "../../../ui/codeMap/threeViewer/threeMapControls.service"
 import { Store } from "@ngrx/store"
-import { CcState } from "../../../../codeCharta.model"
-import { focusedNodePathSelector } from "./focusedNodePath.selector"
+import { CcState } from "../../../codeCharta.model"
+import { focusedNodePathSelector } from "../../store/dynamicSettings/focusedNodePath/focusedNodePath.selector"
+import { currentFocusedNodePathSelector } from "../../store/dynamicSettings/focusedNodePath/currentFocused.selector"
+import { isChildPath } from "../../../util/isChildPath"
 
 @Injectable()
 export class FocusEffects {
@@ -19,14 +21,19 @@ export class FocusEffects {
         () =>
             this.actions$.pipe(
                 ofType(focusNode),
-                withLatestFrom(this.store.select(focusedNodePathSelector)),
-                tap(([, focusedNodePath]) => {
-                    this.threeMapControlsService.focusOnNode(focusedNodePath[0])
+                withLatestFrom(this.store.select(currentFocusedNodePathSelector).pipe(startWith(null), pairwise())),
+                tap(([, [previousFocusedNodePath, newFocusedNodePath]]) => {
+                    if (previousFocusedNodePath && !isChildPath(newFocusedNodePath, previousFocusedNodePath)) {
+                        this.threeMapControlsService.unfocusNode(() => {
+                            this.threeMapControlsService.focusNode(newFocusedNodePath)
+                        })
+                    } else {
+                        this.threeMapControlsService.focusNode(newFocusedNodePath)
+                    }
                 })
             ),
         { dispatch: false }
     )
-
     unfocus$ = createEffect(
         () =>
             this.actions$.pipe(
@@ -38,7 +45,7 @@ export class FocusEffects {
                         return
                     }
                     this.threeMapControlsService.unfocusNode()
-                    this.threeMapControlsService.focusOnNode(focusedNodePath[0])
+                    this.threeMapControlsService.focusNode(focusedNodePath[0])
                 })
             ),
         { dispatch: false }
