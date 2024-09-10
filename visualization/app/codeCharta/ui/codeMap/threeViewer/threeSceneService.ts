@@ -265,7 +265,7 @@ export class ThreeSceneService implements OnDestroy {
         const endPoint = new Vector3(hoveredLabel.position.x, hoveredLabel.position.y, hoveredLabel.position.z)
 
         const pointsBufferGeometry = this.highlightedLine.geometry as BufferGeometry
-        const pointsArray = pointsBufferGeometry.attributes.position.array as Array<number>
+        const pointsArray = [...pointsBufferGeometry.attributes.position.array]
 
         const geometry = new BufferGeometry().setFromPoints([new Vector3(pointsArray[0], pointsArray[1], pointsArray[2]), endPoint])
 
@@ -382,10 +382,10 @@ export class ThreeSceneService implements OnDestroy {
 
     initLights() {
         const ambilight = new AmbientLight(0x70_70_70) // soft white light
-        const light1 = new DirectionalLight(0xe0_e0_e0, 1)
+        const light1 = new DirectionalLight(0xe0_e0_e0, 1.5)
         light1.position.set(50, 10, 8).normalize()
 
-        const light2 = new DirectionalLight(0xe0_e0_e0, 1)
+        const light2 = new DirectionalLight(0xe0_e0_e0, 1.5)
         light2.position.set(-50, 10, -8).normalize()
 
         this.lights.add(ambilight)

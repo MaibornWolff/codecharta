@@ -1,5 +1,6 @@
 import { GeometryOptions } from "../../preview3DPrintMesh"
-import { Font, Mesh } from "three"
+import { Mesh } from "three"
+import { Font } from "three/examples/jsm/loaders/FontLoader"
 import { BackPrintColorChangeStrategy } from "../../ColorChangeStrategies/backPrintColorChangeStrategy"
 import { MetricDescriptionBlockMesh } from "./metricDescriptionBlockMesh"
 import { ColorMetricDescriptionBlockMesh } from "./colorMetricDescriptionBlockMesh"

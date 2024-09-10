@@ -1,10 +1,9 @@
-import { Component, EventEmitter, Input, Output, ViewEncapsulation } from "@angular/core"
+import { Component, EventEmitter, Input, Output } from "@angular/core"
 
 @Component({
     selector: "cc-labelled-color-picker",
     templateUrl: "./labelledColorPicker.component.html",
-    styleUrls: ["./labelledColorPicker.component.scss"],
-    encapsulation: ViewEncapsulation.None
+    styleUrls: ["./labelledColorPicker.component.scss"]
 })
 export class LabelledColorPickerComponent {
     @Input() hexColor: string

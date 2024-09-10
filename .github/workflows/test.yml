@@ -23,7 +23,7 @@ jobs:
         node-version: '20'
 
     - name: Cache root node modules
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       env:
         cache-name: cache-root-node-modules
       with:
@@ -58,7 +58,7 @@ jobs:
         node-version: '20'
 
     - name: Cache node modules
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       env:
         cache-name: cache-node-modules
       with:
@@ -102,7 +102,7 @@ jobs:
         node-version: '20'
 
     - name: Cache node modules
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       env:
         cache-name: cache-node-modules
       with:
@@ -195,7 +195,7 @@ jobs:
           path: ./visualization/dist/
 
       - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@v2.0.2
+        uses: SonarSource/sonarcloud-github-action@v2.3.0
         with:
           projectBaseDir: ./visualization
           args: >

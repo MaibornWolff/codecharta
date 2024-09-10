@@ -1,5 +1,10 @@
 <div class="delta-select-wrapper">
-    <mat-select class="delta-select" [value]="referenceFile$ | async" (selectionChange)="handleDeltaReferenceFileChange($event.value)">
+    <mat-select
+        class="delta-select"
+        [value]="referenceFile$ | async"
+        (selectionChange)="handleDeltaReferenceFileChange($event.value)"
+        panelClass="cc-file-select"
+    >
         @for (file of files$ | async; track file) {
             <mat-option [value]="file.file">
                 {{ file.file.fileMeta.fileName | removeExtension }}
@@ -19,6 +24,7 @@
         class="delta-select"
         placeholder="select comparison file"
         [value]="comparisonFile$ | async"
+        panelClass="cc-file-select"
         (selectionChange)="handleDeltaComparisonFileChange($event.value)"
     >
         @for (file of possibleComparisonFiles$ | async; track file) {

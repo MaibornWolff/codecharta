@@ -1,26 +1,26 @@
-import { ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitControls.service"
+import { ThreeMapControlsService } from "../codeMap/threeViewer/threeMapControls.service"
 import { ViewCubeMouseEventsService } from "./viewCube.mouseEvents.service"
 import { PerspectiveCamera } from "three/src/cameras/PerspectiveCamera"
 import { ThreeCameraService } from "../codeMap/threeViewer/threeCamera.service"
 import { Color, Mesh, Vector3, WebGLRenderer } from "three"
-import type { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
+import { MapControls } from "three/examples/jsm/controls/MapControls"
 import { ViewCubeComponent } from "./viewCube.component"
 
 describe("ViewCubeComponent", () => {
     let viewCubeComponent: ViewCubeComponent
-    let threeOrbitControlsService: ThreeOrbitControlsService
+    let threeMapControlsService: ThreeMapControlsService
     let viewCubeMouseEventsService: ViewCubeMouseEventsService
 
     beforeEach(() => {
-        threeOrbitControlsService = {} as ThreeOrbitControlsService
+        threeMapControlsService = {} as ThreeMapControlsService
         viewCubeMouseEventsService = { init: jest.fn() } as unknown as ViewCubeMouseEventsService
-        threeOrbitControlsService.controls = {
+        threeMapControlsService.controls = {
             target: new Vector3(1, 2, 3)
-        } as unknown as OrbitControls
+        } as unknown as MapControls
         ViewCubeComponent.prototype["initRenderer"] = jest.fn()
         ViewCubeComponent.prototype["onAnimationFrame"] = jest.fn()
         const elementReference = { nativeElement: {} as HTMLElement }
-        viewCubeComponent = new ViewCubeComponent(elementReference, threeOrbitControlsService, viewCubeMouseEventsService)
+        viewCubeComponent = new ViewCubeComponent(elementReference, threeMapControlsService, viewCubeMouseEventsService)
     })
 
     describe("onCameraChanged", () => {
@@ -276,7 +276,7 @@ describe("ViewCubeComponent", () => {
         const loopTests = [...generateFrontTests(), ...generateMiddleTests(), ...generateBackTests()]
 
         beforeEach(() => {
-            threeOrbitControlsService.rotateCameraInVectorDirection = jest.fn()
+            threeMapControlsService.rotateCameraInVectorDirection = jest.fn()
             viewCubeComponent["cubeDefinition"] = cubeDefinition
         })
 
@@ -285,7 +285,7 @@ describe("ViewCubeComponent", () => {
                 viewCubeComponent.onCubeClicked({ cube: test.eventValue })
 
                 const expected = test.expected
-                expect(threeOrbitControlsService.rotateCameraInVectorDirection).toHaveBeenCalledWith(expected.x, expected.y, expected.z)
+                expect(threeMapControlsService.rotateCameraInVectorDirection).toHaveBeenCalledWith(expected.x, expected.y, expected.z)
             })
         }
     })

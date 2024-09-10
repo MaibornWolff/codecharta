@@ -1,6 +1,6 @@
-import { Component, ElementRef, Input, OnInit, QueryList, ViewChild, ViewChildren, ViewEncapsulation } from "@angular/core"
+import { AfterViewInit, Component, ElementRef, HostBinding, Input, OnInit, QueryList, ViewChild, ViewChildren } from "@angular/core"
 import { map, Observable } from "rxjs"
-import { EdgeMetricData, NodeMetricData, CcState } from "../../codeCharta.model"
+import { EdgeMetricData, NodeMetricData, CcState, PrimaryMetrics } from "../../codeCharta.model"
 import { metricDataSelector } from "../../state/selectors/accumulatedData/metricData/metricData.selector"
 import { attributeDescriptorsSelector } from "../../state/store/fileSettings/attributeDescriptors/attributeDescriptors.selector"
 import { Store } from "@ngrx/store"
@@ -12,10 +12,11 @@ type MetricChooserType = "node" | "edge"
 @Component({
     selector: "cc-metric-chooser",
     templateUrl: "./metricChooser.component.html",
-    styleUrls: ["./metricChooser.component.scss"],
-    encapsulation: ViewEncapsulation.None
+    styleUrls: ["./metricChooser.component.scss"]
 })
-export class MetricChooserComponent implements OnInit {
+export class MetricChooserComponent implements OnInit, AfterViewInit {
+    @Input() metricFor?: keyof PrimaryMetrics
+    @Input() icon?: string
     @Input() selectedMetricName: string
     @Input() searchPlaceholder: string
     @Input() handleMetricChanged: (newSelectedMetricName: string) => void
@@ -27,6 +28,8 @@ export class MetricChooserComponent implements OnInit {
     searchTerm = ""
     metricData$: Observable<NodeMetricData[] | EdgeMetricData[]>
     attributeDescriptors$ = this.store.select(attributeDescriptorsSelector)
+
+    @HostBinding("class.hide-metric-value")
     hideMetricSum = false
 
     constructor(private store: Store<CcState>) {}

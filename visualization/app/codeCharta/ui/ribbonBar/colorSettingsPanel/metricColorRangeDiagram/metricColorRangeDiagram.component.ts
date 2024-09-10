@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, ViewEncapsulation } from "@angular/core"
+import { Component, Input, OnChanges } from "@angular/core"
 import * as d3 from "d3"
 
 type VGElement = d3.Selection<SVGSVGElement, unknown, HTMLElement, any>
@@ -8,8 +8,7 @@ type Scale = d3.ScaleLinear<number, number>
 @Component({
     selector: "cc-metric-color-range-diagram",
     templateUrl: "./metricColorRangeDiagram.component.html",
-    styleUrls: ["./metricColorRangeDiagram.component.scss"],
-    encapsulation: ViewEncapsulation.None
+    styleUrls: ["./metricColorRangeDiagram.component.scss"]
 })
 export class MetricColorRangeDiagramComponent implements OnChanges {
     @Input() minValue: number

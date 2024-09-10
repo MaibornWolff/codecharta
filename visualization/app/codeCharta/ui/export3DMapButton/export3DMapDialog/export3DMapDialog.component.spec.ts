@@ -1,5 +1,3 @@
-/* eslint-disable unused-imports/no-unused-vars */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { State } from "@ngrx/store"
 import { render, screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
@@ -17,6 +15,7 @@ jest.mock("three/examples/jsm/loaders/SVGLoader", () => {
     return {
         SVGLoader: jest.fn().mockImplementation(() => {
             return {
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 load: (url: string, onLoad, onProgress?, onError?) => {
                     // Mock a scenario where the SVG loads successfully
                     const mockSVGData = {
@@ -61,7 +60,7 @@ const TestFile: CCFile = { fileMeta: FILE_META, map: TestNodeMap, settings: DEFA
 const TestFileSTate: FileState = { file: TestFile, selectedAs: FileSelectionState.Partial }
 TestState.files = [TestFileSTate]
 
-describe("Export3DMapDialogComponent2", () => {
+describe("Export3DMapDialogComponent", () => {
     let codeMapMesh: CodeMapMesh
     let lightScene: Scene
 
@@ -93,7 +92,7 @@ describe("Export3DMapDialogComponent2", () => {
                 scissor: jest.fn(),
                 viewport: jest.fn()
             } as unknown as WebGLRenderingContext
-        } as WebGLRenderer
+        } as unknown as WebGLRenderer
 
         webGLRenderer.domElement = fakeDomElementProver()
 

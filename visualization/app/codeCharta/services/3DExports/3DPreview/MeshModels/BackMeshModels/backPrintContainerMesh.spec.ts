@@ -1,4 +1,4 @@
-import { Font } from "three"
+import { Font } from "three/examples/jsm/loaders/FontLoader"
 import { GeometryOptions } from "../../preview3DPrintMesh"
 import { BackPrintContainerMesh } from "./backPrintContainerMesh"
 import { BackMWLogoMesh } from "./backMWLogoMesh"

@@ -4,6 +4,7 @@ exports[`CodeMapArrowService Arrow Behaviour when selecting and hovering a build
 [
   CodeMapBuilding {
     "_boundingBox": Box3 {
+      "isBox3": true,
       "max": Vector3 {
         "x": 6,
         "y": 8,
@@ -68,6 +69,7 @@ exports[`CodeMapArrowService Arrow Behaviour when selecting and hovering a build
   },
   CodeMapBuilding {
     "_boundingBox": Box3 {
+      "isBox3": true,
       "max": Vector3 {
         "x": 6,
         "y": 8,
@@ -136,6 +138,7 @@ exports[`CodeMapArrowService Arrow Behaviour when selecting and hovering a build
 exports[`CodeMapArrowService Arrow Behaviour when selecting and hovering a building should only highlight small leaf when big leaf is selected 2`] = `
 CodeMapBuilding {
   "_boundingBox": Box3 {
+    "isBox3": true,
     "max": Vector3 {
       "x": -Infinity,
       "y": -Infinity,
@@ -203,6 +206,7 @@ CodeMapBuilding {
 exports[`CodeMapArrowService Arrow Behaviour when selecting and hovering a building should restore to previous color if another building is selected in delta mode 1`] = `
 CodeMapBuilding {
   "_boundingBox": Box3 {
+    "isBox3": true,
     "max": Vector3 {
       "x": -Infinity,
       "y": -Infinity,
@@ -270,6 +274,7 @@ CodeMapBuilding {
 exports[`CodeMapArrowService Arrow Behaviour when selecting and hovering a building should restore to previous color if another building is selected in delta mode 2`] = `
 CodeMapBuilding {
   "_boundingBox": Box3 {
+    "isBox3": true,
     "max": Vector3 {
       "x": 6,
       "y": 8,

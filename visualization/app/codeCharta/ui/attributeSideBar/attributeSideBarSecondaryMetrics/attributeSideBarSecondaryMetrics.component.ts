@@ -1,4 +1,4 @@
-import { Component, ViewEncapsulation } from "@angular/core"
+import { Component } from "@angular/core"
 import { Store } from "@ngrx/store"
 import { Observable } from "rxjs"
 import { AttributeDescriptors, CcState } from "../../../codeCharta.model"
@@ -12,7 +12,7 @@ import { attributeDescriptorsSelector } from "../../../state/store/fileSettings/
 @Component({
     selector: "cc-attribute-side-bar-secondary-metrics",
     templateUrl: "./attributeSideBarSecondaryMetrics.component.html",
-    encapsulation: ViewEncapsulation.None
+    styleUrls: ["../attributeSideBarMetrics.scss", "./attributeSideBarSecondaryMetrics.component.scss"]
 })
 export class AttributeSideBarSecondaryMetricsComponent {
     secondaryMetrics$: Observable<Metric[]>

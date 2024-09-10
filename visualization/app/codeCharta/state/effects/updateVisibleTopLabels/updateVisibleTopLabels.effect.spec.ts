@@ -7,7 +7,7 @@ import { State, StoreModule } from "@ngrx/store"
 import { appReducers, setStateMiddleware } from "../../store/state.manager"
 import { visibleFileStatesSelector } from "../../selectors/visibleFileStates.selector"
 import { codeMapNodesSelector } from "../../selectors/accumulatedData/codeMapNodes.selector"
-import { getLastAction } from "../../../../codeCharta/util/testUtils/store.utils"
+import { getLastAction } from "../../../util/testUtils/store.utils"
 import { setAmountOfTopLabels } from "../../store/appSettings/amountOfTopLabels/amountOfTopLabels.actions"
 
 describe("updateVisibleTopLabelsEffect", () => {

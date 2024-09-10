@@ -7,7 +7,7 @@ import { QrCodeMesh } from "./qrCodeMesh"
 import { CodeChartaLogoMesh } from "./codeChartaLogoMesh"
 import { CodeChartaTextMesh } from "./codeChartaTextMesh"
 import { MetricDescriptionsContainerMesh } from "./metricDescriptionsContainerMesh"
-import { Font } from "three"
+import { Font } from "three/examples/jsm/loaders/FontLoader"
 import { CustomVisibilityMesh } from "../customVisibilityMesh"
 
 export class BackPrintContainerMesh extends GeneralMesh implements GeneralSizeChangeMesh {

@@ -1,84 +1,26 @@
 @use "variables";
 
-cc-metric-chooser {
+:host {
+    display: flex;
     width: 100%;
 
-    cc-metric-chooser-value,
-    .cc-metric-chooser-container {
-        position: absolute;
-        top: 10%;
-        right: 28px;
-
-        .metric-value {
-            height: 25px;
-
-            .rounded-box {
-                background-color: #e6e6e6;
-                border-radius: 2px;
-                padding: 2px 5px;
-                display: inline-block;
-            }
-        }
-    }
-
-    .mat-mdc-select-placeholder {
-        color: black !important;
-    }
-}
-
-cc-metric-chooser:hover .metric-value {
-    display: none;
-}
-
-.mat-mdc-select-panel.cc-metric-chooser {
-    .cc-metric-chooser-search-field {
-        position: fixed;
-        top: 98px;
-        z-index: -1;
-        width: 300px;
-        font-size: 14px;
-        box-shadow:
-            0px 5px 5px -3px rgba(0, 0, 0, 0.2),
-            0px 8px 10px 1px rgba(0, 0, 0, 0.14),
-            0px 3px 14px 2px rgba(0, 0, 0, 0.12);
-
-        .search-icon {
-            color: variables.$cc-primary-color;
-            margin-left: 8px;
-            font-size: 18px;
-        }
-
-        .mat-mdc-form-field-subscript-wrapper.mat-mdc-form-field-bottom-align {
+    &:hover {
+        cc-metric-chooser-value {
             display: none;
         }
-
-        .mat-mdc-form-field-infix {
-            margin-left: 6px;
-            display: flex;
-        }
-    }
-
-    .cc-metric-chooser-option-container {
-        font-size: 16px;
-
-        mat-option .metric-max-value {
-            color: #ccc;
-        }
-
-        mat-option .metric-subtitle {
-            color: #999;
-            font-size: 11px;
-            overflow: hidden;
-            white-space: nowrap;
-            text-overflow: ellipsis;
-        }
     }
 }
-.cdk-overlay-pane:not(.mat-mdc-select-panel-above) .mdc-menu-surface.mat-mdc-select-panel {
+
+i.fa {
+    padding-right: 8px;
+}
+
+cc-metric-chooser-value {
     position: absolute;
-    width: 300px;
-    max-height: 216px;
-    right: 0;
-    top: 72px;
-    padding: 0;
+    top: 10%;
+    right: 28px;
+}
+
+.mat-mdc-select-placeholder {
+    color: black !important;
 }

@@ -1,8 +1,8 @@
 import { clearIndexedDB, clickButtonOnPageElement, goto } from "../../../puppeteer.helper"
 import { expect } from "@jest/globals"
 import { LegendPanelObject } from "./legendPanel.po"
-import { MapTreeViewLevelPageObject } from "../searchPanel/mapTreeView/mapTreeView.level.po"
-import { SearchPanelModeSelectorPageObject } from "../searchPanel/searchPanelModeSelector/searchPanelModeSelector.po"
+import { MapTreeViewLevelPageObject } from "../ribbonBar/searchPanel/mapTreeView/mapTreeView.level.po"
+import { SearchPanelModeSelectorPageObject } from "../ribbonBar/searchPanel/searchPanelModeSelector/searchPanelModeSelector.po"
 import { UploadFileButtonPageObject } from "../toolBar/uploadFilesButton/uploadFilesButton.po"
 
 describe("LegendPanel", () => {

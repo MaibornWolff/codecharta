@@ -6,15 +6,18 @@ include("model")
 include("filter:MergeFilter", "filter:EdgeFilter", "filter:StructureModifier")
 include(
     "import:CSVImporter",
-    "import:SVNLogParser",
-    "import:GitLogParser",
     "import:SonarImporter",
-    "import:SourceCodeParser",
     "import:CodeMaatImporter",
+    "import:SourceMonitorImporter",
     "import:TokeiImporter",
     "import:MetricGardenerImporter"
 )
-include("parser:RawTextParser")
+include(
+    "parser:RawTextParser",
+    "parser:GitLogParser",
+    "parser:SourceCodeParser",
+    "parser:SVNLogParser"
+)
 include("export:CSVExporter")
 include("tools:ValidationTool", "tools:ccsh", "tools:InteractiveParser", "tools:PipeableParser")
 

@@ -1,4 +1,4 @@
-import { Component, ViewEncapsulation } from "@angular/core"
+import { Component } from "@angular/core"
 import { Observable } from "rxjs"
 
 import { showAttributeTypeSelectorSelector } from "../util/showAttributeTypeSelector.selector"
@@ -10,7 +10,7 @@ import { attributeDescriptorsSelector } from "../../../state/store/fileSettings/
 @Component({
     selector: "cc-attribute-side-bar-primary-metrics",
     templateUrl: "./attributeSideBarPrimaryMetrics.component.html",
-    encapsulation: ViewEncapsulation.None
+    styleUrls: ["./../attributeSideBarMetrics.scss"]
 })
 export class AttributeSideBarPrimaryMetricsComponent {
     primaryMetrics$: Observable<PrimaryMetrics>

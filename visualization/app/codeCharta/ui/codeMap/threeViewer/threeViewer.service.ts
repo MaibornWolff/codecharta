@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core"
 import { ThreeSceneService } from "./threeSceneService"
 import { ThreeCameraService } from "./threeCamera.service"
-import { ThreeOrbitControlsService } from "./threeOrbitControls.service"
+import { ThreeMapControlsService } from "./threeMapControls.service"
 import { ThreeRendererService } from "./threeRenderer.service"
 import { ThreeStatsService } from "./threeStats.service"
 
@@ -12,7 +12,7 @@ export class ThreeViewerService {
     constructor(
         private threeSceneService: ThreeSceneService,
         private threeCameraService: ThreeCameraService,
-        private threeOrbitControlsService: ThreeOrbitControlsService,
+        private threeMapControlsService: ThreeMapControlsService,
         private threeRendererService: ThreeRendererService,
         private threeStatsService: ThreeStatsService
     ) {}
@@ -26,7 +26,7 @@ export class ThreeViewerService {
         scene.add(camera)
         this.threeRendererService.init(window.innerWidth, window.innerHeight, scene, camera)
         this.threeStatsService.init(target)
-        this.threeOrbitControlsService.init(this.threeRendererService.renderer.domElement)
+        this.threeMapControlsService.init(this.threeRendererService.renderer.domElement)
 
         target.append(this.threeRendererService.renderer.domElement)
 
@@ -56,23 +56,23 @@ export class ThreeViewerService {
     }
 
     enableRotation(value: boolean) {
-        this.threeOrbitControlsService.controls.enableRotate = value
+        this.threeMapControlsService.controls.enableRotate = value
     }
 
     onFocusIn = event => {
         if (event.target.nodeName === "INPUT") {
-            this.threeOrbitControlsService.controls.enableKeys = false
+            this.threeMapControlsService.controls.stopListenToKeyEvents()
         }
     }
 
     onFocusOut = event => {
         if (event.target.nodeName === "INPUT") {
-            this.threeOrbitControlsService.controls.enableKeys = true
+            this.threeMapControlsService.controls.listenToKeyEvents(window)
         }
     }
 
     animate() {
-        this.threeOrbitControlsService.controls.update()
+        this.threeMapControlsService.controls.update()
         this.threeRendererService.render()
     }
 
@@ -91,7 +91,7 @@ export class ThreeViewerService {
     }
 
     autoFitTo() {
-        this.threeOrbitControlsService.autoFitTo()
+        this.threeMapControlsService.autoFitTo()
     }
 
     stopAnimate() {

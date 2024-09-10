@@ -1,4 +1,4 @@
-import { Component, OnDestroy, ViewEncapsulation } from "@angular/core"
+import { Component, OnDestroy } from "@angular/core"
 import { filesSelector } from "../../../state/store/files/files.selector"
 import { invertStandard, setAll, setStandard } from "../../../state/store/files/files.actions"
 import { CCFile, CcState } from "../../../codeCharta.model"
@@ -8,8 +8,7 @@ import { Store } from "@ngrx/store"
 @Component({
     selector: "cc-file-panel-file-selector",
     templateUrl: "./filePanelFileSelector.component.html",
-    styleUrls: ["./filePanelFileSelector.component.scss"],
-    encapsulation: ViewEncapsulation.None
+    styleUrls: ["./filePanelFileSelector.component.scss"]
 })
 export class FilePanelFileSelectorComponent implements OnDestroy {
     fileStates: FileState[] = []

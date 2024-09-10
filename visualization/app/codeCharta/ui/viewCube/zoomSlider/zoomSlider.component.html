@@ -1,0 +1,14 @@
+<div class="zoom-slider">
+    <button class="zoom-button" data-testid="zoomOut" (click)="zoomOut()">-</button>
+    <input
+        type="range"
+        id="zoomRange"
+        data-testid="zoomRange"
+        [min]="minZoom"
+        [max]="maxZoom"
+        [value]="zoomPercentage"
+        (input)="onInput($event)"
+    />
+    <button class="zoom-button" data-testid="zoomIn" (click)="zoomIn()">+</button>
+    <span id="zoomValue">{{ zoomPercentage?.toFixed(0) }}%</span>
+</div>

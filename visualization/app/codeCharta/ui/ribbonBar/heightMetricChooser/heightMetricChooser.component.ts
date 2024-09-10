@@ -1,4 +1,4 @@
-import { Component, ViewEncapsulation } from "@angular/core"
+import { Component } from "@angular/core"
 import { Store } from "@ngrx/store"
 import { CcState } from "../../../codeCharta.model"
 import { setHeightMetric } from "../../../state/store/dynamicSettings/heightMetric/heightMetric.actions"
@@ -6,8 +6,7 @@ import { heightMetricSelector } from "../../../state/store/dynamicSettings/heigh
 
 @Component({
     selector: "cc-height-metric-chooser",
-    templateUrl: "./heightMetricChooser.component.html",
-    encapsulation: ViewEncapsulation.None
+    templateUrl: "./heightMetricChooser.component.html"
 })
 export class HeightMetricChooserComponent {
     heightMetric$ = this.store.select(heightMetricSelector)

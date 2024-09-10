@@ -4,7 +4,7 @@
         <mat-slider [disabled]="disabled" [step]="step" [min]="min" [max]="max">
             <input matSliderThumb [value]="value" (input)="handleInputOnChange($event)" />
         </mat-slider>
-        <mat-form-field appearance="outline">
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
             <input
                 matInput
                 type="number"

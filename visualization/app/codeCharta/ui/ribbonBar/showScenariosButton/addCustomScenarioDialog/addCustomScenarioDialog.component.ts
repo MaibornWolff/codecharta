@@ -2,7 +2,7 @@ import { Component } from "@angular/core"
 import { UntypedFormControl } from "@angular/forms"
 import { ScenarioHelper, ScenarioMetricProperty } from "../scenarioHelper"
 import { ThreeCameraService } from "../../../codeMap/threeViewer/threeCamera.service"
-import { ThreeOrbitControlsService } from "../../../codeMap/threeViewer/threeOrbitControls.service"
+import { ThreeMapControlsService } from "../../../codeMap/threeViewer/threeMapControls.service"
 import { customScenarioNameValidator } from "./utils/customScenarioName.validator"
 import { getInitialScenarioMetricProperties } from "./utils/getInitialScenarioMetricProperties"
 import { State } from "@ngrx/store"
@@ -21,7 +21,7 @@ export class AddCustomScenarioDialogComponent {
     constructor(
         private state: State<CcState>,
         threeCameraService: ThreeCameraService,
-        threeOrbitControlsService: ThreeOrbitControlsService
+        threeOrbitControlsService: ThreeMapControlsService
     ) {
         this.scenarioContent = getInitialScenarioMetricProperties(this.state.getValue(), {
             camera: threeCameraService.camera.position,

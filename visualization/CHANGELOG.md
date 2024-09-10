@@ -7,9 +7,29 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Added 🚀
+
+- Add feature to zoom at the mouse cursor [#3693](https://github.com/MaibornWolff/codecharta/pull/3693)
+- Add a zoom slider under the cube, allowing to zoom in and out while always displaying the current zoom factor. [#3697](https://github.com/MaibornWolff/codecharta/pull/3697)
+
+### Fixed 🐞
+
+- Fix issue where zooming out too much makes the map disappear and zooming in too much causes you to go through the map. [#3697](https://github.com/MaibornWolff/codecharta/pull/3697)
+- Camera perspective is correctly adopted from the custom configuration[#3698](https://github.com/MaibornWolff/codecharta/pull/3698)
+- Fix camera behavior when `Reset Camera when changing map` option is deactivated [#3699](https://github.com/MaibornWolff/codecharta/pull/3699)
+
+### Changed
+
+- Change OrbitControls to MapControls for improved map navigation [#3693](https://github.com/MaibornWolff/codecharta/pull/3693)
+
 ### Chore 👨‍💻 👩‍💻
 
 - Bump node version from 18 to 20 [#3690](https://github.com/MaibornWolff/codecharta/pull/3690)
+- Enabled view encapsulation for Global Configuration dialog, Ribbon Bar and File Panel [#3712](https://github.com/MaibornWolff/codecharta/pull/3712)
+- Enabled view encapsulation for Slider [#3713](https://github.com/MaibornWolff/codecharta/pull/3713)
+- Enabled view encapsulation for the Toolbar [#3717](https://github.com/MaibornWolff/codecharta/pull/3717)
+- Enabled view encapsulation for the Legend Panel [#3720](https://github.com/MaibornWolff/codecharta/pull/3720)
+- Enabled view encapsulation for the Attribute Side Bar [#3726](https://github.com/MaibornWolff/codecharta/pull/3726)
 
 ## [1.127.1] - 2024-08-12
 

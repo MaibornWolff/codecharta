@@ -1,13 +1,14 @@
 @if (attributeDescriptors$ | async; as attributeDescriptors) {
     <mat-select
         #matSelect
-        [panelClass]="'cc-metric-chooser'"
+        panelClass="cc-metric-chooser"
         [value]="selectedMetricName"
         (selectionChange)="handleMetricChanged($event.value)"
         (openedChange)="handleOpenedChanged($event)"
         [disabled]="isDisabled"
     >
-        <mat-select-trigger>{{ selectedMetricName }}</mat-select-trigger>
+        <mat-select-trigger><i *ngIf="icon" [class]="'fa ' + icon"></i>{{ selectedMetricName }}</mat-select-trigger>
+
         <mat-form-field class="cc-metric-chooser-search-field">
             <i matPrefix class="fa fa-search search-icon"></i>
             <input
@@ -19,6 +20,7 @@
                 (keydown)="handleKeyDown($event)"
             />
         </mat-form-field>
+
         <div class="cc-metric-chooser-option-container">
             @for (option of metricData$ | async | filterMetricDataBySearchTerm: searchTerm; track option) {
                 <mat-option [value]="option.name" [title]="attributeDescriptors[option.name] | attributeDescriptorTooltip: option.name">
@@ -40,5 +42,9 @@
     </mat-select>
 }
 @if (!hideMetricSum) {
-    <ng-content select="[hoveredInformation]"></ng-content>
+    @if (metricFor) {
+        <cc-metric-chooser-value [metricFor]="metricFor"></cc-metric-chooser-value>
+    } @else {
+        <ng-content></ng-content>
+    }
 }

@@ -1,7 +1,7 @@
 import { GeometryOptions } from "../../preview3DPrintMesh"
 import { GeneralMesh, GeneralSizeChangeMesh } from "../generalMesh"
 import { BackPrintColorChangeStrategy } from "../../ColorChangeStrategies/backPrintColorChangeStrategy"
-import { Font } from "three"
+import { Font } from "three/examples/jsm/loaders/FontLoader"
 import { FrontTextMesh } from "./frontTextMesh"
 import { SecondRowTextMesh } from "./secondRowTextMesh"
 import { FrontMWLogoMesh } from "./frontMWLogoMesh"

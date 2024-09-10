@@ -1,63 +1,170 @@
-# CSVImporter
+# CSV Importer
 
-Generates visualisation data from CSV data with header, e.g.
-from [SourceMonitor](http://www.campwoodsw.com/sourcemonitor.html).
+**Category**: Importer (takes in CSV and outputs cc.json)
 
-## Usage
-
-### CSV Import
+The CSV importer generates visualisation data from generic CSV data with header. How this CSV was generated does not matter, as long as it meets the following requirements:
 
 _Conventions for csv input:_
 
 - There must be a header.
-- The column with header "path", or if not present the first column with non-empty header, will be interpreted as file
-  location and used as hierarchical information the corresponding node.
+- The specified path column name in the header, or if not present the first column with non-empty header, will be interpreted as file location and used as hierarchical information the corresponding node.
 - Columns with empty or duplicate header will be ignored.
 
-# SourceMonitorImporter
+## Usage and Parameters
 
-Generates visualisation data from [SourceMonitor](http://www.campwoodsw.com/sourcemonitor.html) through its CSV export
-functionality.
+| Parameters                          | Description                                                       |
+| ----------------------------------- | ----------------------------------------------------------------- |
+| `FILE`                              | sourcemonitor csv files                                           |
+| `--path-seperator=<pathSeperator>`  | path seperator (default= '/')                                     |
+| `-d, --delimeter=<csvDelimeter>`    | delimeter in csv file                                             |
+| `-h, --help`                        | displays help                                                     |
+| `-o, --outputFile=<outputFile>`     | output File (or empty for stdout)                                 |
+| `--pathColumnName=<pathColumnName>` | specify the path column name                                      |
+| `-nc, --not-compressed`             | uncompresses outputfile to json format, if format of File is gzip |
 
-## Metrics
+```
+ccsh csvimport [-nc] [-d=<csvDelimiter>] [-o=<outputFile>] [--path-column-name=<pathColumnName>]
+               [--path-separator=<pathSeparator>] FILE
+```
 
-| Metric                            | Description                                                                                                   |
-| --------------------------------- | ------------------------------------------------------------------------------------------------------------- |
-| `loc`                             | Total count of lines in the source code, including lines with whitespace, comments, and actual code.          |
-| `rloc`                            | Count of lines that contain actual code, excluding lines that are only whitespace, comments, or tabulations.  |
-| `classes`                         | The total number of distinct classes defined within the source code.                                          |
-| `functions_per_class`             | Average number of functions (or methods) defined within each class.                                           |
-| `average_statements_per_function` | The mean number of statements within each function across the entire codebase.                                |
-| `max_function_mcc`                | The highest McCabe's cyclomatic complexity found in any single function.                                      |
-| `max_block_depth`                 | The greatest level of nesting of control structures (like loops or conditionals) within any part of the code. |
-| `average_block_depth`             | The average depth of nested control structures across the entire codebase.                                    |
-| `average_function_mcc`            | The mean McCabe's cyclomatic complexity across all functions.                                                 |
-| `sm_percent_branch_statements`    | The percentage of all statements that are branch statements (e.g., if, else, switch, case).                   |
-| `sm_method_call_statements`       | The count of statements in the code that are method or function calls.                                        |
-| `sm_percent_lines_with_comments`  | The percentage of the total lines of code that contain comments.                                              |
+## Example
 
-## Usage
+```
+ccsh csvimport example.csv -o exampleOut
+```
 
-### CSV Import for SourceMonitor
+This takes in a csv file that for example could look like this:
 
-If you have analized your projectBuilder with SourceMonitor and exported the metric data (for classes only) to a
-csv-file, you may call the command
+```
+path,name,type,rloc,functions,mcc,pairingRate,avgCommits,dir0
+sample1OnlyLeaf.scss,sample1OnlyLeaf.scss,File,400.0,10.0,100.0,32.0,17.0,
+bigLeaf.ts,bigLeaf.ts,File,100.0,10.0,1.0,77.0,56.0,
+ParentLeaf/smallLeaf.html,smallLeaf.html,File,30.0,100.0,100.0,60.0,51.0,ParentLeaf
+ParentLeaf/otherSmallLeaf.ts,otherSmallLeaf.ts,File,70.0,1000.0,10.0,65.0,22.0,ParentLeaf
+```
 
-> ccsh sourcemonitorimport \<path to sourcemonitor csv file>
+And output a cc.json file that looks like this (the output will all be in one line, here the json was sorted to be more readable):
 
-which prints the visualisation data to stdout.
-
-Currently, SourceMonitorImporter does not support metrics for methods in csv files from SourceMonitor.
-
-### Wrapper Script sourcemonImport.bat
-
-If SourceMonitor v3.5 is installed in 'C:\Program Files (x86)\SourceMonitor' you may use the wrapper script
-sourcemonImport.bat to generate and import metrics from SourceMonitor in one step:
-
-> sourcemonImport.bat \<projectBuilder name> \<source code path> \<language>
-
-If SourceMonitor is installed in a different directory the script must be changed accordingly.
-
-### General CSV Import
-
-You may use the CSVImporter to import general CSV files.
+```
+  "checksum": "93f5995ee258ed3ff1fb1fe396c704eb",
+  "data": {
+    "projectName": "",
+    "nodes": [
+      {
+        "name": "root",
+        "type": "Folder",
+        "attributes": {},
+        "link": "",
+        "children": [
+          {
+            "name": "sample1OnlyLeaf.scss",
+            "type": "File",
+            "attributes": {
+              "rloc": 400.0,
+              "functions": 10.0,
+              "mcc": 100.0,
+              "pairingRate": 32.0,
+              "avgCommits": 17.0
+            },
+            "link": "",
+            "children": []
+          },
+          {
+            "name": "bigLeaf.ts",
+            "type": "File",
+            "attributes": {
+              "rloc": 100.0,
+              "functions": 10.0,
+              "mcc": 1.0,
+              "pairingRate": 77.0,
+              "avgCommits": 56.0
+            },
+            "link": "",
+            "children": []
+          },
+          {
+            "name": "ParentLeaf",
+            "type": "Folder",
+            "attributes": {},
+            "link": "",
+            "children": [
+              {
+                "name": "smallLeaf.html",
+                "type": "File",
+                "attributes": {
+                  "rloc": 30.0,
+                  "functions": 100.0,
+                  "mcc": 100.0,
+                  "pairingRate": 60.0,
+                  "avgCommits": 51.0
+                },
+                "link": "",
+                "children": []
+              },
+              {
+                "name": "otherSmallLeaf.ts",
+                "type": "File",
+                "attributes": {
+                  "rloc": 70.0,
+                  "functions": 1000.0,
+                  "mcc": 10.0,
+                  "pairingRate": 65.0,
+                  "avgCommits": 22.0
+                },
+                "link": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "apiVersion": "1.3",
+    "edges": [],
+    "attributeTypes": {},
+    "attributeDescriptors": {
+      "rloc": {
+        "title": "rloc",
+        "description": "",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "",
+        "direction": -1
+      },
+      "functions": {
+        "title": "functions",
+        "description": "",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "",
+        "direction": -1
+      },
+      "mcc": {
+        "title": "mcc",
+        "description": "",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "",
+        "direction": -1
+      },
+      "pairingRate": {
+        "title": "pairingRate",
+        "description": "",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "",
+        "direction": -1
+      },
+      "avgCommits": {
+        "title": "avgCommits",
+        "description": "",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "",
+        "direction": -1
+      }
+    },
+    "blacklist": []
+  }
+}
+```

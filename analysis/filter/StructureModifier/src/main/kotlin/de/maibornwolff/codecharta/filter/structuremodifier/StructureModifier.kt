@@ -34,7 +34,7 @@ class StructureModifier(
 
     @CommandLine.Option(
         names = ["-s", "--set-root"],
-        description = ["path within project to be extracted as the new roo"]
+        description = ["path within project to be extracted as the new root"]
     )
     private var setRoot: String? = null
 

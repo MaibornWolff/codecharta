@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core"
 import { Camera, RGBAFormat, Scene, Vector2, WebGLInfo, WebGLRenderer, WebGLRenderTarget } from "three"
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass"
-import { WEBGL } from "three/examples/jsm/WebGL"
+import WEBGL from "three/examples/jsm/capabilities/WebGL"
 import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass"
 import { CustomComposer } from "../rendering/postprocessor/customComposer"
 import { isWhiteBackgroundSelector } from "../../../state/store/appSettings/isWhiteBackground/isWhiteBackground.selector"
