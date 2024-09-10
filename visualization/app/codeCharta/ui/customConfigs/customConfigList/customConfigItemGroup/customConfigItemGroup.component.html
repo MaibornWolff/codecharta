@@ -1,5 +1,9 @@
 @for (customConfigItemGroup of customConfigItemGroups | keyvalue; track customConfigItemGroup) {
-    <mat-expansion-panel #matExpansionPanel [expanded]="isGroupExpanded(customConfigItemGroup.key) || searchTerm.length > 0">
+    <mat-expansion-panel
+        #matExpansionPanel
+        class="custom-config-item-group"
+        [expanded]="isGroupExpanded(customConfigItemGroup.key) || searchTerm.length > 0"
+    >
         <mat-expansion-panel-header (click)="toggleGroupExpansion(customConfigItemGroup.key)">
             <mat-panel-title class="custom-config-item-group-title">
                 Custom View(s) in

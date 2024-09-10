@@ -1,0 +1,23 @@
+@use "variables";
+
+button {
+    margin: 0 3px;
+    min-width: 12%;
+    height: 48px;
+    width: 48px;
+    border-radius: 100%;
+    line-height: 48px;
+    background-color: #ffffff;
+    color: variables.$cc-primary-color;
+
+    &:disabled,
+    &[disabled] {
+        background-color: #e6e6e6;
+        color: variables.$cc-disabled-color;
+    }
+
+    i.fa {
+        font-size: 12px;
+        margin-left: 0;
+    }
+}

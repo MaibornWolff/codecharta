@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, SimpleChanges, ViewChild, ViewEncapsulation } from "@angular/core"
+import { Component, Input, OnChanges, SimpleChanges, ViewChild } from "@angular/core"
 import { CustomConfigHelper } from "../../../../util/customConfigHelper"
 import { CustomConfigItemGroup } from "../../customConfigs.component"
 import { ThreeCameraService } from "../../../codeMap/threeViewer/threeCamera.service"
@@ -10,8 +10,7 @@ import { ThreeRendererService } from "../../../codeMap/threeViewer/threeRenderer
 @Component({
     selector: "cc-custom-config-item-group",
     templateUrl: "./customConfigItemGroup.component.html",
-    styleUrls: ["./customConfigItemGroup.component.scss"],
-    encapsulation: ViewEncapsulation.None
+    styleUrls: ["./customConfigItemGroup.component.scss"]
 })
 export class CustomConfigItemGroupComponent implements OnChanges {
     @Input() customConfigItemGroups: Map<string, CustomConfigItemGroup>

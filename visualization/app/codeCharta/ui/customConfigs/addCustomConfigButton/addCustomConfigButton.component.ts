@@ -4,7 +4,8 @@ import { AddCustomConfigDialogComponent } from "./addCustomConfigDialog/addCusto
 
 @Component({
     selector: "cc-add-custom-config-button",
-    templateUrl: "./addCustomConfigButton.component.html"
+    templateUrl: "./addCustomConfigButton.component.html",
+    styleUrls: ["../customConfigButtons.scss"]
 })
 export class AddCustomConfigButtonComponent {
     constructor(private dialog: MatDialog) {}
