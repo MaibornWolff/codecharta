@@ -186,7 +186,7 @@ show_menu() {
         tput rc  # Restore the cursor position to where the menu starts
         tput ed  # Clear everything below the cursor
 
-        echo -e "\n\e[1;36m✨ Use\e[1;33m ⬆️  \ ⬇️ \e[1;36m to navigate, \e[1;33m[␣ SPACE]\e[1;36m to select/deselect, and \e[1;33m[⏎ ENTER]\e[1;36m to confirm your choices. ✨\e[0m\n"
+        echo -e "\n\e[1;36m Use\e[1;33m ⬆️  \ ⬇️ \e[1;36m to navigate, \e[1;33m[␣ SPACE]\e[1;36m to select/deselect, and \e[1;33m[⏎ ENTER]\e[1;36m to confirm your choices. \e[0m\n"
         # Redraw the menu
         for i in "${!options[@]}"; do
             if [ "$i" -eq "$cursor" ]; then
