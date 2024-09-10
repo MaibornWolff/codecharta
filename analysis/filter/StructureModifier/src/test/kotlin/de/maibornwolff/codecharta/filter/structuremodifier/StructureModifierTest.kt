@@ -239,10 +239,10 @@ class StructureModifierTest {
 
     @Test
     fun `should rename mcc to complexity when rename flag is specified`() {
-        //when
+        // when
         val cliResult = executeForOutput("", arrayOf("src/test/resources/merged_project.cc.json", "--rename-mcc"))
 
-        //then
+        // then
         assertThat(cliResult).doesNotContain("mcc")
         assertThat(cliResult).contains("complexity")
         assertThat(cliResult).doesNotContain("sonar_complexity")
@@ -250,10 +250,10 @@ class StructureModifierTest {
 
     @Test
     fun `should rename mcc to sonar_complexity when rename flag is specified with sonar option`() {
-        //when
+        // when
         val cliResult = executeForOutput("", arrayOf("src/test/resources/merged_project.cc.json", "--rename-mcc=sonar"))
 
-        //then
+        // then
         assertThat(cliResult).doesNotContain("mcc")
         assertThat(cliResult).contains("sonar_complexity")
     }

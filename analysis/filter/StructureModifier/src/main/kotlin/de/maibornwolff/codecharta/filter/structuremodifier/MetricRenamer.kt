@@ -14,7 +14,6 @@ class MetricRenamer(
     private val newName: String = "complexity"
 ) {
     fun rename(): Project {
-
         if (!doesProjectContainMCC(project)) {
             println("INFO: Project has not been altered as no MCC metric was found!")
             return project
@@ -29,7 +28,7 @@ class MetricRenamer(
             copyEdges(),
             updatedAttributeTypes.toMutableMap(),
             updatedAttributesDescriptors.toMutableMap(),
-            copyBlacklist(),
+            copyBlacklist()
         ).build()
     }
 
@@ -39,7 +38,9 @@ class MetricRenamer(
 
             val mccValue = updatedAttributes.remove("mcc")
             if (mccValue == null) {
-                throw NullPointerException("Input file contains null value for a node attribute! Please ensure the input is a valid cc.json file.")
+                throw NullPointerException(
+                    "Input file contains null value for a node attribute! Please ensure the input is a valid cc.json file."
+                )
             }
             updatedAttributes[newName] = mccValue
 
@@ -55,12 +56,16 @@ class MetricRenamer(
         return node
     }
 
-    private fun updatedAttributeTypes(attributeTypes: Map<String, MutableMap<String, AttributeType>>): Map<String, MutableMap<String, AttributeType>> {
+    private fun updatedAttributeTypes(
+        attributeTypes: Map<String, MutableMap<String, AttributeType>>
+    ): Map<String, MutableMap<String, AttributeType>> {
         val nodeAttributes = attributeTypes["nodes"] ?: return attributeTypes
 
         val mccType = nodeAttributes.remove("mcc")
         if (mccType == null) {
-            throw NullPointerException("Input file contains null value for an attribute type! Please ensure the input is a valid cc.json file.")
+            throw NullPointerException(
+                "Input file contains null value for an attribute type! Please ensure the input is a valid cc.json file."
+            )
         }
         nodeAttributes[newName] = mccType
 
@@ -74,8 +79,9 @@ class MetricRenamer(
         val mccDescriptor = updatedAttributeDescriptors.remove("mcc")
 
         if (mccDescriptor == null) {
-
-            throw NullPointerException("Input file contains null value for an attribute descriptor! Please ensure the input is a valid cc.json file.")
+            throw NullPointerException(
+                "Input file contains null value for an attribute descriptor! Please ensure the input is a valid cc.json file."
+            )
         }
         updatedAttributeDescriptors[newName] = mccDescriptor
         return updatedAttributeDescriptors
