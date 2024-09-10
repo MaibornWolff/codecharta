@@ -186,24 +186,24 @@ show_menu() {
         tput rc  # Restore the cursor position to where the menu starts
         tput ed  # Clear everything below the cursor
 
-        echo -e "\n\e[1;36m Use\e[1;33m ⬆️  \ ⬇️ \e[1;36m to navigate, \e[1;33m[␣ SPACE]\e[1;36m to select/deselect, and \e[1;33m[⏎ ENTER]\e[1;36m to confirm your choices. \e[0m\n"
+        printf "\n\e[1;36m Use\e[1;33m ⬆️  \ ⬇️ \e[1;36m to navigate, \e[1;33m[␣ SPACE]\e[1;36m to select/deselect, and \e[1;33m[⏎ ENTER]\e[1;36m to confirm your choices. \e[0m\n"
         # Redraw the menu
         for i in "${!options[@]}"; do
             if [ "$i" -eq "$cursor" ]; then
                 if [[ "${selected[i]}" == "1" ]]; then
                     # Hovered & selected option
-                    echo -e "-> \e[1;32m[✔] ${options[i]}\e[0m"  # Bold green for both hovered and selected
+                    printf -- "-> \e[1;32m[✔] ${options[i]}\e[0m\n"  # Bold green for both hovered and selected
                 else
                     # Hovered option (not selected)
-                    echo -e "-> \e[1;33m[ ] ${options[i]}\e[0m"  # Bold yellow for hovered
+                    printf -- "-> \e[1;33m[ ] ${options[i]}\e[0m\n"  # Bold yellow for hovered
                 fi
             else
                 if [[ "${selected[i]}" == "1" ]]; then
                     # Selected option (not hovered)
-                    echo -e "   \e[32m[✔] ${options[i]}\e[0m"  # Regular green for selected
+                    printf -- "   \e[32m[✔] ${options[i]}\e[0m\n"  # Regular green for selected
                 else
                     # Neither hovered nor selected
-                    echo -e "   [ ] ${options[i]}"  # Regular for non-selected, non-hovered
+                    printf -- "   [ ] ${options[i]}\n"  # Regular for non-selected, non-hovered
                 fi
             fi
         done
