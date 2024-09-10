@@ -5,6 +5,7 @@ import de.maibornwolff.codecharta.model.AttributeType
 import de.maibornwolff.codecharta.model.BlacklistItem
 import de.maibornwolff.codecharta.model.Edge
 import de.maibornwolff.codecharta.model.MutableNode
+import de.maibornwolff.codecharta.model.Node
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.model.ProjectBuilder
 
@@ -13,6 +14,12 @@ class MetricRenamer(
     private val newName: String = "complexity"
 ) {
     fun rename(): Project {
+
+        if (!doesProjectContainMCC(project)) {
+            println("INFO: Project has not been altered as no MCC metric was found!")
+            return project
+        }
+
         val updatedRoot = renameMCCRecursivelyInNodes(project.rootNode.toMutableNode())
         val updatedAttributeTypes = updatedAttributeTypes(project.attributeTypes)
         val updatedAttributesDescriptors = updatedAttributeDescriptors(project.attributeDescriptors)
@@ -80,5 +87,29 @@ class MetricRenamer(
 
     private fun copyBlacklist(): MutableList<BlacklistItem> {
         return project.blacklist.toMutableList()
+    }
+
+    private fun doesProjectContainMCC(project: Project): Boolean {
+        return doesMccExistInNodes(project.rootNode) ||
+            doesMccExistInAttributeTypes(project.attributeTypes) ||
+            doesMccExistInAttributeDescriptors(project.attributeDescriptors)
+    }
+
+    private fun doesMccExistInNodes(node: Node): Boolean {
+        if (node.attributes.containsKey("mcc")) return true
+
+        if (node.children.isEmpty()) return false
+
+        val resultOfChildNodes = node.children.any { doesMccExistInNodes(it) }
+        return resultOfChildNodes
+    }
+
+    private fun doesMccExistInAttributeTypes(attributeTypes: Map<String, MutableMap<String, AttributeType>>): Boolean {
+        val nodeAttributeTypes = attributeTypes["nodes"] ?: return false
+        return nodeAttributeTypes.containsKey("mcc")
+    }
+
+    private fun doesMccExistInAttributeDescriptors(attributeDescriptors: Map<String, AttributeDescriptor>): Boolean {
+        return attributeDescriptors.containsKey("mcc")
     }
 }
