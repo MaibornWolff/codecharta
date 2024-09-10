@@ -14,12 +14,12 @@ import {
 import { ViewCubemeshGenerator } from "./viewCube.meshGenerator"
 import { ThreeMapControlsService } from "../codeMap/threeViewer/threeMapControls.service"
 import { ViewCubeMouseEventsService } from "./viewCube.mouseEvents.service"
-import { Component, ElementRef, OnInit, ViewEncapsulation } from "@angular/core"
+import { Component, ElementRef, OnInit } from "@angular/core"
 
 @Component({
     selector: "cc-view-cube",
     templateUrl: "./viewCube.component.html",
-    encapsulation: ViewEncapsulation.None
+    styleUrls: ["./viewCube.component.scss"]
 })
 export class ViewCubeComponent implements OnInit {
     private lights: Group

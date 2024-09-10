@@ -1,4 +1,4 @@
-cc-apply-custom-config-button {
+:host {
     display: flex;
     flex: 1;
 
@@ -6,6 +6,7 @@ cc-apply-custom-config-button {
         flex-direction: row;
         width: 100%;
         margin: 0;
+        background-color: transparent;
 
         &:disabled {
             cursor: default;
