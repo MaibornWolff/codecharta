@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Added 🚀
+
+- Added a new `--rename-mcc` flag to the StructureModifier that can be used to change the name of the mcc metric to complexity or sonar_complexity [#3728](https://github.com/MaibornWolff/codecharta/pull/3728)
+
 ### Changed
 
 - Re-activate metric-gardener on-the-fly execution [#3691](https://github.com/MaibornWolff/codecharta/pull/3691)
