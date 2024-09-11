@@ -1,0 +1,35 @@
+.cc-export-3D-map-dialog .mat-mdc-dialog-container {
+    width: 36vw;
+    min-width: 600px;
+    max-height: 95vh;
+
+    .cc-export-3D-map-dialog-content {
+        display: flex;
+        flex-direction: column;
+        padding: 16px 16px;
+        gap: 16px;
+        overflow-y: auto;
+        max-height: calc(70vh - 200px);
+        flex-grow: 1;
+    }
+
+    .cc-manual-visibility-content {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        margin-top: 16px;
+
+        mat-form-field {
+            display: flex;
+            flex-direction: column;
+        }
+    }
+
+    mat-slider {
+        width: 95%;
+    }
+
+    mat-form-field {
+        margin-bottom: -24px;
+    }
+}
