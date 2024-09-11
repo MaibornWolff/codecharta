@@ -65,7 +65,6 @@ class ParserDialogTest {
 
     @Test
     fun `should output correct arguments when rename mcc is selected`() {
-
         // given
         val inputFolderName = "sampleInputFile"
         val outputFileName = "output"
