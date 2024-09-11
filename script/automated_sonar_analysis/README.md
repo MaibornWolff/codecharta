@@ -10,25 +10,6 @@ This script automates the setup and analysis processes for SonarQube and CodeCha
 
 You can choose to use default values or provide custom configurations when running the script. To skip prompts and use default values, use the `-s` flag. After execution, the script will print a reusable command with the provided configurations, which you can use next time to skip prompts.
 
-## Configuration Variables
-
-- **PROJECT_KEY**: A unique identifier for the project in SonarQube. Default: `maibornwolff-gmbh_codecharta_visualization`
-- **PROJECT_NAME**: The name of the project in SonarQube. Default: `CodeCharta Visualization`
-- **NEW_SONAR_PASSWORD**: The new password for the SonarQube admin user. Default: `newadminpassword`
-- **PROJECT_BASEDIR**: The directory containing the source code to be analyzed. Default: Path to the `visualization` directory relative to the script location.
-- **HOST_SONAR_URL**: URL used by the host machine to access the SonarQube server. Default: `http://localhost:9000`
-- **CONTAINER_SONAR_URL**: URL used by Docker containers to access the SonarQube server. Default: `http://sonarqube:9000`
-- **DEFAULT_SONAR_USER**: Default SonarQube admin user. Default: `admin`
-- **DEFAULT_SONAR_PASSWORD**: Default SonarQube admin password. Default: `admin`
-- **SONARQUBE_TOKEN_NAME**: Name for the SonarQube token. Default: `codecharta_token`
-- **SONARQUBE_TOKEN**: SonarQube token (initialized as empty).
-- **NETWORK_NAME**: Docker network name. Default: `sonarnet`
-- **SONAR_CONTAINER_NAME**: Docker container name for SonarQube. Default: `sonarqube`
-- **RUN_PROJECT_CLEANUP**: Set to `true` to delete the existing SonarQube project. Default: `true`
-- **RUN_SONAR_SCANNER**: Set to `true` to run SonarScanner. Default: `true`
-- **RUN_FINAL_CLEANUP**: Set to `true` to run the final cleanup of Docker containers and networks. Default: `false`
-- **TIMEOUT_PERIOD**: Timeout period in seconds for waiting on SonarQube data processing and startup. Default: `10000`
-
 ## Script Execution
 
 1. **Introduction**: Displays the purpose of the script and usage instructions.
@@ -41,17 +22,33 @@ You can choose to use default values or provide custom configurations when runni
 4. **Encode Project Key and Name**: URL-encodes the project key and name for safe usage.
 5. **Run Steps**:
    - Ensure SonarQube is running.
-   - Reset SonarQube admin password (if required).
-   - Clean up the previous SonarQube project (if configured).
+   - Reset SonarQube admin password.
+   - Clean up the previous SonarQube project.
    - Revoke existing token.
    - Create a new SonarQube project and generate a token.
-   - Run SonarScanner for code analysis (if configured).
+   - Run SonarScanner for code analysis.
    - Perform CodeCharta analysis.
-   - Run final cleanup (if configured).
+   - Run final cleanup.
 
 ## Usage
 
+### Flags
+
+| Flag | Option               | Default Value                                | Description                                                                        |
+| ---- | -------------------- | -------------------------------------------- | ---------------------------------------------------------------------------------- |
+| `-k` | `<project_key>`      | `maibornwolff-gmbh_codecharta_visualization` | Set the project key for SonarQube.                                                 |
+| `-n` | `<project_name>`     | `CodeCharta Visualization`                   | Set the project name for SonarQube.                                                |
+| `-p` | `<new_password>`     | `newadminpassword`                           | Set the new SonarQube admin password.                                              |
+| `-d` | `<project_basedir>`  | `../codecharta/visualization`                | Set the directory containing the project to be scanned.                            |
+| `-u` | `<host_sonar_url>`   | `http://localhost:9000`                      | Set the URL for the SonarQube host.                                                |
+| `-t` | `<sonar_token_name>` | `codecharta_token`                           | Set the token name for SonarQube authentication.                                   |
+| `-s` | -                    | -                                            | Skip all prompts and use either default values or the flags passed in the command. |
+| `-h` | -                    | -                                            | Show the help message for the script and exit.                                     |
+
 ### Default Execution
+
+These commands assume you are in the root of the project.
+For MacOS users, you should have brew installed and bash updated.
 
 ```bash
 ./script/automated_sonar_analysis/run_analysis.sh
@@ -82,11 +79,3 @@ Example reusable command generated:
 ```
 
 This command will automatically use the values you previously provided, making future executions more efficient.
-
-### Key Points:
-
-- The documentation is structured using `#`, `##`, and `###` headers to clearly delineate sections.
-- Code blocks for execution examples are formatted using triple backticks (` ```bash `) to ensure they are displayed correctly.
-- Each command example is displayed cleanly without breaking Markdown rendering.
-
-This format provides clarity and ease of use for the script users.
