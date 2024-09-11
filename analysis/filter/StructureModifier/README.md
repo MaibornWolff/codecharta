@@ -7,7 +7,7 @@ The Structure Modifier is used to modify the structure of .cc.json files. It ena
 - Remove nodes from a project: The resulting project will not include these nodes and their children.
 - Declare a node as root: This means that the chosen node will become the root node of the resulting sub-project.
 - Move nodes within the project: All children of the source node will be transferred to the destination node.
-- Rename the mcc metric to complexity or sonar_complexity (they have previously been renamed to mcc).
+- Rename the mcc metric to complexity or sonar_complexity (revert the previous renaming to mcc).
 - Print the hierarchy of the project: Prints the hierarchy into the console in a human-readable format.
 
 The edges and blacklist entries associated with moved/removed nodes will be altered as well, while all attribute types will be copied.
