@@ -28,6 +28,7 @@ class ParserDialog {
                     choices =
                         listOf(
                             StructureModifierAction.PRINT_STRUCTURE.descripton,
+                            StructureModifierAction.MIGRATE_MCC.descripton,
                             StructureModifierAction.SET_ROOT.descripton,
                             StructureModifierAction.MOVE_NODES.descripton,
                             StructureModifierAction.REMOVE_NODES.descripton
@@ -36,6 +37,7 @@ class ParserDialog {
 
             return when (selectedAction) {
                 StructureModifierAction.PRINT_STRUCTURE.descripton -> listOf(inputFileName, *collectPrintArguments())
+                StructureModifierAction.MIGRATE_MCC.descripton -> listOf(inputFileName, *collectMCCArguments())
                 StructureModifierAction.SET_ROOT.descripton -> listOf(inputFileName, *collectSetRootArguments())
                 StructureModifierAction.MOVE_NODES.descripton ->
                     listOf(
@@ -61,6 +63,17 @@ class ParserDialog {
                     hint = "0"
                 )
             return arrayOf("--print-levels=$printLevels")
+        }
+
+        private fun collectMCCArguments(): Array<String> {
+            val newName: String =
+                KInquirer.promptList(
+                    message = "This action will rename the mcc metric. Which should the new name be?",
+                    choices = listOf("complexity", "sonar_complexity")
+                )
+            val renameParam = if (newName == "sonar_complexity") "--rename-mcc=sonar" else "--rename-mcc"
+            val outputFileName = collectOutputFileName()
+            return arrayOf(renameParam, "--output-file=$outputFileName")
         }
 
         private fun collectSetRootArguments(): Array<String> {
