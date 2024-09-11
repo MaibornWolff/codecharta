@@ -1,11 +1,11 @@
-<div class="custom-config-note-dialog-container">
-    <div mat-dialog-content class="note-input-container">
+<div class="cc-custom-config-note-dialog-container">
+    <div mat-dialog-content class="cc-note-input-container">
         <mat-form-field class="note-input" appearance="fill">
             <mat-label>Custom Note</mat-label>
             <textarea matInput cdkAutosizeMinRows="10" cdkTextareaAutosize [(ngModel)]="data"></textarea>
         </mat-form-field>
     </div>
-    <div mat-dialog-actions class="note-dialog-action-buttons">
+    <div mat-dialog-actions class="cc-note-dialog-action-buttons">
         <button mat-flat-button [mat-dialog-close]>Cancel</button>
         <button mat-flat-button [mat-dialog-close]="data">Ok</button>
     </div>
