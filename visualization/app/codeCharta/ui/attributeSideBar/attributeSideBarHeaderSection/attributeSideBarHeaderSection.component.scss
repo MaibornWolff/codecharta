@@ -1,4 +1,4 @@
-cc-attribute-side-bar-header-section {
+:host {
     display: flex;
     flex-direction: column;
 
@@ -61,15 +61,5 @@ cc-attribute-side-bar-header-section {
                 color: rgb(14, 46, 255);
             }
         }
-    }
-
-    .node-name,
-    .node-origin,
-    .node-path {
-        word-break: break-all;
-        -webkit-user-select: text;
-        -moz-user-select: text;
-        -ms-user-select: text;
-        user-select: text;
     }
 }

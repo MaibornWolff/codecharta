@@ -1,0 +1,30 @@
+.primary-metric-box {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+}
+
+.primary-metric-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+.metric-name {
+    margin-top: 5px;
+    color: grey;
+    word-break: break-word;
+    vertical-align: middle;
+}
+
+.primary-metric-value {
+    margin-right: -5px;
+}
+
+i.fa {
+    font-size: 12pt;
+    min-width: 17px;
+    text-align: center;
+}

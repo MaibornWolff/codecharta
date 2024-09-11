@@ -1,4 +1,4 @@
-import { Component, Input, ViewEncapsulation } from "@angular/core"
+import { Component, Input } from "@angular/core"
 import { Store } from "@ngrx/store"
 import { CodeMapNode } from "../../../../codeCharta.model"
 import { addBlacklistItem, removeBlacklistItem } from "../../../store/fileSettings/blacklist/blacklist.actions"
@@ -6,7 +6,7 @@ import { addBlacklistItem, removeBlacklistItem } from "../../../store/fileSettin
 @Component({
     selector: "cc-flatten-buttons",
     templateUrl: "./flattenButtons.component.html",
-    encapsulation: ViewEncapsulation.None
+    styleUrls: ["../nodeContextMenuButton.component.scss"]
 })
 export class FlattenButtonsComponent {
     @Input() codeMapNode: Pick<CodeMapNode, "path" | "type" | "isFlattened">

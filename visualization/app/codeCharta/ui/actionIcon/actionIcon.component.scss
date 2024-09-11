@@ -1,6 +1,6 @@
 @use "variables";
 
-cc-action-icon {
+:host {
     display: inline-flex;
     align-items: center;
     cursor: pointer;
@@ -23,5 +23,9 @@ cc-action-icon {
         margin: auto;
         line-height: 1.5;
         color: white;
+
+        &.fa-folder-open {
+            padding-left: 1px;
+        }
     }
 }

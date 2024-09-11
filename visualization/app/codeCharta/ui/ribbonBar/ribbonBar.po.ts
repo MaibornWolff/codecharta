@@ -3,7 +3,7 @@ import { clickButtonOnPageElement } from "../../../puppeteer.helper"
 export class RibbonBarPageObject {
     async isPanelOpen(elementName: string) {
         await page.waitForFunction(elementName => document.querySelector(elementName), {}, elementName)
-        return page.$eval(elementName, element => !element.classList.contains("hidden"))
+        return page.$eval(elementName, element => element.classList.contains("expanded"))
     }
 
     async togglePanel(selector: string, elementName: string) {

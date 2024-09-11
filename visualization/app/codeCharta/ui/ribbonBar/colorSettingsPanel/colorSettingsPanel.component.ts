@@ -1,4 +1,4 @@
-import { Component, ViewEncapsulation } from "@angular/core"
+import { Component } from "@angular/core"
 import { MatCheckboxChange } from "@angular/material/checkbox"
 import { State, Store } from "@ngrx/store"
 import { map } from "rxjs"
@@ -21,8 +21,7 @@ import { metricColorRangeValuesSelector } from "./selectors/metricColorRangeValu
 @Component({
     selector: "cc-color-settings-panel",
     templateUrl: "./colorSettingsPanel.component.html",
-    styleUrls: ["./colorSettingsPanel.component.scss"],
-    encapsulation: ViewEncapsulation.None
+    styleUrls: ["./colorSettingsPanel.component.scss"]
 })
 export class ColorSettingsPanelComponent {
     colorMode$ = this.store.select(colorModeSelector)

@@ -1,5 +1,5 @@
 import { map } from "rxjs"
-import { Component, ViewEncapsulation } from "@angular/core"
+import { Component } from "@angular/core"
 
 import { selectedNodeSelector } from "../../state/selectors/selectedNode.selector"
 import { accumulatedDataSelector } from "../../state/selectors/accumulatedData/accumulatedData.selector"
@@ -10,8 +10,7 @@ import { CcState } from "../../codeCharta.model"
 @Component({
     selector: "cc-attribute-side-bar",
     templateUrl: "./attributeSideBar.component.html",
-    styleUrls: ["./attributeSideBar.component.scss"],
-    encapsulation: ViewEncapsulation.None
+    styleUrls: ["./attributeSideBar.component.scss"]
 })
 export class AttributeSideBarComponent {
     selectedNode$ = this.store.select(selectedNodeSelector)

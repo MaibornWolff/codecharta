@@ -1,20 +1,18 @@
-<div>
-    <button
-        mat-button
-        class="state-selector-button mode-selector left"
-        (click)="fileSelectionModeService.toggle()"
-        [class.current]="!(isDeltaState$ | async)"
-        [disabled]="!(isDeltaState$ | async)"
-    >
-        <span class="text">Standard</span>
-    </button>
-    <button
-        mat-button
-        class="state-selector-button mode-selector right"
-        (click)="fileSelectionModeService.toggle()"
-        [class.current]="isDeltaState$ | async"
-        [disabled]="isDeltaState$ | async"
-    >
-        <span class="text">Delta</span>
-    </button>
-</div>
+<button
+    mat-button
+    class="state-selector-button left"
+    (click)="fileSelectionModeService.toggle()"
+    [class.current]="!(isDeltaState$ | async)"
+    [disabled]="!(isDeltaState$ | async)"
+>
+    <span class="text">Standard</span>
+</button>
+<button
+    mat-button
+    class="state-selector-button right"
+    (click)="fileSelectionModeService.toggle()"
+    [class.current]="isDeltaState$ | async"
+    [disabled]="isDeltaState$ | async"
+>
+    <span class="text">Delta</span>
+</button>

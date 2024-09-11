@@ -1,4 +1,4 @@
-import { Component, Input, ViewEncapsulation } from "@angular/core"
+import { Component, Input } from "@angular/core"
 import { Store } from "@ngrx/store"
 import { map } from "rxjs"
 
@@ -10,7 +10,7 @@ import { focusedNodePathSelector } from "../../../store/dynamicSettings/focusedN
 @Component({
     selector: "cc-focus-buttons",
     templateUrl: "./focusButtons.component.html",
-    encapsulation: ViewEncapsulation.None
+    styleUrls: ["../nodeContextMenuButton.component.scss"]
 })
 export class FocusButtonsComponent {
     @Input() codeMapNode: Pick<CodeMapNode, "path">

@@ -6,13 +6,12 @@ import { heightMetricSelector } from "../../state/store/dynamicSettings/heightMe
 import { areaMetricSelector } from "../../state/store/dynamicSettings/areaMetric/areaMetric.selector"
 import { colorMetricSelector } from "../../state/store/dynamicSettings/colorMetric/colorMetric.selector"
 import { edgeMetricSelector } from "../../state/store/dynamicSettings/edgeMetric/edgeMetric.selector"
-import { Component, ViewEncapsulation } from "@angular/core"
+import { Component } from "@angular/core"
 
 @Component({
     selector: "cc-legend-panel",
     templateUrl: "./legendPanel.component.html",
-    styleUrls: ["./legendPanel.component.scss"],
-    encapsulation: ViewEncapsulation.None
+    styleUrls: ["./legendPanel.component.scss"]
 })
 export class LegendPanelComponent {
     isLegendVisible = false

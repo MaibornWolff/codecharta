@@ -1,4 +1,4 @@
-import { Component, ViewEncapsulation } from "@angular/core"
+import { Component } from "@angular/core"
 import { Store } from "@ngrx/store"
 import { Observable } from "rxjs"
 import { CcState } from "../../../codeCharta.model"
@@ -7,8 +7,7 @@ import { isLoadingMapSelector } from "../../../state/store/appSettings/isLoading
 @Component({
     selector: "cc-loading-map-progress-spinner",
     templateUrl: "./loadingMapProgressSpinner.component.html",
-    styleUrls: ["./loadingMapProgressSpinner.component.scss"],
-    encapsulation: ViewEncapsulation.None
+    styleUrls: ["./loadingMapProgressSpinner.component.scss"]
 })
 export class LoadingMapProgressSpinnerComponent {
     isLoadingMap$: Observable<boolean>

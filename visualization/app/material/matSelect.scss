@@ -1,0 +1,8 @@
+@import "./matSelectMetricChooser";
+@import "./matSelectFileSelect";
+
+.cdk-overlay-pane {
+    .mat-mdc-select-panel {
+        padding: 0;
+    }
+}

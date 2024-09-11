@@ -1,4 +1,4 @@
-import { Component, Input, ViewEncapsulation } from "@angular/core"
+import { Component, Input } from "@angular/core"
 import { Store } from "@ngrx/store"
 import { CodeMapNode } from "../../../../codeCharta.model"
 import { addBlacklistItemsIfNotResultsInEmptyMap } from "../../../store/fileSettings/blacklist/blacklist.actions"
@@ -6,7 +6,7 @@ import { addBlacklistItemsIfNotResultsInEmptyMap } from "../../../store/fileSett
 @Component({
     selector: "cc-exclude-button",
     templateUrl: "./excludeButton.component.html",
-    encapsulation: ViewEncapsulation.None
+    styleUrls: ["../nodeContextMenuButton.component.scss"]
 })
 export class ExcludeButtonComponent {
     @Input() codeMapNode: Pick<CodeMapNode, "path" | "type">

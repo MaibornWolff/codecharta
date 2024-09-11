@@ -1,0 +1,14 @@
+button {
+    height: 22px;
+    line-height: 22px;
+    min-width: 45px;
+    margin: 0;
+    padding: 0;
+    font-size: 9pt;
+    background-color: #e6e6e6f5;
+    color: #444;
+
+    &:hover {
+        background-color: #c8c8c8;
+    }
+}
