@@ -13,7 +13,7 @@
         flex-grow: 1;
     }
 
-    .ManualVisibilityContent {
+    .cc-manual-visibility-content {
         display: flex;
         flex-direction: column;
         gap: 16px;
@@ -31,9 +31,5 @@
 
     mat-form-field {
         margin-bottom: -24px;
-    }
-
-    input[type="file"] {
-        margin-top: 16px;
     }
 }

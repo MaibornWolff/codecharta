@@ -36,7 +36,7 @@ interface ManualVisibilityItem {
 }
 
 @Component({
-    selector: "export3DMapDialog.component",
+    selector: "cc-export-3D-map-dialog",
     templateUrl: "./export3DMapDialog.component.html",
     styleUrls: ["./export3DMapDialog.component.scss"]
 })
