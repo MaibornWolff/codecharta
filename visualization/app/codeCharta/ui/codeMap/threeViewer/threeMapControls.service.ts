@@ -126,6 +126,8 @@ export class ThreeMapControlsService {
             MIDDLE: MOUSE.DOLLY,
             RIGHT: MOUSE.PAN
         }
+        this.controls.minPolarAngle = 0
+        this.controls.maxPolarAngle = Math.PI / 3
         this.controls.zoomToCursor = true
         this.controls.listenToKeyEvents(window)
         this.controls.addEventListener("change", () => {
