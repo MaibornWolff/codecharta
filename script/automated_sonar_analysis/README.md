@@ -32,23 +32,36 @@ You can choose to use default values or provide custom configurations when runni
 
 ## Usage
 
-### Flags
+### Parameters
 
-| Flag | Option               | Default Value                                | Description                                                                        |
-| ---- | -------------------- | -------------------------------------------- | ---------------------------------------------------------------------------------- |
-| `-k` | `<project_key>`      | `maibornwolff-gmbh_codecharta_visualization` | Set the project key for SonarQube.                                                 |
-| `-n` | `<project_name>`     | `CodeCharta Visualization`                   | Set the project name for SonarQube.                                                |
-| `-p` | `<new_password>`     | `newadminpassword`                           | Set the new SonarQube admin password.                                              |
-| `-d` | `<project_basedir>`  | `../codecharta/visualization`                | Set the directory containing the project to be scanned.                            |
-| `-u` | `<host_sonar_url>`   | `http://localhost:9000`                      | Set the URL for the SonarQube host.                                                |
-| `-t` | `<sonar_token_name>` | `codecharta_token`                           | Set the token name for SonarQube authentication.                                   |
-| `-s` | -                    | -                                            | Skip all prompts and use either default values or the flags passed in the command. |
-| `-h` | -                    | -                                            | Show the help message for the script and exit.                                     |
+| Parameter               | Description                                                                        |
+| ----------------------- | ---------------------------------------------------------------------------------- |
+| `-k <project_key>`      | Set the project key for SonarQube.                                                 |
+| `-n <project_name>`     | Set the project name for SonarQube.                                                |
+| `-p <new_password>`     | Set the new SonarQube admin password.                                              |
+| `-d <project_basedir>`  | Set the directory containing the project to be scanned.                            |
+| `-u <host_sonar_url>`   | Set the URL for the SonarQube host.                                                |
+| `-t <sonar_token_name>` | Set the token name for SonarQube authentication.                                   |
+| `-s`                    | Skip all prompts and use either default values or the flags passed in the command. |
+| `-h`                    | Show the help message for the script and exit.                                     |
+
+> **USAGE:**
+>
+> ```shell
+> run_analysis.sh [-h] [-s] [-k <project_key>] [-n <project_name>] [-p <new_password>] [-d <project_basedir>] [-u <host_sonar_url>] [-t <sonar_token_name>]
+> ```
 
 ### Default Execution
 
 These commands assume you are in the root of the project.
 For MacOS users, you should have brew installed and bash updated.
+
+```shell
+# For MacOS you need to give execution permission to the script
+chmod +x ./script/automated_sonar_analysis/run_analysis.sh
+```
+
+No need to pass anything the script will prompt as needed.
 
 ```bash
 ./script/automated_sonar_analysis/run_analysis.sh
@@ -56,13 +69,17 @@ For MacOS users, you should have brew installed and bash updated.
 
 ### Skip Prompts
 
+The script will use the defaults and will not prompt at all.
+
 ```bash
 ./script/automated_sonar_analysis/run_analysis.sh -s
 ```
 
 ### Custom Execution with Flags
 
-You can provide flags to customize the execution. For example:
+You can provide flags to customize the execution. In this case, it will skip the prompt and use the provided parameter.
+
+For example:
 
 ```bash
 ./script/automated_sonar_analysis/run_analysis.sh -k "custom_project_key" -n "Custom Project Name" -p "new_password" -d "/path/to/codebase"
