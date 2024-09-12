@@ -47,19 +47,19 @@ cc-search-bar {
         }
     }
 
-    .small-action-button {
-        margin: 0 5px 0 5px;
-        display: inline-block;
-        height: 24px;
-        width: 24px;
-        vertical-align: top;
-    }
-
     button {
         background-color: transparent;
         box-shadow: none;
         margin-top: 2px;
         font-size: 14px;
+
+        &.small-action-button {
+            margin: 0 5px 0 5px;
+            display: inline-block;
+            height: 24px;
+            width: 24px;
+            vertical-align: top;
+        }
 
         &:hover {
             background-color: lightgrey;
