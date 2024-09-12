@@ -69,8 +69,6 @@ No need to pass anything the script will prompt as needed.
 
 ### Skip Prompts
 
-The script will use the defaults and will not prompt at all.
-
 ```bash
 ./script/automated_sonar_analysis/run_analysis.sh -s
 ```
