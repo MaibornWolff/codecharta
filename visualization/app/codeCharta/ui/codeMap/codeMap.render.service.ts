@@ -50,13 +50,13 @@ export class CodeMapRenderService implements OnDestroy {
 
     render(map: CodeMapNode) {
         const nodes = this.getNodes(map)
-        const visibleSortedNodes = this.getVisibleNodes(nodes)
-        this.unflattenedNodes = visibleSortedNodes.filter(({ flat }) => !flat)
+        const sortedNodes = this.sortNodes(nodes)
+        this.unflattenedNodes = sortedNodes.filter(({ flat }) => !flat)
 
-        this.setNewMapMesh(nodes, visibleSortedNodes)
+        this.setNewMapMesh(nodes, sortedNodes)
         this.getNodesMatchingColorSelector(this.unflattenedNodes)
         this.setLabels(this.unflattenedNodes)
-        this.setArrows(visibleSortedNodes)
+        this.setArrows(sortedNodes)
     }
 
     private setNewMapMesh(allMeshNodes, visibleSortedNodes) {
@@ -93,7 +93,7 @@ export class CodeMapRenderService implements OnDestroy {
         }
     }
 
-    getVisibleNodes(nodes: Node[]) {
+    sortNodes(nodes: Node[]) {
         return nodes.filter(node => node.length > 0 && node.width > 0).sort((a, b) => b.height - a.height)
     }
 

@@ -40,11 +40,10 @@ export class FocusEffects {
                 ofType(unfocusNode),
                 withLatestFrom(this.store.select(focusedNodePathSelector)),
                 tap(([, focusedNodePath]) => {
+                    this.threeMapControlsService.unfocusNode()
                     if (focusedNodePath.length === 0) {
-                        this.threeMapControlsService.unfocusNode()
                         return
                     }
-                    this.threeMapControlsService.unfocusNode()
                     this.threeMapControlsService.focusNode(focusedNodePath[0])
                 })
             ),

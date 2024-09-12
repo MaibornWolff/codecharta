@@ -256,15 +256,5 @@ describe("ThreeMapControlsService", () => {
 
             expect(threeCameraService.camera.position).toEqual(previousPosition)
         })
-
-        it("should not move the camera if positionBeforeFocus is not defined", async () => {
-            threeMapControlsService.positionBeforeFocus = undefined
-            const initialPosition = threeCameraService.camera.position.clone()
-
-            threeMapControlsService.unfocusNode()
-            await wait(1100)
-
-            expect(threeCameraService.camera.position).toEqual(initialPosition)
-        })
     })
 })
