@@ -1,11 +1,5 @@
-cc-code-map {
+:host {
     .hidden {
         display: none;
-    }
-
-    unfocus-button-component {
-        &.sideBarVisible {
-            right: 390px;
-        }
     }
 }
