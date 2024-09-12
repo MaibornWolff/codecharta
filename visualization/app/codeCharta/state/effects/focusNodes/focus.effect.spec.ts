@@ -19,8 +19,6 @@ const mockIsChildPath = isChildPath as jest.Mock
 
 describe("FocusEffects", () => {
     let actions$: BehaviorSubject<Action>
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    let effects: FocusEffects
     let store: MockStore<CcState>
     let threeMapControlsService: ThreeMapControlsService
 
@@ -52,8 +50,6 @@ describe("FocusEffects", () => {
                 { provide: ThreeMapControlsService, useValue: threeMapControlsService }
             ]
         })
-
-        effects = TestBed.inject(FocusEffects)
         store = TestBed.inject(MockStore)
     })
 
