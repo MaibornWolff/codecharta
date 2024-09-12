@@ -10,6 +10,10 @@ button {
     color: white;
     background-color: variables.$cc-primary-color;
 
+    &.cc-shadow {
+        box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.2) !important;
+    }
+
     i {
         margin-top: 2px;
     }

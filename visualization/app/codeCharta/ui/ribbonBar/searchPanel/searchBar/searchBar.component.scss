@@ -49,6 +49,10 @@ cc-search-bar {
 
     .small-action-button {
         margin: 0 5px 0 5px;
+        display: inline-block;
+        height: 24px;
+        width: 24px;
+        vertical-align: top;
     }
 
     button {

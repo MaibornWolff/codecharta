@@ -3,6 +3,7 @@ import { Component, Input, ViewEncapsulation } from "@angular/core"
 @Component({
     selector: "cc-map-tree-view-item-option-buttons",
     templateUrl: "./mapTreeViewItemOptionButtons.component.html",
+    styleUrls: ["./mapTreeViewItemOptionButtons.component.scss"],
     encapsulation: ViewEncapsulation.None
 })
 export class MapTreeViewItemOptionButtonsComponent {
