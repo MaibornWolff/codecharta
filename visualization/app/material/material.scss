@@ -19,5 +19,13 @@
 @include mat.slider-theme(theme.$cc-theme);
 @include mat.slide-toggle-theme(theme.$cc-theme);
 
-@import "./matMenu.scss";
-@import "./matDialog.scss";
+@import "./matMenu";
+@import "./matDialog";
+@import "./matSelect";
+@import "./slider";
+@import "./matSlideTogglePresentationMode";
+@import "./colorPicker";
+@import "./attributeTypeSelector";
+@import "./matCustomConfigList";
+@import "./matCustomConfigItemGroup";
+@import "./matExport3DMapDialog";

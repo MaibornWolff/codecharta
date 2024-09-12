@@ -1,15 +1,15 @@
-import { Component, Input, OnInit, ViewEncapsulation } from "@angular/core"
+import { Component, Input, OnInit } from "@angular/core"
 import { Store } from "@ngrx/store"
 import { Observable } from "rxjs"
 
-import { MapColors, CodeMapNode, CcState } from "../../../codeCharta.model"
+import { CcState, CodeMapNode, MapColors } from "../../../codeCharta.model"
 import { selectedNodeSelector } from "../../../state/selectors/selectedNode.selector"
 import { mapColorsSelector } from "../../../state/store/appSettings/mapColors/mapColors.selector"
 
 @Component({
     selector: "cc-metric-delta-selected",
     templateUrl: "./metricDeltaSelected.component.html",
-    encapsulation: ViewEncapsulation.None
+    styleUrls: ["./metricDeltaSelected.component.scss"]
 })
 export class MetricDeltaSelectedComponent implements OnInit {
     @Input() metricName: string

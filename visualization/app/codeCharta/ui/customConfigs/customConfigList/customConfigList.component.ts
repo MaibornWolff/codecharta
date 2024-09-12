@@ -1,11 +1,10 @@
-import { Component, ViewEncapsulation } from "@angular/core"
+import { Component } from "@angular/core"
 import { CustomConfigHelperService } from "../customConfigHelper.service"
 import { debounce } from "../../../util/debounce"
 
 @Component({
     templateUrl: "./customConfigList.component.html",
-    styleUrls: ["./customConfigList.component.scss"],
-    encapsulation: ViewEncapsulation.None
+    styleUrls: ["./customConfigList.component.scss"]
 })
 export class CustomConfigListComponent {
     searchTerm = ""

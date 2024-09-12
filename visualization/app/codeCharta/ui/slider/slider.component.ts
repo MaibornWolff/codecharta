@@ -1,11 +1,10 @@
-import { Component, Input, ViewEncapsulation } from "@angular/core"
+import { Component, Input } from "@angular/core"
 import { parseNumberInput } from "../../util/parseNumberInput"
 
 @Component({
     selector: "cc-slider",
     templateUrl: "./slider.component.html",
-    styleUrls: ["./slider.component.scss"],
-    encapsulation: ViewEncapsulation.None
+    styleUrls: ["./slider.component.scss"]
 })
 export class SliderComponent {
     @Input() value?: number

@@ -1,7 +1,7 @@
-import { Component, Input, ViewEncapsulation } from "@angular/core"
+import { Component, Input } from "@angular/core"
 import { Store } from "@ngrx/store"
 
-import { MapColors, CcState } from "../../codeCharta.model"
+import { CcState, MapColors } from "../../codeCharta.model"
 import { selectedColorMetricDataSelector } from "../../state/selectors/accumulatedData/metricData/selectedColorMetricData.selector"
 import { setMapColors } from "../../state/store/appSettings/mapColors/mapColors.actions"
 import { mapColorsSelector } from "../../state/store/appSettings/mapColors/mapColors.selector"
@@ -10,8 +10,7 @@ import { colorMetricSelector } from "../../state/store/dynamicSettings/colorMetr
 
 @Component({
     selector: "cc-color-picker-for-map-color",
-    templateUrl: "./colorPickerForMapColor.component.html",
-    encapsulation: ViewEncapsulation.None
+    templateUrl: "./colorPickerForMapColor.component.html"
 })
 export class ColorPickerForMapColorComponent {
     @Input() mapColorFor: keyof Omit<MapColors, "labelColorAndAlpha" | "markingColors">

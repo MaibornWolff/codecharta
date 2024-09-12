@@ -1,14 +1,14 @@
-import { Component, Input, ViewEncapsulation } from "@angular/core"
+import { Component, Input } from "@angular/core"
 import { Store } from "@ngrx/store"
 import { Observable } from "rxjs"
-import { CodeMapNode, FileCount, CcState } from "../../../../codeCharta.model"
+import { CcState, CodeMapNode, FileCount } from "../../../../codeCharta.model"
 import { isDeltaStateSelector } from "../../../../state/selectors/isDeltaState.selector"
 import { fileCountSelector } from "./fileCountSelector"
 
 @Component({
     selector: "cc-node-path",
     templateUrl: "./nodePath.component.html",
-    encapsulation: ViewEncapsulation.None
+    styleUrls: ["./nodePath.component.scss"]
 })
 export class NodePathComponent {
     @Input() node?: Pick<CodeMapNode, "path" | "children">

@@ -1,4 +1,4 @@
-import { Component, ViewEncapsulation } from "@angular/core"
+import { Component } from "@angular/core"
 import { State, Store } from "@ngrx/store"
 import hotkeys from "hotkeys-js"
 import html2canvas from "html2canvas"
@@ -14,8 +14,7 @@ import { FileState } from "../../model/files/files"
 
 @Component({
     selector: "cc-screenshot-button",
-    templateUrl: "./screenshotButton.component.html",
-    encapsulation: ViewEncapsulation.None
+    templateUrl: "./screenshotButton.component.html"
 })
 export class ScreenshotButtonComponent {
     TITLE_FILE_BUTTON: string

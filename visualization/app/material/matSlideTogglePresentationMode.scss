@@ -1,0 +1,9 @@
+mat-slide-toggle.mat-mdc-slide-toggle.cc-presentation-mode-button div.mdc-form-field {
+    font-size: 10pt;
+    flex-direction: row-reverse;
+    gap: 12px;
+
+    .mdc-label {
+        text-wrap: nowrap;
+    }
+}

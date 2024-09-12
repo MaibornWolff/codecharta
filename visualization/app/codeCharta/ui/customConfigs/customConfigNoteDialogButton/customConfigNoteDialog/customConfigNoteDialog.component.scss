@@ -1,17 +1,17 @@
 @use "variables";
 
-cc-custom-config-note-dialog {
-    .custom-config-note-dialog-container {
+:host {
+    .cc-custom-config-note-dialog-container {
         padding: 20px 24px;
 
-        .note-input-container {
+        .cc-note-input-container {
             padding: 0;
 
             .note-input {
                 width: 100%;
             }
         }
-        .note-dialog-action-buttons {
+        .cc-note-dialog-action-buttons {
             justify-content: flex-end;
             padding: 0;
         }

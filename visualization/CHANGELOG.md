@@ -26,6 +26,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Chore 👨‍💻 👩‍💻
 
 - Bump node version from 18 to 20 [#3690](https://github.com/MaibornWolff/codecharta/pull/3690)
+- Enabled view encapsulation for Global Configuration dialog, Ribbon Bar and File Panel [#3712](https://github.com/MaibornWolff/codecharta/pull/3712)
+- Enabled view encapsulation for Slider [#3713](https://github.com/MaibornWolff/codecharta/pull/3713)
+- Enabled view encapsulation for the Toolbar [#3717](https://github.com/MaibornWolff/codecharta/pull/3717)
+- Enabled view encapsulation for the Legend Panel [#3720](https://github.com/MaibornWolff/codecharta/pull/3720)
+- Enabled view encapsulation for the Attribute Side Bar [#3726](https://github.com/MaibornWolff/codecharta/pull/3726)
+- Enabled view encapsulation for Buttons [#3729](https://github.com/MaibornWolff/codecharta/pull/3729)
+- Enabled view encapsulation for the Export 3D Map Dialog [#3732](https://github.com/MaibornWolff/codecharta/pull/3732)
 
 ## [1.127.1] - 2024-08-12
 

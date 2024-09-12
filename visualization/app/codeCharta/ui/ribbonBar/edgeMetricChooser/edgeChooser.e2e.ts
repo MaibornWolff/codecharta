@@ -1,7 +1,7 @@
 import { clearIndexedDB, goto } from "../../../../puppeteer.helper"
 import { EdgeChooserPageObject } from "./edgeChooser.po"
-import { MapTreeViewLevelPageObject } from "../../searchPanel/mapTreeView/mapTreeView.level.po"
-import { SearchPanelPageObject } from "../../searchPanel/searchPanel.po"
+import { MapTreeViewLevelPageObject } from "../searchPanel/mapTreeView/mapTreeView.level.po"
+import { SearchPanelPageObject } from "../searchPanel/searchPanel.po"
 import { UploadFileButtonPageObject } from "../../toolBar/uploadFilesButton/uploadFilesButton.po"
 
 describe("MapTreeViewLevel", () => {

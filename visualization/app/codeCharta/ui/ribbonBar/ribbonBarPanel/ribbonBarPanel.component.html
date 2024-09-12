@@ -1,0 +1,25 @@
+<mat-card appearance="outlined">
+    <div class="section">
+        @if (isHeaderExpandable) {
+            <div #toggleHeader class="section-header" (click)="toggleSettings()">
+                <ng-content select=".toggleHeader"></ng-content>
+            </div>
+        } @else {
+            <div class="section-header">
+                <ng-content></ng-content>
+            </div>
+        }
+
+        @if (title || hasSettings) {
+            <div #toggle class="section-title" (click)="toggleSettings()">
+                {{ title }}
+
+                @if (hasSettings) {
+                    <i [class]="'fa fa-angle-' + (isExpanded ? 'up' : 'down')"></i>
+                }
+            </div>
+        }
+    </div>
+
+    <ng-content select="cc-ribbon-bar-panel-settings"></ng-content>
+</mat-card>

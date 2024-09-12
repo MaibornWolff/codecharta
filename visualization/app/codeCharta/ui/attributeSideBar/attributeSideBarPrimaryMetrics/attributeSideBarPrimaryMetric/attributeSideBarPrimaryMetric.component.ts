@@ -1,4 +1,4 @@
-import { Component, Input, ViewEncapsulation } from "@angular/core"
+import { Component, Input } from "@angular/core"
 import { Store } from "@ngrx/store"
 import { Observable } from "rxjs"
 import { CcState } from "../../../../codeCharta.model"
@@ -9,7 +9,7 @@ import { showAttributeTypeSelectorSelector } from "../../util/showAttributeTypeS
 @Component({
     selector: "cc-attribute-side-bar-primary-metric",
     templateUrl: "./attributeSideBarPrimaryMetric.component.html",
-    encapsulation: ViewEncapsulation.None
+    styleUrls: ["./attributeSideBarPrimaryMetric.component.scss"]
 })
 export class AttributeSideBarPrimaryMetricComponent {
     @Input() iconName: string

@@ -9,7 +9,6 @@ import { isEdgeMetricVisibleSelector } from "../../../state/store/appSettings/is
 import { setEdgeMetric } from "../../../state/store/dynamicSettings/edgeMetric/edgeMetric.actions"
 import { edgeMetricSelector } from "../../../state/store/dynamicSettings/edgeMetric/edgeMetric.selector"
 import { attributeDescriptorsSelector } from "../../../state/store/fileSettings/attributeDescriptors/attributeDescriptors.selector"
-import { VALID_NODES_WITH_ID } from "../../../util/dataMocks"
 import { getLastAction } from "../../../util/testUtils/store.utils"
 import { NodeSelectionService } from "../../metricChooser/nodeSelection.service"
 import { EdgeMetricChooserComponent } from "./edgeMetricChooser.component"
@@ -20,7 +19,7 @@ describe("edgeMetricChooserComponent", () => {
         TestBed.configureTestingModule({
             imports: [EdgeMetricChooserModule],
             providers: [
-                { provide: NodeSelectionService, useValue: { createNodeObservable: () => of(VALID_NODES_WITH_ID) } },
+                { provide: NodeSelectionService, useValue: { createNodeObservable: jest.fn().mockReturnValue(of(null)) } },
                 provideMockStore({
                     selectors: [
                         {
@@ -79,10 +78,6 @@ describe("edgeMetricChooserComponent", () => {
 
     describe("edgeValue", () => {
         it("should return null when there is no node hovered", async () => {
-            TestBed.overrideProvider(NodeSelectionService, {
-                useValue: { createNodeObservable: jest.fn().mockReturnValue(of(null)) }
-            })
-
             const { fixture } = await render(EdgeMetricChooserComponent, { excludeComponentDeclaration: true })
             const edgeValue = await firstValueFrom(fixture.componentInstance.edgeValue$)
             expect(edgeValue).toBe(null)
