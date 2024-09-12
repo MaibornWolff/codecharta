@@ -41,6 +41,7 @@ export class ViewCubeMouseEventsService {
 
     private initOrbitalControl(camera: PerspectiveCamera, renderer: WebGLRenderer) {
         this.controls = new OrbitControls(camera, renderer.domElement)
+        this.controls.maxPolarAngle = Math.PI / 3
         this.controls.enableZoom = false
         this.controls.enablePan = false
         this.controls.rotateSpeed = 1
