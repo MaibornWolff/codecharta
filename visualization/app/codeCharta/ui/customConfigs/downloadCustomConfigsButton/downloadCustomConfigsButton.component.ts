@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewEncapsulation } from "@angular/core"
+import { Component, OnDestroy, OnInit } from "@angular/core"
 import { DownloadableConfigs } from "./getDownloadableCustomConfigs"
 
 import { downloadCustomConfigs } from "./downloadCustomConfigHelper"
@@ -8,7 +8,7 @@ import { Subscription } from "rxjs"
 @Component({
     selector: "cc-download-custom-configs-button",
     templateUrl: "./downloadCustomConfigsButton.component.html",
-    encapsulation: ViewEncapsulation.None
+    styleUrls: ["../customConfigButtons.scss"]
 })
 export class DownloadCustomConfigsButtonComponent implements OnInit, OnDestroy {
     downloadableConfigs: DownloadableConfigs

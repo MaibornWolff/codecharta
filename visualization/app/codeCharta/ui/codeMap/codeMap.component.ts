@@ -1,4 +1,4 @@
-import { Component, AfterViewInit, ElementRef, OnDestroy, ViewEncapsulation } from "@angular/core"
+import { Component, AfterViewInit, ElementRef, OnDestroy } from "@angular/core"
 import { isLoadingFileSelector } from "../../state/store/appSettings/isLoadingFile/isLoadingFile.selector"
 import { ThreeViewerService } from "./threeViewer/threeViewer.service"
 import { sharpnessModeSelector } from "../../state/store/appSettings/sharpnessMode/sharpnessMode.selector"
@@ -11,8 +11,7 @@ import { CcState } from "../../codeCharta.model"
 @Component({
     selector: "cc-code-map",
     templateUrl: "./codeMap.component.html",
-    styleUrls: ["./codeMap.component.scss"],
-    encapsulation: ViewEncapsulation.None
+    styleUrls: ["./codeMap.component.scss"]
 })
 export class CodeMapComponent implements AfterViewInit, OnDestroy {
     isLoadingFile$ = this.store.select(isLoadingFileSelector)

@@ -98,7 +98,8 @@
         "rloc": "absolute",
         "functions": "absolute",
         "mcc": "absolute",
-        "pairingRate": "relative"
+        "pairingRate": "relative",
+        "ymcc": "absolute"
       }
     },
     "attributeDescriptors": {

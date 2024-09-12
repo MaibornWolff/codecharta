@@ -27,8 +27,8 @@ class StructureModifierTest {
     }
 
     @Test
-    fun `should read project when prodided with input file`() {
-// when
+    fun `should read project when provided with input file`() {
+        // when
         val cliResult = executeForOutput("", arrayOf("src/test/resources/sample_project.cc.json", "-r=/does/not/exist"))
 
         // then
@@ -36,7 +36,8 @@ class StructureModifierTest {
     }
 
     @Test
-    fun `should read project when receiving piped input`() { // given
+    fun `should read project when receiving piped input`() {
+        // given
         val inputFilePath = "src/test/resources/sample_project.cc.json"
         val input =
             File(inputFilePath).bufferedReader().readLines().joinToString(separator = "") {
@@ -51,7 +52,8 @@ class StructureModifierTest {
     }
 
     @Test
-    fun `should not produce output when provided with invalid project file`() { // given
+    fun `should not produce output when provided with invalid project file`() {
+        // given
         System.setErr(PrintStream(errContent))
 
         // when
@@ -65,7 +67,8 @@ class StructureModifierTest {
     }
 
     @Test
-    fun `should return error when given malformed piped input`() { // given
+    fun `should return error when given malformed piped input`() {
+        // given
         val input = "{this: 12}"
         System.setErr(PrintStream(errContent))
 
@@ -80,8 +83,8 @@ class StructureModifierTest {
     }
 
     @Test
-    fun `should set the  root for new subproject when provided with new root`() {
-// when
+    fun `should set the root for new subproject when provided with new root`() {
+        // when
         val cliResult =
             executeForOutput("", arrayOf("src/test/resources/sample_project.cc.json", "-s=/root/src/folder3"))
 
@@ -92,7 +95,7 @@ class StructureModifierTest {
 
     @Test
     fun `should remove single node when given single folder to remove`() {
-// when
+        // when
         val cliResult = executeForOutput("", arrayOf("src/test/resources/sample_project.cc.json", "-r=/root/src"))
 
         // then
@@ -102,7 +105,7 @@ class StructureModifierTest {
 
     @Test
     fun `should move nodes when move-from flag is specified`() {
-// when
+        // when
         val cliResult =
             executeForOutput(
                 "",
@@ -116,7 +119,7 @@ class StructureModifierTest {
 
     @Test
     fun `should print structure accordingly when print-level is set`() {
-// when
+        // when
         val cliResult = executeForOutput("", arrayOf("src/test/resources/sample_project.cc.json", "-p=2"))
 
         // then
@@ -125,11 +128,11 @@ class StructureModifierTest {
 
     @Test
     fun `should set root and remove unused descriptors when root specified`() {
-// when
+        // when
         val cliResult =
             executeForOutput(
                 "",
-                arrayOf("src/test/resources/test_attributeDescriptors.json", "-s=/root/AnotherParentLeaf")
+                arrayOf("src/test/resources/test_attributeDescriptors.cc.json", "-s=/root/AnotherParentLeaf")
             )
         val resultProject = ProjectDeserializer.deserializeProject(cliResult)
 
@@ -140,11 +143,11 @@ class StructureModifierTest {
 
     @Test
     fun `should remove nodes and unused descriptors when provided with an input file containing unused descriptors`() {
-// when
+        // when
         val cliResult =
             executeForOutput(
                 "",
-                arrayOf("src/test/resources/test_attributeDescriptors.json", "-r=/root/AnotherParentLeaf")
+                arrayOf("src/test/resources/test_attributeDescriptors.cc.json", "-r=/root/AnotherParentLeaf")
             )
         val resultProject = ProjectDeserializer.deserializeProject(cliResult)
 
@@ -154,7 +157,8 @@ class StructureModifierTest {
     }
 
     @Test
-    fun `should stop execution when input file is invalid`() { // given
+    fun `should stop execution when input file is invalid`() {
+        // given
         mockkObject(InputHelper)
         every {
             InputHelper.isInputValid(any(), any())
@@ -172,7 +176,8 @@ class StructureModifierTest {
     }
 
     @Test
-    fun `should remove all specified nodes when multiple values are provided for the remove flag`() { // given
+    fun `should remove all specified nodes when multiple values are provided for the remove flag`() {
+        // given
         val file1 = "/root/src/main/file1.java"
         val file2 = "/root/src/main/file2.java"
         val nodesToRemove = listOf(file1, file2)
@@ -187,7 +192,8 @@ class StructureModifierTest {
     }
 
     @Test
-    fun `should log warning when more than one action is specified`() { // given
+    fun `should log warning when more than one action is specified`() {
+        // given
         val file1 = "/root/src/main/file1.java"
         val file2 = "/root/src/main/file2.java"
         val nodesToRemove = listOf(file1, file2)
@@ -213,7 +219,8 @@ class StructureModifierTest {
     }
 
     @Test
-    fun `should log error when move-from but not move-to is specified`() { // given
+    fun `should log error when move-from but not move-to is specified`() {
+        // given
         val folderToMove = "/root/src/main"
 
         val lambdaSlot = mutableListOf<() -> String>()
@@ -228,5 +235,41 @@ class StructureModifierTest {
 
         // then
         assertThat(lambdaSlot.last()().isNotEmpty()).isTrue()
+    }
+
+    @Test
+    fun `should rename mcc to complexity when rename flag is specified`() {
+        // when
+        val cliResult = executeForOutput("", arrayOf("src/test/resources/merged_project.cc.json", "--rename-mcc"))
+
+        // then
+        assertThat(cliResult).doesNotContain("mcc")
+        assertThat(cliResult).contains("complexity")
+        assertThat(cliResult).doesNotContain("sonar_complexity")
+    }
+
+    @Test
+    fun `should rename mcc to sonar_complexity when rename flag is specified with sonar option`() {
+        // when
+        val cliResult = executeForOutput("", arrayOf("src/test/resources/merged_project.cc.json", "--rename-mcc=sonar"))
+
+        // then
+        assertThat(cliResult).doesNotContain("mcc")
+        assertThat(cliResult).contains("sonar_complexity")
+    }
+
+    @Test
+    fun `should throw Exception when rename flag is specified with an invalid option`() {
+        // given
+        System.setErr(PrintStream(errContent))
+
+        // when
+        executeForOutput("", arrayOf("src/test/resources/merged_project.cc.json", "--rename-mcc=invalid"))
+
+        // then
+        assertThat(errContent.toString()).contains("Invalid value for rename flag, stopping execution...")
+
+        // clean up
+        System.setErr(originalErr)
     }
 }
