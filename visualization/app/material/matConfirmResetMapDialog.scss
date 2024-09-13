@@ -21,7 +21,7 @@
             padding: 0 8px;
             margin: 8px 0 8px 8px;
             color: variables.$cc-primary-color;
-            background-color: rgba(138, 132, 132, 0.08);
+            background-color: variables.$cc-dialog-button-background-color;
             bottom: 0;
         }
     }

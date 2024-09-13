@@ -1,3 +1,5 @@
+@use "variables";
+
 .cc-confirmation-dialog .mat-mdc-dialog-container {
     .confirmation-message {
         padding: 10px;
@@ -7,7 +9,7 @@
         justify-content: flex-end;
 
         .mat-mdc-button {
-            background-color: rgba(138, 132, 132, 0.08);
+            background-color: variables.$cc-dialog-button-background-color;
 
             &.submit-button {
                 color: rgb(0, 150, 136);
