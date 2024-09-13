@@ -7,7 +7,7 @@ button {
     background-color: transparent;
 
     &:hover {
-        background-color: rgba(0, 0, 0, 0.05);
+        background-color: variables.$cc-hovered-button-background-color;
         color: variables.$cc-primary-color;
         border-radius: 50%;
     }

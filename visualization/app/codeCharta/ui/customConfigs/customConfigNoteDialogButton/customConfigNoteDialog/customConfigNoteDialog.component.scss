@@ -20,10 +20,10 @@
             padding: 12px;
             margin: 0 0 0 10px;
             color: variables.$cc-primary-color;
-            background-color: rgba(138, 132, 132, 0.08);
+            background-color: variables.$cc-dialog-button-background-color;
 
             &:hover {
-                background-color: rgba(0, 0, 0, 0.05);
+                background-color: variables.$cc-hovered-button-background-color;
                 color: variables.$cc-primary-color;
             }
         }
