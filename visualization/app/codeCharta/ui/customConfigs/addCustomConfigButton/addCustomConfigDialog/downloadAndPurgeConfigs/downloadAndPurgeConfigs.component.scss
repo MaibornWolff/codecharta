@@ -1,5 +1,8 @@
 :host {
     text-align: right;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
 }
 
 .exceed-local-storage-message {
@@ -10,7 +13,10 @@
 }
 
 .exceed-local-storage-button {
-    margin-right: 89px;
     color: #ffffff;
     background-color: #b02929;
+
+    &:hover {
+        background-color: #8c1f1f;
+    }
 }

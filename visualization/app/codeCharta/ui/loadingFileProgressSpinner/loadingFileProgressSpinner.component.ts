@@ -1,4 +1,4 @@
-import { Component, ViewEncapsulation } from "@angular/core"
+import { Component } from "@angular/core"
 import { Store } from "@ngrx/store"
 import { Observable } from "rxjs"
 import { CcState } from "../../codeCharta.model"
@@ -7,8 +7,7 @@ import { isLoadingFileSelector } from "../../state/store/appSettings/isLoadingFi
 @Component({
     selector: "cc-loading-file-progress-spinner",
     templateUrl: "./loadingFileProgressSpinner.component.html",
-    styleUrls: ["./loadingFileProgressSpinner.component.scss"],
-    encapsulation: ViewEncapsulation.None
+    styleUrls: ["./loadingFileProgressSpinner.component.scss"]
 })
 export class LoadingFileProgressSpinnerComponent {
     isLoadingFile$: Observable<boolean>
