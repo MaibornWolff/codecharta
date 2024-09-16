@@ -128,7 +128,11 @@ export class ThreeMapControlsService {
             MIDDLE: MOUSE.DOLLY,
             RIGHT: MOUSE.PAN
         }
-        this.controls.zoomToCursor = true
+
+        window.addEventListener("wheel", event => {
+            this.controls.zoomToCursor = event.deltaY <= 0
+        })
+
         this.controls.listenToKeyEvents(window)
         this.controls.addEventListener("change", () => {
             this.onInput(this.threeCameraService.camera)
