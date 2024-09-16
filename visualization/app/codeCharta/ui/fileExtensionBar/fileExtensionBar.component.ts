@@ -1,4 +1,4 @@
-import { Component, ViewEncapsulation } from "@angular/core"
+import { Component } from "@angular/core"
 import { MetricDistribution, FileExtensionCalculator } from "./selectors/fileExtensionCalculator"
 import { metricDistributionSelector } from "./selectors/metricDistribution.selector"
 import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
@@ -8,8 +8,7 @@ import { CcState } from "../../codeCharta.model"
 @Component({
     selector: "cc-file-extension-bar",
     templateUrl: "./fileExtensionBar.component.html",
-    styleUrls: ["./fileExtensionBar.component.scss"],
-    encapsulation: ViewEncapsulation.None
+    styleUrls: ["./fileExtensionBar.component.scss"]
 })
 export class FileExtensionBarComponent {
     showAbsoluteValues = false

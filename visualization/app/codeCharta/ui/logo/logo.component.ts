@@ -1,10 +1,10 @@
-import { Component, ViewEncapsulation } from "@angular/core"
+import { Component } from "@angular/core"
 import packageJson from "../../../../package.json"
 
 @Component({
     selector: "cc-logo",
     templateUrl: "./logo.component.html",
-    encapsulation: ViewEncapsulation.None
+    styleUrls: ["./logo.component.scss"]
 })
 export class LogoComponent {
     version = packageJson.version

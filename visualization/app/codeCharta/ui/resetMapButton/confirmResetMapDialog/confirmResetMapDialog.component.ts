@@ -1,5 +1,5 @@
 import { HttpClient } from "@angular/common/http"
-import { Component, ViewEncapsulation } from "@angular/core"
+import { Component } from "@angular/core"
 import { Store } from "@ngrx/store"
 import { first, tap } from "rxjs"
 import { CcState } from "../../../codeCharta.model"
@@ -13,9 +13,8 @@ import { defaultState } from "../../../state/store/state.manager"
 import { deleteCcState } from "../../../util/indexedDB/indexedDBWriter"
 
 @Component({
-    templateUrl: "./confirmResetMapDialog.component.html",
-    styleUrls: ["./confirmResetMapDialog.component.scss"],
-    encapsulation: ViewEncapsulation.None
+    selector: "cc-confirm-reset-map-dialog",
+    templateUrl: "./confirmResetMapDialog.component.html"
 })
 export class ConfirmResetMapDialogComponent {
     private urlUtils = new UrlExtractor(this.httpClient)

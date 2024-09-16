@@ -9,6 +9,7 @@ import { CcState } from "../../../../codeCharta.model"
 import { State } from "@ngrx/store"
 
 @Component({
+    selector: "cc-add-custom-config-dialog",
     templateUrl: "./addCustomConfigDialog.component.html"
 })
 export class AddCustomConfigDialogComponent implements OnInit {

@@ -33,6 +33,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Enabled view encapsulation for the Attribute Side Bar [#3726](https://github.com/MaibornWolff/codecharta/pull/3726)
 - Enabled view encapsulation for Buttons [#3729](https://github.com/MaibornWolff/codecharta/pull/3729)
 - Enabled view encapsulation for the Export 3D Map Dialog [#3732](https://github.com/MaibornWolff/codecharta/pull/3732)
+- Enabled view encapsulation for Dialogs [#3736](https://github.com/MaibornWolff/codecharta/pull/3736)
 
 ## [1.127.1] - 2024-08-12
 

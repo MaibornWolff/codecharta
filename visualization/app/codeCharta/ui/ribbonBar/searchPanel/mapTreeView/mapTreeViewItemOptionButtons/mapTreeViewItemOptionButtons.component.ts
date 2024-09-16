@@ -1,9 +1,9 @@
-import { Component, Input, ViewEncapsulation } from "@angular/core"
+import { Component, Input } from "@angular/core"
 
 @Component({
     selector: "cc-map-tree-view-item-option-buttons",
     templateUrl: "./mapTreeViewItemOptionButtons.component.html",
-    encapsulation: ViewEncapsulation.None
+    styleUrls: ["./mapTreeViewItemOptionButtons.component.scss"]
 })
 export class MapTreeViewItemOptionButtonsComponent {
     @Input() isFlattened: boolean
