@@ -18,13 +18,24 @@ export function calculateEdgeMetricData(visibleFileStates: FileState[], blacklis
         }
     }
 
+    function calculateNodePath(visibleFiles: number, fileState: FileState, nodeName: string) {
+        if (visibleFiles > 1) {
+            return `/root/${fileState.file.fileMeta.fileName}${nodeName.replace("/root", "")}`
+        }
+        return nodeName
+    }
+
     for (const fileState of visibleFileStates) {
         for (const edge of fileState.file.settings.fileSettings.edges) {
             if (bothNodesAssociatedAreVisible(edge, allFilePaths, blacklist)) {
                 // TODO: We likely only need the attributes once per file.
                 for (const edgeMetric of Object.keys(edge.attributes)) {
                     const edgeMetricEntry = updateEntryForMetric(nodeEdgeMetricsMap, edgeMetric)
-                    addEdgeToNodes(edgeMetricEntry, edge.fromNodeName, edge.toNodeName)
+                    addEdgeToNodes(
+                        edgeMetricEntry,
+                        calculateNodePath(visibleFileStates.length, fileState, edge.fromNodeName),
+                        calculateNodePath(visibleFileStates.length, fileState, edge.toNodeName)
+                    )
                 }
             }
         }
