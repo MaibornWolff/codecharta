@@ -10,6 +10,7 @@ import { appReducers, setStateMiddleware } from "../../../state/store/state.mana
 import { MapControls } from "three/examples/jsm/controls/MapControls"
 import { take } from "rxjs"
 import { CodeMapMesh } from "../rendering/codeMapMesh"
+import { fireEvent } from "@testing-library/angular"
 
 describe("ThreeMapControlsService", () => {
     let threeMapControlsService: ThreeMapControlsService
@@ -79,7 +80,6 @@ describe("ThreeMapControlsService", () => {
             expect(threeMapControlsService.controls.mouseButtons.LEFT).toBe(MOUSE.ROTATE)
             expect(threeMapControlsService.controls.mouseButtons.MIDDLE).toBe(MOUSE.DOLLY)
             expect(threeMapControlsService.controls.mouseButtons.RIGHT).toBe(MOUSE.PAN)
-            expect(threeMapControlsService.controls.zoomToCursor).toBe(true)
             expect(addEventListenerMock).toHaveBeenCalledWith("change", expect.any(Function))
         })
     })
@@ -96,6 +96,27 @@ describe("ThreeMapControlsService", () => {
         expect(threeSceneService.scene.remove).toHaveBeenCalled()
 
         expect(threeCameraService.camera.position).toMatchSnapshot()
+    })
+
+    it("should change zoom to follow cursor when zooming in", () => {
+        const domElement = document.createElement("canvas")
+        threeMapControlsService.controls = new MapControls(threeCameraService.camera, domElement)
+        threeMapControlsService.init(domElement)
+
+        fireEvent.wheel(window, { deltaY: -2 })
+
+        expect(threeMapControlsService.controls.zoomToCursor).toBeTruthy()
+    })
+
+    it("should change zoom to default setting when zooming out again", () => {
+        const domElement = document.createElement("canvas")
+        threeMapControlsService.controls = new MapControls(threeCameraService.camera, domElement)
+        threeMapControlsService.init(domElement)
+        threeMapControlsService.controls.zoomToCursor = true
+
+        fireEvent.wheel(window, { deltaY: 2 })
+
+        expect(threeMapControlsService.controls.zoomToCursor).toBeFalsy()
     })
 
     describe("setControlTarget", () => {
