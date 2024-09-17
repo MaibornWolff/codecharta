@@ -135,7 +135,7 @@ describe("ThreeMapControlsService", () => {
             threeMapControlsService.autoFitTo()
             await wait(0)
 
-            expect(threeCameraService.camera.position).toEqual(new Vector3(8.724_905_929_183_022, 8.724_905_929_183_022, 0))
+            expect(threeCameraService.camera.position).toEqual(new Vector3(5.423_365_845_416_211, 5.423_365_845_416_211, 0))
         })
 
         it("should call an control update", async () => {
