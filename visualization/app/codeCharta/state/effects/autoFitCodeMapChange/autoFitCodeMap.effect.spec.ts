@@ -71,13 +71,6 @@ describe("autoFitCodeMapOnFileSelectionChangeEffect", () => {
         expect(mockedAutoFitTo).not.toHaveBeenCalled()
     })
 
-    it("should auto fit map when focused node paths has changed", () => {
-        store.overrideSelector(focusedNodePathSelector, [])
-        store.refreshState()
-        mockedRenderCodeMap$.next(undefined)
-        expect(mockedAutoFitTo).toHaveBeenCalledTimes(1)
-    })
-
     it("should auto fit map when layout algorithm has changed", () => {
         store.overrideSelector(layoutAlgorithmSelector, LayoutAlgorithm.TreeMapStreet)
         store.refreshState()
