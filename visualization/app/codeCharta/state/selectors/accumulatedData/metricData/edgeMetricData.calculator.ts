@@ -18,13 +18,6 @@ export function calculateEdgeMetricData(visibleFileStates: FileState[], blacklis
         }
     }
 
-    function calculateNodePath(visibleFiles: number, fileState: FileState, nodeName: string) {
-        if (visibleFiles > 1) {
-            return `/root/${fileState.file.fileMeta.fileName}${nodeName.replace("/root", "")}`
-        }
-        return nodeName
-    }
-
     for (const fileState of visibleFileStates) {
         for (const edge of fileState.file.settings.fileSettings.edges) {
             if (bothNodesAssociatedAreVisible(edge, allFilePaths, blacklist)) {
@@ -46,6 +39,13 @@ export function calculateEdgeMetricData(visibleFileStates: FileState[], blacklis
         edgeMetricData: newEdgeMetricData,
         nodeEdgeMetricsMap
     }
+}
+
+export function calculateNodePath(visibleFiles: number, fileState: FileState, nodeName: string) {
+    if (visibleFiles > 1) {
+        return `/root/${fileState.file.fileMeta.fileName}${nodeName.replace("/root", "")}`
+    }
+    return nodeName
 }
 
 function bothNodesAssociatedAreVisible(edge: Edge, filePaths: Set<string>, blacklist: BlacklistItem[]) {

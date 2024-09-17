@@ -1962,6 +1962,17 @@ export const FILE_STATES: FileState[] = [
     }
 ]
 
+export const FILE_STATES_TWO_FILES: FileState[] = [
+    {
+        file: TEST_FILE_DATA,
+        selectedAs: FileSelectionState.Partial
+    },
+    {
+        file: TEST_FILE_DATA_JAVA,
+        selectedAs: FileSelectionState.Partial
+    }
+]
+
 export const FILE_STATES_UNSELECTED: FileState[] = [
     {
         file: TEST_FILE_DATA,
