@@ -16,9 +16,4 @@ export class SearchPanelModeSelectorPageObject {
 
         return treeViewClassNames.includes("current") && searchPanelClassNames.includes("expanded")
     }
-
-    async toggleBlacklistView() {
-        await page.waitForSelector("#blacklist", { visible: true }).then(async element => element.click())
-        await page.waitForTimeout(500)
-    }
 }
