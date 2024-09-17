@@ -19,6 +19,8 @@ This script automates the setup and analysis processes for SonarQube and CodeCha
 
 You can choose to use default values or provide custom configurations when running the script. To skip prompts and use default values, use the `-s` flag. After execution, the script will print a reusable command with the provided configurations, which you can use next time to skip prompts.
 
+> **Note:** MacOS support is currently incomplete. There are known issues with the script execution on MacOS that we are working to resolve. Please proceed with caution and check for updates.
+
 ## Script Execution
 
 1. **Introduction**: Displays the purpose of the script and usage instructions.

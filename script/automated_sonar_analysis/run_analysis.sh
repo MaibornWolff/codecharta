@@ -52,6 +52,7 @@ FLAG_NEW_SONAR_PASSWORD=false
 FLAG_PROJECT_BASEDIR=false
 FLAG_HOST_SONAR_URL=false
 FLAG_SONARQUBE_TOKEN_NAME=false
+SKIP_PROMPT=false
 
 ### Help Message ##############################################################
 
@@ -73,47 +74,16 @@ show_help() {
 
 while getopts ":k:n:p:d:u:t:sh" opt; do
   case ${opt} in
-    k ) # Project Key
-      PROJECT_KEY=$OPTARG
-      FLAG_PROJECT_KEY=true
-      ;;
-    n ) # Project Name
-      PROJECT_NAME=$OPTARG
-      FLAG_PROJECT_NAME=true
-      ;;
-    p ) # SonarQube admin password
-      NEW_SONAR_PASSWORD=$OPTARG
-      FLAG_NEW_SONAR_PASSWORD=true
-      ;;
-    d ) # Project Base Directory
-      PROJECT_BASEDIR=$OPTARG
-      FLAG_PROJECT_BASEDIR=true
-      ;;
-    u ) # Host Sonar URL
-      HOST_SONAR_URL=$OPTARG
-      FLAG_HOST_SONAR_URL=true
-      ;;
-    t ) # SonarQube token name
-      SONARQUBE_TOKEN_NAME=$OPTARG
-      FLAG_SONARQUBE_TOKEN_NAME=true
-      ;;
-    s ) # Skip all prompts
-      SKIP_PROMPT=true
-      ;;
-    h ) # Show help
-      show_help
-      exit 0
-      ;;
-    \? ) # Invalid option
-      echo "Invalid option: -$OPTARG" 1>&2
-      show_help
-      exit 1
-      ;;
-    : ) # Missing argument
-      echo "Option -$OPTARG requires an argument." 1>&2
-      show_help
-      exit 1
-      ;;
+    k ) PROJECT_KEY=$OPTARG; FLAG_PROJECT_KEY=true ;;
+    n ) PROJECT_NAME=$OPTARG; FLAG_PROJECT_NAME=true ;;
+    p ) NEW_SONAR_PASSWORD=$OPTARG; FLAG_NEW_SONAR_PASSWORD=true ;;
+    d ) PROJECT_BASEDIR=$OPTARG; FLAG_PROJECT_BASEDIR=true ;;
+    u ) HOST_SONAR_URL=$OPTARG; FLAG_HOST_SONAR_URL=true ;;
+    t ) SONARQUBE_TOKEN_NAME=$OPTARG; FLAG_SONARQUBE_TOKEN_NAME=true ;;
+    s ) SKIP_PROMPT=true ;;
+    h ) show_help; exit 0 ;;
+    \? ) echo "Invalid option: -$OPTARG" 1>&2; show_help; exit 1 ;;
+    : ) echo "Option -$OPTARG requires an argument." 1>&2; show_help; exit 1 ;;
   esac
 done
 
@@ -126,7 +96,6 @@ echo -e "1. Setting up a SonarQube project and resetting the default 'admin' pas
 echo -e "2. Running SonarScanner to analyze your project's source code."
 echo -e "3. Conducting a CodeCharta analysis of the scanned data."
 echo -e "------------------------------------------------------------\n"
-
 
 # Prompt for important variables only if they weren't provided via flags
 if [ "$SKIP_PROMPT" != true ]; then
@@ -164,20 +133,25 @@ cmd+=" -d \"$PROJECT_BASEDIR\""
 cmd+=" -u \"$HOST_SONAR_URL\""
 cmd+=" -t \"$SONARQUBE_TOKEN_NAME\""
 
-# Present a menu to the user to select which steps to run
-steps=("Ensure SonarQube Running" "Reset SonarQube Password" "Clean Up Previous Project" "Revoke Token" "Create Project and Generate Token" "Run SonarScanner" "Run CodeCharta Analysis" "Final Cleanup")
+### Default steps ###
+selected_steps=("Ensure SonarQube Running" "Reset SonarQube Password" "Clean Up Previous Project" "Revoke Token" "Create Project and Generate Token" "Run SonarScanner" "Run CodeCharta Analysis" "Final Cleanup")
 
-preselected_indices=(0 1 2 3 4 5 6 7)  # By default, all steps are preselected
+# Ask if the user wants to select individual steps, unless the -s flag was passed
+if [ "$SKIP_PROMPT" != true ]; then
+    read -p "Would you like to select individual steps to run? (y/N): " select_steps
 
-# Call the `show_menu` function from helpers.sh
-show_menu "${#steps[@]}" "${steps[@]}" "${#preselected_indices[@]}" "${preselected_indices[@]}"
+    if [[ "$select_steps" =~ ^[Yy]$ ]]; then
+        # Present a menu to the user to select which steps to run
+        steps=("Ensure SonarQube Running" "Reset SonarQube Password" "Clean Up Previous Project" "Revoke Token" "Create Project and Generate Token" "Run SonarScanner" "Run CodeCharta Analysis" "Final Cleanup")
+        preselected_indices=(0 1 2 3 4 5 6 7)  # By default, all steps are preselected
 
-# Now selected_options array contains the selected items
-selected_steps=("${selected_options[@]}")
-echo -e "\nRunning:"
-for i in "${!selected_options[@]}"; do
-    echo "  $((i + 1))) ${selected_options[i]}"
-done
+        # Call the `show_menu` function from helpers.sh (ensure this is defined properly in helpers.sh)
+        show_menu "${#steps[@]}" "${steps[@]}" "${#preselected_indices[@]}" "${preselected_indices[@]}"
+
+        # Override the default steps with user-selected options
+        selected_steps=("${selected_options[@]}")
+    fi
+fi
 
 ### Run the steps #############################################################
 
