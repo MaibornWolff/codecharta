@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core"
-import { Store } from "@ngrx/store"
+import { State, Store } from "@ngrx/store"
 import { LoadFileService } from "../../../services/loadFile/loadFile.service"
 import { setIsLoadingFile } from "../../../state/store/appSettings/isLoadingFile/isLoadingFile.actions"
 import { setIsLoadingMap } from "../../../state/store/appSettings/isLoadingMap/isLoadingMap.actions"
@@ -7,6 +7,9 @@ import { CustomConfigHelper, CUSTOM_CONFIG_FILE_EXTENSION } from "../../../util/
 import { getCCFileAndDecorateFileChecksum } from "../../../util/fileHelper"
 import { createCCFileInput } from "../../../util/uploadFiles/createCCFileInput"
 import { readFiles } from "../../../util/uploadFiles/readFiles"
+import { removeAllFiles } from "../../../state/store/files/files.actions"
+import { CcState } from "../../../codeCharta.model"
+import { setCurrentFilesAreSampleFiles } from "../../../state/store/appStatus/currentFilesAreSampleFiles/currentFilesAreSampleFiles.actions"
 
 @Injectable({ providedIn: "root" })
 export class UploadFilesService {
@@ -14,10 +17,16 @@ export class UploadFilesService {
 
     constructor(
         private store: Store,
+        private state: State<CcState>,
         private loadFileService: LoadFileService
     ) {}
 
     uploadFiles() {
+        if (this.state.value.appStatus.currentFilesAreSampleFiles) {
+            this.store.dispatch(removeAllFiles())
+            this.store.dispatch(setCurrentFilesAreSampleFiles({ value: false }))
+        }
+
         const ccFileInput = createCCFileInput()
         ccFileInput.addEventListener("change", () => {
             void this.uploadFilesOnEvent(ccFileInput)
