@@ -57,6 +57,7 @@ import { buildHtmlMessage } from "../../util/loadFilesValidationToErrorDialog"
 import { getNameDataPair } from "../loadFile/fileParser"
 import { LoadFileService, NO_FILES_LOADED_ERROR_MESSAGE } from "../loadFile/loadFile.service"
 import { UrlExtractor } from "./urlExtractor"
+import { setCurrentFilesAreSampleFiles } from "../../state/store/appStatus/currentFilesAreSampleFiles/currentFilesAreSampleFiles.actions"
 
 export const sampleFile1 = { fileName: "sample1.cc.json", fileSize: 3 * 1024, content: sample1 as ExportCCFile }
 export const sampleFile2 = { fileName: "sample2.cc.json", fileSize: 2 * 1024, content: sample2 as ExportCCFile }
@@ -417,6 +418,7 @@ export class LoadInitialFileService {
         } catch {
             this.loadFileService.loadFiles([sampleFile1, sampleFile2])
         }
+        this.store.dispatch(setCurrentFilesAreSampleFiles({ value: true }))
     }
 
     private showErrorDialog(title: string, message: string) {

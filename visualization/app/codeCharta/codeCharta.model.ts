@@ -374,6 +374,7 @@ export function stateObjectReviver(_, valueToRevive) {
 }
 
 export interface AppStatus {
+    currentFilesAreSampleFiles: boolean
     hoveredNodeId: number | null
     selectedBuildingId: number | null
     rightClickedNodeData: {

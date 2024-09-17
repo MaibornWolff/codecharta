@@ -5,6 +5,7 @@ import { FileState } from "../../../model/files/files"
 export const setFiles = createAction("SET_FILES", props<{ value: FileState[] }>())
 export const addFile = createAction("ADD_FILE", props<{ file: CCFile }>())
 export const removeFile = createAction("REMOVE_FILE", props<{ fileName: string }>())
+export const removeAllFiles = createAction("REMOVE_ALL_FILES")
 export const setStandard = createAction("SET_STANDARD", props<{ files: CCFile[] }>())
 export const setStandardByNames = createAction("SET_STANDARD_BY_NAMES", props<{ fileNames: string[] }>())
 export const setAll = createAction("SET_ALL")
@@ -17,6 +18,7 @@ export const fileActions = [
     setFiles,
     addFile,
     removeFile,
+    removeAllFiles,
     setStandard,
     setStandardByNames,
     setAll,
