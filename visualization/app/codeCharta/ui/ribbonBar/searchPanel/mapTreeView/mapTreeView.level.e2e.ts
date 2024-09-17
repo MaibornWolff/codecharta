@@ -1,16 +1,16 @@
 import { clearIndexedDB, goto } from "../../../../../puppeteer.helper"
 import { MapTreeViewLevelPageObject } from "./mapTreeView.level.po"
-import { SearchPanelModeSelectorPageObject } from "../searchPanelModeSelector/searchPanelModeSelector.po"
 import { NodeContextMenuPageObject } from "../../../../state/effects/nodeContextMenu/nodeContextMenu.po"
+import { SearchPanelPageObject } from "../searchPanel.po"
 
 describe("MapTreeViewLevel", () => {
     let mapTreeViewLevel: MapTreeViewLevelPageObject
-    let searchPanelModeSelector: SearchPanelModeSelectorPageObject
+    let searchPanel: SearchPanelPageObject
     let nodeContextMenu: NodeContextMenuPageObject
 
     beforeEach(async () => {
         mapTreeViewLevel = new MapTreeViewLevelPageObject()
-        searchPanelModeSelector = new SearchPanelModeSelectorPageObject()
+        searchPanel = new SearchPanelPageObject()
         nodeContextMenu = new NodeContextMenuPageObject()
 
         await goto()
@@ -24,7 +24,7 @@ describe("MapTreeViewLevel", () => {
         it("excluding a building should exclude it from the tree-view as well", async () => {
             const filePath = "/root/sample1.cc.json/ParentLeaf/smallLeaf.html"
 
-            await searchPanelModeSelector.toggleTreeView()
+            await searchPanel.toggle()
             await mapTreeViewLevel.openFolder("/root/sample1.cc.json")
             await mapTreeViewLevel.openFolder("/root/sample1.cc.json/ParentLeaf")
             await mapTreeViewLevel.openContextMenu(filePath)
@@ -38,7 +38,7 @@ describe("MapTreeViewLevel", () => {
         it("NodeContextMenu path should remain marked when hovering over another mapTreeView Element", async () => {
             const filePath = "/root/sample1.cc.json/ParentLeaf/smallLeaf.html"
 
-            await searchPanelModeSelector.toggleTreeView()
+            await searchPanel.toggle()
             await mapTreeViewLevel.openFolder("/root/sample1.cc.json")
             await mapTreeViewLevel.openFolder("/root/sample1.cc.json/ParentLeaf")
             await mapTreeViewLevel.openContextMenu(filePath)
