@@ -78,4 +78,4 @@ If you installed codecharta-analysis globally via npm, you can just run
 <br>
 `ccsh sourcemonitorimport PATH_TO_SOURCEMONITOR_CSV -o PATH_TO_OUTPUTFILE`
 
-> You can find everything about this importer here [SourceMonitorImporter]({{site.baseurl}}{% link _docs/04-07-sourcemonitor.md %})
+> You can find everything about this importer here [SourceMonitorImporter]({{site.baseurl}}{% link _docs/03-08-sourcemonitorimporter.md %})

@@ -10,14 +10,22 @@ The generated docs can be viewed locally before being pushed to GitHub (see belo
 
 1. [Install Ruby](https://www.ruby-lang.org/en/documentation/installation/) version 2.7.0 or above (check with `ruby -v`). Please be aware, that some OS come with an old Ruby version. [Rubyenv](https://github.com/rbenv/rbenv#installation) did wonders for me (you can skip these steps if you use rbenv already or have some other way to acquire ruby):
    - `brew install rbenv`
-   - Add `eval "$(rbenv init -)"` to the `~/.bash_profile`
+   - Add `eval "$(rbenv init -)"` to the `~/.bash_profile`, `~/.bashrc`, `~/.zshrc` etc. dependent on your shell OR execute
+     - For Bash: `PATH="$HOME/.rbenv/bin:$PATH"` and `eval "$(rbenv init -)"`
+     - For Zsh: `export PATH="$HOME/.rbenv/bin:$PATH"` and `eval "$(rbenv init - zsh)"`
+     - For C-Shell: `setenv PATH $HOME/.rbenv/bin:$PATH` and `eval 'rbenv init - csh'`
    - Close terminal
-   - `which ruby` should now point to _~/.rbenv/shims/ruby_
-   - `rbenv install -v 2.7.4`
+   - Make sure that `~/.rbenv/shims/ruby` appears before `/usr/bin` in the PATH by running `echo $PATH`
+   - `which ruby` should now point to `~/.rbenv/shims/ruby`
+   - `rbenv install -v 3.0.2`
    - OPTIONAL to create a `.ruby-version` in `gh-pages`
    - `cd gh-pages` to go into the docs directory
-   - `rbenv local 2.7.4`
-   - `ruby -v` should now be 2.7.4 for this directory
+   - `rbenv local 3.0.2`
+   - `ruby -v` should now be 3.0.2 for this directory
+   - Ensure that the `uri` module is at version 0.13.0
+     - Use `irb` to open the Ruby shell
+     - Run `puts URI::VERSION` to check the `uri` version
+     - If an upgrade is needed, execute `gem install uri`
    - `bundle` to install all gems
      - `gem install bundler:2.0.2` and `bundle update --bundler` in case the bundler needs to be updated first
    - `bundle exec jekyll serve` to build the site and make it available on a local server
@@ -79,7 +87,7 @@ MM can be modified by copying files from MM directly and changing their content.
 
 ### Markdown
 
-Jekyll uses kramdown to parse Markdown. Please take a look at its [qickref](https://kramdown.gettalong.org/syntax.html#links-and-images). Also, please use this format for internal links between markdown files: `[visualization]({{site.baseurl}}{% link _docs/06-01-visualization.md %})`. It has the benefit that the build will fail locally if a file cannot be found.
+Jekyll uses kramdown to parse Markdown. Please take a look at its [qickref](https://kramdown.gettalong.org/syntax.html#links-and-images). Also, please use this format for internal links between markdown files: `[visualization]({{site.baseurl}}{% link _docs/04-01-visualization.md %})`. It has the benefit that the build will fail locally if a file cannot be found. A link to a section of a different page would look like this: `[link text]({{site.baseurl}}{% link _docs/01-01-document.md %}#section)`.
 
 ## Troubleshoot Docs Generation
 
