@@ -38,13 +38,13 @@ export const primaryMetricsSelector = createSelector(
     }
 )
 
-function getEdge(key: string, selectedNode: CodeMapNode): Edge {
+export function getEdge(key: string, selectedNode: CodeMapNode): Edge {
     if (key === undefined || key === null) {
         return null
     }
     return {
         name: key,
-        incoming: selectedNode.edgeAttributes[key] ? selectedNode.edgeAttributes[key].incoming : 0,
-        outgoing: selectedNode.edgeAttributes[key] ? selectedNode.edgeAttributes[key].outgoing : 0
+        incoming: selectedNode.edgeAttributes[key] ? selectedNode.edgeAttributes[key].incoming ?? 0 : 0,
+        outgoing: selectedNode.edgeAttributes[key] ? selectedNode.edgeAttributes[key].outgoing ?? 0 : 0
     }
 }
