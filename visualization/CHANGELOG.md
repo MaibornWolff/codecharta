@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [1.128.0] - 2024-09-18
+
 ### Added 🚀
 
 - Add feature to zoom at the mouse cursor [#3693](https://github.com/MaibornWolff/codecharta/pull/3693)
@@ -22,6 +24,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Changed
 
 - Change OrbitControls to MapControls for improved map navigation [#3693](https://github.com/MaibornWolff/codecharta/pull/3693)
+- Remove unnecessary button that opened and closed the file explorer [#3647](https://github.com/MaibornWolff/codecharta/pull/3748)
 - Overhaul Focus and Unfocus functionality[#3706](https://github.com/MaibornWolff/codecharta/pull/3706)
 
 ### Chore 👨‍💻 👩‍💻
