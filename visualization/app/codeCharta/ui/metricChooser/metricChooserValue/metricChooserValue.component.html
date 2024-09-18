@@ -1,12 +1,12 @@
 @if (node$ | async; as node) {
     <cc-rounded-box>
         <cc-metric-chooser-type [metricFor]="metricFor"></cc-metric-chooser-type>
-        <span>{{ node.attributes[(primaryMetricNames$ | async)[metricFor]].toLocaleString() }}</span>
+        <span>{{ node.attributes[(primaryMetricNames$ | async)[metricFor]]?.toLocaleString() }}</span>
     </cc-rounded-box>
 
     @if (node.deltas) {
         <cc-rounded-box [backgroundColor]="calculateBackgroundColor(node.deltas[(primaryMetricNames$ | async)[metricFor]])">
-            &Delta;{{ node.deltas[(primaryMetricNames$ | async)[metricFor]].toLocaleString() }}
+            &Delta;{{ node.deltas[(primaryMetricNames$ | async)[metricFor]]?.toLocaleString() }}
         </cc-rounded-box>
     }
 }
