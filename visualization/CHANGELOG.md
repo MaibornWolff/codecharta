@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Changed
+
+- Add thousands seperation for metrics value [#3758](https://github.com/MaibornWolff/codecharta/pull/3758)
+
 ## [1.128.0] - 2024-09-18
 
 ### Added 🚀
