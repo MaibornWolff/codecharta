@@ -23,7 +23,7 @@ describe("LegendPanelController", () => {
             providers: [
                 provideMockStore({
                     selectors: [
-                        { selector: heightMetricSelector, value: "complexity" },
+                        { selector: heightMetricSelector, value: "sonar_complexity" },
                         { selector: areaMetricSelector, value: "loc" },
                         { selector: colorMetricSelector, value: "rloc" },
                         { selector: colorRangeSelector, value: { from: 21, to: 42, max: 9001 } },
@@ -64,7 +64,7 @@ describe("LegendPanelController", () => {
 
         const metricDescriptions = container.querySelectorAll("cc-legend-block")
         expect(metricDescriptions[0].textContent).toMatch("Area metric: Lines of Code (loc)")
-        expect(metricDescriptions[1].textContent).toMatch("Height metric: Cyclomatic Complexity (complexity)")
+        expect(metricDescriptions[1].textContent).toMatch("Height metric: Cyclomatic Complexity (sonar_complexity)")
         expect(metricDescriptions[2].textContent).toMatch("Color metric: Real Lines of Code (rloc)")
     })
 
@@ -74,7 +74,7 @@ describe("LegendPanelController", () => {
         const metricLink = "https://rl.oc"
         store.overrideSelector(isDeltaStateSelector, false)
         const complexityAttributeDescriptor = {
-            complexity: {
+            sonar_complexity: {
                 title: "COMPLEXITY_Title",
                 description: "COMPLEXITY_description",
                 hintLowValue: "COMPLEXITY_lowValue",
@@ -93,9 +93,9 @@ describe("LegendPanelController", () => {
 
         const metricDescriptions = container.querySelectorAll("cc-legend-block")
         expect(metricDescriptions[0].textContent).toMatch("Area metric: Lines of Code (loc)")
-        expect(metricDescriptions[1].textContent).toMatch("Height metric: COMPLEXITY_Title (complexity)")
+        expect(metricDescriptions[1].textContent).toMatch("Height metric: COMPLEXITY_Title (sonar_complexity)")
         expect(metricDescriptions[1].firstElementChild.getAttribute("title")).toMatch(
-            "COMPLEXITY_Title (complexity):\nCOMPLEXITY_description\nLow Values: COMPLEXITY_lowValue"
+            "COMPLEXITY_Title (sonar_complexity):\nCOMPLEXITY_description\nLow Values: COMPLEXITY_lowValue"
         )
         expect(metricDescriptions[1].querySelector("a")).toBeNull()
         expect(metricDescriptions[2].textContent).toMatch("Color metric: RLOC_Title (rloc)")

@@ -102,8 +102,8 @@ export const TEST_ATTRIBUTE_TYPES = {
 
 export const TEST_ATTRIBUTE_DESCRIPTORS_HALF_FILLED: AttributeDescriptors = {
     mcc: {
-        title: "Maximum Cyclic Complexity",
-        description: "Maximum cyclic complexity",
+        title: "Maximum Cyclic sonar_complexity",
+        description: "Maximum cyclic sonar_complexity",
         hintLowValue: "",
         hintHighValue: "",
         link: "https://www.npmjs.com/package/metric-gardener"
@@ -208,25 +208,25 @@ export const VALID_NODE_JAVA: CodeMapNode = {
                     name: "file1.java",
                     path: "/root/src/main/file1.java",
                     type: NodeType.FILE,
-                    attributes: { rloc: 70, functions: 1000, complexity: 10, loc: 2000 }
+                    attributes: { rloc: 70, functions: 1000, sonar_complexity: 10, loc: 2000 }
                 },
                 {
                     name: "file2.java",
                     path: "/root/src/main/file2.java",
                     type: NodeType.FILE,
-                    attributes: { rloc: 55, functions: 100, complexity: 40, loc: 100 }
+                    attributes: { rloc: 55, functions: 100, sonar_complexity: 40, loc: 100 }
                 },
                 {
                     name: "file3.java",
                     path: "/root/src/main/file3.java",
                     type: NodeType.FILE,
-                    attributes: { rloc: 45, functions: 1, complexity: 70, loc: 1 }
+                    attributes: { rloc: 45, functions: 1, sonar_complexity: 70, loc: 1 }
                 },
                 {
                     name: "readme",
                     path: "/root/src/main/readme",
                     type: NodeType.FILE,
-                    attributes: { rloc: 200, functions: 1, complexity: 70, loc: 1 }
+                    attributes: { rloc: 200, functions: 1, sonar_complexity: 70, loc: 1 }
                 }
             ]
         },
@@ -240,7 +240,7 @@ export const VALID_NODE_JAVA: CodeMapNode = {
                     name: "otherFile.java",
                     path: "/root/src/test/otherFile.java",
                     type: NodeType.FILE,
-                    attributes: { rloc: 100, functions: 10, complexity: 100 }
+                    attributes: { rloc: 100, functions: 10, sonar_complexity: 100 }
                 }
             ]
         }
