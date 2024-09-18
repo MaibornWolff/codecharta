@@ -32,14 +32,13 @@ describe("MapTreeViewLevel", () => {
             expect(metrics).toHaveLength(2)
         })
 
-        it("should display the correct amount of incoming and outgoing edges of buildings for default metric", async () => {
+        it("should not display the amount of incoming and outgoing edges of buildings for the none metric", async () => {
             await searchPanel.toggle()
-            await mapTreeViewLevel.openFolder("/root/sample1.cc.json")
-            await mapTreeViewLevel.openFolder("/root/sample1.cc.json/ParentLeaf")
-            await mapTreeViewLevel.hoverNode("/root/sample1.cc.json/ParentLeaf/smallLeaf.html")
+            await mapTreeViewLevel.openFolder("/root/sample2.cc.json")
+            await mapTreeViewLevel.openFolder("/root/sample2.cc.json/ParentLeaf")
+            await mapTreeViewLevel.hoverNode("/root/sample2.cc.json/ParentLeaf/smallLeaf.html")
 
-            expect(await edgeChooser.isEdgeCountAvailable()).toBeTruthy()
-            expect(await edgeChooser.getAmountOfEdges()).toEqual({ incoming: 2, outgoing: 0 })
+            expect(await edgeChooser.isEdgeCountAvailable()).toBeFalsy()
         })
     })
 })
