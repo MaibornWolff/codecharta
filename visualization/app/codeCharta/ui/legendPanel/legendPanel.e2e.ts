@@ -2,20 +2,20 @@ import { clearIndexedDB, clickButtonOnPageElement, goto } from "../../../puppete
 import { expect } from "@jest/globals"
 import { LegendPanelObject } from "./legendPanel.po"
 import { MapTreeViewLevelPageObject } from "../ribbonBar/searchPanel/mapTreeView/mapTreeView.level.po"
-import { SearchPanelModeSelectorPageObject } from "../ribbonBar/searchPanel/searchPanelModeSelector/searchPanelModeSelector.po"
 import { UploadFileButtonPageObject } from "../toolBar/uploadFilesButton/uploadFilesButton.po"
+import { SearchPanelPageObject } from "../ribbonBar/searchPanel/searchPanel.po"
 
 describe("LegendPanel", () => {
     let legendPanelObject: LegendPanelObject
     let uploadFilesButton: UploadFileButtonPageObject
     let mapTreeViewLevel: MapTreeViewLevelPageObject
-    let searchPanelModeSelector: SearchPanelModeSelectorPageObject
+    let searchPanel: SearchPanelPageObject
 
     beforeEach(async () => {
         legendPanelObject = new LegendPanelObject()
         uploadFilesButton = new UploadFileButtonPageObject()
         mapTreeViewLevel = new MapTreeViewLevelPageObject()
-        searchPanelModeSelector = new SearchPanelModeSelectorPageObject()
+        searchPanel = new SearchPanelPageObject()
 
         await goto()
         await setupTest()
@@ -28,7 +28,7 @@ describe("LegendPanel", () => {
     async function setupTest() {
         await uploadFilesButton.openFiles(["./app/codeCharta/resources/sample1_with_different_edges.cc.json"])
         await legendPanelObject.open()
-        await searchPanelModeSelector.toggleTreeView()
+        await searchPanel.toggle()
         await mapTreeViewLevel.openContextMenu("/root")
         await clickButtonOnPageElement(".colorButton:nth-child(2)")
     }

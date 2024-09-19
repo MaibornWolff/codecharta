@@ -1,8 +1,7 @@
 cc-search-panel-mode-selector {
-    mat-button-toggle-group {
+    mat-button-toggle {
         height: 100%;
         align-items: center;
-        font-size: 12px;
     }
 
     .has-blacklist-items-indicator {
