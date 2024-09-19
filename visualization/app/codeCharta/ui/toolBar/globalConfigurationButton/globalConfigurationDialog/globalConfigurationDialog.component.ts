@@ -14,6 +14,7 @@ import { setResetCameraIfNewFileIsLoaded } from "../../../../state/store/appSett
 import { resetCameraIfNewFileIsLoadedSelector } from "../../../../state/store/appSettings/resetCameraIfNewFileIsLoaded/resetCameraIfNewFileIsLoaded.selector"
 
 @Component({
+    selector: "cc-global-configuration-dialog",
     templateUrl: "./globalConfigurationDialog.component.html",
     styleUrls: ["./globalConfigurationDialog.component.scss"]
 })
