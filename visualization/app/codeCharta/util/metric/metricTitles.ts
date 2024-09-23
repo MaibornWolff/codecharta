@@ -7,6 +7,7 @@ export const metricTitles: Map<string, string> = new Map([
     ["rloc", "Real Lines of Code"],
     ["comment_lines", "Number of Code Lines with Comments"],
     ["complexity", "Cyclomatic Complexity"],
+    ["sonar_complexity", "Cyclomatic Complexity"],
     ["mcc", "McCabe Complexity"],
     ["avgCommits", "Average Number of Commits from this file"],
     ["functions", "Number of Functions"],
