@@ -34,9 +34,8 @@ export class ViewCubeComponent implements OnInit {
     private hoverInfo = { cube: null, originalMaterial: null }
 
     private cubeDefinition = {
-        front: null,
-        middle: null,
-        back: null
+        top: null,
+        sides: null
     }
 
     constructor(
@@ -71,12 +70,11 @@ export class ViewCubeComponent implements OnInit {
     }
 
     private initCube() {
-        const { group, front, middle, back } = ViewCubemeshGenerator.buildCube(1.6)
+        const { group, top, sides } = ViewCubemeshGenerator.buildCube(1.9)
 
         this.cubeGroup = group
-        this.cubeDefinition.front = front
-        this.cubeDefinition.middle = middle
-        this.cubeDefinition.back = back
+        this.cubeDefinition.top = top
+        this.cubeDefinition.sides = sides
 
         const cubeBoundingBox = new BoxHelper(this.cubeGroup, new Color(0x00_00_00))
 
@@ -138,91 +136,62 @@ export class ViewCubeComponent implements OnInit {
 
     onCubeClicked = (data: { cube: Mesh }) => {
         switch (data.cube) {
-            case this.cubeDefinition.front.top.middle:
-                this.threeMapControlsService.rotateCameraInVectorDirection(0, -1, -1)
-                break
-            case this.cubeDefinition.front.top.left:
+            case this.cubeDefinition.top.front.left:
                 this.threeMapControlsService.rotateCameraInVectorDirection(1, -1, -1)
                 break
-            case this.cubeDefinition.front.top.right:
+            case this.cubeDefinition.top.front.center:
+                this.threeMapControlsService.rotateCameraInVectorDirection(0, -1, -1)
+                break
+            case this.cubeDefinition.top.front.right:
                 this.threeMapControlsService.rotateCameraInVectorDirection(-1, -1, -1)
                 break
 
-            case this.cubeDefinition.front.middle.middle:
-                this.threeMapControlsService.rotateCameraInVectorDirection(0, 0, 0)
-                break
-            case this.cubeDefinition.front.middle.left:
-                this.threeMapControlsService.rotateCameraInVectorDirection(1, 0, -1)
-                break
-            case this.cubeDefinition.front.middle.right:
-                this.threeMapControlsService.rotateCameraInVectorDirection(-1, 0, -1)
-                break
-
-            case this.cubeDefinition.front.bottom.middle:
-                this.threeMapControlsService.rotateCameraInVectorDirection(0, 1, -1)
-                break
-            case this.cubeDefinition.front.bottom.left:
-                this.threeMapControlsService.rotateCameraInVectorDirection(1, 1, -1)
-                break
-            case this.cubeDefinition.front.bottom.right:
-                this.threeMapControlsService.rotateCameraInVectorDirection(-1, 1, -1)
-                break
-
-            case this.cubeDefinition.middle.middle.right:
-                this.threeMapControlsService.rotateCameraInVectorDirection(-1, 0, 0)
-                break
-            case this.cubeDefinition.middle.top.right:
-                this.threeMapControlsService.rotateCameraInVectorDirection(-1, -1, 0)
-                break
-            case this.cubeDefinition.middle.bottom.right:
-                this.threeMapControlsService.rotateCameraInVectorDirection(-1, 1, 0)
-                break
-
-            case this.cubeDefinition.middle.middle.left:
-                this.threeMapControlsService.rotateCameraInVectorDirection(1, 0, 0)
-                break
-            case this.cubeDefinition.middle.top.left:
+            case this.cubeDefinition.top.middle.left:
                 this.threeMapControlsService.rotateCameraInVectorDirection(1, -1, 0)
                 break
-            case this.cubeDefinition.middle.bottom.left:
-                this.threeMapControlsService.rotateCameraInVectorDirection(1, 1, 0)
-                break
-
-            case this.cubeDefinition.middle.top.middle:
+            case this.cubeDefinition.top.middle.center:
                 this.threeMapControlsService.rotateCameraInVectorDirection(0, -1, 0)
+                // TODO: rotate camera to look at front of map
                 break
-            case this.cubeDefinition.middle.bottom.middle:
-                this.threeMapControlsService.rotateCameraInVectorDirection(0, 1, 0)
+            case this.cubeDefinition.top.middle.right:
+                this.threeMapControlsService.rotateCameraInVectorDirection(-1, -1, 0)
                 break
 
-            case this.cubeDefinition.back.top.middle:
-                this.threeMapControlsService.rotateCameraInVectorDirection(0, -1, 1)
-                break
-            case this.cubeDefinition.back.top.left:
+            case this.cubeDefinition.top.back.left:
                 this.threeMapControlsService.rotateCameraInVectorDirection(1, -1, 1)
                 break
-            case this.cubeDefinition.back.top.right:
+            case this.cubeDefinition.top.back.center:
+                this.threeMapControlsService.rotateCameraInVectorDirection(0, -1, 1)
+                break
+            case this.cubeDefinition.top.back.right:
                 this.threeMapControlsService.rotateCameraInVectorDirection(-1, -1, 1)
                 break
 
-            case this.cubeDefinition.back.middle.middle:
-                this.threeMapControlsService.rotateCameraInVectorDirection(0, 0, 1)
+            case this.cubeDefinition.sides.front.left:
+                this.threeMapControlsService.rotateCameraInVectorDirection(1, 0, -1)
                 break
-            case this.cubeDefinition.back.middle.left:
-                this.threeMapControlsService.rotateCameraInVectorDirection(-1, 0, 1)
+            case this.cubeDefinition.sides.front.center:
+                this.threeMapControlsService.rotateCameraInVectorDirection(0, 0, 0)
                 break
-            case this.cubeDefinition.back.middle.right:
-                this.threeMapControlsService.rotateCameraInVectorDirection(1, 0, 1)
+            case this.cubeDefinition.sides.front.right:
+                this.threeMapControlsService.rotateCameraInVectorDirection(-1, 0, -1)
                 break
 
-            case this.cubeDefinition.back.bottom.middle:
-                this.threeMapControlsService.rotateCameraInVectorDirection(0, 1, 1)
+            case this.cubeDefinition.sides.middle.left:
+                this.threeMapControlsService.rotateCameraInVectorDirection(1, 0, 0)
                 break
-            case this.cubeDefinition.back.bottom.left:
-                this.threeMapControlsService.rotateCameraInVectorDirection(-1, 1, 1)
+            case this.cubeDefinition.sides.middle.right:
+                this.threeMapControlsService.rotateCameraInVectorDirection(-1, 0, 0)
                 break
-            case this.cubeDefinition.back.bottom.right:
-                this.threeMapControlsService.rotateCameraInVectorDirection(1, 1, 1)
+
+            case this.cubeDefinition.sides.back.left:
+                this.threeMapControlsService.rotateCameraInVectorDirection(-1, 0, 1)
+                break
+            case this.cubeDefinition.sides.back.center:
+                this.threeMapControlsService.rotateCameraInVectorDirection(0, 0, 1)
+                break
+            case this.cubeDefinition.sides.back.right:
+                this.threeMapControlsService.rotateCameraInVectorDirection(1, 0, 1)
                 break
         }
     }
