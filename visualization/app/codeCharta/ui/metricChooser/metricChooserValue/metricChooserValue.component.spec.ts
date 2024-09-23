@@ -62,6 +62,21 @@ describe("metricChooserValueComponent", () => {
         expect(screen.queryByText("Δ")).toBe(null)
     })
 
+    it("should display value with thousands seperation", async () => {
+        const rloc = "1000000"
+        VALID_NODE.children[0].attributes = { rloc: Number(rloc) }
+        TestBed.overrideProvider(NodeSelectionService, {
+            useValue: { createNodeObservable: jest.fn().mockReturnValue(of(VALID_NODE.children[0])) }
+        })
+        await render(MetricChooserValueComponent, {
+            excludeComponentDeclaration: true,
+            componentProperties: { metricFor: "areaMetric" }
+        })
+
+        expect(screen.queryByText("1,000,000")).not.toBe(null)
+        expect(screen.queryByText("Δ")).toBe(null)
+    })
+
     it("should display zero height delta value in grey", async () => {
         TestBed.overrideProvider(NodeSelectionService, {
             useValue: {
