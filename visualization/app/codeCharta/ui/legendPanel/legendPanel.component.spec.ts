@@ -15,6 +15,8 @@ import { mapColorsSelector } from "../../state/store/appSettings/mapColors/mapCo
 import { defaultMapColors } from "../../state/store/appSettings/mapColors/mapColors.reducer"
 import { selectedColorMetricDataSelector } from "../../state/selectors/accumulatedData/metricData/selectedColorMetricData.selector"
 import { attributeDescriptorsSelector } from "../../state/store/fileSettings/attributeDescriptors/attributeDescriptors.selector"
+import { ViewContainerRef } from "@angular/core"
+import userEvent from "@testing-library/user-event"
 
 describe("LegendPanelController", () => {
     beforeEach(() => {
@@ -33,7 +35,9 @@ describe("LegendPanelController", () => {
                         { selector: attributeDescriptorsSelector, value: {} }
                     ]
                 }),
-                { provide: State, useValue: {} }
+                { provide: State, useValue: {} },
+                LegendPanelComponent,
+                ViewContainerRef
             ]
         })
     })
@@ -120,6 +124,58 @@ describe("LegendPanelController", () => {
         })
         const openingButton = container.querySelector(".panel-button")
         expect(openingButton.classList).toContain("isAttributeSideBarVisible")
+    })
+
+    describe("closing on outside clicks", () => {
+        let panel: Element
+
+        beforeEach(async () => {
+            const { container } = await render(`<cc-legend-panel></cc-legend-panel>`, {
+                excludeComponentDeclaration: true
+            })
+            panel = container.querySelector("cc-legend-panel")
+        })
+
+        it("should subscribe to mousedown events when opening", () => {
+            const addEventListenerSpy = jest.spyOn(document, "addEventListener")
+            const panel = TestBed.inject(LegendPanelComponent)
+            panel.ngOnInit()
+            expect(addEventListenerSpy).toHaveBeenCalledWith("mousedown", expect.any(Function))
+        })
+
+        it("should unsubscribe mousedown events when destroyed", () => {
+            const removeEventListenerSpy = jest.spyOn(document, "removeEventListener")
+            const panel = TestBed.inject(LegendPanelComponent)
+            panel.ngOnInit()
+            panel.ngOnDestroy()
+            expect(removeEventListenerSpy).toHaveBeenCalledWith("mousedown", expect.any(Function))
+        })
+
+        it("should close on outside clicks", async () => {
+            const { container } = await render(LegendPanelComponent, { excludeComponentDeclaration: true })
+
+            expect(isLegendPanelOpen(container)).toBe(false)
+
+            const openLegendButton = screen.getByTitle("Show panel")
+            fireEvent.click(openLegendButton)
+            expect(isLegendPanelOpen(container)).toBe(true)
+
+            await userEvent.click(document.body)
+            expect(isLegendPanelOpen(container)).toBe(false)
+        })
+
+        it("should not close when clicking inside", async () => {
+            const { container } = await render(LegendPanelComponent, { excludeComponentDeclaration: true })
+
+            expect(isLegendPanelOpen(container)).toBe(false)
+
+            const openLegendButton = screen.getByTitle("Show panel")
+            fireEvent.click(openLegendButton)
+            expect(isLegendPanelOpen(container)).toBe(true)
+
+            await userEvent.click(panel.querySelector("cc-legend-panel"))
+            expect(isLegendPanelOpen(container)).toBe(true)
+        })
     })
 })
 

@@ -6,14 +6,14 @@ import { heightMetricSelector } from "../../state/store/dynamicSettings/heightMe
 import { areaMetricSelector } from "../../state/store/dynamicSettings/areaMetric/areaMetric.selector"
 import { colorMetricSelector } from "../../state/store/dynamicSettings/colorMetric/colorMetric.selector"
 import { edgeMetricSelector } from "../../state/store/dynamicSettings/edgeMetric/edgeMetric.selector"
-import { Component, ElementRef, OnInit } from "@angular/core"
+import { Component, ViewContainerRef, OnDestroy, OnInit } from "@angular/core"
 
 @Component({
     selector: "cc-legend-panel",
     templateUrl: "./legendPanel.component.html",
     styleUrls: ["./legendPanel.component.scss"]
 })
-export class LegendPanelComponent implements OnInit {
+export class LegendPanelComponent implements OnInit, OnDestroy {
     isLegendVisible = false
     isDeltaState$ = this.store.select(isDeltaStateSelector)
     heightMetric$ = this.store.select(heightMetricSelector)
@@ -24,7 +24,7 @@ export class LegendPanelComponent implements OnInit {
     constructor(
         private store: Store<CcState>,
         public isAttributeSideBarVisibleService: IsAttributeSideBarVisibleService,
-        private readonly elementReference: ElementRef
+        private readonly viewReference: ViewContainerRef
     ) {}
 
     toggleIsLegendVisible() {
@@ -41,13 +41,19 @@ export class LegendPanelComponent implements OnInit {
     private collapseOnOutsideClick(event: MouseEvent) {
         const target = event.target as Node
         if (this.isLegendVisible) {
-            const clickedInside = this.elementReference.nativeElement.contains(target)
+            const clickedInside = this.viewReference.element.nativeElement.contains(target)
             const overlayPaneElement = document.querySelector(".cdk-overlay-container")
             const clickedWithinOverlayPane = overlayPaneElement ? overlayPaneElement.contains(target) : false
 
             if (!(clickedInside || clickedWithinOverlayPane)) {
                 this.isLegendVisible = false
             }
+        }
+    }
+
+    ngOnDestroy(): void {
+        if (this.mouseDownListener) {
+            document.removeEventListener("mousedown", this.mouseDownListener)
         }
     }
 }
