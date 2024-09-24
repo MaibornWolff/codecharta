@@ -196,23 +196,44 @@ describe("loadFileService", () => {
             expect(CCFilesUnderTest[0].fileMeta.fileChecksum).toEqual("hash_1")
         })
 
-        it("should keep sample files when loading the same sample file again", () => {
+        it("should keep sample file when loading the same sample file again", () => {
             const dispatchSpy = jest.spyOn(store, "dispatch")
 
             const valid2ndFileContent = klona(validFileContent)
             valid2ndFileContent.fileChecksum = "hash_1"
 
-            codeChartaService.loadFiles([{ fileName: "FirstFile", content: validFileContent, fileSize: 42 }])
+            const valid3rdFileContent = klona(validFileContent)
+            valid3rdFileContent.fileChecksum = "hash_2"
+
+            const valid3rdFileContentWithDifferentHash = klona(validFileContent)
+            valid3rdFileContentWithDifferentHash.fileChecksum = "hash_2_1"
+
+            const valid4thFileContent = klona(validFileContent)
+            valid4thFileContent.fileChecksum = "hash_3"
+
+            codeChartaService.loadFiles([
+                { fileName: "FirstFile", content: validFileContent, fileSize: 42 },
+                { fileName: "SecondFile", content: valid2ndFileContent, fileSize: 42 },
+                { fileName: "ThirdFile", content: valid3rdFileContent, fileSize: 42 }
+            ])
             store.dispatch(setCurrentFilesAreSampleFiles({ value: true }))
 
-            codeChartaService.loadFiles([{ fileName: "FirstFile", content: validFileContent, fileSize: 42 }])
+            codeChartaService.loadFiles([
+                { fileName: "SecondFile", content: valid2ndFileContent, fileSize: 42 },
+                { fileName: "ThirdFile", content: valid3rdFileContentWithDifferentHash, fileSize: 42 },
+                { fileName: "FourthFile", content: valid4thFileContent, fileSize: 42 }
+            ])
 
             const CCFilesUnderTest = getCCFiles(state.getValue().files)
 
             expect(dispatchSpy).toHaveBeenCalledWith(setCurrentFilesAreSampleFiles({ value: false }))
-            expect(CCFilesUnderTest.length).toEqual(1)
-            expect(CCFilesUnderTest[0].fileMeta.fileName).toEqual("FirstFile")
-            expect(CCFilesUnderTest[0].fileMeta.fileChecksum).toEqual("invalid-md5-sample")
+            expect(CCFilesUnderTest.length).toEqual(3)
+            expect(CCFilesUnderTest[0].fileMeta.fileName).toEqual("SecondFile")
+            expect(CCFilesUnderTest[0].fileMeta.fileChecksum).toEqual("hash_1")
+            expect(CCFilesUnderTest[1].fileMeta.fileName).toEqual("ThirdFile")
+            expect(CCFilesUnderTest[1].fileMeta.fileChecksum).toEqual("hash_2_1")
+            expect(CCFilesUnderTest[2].fileMeta.fileName).toEqual("FourthFile")
+            expect(CCFilesUnderTest[2].fileMeta.fileChecksum).toEqual("hash_3")
         })
 
         it("should keep sample files when loading the same sample file and after that another different file", () => {

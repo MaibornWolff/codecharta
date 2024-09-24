@@ -46,7 +46,14 @@ export class LoadFileService implements OnDestroy {
         const recentFiles: string[] = []
         const fileValidationResults: CCFileValidationResult[] = []
 
-        enrichFileStatesAndRecentFilesWithValidationResults(fileStates, recentFiles, nameDataPairs, fileValidationResults)
+        enrichFileStatesAndRecentFilesWithValidationResults(
+            fileStates,
+            recentFiles,
+            nameDataPairs,
+            fileValidationResults,
+            () => this.state.getValue().appStatus.currentFilesAreSampleFiles,
+            () => this.store.dispatch(setCurrentFilesAreSampleFiles({ value: false }))
+        )
 
         if (fileValidationResults.length > 0) {
             this.dialog.open(ErrorDialogComponent, {
@@ -56,14 +63,6 @@ export class LoadFileService implements OnDestroy {
 
         if (recentFiles.length === 0) {
             throw new Error(NO_FILES_LOADED_ERROR_MESSAGE)
-        }
-
-        if (this.state.getValue().appStatus.currentFilesAreSampleFiles) {
-            const numberOfSampleFiles = fileStates.length - recentFiles.length
-            if (numberOfSampleFiles > 0) {
-                fileStates.splice(0, numberOfSampleFiles)
-            }
-            this.store.dispatch(setCurrentFilesAreSampleFiles({ value: false }))
         }
 
         this.store.dispatch(setFiles({ value: fileStates }))
