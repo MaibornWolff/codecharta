@@ -1,7 +1,6 @@
 import {
     addFile,
     invertStandard,
-    removeAllFiles,
     removeFile,
     setAll,
     setDelta,
@@ -24,7 +23,6 @@ export const files = createReducer(
     on(setFiles, setState(defaultFiles)),
     on(addFile, (state, action) => [...state, { file: action.file, selectedAs: FileSelectionState.None }]),
     on(removeFile, (state, action) => removeFileFromState(state, action.fileName)),
-    on(removeAllFiles, () => []),
     on(setDelta, (state, action) => setDeltaState(state, action.referenceFile, action.comparisonFile)),
     on(setDeltaReference, (state, action) => setDeltaReferenceState(state, action.file)),
     on(setDeltaComparison, (state, action) => setDeltaComparisonState(state, action.file)),
