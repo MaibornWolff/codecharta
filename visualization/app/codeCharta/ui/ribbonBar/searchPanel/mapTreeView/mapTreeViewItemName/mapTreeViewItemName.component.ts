@@ -1,8 +1,8 @@
-import { Component, Input, ViewEncapsulation } from "@angular/core"
+import { Component, Input } from "@angular/core"
 import { Store } from "@ngrx/store"
 import { Observable } from "rxjs"
 
-import { CodeMapNode, CcState } from "../../../../../codeCharta.model"
+import { CcState, CodeMapNode } from "../../../../../codeCharta.model"
 import { rootUnarySelector } from "../../../../../state/selectors/accumulatedData/rootUnary.selector"
 import { searchedNodePathsSelector } from "../../../../../state/selectors/searchedNodes/searchedNodePaths.selector"
 import { areaMetricSelector } from "../../../../../state/store/dynamicSettings/areaMetric/areaMetric.selector"
@@ -10,7 +10,7 @@ import { areaMetricSelector } from "../../../../../state/store/dynamicSettings/a
 @Component({
     selector: "cc-map-tree-view-item-name",
     templateUrl: "./mapTreeViewItemName.component.html",
-    encapsulation: ViewEncapsulation.None
+    styleUrls: ["./mapTreeViewItemName.component.scss"]
 })
 export class MapTreeViewItemNameComponent {
     @Input() node: CodeMapNode
