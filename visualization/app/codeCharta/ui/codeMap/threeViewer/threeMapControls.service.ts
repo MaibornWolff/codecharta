@@ -132,7 +132,7 @@ export class ThreeMapControlsService {
         window.addEventListener("wheel", event => {
             this.controls.zoomToCursor = event.deltaY <= 0
         })
-      
+
         this.controls.maxPolarAngle = Math.PI / 2
         this.controls.listenToKeyEvents(window)
         this.controls.addEventListener("change", () => {
