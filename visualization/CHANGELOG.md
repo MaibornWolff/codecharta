@@ -32,6 +32,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Fix issue when multiple files are selected then the edge metrics in the primary metrics section are not displayed correctly. [#3753](https://github.com/MaibornWolff/codecharta/pull/3753)
 - Metric Scenarios (before Metric Templates) are available again [#3762](https://github.com/MaibornWolff/codecharta/pull/3762)
 - Legend Panel closes on outside click [#3770](https://github.com/MaibornWolff/codecharta/pull/3770)
+- Fix that default sample files are not removed when a new file is loaded by the user [#2498](https://github.com/MaibornWolff/codecharta/pull/3768)
 
 ### Changed
 
