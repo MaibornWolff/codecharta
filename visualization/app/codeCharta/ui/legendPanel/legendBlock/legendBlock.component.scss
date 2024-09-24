@@ -1,0 +1,31 @@
+:host {
+    a:link,
+    a:visited {
+        text-decoration: none;
+        color: #000;
+    }
+
+    a:hover {
+        color: blue;
+        text-decoration: solid;
+        text-decoration-line: underline;
+    }
+
+    a:active {
+        color: red;
+    }
+
+    i.fa.fa-external-link {
+        font-size: 10px;
+        min-width: 10px;
+        text-align: center;
+    }
+
+    span {
+        display: inline-block;
+
+        &.bold {
+            font-weight: 600;
+        }
+    }
+}

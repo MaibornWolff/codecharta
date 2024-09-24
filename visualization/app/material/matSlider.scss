@@ -1,0 +1,47 @@
+@use "variables";
+
+.cc-slider-container {
+    display: flex;
+    flex-direction: column;
+
+    .label {
+        margin-left: 10px;
+        color: variables.$cc-font-color;
+    }
+
+    .slider-with-input {
+        display: flex;
+        align-items: center;
+    }
+
+    mat-slider {
+        margin: 0 12px;
+        flex: 2;
+    }
+
+    mat-form-field {
+        flex: 1;
+        height: 32px;
+    }
+
+    .mat-mdc-form-field-subscript-wrapper.mat-mdc-form-field-bottom-align {
+        display: none;
+    }
+
+    .mat-mdc-text-field-wrapper {
+        padding: 0 12px;
+
+        .mat-mdc-form-field-flex {
+            align-self: center;
+
+            .mat-mdc-form-field-infix {
+                padding: 0;
+                min-height: 28px;
+
+                .mat-mdc-input-element {
+                    min-height: inherit;
+                }
+            }
+        }
+    }
+}

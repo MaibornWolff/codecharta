@@ -4,7 +4,7 @@ export default class Rectangle {
     topLeft: Vector2
     width: number
     height: number
-    private bottomRight: Vector2
+    protected bottomRight: Vector2
 
     constructor(topLeft: Vector2, width: number, height: number) {
         this.topLeft = topLeft

@@ -1,16 +1,16 @@
-import { Component, Input, OnChanges, SimpleChanges, ViewChild, ViewEncapsulation } from "@angular/core"
+import { Component, Input, OnChanges, SimpleChanges, ViewChild } from "@angular/core"
 import { CustomConfigHelper } from "../../../../util/customConfigHelper"
 import { CustomConfigItemGroup } from "../../customConfigs.component"
 import { ThreeCameraService } from "../../../codeMap/threeViewer/threeCamera.service"
-import { ThreeOrbitControlsService } from "../../../codeMap/threeViewer/threeOrbitControls.service"
+import { ThreeMapControlsService } from "../../../codeMap/threeViewer/threeMapControls.service"
 import { Store } from "@ngrx/store"
 import { MatExpansionPanel } from "@angular/material/expansion"
+import { ThreeRendererService } from "../../../codeMap/threeViewer/threeRenderer.service"
 
 @Component({
     selector: "cc-custom-config-item-group",
     templateUrl: "./customConfigItemGroup.component.html",
-    styleUrls: ["./customConfigItemGroup.component.scss"],
-    encapsulation: ViewEncapsulation.None
+    styleUrls: ["./customConfigItemGroup.component.scss"]
 })
 export class CustomConfigItemGroupComponent implements OnChanges {
     @Input() customConfigItemGroups: Map<string, CustomConfigItemGroup>
@@ -22,7 +22,8 @@ export class CustomConfigItemGroupComponent implements OnChanges {
     constructor(
         private store: Store,
         private threeCameraService: ThreeCameraService,
-        private threeOrbitControlsService: ThreeOrbitControlsService
+        private threeOrbitControlsService: ThreeMapControlsService,
+        private threeRendererService: ThreeRendererService
     ) {}
 
     ngOnChanges(changes: SimpleChanges): void {
@@ -57,6 +58,12 @@ export class CustomConfigItemGroupComponent implements OnChanges {
     }
 
     applyCustomConfig(configId: string) {
-        CustomConfigHelper.applyCustomConfig(configId, this.store, this.threeCameraService, this.threeOrbitControlsService)
+        CustomConfigHelper.applyCustomConfig(
+            configId,
+            this.store,
+            this.threeCameraService,
+            this.threeOrbitControlsService,
+            this.threeRendererService
+        )
     }
 }

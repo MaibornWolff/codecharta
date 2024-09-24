@@ -20,10 +20,10 @@ jobs:
     - name: Setup Node.js environment
       uses: actions/setup-node@v3
       with:
-        node-version: '18'
+        node-version: '20'
 
     - name: Cache root node modules
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       env:
         cache-name: cache-root-node-modules
       with:
@@ -55,10 +55,10 @@ jobs:
     - name: Setup Node.js environment
       uses: actions/setup-node@v3
       with:
-        node-version: '18'
+        node-version: '20'
 
     - name: Cache node modules
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       env:
         cache-name: cache-node-modules
       with:
@@ -99,10 +99,10 @@ jobs:
     - name: Setup Node.js environment
       uses: actions/setup-node@v3
       with:
-        node-version: '18'
+        node-version: '20'
 
     - name: Cache node modules
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       env:
         cache-name: cache-node-modules
       with:
@@ -135,6 +135,11 @@ jobs:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
 
       - name: Build
         run: |
@@ -190,7 +195,7 @@ jobs:
           path: ./visualization/dist/
 
       - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@v2.0.2
+        uses: SonarSource/sonarcloud-github-action@v2.3.0
         with:
           projectBaseDir: ./visualization
           args: >

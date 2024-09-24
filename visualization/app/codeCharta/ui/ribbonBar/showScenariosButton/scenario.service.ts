@@ -23,7 +23,7 @@ import { setMargin } from "../../../state/store/dynamicSettings/margin/margin.ac
 import { defaultMargin } from "../../../state/store/dynamicSettings/margin/margin.reducer"
 import { setState } from "../../../state/store/state.actions"
 import { ThreeCameraService } from "../../codeMap/threeViewer/threeCamera.service"
-import { ThreeOrbitControlsService } from "../../codeMap/threeViewer/threeOrbitControls.service"
+import { ThreeMapControlsService } from "../../codeMap/threeViewer/threeMapControls.service"
 import { ErrorDialogComponent } from "../../dialogs/errorDialog/errorDialog.component"
 import { ScenarioHelper } from "./scenarioHelper"
 
@@ -34,7 +34,7 @@ export class ScenarioService {
         private store: Store<CcState>,
         private dialog: MatDialog,
         private threeCameraService: ThreeCameraService,
-        private threeOrbitControlsService: ThreeOrbitControlsService
+        private threeOrbitControlsService: ThreeMapControlsService
     ) {}
 
     getScenarios() {

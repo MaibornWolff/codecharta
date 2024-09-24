@@ -1,17 +1,17 @@
-@use "../../../material/theme";
+@use "variables";
 
-cc-action-icon {
+:host {
     display: inline-flex;
     align-items: center;
     cursor: pointer;
     width: 24px;
     height: 24px;
     border-radius: 100%;
-    background-color: theme.$cc-primary-color;
+    background-color: variables.$cc-primary-color;
     font-size: 14px;
 
     &:hover {
-        background-color: theme.$cc-emphasized-color;
+        background-color: variables.$cc-emphasized-color;
     }
 
     &.disabled {
@@ -23,5 +23,9 @@ cc-action-icon {
         margin: auto;
         line-height: 1.5;
         color: white;
+
+        &.fa-folder-open {
+            padding-left: 1px;
+        }
     }
 }

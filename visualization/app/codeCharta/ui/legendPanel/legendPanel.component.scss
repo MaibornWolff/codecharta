@@ -1,7 +1,7 @@
-@use "../../../material/theme";
+@use "variables";
 
 $fixedHeight: 35;
-cc-legend-panel {
+:host {
     .rotated-button {
         position: fixed;
         transform: rotate(90deg);
@@ -10,10 +10,10 @@ cc-legend-panel {
         right: -35px;
         color: white;
         user-select: none;
-        background-color: theme.$cc-primary-color;
+        background-color: variables.$cc-primary-color;
 
         &:hover {
-            background-color: theme.$cc-emphasized-color;
+            background-color: variables.$cc-emphasized-color;
         }
 
         &.isAttributeSideBarVisible {
@@ -26,6 +26,8 @@ cc-legend-panel {
         margin: 6px 8px;
         bottom: ($fixedHeight + 20) + px;
         width: 88px;
+        font-size: 10pt;
+        transition: right 0.3s ease;
     }
 
     .block-wrapper {
@@ -39,6 +41,7 @@ cc-legend-panel {
         border-radius: 5px;
         min-width: 200px;
         max-width: 30%;
+        transition: right 0.3s ease;
 
         &.isAttributeSideBarVisible {
             right: 390px;
@@ -53,52 +56,6 @@ cc-legend-panel {
             border-left-style: none;
             border-bottom-style: none;
             color: #000;
-        }
-
-        cc-legend-block {
-            a:link,
-            a:visited {
-                text-decoration: none;
-                color: #000;
-            }
-
-            a:hover {
-                color: blue;
-                text-decoration: solid;
-                text-decoration-line: underline;
-            }
-
-            a:active {
-                color: red;
-            }
-
-            i.fa.fa-external-link {
-                font-size: 10px;
-                min-width: 10px;
-                text-align: center;
-            }
-
-            span {
-                display: inline-block;
-            }
-        }
-
-        .bold {
-            font-weight: 600;
-        }
-
-        .cc-labelled-color-picker-container > .cc-labelled-color-picker-label {
-            white-space: nowrap;
-            text-overflow: ellipsis;
-
-            /* This tricks the browser into cutting off the beginning instead of the end of the label. However,
-			   changing the text direction has side effects, like moving punctuation around.  */
-            direction: rtl;
-
-            span {
-                /* This should prevent the browser from moving punctuation around.  */
-                unicode-bidi: plaintext;
-            }
         }
     }
 }

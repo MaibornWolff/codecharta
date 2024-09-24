@@ -1,44 +1,57 @@
-# StructureModifier
+# Structure Modifier
 
-The StructureModifier modifies .cc.json files.\
-Perform one of the following actions at a time:
+**Category**: Filter (takes in cc.json and outputs cc.json)
 
-- Remove nodes from a project, excluding them and their children.
-- Set a node as the root, making it the root of the resulting sub-project.
-- Move nodes within the project, transferring all children of the source node to the destination node.
-- Print the project hierarchy.
+The Structure Modifier is used to modify the structure of .cc.json files. It enables to:
 
-Specifying multiple actions in a single command results in only one being performed.\
-Edges and blacklist entries associated with moved or removed nodes will be adjusted, and all attribute types will be
-copied.
+- Remove nodes from a project: The resulting project will not include these nodes and their children.
+- Declare a node as root: This means that the chosen node will become the root node of the resulting sub-project.
+- Move nodes within the project: All children of the source node will be transferred to the destination node.
+- Rename the mcc metric to complexity or sonar_complexity (revert the previous renaming to mcc).
+- Print the hierarchy of the project: Prints the hierarchy into the console in a human-readable format.
 
-## Usage and Parameters
+The edges and blacklist entries associated with moved/removed nodes will be altered as well, while all attribute types will be copied.
 
-| Parameter                          | Description                                                                                                                      |
+> Do not specify multiple actions in one command, as only one action will be performed
+
+### Usage and Parameters
+
+| Parameters                         | Description                                                                                                                      |
 | ---------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
-| `[FILE]`                           | input project file                                                                                                               |
-| `-f, --move-from=<moveFrom>`       | path of nodes to move in project folder                                                                                          |
-| `-h, --help`                       | displays this help and exits                                                                                                     |
-| `-o, --output-file=<outputFile>`   | output File (or empty for stdout)                                                                                                |
+| `FILE`                             | files to merge                                                                                                                   |
+| `-f, --move-from=<moveFrom>`       | move nodes in project folder ... (use paired with the `--move-to` parameter)                                                     |
+| `-h, --help`                       | displays help and exits                                                                                                          |
+| `-o, --outputFile=<outputFile>`    | output File (or empty for stdout)                                                                                                |
 | `-p, --print-levels=<printLevels>` | show first x layers of project hierarchy                                                                                         |
 | `-r, --remove=<remove>`            | comma-separated list of nodes to be removed (when using powershell, the list either can't contain spaces or has to be in quotes) |
-| `-s, --set-root=<setRoot>`         | path within project to be extracted as new root                                                                                  |
-| `-t, --move-to=<moveTo>`           | destination path of nodes to move in project folder<br/>creates / overwrites nodes at destination path                           |
+| `--rename-mcc[=<renameMcc>]`       | renames the mcc metric to complexity. Optionally specify 'sonar' for the metric to be renamed to sonar_complexity                |
+| `-s, --set-root=<setRoot>`         | path within project to be extracted as the new root                                                                              |
+| `-t, --move-to=<moveTo>`           | ... move nodes to destination folder (use paired with `--move-from` parameter)                                                   |
 
 ```
-Usage: ccsh modify [-h] [-f=<moveFrom>] [-o=<outputFile>] [-p=<printLevels>]
-                   [-s=<setRoot>] [-t=<moveTo>] [-r=<remove>]... [FILE]
+Usage: ccsh modify [-h] [--rename-mcc[=<renameMcc>]] [-f=<moveFrom>]
+                   [-o=<outputFile>] [-p=<printLevels>] [-s=<setRoot>]
+                   [-t=<moveTo>] [-r=<remove>]... [FILE]
+
 ```
 
 ## Examples
 
-> sh ccsh modify foo.cc.json -p=2
+```
+ccsh modify foo.cc.json -p=2
+```
 
-> sh ccsh modify foo.cc.json --remove=/root/foo --remove=/root/bar/
+```
+ccsh modify foo.cc.json --remove=/root/foo --remove=/root/bar/
+```
 
-> sh ccsh modify foo.cc.json --move-from=/root/foo --move-to=/root/bar -output-file=project.cc.json
+```
+ccsh modify foo.cc.json --move-from=/root/foo --move-to=/root/bar -output-file=project.cc.json
+```
 
-> sh ccsh modify foo.cc.json --set-root=/root/foo/
+```
+ccsh modify foo.cc.json --set-root=/root/foo/
+```
 
 ## Piped input
 

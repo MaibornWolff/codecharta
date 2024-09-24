@@ -4,10 +4,12 @@
 
 CodeCharta consists of two separate parts:
 
-- The [analysis](https://maibornwolff.github.io/codecharta/docs/analysis/) which is a cli-tool that generates a `.cc.json file` file.
+- The [analysis](https://maibornwolff.github.io/codecharta/docs/analysis/) which is a cli-tool that generates a `.cc.json` file.
 - The [visualization](https://maibornwolff.github.io/codecharta/docs/visualization/) that consumes said file and visualises it in form of a tree map. The visualization has both a desktop client and a [web version](https://maibornwolff.github.io/codecharta/visualization/app/index.html?file=codecharta.cc.json.gz&file=codecharta_analysis.cc.json.gz).
 
-Both parts are in active development, meaning as a developer you can contribute to both.
+Both parts are in active development, meaning as a developer you can contribute to both. For more on how we communicate and how you can give feedback, check out [feedback](https://maibornwolff.github.io/codecharta/docs/feedback/).
+
+All major decisions are documented in our [architecture decision records (ADR)](https://maibornwolff.github.io/codecharta/categories/#adr). It’s also important to know that CodeCharta uses [two different tech stacks](https://maibornwolff.github.io/codecharta/adr/ADR_1_decide_tech_stack/) for analysis and visualization.
 
 # Requirements
 
@@ -15,7 +17,7 @@ To work on CodeCharta, please ensure your system includes:
 
 - Git
 - Java >= 11, <= 21
-- Node >= 18
+- Node >= 20
 
 # Install guide
 
@@ -98,6 +100,34 @@ For the visualisation, we utilize Jest and puppeteer for unit- and e2e-tests. To
 
 When opening a pull requests, all tests are executed automatically using GitHub-actions and a branch can only be merged if all tests are successful. However, it is highly recommended to test changes before pushing them!
 
+# GitHub Actions
+
+In GitHub Actions, we defined stages, which group different jobs. Inside a stage, all jobs run in parallel. There is no data persistence between stages, so we have to rebuild our application in each stage. The CI consists of the following stages:
+
+- Testing (which runs on every push on an active PR)
+- Sonar Analysis (which runs on every push on an active PR after testing to ensure code quality metrics are met)
+- Deploy (run by `make_release.py`)
+
+All workflow files can be found under `.github/workflows`
+
+### Testing
+
+- Runs Unit and E2E/UI-Tests
+- Workflow: `test.yml`
+
+### Sonar
+
+- Publishes Sonar-Analysis-Results to [Sonarcloud.io](https://sonarcloud.io) and displays code-quality of the current PR
+- Workflow: `test.yml`
+
+### Deploy
+
+- Deploys the application in a docker container to the github-pages
+- Publishes the new version on npm
+- Publishes a docker container on [Docker Hub](https://hub.docker.com/r/codecharta/codecharta-visualization)
+
+- Workflow: `release.yml`
+
 # Docker
 
 For deployment and usage of the docker images, check out our documentation page [here](https://maibornwolff.github.io/codecharta/docs/docker-containers/).
@@ -107,6 +137,8 @@ For deployment and usage of the docker images, check out our documentation page 
 We mainly use IntelliJ for our development. The project generally works right away, but sometimes issues can occur:
 
 - Sometimes when opening the main CodeCharta folder, the analysis part does not get detected as a module. To solve this, directly open the analysis folder.
+- If you get Error `lint-staged: command not found` when trying to commit: Try to reinstall the node packages in the project. To do that, visit the root directory of the project (and the subdirectories for analysis and visualization if that still fails) and execute `npm ci`.
+- Sometimes the first analysis build fails on new setup: One of our parsers depends on MetricGardener which is a multi-language parser to calculate metrics for a variety of languages. Therefore, make sure to install MetricGardener before trying to build the project. Also make sure that `metric-gardener` is available in your CLI, else npm will try to install it on the fly. You can find more information on the documentation page about the [MetricGardenerImporter](https://maibornwolff.github.io/codecharta/docs/metricgardener-importer).
 - The integration tests for the analysis (`./gradlew integrationTest`) can fail due to OS specific problems:
 
   - On **windows** this may be caused by a missing or unknown `sh` command.
@@ -120,6 +152,11 @@ We mainly use IntelliJ for our development. The project generally works right aw
   - Select 'Jest' and set 'jestUnit.config.json' as the configuration file as well as adding the Jest option '--env=jsdom'
   - After clicking apply, IntelliJ should e able to execute all visualisation tests
 
+# Branching / Releasing
+
+We create Pull Requests to the `main` branch after implementing a feature or fixing a bug. There is no release or development branch. We never push on `main` directly. Please take a look at our [contributing guidelines](https://github.com/MaibornWolff/codecharta/blob/main/CONTRIBUTING.md) before you start committing.
+When updating your branch, we prefer using a rebase instead of merging to keep the commit history clean.
+
 # Documentation structure
 
 Our documentation is generally split between user docs and developer docs.
@@ -132,7 +169,7 @@ For more information about the CodeChart Shell and individual parsers, click [he
 
 # Code Style
 
-The basic code format is defined through the `.editorconfig`. If possible the other formatting tools check out those rules.
+The basic code format is defined through the `.editorconfig`. If possible, the other formatting tools check out those rules.
 Editors like VSC and IntelliJ Idea are able to apply those basic settings as well.
 
 ## Analysis

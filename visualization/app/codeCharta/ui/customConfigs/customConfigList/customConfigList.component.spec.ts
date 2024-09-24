@@ -9,7 +9,7 @@ import { of } from "rxjs"
 import { defaultState } from "../../../state/store/state.manager"
 import { CUSTOM_CONFIG_ITEM_GROUPS } from "../../../util/dataMocks"
 import { ThreeCameraService } from "../../codeMap/threeViewer/threeCamera.service"
-import { ThreeOrbitControlsService } from "../../codeMap/threeViewer/threeOrbitControls.service"
+import { ThreeMapControlsService } from "../../codeMap/threeViewer/threeMapControls.service"
 import { ThreeSceneService } from "../../codeMap/threeViewer/threeSceneService"
 import { CustomConfigHelperService } from "../customConfigHelper.service"
 import { CustomConfigItemGroup } from "../customConfigs.component"
@@ -38,7 +38,7 @@ describe("customConfigListComponent", () => {
                 { provide: CustomConfigHelperService, useValue: mockedCustomConfigHelperService },
                 { provide: ThreeSceneService, useValue: {} },
                 { provide: ThreeCameraService, useValue: {} },
-                { provide: ThreeOrbitControlsService, useValue: {} },
+                { provide: ThreeMapControlsService, useValue: {} },
                 provideMockStore(),
                 { provide: State, useValue: { getValue: () => defaultState } }
             ]

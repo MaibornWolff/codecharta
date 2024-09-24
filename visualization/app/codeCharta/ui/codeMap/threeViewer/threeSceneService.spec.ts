@@ -362,8 +362,7 @@ describe("ThreeSceneService", () => {
             threeSceneService.toggleLineAnimation(hoveredLabel)
 
             const pointsBufferGeometry = threeSceneService.labels.children[1]["geometry"] as BufferGeometry
-            const pointsArray = pointsBufferGeometry.attributes.position.array as Array<number>
-
+            const pointsArray = [...pointsBufferGeometry.attributes.position.array]
             expect(new Vector3(pointsArray[0], pointsArray[1], pointsArray[2])).toEqual(new Vector3(3, 3, 3))
             expect(new Vector3(pointsArray[3], pointsArray[4], pointsArray[5])).toEqual(new Vector3(2, 2, 2))
         })
@@ -372,7 +371,7 @@ describe("ThreeSceneService", () => {
             threeSceneService.resetLabel()
 
             const pointsBufferGeometry = threeSceneService.labels.children[1]["geometry"] as BufferGeometry
-            const pointsArray = pointsBufferGeometry.attributes.position.array as Array<number>
+            const pointsArray = [...pointsBufferGeometry.attributes.position.array]
 
             expect(new Vector3(pointsArray[0], pointsArray[1], pointsArray[2])).toEqual(new Vector3(3, 3, 3))
             expect(new Vector3(pointsArray[3], pointsArray[4], pointsArray[5])).toEqual(new Vector3(1, 1, 1))

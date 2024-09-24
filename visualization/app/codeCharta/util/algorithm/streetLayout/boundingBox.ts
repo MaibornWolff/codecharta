@@ -5,12 +5,16 @@ import Rectangle from "./rectangle"
 export default abstract class BoundingBox {
     height = 0
     width = 0
-    protected node: CodeMapNode
+    mapNode: CodeMapNode
     protected metricValue: number
     protected FIXED_MARGIN = 0.5
 
-    constructor(node: CodeMapNode) {
-        this.node = node
+    constructor(mapNode: CodeMapNode) {
+        this.mapNode = mapNode
+    }
+
+    getNode() {
+        return this.mapNode
     }
 
     abstract calculateDimension(metricName: string): void

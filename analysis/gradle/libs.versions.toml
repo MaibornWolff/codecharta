@@ -1,9 +1,9 @@
 [versions]
 kotlin-logging = "6.0.9"
 boon = "0.34"
-commons-lang3 = "3.14.0"
+commons-lang3 = "3.17.0"
 gson = "2.10.1"
-jackson = "2.17.1"
+jackson = "2.17.2"
 jacoco = "0.8.11"
 jaxb-api = "2.3.1"
 jersey = "2.42"
@@ -11,20 +11,20 @@ json-schema = "1.14.4"
 json = "20190722"
 juniversalchardet = "1.0.3"
 kotlin-inquirer = "0.1.0"
-kotlin = "1.9.24"
+kotlin = "1.9.25"
 kotlinx-coroutines = "1.8.1"
 picocli = "4.7.6"
-slf4j = "2.0.13"
+slf4j = "2.0.16"
 sonar-java = "6.8.0.23379"
-sonarqube = "5.0.0.4638"
+sonarqube = "5.1.0.4882"
 univocity-parsers = "2.9.1"
-assertj = "3.25.3"
+assertj = "3.26.3"
 junit5 = "5.9.3"
 junit-platform = "1.9.3"
 ktlint = "12.1.1"
 mockito-core = "3.12.4"
 mockito-kotlin = "2.2.0"
-mockk = "1.13.11"
+mockk = "1.13.12"
 wiremock = "2.35.2"
 
 [libraries]
@@ -42,7 +42,7 @@ kotlin-test = { group = "org.jetbrains.kotlin", name = "kotlin-test", version.re
 kotlin-reflect = { group = "org.jetbrains.kotlin", name = "kotlin-reflect", version.ref = "kotlin" }
 assertj-core = { group = "org.assertj", name = "assertj-core", version.ref = "assertj" }
 mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
-jsonassert = { group = "org.skyscreamer", name = "jsonassert", version = "1.5.1" }
+jsonassert = { group = "org.skyscreamer", name = "jsonassert", version = "1.5.3" }
 commons-lang3 = { group = "org.apache.commons", name = "commons-lang3", version.ref = "commons-lang3" }
 juniversalchardet = { group = "com.googlecode.juniversalchardet", name = "juniversalchardet", version.ref = "juniversalchardet" }
 rxjava2 = { group = "io.reactivex.rxjava2", name = "rxjava", version = "2.2.21" }

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const packager = require("electron-packager")
+const packager = require("@electron/packager")
 const path = require("node:path")
 
 const { paths } = require("./appConfig.json")

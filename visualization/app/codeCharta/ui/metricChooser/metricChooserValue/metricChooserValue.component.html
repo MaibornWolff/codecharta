@@ -1,23 +1,12 @@
 @if (node$ | async; as node) {
-    <div class="metric-value">
-        <div class="rounded-box">
-            <cc-metric-chooser-type [attributeType]="'nodes'" [metricFor]="metricFor"></cc-metric-chooser-type>
-            <span class="value">{{ node.attributes[(primaryMetricNames$ | async)[metricFor]] }}</span>
-        </div>
-        @if (node.deltas) {
-            <div
-                [style.marginLeft]="'2px'"
-                [style.backgroundColor]="
-                    metricFor === 'heightMetric' && node.deltas[(primaryMetricNames$ | async)[metricFor]] > 0
-                        ? '#b1d8a8'
-                        : node.deltas[(primaryMetricNames$ | async)[metricFor]] < 0
-                          ? '#ffcccc'
-                          : '#e6e6e6'
-                "
-                class="rounded-box value"
-            >
-                &Delta;{{ node.deltas[(primaryMetricNames$ | async)[metricFor]] }}
-            </div>
-        }
-    </div>
+    <cc-rounded-box>
+        <cc-metric-chooser-type [metricFor]="metricFor"></cc-metric-chooser-type>
+        <span>{{ node.attributes[(primaryMetricNames$ | async)[metricFor]]?.toLocaleString() }}</span>
+    </cc-rounded-box>
+
+    @if (node.deltas) {
+        <cc-rounded-box [backgroundColor]="calculateBackgroundColor(node.deltas[(primaryMetricNames$ | async)[metricFor]])">
+            &Delta;{{ node.deltas[(primaryMetricNames$ | async)[metricFor]]?.toLocaleString() }}
+        </cc-rounded-box>
+    }
 }

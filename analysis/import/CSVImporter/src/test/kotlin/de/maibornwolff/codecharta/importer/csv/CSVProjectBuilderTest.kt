@@ -99,7 +99,7 @@ class CSVProjectBuilderTest {
 
     @Test
     fun `it should read csv files exported from source-monitor correctly`() {
-// when
+        // when
         val csvProjectBuilder =
             CSVProjectBuilder(
                 pathSeparator = '\\',

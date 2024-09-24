@@ -1,0 +1,44 @@
+.cdk-overlay-pane {
+    &.cc-custom-config-list {
+        cc-custom-config-item-group {
+            .mat-expansion-panel-spacing {
+                margin: 0;
+            }
+
+            .mat-expansion-panel-body {
+                padding: 0 16px;
+            }
+
+            .mat-expansion-panel-header:not([aria-disabled="true"]) {
+                border-bottom: 1px solid black;
+                padding: 15px 2px;
+            }
+
+            .mat-expansion-panel:not([class*="mat-elevation-z"]) {
+                box-shadow: none;
+            }
+
+            &.non-applicable-group {
+                .mat-expansion-panel-header-title {
+                    color: rgba(0, 0, 0, 0.3);
+                }
+            }
+
+            .mdc-list-item__content {
+                width: 100%;
+                border-bottom: 1px solid #000000;
+                padding: 0 5px;
+
+                .mdc-list-item__primary-text {
+                    display: flex;
+                    flex-direction: column;
+                    width: 100%;
+                }
+
+                &:hover {
+                    background-color: rgba(0, 0, 0, 0.04);
+                }
+            }
+        }
+    }
+}

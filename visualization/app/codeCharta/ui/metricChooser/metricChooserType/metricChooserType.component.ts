@@ -1,19 +1,18 @@
-import { Component, Input, OnInit, ViewEncapsulation } from "@angular/core"
+import { Component, Input, OnInit } from "@angular/core"
 import { Store } from "@ngrx/store"
-import { Observable, map } from "rxjs"
-import { AttributeTypes, PrimaryMetrics, CcState, Node, CodeMapNode } from "../../../codeCharta.model"
+import { map, Observable } from "rxjs"
+import { AttributeTypes, CcState, CodeMapNode, Node, PrimaryMetrics } from "../../../codeCharta.model"
 import { createAttributeTypeSelector } from "./createAttributeTypeSelector.selector"
 import { NodeSelectionService } from "../nodeSelection.service"
 import { isLeaf } from "../../../util/codeMapHelper"
 
 @Component({
     selector: "cc-metric-chooser-type",
-    templateUrl: "./metricChooserType.component.html",
-    encapsulation: ViewEncapsulation.None
+    templateUrl: "./metricChooserType.component.html"
 })
 export class MetricChooserTypeComponent implements OnInit {
-    @Input() metricFor: keyof PrimaryMetrics
-    @Input() attributeType: keyof AttributeTypes
+    @Input({ required: true }) metricFor: keyof PrimaryMetrics
+    @Input() attributeType: keyof AttributeTypes = "nodes"
 
     isNodeALeaf$: Observable<boolean>
     attributeType$: Observable<string>

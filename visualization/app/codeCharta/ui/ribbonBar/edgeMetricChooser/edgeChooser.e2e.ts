@@ -1,7 +1,7 @@
 import { clearIndexedDB, goto } from "../../../../puppeteer.helper"
 import { EdgeChooserPageObject } from "./edgeChooser.po"
-import { MapTreeViewLevelPageObject } from "../../searchPanel/mapTreeView/mapTreeView.level.po"
-import { SearchPanelPageObject } from "../../searchPanel/searchPanel.po"
+import { MapTreeViewLevelPageObject } from "../searchPanel/mapTreeView/mapTreeView.level.po"
+import { SearchPanelPageObject } from "../searchPanel/searchPanel.po"
 import { UploadFileButtonPageObject } from "../../toolBar/uploadFilesButton/uploadFilesButton.po"
 
 describe("MapTreeViewLevel", () => {
@@ -34,9 +34,9 @@ describe("MapTreeViewLevel", () => {
 
         it("should not display the amount of incoming and outgoing edges of buildings for the none metric", async () => {
             await searchPanel.toggle()
-            await mapTreeViewLevel.openFolder("/root/sample1.cc.json")
-            await mapTreeViewLevel.openFolder("/root/sample1.cc.json/ParentLeaf")
-            await mapTreeViewLevel.hoverNode("/root/sample1.cc.json/ParentLeaf/smallLeaf.html")
+            await mapTreeViewLevel.openFolder("/root/sample2.cc.json")
+            await mapTreeViewLevel.openFolder("/root/sample2.cc.json/ParentLeaf")
+            await mapTreeViewLevel.hoverNode("/root/sample2.cc.json/ParentLeaf/smallLeaf.html")
 
             expect(await edgeChooser.isEdgeCountAvailable()).toBeFalsy()
         })

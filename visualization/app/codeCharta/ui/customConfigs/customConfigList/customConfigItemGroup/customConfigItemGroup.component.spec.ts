@@ -10,7 +10,7 @@ import { defaultState } from "../../../../state/store/state.manager"
 import { CustomConfigHelper } from "../../../../util/customConfigHelper"
 import { CUSTOM_CONFIG_ITEM_GROUPS } from "../../../../util/dataMocks"
 import { ThreeCameraService } from "../../../codeMap/threeViewer/threeCamera.service"
-import { ThreeOrbitControlsService } from "../../../codeMap/threeViewer/threeOrbitControls.service"
+import { ThreeMapControlsService } from "../../../codeMap/threeViewer/threeMapControls.service"
 import { CustomConfigsModule } from "../../customConfigs.module"
 import { visibleFilesBySelectionModeSelector } from "../../visibleFilesBySelectionMode.selector"
 import { CustomConfigItemGroupComponent } from "./customConfigItemGroup.component"
@@ -29,7 +29,7 @@ describe("customConfigItemGroupComponent", () => {
                 { provide: MatDialogRef, useValue: mockedDialogReference },
                 { provide: MatDialog, useValue: mockedDialog },
                 { provide: ThreeCameraService, useValue: {} },
-                { provide: ThreeOrbitControlsService, useValue: {} },
+                { provide: ThreeMapControlsService, useValue: {} },
                 provideMockStore({
                     selectors: [
                         {

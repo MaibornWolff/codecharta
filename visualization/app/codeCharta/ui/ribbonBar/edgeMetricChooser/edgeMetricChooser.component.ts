@@ -1,4 +1,4 @@
-import { Component, ViewEncapsulation } from "@angular/core"
+import { Component } from "@angular/core"
 import { Store } from "@ngrx/store"
 import { combineLatest, map } from "rxjs"
 import { CcState, CodeMapNode, Node } from "../../../codeCharta.model"
@@ -10,8 +10,7 @@ import { NodeSelectionService } from "../../metricChooser/nodeSelection.service"
 @Component({
     selector: "cc-edge-metric-chooser",
     templateUrl: "./edgeMetricChooser.component.html",
-    styleUrls: ["./edgeMetricChooser.component.scss"],
-    encapsulation: ViewEncapsulation.None
+    styleUrls: ["./edgeMetricChooser.component.scss"]
 })
 export class EdgeMetricChooserComponent {
     edgeValue$ = this.createEdgeValue()

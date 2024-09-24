@@ -1,0 +1,29 @@
+@use "variables";
+
+.cdk-overlay-pane:has(.cc-file-select) {
+    width: 300px !important;
+
+    .mat-mdc-option .mdc-list-item__primary-text {
+        flex: 1;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .cc-file-selection-actions {
+        display: flex;
+
+        button.cc-file-select-action-button {
+            width: 100%;
+            font-size: 16px;
+            margin: 0;
+            background-color: transparent;
+            padding: 15px 10px;
+
+            &:hover {
+                background-color: variables.$cc-hovered-button-background-color;
+                color: variables.$cc-primary-color;
+            }
+        }
+    }
+}

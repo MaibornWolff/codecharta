@@ -1,0 +1,4 @@
+<mat-button-toggle id="blacklist" value="blacklist" (click)="updateSearchPanelMode('blacklist')">
+    <i class="fa fa-eye-slash"></i>
+    <div class="has-blacklist-items-indicator" [hidden]="hideBlacklistItemsIndicator$ | async"></div>
+</mat-button-toggle>

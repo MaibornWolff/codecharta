@@ -1,0 +1,23 @@
+#logo {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    left: 2em;
+    bottom: 1em;
+    z-index: 1;
+
+    img {
+        object-fit: contain;
+        max-width: 100%;
+        height: auto;
+    }
+
+    h2 {
+        color: #5a585a;
+        font-weight: bold;
+        font-size: 10px;
+        text-align: center;
+        margin: 0;
+        z-index: -1;
+    }
+}

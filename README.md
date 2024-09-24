@@ -6,7 +6,7 @@
   <br>
 </h1>
 
-<h4 align="center">a beautiful tool to help you visualize and understand code in 3D.</h4>
+<h4 align="center">a tool to help you visualize and understand code in 3D.</h4>
 
 <p align="center">
     <a href="https://github.com/MaibornWolff/codecharta/actions/workflows/release-analysis.yml">
@@ -24,7 +24,7 @@
 
 <p align="center">
 Latest Release: <br>
- Analysis <a href="https://github.com/MaibornWolff/codecharta/releases/tag/ana-1.125.0">1.125.0</a> | Visualization <a href="https://github.com/MaibornWolff/codecharta/releases/tag/vis-1.126.0">1.126.0</a>
+ Analysis <a href="https://github.com/MaibornWolff/codecharta/releases/tag/ana-1.127.0">1.127.0</a> | Visualization <a href="https://github.com/MaibornWolff/codecharta/releases/tag/vis-1.128.0">1.128.0</a>
 
 [comment]: ##################################################################################
 [comment]: <Ensure that the words 'latest release' are above the line with the links>
@@ -34,7 +34,6 @@ Latest Release: <br>
 
 <p align="center">
   <a href="#key-features">Key Features</a> •
-  <a href="#experimental-features">Experimental Features</a> •
   <a href="#how-to-use">How To Use</a> •
   <a href="#feedback">Feedback</a> •
   <a href="#further-information">Further Info</a> •
@@ -62,7 +61,7 @@ Latest Release: <br>
 
 For using CodeCharta the following needs to be installed on your system:
 
-- Node >= 18
+- Node >= 20
 - Java >= 11, <= 21
 
 ## How To Use
@@ -95,9 +94,7 @@ $ ccsh sourcecodeparser junit4 -p junit4 -o junit4.source.cc.json
 
 Have a **bug**, a **feature** request or any question? Please open [a new issue](https://github.com/MaibornWolff/codecharta/issues/new). Feedback is always welcome.
 
-Want to know what we are **working on**? Please check out [our board](https://app.zenhub.com/workspaces/codecharta-workspace-5cd16b609795a865159e7107/board) or install the Zenhub Firefox/Chrome plugin.
-
-Want to have even **more information**? Please check our [news](https://maibornwolff.github.io/codecharta/news/).
+Want to have even **more information**? Please check our [documentation](https://maibornwolff.github.io/codecharta/) and [news](https://maibornwolff.github.io/codecharta/news/).
 
 ## Further Information
 

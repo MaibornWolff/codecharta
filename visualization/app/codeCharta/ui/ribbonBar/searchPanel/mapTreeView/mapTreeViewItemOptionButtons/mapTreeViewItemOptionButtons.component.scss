@@ -1,0 +1,32 @@
+@use "variables";
+
+button {
+    display: inline-block;
+    height: 19px;
+    width: 24px;
+    min-height: 0;
+    margin: 0;
+    background-color: transparent;
+    box-shadow: none;
+    vertical-align: top;
+
+    &:hover {
+        background-color: #ddd;
+        color: variables.$cc-font-color;
+    }
+
+    i {
+        position: absolute;
+        top: 2px;
+        left: 6px;
+    }
+}
+
+.right-aligned {
+    position: absolute;
+    right: 6px;
+
+    i.flattened {
+        color: gray;
+    }
+}

@@ -1,22 +1,14 @@
-cc-code-map {
+:host {
     .hidden {
         display: none;
     }
 
-    cc-view-cube {
-        position: absolute;
-        z-index: 11;
-        right: 0px;
-        top: 10px;
-
-        &.sideBarVisible {
-            right: 350px;
-        }
-    }
-
-    unfocus-button-component {
-        &.sideBarVisible {
-            right: 390px;
-        }
+    #codeMap {
+        position: fixed;
+        z-index: 0;
+        top: 98px;
+        left: 0;
+        width: 100%;
+        height: 100%;
     }
 }

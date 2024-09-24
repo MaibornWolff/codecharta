@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ThreeMapControlsService rotateCameraInVectorDirection  1`] = `
+Vector3 {
+  "x": 0,
+  "y": -8.076685518445746,
+  "z": 0.0008076685518441267,
+}
+`;

@@ -1,5 +1,5 @@
-import { Component, Input, ViewEncapsulation } from "@angular/core"
-import { Store, State } from "@ngrx/store"
+import { Component, Input } from "@angular/core"
+import { State, Store } from "@ngrx/store"
 import { CcState } from "../../codeCharta.model"
 import { getPartialDefaultState } from "./getPartialDefaultState"
 import { setState } from "../../state/store/state.actions"
@@ -7,8 +7,7 @@ import { setState } from "../../state/store/state.actions"
 @Component({
     selector: "cc-reset-settings-button",
     templateUrl: "./resetSettingsButton.component.html",
-    styleUrls: ["./resetSettingsButton.component.scss"],
-    encapsulation: ViewEncapsulation.None
+    styleUrls: ["./resetSettingsButton.component.scss"]
 })
 export class ResetSettingsButtonComponent {
     @Input() settingsKeys: string[]

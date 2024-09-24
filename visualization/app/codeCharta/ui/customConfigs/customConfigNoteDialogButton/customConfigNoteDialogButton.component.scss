@@ -1,0 +1,14 @@
+@use "variables";
+
+button {
+    font-size: 16px;
+    padding: 8px 10px;
+    margin: 0;
+    background-color: transparent;
+
+    &:hover {
+        background-color: variables.$cc-hovered-button-background-color;
+        color: variables.$cc-primary-color;
+        border-radius: 50%;
+    }
+}

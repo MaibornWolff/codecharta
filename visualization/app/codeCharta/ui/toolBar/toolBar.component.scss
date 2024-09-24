@@ -1,6 +1,4 @@
-@use "../../../material/theme";
-
-cc-tool-bar {
+:host {
     display: flex;
     gap: 8px;
     padding-left: 8px;
@@ -16,9 +14,5 @@ cc-tool-bar {
         align-items: center;
         width: 400px;
         justify-content: space-between;
-    }
-
-    span {
-        font-size: 10pt;
     }
 }

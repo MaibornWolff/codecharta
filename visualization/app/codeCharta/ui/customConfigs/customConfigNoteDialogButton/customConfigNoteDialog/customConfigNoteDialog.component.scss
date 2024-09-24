@@ -1,17 +1,17 @@
-@use "app/material/theme";
+@use "variables";
 
-cc-custom-config-note-dialog {
-    .custom-config-note-dialog-container {
+:host {
+    .cc-custom-config-note-dialog-container {
         padding: 20px 24px;
 
-        .note-input-container {
+        .cc-note-input-container {
             padding: 0;
 
             .note-input {
                 width: 100%;
             }
         }
-        .note-dialog-action-buttons {
+        .cc-note-dialog-action-buttons {
             justify-content: flex-end;
             padding: 0;
         }
@@ -19,12 +19,12 @@ cc-custom-config-note-dialog {
         button {
             padding: 12px;
             margin: 0 0 0 10px;
-            color: theme.$cc-primary-color;
-            background-color: rgba(138, 132, 132, 0.08);
+            color: variables.$cc-primary-color;
+            background-color: variables.$cc-dialog-button-background-color;
 
             &:hover {
-                background-color: rgba(0, 0, 0, 0.05);
-                color: theme.$cc-primary-color;
+                background-color: variables.$cc-hovered-button-background-color;
+                color: variables.$cc-primary-color;
             }
         }
     }

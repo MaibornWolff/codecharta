@@ -1,4 +1,4 @@
-import { Component, Input, ViewEncapsulation } from "@angular/core"
+import { Component, Input } from "@angular/core"
 
 import { CodeMapNode } from "../../../codeCharta.model"
 import { IsAttributeSideBarVisibleService } from "../../../services/isAttributeSideBarVisible.service"
@@ -6,8 +6,7 @@ import { IsAttributeSideBarVisibleService } from "../../../services/isAttributeS
 @Component({
     selector: "cc-attribute-side-bar-header-section",
     templateUrl: "./attributeSideBarHeaderSection.component.html",
-    styleUrls: ["./attributeSideBarHeaderSection.component.scss"],
-    encapsulation: ViewEncapsulation.None
+    styleUrls: ["./attributeSideBarHeaderSection.component.scss"]
 })
 export class AttributeSideBarHeaderSectionComponent {
     @Input() node: Pick<CodeMapNode, "children" | "name" | "link" | "path">

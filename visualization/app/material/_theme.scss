@@ -1,62 +1,17 @@
 @use "@angular/material" as mat;
-
 @include mat.core();
 
-$cc-palette: (
-    50: #c3e5fe,
-    100: #9bd3fe,
-    200: #76c3fd,
-    300: #55b5fc,
-    400: #37a8fc,
-    500: #1b9cfc,
-    600: #038ff8,
-    700: #0381df,
-    800: #0374c9,
-    900: #0368b5,
-    A100: #a0d5ff,
-    A200: #a0d5ff,
-    A400: #7ac5ff,
-    A700: #58b6ff,
-    contrast: (
-        50: #000000,
-        100: #000000,
-        200: #000000,
-        300: #000000,
-        400: #000000,
-        500: #ffffff,
-        600: #ffffff,
-        700: #ffffff,
-        800: #ffffff,
-        900: #ffffff,
-        A100: #000000,
-        A200: #000000,
-        A400: #000000,
-        A700: #000000
-    )
-);
+@import "./variables";
 
-$cc-primary: mat.define-palette($cc-palette);
-$cc-accent: mat.define-palette($cc-palette);
-$cc-theme: mat.define-light-theme(
-    (
-        color: (
-            primary: $cc-primary,
-            accent: $cc-accent
-        )
-    )
-);
-
-$cc-primary-color: mat.get-color-from-palette($cc-primary);
-$cc-emphasized-color: #0374c9;
-$cc-accent-color: #fc801bab;
-$cc-disabled-color: rgb(204, 204, 204);
-$cc-font-color: rgba(0, 0, 0, 0.87);
-
-// For the lack of a better way of doing this
-// please remove this
-// if a method is found how to change the checkmark colors directly in theme
-// or you wish to keep the default black
 :root {
+    --mat-dialog-container-min-width: 500px;
+    --mat-dialog-actions-alignment: flex-end;
+
+    --mat-toolbar-container-background-color: #{$cc-primary-color};
+    --mat-toolbar-container-text-color: #fff;
+    --mat-text-button-horizontal-padding: 8px;
+
+    // HACK: For the lack of a better way to change the checkmark colors directly in theme
     .mat-mdc-checkbox.mat-accent {
         --mdc-checkbox-selected-checkmark-color: #fff !important;
     }

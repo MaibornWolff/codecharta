@@ -1,152 +1,26 @@
-@use "../../../../material/theme";
+@use "variables";
 
-.cc-custom-config-list {
-    width: 850px;
+.row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-left: auto;
+}
 
-    .mat-mdc-dialog-content {
-        padding: 16px;
-        max-height: 90vh;
-    }
-    .cc-custom-configs-search-field {
-        width: 100%;
-        font-size: 14px;
+.custom-config-documentation-hint {
+    margin: 10px 0 20px 0;
+    font-size: 1.4em;
+    line-height: 1.4em;
+    color: variables.$cc-font-color;
+}
 
-        .custom-config-search-icon {
-            color: gray;
-            margin-left: 8px;
-            font-size: 18px;
-        }
+.no-custom-configs-box {
+    text-align: center;
+    padding: 50px 0;
+}
 
-        .clear-icon {
-            position: absolute;
-            right: 0;
-            margin: 0;
-            height: 24px;
-            width: 24px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            top: 0px;
-        }
-
-        .mat-mdc-form-field-subscript-wrapper.mat-mdc-form-field-bottom-align {
-            display: none;
-        }
-
-        .mat-mdc-form-field-infix {
-            margin-left: 6px;
-            display: flex;
-        }
-    }
-    .row {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-left: auto;
-    }
-
-    .custom-config-documentation-hint {
-        margin: 10px 0 20px 0;
-        font-size: 1.4em;
-        line-height: 1.4em;
-        color: theme.$cc-font-color;
-    }
-
-    .action-buttons button {
-        margin: 0 3px;
-        min-width: 12%;
-        height: 48px;
-        width: 48px;
-        border-radius: 100%;
-        line-height: 48px;
-        background-color: #ffffff;
-        color: theme.$cc-primary-color;
-
-        &:disabled,
-        &[disabled] {
-            background-color: #e6e6e6;
-            color: theme.$cc-disabled-color;
-        }
-
-        i.fa {
-            font-size: 12px;
-            margin-left: 0;
-        }
-    }
-
-    .no-custom-configs-box {
-        text-align: center;
-        padding: 50px 0;
-    }
-
-    cc-custom-config-item-group {
-        .mat-expansion-panel-spacing {
-            margin: 0;
-        }
-
-        .mat-expansion-panel-body {
-            padding: 0 16px;
-        }
-        .mat-expansion-panel-header:not([aria-disabled="true"]) {
-            border-bottom: 1px solid black;
-            padding: 15px 2px;
-        }
-
-        .mat-expansion-panel:not([class*="mat-elevation-z"]) {
-            box-shadow: none;
-        }
-
-        &.non-applicable-group {
-            .mat-expansion-panel-header-title {
-                color: rgba(0, 0, 0, 0.3);
-            }
-        }
-
-        .mdc-list-item__content {
-            width: 100%;
-            border-bottom: 1px solid #000000;
-            padding: 0 5px;
-
-            .mdc-list-item__primary-text {
-                display: flex;
-                flex-direction: column;
-                width: 100%;
-            }
-
-            &:hover {
-                background-color: rgba(0, 0, 0, 0.04);
-            }
-
-            button {
-                background-color: transparent;
-
-                &.remove-button,
-                &.custom-config-note-dialog-button {
-                    font-size: 16px;
-                    padding: 8px 10px;
-                    margin: 0px;
-
-                    &:hover {
-                        background-color: rgba(0, 0, 0, 0.05);
-                        color: theme.$cc-primary-color;
-                        border-radius: 50%;
-                    }
-                }
-            }
-        }
-    }
-
-    .toggle-non-applicable-configs-button {
-        width: 100%;
-        height: 30px;
-        margin: 5px 0;
-    }
-
-    .mat-mdc-list-base {
-        padding: 0;
-    }
-
-    .mat-mdc-list-item {
-        height: max-content;
-    }
+.toggle-non-applicable-configs-button {
+    width: 100%;
+    height: 30px;
+    margin: 5px 0;
 }

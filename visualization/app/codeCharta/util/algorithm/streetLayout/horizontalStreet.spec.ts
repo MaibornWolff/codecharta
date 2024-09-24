@@ -16,7 +16,7 @@ describe("horizontalStreet", () => {
         codeMapNode.path = "somePath"
         house = new House(codeMapNode)
         children = [house]
-        horizontalStreet = new HorizontalStreet(codeMapNode, children, 1, HorizontalOrientation.RIGHT)
+        horizontalStreet = new HorizontalStreet(codeMapNode, children, HorizontalOrientation.RIGHT)
     })
     describe("calculateDimension", () => {
         it("should calculate street width and height", () => {

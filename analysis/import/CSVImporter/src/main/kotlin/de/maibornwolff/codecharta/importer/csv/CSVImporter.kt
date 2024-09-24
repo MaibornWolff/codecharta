@@ -1,6 +1,5 @@
 package de.maibornwolff.codecharta.importer.csv
 
-import de.maibornwolff.codecharta.importer.sourcemonitor.getAttributeDescriptors
 import de.maibornwolff.codecharta.model.AttributeDescriptor
 import de.maibornwolff.codecharta.model.AttributeGenerator
 import de.maibornwolff.codecharta.serialization.ProjectSerializer

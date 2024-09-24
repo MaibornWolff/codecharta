@@ -78,14 +78,14 @@ describe("suspiciousMetricsHelper", () => {
 
     it("should set unsuspicious metrics of main programming language", () => {
         const metricValuesByLanguage: MetricValuesByLanguage = {
-            java: { complexity: [10, 20, 30, 48], rloc: [100, 200, 300, 365] },
+            java: { sonar_complexity: [10, 20, 30, 48], rloc: [100, 200, 300, 365] },
             ts: { functions: [10, 20, 30, 48], rloc: [100, 200, 300, 365] }
         }
 
         const actualAssessmentResults: MetricAssessmentResults = findGoodAndBadMetrics(metricValuesByLanguage, "java")
 
         expect(actualAssessmentResults.unsuspiciousMetrics).toEqual([
-            `complexity (${metricTitles.get("complexity")})`,
+            `sonar_complexity (${metricTitles.get("sonar_complexity")})`,
             `rloc (${metricTitles.get("rloc")})`
         ])
     })

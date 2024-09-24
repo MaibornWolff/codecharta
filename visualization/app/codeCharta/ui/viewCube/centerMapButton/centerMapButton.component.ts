@@ -1,16 +1,15 @@
-import { Component, ViewEncapsulation } from "@angular/core"
-import { ThreeOrbitControlsService } from "../../codeMap/threeViewer/threeOrbitControls.service"
+import { Component } from "@angular/core"
+import { ThreeMapControlsService } from "../../codeMap/threeViewer/threeMapControls.service"
 
 @Component({
     selector: "cc-center-map-button",
     templateUrl: "./centerMapButton.component.html",
-    styleUrls: ["./centerMapButton.component.scss"],
-    encapsulation: ViewEncapsulation.None
+    styleUrls: ["./centerMapButton.component.scss"]
 })
 export class CenterMapButtonComponent {
-    constructor(private threeOrbitControlsService: ThreeOrbitControlsService) {}
+    constructor(private threeMapControlsService: ThreeMapControlsService) {}
 
     centerMap() {
-        this.threeOrbitControlsService.autoFitTo()
+        this.threeMapControlsService.autoFitTo()
     }
 }

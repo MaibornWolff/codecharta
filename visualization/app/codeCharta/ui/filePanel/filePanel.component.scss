@@ -1,73 +1,10 @@
-@use "../../../material/theme";
+@use "variables";
 
-cc-file-panel {
+:host {
     display: flex;
     gap: inherit;
 
     &.hidden {
         display: none;
-    }
-
-    .state-selector-button {
-        &.mode-selector {
-            height: 24px;
-            width: 66px;
-            background-color: #ffffff;
-
-            &.middle {
-                border-left: 1px solid rgba(230, 230, 230, 0.96);
-                border-right: 1px solid rgba(230, 230, 230, 0.96);
-            }
-
-            &.current {
-                background-color: theme.$cc-primary-color;
-                color: #ffffff;
-            }
-
-            &.current:hover {
-                background-color: theme.$cc-primary-color;
-            }
-        }
-    }
-
-    .reference-comparison-switch {
-        background-color: theme.$cc-primary-color;
-        margin: 0;
-        height: 24px;
-        width: 36px;
-        border-radius: 5px;
-
-        &[disabled] {
-            background-color: theme.$cc-disabled-color;
-        }
-
-        &:hover {
-            background-color: theme.$cc-emphasized-color;
-
-            &[disabled] {
-                background-color: theme.$cc-disabled-color;
-            }
-        }
-
-        .fa {
-            vertical-align: middle;
-            color: rgb(255, 255, 255);
-        }
-    }
-
-    .pictogram {
-        display: inline-flex;
-        width: 10px;
-        margin-right: 5px;
-        margin-left: 5px;
-        height: 22px;
-        border-radius: 2px;
-        align-self: center;
-        vertical-align: bottom;
-    }
-
-    .standard-select,
-    .delta-select {
-        width: 200px;
     }
 }

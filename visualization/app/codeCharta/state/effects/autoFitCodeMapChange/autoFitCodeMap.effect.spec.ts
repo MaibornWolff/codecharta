@@ -1,6 +1,6 @@
 import { TestBed } from "@angular/core/testing"
 import { BehaviorSubject, Subject } from "rxjs"
-import { ThreeOrbitControlsService } from "../../../ui/codeMap/threeViewer/threeOrbitControls.service"
+import { ThreeMapControlsService } from "../../../ui/codeMap/threeViewer/threeMapControls.service"
 import { visibleFileStatesSelector } from "../../selectors/visibleFileStates.selector"
 import { layoutAlgorithmSelector } from "../../store/appSettings/layoutAlgorithm/layoutAlgorithm.selector"
 import { resetCameraIfNewFileIsLoadedSelector } from "../../store/appSettings/resetCameraIfNewFileIsLoaded/resetCameraIfNewFileIsLoaded.selector"
@@ -36,7 +36,7 @@ describe("autoFitCodeMapOnFileSelectionChangeEffect", () => {
                     ]
                 }),
                 provideMockActions(() => actions$),
-                { provide: ThreeOrbitControlsService, useValue: { autoFitTo: mockedAutoFitTo } }
+                { provide: ThreeMapControlsService, useValue: { autoFitTo: mockedAutoFitTo } }
             ]
         })
         store = TestBed.inject(MockStore)
@@ -71,16 +71,15 @@ describe("autoFitCodeMapOnFileSelectionChangeEffect", () => {
         expect(mockedAutoFitTo).not.toHaveBeenCalled()
     })
 
-    it("should auto fit map when focused node paths has changed", () => {
-        store.overrideSelector(focusedNodePathSelector, [])
+    it("should auto fit map when layout algorithm has changed", () => {
+        store.overrideSelector(layoutAlgorithmSelector, LayoutAlgorithm.TreeMapStreet)
         store.refreshState()
         mockedRenderCodeMap$.next(undefined)
         expect(mockedAutoFitTo).toHaveBeenCalledTimes(1)
     })
 
-    it("should auto fit map when layout algorithm has changed", () => {
-        store.overrideSelector(layoutAlgorithmSelector, LayoutAlgorithm.TreeMapStreet)
-        store.refreshState()
+    it("should auto fit map if resetCameraIfNewFileIsLoadedSelector is set to false when starting ", () => {
+        actions$.next({ type: "StartWithGlobalOption:resetCameraIfNewFileIsLoadedSetToFalse" })
         mockedRenderCodeMap$.next(undefined)
         expect(mockedAutoFitTo).toHaveBeenCalledTimes(1)
     })

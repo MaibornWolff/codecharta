@@ -1,6 +1,47 @@
-cc-file-panel-delta-selector {
-    .delta-select-wrapper {
-        display: flex;
-        gap: 12px;
+@use "variables";
+
+.delta-select-wrapper {
+    display: flex;
+    gap: 12px;
+}
+
+.delta-select {
+    width: 200px;
+    font-size: 10pt;
+}
+
+.reference-comparison-switch {
+    background-color: variables.$cc-primary-color;
+    margin: 0;
+    height: 24px;
+    width: 36px;
+    border-radius: 5px;
+
+    &[disabled] {
+        background-color: variables.$cc-disabled-color;
     }
+
+    &:hover {
+        background-color: variables.$cc-emphasized-color;
+
+        &[disabled] {
+            background-color: variables.$cc-disabled-color;
+        }
+    }
+
+    .fa {
+        vertical-align: middle;
+        color: rgb(255, 255, 255);
+    }
+}
+
+.pictogram {
+    display: inline-flex;
+    width: 10px;
+    margin-right: 5px;
+    margin-left: 5px;
+    height: 22px;
+    border-radius: 2px;
+    align-self: center;
+    vertical-align: bottom;
 }
