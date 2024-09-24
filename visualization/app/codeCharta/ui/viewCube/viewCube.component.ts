@@ -137,13 +137,13 @@ export class ViewCubeComponent implements OnInit {
     onCubeClicked = (data: { cube: Mesh }) => {
         switch (data.cube) {
             case this.cubeDefinition.top.front.left:
-                this.threeMapControlsService.rotateCameraInVectorDirection(1, -1, -1)
+                this.threeMapControlsService.rotateCameraInVectorDirection(1, -1, 1)
                 break
             case this.cubeDefinition.top.front.center:
-                this.threeMapControlsService.rotateCameraInVectorDirection(0, -1, -1)
+                this.threeMapControlsService.rotateCameraInVectorDirection(0, -1, 1)
                 break
             case this.cubeDefinition.top.front.right:
-                this.threeMapControlsService.rotateCameraInVectorDirection(-1, -1, -1)
+                this.threeMapControlsService.rotateCameraInVectorDirection(-1, -1, 1)
                 break
 
             case this.cubeDefinition.top.middle.left:
@@ -158,13 +158,13 @@ export class ViewCubeComponent implements OnInit {
                 break
 
             case this.cubeDefinition.top.back.left:
-                this.threeMapControlsService.rotateCameraInVectorDirection(1, -1, 1)
+                this.threeMapControlsService.rotateCameraInVectorDirection(1, -1, -1)
                 break
             case this.cubeDefinition.top.back.center:
-                this.threeMapControlsService.rotateCameraInVectorDirection(0, -1, 1)
+                this.threeMapControlsService.rotateCameraInVectorDirection(0, -1, -1)
                 break
             case this.cubeDefinition.top.back.right:
-                this.threeMapControlsService.rotateCameraInVectorDirection(-1, -1, 1)
+                this.threeMapControlsService.rotateCameraInVectorDirection(-1, -1, -1)
                 break
 
             case this.cubeDefinition.sides.front.left:
@@ -185,13 +185,13 @@ export class ViewCubeComponent implements OnInit {
                 break
 
             case this.cubeDefinition.sides.back.left:
-                this.threeMapControlsService.rotateCameraInVectorDirection(-1, 0, 1)
+                this.threeMapControlsService.rotateCameraInVectorDirection(1, 0, 1)
                 break
             case this.cubeDefinition.sides.back.center:
                 this.threeMapControlsService.rotateCameraInVectorDirection(0, 0, 1)
                 break
             case this.cubeDefinition.sides.back.right:
-                this.threeMapControlsService.rotateCameraInVectorDirection(1, 0, 1)
+                this.threeMapControlsService.rotateCameraInVectorDirection(-1, 0, 1)
                 break
         }
     }
