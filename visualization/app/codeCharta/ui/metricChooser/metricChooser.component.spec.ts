@@ -29,7 +29,7 @@ describe("metricChooserComponent", () => {
                                     { name: "bMetric", maxValue: 2 },
                                     { name: "cMetric", maxValue: 3 },
                                     { name: "fullMetric", maxValue: 42 },
-                                    { name: "complexity", maxValue: 55 }
+                                    { name: "sonar_complexity", maxValue: 55 }
                                 ]
                             }
                         },
@@ -61,7 +61,7 @@ describe("metricChooserComponent", () => {
                 "FullTestTitle (fullMetric):\nFullTestDescription\nHigh Values: FullTestHigh\nLow Values: FullLowValue"
             )
         )
-        await waitFor(() => expect(screen.queryAllByRole("option")[4].textContent).toMatch("complexity  (formerly mcc) (55)"))
+        await waitFor(() => expect(screen.queryAllByRole("option")[4].textContent).toMatch("sonar_complexity  (formerly mcc) (55)"))
         await waitFor(() => expect(screen.queryAllByRole("option")[4].getAttribute("title")).toMatch("Cyclomatic Complexity"))
 
         await userEvent.click(screen.queryAllByRole("option")[1])

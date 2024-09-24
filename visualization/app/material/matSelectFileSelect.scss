@@ -21,7 +21,7 @@
             padding: 15px 10px;
 
             &:hover {
-                background-color: rgba(0, 0, 0, 0.05);
+                background-color: variables.$cc-hovered-button-background-color;
                 color: variables.$cc-primary-color;
             }
         }

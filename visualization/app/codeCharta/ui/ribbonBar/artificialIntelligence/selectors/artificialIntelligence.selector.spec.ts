@@ -18,7 +18,7 @@ describe("ArtificialIntelligenceSelector", () => {
             suspiciousMetricSuggestionLinks: [
                 { from: 365, isOutlier: true, metric: "loc", to: 554, outlierThreshold: 1001 },
                 { from: 29, isOutlier: true, metric: "functions", to: 44, outlierThreshold: 75 },
-                { from: 48, metric: "complexity", to: 71 }
+                { from: 48, metric: "sonar_complexity", to: 71 }
             ],
             unsuspiciousMetrics: ["rloc (Real Lines of Code)"],
             untrackedMetrics: []
@@ -37,7 +37,7 @@ describe("ArtificialIntelligenceSelector", () => {
             suspiciousMetricSuggestionLinks: [
                 { from: 365, isOutlier: true, metric: "loc", to: 554, outlierThreshold: 1001 },
                 { from: 29, isOutlier: true, metric: "functions", to: 44, outlierThreshold: 75 },
-                { from: 48, metric: "complexity", to: 71 }
+                { from: 48, metric: "sonar_complexity", to: 71 }
             ],
             unsuspiciousMetrics: ["rloc (Real Lines of Code)"],
             untrackedMetrics: ["unknownMetric"]

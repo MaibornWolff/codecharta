@@ -1,13 +1,11 @@
-import { Component, OnInit, ViewEncapsulation } from "@angular/core"
+import { Component, OnInit } from "@angular/core"
 import { Store } from "@ngrx/store"
 import { LoadInitialFileService } from "./services/loadInitialFile/loadInitialFile.service"
 import { setIsLoadingFile } from "./state/store/appSettings/isLoadingFile/isLoadingFile.actions"
 
 @Component({
     selector: "cc-code-charta",
-    templateUrl: "./codeCharta.component.html",
-    styleUrls: ["./codeCharta.component.scss"],
-    encapsulation: ViewEncapsulation.None
+    templateUrl: "./codeCharta.component.html"
 })
 export class CodeChartaComponent implements OnInit {
     isInitialized = false

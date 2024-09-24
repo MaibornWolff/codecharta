@@ -28,5 +28,11 @@ mat-dialog-container {
         --mdc-text-button-label-text-color: #{variables.$cc-primary-color};
         --mdc-filled-button-container-color: var(--mdc-filled-text-field-container-color);
         --mdc-filled-button-disabled-container-color: var(--mdc-filled-text-field-container-color);
+
+        &.mat-mdc-dialog-actions.cc-add-custom-config {
+            &:has(cc-download-and-purge-configs) {
+                max-width: 600px;
+            }
+        }
     }
 }

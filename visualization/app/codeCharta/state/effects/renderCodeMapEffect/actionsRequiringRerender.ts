@@ -19,12 +19,6 @@ import { setColorMetric } from "../../store/dynamicSettings/colorMetric/colorMet
 import { setColorMode } from "../../store/dynamicSettings/colorMode/colorMode.actions"
 import { setColorRange } from "../../store/dynamicSettings/colorRange/colorRange.actions"
 import { setEdgeMetric } from "../../store/dynamicSettings/edgeMetric/edgeMetric.actions"
-import {
-    setAllFocusedNodes,
-    focusNode,
-    unfocusAllNodes,
-    unfocusNode
-} from "../../store/dynamicSettings/focusedNodePath/focusedNodePath.actions"
 import { setHeightMetric } from "../../store/dynamicSettings/heightMetric/heightMetric.actions"
 import { setMargin } from "../../store/dynamicSettings/margin/margin.actions"
 import { setSearchPattern } from "../../store/dynamicSettings/searchPattern/searchPattern.actions"
@@ -55,10 +49,6 @@ export const actionsRequiringRerender = [
     setColorRange,
     setMargin,
     setSearchPattern,
-    setAllFocusedNodes,
-    focusNode,
-    unfocusAllNodes,
-    unfocusNode,
     setHeightMetric,
     setAreaMetric,
     setColorMetric,

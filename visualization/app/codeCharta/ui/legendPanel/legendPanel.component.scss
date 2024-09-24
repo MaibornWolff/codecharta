@@ -27,6 +27,7 @@ $fixedHeight: 35;
         bottom: ($fixedHeight + 20) + px;
         width: 88px;
         font-size: 10pt;
+        transition: right 0.3s ease;
     }
 
     .block-wrapper {
@@ -40,6 +41,7 @@ $fixedHeight: 35;
         border-radius: 5px;
         min-width: 200px;
         max-width: 30%;
+        transition: right 0.3s ease;
 
         &.isAttributeSideBarVisible {
             right: 390px;
