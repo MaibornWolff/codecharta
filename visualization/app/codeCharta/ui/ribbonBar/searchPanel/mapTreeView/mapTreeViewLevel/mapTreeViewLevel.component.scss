@@ -1,0 +1,38 @@
+:host {
+    white-space: nowrap;
+}
+.tree-element-0 {
+    overflow-y: auto;
+    max-height: 400px;
+    margin-left: 3px;
+    margin-top: 10px;
+
+    div {
+        margin: 0;
+        padding: 0;
+        position: relative;
+    }
+
+    .tree-element-children {
+        margin-left: 19px;
+    }
+}
+
+.tree-element-label {
+    cursor: default;
+
+    &:focus {
+        outline: none;
+    }
+
+    &:hover,
+    &.hovered {
+        background-color: #efefef;
+        border-radius: 2px;
+        cursor: pointer;
+    }
+    &.marked {
+        background-color: #efefef;
+        border-radius: 2px;
+    }
+}
