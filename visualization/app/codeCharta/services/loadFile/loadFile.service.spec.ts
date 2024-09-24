@@ -16,6 +16,7 @@ import { MatDialog } from "@angular/material/dialog"
 import { metricDataSelector } from "../../state/selectors/accumulatedData/metricData/metricData.selector"
 import { State, Store, StoreModule } from "@ngrx/store"
 import { appReducers, setStateMiddleware } from "../../state/store/state.manager"
+import { setCurrentFilesAreSampleFiles } from "../../state/store/appStatus/currentFilesAreSampleFiles/currentFilesAreSampleFiles.actions"
 
 const mockedMetricDataSelector = metricDataSelector as unknown as jest.Mock
 jest.mock("../../state/selectors/accumulatedData/metricData/metricData.selector", () => ({
@@ -158,6 +159,103 @@ describe("loadFileService", () => {
 
             expect(fileRoot.rootName).toBe(expected.map.name)
             expect(fileRoot.rootPath).toBe(`/${expected.map.name}`)
+        })
+
+        it("should keep old files when loading new files", () => {
+            const valid2ndFileContent = klona(validFileContent)
+            valid2ndFileContent.fileChecksum = "hash_1"
+
+            codeChartaService.loadFiles([{ fileName: "FirstFile", content: validFileContent, fileSize: 42 }])
+            codeChartaService.loadFiles([{ fileName: "SecondFile", content: valid2ndFileContent, fileSize: 42 }])
+
+            const CCFilesUnderTest = getCCFiles(state.getValue().files)
+
+            expect(CCFilesUnderTest.length).toEqual(2)
+            expect(CCFilesUnderTest[0].fileMeta.fileName).toEqual("FirstFile")
+            expect(CCFilesUnderTest[0].fileMeta.fileChecksum).toEqual("invalid-md5-sample")
+            expect(CCFilesUnderTest[1].fileMeta.fileName).toEqual("SecondFile")
+            expect(CCFilesUnderTest[1].fileMeta.fileChecksum).toEqual("hash_1")
+        })
+
+        it("should delete sample files when loading new files", () => {
+            const dispatchSpy = jest.spyOn(store, "dispatch")
+
+            const valid2ndFileContent = klona(validFileContent)
+            valid2ndFileContent.fileChecksum = "hash_1"
+
+            codeChartaService.loadFiles([{ fileName: "FirstFile", content: validFileContent, fileSize: 42 }])
+            store.dispatch(setCurrentFilesAreSampleFiles({ value: true }))
+
+            codeChartaService.loadFiles([{ fileName: "SecondFile", content: valid2ndFileContent, fileSize: 42 }])
+
+            const CCFilesUnderTest = getCCFiles(state.getValue().files)
+
+            expect(dispatchSpy).toHaveBeenCalledWith(setCurrentFilesAreSampleFiles({ value: false }))
+            expect(CCFilesUnderTest.length).toEqual(1)
+            expect(CCFilesUnderTest[0].fileMeta.fileName).toEqual("SecondFile")
+            expect(CCFilesUnderTest[0].fileMeta.fileChecksum).toEqual("hash_1")
+        })
+
+        it("should keep sample files when loading the same sample file again", () => {
+            const dispatchSpy = jest.spyOn(store, "dispatch")
+
+            const valid2ndFileContent = klona(validFileContent)
+            valid2ndFileContent.fileChecksum = "hash_1"
+
+            codeChartaService.loadFiles([{ fileName: "FirstFile", content: validFileContent, fileSize: 42 }])
+            store.dispatch(setCurrentFilesAreSampleFiles({ value: true }))
+
+            codeChartaService.loadFiles([{ fileName: "FirstFile", content: validFileContent, fileSize: 42 }])
+
+            const CCFilesUnderTest = getCCFiles(state.getValue().files)
+
+            expect(dispatchSpy).toHaveBeenCalledWith(setCurrentFilesAreSampleFiles({ value: false }))
+            expect(CCFilesUnderTest.length).toEqual(1)
+            expect(CCFilesUnderTest[0].fileMeta.fileName).toEqual("FirstFile")
+            expect(CCFilesUnderTest[0].fileMeta.fileChecksum).toEqual("invalid-md5-sample")
+        })
+
+        it("should keep sample files when loading the same sample file and after that another different file", () => {
+            const dispatchSpy = jest.spyOn(store, "dispatch")
+
+            const valid2ndFileContent = klona(validFileContent)
+            valid2ndFileContent.fileChecksum = "hash_1"
+
+            codeChartaService.loadFiles([{ fileName: "FirstFile", content: validFileContent, fileSize: 42 }])
+            store.dispatch(setCurrentFilesAreSampleFiles({ value: true }))
+
+            codeChartaService.loadFiles([{ fileName: "FirstFile", content: validFileContent, fileSize: 42 }])
+            codeChartaService.loadFiles([{ fileName: "SecondFile", content: valid2ndFileContent, fileSize: 42 }])
+
+            const CCFilesUnderTest = getCCFiles(state.getValue().files)
+
+            expect(dispatchSpy).toHaveBeenCalledWith(setCurrentFilesAreSampleFiles({ value: false }))
+            expect(CCFilesUnderTest.length).toEqual(2)
+            expect(CCFilesUnderTest[0].fileMeta.fileName).toEqual("FirstFile")
+            expect(CCFilesUnderTest[0].fileMeta.fileChecksum).toEqual("invalid-md5-sample")
+            expect(CCFilesUnderTest[1].fileMeta.fileName).toEqual("SecondFile")
+            expect(CCFilesUnderTest[1].fileMeta.fileChecksum).toEqual("hash_1")
+        })
+
+        it("should keep sample file when loading a invalid file", () => {
+            const dispatchSpy = jest.spyOn(store, "dispatch")
+
+            codeChartaService.loadFiles([{ fileName: "FirstFile", content: validFileContent, fileSize: 42 }])
+            store.dispatch(setCurrentFilesAreSampleFiles({ value: true }))
+
+            const invalidFileContent = klona(validFileContent)
+            invalidFileContent.apiVersion = ""
+
+            expect(() => codeChartaService.loadFiles([{ fileName: "SecondFile", content: invalidFileContent, fileSize: 42 }])).toThrow(
+                "File(s) could not be loaded"
+            )
+
+            const CCFilesUnderTest = getCCFiles(state.getValue().files)
+
+            expect(dispatchSpy).not.toHaveBeenCalledWith(setCurrentFilesAreSampleFiles({ value: false }))
+            expect(CCFilesUnderTest.length).toEqual(1)
+            expect(CCFilesUnderTest[0].fileMeta.fileName).toEqual("FirstFile")
+            expect(CCFilesUnderTest[0].fileMeta.fileChecksum).toEqual("invalid-md5-sample")
         })
 
         it("should replace files with equal file name and checksum when loading new files", () => {
