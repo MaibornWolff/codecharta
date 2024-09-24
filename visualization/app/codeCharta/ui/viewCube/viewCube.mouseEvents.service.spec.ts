@@ -72,6 +72,7 @@ describe("ViewCubeMouseEventsService", () => {
         it("should initialize controls with parameters", () => {
             const camera = new PerspectiveCamera()
             const expectedControls = new OrbitControls(camera, webGLRenderer.domElement)
+            expectedControls.maxPolarAngle = Math.PI / 2
             expectedControls.enableZoom = false
             expectedControls.enablePan = false
             expectedControls.rotateSpeed = 1
