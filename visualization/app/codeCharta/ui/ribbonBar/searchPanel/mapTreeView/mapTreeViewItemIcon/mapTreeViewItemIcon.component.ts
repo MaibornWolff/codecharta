@@ -1,10 +1,9 @@
-import { Component, Input, ViewEncapsulation } from "@angular/core"
+import { Component, Input } from "@angular/core"
 import { CodeMapNode } from "../../../../../codeCharta.model"
 
 @Component({
     selector: "cc-map-tree-view-item-icon",
-    templateUrl: "./mapTreeViewItemIcon.component.html",
-    encapsulation: ViewEncapsulation.None
+    templateUrl: "./mapTreeViewItemIcon.component.html"
 })
 export class MapTreeViewItemIconComponent {
     @Input() node: CodeMapNode

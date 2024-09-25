@@ -1,6 +1,6 @@
-import { Component, Input, OnInit, ViewEncapsulation } from "@angular/core"
+import { Component, Input, OnInit } from "@angular/core"
 
-import { CodeMapNode, CcState } from "../../../../../codeCharta.model"
+import { CcState, CodeMapNode } from "../../../../../codeCharta.model"
 import { setRightClickedNodeData } from "../../../../../state/store/appStatus/rightClickedNodeData/rightClickedNodeData.actions"
 import { rightClickedNodeDataSelector } from "../../../../../state/store/appStatus/rightClickedNodeData/rightClickedNodeData.selector"
 import { hoveredNodeIdSelector } from "../../../../../state/store/appStatus/hoveredNodeId/hoveredNodeId.selector"
@@ -16,7 +16,7 @@ import { isAreaValid } from "../areaMetricValidPipe.pipe"
 @Component({
     selector: "cc-map-tree-view-level",
     templateUrl: "./mapTreeViewLevel.component.html",
-    encapsulation: ViewEncapsulation.None
+    styleUrls: ["./mapTreeViewLevel.component.scss"]
 })
 export class MapTreeViewLevelComponent implements OnInit {
     @Input() node: CodeMapNode

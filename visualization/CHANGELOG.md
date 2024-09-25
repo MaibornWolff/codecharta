@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Fixed 🐞
+
+- Remove horizontal scrollbar in the File/ Node Explorer dropdown and styling fixes [#3765](https://github.com/MaibornWolff/codecharta/pull/3765)
+
 ### Changed
 
 - Add thousands seperation for metrics value [#3758](https://github.com/MaibornWolff/codecharta/pull/3758)
