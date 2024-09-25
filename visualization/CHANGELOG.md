@@ -19,7 +19,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Changed
 
-- Add thousands seperation for metrics value [#3758](https://github.com/MaibornWolff/codecharta/pull/3758)
 - Renaming of Metric Templates to Metric Scenarios [#3656](https://github.com/MaibornWolff/codecharta/pull/3656)
 
 ## [1.128.0] - 2024-09-18
