@@ -1,4 +1,4 @@
-import { Component, ViewEncapsulation } from "@angular/core"
+import { Component } from "@angular/core"
 import { CustomConfigHelper } from "../../../util/customConfigHelper"
 import { createCCFileInput } from "../../../util/uploadFiles/createCCFileInput"
 import { readFiles } from "../../../util/uploadFiles/readFiles"
@@ -6,7 +6,7 @@ import { readFiles } from "../../../util/uploadFiles/readFiles"
 @Component({
     selector: "cc-upload-custom-config-button",
     templateUrl: "./uploadCustomConfigButton.component.html",
-    encapsulation: ViewEncapsulation.None
+    styleUrls: ["../customConfigButtons.scss"]
 })
 export class UploadCustomConfigButtonComponent {
     upload() {

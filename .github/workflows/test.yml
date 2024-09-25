@@ -195,7 +195,7 @@ jobs:
           path: ./visualization/dist/
 
       - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@v2.0.2
+        uses: SonarSource/sonarcloud-github-action@v2.3.0
         with:
           projectBaseDir: ./visualization
           args: >

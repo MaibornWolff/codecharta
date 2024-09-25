@@ -71,16 +71,15 @@ describe("autoFitCodeMapOnFileSelectionChangeEffect", () => {
         expect(mockedAutoFitTo).not.toHaveBeenCalled()
     })
 
-    it("should auto fit map when focused node paths has changed", () => {
-        store.overrideSelector(focusedNodePathSelector, [])
+    it("should auto fit map when layout algorithm has changed", () => {
+        store.overrideSelector(layoutAlgorithmSelector, LayoutAlgorithm.TreeMapStreet)
         store.refreshState()
         mockedRenderCodeMap$.next(undefined)
         expect(mockedAutoFitTo).toHaveBeenCalledTimes(1)
     })
 
-    it("should auto fit map when layout algorithm has changed", () => {
-        store.overrideSelector(layoutAlgorithmSelector, LayoutAlgorithm.TreeMapStreet)
-        store.refreshState()
+    it("should auto fit map if resetCameraIfNewFileIsLoadedSelector is set to false when starting ", () => {
+        actions$.next({ type: "StartWithGlobalOption:resetCameraIfNewFileIsLoadedSetToFalse" })
         mockedRenderCodeMap$.next(undefined)
         expect(mockedAutoFitTo).toHaveBeenCalledTimes(1)
     })

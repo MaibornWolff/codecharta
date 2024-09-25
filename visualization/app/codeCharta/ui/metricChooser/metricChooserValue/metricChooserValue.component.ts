@@ -1,4 +1,4 @@
-import { Component, Input, ViewEncapsulation } from "@angular/core"
+import { Component, Input } from "@angular/core"
 import { Store } from "@ngrx/store"
 import { Observable } from "rxjs"
 import { CcState, CodeMapNode, Node, PrimaryMetrics } from "../../../codeCharta.model"
@@ -8,7 +8,7 @@ import { NodeSelectionService } from "../nodeSelection.service"
 @Component({
     selector: "cc-metric-chooser-value",
     templateUrl: "./metricChooserValue.component.html",
-    encapsulation: ViewEncapsulation.None
+    styleUrl: "./metricChooserValue.component.scss"
 })
 export class MetricChooserValueComponent {
     @Input() metricFor: keyof PrimaryMetrics
@@ -22,5 +22,17 @@ export class MetricChooserValueComponent {
     ) {
         this.node$ = this.nodeSelectionService.createNodeObservable()
         this.primaryMetricNames$ = this.store.select(primaryMetricNamesSelector)
+    }
+
+    calculateBackgroundColor(delta: number): string {
+        if (this.metricFor === "heightMetric" && delta > 0) {
+            return "#b1d8a8"
+        }
+
+        if (delta < 0) {
+            return "#ffcccc"
+        }
+
+        return "#e6e6e6"
     }
 }

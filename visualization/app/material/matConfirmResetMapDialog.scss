@@ -1,0 +1,28 @@
+@use "variables";
+
+.cc-confirm-reset-map-dialog .mat-mdc-dialog-container {
+    mat-toolbar {
+        &.header {
+            background-color: variables.$cc-primary-color;
+            h2 {
+                color: white;
+            }
+        }
+    }
+
+    .mat-mdc-dialog-actions {
+        margin: 0;
+        padding: 0 8px;
+        position: relative;
+        display: flex;
+        justify-content: right;
+
+        .mat-mdc-button {
+            padding: 0 8px;
+            margin: 8px 0 8px 8px;
+            color: variables.$cc-primary-color;
+            background-color: variables.$cc-dialog-button-background-color;
+            bottom: 0;
+        }
+    }
+}

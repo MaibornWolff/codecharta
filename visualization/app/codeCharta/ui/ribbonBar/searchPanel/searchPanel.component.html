@@ -1,0 +1,18 @@
+<cc-ribbon-bar-panel
+    title="File/Node Explorer"
+    [isPinned]="isSearchPanelPinned"
+    (onToggleSettings)="onToggleSettings($event)"
+    [collapseOnPanelClick]="false"
+>
+    <cc-search-bar (click)="openSearchPanel()"></cc-search-bar>
+    <cc-search-panel-mode-selector
+        [searchPanelMode]="searchPanelMode"
+        [updateSearchPanelMode]="updateSearchPanelMode"
+    ></cc-search-panel-mode-selector>
+
+    <cc-ribbon-bar-panel-settings>
+        <cc-blacklist-panel [hidden]="searchPanelMode !== 'blacklist'"></cc-blacklist-panel>
+        <cc-matching-files-counter [hidden]="searchPanelMode !== 'treeView'"></cc-matching-files-counter>
+        <cc-map-tree-view [hidden]="searchPanelMode !== 'treeView'"></cc-map-tree-view>
+    </cc-ribbon-bar-panel-settings>
+</cc-ribbon-bar-panel>

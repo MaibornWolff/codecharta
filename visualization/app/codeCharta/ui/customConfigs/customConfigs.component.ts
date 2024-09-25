@@ -1,8 +1,9 @@
-import { Component, ViewEncapsulation } from "@angular/core"
+import { Component } from "@angular/core"
 import { MatDialog } from "@angular/material/dialog"
 import { CustomConfigListComponent } from "./customConfigList/customConfigList.component"
 import { CustomConfigMapSelectionMode } from "../../model/customConfig/customConfig.api.model"
 import { MapColors, PrimaryMetrics } from "../../codeCharta.model"
+import { AddCustomConfigDialogComponent } from "./addCustomConfigButton/addCustomConfigDialog/addCustomConfigDialog.component"
 
 type CustomConfigColors = Pick<MapColors, "positive" | "neutral" | "negative" | "selected" | "positiveDelta" | "negativeDelta">
 
@@ -27,8 +28,7 @@ export interface CustomConfigItemGroup {
 @Component({
     selector: "cc-custom-configs",
     templateUrl: "./customConfigs.component.html",
-    styleUrls: ["./customConfigs.component.scss"],
-    encapsulation: ViewEncapsulation.None
+    styleUrls: ["./customConfigs.component.scss"]
 })
 export class CustomConfigsComponent {
     constructor(private dialog: MatDialog) {}
@@ -36,6 +36,12 @@ export class CustomConfigsComponent {
     openCustomConfigDialog() {
         this.dialog.open(CustomConfigListComponent, {
             panelClass: "cc-custom-config-list"
+        })
+    }
+
+    showAddCustomConfigDialog() {
+        this.dialog.open(AddCustomConfigDialogComponent, {
+            panelClass: "cc-add-custom-config-dialog"
         })
     }
 }

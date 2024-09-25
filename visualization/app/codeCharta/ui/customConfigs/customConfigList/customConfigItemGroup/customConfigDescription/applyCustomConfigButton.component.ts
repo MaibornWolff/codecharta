@@ -1,4 +1,4 @@
-import { Component, Input, ViewEncapsulation } from "@angular/core"
+import { Component, Input } from "@angular/core"
 import { CustomConfigItem } from "../../../customConfigs.component"
 import { CustomConfigHelper } from "../../../../../util/customConfigHelper"
 import { ThreeCameraService } from "../../../../codeMap/threeViewer/threeCamera.service"
@@ -9,8 +9,7 @@ import { ThreeRendererService } from "../../../../codeMap/threeViewer/threeRende
 @Component({
     selector: "cc-apply-custom-config-button",
     templateUrl: "./applyCustomConfigButton.component.html",
-    styleUrls: ["./applyCustomConfigButton.component.scss"],
-    encapsulation: ViewEncapsulation.None
+    styleUrls: ["./applyCustomConfigButton.component.scss"]
 })
 export class ApplyCustomConfigButtonComponent {
     @Input() customConfigItem: CustomConfigItem

@@ -1,9 +1,9 @@
-import { Component, Inject, ViewEncapsulation } from "@angular/core"
+import { Component, Inject } from "@angular/core"
 import { MAT_DIALOG_DATA } from "@angular/material/dialog"
 
 @Component({
-    templateUrl: "./errorDialog.component.html",
-    encapsulation: ViewEncapsulation.None
+    selector: "cc-error-dialog",
+    templateUrl: "./errorDialog.component.html"
 })
 export class ErrorDialogComponent {
     constructor(

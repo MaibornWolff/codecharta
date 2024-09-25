@@ -1,42 +1,46 @@
-cc-labelled-color-picker {
-    .cc-labelled-color-picker-container {
-        display: flex;
-        height: 40px;
-        align-items: center;
+.cc-labelled-color-picker-container {
+    display: flex;
+    height: 40px;
+    align-items: center;
 
-        &:hover {
-            cursor: pointer;
+    &:hover {
+        cursor: pointer;
+    }
+
+    .cc-color-swatch-container {
+        position: relative;
+        margin: 0 11px; // Exactly 11px to match the mat-checkbox margin
+        width: 18px;
+        height: 18px;
+
+        .cc-color-swatch {
+            display: inline-block;
+            width: inherit;
+            height: inherit;
+            border-radius: 2px;
+            border: 1px solid black;
         }
 
-        .cc-color-swatch-container {
-            position: relative;
-            margin: 0px 11px; // Exactly 11px to match the mat-checkbox margin
-            width: 18px;
-            height: 18px;
-
-            .cc-color-swatch {
-                display: inline-block;
-                width: inherit;
-                height: inherit;
-                border-radius: 2px;
-                border: 1px solid black;
-            }
-
-            .cc-color-brush {
-                position: absolute;
-                left: 50%;
-                top: 50%;
-                transform: translate(-50%, -50%);
-                opacity: 0; // handled by component
-            }
+        .cc-color-brush {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0; // handled by component
         }
     }
 }
 
-.mat-mdc-menu-panel.cc-color-picker-menu .mat-mdc-menu-content {
-    padding: 0;
-}
+.cc-labelled-color-picker-container > .cc-labelled-color-picker-label {
+    white-space: nowrap;
+    text-overflow: ellipsis;
 
-color-chrome .chrome-hue {
-    margin-top: 10px;
+    /* This tricks the browser into cutting off the beginning instead of the end of the label. However,
+       changing the text direction has side effects, like moving punctuation around.  */
+    direction: rtl;
+
+    span {
+        /* This should prevent the browser from moving punctuation around.  */
+        unicode-bidi: plaintext;
+    }
 }

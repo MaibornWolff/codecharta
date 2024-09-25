@@ -1,0 +1,22 @@
+cc-search-panel-mode-selector {
+    mat-button-toggle {
+        height: 100%;
+        align-items: center;
+    }
+
+    .has-blacklist-items-indicator {
+        position: absolute;
+        margin-left: 18px;
+        margin-top: -32px;
+        border-radius: 50%;
+        background-color: red;
+        width: 5px;
+        height: 5px;
+    }
+
+    .mat-button-toggle-checked {
+        .mat-pseudo-checkbox {
+            display: none;
+        }
+    }
+}

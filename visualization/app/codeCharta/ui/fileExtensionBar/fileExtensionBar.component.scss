@@ -3,22 +3,13 @@
     top: 98px;
 }
 
-cc-file-extension-bar {
+:host {
     z-index: 30;
     background-color: white;
 
     .cc-distribution {
         display: flex;
         height: 17px;
-
-        cc-distribution-metric-chooser {
-            width: 210px;
-            display: flex;
-            align-items: center;
-            font-size: 12px;
-            gap: 6px;
-            padding-left: 6px;
-        }
 
         .cc-bar {
             flex: 1;

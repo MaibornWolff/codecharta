@@ -1,8 +1,8 @@
 import { TestBed } from "@angular/core/testing"
 import { render } from "@testing-library/angular"
-import { provideMockStore, MockStore } from "@ngrx/store/testing"
+import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { expect } from "@jest/globals"
-import { TEST_NODE_LEAF, TEST_ATTRIBUTE_DESCRIPTORS, TEST_NODE_FOLDER } from "../../util/dataMocks"
+import { TEST_ATTRIBUTE_DESCRIPTORS, TEST_NODE_FOLDER, TEST_NODE_LEAF } from "../../util/dataMocks"
 import { selectedNodeSelector } from "../../state/selectors/selectedNode.selector"
 import { AttributeSideBarComponent } from "./attributeSideBar.component"
 import { AttributeSideBarModule } from "./attributeSideBar.module"
@@ -21,6 +21,7 @@ import { showAttributeTypeSelectorSelector } from "./util/showAttributeTypeSelec
 import { metricTitles } from "../../util/metric/metricTitles"
 
 let selectedMetricNames
+let selectedMetrics
 
 describe("AttributeSideBarComponent", () => {
     beforeEach(() => {
@@ -29,6 +30,13 @@ describe("AttributeSideBarComponent", () => {
             heightMetric: "a",
             colorMetric: "a",
             edgeMetric: "c"
+        }
+
+        selectedMetrics = {
+            edge: {},
+            color: {},
+            height: {},
+            area: {}
         }
         TestBed.configureTestingModule({
             imports: [AttributeSideBarModule],
@@ -43,7 +51,7 @@ describe("AttributeSideBarComponent", () => {
                         { selector: selectedNodeSelector, value: null },
                         { selector: accumulatedDataSelector, value: {} },
                         { selector: mapColorsSelector, value: defaultMapColors },
-                        { selector: primaryMetricsSelector, value: { edge: {}, color: {}, height: {}, area: {} } }
+                        { selector: primaryMetricsSelector, value: selectedMetrics }
                     ]
                 })
             ]
@@ -98,21 +106,20 @@ describe("AttributeSideBarComponent", () => {
     })
 
     it("should contain 'no edge metric available' note", async () => {
-        selectedMetricNames.edgeMetric = undefined
+        selectedMetrics.edge = undefined
         const { container, detectChanges } = await render(AttributeSideBarComponent, { excludeComponentDeclaration: true })
         const selectedNode = klona(TEST_NODE_FOLDER)
-        selectedNode["children"] = [{}]
         mockSelectedNode(selectedNode as unknown as CodeMapNode, detectChanges)
 
         const primaryMetricsWithoutEdgeMetric = container.querySelectorAll("cc-attribute-side-bar-primary-metrics td")
-        expect(primaryMetricsWithoutEdgeMetric[3].textContent === "No edge metric available")
+        expect(primaryMetricsWithoutEdgeMetric[3].textContent).toContain("No edge metric available")
     })
 
     it("should contain primary/secondary metrics with title/tooltip attribute/metric descriptor information", async () => {
         selectedMetricNames.areaMetric = "a"
         selectedMetricNames.heightMetric = "b"
         selectedMetricNames.colorMetric = "mcc"
-        selectedMetricNames.edgeMetric = "someEdge"
+        selectedMetricNames.edgeMetric = "avgCommits"
 
         const { container, detectChanges } = await render(AttributeSideBarComponent, { excludeComponentDeclaration: true })
 
@@ -125,7 +132,7 @@ describe("AttributeSideBarComponent", () => {
                 value: 10
             },
             edge: {
-                name: "someEdge",
+                name: "avgCommits",
                 incoming: 20,
                 outgoing: 60
             }
@@ -143,7 +150,8 @@ describe("AttributeSideBarComponent", () => {
         expect(attributeTypeSelectorWithinPrimaryMetrics[1].getAttribute("title")).toBe("b_testTitle (b)")
         expect(attributeTypeSelectorWithinPrimaryMetrics[1].querySelector("a").getAttribute("href")).toBe("https://test.link")
         expect(attributeTypeSelectorWithinPrimaryMetrics[2].getAttribute("title")).toBe(metricTitles.get("mcc"))
-        expect(attributeTypeSelectorWithinPrimaryMetrics[3].getAttribute("title")).toBe("")
+        expect(attributeTypeSelectorWithinPrimaryMetrics[3].getAttribute("title")).toBe(metricTitles.get("avgCommits"))
+        expect(attributeTypeSelectorWithinPrimaryMetrics[3].textContent).toBe("Σx͂ 20 / 60 avgCommits (in/out)")
 
         expect(attributeTypeSelectorWithinSecondaryMetrics[1].querySelector("a").getAttribute("href")).toBe("https://test2.link")
         expect(attributeTypeSelectorWithinSecondaryMetrics[1].getAttribute("title")).toBe("d")

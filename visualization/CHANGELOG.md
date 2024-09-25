@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Fixed 🐞
+
+- Remove horizontal scrollbar in the File/ Node Explorer dropdown and styling fixes [#3765](https://github.com/MaibornWolff/codecharta/pull/3765)
+
+### Changed
+
+- Add thousands seperation for metrics value [#3758](https://github.com/MaibornWolff/codecharta/pull/3758)
+
+## [1.128.0] - 2024-09-18
+
 ### Added 🚀
 
 - Add feature to zoom at the mouse cursor [#3693](https://github.com/MaibornWolff/codecharta/pull/3693)
@@ -15,21 +25,33 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Fixed 🐞
 
 - Fix issue where zooming out too much makes the map disappear and zooming in too much causes you to go through the map. [#3697](https://github.com/MaibornWolff/codecharta/pull/3697)
+- Camera perspective is correctly adopted from the custom configuration[#3698](https://github.com/MaibornWolff/codecharta/pull/3698)
+- Fix camera behavior when `Reset Camera when changing map` option is deactivated [#3699](https://github.com/MaibornWolff/codecharta/pull/3699)
+- Fix issue when multiple files are selected then the edge metrics in the primary metrics section are not displayed correctly. [#3753](https://github.com/MaibornWolff/codecharta/pull/3753)
 
 ### Changed
 
 - Change OrbitControls to MapControls for improved map navigation [#3693](https://github.com/MaibornWolff/codecharta/pull/3693)
+- Remove unnecessary button that opened and closed the file explorer [#3647](https://github.com/MaibornWolff/codecharta/pull/3748)
+- Overhaul Focus and Unfocus functionality[#3706](https://github.com/MaibornWolff/codecharta/pull/3706)
 
 ### Chore 👨‍💻 👩‍💻
 
 - Bump node version from 18 to 20 [#3690](https://github.com/MaibornWolff/codecharta/pull/3690)
+- Enabled view encapsulation for Global Configuration dialog, Ribbon Bar and File Panel [#3712](https://github.com/MaibornWolff/codecharta/pull/3712)
+- Enabled view encapsulation for Slider [#3713](https://github.com/MaibornWolff/codecharta/pull/3713)
+- Enabled view encapsulation for the Toolbar [#3717](https://github.com/MaibornWolff/codecharta/pull/3717)
+- Enabled view encapsulation for the Legend Panel [#3720](https://github.com/MaibornWolff/codecharta/pull/3720)
+- Enabled view encapsulation for the Attribute Side Bar [#3726](https://github.com/MaibornWolff/codecharta/pull/3726)
+- Enabled view encapsulation for Buttons [#3729](https://github.com/MaibornWolff/codecharta/pull/3729)
+- Enabled view encapsulation for the Export 3D Map Dialog [#3732](https://github.com/MaibornWolff/codecharta/pull/3732)
+- Enabled view encapsulation for Dialogs [#3736](https://github.com/MaibornWolff/codecharta/pull/3736)
 
 ## [1.127.1] - 2024-08-12
 
 ### Fixed 🐞
 
 - Revert [#3655](https://github.com/MaibornWolff/codecharta/pull/3665) as we implement new navigation methods
-- Camera perspective is correctly adopted from the custom configuration[#3194](https://github.com/MaibornWolff/codecharta/pull/3194)
 
 ## [1.127.0] - 2024-08-12
 

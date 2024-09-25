@@ -46,7 +46,7 @@
         <mat-card appearance="outlined">
             <mat-card-header>Second row center text</mat-card-header>
 
-            <mat-card-content class="ManualVisibilityContent">
+            <mat-card-content class="cc-manual-visibility-content">
                 <mat-slide-toggle
                     data-testid="secondRowToggle"
                     [checked]="secondRow.isVisible"
@@ -63,7 +63,7 @@
 
         <mat-card appearance="outlined">
             <mat-card-header>QR-Code</mat-card-header>
-            <mat-card-content class="ManualVisibilityContent">
+            <mat-card-content class="cc-manual-visibility-content">
                 <mat-slide-toggle data-testid="qrCodeToggle" [checked]="qrCode.isVisible" (change)="onQrCodeVisibilityChange($event)">
                     Show QR-Code
                 </mat-slide-toggle>
@@ -77,7 +77,7 @@
         <mat-card appearance="outlined">
             <mat-card-header>Bottom left logo (SVG):</mat-card-header>
             <mat-card-content>
-                <input #fileInput type="file" (change)="onFileSelected($event)" accept=".svg" />
+                <input #fileInput type="file" class="cc-file-input" (change)="onFileSelected($event)" accept=".svg" />
 
                 <button (click)="onRemoveLogo()" [hidden]="!isFileSelected" mat-button title="Remove Logo Button">
                     <span><i class="fa fa-times"></i> Remove Logo</span>

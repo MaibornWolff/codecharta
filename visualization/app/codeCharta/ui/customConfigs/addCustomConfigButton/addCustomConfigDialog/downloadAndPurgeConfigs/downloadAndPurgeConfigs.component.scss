@@ -1,16 +1,22 @@
 :host {
     text-align: right;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
 }
 
 .exceed-local-storage-message {
     display: block;
     text-align: left;
     padding: 0 16px;
-    color: var(--exceed-local-storage-message-text-color);
+    color: #b02929;
 }
 
 .exceed-local-storage-button {
-    margin-right: 89px;
-    color: var(--exceed-local-storage-button-text-color);
-    background-color: var(--exceed-local-storage-button-background-color);
+    color: #ffffff;
+    background-color: #b02929;
+
+    &:hover {
+        background-color: #8c1f1f;
+    }
 }

@@ -28,8 +28,9 @@ import { ResetColorRangeEffect } from "./codeCharta/state/store/dynamicSettings/
 import { appReducers, setStateMiddleware } from "./codeCharta/state/store/state.manager"
 import { ChangelogDialogModule } from "./codeCharta/ui/dialogs/changelogDialog/changelogDialog.module"
 import { dialogs } from "./codeCharta/ui/dialogs/dialogs"
-import { BlacklistSearchPatternEffect } from "./codeCharta/ui/searchPanel/searchBar/blacklistSearchPattern.effect"
+import { BlacklistSearchPatternEffect } from "./codeCharta/ui/ribbonBar/searchPanel/searchBar/blacklistSearchPattern.effect"
 import { MaterialModule } from "./material/material.module"
+import { FocusEffects } from "./codeCharta/state/effects/focusNodes/focus.effect"
 
 @NgModule({
     imports: [
@@ -53,7 +54,8 @@ import { MaterialModule } from "./material/material.module"
             SetLoadingIndicatorEffect,
             SaveCcStateEffect,
             SaveMetricsInQueryParametersEffect,
-            UpdateMapColorsEffect
+            UpdateMapColorsEffect,
+            FocusEffects
         ]),
         MaterialModule,
         FormsModule,

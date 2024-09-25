@@ -62,6 +62,21 @@ describe("metricChooserValueComponent", () => {
         expect(screen.queryByText("Δ")).toBe(null)
     })
 
+    it("should display value with thousands seperation", async () => {
+        const rloc = "1000000"
+        VALID_NODE.children[0].attributes = { rloc: Number(rloc) }
+        TestBed.overrideProvider(NodeSelectionService, {
+            useValue: { createNodeObservable: jest.fn().mockReturnValue(of(VALID_NODE.children[0])) }
+        })
+        await render(MetricChooserValueComponent, {
+            excludeComponentDeclaration: true,
+            componentProperties: { metricFor: "areaMetric" }
+        })
+
+        expect(screen.queryByText("1,000,000")).not.toBe(null)
+        expect(screen.queryByText("Δ")).toBe(null)
+    })
+
     it("should display zero height delta value in grey", async () => {
         TestBed.overrideProvider(NodeSelectionService, {
             useValue: {
@@ -73,14 +88,14 @@ describe("metricChooserValueComponent", () => {
                 )
             }
         })
-        const { container } = await render(MetricChooserValueComponent, {
+        const { fixture } = await render(MetricChooserValueComponent, {
             excludeComponentDeclaration: true,
             componentProperties: { metricFor: "heightMetric" }
         })
 
         expect(screen.queryByText("Δ0")).not.toBe(null)
-        const deltaContainer = container.querySelector(".rounded-box.value") as HTMLElement
-        expect(deltaContainer.style.backgroundColor).toBe("rgb(230, 230, 230)")
+
+        expect(fixture.componentInstance.calculateBackgroundColor(0)).toBe("#e6e6e6")
     })
 
     it("should display positive height delta value in green", async () => {
@@ -94,14 +109,13 @@ describe("metricChooserValueComponent", () => {
                 )
             }
         })
-        const { container } = await render(MetricChooserValueComponent, {
+        const { fixture } = await render(MetricChooserValueComponent, {
             excludeComponentDeclaration: true,
             componentProperties: { metricFor: "heightMetric" }
         })
 
         expect(screen.queryByText("Δ21")).not.toBe(null)
-        const deltaContainer = container.querySelector(".rounded-box.value") as HTMLElement
-        expect(deltaContainer.style.backgroundColor).toBe("rgb(177, 216, 168)")
+        expect(fixture.componentInstance.calculateBackgroundColor(21)).toBe("#b1d8a8")
     })
 
     it("should display negative height delta value in red", async () => {
@@ -115,13 +129,12 @@ describe("metricChooserValueComponent", () => {
                 )
             }
         })
-        const { container } = await render(MetricChooserValueComponent, {
+        const { fixture } = await render(MetricChooserValueComponent, {
             excludeComponentDeclaration: true,
             componentProperties: { metricFor: "heightMetric" }
         })
 
         expect(screen.queryByText("Δ-1")).not.toBe(null)
-        const deltaContainer = container.querySelector(".rounded-box.value") as HTMLElement
-        expect(deltaContainer.style.backgroundColor).toBe("rgb(255, 204, 204)")
+        expect(fixture.componentInstance.calculateBackgroundColor(-1)).toBe("#ffcccc")
     })
 })

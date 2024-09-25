@@ -9,6 +9,7 @@ import { State } from "@ngrx/store"
 import { CcState } from "../../../../codeCharta.model"
 
 @Component({
+    selector: "cc-add-custom-scenario-dialog",
     templateUrl: "./addCustomScenarioDialog.component.html",
     styleUrls: ["./addCustomScenarioDialog.component.scss"]
 })

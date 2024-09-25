@@ -1,6 +1,6 @@
 import { CC_URL, clearIndexedDB, goto } from "../../../puppeteer.helper"
 import { RibbonBarPageObject } from "./ribbonBar.po"
-import { SearchPanelPageObject } from "../searchPanel/searchPanel.po"
+import { SearchPanelPageObject } from "./searchPanel/searchPanel.po"
 
 describe("RibbonBar", () => {
     const sampleMap = `sample3.cc.json`
@@ -22,20 +22,20 @@ describe("RibbonBar", () => {
         const areaPanel = "area-metric"
         const edgePanel = "edge-metric"
 
-        let isAreaSettingsPanelOpen = await ribbonBar.togglePanel(areaPanel, "cc-area-settings-panel")
+        let isAreaSettingsPanelOpen = await ribbonBar.togglePanel(areaPanel, "#area-metric-card")
         expect(isAreaSettingsPanelOpen).toBeTruthy()
 
         const isSearchPanelOpen = await searchPanel.toggle()
         expect(isSearchPanelOpen).toBeTruthy()
-        expect(await ribbonBar.isPanelOpen("cc-area-settings-panel")).toBeFalsy()
+        expect(await ribbonBar.isPanelOpen("#area-metric-card")).toBeFalsy()
 
-        isAreaSettingsPanelOpen = await ribbonBar.togglePanel(areaPanel, "cc-area-settings-panel")
+        isAreaSettingsPanelOpen = await ribbonBar.togglePanel(areaPanel, "#area-metric-card")
         expect(isAreaSettingsPanelOpen).toBeTruthy()
         expect(await searchPanel.isOpen()).toBeFalsy()
 
-        const isEdgeSettingsPanelOpen = await ribbonBar.togglePanel(edgePanel, "cc-edge-settings-panel")
+        const isEdgeSettingsPanelOpen = await ribbonBar.togglePanel(edgePanel, "#edge-metric-card")
         expect(isEdgeSettingsPanelOpen).toBeTruthy()
-        expect(await ribbonBar.isPanelOpen("cc-area-settings-panel")).toBeFalsy()
+        expect(await ribbonBar.isPanelOpen("#area-metric-card")).toBeFalsy()
     })
 
     it("should open suspicious metrics and high risk profile menu ", async () => {

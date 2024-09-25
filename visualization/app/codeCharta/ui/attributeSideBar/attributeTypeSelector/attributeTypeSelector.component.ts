@@ -1,4 +1,4 @@
-import { Component, Input, ViewEncapsulation } from "@angular/core"
+import { Component, Input } from "@angular/core"
 import { Store } from "@ngrx/store"
 import { AttributeTypes, AttributeTypeValue, CcState } from "../../../codeCharta.model"
 import { updateAttributeType } from "../../../state/store/fileSettings/attributeTypes/attributeTypes.actions"
@@ -6,9 +6,7 @@ import { attributeTypesSelector } from "../../../state/store/fileSettings/attrib
 
 @Component({
     selector: "cc-attribute-type-selector",
-    templateUrl: "./attributeTypeSelector.component.html",
-    styleUrls: ["./attributeTypeSelector.component.scss"],
-    encapsulation: ViewEncapsulation.None
+    templateUrl: "./attributeTypeSelector.component.html"
 })
 export class AttributeTypeSelectorComponent {
     @Input() metricName: string

@@ -1,0 +1,27 @@
+.cc-node-path {
+    color: grey;
+    margin: 5px 0;
+
+    .file-path {
+        word-wrap: break-word;
+    }
+
+    .cc-node-file-count {
+        background: #f0f0f0;
+        border-radius: 3px;
+        padding: 1px 3px;
+        color: black;
+
+        .added-files {
+            color: #64d051;
+        }
+
+        .removed-files {
+            color: rgb(255, 14, 14);
+        }
+
+        .changed-files {
+            color: rgb(14, 46, 255);
+        }
+    }
+}

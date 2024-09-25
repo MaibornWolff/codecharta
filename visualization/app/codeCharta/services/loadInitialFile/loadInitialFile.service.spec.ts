@@ -299,7 +299,7 @@ describe("LoadInitialFileService", () => {
 
             expect(loadFileService.loadFiles).toHaveBeenCalledWith(mockedNameDataPairs)
             expect(mockedDialog.open).not.toHaveBeenCalled()
-            expect(dispatchSpy).toHaveBeenCalledTimes(countDifferences(mockedState.dynamicSettings, defaultDynamicSettings))
+            expect(dispatchSpy).toHaveBeenCalledTimes(countDifferences(mockedState.dynamicSettings, defaultDynamicSettings) - 1)
         })
 
         it("should set all differing  except sortingOrderAscending and isSearchPanelPinned", async () => {

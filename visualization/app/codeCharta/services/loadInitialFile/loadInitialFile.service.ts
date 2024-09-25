@@ -31,7 +31,6 @@ import { setColorMode } from "../../../../app/codeCharta/state/store/dynamicSett
 import { setColorRange } from "../../../../app/codeCharta/state/store/dynamicSettings/colorRange/colorRange.actions"
 import { setDistributionMetric } from "../../../../app/codeCharta/state/store/dynamicSettings/distributionMetric/distributionMetric.actions"
 import { setEdgeMetric } from "../../../../app/codeCharta/state/store/dynamicSettings/edgeMetric/edgeMetric.actions"
-import { setAllFocusedNodes } from "../../../../app/codeCharta/state/store/dynamicSettings/focusedNodePath/focusedNodePath.actions"
 import { setHeightMetric } from "../../../../app/codeCharta/state/store/dynamicSettings/heightMetric/heightMetric.actions"
 import { setMargin } from "../../../../app/codeCharta/state/store/dynamicSettings/margin/margin.actions"
 import { setSearchPattern } from "../../../../app/codeCharta/state/store/dynamicSettings/searchPattern/searchPattern.actions"
@@ -113,6 +112,9 @@ export class LoadInitialFileService {
     private applySettingsAndFilesFromSavedState(savedFileStates: FileState[], savedCcState: CcState, savedNameDataPairs: NameDataPair[]) {
         const missingPropertiesInSavedCcState = []
 
+        if (!savedCcState.appSettings.resetCameraIfNewFileIsLoaded) {
+            this.store.dispatch({ type: "StartWithGlobalOption:resetCameraIfNewFileIsLoadedSetToFalse" })
+        }
         const missingAppSettings = this.applyAppSettings(savedCcState.appSettings)
         missingPropertiesInSavedCcState.push(...missingAppSettings)
 
@@ -297,7 +299,7 @@ export class LoadInitialFileService {
                 this.store.dispatch(setDistributionMetric({ value }))
                 break
             case "focusedNodePath":
-                this.store.dispatch(setAllFocusedNodes({ value }))
+                //ignore setting focused nodes
                 break
             case "searchPattern":
                 this.store.dispatch(setSearchPattern({ value }))

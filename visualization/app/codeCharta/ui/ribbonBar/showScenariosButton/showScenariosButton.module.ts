@@ -5,9 +5,10 @@ import { AddCustomScenarioDialogModule } from "./addCustomScenarioDialog/addCust
 import { ScenarioService } from "./scenario.service"
 import { ScenariosComponent } from "./scenarios/scenarios.component"
 import { ShowScenariosButtonComponent } from "./showScenariosButton.component"
+import { RibbonBarMenuButtonModule } from "../ribbonBarMenuButton/ribbonBarMenuButton.module"
 
 @NgModule({
-    imports: [CommonModule, MaterialModule, AddCustomScenarioDialogModule],
+    imports: [CommonModule, MaterialModule, AddCustomScenarioDialogModule, RibbonBarMenuButtonModule],
     providers: [ScenarioService],
     declarations: [ShowScenariosButtonComponent, ScenariosComponent],
     exports: [ShowScenariosButtonComponent]
