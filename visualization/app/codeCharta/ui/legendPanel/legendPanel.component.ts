@@ -45,7 +45,7 @@ export class LegendPanelComponent implements OnInit, OnDestroy {
             const overlayPaneElement = document.querySelector(".cdk-overlay-container")
             const clickedWithinOverlayPane = overlayPaneElement ? overlayPaneElement.contains(target) : false
 
-            if (!(clickedInside || clickedWithinOverlayPane)) {
+            if (!clickedInside && !clickedWithinOverlayPane) {
                 this.isLegendVisible = false
             }
         }

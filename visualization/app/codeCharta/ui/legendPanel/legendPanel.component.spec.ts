@@ -16,29 +16,23 @@ import { defaultMapColors } from "../../state/store/appSettings/mapColors/mapCol
 import { selectedColorMetricDataSelector } from "../../state/selectors/accumulatedData/metricData/selectedColorMetricData.selector"
 import { attributeDescriptorsSelector } from "../../state/store/fileSettings/attributeDescriptors/attributeDescriptors.selector"
 import { ViewContainerRef } from "@angular/core"
-import userEvent from "@testing-library/user-event"
+
+const selectors = [
+    { selector: heightMetricSelector, value: "sonar_complexity" },
+    { selector: areaMetricSelector, value: "loc" },
+    { selector: colorMetricSelector, value: "rloc" },
+    { selector: colorRangeSelector, value: { from: 21, to: 42, max: 9001 } },
+    { selector: isDeltaStateSelector, value: true },
+    { selector: mapColorsSelector, value: defaultMapColors },
+    { selector: selectedColorMetricDataSelector, value: {} },
+    { selector: attributeDescriptorsSelector, value: {} }
+]
 
 describe("LegendPanelController", () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
             imports: [LegendPanelModule],
-            providers: [
-                provideMockStore({
-                    selectors: [
-                        { selector: heightMetricSelector, value: "sonar_complexity" },
-                        { selector: areaMetricSelector, value: "loc" },
-                        { selector: colorMetricSelector, value: "rloc" },
-                        { selector: colorRangeSelector, value: { from: 21, to: 42, max: 9001 } },
-                        { selector: isDeltaStateSelector, value: true },
-                        { selector: mapColorsSelector, value: defaultMapColors },
-                        { selector: selectedColorMetricDataSelector, value: {} },
-                        { selector: attributeDescriptorsSelector, value: {} }
-                    ]
-                }),
-                { provide: State, useValue: {} },
-                LegendPanelComponent,
-                ViewContainerRef
-            ]
+            providers: [provideMockStore({ selectors }), { provide: State, useValue: {} }, ViewContainerRef]
         })
     })
 
@@ -127,58 +121,50 @@ describe("LegendPanelController", () => {
     })
 
     describe("closing on outside clicks", () => {
-        let panel: Element
-
-        beforeEach(async () => {
-            const { container } = await render(`<cc-legend-panel></cc-legend-panel>`, {
-                excludeComponentDeclaration: true
-            })
-            panel = container.querySelector("cc-legend-panel")
-        })
-
-        it("should subscribe to mousedown events when opening", () => {
+        it("should subscribe to mousedown events when opening", async () => {
             const addEventListenerSpy = jest.spyOn(document, "addEventListener")
-            const panel = TestBed.inject(LegendPanelComponent)
-            panel.ngOnInit()
+            const { fixture } = await render(LegendPanelComponent, { excludeComponentDeclaration: true })
+            fixture.componentInstance.ngOnInit()
             expect(addEventListenerSpy).toHaveBeenCalledWith("mousedown", expect.any(Function))
         })
 
-        it("should unsubscribe mousedown events when destroyed", () => {
+        it("should unsubscribe mousedown events when destroyed", async () => {
             const removeEventListenerSpy = jest.spyOn(document, "removeEventListener")
-            const panel = TestBed.inject(LegendPanelComponent)
-            panel.ngOnInit()
-            panel.ngOnDestroy()
+            const { fixture } = await render(LegendPanelComponent, { excludeComponentDeclaration: true })
+            fixture.componentInstance.ngOnInit()
+            fixture.componentInstance.ngOnDestroy()
             expect(removeEventListenerSpy).toHaveBeenCalledWith("mousedown", expect.any(Function))
         })
 
         it("should close on outside clicks", async () => {
             const { container } = await render(LegendPanelComponent, { excludeComponentDeclaration: true })
-
             expect(isLegendPanelOpen(container)).toBe(false)
 
             const openLegendButton = screen.getByTitle("Show panel")
             fireEvent.click(openLegendButton)
             expect(isLegendPanelOpen(container)).toBe(true)
 
-            await userEvent.click(document.body)
+            fireEvent.click(document.body)
             expect(isLegendPanelOpen(container)).toBe(false)
         })
 
         it("should not close when clicking inside", async () => {
-            const { container } = await render(LegendPanelComponent, { excludeComponentDeclaration: true })
-
+            const { container } = await render(`<cc-legend-panel></cc-legend-panel>`, {
+                excludeComponentDeclaration: true
+            })
+            const panel = container.querySelector("cc-legend-panel")
             expect(isLegendPanelOpen(container)).toBe(false)
 
             const openLegendButton = screen.getByTitle("Show panel")
             fireEvent.click(openLegendButton)
             expect(isLegendPanelOpen(container)).toBe(true)
 
-            await userEvent.click(panel.querySelector("cc-legend-panel"))
+            fireEvent.click(panel)
             expect(isLegendPanelOpen(container)).toBe(true)
         })
     })
 })
 
 function isLegendPanelOpen(container: Element) {
-    return container.querySelector(".block-wrapper").classList.contains("visible")
+    return container.querySelector("#legend-panel").classList.contains("visible")
 }
