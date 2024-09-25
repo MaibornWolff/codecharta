@@ -1,5 +1,5 @@
 import { TestBed } from "@angular/core/testing"
-import { fireEvent, render, screen } from "@testing-library/angular"
+import { render, screen, waitFor } from "@testing-library/angular"
 import { expect } from "@jest/globals"
 import { isDeltaStateSelector } from "../../state/selectors/isDeltaState.selector"
 import { LegendPanelComponent } from "./legendPanel.component"
@@ -16,16 +16,21 @@ import { defaultMapColors } from "../../state/store/appSettings/mapColors/mapCol
 import { selectedColorMetricDataSelector } from "../../state/selectors/accumulatedData/metricData/selectedColorMetricData.selector"
 import { attributeDescriptorsSelector } from "../../state/store/fileSettings/attributeDescriptors/attributeDescriptors.selector"
 import { ViewContainerRef } from "@angular/core"
+import userEvent from "@testing-library/user-event"
+import { edgeMetricSelector } from "../../state/store/dynamicSettings/edgeMetric/edgeMetric.selector"
+import { legendMarkedPackagesSelector } from "./legendMarkedPackages/legendMarkedPackages.selector"
 
 const selectors = [
     { selector: heightMetricSelector, value: "sonar_complexity" },
     { selector: areaMetricSelector, value: "loc" },
     { selector: colorMetricSelector, value: "rloc" },
+    { selector: edgeMetricSelector, value: "rloc" },
     { selector: colorRangeSelector, value: { from: 21, to: 42, max: 9001 } },
     { selector: isDeltaStateSelector, value: true },
     { selector: mapColorsSelector, value: defaultMapColors },
     { selector: selectedColorMetricDataSelector, value: {} },
-    { selector: attributeDescriptorsSelector, value: {} }
+    { selector: attributeDescriptorsSelector, value: {} },
+    { selector: legendMarkedPackagesSelector, value: {} }
 ]
 
 describe("LegendPanelController", () => {
@@ -39,15 +44,15 @@ describe("LegendPanelController", () => {
     it("should open and close", async () => {
         const { container } = await render(LegendPanelComponent, { excludeComponentDeclaration: true })
 
-        expect(isLegendPanelOpen(container)).toBe(false)
+        expect(await isLegendPanelOpen(container)).toBe(false)
 
         const openLegendButton = screen.getByTitle("Show panel")
-        fireEvent.click(openLegendButton)
-        expect(isLegendPanelOpen(container)).toBe(true)
+        await userEvent.click(openLegendButton)
+        expect(await isLegendPanelOpen(container)).toBe(true)
 
         const closeLegendButton = screen.getByTitle("Hide panel")
-        fireEvent.click(closeLegendButton)
-        expect(isLegendPanelOpen(container)).toBe(false)
+        await userEvent.click(closeLegendButton)
+        expect(await isLegendPanelOpen(container)).toBe(false)
     })
 
     it("should display legend for single mode", async () => {
@@ -56,7 +61,7 @@ describe("LegendPanelController", () => {
         store.overrideSelector(isDeltaStateSelector, false)
         store.refreshState()
         detectChanges()
-        fireEvent.click(screen.getByTitle("Show panel"))
+        await userEvent.click(screen.getByTitle("Show panel"))
 
         expect(screen.queryAllByText("delta", { exact: false }).length).not.toBeGreaterThan(0)
 
@@ -86,7 +91,7 @@ describe("LegendPanelController", () => {
         })
         store.refreshState()
         detectChanges()
-        fireEvent.click(screen.getByTitle("Show panel"))
+        await userEvent.click(screen.getByTitle("Show panel"))
         expect(screen.queryAllByText("delta", { exact: false }).length).not.toBeGreaterThan(0)
 
         const metricDescriptions = container.querySelectorAll("cc-legend-block")
@@ -103,7 +108,7 @@ describe("LegendPanelController", () => {
 
     it("should display legend for delta mode", async () => {
         const { container } = await render(LegendPanelComponent, { excludeComponentDeclaration: true })
-        fireEvent.click(screen.getByTitle("Show panel"))
+        await userEvent.click(screen.getByTitle("Show panel"))
 
         expect(screen.queryAllByText("delta", { exact: false }).length).toBeGreaterThan(0)
 
@@ -138,14 +143,14 @@ describe("LegendPanelController", () => {
 
         it("should close on outside clicks", async () => {
             const { container } = await render(LegendPanelComponent, { excludeComponentDeclaration: true })
-            expect(isLegendPanelOpen(container)).toBe(false)
+            expect(await isLegendPanelOpen(container)).toBe(false)
 
             const openLegendButton = screen.getByTitle("Show panel")
-            fireEvent.click(openLegendButton)
-            expect(isLegendPanelOpen(container)).toBe(true)
+            await userEvent.click(openLegendButton)
+            expect(await isLegendPanelOpen(container)).toBe(true)
 
-            fireEvent.click(document.body)
-            expect(isLegendPanelOpen(container)).toBe(false)
+            await userEvent.click(document.body)
+            expect(await isLegendPanelOpen(container)).toBe(false)
         })
 
         it("should not close when clicking inside", async () => {
@@ -153,18 +158,37 @@ describe("LegendPanelController", () => {
                 excludeComponentDeclaration: true
             })
             const panel = container.querySelector("cc-legend-panel")
-            expect(isLegendPanelOpen(container)).toBe(false)
+            expect(await isLegendPanelOpen(container)).toBe(false)
 
             const openLegendButton = screen.getByTitle("Show panel")
-            fireEvent.click(openLegendButton)
-            expect(isLegendPanelOpen(container)).toBe(true)
+            await userEvent.click(openLegendButton)
+            expect(await isLegendPanelOpen(container)).toBe(true)
 
-            fireEvent.click(panel)
-            expect(isLegendPanelOpen(container)).toBe(true)
+            await userEvent.click(panel)
+            expect(await isLegendPanelOpen(container)).toBe(true)
+        })
+
+        it("should not close when clicking inside opened color picker", async () => {
+            const { container } = await render(`<cc-legend-panel></cc-legend-panel>`, {
+                excludeComponentDeclaration: true
+            })
+            expect(await isLegendPanelOpen(container)).toBe(false)
+
+            const openLegendButton = screen.getByTitle("Show panel")
+            await userEvent.click(openLegendButton)
+            expect(await isLegendPanelOpen(container)).toBe(true)
+
+            const colorPicker = container.querySelector("cc-color-picker-for-map-color")
+            await userEvent.click(colorPicker)
+            expect(await isLegendPanelOpen(container)).toBe(true)
+
+            const colorPickerPopup = document.querySelector("cdk-overlay-container")
+            await userEvent.click(colorPickerPopup)
+            expect(await isLegendPanelOpen(container)).toBe(true)
         })
     })
 })
 
-function isLegendPanelOpen(container: Element) {
-    return container.querySelector("#legend-panel").classList.contains("visible")
+async function isLegendPanelOpen(container: Element) {
+    return waitFor(() => container.querySelector("#legend-panel").classList.contains("visible"))
 }
