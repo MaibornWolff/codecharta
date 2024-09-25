@@ -1,0 +1,19 @@
+@use "variables";
+
+.unary-number {
+    color: #a3a3a3;
+    font-size: 0.8em;
+    margin-top: 1px;
+}
+
+.node-name.flattened {
+    color: gray;
+}
+
+.node-name.noAreaMetric {
+    color: #bdbdbd;
+}
+
+.tree-search-result {
+    background-color: variables.$cc-accent-color;
+}

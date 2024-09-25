@@ -23,7 +23,7 @@ describe("SuspiciousMetricsComponent", () => {
                 componentProperties: {
                     data: {
                         analyzedProgrammingLanguage: "ts",
-                        unsuspiciousMetrics: ["rloc", "complexity"],
+                        unsuspiciousMetrics: ["rloc", "sonar_complexity"],
                         suspiciousMetricSuggestionLinks: [],
                         untrackedMetrics: []
                     }
@@ -53,7 +53,7 @@ describe("SuspiciousMetricsComponent", () => {
                 componentProperties: {
                     data: {
                         analyzedProgrammingLanguage: "ts",
-                        unsuspiciousMetrics: ["rloc", "complexity"],
+                        unsuspiciousMetrics: ["rloc", "sonar_complexity"],
                         suspiciousMetricSuggestionLinks: [],
                         untrackedMetrics: []
                     }
@@ -68,7 +68,7 @@ describe("SuspiciousMetricsComponent", () => {
                 componentProperties: {
                     data: {
                         analyzedProgrammingLanguage: "ts",
-                        unsuspiciousMetrics: ["rloc", "complexity"],
+                        unsuspiciousMetrics: ["rloc", "sonar_complexity"],
                         suspiciousMetricSuggestionLinks: [],
                         untrackedMetrics: []
                     }
@@ -120,7 +120,7 @@ describe("SuspiciousMetricsComponent", () => {
                         analyzedProgrammingLanguage: "ts",
                         unsuspiciousMetrics: ["rloc"],
                         suspiciousMetricSuggestionLinks: [
-                            { metric: "complexity", from: 10, to: 22 },
+                            { metric: "sonar_complexity", from: 10, to: 22 },
                             { metric: "code_smell", from: 5, to: 9 }
                         ],
                         untrackedMetrics: []
@@ -130,8 +130,8 @@ describe("SuspiciousMetricsComponent", () => {
             await userEvent.click(screen.getByTitle("Open Suspicious Metrics Panel"))
             expect(screen.queryByText("No programming language was found for analyzing suspicious metrics.")).toBe(null)
             expect(screen.getByTitle("Suspicious Metrics in .ts code")).not.toBe(null)
-            expect(screen.getByTitle("COMPLEXITY (cyclomatic complexity)")).not.toBe(null)
-            expect(screen.getByTitle("COMPLEXITY (cyclomatic complexity)").getElementsByClassName("sub-sub-title")).toHaveLength(1)
+            expect(screen.getByTitle("SONAR_COMPLEXITY (cyclomatic complexity)")).not.toBe(null)
+            expect(screen.getByTitle("SONAR_COMPLEXITY (cyclomatic complexity)").getElementsByClassName("sub-sub-title")).toHaveLength(1)
             expect(screen.getByText("cyclomatic complexity")).not.toBe(null)
             expect(screen.getByTitle("CODE_SMELL")).not.toBe(null)
             expect(screen.getByTitle("CODE_SMELL").getElementsByClassName("sub-sub-title")).toHaveLength(0)
@@ -140,8 +140,8 @@ describe("SuspiciousMetricsComponent", () => {
 
             await userEvent.click(screen.getAllByText("Apply preset")[0], undefined)
             const store = TestBed.inject(Store)
-            expect(store.dispatch).toHaveBeenCalledWith(setHeightMetric({ value: "complexity" }))
-            expect(store.dispatch).toHaveBeenCalledWith(setColorMetric({ value: "complexity" }))
+            expect(store.dispatch).toHaveBeenCalledWith(setHeightMetric({ value: "sonar_complexity" }))
+            expect(store.dispatch).toHaveBeenCalledWith(setColorMetric({ value: "sonar_complexity" }))
             expect(store.dispatch).toHaveBeenCalledWith(setColorRange({ value: { from: 10, to: 22 } }))
         })
     })
@@ -156,7 +156,7 @@ describe("SuspiciousMetricsComponent", () => {
                         unsuspiciousMetrics: ["rloc"],
                         suspiciousMetricSuggestionLinks: [
                             {
-                                metric: "complexity",
+                                metric: "sonar_complexity",
                                 from: 10,
                                 to: 22,
                                 isOutlier: true,
@@ -170,8 +170,8 @@ describe("SuspiciousMetricsComponent", () => {
             await userEvent.click(screen.getByTitle("Open Suspicious Metrics Panel"))
             await userEvent.click(screen.getByTitle("Show very high risk files (90th percentile)"), undefined)
             const store = TestBed.inject(Store)
-            expect(store.dispatch).toHaveBeenCalledWith(setHeightMetric({ value: "complexity" }))
-            expect(store.dispatch).toHaveBeenCalledWith(setColorMetric({ value: "complexity" }))
+            expect(store.dispatch).toHaveBeenCalledWith(setHeightMetric({ value: "sonar_complexity" }))
+            expect(store.dispatch).toHaveBeenCalledWith(setColorMetric({ value: "sonar_complexity" }))
             expect(store.dispatch).toHaveBeenCalledWith(setColorRange({ value: { from: 10, to: 120 } }))
         })
     })

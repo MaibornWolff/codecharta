@@ -3,6 +3,7 @@ import { CustomConfigHelperService } from "../customConfigHelper.service"
 import { debounce } from "../../../util/debounce"
 
 @Component({
+    selector: "cc-custom-config-list",
     templateUrl: "./customConfigList.component.html",
     styleUrls: ["./customConfigList.component.scss"]
 })
