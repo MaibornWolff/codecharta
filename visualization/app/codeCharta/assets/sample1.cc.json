@@ -14,7 +14,7 @@
 					"attributes": {
 						"rloc": 400,
 						"functions": 10,
-						"complexity": 100,
+						"sonar_complexity": 100,
 						"pairingRate": 32,
 						"avgCommits": 17
 					},
@@ -26,7 +26,7 @@
 					"attributes": {
 						"rloc": 100,
 						"functions": 10,
-						"complexity": 1,
+						"sonar_complexity": 1,
 						"pairingRate": 77,
 						"avgCommits": 56
 					},
@@ -43,7 +43,7 @@
 							"attributes": {
 								"rloc": 30,
 								"functions": 100,
-								"complexity": 100,
+								"sonar_complexity": 100,
 								"pairingRate": 60,
 								"avgCommits": 51
 							}
@@ -54,7 +54,7 @@
 							"attributes": {
 								"rloc": 70,
 								"functions": 1000,
-								"complexity": 10,
+								"sonar_complexity": 10,
 								"pairingRate": 65,
 								"avgCommits": 22
 							}
@@ -91,7 +91,7 @@
 		}
 	],
 	"attributeTypes": {
-		"nodes": { "rloc": "absolute", "functions": "absolute", "complexity": "absolute", "pairingRate": "relative" },
+		"nodes": { "rloc": "absolute", "functions": "absolute", "sonar_complexity": "absolute", "pairingRate": "relative" },
 		"edges": { "pairingRate": "relative", "avgCommits": "absolute" }
 	}
 }
