@@ -5,6 +5,7 @@ import { CodeMapNode, CcState } from "../../../../codeCharta.model"
 import { Store } from "@ngrx/store"
 
 @Component({
+    selector: "cc-node-context-menu-card",
     templateUrl: "./nodeContextMenuCard.component.html",
     styleUrls: ["./nodeContextMenuCard.component.scss"]
 })

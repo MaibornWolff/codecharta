@@ -119,7 +119,7 @@ describe("AttributeSideBarComponent", () => {
         selectedMetricNames.areaMetric = "a"
         selectedMetricNames.heightMetric = "b"
         selectedMetricNames.colorMetric = "mcc"
-        selectedMetricNames.edgeMetric = "someEdge"
+        selectedMetricNames.edgeMetric = "avgCommits"
 
         const { container, detectChanges } = await render(AttributeSideBarComponent, { excludeComponentDeclaration: true })
 
@@ -132,7 +132,7 @@ describe("AttributeSideBarComponent", () => {
                 value: 10
             },
             edge: {
-                name: "someEdge",
+                name: "avgCommits",
                 incoming: 20,
                 outgoing: 60
             }
@@ -150,7 +150,8 @@ describe("AttributeSideBarComponent", () => {
         expect(attributeTypeSelectorWithinPrimaryMetrics[1].getAttribute("title")).toBe("b_testTitle (b)")
         expect(attributeTypeSelectorWithinPrimaryMetrics[1].querySelector("a").getAttribute("href")).toBe("https://test.link")
         expect(attributeTypeSelectorWithinPrimaryMetrics[2].getAttribute("title")).toBe(metricTitles.get("mcc"))
-        expect(attributeTypeSelectorWithinPrimaryMetrics[3].getAttribute("title")).toBe("")
+        expect(attributeTypeSelectorWithinPrimaryMetrics[3].getAttribute("title")).toBe(metricTitles.get("avgCommits"))
+        expect(attributeTypeSelectorWithinPrimaryMetrics[3].textContent).toBe("Σx͂ 20 / 60 avgCommits (in/out)")
 
         expect(attributeTypeSelectorWithinSecondaryMetrics[1].querySelector("a").getAttribute("href")).toBe("https://test2.link")
         expect(attributeTypeSelectorWithinSecondaryMetrics[1].getAttribute("title")).toBe("d")

@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Fixed 🐞
+
+- Remove horizontal scrollbar in the File/ Node Explorer dropdown and styling fixes [#3765](https://github.com/MaibornWolff/codecharta/pull/3765)
+
+### Changed
+
+- Add thousands seperation for metrics value [#3758](https://github.com/MaibornWolff/codecharta/pull/3758)
+
 ## [1.128.0] - 2024-09-18
 
 ### Added 🚀
@@ -19,6 +27,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Fix issue where zooming out too much makes the map disappear and zooming in too much causes you to go through the map. [#3697](https://github.com/MaibornWolff/codecharta/pull/3697)
 - Camera perspective is correctly adopted from the custom configuration[#3698](https://github.com/MaibornWolff/codecharta/pull/3698)
 - Fix camera behavior when `Reset Camera when changing map` option is deactivated [#3699](https://github.com/MaibornWolff/codecharta/pull/3699)
+- Fix issue when multiple files are selected then the edge metrics in the primary metrics section are not displayed correctly. [#3753](https://github.com/MaibornWolff/codecharta/pull/3753)
 
 ### Changed
 

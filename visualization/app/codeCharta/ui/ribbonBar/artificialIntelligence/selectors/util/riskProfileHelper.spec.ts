@@ -7,10 +7,10 @@ describe("riskProfileHelper", () => {
         const actualRlocRisk: RiskProfile = { lowRisk: 0, moderateRisk: 0, highRisk: 0, veryHighRisk: 0 }
         const fileExtension = "java"
         const nodes: CodeMapNode[] = [
-            { name: "javaFile1", type: NodeType.FILE, attributes: { rloc: 1, complexity: 48 } },
-            { name: "javaFile2", type: NodeType.FILE, attributes: { rloc: 10, complexity: 71 } },
-            { name: "javaFile3", type: NodeType.FILE, attributes: { rloc: 100, complexity: 117 } },
-            { name: "javaFile4", type: NodeType.FILE, attributes: { rloc: 1000, complexity: 191 } }
+            { name: "javaFile1", type: NodeType.FILE, attributes: { rloc: 1, sonar_complexity: 48 } },
+            { name: "javaFile2", type: NodeType.FILE, attributes: { rloc: 10, sonar_complexity: 71 } },
+            { name: "javaFile3", type: NodeType.FILE, attributes: { rloc: 100, sonar_complexity: 117 } },
+            { name: "javaFile4", type: NodeType.FILE, attributes: { rloc: 1000, sonar_complexity: 191 } }
         ]
 
         for (const node of nodes) {
@@ -27,22 +27,22 @@ describe("riskProfileHelper", () => {
             {
                 name: "javaFile1",
                 type: NodeType.FILE,
-                attributes: { rloc: 1, complexity: metricThresholdsByLanguage.java["complexity"].percentile70 }
+                attributes: { rloc: 1, sonar_complexity: metricThresholdsByLanguage.java["sonar_complexity"].percentile70 }
             },
             {
                 name: "javaFile2",
                 type: NodeType.FILE,
-                attributes: { rloc: 10, complexity: metricThresholdsByLanguage.java["complexity"].percentile80 }
+                attributes: { rloc: 10, sonar_complexity: metricThresholdsByLanguage.java["sonar_complexity"].percentile80 }
             },
             {
                 name: "javaFile3",
                 type: NodeType.FILE,
-                attributes: { rloc: 100, complexity: metricThresholdsByLanguage.java["complexity"].percentile90 }
+                attributes: { rloc: 100, sonar_complexity: metricThresholdsByLanguage.java["sonar_complexity"].percentile90 }
             },
             {
                 name: "tsFile",
                 type: NodeType.FILE,
-                attributes: { rloc: 1000, complexity: metricThresholdsByLanguage.miscellaneous["complexity"].percentile90 }
+                attributes: { rloc: 1000, sonar_complexity: metricThresholdsByLanguage.miscellaneous["sonar_complexity"].percentile90 }
             }
         ]
 
@@ -65,7 +65,7 @@ describe("riskProfileHelper", () => {
         expect(actualRiskProfile).toEqual(expectedRiskProfile)
     })
 
-    it("should calculate risk profile when first available metric (complexity) is not defined for the map", () => {
+    it("should calculate risk profile when first available metric (sonar_complexity) is not defined for the map", () => {
         const actualRlocRisk: RiskProfile = { lowRisk: 0, moderateRisk: 0, highRisk: 0, veryHighRisk: 0 }
         const fileExtension = "java"
         const nodes: CodeMapNode[] = [
