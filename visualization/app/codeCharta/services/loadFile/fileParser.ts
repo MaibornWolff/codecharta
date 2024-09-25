@@ -38,7 +38,9 @@ export function enrichFileStatesAndRecentFilesWithValidationResults(
     fileStates: FileState[],
     recentFiles: string[],
     nameDataPairs: NameDataPair[],
-    fileValidationResults: FileValidationResult[]
+    fileValidationResults: FileValidationResult[],
+    currentFilesAreSampleFilesCallback: () => boolean,
+    setCurrentFilesAreNotSampleFilesCallback: () => void
 ) {
     for (const nameDataPair of nameDataPairs) {
         const fileValidationResult: FileValidationResult = {
@@ -50,7 +52,7 @@ export function enrichFileStatesAndRecentFilesWithValidationResults(
 
         if (fileValidationResult.errors.length === 0) {
             fileValidationResult.warnings.push(...checkWarnings(nameDataPair?.content))
-            addFile(fileStates, recentFiles, nameDataPair)
+            addFile(fileStates, recentFiles, nameDataPair, currentFilesAreSampleFilesCallback, setCurrentFilesAreNotSampleFilesCallback)
         }
 
         if (fileValidationResult.errors.length > 0 || fileValidationResult.warnings.length > 0) {
@@ -59,7 +61,18 @@ export function enrichFileStatesAndRecentFilesWithValidationResults(
     }
 }
 
-function addFile(fileStates: FileState[], recentFiles: string[], file: NameDataPair) {
+function addFile(
+    fileStates: FileState[],
+    recentFiles: string[],
+    file: NameDataPair,
+    currentFilesAreSampleFilesCallback: () => boolean,
+    setCurrentFilesAreNotSampleFilesCallback: () => void
+) {
+    if (currentFilesAreSampleFilesCallback()) {
+        fileStates.length = 0
+        setCurrentFilesAreNotSampleFilesCallback()
+    }
+
     const ccFile = getCCFile(file)
     NodeDecorator.decorateMapWithPathAttribute(ccFile)
     const currentFileChecksum = ccFile.fileMeta.fileChecksum

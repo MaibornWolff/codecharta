@@ -2079,6 +2079,7 @@ export const STATE: CcState = {
     },
     files: [],
     appStatus: {
+        currentFilesAreSampleFiles: false,
         hoveredNodeId: null,
         selectedBuildingId: null,
         rightClickedNodeData: null
@@ -2157,6 +2158,7 @@ export const DEFAULT_STATE: CcState = {
     },
     files: [],
     appStatus: {
+        currentFilesAreSampleFiles: false,
         hoveredNodeId: null,
         selectedBuildingId: null,
         rightClickedNodeData: null

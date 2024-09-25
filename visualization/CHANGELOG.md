@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Fixed 🐞
 
 - Remove horizontal scrollbar in the File/ Node Explorer dropdown and styling fixes [#3765](https://github.com/MaibornWolff/codecharta/pull/3765)
+- Fix that default sample files are not removed when a new file is loaded by the user [#2498](https://github.com/MaibornWolff/codecharta/pull/3768)
 
 ### Changed
 
