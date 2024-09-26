@@ -21,21 +21,27 @@ export class LegendPanelComponent implements OnInit, OnDestroy {
     colorMetric$ = this.store.select(colorMetricSelector)
     edgeMetric$ = this.store.select(edgeMetricSelector)
 
+    private mouseDownListener?: (event: MouseEvent) => void
+
     constructor(
         private store: Store<CcState>,
         public isAttributeSideBarVisibleService: IsAttributeSideBarVisibleService,
         private readonly viewReference: ViewContainerRef
     ) {}
 
-    toggleIsLegendVisible() {
-        this.isLegendVisible = !this.isLegendVisible
-    }
-
-    private mouseDownListener?: (event: MouseEvent) => void
-
     ngOnInit(): void {
         this.mouseDownListener = (event: MouseEvent) => this.collapseOnOutsideClick(event)
         document.addEventListener("mousedown", this.mouseDownListener)
+    }
+
+    ngOnDestroy(): void {
+        if (this.mouseDownListener) {
+            document.removeEventListener("mousedown", this.mouseDownListener)
+        }
+    }
+
+    toggleIsLegendVisible() {
+        this.isLegendVisible = !this.isLegendVisible
     }
 
     private collapseOnOutsideClick(event: MouseEvent) {
@@ -48,12 +54,6 @@ export class LegendPanelComponent implements OnInit, OnDestroy {
             if (!clickedInside && !clickedWithinOverlayPane) {
                 this.isLegendVisible = false
             }
-        }
-    }
-
-    ngOnDestroy(): void {
-        if (this.mouseDownListener) {
-            document.removeEventListener("mousedown", this.mouseDownListener)
         }
     }
 }
