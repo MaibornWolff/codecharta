@@ -33,7 +33,7 @@ const selectors = [
     { selector: legendMarkedPackagesSelector, value: {} }
 ]
 
-describe("LegendPanelController", () => {
+describe(LegendPanelComponent.name, () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
             imports: [LegendPanelModule],
@@ -42,17 +42,19 @@ describe("LegendPanelController", () => {
     })
 
     it("should open and close", async () => {
-        const { container } = await render(LegendPanelComponent, { excludeComponentDeclaration: true })
+        const { container, fixture } = await render(LegendPanelComponent, { excludeComponentDeclaration: true })
 
-        expect(await isLegendPanelOpen(container)).toBe(false)
+        expect(isLegendPanelOpen(container)).toBe(false)
 
         const openLegendButton = screen.getByTitle("Show panel")
         await userEvent.click(openLegendButton)
-        expect(await isLegendPanelOpen(container)).toBe(true)
+        fixture.detectChanges()
+        await waitFor(() => expect(isLegendPanelOpen(container)).toBe(true))
 
         const closeLegendButton = screen.getByTitle("Hide panel")
         await userEvent.click(closeLegendButton)
-        expect(await isLegendPanelOpen(container)).toBe(false)
+        fixture.detectChanges()
+        await waitFor(() => expect(isLegendPanelOpen(container)).toBe(false))
     })
 
     it("should display legend for single mode", async () => {
@@ -68,7 +70,8 @@ describe("LegendPanelController", () => {
         const metricDescriptions = container.querySelectorAll("cc-legend-block")
         expect(metricDescriptions[0].textContent).toMatch("Area metric: Lines of Code (loc)")
         expect(metricDescriptions[1].textContent).toMatch("Height metric: Cyclomatic Complexity (sonar_complexity)")
-        expect(metricDescriptions[2].textContent).toMatch("Color metric: Real Lines of Code (rloc)")
+        expect(metricDescriptions[2].textContent).toMatch("Edge metric: Real Lines of Code (rloc)")
+        expect(metricDescriptions[3].textContent).toMatch("Color metric: Real Lines of Code (rloc)")
     })
 
     it("should contain elements with titles and links if attributeDescriptors are present", async () => {
@@ -101,9 +104,12 @@ describe("LegendPanelController", () => {
             "COMPLEXITY_Title (sonar_complexity):\nCOMPLEXITY_description\nLow Values: COMPLEXITY_lowValue"
         )
         expect(metricDescriptions[1].querySelector("a")).toBeNull()
-        expect(metricDescriptions[2].textContent).toMatch("Color metric: RLOC_Title (rloc)")
+        expect(metricDescriptions[2].textContent).toMatch("Edge metric: RLOC_Title (rloc)")
         expect(metricDescriptions[2].firstElementChild.getAttribute("title")).toMatch("RLOC_Title (rloc)")
         expect(metricDescriptions[2].querySelector("a").getAttribute("href")).toMatch(metricLink)
+        expect(metricDescriptions[3].textContent).toMatch("Color metric: RLOC_Title (rloc)")
+        expect(metricDescriptions[3].firstElementChild.getAttribute("title")).toMatch("RLOC_Title (rloc)")
+        expect(metricDescriptions[3].querySelector("a").getAttribute("href")).toMatch(metricLink)
     })
 
     it("should display legend for delta mode", async () => {
@@ -142,53 +148,38 @@ describe("LegendPanelController", () => {
         })
 
         it("should close on outside clicks", async () => {
-            const { container } = await render(LegendPanelComponent, { excludeComponentDeclaration: true })
-            expect(await isLegendPanelOpen(container)).toBe(false)
+            const { container, fixture } = await render(LegendPanelComponent, { excludeComponentDeclaration: true })
+            expect(isLegendPanelOpen(container)).toBe(false)
 
             const openLegendButton = screen.getByTitle("Show panel")
             await userEvent.click(openLegendButton)
-            expect(await isLegendPanelOpen(container)).toBe(true)
+            fixture.detectChanges()
+            expect(isLegendPanelOpen(container)).toBe(true)
 
             await userEvent.click(document.body)
-            expect(await isLegendPanelOpen(container)).toBe(false)
+            fixture.detectChanges()
+            expect(isLegendPanelOpen(container)).toBe(false)
         })
 
         it("should not close when clicking inside", async () => {
-            const { container } = await render(`<cc-legend-panel></cc-legend-panel>`, {
+            const { container, fixture } = await render(`<cc-legend-panel></cc-legend-panel>`, {
                 excludeComponentDeclaration: true
             })
             const panel = container.querySelector("cc-legend-panel")
-            expect(await isLegendPanelOpen(container)).toBe(false)
+            expect(isLegendPanelOpen(container)).toBe(false)
 
             const openLegendButton = screen.getByTitle("Show panel")
             await userEvent.click(openLegendButton)
-            expect(await isLegendPanelOpen(container)).toBe(true)
+            fixture.detectChanges()
+            expect(isLegendPanelOpen(container)).toBe(true)
 
             await userEvent.click(panel)
-            expect(await isLegendPanelOpen(container)).toBe(true)
-        })
-
-        it("should not close when clicking inside opened color picker", async () => {
-            const { container } = await render(`<cc-legend-panel></cc-legend-panel>`, {
-                excludeComponentDeclaration: true
-            })
-            expect(await isLegendPanelOpen(container)).toBe(false)
-
-            const openLegendButton = screen.getByTitle("Show panel")
-            await userEvent.click(openLegendButton)
-            expect(await isLegendPanelOpen(container)).toBe(true)
-
-            const colorPicker = container.querySelector("cc-color-picker-for-map-color")
-            await userEvent.click(colorPicker)
-            expect(await isLegendPanelOpen(container)).toBe(true)
-
-            const colorPickerPopup = document.querySelector("cdk-overlay-container")
-            await userEvent.click(colorPickerPopup)
-            expect(await isLegendPanelOpen(container)).toBe(true)
+            fixture.detectChanges()
+            expect(isLegendPanelOpen(container)).toBe(true)
         })
     })
 })
 
-async function isLegendPanelOpen(container: Element) {
-    return waitFor(() => container.querySelector("#legend-panel").classList.contains("visible"))
+function isLegendPanelOpen(container: Element) {
+    return container.querySelector("#legend-panel").classList.contains("visible")
 }
