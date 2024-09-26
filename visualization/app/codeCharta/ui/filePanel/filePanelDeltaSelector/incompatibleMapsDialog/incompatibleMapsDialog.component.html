@@ -1,0 +1,15 @@
+<mat-toolbar color="primary">Incompatible Maps</mat-toolbar>
+
+<div mat-dialog-content>
+    <h1>The selected Maps are using incompatible Metrics</h1>
+    <h2>{{ data.referenceFileName$ | async }} → {{ data.comparisonFileName$ | async }}</h2>
+
+    <div class="content">
+        <h2>One of the selected Files is using mcc Metric and the other one complexity. Please migrate.</h2>
+    </div>
+</div>
+
+<div mat-dialog-actions>
+    <a href="https://maibornwolff.github.io/codecharta/news/" target="_blank" rel="noopener noreferrer">Know more</a>
+    <button mat-button [mat-dialog-close]="true" cdkFocusInitial>CLOSE</button>
+</div>
