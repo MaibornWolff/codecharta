@@ -45,6 +45,9 @@ class MergeFilter(
     @CommandLine.Option(names = ["--ignore-case"], description = ["ignores case when checking node names"])
     private var ignoreCase = false
 
+    @CommandLine.Option(names = ["-f"], description = ["merge non-overlapping modules at the top-level structure"])
+    private var mergeModules = false
+
     override val name = NAME
     override val description = DESCRIPTION
 
@@ -61,6 +64,7 @@ class MergeFilter(
 
         @JvmStatic
         fun main(args: Array<String>) {
+            Logger.info { "main" }
             CommandLine(MergeFilter()).execute(*args)
         }
     }
@@ -80,7 +84,7 @@ class MergeFilter(
         }
         val sourceFiles = InputHelper.getFileListFromValidatedResourceArray(sources)
 
-        val srcProjects =
+        val rootChildrenNodes =
             sourceFiles.mapNotNull {
                 val input = it.inputStream()
                 try {
@@ -92,12 +96,34 @@ class MergeFilter(
                     null
                 }
             }
+        if (!hasTopLevelOverlap(rootChildrenNodes) && !mergeModules) {
+            printOverlapError(rootChildrenNodes)
+            return null
+        }
 
-        val mergedProject = ProjectMerger(srcProjects, nodeMergerStrategy).merge()
-
+        val mergedProject = ProjectMerger(rootChildrenNodes, nodeMergerStrategy).merge()
         ProjectSerializer.serializeToFileOrStream(mergedProject, outputFile, output, compress)
 
         return null
+    }
+
+    private fun hasTopLevelOverlap(projects: List<Project>): Boolean {
+        val topLevelNodesSets = projects.map { project ->
+            project.rootNode.children.map { child ->
+                child.name.lowercase()
+            }.toSet()
+        }
+        return topLevelNodesSets.reduce { acc, set -> acc.intersect(set) }.isNotEmpty()
+    }
+
+    private fun printOverlapError(projects: List<Project>) {
+        Logger.error { "Error: No top-level overlap between projects. Missing first-level nodes:" }
+        projects.forEachIndexed { index, project ->
+            val firstLevelNodes = project.rootNode.children.take(3).joinToString(", ") { it.name }
+            Logger.info {
+                "Project ${index + 1}: $firstLevelNodes"
+            }
+        }
     }
 
     override fun getDialog(): ParserDialogInterface = ParserDialog
