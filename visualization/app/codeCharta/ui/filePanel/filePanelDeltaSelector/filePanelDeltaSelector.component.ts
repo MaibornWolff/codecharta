@@ -8,7 +8,7 @@ import { setDeltaComparison, setDeltaReference, switchReferenceAndComparison } f
 import { filesSelector } from "../../../state/store/files/files.selector"
 import { pictogramBackgroundSelector } from "./pictogramBackground.selector"
 import { MatDialog } from "@angular/material/dialog"
-import { IncompatibleMapsDialogComponent } from "./incompatibleMapsDialog/incompatibleMapsDialog.component"
+import { ALERT_ON_INCOMPATIBLE_MAPS, IncompatibleMapsDialogComponent } from "./incompatibleMapsDialog/incompatibleMapsDialog.component"
 
 @Component({
     selector: "cc-file-panel-delta-selector",
@@ -43,9 +43,15 @@ export class FilePanelDeltaSelectorComponent {
     }
 
     private showAlertWhenFilesAreIncompatible() {
-        if (this.areMapsIncompatible()) {
+        if (this.alertOnIncompatibleMaps() && this.areMapsIncompatible()) {
             this.openIncompatibleMapsDialog()
         }
+    }
+
+    private alertOnIncompatibleMaps() {
+        return localStorage.getItem(ALERT_ON_INCOMPATIBLE_MAPS)
+            ? JSON.parse(localStorage.getItem(ALERT_ON_INCOMPATIBLE_MAPS)) === true
+            : true
     }
 
     private openIncompatibleMapsDialog() {

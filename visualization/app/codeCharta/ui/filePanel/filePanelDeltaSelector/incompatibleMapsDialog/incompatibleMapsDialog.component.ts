@@ -1,5 +1,8 @@
 import { Component, Inject } from "@angular/core"
 import { MAT_DIALOG_DATA } from "@angular/material/dialog"
+import { MatCheckboxChange } from "@angular/material/checkbox"
+
+export const ALERT_ON_INCOMPATIBLE_MAPS = "alertOnIncompatibleMaps"
 
 @Component({
     selector: "cc-incompatible-maps-dialog",
@@ -16,4 +19,8 @@ export class IncompatibleMapsDialogComponent {
             fileWithMccMetric: string
         }
     ) {}
+
+    setDoNotAlertOnIncompatibleMaps($event: MatCheckboxChange) {
+        localStorage.setItem(ALERT_ON_INCOMPATIBLE_MAPS, JSON.stringify(!$event.checked))
+    }
 }

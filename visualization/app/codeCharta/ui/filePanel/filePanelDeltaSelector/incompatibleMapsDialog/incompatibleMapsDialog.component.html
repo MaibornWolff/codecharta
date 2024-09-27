@@ -6,6 +6,7 @@
 
     <div class="content">
         <h2>The file {{ data.fileWithMccMetric }} is using mcc Metric and the other one complexity. Please migrate.</h2>
+        <mat-checkbox (change)="setDoNotAlertOnIncompatibleMaps($event)">Don't show again</mat-checkbox>
     </div>
 </div>
 
