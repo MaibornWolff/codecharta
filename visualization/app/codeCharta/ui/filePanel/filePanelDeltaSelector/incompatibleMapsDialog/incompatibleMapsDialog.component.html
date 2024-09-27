@@ -2,10 +2,10 @@
 
 <div mat-dialog-content>
     <h1>The selected Maps are using incompatible Metrics</h1>
-    <h2>{{ data.referenceFileName$ | async }} → {{ data.comparisonFileName$ | async }}</h2>
+    <h2>{{ data.referenceFileName }} → {{ data.comparisonFileName }}</h2>
 
     <div class="content">
-        <h2>One of the selected Files is using mcc Metric and the other one complexity. Please migrate.</h2>
+        <h2>The file {{ data.fileWithMccMetric }} is using mcc Metric and the other one complexity. Please migrate.</h2>
     </div>
 </div>
 

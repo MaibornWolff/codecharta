@@ -1,6 +1,6 @@
 import { Component } from "@angular/core"
 import { Store } from "@ngrx/store"
-import { map, Observable } from "rxjs"
+import { map } from "rxjs"
 import { CCFile, CcState } from "../../../codeCharta.model"
 import { FileSelectionState } from "../../../model/files/files"
 import { referenceFileSelector } from "../../../state/selectors/referenceFile/referenceFile.selector"
@@ -21,39 +21,59 @@ export class FilePanelDeltaSelectorComponent {
     comparisonFile$ = this.files$.pipe(map(files => files.find(file => file.selectedAs === FileSelectionState.Comparison)?.file))
     possibleComparisonFiles$ = this.files$.pipe(map(files => files.filter(file => file.selectedAs !== FileSelectionState.Reference)))
     pictogramBackground$ = this.store.select(pictogramBackgroundSelector)
+    referenceFile: CCFile
+    comparisonFile: CCFile
 
     constructor(
         private store: Store<CcState>,
         private dialog: MatDialog
-    ) {}
+    ) {
+        this.referenceFile$.subscribe(file => (this.referenceFile = file))
+        this.comparisonFile$.subscribe(file => (this.comparisonFile = file))
+    }
 
     handleDeltaReferenceFileChange(file: CCFile) {
         this.store.dispatch(setDeltaReference({ file }))
+        this.showAlertWhenFilesAreIncompatible()
     }
 
     handleDeltaComparisonFileChange(file: CCFile) {
+        this.store.dispatch(setDeltaComparison({ file }))
+        this.showAlertWhenFilesAreIncompatible()
+    }
+
+    private showAlertWhenFilesAreIncompatible() {
         if (this.areMapsIncompatible()) {
             this.openIncompatibleMapsDialog()
         }
-        this.store.dispatch(setDeltaComparison({ file }))
     }
 
     private openIncompatibleMapsDialog() {
         this.dialog.open(IncompatibleMapsDialogComponent, {
             panelClass: "cc-incompatible-maps-dialog",
             data: {
-                referenceFileName$: this.getFileName(this.referenceFile$),
-                comparisonFileName$: this.getFileName(this.comparisonFile$)
+                referenceFileName: this.getFileName(this.referenceFile),
+                comparisonFileName: this.getFileName(this.comparisonFile),
+                fileWithMccMetric: this.getFileWithMccMetric(this.referenceFile, this.comparisonFile)
             }
         })
     }
 
-    private getFileName(file: Observable<CCFile>) {
-        return file.pipe(map(file => file.fileMeta.fileName))
+    private getFileName(file: CCFile) {
+        return file?.fileMeta.fileName
     }
 
-    private hasMccMetric(file: Observable<CCFile>) {
-        return file.pipe(map(file => file.map.children.some(c => c.attributes["mcc"])))
+    private hasMccMetric(file: CCFile) {
+        return file?.map.children.some(c => c.attributes["mcc"])
+    }
+
+    private getFileWithMccMetric(referenceFile: CCFile, comparisonFile: CCFile) {
+        if (this.hasMccMetric(referenceFile)) {
+            return this.getFileName(referenceFile)
+        }
+        if (this.hasMccMetric(comparisonFile)) {
+            return this.getFileName(comparisonFile)
+        }
     }
 
     switchReferenceAndComparison() {
@@ -61,6 +81,8 @@ export class FilePanelDeltaSelectorComponent {
     }
 
     private areMapsIncompatible() {
-        return this.hasMccMetric(this.referenceFile$) !== this.hasMccMetric(this.comparisonFile$)
+        if (this.referenceFile && this.comparisonFile) {
+            return this.hasMccMetric(this.referenceFile) !== this.hasMccMetric(this.comparisonFile)
+        }
     }
 }

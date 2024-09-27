@@ -1,7 +1,7 @@
 {
-  "projectName": "Sample Project with Edges",
+  "projectName": "Sample Project with old mcc metric",
   "apiVersion": "1.2",
-  "fileChecksum": "valid-md5-sample1",
+  "fileChecksum": "valid-md5-sample1_with_old_mcc_metric",
   "nodes": [
     {
       "name": "root",
