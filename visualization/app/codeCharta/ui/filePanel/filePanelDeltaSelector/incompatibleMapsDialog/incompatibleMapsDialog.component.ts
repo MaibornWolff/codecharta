@@ -10,8 +10,6 @@ export const ALERT_ON_INCOMPATIBLE_MAPS = "alertOnIncompatibleMaps"
     styleUrls: ["./incompatibleMapsDialog.component.scss"]
 })
 export class IncompatibleMapsDialogComponent {
-    changes: Record<string, string>
-
     constructor(
         @Inject(MAT_DIALOG_DATA)
         public data: {

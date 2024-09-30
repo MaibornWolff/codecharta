@@ -1,15 +1,21 @@
 import { TestBed } from "@angular/core/testing"
 import { MAT_DIALOG_DATA } from "@angular/material/dialog"
-import { render, screen } from "@testing-library/angular"
-import { IncompatibleMapsDialogComponent } from "././incompatibleMapsDialog.component"
+import { render } from "@testing-library/angular"
+import { IncompatibleMapsDialogComponent } from "./incompatibleMapsDialog.component"
 import { IncompatibleMapsDialogModule } from "./incompatibleMapsDialog.module"
+import userEvent from "@testing-library/user-event"
+import { MatCheckboxModule } from "@angular/material/checkbox"
 
-// note that CHANGELOG.md is mocked globally through jest's moduleNameMapper
-describe("changelogDialogComponent", () => {
-    const mockedMatDialogData = { previousVersion: "", currentVersion: "" }
+describe(IncompatibleMapsDialogComponent.name, () => {
+    const mockedMatDialogData = {
+        referenceFileName: "file_A.cc.json",
+        comparisonFileName: "file_B.cc.json",
+        fileWithMccMetric: "file_A.cc.json"
+    }
+
     beforeEach(() => {
         TestBed.configureTestingModule({
-            imports: [IncompatibleMapsDialogModule],
+            imports: [IncompatibleMapsDialogModule, MatCheckboxModule],
             providers: [
                 {
                     provide: MAT_DIALOG_DATA,
@@ -19,45 +25,39 @@ describe("changelogDialogComponent", () => {
         })
     })
 
-    it("should extract the changes from changelog only for the last version", async () => {
-        mockedMatDialogData.previousVersion = "1.76.0"
-        mockedMatDialogData.currentVersion = "1.77.0"
-        await render(IncompatibleMapsDialogComponent, { excludeComponentDeclaration: true })
-
-        expect(screen.findByText("1.76.0 → 1.77.0")).toBeTruthy()
-
-        expect(screen.findByText("Chore 👨‍💻 👩‍💻")).toBeTruthy()
-        expect(screen.findByText("#6")).toBeTruthy()
-
-        expect(screen.findByText("Fixed 🐞")).toBeTruthy()
-        expect(screen.findByText("#3")).toBeTruthy()
-        expect(screen.findByText("#4")).toBeTruthy()
-        expect(screen.findByText("#5")).toBeTruthy()
+    it("should display the data correctly", async () => {
+        const { container } = await render(IncompatibleMapsDialogComponent, { excludeComponentDeclaration: true })
+        const paragraphs = container.querySelectorAll("p")
+        expect(paragraphs[1].textContent.trim()).toEqual(
+            `${mockedMatDialogData.referenceFileName} → ${mockedMatDialogData.comparisonFileName}`
+        )
+        expect(paragraphs[2].textContent.trim()).toEqual(
+            `The file ${mockedMatDialogData.fileWithMccMetric} is using the mcc metric and the other one complexity. Please migrate.`
+        )
     })
 
-    it("should extract the changes from changelog for 2 versions", async () => {
-        mockedMatDialogData.previousVersion = "1.75.0"
-        mockedMatDialogData.currentVersion = "1.77.0"
-        await render(IncompatibleMapsDialogComponent, { excludeComponentDeclaration: true })
+    it("should call setDoNotAlertOnIncompatibleMaps() when clicking on the checkbox", async () => {
+        const { container, fixture } = await render(IncompatibleMapsDialogComponent, { excludeComponentDeclaration: true })
+        const componentInstance = fixture.componentInstance
+        const spySetDoNotAlertOnIncompatibleMaps = jest.spyOn(componentInstance, "setDoNotAlertOnIncompatibleMaps")
 
-        expect(screen.findByText("1.75.0 → 1.77.0")).toBeTruthy()
+        const checkbox = container.querySelector("mat-checkbox input")
+        await userEvent.click(checkbox)
+        fixture.detectChanges()
 
-        expect(screen.findByText("Chore 👨‍💻 👩‍💻")).toBeTruthy()
-        expect(screen.findByText("#6")).toBeTruthy()
+        expect(spySetDoNotAlertOnIncompatibleMaps).toHaveBeenCalled()
+    })
 
-        expect(screen.findByText("Fixed 🐞")).toBeTruthy()
-        expect(screen.findByText("#3")).toBeTruthy()
-        expect(screen.findByText("#4")).toBeTruthy()
-        expect(screen.findByText("#5")).toBeTruthy()
+    it("should update localStorage when setDoNotAlertOnIncompatibleMaps() is called", async () => {
+        const { container, fixture } = await render(IncompatibleMapsDialogComponent, { excludeComponentDeclaration: true })
 
-        expect(screen.findByText("Added 🚀")).toBeTruthy()
-        expect(screen.findByText("#7")).toBeTruthy()
-        expect(screen.findByText("#8")).toBeTruthy()
+        const checkbox = container.querySelector("mat-checkbox input")
+        await userEvent.click(checkbox)
+        fixture.detectChanges()
+        expect(localStorage.getItem("alertOnIncompatibleMaps")).toBe(JSON.stringify(false))
 
-        expect(screen.findByText("Changed")).toBeTruthy()
-        expect(screen.findByText("#9")).toBeTruthy()
-        expect(screen.findByText("#10")).toBeTruthy()
-
-        expect(screen.queryByText("Removed 🗑")).toBeFalsy()
+        await userEvent.click(checkbox)
+        fixture.detectChanges()
+        expect(localStorage.getItem("alertOnIncompatibleMaps")).toBe(JSON.stringify(true))
     })
 })
