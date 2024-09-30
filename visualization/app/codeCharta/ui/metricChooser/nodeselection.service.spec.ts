@@ -6,7 +6,7 @@ import { accumulatedDataSelector } from "../../state/selectors/accumulatedData/a
 import { hoveredNodeSelector } from "../../state/selectors/hoveredNode.selector"
 import { selectedNodeSelector } from "../../state/selectors/selectedNode.selector"
 import { defaultState } from "../../state/store/state.manager"
-import { TEST_DELTA_MAP_A, TEST_NODES, TEST_NODE_LEAF, VALID_NODE } from "../../util/dataMocks"
+import { TEST_DELTA_MAP_A, TEST_NODES, TEST_NODE_LEAF, VALID_NODE_WITH_MCC } from "../../util/dataMocks"
 import { CodeMapRenderService } from "../codeMap/codeMap.render.service"
 import { NodeSelectionService } from "./nodeSelection.service"
 
@@ -58,11 +58,11 @@ describe("LoadInitialFileService", () => {
             unifiedMapNode: TEST_DELTA_MAP_A.map,
             unifiedFileMeta: null
         })
-        store.overrideSelector(hoveredNodeSelector, VALID_NODE)
+        store.overrideSelector(hoveredNodeSelector, VALID_NODE_WITH_MCC)
         store.refreshState()
 
         nodeSelectionService.createNodeObservable().subscribe(node => {
-            expect(node).toEqual(VALID_NODE)
+            expect(node).toEqual(VALID_NODE_WITH_MCC)
             done()
         })
     })
@@ -73,11 +73,11 @@ describe("LoadInitialFileService", () => {
             unifiedMapNode: TEST_DELTA_MAP_A.map,
             unifiedFileMeta: null
         })
-        store.overrideSelector(selectedNodeSelector, VALID_NODE)
+        store.overrideSelector(selectedNodeSelector, VALID_NODE_WITH_MCC)
         store.refreshState()
 
         nodeSelectionService.createNodeObservable().subscribe(node => {
-            expect(node).toEqual(VALID_NODE)
+            expect(node).toEqual(VALID_NODE_WITH_MCC)
             done()
         })
     })
