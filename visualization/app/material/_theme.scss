@@ -15,4 +15,10 @@
     .mat-mdc-checkbox.mat-accent {
         --mdc-checkbox-selected-checkmark-color: #fff !important;
     }
+
+    .cdk-overlay-pane {
+        &.cc-incompatible-maps-dialog {
+            --mdc-dialog-supporting-text-color: $cc-font-color;
+        }
+    }
 }

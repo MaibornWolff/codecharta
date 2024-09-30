@@ -1,16 +1,15 @@
 <mat-toolbar color="primary">Incompatible Maps</mat-toolbar>
 
-<div mat-dialog-content>
-    <h1>The selected Maps are using incompatible Metrics</h1>
-    <h2>{{ data.referenceFileName }} → {{ data.comparisonFileName }}</h2>
+<mat-dialog-content>
+    <p>The selected maps use different complexity metrics and are therefore incompatible:</p>
+    <p class="cc-files">{{ data.referenceFileName }} → {{ data.comparisonFileName }}</p>
+    <p>
+        The file <b>{{ data.fileWithMccMetric }}</b> is using the <b>mcc metric</b> and the other one complexity. Please migrate.
+    </p>
+    <mat-checkbox (change)="setDoNotAlertOnIncompatibleMaps($event)">Don't show again</mat-checkbox>
+</mat-dialog-content>
 
-    <div class="content">
-        <h2>The file {{ data.fileWithMccMetric }} is using mcc Metric and the other one complexity. Please migrate.</h2>
-        <mat-checkbox (change)="setDoNotAlertOnIncompatibleMaps($event)">Don't show again</mat-checkbox>
-    </div>
-</div>
-
-<div mat-dialog-actions>
-    <a href="https://maibornwolff.github.io/codecharta/news/" target="_blank" rel="noopener noreferrer">Know more</a>
-    <button mat-button [mat-dialog-close]="true" cdkFocusInitial>CLOSE</button>
-</div>
+<mat-dialog-actions align="end">
+    <a href="https://maibornwolff.github.io/codecharta/docs/structure-modifier" target="_blank" rel="noopener noreferrer">Know more</a>
+    <button mat-flat-button [mat-dialog-close]="true">CLOSE</button>
+</mat-dialog-actions>

@@ -6,7 +6,8 @@ export const ALERT_ON_INCOMPATIBLE_MAPS = "alertOnIncompatibleMaps"
 
 @Component({
     selector: "cc-incompatible-maps-dialog",
-    templateUrl: "./incompatibleMapsDialog.component.html"
+    templateUrl: "./incompatibleMapsDialog.component.html",
+    styleUrls: ["./incompatibleMapsDialog.component.scss"]
 })
 export class IncompatibleMapsDialogComponent {
     changes: Record<string, string>
