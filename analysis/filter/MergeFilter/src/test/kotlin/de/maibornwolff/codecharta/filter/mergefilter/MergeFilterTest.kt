@@ -116,7 +116,6 @@ class MergeFilterTest {
 
     @Test
     fun `should warn if no top-level overlap and ask user to force merge`() {
-
         mockkObject(ParserDialog)
         every {
             ParserDialog.askForceMerge()
@@ -141,7 +140,6 @@ class MergeFilterTest {
 
     @Test
     fun `should cancel merge if no top-level overlap and user declines force merge`() {
-
         mockkObject(ParserDialog)
         every {
             ParserDialog.askForceMerge()
