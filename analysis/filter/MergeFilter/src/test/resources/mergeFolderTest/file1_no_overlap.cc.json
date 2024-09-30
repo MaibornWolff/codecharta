@@ -1,0 +1,53 @@
+{
+  "projectName": "SourceMonitorImporter",
+  "apiVersion": "1.0",
+  "nodes": [
+    {
+      "name": "root",
+      "type": "Folder",
+      "children": [
+        {
+          "name": "src",
+          "type": "Folder",
+          "children": [
+            {
+              "name": "main",
+              "type": "Folder",
+              "children": [
+                {
+                  "name": "SourceMonCsvConverter.java",
+                  "type": "File",
+                  "attributes": {
+                    "nloc*": 80.0
+                  }
+                },
+                {
+                  "name": "Something.kt",
+                  "type": "File",
+                  "attributes": {
+                    "nloc*": 80.0
+                  }
+                }
+              ]
+            },
+            {
+              "name": "hello",
+              "type": "Folder",
+              "children": []
+            },
+            {
+              "name": "oneMoreNode",
+              "type": "File",
+              "children": []
+            }
+          ]
+        },
+        {
+          "name": "oneMoreRootChild",
+          "type": "File",
+          "children": []
+        }
+      ]
+    }
+  ]
+}

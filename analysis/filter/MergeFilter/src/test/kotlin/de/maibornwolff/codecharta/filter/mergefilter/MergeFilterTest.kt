@@ -113,4 +113,51 @@ class MergeFilterTest {
 
         assertThat(errContent.toString()).contains("Input invalid files/folders for MergeFilter, stopping execution")
     }
+
+    @Test
+    fun `should warn if no top-level overlap and ask user to force merge`() {
+
+        mockkObject(ParserDialog)
+        every {
+            ParserDialog.askForceMerge()
+        } returns true
+
+        System.setOut(PrintStream(outContent))
+        System.setErr(PrintStream(errContent))
+        CommandLine(MergeFilter()).execute(
+            "src/test/resources/mergeFolderTest/file1_no_overlap.cc.json",
+            "src/test/resources/mergeFolderTest/file2_no_overlap.cc.json"
+        ).toString()
+        System.setOut(originalOut)
+        System.setErr(originalErr)
+
+        assertThat(errContent.toString()).contains("Warning: No top-level overlap between projects")
+
+        val valueInFile1 = "SourceMonCsvConverter.java"
+        val valueInFile2 = "JavaParser.java"
+        assertThat(outContent.toString()).contains(valueInFile1)
+        assertThat(outContent.toString()).contains(valueInFile2)
+    }
+
+    @Test
+    fun `should cancel merge if no top-level overlap and user declines force merge`() {
+
+        mockkObject(ParserDialog)
+        every {
+            ParserDialog.askForceMerge()
+        } returns false
+
+        System.setOut(PrintStream(outContent))
+        System.setErr(PrintStream(errContent))
+        CommandLine(MergeFilter()).execute(
+            "src/test/resources/mergeFolderTest/file1_no_overlap.cc.json",
+            "src/test/resources/mergeFolderTest/file2_no_overlap.cc.json"
+        ).toString()
+        System.setOut(originalOut)
+        System.setErr(originalErr)
+
+        assertThat(errContent.toString()).contains("Warning: No top-level overlap between projects")
+
+        assertThat(outContent.toString()).doesNotContain("SourceMonCsvConverter.java")
+    }
 }
