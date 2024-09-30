@@ -24,7 +24,7 @@ class MergeFilter(
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     var help: Boolean = false
 
-    @CommandLine.Parameters(arity = "1..*", paramLabel = "FILE or FOLDER", description = ["files to merge"])
+    @CommandLine.Parameters(arity = "0..*", paramLabel = "FILES", description = ["cc.json files to merge"])
     private var sources: Array<File> = arrayOf()
 
     @CommandLine.Option(names = ["-a", "--add-missing"], description = ["enable adding missing nodes to reference"])
@@ -45,7 +45,7 @@ class MergeFilter(
     @CommandLine.Option(names = ["--ignore-case"], description = ["ignores case when checking node names"])
     private var ignoreCase = false
 
-    @CommandLine.Option(names = ["-f"], description = ["merge non-overlapping modules at the top-level structure"])
+    @CommandLine.Option(names = ["-f"], description = ["force merge non-overlapping modules at the top-level structure"])
     private var mergeModules = false
 
     override val name = NAME
@@ -64,41 +64,59 @@ class MergeFilter(
 
         @JvmStatic
         fun main(args: Array<String>) {
-            Logger.info { "main" }
+            Logger.info { "Starting merge process..." }
             CommandLine(MergeFilter()).execute(*args)
         }
     }
 
     override fun call(): Unit? {
-        val nodeMergerStrategy =
-            when {
-                leafStrategySet -> LeafNodeMergerStrategy(addMissingNodes, ignoreCase)
-                recursiveStrategySet && !leafStrategySet -> RecursiveNodeMergerStrategy(ignoreCase)
-                else -> throw IllegalArgumentException(
-                    "Only one merging strategy must be set"
-                )
+        if (sources.isEmpty()) {
+            val folderPath = getDialog().getInputFileName("cc.json", true)
+            val folder = File(folderPath)
+
+            if (!folder.exists() || !folder.isDirectory) {
+                Logger.error { "Invalid folder path." }
+                return null
             }
+
+            sources = folder.listFiles { _, name -> name.endsWith(".cc.json") } ?: emptyArray()
+
+            if (sources.isEmpty()) {
+                Logger.error { "No cc.json files found in the folder." }
+                return null
+            }
+        }
+
+        val nodeMergerStrategy = when {
+            leafStrategySet -> LeafNodeMergerStrategy(addMissingNodes, ignoreCase)
+            recursiveStrategySet && !leafStrategySet -> RecursiveNodeMergerStrategy(ignoreCase)
+            else -> throw IllegalArgumentException("Only one merging strategy must be set")
+        }
 
         if (!InputHelper.isInputValid(sources, canInputContainFolders = true)) {
             throw IllegalArgumentException("Input invalid files/folders for MergeFilter, stopping execution...")
         }
         val sourceFiles = InputHelper.getFileListFromValidatedResourceArray(sources)
 
-        val rootChildrenNodes =
-            sourceFiles.mapNotNull {
-                val input = it.inputStream()
-                try {
-                    ProjectDeserializer.deserializeProject(input)
-                } catch (e: Exception) {
-                    Logger.warn {
-                        "${it.name} is not a valid project file and is therefore skipped."
-                    }
-                    null
-                }
+        val rootChildrenNodes = sourceFiles.mapNotNull {
+            val input = it.inputStream()
+            try {
+                ProjectDeserializer.deserializeProject(input)
+            } catch (e: Exception) {
+                Logger.warn { "${it.name} is not a valid project file and will be skipped." }
+                null
             }
-        if (!hasTopLevelOverlap(rootChildrenNodes) && !mergeModules) {
+        }
+
+        if (!hasTopLevelOverlap(rootChildrenNodes)) {
             printOverlapError(rootChildrenNodes)
-            return null
+
+            val continueMerge = ParserDialog.askForceMerge()
+
+            if (!continueMerge) {
+                Logger.info { "Merge cancelled by the user." }
+                return null
+            }
         }
 
         val mergedProject = ProjectMerger(rootChildrenNodes, nodeMergerStrategy).merge()
@@ -109,20 +127,16 @@ class MergeFilter(
 
     private fun hasTopLevelOverlap(projects: List<Project>): Boolean {
         val topLevelNodesSets = projects.map { project ->
-            project.rootNode.children.map { child ->
-                child.name.lowercase()
-            }.toSet()
+            project.rootNode.children.map { child -> child.name.lowercase() }.toSet()
         }
         return topLevelNodesSets.reduce { acc, set -> acc.intersect(set) }.isNotEmpty()
     }
 
     private fun printOverlapError(projects: List<Project>) {
-        Logger.error { "Error: No top-level overlap between projects. Missing first-level nodes:" }
+        Logger.warn { "Warning: No top-level overlap between projects. Missing first-level nodes:" }
         projects.forEachIndexed { index, project ->
             val firstLevelNodes = project.rootNode.children.take(3).joinToString(", ") { it.name }
-            Logger.info {
-                "Project ${index + 1}: $firstLevelNodes"
-            }
+            Logger.info { "Project ${index + 1}: $firstLevelNodes" }
         }
     }
 
