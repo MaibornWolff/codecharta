@@ -42,19 +42,19 @@ export class FilePanelDeltaSelectorComponent {
         this.showAlertWhenFilesAreIncompatible()
     }
 
-    private showAlertWhenFilesAreIncompatible() {
+    showAlertWhenFilesAreIncompatible() {
         if (this.alertOnIncompatibleMaps() && this.areMapsIncompatible()) {
             this.openIncompatibleMapsDialog()
         }
     }
 
-    private alertOnIncompatibleMaps() {
+    alertOnIncompatibleMaps() {
         return localStorage.getItem(ALERT_ON_INCOMPATIBLE_MAPS)
             ? JSON.parse(localStorage.getItem(ALERT_ON_INCOMPATIBLE_MAPS)) === true
             : true
     }
 
-    private openIncompatibleMapsDialog() {
+    openIncompatibleMapsDialog() {
         this.dialog.open(IncompatibleMapsDialogComponent, {
             panelClass: "cc-incompatible-maps-dialog",
             data: {
@@ -86,7 +86,7 @@ export class FilePanelDeltaSelectorComponent {
         this.store.dispatch(switchReferenceAndComparison())
     }
 
-    private areMapsIncompatible() {
+    areMapsIncompatible() {
         if (this.referenceFile && this.comparisonFile) {
             return this.hasMccMetric(this.referenceFile) !== this.hasMccMetric(this.comparisonFile)
         }
