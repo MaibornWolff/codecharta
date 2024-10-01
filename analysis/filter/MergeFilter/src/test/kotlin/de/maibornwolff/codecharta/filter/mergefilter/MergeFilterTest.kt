@@ -158,4 +158,16 @@ class MergeFilterTest {
 
         assertThat(outContent.toString()).doesNotContain("SourceMonCsvConverter.java")
     }
+
+    @Test
+    fun `should warn about invalid project files`() {
+        mockkObject(InputHelper)
+        every { InputHelper.isInputValid(any(), any()) } returns false
+
+        System.setErr(PrintStream(errContent))
+        CommandLine(MergeFilter()).execute("invalid.json").toString()
+        System.setErr(originalErr)
+
+        assertThat(errContent.toString()).contains("Input invalid files/folders for MergeFilter, stopping execution...")
+    }
 }

@@ -24,7 +24,7 @@ class MergeFilter(
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     var help: Boolean = false
 
-    @CommandLine.Parameters(arity = "0..*", paramLabel = "FILES", description = ["cc.json files to merge"])
+    @CommandLine.Parameters(arity = "1..*", paramLabel = "FILE or FOLDER", description = ["files to merge"])
     private var sources: Array<File> = arrayOf()
 
     @CommandLine.Option(names = ["-a", "--add-missing"], description = ["enable adding missing nodes to reference"])
