@@ -170,4 +170,24 @@ class MergeFilterTest {
 
         assertThat(errContent.toString()).contains("Input invalid files/folders for MergeFilter, stopping execution...")
     }
+
+    @Test
+    fun `should log error when no cc json files found in the folder`() {
+        System.setErr(PrintStream(errContent))
+
+        CommandLine(MergeFilter()).execute("src/test/resources/noCCJsonFiles")
+
+        System.setErr(originalErr)
+        assertThat(errContent.toString()).contains("Input invalid files/folders for MergeFilter, stopping execution...")
+    }
+
+    @Test
+    fun `should log error when folder path is invalid`() {
+        System.setErr(PrintStream(errContent))
+
+        CommandLine(MergeFilter()).execute("invalid/path/to/folder")
+
+        System.setErr(originalErr)
+        assertThat(errContent.toString()).contains("Input invalid files/folders for MergeFilter, stopping execution...")
+    }
 }

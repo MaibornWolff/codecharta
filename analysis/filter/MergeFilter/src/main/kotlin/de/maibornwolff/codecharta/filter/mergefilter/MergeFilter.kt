@@ -108,14 +108,16 @@ class MergeFilter(
             }
         }
 
-        if (!hasTopLevelOverlap(rootChildrenNodes)) {
-            printOverlapError(rootChildrenNodes)
+        if (!mergeModules) {
+            if (!hasTopLevelOverlap(rootChildrenNodes)) {
+                printOverlapError(rootChildrenNodes)
 
-            val continueMerge = ParserDialog.askForceMerge()
+                val continueMerge = ParserDialog.askForceMerge()
 
-            if (!continueMerge) {
-                Logger.info { "Merge cancelled by the user." }
-                return null
+                if (!continueMerge) {
+                    Logger.info { "Merge cancelled by the user." }
+                    return null
+                }
             }
         }
 
