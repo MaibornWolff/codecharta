@@ -25,30 +25,6 @@ class MergeFilterTest {
     }
 
     @Test
-    fun `should merge all files in a folder correctly`() {
-        val projectLocation = "src/test/resources/mergeFolderTest"
-        val valueInFile1 = "SourceMonCsvConverterTest.java"
-        val valueInFile2 = "SourceMonCsvConverter.java"
-        val invalidFile = "invalid.json"
-
-        System.setOut(PrintStream(outContent))
-        System.setErr(PrintStream(errContent))
-        CommandLine(MergeFilter()).execute(projectLocation).toString()
-        System.setOut(originalOut)
-        System.setErr(originalErr)
-
-        // should ignore files starting with a dot
-        assertThat(outContent.toString()).doesNotContain("ShouldNotAppear.java")
-
-        // should merge all valid projects in folder
-        // assertThat(outContent.toString()).contains(valueInFile1)
-        // assertThat(outContent.toString()).contains(valueInFile2)
-
-        // should warn about skipped files
-        assertThat(errContent.toString()).contains(invalidFile)
-    }
-
-    @Test
     fun `should merge all indicated files`() {
         System.setOut(PrintStream(outContent))
         CommandLine(MergeFilter()).execute(
@@ -80,6 +56,22 @@ class MergeFilterTest {
         file.deleteOnExit()
 
         assertThat(file.exists()).isTrue
+    }
+
+    @Test
+    fun `should merge non-overlapping json files with force`() {
+        System.setOut(PrintStream(outContent))
+        CommandLine(MergeFilter()).execute(
+            "src/test/resources/mergeFolderTest/file1_no_overlap.cc.json",
+            "src/test/resources/mergeFolderTest/file2_no_overlap.cc.json",
+            "-f"
+        ).toString()
+        System.setOut(originalOut)
+        val valueInFile1 = "JavaParserTest.java"
+        val valueInFile2 = "JavaParser.java"
+
+        assertThat(outContent.toString()).contains(valueInFile1)
+        assertThat(outContent.toString()).contains(valueInFile2)
     }
 
     @Test
@@ -132,7 +124,7 @@ class MergeFilterTest {
 
         assertThat(errContent.toString()).contains("Warning: No top-level overlap between projects")
 
-        val valueInFile1 = "SourceMonCsvConverter.java"
+        val valueInFile1 = "JavaParserTest.java"
         val valueInFile2 = "JavaParser.java"
         assertThat(outContent.toString()).contains(valueInFile1)
         assertThat(outContent.toString()).contains(valueInFile2)
@@ -160,34 +152,50 @@ class MergeFilterTest {
     }
 
     @Test
-    fun `should warn about invalid project files`() {
-        mockkObject(InputHelper)
-        every { InputHelper.isInputValid(any(), any()) } returns false
+    fun `should return ParserDialog when getDialog is called`() {
+        val mergeFilter = MergeFilter()
 
-        System.setErr(PrintStream(errContent))
-        CommandLine(MergeFilter()).execute("invalid.json").toString()
-        System.setErr(originalErr)
-
-        assertThat(errContent.toString()).contains("Input invalid files/folders for MergeFilter, stopping execution...")
+        assertThat(mergeFilter.getDialog()).isSameAs(ParserDialog)
     }
 
     @Test
-    fun `should log error when no cc json files found in the folder`() {
-        System.setErr(PrintStream(errContent))
+    fun `should return false for isApplicable`() {
+        val mergeFilter = MergeFilter()
 
-        CommandLine(MergeFilter()).execute("src/test/resources/noCCJsonFiles")
-
-        System.setErr(originalErr)
-        assertThat(errContent.toString()).contains("Input invalid files/folders for MergeFilter, stopping execution...")
+        assertThat(mergeFilter.isApplicable("resourceToBeParsed")).isFalse
     }
 
     @Test
     fun `should log error when folder path is invalid`() {
+        mockkObject(ParserDialog)
+
+        every {
+            ParserDialog.getInputFileName("cc.json", true)
+        } returns "invalid/folder/path"
+
         System.setErr(PrintStream(errContent))
-
-        CommandLine(MergeFilter()).execute("invalid/path/to/folder")
-
+        CommandLine(MergeFilter()).execute("invalid/folder/path").toString()
         System.setErr(originalErr)
+
+        assertThat(errContent.toString()).contains("Input invalid files/folders for MergeFilter, stopping execution...")
+    }
+
+    @Test
+    fun `should log error when no cc json files found in folder`() {
+        mockkObject(ParserDialog)
+
+        every {
+            ParserDialog.getInputFileName("cc.json", true)
+        } returns "src/test/resources/emptyFolder"
+
+        val emptyFolder = File("src/test/resources/emptyFolder")
+        emptyFolder.mkdirs()
+        emptyFolder.deleteOnExit()
+
+        System.setErr(PrintStream(errContent))
+        CommandLine(MergeFilter()).execute(emptyFolder.absolutePath).toString()
+        System.setErr(originalErr)
+
         assertThat(errContent.toString()).contains("Input invalid files/folders for MergeFilter, stopping execution...")
     }
 }

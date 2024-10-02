@@ -81,7 +81,7 @@ class MergeFilter(
 
             sources = folder.listFiles { _, name -> name.endsWith(".cc.json") } ?: emptyArray()
 
-            if (sources.isEmpty()) {
+            if (sources.isEmpty() || folder.listFiles().isNullOrEmpty()) {
                 Logger.error { "No cc.json files found in the folder." }
                 return null
             }
