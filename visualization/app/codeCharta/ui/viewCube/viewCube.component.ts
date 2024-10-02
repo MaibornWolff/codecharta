@@ -151,7 +151,6 @@ export class ViewCubeComponent implements OnInit {
                 break
             case this.cubeDefinition.top.middle.center:
                 this.threeMapControlsService.rotateCameraInVectorDirection(0, -1, 0)
-                // TODO: rotate camera to look at front of map
                 break
             case this.cubeDefinition.top.middle.right:
                 this.threeMapControlsService.rotateCameraInVectorDirection(-1, -1, 0)
