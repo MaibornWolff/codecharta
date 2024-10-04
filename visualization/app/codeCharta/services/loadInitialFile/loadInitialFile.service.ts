@@ -107,6 +107,7 @@ export class LoadInitialFileService {
             await this.handleErrorLoadFilesFromQueryParams(error as Error)
         } finally {
             this.setMetricsFromUrl()
+            this.setCurrentFilesAreSampleFilesFromUrl()
         }
     }
 
@@ -475,6 +476,13 @@ export class LoadInitialFileService {
 
         if (renderState === "Delta" && files.length >= 2) {
             this.store.dispatch(setDelta({ referenceFile: files[0], comparisonFile: files[1] }))
+        }
+    }
+
+    private setCurrentFilesAreSampleFilesFromUrl() {
+        const isSampleFile = this.urlUtils.getParameterByName(MetricQueryParemter.isSampleFile)
+        if (isSampleFile) {
+            this.store.dispatch(setCurrentFilesAreSampleFiles({ value: true }))
         }
     }
 }
