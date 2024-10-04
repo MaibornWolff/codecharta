@@ -4,7 +4,7 @@ import { setEdgeMetric } from "../../store/dynamicSettings/edgeMetric/edgeMetric
 import { setHeightMetric } from "../../store/dynamicSettings/heightMetric/heightMetric.actions"
 import { setCurrentFilesAreSampleFiles } from "../../store/appStatus/currentFilesAreSampleFiles/currentFilesAreSampleFiles.actions"
 
-export const actionsRequiringSaveMetricsInQueryParameters = [
+export const actionsRequiringUpdateQueryParameters = [
     setEdgeMetric,
     setHeightMetric,
     setColorMetric,

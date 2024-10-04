@@ -11,9 +11,9 @@ import { metricDataSelector } from "../../selectors/accumulatedData/metricData/m
 import { setColorMetric } from "../../store/dynamicSettings/colorMetric/colorMetric.actions"
 import { setEdgeMetric } from "../../store/dynamicSettings/edgeMetric/edgeMetric.actions"
 import { defaultState } from "../../store/state.manager"
-import { SaveMetricsInQueryParametersEffect } from "./saveMetricsInQueryParameters.effect"
+import { UpdateQueryParametersEffect } from "./updateQueryParameters.effect"
 
-describe("SaveMetricsInQueryParametersEffect", () => {
+describe("UpdateQueryParametersEffect", () => {
     let actions$: Subject<Action>
     let store
     let replaceStateSpy
@@ -29,7 +29,7 @@ describe("SaveMetricsInQueryParametersEffect", () => {
         }
 
         TestBed.configureTestingModule({
-            imports: [EffectsModule.forRoot([SaveMetricsInQueryParametersEffect])],
+            imports: [EffectsModule.forRoot([UpdateQueryParametersEffect])],
             providers: [
                 {
                     provide: LoadInitialFileService,
