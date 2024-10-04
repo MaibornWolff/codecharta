@@ -71,6 +71,7 @@ function addFile(
     if (currentFilesAreSampleFilesCallback()) {
         fileStates.length = 0
         setCurrentFilesAreNotSampleFilesCallback()
+        localStorage.removeItem("scenarios")
     }
 
     const ccFile = getCCFile(file)
