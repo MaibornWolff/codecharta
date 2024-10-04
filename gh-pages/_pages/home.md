@@ -5,7 +5,7 @@ header:
   overlay_image: /assets/images/CC-Home.png
   actions:
     - label: "<i class='fas fa-fw fa-link'></i> Explore Web Studio"
-      url: "https://maibornwolff.github.io/codecharta/visualization/app/index.html?file=codecharta.cc.json.gz&file=codecharta_analysis.cc.json.gz"
+      url: "https://maibornwolff.github.io/codecharta/visualization/app/index.html?file=codecharta.cc.json.gz&file=codecharta_analysis.cc.json.gz&currentFilesAreSampleFiles=true"
     - label: "<i class='fas fa-fw fa-link'></i> Quick Start"
       url: "/docs/quick-start-guide/"
 excerpt: >
