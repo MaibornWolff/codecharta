@@ -12,7 +12,7 @@ export enum MetricQueryParemter {
     heightMetric = "height",
     colorMetric = "color",
     edgeMetric = "edge",
-    isSampleFile = "isSampleFile"
+    currentFilesAreSampleFiles = "currentFilesAreSampleFiles"
 }
 
 @Injectable()
@@ -56,9 +56,9 @@ export class UpdateQueryParametersEffect {
         }
 
         if (state.appStatus.currentFilesAreSampleFiles) {
-            this.addOrUpdateQueryParameter(MetricQueryParemter.isSampleFile, true)
+            this.addOrUpdateQueryParameter(MetricQueryParemter.currentFilesAreSampleFiles, true)
         } else {
-            this.deleteQueryParameterIfExists(MetricQueryParemter.isSampleFile)
+            this.deleteQueryParameterIfExists(MetricQueryParemter.currentFilesAreSampleFiles)
         }
     }
 
