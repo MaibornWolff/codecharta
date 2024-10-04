@@ -11,7 +11,8 @@ export enum MetricQueryParemter {
     areaMetric = "area",
     heightMetric = "height",
     colorMetric = "color",
-    edgeMetric = "edge"
+    edgeMetric = "edge",
+    isSampleFile = "isSampleFile"
 }
 
 @Injectable()
@@ -52,6 +53,12 @@ export class SaveMetricsInQueryParametersEffect {
             this.addOrUpdateQueryParameter(MetricQueryParemter.edgeMetric, edgeMetric)
         } else {
             this.deleteQueryParameterIfExists(MetricQueryParemter.edgeMetric)
+        }
+
+        if (state.appStatus.currentFilesAreSampleFiles) {
+            this.addOrUpdateQueryParameter(MetricQueryParemter.isSampleFile, true)
+        } else {
+            this.deleteQueryParameterIfExists(MetricQueryParemter.isSampleFile)
         }
     }
 
