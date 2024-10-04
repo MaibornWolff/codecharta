@@ -5,7 +5,7 @@
 CodeCharta consists of two separate parts:
 
 - The [analysis](https://maibornwolff.github.io/codecharta/docs/analysis/) which is a cli-tool that generates a `.cc.json` file.
-- The [visualization](https://maibornwolff.github.io/codecharta/docs/visualization/) that consumes said file and visualises it in form of a tree map. The visualization has both a desktop client and a [web version](https://maibornwolff.github.io/codecharta/visualization/app/index.html?file=codecharta.cc.json.gz&file=codecharta_analysis.cc.json.gz).
+- The [visualization](https://maibornwolff.github.io/codecharta/docs/visualization/) that consumes said file and visualises it in form of a tree map. The visualization has both a desktop client and a [web version](https://maibornwolff.github.io/codecharta/visualization/app/index.html?file=codecharta.cc.json.gz&file=codecharta_analysis.cc.json.gz&currentFilesAreSampleFiles=true).
 
 Both parts are in active development, meaning as a developer you can contribute to both. For more on how we communicate and how you can give feedback, check out [feedback](https://maibornwolff.github.io/codecharta/docs/feedback/).
 

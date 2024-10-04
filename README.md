@@ -1,6 +1,6 @@
 <h1 align="center">
   <br>
-  <a href="https://maibornwolff.github.io/codecharta/visualization/app/index.html?file=codecharta.cc.json.gz&file=codecharta_analysis.cc.json.gz"><img src="https://raw.githubusercontent.com/maibornwolff/codecharta/main/logo/codecharta_logo.svg" alt="CodeCharta" width="200"/></a>
+  <a href="https://maibornwolff.github.io/codecharta/visualization/app/index.html?file=codecharta.cc.json.gz&file=codecharta_analysis.cc.json.gz&currentFilesAreSampleFiles=true"><img src="https://raw.githubusercontent.com/maibornwolff/codecharta/main/logo/codecharta_logo.svg" alt="CodeCharta" width="200"/></a>
   <br>
   CodeCharta
   <br>
@@ -46,7 +46,7 @@ Latest Release: <br>
 
 - [CodeCharta Visualization](https://maibornwolff.github.io/codecharta/docs/visualization/):
 
-  - CC visualizes code bases as 3D cities, so that you can understand it - view the [Web Demo](https://maibornwolff.github.io/codecharta/visualization/app/index.html?file=codecharta.cc.json.gz&file=codecharta_analysis.cc.json.gz).
+  - CC visualizes code bases as 3D cities, so that you can understand it - view the [Web Demo](https://maibornwolff.github.io/codecharta/visualization/app/index.html?file=codecharta.cc.json.gz&file=codecharta_analysis.cc.json.gz&currentFilesAreSampleFiles=true).
   - It uses code metrics from `.cc.json` files.
   - The imported files are validated using JSON Schema as defined in [generatedSchema.json](/visualization/app/codeCharta/util/generatedSchema.json).
   - You can change the way the file is displayed and save and later load it as a [Custom View](https://maibornwolff.github.io/codecharta/docs/custom-view/).
