@@ -5,7 +5,7 @@ import { debounceTime, map, tap, withLatestFrom } from "rxjs"
 import { CcState } from "../../../codeCharta.model"
 import { LoadInitialFileService } from "../../../services/loadInitialFile/loadInitialFile.service"
 import { metricDataSelector } from "../../selectors/accumulatedData/metricData/metricData.selector"
-import { actionsRequiringSaveMetricsInQueryParameters } from "./actionsRequiringSaveMetricsInQueryParameters"
+import { actionsRequiringUpdateQueryParameters } from "./actionsRequiringUpdateQueryParameters"
 
 export enum MetricQueryParemter {
     areaMetric = "area",
@@ -16,7 +16,7 @@ export enum MetricQueryParemter {
 }
 
 @Injectable()
-export class SaveMetricsInQueryParametersEffect {
+export class UpdateQueryParametersEffect {
     constructor(
         private loadInitialFileService: LoadInitialFileService,
         private actions$: Actions,
@@ -27,7 +27,7 @@ export class SaveMetricsInQueryParametersEffect {
     saveMetricsInQueryParameters$ = createEffect(
         () =>
             this.actions$.pipe(
-                ofType(...actionsRequiringSaveMetricsInQueryParameters),
+                ofType(...actionsRequiringUpdateQueryParameters),
                 withLatestFrom(this.store.select(metricDataSelector)),
                 map(metricData => metricData[1].edgeMetricData && metricData[1].edgeMetricData.length > 0),
                 debounceTime(100),
