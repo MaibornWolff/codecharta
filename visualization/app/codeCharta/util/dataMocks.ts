@@ -158,7 +158,44 @@ export const TEST_ATTRIBUTE_DESCRIPTORS_FULL: AttributeDescriptors = {
     }
 }
 
-export const VALID_NODE: CodeMapNode = {
+export const VALID_NODE_WITH_MCC: CodeMapNode = {
+    ...DEFAULT_ROOT,
+    children: [
+        {
+            name: "big leaf",
+            type: NodeType.FILE,
+            attributes: { rloc: 100, functions: 10, mcc: 1 },
+            isExcluded: false,
+            isFlattened: false,
+            link: "https://www.google.de"
+        },
+        {
+            name: "Parent Leaf",
+            type: NodeType.FOLDER,
+            attributes: {},
+            isExcluded: false,
+            isFlattened: false,
+            children: [
+                {
+                    name: "small leaf",
+                    type: NodeType.FILE,
+                    attributes: { rloc: 30, functions: 100, mcc: 100 },
+                    isExcluded: false,
+                    isFlattened: false
+                },
+                {
+                    name: "other small leaf",
+                    type: NodeType.FILE,
+                    attributes: { rloc: 70, functions: 1000, mcc: 10 },
+                    isExcluded: false,
+                    isFlattened: false
+                }
+            ]
+        }
+    ]
+}
+
+export const VALID_NODE_WITH_COMPLEXITY: CodeMapNode = {
     ...DEFAULT_ROOT,
     children: [
         {
@@ -760,35 +797,35 @@ export const TEST_FILE_CONTENT: ExportCCFile = {
     projectName: "Sample Map",
     fileChecksum: "invalid-md5-sample",
     apiVersion: APIVersions.ONE_POINT_THREE,
-    nodes: [VALID_NODE]
+    nodes: [VALID_NODE_WITH_MCC]
 }
 
 export const TEST_FILE_CONTENT_INVALID_MAJOR_API: ExportCCFile = {
     fileChecksum: "invalid-md5-sample",
     projectName: "Invalid Sample Map",
     apiVersion: "2.0",
-    nodes: [VALID_NODE]
+    nodes: [VALID_NODE_WITH_MCC]
 }
 
 export const TEST_FILE_CONTENT_INVALID_MINOR_API: ExportCCFile = {
     projectName: "Valid Sample Map Minor API High",
     fileChecksum: "invalid-md5-sample",
     apiVersion: "1.4",
-    nodes: [VALID_NODE]
+    nodes: [VALID_NODE_WITH_MCC]
 }
 
 export const TEST_FILE_CONTENT_INVALID_API: ExportCCFile = {
     projectName: "Invalid Sample Map",
     fileChecksum: "invalid-md5-sample",
     apiVersion: "2.a",
-    nodes: [VALID_NODE]
+    nodes: [VALID_NODE_WITH_MCC]
 }
 
 export const TEST_FILE_CONTENT_NO_API: ExportCCFile = {
     projectName: "Invalid Sample Map",
     fileChecksum: "invalid-md5-sample",
     apiVersion: null,
-    nodes: [VALID_NODE]
+    nodes: [VALID_NODE_WITH_MCC]
 }
 
 export const FILE_META: FileMeta = {
@@ -799,7 +836,13 @@ export const FILE_META: FileMeta = {
 
 export const TEST_FILE_DATA: CCFile = {
     fileMeta: FILE_META,
-    map: VALID_NODE,
+    map: VALID_NODE_WITH_MCC,
+    settings: DEFAULT_SETTINGS
+}
+
+export const TEST_FILE_DATA_WITH_COMPLEXITY: CCFile = {
+    fileMeta: FILE_META,
+    map: VALID_NODE_WITH_COMPLEXITY,
     settings: DEFAULT_SETTINGS
 }
 
