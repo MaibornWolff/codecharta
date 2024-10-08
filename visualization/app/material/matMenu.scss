@@ -13,3 +13,12 @@
         font-size: 16px;
     }
 }
+
+.mat-mdc-menu-panel.cc-scenarios-menu {
+    width: 420px;
+    max-width: unset;
+
+    .mat-mdc-menu-content {
+        padding: 0;
+    }
+}
