@@ -10,6 +10,7 @@ const DEFAULT_PADDING_FLOOR_LABEL_FROM_LEVEL_1 = 120
 const DEFAULT_PADDING_FLOOR_LABEL_FROM_LEVEL_2 = 95
 const DEFAULT_ROOT_FLOOR_LABEL_SCALING = 0.035
 const DEFAULT_SUB_FLOOR_LABEL_SCALING = 0.028
+export const HIERARCHY_LEVELS_WITH_LABLES_UPPER_BOUNDRY = 3
 
 export function createTreemapNodes(map: CodeMapNode, state: CcState, metricData: NodeMetricData[], isDeltaState: boolean): Node[] {
     const mapSizeResolutionScaling = getMapResolutionScaleFactor(state.files)
@@ -181,7 +182,7 @@ function getSquarifiedTreeMap(map: CodeMapNode, state: CcState, mapSizeResolutio
             if (node.depth === 0) {
                 addedLabelSpace += DEFAULT_PADDING_FLOOR_LABEL_FROM_LEVEL_1
             }
-            if (node.depth > 0 && node.depth < 3) {
+            if (node.depth > 0 && node.depth < HIERARCHY_LEVELS_WITH_LABLES_UPPER_BOUNDRY) {
                 addedLabelSpace += DEFAULT_PADDING_FLOOR_LABEL_FROM_LEVEL_2
             }
         }
@@ -217,7 +218,7 @@ function getSquarifiedTreeMap(map: CodeMapNode, state: CcState, mapSizeResolutio
                         DEFAULT_PADDING_FLOOR_LABEL_FROM_LEVEL_1
                     )
                 }
-                if (node.depth > 0 && node.depth < 3) {
+                if (node.depth > 0 && node.depth < HIERARCHY_LEVELS_WITH_LABLES_UPPER_BOUNDRY) {
                     return Math.max((rootNode.x1 - rootNode.x0) * DEFAULT_SUB_FLOOR_LABEL_SCALING, DEFAULT_PADDING_FLOOR_LABEL_FROM_LEVEL_2)
                 }
             }
