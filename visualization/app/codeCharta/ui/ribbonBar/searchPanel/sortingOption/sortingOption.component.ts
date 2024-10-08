@@ -1,16 +1,15 @@
-import { Component, ViewEncapsulation } from "@angular/core"
+import { Component } from "@angular/core"
 import { Store } from "@ngrx/store"
 import { Observable } from "rxjs"
 
-import { SortingOption, CcState } from "../../../../codeCharta.model"
+import { CcState, SortingOption } from "../../../../codeCharta.model"
 import { setSortingOption } from "../../../../state/store/dynamicSettings/sortingOption/sortingOption.actions"
 import { sortingOrderSelector } from "../../../../state/store/dynamicSettings/sortingOption/sortingOrder.selector"
 
 @Component({
     selector: "cc-sorting-option",
     templateUrl: "./sortingOption.component.html",
-    styleUrls: ["./sortingOption.component.scss"],
-    encapsulation: ViewEncapsulation.None
+    styleUrls: ["./sortingOption.component.scss"]
 })
 export class SortingOptionComponent {
     sortingOptions = Object.values(SortingOption)
