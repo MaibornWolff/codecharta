@@ -1,4 +1,4 @@
-import { Component, ViewEncapsulation } from "@angular/core"
+import { Component } from "@angular/core"
 import { MatCheckboxChange } from "@angular/material/checkbox"
 import { Store } from "@ngrx/store"
 import { map } from "rxjs"
@@ -13,8 +13,7 @@ import { amountOfBuildingsWithSelectedEdgeMetricSelector } from "./selectors/amo
 
 @Component({
     selector: "cc-edge-settings-panel",
-    templateUrl: "./edgeSettingsPanel.component.html",
-    encapsulation: ViewEncapsulation.None
+    templateUrl: "./edgeSettingsPanel.component.html"
 })
 export class EdgeSettingsPanelComponent {
     amountOfBuildingsWithSelectedEdgeMetric$ = this.store.select(amountOfBuildingsWithSelectedEdgeMetricSelector)
