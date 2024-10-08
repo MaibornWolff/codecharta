@@ -70,23 +70,6 @@ class MergeFilter(
     }
 
     override fun call(): Unit? {
-        if (sources.isEmpty()) {
-            val folderPath = getDialog().getInputFileName("cc.json", true)
-            val folder = File(folderPath)
-
-            if (!folder.exists() || !folder.isDirectory) {
-                Logger.error { "Invalid folder path." }
-                return null
-            }
-
-            sources = folder.listFiles { _, name -> name.endsWith(".cc.json") } ?: emptyArray()
-
-            if (sources.isEmpty() || folder.listFiles().isNullOrEmpty()) {
-                Logger.error { "No cc.json files found in the folder." }
-                return null
-            }
-        }
-
         val nodeMergerStrategy = when {
             leafStrategySet -> LeafNodeMergerStrategy(addMissingNodes, ignoreCase)
             recursiveStrategySet && !leafStrategySet -> RecursiveNodeMergerStrategy(ignoreCase)
