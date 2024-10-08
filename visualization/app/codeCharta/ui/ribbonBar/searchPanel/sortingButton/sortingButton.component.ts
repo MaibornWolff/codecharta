@@ -8,7 +8,8 @@ import { sortingOrderAscendingSelector } from "../../../../state/store/appSettin
 
 @Component({
     selector: "cc-sorting-button",
-    templateUrl: "./sortingButton.component.html"
+    templateUrl: "./sortingButton.component.html",
+    styleUrls: ["./sortingButton.component.scss"]
 })
 export class SortingButtonComponent implements OnInit {
     sortingOrderAscending$: Observable<boolean>
