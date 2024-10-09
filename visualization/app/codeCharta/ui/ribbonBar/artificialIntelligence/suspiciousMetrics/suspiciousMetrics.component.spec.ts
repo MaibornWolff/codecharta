@@ -29,10 +29,10 @@ describe("SuspiciousMetricsComponent", () => {
                     }
                 }
             })
-            expect(container.querySelector(".suspicious-metrics-badge")).not.toBe(null)
+            expect(container.querySelector(".cc-suspicious-metrics-badge")).not.toBe(null)
 
             await userEvent.click(screen.getByTitle("Open Suspicious Metrics Panel"))
-            await waitFor(() => expect(container.querySelector(".suspicious-metrics-badge")).toBe(null))
+            await waitFor(() => expect(container.querySelector(".cc-suspicious-metrics-badge")).toBe(null))
 
             await rerender({
                 componentProperties: {
@@ -44,7 +44,7 @@ describe("SuspiciousMetricsComponent", () => {
                     }
                 }
             })
-            expect(container.querySelector(".suspicious-metrics-badge")).not.toBe(null)
+            expect(container.querySelector(".cc-suspicious-metrics-badge")).not.toBe(null)
         })
 
         it("should show initially and hide on first click, but not show again when new data has same values", async () => {
@@ -59,10 +59,10 @@ describe("SuspiciousMetricsComponent", () => {
                     }
                 }
             })
-            expect(container.querySelector(".suspicious-metrics-badge")).not.toBe(null)
+            expect(container.querySelector(".cc-suspicious-metrics-badge")).not.toBe(null)
 
             await userEvent.click(screen.getByTitle("Open Suspicious Metrics Panel"))
-            await waitFor(() => expect(container.querySelector(".suspicious-metrics-badge")).toBe(null))
+            await waitFor(() => expect(container.querySelector(".cc-suspicious-metrics-badge")).toBe(null))
 
             await rerender({
                 componentProperties: {
@@ -74,7 +74,7 @@ describe("SuspiciousMetricsComponent", () => {
                     }
                 }
             })
-            expect(container.querySelector(".suspicious-metrics-badge")).toBe(null)
+            expect(container.querySelector(".cc-suspicious-metrics-badge")).toBe(null)
         })
 
         it("should not show when nothing was analyzed", async () => {
@@ -89,7 +89,7 @@ describe("SuspiciousMetricsComponent", () => {
                     }
                 }
             })
-            expect(container.querySelector(".suspicious-metrics-badge")).toBe(null)
+            expect(container.querySelector(".cc-suspicious-metrics-badge")).toBe(null)
         })
     })
 
