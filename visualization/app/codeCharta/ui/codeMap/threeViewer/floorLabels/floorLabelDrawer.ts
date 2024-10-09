@@ -15,11 +15,14 @@ export class FloorLabelDrawer {
 
     private floorLabelsPerLevel = new Map()
 
-    constructor(nodes: Node[], rootNode: Node, mapSize: number, scaling: Vector3) {
+    constructor(nodes: Node[], rootNode: Node, mapSize: number, scaling: Vector3, experimentalFeaturesEnabled: boolean) {
         this.collectLabelsPerLevel(nodes)
         this.rootNode = rootNode
         this.mapSize = mapSize
         this.scaling = scaling
+        this.folderGeometryHeight = experimentalFeaturesEnabled
+            ? Math.ceil(2 / FloorLabelHelper.getMapResolutionScaling(rootNode.width) ** 2)
+            : 2.01
     }
 
     private collectLabelsPerLevel(nodes: Node[]) {
@@ -124,6 +127,7 @@ export class FloorLabelDrawer {
 
         // Position plane over the map
         const liftToPreventZFighting = 2
+
         plane.translate(
             scaledMapWidth / 2,
             scaledMapHeight / 2,

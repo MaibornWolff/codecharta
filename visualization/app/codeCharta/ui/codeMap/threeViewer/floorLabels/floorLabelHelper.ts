@@ -1,6 +1,7 @@
 "use strict"
 
 import { Node } from "../../../../codeCharta.model"
+import { HIERARCHY_LEVELS_WITH_LABLES_UPPER_BOUNDRY } from "../../../../util/algorithm/treeMapLayout/treeMapGenerator"
 
 export class FloorLabelHelper {
     static getMapResolutionScaling(mapWidth: number) {
@@ -17,6 +18,6 @@ export class FloorLabelHelper {
     }
 
     static isLabelNode(node: Node) {
-        return !node.isLeaf && node.mapNodeDepth < 3
+        return !node.isLeaf && node.mapNodeDepth < HIERARCHY_LEVELS_WITH_LABLES_UPPER_BOUNDRY
     }
 }
