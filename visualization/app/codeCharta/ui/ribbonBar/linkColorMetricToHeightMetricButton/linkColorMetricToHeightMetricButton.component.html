@@ -1,6 +1,6 @@
 <button
     title="{{ (isColorMetricLinkedToHeightMetric$ | async) ? 'Unlink Height and Color Metric' : 'Link Height and Color Metric' }}"
-    class="link-metrics-button"
+    class="cc-link-metrics-button"
     (click)="toggleIsColorMetricLinkedToHeightMetric()"
 >
     <i [ngClass]="(isColorMetricLinkedToHeightMetric$ | async) ? 'fa fa-chain-broken' : 'fa fa-link'"></i>

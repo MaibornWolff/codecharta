@@ -1,4 +1,4 @@
-import { Component, Input, ViewEncapsulation } from "@angular/core"
+import { Component, Input } from "@angular/core"
 import { MatDialog } from "@angular/material/dialog"
 import { ScenarioService } from "../scenario.service"
 import { ScenarioItem } from "../scenarioHelper"
@@ -7,8 +7,7 @@ import { AddCustomScenarioDialogComponent } from "../addCustomScenarioDialog/add
 @Component({
     selector: "cc-scenarios",
     templateUrl: "./scenarios.component.html",
-    styleUrls: ["./scenarios.component.scss"],
-    encapsulation: ViewEncapsulation.None
+    styleUrls: ["./scenarios.component.scss"]
 })
 export class ScenariosComponent {
     @Input() scenarios: ScenarioItem[] = []

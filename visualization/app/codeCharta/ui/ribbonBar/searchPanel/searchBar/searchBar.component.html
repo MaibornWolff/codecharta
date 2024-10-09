@@ -1,15 +1,15 @@
-<i class="fa fa-search search-icon"></i>
+<i class="fa fa-search cc-search-icon"></i>
 
-<div class="ccSearchInput">
+<div class="cc-search-input">
     <input type="text" placeholder="Search: *.js, **/app/*" [value]="searchPattern$ | async" (input)="setSearchPatternDebounced($event)" />
     @if (!(isSearchPatternEmpty$ | async)) {
-        <button (click)="resetSearchPattern()" class="small-action-button clear-icon" data-testid="search-bar-clear-button">
+        <button (click)="resetSearchPattern()" class="cc-small-action-button cc-clear-icon" data-testid="search-bar-clear-button">
             <i class="fa fa-times"></i>
         </button>
     }
 </div>
 
-<button [matMenuTriggerFor]="menu" class="small-action-button" title="Add to Blacklist">
+<button [matMenuTriggerFor]="menu" class="cc-small-action-button" title="Add to Blacklist">
     <i class="fa fa-ellipsis-h"></i>
 </button>
 <mat-menu #menu="matMenu">

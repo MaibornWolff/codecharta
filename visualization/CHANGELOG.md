@@ -23,6 +23,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 - Renaming of Metric Templates to Metric Scenarios [#3656](https://github.com/MaibornWolff/codecharta/pull/3656)
 
+### Chore 👨‍💻 👩‍💻
+
+- Enable View Encapsulation for components in the ribbon bar [#3779](https://github.com/MaibornWolff/codecharta/pull/3779)
+
 ## [1.128.0] - 2024-09-18
 
 ### Added 🚀

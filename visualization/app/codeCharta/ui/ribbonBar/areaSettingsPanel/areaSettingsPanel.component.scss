@@ -1,19 +1,9 @@
-cc-area-settings-panel {
+:host {
     text-align: left;
     max-height: 300px;
 
     .options {
         display: flex;
         flex-direction: column;
-
-        .margin-option {
-            position: relative;
-
-            cc-reset-settings-button {
-                position: absolute;
-                top: -20%;
-                left: 20%;
-            }
-        }
     }
 }
