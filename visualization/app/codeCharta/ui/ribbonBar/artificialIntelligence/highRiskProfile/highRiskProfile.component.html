@@ -1,6 +1,6 @@
-<cc-ribbon-bar-menu-button [title]="'Open High Risk Profile'" icon="fa-bar-chart" [matMenuTriggerFor]="menu"> </cc-ribbon-bar-menu-button>
+<cc-ribbon-bar-menu-button [title]="'Open High Risk Profile'" icon="fa-bar-chart" [matMenuTriggerFor]="menu"></cc-ribbon-bar-menu-button>
 
-<mat-menu #menu="matMenu" class="ai-drop-down high-risk-profile">
+<mat-menu #menu="matMenu" class="cc-ai-drop-down cc-high-risk-profile">
     @if (data.riskProfile !== undefined) {
         <div class="title">Risk Profile</div>
         <div class="text-content">
@@ -23,32 +23,32 @@
                 <li>{{ data.riskProfile.veryHighRisk }}% of overall code is in files with extreme complexity</li>
             </ul>
         </div>
-        <div class="risk-profiles">
+        <div class="cc-risk-profiles">
             <div
                 [ccRiskProfileBar]="data.riskProfile.lowRisk"
                 title="Low Risk ({{ data.riskProfile.lowRisk }}% of code)"
-                class="risk-profile low-risk"
+                class="cc-risk-profile cc-low-risk"
             >
                 {{ data.riskProfile.lowRisk }}%
             </div>
             <div
                 [ccRiskProfileBar]="data.riskProfile.moderateRisk"
                 title="Moderate Risk ({{ data.riskProfile.moderateRisk }}% of code)"
-                class="risk-profile moderate-risk"
+                class="cc-risk-profile cc-moderate-risk"
             >
                 {{ data.riskProfile.moderateRisk }}%
             </div>
             <div
                 [ccRiskProfileBar]="data.riskProfile.highRisk"
                 title="High Risk ({{ data.riskProfile.highRisk }}% of code)"
-                class="risk-profile high-risk"
+                class="cc-risk-profile cc-high-risk"
             >
                 {{ data.riskProfile.highRisk }}%
             </div>
             <div
                 [ccRiskProfileBar]="data.riskProfile.veryHighRisk"
                 title="Very High Risk ({{ data.riskProfile.veryHighRisk }}% of code)"
-                class="risk-profile very-high-risk"
+                class="cc-risk-profile cc-very-high-risk"
             >
                 {{ data.riskProfile.veryHighRisk }}%
             </div>
