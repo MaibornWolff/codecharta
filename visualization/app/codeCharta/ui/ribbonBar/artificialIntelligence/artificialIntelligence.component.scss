@@ -4,17 +4,6 @@ cc-artificial-intelligence {
     display: flex;
     justify-content: center;
     gap: 4px;
-
-    .suspicious-metrics-badge {
-        position: absolute;
-        bottom: 10px;
-        padding: 4px 6px;
-        border-radius: 50%;
-        background: red;
-        color: white;
-        font-size: 10px;
-        line-height: 10px;
-    }
 }
 
 .button-mat-dialog {
