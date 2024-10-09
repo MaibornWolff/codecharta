@@ -9,7 +9,6 @@ export class FloorLabelDrawer {
     private readonly rootNode: Node
     private readonly mapSize: number
     private readonly scaling: Vector3
-    private readonly experimentalFeaturesEnabled: boolean
     private readonly folderGeometryHeight: number = 2.01
     private lastScaling: Vector3 = new Vector3(1, 1, 1)
     private floorLabelPlaneLevel: Map<Mesh, number> = new Map<Mesh, number>()
@@ -21,7 +20,9 @@ export class FloorLabelDrawer {
         this.rootNode = rootNode
         this.mapSize = mapSize
         this.scaling = scaling
-        this.experimentalFeaturesEnabled = experimentalFeaturesEnabled
+        this.folderGeometryHeight = experimentalFeaturesEnabled
+            ? Math.ceil(2 / FloorLabelHelper.getMapResolutionScaling(rootNode.width) ** 2)
+            : 2.01
     }
 
     private collectLabelsPerLevel(nodes: Node[]) {
@@ -125,7 +126,7 @@ export class FloorLabelDrawer {
         planeMesh.rotateX((90 * Math.PI) / 180)
 
         // Position plane over the map
-        const liftToPreventZFighting = this.experimentalFeaturesEnabled ? Math.ceil(2 / mapResolutionScaling ** 2) : 2
+        const liftToPreventZFighting = 2
 
         plane.translate(
             scaledMapWidth / 2,
