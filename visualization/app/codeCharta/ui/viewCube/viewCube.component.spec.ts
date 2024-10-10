@@ -47,7 +47,7 @@ describe("ViewCubeComponent", () => {
     })
 
     describe("onCubeHovered", () => {
-        it("should set hover info cube emmisive color to white", () => {
+        it("should set hover info cube emissive color to white", () => {
             viewCubeComponent["renderer"] = {
                 render: jest.fn()
             } as unknown as WebGLRenderer
@@ -76,204 +76,153 @@ describe("ViewCubeComponent", () => {
     describe("onCubeClicked", () => {
         const generateHorizontalMesh = () => {
             return {
-                middle: new Mesh(),
                 left: new Mesh(),
+                center: new Mesh(),
                 right: new Mesh()
             }
         }
 
-        const generateFaceMesh = () => {
+        const generateTopMesh = () => {
             return {
-                top: generateHorizontalMesh(),
+                front: generateHorizontalMesh(),
                 middle: generateHorizontalMesh(),
-                bottom: generateHorizontalMesh()
+                back: generateHorizontalMesh()
+            }
+        }
+
+        const generateSidesMesh = () => {
+            return {
+                front: generateHorizontalMesh(),
+                middle: {
+                    left: new Mesh(),
+                    right: new Mesh()
+                },
+                back: generateHorizontalMesh()
             }
         }
 
         const cubeDefinition = {
-            front: generateFaceMesh(),
-            middle: generateFaceMesh(),
-            back: generateFaceMesh()
+            top: generateTopMesh(),
+            sides: generateSidesMesh()
         }
 
-        const generateFrontTests = () => {
+        const generateTopTests = () => {
             return [
-                {
-                    expectedString: "(0, -1, -1)",
-                    whenObject: "front.top.middle",
-                    eventValue: cubeDefinition.front.top.middle,
-                    expected: { x: 0, y: -1, z: -1 }
-                },
-                {
-                    expectedString: "(1, -1, -1)",
-                    whenObject: "front.top.left",
-                    eventValue: cubeDefinition.front.top.left,
-                    expected: { x: 1, y: -1, z: -1 }
-                },
-                {
-                    expectedString: "(-1, -1, -1)",
-                    whenObject: "front.top.right",
-                    eventValue: cubeDefinition.front.top.right,
-                    expected: { x: -1, y: -1, z: -1 }
-                },
-
-                {
-                    expectedString: "(0, 0, 0)",
-                    whenObject: "front.middle.middle",
-                    eventValue: cubeDefinition.front.middle.middle,
-                    expected: { x: 0, y: 0, z: 0 }
-                },
-                {
-                    expectedString: "(1, 0, -1)",
-                    whenObject: "front.middle.left",
-                    eventValue: cubeDefinition.front.middle.left,
-                    expected: { x: 1, y: 0, z: -1 }
-                },
-                {
-                    expectedString: "(-1, 0, -1)",
-                    whenObject: "front.middle.right",
-                    eventValue: cubeDefinition.front.middle.right,
-                    expected: { x: -1, y: 0, z: -1 }
-                },
-
-                {
-                    expectedString: "(0, 1, -1)",
-                    whenObject: "front.bottom.middle",
-                    eventValue: cubeDefinition.front.bottom.middle,
-                    expected: { x: 0, y: 1, z: -1 }
-                },
-                {
-                    expectedString: "(1, 1, -1)",
-                    whenObject: "front.bottom.left",
-                    eventValue: cubeDefinition.front.bottom.left,
-                    expected: { x: 1, y: 1, z: -1 }
-                },
-                {
-                    expectedString: "(-1, 1, -1)",
-                    whenObject: "front.bottom.right",
-                    eventValue: cubeDefinition.front.bottom.right,
-                    expected: { x: -1, y: 1, z: -1 }
-                }
-            ]
-        }
-
-        const generateMiddleTests = () => {
-            return [
-                {
-                    expectedString: "(0, -1, 0)",
-                    whenObject: "middle.top.middle",
-                    eventValue: cubeDefinition.middle.top.middle,
-                    expected: { x: 0, y: -1, z: 0 }
-                },
-                {
-                    expectedString: "(1, -1, 0)",
-                    whenObject: "middle.top.left",
-                    eventValue: cubeDefinition.middle.top.left,
-                    expected: { x: 1, y: -1, z: 0 }
-                },
-                {
-                    expectedString: "(-1, -1, 0)",
-                    whenObject: "middle.top.right",
-                    eventValue: cubeDefinition.middle.top.right,
-                    expected: { x: -1, y: -1, z: 0 }
-                },
-
-                {
-                    expectedString: "(1, 0, 0)",
-                    whenObject: "middle.middle.left",
-                    eventValue: cubeDefinition.middle.middle.left,
-                    expected: { x: 1, y: 0, z: 0 }
-                },
-                {
-                    expectedString: "(-1, 0, 0)",
-                    whenObject: "middle.middle.right",
-                    eventValue: cubeDefinition.middle.middle.right,
-                    expected: { x: -1, y: 0, z: 0 }
-                },
-
-                {
-                    expectedString: "(0, 1, 0)",
-                    whenObject: "middle.bottom.middle",
-                    eventValue: cubeDefinition.middle.bottom.middle,
-                    expected: { x: 0, y: 1, z: 0 }
-                },
-                {
-                    expectedString: "(1, 1, 0)",
-                    whenObject: "middle.bottom.left",
-                    eventValue: cubeDefinition.middle.bottom.left,
-                    expected: { x: 1, y: 1, z: 0 }
-                },
-                {
-                    expectedString: "(-1, 1, 0)",
-                    whenObject: "middle.bottom.right",
-                    eventValue: cubeDefinition.middle.bottom.right,
-                    expected: { x: -1, y: 1, z: 0 }
-                }
-            ]
-        }
-
-        const generateBackTests = () => {
-            return [
-                {
-                    expectedString: "(0, -1, 1)",
-                    whenObject: "back.top.middle",
-                    eventValue: cubeDefinition.back.top.middle,
-                    expected: { x: 0, y: -1, z: 1 }
-                },
                 {
                     expectedString: "(1, -1, 1)",
-                    whenObject: "back.top.left",
-                    eventValue: cubeDefinition.back.top.left,
+                    whenObject: "top.front.left",
+                    eventValue: cubeDefinition.top.front.left,
                     expected: { x: 1, y: -1, z: 1 }
                 },
                 {
+                    expectedString: "(0, -1, 1)",
+                    whenObject: "top.front.center",
+                    eventValue: cubeDefinition.top.front.center,
+                    expected: { x: 0, y: -1, z: 1 }
+                },
+                {
                     expectedString: "(-1, -1, 1)",
-                    whenObject: "back.top.right",
-                    eventValue: cubeDefinition.back.top.right,
+                    whenObject: "top.front.right",
+                    eventValue: cubeDefinition.top.front.right,
                     expected: { x: -1, y: -1, z: 1 }
                 },
 
                 {
-                    expectedString: "(0, 0, 1)",
-                    whenObject: "back.middle.middle",
-                    eventValue: cubeDefinition.back.middle.middle,
-                    expected: { x: 0, y: 0, z: 1 }
+                    expectedString: "(1, -1, 0)",
+                    whenObject: "top.middle.left",
+                    eventValue: cubeDefinition.top.middle.left,
+                    expected: { x: 1, y: -1, z: 0 }
                 },
                 {
-                    expectedString: "(-1, 0, 1)",
-                    whenObject: "back.middle.left",
-                    eventValue: cubeDefinition.back.middle.left,
-                    expected: { x: -1, y: 0, z: 1 }
+                    expectedString: "(0, -1, 0)",
+                    whenObject: "top.middle.center",
+                    eventValue: cubeDefinition.top.middle.center,
+                    expected: { x: 0, y: -1, z: 0 }
                 },
                 {
-                    expectedString: "(-1, 0, -1)",
-                    whenObject: "back.middle.right",
-                    eventValue: cubeDefinition.front.middle.right,
-                    expected: { x: -1, y: 0, z: -1 }
+                    expectedString: "(-1, -1, 0)",
+                    whenObject: "top.middle.right",
+                    eventValue: cubeDefinition.top.middle.right,
+                    expected: { x: -1, y: -1, z: 0 }
                 },
 
                 {
-                    expectedString: "(0, 1, 1)",
-                    whenObject: "back.bottom.middle",
-                    eventValue: cubeDefinition.back.bottom.middle,
-                    expected: { x: 0, y: 1, z: 1 }
+                    expectedString: "(1, -1, -1)",
+                    whenObject: "top.back.left",
+                    eventValue: cubeDefinition.top.back.left,
+                    expected: { x: 1, y: -1, z: -1 }
                 },
                 {
-                    expectedString: "(-1, 1, 1)",
-                    whenObject: "back.bottom.left",
-                    eventValue: cubeDefinition.back.bottom.left,
-                    expected: { x: -1, y: 1, z: 1 }
+                    expectedString: "(0, -1, -1)",
+                    whenObject: "top.back.center",
+                    eventValue: cubeDefinition.top.back.center,
+                    expected: { x: 0, y: -1, z: -1 }
                 },
                 {
-                    expectedString: "(1, 1, 1)",
-                    whenObject: "back.bottom.right",
-                    eventValue: cubeDefinition.back.bottom.right,
-                    expected: { x: 1, y: 1, z: 1 }
+                    expectedString: "(-1, -1, -1)",
+                    whenObject: "top.back.right",
+                    eventValue: cubeDefinition.top.back.right,
+                    expected: { x: -1, y: -1, z: -1 }
                 }
             ]
         }
 
-        const loopTests = [...generateFrontTests(), ...generateMiddleTests(), ...generateBackTests()]
+        const generateSidesTests = () => {
+            return [
+                {
+                    expectedString: "(1, 0, -1)",
+                    whenObject: "sides.front.left",
+                    eventValue: cubeDefinition.sides.front.left,
+                    expected: { x: 1, y: 0, z: -1 }
+                },
+                {
+                    expectedString: "(0, 0, 0)",
+                    whenObject: "sides.front.center",
+                    eventValue: cubeDefinition.sides.front.center,
+                    expected: { x: 0, y: 0, z: 0 }
+                },
+                {
+                    expectedString: "(-1, 0, -1)",
+                    whenObject: "sides.front.right",
+                    eventValue: cubeDefinition.sides.front.right,
+                    expected: { x: -1, y: 0, z: -1 }
+                },
+
+                {
+                    expectedString: "(1, 0, 0)",
+                    whenObject: "sides.middle.left",
+                    eventValue: cubeDefinition.sides.middle.left,
+                    expected: { x: 1, y: 0, z: 0 }
+                },
+                {
+                    expectedString: "(-1, 0, 0)",
+                    whenObject: "sides.middle.right",
+                    eventValue: cubeDefinition.sides.middle.right,
+                    expected: { x: -1, y: 0, z: 0 }
+                },
+
+                {
+                    expectedString: "(1, 0, 1)",
+                    whenObject: "sides.back.left",
+                    eventValue: cubeDefinition.sides.back.left,
+                    expected: { x: 1, y: 0, z: 1 }
+                },
+                {
+                    expectedString: "(0, 0, 1)",
+                    whenObject: "sides.back.center",
+                    eventValue: cubeDefinition.sides.back.center,
+                    expected: { x: 0, y: 0, z: 1 }
+                },
+                {
+                    expectedString: "(-1, 0, 1)",
+                    whenObject: "sides.back.right",
+                    eventValue: cubeDefinition.sides.back.right,
+                    expected: { x: -1, y: 0, z: 1 }
+                }
+            ]
+        }
+
+        const loopTests = [...generateTopTests(), ...generateSidesTests()]
 
         beforeEach(() => {
             threeMapControlsService.rotateCameraInVectorDirection = jest.fn()
