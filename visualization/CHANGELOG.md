@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 - Add thousands separation for big numbers [#3758](https://github.com/MaibornWolff/codecharta/pull/3758)
 - Add popup when comparing files with different complexity metrics [#3773](https://github.com/MaibornWolff/codecharta/pull/3773)
+- Add experimental feature: dynamic floor lable height for large maps [#3778](https://github.com/MaibornWolff/codecharta/pull/3778)
 
 ### Fixed 🐞
 
