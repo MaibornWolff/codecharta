@@ -100,6 +100,26 @@ describe("FloorLabelDrawer", () => {
             expect(floorLabelPlanes.length).toBe(3)
         })
 
+        it("should scale folderGeometryHeight when experimentalFeatures are enabled", () => {
+            initMapCanvas()
+
+            const rootNode = createFakeNode("root", 20_000, 20_000, false, 0)
+            const nodes = [
+                rootNode,
+                createFakeNode("simpleLabelNode1", 4000, 4000, false, 1),
+                createFakeNode("simpleLabelNode2", 2000, 2000, false, 2),
+                createFakeNode("simpleLabelNode3", 1500, 1500, false, 2),
+                createFakeNode("text_to_be_shortened_to_fit_onto_the_floor", 50, 50, false, 2)
+            ]
+
+            const floorLabelDrawer = new FloorLabelDrawer(nodes, rootNode, mapSize, scaling, true)
+            const floorLabelPlanes = floorLabelDrawer.draw()
+
+            expect(floorLabelDrawer.folderGeometryHeight).toBe(68)
+
+            expect(floorLabelPlanes.length).toBe(3)
+        })
+
         it("should not draw on more than three levels'", () => {
             initMapCanvas()
 
