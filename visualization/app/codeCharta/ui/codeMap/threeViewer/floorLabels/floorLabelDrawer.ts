@@ -21,7 +21,7 @@ export class FloorLabelDrawer {
         this.mapSize = mapSize
         this.scaling = scaling
         this.folderGeometryHeight = experimentalFeaturesEnabled
-            ? Math.ceil(2 / FloorLabelHelper.getMapResolutionScaling(rootNode.width))
+            ? Math.ceil(2 / FloorLabelHelper.getMapResolutionScaling(rootNode.width)) * 2
             : 2.01
     }
 
@@ -53,10 +53,11 @@ export class FloorLabelDrawer {
     }
 
     translatePlaneCanvases(scale: Vector3) {
+        const defaultFolderHeight = 2
         for (const plane of this.floorLabelPlanes) {
             const level = this.floorLabelPlaneLevel.get(plane) + 1
             const difference = level * this.lastScaling.y - level * scale.y
-            plane.geometry.translate(0, 0, this.folderGeometryHeight * difference)
+            plane.geometry.translate(0, 0, defaultFolderHeight * difference)
         }
         this.lastScaling = scale
     }
