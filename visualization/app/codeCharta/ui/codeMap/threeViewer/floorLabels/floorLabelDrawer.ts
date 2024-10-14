@@ -9,7 +9,7 @@ export class FloorLabelDrawer {
     private readonly rootNode: Node
     private readonly mapSize: number
     private readonly scaling: Vector3
-    private readonly folderGeometryHeight: number = 2.01
+    readonly folderGeometryHeight: number = 2.01
     private lastScaling: Vector3 = new Vector3(1, 1, 1)
     private floorLabelPlaneLevel: Map<Mesh, number> = new Map<Mesh, number>()
 
