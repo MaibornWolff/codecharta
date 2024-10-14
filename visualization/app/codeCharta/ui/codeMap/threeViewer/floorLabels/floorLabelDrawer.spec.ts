@@ -167,7 +167,7 @@ describe("FloorLabelDrawer", () => {
             floorLabelDrawer.translatePlaneCanvases(new Vector3(1, translateY, 1))
 
             const expectedDifference = lastScaling - translateY
-            const additivePositionDelta = 2.01 * expectedDifference
+            const additivePositionDelta = 2 * expectedDifference
 
             const translatedPostion = floorLabelDrawer["floorLabelPlanes"][0].geometry.attributes.position.array[2]
             expect(translatedPostion).toBeCloseTo(startPosition + additivePositionDelta, 5)
