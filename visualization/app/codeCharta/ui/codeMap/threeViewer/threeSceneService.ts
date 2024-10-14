@@ -144,8 +144,8 @@ export class ThreeSceneService implements OnDestroy {
 
     scaleHeight() {
         const scale = this.state.getValue().appSettings.scaling
-        // Does this call do anything? Tranlating Planes, which are added a previous point to the scene?
-        // this.floorLabelDrawer?.translatePlaneCanvases(scale)
+
+        this.floorLabelDrawer?.translatePlaneCanvases(scale)
         this.mapGeometry.scale.set(scale.x, scale.y, scale.z)
         this.mapGeometry.position.set(-treeMapSize * scale.x, 0, -treeMapSize * scale.z)
         this.mapMesh.setScale(scale)

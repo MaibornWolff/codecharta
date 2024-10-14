@@ -21,7 +21,7 @@ export class FloorLabelDrawer {
         this.mapSize = mapSize
         this.scaling = scaling
         this.folderGeometryHeight = experimentalFeaturesEnabled
-            ? Math.ceil(2 / FloorLabelHelper.getMapResolutionScaling(rootNode.width) ** 2)
+            ? Math.ceil(2 / FloorLabelHelper.getMapResolutionScaling(rootNode.width))
             : 2.01
     }
 
