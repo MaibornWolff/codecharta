@@ -40,13 +40,13 @@ Usage: ccsh sonarimport [-h] [--merge-modules] [-nc] [-o=<outputFile>]
 ## Examples
 
 ```
-ccsh sonarimport <url> <projectKey> --user=<userToken> --output-file=<fileName> --merge-modules=<Boolean>
+ccsh sonarimport <url> <projectKey> --user-token=<userToken> --output-file=<fileName> --merge-modules=<Boolean>
 ```
 
 If you use SonarQube locally, an example command would look like the following:
 
 ```
-ccsh sonarimport "http://localhost:9000/" "CodeCharta" "--user=squ_12345" "--output-file=output" "--merge-modules=false"
+ccsh sonarimport "http://localhost:9000/" "CodeCharta" "--user-token=squ_12345" "--output-file=output" "--merge-modules=false"
 ```
 
 For a more detailed example, please check out [this article]({{site.baseurl}}{% link _docs/02-05-analyze-with-sonarqube.md %}).
