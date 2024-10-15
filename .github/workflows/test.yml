@@ -96,10 +96,6 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - name: Update deps
-      run: |
-          sudo apt-get install -y libnss3 libatk-bridge2.0-0 libx11-xcb1 libxcomposite1 libxcursor1 libxdamage1 libxi6 libxtst6
-
     - name: Setup Node.js environment
       uses: actions/setup-node@v3
       with:
