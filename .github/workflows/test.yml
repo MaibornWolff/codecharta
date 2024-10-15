@@ -101,6 +101,15 @@ jobs:
       with:
         node-version: '20'
 
+    - name: Debug Info
+      run: |
+        uname -a
+        lsb_release -a
+        node -v
+        npm -v
+        google-chrome --version
+        dpkg -l
+
     - name: Cache node modules
       uses: actions/cache@v4
       env:
@@ -122,15 +131,6 @@ jobs:
         npm run build
         npm run e2e:ci
       working-directory: ${{env.working-directory}}
-
-    - name: Debug Info
-      run: |
-        uname -a
-        lsb_release -a
-        node -v
-        npm -v
-        google-chrome --version
-        dpkg -l
 
  test_and_sonar_analysis:
     name: "Build, Test and Publish Analysis Sonar Results"
