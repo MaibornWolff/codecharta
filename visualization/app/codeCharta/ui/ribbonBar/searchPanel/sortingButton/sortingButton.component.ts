@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation } from "@angular/core"
+import { Component, OnInit } from "@angular/core"
 import { Store } from "@ngrx/store"
 import { Observable } from "rxjs"
 import { CcState } from "../../../../codeCharta.model"
@@ -9,7 +9,7 @@ import { sortingOrderAscendingSelector } from "../../../../state/store/appSettin
 @Component({
     selector: "cc-sorting-button",
     templateUrl: "./sortingButton.component.html",
-    encapsulation: ViewEncapsulation.None
+    styleUrls: ["./sortingButton.component.scss"]
 })
 export class SortingButtonComponent implements OnInit {
     sortingOrderAscending$: Observable<boolean>

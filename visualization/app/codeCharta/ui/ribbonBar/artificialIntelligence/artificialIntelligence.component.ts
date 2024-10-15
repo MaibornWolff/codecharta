@@ -1,4 +1,4 @@
-import { Component, ViewEncapsulation } from "@angular/core"
+import { Component } from "@angular/core"
 import { Store } from "@ngrx/store"
 import { CcState } from "../../../codeCharta.model"
 import { artificialIntelligenceSelector } from "./selectors/artificialIntelligence.selector"
@@ -6,8 +6,7 @@ import { artificialIntelligenceSelector } from "./selectors/artificialIntelligen
 @Component({
     selector: "cc-artificial-intelligence",
     templateUrl: "./artificialIntelligence.component.html",
-    styleUrls: ["./artificialIntelligence.component.scss"],
-    encapsulation: ViewEncapsulation.None
+    styleUrls: ["./artificialIntelligence.component.scss"]
 })
 export class ArtificialIntelligenceComponent {
     data$ = this.store.select(artificialIntelligenceSelector)

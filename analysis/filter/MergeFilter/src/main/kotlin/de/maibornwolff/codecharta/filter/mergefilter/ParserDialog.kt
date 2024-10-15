@@ -52,5 +52,12 @@ class ParserDialog {
                 "--ignore-case=$ignoreCase"
             )
         }
+
+        fun askForceMerge(): Boolean {
+            return KInquirer.promptConfirm(
+                message = "Do you still want to merge non-overlapping at the top-level nodes?",
+                default = false
+            )
+        }
     }
 }

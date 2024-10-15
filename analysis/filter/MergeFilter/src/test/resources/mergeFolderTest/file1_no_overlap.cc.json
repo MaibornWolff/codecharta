@@ -1,0 +1,17 @@
+{
+  "projectName": "SourceMonitorImporter",
+  "apiVersion": "1.0",
+  "nodes": [
+    {
+      "name": "root",
+      "type": "Folder",
+      "children": [
+        {
+          "name": "JavaParserTest.java",
+          "type": "File",
+          "children": []
+        }
+      ]
+    }
+  ]
+}

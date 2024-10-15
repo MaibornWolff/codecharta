@@ -1,4 +1,4 @@
-import { Component, ViewEncapsulation } from "@angular/core"
+import { Component } from "@angular/core"
 import { marginSelector } from "../../../state/store/dynamicSettings/margin/margin.selector"
 import { setMargin } from "../../../state/store/dynamicSettings/margin/margin.actions"
 import { MatCheckboxChange } from "@angular/material/checkbox"
@@ -13,8 +13,7 @@ import { CcState } from "../../../codeCharta.model"
 @Component({
     selector: "cc-area-settings-panel",
     templateUrl: "./areaSettingsPanel.component.html",
-    styleUrls: ["./areaSettingsPanel.component.scss"],
-    encapsulation: ViewEncapsulation.None
+    styleUrls: ["./areaSettingsPanel.component.scss"]
 })
 export class AreaSettingsPanelComponent {
     static DEBOUNCE_TIME = 400

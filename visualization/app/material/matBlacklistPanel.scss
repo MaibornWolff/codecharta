@@ -1,0 +1,13 @@
+mat-list.mat-mdc-list.mat-mdc-list-base.cc-blacklist-panel-list mat-list-item {
+    border-top: 1px solid rgba(0, 0, 0, 0.12);
+
+    .mdc-list-item__content {
+        padding: 0;
+
+        button {
+            .fa {
+                padding-right: 8px;
+            }
+        }
+    }
+}

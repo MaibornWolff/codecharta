@@ -1,0 +1,15 @@
+<mat-toolbar color="primary">Incompatible Maps</mat-toolbar>
+
+<mat-dialog-content>
+    <p>The selected maps use different complexity metrics and are therefore incompatible:</p>
+    <p class="cc-files">{{ data.referenceFileName }} → {{ data.comparisonFileName }}</p>
+    <p>
+        The file <b>{{ data.fileWithMccMetric }}</b> is using the <b>mcc metric</b> and the other one complexity. Please migrate.
+    </p>
+    <mat-checkbox (change)="setDoNotAlertOnIncompatibleMaps($event)">Don't show again</mat-checkbox>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+    <a href="https://maibornwolff.github.io/codecharta/docs/structure-modifier" target="_blank" rel="noopener noreferrer">Know more</a>
+    <button mat-flat-button [mat-dialog-close]="true">CLOSE</button>
+</mat-dialog-actions>

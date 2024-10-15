@@ -6,236 +6,212 @@ export class ViewCubemeshGenerator {
         const middleEdgeSize = 1 / edgeToFaceRatio
         const verticeSize = (1 - middleEdgeSize) / 2
 
-        const cubeEdgeGeometry = new BoxGeometry(middleEdgeSize, verticeSize, verticeSize)
+        const cubeTopEdgeGeometry = new BoxGeometry(middleEdgeSize, verticeSize, verticeSize)
+        const cubeSideEdgeGeometry = new BoxGeometry(verticeSize, middleEdgeSize + verticeSize, verticeSize)
         const cubeVerticeGeometry = new BoxGeometry(verticeSize, verticeSize, verticeSize)
-        const cubeFaceGeometry = new BoxGeometry(middleEdgeSize, middleEdgeSize, verticeSize)
+        const cubeTopFaceGeometry = new BoxGeometry(middleEdgeSize, middleEdgeSize, verticeSize)
+        const cubeSideFaceGeometry = new BoxGeometry(middleEdgeSize, middleEdgeSize + verticeSize, verticeSize)
 
-        return ViewCubemeshGenerator.buildCubeGroup(cubeEdgeGeometry, cubeVerticeGeometry, cubeFaceGeometry)
+        return ViewCubemeshGenerator.newBuildCubeGroup(
+            cubeTopEdgeGeometry,
+            cubeSideEdgeGeometry,
+            cubeVerticeGeometry,
+            cubeTopFaceGeometry,
+            cubeSideFaceGeometry
+        )
     }
 
-    private static buildCubeGroup(cubeEdgeGeometry: BoxGeometry, cubeVerticeGeometry: BoxGeometry, cubeFaceGeometry: BoxGeometry) {
+    private static newBuildCubeGroup(
+        cubeTopEdgeGeometry: BoxGeometry,
+        cubeSideEdgeGeometry: BoxGeometry,
+        cubeVerticeGeometry: BoxGeometry,
+        cubeTopFaceGeometry: BoxGeometry,
+        cubeSideFaceGeometry: BoxGeometry
+    ) {
         const group = new Group()
         const {
-            group: fullFaceFront,
-            topLeft: topLeftFront,
-            topCenter: topCenterFront,
-            topRight: topRightFront,
-            bottomLeft: bottomLeftFront,
-            bottomCenter: bottomCenterFront,
-            bottomRight: bottomRightFront,
-            middleLeft: middleLeftFront,
-            middleCenter: middleCenterFront,
-            middleRight: middleRightFront
-        } = ViewCubemeshGenerator.buildFullFace(cubeEdgeGeometry, cubeVerticeGeometry, cubeFaceGeometry)
+            group: cubeTopFace,
+            frontLeft: topFrontLeft,
+            frontCenter: topFrontCenter,
+            frontRight: topFrontRight,
+            middleLeft: topMiddleLeft,
+            middleCenter: topMiddleCenter,
+            middleRight: topMiddleRight,
+            backLeft: topBackLeft,
+            backCenter: topbackCenter,
+            backRight: topBackRight
+        } = ViewCubemeshGenerator.buildCubeTopFace(cubeTopEdgeGeometry, cubeVerticeGeometry, cubeTopFaceGeometry)
+        group.add(cubeTopFace)
+
         const {
-            group: fullFaceBack,
-            topLeft: topLeftBack,
-            topCenter: topCenterBack,
-            topRight: topRightBack,
-            bottomLeft: bottomLeftBack,
-            bottomCenter: bottomCenterBack,
-            bottomRight: bottomRightBack,
-            middleLeft: middleLeftBack,
-            middleCenter: middleCenterBack,
-            middleRight: middleRightBack
-        } = ViewCubemeshGenerator.buildFullFace(cubeEdgeGeometry, cubeVerticeGeometry, cubeFaceGeometry)
-        const offset = cubeEdgeGeometry.parameters.width / 2 + cubeVerticeGeometry.parameters.width / 2
-        fullFaceBack.position.z -= offset
-        fullFaceFront.position.z += offset
-        const {
-            group: middleRing,
-            topLeftMiddle,
-            topMiddleMiddle,
-            topRightMiddle,
-            middleLeftMiddle,
-            middleRightMiddle,
-            bottomLeftMiddle,
-            bottomMiddleMiddle,
-            bottomRightMiddle
-        } = ViewCubemeshGenerator.buildMiddleRing(cubeFaceGeometry, cubeEdgeGeometry, cubeVerticeGeometry)
-        group.add(fullFaceFront)
-        group.add(fullFaceBack)
-        group.add(middleRing)
+            group: cubeSides,
+            frontLeftEdge: sideFrontLeft,
+            frontCenterFace: sideFrontCenter,
+            frontRightEdge: sideFrontRight,
+            middleLeftFace: sideMiddleLeft,
+            middleRightFace: sideMiddleRight,
+            backLeftEdge: sideBackLeft,
+            backCenterFace: sideBackCenter,
+            backRightEdge: sideBackRight
+        } = ViewCubemeshGenerator.buildCubeSides(cubeSideEdgeGeometry, cubeSideFaceGeometry)
+        group.add(cubeSides)
+
         return {
             group,
-            front: {
-                top: {
-                    left: topLeftFront,
-                    middle: topCenterFront,
-                    right: topRightFront
+            top: {
+                front: {
+                    left: topFrontLeft,
+                    center: topFrontCenter,
+                    right: topFrontRight
                 },
                 middle: {
-                    left: middleRightFront,
-                    middle: middleCenterFront,
-                    right: middleLeftFront
+                    left: topMiddleLeft,
+                    center: topMiddleCenter,
+                    right: topMiddleRight
                 },
-                bottom: {
-                    left: bottomLeftFront,
-                    middle: bottomCenterFront,
-                    right: bottomRightFront
+                back: {
+                    left: topBackLeft,
+                    center: topbackCenter,
+                    right: topBackRight
                 }
             },
-            back: {
-                top: {
-                    left: topLeftBack,
-                    middle: topCenterBack,
-                    right: topRightBack
+            sides: {
+                front: {
+                    left: sideFrontLeft,
+                    center: sideFrontCenter,
+                    right: sideFrontRight
                 },
                 middle: {
-                    left: middleLeftBack,
-                    middle: middleCenterBack,
-                    right: middleRightBack
+                    left: sideMiddleLeft,
+                    right: sideMiddleRight
                 },
-                bottom: {
-                    left: bottomLeftBack,
-                    middle: bottomCenterBack,
-                    right: bottomRightBack
-                }
-            },
-            middle: {
-                top: {
-                    left: topLeftMiddle,
-                    middle: topMiddleMiddle,
-                    right: topRightMiddle
-                },
-                middle: {
-                    left: middleLeftMiddle,
-                    right: middleRightMiddle
-                },
-                bottom: {
-                    left: bottomLeftMiddle,
-                    middle: bottomMiddleMiddle,
-                    right: bottomRightMiddle
+                back: {
+                    left: sideBackLeft,
+                    center: sideBackCenter,
+                    right: sideBackRight
                 }
             }
         }
     }
 
-    private static buildMiddleRing(cubeFaceGeometry: BoxGeometry, cubeEdgeGeometry: BoxGeometry, cubeVerticeGeometry: BoxGeometry) {
-        const {
-            group: middleFaceLeft,
-            left: topLeftMiddle,
-            right: bottomLeftMiddle,
-            center: middleLeftMiddle
-        } = ViewCubemeshGenerator.buildMiddleFace(cubeFaceGeometry, cubeEdgeGeometry)
-        const {
-            group: middleFaceRight,
-            left: topRightMiddle,
-            right: bottomRightMiddle,
-            center: middleRightMiddle
-        } = ViewCubemeshGenerator.buildMiddleFace(cubeFaceGeometry, cubeEdgeGeometry)
-        const faceCenterTop = new Mesh(cubeFaceGeometry, getBaseMaterialFace())
-        const faceCenterBottom = new Mesh(cubeFaceGeometry, getBaseMaterialFace())
-        const offset = cubeEdgeGeometry.parameters.width / 2 + cubeVerticeGeometry.parameters.width / 2
-        middleFaceLeft.position.x -= offset
-        middleFaceLeft.rotation.x = Math.PI / 2
-        middleFaceLeft.rotation.y = Math.PI / 2
-        middleFaceRight.position.x += offset
-        middleFaceRight.rotation.x = Math.PI / 2
-        middleFaceRight.rotation.y = Math.PI / 2
-        faceCenterBottom.position.y -= offset
-        faceCenterBottom.rotation.x = Math.PI / 2
-        faceCenterTop.position.y += offset
-        faceCenterTop.rotation.x = Math.PI / 2
+    private static buildCubeTopFace(cubeEdgeGeometry: BoxGeometry, cubeVerticeGeometry: BoxGeometry, cubeFaceGeometry: BoxGeometry) {
+        const frontLeftVertice = new Mesh(cubeVerticeGeometry, getBaseMaterialVertices())
+        const frontCenterEdge = new Mesh(cubeEdgeGeometry, getBaseMaterialEdge())
+        const frontRightVertice = new Mesh(cubeVerticeGeometry, getBaseMaterialVertices())
+
+        const middleLeftEdge = new Mesh(cubeEdgeGeometry, getBaseMaterialEdge())
+        const middleCenterFace = new Mesh(cubeFaceGeometry, getBaseMaterialFace())
+        const middleRightEdge = new Mesh(cubeEdgeGeometry, getBaseMaterialFace())
+
+        const backLeftVertice = new Mesh(cubeVerticeGeometry, getBaseMaterialVertices())
+        const backCenterEdge = new Mesh(cubeEdgeGeometry, getBaseMaterialEdge())
+        const backRightVertice = new Mesh(cubeVerticeGeometry, getBaseMaterialVertices())
+
+        const offset = cubeFaceGeometry.parameters.height / 2 + cubeVerticeGeometry.parameters.height / 2
+
+        frontLeftVertice.position.x -= offset
+        frontLeftVertice.position.y -= offset
+        frontCenterEdge.position.y -= offset
+        frontRightVertice.position.x += offset
+        frontRightVertice.position.y -= offset
+
+        middleLeftEdge.position.x -= offset
+        middleLeftEdge.rotation.z = Math.PI / 2
+        middleRightEdge.position.x += offset
+        middleRightEdge.rotation.z = Math.PI / 2
+
+        backLeftVertice.position.x -= offset
+        backLeftVertice.position.y += offset
+        backCenterEdge.position.y += offset
+        backRightVertice.position.x += offset
+        backRightVertice.position.y += offset
+
         const group = new Group()
-        group.add(middleFaceLeft)
-        group.add(middleFaceRight)
-        group.add(faceCenterBottom)
-        group.add(faceCenterTop)
+        group.rotation.x = Math.PI / 2
+        group.position.y += offset
+
+        group.add(frontLeftVertice)
+        group.add(frontCenterEdge)
+        group.add(frontRightVertice)
+
+        group.add(middleLeftEdge)
+        group.add(middleCenterFace)
+        group.add(middleRightEdge)
+
+        group.add(backLeftVertice)
+        group.add(backCenterEdge)
+        group.add(backRightVertice)
 
         return {
             group,
-            topLeftMiddle,
-            topMiddleMiddle: faceCenterTop,
-            topRightMiddle,
-            middleLeftMiddle,
-            middleRightMiddle,
-            bottomLeftMiddle,
-            bottomMiddleMiddle: faceCenterBottom,
-            bottomRightMiddle
+            frontLeft: frontLeftVertice,
+            frontCenter: frontCenterEdge,
+            frontRight: frontRightVertice,
+            middleLeft: middleLeftEdge,
+            middleCenter: middleCenterFace,
+            middleRight: middleRightEdge,
+            backLeft: backLeftVertice,
+            backCenter: backCenterEdge,
+            backRight: backRightVertice
         }
     }
 
-    private static buildFullFace(cubeEdgeGeometry: BoxGeometry, cubeVerticeGeometry: BoxGeometry, cubeFaceGeometry: BoxGeometry) {
-        const {
-            group: topEdge,
-            left: topLeft,
-            right: topRight,
-            center: topCenter
-        } = ViewCubemeshGenerator.buildFullEdge(cubeEdgeGeometry, cubeVerticeGeometry)
-        const {
-            group: bottomEdge,
-            left: bottomLeft,
-            right: bottomRight,
-            center: bottomCenter
-        } = ViewCubemeshGenerator.buildFullEdge(cubeEdgeGeometry, cubeVerticeGeometry)
-        const offset = cubeEdgeGeometry.parameters.height / 2 + cubeFaceGeometry.parameters.height / 2
-        topEdge.position.y += offset
-        bottomEdge.position.y -= offset
-        const {
-            group: middleFace,
-            left: middleLeft,
-            right: middleRight,
-            center: middleCenter
-        } = ViewCubemeshGenerator.buildMiddleFace(
-            cubeFaceGeometry,
+    private static buildCubeSides(cubeEdgeGeometry: BoxGeometry, cubeFaceGeometry: BoxGeometry) {
+        const frontLeftEdge = new Mesh(cubeEdgeGeometry, getBaseMaterialEdge())
+        const frontCenterFace = new Mesh(cubeFaceGeometry, getBaseMaterialFace())
+        const frontRightEdge = new Mesh(cubeEdgeGeometry, getBaseMaterialEdge())
 
-            cubeEdgeGeometry
-        )
+        const middleLeftFace = new Mesh(cubeFaceGeometry, getBaseMaterialFace())
+        const middleRightFace = new Mesh(cubeFaceGeometry, getBaseMaterialFace())
+
+        const backLeftEdge = new Mesh(cubeEdgeGeometry, getBaseMaterialEdge())
+        const backCenterFace = new Mesh(cubeFaceGeometry, getBaseMaterialFace())
+        const backRightEdge = new Mesh(cubeEdgeGeometry, getBaseMaterialEdge())
+
+        const offset = cubeFaceGeometry.parameters.width / 2 + cubeEdgeGeometry.parameters.width / 2
+        const verticalOffset = cubeEdgeGeometry.parameters.width / 2
+
+        frontLeftEdge.position.x -= offset
+        frontLeftEdge.position.z += offset
+        frontCenterFace.position.z += offset
+        frontRightEdge.position.x += offset
+        frontRightEdge.position.z += offset
+
+        middleLeftFace.position.x -= offset
+        middleLeftFace.rotation.y = Math.PI / 2
+        middleRightFace.position.x += offset
+        middleRightFace.rotation.y = Math.PI / 2
+
+        backLeftEdge.position.x -= offset
+        backLeftEdge.position.z -= offset
+        backCenterFace.position.z -= offset
+        backRightEdge.position.x += offset
+        backRightEdge.position.z -= offset
+
         const group = new Group()
-        group.add(topEdge)
-        group.add(bottomEdge)
-        group.add(middleFace)
+        group.position.y -= verticalOffset
+
+        group.add(frontLeftEdge)
+        group.add(frontCenterFace)
+        group.add(frontRightEdge)
+
+        group.add(middleLeftFace)
+        group.add(middleRightFace)
+
+        group.add(backLeftEdge)
+        group.add(backCenterFace)
+        group.add(backRightEdge)
+
         return {
             group,
-            topLeft,
-            topCenter,
-            topRight,
-            bottomLeft,
-            bottomCenter,
-            bottomRight,
-            middleLeft,
-            middleCenter,
-            middleRight
-        }
-    }
-
-    private static buildMiddleFace(cubeFaceGeometry: BoxGeometry, cubeEdgeGeometry: BoxGeometry) {
-        const faceCenter = new Mesh(cubeFaceGeometry, getBaseMaterialFace())
-        const edgeLeft = new Mesh(cubeEdgeGeometry, getBaseMaterialEdge())
-        const edgeRight = new Mesh(cubeEdgeGeometry, getBaseMaterialEdge())
-        const offset = cubeFaceGeometry.parameters.height / 2 + cubeEdgeGeometry.parameters.height / 2
-        edgeLeft.position.y -= offset
-        edgeRight.position.y += offset
-        const group = new Group()
-        group.rotation.z = Math.PI / 2
-        group.add(faceCenter)
-        group.add(edgeLeft)
-        group.add(edgeRight)
-        return {
-            group,
-            left: edgeLeft,
-            right: edgeRight,
-            center: faceCenter
-        }
-    }
-
-    private static buildFullEdge(cubeEdgeGeometry: BoxGeometry, cubeVerticeGeometry: BoxGeometry) {
-        const edgeCenter = new Mesh(cubeEdgeGeometry, getBaseMaterialEdge())
-        const verticeLeft = new Mesh(cubeVerticeGeometry, getBaseMaterialVertices())
-        const verticeRight = new Mesh(cubeVerticeGeometry, getBaseMaterialVertices())
-        const offset = cubeEdgeGeometry.parameters.width / 2 + cubeVerticeGeometry.parameters.width / 2
-        verticeLeft.position.x -= offset
-        verticeRight.position.x += offset
-        const group = new Group()
-        group.add(edgeCenter)
-        group.add(verticeLeft)
-        group.add(verticeRight)
-        return {
-            group,
-            left: verticeLeft,
-            right: verticeRight,
-            center: edgeCenter
+            frontLeftEdge,
+            frontCenterFace,
+            frontRightEdge,
+            middleLeftFace,
+            middleRightFace,
+            backLeftEdge,
+            backCenterFace,
+            backRightEdge
         }
     }
 }

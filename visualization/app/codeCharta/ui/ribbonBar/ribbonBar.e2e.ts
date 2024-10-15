@@ -41,7 +41,7 @@ describe("RibbonBar", () => {
     it("should open suspicious metrics and high risk profile menu ", async () => {
         await page.goto(`${CC_URL}?file=codeCharta/assets/${sampleMap}`)
         await page.click("cc-suspicious-metrics")
-        const suspiciousMetricsMenu = await page.waitForSelector(".mat-mdc-menu-panel.mat-mdc-menu-panel.ai-drop-down")
+        const suspiciousMetricsMenu = await page.waitForSelector(".mat-mdc-menu-panel.cc-ai-drop-down.cc-suspicious-metric-panel")
         expect(suspiciousMetricsMenu).toBeTruthy()
         let titleElement = await suspiciousMetricsMenu.waitForSelector(".sub-title")
         let titleContent = await titleElement.evaluate(element => element.textContent)
@@ -49,7 +49,7 @@ describe("RibbonBar", () => {
 
         await page.click("cc-code-charta #codeMap")
         await page.click("cc-high-risk-profile")
-        const highRisProfileMenu = await page.waitForSelector(".mat-mdc-menu-panel.mat-mdc-menu-panel.ai-drop-down")
+        const highRisProfileMenu = await page.waitForSelector(".mat-mdc-menu-panel.cc-ai-drop-down.cc-high-risk-profile")
         expect(highRisProfileMenu).toBeTruthy()
         titleElement = await highRisProfileMenu.waitForSelector(".title")
         titleContent = await titleElement.evaluate(element => element.textContent)
