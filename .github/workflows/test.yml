@@ -119,7 +119,7 @@ jobs:
 
     - name: Test and Linter
       env:
-        PUPPETEER_EXECUTABLE_PATH: "/usr/bin/chromium-browser"
+        PUPPETEER_EXECUTABLE_PATH: "/usr/bin/chrome"
       run: |
         npm run build
         npm run e2e:ci
