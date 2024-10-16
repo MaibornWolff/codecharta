@@ -276,5 +276,5 @@ export function calculateAreaValue(node: CodeMapNode, { dynamicSettings, appSett
         }
         return appSettings.invertArea ? maxWidth - node.attributes[dynamicSettings.areaMetric] : node.attributes[dynamicSettings.areaMetric]
     }
-    return 0
+    return 0.5
 }
