@@ -134,7 +134,7 @@ export class ThreeMapControlsService {
         })
 
         this.controls.minPolarAngle = 0
-        this.controls.maxPolarAngle = Math.PI / 3
+        this.controls.maxPolarAngle = Math.PI / 2
         this.controls.listenToKeyEvents(window)
         this.controls.addEventListener("change", () => {
             this.onInput(this.threeCameraService.camera)
