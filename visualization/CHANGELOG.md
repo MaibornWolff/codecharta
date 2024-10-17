@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Added 🚀
+
+- Add experimental feature: show buildings with an area metric value of 0 [#3789](https://github.com/MaibornWolff/codecharta/pull/3789)
+
+### Fixed 🐞
+
+- Fix that default sample files are not removed when a new file is loaded by the user [#2498](https://github.com/MaibornWolff/codecharta/pull/3768)
+
 ## [1.129.1] - 2024-10-18
 
 ### Fixed 🐞
@@ -20,7 +28,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Add thousands separation for big numbers [#3758](https://github.com/MaibornWolff/codecharta/pull/3758)
 - Add popup when comparing files with different complexity metrics [#3773](https://github.com/MaibornWolff/codecharta/pull/3773)
 - Add experimental feature: dynamic floor lable height for large maps [#3778](https://github.com/MaibornWolff/codecharta/pull/3778)
-- Add experimental feature: show buildings with an area metric value of 0 [#3789](https://github.com/MaibornWolff/codecharta/pull/3789)
 
 ### Fixed 🐞
 
