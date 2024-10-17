@@ -12,6 +12,7 @@ import {
     STATE,
     TEST_FILE_WITH_PATHS,
     TEST_NODE_LEAF,
+    TEST_NODE_LEAF_0_LENGTH,
     TEST_NODE_ROOT,
     TEST_NODES,
     VALID_EDGES
@@ -230,6 +231,44 @@ describe("codeMapRenderService", () => {
             const sortedNodes: Node[] = codeMapRenderService["getNodes"](map)
 
             expect(sortedNodes).toMatchSnapshot()
+        })
+    })
+
+    describe("sortNodes", () => {
+        it("should return nodes with length of 0 and set min length if experimental features are enabled", () => {
+            const newState = {
+                ...state.getValue(),
+                appSettings: {
+                    ...state.getValue().appSettings,
+                    experimentalFeaturesEnabled: true
+                }
+            }
+            store.dispatch(setState({ value: newState }))
+
+            const nodes = klona(TEST_NODES)
+            const sortedNodes: Node[] = codeMapRenderService["sortNodes"](nodes)
+
+            const updatedNode = klona(TEST_NODE_LEAF_0_LENGTH)
+            updatedNode.length = 2
+            const result: Node[] = [TEST_NODE_ROOT, TEST_NODE_LEAF, updatedNode]
+            expect(sortedNodes).toEqual(result)
+        })
+
+        it("should return nodes with length and width > 0 if experimental features are not enabled", () => {
+            const newState = {
+                ...state.getValue(),
+                appSettings: {
+                    ...state.getValue().appSettings,
+                    experimentalFeaturesEnabled: false
+                }
+            }
+            store.dispatch(setState({ value: newState }))
+
+            const nodes = klona(TEST_NODES)
+            const sortedNodes: Node[] = codeMapRenderService["sortNodes"](nodes)
+
+            const result: Node[] = [TEST_NODE_ROOT, TEST_NODE_LEAF]
+            expect(sortedNodes).toEqual(result)
         })
     })
 

@@ -4,7 +4,7 @@ import { createTreemapNodes } from "../../util/algorithm/treeMapLayout/treeMapGe
 import { CodeMapLabelService } from "./codeMap.label.service"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { CodeMapArrowService } from "./arrow/codeMap.arrow.service"
-import { CodeMapNode, LayoutAlgorithm, Node, CcState } from "../../codeCharta.model"
+import { CcState, CodeMapNode, LayoutAlgorithm, Node } from "../../codeCharta.model"
 import { isDeltaState } from "../../model/files/files.helper"
 import { StreetLayoutGenerator } from "../../util/algorithm/streetLayout/streetLayoutGenerator"
 import { ThreeStatsService } from "./threeViewer/threeStats.service"
@@ -12,7 +12,9 @@ import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
 import { isLoadingFileSelector } from "../../state/store/appSettings/isLoadingFile/isLoadingFile.selector"
 import { Subscription, tap } from "rxjs"
 import { metricDataSelector } from "../../state/selectors/accumulatedData/metricData/metricData.selector"
-import { Store, State } from "@ngrx/store"
+import { State, Store } from "@ngrx/store"
+
+const MIN_BUILDING_LENGTH = 2
 
 @Injectable({ providedIn: "root" })
 export class CodeMapRenderService implements OnDestroy {
@@ -94,7 +96,20 @@ export class CodeMapRenderService implements OnDestroy {
     }
 
     sortNodes(nodes: Node[]) {
+        const experimentalFeaturesEnabled = this.state.getValue().appSettings.experimentalFeaturesEnabled
+        if (experimentalFeaturesEnabled) {
+            this.setMinBuildingLength(nodes)
+            return nodes.filter(node => node.width > 0).sort((a, b) => b.height - a.height)
+        }
         return nodes.filter(node => node.length > 0 && node.width > 0).sort((a, b) => b.height - a.height)
+    }
+
+    private setMinBuildingLength(nodes: Node[]) {
+        for (const node of nodes) {
+            if (node.length <= 0) {
+                node.length = MIN_BUILDING_LENGTH
+            }
+        }
     }
 
     private getNodesMatchingColorSelector(sortedNodes: Node[]) {
