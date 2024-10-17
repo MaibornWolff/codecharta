@@ -14,19 +14,23 @@ import { defaultState } from "../../store/state.manager"
 import { UpdateQueryParametersEffect } from "./updateQueryParameters.effect"
 
 describe("UpdateQueryParametersEffect", () => {
+    const mockDynamicSettings = {
+        ...defaultState.dynamicSettings,
+        areaMetric: "rloc",
+        heightMetric: "mcc",
+        colorMetric: "functions",
+        edgeMetric: "pairingRate"
+    }
+    const mockState = { ...defaultState, dynamicSettings: mockDynamicSettings }
+    let mockGetState
+
     let actions$: Subject<Action>
     let store
     let replaceStateSpy
 
     beforeEach(async () => {
         actions$ = new Subject()
-        const mockDynamicSettings = {
-            ...defaultState.dynamicSettings,
-            areaMetric: "rloc",
-            heightMetric: "mcc",
-            colorMetric: "functions",
-            edgeMetric: "pairingRate"
-        }
+        mockGetState = jest.fn()
 
         TestBed.configureTestingModule({
             imports: [EffectsModule.forRoot([UpdateQueryParametersEffect])],
@@ -40,11 +44,7 @@ describe("UpdateQueryParametersEffect", () => {
                 },
                 {
                     provide: State,
-                    useValue: {
-                        getValue: () => {
-                            return { ...defaultState, dynamicSettings: mockDynamicSettings }
-                        }
-                    }
+                    useValue: { getValue: mockGetState }
                 },
                 provideMockStore({
                     selectors: [
@@ -57,6 +57,8 @@ describe("UpdateQueryParametersEffect", () => {
 
         store = TestBed.inject(MockStore)
         replaceStateSpy = jest.spyOn(global.window.history, "replaceState")
+
+        mockGetState.mockReturnValue(mockState)
     })
 
     afterEach(() => {
@@ -69,17 +71,46 @@ describe("UpdateQueryParametersEffect", () => {
         jest.spyOn(loadInitialFileService, "checkFileQueryParameterPresent").mockImplementation(() => false)
 
         actions$.next(setEdgeMetric({ value: "pairingRate" }))
-        store.refreshState()
 
         await waitFor(() => expect(replaceStateSpy).not.toHaveBeenCalled())
     })
 
     it("should not save edge-metric in query parameters when map does not contain edges", async () => {
         actions$.next(setEdgeMetric({ value: "pairingRate" }))
-        store.refreshState()
 
         await waitFor(() =>
             expect(replaceStateSpy).toHaveBeenCalledWith(null, "", `http://localhost/?area=rloc&height=mcc&color=functions`)
+        )
+    })
+
+    it("should remove currentFilesAreSampleFiles query parameter when currentFilesAreSampleFiles is false", async () => {
+        global.window.history.replaceState(
+            null,
+            "",
+            `http://localhost/?area=rloc&height=mcc&color=functions&currentFilesAreSampleFiles=true`
+        )
+
+        actions$.next(setColorMetric({ value: "pairingRate" }))
+
+        await waitFor(() => {
+            expect(replaceStateSpy).toHaveBeenLastCalledWith(null, "", `http://localhost/?area=rloc&height=mcc&color=functions`) // Now it checks for the latest state
+        })
+    })
+
+    it("should save currentFilesAreSampleFiles in query parameters when currentFilesAreSampleFiles is true", async () => {
+        mockGetState.mockReturnValue({
+            ...mockState,
+            appStatus: { ...mockState.appStatus, currentFilesAreSampleFiles: true }
+        })
+
+        actions$.next(setEdgeMetric({ value: "pairingRate" }))
+
+        await waitFor(() =>
+            expect(replaceStateSpy).toHaveBeenCalledWith(
+                null,
+                "",
+                `http://localhost/?area=rloc&height=mcc&color=functions&currentFilesAreSampleFiles=true`
+            )
         )
     })
 
@@ -92,7 +123,6 @@ describe("UpdateQueryParametersEffect", () => {
         store.refreshState()
 
         actions$.next(setEdgeMetric({ value: "pairingRate" }))
-        store.refreshState()
 
         await waitFor(() =>
             expect(replaceStateSpy).toHaveBeenCalledWith(
@@ -108,6 +138,6 @@ describe("UpdateQueryParametersEffect", () => {
         actions$.next(setColorMetric({ value: "avgCommits" }))
         store.refreshState()
 
-        await waitFor(() => expect(replaceStateSpy).toHaveBeenCalledTimes(4))
+        await waitFor(() => expect(replaceStateSpy).toHaveBeenCalledTimes(5))
     })
 })
