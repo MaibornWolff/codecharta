@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core"
 import { map } from "rxjs"
 import { createEffect } from "@ngrx/effects"
-import { visibleFileStatesSelector } from "../../selectors/visibleFileStates.selector"
+import { visibleFileStatesSelector } from "../../selectors/visibleFileStates/visibleFileStates.selector"
 import { unfocusAllNodes } from "../../store/dynamicSettings/focusedNodePath/focusedNodePath.actions"
 import { Store } from "@ngrx/store"
 import { CcState } from "../../../codeCharta.model"
