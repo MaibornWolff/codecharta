@@ -481,7 +481,7 @@ export class LoadInitialFileService {
 
     private setCurrentFilesAreSampleFilesFromUrl() {
         const currentFilesAreSampleFiles = this.urlUtils.getParameterByName(MetricQueryParemter.currentFilesAreSampleFiles)
-        if (currentFilesAreSampleFiles) {
+        if (currentFilesAreSampleFiles && currentFilesAreSampleFiles === "true") {
             this.store.dispatch(setCurrentFilesAreSampleFiles({ value: true }))
         }
     }
