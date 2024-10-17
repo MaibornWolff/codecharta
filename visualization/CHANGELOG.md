@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Fixed 🐞
+
+- When an invisible file is deleted, the shown map is not reloaded anymore [#3747](https://github.com/MaibornWolff/codecharta/pull/3788)
+
 ## [1.129.0] - 2024-10-17
 
 ### Added 🚀
