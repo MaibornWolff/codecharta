@@ -58,6 +58,17 @@
                 "pairingRate": 65,
                 "avgCommits": 22
               }
+            },
+            {
+              "name": "middleSmallLeaf.ts",
+              "type": "File",
+              "attributes": {
+                "rloc": 0,
+                "functions": 1000,
+                "sonar_complexity": 0,
+                "pairingRate": 65,
+                "avgCommits": 0
+              }
             }
           ]
         }
