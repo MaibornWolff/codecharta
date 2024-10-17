@@ -1,48 +1,53 @@
 import { TestBed } from "@angular/core/testing"
-import { Subject } from "rxjs"
-import { Action, State } from "@ngrx/store"
+import { State } from "@ngrx/store"
 import { EffectsModule } from "@ngrx/effects"
-import { provideMockActions } from "@ngrx/effects/testing"
 import { provideMockStore, MockStore } from "@ngrx/store/testing"
-
-import { setFiles } from "../../store/files/files.actions"
 import { setState } from "../../store/state.actions"
 import { UpdateFileSettingsEffect } from "./updateFileSettings.effect"
 import { getLastAction } from "../../../util/testUtils/store.utils"
+import { TEST_FILE_DATA, TEST_FILE_DATA_JAVA, TEST_FILE_DATA_TWO } from "../../../util/dataMocks"
+import { FileSelectionState } from "../../../model/files/files"
+import { visibleFileStatesSelector } from "../../selectors/visibleFileStates/visibleFileStates.selector"
 
 describe("UpdateFileSettingsEffect", () => {
-    let actions$: Subject<Action>
+    const modifiedDefaultState = {
+        files: [
+            { selectedAs: FileSelectionState.Reference, file: TEST_FILE_DATA },
+            { selectedAs: FileSelectionState.Reference, file: TEST_FILE_DATA_TWO },
+            { selectedAs: FileSelectionState.None, file: TEST_FILE_DATA_JAVA }
+        ]
+    }
+
+    let store: MockStore
 
     beforeEach(async () => {
-        actions$ = new Subject()
         TestBed.configureTestingModule({
             imports: [EffectsModule.forRoot([UpdateFileSettingsEffect])],
             providers: [
-                { provide: State, useValue: { getValue: () => ({ files: [] }) } },
-                provideMockStore(),
-                provideMockActions(() => actions$)
+                { provide: State, useValue: { getValue: () => modifiedDefaultState } },
+                provideMockStore({
+                    selectors: [
+                        {
+                            selector: visibleFileStatesSelector,
+                            value: [
+                                { selectedAs: FileSelectionState.Reference, file: TEST_FILE_DATA },
+                                { selectedAs: FileSelectionState.Reference, file: TEST_FILE_DATA_TWO }
+                            ]
+                        }
+                    ]
+                })
             ]
         })
-    })
-
-    afterEach(() => {
-        actions$.complete()
+        store = TestBed.inject(MockStore)
     })
 
     it("should update fileSettings when files have changed", async () => {
-        const store = TestBed.inject(MockStore)
-        actions$.next(setFiles({ value: [] }))
+        store.overrideSelector(visibleFileStatesSelector, [{ selectedAs: FileSelectionState.Reference, file: TEST_FILE_DATA_TWO }])
+        store.refreshState()
+
         expect(await getLastAction(store)).toEqual(
             setState({
-                value: {
-                    fileSettings: {
-                        edges: [],
-                        markedPackages: [],
-                        blacklist: [],
-                        attributeTypes: { edges: {}, nodes: {} },
-                        attributeDescriptors: {}
-                    }
-                }
+                value: TEST_FILE_DATA_TWO.settings
             })
         )
     })
