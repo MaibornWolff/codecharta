@@ -40,7 +40,7 @@ export class UploadFilesService {
             }
 
             if (ccFiles.length > 0) {
-                await this.loadFileService.loadFiles(ccFiles)
+                this.loadFileService.loadFiles(ccFiles)
             }
         } catch {
             this.store.dispatch(setIsLoadingFile({ value: false }))

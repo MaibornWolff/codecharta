@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Fixed 🐞
+
+- Fix that default sample files are not removed when a new file is loaded by the user [#2498](https://github.com/MaibornWolff/codecharta/pull/3768)
+
 ## [1.129.0] - 2024-10-17
 
 ### Added 🚀

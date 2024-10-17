@@ -17,7 +17,7 @@ import { RenderCodeMapEffect } from "./codeCharta/state/effects/renderCodeMapEff
 import { ResetChosenMetricsEffect } from "./codeCharta/state/effects/resetChosenMetrics/resetChosenMetrics.effect"
 import { ResetSelectedEdgeMetricWhenItDoesntExistAnymoreEffect } from "./codeCharta/state/effects/resetSelectedEdgeMetricWhenItDoesntExistAnymore/resetSelectedEdgeMetricWhenItDoesntExistAnymore.effect"
 import { SaveCcStateEffect } from "./codeCharta/state/effects/saveCcState/saveCcState.effect"
-import { SaveMetricsInQueryParametersEffect } from "./codeCharta/state/effects/saveMetricsInQueryParameters/saveMetricsInQueryParameters.effect"
+import { UpdateQueryParametersEffect } from "./codeCharta/state/effects/updateQueryParameters/updateQueryParameters.effect"
 import { SetLoadingIndicatorEffect } from "./codeCharta/state/effects/setLoadingIndicator/setLoadingIndicator.effect"
 import { UnfocusNodesEffect } from "./codeCharta/state/effects/unfocusNodes/unfocusNodes.effect"
 import { UpdateEdgePreviewsEffect } from "./codeCharta/state/effects/updateEdgePreviews/updateEdgePreviews.effect"
@@ -54,7 +54,7 @@ import { IncompatibleMapsDialogModule } from "./codeCharta/ui/filePanel/filePane
             UpdateFileSettingsEffect,
             SetLoadingIndicatorEffect,
             SaveCcStateEffect,
-            SaveMetricsInQueryParametersEffect,
+            UpdateQueryParametersEffect,
             UpdateMapColorsEffect,
             FocusEffects
         ]),

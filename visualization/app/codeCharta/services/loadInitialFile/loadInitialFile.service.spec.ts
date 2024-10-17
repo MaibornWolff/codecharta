@@ -8,7 +8,7 @@ import stringify from "safe-stable-stringify"
 import { AppSettings, CcState, DynamicSettings, FileSettings } from "../../codeCharta.model"
 import { FileSelectionState } from "../../model/files/files"
 import { getCCFiles } from "../../model/files/files.helper"
-import { MetricQueryParemter } from "../../state/effects/saveMetricsInQueryParameters/saveMetricsInQueryParameters.effect"
+import { MetricQueryParemter } from "../../state/effects/updateQueryParameters/updateQueryParameters.effect"
 import { metricDataSelector } from "../../state/selectors/accumulatedData/metricData/metricData.selector"
 import { setAmountOfTopLabels } from "../../state/store/appSettings/amountOfTopLabels/amountOfTopLabels.actions"
 import { defaultAppSettings } from "../../state/store/appSettings/appSettings.reducer"
@@ -27,6 +27,7 @@ import { getNameDataPair } from "../loadFile/fileParser"
 import { LoadFileService } from "../loadFile/loadFile.service"
 import { LoadInitialFileService, sampleFile1, sampleFile2 } from "./loadInitialFile.service"
 import { UrlExtractor } from "./urlExtractor"
+import { setCurrentFilesAreSampleFiles } from "../../state/store/appStatus/currentFilesAreSampleFiles/currentFilesAreSampleFiles.actions"
 
 jest.mock("./urlExtractor")
 jest.mock("../../model/files/files.helper")
@@ -97,6 +98,50 @@ describe("LoadInitialFileService", () => {
 
             expect(loadFileService.loadFiles).toHaveBeenCalledWith([sampleFile1, sampleFile2])
             expect(mockedDialog.open).toHaveBeenCalled()
+        })
+
+        it("should dispatch currentFilesAreSampleFiles when query param currentFilesAreSampleFiles is true", async () => {
+            const dispatchSpy = jest.spyOn(store, "dispatch")
+            jest.mocked(UrlExtractor.prototype.getParameterByName).mockImplementation(queryParameter => {
+                if (queryParameter === MetricQueryParemter.currentFilesAreSampleFiles) {
+                    return "true"
+                }
+                return "filename"
+            })
+
+            await loadInitialFileService.loadFilesOrSampleFiles()
+
+            expect(dispatchSpy).toHaveBeenCalledWith(setCurrentFilesAreSampleFiles({ value: true }))
+        })
+
+        it("should not dispatch currentFilesAreSampleFiles when query param currentFilesAreSampleFiles is not existent", async () => {
+            const dispatchSpy = jest.spyOn(store, "dispatch")
+            jest.mocked(UrlExtractor.prototype.getParameterByName).mockImplementation(queryParameter => {
+                if (queryParameter === MetricQueryParemter.currentFilesAreSampleFiles) {
+                    return undefined
+                }
+                return "filename"
+            })
+
+            await loadInitialFileService.loadFilesOrSampleFiles()
+
+            expect(dispatchSpy).not.toHaveBeenCalledWith(
+                setCurrentFilesAreSampleFiles({ value: true }),
+                setCurrentFilesAreSampleFiles({ value: false })
+            )
+        })
+
+        it("should set currentFilesAreSampleFiles to true if sample files are loaded", async () => {
+            const dispatchSpy = jest.spyOn(store, "dispatch")
+
+            jest.mocked(UrlExtractor.prototype.getParameterByName).mockImplementation(() => "filename")
+            jest.mocked(UrlExtractor.prototype.getFileDataFromQueryParam).mockImplementation(() => {
+                throw new Error("files could not be loaded from query param")
+            })
+
+            await loadInitialFileService.loadFilesOrSampleFiles()
+
+            expect(dispatchSpy).toHaveBeenCalledWith(setCurrentFilesAreSampleFiles({ value: true }))
         })
 
         it("should set files and then apply settings when files in query params and indexeddb are equal", async () => {
@@ -262,6 +307,34 @@ describe("LoadInitialFileService", () => {
 
             expect(loadFileService.loadFiles).toHaveBeenCalledWith([sampleFile1, sampleFile2])
             expect(mockedDialog.open).toHaveBeenCalled()
+        })
+
+        it("should set currentFilesAreSampleFiles to true if sample files are loaded", async () => {
+            const dispatchSpy = jest.spyOn(store, "dispatch")
+
+            jest.mocked(UrlExtractor.prototype.getParameterByName).mockImplementation(() => null)
+            jest.mocked(readCcState).mockImplementation(
+                async () =>
+                    new Promise(() => {
+                        throw new Error("Could not read cc-state")
+                    })
+            )
+
+            await loadInitialFileService.loadFilesOrSampleFiles()
+
+            expect(dispatchSpy).toHaveBeenCalledWith(setCurrentFilesAreSampleFiles({ value: true }))
+        })
+
+        it("should not set currentFilesAreSampleFiles if files from indexeddb are loaded", async () => {
+            const mockedState = JSON.parse(stringify(defaultState)) as CcState
+            mockedState.files = FILE_STATES
+            jest.mocked(UrlExtractor.prototype.getParameterByName).mockImplementation(() => null)
+            jest.mocked(readCcState).mockImplementation(async () => new Promise(resolve => resolve(defaultState)))
+            const dispatchSpy = jest.spyOn(store, "dispatch")
+            await loadInitialFileService.loadFilesOrSampleFiles()
+
+            expect(dispatchSpy).not.toHaveBeenCalledWith(setCurrentFilesAreSampleFiles({ value: true }))
+            expect(dispatchSpy).not.toHaveBeenCalledWith(setCurrentFilesAreSampleFiles({ value: false }))
         })
 
         it("should set all differing fileSettings", async () => {

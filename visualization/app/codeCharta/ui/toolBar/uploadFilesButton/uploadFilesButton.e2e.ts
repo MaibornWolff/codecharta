@@ -39,15 +39,33 @@ describe("UploadFileButton", () => {
         expect(await filePanel.getSelectedName()).toEqual("output")
     })
 
+    it("should load sample cc.json files", async () => {
+        const loadedMapsName = await filePanel.getAllNames()
+
+        expect(loadedMapsName.length).toEqual(2)
+        expect(loadedMapsName[0]).toEqual("sample1")
+        expect(loadedMapsName[1]).toEqual("sample2")
+    })
+
     it("should load multiple cc.json files", async () => {
         await uploadFileButton.openFiles(["./app/codeCharta/assets/sample3.cc.json", "./app/codeCharta/assets/sample4.cc.json"])
 
         const loadedMapsName = await filePanel.getAllNames()
 
-        expect(loadedMapsName[0]).toEqual("sample1")
-        expect(loadedMapsName[1]).toEqual("sample2")
-        expect(loadedMapsName[2]).toEqual("sample3")
-        expect(loadedMapsName[3]).toEqual("sample4")
+        expect(loadedMapsName.length).toEqual(2)
+        expect(loadedMapsName[0]).toEqual("sample3")
+        expect(loadedMapsName[1]).toEqual("sample4")
+    })
+
+    it("should load multiple cc.json files after each other", async () => {
+        await uploadFileButton.openFiles(["./app/codeCharta/assets/sample3.cc.json"])
+        await uploadFileButton.openFiles(["./app/codeCharta/assets/sample4.cc.json"])
+
+        const loadedMapsName = await filePanel.getAllNames()
+
+        expect(loadedMapsName.length).toEqual(2)
+        expect(loadedMapsName[0]).toEqual("sample3")
+        expect(loadedMapsName[1]).toEqual("sample4")
     })
 
     it("should keep the old map if opening a file was cancelled", async () => {
