@@ -38,4 +38,4 @@ title: Detailed instruction of how to use SonarQube 9.4
 13. Install CodeCharta analysis
     > npm i -g codecharta-analysis
 14. Execute `ccsh sonarimport` in your terminal to generate a `cc.json` file to load it into [CodeCharta's Visualization](https://maibornwolff.github.io/codecharta/visualization/app/index.html?file=codecharta.cc.json.gz&file=codecharta_analysis.cc.json.gz)
-    > ccsh sonarimport "http://localhost:9000/" "CodeCharta" "--user=user token" "--output-file=output" "--merge-modules=false"
+    > ccsh sonarimport "http://localhost:9000/" "CodeCharta" "--user-token=user token" "--output-file=output" "--merge-modules=false"
