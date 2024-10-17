@@ -840,6 +840,12 @@ export const TEST_FILE_DATA: CCFile = {
     settings: DEFAULT_SETTINGS
 }
 
+export const TEST_FILE_DATA_TWO: CCFile = {
+    fileMeta: { ...FILE_META, fileChecksum: "md5-file-two", fileName: "fileTwo" },
+    map: VALID_NODE_WITH_MCC,
+    settings: { fileSettings: { ...DEFAULT_SETTINGS.fileSettings, markedPackages: [{ path: "somePath", color: "someColor" }] } }
+}
+
 export const TEST_FILE_DATA_WITH_COMPLEXITY: CCFile = {
     fileMeta: FILE_META,
     map: VALID_NODE_WITH_COMPLEXITY,

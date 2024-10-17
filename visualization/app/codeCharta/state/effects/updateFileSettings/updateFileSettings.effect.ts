@@ -1,28 +1,26 @@
 import { Injectable } from "@angular/core"
-import { Actions, createEffect, ofType } from "@ngrx/effects"
-import { fileActions } from "../../store/files/files.actions"
+import { createEffect } from "@ngrx/effects"
 import { setState } from "../../store/state.actions"
 import { CcState } from "../../../codeCharta.model"
 import { map } from "rxjs"
 import { getVisibleFiles, isPartialState } from "../../../model/files/files.helper"
-import { visibleFileStatesSelector } from "../../selectors/visibleFileStates.selector"
+import { visibleFileStatesSelector } from "../../selectors/visibleFileStates/visibleFileStates.selector"
 import { getMergedEdges } from "./utils/edges.merger"
 import { getMergedMarkedPackages } from "./utils/markedPackages.merger"
 import { getMergedBlacklist } from "./utils/blacklist.merger"
 import { getMergedAttributeTypes } from "./utils/attributeTypes.merger"
 import { getMergedAttributeDescriptors } from "./utils/attributeDescriptors.merger"
-import { State } from "@ngrx/store"
+import { State, Store } from "@ngrx/store"
 
 @Injectable()
 export class UpdateFileSettingsEffect {
     constructor(
-        private actions$: Actions,
+        private store: Store<CcState>,
         private state: State<CcState>
     ) {}
 
     updateFileSettings$ = createEffect(() =>
-        this.actions$.pipe(
-            ofType(...fileActions),
+        this.store.select(visibleFileStatesSelector).pipe(
             map(() => {
                 const state = this.state.getValue()
                 const visibleFiles = getVisibleFiles(state.files)

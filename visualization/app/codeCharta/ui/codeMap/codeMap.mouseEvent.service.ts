@@ -16,7 +16,7 @@ import { idToNodeSelector } from "../../state/selectors/accumulatedData/idToNode
 import { IdToBuildingService } from "../../services/idToBuilding/idToBuilding.service"
 import { hoveredNodeIdSelector } from "../../state/store/appStatus/hoveredNodeId/hoveredNodeId.selector"
 import { tap } from "rxjs"
-import { visibleFileStatesSelector } from "../../state/selectors/visibleFileStates.selector"
+import { visibleFileStatesSelector } from "../../state/selectors/visibleFileStates/visibleFileStates.selector"
 import { blacklistSelector } from "../../state/store/fileSettings/blacklist/blacklist.selector"
 import { debounce } from "../../util/debounce"
 import { Store, State } from "@ngrx/store"
