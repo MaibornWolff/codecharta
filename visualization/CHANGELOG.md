@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [1.129.0] - 2024-10-17
+
 ### Added 🚀
 
 - Add thousands separation for big numbers [#3758](https://github.com/MaibornWolff/codecharta/pull/3758)
