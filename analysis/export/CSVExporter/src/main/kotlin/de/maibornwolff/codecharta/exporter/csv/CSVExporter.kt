@@ -63,13 +63,9 @@ class CSVExporter() : Callable<Unit>, InteractiveParser {
 
     @Throws(IOException::class)
     override fun call(): Unit? {
-        if (maxHierarchy < 0) {
-            throw IllegalArgumentException("depth-of-hierarchy must not be negative")
-        }
+        require (maxHierarchy >= 0) { "depth-of-hierarchy must not be negative" }
 
-        if (!InputHelper.isInputValid(sources, canInputContainFolders = false)) {
-            throw IllegalArgumentException("Invalid input file for CSVExporter, stopping execution...")
-        }
+        require (InputHelper.isInputValid(sources, canInputContainFolders = true)) { "Invalid input file/folder for CSVExporter, stopping execution..." }
 
         if (outputFile.isNotEmpty()) {
             outputFile = OutputFileHandler.checkAndFixFileExtension(outputFile, false, FileExtension.CSV)
