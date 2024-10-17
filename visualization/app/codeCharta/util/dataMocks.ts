@@ -2583,6 +2583,32 @@ export const TEST_NODE_LEAF: Node = {
     outgoingEdgePoint: new Vector3()
 }
 
+export const TEST_NODE_LEAF_0_LENGTH: Node = {
+    name: "root/big leaf.ts",
+    id: 1,
+    width: 1,
+    height: 2,
+    length: 0,
+    depth: 4,
+    mapNodeDepth: 2,
+    x0: 5,
+    z0: 6,
+    y0: 7,
+    isLeaf: true,
+    deltas: { a: 1, b: 2 },
+    attributes: { a: 20, b: 15, mcc: 20 },
+    edgeAttributes: { a: { incoming: 2, outgoing: 666 } },
+    heightDelta: 20,
+    visible: true,
+    path: "/root/big leaf",
+    link: "NO_LINK",
+    markingColor: "0xFFFFFF",
+    flat: false,
+    color: "#ddcc00",
+    incomingEdgePoint: new Vector3(),
+    outgoingEdgePoint: new Vector3()
+}
+
 export const TEST_NODE_FOLDER: Node = {
     name: "root",
     id: 1,
@@ -2608,7 +2634,7 @@ export const TEST_NODE_FOLDER: Node = {
     outgoingEdgePoint: new Vector3()
 }
 
-export const TEST_NODES: Node[] = [TEST_NODE_ROOT, TEST_NODE_LEAF]
+export const TEST_NODES: Node[] = [TEST_NODE_ROOT, TEST_NODE_LEAF, TEST_NODE_LEAF_0_LENGTH]
 
 export const INCOMING_NODE: Node = {
     name: "root/small leaf",
