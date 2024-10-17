@@ -100,6 +100,37 @@ describe("LoadInitialFileService", () => {
             expect(mockedDialog.open).toHaveBeenCalled()
         })
 
+        it("should dispatch currentFilesAreSampleFiles when query param currentFilesAreSampleFiles is true", async () => {
+            const dispatchSpy = jest.spyOn(store, "dispatch")
+            jest.mocked(UrlExtractor.prototype.getParameterByName).mockImplementation(queryParameter => {
+                if (queryParameter === MetricQueryParemter.currentFilesAreSampleFiles) {
+                    return "true"
+                }
+                return "filename"
+            })
+
+            await loadInitialFileService.loadFilesOrSampleFiles()
+
+            expect(dispatchSpy).toHaveBeenCalledWith(setCurrentFilesAreSampleFiles({ value: true }))
+        })
+
+        it("should not dispatch currentFilesAreSampleFiles when query param currentFilesAreSampleFiles is not existent", async () => {
+            const dispatchSpy = jest.spyOn(store, "dispatch")
+            jest.mocked(UrlExtractor.prototype.getParameterByName).mockImplementation(queryParameter => {
+                if (queryParameter === MetricQueryParemter.currentFilesAreSampleFiles) {
+                    return undefined
+                }
+                return "filename"
+            })
+
+            await loadInitialFileService.loadFilesOrSampleFiles()
+
+            expect(dispatchSpy).not.toHaveBeenCalledWith(
+                setCurrentFilesAreSampleFiles({ value: true }),
+                setCurrentFilesAreSampleFiles({ value: false })
+            )
+        })
+
         it("should set currentFilesAreSampleFiles to true if sample files are loaded", async () => {
             const dispatchSpy = jest.spyOn(store, "dispatch")
 
