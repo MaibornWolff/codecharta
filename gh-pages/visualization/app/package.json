@@ -10,7 +10,7 @@
     "url": "https://github.com/MaibornWolff/codecharta.git"
   },
   "name": "codecharta-visualization",
-  "version": "1.128.0",
+  "version": "1.129.0",
   "engines": {
     "node": ">=20"
   },
@@ -99,7 +99,7 @@
     "rxjs": "^7.5.1",
     "safe-stable-stringify": "^2.4.3",
     "shelljs": "^0.8.4",
-    "three": "^0.156.0",
+    "three": "^0.168.0",
     "three-orbit-controls": "^82.1.0",
     "typescript-json-schema": "0.63.0",
     "zone.js": "^0.14.4"
@@ -120,7 +120,7 @@
     "@types/expect-puppeteer": "^5.0.2",
     "@types/jest-environment-puppeteer": "^5.0.3",
     "@types/node": "^18.0.0",
-    "@types/three": "^0.156.0",
+    "@types/three": "^0.168.0",
     "@typescript-eslint/eslint-plugin": "^5.44.0",
     "@typescript-eslint/parser": "^5.44.0",
     "bestzip": "^2.2.0",

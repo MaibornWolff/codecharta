@@ -17,8 +17,13 @@
         <mat-slide-toggle [checked]="isWhiteBackground$ | async" (change)="handleIsWhiteBackgroundChanged($event)">
             White Background
         </mat-slide-toggle>
-        <mat-slide-toggle [checked]="experimentalFeaturesEnabled$ | async" (change)="handleExperimentalFeaturesEnabledChanged($event)">
-            Enable Experimental Features
+        <mat-slide-toggle
+            [checked]="experimentalFeaturesEnabled$ | async"
+            (change)="handleExperimentalFeaturesEnabledChanged($event)"
+            title="Current experimental features:
+Dynamic Floor Label Height: Raises folder labels further up to reduce flickering on large maps (Needs site refresh)"
+        >
+            Enable Experimental Features <i class="fa fa-info-circle"></i>
         </mat-slide-toggle>
         <mat-slide-toggle [checked]="screenshotToClipboardEnabled$ | async" (change)="handleScreenshotToClipboardEnabledChanged($event)">
             Screenshot to clipboard

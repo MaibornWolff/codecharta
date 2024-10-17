@@ -7,10 +7,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [1.129.0] - 2024-10-17
+
 ### Added 🚀
 
 - Add thousands separation for big numbers [#3758](https://github.com/MaibornWolff/codecharta/pull/3758)
 - Add popup when comparing files with different complexity metrics [#3773](https://github.com/MaibornWolff/codecharta/pull/3773)
+- Add experimental feature: dynamic floor lable height for large maps [#3778](https://github.com/MaibornWolff/codecharta/pull/3778)
 - Add experimental feature: show buildings with an area metric value of 0 [#3789](https://github.com/MaibornWolff/codecharta/pull/3789)
 
 ### Fixed 🐞
@@ -37,6 +40,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+- Fix breaking map selection layout by setting automatic line extension. [#3764](https://github.com/orgs/MaibornWolff/projects/11/views/3?pane=issue&itemId=80844170)
 - Fix issue where zooming out too much makes the map disappear and zooming in too much causes you to go through the map. [#3697](https://github.com/MaibornWolff/codecharta/pull/3697)
 - Camera perspective is correctly adopted from the custom configuration[#3698](https://github.com/MaibornWolff/codecharta/pull/3698)
 - Fix camera behavior when `Reset Camera when changing map` option is deactivated [#3699](https://github.com/MaibornWolff/codecharta/pull/3699)

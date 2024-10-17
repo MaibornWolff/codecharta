@@ -1,7 +1,8 @@
 @use "variables";
 
 .cdk-overlay-pane:has(.cc-file-select) {
-    width: 300px !important;
+    width: auto !important;
+    max-width: 750px;
 
     .mat-mdc-option .mdc-list-item__primary-text {
         flex: 1;
