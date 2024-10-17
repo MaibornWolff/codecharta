@@ -105,7 +105,11 @@ export class CodeMapRenderService implements OnDestroy {
     }
 
     private setMinBuildingLength(nodes: Node[]) {
-        nodes.map(node => (node.length > 0 ? node.length : (node.length = MIN_BUILDING_LENGTH)))
+        for (const node of nodes) {
+            if (node.length <= 0) {
+                node.length = MIN_BUILDING_LENGTH
+            }
+        }
     }
 
     private getNodesMatchingColorSelector(sortedNodes: Node[]) {
