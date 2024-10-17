@@ -96,8 +96,12 @@ export class CodeMapRenderService implements OnDestroy {
     }
 
     sortNodes(nodes: Node[]) {
-        this.setMinBuildingLength(nodes)
-        return nodes.filter(node => node.width > 0).sort((a, b) => b.height - a.height)
+        const experimentalFeaturesEnabled = this.state.getValue().appSettings.experimentalFeaturesEnabled
+        if (experimentalFeaturesEnabled) {
+            this.setMinBuildingLength(nodes)
+            return nodes.filter(node => node.width > 0).sort((a, b) => b.height - a.height)
+        }
+        return nodes.filter(node => node.length > 0 && node.width > 0).sort((a, b) => b.height - a.height)
     }
 
     private setMinBuildingLength(nodes: Node[]) {
