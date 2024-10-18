@@ -8,11 +8,12 @@ cp -R visualization/dist/webpack/ gh-pages/visualization/app/
 analysis/gradlew -p analysis/ installDist
 
 mkdir gh-pages/demo_files
+
+git ls-files > gh-pages/demo_files/file-name-list.txt
+git log --numstat --raw --topo-order --reverse -m > gh-pages/demo_files/git.log
+
 cd gh-pages/demo_files || exit
 CCSH=../../analysis/build/install/codecharta-analysis/bin/ccsh
-
-git log --numstat --raw --topo-order --reverse -m > git.log
-git ls-files > file-name-list.txt
 
 # Data for for both visualization and analysis
 $CCSH gitlogparser log-scan --git-log git.log --repo-files file-name-list.txt -o codecharta_git.cc.json -nc
