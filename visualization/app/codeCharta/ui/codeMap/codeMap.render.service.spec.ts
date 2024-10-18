@@ -295,7 +295,7 @@ describe("codeMapRenderService", () => {
         it("should call codeMapLabelService.addLeafLabel for each shown leaf label", () => {
             codeMapRenderService["setLabels"](nodes)
 
-            expect(codeMapLabelService.addLeafLabel).toHaveBeenCalledTimes(2)
+            expect(codeMapLabelService.addLeafLabel).toHaveBeenCalledTimes(3)
         })
 
         it("should not generate labels when showMetricLabelNodeName and showMetricLabelNameValue are both false", () => {
