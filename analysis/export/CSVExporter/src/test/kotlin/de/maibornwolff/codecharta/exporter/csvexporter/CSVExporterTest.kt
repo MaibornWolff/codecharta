@@ -67,6 +67,24 @@ class CSVExporterTest {
     }
 
     @Test
+    fun `should create correct output when one folder with two valid files is specified as input source`() {
+        // given
+        val inputFolderPath = "src/test/resources"
+        val outputFilePath = "src/test/resources/output.csv"
+        val outputFile = File(outputFilePath)
+        outputFile.deleteOnExit()
+        val referenceFile = File("src/test/resources/reference_valid_folder.csv")
+
+        // when
+        CommandLine(CSVExporter()).execute(inputFolderPath, "-o", outputFilePath)
+
+        // then
+        Assertions.assertThat(outputFile.exists()).isTrue()
+        Assertions.assertThat(outputFile.length()).isNotEqualTo(0)
+        Assertions.assertThat(outputFile).hasSameTextualContentAs(referenceFile)
+    }
+
+    @Test
     fun `should fail to create output when invalid file is specified as input source`() {
         // given
         val invalidInputFilePath = "filePathDoesNotExist.cc.json"
@@ -82,7 +100,7 @@ class CSVExporterTest {
 
         // then
         Assertions.assertThat(errContent.toString())
-            .contains("Invalid input file for CSVExporter, stopping execution...")
+            .contains("Invalid input file/folder for CSVExporter, stopping execution...")
 
         // clean up
         System.setErr(originalErr)
@@ -105,7 +123,7 @@ class CSVExporterTest {
 
         // then
         Assertions.assertThat(errContent.toString())
-            .contains("Invalid input file for CSVExporter, stopping execution...")
+            .contains("Invalid input file/folder for CSVExporter, stopping execution...")
 
         // clean up
         System.setErr(originalErr)
@@ -127,7 +145,7 @@ class CSVExporterTest {
 
         // then
         Assertions.assertThat(errContent.toString())
-            .contains("Invalid input file for CSVExporter, stopping execution...")
+            .contains("Invalid input file/folder for CSVExporter, stopping execution...")
 
         // clean up
         System.setErr(originalErr)

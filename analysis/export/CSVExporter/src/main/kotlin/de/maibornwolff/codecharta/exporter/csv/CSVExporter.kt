@@ -67,12 +67,26 @@ class CSVExporter() : Callable<Unit>, InteractiveParser {
 
         require (InputHelper.isInputValid(sources, canInputContainFolders = true)) { "Invalid input file/folder for CSVExporter, stopping execution..." }
 
+        val files = sources.flatMap {
+            if (it.isDirectory) {
+                it.listFiles { _, name -> name.endsWith(".cc.json") }
+                    ?.toList()
+                    ?: emptyList()
+            } else {
+                listOf(it)
+            }
+        }.toTypedArray()
+
+        require(InputHelper.isInputValid(files, canInputContainFolders = false)) {
+            "Invalid input file for CSVExporter, stopping execution..."
+        }
+
         if (outputFile.isNotEmpty()) {
             outputFile = OutputFileHandler.checkAndFixFileExtension(outputFile, false, FileExtension.CSV)
         }
 
         val projects =
-            sources.map {
+            files.map {
                 ProjectDeserializer.deserializeProject(it.inputStream())
             }
         projects.forEachIndexed { index, project ->
