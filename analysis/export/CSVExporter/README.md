@@ -1,6 +1,6 @@
 # CSV Exporter
 
-**Category**: Exporter (takes in cc.json and outputs .csv)
+**Category**: Exporter (takes in cc.json-Files and Folders containing cc.json-Files and outputs .csv)
 
 Generates CSV file with header from visualization data (cc.json)
 
@@ -12,19 +12,20 @@ _Conventions for csv output:_
 - Column named _type_ contains the type of the node
 - Columns named _Dir0_, _Dir1_, ... contain the split hierarchical data of the node for convenience
 - The other columns contain the attributes of the nodes
+- If multiple files are loaded the outputs are simply written below each other, so there will be multiple headers in the csv file.
 
 ## Usage and Parameters
 
 | Parameters                            | Description                                                                     |
 | ------------------------------------- | ------------------------------------------------------------------------------- |
 | `--depth-of-hierarchy=<maxHierarchy>` | Defines how many layers of the project structure should be listed (DEFAULT: 10) |
-| `FILE`                                | Input file                                                                      |
+| `FILE/FOLDER`                         | Input file or folder                                                            |
 | `-h, --help`                          | Displays help and exits                                                         |
 | `-o, --outputFile=<outputFile>`       | Output File (or empty for stdout)                                               |
 
 ```
 ccsh csvexport [-h] [--depth-of-hierarchy=<maxHierarchy>]
-               [-o=<outputFile>] FILE...
+               [-o=<outputFile>] FILE/FOLDER...
 ```
 
 ## Examples
