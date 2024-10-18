@@ -6,7 +6,7 @@ import { accumulatedDataSelector } from "../../state/selectors/accumulatedData/a
 import { hoveredNodeSelector } from "../../state/selectors/hoveredNode.selector"
 import { selectedNodeSelector } from "../../state/selectors/selectedNode.selector"
 import { defaultState } from "../../state/store/state.manager"
-import { TEST_DELTA_MAP_A, TEST_NODES, TEST_NODE_LEAF, VALID_NODE_WITH_MCC } from "../../util/dataMocks"
+import { TEST_DELTA_MAP_A, TEST_NODE_LEAF_0_LENGTH, TEST_NODES, VALID_NODE_WITH_MCC } from "../../util/dataMocks"
 import { CodeMapRenderService } from "../codeMap/codeMap.render.service"
 import { NodeSelectionService } from "./nodeSelection.service"
 
@@ -91,7 +91,7 @@ describe("LoadInitialFileService", () => {
         store.refreshState()
 
         nodeSelectionService.createNodeObservable().subscribe(node => {
-            expect(node).toEqual(TEST_NODE_LEAF)
+            expect(node).toEqual(TEST_NODE_LEAF_0_LENGTH)
             done()
         })
     })
