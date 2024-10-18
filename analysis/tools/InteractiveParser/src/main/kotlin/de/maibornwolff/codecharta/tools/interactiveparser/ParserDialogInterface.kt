@@ -5,14 +5,33 @@ import com.github.kinquirer.components.promptInput
 import java.io.File
 import java.nio.file.Paths
 
+enum class InputType {
+    FOLDER,
+    FILE,
+    FOLDER_AND_FILE
+}
+
 interface ParserDialogInterface {
     fun collectParserArgs(): List<String>
 
-    fun getInputFileName(inputType: String, isFolder: Boolean): String {
-        val fileOrFolder = if (isFolder) "folder of $inputType files" else "$inputType file"
+    fun getInputFileName(fileExtension: String, inputType: InputType): String {
+        val fileOrFolder = when (inputType) {
+            InputType.FOLDER -> {
+                "folder of $fileExtension files"
+            }
+
+            InputType.FILE -> {
+                "$fileExtension file"
+            }
+
+            else -> {
+                "folder or $fileExtension file"
+            }
+        }
+
         return KInquirer.promptInput(
             message = "What is the $fileOrFolder that should be parsed?",
-            hint = Paths.get("").toAbsolutePath().toString() + File.separator + "yourInput$inputType"
+            hint = Paths.get("").toAbsolutePath().toString() + File.separator + "yourInput$fileExtension"
         )
     }
 

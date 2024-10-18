@@ -3,6 +3,7 @@ package de.maibornwolff.codecharta.filter.mergefilter
 import com.github.kinquirer.KInquirer
 import com.github.kinquirer.components.promptConfirm
 import com.github.kinquirer.components.promptInput
+import de.maibornwolff.codecharta.tools.interactiveparser.InputType
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import de.maibornwolff.codecharta.util.InputHelper
 import java.io.File
@@ -12,7 +13,7 @@ class ParserDialog {
         override fun collectParserArgs(): List<String> {
             var inputFolderName: String
             do {
-                inputFolderName = getInputFileName("cc.json", true)
+                inputFolderName = getInputFileName("cc.json", InputType.FOLDER)
             } while (!InputHelper.isInputValidAndNotNull(arrayOf(File(inputFolderName)), canInputContainFolders = true))
 
             val outputFileName: String =

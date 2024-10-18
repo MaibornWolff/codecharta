@@ -63,12 +63,24 @@ class CSVExporter() : Callable<Unit>, InteractiveParser {
 
     @Throws(IOException::class)
     override fun call(): Unit? {
-        if (maxHierarchy < 0) {
-            throw IllegalArgumentException("depth-of-hierarchy must not be negative")
+        require(maxHierarchy >= 0) { "depth-of-hierarchy must not be negative" }
+
+        require(InputHelper.isInputValid(sources, canInputContainFolders = true)) {
+            "Invalid input file/folder for CSVExporter, stopping execution..."
         }
 
-        if (!InputHelper.isInputValid(sources, canInputContainFolders = false)) {
-            throw IllegalArgumentException("Invalid input file for CSVExporter, stopping execution...")
+        val files = sources.flatMap {
+            if (it.isDirectory) {
+                it.listFiles { _, name -> name.endsWith(".cc.json") }
+                    ?.toList()
+                    ?: emptyList()
+            } else {
+                listOf(it)
+            }
+        }.toTypedArray()
+
+        require(InputHelper.isInputValid(files, canInputContainFolders = false)) {
+            "Invalid input file for CSVExporter, stopping execution..."
         }
 
         if (outputFile.isNotEmpty()) {
@@ -76,7 +88,7 @@ class CSVExporter() : Callable<Unit>, InteractiveParser {
         }
 
         val projects =
-            sources.map {
+            files.map {
                 ProjectDeserializer.deserializeProject(it.inputStream())
             }
         projects.forEachIndexed { index, project ->
