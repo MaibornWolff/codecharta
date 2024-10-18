@@ -63,9 +63,11 @@ class CSVExporter() : Callable<Unit>, InteractiveParser {
 
     @Throws(IOException::class)
     override fun call(): Unit? {
-        require (maxHierarchy >= 0) { "depth-of-hierarchy must not be negative" }
+        require(maxHierarchy >= 0) { "depth-of-hierarchy must not be negative" }
 
-        require (InputHelper.isInputValid(sources, canInputContainFolders = true)) { "Invalid input file/folder for CSVExporter, stopping execution..." }
+        require(InputHelper.isInputValid(sources, canInputContainFolders = true)) {
+            "Invalid input file/folder for CSVExporter, stopping execution..."
+        }
 
         val files = sources.flatMap {
             if (it.isDirectory) {
