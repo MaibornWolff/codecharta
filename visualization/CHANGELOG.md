@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Added 🚀
+
+- Add further functionality for nested data to show popup when comparing files with different complexity metrics [#3791](https://github.com/MaibornWolff/codecharta/pull/3791)
+
 ## [1.129.1] - 2024-10-18
 
 ### Fixed 🐞

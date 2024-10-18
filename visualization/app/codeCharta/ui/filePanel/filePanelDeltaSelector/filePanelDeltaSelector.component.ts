@@ -1,7 +1,7 @@
 import { Component } from "@angular/core"
 import { Store } from "@ngrx/store"
 import { map } from "rxjs"
-import { CCFile, CcState } from "../../../codeCharta.model"
+import { CCFile, CcState, CodeMapNode } from "../../../codeCharta.model"
 import { FileSelectionState } from "../../../model/files/files"
 import { referenceFileSelector } from "../../../state/selectors/referenceFile/referenceFile.selector"
 import { setDeltaComparison, setDeltaReference, switchReferenceAndComparison } from "../../../state/store/files/files.actions"
@@ -70,7 +70,23 @@ export class FilePanelDeltaSelectorComponent {
     }
 
     private hasMccMetric(file: CCFile) {
-        return file?.map.children.some(c => c.attributes["mcc"])
+        return file?.map.children.some(node => this.containsMCCAttribute(node))
+    }
+
+    private containsMCCAttribute(node: CodeMapNode): boolean {
+        if (node.attributes["mcc"]) {
+            return true
+        }
+
+        if (node.children) {
+            for (const child of node.children) {
+                if (this.containsMCCAttribute(child)) {
+                    return true
+                }
+            }
+        }
+
+        return false
     }
 
     private getFileWithMccMetric(referenceFile: CCFile, comparisonFile: CCFile) {
