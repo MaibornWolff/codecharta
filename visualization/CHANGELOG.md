@@ -10,17 +10,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Added 🚀
 
 - Add experimental feature: show buildings with an area metric value of 0 [#3789](https://github.com/MaibornWolff/codecharta/pull/3789)
+- Add further functionality for nested data to show popup when comparing files with different complexity metrics [#3791](https://github.com/MaibornWolff/codecharta/pull/3791)
 
 ### Fixed 🐞
 
-- Fix that default sample files are not removed when a new file is loaded by the user [#2498](https://github.com/MaibornWolff/codecharta/pull/3768)
-- When an invisible file is deleted, the shown map is not reloaded anymore [#3747](https://github.com/MaibornWolff/codecharta/pull/3788)
+- Fix that default sample files are not removed when a new file is loaded by the user [#3768](https://github.com/MaibornWolff/codecharta/pull/3768)
+- When an invisible file is deleted, the shown map is not reloaded anymore [#3788](https://github.com/MaibornWolff/codecharta/pull/3788)
 
 ## [1.129.1] - 2024-10-18
 
 ### Fixed 🐞
 
-- Fix an issue which caused the web demo files to be incomplete [#3790](https://github.com/MaibornWolff/codecharta/pull/3758)
+- Fix an issue which caused the web demo files to be incomplete [#3790](https://github.com/MaibornWolff/codecharta/pull/3790)
 
 ## [1.129.0] - 2024-10-17
 
@@ -36,7 +37,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Fix issue when multiple files are selected then the edge metrics in the primary metrics section are not displayed correctly. [#3753](https://github.com/MaibornWolff/codecharta/pull/3753)
 - Metric Scenarios (before Metric Templates) are available again [#3762](https://github.com/MaibornWolff/codecharta/pull/3762)
 - Legend Panel closes on outside click [#3770](https://github.com/MaibornWolff/codecharta/pull/3770)
-- Fix that default sample files are not removed when a new file is loaded by the user [#2498](https://github.com/MaibornWolff/codecharta/pull/3768)
 
 ### Changed
 
