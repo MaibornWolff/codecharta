@@ -22,7 +22,7 @@ describe("LoadInitialFileService", () => {
                     provide: CodeMapRenderService,
                     useValue: {
                         getNodes: jest.fn().mockImplementation(() => TEST_NODES),
-                        sortNodes: jest.fn().mockImplementation(input => input)
+                        getVisibleNodes: jest.fn().mockImplementation(input => input)
                     }
                 },
                 provideMockStore({

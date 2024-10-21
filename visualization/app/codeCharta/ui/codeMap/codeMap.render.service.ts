@@ -52,13 +52,13 @@ export class CodeMapRenderService implements OnDestroy {
 
     render(map: CodeMapNode) {
         const nodes = this.getNodes(map)
-        const sortedNodes = this.sortNodes(nodes)
-        this.unflattenedNodes = sortedNodes.filter(({ flat }) => !flat)
+        const visibleSortedNodes = this.getVisibleNodes(nodes)
+        this.unflattenedNodes = visibleSortedNodes.filter(({ flat }) => !flat)
 
-        this.setNewMapMesh(nodes, sortedNodes)
+        this.setNewMapMesh(nodes, visibleSortedNodes)
         this.getNodesMatchingColorSelector(this.unflattenedNodes)
         this.setLabels(this.unflattenedNodes)
-        this.setArrows(sortedNodes)
+        this.setArrows(visibleSortedNodes)
     }
 
     private setNewMapMesh(allMeshNodes, visibleSortedNodes) {
@@ -95,13 +95,13 @@ export class CodeMapRenderService implements OnDestroy {
         }
     }
 
-    sortNodes(nodes: Node[]) {
+    getVisibleNodes(nodes: Node[]) {
         const experimentalFeaturesEnabled = this.state.getValue().appSettings.experimentalFeaturesEnabled
         if (experimentalFeaturesEnabled) {
             this.setMinBuildingLength(nodes)
-            return nodes.filter(node => node.width > 0).sort((a, b) => b.height - a.height)
+            return nodes.filter(node => node.visible && node.width > 0).sort((a, b) => b.height - a.height)
         }
-        return nodes.filter(node => node.length > 0 && node.width > 0).sort((a, b) => b.height - a.height)
+        return nodes.filter(node => node.visible && node.length > 0 && node.width > 0).sort((a, b) => b.height - a.height)
     }
 
     private setMinBuildingLength(nodes: Node[]) {

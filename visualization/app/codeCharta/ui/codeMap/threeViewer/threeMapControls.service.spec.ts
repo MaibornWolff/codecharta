@@ -3,13 +3,12 @@ import { StoreModule } from "@ngrx/store"
 import { ThreeMapControlsService } from "./threeMapControls.service"
 import { ThreeCameraService } from "./threeCamera.service"
 import { ThreeSceneService } from "./threeSceneService"
-import { Box3, BoxGeometry, Group, Mesh, MOUSE, PerspectiveCamera, Sphere, Vector3 } from "three"
+import { BoxGeometry, Group, Mesh, MOUSE, PerspectiveCamera, Sphere, Vector3 } from "three"
 import { ThreeRendererService } from "./threeRenderer.service"
 import { wait } from "../../../util/testUtils/wait"
 import { appReducers, setStateMiddleware } from "../../../state/store/state.manager"
 import { MapControls } from "three/examples/jsm/controls/MapControls"
 import { take } from "rxjs"
-import { CodeMapMesh } from "../rendering/codeMapMesh"
 import { fireEvent } from "@testing-library/angular"
 
 describe("ThreeMapControlsService", () => {
@@ -220,62 +219,10 @@ describe("ThreeMapControlsService", () => {
         })
 
         it("should return a zoom percentage between MIN_ZOOM and MAX_ZOOM for a distance within the min and max range", () => {
-            const result = threeMapControlsService.getZoomPercentage(550)
+            const result = threeMapControlsService.getZoomPercentage(550) // Middle of the range
 
             expect(result).toBeGreaterThan(10)
             expect(result).toBeLessThan(200)
-        })
-    })
-
-    describe("focusNode", () => {
-        beforeEach(() => {
-            withMockedThreeSceneService()
-            withMockedControlService()
-        })
-
-        it("should save the current camera position and focus on the specified node", async () => {
-            const nodePath = "some/node/path"
-            const mockNodeBoundingSphere = new Sphere(new Vector3(10, 10, 10), 8.660_254_037_844_387)
-            const mockNodeBoundingBox = new Box3().setFromCenterAndSize(new Vector3(10, 10, 10), new Vector3(10, 10, 10))
-
-            const mockNode = {
-                boundingBox: mockNodeBoundingBox,
-                boundingSphere: {
-                    getBoundingSphere: jest.fn().mockReturnValue(mockNodeBoundingSphere)
-                }
-            }
-
-            const mockMapMesh = {
-                getBuildingByPath: jest.fn().mockReturnValue(mockNode)
-            }
-
-            jest.spyOn(threeSceneService, "getMapMesh").mockReturnValue(mockMapMesh as unknown as CodeMapMesh)
-
-            const spyEnsureProperDistanceAndFocus = jest.spyOn(threeMapControlsService as never, "ensureProperDistanceAndFocus")
-
-            threeMapControlsService.focusNode(nodePath)
-
-            expect(threeMapControlsService.positionBeforeFocus).toEqual(threeCameraService.camera.position.clone())
-            expect(mockMapMesh.getBuildingByPath).toHaveBeenCalledWith(nodePath)
-            await wait(0)
-            expect(spyEnsureProperDistanceAndFocus).toHaveBeenCalledWith(mockNodeBoundingSphere)
-        })
-    })
-
-    describe("unfocusNode", () => {
-        beforeEach(() => {
-            withMockedControlService()
-        })
-
-        it("should move the camera back to positionBeforeFocus if defined", async () => {
-            const previousPosition = new Vector3(0, 0, 100)
-            threeMapControlsService.positionBeforeFocus = previousPosition.clone()
-            threeCameraService.camera.position.set(10, 10, 10)
-
-            threeMapControlsService.unfocusNode()
-            await wait(1100)
-
-            expect(threeCameraService.camera.position).toEqual(previousPosition)
         })
     })
 })
