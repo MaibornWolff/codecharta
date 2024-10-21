@@ -28,7 +28,7 @@ THEN
 1.
 
 ## Specifications
-- is released in [online-demo](https://maibornwolff.github.io/codecharta/visualization/app/index.html?file=codecharta.cc.json.gz&file=codecharta_analysis.cc.json.gz): yes | no
+- is released in [online-demo](https://maibornwolff.github.io/codecharta/visualization/app/index.html?file=codecharta.cc.json.gz&file=codecharta_analysis.cc.json.gz&currentFilesAreSampleFiles=true): yes | no
 - CodeCharta Version:
 - OS:
 - Browser:

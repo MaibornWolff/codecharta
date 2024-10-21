@@ -41,6 +41,7 @@ describe("LegendPanel", () => {
     it("should remove a highlighted folder and remove from legend", async () => {
         await mapTreeViewLevel.openContextMenu("/root")
         await clickButtonOnPageElement(".colorButton:nth-child(2)")
+        await legendPanelObject.open()
         const emptyFilelist = await legendPanelObject.getEmptyLegendIfNoFilenamesExist()
         expect(emptyFilelist).toEqual("")
     })

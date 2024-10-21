@@ -9,8 +9,18 @@ import { Action } from "@ngrx/store"
 import { setStandard } from "../../files/files.actions"
 import { getLastAction } from "../../../../util/testUtils/store.utils"
 import { setColorMetric } from "../colorMetric/colorMetric.actions"
+import { TEST_FILE_DATA, TEST_FILE_DATA_JAVA, TEST_FILE_DATA_TWO } from "../../../../util/dataMocks"
+import { FileSelectionState } from "../../../../model/files/files"
 
 describe("ResetColorRangeEffect", () => {
+    const modifiedDefaultState = {
+        files: [
+            { selectedAs: FileSelectionState.Reference, file: TEST_FILE_DATA },
+            { selectedAs: FileSelectionState.Reference, file: TEST_FILE_DATA_TWO },
+            { selectedAs: FileSelectionState.None, file: TEST_FILE_DATA_JAVA }
+        ]
+    }
+
     let actions$: BehaviorSubject<Action>
 
     beforeEach(() => {
@@ -19,6 +29,7 @@ describe("ResetColorRangeEffect", () => {
             imports: [EffectsModule.forRoot([ResetColorRangeEffect])],
             providers: [
                 provideMockStore({
+                    initialState: modifiedDefaultState,
                     selectors: [
                         {
                             selector: selectedColorMetricDataSelector,

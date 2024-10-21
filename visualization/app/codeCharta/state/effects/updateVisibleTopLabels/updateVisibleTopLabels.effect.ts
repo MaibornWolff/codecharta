@@ -4,7 +4,7 @@ import { State, Store } from "@ngrx/store"
 import { createEffect } from "@ngrx/effects"
 import { map, pairwise, withLatestFrom } from "rxjs"
 
-import { visibleFileStatesSelector } from "../../selectors/visibleFileStates.selector"
+import { visibleFileStatesSelector } from "../../selectors/visibleFileStates/visibleFileStates.selector"
 import { codeMapNodesSelector } from "../../selectors/accumulatedData/codeMapNodes.selector"
 import { setAmountOfTopLabels } from "../../store/appSettings/amountOfTopLabels/amountOfTopLabels.actions"
 import { getNumberOfTopLabels } from "./getNumberOfTopLabels"
