@@ -1,4 +1,4 @@
-import { visibleFileStatesSelector } from "../../state/selectors/visibleFileStates.selector"
+import { visibleFileStatesSelector } from "../../state/selectors/visibleFileStates/visibleFileStates.selector"
 import { CustomConfig, CustomConfigMapSelectionMode, MapNamesByChecksum } from "../../model/customConfig/customConfig.api.model"
 import { FileSelectionState, FileState } from "../../model/files/files"
 import { createSelector } from "@ngrx/store"
