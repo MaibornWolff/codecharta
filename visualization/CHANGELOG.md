@@ -14,16 +14,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Fixed 🐞
 
 - Fix that default sample files are not removed when a new file is loaded by the user [#2498](https://github.com/MaibornWolff/codecharta/pull/3768)
+- When an invisible file is deleted, the shown map is not reloaded anymore [#3747](https://github.com/MaibornWolff/codecharta/pull/3788)
 
 ## [1.129.1] - 2024-10-18
 
 ### Fixed 🐞
 
 - Fix an issue which caused the web demo files to be incomplete [#3790](https://github.com/MaibornWolff/codecharta/pull/3758)
-
-### Fixed 🐞
-
-- When an invisible file is deleted, the shown map is not reloaded anymore [#3747](https://github.com/MaibornWolff/codecharta/pull/3788)
 
 ## [1.129.0] - 2024-10-17
 
