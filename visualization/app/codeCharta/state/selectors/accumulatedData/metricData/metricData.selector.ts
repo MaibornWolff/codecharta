@@ -1,6 +1,6 @@
 import { createSelector } from "@ngrx/store"
 import { blacklistSelector } from "../../../store/fileSettings/blacklist/blacklist.selector"
-import { visibleFileStatesSelector } from "../../visibleFileStates.selector"
+import { visibleFileStatesSelector } from "../../visibleFileStates/visibleFileStates.selector"
 import { calculateEdgeMetricData } from "./edgeMetricData.calculator"
 import { calculateNodeMetricData } from "./nodeMetricData.calculator"
 

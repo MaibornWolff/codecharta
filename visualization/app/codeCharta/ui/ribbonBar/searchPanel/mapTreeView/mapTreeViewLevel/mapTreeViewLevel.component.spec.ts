@@ -4,7 +4,7 @@ import { findByText, findByTitle, getByText, queryByText, queryByTitle, render, 
 import userEvent from "@testing-library/user-event"
 import { IdToBuildingService } from "../../../../../services/idToBuilding/idToBuilding.service"
 import * as SearchedNodePathsSelector from "../../../../../state/selectors/searchedNodes/searchedNodePaths.selector"
-import * as VisibleFileStatesSelector from "../../../../../state/selectors/visibleFileStates.selector"
+import * as VisibleFileStatesSelector from "../../../../../state/selectors/visibleFileStates/visibleFileStates.selector"
 import { defaultMapColors } from "../../../../../state/store/appSettings/mapColors/mapColors.reducer"
 import * as MapColorsSelector from "../../../../../state/store/appSettings/mapColors/mapColors.selector"
 import { setHoveredNodeId } from "../../../../../state/store/appStatus/hoveredNodeId/hoveredNodeId.actions"
