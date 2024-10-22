@@ -16,9 +16,8 @@ export const parseBlacklistItems = (blacklistType: BlacklistType, searchPattern:
             if (path.length > 0) {
                 if (path.startsWith("!")) {
                     break
-                } else {
-                    path = unifyWildCard(path)
                 }
+                path = unifyWildCard(path)
                 blacklistItems.push({ path, type: blacklistType })
             }
         }

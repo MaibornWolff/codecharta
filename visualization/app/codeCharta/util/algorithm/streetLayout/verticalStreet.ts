@@ -1,10 +1,10 @@
-import BoundingBox from "./boundingBox"
-import Rectangle from "./rectangle"
-import HorizontalStreet, { HorizontalOrientation } from "./horizontalStreet"
-import Street from "./street"
-import { CodeMapNode, NodeType } from "../../../codeCharta.model"
-import { StreetViewHelper } from "./streetViewHelper"
 import { Vector2 } from "three"
+import { CodeMapNode, NodeType } from "../../../codeCharta.model"
+import BoundingBox from "./boundingBox"
+import HorizontalStreet, { HorizontalOrientation } from "./horizontalStreet"
+import Rectangle from "./rectangle"
+import Street from "./street"
+import { StreetViewHelper } from "./streetViewHelper"
 
 export enum VerticalOrientation {
     UP,
@@ -17,7 +17,7 @@ export default class VerticalStreet extends Street {
     protected rightRow: BoundingBox[] = []
     orientation: VerticalOrientation
     private _origin: Vector2
-
+    // biome-ignore lint/correctness/noUnusedVariables: <explanation>
     constructor(node: CodeMapNode, children: BoundingBox[], depth: number, orientation: VerticalOrientation = VerticalOrientation.UP) {
         super(node)
         this.children = children

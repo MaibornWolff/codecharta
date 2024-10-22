@@ -1,6 +1,6 @@
 import { SVGLoader } from "three/examples/jsm/loaders/SVGLoader"
-import { CreateSvgGeometryStrategy, CreateSvgGeometryStrategyOptions } from "./createSvgGeometryStrategy"
 import { GeometryOptions } from "../preview3DPrintMesh"
+import { CreateSvgGeometryStrategy, CreateSvgGeometryStrategyOptions } from "./createSvgGeometryStrategy"
 
 describe("CreateSvgGeometryStrategy", () => {
     let strategy: CreateSvgGeometryStrategy
@@ -28,6 +28,7 @@ describe("CreateSvgGeometryStrategy", () => {
 
         const loader = new SVGLoader()
         const svg = loader.parse(svgData)
+        // biome-ignore lint/correctness/noUnusedVariables: <explanation>
         jest.spyOn(SVGLoader.prototype, "load").mockImplementation((url, onLoad) => {
             onLoad(svg)
         })
@@ -56,6 +57,7 @@ describe("CreateSvgGeometryStrategy", () => {
 
         const loader = new SVGLoader()
         const svg = loader.parse(svgData)
+        // biome-ignore lint/correctness/noUnusedVariables: <explanation>
         jest.spyOn(SVGLoader.prototype, "load").mockImplementation((url, onLoad) => {
             onLoad(svg)
         })

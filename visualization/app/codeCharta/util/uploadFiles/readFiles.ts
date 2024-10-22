@@ -1,10 +1,11 @@
+import { ungzip } from "pako"
 import { parseGameObjectsFile } from "../gameObjectsParser/gameObjectsImporter"
 import { validateGameObjects } from "../gameObjectsParser/gameObjectsValidator"
-import { ungzip } from "pako"
 
 export const readFiles = (files: FileList): Promise<string>[] => {
     const readFilesPromises = []
     // eslint-disable-next-line unicorn/no-for-loop -- FileList is not iterable, therefore we cannot use for-of loop
+    // biome-ignore lint/style/useForOf: FileList is not iterable, therefore we cannot use for-of loop
     for (let index = 0; index < files.length; index++) {
         readFilesPromises.push(readFile(files[index]))
     }

@@ -1,5 +1,6 @@
+import { Store } from "@ngrx/store"
+import { BehaviorSubject } from "rxjs"
 import { LocalStorageCustomConfigs, stateObjectReplacer, stateObjectReviver } from "../codeCharta.model"
-import { CustomConfigItemGroup } from "../ui/customConfigs/customConfigs.component"
 import {
     CustomConfig,
     CustomConfigMapSelectionMode,
@@ -7,14 +8,13 @@ import {
     ExportCustomConfig,
     MapNamesByChecksum
 } from "../model/customConfig/customConfig.api.model"
-import { FileNameHelper } from "./fileNameHelper"
-import { FileDownloader } from "./fileDownloader"
 import { ThreeCameraService } from "../ui/codeMap/threeViewer/threeCamera.service"
 import { ThreeMapControlsService } from "../ui/codeMap/threeViewer/threeMapControls.service"
-import { BehaviorSubject } from "rxjs"
-import { VisibleFilesBySelectionMode } from "../ui/customConfigs/visibleFilesBySelectionMode.selector"
-import { Store } from "@ngrx/store"
 import { ThreeRendererService } from "../ui/codeMap/threeViewer/threeRenderer.service"
+import { CustomConfigItemGroup } from "../ui/customConfigs/customConfigs.component"
+import { VisibleFilesBySelectionMode } from "../ui/customConfigs/visibleFilesBySelectionMode.selector"
+import { FileDownloader } from "./fileDownloader"
+import { FileNameHelper } from "./fileNameHelper"
 
 export const CUSTOM_CONFIG_FILE_EXTENSION = ".cc.config.json"
 const CUSTOM_CONFIGS_LOCAL_STORAGE_VERSION = "1.0.1"
@@ -191,6 +191,7 @@ export class CustomConfigHelper {
 
     static applyCustomConfig(
         configId: string,
+        // biome-ignore lint/correctness/noUnusedVariables: <explanation>
         store: Store,
         threeCameraService: ThreeCameraService,
         threeOrbitControlsService: ThreeMapControlsService,
