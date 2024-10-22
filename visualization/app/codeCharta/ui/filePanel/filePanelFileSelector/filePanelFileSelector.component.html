@@ -1,4 +1,5 @@
 <mat-select
+    #fileSelect
     panelClass="cc-file-select"
     [(value)]="selectedFilesInUI"
     (selectionChange)="handleSelectedFilesChanged($event.value)"
@@ -11,12 +12,24 @@
         <button class="cc-file-select-action-button" (click)="handleSelectZeroFiles()">None</button>
         <button class="cc-file-select-action-button" (click)="handleInvertSelectedFiles()">Invert</button>
     </div>
-    @for (file of fileStates; track file) {
-        <mat-option class="cc-file-name" [value]="file.file">
+    @for (file of filesInUI; track file) {
+        <mat-option class="cc-file-name" [value]="file.file" [ngStyle]="{ 'text-decoration': file.isRemoved ? 'line-through' : 'none' }">
             {{ file.file.fileMeta.fileName | removeExtension }}
-            @if (fileStates.length > 1) {
-                <cc-remove-file-button [filename]="file.file.fileMeta.fileName"></cc-remove-file-button>
-            }
+            <cc-remove-file-button
+                [filename]="file.file.fileMeta.fileName"
+                [isRemoved]="file.isRemoved"
+                (removeOrAddFile)="handleAddOrRemoveFile($event)"
+            ></cc-remove-file-button>
         </mat-option>
     }
+    <div class="cc-apply-file-selection-button-container">
+        <button
+            (click)="handleApplyFileChanges()"
+            [disabled]="selectedFilesInUI.length === 0"
+            matTooltip="Select at least one map"
+            matTooltipDisabled="{{ selectedFilesInUI.length > 0 }}"
+        >
+            Apply
+        </button>
+    </div>
 </mat-select>
