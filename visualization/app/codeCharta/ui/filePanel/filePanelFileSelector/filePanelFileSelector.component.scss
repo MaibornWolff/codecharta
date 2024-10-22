@@ -7,15 +7,16 @@
 
 .cc-apply-file-selection-button-container {
     padding-right: 16px;
-    padding-left: 16px;
     display: flex;
     justify-content: flex-end;
 
     button {
-        padding: 8px 15px;
+        width: 50%;
+        height: 30px;
 
         &:hover {
-            border-radius: 20%;
+            border-radius: 10%;
+            background-color: #dddddd;
         }
     }
 }
