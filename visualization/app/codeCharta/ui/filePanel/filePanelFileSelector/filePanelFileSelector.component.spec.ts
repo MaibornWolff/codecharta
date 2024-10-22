@@ -140,6 +140,23 @@ describe("filePanelFileSelectorComponent", () => {
 
                 expect(component.selectedFilesInUI).toEqual([])
             })
+
+            it("should not crash if all files are flagged as removed", () => {
+                component.filesInUI = []
+                component.selectedFilesInUI = []
+
+                component.handleInvertSelectedFiles()
+
+                expect(component.selectedFilesInUI).toEqual([])
+            })
+
+            it("should select all files if no file is visible", () => {
+                component.selectedFilesInUI = []
+
+                component.handleInvertSelectedFiles()
+
+                expect(component.selectedFilesInUI).toEqual([TEST_FILE_DATA, TEST_FILE_DATA_TWO])
+            })
         })
 
         describe("handleAddOrRemoveFile", () => {
