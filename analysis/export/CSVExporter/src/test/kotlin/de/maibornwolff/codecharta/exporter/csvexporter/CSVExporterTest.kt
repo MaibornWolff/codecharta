@@ -323,5 +323,4 @@ class CSVExporterTest {
         val referenceLines = referenceFile.readLines().sorted()
         Assertions.assertThat(outputLines).isEqualTo(referenceLines)
     }
-
 }
