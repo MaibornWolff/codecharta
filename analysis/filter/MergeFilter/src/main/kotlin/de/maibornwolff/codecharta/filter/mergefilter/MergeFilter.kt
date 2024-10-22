@@ -48,6 +48,9 @@ class MergeFilter(
     @CommandLine.Option(names = ["-f"], description = ["force merge non-overlapping modules at the top-level structure"])
     private var mergeModules = false
 
+    @CommandLine.Option(names = ["-mimo"], description = ["merge multiple files with the same prefix into multiple output files"])
+    private var mimo = false
+
     override val name = NAME
     override val description = DESCRIPTION
 
@@ -79,33 +82,38 @@ class MergeFilter(
         if (!InputHelper.isInputValid(sources, canInputContainFolders = true)) {
             throw IllegalArgumentException("Input invalid files/folders for MergeFilter, stopping execution...")
         }
+
         val sourceFiles = InputHelper.getFileListFromValidatedResourceArray(sources)
 
-        val rootChildrenNodes = sourceFiles.mapNotNull {
-            val input = it.inputStream()
-            try {
-                ProjectDeserializer.deserializeProject(input)
-            } catch (e: Exception) {
-                Logger.warn { "${it.name} is not a valid project file and will be skipped." }
-                null
-            }
-        }
-
-        if (!mergeModules) {
-            if (!hasTopLevelOverlap(rootChildrenNodes)) {
-                printOverlapError(rootChildrenNodes)
-
-                val continueMerge = ParserDialog.askForceMerge()
-
-                if (!continueMerge) {
-                    Logger.info { "Merge cancelled by the user." }
-                    return null
+        if (mimo) {
+            processMimoMerge(sourceFiles, nodeMergerStrategy)
+        } else {
+            val rootChildrenNodes = sourceFiles.mapNotNull {
+                val input = it.inputStream()
+                try {
+                    ProjectDeserializer.deserializeProject(input)
+                } catch (e: Exception) {
+                    Logger.warn { "${it.name} is not a valid project file and will be skipped." }
+                    null
                 }
             }
-        }
 
-        val mergedProject = ProjectMerger(rootChildrenNodes, nodeMergerStrategy).merge()
-        ProjectSerializer.serializeToFileOrStream(mergedProject, outputFile, output, compress)
+            if (!mergeModules) {
+                if (!hasTopLevelOverlap(rootChildrenNodes)) {
+                    printOverlapError(rootChildrenNodes)
+
+                    val continueMerge = ParserDialog.askForceMerge()
+
+                    if (!continueMerge) {
+                        Logger.info { "Merge cancelled by the user." }
+                        return null
+                    }
+                }
+            }
+
+            val mergedProject = ProjectMerger(rootChildrenNodes, nodeMergerStrategy).merge()
+            ProjectSerializer.serializeToFileOrStream(mergedProject, outputFile, output, compress)
+        }
 
         return null
     }
@@ -129,5 +137,71 @@ class MergeFilter(
 
     override fun isApplicable(resourceToBeParsed: String): Boolean {
         return false
+    }
+
+    private fun processMimoMerge(sourceFiles: List<File>, nodeMergerStrategy: NodeMergerStrategy) {
+        val groupedFiles = sourceFiles.groupBy { it.name.substringBefore('.') }
+
+        groupedFiles.forEach { (prefix, files) ->
+            if (files.size > 1) {
+                val rootChildrenNodes = files.mapNotNull {
+                    val input = it.inputStream()
+                    try {
+                        ProjectDeserializer.deserializeProject(input)
+                    } catch (e: Exception) {
+                        Logger.warn { "${it.name} is not a valid project file and will be skipped." }
+                        null
+                    }
+                }
+
+                if (!mergeModules && !hasTopLevelOverlap(rootChildrenNodes)) {
+                    Logger.warn { "Warning: No top-level overlap for files with prefix $prefix." }
+                    return@forEach
+                }
+
+                val mergedProject = ProjectMerger(rootChildrenNodes, nodeMergerStrategy).merge()
+                val outputFileName = "$prefix.merge.cc.json"
+                ProjectSerializer.serializeToFileOrStream(mergedProject, outputFileName, output, compress)
+
+                Logger.info { "Merged files with prefix $prefix into $outputFileName" }
+            } else {
+                Logger.warn { "No matching files found for prefix $prefix." }
+                suggestLevenshteinCorrections(prefix, groupedFiles.keys)
+            }
+        }
+    }
+
+    private fun suggestLevenshteinCorrections(prefix: String, availablePrefixes: Set<String>) {
+        val suggestions = availablePrefixes.filter { levenshteinDistance(it, prefix) < 3 }
+        if (suggestions.isNotEmpty()) {
+            Logger.warn { "Did you mean one of these? ${suggestions.joinToString(", ")}" }
+        }
+    }
+
+    private fun levenshteinDistance(lhs: CharSequence, rhs: CharSequence): Int {
+        val lhsLength = lhs.length
+        val rhsLength = rhs.length
+
+        var cost = IntArray(rhsLength + 1) { it }
+        var newCost = IntArray(rhsLength + 1)
+
+        for (i in 1..lhsLength) {
+            newCost[0] = i
+
+            for (j in 1..rhsLength) {
+                val match = if (lhs[i - 1] == rhs[j - 1]) 0 else 1
+                val costReplace = cost[j - 1] + match
+                val costInsert = cost[j] + 1
+                val costDelete = newCost[j - 1] + 1
+
+                newCost[j] = minOf(costInsert, costDelete, costReplace)
+            }
+
+            val swap = cost
+            cost = newCost
+            newCost = swap
+        }
+
+        return cost[rhsLength]
     }
 }
