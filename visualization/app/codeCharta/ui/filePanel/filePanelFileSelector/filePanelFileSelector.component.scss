@@ -14,7 +14,7 @@
         width: 50%;
         height: 30px;
 
-        &:hover {
+        &:hover:not(:disabled) {
             border-radius: 10%;
             background-color: #dddddd;
         }
