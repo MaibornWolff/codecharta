@@ -74,6 +74,11 @@ describe("files", () => {
             expect(result.length).toBe(1)
             expect(result[0].selectedAs).toBe(FileSelectionState.Partial)
         })
+
+        it("should not change if no file is removed", () => {
+            const result = files(state, removeFiles({ fileNames: [] }))
+            expect(result).toBe(state)
+        })
     })
 
     describe("Action: SET_DELTA_REFERENCE", () => {
