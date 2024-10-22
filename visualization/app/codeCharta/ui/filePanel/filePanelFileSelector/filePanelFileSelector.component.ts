@@ -1,13 +1,19 @@
-import { Component, OnDestroy } from "@angular/core"
+import { Component, OnDestroy, ViewChild } from "@angular/core"
 import { filesSelector } from "../../../state/store/files/files.selector"
-import { invertStandard, setAll, setStandard } from "../../../state/store/files/files.actions"
+import { removeFiles, setStandard } from "../../../state/store/files/files.actions"
 import { CCFile, CcState } from "../../../codeCharta.model"
-import { FileSelectionState, FileState } from "../../../model/files/files"
+import { FileSelectionState } from "../../../model/files/files"
 import { Store } from "@ngrx/store"
 import { MatSelect } from "@angular/material/select"
 import { MatOption } from "@angular/material/core"
 import { RemoveFileButtonComponent } from "./removeFileButton/removeFileButton.component"
 import { RemoveExtensionPipe } from "../../../util/pipes/removeExtension.pipe"
+import { take } from "rxjs"
+
+type FileRemovedInUIState = {
+    file: CCFile
+    isRemoved: boolean
+}
 
 @Component({
     selector: "cc-file-panel-file-selector",
@@ -17,16 +23,18 @@ import { RemoveExtensionPipe } from "../../../util/pipes/removeExtension.pipe"
     imports: [MatSelect, MatOption, RemoveFileButtonComponent, RemoveExtensionPipe]
 })
 export class FilePanelFileSelectorComponent implements OnDestroy {
-    fileStates: FileState[] = []
+    @ViewChild("fileSelect") select: MatSelect
+
+    filesInUI: FileRemovedInUIState[] = []
     selectedFilesInUI: CCFile[] = []
-    selectedFilesInStore: CCFile[] = []
-    private filesSubscription = this.store.select(filesSelector).subscribe(files => {
-        this.fileStates = files
-        this.selectedFilesInStore = files.filter(file => file.selectedAs === FileSelectionState.Partial).map(file => file.file)
-        this.selectedFilesInUI = this.selectedFilesInStore
+    private closedByApply = false
+
+    private readonly filesSubscription = this.store.select(filesSelector).subscribe(fileStates => {
+        this.filesInUI = fileStates.map(file => ({ file: file.file, isRemoved: false }))
+        this.selectedFilesInUI = fileStates.filter(file => file.selectedAs === FileSelectionState.Partial).map(file => file.file)
     })
 
-    constructor(private store: Store<CcState>) {}
+    constructor(private readonly store: Store<CcState>) {}
 
     ngOnDestroy(): void {
         this.filesSubscription.unsubscribe()
@@ -34,14 +42,26 @@ export class FilePanelFileSelectorComponent implements OnDestroy {
 
     handleSelectedFilesChanged(selectedFiles: CCFile[]) {
         this.selectedFilesInUI = selectedFiles
-        if (selectedFiles.length > 0) {
-            this.store.dispatch(setStandard({ files: selectedFiles }))
+        for (const file of this.filesInUI) {
+            if (selectedFiles.includes(file.file)) {
+                file.isRemoved = false
+            }
         }
     }
 
-    handleOpenedChanged(isOpen: boolean) {
-        if (!isOpen) {
-            this.selectedFilesInUI = this.selectedFilesInStore
+    handleOpenedChanged(opened: boolean) {
+        if (!this.closedByApply && !opened) {
+            this.store
+                .select(filesSelector)
+                .pipe(take(1))
+                .subscribe(fileStates => {
+                    this.filesInUI = fileStates.map(file => ({ file: file.file, isRemoved: false }))
+                    this.selectedFilesInUI = fileStates
+                        .filter(file => file.selectedAs === FileSelectionState.Partial)
+                        .map(file => file.file)
+                })
+        } else {
+            this.closedByApply = false
         }
     }
 
@@ -50,14 +70,32 @@ export class FilePanelFileSelectorComponent implements OnDestroy {
     }
 
     handleInvertSelectedFiles() {
-        if (this.selectedFilesInUI.length === this.fileStates.length) {
+        if (this.filesInUI.length === 0) {
+            this.selectedFilesInUI = this.filesInUI.filter(file => !file.isRemoved).map(file => file.file)
+        } else if (this.selectedFilesInUI.length === this.filesInUI.length) {
             this.selectedFilesInUI = []
         } else {
-            this.store.dispatch(invertStandard())
+            const notRemovedFiles = this.filesInUI.filter(file => !file.isRemoved)
+            this.selectedFilesInUI = notRemovedFiles.filter(file => !this.selectedFilesInUI.includes(file.file)).map(file => file.file)
         }
     }
 
     handleSelectAllFiles() {
-        this.store.dispatch(setAll())
+        this.selectedFilesInUI = this.filesInUI.filter(file => !file.isRemoved).map(file => file.file)
+    }
+
+    handleApplyFileChanges() {
+        const fileNamesToRemove = this.filesInUI.filter(file => file.isRemoved).map(file => file.file.fileMeta.fileName)
+        this.store.dispatch(setStandard({ files: this.selectedFilesInUI }))
+        this.store.dispatch(removeFiles({ fileNames: fileNamesToRemove }))
+        this.closedByApply = true
+        this.select.close()
+    }
+
+    handleAddOrRemoveFile(fileName: string) {
+        this.filesInUI = this.filesInUI.map(file =>
+            file.file.fileMeta.fileName === fileName ? { file: file.file, isRemoved: !file.isRemoved } : file
+        )
+        this.selectedFilesInUI = this.selectedFilesInUI.filter(file => file.fileMeta.fileName !== fileName)
     }
 }
