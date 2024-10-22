@@ -6,9 +6,9 @@ import { FileSelectionState } from "../../../model/files/files"
 import { Store } from "@ngrx/store"
 import { MatSelect } from "@angular/material/select"
 import { MatOption } from "@angular/material/core"
-import { RemoveFileButtonComponent } from "./removeFileButton/removeFileButton.component"
 import { RemoveExtensionPipe } from "../../../util/pipes/removeExtension.pipe"
 import { take } from "rxjs"
+import { RemoveOrAddFileButtonComponent } from "./removeFileButton/removeOrAddFileButton.component"
 
 type FileRemovedInUIState = {
     file: CCFile
@@ -20,7 +20,7 @@ type FileRemovedInUIState = {
     templateUrl: "./filePanelFileSelector.component.html",
     styleUrls: ["./filePanelFileSelector.component.scss"],
     standalone: true,
-    imports: [MatSelect, MatOption, RemoveFileButtonComponent, RemoveExtensionPipe]
+    imports: [MatSelect, MatOption, RemoveOrAddFileButtonComponent, RemoveExtensionPipe]
 })
 export class FilePanelFileSelectorComponent implements OnDestroy {
     @ViewChild("fileSelect") select: MatSelect
@@ -70,12 +70,12 @@ export class FilePanelFileSelectorComponent implements OnDestroy {
     }
 
     handleInvertSelectedFiles() {
+        const notRemovedFiles = this.filesInUI.filter(file => !file.isRemoved)
         if (this.filesInUI.length === 0) {
-            this.selectedFilesInUI = this.filesInUI.filter(file => !file.isRemoved).map(file => file.file)
-        } else if (this.selectedFilesInUI.length === this.filesInUI.length) {
+            this.selectedFilesInUI = notRemovedFiles.map(file => file.file)
+        } else if (this.selectedFilesInUI.length === notRemovedFiles.length) {
             this.selectedFilesInUI = []
         } else {
-            const notRemovedFiles = this.filesInUI.filter(file => !file.isRemoved)
             this.selectedFilesInUI = notRemovedFiles.filter(file => !this.selectedFilesInUI.includes(file.file)).map(file => file.file)
         }
     }
