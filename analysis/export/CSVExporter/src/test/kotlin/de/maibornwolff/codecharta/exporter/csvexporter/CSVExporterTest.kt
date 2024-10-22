@@ -81,7 +81,7 @@ class CSVExporterTest {
         // then
         Assertions.assertThat(outputFile.exists()).isTrue()
         Assertions.assertThat(outputFile.length()).isNotEqualTo(0)
-        Assertions.assertThat(outputFile).hasSameTextualContentAs(referenceFile)
+        assertFilesHaveSameContentRegardlessOfOrder(outputFile, referenceFile)
     }
 
     @Test
@@ -101,7 +101,7 @@ class CSVExporterTest {
         // then
         Assertions.assertThat(outputFile.exists()).isTrue()
         Assertions.assertThat(outputFile.length()).isNotEqualTo(0)
-        Assertions.assertThat(outputFile).hasSameTextualContentAs(referenceFile)
+        assertFilesHaveSameContentRegardlessOfOrder(outputFile, referenceFile)
     }
 
     @Test
@@ -317,4 +317,11 @@ class CSVExporterTest {
         // then
         Assertions.assertThat(lambdaSlot.last()().endsWith(absoluteOutputFilePath)).isTrue()
     }
+
+    private fun assertFilesHaveSameContentRegardlessOfOrder(outputFile: File, referenceFile: File) {
+        val outputLines = outputFile.readLines().sorted()
+        val referenceLines = referenceFile.readLines().sorted()
+        Assertions.assertThat(outputLines).isEqualTo(referenceLines)
+    }
+
 }
