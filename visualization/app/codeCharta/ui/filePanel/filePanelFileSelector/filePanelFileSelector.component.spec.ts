@@ -1,13 +1,16 @@
 import { TestBed } from "@angular/core/testing"
 import { fireEvent, render, screen, waitForElementToBeRemoved } from "@testing-library/angular"
-import { FileSelectionState } from "../../../model/files/files"
-import { addFile, invertStandard, setStandard } from "../../../state/store/files/files.actions"
-import { TEST_FILE_DATA } from "../../../util/dataMocks"
+import { addFile, removeFiles, setStandard } from "../../../state/store/files/files.actions"
+import { TEST_FILE_DATA, TEST_FILE_DATA_TWO } from "../../../util/dataMocks"
 import { FilePanelComponent } from "../filePanel.component"
 import { FilePanelFileSelectorComponent } from "./filePanelFileSelector.component"
 import { appReducers, setStateMiddleware } from "../../../state/store/state.manager"
 import { Store, StoreModule } from "@ngrx/store"
-import { CcState } from "../../../codeCharta.model"
+import { CCFile, CcState } from "../../../codeCharta.model"
+import { MatSelect } from "@angular/material/select"
+import { filesSelector } from "../../../state/store/files/files.selector"
+import { of } from "rxjs"
+import { FileSelectionState } from "../../../model/files/files"
 
 describe("filePanelFileSelectorComponent", () => {
     it("should reset selected files to selected in store when closing with zero selections", async () => {
@@ -33,54 +36,167 @@ describe("filePanelFileSelectorComponent", () => {
         expect(fixture.componentInstance["selectedFilesInUI"][0]).toEqual(TEST_FILE_DATA)
     })
 
-    describe("handleSelectedFilesChanged", () => {
-        it("should not dispatch selection to store, when new selection is empty", () => {
-            const mockedStore = createMockedStore()
-            const component = new FilePanelFileSelectorComponent(mockedStore)
-            component.handleSelectedFilesChanged([])
-            expect(mockedStore.dispatch).not.toHaveBeenCalled()
-        })
+    describe("method", () => {
+        let component: FilePanelFileSelectorComponent
+        let mockedStore: Store<CcState>
+        let defaultMockedFilesInUI: { isRemoved: boolean; file: CCFile }[]
+        let defaultMockedSelectedFilesInUI: CCFile[]
 
-        it("should dispatch selection to store, when new selection is not empty", () => {
-            const mockedStore = createMockedStore()
-            const component = new FilePanelFileSelectorComponent(mockedStore)
-            component.handleSelectedFilesChanged([TEST_FILE_DATA])
-            expect(mockedStore.dispatch).toHaveBeenCalledWith(setStandard({ files: [TEST_FILE_DATA] }))
-        })
-    })
+        beforeEach(() => {
+            mockedStore = createMockedStore()
 
-    describe("handleInvertSelectedFiles", () => {
-        it("should invert selection", () => {
-            const mockedStore = createMockedStore()
-            const component = new FilePanelFileSelectorComponent(mockedStore)
-            component.fileStates = [
-                { selectedAs: FileSelectionState.Partial, file: TEST_FILE_DATA },
-                { selectedAs: FileSelectionState.None, file: TEST_FILE_DATA }
+            const mockMatSelect = { close: jest.fn() } as Partial<MatSelect>
+            component = new FilePanelFileSelectorComponent(mockedStore)
+            component.select = mockMatSelect as MatSelect
+
+            defaultMockedFilesInUI = [
+                { isRemoved: false, file: TEST_FILE_DATA },
+                { isRemoved: false, file: TEST_FILE_DATA_TWO }
             ]
-            component.selectedFilesInUI = [TEST_FILE_DATA]
+            component.filesInUI = defaultMockedFilesInUI
 
-            component.handleInvertSelectedFiles()
-
-            expect(mockedStore.dispatch).toHaveBeenCalledWith(invertStandard())
+            defaultMockedSelectedFilesInUI = [TEST_FILE_DATA]
+            component.selectedFilesInUI = defaultMockedSelectedFilesInUI
         })
 
-        it("should not invert selection in store, when new selection would be empty", () => {
-            const mockedStore = createMockedStore()
-            const component = new FilePanelFileSelectorComponent(mockedStore)
-            component.fileStates = [{ selectedAs: FileSelectionState.Partial, file: TEST_FILE_DATA }]
-            component.selectedFilesInUI = [TEST_FILE_DATA]
+        describe("handleOpenedChanged", () => {
+            it("should reset selected files to selected in store when closed without applying", async () => {
+                component.handleInvertSelectedFiles()
+                component.handleOpenedChanged(false)
 
-            component.handleInvertSelectedFiles()
+                expect(component.selectedFilesInUI).toEqual([TEST_FILE_DATA])
+            })
 
-            expect(mockedStore.dispatch).not.toHaveBeenCalled()
-            expect(component.selectedFilesInUI).toEqual([])
+            it("should update selected files to selected in store when closed with applying", async () => {
+                component.handleInvertSelectedFiles()
+                component.handleApplyFileChanges()
+
+                expect(mockedStore.dispatch).toHaveBeenCalledWith(setStandard({ files: [TEST_FILE_DATA_TWO] }))
+                expect(component.selectedFilesInUI).toEqual([TEST_FILE_DATA_TWO])
+                expect(component.filesInUI).toEqual(defaultMockedFilesInUI)
+            })
+        })
+
+        describe("handleSelectedFilesChanged", () => {
+            it("should dispatch selection to store, when new selection is applied", () => {
+                component.handleSelectedFilesChanged([TEST_FILE_DATA])
+                component.handleApplyFileChanges()
+
+                expect(mockedStore.dispatch).toHaveBeenCalledWith(setStandard({ files: [TEST_FILE_DATA] }))
+            })
+        })
+
+        describe("handleSelectAll", () => {
+            it("should select all files", () => {
+                component.selectedFilesInUI = []
+
+                component.handleSelectAllFiles()
+
+                expect(component.selectedFilesInUI).toEqual([TEST_FILE_DATA, TEST_FILE_DATA_TWO])
+            })
+
+            it("should only select files not flagged as removed", () => {
+                component.filesInUI = [
+                    { isRemoved: false, file: TEST_FILE_DATA },
+                    { isRemoved: true, file: TEST_FILE_DATA_TWO }
+                ]
+                component.selectedFilesInUI = []
+
+                component.handleSelectAllFiles()
+
+                expect(component.selectedFilesInUI).toEqual([TEST_FILE_DATA])
+            })
+        })
+
+        describe("handleInvertSelectedFiles", () => {
+            it("should invert selection", () => {
+                component.handleInvertSelectedFiles()
+                component.handleApplyFileChanges()
+
+                expect(mockedStore.dispatch).toHaveBeenCalledWith(setStandard({ files: [TEST_FILE_DATA_TWO] }))
+            })
+
+            it("should not invert removed files", () => {
+                component.filesInUI = [
+                    { isRemoved: false, file: TEST_FILE_DATA },
+                    { isRemoved: true, file: TEST_FILE_DATA_TWO },
+                    { isRemoved: false, file: TEST_FILE_DATA_TWO }
+                ]
+
+                component.handleInvertSelectedFiles()
+
+                expect(component.selectedFilesInUI).toEqual([TEST_FILE_DATA_TWO])
+            })
+
+            it("should set selectedFilesInUI to an empty array if all not removed files are selected", () => {
+                component.filesInUI = [
+                    { isRemoved: false, file: TEST_FILE_DATA },
+                    { isRemoved: false, file: TEST_FILE_DATA_TWO },
+                    { isRemoved: true, file: TEST_FILE_DATA_TWO }
+                ]
+                component.selectedFilesInUI = [TEST_FILE_DATA, TEST_FILE_DATA_TWO]
+
+                component.handleInvertSelectedFiles()
+
+                expect(component.selectedFilesInUI).toEqual([])
+            })
+        })
+
+        describe("handleAddOrRemoveFile", () => {
+            beforeEach(() => {
+                component.filesInUI = [
+                    { isRemoved: false, file: TEST_FILE_DATA },
+                    { isRemoved: true, file: TEST_FILE_DATA_TWO }
+                ]
+                component.selectedFilesInUI = [TEST_FILE_DATA]
+            })
+
+            it("should flag file as removed when file is removed", () => {
+                const fileNameToRemove = TEST_FILE_DATA.fileMeta.fileName
+                component.handleAddOrRemoveFile(fileNameToRemove)
+
+                expect(component.filesInUI.find(file => file.file.fileMeta.fileName === fileNameToRemove).isRemoved).toBeTruthy()
+            })
+
+            it("should remove file from selectedFilesInUI when file is removed", () => {
+                const fileNameToRemove = TEST_FILE_DATA.fileMeta.fileName
+                component.handleAddOrRemoveFile(fileNameToRemove)
+
+                expect(component.selectedFilesInUI).toEqual([])
+            })
+
+            it("should add a file if it is already flagged as removed", () => {
+                const fileNameToAdd = TEST_FILE_DATA_TWO.fileMeta.fileName
+                component.handleAddOrRemoveFile(fileNameToAdd)
+
+                expect(component.filesInUI.find(file => file.file.fileMeta.fileName === fileNameToAdd).isRemoved).toBeFalsy()
+            })
+
+            it("should dispatch an action to remove the flagged files if applied", () => {
+                const fileNameToRemove = TEST_FILE_DATA.fileMeta.fileName
+
+                component.handleAddOrRemoveFile(fileNameToRemove)
+                component.handleApplyFileChanges()
+
+                expect(mockedStore.dispatch).toHaveBeenCalledWith(
+                    removeFiles({ fileNames: [fileNameToRemove, TEST_FILE_DATA_TWO.fileMeta.fileName] })
+                )
+            })
         })
     })
 
     function createMockedStore() {
         return {
             dispatch: jest.fn(),
-            select: () => ({ subscribe: jest.fn() })
+            select: jest.fn().mockImplementation(selector => {
+                if (selector === filesSelector) {
+                    return of([
+                        { file: TEST_FILE_DATA, selectedAs: FileSelectionState.Partial },
+                        { file: TEST_FILE_DATA_TWO, selectedAs: FileSelectionState.None }
+                    ])
+                }
+                return of([])
+            })
         } as unknown as Store<CcState>
     }
 })
