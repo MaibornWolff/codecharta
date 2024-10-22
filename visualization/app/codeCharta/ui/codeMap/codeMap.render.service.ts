@@ -52,7 +52,7 @@ export class CodeMapRenderService implements OnDestroy {
 
     render(map: CodeMapNode) {
         const nodes = this.getNodes(map)
-        const visibleSortedNodes = this.getVisibleNodes(nodes)
+        const visibleSortedNodes = this.sortVisibleNodesByHeightDescending(nodes)
         this.unflattenedNodes = visibleSortedNodes.filter(({ flat }) => !flat)
 
         this.setNewMapMesh(nodes, visibleSortedNodes)
@@ -95,7 +95,7 @@ export class CodeMapRenderService implements OnDestroy {
         }
     }
 
-    getVisibleNodes(nodes: Node[]) {
+    sortVisibleNodesByHeightDescending(nodes: Node[]) {
         const experimentalFeaturesEnabled = this.state.getValue().appSettings.experimentalFeaturesEnabled
         if (experimentalFeaturesEnabled) {
             this.setMinBuildingLength(nodes)
