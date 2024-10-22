@@ -65,12 +65,12 @@ export class FilePanelFileSelectorComponent implements OnDestroy {
     }
 
     handleInvertSelectedFiles() {
+        const notRemovedFiles = this.filesInUI.filter(file => !file.isRemoved)
         if (this.filesInUI.length === 0) {
-            this.selectedFilesInUI = this.filesInUI.filter(file => !file.isRemoved).map(file => file.file)
-        } else if (this.selectedFilesInUI.length === this.filesInUI.length) {
+            this.selectedFilesInUI = notRemovedFiles.map(file => file.file)
+        } else if (this.selectedFilesInUI.length === notRemovedFiles.length) {
             this.selectedFilesInUI = []
         } else {
-            const notRemovedFiles = this.filesInUI.filter(file => !file.isRemoved)
             this.selectedFilesInUI = notRemovedFiles.filter(file => !this.selectedFilesInUI.includes(file.file)).map(file => file.file)
         }
     }

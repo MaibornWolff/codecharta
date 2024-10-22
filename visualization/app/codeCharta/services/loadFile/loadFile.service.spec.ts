@@ -2,7 +2,7 @@ import { TestBed } from "@angular/core/testing"
 import { LoadFileService } from "./loadFile.service"
 import { TEST_FILE_CONTENT } from "../../util/dataMocks"
 import { CCFile, CcState, NodeMetricData, NodeType } from "../../codeCharta.model"
-import { removeFile, setDeltaReference, setStandard } from "../../state/store/files/files.actions"
+import { removeFiles, setDeltaReference, setStandard } from "../../state/store/files/files.actions"
 import { ExportBlacklistType, ExportCCFile } from "../../codeCharta.api.model"
 import { getCCFiles, isPartialState } from "../../model/files/files.helper"
 import { CCFileValidationResult, ERROR_MESSAGES } from "../../util/fileValidator"
@@ -486,9 +486,21 @@ describe("loadFileService", () => {
                 { fileName: "SecondFile", content: validFileContent, fileSize: 42 }
             ])
 
-            store.dispatch(removeFile({ fileName: "FirstFile" }))
+            store.dispatch(removeFiles({ fileNames: ["FirstFile"] }))
             expect(state.getValue().files).toHaveLength(1)
             expect(state.getValue().files[0].file.fileMeta.fileName).toEqual("SecondFile")
+        })
+
+        it("should remove two files", () => {
+            codeChartaService.loadFiles([
+                { fileName: "FirstFile", content: validFileContent, fileSize: 42 },
+                { fileName: "SecondFile", content: validFileContent, fileSize: 42 },
+                { fileName: "ThirdFile", content: validFileContent, fileSize: 42 }
+            ])
+
+            store.dispatch(removeFiles({ fileNames: ["FirstFile", "SecondFile"] }))
+            expect(state.getValue().files).toHaveLength(1)
+            expect(state.getValue().files[0].file.fileMeta.fileName).toEqual("ThirdFile")
         })
     })
 
