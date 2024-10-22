@@ -31,7 +31,7 @@ class CSVExporter() : Callable<Unit>, InteractiveParser {
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
 
-    @CommandLine.Parameters(arity = "1..*",  paramLabel = "FILE or FOLDER", description = ["input file or folder"])
+    @CommandLine.Parameters(arity = "1..*", paramLabel = "FILE or FOLDER", description = ["input file or folder"])
     private var sources: Array<File> = arrayOf()
 
     @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File (or empty for stdout)"])
