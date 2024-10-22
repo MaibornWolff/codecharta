@@ -166,15 +166,52 @@ class MergeFilter(
                 Logger.info { "Merged files with prefix $prefix into $outputFileName" }
             } else {
                 Logger.warn { "No matching files found for prefix $prefix." }
-                suggestLevenshteinCorrections(prefix, groupedFiles.keys)
+                val availablePrefixes = groupedFiles.keys
+                suggestAndHandleLevenshteinCorrections(sourceFiles, prefix, availablePrefixes, nodeMergerStrategy)
             }
         }
     }
 
-    private fun suggestLevenshteinCorrections(prefix: String, availablePrefixes: Set<String>) {
+    private fun suggestAndHandleLevenshteinCorrections(
+        sourceFiles: List<File>,
+        prefix: String,
+        availablePrefixes: Set<String>,
+        nodeMergerStrategy: NodeMergerStrategy
+    ) {
+        val groupedFiles = sourceFiles.groupBy { it.name.substringBefore('.') }
+
         val suggestions = availablePrefixes.filter { levenshteinDistance(it, prefix) < 3 }
         if (suggestions.isNotEmpty()) {
             Logger.warn { "Did you mean one of these? ${suggestions.joinToString(", ")}" }
+            val selectedPrefix = ParserDialog.askForFileCorrection(prefix, suggestions)
+
+            if (!selectedPrefix.isNullOrBlank()) {
+                Logger.info { "Selected to use $selectedPrefix instead of $prefix." }
+                val correctedFiles = groupedFiles[selectedPrefix]
+
+                if (correctedFiles != null) {
+                    val rootChildrenNodes = correctedFiles.mapNotNull {
+                        val input = it.inputStream()
+                        try {
+                            ProjectDeserializer.deserializeProject(input)
+                        } catch (e: Exception) {
+                            Logger.warn { "${it.name} is not a valid project file and will be skipped." }
+                            null
+                        }
+                    }
+
+                    if (!mergeModules && !hasTopLevelOverlap(rootChildrenNodes)) {
+                        Logger.warn { "Warning: No top-level overlap for files with prefix $selectedPrefix." }
+                        return
+                    }
+
+                    val mergedProject = ProjectMerger(rootChildrenNodes, nodeMergerStrategy).merge()
+                    val outputFileName = "$selectedPrefix.merge.cc.json"
+                    ProjectSerializer.serializeToFileOrStream(mergedProject, outputFileName, output, compress)
+                }
+            } else {
+                Logger.info { "Skipped correction for $prefix." }
+            }
         }
     }
 
