@@ -14,7 +14,17 @@ export async function goto(url = CC_URL) {
 }
 
 export async function clickButtonOnPageElement(selectorString: string, expectToClickOptions?) {
-    await page.waitForSelector(selectorString)
+    await page.waitForSelector(selectorString, { visible: true, timeout: 10_000 })
+    const element = await page.$(selectorString)
+    if (!element) {
+        throw new Error(`Element ${selectorString} not found`)
+    }
+
+    const boundingBox = await element.boundingBox()
+    if (!boundingBox) {
+        throw new Error(`Element ${selectorString} is not visible or not clickable`)
+    }
+
     await expect(page).toClick(selectorString, expectToClickOptions)
 }
 

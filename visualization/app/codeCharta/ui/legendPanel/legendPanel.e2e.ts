@@ -56,11 +56,25 @@ describe("LegendPanel", () => {
 
     it("should highlight two different folders and add both to the legend then remove the first", async () => {
         await mapTreeViewLevel.openContextMenu("/root/ParentLeaf")
-        await clickButtonOnPageElement(".colorButton:nth-child(1)")
+        await retryOperation(async () => clickButtonOnPageElement(".colorButton:nth-child(1)"))
         await mapTreeViewLevel.openContextMenu("/root")
-        await clickButtonOnPageElement(".colorButton:nth-child(2)")
+        await retryOperation(async () => clickButtonOnPageElement(".colorButton:nth-child(2)"))
         await legendPanelObject.open()
         const selectedFolder = await legendPanelObject.getFilename()
         expect(selectedFolder).toMatch(/root\/ParentLeaf\s*/)
     })
 })
+
+const retryOperation = async (operation, retries = 3, delay = 1000) => {
+    for (let attempt = 1; attempt <= retries; attempt++) {
+        try {
+            await operation()
+            return
+        } catch (error) {
+            if (attempt === retries) {
+                throw error
+            }
+            await new Promise(result => setTimeout(result, delay))
+        }
+    }
+}
