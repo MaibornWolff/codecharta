@@ -234,7 +234,7 @@ describe("codeMapRenderService", () => {
         })
     })
 
-    describe("sortNodes", () => {
+    describe("sortVisibleNodesByHeightDescending", () => {
         it("should return nodes with length of 0 and set min length if experimental features are enabled", () => {
             const newState = {
                 ...state.getValue(),
@@ -246,7 +246,7 @@ describe("codeMapRenderService", () => {
             store.dispatch(setState({ value: newState }))
 
             const nodes = klona(TEST_NODES)
-            const sortedNodes: Node[] = codeMapRenderService["sortNodes"](nodes)
+            const sortedNodes: Node[] = codeMapRenderService.sortVisibleNodesByHeightDescending(nodes)
 
             const updatedNode = klona(TEST_NODE_LEAF_0_LENGTH)
             updatedNode.length = 2
@@ -265,7 +265,7 @@ describe("codeMapRenderService", () => {
             store.dispatch(setState({ value: newState }))
 
             const nodes = klona(TEST_NODES)
-            const sortedNodes: Node[] = codeMapRenderService["sortNodes"](nodes)
+            const sortedNodes: Node[] = codeMapRenderService.sortVisibleNodesByHeightDescending(nodes)
 
             const result: Node[] = [TEST_NODE_ROOT, TEST_NODE_LEAF]
             expect(sortedNodes).toEqual(result)

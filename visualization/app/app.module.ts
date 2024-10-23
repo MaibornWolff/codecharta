@@ -30,7 +30,6 @@ import { ChangelogDialogModule } from "./codeCharta/ui/dialogs/changelogDialog/c
 import { dialogs } from "./codeCharta/ui/dialogs/dialogs"
 import { BlacklistSearchPatternEffect } from "./codeCharta/ui/ribbonBar/searchPanel/searchBar/blacklistSearchPattern.effect"
 import { MaterialModule } from "./material/material.module"
-import { FocusEffects } from "./codeCharta/state/effects/focusNodes/focus.effect"
 import { IncompatibleMapsDialogModule } from "./codeCharta/ui/filePanel/filePanelDeltaSelector/incompatibleMapsDialog/incompatibleMapsDialog.module"
 
 @NgModule({
@@ -55,8 +54,7 @@ import { IncompatibleMapsDialogModule } from "./codeCharta/ui/filePanel/filePane
             SetLoadingIndicatorEffect,
             SaveCcStateEffect,
             UpdateQueryParametersEffect,
-            UpdateMapColorsEffect,
-            FocusEffects
+            UpdateMapColorsEffect
         ]),
         MaterialModule,
         FormsModule,

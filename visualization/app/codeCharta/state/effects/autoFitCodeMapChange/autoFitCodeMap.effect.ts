@@ -7,6 +7,7 @@ import { ThreeMapControlsService } from "../../../ui/codeMap/threeViewer/threeMa
 import { visibleFileStatesSelector } from "../../selectors/visibleFileStates/visibleFileStates.selector"
 import { layoutAlgorithmSelector } from "../../store/appSettings/layoutAlgorithm/layoutAlgorithm.selector"
 import { resetCameraIfNewFileIsLoadedSelector } from "../../store/appSettings/resetCameraIfNewFileIsLoaded/resetCameraIfNewFileIsLoaded.selector"
+import { focusedNodePathSelector } from "../../store/dynamicSettings/focusedNodePath/focusedNodePath.selector"
 import { RenderCodeMapEffect } from "../renderCodeMapEffect/renderCodeMap.effect"
 
 @Injectable()
@@ -20,7 +21,11 @@ export class AutoFitCodeMapEffect {
 
     autoFitTo$ = createEffect(
         () =>
-            combineLatest([this.store.select(visibleFileStatesSelector), this.store.select(layoutAlgorithmSelector)]).pipe(
+            combineLatest([
+                this.store.select(visibleFileStatesSelector),
+                this.store.select(focusedNodePathSelector),
+                this.store.select(layoutAlgorithmSelector)
+            ]).pipe(
                 skip(1), // initial map load is already fitted
                 withLatestFrom(this.store.select(resetCameraIfNewFileIsLoadedSelector)),
                 filter(([, resetCameraIfNewFileIsLoaded]) => resetCameraIfNewFileIsLoaded),
