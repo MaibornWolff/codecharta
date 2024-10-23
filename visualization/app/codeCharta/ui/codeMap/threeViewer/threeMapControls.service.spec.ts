@@ -9,7 +9,6 @@ import { wait } from "../../../util/testUtils/wait"
 import { appReducers, setStateMiddleware } from "../../../state/store/state.manager"
 import { MapControls } from "three/examples/jsm/controls/MapControls"
 import { take } from "rxjs"
-import { fireEvent } from "@testing-library/angular"
 
 describe("ThreeMapControlsService", () => {
     let threeMapControlsService: ThreeMapControlsService
@@ -71,7 +70,9 @@ describe("ThreeMapControlsService", () => {
             const addEventListenerMock = jest.fn()
             jest.spyOn(MapControls.prototype, "addEventListener").mockImplementation(addEventListenerMock)
 
-            threeMapControlsService.controls = new MapControls(threeCameraService.camera, domElement)
+            const mockMapControls = new MapControls(threeCameraService.camera, domElement)
+
+            threeMapControlsService.controls = mockMapControls
 
             threeMapControlsService.init(domElement)
 
@@ -79,6 +80,7 @@ describe("ThreeMapControlsService", () => {
             expect(threeMapControlsService.controls.mouseButtons.LEFT).toBe(MOUSE.ROTATE)
             expect(threeMapControlsService.controls.mouseButtons.MIDDLE).toBe(MOUSE.DOLLY)
             expect(threeMapControlsService.controls.mouseButtons.RIGHT).toBe(MOUSE.PAN)
+            expect(threeMapControlsService.controls.zoomToCursor).toBe(true)
             expect(addEventListenerMock).toHaveBeenCalledWith("change", expect.any(Function))
         })
     })
@@ -95,27 +97,6 @@ describe("ThreeMapControlsService", () => {
         expect(threeSceneService.scene.remove).toHaveBeenCalled()
 
         expect(threeCameraService.camera.position).toMatchSnapshot()
-    })
-
-    it("should change zoom to follow cursor when zooming in", () => {
-        const domElement = document.createElement("canvas")
-        threeMapControlsService.controls = new MapControls(threeCameraService.camera, domElement)
-        threeMapControlsService.init(domElement)
-
-        fireEvent.wheel(window, { deltaY: -2 })
-
-        expect(threeMapControlsService.controls.zoomToCursor).toBeTruthy()
-    })
-
-    it("should change zoom to default setting when zooming out again", () => {
-        const domElement = document.createElement("canvas")
-        threeMapControlsService.controls = new MapControls(threeCameraService.camera, domElement)
-        threeMapControlsService.init(domElement)
-        threeMapControlsService.controls.zoomToCursor = true
-
-        fireEvent.wheel(window, { deltaY: 2 })
-
-        expect(threeMapControlsService.controls.zoomToCursor).toBeFalsy()
     })
 
     describe("setControlTarget", () => {
@@ -178,7 +159,7 @@ describe("ThreeMapControlsService", () => {
 
             threeMapControlsService.setZoomPercentage(initialZoom)
 
-            let actualZoomPercentage: number
+            let actualZoomPercentage
             threeMapControlsService.zoomPercentage$.pipe(take(1)).subscribe(zoomPercentage => (actualZoomPercentage = zoomPercentage))
 
             expect(actualZoomPercentage).toBe(initialZoom)
@@ -193,7 +174,7 @@ describe("ThreeMapControlsService", () => {
             const distance = threeCameraService.camera.position.length()
             const expectedZoomPercentage = threeMapControlsService.getZoomPercentage(distance)
 
-            let actualZoomPercentage: number
+            let actualZoomPercentage
             threeMapControlsService.zoomPercentage$.pipe(take(1)).subscribe(zoomPercentage => (actualZoomPercentage = zoomPercentage))
 
             expect(actualZoomPercentage).toBeCloseTo(expectedZoomPercentage)
