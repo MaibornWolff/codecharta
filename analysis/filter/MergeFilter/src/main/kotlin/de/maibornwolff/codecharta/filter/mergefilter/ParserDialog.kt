@@ -63,7 +63,7 @@ class ParserDialog {
 
         fun askForFileCorrection(originalPrefix: String, suggestions: List<String>): String? {
             return KInquirer.promptInput(
-                message = "Did you mean one of these ${suggestions.joinToString(", ")} instead of $originalPrefix? (Enter to skip)",
+                message = "Did you mean one of these ' ${suggestions.joinToString(", ")} ' instead of $originalPrefix? (Enter to skip)",
                 default = ""
             )
         }
