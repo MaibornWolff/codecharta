@@ -1,7 +1,7 @@
 import { FilePanelFileSelectorComponent } from "./filePanelFileSelector/filePanelFileSelector.component"
 import { FilePanelStateButtonsComponent } from "./filePanelStateButtons/filePanelStateButtons.component"
 import { FilePanelDeltaSelectorComponent } from "./filePanelDeltaSelector/filePanelDeltaSelector.component"
-import { RemoveFileButtonComponent } from "./filePanelFileSelector/removeFileButton/removeFileButton.component"
+import { RemoveOrAddFileButtonComponent } from "./filePanelFileSelector/removeFileButton/removeOrAddFileButton.component"
 import { NgModule } from "@angular/core"
 import { CommonModule } from "@angular/common"
 import { MaterialModule } from "../../../material/material.module"
@@ -16,7 +16,7 @@ import { RemoveExtensionPipeModule } from "../../util/pipes/RemoveExtensionPipeM
         FilePanelDeltaSelectorComponent,
         FilePanelFileSelectorComponent,
         FilePanelStateButtonsComponent,
-        RemoveFileButtonComponent,
+        RemoveOrAddFileButtonComponent,
         FilePanelComponent
     ],
     providers: [FileSelectionModeService],

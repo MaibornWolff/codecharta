@@ -1,8 +1,6 @@
 import {
     addFile,
-    invertStandard,
-    removeFile,
-    setAll,
+    removeFiles,
     setDelta,
     setDeltaComparison,
     setDeltaReference,
@@ -22,7 +20,7 @@ export const files = createReducer(
     defaultFiles,
     on(setFiles, setState(defaultFiles)),
     on(addFile, (state, action) => [...state, { file: action.file, selectedAs: FileSelectionState.None }]),
-    on(removeFile, (state, action) => removeFileFromState(state, action.fileName)),
+    on(removeFiles, (state, action) => removeFilesFromState(state, action.fileNames)),
     on(setDelta, (state, action) => setDeltaState(state, action.referenceFile, action.comparisonFile)),
     on(setDeltaReference, (state, action) => setDeltaReferenceState(state, action.file)),
     on(setDeltaComparison, (state, action) => setDeltaComparisonState(state, action.file)),
@@ -33,18 +31,14 @@ export const files = createReducer(
             action.files.map(x => x.fileMeta.fileName)
         )
     ),
-    on(setStandardByNames, (state, action) => setStandardByNamesState(state, action.fileNames)),
-    on(invertStandard, state =>
-        state.map(fileState => ({
-            ...fileState,
-            selectedAs: fileState.selectedAs === FileSelectionState.Partial ? FileSelectionState.None : FileSelectionState.Partial
-        }))
-    ),
-    on(setAll, state => state.map(fileState => ({ ...fileState, selectedAs: FileSelectionState.Partial })))
+    on(setStandardByNames, (state, action) => setStandardByNamesState(state, action.fileNames))
 )
 
-function removeFileFromState(state: FileState[], fileName: string): FileState[] {
-    const newState = state.filter(fileState => fileState.file.fileMeta.fileName !== fileName)
+function removeFilesFromState(state: FileState[], fileNames: string[]): FileState[] {
+    if (fileNames.length === 0) {
+        return state
+    }
+    const newState = state.filter(fileState => !fileNames.includes(fileState.file.fileMeta.fileName))
     const isAnyFileSelected = newState.some(fileState => fileState.selectedAs === FileSelectionState.Partial)
     if (!isAnyFileSelected) {
         newState[0] = {
