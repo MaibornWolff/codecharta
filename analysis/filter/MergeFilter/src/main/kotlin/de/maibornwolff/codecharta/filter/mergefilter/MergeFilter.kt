@@ -180,38 +180,54 @@ class MergeFilter(
     ) {
         val groupedFiles = sourceFiles.groupBy { it.name.substringBefore('.') }
 
-        val suggestions = availablePrefixes.filter { levenshteinDistance(it, prefix) < 3 }
+        val suggestions = availablePrefixes
+            .filter { it != prefix && levenshteinDistance(it, prefix) < 3 }
+
         if (suggestions.isNotEmpty()) {
-            Logger.warn { "Did you mean one of these? ${suggestions.joinToString(", ")}" }
             val selectedPrefix = ParserDialog.askForFileCorrection(prefix, suggestions)
 
             if (!selectedPrefix.isNullOrBlank()) {
-                Logger.info { "Selected to use $selectedPrefix instead of $prefix." }
-                val correctedFiles = groupedFiles[selectedPrefix]
+                if (suggestions.contains(selectedPrefix)) {
+                    Logger.info { "Merging $prefix with other '$selectedPrefix' projects." }
+                    val correctedFiles = (groupedFiles[selectedPrefix] ?: emptyList()) + (groupedFiles[prefix] ?: emptyList())
 
-                if (correctedFiles != null) {
-                    val rootChildrenNodes = correctedFiles.mapNotNull {
-                        val input = it.inputStream()
-                        try {
-                            ProjectDeserializer.deserializeProject(input)
-                        } catch (e: Exception) {
-                            Logger.warn { "${it.name} is not a valid project file and will be skipped." }
-                            null
+                    if (correctedFiles.isNotEmpty()) {
+                        val rootChildrenNodes = correctedFiles.mapNotNull { file ->
+                            val input = file.inputStream()
+                            try {
+                                ProjectDeserializer.deserializeProject(input)
+                            } catch (e: Exception) {
+                                Logger.warn { "${file.name} is not a valid project file and will be skipped." }
+                                null
+                            }
                         }
-                    }
 
-                    if (!mergeModules && !hasTopLevelOverlap(rootChildrenNodes)) {
-                        Logger.warn { "Warning: No top-level overlap for files with prefix $selectedPrefix." }
-                        return
-                    }
+                        if (!mergeModules && !hasTopLevelOverlap(rootChildrenNodes)) {
+                            Logger.warn { "Warning: No top-level overlap for files with prefix $selectedPrefix." }
+                            return
+                        }
 
-                    val mergedProject = ProjectMerger(rootChildrenNodes, nodeMergerStrategy).merge()
-                    val outputFileName = "$selectedPrefix.merge.cc.json"
-                    ProjectSerializer.serializeToFileOrStream(mergedProject, outputFileName, output, compress)
+                        val mergedProject = ProjectMerger(rootChildrenNodes, nodeMergerStrategy).merge()
+                        val outputFileName = "$selectedPrefix.merge.cc.json"
+                        ProjectSerializer.serializeToFileOrStream(mergedProject, outputFileName, output, compress)
+                    }
+                } else {
+                    Logger.warn {
+                        "The entered project name '$selectedPrefix' is not a valid suggestion. " +
+                            "Please enter a valid project name from the list."
+                    }
+                    suggestAndHandleLevenshteinCorrections(
+                        sourceFiles,
+                        prefix,
+                        availablePrefixes,
+                        nodeMergerStrategy
+                    )
                 }
             } else {
                 Logger.info { "Skipped correction for $prefix." }
             }
+        } else {
+            Logger.warn { "No matching files found for prefix $prefix, and no close suggestions were found." }
         }
     }
 
