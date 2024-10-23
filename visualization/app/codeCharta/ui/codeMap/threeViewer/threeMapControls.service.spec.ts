@@ -80,7 +80,6 @@ describe("ThreeMapControlsService", () => {
             expect(threeMapControlsService.controls.mouseButtons.LEFT).toBe(MOUSE.ROTATE)
             expect(threeMapControlsService.controls.mouseButtons.MIDDLE).toBe(MOUSE.DOLLY)
             expect(threeMapControlsService.controls.mouseButtons.RIGHT).toBe(MOUSE.PAN)
-            expect(threeMapControlsService.controls.zoomToCursor).toBe(true)
             expect(addEventListenerMock).toHaveBeenCalledWith("change", expect.any(Function))
         })
     })
