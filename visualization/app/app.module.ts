@@ -1,4 +1,4 @@
-import { HttpClientModule } from "@angular/common/http"
+import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http"
 import { APP_INITIALIZER, NgModule } from "@angular/core"
 import { FormsModule, ReactiveFormsModule } from "@angular/forms"
 import { BrowserModule } from "@angular/platform-browser"
@@ -34,9 +34,10 @@ import { FocusEffects } from "./codeCharta/state/effects/focusNodes/focus.effect
 import { IncompatibleMapsDialogModule } from "./codeCharta/ui/filePanel/filePanelDeltaSelector/incompatibleMapsDialog/incompatibleMapsDialog.module"
 
 @NgModule({
+    declarations: [...dialogs],
+    bootstrap: [CodeChartaComponent],
     imports: [
         BrowserModule,
-        HttpClientModule,
         StoreModule.forRoot(appReducers, { metaReducers: [setStateMiddleware] }),
         EffectsModule.forRoot([
             UnfocusNodesEffect,
@@ -73,10 +74,9 @@ import { IncompatibleMapsDialogModule } from "./codeCharta/ui/filePanel/filePane
             useFactory: (config: VersionService) => () => config.synchronizeLocalCodeChartaVersion(),
             deps: [VersionService],
             multi: true
-        }
-    ],
-    declarations: [...dialogs],
-    bootstrap: [CodeChartaComponent]
+        },
+        provideHttpClient(withInterceptorsFromDi())
+    ]
 })
 export class AppModule {}
 
