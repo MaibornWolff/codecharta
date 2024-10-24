@@ -72,6 +72,7 @@
     "@angular/material": "^18.2.10",
     "@angular/platform-browser": "^18.2.9",
     "@angular/platform-browser-dynamic": "^18.2.9",
+    "@angular/router": "^18.2.9",
     "@ngrx/effects": "^18.1.0",
     "@ngrx/store": "^18.1.0",
     "@ngrx/operators": "^18.0.0",
@@ -139,7 +140,7 @@
     "marked": "^5.0.2",
     "puppeteer": "^23.6.0",
     "ts-jest": "^29.0.5",
-    "typescript": "^5.2.2",
+    "typescript": "5.4",
     "webpack-glsl-loader": "^1.0.1"
   }
 }
