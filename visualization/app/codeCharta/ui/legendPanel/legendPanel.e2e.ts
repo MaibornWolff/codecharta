@@ -47,38 +47,20 @@ describe("LegendPanel", () => {
         expect(emptyFilelist).toEqual("")
     })
 
-    it("should highlight two different folders and add both to the legend", async () => {
-        await searchPanel.toggle()
-        await mapTreeViewLevel.openContextMenu("/root/ParentLeaf")
-        await clickButtonOnPageElement(".colorButton:nth-child(1)")
-        const selectedFolder = await legendPanelObject.getMultipleFilenames()
-        expect(selectedFolder[0]).toEqual("/root")
-        expect(selectedFolder[1]).toEqual("/root/ParentLeaf")
-    })
-
     it("should highlight two different folders and add both to the legend then remove the first", async () => {
         await searchPanel.toggle()
         await mapTreeViewLevel.openContextMenu("/root/ParentLeaf")
-        await retryOperation(async () => clickButtonOnPageElement(".colorButton:nth-child(1)"))
+        await clickButtonOnPageElement(".colorButton:nth-child(1)")
+        await legendPanelObject.open()
+        const selectedFolders = await legendPanelObject.getMultipleFilenames()
+        expect(selectedFolders[0]).toEqual("/root")
+        expect(selectedFolders[1]).toEqual("/root/ParentLeaf")
+
         await searchPanel.toggle()
         await mapTreeViewLevel.openContextMenu("/root")
-        await retryOperation(async () => clickButtonOnPageElement(".colorButton:nth-child(2)"))
+        await clickButtonOnPageElement(".colorButton:nth-child(2)")
         await legendPanelObject.open()
         const selectedFolder = await legendPanelObject.getFilename()
         expect(selectedFolder).toMatch("/root/ParentLeaf")
     })
 })
-
-const retryOperation = async (operation, retries = 3, delay = 1000) => {
-    for (let attempt = 1; attempt <= retries; attempt++) {
-        try {
-            await operation()
-            return
-        } catch (error) {
-            if (attempt === retries) {
-                throw error
-            }
-            await new Promise(result => setTimeout(result, delay))
-        }
-    }
-}
