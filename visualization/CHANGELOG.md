@@ -14,7 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Changed
 
-- Revert focus behaviour to old one for stability [#3761](https://github.com/MaibornWolff/codecharta/issues/3761)
+- Revert focus behaviour to old one for stability [#3793](https://github.com/MaibornWolff/codecharta/pull/3793)
 
 ### Fixed 🐞
 
