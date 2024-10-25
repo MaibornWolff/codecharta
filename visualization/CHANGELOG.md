@@ -12,6 +12,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Add experimental feature: show buildings with an area metric value of 0 [#3789](https://github.com/MaibornWolff/codecharta/pull/3789)
 - Add further functionality for nested data to show popup when comparing files with different complexity metrics [#3791](https://github.com/MaibornWolff/codecharta/pull/3791)
 
+### Changed
+
+- Revert focus behaviour to old one for stability [#3761](https://github.com/MaibornWolff/codecharta/issues/3761)
+
 ### Fixed 🐞
 
 - Fix that default sample files are not removed when a new file is loaded by the user [#3768](https://github.com/MaibornWolff/codecharta/pull/3768)
