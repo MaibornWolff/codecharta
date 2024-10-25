@@ -59,7 +59,7 @@ class MetricRenamer(
     ): Map<String, MutableMap<String, AttributeType>> {
         val nodeAttributes = attributeTypes["nodes"] ?: return attributeTypes
 
-        if(nodeAttributes.containsKey("mcc")) {
+        if (nodeAttributes.containsKey("mcc")) {
             val mccType = nodeAttributes.remove("mcc")
                 ?: throw NullPointerException(
                     "Input file contains null value for an attribute type! Please ensure the input is a valid cc.json file."
