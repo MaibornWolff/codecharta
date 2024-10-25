@@ -39,6 +39,7 @@ describe("LegendPanel", () => {
     })
 
     it("should remove a highlighted folder and remove from legend", async () => {
+        await searchPanel.toggle()
         await mapTreeViewLevel.openContextMenu("/root")
         await clickButtonOnPageElement(".colorButton:nth-child(2)")
         await legendPanelObject.open()
@@ -47,6 +48,7 @@ describe("LegendPanel", () => {
     })
 
     it("should highlight two different folders and add both to the legend", async () => {
+        await searchPanel.toggle()
         await mapTreeViewLevel.openContextMenu("/root/ParentLeaf")
         await clickButtonOnPageElement(".colorButton:nth-child(1)")
         const selectedFolder = await legendPanelObject.getMultipleFilenames()
@@ -55,13 +57,15 @@ describe("LegendPanel", () => {
     })
 
     it("should highlight two different folders and add both to the legend then remove the first", async () => {
+        await searchPanel.toggle()
         await mapTreeViewLevel.openContextMenu("/root/ParentLeaf")
         await retryOperation(async () => clickButtonOnPageElement(".colorButton:nth-child(1)"))
+        await searchPanel.toggle()
         await mapTreeViewLevel.openContextMenu("/root")
         await retryOperation(async () => clickButtonOnPageElement(".colorButton:nth-child(2)"))
         await legendPanelObject.open()
         const selectedFolder = await legendPanelObject.getFilename()
-        expect(selectedFolder).toMatch(/root\/ParentLeaf\s*/)
+        expect(selectedFolder).toMatch("/root/ParentLeaf")
     })
 })
 
