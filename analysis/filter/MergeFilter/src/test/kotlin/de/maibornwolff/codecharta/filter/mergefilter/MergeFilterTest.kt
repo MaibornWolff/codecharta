@@ -1,6 +1,7 @@
 package de.maibornwolff.codecharta.filter.mergefilter
 
 import de.maibornwolff.codecharta.filter.mergefilter.MergeFilter.Companion.main
+import de.maibornwolff.codecharta.tools.interactiveparser.InputType
 import de.maibornwolff.codecharta.util.InputHelper
 import io.mockk.every
 import io.mockk.mockkObject
@@ -188,7 +189,7 @@ class MergeFilterTest {
         mockkObject(ParserDialog)
 
         every {
-            ParserDialog.getInputFileName("cc.json", true)
+            ParserDialog.getInputFileName("cc.json", InputType.FOLDER)
         } returns "invalid/folder/path"
 
         System.setErr(PrintStream(errContent))
@@ -203,7 +204,7 @@ class MergeFilterTest {
         mockkObject(ParserDialog)
 
         every {
-            ParserDialog.getInputFileName("cc.json", true)
+            ParserDialog.getInputFileName("cc.json", InputType.FOLDER)
         } returns "src/test/resources/emptyFolder"
 
         val emptyFolder = File("src/test/resources/emptyFolder")

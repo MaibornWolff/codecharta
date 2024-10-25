@@ -31,7 +31,7 @@ class CSVExporter() : Callable<Unit>, InteractiveParser {
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
 
-    @CommandLine.Parameters(arity = "1..*", paramLabel = "FILE", description = ["json files"])
+    @CommandLine.Parameters(arity = "1..*", paramLabel = "FILE or FOLDER", description = ["input file or folder"])
     private var sources: Array<File> = arrayOf()
 
     @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File (or empty for stdout)"])
@@ -63,12 +63,24 @@ class CSVExporter() : Callable<Unit>, InteractiveParser {
 
     @Throws(IOException::class)
     override fun call(): Unit? {
-        if (maxHierarchy < 0) {
-            throw IllegalArgumentException("depth-of-hierarchy must not be negative")
+        require(maxHierarchy >= 0) { "depth-of-hierarchy must not be negative" }
+
+        require(InputHelper.isInputValid(sources, canInputContainFolders = true)) {
+            "Invalid input file/folder for CSVExporter, stopping execution..."
         }
 
-        if (!InputHelper.isInputValid(sources, canInputContainFolders = false)) {
-            throw IllegalArgumentException("Invalid input file for CSVExporter, stopping execution...")
+        val files = sources.flatMap {
+            if (it.isDirectory) {
+                it.listFiles { _, name -> name.endsWith(".cc.json") }
+                    ?.toList()
+                    ?: emptyList()
+            } else {
+                listOf(it)
+            }
+        }.toTypedArray()
+
+        require(InputHelper.isInputValid(files, canInputContainFolders = false)) {
+            "Invalid input file for CSVExporter, stopping execution..."
         }
 
         if (outputFile.isNotEmpty()) {
@@ -76,7 +88,7 @@ class CSVExporter() : Callable<Unit>, InteractiveParser {
         }
 
         val projects =
-            sources.map {
+            files.map {
                 ProjectDeserializer.deserializeProject(it.inputStream())
             }
         projects.forEachIndexed { index, project ->
