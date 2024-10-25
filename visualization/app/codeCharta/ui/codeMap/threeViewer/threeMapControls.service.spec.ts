@@ -70,9 +70,7 @@ describe("ThreeMapControlsService", () => {
             const addEventListenerMock = jest.fn()
             jest.spyOn(MapControls.prototype, "addEventListener").mockImplementation(addEventListenerMock)
 
-            const mockMapControls = new MapControls(threeCameraService.camera, domElement)
-
-            threeMapControlsService.controls = mockMapControls
+            threeMapControlsService.controls = new MapControls(threeCameraService.camera, domElement)
 
             threeMapControlsService.init(domElement)
 
@@ -158,7 +156,7 @@ describe("ThreeMapControlsService", () => {
 
             threeMapControlsService.setZoomPercentage(initialZoom)
 
-            let actualZoomPercentage
+            let actualZoomPercentage: number
             threeMapControlsService.zoomPercentage$.pipe(take(1)).subscribe(zoomPercentage => (actualZoomPercentage = zoomPercentage))
 
             expect(actualZoomPercentage).toBe(initialZoom)
@@ -173,7 +171,7 @@ describe("ThreeMapControlsService", () => {
             const distance = threeCameraService.camera.position.length()
             const expectedZoomPercentage = threeMapControlsService.getZoomPercentage(distance)
 
-            let actualZoomPercentage
+            let actualZoomPercentage: number
             threeMapControlsService.zoomPercentage$.pipe(take(1)).subscribe(zoomPercentage => (actualZoomPercentage = zoomPercentage))
 
             expect(actualZoomPercentage).toBeCloseTo(expectedZoomPercentage)
