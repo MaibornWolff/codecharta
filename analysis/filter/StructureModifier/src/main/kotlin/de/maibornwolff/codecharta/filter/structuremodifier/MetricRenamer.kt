@@ -37,11 +37,9 @@ class MetricRenamer(
             val updatedAttributes = node.attributes.toMutableMap()
 
             val mccValue = updatedAttributes.remove("mcc")
-            if (mccValue == null) {
-                throw NullPointerException(
+                ?: throw NullPointerException(
                     "Input file contains null value for a node attribute! Please ensure the input is a valid cc.json file."
                 )
-            }
             updatedAttributes[newName] = mccValue
 
             node.attributes = updatedAttributes
@@ -61,13 +59,13 @@ class MetricRenamer(
     ): Map<String, MutableMap<String, AttributeType>> {
         val nodeAttributes = attributeTypes["nodes"] ?: return attributeTypes
 
-        val mccType = nodeAttributes.remove("mcc")
-        if (mccType == null) {
-            throw NullPointerException(
-                "Input file contains null value for an attribute type! Please ensure the input is a valid cc.json file."
-            )
+        if(nodeAttributes.containsKey("mcc")) {
+            val mccType = nodeAttributes.remove("mcc")
+                ?: throw NullPointerException(
+                    "Input file contains null value for an attribute type! Please ensure the input is a valid cc.json file."
+                )
+            nodeAttributes[newName] = mccType
         }
-        nodeAttributes[newName] = mccType
 
         return attributeTypes
     }
@@ -77,12 +75,10 @@ class MetricRenamer(
 
         val updatedAttributeDescriptors = attributeDescriptors.toMutableMap()
         val mccDescriptor = updatedAttributeDescriptors.remove("mcc")
-
-        if (mccDescriptor == null) {
-            throw NullPointerException(
+            ?: throw NullPointerException(
                 "Input file contains null value for an attribute descriptor! Please ensure the input is a valid cc.json file."
             )
-        }
+
         updatedAttributeDescriptors[newName] = mccDescriptor
         return updatedAttributeDescriptors
     }
