@@ -4,15 +4,15 @@ import { FilePanelDeltaSelectorComponent } from "./filePanelDeltaSelector/filePa
 import { RemoveFileButtonComponent } from "./filePanelFileSelector/removeFileButton/removeFileButton.component"
 import { NgModule } from "@angular/core"
 import { CommonModule } from "@angular/common"
-import { MaterialModule } from "../../../material/material.module"
+
 import { FormsModule } from "@angular/forms"
 import { FileSelectionModeService } from "./fileSelectionMode.service"
 import { FilePanelComponent } from "./filePanel.component"
-import { RemoveExtensionPipeModule } from "../../util/pipes/RemoveExtensionPipeModule"
 
 @NgModule({
-    imports: [CommonModule, MaterialModule, FormsModule, RemoveExtensionPipeModule],
-    declarations: [
+    imports: [
+        CommonModule,
+        FormsModule,
         FilePanelDeltaSelectorComponent,
         FilePanelFileSelectorComponent,
         FilePanelStateButtonsComponent,

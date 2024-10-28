@@ -3,11 +3,15 @@ import { CcState } from "../../../codeCharta.model"
 import { attributeDescriptorsSelector } from "../../../state/store/fileSettings/attributeDescriptors/attributeDescriptors.selector"
 import { Store } from "@ngrx/store"
 import { metricTitles } from "../../../util/metric/metricTitles"
+import { AsyncPipe } from "@angular/common"
+import { AttributeDescriptorTooltipPipe } from "../../../util/pipes/attributeDescriptorTooltip.pipe"
 
 @Component({
     selector: "cc-legend-block",
     templateUrl: "./legendBlock.component.html",
-    styleUrls: ["./legendBlock.component.scss"]
+    styleUrls: ["./legendBlock.component.scss"],
+    standalone: true,
+    imports: [AsyncPipe, AttributeDescriptorTooltipPipe]
 })
 export class LegendBlockComponent {
     @Input() metricName: string

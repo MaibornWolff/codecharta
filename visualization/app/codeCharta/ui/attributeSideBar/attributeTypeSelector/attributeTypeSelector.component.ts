@@ -3,10 +3,14 @@ import { Store } from "@ngrx/store"
 import { AttributeTypes, AttributeTypeValue, CcState } from "../../../codeCharta.model"
 import { updateAttributeType } from "../../../state/store/fileSettings/attributeTypes/attributeTypes.actions"
 import { attributeTypesSelector } from "../../../state/store/fileSettings/attributeTypes/attributeTypes.selector"
+import { MatButtonToggleGroup, MatButtonToggle } from "@angular/material/button-toggle"
+import { AsyncPipe } from "@angular/common"
 
 @Component({
     selector: "cc-attribute-type-selector",
-    templateUrl: "./attributeTypeSelector.component.html"
+    templateUrl: "./attributeTypeSelector.component.html",
+    standalone: true,
+    imports: [MatButtonToggleGroup, MatButtonToggle, AsyncPipe]
 })
 export class AttributeTypeSelectorComponent {
     @Input() metricName: string

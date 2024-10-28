@@ -8,11 +8,16 @@ import { BlacklistType, CcState } from "../../../../codeCharta.model"
 import { blacklistSearchPattern } from "./blacklistSearchPattern.effect"
 import { debounce } from "../../../../util/debounce"
 import { Store } from "@ngrx/store"
+import { MatMenuTrigger, MatMenu, MatMenuItem } from "@angular/material/menu"
+import { MatDivider } from "@angular/material/divider"
+import { AsyncPipe } from "@angular/common"
 
 @Component({
     selector: "cc-search-bar",
     templateUrl: "./searchBar.component.html",
-    styleUrls: ["./searchBar.component.scss"]
+    styleUrls: ["./searchBar.component.scss"],
+    standalone: true,
+    imports: [MatMenuTrigger, MatMenu, MatMenuItem, MatDivider, AsyncPipe]
 })
 export class SearchBarComponent {
     searchPattern$ = this.store.select(searchPatternSelector)

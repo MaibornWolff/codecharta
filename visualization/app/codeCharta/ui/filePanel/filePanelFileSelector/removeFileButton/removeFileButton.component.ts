@@ -5,7 +5,8 @@ import { removeFile } from "../../../../state/store/files/files.actions"
 @Component({
     selector: "cc-remove-file-button",
     templateUrl: "./removeFileButton.component.html",
-    styleUrls: ["/removeFileButton.component.scss"]
+    styleUrls: ["/removeFileButton.component.scss"],
+    standalone: true
 })
 export class RemoveFileButtonComponent {
     @Input() filename: string

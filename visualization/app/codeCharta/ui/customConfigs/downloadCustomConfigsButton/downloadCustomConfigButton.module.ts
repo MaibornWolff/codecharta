@@ -4,7 +4,7 @@ import { CustomConfigHelperService } from "../customConfigHelper.service"
 import { DownloadCustomConfigsButtonComponent } from "./downloadCustomConfigsButton.component"
 
 @NgModule({
-    declarations: [DownloadCustomConfigsButtonComponent],
+    imports: [DownloadCustomConfigsButtonComponent],
     exports: [DownloadCustomConfigsButtonComponent],
     providers: [CustomConfigHelperService]
 })
