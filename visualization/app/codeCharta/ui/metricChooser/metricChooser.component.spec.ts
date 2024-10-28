@@ -1,23 +1,19 @@
 import { ListKeyManager } from "@angular/cdk/a11y"
 import { Component, ViewChild } from "@angular/core"
 import { TestBed } from "@angular/core/testing"
-import { MatSelectModule } from "@angular/material/select"
 import { expect } from "@jest/globals"
 import { provideMockStore } from "@ngrx/store/testing"
 import { getByText, queryByText, render, screen, waitFor } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
-import { MaterialModule } from "../../../material/material.module"
 import { metricDataSelector } from "../../state/selectors/accumulatedData/metricData/metricData.selector"
 import { attributeDescriptorsSelector } from "../../state/store/fileSettings/attributeDescriptors/attributeDescriptors.selector"
 import { TEST_ATTRIBUTE_DESCRIPTORS_FULL } from "../../util/dataMocks"
 import { MetricChooserComponent } from "./metricChooser.component"
-import { MetricChooserModule } from "./metricChooser.module"
 
 describe("metricChooserComponent", () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
-            declarations: [MetricChooserComponent],
-            imports: [MetricChooserModule, MatSelectModule, MaterialModule],
+            imports: [MetricChooserComponent],
             providers: [
                 provideMockStore({
                     selectors: [
@@ -167,7 +163,7 @@ describe("metricChooserComponent", () => {
         }
 
         const { container, fixture } = await render(WrapperComponent, {
-            declarations: [MetricChooserComponent, WrapperComponent]
+            declarations: [WrapperComponent]
         })
 
         const metricChooserComponent: MetricChooserComponent = fixture.debugElement.componentInstance.metricChooserComponentRef

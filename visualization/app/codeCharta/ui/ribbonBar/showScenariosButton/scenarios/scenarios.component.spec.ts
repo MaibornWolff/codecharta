@@ -1,3 +1,4 @@
+import { ShowScenariosButtonComponent } from "./../showScenariosButton.component"
 import { TestBed } from "@angular/core/testing"
 import { MatDialog } from "@angular/material/dialog"
 import { getByText, getByTitle, render, screen } from "@testing-library/angular"
@@ -5,13 +6,12 @@ import userEvent from "@testing-library/user-event"
 import { SCENARIO_ITEMS } from "../../../../util/dataMocks"
 import { AddCustomScenarioDialogComponent } from "../addCustomScenarioDialog/addCustomScenarioDialog.component"
 import { ScenarioService } from "../scenario.service"
-import { ShowScenariosButtonModule } from "../showScenariosButton.module"
 import { ScenariosComponent } from "./scenarios.component"
 
 describe("scenariosComponent", () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
-            imports: [ShowScenariosButtonModule],
+            imports: [ShowScenariosButtonComponent],
             providers: [
                 {
                     provide: ScenarioService,

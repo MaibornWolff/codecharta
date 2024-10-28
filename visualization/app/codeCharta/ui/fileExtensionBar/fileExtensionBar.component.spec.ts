@@ -9,13 +9,12 @@ import { attributeDescriptorsSelector } from "../../state/store/fileSettings/att
 import { CODE_MAP_BUILDING_TS_NODE } from "../../util/dataMocks"
 import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
 import { FileExtensionBarComponent } from "./fileExtensionBar.component"
-import { FileExtensionBarModule } from "./fileExtensionBar.module"
 import { metricDistributionSelector } from "./selectors/metricDistribution.selector"
 
 describe("fileExtensionBarComponent", () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
-            imports: [FileExtensionBarModule],
+            imports: [FileExtensionBarComponent],
             providers: [
                 {
                     provide: ThreeSceneService,

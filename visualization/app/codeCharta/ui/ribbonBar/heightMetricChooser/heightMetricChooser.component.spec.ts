@@ -11,14 +11,13 @@ import { attributeDescriptorsSelector } from "../../../state/store/fileSettings/
 import { getLastAction } from "../../../util/testUtils/store.utils"
 import { NodeSelectionService } from "../../metricChooser/nodeSelection.service"
 import { HeightMetricChooserComponent } from "./heightMetricChooser.component"
-import { HeightMetricChooserModule } from "./heightMetricChooser.module"
 
 describe("heightMetricChooserComponent", () => {
     let store: MockStore
 
     beforeEach(() => {
         TestBed.configureTestingModule({
-            imports: [HeightMetricChooserModule],
+            imports: [HeightMetricChooserComponent],
             providers: [
                 { provide: NodeSelectionService, useValue: { createNodeObservable: jest.fn() } },
                 provideMockStore({
