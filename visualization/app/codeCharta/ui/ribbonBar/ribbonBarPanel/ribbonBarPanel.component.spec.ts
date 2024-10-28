@@ -4,7 +4,7 @@ import { TestBed } from "@angular/core/testing"
 import { RibbonBarPanelSettingsComponent } from "./ribbonBarPanelSettings.component"
 import { RibbonBarPanelComponent } from "./ribbonBarPanel.component"
 import userEvent from "@testing-library/user-event"
-import { CUSTOM_ELEMENTS_SCHEMA, ViewContainerRef } from "@angular/core"
+import { ViewContainerRef } from "@angular/core"
 
 describe(RibbonBarPanelComponent.name, () => {
     describe("with expandable settings", () => {
@@ -12,8 +12,8 @@ describe(RibbonBarPanelComponent.name, () => {
 
         beforeEach(async () => {
             TestBed.configureTestingModule({
-                imports: [RibbonBarPanelComponent],
-                providers: [RibbonBarPanelComponent, RibbonBarPanelSettingsComponent, provideMockStore()]
+                imports: [RibbonBarPanelComponent, RibbonBarPanelSettingsComponent],
+                providers: [provideMockStore()]
             })
             const { container } = await render(
                 `<cc-ribbon-bar-panel [isHeaderExpandable]="false">
@@ -49,7 +49,7 @@ describe(RibbonBarPanelComponent.name, () => {
 
     it("renders expandable header when isHeaderExpandable is true", async () => {
         TestBed.configureTestingModule({
-            imports: [RibbonBarPanelComponent],
+            imports: [RibbonBarPanelComponent, RibbonBarPanelSettingsComponent],
             providers: [provideMockStore()]
         })
         const { container } = await render(
@@ -65,7 +65,7 @@ describe(RibbonBarPanelComponent.name, () => {
 
     it("renders non-expandable header when isHeaderExpandable is false", async () => {
         TestBed.configureTestingModule({
-            imports: [RibbonBarPanelComponent],
+            imports: [RibbonBarPanelComponent, RibbonBarPanelSettingsComponent],
             providers: [provideMockStore()]
         })
         const { container } = await render(
@@ -80,7 +80,7 @@ describe(RibbonBarPanelComponent.name, () => {
 
     it("should be open when clicked on section header", async () => {
         TestBed.configureTestingModule({
-            imports: [RibbonBarPanelComponent],
+            imports: [RibbonBarPanelComponent, RibbonBarPanelSettingsComponent],
             providers: [provideMockStore()]
         })
         const { container } = await render(
@@ -96,7 +96,7 @@ describe(RibbonBarPanelComponent.name, () => {
 
     it("should not open when clicked on non-expandable header", async () => {
         TestBed.configureTestingModule({
-            imports: [RibbonBarPanelComponent],
+            imports: [RibbonBarPanelComponent, RibbonBarPanelSettingsComponent],
             providers: [provideMockStore()]
         })
         const { container } = await render(
@@ -115,18 +115,14 @@ describe(RibbonBarPanelComponent.name, () => {
 
         beforeEach(async () => {
             TestBed.configureTestingModule({
-                imports: [RibbonBarPanelComponent],
-                providers: [RibbonBarPanelSettingsComponent, provideMockStore(), ViewContainerRef],
-                schemas: [CUSTOM_ELEMENTS_SCHEMA]
+                imports: [RibbonBarPanelComponent, RibbonBarPanelSettingsComponent],
+                providers: [RibbonBarPanelComponent, provideMockStore(), ViewContainerRef]
             })
             const { container } = await render(
                 `<cc-ribbon-bar-panel [isHeaderExpandable]="false">
                             <div></div>
                             <cc-ribbon-bar-panel-settings></cc-ribbon-bar-panel-settings>
-                         </cc-ribbon-bar-panel>`,
-                {
-                    excludeComponentDeclaration: true
-                }
+                         </cc-ribbon-bar-panel>`
             )
             panel = container.querySelector("cc-ribbon-bar-panel")
         })
