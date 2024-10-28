@@ -51,7 +51,7 @@ describe("fileExtensionBarComponent", () => {
     })
 
     it("should toggle displayed metric relative / absolute values on click", async () => {
-        await render(FileExtensionBarComponent, { excludeComponentDeclaration: true })
+        await render(FileExtensionBarComponent)
         expect(screen.getByText("ts 100.00%")).toBeTruthy()
         expect(screen.queryByText("ts 1,120")).toBeFalsy()
 
@@ -61,7 +61,7 @@ describe("fileExtensionBarComponent", () => {
     })
 
     it("should show details on click of details button", async () => {
-        const { container } = await render(FileExtensionBarComponent, { excludeComponentDeclaration: true })
+        const { container } = await render(FileExtensionBarComponent)
         expect(container.querySelector(".cc-distribution-details").classList).toContain("cc-hidden")
 
         await userEvent.click(container.querySelector(".cc-show-details-button"))
@@ -69,7 +69,7 @@ describe("fileExtensionBarComponent", () => {
     })
 
     it("should highlight buildings on hover", async () => {
-        await render(FileExtensionBarComponent, { excludeComponentDeclaration: true })
+        await render(FileExtensionBarComponent)
         await userEvent.hover(screen.getByText("ts 100.00%"))
 
         const threeSceneService = TestBed.inject<ThreeSceneService>(ThreeSceneService)

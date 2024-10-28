@@ -2,17 +2,15 @@ import { EventEmitter } from "@angular/core"
 import { TestBed } from "@angular/core/testing"
 import { expect } from "@jest/globals"
 import { fireEvent, render, screen, waitForElementToBeRemoved } from "@testing-library/angular"
-
 import { LabelledColorPickerComponent } from "./labelledColorPicker.component"
-import { LabelledColorPickerModule } from "./labelledColorPicker.module"
 
-describe("labelledColorPicker", () => {
+describe("LabelledColorPickerComponent", () => {
     const handleColorChange = jest.fn()
 
     beforeEach(() => {
         handleColorChange.mockReset()
         TestBed.configureTestingModule({
-            imports: [LabelledColorPickerModule]
+            imports: [LabelledColorPickerComponent]
         })
     })
 

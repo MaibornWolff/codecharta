@@ -42,21 +42,21 @@ describe("RibbonBarComponent", () => {
     describe("delta state", () => {
         it("should not show cc-color-metric-chooser and cc-link-color-metric-to-height-metric-button when in delta mode", async () => {
             mockedIsDeltaStateSelector.mockImplementation(() => true)
-            const { container } = await render(RibbonBarComponent, { excludeComponentDeclaration: true })
+            const { container } = await render(RibbonBarComponent)
             expect(container.querySelector("cc-color-metric-chooser")).toBe(null)
             expect(container.querySelector("cc-link-color-metric-to-height-metric-button")).toBe(null)
         })
 
         it("should show cc-color-metric-chooser and cc-link-color-metric-to-height-metric-button when not in delta mode", async () => {
             mockedIsDeltaStateSelector.mockImplementation(() => false)
-            const { container } = await render(RibbonBarComponent, { excludeComponentDeclaration: true })
+            const { container } = await render(RibbonBarComponent)
             expect(container.querySelector("cc-color-metric-chooser")).not.toBe(null)
             expect(container.querySelector("cc-link-color-metric-to-height-metric-button")).not.toBe(null)
         })
 
         it("should show cc-color-settings-panel when in delta mode", async () => {
             mockedIsDeltaStateSelector.mockImplementation(() => true)
-            const { container } = await render(RibbonBarComponent, { excludeComponentDeclaration: true })
+            const { container } = await render(RibbonBarComponent)
             expect(container.querySelector("cc-color-settings-panel")).not.toBe(null)
         })
     })
@@ -69,12 +69,12 @@ describe("RibbonBarComponent", () => {
                 nodeEdgeMetricsMap: new Map()
             }))
 
-            await render(RibbonBarComponent, { excludeComponentDeclaration: true })
+            await render(RibbonBarComponent)
             expect(screen.getByText("Edge Metric Options")).toBeTruthy()
         })
 
         it("should hide edge metrics when there aren't any available", async () => {
-            await render(RibbonBarComponent, { excludeComponentDeclaration: true })
+            await render(RibbonBarComponent)
             expect(screen.queryByText("Edge Metric Options")).toBe(null)
         })
     })

@@ -39,7 +39,7 @@ describe("areaMetricChooserComponent", () => {
     })
 
     it("should be a select for area metric", async () => {
-        const { detectChanges } = await render(AreaMetricChooserComponent, { excludeComponentDeclaration: true })
+        const { detectChanges } = await render(AreaMetricChooserComponent)
 
         await userEvent.click(await screen.findByText("aMetric"))
         await waitFor(() => expect(screen.getByPlaceholderText("Area Metric (highest value)")).not.toBe(null))

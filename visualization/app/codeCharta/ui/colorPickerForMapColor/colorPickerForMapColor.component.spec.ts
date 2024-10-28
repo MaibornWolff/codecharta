@@ -2,17 +2,15 @@ import { TestBed } from "@angular/core/testing"
 import { provideMockStore } from "@ngrx/store/testing"
 import { render, screen } from "@testing-library/angular"
 import { ColorPickerForMapColorComponent } from "./colorPickerForMapColor.component"
-
-import { ColorPickerForMapColorModule } from "./colorPickerForMapColor.module"
 import { mapColorsSelector } from "../../state/store/appSettings/mapColors/mapColors.selector"
 import { defaultMapColors } from "../../state/store/appSettings/mapColors/mapColors.reducer"
 import { colorRangeSelector } from "../../state/store/dynamicSettings/colorRange/colorRange.selector"
 import { selectedColorMetricDataSelector } from "../../state/selectors/accumulatedData/metricData/selectedColorMetricData.selector"
 
-describe("colorPickerForMapColor", () => {
+describe("ColorPickerForMapColorComponent", () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
-            imports: [ColorPickerForMapColorModule],
+            imports: [ColorPickerForMapColorComponent],
             providers: [
                 provideMockStore({
                     selectors: [

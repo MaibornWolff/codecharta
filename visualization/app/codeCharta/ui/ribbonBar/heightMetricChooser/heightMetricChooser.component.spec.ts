@@ -41,7 +41,7 @@ describe("heightMetricChooserComponent", () => {
     })
 
     it("should be a select for height metric", async () => {
-        const { detectChanges } = await render(HeightMetricChooserComponent, { excludeComponentDeclaration: true })
+        const { detectChanges } = await render(HeightMetricChooserComponent)
         store = TestBed.inject(MockStore)
 
         await userEvent.click(await screen.findByText("aMetric"))

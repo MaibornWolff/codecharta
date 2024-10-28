@@ -20,11 +20,10 @@ import { CodeMapMouseEventService } from "../../../../codeMap/codeMap.mouseEvent
 import { CodeMapBuilding } from "../../../../codeMap/rendering/codeMapBuilding"
 import { ThreeRendererService } from "../../../../codeMap/threeViewer/threeRenderer.service"
 import { ThreeSceneService } from "../../../../codeMap/threeViewer/threeSceneService"
-import { MapTreeViewModule } from "../mapTreeView.module"
 import { MapTreeViewLevelComponent } from "./mapTreeViewLevel.component"
 import { rootNode } from "./mocks"
 
-describe("mapTreeViewLevel", () => {
+describe("MapTreeViewLevelComponent", () => {
     const componentProperties = {
         depth: 0,
         node: rootNode
@@ -44,7 +43,7 @@ describe("mapTreeViewLevel", () => {
 
     beforeEach(() => {
         TestBed.configureTestingModule({
-            imports: [MapTreeViewModule, StoreModule.forRoot(appReducers, { metaReducers: [setStateMiddleware] })],
+            imports: [MapTreeViewLevelComponent, StoreModule.forRoot(appReducers, { metaReducers: [setStateMiddleware] })],
             providers: [
                 {
                     provide: ThreeSceneService,

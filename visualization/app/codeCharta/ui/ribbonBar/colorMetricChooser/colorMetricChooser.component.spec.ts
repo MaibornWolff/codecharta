@@ -41,7 +41,7 @@ describe("colorMetricChooserComponent", () => {
     })
 
     it("should be a select for color metric", async () => {
-        const { container, detectChanges } = await render(ColorMetricChooserComponent, { excludeComponentDeclaration: true })
+        const { container, detectChanges } = await render(ColorMetricChooserComponent)
 
         expect(screen.getByRole("combobox").getAttribute("aria-disabled")).toBe("false")
 
@@ -64,7 +64,7 @@ describe("colorMetricChooserComponent", () => {
     })
 
     it("should disable metric chooser when height and color metric are linked", async () => {
-        const { container, detectChanges } = await render(ColorMetricChooserComponent, { excludeComponentDeclaration: true })
+        const { container, detectChanges } = await render(ColorMetricChooserComponent)
         const store = TestBed.inject(MockStore)
         store.overrideSelector(isColorMetricLinkedToHeightMetricSelector, true)
         store.refreshState()
