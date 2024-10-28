@@ -4,8 +4,7 @@ import { DistributionMetricChooserComponent } from "./distributionMetricChooser.
 import { MetricChooserModule } from "../../metricChooser/metricChooser.module"
 
 @NgModule({
-    imports: [CommonModule, MetricChooserModule],
-    declarations: [DistributionMetricChooserComponent],
+    imports: [CommonModule, MetricChooserModule, DistributionMetricChooserComponent],
     exports: [DistributionMetricChooserComponent]
 })
 export class DistributionMetricChooserModule {}

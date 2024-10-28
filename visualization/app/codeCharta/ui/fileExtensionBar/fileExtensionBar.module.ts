@@ -4,8 +4,7 @@ import { DistributionMetricChooserModule } from "./distributionMetricChooser/dis
 import { FileExtensionBarComponent } from "./fileExtensionBar.component"
 
 @NgModule({
-    imports: [CommonModule, DistributionMetricChooserModule],
-    declarations: [FileExtensionBarComponent],
+    imports: [CommonModule, DistributionMetricChooserModule, FileExtensionBarComponent],
     exports: [FileExtensionBarComponent]
 })
 export class FileExtensionBarModule {}

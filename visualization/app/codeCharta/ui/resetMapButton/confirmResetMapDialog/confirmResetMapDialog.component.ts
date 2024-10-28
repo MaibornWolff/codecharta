@@ -11,10 +11,16 @@ import { metricDataSelector } from "../../../state/selectors/accumulatedData/met
 import { setState } from "../../../state/store/state.actions"
 import { defaultState } from "../../../state/store/state.manager"
 import { deleteCcState } from "../../../util/indexedDB/indexedDBWriter"
+import { MatToolbar } from "@angular/material/toolbar"
+import { CdkScrollable } from "@angular/cdk/scrolling"
+import { MatDialogContent, MatDialogActions, MatDialogClose } from "@angular/material/dialog"
+import { MatButton } from "@angular/material/button"
 
 @Component({
     selector: "cc-confirm-reset-map-dialog",
-    templateUrl: "./confirmResetMapDialog.component.html"
+    templateUrl: "./confirmResetMapDialog.component.html",
+    standalone: true,
+    imports: [MatToolbar, CdkScrollable, MatDialogContent, MatDialogActions, MatButton, MatDialogClose]
 })
 export class ConfirmResetMapDialogComponent {
     private urlUtils = new UrlExtractor(this.httpClient)

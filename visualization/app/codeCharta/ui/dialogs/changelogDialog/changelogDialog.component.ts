@@ -1,11 +1,17 @@
 import markdownFile from "../../../../../CHANGELOG.md"
 import { Component, Inject } from "@angular/core"
-import { MAT_DIALOG_DATA } from "@angular/material/dialog"
+import { MAT_DIALOG_DATA, MatDialogContent, MatDialogActions, MatDialogClose } from "@angular/material/dialog"
 import { marked } from "marked"
+import { MatToolbar } from "@angular/material/toolbar"
+import { CdkScrollable } from "@angular/cdk/scrolling"
+import { MatButton } from "@angular/material/button"
+import { KeyValuePipe } from "@angular/common"
 
 @Component({
     selector: "cc-change-log-dialog",
-    templateUrl: "./changelogDialog.component.html"
+    templateUrl: "./changelogDialog.component.html",
+    standalone: true,
+    imports: [MatToolbar, CdkScrollable, MatDialogContent, MatDialogActions, MatButton, MatDialogClose, KeyValuePipe]
 })
 export class ChangelogDialogComponent {
     changes: Record<string, string>

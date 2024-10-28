@@ -4,8 +4,7 @@ import { MetricChooserModule } from "../../metricChooser/metricChooser.module"
 import { AreaMetricChooserComponent } from "./areaMetricChooser.component"
 
 @NgModule({
-    imports: [CommonModule, MetricChooserModule],
-    declarations: [AreaMetricChooserComponent],
+    imports: [CommonModule, MetricChooserModule, AreaMetricChooserComponent],
     exports: [AreaMetricChooserComponent]
 })
 export class AreaMetricChooserModule {}

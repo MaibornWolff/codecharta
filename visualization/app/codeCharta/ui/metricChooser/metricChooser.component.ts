@@ -4,15 +4,37 @@ import { EdgeMetricData, NodeMetricData, CcState, PrimaryMetrics } from "../../c
 import { metricDataSelector } from "../../state/selectors/accumulatedData/metricData/metricData.selector"
 import { attributeDescriptorsSelector } from "../../state/store/fileSettings/attributeDescriptors/attributeDescriptors.selector"
 import { Store } from "@ngrx/store"
-import { MatSelect } from "@angular/material/select"
+import { MatSelect, MatSelectTrigger } from "@angular/material/select"
 import { MatOption } from "@angular/material/core"
+import { NgIf, AsyncPipe } from "@angular/common"
+import { MatFormField, MatPrefix } from "@angular/material/form-field"
+import { MatInput } from "@angular/material/input"
+import { FormsModule } from "@angular/forms"
+import { MetricChooserValueComponent } from "./metricChooserValue/metricChooserValue.component"
+import { AttributeDescriptorTooltipPipe } from "../../util/pipes/attributeDescriptorTooltip.pipe"
+import { FilterMetricDataBySearchTermPipe } from "./filterMetricDataBySearchTerm.pipe"
 
 type MetricChooserType = "node" | "edge"
 
 @Component({
     selector: "cc-metric-chooser",
     templateUrl: "./metricChooser.component.html",
-    styleUrls: ["./metricChooser.component.scss"]
+    styleUrls: ["./metricChooser.component.scss"],
+    standalone: true,
+    imports: [
+        MatSelect,
+        MatSelectTrigger,
+        NgIf,
+        MatFormField,
+        MatPrefix,
+        MatInput,
+        FormsModule,
+        MatOption,
+        MetricChooserValueComponent,
+        AsyncPipe,
+        AttributeDescriptorTooltipPipe,
+        FilterMetricDataBySearchTermPipe
+    ]
 })
 export class MetricChooserComponent implements OnInit, AfterViewInit {
     @Input() metricFor?: keyof PrimaryMetrics
