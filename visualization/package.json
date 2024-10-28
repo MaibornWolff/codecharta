@@ -142,5 +142,8 @@
     "ts-jest": "^29.0.5",
     "typescript": "5.4",
     "webpack-glsl-loader": "^1.0.1"
+  },
+  "optionalDependencies": {
+    "@rollup/rollup-linux-x64-gnu": "^4.24.2"
   }
 }
