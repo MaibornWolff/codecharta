@@ -15,7 +15,6 @@ describe("ZoomSliderComponent", () => {
 
     beforeEach(() => {
         TestBed.configureTestingModule({
-            declarations: [ZoomSliderComponent],
             providers: [{ provide: ThreeMapControlsService, useValue: mockedThreeMapControlsService }]
         })
     })

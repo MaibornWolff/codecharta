@@ -11,7 +11,6 @@ import { ScenarioService } from "app/codeCharta/ui/ribbonBar/showScenariosButton
 import { FileSelectionModeService } from "app/codeCharta/ui/filePanel/fileSelectionMode.service"
 import { provideAnimationsAsync } from "@angular/platform-browser/animations/async"
 import { AutoFitCodeMapEffect } from "app/codeCharta/state/effects/autoFitCodeMapChange/autoFitCodeMap.effect"
-import { FocusEffects } from "app/codeCharta/state/effects/focusNodes/focus.effect"
 import { LinkColorMetricToHeightMetricEffect } from "app/codeCharta/state/effects/linkColorMetricToHeightMetric/linkColorMetricToHeightMetric.effect"
 import { OpenNodeContextMenuEffect } from "app/codeCharta/state/effects/nodeContextMenu/openNodeContextMenu.effect"
 import { RenderCodeMapEffect } from "app/codeCharta/state/effects/renderCodeMapEffect/renderCodeMap.effect"
@@ -54,8 +53,7 @@ export const appConfig: ApplicationConfig = {
             SetLoadingIndicatorEffect,
             SaveCcStateEffect,
             UpdateQueryParametersEffect,
-            UpdateMapColorsEffect,
-            FocusEffects
+            UpdateMapColorsEffect
         ]),
 
         VersionService,
