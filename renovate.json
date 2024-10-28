@@ -1,5 +1,9 @@
 {
-  "extends": ["config:base", ":preserveSemverRanges"],
+  "extends": ["config:recommended", ":preserveSemverRanges"],
+  "vulnerabilityAlerts": {
+    "labels": ["security", "dependencies"],
+    "automerge": true
+  },
   "packageRules": [
     {
       "description": "Automerge non-major updates",
