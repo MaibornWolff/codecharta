@@ -8,7 +8,6 @@ import { clone } from "../../../util/clone"
 import { TEST_FILE_DATA, TEST_FILE_DATA_WITH_COMPLEXITY } from "../../../util/dataMocks"
 import { MatSelectModule } from "@angular/material/select"
 import { render } from "@testing-library/angular"
-import { RemoveExtensionPipe } from "../../../util/pipes/removeExtension.pipe"
 
 describe(FilePanelDeltaSelectorComponent.name, () => {
     let store: Store<CcState>
@@ -17,7 +16,6 @@ describe(FilePanelDeltaSelectorComponent.name, () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
             imports: [StoreModule.forRoot({}), MatDialogModule, MatSelectModule],
-            declarations: [FilePanelDeltaSelectorComponent, RemoveExtensionPipe],
             providers: [{ provide: MatDialog, useValue: mockedDialog }, Store]
         })
     })

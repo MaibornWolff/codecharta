@@ -162,9 +162,7 @@ describe("metricChooserComponent", () => {
             @ViewChild(MetricChooserComponent, { static: true }) metricChooserComponentRef: MetricChooserComponent
         }
 
-        const { container, fixture } = await render(WrapperComponent, {
-            declarations: [WrapperComponent]
-        })
+        const { container, fixture } = await render(WrapperComponent)
 
         const metricChooserComponent: MetricChooserComponent = fixture.debugElement.componentInstance.metricChooserComponentRef
 

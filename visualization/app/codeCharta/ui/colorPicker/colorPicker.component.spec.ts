@@ -1,7 +1,7 @@
 import { Component } from "@angular/core"
 import { TestBed } from "@angular/core/testing"
 import { fireEvent, render, screen, waitFor } from "@testing-library/angular"
-import { ColorPickerComponent } from "app/codeCharta/ui/colorPicker/colorPicker.component"
+import { ColorPickerComponent } from "./colorPicker.component"
 
 describe("ColorPickerComponent", () => {
     @Component({

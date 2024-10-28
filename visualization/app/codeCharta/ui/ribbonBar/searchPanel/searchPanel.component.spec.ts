@@ -3,15 +3,12 @@ import { fireEvent, render, screen } from "@testing-library/angular"
 import { SearchPanelComponent } from "./searchPanel.component"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { isSearchPanelPinnedSelector } from "../../../state/store/appSettings/isSearchPanelPinned/isSearchPanelPinned.selector"
-import { RibbonBarPanelComponent } from "../ribbonBarPanel/ribbonBarPanel.component"
-import { RibbonBarPanelSettingsComponent } from "../ribbonBarPanel/ribbonBarPanelSettings.component"
 
 describe(SearchPanelComponent.name, () => {
     let store: MockStore
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             imports: [SearchPanelComponent],
-            declarations: [RibbonBarPanelComponent, RibbonBarPanelSettingsComponent],
             providers: [
                 provideMockStore({
                     selectors: [{ selector: isSearchPanelPinnedSelector, value: false }]
