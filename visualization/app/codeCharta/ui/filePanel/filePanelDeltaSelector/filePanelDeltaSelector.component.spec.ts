@@ -86,7 +86,7 @@ describe(FilePanelDeltaSelectorComponent.name, () => {
     })
 
     async function renderComponent() {
-        const { fixture } = await render(FilePanelDeltaSelectorComponent, { excludeComponentDeclaration: true })
+        const { fixture } = await render(FilePanelDeltaSelectorComponent)
         store = TestBed.inject(Store)
         return fixture
     }

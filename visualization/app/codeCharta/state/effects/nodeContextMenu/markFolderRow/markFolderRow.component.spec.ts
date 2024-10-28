@@ -1,7 +1,6 @@
 import { TestBed } from "@angular/core/testing"
 import { fireEvent, render } from "@testing-library/angular"
 import { MarkFolderRowComponent } from "./markFolderRow.component"
-import { MarkFolderRowModule } from "./markFolderRow.module"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { markFolderItemsSelector } from "./selectors/markFolderItems.selector"
 import { rightClickedCodeMapNodeSelector } from "../rightClickedCodeMapNode.selector"
@@ -11,7 +10,7 @@ import { markPackages, unmarkPackage } from "../../../store/fileSettings/markedP
 describe("markFolderRow component", () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
-            imports: [MarkFolderRowModule],
+            imports: [MarkFolderRowComponent],
             providers: [
                 provideMockStore({
                     selectors: [
@@ -24,7 +23,7 @@ describe("markFolderRow component", () => {
     })
 
     it("should let a user mark and unmark a node", async () => {
-        const { container, detectChanges } = await render(MarkFolderRowComponent, { excludeComponentDeclaration: true })
+        const { container, detectChanges } = await render(MarkFolderRowComponent)
         const store = TestBed.inject(MockStore)
 
         expect(container.querySelectorAll("button").length).toBe(1)

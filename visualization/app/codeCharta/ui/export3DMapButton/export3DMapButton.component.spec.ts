@@ -21,7 +21,7 @@ describe("Export3DMapButtonComponent", () => {
     })
 
     it("should render the button", async function () {
-        await render(Export3DMapButtonComponent, { excludeComponentDeclaration: true })
+        await render(Export3DMapButtonComponent)
         const exportButton = screen.getByRole("button")
         expect(exportButton).not.toBe(null)
     })

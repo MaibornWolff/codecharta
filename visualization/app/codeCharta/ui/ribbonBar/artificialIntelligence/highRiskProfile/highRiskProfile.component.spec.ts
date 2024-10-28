@@ -1,13 +1,12 @@
 import { render, screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
-import { ArtificialIntelligenceModule } from "../artificialIntelligence.module"
 import { HighRiskProfileComponent } from "./highRiskProfile.component"
 
 describe("HighRiskProfileComponent", () => {
     it("should render profile with an analyzed programming properties", async () => {
         await render(HighRiskProfileComponent, {
             excludeComponentDeclaration: true,
-            imports: [ArtificialIntelligenceModule],
+            imports: [HighRiskProfileComponent],
             componentProperties: {
                 data: {
                     analyzedProgrammingLanguage: "ts",
@@ -45,8 +44,7 @@ describe("HighRiskProfileComponent", () => {
 
     it("should explain that there couldn't be analyzed a risk profile", async () => {
         await render(HighRiskProfileComponent, {
-            excludeComponentDeclaration: true,
-            imports: [ArtificialIntelligenceModule],
+            imports: [HighRiskProfileComponent],
             componentProperties: {
                 data: {
                     analyzedProgrammingLanguage: "",
@@ -71,8 +69,7 @@ describe("HighRiskProfileComponent", () => {
 
     it("should explain that there couldn't be analyzed a risk profile even when analyzedProgrammingLanguage is undefined", async () => {
         await render(HighRiskProfileComponent, {
-            excludeComponentDeclaration: true,
-            imports: [ArtificialIntelligenceModule],
+            imports: [HighRiskProfileComponent],
             componentProperties: {
                 data: {
                     analyzedProgrammingLanguage: undefined,

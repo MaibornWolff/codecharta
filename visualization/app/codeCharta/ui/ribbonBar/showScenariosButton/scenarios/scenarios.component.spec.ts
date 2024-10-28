@@ -26,7 +26,7 @@ describe("scenariosComponent", () => {
     })
 
     it("should let a user open the dialog for creating a custom scenario", async () => {
-        await render(ScenariosComponent, { excludeComponentDeclaration: true })
+        await render(ScenariosComponent)
         const dialog = TestBed.inject(MatDialog)
 
         await userEvent.click(screen.getByTitle("Create a custom scenario"))

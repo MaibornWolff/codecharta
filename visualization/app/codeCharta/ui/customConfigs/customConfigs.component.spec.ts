@@ -19,7 +19,7 @@ describe("CustomConfigsComponent", () => {
     })
 
     it("should open dialog when clicking add custom config button", async () => {
-        await render(CustomConfigsComponent, { excludeComponentDeclaration: true })
+        await render(CustomConfigsComponent)
 
         const addButton = screen.getByTitle("Create new Custom View")
         await userEvent.click(addButton)
@@ -29,7 +29,7 @@ describe("CustomConfigsComponent", () => {
     })
 
     it("should open dialog when clicking add custom config button", async () => {
-        await render(CustomConfigsComponent, { excludeComponentDeclaration: true })
+        await render(CustomConfigsComponent)
 
         const openCustomConfigsButton = screen.getByTitle("Open your saved Custom Views")
         await userEvent.click(openCustomConfigsButton)

@@ -41,7 +41,7 @@ describe(LegendPanelComponent.name, () => {
     })
 
     it("should open and close", async () => {
-        const { container, fixture } = await render(LegendPanelComponent, { excludeComponentDeclaration: true })
+        const { container, fixture } = await render(LegendPanelComponent)
 
         expect(isLegendPanelOpen(container)).toBe(false)
 
@@ -57,7 +57,7 @@ describe(LegendPanelComponent.name, () => {
     })
 
     it("should display legend for single mode", async () => {
-        const { container, detectChanges } = await render(LegendPanelComponent, { excludeComponentDeclaration: true })
+        const { container, detectChanges } = await render(LegendPanelComponent)
         const store = TestBed.inject(MockStore)
         store.overrideSelector(isDeltaStateSelector, false)
         store.refreshState()
@@ -74,7 +74,7 @@ describe(LegendPanelComponent.name, () => {
     })
 
     it("should contain elements with titles and links if attributeDescriptors are present", async () => {
-        const { container, detectChanges } = await render(LegendPanelComponent, { excludeComponentDeclaration: true })
+        const { container, detectChanges } = await render(LegendPanelComponent)
         const store = TestBed.inject(MockStore)
         const metricLink = "https://rl.oc"
         store.overrideSelector(isDeltaStateSelector, false)
@@ -112,7 +112,7 @@ describe(LegendPanelComponent.name, () => {
     })
 
     it("should display legend for delta mode", async () => {
-        const { container } = await render(LegendPanelComponent, { excludeComponentDeclaration: true })
+        const { container } = await render(LegendPanelComponent)
         await userEvent.click(screen.getByTitle("Show panel"))
 
         expect(screen.queryAllByText("delta", { exact: false }).length).toBeGreaterThan(0)
@@ -133,21 +133,21 @@ describe(LegendPanelComponent.name, () => {
     describe("closing on outside clicks", () => {
         it("should subscribe to mousedown events when opening", async () => {
             const addEventListenerSpy = jest.spyOn(document, "addEventListener")
-            const { fixture } = await render(LegendPanelComponent, { excludeComponentDeclaration: true })
+            const { fixture } = await render(LegendPanelComponent)
             fixture.componentInstance.ngOnInit()
             expect(addEventListenerSpy).toHaveBeenCalledWith("mousedown", expect.any(Function))
         })
 
         it("should unsubscribe mousedown events when destroyed", async () => {
             const removeEventListenerSpy = jest.spyOn(document, "removeEventListener")
-            const { fixture } = await render(LegendPanelComponent, { excludeComponentDeclaration: true })
+            const { fixture } = await render(LegendPanelComponent)
             fixture.componentInstance.ngOnInit()
             fixture.componentInstance.ngOnDestroy()
             expect(removeEventListenerSpy).toHaveBeenCalledWith("mousedown", expect.any(Function))
         })
 
         it("should close on outside clicks", async () => {
-            const { container, fixture } = await render(LegendPanelComponent, { excludeComponentDeclaration: true })
+            const { container, fixture } = await render(LegendPanelComponent)
             expect(isLegendPanelOpen(container)).toBe(false)
 
             const openLegendButton = screen.getByTitle("Show panel")
