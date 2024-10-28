@@ -13,3 +13,36 @@
         font-size: 16px;
     }
 }
+
+.mat-mdc-menu-panel.cc-scenarios-menu {
+    width: 420px;
+    max-width: unset;
+
+    .mat-mdc-menu-content {
+        padding: 0;
+    }
+}
+
+.mat-mdc-menu-panel.cc-ai-drop-down.cc-high-risk-profile {
+    max-width: 35em;
+    padding: 10px;
+
+    .mat-mdc-menu-content {
+        padding: 0;
+    }
+
+    .title {
+        font-size: 20px;
+        font-weight: bold;
+        margin-bottom: 8px;
+    }
+
+    .sub-title {
+        font-size: 16px;
+    }
+
+    .text-content {
+        font-size: 14px;
+        padding: 8px 0 16px 0;
+    }
+}

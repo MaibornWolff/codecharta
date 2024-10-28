@@ -4,7 +4,7 @@ import { createTreemapNodes } from "../../util/algorithm/treeMapLayout/treeMapGe
 import { CodeMapLabelService } from "./codeMap.label.service"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { CodeMapArrowService } from "./arrow/codeMap.arrow.service"
-import { CodeMapNode, LayoutAlgorithm, Node, CcState } from "../../codeCharta.model"
+import { CcState, CodeMapNode, LayoutAlgorithm, Node } from "../../codeCharta.model"
 import { isDeltaState } from "../../model/files/files.helper"
 import { StreetLayoutGenerator } from "../../util/algorithm/streetLayout/streetLayoutGenerator"
 import { ThreeStatsService } from "./threeViewer/threeStats.service"
@@ -12,7 +12,9 @@ import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
 import { isLoadingFileSelector } from "../../state/store/appSettings/isLoadingFile/isLoadingFile.selector"
 import { Subscription, tap } from "rxjs"
 import { metricDataSelector } from "../../state/selectors/accumulatedData/metricData/metricData.selector"
-import { Store, State } from "@ngrx/store"
+import { State, Store } from "@ngrx/store"
+
+const MIN_BUILDING_LENGTH = 2
 
 @Injectable({ providedIn: "root" })
 export class CodeMapRenderService implements OnDestroy {
@@ -50,13 +52,13 @@ export class CodeMapRenderService implements OnDestroy {
 
     render(map: CodeMapNode) {
         const nodes = this.getNodes(map)
-        const sortedNodes = this.sortNodes(nodes)
-        this.unflattenedNodes = sortedNodes.filter(({ flat }) => !flat)
+        const visibleSortedNodes = this.sortVisibleNodesByHeightDescending(nodes)
+        this.unflattenedNodes = visibleSortedNodes.filter(({ flat }) => !flat)
 
-        this.setNewMapMesh(nodes, sortedNodes)
+        this.setNewMapMesh(nodes, visibleSortedNodes)
         this.getNodesMatchingColorSelector(this.unflattenedNodes)
         this.setLabels(this.unflattenedNodes)
-        this.setArrows(sortedNodes)
+        this.setArrows(visibleSortedNodes)
     }
 
     private setNewMapMesh(allMeshNodes, visibleSortedNodes) {
@@ -93,8 +95,21 @@ export class CodeMapRenderService implements OnDestroy {
         }
     }
 
-    sortNodes(nodes: Node[]) {
-        return nodes.filter(node => node.length > 0 && node.width > 0).sort((a, b) => b.height - a.height)
+    sortVisibleNodesByHeightDescending(nodes: Node[]) {
+        const experimentalFeaturesEnabled = this.state.getValue().appSettings.experimentalFeaturesEnabled
+        if (experimentalFeaturesEnabled) {
+            this.setMinBuildingLength(nodes)
+            return nodes.filter(node => node.visible && node.width > 0).sort((a, b) => b.height - a.height)
+        }
+        return nodes.filter(node => node.visible && node.length > 0 && node.width > 0).sort((a, b) => b.height - a.height)
+    }
+
+    private setMinBuildingLength(nodes: Node[]) {
+        for (const node of nodes) {
+            if (node.length <= 0) {
+                node.length = MIN_BUILDING_LENGTH
+            }
+        }
     }
 
     private getNodesMatchingColorSelector(sortedNodes: Node[]) {

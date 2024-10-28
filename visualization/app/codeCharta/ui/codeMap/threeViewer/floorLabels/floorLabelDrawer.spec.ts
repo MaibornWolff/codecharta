@@ -87,7 +87,7 @@ describe("FloorLabelDrawer", () => {
 
             const canvasContextMock = createCanvasMock()
 
-            const floorLabelDrawer = new FloorLabelDrawer(nodes, rootNode, mapSize, scaling)
+            const floorLabelDrawer = new FloorLabelDrawer(nodes, rootNode, mapSize, scaling, false)
             const floorLabelPlanes = floorLabelDrawer.draw()
 
             expect(canvasContextMock.fillText).toHaveBeenCalledTimes(5)
@@ -96,6 +96,26 @@ describe("FloorLabelDrawer", () => {
             expect(canvasContextMock.fillText).toHaveBeenNthCalledWith(3, "simpleLabelNode2", expect.any(Number), expect.any(Number))
             expect(canvasContextMock.fillText).toHaveBeenNthCalledWith(4, "simpleLabelNode3", expect.any(Number), expect.any(Number))
             expect(canvasContextMock.fillText).toHaveBeenNthCalledWith(5, "text…", expect.any(Number), expect.any(Number))
+
+            expect(floorLabelPlanes.length).toBe(3)
+        })
+
+        it("should scale folderGeometryHeight when experimentalFeatures are enabled", () => {
+            initMapCanvas()
+
+            const rootNode = createFakeNode("root", 20_000, 20_000, false, 0)
+            const nodes = [
+                rootNode,
+                createFakeNode("simpleLabelNode1", 4000, 4000, false, 1),
+                createFakeNode("simpleLabelNode2", 2000, 2000, false, 2),
+                createFakeNode("simpleLabelNode3", 1500, 1500, false, 2),
+                createFakeNode("text_to_be_shortened_to_fit_onto_the_floor", 50, 50, false, 2)
+            ]
+
+            const floorLabelDrawer = new FloorLabelDrawer(nodes, rootNode, mapSize, scaling, true)
+            const floorLabelPlanes = floorLabelDrawer.draw()
+
+            expect(floorLabelDrawer.folderGeometryHeight).toBe(68)
 
             expect(floorLabelPlanes.length).toBe(3)
         })
@@ -115,7 +135,7 @@ describe("FloorLabelDrawer", () => {
 
             const canvasContextMock = createCanvasMock()
 
-            const floorLabelDrawer = new FloorLabelDrawer(nodes, rootNode, mapSize, scaling)
+            const floorLabelDrawer = new FloorLabelDrawer(nodes, rootNode, mapSize, scaling, false)
             const floorLabelPlanes = floorLabelDrawer.draw()
 
             expect(canvasContextMock.fillText).toHaveBeenCalledTimes(4)
@@ -134,7 +154,7 @@ describe("FloorLabelDrawer", () => {
 
             const canvasContextMock = createCanvasMock()
 
-            const floorLabelDrawer = new FloorLabelDrawer(nodes, rootNode, mapSize, scaling)
+            const floorLabelDrawer = new FloorLabelDrawer(nodes, rootNode, mapSize, scaling, false)
             const floorLabelPlanes = floorLabelDrawer.draw()
 
             expect(canvasContextMock.fillText).toHaveBeenCalledTimes(2)
@@ -153,7 +173,7 @@ describe("FloorLabelDrawer", () => {
                 createFakeNode("unlabeledNode", 100, 100, true, 1)
             ]
 
-            const floorLabelDrawer = new FloorLabelDrawer(nodes, rootNode, mapSize, scaling)
+            const floorLabelDrawer = new FloorLabelDrawer(nodes, rootNode, mapSize, scaling, false)
             const floorLabelPlanes = floorLabelDrawer.draw()
 
             const geometryPositions = floorLabelPlanes[0].geometry.attributes.position.array
@@ -167,7 +187,7 @@ describe("FloorLabelDrawer", () => {
             floorLabelDrawer.translatePlaneCanvases(new Vector3(1, translateY, 1))
 
             const expectedDifference = lastScaling - translateY
-            const additivePositionDelta = 2.01 * expectedDifference
+            const additivePositionDelta = 2 * expectedDifference
 
             const translatedPostion = floorLabelDrawer["floorLabelPlanes"][0].geometry.attributes.position.array[2]
             expect(translatedPostion).toBeCloseTo(startPosition + additivePositionDelta, 5)

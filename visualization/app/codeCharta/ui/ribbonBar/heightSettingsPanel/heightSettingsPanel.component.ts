@@ -1,4 +1,4 @@
-import { Component, ViewEncapsulation } from "@angular/core"
+import { Component } from "@angular/core"
 import { amountOfTopLabelsSelector } from "../../../state/store/appSettings/amountOfTopLabels/amountOfTopLabels.selector"
 import { isLabelsSliderDisabledSelector } from "./selectors/isLabelsSliderDisabled.selector"
 import { setAmountOfTopLabels } from "../../../state/store/appSettings/amountOfTopLabels/amountOfTopLabels.actions"
@@ -18,8 +18,7 @@ import { CcState } from "../../../codeCharta.model"
 
 @Component({
     selector: "cc-height-settings-panel",
-    templateUrl: "./heightSettingsPanel.component.html",
-    encapsulation: ViewEncapsulation.None
+    templateUrl: "./heightSettingsPanel.component.html"
 })
 export class HeightSettingsPanelComponent {
     static DEBOUNCE_TIME = 400

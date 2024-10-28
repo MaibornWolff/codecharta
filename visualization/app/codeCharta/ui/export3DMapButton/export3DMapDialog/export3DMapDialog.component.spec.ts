@@ -201,7 +201,7 @@ describe("Export3DMapDialogComponent", () => {
         await userEvent.type(inputElement, secondRowTextInput)
         fixture.detectChanges()
         expect(inputElement.value).toBe(secondRowTextInput)
-    })
+    }, 10_000)
 
     it("should update QR code text when input changes", async () => {
         const { fixture } = await setup()

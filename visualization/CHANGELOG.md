@@ -7,13 +7,49 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
-### Fixed 🐞
+### Added 🚀
 
-- Remove horizontal scrollbar in the File/ Node Explorer dropdown and styling fixes [#3765](https://github.com/MaibornWolff/codecharta/pull/3765)
+- Add experimental feature: show buildings with an area metric value of 0 [#3789](https://github.com/MaibornWolff/codecharta/pull/3789)
+- Add further functionality for nested data to show popup when comparing files with different complexity metrics [#3791](https://github.com/MaibornWolff/codecharta/pull/3791)
+- Add improvements to the migration script for old mcc maps [#3803](https://github.com/MaibornWolff/codecharta/pull/3803)
 
 ### Changed
 
-- Add thousands seperation for metrics value [#3758](https://github.com/MaibornWolff/codecharta/pull/3758)
+- Revert focus behaviour to old one for stability [#3793](https://github.com/MaibornWolff/codecharta/pull/3793)
+
+### Fixed 🐞
+
+- Fix that default sample files are not removed when a new file is loaded by the user [#3768](https://github.com/MaibornWolff/codecharta/pull/3768)
+- When an invisible file is deleted, the shown map is not reloaded anymore [#3788](https://github.com/MaibornWolff/codecharta/pull/3788)
+
+## [1.129.1] - 2024-10-18
+
+### Fixed 🐞
+
+- Fix an issue which caused the web demo files to be incomplete [#3790](https://github.com/MaibornWolff/codecharta/pull/3790)
+
+## [1.129.0] - 2024-10-17
+
+### Added 🚀
+
+- Add thousands separation for big numbers [#3758](https://github.com/MaibornWolff/codecharta/pull/3758)
+- Add popup when comparing files with different complexity metrics [#3773](https://github.com/MaibornWolff/codecharta/pull/3773)
+- Add experimental feature: dynamic floor lable height for large maps [#3778](https://github.com/MaibornWolff/codecharta/pull/3778)
+
+### Fixed 🐞
+
+- Remove horizontal scrollbar in the File/ Node Explorer dropdown and styling fixes [#3765](https://github.com/MaibornWolff/codecharta/pull/3765)
+- Fix issue when multiple files are selected then the edge metrics in the primary metrics section are not displayed correctly. [#3753](https://github.com/MaibornWolff/codecharta/pull/3753)
+- Metric Scenarios (before Metric Templates) are available again [#3762](https://github.com/MaibornWolff/codecharta/pull/3762)
+- Legend Panel closes on outside click [#3770](https://github.com/MaibornWolff/codecharta/pull/3770)
+
+### Changed
+
+- Renaming of Metric Templates to Metric Scenarios [#3656](https://github.com/MaibornWolff/codecharta/pull/3656)
+
+### Chore 👨‍💻 👩‍💻
+
+- Enable View Encapsulation for components in the ribbon bar [#3779](https://github.com/MaibornWolff/codecharta/pull/3779)
 
 ## [1.128.0] - 2024-09-18
 
@@ -24,10 +60,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+- Fix breaking map selection layout by setting automatic line extension. [#3764](https://github.com/orgs/MaibornWolff/projects/11/views/3?pane=issue&itemId=80844170)
 - Fix issue where zooming out too much makes the map disappear and zooming in too much causes you to go through the map. [#3697](https://github.com/MaibornWolff/codecharta/pull/3697)
 - Camera perspective is correctly adopted from the custom configuration[#3698](https://github.com/MaibornWolff/codecharta/pull/3698)
 - Fix camera behavior when `Reset Camera when changing map` option is deactivated [#3699](https://github.com/MaibornWolff/codecharta/pull/3699)
-- Fix issue when multiple files are selected then the edge metrics in the primary metrics section are not displayed correctly. [#3753](https://github.com/MaibornWolff/codecharta/pull/3753)
 
 ### Changed
 

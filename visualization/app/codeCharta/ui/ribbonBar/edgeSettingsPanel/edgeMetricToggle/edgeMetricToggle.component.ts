@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation } from "@angular/core"
+import { Component, OnInit } from "@angular/core"
 import { Observable } from "rxjs"
 import { isEdgeMetricVisibleSelector } from "../../../../state/store/appSettings/isEdgeMetricVisible/isEdgeMetricVisible.selector"
 import { toggleEdgeMetricVisible } from "../../../../state/store/appSettings/isEdgeMetricVisible/isEdgeMetricVisible.actions"
@@ -7,8 +7,7 @@ import { CcState } from "../../../../codeCharta.model"
 
 @Component({
     selector: "cc-edge-metric-toggle",
-    templateUrl: "./edgeMetricToggle.component.html",
-    encapsulation: ViewEncapsulation.None
+    templateUrl: "./edgeMetricToggle.component.html"
 })
 export class EdgeMetricToggleComponent implements OnInit {
     isEdgeMetricVisible$: Observable<boolean>

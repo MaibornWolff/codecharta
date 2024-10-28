@@ -1,13 +1,4 @@
-import {
-    AfterViewChecked,
-    ChangeDetectionStrategy,
-    ChangeDetectorRef,
-    Component,
-    ElementRef,
-    Input,
-    ViewChild,
-    ViewEncapsulation
-} from "@angular/core"
+import { AfterViewChecked, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Input, ViewChild } from "@angular/core"
 import { SliderRangePosition } from "../utils/SliderRangePosition"
 
 const minDistanceBetweenLabels = 4
@@ -16,7 +7,6 @@ const minDistanceBetweenLabels = 4
     selector: "cc-range-slider-labels",
     templateUrl: "./rangeSliderLabels.component.html",
     styleUrls: ["./rangeSliderLabels.component.scss"],
-    encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RangeSliderLabelsComponent implements AfterViewChecked {

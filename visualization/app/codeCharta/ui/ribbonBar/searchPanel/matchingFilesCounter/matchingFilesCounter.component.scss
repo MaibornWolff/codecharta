@@ -1,4 +1,4 @@
-cc-matching-files-counter {
+:host {
     .node-count {
         background: #eee;
         color: black;
@@ -25,26 +25,6 @@ cc-matching-files-counter {
         width: 19px;
         height: 16px;
         margin-left: 6px;
-    }
-
-    cc-thumb-tack-button button {
-        height: 25px;
-        background: #e6e6e6;
-        padding: 1px 8px;
-    }
-
-    cc-sorting-button button {
-        height: 25px;
-        background: #e6e6e6;
-        padding: 1px 8px;
-    }
-
-    cc-sorting-option .mat-mdc-select {
-        width: 105px;
-        padding: 2px 8px;
-        font-weight: normal;
-        line-height: 17px;
-        font-size: 10pt;
     }
 
     .clickable-component {

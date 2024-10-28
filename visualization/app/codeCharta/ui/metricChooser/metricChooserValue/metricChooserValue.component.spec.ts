@@ -5,7 +5,7 @@ import { render, screen } from "@testing-library/angular"
 import { of } from "rxjs"
 import { CodeMapNode, Node } from "../../../codeCharta.model"
 import { primaryMetricNamesSelector } from "../../../state/selectors/primaryMetrics/primaryMetricNames.selector"
-import { DEFAULT_STATE, VALID_NODE } from "../../../util/dataMocks"
+import { DEFAULT_STATE, VALID_NODE_WITH_MCC } from "../../../util/dataMocks"
 import { NodeSelectionService } from "../nodeSelection.service"
 import { MetricChooserValueComponent } from "./metricChooserValue.component"
 import { MetricChooserValueModule } from "./metricChooserValue.module"
@@ -52,7 +52,7 @@ describe("metricChooserValueComponent", () => {
 
     it("should display attribute value", async () => {
         TestBed.overrideProvider(NodeSelectionService, {
-            useValue: { createNodeObservable: jest.fn().mockReturnValue(of(VALID_NODE.children[0])) }
+            useValue: { createNodeObservable: jest.fn().mockReturnValue(of(VALID_NODE_WITH_MCC.children[0])) }
         })
         await render(MetricChooserValueComponent, {
             excludeComponentDeclaration: true,
@@ -64,9 +64,9 @@ describe("metricChooserValueComponent", () => {
 
     it("should display value with thousands seperation", async () => {
         const rloc = "1000000"
-        VALID_NODE.children[0].attributes = { rloc: Number(rloc) }
+        VALID_NODE_WITH_MCC.children[0].attributes = { rloc: Number(rloc) }
         TestBed.overrideProvider(NodeSelectionService, {
-            useValue: { createNodeObservable: jest.fn().mockReturnValue(of(VALID_NODE.children[0])) }
+            useValue: { createNodeObservable: jest.fn().mockReturnValue(of(VALID_NODE_WITH_MCC.children[0])) }
         })
         await render(MetricChooserValueComponent, {
             excludeComponentDeclaration: true,

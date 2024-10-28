@@ -1,0 +1,84 @@
+@use "variables";
+
+.mat-mdc-menu-panel.cc-ai-drop-down.cc-suspicious-metric-panel {
+    max-width: 35em;
+    padding: 10px;
+    scrollbar-gutter: stable;
+
+    code {
+        background: rgba(230, 230, 230, 0.96);
+        font-size: 16px;
+    }
+
+    ul.text-content {
+        margin: 0;
+        padding-left: 18px;
+    }
+
+    .sub-title {
+        font-size: 16px;
+    }
+
+    .text-content {
+        font-size: 14px;
+        padding: 8px 0 16px 0;
+    }
+
+    .caret-icon-span {
+        display: inline-block;
+        width: 10px;
+        font-size: 16px;
+        text-align: center;
+    }
+
+    .show-metrics-button {
+        background-color: white;
+        color: black;
+        cursor: pointer;
+        width: 100%;
+        border: none;
+        text-align: left;
+        font-size: 16px;
+        padding: 0 0 6px 0;
+    }
+
+    .title {
+        display: inline-block;
+        font-size: 20px;
+        font-weight: bold;
+        margin-bottom: 8px;
+    }
+
+    cc-action-icon {
+        margin-left: 6px;
+    }
+
+    .mat-mdc-menu-content {
+        padding: 0;
+    }
+
+    .mat-button-toggle-appearance-standard .mat-button-toggle-label-content {
+        line-height: 2.5;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+    }
+
+    mat-button-toggle {
+        height: 35px;
+        background-color: rgba(230, 230, 230, 0.96);
+
+        &:enabled:hover {
+            background-color: #c8c8c8;
+        }
+    }
+
+    .mat-button-toggle-checked .mat-button-toggle-label-content .mat-pseudo-checkbox {
+        display: none;
+    }
+
+    .mat-button-toggle-checked .mat-button-toggle-ripple {
+        display: none;
+    }
+}

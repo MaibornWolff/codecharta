@@ -10,6 +10,7 @@ const DEFAULT_PADDING_FLOOR_LABEL_FROM_LEVEL_1 = 120
 const DEFAULT_PADDING_FLOOR_LABEL_FROM_LEVEL_2 = 95
 const DEFAULT_ROOT_FLOOR_LABEL_SCALING = 0.035
 const DEFAULT_SUB_FLOOR_LABEL_SCALING = 0.028
+export const HIERARCHY_LEVELS_WITH_LABLES_UPPER_BOUNDARY = 3
 
 export function createTreemapNodes(map: CodeMapNode, state: CcState, metricData: NodeMetricData[], isDeltaState: boolean): Node[] {
     const mapSizeResolutionScaling = getMapResolutionScaleFactor(state.files)
@@ -158,7 +159,7 @@ function scaleRoot(root: Node, scaleLength: number, scaleWidth: number) {
 function getSquarifiedTreeMap(map: CodeMapNode, state: CcState, mapSizeResolutionScaling: number, maxWidth: number): SquarifiedTreeMap {
     const hierarchyNode = hierarchy(map)
     const nodesPerSide = getEstimatedNodesPerSide(hierarchyNode)
-    const { enableFloorLabels } = state.appSettings
+    const { enableFloorLabels, experimentalFeaturesEnabled } = state.appSettings
     const { margin } = state.dynamicSettings
     const padding = margin * PADDING_SCALING_FACTOR * mapSizeResolutionScaling
 
@@ -181,7 +182,7 @@ function getSquarifiedTreeMap(map: CodeMapNode, state: CcState, mapSizeResolutio
             if (node.depth === 0) {
                 addedLabelSpace += DEFAULT_PADDING_FLOOR_LABEL_FROM_LEVEL_1
             }
-            if (node.depth > 0 && node.depth < 3) {
+            if (node.depth > 0 && node.depth < HIERARCHY_LEVELS_WITH_LABLES_UPPER_BOUNDARY) {
                 addedLabelSpace += DEFAULT_PADDING_FLOOR_LABEL_FROM_LEVEL_2
             }
         }
@@ -217,7 +218,7 @@ function getSquarifiedTreeMap(map: CodeMapNode, state: CcState, mapSizeResolutio
                         DEFAULT_PADDING_FLOOR_LABEL_FROM_LEVEL_1
                     )
                 }
-                if (node.depth > 0 && node.depth < 3) {
+                if (node.depth > 0 && node.depth < HIERARCHY_LEVELS_WITH_LABLES_UPPER_BOUNDARY) {
                     return Math.max((rootNode.x1 - rootNode.x0) * DEFAULT_SUB_FLOOR_LABEL_SCALING, DEFAULT_PADDING_FLOOR_LABEL_FROM_LEVEL_2)
                 }
             }
@@ -227,7 +228,9 @@ function getSquarifiedTreeMap(map: CodeMapNode, state: CcState, mapSizeResolutio
         })
 
     return {
-        treeMap: treeMap(hierarchyNode.sum(node => calculateAreaValue(node, state, maxWidth) * mapSizeResolutionScaling)),
+        treeMap: treeMap(
+            hierarchyNode.sum(node => calculateAreaValue(node, state, maxWidth, experimentalFeaturesEnabled) * mapSizeResolutionScaling)
+        ),
         height,
         width
     }
@@ -255,7 +258,12 @@ function isOnlyVisibleInComparisonMap(node: CodeMapNode, dynamicSettings: Dynami
 }
 
 // Only exported for testing.
-export function calculateAreaValue(node: CodeMapNode, { dynamicSettings, appSettings, fileSettings }: CcState, maxWidth: number) {
+export function calculateAreaValue(
+    node: CodeMapNode,
+    { dynamicSettings, appSettings, fileSettings }: CcState,
+    maxWidth: number,
+    experimentalFeaturesEnabled: boolean
+) {
     if (node.isExcluded) {
         return 0
     }
@@ -276,5 +284,5 @@ export function calculateAreaValue(node: CodeMapNode, { dynamicSettings, appSett
         }
         return appSettings.invertArea ? maxWidth - node.attributes[dynamicSettings.areaMetric] : node.attributes[dynamicSettings.areaMetric]
     }
-    return 0
+    return experimentalFeaturesEnabled ? 0.5 : 0
 }

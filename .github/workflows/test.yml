@@ -118,11 +118,12 @@ jobs:
       working-directory: ${{env.working-directory}}
 
     - name: Test and Linter
+      env:
+        PUPPETEER_EXECUTABLE_PATH: "/usr/bin/google-chrome"
       run: |
         npm run build
         npm run e2e:ci
       working-directory: ${{env.working-directory}}
-
 
  test_and_sonar_analysis:
     name: "Build, Test and Publish Analysis Sonar Results"

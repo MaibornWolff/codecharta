@@ -9,17 +9,20 @@ export class FloorLabelDrawer {
     private readonly rootNode: Node
     private readonly mapSize: number
     private readonly scaling: Vector3
-    private readonly folderGeometryHeight: number = 2.01
+    readonly folderGeometryHeight: number = 2.01
     private lastScaling: Vector3 = new Vector3(1, 1, 1)
     private floorLabelPlaneLevel: Map<Mesh, number> = new Map<Mesh, number>()
 
     private floorLabelsPerLevel = new Map()
 
-    constructor(nodes: Node[], rootNode: Node, mapSize: number, scaling: Vector3) {
+    constructor(nodes: Node[], rootNode: Node, mapSize: number, scaling: Vector3, experimentalFeaturesEnabled: boolean) {
         this.collectLabelsPerLevel(nodes)
         this.rootNode = rootNode
         this.mapSize = mapSize
         this.scaling = scaling
+        this.folderGeometryHeight = experimentalFeaturesEnabled
+            ? Math.ceil(2 / FloorLabelHelper.getMapResolutionScaling(rootNode.width)) * 2
+            : 2.01
     }
 
     private collectLabelsPerLevel(nodes: Node[]) {
@@ -50,10 +53,11 @@ export class FloorLabelDrawer {
     }
 
     translatePlaneCanvases(scale: Vector3) {
+        const defaultFolderHeight = 2
         for (const plane of this.floorLabelPlanes) {
             const level = this.floorLabelPlaneLevel.get(plane) + 1
             const difference = level * this.lastScaling.y - level * scale.y
-            plane.geometry.translate(0, 0, this.folderGeometryHeight * difference)
+            plane.geometry.translate(0, 0, defaultFolderHeight * difference)
         }
         this.lastScaling = scale
     }
@@ -124,6 +128,7 @@ export class FloorLabelDrawer {
 
         // Position plane over the map
         const liftToPreventZFighting = 2
+
         plane.translate(
             scaledMapWidth / 2,
             scaledMapHeight / 2,

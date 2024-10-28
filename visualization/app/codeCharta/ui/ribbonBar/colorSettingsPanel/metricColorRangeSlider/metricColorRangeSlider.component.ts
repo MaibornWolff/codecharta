@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, OnChanges, SimpleChanges, ViewChild, ViewEncapsulation } from "@angular/core"
+import { Component, ElementRef, Input, OnChanges, SimpleChanges, ViewChild } from "@angular/core"
 import { calculateSliderRangePosition, SliderRangePosition, updateLeftThumb, updateRightThumb } from "./utils/SliderRangePosition"
 import { parseNumberInput } from "../../../../util/parseNumberInput"
 
@@ -8,8 +8,7 @@ export type CurrentlySliding = undefined | "leftThumb" | "rightThumb"
 @Component({
     selector: "cc-metric-color-range-slider",
     templateUrl: "./metricColorRangeSlider.component.html",
-    styleUrls: ["./metricColorRangeSlider.component.scss"],
-    encapsulation: ViewEncapsulation.None
+    styleUrls: ["./metricColorRangeSlider.component.scss"]
 })
 export class MetricColorRangeSliderComponent implements OnChanges {
     @Input() minValue: number

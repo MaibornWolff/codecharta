@@ -67,6 +67,44 @@ class CSVExporterTest {
     }
 
     @Test
+    fun `should create correct output when one folder with two valid files is specified as input source`() {
+        // given
+        val inputFolderPath = "src/test/resources"
+        val outputFilePath = "src/test/resources/output.csv"
+        val outputFile = File(outputFilePath)
+        outputFile.deleteOnExit()
+        val referenceFile = File("src/test/resources/reference_valid_folder.csv")
+
+        // when
+        CommandLine(CSVExporter()).execute(inputFolderPath, "-o", outputFilePath)
+
+        // then
+        Assertions.assertThat(outputFile.exists()).isTrue()
+        Assertions.assertThat(outputFile.length()).isNotEqualTo(0)
+        assertFilesHaveSameContentRegardlessOfOrder(outputFile, referenceFile)
+    }
+
+    @Test
+    fun `should create correct output when two valid files and a folder are specified as input sources`() {
+        // given
+        val inputFilePath1 = "src/test/resources/input_valid_1.cc.json"
+        val inputFilePath2 = "src/test/resources/input_valid_2.cc.json"
+        val inputFolderPath = "src/test/resources"
+        val outputFilePath = "src/test/resources/output.csv"
+        val outputFile = File(outputFilePath)
+        outputFile.deleteOnExit()
+        val referenceFile = File("src/test/resources/reference_valid_two_files_and_folder.csv")
+
+        // when
+        CommandLine(CSVExporter()).execute(inputFilePath1, inputFilePath2, inputFolderPath, "-o", outputFilePath)
+
+        // then
+        Assertions.assertThat(outputFile.exists()).isTrue()
+        Assertions.assertThat(outputFile.length()).isNotEqualTo(0)
+        assertFilesHaveSameContentRegardlessOfOrder(outputFile, referenceFile)
+    }
+
+    @Test
     fun `should fail to create output when invalid file is specified as input source`() {
         // given
         val invalidInputFilePath = "filePathDoesNotExist.cc.json"
@@ -82,7 +120,7 @@ class CSVExporterTest {
 
         // then
         Assertions.assertThat(errContent.toString())
-            .contains("Invalid input file for CSVExporter, stopping execution...")
+            .contains("Invalid input file/folder for CSVExporter, stopping execution...")
 
         // clean up
         System.setErr(originalErr)
@@ -105,7 +143,7 @@ class CSVExporterTest {
 
         // then
         Assertions.assertThat(errContent.toString())
-            .contains("Invalid input file for CSVExporter, stopping execution...")
+            .contains("Invalid input file/folder for CSVExporter, stopping execution...")
 
         // clean up
         System.setErr(originalErr)
@@ -127,7 +165,7 @@ class CSVExporterTest {
 
         // then
         Assertions.assertThat(errContent.toString())
-            .contains("Invalid input file for CSVExporter, stopping execution...")
+            .contains("Invalid input file/folder for CSVExporter, stopping execution...")
 
         // clean up
         System.setErr(originalErr)
@@ -278,5 +316,11 @@ class CSVExporterTest {
 
         // then
         Assertions.assertThat(lambdaSlot.last()().endsWith(absoluteOutputFilePath)).isTrue()
+    }
+
+    private fun assertFilesHaveSameContentRegardlessOfOrder(outputFile: File, referenceFile: File) {
+        val outputLines = outputFile.readLines().sorted()
+        val referenceLines = referenceFile.readLines().sorted()
+        Assertions.assertThat(outputLines).isEqualTo(referenceLines)
     }
 }

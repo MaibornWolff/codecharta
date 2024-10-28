@@ -1,4 +1,4 @@
-import { Component, ViewEncapsulation } from "@angular/core"
+import { Component } from "@angular/core"
 import { Store } from "@ngrx/store"
 import { BlacklistItem, CcState } from "../../../../codeCharta.model"
 import { removeBlacklistItem } from "../../../../state/store/fileSettings/blacklist/blacklist.actions"
@@ -7,8 +7,7 @@ import { createBlacklistItemSelector } from "./createBlacklistItemSelector"
 @Component({
     selector: "cc-blacklist-panel",
     templateUrl: "./blacklistPanel.component.html",
-    styleUrls: ["./blacklistPanel.component.scss"],
-    encapsulation: ViewEncapsulation.None
+    styleUrls: ["./blacklistPanel.component.scss"]
 })
 export class BlacklistPanelComponent {
     flattenedItems$ = this.store.select(createBlacklistItemSelector("flatten"))

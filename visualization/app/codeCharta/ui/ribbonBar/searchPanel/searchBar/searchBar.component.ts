@@ -1,4 +1,4 @@
-import { Component, ViewEncapsulation } from "@angular/core"
+import { Component } from "@angular/core"
 import { setSearchPattern } from "../../../../state/store/dynamicSettings/searchPattern/searchPattern.actions"
 import { searchPatternSelector } from "../../../../state/store/dynamicSettings/searchPattern/searchPattern.selector"
 import { isSearchPatternEmptySelector } from "./selectors/isSearchPatternEmpty.selector"
@@ -12,8 +12,7 @@ import { Store } from "@ngrx/store"
 @Component({
     selector: "cc-search-bar",
     templateUrl: "./searchBar.component.html",
-    styleUrls: ["./searchBar.component.scss"],
-    encapsulation: ViewEncapsulation.None
+    styleUrls: ["./searchBar.component.scss"]
 })
 export class SearchBarComponent {
     searchPattern$ = this.store.select(searchPatternSelector)

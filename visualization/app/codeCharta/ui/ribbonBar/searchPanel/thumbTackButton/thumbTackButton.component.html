@@ -1,8 +1,3 @@
-<button
-    class="box-rounded submenu-button"
-    (click)="onClick()"
-    title="Pin file explorer"
-    [ngClass]="(isSearchPanelPinned$ | async) ? 'pinned' : ''"
->
+<button class="box-rounded" (click)="onClick()" title="Pin file explorer" [ngClass]="(isSearchPanelPinned$ | async) ? 'pinned' : ''">
     <i class="fa fa-thumb-tack"></i>
 </button>

@@ -1,7 +1,7 @@
 import { TestBed } from "@angular/core/testing"
 import { BehaviorSubject, Subject } from "rxjs"
 import { ThreeMapControlsService } from "../../../ui/codeMap/threeViewer/threeMapControls.service"
-import { visibleFileStatesSelector } from "../../selectors/visibleFileStates.selector"
+import { visibleFileStatesSelector } from "../../selectors/visibleFileStates/visibleFileStates.selector"
 import { layoutAlgorithmSelector } from "../../store/appSettings/layoutAlgorithm/layoutAlgorithm.selector"
 import { resetCameraIfNewFileIsLoadedSelector } from "../../store/appSettings/resetCameraIfNewFileIsLoaded/resetCameraIfNewFileIsLoaded.selector"
 import { focusedNodePathSelector } from "../../store/dynamicSettings/focusedNodePath/focusedNodePath.selector"
@@ -69,6 +69,13 @@ describe("autoFitCodeMapOnFileSelectionChangeEffect", () => {
         store.refreshState()
         mockedRenderCodeMap$.next(undefined)
         expect(mockedAutoFitTo).not.toHaveBeenCalled()
+    })
+
+    it("should auto fit map when focused node paths has changed", () => {
+        store.overrideSelector(focusedNodePathSelector, [])
+        store.refreshState()
+        mockedRenderCodeMap$.next(undefined)
+        expect(mockedAutoFitTo).toHaveBeenCalledTimes(1)
     })
 
     it("should auto fit map when layout algorithm has changed", () => {

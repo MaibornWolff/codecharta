@@ -1,5 +1,3 @@
-@use "variables";
-
 cc-search-panel {
     .search-panel-card {
         border-left: none;
@@ -21,14 +19,6 @@ cc-search-panel {
         &.hidden {
             display: none;
             pointer-events: none;
-        }
-    }
-
-    .submenu-button {
-        border: 2px solid variables.$cc-primary-color;
-
-        &:hover {
-            border: 2px solid variables.$cc-emphasized-color;
         }
     }
 }

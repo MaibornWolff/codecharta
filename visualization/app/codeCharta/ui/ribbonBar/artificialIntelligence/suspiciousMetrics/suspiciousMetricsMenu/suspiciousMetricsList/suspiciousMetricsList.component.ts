@@ -15,7 +15,8 @@ import { MatMenuTrigger } from "@angular/material/menu"
 
 @Component({
     selector: "cc-suspicious-metrics-list",
-    templateUrl: "./suspiciousMetricsList.component.html"
+    templateUrl: "./suspiciousMetricsList.component.html",
+    styleUrls: ["./suspiciousMetricsList.component.scss"]
 })
 export class SuspiciousMetricsListComponent {
     @Input() matMenuTriggerReference: MatMenuTrigger

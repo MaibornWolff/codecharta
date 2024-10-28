@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation } from "@angular/core"
+import { Component, OnInit } from "@angular/core"
 import { Store } from "@ngrx/store"
 import { Observable } from "rxjs"
 import { CcState } from "../../../../codeCharta.model"
@@ -9,8 +9,7 @@ import { isSearchPanelPinnedSelector } from "../../../../state/store/appSettings
 @Component({
     selector: "cc-thumb-tack-button",
     templateUrl: "./thumbTackButton.component.html",
-    styleUrls: ["./thumbTackButton.component.scss"],
-    encapsulation: ViewEncapsulation.None
+    styleUrls: ["./thumbTackButton.component.scss"]
 })
 export class ThumbTackButtonComponent implements OnInit {
     isSearchPanelPinned$: Observable<boolean>

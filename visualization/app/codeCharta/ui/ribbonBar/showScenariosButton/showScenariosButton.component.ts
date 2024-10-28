@@ -1,12 +1,11 @@
-import { Component, ViewEncapsulation } from "@angular/core"
+import { Component } from "@angular/core"
 import { ScenarioService } from "./scenario.service"
 import { ScenarioItem } from "./scenarioHelper"
 
 @Component({
     selector: "cc-show-scenarios-button",
     templateUrl: "./showScenariosButton.component.html",
-    styleUrls: ["./showScenariosButton.component.scss"],
-    encapsulation: ViewEncapsulation.None
+    styleUrls: ["./showScenariosButton.component.scss"]
 })
 export class ShowScenariosButtonComponent {
     scenarios: ScenarioItem[] = []

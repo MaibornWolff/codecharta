@@ -7,11 +7,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Added 🚀
+
+- Add the option to specify whole folders for the CSVExporter instead of only single files [#3411](https://github.com/MaibornWolff/codecharta/pull/3792)
+
 ## [1.127.0] - 2024-09-17
 
 ### Added 🚀
 
 - Add a new `--rename-mcc` flag to the StructureModifier that can be used to change the name of the mcc metric to complexity or sonar_complexity [#3728](https://github.com/MaibornWolff/codecharta/pull/3728)
+- Add a pre-check function before merging non-overlapping modules [#3745](https://github.com/MaibornWolff/codecharta/pull/3745)
 
 ### Changed
 

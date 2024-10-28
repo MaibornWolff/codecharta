@@ -17,7 +17,7 @@ import { RenderCodeMapEffect } from "./codeCharta/state/effects/renderCodeMapEff
 import { ResetChosenMetricsEffect } from "./codeCharta/state/effects/resetChosenMetrics/resetChosenMetrics.effect"
 import { ResetSelectedEdgeMetricWhenItDoesntExistAnymoreEffect } from "./codeCharta/state/effects/resetSelectedEdgeMetricWhenItDoesntExistAnymore/resetSelectedEdgeMetricWhenItDoesntExistAnymore.effect"
 import { SaveCcStateEffect } from "./codeCharta/state/effects/saveCcState/saveCcState.effect"
-import { SaveMetricsInQueryParametersEffect } from "./codeCharta/state/effects/saveMetricsInQueryParameters/saveMetricsInQueryParameters.effect"
+import { UpdateQueryParametersEffect } from "./codeCharta/state/effects/updateQueryParameters/updateQueryParameters.effect"
 import { SetLoadingIndicatorEffect } from "./codeCharta/state/effects/setLoadingIndicator/setLoadingIndicator.effect"
 import { UnfocusNodesEffect } from "./codeCharta/state/effects/unfocusNodes/unfocusNodes.effect"
 import { UpdateEdgePreviewsEffect } from "./codeCharta/state/effects/updateEdgePreviews/updateEdgePreviews.effect"
@@ -30,7 +30,7 @@ import { ChangelogDialogModule } from "./codeCharta/ui/dialogs/changelogDialog/c
 import { dialogs } from "./codeCharta/ui/dialogs/dialogs"
 import { BlacklistSearchPatternEffect } from "./codeCharta/ui/ribbonBar/searchPanel/searchBar/blacklistSearchPattern.effect"
 import { MaterialModule } from "./material/material.module"
-import { FocusEffects } from "./codeCharta/state/effects/focusNodes/focus.effect"
+import { IncompatibleMapsDialogModule } from "./codeCharta/ui/filePanel/filePanelDeltaSelector/incompatibleMapsDialog/incompatibleMapsDialog.module"
 
 @NgModule({
     imports: [
@@ -53,16 +53,16 @@ import { FocusEffects } from "./codeCharta/state/effects/focusNodes/focus.effect
             UpdateFileSettingsEffect,
             SetLoadingIndicatorEffect,
             SaveCcStateEffect,
-            SaveMetricsInQueryParametersEffect,
-            UpdateMapColorsEffect,
-            FocusEffects
+            UpdateQueryParametersEffect,
+            UpdateMapColorsEffect
         ]),
         MaterialModule,
         FormsModule,
         ReactiveFormsModule,
         ChangelogDialogModule,
         CodeChartaModule,
-        NodeContextMenuCardModule
+        NodeContextMenuCardModule,
+        IncompatibleMapsDialogModule
     ],
     providers: [
         VersionService,

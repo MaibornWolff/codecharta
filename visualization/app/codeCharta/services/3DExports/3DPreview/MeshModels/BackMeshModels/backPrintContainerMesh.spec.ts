@@ -1,4 +1,4 @@
-import { Font } from "three/examples/jsm/loaders/FontLoader"
+import { Font, FontData } from "three/examples/jsm/loaders/FontLoader"
 import { GeometryOptions } from "../../preview3DPrintMesh"
 import { BackPrintContainerMesh } from "./backPrintContainerMesh"
 import { BackMWLogoMesh } from "./backMWLogoMesh"
@@ -78,10 +78,11 @@ jest.mock("./metricDescriptionsContainerMesh", () => {
 
 describe("BackPrintContainerMesh", () => {
     let font: Font
+    let fontData: FontData
     let geometryOptions: GeometryOptions
 
     beforeEach(() => {
-        font = new Font(font)
+        font = new Font(fontData)
         geometryOptions = {
             width: 100,
             printHeight: 10,

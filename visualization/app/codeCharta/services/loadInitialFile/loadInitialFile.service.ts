@@ -31,6 +31,7 @@ import { setColorMode } from "../../../../app/codeCharta/state/store/dynamicSett
 import { setColorRange } from "../../../../app/codeCharta/state/store/dynamicSettings/colorRange/colorRange.actions"
 import { setDistributionMetric } from "../../../../app/codeCharta/state/store/dynamicSettings/distributionMetric/distributionMetric.actions"
 import { setEdgeMetric } from "../../../../app/codeCharta/state/store/dynamicSettings/edgeMetric/edgeMetric.actions"
+import { setAllFocusedNodes } from "../../../../app/codeCharta/state/store/dynamicSettings/focusedNodePath/focusedNodePath.actions"
 import { setHeightMetric } from "../../../../app/codeCharta/state/store/dynamicSettings/heightMetric/heightMetric.actions"
 import { setMargin } from "../../../../app/codeCharta/state/store/dynamicSettings/margin/margin.actions"
 import { setSearchPattern } from "../../../../app/codeCharta/state/store/dynamicSettings/searchPattern/searchPattern.actions"
@@ -47,7 +48,7 @@ import { ExportCCFile } from "../../codeCharta.api.model"
 import { AppSettings, CcState, DynamicSettings, FileSettings, NameDataPair } from "../../codeCharta.model"
 import { FileState } from "../../model/files/files"
 import { getCCFiles } from "../../model/files/files.helper"
-import { MetricQueryParemter } from "../../state/effects/saveMetricsInQueryParameters/saveMetricsInQueryParameters.effect"
+import { MetricQueryParemter } from "../../state/effects/updateQueryParameters/updateQueryParameters.effect"
 import { metricDataSelector } from "../../state/selectors/accumulatedData/metricData/metricData.selector"
 import { setIsLoadingFile } from "../../state/store/appSettings/isLoadingFile/isLoadingFile.actions"
 import { setIsLoadingMap } from "../../state/store/appSettings/isLoadingMap/isLoadingMap.actions"
@@ -57,6 +58,7 @@ import { buildHtmlMessage } from "../../util/loadFilesValidationToErrorDialog"
 import { getNameDataPair } from "../loadFile/fileParser"
 import { LoadFileService, NO_FILES_LOADED_ERROR_MESSAGE } from "../loadFile/loadFile.service"
 import { UrlExtractor } from "./urlExtractor"
+import { setCurrentFilesAreSampleFiles } from "../../state/store/appStatus/currentFilesAreSampleFiles/currentFilesAreSampleFiles.actions"
 
 export const sampleFile1 = { fileName: "sample1.cc.json", fileSize: 3 * 1024, content: sample1 as ExportCCFile }
 export const sampleFile2 = { fileName: "sample2.cc.json", fileSize: 2 * 1024, content: sample2 as ExportCCFile }
@@ -106,6 +108,7 @@ export class LoadInitialFileService {
             await this.handleErrorLoadFilesFromQueryParams(error as Error)
         } finally {
             this.setMetricsFromUrl()
+            this.setCurrentFilesAreSampleFilesFromUrl()
         }
     }
 
@@ -299,7 +302,7 @@ export class LoadInitialFileService {
                 this.store.dispatch(setDistributionMetric({ value }))
                 break
             case "focusedNodePath":
-                //ignore setting focused nodes
+                this.store.dispatch(setAllFocusedNodes({ value }))
                 break
             case "searchPattern":
                 this.store.dispatch(setSearchPattern({ value }))
@@ -417,6 +420,7 @@ export class LoadInitialFileService {
         } catch {
             this.loadFileService.loadFiles([sampleFile1, sampleFile2])
         }
+        this.store.dispatch(setCurrentFilesAreSampleFiles({ value: true }))
     }
 
     private showErrorDialog(title: string, message: string) {
@@ -473,6 +477,13 @@ export class LoadInitialFileService {
 
         if (renderState === "Delta" && files.length >= 2) {
             this.store.dispatch(setDelta({ referenceFile: files[0], comparisonFile: files[1] }))
+        }
+    }
+
+    private setCurrentFilesAreSampleFilesFromUrl() {
+        const currentFilesAreSampleFiles = this.urlUtils.getParameterByName(MetricQueryParemter.currentFilesAreSampleFiles)
+        if (currentFilesAreSampleFiles && currentFilesAreSampleFiles === "true") {
+            this.store.dispatch(setCurrentFilesAreSampleFiles({ value: true }))
         }
     }
 }

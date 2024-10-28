@@ -12,6 +12,7 @@ import { loadFilesValidationToErrorDialog } from "../../util/loadFilesValidation
 import { enrichFileStatesAndRecentFilesWithValidationResults } from "./fileParser"
 import { fileRoot } from "./fileRoot"
 import { Store, State } from "@ngrx/store"
+import { setCurrentFilesAreSampleFiles } from "../../state/store/appStatus/currentFilesAreSampleFiles/currentFilesAreSampleFiles.actions"
 
 export const NO_FILES_LOADED_ERROR_MESSAGE = "File(s) could not be loaded"
 
@@ -45,7 +46,14 @@ export class LoadFileService implements OnDestroy {
         const recentFiles: string[] = []
         const fileValidationResults: CCFileValidationResult[] = []
 
-        enrichFileStatesAndRecentFilesWithValidationResults(fileStates, recentFiles, nameDataPairs, fileValidationResults)
+        enrichFileStatesAndRecentFilesWithValidationResults(
+            fileStates,
+            recentFiles,
+            nameDataPairs,
+            fileValidationResults,
+            () => this.state.getValue().appStatus.currentFilesAreSampleFiles,
+            () => this.store.dispatch(setCurrentFilesAreSampleFiles({ value: false }))
+        )
 
         if (fileValidationResults.length > 0) {
             this.dialog.open(ErrorDialogComponent, {

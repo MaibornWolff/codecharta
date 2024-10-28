@@ -6,7 +6,8 @@ import { SuspiciousMetricsDialogComponent } from "./suspiciousMetricsDialog/susp
 
 @Component({
     selector: "cc-suspicious-metrics-menu",
-    templateUrl: "./suspiciousMetricsMenu.component.html"
+    templateUrl: "./suspiciousMetricsMenu.component.html",
+    styleUrls: ["./suspiciousMetricsMenu.component.scss"]
 })
 export class SuspiciousMetricsMenuComponent {
     @ViewChild(MatMenuTrigger) menuTrigger: MatMenuTrigger

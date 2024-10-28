@@ -27,10 +27,10 @@ describe("LegendPanel", () => {
 
     async function setupTest() {
         await uploadFilesButton.openFiles(["./app/codeCharta/resources/sample1_with_different_edges.cc.json"])
-        await legendPanelObject.open()
         await searchPanel.toggle()
         await mapTreeViewLevel.openContextMenu("/root")
         await clickButtonOnPageElement(".colorButton:nth-child(2)")
+        await legendPanelObject.open()
     }
 
     it("should highlight a folder and add to legend", async () => {
@@ -39,26 +39,28 @@ describe("LegendPanel", () => {
     })
 
     it("should remove a highlighted folder and remove from legend", async () => {
+        await searchPanel.toggle()
         await mapTreeViewLevel.openContextMenu("/root")
         await clickButtonOnPageElement(".colorButton:nth-child(2)")
+        await legendPanelObject.open()
         const emptyFilelist = await legendPanelObject.getEmptyLegendIfNoFilenamesExist()
         expect(emptyFilelist).toEqual("")
     })
 
-    it("should highlight two different folders and add both to the legend", async () => {
-        await mapTreeViewLevel.openContextMenu("/root/ParentLeaf")
-        await clickButtonOnPageElement(".colorButton:nth-child(1)")
-        const selectedFolder = await legendPanelObject.getMultipleFilenames()
-        expect(selectedFolder[0]).toEqual("/root")
-        expect(selectedFolder[1]).toEqual("/root/ParentLeaf")
-    })
-
     it("should highlight two different folders and add both to the legend then remove the first", async () => {
+        await searchPanel.toggle()
         await mapTreeViewLevel.openContextMenu("/root/ParentLeaf")
         await clickButtonOnPageElement(".colorButton:nth-child(1)")
+        await legendPanelObject.open()
+        const selectedFolders = await legendPanelObject.getMultipleFilenames()
+        expect(selectedFolders[0]).toEqual("/root")
+        expect(selectedFolders[1]).toEqual("/root/ParentLeaf")
+
+        await searchPanel.toggle()
         await mapTreeViewLevel.openContextMenu("/root")
         await clickButtonOnPageElement(".colorButton:nth-child(2)")
+        await legendPanelObject.open()
         const selectedFolder = await legendPanelObject.getFilename()
-        expect(selectedFolder).toMatch(/root\/ParentLeaf\s*/)
+        expect(selectedFolder).toMatch("/root/ParentLeaf")
     })
 })

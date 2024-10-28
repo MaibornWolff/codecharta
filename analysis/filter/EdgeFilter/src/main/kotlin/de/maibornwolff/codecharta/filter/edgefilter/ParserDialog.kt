@@ -2,6 +2,7 @@ package de.maibornwolff.codecharta.filter.edgefilter
 
 import com.github.kinquirer.KInquirer
 import com.github.kinquirer.components.promptInput
+import de.maibornwolff.codecharta.tools.interactiveparser.InputType
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import de.maibornwolff.codecharta.util.InputHelper
 import de.maibornwolff.codecharta.util.Logger
@@ -12,7 +13,7 @@ class ParserDialog {
         override fun collectParserArgs(): List<String> {
             var inputFileName: String
             do {
-                inputFileName = getInputFileName("cc.json", false)
+                inputFileName = getInputFileName("cc.json", InputType.FILE)
             } while (!InputHelper.isInputValidAndNotNull(arrayOf(File(inputFileName)), canInputContainFolders = false))
 
             Logger.info {
