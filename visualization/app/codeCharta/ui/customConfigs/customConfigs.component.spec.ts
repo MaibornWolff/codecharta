@@ -4,7 +4,6 @@ import { render, screen } from "@testing-library/angular"
 import { CustomConfigsComponent } from "./customConfigs.component"
 import { AddCustomConfigDialogComponent } from "./addCustomConfigButton/addCustomConfigDialog/addCustomConfigDialog.component"
 import { CustomConfigListComponent } from "./customConfigList/customConfigList.component"
-import { CustomConfigsModule } from "./customConfigs.module"
 import { MatDialog } from "@angular/material/dialog"
 import userEvent from "@testing-library/user-event"
 
@@ -14,7 +13,7 @@ describe("CustomConfigsComponent", () => {
     beforeEach(() => {
         mockedDialog = { open: jest.fn() }
         TestBed.configureTestingModule({
-            imports: [CustomConfigsModule],
+            imports: [CustomConfigsComponent],
             providers: [{ provide: MatDialog, useValue: mockedDialog }, provideMockStore()]
         })
     })

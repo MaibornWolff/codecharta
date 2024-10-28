@@ -11,7 +11,7 @@ import { CustomConfigHelper } from "../../../../util/customConfigHelper"
 import { CUSTOM_CONFIG_ITEM_GROUPS } from "../../../../util/dataMocks"
 import { ThreeCameraService } from "../../../codeMap/threeViewer/threeCamera.service"
 import { ThreeMapControlsService } from "../../../codeMap/threeViewer/threeMapControls.service"
-import { CustomConfigsModule } from "../../customConfigs.module"
+import { CustomConfigsComponent } from "../../customConfigs.component"
 import { visibleFilesBySelectionModeSelector } from "../../visibleFilesBySelectionMode.selector"
 import { CustomConfigItemGroupComponent } from "./customConfigItemGroup.component"
 
@@ -24,7 +24,7 @@ describe("customConfigItemGroupComponent", () => {
         mockedDialogReference = { close: jest.fn() }
 
         TestBed.configureTestingModule({
-            imports: [CustomConfigsModule],
+            imports: [CustomConfigsComponent],
             providers: [
                 { provide: MatDialogRef, useValue: mockedDialogReference },
                 { provide: MatDialog, useValue: mockedDialog },
@@ -53,7 +53,6 @@ describe("customConfigItemGroupComponent", () => {
         CustomConfigHelper.applyCustomConfig = jest.fn()
         const customConfigItemGroups = new Map([["File_B_File_C_STANDARD", CUSTOM_CONFIG_ITEM_GROUPS.get("File_B_File_C_STANDARD")]])
         await render(CustomConfigItemGroupComponent, {
-            excludeComponentDeclaration: true,
             componentProperties: { customConfigItemGroups }
         })
         const applyCustomConfigButton = screen.getAllByText("mcc")[0].closest("button")
@@ -68,7 +67,6 @@ describe("customConfigItemGroupComponent", () => {
         CustomConfigHelper.deleteCustomConfig = jest.fn()
         const customConfigItemGroups = new Map([["File_B_File_C_STANDARD", CUSTOM_CONFIG_ITEM_GROUPS.get("File_B_File_C_STANDARD")]])
         await render(CustomConfigItemGroupComponent, {
-            excludeComponentDeclaration: true,
             componentProperties: { customConfigItemGroups }
         })
 
@@ -82,7 +80,6 @@ describe("customConfigItemGroupComponent", () => {
     it("should apply a custom config and close custom config dialog when clicking on config name", async () => {
         const customConfigItemGroups = new Map([["File_B_File_C_STANDARD", CUSTOM_CONFIG_ITEM_GROUPS.get("File_B_File_C_STANDARD")]])
         await render(CustomConfigItemGroupComponent, {
-            excludeComponentDeclaration: true,
             componentProperties: { customConfigItemGroups }
         })
 
@@ -99,7 +96,6 @@ describe("customConfigItemGroupComponent", () => {
         const customConfigItemGroups = new Map([["File_B_File_C_STANDARD", CUSTOM_CONFIG_ITEM_GROUPS.get("File_B_File_C_STANDARD")]])
 
         const { rerender } = await render(CustomConfigItemGroupComponent, {
-            excludeComponentDeclaration: true,
             componentProperties: { customConfigItemGroups }
         })
         const store = TestBed.inject(MockStore)
@@ -131,7 +127,6 @@ describe("customConfigItemGroupComponent", () => {
         CUSTOM_CONFIG_ITEM_GROUPS.get("File_B_File_C_STANDARD").customConfigItems[1].isApplicable = false
         const customConfigItemGroups = new Map([["File_B_File_C_STANDARD", CUSTOM_CONFIG_ITEM_GROUPS.get("File_B_File_C_STANDARD")]])
         const { rerender } = await render(CustomConfigItemGroupComponent, {
-            excludeComponentDeclaration: true,
             componentProperties: { customConfigItemGroups }
         })
         const store = TestBed.inject(MockStore)
@@ -155,7 +150,6 @@ describe("customConfigItemGroupComponent", () => {
     it("should expand custom config item group on toggle expansion", async () => {
         const customConfigItemGroups = new Map([["File_B_File_C_STANDARD", CUSTOM_CONFIG_ITEM_GROUPS.get("File_B_File_C_STANDARD")]])
         const { fixture, container } = await render(CustomConfigItemGroupComponent, {
-            excludeComponentDeclaration: true,
             componentProperties: {
                 expandedStates: {}
             },
@@ -183,7 +177,6 @@ describe("customConfigItemGroupComponent", () => {
     it("should reset expanded states on new searchterm or configitems", async () => {
         const customConfigItemGroups = new Map([["File_B_File_C_STANDARD", CUSTOM_CONFIG_ITEM_GROUPS.get("File_B_File_C_STANDARD")]])
         const { rerender, fixture } = await render(CustomConfigItemGroupComponent, {
-            excludeComponentDeclaration: true,
             componentProperties: {
                 expandedStates: {}
             },
@@ -229,7 +222,6 @@ describe("customConfigItemGroupComponent", () => {
     it("should display no configs found message when searchterm doesnt match any configs", async () => {
         const customConfigItemGroups = new Map([["File_B_File_C_STANDARD", CUSTOM_CONFIG_ITEM_GROUPS.get("File_B_File_C_STANDARD")]])
         const { rerender, container } = await render(CustomConfigItemGroupComponent, {
-            excludeComponentDeclaration: true,
             componentProperties: {
                 expandedStates: {}
             },

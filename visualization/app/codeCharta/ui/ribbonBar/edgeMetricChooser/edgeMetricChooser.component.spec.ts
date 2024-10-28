@@ -12,12 +12,11 @@ import { attributeDescriptorsSelector } from "../../../state/store/fileSettings/
 import { getLastAction } from "../../../util/testUtils/store.utils"
 import { NodeSelectionService } from "../../metricChooser/nodeSelection.service"
 import { EdgeMetricChooserComponent } from "./edgeMetricChooser.component"
-import { EdgeMetricChooserModule } from "./edgeMetricChooser.module"
 
 describe("edgeMetricChooserComponent", () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
-            imports: [EdgeMetricChooserModule],
+            imports: [EdgeMetricChooserComponent],
             providers: [
                 { provide: NodeSelectionService, useValue: { createNodeObservable: jest.fn().mockReturnValue(of(null)) } },
                 provideMockStore({

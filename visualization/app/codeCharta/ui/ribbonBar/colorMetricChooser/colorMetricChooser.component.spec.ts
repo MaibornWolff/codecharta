@@ -12,12 +12,11 @@ import { attributeDescriptorsSelector } from "../../../state/store/fileSettings/
 import { getLastAction } from "../../../util/testUtils/store.utils"
 import { NodeSelectionService } from "../../metricChooser/nodeSelection.service"
 import { ColorMetricChooserComponent } from "./colorMetricChooser.component"
-import { ColorMetricChooserModule } from "./colorMetricChooser.module"
 
 describe("colorMetricChooserComponent", () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
-            imports: [ColorMetricChooserModule],
+            imports: [ColorMetricChooserComponent],
             providers: [
                 { provide: NodeSelectionService, useValue: { createNodeObservable: jest.fn() } },
                 provideMockStore({

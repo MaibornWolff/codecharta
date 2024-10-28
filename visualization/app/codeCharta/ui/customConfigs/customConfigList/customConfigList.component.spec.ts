@@ -12,8 +12,7 @@ import { ThreeCameraService } from "../../codeMap/threeViewer/threeCamera.servic
 import { ThreeMapControlsService } from "../../codeMap/threeViewer/threeMapControls.service"
 import { ThreeSceneService } from "../../codeMap/threeViewer/threeSceneService"
 import { CustomConfigHelperService } from "../customConfigHelper.service"
-import { CustomConfigItemGroup } from "../customConfigs.component"
-import { CustomConfigsModule } from "../customConfigs.module"
+import { CustomConfigItemGroup, CustomConfigsComponent } from "../customConfigs.component"
 import { DownloadableConfigs } from "../downloadCustomConfigsButton/getDownloadableCustomConfigs"
 import { CustomConfigListComponent } from "./customConfigList.component"
 import { CustomConfigGroups } from "./getCustomConfigItemGroups"
@@ -32,7 +31,7 @@ describe("customConfigListComponent", () => {
     beforeEach(() => {
         mockedDialog = { open: jest.fn() }
         TestBed.configureTestingModule({
-            imports: [CustomConfigsModule],
+            imports: [CustomConfigsComponent],
             providers: [
                 { provide: MatDialog, useValue: mockedDialog },
                 { provide: CustomConfigHelperService, useValue: mockedCustomConfigHelperService },
@@ -145,8 +144,7 @@ describe("customConfigListComponent", () => {
         const { rerender, container } = await render(CustomConfigListComponent, {
             componentProperties: {
                 searchTerm: ""
-            },
-            excludeComponentDeclaration: true
+            }
         })
 
         await userEvent.click(container.querySelector("mat-expansion-panel-header"))

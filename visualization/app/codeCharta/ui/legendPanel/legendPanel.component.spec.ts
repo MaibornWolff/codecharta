@@ -3,7 +3,6 @@ import { render, screen, waitFor } from "@testing-library/angular"
 import { expect } from "@jest/globals"
 import { isDeltaStateSelector } from "../../state/selectors/isDeltaState.selector"
 import { LegendPanelComponent } from "./legendPanel.component"
-import { LegendPanelModule } from "./legendPanel.module"
 import { IsAttributeSideBarVisibleService } from "../../services/isAttributeSideBarVisible.service"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { heightMetricSelector } from "../../state/store/dynamicSettings/heightMetric/heightMetric.selector"
@@ -36,7 +35,7 @@ const selectors = [
 describe(LegendPanelComponent.name, () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
-            imports: [LegendPanelModule],
+            imports: [LegendPanelComponent],
             providers: [provideMockStore({ selectors }), { provide: State, useValue: {} }, ViewContainerRef]
         })
     })
@@ -162,9 +161,7 @@ describe(LegendPanelComponent.name, () => {
         })
 
         it("should not close when clicking inside", async () => {
-            const { container, fixture } = await render(`<cc-legend-panel></cc-legend-panel>`, {
-                excludeComponentDeclaration: true
-            })
+            const { container, fixture } = await render(`<cc-legend-panel></cc-legend-panel>`, {})
             const panel = container.querySelector("cc-legend-panel")
             expect(isLegendPanelOpen(container)).toBe(false)
 
