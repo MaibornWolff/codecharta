@@ -2,12 +2,12 @@
 main:
     - title: "Docs"
       url: /docs/overview/
-    - title: "Showcase"
-      url: /showcase/
-    - title: "News"
-      url: /news/
+    - title: "Examples"
+      url: /examples/
     - title: "Releases"
       url: categories/#release
+    - title: "Service Offerings"
+      url: /docs/service-offerings/overview/
 
 # docs navigation bar
 docs:
@@ -94,5 +94,8 @@ docs:
             url: /docs/feedback/
           - title: "Price (Free)"
             url: /docs/price/
-          - title: "Timeline"
-            url: /docs/timeline/
+
+    - title: Service Offerings
+      children:
+          - title: "Overview"
+            url: /docs/service-offerings/overview/

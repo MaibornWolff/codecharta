@@ -11,7 +11,7 @@ CodeCharta consists of two separate parts: [analysis]({{site.baseurl}}{% link _d
 
 > Please note that CodeCharta runs only on your client. No `.cc.json` that you analyze or visualize will ever leave your computer unless you distribute it yourself.
 
-You can [try the web visualization]({{site.web_visualization_link}}) immediately and explore CodeCharta Code in CodeCharta. No downloads necessary, though we do provide a [desktop client]({{site.baseurl}}{% link _docs/01-03-installation.md %}) for your convenience. The visualization interface is explained [here]({{site.baseurl}}{% link _docs/04-01-visualization.md %}) and if you want to explore another code base from the default one, you can use one of the files from the [showcase]({{site.baseurl}}{% link _pages/showcase.md %}).
+You can [try the web visualization]({{site.web_visualization_link}}) immediately and explore CodeCharta Code in CodeCharta. No downloads necessary, though we do provide a [desktop client]({{site.baseurl}}{% link _docs/01-03-installation.md %}) for your convenience. The visualization interface is explained [here]({{site.baseurl}}{% link _docs/04-01-visualization.md %}) and if you want to explore another code base from the default one, you can use one of the files from the [showcase]({{site.baseurl}}{% link _pages/examples.md %}).
 
 However, if you want to **generate your own** `.cc.json` files, you should read this guide first.
 

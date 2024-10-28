@@ -1,6 +1,6 @@
 ---
-title: "Showcase"
-permalink: /showcase/
+title: "Examples"
+permalink: /examples/
 
 layout: collection
 collection: showcase
