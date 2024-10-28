@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 - Add experimental feature: show buildings with an area metric value of 0 [#3789](https://github.com/MaibornWolff/codecharta/pull/3789)
 - Add further functionality for nested data to show popup when comparing files with different complexity metrics [#3791](https://github.com/MaibornWolff/codecharta/pull/3791)
+- Add improvements to the migration script for old mcc maps [#3803](https://github.com/MaibornWolff/codecharta/pull/3803)
 
 ### Changed
 
