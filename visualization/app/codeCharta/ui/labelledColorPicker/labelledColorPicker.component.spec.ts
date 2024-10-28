@@ -31,7 +31,7 @@ describe("LabelledColorPickerComponent", () => {
         expectBrushVisibility(container, true)
 
         fireEvent.click(colorPickerTrigger)
-        const colorPicker = screen.getByRole("colorpicker")
+        const colorPicker = screen.getByRole("colorpicker", { hidden: true })
         expectBrushVisibility(container, true)
 
         // @ts-expect-error
@@ -42,7 +42,7 @@ describe("LabelledColorPickerComponent", () => {
         expectBrushVisibility(container, true) // still true as color picker is still open
 
         fireEvent.click(document)
-        await waitForElementToBeRemoved(screen.getByRole("colorpicker"))
+        await waitForElementToBeRemoved(screen.getByRole("colorpicker", { hidden: true }))
         expectBrushVisibility(container, false)
     })
 })
