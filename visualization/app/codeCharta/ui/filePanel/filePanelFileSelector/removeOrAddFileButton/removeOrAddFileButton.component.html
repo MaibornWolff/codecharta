@@ -1,4 +1,4 @@
-<button (click)="onRemoveOrAddFile(filename, $event)" title="Remove map">
+<button (click)="onRemoveOrAddFile(filename, $event)" title="{{ isRemoved ? 'Undo remove map' : 'Remove map' }}">
     @if (isRemoved) {
         <i class="fa fa-undo"></i>
     } @else {
