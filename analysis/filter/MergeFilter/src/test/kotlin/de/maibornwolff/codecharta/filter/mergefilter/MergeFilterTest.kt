@@ -257,4 +257,42 @@ class MergeFilterTest {
             mergeFilter.call()
         }
     }
+
+    @Test
+    fun `should skip invalid project files during mimo merge`() {
+        System.setErr(PrintStream(errContent))
+        CommandLine(MergeFilter()).execute(
+            "src/test/resources/mergeFolderTest/mergeFolderTestMIMO/module.raw.cc.json",
+            "src/test/resources/mergeFolderTest/mergeFolderTestMIMO/invalid.cc.json",
+            "-mimo"
+        ).toString()
+        System.setErr(originalErr)
+
+        assertThat(errContent.toString()).contains("Input invalid files/folders for MergeFilter, stopping execution...")
+    }
+
+    @Test
+    fun `should warn if no top-level overlap for mimo merged files and skip merge`() {
+        System.setErr(PrintStream(errContent))
+        CommandLine(MergeFilter()).execute(
+            "src/test/resources/mergeFolderTest/file1_no_overlap.cc.json",
+            "src/test/resources/mergeFolderTest/file2_no_overlap.cc.json",
+            "-mimo"
+        ).toString()
+        System.setErr(originalErr)
+
+        assertThat(errContent.toString()).contains("No matching files found for prefix file1_no_overlap")
+    }
+
+    @Test
+    fun `should handle single file without matching prefix gracefully in mimo mode`() {
+        System.setErr(PrintStream(errContent))
+        CommandLine(MergeFilter()).execute(
+            "src/test/resources/mergeFolderTest/file1_no_overlap.cc.json",
+            "-mimo"
+        ).toString()
+        System.setErr(originalErr)
+
+        assertThat(errContent.toString()).contains("No matching files found for prefix file1_no_overlap")
+    }
 }
