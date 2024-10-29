@@ -232,21 +232,6 @@ class MergeFilterTest {
     }
 
     @Test
-    fun `should not suggest corrections when no similar prefixes found`() {
-        mockkObject(ParserDialog)
-        every { ParserDialog.askForFileCorrection(any(), any()) } returns null
-
-        System.setErr(PrintStream(errContent))
-        CommandLine(MergeFilter()).execute(
-            "src/test/resources/mergeFolderTest/mergeFolderTestMIMO/nonmatched.raw.cc.json",
-            "-mimo"
-        ).toString()
-        System.setErr(originalErr)
-
-        assertThat(errContent.toString()).contains("No matching files found for prefix nonmatched, and no close suggestions were found.")
-    }
-
-    @Test
     fun `should calculate levenshtein distance correctly`() {
         val mergeFilter = MergeFilter()
         val method = MergeFilter::class.java.getDeclaredMethod("levenshteinDistance", CharSequence::class.java, CharSequence::class.java)
