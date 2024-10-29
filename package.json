@@ -22,13 +22,10 @@
   "scripts": {
     "format": "biome format --fix",
     "format:check": "biome check",
-    "format:quick": "pretty-quick --staged",
     "prepare": "husky install"
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
-    "husky": "^8.0.0",
-    "prettier": "^3.2.5",
-    "pretty-quick": "^4.0.0"
+    "husky": "^8.0.0"
   }
 }

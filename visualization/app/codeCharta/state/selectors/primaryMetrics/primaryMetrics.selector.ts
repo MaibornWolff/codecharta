@@ -44,7 +44,7 @@ export function getEdge(key: string, selectedNode: CodeMapNode): Edge {
     }
     return {
         name: key,
-        incoming: selectedNode.edgeAttributes[key] ? selectedNode.edgeAttributes[key].incoming ?? 0 : 0,
-        outgoing: selectedNode.edgeAttributes[key] ? selectedNode.edgeAttributes[key].outgoing ?? 0 : 0
+        incoming: selectedNode.edgeAttributes[key] ? (selectedNode.edgeAttributes[key].incoming ?? 0) : 0,
+        outgoing: selectedNode.edgeAttributes[key] ? (selectedNode.edgeAttributes[key].outgoing ?? 0) : 0
     }
 }
