@@ -1,6 +1,6 @@
 import { SVGLoader } from "three/examples/jsm/loaders/SVGLoader"
-import { GeometryOptions } from "../preview3DPrintMesh"
 import { CreateSvgGeometryStrategy, CreateSvgGeometryStrategyOptions } from "./createSvgGeometryStrategy"
+import { GeometryOptions } from "../preview3DPrintMesh"
 
 describe("CreateSvgGeometryStrategy", () => {
     let strategy: CreateSvgGeometryStrategy

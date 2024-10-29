@@ -1,10 +1,10 @@
-import { Vector2 } from "three"
-import { CodeMapNode, NodeType } from "../../../codeCharta.model"
 import BoundingBox from "./boundingBox"
-import HorizontalStreet, { HorizontalOrientation } from "./horizontalStreet"
 import Rectangle from "./rectangle"
+import HorizontalStreet, { HorizontalOrientation } from "./horizontalStreet"
 import Street from "./street"
+import { CodeMapNode, NodeType } from "../../../codeCharta.model"
 import { StreetViewHelper } from "./streetViewHelper"
+import { Vector2 } from "three"
 
 export enum VerticalOrientation {
     UP,

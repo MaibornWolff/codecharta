@@ -2,14 +2,14 @@ import { State } from "@ngrx/store"
 import { render, screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
 import { AmbientLight, BufferGeometry, DirectionalLight, Group, Scene, Shape, Vector2, WebGLRenderer } from "three"
-import { CCFile, CodeMapNode, ColorMode, NodeType } from "../../../codeCharta.model"
-import { FileSelectionState, FileState } from "../../../model/files/files"
-import { QrCodeMesh } from "../../../services/3DExports/3DPreview/MeshModels/BackMeshModels/qrCodeMesh"
 import { DEFAULT_SETTINGS, DEFAULT_STATE, FILE_META, TEST_NODES } from "../../../util/dataMocks"
 import { CodeMapMesh } from "../../codeMap/rendering/codeMapMesh"
 import { ThreeSceneService } from "../../codeMap/threeViewer/threeSceneService"
 import { Export3DMapButtonModule } from "../export3DMapButton.module"
 import { Export3DMapDialogComponent } from "./export3DMapDialog.component"
+import { QrCodeMesh } from "../../../services/3DExports/3DPreview/MeshModels/BackMeshModels/qrCodeMesh"
+import { FileSelectionState, FileState } from "../../../model/files/files"
+import { CCFile, CodeMapNode, ColorMode, NodeType } from "../../../codeCharta.model"
 
 jest.mock("three/examples/jsm/loaders/SVGLoader", () => {
     return {
