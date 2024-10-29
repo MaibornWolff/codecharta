@@ -125,7 +125,7 @@ jobs:
       working-directory: ${{env.working-directory}}
 
  test_and_sonar_analysis:
-    name: "Build, Test and Publish Analysis Sonar Results"
+    name: "Code Quality Results (analysis)"
     runs-on: ubuntu-latest
     env:
       working-directory: ./analysis
@@ -179,7 +179,7 @@ jobs:
 
  publish_sonar_visualization:
     needs: [build_visualization_test, build_visualization_e2e]
-    name: "Code Quality Results"
+    name: "Code Quality Results (visualization)"
     runs-on: ubuntu-latest
     env:
       working-directory: ./visualization
