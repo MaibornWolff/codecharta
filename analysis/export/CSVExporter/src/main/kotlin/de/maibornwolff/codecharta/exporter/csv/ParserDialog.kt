@@ -3,6 +3,7 @@ package de.maibornwolff.codecharta.exporter.csv
 import com.github.kinquirer.KInquirer
 import com.github.kinquirer.components.promptInput
 import com.github.kinquirer.components.promptInputNumber
+import de.maibornwolff.codecharta.tools.interactiveparser.InputType
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import de.maibornwolff.codecharta.util.InputHelper
 import java.io.File
@@ -13,8 +14,8 @@ class ParserDialog {
         override fun collectParserArgs(): List<String> {
             var inputFileName: String
             do {
-                inputFileName = getInputFileName("cc.json", false)
-            } while (!InputHelper.isInputValidAndNotNull(arrayOf(File(inputFileName)), canInputContainFolders = false))
+                inputFileName = getInputFileName("cc.json", InputType.FOLDER_AND_FILE)
+            } while (!InputHelper.isInputValidAndNotNull(arrayOf(File(inputFileName)), canInputContainFolders = true))
 
             val defaultOutputFileName = getOutputFileName(inputFileName)
             val outputFileName: String =

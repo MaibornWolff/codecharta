@@ -13,7 +13,7 @@ export class LegendPanelObject {
     }
     async getFilename() {
         return page.$eval("cc-legend-panel cc-legend-marked-packages cc-labelled-color-picker", element => {
-            return element["innerText"]
+            return element.textContent.trim()
         })
     }
 

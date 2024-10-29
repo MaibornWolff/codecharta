@@ -9,6 +9,12 @@ describe("focusedNodePath", () => {
             expect(result).toEqual(["some/path/*.ts"])
         })
 
+        it("should add focusedNodePath", () => {
+            const result = focusedNodePath(["some/path/*.ts"], focusNode({ value: "foo.ts" }))
+
+            expect(result).toEqual(["foo.ts", "some/path/*.ts"])
+        })
+
         it("should not allow to focus root folder", () => {
             const result = focusedNodePath([], focusNode({ value: "/root" }))
 
