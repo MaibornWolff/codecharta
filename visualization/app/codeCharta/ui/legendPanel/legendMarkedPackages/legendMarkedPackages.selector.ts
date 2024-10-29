@@ -7,7 +7,6 @@ export type MarkedPackagesMap = {
 }
 
 export const legendMarkedPackagesSelector = createSelector(markedPackagesSelector, markedPackages =>
-    // eslint-disable-next-line unicorn/prefer-object-from-entries
     markedPackages.reduce((accumulator, { color, path }) => {
         if (!Object.prototype.hasOwnProperty.call(accumulator, color)) {
             accumulator[color] = []

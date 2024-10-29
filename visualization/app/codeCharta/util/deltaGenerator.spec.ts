@@ -162,7 +162,6 @@ describe("deltaGenerator", () => {
         const b = { a: 110, b: 11, c: 0 }
         const c = { a: 110, b: 11, c: 0, d: 10 }
         const d = { a: 110, b: 11 }
-        // eslint-disable-next-line unicorn/prevent-abbreviations
         const e = { d: 110, e: 11 }
 
         const ab = DeltaGenerator["compareAttributeValues"](a, b).deltaList
