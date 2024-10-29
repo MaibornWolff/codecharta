@@ -4,6 +4,7 @@ import com.github.kinquirer.KInquirer
 import com.github.kinquirer.components.promptConfirm
 import com.github.kinquirer.components.promptInput
 import de.maibornwolff.codecharta.tools.interactiveparser.InputType
+import com.github.kinquirer.components.promptList
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import de.maibornwolff.codecharta.util.InputHelper
 import java.io.File
@@ -62,10 +63,11 @@ class ParserDialog {
         }
 
         fun askForFileCorrection(originalPrefix: String, suggestions: List<String>): String? {
-            return KInquirer.promptInput(
-                message = "Did you mean one of these ' ${suggestions.joinToString(", ")} ' instead of $originalPrefix? (Enter to skip)",
-                default = ""
-            )
+            val choices = suggestions + "Skip"
+            return KInquirer.promptList(
+                message = "Did you mean one of these instead of $originalPrefix?",
+                choices = choices
+            ).takeIf { it != "Skip" }
         }
     }
 }

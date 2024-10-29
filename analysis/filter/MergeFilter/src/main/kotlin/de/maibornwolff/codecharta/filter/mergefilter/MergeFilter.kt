@@ -166,39 +166,55 @@ class MergeFilter(
                 Logger.info { "Merged files with prefix $prefix into $outputFileName" }
             } else {
                 Logger.warn { "No matching files found for prefix $prefix." }
-                val availablePrefixes = groupedFiles.keys
-                suggestAndHandleLevenshteinCorrections(sourceFiles, prefix, availablePrefixes, nodeMergerStrategy)
+                val availablePrefixes = groupedFiles.keys.toSet()
+                suggestAndHandleLevenshteinCorrections(
+                    sourceFiles,
+                    listOf(prefix),
+                    availablePrefixes,
+                    nodeMergerStrategy
+                )
             }
         }
     }
 
     private fun suggestAndHandleLevenshteinCorrections(
         sourceFiles: List<File>,
-        prefix: String,
+        prefixesToCheck: List<String>,
         availablePrefixes: Set<String>,
         nodeMergerStrategy: NodeMergerStrategy
     ) {
         val groupedFiles = sourceFiles.groupBy { it.name.substringBefore('.') }
+        val processedPrefixes = mutableSetOf<String>()
 
-        val suggestions = availablePrefixes
-            .filter { it != prefix && levenshteinDistance(it, prefix) < 3 }
+        for (prefix in prefixesToCheck) {
+            if (processedPrefixes.contains(prefix)) continue
 
-        if (suggestions.isNotEmpty()) {
-            val selectedPrefix = ParserDialog.askForFileCorrection(prefix, suggestions)
+            val suggestions = availablePrefixes
+                .filter { it != prefix && it !in processedPrefixes && levenshteinDistance(it, prefix) < 3 }
 
-            if (!selectedPrefix.isNullOrBlank()) {
+            if (suggestions.isNotEmpty()) {
+                val selectedPrefix = ParserDialog.askForFileCorrection(prefix, suggestions)
+
+                if (selectedPrefix == null) {
+                    Logger.info { "Skipped correction for $prefix." }
+                    continue
+                }
+
                 if (suggestions.contains(selectedPrefix)) {
                     Logger.info { "Merging $prefix with other '$selectedPrefix' projects." }
                     val correctedFiles = (groupedFiles[selectedPrefix] ?: emptyList()) + (groupedFiles[prefix] ?: emptyList())
+                    processedPrefixes.add(selectedPrefix)
+                    processedPrefixes.add(prefix)
 
                     if (correctedFiles.isNotEmpty()) {
                         val rootChildrenNodes = correctedFiles.mapNotNull { file ->
-                            val input = file.inputStream()
-                            try {
-                                ProjectDeserializer.deserializeProject(input)
-                            } catch (e: Exception) {
-                                Logger.warn { "${file.name} is not a valid project file and will be skipped." }
-                                null
+                            file.inputStream().use {
+                                try {
+                                    ProjectDeserializer.deserializeProject(it)
+                                } catch (e: Exception) {
+                                    Logger.warn { "${file.name} is not a valid project file and will be skipped." }
+                                    null
+                                }
                             }
                         }
 
@@ -218,16 +234,14 @@ class MergeFilter(
                     }
                     suggestAndHandleLevenshteinCorrections(
                         sourceFiles,
-                        prefix,
+                        listOf(prefix),
                         availablePrefixes,
                         nodeMergerStrategy
                     )
                 }
             } else {
-                Logger.info { "Skipped correction for $prefix." }
+                Logger.warn { "No matching files found for prefix $prefix, and no close suggestions were found." }
             }
-        } else {
-            Logger.warn { "No matching files found for prefix $prefix, and no close suggestions were found." }
         }
     }
 
