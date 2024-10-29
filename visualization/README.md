@@ -57,6 +57,8 @@ $ codecharta-visualization
 
 > To clone and run this application, you'll need [Git](https://git-scm.com) and [Node.js](https://nodejs.org/en/download/) (version >=20) installed
 
+> (Windows) For some tasks the Git bash utilities are required
+
 ```bash
 # Clone the CodeCharta repo
 $ git clone https://github.com/MaibornWolff/codecharta.git
