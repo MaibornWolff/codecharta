@@ -9,6 +9,7 @@ import io.mockk.unmockkAll
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import picocli.CommandLine
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -216,5 +217,58 @@ class MergeFilterTest {
         System.setErr(originalErr)
 
         assertThat(errContent.toString()).contains("Input invalid files/folders for MergeFilter, stopping execution...")
+    }
+
+    @Test
+    fun `should warn about invalid files during mimo merge`() {
+        System.setErr(PrintStream(errContent))
+        CommandLine(MergeFilter()).execute(
+            "src/test/resources/mergeFolderTest/mergeFolderTestMIMO/invalid.cc.json",
+            "-mimo"
+        ).toString()
+        System.setErr(originalErr)
+
+        assertThat(errContent.toString()).contains("Input invalid files/folders for MergeFilter, stopping execution...")
+    }
+
+    @Test
+    fun `should not suggest corrections when no similar prefixes found`() {
+        mockkObject(ParserDialog)
+        every { ParserDialog.askForFileCorrection(any(), any()) } returns null
+
+        System.setErr(PrintStream(errContent))
+        CommandLine(MergeFilter()).execute(
+            "src/test/resources/mergeFolderTest/mergeFolderTestMIMO/nonmatched.raw.cc.json",
+            "-mimo"
+        ).toString()
+        System.setErr(originalErr)
+
+        assertThat(errContent.toString()).contains("No matching files found for prefix nonmatched, and no close suggestions were found.")
+    }
+
+    @Test
+    fun `should calculate levenshtein distance correctly`() {
+        val mergeFilter = MergeFilter()
+        val method = MergeFilter::class.java.getDeclaredMethod("levenshteinDistance", CharSequence::class.java, CharSequence::class.java)
+        method.isAccessible = true
+        val distance = method.invoke(mergeFilter, "kitten", "sitting") as Int
+        assertThat(distance).isEqualTo(3)
+    }
+
+    @Test
+    fun `should throw exception when both merging strategies are set`() {
+        val mergeFilter = MergeFilter()
+
+        val leafStrategyField = MergeFilter::class.java.getDeclaredField("leafStrategySet")
+        leafStrategyField.isAccessible = true
+        leafStrategyField.set(mergeFilter, true)
+
+        val recursiveStrategyField = MergeFilter::class.java.getDeclaredField("recursiveStrategySet")
+        recursiveStrategyField.isAccessible = true
+        recursiveStrategyField.set(mergeFilter, true)
+
+        assertThrows<IllegalArgumentException> {
+            mergeFilter.call()
+        }
     }
 }
