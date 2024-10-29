@@ -15,7 +15,7 @@ All major decisions are documented in our [architecture decision records (ADR)](
 
 To work on CodeCharta, please ensure your system includes:
 
-- Git
+- Git (with bash utilities for Windows)
 - Java >= 11, <= 21
 - Node >= 20
 
