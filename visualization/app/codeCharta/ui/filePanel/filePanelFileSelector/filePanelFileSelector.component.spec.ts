@@ -1,7 +1,7 @@
 import { TestBed } from "@angular/core/testing"
 import { fireEvent, render, screen, waitForElementToBeRemoved } from "@testing-library/angular"
 import { addFile, removeFiles, setStandard } from "../../../state/store/files/files.actions"
-import { TEST_FILE_DATA, TEST_FILE_DATA_TWO } from "../../../util/dataMocks"
+import { TEST_FILE_DATA, TEST_FILE_DATA_JAVA, TEST_FILE_DATA_TWO } from "../../../util/dataMocks"
 import { FilePanelComponent } from "../filePanel.component"
 import { FilePanelFileSelectorComponent } from "./filePanelFileSelector.component"
 import { appReducers, setStateMiddleware } from "../../../state/store/state.manager"
@@ -36,7 +36,7 @@ describe("filePanelFileSelectorComponent", () => {
         expect(fixture.componentInstance["selectedFilesInUI"][0]).toEqual(TEST_FILE_DATA)
     })
 
-    describe("method", () => {
+    describe("handle-methods", () => {
         let component: FilePanelFileSelectorComponent
         let mockedStore: Store<CcState>
         let defaultMockedFilesInUI: { isRemoved: boolean; file: CCFile }[]
@@ -199,6 +199,90 @@ describe("filePanelFileSelectorComponent", () => {
                     removeFiles({ fileNames: [fileNameToRemove, TEST_FILE_DATA_TWO.fileMeta.fileName] })
                 )
             })
+        })
+    })
+
+    describe("Button State", () => {
+        let component: FilePanelFileSelectorComponent
+
+        beforeEach(() => {
+            const mockedStore = createMockedStore()
+            component = new FilePanelFileSelectorComponent(mockedStore)
+            component.filesInUI = [
+                { isRemoved: false, file: TEST_FILE_DATA },
+                { isRemoved: false, file: TEST_FILE_DATA_TWO }
+            ]
+            component.filesInStore = [
+                { selectedAs: FileSelectionState.Partial, file: TEST_FILE_DATA },
+                { selectedAs: FileSelectionState.None, file: TEST_FILE_DATA_TWO }
+            ]
+            component.selectedFilesInUI = [TEST_FILE_DATA]
+        })
+
+        it("should set button state to 'No Changes To Apply' if selection is opened", () => {
+            component.handleOpenedChanged(true)
+
+            expect(component.applyButtonTooltip).toBe("No changes to apply")
+            expect(component.applyButtonDisabled).toBe(true)
+        })
+
+        it("should set button state to 'No Map Selected' if no files are selected", () => {
+            component.selectedFilesInUI = []
+
+            component.handleAddOrRemoveFile("do_something")
+
+            expect(component.applyButtonTooltip).toBe("Select at least one map")
+            expect(component.applyButtonDisabled).toBe(true)
+        })
+
+        it("should set button state to 'No Map Selected' if only selected file is deleted", () => {
+            component.handleAddOrRemoveFile(TEST_FILE_DATA.fileMeta.fileName)
+
+            expect(component.applyButtonTooltip).toBe("Select at least one map")
+            expect(component.applyButtonDisabled).toBe(true)
+        })
+
+        it("should set button state to 'Enabled' if UI selection differs from store", () => {
+            component.handleInvertSelectedFiles()
+
+            expect(component.applyButtonTooltip).toBe("")
+            expect(component.applyButtonDisabled).toBe(false)
+        })
+
+        it("should set button state to 'No Changes To Apply' if UI selection matches store", () => {
+            component.handleSelectedFilesChanged([TEST_FILE_DATA])
+
+            expect(component.applyButtonTooltip).toBe("No changes to apply")
+            expect(component.applyButtonDisabled).toBe(true)
+        })
+
+        it("should enable button if at least one file is flagged as removed", () => {
+            component.handleAddOrRemoveFile(TEST_FILE_DATA_TWO.fileMeta.fileName)
+
+            expect(component.applyButtonDisabled).toBe(false)
+        })
+
+        it("should enable button if length of selectedFilesInUI is different from length of selectedFilesInStore", () => {
+            component.filesInStore = [
+                { selectedAs: FileSelectionState.Partial, file: TEST_FILE_DATA },
+                { selectedAs: FileSelectionState.Partial, file: TEST_FILE_DATA_TWO }
+            ]
+
+            component.handleSelectedFilesChanged([TEST_FILE_DATA])
+
+            expect(component.applyButtonDisabled).toBe(false)
+        })
+
+        it("should enable button if content of selectedFilesInUI is different from selectedFilesInStore", () => {
+            component.filesInStore = [
+                { selectedAs: FileSelectionState.Partial, file: TEST_FILE_DATA },
+                { selectedAs: FileSelectionState.None, file: TEST_FILE_DATA_TWO },
+                { selectedAs: FileSelectionState.Partial, file: TEST_FILE_DATA_JAVA }
+            ]
+
+            component.handleSelectedFilesChanged([TEST_FILE_DATA_TWO, TEST_FILE_DATA_JAVA])
+
+            expect(component.applyButtonDisabled).toBe(false)
         })
     })
 

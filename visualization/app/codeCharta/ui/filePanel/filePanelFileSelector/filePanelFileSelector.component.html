@@ -25,9 +25,9 @@
     <div class="cc-apply-file-selection-button-container">
         <button
             (click)="handleApplyFileChanges()"
-            [disabled]="selectedFilesInUI.length === 0"
-            matTooltip="Select at least one map"
-            matTooltipDisabled="{{ selectedFilesInUI.length > 0 }}"
+            [disabled]="applyButtonDisabled"
+            matTooltip="{{ applyButtonTooltip }}"
+            matTooltipDisabled="{{ !applyButtonDisabled }}"
         >
             Apply
         </button>
