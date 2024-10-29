@@ -252,6 +252,7 @@ class MergeFilterTest {
         val method = MergeFilter::class.java.getDeclaredMethod("levenshteinDistance", CharSequence::class.java, CharSequence::class.java)
         method.isAccessible = true
         val distance = method.invoke(mergeFilter, "kitten", "sitting") as Int
+
         assertThat(distance).isEqualTo(3)
     }
 
