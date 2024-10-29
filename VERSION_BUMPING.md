@@ -17,7 +17,7 @@ For the Visualization release, the project must be built, so it is advisable to 
 ## Start the automatic release process
 
 - Call `pipenv run make_release`.
-- On Windows it is recommended to run the command in `cmd.exe` rather than in a git bash.
+- **On Windows**: Make sure that the git bash utilities are on your path variable if you are using the `cmd`. Alternatively, you can use the git `bash` directly.
 - Check the release process on GitHub after the script is completed
 
 > You can add `-f` or `--force` to disable the protections of the script. You can't release in force mode.
