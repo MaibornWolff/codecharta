@@ -4,7 +4,7 @@ import { fireEvent } from "@testing-library/angular"
 import { NodeContextMenuService } from "./nodeContextMenu.service"
 import { Store } from "@ngrx/store"
 
-describe("NodeContextMenuService ", () => {
+describe("NodeContextMenuService", () => {
     let mockedWheelTargetElement
 
     beforeEach(async () => {
