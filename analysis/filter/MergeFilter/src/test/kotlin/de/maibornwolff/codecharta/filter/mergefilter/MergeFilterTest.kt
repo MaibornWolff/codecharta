@@ -295,4 +295,57 @@ class MergeFilterTest {
 
         assertThat(errContent.toString()).contains("No matching files found for prefix file1_no_overlap")
     }
+
+    @Test
+    fun `should skip correction when user declines suggestion`() {
+        mockkObject(ParserDialog)
+        every { ParserDialog.askForFileCorrection("modul", listOf("module")) } returns null
+
+        System.setOut(PrintStream(outContent))
+        System.setErr(PrintStream(errContent))
+        CommandLine(MergeFilter()).execute(
+            "src/test/resources/mergeFolderTest/mergeFolderTestMIMO/modul.git.cc.json",
+            "src/test/resources/mergeFolderTest/mergeFolderTestMIMO/module.git.cc.json",
+            "-mimo"
+        ).toString()
+
+        assertThat(errContent.toString()).contains("Skipped correction for modul.")
+    }
+
+    @Test
+    fun `should warn when user selects invalid suggestion`() {
+        mockkObject(ParserDialog)
+        every { ParserDialog.askForFileCorrection("modul", listOf("module")) } returns "invalid_selection"
+
+        System.setOut(PrintStream(outContent))
+        System.setErr(PrintStream(errContent))
+
+        try {
+            CommandLine(MergeFilter()).execute(
+                "src/test/resources/mergeFolderTest/mergeFolderTestMIMO/modul.git.cc.json",
+                "src/test/resources/mergeFolderTest/mergeFolderTestMIMO/module.git.cc.json",
+                "-mimo"
+            ).toString()
+        } catch (e: StackOverflowError) {
+            println("Recursion was aborted to prevent StackOverflow.")
+        }
+
+        assertThat(errContent.toString()).contains("The entered project name 'invalid_selection' is not a valid suggestion.")
+    }
+
+    @Test
+    fun `should warn when no top-level overlap after accepting suggestion`() {
+        mockkObject(ParserDialog)
+        every { ParserDialog.askForFileCorrection("file1_no_overlap", listOf("file2_no_overlap")) } returns "file2_no_overlap"
+
+        System.setOut(PrintStream(outContent))
+        System.setErr(PrintStream(errContent))
+        CommandLine(MergeFilter()).execute(
+            "src/test/resources/mergeFolderTest/file1_no_overlap.cc.json",
+            "src/test/resources/mergeFolderTest/file2_no_overlap.cc.json",
+            "-mimo"
+        ).toString()
+
+        assertThat(errContent.toString()).contains("Warning: No top-level overlap for files with prefix file2_no_overlap.")
+    }
 }
