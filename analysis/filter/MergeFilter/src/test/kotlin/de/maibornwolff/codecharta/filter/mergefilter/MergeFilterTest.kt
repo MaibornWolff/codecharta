@@ -348,4 +348,20 @@ class MergeFilterTest {
 
         assertThat(errContent.toString()).contains("Warning: No top-level overlap for files with prefix file2_no_overlap.")
     }
+    @Test
+    fun `should throw exception when no merging strategy is set`() {
+        val mergeFilter = MergeFilter()
+
+        val leafStrategyField = MergeFilter::class.java.getDeclaredField("leafStrategySet")
+        leafStrategyField.isAccessible = true
+        leafStrategyField.set(mergeFilter, false)
+
+        val recursiveStrategyField = MergeFilter::class.java.getDeclaredField("recursiveStrategySet")
+        recursiveStrategyField.isAccessible = true
+        recursiveStrategyField.set(mergeFilter, false)
+
+        assertThrows<IllegalArgumentException> {
+            mergeFilter.call()
+        }
+    }
 }
