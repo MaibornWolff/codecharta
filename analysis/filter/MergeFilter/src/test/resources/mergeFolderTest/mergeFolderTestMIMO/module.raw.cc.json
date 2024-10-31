@@ -7,7 +7,7 @@
       "type": "Folder",
       "children": [
         {
-          "name": "SecondRootChild",
+          "name": "ZeroRootChild",
           "type": "File",
           "children": []
         }
