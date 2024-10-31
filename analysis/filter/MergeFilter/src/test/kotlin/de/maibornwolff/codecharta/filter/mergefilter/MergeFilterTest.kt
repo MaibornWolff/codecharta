@@ -365,4 +365,29 @@ class MergeFilterTest {
             mergeFilter.call()
         }
     }
+
+    @Test
+    fun `should log warning when single file has no matching prefix in mimo mode`() {
+        System.setErr(PrintStream(errContent))
+        CommandLine(MergeFilter()).execute(
+            "src/test/resources/mergeFolderTest/file1_no_overlap.cc.json",
+            "-mimo"
+        ).toString()
+        System.setErr(originalErr)
+
+        assertThat(errContent.toString()).contains("No matching files found for prefix file1_no_overlap")
+    }
+
+    @Test
+    fun `should skip mimo merge if no overlap and mergeModules is false`() {
+        System.setErr(PrintStream(errContent))
+        CommandLine(MergeFilter()).execute(
+            "src/test/resources/mergeFolderTest/file1_no_overlap.cc.json",
+            "src/test/resources/mergeFolderTest/file2_no_overlap.cc.json",
+            "-mimo"
+        ).toString()
+        System.setErr(originalErr)
+
+        assertThat(errContent.toString()).contains("No matching files found for prefix file1_no_overlap.")
+    }
 }
