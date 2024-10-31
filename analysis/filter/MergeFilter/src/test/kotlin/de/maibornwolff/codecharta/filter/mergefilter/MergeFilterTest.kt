@@ -367,27 +367,30 @@ class MergeFilterTest {
     }
 
     @Test
-    fun `should log warning when single file has no matching prefix in mimo mode`() {
+    fun `should skip invalid file and continue mimo merge with other valid files`() {
+        val errContent = ByteArrayOutputStream()
         System.setErr(PrintStream(errContent))
+
         CommandLine(MergeFilter()).execute(
             "src/test/resources/mergeFolderTest/file1_no_overlap.cc.json",
+            "src/test/resources/mergeFolderTest/mimoInvalidFile.cc.json",
             "-mimo"
-        ).toString()
-        System.setErr(originalErr)
+        )
 
-        assertThat(errContent.toString()).contains("No matching files found for prefix file1_no_overlap")
+        assertThat(errContent.toString()).contains("Input invalid files/folders for MergeFilter, stopping execution...")
     }
 
     @Test
-    fun `should skip mimo merge if no overlap and mergeModules is false`() {
+    fun `should warn and skip merging files without top-level overlap when mergeModules is false`() {
+        val errContent = ByteArrayOutputStream()
         System.setErr(PrintStream(errContent))
-        CommandLine(MergeFilter()).execute(
-            "src/test/resources/mergeFolderTest/file1_no_overlap.cc.json",
-            "src/test/resources/mergeFolderTest/file2_no_overlap.cc.json",
-            "-mimo"
-        ).toString()
-        System.setErr(originalErr)
 
-        assertThat(errContent.toString()).contains("No matching files found for prefix file1_no_overlap.")
+        CommandLine(MergeFilter()).execute(
+            "src/test/resources/mergeFolderTest/mergeFolderTestMIMO/module.raw.cc.json",
+            "src/test/resources/mergeFolderTest/mergeFolderTestMIMO/module.git.cc.json",
+            "-mimo"
+        )
+
+        assertThat(errContent.toString()).contains("Warning: No top-level overlap for files with prefix module")
     }
 }
