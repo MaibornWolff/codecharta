@@ -348,6 +348,7 @@ class MergeFilterTest {
 
         assertThat(errContent.toString()).contains("Warning: No top-level overlap for files with prefix file2_no_overlap.")
     }
+
     @Test
     fun `should throw exception when no merging strategy is set`() {
         val mergeFilter = MergeFilter()
