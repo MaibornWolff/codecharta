@@ -2,13 +2,14 @@ import { TestBed } from "@angular/core/testing"
 import { render } from "@testing-library/angular"
 import { expect } from "@jest/globals"
 import { MatchingFilesCounterComponent } from "./matchingFilesCounter.component"
+import { MatchingFilesCounterModule } from "./matchingFilesCounter.module"
 import { provideMockStore } from "@ngrx/store/testing"
 import { matchingFilesCounterSelector } from "./selectors/matchingFilesCounter.selector"
 
 describe("MatchingFilesCounterComponent", () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
-            imports: [MatchingFilesCounterComponent],
+            imports: [MatchingFilesCounterModule],
             providers: [
                 provideMockStore({
                     selectors: [
@@ -27,7 +28,7 @@ describe("MatchingFilesCounterComponent", () => {
     })
 
     it("should render and show matching files counter data", async () => {
-        const { container } = await render(MatchingFilesCounterComponent)
+        const { container } = await render(MatchingFilesCounterComponent, { excludeComponentDeclaration: true })
         const searchContainer = container.querySelector("[title='Files matching search pattern']")
         const flattenedContainer = container.querySelector("[title='Files flattened']")
         const excludedContainer = container.querySelector("[title='Files excluded']")

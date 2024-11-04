@@ -11,14 +11,10 @@ import { ThreeRendererService } from "../codeMap/threeViewer/threeRenderer.servi
 import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
 import { createPNGFileName } from "../../model/files/files.helper"
 import { FileState } from "../../model/files/files"
-import { ActionIconComponent } from "../actionIcon/actionIcon.component"
-import { AsyncPipe } from "@angular/common"
 
 @Component({
     selector: "cc-screenshot-button",
-    templateUrl: "./screenshotButton.component.html",
-    standalone: true,
-    imports: [ActionIconComponent, AsyncPipe]
+    templateUrl: "./screenshotButton.component.html"
 })
 export class ScreenshotButtonComponent {
     TITLE_FILE_BUTTON: string

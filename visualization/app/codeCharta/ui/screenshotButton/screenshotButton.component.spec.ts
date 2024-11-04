@@ -9,6 +9,7 @@ import { ThreeCameraService } from "../codeMap/threeViewer/threeCamera.service"
 import { ThreeRendererService } from "../codeMap/threeViewer/threeRenderer.service"
 import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
 import { ScreenshotButtonComponent } from "./screenshotButton.component"
+import { ScreenshotButtonModule } from "./screenshotButton.module"
 
 jest.mock("../../../../app/codeCharta/util/clipboard/clipboardWriter", () => {
     return {
@@ -27,7 +28,7 @@ jest.mock("html2canvas", () => {
 describe("screenshotButtonComponent", () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
-            imports: [ScreenshotButtonComponent],
+            imports: [ScreenshotButtonModule],
             providers: [
                 provideMockStore({ selectors: [{ selector: screenshotToClipboardEnabledSelector, value: true }] }),
                 { provide: State, useValue: { getValue: () => defaultState } },
@@ -57,7 +58,9 @@ describe("screenshotButtonComponent", () => {
     it("should copy to clipboard on click, when screenshot to clipboard is enabled", async () => {
         ;(checkWriteToClipboardAllowed as jest.Mock).mockImplementation(() => true)
 
-        const { fixture } = await render(ScreenshotButtonComponent)
+        const { fixture } = await render(ScreenshotButtonComponent, {
+            excludeComponentDeclaration: true
+        })
 
         const { xStart, yStart, croppedCanvasWidth, croppedCanvasHeight, imageData } = createMockImageData()
         jest.spyOn(CanvasRenderingContext2D.prototype, "getImageData").mockImplementation(() => imageData)
@@ -84,7 +87,9 @@ describe("screenshotButtonComponent", () => {
     })
 
     it("should save to file on click, when screenshot to clipboard is not enabled", async () => {
-        const { fixture, detectChanges } = await render(ScreenshotButtonComponent)
+        const { fixture, detectChanges } = await render(ScreenshotButtonComponent, {
+            excludeComponentDeclaration: true
+        })
         const store = TestBed.inject(MockStore)
         store.overrideSelector(screenshotToClipboardEnabledSelector, false)
         store.refreshState()
@@ -117,7 +122,9 @@ describe("screenshotButtonComponent", () => {
 
     it("should be disabled when write to clipoard is not available in browser", async () => {
         ;(checkWriteToClipboardAllowed as jest.Mock).mockImplementation(() => false)
-        const { container, fixture } = await render(ScreenshotButtonComponent)
+        const { container, fixture } = await render(ScreenshotButtonComponent, {
+            excludeComponentDeclaration: true
+        })
 
         const makeScreenshotToClipboardSpy = jest.spyOn(fixture.componentInstance, "makeScreenshotToClipboard")
 

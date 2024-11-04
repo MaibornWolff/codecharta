@@ -1,13 +1,9 @@
 import { Component, Inject } from "@angular/core"
-import { MAT_DIALOG_DATA, MatDialogTitle, MatDialogContent, MatDialogActions, MatDialogClose } from "@angular/material/dialog"
-import { CdkScrollable } from "@angular/cdk/scrolling"
-import { MatButton } from "@angular/material/button"
+import { MAT_DIALOG_DATA } from "@angular/material/dialog"
 
 @Component({
     selector: "cc-confirmation-dialog",
-    templateUrl: "./confirmationDialog.component.html",
-    standalone: true,
-    imports: [MatDialogTitle, CdkScrollable, MatDialogContent, MatDialogActions, MatButton, MatDialogClose]
+    templateUrl: "./confirmationDialog.component.html"
 })
 export class ConfirmationDialogComponent {
     constructor(@Inject(MAT_DIALOG_DATA) public data: { title: string; message: string }) {}

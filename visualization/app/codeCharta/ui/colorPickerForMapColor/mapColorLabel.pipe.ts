@@ -3,10 +3,7 @@ import { Pipe, PipeTransform } from "@angular/core"
 import { ColorRange, MapColors } from "../../codeCharta.model"
 import { MetricMinMax } from "../../state/selectors/accumulatedData/metricData/selectedColorMetricData.selector"
 
-@Pipe({
-    name: "mapColorLabel",
-    standalone: true
-})
+@Pipe({ name: "mapColorLabel" })
 export class MapColorLabelPipe implements PipeTransform {
     transform(metricName: keyof MapColors, colorRange: ColorRange, nodeMetricRange: MetricMinMax, colorMetric: string): string {
         switch (metricName) {

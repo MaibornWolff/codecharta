@@ -5,8 +5,7 @@ import { ThreeMapControlsService } from "../../codeMap/threeViewer/threeMapContr
     selector: "cc-zoom-slider",
     templateUrl: "./zoomSlider.component.html",
     styleUrls: ["./zoomSlider.component.scss"],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: true
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ZoomSliderComponent implements OnInit {
     zoomPercentage: number

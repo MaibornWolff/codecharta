@@ -1,16 +1,16 @@
-import { TestBed } from "@angular/core/testing"
-import { State } from "@ngrx/store"
-import { provideMockStore } from "@ngrx/store/testing"
-import { render } from "@testing-library/angular"
-import { FileSelectionModeService } from "../../../codeCharta/ui/filePanel/fileSelectionMode.service"
-import { isDeltaStateSelector } from "../../state/selectors/isDeltaState.selector"
 import { FilePanelComponent } from "./filePanel.component"
+import { TestBed } from "@angular/core/testing"
+import { FilePanelModule } from "./filePanel.module"
+import { render } from "@testing-library/angular"
+import { isDeltaStateSelector } from "../../state/selectors/isDeltaState.selector"
+import { provideMockStore } from "@ngrx/store/testing"
+import { State } from "@ngrx/store"
 
 describe("filePanelComponent", () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
-            imports: [FilePanelComponent],
-            providers: [FileSelectionModeService, { provide: State, useValue: {} }]
+            imports: [FilePanelModule],
+            providers: [{ provide: State, useValue: {} }]
         })
     })
 

@@ -12,11 +12,12 @@ import { attributeDescriptorsSelector } from "../../../state/store/fileSettings/
 import { getLastAction } from "../../../util/testUtils/store.utils"
 import { NodeSelectionService } from "../../metricChooser/nodeSelection.service"
 import { EdgeMetricChooserComponent } from "./edgeMetricChooser.component"
+import { EdgeMetricChooserModule } from "./edgeMetricChooser.module"
 
 describe("edgeMetricChooserComponent", () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
-            imports: [EdgeMetricChooserComponent],
+            imports: [EdgeMetricChooserModule],
             providers: [
                 { provide: NodeSelectionService, useValue: { createNodeObservable: jest.fn().mockReturnValue(of(null)) } },
                 provideMockStore({
@@ -41,7 +42,7 @@ describe("edgeMetricChooserComponent", () => {
 
     describe("edgeMetricChooser", () => {
         it("should be a select for edge metric", async () => {
-            const { detectChanges } = await render(EdgeMetricChooserComponent)
+            const { detectChanges } = await render(EdgeMetricChooserComponent, { excludeComponentDeclaration: true })
 
             await userEvent.click(await screen.findByText("aMetric"))
             await waitFor(() => expect(screen.getByPlaceholderText("Edge Metric (highest value)")).toBeTruthy())
@@ -61,7 +62,7 @@ describe("edgeMetricChooserComponent", () => {
         })
 
         it("should reflect edge metric's visibility in its class name", async () => {
-            const { container, detectChanges } = await render(EdgeMetricChooserComponent)
+            const { container, detectChanges } = await render(EdgeMetricChooserComponent, { excludeComponentDeclaration: true })
 
             let metricChoser = container.querySelector("cc-metric-chooser")
             expect(metricChoser.classList.contains("is-edge-metric-disabled")).toBe(false)
@@ -77,13 +78,13 @@ describe("edgeMetricChooserComponent", () => {
 
     describe("edgeValue", () => {
         it("should return null when there is no node hovered", async () => {
-            const { fixture } = await render(EdgeMetricChooserComponent)
+            const { fixture } = await render(EdgeMetricChooserComponent, { excludeComponentDeclaration: true })
             const edgeValue = await firstValueFrom(fixture.componentInstance.edgeValue$)
             expect(edgeValue).toBe(null)
         })
 
         it("should return null if node has no edge attributes for given metric", async () => {
-            const { fixture } = await render(EdgeMetricChooserComponent)
+            const { fixture } = await render(EdgeMetricChooserComponent, { excludeComponentDeclaration: true })
             const edgeValue = await firstValueFrom(fixture.componentInstance.edgeValue$)
             expect(edgeValue).toBe(null)
         })
@@ -97,7 +98,7 @@ describe("edgeMetricChooserComponent", () => {
                 }
             })
 
-            const { fixture } = await render(EdgeMetricChooserComponent)
+            const { fixture } = await render(EdgeMetricChooserComponent, { excludeComponentDeclaration: true })
             const edgeValue = await firstValueFrom(fixture.componentInstance.edgeValue$)
             expect(edgeValue).toBe("3.142 / 2")
         })
@@ -111,7 +112,7 @@ describe("edgeMetricChooserComponent", () => {
                 }
             })
 
-            const { fixture } = await render(EdgeMetricChooserComponent)
+            const { fixture } = await render(EdgeMetricChooserComponent, { excludeComponentDeclaration: true })
             const edgeValue = await firstValueFrom(fixture.componentInstance.edgeValue$)
             expect(edgeValue).toBe("- / 2")
         })

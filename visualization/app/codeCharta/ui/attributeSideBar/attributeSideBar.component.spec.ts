@@ -5,6 +5,7 @@ import { expect } from "@jest/globals"
 import { TEST_ATTRIBUTE_DESCRIPTORS, TEST_NODE_FOLDER, TEST_NODE_LEAF } from "../../util/dataMocks"
 import { selectedNodeSelector } from "../../state/selectors/selectedNode.selector"
 import { AttributeSideBarComponent } from "./attributeSideBar.component"
+import { AttributeSideBarModule } from "./attributeSideBar.module"
 import { IsAttributeSideBarVisibleService } from "../../services/isAttributeSideBarVisible.service"
 import { primaryMetricNamesSelector } from "../../state/selectors/primaryMetrics/primaryMetricNames.selector"
 import { attributeDescriptorsSelector } from "../../state/store/fileSettings/attributeDescriptors/attributeDescriptors.selector"
@@ -38,7 +39,7 @@ describe("AttributeSideBarComponent", () => {
             area: {}
         }
         TestBed.configureTestingModule({
-            imports: [AttributeSideBarComponent],
+            imports: [AttributeSideBarModule],
             providers: [
                 { provide: IsAttributeSideBarVisibleService, useValue: { isOpen: true } },
                 provideMockStore({
@@ -58,7 +59,7 @@ describe("AttributeSideBarComponent", () => {
     })
 
     it("should display side bar if no building is selected (for opening / closing transition effect)", async () => {
-        const { container } = await render(AttributeSideBarComponent)
+        const { container } = await render(AttributeSideBarComponent, { excludeComponentDeclaration: true })
 
         expect(container.querySelector(".side-bar-container")).not.toBe(null)
     })
@@ -73,7 +74,7 @@ describe("AttributeSideBarComponent", () => {
     })
 
     it("should render correctly with selected building", async () => {
-        const { container, detectChanges } = await render(AttributeSideBarComponent)
+        const { container, detectChanges } = await render(AttributeSideBarComponent, { excludeComponentDeclaration: true })
         const selectedNode = klona(TEST_NODE_LEAF)
         selectedNode.deltas = undefined
         mockSelectedNode(selectedNode as unknown as CodeMapNode, detectChanges)
@@ -89,7 +90,7 @@ describe("AttributeSideBarComponent", () => {
     })
 
     it("should display attribute type selectors for folders", async () => {
-        const { container, detectChanges } = await render(AttributeSideBarComponent)
+        const { container, detectChanges } = await render(AttributeSideBarComponent, { excludeComponentDeclaration: true })
         const selectedNode = klona(TEST_NODE_FOLDER)
         selectedNode["children"] = [{}]
         mockSelectedNode(selectedNode as unknown as CodeMapNode, detectChanges)
@@ -106,7 +107,7 @@ describe("AttributeSideBarComponent", () => {
 
     it("should contain 'no edge metric available' note", async () => {
         selectedMetrics.edge = undefined
-        const { container, detectChanges } = await render(AttributeSideBarComponent)
+        const { container, detectChanges } = await render(AttributeSideBarComponent, { excludeComponentDeclaration: true })
         const selectedNode = klona(TEST_NODE_FOLDER)
         mockSelectedNode(selectedNode as unknown as CodeMapNode, detectChanges)
 
@@ -120,7 +121,7 @@ describe("AttributeSideBarComponent", () => {
         selectedMetricNames.colorMetric = "mcc"
         selectedMetricNames.edgeMetric = "avgCommits"
 
-        const { container, detectChanges } = await render(AttributeSideBarComponent)
+        const { container, detectChanges } = await render(AttributeSideBarComponent, { excludeComponentDeclaration: true })
 
         const store = TestBed.inject(MockStore)
         store.overrideSelector(primaryMetricsSelector, {

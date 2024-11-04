@@ -1,5 +1,5 @@
 import { Component } from "@angular/core"
-import { MatSlideToggleChange, MatSlideToggle } from "@angular/material/slide-toggle"
+import { MatSlideToggleChange } from "@angular/material/slide-toggle"
 import { Store } from "@ngrx/store"
 import { CcState } from "../../../../codeCharta.model"
 import { setScreenshotToClipboardEnabled } from "../../../../state/store/appSettings/enableClipboard/screenshotToClipboardEnabled.actions"
@@ -12,33 +12,11 @@ import { setIsWhiteBackground } from "../../../../state/store/appSettings/isWhit
 import { isWhiteBackgroundSelector } from "../../../../state/store/appSettings/isWhiteBackground/isWhiteBackground.selector"
 import { setResetCameraIfNewFileIsLoaded } from "../../../../state/store/appSettings/resetCameraIfNewFileIsLoaded/resetCameraIfNewFileIsLoaded.actions"
 import { resetCameraIfNewFileIsLoadedSelector } from "../../../../state/store/appSettings/resetCameraIfNewFileIsLoaded/resetCameraIfNewFileIsLoaded.selector"
-import { MatToolbar } from "@angular/material/toolbar"
-import { CdkScrollable } from "@angular/cdk/scrolling"
-import { MatDialogContent, MatDialogActions, MatDialogClose } from "@angular/material/dialog"
-import { MapLayoutSelectionComponent } from "./mapLayoutSelection/mapLayoutSelection.component"
-import { DisplayQualitySelectionComponent } from "./displayQualitySelection/displayQualitySelection.component"
-import { ResetSettingsButtonComponent } from "../../../resetSettingsButton/resetSettingsButton.component"
-import { MatButton } from "@angular/material/button"
-import { AsyncPipe } from "@angular/common"
 
 @Component({
     selector: "cc-global-configuration-dialog",
     templateUrl: "./globalConfigurationDialog.component.html",
-    styleUrls: ["./globalConfigurationDialog.component.scss"],
-    standalone: true,
-    imports: [
-        MatToolbar,
-        CdkScrollable,
-        MatDialogContent,
-        MapLayoutSelectionComponent,
-        DisplayQualitySelectionComponent,
-        MatSlideToggle,
-        ResetSettingsButtonComponent,
-        MatDialogActions,
-        MatButton,
-        MatDialogClose,
-        AsyncPipe
-    ]
+    styleUrls: ["./globalConfigurationDialog.component.scss"]
 })
 export class GlobalConfigurationDialogComponent {
     screenshotToClipboardEnabled$ = this.store.select(screenshotToClipboardEnabledSelector)

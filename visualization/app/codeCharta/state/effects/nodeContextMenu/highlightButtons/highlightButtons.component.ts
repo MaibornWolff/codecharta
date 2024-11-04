@@ -2,14 +2,11 @@ import { Component, Input, OnChanges, SimpleChanges } from "@angular/core"
 import { CodeMapNode } from "../../../../codeCharta.model"
 import { IdToBuildingService } from "../../../../services/idToBuilding/idToBuilding.service"
 import { ThreeSceneService } from "../../../../ui/codeMap/threeViewer/threeSceneService"
-import { MatButton } from "@angular/material/button"
 
 @Component({
     selector: "cc-highlight-buttons",
     templateUrl: "./highlightButtons.component.html",
-    styleUrls: ["../nodeContextMenuButton.component.scss"],
-    standalone: true,
-    imports: [MatButton]
+    styleUrls: ["../nodeContextMenuButton.component.scss"]
 })
 export class HighlightButtonsComponent implements OnChanges {
     @Input() codeMapNode: Pick<CodeMapNode, "id">

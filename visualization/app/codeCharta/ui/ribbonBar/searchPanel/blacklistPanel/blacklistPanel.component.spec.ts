@@ -1,6 +1,7 @@
 import { TestBed } from "@angular/core/testing"
 import { render, screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
+import { MaterialModule } from "../../../../../material/material.module"
 import { removeBlacklistItem } from "../../../../state/store/fileSettings/blacklist/blacklist.actions"
 import { BlacklistPanelComponent } from "./blacklistPanel.component"
 import { Store } from "@ngrx/store"
@@ -9,7 +10,7 @@ import { BlacklistItem } from "../../../../codeCharta.model"
 
 const placeholderText = "Add pattern via search or node context-menu"
 
-describe("BlacklistPanelComponent", () => {
+describe("blacklistPanel", () => {
     let flattenedItems$: BehaviorSubject<BlacklistItem[]>
     let excludedItems$: BehaviorSubject<BlacklistItem[]>
     let dispatchSpy: jest.Mock
@@ -19,7 +20,7 @@ describe("BlacklistPanelComponent", () => {
         excludedItems$ = new BehaviorSubject([])
         dispatchSpy = jest.fn()
         TestBed.configureTestingModule({
-            imports: [BlacklistPanelComponent],
+            imports: [MaterialModule],
             providers: [{ provide: Store, useValue: { select: () => new BehaviorSubject([]), dispatch: dispatchSpy } }]
         })
     })

@@ -9,12 +9,13 @@ import { attributeDescriptorsSelector } from "../../state/store/fileSettings/att
 import { CODE_MAP_BUILDING_TS_NODE } from "../../util/dataMocks"
 import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
 import { FileExtensionBarComponent } from "./fileExtensionBar.component"
+import { FileExtensionBarModule } from "./fileExtensionBar.module"
 import { metricDistributionSelector } from "./selectors/metricDistribution.selector"
 
 describe("fileExtensionBarComponent", () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
-            imports: [FileExtensionBarComponent],
+            imports: [FileExtensionBarModule],
             providers: [
                 {
                     provide: ThreeSceneService,
@@ -51,7 +52,7 @@ describe("fileExtensionBarComponent", () => {
     })
 
     it("should toggle displayed metric relative / absolute values on click", async () => {
-        await render(FileExtensionBarComponent)
+        await render(FileExtensionBarComponent, { excludeComponentDeclaration: true })
         expect(screen.getByText("ts 100.00%")).toBeTruthy()
         expect(screen.queryByText("ts 1,120")).toBeFalsy()
 
@@ -61,7 +62,7 @@ describe("fileExtensionBarComponent", () => {
     })
 
     it("should show details on click of details button", async () => {
-        const { container } = await render(FileExtensionBarComponent)
+        const { container } = await render(FileExtensionBarComponent, { excludeComponentDeclaration: true })
         expect(container.querySelector(".cc-distribution-details").classList).toContain("cc-hidden")
 
         await userEvent.click(container.querySelector(".cc-show-details-button"))
@@ -69,7 +70,7 @@ describe("fileExtensionBarComponent", () => {
     })
 
     it("should highlight buildings on hover", async () => {
-        await render(FileExtensionBarComponent)
+        await render(FileExtensionBarComponent, { excludeComponentDeclaration: true })
         await userEvent.hover(screen.getByText("ts 100.00%"))
 
         const threeSceneService = TestBed.inject<ThreeSceneService>(ThreeSceneService)

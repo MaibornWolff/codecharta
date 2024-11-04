@@ -6,16 +6,11 @@ import { CodeMapNode, CcState } from "../../../../codeCharta.model"
 import { currentFocusedNodePathSelector } from "../../../store/dynamicSettings/focusedNodePath/currentFocused.selector"
 import { focusNode, unfocusAllNodes, unfocusNode } from "../../../store/dynamicSettings/focusedNodePath/focusedNodePath.actions"
 import { focusedNodePathSelector } from "../../../store/dynamicSettings/focusedNodePath/focusedNodePath.selector"
-import { MatButton } from "@angular/material/button"
-import { AsyncPipe } from "@angular/common"
-import { IsNodeFocusedPipe } from "./isNodeFocused.pipe"
 
 @Component({
     selector: "cc-focus-buttons",
     templateUrl: "./focusButtons.component.html",
-    styleUrls: ["../nodeContextMenuButton.component.scss"],
-    standalone: true,
-    imports: [MatButton, AsyncPipe, IsNodeFocusedPipe]
+    styleUrls: ["../nodeContextMenuButton.component.scss"]
 })
 export class FocusButtonsComponent {
     @Input() codeMapNode: Pick<CodeMapNode, "path">

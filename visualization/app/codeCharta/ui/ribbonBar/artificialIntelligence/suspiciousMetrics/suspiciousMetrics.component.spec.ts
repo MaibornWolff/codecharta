@@ -4,13 +4,14 @@ import userEvent from "@testing-library/user-event"
 import { setColorMetric } from "../../../../state/store/dynamicSettings/colorMetric/colorMetric.actions"
 import { setColorRange } from "../../../../state/store/dynamicSettings/colorRange/colorRange.actions"
 import { setHeightMetric } from "../../../../state/store/dynamicSettings/heightMetric/heightMetric.actions"
+import { ArtificialIntelligenceModule } from "../artificialIntelligence.module"
 import { SuspiciousMetricsComponent } from "./suspiciousMetrics.component"
 import { Store } from "@ngrx/store"
 
 describe("SuspiciousMetricsComponent", () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
-            imports: [SuspiciousMetricsComponent],
+            imports: [ArtificialIntelligenceModule],
             providers: [{ provide: Store, useValue: { dispatch: jest.fn() } }]
         })
     })
@@ -18,6 +19,7 @@ describe("SuspiciousMetricsComponent", () => {
     describe("badge", () => {
         it("should show initially and hide on first click, but show again when data has changed", async () => {
             const { container, rerender } = await render(SuspiciousMetricsComponent, {
+                excludeComponentDeclaration: true,
                 componentProperties: {
                     data: {
                         analyzedProgrammingLanguage: "ts",
@@ -47,6 +49,7 @@ describe("SuspiciousMetricsComponent", () => {
 
         it("should show initially and hide on first click, but not show again when new data has same values", async () => {
             const { container, rerender } = await render(SuspiciousMetricsComponent, {
+                excludeComponentDeclaration: true,
                 componentProperties: {
                     data: {
                         analyzedProgrammingLanguage: "ts",
@@ -76,6 +79,7 @@ describe("SuspiciousMetricsComponent", () => {
 
         it("should not show when nothing was analyzed", async () => {
             const { container } = await render(SuspiciousMetricsComponent, {
+                excludeComponentDeclaration: true,
                 componentProperties: {
                     data: {
                         analyzedProgrammingLanguage: undefined,

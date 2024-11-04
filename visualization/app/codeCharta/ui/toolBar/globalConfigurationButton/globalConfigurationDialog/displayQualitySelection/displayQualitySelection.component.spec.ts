@@ -2,6 +2,7 @@ import { TestBed } from "@angular/core/testing"
 import { fireEvent, render, screen, waitForElementToBeRemoved } from "@testing-library/angular"
 import { provideMockStore, MockStore } from "@ngrx/store/testing"
 import { DisplayQualitySelectionComponent } from "./displayQualitySelection.component"
+import { DisplayQualitySelectionModule } from "./displayQualitySelection.module"
 import { sharpnessModeSelector } from "../../../../../state/store/appSettings/sharpnessMode/sharpnessMode.selector"
 import { SharpnessMode } from "../../../../../codeCharta.model"
 import { getLastAction } from "../../../../../util/testUtils/store.utils"
@@ -10,7 +11,7 @@ import { setSharpnessMode } from "../../../../../state/store/appSettings/sharpne
 describe("DisplayQualitySelectionComponent", () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
-            imports: [DisplayQualitySelectionComponent],
+            imports: [DisplayQualitySelectionModule],
             providers: [
                 provideMockStore({
                     selectors: [{ selector: sharpnessModeSelector, value: SharpnessMode.Standard }]

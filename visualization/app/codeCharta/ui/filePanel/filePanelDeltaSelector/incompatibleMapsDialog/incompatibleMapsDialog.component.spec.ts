@@ -2,7 +2,9 @@ import { TestBed } from "@angular/core/testing"
 import { MAT_DIALOG_DATA } from "@angular/material/dialog"
 import { render } from "@testing-library/angular"
 import { IncompatibleMapsDialogComponent } from "./incompatibleMapsDialog.component"
+import { IncompatibleMapsDialogModule } from "./incompatibleMapsDialog.module"
 import userEvent from "@testing-library/user-event"
+import { MatCheckboxModule } from "@angular/material/checkbox"
 
 describe(IncompatibleMapsDialogComponent.name, () => {
     const mockedMatDialogData = {
@@ -13,7 +15,7 @@ describe(IncompatibleMapsDialogComponent.name, () => {
 
     beforeEach(() => {
         TestBed.configureTestingModule({
-            imports: [IncompatibleMapsDialogComponent],
+            imports: [IncompatibleMapsDialogModule, MatCheckboxModule],
             providers: [
                 {
                     provide: MAT_DIALOG_DATA,
@@ -24,7 +26,7 @@ describe(IncompatibleMapsDialogComponent.name, () => {
     })
 
     it("should display the data correctly", async () => {
-        const { container } = await render(IncompatibleMapsDialogComponent)
+        const { container } = await render(IncompatibleMapsDialogComponent, { excludeComponentDeclaration: true })
         const paragraphs = container.querySelectorAll("p")
         expect(paragraphs[1].textContent.trim()).toEqual(
             `${mockedMatDialogData.referenceFileName} → ${mockedMatDialogData.comparisonFileName}`
@@ -35,7 +37,7 @@ describe(IncompatibleMapsDialogComponent.name, () => {
     })
 
     it("should call setDoNotAlertOnIncompatibleMaps() when clicking on the checkbox", async () => {
-        const { container, fixture } = await render(IncompatibleMapsDialogComponent)
+        const { container, fixture } = await render(IncompatibleMapsDialogComponent, { excludeComponentDeclaration: true })
         const componentInstance = fixture.componentInstance
         const spySetDoNotAlertOnIncompatibleMaps = jest.spyOn(componentInstance, "setDoNotAlertOnIncompatibleMaps")
 
@@ -47,7 +49,7 @@ describe(IncompatibleMapsDialogComponent.name, () => {
     })
 
     it("should update localStorage when setDoNotAlertOnIncompatibleMaps() is called", async () => {
-        const { container, fixture } = await render(IncompatibleMapsDialogComponent)
+        const { container, fixture } = await render(IncompatibleMapsDialogComponent, { excludeComponentDeclaration: true })
 
         const checkbox = container.querySelector("mat-checkbox input")
         await userEvent.click(checkbox)

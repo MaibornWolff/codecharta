@@ -1,6 +1,7 @@
 import { render, screen } from "@testing-library/angular"
 import { TestBed } from "@angular/core/testing"
 import { FlattenButtonsComponent } from "./flattenButtons.component"
+import { FlattenButtonsModule } from "./flattenButtons.module"
 import { NodeType } from "../../../../codeCharta.model"
 import userEvent from "@testing-library/user-event"
 import { Store } from "@ngrx/store"
@@ -12,7 +13,7 @@ describe("flattenButtonsComponent", () => {
     beforeEach(() => {
         mockedStore = { dispatch: jest.fn() }
         TestBed.configureTestingModule({
-            imports: [FlattenButtonsComponent],
+            imports: [FlattenButtonsModule],
             providers: [{ provide: Store, useValue: mockedStore }]
         })
     })

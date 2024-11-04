@@ -1,19 +1,21 @@
 import { TestBed } from "@angular/core/testing"
+
 import { render, screen } from "@testing-library/angular"
 import { CustomConfigNoteDialogButtonComponent } from "./customConfigNoteDialogButton.component"
 import userEvent from "@testing-library/user-event"
 import { CustomConfigItem } from "../customConfigs.component"
 import { CustomConfigHelper } from "../../../util/customConfigHelper"
+import { CustomConfigNoteDialogButtonModule } from "./customConfigNoteDialogButton.module"
 import { TestbedHarnessEnvironment } from "@angular/cdk/testing/testbed"
 import { MatDialogHarness } from "@angular/material/dialog/testing"
 
-describe("CustomConfigNoteDialogButtonComponent", () => {
+describe("customConfigNoteDialogComponent", () => {
     let editCustomConfigNoteSpy: jest.SpyInstance
 
     beforeEach(() => {
         editCustomConfigNoteSpy = jest.spyOn(CustomConfigHelper, "editCustomConfigNote").mockImplementation(() => {})
         TestBed.configureTestingModule({
-            imports: [CustomConfigNoteDialogButtonComponent]
+            imports: [CustomConfigNoteDialogButtonModule]
         })
     })
 

@@ -1,11 +1,12 @@
 import { TestBed } from "@angular/core/testing"
 import { render, screen } from "@testing-library/angular"
 import { RangeSliderLabelsComponent } from "./rangeSliderLabels.component"
+import { MetricColorRangeSliderModule } from "../metricColorRangeSlider.module"
 
 describe("RangeSliderLabelsComponent", () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
-            imports: [RangeSliderLabelsComponent]
+            imports: [MetricColorRangeSliderModule]
         })
     })
 

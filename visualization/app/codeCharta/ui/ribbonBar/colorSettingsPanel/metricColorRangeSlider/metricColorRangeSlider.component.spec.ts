@@ -1,11 +1,12 @@
 import { TestBed } from "@angular/core/testing"
 import { fireEvent, render } from "@testing-library/angular"
+import { MetricColorRangeSliderModule } from "./metricColorRangeSlider.module"
 import { MetricColorRangeSliderComponent } from "./metricColorRangeSlider.component"
 
-describe("MetricColorRangeSliderComponent", () => {
+describe("RangeSliderComponent", () => {
     beforeEach(async () => {
         TestBed.configureTestingModule({
-            imports: [MetricColorRangeSliderComponent]
+            imports: [MetricColorRangeSliderModule]
         })
     })
 

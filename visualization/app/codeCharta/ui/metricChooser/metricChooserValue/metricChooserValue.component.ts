@@ -4,16 +4,11 @@ import { Observable } from "rxjs"
 import { CcState, CodeMapNode, Node, PrimaryMetrics } from "../../../codeCharta.model"
 import { primaryMetricNamesSelector } from "../../../state/selectors/primaryMetrics/primaryMetricNames.selector"
 import { NodeSelectionService } from "../nodeSelection.service"
-import { RoundedBoxComponent } from "../../ribbonBar/roundedBox/roundedBox.component"
-import { MetricChooserTypeComponent } from "../metricChooserType/metricChooserType.component"
-import { AsyncPipe } from "@angular/common"
 
 @Component({
     selector: "cc-metric-chooser-value",
     templateUrl: "./metricChooserValue.component.html",
-    styleUrl: "./metricChooserValue.component.scss",
-    standalone: true,
-    imports: [RoundedBoxComponent, MetricChooserTypeComponent, AsyncPipe]
+    styleUrl: "./metricChooserValue.component.scss"
 })
 export class MetricChooserValueComponent {
     @Input() metricFor: keyof PrimaryMetrics

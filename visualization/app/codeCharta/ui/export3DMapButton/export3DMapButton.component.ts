@@ -7,13 +7,10 @@ import { colorModeSelector } from "../../state/store/dynamicSettings/colorMode/c
 import { take } from "rxjs"
 import { ErrorDialogComponent } from "../dialogs/errorDialog/errorDialog.component"
 import { setColorMode } from "../../state/store/dynamicSettings/colorMode/colorMode.actions"
-import { ActionIconComponent } from "../actionIcon/actionIcon.component"
 
 @Component({
     selector: "cc-export-3d-map-button",
-    templateUrl: "./export3DMapButton.component.html",
-    standalone: true,
-    imports: [ActionIconComponent]
+    templateUrl: "./export3DMapButton.component.html"
 })
 export class Export3DMapButtonComponent {
     constructor(

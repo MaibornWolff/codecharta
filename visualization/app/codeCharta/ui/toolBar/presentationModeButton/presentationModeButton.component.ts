@@ -1,17 +1,14 @@
 import { Component, ElementRef } from "@angular/core"
-import { MatSlideToggleChange, MatSlideToggle } from "@angular/material/slide-toggle"
+import { MatSlideToggleChange } from "@angular/material/slide-toggle"
 import { Store } from "@ngrx/store"
 import { CcState } from "../../../codeCharta.model"
 import { setPresentationMode } from "../../../state/store/appSettings/isPresentationMode/isPresentationMode.actions"
 import { isPresentationModeSelector } from "../../../state/store/appSettings/isPresentationMode/isPresentationMode.selector"
-import { AsyncPipe } from "@angular/common"
 
 @Component({
     selector: "cc-presentation-mode-button",
     templateUrl: "./presentationModeButton.component.html",
-    styleUrls: ["./presentationModeButton.component.scss"],
-    standalone: true,
-    imports: [MatSlideToggle, AsyncPipe]
+    styleUrls: ["./presentationModeButton.component.scss"]
 })
 export class PresentationModeButtonComponent {
     isPresentationModeEnabled$ = this.store.select(isPresentationModeSelector)

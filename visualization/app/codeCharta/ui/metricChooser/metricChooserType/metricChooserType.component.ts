@@ -5,13 +5,10 @@ import { AttributeTypes, CcState, CodeMapNode, Node, PrimaryMetrics } from "../.
 import { createAttributeTypeSelector } from "./createAttributeTypeSelector.selector"
 import { NodeSelectionService } from "../nodeSelection.service"
 import { isLeaf } from "../../../util/codeMapHelper"
-import { AsyncPipe } from "@angular/common"
 
 @Component({
     selector: "cc-metric-chooser-type",
-    templateUrl: "./metricChooserType.component.html",
-    standalone: true,
-    imports: [AsyncPipe]
+    templateUrl: "./metricChooserType.component.html"
 })
 export class MetricChooserTypeComponent implements OnInit {
     @Input({ required: true }) metricFor: keyof PrimaryMetrics

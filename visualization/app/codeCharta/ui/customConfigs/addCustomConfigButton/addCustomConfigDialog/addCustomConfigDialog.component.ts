@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core"
-import { UntypedFormControl, Validators, AbstractControl, ValidatorFn, FormsModule, ReactiveFormsModule } from "@angular/forms"
+import { UntypedFormControl, Validators, AbstractControl, ValidatorFn } from "@angular/forms"
 import { CustomConfigHelper } from "../../../../util/customConfigHelper"
 import { buildCustomConfigFromState } from "../../../../util/customConfigBuilder"
 import { ThreeCameraService } from "../../../codeMap/threeViewer/threeCamera.service"
@@ -7,36 +7,10 @@ import { ThreeMapControlsService } from "../../../codeMap/threeViewer/threeMapCo
 import { VisibleFilesBySelectionMode, visibleFilesBySelectionModeSelector } from "../../visibleFilesBySelectionMode.selector"
 import { CcState } from "../../../../codeCharta.model"
 import { State } from "@ngrx/store"
-import { MatToolbar } from "@angular/material/toolbar"
-import { CdkScrollable } from "@angular/cdk/scrolling"
-import { MatDialogContent, MatDialogActions, MatDialogClose } from "@angular/material/dialog"
-import { MatFormField, MatLabel, MatHint, MatError } from "@angular/material/form-field"
-import { MatInput } from "@angular/material/input"
-import { CdkTextareaAutosize } from "@angular/cdk/text-field"
-import { DownloadAndPurgeConfigsComponent } from "./downloadAndPurgeConfigs/downloadAndPurgeConfigs.component"
-import { MatButton } from "@angular/material/button"
 
 @Component({
     selector: "cc-add-custom-config-dialog",
-    templateUrl: "./addCustomConfigDialog.component.html",
-    standalone: true,
-    imports: [
-        MatToolbar,
-        CdkScrollable,
-        MatDialogContent,
-        MatFormField,
-        MatLabel,
-        MatInput,
-        FormsModule,
-        ReactiveFormsModule,
-        MatHint,
-        MatError,
-        CdkTextareaAutosize,
-        MatDialogActions,
-        DownloadAndPurgeConfigsComponent,
-        MatButton,
-        MatDialogClose
-    ]
+    templateUrl: "./addCustomConfigDialog.component.html"
 })
 export class AddCustomConfigDialogComponent implements OnInit {
     customConfigName: UntypedFormControl

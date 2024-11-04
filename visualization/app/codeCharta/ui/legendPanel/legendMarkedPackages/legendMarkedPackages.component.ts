@@ -1,20 +1,17 @@
 import { Component } from "@angular/core"
 import { map, Observable } from "rxjs"
-import { KeyValue, AsyncPipe, KeyValuePipe } from "@angular/common"
+import { KeyValue } from "@angular/common"
 import { legendMarkedPackagesSelector, MarkedPackagesMap } from "./legendMarkedPackages.selector"
 import { markPackages } from "../../../state/store/fileSettings/markedPackages/markedPackages.actions"
 import { Store } from "@ngrx/store"
 import { CcState } from "../../../codeCharta.model"
-import { LabelledColorPickerComponent } from "../../labelledColorPicker/labelledColorPicker.component"
 
 type MarkedPackagesMapKeyValue = KeyValue<keyof MarkedPackagesMap, MarkedPackagesMap[keyof MarkedPackagesMap]>
 
 @Component({
     selector: "cc-legend-marked-packages",
     templateUrl: "./legendMarkedPackages.component.html",
-    styleUrls: ["./legendMarkedPackages.component.scss"],
-    standalone: true,
-    imports: [LabelledColorPickerComponent, AsyncPipe, KeyValuePipe]
+    styleUrls: ["./legendMarkedPackages.component.scss"]
 })
 export class LegendMarkedPackagesComponent {
     markedPackagesMap$: Observable<MarkedPackagesMap>

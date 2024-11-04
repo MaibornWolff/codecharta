@@ -6,22 +6,11 @@ import { accumulatedDataSelector } from "../../state/selectors/accumulatedData/a
 import { IsAttributeSideBarVisibleService } from "../../services/isAttributeSideBarVisible.service"
 import { Store } from "@ngrx/store"
 import { CcState } from "../../codeCharta.model"
-import { AttributeSideBarHeaderSectionComponent } from "./attributeSideBarHeaderSection/attributeSideBarHeaderSection.component"
-import { AttributeSideBarPrimaryMetricsComponent } from "./attributeSideBarPrimaryMetrics/attributeSideBarPrimaryMetrics.component"
-import { AttributeSideBarSecondaryMetricsComponent } from "./attributeSideBarSecondaryMetrics/attributeSideBarSecondaryMetrics.component"
-import { AsyncPipe } from "@angular/common"
 
 @Component({
     selector: "cc-attribute-side-bar",
     templateUrl: "./attributeSideBar.component.html",
-    styleUrls: ["./attributeSideBar.component.scss"],
-    standalone: true,
-    imports: [
-        AttributeSideBarHeaderSectionComponent,
-        AttributeSideBarPrimaryMetricsComponent,
-        AttributeSideBarSecondaryMetricsComponent,
-        AsyncPipe
-    ]
+    styleUrls: ["./attributeSideBar.component.scss"]
 })
 export class AttributeSideBarComponent {
     selectedNode$ = this.store.select(selectedNodeSelector)

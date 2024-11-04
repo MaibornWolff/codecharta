@@ -1,13 +1,9 @@
 import { Component, EventEmitter, HostListener, Input, Output, TemplateRef, ViewChild } from "@angular/core"
-import { MatMenuTrigger, MenuPositionX, MatMenu } from "@angular/material/menu"
-import { NgTemplateOutlet } from "@angular/common"
-import { ColorChromeModule } from "ngx-color/chrome"
+import { MatMenuTrigger, MenuPositionX } from "@angular/material/menu"
 
 @Component({
     selector: "cc-color-picker",
-    templateUrl: "./colorPicker.component.html",
-    standalone: true,
-    imports: [NgTemplateOutlet, MatMenuTrigger, MatMenu, ColorChromeModule]
+    templateUrl: "./colorPicker.component.html"
 })
 export class ColorPickerComponent {
     @Input() hexColor: string

@@ -5,14 +5,11 @@ import { CustomConfigHelper } from "../../../../../util/customConfigHelper"
 import { MatDialog } from "@angular/material/dialog"
 import { validateLocalStorageSize } from "./validateLocalStorageSize"
 import { downloadAndCollectPurgeableConfigs } from "./downloadAndCollectPurgeableConfigs"
-import { MatButton } from "@angular/material/button"
 
 @Component({
     selector: "cc-download-and-purge-configs",
     templateUrl: "./downloadAndPurgeConfigs.component.html",
-    styleUrl: "./downloadAndPurgeConfigs.component.scss",
-    standalone: true,
-    imports: [MatButton]
+    styleUrl: "./downloadAndPurgeConfigs.component.scss"
 })
 export class DownloadAndPurgeConfigsComponent implements OnInit {
     isLocalStorageSizeValid = true

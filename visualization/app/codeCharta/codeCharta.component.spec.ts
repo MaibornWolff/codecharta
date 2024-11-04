@@ -1,5 +1,6 @@
 import { TestBed } from "@angular/core/testing"
 import { LoadInitialFileService } from "./services/loadInitialFile/loadInitialFile.service"
+import { CodeChartaModule } from "./codeCharta.module"
 import { CodeChartaComponent } from "./codeCharta.component"
 import { setIsLoadingFile } from "./state/store/appSettings/isLoadingFile/isLoadingFile.actions"
 import { Store } from "@ngrx/store"
@@ -7,7 +8,7 @@ import { Store } from "@ngrx/store"
 describe("codeChartaComponent", () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
-            imports: [CodeChartaComponent],
+            imports: [CodeChartaModule],
             providers: [{ provide: LoadInitialFileService, useValue: { loadFilesOrSampleFiles: jest.fn() } }]
         })
     })

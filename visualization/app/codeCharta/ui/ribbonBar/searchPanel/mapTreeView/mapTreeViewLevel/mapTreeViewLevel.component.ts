@@ -11,26 +11,12 @@ import { ThreeSceneService } from "../../../../codeMap/threeViewer/threeSceneSer
 import { IdToBuildingService } from "../../../../../services/idToBuilding/idToBuilding.service"
 import { ThreeRendererService } from "../../../../codeMap/threeViewer/threeRenderer.service"
 import { CodeMapMouseEventService } from "../../../../codeMap/codeMap.mouseEvent.service"
-import { isAreaValid, AreaMetricValidPipe } from "../areaMetricValidPipe.pipe"
-import { MapTreeViewItemIconComponent } from "../mapTreeViewItemIcon/mapTreeViewItemIcon.component"
-import { MapTreeViewItemNameComponent } from "../mapTreeViewItemName/mapTreeViewItemName.component"
-import { MapTreeViewItemOptionButtonsComponent } from "../mapTreeViewItemOptionButtons/mapTreeViewItemOptionButtons.component"
-import { AsyncPipe } from "@angular/common"
-import { IsNodeLeafPipe } from "../isNodeLeaf.pipe"
+import { isAreaValid } from "../areaMetricValidPipe.pipe"
 
 @Component({
     selector: "cc-map-tree-view-level",
     templateUrl: "./mapTreeViewLevel.component.html",
-    styleUrls: ["./mapTreeViewLevel.component.scss"],
-    standalone: true,
-    imports: [
-        MapTreeViewItemIconComponent,
-        MapTreeViewItemNameComponent,
-        MapTreeViewItemOptionButtonsComponent,
-        AsyncPipe,
-        AreaMetricValidPipe,
-        IsNodeLeafPipe
-    ]
+    styleUrls: ["./mapTreeViewLevel.component.scss"]
 })
 export class MapTreeViewLevelComponent implements OnInit {
     @Input() node: CodeMapNode

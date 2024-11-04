@@ -2,15 +2,17 @@ import { EventEmitter } from "@angular/core"
 import { TestBed } from "@angular/core/testing"
 import { expect } from "@jest/globals"
 import { fireEvent, render, screen, waitForElementToBeRemoved } from "@testing-library/angular"
-import { LabelledColorPickerComponent } from "./labelledColorPicker.component"
 
-describe("LabelledColorPickerComponent", () => {
+import { LabelledColorPickerComponent } from "./labelledColorPicker.component"
+import { LabelledColorPickerModule } from "./labelledColorPicker.module"
+
+describe("labelledColorPicker", () => {
     const handleColorChange = jest.fn()
 
     beforeEach(() => {
         handleColorChange.mockReset()
         TestBed.configureTestingModule({
-            imports: [LabelledColorPickerComponent]
+            imports: [LabelledColorPickerModule]
         })
     })
 
@@ -31,7 +33,7 @@ describe("LabelledColorPickerComponent", () => {
         expectBrushVisibility(container, true)
 
         fireEvent.click(colorPickerTrigger)
-        const colorPicker = screen.getByRole("colorpicker", { hidden: true })
+        const colorPicker = screen.getByRole("colorpicker")
         expectBrushVisibility(container, true)
 
         // @ts-expect-error
@@ -42,7 +44,7 @@ describe("LabelledColorPickerComponent", () => {
         expectBrushVisibility(container, true) // still true as color picker is still open
 
         fireEvent.click(document)
-        await waitForElementToBeRemoved(screen.getByRole("colorpicker", { hidden: true }))
+        await waitForElementToBeRemoved(screen.getByRole("colorpicker"))
         expectBrushVisibility(container, false)
     })
 })

@@ -1,5 +1,5 @@
 import { Component } from "@angular/core"
-import { MatCheckboxChange, MatCheckbox } from "@angular/material/checkbox"
+import { MatCheckboxChange } from "@angular/material/checkbox"
 import { State, Store } from "@ngrx/store"
 import { map } from "rxjs"
 import { CcState, ColorLabelOptions, ColorMode, ColorRange } from "../../../codeCharta.model"
@@ -14,34 +14,14 @@ import { colorModeSelector } from "../../../state/store/dynamicSettings/colorMod
 import { calculateInitialColorRange } from "../../../state/store/dynamicSettings/colorRange/calculateInitialColorRange"
 import { setColorRange } from "../../../state/store/dynamicSettings/colorRange/colorRange.actions"
 import { debounce } from "../../../util/debounce"
-import { HandleValueChange, MetricColorRangeSliderComponent } from "./metricColorRangeSlider/metricColorRangeSlider.component"
+import { HandleValueChange } from "./metricColorRangeSlider/metricColorRangeSlider.component"
 import { metricColorRangeColorsSelector } from "./selectors/metricColorRangeColors.selector"
 import { metricColorRangeValuesSelector } from "./selectors/metricColorRangeValues.selector"
-import { ResetSettingsButtonComponent } from "../../resetSettingsButton/resetSettingsButton.component"
-import { MetricColorRangeDiagramComponent } from "./metricColorRangeDiagram/metricColorRangeDiagram.component"
-import { MatFormField, MatLabel } from "@angular/material/form-field"
-import { MatSelect } from "@angular/material/select"
-import { MatOption } from "@angular/material/core"
-import { ColorPickerForMapColorComponent } from "../../colorPickerForMapColor/colorPickerForMapColor.component"
-import { AsyncPipe } from "@angular/common"
 
 @Component({
     selector: "cc-color-settings-panel",
     templateUrl: "./colorSettingsPanel.component.html",
-    styleUrls: ["./colorSettingsPanel.component.scss"],
-    standalone: true,
-    imports: [
-        MetricColorRangeSliderComponent,
-        ResetSettingsButtonComponent,
-        MetricColorRangeDiagramComponent,
-        MatFormField,
-        MatLabel,
-        MatSelect,
-        MatOption,
-        ColorPickerForMapColorComponent,
-        MatCheckbox,
-        AsyncPipe
-    ]
+    styleUrls: ["./colorSettingsPanel.component.scss"]
 })
 export class ColorSettingsPanelComponent {
     colorMode$ = this.store.select(colorModeSelector)

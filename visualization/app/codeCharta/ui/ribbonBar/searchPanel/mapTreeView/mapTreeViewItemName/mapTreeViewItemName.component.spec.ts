@@ -1,16 +1,17 @@
 import { TestBed } from "@angular/core/testing"
 import { render } from "@testing-library/angular"
 import { CodeMapNode } from "../../../../../codeCharta.model"
+import { MapTreeViewModule } from "../mapTreeView.module"
 import { MapTreeViewItemNameComponent } from "./mapTreeViewItemName.component"
 import { provideMockStore } from "@ngrx/store/testing"
 import { areaMetricSelector } from "../../../../../state/store/dynamicSettings/areaMetric/areaMetric.selector"
 import { rootUnarySelector } from "../../../../../state/selectors/accumulatedData/rootUnary.selector"
 import { searchedNodePathsSelector } from "../../../../../state/selectors/searchedNodes/searchedNodePaths.selector"
 
-describe("MapTreeViewItemNameComponent", () => {
+describe("mapTreeViewItemNameComponent", () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
-            imports: [MapTreeViewItemNameComponent],
+            imports: [MapTreeViewModule],
             providers: [
                 provideMockStore({
                     selectors: [

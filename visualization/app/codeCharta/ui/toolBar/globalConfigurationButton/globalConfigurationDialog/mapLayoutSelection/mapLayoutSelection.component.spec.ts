@@ -1,18 +1,18 @@
-import { HarnessLoader } from "@angular/cdk/testing"
-import { TestbedHarnessEnvironment } from "@angular/cdk/testing/testbed"
 import { ComponentFixture, TestBed } from "@angular/core/testing"
-import { MatInputHarness } from "@angular/material/input/testing"
-import { MatSelectHarness } from "@angular/material/select/testing"
-import { provideAnimationsAsync } from "@angular/platform-browser/animations/async"
-import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { screen } from "@testing-library/angular"
 import { LayoutAlgorithm } from "../../../../../codeCharta.model"
 import { setLayoutAlgorithm } from "../../../../../state/store/appSettings/layoutAlgorithm/layoutAlgorithm.actions"
+import { provideMockStore, MockStore } from "@ngrx/store/testing"
+import { MapLayoutSelectionComponent } from "./mapLayoutSelection.component"
+import { MapLayoutSelectionModule } from "./mapLayoutSelection.module"
+import { HarnessLoader } from "@angular/cdk/testing"
+import { TestbedHarnessEnvironment } from "@angular/cdk/testing/testbed"
+import { MatSelectHarness } from "@angular/material/select/testing"
+import { MatInputHarness } from "@angular/material/input/testing"
 import { layoutAlgorithmSelector } from "../../../../../state/store/appSettings/layoutAlgorithm/layoutAlgorithm.selector"
-import { setMaxTreeMapFiles } from "../../../../../state/store/appSettings/maxTreeMapFiles/maxTreeMapFiles.actions"
 import { maxTreeMapFilesSelector } from "../../../../../state/store/appSettings/maxTreeMapFiles/maxTreeMapFiles.selector"
 import { getLastAction } from "../../../../../util/testUtils/store.utils"
-import { MapLayoutSelectionComponent } from "./mapLayoutSelection.component"
+import { setMaxTreeMapFiles } from "../../../../../state/store/appSettings/maxTreeMapFiles/maxTreeMapFiles.actions"
 
 let loader: HarnessLoader
 let fixture: ComponentFixture<MapLayoutSelectionComponent>
@@ -21,9 +21,9 @@ describe("MapLayoutSelectionComponent", () => {
     let store: MockStore
     beforeEach(() => {
         TestBed.configureTestingModule({
-            imports: [MapLayoutSelectionComponent],
+            imports: [MapLayoutSelectionModule],
+            declarations: [MapLayoutSelectionComponent],
             providers: [
-                provideAnimationsAsync(),
                 provideMockStore({
                     selectors: [
                         { selector: layoutAlgorithmSelector, value: LayoutAlgorithm.SquarifiedTreeMap },

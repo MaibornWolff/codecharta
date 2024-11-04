@@ -4,17 +4,11 @@ import { invertStandard, setAll, setStandard } from "../../../state/store/files/
 import { CCFile, CcState } from "../../../codeCharta.model"
 import { FileSelectionState, FileState } from "../../../model/files/files"
 import { Store } from "@ngrx/store"
-import { MatSelect } from "@angular/material/select"
-import { MatOption } from "@angular/material/core"
-import { RemoveFileButtonComponent } from "./removeFileButton/removeFileButton.component"
-import { RemoveExtensionPipe } from "../../../util/pipes/removeExtension.pipe"
 
 @Component({
     selector: "cc-file-panel-file-selector",
     templateUrl: "./filePanelFileSelector.component.html",
-    styleUrls: ["./filePanelFileSelector.component.scss"],
-    standalone: true,
-    imports: [MatSelect, MatOption, RemoveFileButtonComponent, RemoveExtensionPipe]
+    styleUrls: ["./filePanelFileSelector.component.scss"]
 })
 export class FilePanelFileSelectorComponent implements OnDestroy {
     fileStates: FileState[] = []

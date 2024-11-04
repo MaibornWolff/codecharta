@@ -4,7 +4,7 @@ import { ComponentFixture, TestBed } from "@angular/core/testing"
 import { MatInputHarness } from "@angular/material/input/testing"
 import { MatSliderHarness } from "@angular/material/slider/testing"
 import { SliderComponent } from "./slider.component"
-import { provideAnimationsAsync } from "@angular/platform-browser/animations/async"
+import { SliderModule } from "./slider.module"
 
 let loader: HarnessLoader
 let fixture: ComponentFixture<SliderComponent>
@@ -12,8 +12,8 @@ let fixture: ComponentFixture<SliderComponent>
 describe("SliderComponent", () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
-            imports: [SliderComponent],
-            providers: [provideAnimationsAsync()]
+            imports: [SliderModule],
+            declarations: [SliderComponent]
         }).compileComponents()
         fixture = TestBed.createComponent(SliderComponent)
         loader = TestbedHarnessEnvironment.loader(fixture)

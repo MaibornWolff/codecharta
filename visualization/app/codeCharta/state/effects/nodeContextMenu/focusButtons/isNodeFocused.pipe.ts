@@ -7,10 +7,7 @@ type IsNodeFocusedType = {
     isParentFocused: boolean
 }
 
-@Pipe({
-    name: "isNodeFocused",
-    standalone: true
-})
+@Pipe({ name: "isNodeFocused" })
 export class IsNodeFocusedPipe implements PipeTransform {
     transform(focusedNodePath: string | undefined, node: Pick<CodeMapNode, "path">): IsNodeFocusedType {
         if (!focusedNodePath || !node) {

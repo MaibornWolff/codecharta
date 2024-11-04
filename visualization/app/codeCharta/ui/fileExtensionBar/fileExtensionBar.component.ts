@@ -4,14 +4,11 @@ import { metricDistributionSelector } from "./selectors/metricDistribution.selec
 import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
 import { Store } from "@ngrx/store"
 import { CcState } from "../../codeCharta.model"
-import { DistributionMetricChooserComponent } from "./distributionMetricChooser/distributionMetricChooser.component"
 
 @Component({
     selector: "cc-file-extension-bar",
     templateUrl: "./fileExtensionBar.component.html",
-    styleUrls: ["./fileExtensionBar.component.scss"],
-    standalone: true,
-    imports: [DistributionMetricChooserComponent]
+    styleUrls: ["./fileExtensionBar.component.scss"]
 })
 export class FileExtensionBarComponent {
     showAbsoluteValues = false

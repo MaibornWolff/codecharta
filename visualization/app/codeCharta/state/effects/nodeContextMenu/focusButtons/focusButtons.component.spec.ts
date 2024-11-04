@@ -2,6 +2,7 @@ import { render } from "@testing-library/angular"
 import { TestBed } from "@angular/core/testing"
 import { expect } from "@jest/globals"
 import { FocusButtonsComponent } from "./focusButtons.component"
+import { FocusButtonsModule } from "./focusButtons.module"
 import { focusedNodePathSelector } from "../../../store/dynamicSettings/focusedNodePath/focusedNodePath.selector"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { currentFocusedNodePathSelector } from "../../../store/dynamicSettings/focusedNodePath/currentFocused.selector"
@@ -9,7 +10,7 @@ import { currentFocusedNodePathSelector } from "../../../store/dynamicSettings/f
 describe("focusButton", () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
-            imports: [FocusButtonsComponent],
+            imports: [FocusButtonsModule],
             providers: [
                 provideMockStore({
                     selectors: [

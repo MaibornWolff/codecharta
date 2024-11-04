@@ -8,8 +8,7 @@ import { Subscription } from "rxjs"
 @Component({
     selector: "cc-download-custom-configs-button",
     templateUrl: "./downloadCustomConfigsButton.component.html",
-    styleUrls: ["../customConfigButtons.scss"],
-    standalone: true
+    styleUrls: ["../customConfigButtons.scss"]
 })
 export class DownloadCustomConfigsButtonComponent implements OnInit, OnDestroy {
     downloadableConfigs: DownloadableConfigs

@@ -1,5 +1,5 @@
 import { Component } from "@angular/core"
-import { UntypedFormControl, FormsModule, ReactiveFormsModule } from "@angular/forms"
+import { UntypedFormControl } from "@angular/forms"
 import { ScenarioHelper, ScenarioMetricProperty } from "../scenarioHelper"
 import { ThreeCameraService } from "../../../codeMap/threeViewer/threeCamera.service"
 import { ThreeMapControlsService } from "../../../codeMap/threeViewer/threeMapControls.service"
@@ -7,34 +7,11 @@ import { customScenarioNameValidator } from "./utils/customScenarioName.validato
 import { getInitialScenarioMetricProperties } from "./utils/getInitialScenarioMetricProperties"
 import { State } from "@ngrx/store"
 import { CcState } from "../../../../codeCharta.model"
-import { MatToolbar } from "@angular/material/toolbar"
-import { CdkScrollable } from "@angular/cdk/scrolling"
-import { MatDialogContent, MatDialogActions, MatDialogClose } from "@angular/material/dialog"
-import { MatFormField, MatLabel, MatError } from "@angular/material/form-field"
-import { MatInput } from "@angular/material/input"
-import { MatSlideToggle } from "@angular/material/slide-toggle"
-import { MatButton } from "@angular/material/button"
 
 @Component({
     selector: "cc-add-custom-scenario-dialog",
     templateUrl: "./addCustomScenarioDialog.component.html",
-    styleUrls: ["./addCustomScenarioDialog.component.scss"],
-    standalone: true,
-    imports: [
-        MatToolbar,
-        CdkScrollable,
-        MatDialogContent,
-        MatFormField,
-        MatLabel,
-        MatInput,
-        FormsModule,
-        ReactiveFormsModule,
-        MatError,
-        MatSlideToggle,
-        MatDialogActions,
-        MatButton,
-        MatDialogClose
-    ]
+    styleUrls: ["./addCustomScenarioDialog.component.scss"]
 })
 export class AddCustomScenarioDialogComponent {
     scenarioName = new UntypedFormControl("", [customScenarioNameValidator()])

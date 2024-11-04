@@ -3,15 +3,11 @@ import { Store } from "@ngrx/store"
 import { CcState } from "../../../codeCharta.model"
 import { setDistributionMetric } from "../../../state/store/dynamicSettings/distributionMetric/distributionMetric.actions"
 import { distributionMetricSelector } from "../../../state/store/dynamicSettings/distributionMetric/distributionMetric.selector"
-import { MetricChooserComponent } from "../../metricChooser/metricChooser.component"
-import { AsyncPipe } from "@angular/common"
 
 @Component({
     selector: "cc-distribution-metric-chooser",
     templateUrl: "./distributionMetricChooser.component.html",
-    styleUrls: ["./distributionMetricChooser.component.scss"],
-    standalone: true,
-    imports: [MetricChooserComponent, AsyncPipe]
+    styleUrls: ["./distributionMetricChooser.component.scss"]
 })
 export class DistributionMetricChooserComponent {
     distributionMetric$ = this.store.select(distributionMetricSelector)

@@ -3,10 +3,7 @@ import { Pipe, PipeTransform } from "@angular/core"
 import { CodeMapNode } from "../../../../../codeCharta.model"
 import { isLeaf } from "../../../../../util/codeMapHelper"
 
-@Pipe({
-    name: "mapTreeViewItemIconClass",
-    standalone: true
-})
+@Pipe({ name: "mapTreeViewItemIconClass" })
 export class MapTreeViewItemIconClassPipe implements PipeTransform {
     transform(value: CodeMapNode, isOpen: boolean): string {
         if (isLeaf(value)) {

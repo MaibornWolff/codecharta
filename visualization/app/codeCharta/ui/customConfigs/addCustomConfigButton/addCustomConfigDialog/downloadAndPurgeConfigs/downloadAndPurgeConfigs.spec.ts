@@ -2,6 +2,7 @@ import { validateLocalStorageSize } from "./validateLocalStorageSize"
 import { DownloadAndPurgeConfigsComponent } from "./downloadAndPurgeConfigs.component"
 import { render, screen } from "@testing-library/angular"
 import { TestBed } from "@angular/core/testing"
+import { MaterialModule } from "../../../../../../material/material.module"
 import userEvent from "@testing-library/user-event"
 import { ConfirmationDialogComponent } from "../../../../dialogs/confirmationDialog/confirmationDialog.component"
 import { NgModule } from "@angular/core"
@@ -19,8 +20,9 @@ const mockedDownloadAndCollectPurgeableOldConfigs = jest.mocked(downloadAndColle
 
 describe("downloadAndPurgeConfigsComponent", () => {
     @NgModule({
-        imports: [DownloadAndPurgeConfigsComponent, ErrorDialogComponent, ConfirmationDialogComponent],
-        providers: [{ provide: InteractivityChecker, useValue: { isFocusable: () => true, isTabbable: () => true } }]
+        imports: [MaterialModule],
+        providers: [{ provide: InteractivityChecker, useValue: { isFocusable: () => true, isTabbable: () => true } }],
+        declarations: [ErrorDialogComponent, ConfirmationDialogComponent]
     })
     class TestModule {}
 

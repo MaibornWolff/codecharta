@@ -7,18 +7,11 @@ import { areaMetricSelector } from "../../state/store/dynamicSettings/areaMetric
 import { colorMetricSelector } from "../../state/store/dynamicSettings/colorMetric/colorMetric.selector"
 import { edgeMetricSelector } from "../../state/store/dynamicSettings/edgeMetric/edgeMetric.selector"
 import { Component, ViewContainerRef, OnDestroy, OnInit } from "@angular/core"
-import { LegendBlockComponent } from "./legendBlock/legendBlock.component"
-import { ColorPickerForMapColorComponent } from "../colorPickerForMapColor/colorPickerForMapColor.component"
-import { LegendMarkedPackagesComponent } from "./legendMarkedPackages/legendMarkedPackages.component"
-import { MatButton } from "@angular/material/button"
-import { AsyncPipe } from "@angular/common"
 
 @Component({
     selector: "cc-legend-panel",
     templateUrl: "./legendPanel.component.html",
-    styleUrls: ["./legendPanel.component.scss"],
-    standalone: true,
-    imports: [LegendBlockComponent, ColorPickerForMapColorComponent, LegendMarkedPackagesComponent, MatButton, AsyncPipe]
+    styleUrls: ["./legendPanel.component.scss"]
 })
 export class LegendPanelComponent implements OnInit, OnDestroy {
     isLegendVisible = false

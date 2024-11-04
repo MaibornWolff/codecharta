@@ -1,8 +1,7 @@
 import { Directive, ElementRef, Input, OnChanges, SimpleChanges } from "@angular/core"
 
 @Directive({
-    selector: "[ccRiskProfileBar]",
-    standalone: true
+    selector: "[ccRiskProfileBar]"
 })
 export class RiskProfileBarDirective implements OnChanges {
     @Input() ccRiskProfileBar = 0

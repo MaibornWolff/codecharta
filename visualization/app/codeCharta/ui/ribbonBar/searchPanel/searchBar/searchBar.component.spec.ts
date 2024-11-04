@@ -2,6 +2,7 @@ import { render, screen, waitFor } from "@testing-library/angular"
 import { TestBed } from "@angular/core/testing"
 import { BlacklistSearchPatternEffect } from "./blacklistSearchPattern.effect"
 import { SearchBarComponent } from "./searchBar.component"
+import { SearchBarModule } from "./searchBar.module"
 import userEvent from "@testing-library/user-event"
 import { searchPatternSelector } from "../../../../state/store/dynamicSettings/searchPattern/searchPattern.selector"
 import { AddBlacklistItemsIfNotResultsInEmptyMapEffect } from "../../../../state/effects/addBlacklistItemsIfNotResultsInEmptyMap/addBlacklistItemsIfNotResultsInEmptyMap.effect"
@@ -17,22 +18,22 @@ jest.mock("../../../../state/effects/addBlacklistItemsIfNotResultsInEmptyMap/res
 
 const mockedResultsInEmptyMap = jest.mocked(resultsInEmptyMap)
 
-describe("SearchBarComponent", () => {
+describe("cc-search-bar", () => {
     const mockedDialog = { open: jest.fn() }
 
     beforeEach(async () => {
         TestBed.configureTestingModule({
             imports: [
-                SearchBarComponent,
                 StoreModule.forRoot(appReducers, { metaReducers: [setStateMiddleware] }),
-                EffectsModule.forRoot([BlacklistSearchPatternEffect, AddBlacklistItemsIfNotResultsInEmptyMapEffect])
+                EffectsModule.forRoot([BlacklistSearchPatternEffect, AddBlacklistItemsIfNotResultsInEmptyMapEffect]),
+                SearchBarModule
             ],
             providers: [{ provide: MatDialog, useValue: mockedDialog }]
         })
     })
 
     it("should be a debounced field for search pattern with clear button if is not empty", async () => {
-        await render(SearchBarComponent)
+        await render(SearchBarComponent, { excludeComponentDeclaration: true })
         const store = TestBed.inject(Store)
         const state = TestBed.inject(State)
         const dispatchSpy = jest.spyOn(store, "dispatch")
@@ -53,7 +54,7 @@ describe("SearchBarComponent", () => {
     })
 
     it("should flatten pattern", async () => {
-        await render(SearchBarComponent)
+        await render(SearchBarComponent, { excludeComponentDeclaration: true })
         const state = TestBed.inject(State)
 
         const searchField = screen.getByPlaceholderText("Search: *.js, **/app/*") as HTMLInputElement
@@ -69,7 +70,7 @@ describe("SearchBarComponent", () => {
 
     it("should exclude pattern", async () => {
         mockedResultsInEmptyMap.mockImplementation(() => false)
-        await render(SearchBarComponent)
+        await render(SearchBarComponent, { excludeComponentDeclaration: true })
         const state = TestBed.inject(State)
 
         const searchField = screen.getByPlaceholderText("Search: *.js, **/app/*") as HTMLInputElement

@@ -1,6 +1,7 @@
 import { TestBed } from "@angular/core/testing"
 import { render, screen } from "@testing-library/angular"
 import { EdgeSettingsPanelComponent } from "./edgeSettingsPanel.component"
+import { EdgeSettingsPanelModule } from "./edgeSettingsPanel.module"
 import { provideMockStore } from "@ngrx/store/testing"
 import { amountOfBuildingsWithSelectedEdgeMetricSelector } from "./selectors/amountOfBuildingsWithSelectedEdgeMetric.selector"
 import { amountOfEdgePreviewsSelector } from "../../../state/store/appSettings/amountOfEdgePreviews/amountOfEdgePreviews.selector"
@@ -12,10 +13,10 @@ import { colorRangeSelector } from "../../../state/store/dynamicSettings/colorRa
 import { mapColorsSelector } from "../../../state/store/appSettings/mapColors/mapColors.selector"
 import { defaultMapColors } from "../../../state/store/appSettings/mapColors/mapColors.reducer"
 
-describe("EdgeSettingsPanelComponent", () => {
+describe("edgeSettingsPanelComponent", () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
-            imports: [EdgeSettingsPanelComponent],
+            imports: [EdgeSettingsPanelModule],
             providers: [
                 provideMockStore({
                     selectors: [
@@ -34,7 +35,7 @@ describe("EdgeSettingsPanelComponent", () => {
     })
 
     it("should render correctly", async () => {
-        await render(EdgeSettingsPanelComponent)
+        await render(EdgeSettingsPanelComponent, { excludeComponentDeclaration: true })
         expect(screen.getByText("Preview")).toBeTruthy()
         expect(screen.getByText("Height")).toBeTruthy()
         expect(screen.getByText("Outgoing Edge")).toBeTruthy()

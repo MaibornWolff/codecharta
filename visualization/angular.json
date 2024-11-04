@@ -22,7 +22,7 @@
           "options": {
             "outputPath": "dist/webpack",
             "index": "app/index.html",
-            "main": "app/main.ts",
+            "main": "app/app.module.ts",
             "polyfills": "app/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "sass",

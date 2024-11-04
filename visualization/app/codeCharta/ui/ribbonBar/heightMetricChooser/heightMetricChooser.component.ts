@@ -3,14 +3,10 @@ import { Store } from "@ngrx/store"
 import { CcState } from "../../../codeCharta.model"
 import { setHeightMetric } from "../../../state/store/dynamicSettings/heightMetric/heightMetric.actions"
 import { heightMetricSelector } from "../../../state/store/dynamicSettings/heightMetric/heightMetric.selector"
-import { MetricChooserComponent } from "../../metricChooser/metricChooser.component"
-import { AsyncPipe } from "@angular/common"
 
 @Component({
     selector: "cc-height-metric-chooser",
-    templateUrl: "./heightMetricChooser.component.html",
-    standalone: true,
-    imports: [MetricChooserComponent, AsyncPipe]
+    templateUrl: "./heightMetricChooser.component.html"
 })
 export class HeightMetricChooserComponent {
     heightMetric$ = this.store.select(heightMetricSelector)

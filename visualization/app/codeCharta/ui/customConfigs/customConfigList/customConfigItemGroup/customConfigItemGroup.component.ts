@@ -4,37 +4,13 @@ import { CustomConfigItemGroup } from "../../customConfigs.component"
 import { ThreeCameraService } from "../../../codeMap/threeViewer/threeCamera.service"
 import { ThreeMapControlsService } from "../../../codeMap/threeViewer/threeMapControls.service"
 import { Store } from "@ngrx/store"
-import { MatExpansionPanel, MatExpansionPanelHeader, MatExpansionPanelTitle } from "@angular/material/expansion"
+import { MatExpansionPanel } from "@angular/material/expansion"
 import { ThreeRendererService } from "../../../codeMap/threeViewer/threeRenderer.service"
-import { MatList, MatListItem } from "@angular/material/list"
-import { MatDialogClose } from "@angular/material/dialog"
-import { CustomConfigNoteDialogButtonComponent } from "../../customConfigNoteDialogButton/customConfigNoteDialogButton.component"
-import { ApplyCustomConfigButtonComponent } from "./customConfigDescription/applyCustomConfigButton.component"
-import { TitleCasePipe, KeyValuePipe } from "@angular/common"
-import { TruncateTextPipe } from "../../../../util/pipes/truncateText.pipe"
-import { CustomConfig2ApplicableMessage } from "./customConfig2ApplicableMessage.pipe"
-import { FilterCustomConfigDataBySearchTermPipe } from "./customConfigDescription/filterCustomConfigDataBySearchTerm.pipe"
 
 @Component({
     selector: "cc-custom-config-item-group",
     templateUrl: "./customConfigItemGroup.component.html",
-    styleUrls: ["./customConfigItemGroup.component.scss"],
-    standalone: true,
-    imports: [
-        MatExpansionPanel,
-        MatExpansionPanelHeader,
-        MatExpansionPanelTitle,
-        MatList,
-        MatListItem,
-        MatDialogClose,
-        CustomConfigNoteDialogButtonComponent,
-        ApplyCustomConfigButtonComponent,
-        TitleCasePipe,
-        KeyValuePipe,
-        TruncateTextPipe,
-        CustomConfig2ApplicableMessage,
-        FilterCustomConfigDataBySearchTermPipe
-    ]
+    styleUrls: ["./customConfigItemGroup.component.scss"]
 })
 export class CustomConfigItemGroupComponent implements OnChanges {
     @Input() customConfigItemGroups: Map<string, CustomConfigItemGroup>

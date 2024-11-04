@@ -1,3 +1,4 @@
+import "./codeCharta.module"
 import { stateObjectReplacer, stateObjectReviver } from "./codeCharta.model"
 
 describe("codeChartaModel", () => {

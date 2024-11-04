@@ -12,11 +12,12 @@ import { attributeDescriptorsSelector } from "../../../state/store/fileSettings/
 import { getLastAction } from "../../../util/testUtils/store.utils"
 import { NodeSelectionService } from "../../metricChooser/nodeSelection.service"
 import { ColorMetricChooserComponent } from "./colorMetricChooser.component"
+import { ColorMetricChooserModule } from "./colorMetricChooser.module"
 
 describe("colorMetricChooserComponent", () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
-            imports: [ColorMetricChooserComponent],
+            imports: [ColorMetricChooserModule],
             providers: [
                 { provide: NodeSelectionService, useValue: { createNodeObservable: jest.fn() } },
                 provideMockStore({
@@ -41,7 +42,7 @@ describe("colorMetricChooserComponent", () => {
     })
 
     it("should be a select for color metric", async () => {
-        const { container, detectChanges } = await render(ColorMetricChooserComponent)
+        const { container, detectChanges } = await render(ColorMetricChooserComponent, { excludeComponentDeclaration: true })
 
         expect(screen.getByRole("combobox").getAttribute("aria-disabled")).toBe("false")
 
@@ -64,7 +65,7 @@ describe("colorMetricChooserComponent", () => {
     })
 
     it("should disable metric chooser when height and color metric are linked", async () => {
-        const { container, detectChanges } = await render(ColorMetricChooserComponent)
+        const { container, detectChanges } = await render(ColorMetricChooserComponent, { excludeComponentDeclaration: true })
         const store = TestBed.inject(MockStore)
         store.overrideSelector(isColorMetricLinkedToHeightMetricSelector, true)
         store.refreshState()

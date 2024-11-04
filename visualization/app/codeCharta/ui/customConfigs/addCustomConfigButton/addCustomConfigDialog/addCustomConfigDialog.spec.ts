@@ -1,4 +1,5 @@
 import { TestBed } from "@angular/core/testing"
+import { AddCustomConfigButtonModule } from "../addCustomConfigButton.module"
 import { render, screen } from "@testing-library/angular"
 import { AddCustomConfigDialogComponent } from "./addCustomConfigDialog.component"
 import { CustomConfigHelper } from "../../../../util/customConfigHelper"
@@ -11,13 +12,13 @@ import { provideMockStore } from "@ngrx/store/testing"
 import { defaultState } from "../../../../state/store/state.manager"
 import { State } from "@ngrx/store"
 
-describe("AddCustomConfigDialogComponent", () => {
+describe("addCustomConfigDialogComponent", () => {
     jest.spyOn(CustomConfigHelper, "getConfigNameSuggestionByFileState").mockReturnValue("new custom view name")
 
     beforeEach(async () => {
         const mockedDialog = { open: jest.fn() }
         TestBed.configureTestingModule({
-            imports: [AddCustomConfigDialogComponent],
+            imports: [AddCustomConfigButtonModule],
             providers: [
                 { provide: MatDialog, useValue: mockedDialog },
                 { provide: ThreeCameraService, useValue: { camera: { position: new Vector3(0, 300, 1000) } } },
@@ -29,7 +30,7 @@ describe("AddCustomConfigDialogComponent", () => {
     })
 
     it("should suggest a valid custom view name and 'add' button is enabled", async () => {
-        await render(AddCustomConfigDialogComponent)
+        await render(AddCustomConfigDialogComponent, { excludeComponentDeclaration: true })
 
         const input = screen.getAllByRole("textbox") as HTMLInputElement[]
         const nameTextField = input[0]
@@ -39,7 +40,7 @@ describe("AddCustomConfigDialogComponent", () => {
     })
 
     it("should show an empty comment text field, with optional entry", async () => {
-        await render(AddCustomConfigDialogComponent)
+        await render(AddCustomConfigDialogComponent, { excludeComponentDeclaration: true })
 
         const input = screen.getAllByRole("textbox") as HTMLInputElement[]
         const commentTextField = input[1]
@@ -49,7 +50,7 @@ describe("AddCustomConfigDialogComponent", () => {
     })
 
     it("should show error message when input field is empty and disable 'add' button", async () => {
-        await render(AddCustomConfigDialogComponent)
+        await render(AddCustomConfigDialogComponent, { excludeComponentDeclaration: true })
 
         const input = screen.getAllByRole("textbox") as HTMLInputElement[]
         const nameTextField = input[0]
@@ -61,7 +62,7 @@ describe("AddCustomConfigDialogComponent", () => {
     })
 
     it("should show error message when file name already exists and disable 'add' button", async () => {
-        await render(AddCustomConfigDialogComponent)
+        await render(AddCustomConfigDialogComponent, { excludeComponentDeclaration: true })
         jest.spyOn(CustomConfigHelper, "hasCustomConfigByName").mockReturnValue(true)
 
         const input = screen.getAllByRole("textbox") as HTMLInputElement[]

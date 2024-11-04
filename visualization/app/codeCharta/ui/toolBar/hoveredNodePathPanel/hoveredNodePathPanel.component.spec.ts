@@ -1,13 +1,14 @@
 import { TestBed } from "@angular/core/testing"
 import { render } from "@testing-library/angular"
 import { HoveredNodePathPanelComponent } from "./hoveredNodePathPanel.component"
+import { HoveredNodePathPanelModule } from "./hoveredNodePathPanel.module"
 import { hoveredNodePathPanelDataSelector } from "./hoveredNodePathPanelData.selector"
 import { provideMockStore } from "@ngrx/store/testing"
 
 describe("HoveredNodePathPanelComponent", () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
-            imports: [HoveredNodePathPanelComponent]
+            imports: [HoveredNodePathPanelModule]
         })
     })
 

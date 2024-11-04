@@ -4,15 +4,11 @@ import { markFolderItemsSelector } from "./selectors/markFolderItems.selector"
 import { CcState } from "../../../../codeCharta.model"
 import { rightClickedCodeMapNodeSelector } from "../rightClickedCodeMapNode.selector"
 import { Store } from "@ngrx/store"
-import { ColorPickerComponent } from "../../../../ui/colorPicker/colorPicker.component"
-import { AsyncPipe } from "@angular/common"
 
 @Component({
     selector: "cc-mark-folder-row",
     templateUrl: "./markFolderRow.component.html",
-    styleUrls: ["./markFolderRow.component.scss"],
-    standalone: true,
-    imports: [ColorPickerComponent, AsyncPipe]
+    styleUrls: ["./markFolderRow.component.scss"]
 })
 export class MarkFolderRowComponent {
     markFolderItems$ = this.store.select(markFolderItemsSelector)

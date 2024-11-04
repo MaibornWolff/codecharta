@@ -15,6 +15,7 @@ import { setState } from "../../../state/store/state.actions"
 import { defaultState } from "../../../state/store/state.manager"
 import { METRIC_DATA, TEST_DELTA_MAP_A } from "../../../util/dataMocks"
 import * as indexedDBWriter from "../../../util/indexedDB/indexedDBWriter"
+import { ResetMapButtonModule } from "../resetMapButton.module"
 import { ConfirmResetMapDialogComponent } from "./confirmResetMapDialog.component"
 import * as resetChosenMetricsEffect from "../../../state/effects/resetChosenMetrics/resetChosenMetrics.effect"
 
@@ -28,7 +29,7 @@ describe("ConfirmResetMapDialogComponent", () => {
 
     beforeEach(() => {
         TestBed.configureTestingModule({
-            imports: [ConfirmResetMapDialogComponent],
+            imports: [ResetMapButtonModule],
             providers: [
                 { provide: MatDialogRef, useValue: mockedDialogReference },
                 { provide: MatDialog, useValue: mockedDialog },
@@ -76,7 +77,7 @@ describe("ConfirmResetMapDialogComponent", () => {
     })
 
     it("Should reset state to maps in file query parameter when confirm is selected and file query parameter is specified", async () => {
-        await render(ConfirmResetMapDialogComponent)
+        await render(ConfirmResetMapDialogComponent, { excludeComponentDeclaration: true })
 
         const store = TestBed.inject(MockStore)
         const loadFileService = TestBed.inject(LoadFileService)
@@ -101,7 +102,7 @@ describe("ConfirmResetMapDialogComponent", () => {
     })
 
     it("Should close dialog when abort is selected", async () => {
-        await render(ConfirmResetMapDialogComponent)
+        await render(ConfirmResetMapDialogComponent, { excludeComponentDeclaration: true })
 
         const store = TestBed.inject(MockStore)
         const dispatchSpy = jest.spyOn(store, "dispatch")
