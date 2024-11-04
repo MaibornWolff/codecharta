@@ -7,10 +7,15 @@ import { setMapColors } from "../../state/store/appSettings/mapColors/mapColors.
 import { mapColorsSelector } from "../../state/store/appSettings/mapColors/mapColors.selector"
 import { colorRangeSelector } from "../../state/store/dynamicSettings/colorRange/colorRange.selector"
 import { colorMetricSelector } from "../../state/store/dynamicSettings/colorMetric/colorMetric.selector"
+import { LabelledColorPickerComponent } from "../labelledColorPicker/labelledColorPicker.component"
+import { AsyncPipe } from "@angular/common"
+import { MapColorLabelPipe } from "./mapColorLabel.pipe"
 
 @Component({
     selector: "cc-color-picker-for-map-color",
-    templateUrl: "./colorPickerForMapColor.component.html"
+    templateUrl: "./colorPickerForMapColor.component.html",
+    standalone: true,
+    imports: [LabelledColorPickerComponent, AsyncPipe, MapColorLabelPipe]
 })
 export class ColorPickerForMapColorComponent {
     @Input() mapColorFor: keyof Omit<MapColors, "labelColorAndAlpha" | "markingColors">

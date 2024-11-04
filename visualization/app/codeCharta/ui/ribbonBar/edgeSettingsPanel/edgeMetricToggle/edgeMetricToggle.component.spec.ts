@@ -1,16 +1,15 @@
 import { fireEvent, render } from "@testing-library/angular"
 import { EdgeMetricToggleComponent } from "./edgeMetricToggle.component"
 import { TestBed } from "@angular/core/testing"
-import { MaterialModule } from "../../../../../material/material.module"
 import { isEdgeMetricVisibleSelector } from "../../../../state/store/appSettings/isEdgeMetricVisible/isEdgeMetricVisible.selector"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { getLastAction } from "../../../../util/testUtils/store.utils"
 import { toggleEdgeMetricVisible } from "../../../../state/store/appSettings/isEdgeMetricVisible/isEdgeMetricVisible.actions"
 
-describe("edgeMetricToggleComponent", () => {
+describe("EdgeMetricToggleComponent", () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
-            imports: [MaterialModule],
+            imports: [EdgeMetricToggleComponent],
             providers: [provideMockStore({ selectors: [{ selector: isEdgeMetricVisibleSelector, value: false }] })]
         })
     })

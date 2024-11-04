@@ -6,10 +6,17 @@ import { layoutAlgorithmSelector } from "../../../../../state/store/appSettings/
 import { setMaxTreeMapFiles } from "../../../../../state/store/appSettings/maxTreeMapFiles/maxTreeMapFiles.actions"
 import { maxTreeMapFilesSelector } from "../../../../../state/store/appSettings/maxTreeMapFiles/maxTreeMapFiles.selector"
 import { debounce } from "../../../../../util/debounce"
+import { MatFormField, MatLabel } from "@angular/material/form-field"
+import { MatSelect } from "@angular/material/select"
+import { MatOption } from "@angular/material/core"
+import { SliderComponent } from "../../../../slider/slider.component"
+import { AsyncPipe } from "@angular/common"
 
 @Component({
     selector: "cc-map-layout-selection",
-    templateUrl: "./mapLayoutSelection.component.html"
+    templateUrl: "./mapLayoutSelection.component.html",
+    standalone: true,
+    imports: [MatFormField, MatLabel, MatSelect, MatOption, SliderComponent, AsyncPipe]
 })
 export class MapLayoutSelectionComponent {
     layoutAlgorithms = Object.values(LayoutAlgorithm)

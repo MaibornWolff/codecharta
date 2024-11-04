@@ -12,11 +12,14 @@ import {
     ViewContainerRef
 } from "@angular/core"
 import { RibbonBarPanelSettingsComponent } from "./ribbonBarPanelSettings.component"
+import { MatCard } from "@angular/material/card"
 
 @Component({
     selector: "cc-ribbon-bar-panel",
     templateUrl: "./ribbonBarPanel.component.html",
-    styleUrl: "./ribbonBarPanel.component.scss"
+    styleUrl: "./ribbonBarPanel.component.scss",
+    standalone: true,
+    imports: [MatCard]
 })
 export class RibbonBarPanelComponent implements OnInit, OnDestroy {
     @Input() title?: string

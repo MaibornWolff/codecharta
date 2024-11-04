@@ -18,7 +18,19 @@ import {
     Preview3DPrintMesh
 } from "../../../services/3DExports/3DPreview/preview3DPrintMesh"
 import { calculateNodeMetricData } from "../../../state/selectors/accumulatedData/metricData/nodeMetricData.calculator"
-import { MatSlideToggleChange } from "@angular/material/slide-toggle"
+import { MatSlideToggleChange, MatSlideToggle } from "@angular/material/slide-toggle"
+import { MatToolbar } from "@angular/material/toolbar"
+import { CdkScrollable } from "@angular/cdk/scrolling"
+import { MatDialogContent, MatDialogActions } from "@angular/material/dialog"
+import { MatFormField, MatLabel } from "@angular/material/form-field"
+import { MatSelect, MatSelectTrigger } from "@angular/material/select"
+import { MatOption } from "@angular/material/core"
+import { MatCard, MatCardHeader, MatCardContent } from "@angular/material/card"
+import { MatSlider, MatSliderThumb } from "@angular/material/slider"
+import { FormsModule } from "@angular/forms"
+import { MatInput } from "@angular/material/input"
+import { MatButton } from "@angular/material/button"
+import { LabelledColorPickerComponent } from "../../labelledColorPicker/labelledColorPicker.component"
 
 interface Printer {
     name: string
@@ -38,7 +50,29 @@ interface ManualVisibilityItem {
 @Component({
     selector: "cc-export-3D-map-dialog",
     templateUrl: "./export3DMapDialog.component.html",
-    styleUrls: ["./export3DMapDialog.component.scss"]
+    styleUrls: ["./export3DMapDialog.component.scss"],
+    standalone: true,
+    imports: [
+        MatToolbar,
+        CdkScrollable,
+        MatDialogContent,
+        MatFormField,
+        MatLabel,
+        MatSelect,
+        MatSelectTrigger,
+        MatOption,
+        MatCard,
+        MatCardHeader,
+        MatCardContent,
+        MatSlider,
+        MatSliderThumb,
+        FormsModule,
+        MatInput,
+        MatSlideToggle,
+        MatButton,
+        LabelledColorPickerComponent,
+        MatDialogActions
+    ]
 })
 export class Export3DMapDialogComponent {
     @ViewChild("rendererContainer") rendererContainer: ElementRef

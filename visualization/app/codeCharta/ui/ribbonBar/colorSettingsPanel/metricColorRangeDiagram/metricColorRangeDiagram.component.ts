@@ -8,7 +8,8 @@ type Scale = d3.ScaleLinear<number, number>
 @Component({
     selector: "cc-metric-color-range-diagram",
     templateUrl: "./metricColorRangeDiagram.component.html",
-    styleUrls: ["./metricColorRangeDiagram.component.scss"]
+    styleUrls: ["./metricColorRangeDiagram.component.scss"],
+    standalone: true
 })
 export class MetricColorRangeDiagramComponent implements OnChanges {
     @Input() minValue: number

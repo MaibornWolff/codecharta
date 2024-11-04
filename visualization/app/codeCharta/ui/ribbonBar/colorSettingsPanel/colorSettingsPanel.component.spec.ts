@@ -10,7 +10,6 @@ import { setColorRange } from "../../../state/store/dynamicSettings/colorRange/c
 import { appReducers, setStateMiddleware } from "../../../state/store/state.manager"
 import { wait } from "../../../util/testUtils/wait"
 import { ColorSettingsPanelComponent } from "./colorSettingsPanel.component"
-import { ColorSettingsPanelModule } from "./colorSettingsPanel.module"
 
 jest.mock("../../../state/selectors/isDeltaState.selector", () => ({
     isDeltaStateSelector: jest.fn()
@@ -21,11 +20,11 @@ jest.mock("../../../state/store/dynamicSettings/colorRange/colorRange.selector",
 
 const mockedIsDeltaStateSelector = jest.mocked(isDeltaStateSelector)
 
-describe("colorSettingsPanelComponent", () => {
+describe("ColorSettingsPanelComponent", () => {
     mockedIsDeltaStateSelector.mockImplementation(() => false)
     beforeEach(() => {
         TestBed.configureTestingModule({
-            imports: [ColorSettingsPanelModule, StoreModule.forRoot(appReducers, { metaReducers: [setStateMiddleware] })]
+            imports: [ColorSettingsPanelComponent, StoreModule.forRoot(appReducers, { metaReducers: [setStateMiddleware] })]
         })
     })
 
@@ -35,7 +34,7 @@ describe("colorSettingsPanelComponent", () => {
         })
 
         it("should show relevant elements for standard mode", async () => {
-            const { container } = await render(ColorSettingsPanelComponent, { excludeComponentDeclaration: true })
+            const { container } = await render(ColorSettingsPanelComponent)
             expect(container.querySelector("cc-metric-color-range-slider")).not.toBe(null)
             expect(screen.queryAllByText("Show labels").length).toBe(3)
             expect(screen.queryByText("+Δ positive delta")).toBe(null)
@@ -43,7 +42,7 @@ describe("colorSettingsPanelComponent", () => {
         })
 
         it("should invert color range", async () => {
-            await render(ColorSettingsPanelComponent, { excludeComponentDeclaration: true })
+            await render(ColorSettingsPanelComponent)
             const dispatchSpy = jest.spyOn(TestBed.inject(Store), "dispatch")
 
             const invertColors = screen.getByText("Invert Colors")
@@ -53,7 +52,7 @@ describe("colorSettingsPanelComponent", () => {
         })
 
         it("should allow to show labels for negative color", async () => {
-            await render(ColorSettingsPanelComponent, { excludeComponentDeclaration: true })
+            await render(ColorSettingsPanelComponent)
             const dispatchSpy = jest.spyOn(TestBed.inject(Store), "dispatch")
 
             const showNegativeLabels = screen.queryAllByText("Show labels")[2]
@@ -63,7 +62,7 @@ describe("colorSettingsPanelComponent", () => {
         })
 
         it("should reset invert colors checkbox on resetting colors", async () => {
-            const { fixture } = await render(ColorSettingsPanelComponent, { excludeComponentDeclaration: true })
+            const { fixture } = await render(ColorSettingsPanelComponent)
 
             await userEvent.click(screen.getByText("Invert Colors"))
             expect(fixture.componentInstance.isColorRangeInverted).toBe(true)
@@ -73,7 +72,7 @@ describe("colorSettingsPanelComponent", () => {
         })
 
         it("should update store debounced without loosing an update and track it", async () => {
-            const { fixture } = await render(ColorSettingsPanelComponent, { excludeComponentDeclaration: true })
+            const { fixture } = await render(ColorSettingsPanelComponent)
             const dispatchSpy = jest.spyOn(TestBed.inject(Store), "dispatch")
 
             fixture.componentInstance.handleValueChange({ newLeftValue: 10 })
@@ -92,7 +91,7 @@ describe("colorSettingsPanelComponent", () => {
         })
 
         it("should show relevant elements for delta mode", async () => {
-            const { container } = await render(ColorSettingsPanelComponent, { excludeComponentDeclaration: true })
+            const { container } = await render(ColorSettingsPanelComponent)
             expect(container.querySelector("cc-metric-color-range-slider")).toBe(null)
             expect(screen.queryByText("Show labels")).toBe(null)
             expect(screen.getByText("+Δ positive delta")).not.toBe(null)
@@ -100,7 +99,7 @@ describe("colorSettingsPanelComponent", () => {
         })
 
         it("should invert delta colors", async () => {
-            await render(ColorSettingsPanelComponent, { excludeComponentDeclaration: true })
+            await render(ColorSettingsPanelComponent)
             const dispatchSpy = jest.spyOn(TestBed.inject(Store), "dispatch")
 
             const invertColors = screen.getByText("Invert Colors")
@@ -110,7 +109,7 @@ describe("colorSettingsPanelComponent", () => {
         })
 
         it("should reset delta colors", async () => {
-            await render(ColorSettingsPanelComponent, { excludeComponentDeclaration: true })
+            await render(ColorSettingsPanelComponent)
             const store = TestBed.inject(Store)
             store.dispatch(
                 setMapColors({

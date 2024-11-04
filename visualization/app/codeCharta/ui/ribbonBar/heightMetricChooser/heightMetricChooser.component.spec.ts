@@ -11,14 +11,13 @@ import { attributeDescriptorsSelector } from "../../../state/store/fileSettings/
 import { getLastAction } from "../../../util/testUtils/store.utils"
 import { NodeSelectionService } from "../../metricChooser/nodeSelection.service"
 import { HeightMetricChooserComponent } from "./heightMetricChooser.component"
-import { HeightMetricChooserModule } from "./heightMetricChooser.module"
 
 describe("heightMetricChooserComponent", () => {
     let store: MockStore
 
     beforeEach(() => {
         TestBed.configureTestingModule({
-            imports: [HeightMetricChooserModule],
+            imports: [HeightMetricChooserComponent],
             providers: [
                 { provide: NodeSelectionService, useValue: { createNodeObservable: jest.fn() } },
                 provideMockStore({
@@ -42,7 +41,7 @@ describe("heightMetricChooserComponent", () => {
     })
 
     it("should be a select for height metric", async () => {
-        const { detectChanges } = await render(HeightMetricChooserComponent, { excludeComponentDeclaration: true })
+        const { detectChanges } = await render(HeightMetricChooserComponent)
         store = TestBed.inject(MockStore)
 
         await userEvent.click(await screen.findByText("aMetric"))

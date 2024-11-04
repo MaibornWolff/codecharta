@@ -8,11 +8,17 @@ import { showAttributeTypeSelectorSelector } from "../util/showAttributeTypeSele
 import { showDeltaValueSelector } from "../util/showDeltaValueSelector"
 import { secondaryMetricsSelector } from "./secondaryMetrics.selector"
 import { attributeDescriptorsSelector } from "../../../state/store/fileSettings/attributeDescriptors/attributeDescriptors.selector"
+import { AttributeTypeSelectorComponent } from "../attributeTypeSelector/attributeTypeSelector.component"
+import { MetricDeltaSelectedComponent } from "../metricDeltaSelected/metricDeltaSelected.component"
+import { AsyncPipe, DecimalPipe } from "@angular/common"
+import { AttributeDescriptorTooltipPipe } from "../../../util/pipes/attributeDescriptorTooltip.pipe"
 
 @Component({
     selector: "cc-attribute-side-bar-secondary-metrics",
     templateUrl: "./attributeSideBarSecondaryMetrics.component.html",
-    styleUrls: ["../attributeSideBarMetrics.scss", "./attributeSideBarSecondaryMetrics.component.scss"]
+    styleUrls: ["../attributeSideBarMetrics.scss", "./attributeSideBarSecondaryMetrics.component.scss"],
+    standalone: true,
+    imports: [AttributeTypeSelectorComponent, MetricDeltaSelectedComponent, AsyncPipe, DecimalPipe, AttributeDescriptorTooltipPipe]
 })
 export class AttributeSideBarSecondaryMetricsComponent {
     secondaryMetrics$: Observable<Metric[]>

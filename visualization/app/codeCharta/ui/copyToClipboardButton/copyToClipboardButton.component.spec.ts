@@ -1,7 +1,7 @@
 import { TestBed } from "@angular/core/testing"
 import { CopyToClipboardService } from "./copyToClipboard.service"
 import { CopyToClipboardButtonComponent } from "./copyToClipboardButton.component"
-import { CopyToClipboardButtonModule } from "./copyToClipboardButton.module"
+
 let component: CopyToClipboardButtonComponent
 describe("CopyToClipboardButtonComponent", () => {
     const writeToClipboardMock = jest.fn()
@@ -9,15 +9,11 @@ describe("CopyToClipboardButtonComponent", () => {
 
     beforeAll(() => {
         TestBed.configureTestingModule({
-            imports: [CopyToClipboardButtonModule],
-            providers: [
-                { provide: CopyToClipboardService, useValue: { getClipboardText: getClipboardTextMock } },
-                CopyToClipboardButtonComponent
-            ]
-        })
+            imports: [CopyToClipboardButtonComponent],
+            providers: [{ provide: CopyToClipboardService, useValue: { getClipboardText: getClipboardTextMock } }]
+        }).compileComponents()
 
-        component = TestBed.inject(CopyToClipboardButtonComponent)
-        TestBed.inject(CopyToClipboardService)
+        component = TestBed.createComponent(CopyToClipboardButtonComponent).componentInstance
 
         //clipboard does not exist in jest's JSdom, see https://stackoverflow.com/questions/62351935/how-to-mock-navigator-clipboard-writetext-in-jest
         Object.assign(navigator, { clipboard: { writeText: writeToClipboardMock } })

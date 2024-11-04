@@ -2,7 +2,10 @@ import { Pipe, PipeTransform } from "@angular/core"
 
 import { CodeMapNode } from "../../../../codeCharta.model"
 
-@Pipe({ name: "areaMetricValid" })
+@Pipe({
+    name: "areaMetricValid",
+    standalone: true
+})
 export class AreaMetricValidPipe implements PipeTransform {
     transform(node: CodeMapNode, areaMetric: string): boolean {
         return isAreaValid(node, areaMetric)

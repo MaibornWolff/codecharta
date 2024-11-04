@@ -12,11 +12,16 @@ import { ArtificialIntelligenceData } from "../../../selectors/artificialIntelli
 import { Store } from "@ngrx/store"
 import { MatDialog } from "@angular/material/dialog"
 import { MatMenuTrigger } from "@angular/material/menu"
+import { NgClass } from "@angular/common"
+import { MatButtonToggleGroup, MatButtonToggle } from "@angular/material/button-toggle"
+import { TruncateTextPipe } from "../../../../../../util/pipes/truncateText.pipe"
 
 @Component({
     selector: "cc-suspicious-metrics-list",
     templateUrl: "./suspiciousMetricsList.component.html",
-    styleUrls: ["./suspiciousMetricsList.component.scss"]
+    styleUrls: ["./suspiciousMetricsList.component.scss"],
+    standalone: true,
+    imports: [NgClass, MatButtonToggleGroup, MatButtonToggle, TruncateTextPipe]
 })
 export class SuspiciousMetricsListComponent {
     @Input() matMenuTriggerReference: MatMenuTrigger

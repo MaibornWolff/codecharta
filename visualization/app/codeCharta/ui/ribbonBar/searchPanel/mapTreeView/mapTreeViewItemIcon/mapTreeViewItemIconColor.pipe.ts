@@ -5,7 +5,11 @@ import { CodeMapNode, CcState } from "../../../../../codeCharta.model"
 import { getMarkingColor, isLeaf } from "../../../../../util/codeMapHelper"
 import { isAreaValid } from "../areaMetricValidPipe.pipe"
 
-@Pipe({ name: "mapTreeViewItemIconColor", pure: false })
+@Pipe({
+    name: "mapTreeViewItemIconColor",
+    pure: false,
+    standalone: true
+})
 export class MapTreeViewItemIconColorPipe implements PipeTransform {
     static readonly defaultColor = "#000000"
     static readonly areMetricZeroColor = "#BDBDBD"

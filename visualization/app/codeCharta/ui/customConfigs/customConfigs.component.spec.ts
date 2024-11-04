@@ -4,7 +4,6 @@ import { render, screen } from "@testing-library/angular"
 import { CustomConfigsComponent } from "./customConfigs.component"
 import { AddCustomConfigDialogComponent } from "./addCustomConfigButton/addCustomConfigDialog/addCustomConfigDialog.component"
 import { CustomConfigListComponent } from "./customConfigList/customConfigList.component"
-import { CustomConfigsModule } from "./customConfigs.module"
 import { MatDialog } from "@angular/material/dialog"
 import userEvent from "@testing-library/user-event"
 
@@ -14,13 +13,13 @@ describe("CustomConfigsComponent", () => {
     beforeEach(() => {
         mockedDialog = { open: jest.fn() }
         TestBed.configureTestingModule({
-            imports: [CustomConfigsModule],
+            imports: [CustomConfigsComponent],
             providers: [{ provide: MatDialog, useValue: mockedDialog }, provideMockStore()]
         })
     })
 
     it("should open dialog when clicking add custom config button", async () => {
-        await render(CustomConfigsComponent, { excludeComponentDeclaration: true })
+        await render(CustomConfigsComponent)
 
         const addButton = screen.getByTitle("Create new Custom View")
         await userEvent.click(addButton)
@@ -30,7 +29,7 @@ describe("CustomConfigsComponent", () => {
     })
 
     it("should open dialog when clicking add custom config button", async () => {
-        await render(CustomConfigsComponent, { excludeComponentDeclaration: true })
+        await render(CustomConfigsComponent)
 
         const openCustomConfigsButton = screen.getByTitle("Open your saved Custom Views")
         await userEvent.click(openCustomConfigsButton)
