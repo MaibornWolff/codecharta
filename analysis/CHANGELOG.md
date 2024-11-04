@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [1.128.0] - 2024-11-04
+
 ### Added 🚀
 
 - Add the option to specify whole folders for the CSVExporter instead of only single files [#3411](https://github.com/MaibornWolff/codecharta/pull/3792)
