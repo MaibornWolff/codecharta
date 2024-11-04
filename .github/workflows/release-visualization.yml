@@ -41,7 +41,7 @@ jobs:
         working-directory: ./visualization
         run: |
           npm ci
-          npm run test
+          npm run test:ci
           npm run build
           npm run package
           docker build -t codecharta/codecharta-visualization .
