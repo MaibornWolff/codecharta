@@ -6,11 +6,17 @@ import { isEdgeMetricVisibleSelector } from "../../../state/store/appSettings/is
 import { setEdgeMetric } from "../../../state/store/dynamicSettings/edgeMetric/edgeMetric.actions"
 import { edgeMetricSelector } from "../../../state/store/dynamicSettings/edgeMetric/edgeMetric.selector"
 import { NodeSelectionService } from "../../metricChooser/nodeSelection.service"
+import { MetricChooserComponent } from "../../metricChooser/metricChooser.component"
+import { RoundedBoxComponent } from "../roundedBox/roundedBox.component"
+import { MetricChooserTypeComponent } from "../../metricChooser/metricChooserType/metricChooserType.component"
+import { AsyncPipe } from "@angular/common"
 
 @Component({
     selector: "cc-edge-metric-chooser",
     templateUrl: "./edgeMetricChooser.component.html",
-    styleUrls: ["./edgeMetricChooser.component.scss"]
+    styleUrls: ["./edgeMetricChooser.component.scss"],
+    standalone: true,
+    imports: [MetricChooserComponent, RoundedBoxComponent, MetricChooserTypeComponent, AsyncPipe]
 })
 export class EdgeMetricChooserComponent {
     edgeValue$ = this.createEdgeValue()

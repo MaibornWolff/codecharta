@@ -4,10 +4,14 @@ import { colorMetricSelector } from "../../../state/store/dynamicSettings/colorM
 import { isColorMetricLinkedToHeightMetricSelector } from "../../../state/store/appSettings/isHeightAndColorMetricLinked/isColorMetricLinkedToHeightMetric.selector"
 import { Store } from "@ngrx/store"
 import { CcState } from "../../../codeCharta.model"
+import { MetricChooserComponent } from "../../metricChooser/metricChooser.component"
+import { AsyncPipe } from "@angular/common"
 
 @Component({
     selector: "cc-color-metric-chooser",
-    templateUrl: "./colorMetricChooser.component.html"
+    templateUrl: "./colorMetricChooser.component.html",
+    standalone: true,
+    imports: [MetricChooserComponent, AsyncPipe]
 })
 export class ColorMetricChooserComponent {
     colorMetric$ = this.store.select(colorMetricSelector)

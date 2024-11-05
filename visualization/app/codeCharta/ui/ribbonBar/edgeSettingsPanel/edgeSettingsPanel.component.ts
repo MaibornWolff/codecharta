@@ -1,5 +1,5 @@
 import { Component } from "@angular/core"
-import { MatCheckboxChange } from "@angular/material/checkbox"
+import { MatCheckboxChange, MatCheckbox } from "@angular/material/checkbox"
 import { Store } from "@ngrx/store"
 import { map } from "rxjs"
 import { CcState } from "../../../codeCharta.model"
@@ -10,10 +10,24 @@ import { edgeHeightSelector } from "../../../state/store/appSettings/edgeHeight/
 import { setShowOnlyBuildingsWithEdges } from "../../../state/store/appSettings/showOnlyBuildingsWithEdges/showOnlyBuildingsWithEdges.actions"
 import { showOnlyBuildingsWithEdgesSelector } from "../../../state/store/appSettings/showOnlyBuildingsWithEdges/showOnlyBuildingsWithEdges.selector"
 import { amountOfBuildingsWithSelectedEdgeMetricSelector } from "./selectors/amountOfBuildingsWithSelectedEdgeMetric.selector"
+import { SliderComponent } from "../../slider/slider.component"
+import { ColorPickerForMapColorComponent } from "../../colorPickerForMapColor/colorPickerForMapColor.component"
+import { EdgeMetricToggleComponent } from "./edgeMetricToggle/edgeMetricToggle.component"
+import { ResetSettingsButtonComponent } from "../../resetSettingsButton/resetSettingsButton.component"
+import { AsyncPipe } from "@angular/common"
 
 @Component({
     selector: "cc-edge-settings-panel",
-    templateUrl: "./edgeSettingsPanel.component.html"
+    templateUrl: "./edgeSettingsPanel.component.html",
+    standalone: true,
+    imports: [
+        SliderComponent,
+        ColorPickerForMapColorComponent,
+        MatCheckbox,
+        EdgeMetricToggleComponent,
+        ResetSettingsButtonComponent,
+        AsyncPipe
+    ]
 })
 export class EdgeSettingsPanelComponent {
     amountOfBuildingsWithSelectedEdgeMetric$ = this.store.select(amountOfBuildingsWithSelectedEdgeMetricSelector)

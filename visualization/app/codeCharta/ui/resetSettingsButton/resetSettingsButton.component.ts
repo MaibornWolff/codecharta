@@ -7,7 +7,8 @@ import { setState } from "../../state/store/state.actions"
 @Component({
     selector: "cc-reset-settings-button",
     templateUrl: "./resetSettingsButton.component.html",
-    styleUrls: ["./resetSettingsButton.component.scss"]
+    styleUrls: ["./resetSettingsButton.component.scss"],
+    standalone: true
 })
 export class ResetSettingsButtonComponent {
     @Input() settingsKeys: string[]

@@ -7,7 +7,8 @@ const minDistanceBetweenLabels = 4
     selector: "cc-range-slider-labels",
     templateUrl: "./rangeSliderLabels.component.html",
     styleUrls: ["./rangeSliderLabels.component.scss"],
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true
 })
 export class RangeSliderLabelsComponent implements AfterViewChecked {
     @Input() minValue: number

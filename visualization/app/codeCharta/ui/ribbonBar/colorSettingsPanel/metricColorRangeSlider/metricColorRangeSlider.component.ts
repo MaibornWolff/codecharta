@@ -1,6 +1,9 @@
 import { Component, ElementRef, Input, OnChanges, SimpleChanges, ViewChild } from "@angular/core"
 import { calculateSliderRangePosition, SliderRangePosition, updateLeftThumb, updateRightThumb } from "./utils/SliderRangePosition"
 import { parseNumberInput } from "../../../../util/parseNumberInput"
+import { MatFormField } from "@angular/material/form-field"
+import { MatInput } from "@angular/material/input"
+import { RangeSliderLabelsComponent } from "./rangeSliderLabels/rangeSliderLabels.component"
 
 export type HandleValueChange = (changedValue: { newLeftValue?: number; newRightValue?: number }) => void
 export type CurrentlySliding = undefined | "leftThumb" | "rightThumb"
@@ -8,7 +11,9 @@ export type CurrentlySliding = undefined | "leftThumb" | "rightThumb"
 @Component({
     selector: "cc-metric-color-range-slider",
     templateUrl: "./metricColorRangeSlider.component.html",
-    styleUrls: ["./metricColorRangeSlider.component.scss"]
+    styleUrls: ["./metricColorRangeSlider.component.scss"],
+    standalone: true,
+    imports: [MatFormField, MatInput, RangeSliderLabelsComponent]
 })
 export class MetricColorRangeSliderComponent implements OnChanges {
     @Input() minValue: number

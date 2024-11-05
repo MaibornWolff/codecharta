@@ -2,14 +2,13 @@ import { TestBed } from "@angular/core/testing"
 import { MAT_DIALOG_DATA } from "@angular/material/dialog"
 import { render, screen } from "@testing-library/angular"
 import { ChangelogDialogComponent } from "./changelogDialog.component"
-import { ChangelogDialogModule } from "./changelogDialog.module"
 
 // note that CHANGELOG.md is mocked globally through jest's moduleNameMapper
-describe("changelogDialogComponent", () => {
+describe("ChangelogDialogComponent", () => {
     const mockedMatDialogData = { previousVersion: "", currentVersion: "" }
     beforeEach(() => {
         TestBed.configureTestingModule({
-            imports: [ChangelogDialogModule],
+            imports: [ChangelogDialogComponent],
             providers: [
                 {
                     provide: MAT_DIALOG_DATA,
@@ -22,7 +21,7 @@ describe("changelogDialogComponent", () => {
     it("should extract the changes from changelog only for the last version", async () => {
         mockedMatDialogData.previousVersion = "1.76.0"
         mockedMatDialogData.currentVersion = "1.77.0"
-        await render(ChangelogDialogComponent, { excludeComponentDeclaration: true })
+        await render(ChangelogDialogComponent)
 
         expect(screen.findByText("1.76.0 → 1.77.0")).toBeTruthy()
 
@@ -38,7 +37,7 @@ describe("changelogDialogComponent", () => {
     it("should extract the changes from changelog for 2 versions", async () => {
         mockedMatDialogData.previousVersion = "1.75.0"
         mockedMatDialogData.currentVersion = "1.77.0"
-        await render(ChangelogDialogComponent, { excludeComponentDeclaration: true })
+        await render(ChangelogDialogComponent)
 
         expect(screen.findByText("1.75.0 → 1.77.0")).toBeTruthy()
 

@@ -8,12 +8,11 @@ import { primaryMetricNamesSelector } from "../../../state/selectors/primaryMetr
 import { DEFAULT_STATE, VALID_NODE_WITH_MCC } from "../../../util/dataMocks"
 import { NodeSelectionService } from "../nodeSelection.service"
 import { MetricChooserValueComponent } from "./metricChooserValue.component"
-import { MetricChooserValueModule } from "./metricChooserValue.module"
 
-describe("metricChooserValueComponent", () => {
+describe("MetricChooserValueComponent", () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
-            imports: [MetricChooserValueModule],
+            imports: [MetricChooserValueComponent],
             providers: [
                 { provide: State, useValue: { getValue: () => DEFAULT_STATE } },
                 { provide: NodeSelectionService, useValue: { createNodeObservable: jest.fn(() => of(null)) } },

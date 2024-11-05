@@ -2,7 +2,8 @@ import { Pipe, PipeTransform } from "@angular/core"
 import { CustomConfigItem } from "../../../customConfigs.component"
 
 @Pipe({
-    name: "filterCustomConfigDataBySearchTerm"
+    name: "filterCustomConfigDataBySearchTerm",
+    standalone: true
 })
 export class FilterCustomConfigDataBySearchTermPipe implements PipeTransform {
     transform(customConfigItems: CustomConfigItem[], searchTerm: string): CustomConfigItem[] {

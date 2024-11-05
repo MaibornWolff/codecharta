@@ -4,7 +4,8 @@ import { ThreeMapControlsService } from "../../codeMap/threeViewer/threeMapContr
 @Component({
     selector: "cc-center-map-button",
     templateUrl: "./centerMapButton.component.html",
-    styleUrls: ["./centerMapButton.component.scss"]
+    styleUrls: ["./centerMapButton.component.scss"],
+    standalone: true
 })
 export class CenterMapButtonComponent {
     constructor(private threeMapControlsService: ThreeMapControlsService) {}

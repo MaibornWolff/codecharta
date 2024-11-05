@@ -4,7 +4,6 @@ import { MatInputHarness } from "@angular/material/input/testing"
 import { render, screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
 import { AreaSettingsPanelComponent } from "./areaSettingsPanel.component"
-import { AreaSettingsPanelModule } from "./areaSettingsPanel.module"
 import { State, StoreModule } from "@ngrx/store"
 import { appReducers, setStateMiddleware } from "../../../state/store/state.manager"
 import { CcState } from "../../../codeCharta.model"
@@ -12,12 +11,12 @@ import { CcState } from "../../../codeCharta.model"
 describe("AreaSettingsPanelComponent", () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
-            imports: [AreaSettingsPanelModule, StoreModule.forRoot(appReducers, { metaReducers: [setStateMiddleware] })]
+            imports: [AreaSettingsPanelComponent, StoreModule.forRoot(appReducers, { metaReducers: [setStateMiddleware] })]
         })
     })
 
     it("should allow for change and resetting of 'margin', 'enable floor label' and 'invert area'", async () => {
-        const { fixture } = await render(AreaSettingsPanelComponent, { excludeComponentDeclaration: true })
+        const { fixture } = await render(AreaSettingsPanelComponent)
         const loader = TestbedHarnessEnvironment.loader(fixture)
         const state = TestBed.inject(State)
         const initialValues = extractRelatedValues(state.getValue())

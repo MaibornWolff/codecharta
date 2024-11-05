@@ -2,7 +2,6 @@ import { TestBed } from "@angular/core/testing"
 import { State, Store } from "@ngrx/store"
 import { Export3DMapButtonComponent } from "./export3DMapButton.component"
 import { render, screen } from "@testing-library/angular"
-import { Export3DMapButtonModule } from "./export3DMapButton.module"
 import { MatDialog } from "@angular/material/dialog"
 import { Export3DMapDialogComponent } from "./export3DMapDialog/export3DMapDialog.component"
 import { ErrorDialogComponent } from "../dialogs/errorDialog/errorDialog.component"
@@ -13,7 +12,7 @@ import { of } from "rxjs"
 describe("Export3DMapButtonComponent", () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
-            imports: [Export3DMapButtonModule],
+            imports: [Export3DMapButtonComponent],
             providers: [
                 { provide: State, useValue: {} },
                 { provide: Store, useValue: {} }
@@ -22,7 +21,7 @@ describe("Export3DMapButtonComponent", () => {
     })
 
     it("should render the button", async function () {
-        await render(Export3DMapButtonComponent, { excludeComponentDeclaration: true })
+        await render(Export3DMapButtonComponent)
         const exportButton = screen.getByRole("button")
         expect(exportButton).not.toBe(null)
     })

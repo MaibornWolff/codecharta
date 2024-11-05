@@ -5,11 +5,14 @@ import { Observable } from "rxjs"
 import { CcState, CodeMapNode, MapColors } from "../../../codeCharta.model"
 import { selectedNodeSelector } from "../../../state/selectors/selectedNode.selector"
 import { mapColorsSelector } from "../../../state/store/appSettings/mapColors/mapColors.selector"
+import { AsyncPipe, DecimalPipe } from "@angular/common"
 
 @Component({
     selector: "cc-metric-delta-selected",
     templateUrl: "./metricDeltaSelected.component.html",
-    styleUrls: ["./metricDeltaSelected.component.scss"]
+    styleUrls: ["./metricDeltaSelected.component.scss"],
+    standalone: true,
+    imports: [AsyncPipe, DecimalPipe]
 })
 export class MetricDeltaSelectedComponent implements OnInit {
     @Input() metricName: string

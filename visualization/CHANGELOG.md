@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [1.130.0] - 2024-11-04
+
 ### Added 🚀
 
 - Add experimental feature: show buildings with an area metric value of 0 [#3789](https://github.com/MaibornWolff/codecharta/pull/3789)

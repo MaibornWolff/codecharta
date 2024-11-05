@@ -4,7 +4,7 @@ import { isLabelsSliderDisabledSelector } from "./selectors/isLabelsSliderDisabl
 import { setAmountOfTopLabels } from "../../../state/store/appSettings/amountOfTopLabels/amountOfTopLabels.actions"
 import { showMetricLabelNodeNameSelector } from "../../../state/store/appSettings/showMetricLabelNodeName/showMetricLabelNodeName.selector"
 import { showMetricLabelNodeValueSelector } from "../../../state/store/appSettings/showMetricLabelNameValue/showMetricLabelNameValue.selector"
-import { MatCheckboxChange } from "@angular/material/checkbox"
+import { MatCheckboxChange, MatCheckbox } from "@angular/material/checkbox"
 import { setShowMetricLabelNodeName } from "../../../state/store/appSettings/showMetricLabelNodeName/showMetricLabelNodeName.actions"
 import { setShowMetricLabelNameValue } from "../../../state/store/appSettings/showMetricLabelNameValue/showMetricLabelNameValue.actions"
 import { scalingSelector } from "../../../state/store/appSettings/scaling/scaling.selector"
@@ -15,10 +15,15 @@ import { isDeltaStateSelector } from "../../../state/selectors/isDeltaState.sele
 import { debounce } from "../../../util/debounce"
 import { Store } from "@ngrx/store"
 import { CcState } from "../../../codeCharta.model"
+import { SliderComponent } from "../../slider/slider.component"
+import { ResetSettingsButtonComponent } from "../../resetSettingsButton/resetSettingsButton.component"
+import { AsyncPipe } from "@angular/common"
 
 @Component({
     selector: "cc-height-settings-panel",
-    templateUrl: "./heightSettingsPanel.component.html"
+    templateUrl: "./heightSettingsPanel.component.html",
+    standalone: true,
+    imports: [SliderComponent, MatCheckbox, ResetSettingsButtonComponent, AsyncPipe]
 })
 export class HeightSettingsPanelComponent {
     static DEBOUNCE_TIME = 400
