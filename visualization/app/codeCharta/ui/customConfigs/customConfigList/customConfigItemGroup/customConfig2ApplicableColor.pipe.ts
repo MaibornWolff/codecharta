@@ -4,7 +4,10 @@ import { CcState } from "../../../../codeCharta.model"
 import { CustomConfigItem } from "../../customConfigs.component"
 import { getMissingCustomConfigModeAndMaps } from "./getMissingCustomConfigModeAndMaps"
 
-@Pipe({ name: "customConfig2ApplicableColor" })
+@Pipe({
+    name: "customConfig2ApplicableColor",
+    standalone: true
+})
 export class CustomConfig2ApplicableColor implements PipeTransform {
     constructor(private state: State<CcState>) {}
 

@@ -6,7 +6,8 @@ import { readFiles } from "../../../util/uploadFiles/readFiles"
 @Component({
     selector: "cc-upload-custom-config-button",
     templateUrl: "./uploadCustomConfigButton.component.html",
-    styleUrls: ["../customConfigButtons.scss"]
+    styleUrls: ["../customConfigButtons.scss"],
+    standalone: true
 })
 export class UploadCustomConfigButtonComponent {
     upload() {

@@ -7,7 +7,8 @@ import { CustomConfigHelper } from "../../../util/customConfigHelper"
 @Component({
     selector: "cc-custom-config-note-dialog-button",
     templateUrl: "./customConfigNoteDialogButton.component.html",
-    styleUrls: ["./customConfigNoteDialogButton.component.scss"]
+    styleUrls: ["./customConfigNoteDialogButton.component.scss"],
+    standalone: true
 })
 export class CustomConfigNoteDialogButtonComponent {
     @Input() customConfigItem: CustomConfigItem

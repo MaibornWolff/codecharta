@@ -12,8 +12,7 @@ import { ThreeCameraService } from "../../codeMap/threeViewer/threeCamera.servic
 import { ThreeMapControlsService } from "../../codeMap/threeViewer/threeMapControls.service"
 import { ThreeSceneService } from "../../codeMap/threeViewer/threeSceneService"
 import { CustomConfigHelperService } from "../customConfigHelper.service"
-import { CustomConfigItemGroup } from "../customConfigs.component"
-import { CustomConfigsModule } from "../customConfigs.module"
+import { CustomConfigItemGroup, CustomConfigsComponent } from "../customConfigs.component"
 import { DownloadableConfigs } from "../downloadCustomConfigsButton/getDownloadableCustomConfigs"
 import { CustomConfigListComponent } from "./customConfigList.component"
 import { CustomConfigGroups } from "./getCustomConfigItemGroups"
@@ -32,7 +31,7 @@ describe("customConfigListComponent", () => {
     beforeEach(() => {
         mockedDialog = { open: jest.fn() }
         TestBed.configureTestingModule({
-            imports: [CustomConfigsModule],
+            imports: [CustomConfigsComponent],
             providers: [
                 { provide: MatDialog, useValue: mockedDialog },
                 { provide: CustomConfigHelperService, useValue: mockedCustomConfigHelperService },
@@ -46,7 +45,7 @@ describe("customConfigListComponent", () => {
     })
 
     it("should show initial text when there are no custom configs", async () => {
-        await render(CustomConfigListComponent, { excludeComponentDeclaration: true })
+        await render(CustomConfigListComponent)
 
         expect(screen.getByText("It is time to add your first Custom View!")).not.toBeNull()
     })
@@ -57,7 +56,7 @@ describe("customConfigListComponent", () => {
             nonApplicableItems: new Map([["File_D_DELTA", CUSTOM_CONFIG_ITEM_GROUPS.get("File_D_DELTA")]])
         }
         mockedCustomConfigHelperService.customConfigItemGroups$ = of(customConfigItemGroup)
-        await render(CustomConfigListComponent, { excludeComponentDeclaration: true })
+        await render(CustomConfigListComponent)
 
         expect(screen.getByTitle("Create new Custom View")).not.toBeNull()
         expect(screen.getByTitle("Download Custom View related to currently uploaded maps, if any.")).not.toBeNull()
@@ -71,7 +70,7 @@ describe("customConfigListComponent", () => {
             nonApplicableItems: new Map([["File_D_DELTA", CUSTOM_CONFIG_ITEM_GROUPS.get("File_D_DELTA")]])
         }
         mockedCustomConfigHelperService.customConfigItemGroups$ = of(customConfigItemGroup)
-        const { container } = await render(CustomConfigListComponent, { excludeComponentDeclaration: true })
+        const { container } = await render(CustomConfigListComponent)
 
         expect(container.querySelector("mat-expansion-panel-header").textContent).toBe(
             " Custom View(s) in  Standard  mode for fileB fileC "
@@ -90,7 +89,7 @@ describe("customConfigListComponent", () => {
         }
         mockedCustomConfigHelperService.customConfigItemGroups$ = of(customConfigItemGroup)
 
-        await render(CustomConfigListComponent, { excludeComponentDeclaration: true })
+        await render(CustomConfigListComponent)
 
         expect(screen.queryByText("Show non-applicable Custom Views")).toBeNull()
     })
@@ -101,7 +100,7 @@ describe("customConfigListComponent", () => {
             nonApplicableItems: new Map([["File_D_DELTA", CUSTOM_CONFIG_ITEM_GROUPS.get("File_D_DELTA")]])
         }
         mockedCustomConfigHelperService.customConfigItemGroups$ = of(customConfigItemGroup)
-        const { container } = await render(CustomConfigListComponent, { excludeComponentDeclaration: true })
+        const { container } = await render(CustomConfigListComponent)
 
         const customConfigItemGroupElement = container.querySelector("mat-expansion-panel-header")
 
@@ -120,7 +119,7 @@ describe("customConfigListComponent", () => {
             nonApplicableItems: new Map([["File_D_DELTA", CUSTOM_CONFIG_ITEM_GROUPS.get("File_D_DELTA")]])
         }
         mockedCustomConfigHelperService.customConfigItemGroups$ = of(customConfigItemGroup)
-        const { container } = await render(CustomConfigListComponent, { excludeComponentDeclaration: true })
+        const { container } = await render(CustomConfigListComponent)
 
         await userEvent.click(screen.queryByText("Show non-applicable Custom Views"))
 
@@ -145,8 +144,7 @@ describe("customConfigListComponent", () => {
         const { rerender, container } = await render(CustomConfigListComponent, {
             componentProperties: {
                 searchTerm: ""
-            },
-            excludeComponentDeclaration: true
+            }
         })
 
         await userEvent.click(container.querySelector("mat-expansion-panel-header"))

@@ -1,6 +1,5 @@
 import { TestBed } from "@angular/core/testing"
 import { State } from "@ngrx/store"
-import { AddCustomConfigButtonModule } from "./addCustomConfigButton.module"
 import { render, screen } from "@testing-library/angular"
 import { AddCustomConfigButtonComponent } from "./addCustomConfigButton.component"
 import userEvent from "@testing-library/user-event"
@@ -12,10 +11,10 @@ import { TestbedHarnessEnvironment } from "@angular/cdk/testing/testbed"
 import { MatDialogHarness } from "@angular/material/dialog/testing"
 import { defaultState } from "../../../state/store/state.manager"
 
-describe("addCustomConfigButtonComponent", () => {
+describe("AddCustomConfigButtonComponent", () => {
     beforeEach(async () => {
         TestBed.configureTestingModule({
-            imports: [AddCustomConfigButtonModule],
+            imports: [AddCustomConfigButtonComponent],
             providers: [
                 { provide: ThreeCameraService, useValue: { camera: { position: new Vector3(0, 300, 1000) } } },
                 { provide: ThreeMapControlsService, useValue: { controls: { target: new Vector3(0, 0, 0) } } },
@@ -28,7 +27,7 @@ describe("addCustomConfigButtonComponent", () => {
         const configName = "myCustomConfig"
         const configNote = "My Custom Note"
         const addCustomConfigSpy = jest.spyOn(CustomConfigHelper, "addCustomConfig")
-        const { fixture } = await render(AddCustomConfigButtonComponent, { excludeComponentDeclaration: true })
+        const { fixture } = await render(AddCustomConfigButtonComponent)
         const loader = TestbedHarnessEnvironment.documentRootLoader(fixture)
         let currentlyOpenedDialogs = await loader.getAllHarnesses(MatDialogHarness)
         expect(currentlyOpenedDialogs.length).toBe(0)

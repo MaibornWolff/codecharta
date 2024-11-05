@@ -2,7 +2,10 @@ import { Pipe, PipeTransform } from "@angular/core"
 import { AttributeDescriptor } from "../../codeCharta.model"
 import { metricTitles } from "../metric/metricTitles"
 
-@Pipe({ name: "attributeDescriptorTooltip" })
+@Pipe({
+    name: "attributeDescriptorTooltip",
+    standalone: true
+})
 export class AttributeDescriptorTooltipPipe implements PipeTransform {
     transform(attributeDescriptor: AttributeDescriptor, key: string): string {
         if (attributeDescriptor == null) {

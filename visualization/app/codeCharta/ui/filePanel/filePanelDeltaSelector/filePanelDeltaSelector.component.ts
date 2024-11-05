@@ -9,11 +9,17 @@ import { filesSelector } from "../../../state/store/files/files.selector"
 import { pictogramBackgroundSelector } from "./pictogramBackground.selector"
 import { MatDialog } from "@angular/material/dialog"
 import { ALERT_ON_INCOMPATIBLE_MAPS, IncompatibleMapsDialogComponent } from "./incompatibleMapsDialog/incompatibleMapsDialog.component"
+import { MatSelect } from "@angular/material/select"
+import { MatOption } from "@angular/material/core"
+import { AsyncPipe } from "@angular/common"
+import { RemoveExtensionPipe } from "../../../util/pipes/removeExtension.pipe"
 
 @Component({
     selector: "cc-file-panel-delta-selector",
     templateUrl: "./filePanelDeltaSelector.component.html",
-    styleUrls: ["./filePanelDeltaSelector.component.scss"]
+    styleUrls: ["./filePanelDeltaSelector.component.scss"],
+    standalone: true,
+    imports: [MatSelect, MatOption, AsyncPipe, RemoveExtensionPipe]
 })
 export class FilePanelDeltaSelectorComponent {
     files$ = this.store.select(filesSelector)

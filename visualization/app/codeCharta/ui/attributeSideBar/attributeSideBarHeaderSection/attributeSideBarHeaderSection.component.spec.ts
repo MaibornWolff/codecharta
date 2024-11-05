@@ -1,15 +1,15 @@
+import { AttributeSideBarComponent } from "./../attributeSideBar.component"
 import { TestBed } from "@angular/core/testing"
 import { render } from "@testing-library/angular"
 import { provideMockStore } from "@ngrx/store/testing"
 import { CodeMapNode } from "../../../codeCharta.model"
-import { AttributeSideBarModule } from "../attributeSideBar.module"
 import { AttributeSideBarHeaderSectionComponent } from "./attributeSideBarHeaderSection.component"
 import { IsAttributeSideBarVisibleService } from "../../../services/isAttributeSideBarVisible.service"
 
-describe("attributeSideBarHeaderSection", () => {
+describe("AttributeSideBarComponent", () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
-            imports: [AttributeSideBarModule],
+            imports: [AttributeSideBarComponent],
             providers: [{ provide: IsAttributeSideBarVisibleService, useValue: { isOpen: true } }, provideMockStore()]
         })
     })

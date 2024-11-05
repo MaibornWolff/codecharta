@@ -1,12 +1,10 @@
 import { ApplicationInitStatus } from "@angular/core"
 import { TestBed } from "@angular/core/testing"
 import { fireEvent } from "@testing-library/angular"
-import { MaterialModule } from "../../../../material/material.module"
 import { NodeContextMenuService } from "./nodeContextMenu.service"
-import { NodeContextMenuCardModule } from "./nodeContextMenuCard/nodeContextMenuCard.module"
 import { Store } from "@ngrx/store"
 
-describe("nodeContextMenuService", () => {
+describe("NodeContextMenuService", () => {
     let mockedWheelTargetElement
 
     beforeEach(async () => {
@@ -14,7 +12,6 @@ describe("nodeContextMenuService", () => {
         jest.spyOn(document, "getElementById").mockImplementation(() => mockedWheelTargetElement)
 
         TestBed.configureTestingModule({
-            imports: [MaterialModule, NodeContextMenuCardModule],
             providers: [NodeContextMenuService, { provide: Store, useValue: { dispatch: jest.fn() } }]
         })
         await TestBed.inject(ApplicationInitStatus).donePromise

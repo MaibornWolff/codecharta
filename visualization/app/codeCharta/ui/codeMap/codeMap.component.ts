@@ -7,11 +7,16 @@ import { skip, tap } from "rxjs"
 import { IsAttributeSideBarVisibleService } from "../../services/isAttributeSideBarVisible.service"
 import { Store } from "@ngrx/store"
 import { CcState } from "../../codeCharta.model"
+import { ViewCubeComponent } from "../viewCube/viewCube.component"
+import { AttributeSideBarComponent } from "../attributeSideBar/attributeSideBar.component"
+import { AsyncPipe } from "@angular/common"
 
 @Component({
     selector: "cc-code-map",
     templateUrl: "./codeMap.component.html",
-    styleUrls: ["./codeMap.component.scss"]
+    styleUrls: ["./codeMap.component.scss"],
+    standalone: true,
+    imports: [ViewCubeComponent, AttributeSideBarComponent, AsyncPipe]
 })
 export class CodeMapComponent implements AfterViewInit, OnDestroy {
     isLoadingFile$ = this.store.select(isLoadingFileSelector)
