@@ -126,8 +126,15 @@ export class ThreeMapControlsService {
             RIGHT: MOUSE.PAN
         }
 
-        window.addEventListener("wheel", event => {
-            this.controls.zoomToCursor = event.deltaY <= 0
+        window.addEventListener("keydown", event => {
+            if (event.key === "Shift") {
+                this.controls.zoomToCursor = false
+            }
+        })
+        window.addEventListener("keyup", event => {
+            if (event.key === "Shift") {
+                this.controls.zoomToCursor = true
+            }
         })
 
         this.controls.minPolarAngle = 0
