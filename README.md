@@ -1,90 +1,111 @@
-<h1 align="center">
-  <br>
-  <a href="https://maibornwolff.github.io/codecharta/visualization/app/index.html?file=codecharta.cc.json.gz&file=codecharta_analysis.cc.json.gz&currentFilesAreSampleFiles=true"><img src="https://raw.githubusercontent.com/maibornwolff/codecharta/main/logo/codecharta_logo.svg" alt="CodeCharta" width="200"/></a>
-  <br>
-  CodeCharta
-  <br>
-</h1>
+<style>
+  .center {
+    display:flex;
+    justify-content:center;
+    flex-direction: column;
+    align-items: center;
+    text-align:center;
+    margin-bottom:10px;
+  }
+  .row-with-gaps {
+    display:flex;
+    gap: 5px;
+  }
+</style>
 
-<h4 align="center">make your code base more tangible and understandable by visualising and printing your code in 3D</h4>
-
-<p align="center">
-    <a href="https://github.com/MaibornWolff/codecharta/actions/workflows/release-analysis.yml">
-        <img src="https://github.com/MaibornWolff/codecharta/actions/workflows/release-analysis.yml/badge.svg" alt="Release Analysis">
-    </a>
-    <a href="https://github.com/MaibornWolff/codecharta/actions/workflows/release-visualization.yml">
-        <img src="https://github.com/MaibornWolff/codecharta/actions/workflows/release-visualization.yml/badge.svg" alt="Release Visualization">
-    </a>
-  <a href="https://sonarcloud.io/dashboard?id=maibornwolff-gmbh_codecharta_analysis">
-    <img src="https://sonarcloud.io/api/project_badges/measure?project=maibornwolff-gmbh_codecharta_analysis&metric=alert_status" alt="Quality Gate Analysis"></a>
-  <a href="https://sonarcloud.io/dashboard?id=maibornwolff-gmbh_codecharta_visualization">
-      <img src="https://sonarcloud.io/api/project_badges/measure?project=maibornwolff-gmbh_codecharta_visualization&metric=alert_status" alt="Quality Gate Visualization">
+<div class="center" style="">
+  <a href="https://maibornwolff.github.io/codecharta/visualization/app/index.html?file=codecharta.cc.json.gz&file=codecharta_analysis.cc.json.gz&currentFilesAreSampleFiles=true">
+    <img src="https://raw.githubusercontent.com/maibornwolff/codecharta/main/logo/codecharta_logo.svg" alt="CodeCharta logo" width="200"/>
   </a>
-</p>
 
-<p align="center">
-Latest Release: <br>
- Analysis <a href="https://github.com/MaibornWolff/codecharta/releases/tag/ana-1.127.0">1.127.0</a> | Visualization <a href="https://github.com/MaibornWolff/codecharta/releases/tag/vis-1.129.1">1.129.1</a>
+  <p>
+    Latest Release
+    <br>
+    Analysis <a href="https://github.com/MaibornWolff/codecharta/releases/tag/ana-1.127.0">1.127.0</a> | Visualization <a href="https://github.com/MaibornWolff/codecharta/releases/tag/vis-1.129.1">1.129.1</a>
 
 [comment]: ##################################################################################
 [comment]: <Ensure that the words 'latest release' are above the line with the links>
 [comment]: ##################################################################################
 
-</p>
+  </p>
 
-<p align="center">
-  <a href="https://maibornwolff.github.io/codecharta/">Docs</a> •
-  <a href="https://maibornwolff.github.io/codecharta/docs/quick-start-guide/">Quickstart</a> •
-  <a href="#key-features">Key Features</a> •
-  <a href="#how-to-use">How To Use</a> •
-  <a href="#get-involved">Get Involved</a> •
-  <a href="#further-information">Further Info</a>
-</p>
+  <div class="row-with-gaps">
+    <a href="https://github.com/MaibornWolff/codecharta/actions/workflows/release-analysis.yml">
+      <img src="https://github.com/MaibornWolff/codecharta/actions/workflows/release-analysis.yml/badge.svg" alt="Release Analysis">
+    </a>
+    <a href="https://github.com/MaibornWolff/codecharta/actions/workflows/release-visualization.yml">
+      <img src="https://github.com/MaibornWolff/codecharta/actions/workflows/release-visualization.yml/badge.svg" alt="Release Visualization">
+    </a>
+    <a href="https://sonarcloud.io/dashboard?id=maibornwolff-gmbh_codecharta_analysis">
+      <img src="https://sonarcloud.io/api/project_badges/measure?project=maibornwolff-gmbh_codecharta_analysis&metric=alert_status" alt="Quality Gate Analysis"></a>
+    <a href="https://sonarcloud.io/dashboard?id=maibornwolff-gmbh_codecharta_visualization">
+      <img src="https://sonarcloud.io/api/project_badges/measure?project=maibornwolff-gmbh_codecharta_visualization&metric=alert_status" alt="Quality Gate Visualization"> 
+    </a>
+  </div>
+
+  <div class="row-with-gaps">
+    <a href="https://maibornwolff.github.io/codecharta/">Documentation</a> •
+    <a href="#features">Features</a> •
+    <a href="https://maibornwolff.github.io/codecharta/docs/quick-start-guide/">Quickstart</a> •
+    <a href="#get-involved">Get Involved</a> •
+    <a href="#links">Links</a>
+  </div>
+</div>
 
 ![Screenshot of visualization](screenshot.png)
 
-## Key Features
+## What is CodeCharta
 
-CodeCharta is a tool to analyze and visualize code bases. Make it more tangible and understandable.
-It models your code as a 3D city, where each building represents a file and each color a metric. You can navigate through the city and explore the code base.
-Mainly will be used for communication and understanding of the code base.
-It consists of two parts:
+Having trouble communicating the problems in your code base? Look no further, CodeCharta is able to visualise or even print your code base in 3D! While showing you lots of different metrics to help you decide what to tackle next. Without sharing your code! CodeCharta is an open source project mainly developed by [MaibornWolff](https://www.maibornwolff.de/en). You can find everything you need in our [Documentation](https://maibornwolff.github.io/codecharta/).
 
-- [CodeCharta Analysis](https://maibornwolff.github.io/codecharta/docs/analysis/):
+## Features
 
-  - CC Analysis is a Command-Line-Tool to generate `.cc.json` files.
-  - It includes some pre-defined importers for e.g. [SonarQube](https://maibornwolff.github.io/codecharta/docs/sonar-importer), [SourceMonitor](https://maibornwolff.github.io/codecharta/docs/sourcemonitorimporter), [Git](https://maibornwolff.github.io/codecharta/docs/git-log-parser), generic [CSV](https://maibornwolff.github.io/codecharta/docs/csv-importer) data.
-  - It is able to import metrics from third party tools and parses some of the metrics itself.
-  - It also includes commands to [validate]() and [merge]() multiple `.cc.json` files. For easier usability.
-  - Also includes a [CodeCharta Shell](https://maibornwolff.github.io/codecharta/docs/ccsh/) to run the parsers interactively.
+### [Analysis](https://maibornwolff.github.io/codecharta/docs/analysis/) with [CCSH(CodeCharta Shell)](https://maibornwolff.github.io/codecharta/docs/ccsh/)
 
-- [CodeCharta Visualization](https://maibornwolff.github.io/codecharta/docs/visualization/):
-  - CC visualizes code bases as 3D cities, so that you can understand it - view the [Web Demo](https://maibornwolff.github.io/codecharta/visualization/app/index.html?file=codecharta.cc.json.gz&file=codecharta_analysis.cc.json.gz&currentFilesAreSampleFiles=true). Using different metrics for height, color, and area.
-  - It uses code metrics from `.cc.json` files, which are generated by the analysis part.
-  - The imported files are validated using JSON Schema as defined in [generatedSchema.json](/visualization/app/codeCharta/util/generatedSchema.json).
-  - You can change the way the file is displayed and save and later load it as a [Custom View](https://maibornwolff.github.io/codecharta/docs/custom-view/).
+Our analysis generates the data needed for our visualisation.
+Various imports ready to import metrics from:
 
-## How To Use
+- [Sonar](https://maibornwolff.github.io/codecharta/docs/sonar-importer)
+- [Tokei](https://maibornwolff.github.io/codecharta/docs/tokei-importer)
+- [Code Maat](https://maibornwolff.github.io/codecharta/docs/codemaatimporter)
+- [Source Monitor](https://maibornwolff.github.io/codecharta/docs/sourcemonitorimporter)
+- [CSV](https://maibornwolff.github.io/codecharta/docs/csv-importer)
 
-You can find most of our documentation in the [Docs](https://maibornwolff.github.io/codecharta/), but if you want to get started quickly, here is a short guide.
+If you want to parse the data yourself, we have you covered with our 4 parsers:
 
-### Requirements
+- [Git Log](https://maibornwolff.github.io/codecharta/docs/git-log-parser)
+- [SVN Log](https://maibornwolff.github.io/codecharta/docs/svn-log-parser)
+- [Source Code](https://maibornwolff.github.io/codecharta/docs/source-code-parser)
+- [Raw Text](https://maibornwolff.github.io/codecharta/docs/raw-text-parser)
 
-For using CodeCharta the following needs to be installed on your system:
+Merge the different results of our parsers and importers together into one map!
+
+Last but not least, our [CCSH(CodeCharta Shell)](https://maibornwolff.github.io/codecharta/docs/ccsh/) has all this functionality built in!
+
+### [Visualisation](https://maibornwolff.github.io/codecharta/docs/visualization/)
+
+- **Visualise metrics** imported and parsed by our analaysis as a **city-like map**
+- Move freely around your code base
+- **Files** are displayed as **buildings**, with **colors**, **area size**, and **height** representing **customizable metrics**.
+- See **dependencies** with our **edge metrics**!
+- Download your map as a 3D model to **print your code base**
+- View at the delta between two maps! Allows you to **compare different points in time**!
+- **Safe your settings** and **views** for later!
+
+## Getting started
+
+You can find our prefered way to get start under [Documentation - Quick Start Guide](https://maibornwolff.github.io/codecharta/docs/quick-start-guide/). But if you want to get started quickly, here are some ideas
+
+### [Web Studio](https://maibornwolff.github.io/codecharta/visualization/app/index.html?file=codecharta.cc.json.gz&file=codecharta_analysis.cc.json.gz&currentFilesAreSampleFiles=true&area=rloc&height=sonar_complexity&color=sonar_complexity)
+
+Before you dive into CodeCharta, you can try out our [Web Studio](https://maibornwolff.github.io/codecharta/visualization/app/index.html?file=codecharta.cc.json.gz&file=codecharta_analysis.cc.json.gz&currentFilesAreSampleFiles=true&area=rloc&height=sonar_complexity&color=sonar_complexity), which already includes two sample maps.
+
+### [CCSH(CodeCharta Shell)](https://maibornwolff.github.io/codecharta/docs/ccsh/)
+
+Try out our [CCSH(CodeCharta Shell)](https://maibornwolff.github.io/codecharta/docs/ccsh/)! To use CodeCharta you need the following installed on your system:
 
 - Node **>= 20**
 - Java **>= 11, <= 21**
-
-### How to use **Visualization**?
-
-- **Online:** You can try the [web visualization](https://maibornwolff.github.io/codecharta/visualization/app/index.html?file=codecharta.cc.json&file=codecharta_analysis.cc.json) without any installation and explore the CodeCharta code (shown by default).
-- **Local:** See [here](visualization/README.md).
-
-### How to use **Analysis**?
-
-- Analysis is split into different parsers that generate `.cc.json` files. To run these parsers you need the [CodeCharta Shell](https://maibornwolff.github.io/codecharta/docs/ccsh/).
-
-In this example we will generate a `.cc.json` from [JUnit4](https://github.com/junit-team/junit4) using the [Source Code Parser](https://maibornwolff.github.io/codecharta/docs/source-code-parser) (that parses java projects).
 
 ```bash
 # Install codecharta-analysis globally
@@ -96,23 +117,18 @@ $ ccsh sourcecodeparser junit4 -p junit4 -o junit4.source.cc.json
 # Now you can upload `junit4.source.cc.json` to CodeCharta Visualization
 ```
 
-> **Note**
-> If you want to be guided through selecting the arguments. Just execute `ccsh` and you can run the parsers **interactively** with dialogs.
-
 ## Get Involved
 
-Have a **bug**, a **feature** request or any question? Please open [a new issue](https://github.com/MaibornWolff/codecharta/issues/new). Feedback is always welcome.
+Do you have a **bug**, **feature request**, or question? Please open a [a new issue](https://github.com/MaibornWolff/codecharta/issues/new). Feedback is always welcome.
 
-Want to have even **more information**? Please check our [documentation](https://maibornwolff.github.io/codecharta/) and [news](https://maibornwolff.github.io/codecharta/news/).
+Want **more information**? Check out our [documentation](https://maibornwolff.github.io/codecharta/) and [news](https://maibornwolff.github.io/codecharta/news/).
 
-## Further Information
+## Links
 
-- [Docs](https://maibornwolff.github.io/codecharta/)
+- [Documentation](https://maibornwolff.github.io/codecharta/)
 - [Quickstart Guide](https://maibornwolff.github.io/codecharta/docs/quick-start-guide/)
 - [Releases](https://github.com/MaibornWolff/codecharta/releases)
 - [Coverage](https://maibornwolff.github.io/codecharta/visualization/coverage/lcov-report/)
-- [Sonarqube Visualization](https://sonarcloud.io/project/overview?id=maibornwolff-gmbh_codecharta_visualization)
-- [Sonarqube Analysis](https://sonarcloud.io/project/overview?id=maibornwolff-gmbh_codecharta_analysis)
 - [Analysis - Changelog](analysis/CHANGELOG.md) | [Visualization - Changelog](visualization/CHANGELOG.md)
 - [Contributing](CONTRIBUTING.md)
 - [Code of Conduct](CODE_OF_CONDUCT.md)
@@ -124,5 +140,4 @@ MIT
 
 ---
 
-> [maibornwolff.de](https://www.maibornwolff.de) &nbsp;&middot;&nbsp;
-> GitHub [@MaibornWolff](https://github.com/maibornwolff)
+Made with ❤ by [MaibornWolff](https://www.maibornwolff.de/en) &nbsp;&middot;&nbsp; GitHub [@MaibornWolff](https://github.com/maibornwolff)
