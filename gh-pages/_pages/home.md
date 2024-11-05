@@ -5,6 +5,8 @@ header:
   actions:
     - label: "<i class='fas fa-fw fa-link'></i> Quick Start"
       url: "/docs/quick-start-guide/"
+    - label: "<i class='fas fa-fw fa-link'></i> Web Studio"
+      url: "https://maibornwolff.github.io/codecharta/visualization/app/index.html?file=codecharta.cc.json.gz&file=codecharta_analysis.cc.json.gz"
   overlay_image: /assets/images/cc_home.png
   overlay_filter: 0.3
 excerpt: >
@@ -19,4 +21,4 @@ CodeCharta is our attempt to make code more **tangible**, so that you can **comm
 
 {% include features.html %}
 
-[> Get started now!]({{site.baseurl}}/docs/quick-start-guide/){: .btn--primary.btn}
+[> Get started now!]({{site.baseurl}}/docs/overview/first-steps/){: .btn--primary.btn}

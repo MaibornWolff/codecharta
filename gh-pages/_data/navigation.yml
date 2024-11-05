@@ -1,101 +1,97 @@
 # main links
 main:
     - title: "Docs"
-      url: /docs/overview/
+      url: "/docs/overview/introduction"
     - title: "Examples"
-      url: /examples/
+      url: "/examples/"
     - title: "Releases"
-      url: categories/#release
+      url: "categories/#release"
     - title: "Service Offerings"
-      url: /docs/service-offerings/overview/
-
-# docs navigation bar
+      url: "/docs/overview/service-offerings"
 docs:
-    - title: Getting Started
+    - title: Overview
       children:
-          - title: "Overview"
-            url: /docs/overview/
-          - title: "Quick-Start Guide"
-            url: /docs/quick-start-guide/
-          - title: "Installation"
-            url: /docs/installation/
-          - title: "Docker Containers"
-            url: /docs/docker-containers/
-
-    - title: Analysis
-      children:
-          - title: "Analysis"
-            url: /docs/analysis/
-          - title: "Metrics"
-            url: /docs/metrics/
-          - title: "CodeCharta Shell"
-            url: /docs/ccsh/
-          - title: "Custom Metrics"
-            url: /docs/custom-metrics/
-          - title: "Analyze with SonarQube"
-            url: /docs/analyze-with-sonarqube/
-
-    - title: Analysis-Tools
-      children:
-          - title: "Source Code Parser"
-            url: /docs/source-code-parser
-          - title: "Raw Text Parser"
-            url: /docs/raw-text-parser
-          - title: "Git Log Parser"
-            url: /docs/git-log-parser
-          - title: "SVN Log Parser"
-            url: /docs/svn-log-parser
-          - title: "Sonar Importer"
-            url: /docs/sonar-importer
-          - title: "Tokei Importer"
-            url: /docs/tokei-importer
-          - title: "CSV Importer"
-            url: /docs/csv-importer
-          - title: "SourceMonitor Importer"
-            url: /docs/sourcemonitorimporter
-          - title: "Code Maat Importer"
-            url: /docs/codemaatimporter
-          - title: "MetricGardener Importer"
-            url: /docs/metricgardener-importer
-          - title: "CSV Exporter"
-            url: /docs/csv-exporter
-          - title: "Edge Filter"
-            url: /docs/edge-filter
-          - title: "Merge Filter"
-            url: /docs/merge-filter
-          - title: "Structure Modifier"
-            url: /docs/structure-modifier
-
-    - title: Visualization
-      children:
+          - title: "Introduction"
+            url: "/docs/overview/introduction"
+          - title: "First Steps"
+            url: "/docs/overview/first-steps"
           - title: "Visualization"
-            url: /docs/visualization/
-          - title: "User Controls"
-            url: /docs/user-controls/
-          - title: "Custom View"
-            url: /docs/custom-view/
-          - title: "Suspicious metrics"
-            url: /docs/suspicious-metrics/
-          - title: "Risk profile"
-            url: /docs/risk-profile/
-
-    - title: How-Tos
-      children:
+            url: "/docs/overview/visualization"
+          - title: "Analysis (CCSH)"
+            url: "/docs/overview/analysis"
+          - title: "Dockerized"
+            url: "/docs/overview/dockerized"
           - title: "How-Tos"
             url: categories/#how-to
-
-    - title: About
+          - title: "Service Offerings"
+            url: "/docs/overview/service-offerings"
+    - title: "Visualization"
+      children:
+          - title: "Web Studio"
+            url: "/docs/visualization/web-studio"
+          - title: "User controls"
+            url: "/docs/visualization/user-controls"
+          - title: "3d printing"
+            url: "/docs/visualization/3d-printing"
+          - title: "Risk profile"
+            url: "/docs/visualization/risk-profile"
+          - title: "Custom views"
+            url: "/docs/visualization/custom-views"
+          - title: "Suspicious metrics"
+            url: "/docs/visualization/suspicious-metrics"
+    - title: "Analysis (CCSH)"
+      children:
+          - title: "CodeCharta Shell"
+            url: "/docs/analysis/codecharta-shell"
+          - title: "Metrics"
+            url: "/docs/analysis/metrics"
+          - title: "Custom Metrics"
+            url: "/docs/analysis/custom-metrics"
+          - title: "Examples"
+            url: "/docs/analysis/examples"
+          - title: "Example with Sonar Qube"
+            url: "/docs/analysis/example-sonar-qube"
+    - title: "Importer (CCSH)"
+      children:
+          - title: "Sonar"
+            url: "/docs/analysis/importer/sonar"
+          - title: "Tokei"
+            url: "/docs/analysis/importer/tokei"
+          - title: "CSV"
+            url: "/docs/analysis/importer/csv"
+          - title: "SourceMonitor"
+            url: "/docs/analysis/importer/sourcemonitor"
+          - title: "Code Maat"
+            url: "/docs/analysis/importer/code-maat"
+    - title: "Parser (CCSH)"
+      children:
+          - title: "Souce Code"
+            url: "/docs/parser/source-code"
+          - title: "Raw Text"
+            url: "/docs/parser/raw-text"
+          - title: "Git Log"
+            url: "/docs/parser/git-log"
+          - title: "SVN Log"
+            url: "/docs/parser/svn-log"
+    - title: "Exporter (CCSH)"
+      children:
+          - title: "Csv"
+            url: "/docs/exporter/csv"
+    - title: "Filter (CCSH)"
+      children:
+          - title: "Edge Filter"
+            url: "/docs/filter/edge-filter"
+          - title: "Merge Filter"
+            url: "/docs/filter/merge-filter"
+          - title: "Structure Modifier"
+            url: "/docs/filter/structure-modifier"
+    - title: "About"
       children:
           - title: "License"
-            url: /docs/license/
+            url: "/docs/about/license"
           - title: "Versioning"
-            url: /docs/versioning/
+            url: "/docs/about/versioning"
           - title: "Feedback"
-            url: /docs/feedback/
+            url: "/docs/about/feedback"
           - title: "Price (Free)"
-            url: /docs/price/
-
-    - title: Service Offerings
-      children:
-          - title: "Overview"
-            url: /docs/service-offerings/overview/
+            url: "/docs/about/price"
