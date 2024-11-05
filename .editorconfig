@@ -1,11 +1,8 @@
 root = true
 
 # The basic settings will be used by
-# - prettier: https://github.com/prettier/prettier/issues/15255#issuecomment-1801339582
-# EsLint will respect the prettier settings, but does not apply them. This is by design
-# - to verify that the eslint rules do not interfere with the eslint setting use npm run lint:checkRules in visualization
-# lint-stages in visualization
-# - will be executed through husky's pre-commit hook, running the linter on all stages files in visualization
+# - biome (partially)
+# - ktlint (analysis)
 
 [*]
 charset = utf-8
