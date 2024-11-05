@@ -187,13 +187,9 @@ The tool _KTlint_ is added to gradle via a plugin. _KTlint_ is a linter and a fo
 
 ## Visualization
 
-In the visualization we use two tools in combination: _Prettier_ and _EsLint_ with some plugins.
-
-_Prettier_ uses `.editorconfig` for baseline configuration, together with the `prettier: {...}` section in our `visualization/package.json`.
-
-_EsLint_ is configured inside `visualization/` via `.eslintrc.js`. It respects the formatting applied through _Prettier_ as defined by the last
-entry in the `extends` array inside the configuration. Important is, that _EsLint_ does not format the code according to _Prettier_, _Prettier_
-itself does the formating after _EsLint_ ran through. _EsLint_ is more focused on **Code Quality**, not on **Code Style**.
+In the Visualization we use BiomeJS to format and lint our code, to keep it in a consistant style.
+You can execute the script in the root package.json yourself or we highly recommend installing the Biome extension and formatting on save.
+If the code is not formatted, the git hooks will format it for you before commiting.
 
 ## Commits: Linting on Staged Files
 

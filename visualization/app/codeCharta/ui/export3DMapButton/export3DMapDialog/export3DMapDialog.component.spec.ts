@@ -15,7 +15,7 @@ jest.mock("three/examples/jsm/loaders/SVGLoader", () => {
     return {
         SVGLoader: jest.fn().mockImplementation(() => {
             return {
-                // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                // biome-ignore lint/correctness/noUnusedVariables: <explanation>
                 load: (url: string, onLoad, onProgress?, onError?) => {
                     // Mock a scenario where the SVG loads successfully
                     const mockSVGData = {

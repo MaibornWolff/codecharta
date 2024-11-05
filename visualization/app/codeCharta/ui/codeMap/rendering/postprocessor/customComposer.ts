@@ -1,4 +1,4 @@
-import { WebGLInfo, WebGLRenderer, WebGLRenderTarget } from "three"
+import { WebGLInfo, WebGLRenderTarget, WebGLRenderer } from "three"
 import { MaskPass, ClearMaskPass } from "three/examples/jsm/postprocessing/MaskPass"
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer"
 import { Pass } from "three/examples/jsm/postprocessing/Pass"
@@ -77,6 +77,7 @@ export class CustomComposer extends EffectComposer {
 
     dispose() {
         // TODO add more dispose
+        // biome-ignore lint/style/useForOf: <explanation>
         for (let index = 0; index < this.passes.length; index++) {
             this.passes[index]["fsQuad"]?.material.dispose()
             this.passes[index]["fsQuad"]?._mesh?.geometry.dispose()

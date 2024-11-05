@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Box3, BoxGeometry, Mesh, MeshBasicMaterial, Vector3 } from "three"
 import { ColorChangeStrategy } from "../ColorChangeStrategies/colorChangeStrategy"
 import { GeometryOptions } from "../preview3DPrintMesh"
