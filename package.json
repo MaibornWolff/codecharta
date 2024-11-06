@@ -22,10 +22,13 @@
   "scripts": {
     "format": "biome format --fix",
     "format:check": "biome check",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "commitlint": "commitlint --config commitlint.config.js --edit"
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
+    "@commitlint/cli": "^19.5.0",
+    "@commitlint/config-conventional": "^19.5.0",
     "husky": "^8.0.0"
   }
 }
