@@ -8,12 +8,12 @@ Things that increase the chance that a pull request will be accepted:
 
 - Write clean code.
 - Write tests for your new code and regression tests after fixing a bug.
-- Write a good commit message and include the issue number at the end `#123`.
+- Write a good [commit message](#commit-messages) and include the issue number at the end `(#123)`.
 - Update the CHANGELOG.md with any changes/additions made
 
 When merging pull requests we prefer to rebase instead of a squash merge, as this results in a cleaner commit history that makes it easier to detect bugs.
 
-> During development on other branches, make sure to always rebase on top of the most current changes on the main branch so that the commits stay in the right order and do not produce as many merge conflicts when closing the pull request
+> During development on other branches, make sure to always rebase on top of the most current changes on the main branch so that the commits stay in the right order and do not produce as many merge conflicts when closing the pull request. Check the [DEV_START_GUIDE.md](DEV_START_GUIDE.md) for more details.
 
 This project is bound by a [Code of Conduct](CODE_OF_CONDUCT.md).
 
@@ -41,33 +41,41 @@ Examples:
 
 ### Commit Messages
 
-To unify the appearance of all commit messages we only accept commit messages using the following principles:
-
-- A commit contains the following, while the `<body-description>` is optional:
+To unify the appearance of all commit messages we only accept commit messages with this structure:
 
   ```
-  <subject-line> #<issue-id>
+  <type>(<scope?>): <subject>(#<issue-nummer?>)
 
-  [<body-description>]
+  <body-description?>
   ```
 
-- Separate subject-line from optional body-description with a blank line
-- Use the body-description to explain what, why or how within max 72 characters
-- Limit the subject line to 50 characters and add the **GitHub Issue Number** with the `#`
-- **Capitalize** the subject line
-- Do not end the subject line with a full stop
+**Mind the space after the colon!**
+
+- Use the optional body-description to explain what, why or how
+- Separate type/subject-line from optional body-description with a blank line
+- Limit the type/subject line to 72 characters and add the **GitHub Issue Number** with the `#` in brackets like this:
+- - **(#1234)**
+- The subject line can be capitalized
+- Do not end the subject line or the body with a full stop
+- `<type>` can be on of the following:
+- - `[ 'build', 'chore', 'ci', 'docs', 'feat', 'fix', 'perf', 'refactor', 'revert', 'style', 'test' ]`
+- Use a exclamation mark in front of the `:` to indicate a major breaking change
+- `<scope>` can be present and contain a list of the following targets:
+- - `[ 'analysis', 'visualization', 'docker', 'gh-pages', 'docs', 'readme', 'stg', 'config' ]`
 - The subject line always uses the **imperative mood** and is able to **complete the following sentence**:
   > If applied, this commit will ...
 
-#### Good commit messages
+> Example: chore(visualization): update tree.js dependency to version 0.42 (#1234)
 
-- ... Add new function to do X #123
-- ... Add test for X #123
-- ... Refactor subsystem X for readability #123
-- ... Update getting started documentation #123
-- ... Remove deprecated methods #123
+#### Good `<subject>` messages
 
-#### Bad commit messages
+- ... Add new function to do X (#123)
+- ... Add test for X (#123)
+- ... Refactor subsystem X for readability (#123)
+- ... Update getting started documentation (#123)
+- ... Remove deprecated methods (#123)
+
+#### Bad <subject> messages
 
 - _adding new function to do X for Y_ #123
 - _added service X_ #123
@@ -85,6 +93,8 @@ To unify the appearance of all commit messages we only accept commit messages us
 - The PR Assignee is only used by the reviewer to see who is reviewing it
 
 ## Changelog Guidelines
+
+Principle: https://keepachangelog.com/en/1.1.0/
 
 ### Why do we write a changelog?
 
@@ -122,7 +132,7 @@ To unify the appearance of all commit messages we only accept commit messages us
 ### Notes
 
 - Link to the image can be copied from an image uploaded to the Pull Request
-- If there are no Pull Requests associated to your change, link an issue.
+- If there are **no** Pull Requests associated to your change, link an issue.
 - The image should always have a width and/or a height attribute.
   - Example: width=”350px”
 
