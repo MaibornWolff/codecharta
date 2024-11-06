@@ -11,12 +11,11 @@ import { attributeDescriptorsSelector } from "../../../state/store/fileSettings/
 import { getLastAction } from "../../../util/testUtils/store.utils"
 import { NodeSelectionService } from "../../metricChooser/nodeSelection.service"
 import { AreaMetricChooserComponent } from "./areaMetricChooser.component"
-import { AreaMetricChooserModule } from "./areaMetricChooser.module"
 
 describe("areaMetricChooserComponent", () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
-            imports: [AreaMetricChooserModule],
+            imports: [AreaMetricChooserComponent],
             providers: [
                 { provide: NodeSelectionService, useValue: { createNodeObservable: jest.fn() } },
                 provideMockStore({
@@ -40,7 +39,7 @@ describe("areaMetricChooserComponent", () => {
     })
 
     it("should be a select for area metric", async () => {
-        const { detectChanges } = await render(AreaMetricChooserComponent, { excludeComponentDeclaration: true })
+        const { detectChanges } = await render(AreaMetricChooserComponent)
 
         await userEvent.click(await screen.findByText("aMetric"))
         await waitFor(() => expect(screen.getByPlaceholderText("Area Metric (highest value)")).not.toBe(null))

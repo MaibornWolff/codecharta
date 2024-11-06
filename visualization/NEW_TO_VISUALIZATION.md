@@ -14,26 +14,13 @@ This chart shows the data flow in our architecture when a new cc.json is opened.
 
 ![new-file-imported](../gh-pages/assets/images/docs/reference/loading-a-new-file-flow.png)
 
-### PlopJS
-
-In order to reduce the amount of time spent on repetitive work such as creating 5 files for an ui-component, we implemented some plop-templates that will help you with that. Just type `npm run plop` and let the magic take over.
-
-Currently, we support the creation of:
-
-- state service
-- ui-component
-- util static class
-- redux property
-- redux sub-reducer
-
 ### Other Technologies
 
 - Typescript
 - npm
-- AngularJs 1.x, specifically what are Components, Services
+- Angular
 - Jest (Unit Tests)
 - Puppeteer (E2E Tests)
-- ESLint
 - ThreeJs for 3d visualization
 - d3 for tree map algorithm and tree hierarchy (parent-child relations)
 - Webpack
@@ -64,8 +51,4 @@ There are 3 possible ways to build and run the application. You can run it as a 
 
 For more test options check the `package.json`
 
-### Troubleshooting
-
-#### ESLint & IntelliJ
-
-If you run into a warning about the ESLint configuration you can try to change `Run for files` default glob pattern to this pattern `"**/*.(js|ts|jsx|tsx|html|vue)"`
+<!-- ### Troubleshooting -->

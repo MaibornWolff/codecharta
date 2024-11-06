@@ -57,6 +57,8 @@ $ codecharta-visualization
 
 > To clone and run this application, you'll need [Git](https://git-scm.com) and [Node.js](https://nodejs.org/en/download/) (version >=20) installed
 
+> (Windows) For some tasks the Git bash utilities are required
+
 ```bash
 # Clone the CodeCharta repo
 $ git clone https://github.com/MaibornWolff/codecharta.git
@@ -133,9 +135,12 @@ To run tests check out the following **tasks**:
 Run unit tests in `app/` and generate a coverage report in `dist/coverage/`.
 
 ```bash
+# Executes test with reduced CPU usage to avoid memory problems
 $ npm run test
 # To run the tests in watch mode, use
 $ npm run test:auto
+# To run as many tests in parallel as possible
+$ npm run test:ci
 ```
 
 #### E2E

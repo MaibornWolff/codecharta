@@ -3,7 +3,7 @@ import { fireEvent, render, screen, waitForElementToBeRemoved } from "@testing-l
 import { FileSelectionState } from "../../../model/files/files"
 import { addFile, invertStandard, setStandard } from "../../../state/store/files/files.actions"
 import { TEST_FILE_DATA } from "../../../util/dataMocks"
-import { FilePanelModule } from "../filePanel.module"
+import { FilePanelComponent } from "../filePanel.component"
 import { FilePanelFileSelectorComponent } from "./filePanelFileSelector.component"
 import { appReducers, setStateMiddleware } from "../../../state/store/state.manager"
 import { Store, StoreModule } from "@ngrx/store"
@@ -12,8 +12,7 @@ import { CcState } from "../../../codeCharta.model"
 describe("filePanelFileSelectorComponent", () => {
     it("should reset selected files to selected in store when closing with zero selections", async () => {
         const { detectChanges, fixture } = await render(FilePanelFileSelectorComponent, {
-            imports: [FilePanelModule, StoreModule.forRoot(appReducers, { metaReducers: [setStateMiddleware] })],
-            excludeComponentDeclaration: true
+            imports: [FilePanelComponent, StoreModule.forRoot(appReducers, { metaReducers: [setStateMiddleware] })]
         })
         const store = TestBed.inject(Store)
         store.dispatch(addFile({ file: TEST_FILE_DATA }))

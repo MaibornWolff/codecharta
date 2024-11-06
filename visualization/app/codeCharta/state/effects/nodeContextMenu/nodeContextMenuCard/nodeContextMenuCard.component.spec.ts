@@ -4,14 +4,13 @@ import { IdToBuildingService } from "../../../../services/idToBuilding/idToBuild
 import { ThreeSceneService } from "../../../../ui/codeMap/threeViewer/threeSceneService"
 import { VALID_FILE_NODE_WITH_ID, VALID_NODE_WITH_PATH } from "../../../../util/dataMocks"
 import { NodeContextMenuCardComponent } from "./nodeContextMenuCard.component"
-import { NodeContextMenuCardModule } from "./nodeContextMenuCard.module"
 import { provideMockStore } from "@ngrx/store/testing"
 import { rightClickedCodeMapNodeSelector } from "../rightClickedCodeMapNode.selector"
 
 describe("NodeContextMenuCardComponent", () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
-            imports: [NodeContextMenuCardModule],
+            imports: [NodeContextMenuCardComponent],
             providers: [
                 {
                     provide: ThreeSceneService,

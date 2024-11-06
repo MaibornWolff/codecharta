@@ -1,5 +1,3 @@
-import "./codeMap.module"
-import "../../codeCharta.module"
 import { TestBed } from "@angular/core/testing"
 import { CodeMapLabelService } from "./codeMap.label.service"
 import { CcState, Node } from "../../codeCharta.model"

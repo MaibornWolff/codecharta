@@ -4,6 +4,7 @@ import { CustomConfigListComponent } from "./customConfigList/customConfigList.c
 import { CustomConfigMapSelectionMode } from "../../model/customConfig/customConfig.api.model"
 import { MapColors, PrimaryMetrics } from "../../codeCharta.model"
 import { AddCustomConfigDialogComponent } from "./addCustomConfigButton/addCustomConfigDialog/addCustomConfigDialog.component"
+import { RibbonBarMenuButtonComponent } from "../ribbonBar/ribbonBarMenuButton/ribbonBarMenuButton.component"
 
 type CustomConfigColors = Pick<MapColors, "positive" | "neutral" | "negative" | "selected" | "positiveDelta" | "negativeDelta">
 
@@ -28,7 +29,9 @@ export interface CustomConfigItemGroup {
 @Component({
     selector: "cc-custom-configs",
     templateUrl: "./customConfigs.component.html",
-    styleUrls: ["./customConfigs.component.scss"]
+    styleUrls: ["./customConfigs.component.scss"],
+    standalone: true,
+    imports: [RibbonBarMenuButtonComponent]
 })
 export class CustomConfigsComponent {
     constructor(private dialog: MatDialog) {}

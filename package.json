@@ -20,16 +20,12 @@
     "arrowParens": "avoid"
   },
   "scripts": {
-    "format": "prettier --write \"./**/*\"",
-    "format:check": "prettier --check \"./**/*\"",
-    "format:quick": "pretty-quick --staged",
-    "lint:visualization": "cd visualization && npm run lint:fix",
-    "lint:visualization:quick": "cd visualization && npm run precommit",
+    "format": "biome format --fix",
+    "format:check": "biome check",
     "prepare": "husky install"
   },
   "devDependencies": {
-    "husky": "^8.0.0",
-    "prettier": "^3.2.5",
-    "pretty-quick": "^4.0.0"
+    "@biomejs/biome": "1.9.4",
+    "husky": "^8.0.0"
   }
 }

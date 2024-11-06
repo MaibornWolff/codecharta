@@ -21,7 +21,7 @@
   <p>
     Latest Release
     <br>
-    Analysis <a href="https://github.com/MaibornWolff/codecharta/releases/tag/ana-1.127.0">1.127.0</a> | Visualization <a href="https://github.com/MaibornWolff/codecharta/releases/tag/vis-1.129.1">1.129.1</a>
+    Analysis <a href="https://github.com/MaibornWolff/codecharta/releases/tag/ana-1.128.0">1.128.0</a> | Visualization <a href="https://github.com/MaibornWolff/codecharta/releases/tag/vis-1.130.0">1.130.0</a>
 
 [comment]: ##################################################################################
 [comment]: <Ensure that the words 'latest release' are above the line with the links>
@@ -39,7 +39,7 @@
     <a href="https://sonarcloud.io/dashboard?id=maibornwolff-gmbh_codecharta_analysis">
       <img src="https://sonarcloud.io/api/project_badges/measure?project=maibornwolff-gmbh_codecharta_analysis&metric=alert_status" alt="Quality Gate Analysis"></a>
     <a href="https://sonarcloud.io/dashboard?id=maibornwolff-gmbh_codecharta_visualization">
-      <img src="https://sonarcloud.io/api/project_badges/measure?project=maibornwolff-gmbh_codecharta_visualization&metric=alert_status" alt="Quality Gate Visualization"> 
+      <img src="https://sonarcloud.io/api/project_badges/measure?project=maibornwolff-gmbh_codecharta_visualization&metric=alert_status" alt="Quality Gate Visualization">
     </a>
   </div>
 

@@ -1,12 +1,11 @@
 import { TestBed } from "@angular/core/testing"
 import { render } from "@testing-library/angular"
 import { MetricColorRangeDiagramComponent } from "./metricColorRangeDiagram.component"
-import { MetricColorRangeDiagramModule } from "./metricColorRangeDiagram.module"
 
 describe("MetricColorRangeDiagramComponent", () => {
     beforeEach(async () => {
         TestBed.configureTestingModule({
-            imports: [MetricColorRangeDiagramModule]
+            imports: [MetricColorRangeDiagramComponent]
         })
     })
 

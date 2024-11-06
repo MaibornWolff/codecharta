@@ -1,9 +1,13 @@
 import { Component, EventEmitter, Input, Output } from "@angular/core"
+import { ColorPickerComponent } from "../colorPicker/colorPicker.component"
+import { ReadableColorForBackgroundPipe } from "./readableColorForBackground.pipe"
 
 @Component({
     selector: "cc-labelled-color-picker",
     templateUrl: "./labelledColorPicker.component.html",
-    styleUrls: ["./labelledColorPicker.component.scss"]
+    styleUrls: ["./labelledColorPicker.component.scss"],
+    standalone: true,
+    imports: [ColorPickerComponent, ReadableColorForBackgroundPipe]
 })
 export class LabelledColorPickerComponent {
     @Input() hexColor: string

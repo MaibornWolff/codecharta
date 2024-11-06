@@ -5,17 +5,17 @@ import { AmbientLight, BufferGeometry, DirectionalLight, Group, Scene, Shape, Ve
 import { DEFAULT_SETTINGS, DEFAULT_STATE, FILE_META, TEST_NODES } from "../../../util/dataMocks"
 import { CodeMapMesh } from "../../codeMap/rendering/codeMapMesh"
 import { ThreeSceneService } from "../../codeMap/threeViewer/threeSceneService"
-import { Export3DMapButtonModule } from "../export3DMapButton.module"
 import { Export3DMapDialogComponent } from "./export3DMapDialog.component"
 import { QrCodeMesh } from "../../../services/3DExports/3DPreview/MeshModels/BackMeshModels/qrCodeMesh"
 import { FileSelectionState, FileState } from "../../../model/files/files"
 import { CCFile, CodeMapNode, ColorMode, NodeType } from "../../../codeCharta.model"
+import { Export3DMapButtonComponent } from "../export3DMapButton.component"
 
 jest.mock("three/examples/jsm/loaders/SVGLoader", () => {
     return {
         SVGLoader: jest.fn().mockImplementation(() => {
             return {
-                // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                // biome-ignore lint/correctness/noUnusedVariables: <explanation>
                 load: (url: string, onLoad, onProgress?, onError?) => {
                     // Mock a scenario where the SVG loads successfully
                     const mockSVGData = {
@@ -142,12 +142,11 @@ describe("Export3DMapDialogComponent", () => {
 
     async function setup() {
         const renderObject = await render(Export3DMapDialogComponent, {
-            imports: [Export3DMapButtonModule],
+            imports: [Export3DMapButtonComponent],
             providers: [
                 { provide: State, useValue: { getValue: () => TestState } },
                 { provide: ThreeSceneService, useValue: threeSceneServiceMock }
-            ],
-            excludeComponentDeclaration: true
+            ]
         })
 
         return renderObject

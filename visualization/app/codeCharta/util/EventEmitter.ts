@@ -10,6 +10,7 @@ export class EventEmitter<EventMap extends AbstractEventMap> {
     }
 
     emit<EventType extends keyof EventMap>(event: EventType, data?: Parameters<EventMap[EventType]>[0]) {
+        // biome-ignore lint/style/useExplicitLengthCheck: <explanation>
         if (!this.listeners[event]?.length) {
             return false
         }

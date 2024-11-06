@@ -1,10 +1,9 @@
 import { Component } from "@angular/core"
 import { TestBed } from "@angular/core/testing"
 import { fireEvent, render, screen, waitFor } from "@testing-library/angular"
+import { ColorPickerComponent } from "./colorPicker.component"
 
-import { ColorPickerModule } from "./colorPicker.module"
-
-describe("colorPicker", () => {
+describe("ColorPickerComponent", () => {
     @Component({
         selector: "test-color-picker",
         template: `
@@ -26,7 +25,7 @@ describe("colorPicker", () => {
 
     beforeEach(() => {
         TestBed.configureTestingModule({
-            imports: [ColorPickerModule]
+            imports: [ColorPickerComponent]
         })
     })
 

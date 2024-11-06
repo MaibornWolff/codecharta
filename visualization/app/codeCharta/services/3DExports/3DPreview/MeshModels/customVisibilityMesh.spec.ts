@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { GeneralMesh } from "./generalMesh"
 import { ColorChangeStrategy } from "../ColorChangeStrategies/colorChangeStrategy"
 import { CustomVisibilityMesh } from "./customVisibilityMesh"

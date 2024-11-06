@@ -3,7 +3,7 @@ import { render, screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
 import { expect } from "@jest/globals"
 import { ApplyCustomConfigButtonComponent } from "./applyCustomConfigButton.component"
-import { CustomConfigsModule } from "../../../customConfigs.module"
+import { CustomConfigsComponent } from "../../../customConfigs.component"
 import { ThreeCameraService } from "../../../../codeMap/threeViewer/threeCamera.service"
 import { ThreeMapControlsService } from "../../../../codeMap/threeViewer/threeMapControls.service"
 import { CUSTOM_CONFIG_ITEM_GROUPS } from "../../../../../util/dataMocks"
@@ -18,7 +18,7 @@ describe("applyCustomConfigButtonComponent", () => {
     const mockedDialogReference = { close: jest.fn() }
     beforeEach(() => {
         TestBed.configureTestingModule({
-            imports: [CustomConfigsModule],
+            imports: [CustomConfigsComponent],
             providers: [
                 { provide: MatDialogRef, useValue: mockedDialogReference },
                 { provide: MatDialog, useValue: mockedDialog },
@@ -34,7 +34,6 @@ describe("applyCustomConfigButtonComponent", () => {
         CustomConfigHelper.applyCustomConfig = jest.fn()
         const customConfigItem = CUSTOM_CONFIG_ITEM_GROUPS.get("File_B_File_C_STANDARD").customConfigItems[0]
         const { container } = await render(ApplyCustomConfigButtonComponent, {
-            excludeComponentDeclaration: true,
             componentProperties: { customConfigItem }
         })
 
@@ -62,7 +61,6 @@ describe("applyCustomConfigButtonComponent", () => {
         const customConfigItem = CUSTOM_CONFIG_ITEM_GROUPS.get("File_B_File_C_STANDARD").customConfigItems[0]
         customConfigItem.isApplicable = false
         await render(ApplyCustomConfigButtonComponent, {
-            excludeComponentDeclaration: true,
             componentProperties: { customConfigItem }
         })
         const applyCustomConfigButton = screen.getByRole("button") as HTMLButtonElement

@@ -11,7 +11,7 @@ on:
 jobs:
  check_prettier:
     if: "!contains(github.event.head_commit.message, 'Deploying to main')"
-    name: Prettier Test
+    name: Code Style
     runs-on: ubuntu-latest
     env:
       working-directory: ./
@@ -34,18 +34,18 @@ jobs:
           ${{ runner.os }}-build-
           ${{ runner.os }}-
 
-    - name: Install Node
+    - name: Install node
       run: npm ci
       working-directory: ${{env.working-directory}}
 
-    - name: Lint files
+    - name: Check formatting and linting
       run: |
         npm run format:check
       working-directory: ${{env.working-directory}}
 
  build_visualization_test:
     if: "!contains(github.event.head_commit.message, 'Deploying to main')"
-    name: Visualization Test
+    name: Unit Tests (Visualization)
     runs-on: ubuntu-latest
     env:
       working-directory: ./visualization
@@ -69,16 +69,15 @@ jobs:
           ${{ runner.os }}-build-
           ${{ runner.os }}-
 
-    - name: Install Node
+    - name: Install node
       run: npm ci
       working-directory: ${{env.working-directory}}
 
-    - name: Test and Linter
+    - name: Run unit tests
       env:
         NODE_OPTIONS: "--max_old_space_size=4096"
       run: |
-        npm run test
-        npm run lint
+        npm run test:ci
       working-directory: ${{env.working-directory}}
 
     - name: Upload artifact
@@ -89,7 +88,7 @@ jobs:
 
  build_visualization_e2e:
     if: "!contains(github.event.head_commit.message, 'Deploying to main')"
-    name: Visualization E2E
+    name: E2E Tests (Visualization)
     runs-on: ubuntu-latest
     env:
       working-directory: ./visualization
@@ -113,11 +112,11 @@ jobs:
           ${{ runner.os }}-build-
           ${{ runner.os }}-
 
-    - name: Install Node
+    - name: Install node
       run: npm ci
       working-directory: ${{env.working-directory}}
 
-    - name: Test and Linter
+    - name: Build and run e2e tests
       env:
         PUPPETEER_EXECUTABLE_PATH: "/usr/bin/google-chrome"
       run: |
@@ -126,7 +125,7 @@ jobs:
       working-directory: ${{env.working-directory}}
 
  test_and_sonar_analysis:
-    name: "Build, Test and Publish Analysis Sonar Results"
+    name: "Code Quality Results (analysis)"
     runs-on: ubuntu-latest
     env:
       working-directory: ./analysis
@@ -180,7 +179,7 @@ jobs:
 
  publish_sonar_visualization:
     needs: [build_visualization_test, build_visualization_e2e]
-    name: "Build and Publish Visualization Sonar Results"
+    name: "Code Quality Results (visualization)"
     runs-on: ubuntu-latest
     env:
       working-directory: ./visualization

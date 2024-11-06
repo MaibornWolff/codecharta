@@ -33,9 +33,9 @@ $cc-palette: (
     )
 );
 
-$cc-primary: mat.define-palette($cc-palette);
-$cc-accent: mat.define-palette($cc-palette);
-$cc-theme: mat.define-light-theme(
+$cc-primary: mat.m2-define-palette($cc-palette);
+$cc-accent: mat.m2-define-palette($cc-palette);
+$cc-theme: mat.m2-define-light-theme(
     (
         color: (
             primary: $cc-primary,
@@ -44,7 +44,7 @@ $cc-theme: mat.define-light-theme(
     )
 );
 
-$cc-primary-color: mat.get-color-from-palette($cc-primary);
+$cc-primary-color: mat.m2-get-color-from-palette($cc-primary);
 $cc-emphasized-color: #0374c9;
 $cc-accent-color: #fc801bab;
 $cc-disabled-color: rgb(204, 204, 204);

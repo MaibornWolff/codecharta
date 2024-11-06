@@ -191,6 +191,7 @@ export class CustomConfigHelper {
 
     static applyCustomConfig(
         configId: string,
+        // biome-ignore lint/correctness/noUnusedVariables: <explanation>
         store: Store,
         threeCameraService: ThreeCameraService,
         threeOrbitControlsService: ThreeMapControlsService,

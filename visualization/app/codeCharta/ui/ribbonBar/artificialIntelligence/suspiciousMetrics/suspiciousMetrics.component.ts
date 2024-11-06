@@ -3,11 +3,14 @@ import { dequal } from "dequal"
 import { ArtificialIntelligenceData } from "../selectors/artificialIntelligence.selector"
 import { MatMenu, MatMenuTrigger } from "@angular/material/menu"
 import { SuspiciousMetricsMenuComponent } from "./suspiciousMetricsMenu/suspiciousMetricsMenu.component"
+import { RibbonBarMenuButtonComponent } from "../../ribbonBarMenuButton/ribbonBarMenuButton.component"
 
 @Component({
     selector: "cc-suspicious-metrics",
     templateUrl: "./suspiciousMetrics.component.html",
-    styleUrl: "./suspiciousMetrics.component.scss"
+    styleUrl: "./suspiciousMetrics.component.scss",
+    standalone: true,
+    imports: [RibbonBarMenuButtonComponent, MatMenuTrigger, MatMenu, SuspiciousMetricsMenuComponent]
 })
 export class SuspiciousMetricsComponent implements OnChanges, AfterViewInit {
     @ViewChild(SuspiciousMetricsMenuComponent) menuComponent: SuspiciousMetricsMenuComponent

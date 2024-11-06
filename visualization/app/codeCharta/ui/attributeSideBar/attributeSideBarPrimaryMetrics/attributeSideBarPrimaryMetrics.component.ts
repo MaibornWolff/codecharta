@@ -6,11 +6,23 @@ import { PrimaryMetrics, primaryMetricsSelector } from "../../../state/selectors
 import { Store } from "@ngrx/store"
 import { AttributeDescriptors, CcState } from "../../../codeCharta.model"
 import { attributeDescriptorsSelector } from "../../../state/store/fileSettings/attributeDescriptors/attributeDescriptors.selector"
+import { AttributeSideBarPrimaryMetricComponent } from "./attributeSideBarPrimaryMetric/attributeSideBarPrimaryMetric.component"
+import { AttributeTypeSelectorComponent } from "../attributeTypeSelector/attributeTypeSelector.component"
+import { AsyncPipe, DecimalPipe } from "@angular/common"
+import { AttributeDescriptorTooltipPipe } from "../../../util/pipes/attributeDescriptorTooltip.pipe"
 
 @Component({
     selector: "cc-attribute-side-bar-primary-metrics",
     templateUrl: "./attributeSideBarPrimaryMetrics.component.html",
-    styleUrls: ["./../attributeSideBarMetrics.scss"]
+    styleUrls: ["./../attributeSideBarMetrics.scss"],
+    standalone: true,
+    imports: [
+        AttributeSideBarPrimaryMetricComponent,
+        AttributeTypeSelectorComponent,
+        AsyncPipe,
+        DecimalPipe,
+        AttributeDescriptorTooltipPipe
+    ]
 })
 export class AttributeSideBarPrimaryMetricsComponent {
     primaryMetrics$: Observable<PrimaryMetrics>
