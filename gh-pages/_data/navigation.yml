@@ -15,9 +15,9 @@ docs:
             url: "/docs/overview/introduction"
           - title: "First Steps"
             url: "/docs/overview/first-steps"
-          - title: "Visualization"
+          - title: "Visualization - Web Studio"
             url: "/docs/overview/visualization"
-          - title: "Analysis (CCSH)"
+          - title: "Analysis - CCSH"
             url: "/docs/overview/analysis"
           - title: "Dockerized"
             url: "/docs/overview/dockerized"
@@ -25,7 +25,7 @@ docs:
             url: categories/#how-to
           - title: "Service Offerings"
             url: "/docs/overview/service-offerings"
-    - title: "Visualization"
+    - title: "Visualization - Web Studio"
       children:
           - title: "Web Studio"
             url: "/docs/visualization/web-studio"
@@ -39,7 +39,7 @@ docs:
             url: "/docs/visualization/custom-views"
           - title: "Suspicious metrics"
             url: "/docs/visualization/suspicious-metrics"
-    - title: "Analysis (CCSH)"
+    - title: "CCSH - Analysis"
       children:
           - title: "CodeCharta Shell"
             url: "/docs/analysis/codecharta-shell"
@@ -51,7 +51,7 @@ docs:
             url: "/docs/analysis/examples"
           - title: "Example with Sonar Qube"
             url: "/docs/analysis/example-sonar-qube"
-    - title: "Importer (CCSH)"
+    - title: "CCSH - Importer"
       children:
           - title: "Sonar"
             url: "/docs/analysis/importer/sonar"
@@ -63,7 +63,7 @@ docs:
             url: "/docs/analysis/importer/sourcemonitor"
           - title: "Code Maat"
             url: "/docs/analysis/importer/code-maat"
-    - title: "Parser (CCSH)"
+    - title: "CCSH - Parser"
       children:
           - title: "Souce Code"
             url: "/docs/parser/source-code"
@@ -73,11 +73,11 @@ docs:
             url: "/docs/parser/git-log"
           - title: "SVN Log"
             url: "/docs/parser/svn-log"
-    - title: "Exporter (CCSH)"
+    - title: "CCSH - Exporter"
       children:
           - title: "Csv"
             url: "/docs/exporter/csv"
-    - title: "Filter (CCSH)"
+    - title: "CCSH - Filter"
       children:
           - title: "Edge Filter"
             url: "/docs/filter/edge-filter"

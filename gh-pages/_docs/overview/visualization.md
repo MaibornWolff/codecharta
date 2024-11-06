@@ -15,7 +15,7 @@ gallery:
 
 The goal of the CodeCharta visualization is to make code quality more accessible and tangible to everyone. We use the _city metaphor_ and represent each file in your source code with a _building_. This allows user to grasp complex metrics, even without knowing what they are in detail. This also provides a big picture view of code to **experienced professionals** and allows them free exploration of the code files and their metrics.
 
-This is what you will find, once you [open the web visualization]({{site.web_visualization_link}}):
+This is what you will find, once you [open our Web Studio]({{site.web_visualization_link}}):
 
 {% include gallery %}
 

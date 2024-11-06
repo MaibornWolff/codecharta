@@ -17,7 +17,7 @@ gallery:
 
 Before you start doing anything, you should have a look at our [Web Studio](https://maibornwolff.github.io/codecharta/visualization/app/index.html?file=codecharta.cc.json.gz&file=codecharta_analysis.cc.json.gz&currentFilesAreSampleFiles=true&area=rloc&height=sonar_complexity&color=sonar_complexity) you can try everything out yourself. You could also have a look at our [User Controls]() to help you navigate.
 
-# CCSH
+# CCSH (CodeCharta Shell)
 
 After trying out the WebStudio, you may be wondering how to get your own project metrics into CodeCharta. You need to download our pre-build [CCSH (CodeCharta Shell)]({{site.baseurl}}{% link _docs/analysis/ccsh.md %}), which will generate the metrics that can later be imported into our [Web Studio](https://maibornwolff.github.io/codecharta/visualization/app/index.html?file=codecharta.cc.json.gz&file=codecharta_analysis.cc.json.gz&currentFilesAreSampleFiles=true&area=rloc&height=sonar_complexity&color=sonar_complexity).
 
@@ -38,7 +38,8 @@ $ ccsh -h
 # done :)!
 ```
 
-Now you would need to decide where you want to get your metrics from. Every parser and importer has their own metrics that can be exported. Checkout [Analysis]({{site.baseurl}}{% link _docs/overview/analysis.md %}) to see an overview.
+Now you need to decide where you want to get your metrics from. Every parser and importer has their own metrics that can be exported.
+Checkout [Analysis]({{site.baseurl}}{% link _docs/overview/analysis.md %}) to see an overview.
 
 In this example we will use our [Raw Text Parser]({{site.baseurl}}{% link _docs/parser/raw-text.md%}) as it works on nearly every format.
 
@@ -49,7 +50,7 @@ $ ccsh rawtextparser -o=tutorial <path/to/your/project>
 # done :)!
 ```
 
-This generates a tutorial.cc.json.gz, which can be imported in our [Web Studio](https://maibornwolff.github.io/codecharta/visualization/app/index.html?file=codecharta.cc.json.gz&file=codecharta_analysis.cc.json.gz&currentFilesAreSampleFiles=true&area=rloc&height=sonar_complexity&color=sonar_complexity).
+This generates a **tutorial.cc.json.gz**, which can be imported in our [Web Studio](https://maibornwolff.github.io/codecharta/visualization/app/index.html?file=codecharta.cc.json.gz&file=codecharta_analysis.cc.json.gz&currentFilesAreSampleFiles=true&area=rloc&height=sonar_complexity&color=sonar_complexity).
 
-Just click on the top left on import and open your tutorial.cc.json.gz. You are now able to explore your code base to your hearts content.
+Just click on the top left on import and open your **tutorial.cc.json.gz**. You are now able to explore your code base to your hearts content.
 {% include gallery %}

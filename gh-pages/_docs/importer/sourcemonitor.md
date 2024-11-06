@@ -79,4 +79,4 @@ You may use the [CSVImporter]({{site.baseurl}}{% link _docs/importer/csv.md %}) 
 
 ## Example
 
-TODO SM - HOWOTO
+An explicit example with the [Open Office Code](https://github.com/apache/openoffice), can be found [here]({{site.baseurl}}{% link _posts/how-to/2019-06-14-generate_with_sourcemonitor.md %})

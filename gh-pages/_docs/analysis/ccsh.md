@@ -30,7 +30,7 @@ $ ccsh -h
 
 ## General usage
 
-After the CodeCharta analysis has been TODO Installed, executing `ccsh -h` should show the help where all further are listed. Most often the CodeCharta shell is called with one of its tools to perform different actions. For example `ccsh csvimport example.csv` will use the [CSVImporter]({{site.baseurl}}{% link _docs/importer/csv.md %}) to turn the given csv file into `cc.json` format. More information on how to the CodeCharta Shell can be found in the pages of the individual analysis tools or in our TODO howto
+After the CodeCharta analysis has been installed, executing `ccsh -h` should show the help where all further are listed. Most often the CodeCharta shell is called with one of its tools to perform different actions. For example `ccsh csvimport example.csv` will use the [CSVImporter]({{site.baseurl}}{% link _docs/importer/csv.md %}) to turn the given csv file into `cc.json` format. More information on how to the CodeCharta Shell can be found in the pages of the individual analysis tools or in our [How-to articles]({{site.baseurl}}{% link _pages/category-archive.md %}#how-to).
 
 ## Interactive Shell
 
@@ -66,7 +66,7 @@ Currently, the following parsers are considered when checking for recommendation
 
 ## Combining multiple metrics
 
-You can combine multiple metrics into one `.cc.json`. This allows users to analyze a codebase with multiple tools (e.g. the sonarimporter for code metrics like complexity and the gitlogparser for metadata like number of authors) and combine the results in a single file that can be visualized. This is done with the [Merge Filter]({{site.baseurl}}{% link _docs/filter/merge-filter.md %}). Some importers support direct pipe-through, which means you don't need to use the merge filter. If these importers are missing a metric, please take a look at TODO Custom Metrics.
+You can combine multiple metrics into one `.cc.json`. This allows users to analyze a codebase with multiple tools (e.g. the sonarimporter for code metrics like complexity and the gitlogparser for metadata like number of authors) and combine the results in a single file that can be visualized. This is done with the [Merge Filter]({{site.baseurl}}{% link _docs/filter/merge-filter.md %}). Some importers support direct pipe-through, which means you don't need to use the merge filter. If these importers are missing a metric, please take a look at [Custom Metrics]({{site.baseurl}}{% link _docs/analysis/custom-metrics.md %}) and Importer.
 
 ## Piped input for filters
 
