@@ -1,4 +1,4 @@
-<div style="display:flex;justify-content:center;flex-direction:column;align-items:center;text-align:center;margin-bottom:10px;">
+<div align="center">
   <a href="https://maibornwolff.github.io/codecharta/visualization/app/index.html?file=codecharta.cc.json.gz&file=codecharta_analysis.cc.json.gz&currentFilesAreSampleFiles=true">
     <img src="https://raw.githubusercontent.com/maibornwolff/codecharta/main/logo/codecharta_logo.svg" alt="CodeCharta logo" width="200"/>
   </a>
@@ -13,7 +13,8 @@
 [comment]: ##################################################################################
 
   </p>
-  <div style="display:flex;gap: 5px;">
+
+  <div>
     <a href="https://maibornwolff.github.io/codecharta/">Documentation</a> •
     <a href="#features">Features</a> •
     <a href="https://maibornwolff.github.io/codecharta/docs/overview/first-steps">Quickstart</a> •
@@ -21,7 +22,7 @@
     <a href="#links">Links</a>
   </div>
 
-  <div style="display:flex;gap: 5px;">
+  <div>
     <a href="https://github.com/MaibornWolff/codecharta/actions/workflows/release-analysis.yml">
       <img src="https://github.com/MaibornWolff/codecharta/actions/workflows/release-analysis.yml/badge.svg" alt="Release Analysis">
     </a>
@@ -46,13 +47,17 @@ source project mainly developed by [MaibornWolff](https://www.maibornwolff.de/en
 our [Documentation](https://maibornwolff.github.io/codecharta/).
 
 ## Features
+
 ### CodeCharta Shell (Analysis)
+
 Our Shell is the heart of CodeCharta. It allows you to import metrics from various sources or parse your code base.
-You need it to generate the data needed for our Web Studio. It supports different imports from [Sonar](https://maibornwolff.github.io/codecharta/docs/importer/sonar),
+You need it to generate the data needed for our Web Studio. It supports different imports
+from [Sonar](https://maibornwolff.github.io/codecharta/docs/importer/sonar),
 [Tokei](https://maibornwolff.github.io/codecharta/docs/importer/tokei),
 [Code Maat](https://maibornwolff.github.io/codecharta/docs/importer/code-maat),
 [Source Monitor](https://maibornwolff.github.io/codecharta/docs/importer/sourcemonitor),
-or even [CSV](https://maibornwolff.github.io/codecharta/docs/importer/csv) files! Or you can parse your code base directly with various parsers for [Git Log](https://maibornwolff.github.io/codecharta/docs/parser/git-log),
+or even [CSV](https://maibornwolff.github.io/codecharta/docs/importer/csv) files! Or you can parse your code base directly with various
+parsers for [Git Log](https://maibornwolff.github.io/codecharta/docs/parser/git-log),
 [SVN Log](https://maibornwolff.github.io/codecharta/docs/parser/svn-log),
 [Source Code](https://maibornwolff.github.io/codecharta/docs/parser/source-code),
 and [Raw Text](https://maibornwolff.github.io/codecharta/docs/parser/raw-text).
@@ -61,6 +66,7 @@ and [Raw Text](https://maibornwolff.github.io/codecharta/docs/parser/raw-text).
 ![Analysis overview](assets/ccsh_overview.png)
 
 ### Web Studio (Visualisation)
+
 Our Web Studio allows you to visualize your code base in 3D. It takes the results from our Shell and displays them in a city-like map.
 You can move around your code base, zoom in and out, and see the metrics of your code base in a 3D map.
 Files with metrics become buildings where the area, height and color represent different metrics, you can freely choose!
@@ -72,6 +78,7 @@ Take it in your hands and show it to your colleagues.
 ![Visualization overview](assets/visualization_overview.png)
 
 #### Track changes
+
 Compare two maps and see the delta between them. This allows you to see the changes in your code base over time.
 
 ![Screenshot of delta view](assets/delta_view.png)
@@ -82,6 +89,7 @@ You can find our prefered way to get start
 under [Documentation - Quick Start Guide](https://maibornwolff.github.io/codecharta/docs/overview/first-steps).
 
 But if you already know what to do, here is how you install our CCSH.
+
 ```bash
 # Install our codecharta shell globally
 $ npm i -g codecharta-analysis
@@ -91,6 +99,7 @@ $ ccsh - h
 ```
 
 ## Get Involved
+
 Do you have a **bug**, **feature request**, or question? Please open a [a new issue](https://github.com/MaibornWolff/codecharta/issues/new).
 Feedback is always welcome.
 
@@ -98,17 +107,23 @@ Want **more information**? Check out our [documentation](https://maibornwolff.gi
 and [news](https://maibornwolff.github.io/codecharta/news/).
 
 ## Service Offerings
+
 Your company needs professional support to analyse your code base? We offer a service to help you with that.
 
 ### Code Quality Insights
+
 Get a report about your hotspots and areas for improvement. This is currently free of charge.
 
-**Click** the link to learn more: [Code Quality Insights](https://www.maibornwolff.de/en/code-quality-insights?utm_source=github_repo&utm_medium_website&utm_campaign=code_charta_at_github&utm_id=code_charta_at_github)
+**Click** the link to learn
+more: [Code Quality Insights](https://www.maibornwolff.de/en/code-quality-insights?utm_source=github_repo&utm_medium_website&utm_campaign=code_charta_at_github&utm_id=code_charta_at_github)
 
 ### Software Health Check
-A full Software Health Check for your codebase and everything around it. **Click** the link to learn more: [Software Health Check](https://www.maibornwolff.de/service/planungssicherheit-durch-web-application-audit/)
+
+A full Software Health Check for your codebase and everything around it. **Click** the link to learn
+more: [Software Health Check](https://www.maibornwolff.de/service/planungssicherheit-durch-web-application-audit/)
 
 ## Links
+
 - [Documentation](https://maibornwolff.github.io/codecharta/)
 - [Quickstart Guide](https://maibornwolff.github.io/codecharta/docs/overview/first-steps/)
 - [Releases](https://github.com/MaibornWolff/codecharta/releases)
