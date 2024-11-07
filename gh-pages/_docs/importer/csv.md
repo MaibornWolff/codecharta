@@ -1,5 +1,5 @@
 ---
-permalink: /docs/analysis/importer/csv
+permalink: /docs/importer/csv
 title: "CSV Importer"
 ---
 

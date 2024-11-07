@@ -1,5 +1,5 @@
 ---
-permalink: /docs/analysis/importer/sonar
+permalink: /docs/importer/sonar
 title: "Sonar Importer"
 
 toc: true

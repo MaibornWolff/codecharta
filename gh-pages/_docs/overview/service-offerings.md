@@ -14,7 +14,7 @@ We analyze your codebase and give you valuable insights in your code. Here are t
 
 Get a report about your hotspots and areas for improvement. This is currently free of charge.
 
-<b>Click</b> the link to learn more: [Code Quality Insights](https://www.maibornwolff.de/en/code-quality-insights?utm_source=github&utm_medium_website&utm_campaign=code_charta_at_github&utm_id=code_charta_at_github)
+<b>Click</b> the link to learn more: [Code Quality Insights](https://www.maibornwolff.de/en/code-quality-insights?utm_source=github_pages&utm_medium_website&utm_campaign=code_charta_at_github&utm_id=code_charta_at_github)
 
 # Software Health Check
 

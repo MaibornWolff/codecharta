@@ -1,5 +1,5 @@
 ---
-permalink: /docs/analysis/importer/tokei
+permalink: /docs/importer/tokei
 title: "Tokei Importer"
 
 toc: true

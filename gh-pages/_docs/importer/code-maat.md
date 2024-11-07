@@ -1,5 +1,5 @@
 ---
-permalink: /docs/analysis/importer/code-maat
+permalink: /docs/importer/code-maat
 title: "Code Maat Importer"
 
 toc: true

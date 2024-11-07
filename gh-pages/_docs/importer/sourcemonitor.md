@@ -1,5 +1,5 @@
 ---
-permalink: /docs/analysis/importer/sourcemonitor
+permalink: /docs/importer/sourcemonitor
 title: "SourceMonitor Importer"
 ---
 
