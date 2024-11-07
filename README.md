@@ -1,19 +1,4 @@
-<style>
-  .center {
-    display:flex;
-    justify-content:center;
-    flex-direction: column;
-    align-items: center;
-    text-align:center;
-    margin-bottom:10px;
-  }
-  .row-with-gaps {
-    display:flex;
-    gap: 5px;
-  }
-</style>
-
-<div class="center" style="">
+<div style="display:flex;justify-content:center;flex-direction:column;align-items:center;text-align:center;margin-bottom:10px;">
   <a href="https://maibornwolff.github.io/codecharta/visualization/app/index.html?file=codecharta.cc.json.gz&file=codecharta_analysis.cc.json.gz&currentFilesAreSampleFiles=true">
     <img src="https://raw.githubusercontent.com/maibornwolff/codecharta/main/logo/codecharta_logo.svg" alt="CodeCharta logo" width="200"/>
   </a>
@@ -28,7 +13,7 @@
 [comment]: ##################################################################################
 
   </p>
-  <div class="row-with-gaps">
+  <div style="display:flex;gap: 5px;">
     <a href="https://maibornwolff.github.io/codecharta/">Documentation</a> •
     <a href="#features">Features</a> •
     <a href="https://maibornwolff.github.io/codecharta/docs/overview/first-steps">Quickstart</a> •
@@ -36,7 +21,7 @@
     <a href="#links">Links</a>
   </div>
 
-  <div class="row-with-gaps">
+  <div style="display:flex;gap: 5px;">
     <a href="https://github.com/MaibornWolff/codecharta/actions/workflows/release-analysis.yml">
       <img src="https://github.com/MaibornWolff/codecharta/actions/workflows/release-analysis.yml/badge.svg" alt="Release Analysis">
     </a>
