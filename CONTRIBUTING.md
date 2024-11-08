@@ -44,7 +44,7 @@ Examples:
 To unify the appearance of all commit messages we only accept commit messages with this structure:
 
   ```
-  <type>(<scope?>): <subject>(#<issue-nummer?>)
+  <type>(<scope?>): <subject>(#<issue-number?>)
 
   <body-description?>
   ```
@@ -59,7 +59,7 @@ To unify the appearance of all commit messages we only accept commit messages wi
 - Do not end the subject line or the body with a full stop
 - `<type>` can be on of the following:
 - - `[ 'build', 'chore', 'ci', 'docs', 'feat', 'fix', 'perf', 'refactor', 'revert', 'style', 'test' ]`
-- Use a exclamation mark in front of the `:` to indicate a major breaking change
+- Use an exclamation mark in front of the `:` to indicate a major breaking change
 - `<scope>` can be present and contain a list of the following targets:
 - - `[ 'analysis', 'visualization', 'docker', 'gh-pages', 'docs', 'readme', 'stg', 'config' ]`
 - The subject line always uses the **imperative mood** and is able to **complete the following sentence**:
