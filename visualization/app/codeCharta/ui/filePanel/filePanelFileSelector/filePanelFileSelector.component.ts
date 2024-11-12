@@ -9,6 +9,8 @@ import { MatOption } from "@angular/material/core"
 import { RemoveExtensionPipe } from "../../../util/pipes/removeExtension.pipe"
 import { take } from "rxjs"
 import { RemoveOrAddFileButtonComponent } from "./removeOrAddFileButton/removeOrAddFileButton.component"
+import { NgStyle } from "@angular/common"
+import { MatTooltip } from "@angular/material/tooltip"
 
 type FileRemovedInUIState = {
     file: CCFile
@@ -20,7 +22,7 @@ type FileRemovedInUIState = {
     templateUrl: "./filePanelFileSelector.component.html",
     styleUrls: ["./filePanelFileSelector.component.scss"],
     standalone: true,
-    imports: [MatSelect, MatOption, RemoveOrAddFileButtonComponent, RemoveExtensionPipe]
+    imports: [MatSelect, MatOption, RemoveOrAddFileButtonComponent, RemoveExtensionPipe, NgStyle, MatTooltip]
 })
 export class FilePanelFileSelectorComponent implements OnDestroy {
     @ViewChild("fileSelect") select: MatSelect
