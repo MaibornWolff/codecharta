@@ -4,7 +4,7 @@ import { Component, EventEmitter, Input, Output } from "@angular/core"
     selector: "cc-remove-file-button",
     templateUrl: "./removeOrAddFileButton.component.html",
     styleUrls: ["/removeOrAddFileButton.component.scss"],
-    standalone: true,
+    standalone: true
 })
 export class RemoveOrAddFileButtonComponent {
     @Input() filename: string
