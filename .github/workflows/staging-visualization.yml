@@ -39,10 +39,10 @@ jobs:
           npm run build
 
       - name: Create deployment directory
-        run: mkdir -p gh-pages/stg/visualization
+        run: mkdir -p ./gh-pages/stg/visualization
 
       - name: Copy built files
-        run: cp -r visualization/dist/* gh-pages/stg/visualization/
+        run: cp -r ./visualization/dist/* ./gh-pages/stg/visualization/
 
       - name: Deploy Visualization to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4.6.9
