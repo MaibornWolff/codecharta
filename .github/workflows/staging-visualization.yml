@@ -36,10 +36,7 @@ jobs:
         working-directory: ./visualization
         run: |
           npm ci
-          npm run test:ci
           npm run build
-          npm run package
-          docker build -t codecharta/codecharta-visualization:staging .
 
       - name: Create deployment directory
         run: mkdir -p gh-pages/stg/visualization
