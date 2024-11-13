@@ -27,16 +27,16 @@ class MergeFilter(
     @CommandLine.Parameters(arity = "1..*", paramLabel = "FILE or FOLDER", description = ["files to merge"])
     private var sources: Array<File> = arrayOf()
 
-    @CommandLine.Option(names = ["-a", "--add-missing"], description = ["enable adding missing nodes to reference"])
+    @CommandLine.Option(names = ["-a", "--add-missing"], description = ["[Leaf Merging Strategy] enable adding missing nodes to reference"])
     private var addMissingNodes = false
 
-    @CommandLine.Option(names = ["--recursive"], description = ["recursive merging strategy (default)"])
+    @CommandLine.Option(names = ["--recursive"], description = ["Recursive Merging Strategy (default)"])
     private var recursiveStrategySet = true
 
-    @CommandLine.Option(names = ["--leaf"], description = ["leaf merging strategy"])
+    @CommandLine.Option(names = ["--leaf"], description = ["Leaf Merging Strategy"])
     private var leafStrategySet = false
 
-    @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File (or empty for stdout)"])
+    @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File (or empty for stdout; ignored in MIMO mode)"])
     private var outputFile: String? = null
 
     @CommandLine.Option(names = ["-nc", "--not-compressed"], description = ["save uncompressed output File"])
@@ -48,8 +48,14 @@ class MergeFilter(
     @CommandLine.Option(names = ["-f"], description = ["force merge non-overlapping modules at the top-level structure"])
     private var mergeModules = false
 
-    @CommandLine.Option(names = ["-mimo"], description = ["merge multiple files with the same prefix into multiple output files"])
+    @CommandLine.Option(names = ["--mimo"], description = ["merge multiple files with the same prefix into multiple output files"])
     private var mimo = false
+
+    @CommandLine.Option(
+        names = ["-ld", "--levenshtein-distance"],
+        description = ["[MIMO mode] levenshtein distance for name match suggestions (default: 3; 0 for no suggestions)"]
+    )
+    private var levenshteinDistance = 3
 
     override val name = NAME
     override val description = DESCRIPTION

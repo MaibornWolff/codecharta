@@ -3,8 +3,9 @@ package de.maibornwolff.codecharta.filter.mergefilter
 import com.github.kinquirer.KInquirer
 import com.github.kinquirer.components.promptConfirm
 import com.github.kinquirer.components.promptInput
-import de.maibornwolff.codecharta.tools.interactiveparser.InputType
+import com.github.kinquirer.components.promptInputNumber
 import com.github.kinquirer.components.promptList
+import de.maibornwolff.codecharta.tools.interactiveparser.InputType
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import de.maibornwolff.codecharta.util.InputHelper
 import java.io.File
@@ -17,26 +18,50 @@ class ParserDialog {
                 inputFolderName = getInputFileName("cc.json", InputType.FOLDER)
             } while (!InputHelper.isInputValidAndNotNull(arrayOf(File(inputFolderName)), canInputContainFolders = true))
 
-            val outputFileName: String =
-                KInquirer.promptInput(
-                    message = "What is the name of the output file?"
-                )
+            val isMimoMode = KInquirer.promptConfirm(
+                message = "Do you want to use MIMO mode? (multiple inputs multiple outputs)",
+                default = false
+            )
 
-            val isCompressed =
-                (outputFileName.isEmpty()) ||
+            var outputFileName = ""
+            var isCompressed = false
+            var levenshteinDistance = 0
+            if (isMimoMode) {
+                levenshteinDistance = KInquirer.promptInputNumber(
+                    message = "Select Levenshtein Distance for name match suggestions (0 for no suggestions)",
+                    default = "3"
+                ).toInt()
+            } else {
+                outputFileName =
+                    KInquirer.promptInput(
+                        message = "What is the name of the output file?"
+                    )
+
+                isCompressed =
+                    (outputFileName.isEmpty()) ||
                     KInquirer.promptConfirm(
                         message = "Do you want to compress the output file?",
                         default = true
                     )
+            }
 
-            val addMissing: Boolean =
-                KInquirer.promptConfirm(message = "Do you want to add missing nodes to reference?", default = false)
+            val leafMergingStrategy = "Leaf Merging Strategy"
+            val recursiveMergingStrategy = "Recursive Merging Strategy"
+            val strategy = KInquirer.promptList(
+                message = "Which merging strategy should be used?",
+                choices = listOf(recursiveMergingStrategy, leafMergingStrategy),
+                hint = "Default is 'Recursive Merging Strategy'"
+            )
 
-            val recursive: Boolean =
-                KInquirer.promptConfirm(message = "Do you want to use recursive merge strategy?", default = true)
-
-            val leaf: Boolean =
-                KInquirer.promptConfirm(message = "Do you want to use leaf merging strategy?", default = false)
+            var leafFlag = false
+            var addMissing = false
+            if (strategy == leafMergingStrategy) {
+                leafFlag = true
+                addMissing = KInquirer.promptConfirm(
+                    message = "Do you want to add missing nodes to reference?",
+                    default = false
+                )
+            }
 
             val ignoreCase: Boolean =
                 KInquirer.promptConfirm(
@@ -44,14 +69,23 @@ class ParserDialog {
                     default = false
                 )
 
-            return listOf(
+            val basicMergeConfig = listOf(
                 inputFolderName,
-                "--output-file=$outputFileName",
-                "--not-compressed=$isCompressed",
                 "--add-missing=$addMissing",
-                "--recursive=$recursive",
-                "--leaf=$leaf",
+                "--recursive=${!leafFlag}",
+                "--leaf=$leafFlag",
                 "--ignore-case=$ignoreCase"
+            )
+
+            if (isMimoMode) {
+                return basicMergeConfig + listOf(
+                    "--mimo=true",
+                    "--levenshtein-distance=$levenshteinDistance"
+                )
+            }
+            return basicMergeConfig + listOf(
+                "--output-file=$outputFileName",
+                "--not-compressed=$isCompressed"
             )
         }
 
