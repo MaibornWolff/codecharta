@@ -224,7 +224,7 @@ class MergeFilterTest {
         System.setErr(PrintStream(errContent))
         CommandLine(MergeFilter()).execute(
             "src/test/resources/mergeFolderTest/mergeFolderTestMIMO/invalid.cc.json",
-            "-mimo"
+            "--mimo"
         ).toString()
         System.setErr(originalErr)
 
@@ -264,7 +264,7 @@ class MergeFilterTest {
         CommandLine(MergeFilter()).execute(
             "src/test/resources/mergeFolderTest/mergeFolderTestMIMO/module.raw.cc.json",
             "src/test/resources/mergeFolderTest/mergeFolderTestMIMO/invalid.cc.json",
-            "-mimo"
+            "--mimo"
         ).toString()
         System.setErr(originalErr)
 
@@ -277,7 +277,7 @@ class MergeFilterTest {
         CommandLine(MergeFilter()).execute(
             "src/test/resources/mergeFolderTest/file1_no_overlap.cc.json",
             "src/test/resources/mergeFolderTest/file2_no_overlap.cc.json",
-            "-mimo"
+            "--mimo"
         ).toString()
         System.setErr(originalErr)
 
@@ -289,7 +289,7 @@ class MergeFilterTest {
         System.setErr(PrintStream(errContent))
         CommandLine(MergeFilter()).execute(
             "src/test/resources/mergeFolderTest/file1_no_overlap.cc.json",
-            "-mimo"
+            "--mimo"
         ).toString()
         System.setErr(originalErr)
 
@@ -306,7 +306,7 @@ class MergeFilterTest {
         CommandLine(MergeFilter()).execute(
             "src/test/resources/mergeFolderTest/mergeFolderTestMIMO/modul.git.cc.json",
             "src/test/resources/mergeFolderTest/mergeFolderTestMIMO/module.git.cc.json",
-            "-mimo"
+            "--mimo"
         ).toString()
 
         assertThat(errContent.toString()).contains("Skipped correction for modul.")
@@ -324,7 +324,7 @@ class MergeFilterTest {
             CommandLine(MergeFilter()).execute(
                 "src/test/resources/mergeFolderTest/mergeFolderTestMIMO/modul.git.cc.json",
                 "src/test/resources/mergeFolderTest/mergeFolderTestMIMO/module.git.cc.json",
-                "-mimo"
+                "--mimo"
             ).toString()
         } catch (e: StackOverflowError) {
             println("Recursion was aborted to prevent StackOverflow.")
@@ -343,7 +343,7 @@ class MergeFilterTest {
         CommandLine(MergeFilter()).execute(
             "src/test/resources/mergeFolderTest/file1_no_overlap.cc.json",
             "src/test/resources/mergeFolderTest/file2_no_overlap.cc.json",
-            "-mimo"
+            "--mimo"
         ).toString()
 
         assertThat(errContent.toString()).contains("Warning: No top-level overlap for files with prefix file2_no_overlap.")
@@ -374,7 +374,7 @@ class MergeFilterTest {
         CommandLine(MergeFilter()).execute(
             "src/test/resources/mergeFolderTest/file1_no_overlap.cc.json",
             "src/test/resources/mergeFolderTest/mimoInvalidFile.cc.json",
-            "-mimo"
+            "--mimo"
         )
 
         assertThat(errContent.toString()).contains("Input invalid files/folders for MergeFilter, stopping execution...")
@@ -388,7 +388,7 @@ class MergeFilterTest {
         CommandLine(MergeFilter()).execute(
             "src/test/resources/mergeFolderTest/mergeFolderTestMIMO/module.raw.cc.json",
             "src/test/resources/mergeFolderTest/mergeFolderTestMIMO/module.git.cc.json",
-            "-mimo"
+            "--mimo"
         )
 
         assertThat(errContent.toString()).contains("Warning: No top-level overlap for files with prefix module")

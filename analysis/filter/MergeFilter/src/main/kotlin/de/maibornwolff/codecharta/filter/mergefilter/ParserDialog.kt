@@ -31,6 +31,11 @@ class ParserDialog {
                     message = "Select Levenshtein Distance for name match suggestions (0 for no suggestions)",
                     default = "3"
                 ).toInt()
+
+                isCompressed = KInquirer.promptConfirm(
+                    message = "Do you want to compress the output file(s)?",
+                    default = true
+                )
             } else {
                 outputFileName =
                     KInquirer.promptInput(
@@ -74,7 +79,8 @@ class ParserDialog {
                 "--add-missing=$addMissing",
                 "--recursive=${!leafFlag}",
                 "--leaf=$leafFlag",
-                "--ignore-case=$ignoreCase"
+                "--ignore-case=$ignoreCase",
+                "--not-compressed=${!isCompressed}"
             )
 
             if (isMimoMode) {
@@ -84,8 +90,7 @@ class ParserDialog {
                 )
             }
             return basicMergeConfig + listOf(
-                "--output-file=$outputFileName",
-                "--not-compressed=$isCompressed"
+                "--output-file=$outputFileName"
             )
         }
 
