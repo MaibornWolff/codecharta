@@ -38,16 +38,11 @@ jobs:
           npm ci
           npm run build
 
-      - name: Create deployment directory
-        run: mkdir -p ./gh-pages/stg/visualization
-
-      - name: Copy built files
-        run: cp -r ./visualization/dist/* ./gh-pages/stg/visualization/
-
       - name: Deploy Visualization to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4.6.9
         with:
           token: ${{ secrets.DEPLOY_TOKEN }}
           branch: gh-pages
-          folder: gh-pages/stg/visualization
+          folder: visualization/dist/webpack
+          target-folder: gh-pages/stg/visualization
           clean: false
