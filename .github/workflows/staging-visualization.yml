@@ -1,6 +1,7 @@
 name: Staging Environment - Visualization
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - tech/3819/staging-environment
@@ -15,20 +16,12 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup Node.js environment
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: '20'
-
-      - name: Install wine
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y wine-stable
-
-      - name: Install zip
-        run: sudo apt-get install -y zip
 
       - name: Build visualization
         env:
@@ -44,5 +37,5 @@ jobs:
           token: ${{ secrets.DEPLOY_TOKEN }}
           branch: gh-pages
           folder: visualization/dist/webpack
-          target-folder: gh-pages/stg/visualization
+          target-folder: stg/visualization
           clean: false
