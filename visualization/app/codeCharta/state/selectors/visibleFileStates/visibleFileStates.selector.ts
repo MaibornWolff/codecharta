@@ -1,7 +1,7 @@
-import { FileSelectionState, FileState } from "../../../model/files/files"
-import { createSelectorFactory, defaultMemoize } from "@ngrx/store"
-import { filesSelector } from "../../store/files/files.selector"
-import { getVisibleFileStates, isDeltaState } from "../../../model/files/files.helper"
+import {FileSelectionState, FileState} from "../../../model/files/files"
+import {createSelectorFactory, defaultMemoize} from "@ngrx/store"
+import {filesSelector} from "../../store/files/files.selector"
+import {getVisibleFileStates, isDeltaState} from "../../../model/files/files.helper"
 
 function removeMatch(array: string[], target: string): string[] {
     const matchIndex = array.indexOf(target)
