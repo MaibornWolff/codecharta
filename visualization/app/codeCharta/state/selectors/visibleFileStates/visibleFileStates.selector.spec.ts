@@ -69,6 +69,21 @@ describe("_onlyVisibleFilesMatterComparer", () => {
         ]
         expect(onlyVisibleFilesMatterComparer(fileStates1, fileStates2)).toBe(false)
     })
+
+    it("should return false for arrays of different file selection states", () => {
+        const fileStates1 = [{ selectedAs: FileSelectionState.Reference, file: TEST_FILE_DATA }]
+        const fileStates2 = [
+            {
+                selectedAs: FileSelectionState.Partial,
+                file: {
+                    ...TEST_FILE_DATA,
+                    fileMeta: { ...FILE_META, fileName: "second-file" }
+                }
+            },
+            { selectedAs: FileSelectionState.Partial, file: TEST_FILE_DATA }
+        ]
+        expect(onlyVisibleFilesMatterComparer(fileStates1, fileStates2)).toBe(false)
+    })
 })
 
 describe("visibleFileStatesSelector", () => {
