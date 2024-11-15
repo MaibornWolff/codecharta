@@ -1,7 +1,7 @@
 import { TestBed } from "@angular/core/testing"
 import { FileSelectionState } from "../../model/files/files"
 import { referenceFileSelector } from "../../state/selectors/referenceFile/referenceFile.selector"
-import { addFile, removeFile, setDelta, setStandard } from "../../state/store/files/files.actions"
+import { addFile, removeFiles, setDelta, setStandard } from "../../state/store/files/files.actions"
 import { TEST_FILE_DATA, TEST_FILE_DATA_JAVA } from "../../util/dataMocks"
 import { FileSelectionModeService } from "./fileSelectionMode.service"
 import { State, Store, StoreModule } from "@ngrx/store"
@@ -49,7 +49,7 @@ describe("FileSelectionModeService", () => {
         fileSelectionModeService.toggle()
         store.dispatch(setDelta({ referenceFile: TEST_FILE_DATA_JAVA, comparisonFile: TEST_FILE_DATA }))
         fileSelectionModeService.toggle()
-        store.dispatch(removeFile({ fileName: TEST_FILE_DATA_JAVA.fileMeta.fileName }))
+        store.dispatch(removeFiles({ fileNames: [TEST_FILE_DATA_JAVA.fileMeta.fileName] }))
         fileSelectionModeService.toggle()
         expect(referenceFileSelector(state.getValue())).toBe(TEST_FILE_DATA)
     })

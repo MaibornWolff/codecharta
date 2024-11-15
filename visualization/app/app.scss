@@ -38,3 +38,11 @@ button {
     margin: 6px 8px;
     cursor: pointer;
 }
+
+.cdk-overlay-pane {
+    .cc-file-select {
+        min-width: 250px;
+        max-width: 550px;
+        max-height: 300px;
+    }
+}
