@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - tech/3819/staging-environment
+      - main
     paths:
       - 'visualization/**'
 
