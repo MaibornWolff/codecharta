@@ -1,10 +1,12 @@
 package de.maibornwolff.codecharta.filter.mergefilter
 
 import com.github.kinquirer.KInquirer
+import com.github.kinquirer.components.promptCheckboxObject
 import com.github.kinquirer.components.promptConfirm
 import com.github.kinquirer.components.promptInput
 import com.github.kinquirer.components.promptInputNumber
 import com.github.kinquirer.components.promptList
+import com.github.kinquirer.core.Choice
 import de.maibornwolff.codecharta.tools.interactiveparser.InputType
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import de.maibornwolff.codecharta.util.InputHelper
@@ -24,7 +26,7 @@ class ParserDialog {
             )
 
             var outputFileName = ""
-            var isCompressed = false
+            val isCompressed: Boolean
             var levenshteinDistance = 0
             if (isMimoMode) {
                 levenshteinDistance = KInquirer.promptInputNumber(
@@ -80,7 +82,7 @@ class ParserDialog {
                 "--recursive=${!leafFlag}",
                 "--leaf=$leafFlag",
                 "--ignore-case=$ignoreCase",
-                "--not-compressed=${!isCompressed}"
+                "--not-compressed=$isCompressed"
             )
 
             if (isMimoMode) {
@@ -101,12 +103,21 @@ class ParserDialog {
             )
         }
 
-        fun askForFileCorrection(originalPrefix: String, suggestions: List<String>): String? {
-            val choices = suggestions + "Skip"
+        fun askForMimoPrefix(prefixOptions: Set<String>): String {
             return KInquirer.promptList(
-                message = "Did you mean one of these instead of $originalPrefix?",
-                choices = choices
-            ).takeIf { it != "Skip" }
+                message = "Which prefix should be used for the output file?",
+                choices = prefixOptions.toList()
+            )
+        }
+
+        fun requestMimoFileSelection(files: List<File>): List<File> {
+            val choiceList = files.map { Choice(it.name, it) }
+            return KInquirer.promptCheckboxObject(
+                message = "Which files should be merged? [Enter = Confirm, Space = Select]",
+                choices = choiceList,
+                hint = "Not selected files will not get merged",
+                pageSize = 10
+            )
         }
     }
 }

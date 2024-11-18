@@ -94,34 +94,29 @@ class MergeFilter(
         if (mimo) {
             processMimoMerge(sourceFiles, nodeMergerStrategy)
         } else {
-            val rootChildrenNodes = sourceFiles.mapNotNull {
-                val input = it.inputStream()
-                try {
-                    ProjectDeserializer.deserializeProject(input)
-                } catch (e: Exception) {
-                    Logger.warn { "${it.name} is not a valid project file and will be skipped." }
-                    null
-                }
-            }
+            val projects = readProjects(sourceFiles)
+            if (!continueIfIncompatibleProjects(projects)) return null
 
-            if (!mergeModules) {
-                if (!hasTopLevelOverlap(rootChildrenNodes)) {
-                    printOverlapError(rootChildrenNodes)
-
-                    val continueMerge = ParserDialog.askForceMerge()
-
-                    if (!continueMerge) {
-                        Logger.info { "Merge cancelled by the user." }
-                        return null
-                    }
-                }
-            }
-
-            val mergedProject = ProjectMerger(rootChildrenNodes, nodeMergerStrategy).merge()
+            val mergedProject = ProjectMerger(projects, nodeMergerStrategy).merge()
             ProjectSerializer.serializeToFileOrStream(mergedProject, outputFile, output, compress)
         }
 
         return null
+    }
+
+    private fun continueIfIncompatibleProjects(projects: List<Project>): Boolean {
+        if (mergeModules) return true
+        if (!hasTopLevelOverlap(projects)) {
+            printOverlapError(projects)
+
+            val continueMerge = ParserDialog.askForceMerge()
+
+            if (!continueMerge) {
+                Logger.info { "Merge cancelled by the user." }
+                return false
+            }
+        }
+        return true
     }
 
     private fun hasTopLevelOverlap(projects: List<Project>): Boolean {
@@ -146,107 +141,58 @@ class MergeFilter(
     }
 
     private fun processMimoMerge(sourceFiles: List<File>, nodeMergerStrategy: NodeMergerStrategy) {
-        val groupedFiles = sourceFiles.groupBy { it.name.substringBefore('.') }
+        val mutableSourceFiles: MutableList<File> = sourceFiles.toMutableList()
+        val groupedFiles: MutableList<Pair<Boolean, List<File>>> = mutableListOf()
+        while (mutableSourceFiles.isNotEmpty()) {
+            val currentFile = mutableSourceFiles.removeFirst()
+            var exactMatch = true
+            val currentFileList: MutableList<File> = mutableListOf()
 
-        groupedFiles.forEach { (prefix, files) ->
-            if (files.size > 1) {
-                val rootChildrenNodes = files.mapNotNull {
-                    val input = it.inputStream()
-                    try {
-                        ProjectDeserializer.deserializeProject(input)
-                    } catch (e: Exception) {
-                        Logger.warn { "${it.name} is not a valid project file and will be skipped." }
-                        null
-                    }
+            mutableSourceFiles.forEach {
+                val filterResult = mimoGroupFileFilter(currentFile, it)
+                if (filterResult == 0) {
+                    currentFileList.add(it)
+                } else if (filterResult == 1) {
+                    exactMatch = false
+                    currentFileList.add(it)
                 }
+            }
 
-                if (!mergeModules && !hasTopLevelOverlap(rootChildrenNodes)) {
-                    Logger.warn { "Warning: No top-level overlap for files with prefix $prefix." }
-                    return@forEach
-                }
+            mutableSourceFiles.removeAll(currentFileList)
+            currentFileList.add(currentFile)
 
-                val mergedProject = ProjectMerger(rootChildrenNodes, nodeMergerStrategy).merge()
-                val outputFileName = "$prefix.merge.cc.json"
-                ProjectSerializer.serializeToFileOrStream(mergedProject, outputFileName, output, compress)
-
-                Logger.info { "Merged files with prefix $prefix into $outputFileName" }
+            if (currentFileList.size > 1) {
+                groupedFiles.add(Pair(exactMatch, currentFileList))
             } else {
-                Logger.warn { "No matching files found for prefix $prefix." }
-                val availablePrefixes = groupedFiles.keys.toSet()
-                suggestAndHandleLevenshteinCorrections(
-                    sourceFiles,
-                    listOf(prefix),
-                    availablePrefixes,
-                    nodeMergerStrategy
-                )
+                Logger.debug { "Discarded ${currentFile.name} as a potential group" }
             }
         }
-    }
 
-    private fun suggestAndHandleLevenshteinCorrections(
-        sourceFiles: List<File>,
-        prefixesToCheck: List<String>,
-        availablePrefixes: Set<String>,
-        nodeMergerStrategy: NodeMergerStrategy
-    ) {
-        val groupedFiles = sourceFiles.groupBy { it.name.substringBefore('.') }
-        val processedPrefixes = mutableSetOf<String>()
-
-        for (prefix in prefixesToCheck) {
-            if (processedPrefixes.contains(prefix)) continue
-
-            val suggestions = availablePrefixes
-                .filter { it != prefix && it !in processedPrefixes && levenshteinDistance(it, prefix) < 3 }
-
-            if (suggestions.isNotEmpty()) {
-                val selectedPrefix = ParserDialog.askForFileCorrection(prefix, suggestions)
-
-                if (selectedPrefix == null) {
-                    Logger.info { "Skipped correction for $prefix." }
-                    continue
-                }
-
-                if (suggestions.contains(selectedPrefix)) {
-                    Logger.info { "Merging $prefix with other '$selectedPrefix' projects." }
-                    val correctedFiles = (groupedFiles[selectedPrefix] ?: emptyList()) + (groupedFiles[prefix] ?: emptyList())
-                    processedPrefixes.add(selectedPrefix)
-                    processedPrefixes.add(prefix)
-
-                    if (correctedFiles.isNotEmpty()) {
-                        val rootChildrenNodes = correctedFiles.mapNotNull { file ->
-                            file.inputStream().use {
-                                try {
-                                    ProjectDeserializer.deserializeProject(it)
-                                } catch (e: Exception) {
-                                    Logger.warn { "${file.name} is not a valid project file and will be skipped." }
-                                    null
-                                }
-                            }
-                        }
-
-                        if (!mergeModules && !hasTopLevelOverlap(rootChildrenNodes)) {
-                            Logger.warn { "Warning: No top-level overlap for files with prefix $selectedPrefix." }
-                            return
-                        }
-
-                        val mergedProject = ProjectMerger(rootChildrenNodes, nodeMergerStrategy).merge()
-                        val outputFileName = "$selectedPrefix.merge.cc.json"
-                        ProjectSerializer.serializeToFileOrStream(mergedProject, outputFileName, output, compress)
-                    }
-                } else {
-                    Logger.warn {
-                        "The entered project name '$selectedPrefix' is not a valid suggestion. " +
-                            "Please enter a valid project name from the list."
-                    }
-                    suggestAndHandleLevenshteinCorrections(
-                        sourceFiles,
-                        listOf(prefix),
-                        availablePrefixes,
-                        nodeMergerStrategy
-                    )
-                }
+        groupedFiles.forEach { (exactMatch, files) ->
+            val confirmedFileList = if (exactMatch) {
+                files
             } else {
-                Logger.warn { "No matching files found for prefix $prefix, and no close suggestions were found." }
+                ParserDialog.requestMimoFileSelection(files)
+            }
+            if (confirmedFileList.size <= 1) {
+                Logger.info { "Continue with next group, because one or less files were selected" }
+                return@forEach
+            }
+
+            val projects = readProjects(confirmedFileList)
+            if (projects.size <= 1) {
+                Logger.warn { "After deserializing there were one or less projects. Continue with next group" }
+                return@forEach
+            }
+
+            if (!continueIfIncompatibleProjects(projects)) return@forEach
+
+            val mergedProject = ProjectMerger(projects, nodeMergerStrategy).merge()
+            val outputFilePrefix = mimoGroupNameGenerator(confirmedFileList)
+            ProjectSerializer.serializeToFileOrStream(mergedProject, "$outputFilePrefix.merge.cc.json", output, compress)
+            Logger.info {
+                "Merged files with prefix '$outputFilePrefix' into" +
+                    " '$outputFilePrefix.merge.cc.json${if (compress) ".gz" else ""}'"
             }
         }
     }
@@ -276,5 +222,35 @@ class MergeFilter(
         }
 
         return cost[rhsLength]
+    }
+
+    private fun mimoGroupFileFilter(original: File, comparison: File): Int {
+        val ogPrefix = original.name.substringBefore(".")
+        val compPrefix = comparison.name.substringBefore(".")
+        return if (ogPrefix == compPrefix) {
+            0
+        } else if (levenshteinDistance > 0 && levenshteinDistance(ogPrefix, compPrefix) <= levenshteinDistance) {
+            1
+        } else {
+            -1
+        }
+    }
+
+    private fun mimoGroupNameGenerator(files: List<File>): String {
+        val filePrefixes = files.map { it.name.substringBefore(".") }.toSet()
+        if (filePrefixes.size == 1) return filePrefixes.first()
+        return ParserDialog.askForMimoPrefix(filePrefixes)
+    }
+
+    private fun readProjects(files: List<File>): List<Project> {
+        return files.mapNotNull {
+            val input = it.inputStream()
+            try {
+                ProjectDeserializer.deserializeProject(input)
+            } catch (e: Exception) {
+                Logger.warn { "${it.name} is not a valid project file and will be skipped." }
+                null
+            }
+        }
     }
 }
