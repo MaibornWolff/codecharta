@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.filter.mergefilter
 
+import de.maibornwolff.codecharta.filter.mergefilter.mimo.Mimo
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
@@ -94,7 +95,7 @@ class MergeFilter(
         if (mimo) {
             processMimoMerge(sourceFiles, nodeMergerStrategy)
         } else {
-            val projects = readProjects(sourceFiles)
+            val projects = readInputFiles(sourceFiles)
             if (!continueIfIncompatibleProjects(projects)) return null
 
             val mergedProject = ProjectMerger(projects, nodeMergerStrategy).merge()
@@ -141,32 +142,7 @@ class MergeFilter(
     }
 
     private fun processMimoMerge(sourceFiles: List<File>, nodeMergerStrategy: NodeMergerStrategy) {
-        val mutableSourceFiles: MutableList<File> = sourceFiles.toMutableList()
-        val groupedFiles: MutableList<Pair<Boolean, List<File>>> = mutableListOf()
-        while (mutableSourceFiles.isNotEmpty()) {
-            val currentFile = mutableSourceFiles.removeFirst()
-            var exactMatch = true
-            val currentFileList: MutableList<File> = mutableListOf()
-
-            mutableSourceFiles.forEach {
-                val filterResult = mimoGroupFileFilter(currentFile, it)
-                if (filterResult == 0) {
-                    currentFileList.add(it)
-                } else if (filterResult == 1) {
-                    exactMatch = false
-                    currentFileList.add(it)
-                }
-            }
-
-            mutableSourceFiles.removeAll(currentFileList)
-            currentFileList.add(currentFile)
-
-            if (currentFileList.size > 1) {
-                groupedFiles.add(Pair(exactMatch, currentFileList))
-            } else {
-                Logger.debug { "Discarded ${currentFile.name} as a potential group" }
-            }
-        }
+        val groupedFiles: List<Pair<Boolean, List<File>>> = Mimo.generateProjectGroups(sourceFiles, levenshteinDistance)
 
         groupedFiles.forEach { (exactMatch, files) ->
             val confirmedFileList = if (exactMatch) {
@@ -179,7 +155,7 @@ class MergeFilter(
                 return@forEach
             }
 
-            val projects = readProjects(confirmedFileList)
+            val projects = readInputFiles(confirmedFileList)
             if (projects.size <= 1) {
                 Logger.warn { "After deserializing there were one or less projects. Continue with next group" }
                 return@forEach
@@ -188,7 +164,7 @@ class MergeFilter(
             if (!continueIfIncompatibleProjects(projects)) return@forEach
 
             val mergedProject = ProjectMerger(projects, nodeMergerStrategy).merge()
-            val outputFilePrefix = mimoGroupNameGenerator(confirmedFileList)
+            val outputFilePrefix = Mimo.retrieveGroupName(confirmedFileList)
             ProjectSerializer.serializeToFileOrStream(mergedProject, "$outputFilePrefix.merge.cc.json", output, compress)
             Logger.info {
                 "Merged files with prefix '$outputFilePrefix' into" +
@@ -197,52 +173,7 @@ class MergeFilter(
         }
     }
 
-    private fun levenshteinDistance(lhs: CharSequence, rhs: CharSequence): Int {
-        val lhsLength = lhs.length
-        val rhsLength = rhs.length
-
-        var cost = IntArray(rhsLength + 1) { it }
-        var newCost = IntArray(rhsLength + 1)
-
-        for (i in 1..lhsLength) {
-            newCost[0] = i
-
-            for (j in 1..rhsLength) {
-                val match = if (lhs[i - 1] == rhs[j - 1]) 0 else 1
-                val costReplace = cost[j - 1] + match
-                val costInsert = cost[j] + 1
-                val costDelete = newCost[j - 1] + 1
-
-                newCost[j] = minOf(costInsert, costDelete, costReplace)
-            }
-
-            val swap = cost
-            cost = newCost
-            newCost = swap
-        }
-
-        return cost[rhsLength]
-    }
-
-    private fun mimoGroupFileFilter(original: File, comparison: File): Int {
-        val ogPrefix = original.name.substringBefore(".")
-        val compPrefix = comparison.name.substringBefore(".")
-        return if (ogPrefix == compPrefix) {
-            0
-        } else if (levenshteinDistance > 0 && levenshteinDistance(ogPrefix, compPrefix) <= levenshteinDistance) {
-            1
-        } else {
-            -1
-        }
-    }
-
-    private fun mimoGroupNameGenerator(files: List<File>): String {
-        val filePrefixes = files.map { it.name.substringBefore(".") }.toSet()
-        if (filePrefixes.size == 1) return filePrefixes.first()
-        return ParserDialog.askForMimoPrefix(filePrefixes)
-    }
-
-    private fun readProjects(files: List<File>): List<Project> {
+    private fun readInputFiles(files: List<File>): List<Project> {
         return files.mapNotNull {
             val input = it.inputStream()
             try {
