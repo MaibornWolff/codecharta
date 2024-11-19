@@ -27,7 +27,7 @@ class ParserDialogTest {
     fun `should output correct arguments when print structure is selected`() {
         // given
         val inputFolderName = "sampleInputFile"
-        val printLevels = BigDecimal(5)
+        val level = BigDecimal(5)
 
         mockkObject(InputHelper)
         every {
@@ -40,7 +40,7 @@ class ParserDialogTest {
         } returns inputFolderName
         every {
             KInquirer.promptInputNumber(any(), any(), any(), any())
-        } returns printLevels
+        } returns level
         mockkStatic("com.github.kinquirer.components.ListKt")
 
         // when
@@ -58,7 +58,7 @@ class ParserDialogTest {
         // given
         val invalidInputFolderName = ""
         val validInputFolderName = "sampleInputFile"
-        val printLevels = BigDecimal(5)
+        val level = BigDecimal(5)
 
         mockkObject(InputHelper)
         every {
@@ -71,7 +71,7 @@ class ParserDialogTest {
         } returns invalidInputFolderName andThen validInputFolderName
         every {
             KInquirer.promptInputNumber(any(), any(), any(), any())
-        } returns printLevels
+        } returns level
         mockkStatic("com.github.kinquirer.components.ListKt")
 
         // when

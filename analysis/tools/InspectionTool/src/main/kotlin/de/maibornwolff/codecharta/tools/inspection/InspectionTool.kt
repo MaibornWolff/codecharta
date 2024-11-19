@@ -32,7 +32,7 @@ class InspectionTool(
         names = ["-l", "--levels"],
         description = ["prints first x layers of project hierarchy"]
     )
-    private var printLevels: Int = 1
+    private var level: Int = 1
 
     private lateinit var project: Project
 
@@ -52,7 +52,7 @@ class InspectionTool(
     override fun call(): Unit? {
         project = readProject() ?: return null
 
-        ProjectStructurePrinter(project, output).printProjectStructure(printLevels)
+        ProjectStructurePrinter(project, output).printProjectStructure(level)
 
         return null
     }
