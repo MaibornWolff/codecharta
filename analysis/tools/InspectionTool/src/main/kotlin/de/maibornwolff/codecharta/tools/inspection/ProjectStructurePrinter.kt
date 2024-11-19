@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.tools.inspector
+package de.maibornwolff.codecharta.tools.inspection
 
 import de.maibornwolff.codecharta.model.MutableNode
 import de.maibornwolff.codecharta.model.Project

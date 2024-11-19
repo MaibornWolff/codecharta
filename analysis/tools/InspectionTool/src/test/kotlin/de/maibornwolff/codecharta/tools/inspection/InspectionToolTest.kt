@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.tools.inspector
+package de.maibornwolff.codecharta.tools.inspection
 
 import de.maibornwolff.codecharta.util.InputHelper
 import io.mockk.every
@@ -14,7 +14,7 @@ import java.io.File
 import java.io.PrintStream
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class InspectorToolTest {
+class InspectionToolTest {
     private val errContent = ByteArrayOutputStream()
     private val originalErr = System.err
 
@@ -108,7 +108,7 @@ class InspectorToolTest {
         System.setErr(PrintStream(errContent))
 
         // when
-        CommandLine(InspectorTool()).execute("thisDoesNotExist.cc.json").toString()
+        CommandLine(InspectionTool()).execute("thisDoesNotExist.cc.json").toString()
 
         // then
         assertThat(errContent.toString()).contains("Input invalid file for StructureModifier, stopping execution")

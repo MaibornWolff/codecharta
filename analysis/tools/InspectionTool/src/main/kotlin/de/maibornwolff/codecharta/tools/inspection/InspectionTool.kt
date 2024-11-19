@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.tools.inspector
+package de.maibornwolff.codecharta.tools.inspection
 
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
@@ -14,11 +14,11 @@ import java.io.PrintStream
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
-    name = InspectorTool.NAME,
-    description = [InspectorTool.DESCRIPTION],
+    name = InspectionTool.NAME,
+    description = [InspectionTool.DESCRIPTION],
     footer = [CodeChartaConstants.General.GENERIC_FOOTER]
 )
-class InspectorTool(
+class InspectionTool(
     private val input: InputStream = System.`in`,
     private val output: PrintStream = System.out
 ) : Callable<Unit?>, InteractiveParser {
@@ -45,7 +45,7 @@ class InspectorTool(
 
         @JvmStatic
         fun mainWithInOut(input: InputStream, output: PrintStream, args: Array<String>) {
-            CommandLine(InspectorTool(input, output)).execute(*args)
+            CommandLine(InspectionTool(input, output)).execute(*args)
         }
     }
 

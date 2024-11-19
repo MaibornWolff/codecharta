@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.tools.inspector
+package de.maibornwolff.codecharta.tools.inspection
 
 import com.github.kinquirer.KInquirer
 import com.github.kinquirer.components.promptInput

@@ -1,7 +1,7 @@
 dependencies {
     implementation(project(":model"))
     implementation(project(":tools:InteractiveParser"))
-    implementation(project(":tools:InspectorTool"))
+    implementation(project(":tools:InspectionTool"))
 
     implementation(libs.picocli)
     implementation(libs.kotlin.inquirer)

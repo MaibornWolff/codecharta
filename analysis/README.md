@@ -57,7 +57,7 @@ Components that export data from visualisation data to other formats.
 | Name                                             | Description                               |
 | ------------------------------------------------ |-------------------------------------------|
 | [ValidationTool](tools/ValidationTool/README.md) | validates a given json file               |
-| [InspectorTool](tools/InspectorTool/README.md)   | shows information about a given json file |
+| [InspectionTool](tools/InspectionTool/README.md)   | shows information about a given json file |
 
 ## Requirements
 
