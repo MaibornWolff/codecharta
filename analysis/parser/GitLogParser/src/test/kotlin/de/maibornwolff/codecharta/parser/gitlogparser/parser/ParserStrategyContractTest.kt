@@ -3,9 +3,11 @@ package de.maibornwolff.codecharta.parser.gitlogparser.parser
 import de.maibornwolff.codecharta.parser.gitlogparser.input.Commit
 import de.maibornwolff.codecharta.parser.gitlogparser.input.metrics.MetricsFactory
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.data.TemporalUnitLessThanOffset
 import org.junit.jupiter.api.Test
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
+import java.time.temporal.ChronoUnit
 import java.util.stream.Stream
 
 abstract class ParserStrategyContractTest {
@@ -50,7 +52,11 @@ abstract class ParserStrategyContractTest {
     @Test
     fun parseDateFromCommitLines() {
         val commitDate = logParserStrategy.parseDate(fullCommit)
-        assertThat(commitDate).isEqualToIgnoringNanos(OffsetDateTime.of(2017, 5, 9, 19, 57, 57, 0, ZONE_OFFSET))
+
+        val expectedDate = OffsetDateTime.of(2017, 5, 9, 19, 57, 57, 0, ZONE_OFFSET)
+        val precision = TemporalUnitLessThanOffset(1, ChronoUnit.MILLIS)
+
+        assertThat(commitDate).isCloseTo(expectedDate, precision)
     }
 
     @Test

@@ -24,8 +24,7 @@ import java.util.concurrent.Callable
 )
 class StructureModifier(
     private val input: InputStream = System.`in`,
-    private val output: PrintStream = System.out,
-    private val error: PrintStream = System.err
+    private val output: PrintStream = System.out
 ) : Callable<Unit?>, InteractiveParser {
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     var help: Boolean = false
@@ -85,8 +84,8 @@ class StructureModifier(
         const val DESCRIPTION = "changes the structure of cc.json files"
 
         @JvmStatic
-        fun mainWithInOut(input: InputStream, output: PrintStream, error: PrintStream, args: Array<String>) {
-            CommandLine(StructureModifier(input, output, error)).execute(*args)
+        fun mainWithInOut(input: InputStream, output: PrintStream, args: Array<String>) {
+            CommandLine(StructureModifier(input, output)).execute(*args)
         }
     }
 
@@ -140,7 +139,7 @@ class StructureModifier(
             return ProjectDeserializer.deserializeProject(input)
         }
 
-        require (InputHelper.isInputValid(arrayOf(source!!), canInputContainFolders = false)) {
+        require(InputHelper.isInputValid(arrayOf(source!!), canInputContainFolders = false)) {
             "Input invalid file for StructureModifier, stopping execution..."
         }
 
