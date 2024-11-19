@@ -3,6 +3,7 @@ package de.maibornwolff.codecharta.filter.structuremodifier
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
+import de.maibornwolff.codecharta.tools.inspector.ProjectStructurePrinter
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import de.maibornwolff.codecharta.tools.interactiveparser.util.CodeChartaConstants
@@ -139,8 +140,8 @@ class StructureModifier(
             return ProjectDeserializer.deserializeProject(input)
         }
 
-        if (!InputHelper.isInputValid(arrayOf(source!!), canInputContainFolders = false)) {
-            throw IllegalArgumentException("Input invalid file for StructureModifier, stopping execution...")
+        require (InputHelper.isInputValid(arrayOf(source!!), canInputContainFolders = false)) {
+            "Input invalid file for StructureModifier, stopping execution..."
         }
 
         val input = source!!.inputStream()
