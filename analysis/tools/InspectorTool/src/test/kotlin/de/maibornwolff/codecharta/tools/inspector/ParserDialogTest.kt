@@ -58,8 +58,7 @@ class ParserDialogTest {
         // given
         val invalidInputFolderName = ""
         val validInputFolderName = "sampleInputFile"
-        val outputFileName = "output"
-        val nodeToRemove = "/root/src/main/java"
+        val printLevels = BigDecimal(5)
 
         mockkObject(InputHelper)
         every {
@@ -69,7 +68,10 @@ class ParserDialogTest {
         mockkStatic("com.github.kinquirer.components.InputKt")
         every {
             KInquirer.promptInput(any(), any(), any(), any(), any(), any())
-        } returns invalidInputFolderName andThen validInputFolderName andThen nodeToRemove andThen outputFileName
+        } returns invalidInputFolderName andThen validInputFolderName
+        every {
+            KInquirer.promptInputNumber(any(), any(), any(), any())
+        } returns printLevels
         mockkStatic("com.github.kinquirer.components.ListKt")
 
         // when
