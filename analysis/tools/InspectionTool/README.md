@@ -1,6 +1,6 @@
-# Inspector
+# Inspection
 
-The Inspector is used to inspect the structure of .cc.json files. It enables to:
+The Inspection Tool is used to inspect the structure of .cc.json files. It enables to:
 
 - Print the hierarchy of the project: Prints the hierarchy in a human-readable format.
 

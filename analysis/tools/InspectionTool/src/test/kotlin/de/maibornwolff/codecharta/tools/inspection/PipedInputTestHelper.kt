@@ -1,6 +1,6 @@
-package de.maibornwolff.codecharta.tools.inspector
+package de.maibornwolff.codecharta.tools.inspection
 
-import de.maibornwolff.codecharta.tools.inspector.InspectorTool.Companion.mainWithInOut
+import de.maibornwolff.codecharta.tools.inspection.InspectionTool.Companion.mainWithInOut
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.InputStream

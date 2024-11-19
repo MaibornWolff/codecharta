@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.tools.inspector
+package de.maibornwolff.codecharta.tools.inspection
 
 import com.github.kinquirer.KInquirer
 import com.github.kinquirer.components.promptInput
@@ -45,7 +45,7 @@ class ParserDialogTest {
 
         // when
         val parserArguments = ParserDialog.collectParserArgs()
-        val commandLine = CommandLine(InspectorTool())
+        val commandLine = CommandLine(InspectionTool())
         val parseResult = commandLine.parseArgs(*parserArguments.toTypedArray())
 
         // then
@@ -76,7 +76,7 @@ class ParserDialogTest {
 
         // when
         val parserArguments = ParserDialog.collectParserArgs()
-        val commandLine = CommandLine(InspectorTool())
+        val commandLine = CommandLine(InspectionTool())
         val parseResult = commandLine.parseArgs(*parserArguments.toTypedArray())
 
         // then
