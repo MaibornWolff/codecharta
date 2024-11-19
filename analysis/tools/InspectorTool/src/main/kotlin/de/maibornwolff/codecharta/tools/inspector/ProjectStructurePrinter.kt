@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.filter.structuremodifier
+package de.maibornwolff.codecharta.tools.inspector
 
 import de.maibornwolff.codecharta.model.MutableNode
 import de.maibornwolff.codecharta.model.Project

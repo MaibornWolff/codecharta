@@ -1,15 +1,15 @@
 dependencies {
     implementation(project(":model"))
     implementation(project(":tools:InteractiveParser"))
-    implementation(project(":tools:InspectorTool"))
 
+    implementation(libs.boon)
+    implementation(libs.slf4j.simple)
     implementation(libs.picocli)
+    implementation(libs.univocity.parsers)
     implementation(libs.kotlin.inquirer)
 
-    testImplementation(libs.kotlin.test)
-    testImplementation(libs.junit.jupiter.api)
-    testImplementation(libs.assertj.core)
     testImplementation(libs.mockk)
+    testImplementation(libs.assertj.core)
 }
 
 tasks.test {
