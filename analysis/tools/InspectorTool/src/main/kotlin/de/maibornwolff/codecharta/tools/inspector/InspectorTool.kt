@@ -20,8 +20,7 @@ import java.util.concurrent.Callable
 )
 class InspectorTool(
     private val input: InputStream = System.`in`,
-    private val output: PrintStream = System.out,
-    private val error: PrintStream = System.err
+    private val output: PrintStream = System.out
 ) : Callable<Unit?>, InteractiveParser {
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     var help: Boolean = false
@@ -45,8 +44,8 @@ class InspectorTool(
         const val DESCRIPTION = "prints the structure of cc.json files"
 
         @JvmStatic
-        fun mainWithInOut(input: InputStream, output: PrintStream, error: PrintStream, args: Array<String>) {
-            CommandLine(InspectorTool(input, output, error)).execute(*args)
+        fun mainWithInOut(input: InputStream, output: PrintStream, args: Array<String>) {
+            CommandLine(InspectorTool(input, output)).execute(*args)
         }
     }
 

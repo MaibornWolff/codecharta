@@ -53,6 +53,7 @@ class ParserDialogTest {
         Assertions.assertThat(parseResult.matchedOption("levels").getValue<Int>()).isEqualTo(5)
     }
 
+    @Test
     fun `should prompt user twice for input file when first input file is invalid`() {
         // given
         val invalidInputFolderName = ""
