@@ -210,7 +210,8 @@ export class MetricColorRangeDiagramComponent implements OnChanges {
     }
 
     private createGroup(svg: VGElement) {
-        return svg.append("g")
+        return svg
+            .append("g")
             .attr("transform", `translate(${this.frameMarginLeft}, ${this.frameMarginTop})`)
             .attr("display", "flex")
             .attr("justify-content", "center")
