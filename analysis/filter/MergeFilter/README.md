@@ -2,7 +2,7 @@
 
 **Category**: Filter (takes in multiple cc.json files and outputs single cc.json)
 
-Reads the specified files and merges visualisation data.
+Reads the specified files and merges visualization data.
 
 The first file with visualisation data is used as reference for the merging strategy and a base for the output. The visualisation data in the additional json files (given they have the same API version) are fitted into this reference structure according to a specific strategy. Currently, there are two main strategies:
 
@@ -14,16 +14,19 @@ Both strategies will merge the unique list entries for `attributeTypes` and `bla
 
 ## Usage and Parameters
 
-| Parameters                      | Description                              |
-| ------------------------------- | ---------------------------------------- |
-| `FILE`                          | files to merge                           |
-| `-a, --add-missing`             | enable adding missing nodes to reference |
-| `-h, --help`                    | displays help and exits                  |
-| `--ignore-case`                 | ignores case when checking node names    |
-| `--leaf`                        | use leaf merging strategy                |
-| `-nc, --not-compressed`         | save uncompressed output File            |
-| `-o, --outputFile=<outputFile>` | output File (or empty for stdout)        |
-| `--recursive`                   | use recursive merging strategy (default) |
+| Parameters                      | Description                                                          |
+|---------------------------------|----------------------------------------------------------------------|
+| `FILE`                          | files to merge                                                       |
+| `-a, --add-missing`             | [Leaf Merging Strategy] enable adding missing nodes to reference     |
+| `-h, --help`                    | displays help and exits                                              |
+| `--ignore-case`                 | ignores case when checking node names                                |
+| `--leaf`                        | use leaf merging strategy                                            |
+| `-nc, --not-compressed`         | save uncompressed output File                                        |
+| `-o, --outputFile=<outputFile>` | output File (or empty for stdout; ignored in [MIMO mode]))           |
+| `--recursive`                   | use recursive merging strategy (default)                             |
+| `--mimo`                        | merge multiple files with the same prefix into multiple output files |
+| `-ld, --levenshtein-distance`   | [MIMO mode] levenshtein distance for name match suggestions          |
+| `-f`                            | force merge non-overlapping modules at the top-level structure       |
 
 ```
 Usage: ccsh merge [-ah] [--ignore-case] [--leaf] [-nc] [--recursive]
@@ -45,3 +48,15 @@ ccsh merge file1.cc.json ../foo/ -o=test.cc.json
 ```
 
 This last example inputs the folder foo, which will result in all project files in that folder being merged with the reference file (file1.cc.json).
+
+```
+ccsh merge myProjectFolder/ --mimo -ld 0 -f
+```
+
+## MIMO - Multiply Inputs Multiple Outputs
+
+Matches multiple `cc.json` files based on their prefix (e.g. **myProject**.git.cc.json). Tries to match project names with typos and asks which to add to the output.
+If you want to use this in a CI/CD pipeline environment you may find it useful to specify `-ld` and `-f` to not prompt any user input.
+The output file name follows the following schema: `myProject.merge.cc.json`.
+
+> IMPORTANT: Output is always the current working directory.
