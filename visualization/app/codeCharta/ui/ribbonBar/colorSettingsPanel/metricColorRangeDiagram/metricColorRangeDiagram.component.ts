@@ -191,7 +191,7 @@ export class MetricColorRangeDiagramComponent implements OnChanges {
         this.frameMarginTop = 10
         this.frameMarginBottom = 50
         this.frameMarginLeft = 50
-        this.frameMarginRight = 50
+        this.frameMarginRight = 10
         this.framePadding = 5
 
         this.frameHeight = this.svgHeight - this.frameMarginTop - this.frameMarginBottom
