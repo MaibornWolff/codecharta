@@ -26,8 +26,8 @@ export class MetricColorRangeDiagramComponent implements OnChanges {
     private svgWidth: number
     private framePadding: number
     private svgHeight: number
-    private innerDiagramWidth: number
-    private innerDiagramHeight: number
+    private frameWidth: number
+    private frameHeight: number
     private frameMarginTop: number
     private frameMarginBottom: number
     private frameMarginLeft: number
@@ -65,14 +65,14 @@ export class MetricColorRangeDiagramComponent implements OnChanges {
         this.svgWidth = 550
         this.svgHeight = 250
 
-        this.frameMarginTop = 15
+        this.frameMarginTop = 10
         this.frameMarginBottom = 50
         this.frameMarginLeft = 50
         this.frameMarginRight = 50
         this.framePadding = 5
 
-        this.innerDiagramWidth = this.svgWidth - this.frameMarginLeft - this.frameMarginRight - 2 * this.framePadding
-        this.innerDiagramHeight = this.svgHeight - this.frameMarginTop - this.frameMarginBottom - 2 * this.framePadding
+        this.frameHeight = this.svgHeight - this.frameMarginTop - this.frameMarginBottom
+        this.frameWidth = this.svgWidth - this.frameMarginLeft - this.frameMarginRight
 
         this.yLabelYOffset = -42
         this.xLabelYOffset = 20
@@ -94,9 +94,11 @@ export class MetricColorRangeDiagramComponent implements OnChanges {
         g.append("path")
             .attr(
                 "d",
-                `M ${-this.framePadding} ${-this.framePadding}
-                h${this.innerDiagramWidth + 2 * this.framePadding} v${this.innerDiagramHeight + 2 * this.framePadding}
-                h${-this.innerDiagramWidth - 2 * this.framePadding} v${-this.innerDiagramHeight - 2 * this.framePadding}`
+                `M 0 0
+                h${this.frameWidth}
+                v${this.frameHeight}
+                h${-this.frameWidth}
+                v${-this.frameHeight}`
             )
             .attr("fill", "none")
             .attr("stroke", "#888")
@@ -106,14 +108,14 @@ export class MetricColorRangeDiagramComponent implements OnChanges {
     private drawAxes(g: GElement, x: Scale, y: Scale) {
         g.append("g")
             .attr("id", "axis-x")
-            .attr("transform", `translate(0,${this.innerDiagramHeight + this.framePadding})`)
+            .attr("transform", `translate(${this.framePadding},${this.frameHeight})`)
             .call(d3.axisBottom(x).ticks(5))
             .attr("font-size", "13px")
             .attr("color", "#888")
 
         g.append("g")
             .attr("id", "axis-y")
-            .attr("transform", `translate(${-this.framePadding}, 0)`)
+            .attr("transform", `translate(0,${this.framePadding})`)
             .call(
                 d3
                     .axisLeft(y)
@@ -134,7 +136,7 @@ export class MetricColorRangeDiagramComponent implements OnChanges {
         return d3
             .scaleLinear()
             .domain(d3.extent(this.percentileRanks, d => d["x"] as number))
-            .range([0, this.innerDiagramWidth])
+            .range([0, this.frameWidth - 2 * this.framePadding])
     }
 
     private createYScale() {
@@ -144,12 +146,12 @@ export class MetricColorRangeDiagramComponent implements OnChanges {
         return d3
             .scaleLinear()
             .domain(this.isAttributeDirectionInversed ? domainInversed : domainStandard)
-            .range([this.innerDiagramHeight, 0])
+            .range([this.frameHeight - 2 * this.framePadding, 0])
     }
 
     private drawLabels(g: GElement) {
-        const pathStartY = -this.framePadding
-        const pathHeight = this.innerDiagramHeight + 2 * this.framePadding
+        const pathStartY = 0
+        const pathHeight = this.frameHeight
         const verticalCenter = pathStartY + pathHeight / 2
 
         g.append("text")
@@ -166,8 +168,8 @@ export class MetricColorRangeDiagramComponent implements OnChanges {
             .attr("id", "x-label")
             .attr("class", "x label")
             .attr("text-anchor", "middle")
-            .attr("x", this.innerDiagramWidth / 2)
-            .attr("y", this.innerDiagramHeight + this.frameMarginTop + 2 * this.framePadding + this.xLabelYOffset)
+            .attr("x", (this.frameWidth - this.framePadding) / 2)
+            .attr("y", this.frameHeight + this.frameMarginTop + this.xLabelYOffset)
             .attr("fill", "#888")
             .text(`Quantiles (% of ${this.colorMetric})`)
     }
@@ -186,28 +188,25 @@ export class MetricColorRangeDiagramComponent implements OnChanges {
 
         g.append("rect")
             .attr("class", "left-area")
-            .attr("x", 0)
-            .attr("y", -this.framePadding)
+            .attr("x", this.framePadding)
             .attr("width", leftValue)
-            .attr("height", this.innerDiagramHeight + 2 * this.framePadding)
+            .attr("height", this.frameHeight)
             .style("fill", this.isAttributeDirectionInversed ? this.rightColor : this.leftColor)
             .style("fill-opacity", "0.3")
 
         g.append("rect")
             .attr("class", "middle-area")
-            .attr("x", leftValue)
-            .attr("y", -this.framePadding)
+            .attr("x", leftValue + this.framePadding)
             .attr("width", rightValue - leftValue)
-            .attr("height", this.innerDiagramHeight + 2 * this.framePadding)
+            .attr("height", this.frameHeight)
             .style("fill", this.middleColor)
             .style("fill-opacity", "0.3")
 
         g.append("rect")
             .attr("class", "right-area")
-            .attr("x", rightValue)
-            .attr("y", -this.framePadding)
-            .attr("width", this.innerDiagramWidth - rightValue)
-            .attr("height", this.innerDiagramHeight + 2 * this.framePadding)
+            .attr("x", rightValue + this.framePadding)
+            .attr("width", this.frameWidth - 2 * this.framePadding - rightValue)
+            .attr("height", this.frameHeight)
             .style("fill", this.isAttributeDirectionInversed ? this.leftColor : this.rightColor)
             .style("fill-opacity", "0.3")
     }
@@ -227,6 +226,7 @@ export class MetricColorRangeDiagramComponent implements OnChanges {
                     .x(d => this.createXScale()(d["x"]))
                     .y(d => this.createYScale()(d["y"]))
             )
+            .attr("transform", `translate(${this.framePadding}, ${this.framePadding})`)
     }
 
     private calculatePercentileRanks(array: number[]) {
