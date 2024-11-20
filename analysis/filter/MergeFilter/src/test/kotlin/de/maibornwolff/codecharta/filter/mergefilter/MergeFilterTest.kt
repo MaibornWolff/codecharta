@@ -1,10 +1,15 @@
 package de.maibornwolff.codecharta.filter.mergefilter
 
+import com.github.kinquirer.KInquirer
+import com.github.kinquirer.components.promptCheckboxObject
+import com.github.kinquirer.components.promptList
+import com.github.kinquirer.core.Choice
 import de.maibornwolff.codecharta.filter.mergefilter.MergeFilter.Companion.main
 import de.maibornwolff.codecharta.tools.interactiveparser.InputType
 import de.maibornwolff.codecharta.util.InputHelper
 import io.mockk.every
 import io.mockk.mockkObject
+import io.mockk.mockkStatic
 import io.mockk.unmockkAll
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
@@ -433,8 +438,13 @@ class MergeFilterTest {
                 val prefixTestFile3 = "testProjectX"
 
                 mockkObject(ParserDialog)
-                every { ParserDialog.requestMimoFileSelection(any()) } returns listOf(testFile1, testFile2, testFile3)
-                every { ParserDialog.askForMimoPrefix(any()) } returns prefixTestFile3
+                mockkStatic("com.github.kinquirer.components.CheckboxKt", "com.github.kinquirer.components.ListKt")
+                every {
+                    KInquirer.promptList(any(), any(), any(), any(), any())
+                } returns prefixTestFile3
+                every {
+                    KInquirer.promptCheckboxObject(any(), any<List<Choice<File>>>(), any(),any(), any(), any(),any())
+                } returns listOf(testFile1, testFile2, testFile3)
 
                 System.setErr(PrintStream(errContent))
                 CommandLine(MergeFilter()).execute(
