@@ -443,7 +443,7 @@ class MergeFilterTest {
                     KInquirer.promptList(any(), any(), any(), any(), any())
                 } returns prefixTestFile3
                 every {
-                    KInquirer.promptCheckboxObject(any(), any<List<Choice<File>>>(), any(),any(), any(), any(),any())
+                    KInquirer.promptCheckboxObject(any(), any<List<Choice<File>>>(), any(), any(), any(), any(), any())
                 } returns listOf(testFile1, testFile2, testFile3)
 
                 System.setErr(PrintStream(errContent))
