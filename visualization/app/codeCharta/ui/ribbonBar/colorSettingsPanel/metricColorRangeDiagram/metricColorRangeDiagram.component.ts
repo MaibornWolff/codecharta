@@ -210,7 +210,10 @@ export class MetricColorRangeDiagramComponent implements OnChanges {
     }
 
     private createGroup(svg: VGElement) {
-        return svg.append("g").attr("transform", `translate(${this.frameMarginLeft}, ${this.frameMarginTop})`)
+        return svg.append("g")
+            .attr("transform", `translate(${this.frameMarginLeft}, ${this.frameMarginTop})`)
+            .attr("display", "flex")
+            .attr("justify-content", "center")
     }
 
     private drawFrame(g: GElement) {
@@ -276,10 +279,10 @@ export class MetricColorRangeDiagramComponent implements OnChanges {
         g.append("text")
             .attr("id", "y-label")
             .attr("class", "y label")
+            .attr("text-anchor", "middle")
             .attr("transform", `rotate(-90)`)
             .attr("x", -this.frameHeight / 2 - this.frameMarginTop)
             .attr("y", this.frameMarginLeft - this.yLabelXOffset)
-            .attr("text-anchor", "middle")
             .attr("fill", "#888")
             .text(`${this.colorMetric}`)
 
@@ -287,7 +290,7 @@ export class MetricColorRangeDiagramComponent implements OnChanges {
             .attr("id", "x-label")
             .attr("class", "x label")
             .attr("text-anchor", "middle")
-            .attr("x", this.frameWidth / 2 + this.frameMarginLeft)
+            .attr("x", this.frameWidth / 2)
             .attr("y", this.frameHeight + this.frameMarginTop + this.xLabelYOffset)
             .attr("fill", "#888")
             .text(`Quantiles (% of ${this.colorMetric})`)
