@@ -14,19 +14,7 @@ cc-ribbon-bar-panel {
     &.ribbon-bar-panel-wide {
         flex-grow: 1;
     }
-}
 
-mat-card.color-height-metric-link {
-    display: flex;
-    justify-content: center;
-    flex-grow: 0;
-    padding: 0;
-    height: 46px;
-    border-radius: 0;
-    border-top: 1px solid #cdcdcd;
-}
-
-cc-ribbon-bar-panel {
     cc-ribbon-bar-panel-settings {
         font-size: 0.9em;
         left: 0;
@@ -37,6 +25,16 @@ cc-ribbon-bar-panel {
         left: auto;
         right: 0;
     }
+}
+
+mat-card.color-height-metric-link {
+    display: flex;
+    justify-content: center;
+    flex-grow: 0;
+    padding: 0;
+    height: 46px;
+    border-radius: 0;
+    border-top: 1px solid #cdcdcd;
 }
 
 .color-settings-header {
