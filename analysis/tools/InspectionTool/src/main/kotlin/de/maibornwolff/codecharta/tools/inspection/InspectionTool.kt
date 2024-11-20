@@ -29,7 +29,7 @@ class InspectionTool(
     private var source: File? = null
 
     @CommandLine.Option(
-        names = ["-l", "--levels"],
+        names = ["-l", "--levels", "-d", "--depth"],
         description = ["prints first x levels of project hierarchy"]
     )
     private var level: Int = 1
