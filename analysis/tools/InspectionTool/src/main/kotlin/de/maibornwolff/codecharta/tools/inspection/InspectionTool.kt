@@ -30,7 +30,7 @@ class InspectionTool(
 
     @CommandLine.Option(
         names = ["-l", "--levels"],
-        description = ["prints first x layers of project hierarchy"]
+        description = ["prints first x levels of project hierarchy"]
     )
     private var level: Int = 1
 
@@ -63,7 +63,7 @@ class InspectionTool(
         }
 
         require(InputHelper.isInputValid(arrayOf(source!!), canInputContainFolders = false)) {
-            "Input invalid file for StructureModifier, stopping execution..."
+            "Input invalid file for InspectionTool, stopping execution..."
         }
 
         val input = source!!.inputStream()
