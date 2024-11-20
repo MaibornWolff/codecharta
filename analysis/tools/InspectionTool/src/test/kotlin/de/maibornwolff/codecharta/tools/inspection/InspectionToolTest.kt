@@ -111,7 +111,7 @@ class InspectionToolTest {
         CommandLine(InspectionTool()).execute("thisDoesNotExist.cc.json").toString()
 
         // then
-        assertThat(errContent.toString()).contains("Input invalid file for StructureModifier, stopping execution")
+        assertThat(errContent.toString()).contains("Input invalid file for InspectionTool, stopping execution")
 
         // clean up
         System.setErr(originalErr)
