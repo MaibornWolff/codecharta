@@ -59,6 +59,129 @@ export class MetricColorRangeDiagramComponent implements OnChanges {
         this.drawLabels(group)
         this.drawAreas(group, x)
         this.drawLine(group)
+        this.addCross(svg, x, y)
+    }
+
+    private addCross(svg: VGElement, x: Scale, y: Scale) {
+        const tooltip: d3.Selection<SVGTextElement, unknown, HTMLElement, any> = svg
+            .append("text")
+            .attr("id", "tooltip")
+            .attr("fill", "#000")
+            .attr("font-size", "13px")
+            .style("display", "none")
+
+        const dashedVerticalLine: d3.Selection<SVGLineElement, unknown, HTMLElement, any> = svg
+            .append("line")
+            .attr("id", "dashed-vertical-line")
+            .attr("stroke", "#000")
+            .attr("stroke-width", "1px")
+            .attr("stroke-dasharray", "4")
+            .style("display", "none")
+
+        const straightVerticalLine: d3.Selection<SVGLineElement, unknown, HTMLElement, any> = svg
+            .append("line")
+            .attr("id", "straight-vertical-line")
+            .attr("stroke", "#000")
+            .attr("stroke-width", "1px")
+            .style("display", "none")
+
+        const horizontalLine: d3.Selection<SVGLineElement, unknown, HTMLElement, any> = svg
+            .append("line")
+            .attr("id", "horizontal-line")
+            .attr("stroke", "#000")
+            .attr("stroke-width", "1px")
+            .style("display", "none")
+
+        const rectangle: d3.Selection<SVGRectElement, unknown, HTMLElement, any> = svg
+            .append("rect")
+            .attr("x", this.frameMarginLeft)
+            .attr("width", this.frameWidth)
+            .attr("height", this.svgHeight)
+            .attr("fill", "none")
+            .attr("pointer-events", "all")
+
+        this.addOnMouseMoveEvent(rectangle, x, y, tooltip, dashedVerticalLine, straightVerticalLine, horizontalLine)
+        this.addOnMouseOutEvent(rectangle, tooltip, dashedVerticalLine, straightVerticalLine, horizontalLine)
+    }
+
+    private addOnMouseMoveEvent(
+        rectangle: d3.Selection<SVGRectElement, unknown, HTMLElement, any>,
+        x: Scale,
+        y: Scale,
+        tooltip: d3.Selection<SVGTextElement, unknown, HTMLElement, any>,
+        dashedVerticalLine: d3.Selection<SVGLineElement, unknown, HTMLElement, any>,
+        straightVerticalLine: d3.Selection<SVGLineElement, unknown, HTMLElement, any>,
+        horizontalLine: d3.Selection<SVGLineElement, unknown, HTMLElement, any>
+    ) {
+        rectangle.on("mousemove", event => {
+            const mouseX = d3.pointer(event)[0]
+            let xValue = x.invert(mouseX - this.frameMarginLeft - this.framePadding)
+            xValue = Math.max(0, Math.min(xValue, 100))
+            const yValue = this.getYValueFromX(xValue)
+
+            const yLinePosition = this.calculateYPosition(yValue, y)
+
+            const xLabelPosition = xValue > 50 ? mouseX - 80 : mouseX + 10
+            const yLabelPosition =
+                yLinePosition < this.frameHeight / 2 + this.frameMarginTop + this.framePadding ? yLinePosition + 20 : yLinePosition - 20
+
+            tooltip
+                .style("display", "block")
+                .attr("x", xLabelPosition)
+                .attr("y", yLabelPosition)
+                .text(`Quantile: ${Math.round(xValue)}`)
+                .append("tspan")
+                .attr("x", xLabelPosition)
+                .attr("dy", "1.2em")
+                .text(`Value: ${yValue}`)
+
+            dashedVerticalLine
+                .attr("x1", mouseX)
+                .attr("x2", mouseX)
+                .attr("y1", this.frameMarginTop)
+                .attr("y2", this.frameMarginTop + this.frameHeight)
+                .style("display", "block")
+
+            straightVerticalLine
+                .attr("x1", mouseX)
+                .attr("x2", mouseX)
+                .attr("y1", yLinePosition)
+                .attr("y2", this.frameMarginTop + this.frameHeight)
+                .style("display", "block")
+
+            horizontalLine
+                .attr("x1", this.frameMarginLeft)
+                .attr("x2", mouseX)
+                .attr("y1", yLinePosition)
+                .attr("y2", yLinePosition)
+                .style("display", "block")
+        })
+    }
+
+    private addOnMouseOutEvent(
+        rectangle: d3.Selection<SVGRectElement, unknown, HTMLElement, any>,
+        tooltip: d3.Selection<SVGTextElement, unknown, HTMLElement, any>,
+        dashedVerticalLine: d3.Selection<SVGLineElement, unknown, HTMLElement, any>,
+        straightVerticalLine: d3.Selection<SVGLineElement, unknown, HTMLElement, any>,
+        horizontalLine: d3.Selection<SVGLineElement, unknown, HTMLElement, any>
+    ) {
+        rectangle.on("mouseout", () => {
+            tooltip.style("display", "none")
+            dashedVerticalLine.style("display", "none")
+            straightVerticalLine.style("display", "none")
+            horizontalLine.style("display", "none")
+        })
+    }
+
+    private calculateYPosition(yValue: number, yScale: Scale): number {
+        return yScale(yValue) + this.frameMarginTop + this.framePadding
+    }
+
+    private getYValueFromX(xValue: number): number {
+        const closestPoint = this.percentileRanks.reduce((prev, curr) => {
+            return curr.x - xValue >= 0 && Math.abs(curr.x - xValue) < Math.abs(prev.x - xValue) ? curr : prev
+        })
+        return closestPoint.y
     }
 
     private initializeDiagramDimesions() {
