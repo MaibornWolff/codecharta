@@ -83,7 +83,7 @@ class MergeFilter(
         val nodeMergerStrategy = when {
             leafStrategySet -> LeafNodeMergerStrategy(addMissingNodes, ignoreCase)
             recursiveStrategySet && !leafStrategySet -> RecursiveNodeMergerStrategy(ignoreCase)
-            else -> throw IllegalArgumentException("Only one merging strategy must be set")
+            else -> throw IllegalArgumentException("At least one merging strategy must be set")
         }
 
         if (!InputHelper.isInputValid(sources, canInputContainFolders = true)) {

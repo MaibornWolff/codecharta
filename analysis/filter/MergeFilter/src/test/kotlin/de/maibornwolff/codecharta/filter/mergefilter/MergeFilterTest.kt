@@ -8,8 +8,9 @@ import io.mockk.mockkObject
 import io.mockk.unmockkAll
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 import picocli.CommandLine
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -220,177 +221,266 @@ class MergeFilterTest {
     }
 
     @Test
-    fun `should warn about invalid files during mimo merge`() {
-        System.setErr(PrintStream(errContent))
-        CommandLine(MergeFilter()).execute(
-            "src/test/resources/mergeFolderTest/mergeFolderTestMIMO/invalid.cc.json",
-            "--mimo"
-        ).toString()
-        System.setErr(originalErr)
-
-        assertThat(errContent.toString()).contains("Input invalid files/folders for MergeFilter, stopping execution...")
-    }
-
-    @Test
-    fun `should calculate levenshtein distance correctly`() {
-        val mergeFilter = MergeFilter()
-        val method = MergeFilter::class.java.getDeclaredMethod("levenshteinDistance", CharSequence::class.java, CharSequence::class.java)
-        method.isAccessible = true
-        val distance = method.invoke(mergeFilter, "kitten", "sitting") as Int
-
-        assertThat(distance).isEqualTo(3)
-    }
-
-    @Test
     fun `should throw exception when both merging strategies are set`() {
-        val mergeFilter = MergeFilter()
-
-        val leafStrategyField = MergeFilter::class.java.getDeclaredField("leafStrategySet")
-        leafStrategyField.isAccessible = true
-        leafStrategyField.set(mergeFilter, true)
-
-        val recursiveStrategyField = MergeFilter::class.java.getDeclaredField("recursiveStrategySet")
-        recursiveStrategyField.isAccessible = true
-        recursiveStrategyField.set(mergeFilter, true)
-
-        assertThrows<IllegalArgumentException> {
-            mergeFilter.call()
-        }
-    }
-
-    @Test
-    fun `should skip invalid project files during mimo merge`() {
         System.setErr(PrintStream(errContent))
         CommandLine(MergeFilter()).execute(
-            "src/test/resources/mergeFolderTest/mergeFolderTestMIMO/module.raw.cc.json",
-            "src/test/resources/mergeFolderTest/mergeFolderTestMIMO/invalid.cc.json",
-            "--mimo"
-        ).toString()
+            "src/test/resources/test.json",
+            "src/test/resources/test2.json",
+            "--leaf=false",
+            "--recursive=false"
+        )
+
         System.setErr(originalErr)
 
-        assertThat(errContent.toString()).contains("Input invalid files/folders for MergeFilter, stopping execution...")
+        assertThat(errContent.toString()).contains("At least one merging strategy must be set")
     }
 
-    @Test
-    fun `should warn if no top-level overlap for mimo merged files and skip merge`() {
-        System.setErr(PrintStream(errContent))
-        CommandLine(MergeFilter()).execute(
-            "src/test/resources/mergeFolderTest/file1_no_overlap.cc.json",
-            "src/test/resources/mergeFolderTest/file2_no_overlap.cc.json",
-            "--mimo"
-        ).toString()
-        System.setErr(originalErr)
+    @Nested
+    @DisplayName("MimoModeTests")
+    inner class MimoModeTest {
+        val testFile1Path = "src/test/resources/test.json"
+        val testProjectPathA = "src/test/resources/mimoFileSelection/testProject.alpha.cc.json"
+        val testProjectPathB = "src/test/resources/mimoFileSelection/testProject.beta.cc.json"
+        val testProjectPathC = "src/test/resources/mimoFileSelection/testProjectX.notIncl.cc.json"
+        val invalidTestProjectPath = "src/test/resources/testProject.invalid.cc.json"
+        val testProjectFolder = "src/test/resources/mimoFileSelection"
 
-        assertThat(errContent.toString()).contains("No matching files found for prefix file1_no_overlap")
-    }
+        val testNoOverlapPath1 = "src/test/resources/mimoOverlap/prefix.file1_no_overlap.cc.json"
+        val testNoOverlapPath2 = "src/test/resources/mimoOverlap/prefix.file2_no_overlap.cc.json"
 
-    @Test
-    fun `should handle single file without matching prefix gracefully in mimo mode`() {
-        System.setErr(PrintStream(errContent))
-        CommandLine(MergeFilter()).execute(
-            "src/test/resources/mergeFolderTest/file1_no_overlap.cc.json",
-            "--mimo"
-        ).toString()
-        System.setErr(originalErr)
-
-        assertThat(errContent.toString()).contains("No matching files found for prefix file1_no_overlap")
-    }
-
-    @Test
-    fun `should skip correction when user declines suggestion`() {
-        mockkObject(ParserDialog)
-        every { ParserDialog.askForFileCorrection("modul", listOf("module")) } returns null
-
-        System.setOut(PrintStream(outContent))
-        System.setErr(PrintStream(errContent))
-        CommandLine(MergeFilter()).execute(
-            "src/test/resources/mergeFolderTest/mergeFolderTestMIMO/modul.git.cc.json",
-            "src/test/resources/mergeFolderTest/mergeFolderTestMIMO/module.git.cc.json",
-            "--mimo"
-        ).toString()
-
-        assertThat(errContent.toString()).contains("Skipped correction for modul.")
-    }
-
-    @Test
-    fun `should warn when user selects invalid suggestion`() {
-        mockkObject(ParserDialog)
-        every { ParserDialog.askForFileCorrection("modul", listOf("module")) } returns "invalid_selection"
-
-        System.setOut(PrintStream(outContent))
-        System.setErr(PrintStream(errContent))
-
-        try {
+        @Test
+        fun `should warn about invalid files during mimo merge and abort`() {
+            System.setErr(PrintStream(errContent))
             CommandLine(MergeFilter()).execute(
-                "src/test/resources/mergeFolderTest/mergeFolderTestMIMO/modul.git.cc.json",
-                "src/test/resources/mergeFolderTest/mergeFolderTestMIMO/module.git.cc.json",
+                "src/test/resources/invalid.cc.json",
                 "--mimo"
             ).toString()
-        } catch (e: StackOverflowError) {
-            println("Recursion was aborted to prevent StackOverflow.")
+            System.setErr(originalErr)
+
+            assertThat(errContent.toString()).contains("Input invalid files/folders for MergeFilter, stopping execution...")
         }
 
-        assertThat(errContent.toString()).contains("The entered project name 'invalid_selection' is not a valid suggestion.")
-    }
+        @Test
+        fun `should handle single file gracefully in mimo mode`() {
+            System.setErr(PrintStream(errContent))
+            CommandLine(MergeFilter()).execute(
+                testFile1Path,
+                "--mimo"
+            ).toString()
+            System.setErr(originalErr)
 
-    @Test
-    fun `should warn when no top-level overlap after accepting suggestion`() {
-        mockkObject(ParserDialog)
-        every { ParserDialog.askForFileCorrection("file1_no_overlap", listOf("file2_no_overlap")) } returns "file2_no_overlap"
-
-        System.setOut(PrintStream(outContent))
-        System.setErr(PrintStream(errContent))
-        CommandLine(MergeFilter()).execute(
-            "src/test/resources/mergeFolderTest/file1_no_overlap.cc.json",
-            "src/test/resources/mergeFolderTest/file2_no_overlap.cc.json",
-            "--mimo"
-        ).toString()
-
-        assertThat(errContent.toString()).contains("Warning: No top-level overlap for files with prefix file2_no_overlap.")
-    }
-
-    @Test
-    fun `should throw exception when no merging strategy is set`() {
-        val mergeFilter = MergeFilter()
-
-        val leafStrategyField = MergeFilter::class.java.getDeclaredField("leafStrategySet")
-        leafStrategyField.isAccessible = true
-        leafStrategyField.set(mergeFilter, false)
-
-        val recursiveStrategyField = MergeFilter::class.java.getDeclaredField("recursiveStrategySet")
-        recursiveStrategyField.isAccessible = true
-        recursiveStrategyField.set(mergeFilter, false)
-
-        assertThrows<IllegalArgumentException> {
-            mergeFilter.call()
+            assertThat(errContent.toString()).contains("Discarded 'test' of test.json as a potential group")
         }
-    }
 
-    @Test
-    fun `should skip invalid file and continue mimo merge with other valid files`() {
-        val errContent = ByteArrayOutputStream()
-        System.setErr(PrintStream(errContent))
+        @Nested
+        @DisplayName("FileSelection")
+        inner class MimoFileSelection {
+            @Test
+            fun `should merge two selected files if two of three are selected`() {
+                val testFile1 = File(testProjectPathA)
+                val testFile2 = File(testProjectPathB)
 
-        CommandLine(MergeFilter()).execute(
-            "src/test/resources/mergeFolderTest/file1_no_overlap.cc.json",
-            "src/test/resources/mergeFolderTest/mimoInvalidFile.cc.json",
-            "--mimo"
-        )
+                mockkObject(ParserDialog)
+                every { ParserDialog.requestMimoFileSelection(any()) } returns listOf(testFile1, testFile2)
 
-        assertThat(errContent.toString()).contains("Input invalid files/folders for MergeFilter, stopping execution...")
-    }
+                System.setOut(PrintStream(outContent))
+                System.setErr(PrintStream(errContent))
+                CommandLine(MergeFilter()).execute(
+                    testProjectFolder,
+                    "--mimo",
+                    "-nc"
+                ).toString()
+                System.setOut(originalOut)
+                System.setErr(originalErr)
 
-    @Test
-    fun `should warn and skip merging files without top-level overlap when mergeModules is false`() {
-        val errContent = ByteArrayOutputStream()
-        System.setErr(PrintStream(errContent))
+                val outputFileName = "testProject.merge.cc.json"
+                val outputFile = File(outputFileName)
+                val outputBufferedReader = outputFile.bufferedReader()
+                val outputFileContent = outputBufferedReader.readText()
 
-        CommandLine(MergeFilter()).execute(
-            "src/test/resources/mergeFolderTest/mergeFolderTestMIMO/module.raw.cc.json",
-            "src/test/resources/mergeFolderTest/mergeFolderTestMIMO/module.git.cc.json",
-            "--mimo"
-        )
+                assertThat(errContent.toString()).contains("Merged files with prefix 'testProject' into '$outputFileName'")
+                assertThat(outputFileContent).doesNotContain("ThirdTestAttribute")
+                assertThat(outputFileContent).contains("Lines*")
+                assertThat(outputFileContent).contains("AdditionalAttributeForTest")
 
-        assertThat(errContent.toString()).contains("Warning: No top-level overlap for files with prefix module")
+                outputBufferedReader.close()
+                outputFile.deleteOnExit()
+            }
+
+            @Test
+            fun `should stop execution if only one file is selected`() {
+                val testFile1 = File(testProjectPathA)
+
+                mockkObject(ParserDialog)
+                every { ParserDialog.requestMimoFileSelection(any()) } returns listOf(testFile1)
+
+                System.setOut(PrintStream(outContent))
+                System.setErr(PrintStream(errContent))
+                CommandLine(MergeFilter()).execute(
+                    testProjectFolder,
+                    "--mimo",
+                    "-nc"
+                ).toString()
+                System.setOut(originalOut)
+                System.setErr(originalErr)
+
+                assertThat(errContent.toString()).contains("Continue with next group, because one or less files were selected")
+            }
+
+            @Test
+            fun `should warn if only one file valid after deserializing`() {
+                val invalidTestFile = File(invalidTestProjectPath)
+
+                System.setOut(PrintStream(outContent))
+                System.setErr(PrintStream(errContent))
+                CommandLine(MergeFilter()).execute(
+                    testProjectPathA,
+                    invalidTestProjectPath,
+                    "--mimo",
+                    "-nc"
+                ).toString()
+                System.setOut(originalOut)
+                System.setErr(originalErr)
+
+                assertThat(errContent.toString()).contains(
+                    "${invalidTestFile.name} is not a valid project file and will be skipped"
+                )
+                assertThat(errContent.toString()).contains(
+                    "After deserializing there were one or less projects. Continue with next group"
+                )
+            }
+
+            @Test
+            fun `should merge two input files without name or file or overlap question`() {
+                System.setOut(PrintStream(outContent))
+                System.setErr(PrintStream(errContent))
+                CommandLine(MergeFilter()).execute(
+                    testProjectPathA,
+                    testProjectPathB,
+                    "--mimo",
+                    "-nc"
+                )
+                System.setOut(originalOut)
+                System.setErr(originalErr)
+
+                val outputFileName = "testProject.merge.cc.json"
+                val outputFile = File(outputFileName)
+                val outputBufferedReader = outputFile.bufferedReader()
+                val outputFileContent = outputBufferedReader.readText()
+
+                assertThat(errContent.toString()).contains("Merged files with prefix 'testProject' into '$outputFileName'")
+                assertThat(outputFileContent).contains("Lines*")
+                assertThat(outputFileContent).contains("AdditionalAttributeForTest")
+
+                outputBufferedReader.close()
+                outputFile.deleteOnExit()
+            }
+        }
+
+        @Test
+        fun `should warn if no top-level overlap for mimo merged files and skip merge`() {
+            mockkObject(ParserDialog)
+            every { ParserDialog.askForceMerge() } returns false
+
+            System.setErr(PrintStream(errContent))
+            CommandLine(MergeFilter()).execute(
+                testNoOverlapPath1,
+                testNoOverlapPath2,
+                "--mimo"
+            )
+            System.setErr(originalErr)
+
+            assertThat(errContent.toString()).contains("No top-level overlap between projects. Missing first-level nodes")
+        }
+
+        @Test
+        fun `should not warn if no top-level overlap for mimo and merge`() {
+            mockkObject(ParserDialog)
+            every { ParserDialog.askForceMerge() } returns false
+
+            System.setErr(PrintStream(errContent))
+            CommandLine(MergeFilter()).execute(
+                testNoOverlapPath1,
+                testNoOverlapPath2,
+                "--mimo",
+                "-f",
+                "-nc"
+            )
+            System.setErr(originalErr)
+
+            val outputFileName = "prefix.merge.cc.json"
+            val outputFile = File(outputFileName)
+            val outputBufferedReader = outputFile.bufferedReader()
+            val outputFileContent = outputBufferedReader.readText()
+
+            assertThat(errContent.toString()).contains("Merged files with prefix 'prefix' into '$outputFileName'")
+            assertThat(outputFileContent).contains("JavaParser.java")
+            assertThat(outputFileContent).contains("JavaParserTest.java")
+            assertThat(outputFile).exists()
+
+            outputBufferedReader.close()
+            outputFile.deleteOnExit()
+        }
+
+        @Nested
+        @DisplayName("Output File Name")
+        inner class MimoOutputName {
+            @Test
+            fun `should ask about output file name`() {
+                val testFile1 = File(testProjectPathA)
+                val testFile2 = File(testProjectPathB)
+                val testFile3 = File(testProjectPathC)
+                val prefixTestFile3 = "testProjectX"
+
+                mockkObject(ParserDialog)
+                every { ParserDialog.requestMimoFileSelection(any()) } returns listOf(testFile1, testFile2, testFile3)
+                every { ParserDialog.askForMimoPrefix(any()) } returns prefixTestFile3
+
+                System.setErr(PrintStream(errContent))
+                CommandLine(MergeFilter()).execute(
+                    testProjectFolder,
+                    "--mimo",
+                    "-nc"
+                ).toString()
+
+                System.setErr(originalErr)
+
+                val outputFileName = "$prefixTestFile3.merge.cc.json"
+                val outputFile = File(outputFileName)
+                val outputBufferedReader = outputFile.bufferedReader()
+                val outputFileContent = outputBufferedReader.readText()
+
+                assertThat(errContent.toString()).contains("Merged files with prefix '$prefixTestFile3' into '$outputFileName'")
+                assertThat(outputFileContent).contains("ThirdTestAttribute")
+                assertThat(outputFileContent).contains("Lines*")
+                assertThat(outputFileContent).contains("AdditionalAttributeForTest")
+
+                outputBufferedReader.close()
+                outputFile.deleteOnExit()
+            }
+        }
+
+        @Test
+        fun `should merge two projects with exact name strictly if lvd is defined and skip single file`() {
+            val prefix = "testProject"
+
+            System.setErr(PrintStream(errContent))
+            CommandLine(MergeFilter()).execute(
+                testProjectFolder,
+                "--mimo",
+                "--levenshtein-distance=0"
+            ).toString()
+
+            System.setErr(originalErr)
+
+            val outputFileName = "$prefix.merge.cc.json.gz"
+            val outputFile = File(outputFileName)
+
+            assertThat(errContent.toString()).contains("Merged files with prefix '$prefix' into '$outputFileName'")
+            assertThat(errContent.toString()).contains("Discarded 'testProjectX' of testProjectX.notIncl.cc.json as a potential group")
+            assertThat(outputFile).exists()
+
+            outputFile.deleteOnExit()
+        }
     }
 }

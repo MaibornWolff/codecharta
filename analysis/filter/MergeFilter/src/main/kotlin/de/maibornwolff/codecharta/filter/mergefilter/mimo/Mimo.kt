@@ -30,7 +30,10 @@ class Mimo {
                 if (currentFileList.size > 1) {
                     groupedFiles.add(Pair(exactMatch, currentFileList))
                 } else {
-                    Logger.debug { "Discarded ${currentFile.name} as a potential group" }
+                    Logger.info {
+                        "Discarded '${currentFile.name.substringBefore(".")}' " +
+                            "of ${currentFile.name} as a potential group"
+                    }
                 }
             }
             return groupedFiles

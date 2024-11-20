@@ -69,7 +69,7 @@ class ParserDialogTest {
             }
         ).isEqualTo(listOf(inputFolderName))
         Assertions.assertThat(parseResult.matchedOption("output-file").getValue<String>()).isEqualTo(outputFileName)
-        Assertions.assertThat(parseResult.matchedOption("not-compressed").getValue<Boolean>()).isEqualTo(!compress)
+        Assertions.assertThat(parseResult.matchedOption("not-compressed").getValue<Boolean>()).isEqualTo(compress)
         Assertions.assertThat(parseResult.matchedOption("add-missing").getValue<Boolean>()).isEqualTo(addMissing)
         Assertions.assertThat(parseResult.matchedOption("recursive").getValue<Boolean>()).isEqualTo(recursive)
         Assertions.assertThat(parseResult.matchedOption("leaf").getValue<Boolean>()).isEqualTo(leaf)
@@ -120,7 +120,7 @@ class ParserDialogTest {
             }
         ).isEqualTo(listOf(inputFolderName))
         Assertions.assertThat(parseResult.matchedOption("output-file").getValue<String>()).isEqualTo(outputFileName)
-        Assertions.assertThat(parseResult.matchedOption("not-compressed").getValue<Boolean>()).isEqualTo(!compress)
+        Assertions.assertThat(parseResult.matchedOption("not-compressed").getValue<Boolean>()).isEqualTo(compress)
         Assertions.assertThat(parseResult.matchedOption("add-missing").getValue<Boolean>()).isEqualTo(addMissing)
         Assertions.assertThat(parseResult.matchedOption("recursive").getValue<Boolean>()).isEqualTo(recursive)
         Assertions.assertThat(parseResult.matchedOption("leaf").getValue<Boolean>()).isEqualTo(leaf)
@@ -174,7 +174,7 @@ class ParserDialogTest {
                 it.name
             }
         ).isEqualTo(listOf(inputFolderName))
-        Assertions.assertThat(parseResult.matchedOption("not-compressed").getValue<Boolean>()).isEqualTo(!compress)
+        Assertions.assertThat(parseResult.matchedOption("not-compressed").getValue<Boolean>()).isEqualTo(compress)
         Assertions.assertThat(parseResult.matchedOption("add-missing").getValue<Boolean>()).isEqualTo(addMissing)
         Assertions.assertThat(parseResult.matchedOption("recursive").getValue<Boolean>()).isEqualTo(recursive)
         Assertions.assertThat(parseResult.matchedOption("leaf").getValue<Boolean>()).isEqualTo(leaf)

@@ -7,13 +7,8 @@
       "type": "Folder",
       "children": [
         {
-          "name": "SecondRootChild",
-          "type": "Folder",
-          "children": []
-        },
-        {
-          "name": "ThirdRootChild",
-          "type": "Folder",
+          "name": "JavaParser.java",
+          "type": "File",
           "children": []
         }
       ]
