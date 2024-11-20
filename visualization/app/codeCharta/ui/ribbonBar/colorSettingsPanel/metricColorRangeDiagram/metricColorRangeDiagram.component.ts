@@ -32,7 +32,7 @@ export class MetricColorRangeDiagramComponent implements OnChanges {
     private frameMarginBottom: number
     private frameMarginLeft: number
     private frameMarginRight: number
-    private yLabelYOffset: number
+    private yLabelXOffset: number
     private xLabelYOffset: number
     private percentileRanks: { x: number; y: number }[]
 
@@ -74,7 +74,7 @@ export class MetricColorRangeDiagramComponent implements OnChanges {
         this.frameHeight = this.svgHeight - this.frameMarginTop - this.frameMarginBottom
         this.frameWidth = this.svgWidth - this.frameMarginLeft - this.frameMarginRight
 
-        this.yLabelYOffset = -42
+        this.yLabelXOffset = 80
         this.xLabelYOffset = 20
     }
 
@@ -150,16 +150,12 @@ export class MetricColorRangeDiagramComponent implements OnChanges {
     }
 
     private drawLabels(g: GElement) {
-        const pathStartY = 0
-        const pathHeight = this.frameHeight
-        const verticalCenter = pathStartY + pathHeight / 2
-
         g.append("text")
             .attr("id", "y-label")
             .attr("class", "y label")
             .attr("transform", `rotate(-90)`)
-            .attr("x", -verticalCenter)
-            .attr("y", this.yLabelYOffset)
+            .attr("x", -this.frameHeight / 2 - this.frameMarginTop)
+            .attr("y", this.frameMarginLeft - this.yLabelXOffset)
             .attr("text-anchor", "middle")
             .attr("fill", "#888")
             .text(`${this.colorMetric}`)
@@ -168,7 +164,7 @@ export class MetricColorRangeDiagramComponent implements OnChanges {
             .attr("id", "x-label")
             .attr("class", "x label")
             .attr("text-anchor", "middle")
-            .attr("x", (this.frameWidth - this.framePadding) / 2)
+            .attr("x", this.frameWidth / 2 + this.frameMarginLeft)
             .attr("y", this.frameHeight + this.frameMarginTop + this.xLabelYOffset)
             .attr("fill", "#888")
             .text(`Quantiles (% of ${this.colorMetric})`)
