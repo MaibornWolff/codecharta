@@ -40,7 +40,7 @@ class StructureModifier(
 
     @CommandLine.Option(
         names = ["-p", "--print-levels"],
-        description = ["show first x layers of project hierarchy"]
+        description = ["show first x layers of project hierarchy (deprecated; use command 'inspect' instead)"]
     )
     private var printLevels: Int? = null
 
