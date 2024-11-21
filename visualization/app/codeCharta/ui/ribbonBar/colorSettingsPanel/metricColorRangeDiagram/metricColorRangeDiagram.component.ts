@@ -117,9 +117,9 @@ export class MetricColorRangeDiagramComponent implements OnChanges {
             const mouseX = d3.pointer(event)[0]
             let xValue = x.invert(mouseX - this.frameMarginLeft - this.framePadding)
             xValue = Math.max(0, Math.min(xValue, 100))
-            const yValue = this.getYValueFromX(xValue)
+            const yValue = this.getYValueFromXValue(xValue)
 
-            const yLinePosition = this.calculateYPosition(yValue, y)
+            const yLinePosition = this.getYPositionForYValue(yValue, y)
 
             const xLabelPosition = xValue > 50 ? mouseX - 80 : mouseX + 10
             const yLabelPosition =
@@ -173,11 +173,11 @@ export class MetricColorRangeDiagramComponent implements OnChanges {
         })
     }
 
-    private calculateYPosition(yValue: number, yScale: Scale): number {
+    private getYPositionForYValue(yValue: number, yScale: Scale): number {
         return yScale(yValue) + this.frameMarginTop + this.framePadding
     }
 
-    private getYValueFromX(xValue: number): number {
+    private getYValueFromXValue(xValue: number): number {
         const closestPoint = this.percentileRanks.reduce((prev, curr) => {
             return curr.x - xValue >= 0 && Math.abs(curr.x - xValue) < Math.abs(prev.x - xValue) ? curr : prev
         }, this.percentileRanks[0])
