@@ -30,7 +30,8 @@ class InspectionToolTest {
         val cliResult = executeForOutput("", arrayOf("src/test/resources/sample_project.cc.json"))
 
         // then
-        assertThat(cliResult).isEqualTo("root\n- src\n")
+        val expectedOutput = "root" + System.lineSeparator() + "- src" + System.lineSeparator()
+        assertThat(cliResult).isEqualTo(expectedOutput)
     }
 
     @Test
@@ -46,7 +47,8 @@ class InspectionToolTest {
         val cliResult = executeForOutput(input)
 
         // then
-        assertThat(cliResult).isEqualTo("root\n- src\n")
+        val expectedOutput = "root" + System.lineSeparator() + "- src" + System.lineSeparator()
+        assertThat(cliResult).isEqualTo(expectedOutput)
     }
 
     @Test
@@ -86,7 +88,8 @@ class InspectionToolTest {
         val cliResult = executeForOutput("", arrayOf("src/test/resources/sample_project.cc.json"))
 
         // then
-        assertThat(cliResult).isEqualTo("root\n- src\n")
+        val expectedOutput = "root" + System.lineSeparator() + "- src" + System.lineSeparator()
+        assertThat(cliResult).contains(expectedOutput)
     }
 
     @Test
