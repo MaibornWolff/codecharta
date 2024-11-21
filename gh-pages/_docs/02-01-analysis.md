@@ -31,7 +31,7 @@ For additional properties check out the [cc.json schema changelog](https://githu
 This is a list of all tools available in the ccsh. Each of these tools has its own page with further documentation which can be reached by clicking on the tools name.
 
 | Name                                                                                       | Category | Description                                                                                                                              |
-| ------------------------------------------------------------------------------------------ | -------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+|--------------------------------------------------------------------------------------------|----------|------------------------------------------------------------------------------------------------------------------------------------------|
 | [SourceCodeParser]({{site.baseurl}}{% link _docs/03-01-sourcecodeparser.md %})             | Parser   | Generates metrics from given source code (currently only supports Java code)                                                             |
 | [RawTextParser]({{site.baseurl}}{% link _docs/03-02-rawtextparser.md %})                   | Parser   | Can generate metrics from any language as it only considers the raw text                                                                 |
 | [GitLogParser]({{site.baseurl}}{% link _docs/03-03-gitlogparser.md %})                     | Parser   | Generated metrics based on a given git-log file or git repo (this generates the git-log on the fly)                                      |
@@ -46,6 +46,7 @@ This is a list of all tools available in the ccsh. Each of these tools has its o
 | [EdgeFilter]({{site.baseurl}}{% link _docs/03-12-edgefilter.md %})                         | Filter   | Turns `cc.json` files that only contain edge data into normal, visualizable `cc.json` files                                              |
 | [MergeFilter]({{site.baseurl}}{% link _docs/03-13-mergefilter.md %})                       | Filter   | Merges multiple `cc.json` files into one                                                                                                 |
 | [StructureModifier]({{site.baseurl}}{% link _docs/03-14-structuremodifier.md %})           | Filter   | Allows to modify the structure of a `cc.json` file without manually changing it                                                          |
+| [InspectionTool]({{site.baseurl}}{% link _docs/03-15-inspectiontool.md %})                 | Tool     | Allows to print the structure of a `cc.json` file in human readable format                                                               |
 
 ## Goal
 
