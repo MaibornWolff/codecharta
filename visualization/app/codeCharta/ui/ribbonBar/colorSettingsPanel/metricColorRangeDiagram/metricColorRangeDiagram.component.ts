@@ -180,7 +180,7 @@ export class MetricColorRangeDiagramComponent implements OnChanges {
     private getYValueFromX(xValue: number): number {
         const closestPoint = this.percentileRanks.reduce((prev, curr) => {
             return curr.x - xValue >= 0 && Math.abs(curr.x - xValue) < Math.abs(prev.x - xValue) ? curr : prev
-        })
+        }, this.percentileRanks[0])
         return closestPoint.y
     }
 
