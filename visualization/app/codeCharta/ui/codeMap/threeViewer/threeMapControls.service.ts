@@ -127,12 +127,12 @@ export class ThreeMapControlsService {
         }
 
         window.addEventListener("keydown", event => {
-            if (event.key === "Shift") {
+            if (event.key === "Alt") {
                 this.controls.zoomToCursor = false
             }
         })
         window.addEventListener("keyup", event => {
-            if (event.key === "Shift") {
+            if (event.key === "Alt") {
                 this.controls.zoomToCursor = true
             }
         })
