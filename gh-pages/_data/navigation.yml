@@ -21,8 +21,6 @@ docs:
             url: "/docs/overview/analysis"
           - title: "Dockerized"
             url: "/docs/overview/dockerized"
-          - title: "How-Tos"
-            url: "categories/#how-to"
           - title: "Service Offerings"
             url: "/docs/overview/service-offerings"
     - title: "Visualization - Web Studio"
