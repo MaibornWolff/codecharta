@@ -209,4 +209,162 @@ describe("MetricColorRangeDiagramComponent", () => {
         expect(rightArea.getAttribute("x")).toBe("485")
         expect(rightArea.style.fill).toBe("#820E0E")
     })
+
+    it("should add cross", async () => {
+        const { fixture, detectChanges, container } = await render(MetricColorRangeDiagramComponent, {
+            componentInputs: {
+                values: [100]
+            }
+        })
+
+        fixture.componentInstance.ngOnChanges()
+        detectChanges()
+
+        const svg = container.querySelector("svg")
+        const tooltip = svg.getElementsByClassName("cross-tooltip")[0] as HTMLElement
+        const dashedVerticalLine = svg.getElementsByClassName("dashed-vertical-line")[0] as HTMLElement
+        const straightVerticalLine = svg.getElementsByClassName("straight-vertical-line")[0] as HTMLElement
+        const horizontalLine = svg.getElementsByClassName("horizontal-line")[0] as HTMLElement
+        const rectangle = svg.getElementsByClassName("mouse-event-rect")[0] as HTMLElement
+
+        expect(tooltip).toBeTruthy()
+        expect(dashedVerticalLine).toBeTruthy()
+        expect(straightVerticalLine).toBeTruthy()
+        expect(horizontalLine).toBeTruthy()
+        expect(rectangle).toBeTruthy()
+
+        expect(tooltip.getAttribute("style")).toBe("display: none;")
+        expect(dashedVerticalLine.getAttribute("style")).toBe("display: none;")
+        expect(straightVerticalLine.getAttribute("style")).toBe("display: none;")
+        expect(horizontalLine.getAttribute("style")).toBe("display: none;")
+        expect(rectangle.getAttribute("width")).toBe("490")
+        expect(rectangle.getAttribute("height")).toBe("215")
+    })
+
+    it("should change visibility of cross on mousemove and mouseout events correctly", async () => {
+        const { fixture, container } = await render(MetricColorRangeDiagramComponent, {
+            componentInputs: {
+                values: [100]
+            }
+        })
+
+        fixture.componentInstance.ngOnChanges()
+        const svg = container.querySelector("svg")
+        const rectangle = svg.getElementsByClassName("mouse-event-rect")[0] as HTMLElement
+        const tooltip = svg.getElementsByClassName("cross-tooltip")[0] as HTMLElement
+        const dashedVerticalLine = svg.getElementsByClassName("dashed-vertical-line")[0] as HTMLElement
+        const straightVerticalLine = svg.getElementsByClassName("straight-vertical-line")[0] as HTMLElement
+        const horizontalLine = svg.getElementsByClassName("horizontal-line")[0] as HTMLElement
+
+        //WHEN
+        rectangle.dispatchEvent(new MouseEvent("mousemove"))
+
+        //THEN
+        expect(tooltip.getAttribute("style")).toBe("display: block;")
+        expect(dashedVerticalLine.getAttribute("style")).toBe("display: block;")
+        expect(straightVerticalLine.getAttribute("style")).toBe("display: block;")
+        expect(horizontalLine.getAttribute("style")).toBe("display: block;")
+
+        //WHEN
+        rectangle.dispatchEvent(new MouseEvent("mouseout"))
+
+        //THEN
+        expect(tooltip.getAttribute("style")).toBe("display: none;")
+        expect(dashedVerticalLine.getAttribute("style")).toBe("display: none;")
+        expect(straightVerticalLine.getAttribute("style")).toBe("display: none;")
+        expect(horizontalLine.getAttribute("style")).toBe("display: none;")
+    })
+
+    describe("cross-hair", () => {
+        let svg: SVGSVGElement
+        let mouseEventRectangle: HTMLElement
+
+        beforeEach(async () => {
+            const { container } = await render(MetricColorRangeDiagramComponent, {
+                componentInputs: {
+                    minValue: 1,
+                    maxValue: 10,
+                    values: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+                }
+            })
+            svg = container.querySelector("svg")
+            mouseEventRectangle = svg.getElementsByClassName("mouse-event-rect")[0] as HTMLElement
+        })
+
+        const expectedYLinePositionsForMouseXPositions = [
+            [167, 0],
+            [167, 50],
+            [95, 200],
+            [5, 450],
+            [5, 1000]
+        ]
+        test.each(expectedYLinePositionsForMouseXPositions)("should be on y=%p when mouse on x=%p", (expectedYPosition, mouseXPosition) => {
+            //WHEN
+            const simulatedEvent = new MouseEvent("mousemove", {
+                clientX: mouseXPosition,
+                clientY: 0
+            })
+            mouseEventRectangle.dispatchEvent(simulatedEvent)
+
+            //THEN
+            const horizontalLine = svg.getElementsByClassName("horizontal-line")[0] as HTMLElement
+            const xPosition = horizontalLine.getAttribute("x2")
+            const yPosition = horizontalLine.getAttribute("y1")
+
+            expect(xPosition).toBe(mouseXPosition.toString())
+            expect(yPosition).toBe(expectedYPosition.toString())
+        })
+
+        const expectedYTooltipPositionsForMouseXPositions = [
+            [147, 10, 0],
+            [147, 60, 50],
+            [115, 210, 200],
+            [25, 370, 450],
+            [25, 920, 1000]
+        ]
+        test.each(expectedYTooltipPositionsForMouseXPositions)(
+            "should correctly position the tooltip on y=%p and x=%p for mouse on x=%p",
+            async (expectedYPosition, expectedXPosition, mouseXPosition) => {
+                //WHEN
+                const simulatedEvent = new MouseEvent("mousemove", {
+                    clientX: mouseXPosition,
+                    clientY: 0
+                })
+                mouseEventRectangle.dispatchEvent(simulatedEvent)
+
+                // Then
+                const tooltip = svg.getElementsByClassName("cross-tooltip")[0] as HTMLElement
+                const tooltipXPosition = parseInt(tooltip.getAttribute("x"))
+                const tooltipYPosition = parseInt(tooltip.getAttribute("y"))
+
+                expect(tooltipXPosition).toBe(expectedXPosition)
+                expect(tooltipYPosition).toBe(expectedYPosition)
+            }
+        )
+
+        const expectedQuantileAndYValueForMouseXPositions = [
+            [0, 1, 0],
+            [9, 1, 50],
+            [41, 5, 200],
+            [93, 10, 450],
+            [100, 10, 1000]
+        ]
+        test.each(expectedQuantileAndYValueForMouseXPositions)(
+            "should show Quantile: %p and Value: %p as the correct tooltip text when mouse on x=%p",
+            (quantile, yValue, mouseXPosition) => {
+                //WHEN
+                const simulatedEvent = new MouseEvent("mousemove", {
+                    clientX: mouseXPosition,
+                    clientY: 0
+                })
+                mouseEventRectangle.dispatchEvent(simulatedEvent)
+
+                //THEN
+                const tooltip = svg.getElementsByClassName("cross-tooltip")[0] as HTMLElement
+
+                expect(tooltip.innerHTML).toContain(`Quantile: ${quantile}`)
+                expect(tooltip.innerHTML).toContain(`Value: ${yValue}`)
+            }
+        )
+    })
 })
