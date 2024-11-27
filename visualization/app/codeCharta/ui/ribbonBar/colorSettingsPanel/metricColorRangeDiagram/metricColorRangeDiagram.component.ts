@@ -1,8 +1,11 @@
 import { Component, Input, OnChanges } from "@angular/core"
 import * as d3 from "d3"
 
-type VGElement = d3.Selection<SVGSVGElement, unknown, HTMLElement, any>
-type GElement = d3.Selection<SVGGElement, unknown, HTMLElement, any>
+type SVGElement = d3.Selection<SVGSVGElement, unknown, HTMLElement, any>
+type GroupElement = d3.Selection<SVGGElement, unknown, HTMLElement, any>
+type TextElement = d3.Selection<SVGTextElement, unknown, HTMLElement, any>
+type LineElement = d3.Selection<SVGLineElement, unknown, HTMLElement, any>
+type RectElement = d3.Selection<SVGRectElement, unknown, HTMLElement, any>
 type Scale = d3.ScaleLinear<number, number>
 
 @Component({
@@ -59,129 +62,7 @@ export class MetricColorRangeDiagramComponent implements OnChanges {
         this.drawLabels(group)
         this.drawAreas(group, x)
         this.drawLine(group)
-        this.addCross(svg, x, y)
-    }
-
-    private addCross(svg: VGElement, x: Scale, y: Scale) {
-        const tooltip: d3.Selection<SVGTextElement, unknown, HTMLElement, any> = svg
-            .append("text")
-            .attr("id", "tooltip")
-            .attr("fill", "#000")
-            .attr("font-size", "13px")
-            .style("display", "none")
-
-        const dashedVerticalLine: d3.Selection<SVGLineElement, unknown, HTMLElement, any> = svg
-            .append("line")
-            .attr("id", "dashed-vertical-line")
-            .attr("stroke", "#000")
-            .attr("stroke-width", "1px")
-            .attr("stroke-dasharray", "4")
-            .style("display", "none")
-
-        const straightVerticalLine: d3.Selection<SVGLineElement, unknown, HTMLElement, any> = svg
-            .append("line")
-            .attr("id", "straight-vertical-line")
-            .attr("stroke", "#000")
-            .attr("stroke-width", "1px")
-            .style("display", "none")
-
-        const horizontalLine: d3.Selection<SVGLineElement, unknown, HTMLElement, any> = svg
-            .append("line")
-            .attr("id", "horizontal-line")
-            .attr("stroke", "#000")
-            .attr("stroke-width", "1px")
-            .style("display", "none")
-
-        const rectangle: d3.Selection<SVGRectElement, unknown, HTMLElement, any> = svg
-            .append("rect")
-            .attr("x", this.frameMarginLeft)
-            .attr("width", this.frameWidth)
-            .attr("height", this.svgHeight)
-            .attr("fill", "none")
-            .attr("pointer-events", "all")
-
-        this.addOnMouseMoveEvent(rectangle, x, y, tooltip, dashedVerticalLine, straightVerticalLine, horizontalLine)
-        this.addOnMouseOutEvent(rectangle, tooltip, dashedVerticalLine, straightVerticalLine, horizontalLine)
-    }
-
-    private addOnMouseMoveEvent(
-        rectangle: d3.Selection<SVGRectElement, unknown, HTMLElement, any>,
-        x: Scale,
-        y: Scale,
-        tooltip: d3.Selection<SVGTextElement, unknown, HTMLElement, any>,
-        dashedVerticalLine: d3.Selection<SVGLineElement, unknown, HTMLElement, any>,
-        straightVerticalLine: d3.Selection<SVGLineElement, unknown, HTMLElement, any>,
-        horizontalLine: d3.Selection<SVGLineElement, unknown, HTMLElement, any>
-    ) {
-        rectangle.on("mousemove", event => {
-            const mouseX = d3.pointer(event)[0]
-            let xValue = x.invert(mouseX - this.frameMarginLeft - this.framePadding)
-            xValue = Math.max(0, Math.min(xValue, 100))
-            const yValue = this.getYValueFromXValue(xValue)
-
-            const yLinePosition = this.getYPositionForYValue(yValue, y)
-
-            const xLabelPosition = xValue > 50 ? mouseX - 80 : mouseX + 10
-            const yLabelPosition =
-                yLinePosition < this.frameHeight / 2 + this.frameMarginTop + this.framePadding ? yLinePosition + 20 : yLinePosition - 20
-
-            tooltip
-                .style("display", "block")
-                .attr("x", xLabelPosition)
-                .attr("y", yLabelPosition)
-                .text(`Quantile: ${Math.round(xValue)}`)
-                .append("tspan")
-                .attr("x", xLabelPosition)
-                .attr("dy", "1.2em")
-                .text(`Value: ${yValue}`)
-
-            dashedVerticalLine
-                .attr("x1", mouseX)
-                .attr("x2", mouseX)
-                .attr("y1", this.frameMarginTop)
-                .attr("y2", this.frameMarginTop + this.frameHeight)
-                .style("display", "block")
-
-            straightVerticalLine
-                .attr("x1", mouseX)
-                .attr("x2", mouseX)
-                .attr("y1", yLinePosition)
-                .attr("y2", this.frameMarginTop + this.frameHeight)
-                .style("display", "block")
-
-            horizontalLine
-                .attr("x1", this.frameMarginLeft)
-                .attr("x2", mouseX)
-                .attr("y1", yLinePosition)
-                .attr("y2", yLinePosition)
-                .style("display", "block")
-        })
-    }
-
-    private addOnMouseOutEvent(
-        rectangle: d3.Selection<SVGRectElement, unknown, HTMLElement, any>,
-        tooltip: d3.Selection<SVGTextElement, unknown, HTMLElement, any>,
-        dashedVerticalLine: d3.Selection<SVGLineElement, unknown, HTMLElement, any>,
-        straightVerticalLine: d3.Selection<SVGLineElement, unknown, HTMLElement, any>,
-        horizontalLine: d3.Selection<SVGLineElement, unknown, HTMLElement, any>
-    ) {
-        rectangle.on("mouseout", () => {
-            tooltip.style("display", "none")
-            dashedVerticalLine.style("display", "none")
-            straightVerticalLine.style("display", "none")
-            horizontalLine.style("display", "none")
-        })
-    }
-
-    private getYPositionForYValue(yValue: number, yScale: Scale): number {
-        return yScale(yValue) + this.frameMarginTop + this.framePadding
-    }
-
-    private getYValueFromXValue(xValue: number): number {
-        const closestPoint = this.percentileRanks.reduce((prev, curr) => {
-            return curr.x - xValue >= 0 && Math.abs(curr.x - xValue) < Math.abs(prev.x - xValue) ? curr : prev
-        }, this.percentileRanks[0])
-        return closestPoint.y
+        this.addCross(group, x, y)
     }
 
     private initializeDiagramDimesions() {
@@ -209,7 +90,7 @@ export class MetricColorRangeDiagramComponent implements OnChanges {
         return d3.select("#cc-range-diagram-container").append("svg").attr("width", this.svgWidth).attr("height", this.svgHeight)
     }
 
-    private createGroup(svg: VGElement) {
+    private createGroup(svg: SVGElement) {
         return svg
             .append("g")
             .attr("transform", `translate(${this.frameMarginLeft}, ${this.frameMarginTop})`)
@@ -217,7 +98,7 @@ export class MetricColorRangeDiagramComponent implements OnChanges {
             .attr("justify-content", "center")
     }
 
-    private drawFrame(g: GElement) {
+    private drawFrame(g: GroupElement) {
         g.append("path")
             .attr(
                 "d",
@@ -232,7 +113,7 @@ export class MetricColorRangeDiagramComponent implements OnChanges {
             .attr("stroke-width", "1px")
     }
 
-    private drawAxes(g: GElement, x: Scale, y: Scale) {
+    private drawAxes(g: GroupElement, x: Scale, y: Scale) {
         g.append("g")
             .attr("id", "axis-x")
             .attr("transform", `translate(${this.framePadding},${this.frameHeight})`)
@@ -276,7 +157,7 @@ export class MetricColorRangeDiagramComponent implements OnChanges {
             .range([this.frameHeight - 2 * this.framePadding, 0])
     }
 
-    private drawLabels(g: GElement) {
+    private drawLabels(g: GroupElement) {
         g.append("text")
             .attr("id", "y-label")
             .attr("class", "y label")
@@ -297,7 +178,7 @@ export class MetricColorRangeDiagramComponent implements OnChanges {
             .text(`Quantiles (% of ${this.colorMetric})`)
     }
 
-    private drawAreas(g: GElement, x: Scale) {
+    private drawAreas(g: GroupElement, x: Scale) {
         const leftValue = x(
             this.isAttributeDirectionInversed
                 ? this.calculateReversedPercentileFromMetricValue(this.currentRightValue)
@@ -334,7 +215,7 @@ export class MetricColorRangeDiagramComponent implements OnChanges {
             .style("fill-opacity", "0.3")
     }
 
-    private drawLine(g: GElement) {
+    private drawLine(g: GroupElement) {
         g.append("path")
             .attr("id", "diagram-path")
             .datum(this.percentileRanks)
@@ -416,5 +297,116 @@ export class MetricColorRangeDiagramComponent implements OnChanges {
                 return minPercentile
             }
         }
+    }
+
+    private addCross(group: GroupElement, x: Scale, y: Scale) {
+        const tooltip: TextElement = group
+            .append("text")
+            .attr("class", "cross-tooltip")
+            .attr("fill", "#000")
+            .attr("font-size", "13px")
+            .style("display", "none")
+
+        const dashedVerticalLine: LineElement = group
+            .append("line")
+            .attr("class", "dashed-vertical-line")
+            .attr("stroke", "#000")
+            .attr("stroke-width", "1px")
+            .attr("stroke-dasharray", "4")
+            .style("display", "none")
+
+        const straightVerticalLine: LineElement = group
+            .append("line")
+            .attr("class", "straight-vertical-line")
+            .attr("stroke", "#000")
+            .attr("stroke-width", "1px")
+            .style("display", "none")
+
+        const horizontalLine: LineElement = group
+            .append("line")
+            .attr("class", "horizontal-line")
+            .attr("stroke", "#000")
+            .attr("stroke-width", "1px")
+            .style("display", "none")
+
+        const rectangle: RectElement = group
+            .append("rect")
+            .attr("class", "mouse-event-rect")
+            .attr("width", this.frameWidth)
+            .attr("height", this.frameHeight + this.frameMarginBottom / 2)
+            .attr("fill", "none")
+            .attr("pointer-events", "all")
+
+        this.addOnMouseMoveEvent(rectangle, x, y, tooltip, dashedVerticalLine, straightVerticalLine, horizontalLine)
+        this.addOnMouseOutEvent(rectangle, tooltip, dashedVerticalLine, straightVerticalLine, horizontalLine)
+    }
+
+    private addOnMouseMoveEvent(
+        rectangle: RectElement,
+        x: Scale,
+        y: Scale,
+        tooltip: TextElement,
+        dashedVerticalLine: LineElement,
+        straightVerticalLine: LineElement,
+        horizontalLine: LineElement
+    ) {
+        rectangle.on("mousemove", event => {
+            const mouseX = d3.pointer(event)[0]
+            let xValue = x.invert(mouseX - this.framePadding)
+            xValue = Math.max(0, Math.min(xValue, 100))
+            const yValue = this.getYValueForXValue(xValue)
+
+            const yLinePosition = this.getYPositionForYValue(yValue, y)
+
+            const xTooltipPosition = xValue > 50 ? mouseX - 80 : mouseX + 10
+            const yTooltipPosition = yLinePosition < this.frameHeight / 2 + this.framePadding ? yLinePosition + 20 : yLinePosition - 20
+
+            tooltip
+                .style("display", "block")
+                .attr("x", xTooltipPosition)
+                .attr("y", yTooltipPosition)
+                .text(`Quantile: ${Math.round(xValue)}`)
+                .append("tspan")
+                .attr("x", xTooltipPosition)
+                .attr("dy", "1.2em")
+                .text(`Value: ${yValue}`)
+
+            dashedVerticalLine.attr("x1", mouseX).attr("x2", mouseX).attr("y2", this.frameHeight).style("display", "block")
+
+            straightVerticalLine
+                .attr("x1", mouseX)
+                .attr("x2", mouseX)
+                .attr("y1", yLinePosition)
+                .attr("y2", this.frameHeight)
+                .style("display", "block")
+
+            horizontalLine.attr("x2", mouseX).attr("y1", yLinePosition).attr("y2", yLinePosition).style("display", "block")
+        })
+    }
+
+    private addOnMouseOutEvent(
+        rectangle: RectElement,
+        tooltip: TextElement,
+        dashedVerticalLine: LineElement,
+        straightVerticalLine: LineElement,
+        horizontalLine: LineElement
+    ) {
+        rectangle.on("mouseout", () => {
+            tooltip.style("display", "none")
+            dashedVerticalLine.style("display", "none")
+            straightVerticalLine.style("display", "none")
+            horizontalLine.style("display", "none")
+        })
+    }
+
+    private getYPositionForYValue(yValue: number, yScale: Scale): number {
+        return yScale(yValue) + this.framePadding
+    }
+
+    private getYValueForXValue(xValue: number): number {
+        const closestPoint = this.percentileRanks.reduce((prev, curr) => {
+            return curr.x - xValue >= 0 && Math.abs(curr.x - xValue) < Math.abs(prev.x - xValue) ? curr : prev
+        }, this.percentileRanks[0])
+        return closestPoint.y
     }
 }
