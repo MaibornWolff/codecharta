@@ -17,7 +17,7 @@
   <div>
     <a href="https://maibornwolff.github.io/codecharta/">Documentation</a> •
     <a href="#features">Features</a> •
-    <a href="https://maibornwolff.github.io/codecharta/docs/overview/first-steps">Quickstart</a> •
+    <a href="https://maibornwolff.github.io/codecharta/docs/overview/getting-started">Quickstart</a> •
     <a href="#get-involved">Get Involved</a> •
     <a href="#links">Links</a>
   </div>
@@ -86,7 +86,7 @@ Compare two maps and see the delta between them. This allows you to see the chan
 ## Getting started
 
 You can find our prefered way to get start
-under [Documentation - Quick Start Guide](https://maibornwolff.github.io/codecharta/docs/overview/first-steps).
+under [Documentation - Quick Start Guide](https://maibornwolff.github.io/codecharta/docs/overview/getting-started).
 
 But if you already know what to do, here is how you install our CCSH.
 
@@ -125,7 +125,7 @@ more: [Software Health Check](https://www.maibornwolff.de/service/planungssicher
 ## Links
 
 - [Documentation](https://maibornwolff.github.io/codecharta/)
-- [Quickstart Guide](https://maibornwolff.github.io/codecharta/docs/overview/first-steps/)
+- [Quickstart Guide](https://maibornwolff.github.io/codecharta/docs/overview/getting-started/)
 - [Releases](https://github.com/MaibornWolff/codecharta/releases)
 - [Coverage](https://maibornwolff.github.io/codecharta/visualization/coverage/lcov-report/)
 - [Analysis - Changelog](analysis/CHANGELOG.md) | [Visualization - Changelog](visualization/CHANGELOG.md)

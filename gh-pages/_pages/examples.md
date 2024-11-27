@@ -3,7 +3,7 @@ title: "Examples"
 permalink: /examples/
 
 layout: collection
-collection: showcase
+collection: examples
 entries_layout: grid
 show_excerpts: true
 ---

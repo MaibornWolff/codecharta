@@ -29,6 +29,15 @@ social:
 
 # Custom site variables, reference them in liquid like this: {{site.web_visualization_link}}
 web_visualization_link: https://maibornwolff.github.io/codecharta/visualization/app/index.html?file=codecharta.cc.json.gz&file=codecharta_analysis.cc.json.gz&currentFilesAreSampleFiles=true
+docs_overview: /codecharta/docs/overview
+docs_analysis: /codecharta/docs/analysis
+docs_about: /codecharta/docs/about
+docs_exporter: /codecharta/docs/exporter
+docs_filter: /codecharta/docs/filter
+docs_importer: /codecharta/docs/importer
+docs_parser: /codecharta/docs/parser
+docs_visualization: /codecharta/docs/visualization
+docs_how_to: /codecharta/docs/how-to
 
 # Reading Files
 include:
@@ -96,6 +105,7 @@ whitelist:
     - jekyll-gist
     - jekyll-feed
     - jekyll-include-cache
+    - jekyll-redirect-from
 
 # Archives
 #  Type
@@ -130,7 +140,7 @@ collections:
     docs:
         output: true
         permalink: /:collection/:path/
-    showcase:
+    examples:
         output: true
         permalink: /:collection/:path/
 
@@ -154,10 +164,10 @@ defaults:
           layout: single
           sidebar:
               nav: "docs"
-    # _showcase
+    # _examples
     - scope:
           path: ""
-          type: showcase
+          type: examples
       values:
           layout: single
     # _posts
