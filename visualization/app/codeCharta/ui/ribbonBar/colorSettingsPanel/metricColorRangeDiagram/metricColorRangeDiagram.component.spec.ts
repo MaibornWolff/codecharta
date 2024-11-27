@@ -334,8 +334,8 @@ describe("MetricColorRangeDiagramComponent", () => {
 
                 // Then
                 const tooltip = svg.getElementsByClassName("cross-tooltip")[0] as HTMLElement
-                const tooltipXPosition = parseInt(tooltip.getAttribute("x"))
-                const tooltipYPosition = parseInt(tooltip.getAttribute("y"))
+                const tooltipXPosition = Number.parseInt(tooltip.getAttribute("x"))
+                const tooltipYPosition = Number.parseInt(tooltip.getAttribute("y"))
 
                 expect(tooltipXPosition).toBe(expectedXPosition)
                 expect(tooltipYPosition).toBe(expectedYPosition)
