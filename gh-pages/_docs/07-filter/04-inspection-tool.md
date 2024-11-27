@@ -1,3 +1,11 @@
+---
+permalink: /docs/filter/inspection-tool
+title: "Inspection Tool"
+
+toc: true
+toc_sticky: true
+toc_label: "Jump to Section"
+---
 # Inspection
 
 The Inspection Tool is used to inspect the structure of .cc.json files. It enables to:

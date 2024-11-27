@@ -87,6 +87,8 @@ docs:
             url: "/docs/filter/merge-filter"
           - title: "Structure Modifier"
             url: "/docs/filter/structure-modifier"
+          - title: "Inspection Tool"
+            url: "/docs/filter/inspection-tool"
     - title: "How To"
       children:
           - title: "Integrate with Jenkins and Sonar"
@@ -111,7 +113,6 @@ docs:
             url: "/docs/how-to/use-sonar-9-4"
           - title: "Script for automated Sonar Analysis"
             url: "/docs/how-to/automated-sonar-analysis"
-
     - title: "About"
       children:
           - title: "License"

@@ -46,11 +46,12 @@ This is a list of all tools available in the ccsh. Each of these tools has its o
 
 ## Filter
 
-| Name                                                                               | Category | Description                                                                                 |
-| ---------------------------------------------------------------------------------- | -------- | ------------------------------------------------------------------------------------------- |
-| [EdgeFilter]({{site.docs_filter}}/edge-filter)               | Filter   | Turns `cc.json` files that only contain edge data into normal, visualizable `cc.json` files |
-| [MergeFilter]({{site.docs_filter}}/merge-filter)             | Filter   | Merges multiple `cc.json` files into one                                                    |
-| [StructureModifier]({{site.docs_filter}}/structure-modifier) | Filter   | Allows to modify the structure of a `cc.json` file without manually changing it             |
+| Name                                                                       | Category | Description                                                                                |
+|----------------------------------------------------------------------------| -------- | ------------------------------------------------------------------------------------------ |
+| [EdgeFilter]({{site.docs_filter}}/edge-filter)                             | Filter   | Turns `cc.json` files that only contain edge data into normal, visualizable `cc.json` files |
+| [MergeFilter]({{site.docs_filter}}/merge-filter)                           | Filter   | Merges multiple `cc.json` files into one                                                   |
+| [StructureModifier]({{site.docs_filter}}/structure-modifier)               | Filter   | Allows to modify the structure of a `cc.json` file without manually changing it            |
+| [InspectionTool]({{site.docs_filter}}/inspection-tool)                     | Filter   | Allows to print the structure of a `cc.json` file in human readable format             |
 
 # Metrics
 
