@@ -16,6 +16,7 @@ import de.maibornwolff.codecharta.parser.sourcecodeparser.SourceCodeParserMain
 import de.maibornwolff.codecharta.parser.svnlogparser.SVNLogParser
 import de.maibornwolff.codecharta.tools.ccsh.Ccsh
 import de.maibornwolff.codecharta.tools.ccsh.parser.repository.PicocliParserRepository
+import de.maibornwolff.codecharta.tools.inspection.InspectionTool
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import de.maibornwolff.codecharta.tools.validation.ValidationTool
@@ -69,7 +70,8 @@ class PicocliParserRepositoryTest {
             SVNLogParser(), GitLogParser(),
             SourceCodeParserMain(), CodeMaatImporter(),
             TokeiImporter(), RawTextParser(),
-            MetricGardenerImporter(), ValidationTool()
+            MetricGardenerImporter(), ValidationTool(),
+            InspectionTool()
         )
     }
 
@@ -101,6 +103,7 @@ class PicocliParserRepositoryTest {
                 listOf(TokeiImporter.NAME, " - " + TokeiImporter.DESCRIPTION),
                 listOf(RawTextParser.NAME, " - " + RawTextParser.DESCRIPTION),
                 listOf(ValidationTool.NAME, " - " + ValidationTool.DESCRIPTION),
+                listOf(InspectionTool.NAME, " - " + InspectionTool.DESCRIPTION),
                 listOf(MetricGardenerImporter.NAME, " - " + MetricGardenerImporter.DESCRIPTION)
             )
         }

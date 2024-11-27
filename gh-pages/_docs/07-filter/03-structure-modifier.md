@@ -15,7 +15,7 @@ The Structure Modifier is used to modify the structure of .cc.json files. It ena
 - Declare a node as root: This means that the chosen node will become the root node of the resulting sub-project.
 - Move nodes within the project: All children of the source node will be transferred to the destination node.
 - Rename the mcc metric to complexity or sonar_complexity (revert the previous renaming to mcc).
-- Print the hierarchy of the project: Prints the hierarchy into the console in a human-readable format.
+- Print the hierarchy of the project: Prints the hierarchy into the console in a human-readable format. (That feature was moved to the new command 'inspect')
 
 The edges and blacklist entries associated with moved/removed nodes will be altered as well, while all attribute types will be copied.
 
@@ -29,7 +29,6 @@ The edges and blacklist entries associated with moved/removed nodes will be alte
 | `-f, --move-from=<moveFrom>`       | move nodes in project folder ... (use paired with the `--move-to` parameter)                                                     |
 | `-h, --help`                       | displays help and exits                                                                                                          |
 | `-o, --outputFile=<outputFile>`    | output File (or empty for stdout)                                                                                                |
-| `-p, --print-levels=<printLevels>` | show first x layers of project hierarchy                                                                                         |
 | `-r, --remove=<remove>`            | comma-separated list of nodes to be removed (when using powershell, the list either can't contain spaces or has to be in quotes) |
 | `--rename-mcc[=<renameMcc>]`       | renames the mcc metric to complexity. Optionally specify 'sonar' for the metric to be renamed to sonar_complexity                |
 | `-s, --set-root=<setRoot>`         | path within project to be extracted as the new root                                                                              |

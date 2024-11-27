@@ -1,0 +1,41 @@
+name: Staging Environment - Visualization
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - 'visualization/**'
+
+jobs:
+  build_and_deploy_visualization:
+    name: Build and Deploy Visualization
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Build visualization
+        env:
+          NODE_OPTIONS: "--max_old_space_size=4096"
+        working-directory: ./visualization
+        run: |
+          npm ci
+          npm run build
+
+      - name: Deploy Visualization to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4.6.9
+        with:
+          token: ${{ secrets.DEPLOY_TOKEN }}
+          branch: gh-pages
+          folder: visualization/dist/webpack
+          target-folder: stg/visualization
+          clean: false

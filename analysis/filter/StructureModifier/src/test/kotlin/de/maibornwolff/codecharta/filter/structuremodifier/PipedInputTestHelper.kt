@@ -7,7 +7,7 @@ import java.io.InputStream
 import java.io.PrintStream
 
 fun executeForOutput(input: String, args: Array<String> = emptyArray()) = outputAsString(input) { inputStream, outputStream, errorStream ->
-    mainWithInOut(inputStream, outputStream, errorStream, args)
+    mainWithInOut(inputStream, outputStream, args)
 }
 
 fun outputAsString(input: String, aMethod: (input: InputStream, output: PrintStream, error: PrintStream) -> Unit) = outputAsString(

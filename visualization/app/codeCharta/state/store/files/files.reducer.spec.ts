@@ -1,8 +1,6 @@
 import {
     addFile,
-    invertStandard,
-    removeFile,
-    setAll,
+    removeFiles,
     setDelta,
     setDeltaComparison,
     setDeltaReference,
@@ -62,9 +60,9 @@ describe("files", () => {
         })
     })
 
-    describe("Action: REMOVE_FILE", () => {
+    describe("Action: REMOVE_FILES", () => {
         it("should remove a file", () => {
-            const result = files(state, removeFile({ fileName: TEST_DELTA_MAP_A.fileMeta.fileName }))
+            const result = files(state, removeFiles({ fileNames: [TEST_DELTA_MAP_A.fileMeta.fileName] }))
 
             expect(result[0].file).toEqual(TEST_DELTA_MAP_B)
             expect(result.length).toBe(1)
@@ -72,19 +70,14 @@ describe("files", () => {
 
         it("should select first file as partial when there is no other file selected", () => {
             state[1].selectedAs = FileSelectionState.None
-            const result = files(state, removeFile({ fileName: state[0].file.fileMeta.fileName }))
+            const result = files(state, removeFiles({ fileNames: [state[0].file.fileMeta.fileName] }))
             expect(result.length).toBe(1)
             expect(result[0].selectedAs).toBe(FileSelectionState.Partial)
         })
-    })
 
-    describe("Action: SET_ALL", () => {
-        it("should select all", () => {
-            state[0].selectedAs = FileSelectionState.None
-            state[1].selectedAs = FileSelectionState.None
-            const result = files(state, setAll())
-            expect(result[0].selectedAs).toBe(FileSelectionState.Partial)
-            expect(result[1].selectedAs).toBe(FileSelectionState.Partial)
+        it("should not change if no file is removed", () => {
+            const result = files(state, removeFiles({ fileNames: [] }))
+            expect(result).toBe(state)
         })
     })
 
@@ -137,16 +130,6 @@ describe("files", () => {
             const result = files(state, switchReferenceAndComparison())
             expect(result[0].selectedAs).toBe(FileSelectionState.Comparison)
             expect(result[1].selectedAs).toBe(FileSelectionState.Reference)
-        })
-    })
-
-    describe("Action: INVERT_STANDARD", () => {
-        it("should invert selection", () => {
-            state[0].selectedAs = FileSelectionState.Partial
-            state[1].selectedAs = FileSelectionState.None
-            const result = files(state, invertStandard())
-            expect(result[0].selectedAs).toBe(FileSelectionState.None)
-            expect(result[1].selectedAs).toBe(FileSelectionState.Partial)
         })
     })
 })

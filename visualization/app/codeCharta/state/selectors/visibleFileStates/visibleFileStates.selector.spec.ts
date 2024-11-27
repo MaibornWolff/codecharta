@@ -2,17 +2,17 @@ import { FileSelectionState, FileState } from "../../../model/files/files"
 import { FILE_META, TEST_FILE_DATA } from "../../../util/dataMocks"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { TestBed } from "@angular/core/testing"
-import { _onlyVisibleFilesMatterComparer, visibleFileStatesSelector } from "./visibleFileStates.selector"
+import { onlyVisibleFilesMatterComparer, visibleFileStatesSelector } from "./visibleFileStates.selector"
 
 describe("_onlyVisibleFilesMatterComparer", () => {
     it("should return true for two empty file state arrays", () => {
-        expect(_onlyVisibleFilesMatterComparer([], [])).toBe(true)
+        expect(onlyVisibleFilesMatterComparer([], [])).toBe(true)
     })
 
     it("should return false for arrays of different lengths", () => {
         const fileStates1 = [{ selectedAs: FileSelectionState.Reference, file: TEST_FILE_DATA }]
         const fileStates2 = []
-        expect(_onlyVisibleFilesMatterComparer(fileStates1, fileStates2)).toBe(false)
+        expect(onlyVisibleFilesMatterComparer(fileStates1, fileStates2)).toBe(false)
     })
 
     it("should return true for arrays with the same visible file checksums, in the same order", () => {
@@ -29,7 +29,7 @@ describe("_onlyVisibleFilesMatterComparer", () => {
             }
         ]
         const fileStates2 = [file1]
-        expect(_onlyVisibleFilesMatterComparer(fileStates1, fileStates2)).toBe(true)
+        expect(onlyVisibleFilesMatterComparer(fileStates1, fileStates2)).toBe(true)
     })
 
     it("should return true for arrays with the same visible files in different orders", () => {
@@ -53,7 +53,7 @@ describe("_onlyVisibleFilesMatterComparer", () => {
             },
             { selectedAs: FileSelectionState.Reference, file: TEST_FILE_DATA }
         ]
-        expect(_onlyVisibleFilesMatterComparer(fileStates1, fileStates2)).toBe(true)
+        expect(onlyVisibleFilesMatterComparer(fileStates1, fileStates2)).toBe(true)
     })
 
     it("should return false for arrays with different visible file checksums", () => {
@@ -67,7 +67,22 @@ describe("_onlyVisibleFilesMatterComparer", () => {
                 }
             }
         ]
-        expect(_onlyVisibleFilesMatterComparer(fileStates1, fileStates2)).toBe(false)
+        expect(onlyVisibleFilesMatterComparer(fileStates1, fileStates2)).toBe(false)
+    })
+
+    it("should return false for arrays of different file selection states", () => {
+        const fileStates1 = [{ selectedAs: FileSelectionState.Reference, file: TEST_FILE_DATA }]
+        const fileStates2 = [
+            {
+                selectedAs: FileSelectionState.Partial,
+                file: {
+                    ...TEST_FILE_DATA,
+                    fileMeta: { ...FILE_META, fileName: "second-file" }
+                }
+            },
+            { selectedAs: FileSelectionState.Partial, file: TEST_FILE_DATA }
+        ]
+        expect(onlyVisibleFilesMatterComparer(fileStates1, fileStates2)).toBe(false)
     })
 })
 
