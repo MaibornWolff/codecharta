@@ -10,6 +10,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Added 🚀
 
 - Add alternative center-focused zoom option via the `ALT`-key [#3815](https://github.com/MaibornWolff/codecharta/pull/3815)
+- Add an apply button when selecting maps [#3637](https://github.com/MaibornWolff/codecharta/pull/3637)
+
+### Fixed 🐞
+
+- Fix that the map is reloaded when switching from delta to standard view [#3825](https://github.com/MaibornWolff/codecharta/pull/3825)
 
 ## [1.130.0] - 2024-11-04
 

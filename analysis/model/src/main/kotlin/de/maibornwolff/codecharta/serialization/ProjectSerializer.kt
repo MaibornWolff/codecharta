@@ -58,7 +58,7 @@ object ProjectSerializer {
 
     /**
      * This method serializes a Project-Object to json and writes it to the specified file, or if no file is specified,
-     * to the an OutputStream. If a file is specified, and compress is true, the output will be GZIP compressed.
+     * to the OutputStream. If a file is specified, and compress is true, the output will be GZIP compressed.
      *
      * @param project the Project-Object to be serialized
      * @param outputFilePath file to write the serialized object to
@@ -73,7 +73,7 @@ object ProjectSerializer {
         if (isOutputFileSpecified) {
             val absoluteFilePath =
                 OutputFileHandler.checkAndFixFileExtension(
-                    File(outputFilePath).absolutePath,
+                    File(outputFilePath!!).absolutePath,
                     compress,
                     FileExtension.JSON
                 )

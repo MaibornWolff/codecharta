@@ -20,6 +20,7 @@ import de.maibornwolff.codecharta.parser.svnlogparser.SVNLogParser
 import de.maibornwolff.codecharta.tools.ccsh.parser.InteractiveParserSuggestionDialog
 import de.maibornwolff.codecharta.tools.ccsh.parser.ParserService
 import de.maibornwolff.codecharta.tools.ccsh.parser.repository.PicocliParserRepository
+import de.maibornwolff.codecharta.tools.inspection.InspectionTool
 import de.maibornwolff.codecharta.tools.interactiveparser.util.CodeChartaConstants
 import de.maibornwolff.codecharta.tools.validation.ValidationTool
 import de.maibornwolff.codecharta.util.AttributeGeneratorRegistry
@@ -37,6 +38,7 @@ import kotlin.system.exitProcess
     description = ["Command Line Interface for CodeCharta analysis"],
     subcommands = [
         ValidationTool::class,
+        InspectionTool::class,
         MergeFilter::class,
         EdgeFilter::class,
         StructureModifier::class,
@@ -147,10 +149,10 @@ class Ccsh : Callable<Unit?> {
             if (configuredParsers.size == 1) {
                 Logger.info { "Parser was successfully executed." }
                 return 0
-            } else {
-                Logger.info { "Each parser was successfully executed." }
-                return askAndMergeResults(commandLine)
             }
+
+            Logger.info { "Each parser was successfully executed." }
+            return askAndMergeResults(commandLine)
         }
 
         private fun askAndMergeResults(commandLine: CommandLine): Int {

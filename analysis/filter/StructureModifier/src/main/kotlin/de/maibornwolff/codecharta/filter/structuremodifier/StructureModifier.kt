@@ -3,6 +3,7 @@ package de.maibornwolff.codecharta.filter.structuremodifier
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
+import de.maibornwolff.codecharta.tools.inspection.ProjectStructurePrinter
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import de.maibornwolff.codecharta.tools.interactiveparser.util.CodeChartaConstants
@@ -23,8 +24,7 @@ import java.util.concurrent.Callable
 )
 class StructureModifier(
     private val input: InputStream = System.`in`,
-    private val output: PrintStream = System.out,
-    private val error: PrintStream = System.err
+    private val output: PrintStream = System.out
 ) : Callable<Unit?>, InteractiveParser {
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     var help: Boolean = false
@@ -40,7 +40,7 @@ class StructureModifier(
 
     @CommandLine.Option(
         names = ["-p", "--print-levels"],
-        description = ["show first x layers of project hierarchy"]
+        description = ["show first x layers of project hierarchy (deprecated; use command 'inspect' instead)"]
     )
     private var printLevels: Int? = null
 
@@ -84,8 +84,8 @@ class StructureModifier(
         const val DESCRIPTION = "changes the structure of cc.json files"
 
         @JvmStatic
-        fun mainWithInOut(input: InputStream, output: PrintStream, error: PrintStream, args: Array<String>) {
-            CommandLine(StructureModifier(input, output, error)).execute(*args)
+        fun mainWithInOut(input: InputStream, output: PrintStream, args: Array<String>) {
+            CommandLine(StructureModifier(input, output)).execute(*args)
         }
     }
 
@@ -139,8 +139,8 @@ class StructureModifier(
             return ProjectDeserializer.deserializeProject(input)
         }
 
-        if (!InputHelper.isInputValid(arrayOf(source!!), canInputContainFolders = false)) {
-            throw IllegalArgumentException("Input invalid file for StructureModifier, stopping execution...")
+        require(InputHelper.isInputValid(arrayOf(source!!), canInputContainFolders = false)) {
+            "Input invalid file for StructureModifier, stopping execution..."
         }
 
         val input = source!!.inputStream()

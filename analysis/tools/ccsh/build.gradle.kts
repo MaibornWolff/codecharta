@@ -16,7 +16,7 @@ dependencies {
             ":parser:SVNLogParser", ":import:SonarImporter", ":parser:SourceCodeParser",
             ":import:TokeiImporter", ":filter:MergeFilter", ":filter:EdgeFilter",
             ":tools:ValidationTool", ":export:CSVExporter", ":parser:GitLogParser",
-            ":parser:RawTextParser", ":tools:InteractiveParser", ":tools:PipeableParser",
+            ":parser:RawTextParser", ":tools:InspectionTool", ":tools:InteractiveParser", ":tools:PipeableParser",
             ":import:MetricGardenerImporter", ":import:SourceMonitorImporter"
         )
 

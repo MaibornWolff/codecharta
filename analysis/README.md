@@ -54,9 +54,10 @@ Components that export data from visualisation data to other formats.
 
 ### Additional Tools
 
-| Name                                             | Description                 |
-| ------------------------------------------------ | --------------------------- |
-| [ValidationTool](tools/ValidationTool/README.md) | validates a given json file |
+| Name                                             | Description                               |
+| ------------------------------------------------ |-------------------------------------------|
+| [ValidationTool](tools/ValidationTool/README.md) | validates a given json file               |
+| [InspectionTool](tools/InspectionTool/README.md)   | shows information about a given json file |
 
 ## Requirements
 
