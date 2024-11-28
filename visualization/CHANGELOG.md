@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [1.131.0] - 2024-11-28
+
 ### Added 🚀
 
 - Add alternative center-focused zoom option via the `ALT`-key [#3815](https://github.com/MaibornWolff/codecharta/pull/3815)
