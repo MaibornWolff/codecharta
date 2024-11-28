@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
-- Add alternative center-focused zoom option via the `🡹 Shift`-key [#3815](https://github.com/MaibornWolff/codecharta/pull/3815)
+- Add alternative center-focused zoom option via the `ALT`-key [#3815](https://github.com/MaibornWolff/codecharta/pull/3815)
 
 ## [1.130.0] - 2024-11-04
 
