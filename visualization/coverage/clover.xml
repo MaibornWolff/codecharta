@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1732794361781" clover="3.2.0">
-  <project timestamp="1732794361781" name="All files">
-    <metrics statements="9834" coveredstatements="9149" conditionals="2486" coveredconditionals="2048" methods="1840" coveredmethods="1638" elements="14160" coveredelements="12835" complexity="0" loc="9834" ncloc="9834" packages="246" files="530" classes="530"/>
+<coverage generated="1732799724011" clover="3.2.0">
+  <project timestamp="1732799724011" name="All files">
+    <metrics statements="9834" coveredstatements="9152" conditionals="2484" coveredconditionals="2048" methods="1839" coveredmethods="1638" elements="14157" coveredelements="12838" complexity="0" loc="9834" ncloc="9834" packages="246" files="530" classes="530"/>
     <package name="app">
       <metrics statements="35" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="0"/>
       <file name="app.config.ts" path="/home/runner/work/codecharta/codecharta/visualization/app/app.config.ts">
@@ -5614,7 +5614,7 @@
       </file>
     </package>
     <package name="app.codeCharta.ui.codeMap.threeViewer">
-      <metrics statements="515" coveredstatements="454" conditionals="130" coveredconditionals="71" methods="99" coveredmethods="80"/>
+      <metrics statements="515" coveredstatements="457" conditionals="128" coveredconditionals="71" methods="98" coveredmethods="80"/>
       <file name="threeCamera.service.ts" path="/home/runner/work/codecharta/codecharta/visualization/app/codeCharta/ui/codeMap/threeViewer/threeCamera.service.ts">
         <metrics statements="11" coveredstatements="11" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="2"/>
         <line num="1" count="39" type="stmt"/>
@@ -5630,7 +5630,7 @@
         <line num="19" count="2" type="stmt"/>
       </file>
       <file name="threeMapControls.service.ts" path="/home/runner/work/codecharta/codecharta/visualization/app/codeCharta/ui/codeMap/threeViewer/threeMapControls.service.ts">
-        <metrics statements="100" coveredstatements="92" conditionals="5" coveredconditionals="3" methods="22" coveredmethods="18"/>
+        <metrics statements="100" coveredstatements="95" conditionals="3" coveredconditionals="3" methods="21" coveredmethods="18"/>
         <line num="1" count="36" type="stmt"/>
         <line num="2" count="36" type="stmt"/>
         <line num="3" count="36" type="stmt"/>
@@ -5693,44 +5693,44 @@
         <line num="118" count="1" type="stmt"/>
         <line num="122" count="1" type="stmt"/>
         <line num="123" count="1" type="stmt"/>
-        <line num="129" count="1" type="stmt"/>
-        <line num="130" count="0" type="cond" truecount="0" falsecount="1"/>
+        <line num="128" count="1" type="stmt"/>
+        <line num="130" count="1" type="stmt"/>
         <line num="131" count="0" type="stmt"/>
         <line num="134" count="1" type="stmt"/>
-        <line num="135" count="0" type="cond" truecount="0" falsecount="1"/>
-        <line num="136" count="0" type="stmt"/>
+        <line num="135" count="1" type="stmt"/>
+        <line num="136" count="1" type="stmt"/>
+        <line num="138" count="1" type="stmt"/>
+        <line num="139" count="1" type="stmt"/>
         <line num="140" count="1" type="stmt"/>
         <line num="141" count="1" type="stmt"/>
-        <line num="142" count="1" type="stmt"/>
-        <line num="143" count="1" type="stmt"/>
+        <line num="142" count="0" type="stmt"/>
+        <line num="143" count="0" type="stmt"/>
         <line num="144" count="0" type="stmt"/>
-        <line num="145" count="0" type="stmt"/>
-        <line num="146" count="0" type="stmt"/>
-        <line num="148" count="1" type="stmt"/>
-        <line num="152" count="4" type="stmt"/>
-        <line num="153" count="4" type="stmt"/>
-        <line num="157" count="116" type="stmt"/>
-        <line num="158" count="0" type="stmt"/>
-        <line num="163" count="8" type="stmt"/>
-        <line num="164" count="8" type="stmt"/>
-        <line num="166" count="8" type="cond" truecount="1" falsecount="0"/>
-        <line num="167" count="2" type="stmt"/>
-        <line num="169" count="6" type="cond" truecount="1" falsecount="0"/>
-        <line num="170" count="2" type="stmt"/>
-        <line num="173" count="4" type="stmt"/>
-        <line num="174" count="4" type="stmt"/>
+        <line num="146" count="1" type="stmt"/>
+        <line num="150" count="4" type="stmt"/>
+        <line num="151" count="4" type="stmt"/>
+        <line num="155" count="116" type="stmt"/>
+        <line num="156" count="0" type="stmt"/>
+        <line num="161" count="8" type="stmt"/>
+        <line num="162" count="8" type="stmt"/>
+        <line num="164" count="8" type="cond" truecount="1" falsecount="0"/>
+        <line num="165" count="2" type="stmt"/>
+        <line num="167" count="6" type="cond" truecount="1" falsecount="0"/>
+        <line num="168" count="2" type="stmt"/>
+        <line num="171" count="4" type="stmt"/>
+        <line num="172" count="4" type="stmt"/>
+        <line num="176" count="4" type="stmt"/>
+        <line num="177" count="4" type="stmt"/>
         <line num="178" count="4" type="stmt"/>
-        <line num="179" count="4" type="stmt"/>
         <line num="180" count="4" type="stmt"/>
-        <line num="182" count="4" type="stmt"/>
+        <line num="184" count="2" type="stmt"/>
+        <line num="185" count="2" type="stmt"/>
         <line num="186" count="2" type="stmt"/>
-        <line num="187" count="2" type="stmt"/>
-        <line num="188" count="2" type="stmt"/>
+        <line num="190" count="4" type="stmt"/>
+        <line num="191" count="4" type="stmt"/>
         <line num="192" count="4" type="stmt"/>
         <line num="193" count="4" type="stmt"/>
-        <line num="194" count="4" type="stmt"/>
         <line num="195" count="4" type="stmt"/>
-        <line num="197" count="4" type="stmt"/>
       </file>
       <file name="threeRenderer.service.ts" path="/home/runner/work/codecharta/codecharta/visualization/app/codeCharta/ui/codeMap/threeViewer/threeRenderer.service.ts">
         <metrics statements="77" coveredstatements="74" conditionals="29" coveredconditionals="22" methods="9" coveredmethods="8"/>
@@ -7063,9 +7063,9 @@
         <line num="289" count="4" type="stmt"/>
         <line num="291" count="4" type="stmt"/>
         <line num="293" count="4" type="stmt"/>
-        <line num="294" count="132" type="stmt"/>
-        <line num="295" count="132" type="stmt"/>
-        <line num="296" count="132" type="stmt"/>
+        <line num="294" count="126" type="stmt"/>
+        <line num="295" count="126" type="stmt"/>
+        <line num="296" count="126" type="stmt"/>
         <line num="299" count="4" type="stmt"/>
         <line num="303" count="0" type="stmt"/>
         <line num="307" count="5" type="stmt"/>
@@ -8158,13 +8158,13 @@
         <line num="47" count="2" type="stmt"/>
         <line num="55" count="2" type="stmt"/>
         <line num="64" count="2" type="stmt"/>
-        <line num="68" count="78" type="stmt"/>
-        <line num="69" count="78" type="cond" truecount="1" falsecount="0"/>
-        <line num="70" count="58" type="stmt"/>
+        <line num="68" count="82" type="stmt"/>
+        <line num="69" count="82" type="cond" truecount="1" falsecount="0"/>
+        <line num="70" count="62" type="stmt"/>
         <line num="72" count="20" type="stmt"/>
-        <line num="76" count="136" type="stmt"/>
-        <line num="77" count="136" type="cond" truecount="1" falsecount="0"/>
-        <line num="78" count="116" type="stmt"/>
+        <line num="76" count="144" type="stmt"/>
+        <line num="77" count="144" type="cond" truecount="1" falsecount="0"/>
+        <line num="78" count="124" type="stmt"/>
         <line num="80" count="20" type="stmt"/>
       </file>
     </package>
