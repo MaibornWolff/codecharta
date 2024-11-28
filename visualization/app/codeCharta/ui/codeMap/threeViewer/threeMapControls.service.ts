@@ -125,17 +125,15 @@ export class ThreeMapControlsService {
             MIDDLE: MOUSE.DOLLY,
             RIGHT: MOUSE.PAN
         }
+        this.controls.zoomToCursor = true
 
-        window.addEventListener("keydown", event => {
-            if (event.key === "Alt") {
-                this.controls.zoomToCursor = false
-            }
-        })
-        window.addEventListener("keyup", event => {
-            if (event.key === "Alt") {
-                this.controls.zoomToCursor = true
-            }
-        })
+        const updateZoomToCursor = (event: KeyboardEvent | MouseEvent) => {
+            this.controls.zoomToCursor = !event.altKey
+        }
+
+        window.addEventListener("keydown", updateZoomToCursor)
+        window.addEventListener("keyup", updateZoomToCursor)
+        window.addEventListener("mousemove", updateZoomToCursor)
 
         this.controls.minPolarAngle = 0
         this.controls.maxPolarAngle = Math.PI / 2
