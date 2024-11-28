@@ -120,7 +120,7 @@ more: [Code Quality Insights](https://www.maibornwolff.de/en/code-quality-insigh
 ### Software Health Check
 
 A full Software Health Check for your codebase and everything around it. **Click** the link to learn
-more: [Software Health Check](https://www.maibornwolff.de/service/planungssicherheit-durch-web-application-audit/)
+more: [Software Health Check](https://www.maibornwolff.de/en/service/software-health-check/)
 
 ## Links
 
