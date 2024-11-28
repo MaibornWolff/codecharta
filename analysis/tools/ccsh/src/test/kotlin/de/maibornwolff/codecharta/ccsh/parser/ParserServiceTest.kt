@@ -63,7 +63,8 @@ class ParserServiceTest {
                 Arguments.of("svnlogparser"),
                 Arguments.of("tokeiimporter"),
                 Arguments.of("rawtextparser"),
-                Arguments.of("check")
+                Arguments.of("check"),
+                Arguments.of("inspect")
             )
         }
     }
@@ -113,6 +114,7 @@ class ParserServiceTest {
         val selectedParserList =
             listOf(
                 "check",
+                "inspect",
                 "edgefilter",
                 "sonarimport",
                 "svnlogparser",

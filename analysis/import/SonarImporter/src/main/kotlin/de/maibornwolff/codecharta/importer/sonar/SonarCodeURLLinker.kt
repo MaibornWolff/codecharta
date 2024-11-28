@@ -21,7 +21,7 @@ open class SonarCodeURLLinker {
     companion object {
         val NULL: SonarCodeURLLinker =
             object : SonarCodeURLLinker() {
-                override fun createUrlString(c: Component): String {
+                override fun createUrlString(component: Component): String {
                     return ""
                 }
             }
