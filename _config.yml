@@ -2,7 +2,7 @@
 # the others are Minimal Mistakes Configurations: https://mmistakes.github.io/minimal-mistakes/docs/configuration/
 
 remote_theme: "mmistakes/minimal-mistakes"
-minimal_mistakes_skin: "dark" # "default", "air", "aqua", "contrast", "dark", "dirt", "neon", "mint", "plum", "sunrise"
+minimal_mistakes_skin: "air" # "default", "air", "aqua", "contrast", "dark", "dirt", "neon", "mint", "plum", "sunrise"
 
 # Site Settings
 locale: "en-US"
@@ -13,9 +13,9 @@ url: # the base hostname & protocol for your site e.g. "https://mmistakes.github
 baseurl: "" # the subpath of your site, e.g. "/blog"
 repository: MaibornWolff/codecharta # GitHub username/repo-name e.g. "mmistakes/minimal-mistakes"
 teaser: # path of fallback teaser image, e.g. "/assets/images/500x300.png"
-logo: # path of logo image to display in the masthead, e.g. "/assets/images/88x88.png"
-masthead_title: # overrides the website title displayed in the masthead, use " " for no title
-# breadcrumbs            : false # true, false (default)
+logo: /assets/images/codecharta_logo.png # path of logo image to display in the masthead, e.g. "/assets/images/88x88.png"
+masthead_title: CodeCharta # overrides the website title displayed in the masthead, use " " for no title
+breadcrumbs: true
 words_per_minute: 200
 
 search: true
@@ -24,18 +24,20 @@ search_provider: lunr
 
 social:
     type: Organization # Person or Organization (defaults to Person)
-    name: # If the user or organization name differs from the site's name
+    name: MaibornWolff # If the user or organization name differs from the site's name
     links: # An array of links to social media profiles
 
 # Custom site variables, reference them in liquid like this: {{site.web_visualization_link}}
 web_visualization_link: https://maibornwolff.github.io/codecharta/visualization/app/index.html?file=codecharta.cc.json.gz&file=codecharta_analysis.cc.json.gz&currentFilesAreSampleFiles=true
-
-# Site Footer
-footer:
-    links:
-        - label: "GitHub"
-          icon: "fab fa-fw fa-github"
-          url: https://github.com/MaibornWolff/codecharta
+docs_overview: /codecharta/docs/overview
+docs_analysis: /codecharta/docs/analysis
+docs_about: /codecharta/docs/about
+docs_exporter: /codecharta/docs/exporter
+docs_filter: /codecharta/docs/filter
+docs_importer: /codecharta/docs/importer
+docs_parser: /codecharta/docs/parser
+docs_visualization: /codecharta/docs/visualization
+docs_how_to: /codecharta/docs/how-to
 
 # Reading Files
 include:
@@ -103,6 +105,7 @@ whitelist:
     - jekyll-gist
     - jekyll-feed
     - jekyll-include-cache
+    - jekyll-redirect-from
 
 # Archives
 #  Type
@@ -137,7 +140,7 @@ collections:
     docs:
         output: true
         permalink: /:collection/:path/
-    showcase:
+    examples:
         output: true
         permalink: /:collection/:path/
 
@@ -161,10 +164,10 @@ defaults:
           layout: single
           sidebar:
               nav: "docs"
-    # _showcase
+    # _examples
     - scope:
           path: ""
-          type: showcase
+          type: examples
       values:
           layout: single
     # _posts
