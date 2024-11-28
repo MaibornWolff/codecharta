@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.filter.mergefilter
 
+import de.maibornwolff.codecharta.filter.mergefilter.mimo.Mimo
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
@@ -27,16 +28,16 @@ class MergeFilter(
     @CommandLine.Parameters(arity = "1..*", paramLabel = "FILE or FOLDER", description = ["files to merge"])
     private var sources: Array<File> = arrayOf()
 
-    @CommandLine.Option(names = ["-a", "--add-missing"], description = ["enable adding missing nodes to reference"])
+    @CommandLine.Option(names = ["-a", "--add-missing"], description = ["[Leaf Merging Strategy] enable adding missing nodes to reference"])
     private var addMissingNodes = false
 
-    @CommandLine.Option(names = ["--recursive"], description = ["recursive merging strategy (default)"])
+    @CommandLine.Option(names = ["--recursive"], description = ["Recursive Merging Strategy (default)"])
     private var recursiveStrategySet = true
 
-    @CommandLine.Option(names = ["--leaf"], description = ["leaf merging strategy"])
+    @CommandLine.Option(names = ["--leaf"], description = ["Leaf Merging Strategy"])
     private var leafStrategySet = false
 
-    @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File (or empty for stdout)"])
+    @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File (or empty for stdout; ignored in MIMO mode)"])
     private var outputFile: String? = null
 
     @CommandLine.Option(names = ["-nc", "--not-compressed"], description = ["save uncompressed output File"])
@@ -47,6 +48,15 @@ class MergeFilter(
 
     @CommandLine.Option(names = ["-f"], description = ["force merge non-overlapping modules at the top-level structure"])
     private var mergeModules = false
+
+    @CommandLine.Option(names = ["--mimo"], description = ["merge multiple files with the same prefix into multiple output files"])
+    private var mimo = false
+
+    @CommandLine.Option(
+        names = ["-ld", "--levenshtein-distance"],
+        description = ["[MIMO mode] levenshtein distance for name match suggestions (default: 3; 0 for no suggestions)"]
+    )
+    private var levenshteinDistance = 3
 
     override val name = NAME
     override val description = DESCRIPTION
@@ -73,41 +83,41 @@ class MergeFilter(
         val nodeMergerStrategy = when {
             leafStrategySet -> LeafNodeMergerStrategy(addMissingNodes, ignoreCase)
             recursiveStrategySet && !leafStrategySet -> RecursiveNodeMergerStrategy(ignoreCase)
-            else -> throw IllegalArgumentException("Only one merging strategy must be set")
+            else -> throw IllegalArgumentException("At least one merging strategy must be set")
         }
 
         if (!InputHelper.isInputValid(sources, canInputContainFolders = true)) {
             throw IllegalArgumentException("Input invalid files/folders for MergeFilter, stopping execution...")
         }
+
         val sourceFiles = InputHelper.getFileListFromValidatedResourceArray(sources)
 
-        val rootChildrenNodes = sourceFiles.mapNotNull {
-            val input = it.inputStream()
-            try {
-                ProjectDeserializer.deserializeProject(input)
-            } catch (e: Exception) {
-                Logger.warn { "${it.name} is not a valid project file and will be skipped." }
-                null
-            }
+        if (mimo) {
+            processMimoMerge(sourceFiles, nodeMergerStrategy)
+        } else {
+            val projects = readInputFiles(sourceFiles)
+            if (!continueIfIncompatibleProjects(projects)) return null
+
+            val mergedProject = ProjectMerger(projects, nodeMergerStrategy).merge()
+            ProjectSerializer.serializeToFileOrStream(mergedProject, outputFile, output, compress)
         }
-
-        if (!mergeModules) {
-            if (!hasTopLevelOverlap(rootChildrenNodes)) {
-                printOverlapError(rootChildrenNodes)
-
-                val continueMerge = ParserDialog.askForceMerge()
-
-                if (!continueMerge) {
-                    Logger.info { "Merge cancelled by the user." }
-                    return null
-                }
-            }
-        }
-
-        val mergedProject = ProjectMerger(rootChildrenNodes, nodeMergerStrategy).merge()
-        ProjectSerializer.serializeToFileOrStream(mergedProject, outputFile, output, compress)
 
         return null
+    }
+
+    private fun continueIfIncompatibleProjects(projects: List<Project>): Boolean {
+        if (mergeModules) return true
+        if (!hasTopLevelOverlap(projects)) {
+            printOverlapError(projects)
+
+            val continueMerge = ParserDialog.askForceMerge()
+
+            if (!continueMerge) {
+                Logger.info { "Merge cancelled by the user." }
+                return false
+            }
+        }
+        return true
     }
 
     private fun hasTopLevelOverlap(projects: List<Project>): Boolean {
@@ -129,5 +139,49 @@ class MergeFilter(
 
     override fun isApplicable(resourceToBeParsed: String): Boolean {
         return false
+    }
+
+    private fun processMimoMerge(sourceFiles: List<File>, nodeMergerStrategy: NodeMergerStrategy) {
+        val groupedFiles: List<Pair<Boolean, List<File>>> = Mimo.generateProjectGroups(sourceFiles, levenshteinDistance)
+
+        groupedFiles.forEach { (exactMatch, files) ->
+            val confirmedFileList = if (exactMatch) {
+                files
+            } else {
+                ParserDialog.requestMimoFileSelection(files)
+            }
+            if (confirmedFileList.size <= 1) {
+                Logger.info { "Continue with next group, because one or less files were selected" }
+                return@forEach
+            }
+
+            val projects = readInputFiles(confirmedFileList)
+            if (projects.size <= 1) {
+                Logger.warn { "After deserializing there were one or less projects. Continue with next group" }
+                return@forEach
+            }
+
+            if (!continueIfIncompatibleProjects(projects)) return@forEach
+
+            val mergedProject = ProjectMerger(projects, nodeMergerStrategy).merge()
+            val outputFilePrefix = Mimo.retrieveGroupName(confirmedFileList)
+            ProjectSerializer.serializeToFileOrStream(mergedProject, "$outputFilePrefix.merge.cc.json", output, compress)
+            Logger.info {
+                "Merged files with prefix '$outputFilePrefix' into" +
+                    " '$outputFilePrefix.merge.cc.json${if (compress) ".gz" else ""}'"
+            }
+        }
+    }
+
+    private fun readInputFiles(files: List<File>): List<Project> {
+        return files.mapNotNull {
+            val input = it.inputStream()
+            try {
+                ProjectDeserializer.deserializeProject(input)
+            } catch (e: Exception) {
+                Logger.warn { "${it.name} is not a valid project file and will be skipped." }
+                null
+            }
+        }
     }
 }
