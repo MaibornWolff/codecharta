@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [1.131.1] - 2024-11-28
+
 ### Fixed 🐞
 
 - Set default scroll behaviour to zoom to cursor.
