@@ -4,7 +4,7 @@ permalink: /
 header:
   actions:
     - label: "<i class='fas fa-fw fa-link'></i> Quick Start"
-      url: "/docs/overview/getting-started/"
+      url: "/docs/overview/getting-started"
     - label: "<i class='fas fa-fw fa-link'></i> Web Studio"
       url: "https://maibornwolff.github.io/codecharta/visualization/app/index.html?file=codecharta.cc.json.gz&file=codecharta_analysis.cc.json.gz"
   overlay_image: /assets/images/cc_home.png
@@ -21,4 +21,4 @@ CodeCharta is our attempt to make code more **tangible**, so that you can **comm
 
 {% include features.html %}
 
-[> Get started!]({{site.baseurl}}/docs/overview/getting-started/){: .btn--primary.btn}
+[> Get started!]({{site.baseurl}}/docs/overview/getting-started){: .btn--primary.btn}
