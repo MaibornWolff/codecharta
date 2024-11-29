@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [1.129.0] - 2024-11-29
+
 ### Changed
 
 - Moved the structure print functionality to a new tool called 'inspection' [#3826](https://github.com/MaibornWolff/codecharta/pull/3826)
