@@ -29,15 +29,15 @@ social:
 
 # Custom site variables, reference them in liquid like this: {{site.web_visualization_link}}
 web_visualization_link: https://maibornwolff.github.io/codecharta/visualization/app/index.html?file=codecharta.cc.json.gz&file=codecharta_analysis.cc.json.gz&currentFilesAreSampleFiles=true
-docs_overview: /codecharta/docs/overview
-docs_analysis: /codecharta/docs/analysis
-docs_about: /codecharta/docs/about
-docs_exporter: /codecharta/docs/exporter
-docs_filter: /codecharta/docs/filter
-docs_importer: /codecharta/docs/importer
-docs_parser: /codecharta/docs/parser
-docs_visualization: /codecharta/docs/visualization
-docs_how_to: /codecharta/docs/how-to
+docs_overview: /docs/overview
+docs_analysis: /docs/analysis
+docs_about: /docs/about
+docs_exporter: /docs/exporter
+docs_filter: /docs/filter
+docs_importer: /docs/importer
+docs_parser: /docs/parser
+docs_visualization: /docs/visualization
+docs_how_to: /docs/how-to
 
 # Reading Files
 include:
