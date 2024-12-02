@@ -1,6 +1,11 @@
 ---
 title: "Examples"
 permalink: /examples/
+redirect_from:
+  - /showcases/
+  - /showcases
+  - /showcase/
+  - /showcase
 
 layout: collection
 collection: examples
