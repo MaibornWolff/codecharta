@@ -4,9 +4,8 @@
   </a>
 
   <p>
-    Latest Release
-    <br>
-    Analysis <a href="https://github.com/MaibornWolff/codecharta/releases/tag/ana-1.128.0">1.128.0</a> | Visualization <a href="https://github.com/MaibornWolff/codecharta/releases/tag/vis-1.130.0">1.130.0</a>
+    Latest Release: <br>
+    Analysis <a href="https://github.com/MaibornWolff/codecharta/releases/tag/ana-1.129.0">1.129.0</a> | Visualization <a href="https://github.com/MaibornWolff/codecharta/releases/tag/vis-1.131.1">1.131.1</a>
 
 [comment]: ##################################################################################
 [comment]: <Ensure that the words 'latest release' are above the line with the links>
