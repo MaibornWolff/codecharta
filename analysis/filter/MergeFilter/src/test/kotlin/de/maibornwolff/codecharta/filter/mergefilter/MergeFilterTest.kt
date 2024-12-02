@@ -243,7 +243,7 @@ class MergeFilterTest {
     @Nested
     @DisplayName("MimoModeTests")
     inner class MimoModeTest {
-        val testFile1Path = "src/test/resources/test.json"
+        private val testFile1Path = "src/test/resources/test.json"
         val testProjectPathA = "src/test/resources/mimoFileSelection/testProject.alpha.cc.json"
         val testProjectPathB = "src/test/resources/mimoFileSelection/testProject.beta.cc.json"
         val testProjectPathC = "src/test/resources/mimoFileSelection/testProjectX.notIncl.cc.json"
@@ -491,6 +491,70 @@ class MergeFilterTest {
             assertThat(outputFile).exists()
 
             outputFile.deleteOnExit()
+        }
+    }
+
+    @Nested
+    @DisplayName("FatMergeTests")
+    inner class FatMergeTest {
+        private val fatMergeTestFolder = "src/test/resources/fatMerge"
+        private val testFilePath1 = "$fatMergeTestFolder/testEdges1.cc.json"
+        private val testFilePath2 = "$fatMergeTestFolder/testProject.alpha.cc.json"
+        private val testFilePathDuplicate = "$fatMergeTestFolder/duplicate/testProject.beta.cc.json"
+
+        @Test
+        fun `should warn about invalid files during fat merge and abort`() {
+            System.setErr(PrintStream(errContent))
+            CommandLine(MergeFilter()).execute(
+                "src/test/resources/invalid.cc.json",
+                "--fat"
+            ).toString()
+            System.setErr(originalErr)
+
+            assertThat(errContent.toString()).contains("Input invalid files/folders for MergeFilter, stopping execution...")
+        }
+
+        @Test
+        fun `should exit when prefixes are not unique`() {
+            System.setErr(PrintStream(errContent))
+            CommandLine(MergeFilter()).execute(
+                testFilePath1, testFilePath2, testFilePathDuplicate,
+                "--fat"
+            ).toString()
+            System.setErr(originalErr)
+
+            assertThat(errContent.toString()).contains("Make sure that the input prefixes across all input files are unique!")
+        }
+
+        @Test
+        fun `should cancel on single file input`() {
+            System.setErr(PrintStream(errContent))
+            CommandLine(MergeFilter()).execute(
+                testFilePath1,
+                "--fat"
+            ).toString()
+            System.setErr(originalErr)
+
+            assertThat(errContent.toString()).contains("One or less projects in input, merging aborted.")
+        }
+
+        @Test
+        fun `should merge all projects into one file each packaged into a subfolder with input file's prefix`() {
+            System.setOut(PrintStream(outContent))
+            System.setErr(PrintStream(errContent))
+            CommandLine(MergeFilter()).execute(
+                testFilePath1, testFilePath2,
+                "--fat"
+            ).toString()
+            System.setErr(originalErr)
+            System.setOut(originalOut)
+            assertThat(errContent.toString()).contains("Input invalid files/folders for MergeFilter, stopping execution...")
+            assertThat(originalOut.toString()).contains("")
+        }
+
+        @Test
+        fun `should output into specified file`() {
+
         }
     }
 }

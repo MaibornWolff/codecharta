@@ -51,8 +51,8 @@ class Mimo {
             }
         }
 
-        fun retrieveGroupName(files: List<File>): String {
-            val filePrefixes = files.map { it.name.substringBefore(".") }.toSet()
+        fun retrieveGroupName(files: List<String>): String {
+            val filePrefixes = files.map { it.substringBefore(".") }.toSet()
             if (filePrefixes.size == 1) return filePrefixes.first()
             return ParserDialog.askForMimoPrefix(filePrefixes)
         }
