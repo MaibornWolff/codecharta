@@ -3,6 +3,7 @@ permalink: /docs/importer/sonar
 title: "Sonar Importer"
 redirect_from:
   - /importer/
+  - /docs/sonar-importer
 
 toc: true
 toc_sticky: true

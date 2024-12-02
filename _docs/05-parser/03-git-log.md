@@ -1,6 +1,8 @@
 ---
 permalink: /docs/parser/git-log
 title: "Git Log Parser"
+redirect_from:
+  - /docs/git-log-parser
 
 toc: true
 toc_sticky: true

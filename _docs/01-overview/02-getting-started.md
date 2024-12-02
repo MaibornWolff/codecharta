@@ -2,6 +2,8 @@
 permalink: /docs/overview/getting-started
 title: "Getting started"
 excerpt: "Let's get started!"
+redirect_from:
+  - /docs/overview/getting-started/
 
 toc: true
 toc_sticky: true
