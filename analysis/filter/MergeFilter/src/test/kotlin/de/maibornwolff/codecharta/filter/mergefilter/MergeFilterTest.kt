@@ -5,6 +5,7 @@ import com.github.kinquirer.components.promptCheckboxObject
 import com.github.kinquirer.components.promptList
 import com.github.kinquirer.core.Choice
 import de.maibornwolff.codecharta.filter.mergefilter.MergeFilter.Companion.main
+import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InputType
 import de.maibornwolff.codecharta.util.InputHelper
 import io.mockk.every
@@ -543,20 +544,44 @@ class MergeFilterTest {
         @Test
         fun `should merge all projects into one file each packaged into a subfolder with input file's prefix`() {
             System.setOut(PrintStream(outContent))
-            System.setErr(PrintStream(errContent))
             CommandLine(MergeFilter()).execute(
                 testFilePath1,
                 testFilePath2,
                 "--large"
             ).toString()
-            System.setErr(originalErr)
             System.setOut(originalOut)
-            assertThat(errContent.toString()).contains("Input invalid files/folders for MergeFilter, stopping execution...")
-            assertThat(originalOut.toString()).contains("")
+            val outputString = outContent.toString()
+            assertThat(outputString).contains("testProject", "testEdges1")
+            assertThat(outputString).contains("SourceMonCsvConverter", "number_of_commits")
+            assertThat(
+                outputString
+            ).contains("/root/testEdges1/visualization/file2", "/root/testEdges1/visualization/file3", "/root/testEdges1/file1")
         }
 
         @Test
         fun `should output into specified file`() {
+            val outPutFilePath = "$fatMergeTestFolder/largeOutputToFile.cc.json"
+            CommandLine(MergeFilter()).execute(
+                testFilePath1,
+                testFilePath2,
+                "--large",
+                "-o=$outPutFilePath",
+                "-nc"
+            ).toString()
+            val outPutFile = File(outPutFilePath)
+            assertThat(outPutFile).exists()
+            val project = ProjectDeserializer.deserializeProject(outPutFile.inputStream())
+            val projectInput1 = ProjectDeserializer.deserializeProject(File(testFilePath1).inputStream())
+            val projectInput2 = ProjectDeserializer.deserializeProject(File(testFilePath2).inputStream())
+            assertThat(project.sizeOfEdges()).isEqualTo(2)
+            assertThat(project.sizeOfBlacklist()).isEqualTo(2)
+            assertThat(project.edges.toString()).contains("/root/testEdges1/visualization/file2", "/root/testEdges1/visualization/file3")
+            assertThat(project.rootNode.children.size).isEqualTo(2)
+            val outputProject1 = project.rootNode.children.first { it.name == "testEdges1" }
+            val outputProject2 = project.rootNode.children.first { it.name == "testProject" }
+            assertThat(outputProject1.children.toString()).isEqualTo(projectInput1.rootNode.children.toString())
+            assertThat(outputProject2.children.toString()).isEqualTo(projectInput2.rootNode.children.toString())
+            outPutFile.deleteOnExit()
         }
     }
 }
