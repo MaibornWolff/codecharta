@@ -124,7 +124,7 @@ more: [Software Health Check](https://www.maibornwolff.de/en/service/software-he
 ## Links
 
 - [Documentation](https://maibornwolff.github.io/codecharta/)
-- [Quickstart Guide](https://maibornwolff.github.io/codecharta/docs/overview/getting-started/)
+- [Quickstart Guide](https://maibornwolff.github.io/codecharta/docs/overview/getting-started)
 - [Releases](https://github.com/MaibornWolff/codecharta/releases)
 - [Coverage](https://maibornwolff.github.io/codecharta/visualization/coverage/lcov-report/)
 - [Analysis - Changelog](analysis/CHANGELOG.md) | [Visualization - Changelog](visualization/CHANGELOG.md)
