@@ -21,4 +21,4 @@ CodeCharta is our attempt to make code more **tangible**, so that you can **comm
 
 {% include features.html %}
 
-[> Get started!]({{site.baseurl}}/docs/overview/getting-started/){: .btn--primary.btn}
+[> Get started!]({{site.baseurl}}/docs/overview/getting-started){: .btn--primary.btn}
