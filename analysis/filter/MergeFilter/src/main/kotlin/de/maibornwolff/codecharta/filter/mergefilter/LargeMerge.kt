@@ -6,7 +6,7 @@ import de.maibornwolff.codecharta.model.Node
 import de.maibornwolff.codecharta.model.NodeType
 import de.maibornwolff.codecharta.model.Project
 
-class FatMerge {
+class LargeMerge {
     companion object {
         fun packageProjectInto(project: Project, prefix: String): Project {
             val modifiedProject = Project(
