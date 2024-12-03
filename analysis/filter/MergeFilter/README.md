@@ -14,19 +14,20 @@ Both strategies will merge the unique list entries for `attributeTypes` and `bla
 
 ## Usage and Parameters
 
-| Parameters                      | Description                                                          |
-|---------------------------------|----------------------------------------------------------------------|
-| `FILE`                          | files to merge                                                       |
-| `-a, --add-missing`             | [Leaf Merging Strategy] enable adding missing nodes to reference     |
-| `-h, --help`                    | displays help and exits                                              |
-| `--ignore-case`                 | ignores case when checking node names                                |
-| `--leaf`                        | use leaf merging strategy                                            |
-| `-nc, --not-compressed`         | save uncompressed output File                                        |
-| `-o, --outputFile=<outputFile>` | output File (or empty for stdout; ignored in [MIMO mode]))           |
-| `--recursive`                   | use recursive merging strategy (default)                             |
-| `--mimo`                        | merge multiple files with the same prefix into multiple output files |
-| `-ld, --levenshtein-distance`   | [MIMO mode] levenshtein distance for name match suggestions          |
-| `-f`                            | force merge non-overlapping modules at the top-level structure       |
+| Parameters                      | Description                                                                      |
+|---------------------------------|----------------------------------------------------------------------------------|
+| `FILE`                          | files to merge                                                                   |
+| `-a, --add-missing`             | [Leaf Merging Strategy] enable adding missing nodes to reference                 |
+| `-h, --help`                    | displays help and exits                                                          |
+| `--ignore-case`                 | ignores case when checking node names                                            |
+| `--leaf`                        | use leaf merging strategy                                                        |
+| `-nc, --not-compressed`         | save uncompressed output File                                                    |
+| `-o, --outputFile=<outputFile>` | output File (or empty for stdout; [MIMO mode] output folder))                    |
+| `--recursive`                   | use recursive merging strategy (default)                                         |
+| `--mimo`                        | merge multiple files with the same prefix into multiple output files             |
+| `-ld, --levenshtein-distance`   | [MIMO mode] levenshtein distance for name match suggestions                      |
+| `-f`                            | force merge non-overlapping modules at the top-level structure                   |
+| `--large`                       | merge multiple project files into one output file, separated by their dot-prefix |
 
 ```
 Usage: ccsh merge [-ah] [--ignore-case] [--leaf] [-nc] [--recursive]
@@ -53,10 +54,24 @@ This last example inputs the folder foo, which will result in all project files 
 ccsh merge myProjectFolder/ --mimo -ld 0 -f
 ```
 
-## MIMO - Multiply Inputs Multiple Outputs
+## MIMO Merge - Multiply Inputs Multiple Outputs
 
 Matches multiple `cc.json` files based on their prefix (e.g. **myProject**.git.cc.json). Tries to match project names with typos and asks which to add to the output.
 If you want to use this in a CI/CD pipeline environment you may find it useful to specify `-ld` and `-f` to not prompt any user input.
 The output file name follows the following schema: `myProject.merge.cc.json`.
 
-> IMPORTANT: Output is always the current working directory.
+## Large Merge
+
+Merges multiple `.cc.json` files into one projects, but separates them into sub-folders, with names defined through the dot-prefixes of the input files:
+
+```
+ccsh merge aa.cc.json bb.cc.json cc.cc.json --large -o myOutputFile -nc
+# myOutputFile.cc.json:
+# - root
+# - - aa
+# - - - *
+# - - bb
+# - - - *
+# - - cc
+# - - - *
+```
