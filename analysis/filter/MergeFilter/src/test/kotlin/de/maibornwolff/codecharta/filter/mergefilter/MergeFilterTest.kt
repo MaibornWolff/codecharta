@@ -497,7 +497,7 @@ class MergeFilterTest {
     @Nested
     @DisplayName("FatMergeTests")
     inner class FatMergeTest {
-        private val fatMergeTestFolder = "src/test/resources/fatMerge"
+        private val fatMergeTestFolder = "src/test/resources/largeMerge"
         private val testFilePath1 = "$fatMergeTestFolder/testEdges1.cc.json"
         private val testFilePath2 = "$fatMergeTestFolder/testProject.alpha.cc.json"
         private val testFilePathDuplicate = "$fatMergeTestFolder/duplicate/testProject.beta.cc.json"
@@ -507,7 +507,7 @@ class MergeFilterTest {
             System.setErr(PrintStream(errContent))
             CommandLine(MergeFilter()).execute(
                 "src/test/resources/invalid.cc.json",
-                "--fat"
+                "--large"
             ).toString()
             System.setErr(originalErr)
 
@@ -518,8 +518,10 @@ class MergeFilterTest {
         fun `should exit when prefixes are not unique`() {
             System.setErr(PrintStream(errContent))
             CommandLine(MergeFilter()).execute(
-                testFilePath1, testFilePath2, testFilePathDuplicate,
-                "--fat"
+                testFilePath1,
+                testFilePath2,
+                testFilePathDuplicate,
+                "--large"
             ).toString()
             System.setErr(originalErr)
 
@@ -531,7 +533,7 @@ class MergeFilterTest {
             System.setErr(PrintStream(errContent))
             CommandLine(MergeFilter()).execute(
                 testFilePath1,
-                "--fat"
+                "--large"
             ).toString()
             System.setErr(originalErr)
 
@@ -543,8 +545,9 @@ class MergeFilterTest {
             System.setOut(PrintStream(outContent))
             System.setErr(PrintStream(errContent))
             CommandLine(MergeFilter()).execute(
-                testFilePath1, testFilePath2,
-                "--fat"
+                testFilePath1,
+                testFilePath2,
+                "--large"
             ).toString()
             System.setErr(originalErr)
             System.setOut(originalOut)
@@ -554,7 +557,6 @@ class MergeFilterTest {
 
         @Test
         fun `should output into specified file`() {
-
         }
     }
 }
