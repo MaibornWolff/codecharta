@@ -48,7 +48,6 @@ class LargeMerge {
         }
 
         private fun insertFolderIntoPath(path: String, folderName: String): String {
-            require(Regex("^/root/").matches(path))
             return path.replace(Regex("^/root/"), "/root/$folderName/")
         }
     }
