@@ -175,10 +175,12 @@ class MergeFilter(
 
             val mergedProject = ProjectMerger(projects, nodeMergerStrategy).merge()
             val outputFilePrefix = Mimo.retrieveGroupName(projectsFileNamePairs.map { it.first })
-            ProjectSerializer.serializeToFileOrStream(mergedProject, "$outputFilePrefix.merge.cc.json", output, compress)
+            val outputFileName = "$outputFilePrefix.merge.cc.json"
+            val outputFilePath = Mimo.assembleOutputFilePath(outputFile, outputFileName)
+            ProjectSerializer.serializeToFileOrStream(mergedProject, outputFilePath, output, compress)
             Logger.info {
                 "Merged files with prefix '$outputFilePrefix' into" +
-                    " '$outputFilePrefix.merge.cc.json${if (compress) ".gz" else ""}'"
+                    " '$outputFileName${if (compress) ".gz" else ""}'"
             }
         }
     }

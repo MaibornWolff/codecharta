@@ -493,11 +493,54 @@ class MergeFilterTest {
 
             outputFile.deleteOnExit()
         }
+
+        @Test
+        fun `should merge two projects with output at the given location`() {
+            val prefix = "testProject"
+            val outputFolder = "src/test/resources"
+
+            System.setErr(PrintStream(errContent))
+            CommandLine(MergeFilter()).execute(
+                testProjectPathA,
+                testProjectPathB,
+                "--mimo",
+                "--levenshtein-distance=0",
+                "-o=$outputFolder"
+            ).toString()
+
+            System.setErr(originalErr)
+
+            val outputFileName = "$prefix.merge.cc.json.gz"
+            val outputFile = File("$outputFolder/$outputFileName")
+
+            assertThat(errContent.toString()).contains("Merged files with prefix '$prefix' into '$outputFileName'")
+            assertThat(outputFile).exists()
+
+            outputFile.deleteOnExit()
+        }
+
+        @Test
+        fun `should throw error if output-file is not a folder`() {
+            val invalidOutputPath = "src/test/resources/invalid.cc.json"
+
+            System.setErr(PrintStream(errContent))
+            CommandLine(MergeFilter()).execute(
+                testProjectPathA,
+                testProjectPathB,
+                "--mimo",
+                "--levenshtein-distance=0",
+                "-o=$invalidOutputPath"
+            ).toString()
+
+            System.setErr(originalErr)
+
+            assertThat(errContent.toString()).contains("Please specify a folder for MIMO output or nothing")
+        }
     }
 
     @Nested
-    @DisplayName("FatMergeTests")
-    inner class FatMergeTest {
+    @DisplayName("LargeMergeTests")
+    inner class LargeMergeTest {
         private val fatMergeTestFolder = "src/test/resources/largeMerge"
         private val testFilePath1 = "$fatMergeTestFolder/testEdges1.cc.json"
         private val testFilePath2 = "$fatMergeTestFolder/testProject.alpha.cc.json"
