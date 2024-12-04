@@ -7,7 +7,7 @@ import { visibleFilesBySelectionModeSelector } from "./visibleFilesBySelectionMo
 import { Store } from "@ngrx/store"
 import { CcState } from "../../codeCharta.model"
 
-@Injectable()
+@Injectable({ providedIn: "root" })
 export class CustomConfigHelperService {
     readonly downloadableCustomConfigs$ = combineLatest([
         this.store.select(visibleFilesBySelectionModeSelector),

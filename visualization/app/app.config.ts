@@ -6,9 +6,6 @@ import { appReducers, setStateMiddleware } from "app/codeCharta/state/store/stat
 import { UnfocusNodesEffect } from "app/codeCharta/state/effects/unfocusNodes/unfocusNodes.effect"
 import { AddBlacklistItemsIfNotResultsInEmptyMapEffect } from "app/codeCharta/state/effects/addBlacklistItemsIfNotResultsInEmptyMap/addBlacklistItemsIfNotResultsInEmptyMap.effect"
 import { VersionService } from "app/codeCharta/services/version/version.service"
-import { CopyToClipboardService } from "app/codeCharta/ui/copyToClipboardButton/copyToClipboard.service"
-import { ScenarioService } from "app/codeCharta/ui/ribbonBar/showScenariosButton/scenario.service"
-import { FileSelectionModeService } from "app/codeCharta/ui/filePanel/fileSelectionMode.service"
 import { provideAnimationsAsync } from "@angular/platform-browser/animations/async"
 import { AutoFitCodeMapEffect } from "app/codeCharta/state/effects/autoFitCodeMapChange/autoFitCodeMap.effect"
 import { LinkColorMetricToHeightMetricEffect } from "app/codeCharta/state/effects/linkColorMetricToHeightMetric/linkColorMetricToHeightMetric.effect"
@@ -28,9 +25,6 @@ import { BlacklistSearchPatternEffect } from "app/codeCharta/ui/ribbonBar/search
 
 export const appConfig: ApplicationConfig = {
     providers: [
-        CopyToClipboardService,
-        ScenarioService,
-        FileSelectionModeService,
         provideAnimationsAsync(),
         provideHttpClient(withInterceptorsFromDi()),
 
@@ -56,7 +50,6 @@ export const appConfig: ApplicationConfig = {
             UpdateMapColorsEffect
         ]),
 
-        VersionService,
         {
             provide: APP_INITIALIZER,
             useFactory: (versionService: VersionService) => () => versionService.synchronizeLocalCodeChartaVersion(),

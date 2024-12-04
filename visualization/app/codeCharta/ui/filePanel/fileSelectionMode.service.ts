@@ -7,7 +7,7 @@ import { isDeltaState, isEqual } from "../../model/files/files.helper"
 import { setDelta, setFiles } from "../../state/store/files/files.actions"
 import { filesSelector } from "../../state/store/files/files.selector"
 
-@Injectable()
+@Injectable({ providedIn: "root" })
 export class FileSelectionModeService implements OnDestroy {
     lastSetFilesOfPreviousMode: FileState[] = []
 

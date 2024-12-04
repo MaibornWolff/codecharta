@@ -5,7 +5,7 @@ import { accumulatedDataSelector } from "../../state/selectors/accumulatedData/a
 import { buildTextOfFiles } from "./util/clipboardString"
 import { getFilenamesWithHighestMetrics } from "./util/getFilenamesWithHighestMetrics"
 
-@Injectable()
+@Injectable({ providedIn: "root" })
 export class CopyToClipboardService {
     constructor(private state: State<CcState>) {}
 

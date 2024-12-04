@@ -27,7 +27,7 @@ import { ThreeMapControlsService } from "../../codeMap/threeViewer/threeMapContr
 import { ErrorDialogComponent } from "../../dialogs/errorDialog/errorDialog.component"
 import { ScenarioHelper } from "./scenarioHelper"
 
-@Injectable()
+@Injectable({ providedIn: "root" })
 export class ScenarioService {
     constructor(
         private state: State<CcState>,
