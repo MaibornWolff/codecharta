@@ -7,8 +7,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
-## [1.131.2] - 2024-12-04
-
 ### Fixed 🐞
 
 - Fix Custom View menu not working due to missing its provider [#3842](https://github.com/MaibornWolff/codecharta/pull/3842)
