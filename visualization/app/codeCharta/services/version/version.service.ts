@@ -4,7 +4,7 @@ import { MatDialog } from "@angular/material/dialog"
 import { ChangelogDialogComponent } from "../../ui/dialogs/changelogDialog/changelogDialog.component"
 import { compareVersion } from "./utils/compareVersion"
 
-@Injectable()
+@Injectable({ providedIn: "root" })
 export class VersionService {
     readonly version = packageJson.version
 
