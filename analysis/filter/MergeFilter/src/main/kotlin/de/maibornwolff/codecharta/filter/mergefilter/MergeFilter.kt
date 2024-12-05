@@ -199,7 +199,7 @@ class MergeFilter(
 
         val packagedProjects: MutableList<Project> = mutableListOf()
         projectsFileNamePairs.forEach {
-            packagedProjects.add(LargeMerge.packageProjectInto(it.second, it.first.substringBefore(".")))
+            packagedProjects.add(LargeMerge.wrapProjectInFolder(it.second, it.first.substringBefore(".")))
         }
 
         val mergedProject = ProjectMerger(packagedProjects, nodeMergerStrategy).merge()
