@@ -626,5 +626,21 @@ class MergeFilterTest {
             assertThat(outputProject2.children.toString()).isEqualTo(projectInput2.rootNode.children.toString())
             outPutFile.deleteOnExit()
         }
+
+        @Test
+        fun `should throw error if input project does not contain a strict root node`() {
+            val customRootProject = "$fatMergeTestFolder/duplicate/customRootFailure.cc.json"
+            System.setErr(PrintStream(errContent))
+            CommandLine(MergeFilter()).execute(
+                testFilePath1,
+                testFilePath2,
+                customRootProject,
+                "--large"
+            ).toString()
+            System.setErr(originalErr)
+            assertThat(
+                errContent.toString()
+            ).contains("Input project structure doesn't have '/root/' as a base folder. If that's intended open an issue.")
+        }
     }
 }
