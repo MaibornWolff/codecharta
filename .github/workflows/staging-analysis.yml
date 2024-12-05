@@ -1,0 +1,78 @@
+name: Staging Deployment - Analysis
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'analysis/**'
+
+jobs:
+  build_and_deploy:
+    name: Build and Deploy
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://registry.npmjs.org'
+
+      # Get short SHA for tagging
+      - name: Set short SHA
+        run: echo "SHORT_SHA=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+
+      - name: Build analysis
+        working-directory: ./analysis
+        run: |
+          chmod +x ./gradlew
+          ./gradlew build
+
+      # Docker build and push with staging tags
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./analysis
+          push: true
+          tags: |
+            codecharta/codecharta-analysis:staging
+            codecharta/codecharta-analysis:staging-${{ env.SHORT_SHA }}
+
+      # Publish node-wrapper to npm with staging tag
+      - name: Update package version
+        working-directory: ./analysis/node-wrapper
+        run: |
+          npm version "0.0.0-staging-${SHORT_SHA}" --no-git-tag-version
+
+      - name: Publish to npm
+        working-directory: ./analysis/node-wrapper
+        run: |
+          npm publish --tag staging
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      # Create and deploy sample file for staging
+      - name: Create Sample File for Web Demo
+        run: sh ./script/build_demo_file_analysis.sh
+
+      - name: Deploy to GitHub Pages Staging
+        uses: JamesIves/github-pages-deploy-action@v4.6.9
+        with:
+          token: ${{ secrets.DEPLOY_TOKEN }}
+          branch: gh-pages
+          folder: gh-pages
+          target-folder: stg/analysis
+          clean: true 
