@@ -1,6 +1,6 @@
 {
-  "name": "CodeCharta Docs",
-  "short_name": "CodeCharta Docs",
+  "name": "CodeCharta",
+  "short_name": "CC",
   "icons": [
     {
       "src": "/assets/images/favicon/web-app-manifest-192x192.png",
