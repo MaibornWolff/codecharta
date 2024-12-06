@@ -1,11 +1,12 @@
-name: Staging Deployment - Visualization
+name: Staging Deployment - Analysis
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
     paths:
-      - 'visualization/**'
+      - 'analysis/**'
 
 jobs:
   build_and_deploy:
@@ -25,17 +26,15 @@ jobs:
           node-version: '20'
           registry-url: 'https://registry.npmjs.org'
 
-      - name: Build visualization
-        env:
-          NODE_OPTIONS: "--max_old_space_size=4096"
-        working-directory: ./visualization
-        run: |
-          npm ci
-          npm run build
-
       # Get short SHA for tagging
       - name: Set short SHA
         run: echo "SHORT_SHA=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+
+      - name: Build analysis
+        working-directory: ./analysis
+        run: |
+          chmod +x ./gradlew
+          ./gradlew build
 
       # Docker build and push with staging tags
       - name: Login to Docker Hub
@@ -47,31 +46,22 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
-          context: ./visualization
+          context: ./analysis
           push: true
           tags: |
-            codecharta/codecharta-visualization:staging
-            codecharta/codecharta-visualization:staging-${{ env.SHORT_SHA }}
+            codecharta/codecharta-analysis:staging
+            codecharta/codecharta-analysis:staging-${{ env.SHORT_SHA }}
 
-      # Publish to npm with staging tag
+      # Publish node-wrapper to npm with staging tag
       - name: Update package version
-        working-directory: ./visualization
+        working-directory: ./analysis/node-wrapper
         run: |
           npm version "0.0.0-staging-${SHORT_SHA}" --no-git-tag-version
 
       - name: Publish to npm
-        working-directory: ./visualization
+        working-directory: ./analysis/node-wrapper
         run: |
           npm publish --tag staging
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      # Deploy to GitHub Pages staging environment
-      - name: Deploy to GitHub Pages
-        uses: JamesIves/github-pages-deploy-action@v4.6.9
-        with:
-          token: ${{ secrets.DEPLOY_TOKEN }}
-          branch: gh-pages
-          folder: visualization/dist/webpack
-          target-folder: stg/visualization
-          clean: true
+    
