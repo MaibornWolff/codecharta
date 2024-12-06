@@ -5,30 +5,60 @@ on:
     tags: 'ana-*.*.*'
 
 jobs:
-  build_project:
-    name: Build Project and Release
-
+  promote_and_release:
+    name: Promote and Release
     runs-on: ubuntu-latest
-
     permissions:
       contents: write
+      packages: write
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: Setup Node.js environment
-        uses: actions/setup-node@v3
+      # Extract version from tag
+      - name: Set version
+        run: |
+          echo "VERSION=${GITHUB_REF#refs/tags/ana-}" >> $GITHUB_ENV
+
+      # Docker promotion
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Pull and retag Docker image
+        run: |
+          docker pull codecharta/codecharta-analysis:staging
+          docker tag codecharta/codecharta-analysis:staging codecharta/codecharta-analysis:latest
+          docker tag codecharta/codecharta-analysis:staging codecharta/codecharta-analysis:${{ env.VERSION }}
+          docker push codecharta/codecharta-analysis:latest
+          docker push codecharta/codecharta-analysis:${{ env.VERSION }}
+
+      # NPM promotion
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: '20'
+          registry-url: 'https://registry.npmjs.org'
 
-      - name: Build analysis
-        working-directory: ./analysis
+      - name: Promote npm package
+        working-directory: ./analysis/node-wrapper
         run: |
-          chmod +x ./gradlew
-          ./gradlew build
-          docker build -t codecharta/codecharta-analysis .
+          # Get the latest staging version
+          STAGING_VERSION=$(npm view @codechart/analysis@staging version)
+          
+          # Download the staging package
+          npm pack @codechart/analysis@staging
+          
+          # Update version and publish as latest
+          npm version ${{ env.VERSION }} --no-git-tag-version
+          npm publish codechart-analysis-${STAGING_VERSION}.tgz --tag latest
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
+      # Add changelog entries
       - name: Add Changelog Entries to Release
         uses: rasmus-saks/release-a-changelog-action@v1.2.0
         with:
@@ -37,38 +67,19 @@ jobs:
           title-template: 'Analysis release {version}'
           tag-template: 'ana-{version}'
 
-      - name: Upload Release Files to tagged release
+      # Upload release assets
+      - name: Upload Release Files
         uses: alexellis/upload-assets@0.4.1
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:
           asset_paths: '["analysis/build/distributions/*.tar"]'
 
-      - name: Publish analysis npm package
-        uses: JS-DevTools/npm-publish@v2.2.2
-        with:
-          token: ${{ secrets.NPM_TOKEN }}
-          package: ./analysis/node-wrapper/package.json
-
-      - name: Set env
-        run: |
-          fullVersion="${GITHUB_REF#refs/*/}"
-          echo "RELEASE_VERSION=${fullVersion:4}" >> $GITHUB_ENV
-
-      - name: Publish Docker Analysis Image
-        uses: elgohr/Publish-Docker-Github-Action@v5
-        with:
-          default_branch: main
-          name: codecharta/codecharta-analysis
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-          tags: "latest,${{ env.RELEASE_VERSION }}"
-          workdir: ./analysis
-
+      # Create and deploy sample file for production
       - name: Create Sample File for Web Demo
         run: sh ./script/build_demo_file_analysis.sh
 
-      - name: Deploy GH-Pages
+      - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4.6.9
         with:
           token: ${{ secrets.DEPLOY_TOKEN }}

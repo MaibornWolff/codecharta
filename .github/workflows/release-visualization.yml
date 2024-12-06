@@ -5,47 +5,60 @@ on:
     tags: 'vis-*.*.*'
 
 jobs:
-  build_project:
-    name: Build Project
-
+  promote_and_release:
+    name: Promote and Release
     runs-on: ubuntu-latest
-
     permissions:
       contents: write
+      packages: write
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: Setup Node.js environment
-        uses: actions/setup-node@v3
+      # Extract version from tag
+      - name: Set version
+        run: |
+          echo "VERSION=${GITHUB_REF#refs/tags/vis-}" >> $GITHUB_ENV
+
+      # Docker promotion
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Pull and retag Docker image
+        run: |
+          docker pull codecharta/codecharta-visualization:staging
+          docker tag codecharta/codecharta-visualization:staging codecharta/codecharta-visualization:latest
+          docker tag codecharta/codecharta-visualization:staging codecharta/codecharta-visualization:${{ env.VERSION }}
+          docker push codecharta/codecharta-visualization:latest
+          docker push codecharta/codecharta-visualization:${{ env.VERSION }}
+
+      # NPM promotion
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: '20'
+          registry-url: 'https://registry.npmjs.org'
 
-      - name: Install wine
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y wine-stable
-
-      - name: Install zip
-        run: sudo apt-get install -y zip
-
-      - name: Enable analysis execution rights
-        working-directory: ./analysis
-        run: |
-          chmod +x ./gradlew
-
-      - name: Build visualization
-        env:
-          NODE_OPTIONS: "--max_old_space_size=4096"
+      - name: Promote npm package
         working-directory: ./visualization
         run: |
-          npm ci
-          npm run test:ci
-          npm run build
-          npm run package
-          docker build -t codecharta/codecharta-visualization .
+          # Get the latest staging version
+          STAGING_VERSION=$(npm view codecharta-visualization@staging version)
+          
+          # Download the staging package
+          npm pack codecharta-visualization@staging
+          
+          # Update version and publish as latest
+          npm version ${{ env.VERSION }} --no-git-tag-version
+          npm publish codecharta-visualization-${STAGING_VERSION}.tgz --tag latest
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
+      # Add changelog entries
       - name: Add Changelog Entries to Release
         uses: rasmus-saks/release-a-changelog-action@v1.2.0
         with:
@@ -54,41 +67,19 @@ jobs:
           title-template: 'Visualization release {version}'
           tag-template: 'vis-{version}'
 
-      - name: Upload Release Files to tagged release
+      # Upload release assets
+      - name: Upload Release Files
         uses: alexellis/upload-assets@0.4.1
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:
           asset_paths: '["visualization/dist/packages/*.zip"]'
 
-      - name: Publish visualization npm package
-        uses: JS-DevTools/npm-publish@v2.2.2
-        with:
-          token: ${{ secrets.NPM_TOKEN }}
-          package: ./visualization/package.json
-
-      - name: Set env
-        run: |
-          fullVersion="${GITHUB_REF#refs/*/}"
-          echo "RELEASE_VERSION=${fullVersion:4}" >> $GITHUB_ENV
-
-      - name: Publish Docker Visualization Image
-        uses: elgohr/Publish-Docker-Github-Action@v5
-        with:
-          default_branch: main
-          name: codecharta/codecharta-visualization
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-          tags: "latest,${{ env.RELEASE_VERSION }}"
-          workdir: ./visualization
-
-      - name: Create Sample File for Web Demo
-        run: sh ./script/build_demo_file_visualization.sh
-
-      - name: Deploy GH-Pages
+      # Deploy to production GitHub Pages
+      - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4.6.9
         with:
           token: ${{ secrets.DEPLOY_TOKEN }}
           branch: gh-pages
-          folder: gh-pages
+          folder: visualization/dist/webpack
           clean: true
