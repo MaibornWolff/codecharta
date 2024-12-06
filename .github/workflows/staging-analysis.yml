@@ -63,16 +63,4 @@ jobs:
           npm publish --tag staging
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      # Create and deploy sample file for staging
-      - name: Create Sample File for Web Demo
-        run: sh ./script/build_demo_file_analysis.sh
-
-      - name: Deploy to GitHub Pages Staging
-        uses: JamesIves/github-pages-deploy-action@v4.6.9
-        with:
-          token: ${{ secrets.DEPLOY_TOKEN }}
-          branch: gh-pages
-          folder: gh-pages
-          target-folder: stg/analysis
-          clean: true 
+    
