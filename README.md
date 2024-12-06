@@ -64,9 +64,9 @@ and [Raw Text](https://maibornwolff.github.io/codecharta/docs/parser/raw-text).
 
 ![Analysis overview](assets/ccsh_overview.png)
 
-### Web Studio (Visualisation)
+### [Web Studio](https://codecharta.com/visualization/app/index.html?file=codecharta.cc.json.gz&file=codecharta_analysis.cc.json.gz&area=rloc&height=sonar_complexity&color=sonar_complexity) (Visualisation)
 
-Our Web Studio allows you to visualize your code base in 3D. It takes the results from our Shell and displays them in a city-like map.
+Our [Web Studio](https://codecharta.com/visualization/app/index.html?file=codecharta.cc.json.gz&file=codecharta_analysis.cc.json.gz&area=rloc&height=sonar_complexity&color=sonar_complexity) allows you to visualize your code base in 3D. It takes the results from our Shell and displays them in a city-like map.
 You can move around your code base, zoom in and out, and see the metrics of your code base in a 3D map.
 Files with metrics become buildings where the area, height and color represent different metrics, you can freely choose!
 Makes it easy to see the hotspots in your code base and find areas for improvement.
