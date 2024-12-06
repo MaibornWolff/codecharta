@@ -8,6 +8,8 @@ main:
       url: "categories/#release"
     - title: "Service Offerings"
       url: "/docs/overview/service-offerings"
+    - title: <i class="fa-brands fa-github fa-xl"></i>
+      url: "https://github.com/MaibornWolff/codecharta"
 docs:
     - title: "Overview"
       children:
