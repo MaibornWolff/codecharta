@@ -20,24 +20,32 @@ class ParserDialog {
                 inputFolderName = getInputFileName("cc.json", InputType.FOLDER)
             } while (!InputHelper.isInputValidAndNotNull(arrayOf(File(inputFolderName)), canInputContainFolders = true))
 
-            val isMimoMode = KInquirer.promptConfirm(
-                message = "Do you want to use MIMO mode? (multiple inputs multiple outputs)",
-                default = false
+            val defaultMerge = "Default merging..."
+            val mimoMerge = "Mimo Merge"
+            val largeMerge = "Large Merge"
+            val mergeMode = KInquirer.promptList(
+                message = "Do you want to use a special merge mode?",
+                choices = listOf(defaultMerge, mimoMerge, largeMerge)
             )
 
-            var outputFileName = ""
+            val outputFileName: String
             val isCompressed: Boolean
             var levenshteinDistance = 0
-            if (isMimoMode) {
-                levenshteinDistance = KInquirer.promptInputNumber(
-                    message = "Select Levenshtein Distance for name match suggestions (0 for no suggestions)",
-                    default = "3"
-                ).toInt()
+            if (mergeMode == mimoMerge) {
+                outputFileName = KInquirer.promptInput(
+                    message = "What is the output folder path?",
+                    hint = "Uses the current working directory if empty"
+                )
 
                 isCompressed = KInquirer.promptConfirm(
                     message = "Do you want to compress the output file(s)?",
                     default = true
                 )
+
+                levenshteinDistance = KInquirer.promptInputNumber(
+                    message = "Select Levenshtein Distance for name match suggestions (0 for no suggestions)",
+                    default = "3"
+                ).toInt()
             } else {
                 outputFileName =
                     KInquirer.promptInput(
@@ -82,18 +90,24 @@ class ParserDialog {
                 "--recursive=${!leafFlag}",
                 "--leaf=$leafFlag",
                 "--ignore-case=$ignoreCase",
-                "--not-compressed=$isCompressed"
+                "--not-compressed=$isCompressed",
+                "--output-file=$outputFileName"
             )
 
-            if (isMimoMode) {
+            if (mergeMode == mimoMerge) {
                 return basicMergeConfig + listOf(
                     "--mimo=true",
                     "--levenshtein-distance=$levenshteinDistance"
                 )
             }
-            return basicMergeConfig + listOf(
-                "--output-file=$outputFileName"
-            )
+
+            if (mergeMode == largeMerge) {
+                return basicMergeConfig + listOf(
+                    "--large=true"
+                )
+            }
+
+            return basicMergeConfig
         }
 
         fun askForceMerge(): Boolean {

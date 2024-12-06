@@ -26,14 +26,15 @@ class ParserDialogTest {
     }
 
     @Test
-    fun `should output correct arguments and skip questions (leaf, no mimo)`() {
+    fun `should output correct arguments and skip questions (leaf, no mimo or large)`() {
         // given
         val inputFolderName = "folder"
         val outputFileName = "sampleOutputFile"
         val compress = false
         val addMissing = true
         val ignoreCase = false
-        val mimo = false
+
+        val mergeMode = "Default merging..."
 
         // set indirectly
         val recursive = false
@@ -51,11 +52,11 @@ class ParserDialogTest {
         mockkStatic("com.github.kinquirer.components.ConfirmKt")
         every {
             KInquirer.promptConfirm(any(), any())
-        } returns mimo andThen compress andThen addMissing andThen ignoreCase
+        } returns compress andThen addMissing andThen ignoreCase
         mockkStatic("com.github.kinquirer.components.ListKt")
         every {
             KInquirer.promptList(any(), any(), any(), any(), any())
-        } returns "Leaf Merging Strategy"
+        } returns mergeMode andThen "Leaf Merging Strategy"
 
         // when
         val parserArguments = ParserDialog.collectParserArgs()
@@ -77,14 +78,15 @@ class ParserDialogTest {
     }
 
     @Test
-    fun `should output correct arguments and skip questions (recursive, no mimo)`() {
+    fun `should output correct arguments and skip questions (recursive, no mimo or large)`() {
         // given
         val inputFolderName = "folder"
         val outputFileName = "sampleOutputFile"
         val compress = true
         val addMissing = false
         val ignoreCase = false
-        val mimo = false
+
+        val mergeMode = "Default merging..."
 
         // set indirectly
         val recursive = true
@@ -102,11 +104,11 @@ class ParserDialogTest {
         mockkStatic("com.github.kinquirer.components.ConfirmKt")
         every {
             KInquirer.promptConfirm(any(), any())
-        } returns mimo andThen compress andThen ignoreCase
+        } returns compress andThen ignoreCase
         mockkStatic("com.github.kinquirer.components.ListKt")
         every {
             KInquirer.promptList(any(), any(), any(), any(), any())
-        } returns "Recursive Merging Strategy"
+        } returns mergeMode andThen "Recursive Merging Strategy"
 
         // when
         val parserArguments = ParserDialog.collectParserArgs()
@@ -128,14 +130,15 @@ class ParserDialogTest {
     }
 
     @Test
-    fun `should output correct arguments when mimo`() {
+    fun `should output correct arguments when using Mimo Merge`() {
         // given
         val inputFolderName = "folder"
         val addMissing = false
         val ignoreCase = true
-        val mimo = true
         val levenshteinDistance = BigDecimal(3)
         val compress = true
+
+        val mergeMode = "Mimo Merge"
 
         // set indirectly
         val recursive = true
@@ -149,7 +152,7 @@ class ParserDialogTest {
         mockkStatic("com.github.kinquirer.components.InputKt")
         every {
             KInquirer.promptInput(any(), any(), any())
-        } returns inputFolderName
+        } returns inputFolderName andThen ""
         every {
             KInquirer.promptInputNumber(any(), any(), any(), any())
         } returns levenshteinDistance
@@ -157,11 +160,11 @@ class ParserDialogTest {
         mockkStatic("com.github.kinquirer.components.ConfirmKt")
         every {
             KInquirer.promptConfirm(any(), any())
-        } returns mimo andThen compress andThen ignoreCase
+        } returns compress andThen ignoreCase
         mockkStatic("com.github.kinquirer.components.ListKt")
         every {
             KInquirer.promptList(any(), any(), any(), any(), any())
-        } returns "Recursive Merging Strategy"
+        } returns mergeMode andThen "Recursive Merging Strategy"
 
         // when
         val parserArguments = ParserDialog.collectParserArgs()
@@ -174,13 +177,68 @@ class ParserDialogTest {
                 it.name
             }
         ).isEqualTo(listOf(inputFolderName))
+        Assertions.assertThat(parseResult.matchedOption("output-file").getValue<String>()).isEqualTo("")
         Assertions.assertThat(parseResult.matchedOption("not-compressed").getValue<Boolean>()).isEqualTo(compress)
         Assertions.assertThat(parseResult.matchedOption("add-missing").getValue<Boolean>()).isEqualTo(addMissing)
         Assertions.assertThat(parseResult.matchedOption("recursive").getValue<Boolean>()).isEqualTo(recursive)
         Assertions.assertThat(parseResult.matchedOption("leaf").getValue<Boolean>()).isEqualTo(leaf)
         Assertions.assertThat(parseResult.matchedOption("ignore-case").getValue<Boolean>()).isEqualTo(ignoreCase)
-        Assertions.assertThat(parseResult.matchedOption("mimo").getValue<Boolean>()).isEqualTo(mimo)
+        Assertions.assertThat(parseResult.matchedOption("mimo").getValue<Boolean>()).isTrue()
         Assertions.assertThat(parseResult.matchedOption("levenshtein-distance").getValue<Int>()).isEqualTo(levenshteinDistance.toInt())
+    }
+
+    @Test
+    fun `should output correct arguments when using Large Merge`() {
+        // given
+        val inputFolderName = "folder"
+        val outputFileName = "sampleOutputFile"
+        val addMissing = false
+        val ignoreCase = true
+        val compress = true
+
+        val mergeMode = "Large Merge"
+
+        // set indirectly
+        val recursive = true
+        val leaf = false
+
+        mockkObject(InputHelper)
+        every {
+            InputHelper.isInputValidAndNotNull(any(), any())
+        } returns true
+
+        mockkStatic("com.github.kinquirer.components.InputKt")
+        every {
+            KInquirer.promptInput(any(), any(), any())
+        } returns inputFolderName andThen outputFileName
+
+        mockkStatic("com.github.kinquirer.components.ConfirmKt")
+        every {
+            KInquirer.promptConfirm(any(), any())
+        } returns compress andThen ignoreCase
+        mockkStatic("com.github.kinquirer.components.ListKt")
+        every {
+            KInquirer.promptList(any(), any(), any(), any(), any())
+        } returns mergeMode andThen "Recursive Merging Strategy"
+
+        // when
+        val parserArguments = ParserDialog.collectParserArgs()
+        val commandLine = CommandLine(MergeFilter())
+        val parseResult = commandLine.parseArgs(*parserArguments.toTypedArray())
+
+        // then
+        Assertions.assertThat(
+            parseResult.matchedPositional(0).getValue<Array<File>>().map {
+                it.name
+            }
+        ).isEqualTo(listOf(inputFolderName))
+        Assertions.assertThat(parseResult.matchedOption("output-file").getValue<String>()).isEqualTo(outputFileName)
+        Assertions.assertThat(parseResult.matchedOption("not-compressed").getValue<Boolean>()).isEqualTo(compress)
+        Assertions.assertThat(parseResult.matchedOption("add-missing").getValue<Boolean>()).isEqualTo(addMissing)
+        Assertions.assertThat(parseResult.matchedOption("recursive").getValue<Boolean>()).isEqualTo(recursive)
+        Assertions.assertThat(parseResult.matchedOption("leaf").getValue<Boolean>()).isEqualTo(leaf)
+        Assertions.assertThat(parseResult.matchedOption("ignore-case").getValue<Boolean>()).isEqualTo(ignoreCase)
+        Assertions.assertThat(parseResult.matchedOption("large").getValue<Boolean>()).isTrue()
     }
 
     @Test

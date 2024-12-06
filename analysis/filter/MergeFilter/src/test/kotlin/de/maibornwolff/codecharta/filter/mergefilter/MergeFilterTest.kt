@@ -5,6 +5,7 @@ import com.github.kinquirer.components.promptCheckboxObject
 import com.github.kinquirer.components.promptList
 import com.github.kinquirer.core.Choice
 import de.maibornwolff.codecharta.filter.mergefilter.MergeFilter.Companion.main
+import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InputType
 import de.maibornwolff.codecharta.util.InputHelper
 import io.mockk.every
@@ -243,7 +244,7 @@ class MergeFilterTest {
     @Nested
     @DisplayName("MimoModeTests")
     inner class MimoModeTest {
-        val testFile1Path = "src/test/resources/test.json"
+        private val testFile1Path = "src/test/resources/test.json"
         val testProjectPathA = "src/test/resources/mimoFileSelection/testProject.alpha.cc.json"
         val testProjectPathB = "src/test/resources/mimoFileSelection/testProject.beta.cc.json"
         val testProjectPathC = "src/test/resources/mimoFileSelection/testProjectX.notIncl.cc.json"
@@ -491,6 +492,155 @@ class MergeFilterTest {
             assertThat(outputFile).exists()
 
             outputFile.deleteOnExit()
+        }
+
+        @Test
+        fun `should merge two projects with output at the given location`() {
+            val prefix = "testProject"
+            val outputFolder = "src/test/resources"
+
+            System.setErr(PrintStream(errContent))
+            CommandLine(MergeFilter()).execute(
+                testProjectPathA,
+                testProjectPathB,
+                "--mimo",
+                "--levenshtein-distance=0",
+                "-o=$outputFolder"
+            ).toString()
+
+            System.setErr(originalErr)
+
+            val outputFileName = "$prefix.merge.cc.json.gz"
+            val outputFile = File("$outputFolder/$outputFileName")
+
+            assertThat(errContent.toString()).contains("Merged files with prefix '$prefix' into '$outputFileName'")
+            assertThat(outputFile).exists()
+
+            outputFile.deleteOnExit()
+        }
+
+        @Test
+        fun `should throw error if output-file is not a folder`() {
+            val invalidOutputPath = "src/test/resources/invalid.cc.json"
+
+            System.setErr(PrintStream(errContent))
+            CommandLine(MergeFilter()).execute(
+                testProjectPathA,
+                testProjectPathB,
+                "--mimo",
+                "--levenshtein-distance=0",
+                "-o=$invalidOutputPath"
+            ).toString()
+
+            System.setErr(originalErr)
+
+            assertThat(errContent.toString()).contains("Please specify a folder for MIMO output or nothing")
+        }
+    }
+
+    @Nested
+    @DisplayName("LargeMergeTests")
+    inner class LargeMergeTest {
+        private val fatMergeTestFolder = "src/test/resources/largeMerge"
+        private val testFilePath1 = "$fatMergeTestFolder/testEdges1.cc.json"
+        private val testFilePath2 = "$fatMergeTestFolder/testProject.alpha.cc.json"
+        private val testFilePathDuplicate = "$fatMergeTestFolder/duplicate/testProject.beta.cc.json"
+
+        @Test
+        fun `should warn about invalid files during fat merge and abort`() {
+            System.setErr(PrintStream(errContent))
+            CommandLine(MergeFilter()).execute(
+                "src/test/resources/invalid.cc.json",
+                "--large"
+            ).toString()
+            System.setErr(originalErr)
+
+            assertThat(errContent.toString()).contains("Input invalid files/folders for MergeFilter, stopping execution...")
+        }
+
+        @Test
+        fun `should exit when prefixes are not unique`() {
+            System.setErr(PrintStream(errContent))
+            CommandLine(MergeFilter()).execute(
+                testFilePath1,
+                testFilePath2,
+                testFilePathDuplicate,
+                "--large"
+            ).toString()
+            System.setErr(originalErr)
+
+            assertThat(errContent.toString()).contains("Make sure that the input prefixes across all input files are unique!")
+        }
+
+        @Test
+        fun `should cancel on single file input`() {
+            System.setErr(PrintStream(errContent))
+            CommandLine(MergeFilter()).execute(
+                testFilePath1,
+                "--large"
+            ).toString()
+            System.setErr(originalErr)
+
+            assertThat(errContent.toString()).contains("One or less projects in input, merging aborted.")
+        }
+
+        @Test
+        fun `should merge all projects into one file each packaged into a subfolder with input file's prefix`() {
+            System.setOut(PrintStream(outContent))
+            CommandLine(MergeFilter()).execute(
+                testFilePath1,
+                testFilePath2,
+                "--large"
+            ).toString()
+            System.setOut(originalOut)
+            val outputString = outContent.toString()
+            assertThat(outputString).contains("testProject", "testEdges1")
+            assertThat(outputString).contains("SourceMonCsvConverter", "number_of_commits")
+            assertThat(
+                outputString
+            ).contains("/root/testEdges1/visualization/file2", "/root/testEdges1/visualization/file3", "/root/testEdges1/file1")
+        }
+
+        @Test
+        fun `should output into specified file`() {
+            val outPutFilePath = "$fatMergeTestFolder/largeOutputToFile.cc.json"
+            CommandLine(MergeFilter()).execute(
+                testFilePath1,
+                testFilePath2,
+                "--large",
+                "-o=$outPutFilePath",
+                "-nc"
+            ).toString()
+            val outPutFile = File(outPutFilePath)
+            assertThat(outPutFile).exists()
+            val project = ProjectDeserializer.deserializeProject(outPutFile.inputStream())
+            val projectInput1 = ProjectDeserializer.deserializeProject(File(testFilePath1).inputStream())
+            val projectInput2 = ProjectDeserializer.deserializeProject(File(testFilePath2).inputStream())
+            assertThat(project.sizeOfEdges()).isEqualTo(2)
+            assertThat(project.sizeOfBlacklist()).isEqualTo(2)
+            assertThat(project.edges.toString()).contains("/root/testEdges1/visualization/file2", "/root/testEdges1/visualization/file3")
+            assertThat(project.rootNode.children.size).isEqualTo(2)
+            val outputProject1 = project.rootNode.children.first { it.name == "testEdges1" }
+            val outputProject2 = project.rootNode.children.first { it.name == "testProject" }
+            assertThat(outputProject1.children.toString()).isEqualTo(projectInput1.rootNode.children.toString())
+            assertThat(outputProject2.children.toString()).isEqualTo(projectInput2.rootNode.children.toString())
+            outPutFile.deleteOnExit()
+        }
+
+        @Test
+        fun `should throw error if input project does not contain a strict root node`() {
+            val customRootProject = "$fatMergeTestFolder/duplicate/customRootFailure.cc.json"
+            System.setErr(PrintStream(errContent))
+            CommandLine(MergeFilter()).execute(
+                testFilePath1,
+                testFilePath2,
+                customRootProject,
+                "--large"
+            ).toString()
+            System.setErr(originalErr)
+            assertThat(
+                errContent.toString()
+            ).contains("Input project structure doesn't have '/root/' as a base folder. If that's intended open an issue.")
         }
     }
 }

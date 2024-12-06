@@ -51,8 +51,8 @@ class Mimo {
             }
         }
 
-        fun retrieveGroupName(files: List<File>): String {
-            val filePrefixes = files.map { it.name.substringBefore(".") }.toSet()
+        fun retrieveGroupName(files: List<String>): String {
+            val filePrefixes = files.map { it.substringBefore(".") }.toSet()
             if (filePrefixes.size == 1) return filePrefixes.first()
             return ParserDialog.askForMimoPrefix(filePrefixes)
         }
@@ -82,6 +82,16 @@ class Mimo {
             }
 
             return cost[rhsLength]
+        }
+
+        fun assembleOutputFilePath(filePath: String?, fileName: String): String {
+            return if (filePath.isNullOrEmpty()) {
+                fileName
+            } else if (File(filePath).isDirectory) {
+                "${File(filePath).path}/$fileName"
+            } else {
+                throw IllegalArgumentException("Please specify a folder for MIMO output or nothing")
+            }
         }
     }
 }

@@ -7,7 +7,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Added 🚀
+
+- Add a new `--large` flag to the MergeFilter that merges projects into one file each in its own subfolder depending on the input file's dot-prefix name [#3841](https://github.com/MaibornWolff/codecharta/pull/3841)
+- Add the ability to the MergeFilter to specify the output file during `--mimo` operation [#3841](https://github.com/MaibornWolff/codecharta/pull/3841)
+
 ## [1.129.0] - 2024-11-29
+
+### Added 🚀
+
+- Add a new `--mimo` flag to the MergeFilter that merges multiple project files into multiple output files depending on the input file's dot-prefix name [#3800](https://github.com/MaibornWolff/codecharta/pull/3800)
 
 ### Changed
 

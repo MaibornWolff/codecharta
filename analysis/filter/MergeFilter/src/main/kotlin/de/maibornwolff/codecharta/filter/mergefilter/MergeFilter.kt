@@ -58,6 +58,12 @@ class MergeFilter(
     )
     private var levenshteinDistance = 3
 
+    @CommandLine.Option(
+        names = ["--large"],
+        description = ["Merges input files into on file divided into project sub-folder as defined per prefix of each input file"]
+    )
+    private var largeMerge = false
+
     override val name = NAME
     override val description = DESCRIPTION
 
@@ -94,8 +100,11 @@ class MergeFilter(
 
         if (mimo) {
             processMimoMerge(sourceFiles, nodeMergerStrategy)
+        } else if (largeMerge) {
+            processLargeMerge(sourceFiles, nodeMergerStrategy)
         } else {
             val projects = readInputFiles(sourceFiles)
+
             if (!continueIfIncompatibleProjects(projects)) return null
 
             val mergedProject = ProjectMerger(projects, nodeMergerStrategy).merge()
@@ -155,8 +164,9 @@ class MergeFilter(
                 return@forEach
             }
 
-            val projects = readInputFiles(confirmedFileList)
-            if (projects.size <= 1) {
+            val projectsFileNamePairs = readInputFilesKeepFileNames(confirmedFileList)
+            val projects = projectsFileNamePairs.map { it.second }
+            if (projectsFileNamePairs.size <= 1) {
                 Logger.warn { "After deserializing there were one or less projects. Continue with next group" }
                 return@forEach
             }
@@ -164,13 +174,36 @@ class MergeFilter(
             if (!continueIfIncompatibleProjects(projects)) return@forEach
 
             val mergedProject = ProjectMerger(projects, nodeMergerStrategy).merge()
-            val outputFilePrefix = Mimo.retrieveGroupName(confirmedFileList)
-            ProjectSerializer.serializeToFileOrStream(mergedProject, "$outputFilePrefix.merge.cc.json", output, compress)
+            val outputFilePrefix = Mimo.retrieveGroupName(projectsFileNamePairs.map { it.first })
+            val outputFileName = "$outputFilePrefix.merge.cc.json"
+            val outputFilePath = Mimo.assembleOutputFilePath(outputFile, outputFileName)
+            ProjectSerializer.serializeToFileOrStream(mergedProject, outputFilePath, output, compress)
             Logger.info {
                 "Merged files with prefix '$outputFilePrefix' into" +
-                    " '$outputFilePrefix.merge.cc.json${if (compress) ".gz" else ""}'"
+                    " '$outputFileName${if (compress) ".gz" else ""}'"
             }
         }
+    }
+
+    private fun processLargeMerge(sourceFiles: List<File>, nodeMergerStrategy: NodeMergerStrategy) {
+        val projectsFileNamePairs = readInputFilesKeepFileNames(sourceFiles)
+        val fileNameList = projectsFileNamePairs.map { it.first }
+
+        require(fileNameList.size > 1) {
+            Logger.warn { "One or less projects in input, merging aborted." }
+        }
+
+        require(fileNameList.groupingBy { it.substringBefore(".") }.eachCount().all { it.value == 1 }) {
+            Logger.warn { "Make sure that the input prefixes across all input files are unique!" }
+        }
+
+        val packagedProjects: MutableList<Project> = mutableListOf()
+        projectsFileNamePairs.forEach {
+            packagedProjects.add(LargeMerge.wrapProjectInFolder(it.second, it.first.substringBefore(".")))
+        }
+
+        val mergedProject = ProjectMerger(packagedProjects, nodeMergerStrategy).merge()
+        ProjectSerializer.serializeToFileOrStream(mergedProject, outputFile, output, compress)
     }
 
     private fun readInputFiles(files: List<File>): List<Project> {
@@ -178,6 +211,17 @@ class MergeFilter(
             val input = it.inputStream()
             try {
                 ProjectDeserializer.deserializeProject(input)
+            } catch (e: Exception) {
+                Logger.warn { "${it.name} is not a valid project file and will be skipped." }
+                null
+            }
+        }
+    }
+
+    private fun readInputFilesKeepFileNames(files: List<File>): List<Pair<String, Project>> {
+        return files.mapNotNull {
+            try {
+                Pair(it.name, ProjectDeserializer.deserializeProject(it.inputStream()))
             } catch (e: Exception) {
                 Logger.warn { "${it.name} is not a valid project file and will be skipped." }
                 null
