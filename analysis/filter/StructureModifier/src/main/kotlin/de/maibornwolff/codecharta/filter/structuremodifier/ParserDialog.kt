@@ -22,8 +22,8 @@ class ParserDialog {
         }
 
         fun Session.callTestFun(
-            callback1: suspend RunScope.() -> Unit = {},
-            callback2: suspend RunScope.() -> Unit = {},
+        callback1: suspend RunScope.() -> Unit = {},
+        callback2: suspend RunScope.() -> Unit = {},
         ): String {
             val result1: String =
                 testFun1(
