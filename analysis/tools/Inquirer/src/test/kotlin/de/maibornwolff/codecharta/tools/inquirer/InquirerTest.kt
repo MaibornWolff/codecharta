@@ -15,10 +15,8 @@ import com.varabyte.kotterx.test.runtime.stripFormatting
 import com.varabyte.kotterx.test.terminal.assertMatches
 import com.varabyte.kotterx.test.terminal.resolveRerenders
 import com.varabyte.kotterx.test.terminal.type
-import kotlinx.coroutines.TimeoutCancellationException
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import java.lang.AssertionError
 
 class InquirerTest {
 private val testInput = "this is text to simulate user input."
@@ -603,7 +601,8 @@ private val testInput = "this is text to simulate user input."
                 callback = {
                 terminal.type(testString)
                 terminal.press(Keys.ENTER)
-            })
+            },
+            )
             assertThat(result).isEqualTo(testString)
         }
     }
