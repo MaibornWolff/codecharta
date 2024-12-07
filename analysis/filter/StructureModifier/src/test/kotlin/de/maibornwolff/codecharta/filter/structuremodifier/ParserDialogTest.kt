@@ -32,7 +32,6 @@ class ParserDialogTest {
                     terminal.press(Keys.ENTER)
                 },
                 actionCallback = {
-                    Thread.sleep(1)
                     terminal.press(Keys.ENTER)
                 },
                 printCallback = {

@@ -20,6 +20,7 @@ import com.varabyte.kotter.foundation.text.textLine
 import com.varabyte.kotter.runtime.MainRenderScope
 import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.Session
+import kotlinx.coroutines.delay
 
 const val DEFAULT_INVALID_INPUT_MESSAGE = "Input is invalid!"
 
@@ -48,6 +49,7 @@ onInputReady: suspend RunScope.() -> Unit,
             }
             lastUserInput = input
         }
+        delay(20)
         onInputReady()
     }
     return lastUserInput
@@ -102,6 +104,7 @@ onInputReady: suspend RunScope.() -> Unit,
             }
             lastUserInput = input
         }
+        delay(20)
         onInputReady()
     }
     return lastUserInput
@@ -128,6 +131,7 @@ onInputReady: suspend RunScope.() -> Unit,
                 }
             }
         }
+        delay(20)
         onInputReady()
     }
     return result
@@ -180,6 +184,7 @@ onInputReady: suspend RunScope.() -> Unit,
                 }
             }
         }
+        delay(20)
         onInputReady()
     }
     return result
@@ -242,6 +247,7 @@ onInputReady: suspend RunScope.() -> Unit,
                 }
             }
         }
+        delay(20)
         onInputReady()
     }
     return result
@@ -333,7 +339,10 @@ hint: String = "SPACE to select, ENTER to confirm selection",
     return myPromptCheckbox(message, choices, hint, allowEmptyInput, onInputReady = {})
 }
 
-fun MainRenderScope.drawFun(isInputEmpty: Boolean, sleepTimer: Long) {
+fun MainRenderScope.drawFun(
+isInputEmpty: Boolean,
+sleepTimer: Long,
+) {
     text("text before sleeping; empty input is $isInputEmpty")
     textLine("; input:")
     input()
@@ -342,7 +351,8 @@ fun MainRenderScope.drawFun(isInputEmpty: Boolean, sleepTimer: Long) {
 
 fun Session.testFun1(
 //    message: String,
-    callback: suspend RunScope.() -> Unit): String {
+    callback: suspend RunScope.() -> Unit,
+): String {
     var userInput = "-1"
     var emptyInput by liveVarOf(true)
     section {
@@ -354,13 +364,14 @@ fun Session.testFun1(
 //            invalidInputMessage = "invald",
 //            "a"
 //        )
-        drawFun(emptyInput,0)
+        drawFun(emptyInput, 0)
     }.runUntilSignal {
         onInputChanged { emptyInput = !emptyInput }
         onInputEntered {
             signal()
             userInput = input
         }
+        delay(20)
         callback()
     }
     return userInput
@@ -377,6 +388,7 @@ fun Session.testFun2(callback: suspend RunScope.() -> Unit): String {
             signal()
             userInput = input
         }
+        delay(20)
         callback()
     }
     return userInput
