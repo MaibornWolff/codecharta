@@ -1,0 +1,189 @@
+name: Release Process
+
+on:
+  workflow_dispatch:
+    inputs:
+      repository:
+        description: 'Repository to release'
+        required: true
+        type: choice
+        options:
+          - visualization
+          - analysis
+      version_type:
+        description: 'Version increment type'
+        required: true
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      new_version: ${{ steps.version.outputs.new_version }}
+      prefix: ${{ steps.version.outputs.prefix }}
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+
+      - name: Update version and files
+        id: version
+        run: |
+          set -e
+          NEW_VERSION=$(bun run script/version-manager.ts ${{ inputs.repository }} ${{ inputs.version_type }})
+          echo "new_version=${NEW_VERSION}" >> $GITHUB_OUTPUT
+          echo "prefix=${{ inputs.repository == 'visualization' && 'vis' || 'ana' }}" >> $GITHUB_OUTPUT
+
+  build:
+    needs: prepare
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        if: inputs.repository == 'visualization'
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Build visualization
+        if: inputs.repository == 'visualization'
+        working-directory: ./visualization
+        env:
+          NODE_OPTIONS: "--max_old_space_size=4096"
+        run: |
+          npm ci
+          npm run build
+          npm run package
+
+      - name: Build analysis
+        if: inputs.repository == 'analysis'
+        working-directory: ./analysis
+        run: |
+          chmod +x ./gradlew
+          ./gradlew build
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: ${{ inputs.repository }}/dist
+
+  publish:
+    needs: [prepare, build]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: ${{ inputs.repository }}/dist
+
+      - name: Setup Node.js
+        if: inputs.repository == 'visualization'
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Publish to npm (visualization)
+        if: inputs.repository == 'visualization'
+        working-directory: ./visualization
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Publish to npm (analysis)
+        if: inputs.repository == 'analysis'
+        working-directory: ./analysis/node-wrapper
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./${{ inputs.repository }}
+          push: true
+          tags: |
+            codecharta/codecharta-${{ inputs.repository }}:latest
+            codecharta/codecharta-${{ inputs.repository }}:${{ needs.prepare.outputs.new_version }}
+
+  deploy:
+    needs: [prepare, build]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: ${{ inputs.repository }}/dist
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ needs.prepare.outputs.prefix }}-${{ needs.prepare.outputs.new_version }}
+          name: "${{ inputs.repository }} ${{ needs.prepare.outputs.new_version }}"
+          body_path: ${{ inputs.repository }}/CHANGELOG.md
+          files: |
+            ${{ inputs.repository }}/dist/packages/*.*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4.6.9
+        with:
+          token: ${{ secrets.DEPLOY_TOKEN }}
+          branch: gh-pages
+          folder: ${{ inputs.repository == 'visualization' && 'visualization/dist/webpack' || 'gh-pages' }}
+          clean: ${{ inputs.repository == 'visualization' }}
+
+  finalize:
+    needs: [prepare, publish, deploy]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Commit and tag changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add -A
+          git commit -m "Releasing ${{ needs.prepare.outputs.prefix }}-${{ needs.prepare.outputs.new_version }}"
+          git tag "${{ needs.prepare.outputs.prefix }}-${{ needs.prepare.outputs.new_version }}"
+          git push --follow-tags
