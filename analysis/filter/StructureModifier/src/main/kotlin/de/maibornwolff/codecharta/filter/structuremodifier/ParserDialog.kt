@@ -40,14 +40,15 @@ class ParserDialog {
 
         // TODO: check if its a problem that this is in a companion object
         internal fun Session.myCollectParserArgs(
-        fileCallback: suspend RunScope.() -> Unit = {},
-        actionCallback: suspend RunScope.() -> Unit = {},
-        printCallback: suspend RunScope.() -> Unit = {},
-        setRootCallback: suspend RunScope.() -> Unit = {},
-        moveFromCallback: suspend RunScope.() -> Unit = {},
-        moveToCallback: suspend RunScope.() -> Unit = {},
-        removeNodesCallback: suspend RunScope.() -> Unit = {},
-        outFileCallback: suspend RunScope.() -> Unit = {},
+        defaultCallback: suspend RunScope.() -> Unit = {},
+        fileCallback: suspend RunScope.() -> Unit = defaultCallback,
+        actionCallback: suspend RunScope.() -> Unit = defaultCallback,
+        printCallback: suspend RunScope.() -> Unit = defaultCallback,
+        setRootCallback: suspend RunScope.() -> Unit = defaultCallback,
+        moveFromCallback: suspend RunScope.() -> Unit = defaultCallback,
+        moveToCallback: suspend RunScope.() -> Unit = defaultCallback,
+        removeNodesCallback: suspend RunScope.() -> Unit = defaultCallback,
+        outFileCallback: suspend RunScope.() -> Unit = defaultCallback,
         ): List<String> {
             val result: List<String>
 
