@@ -20,7 +20,6 @@ import com.varabyte.kotter.foundation.text.textLine
 import com.varabyte.kotter.runtime.MainRenderScope
 import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.Session
-import kotlinx.coroutines.delay
 
 const val DEFAULT_INVALID_INPUT_MESSAGE = "Input is invalid!"
 
@@ -49,7 +48,6 @@ onInputReady: suspend RunScope.() -> Unit,
             }
             lastUserInput = input
         }
-        delay(20)
         onInputReady()
     }
     return lastUserInput
@@ -104,7 +102,6 @@ onInputReady: suspend RunScope.() -> Unit,
             }
             lastUserInput = input
         }
-        delay(20)
         onInputReady()
     }
     return lastUserInput
@@ -121,8 +118,7 @@ onInputReady: suspend RunScope.() -> Unit,
         drawConfirm(message, hint, choice)
     }.runUntilSignal {
         onKeyPressed {
-            println(key)
-            when (key) {
+             when (key) {
                 Keys.LEFT -> choice = true
                 Keys.RIGHT -> choice = false
                 Keys.ENTER -> {
@@ -131,7 +127,6 @@ onInputReady: suspend RunScope.() -> Unit,
                 }
             }
         }
-        delay(20)
         onInputReady()
     }
     return result
@@ -184,7 +179,6 @@ onInputReady: suspend RunScope.() -> Unit,
                 }
             }
         }
-        delay(20)
         onInputReady()
     }
     return result
@@ -247,7 +241,6 @@ onInputReady: suspend RunScope.() -> Unit,
                 }
             }
         }
-        delay(20)
         onInputReady()
     }
     return result
@@ -371,7 +364,6 @@ fun Session.testFun1(
             signal()
             userInput = input
         }
-        delay(20)
         callback()
     }
     return userInput
@@ -388,7 +380,6 @@ fun Session.testFun2(callback: suspend RunScope.() -> Unit): String {
             signal()
             userInput = input
         }
-        delay(20)
         callback()
     }
     return userInput
