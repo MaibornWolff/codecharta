@@ -1,6 +1,8 @@
 package de.maibornwolff.codecharta.tools.inquirer
 
 import com.varabyte.kotter.foundation.input.Keys
+import com.varabyte.kotter.foundation.input.input
+import com.varabyte.kotter.foundation.input.runUntilInputEntered
 import com.varabyte.kotter.foundation.text.black
 import com.varabyte.kotter.foundation.text.bold
 import com.varabyte.kotter.foundation.text.cyan
@@ -8,13 +10,13 @@ import com.varabyte.kotter.foundation.text.green
 import com.varabyte.kotter.foundation.text.invert
 import com.varabyte.kotter.foundation.text.text
 import com.varabyte.kotter.foundation.text.textLine
-import com.varabyte.kotterx.test.foundation.input.press
+import com.varabyte.kotter.runtime.terminal.inmemory.press
+import com.varabyte.kotter.runtime.terminal.inmemory.resolveRerenders
+import com.varabyte.kotter.runtime.terminal.inmemory.type
 import com.varabyte.kotterx.test.foundation.testSession
 import com.varabyte.kotterx.test.runtime.blockUntilRenderWhen
 import com.varabyte.kotterx.test.runtime.stripFormatting
 import com.varabyte.kotterx.test.terminal.assertMatches
-import com.varabyte.kotterx.test.terminal.resolveRerenders
-import com.varabyte.kotterx.test.terminal.type
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -604,6 +606,33 @@ private val testInput = "this is text to simulate user input."
             },
             )
             assertThat(result).isEqualTo(testString)
+        }
+    }
+
+    @Test
+    fun `input should not break across multiple sections`() =
+    testSession { terminal ->
+        var testRunCount = 1
+        while (testRunCount < 1000) {
+            println("Test run #$testRunCount...")
+            terminal.clear()
+
+            val numCharsToType = testRunCount % 20
+            section {
+                input()
+            }.runUntilInputEntered {
+               //  delay(20) // uncomment me and test stops crashing
+                terminal.type(testRunCount.toString())
+                terminal.type(": ")
+                for (i in 0 until numCharsToType) terminal.type('a')
+                terminal.press(Keys.ENTER)
+            }
+
+            terminal.assertMatches {
+                text("$testRunCount: ${"a".repeat(numCharsToType)} ")
+            }
+
+            testRunCount++
         }
     }
 }
