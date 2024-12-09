@@ -1,18 +1,21 @@
 package de.maibornwolff.codecharta.filter.structuremodifier
 
 import com.varabyte.kotter.foundation.input.Keys
-import com.varabyte.kotterx.test.foundation.input.press
+import com.varabyte.kotter.runtime.terminal.inmemory.press
+import com.varabyte.kotter.runtime.terminal.inmemory.type
 import com.varabyte.kotterx.test.foundation.testSession
-import com.varabyte.kotterx.test.terminal.type
 import de.maibornwolff.codecharta.filter.structuremodifier.ParserDialog.Companion.callTestFun
 import de.maibornwolff.codecharta.filter.structuremodifier.ParserDialog.Companion.myCollectParserArgs
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.Timeout
 import picocli.CommandLine
 import java.io.File
 import java.nio.file.Paths
 import kotlin.io.path.Path
 
+@Timeout(120)
 class ParserDialogTest {
     val absolutePath = Paths.get("").toAbsolutePath().toString()
     val resourceFolder = Path(absolutePath, "/src/test/resources/")
@@ -27,6 +30,7 @@ class ParserDialogTest {
             // when
             val parserArguments =
             myCollectParserArgs(
+                defaultCallback = { terminal.press(Keys.ENTER) },
                 fileCallback = {
                     terminal.type(sampleProjectPath.toString())
                     terminal.press(Keys.ENTER)
@@ -62,6 +66,7 @@ class ParserDialogTest {
         testSession { terminal ->
             val parserArguments =
             myCollectParserArgs(
+            defaultCallback = { terminal.press(Keys.ENTER) },
                 fileCallback = {
                     terminal.type(sampleProjectPath.toString())
                     terminal.press(Keys.ENTER)
@@ -105,6 +110,7 @@ class ParserDialogTest {
             // when
             val parserArguments =
             myCollectParserArgs(
+            defaultCallback = { terminal.press(Keys.ENTER) },
                 fileCallback = {
                     terminal.type(sampleProjectPath.toString())
                     terminal.press(Keys.ENTER)
@@ -152,6 +158,7 @@ class ParserDialogTest {
             // when
             val parserArguments =
             myCollectParserArgs(
+            defaultCallback = { terminal.press(Keys.ENTER) },
                 fileCallback = {
                     terminal.type(sampleProjectPath.toString())
                     terminal.press(Keys.ENTER)
@@ -196,6 +203,7 @@ class ParserDialogTest {
             // when
             val parserArguments =
             myCollectParserArgs(
+            defaultCallback = { terminal.press(Keys.ENTER) },
                 fileCallback = {
                     terminal.type(invalidInputFileName)
                     terminal.press(Keys.ENTER)
@@ -243,6 +251,16 @@ class ParserDialogTest {
             },
             )
             assertThat(result).isEqualTo(testString + testString)
+        }
+    }
+
+    @Disabled
+    @Test
+    fun `run until frozen`() {
+        var i = 0
+        while (true) {
+            println("Test #${i++}...")
+            `should prompt user twice for input file when first input file is invalid`()
         }
     }
 }
