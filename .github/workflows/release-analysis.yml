@@ -4,6 +4,9 @@ on:
   push:
     tags: 'ana-*.*.*'
 
+env:
+  VERSION: "0.0.0"
+
 jobs:
   promote_and_release:
     name: Promote and Release
