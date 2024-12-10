@@ -24,7 +24,28 @@ jobs:
         run: |
           echo "VERSION=${GITHUB_REF#refs/tags/vis-}" >> $GITHUB_ENV
 
-      # Docker promotion
+      # Build just for release artifacts
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y wine-stable zip
+
+      - name: Build visualization
+        env:
+          NODE_OPTIONS: "--max_old_space_size=4096"
+        working-directory: ./visualization
+        run: |
+          npm ci
+          npm run build
+          npm run package
+
+      # Promote from staging
       - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
@@ -38,13 +59,6 @@ jobs:
           docker tag codecharta/codecharta-visualization:staging codecharta/codecharta-visualization:${{ env.VERSION }}
           docker push codecharta/codecharta-visualization:latest
           docker push codecharta/codecharta-visualization:${{ env.VERSION }}
-
-      # NPM promotion
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          registry-url: 'https://registry.npmjs.org'
 
       - name: Promote npm package
         working-directory: ./visualization
@@ -61,7 +75,7 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      # Add changelog entries
+      # Create GitHub Release
       - name: Add Changelog Entries to Release
         uses: rasmus-saks/release-a-changelog-action@v1.2.0
         with:
