@@ -1,17 +1,19 @@
-name: Release Process
+name: Release CodeCharta (Visualization and Analysis)
+# This workflow handles the release process for both visualization and analysis components.
+# It promotes staged versions to production across npm, Docker, and GitHub releases.
 
 on:
   workflow_dispatch:
     inputs:
       repository:
-        description: 'Repository to release'
+        description: 'Repository to release (visualization/analysis)'
         required: true
         type: choice
         options:
           - visualization
           - analysis
       version_type:
-        description: 'Version increment type'
+        description: 'Version increment type (major.minor.patch)'
         required: true
         type: choice
         options:
@@ -20,20 +22,22 @@ on:
           - major
 
 jobs:
+  # Updates version numbers and changelog files
   prepare:
+    name: Prepare Release and Update Docs
     runs-on: ubuntu-latest
     outputs:
-      new_version: ${{ steps.version.outputs.new_version }}
-      prefix: ${{ steps.version.outputs.prefix }}
+      new_version: ${{ steps.version.outputs.new_version }} # e.g., "1.132.0"
+      prefix: ${{ steps.version.outputs.prefix }}           # "vis" or "ana"
     permissions:
       contents: write
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Setup Bun
+      - name: Setup Bun runtime
         uses: oven-sh/setup-bun@v1
         with:
           bun-version: latest
@@ -46,117 +50,100 @@ jobs:
           echo "new_version=${NEW_VERSION}" >> $GITHUB_OUTPUT
           echo "prefix=${{ inputs.repository == 'visualization' && 'vis' || 'ana' }}" >> $GITHUB_OUTPUT
 
-  build:
+  # Promotes staged npm package to latest release
+  promote-npm:
+    name: Promote NPM Package
     needs: prepare
     runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        if: inputs.repository == 'visualization'
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
-      - name: Build visualization
-        if: inputs.repository == 'visualization'
-        working-directory: ./visualization
-        env:
-          NODE_OPTIONS: "--max_old_space_size=4096"
-        run: |
-          npm ci
-          npm run build
-          npm run package
-
-      - name: Build analysis
-        if: inputs.repository == 'analysis'
-        working-directory: ./analysis
-        run: |
-          chmod +x ./gradlew
-          ./gradlew build
-
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: dist
-          path: ${{ inputs.repository }}/dist
-
-  publish:
-    needs: [prepare, build]
-    runs-on: ubuntu-latest
     permissions:
-      contents: write
       packages: write
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Download artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: dist
-          path: ${{ inputs.repository }}/dist
-
       - name: Setup Node.js
-        if: inputs.repository == 'visualization'
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           registry-url: 'https://registry.npmjs.org'
 
-      - name: Publish to npm (visualization)
+      - name: Promote npm package (visualization)
         if: inputs.repository == 'visualization'
-        working-directory: ./visualization
-        run: npm publish
+        run: |
+          STAGING_VERSION=$(npm view codecharta-visualization@staging version)
+          echo "Promoting from staging version: ${STAGING_VERSION}"
+          npm pack codecharta-visualization@staging
+          npm version ${{ needs.prepare.outputs.new_version }} --no-git-tag-version
+          npm publish codecharta-visualization-${STAGING_VERSION}.tgz --tag latest
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - name: Publish to npm (analysis)
+      - name: Promote npm package (analysis)
         if: inputs.repository == 'analysis'
-        working-directory: ./analysis/node-wrapper
-        run: npm publish
+        run: |
+          STAGING_VERSION=$(npm view @codechart/analysis@staging version)
+          echo "Promoting from staging version: ${STAGING_VERSION}"
+          npm pack @codechart/analysis@staging
+          npm version ${{ needs.prepare.outputs.new_version }} --no-git-tag-version
+          npm publish codechart-analysis-${STAGING_VERSION}.tgz --tag latest
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
+  # Promotes staged Docker image to latest release
+  promote-docker:
+    name: Promote Docker Image
+    needs: prepare
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+    steps:
       - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v5
-        with:
-          context: ./${{ inputs.repository }}
-          push: true
-          tags: |
-            codecharta/codecharta-${{ inputs.repository }}:latest
-            codecharta/codecharta-${{ inputs.repository }}:${{ needs.prepare.outputs.new_version }}
+      - name: Pull and retag Docker image
+        run: |
+          echo "Promoting Docker image for ${{ inputs.repository }}"
+          docker pull codecharta/codecharta-${{ inputs.repository }}:staging
+          docker tag codecharta/codecharta-${{ inputs.repository }}:staging codecharta/codecharta-${{ inputs.repository }}:latest
+          docker tag codecharta/codecharta-${{ inputs.repository }}:staging codecharta/codecharta-${{ inputs.repository }}:${{ needs.prepare.outputs.new_version }}
+          docker push codecharta/codecharta-${{ inputs.repository }}:latest
+          docker push codecharta/codecharta-${{ inputs.repository }}:${{ needs.prepare.outputs.new_version }}
 
-  deploy:
-    needs: [prepare, build]
+  # Creates GitHub release and updates gh-pages
+  github-release-visualization:
+    name: Create GitHub Release (Visualization)
+    needs: prepare
+    if: inputs.repository == 'visualization'
     runs-on: ubuntu-latest
     permissions:
       contents: write
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Download artifacts
-        uses: actions/download-artifact@v4
+      - name: Add Changelog Entries
+        uses: rasmus-saks/release-a-changelog-action@v1.2.0
         with:
-          name: dist
-          path: ${{ inputs.repository }}/dist
+          github-token: '${{ secrets.GITHUB_TOKEN }}'
+          path: 'visualization/CHANGELOG.md'
+          title-template: 'Visualization release {version}'
+          tag-template: 'vis-{version}'
+
+      - name: Upload Release Files
+        uses: alexellis/upload-assets@0.4.1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          asset_paths: '["visualization/dist/packages/*.zip"]'
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ needs.prepare.outputs.prefix }}-${{ needs.prepare.outputs.new_version }}
-          name: "${{ inputs.repository }} ${{ needs.prepare.outputs.new_version }}"
-          body_path: ${{ inputs.repository }}/CHANGELOG.md
+          name: "Visualization ${{ needs.prepare.outputs.new_version }}"
+          body_path: 'visualization/CHANGELOG.md'
           files: |
-            ${{ inputs.repository }}/dist/packages/*.*
+            visualization/dist/packages/*.*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -165,22 +152,73 @@ jobs:
         with:
           token: ${{ secrets.DEPLOY_TOKEN }}
           branch: gh-pages
-          folder: ${{ inputs.repository == 'visualization' && 'visualization/dist/webpack' || 'gh-pages' }}
-          clean: ${{ inputs.repository == 'visualization' }}
+          folder: visualization/dist/webpack
+          clean: true
 
-  finalize:
-    needs: [prepare, publish, deploy]
+  github-release-analysis:
+    name: Create GitHub Release (Analysis)
+    needs: prepare
+    if: inputs.repository == 'analysis'
     runs-on: ubuntu-latest
     permissions:
       contents: write
     steps:
-      - name: Checkout
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Add Changelog Entries
+        uses: rasmus-saks/release-a-changelog-action@v1.2.0
+        with:
+          github-token: '${{ secrets.GITHUB_TOKEN }}'
+          path: 'analysis/CHANGELOG.md'
+          title-template: 'Analysis release {version}'
+          tag-template: 'ana-{version}'
+
+      - name: Upload Release Files
+        uses: alexellis/upload-assets@0.4.1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          asset_paths: '["analysis/build/distributions/*.tar"]'
+
+      - name: Create Sample File for Web Demo
+        run: sh ./script/build_demo_file_analysis.sh
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ needs.prepare.outputs.prefix }}-${{ needs.prepare.outputs.new_version }}
+          name: "Analysis ${{ needs.prepare.outputs.new_version }}"
+          body_path: 'analysis/CHANGELOG.md'
+          files: |
+            analysis/build/distributions/*.*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4.6.9
+        with:
+          token: ${{ secrets.DEPLOY_TOKEN }}
+          branch: gh-pages
+          folder: gh-pages
+          clean: false
+
+  # Commits version changes and pushes final tag
+  finalize:
+    name: Finalize Release
+    needs: [prepare, promote-npm, promote-docker, github-release-visualization, github-release-analysis]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
       - name: Commit and tag changes
         run: |
+          echo "Finalizing release ${{ needs.prepare.outputs.prefix }}-${{ needs.prepare.outputs.new_version }}"
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add -A
