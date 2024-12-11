@@ -8,8 +8,8 @@ on:
         required: true
         type: choice
         options:
-          - visualization
-          - analysis
+          - Visualization
+          - Analysis
       version_type:
         description: 'Version increment type'
         required: true
@@ -44,13 +44,20 @@ jobs:
           set -e
           NEW_VERSION=$(bun run script/version-manager.ts ${{ inputs.repository }} ${{ inputs.version_type }})
           echo "new_version=${NEW_VERSION}" >> $GITHUB_OUTPUT
-          echo "prefix=${{ inputs.repository == 'visualization' && 'vis' || 'ana' }}" >> $GITHUB_OUTPUT
+          echo "prefix=${{ inputs.repository == 'Visualization' && 'vis' || 'ana' }}" >> $GITHUB_OUTPUT
 
       - name: Commit and tag changes
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add -A
-          git commit -m "Releasing ${{ steps.version.outputs.prefix }}-${{ steps.version.outputs.new_version }}"
+          git commit -m "Releasing ${{ steps.version.outputs.prefix }}-${{ steps.version.outputs.new_version }} [skip ci]"
           git tag "${{ steps.version.outputs.prefix }}-${{ steps.version.outputs.new_version }}"
           git push --follow-tags
+
+      - name: Trigger release workflow
+        run: |
+          gh workflow run "Release ${{ inputs.repository }}" \
+            --ref "${{ steps.version.outputs.prefix }}-${{ steps.version.outputs.new_version }}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
