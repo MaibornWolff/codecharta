@@ -8,6 +8,9 @@ on:
     paths:
       - 'analysis/**'
 
+env:
+  SHORT_SHA: "0000000"
+
 jobs:
   build_and_deploy:
     name: Build and Deploy
