@@ -1,8 +1,11 @@
 import { Component, Input, OnChanges } from "@angular/core"
 import * as d3 from "d3"
 
-type VGElement = d3.Selection<SVGSVGElement, unknown, HTMLElement, any>
-type GElement = d3.Selection<SVGGElement, unknown, HTMLElement, any>
+type SVGElement = d3.Selection<SVGSVGElement, unknown, HTMLElement, any>
+type GroupElement = d3.Selection<SVGGElement, unknown, HTMLElement, any>
+type TextElement = d3.Selection<SVGTextElement, unknown, HTMLElement, any>
+type LineElement = d3.Selection<SVGLineElement, unknown, HTMLElement, any>
+type RectElement = d3.Selection<SVGRectElement, unknown, HTMLElement, any>
 type Scale = d3.ScaleLinear<number, number>
 
 @Component({
@@ -23,16 +26,17 @@ export class MetricColorRangeDiagramComponent implements OnChanges {
     @Input() rightColor: string
     @Input() isAttributeDirectionInversed: boolean
 
+    private svgWidth: number
+    private framePadding: number
+    private svgHeight: number
     private frameWidth: number
-    private frameBuffer: number
     private frameHeight: number
-    private diagramWidth: number
-    private diagramHeight: number
-    private marginTop: number
-    private marginBottom: number
-    private marginLeft: number
-    private marginRight: number
-    private yLabelYOffset: number
+    private frameMarginTop: number
+    private frameMarginBottom: number
+    private frameMarginLeft: number
+    private frameMarginRight: number
+    private yLabelXOffset: number
+    private xLabelYOffset: number
     private percentileRanks: { x: number; y: number }[]
 
     ngOnChanges() {
@@ -58,19 +62,24 @@ export class MetricColorRangeDiagramComponent implements OnChanges {
         this.drawLabels(group)
         this.drawAreas(group, x)
         this.drawLine(group)
+        this.addCross(group, x, y)
     }
 
     private initializeDiagramDimesions() {
-        this.frameWidth = 296
-        this.frameBuffer = 10
-        this.frameHeight = 80
-        this.marginTop = 10
-        this.marginBottom = 10
-        this.marginLeft = 66
-        this.marginRight = 54
-        this.diagramWidth = this.frameWidth - this.marginLeft - this.marginRight
-        this.diagramHeight = this.frameHeight - this.marginTop - this.marginBottom
-        this.yLabelYOffset = -47
+        this.svgWidth = 550
+        this.svgHeight = 250
+
+        this.frameMarginTop = 10
+        this.frameMarginBottom = 50
+        this.frameMarginLeft = 50
+        this.frameMarginRight = 10
+        this.framePadding = 5
+
+        this.frameHeight = this.svgHeight - this.frameMarginTop - this.frameMarginBottom
+        this.frameWidth = this.svgWidth - this.frameMarginLeft - this.frameMarginRight
+
+        this.yLabelXOffset = 80
+        this.xLabelYOffset = 20
     }
 
     private clearDiagramContainer() {
@@ -78,36 +87,43 @@ export class MetricColorRangeDiagramComponent implements OnChanges {
     }
 
     private createSvg() {
-        return d3.select("#cc-range-diagram-container").append("svg")
+        return d3.select("#cc-range-diagram-container").append("svg").attr("width", this.svgWidth).attr("height", this.svgHeight)
     }
 
-    private createGroup(svg: VGElement) {
-        return svg.append("g").attr("transform", `translate(${this.marginLeft}, ${this.marginTop})`)
+    private createGroup(svg: SVGElement) {
+        return svg
+            .append("g")
+            .attr("transform", `translate(${this.frameMarginLeft}, ${this.frameMarginTop})`)
+            .attr("display", "flex")
+            .attr("justify-content", "center")
     }
 
-    private drawFrame(g: GElement) {
+    private drawFrame(g: GroupElement) {
         g.append("path")
             .attr(
                 "d",
-                `M ${-this.frameBuffer} ${-this.frameBuffer} h${this.diagramWidth + 2 * this.frameBuffer} v${
-                    this.diagramHeight + 2 * this.frameBuffer
-                } h${-this.diagramWidth - 2 * this.frameBuffer} v${-this.diagramHeight - 2 * this.frameBuffer}`
+                `M 0 0
+                h${this.frameWidth}
+                v${this.frameHeight}
+                h${-this.frameWidth}
+                v${-this.frameHeight}`
             )
             .attr("fill", "none")
             .attr("stroke", "#888")
             .attr("stroke-width", "1px")
     }
 
-    private drawAxes(g: GElement, x: Scale, y: Scale) {
+    private drawAxes(g: GroupElement, x: Scale, y: Scale) {
         g.append("g")
             .attr("id", "axis-x")
-            .attr("transform", `translate(0,${this.diagramHeight + this.frameBuffer})`)
+            .attr("transform", `translate(${this.framePadding},${this.frameHeight})`)
             .call(d3.axisBottom(x).ticks(5))
+            .attr("font-size", "13px")
             .attr("color", "#888")
 
         g.append("g")
             .attr("id", "axis-y")
-            .attr("transform", `translate(${-this.frameBuffer}, 0)`)
+            .attr("transform", `translate(0,${this.framePadding})`)
             .call(
                 d3
                     .axisLeft(y)
@@ -120,6 +136,7 @@ export class MetricColorRangeDiagramComponent implements OnChanges {
                               : d.toString()
                     })
             )
+            .attr("font-size", "13px")
             .attr("color", "#888")
     }
 
@@ -127,7 +144,7 @@ export class MetricColorRangeDiagramComponent implements OnChanges {
         return d3
             .scaleLinear()
             .domain(d3.extent(this.percentileRanks, d => d["x"] as number))
-            .range([0, this.diagramWidth])
+            .range([0, this.frameWidth - 2 * this.framePadding])
     }
 
     private createYScale() {
@@ -137,21 +154,17 @@ export class MetricColorRangeDiagramComponent implements OnChanges {
         return d3
             .scaleLinear()
             .domain(this.isAttributeDirectionInversed ? domainInversed : domainStandard)
-            .range([this.diagramHeight, 0])
+            .range([this.frameHeight - 2 * this.framePadding, 0])
     }
 
-    private drawLabels(g: GElement) {
-        const pathStartY = -this.frameBuffer
-        const pathHeight = this.diagramHeight + 2 * this.frameBuffer
-        const verticalCenter = pathStartY + pathHeight / 2
-
+    private drawLabels(g: GroupElement) {
         g.append("text")
             .attr("id", "y-label")
             .attr("class", "y label")
-            .attr("transform", `rotate(-90)`)
-            .attr("x", -verticalCenter)
-            .attr("y", this.yLabelYOffset)
             .attr("text-anchor", "middle")
+            .attr("transform", `rotate(-90)`)
+            .attr("x", -this.frameHeight / 2 - this.frameMarginTop)
+            .attr("y", this.frameMarginLeft - this.yLabelXOffset)
             .attr("fill", "#888")
             .text(`${this.colorMetric}`)
 
@@ -159,13 +172,13 @@ export class MetricColorRangeDiagramComponent implements OnChanges {
             .attr("id", "x-label")
             .attr("class", "x label")
             .attr("text-anchor", "middle")
-            .attr("x", this.diagramWidth / 2)
-            .attr("y", this.diagramHeight + this.marginTop + this.marginBottom + 2 * this.frameBuffer)
+            .attr("x", this.frameWidth / 2)
+            .attr("y", this.frameHeight + this.frameMarginTop + this.xLabelYOffset)
             .attr("fill", "#888")
             .text(`Quantiles (% of ${this.colorMetric})`)
     }
 
-    private drawAreas(g: GElement, x: Scale) {
+    private drawAreas(g: GroupElement, x: Scale) {
         const leftValue = x(
             this.isAttributeDirectionInversed
                 ? this.calculateReversedPercentileFromMetricValue(this.currentRightValue)
@@ -179,33 +192,30 @@ export class MetricColorRangeDiagramComponent implements OnChanges {
 
         g.append("rect")
             .attr("class", "left-area")
-            .attr("x", 0)
-            .attr("y", -this.frameBuffer)
+            .attr("x", this.framePadding)
             .attr("width", leftValue)
-            .attr("height", this.diagramHeight + 2 * this.frameBuffer)
+            .attr("height", this.frameHeight)
             .style("fill", this.isAttributeDirectionInversed ? this.rightColor : this.leftColor)
             .style("fill-opacity", "0.3")
 
         g.append("rect")
             .attr("class", "middle-area")
-            .attr("x", leftValue)
-            .attr("y", -this.frameBuffer)
+            .attr("x", leftValue + this.framePadding)
             .attr("width", rightValue - leftValue)
-            .attr("height", this.diagramHeight + 2 * this.frameBuffer)
+            .attr("height", this.frameHeight)
             .style("fill", this.middleColor)
             .style("fill-opacity", "0.3")
 
         g.append("rect")
             .attr("class", "right-area")
-            .attr("x", rightValue)
-            .attr("y", -this.frameBuffer)
-            .attr("width", this.diagramWidth - rightValue)
-            .attr("height", this.diagramHeight + 2 * this.frameBuffer)
+            .attr("x", rightValue + this.framePadding)
+            .attr("width", this.frameWidth - 2 * this.framePadding - rightValue)
+            .attr("height", this.frameHeight)
             .style("fill", this.isAttributeDirectionInversed ? this.leftColor : this.rightColor)
             .style("fill-opacity", "0.3")
     }
 
-    private drawLine(g: GElement) {
+    private drawLine(g: GroupElement) {
         g.append("path")
             .attr("id", "diagram-path")
             .datum(this.percentileRanks)
@@ -220,6 +230,7 @@ export class MetricColorRangeDiagramComponent implements OnChanges {
                     .x(d => this.createXScale()(d["x"]))
                     .y(d => this.createYScale()(d["y"]))
             )
+            .attr("transform", `translate(${this.framePadding}, ${this.framePadding})`)
     }
 
     private calculatePercentileRanks(array: number[]) {
@@ -286,5 +297,116 @@ export class MetricColorRangeDiagramComponent implements OnChanges {
                 return minPercentile
             }
         }
+    }
+
+    private addCross(group: GroupElement, x: Scale, y: Scale) {
+        const tooltip: TextElement = group
+            .append("text")
+            .attr("class", "cross-tooltip")
+            .attr("fill", "#000")
+            .attr("font-size", "13px")
+            .style("display", "none")
+
+        const dashedVerticalLine: LineElement = group
+            .append("line")
+            .attr("class", "dashed-vertical-line")
+            .attr("stroke", "#000")
+            .attr("stroke-width", "1px")
+            .attr("stroke-dasharray", "4")
+            .style("display", "none")
+
+        const straightVerticalLine: LineElement = group
+            .append("line")
+            .attr("class", "straight-vertical-line")
+            .attr("stroke", "#000")
+            .attr("stroke-width", "1px")
+            .style("display", "none")
+
+        const horizontalLine: LineElement = group
+            .append("line")
+            .attr("class", "horizontal-line")
+            .attr("stroke", "#000")
+            .attr("stroke-width", "1px")
+            .style("display", "none")
+
+        const rectangle: RectElement = group
+            .append("rect")
+            .attr("class", "mouse-event-rect")
+            .attr("width", this.frameWidth)
+            .attr("height", this.frameHeight + this.frameMarginBottom / 2)
+            .attr("fill", "none")
+            .attr("pointer-events", "all")
+
+        this.addOnMouseMoveEvent(rectangle, x, y, tooltip, dashedVerticalLine, straightVerticalLine, horizontalLine)
+        this.addOnMouseOutEvent(rectangle, tooltip, dashedVerticalLine, straightVerticalLine, horizontalLine)
+    }
+
+    private addOnMouseMoveEvent(
+        rectangle: RectElement,
+        x: Scale,
+        y: Scale,
+        tooltip: TextElement,
+        dashedVerticalLine: LineElement,
+        straightVerticalLine: LineElement,
+        horizontalLine: LineElement
+    ) {
+        rectangle.on("mousemove", event => {
+            const mouseX = d3.pointer(event)[0]
+            let xValue = x.invert(mouseX - this.framePadding)
+            xValue = Math.max(0, Math.min(xValue, 100))
+            const yValue = this.getYValueForXValue(xValue)
+
+            const yLinePosition = this.getYPositionForYValue(yValue, y)
+
+            const xTooltipPosition = xValue > 50 ? mouseX - 80 : mouseX + 10
+            const yTooltipPosition = yLinePosition < this.frameHeight / 2 + this.framePadding ? yLinePosition + 20 : yLinePosition - 20
+
+            tooltip
+                .style("display", "block")
+                .attr("x", xTooltipPosition)
+                .attr("y", yTooltipPosition)
+                .text(`Quantile: ${Math.round(xValue)}`)
+                .append("tspan")
+                .attr("x", xTooltipPosition)
+                .attr("dy", "1.2em")
+                .text(`Value: ${yValue}`)
+
+            dashedVerticalLine.attr("x1", mouseX).attr("x2", mouseX).attr("y2", this.frameHeight).style("display", "block")
+
+            straightVerticalLine
+                .attr("x1", mouseX)
+                .attr("x2", mouseX)
+                .attr("y1", yLinePosition)
+                .attr("y2", this.frameHeight)
+                .style("display", "block")
+
+            horizontalLine.attr("x2", mouseX).attr("y1", yLinePosition).attr("y2", yLinePosition).style("display", "block")
+        })
+    }
+
+    private addOnMouseOutEvent(
+        rectangle: RectElement,
+        tooltip: TextElement,
+        dashedVerticalLine: LineElement,
+        straightVerticalLine: LineElement,
+        horizontalLine: LineElement
+    ) {
+        rectangle.on("mouseout", () => {
+            tooltip.style("display", "none")
+            dashedVerticalLine.style("display", "none")
+            straightVerticalLine.style("display", "none")
+            horizontalLine.style("display", "none")
+        })
+    }
+
+    private getYPositionForYValue(yValue: number, yScale: Scale): number {
+        return yScale(yValue) + this.framePadding
+    }
+
+    private getYValueForXValue(xValue: number): number {
+        const closestPoint = this.percentileRanks.reduce((prev, curr) => {
+            return curr.x - xValue >= 0 && Math.abs(curr.x - xValue) < Math.abs(prev.x - xValue) ? curr : prev
+        }, this.percentileRanks[0])
+        return closestPoint.y
     }
 }
