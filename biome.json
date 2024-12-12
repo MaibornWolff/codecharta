@@ -117,7 +117,10 @@
         "useBlockStatements": "error",
         "useCollapsedElseIf": "error",
         "useExplicitLengthCheck": "error",
-        "useFilenamingConvention": { "level": "off", "options": { "requireAscii": true, "filenameCases": ["kebab-case"] } },
+        "useFilenamingConvention": {
+          "level": "off",
+          "options": { "requireAscii": true, "filenameCases": ["kebab-case"] }
+        },
         "useForOf": "error",
         "useNamingConvention": {
           "level": "off",
@@ -257,6 +260,14 @@
             "useGetterReturn": "off",
             "useValidTypeof": "off"
           }
+        }
+      }
+    },
+    {
+      "include": ["visualization/package.json"],
+      "json": {
+        "formatter": {
+          "lineWidth": 80
         }
       }
     }
