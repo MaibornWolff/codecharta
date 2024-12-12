@@ -1,10 +1,6 @@
-# WARNING: Do not change the name of this workflow as it is referenced by the release.yml workflow
-name: Release Analysis
+name: Release - Analysis
 
 on:
-  workflow_dispatch:
-    # This workflow is triggered by the release.yml workflow after version updates
-    # The tag-based trigger is kept for backward compatibility
   push:
     tags: 'ana-*.*.*'
 
