@@ -38,8 +38,12 @@ jobs:
       - name: Update version and files
         id: version
         run: |
-          set -e
-          NEW_VERSION=$(bun run script/version-manager.ts ${{ inputs.repository }} ${{ inputs.version_type }})
+          set -e  # Exit immediately if a command exits with a non-zero status
+          NEW_VERSION=$(bun script/version-manager.ts ${{ inputs.repository }} ${{ inputs.version_type }})
+          if [ $? -ne 0 ]; then
+            echo "::error::Version manager failed"
+            exit 1
+          fi
           echo "new_version=${NEW_VERSION}" >> $GITHUB_OUTPUT
           echo "prefix=${{ inputs.repository == 'Visualization' && 'vis' || 'ana' }}" >> $GITHUB_OUTPUT
 

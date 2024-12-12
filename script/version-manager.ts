@@ -66,8 +66,10 @@ class VersionManager {
             const date = new Date().toISOString().split("T")[0]
             const prefix = normalizedRepo === "visualization" ? "vis" : "ana"
 
-            // 1. Update version using npm
             let newVersion: string
+            let changelogEntries: string
+
+            // 1. Update version using npm
             try {
                 newVersion = execSync(`cd ${normalizedRepo} && npm version ${type} --no-git-tag-version`).toString().trim().replace("v", "")
             } catch (error) {
@@ -97,7 +99,8 @@ class VersionManager {
                     throw new Error("Changelog must contain an unreleased section")
                 }
 
-                const changelogEntries = this.extractLatestChangelog(changelog)
+                // Store changelog entries before modifying the file
+                changelogEntries = this.extractLatestChangelog(changelog)
 
                 if (!changelogEntries.trim()) {
                     throw new Error("No entries found in unreleased section")
@@ -113,7 +116,6 @@ class VersionManager {
 
             // 4. Create release post
             try {
-                // Keep original case for display purposes
                 const displayName = repository.charAt(0).toUpperCase() + repository.slice(1).toLowerCase()
                 const postContent = `---
 categories:
@@ -130,7 +132,7 @@ title: ${displayName} version ${newVersion}
 {{page.title}} is live and ready for [download](https://github.com/MaibornWolff/codecharta/releases/tag/${prefix}-${newVersion}). 
 This version brings the following:
 
-${this.extractLatestChangelog(fs.readFileSync(`${normalizedRepo}/CHANGELOG.md`, "utf8"))}`
+${changelogEntries}`
 
                 const postsDir = "gh-pages/_posts/release"
                 this.ensureDirectoryExists(postsDir)
@@ -148,30 +150,41 @@ ${this.extractLatestChangelog(fs.readFileSync(`${normalizedRepo}/CHANGELOG.md`, 
 
     private extractLatestChangelog(changelog: string): string {
         const lines = changelog.split("\n")
-        const entries: string[] = []
-        let started = false
+        const startIndex = lines.findIndex(line => line.toLowerCase().startsWith("## [unreleased]"))
+        const endIndex = lines.findIndex((line, index) => index > startIndex && line.startsWith("## ["))
 
-        for (const line of lines) {
-            if (line.startsWith("## [unreleased]")) {
-                started = true
-                continue
-            }
-            if (started && line.startsWith("## [")) {
-                break
-            }
-            if (started && line.trim()) {
-                entries.push(line)
-            }
+        if (startIndex === -1 || endIndex === -1) {
+            throw new Error("Could not find unreleased section in changelog")
         }
 
-        return entries.join("\n")
+        const content = lines
+            .slice(startIndex + 1, endIndex)
+            .join("\n")
+            .trim()
+
+        // Validate content
+        if (!content) {
+            throw new Error("Unreleased section is empty")
+        }
+
+        // Check for at least one change entry
+        if (!content.includes("###")) {
+            throw new Error("No change categories (###) found in unreleased section")
+        }
+
+        // Check for at least one bullet point
+        if (!content.includes("-")) {
+            throw new Error("No changes (bullet points) found in unreleased section")
+        }
+
+        return content
     }
 }
 
 // CLI interface
 if (import.meta.main) {
     if (process.argv.length !== 4) {
-        console.error("Usage: bun run script/version-manager.ts <repository> <version-type>")
+        console.error("Usage: bun script/version-manager.ts <repository> <version-type>")
         process.exit(1)
     }
 
@@ -179,5 +192,3 @@ if (import.meta.main) {
     const manager = new VersionManager()
     process.stdout.write(manager.updateVersion(repository, type))
 }
-
-export default VersionManager
