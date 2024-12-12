@@ -43,6 +43,14 @@ jobs:
           echo "npm_package=${NPM_PACKAGE}" >> $GITHUB_OUTPUT
           echo "docker_repo=${DOCKER_REPO}" >> $GITHUB_OUTPUT
 
+      # Setup Node.js and npm login
+      - name: Setup Node.js
+        if: inputs.unpublish_type == 'npm' || inputs.unpublish_type == 'all'
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://registry.npmjs.org'
+
       # Unpublish npm package
       - name: Unpublish from npm
         if: inputs.unpublish_type == 'npm' || inputs.unpublish_type == 'all'
