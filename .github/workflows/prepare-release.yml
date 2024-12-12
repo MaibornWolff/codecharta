@@ -52,7 +52,7 @@ jobs:
         uses: peter-evans/create-pull-request@v7
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: "Releasing ${{ steps.version.outputs.prefix }}-${{ steps.version.outputs.new_version }} [skip ci]"
+          commit-message: "Releasing ${{ steps.version.outputs.prefix }}-${{ steps.version.outputs.new_version }}"
           committer: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
           author: ${{ github.actor }} <${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com>
           branch: release/${{ steps.version.outputs.prefix }}-${{ steps.version.outputs.new_version }}
