@@ -1,0 +1,90 @@
+name: Unpublish Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      repository:
+        description: 'Repository to unpublish'
+        required: true
+        type: choice
+        options:
+          - Visualization
+          - Analysis
+      version:
+        description: 'Version to unpublish (e.g., 1.131.2)'
+        required: true
+        type: string
+      unpublish_type:
+        description: 'What to unpublish'
+        required: true
+        type: choice
+        options:
+          - all
+          - npm
+          - docker
+
+jobs:
+  unpublish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+
+    steps:
+      - name: Setup variables
+        id: vars
+        run: |
+          REPO_LOWER=$(echo "${{ inputs.repository }}" | tr '[:upper:]' '[:lower:]')
+          PREFIX=$([ "$REPO_LOWER" = "visualization" ] && echo "vis" || echo "ana")
+          NPM_PACKAGE=$([ "$REPO_LOWER" = "visualization" ] && echo "codecharta-visualization" || echo "@codechart/analysis")
+          DOCKER_REPO=$([ "$REPO_LOWER" = "visualization" ] && echo "codecharta-visualization" || echo "codecharta-analysis")
+          echo "repo_lower=${REPO_LOWER}" >> $GITHUB_OUTPUT
+          echo "prefix=${PREFIX}" >> $GITHUB_OUTPUT
+          echo "npm_package=${NPM_PACKAGE}" >> $GITHUB_OUTPUT
+          echo "docker_repo=${DOCKER_REPO}" >> $GITHUB_OUTPUT
+
+      # Unpublish npm package
+      - name: Unpublish from npm
+        if: inputs.unpublish_type == 'npm' || inputs.unpublish_type == 'all'
+        run: |
+          echo "Unpublishing ${{ steps.vars.outputs.npm_package }}@${{ inputs.version }}"
+          npm unpublish ${{ steps.vars.outputs.npm_package }}@${{ inputs.version }} --force || true
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      # Remove Docker tags
+      - name: Remove Docker tags
+        if: inputs.unpublish_type == 'docker' || inputs.unpublish_type == 'all'
+        run: |
+          # Login to Docker Hub
+          echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
+          
+          # Delete specific version tag
+          echo "Removing Docker tag: codecharta/${{ steps.vars.outputs.docker_repo }}:${{ inputs.version }}"
+          TOKEN=$(curl -s -H "Content-Type: application/json" -X POST -d '{"username": "${{ secrets.DOCKER_USERNAME }}", "password": "${{ secrets.DOCKER_PASSWORD }}"}' https://hub.docker.com/v2/users/login/ | jq -r .token)
+          curl -X DELETE -H "Authorization: JWT ${TOKEN}" https://hub.docker.com/v2/repositories/codecharta/${{ steps.vars.outputs.docker_repo }}/tags/${{ inputs.version }}/
+
+          # If this was the latest version, we should also remove the 'latest' tag
+          echo "Note: If this was the latest version, you may need to manually update the 'latest' tag"
+
+      # Delete GitHub release and tag
+      - name: Delete GitHub Release
+        if: inputs.unpublish_type == 'all'
+        run: |
+          TAG="${{ steps.vars.outputs.prefix }}-${{ inputs.version }}"
+          echo "Deleting release and tag: ${TAG}"
+          
+          # Delete the release
+          gh release delete ${TAG} --yes || true
+          
+          # Delete the tag
+          git push --delete origin ${TAG} || true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Warning Message
+        run: |
+          echo "::warning::Release ${{ inputs.version }} has been unpublished. You may need to:"
+          echo "::warning::1. Manually update the 'latest' tag in Docker Hub if needed"
+          echo "::warning::2. Update version numbers in README.md"
+          echo "::warning::3. Consider creating a new patch release" 

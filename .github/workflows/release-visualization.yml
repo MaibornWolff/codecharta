@@ -51,10 +51,18 @@ jobs:
           node-version: '20'
           registry-url: 'https://registry.npmjs.org'
 
-      - name: Install dependencies
+      - name: Install wine
         run: |
           sudo apt-get update
-          sudo apt-get install -y wine-stable zip
+          sudo apt-get install -y wine-stable
+          
+      - name: Install zip
+        run: sudo apt-get install -y zip
+
+      - name: Enable analysis execution rights
+        working-directory: ./analysis
+        run: |
+          chmod +x ./gradlew
 
       - name: Build visualization
         env:
@@ -106,7 +114,10 @@ jobs:
         with:
           asset_paths: '["visualization/dist/packages/*.zip"]'
 
-      # Deploy to production GitHub Pages
+      # Create and deploy sample file
+      - name: Create Sample File for Web Demo
+        run: sh ./script/build_demo_file_visualization.sh
+
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4.6.9
         with:
