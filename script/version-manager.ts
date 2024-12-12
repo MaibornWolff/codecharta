@@ -55,6 +55,36 @@ class VersionManager {
         }
     }
 
+    private updateReadme(repository: Repository, newVersion: string): void {
+        const readmePath = "README.md"
+        const readme = fs.readFileSync(readmePath, "utf8")
+
+        // Find the line with version links
+        const versionLineRegex = /Analysis <a href=".*?">(.*?)<\/a> \| Visualization <a href=".*?">(.*?)<\/a>/
+        const match = readme.match(versionLineRegex)
+
+        if (!match) {
+            throw new Error("Could not find version line in README.md")
+        }
+
+        let updatedReadme = readme
+        const prefix = repository === "visualization" ? "vis" : "ana"
+
+        if (repository === "visualization") {
+            updatedReadme = readme.replace(
+                versionLineRegex,
+                `Analysis <a href="https://github.com/MaibornWolff/codecharta/releases/tag/ana-${match[1]}">${match[1]}</a> | Visualization <a href="https://github.com/MaibornWolff/codecharta/releases/tag/vis-${newVersion}">${newVersion}</a>`
+            )
+        } else {
+            updatedReadme = readme.replace(
+                versionLineRegex,
+                `Analysis <a href="https://github.com/MaibornWolff/codecharta/releases/tag/ana-${newVersion}">${newVersion}</a> | Visualization <a href="https://github.com/MaibornWolff/codecharta/releases/tag/vis-${match[2]}">${match[2]}</a>`
+            )
+        }
+
+        fs.writeFileSync(readmePath, updatedReadme)
+    }
+
     public updateVersion(repository: string, type: string): string {
         try {
             // Validate inputs
@@ -74,6 +104,13 @@ class VersionManager {
                 newVersion = execSync(`cd ${normalizedRepo} && npm version ${type} --no-git-tag-version`).toString().trim().replace("v", "")
             } catch (error) {
                 throw new Error(`Failed to update version in ${normalizedRepo}/package.json: ${error}`)
+            }
+
+            // 2. Update README.md
+            try {
+                this.updateReadme(normalizedRepo, newVersion)
+            } catch (error) {
+                throw new Error(`Failed to update README.md: ${error}`)
             }
 
             // 2. If analysis, also update gradle.properties
