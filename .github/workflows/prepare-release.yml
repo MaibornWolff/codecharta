@@ -22,15 +22,11 @@ on:
 jobs:
   prepare:
     runs-on: ubuntu-latest
-    outputs:
-      new_version: ${{ steps.version.outputs.new_version }}
-      prefix: ${{ steps.version.outputs.prefix }}
     permissions:
       contents: write
       pull-requests: write
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
@@ -47,35 +43,22 @@ jobs:
           echo "new_version=${NEW_VERSION}" >> $GITHUB_OUTPUT
           echo "prefix=${{ inputs.repository == 'Visualization' && 'vis' || 'ana' }}" >> $GITHUB_OUTPUT
 
-      - name: Create release branch and commit changes
-        run: |
-          # Create a new branch
-          git checkout -b release/${{ steps.version.outputs.prefix }}-${{ steps.version.outputs.new_version }}
-          
-          # Stage and commit changes
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git add -A
-          git commit -m "Releasing ${{ steps.version.outputs.prefix }}-${{ steps.version.outputs.new_version }} [skip ci]"
-          
-          # Create tag (will be pushed with the merge)
-          git tag "${{ steps.version.outputs.prefix }}-${{ steps.version.outputs.new_version }}"
-          
-          # Push branch
-          git push origin release/${{ steps.version.outputs.prefix }}-${{ steps.version.outputs.new_version }}
-
-      - name: Create release pull request
-        uses: peter-evans/create-pull-request@v5
+      - name: Create Pull Request
+        id: cpr
+        uses: peter-evans/create-pull-request@v7
         with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "Releasing ${{ steps.version.outputs.prefix }}-${{ steps.version.outputs.new_version }} [skip ci]"
+          committer: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
+          author: ${{ github.actor }} <${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com>
+          branch: release/${{ steps.version.outputs.prefix }}-${{ steps.version.outputs.new_version }}
+          delete-branch: true
           title: "Release ${{ inputs.repository }} ${{ steps.version.outputs.new_version }}"
           body: |
             Automated PR for releasing ${{ inputs.repository }} version ${{ steps.version.outputs.new_version }}
             
             This PR was automatically created by the release workflow.
-            After merging, the tag `${{ steps.version.outputs.prefix }}-${{ steps.version.outputs.new_version }}` will trigger the release workflow.
-          branch: release/${{ steps.version.outputs.prefix }}-${{ steps.version.outputs.new_version }}
-          base: main
-          labels: release
-          delete-branch: true
-
-      # The appropriate release workflow will be triggered after the PR is merged
+            After merging, the release workflow will create a tag `${{ steps.version.outputs.prefix }}-${{ steps.version.outputs.new_version }}` and start the release process.
+          labels: |
+            release
+          draft: false

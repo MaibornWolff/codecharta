@@ -1,14 +1,21 @@
 name: Release - Analysis
 
 on:
-  push:
-    tags: 'ana-*.*.*'
+  pull_request:
+    types:
+      - closed
+    branches:
+      - 'release/ana-*'
+
 
 env:
   VERSION: "0.0.0"
 
 jobs:
   promote_and_release:
+    if: |
+      github.event.pull_request.merged == true && 
+      contains(github.event.pull_request.labels.*.name, 'release')
     name: Promote and Release
     runs-on: ubuntu-latest
     permissions:
@@ -19,10 +26,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # Extract version from tag
+      # Extract version from branch name
       - name: Set version
         run: |
-          echo "VERSION=${GITHUB_REF#refs/tags/ana-}" >> $GITHUB_ENV
+          BRANCH_NAME="${{ github.event.pull_request.head.ref }}"
+          echo "VERSION=${BRANCH_NAME#release/ana-}" >> $GITHUB_ENV
 
       # Build just for release artifacts
       - name: Setup Node.js
