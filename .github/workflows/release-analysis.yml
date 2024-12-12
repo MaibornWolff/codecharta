@@ -5,8 +5,10 @@ on:
     types:
       - closed
     branches:
-      - 'release/ana-*'
-
+      - main
+    paths:
+      - 'analysis/**'
+      - 'gh-pages/_posts/release/*ana_*.md'
 
 env:
   VERSION: "0.0.0"
@@ -15,7 +17,8 @@ jobs:
   promote_and_release:
     if: |
       github.event.pull_request.merged == true && 
-      contains(github.event.pull_request.labels.*.name, 'release')
+      contains(github.event.pull_request.labels.*.name, 'release') &&
+      startsWith(github.event.pull_request.head.ref, 'release/ana-')
     name: Promote and Release
     runs-on: ubuntu-latest
     permissions:
