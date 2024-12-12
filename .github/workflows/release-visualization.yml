@@ -6,9 +6,6 @@ on:
       - closed
     branches:
       - main
-    paths:
-      - 'visualization/**'
-      - 'gh-pages/_posts/release/**'
 
 env:
   VERSION: "0.0.0"
