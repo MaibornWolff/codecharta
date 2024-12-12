@@ -64,6 +64,8 @@ jobs:
       - name: Publish to npm
         working-directory: ./analysis/node-wrapper
         run: |
+          npm ci
+          npm run prepare
           npm publish --tag staging
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

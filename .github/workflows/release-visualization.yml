@@ -79,18 +79,12 @@ jobs:
           docker push codecharta/codecharta-visualization:latest
           docker push codecharta/codecharta-visualization:${{ env.VERSION }}
 
-      - name: Promote npm package
+      - name: Publish npm package
         working-directory: ./visualization
         run: |
-          # Get the latest staging version
-          STAGING_VERSION=$(npm view codecharta-visualization@staging version)
-          
-          # Download the staging package
-          npm pack codecharta-visualization@staging
-          
-          # Update version and publish as latest
-          npm version ${{ env.VERSION }} --no-git-tag-version
-          npm publish codecharta-visualization-${STAGING_VERSION}.tgz --tag latest
+          # Update version and publish
+          npm version ${{ env.VERSION }} --no-git-tag-version --allow-same-version
+          npm publish --tag latest
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
