@@ -13,9 +13,14 @@ type VersionType = "major" | "minor" | "patch"
 
 class VersionManager {
     private validateRepository(repository: string): asserts repository is Repository {
-        if (repository !== "visualization" && repository !== "analysis") {
-            throw new Error(`Invalid repository: ${repository}. Must be either "visualization" or "analysis"`)
+        const normalized = repository.toLowerCase()
+        if (normalized !== "visualization" && normalized !== "analysis") {
+            throw new Error(`Invalid repository: ${repository}. Must be either "Visualization" or "Analysis" (case insensitive)`)
         }
+    }
+
+    private getNormalizedRepository(repository: string): Repository {
+        return repository.toLowerCase() as Repository
     }
 
     private validateVersionType(type: string): asserts type is VersionType {
@@ -25,7 +30,8 @@ class VersionManager {
     }
 
     private validateFiles(repository: string) {
-        if (repository === "visualization") {
+        const normalizedRepo = this.getNormalizedRepository(repository)
+        if (normalizedRepo === "visualization") {
             const visualizationFiles = ["visualization/package.json", "visualization/CHANGELOG.md"]
             for (const file of visualizationFiles) {
                 if (!fs.existsSync(file)) {
@@ -56,19 +62,20 @@ class VersionManager {
             this.validateVersionType(type)
             this.validateFiles(repository)
 
+            const normalizedRepo = this.getNormalizedRepository(repository)
             const date = new Date().toISOString().split("T")[0]
-            const prefix = repository === "visualization" ? "vis" : "ana"
+            const prefix = normalizedRepo === "visualization" ? "vis" : "ana"
 
             // 1. Update version using npm
             let newVersion: string
             try {
-                newVersion = execSync(`cd ${repository} && npm version ${type} --no-git-tag-version`).toString().trim().replace("v", "")
+                newVersion = execSync(`cd ${normalizedRepo} && npm version ${type} --no-git-tag-version`).toString().trim().replace("v", "")
             } catch (error) {
-                throw new Error(`Failed to update version in ${repository}/package.json: ${error}`)
+                throw new Error(`Failed to update version in ${normalizedRepo}/package.json: ${error}`)
             }
 
             // 2. If analysis, also update gradle.properties
-            if (repository === "analysis") {
+            if (normalizedRepo === "analysis") {
                 try {
                     const gradleProps = fs.readFileSync("analysis/gradle.properties", "utf8")
                     const updatedProps = gradleProps.replace(/currentVersion=.+/, `currentVersion=${newVersion}`)
@@ -83,7 +90,7 @@ class VersionManager {
 
             // 3. Update changelog
             try {
-                const changelogPath = `${repository}/CHANGELOG.md`
+                const changelogPath = `${normalizedRepo}/CHANGELOG.md`
                 const changelog = fs.readFileSync(changelogPath, "utf8")
 
                 if (!changelog.includes("## [unreleased]")) {
@@ -106,22 +113,24 @@ class VersionManager {
 
             // 4. Create release post
             try {
+                // Keep original case for display purposes
+                const displayName = repository.charAt(0).toUpperCase() + repository.slice(1).toLowerCase()
                 const postContent = `---
 categories:
   - Release
-  - Release-${repository}
+  - Release-${displayName}
 tags:
   - gh-pages
   - release
-  - ${repository.toLowerCase()}
+  - ${normalizedRepo}
 
-title: ${repository} version ${newVersion}
+title: ${displayName} version ${newVersion}
 ---
 
 {{page.title}} is live and ready for [download](https://github.com/MaibornWolff/codecharta/releases/tag/${prefix}-${newVersion}). 
 This version brings the following:
 
-${this.extractLatestChangelog(fs.readFileSync(`${repository}/CHANGELOG.md`, "utf8"))}`
+${this.extractLatestChangelog(fs.readFileSync(`${normalizedRepo}/CHANGELOG.md`, "utf8"))}`
 
                 const postsDir = "gh-pages/_posts/release"
                 this.ensureDirectoryExists(postsDir)
