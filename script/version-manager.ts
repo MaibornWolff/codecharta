@@ -236,18 +236,25 @@ if (import.meta.main) {
     const [command, ...args] = process.argv.slice(2)
     const manager = new VersionManager()
 
-    if (command === "extract-changelog") {
-        if (args.length !== 1) {
-            console.error("Usage: bun script/version-manager.ts extract-changelog <repository>")
+    switch (command) {
+        case "extract-changelog":
+            if (args.length !== 1) {
+                console.error("Usage: bun script/version-manager.ts extract-changelog <repository>")
+                process.exit(1)
+            }
+            process.stdout.write(manager.extractChangelog(args[0]))
+            break
+
+        case "update-version":
+            if (args.length !== 2) {
+                console.error("Usage: bun script/version-manager.ts update-version <repository> <version-type>")
+                process.exit(1)
+            }
+            process.stdout.write(manager.updateVersion(args[0], args[1]))
+            break
+
+        default:
+            console.error("Unknown command. Available commands: extract-changelog, update-version")
             process.exit(1)
-        }
-        process.stdout.write(manager.extractChangelog(args[0]))
-    } else {
-        // existing version update logic
-        if (args.length !== 2) {
-            console.error("Usage: bun script/version-manager.ts <repository> <version-type>")
-            process.exit(1)
-        }
-        process.stdout.write(manager.updateVersion(args[0], args[1]))
     }
 }
