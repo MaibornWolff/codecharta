@@ -8,8 +8,8 @@ on:
         required: true
         type: choice
         options:
-          - Visualization
-          - Analysis
+          - visualization
+          - analysis
       version:
         description: 'Version to unpublish (e.g., 1.131.2)'
         required: true
@@ -34,11 +34,9 @@ jobs:
       - name: Setup variables
         id: vars
         run: |
-          REPO_LOWER=$(echo "${{ inputs.repository }}" | tr '[:upper:]' '[:lower:]')
-          PREFIX=$([ "$REPO_LOWER" = "visualization" ] && echo "vis" || echo "ana")
-          NPM_PACKAGE=$([ "$REPO_LOWER" = "visualization" ] && echo "codecharta-visualization" || echo "@codechart/analysis")
-          DOCKER_REPO=$([ "$REPO_LOWER" = "visualization" ] && echo "codecharta-visualization" || echo "codecharta-analysis")
-          echo "repo_lower=${REPO_LOWER}" >> $GITHUB_OUTPUT
+          PREFIX=$([ "${{ inputs.repository }}" = "visualization" ] && echo "vis" || echo "ana")
+          NPM_PACKAGE=$([ "${{ inputs.repository }}" = "visualization" ] && echo "codecharta-visualization" || echo "@codechart/analysis")
+          DOCKER_REPO=$([ "${{ inputs.repository }}" = "visualization" ] && echo "codecharta-visualization" || echo "codecharta-analysis")
           echo "prefix=${PREFIX}" >> $GITHUB_OUTPUT
           echo "npm_package=${NPM_PACKAGE}" >> $GITHUB_OUTPUT
           echo "docker_repo=${DOCKER_REPO}" >> $GITHUB_OUTPUT
@@ -75,17 +73,22 @@ jobs:
           # If this was the latest version, we should also remove the 'latest' tag
           echo "Note: If this was the latest version, you may need to manually update the 'latest' tag"
 
-      # Delete GitHub release and tag
+      # Delete GitHub release
       - name: Delete GitHub Release
         if: inputs.unpublish_type == 'all'
         run: |
           TAG="${{ steps.vars.outputs.prefix }}-${{ inputs.version }}"
-          echo "Deleting release and tag: ${TAG}"
-          
-          # Delete the release
+          echo "Deleting release: ${TAG}"
           gh release delete ${TAG} --yes || true
-          
-          # Delete the tag
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Delete Git tag
+      - name: Delete Git Tag
+        if: inputs.unpublish_type == 'all'
+        run: |
+          TAG="${{ steps.vars.outputs.prefix }}-${{ inputs.version }}"
+          echo "Deleting tag: ${TAG}"
           git push --delete origin ${TAG} || true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
