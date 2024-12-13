@@ -52,17 +52,11 @@ jobs:
           git tag "ana-${{ env.VERSION }}"
           git push origin "ana-${{ env.VERSION }}"
 
-      - name: Setup Java
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'temurin'
-          java-version: '17'
-
       - name: Build analysis
         working-directory: ./analysis
         run: |
           chmod +x ./gradlew
-          ./gradlew clean build installDist
+          ./gradlew build
 
       # Debug step to verify files
       - name: List build artifacts
