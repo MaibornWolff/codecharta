@@ -100,9 +100,20 @@ class VersionManager {
 
             // 1. Update version using npm
             try {
-                newVersion = execSync(`cd ${normalizedRepo} && npm version ${type} --no-git-tag-version`).toString().trim().replace("v", "")
+                if (normalizedRepo === "visualization") {
+                    newVersion = execSync(`cd ${normalizedRepo} && npm version ${type} --no-git-tag-version`)
+                        .toString()
+                        .trim()
+                        .replace("v", "")
+                } else {
+                    // For analysis, use node-wrapper package.json
+                    newVersion = execSync(`cd analysis/node-wrapper && npm version ${type} --no-git-tag-version`)
+                        .toString()
+                        .trim()
+                        .replace("v", "")
+                }
             } catch (error) {
-                throw new Error(`Failed to update version in ${normalizedRepo}/package.json: ${error}`)
+                throw new Error(`Failed to update version: ${error}`)
             }
 
             // 2. Update README.md
@@ -112,21 +123,18 @@ class VersionManager {
                 throw new Error(`Failed to update README.md: ${error}`)
             }
 
-            // 2. If analysis, also update gradle.properties
+            // 3. If analysis, also update gradle.properties
             if (normalizedRepo === "analysis") {
                 try {
                     const gradleProps = fs.readFileSync("analysis/gradle.properties", "utf8")
                     const updatedProps = gradleProps.replace(/currentVersion=.+/, `currentVersion=${newVersion}`)
                     fs.writeFileSync("analysis/gradle.properties", updatedProps)
-
-                    // Update node-wrapper version
-                    execSync(`cd analysis/node-wrapper && npm version ${newVersion} --no-git-tag-version`)
                 } catch (error) {
                     throw new Error(`Failed to update analysis versions: ${error}`)
                 }
             }
 
-            // 3. Update changelog
+            // 4. Update changelog
             try {
                 const changelogPath = `${normalizedRepo}/CHANGELOG.md`
                 const changelog = fs.readFileSync(changelogPath, "utf8")
@@ -150,7 +158,7 @@ class VersionManager {
                 throw new Error(`Failed to update changelog: ${error}`)
             }
 
-            // 4. Create release post
+            // 5. Create release post
             try {
                 const displayName = repository.charAt(0).toUpperCase() + repository.slice(1).toLowerCase()
                 const postContent = `---
