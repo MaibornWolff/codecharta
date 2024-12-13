@@ -68,7 +68,6 @@ class VersionManager {
         }
 
         let updatedReadme = readme
-        const prefix = repository === "visualization" ? "vis" : "ana"
 
         if (repository === "visualization") {
             updatedReadme = readme.replace(
@@ -137,7 +136,7 @@ class VersionManager {
                 }
 
                 // Store changelog entries before modifying the file
-                changelogEntries = this.extractLatestChangelog(changelog)
+                changelogEntries = this.extractUnreleasedChangelog(changelog)
 
                 if (!changelogEntries.trim()) {
                     throw new Error("No entries found in unreleased section")
@@ -185,7 +184,7 @@ ${changelogEntries}`
         }
     }
 
-    private extractLatestChangelog(changelog: string): string {
+    private extractUnreleasedChangelog(changelog: string): string {
         const lines = changelog.split("\n")
         const startIndex = lines.findIndex(line => line.toLowerCase().startsWith("## [unreleased]"))
         const endIndex = lines.findIndex((line, index) => index > startIndex && line.startsWith("## ["))
@@ -210,20 +209,42 @@ ${changelogEntries}`
         }
 
         // Check for at least one bullet point
-        if (!content.includes("-")) {
-            throw new Error("No changes (bullet points) found in unreleased section")
+        if (content.length === 0) {
+            throw new Error("Unreleased section is empty")
         }
 
         return content
     }
 
-    public extractChangelog(repository: string): string {
+    private extractChangelogForVersion(changelog: string, version: string): string {
+        const lines = changelog.split("\n")
+        const startIndex = lines.findIndex(line => line.includes(`## [${version}]`))
+        const endIndex = lines.findIndex((line, index) => index > startIndex && line.startsWith("## ["))
+
+        if (startIndex === -1 || endIndex === -1) {
+            throw new Error(`Could not find changelog section for version ${version}`)
+        }
+
+        const content = lines
+            .slice(startIndex + 1, endIndex)
+            .join("\n")
+            .trim()
+
+        if (!content) {
+            throw new Error(`Changelog section for version ${version} is empty`)
+        }
+
+        return content
+    }
+
+    public extractChangelog(repository: string, version?: string): string {
         try {
             this.validateRepository(repository)
             const normalizedRepo = this.getNormalizedRepository(repository)
             const changelogPath = `${normalizedRepo}/CHANGELOG.md`
             const changelog = fs.readFileSync(changelogPath, "utf8")
-            return this.extractLatestChangelog(changelog)
+
+            return version ? this.extractChangelogForVersion(changelog, version) : this.extractUnreleasedChangelog(changelog)
         } catch (error) {
             console.error(`Error extracting changelog: ${error}`)
             throw error
@@ -238,11 +259,11 @@ if (import.meta.main) {
 
     switch (command) {
         case "extract-changelog":
-            if (args.length !== 1) {
-                console.error("Usage: bun script/version-manager.ts extract-changelog <repository>")
+            if (args.length === 0 || args.length > 2) {
+                console.error("Usage: bun script/version-manager.ts extract-changelog <repository> [version]")
                 process.exit(1)
             }
-            process.stdout.write(manager.extractChangelog(args[0]))
+            process.stdout.write(manager.extractChangelog(args[0], args[1]))
             break
 
         case "update-version":

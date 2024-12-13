@@ -96,8 +96,8 @@ jobs:
       - name: Create Release
         id: create_release
         run: |
-          # Extract changelog entries
-          CHANGELOG_CONTENT=$(bun script/version-manager.ts extract-changelog visualization)
+          # Extract changelog entries for this version
+          CHANGELOG_CONTENT=$(bun script/version-manager.ts extract-changelog visualization ${{ env.VERSION }})
           
           # Create release with changelog
           gh release create "vis-${{ env.VERSION }}" \
