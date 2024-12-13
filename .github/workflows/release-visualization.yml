@@ -93,6 +93,7 @@ jobs:
           path: |
             visualization/dist/
             visualization/package.json
+          compression-level: 0  # No compression for binary files
 
   # Create GitHub Release
   create_release:
@@ -109,6 +110,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: build-artifacts
+          path: visualization/dist
 
       - name: Setup Bun
         uses: oven-sh/setup-bun@v1
@@ -141,9 +143,10 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: build-artifacts
+          path: visualization
 
       - name: Publish package
-        working-directory: ./visualization
+        working-directory: visualization
         run: |
           npm version ${{ needs.build.outputs.version }} --no-git-tag-version --allow-same-version
           npm publish --tag latest
