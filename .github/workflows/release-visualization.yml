@@ -2,6 +2,11 @@ name: Release - Visualization
 
 on:
   workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to release (e.g., 1.131.3)'
+        required: true
+        type: string
   pull_request:
     types:
       - closed
@@ -17,9 +22,11 @@ env:
 jobs:
   promote_and_release:
     if: |
-      github.event.pull_request.merged == true && 
-      contains(github.event.pull_request.labels.*.name, 'release') &&
-      startsWith(github.event.pull_request.head.ref, 'release/vis-')
+      (github.event_name == 'workflow_dispatch') ||
+      (github.event_name == 'pull_request' && 
+       github.event.pull_request.merged == true && 
+       contains(github.event.pull_request.labels.*.name, 'release') &&
+       startsWith(github.event.pull_request.head.ref, 'release/vis-'))
     name: Promote and Release
     runs-on: ubuntu-latest
     permissions:
@@ -32,8 +39,12 @@ jobs:
 
       - name: Set version
         run: |
-          BRANCH_NAME="${{ github.event.pull_request.head.ref }}"
-          echo "VERSION=${BRANCH_NAME#release/vis-}" >> $GITHUB_ENV
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            echo "VERSION=${{ inputs.version }}" >> $GITHUB_ENV
+          else
+            BRANCH_NAME="${{ github.event.pull_request.head.ref }}"
+            echo "VERSION=${BRANCH_NAME#release/vis-}" >> $GITHUB_ENV
+          fi
 
       - name: Create tag
         run: |
