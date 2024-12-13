@@ -20,19 +20,18 @@ env:
   VERSION: "0.0.0"
 
 jobs:
-  promote_and_release:
+  # Build artifacts
+  build:
     if: |
       (github.event_name == 'workflow_dispatch') ||
       (github.event_name == 'pull_request' && 
        github.event.pull_request.merged == true && 
        contains(github.event.pull_request.labels.*.name, 'release') &&
        startsWith(github.event.pull_request.head.ref, 'release/vis-'))
-    name: Promote and Release
+    name: Build
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      packages: write
-
+    outputs:
+      version: ${{ env.VERSION }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -86,27 +85,77 @@ jobs:
           echo "Found zip files:"
           find visualization/dist/packages -name "*.zip"
 
-      # Setup Bun for version-manager
+      # Upload build artifacts for other jobs
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifacts
+          path: |
+            visualization/dist/
+            visualization/package.json
+
+  # Create GitHub Release
+  create_release:
+    needs: build
+    name: Create GitHub Release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build-artifacts
+
       - name: Setup Bun
         uses: oven-sh/setup-bun@v1
         with:
           bun-version: latest
 
-      # Create release with changelog
       - name: Create Release
-        id: create_release
         run: |
-          # Extract changelog entries for this version
-          CHANGELOG_CONTENT=$(bun script/version-manager.ts extract-changelog visualization ${{ env.VERSION }})
-          
-          # Create release with changelog
-          gh release create "vis-${{ env.VERSION }}" \
-            --title "Visualization release ${{ env.VERSION }}" \
+          CHANGELOG_CONTENT=$(bun script/version-manager.ts extract-changelog visualization ${{ needs.build.outputs.version }})
+          gh release create "vis-${{ needs.build.outputs.version }}" \
+            --title "Visualization release ${{ needs.build.outputs.version }}" \
             --notes "$CHANGELOG_CONTENT" \
             visualization/dist/packages/*.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+  # Publish to npm
+  publish_npm:
+    needs: build
+    name: Publish to npm
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build-artifacts
+
+      - name: Publish package
+        working-directory: ./visualization
+        run: |
+          npm version ${{ needs.build.outputs.version }} --no-git-tag-version --allow-same-version
+          npm publish --tag latest
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+  # Publish to Docker Hub
+  publish_docker:
+    needs: build
+    name: Publish to Docker Hub
+    runs-on: ubuntu-latest
+    steps:
       - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
@@ -117,17 +166,26 @@ jobs:
         run: |
           docker pull codecharta/codecharta-visualization:staging
           docker tag codecharta/codecharta-visualization:staging codecharta/codecharta-visualization:latest
-          docker tag codecharta/codecharta-visualization:staging codecharta/codecharta-visualization:${{ env.VERSION }}
+          docker tag codecharta/codecharta-visualization:staging codecharta/codecharta-visualization:${{ needs.build.outputs.version }}
           docker push codecharta/codecharta-visualization:latest
-          docker push codecharta/codecharta-visualization:${{ env.VERSION }}
+          docker push codecharta/codecharta-visualization:${{ needs.build.outputs.version }}
 
-      - name: Publish npm package
-        working-directory: ./visualization
-        run: |
-          npm version ${{ env.VERSION }} --no-git-tag-version --allow-same-version
-          npm publish --tag latest
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+  # Deploy to GitHub Pages
+  deploy_website:
+    needs: build
+    name: Deploy Website
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build-artifacts
+          path: visualization/dist
 
       - name: Create Sample File for Web Demo
         run: sh ./script/build_demo_file_visualization.sh
