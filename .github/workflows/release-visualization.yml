@@ -30,13 +30,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # Extract version from branch name
       - name: Set version
         run: |
           BRANCH_NAME="${{ github.event.pull_request.head.ref }}"
           echo "VERSION=${BRANCH_NAME#release/vis-}" >> $GITHUB_ENV
 
-      # Create and push tag
       - name: Create tag
         run: |
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -44,20 +42,16 @@ jobs:
           git tag "vis-${{ env.VERSION }}"
           git push origin "vis-${{ env.VERSION }}"
 
-      # Build just for release artifacts
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           registry-url: 'https://registry.npmjs.org'
 
-      - name: Install wine
+      - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y wine-stable
-          
-      - name: Install zip
-        run: sudo apt-get install -y zip
+          sudo apt-get install -y wine-stable zip
 
       - name: Enable analysis execution rights
         working-directory: ./analysis
@@ -73,7 +67,14 @@ jobs:
           npm run build
           npm run package
 
-      # Create GitHub Release
+      # Debug step to verify files
+      - name: List build artifacts
+        run: |
+          echo "Contents of visualization/dist/packages:"
+          ls -la visualization/dist/packages/
+          echo "Found zip files:"
+          find visualization/dist/packages -name "*.zip"
+
       - name: Add Changelog Entries to Release
         uses: rasmus-saks/release-a-changelog-action@v1.2.0
         with:
@@ -82,33 +83,19 @@ jobs:
           title-template: 'Visualization release {version}'
           tag-template: 'vis-{version}'
 
-      # Upload release assets
       - name: Upload Release Files
         uses: alexellis/upload-assets@0.4.1
         env:
-          GITHUB_TOKEN: ${{ github.token }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           asset_paths: '["visualization/dist/packages/*.zip"]'
 
-      # Create and deploy sample file
-      - name: Create Sample File for Web Demo
-        run: sh ./script/build_demo_file_visualization.sh
-
-      - name: Deploy to GitHub Pages
-        uses: JamesIves/github-pages-deploy-action@v4.6.9
-        with:
-          token: ${{ secrets.DEPLOY_TOKEN }}
-          branch: gh-pages
-          folder: visualization/dist/webpack
-          clean: true
-
-      # Promote from staging
       - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-    
+
       - name: Pull and retag Docker image
         run: |
           docker pull codecharta/codecharta-visualization:staging
@@ -120,8 +107,18 @@ jobs:
       - name: Publish npm package
         working-directory: ./visualization
         run: |
-          # Update version and publish
           npm version ${{ env.VERSION }} --no-git-tag-version --allow-same-version
           npm publish --tag latest
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Create Sample File for Web Demo
+        run: sh ./script/build_demo_file_visualization.sh
+
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4.6.9
+        with:
+          token: ${{ secrets.DEPLOY_TOKEN }}
+          branch: gh-pages
+          folder: visualization/dist/webpack
+          clean: true
