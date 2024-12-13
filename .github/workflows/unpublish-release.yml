@@ -74,6 +74,9 @@ jobs:
           echo "Note: If this was the latest version, you may need to manually update the 'latest' tag"
 
       # Delete GitHub release
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - name: Delete GitHub Release
         if: inputs.unpublish_type == 'all'
         run: |
