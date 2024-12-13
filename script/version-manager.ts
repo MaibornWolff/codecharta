@@ -216,16 +216,38 @@ ${changelogEntries}`
 
         return content
     }
+
+    public extractChangelog(repository: string): string {
+        try {
+            this.validateRepository(repository)
+            const normalizedRepo = this.getNormalizedRepository(repository)
+            const changelogPath = `${normalizedRepo}/CHANGELOG.md`
+            const changelog = fs.readFileSync(changelogPath, "utf8")
+            return this.extractLatestChangelog(changelog)
+        } catch (error) {
+            console.error(`Error extracting changelog: ${error}`)
+            throw error
+        }
+    }
 }
 
 // CLI interface
 if (import.meta.main) {
-    if (process.argv.length !== 4) {
-        console.error("Usage: bun script/version-manager.ts <repository> <version-type>")
-        process.exit(1)
-    }
-
-    const [repository, type] = process.argv.slice(2)
+    const [command, ...args] = process.argv.slice(2)
     const manager = new VersionManager()
-    process.stdout.write(manager.updateVersion(repository, type))
+
+    if (command === "extract-changelog") {
+        if (args.length !== 1) {
+            console.error("Usage: bun script/version-manager.ts extract-changelog <repository>")
+            process.exit(1)
+        }
+        process.stdout.write(manager.extractChangelog(args[0]))
+    } else {
+        // existing version update logic
+        if (args.length !== 2) {
+            console.error("Usage: bun script/version-manager.ts <repository> <version-type>")
+            process.exit(1)
+        }
+        process.stdout.write(manager.updateVersion(args[0], args[1]))
+    }
 }
