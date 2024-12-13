@@ -91,9 +91,14 @@ jobs:
         with:
           name: build-artifacts
           path: |
-            visualization/dist/
-            visualization/package.json
-          compression-level: 0  # No compression for binary files
+            visualization/dist/packages
+
+      - name: Upload webpack
+        uses: actions/upload-artifact@v4
+        with:
+          name: webpack-build
+          path: |
+            visualization/dist/webpack
 
   # Create GitHub Release
   create_release:
@@ -110,7 +115,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: build-artifacts
-          path: visualization/dist
+          path: visualization/dist/packages
 
       - name: Setup Bun
         uses: oven-sh/setup-bun@v1
@@ -119,6 +124,10 @@ jobs:
 
       - name: Create Release
         run: |
+          # Debug: List files
+          echo "Contents of packages directory:"
+          ls -la visualization/dist/packages/
+          
           CHANGELOG_CONTENT=$(bun script/version-manager.ts extract-changelog visualization ${{ needs.build.outputs.version }})
           gh release create "vis-${{ needs.build.outputs.version }}" \
             --title "Visualization release ${{ needs.build.outputs.version }}" \
@@ -142,8 +151,8 @@ jobs:
       - name: Download build artifacts
         uses: actions/download-artifact@v4
         with:
-          name: build-artifacts
-          path: visualization
+          name: webpack-build
+          path: visualization/dist/webpack
 
       - name: Publish package
         working-directory: visualization
@@ -187,8 +196,8 @@ jobs:
       - name: Download build artifacts
         uses: actions/download-artifact@v4
         with:
-          name: build-artifacts
-          path: visualization/dist
+          name: webpack-build
+          path: visualization/dist/webpack
 
       - name: Create Sample File for Web Demo
         run: sh ./script/build_demo_file_visualization.sh
