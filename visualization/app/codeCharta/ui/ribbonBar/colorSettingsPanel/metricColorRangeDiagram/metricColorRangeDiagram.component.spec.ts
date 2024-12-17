@@ -64,7 +64,7 @@ describe("MetricColorRangeDiagramComponent", () => {
         expect(diagramPath.getAttribute("d")).toBe("M0,178.2L0,178.2L180,178.2L180,162L240,162L240,36L300,36L300,0L480,0")
     })
 
-    it("should render diagram correctly when attribute direction is inversed", async () => {
+    it("should render diagram correctly when attribute direction is inverted", async () => {
         const { fixture, detectChanges, container } = await render(MetricColorRangeDiagramComponent, {
             componentInputs: {
                 minValue: 15,
@@ -76,7 +76,7 @@ describe("MetricColorRangeDiagramComponent", () => {
                 leftColor: "#69AE40",
                 middleColor: "#ddcc00",
                 rightColor: "#820E0E",
-                isAttributeDirectionInversed: true
+                isAttributeDirectionInverted: true
             }
         })
 
@@ -284,7 +284,8 @@ describe("MetricColorRangeDiagramComponent", () => {
                 componentInputs: {
                     minValue: 1,
                     maxValue: 10,
-                    values: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+                    values: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+                    isAttributeDirectionInverted: false
                 }
             })
             svg = container.querySelector("svg")
