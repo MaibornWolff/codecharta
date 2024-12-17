@@ -31,6 +31,7 @@ on:
 
 jobs:
   setup:
+    name: Setup Variables
     runs-on: ubuntu-latest
     outputs:
       prefix: ${{ steps.vars.outputs.prefix }}
@@ -48,6 +49,7 @@ jobs:
           echo "docker_repo=${DOCKER_REPO}" >> $GITHUB_OUTPUT
 
   unpublish_npm:
+    name: Unpublish from npm
     needs: setup
     if: inputs.unpublish_type == 'npm' || inputs.unpublish_type == 'all'
     runs-on: ubuntu-latest
@@ -66,6 +68,7 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
   unpublish_docker:
+    name: Unpublish from Docker Hub
     needs: setup
     if: inputs.unpublish_type == 'docker' || inputs.unpublish_type == 'all'
     runs-on: ubuntu-latest
@@ -81,12 +84,12 @@ jobs:
           echo "Note: If this was the latest version, you may need to manually update the 'latest' tag"
 
   unpublish_github:
+    name: Unpublish from GitHub
     needs: setup
     if: inputs.unpublish_type == 'github' || inputs.unpublish_type == 'all'
     runs-on: ubuntu-latest
     permissions:
       contents: write
-      pull-requests: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -109,8 +112,21 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Create Revert PR
-        if: inputs.create_revert_pr == true
+  create_revert_pr:
+    name: Create Revert Pull Request
+    needs: [setup, unpublish_github]
+    if: inputs.create_revert_pr == true && (inputs.unpublish_type == 'github' || inputs.unpublish_type == 'all')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Create and Push Revert PR
         run: |
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
@@ -137,7 +153,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   notify:
-    needs: [setup, unpublish_npm, unpublish_docker, unpublish_github]
+    name: Show Notifications
+    needs: [setup, unpublish_npm, unpublish_docker, unpublish_github, create_revert_pr]
     if: always()
     runs-on: ubuntu-latest
     steps:
