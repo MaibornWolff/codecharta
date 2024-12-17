@@ -38,13 +38,29 @@ export class MetricColorRangeDiagramComponent implements OnChanges {
     private yLabelXOffset: number
     private xLabelYOffset: number
     private percentileRanks: { x: number; y: number }[]
+    private percentileToMetricValueMap: Map<number, number>
 
     ngOnChanges() {
         if (this.values.length > 0) {
             this.percentileRanks = this.isAttributeDirectionInverted
                 ? this.calculateReversedPercentileRanks(this.values)
                 : this.calculatePercentileRanks(this.values)
+            this.updatePercentileToMetricValueMap()
             this.renderDiagram()
+        }
+    }
+
+    private updatePercentileToMetricValueMap() {
+        this.percentileToMetricValueMap = new Map()
+        let currentPercentileRankIndex = 0
+        for (let percentile = 0; percentile <= 100; percentile++) {
+            while (
+                percentile > this.percentileRanks[currentPercentileRankIndex]["x"] &&
+                currentPercentileRankIndex < this.percentileRanks.length - 1
+            ) {
+                currentPercentileRankIndex++
+            }
+            this.percentileToMetricValueMap.set(percentile, this.percentileRanks[currentPercentileRankIndex]["y"])
         }
     }
 
@@ -343,8 +359,8 @@ export class MetricColorRangeDiagramComponent implements OnChanges {
 
     private addOnMouseMoveEvent(
         rectangle: RectElement,
-        x: Scale,
-        y: Scale,
+        xScale: Scale,
+        yScale: Scale,
         tooltip: TextElement,
         dashedVerticalLine: LineElement,
         straightVerticalLine: LineElement,
@@ -352,11 +368,11 @@ export class MetricColorRangeDiagramComponent implements OnChanges {
     ) {
         rectangle.on("mousemove", event => {
             const mouseX = d3.pointer(event)[0]
-            let percentile = x.invert(mouseX - this.framePadding)
+            let percentile = Math.round(xScale.invert(mouseX - this.framePadding))
             percentile = Math.max(0, Math.min(percentile, 100))
-            const metricValue = this.calculateMetricValueFromPercentile(percentile)
+            const metricValue = this.percentileToMetricValueMap.get(percentile)
 
-            const yLinePosition = this.getYPositionForMetricValue(metricValue, y)
+            const yLinePosition = yScale(metricValue) + this.framePadding
 
             const xTooltipPosition = mouseX < this.frameWidth / 2 ? mouseX + 10 : mouseX - 80
             const yTooltipPosition = yLinePosition < this.frameHeight / 2 ? yLinePosition + 20 : yLinePosition - 20
@@ -365,7 +381,7 @@ export class MetricColorRangeDiagramComponent implements OnChanges {
                 .style("display", "block")
                 .attr("x", xTooltipPosition)
                 .attr("y", yTooltipPosition)
-                .text(`Quantile: ${Math.round(percentile)}`)
+                .text(`Quantile: ${percentile}`)
                 .append("tspan")
                 .attr("x", xTooltipPosition)
                 .attr("dy", "1.2em")
@@ -397,17 +413,5 @@ export class MetricColorRangeDiagramComponent implements OnChanges {
             straightVerticalLine.style("display", "none")
             horizontalLine.style("display", "none")
         })
-    }
-
-    private getYPositionForMetricValue(yValue: number, yScale: Scale): number {
-        return yScale(yValue) + this.framePadding
-    }
-
-    private calculateMetricValueFromPercentile(percentile: number) {
-        for (const percentileRank of this.percentileRanks) {
-            if (percentileRank["x"] >= percentile) {
-                return percentileRank["y"]
-            }
-        }
     }
 }
