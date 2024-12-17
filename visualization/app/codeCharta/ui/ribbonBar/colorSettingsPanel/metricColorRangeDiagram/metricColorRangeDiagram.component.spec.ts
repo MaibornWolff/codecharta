@@ -277,7 +277,7 @@ describe("MetricColorRangeDiagramComponent", () => {
 
     describe("cross-hair", () => {
         let container: Element
-        let fixture:  ComponentFixture<MetricColorRangeDiagramComponent>
+        let fixture: ComponentFixture<MetricColorRangeDiagramComponent>
         let svg: Element
         let mouseEventRectangle: HTMLElement
 
@@ -294,63 +294,64 @@ describe("MetricColorRangeDiagramComponent", () => {
         })
 
         function simulateMouseEvent(isAttributeDirectionInverted: boolean, mouseXPosition: number) {
-            fixture.componentInstance.isAttributeDirectionInverted = isAttributeDirectionInverted;
-            fixture.componentInstance.ngOnChanges();
+            fixture.componentInstance.isAttributeDirectionInverted = isAttributeDirectionInverted
+            fixture.componentInstance.ngOnChanges()
 
-            svg = container.querySelector("svg");
-            mouseEventRectangle = svg.getElementsByClassName("mouse-event-rect")[0] as HTMLElement;
+            svg = container.querySelector("svg")
+            mouseEventRectangle = svg.getElementsByClassName("mouse-event-rect")[0] as HTMLElement
 
             const simulatedEvent = new MouseEvent("mousemove", {
                 clientX: mouseXPosition,
                 clientY: 0
-            });
-            mouseEventRectangle.dispatchEvent(simulatedEvent);
+            })
+            mouseEventRectangle.dispatchEvent(simulatedEvent)
         }
 
         const expectedYLinePositionsForMouseXPositions = [
-            {isAttributeDirectionInverted: false, mouseXPosition: 0, expectedYPosition: 167},
-            {isAttributeDirectionInverted: false, mouseXPosition: 50, expectedYPosition: 167},
-            {isAttributeDirectionInverted: false, mouseXPosition: 200, expectedYPosition: 95},
-            {isAttributeDirectionInverted: false, mouseXPosition: 450, expectedYPosition: 5},
-            {isAttributeDirectionInverted: false, mouseXPosition: 1000, expectedYPosition: 5},
-            {isAttributeDirectionInverted: true, mouseXPosition: 0, expectedYPosition: 185},
-            {isAttributeDirectionInverted: true, mouseXPosition: 50, expectedYPosition: 185},
-            {isAttributeDirectionInverted: true, mouseXPosition: 200, expectedYPosition: 113},
-            {isAttributeDirectionInverted: true, mouseXPosition: 450, expectedYPosition: 23},
-            {isAttributeDirectionInverted: true, mouseXPosition: 1000, expectedYPosition: 23}
-        ];
+            { isAttributeDirectionInverted: false, mouseXPosition: 0, expectedYPosition: 167 },
+            { isAttributeDirectionInverted: false, mouseXPosition: 50, expectedYPosition: 167 },
+            { isAttributeDirectionInverted: false, mouseXPosition: 200, expectedYPosition: 95 },
+            { isAttributeDirectionInverted: false, mouseXPosition: 450, expectedYPosition: 5 },
+            { isAttributeDirectionInverted: false, mouseXPosition: 1000, expectedYPosition: 5 },
+            { isAttributeDirectionInverted: true, mouseXPosition: 0, expectedYPosition: 185 },
+            { isAttributeDirectionInverted: true, mouseXPosition: 50, expectedYPosition: 185 },
+            { isAttributeDirectionInverted: true, mouseXPosition: 200, expectedYPosition: 113 },
+            { isAttributeDirectionInverted: true, mouseXPosition: 450, expectedYPosition: 23 },
+            { isAttributeDirectionInverted: true, mouseXPosition: 1000, expectedYPosition: 23 }
+        ]
         test.each(expectedYLinePositionsForMouseXPositions)(
             `should be at expectedYPosition=$expectedYPosition for isAttributeDirectionInverted=$isAttributeDirectionInverted attribute direction and mouseXPosition=$mouseXPosition`,
-            ({isAttributeDirectionInverted, mouseXPosition, expectedYPosition}) => {
-            //WHEN
-            simulateMouseEvent(isAttributeDirectionInverted, mouseXPosition);
+            ({ isAttributeDirectionInverted, mouseXPosition, expectedYPosition }) => {
+                //WHEN
+                simulateMouseEvent(isAttributeDirectionInverted, mouseXPosition)
 
-            //THEN
-            const horizontalLine = svg.getElementsByClassName("horizontal-line")[0] as HTMLElement
-            const xPosition = horizontalLine.getAttribute("x2")
-            const yPosition = horizontalLine.getAttribute("y1")
+                //THEN
+                const horizontalLine = svg.getElementsByClassName("horizontal-line")[0] as HTMLElement
+                const xPosition = horizontalLine.getAttribute("x2")
+                const yPosition = horizontalLine.getAttribute("y1")
 
-            expect(xPosition).toBe(mouseXPosition.toString())
-            expect(yPosition).toBe(expectedYPosition.toString())
-        })
+                expect(xPosition).toBe(mouseXPosition.toString())
+                expect(yPosition).toBe(expectedYPosition.toString())
+            }
+        )
 
         const expectedYTooltipPositionsForMouseXPositions = [
-            {isAttributeDirectionInverted: false, mouseXPosition: 0, expectedXPosition: 10, expectedYPosition: 147},
-            {isAttributeDirectionInverted: false, mouseXPosition: 50, expectedXPosition: 60, expectedYPosition: 147},
-            {isAttributeDirectionInverted: false, mouseXPosition: 200, expectedXPosition: 210, expectedYPosition: 75},
-            {isAttributeDirectionInverted: false, mouseXPosition: 450, expectedXPosition: 370, expectedYPosition: 25},
-            {isAttributeDirectionInverted: false, mouseXPosition: 1000, expectedXPosition: 920, expectedYPosition: 25},
-            {isAttributeDirectionInverted: true, mouseXPosition: 0, expectedXPosition: 10, expectedYPosition: 165},
-            {isAttributeDirectionInverted: true, mouseXPosition: 50, expectedXPosition: 60, expectedYPosition: 165},
-            {isAttributeDirectionInverted: true, mouseXPosition: 200, expectedXPosition: 210, expectedYPosition: 93},
-            {isAttributeDirectionInverted: true, mouseXPosition: 450, expectedXPosition: 370, expectedYPosition: 43},
-            {isAttributeDirectionInverted: true, mouseXPosition: 1000, expectedXPosition: 920, expectedYPosition: 43},
+            { isAttributeDirectionInverted: false, mouseXPosition: 0, expectedXPosition: 10, expectedYPosition: 147 },
+            { isAttributeDirectionInverted: false, mouseXPosition: 50, expectedXPosition: 60, expectedYPosition: 147 },
+            { isAttributeDirectionInverted: false, mouseXPosition: 200, expectedXPosition: 210, expectedYPosition: 75 },
+            { isAttributeDirectionInverted: false, mouseXPosition: 450, expectedXPosition: 370, expectedYPosition: 25 },
+            { isAttributeDirectionInverted: false, mouseXPosition: 1000, expectedXPosition: 920, expectedYPosition: 25 },
+            { isAttributeDirectionInverted: true, mouseXPosition: 0, expectedXPosition: 10, expectedYPosition: 165 },
+            { isAttributeDirectionInverted: true, mouseXPosition: 50, expectedXPosition: 60, expectedYPosition: 165 },
+            { isAttributeDirectionInverted: true, mouseXPosition: 200, expectedXPosition: 210, expectedYPosition: 93 },
+            { isAttributeDirectionInverted: true, mouseXPosition: 450, expectedXPosition: 370, expectedYPosition: 43 },
+            { isAttributeDirectionInverted: true, mouseXPosition: 1000, expectedXPosition: 920, expectedYPosition: 43 }
         ]
         test.each(expectedYTooltipPositionsForMouseXPositions)(
             `should show tooltip at expectedXPosition=$expectedXPosition and expectedYPosition=$expectedYPosition for isAttributeDirectionInverted=$isAttributeDirectionInverted attribute direction and mouseXPosition=$mouseXPosition`,
-            async ({isAttributeDirectionInverted, mouseXPosition, expectedXPosition, expectedYPosition}) => {
+            async ({ isAttributeDirectionInverted, mouseXPosition, expectedXPosition, expectedYPosition }) => {
                 //WHEN
-                simulateMouseEvent(isAttributeDirectionInverted, mouseXPosition);
+                simulateMouseEvent(isAttributeDirectionInverted, mouseXPosition)
 
                 // Then
                 const tooltip = svg.getElementsByClassName("cross-tooltip")[0] as HTMLElement
@@ -363,22 +364,22 @@ describe("MetricColorRangeDiagramComponent", () => {
         )
 
         const expectedQuantileAndYValueForMouseXPositions = [
-            {isAttributeDirectionInverted: false, mouseXPosition: 0, expectedQuantile: 0, expectedYValue: 1},
-            {isAttributeDirectionInverted: false, mouseXPosition: 50, expectedQuantile: 9, expectedYValue: 1},
-            {isAttributeDirectionInverted: false, mouseXPosition: 200, expectedQuantile: 41, expectedYValue: 5},
-            {isAttributeDirectionInverted: false, mouseXPosition: 450, expectedQuantile: 93, expectedYValue: 10},
-            {isAttributeDirectionInverted: false, mouseXPosition: 1000, expectedQuantile: 100, expectedYValue: 10},
-            {isAttributeDirectionInverted: true, mouseXPosition: 0, expectedQuantile: 0, expectedYValue: 10},
-            {isAttributeDirectionInverted: true, mouseXPosition: 50, expectedQuantile: 9, expectedYValue: 10},
-            {isAttributeDirectionInverted: true, mouseXPosition: 200, expectedQuantile: 41, expectedYValue: 6},
-            {isAttributeDirectionInverted: true, mouseXPosition: 450, expectedQuantile: 93, expectedYValue: 1},
-            {isAttributeDirectionInverted: true, mouseXPosition: 1000, expectedQuantile: 100, expectedYValue: 1}
+            { isAttributeDirectionInverted: false, mouseXPosition: 0, expectedQuantile: 0, expectedYValue: 1 },
+            { isAttributeDirectionInverted: false, mouseXPosition: 50, expectedQuantile: 9, expectedYValue: 1 },
+            { isAttributeDirectionInverted: false, mouseXPosition: 200, expectedQuantile: 41, expectedYValue: 5 },
+            { isAttributeDirectionInverted: false, mouseXPosition: 450, expectedQuantile: 93, expectedYValue: 10 },
+            { isAttributeDirectionInverted: false, mouseXPosition: 1000, expectedQuantile: 100, expectedYValue: 10 },
+            { isAttributeDirectionInverted: true, mouseXPosition: 0, expectedQuantile: 0, expectedYValue: 10 },
+            { isAttributeDirectionInverted: true, mouseXPosition: 50, expectedQuantile: 9, expectedYValue: 10 },
+            { isAttributeDirectionInverted: true, mouseXPosition: 200, expectedQuantile: 41, expectedYValue: 6 },
+            { isAttributeDirectionInverted: true, mouseXPosition: 450, expectedQuantile: 93, expectedYValue: 1 },
+            { isAttributeDirectionInverted: true, mouseXPosition: 1000, expectedQuantile: 100, expectedYValue: 1 }
         ]
         test.each(expectedQuantileAndYValueForMouseXPositions)(
             `should show quantile=$expectedQuantile and yValue=$expectedYValue for isAttributeDirectionInverted=$attributeDirectionInverted attribute direction and mouseXPosition=$mouseXPosition`,
-            ({isAttributeDirectionInverted, mouseXPosition, expectedQuantile, expectedYValue}) => {
+            ({ isAttributeDirectionInverted, mouseXPosition, expectedQuantile, expectedYValue }) => {
                 //WHEN
-                simulateMouseEvent(isAttributeDirectionInverted, mouseXPosition);
+                simulateMouseEvent(isAttributeDirectionInverted, mouseXPosition)
 
                 //THEN
                 const tooltip = svg.getElementsByClassName("cross-tooltip")[0] as HTMLElement
