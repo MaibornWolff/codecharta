@@ -403,10 +403,11 @@ export class MetricColorRangeDiagramComponent implements OnChanges {
         return yScale(yValue) + this.framePadding
     }
 
-    private getYValueForXValue(xValue: number): number {
-        const closestPoint = this.percentileRanks.reduce((prev, curr) => {
-            return curr.x - xValue >= 0 && Math.abs(curr.x - xValue) < Math.abs(prev.x - xValue) ? curr : prev
-        }, this.percentileRanks[0])
-        return closestPoint.y
+    private calculateMetricValueFromPercentile(percentile: number) {
+        for (const percentileRank of this.percentileRanks) {
+            if (percentileRank["x"] >= percentile) {
+                return percentileRank["y"]
+            }
+        }
     }
 }
