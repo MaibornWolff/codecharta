@@ -62,7 +62,7 @@ export class MetricColorRangeDiagramComponent implements OnChanges {
         this.drawLabels(group)
         this.drawAreas(group, x)
         this.drawLine(group)
-        this.addCross(group, x, y)
+        this.addCrossHair(group, x, y)
     }
 
     private initializeDiagramDimesions() {
@@ -299,7 +299,7 @@ export class MetricColorRangeDiagramComponent implements OnChanges {
         }
     }
 
-    private addCross(group: GroupElement, x: Scale, y: Scale) {
+    private addCrossHair(group: GroupElement, x: Scale, y: Scale) {
         const tooltip: TextElement = group
             .append("text")
             .attr("class", "cross-tooltip")
@@ -311,7 +311,7 @@ export class MetricColorRangeDiagramComponent implements OnChanges {
             .append("line")
             .attr("class", "dashed-vertical-line")
             .attr("stroke", "#000")
-            .attr("stroke-width", "1px")
+            .attr("stroke-width", "0.7px")
             .attr("stroke-dasharray", "4")
             .style("display", "none")
 
@@ -319,14 +319,14 @@ export class MetricColorRangeDiagramComponent implements OnChanges {
             .append("line")
             .attr("class", "straight-vertical-line")
             .attr("stroke", "#000")
-            .attr("stroke-width", "1px")
+            .attr("stroke-width", "0.7px")
             .style("display", "none")
 
         const horizontalLine: LineElement = group
             .append("line")
             .attr("class", "horizontal-line")
             .attr("stroke", "#000")
-            .attr("stroke-width", "1px")
+            .attr("stroke-width", "0.7px")
             .style("display", "none")
 
         const rectangle: RectElement = group
