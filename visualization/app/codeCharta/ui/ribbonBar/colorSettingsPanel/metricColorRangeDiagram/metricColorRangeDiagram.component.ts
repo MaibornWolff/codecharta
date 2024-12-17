@@ -24,7 +24,7 @@ export class MetricColorRangeDiagramComponent implements OnChanges {
     @Input() leftColor: string
     @Input() middleColor: string
     @Input() rightColor: string
-    @Input() isAttributeDirectionInversed: boolean
+    @Input() isAttributeDirectionInverted: boolean
 
     private svgWidth: number
     private framePadding: number
@@ -41,7 +41,7 @@ export class MetricColorRangeDiagramComponent implements OnChanges {
 
     ngOnChanges() {
         if (this.values.length > 0) {
-            this.percentileRanks = this.isAttributeDirectionInversed
+            this.percentileRanks = this.isAttributeDirectionInverted
                 ? this.calculateReversedPercentileRanks(this.values)
                 : this.calculatePercentileRanks(this.values)
             this.renderDiagram()
@@ -149,11 +149,11 @@ export class MetricColorRangeDiagramComponent implements OnChanges {
 
     private createYScale() {
         const domainStandard = [0, d3.max(this.percentileRanks, d => d["y"] as number)]
-        const domainInversed = [d3.max(this.percentileRanks, d => d["y"] as number), 0]
+        const domainInverted = [d3.max(this.percentileRanks, d => d["y"] as number), 0]
 
         return d3
             .scaleLinear()
-            .domain(this.isAttributeDirectionInversed ? domainInversed : domainStandard)
+            .domain(this.isAttributeDirectionInverted ? domainInverted : domainStandard)
             .range([this.frameHeight - 2 * this.framePadding, 0])
     }
 
@@ -180,12 +180,12 @@ export class MetricColorRangeDiagramComponent implements OnChanges {
 
     private drawAreas(g: GroupElement, x: Scale) {
         const leftValue = x(
-            this.isAttributeDirectionInversed
+            this.isAttributeDirectionInverted
                 ? this.calculateReversedPercentileFromMetricValue(this.currentRightValue)
                 : this.calculatePercentileFromMetricValue(this.currentLeftValue)
         )
         const rightValue = x(
-            this.isAttributeDirectionInversed
+            this.isAttributeDirectionInverted
                 ? this.calculateReversedPercentileFromMetricValue(this.currentLeftValue)
                 : this.calculatePercentileFromMetricValue(this.currentRightValue)
         )
@@ -195,7 +195,7 @@ export class MetricColorRangeDiagramComponent implements OnChanges {
             .attr("x", this.framePadding)
             .attr("width", leftValue)
             .attr("height", this.frameHeight)
-            .style("fill", this.isAttributeDirectionInversed ? this.rightColor : this.leftColor)
+            .style("fill", this.isAttributeDirectionInverted ? this.rightColor : this.leftColor)
             .style("fill-opacity", "0.3")
 
         g.append("rect")
@@ -211,7 +211,7 @@ export class MetricColorRangeDiagramComponent implements OnChanges {
             .attr("x", rightValue + this.framePadding)
             .attr("width", this.frameWidth - 2 * this.framePadding - rightValue)
             .attr("height", this.frameHeight)
-            .style("fill", this.isAttributeDirectionInversed ? this.leftColor : this.rightColor)
+            .style("fill", this.isAttributeDirectionInverted ? this.leftColor : this.rightColor)
             .style("fill-opacity", "0.3")
     }
 
@@ -352,24 +352,24 @@ export class MetricColorRangeDiagramComponent implements OnChanges {
     ) {
         rectangle.on("mousemove", event => {
             const mouseX = d3.pointer(event)[0]
-            let xValue = x.invert(mouseX - this.framePadding)
-            xValue = Math.max(0, Math.min(xValue, 100))
-            const yValue = this.getYValueForXValue(xValue)
+            let percentile = x.invert(mouseX - this.framePadding)
+            percentile = Math.max(0, Math.min(percentile, 100))
+            const metricValue = this.calculateMetricValueFromPercentile(percentile)
 
-            const yLinePosition = this.getYPositionForYValue(yValue, y)
+            const yLinePosition = this.getYPositionForMetricValue(metricValue, y)
 
-            const xTooltipPosition = xValue > 50 ? mouseX - 80 : mouseX + 10
-            const yTooltipPosition = yLinePosition < this.frameHeight / 2 + this.framePadding ? yLinePosition + 20 : yLinePosition - 20
+            const xTooltipPosition = mouseX < this.frameWidth / 2 ? mouseX + 10 : mouseX - 80
+            const yTooltipPosition = yLinePosition < this.frameHeight / 2 ? yLinePosition + 20 : yLinePosition - 20
 
             tooltip
                 .style("display", "block")
                 .attr("x", xTooltipPosition)
                 .attr("y", yTooltipPosition)
-                .text(`Quantile: ${Math.round(xValue)}`)
+                .text(`Quantile: ${Math.round(percentile)}`)
                 .append("tspan")
                 .attr("x", xTooltipPosition)
                 .attr("dy", "1.2em")
-                .text(`Value: ${yValue}`)
+                .text(`Value: ${metricValue}`)
 
             dashedVerticalLine.attr("x1", mouseX).attr("x2", mouseX).attr("y2", this.frameHeight).style("display", "block")
 
@@ -399,7 +399,7 @@ export class MetricColorRangeDiagramComponent implements OnChanges {
         })
     }
 
-    private getYPositionForYValue(yValue: number, yScale: Scale): number {
+    private getYPositionForMetricValue(yValue: number, yScale: Scale): number {
         return yScale(yValue) + this.framePadding
     }
 
