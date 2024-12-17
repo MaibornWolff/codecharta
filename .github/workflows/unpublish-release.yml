@@ -22,14 +22,15 @@ on:
           - all
           - npm
           - docker
+          - github
 
 jobs:
-  unpublish:
+  setup:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      packages: write
-
+    outputs:
+      prefix: ${{ steps.vars.outputs.prefix }}
+      npm_package: ${{ steps.vars.outputs.npm_package }}
+      docker_repo: ${{ steps.vars.outputs.docker_repo }}
     steps:
       - name: Setup variables
         id: vars
@@ -41,64 +42,93 @@ jobs:
           echo "npm_package=${NPM_PACKAGE}" >> $GITHUB_OUTPUT
           echo "docker_repo=${DOCKER_REPO}" >> $GITHUB_OUTPUT
 
-      # Setup Node.js and npm login
+  unpublish_npm:
+    needs: setup
+    if: inputs.unpublish_type == 'npm' || inputs.unpublish_type == 'all'
+    runs-on: ubuntu-latest
+    steps:
       - name: Setup Node.js
-        if: inputs.unpublish_type == 'npm' || inputs.unpublish_type == 'all'
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           registry-url: 'https://registry.npmjs.org'
 
-      # Unpublish npm package
       - name: Unpublish from npm
-        if: inputs.unpublish_type == 'npm' || inputs.unpublish_type == 'all'
         run: |
-          echo "Unpublishing ${{ steps.vars.outputs.npm_package }}@${{ inputs.version }}"
-          npm unpublish ${{ steps.vars.outputs.npm_package }}@${{ inputs.version }} --force || true
+          echo "Unpublishing ${{ needs.setup.outputs.npm_package }}@${{ inputs.version }}"
+          npm unpublish ${{ needs.setup.outputs.npm_package }}@${{ inputs.version }} --force || true
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      # Remove Docker tags
+  unpublish_docker:
+    needs: setup
+    if: inputs.unpublish_type == 'docker' || inputs.unpublish_type == 'all'
+    runs-on: ubuntu-latest
+    steps:
       - name: Remove Docker tags
-        if: inputs.unpublish_type == 'docker' || inputs.unpublish_type == 'all'
         run: |
-          # Login to Docker Hub
           echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
           
-          # Delete specific version tag
-          echo "Removing Docker tag: codecharta/${{ steps.vars.outputs.docker_repo }}:${{ inputs.version }}"
+          echo "Removing Docker tag: codecharta/${{ needs.setup.outputs.docker_repo }}:${{ inputs.version }}"
           TOKEN=$(curl -s -H "Content-Type: application/json" -X POST -d '{"username": "${{ secrets.DOCKER_USERNAME }}", "password": "${{ secrets.DOCKER_PASSWORD }}"}' https://hub.docker.com/v2/users/login/ | jq -r .token)
-          curl -X DELETE -H "Authorization: JWT ${TOKEN}" https://hub.docker.com/v2/repositories/codecharta/${{ steps.vars.outputs.docker_repo }}/tags/${{ inputs.version }}/
-
-          # If this was the latest version, we should also remove the 'latest' tag
+          curl -X DELETE -H "Authorization: JWT ${TOKEN}" https://hub.docker.com/v2/repositories/codecharta/${{ needs.setup.outputs.docker_repo }}/tags/${{ inputs.version }}/
+          
           echo "Note: If this was the latest version, you may need to manually update the 'latest' tag"
 
-      # Delete GitHub release
+  unpublish_github:
+    needs: setup
+    if: inputs.unpublish_type == 'github' || inputs.unpublish_type == 'all'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Delete GitHub Release
-        if: inputs.unpublish_type == 'all'
         run: |
-          TAG="${{ steps.vars.outputs.prefix }}-${{ inputs.version }}"
+          TAG="${{ needs.setup.outputs.prefix }}-${{ inputs.version }}"
           echo "Deleting release: ${TAG}"
           gh release delete ${TAG} --yes || true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # Delete Git tag
       - name: Delete Git Tag
-        if: inputs.unpublish_type == 'all'
         run: |
-          TAG="${{ steps.vars.outputs.prefix }}-${{ inputs.version }}"
+          TAG="${{ needs.setup.outputs.prefix }}-${{ inputs.version }}"
           echo "Deleting tag: ${TAG}"
           git push --delete origin ${TAG} || true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Revert Release Commit
+        run: |
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          
+          COMMIT_MSG="Releasing ${{ needs.setup.outputs.prefix }}-${{ inputs.version }}"
+          COMMIT_HASH=$(git log --format="%H" --grep="$COMMIT_MSG" -1)
+          
+          if [ ! -z "$COMMIT_HASH" ]; then
+            echo "Found release commit: ${COMMIT_HASH}"
+            git revert --no-edit $COMMIT_HASH
+            git push origin main
+          else
+            echo "::warning::Could not find release commit with message: $COMMIT_MSG"
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  notify:
+    needs: [setup, unpublish_npm, unpublish_docker, unpublish_github]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
       - name: Warning Message
         run: |
           echo "::warning::Release ${{ inputs.version }} has been unpublished. You may need to:"
           echo "::warning::1. Manually update the 'latest' tag in Docker Hub if needed"
           echo "::warning::2. Update version numbers in README.md"
-          echo "::warning::3. Consider creating a new patch release" 
+          echo "::warning::3. Consider creating a new patch release"
