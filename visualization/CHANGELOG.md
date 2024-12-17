@@ -7,7 +7,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Added
 
+- Add a cross-hair when hovering over the color quantile diagram [#3827](https://github.com/MaibornWolff/codecharta/pull/3827)
+
+### Changed
+
+- Increased the size of the color quantile diagram [#3827](https://github.com/MaibornWolff/codecharta/pull/3827)
 
 ## [1.131.2] - 2024-12-04
 
