@@ -23,6 +23,11 @@ on:
           - npm
           - docker
           - github
+      create_revert_pr:
+        description: 'Create a PR to revert the release commit'
+        type: boolean
+        required: false
+        default: false
 
 jobs:
   setup:
@@ -81,6 +86,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      pull-requests: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -103,7 +109,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Revert Release Commit
+      - name: Create Revert PR
+        if: inputs.create_revert_pr == true
         run: |
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
@@ -113,8 +120,16 @@ jobs:
           
           if [ ! -z "$COMMIT_HASH" ]; then
             echo "Found release commit: ${COMMIT_HASH}"
+            BRANCH_NAME="revert-release/${{ needs.setup.outputs.prefix }}-${{ inputs.version }}"
+            git checkout -b $BRANCH_NAME
             git revert --no-edit $COMMIT_HASH
-            git push origin main
+            git push origin $BRANCH_NAME
+            
+            gh pr create \
+              --title "Revert release ${{ needs.setup.outputs.prefix }}-${{ inputs.version }}" \
+              --body "This PR reverts the release commit for version ${{ inputs.version }}" \
+              --base main \
+              --head $BRANCH_NAME
           else
             echo "::warning::Could not find release commit with message: $COMMIT_MSG"
           fi
