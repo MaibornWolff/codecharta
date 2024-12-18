@@ -2,12 +2,12 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
 import org.sonarqube.gradle.SonarExtension
 
 buildscript {
-  repositories {
-    mavenCentral()
-    maven(url = "https://plugins.gradle.org/m2/")
-    maven(url = "https://jitpack.io")
-    maven(url = "https://s01.oss.sonatype.org/content/repositories/snapshots/")
-  }
+    repositories {
+        mavenCentral()
+        maven(url = "https://plugins.gradle.org/m2/")
+        maven(url = "https://jitpack.io")
+        maven(url = "https://s01.oss.sonatype.org/content/repositories/snapshots/")
+    }
 }
 
 plugins {
