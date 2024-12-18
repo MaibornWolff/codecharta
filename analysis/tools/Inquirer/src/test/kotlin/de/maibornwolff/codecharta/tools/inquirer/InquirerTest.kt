@@ -1,8 +1,6 @@
 package de.maibornwolff.codecharta.tools.inquirer
 
 import com.varabyte.kotter.foundation.input.Keys
-import com.varabyte.kotter.foundation.input.input
-import com.varabyte.kotter.foundation.input.runUntilInputEntered
 import com.varabyte.kotter.foundation.text.black
 import com.varabyte.kotter.foundation.text.bold
 import com.varabyte.kotter.foundation.text.cyan
@@ -21,7 +19,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 class InquirerTest {
-private val testInput = "this is text to simulate user input."
+    private val testInput = "this is text to simulate user input."
 
     private val testMessage = "this test message is displayed as the question."
     private val testHint = "this is displayed as the hint for a prompt."
@@ -33,12 +31,12 @@ private val testInput = "this is text to simulate user input."
     private val emptySelectionNotAllowedMessage = "Empty selection is not allowed!"
 
     private val testChoices =
-    listOf(
+        listOf(
             "element 0",
             "element 1",
             "element 2",
-            "element 3",
-    )
+            "element 3"
+        )
 
     // Tests for promptInput
 
@@ -54,8 +52,8 @@ private val testInput = "this is text to simulate user input."
                     }
                     text("> ")
                     black(isBright = true) {
-                    invert { text("${testHint[0]}") }
-                    text("${testHint.drop(1)} ")
+                        invert { text("${testHint[0]}") }
+                        text("${testHint.drop(1)} ")
                     }
                 }
                 terminal.press(Keys.ENTER)
@@ -69,15 +67,15 @@ private val testInput = "this is text to simulate user input."
 
         testSession { terminal ->
             result =
-            myPromptInput(testMessage, onInputReady = {
-                terminal.type(testInput)
-                terminal.press(Keys.ENTER)
-            })
+                myPromptInput(testMessage, onInputReady = {
+                    terminal.type(testInput)
+                    terminal.press(Keys.ENTER)
+                })
 
             assertThat(terminal.resolveRerenders().stripFormatting()).containsExactly(
-                    "? $testMessage",
-                    "> $testInput ",
-                    "",
+                "? $testMessage",
+                "> $testInput ",
+                ""
             )
             assertThat(result).isEqualTo(testInput)
         }
@@ -89,15 +87,15 @@ private val testInput = "this is text to simulate user input."
 
         testSession { terminal ->
             result =
-            myPromptInput(testMessage, allowEmptyInput = true, onInputReady = {
-                terminal.press(Keys.ENTER)
+                myPromptInput(testMessage, allowEmptyInput = true, onInputReady = {
+                    terminal.press(Keys.ENTER)
 
-                assertThat(terminal.resolveRerenders().stripFormatting()).containsExactly(
-                    "? $testMessage  $emptyInputAllowedMessage",
-                    ">  ",
-                    "",
-                )
-            })
+                    assertThat(terminal.resolveRerenders().stripFormatting()).containsExactly(
+                        "? $testMessage  $emptyInputAllowedMessage",
+                        ">  ",
+                        ""
+                    )
+                })
             assertThat(result).isEqualTo("")
         }
     }
@@ -106,22 +104,23 @@ private val testInput = "this is text to simulate user input."
     fun `should not accept empty input and display warning message when empty input is not allowed`() {
         testSession { terminal ->
             myPromptInput(
-            testMessage, allowEmptyInput = false,
+                testMessage,
+                allowEmptyInput = false,
                 onInputReady = {
                     terminal.press(Keys.ENTER)
 
                     blockUntilRenderWhen {
                         terminal.resolveRerenders().stripFormatting() ==
-                        listOf(
-                            "? $testMessage  $emptyInputNotAllowedMessage",
-                            ">  ",
-                            "",
-                        )
+                            listOf(
+                                "? $testMessage  $emptyInputNotAllowedMessage",
+                                ">  ",
+                                ""
+                            )
                     }
 
                     terminal.type("irrelevant non empty input")
                     terminal.press(Keys.ENTER)
-                },
+                }
             )
         }
     }
@@ -132,10 +131,10 @@ private val testInput = "this is text to simulate user input."
 
         testSession { terminal ->
             result =
-            myPromptInput(testMessage, inputValidator = { true }, onInputReady = {
-                terminal.type(testInput)
-                terminal.press(Keys.ENTER)
-            })
+                myPromptInput(testMessage, inputValidator = { true }, onInputReady = {
+                    terminal.type(testInput)
+                    terminal.press(Keys.ENTER)
+                })
             assertThat(result).isEqualTo(testInput)
         }
     }
@@ -146,9 +145,9 @@ private val testInput = "this is text to simulate user input."
 
         testSession { terminal ->
             result =
-            myPromptInput(testMessage, allowEmptyInput = true, inputValidator = { false }, onInputReady = {
-                terminal.press(Keys.ENTER)
-            })
+                myPromptInput(testMessage, allowEmptyInput = true, inputValidator = { false }, onInputReady = {
+                    terminal.press(Keys.ENTER)
+                })
             assertThat(result).isEqualTo("")
         }
     }
@@ -157,7 +156,8 @@ private val testInput = "this is text to simulate user input."
     fun `should not accept input and display default warning message when input was invalid`() {
         testSession { terminal ->
             myPromptInput(
-            testMessage, allowEmptyInput = false,
+                testMessage,
+                allowEmptyInput = false,
                 inputValidator = { input -> input.contains("accepted") },
                 onInputReady = {
                     terminal.type("x")
@@ -165,25 +165,27 @@ private val testInput = "this is text to simulate user input."
 
                     blockUntilRenderWhen {
                         terminal.resolveRerenders().stripFormatting() ==
-                        listOf(
-                            "? $testMessage  Input is invalid!",
-                            "> x ",
-                            "",
-                        )
+                            listOf(
+                                "? $testMessage  Input is invalid!",
+                                "> x ",
+                                ""
+                            )
                     }
 
                     terminal.type("accepted")
                     terminal.press(Keys.ENTER)
-                },
+                }
             )
         }
     }
 
     @Test
-    fun `should not accept input and display custom warning message when a custom invalid input message was specified and input was invalid`() {
+    fun `should not accept invalid input and display custom warning message when a custom invalid input message was specified`() {
         testSession { terminal ->
             myPromptInput(
-            testMessage, allowEmptyInput = false, invalidInputMessage = testInvalidInputMessage,
+                testMessage,
+                allowEmptyInput = false,
+                invalidInputMessage = testInvalidInputMessage,
                 inputValidator = { input -> input.contains("accepted") },
                 onInputReady = {
                     terminal.type("x")
@@ -191,16 +193,16 @@ private val testInput = "this is text to simulate user input."
 
                     blockUntilRenderWhen {
                         terminal.resolveRerenders().stripFormatting() ==
-                        listOf(
-                            "? $testMessage  $testInvalidInputMessage",
-                            "> x ",
-                            "",
-                        )
+                            listOf(
+                                "? $testMessage  $testInvalidInputMessage",
+                                "> x ",
+                                ""
+                            )
                     }
 
                     terminal.type("accepted")
                     terminal.press(Keys.ENTER)
-                },
+                }
             )
         }
     }
@@ -213,10 +215,10 @@ private val testInput = "this is text to simulate user input."
 
         testSession { terminal ->
             result =
-            myPromptInputNumber(testMessage, onInputReady = {
-                terminal.type("test 1, test 2; test 3.?/%!IV")
-                terminal.press(Keys.ENTER)
-            })
+                myPromptInputNumber(testMessage, onInputReady = {
+                    terminal.type("test 1, test 2; test 3.?/%!IV")
+                    terminal.press(Keys.ENTER)
+                })
             assertThat(result).isEqualTo("123")
         }
     }
@@ -248,14 +250,14 @@ private val testInput = "this is text to simulate user input."
 
         testSession { terminal ->
             result =
-            myPromptConfirm(testMessage, onInputReady = {
-                terminal.press(Keys.ENTER)
-            })
+                myPromptConfirm(testMessage, onInputReady = {
+                    terminal.press(Keys.ENTER)
+                })
 
             assertThat(terminal.resolveRerenders().stripFormatting()).containsExactly(
-                    "? $testMessage  arrow keys to change selection",
-                    "> [Yes] No ",
-                    "",
+                "? $testMessage  arrow keys to change selection",
+                "> [Yes] No ",
+                ""
             )
             assertThat(result).isTrue()
         }
@@ -267,15 +269,15 @@ private val testInput = "this is text to simulate user input."
 
         testSession { terminal ->
             result =
-            myPromptConfirm(testMessage, testHint, onInputReady = {
-                terminal.press(Keys.RIGHT)
-                terminal.press(Keys.ENTER)
-            })
+                myPromptConfirm(testMessage, testHint, onInputReady = {
+                    terminal.press(Keys.RIGHT)
+                    terminal.press(Keys.ENTER)
+                })
 
             assertThat(terminal.resolveRerenders().stripFormatting()).containsExactly(
-                    "? $testMessage  $testHint",
-                    ">  Yes [No]",
-                    "",
+                "? $testMessage  $testHint",
+                ">  Yes [No]",
+                ""
             )
             assertThat(result).isFalse()
         }
@@ -287,13 +289,13 @@ private val testInput = "this is text to simulate user input."
 
         testSession { terminal ->
             result =
-            myPromptConfirm(testMessage, onInputReady = {
-                repeat(5) {
-                    terminal.press(Keys.RIGHT)
-                }
-                terminal.press(Keys.LEFT)
-                terminal.press(Keys.ENTER)
-            })
+                myPromptConfirm(testMessage, onInputReady = {
+                    repeat(5) {
+                        terminal.press(Keys.RIGHT)
+                    }
+                    terminal.press(Keys.LEFT)
+                    terminal.press(Keys.ENTER)
+                })
             assertThat(result).isTrue()
         }
     }
@@ -306,9 +308,9 @@ private val testInput = "this is text to simulate user input."
             myPromptList(testMessage, testChoices, testHint, onInputReady = {
                 terminal.assertMatches {
                     bold {
-                    green { text("? ") }
-                    text(testMessage)
-                    black(isBright = true) { textLine("  $testHint") }
+                        green { text("? ") }
+                        text(testMessage)
+                        black(isBright = true) { textLine("  $testHint") }
                     }
                     cyan(isBright = true) { text(" ❯ ") }
                     cyan { textLine(testChoices[0]) }
@@ -327,17 +329,17 @@ private val testInput = "this is text to simulate user input."
 
         testSession { terminal ->
             result =
-            myPromptList(testMessage, testChoices, onInputReady = {
-                terminal.press(Keys.ENTER)
-            })
+                myPromptList(testMessage, testChoices, onInputReady = {
+                    terminal.press(Keys.ENTER)
+                })
 
             assertThat(terminal.resolveRerenders().stripFormatting()).containsExactly(
-                    "? $testMessage  arrow keys to move, ENTER to select",
-                    " ❯ element 0",
-                    "   element 1",
-                    "   element 2",
-                    "   element 3",
-                    "",
+                "? $testMessage  arrow keys to move, ENTER to select",
+                " ❯ element 0",
+                "   element 1",
+                "   element 2",
+                "   element 3",
+                ""
             )
             assertThat(result).isEqualTo(testChoices[0])
         }
@@ -349,18 +351,18 @@ private val testInput = "this is text to simulate user input."
 
         testSession { terminal ->
             result =
-            myPromptList(testMessage, testChoices, onInputReady = {
-                terminal.press(Keys.DOWN)
-                terminal.press(Keys.ENTER)
-            })
+                myPromptList(testMessage, testChoices, onInputReady = {
+                    terminal.press(Keys.DOWN)
+                    terminal.press(Keys.ENTER)
+                })
 
             assertThat(terminal.resolveRerenders().stripFormatting()).containsExactly(
-                    "? $testMessage  arrow keys to move, ENTER to select",
-                    "   element 0",
-                    " ❯ element 1",
-                    "   element 2",
-                    "   element 3",
-                    "",
+                "? $testMessage  arrow keys to move, ENTER to select",
+                "   element 0",
+                " ❯ element 1",
+                "   element 2",
+                "   element 3",
+                ""
             )
             assertThat(result).isEqualTo(testChoices[1])
         }
@@ -372,20 +374,20 @@ private val testInput = "this is text to simulate user input."
 
         testSession { terminal ->
             result =
-            myPromptList(testMessage, testChoices, onInputReady = {
-                repeat(6) {
-                    terminal.press(Keys.DOWN)
-                }
-                terminal.press(Keys.ENTER)
-            })
+                myPromptList(testMessage, testChoices, onInputReady = {
+                    repeat(6) {
+                        terminal.press(Keys.DOWN)
+                    }
+                    terminal.press(Keys.ENTER)
+                })
 
             assertThat(terminal.resolveRerenders().stripFormatting()).containsExactly(
-                    "? $testMessage  arrow keys to move, ENTER to select",
-                    "   element 0",
-                    "   element 1",
-                    "   element 2",
-                    " ❯ element 3",
-                    "",
+                "? $testMessage  arrow keys to move, ENTER to select",
+                "   element 0",
+                "   element 1",
+                "   element 2",
+                " ❯ element 3",
+                ""
             )
             assertThat(result).isEqualTo(testChoices.last())
         }
@@ -424,16 +426,16 @@ private val testInput = "this is text to simulate user input."
 
         testSession { terminal ->
             result =
-            myPromptCheckbox(testMessage, testChoices, testHint, allowEmptyInput = true, onInputReady = {
-                terminal.press(Keys.ENTER)
-            })
+                myPromptCheckbox(testMessage, testChoices, testHint, allowEmptyInput = true, onInputReady = {
+                    terminal.press(Keys.ENTER)
+                })
             assertThat(terminal.resolveRerenders().stripFormatting()).containsExactly(
-                    "? $testMessage  $testHint  $emptySelectionAllowedMessage",
-                    " ❯ ◯ element 0",
-                    "   ◯ element 1",
-                    "   ◯ element 2",
-                    "   ◯ element 3",
-                    "",
+                "? $testMessage  $testHint  $emptySelectionAllowedMessage",
+                " ❯ ◯ element 0",
+                "   ◯ element 1",
+                "   ◯ element 2",
+                "   ◯ element 3",
+                ""
             )
             assertThat(result).isEqualTo(emptyList)
         }
@@ -442,26 +444,29 @@ private val testInput = "this is text to simulate user input."
     @Test
     fun `should not accept input and display hint when selection is empty and empty input is not allowed`() {
         testSession { terminal ->
-             myPromptCheckbox(
-             testMessage, testChoices, testHint, allowEmptyInput = false,
-                 onInputReady = {
+            myPromptCheckbox(
+                testMessage,
+                testChoices,
+                testHint,
+                allowEmptyInput = false,
+                onInputReady = {
                     terminal.press(Keys.ENTER)
 
                     blockUntilRenderWhen {
                         terminal.resolveRerenders().stripFormatting() ==
-                        listOf(
-                            "? $testMessage  $emptySelectionNotAllowedMessage",
-                            " ❯ ◯ element 0",
-                            "   ◯ element 1",
-                            "   ◯ element 2",
-                            "   ◯ element 3",
-                            "",
-                        )
+                            listOf(
+                                "? $testMessage  $emptySelectionNotAllowedMessage",
+                                " ❯ ◯ element 0",
+                                "   ◯ element 1",
+                                "   ◯ element 2",
+                                "   ◯ element 3",
+                                ""
+                            )
                     }
 
                     terminal.press(Keys.SPACE)
                     terminal.press(Keys.ENTER)
-                },
+                }
             )
         }
     }
@@ -472,17 +477,17 @@ private val testInput = "this is text to simulate user input."
 
         testSession { terminal ->
             result =
-            myPromptCheckbox(testMessage, testChoices, testHint, onInputReady = {
-                terminal.press(Keys.SPACE)
-                terminal.press(Keys.ENTER)
-            })
+                myPromptCheckbox(testMessage, testChoices, testHint, onInputReady = {
+                    terminal.press(Keys.SPACE)
+                    terminal.press(Keys.ENTER)
+                })
             assertThat(terminal.resolveRerenders().stripFormatting()).containsExactly(
-                    "? $testMessage  $testHint",
-                    " ❯ ◉ element 0",
-                    "   ◯ element 1",
-                    "   ◯ element 2",
-                    "   ◯ element 3",
-                    "",
+                "? $testMessage  $testHint",
+                " ❯ ◉ element 0",
+                "   ◯ element 1",
+                "   ◯ element 2",
+                "   ◯ element 3",
+                ""
             )
             assertThat(result).isEqualTo(listOf(testChoices[0]))
         }
@@ -494,18 +499,18 @@ private val testInput = "this is text to simulate user input."
 
         testSession { terminal ->
             result =
-            myPromptCheckbox(testMessage, testChoices, testHint, onInputReady = {
-                terminal.press(Keys.DOWN)
-                terminal.press(Keys.SPACE)
-                terminal.press(Keys.ENTER)
-            })
+                myPromptCheckbox(testMessage, testChoices, testHint, onInputReady = {
+                    terminal.press(Keys.DOWN)
+                    terminal.press(Keys.SPACE)
+                    terminal.press(Keys.ENTER)
+                })
             assertThat(terminal.resolveRerenders().stripFormatting()).containsExactly(
-                    "? $testMessage  $testHint",
-                    "   ◯ element 0",
-                    " ❯ ◉ element 1",
-                    "   ◯ element 2",
-                    "   ◯ element 3",
-                    "",
+                "? $testMessage  $testHint",
+                "   ◯ element 0",
+                " ❯ ◉ element 1",
+                "   ◯ element 2",
+                "   ◯ element 3",
+                ""
             )
             assertThat(result).isEqualTo(listOf(testChoices[1]))
         }
@@ -517,20 +522,20 @@ private val testInput = "this is text to simulate user input."
 
         testSession { terminal ->
             result =
-            myPromptCheckbox(testMessage, testChoices, testHint, onInputReady = {
-                repeat(6) {
-                    terminal.press(Keys.DOWN)
-                }
-                terminal.press(Keys.SPACE)
-                terminal.press(Keys.ENTER)
-            })
+                myPromptCheckbox(testMessage, testChoices, testHint, onInputReady = {
+                    repeat(6) {
+                        terminal.press(Keys.DOWN)
+                    }
+                    terminal.press(Keys.SPACE)
+                    terminal.press(Keys.ENTER)
+                })
             assertThat(terminal.resolveRerenders().stripFormatting()).containsExactly(
-                    "? $testMessage  $testHint",
-                    "   ◯ element 0",
-                    "   ◯ element 1",
-                    "   ◯ element 2",
-                    " ❯ ◉ element 3",
-                    "",
+                "? $testMessage  $testHint",
+                "   ◯ element 0",
+                "   ◯ element 1",
+                "   ◯ element 2",
+                " ❯ ◉ element 3",
+                ""
             )
             assertThat(result).isEqualTo(listOf(testChoices.last()))
         }
@@ -542,20 +547,20 @@ private val testInput = "this is text to simulate user input."
 
         testSession { terminal ->
             result =
-            myPromptCheckbox(testMessage, testChoices, testHint, onInputReady = {
-                terminal.press(Keys.DOWN)
-                terminal.press(Keys.DOWN)
-                terminal.press(Keys.SPACE)
-                terminal.press(Keys.UP)
-                terminal.press(Keys.ENTER)
-            })
+                myPromptCheckbox(testMessage, testChoices, testHint, onInputReady = {
+                    terminal.press(Keys.DOWN)
+                    terminal.press(Keys.DOWN)
+                    terminal.press(Keys.SPACE)
+                    terminal.press(Keys.UP)
+                    terminal.press(Keys.ENTER)
+                })
             assertThat(terminal.resolveRerenders().stripFormatting()).containsExactly(
-                    "? $testMessage  $testHint",
-                    "   ◯ element 0",
-                    " ❯ ◯ element 1",
-                    "   ◉ element 2",
-                    "   ◯ element 3",
-                    "",
+                "? $testMessage  $testHint",
+                "   ◯ element 0",
+                " ❯ ◯ element 1",
+                "   ◉ element 2",
+                "   ◯ element 3",
+                ""
             )
             assertThat(result).isEqualTo(listOf(testChoices[2]))
         }
@@ -568,71 +573,27 @@ private val testInput = "this is text to simulate user input."
 
         testSession { terminal ->
             result =
-            myPromptCheckbox(testMessage, testChoices, testHint, onInputReady = {
-                terminal.press(Keys.SPACE)
+                myPromptCheckbox(testMessage, testChoices, testHint, onInputReady = {
+                    terminal.press(Keys.SPACE)
 
-                terminal.press(Keys.DOWN)
-                terminal.press(Keys.SPACE)
+                    terminal.press(Keys.DOWN)
+                    terminal.press(Keys.SPACE)
 
-                terminal.press(Keys.DOWN)
-                terminal.press(Keys.DOWN)
-                terminal.press(Keys.SPACE)
+                    terminal.press(Keys.DOWN)
+                    terminal.press(Keys.DOWN)
+                    terminal.press(Keys.SPACE)
 
-                terminal.press(Keys.ENTER)
-            })
+                    terminal.press(Keys.ENTER)
+                })
             assertThat(terminal.resolveRerenders().stripFormatting()).containsExactly(
-                    "? $testMessage  $testHint",
-                    "   ◉ element 0",
-                    "   ◉ element 1",
-                    "   ◯ element 2",
-                    " ❯ ◉ element 3",
-                    "",
+                "? $testMessage  $testHint",
+                "   ◉ element 0",
+                "   ◉ element 1",
+                "   ◯ element 2",
+                " ❯ ◉ element 3",
+                ""
             )
             assertThat(result).isEqualTo(elemsToSelect)
-        }
-    }
-
-    @Test
-    fun `does fun1 only type input after the sleep is complete`() {
-        val testString = "Long input that should test if the length has any effect on anything"
-        var result: String
-        testSession { terminal ->
-            result =
-            testFun1(
-//                message = "ta3dadaFafefa",
-                callback = {
-                terminal.type(testString)
-                terminal.press(Keys.ENTER)
-            },
-            )
-            assertThat(result).isEqualTo(testString)
-        }
-    }
-
-    @Test
-    fun `input should not break across multiple sections`() =
-    testSession { terminal ->
-        var testRunCount = 1
-        while (testRunCount < 1000) {
-            println("Test run #$testRunCount...")
-            terminal.clear()
-
-            val numCharsToType = testRunCount % 20
-            section {
-                input()
-            }.runUntilInputEntered {
-               //  delay(20) // uncomment me and test stops crashing
-                terminal.type(testRunCount.toString())
-                terminal.type(": ")
-                for (i in 0 until numCharsToType) terminal.type('a')
-                terminal.press(Keys.ENTER)
-            }
-
-            terminal.assertMatches {
-                text("$testRunCount: ${"a".repeat(numCharsToType)} ")
-            }
-
-            testRunCount++
         }
     }
 }
