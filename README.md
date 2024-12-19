@@ -134,7 +134,7 @@ more: [Software Health Check](https://www.maibornwolff.de/en/service/software-he
 
 ## License
 
-MIT
+BSD-3-Clause License
 
 ---
 
