@@ -5,12 +5,6 @@ import com.github.kinquirer.components.promptInput
 import java.io.File
 import java.nio.file.Paths
 
-enum class InputType {
-    FOLDER,
-    FILE,
-    FOLDER_AND_FILE
-}
-
 interface ParserDialogInterface {
     fun collectParserArgs(): List<String>
 
