@@ -138,45 +138,45 @@ class ParserDialog {
 
             return basicMergeConfig
         }
-    }
 
-    fun askForceMerge(forceCallback: suspend RunScope.() -> Unit = {}): Boolean {
-        var force = false
-        session {
-            force = myPromptConfirm(
-                message = "Do you still want to merge non-overlapping at the top-level nodes?",
-                onInputReady = forceCallback
-            )
-        }
-        return force
-    }
-
-    fun askForMimoPrefix(prefixOptions: Set<String>, prefixCallback: suspend RunScope.() -> Unit = {}): String {
-        var prefix = ""
-        session {
-            prefix = myPromptList(
-                message = "Which prefix should be used for the output file?",
-                choices = prefixOptions.toList(),
-                onInputReady = prefixCallback
-            )
-        }
-        return prefix
-    }
-
-    fun requestMimoFileSelection(files: List<File>, fileSelectionCallback: suspend RunScope.() -> Unit = {}): List<File> {
-        val fileNameList = files.map { it.name }
-
-        var choiceList: List<String> = listOf()
-        session {
-            choiceList = myPromptCheckbox(
-                message = "",
-                choices = fileNameList,
-                hint = "Not selected files will not get merged",
-                allowEmptyInput = true,
-                onInputReady = fileSelectionCallback
-            )
+        fun askForceMerge(forceCallback: suspend RunScope.() -> Unit = {}): Boolean {
+            var force = false
+            session {
+                force = myPromptConfirm(
+                    message = "Do you still want to merge non-overlapping at the top-level nodes?",
+                    onInputReady = forceCallback
+                )
+            }
+            return force
         }
 
-        return files.filter { choiceList.contains(it.name) }
+        fun askForMimoPrefix(prefixOptions: Set<String>, prefixCallback: suspend RunScope.() -> Unit = {}): String {
+            var prefix = ""
+            session {
+                prefix = myPromptList(
+                    message = "Which prefix should be used for the output file?",
+                    choices = prefixOptions.toList(),
+                    onInputReady = prefixCallback
+                )
+            }
+            return prefix
+        }
+
+        fun requestMimoFileSelection(files: List<File>, fileSelectionCallback: suspend RunScope.() -> Unit = {}): List<File> {
+            val fileNameList = files.map { it.name }
+
+            var choiceList: List<String> = listOf()
+            session {
+                choiceList = myPromptCheckbox(
+                    message = "",
+                    choices = fileNameList,
+                    hint = "Not selected files will not get merged",
+                    allowEmptyInput = true,
+                    onInputReady = fileSelectionCallback
+                )
+            }
+
+            return files.filter { choiceList.contains(it.name) }
+        }
     }
 }
