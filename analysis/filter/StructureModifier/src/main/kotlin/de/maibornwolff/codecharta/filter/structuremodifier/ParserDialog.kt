@@ -19,7 +19,6 @@ class ParserDialog {
             return res
         }
 
-        // TODO: check if its a problem that this is in a companion object
         internal fun Session.myCollectParserArgs(
             defaultCallback: suspend RunScope.() -> Unit = {},
             fileCallback: suspend RunScope.() -> Unit = defaultCallback,
