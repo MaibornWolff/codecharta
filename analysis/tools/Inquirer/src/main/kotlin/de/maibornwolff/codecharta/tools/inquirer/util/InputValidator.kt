@@ -1,17 +1,15 @@
 package de.maibornwolff.codecharta.tools.inquirer.util
 
+import de.maibornwolff.codecharta.serialization.FileExtension
+import de.maibornwolff.codecharta.tools.inquirer.InputType
 import java.io.File
 
 class InputValidator {
     companion object {
-// TODO what kind of methods do we need here?
-        // -> create all that are currently needed for the project when integrating kotter into each parser
         //
-        // needed checkers:
-        // check if the input is an existing file
-        // check if the input is an existing file or folder (can probably be combined with above function)
         // sometimes input is list of files (or folders), check if they are all existing files
-        // (add more when going through the parsers)
+        // -> can it be multiple files?
+
 
         fun isInputAnExistingFile(vararg allowedFiletypes: String): (String) -> Boolean = { input ->
             val file = File(input)
@@ -19,15 +17,29 @@ class InputValidator {
             file.exists() && file.isFile && isFileCorrectType
         }
 
-        // TODO write this method --- make parameter accept multiple strings
-        fun isInputAnExistingFileOrFolder(filetype: String = ""): (String) -> Boolean = { input ->
-            true
+        fun isFileOrFolderValid(inputType: InputType, fileExtensionList: List<FileExtension>): (String) -> Boolean = { input ->
+            val objectToVerify = File(input)
+            objectToVerify.exists() && when (inputType) {
+                InputType.FOLDER -> {
+                    objectToVerify.isDirectory
+                }
+                InputType.FILE -> {
+                    objectToVerify.isFile && fileExtensionList.any { input.endsWith(it.extension) }
+                }
+                else -> {
+                    objectToVerify.isDirectory || (objectToVerify.isFile && fileExtensionList.any { input.endsWith(it.extension) })
+                }
+            }
         }
 
         // not sure if this one is needed, its currently there for testing
         fun isInputBetweenNumbers(minValue: Int, maxValue: Int): (String) -> Boolean = { input ->
             val inputNumber = input.toInt()
             inputNumber in (minValue + 1)..<maxValue
+        }
+
+        fun isNumberGreaterThen(minValue: Int): (String) -> Boolean = { input ->
+            input.toInt() > minValue
         }
     }
 }
