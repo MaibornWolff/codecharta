@@ -233,7 +233,7 @@ fun Session.myPromptDefaultFileFolderInput(
         message = "What is the input $inputMessage",
         hint = currentWorkingDirectory,
         allowEmptyInput = allowEmptyInput,
-        invalidInputMessage = "Please input a valid $inputType",
+        invalidInputMessage = "Please input a valid ${inputType.inputType}",
         inputValidator = InputValidator.isFileOrFolderValid(inputType, fileExtensionList),
         onInputReady = onInputReady
     )
