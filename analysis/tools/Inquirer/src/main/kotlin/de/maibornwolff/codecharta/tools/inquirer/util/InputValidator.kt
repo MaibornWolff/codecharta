@@ -10,7 +10,6 @@ class InputValidator {
         // sometimes input is list of files (or folders), check if they are all existing files
         // -> can it be multiple files?
 
-
         fun isInputAnExistingFile(vararg allowedFiletypes: String): (String) -> Boolean = { input ->
             val file = File(input)
             val isFileCorrectType = allowedFiletypes.isEmpty() || allowedFiletypes.any { input.endsWith(it) }
