@@ -24,7 +24,7 @@ junit-platform = "1.9.3"
 ktlint = "12.1.2"
 mockito-core = "3.12.4"
 mockito-kotlin = "2.2.0"
-mockk = "1.13.14"
+mockk = "1.13.16"
 wiremock = "2.35.2"
 
 [libraries]
