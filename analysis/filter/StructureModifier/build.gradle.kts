@@ -5,7 +5,6 @@ dependencies {
     implementation(project(":tools:InspectionTool"))
 
     implementation(libs.picocli)
-    implementation(libs.kotlin.inquirer)
     implementation(libs.kotter)
     implementation(libs.kotter.test)
 
