@@ -139,7 +139,7 @@ class ParserDialog {
             return basicMergeConfig
         }
 
-        fun askForceMerge(forceCallback: suspend RunScope.() -> Unit = {}): Boolean {
+        internal val askForceMerge: (suspend RunScope.() -> Unit) -> Boolean = { forceCallback ->
             var force = false
             session {
                 force = myPromptConfirm(
@@ -147,10 +147,14 @@ class ParserDialog {
                     onInputReady = forceCallback
                 )
             }
-            return force
+            force
         }
 
-        fun askForMimoPrefix(prefixOptions: Set<String>, prefixCallback: suspend RunScope.() -> Unit = {}): String {
+        fun callAskForceMerge(): Boolean {
+            return askForceMerge {}
+        }
+
+        internal val askForMimoPrefix: (Set<String>, suspend RunScope.() -> Unit) -> String = { prefixOptions, prefixCallback ->
             var prefix = ""
             session {
                 prefix = myPromptList(
@@ -159,12 +163,15 @@ class ParserDialog {
                     onInputReady = prefixCallback
                 )
             }
-            return prefix
+            prefix
         }
 
-        fun requestMimoFileSelection(files: List<File>, fileSelectionCallback: suspend RunScope.() -> Unit = {}): List<File> {
-            val fileNameList = files.map { it.name }
+        fun callAskForMimoPrefix(prefixOptions: Set<String>): String {
+            return askForMimoPrefix(prefixOptions) {}
+        }
 
+        internal val requestMimoFileSelection: (List<File>, suspend RunScope.() -> Unit) -> List<File> = { files, fileCallback ->
+            val fileNameList = files.map { it.name }
             var choiceList: List<String> = listOf()
             session {
                 choiceList = myPromptCheckbox(
@@ -172,11 +179,14 @@ class ParserDialog {
                     choices = fileNameList,
                     hint = "Not selected files will not get merged",
                     allowEmptyInput = true,
-                    onInputReady = fileSelectionCallback
+                    onInputReady = fileCallback
                 )
             }
+            files.filter { choiceList.contains(it.name) }
+        }
 
-            return files.filter { choiceList.contains(it.name) }
+        fun callRequestMimoFileSelection(files: List<File>): List<File> {
+            return requestMimoFileSelection(files) {}
         }
     }
 }
