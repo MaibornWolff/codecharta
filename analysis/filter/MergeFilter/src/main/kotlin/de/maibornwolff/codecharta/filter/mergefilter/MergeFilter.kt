@@ -119,7 +119,7 @@ class MergeFilter(
         if (!hasTopLevelOverlap(projects)) {
             printOverlapError(projects)
 
-            val continueMerge = ParserDialog.askForceMerge()
+            val continueMerge = ParserDialog.callAskForceMerge()
 
             if (!continueMerge) {
                 Logger.info { "Merge cancelled by the user." }
@@ -157,7 +157,7 @@ class MergeFilter(
             val confirmedFileList = if (exactMatch) {
                 files
             } else {
-                ParserDialog.requestMimoFileSelection(files)
+                ParserDialog.callRequestMimoFileSelection(files)
             }
             if (confirmedFileList.size <= 1) {
                 Logger.info { "Continue with next group, because one or less files were selected" }
