@@ -239,48 +239,4 @@ fun Session.myPromptDefaultFileFolderInput(
     )
 }
 
-// public API
 
-// fun Session.myPromptInput(
-//    message: String,
-//    hint: String = "",
-//    allowEmptyInput: Boolean = false,
-//    invalidInputMessage: String = DEFAULT_INVALID_INPUT_MESSAGE,
-//    inputValidator: (String) -> Boolean = { true }
-// ): String {
-//    return myPromptInput(message, hint, allowEmptyInput, invalidInputMessage, inputValidator, onInputReady = {})
-// }
-//
-// fun Session.myPromptInputNumber(
-//    message: String,
-//    hint: String = "",
-//    allowEmptyInput: Boolean = false,
-//    invalidInputMessage: String = DEFAULT_INVALID_INPUT_MESSAGE,
-//    inputValidator: (String) -> Boolean = { true }
-// ): String {
-//    return myPromptInputNumber(message, hint, allowEmptyInput, invalidInputMessage, inputValidator, onInputReady = {})
-// }
-//
-// fun Session.myPromptConfirm(message: String, hint: String = "arrow keys to change selection"): Boolean {
-//    return myPromptConfirm(message, hint, onInputReady = {})
-// }
-//
-// fun Session.myPromptList(message: String, choices: List<String>, hint: String = "arrow keys to move, ENTER to select"): String {
-//    return myPromptList(message, choices, hint, onInputReady = {})
-// }
-//
-// fun Session.myPromptCheckbox(
-//    message: String,
-//    choices: List<String>,
-//    allowEmptyInput: Boolean = false,
-//    hint: String = "SPACE to select, ENTER to confirm selection"
-// ): List<String> {
-//    return myPromptCheckbox(message, choices, hint, allowEmptyInput, onInputReady = {})
-// }
-
-fun MainRenderScope.drawFun(isInputEmpty: Boolean, sleepTimer: Long) {
-    text("text before sleeping; empty input is $isInputEmpty")
-    textLine("; input:")
-    input()
-    Thread.sleep(sleepTimer)
-}
