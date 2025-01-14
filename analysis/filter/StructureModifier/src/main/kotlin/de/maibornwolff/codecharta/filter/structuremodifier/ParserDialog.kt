@@ -3,6 +3,9 @@ package de.maibornwolff.codecharta.filter.structuremodifier
 import com.varabyte.kotter.foundation.session
 import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.Session
+import de.maibornwolff.codecharta.serialization.FileExtension
+import de.maibornwolff.codecharta.tools.inquirer.InputType
+import de.maibornwolff.codecharta.tools.inquirer.myPromptDefaultFileFolderInput
 import de.maibornwolff.codecharta.tools.inquirer.myPromptInput
 import de.maibornwolff.codecharta.tools.inquirer.myPromptInputNumber
 import de.maibornwolff.codecharta.tools.inquirer.myPromptList
@@ -20,25 +23,23 @@ class ParserDialog {
         }
 
         internal fun Session.myCollectParserArgs(
-            defaultCallback: suspend RunScope.() -> Unit = {},
-            fileCallback: suspend RunScope.() -> Unit = defaultCallback,
-            actionCallback: suspend RunScope.() -> Unit = defaultCallback,
-            printCallback: suspend RunScope.() -> Unit = defaultCallback,
-            setRootCallback: suspend RunScope.() -> Unit = defaultCallback,
-            moveFromCallback: suspend RunScope.() -> Unit = defaultCallback,
-            moveToCallback: suspend RunScope.() -> Unit = defaultCallback,
-            removeNodesCallback: suspend RunScope.() -> Unit = defaultCallback,
-            chooseNameCallback: suspend RunScope.() -> Unit = defaultCallback,
-            outFileCallback: suspend RunScope.() -> Unit = defaultCallback
+            fileCallback: suspend RunScope.() -> Unit = {},
+            actionCallback: suspend RunScope.() -> Unit = {},
+            printCallback: suspend RunScope.() -> Unit = {},
+            setRootCallback: suspend RunScope.() -> Unit = {},
+            moveFromCallback: suspend RunScope.() -> Unit = {},
+            moveToCallback: suspend RunScope.() -> Unit = {},
+            removeNodesCallback: suspend RunScope.() -> Unit = {},
+            chooseNameCallback: suspend RunScope.() -> Unit = {},
+            outFileCallback: suspend RunScope.() -> Unit = {}
         ): List<String> {
             val result: List<String>
 
             val inputFileName: String =
-                myPromptInput(
-                    message = "What is the cc.json file that should be modified?",
-                    hint = Paths.get("").toAbsolutePath().toString() + File.separator + "yourInput.cc.json",
-                    invalidInputMessage = "Please input a valid cc.json file!",
-                    inputValidator = InputValidator.isInputAnExistingFile("cc.json", "cc.json.gz"),
+                myPromptDefaultFileFolderInput(
+                    allowEmptyInput = false,
+                    inputType = InputType.FILE,
+                    fileExtensionList = listOf(FileExtension.CCJSON, FileExtension.CCGZ),
                     onInputReady = fileCallback
                 )
 
