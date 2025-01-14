@@ -1,67 +1,81 @@
 package de.maibornwolff.codecharta.filter.edgefilter
 
-import com.github.kinquirer.KInquirer
-import com.github.kinquirer.components.promptInput
-import de.maibornwolff.codecharta.util.InputHelper
-import io.mockk.every
-import io.mockk.mockkObject
-import io.mockk.mockkStatic
-import io.mockk.unmockkAll
-import org.assertj.core.api.Assertions
-import org.junit.jupiter.api.AfterEach
+import com.varabyte.kotter.foundation.input.Keys
+import com.varabyte.kotter.runtime.terminal.inmemory.press
+import com.varabyte.kotter.runtime.terminal.inmemory.type
+import com.varabyte.kotterx.test.foundation.testSession
+import de.maibornwolff.codecharta.filter.edgefilter.ParserDialog.Companion.myCollectParserArgs
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
+import org.junit.jupiter.api.Timeout
 import picocli.CommandLine
 import java.io.File
 
+@Timeout(120)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ParserDialogTest {
-    @AfterEach
-    fun afterTest() {
-        unmockkAll()
-    }
+    val testResourceBaseFolder = "src/test/resources/"
+    val inputFileName = "${testResourceBaseFolder}coupling.cc.json"
+    val outputFileName = "sampleOutputFile"
+    val separator = '/'
 
     @Test
-    fun `should output correct arguments when provided with valid input`() { // given
-        mockkObject(InputHelper)
-        every {
-            InputHelper.isInputValidAndNotNull(any(), any())
-        } returns true
+    fun `should output correct arguments when provided with valid input`() {
+        testSession { terminal ->
+            val parserArguments = myCollectParserArgs(
+                fileCallback = {
+                    terminal.type(inputFileName)
+                    terminal.press(Keys.ENTER)
+                },
+                outFileCallback = {
+                    terminal.type(outputFileName)
+                    terminal.press(Keys.ENTER)
+                },
+                separatorCallback = {
+                    terminal.type(separator)
+                    terminal.press(Keys.ENTER)
+                }
+            )
 
-        mockkStatic("com.github.kinquirer.components.InputKt")
-        every {
-            KInquirer.promptInput(any(), any(), any())
-        } returns "sampleFile.cc.json" andThen "sampleOutputFile" andThen "/"
+            val cmdLine = CommandLine(EdgeFilter())
+            val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
 
-        // when
-        val parserArguments = ParserDialog.collectParserArgs()
-        val cmdLine = CommandLine(EdgeFilter())
-        val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
-
-        // then
-        Assertions.assertThat(parseResult.matchedOption("output-file").getValue<String>()).isEqualTo("sampleOutputFile")
-        Assertions.assertThat(parseResult.matchedOption("path-separator").getValue<Char>()).isEqualTo('/')
-        Assertions.assertThat(parseResult.matchedPositional(0).getValue<File>()).isEqualTo(File("sampleFile.cc.json"))
+            assertThat(parseResult.matchedOption("output-file").getValue<String>()).isEqualTo(outputFileName)
+            assertThat(parseResult.matchedOption("path-separator").getValue<Char>()).isEqualTo(separator)
+            assertThat(parseResult.matchedPositional(0).getValue<File>()).isEqualTo(File(inputFileName))
+        }
     }
 
     @Test
     fun `should prompt user twice for input file when first input file is invalid`() { // given
-        mockkObject(InputHelper)
-        every {
-            InputHelper.isInputValidAndNotNull(any(), any())
-        } returns false andThen true
+        val invalidFileName = ""
 
-        mockkStatic("com.github.kinquirer.components.InputKt")
-        every {
-            KInquirer.promptInput(any(), any(), any())
-        } returns "" andThen "sampleFile.cc.json" andThen "sampleOutputFile" andThen "/"
+        testSession { terminal ->
+            val parserArguments = myCollectParserArgs(
+                fileCallback = {
+                    terminal.type(invalidFileName)
+                    terminal.press(Keys.ENTER)
+                    terminal.type(inputFileName)
+                    terminal.press(Keys.ENTER)
+                },
+                outFileCallback = {
+                    terminal.type(outputFileName)
+                    terminal.press(Keys.ENTER)
+                },
+                separatorCallback = {
+                    // accept hint value
+                    terminal.press(Keys.RIGHT)
+                    terminal.press(Keys.ENTER)
+                }
+            )
 
-        // when
-        val parserArguments = ParserDialog.collectParserArgs()
-        val cmdLine = CommandLine(EdgeFilter())
-        val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
+            val cmdLine = CommandLine(EdgeFilter())
+            val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
 
-        // then
-        Assertions.assertThat(parseResult.matchedPositional(0).getValue<File>()).isEqualTo(File("sampleFile.cc.json"))
+            assertThat(parseResult.matchedOption("output-file").getValue<String>()).isEqualTo(outputFileName)
+            assertThat(parseResult.matchedOption("path-separator").getValue<Char>()).isEqualTo(separator)
+            assertThat(parseResult.matchedPositional(0).getValue<File>()).isEqualTo(File(inputFileName))
+        }
     }
 }
