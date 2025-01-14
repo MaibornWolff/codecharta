@@ -4,9 +4,9 @@ import com.varabyte.kotter.foundation.session
 import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.Session
 import de.maibornwolff.codecharta.serialization.FileExtension
+import de.maibornwolff.codecharta.tools.inquirer.InputType
 import de.maibornwolff.codecharta.tools.inquirer.myPromptDefaultFileFolderInput
 import de.maibornwolff.codecharta.tools.inquirer.myPromptInput
-import de.maibornwolff.codecharta.tools.interactiveparser.InputType
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import de.maibornwolff.codecharta.util.Logger
 
@@ -25,7 +25,7 @@ class ParserDialog {
         ): List<String> {
             val inputFileName: String = myPromptDefaultFileFolderInput(
                 allowEmptyInput = false,
-                inputType = de.maibornwolff.codecharta.tools.inquirer.InputType.FILE,
+                inputType = InputType.FILE,
                 fileExtensionList = listOf(FileExtension.CCJSON, FileExtension.CCGZ),
                 onInputReady = fileCallback
             )
