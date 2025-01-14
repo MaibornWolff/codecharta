@@ -44,7 +44,6 @@ class ParserDialogTest {
             // when
             val parserArguments =
                 myCollectParserArgs(
-                    defaultCallback = { terminal.press(Keys.ENTER) },
                     fileCallback = {
                         terminal.type(sampleProjectPath.toString())
                         terminal.press(Keys.ENTER)
@@ -79,7 +78,6 @@ class ParserDialogTest {
 
         testSession { terminal ->
             val parserArguments = myCollectParserArgs(
-                defaultCallback = { terminal.press(Keys.ENTER) },
                 fileCallback = {
                     terminal.type(sampleProjectPath.toString())
                     terminal.press(Keys.ENTER)
@@ -122,7 +120,6 @@ class ParserDialogTest {
         testSession { terminal ->
             val parserArguments =
                 myCollectParserArgs(
-                    defaultCallback = { terminal.press(Keys.ENTER) },
                     fileCallback = {
                         terminal.type(sampleProjectPath.toString())
                         terminal.press(Keys.ENTER)
@@ -169,7 +166,6 @@ class ParserDialogTest {
             // when
             val parserArguments =
                 myCollectParserArgs(
-                    defaultCallback = { terminal.press(Keys.ENTER) },
                     fileCallback = {
                         terminal.type(sampleProjectPath.toString())
                         terminal.press(Keys.ENTER)
@@ -222,7 +218,6 @@ class ParserDialogTest {
             // when
             val parserArguments =
                 myCollectParserArgs(
-                    defaultCallback = { terminal.press(Keys.ENTER) },
                     fileCallback = {
                         terminal.type(sampleProjectPath.toString())
                         terminal.press(Keys.ENTER)
@@ -268,7 +263,6 @@ class ParserDialogTest {
             // when
             val parserArguments =
                 myCollectParserArgs(
-                    defaultCallback = { terminal.press(Keys.ENTER) },
                     fileCallback = {
                         terminal.type(invalidInputFileName)
                         terminal.press(Keys.ENTER)
