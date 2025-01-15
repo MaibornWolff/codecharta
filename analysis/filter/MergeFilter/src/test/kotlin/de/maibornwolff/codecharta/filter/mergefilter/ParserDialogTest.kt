@@ -14,9 +14,9 @@ import kotlin.io.path.Path
 
 @Timeout(120)
 class ParserDialogTest {
-    val testResourceBaseFolder = "src/test/resources/"
-    val inputFolderName = testResourceBaseFolder
-    val inputFolderPath = Path(inputFolderName)
+    private val testResourceBaseFolder = "src/test/resources/"
+    private val inputFolderName = testResourceBaseFolder
+    private val inputFolderPath = Path(inputFolderName)
 
     @Test
     fun `should output correct arguments and skip questions (leaf, no mimo or large)`() {
