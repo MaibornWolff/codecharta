@@ -8,9 +8,11 @@ import de.maibornwolff.codecharta.importer.codemaat.ParserDialog.Companion.myCol
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
+import org.junit.jupiter.api.Timeout
 import picocli.CommandLine
 import java.io.File
 
+@Timeout(120)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ParserDialogTest {
     private val testResourceBaseFolder = "src/test/resources/"

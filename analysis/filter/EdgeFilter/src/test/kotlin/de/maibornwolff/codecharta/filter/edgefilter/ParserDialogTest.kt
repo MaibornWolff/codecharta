@@ -15,10 +15,10 @@ import java.io.File
 @Timeout(120)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ParserDialogTest {
-    val testResourceBaseFolder = "src/test/resources/"
-    val inputFileName = "${testResourceBaseFolder}coupling.cc.json"
-    val outputFileName = "sampleOutputFile"
-    val separator = '/'
+    private val testResourceBaseFolder = "src/test/resources/"
+    private val inputFileName = "${testResourceBaseFolder}coupling.cc.json"
+    private val outputFileName = "sampleOutputFile"
+    private val separator = '/'
 
     @Test
     fun `should output correct arguments when provided with valid input`() {
