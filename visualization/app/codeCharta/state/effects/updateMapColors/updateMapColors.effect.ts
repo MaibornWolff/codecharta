@@ -20,15 +20,20 @@ export class UpdateMapColorsEffect {
             map(colorMetric => {
                 const state = this.state.getValue()
                 const attributeDescriptors = state.fileSettings.attributeDescriptors
+                const currentMapColors = state.appSettings.mapColors
+
+                // Only reverse colors if the metric direction is reversed
                 if (attributeDescriptors[colorMetric]?.direction === 1) {
-                    const reversedMapColors: MapColors = JSON.parse(stringify(state.appSettings.mapColors))
+                    const reversedMapColors: MapColors = JSON.parse(stringify(currentMapColors))
                     const temporary = reversedMapColors.negative
                     reversedMapColors.negative = reversedMapColors.positive
                     reversedMapColors.positive = temporary
 
                     return setMapColors({ value: reversedMapColors })
                 }
-                return setMapColors({ value: defaultMapColors })
+
+                // Keep current colors if they exist, otherwise use defaults
+                return setMapColors({ value: currentMapColors ?? defaultMapColors })
             })
         )
     )
