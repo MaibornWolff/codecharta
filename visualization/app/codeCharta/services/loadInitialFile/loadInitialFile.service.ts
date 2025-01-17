@@ -68,11 +68,11 @@ export class LoadInitialFileService {
     private urlUtils = new UrlExtractor(this.httpClient)
 
     constructor(
-        private store: Store,
-        private state: State<CcState>,
-        private dialog: MatDialog,
-        private loadFileService: LoadFileService,
-        private httpClient: HttpClient
+        private readonly store: Store,
+        private readonly state: State<CcState>,
+        private readonly dialog: MatDialog,
+        private readonly loadFileService: LoadFileService,
+        private readonly httpClient: HttpClient
     ) {}
 
     async loadFilesOrSampleFiles() {

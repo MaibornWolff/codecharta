@@ -14,7 +14,7 @@ import { defaultNMetrics, isAnyMetricAvailable, preselectCombination } from "./u
 
 @Injectable()
 export class ResetChosenMetricsEffect {
-    constructor(private store: Store<CcState>) {}
+    constructor(private readonly store: Store<CcState>) {}
 
     resetChosenDistributionMetric$ = createEffect(
         () =>

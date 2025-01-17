@@ -22,9 +22,9 @@ export class ThreeMapControlsService {
     zoomPercentage$ = new BehaviorSubject<number>(100)
 
     constructor(
-        private threeCameraService: ThreeCameraService,
-        private threeSceneService: ThreeSceneService,
-        private threeRendererService: ThreeRendererService
+        private readonly threeCameraService: ThreeCameraService,
+        private readonly threeSceneService: ThreeSceneService,
+        private readonly threeRendererService: ThreeRendererService
     ) {}
 
     setControlTarget(cameraTarget: Vector3) {

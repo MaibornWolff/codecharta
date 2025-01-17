@@ -16,11 +16,11 @@ export const maxFPS = 1000 / 60
 @Injectable()
 export class RenderCodeMapEffect {
     constructor(
-        private store: Store<CcState>,
-        private actions$: Actions,
-        private uploadFilesService: UploadFilesService,
-        private threeRendererService: ThreeRendererService,
-        private codeMapRenderService: CodeMapRenderService
+        private readonly store: Store<CcState>,
+        private readonly actions$: Actions,
+        private readonly uploadFilesService: UploadFilesService,
+        private readonly threeRendererService: ThreeRendererService,
+        private readonly codeMapRenderService: CodeMapRenderService
     ) {}
 
     private actionsRequiringRender$ = this.actions$.pipe(ofType(...actionsRequiringRerender))

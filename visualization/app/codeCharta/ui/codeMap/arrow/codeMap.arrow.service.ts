@@ -36,10 +36,10 @@ export class CodeMapArrowService implements OnDestroy {
         .subscribe()
 
     constructor(
-        private store: Store<CcState>,
-        private state: State<CcState>,
+        private readonly store: Store<CcState>,
+        private readonly state: State<CcState>,
         private threeSceneService: ThreeSceneService,
-        private idToBuildingService: IdToBuildingService
+        private readonly idToBuildingService: IdToBuildingService
     ) {
         this.threeSceneService.subscribe("onBuildingSelected", this.onBuildingSelected)
         this.threeSceneService.subscribe("onBuildingDeselected", this.onBuildingDeselected)

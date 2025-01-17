@@ -18,7 +18,7 @@ export class MarkFolderRowComponent {
     markFolderItems$ = this.store.select(markFolderItemsSelector)
     codeMapNode$ = this.store.select(rightClickedCodeMapNodeSelector)
 
-    constructor(private store: Store<CcState>) {}
+    constructor(private readonly store: Store<CcState>) {}
 
     markFolder(path: string, color: string) {
         this.store.dispatch(markPackages({ packages: [{ path, color }] }))

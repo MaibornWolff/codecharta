@@ -79,12 +79,12 @@ export class CodeMapMouseEventService implements OnDestroy {
         private threeCameraService: ThreeCameraService,
         private threeRendererService: ThreeRendererService,
         private threeSceneService: ThreeSceneService,
-        private store: Store<CcState>,
-        private state: State<CcState>,
-        private codeMapLabelService: CodeMapLabelService,
-        private viewCubeMouseEvents: ViewCubeMouseEventsService,
-        private threeViewerService: ThreeViewerService,
-        private idToBuilding: IdToBuildingService
+        private readonly store: Store<CcState>,
+        private readonly state: State<CcState>,
+        private readonly codeMapLabelService: CodeMapLabelService,
+        private readonly viewCubeMouseEvents: ViewCubeMouseEventsService,
+        private readonly threeViewerService: ThreeViewerService,
+        private readonly idToBuilding: IdToBuildingService
     ) {}
 
     ngOnDestroy(): void {

@@ -17,7 +17,7 @@ export class AttributeSideBarHeaderSectionComponent {
     @Input() node: Pick<CodeMapNode, "children" | "name" | "link" | "path">
     @Input() fileName: string
 
-    constructor(private isAttributeSideBarVisibleService: IsAttributeSideBarVisibleService) {}
+    constructor(private readonly isAttributeSideBarVisibleService: IsAttributeSideBarVisibleService) {}
 
     closeSideBar() {
         this.isAttributeSideBarVisibleService.isOpen = false
