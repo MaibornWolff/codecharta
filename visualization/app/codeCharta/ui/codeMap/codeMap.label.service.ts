@@ -34,10 +34,10 @@ export class CodeMapLabelService {
     private nodeHeight = 0
 
     constructor(
-        private state: State<CcState>,
-        private threeCameraService: ThreeCameraService,
+        private readonly state: State<CcState>,
+        private readonly threeCameraService: ThreeCameraService,
         private threeSceneService: ThreeSceneService,
-        private threeMapControlsService: ThreeMapControlsService
+        private readonly threeMapControlsService: ThreeMapControlsService
     ) {
         this.labels = new Array<InternalLabel>()
         this.threeMapControlsService.subscribe("onCameraChanged", () => this.onCameraChanged())

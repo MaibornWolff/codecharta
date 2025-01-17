@@ -23,7 +23,7 @@ export class FocusButtonsComponent {
     currentFocusedNodePath$ = this.store.select(currentFocusedNodePathSelector)
     hasPreviousFocusedNodePath$ = this.store.select(focusedNodePathSelector).pipe(map(focusedNodePaths => focusedNodePaths.length > 1))
 
-    constructor(private store: Store<CcState>) {}
+    constructor(private readonly store: Store<CcState>) {}
 
     handleFocusNodeClicked() {
         this.store.dispatch(focusNode({ value: this.codeMapNode.path }))
