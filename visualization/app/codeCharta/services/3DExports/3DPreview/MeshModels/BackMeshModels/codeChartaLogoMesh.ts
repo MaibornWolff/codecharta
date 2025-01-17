@@ -6,8 +6,7 @@ import { CustomVisibilityMesh } from "../customVisibilityMesh"
 export class CodeChartaLogoMesh extends CustomVisibilityMesh {
     private readonly createSvgStrategy: CreateSvgGeometryStrategy
 
-    constructor(name: string,
-                createSvgStrategy: CreateSvgGeometryStrategy = new CreateSvgGeometryStrategy()) {
+    constructor(name: string, createSvgStrategy: CreateSvgGeometryStrategy = new CreateSvgGeometryStrategy()) {
         super(name, new BackPrintColorChangeStrategy(), 180, true)
         this.createSvgStrategy = createSvgStrategy
     }

@@ -75,7 +75,7 @@ export class MapMesh extends CustomVisibilityMesh {
         const scale = (geometryOptions.width - 2 * geometryOptions.mapSideOffset) / (oldWidth - 2 * geometryOptions.mapSideOffset)
         this.geometry.scale(scale, scale, scale)
     }
-    
+
     updateColor(numberOfColors: number) {
         this.updateMapColors(this.originalColors, this.geometry, numberOfColors)
     }
