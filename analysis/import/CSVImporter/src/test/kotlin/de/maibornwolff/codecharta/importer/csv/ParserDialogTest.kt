@@ -134,7 +134,7 @@ class ParserDialogTest {
                 fileCallback = {
                     terminal.type(invalidFileName1)
                     terminal.press(Keys.ENTER)
-                    terminal.press(Keys.BACKSPACE,Keys.BACKSPACE,Keys.BACKSPACE)
+                    terminal.press(Keys.BACKSPACE, Keys.BACKSPACE, Keys.BACKSPACE)
                     terminal.type(inputFileName)
                     terminal.press(Keys.ENTER)
                 },
