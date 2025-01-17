@@ -65,7 +65,7 @@ export const sampleFile2 = { fileName: "sample2.cc.json", fileSize: 2 * 1024, co
 
 @Injectable({ providedIn: "root" })
 export class LoadInitialFileService {
-    private urlUtils = new UrlExtractor(this.httpClient)
+    private readonly urlUtils = new UrlExtractor(this.httpClient)
 
     constructor(
         private readonly store: Store,

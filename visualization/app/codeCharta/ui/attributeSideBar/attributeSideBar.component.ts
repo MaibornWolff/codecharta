@@ -29,6 +29,6 @@ export class AttributeSideBarComponent {
 
     constructor(
         public isAttributeSideBarVisibleService: IsAttributeSideBarVisibleService,
-        private store: Store<CcState>
+        private readonly store: Store<CcState>
     ) {}
 }

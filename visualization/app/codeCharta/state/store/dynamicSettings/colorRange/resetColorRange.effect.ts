@@ -13,8 +13,8 @@ import { visibleFileStatesSelector } from "../../../selectors/visibleFileStates/
 @Injectable()
 export class ResetColorRangeEffect {
     constructor(
-        private actions$: Actions,
-        private store: Store<CcState>
+        private readonly actions$: Actions,
+        private readonly store: Store<CcState>
     ) {}
 
     resetColorRange$ = createEffect(() =>

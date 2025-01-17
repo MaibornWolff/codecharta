@@ -11,7 +11,7 @@ import { FrontLogo } from "./frontLogo"
 export class FrontPrintContainerMesh extends GeneralMesh implements GeneralSizeChangeMesh {
     private childrenMeshes: Map<string, GeneralMesh>
 
-    constructor(private font: Font) {
+    constructor(private readonly font: Font) {
         const colorChangeStrategy = new BackPrintColorChangeStrategy()
         super("FrontPrintContainer", colorChangeStrategy)
     }

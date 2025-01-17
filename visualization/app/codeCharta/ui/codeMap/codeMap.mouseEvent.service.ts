@@ -44,15 +44,15 @@ export class CodeMapMouseEventService implements OnDestroy {
 
     private intersectedBuilding: CodeMapBuilding
 
-    private mouse: Coordinates = { x: 0, y: 0 }
+    private readonly mouse: Coordinates = { x: 0, y: 0 }
     private oldMouse: Coordinates = { x: 0, y: 0 }
     private mouseOnLastClick: Coordinates = { x: 0, y: 0 }
     private isGrabbing = false
     private isMoving = false
-    private raycaster = new Raycaster()
+    private readonly raycaster = new Raycaster()
     private labelHoveredBuilding = null
     private labelSelectedBuilding = null
-    private subscriptions = [
+    private readonly subscriptions = [
         this.store
             .select(visibleFileStatesSelector)
             .pipe(tap(() => this.onFilesSelectionChanged()))
