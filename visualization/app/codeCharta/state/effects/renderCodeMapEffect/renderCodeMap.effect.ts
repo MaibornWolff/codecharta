@@ -23,7 +23,7 @@ export class RenderCodeMapEffect {
         private readonly codeMapRenderService: CodeMapRenderService
     ) {}
 
-    private actionsRequiringRender$ = this.actions$.pipe(ofType(...actionsRequiringRerender))
+    private readonly actionsRequiringRender$ = this.actions$.pipe(ofType(...actionsRequiringRerender))
 
     renderCodeMap$ = createEffect(
         () =>

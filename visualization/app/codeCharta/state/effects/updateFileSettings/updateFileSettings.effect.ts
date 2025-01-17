@@ -15,8 +15,8 @@ import { State, Store } from "@ngrx/store"
 @Injectable()
 export class UpdateFileSettingsEffect {
     constructor(
-        private store: Store<CcState>,
-        private state: State<CcState>
+        private readonly store: Store<CcState>,
+        private readonly state: State<CcState>
     ) {}
 
     updateFileSettings$ = createEffect(() =>

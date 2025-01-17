@@ -10,7 +10,7 @@ export class TextMesh extends CustomVisibilityMesh {
         minScale: number,
         manualVisibility: boolean,
         public createTextGeometryOptions: CreateTextGeometryStrategyOptions,
-        private createTextGeometryStrategy = new CreateTextGeometryStrategy()
+        private readonly createTextGeometryStrategy = new CreateTextGeometryStrategy()
     ) {
         super(name, colorChangeStrategy, minScale, manualVisibility)
     }

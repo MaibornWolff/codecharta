@@ -5,7 +5,7 @@ import { FrontPrintColorChangeStrategy } from "../../ColorChangeStrategies/front
 export abstract class FrontLogo extends GeneralMesh {
     constructor(
         name: string,
-        private alignment: "right" | "left"
+        private readonly alignment: "right" | "left"
     ) {
         super(name, new FrontPrintColorChangeStrategy())
     }
