@@ -145,9 +145,9 @@ export class LoadInitialFileService {
     }
 
     private async handleErrorLoadFilesFromQueryParams(error: Error) {
-        if ((error as Error).message !== NO_FILES_LOADED_ERROR_MESSAGE) {
+        if (error.message !== NO_FILES_LOADED_ERROR_MESSAGE) {
             const title = "File(s) could not be loaded from the given file URL parameter. Loaded sample files instead."
-            const message = this.createTitleUrlErrorDialog(error as Error)
+            const message = this.createTitleUrlErrorDialog(error)
             this.showErrorDialog(title, message)
         }
         await this.loadSampleFiles()
@@ -170,9 +170,9 @@ export class LoadInitialFileService {
     }
 
     private async handleErrorLoadFilesFromIndexedDB(error: Error) {
-        if ((error as Error).message !== NO_FILES_LOADED_ERROR_MESSAGE) {
+        if (error.message !== NO_FILES_LOADED_ERROR_MESSAGE) {
             const title = "Previously loaded files and settings could not be restored. Loaded sample files instead."
-            const message = (error as Error).message
+            const message = error.message
             this.showErrorDialog(title, message)
         }
         await this.loadSampleFiles()

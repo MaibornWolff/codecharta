@@ -23,7 +23,7 @@ export class MapLayoutSelectionComponent {
     layoutAlgorithm$ = this.store.select(layoutAlgorithmSelector)
     maxTreeMapFiles$ = this.store.select(maxTreeMapFilesSelector)
 
-    constructor(private store: Store<CcState>) {}
+    constructor(private readonly store: Store<CcState>) {}
 
     handleSelectedLayoutAlgorithmChanged(event: { value: LayoutAlgorithm }) {
         this.store.dispatch(setLayoutAlgorithm({ value: event.value }))

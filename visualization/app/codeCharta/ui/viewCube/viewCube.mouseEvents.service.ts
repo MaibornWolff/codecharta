@@ -16,7 +16,7 @@ type ViewCubeEvents = {
 
 @Injectable({ providedIn: "root" })
 export class ViewCubeMouseEventsService {
-    private eventEmitter = new EventEmitter<ViewCubeEvents>()
+    private readonly eventEmitter = new EventEmitter<ViewCubeEvents>()
 
     private cubeGroup: Group
     private camera: PerspectiveCamera
@@ -25,7 +25,7 @@ export class ViewCubeMouseEventsService {
     private controls: OrbitControls
     private isDragging = false
 
-    constructor(private threeMapControlsService: ThreeMapControlsService) {}
+    constructor(private readonly threeMapControlsService: ThreeMapControlsService) {}
 
     init(cubeGroup: Group, camera: PerspectiveCamera, renderer: WebGLRenderer) {
         this.cubeGroup = cubeGroup

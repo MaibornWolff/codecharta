@@ -22,8 +22,8 @@ const CUSTOM_CONFIGS_DOWNLOAD_FILE_VERSION = "1.0.1"
 export const CUSTOM_CONFIGS_LOCAL_STORAGE_ELEMENT = "CodeCharta::customConfigs"
 
 export class CustomConfigHelper {
-    private static customConfigs: Map<string, CustomConfig> = CustomConfigHelper.loadCustomConfigsFromLocalStorage()
-    static customConfigChange$: BehaviorSubject<null> = new BehaviorSubject(null)
+    private static readonly customConfigs: Map<string, CustomConfig> = CustomConfigHelper.loadCustomConfigsFromLocalStorage()
+    public static readonly customConfigChange$: BehaviorSubject<null> = new BehaviorSubject(null)
 
     static setCustomConfigsToLocalStorage() {
         const newLocalStorageElement: LocalStorageCustomConfigs = {

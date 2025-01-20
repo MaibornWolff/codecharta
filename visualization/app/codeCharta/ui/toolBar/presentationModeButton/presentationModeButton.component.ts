@@ -18,7 +18,7 @@ export class PresentationModeButtonComponent {
 
     constructor(
         private readonly store: Store<CcState>,
-        private elementReference: ElementRef
+        private readonly elementReference: ElementRef
     ) {}
 
     setPresentationModeEnabled(event: MatSlideToggleChange) {
