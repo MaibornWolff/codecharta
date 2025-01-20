@@ -14,8 +14,8 @@ export class ZoomSliderComponent implements OnInit {
     minZoom: number
 
     constructor(
-        private threeMapControlsService: ThreeMapControlsService,
-        private cdr: ChangeDetectorRef
+        private readonly threeMapControlsService: ThreeMapControlsService,
+        private readonly cdr: ChangeDetectorRef
     ) {}
 
     ngOnInit() {

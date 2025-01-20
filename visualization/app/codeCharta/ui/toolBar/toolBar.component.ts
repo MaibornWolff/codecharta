@@ -36,5 +36,5 @@ import { AsyncPipe } from "@angular/common"
 export class ToolBarComponent {
     hoveredNodeId$ = this.store.select(hoveredNodeIdSelector)
 
-    constructor(private store: Store<CcState>) {}
+    constructor(private readonly store: Store<CcState>) {}
 }
