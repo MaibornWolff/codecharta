@@ -1,5 +1,6 @@
 dependencies {
     implementation(project(":model"))
+    implementation(project(":tools:Inquirer"))
     implementation(project(":filter:MergeFilter"))
     implementation(project(":tools:InteractiveParser"))
 
@@ -7,7 +8,8 @@ dependencies {
     implementation(libs.jersey.client)
     implementation(libs.gson)
     implementation(libs.picocli)
-    implementation(libs.kotlin.inquirer)
+    implementation(libs.kotter)
+    implementation(libs.kotter.test)
 
     implementation(libs.jersey.hk2)
     implementation(libs.javax.activation)
