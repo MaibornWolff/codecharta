@@ -1,235 +1,166 @@
 package de.maibornwolff.codecharta.parser.gitlogparser
 
-import com.github.kinquirer.KInquirer
-import com.github.kinquirer.components.promptConfirm
-import com.github.kinquirer.components.promptInput
+import com.varabyte.kotter.foundation.input.Keys
+import com.varabyte.kotter.runtime.terminal.inmemory.press
+import com.varabyte.kotter.runtime.terminal.inmemory.type
+import com.varabyte.kotterx.test.foundation.testSession
+import de.maibornwolff.codecharta.parser.gitlogparser.ParserDialog.Companion.collectSubcommand
+import de.maibornwolff.codecharta.parser.gitlogparser.ParserDialog.Companion.myCollectParserArgs
 import de.maibornwolff.codecharta.parser.gitlogparser.subcommands.LogScanCommand
+import de.maibornwolff.codecharta.parser.gitlogparser.subcommands.LogScanParserDialog.Companion.collectLogScan
 import de.maibornwolff.codecharta.parser.gitlogparser.subcommands.RepoScanCommand
-import de.maibornwolff.codecharta.util.InputHelper
-import io.mockk.every
-import io.mockk.mockkObject
-import io.mockk.mockkStatic
-import io.mockk.unmockkAll
-import org.assertj.core.api.Assertions
-import org.junit.jupiter.api.AfterEach
+import de.maibornwolff.codecharta.parser.gitlogparser.subcommands.RepoScanParserDialog.Companion.collectRepoScan
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
+import org.junit.jupiter.api.Timeout
 import picocli.CommandLine
 import java.io.File
 
+@Timeout(120)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ParserDialogTest {
-    companion object {
-        private const val FIRST_ELEMENT = 1
-    }
+    private val outputFileName = "codecharta.cc.json"
 
-    @AfterEach
-    fun afterTest() {
-        unmockkAll()
+    @Test
+    fun `should return true for log-scan`() {
+        testSession { terminal ->
+            val isLogScan = collectSubcommand(
+                scanCallback = {
+                    terminal.press(Keys.ENTER)
+                }
+            )
+            assertThat(isLogScan).isTrue()
+        }
     }
 
     @Test
-    fun `should output correct arguments when repo-scan is selected`() { // given
-        val isLogScan = false
-        val pathName = "path/to/repo"
-        val outputFileName = "codecharta.cc.json"
-        val isCompressed = false
-        val isSilent = false
-        val addAuthor = false
-
-        mockkObject(InputHelper)
-        every { InputHelper.isInputValidAndNotNull(any(), any()) } returns true
-
-        mockkStatic("com.github.kinquirer.components.InputKt")
-        every {
-            KInquirer.promptInput(any(), any(), any())
-        } returns pathName andThen outputFileName
-        mockkStatic("com.github.kinquirer.components.ConfirmKt")
-        every {
-            KInquirer.promptConfirm(any(), any())
-        } returns isLogScan andThen isCompressed andThen isSilent andThen addAuthor
-
-        // when
-        val parserArguments = ParserDialog.collectParserArgs().drop(Companion.FIRST_ELEMENT)
-        val cmdLine = CommandLine(RepoScanCommand())
-        val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
-
-        // then
-        Assertions.assertThat(parseResult.matchedOption("repo-path").getValue<String>()).isEqualTo(pathName)
-        Assertions.assertThat(parseResult.matchedOption("output-file").getValue<String>()).isEqualTo(outputFileName)
-        Assertions.assertThat(parseResult.matchedOption("not-compressed").getValue<Boolean>()).isEqualTo(isCompressed)
-        Assertions.assertThat(parseResult.matchedOption("silent").getValue<Boolean>()).isEqualTo(isSilent)
-        Assertions.assertThat(parseResult.matchedOption("add-author").getValue<Boolean>()).isEqualTo(addAuthor)
+    fun `should return false for log-scan`() {
+        testSession { terminal ->
+            val isLogScan = collectSubcommand(
+                scanCallback = {
+                    terminal.press(Keys.RIGHT)
+                    terminal.press(Keys.ENTER)
+                }
+            )
+            assertThat(isLogScan).isFalse()
+        }
     }
 
     @Test
-    fun `should output correct arguments when repo-scan is selected and compress-flag is set`() { // given
-        val isLogScan = false
-        val pathName = "path/to/repo"
-        val outputFileName = "codecharta.cc.json"
-        val isCompressed = true
-        val isSilent = false
-        val addAuthor = false
+    fun `should collect log-scan subcommands correctly`() {
+        val testResourceBaseFolder = "src/test/resources/"
+        val logFileName = "${testResourceBaseFolder}codeCharta.log"
+        val lsFileName = "${testResourceBaseFolder}names-in-git-repo.txt"
+        val invalidFileName = "inv"
 
-        mockkObject(InputHelper)
-        every { InputHelper.isInputValidAndNotNull(any(), any()) } returns true
+        testSession { terminal ->
+            val parserArguments = collectLogScan(
+                logCallback = {
+                    terminal.type(invalidFileName)
+                    terminal.press(Keys.ENTER)
+                    terminal.press(Keys.BACKSPACE, Keys.BACKSPACE, Keys.BACKSPACE)
+                    terminal.type(logFileName)
+                    terminal.press(Keys.ENTER)
+                },
+                lsCallback = {
+                    terminal.type(invalidFileName)
+                    terminal.press(Keys.ENTER)
+                    terminal.press(Keys.BACKSPACE, Keys.BACKSPACE, Keys.BACKSPACE)
+                    terminal.type(lsFileName)
+                    terminal.press(Keys.ENTER)
+                }
+            )
 
-        mockkStatic("com.github.kinquirer.components.InputKt")
-        every {
-            KInquirer.promptInput(any(), any(), any())
-        } returns pathName andThen outputFileName
-        mockkStatic("com.github.kinquirer.components.ConfirmKt")
-        every {
-            KInquirer.promptConfirm(any(), any())
-        } returns isLogScan andThen isCompressed andThen isSilent andThen addAuthor
+            val cmdLine = CommandLine(LogScanCommand())
+            val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
 
-        // when
-        val parserArguments = ParserDialog.collectParserArgs().drop(Companion.FIRST_ELEMENT)
-        val cmdLine = CommandLine(RepoScanCommand())
-        val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
-
-        // then
-        Assertions.assertThat(parseResult.matchedOption("repo-path").getValue<String>()).isEqualTo(pathName)
-        Assertions.assertThat(parseResult.matchedOption("output-file").getValue<String>()).isEqualTo(outputFileName)
-        Assertions.assertThat(parseResult.matchedOption("not-compressed")).isNull()
-        Assertions.assertThat(parseResult.matchedOption("silent").getValue<Boolean>()).isEqualTo(isSilent)
-        Assertions.assertThat(parseResult.matchedOption("add-author").getValue<Boolean>()).isEqualTo(addAuthor)
+            assertThat(parseResult.matchedOption("git-log").getValue<File>().name).isEqualTo(File(logFileName).name)
+            assertThat(parseResult.matchedOption("repo-files").getValue<File>().name).isEqualTo(File(lsFileName).name)
+        }
     }
 
     @Test
-    fun `should output correct arguments when log-scan is selected`() { // given
-        val isLogScan = true
-        val gitLogFileName = "git.log"
-        val fileNameList = "file-name-list.txt"
-        val outputFileName = "codecharta.cc.json"
-        val isCompressed = false
-        val isSilent = false
-        val addAuthor = false
+    fun `should collect repo-scan subcommands correctly`() {
+        val testResourceBaseFolder = "src/test/resources/"
+        val repoFolderName = "${testResourceBaseFolder}my/"
+        val invalidFileName = "inv"
 
-        mockkObject(InputHelper)
-        every { InputHelper.isInputValidAndNotNull(any(), any()) } returns true andThen true
+        testSession { terminal ->
+            val parserArguments = collectRepoScan(
+                repoCallback = {
+                    terminal.type(invalidFileName)
+                    terminal.press(Keys.ENTER)
+                    terminal.press(Keys.BACKSPACE, Keys.BACKSPACE, Keys.BACKSPACE)
+                    terminal.type(repoFolderName)
+                    terminal.press(Keys.ENTER)
+                }
+            )
 
-        mockkStatic("com.github.kinquirer.components.InputKt")
-        every {
-            KInquirer.promptInput(any(), any(), any())
-        } returns gitLogFileName andThen fileNameList andThen outputFileName
-        mockkStatic("com.github.kinquirer.components.ConfirmKt")
-        every {
-            KInquirer.promptConfirm(any(), any())
-        } returns isLogScan andThen isCompressed andThen isSilent andThen addAuthor
-
-        // when
-        val parserArguments = ParserDialog.collectParserArgs().drop(Companion.FIRST_ELEMENT)
-        val cmdLine = CommandLine(LogScanCommand())
-        val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
-
-        // then
-        Assertions.assertThat(parseResult.matchedOption("git-log").getValue<File>().name).isEqualTo(gitLogFileName)
-        Assertions.assertThat(parseResult.matchedOption("repo-files").getValue<File>().name).isEqualTo(fileNameList)
-        Assertions.assertThat(parseResult.matchedOption("output-file").getValue<String>()).isEqualTo(outputFileName)
-        Assertions.assertThat(parseResult.matchedOption("not-compressed").getValue<Boolean>()).isEqualTo(isCompressed)
-        Assertions.assertThat(parseResult.matchedOption("silent").getValue<Boolean>()).isEqualTo(isSilent)
-        Assertions.assertThat(parseResult.matchedOption("add-author").getValue<Boolean>()).isEqualTo(addAuthor)
+            val cmdLine = CommandLine(RepoScanCommand())
+            val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
+            assertThat(File(parseResult.matchedOption("repo-path").getValue<String>())).isEqualTo(File(repoFolderName))
+        }
     }
 
     @Test
-    fun `should output correct arguments when log-scan is selected and compress-flag is set`() { // given
-        val isLogScan = true
-        val gitLogFileName = "git.log"
-        val fileNameList = "file-name-list.txt"
-        val outputFileName = "codecharta.cc.json"
-        val isCompressed = true
+    fun `should output correct arguments for standard questions`() {
         val isSilent = false
         val addAuthor = false
 
-        mockkObject(InputHelper)
-        every { InputHelper.isInputValidAndNotNull(any(), any()) } returns true andThen true
+        testSession { terminal ->
+            val parserArguments = myCollectParserArgs(
+                outFileCallback = {
+                    terminal.type(outputFileName)
+                    terminal.press(Keys.ENTER)
+                },
+                compressCallback = {
+                    terminal.press(Keys.ENTER)
+                },
+                silentCallback = {
+                    terminal.press(Keys.RIGHT)
+                    terminal.press(Keys.ENTER)
+                },
+                authorCallback = {
+                    terminal.press(Keys.RIGHT)
+                    terminal.press(Keys.ENTER)
+                }
+            )
 
-        mockkStatic("com.github.kinquirer.components.InputKt")
-        every {
-            KInquirer.promptInput(any(), any(), any())
-        } returns gitLogFileName andThen fileNameList andThen outputFileName
-        mockkStatic("com.github.kinquirer.components.ConfirmKt")
-        every {
-            KInquirer.promptConfirm(any(), any())
-        } returns isLogScan andThen isCompressed andThen isSilent andThen addAuthor
+            val cmdLine = CommandLine(RepoScanCommand())
+            val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
 
-        // when
-        val parserArguments = ParserDialog.collectParserArgs().drop(Companion.FIRST_ELEMENT)
-        val cmdLine = CommandLine(LogScanCommand())
-        val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
-
-        // then
-        Assertions.assertThat(parseResult.matchedOption("git-log").getValue<File>().name).isEqualTo(gitLogFileName)
-        Assertions.assertThat(parseResult.matchedOption("repo-files").getValue<File>().name).isEqualTo(fileNameList)
-        Assertions.assertThat(parseResult.matchedOption("output-file").getValue<String>()).isEqualTo(outputFileName)
-        Assertions.assertThat(parseResult.matchedOption("not-compressed")).isNull()
-        Assertions.assertThat(parseResult.matchedOption("silent").getValue<Boolean>()).isEqualTo(isSilent)
-        Assertions.assertThat(parseResult.matchedOption("add-author").getValue<Boolean>()).isEqualTo(addAuthor)
+            assertThat(parseResult.matchedOption("output-file").getValue<String>()).isEqualTo(outputFileName)
+            assertThat(parseResult.matchedOption("not-compressed")).isNull()
+            assertThat(parseResult.matchedOption("silent").getValue<Boolean>()).isEqualTo(isSilent)
+            assertThat(parseResult.matchedOption("add-author").getValue<Boolean>()).isEqualTo(addAuthor)
+        }
     }
 
     @Test
-    fun `should prompt user twice for repo-path when first repo-path is invalid`() { // given
-        val isLogScan = false
-        val repoPathNameEmpty = ""
-        val repoPathName = "path/to/repo"
-        val outputFileName = "codecharta.cc.json"
-        val isCompressed = false
-        val isSilent = false
-        val addAuthor = false
+    fun `should not ask for compression if no file is given`() {
+        val isSilent = true
+        val addAuthor = true
 
-        mockkObject(InputHelper)
-        every { InputHelper.isInputValidAndNotNull(any(), any()) } returns false andThen true
+        testSession { terminal ->
+            val parserArguments = myCollectParserArgs(
+                outFileCallback = {
+                    terminal.press(Keys.ENTER)
+                },
+                silentCallback = {
+                    terminal.press(Keys.ENTER)
+                },
+                authorCallback = {
+                    terminal.press(Keys.ENTER)
+                }
+            )
 
-        mockkStatic("com.github.kinquirer.components.InputKt")
-        every {
-            KInquirer.promptInput(any(), any(), any())
-        } returns repoPathNameEmpty andThen repoPathName andThen outputFileName
-        mockkStatic("com.github.kinquirer.components.ConfirmKt")
-        every {
-            KInquirer.promptConfirm(any(), any())
-        } returns isLogScan andThen isCompressed andThen isSilent andThen addAuthor
-
-        // when
-        val parserArguments = ParserDialog.collectParserArgs().drop(Companion.FIRST_ELEMENT)
-        val cmdLine = CommandLine(RepoScanCommand())
-        val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
-
-        // then
-        Assertions.assertThat(parseResult.matchedOption("repo-path").getValue<String>()).isEqualTo(repoPathName)
-    }
-
-    @Test
-    fun `should prompt user twice for input file when first input file is invalid`() { // given
-        val isLogScan = true
-        val gitLogFileNameEmpty = ""
-        val gitLogFileName = "git.log"
-        val fileNameListEmpty = ""
-        val fileNameList = "file-name-list.txt"
-        val outputFileName = "codecharta.cc.json"
-        val isCompressed = true
-        val isSilent = false
-        val addAuthor = false
-
-        mockkObject(InputHelper)
-        every { InputHelper.isInputValidAndNotNull(any(), any()) } returns false andThen true andThen false andThen true
-
-        mockkStatic("com.github.kinquirer.components.InputKt")
-        every {
-            KInquirer.promptInput(any(), any(), any())
-        } returns gitLogFileNameEmpty andThen gitLogFileName andThen fileNameListEmpty andThen fileNameList andThen outputFileName
-        mockkStatic("com.github.kinquirer.components.ConfirmKt")
-        every {
-            KInquirer.promptConfirm(any(), any())
-        } returns isLogScan andThen isCompressed andThen isSilent andThen addAuthor
-
-        // when
-        val parserArguments = ParserDialog.collectParserArgs().drop(Companion.FIRST_ELEMENT)
-        val cmdLine = CommandLine(LogScanCommand())
-        val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
-
-        // then
-        Assertions.assertThat(parseResult.matchedOption("git-log").getValue<File>().name).isEqualTo(gitLogFileName)
-        Assertions.assertThat(parseResult.matchedOption("repo-files").getValue<File>().name).isEqualTo(fileNameList)
+            val cmdLine = CommandLine(RepoScanCommand())
+            val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
+            assertThat(parseResult.matchedOption("output-file").getValue<String>()).isEqualTo("")
+            assertThat(parseResult.matchedOption("not-compressed")).isNull()
+            assertThat(parseResult.matchedOption("silent").getValue<Boolean>()).isEqualTo(isSilent)
+            assertThat(parseResult.matchedOption("add-author").getValue<Boolean>()).isEqualTo(addAuthor)
+        }
     }
 }
