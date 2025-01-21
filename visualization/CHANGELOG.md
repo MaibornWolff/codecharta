@@ -293,7 +293,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Fix command not found issue for --version and --help in the analysis [#3377](https://github.com/MaibornWolff/codecharta/pull/3377)
 - Fix metric gardener importer getting stuck for large inputs [#3382](https://github.com/MaibornWolff/codecharta/pull/3382)
 - Update docs for ccsh to remove outdated parameters and unify the pages structure [#3333](https://github.com/MaibornWolff/codecharta/pull/3388)
-- Fix resetting colors in color metrics [#3872](https://github.com/MaibornWolff/codecharta/pull/3872)
+- Fix resetting colors in color metrics [#3878](https://github.com/MaibornWolff/codecharta/pull/3878)
 
 ### Chore 👨‍💻 👩‍💻
 
