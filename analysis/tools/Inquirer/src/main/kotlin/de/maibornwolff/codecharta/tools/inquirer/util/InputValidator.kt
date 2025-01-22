@@ -23,10 +23,10 @@ class InputValidator {
                     objectToVerify.isDirectory
                 }
                 InputType.FILE -> {
-                    objectToVerify.isFile && fileExtensionList.any { input.endsWith(it.extension) }
+                    verifyFile(objectToVerify, fileExtensionList)
                 }
                 else -> {
-                    objectToVerify.isDirectory || (objectToVerify.isFile && fileExtensionList.any { input.endsWith(it.extension) })
+                    objectToVerify.isDirectory || verifyFile(objectToVerify, fileExtensionList)
                 }
             }
         }
@@ -39,6 +39,11 @@ class InputValidator {
 
         fun isNumberGreaterThen(minValue: Int): (String) -> Boolean = { input ->
             input.toInt() > minValue
+        }
+
+        private fun verifyFile(objectToVerify: File, fileExtensionList: List<FileExtension>): Boolean {
+            return objectToVerify.isFile &&
+                (fileExtensionList.isEmpty() || fileExtensionList.any { objectToVerify.extension == it.extension })
         }
     }
 }
