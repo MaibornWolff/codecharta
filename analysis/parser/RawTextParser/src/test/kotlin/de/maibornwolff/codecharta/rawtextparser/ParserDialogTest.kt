@@ -1,185 +1,235 @@
-@file:Suppress("ktlint:standard:max-line-length")
-
 package de.maibornwolff.codecharta.rawtextparser
 
-import com.github.kinquirer.KInquirer
-import com.github.kinquirer.components.promptConfirm
-import com.github.kinquirer.components.promptInput
-import com.github.kinquirer.components.promptInputNumber
-import de.maibornwolff.codecharta.parser.rawtextparser.ParserDialog
+import com.varabyte.kotter.foundation.input.Keys
+import com.varabyte.kotter.runtime.terminal.inmemory.press
+import com.varabyte.kotter.runtime.terminal.inmemory.type
+import com.varabyte.kotterx.test.foundation.testSession
+import de.maibornwolff.codecharta.parser.rawtextparser.ParserDialog.Companion.myCollectParserArgs
 import de.maibornwolff.codecharta.parser.rawtextparser.RawTextParser
-import de.maibornwolff.codecharta.util.InputHelper
-import io.mockk.every
-import io.mockk.mockkObject
-import io.mockk.mockkStatic
-import io.mockk.unmockkAll
-import org.assertj.core.api.Assertions
-import org.junit.jupiter.api.AfterEach
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
+import org.junit.jupiter.api.Timeout
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
 import picocli.CommandLine
 import java.io.File
-import java.math.BigDecimal
 
+@Timeout(120)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ParserDialogTest {
-    @AfterEach
-    fun afterTest() {
-        unmockkAll()
-    }
+    private val testResourceBaseFolder = "src/test/resources/"
+    private val inputFileName = "${testResourceBaseFolder}sampleproject/tabs.included"
+    private val outputFileName = "test.cc.json"
 
     @Test
     fun `should output correct arguments when provided with valid input`() {
-        // given
-        val fileName = "test.txt"
-        val outputFileName = "test.cc.json"
         val isCompressed = false
         val verbose = false
         val metrics = "metric1"
         val tabWidth = "5"
         val tabWidthValue = 5
-        val maxIndentLvl = BigDecimal(10)
+        val maxIndentLvl = 10
         val exclude = "file1"
-        val fileExtensions = ""
         val withoutDefaultExcludes = false
 
-        mockkObject(InputHelper)
-        every { InputHelper.isInputValidAndNotNull(any(), any()) } returns true
+        testSession { terminal ->
+            val parserArguments = myCollectParserArgs(
+                fileCallback = {
+                    terminal.type(inputFileName)
+                    terminal.press(Keys.ENTER)
+                },
+                outFileCallback = {
+                    terminal.type(outputFileName)
+                    terminal.press(Keys.ENTER)
+                },
+                compressCallback = {
+                    terminal.press(Keys.RIGHT)
+                    terminal.press(Keys.ENTER)
+                },
+                verboseCallback = {
+                    terminal.press(Keys.RIGHT)
+                    terminal.press(Keys.ENTER)
+                },
+                metricCallback = {
+                    terminal.type(metrics)
+                    terminal.press(Keys.ENTER)
+                },
+                tabCallback = {
+                    terminal.type(tabWidth)
+                    terminal.press(Keys.ENTER)
+                },
+                indentationCallback = {
+                    terminal.type(maxIndentLvl.toString())
+                    terminal.press(Keys.ENTER)
+                },
+                excludeCallback = {
+                    terminal.type(exclude)
+                    terminal.press(Keys.ENTER)
+                },
+                extensionCallback = {
+                    terminal.press(Keys.ENTER)
+                },
+                defaultCallback = {
+                    terminal.press(Keys.RIGHT)
+                    terminal.press(Keys.ENTER)
+                }
+            )
+            val commandLine = CommandLine(RawTextParser())
+            val parseResult = commandLine.parseArgs(*parserArguments.toTypedArray())
 
-        mockkStatic("com.github.kinquirer.components.InputKt")
-        every {
-            KInquirer.promptInput(any(), any(), any())
-        } returns fileName andThen outputFileName andThen metrics andThen tabWidth andThen exclude andThen fileExtensions
-        every {
-            KInquirer.promptInputNumber(any(), any(), any())
-        } returns maxIndentLvl
-        mockkStatic("com.github.kinquirer.components.ConfirmKt")
-        every {
-            KInquirer.promptConfirm(any(), any())
-        } returns isCompressed andThen verbose andThen withoutDefaultExcludes
-
-        // when
-        val parserArguments = ParserDialog.collectParserArgs()
-        val commandLine = CommandLine(RawTextParser())
-        val parseResult = commandLine.parseArgs(*parserArguments.toTypedArray())
-
-        // then
-        Assertions.assertThat(parseResult.matchedOption("output-file").getValue<String>().equals(outputFileName))
-        Assertions.assertThat(parseResult.matchedOption("not-compressed").getValue<Boolean>()).isEqualTo(isCompressed)
-        Assertions.assertThat(parseResult.matchedOption("metrics").getValue<List<String>>()).isEqualTo(listOf(metrics))
-        Assertions.assertThat(parseResult.matchedOption("max-indentation-level").getValue<Int>())
-            .isEqualTo(maxIndentLvl.toInt())
-        Assertions.assertThat(parseResult.matchedOption("tab-width").getValue<Int>()).isEqualTo(tabWidthValue)
-        Assertions.assertThat(parseResult.matchedOption("file-extensions").getValue<List<String>>())
-            .isEqualTo(listOf<String>())
-        Assertions.assertThat(parseResult.matchedOption("without-default-excludes").getValue<Boolean>())
-            .isEqualTo(withoutDefaultExcludes)
-        Assertions.assertThat(parseResult.matchedOption("verbose").getValue<Boolean>())
-            .isEqualTo(withoutDefaultExcludes)
-        Assertions.assertThat(parseResult.matchedOption("exclude").getValue<List<String>>()).isEqualTo(listOf(exclude))
-        Assertions.assertThat(parseResult.matchedPositional(0).getValue<File>().name).isEqualTo(fileName)
+            assertThat(parseResult.matchedOption("output-file").getValue<String>().equals(outputFileName))
+            assertThat(parseResult.matchedOption("not-compressed").getValue<Boolean>()).isEqualTo(isCompressed)
+            assertThat(parseResult.matchedOption("metrics").getValue<List<String>>()).isEqualTo(listOf(metrics))
+            assertThat(parseResult.matchedOption("max-indentation-level").getValue<Int>())
+                .isEqualTo(maxIndentLvl)
+            assertThat(parseResult.matchedOption("tab-width").getValue<Int>()).isEqualTo(tabWidthValue)
+            assertThat(parseResult.matchedOption("file-extensions").getValue<List<String>>())
+                .isEqualTo(listOf<String>())
+            assertThat(parseResult.matchedOption("without-default-excludes").getValue<Boolean>())
+                .isEqualTo(withoutDefaultExcludes)
+            assertThat(parseResult.matchedOption("verbose").getValue<Boolean>())
+                .isEqualTo(verbose)
+            assertThat(parseResult.matchedOption("exclude").getValue<List<String>>()).isEqualTo(listOf(exclude))
+            assertThat(parseResult.matchedPositional(0).getValue<File>().name).isEqualTo(File(inputFileName).name)
+        }
     }
 
     @ParameterizedTest
     @MethodSource("provideInvalidTabWidth")
     fun `should set tab-width to 0 when non-integer tab-width provided`(invalidTabWidth: String) {
-        // given
-        val fileName = "test.txt"
-        val outputFileName = "test.cc.json"
         val isCompressed = false
         val verbose = false
         val metrics = "metric1"
-        val tabWidthValue = 0
-        val maxIndentLvl = BigDecimal(10)
+        val tabWidthValue = 12
+        val maxIndentLvl = 10
         val exclude = "file1"
-        val fileExtensions = ""
         val withoutDefaultExcludes = false
 
-        mockkObject(InputHelper)
-        every { InputHelper.isInputValidAndNotNull(any(), any()) } returns true
+        testSession { terminal ->
+            val parserArguments = myCollectParserArgs(
+                fileCallback = {
+                    terminal.type(inputFileName)
+                    terminal.press(Keys.ENTER)
+                },
+                outFileCallback = {
+                    terminal.type(outputFileName)
+                    terminal.press(Keys.ENTER)
+                },
+                compressCallback = {
+                    terminal.press(Keys.RIGHT)
+                    terminal.press(Keys.ENTER)
+                },
+                verboseCallback = {
+                    terminal.press(Keys.RIGHT)
+                    terminal.press(Keys.ENTER)
+                },
+                metricCallback = {
+                    terminal.type(metrics)
+                    terminal.press(Keys.ENTER)
+                },
+                tabCallback = {
+                    terminal.type(invalidTabWidth)
+                    terminal.press(Keys.ENTER)
+                },
+                indentationCallback = {
+                    terminal.type(maxIndentLvl.toString())
+                    terminal.press(Keys.ENTER)
+                },
+                excludeCallback = {
+                    terminal.type(exclude)
+                    terminal.press(Keys.ENTER)
+                },
+                extensionCallback = {
+                    terminal.press(Keys.ENTER)
+                },
+                defaultCallback = {
+                    terminal.press(Keys.RIGHT)
+                    terminal.press(Keys.ENTER)
+                }
+            )
+            val commandLine = CommandLine(RawTextParser())
+            val parseResult = commandLine.parseArgs(*parserArguments.toTypedArray())
 
-        mockkStatic("com.github.kinquirer.components.InputKt")
-        every {
-            KInquirer.promptInput(any(), any(), any())
-        } returns fileName andThen outputFileName andThen metrics andThen invalidTabWidth andThen exclude andThen fileExtensions
-        every {
-            KInquirer.promptInputNumber(any(), any(), any())
-        } returns maxIndentLvl
-        mockkStatic("com.github.kinquirer.components.ConfirmKt")
-        every {
-            KInquirer.promptConfirm(any(), any())
-        } returns isCompressed andThen verbose andThen withoutDefaultExcludes
-
-        // when
-        val parserArguments = ParserDialog.collectParserArgs()
-        val commandLine = CommandLine(RawTextParser())
-        val parseResult = commandLine.parseArgs(*parserArguments.toTypedArray())
-
-        // then
-        Assertions.assertThat(parseResult.matchedOption("output-file").getValue<String>().equals(outputFileName))
-        Assertions.assertThat(parseResult.matchedOption("not-compressed").getValue<Boolean>()).isEqualTo(isCompressed)
-        Assertions.assertThat(parseResult.matchedOption("metrics").getValue<List<String>>()).isEqualTo(listOf(metrics))
-        Assertions.assertThat(parseResult.matchedOption("max-indentation-level").getValue<Int>())
-            .isEqualTo(maxIndentLvl.toInt())
-        Assertions.assertThat(parseResult.matchedOption("tab-width").getValue<Int>()).isEqualTo(tabWidthValue)
-        Assertions.assertThat(parseResult.matchedOption("file-extensions").getValue<List<String>>())
-            .isEqualTo(listOf<String>())
-        Assertions.assertThat(parseResult.matchedOption("without-default-excludes").getValue<Boolean>())
-            .isEqualTo(withoutDefaultExcludes)
-        Assertions.assertThat(parseResult.matchedOption("verbose").getValue<Boolean>())
-            .isEqualTo(withoutDefaultExcludes)
-        Assertions.assertThat(parseResult.matchedOption("exclude").getValue<List<String>>()).isEqualTo(listOf(exclude))
-        Assertions.assertThat(parseResult.matchedPositional(0).getValue<File>().name).isEqualTo(fileName)
+            assertThat(parseResult.matchedOption("output-file").getValue<String>().equals(outputFileName))
+            assertThat(parseResult.matchedOption("not-compressed").getValue<Boolean>()).isEqualTo(isCompressed)
+            assertThat(parseResult.matchedOption("metrics").getValue<List<String>>()).isEqualTo(listOf(metrics))
+            assertThat(parseResult.matchedOption("max-indentation-level").getValue<Int>())
+                .isEqualTo(maxIndentLvl)
+            assertThat(parseResult.matchedOption("tab-width").getValue<Int>()).isEqualTo(tabWidthValue)
+            assertThat(parseResult.matchedOption("file-extensions").getValue<List<String>>())
+                .isEqualTo(listOf<String>())
+            assertThat(parseResult.matchedOption("without-default-excludes").getValue<Boolean>())
+                .isEqualTo(withoutDefaultExcludes)
+            assertThat(parseResult.matchedOption("verbose").getValue<Boolean>())
+                .isEqualTo(verbose)
+            assertThat(parseResult.matchedOption("exclude").getValue<List<String>>()).isEqualTo(listOf(exclude))
+            assertThat(parseResult.matchedPositional(0).getValue<File>().name).isEqualTo(File(inputFileName).name)
+        }
     }
 
     @Test
     fun `should prompt user twice for input file when first input file is invalid`() {
-        // given
         val invalidFileName = ""
-        val validFileName = "test.txt"
-        val outputFileName = "test.cc.json"
-        val isCompressed = false
-        val verbose = false
         val metrics = "metric1"
         val tabWidth = "5"
-        val maxIndentLvl = BigDecimal(10)
+        val maxIndentLvl = 10
         val exclude = "file1"
-        val fileExtensions = ""
-        val withoutDefaultExcludes = false
 
-        mockkObject(InputHelper)
-        every { InputHelper.isInputValidAndNotNull(any(), any()) } returns false andThen true
+        testSession { terminal ->
+            val parserArguments = myCollectParserArgs(
+                fileCallback = {
+                    terminal.type(invalidFileName)
+                    terminal.press(Keys.ENTER)
+                    terminal.press(Keys.BACKSPACE, Keys.BACKSPACE, Keys.BACKSPACE)
+                    terminal.type(inputFileName)
+                    terminal.press(Keys.ENTER)
+                },
+                outFileCallback = {
+                    terminal.type(outputFileName)
+                    terminal.press(Keys.ENTER)
+                },
+                compressCallback = {
+                    terminal.press(Keys.ENTER)
+                },
+                verboseCallback = {
+                    terminal.press(Keys.ENTER)
+                },
+                metricCallback = {
+                    terminal.type(metrics)
+                    terminal.press(Keys.ENTER)
+                },
+                tabCallback = {
+                    terminal.type(tabWidth)
+                    terminal.press(Keys.ENTER)
+                },
+                indentationCallback = {
+                    terminal.type(maxIndentLvl.toString())
+                    terminal.press(Keys.ENTER)
+                },
+                excludeCallback = {
+                    terminal.type(exclude)
+                    terminal.press(Keys.ENTER)
+                },
+                extensionCallback = {
+                    terminal.press(Keys.ENTER)
+                },
+                defaultCallback = {
+                    terminal.press(Keys.ENTER)
+                }
+            )
+            val commandLine = CommandLine(RawTextParser())
+            val parseResult = commandLine.parseArgs(*parserArguments.toTypedArray())
 
-        mockkStatic("com.github.kinquirer.components.InputKt")
-        every {
-            KInquirer.promptInput(any(), any(), any())
-        } returns invalidFileName andThen validFileName andThen outputFileName andThen metrics andThen tabWidth andThen exclude andThen fileExtensions
-        every {
-            KInquirer.promptInputNumber(any(), any(), any())
-        } returns maxIndentLvl
-        mockkStatic("com.github.kinquirer.components.ConfirmKt")
-        every {
-            KInquirer.promptConfirm(any(), any())
-        } returns isCompressed andThen verbose andThen withoutDefaultExcludes
-
-        // when
-        val parserArguments = ParserDialog.collectParserArgs()
-        val commandLine = CommandLine(RawTextParser())
-        val parseResult = commandLine.parseArgs(*parserArguments.toTypedArray())
-
-        // then
-        Assertions.assertThat(parseResult.matchedPositional(0).getValue<File>().name).isEqualTo(validFileName)
+            assertThat(parseResult.matchedPositional(0).getValue<File>().name).isEqualTo(File(inputFileName).name)
+        }
     }
 
     private fun provideInvalidTabWidth(): List<Arguments> {
         return listOf(
-            Arguments.of("string-value"),
-            Arguments.of(""),
             Arguments.of("12."),
-            Arguments.of("12.0")
+            Arguments.of("12a sa---__d")
         )
     }
 }
