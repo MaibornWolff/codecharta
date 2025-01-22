@@ -16,7 +16,6 @@ export class ResetColorRangeEffect {
         private readonly store: Store<CcState>
     ) {}
 
-    // Only reset colors when loading new files, not when changing metrics
     resetColorRange$ = createEffect(() =>
         this.actions$.pipe(
             ofType(setFiles),
@@ -25,7 +24,6 @@ export class ResetColorRangeEffect {
                 this.store.select(selectedColorMetricDataSelector).pipe(
                     take(1),
                     map(selectedColorMetricData => {
-                        // Only set initial colors if we don't have any custom colors yet
                         if (currentColorRange.from === 0 && currentColorRange.to === 0) {
                             return setColorRange({ value: calculateInitialColorRange(selectedColorMetricData) })
                         }
