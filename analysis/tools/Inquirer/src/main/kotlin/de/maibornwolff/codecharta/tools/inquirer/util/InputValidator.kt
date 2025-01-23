@@ -43,7 +43,7 @@ class InputValidator {
 
         private fun verifyFile(objectToVerify: File, fileExtensionList: List<FileExtension>): Boolean {
             return objectToVerify.isFile &&
-                (fileExtensionList.isEmpty() || fileExtensionList.any { objectToVerify.extension == it.extension })
+                (fileExtensionList.isEmpty() || fileExtensionList.any { objectToVerify.name.endsWith(it.extension) })
         }
     }
 }
