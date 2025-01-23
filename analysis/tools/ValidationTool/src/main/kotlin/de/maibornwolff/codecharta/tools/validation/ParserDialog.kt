@@ -1,25 +1,32 @@
 package de.maibornwolff.codecharta.tools.validation
 
-import com.github.kinquirer.KInquirer
-import com.github.kinquirer.components.promptInput
+import com.varabyte.kotter.foundation.session
+import com.varabyte.kotter.runtime.RunScope
+import com.varabyte.kotter.runtime.Session
+import de.maibornwolff.codecharta.serialization.FileExtension
+import de.maibornwolff.codecharta.tools.inquirer.InputType
+import de.maibornwolff.codecharta.tools.inquirer.myPromptDefaultFileFolderInput
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
-import de.maibornwolff.codecharta.util.Logger
-import java.io.File
-import java.nio.file.Paths
 
 class ParserDialog {
     companion object : ParserDialogInterface {
-        private const val EXTENSION = "cc.json"
-
         override fun collectParserArgs(): List<String> {
-            val inputFileName =
-                KInquirer.promptInput(
-                    message = "Which $EXTENSION file do you want to validate?",
-                    hint =
-                        Paths.get("").toAbsolutePath()
-                            .toString() + File.separator + "yourInput." + EXTENSION
-                )
-            Logger.info { "File path: $inputFileName" }
+            var res = listOf<String>()
+            session { res = myCollectParserArgs() }
+            return res
+        }
+
+        internal fun Session.myCollectParserArgs(fileCallback: suspend RunScope.() -> Unit = {}): List<String> {
+            print("Which file do you want to validate?")
+            val inputFileName: String = myPromptDefaultFileFolderInput(
+                allowEmptyInput = false,
+                inputType = InputType.FILE,
+                fileExtensionList = listOf(
+                    FileExtension.CCJSON,
+                    FileExtension.CCGZ
+                ),
+                onInputReady = fileCallback
+            )
 
             return listOf(inputFileName)
         }
