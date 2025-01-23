@@ -22,7 +22,6 @@ export class UpdateMapColorsEffect {
                 const attributeDescriptors = state.fileSettings.attributeDescriptors
                 const currentMapColors = state.appSettings.mapColors
 
-                // Only reverse colors if the metric direction is reversed
                 if (attributeDescriptors[colorMetric]?.direction === 1) {
                     const reversedMapColors: MapColors = JSON.parse(stringify(currentMapColors))
                     const temporary = reversedMapColors.negative
@@ -32,7 +31,6 @@ export class UpdateMapColorsEffect {
                     return setMapColors({ value: reversedMapColors })
                 }
 
-                // Keep current colors if they exist, otherwise use defaults
                 return setMapColors({ value: currentMapColors ?? defaultMapColors })
             })
         )
