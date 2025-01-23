@@ -1,37 +1,41 @@
 package de.maibornwolff.codecharta.tools.inspection
 
-import com.github.kinquirer.KInquirer
-import com.github.kinquirer.components.promptInput
-import com.github.kinquirer.components.promptInputNumber
+import com.varabyte.kotter.foundation.session
+import com.varabyte.kotter.runtime.RunScope
+import com.varabyte.kotter.runtime.Session
+import de.maibornwolff.codecharta.serialization.FileExtension
+import de.maibornwolff.codecharta.tools.inquirer.InputType
+import de.maibornwolff.codecharta.tools.inquirer.myPromptDefaultFileFolderInput
+import de.maibornwolff.codecharta.tools.inquirer.myPromptInputNumber
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
-import de.maibornwolff.codecharta.util.InputHelper
-import java.io.File
-import java.math.BigDecimal
-import java.nio.file.Paths
 
 class ParserDialog {
     companion object : ParserDialogInterface {
         override fun collectParserArgs(): List<String> {
-            var inputFileName: String
-            do {
-                inputFileName =
-                    KInquirer.promptInput(
-                        message = "What is the cc.json file that you want to inspect?",
-                        hint = Paths.get("").toAbsolutePath().toString() + File.separator + "yourInput.cc.json"
-                    )
-            } while (!InputHelper.isInputValidAndNotNull(arrayOf(File(inputFileName)), canInputContainFolders = false))
-
-            return listOf(inputFileName, *collectPrintArguments())
+            var res = listOf<String>()
+            session { res = myCollectParserArgs() }
+            return res
         }
 
-        private fun collectPrintArguments(): Array<String> {
-            val levels: BigDecimal =
-                KInquirer.promptInputNumber(
-                    message = "How many levels do you want to print?",
-                    default = "0",
-                    hint = "0"
-                )
-            return arrayOf("--levels=$levels")
+        internal fun Session.myCollectParserArgs(
+            fileCallback: suspend RunScope.() -> Unit = {},
+            levelsCallback: suspend RunScope.() -> Unit = {}
+        ): List<String> {
+            val inputFileName: String = myPromptDefaultFileFolderInput(
+                allowEmptyInput = false,
+                inputType = InputType.FILE,
+                fileExtensionList = listOf(FileExtension.CCJSON, FileExtension.CCGZ),
+                onInputReady = fileCallback
+            )
+
+            val levels = myPromptInputNumber(
+                message = "How many levels do you want to print?",
+                hint = "0",
+                allowEmptyInput = false,
+                onInputReady = levelsCallback
+            )
+
+            return listOf(inputFileName, "--levels=$levels")
         }
     }
 }
