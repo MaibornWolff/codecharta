@@ -26,7 +26,6 @@ dependencies {
     }
 
     implementation(libs.picocli)
-    implementation(libs.kotlin.inquirer)
 
     testImplementation(libs.junit.jupiter.api)
 }
