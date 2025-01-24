@@ -6,7 +6,6 @@ dependencies {
     implementation(libs.picocli)
     implementation(libs.slf4j.simple)
     implementation(libs.commons.text)
-    implementation(libs.kotlin.inquirer)
 
     testImplementation(libs.kotlin.test)
     testImplementation(libs.junit.jupiter.api)
