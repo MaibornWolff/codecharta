@@ -2,7 +2,6 @@ package de.maibornwolff.codecharta.filter.mergefilter
 
 import de.maibornwolff.codecharta.filter.mergefilter.MergeFilter.Companion.main
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
-import de.maibornwolff.codecharta.tools.interactiveparser.InputType
 import io.mockk.every
 import io.mockk.mockkObject
 import io.mockk.unmockkAll
@@ -186,12 +185,6 @@ class MergeFilterTest {
 
     @Test
     fun `should log error when folder path is invalid`() {
-        mockkObject(ParserDialog)
-
-        every {
-            ParserDialog.getInputFileName("cc.json", InputType.FOLDER)
-        } returns "invalid/folder/path"
-
         setStreams()
         CommandLine(MergeFilter()).execute("invalid/folder/path").toString()
         resetStreams()
@@ -201,12 +194,6 @@ class MergeFilterTest {
 
     @Test
     fun `should log error when no cc json files found in folder`() {
-        mockkObject(ParserDialog)
-
-        every {
-            ParserDialog.getInputFileName("cc.json", InputType.FOLDER)
-        } returns "src/test/resources/emptyFolder"
-
         val emptyFolder = File("src/test/resources/emptyFolder")
         emptyFolder.mkdirs()
         emptyFolder.deleteOnExit()
