@@ -1,81 +1,85 @@
 package de.maibornwolff.codecharta.exporter.csvexporter
 
-import com.github.kinquirer.KInquirer
-import com.github.kinquirer.components.promptInput
-import com.github.kinquirer.components.promptInputNumber
+import com.varabyte.kotter.foundation.input.Keys
+import com.varabyte.kotter.runtime.terminal.inmemory.press
+import com.varabyte.kotter.runtime.terminal.inmemory.type
+import com.varabyte.kotterx.test.foundation.testSession
 import de.maibornwolff.codecharta.exporter.csv.CSVExporter
-import de.maibornwolff.codecharta.exporter.csv.ParserDialog
-import de.maibornwolff.codecharta.util.InputHelper
-import io.mockk.every
-import io.mockk.mockkObject
-import io.mockk.mockkStatic
-import io.mockk.unmockkAll
-import org.assertj.core.api.Assertions
-import org.junit.jupiter.api.AfterEach
+import de.maibornwolff.codecharta.exporter.csv.ParserDialog.Companion.myCollectParserArgs
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
+import org.junit.jupiter.api.Timeout
 import picocli.CommandLine
 import java.io.File
-import java.math.BigDecimal
 
+@Timeout(120)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ParserDialogTest {
-    @AfterEach
-    fun afterTest() {
-        unmockkAll()
-    }
+    private val testResourceBaseFolder = "src/test/resources/"
+    private val inputFileName = "${testResourceBaseFolder}input_valid_1.cc.json"
+    private val outputFileName = "out.csv"
 
     @Test
     fun `should output correct arguments when provided with valid input`() {
-        // given
-        mockkObject(InputHelper)
-        every {
-            InputHelper.isInputValidAndNotNull(any(), any())
-        } returns true
+        val hierarchy = 5
 
-        mockkStatic("com.github.kinquirer.components.InputKt")
-        every {
-            KInquirer.promptInput(any(), any(), any())
-        } returns "sampleFile.cc.json" andThen "sampleOutputFile"
-        every {
-            KInquirer.promptInputNumber(any(), any(), any())
-        } returns BigDecimal(5)
+        testSession { terminal ->
+            val parserArguments = myCollectParserArgs(
+                fileCallback = {
+                    terminal.type(inputFileName)
+                    terminal.press(Keys.ENTER)
+                },
+                outFileCallback = {
+                    terminal.type(outputFileName)
+                    terminal.press(Keys.ENTER)
+                },
+                hierarchyCallback = {
+                    terminal.type(hierarchy.toString())
+                    terminal.press(Keys.ENTER)
+                }
+            )
 
-        // when
-        val parserArguments = ParserDialog.collectParserArgs()
-        val commandLine = CommandLine(CSVExporter())
-        val parseResult = commandLine.parseArgs(*parserArguments.toTypedArray())
+            val commandLine = CommandLine(CSVExporter())
+            val parseResult = commandLine.parseArgs(*parserArguments.toTypedArray())
 
-        // then
-        Assertions.assertThat(parseResult.matchedPositional(0).getValue<Array<File>>().first().name)
-            .isEqualTo("sampleFile.cc.json")
-        Assertions.assertThat(parseResult.matchedOption("output-file").getValue<String>()).isEqualTo("sampleOutputFile")
-        Assertions.assertThat(parseResult.matchedOption("depth-of-hierarchy").getValue<Int>()).isEqualTo(5)
+            assertThat(parseResult.matchedPositional(0).getValue<Array<File>>().first().name)
+                .isEqualTo(File(inputFileName).name)
+            assertThat(parseResult.matchedOption("output-file").getValue<String>()).isEqualTo(outputFileName)
+            assertThat(parseResult.matchedOption("depth-of-hierarchy").getValue<Int>()).isEqualTo(hierarchy)
+        }
     }
 
     @Test
     fun `should prompt user twice for input file when first input file is invalid`() {
-        // given
-        mockkObject(InputHelper)
-        every {
-            InputHelper.isInputValidAndNotNull(any(), any())
-        } returns false andThen true
+        val invalidFileName = "inv"
 
-        mockkStatic("com.github.kinquirer.components.InputKt")
-        every {
-            KInquirer.promptInput(any(), any(), any())
-        } returns "" andThen "sampleFile.cc.json" andThen "sampleOutputFile"
-        every {
-            KInquirer.promptInputNumber(any(), any(), any())
-        } returns BigDecimal(5)
+        testSession { terminal ->
+            val parserArguments = myCollectParserArgs(
+                fileCallback = {
+                    terminal.type(invalidFileName)
+                    terminal.press(Keys.ENTER)
+                    terminal.press(Keys.BACKSPACE, Keys.BACKSPACE, Keys.BACKSPACE)
+                    terminal.type(inputFileName)
+                    terminal.press(Keys.ENTER)
+                },
+                outFileCallback = {
+                    terminal.type(outputFileName)
+                    terminal.press(Keys.ENTER)
+                },
+                hierarchyCallback = {
+                    terminal.press(Keys.RIGHT)
+                    terminal.press(Keys.ENTER)
+                }
+            )
 
-        // when
-        val parserArguments = ParserDialog.collectParserArgs()
-        val commandLine = CommandLine(CSVExporter())
-        val parseResult = commandLine.parseArgs(*parserArguments.toTypedArray())
+            val commandLine = CommandLine(CSVExporter())
+            val parseResult = commandLine.parseArgs(*parserArguments.toTypedArray())
 
-        // then
-        Assertions.assertThat(parseResult.matchedPositional(0).getValue<Array<File>>().first().name)
-            .isEqualTo("sampleFile.cc.json")
+            assertThat(parseResult.matchedPositional(0).getValue<Array<File>>().first().name)
+                .isEqualTo(File(inputFileName).name)
+            assertThat(parseResult.matchedOption("output-file").getValue<String>()).isEqualTo(outputFileName)
+            assertThat(parseResult.matchedOption("depth-of-hierarchy").getValue<Int>()).isEqualTo(10)
+        }
     }
 }
