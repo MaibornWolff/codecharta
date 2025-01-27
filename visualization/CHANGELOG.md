@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Fixed 🐞
 
 - Fix applying Custom Views [#3898](https://github.com/MaibornWolff/codecharta/pull/3898)
+- The camera is now only reset when the area or the height of the map is changed [#3896](https://github.com/MaibornWolff/codecharta/pull/3896)
 
 ## [1.131.2] - 2024-12-04
 
