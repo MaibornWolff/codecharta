@@ -12,6 +12,7 @@ import { Action } from "@ngrx/store"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { provideMockActions } from "@ngrx/effects/testing"
 import { LayoutAlgorithm } from "../../../codeCharta.model"
+import { selectorsTriggeringAutoFit } from "./selectorsTriggeringAutoFit"
 
 describe("autoFitCodeMapOnFileSelectionChangeEffect", () => {
     let mockedRenderCodeMap$: Subject<unknown>
@@ -23,17 +24,15 @@ describe("autoFitCodeMapOnFileSelectionChangeEffect", () => {
         actions$ = new BehaviorSubject({ type: "" })
         mockedRenderCodeMap$ = new Subject()
         mockedAutoFitTo = jest.fn()
+        const mockedSelectorsTriggeringAutoFit = selectorsTriggeringAutoFit.map(selector => {
+            return { selector, value: [] }
+        })
         TestBed.configureTestingModule({
             imports: [EffectsModule.forRoot([AutoFitCodeMapEffect])],
             providers: [
                 { provide: RenderCodeMapEffect, useValue: { renderCodeMap$: mockedRenderCodeMap$ } },
                 provideMockStore({
-                    selectors: [
-                        { selector: visibleFileStatesSelector, value: [] },
-                        { selector: focusedNodePathSelector, value: [] },
-                        { selector: layoutAlgorithmSelector, value: LayoutAlgorithm.StreetMap },
-                        { selector: resetCameraIfNewFileIsLoadedSelector, value: true }
-                    ]
+                    selectors: [...mockedSelectorsTriggeringAutoFit, { selector: resetCameraIfNewFileIsLoadedSelector, value: true }]
                 }),
                 provideMockActions(() => actions$),
                 { provide: ThreeMapControlsService, useValue: { autoFitTo: mockedAutoFitTo } }
