@@ -30,7 +30,16 @@ export const ERROR_MESSAGES = {
     fixedFoldersOverlapped: "Folders may not overlap.",
     fixedFoldersNotAllowed: "Fixated folders may not be defined in API-Version < 1.2.",
     fileAlreadyExists: "File already exists.",
-    blacklistError: "Excluding all buildings is not possible."
+    blacklistError: "Excluding all buildings is not possible.",
+    fileContainsAuthorsAttribute:
+        "File contains unsupported 'authors' attribute. This attribute will be ignored. Node containing the attribute: "
+}
+
+export function removeAuthorsAttributes(file: ExportCCFile): string[] {
+    if (!file || !file.nodes) {
+        return []
+    }
+    return removeAuthorsAttributeFromNodes(file.nodes)
 }
 
 export function checkWarnings(file: ExportCCFile) {
@@ -97,6 +106,21 @@ function fileHasHigherMajorVersion(file: ExportCCFile) {
 function fileHasHigherMinorVersion(file: ExportCCFile) {
     const apiVersion = getAsApiVersion(file.apiVersion)
     return apiVersion.minor > getAsApiVersion(latestApiVersion).minor
+}
+
+function removeAuthorsAttributeFromNodes(nodes: CodeMapNode[]): string[] {
+    const warnings: string[] = []
+    for (const node of nodes) {
+        if (node.attributes?.authors) {
+            delete node.attributes.authors
+            warnings.push(`${ERROR_MESSAGES.fileContainsAuthorsAttribute}"${node.name}"`)
+        }
+
+        if (node.children) {
+            warnings.push(...removeAuthorsAttributeFromNodes(node.children))
+        }
+    }
+    return warnings
 }
 
 export function getAsApiVersion(version: string): ApiVersion {
