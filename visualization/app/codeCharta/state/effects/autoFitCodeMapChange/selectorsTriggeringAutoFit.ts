@@ -5,11 +5,8 @@ import { invertAreaSelector } from "../../store/appSettings/invertArea/invertAre
 import { marginSelector } from "../../store/dynamicSettings/margin/margin.selector"
 import { DefaultProjectorFn, MemoizedSelector } from "@ngrx/store"
 import { enableFloorLabelsSelector } from "../../store/appSettings/enableFloorLabels/enableFloorLabels.selector"
-import { invertHeightSelector } from "../../store/appSettings/invertHeight/invertHeight.selector"
-import { edgeHeightSelector } from "../../store/appSettings/edgeHeight/edgeHeight.selector"
-import { scalingSelector } from "../../store/appSettings/scaling/scaling.selector"
 import { areaMetricSelector } from "../../store/dynamicSettings/areaMetric/areaMetric.selector"
-import { heightMetricSelector } from "../../store/dynamicSettings/heightMetric/heightMetric.selector"
+import { isDeltaStateSelector } from "../../selectors/isDeltaState.selector"
 
 export const selectorsTriggeringAutoFit: MemoizedSelector<any, any, DefaultProjectorFn<any>>[] = [
     visibleFileStatesSelector,
@@ -18,10 +15,6 @@ export const selectorsTriggeringAutoFit: MemoizedSelector<any, any, DefaultProje
     invertAreaSelector,
     marginSelector,
     enableFloorLabelsSelector,
-    invertHeightSelector,
-    edgeHeightSelector,
-    scalingSelector,
     areaMetricSelector,
-    heightMetricSelector
-    //TODO: update this list with all selectors that should trigger autoFit
+    isDeltaStateSelector
 ]
