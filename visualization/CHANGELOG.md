@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 - Increased the size of the color quantile diagram [#3827](https://github.com/MaibornWolff/codecharta/pull/3827)
 
+### Fixed 🐞
+
+- Fix applying Custom Views [#3898](https://github.com/MaibornWolff/codecharta/pull/3898)
+
 ## [1.131.2] - 2024-12-04
 
 ### Fixed 🐞
