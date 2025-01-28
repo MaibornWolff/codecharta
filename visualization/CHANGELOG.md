@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+- Fix loading cc.json files that contain the 'authors' attribute [#3848](https://github.com/MaibornWolff/codecharta/pull/3897)
 - Fix applying Custom Views [#3898](https://github.com/MaibornWolff/codecharta/pull/3898)
 - The camera is now only reset when the area or the height of the map is changed [#3896](https://github.com/MaibornWolff/codecharta/pull/3896)
 
