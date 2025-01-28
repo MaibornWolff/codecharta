@@ -13,6 +13,7 @@ import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { provideMockActions } from "@ngrx/effects/testing"
 import { LayoutAlgorithm } from "../../../codeCharta.model"
 import { selectorsTriggeringAutoFit } from "./selectorsTriggeringAutoFit"
+import { colorRangeSelector } from "../../store/dynamicSettings/colorRange/colorRange.selector"
 
 describe("autoFitCodeMapOnFileSelectionChangeEffect", () => {
     let mockedRenderCodeMap$: Subject<unknown>
@@ -32,7 +33,11 @@ describe("autoFitCodeMapOnFileSelectionChangeEffect", () => {
             providers: [
                 { provide: RenderCodeMapEffect, useValue: { renderCodeMap$: mockedRenderCodeMap$ } },
                 provideMockStore({
-                    selectors: [...mockedSelectorsTriggeringAutoFit, { selector: resetCameraIfNewFileIsLoadedSelector, value: true }]
+                    selectors: [
+                        ...mockedSelectorsTriggeringAutoFit,
+                        { selector: resetCameraIfNewFileIsLoadedSelector, value: true },
+                        { selector: colorRangeSelector, value: { from: 0, to: 0 } }
+                    ]
                 }),
                 provideMockActions(() => actions$),
                 { provide: ThreeMapControlsService, useValue: { autoFitTo: mockedAutoFitTo } }
@@ -65,6 +70,13 @@ describe("autoFitCodeMapOnFileSelectionChangeEffect", () => {
         store.overrideSelector(resetCameraIfNewFileIsLoadedSelector, false)
         store.refreshState()
         store.overrideSelector(visibleFileStatesSelector, [])
+        store.refreshState()
+        mockedRenderCodeMap$.next(undefined)
+        expect(mockedAutoFitTo).not.toHaveBeenCalled()
+    })
+
+    it("should do nothing when color range has changed", () => {
+        store.overrideSelector(colorRangeSelector, { from: 1, to: 2 })
         store.refreshState()
         mockedRenderCodeMap$.next(undefined)
         expect(mockedAutoFitTo).not.toHaveBeenCalled()
