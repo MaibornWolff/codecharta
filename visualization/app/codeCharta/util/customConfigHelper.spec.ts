@@ -11,6 +11,12 @@ import { CustomConfigItemGroup } from "../ui/customConfigs/customConfigs.compone
 import { klona } from "klona"
 import { stubDate } from "../../../mocks/dateMock.helper"
 import { FileDownloader } from "./fileDownloader"
+import { Vector3 } from "three/src/math/Vector3"
+import { Store } from "@ngrx/store"
+import { ThreeCameraService } from "../ui/codeMap/threeViewer/threeCamera.service"
+import { ThreeMapControlsService } from "../ui/codeMap/threeViewer/threeMapControls.service"
+import { ThreeRendererService } from "../ui/codeMap/threeViewer/threeRenderer.service"
+import { setState } from "../state/store/state.actions"
 
 describe("CustomConfigHelper", () => {
     beforeEach(() => {
@@ -437,6 +443,65 @@ describe("CustomConfigHelper", () => {
 
             CustomConfigHelper.downloadCustomConfigs(exportedCustomConfigs)
             expect(FileDownloader.downloadData).toHaveBeenCalledWith("mock_serialized_config_to_be_downloaded", `${newDate}.cc.config.json`)
+        })
+    })
+
+    describe("applyCustomConfig", () => {
+        let customConfigMock: CustomConfig
+        let store: Store
+        let threeCameraService: ThreeCameraService
+        let threeOrbitControlsService: ThreeMapControlsService
+        let threeRendererService: ThreeRendererService
+
+        beforeEach(() => {
+            customConfigMock = {
+                stateSettings: {
+                    appSettings: {},
+                    dynamicSettings: {},
+                    fileSettings: {}
+                },
+                camera: {
+                    camera: new Vector3(1, 2, 3),
+                    cameraTarget: new Vector3(4, 5, 6)
+                }
+            } as CustomConfig
+
+            store = {
+                dispatch: jest.fn()
+            } as unknown as Store
+
+            threeCameraService = {
+                setPosition: jest.fn()
+            } as unknown as ThreeCameraService
+
+            threeOrbitControlsService = {
+                setControlTarget: jest.fn()
+            } as unknown as ThreeMapControlsService
+
+            threeRendererService = {
+                render: jest.fn()
+            } as unknown as ThreeRendererService
+
+            jest.spyOn(CustomConfigHelper, "getCustomConfigSettings").mockReturnValue(customConfigMock)
+        })
+
+        it("should dispatch stateSettings to the store", () => {
+            CustomConfigHelper.applyCustomConfig("testId", store, threeCameraService, threeOrbitControlsService, threeRendererService)
+
+            expect(store.dispatch).toHaveBeenCalledWith(setState({ value: customConfigMock.stateSettings }))
+        })
+
+        it("should update camera position and orbit controls target", () => {
+            CustomConfigHelper.applyCustomConfig("testId", store, threeCameraService, threeOrbitControlsService, threeRendererService)
+
+            expect(threeCameraService.setPosition).toHaveBeenCalledWith(customConfigMock.camera.camera)
+            expect(threeOrbitControlsService.setControlTarget).toHaveBeenCalledWith(customConfigMock.camera.cameraTarget)
+        })
+
+        it("should trigger a render in the renderer service", () => {
+            CustomConfigHelper.applyCustomConfig("testId", store, threeCameraService, threeOrbitControlsService, threeRendererService)
+
+            expect(threeRendererService.render).toHaveBeenCalled()
         })
     })
 })
