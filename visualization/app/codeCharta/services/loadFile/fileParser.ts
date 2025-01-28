@@ -2,7 +2,12 @@ import { ExportBlacklistItem, ExportCCFile } from "../../codeCharta.api.model"
 import { CCFile, NameDataPair } from "../../codeCharta.model"
 import { FileSelectionState, FileState } from "../../model/files/files"
 import { getCCFile } from "../../util/fileHelper"
-import { CCFileValidationResult as FileValidationResult, checkErrors, checkWarnings } from "../../util/fileValidator"
+import {
+    CCFileValidationResult as FileValidationResult,
+    checkErrors,
+    checkWarnings,
+    removeAuthorsAttributes
+} from "../../util/fileValidator"
 import { NodeDecorator } from "../../util/nodeDecorator"
 
 export function getNameDataPair(ccFile: CCFile): NameDataPair {
@@ -48,10 +53,13 @@ export function enrichFileStatesAndRecentFilesWithValidationResults(
             errors: [],
             warnings: []
         }
+        fileValidationResult.warnings.push(...removeAuthorsAttributes(nameDataPair?.content)) //Needs to be done before schema validation
+
         fileValidationResult.errors.push(...checkErrors(nameDataPair?.content))
 
         if (fileValidationResult.errors.length === 0) {
             fileValidationResult.warnings.push(...checkWarnings(nameDataPair?.content))
+
             addFile(fileStates, recentFiles, nameDataPair, currentFilesAreSampleFilesCallback, setCurrentFilesAreNotSampleFilesCallback)
         }
 
