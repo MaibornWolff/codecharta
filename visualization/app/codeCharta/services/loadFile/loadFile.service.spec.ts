@@ -1,6 +1,6 @@
 import { TestBed } from "@angular/core/testing"
 import { LoadFileService } from "./loadFile.service"
-import { TEST_FILE_CONTENT } from "../../util/dataMocks"
+import { TEST_FILE_CONTENT, TEST_FILE_CONTENT_WITH_AUTHORS, TEST_FILE_CONTENT_WITHOUT_AUTHORS } from "../../util/dataMocks"
 import { CCFile, CcState, NodeMetricData, NodeType } from "../../codeCharta.model"
 import { removeFiles, setDeltaReference, setStandard } from "../../state/store/files/files.actions"
 import { ExportBlacklistType, ExportCCFile } from "../../codeCharta.api.model"
@@ -17,6 +17,7 @@ import { metricDataSelector } from "../../state/selectors/accumulatedData/metric
 import { State, Store, StoreModule } from "@ngrx/store"
 import { appReducers, setStateMiddleware } from "../../state/store/state.manager"
 import { setCurrentFilesAreSampleFiles } from "../../state/store/appStatus/currentFilesAreSampleFiles/currentFilesAreSampleFiles.actions"
+import { getCCFileAndDecorateFileChecksum } from "../../util/fileHelper"
 
 const mockedMetricDataSelector = metricDataSelector as unknown as jest.Mock
 jest.mock("../../state/selectors/accumulatedData/metricData/metricData.selector", () => ({
@@ -516,5 +517,38 @@ describe("loadFileService", () => {
         // set reference file to a partial selected file. Therefore reference file becomes undefined
         store.dispatch(setStandard({ files: [state.getValue().files[0].file] }))
         expect(updateRootDataSpy).toHaveBeenCalledTimes(1)
+    })
+
+    it("should load files ignoring the authors attribute", () => {
+        const testFileContentWithAuthors = TEST_FILE_CONTENT_WITH_AUTHORS
+        const testJsonWithAuthors = JSON.stringify(testFileContentWithAuthors)
+        const expectedFileContentWithoutAuthors = TEST_FILE_CONTENT_WITHOUT_AUTHORS
+        const ccFile = getCCFileAndDecorateFileChecksum(testJsonWithAuthors)
+
+        codeChartaService.loadFiles([{ fileName: "FirstFile", content: ccFile, fileSize: 42 }])
+
+        expect(ccFile).toEqual(expectedFileContentWithoutAuthors)
+    })
+
+    it("should show warnings for files containing the authors attribute", () => {
+        const testFileContentWithAuthors = TEST_FILE_CONTENT_WITH_AUTHORS
+        const testJsonWithAuthors = JSON.stringify(testFileContentWithAuthors)
+        const expectedFileValidationResult: CCFileValidationResult[] = [
+            {
+                fileName: "FirstFile",
+                errors: [],
+                warnings: [
+                    `${ERROR_MESSAGES.fileContainsAuthorsAttribute}".gitignore"`,
+                    `${ERROR_MESSAGES.fileContainsAuthorsAttribute}"tabs.tsx"`
+                ]
+            }
+        ]
+        const ccFile = getCCFileAndDecorateFileChecksum(testJsonWithAuthors)
+
+        codeChartaService.loadFiles([{ fileName: "FirstFile", content: ccFile, fileSize: 42 }])
+
+        expect(dialog.open).toHaveBeenLastCalledWith(ErrorDialogComponent, {
+            data: loadFilesValidationToErrorDialog(expectedFileValidationResult)
+        })
     })
 })
