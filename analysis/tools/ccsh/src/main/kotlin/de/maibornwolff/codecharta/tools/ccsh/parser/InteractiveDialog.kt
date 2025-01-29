@@ -46,18 +46,19 @@ class InteractiveDialog {
             return askForPath {}
         }
 
-        internal val askApplicableParser: (List<String>, suspend RunScope.() -> Unit) -> List<String> = { applicableParsers, applicableCallback ->
-            var selectedParsers: List<String> = listOf()
-            session {
-                selectedParsers = myPromptCheckbox(
-                    message = "Choose from this list of applicable parsers. You can select individual parsers by pressing spacebar.",
-                    choices = applicableParsers,
-                    allowEmptyInput = true,
-                    onInputReady = applicableCallback
-                )
+        internal val askApplicableParser: (List<String>, suspend RunScope.() -> Unit) -> List<String> =
+            { applicableParsers, applicableCallback ->
+                var selectedParsers: List<String> = listOf()
+                session {
+                    selectedParsers = myPromptCheckbox(
+                        message = "Choose from this list of applicable parsers. You can select individual parsers by pressing spacebar.",
+                        choices = applicableParsers,
+                        allowEmptyInput = true,
+                        onInputReady = applicableCallback
+                    )
+                }
+                selectedParsers
             }
-            selectedParsers
-        }
 
         fun callAskApplicableParser(applicableParsers: List<String>): List<String> {
             return askApplicableParser(applicableParsers) {}
