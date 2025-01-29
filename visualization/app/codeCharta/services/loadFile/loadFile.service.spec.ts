@@ -1,5 +1,5 @@
 import { TestBed } from "@angular/core/testing"
-import { LoadFileService } from "./loadFile.service"
+import { FILES_ALREADY_LOADED_ERROR_MESSAGE, LoadFileService } from "./loadFile.service"
 import { TEST_FILE_CONTENT, TEST_FILE_CONTENT_WITH_AUTHORS, TEST_FILE_CONTENT_WITHOUT_AUTHORS } from "../../util/dataMocks"
 import { CCFile, CcState, NodeMetricData, NodeType } from "../../codeCharta.model"
 import { removeFiles, setDeltaReference, setStandard } from "../../state/store/files/files.actions"
@@ -18,6 +18,7 @@ import { State, Store, StoreModule } from "@ngrx/store"
 import { appReducers, setStateMiddleware } from "../../state/store/state.manager"
 import { setCurrentFilesAreSampleFiles } from "../../state/store/appStatus/currentFilesAreSampleFiles/currentFilesAreSampleFiles.actions"
 import { getCCFileAndDecorateFileChecksum } from "../../util/fileHelper"
+import { FileSelectionState, FileState } from "../../model/files/files"
 
 const mockedMetricDataSelector = metricDataSelector as unknown as jest.Mock
 jest.mock("../../state/selectors/accumulatedData/metricData/metricData.selector", () => ({
@@ -27,6 +28,7 @@ jest.mock("../../state/selectors/accumulatedData/metricData/metricData.selector"
 describe("loadFileService", () => {
     let codeChartaService: LoadFileService
     let store: Store<CcState>
+    let storeDispatchSpy: jest.SpyInstance
     let state: State<CcState>
     let dialog: MatDialog
     let validFileContent: ExportCCFile
@@ -43,6 +45,8 @@ describe("loadFileService", () => {
             { name: "mcc", maxValue: 1, minValue: 1, values: [1, 1] },
             { name: "rloc", maxValue: 2, minValue: 1, values: [1, 2] }
         ]
+
+        storeDispatchSpy = jest.spyOn(store, "dispatch")
     })
 
     afterEach(() => {
@@ -179,8 +183,6 @@ describe("loadFileService", () => {
         })
 
         it("should delete sample files when loading new files", () => {
-            const dispatchSpy = jest.spyOn(store, "dispatch")
-
             const valid2ndFileContent = klona(validFileContent)
             valid2ndFileContent.fileChecksum = "hash_1"
 
@@ -191,15 +193,13 @@ describe("loadFileService", () => {
 
             const CCFilesUnderTest = getCCFiles(state.getValue().files)
 
-            expect(dispatchSpy).toHaveBeenCalledWith(setCurrentFilesAreSampleFiles({ value: false }))
+            expect(storeDispatchSpy).toHaveBeenCalledWith(setCurrentFilesAreSampleFiles({ value: false }))
             expect(CCFilesUnderTest.length).toEqual(1)
             expect(CCFilesUnderTest[0].fileMeta.fileName).toEqual("SecondFile")
             expect(CCFilesUnderTest[0].fileMeta.fileChecksum).toEqual("hash_1")
         })
 
         it("should keep sample file when loading the same sample file again", () => {
-            const dispatchSpy = jest.spyOn(store, "dispatch")
-
             const valid2ndFileContent = klona(validFileContent)
             valid2ndFileContent.fileChecksum = "hash_1"
 
@@ -227,7 +227,7 @@ describe("loadFileService", () => {
 
             const CCFilesUnderTest = getCCFiles(state.getValue().files)
 
-            expect(dispatchSpy).toHaveBeenCalledWith(setCurrentFilesAreSampleFiles({ value: false }))
+            expect(storeDispatchSpy).toHaveBeenCalledWith(setCurrentFilesAreSampleFiles({ value: false }))
             expect(CCFilesUnderTest.length).toEqual(3)
             expect(CCFilesUnderTest[0].fileMeta.fileName).toEqual("SecondFile")
             expect(CCFilesUnderTest[0].fileMeta.fileChecksum).toEqual("hash_1")
@@ -238,8 +238,6 @@ describe("loadFileService", () => {
         })
 
         it("should keep sample files when loading the same sample file and after that another different file", () => {
-            const dispatchSpy = jest.spyOn(store, "dispatch")
-
             const valid2ndFileContent = klona(validFileContent)
             valid2ndFileContent.fileChecksum = "hash_1"
 
@@ -251,7 +249,7 @@ describe("loadFileService", () => {
 
             const CCFilesUnderTest = getCCFiles(state.getValue().files)
 
-            expect(dispatchSpy).toHaveBeenCalledWith(setCurrentFilesAreSampleFiles({ value: false }))
+            expect(storeDispatchSpy).toHaveBeenCalledWith(setCurrentFilesAreSampleFiles({ value: false }))
             expect(CCFilesUnderTest.length).toEqual(2)
             expect(CCFilesUnderTest[0].fileMeta.fileName).toEqual("FirstFile")
             expect(CCFilesUnderTest[0].fileMeta.fileChecksum).toEqual("invalid-md5-sample")
@@ -259,9 +257,7 @@ describe("loadFileService", () => {
             expect(CCFilesUnderTest[1].fileMeta.fileChecksum).toEqual("hash_1")
         })
 
-        it("should keep sample file when loading a invalid file", () => {
-            const dispatchSpy = jest.spyOn(store, "dispatch")
-
+        it("should keep sample file when loading an invalid file", () => {
             codeChartaService.loadFiles([{ fileName: "FirstFile", content: validFileContent, fileSize: 42 }])
             store.dispatch(setCurrentFilesAreSampleFiles({ value: true }))
 
@@ -274,13 +270,13 @@ describe("loadFileService", () => {
 
             const CCFilesUnderTest = getCCFiles(state.getValue().files)
 
-            expect(dispatchSpy).not.toHaveBeenCalledWith(setCurrentFilesAreSampleFiles({ value: false }))
+            expect(storeDispatchSpy).not.toHaveBeenCalledWith(setCurrentFilesAreSampleFiles({ value: false }))
             expect(CCFilesUnderTest.length).toEqual(1)
             expect(CCFilesUnderTest[0].fileMeta.fileName).toEqual("FirstFile")
             expect(CCFilesUnderTest[0].fileMeta.fileChecksum).toEqual("invalid-md5-sample")
         })
 
-        it("should replace files with equal file name and checksum when loading new files", () => {
+        it("should ignore files with equal file name and checksum when loading new files", () => {
             const valid2ndFileContent = klona(validFileContent)
             valid2ndFileContent.fileChecksum = "hash_1"
 
@@ -297,6 +293,92 @@ describe("loadFileService", () => {
             expect(CCFilesUnderTest[0].fileMeta.fileChecksum).toEqual("invalid-md5-sample")
             expect(CCFilesUnderTest[1].fileMeta.fileName).toEqual("SecondFile")
             expect(CCFilesUnderTest[1].fileMeta.fileChecksum).toEqual("hash_1")
+        })
+
+        it("should only load one file if the same file is loaded twice", () => {
+            codeChartaService.loadFiles([
+                { fileName: "FirstFile", content: validFileContent, fileSize: 42 },
+                { fileName: "SecondFile", content: validFileContent, fileSize: 42 }
+            ])
+
+            const CCFilesUnderTest = getCCFiles(state.getValue().files)
+
+            expect(CCFilesUnderTest.length).toEqual(1)
+        })
+
+        it("should throw error if loaded file was already loaded", () => {
+            codeChartaService.loadFiles([{ fileName: "FirstFile", content: validFileContent, fileSize: 42 }])
+
+            expect(() => {
+                codeChartaService.loadFiles([{ fileName: "FirstFile", content: validFileContent, fileSize: 42 }])
+            }).toThrow(FILES_ALREADY_LOADED_ERROR_MESSAGE)
+        })
+
+        it("should throw error if all loaded files were already loaded", () => {
+            const validFileContent2 = clone({ ...TEST_FILE_CONTENT, fileChecksum: "second-file-checksum" })
+            const validFileContent3 = clone({ ...TEST_FILE_CONTENT, fileChecksum: "third-file-checksum" })
+            codeChartaService.loadFiles([
+                { fileName: "FirstFile", content: validFileContent, fileSize: 42 },
+                { fileName: "SecondFile", content: validFileContent2, fileSize: 42 },
+                { fileName: "ThirdFile", content: validFileContent3, fileSize: 42 }
+            ])
+
+            expect(() => {
+                codeChartaService.loadFiles([
+                    { fileName: "FirstFile", content: validFileContent, fileSize: 42 },
+                    { fileName: "ThirdFile", content: validFileContent3, fileSize: 42 }
+                ])
+            }).toThrow(FILES_ALREADY_LOADED_ERROR_MESSAGE)
+        })
+
+        it("should throw no error if one loaded files was not loaded", () => {
+            const validFileContent2 = clone({ ...TEST_FILE_CONTENT, fileChecksum: "second-file-checksum" })
+            const validFileContent3 = clone({ ...TEST_FILE_CONTENT, fileChecksum: "third-file-checksum" })
+            codeChartaService.loadFiles([
+                { fileName: "FirstFile", content: validFileContent, fileSize: 42 },
+                { fileName: "SecondFile", content: validFileContent2, fileSize: 42 }
+            ])
+
+            expect(() => {
+                codeChartaService.loadFiles([
+                    { fileName: "FirstFile", content: validFileContent, fileSize: 42 },
+                    { fileName: "ThirdFile", content: validFileContent3, fileSize: 42 }
+                ])
+            }).not.toThrow()
+        })
+
+        it("should update name when uploading file that was already uploaded", () => {
+            codeChartaService.loadFiles([{ fileName: "FirstFile", content: validFileContent, fileSize: 42 }])
+
+            try {
+                codeChartaService.loadFiles([{ fileName: "DifferentName", content: validFileContent, fileSize: 42 }])
+            } catch (e) {}
+
+            const CCFilesUnderTest = getCCFiles(state.getValue().files)
+
+            expect(CCFilesUnderTest.length).toEqual(1)
+            expect(CCFilesUnderTest[0].fileMeta.fileName).toEqual("DifferentName")
+            expect(CCFilesUnderTest[0].fileMeta.fileChecksum).toEqual("invalid-md5-sample")
+        })
+
+        it("should update visibility when uploading file that was already uploaded", () => {
+            codeChartaService.loadFiles([{ fileName: "FirstFile", content: validFileContent, fileSize: 42 }])
+            const validFileContent2 = clone({ ...TEST_FILE_CONTENT, fileChecksum: "second-file-checksum" })
+            codeChartaService.loadFiles([{ fileName: "SecondFile", content: validFileContent2, fileSize: 42 }])
+
+            store.dispatch(setStandard({ files: [state.getValue().files[1].file] }))
+
+            try {
+                codeChartaService.loadFiles([{ fileName: "FirstFile", content: validFileContent, fileSize: 42 }])
+            } catch (e) {}
+
+            const filesUnderTest: FileState[] = state.getValue().files
+
+            expect(filesUnderTest.length).toEqual(2)
+            expect(filesUnderTest[0].file.fileMeta.fileName).toEqual("FirstFile")
+            expect(filesUnderTest[0].selectedAs).toEqual(FileSelectionState.Partial)
+            expect(filesUnderTest[1].file.fileMeta.fileName).toEqual("SecondFile")
+            expect(filesUnderTest[1].selectedAs).toEqual(FileSelectionState.None)
         })
 
         it("should load files with equal file name but different checksum and rename uploaded files ", () => {
