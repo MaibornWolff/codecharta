@@ -4,7 +4,7 @@ import com.github.kinquirer.KInquirer
 import com.github.kinquirer.components.promptConfirm
 import com.github.kinquirer.components.promptInput
 import de.maibornwolff.codecharta.tools.ccsh.Ccsh
-import de.maibornwolff.codecharta.tools.ccsh.parser.InteractiveParserSuggestionDialog
+import de.maibornwolff.codecharta.tools.ccsh.parser.InteractiveParserSuggestion
 import de.maibornwolff.codecharta.tools.ccsh.parser.ParserService
 import de.maibornwolff.codecharta.util.Logger
 import io.mockk.every
@@ -85,9 +85,9 @@ class CcshTest {
             parsersAndArgs.put(currentParserName, currentParserArgs)
         }
 
-        mockkObject(InteractiveParserSuggestionDialog)
+        mockkObject(InteractiveParserSuggestion)
         every {
-            InteractiveParserSuggestionDialog.offerAndGetInteractiveParserSuggestionsAndConfigurations(any())
+            InteractiveParserSuggestion.offerAndGetInteractiveParserSuggestionsAndConfigurations(any())
         } returns parsersAndArgs
     }
 

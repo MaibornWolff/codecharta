@@ -1,8 +1,6 @@
 package de.maibornwolff.codecharta.tools.ccsh.parser
 
-import com.varabyte.kotter.foundation.session
 import de.maibornwolff.codecharta.tools.ccsh.parser.repository.PicocliParserRepository
-import de.maibornwolff.codecharta.tools.inquirer.myPromptList
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import picocli.CommandLine
 
@@ -41,14 +39,9 @@ class ParserService {
         }
 
         fun selectParser(commandLine: CommandLine, parserRepository: PicocliParserRepository): String {
-            var selectedParser = ""
-            session {
-                selectedParser = myPromptList(
-                    message = "Which parser do you want to execute?",
-                    choices = parserRepository.getInteractiveParserNamesWithDescription(commandLine),
-                    onInputReady = {}
-                )
-            }
+            val selectedParser = InteractiveDialog.callAskParserToExecute(
+                parserRepository.getInteractiveParserNamesWithDescription(commandLine)
+            )
             return parserRepository.extractParserName(selectedParser)
         }
 
