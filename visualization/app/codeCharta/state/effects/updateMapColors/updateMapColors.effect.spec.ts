@@ -47,7 +47,7 @@ describe("UpdateMapColorsEffect", () => {
     beforeEach(() => {
         actions$ = new ReplaySubject(1)
         subscriptions = []
-        
+
         TestBed.configureTestingModule({
             providers: [
                 UpdateMapColorsEffect,
@@ -70,13 +70,19 @@ describe("UpdateMapColorsEffect", () => {
     })
 
     afterEach(() => {
-        subscriptions.forEach(sub => sub.unsubscribe())
+        subscriptions.forEach(sub => {
+            sub.unsubscribe()
+        })
         subscriptions = []
-        store.resetSelectors()
+        store?.resetSelectors()
+        actions$ = null
+        effects = null
+        store = null
+        jest.clearAllMocks()
     })
 
     describe("updateMapColors$", () => {
-        it("should reverse mapcolors when attributedescriptor has positive direction", (done) => {
+        it("should reverse mapcolors when attributedescriptor has positive direction", done => {
             // Arrange
             const reversedMapColors: MapColors = JSON.parse(stringify(defaultMapColors))
             const temporary = reversedMapColors.negative
@@ -96,7 +102,7 @@ describe("UpdateMapColorsEffect", () => {
             )
         })
 
-        it("should set mapcolors to default when attributedescriptor has negative direction", (done) => {
+        it("should set mapcolors to default when attributedescriptor has negative direction", done => {
             // Act
             store.overrideSelector(colorMetricSelector, "comment_lines")
             store.refreshState()
