@@ -319,7 +319,7 @@ class CcshTest {
         mockPrepareInteractiveDialog()
         mockDialogRunParsers(true)
         mockDialogMergeResults(true)
-       mockDialogResultLocation(folderPath)
+        mockDialogResultLocation(folderPath)
 
         // when
         Ccsh.executeConfiguredParsers(cmdLine, multipleConfiguredParsers)
