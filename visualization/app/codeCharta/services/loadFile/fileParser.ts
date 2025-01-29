@@ -46,7 +46,8 @@ export function enrichFileStatesAndRecentFilesWithValidationResults(
     fileValidationResults: FileValidationResult[],
     currentFilesAreSampleFilesCallback: () => boolean,
     setCurrentFilesAreNotSampleFilesCallback: () => void
-) {
+): boolean {
+    let newFilesWereAdded = false
     for (const nameDataPair of nameDataPairs) {
         const fileValidationResult: FileValidationResult = {
             fileName: nameDataPair?.fileName,
@@ -59,14 +60,23 @@ export function enrichFileStatesAndRecentFilesWithValidationResults(
 
         if (fileValidationResult.errors.length === 0) {
             fileValidationResult.warnings.push(...checkWarnings(nameDataPair?.content))
-
-            addFile(fileStates, recentFiles, nameDataPair, currentFilesAreSampleFilesCallback, setCurrentFilesAreNotSampleFilesCallback)
+            const addedFile = addFile(
+                fileStates,
+                recentFiles,
+                nameDataPair,
+                currentFilesAreSampleFilesCallback,
+                setCurrentFilesAreNotSampleFilesCallback
+            )
+            if (addedFile) {
+                newFilesWereAdded = true
+            }
         }
 
         if (fileValidationResult.errors.length > 0 || fileValidationResult.warnings.length > 0) {
             fileValidationResults.push(fileValidationResult)
         }
     }
+    return newFilesWereAdded
 }
 
 function addFile(
@@ -75,7 +85,7 @@ function addFile(
     file: NameDataPair,
     currentFilesAreSampleFilesCallback: () => boolean,
     setCurrentFilesAreNotSampleFilesCallback: () => void
-) {
+): boolean {
     if (currentFilesAreSampleFilesCallback()) {
         fileStates.length = 0
         setCurrentFilesAreNotSampleFilesCallback()
@@ -98,13 +108,13 @@ function addFile(
     }
     if (isDuplicate) {
         fileStates[storedFileChecksums.get(currentFileChecksum)].file.fileMeta.fileName = currentFileName
-        recentFiles[0] = currentFileName
-        recentFiles.push(currentFileName)
-        return
+        recentFiles.unshift(currentFileName)
+        return false
     }
 
     fileStates.push({ file: ccFile, selectedAs: FileSelectionState.None })
     recentFiles.push(currentFileName)
+    return true
 }
 
 function getFileName(currentFileName: string, storedFileNames: Map<string, string>, currentFileChecksum: string) {
