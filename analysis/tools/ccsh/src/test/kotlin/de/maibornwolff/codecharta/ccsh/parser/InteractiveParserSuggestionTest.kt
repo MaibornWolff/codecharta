@@ -4,7 +4,7 @@ import com.github.kinquirer.KInquirer
 import com.github.kinquirer.components.promptCheckbox
 import com.github.kinquirer.components.promptInput
 import de.maibornwolff.codecharta.tools.ccsh.Ccsh
-import de.maibornwolff.codecharta.tools.ccsh.parser.InteractiveParserSuggestionDialog
+import de.maibornwolff.codecharta.tools.ccsh.parser.InteractiveParserSuggestion
 import de.maibornwolff.codecharta.tools.ccsh.parser.ParserService
 import io.mockk.every
 import io.mockk.mockkObject
@@ -22,7 +22,7 @@ import java.io.ByteArrayOutputStream
 import java.io.PrintStream
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class InteractiveParserSuggestionDialogTest {
+class InteractiveParserSuggestionTest {
     private val outContent = ByteArrayOutputStream()
     private val originalOut = System.out
     private val errorOut = ByteArrayOutputStream()
@@ -59,7 +59,7 @@ class InteractiveParserSuggestionDialogTest {
         } returns emptyList()
 
         val usableParsers =
-            InteractiveParserSuggestionDialog.offerAndGetInteractiveParserSuggestionsAndConfigurations(cmdLine)
+            InteractiveParserSuggestion.offerAndGetInteractiveParserSuggestionsAndConfigurations(cmdLine)
 
         Assertions.assertThat(errorOut.toString()).contains(Ccsh.NO_USABLE_PARSER_FOUND_MESSAGE)
         Assertions.assertThat(usableParsers).isNotNull
@@ -86,7 +86,7 @@ class InteractiveParserSuggestionDialogTest {
         } returns listOf(parser)
 
         val selectedParsers =
-            InteractiveParserSuggestionDialog.offerAndGetInteractiveParserSuggestionsAndConfigurations(cmdLine)
+            InteractiveParserSuggestion.offerAndGetInteractiveParserSuggestionsAndConfigurations(cmdLine)
 
         Assertions.assertThat(selectedParsers).isNotNull
         Assertions.assertThat(selectedParsers).isEmpty()
@@ -120,7 +120,7 @@ class InteractiveParserSuggestionDialogTest {
         } returns mapOf(parserWithoutDescription to configuration)
 
         val configuredParsers =
-            InteractiveParserSuggestionDialog.offerAndGetInteractiveParserSuggestionsAndConfigurations(cmdLine)
+            InteractiveParserSuggestion.offerAndGetInteractiveParserSuggestionsAndConfigurations(cmdLine)
 
         verify { ParserService.configureParserSelection(any(), any(), parserListWithoutDescription) }
 
@@ -139,7 +139,7 @@ class InteractiveParserSuggestionDialogTest {
         } returns ""
 
         val selectedParsers =
-            InteractiveParserSuggestionDialog.offerAndGetInteractiveParserSuggestionsAndConfigurations(cmdLine)
+            InteractiveParserSuggestion.offerAndGetInteractiveParserSuggestionsAndConfigurations(cmdLine)
 
         Assertions.assertThat(selectedParsers).isNotNull
         Assertions.assertThat(selectedParsers).isEmpty()
@@ -154,7 +154,7 @@ class InteractiveParserSuggestionDialogTest {
         } returns "src/test/resources/does/not/exist"
 
         val selectedParsers =
-            InteractiveParserSuggestionDialog.offerAndGetInteractiveParserSuggestionsAndConfigurations(cmdLine)
+            InteractiveParserSuggestion.offerAndGetInteractiveParserSuggestionsAndConfigurations(cmdLine)
 
         Assertions.assertThat(selectedParsers).isNotNull
         Assertions.assertThat(selectedParsers).isEmpty()

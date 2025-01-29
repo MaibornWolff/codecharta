@@ -1,16 +1,12 @@
 package de.maibornwolff.codecharta.tools.ccsh.parser
 
-import com.varabyte.kotter.foundation.session
 import de.maibornwolff.codecharta.tools.ccsh.Ccsh
 import de.maibornwolff.codecharta.tools.ccsh.parser.repository.PicocliParserRepository
-import de.maibornwolff.codecharta.tools.inquirer.myPromptCheckbox
-import de.maibornwolff.codecharta.tools.inquirer.myPromptInput
 import de.maibornwolff.codecharta.util.Logger
 import picocli.CommandLine
 import java.io.File
-import java.nio.file.Paths
 
-class InteractiveParserSuggestionDialog {
+class InteractiveParserSuggestion {
     companion object {
         fun offerAndGetInteractiveParserSuggestionsAndConfigurations(commandLine: CommandLine): Map<String, List<String>> {
             val applicableParsers = getApplicableInteractiveParsers(commandLine)
@@ -31,16 +27,7 @@ class InteractiveParserSuggestionDialog {
         }
 
         private fun getApplicableInteractiveParsers(commandLine: CommandLine): List<String> {
-            var inputFilePath: String = ""
-            println("You can provide a directory path / file path / sonar url.")
-            session {
-                inputFilePath = myPromptInput(
-                    message = "Which path should be scanned?",
-                    hint = Paths.get("").toAbsolutePath().toString(),
-                    allowEmptyInput = false,
-                    onInputReady = {}
-                )
-            }
+            val inputFilePath: String = InteractiveDialog.callAskForPath()
 
             val inputFile = File(inputFilePath)
             if (inputFilePath == "" || !isInputFileOrDirectory(inputFile)) {
@@ -60,15 +47,7 @@ class InteractiveParserSuggestionDialog {
         }
 
         private fun selectToBeExecutedInteractiveParsers(applicableParsers: List<String>): List<String> {
-            var selectedParsers: List<String> = listOf()
-            session {
-                selectedParsers = myPromptCheckbox(
-                    message = "Choose from this list of applicable parsers. You can select individual parsers by pressing spacebar.",
-                    choices = applicableParsers,
-                    allowEmptyInput = true,
-                    onInputReady = {}
-                )
-            }
+            val selectedParsers: List<String> = InteractiveDialog.callAskApplicableParser(applicableParsers)
 
             if (selectedParsers.isEmpty()) {
                 Logger.info { "Did not select any parser to be configured!" }
