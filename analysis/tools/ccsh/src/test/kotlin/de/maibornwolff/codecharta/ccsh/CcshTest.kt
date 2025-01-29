@@ -1,15 +1,12 @@
 package de.maibornwolff.codecharta.ccsh
 
-import com.github.kinquirer.KInquirer
-import com.github.kinquirer.components.promptConfirm
-import com.github.kinquirer.components.promptInput
 import de.maibornwolff.codecharta.tools.ccsh.Ccsh
+import de.maibornwolff.codecharta.tools.ccsh.parser.InteractiveDialog
 import de.maibornwolff.codecharta.tools.ccsh.parser.InteractiveParserSuggestion
 import de.maibornwolff.codecharta.tools.ccsh.parser.ParserService
 import de.maibornwolff.codecharta.util.Logger
 import io.mockk.every
 import io.mockk.mockkObject
-import io.mockk.mockkStatic
 import io.mockk.unmockkAll
 import io.mockk.verify
 import org.assertj.core.api.Assertions
@@ -17,11 +14,13 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
+import org.junit.jupiter.api.Timeout
 import picocli.CommandLine
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.PrintStream
 
+@Timeout(120)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class CcshTest {
     private val outContent = ByteArrayOutputStream()
@@ -91,11 +90,20 @@ class CcshTest {
         } returns parsersAndArgs
     }
 
-    private fun mockKInquirerConfirm(shouldConfirm: Boolean) {
-        mockkStatic("com.github.kinquirer.components.ConfirmKt")
-        every {
-            KInquirer.promptConfirm(any(), any())
-        } returns shouldConfirm
+    private fun mockPrepareInteractiveDialog() {
+        mockkObject(InteractiveDialog)
+    }
+
+    private fun mockDialogMergeResults(shouldMerge: Boolean) {
+        every { InteractiveDialog.callAskForMerge() } returns shouldMerge
+    }
+
+    private fun mockDialogRunParsers(shouldRun: Boolean) {
+        every { InteractiveDialog.callAskRunParsers() } returns shouldRun
+    }
+
+    private fun mockDialogResultLocation(pathToReturn: String) {
+        every { InteractiveDialog.callAskJsonPath() } returns pathToReturn
     }
 
     @Test
@@ -166,12 +174,10 @@ class CcshTest {
 
         mockInteractiveParserSuggestionDialog(selectedParsers, args)
         mockSuccessfulParserService()
-        mockKInquirerConfirm(true)
-
-        mockkStatic("com.github.kinquirer.components.InputKt")
-        every {
-            KInquirer.promptInput(any(), any(), any(), any(), any())
-        } returns "dummy/path"
+        mockPrepareInteractiveDialog()
+        mockDialogRunParsers(true)
+        mockDialogMergeResults(true)
+        mockDialogResultLocation("dummy/path")
 
         // when
         val exitCode = Ccsh.executeCommandLine(emptyArray())
@@ -204,7 +210,8 @@ class CcshTest {
 
         mockInteractiveParserSuggestionDialog(selectedParsers, args)
         mockSuccessfulParserService()
-        mockKInquirerConfirm(false)
+        mockPrepareInteractiveDialog()
+        mockDialogRunParsers(false)
 
         // when
         val exitCode = Ccsh.executeCommandLine(emptyArray())
@@ -280,7 +287,8 @@ class CcshTest {
 
         mockInteractiveParserSuggestionDialog(selectedParsers, args)
         mockSuccessfulParserService()
-        mockKInquirerConfirm(true)
+        mockPrepareInteractiveDialog()
+        mockDialogRunParsers(true)
 
         // when
         val exitCode = Ccsh.executeCommandLine(emptyArray())
@@ -308,12 +316,10 @@ class CcshTest {
         mockkObject(Logger)
         every { Logger.info(capture(lambdaSlot)) } returns Unit
 
-        mockKInquirerConfirm(true)
-
-        mockkStatic("com.github.kinquirer.components.InputKt")
-        every {
-            KInquirer.promptInput(any(), any(), any(), any(), any())
-        } returns folderPath
+        mockPrepareInteractiveDialog()
+        mockDialogRunParsers(true)
+        mockDialogMergeResults(true)
+       mockDialogResultLocation(folderPath)
 
         // when
         Ccsh.executeConfiguredParsers(cmdLine, multipleConfiguredParsers)
@@ -347,11 +353,10 @@ class CcshTest {
             )
 
         mockInteractiveParserSuggestionDialog(selectedParsers, args)
-        mockKInquirerConfirm(true)
-        mockkStatic("com.github.kinquirer.components.InputKt")
-        every {
-            KInquirer.promptInput(any(), any(), any(), any(), any())
-        } returns File(folderPath).absolutePath
+        mockPrepareInteractiveDialog()
+        mockDialogRunParsers(true)
+        mockDialogMergeResults(true)
+        mockDialogResultLocation(File(folderPath).absolutePath)
 
         // when
         val exitCode = Ccsh.executeCommandLine(emptyArray())
