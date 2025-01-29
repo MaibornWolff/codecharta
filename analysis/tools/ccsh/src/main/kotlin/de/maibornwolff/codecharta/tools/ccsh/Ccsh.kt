@@ -1,6 +1,5 @@
 package de.maibornwolff.codecharta.tools.ccsh
 
-import com.varabyte.kotter.foundation.session
 import de.maibornwolff.codecharta.exporter.csv.CSVExporter
 import de.maibornwolff.codecharta.filter.edgefilter.EdgeFilter
 import de.maibornwolff.codecharta.filter.mergefilter.MergeFilter
@@ -15,20 +14,16 @@ import de.maibornwolff.codecharta.parser.gitlogparser.GitLogParser
 import de.maibornwolff.codecharta.parser.rawtextparser.RawTextParser
 import de.maibornwolff.codecharta.parser.sourcecodeparser.SourceCodeParserMain
 import de.maibornwolff.codecharta.parser.svnlogparser.SVNLogParser
-import de.maibornwolff.codecharta.tools.ccsh.parser.InteractiveParserSuggestionDialog
+import de.maibornwolff.codecharta.tools.ccsh.parser.InteractiveDialog
+import de.maibornwolff.codecharta.tools.ccsh.parser.InteractiveParserSuggestion
 import de.maibornwolff.codecharta.tools.ccsh.parser.ParserService
 import de.maibornwolff.codecharta.tools.ccsh.parser.repository.PicocliParserRepository
-import de.maibornwolff.codecharta.tools.inquirer.InputType
-import de.maibornwolff.codecharta.tools.inquirer.myPromptConfirm
-import de.maibornwolff.codecharta.tools.inquirer.myPromptInput
-import de.maibornwolff.codecharta.tools.inquirer.util.InputValidator
 import de.maibornwolff.codecharta.tools.inspection.InspectionTool
 import de.maibornwolff.codecharta.tools.interactiveparser.util.CodeChartaConstants
 import de.maibornwolff.codecharta.tools.validation.ValidationTool
 import de.maibornwolff.codecharta.util.AttributeGeneratorRegistry
 import de.maibornwolff.codecharta.util.Logger
 import picocli.CommandLine
-import java.nio.file.Paths
 import java.util.concurrent.Callable
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
@@ -108,21 +103,14 @@ class Ccsh : Callable<Unit?> {
 
         private fun executeParserSuggestions(commandLine: CommandLine): Int {
             val configuredParsers =
-                InteractiveParserSuggestionDialog.offerAndGetInteractiveParserSuggestionsAndConfigurations(
+                InteractiveParserSuggestion.offerAndGetInteractiveParserSuggestionsAndConfigurations(
                     commandLine
                 )
             if (configuredParsers.isEmpty()) {
                 return 0
             }
 
-            var shouldRunConfiguredParsers = true
-
-            session {
-                shouldRunConfiguredParsers = myPromptConfirm(
-                    message = "Do you want to run all configured parsers now?",
-                    onInputReady = {}
-                )
-            }
+            val shouldRunConfiguredParsers = InteractiveDialog.callAskRunParsers()
 
             return if (shouldRunConfiguredParsers) {
                 executeConfiguredParsers(commandLine, configuredParsers)
@@ -162,26 +150,11 @@ class Ccsh : Callable<Unit?> {
         }
 
         private fun askAndMergeResults(commandLine: CommandLine): Int {
-            var shouldMerge = false
+            val shouldMerge = InteractiveDialog.callAskForMerge()
             var ccJsonFilePath = ""
-            session {
-                shouldMerge = myPromptConfirm(
-                    message = "Do you want to merge all generated files into one result now?",
-                    onInputReady = {}
-                )
 
-                if (shouldMerge) {
-                    println(
-                        "If you did not output all cc.json files into the same folder, " +
-                            "you need to manually move them there before trying to merge."
-                    )
-                    ccJsonFilePath = myPromptInput(
-                        message = "What is the folder path containing all cc.json files?",
-                        hint = Paths.get("").toAbsolutePath().toString(),
-                        inputValidator = InputValidator.isFileOrFolderValid(InputType.FOLDER, listOf()),
-                        onInputReady = {}
-                    )
-                }
+            if (shouldMerge) {
+                ccJsonFilePath = InteractiveDialog.callAskJsonPath()
             }
 
             return if (shouldMerge) {
