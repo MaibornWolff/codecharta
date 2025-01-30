@@ -7,7 +7,7 @@ import { GeneralSizeChangeMesh } from "../generalMesh"
 export class CustomLogoMesh extends FrontLogo implements GeneralSizeChangeMesh {
     constructor(
         name: string,
-        private filePath: string
+        private readonly filePath: string
     ) {
         super(name, "left")
     }
@@ -50,6 +50,5 @@ export class CustomLogoMesh extends FrontLogo implements GeneralSizeChangeMesh {
 
     changeSize(geometryOptions: GeometryOptions, oldWidth: number): void {
         this.position.x -= (geometryOptions.width - oldWidth) / 2
-        return
     }
 }

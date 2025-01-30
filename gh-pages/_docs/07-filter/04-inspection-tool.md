@@ -19,6 +19,7 @@ The Inspection Tool is used to inspect the structure of .cc.json files. It enabl
 | `FILE`                                       | file to inspect                                                                      |
 | `-h, --help`                                 | Displays help and                                                                    |
 | `-l, --levels, -d, --depth=<numberOfLevels>` | show first x layers of project hierarchy (if not specified, prints first two levels) |
+
 ```
 Usage: ccsh inspect [-l=<numberOfLevels>] [FILE]
 ```

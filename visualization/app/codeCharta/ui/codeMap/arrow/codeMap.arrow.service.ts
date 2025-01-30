@@ -14,14 +14,14 @@ import { edgeVisibilitySelector } from "./utils/edgeVisibility.selector"
 @Injectable({ providedIn: "root" })
 export class CodeMapArrowService implements OnDestroy {
     private map: Map<string, Node>
-    private VERTICES_PER_LINE = 5
+    private readonly VERTICES_PER_LINE = 5
     private arrows: Object3D[] = new Array<Object3D>()
-    private HIGHLIGHT_BUILDING_DELAY = 1
-    private debounceCalculation: (hoveredBuilding: CodeMapBuilding) => void = debounce(
+    private readonly HIGHLIGHT_BUILDING_DELAY = 1
+    private readonly debounceCalculation: (hoveredBuilding: CodeMapBuilding) => void = debounce(
         (hoveredBuilding: CodeMapBuilding) => this.resetEdgesOfBuildings(hoveredBuilding),
         this.HIGHLIGHT_BUILDING_DELAY
     )
-    private subscription = this.store
+    private readonly subscription = this.store
         .select(hoveredNodeIdSelector)
         .pipe(
             tap(hoveredNodeId => {
@@ -36,10 +36,10 @@ export class CodeMapArrowService implements OnDestroy {
         .subscribe()
 
     constructor(
-        private store: Store<CcState>,
-        private state: State<CcState>,
+        private readonly store: Store<CcState>,
+        private readonly state: State<CcState>,
         private threeSceneService: ThreeSceneService,
-        private idToBuildingService: IdToBuildingService
+        private readonly idToBuildingService: IdToBuildingService
     ) {
         this.threeSceneService.subscribe("onBuildingSelected", this.onBuildingSelected)
         this.threeSceneService.subscribe("onBuildingDeselected", this.onBuildingDeselected)

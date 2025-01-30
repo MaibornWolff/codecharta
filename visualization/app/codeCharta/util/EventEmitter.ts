@@ -2,7 +2,7 @@ type Listener<D = undefined> = (data?: D) => void
 type AbstractEventMap = Record<string, Listener>
 
 export class EventEmitter<EventMap extends AbstractEventMap> {
-    private listeners: Partial<Record<keyof EventMap, Listener[]>> = {}
+    private readonly listeners: Partial<Record<keyof EventMap, Listener[]>> = {}
 
     on<EventType extends keyof EventMap>(event: EventType, callback: EventMap[EventType]) {
         this.listeners[event] ??= []

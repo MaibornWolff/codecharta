@@ -5,7 +5,7 @@ import { Injectable } from "@angular/core"
 export class IsAttributeSideBarVisibleService {
     isOpen = false
 
-    constructor(private threeSceneService: ThreeSceneService) {
+    constructor(private readonly threeSceneService: ThreeSceneService) {
         this.threeSceneService.subscribe("onBuildingSelected", () => {
             this.isOpen = true
         })

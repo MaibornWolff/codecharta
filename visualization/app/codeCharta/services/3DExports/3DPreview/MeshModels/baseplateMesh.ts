@@ -5,7 +5,7 @@ import { ShaderMaterial } from "three"
 import { BaseplateColorChangeStrategy } from "../ColorChangeStrategies/baseplateColorChangeStrategy"
 
 export class BaseplateMesh extends GeneralMesh implements GeneralSizeChangeMesh {
-    constructor(private createBaseplateGeometryStrategy: CreateBaseplateGeometryStrategy = new CreateBaseplateGeometryStrategy()) {
+    constructor(private readonly createBaseplateGeometryStrategy: CreateBaseplateGeometryStrategy = new CreateBaseplateGeometryStrategy()) {
         super("Baseplate", new BaseplateColorChangeStrategy())
     }
 

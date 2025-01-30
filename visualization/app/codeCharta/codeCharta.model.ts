@@ -44,7 +44,7 @@ export interface FileCount {
     changed: number
 }
 
-interface squarifiedNode {
+interface SquarifiedNode {
     name: string
     id?: number
     type: NodeType
@@ -64,12 +64,12 @@ interface squarifiedNode {
     fileCount?: FileCount
 }
 
-interface streetNode {
+interface StreetNode {
     value?: number
     rect?: Rectangle
     zOffset?: number
 }
-export interface CodeMapNode extends squarifiedNode, streetNode {}
+export interface CodeMapNode extends SquarifiedNode, StreetNode {}
 
 export interface FixedPosition {
     left: number

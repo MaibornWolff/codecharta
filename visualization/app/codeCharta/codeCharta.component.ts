@@ -28,8 +28,8 @@ export class CodeChartaComponent implements OnInit {
     isInitialized = false
 
     constructor(
-        private store: Store,
-        private loadInitialFileService: LoadInitialFileService
+        private readonly store: Store,
+        private readonly loadInitialFileService: LoadInitialFileService
     ) {}
 
     async ngOnInit(): Promise<void> {

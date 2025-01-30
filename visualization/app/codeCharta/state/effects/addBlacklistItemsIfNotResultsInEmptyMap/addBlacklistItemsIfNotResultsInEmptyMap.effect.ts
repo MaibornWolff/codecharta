@@ -13,9 +13,9 @@ import { CcState } from "../../../codeCharta.model"
 @Injectable()
 export class AddBlacklistItemsIfNotResultsInEmptyMapEffect {
     constructor(
-        private actions$: Actions,
-        private store: Store<CcState>,
-        private dialog: MatDialog
+        private readonly actions$: Actions,
+        private readonly store: Store<CcState>,
+        private readonly dialog: MatDialog
     ) {}
 
     doBlacklistItemsResultInEmptyMap$ = this.actions$.pipe(

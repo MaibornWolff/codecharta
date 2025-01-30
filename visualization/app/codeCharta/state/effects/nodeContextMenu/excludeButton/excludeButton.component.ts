@@ -14,7 +14,7 @@ import { MatButton } from "@angular/material/button"
 export class ExcludeButtonComponent {
     @Input() codeMapNode: Pick<CodeMapNode, "path" | "type">
 
-    constructor(private store: Store) {}
+    constructor(private readonly store: Store) {}
 
     excludeNode() {
         this.store.dispatch(

@@ -20,7 +20,7 @@ export class MetricDeltaSelectedComponent implements OnInit {
     selectedNode$: Observable<CodeMapNode>
     mapColors$: Observable<MapColors>
 
-    constructor(private store: Store<CcState>) {}
+    constructor(private readonly store: Store<CcState>) {}
 
     ngOnInit(): void {
         this.selectedNode$ = this.store.select(selectedNodeSelector)

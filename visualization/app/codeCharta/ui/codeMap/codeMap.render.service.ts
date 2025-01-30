@@ -27,8 +27,8 @@ export class CodeMapRenderService implements OnDestroy {
     private subscription: Subscription
 
     constructor(
-        private store: Store<CcState>,
-        private state: State<CcState>,
+        private readonly store: Store<CcState>,
+        private readonly state: State<CcState>,
         private threeSceneService: ThreeSceneService,
         private codeMapLabelService: CodeMapLabelService,
         private codeMapArrowService: CodeMapArrowService,

@@ -18,10 +18,10 @@ export enum MetricQueryParemter {
 @Injectable()
 export class UpdateQueryParametersEffect {
     constructor(
-        private loadInitialFileService: LoadInitialFileService,
-        private actions$: Actions,
-        private state: State<CcState>,
-        private store: Store<CcState>
+        private readonly loadInitialFileService: LoadInitialFileService,
+        private readonly actions$: Actions,
+        private readonly state: State<CcState>,
+        private readonly store: Store<CcState>
     ) {}
 
     saveMetricsInQueryParameters$ = createEffect(

@@ -33,10 +33,10 @@ export class CodeMapComponent implements AfterViewInit, OnDestroy {
 
     constructor(
         public isAttributeSideBarVisibleService: IsAttributeSideBarVisibleService,
-        private store: Store<CcState>,
-        private threeViewerService: ThreeViewerService,
-        private codeMapMouseEventService: CodeMapMouseEventService,
-        private elementReference: ElementRef
+        private readonly store: Store<CcState>,
+        private readonly threeViewerService: ThreeViewerService,
+        private readonly codeMapMouseEventService: CodeMapMouseEventService,
+        private readonly elementReference: ElementRef
     ) {}
 
     ngAfterViewInit(): void {

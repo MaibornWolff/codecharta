@@ -11,8 +11,8 @@ import { visibleFileStatesSelector } from "../../selectors/visibleFileStates/vis
 @Injectable()
 export class SetLoadingIndicatorEffect {
     constructor(
-        private actions$: Actions,
-        private store: Store<CcState>
+        private readonly actions$: Actions,
+        private readonly store: Store<CcState>
     ) {}
 
     setIsLoadingFile$ = createEffect(() => this.store.select(visibleFileStatesSelector).pipe(map(() => setIsLoadingFile({ value: true }))))

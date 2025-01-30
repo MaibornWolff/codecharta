@@ -2,8 +2,8 @@ import convert from "color-convert"
 
 export class HSL {
     constructor(
-        private h: number,
-        private s: number,
+        private readonly h: number,
+        private readonly s: number,
         private l: number
     ) {}
 

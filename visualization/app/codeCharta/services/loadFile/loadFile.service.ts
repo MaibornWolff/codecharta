@@ -32,9 +32,9 @@ export class LoadFileService implements OnDestroy {
         .subscribe()
 
     constructor(
-        private store: Store<CcState>,
-        private state: State<CcState>,
-        private dialog: MatDialog
+        private readonly store: Store<CcState>,
+        private readonly state: State<CcState>,
+        private readonly dialog: MatDialog
     ) {}
 
     ngOnDestroy(): void {

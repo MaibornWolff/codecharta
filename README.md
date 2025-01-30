@@ -84,7 +84,7 @@ Compare two maps and see the delta between them. This allows you to see the chan
 
 ## Getting started
 
-You can find our prefered way to get start
+You can find our preferred way to get started
 under [Documentation - Quick Start Guide](https://maibornwolff.github.io/codecharta/docs/overview/getting-started).
 
 But if you already know what to do, here is how you install our CCSH.
@@ -99,7 +99,7 @@ $ ccsh - h
 
 ## Get Involved
 
-Do you have a **bug**, **feature request**, or question? Please open a [a new issue](https://github.com/MaibornWolff/codecharta/issues/new).
+Do you have a **bug**, **feature request**, or question? Please open [a new issue](https://github.com/MaibornWolff/codecharta/issues/new).
 Feedback is always welcome.
 
 Want **more information**? Check out our [documentation](https://maibornwolff.github.io/codecharta/)

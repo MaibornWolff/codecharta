@@ -13,8 +13,8 @@ import { CcState } from "../../../codeCharta.model"
 @Injectable()
 export class UpdateVisibleTopLabelsEffect {
     constructor(
-        private store: Store<CcState>,
-        private state: State<CcState>
+        private readonly store: Store<CcState>,
+        private readonly state: State<CcState>
     ) {}
 
     updateVisibleTopLabels$ = createEffect(() =>

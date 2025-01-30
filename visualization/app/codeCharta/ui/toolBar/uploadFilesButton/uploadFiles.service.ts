@@ -13,8 +13,8 @@ export class UploadFilesService {
     isUploading = false
 
     constructor(
-        private store: Store,
-        private loadFileService: LoadFileService
+        private readonly store: Store,
+        private readonly loadFileService: LoadFileService
     ) {}
 
     uploadFiles() {

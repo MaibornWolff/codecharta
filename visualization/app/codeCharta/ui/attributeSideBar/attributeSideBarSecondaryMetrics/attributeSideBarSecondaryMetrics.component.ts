@@ -26,7 +26,7 @@ export class AttributeSideBarSecondaryMetricsComponent {
     showDeltaValue$: Observable<boolean>
     attributeDescriptors$: Observable<AttributeDescriptors>
 
-    constructor(private store: Store<CcState>) {
+    constructor(private readonly store: Store<CcState>) {
         this.secondaryMetrics$ = this.store.select(secondaryMetricsSelector)
         this.showAttributeTypeSelector$ = this.store.select(showAttributeTypeSelectorSelector)
         this.showDeltaValue$ = this.store.select(showDeltaValueSelector)

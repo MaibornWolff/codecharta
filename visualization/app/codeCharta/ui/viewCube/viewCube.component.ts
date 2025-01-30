@@ -31,9 +31,9 @@ export class ViewCubeComponent implements OnInit {
     private camera: PerspectiveCamera
     private renderer: WebGLRenderer
     private scene: Scene
-    private WIDTH = 200
-    private HEIGHT = 200
-    private LENGTH_VIEWCUBE = 1
+    private readonly WIDTH = 200
+    private readonly HEIGHT = 200
+    private readonly LENGTH_VIEWCUBE = 1
 
     private hoverInfo = { cube: null, originalMaterial: null }
 
@@ -43,9 +43,9 @@ export class ViewCubeComponent implements OnInit {
     }
 
     constructor(
-        private elementReference: ElementRef,
-        private threeMapControlsService: ThreeMapControlsService,
-        private viewCubeMouseEvents: ViewCubeMouseEventsService
+        private readonly elementReference: ElementRef,
+        private readonly threeMapControlsService: ThreeMapControlsService,
+        private readonly viewCubeMouseEvents: ViewCubeMouseEventsService
     ) {}
 
     ngOnInit() {

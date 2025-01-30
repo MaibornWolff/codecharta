@@ -35,7 +35,7 @@ import { LastPartOfNodePathPipe } from "./lastPartOfNodePath.pipe"
 export class NodeContextMenuCardComponent implements OnInit {
     codeMapNode$: Observable<CodeMapNode>
 
-    constructor(private store: Store<CcState>) {}
+    constructor(private readonly store: Store<CcState>) {}
 
     ngOnInit(): void {
         this.codeMapNode$ = this.store.select(rightClickedCodeMapNodeSelector)

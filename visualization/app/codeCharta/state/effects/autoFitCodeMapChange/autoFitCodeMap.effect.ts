@@ -13,10 +13,10 @@ import { RenderCodeMapEffect } from "../renderCodeMapEffect/renderCodeMap.effect
 @Injectable()
 export class AutoFitCodeMapEffect {
     constructor(
-        private store: Store<CcState>,
-        private renderCodeMapEffect: RenderCodeMapEffect,
-        private threeMapControlsService: ThreeMapControlsService,
-        private actions$: Actions
+        private readonly store: Store<CcState>,
+        private readonly renderCodeMapEffect: RenderCodeMapEffect,
+        private readonly threeMapControlsService: ThreeMapControlsService,
+        private readonly actions$: Actions
     ) {}
 
     autoFitTo$ = createEffect(

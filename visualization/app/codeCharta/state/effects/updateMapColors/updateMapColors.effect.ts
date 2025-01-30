@@ -11,8 +11,8 @@ import { colorMetricSelector } from "../../store/dynamicSettings/colorMetric/col
 @Injectable()
 export class UpdateMapColorsEffect {
     constructor(
-        private store: Store<CcState>,
-        private state: State<CcState>
+        private readonly store: Store<CcState>,
+        private readonly state: State<CcState>
     ) {}
 
     updateMapColors$ = createEffect(() =>

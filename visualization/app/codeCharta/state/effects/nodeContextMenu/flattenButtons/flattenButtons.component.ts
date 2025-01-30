@@ -14,7 +14,7 @@ import { MatButton } from "@angular/material/button"
 export class FlattenButtonsComponent {
     @Input() codeMapNode: Pick<CodeMapNode, "path" | "type" | "isFlattened">
 
-    constructor(private store: Store) {}
+    constructor(private readonly store: Store) {}
 
     flattenNode() {
         this.store.dispatch(

@@ -4,7 +4,7 @@ import { GeometryOptions } from "../../preview3DPrintMesh"
 import { CustomVisibilityMesh } from "../customVisibilityMesh"
 
 export class CodeChartaLogoMesh extends CustomVisibilityMesh {
-    private createSvgStrategy: CreateSvgGeometryStrategy
+    private readonly createSvgStrategy: CreateSvgGeometryStrategy
 
     constructor(name: string, createSvgStrategy: CreateSvgGeometryStrategy = new CreateSvgGeometryStrategy()) {
         super(name, new BackPrintColorChangeStrategy(), 180, true)

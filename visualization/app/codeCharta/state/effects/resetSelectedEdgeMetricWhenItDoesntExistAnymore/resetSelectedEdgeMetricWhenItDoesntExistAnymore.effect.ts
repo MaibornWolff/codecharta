@@ -9,7 +9,7 @@ import { edgeMetricSelector } from "../../store/dynamicSettings/edgeMetric/edgeM
 
 @Injectable()
 export class ResetSelectedEdgeMetricWhenItDoesntExistAnymoreEffect {
-    constructor(private store: Store<CcState>) {}
+    constructor(private readonly store: Store<CcState>) {}
 
     resetSelectedEdgeMetricWhenItDoesntExistAnymore$ = createEffect(() =>
         this.store.select(metricDataSelector).pipe(

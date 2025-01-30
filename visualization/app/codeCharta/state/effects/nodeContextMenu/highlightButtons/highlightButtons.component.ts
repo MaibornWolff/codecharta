@@ -17,8 +17,8 @@ export class HighlightButtonsComponent implements OnChanges {
     isHighlighted: boolean
 
     constructor(
-        private threeSceneService: ThreeSceneService,
-        private idToBuilding: IdToBuildingService
+        private readonly threeSceneService: ThreeSceneService,
+        private readonly idToBuilding: IdToBuildingService
     ) {}
 
     ngOnChanges(changes: SimpleChanges): void {

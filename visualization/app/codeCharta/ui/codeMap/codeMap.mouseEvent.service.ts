@@ -44,15 +44,15 @@ export class CodeMapMouseEventService implements OnDestroy {
 
     private intersectedBuilding: CodeMapBuilding
 
-    private mouse: Coordinates = { x: 0, y: 0 }
+    private readonly mouse: Coordinates = { x: 0, y: 0 }
     private oldMouse: Coordinates = { x: 0, y: 0 }
     private mouseOnLastClick: Coordinates = { x: 0, y: 0 }
     private isGrabbing = false
     private isMoving = false
-    private raycaster = new Raycaster()
+    private readonly raycaster = new Raycaster()
     private labelHoveredBuilding = null
     private labelSelectedBuilding = null
-    private subscriptions = [
+    private readonly subscriptions = [
         this.store
             .select(visibleFileStatesSelector)
             .pipe(tap(() => this.onFilesSelectionChanged()))
@@ -79,12 +79,12 @@ export class CodeMapMouseEventService implements OnDestroy {
         private threeCameraService: ThreeCameraService,
         private threeRendererService: ThreeRendererService,
         private threeSceneService: ThreeSceneService,
-        private store: Store<CcState>,
-        private state: State<CcState>,
-        private codeMapLabelService: CodeMapLabelService,
-        private viewCubeMouseEvents: ViewCubeMouseEventsService,
-        private threeViewerService: ThreeViewerService,
-        private idToBuilding: IdToBuildingService
+        private readonly store: Store<CcState>,
+        private readonly state: State<CcState>,
+        private readonly codeMapLabelService: CodeMapLabelService,
+        private readonly viewCubeMouseEvents: ViewCubeMouseEventsService,
+        private readonly threeViewerService: ThreeViewerService,
+        private readonly idToBuilding: IdToBuildingService
     ) {}
 
     ngOnDestroy(): void {

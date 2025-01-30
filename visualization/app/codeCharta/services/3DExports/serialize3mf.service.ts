@@ -165,8 +165,6 @@ function constructVertices(
             vertexIndexToNewVertexIndex.set(vertexIndex, vertexToNewVertexIndex.get(vertexString))
         }
     }
-
-    return
 }
 
 function constructTriangles(

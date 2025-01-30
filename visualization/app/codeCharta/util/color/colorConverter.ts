@@ -3,9 +3,9 @@ import convert from "color-convert"
 import { HSL } from "./hsl"
 
 export class ColorConverter {
-    private static colorToVector3Map = new Map<string, Vector3>()
-    private static colorToVector3ArrayMap = new Map<string, number[]>()
-    private static hexToNumberMap = new Map<string, number>()
+    private static readonly colorToVector3Map = new Map<string, Vector3>()
+    private static readonly colorToVector3ArrayMap = new Map<string, number[]>()
+    private static readonly hexToNumberMap = new Map<string, number>()
 
     static getVector3(color: string) {
         let vector = this.colorToVector3Map.get(color)

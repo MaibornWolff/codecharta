@@ -8,7 +8,7 @@ import { compareVersion } from "./utils/compareVersion"
 export class VersionService {
     readonly version = packageJson.version
 
-    constructor(private dialog: MatDialog) {}
+    constructor(private readonly dialog: MatDialog) {}
 
     synchronizeLocalCodeChartaVersion() {
         const savedPreviousVersion = localStorage.getItem("codeChartaVersion")

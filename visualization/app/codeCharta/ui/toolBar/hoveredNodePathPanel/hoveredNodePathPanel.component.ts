@@ -14,5 +14,5 @@ import { AsyncPipe } from "@angular/common"
 export class HoveredNodePathPanelComponent {
     hoveredNodePathPanelData$ = this.store.select(hoveredNodePathPanelDataSelector)
 
-    constructor(private store: Store<CcState>) {}
+    constructor(private readonly store: Store<CcState>) {}
 }

@@ -10,8 +10,8 @@ import { setHoveredNodeId } from "../../store/appStatus/hoveredNodeId/hoveredNod
 @Injectable()
 export class SaveCcStateEffect {
     constructor(
-        private actions$: Actions,
-        private state: State<CcState>
+        private readonly actions$: Actions,
+        private readonly state: State<CcState>
     ) {}
 
     saveCcState$ = createEffect(

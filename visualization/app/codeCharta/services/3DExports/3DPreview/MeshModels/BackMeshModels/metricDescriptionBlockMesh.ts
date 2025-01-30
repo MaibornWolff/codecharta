@@ -23,7 +23,7 @@ export class MetricDescriptionBlockMesh extends CustomVisibilityMesh {
     constructor(
         public metricDescriptionBlockOptions: MetricDescriptionBlockOptions,
         public font: Font,
-        private yOffset: number
+        private readonly yOffset: number
     ) {
         super(metricDescriptionBlockOptions.name, new BackPrintColorChangeStrategy(), 200, true)
         this.createSvgGeometryStrategy = new CreateSvgGeometryStrategy()
