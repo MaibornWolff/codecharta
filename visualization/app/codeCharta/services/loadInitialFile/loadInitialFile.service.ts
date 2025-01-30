@@ -99,7 +99,7 @@ export class LoadInitialFileService {
             const urlNameDataPairCheckSums = urlNameDataPairs.map(urlNameDataPair => urlNameDataPair.content.fileChecksum)
             const savedNameDataPairCheckSums = savedNameDataPairs.map(savedNameDataPair => savedNameDataPair.content.fileChecksum)
             if (stringify(urlNameDataPairCheckSums) === stringify(savedNameDataPairCheckSums)) {
-                this.applySettingsAndFilesFromSavedState(savedFileStates, savedCcState, savedNameDataPairs)
+                this._applySettingsAndFilesFromSavedState(savedFileStates, savedCcState, savedNameDataPairs)
             } else {
                 this.applySettingsFromSavedState(savedCcState, urlNameDataPairs)
             }
@@ -112,7 +112,7 @@ export class LoadInitialFileService {
         }
     }
 
-    private applySettingsAndFilesFromSavedState(savedFileStates: FileState[], savedCcState: CcState, savedNameDataPairs: NameDataPair[]) {
+    _applySettingsAndFilesFromSavedState(savedFileStates: FileState[], savedCcState: CcState, savedNameDataPairs: NameDataPair[]) {
         const missingPropertiesInSavedCcState = []
 
         if (!savedCcState.appSettings.resetCameraIfNewFileIsLoaded) {
@@ -163,7 +163,7 @@ export class LoadInitialFileService {
 
             const savedFileStates = savedCcState.files
             const savedNameDataPairs = savedFileStates.map(fileState => getNameDataPair(fileState.file))
-            this.applySettingsAndFilesFromSavedState(savedFileStates, savedCcState, savedNameDataPairs)
+            this._applySettingsAndFilesFromSavedState(savedFileStates, savedCcState, savedNameDataPairs)
         } catch (error) {
             await this.handleErrorLoadFilesFromIndexedDB(error as Error)
         }

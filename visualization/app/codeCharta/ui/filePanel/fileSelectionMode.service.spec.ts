@@ -53,4 +53,25 @@ describe("FileSelectionModeService", () => {
         fileSelectionModeService.toggle()
         expect(referenceFileSelector(state.getValue())).toBe(TEST_FILE_DATA)
     })
+
+    it("should remain sorted after toggling", () => {
+        const file1 = { ...TEST_FILE_DATA, fileMeta: { ...TEST_FILE_DATA.fileMeta, fileName: "bFile", fileChecksum: "2" } }
+        const file2 = { ...TEST_FILE_DATA_JAVA, fileMeta: { ...TEST_FILE_DATA_JAVA.fileMeta, fileName: "aFile", fileChecksum: "1" } }
+        const file3 = { ...TEST_FILE_DATA, fileMeta: { ...TEST_FILE_DATA.fileMeta, fileName: "aFile", fileChecksum: "2" } }
+
+        store.dispatch(addFile({ file: file1 }))
+        store.dispatch(addFile({ file: file2 }))
+        store.dispatch(addFile({ file: file3 }))
+
+        fileSelectionModeService.toggle()
+
+        const fileStates = state.getValue().files
+        expect(fileStates[0].file.fileMeta.fileName).toBe("aFile")
+        expect(fileStates[0].file.fileMeta.fileChecksum).toBe("1")
+        expect(fileStates[1].file.fileMeta.fileName).toBe("aFile")
+        expect(fileStates[1].file.fileMeta.fileChecksum).toBe("2")
+        expect(fileStates[2].file.fileMeta.fileName).toBe("bFile")
+        expect(fileStates[3].file.fileMeta.fileName).toBe("fileA")
+        expect(fileStates[4].file.fileMeta.fileName).toBe("fileB")
+    })
 })
