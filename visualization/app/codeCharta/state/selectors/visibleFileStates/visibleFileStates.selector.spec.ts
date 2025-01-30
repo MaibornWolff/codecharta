@@ -1,87 +1,133 @@
 import { FileSelectionState, FileState } from "../../../model/files/files"
-import { FILE_META, TEST_FILE_DATA } from "../../../util/dataMocks"
+import { FILE_META, TEST_FILE_DATA, TEST_FILE_DATA_JAVA, TEST_FILE_DATA_TWO } from "../../../util/dataMocks"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { TestBed } from "@angular/core/testing"
 import { onlyVisibleFilesMatterComparer, visibleFileStatesSelector } from "./visibleFileStates.selector"
 
-describe("_onlyVisibleFilesMatterComparer", () => {
-    it("should return true for two empty file state arrays", () => {
+describe("_onlyVisibleFilesMatterComparer with standard state", () => {
+    const fileStatePartial1 = { selectedAs: FileSelectionState.Partial, file: TEST_FILE_DATA }
+    const fileStatePartial2 = { selectedAs: FileSelectionState.Partial, file: TEST_FILE_DATA_TWO }
+    const fileStateNone = { selectedAs: FileSelectionState.None, file: TEST_FILE_DATA_JAVA }
+
+    it("should return true for two empty file states", () => {
         expect(onlyVisibleFilesMatterComparer([], [])).toBe(true)
     })
 
-    it("should return false for arrays of different lengths", () => {
-        const fileStates1 = [{ selectedAs: FileSelectionState.Reference, file: TEST_FILE_DATA }]
+    it("should return true for the same file states", () => {
+        const fileStates = [fileStatePartial1, fileStateNone]
+        expect(onlyVisibleFilesMatterComparer(fileStates, fileStates)).toBe(true)
+    })
+
+    it("should return false for file states with different number of visible files", () => {
+        const fileStates1 = [fileStatePartial1, fileStatePartial2]
+        const fileStates2 = [fileStatePartial1, fileStateNone]
+        expect(onlyVisibleFilesMatterComparer(fileStates1, fileStates2)).toBe(false)
+    })
+
+    it("should return false for file states with different visible files", () => {
+        const fileStates1 = [fileStatePartial1]
+        const fileStates2 = [fileStatePartial2]
+        expect(onlyVisibleFilesMatterComparer(fileStates1, fileStates2)).toBe(false)
+    })
+
+    it("should return true for file states with same visible files in different order", () => {
+        const fileStates1 = [fileStatePartial1, fileStatePartial2]
+        const fileStates2 = [fileStatePartial2, fileStatePartial1]
+        expect(onlyVisibleFilesMatterComparer(fileStates1, fileStates2)).toBe(true)
+    })
+})
+
+describe("_onlyVisibleFilesMatterComparer with delta state", () => {
+    const fileStateReference = { selectedAs: FileSelectionState.Reference, file: TEST_FILE_DATA }
+    const fileStateComparison = { selectedAs: FileSelectionState.Comparison, file: TEST_FILE_DATA_TWO }
+    const fileStateNone = { selectedAs: FileSelectionState.None, file: TEST_FILE_DATA_JAVA }
+
+    it("should return false for states of different lengths", () => {
+        const fileStates1 = [fileStateReference]
         const fileStates2 = []
         expect(onlyVisibleFilesMatterComparer(fileStates1, fileStates2)).toBe(false)
     })
 
-    it("should return true for arrays with the same visible file checksums, in the same order", () => {
-        const file1 = { selectedAs: FileSelectionState.Reference, file: TEST_FILE_DATA }
+    it("should return true for states with the same visible files", () => {
+        const fileStates1: FileState[] = [fileStateReference, fileStateNone]
+        const fileStates2 = [fileStateReference]
 
-        const fileStates1: FileState[] = [
-            file1,
-            {
-                selectedAs: FileSelectionState.None,
-                file: {
-                    ...TEST_FILE_DATA,
-                    fileMeta: { ...FILE_META, fileName: "second-file" }
-                }
-            }
-        ]
-        const fileStates2 = [file1]
         expect(onlyVisibleFilesMatterComparer(fileStates1, fileStates2)).toBe(true)
     })
 
-    it("should return true for arrays with the same visible files in different orders", () => {
-        const fileStates1: FileState[] = [
-            { selectedAs: FileSelectionState.Reference, file: TEST_FILE_DATA },
-            {
-                selectedAs: FileSelectionState.None,
-                file: {
-                    ...TEST_FILE_DATA,
-                    fileMeta: { ...FILE_META, fileName: "second-file" }
-                }
-            }
-        ]
-        const fileStates2 = [
-            {
-                selectedAs: FileSelectionState.None,
-                file: {
-                    ...TEST_FILE_DATA,
-                    fileMeta: { ...FILE_META, fileName: "second-file" }
-                }
-            },
-            { selectedAs: FileSelectionState.Reference, file: TEST_FILE_DATA }
-        ]
-        expect(onlyVisibleFilesMatterComparer(fileStates1, fileStates2)).toBe(true)
-    })
+    it("should return false for states with no reference file", () => {
+        const fileStates1: FileState[] = [fileStateReference, fileStateNone]
+        const fileStates2 = [fileStateNone]
 
-    it("should return false for arrays with different visible file checksums", () => {
-        const fileStates1: FileState[] = [{ selectedAs: FileSelectionState.Reference, file: TEST_FILE_DATA }]
-        const fileStates2 = [
-            {
-                selectedAs: FileSelectionState.Reference,
-                file: {
-                    ...TEST_FILE_DATA,
-                    fileMeta: { ...FILE_META, fileName: "second-file" }
-                }
-            }
-        ]
         expect(onlyVisibleFilesMatterComparer(fileStates1, fileStates2)).toBe(false)
     })
 
-    it("should return false for arrays of different file selection states", () => {
-        const fileStates1 = [{ selectedAs: FileSelectionState.Reference, file: TEST_FILE_DATA }]
-        const fileStates2 = [
-            {
-                selectedAs: FileSelectionState.Partial,
-                file: {
-                    ...TEST_FILE_DATA,
-                    fileMeta: { ...FILE_META, fileName: "second-file" }
-                }
-            },
-            { selectedAs: FileSelectionState.Partial, file: TEST_FILE_DATA }
-        ]
+    it("should return false for states with no comparison file", () => {
+        const fileStates1: FileState[] = [fileStateReference, fileStateComparison]
+        const fileStates2 = [fileStateReference, fileStateNone]
+
+        expect(onlyVisibleFilesMatterComparer(fileStates1, fileStates2)).toBe(false)
+    })
+
+    it("should return true for states with the same visible files in different orders", () => {
+        const fileStates1: FileState[] = [fileStateReference, fileStateNone]
+        const fileStates2 = [fileStateNone, fileStateReference]
+        expect(onlyVisibleFilesMatterComparer(fileStates1, fileStates2)).toBe(true)
+    })
+
+    it("should return false for states with different visible files", () => {
+        const fileStates1: FileState[] = [fileStateReference]
+        const fileStates2 = [fileStateNone]
+
+        expect(onlyVisibleFilesMatterComparer(fileStates1, fileStates2)).toBe(false)
+    })
+
+    it("should return false for states of different file selection states", () => {
+        const fileStates1: FileState[] = [fileStateReference]
+        const fileStates2 = [{ ...fileStateReference, selectedAs: FileSelectionState.Comparison }]
+        expect(onlyVisibleFilesMatterComparer(fileStates1, fileStates2)).toBe(false)
+    })
+
+    it("should return true when both states have the same reference and comparison files correctly set", () => {
+        const referenceFile: FileState = fileStateReference
+        const comparisonFile: FileState = { ...fileStateNone, selectedAs: FileSelectionState.Comparison }
+
+        const fileStates1 = [referenceFile, comparisonFile]
+        const fileStates2 = [referenceFile, comparisonFile]
+
+        expect(onlyVisibleFilesMatterComparer(fileStates1, fileStates2)).toBe(true)
+    })
+
+    it("should return false for different comparison files", () => {
+        const referenceFile1: FileState = fileStateReference
+        const referenceFile2: FileState = fileStateReference
+        const comparisonFile1: FileState = {
+            file: { ...TEST_FILE_DATA, fileMeta: { ...FILE_META, fileChecksum: "checksum3" } },
+            selectedAs: FileSelectionState.Comparison
+        }
+        const comparisonFile2: FileState = {
+            file: { ...TEST_FILE_DATA, fileMeta: { ...FILE_META, fileChecksum: "checksum4" } },
+            selectedAs: FileSelectionState.Comparison
+        }
+
+        const fileStates1 = [referenceFile1, comparisonFile1]
+        const fileStates2 = [referenceFile2, comparisonFile2]
+
+        expect(onlyVisibleFilesMatterComparer(fileStates1, fileStates2)).toBe(false)
+    })
+
+    it("should return false for different reference files", () => {
+        const referenceFile1: FileState = fileStateReference
+        const referenceFile2: FileState = {
+            file: { ...TEST_FILE_DATA, fileMeta: { ...FILE_META, fileChecksum: "checksum2" } },
+            selectedAs: FileSelectionState.Reference
+        }
+        const comparisonFile1: FileState = { ...fileStateNone, selectedAs: FileSelectionState.Comparison }
+        const comparisonFile2: FileState = { ...fileStateNone, selectedAs: FileSelectionState.Comparison }
+
+        const fileStates1 = [referenceFile1, comparisonFile1]
+        const fileStates2 = [referenceFile2, comparisonFile2]
+
         expect(onlyVisibleFilesMatterComparer(fileStates1, fileStates2)).toBe(false)
     })
 })
