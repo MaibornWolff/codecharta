@@ -19,8 +19,8 @@ describe("FileSelectionModeService", () => {
         })
         store = TestBed.inject(Store)
         state = TestBed.inject(State)
-        store.dispatch(addFile({ file: TEST_FILE_DATA }))
         store.dispatch(addFile({ file: TEST_FILE_DATA_JAVA }))
+        store.dispatch(addFile({ file: TEST_FILE_DATA }))
         store.dispatch(setStandard({ files: [TEST_FILE_DATA] }))
 
         fileSelectionModeService = new FileSelectionModeService(store, state)
@@ -33,16 +33,16 @@ describe("FileSelectionModeService", () => {
 
     it("should restore previous files on toggle", () => {
         let fileStates = state.getValue().files
-        expect(fileStates[0].selectedAs).toBe(FileSelectionState.Partial)
-        expect(fileStates[1].selectedAs).toBe(FileSelectionState.None)
+        expect(fileStates[0].selectedAs).toBe(FileSelectionState.None)
+        expect(fileStates[1].selectedAs).toBe(FileSelectionState.Partial)
 
         fileSelectionModeService.toggle()
         store.dispatch(setDelta({ referenceFile: TEST_FILE_DATA_JAVA, comparisonFile: TEST_FILE_DATA }))
-
         fileSelectionModeService.toggle()
+
         fileStates = state.getValue().files
-        expect(fileStates[0].selectedAs).toBe(FileSelectionState.Partial)
-        expect(fileStates[1].selectedAs).toBe(FileSelectionState.None)
+        expect(fileStates[0].selectedAs).toBe(FileSelectionState.None)
+        expect(fileStates[1].selectedAs).toBe(FileSelectionState.Partial)
     })
 
     it("should not restore a removed file when toggling back to delta mode", () => {
@@ -63,6 +63,7 @@ describe("FileSelectionModeService", () => {
         store.dispatch(addFile({ file: file2 }))
         store.dispatch(addFile({ file: file3 }))
 
+        fileSelectionModeService.toggle()
         fileSelectionModeService.toggle()
 
         const fileStates = state.getValue().files
