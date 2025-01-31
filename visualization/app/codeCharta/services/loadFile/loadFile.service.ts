@@ -47,7 +47,7 @@ export class LoadFileService implements OnDestroy {
         const recentFiles: string[] = []
         const fileValidationResults: CCFileValidationResult[] = []
 
-        const newFilesWereAdded = enrichFileStatesAndRecentFilesWithValidationResults(
+        const hasAddedAtLeastOneFile = enrichFileStatesAndRecentFilesWithValidationResults(
             fileStates,
             recentFiles,
             nameDataPairs,
@@ -73,7 +73,7 @@ export class LoadFileService implements OnDestroy {
         this.store.dispatch(setStandardByNames({ fileNames: recentFiles }))
         fileRoot.updateRoot(rootName)
 
-        if (!newFilesWereAdded) {
+        if (!hasAddedAtLeastOneFile) {
             throw new Error(FILES_ALREADY_LOADED_ERROR_MESSAGE)
         }
     }

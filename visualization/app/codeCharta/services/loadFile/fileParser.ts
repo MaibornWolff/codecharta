@@ -47,7 +47,7 @@ export function enrichFileStatesAndRecentFilesWithValidationResults(
     currentFilesAreSampleFilesCallback: () => boolean,
     setCurrentFilesAreNotSampleFilesCallback: () => void
 ): boolean {
-    let newFilesWereAdded = false
+    let hasAddedAtLeastOneFile = false
     for (const nameDataPair of nameDataPairs) {
         const fileValidationResult: FileValidationResult = {
             fileName: nameDataPair?.fileName,
@@ -60,15 +60,15 @@ export function enrichFileStatesAndRecentFilesWithValidationResults(
 
         if (fileValidationResult.errors.length === 0) {
             fileValidationResult.warnings.push(...checkWarnings(nameDataPair?.content))
-            const addedFile = addFile(
+            const hasAddedFile = addFile(
                 fileStates,
                 recentFiles,
                 nameDataPair,
                 currentFilesAreSampleFilesCallback,
                 setCurrentFilesAreNotSampleFilesCallback
             )
-            if (addedFile) {
-                newFilesWereAdded = true
+            if (hasAddedFile) {
+                hasAddedAtLeastOneFile = true
             }
         }
 
@@ -76,7 +76,7 @@ export function enrichFileStatesAndRecentFilesWithValidationResults(
             fileValidationResults.push(fileValidationResult)
         }
     }
-    return newFilesWereAdded
+    return hasAddedAtLeastOneFile
 }
 
 function addFile(
