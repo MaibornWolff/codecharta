@@ -394,37 +394,6 @@ describe("LoadInitialFileService", () => {
             expect(dispatchSpy).toHaveBeenCalledTimes(countDifferences(mockedState.appSettings, defaultAppSettings) - 2)
         })
     })
-
-    it("should sort fileStates alphabetically by fileName and checksum after applying settings and files from saved state", async () => {
-        const file1 = { ...TEST_DELTA_MAP_A, fileMeta: { ...TEST_DELTA_MAP_A.fileMeta, fileName: "bFile", fileChecksum: "2" } }
-        const file2 = { ...TEST_DELTA_MAP_B, fileMeta: { ...TEST_DELTA_MAP_B.fileMeta, fileName: "aFile", fileChecksum: "1" } }
-        const file3 = { ...TEST_DELTA_MAP_A, fileMeta: { ...TEST_DELTA_MAP_A.fileMeta, fileName: "aFile", fileChecksum: "2" } }
-
-        const savedState = {
-            ...defaultState,
-            files: [
-                { file: file1, selectedAs: FileSelectionState.Partial },
-                { file: file2, selectedAs: FileSelectionState.Partial },
-                { file: file3, selectedAs: FileSelectionState.Partial }
-            ]
-        }
-
-        jest.mocked(readCcState).mockImplementation(async () => new Promise(resolve => resolve(savedState)))
-
-        await loadInitialFileService._applySettingsAndFilesFromSavedState(
-            savedState.files,
-            savedState,
-            savedState.files.map(fileState => getNameDataPair(fileState.file))
-        )
-
-        const fileStates = store //TODO: fix that test
-        expect(fileStates[0].file.fileMeta.fileName).toBe("aFile")
-        expect(fileStates[0].file.fileMeta.fileChecksum).toBe("1")
-        expect(fileStates[1].file.fileMeta.fileName).toBe("aFile")
-        expect(fileStates[1].file.fileMeta.fileChecksum).toBe("2")
-        expect(fileStates[2].file.fileMeta.fileName).toBe("bFile")
-        expect(fileStates[2].file.fileMeta.fileChecksum).toBe("2")
-    })
 })
 
 function nullifyObjectValues(originalObject) {

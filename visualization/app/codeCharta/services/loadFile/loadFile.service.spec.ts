@@ -596,7 +596,7 @@ describe("loadFileService", () => {
         expect(updateRootDataSpy).toHaveBeenCalledTimes(1)
         expect(updateRootDataSpy).toHaveBeenCalledWith(state.getValue().files[0].file.map.name)
 
-        // set reference file to a partial selected file. Therefore, reference file becomes undefined
+        // set reference file to a partial selected file. Therefore reference file becomes undefined
         store.dispatch(setStandard({ files: [state.getValue().files[0].file] }))
         expect(updateRootDataSpy).toHaveBeenCalledTimes(1)
     })
