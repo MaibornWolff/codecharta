@@ -12,7 +12,7 @@
             Hide Flattened Buildings
         </mat-slide-toggle>
         <mat-slide-toggle [checked]="resetCameraIfNewFileIsLoaded$ | async" (change)="handleResetCameraIfNewFileIsLoadedChanged($event)">
-            Reset Camera when changing map
+            Reset camera when map layout changes
         </mat-slide-toggle>
         <mat-slide-toggle [checked]="isWhiteBackground$ | async" (change)="handleIsWhiteBackgroundChanged($event)">
             White Background
