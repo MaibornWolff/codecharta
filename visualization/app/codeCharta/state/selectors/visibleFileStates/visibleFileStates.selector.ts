@@ -2,7 +2,7 @@ import { FileSelectionState, FileState } from "../../../model/files/files"
 import { createSelectorFactory, defaultMemoize } from "@ngrx/store"
 import { filesSelector } from "../../store/files/files.selector"
 import { getVisibleFileStates, isDeltaState } from "../../../model/files/files.helper"
-import { compareContent } from "../../../util/arrayHelper"
+import { compareContentIgnoringOrder } from "../../../util/arrayHelper"
 
 export function _onlyVisibleFilesMatterComparer(fileStates1: FileState[], fileStates2: FileState[]): boolean {
     if (fileStates1 === fileStates2) {
@@ -28,7 +28,7 @@ export function _onlyVisibleFilesMatterComparer(fileStates1: FileState[], fileSt
         return false
     }
 
-    return compareContent(visibleFileChecksums1, visibleFileChecksum2)
+    return compareContentIgnoringOrder(visibleFileChecksums1, visibleFileChecksum2)
 }
 
 function compareDeltaState(fileStates1: FileState[], fileStates2: FileState[]): boolean {
