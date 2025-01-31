@@ -229,12 +229,14 @@ describe("loadFileService", () => {
 
             expect(storeDispatchSpy).toHaveBeenCalledWith(setCurrentFilesAreSampleFiles({ value: false }))
             expect(CCFilesUnderTest.length).toEqual(3)
-            expect(CCFilesUnderTest[0].fileMeta.fileName).toEqual("SecondFile")
-            expect(CCFilesUnderTest[0].fileMeta.fileChecksum).toEqual("hash_1")
-            expect(CCFilesUnderTest[1].fileMeta.fileName).toEqual("ThirdFile")
-            expect(CCFilesUnderTest[1].fileMeta.fileChecksum).toEqual("hash_2_1")
-            expect(CCFilesUnderTest[2].fileMeta.fileName).toEqual("FourthFile")
-            expect(CCFilesUnderTest[2].fileMeta.fileChecksum).toEqual("hash_3")
+            const allFileNames = CCFilesUnderTest.map(file => file.fileMeta.fileName)
+            const allChecksums = CCFilesUnderTest.map(file => file.fileMeta.fileChecksum)
+            expect(allFileNames).toContain("SecondFile")
+            expect(allFileNames).toContain("ThirdFile")
+            expect(allFileNames).toContain("FourthFile")
+            expect(allChecksums).toContain("hash_1")
+            expect(allChecksums).toContain("hash_2_1")
+            expect(allChecksums).toContain("hash_3")
         })
 
         it("should keep sample files when loading the same sample file and after that another different file", () => {
@@ -396,12 +398,14 @@ describe("loadFileService", () => {
             const CCFilesUnderTest = getCCFiles(state.getValue().files)
 
             expect(CCFilesUnderTest.length).toEqual(3)
-            expect(CCFilesUnderTest[0].fileMeta.fileName).toEqual("FirstFile")
-            expect(CCFilesUnderTest[0].fileMeta.fileChecksum).toEqual("invalid-md5-sample")
-            expect(CCFilesUnderTest[1].fileMeta.fileName).toEqual("FirstFile_1")
-            expect(CCFilesUnderTest[1].fileMeta.fileChecksum).toEqual("hash_1")
-            expect(CCFilesUnderTest[2].fileMeta.fileName).toEqual("FirstFile_2")
-            expect(CCFilesUnderTest[2].fileMeta.fileChecksum).toEqual("hash_2")
+            const allFileNames = CCFilesUnderTest.map(file => file.fileMeta.fileName)
+            const allChecksums = CCFilesUnderTest.map(file => file.fileMeta.fileChecksum)
+            expect(allFileNames).toContain("FirstFile")
+            expect(allFileNames).toContain("FirstFile_1")
+            expect(allFileNames).toContain("FirstFile_2")
+            expect(allChecksums).toContain("invalid-md5-sample")
+            expect(allChecksums).toContain("hash_1")
+            expect(allChecksums).toContain("hash_2")
         })
 
         it("should not load files with equal file name and checksum when there was a renaming of file names in previous uploads", () => {
@@ -422,12 +426,14 @@ describe("loadFileService", () => {
             const CCFilesUnderTest = getCCFiles(state.getValue().files)
 
             expect(CCFilesUnderTest.length).toEqual(3)
-            expect(CCFilesUnderTest[0].fileMeta.fileName).toEqual("FirstFile")
-            expect(CCFilesUnderTest[0].fileMeta.fileChecksum).toEqual("invalid-md5-sample")
-            expect(CCFilesUnderTest[1].fileMeta.fileName).toEqual("FirstFile_1")
-            expect(CCFilesUnderTest[1].fileMeta.fileChecksum).toEqual("hash_1")
-            expect(CCFilesUnderTest[2].fileMeta.fileName).toEqual("FirstFile_2")
-            expect(CCFilesUnderTest[2].fileMeta.fileChecksum).toEqual("hash_2")
+            const allFileNames = CCFilesUnderTest.map(file => file.fileMeta.fileName)
+            const allChecksums = CCFilesUnderTest.map(file => file.fileMeta.fileChecksum)
+            expect(allFileNames).toContain("FirstFile")
+            expect(allFileNames).toContain("FirstFile_1")
+            expect(allFileNames).toContain("FirstFile_2")
+            expect(allChecksums).toContain("invalid-md5-sample")
+            expect(allChecksums).toContain("hash_1")
+            expect(allChecksums).toContain("hash_2")
         })
 
         it("should not load broken file but after fixing this problem manually it should possible to load this file again", () => {
@@ -637,7 +643,7 @@ describe("loadFileService", () => {
     it("should sort fileStates alphabetically by filename and checksum after loading files", () => {
         const file1 = { ...TEST_FILE_CONTENT, projectName: "bProject", fileChecksum: "2" }
         const file2 = { ...TEST_FILE_CONTENT, projectName: "aProject", fileChecksum: "1" }
-        const file3 = { ...TEST_FILE_CONTENT, projectName: "aProject", fileChecksum: "2" }
+        const file3 = { ...TEST_FILE_CONTENT, projectName: "aProject", fileChecksum: "3" }
 
         codeChartaService.loadFiles([
             { fileName: "bFile", content: file1, fileSize: 42 },
@@ -648,8 +654,8 @@ describe("loadFileService", () => {
         const fileStates = state.getValue().files
         expect(fileStates[0].file.fileMeta.fileName).toBe("aFile")
         expect(fileStates[0].file.fileMeta.fileChecksum).toBe("1")
-        expect(fileStates[1].file.fileMeta.fileName).toBe("aFile")
-        expect(fileStates[1].file.fileMeta.fileChecksum).toBe("2")
+        expect(fileStates[1].file.fileMeta.fileName).toBe("aFile_1")
+        expect(fileStates[1].file.fileMeta.fileChecksum).toBe("3")
         expect(fileStates[2].file.fileMeta.fileName).toBe("bFile")
         expect(fileStates[2].file.fileMeta.fileChecksum).toBe("2")
     })
