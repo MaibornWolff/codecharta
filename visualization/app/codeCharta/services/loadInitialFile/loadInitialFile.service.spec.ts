@@ -398,7 +398,7 @@ describe("LoadInitialFileService", () => {
     it("should sort fileStates alphabetically by fileName and checksum after applying settings and files from saved state", async () => {
         const file1 = { ...TEST_DELTA_MAP_A, fileMeta: { ...TEST_DELTA_MAP_A.fileMeta, fileName: "bFile", fileChecksum: "2" } }
         const file2 = { ...TEST_DELTA_MAP_B, fileMeta: { ...TEST_DELTA_MAP_B.fileMeta, fileName: "aFile", fileChecksum: "1" } }
-        const file3 = { ...TEST_DELTA_MAP_A, fileMeta: { ...TEST_DELTA_MAP_A.fileMeta, fileName: "aFile", fileChecksum: "3" } }
+        const file3 = { ...TEST_DELTA_MAP_A, fileMeta: { ...TEST_DELTA_MAP_A.fileMeta, fileName: "aFile", fileChecksum: "2" } }
 
         const savedState = {
             ...defaultState,
@@ -421,7 +421,7 @@ describe("LoadInitialFileService", () => {
         expect(fileStates[0].file.fileMeta.fileName).toBe("aFile")
         expect(fileStates[0].file.fileMeta.fileChecksum).toBe("1")
         expect(fileStates[1].file.fileMeta.fileName).toBe("aFile")
-        expect(fileStates[1].file.fileMeta.fileChecksum).toBe("3")
+        expect(fileStates[1].file.fileMeta.fileChecksum).toBe("2")
         expect(fileStates[2].file.fileMeta.fileName).toBe("bFile")
         expect(fileStates[2].file.fileMeta.fileChecksum).toBe("2")
     })
