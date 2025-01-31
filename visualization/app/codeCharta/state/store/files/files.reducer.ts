@@ -37,11 +37,11 @@ function setFileStatesState(_: FileState[], fileStates: FileState[]): FileState[
     if (fileStates === undefined) {
         return defaultFiles
     }
-    return [...fileStates].sort((fileStateA, fileStateB) => (isSmaller(fileStateA.file, fileStateB.file) ? -1 : 1))
+    return [...fileStates].sort((fileStateA, fileStateB) => (greaterEqualThan(fileStateA.file, fileStateB.file) ? 1 : -1))
 }
 
 function insertIntoSortedState(state: FileState[], file: CCFile) {
-    const index = state.findIndex(fileState => isSmaller(fileState.file, file))
+    const index = state.findIndex(fileState => greaterEqualThan(fileState.file, file))
     const fileState = { file, selectedAs: FileSelectionState.None }
     if (index === -1) {
         return [...state, fileState]
@@ -50,14 +50,14 @@ function insertIntoSortedState(state: FileState[], file: CCFile) {
     }
 }
 
-function isSmaller(fileA: CCFile, fileB: CCFile): boolean {
-    if (fileA.fileMeta.fileName < fileB.fileMeta.fileName) {
+function greaterEqualThan(fileA: CCFile, fileB: CCFile): boolean {
+    if (fileA.fileMeta.fileName > fileB.fileMeta.fileName) {
         return true
     }
-    if (fileA.fileMeta.fileName > fileB.fileMeta.fileName) {
+    if (fileA.fileMeta.fileName < fileB.fileMeta.fileName) {
         return false
     }
-    return fileA.fileMeta.fileChecksum < fileB.fileMeta.fileChecksum
+    return fileA.fileMeta.fileChecksum >= fileB.fileMeta.fileChecksum
 }
 
 function removeFilesFromState(state: FileState[], fileNames: string[]): FileState[] {
