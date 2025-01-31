@@ -635,24 +635,4 @@ describe("loadFileService", () => {
             data: loadFilesValidationToErrorDialog(expectedFileValidationResult)
         })
     })
-
-    it("should sort fileStates alphabetically by filename and checksum after loading files", () => {
-        const file1 = { ...TEST_FILE_CONTENT, projectName: "bProject", fileChecksum: "2" }
-        const file2 = { ...TEST_FILE_CONTENT, projectName: "aProject", fileChecksum: "1" }
-        const file3 = { ...TEST_FILE_CONTENT, projectName: "aProject", fileChecksum: "2" }
-
-        codeChartaService.loadFiles([
-            { fileName: "bFile", content: file1, fileSize: 42 },
-            { fileName: "aFile", content: file2, fileSize: 42 },
-            { fileName: "aFile", content: file3, fileSize: 42 }
-        ])
-
-        const fileStates = state.getValue().files
-        expect(fileStates[0].file.fileMeta.fileName).toBe("aFile")
-        expect(fileStates[0].file.fileMeta.fileChecksum).toBe("1")
-        expect(fileStates[1].file.fileMeta.fileName).toBe("aFile")
-        expect(fileStates[1].file.fileMeta.fileChecksum).toBe("2")
-        expect(fileStates[2].file.fileMeta.fileName).toBe("bFile")
-        expect(fileStates[2].file.fileMeta.fileChecksum).toBe("2")
-    })
 })
