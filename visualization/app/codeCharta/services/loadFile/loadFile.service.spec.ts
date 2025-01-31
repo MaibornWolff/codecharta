@@ -354,7 +354,7 @@ describe("loadFileService", () => {
 
             try {
                 codeChartaService.loadFiles([{ fileName: "DifferentName", content: validFileContent, fileSize: 42 }])
-            } catch (e) {}
+            } catch (_) {}
 
             const CCFilesUnderTest = getCCFiles(state.getValue().files)
 
@@ -372,7 +372,7 @@ describe("loadFileService", () => {
 
             try {
                 codeChartaService.loadFiles([{ fileName: "FirstFile", content: validFileContent, fileSize: 42 }])
-            } catch (e) {}
+            } catch (_) {}
 
             const filesUnderTest: FileState[] = state.getValue().files
 
@@ -604,8 +604,7 @@ describe("loadFileService", () => {
     })
 
     it("should load files ignoring the authors attribute", () => {
-        const testFileContentWithAuthors = TEST_FILE_CONTENT_WITH_AUTHORS
-        const testJsonWithAuthors = JSON.stringify(testFileContentWithAuthors)
+        const testJsonWithAuthors = JSON.stringify(TEST_FILE_CONTENT_WITH_AUTHORS)
         const expectedFileContentWithoutAuthors = TEST_FILE_CONTENT_WITHOUT_AUTHORS
         const ccFile = getCCFileAndDecorateFileChecksum(testJsonWithAuthors)
 
@@ -615,8 +614,7 @@ describe("loadFileService", () => {
     })
 
     it("should show warnings for files containing the authors attribute", () => {
-        const testFileContentWithAuthors = TEST_FILE_CONTENT_WITH_AUTHORS
-        const testJsonWithAuthors = JSON.stringify(testFileContentWithAuthors)
+        const testJsonWithAuthors = JSON.stringify(TEST_FILE_CONTENT_WITH_AUTHORS)
         const expectedFileValidationResult: CCFileValidationResult[] = [
             {
                 fileName: "FirstFile",

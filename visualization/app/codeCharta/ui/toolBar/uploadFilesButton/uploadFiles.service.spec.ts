@@ -33,7 +33,7 @@ describe("UploadFilesService", () => {
         mockFileInput = {
             files: [new File([stringify(TEST_FILE_CONTENT)], "test.cc.json", { type: "application/json" })],
             click: jest.fn(),
-            addEventListener: jest.fn((event, callback) => {})
+            addEventListener: jest.fn((_event, _callback) => {})
         } as unknown as HTMLInputElement
         ;(createCCFileInput as jest.Mock).mockReturnValue(mockFileInput)
     })

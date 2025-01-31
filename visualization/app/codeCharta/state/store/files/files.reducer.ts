@@ -45,9 +45,8 @@ function insertIntoSortedState(state: FileState[], file: CCFile) {
     const fileState = { file, selectedAs: FileSelectionState.None }
     if (index === -1) {
         return [...state, fileState]
-    } else {
-        return [...state.slice(0, index), fileState, ...state.slice(index)]
     }
+    return [...state.slice(0, index), fileState, ...state.slice(index)]
 }
 
 function greaterEqualThan(fileA: CCFile, fileB: CCFile): boolean {
