@@ -9,7 +9,7 @@ import {
     setStandardByNames,
     switchReferenceAndComparison
 } from "./files.actions"
-import { TEST_DELTA_MAP_A, TEST_DELTA_MAP_B } from "../../../util/dataMocks"
+import { TEST_DELTA_MAP_A, TEST_DELTA_MAP_B, TEST_FILE_DATA } from "../../../util/dataMocks"
 import { isDeltaState, isPartialState } from "../../../model/files/files.helper"
 import { FileSelectionState, FileState } from "../../../model/files/files"
 import { clone } from "../../../util/clone"
@@ -30,6 +30,65 @@ describe("files", () => {
             const result = files(state, setFiles({ value: newFiles }))
 
             expect(result).toEqual(newFiles)
+        })
+
+        it("should set new files and sort them in descending order by name and checksum", () => {
+            const newFiles: FileState[] = [
+                {
+                    file: { ...TEST_FILE_DATA, fileMeta: { ...TEST_FILE_DATA.fileMeta, fileName: "B", fileChecksum: "1" } },
+                    selectedAs: FileSelectionState.Partial
+                },
+                {
+                    file: { ...TEST_FILE_DATA, fileMeta: { ...TEST_FILE_DATA.fileMeta, fileName: "A", fileChecksum: "2" } },
+                    selectedAs: FileSelectionState.Partial
+                },
+                {
+                    file: { ...TEST_FILE_DATA, fileMeta: { ...TEST_FILE_DATA.fileMeta, fileName: "C", fileChecksum: "3" } },
+                    selectedAs: FileSelectionState.Partial
+                },
+                {
+                    file: { ...TEST_FILE_DATA, fileMeta: { ...TEST_FILE_DATA.fileMeta, fileName: "B", fileChecksum: "4" } },
+                    selectedAs: FileSelectionState.Partial
+                }
+            ]
+
+            const result = files(state, setFiles({ value: newFiles }))
+
+            expect(result.length).toBe(4)
+            expect(result[0].file.fileMeta.fileName).toBe("A")
+            expect(result[0].file.fileMeta.fileChecksum).toBe("2")
+            expect(result[1].file.fileMeta.fileName).toBe("B")
+            expect(result[1].file.fileMeta.fileChecksum).toBe("1")
+            expect(result[2].file.fileMeta.fileName).toBe("B")
+            expect(result[2].file.fileMeta.fileChecksum).toBe("4")
+            expect(result[3].file.fileMeta.fileName).toBe("C")
+            expect(result[3].file.fileMeta.fileChecksum).toBe("3")
+        })
+    })
+
+    describe("Action: ADD_FILE", () => {
+        it("should add a file and sort the files in descending order by name and checksum", () => {
+            const newFile1 = { ...TEST_FILE_DATA, fileMeta: { ...TEST_FILE_DATA.fileMeta, fileName: "B", fileChecksum: "1" } }
+            const newFile2 = { ...TEST_FILE_DATA, fileMeta: { ...TEST_FILE_DATA.fileMeta, fileName: "A", fileChecksum: "2" } }
+            const newFile3 = { ...TEST_FILE_DATA, fileMeta: { ...TEST_FILE_DATA.fileMeta, fileName: "C", fileChecksum: "3" } }
+            const newFile4 = { ...TEST_FILE_DATA, fileMeta: { ...TEST_FILE_DATA.fileMeta, fileName: "B", fileChecksum: "4" } }
+
+            state = files(state, addFile({ file: newFile1 }))
+            state = files(state, addFile({ file: newFile2 }))
+            state = files(state, addFile({ file: newFile3 }))
+            const result = files(state, addFile({ file: newFile4 }))
+
+            expect(result.length).toBe(6)
+            expect(result[0].file.fileMeta.fileName).toBe("A")
+            expect(result[0].file.fileMeta.fileChecksum).toBe("2")
+            expect(result[1].file.fileMeta.fileName).toBe("B")
+            expect(result[1].file.fileMeta.fileChecksum).toBe("1")
+            expect(result[2].file.fileMeta.fileName).toBe("B")
+            expect(result[2].file.fileMeta.fileChecksum).toBe("4")
+            expect(result[3].file.fileMeta.fileName).toBe("C")
+            expect(result[3].file.fileMeta.fileChecksum).toBe("3")
+            expect(result[4].file.fileMeta.fileName).toBe("fileA")
+            expect(result[5].file.fileMeta.fileName).toBe("fileB")
         })
     })
 
