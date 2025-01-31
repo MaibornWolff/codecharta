@@ -1,4 +1,4 @@
-import { addItemToArray, compareContent, removeItemFromArray } from "./arrayHelper"
+import { addItemToArray, compareContentIgnoringOrder, removeItemFromArray } from "./arrayHelper"
 
 function mutateObject(object: Record<string, number>) {
     object.x = 10_000
@@ -41,7 +41,7 @@ describe("arrayHelper", () => {
         })
     })
 
-    describe("compareContent", () => {
+    describe("compareContentIgnoringOrder", () => {
         it("should return true for arrays with the same contents", () => {
             const array1 = [
                 { x: 1, y: 2 },
@@ -52,7 +52,7 @@ describe("arrayHelper", () => {
                 { x: 3, y: 4 }
             ]
 
-            const result = compareContent(array1, array2)
+            const result = compareContentIgnoringOrder(array1, array2)
 
             expect(result).toBe(true)
         })
@@ -61,7 +61,7 @@ describe("arrayHelper", () => {
             const array1 = [{ x: 1, y: 2 }]
             const array2 = [{ x: 3, y: 4 }]
 
-            const result = compareContent(array1, array2)
+            const result = compareContentIgnoringOrder(array1, array2)
 
             expect(result).toBe(false)
         })
@@ -76,7 +76,7 @@ describe("arrayHelper", () => {
                 { x: 3, y: 4 }
             ]
 
-            const result = compareContent(array1, array2)
+            const result = compareContentIgnoringOrder(array1, array2)
 
             expect(result).toBe(true)
         })
@@ -88,8 +88,8 @@ describe("arrayHelper", () => {
                 { x: 3, y: 4 }
             ]
 
-            const result1 = compareContent(array1, array2)
-            const result2 = compareContent(array2, array1)
+            const result1 = compareContentIgnoringOrder(array1, array2)
+            const result2 = compareContentIgnoringOrder(array2, array1)
 
             expect(result1).toBe(false)
             expect(result2).toBe(false)
@@ -99,7 +99,7 @@ describe("arrayHelper", () => {
             const array1 = []
             const array2 = []
 
-            const result = compareContent(array1, array2)
+            const result = compareContentIgnoringOrder(array1, array2)
 
             expect(result).toBe(true)
         })
@@ -116,8 +116,8 @@ describe("arrayHelper", () => {
                 { x: 1, y: 3 }
             ]
 
-            const result1 = compareContent(array1, array2)
-            const result2 = compareContent(array2, array1)
+            const result1 = compareContentIgnoringOrder(array1, array2)
+            const result2 = compareContentIgnoringOrder(array2, array1)
 
             expect(result1).toBe(false)
             expect(result2).toBe(false)

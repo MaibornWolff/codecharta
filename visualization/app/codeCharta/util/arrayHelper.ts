@@ -26,7 +26,7 @@ export function addItemsToArray<T>(array: T[], items: T[]): T[] {
     return newArray
 }
 
-export function compareContent<T>(array1: T[], array2: T[]): boolean {
+export function compareContentIgnoringOrder<T>(array1: T[], array2: T[]): boolean {
     if (array1.length !== array2.length) {
         return false
     }
