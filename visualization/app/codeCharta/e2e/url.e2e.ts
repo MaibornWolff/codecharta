@@ -78,7 +78,7 @@ describe("codecharta", () => {
     it("should load data when file parameters in url are valid", async () => {
         await mockResponses()
         await goto(`${CC_URL}?file=fileOne.json&file=fileTwo.json`)
-        await checkAllFileNames(["Sample Project with Edges", "Sample Project"])
+        await checkAllFileNames(["Sample Project", "Sample Project with Edges"])
     })
 
     it("should throw errors when file parameters in url are invalid and load sample data instead", async () => {
