@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Added
 
 - Add a cross-hair when hovering over the color quantile diagram [#3827](https://github.com/MaibornWolff/codecharta/pull/3827)
+- Maps are always shown and rendered in alphabetical order [#3905](https://github.com/MaibornWolff/codecharta/pull/3905)
 
 ### Changed
 
