@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Changed
 
 - Increased the size of the color quantile diagram [#3827](https://github.com/MaibornWolff/codecharta/pull/3827)
+- Rename the "Reset camera..."-settings-button to make it more clear what it does [#3906](https://github.com/MaibornWolff/codecharta/pull/3906)
 
 ### Fixed 🐞
 
