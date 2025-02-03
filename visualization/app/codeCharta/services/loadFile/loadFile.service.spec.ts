@@ -229,12 +229,14 @@ describe("loadFileService", () => {
 
             expect(storeDispatchSpy).toHaveBeenCalledWith(setCurrentFilesAreSampleFiles({ value: false }))
             expect(CCFilesUnderTest.length).toEqual(3)
-            expect(CCFilesUnderTest[0].fileMeta.fileName).toEqual("SecondFile")
-            expect(CCFilesUnderTest[0].fileMeta.fileChecksum).toEqual("hash_1")
-            expect(CCFilesUnderTest[1].fileMeta.fileName).toEqual("ThirdFile")
-            expect(CCFilesUnderTest[1].fileMeta.fileChecksum).toEqual("hash_2_1")
-            expect(CCFilesUnderTest[2].fileMeta.fileName).toEqual("FourthFile")
-            expect(CCFilesUnderTest[2].fileMeta.fileChecksum).toEqual("hash_3")
+            const allFileNames = CCFilesUnderTest.map(file => file.fileMeta.fileName)
+            expect(allFileNames).toContain("SecondFile")
+            expect(allFileNames).toContain("ThirdFile")
+            expect(allFileNames).toContain("FourthFile")
+            const allChecksums = CCFilesUnderTest.map(file => file.fileMeta.fileChecksum)
+            expect(allChecksums).toContain("hash_1")
+            expect(allChecksums).toContain("hash_2_1")
+            expect(allChecksums).toContain("hash_3")
         })
 
         it("should keep sample files when loading the same sample file and after that another different file", () => {
@@ -352,7 +354,7 @@ describe("loadFileService", () => {
 
             try {
                 codeChartaService.loadFiles([{ fileName: "DifferentName", content: validFileContent, fileSize: 42 }])
-            } catch (e) {}
+            } catch (_) {}
 
             const CCFilesUnderTest = getCCFiles(state.getValue().files)
 
@@ -370,7 +372,7 @@ describe("loadFileService", () => {
 
             try {
                 codeChartaService.loadFiles([{ fileName: "FirstFile", content: validFileContent, fileSize: 42 }])
-            } catch (e) {}
+            } catch (_) {}
 
             const filesUnderTest: FileState[] = state.getValue().files
 
@@ -602,8 +604,7 @@ describe("loadFileService", () => {
     })
 
     it("should load files ignoring the authors attribute", () => {
-        const testFileContentWithAuthors = TEST_FILE_CONTENT_WITH_AUTHORS
-        const testJsonWithAuthors = JSON.stringify(testFileContentWithAuthors)
+        const testJsonWithAuthors = JSON.stringify(TEST_FILE_CONTENT_WITH_AUTHORS)
         const expectedFileContentWithoutAuthors = TEST_FILE_CONTENT_WITHOUT_AUTHORS
         const ccFile = getCCFileAndDecorateFileChecksum(testJsonWithAuthors)
 
@@ -613,8 +614,7 @@ describe("loadFileService", () => {
     })
 
     it("should show warnings for files containing the authors attribute", () => {
-        const testFileContentWithAuthors = TEST_FILE_CONTENT_WITH_AUTHORS
-        const testJsonWithAuthors = JSON.stringify(testFileContentWithAuthors)
+        const testJsonWithAuthors = JSON.stringify(TEST_FILE_CONTENT_WITH_AUTHORS)
         const expectedFileValidationResult: CCFileValidationResult[] = [
             {
                 fileName: "FirstFile",

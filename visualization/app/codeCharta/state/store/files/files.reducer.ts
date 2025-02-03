@@ -13,13 +13,12 @@ import { CCFile } from "../../../codeCharta.model"
 import { FileSelectionState, FileState } from "../../../model/files/files"
 import { isEqual } from "../../../model/files/files.helper"
 import { createReducer, on } from "@ngrx/store"
-import { setState } from "../util/setState.reducer.factory"
 
 export const defaultFiles: FileState[] = []
 export const files = createReducer(
     defaultFiles,
-    on(setFiles, setState(defaultFiles)),
-    on(addFile, (state, action) => [...state, { file: action.file, selectedAs: FileSelectionState.None }]),
+    on(setFiles, (state, action) => setFileStatesState(state, action.value)),
+    on(addFile, (state, action) => insertIntoSortedState(state, action.file)),
     on(removeFiles, (state, action) => removeFilesFromState(state, action.fileNames)),
     on(setDelta, (state, action) => setDeltaState(state, action.referenceFile, action.comparisonFile)),
     on(setDeltaReference, (state, action) => setDeltaReferenceState(state, action.file)),
@@ -33,6 +32,32 @@ export const files = createReducer(
     ),
     on(setStandardByNames, (state, action) => setStandardByNamesState(state, action.fileNames))
 )
+
+function setFileStatesState(_: FileState[], fileStates: FileState[]): FileState[] {
+    if (fileStates === undefined) {
+        return defaultFiles
+    }
+    return [...fileStates].sort((fileStateA, fileStateB) => (greaterEqualThan(fileStateA.file, fileStateB.file) ? 1 : -1))
+}
+
+function insertIntoSortedState(state: FileState[], file: CCFile) {
+    const index = state.findIndex(fileState => greaterEqualThan(fileState.file, file))
+    const fileState = { file, selectedAs: FileSelectionState.None }
+    if (index === -1) {
+        return [...state, fileState]
+    }
+    return [...state.slice(0, index), fileState, ...state.slice(index)]
+}
+
+function greaterEqualThan(fileA: CCFile, fileB: CCFile): boolean {
+    if (fileA.fileMeta.fileName > fileB.fileMeta.fileName) {
+        return true
+    }
+    if (fileA.fileMeta.fileName < fileB.fileMeta.fileName) {
+        return false
+    }
+    return fileA.fileMeta.fileChecksum >= fileB.fileMeta.fileChecksum
+}
 
 function removeFilesFromState(state: FileState[], fileNames: string[]): FileState[] {
     if (fileNames.length === 0) {
