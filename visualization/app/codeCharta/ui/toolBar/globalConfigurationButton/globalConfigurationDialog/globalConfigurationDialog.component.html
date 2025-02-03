@@ -11,8 +11,9 @@
         <mat-slide-toggle [checked]="hideFlatBuildings$ | async" (change)="handleHideFlatBuildingsChanged($event)">
             Hide Flattened Buildings
         </mat-slide-toggle>
-        <mat-slide-toggle [checked]="resetCameraIfNewFileIsLoaded$ | async" (change)="handleResetCameraIfNewFileIsLoadedChanged($event)">
-            Reset camera when map layout changes
+        <mat-slide-toggle [checked]="resetCameraIfNewFileIsLoaded$ | async" (change)="handleResetCameraIfNewFileIsLoadedChanged($event)"
+                          title="The camera is reset to the default position when any change in the map layout is made. Layout changes could be area changes, file changes, layout algorithm changes, focussing, excluding etc.">
+            Reset camera when map layout changes <i class="fa fa-info-circle"></i>
         </mat-slide-toggle>
         <mat-slide-toggle [checked]="isWhiteBackground$ | async" (change)="handleIsWhiteBackgroundChanged($event)">
             White Background
