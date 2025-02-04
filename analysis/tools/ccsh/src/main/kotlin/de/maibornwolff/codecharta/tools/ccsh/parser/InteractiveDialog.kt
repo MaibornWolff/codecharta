@@ -2,6 +2,7 @@ package de.maibornwolff.codecharta.tools.ccsh.parser
 
 import com.varabyte.kotter.foundation.session
 import com.varabyte.kotter.runtime.RunScope
+import com.varabyte.kotter.runtime.Session
 import de.maibornwolff.codecharta.tools.inquirer.InputType
 import de.maibornwolff.codecharta.tools.inquirer.myPromptCheckbox
 import de.maibornwolff.codecharta.tools.inquirer.myPromptConfirm
@@ -12,109 +13,111 @@ import java.nio.file.Paths
 
 class InteractiveDialog {
     companion object {
-        internal val askParserToExecute: (List<String>, suspend RunScope.() -> Unit) -> String = { parserOptions, parserCallback ->
-            var selectedParser = ""
-            session {
-                selectedParser = myPromptList(
-                    message = "Which parser do you want to execute?",
-                    choices = parserOptions,
-                    onInputReady = parserCallback
-                )
-            }
-            selectedParser
+        internal fun Session.askParserToExecute(parserOptions: List<String>, parserCallback: suspend RunScope.() -> Unit = {}): String {
+            return myPromptList(
+                message = "Which parser do you want to execute?",
+                choices = parserOptions,
+                onInputReady = parserCallback
+            )
         }
 
         fun callAskParserToExecute(parserOptions: List<String>): String {
-            return askParserToExecute(parserOptions) {}
+            var selectedParser = ""
+            session {
+                selectedParser = askParserToExecute(parserOptions)
+            }
+            return selectedParser
         }
 
-        internal val askForPath: (suspend RunScope.() -> Unit) -> String = { pathCallback ->
-            var inputFilePath = ""
+        internal fun Session.askForPath(pathCallback: suspend RunScope.() -> Unit = {}): String {
             println("You can provide a directory path / file path / sonar url.")
-            session {
-                inputFilePath = myPromptInput(
-                    message = "Which path should be scanned?",
-                    hint = Paths.get("").toAbsolutePath().toString(),
-                    allowEmptyInput = false,
-                    onInputReady = pathCallback
-                )
-            }
-            inputFilePath
+            return myPromptInput(
+                message = "Which path should be scanned?",
+                hint = Paths.get("").toAbsolutePath().toString(),
+                allowEmptyInput = false,
+                onInputReady = pathCallback
+            )
         }
 
         fun callAskForPath(): String {
-            return askForPath {}
+            var inputFilePath = ""
+            println("You can provide a directory path / file path / sonar url.")
+            session {
+                inputFilePath = askForPath()
+            }
+            return inputFilePath
         }
 
-        internal val askApplicableParser: (List<String>, suspend RunScope.() -> Unit) -> List<String> =
-            { applicableParsers, applicableCallback ->
-                var selectedParsers: List<String> = listOf()
-                session {
-                    selectedParsers = myPromptCheckbox(
-                        message = "Choose from this list of applicable parsers. You can select individual parsers by pressing spacebar.",
-                        choices = applicableParsers,
-                        allowEmptyInput = true,
-                        onInputReady = applicableCallback
-                    )
-                }
-                selectedParsers
+        internal fun Session.askApplicableParser(
+            applicableParsers: List<String>,
+            applicableCallback: suspend RunScope.() -> Unit = {
             }
+        ): List<String> {
+            return myPromptCheckbox(
+                message = "Choose from this list of applicable parsers. You can select individual parsers by pressing spacebar.",
+                choices = applicableParsers,
+                allowEmptyInput = true,
+                onInputReady = applicableCallback
+            )
+        }
 
         fun callAskApplicableParser(applicableParsers: List<String>): List<String> {
-            return askApplicableParser(applicableParsers) {}
+            var selectedParsers: List<String> = listOf()
+            session {
+                selectedParsers = askApplicableParser(applicableParsers)
+            }
+            return selectedParsers
         }
 
-        internal val askRunParsers: (suspend RunScope.() -> Unit) -> Boolean = { runCallback ->
-            var shouldRunConfiguredParsers = true
-
-            session {
-                shouldRunConfiguredParsers = myPromptConfirm(
-                    message = "Do you want to run all configured parsers now?",
-                    onInputReady = runCallback
-                )
-            }
-            shouldRunConfiguredParsers
+        internal fun Session.askRunParsers(runCallback: suspend RunScope.() -> Unit = {}): Boolean {
+            return myPromptConfirm(
+                message = "Do you want to run all configured parsers now?",
+                onInputReady = runCallback
+            )
         }
 
         fun callAskRunParsers(): Boolean {
-            return askRunParsers {}
+            var shouldRunConfiguredParsers = true
+            session {
+                shouldRunConfiguredParsers = askRunParsers()
+            }
+            return shouldRunConfiguredParsers
         }
 
-        internal val askForMerge: (suspend RunScope.() -> Unit) -> Boolean = { mergeCallback ->
-            var shouldMerge = false
-
-            session {
-                shouldMerge = myPromptConfirm(
-                    message = "Do you want to merge all generated files into one result now?",
-                    onInputReady = mergeCallback
-                )
-            }
-            shouldMerge
+        internal fun Session.askForMerge(mergeCallback: suspend RunScope.() -> Unit = {}): Boolean {
+            return myPromptConfirm(
+                message = "Do you want to merge all generated files into one result now?",
+                onInputReady = mergeCallback
+            )
         }
 
         fun callAskForMerge(): Boolean {
-            return askForMerge {}
+            var shouldMerge = false
+            session {
+                shouldMerge = askForMerge()
+            }
+            return shouldMerge
         }
 
-        internal val askJsonPath: (suspend RunScope.() -> Unit) -> String = { jsonCallback ->
+        internal fun Session.askJsonPath(jsonCallback: suspend RunScope.() -> Unit = {}): String {
             println(
                 "If you did not output all cc.json files into the same folder, " +
                     "you need to manually move them there before trying to merge."
             )
-            var ccJsonFilePath = ""
-            session {
-                ccJsonFilePath = myPromptInput(
-                    message = "What is the folder path containing all cc.json files?",
-                    hint = Paths.get("").toAbsolutePath().toString(),
-                    inputValidator = InputValidator.isFileOrFolderValid(InputType.FOLDER, listOf()),
-                    onInputReady = jsonCallback
-                )
-            }
-            ccJsonFilePath
+            return myPromptInput(
+                message = "What is the folder path containing all cc.json files?",
+                hint = Paths.get("").toAbsolutePath().toString(),
+                inputValidator = InputValidator.isFileOrFolderValid(InputType.FOLDER, listOf()),
+                onInputReady = jsonCallback
+            )
         }
 
         fun callAskJsonPath(): String {
-            return askJsonPath {}
+            var ccJsonFilePath = ""
+            session {
+                ccJsonFilePath = askJsonPath()
+            }
+            return ccJsonFilePath
         }
     }
 }
