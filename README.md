@@ -5,7 +5,7 @@
 
   <p>
     Latest Release: <br>
-    Analysis <a href="https://github.com/MaibornWolff/codecharta/releases/tag/ana-1.130.0">1.130.0</a> | Visualization <a href="https://github.com/MaibornWolff/codecharta/releases/tag/vis-1.131.2">1.131.2</a>
+    Analysis <a href="https://github.com/MaibornWolff/codecharta/releases/tag/ana-1.130.0">1.130.0</a> | Visualization <a href="https://github.com/MaibornWolff/codecharta/releases/tag/vis-1.132.0">1.132.0</a>
 
 [comment]: ##################################################################################
 [comment]: <Ensure that the words 'latest release' are above the line with the links>
