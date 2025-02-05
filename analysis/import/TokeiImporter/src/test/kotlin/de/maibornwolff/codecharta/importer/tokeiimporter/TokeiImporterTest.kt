@@ -9,6 +9,7 @@ import io.mockk.mockkObject
 import io.mockk.unmockkAll
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import picocli.CommandLine
@@ -139,6 +140,7 @@ class TokeiImporterTest {
 
         val project = ProjectDeserializer.deserializeProject(cliResult)
         assertThat(project.rootNode.children.size).isEqualTo(2)
+        assertThat(project.rootNode.name).isEqualTo("root")
         assertThat(project.rootNode.children.toMutableList()[0].name).isEqualTo("make_release.sh")
         assertThat(project.rootNode.children.toMutableList()[0].attributes["rloc"]).isEqualTo(500.0)
         assertThat(project.rootNode.children.toMutableList()[1].attributes["rloc"]).isNull()
@@ -161,6 +163,32 @@ class TokeiImporterTest {
         assertThat(project.rootNode.children.first().name).isEqualTo("bar")
         assertThat(project.rootNode.children.first().children.size).isEqualTo(1)
         assertThat(project.rootNode.children.first().children.first().name).isEqualTo("CHANGELOG.md")
+    }
+
+    @Test
+    fun `tokei projectStructure stays the same independent of execution place` () {
+        val cliResult1 = executeForOutput("", arrayOf("src/test/resources/from_TokeiImporter_folder.json")) //tokei . -o json --exclude "*.json" > src/test/resources/with_dot.json
+        val cliResult2 = executeForOutput("", arrayOf("src/test/resources/one_folder_up.json", "-r=TokeiImporter"))//tokei TokeiImporter -o json --exclude "*.json" > TokeiImporter/src/test/resources/one_folder_up.json;
+
+        val project1 = ProjectDeserializer.deserializeProject(cliResult1)
+        val project2 = ProjectDeserializer.deserializeProject(cliResult2)
+
+        assertTrue(project1.rootNode.name == project2.rootNode.name)
+        assertThat(project1.rootNode.children.size).isEqualTo(project2.rootNode.children.size)
+        assertThat(project1.rootNode.children.map { it.name }).containsAll(project2.rootNode.children.map { it.name })
+    }
+
+    @Test
+    fun `tokei projectStructure stays the same with and without dot` (){
+        val cliResult1 = executeForOutput("", arrayOf("src/test/resources/without_dot.json")) //tokei -o json --exclude "*.json" > src/test/resources/without_dot.json;
+        val cliResult2 = executeForOutput("", arrayOf("src/test/resources/from_TokeiImporter_folder.json")) //tokei . -o json --exclude "*.json" > src/test/resources/with_dot.json
+
+        val project1 = ProjectDeserializer.deserializeProject(cliResult1)
+        val project2 = ProjectDeserializer.deserializeProject(cliResult2)
+
+        assertTrue(project1.rootNode.name == project2.rootNode.name)
+        assertTrue(project1.rootNode.children.size == project2.rootNode.children.size)
+        assertThat(project1.rootNode.children.map { it.name }).containsAll(project2.rootNode.children.map { it.name })
     }
 
     @Test
