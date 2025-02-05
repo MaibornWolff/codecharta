@@ -7,12 +7,12 @@ cp -R visualization/dist/webpack/ gh-pages/visualization/app/
 
 analysis/gradlew -p analysis/ installDist
 
-mkdir gh-pages/demo_files
+mkdir gh-pages/temp_dir
 
-git ls-files > gh-pages/demo_files/file-name-list.txt
-git log --numstat --raw --topo-order --reverse -m > gh-pages/demo_files/git.log
+git ls-files > gh-pages/temp_dir/file-name-list.txt
+git log --numstat --raw --topo-order --reverse -m > gh-pages/temp_dir/git.log
 
-cd gh-pages/demo_files || exit
+cd gh-pages/temp_dir || exit
 CCSH=../../analysis/build/install/codecharta-analysis/bin/ccsh
 
 # Data for for both visualization and analysis
@@ -38,4 +38,4 @@ $CCSH merge -o ../visualization/app/codecharta_analysis.cc.json codecharta_sonar
 
 
 cd ../..
-rm -r gh-pages/demo_files
+rm -r gh-pages/temp_dir
