@@ -19,14 +19,14 @@ It supports a large amount of different languages.
 
 ## Usage and Parameters
 
-| Parameter                          | Description                                                                 |
-| ---------------------------------- | --------------------------------------------------------------------------- |
-| `<FILE>`                           | Tokei generated JSON file                                                   |
-| `-h, --help`                       | displays this help and exits                                                |
-| `-o, --output-file=<outputFile>`   | output File (or empty for stdout)                                           |
-| `-r, --root-name=<rootName>`       | root folder as specified when executing tokei                               |
-| `--path-separator=<pathSeparator>` | path separator, leave empty for auto-detection UNIX/Windows (default = '/') |
-| `-nc, --not-compressed`            | don't compress output to gzip, output JSON instead                          |
+| Parameter                          | Description                                                                                                                                                                                              |
+| ---------------------------------- |----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `<FILE>`                           | Tokei generated JSON file                                                                                                                                                                                |
+| `-h, --help`                       | displays this help and exits                                                                                                                                                                             |
+| `-o, --output-file=<outputFile>`   | output File (or empty for stdout)                                                                                                                                                                        |
+| `-r, --root-name=<rootName>`       | root folder as specified when executing tokei. Setting this parameter is important for later merging. It ensures that the resulting structure matches the structure produced by other importers/parsers. |
+| `--path-separator=<pathSeparator>` | path separator, leave empty for auto-detection UNIX/Windows (default = '/')                                                                                                                              |
+| `-nc, --not-compressed`            | don't compress output to gzip, output JSON instead                                                                                                                                                       |
 
 ```
 Usage: ccsh tokeiimporter [-h] [--path-separator=<pathSeparator>]
@@ -36,13 +36,16 @@ Usage: ccsh tokeiimporter [-h] [--path-separator=<pathSeparator>]
 
 ## Examples
 
-```
-ccsh tokeiimporter tokei_results.json --path-separator=\\ -o output.cc.json
+```bash
+# Tokei
+tokei yourDirectory/yourCode -o json > tokei_results.json
+# CodeCharta
+ccsh tokeiimporter tokei_results.json --path-separator=\\ -r yourDirectory/yourCode -o output.cc.json
 ```
 
 Results of Tokei can also directly be piped into the Tokei importer like this:
 
-```
+```bash
 tokei yourCode -o json | ccsh tokeiimporter -r yourCode
 ```
 
@@ -57,7 +60,7 @@ If you want to build it yourself, check the repository directly or this guide:
 1. Make sure you have [Rust](https://www.rust-lang.org/tools/install)
    and the C++ Build Tools of Visual Studio installed.
 2. Build Tokei from source
-   ```
+   ```bash
    $ git clone https://github.com/XAMPPRocky/tokei.git
    $ cd tokei
    $ cargo build --release
