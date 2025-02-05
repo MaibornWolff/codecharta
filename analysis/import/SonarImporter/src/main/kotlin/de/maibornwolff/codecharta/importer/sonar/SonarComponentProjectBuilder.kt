@@ -117,13 +117,16 @@ class SonarComponentProjectBuilder(
     private fun createParentPath(component: Component): Path {
         return if (!usePath && component.key != null) {
             val extendedPath = component.key.replace(':', '/')
-            PathFactory.fromFileSystemPath(extendedPath.substring(0, extendedPath.lastIndexOf('/') + 1))
+            PathFactory.fromFileSystemPath(getCuttedPath(extendedPath))
         } else if (usePath && component.path != null) {
-            val path = component.path
-            PathFactory.fromFileSystemPath(path.substring(0, path.lastIndexOf('/') + 1))
+            PathFactory.fromFileSystemPath(getCuttedPath(component.path))
         } else {
             Path.trivialPath()
         }
+    }
+
+    private fun getCuttedPath(path: String): String {
+        return path.substring(path.indexOf('/') + 1, path.lastIndexOf('/') + 1)
     }
 
     private fun setTotalComponents(components: ComponentMap) {

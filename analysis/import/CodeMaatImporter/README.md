@@ -29,15 +29,13 @@ Usage: ccsh codemaatimport [-h] [-nc] [-o=<outputFile>] FILE...
 1. Create VCS Log file from your project, e.g. with Git
 
    ````bash
-   git log --pretty=format:'[%h] %an %ad %s' --since=<YYYY/MM/DD> --date=short --numstat > project.log ```
-
+   git log --pretty=format:'[%h] %an %ad %s' --since=2023/01/01 --date=short --numstat > project.log
    ````
 
 2. Analyse the Log with [CodeMaat](https://github.com/adamtornhill/code-maat) in 'coupling' mode
 
    ```bash
    maat -c git -l project.log -a coupling > edges.csv
-
    ```
 
 3. Convert csv file to cc.json format with CodeMaatImporter
