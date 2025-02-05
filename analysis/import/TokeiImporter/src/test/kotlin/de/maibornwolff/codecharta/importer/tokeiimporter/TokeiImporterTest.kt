@@ -150,11 +150,7 @@ class TokeiImporterTest {
 
     @Test
     fun `tokei pre 12 projectStructure is correct`() {
-        val input =
-            File("src/test/resources/tokei_pre12_unix_root.json").bufferedReader().readLines()
-                .joinToString(separator = "") { it }
-
-        val cliResult = executeForOutput(input)
+        val cliResult = executeForOutput("", arrayOf("src/test/resources/tokei_pre12_unix_root.json", "-r=foo"))
 
         val project = ProjectDeserializer.deserializeProject(cliResult)
         assertThat(project.rootNode.children.size).isEqualTo(1)
@@ -167,14 +163,16 @@ class TokeiImporterTest {
 
     @Test
     fun `tokei projectStructure stays the same independent of execution place`() {
+        // tokei . -o json --exclude "*.json" > src/test/resources/with_dot.json
         val cliResult1 = executeForOutput(
             "",
             arrayOf("src/test/resources/from_TokeiImporter_folder.json")
-        ) // tokei . -o json --exclude "*.json" > src/test/resources/with_dot.json
+        )
+        // tokei TokeiImporter -o json --exclude "*.json" > TokeiImporter/src/test/resources/one_folder_up.json;
         val cliResult2 = executeForOutput(
             "",
             arrayOf("src/test/resources/one_folder_up.json", "-r=TokeiImporter")
-        ) // tokei TokeiImporter -o json --exclude "*.json" > TokeiImporter/src/test/resources/one_folder_up.json;
+        )
 
         val project1 = ProjectDeserializer.deserializeProject(cliResult1)
         val project2 = ProjectDeserializer.deserializeProject(cliResult2)
@@ -185,15 +183,17 @@ class TokeiImporterTest {
     }
 
     @Test
-    fun `tokei projectStructure stays the same with and without dot`()  {
+    fun `tokei projectStructure stays the same with and without dot`() {
+        // tokei -o json --exclude "*.json" > src/test/resources/without_dot.json;
         val cliResult1 = executeForOutput(
             "",
             arrayOf("src/test/resources/without_dot.json")
-        ) // tokei -o json --exclude "*.json" > src/test/resources/without_dot.json;
+        )
+        // tokei . -o json --exclude "*.json" > src/test/resources/with_dot.json
         val cliResult2 = executeForOutput(
             "",
             arrayOf("src/test/resources/from_TokeiImporter_folder.json")
-        ) // tokei . -o json --exclude "*.json" > src/test/resources/with_dot.json
+        )
 
         val project1 = ProjectDeserializer.deserializeProject(cliResult1)
         val project2 = ProjectDeserializer.deserializeProject(cliResult2)
