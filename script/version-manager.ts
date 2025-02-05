@@ -142,9 +142,10 @@ class VersionManager {
                 // Store changelog entries before modifying the file
                 unreleasedChangelogSection = this.extractChangelogSection(changelog, "unreleased")
 
-                const updatedChangelog = changelog
-                    .replace("## [unreleased]", `## [${newVersion}] - ${date}`)
-                    .replace(/(# Changelog\n\n)/, `$1## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)\n\n`)
+                const updatedChangelog = changelog.replace(
+                    "## [unreleased]",
+                    `## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)\n\n## [${newVersion}] - ${date}`
+                )
                 fs.writeFileSync(changelogPath, updatedChangelog)
             } catch (error) {
                 throw new Error(`Failed to update changelog: ${error}`)
