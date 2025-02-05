@@ -2,6 +2,7 @@
 
 analysis/gradlew -p analysis/ installDist
 
+<<<<<<<< HEAD:.github/workflows/scripts/build_demo_files.sh
 mkdir temp_dir
 
 git ls-files > temp_dir/file-name-list.txt
@@ -9,6 +10,15 @@ git log --numstat --raw --topo-order --reverse -m > temp_dir/git.log
 
 cd temp_dir || exit
 CCSH=../analysis/build/install/codecharta-analysis/bin/ccsh
+========
+mkdir gh-pages/temp_dir
+
+git ls-files > gh-pages/temp_dir/file-name-list.txt
+git log --numstat --raw --topo-order --reverse -m > gh-pages/temp_dir/git.log
+
+cd gh-pages/temp_dir || exit
+CCSH=../../analysis/build/install/codecharta-analysis/bin/ccsh
+>>>>>>>> bb1a54a27 (Rename build demo file script #3910):script/build_demo_files.sh
 
 # Data for for both visualization and analysis
 $CCSH gitlogparser log-scan --git-log git.log --repo-files file-name-list.txt -o codecharta_git.cc.json -nc
@@ -32,5 +42,10 @@ $CCSH merge -o ../visualization/dist/webpack/codecharta_analysis.cc.json codecha
 $CCSH merge -o ../visualization/dist/webpack/codecharta_analysis.cc.json codecharta_sonar_mod.cc.json codecharta_git_mod.cc.json
 
 
+<<<<<<<< HEAD:.github/workflows/scripts/build_demo_files.sh
 cd ..
 rm -r temp_dir
+========
+cd ../..
+rm -r gh-pages/temp_dir
+>>>>>>>> bb1a54a27 (Rename build demo file script #3910):script/build_demo_files.sh
