@@ -96,7 +96,7 @@ class VersionManager {
             const prefix = normalizedRepo === "visualization" ? "vis" : "ana"
 
             let newVersion: string
-            let changelogEntries: string
+            let unreleasedChangelogSection: string
 
             // 1. Update version using npm
             try {
@@ -139,16 +139,8 @@ class VersionManager {
                 const changelogPath = `${normalizedRepo}/CHANGELOG.md`
                 const changelog = fs.readFileSync(changelogPath, "utf8")
 
-                if (!changelog.includes("## [unreleased]")) {
-                    throw new Error("Changelog must contain an unreleased section")
-                }
-
                 // Store changelog entries before modifying the file
-                changelogEntries = this.extractUnreleasedChangelog(changelog)
-
-                if (!changelogEntries.trim()) {
-                    throw new Error("No entries found in unreleased section")
-                }
+                unreleasedChangelogSection = this.extractChangelogSection(changelog, "unreleased")
 
                 const updatedChangelog = changelog
                     .replace("## [unreleased]", `## [${newVersion}] - ${date}`)
@@ -173,10 +165,10 @@ tags:
 title: ${displayName} version ${newVersion}
 ---
 
-{{page.title}} is live and ready for [download](https://github.com/MaibornWolff/codecharta/releases/tag/${prefix}-${newVersion}). 
+{{page.title}} is live and ready for [download](https://github.com/MaibornWolff/codecharta/releases/tag/${prefix}-${newVersion}).
 This version brings the following:
 
-${changelogEntries}`
+${unreleasedChangelogSection}`
 
                 const postsDir = "gh-pages/_posts/release"
                 this.ensureDirectoryExists(postsDir)
@@ -192,45 +184,13 @@ ${changelogEntries}`
         }
     }
 
-    private extractUnreleasedChangelog(changelog: string): string {
-        const lines = changelog.split("\n")
-        const startIndex = lines.findIndex(line => line.toLowerCase().startsWith("## [unreleased]"))
-        const endIndex = lines.findIndex((line, index) => index > startIndex && line.startsWith("## ["))
-
-        if (startIndex === -1 || endIndex === -1) {
-            throw new Error("Could not find unreleased section in changelog")
-        }
-
-        const content = lines
-            .slice(startIndex + 1, endIndex)
-            .join("\n")
-            .trim()
-
-        // Validate content
-        if (!content) {
-            throw new Error("Unreleased section is empty")
-        }
-
-        // Check for at least one change entry
-        if (!content.includes("###")) {
-            throw new Error("No change categories (###) found in unreleased section")
-        }
-
-        // Check for at least one bullet point
-        if (content.length === 0) {
-            throw new Error("Unreleased section is empty")
-        }
-
-        return content
-    }
-
-    private extractChangelogForVersion(changelog: string, version: string): string {
+    private extractChangelogSection(changelog: string, version: string): string {
         const lines = changelog.split("\n")
         const startIndex = lines.findIndex(line => line.includes(`## [${version}]`))
         const endIndex = lines.findIndex((line, index) => index > startIndex && line.startsWith("## ["))
 
         if (startIndex === -1 || endIndex === -1) {
-            throw new Error(`Could not find changelog section for version ${version}`)
+            throw new Error(`Could not find changelog section ${version}`)
         }
 
         const content = lines
@@ -239,7 +199,15 @@ ${changelogEntries}`
             .trim()
 
         if (!content) {
-            throw new Error(`Changelog section for version ${version} is empty`)
+            throw new Error(`Changelog section ${version} is empty`)
+        }
+
+        if (!content.includes("###")) {
+            throw new Error(`No change category (###) found in ${version} section`)
+        }
+
+        if (!content.includes("- ")) {
+            throw new Error(`No change entry found in ${version} section`)
         }
 
         return content
@@ -252,7 +220,7 @@ ${changelogEntries}`
             const changelogPath = `${normalizedRepo}/CHANGELOG.md`
             const changelog = fs.readFileSync(changelogPath, "utf8")
 
-            return version ? this.extractChangelogForVersion(changelog, version) : this.extractUnreleasedChangelog(changelog)
+            return version ? this.extractChangelogSection(changelog, version) : this.extractChangelogSection(changelog, "unreleased")
         } catch (error) {
             console.error(`Error extracting changelog: ${error}`)
             throw error
@@ -261,6 +229,7 @@ ${changelogEntries}`
 }
 
 // CLI interface
+// @ts-ignore
 if (import.meta.main) {
     const [command, ...args] = process.argv.slice(2)
     const manager = new VersionManager()
