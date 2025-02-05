@@ -69,12 +69,15 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
+      - name: Create Sample File for Web Demo
+        run: sh ./script/build_demo_files.sh
+
       # Deploy to GitHub Pages staging environment
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4.7.2
         with:
           token: ${{ secrets.DEPLOY_TOKEN }}
           branch: gh-pages
-          folder: visualization/dist/webpack
+          folder: gh-pages/visualization/app
           target-folder: stg/visualization
           clean: true
