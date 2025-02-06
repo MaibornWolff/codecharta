@@ -1,16 +1,12 @@
 package de.maibornwolff.codecharta.tools.ccsh.parser
 
-import com.github.kinquirer.KInquirer
-import com.github.kinquirer.components.promptCheckbox
-import com.github.kinquirer.components.promptInput
 import de.maibornwolff.codecharta.tools.ccsh.Ccsh
 import de.maibornwolff.codecharta.tools.ccsh.parser.repository.PicocliParserRepository
 import de.maibornwolff.codecharta.util.Logger
 import picocli.CommandLine
 import java.io.File
-import java.nio.file.Paths
 
-class InteractiveParserSuggestionDialog {
+class InteractiveParserSuggestion {
     companion object {
         fun offerAndGetInteractiveParserSuggestionsAndConfigurations(commandLine: CommandLine): Map<String, List<String>> {
             val applicableParsers = getApplicableInteractiveParsers(commandLine)
@@ -31,12 +27,7 @@ class InteractiveParserSuggestionDialog {
         }
 
         private fun getApplicableInteractiveParsers(commandLine: CommandLine): List<String> {
-            val inputFilePath: String =
-                KInquirer.promptInput(
-                    message = "Which path should be scanned?",
-                    hint = "You can provide a directory path / file path / sonar url.",
-                    default = Paths.get("").toAbsolutePath().toString()
-                )
+            val inputFilePath: String = InteractiveDialog.callAskForPath()
 
             val inputFile = File(inputFilePath)
             if (inputFilePath == "" || !isInputFileOrDirectory(inputFile)) {
@@ -56,11 +47,7 @@ class InteractiveParserSuggestionDialog {
         }
 
         private fun selectToBeExecutedInteractiveParsers(applicableParsers: List<String>): List<String> {
-            val selectedParsers =
-                KInquirer.promptCheckbox(
-                    message = "Choose from this list of applicable parsers. You can select individual parsers by pressing spacebar.",
-                    choices = applicableParsers
-                )
+            val selectedParsers: List<String> = InteractiveDialog.callAskApplicableParser(applicableParsers)
 
             if (selectedParsers.isEmpty()) {
                 Logger.info { "Did not select any parser to be configured!" }

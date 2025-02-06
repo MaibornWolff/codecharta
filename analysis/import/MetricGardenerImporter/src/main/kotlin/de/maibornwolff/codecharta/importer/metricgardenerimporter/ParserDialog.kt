@@ -1,53 +1,62 @@
 package de.maibornwolff.codecharta.importer.metricgardenerimporter
 
-import com.github.kinquirer.KInquirer
-import com.github.kinquirer.components.promptConfirm
-import com.github.kinquirer.components.promptInput
+import com.varabyte.kotter.foundation.session
+import com.varabyte.kotter.runtime.RunScope
+import com.varabyte.kotter.runtime.Session
+import de.maibornwolff.codecharta.serialization.FileExtension
+import de.maibornwolff.codecharta.tools.inquirer.InputType
+import de.maibornwolff.codecharta.tools.inquirer.myPromptConfirm
+import de.maibornwolff.codecharta.tools.inquirer.myPromptDefaultFileFolderInput
+import de.maibornwolff.codecharta.tools.inquirer.myPromptInput
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
-import de.maibornwolff.codecharta.util.InputHelper
-import java.io.File
 
 class ParserDialog {
     companion object : ParserDialogInterface {
         override fun collectParserArgs(): List<String> {
-            val isJsonFile: Boolean =
-                KInquirer.promptConfirm(
-                    message = "Do you already have a MetricGardener json-File?",
-                    default = false
+            var res = listOf<String>()
+            session { res = myCollectParserArgs() }
+            return res
+        }
+
+        internal fun Session.myCollectParserArgs(
+            jsonCallback: suspend RunScope.() -> Unit = {},
+            fileCallback: suspend RunScope.() -> Unit = {},
+            outFileCallback: suspend RunScope.() -> Unit = {},
+            compressCallback: suspend RunScope.() -> Unit = {}
+        ): List<String> {
+            val isJsonFile: Boolean = myPromptConfirm(
+                message = "Do you already have a MetricGardener json-File?",
+                onInputReady = jsonCallback
+            )
+
+            val inputFileName: String = if (isJsonFile) {
+                myPromptDefaultFileFolderInput(
+                    allowEmptyInput = false,
+                    InputType.FILE,
+                    listOf(FileExtension.JSON),
+                    onInputReady = fileCallback
                 )
+            } else {
+                myPromptDefaultFileFolderInput(allowEmptyInput = false, InputType.FOLDER, listOf(), onInputReady = fileCallback)
+            }
 
-            var inputFile: String
-            do {
-                inputFile = collectInputFileName(isJsonFile)
-            } while (!InputHelper.isInputValidAndNotNull(arrayOf(File(inputFile)), canInputContainFolders = true))
+            val outputFileName: String = myPromptInput(
+                message = "What is the name of the output file?",
+                allowEmptyInput = true,
+                onInputReady = outFileCallback
+            )
 
-            val outputFileName: String =
-                KInquirer.promptInput(
-                    message = "What is the name of the output file? If empty, the result will be returned in the terminal",
-                    hint = "path/to/output/filename.cc.json"
-                )
-
-            val isCompressed =
-                (outputFileName.isEmpty()) ||
-                    KInquirer.promptConfirm(
-                        message = "Do you want to compress the output file?",
-                        default = true
-                    )
+            val isCompressed = outputFileName.isEmpty() || myPromptConfirm(
+                message = "Do you want to compress the output file?",
+                onInputReady = compressCallback
+            )
 
             return listOfNotNull(
-                inputFile,
+                inputFileName,
                 "--output-file=$outputFileName",
                 if (isCompressed) null else "--not-compressed",
                 if (isJsonFile) "--is-json-file" else null
             )
-        }
-
-        private fun collectInputFileName(isJsonFile: Boolean): String {
-            return if (isJsonFile) {
-                getInputFileName("Which MetricGardener json-File do you want to import?", "yourFile.json")
-            } else {
-                getInputFileName("What Project do you want to parse?", "")
-            }
         }
     }
 }
