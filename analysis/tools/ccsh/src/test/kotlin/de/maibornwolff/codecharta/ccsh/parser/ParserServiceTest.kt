@@ -115,7 +115,7 @@ class ParserServiceTest {
         val selectedParserName = "selectedParser"
         val fakeCMDline = CommandLine(NotInteractiveParserTest())
 
-        var resultCode = ParserService.executeSelectedParser(fakeCMDline,selectedParserName )
+        var resultCode = ParserService.executeSelectedParser(fakeCMDline, selectedParserName)
         assertThat(resultCode).isEqualTo(ParserService.EXIT_CODE_PARSER_NOT_SUPPORTED)
 
         resultCode = ParserService.executePreconfiguredParser(fakeCMDline, Pair(selectedParserName, listOf(selectedParserName)))
