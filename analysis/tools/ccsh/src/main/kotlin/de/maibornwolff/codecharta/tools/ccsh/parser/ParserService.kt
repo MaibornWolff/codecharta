@@ -6,7 +6,7 @@ import picocli.CommandLine
 
 class ParserService {
     companion object {
-        private const val EXIT_CODE_PARSER_NOT_SUPPORTED = 42
+        internal const val EXIT_CODE_PARSER_NOT_SUPPORTED = 42
 
         fun getParserSuggestions(commandLine: CommandLine, parserRepository: PicocliParserRepository, inputFile: String): List<String> {
             val allParsers = parserRepository.getAllInteractiveParsers(commandLine)
