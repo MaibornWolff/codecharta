@@ -5,6 +5,8 @@ import { CcState } from "../../../../codeCharta.model"
 import { TestBed } from "@angular/core/testing"
 import { appReducers } from "../../../store/state.manager"
 import { setFiles } from "../../../store/files/files.actions"
+import { NodeEdgeMetricsMap } from "./edgeMetricData.calculator"
+import { firstValueFrom } from "rxjs"
 
 describe("sortedNodeEdgeMetricsMapSelector", () => {
     let store: Store<CcState>
@@ -16,12 +18,15 @@ describe("sortedNodeEdgeMetricsMapSelector", () => {
         store = TestBed.inject(Store)
     })
 
-    it("should return a sorted map of node edge metrics", () => {
-        let result
+    afterEach(() => {
+        sortedNodeEdgeMetricsMapSelector.release()
+        TestBed.resetTestingModule()
+    })
+
+    it("should return a sorted map of node edge metrics", async () => {
         store.dispatch(setFiles({ value: FILE_STATES }))
-        store.select(sortedNodeEdgeMetricsMapSelector).subscribe(temp => {
-            result = temp
-        })
+
+        const result: NodeEdgeMetricsMap = await firstValueFrom(store.select(sortedNodeEdgeMetricsMapSelector))
 
         expect(result.get("pairingRate")).toEqual(
             new Map([
@@ -44,13 +49,11 @@ describe("sortedNodeEdgeMetricsMapSelector", () => {
         )
     })
 
-    it("should return an empty map if there are no edges", () => {
-        let result
+    it("should return an empty map if there are no edges", async () => {
         store.dispatch(setFiles({ value: FILE_STATES_WITHOUT_EDGES }))
-        store.select(sortedNodeEdgeMetricsMapSelector).subscribe(temp => {
-            result = temp
-        })
 
-        expect(result.size).toEqual(0)
+        const result: NodeEdgeMetricsMap = await firstValueFrom(store.select(sortedNodeEdgeMetricsMapSelector))
+
+        expect(result).toEqual(new Map())
     })
 })
