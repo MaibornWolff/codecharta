@@ -45,13 +45,6 @@ jobs:
             echo "VERSION=${BRANCH_NAME#release/vis-}" >> $GITHUB_ENV
           fi
 
-      - name: Create tag
-        run: |
-          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
-          git tag "vis-${{ env.VERSION }}"
-          git push origin "vis-${{ env.VERSION }}"
-
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -100,42 +93,6 @@ jobs:
           path: |
             visualization/dist/webpack
 
-  # Create GitHub Release
-  create_release:
-    needs: build
-    name: Create GitHub Release
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Download build artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: build-artifacts
-          path: visualization/dist/packages
-
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@v1
-        with:
-          bun-version: latest
-
-      - name: Create Release
-        run: |
-          # Debug: List files
-          echo "Contents of packages directory:"
-          ls -la visualization/dist/packages/
-
-          CHANGELOG_CONTENT=$(bun script/version-manager.ts extract-changelog visualization ${{ needs.build.outputs.version }})
-          gh release create "vis-${{ needs.build.outputs.version }}" \
-            --title "Visualization release ${{ needs.build.outputs.version }}" \
-            --notes "$CHANGELOG_CONTENT" \
-            visualization/dist/packages/*.zip
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
   # Publish to npm
   publish_npm:
     needs: build
@@ -164,52 +121,3 @@ jobs:
           npm publish --tag latest
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-  # Publish to Docker Hub
-  publish_docker:
-    needs: build
-    name: Publish to Docker Hub
-    runs-on: ubuntu-latest
-    steps:
-      - name: Login to Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-
-      - name: Pull and retag Docker image
-        run: |
-          docker pull codecharta/codecharta-visualization:staging
-          docker tag codecharta/codecharta-visualization:staging codecharta/codecharta-visualization:latest
-          docker tag codecharta/codecharta-visualization:staging codecharta/codecharta-visualization:${{ needs.build.outputs.version }}
-          docker push codecharta/codecharta-visualization:latest
-          docker push codecharta/codecharta-visualization:${{ needs.build.outputs.version }}
-
-  # Deploy to GitHub Pages
-  deploy_website:
-    needs: build
-    name: Deploy Website
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Download build artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: webpack-build
-          path: visualization/dist/webpack
-
-      - name: Create Sample File for Web Demo
-        run: sh ./script/build_demo_file_visualization.sh
-
-      - name: Deploy to GitHub Pages
-        uses: JamesIves/github-pages-deploy-action@v4.7.2
-        with:
-          token: ${{ secrets.DEPLOY_TOKEN }}
-          branch: gh-pages
-          folder: visualization/dist/webpack
-          target-folder: visualization/app
-          clean: true
