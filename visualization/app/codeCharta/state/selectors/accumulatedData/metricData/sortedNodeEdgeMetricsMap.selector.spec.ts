@@ -1,64 +1,56 @@
-import { STATE } from "../../../../util/dataMocks"
-import { calculateEdgeMetricData } from "./edgeMetricData.calculator"
-import { clone } from "../../../../util/clone"
+import { FILE_STATES, FILE_STATES_WITHOUT_EDGES } from "../../../../util/dataMocks"
 import { sortedNodeEdgeMetricsMapSelector } from "./sortedNodeEdgeMetricsMap.selector"
-
-jest.mock("./edgeMetricData.calculator", () => ({
-    calculateEdgeMetricData: jest.fn()
-}))
+import { Store, StoreModule } from "@ngrx/store"
+import { CcState } from "../../../../codeCharta.model"
+import { TestBed } from "@angular/core/testing"
+import { appReducers } from "../../../store/state.manager"
+import { setFiles } from "../../../store/files/files.actions"
 
 describe("sortedNodeEdgeMetricsMapSelector", () => {
-    const mockedCalculateEdgeMetricData = calculateEdgeMetricData as jest.Mock
-    let state
+    let store: Store<CcState>
 
     beforeEach(() => {
-        state = clone(STATE)
+        TestBed.configureTestingModule({
+            imports: [StoreModule.forRoot(appReducers)]
+        })
+        store = TestBed.inject(Store)
     })
 
     it("should return a sorted map of node edge metrics", () => {
-        const nodeEdgeMetricsMap = new Map([
-            [
-                "metric1",
-                new Map([
-                    ["node1", { incoming: 2, outgoing: 3 }],
-                    ["node2", { incoming: 1, outgoing: 1 }],
-                    ["node3", { incoming: 4, outgoing: 4 }]
-                ])
-            ],
-            [
-                "metric2",
-                new Map([
-                    ["node3", { incoming: 5, outgoing: 5 }],
-                    ["node0", { incoming: 0, outgoing: 0 }],
-                    ["node4", { incoming: 2, outgoing: 2 }]
-                ])
-            ]
-        ])
-        mockedCalculateEdgeMetricData.mockReturnValue({ nodeEdgeMetricsMap })
+        let result
+        store.dispatch(setFiles({ value: FILE_STATES }))
+        store.select(sortedNodeEdgeMetricsMapSelector).subscribe(temp => {
+            result = temp
+        })
 
-        const result = sortedNodeEdgeMetricsMapSelector(state)
-
-        expect(result.get("metric1")).toEqual(
+        expect(result.get("pairingRate")).toEqual(
             new Map([
-                ["node1", { incoming: 2, outgoing: 3 }],
-                ["node3", { incoming: 4, outgoing: 4 }],
-                ["node2", { incoming: 1, outgoing: 1 }]
+                ["/root/Parent Leaf/small leaf", { incoming: 2, outgoing: 0 }],
+                ["/root/big leaf", { incoming: 0, outgoing: 1 }],
+                ["/root/Parent Leaf/other small leaf", { incoming: 0, outgoing: 1 }]
             ])
         )
-        expect(result.get("metric2")).toEqual(
+        expect(result.get("avgCommits")).toEqual(
             new Map([
-                ["node3", { incoming: 5, outgoing: 5 }],
-                ["node4", { incoming: 2, outgoing: 2 }],
-                ["node0", { incoming: 0, outgoing: 0 }]
+                ["/root/Parent Leaf/small leaf", { incoming: 1, outgoing: 0 }],
+                ["/root/big leaf", { incoming: 0, outgoing: 1 }]
+            ])
+        )
+        expect(result.get("otherMetric")).toEqual(
+            new Map([
+                ["/root/Parent Leaf/other small leaf", { incoming: 0, outgoing: 1 }],
+                ["/root/Parent Leaf/small leaf", { incoming: 1, outgoing: 0 }]
             ])
         )
     })
 
-    it("should return an empty map if no metrics are available", () => {
-        mockedCalculateEdgeMetricData.mockReturnValue({ nodeEdgeMetricsMap: new Map() })
+    it("should return an empty map if there are no edges", () => {
+        let result
+        store.dispatch(setFiles({ value: FILE_STATES_WITHOUT_EDGES }))
+        store.select(sortedNodeEdgeMetricsMapSelector).subscribe(temp => {
+            result = temp
+        })
 
-        const result = sortedNodeEdgeMetricsMapSelector(state)
-
-        expect(result.size).toBe(0)
+        expect(result.size).toEqual(0)
     })
 })
