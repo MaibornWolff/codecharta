@@ -77,7 +77,7 @@ class InteractiveParserSuggestionTest {
     @Test
     fun `should return empty map when user does not select any parser`() {
         mockPrepareInteractiveDialog()
-        mockDialogScannerPath("src")
+        mockDialogScannerPath("src/test/resources/sampleproject/foo.java")
         mockDialogApplicableParserSelection(emptyList())
 
         val parser = "dummyParser"
