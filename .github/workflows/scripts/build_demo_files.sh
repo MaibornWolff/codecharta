@@ -8,7 +8,7 @@ git ls-files > temp_dir/file-name-list.txt
 git log --numstat --raw --topo-order --reverse -m > temp_dir/git.log
 
 cd temp_dir || exit
-CCSH=../../analysis/build/install/codecharta-analysis/bin/ccsh
+CCSH=../analysis/build/install/codecharta-analysis/bin/ccsh
 
 # Data for for both visualization and analysis
 $CCSH gitlogparser log-scan --git-log git.log --repo-files file-name-list.txt -o codecharta_git.cc.json -nc
