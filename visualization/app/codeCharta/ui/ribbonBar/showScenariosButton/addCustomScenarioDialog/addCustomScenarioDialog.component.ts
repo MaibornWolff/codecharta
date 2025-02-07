@@ -48,8 +48,8 @@ export class AddCustomScenarioDialogComponent {
         threeOrbitControlsService: ThreeMapControlsService
     ) {
         this.scenarioContent = getInitialScenarioMetricProperties(this.state.getValue(), {
-            camera: threeCameraService.camera.position,
-            cameraTarget: threeOrbitControlsService.controls.target
+            camera: threeCameraService.camera.position.clone(),
+            cameraTarget: threeOrbitControlsService.controls.target.clone()
         })
     }
 
