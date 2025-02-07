@@ -167,7 +167,8 @@ export const VALID_NODE_WITH_MCC: CodeMapNode = {
             attributes: { rloc: 100, functions: 10, mcc: 1 },
             isExcluded: false,
             isFlattened: false,
-            link: "https://www.google.de"
+            link: "https://www.google.de",
+            path: "/root/big leaf"
         },
         {
             name: "Parent Leaf",
@@ -175,20 +176,23 @@ export const VALID_NODE_WITH_MCC: CodeMapNode = {
             attributes: {},
             isExcluded: false,
             isFlattened: false,
+            path: "/root/Parent Leaf",
             children: [
                 {
                     name: "small leaf",
                     type: NodeType.FILE,
                     attributes: { rloc: 30, functions: 100, mcc: 100 },
                     isExcluded: false,
-                    isFlattened: false
+                    isFlattened: false,
+                    path: "/root/Parent Leaf/small leaf"
                 },
                 {
                     name: "other small leaf",
                     type: NodeType.FILE,
                     attributes: { rloc: 70, functions: 1000, mcc: 10 },
                     isExcluded: false,
-                    isFlattened: false
+                    isFlattened: false,
+                    path: "/root/Parent Leaf/other small leaf"
                 }
             ]
         }
@@ -930,6 +934,12 @@ export const TEST_FILE_DATA: CCFile = {
     fileMeta: FILE_META,
     map: VALID_NODE_WITH_MCC,
     settings: DEFAULT_SETTINGS
+}
+
+export const TEST_FILE_DATA_WITHOUT_EDGES: CCFile = {
+    fileMeta: FILE_META,
+    map: VALID_NODE_WITH_MCC,
+    settings: { ...DEFAULT_SETTINGS, fileSettings: { ...DEFAULT_SETTINGS.fileSettings, edges: [] } }
 }
 
 export const TEST_FILE_DATA_TWO: CCFile = {
@@ -2114,16 +2124,16 @@ export const FILE_STATES_TWO_FILES: FileState[] = [
     }
 ]
 
-export const FILE_STATES_UNSELECTED: FileState[] = [
-    {
-        file: TEST_FILE_DATA,
-        selectedAs: FileSelectionState.None
-    }
-]
-
 export const FILE_STATES_JAVA: FileState[] = [
     {
         file: TEST_FILE_DATA_JAVA,
+        selectedAs: FileSelectionState.Partial
+    }
+]
+
+export const FILE_STATES_WITHOUT_EDGES: FileState[] = [
+    {
+        file: TEST_FILE_DATA_WITHOUT_EDGES,
         selectedAs: FileSelectionState.Partial
     }
 ]
