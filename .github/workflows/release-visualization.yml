@@ -203,7 +203,7 @@ jobs:
           path: visualization/dist/webpack
 
       - name: Create Sample File for Web Demo
-        run: sh ./script/build_demo_files.sh
+        run: sh ./.github/workflows/scripts/build_demo_files.sh
 
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4.7.2

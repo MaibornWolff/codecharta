@@ -41,7 +41,7 @@ jobs:
         run: echo "SHORT_SHA=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
 
       - name: Create Sample File for Web Demo
-        run: sh ./script/build_demo_files.sh
+        run: sh ./.github/workflows/scripts/build_demo_files.sh
 
       # Deploy to GitHub Pages staging environment
       - name: Deploy to GitHub Pages
