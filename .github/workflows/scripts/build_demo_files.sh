@@ -34,5 +34,3 @@ $CCSH merge -o ../visualization/dist/webpack/codecharta_analysis.cc.json codecha
 
 cd ..
 rm -r temp_dir
-
-ls -R
