@@ -22,7 +22,6 @@ class ParserDialog {
             levelsCallback: suspend RunScope.() -> Unit = {}
         ): List<String> {
             val inputFileName: String = myPromptDefaultFileFolderInput(
-                allowEmptyInput = false,
                 inputType = InputType.FILE,
                 fileExtensionList = listOf(FileExtension.CCJSON, FileExtension.CCGZ),
                 onInputReady = fileCallback

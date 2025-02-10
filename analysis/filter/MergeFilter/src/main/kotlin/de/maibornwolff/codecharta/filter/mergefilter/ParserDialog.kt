@@ -35,7 +35,6 @@ class ParserDialog {
         ): List<String> {
             val inputDataName: String =
                 myPromptDefaultFileFolderInput(
-                    allowEmptyInput = false,
                     inputType = InputType.FOLDER_AND_FILE,
                     fileExtensionList = listOf(FileExtension.CCJSON, FileExtension.CCGZ),
                     onInputReady = fileCallback
