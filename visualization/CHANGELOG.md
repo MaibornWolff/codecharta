@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/)
 
-## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
+## [1.132.0] - 2025-02-04 (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
 ### Added
 
@@ -15,7 +15,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Changed
 
 - Increased the size of the color quantile diagram [#3827](https://github.com/MaibornWolff/codecharta/pull/3827)
-- Rename the "Reset camera..."-settings-button to make it more clear what it does [#3906](https://github.com/MaibornWolff/codecharta/pull/3906)
+- Rename the "Reset camera..."-settings-button and add tooltip to make it more clear what it does [#3906](https://github.com/MaibornWolff/codecharta/pull/3906) [#3908](https://github.com/MaibornWolff/codecharta/pull/3908)
 
 ### Fixed 🐞
 
