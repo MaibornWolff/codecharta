@@ -24,7 +24,6 @@ class ParserDialog {
             compressCallback: suspend RunScope.() -> Unit = {}
         ): List<String> {
             val inputFileName = myPromptDefaultFileFolderInput(
-                allowEmptyInput = false,
                 inputType = InputType.FILE,
                 fileExtensionList = listOf(FileExtension.CSV),
                 onInputReady = fileCallback

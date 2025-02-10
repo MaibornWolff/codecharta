@@ -31,13 +31,12 @@ class ParserDialog {
 
             val inputFileName: String = if (isJsonFile) {
                 myPromptDefaultFileFolderInput(
-                    allowEmptyInput = false,
                     InputType.FILE,
                     listOf(FileExtension.JSON),
                     onInputReady = fileCallback
                 )
             } else {
-                myPromptDefaultFileFolderInput(allowEmptyInput = false, InputType.FOLDER, listOf(), onInputReady = fileCallback)
+                myPromptDefaultFileFolderInput(InputType.FOLDER, listOf(), onInputReady = fileCallback)
             }
 
             val outputFileName: String = myPromptInput(

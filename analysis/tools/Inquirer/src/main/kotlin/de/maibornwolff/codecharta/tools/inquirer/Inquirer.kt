@@ -191,7 +191,6 @@ private fun getSelectedElems(choices: List<String>, selection: List<Boolean>): L
 }
 
 fun Session.myPromptDefaultFileFolderInput(
-    allowEmptyInput: Boolean,
     inputType: InputType,
     fileExtensionList: List<FileExtension>,
     onInputReady: suspend RunScope.() -> Unit
@@ -228,7 +227,7 @@ fun Session.myPromptDefaultFileFolderInput(
     return myPromptInput(
         message = "What is the input $inputMessage",
         hint = currentWorkingDirectory,
-        allowEmptyInput = allowEmptyInput,
+        allowEmptyInput = false,
         invalidInputMessage = "Please input a valid ${inputType.inputType}",
         inputValidator = InputValidator.isFileOrFolderValid(inputType, fileExtensionList),
         onInputReady = onInputReady

@@ -31,7 +31,6 @@ class ParserDialog {
             defaultCallback: suspend RunScope.() -> Unit = {}
         ): List<String> {
             val inputFileName = myPromptDefaultFileFolderInput(
-                allowEmptyInput = false,
                 inputType = InputType.FOLDER_AND_FILE,
                 fileExtensionList = listOf(),
                 onInputReady = fileCallback

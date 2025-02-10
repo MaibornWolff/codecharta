@@ -23,7 +23,6 @@ class ParserDialog {
             hierarchyCallback: suspend RunScope.() -> Unit = {}
         ): List<String> {
             val inputFileName: String = myPromptDefaultFileFolderInput(
-                allowEmptyInput = false,
                 inputType = de.maibornwolff.codecharta.tools.inquirer.InputType.FOLDER_AND_FILE,
                 fileExtensionList = listOf(FileExtension.CCJSON, FileExtension.CCGZ),
                 onInputReady = fileCallback

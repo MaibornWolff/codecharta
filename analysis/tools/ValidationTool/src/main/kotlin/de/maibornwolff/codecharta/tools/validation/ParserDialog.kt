@@ -19,7 +19,6 @@ class ParserDialog {
         internal fun Session.myCollectParserArgs(fileCallback: suspend RunScope.() -> Unit = {}): List<String> {
             print("Which file do you want to validate?")
             val inputFileName: String = myPromptDefaultFileFolderInput(
-                allowEmptyInput = false,
                 inputType = InputType.FILE,
                 fileExtensionList = listOf(
                     FileExtension.CCJSON,

@@ -26,7 +26,6 @@ class ParserDialog {
         ): List<String> {
             print("You can generate this file with: svn log --verbose > svn.log")
             val inputFileName: String = myPromptDefaultFileFolderInput(
-                allowEmptyInput = false,
                 inputType = InputType.FILE,
                 fileExtensionList = listOf(),
                 onInputReady = fileCallback
