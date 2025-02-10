@@ -6,10 +6,6 @@ import java.io.File
 
 class InputValidator {
     companion object {
-        //
-        // sometimes input is list of files (or folders), check if they are all existing files
-        // -> can it be multiple files?
-
         fun isInputAnExistingFile(vararg allowedFiletypes: String): (String) -> Boolean = { input ->
             val file = File(input)
             val isFileCorrectType = allowedFiletypes.isEmpty() || allowedFiletypes.any { input.endsWith(it) }
@@ -29,12 +25,6 @@ class InputValidator {
                     objectToVerify.isDirectory || verifyFile(objectToVerify, fileExtensionList)
                 }
             }
-        }
-
-        // not sure if this one is needed, its currently there for testing
-        fun isInputBetweenNumbers(minValue: Int, maxValue: Int): (String) -> Boolean = { input ->
-            val inputNumber = input.toInt()
-            inputNumber in (minValue + 1)..<maxValue
         }
 
         fun isNumberGreaterThen(minValue: Int): (String) -> Boolean = { input ->
