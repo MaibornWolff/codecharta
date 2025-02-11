@@ -15,6 +15,7 @@ import com.varabyte.kotterx.test.foundation.testSession
 import com.varabyte.kotterx.test.runtime.blockUntilRenderWhen
 import com.varabyte.kotterx.test.runtime.stripFormatting
 import com.varabyte.kotterx.test.terminal.assertMatches
+import de.maibornwolff.codecharta.tools.inquirer.util.InputValidator
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -223,6 +224,75 @@ class InquirerTest {
         }
     }
 
+    @Test
+    fun `should not accept input if invalid`() {
+        var rendered: List<String>
+        testSession { terminal ->
+            val result =
+                myPromptInputNumber(
+                    testMessage,
+                    invalidInputMessage = testInvalidInputMessage,
+                    inputValidator = InputValidator.isNumberGreaterThen(
+                        2
+                    ),
+                    onInputReady = {
+                        terminal.type("1")
+                        terminal.press(Keys.ENTER)
+
+                        blockUntilRenderWhen {
+                            rendered = terminal.resolveRerenders().stripFormatting()
+                            rendered.any { it.contains(testInvalidInputMessage) }
+                        }
+
+                        terminal.press(Keys.BACKSPACE)
+                        terminal.type("3")
+                        terminal.press(Keys.ENTER)
+                    }
+                )
+
+            assertThat(terminal.resolveRerenders().stripFormatting()).isEqualTo(
+                listOf(
+                    "? $testMessage  $testInvalidInputMessage",
+                    "> 1 ",
+                    ""
+                )
+            )
+            assertThat(result).isEqualTo("3")
+        }
+    }
+
+    @Test
+    fun `should accept empty number input`() {
+        testSession { terminal ->
+            val result = myPromptInputNumber(testMessage, allowEmptyInput = true, onInputReady = {
+                terminal.press(Keys.ENTER)
+            })
+            assertThat(result).isEqualTo("")
+        }
+    }
+
+    @Test
+    fun `should accept empty input but still check if valid`() {
+        testSession { terminal ->
+            val result =
+                myPromptInputNumber(
+                    testMessage,
+                    allowEmptyInput = true,
+                    inputValidator = InputValidator.isNumberGreaterThen(
+                        2
+                    ),
+                    onInputReady = {
+                        terminal.type("1")
+                        terminal.press(Keys.ENTER)
+                        terminal.press(Keys.BACKSPACE)
+                        terminal.press(Keys.ENTER)
+                    }
+                )
+
+            assertThat(result).isEqualTo("")
+        }
+    }
+
     // Tests for promptConfirm
 
     @Test
@@ -346,7 +416,7 @@ class InquirerTest {
     }
 
     @Test
-    fun `should select the second list option when arrow down was pressed`() {
+    fun `should select the second list option when arrow down was pressed once after multiple up`() {
         var result: String
 
         testSession { terminal ->
@@ -365,6 +435,36 @@ class InquirerTest {
                 ""
             )
             assertThat(result).isEqualTo(testChoices[1])
+        }
+    }
+
+    @Test
+    fun `should not go up if in first position`() {
+        var result: String
+
+        testSession { terminal ->
+            result =
+                myPromptList(testMessage, testChoices, onInputReady = {
+                    repeat(5) {
+                        terminal.press(Keys.UP)
+                    }
+                    terminal.press(Keys.DOWN)
+                    terminal.press(Keys.UP)
+                    repeat(2) {
+                        terminal.press(Keys.DOWN)
+                    }
+                    terminal.press(Keys.ENTER)
+                })
+
+            assertThat(terminal.resolveRerenders().stripFormatting()).containsExactly(
+                "? $testMessage  arrow keys to move, ENTER to select",
+                "   element 0",
+                "   element 1",
+                " ❯ element 2",
+                "   element 3",
+                ""
+            )
+            assertThat(result).isEqualTo(testChoices[2])
         }
     }
 
@@ -513,6 +613,40 @@ class InquirerTest {
                 ""
             )
             assertThat(result).isEqualTo(listOf(testChoices[1]))
+        }
+    }
+
+    @Test
+    fun `should select the third checkbox option when space, arrow down and up was pressed mixed`() {
+        var result: List<String>
+
+        testSession { terminal ->
+            result =
+                myPromptCheckbox(testMessage, testChoices, testHint, onInputReady = {
+                    terminal.press(Keys.SPACE)
+                    terminal.press(Keys.SPACE)
+                    repeat(5) {
+                        terminal.press(Keys.UP)
+                    }
+                    terminal.press(Keys.DOWN)
+                    terminal.press(Keys.UP)
+                    repeat(2) {
+                        terminal.press(Keys.DOWN)
+                    }
+                    repeat(3) {
+                        terminal.press(Keys.SPACE)
+                    }
+                    terminal.press(Keys.ENTER)
+                })
+            assertThat(terminal.resolveRerenders().stripFormatting()).containsExactly(
+                "? $testMessage  $testHint",
+                "   ◯ element 0",
+                "   ◯ element 1",
+                " ❯ ◉ element 2",
+                "   ◯ element 3",
+                ""
+            )
+            assertThat(result).isEqualTo(listOf(testChoices[2]))
         }
     }
 
