@@ -150,6 +150,7 @@ private fun Session.collectRemoveNodesArguments(
 private fun Session.collectOutputFileName(outFileCallback: suspend RunScope.() -> Unit): String {
     return myPromptInput(
         message = "What is the name of the output file?",
+        allowEmptyInput = true,
         onInputReady = outFileCallback
     )
 }
