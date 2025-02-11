@@ -226,7 +226,7 @@ class InquirerTest {
 
     @Test
     fun `should not accept input if invalid`() {
-        var rendered: List<String>
+        var rendered: List<String> = listOf()
         testSession { terminal ->
             val result =
                 myPromptInputNumber(
@@ -250,7 +250,7 @@ class InquirerTest {
                     }
                 )
 
-            assertThat(terminal.resolveRerenders().stripFormatting()).isEqualTo(
+            assertThat(rendered).isEqualTo(
                 listOf(
                     "? $testMessage  $testInvalidInputMessage",
                     "> 1 ",
