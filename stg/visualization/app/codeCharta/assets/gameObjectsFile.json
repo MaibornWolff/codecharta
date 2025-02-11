@@ -1,0 +1,75 @@
+{
+  "gameObjectPositions": [
+    {
+      "name": "root.visualization.ui",
+      "position": {
+        "x": 159.5,
+        "y": 3.5,
+        "z": 8.5
+      },
+      "scale": {
+        "x": 5.0,
+        "y": 1.0,
+        "z": 5.0
+      }
+    },
+    {
+      "name": "root.visualization.packageLock",
+      "position": {
+        "x": 82.0,
+        "y": 5.0,
+        "z": 89.0
+      },
+      "scale": {
+        "x": 2.0,
+        "y": 4.0,
+        "z": 2.0
+      }
+    },
+    {
+      "name": "root.visualization",
+      "position": {
+        "x": 84.0,
+        "y": 2.5,
+        "z": 48.0
+      },
+      "scale": {
+        "x": 160.0,
+        "y": 1.0,
+        "z": 88.0
+      }
+    },
+    {
+      "name": "root.CHANGELOG",
+      "position": {
+        "x": 84.0,
+        "y": 2.5,
+        "z": 552.5
+      },
+      "scale": {
+        "x": 5.0,
+        "y": 1.0,
+        "z": 5.0
+      }
+    },
+    {
+      "name": "root",
+      "position": {
+        "x": 84.0,
+        "y": 0.5,
+        "z": 279.5
+      },
+      "scale": {
+        "x": 168.0,
+        "y": 1.0,
+        "z": 559.0
+      }
+    }
+  ],
+  "cycles": [
+    {
+      "from": "root.CHANGELOG",
+      "to": "root.visualization.packageLock"
+    }
+  ]
+}
