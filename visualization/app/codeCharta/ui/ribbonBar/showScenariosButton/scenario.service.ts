@@ -92,6 +92,7 @@ export class ScenarioService {
             this.threeCameraService.setPosition(scenario.camera.camera)
             // @ts-ignore -- we know that it is not a partial when it is set
             this.threeOrbitControlsService.setControlTarget(scenario.camera.cameraTarget)
+            this.threeOrbitControlsService.controls.update()
         }
     }
 
