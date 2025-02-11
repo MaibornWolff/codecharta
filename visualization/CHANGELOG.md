@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Fixed
+
+- Fixed camera not updating when metric scenario is applied [#3920](https://github.com/MaibornWolff/codecharta/pull/3920)
+
 ## [1.132.0] - 2025-02-04 (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
 ### Added
