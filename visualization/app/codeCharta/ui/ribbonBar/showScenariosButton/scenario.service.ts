@@ -30,11 +30,11 @@ import { ScenarioHelper } from "./scenarioHelper"
 @Injectable({ providedIn: "root" })
 export class ScenarioService {
     constructor(
-        private state: State<CcState>,
-        private store: Store<CcState>,
-        private dialog: MatDialog,
-        private threeCameraService: ThreeCameraService,
-        private threeOrbitControlsService: ThreeMapControlsService
+        private readonly state: State<CcState>,
+        private readonly store: Store<CcState>,
+        private readonly dialog: MatDialog,
+        private readonly threeCameraService: ThreeCameraService,
+        private readonly threeOrbitControlsService: ThreeMapControlsService
     ) {}
 
     getScenarios() {
