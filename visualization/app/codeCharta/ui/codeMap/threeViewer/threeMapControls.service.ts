@@ -31,6 +31,10 @@ export class ThreeMapControlsService {
         this.controls.target.set(cameraTarget.x, cameraTarget.y, cameraTarget.z)
     }
 
+    updateControls() {
+        this.controls.update()
+    }
+
     rotateCameraInVectorDirection(x: number, y: number, z: number) {
         const zoom = this.getZoom()
         this.lookAtDirectionFromTarget(x, y, z)
@@ -51,7 +55,7 @@ export class ThreeMapControlsService {
 
             cameraReference.position.set(length, length, boundingSphere.center.z)
 
-            this.controls.update()
+            this.updateControls()
 
             this.focusCameraViewToCenter(boundingSphere)
             this.threeRendererService.render()
@@ -190,7 +194,7 @@ export class ThreeMapControlsService {
         const newDistance = this.getDistanceFromZoomPercentage(zoom)
         const direction = new Vector3().subVectors(this.threeCameraService.camera.position, this.controls.target).normalize()
         this.threeCameraService.camera.position.copy(this.controls.target).add(direction.multiplyScalar(newDistance))
-        this.controls.update()
+        this.updateControls()
 
         this.zoomPercentage$.next(zoom)
     }
