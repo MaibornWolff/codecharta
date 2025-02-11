@@ -1,14 +1,11 @@
 package de.maibornwolff.codecharta.ccsh.parser
 
-import com.github.kinquirer.KInquirer
-import com.github.kinquirer.components.promptCheckbox
-import com.github.kinquirer.components.promptInput
 import de.maibornwolff.codecharta.tools.ccsh.Ccsh
-import de.maibornwolff.codecharta.tools.ccsh.parser.InteractiveParserSuggestionDialog
+import de.maibornwolff.codecharta.tools.ccsh.parser.InteractiveDialog
+import de.maibornwolff.codecharta.tools.ccsh.parser.InteractiveParserSuggestion
 import de.maibornwolff.codecharta.tools.ccsh.parser.ParserService
 import io.mockk.every
 import io.mockk.mockkObject
-import io.mockk.mockkStatic
 import io.mockk.unmockkAll
 import io.mockk.verify
 import org.assertj.core.api.Assertions
@@ -17,12 +14,14 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
+import org.junit.jupiter.api.Timeout
 import picocli.CommandLine
 import java.io.ByteArrayOutputStream
 import java.io.PrintStream
 
+@Timeout(120)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class InteractiveParserSuggestionDialogTest {
+class InteractiveParserSuggestionTest {
     private val outContent = ByteArrayOutputStream()
     private val originalOut = System.out
     private val errorOut = ByteArrayOutputStream()
@@ -46,20 +45,29 @@ class InteractiveParserSuggestionDialogTest {
         unmockkAll()
     }
 
+    private fun mockPrepareInteractiveDialog() {
+        mockkObject(InteractiveDialog)
+    }
+
+    private fun mockDialogScannerPath(pathToReturn: String) {
+        every { InteractiveDialog.callAskForPath() } returns pathToReturn
+    }
+
+    private fun mockDialogApplicableParserSelection(parserSelection: List<String>) {
+        every { InteractiveDialog.callAskApplicableParser(any()) } returns parserSelection
+    }
+
     @Test
     fun `should only output message when no usable parsers were found`() {
-        mockkStatic("com.github.kinquirer.components.InputKt")
-        every {
-            KInquirer.promptInput(any(), any(), any(), any(), any())
-        } returns "src"
-
+        mockPrepareInteractiveDialog()
+        mockDialogScannerPath("src")
         mockkObject(ParserService)
         every {
             ParserService.getParserSuggestions(any(), any(), any())
         } returns emptyList()
 
         val usableParsers =
-            InteractiveParserSuggestionDialog.offerAndGetInteractiveParserSuggestionsAndConfigurations(cmdLine)
+            InteractiveParserSuggestion.offerAndGetInteractiveParserSuggestionsAndConfigurations(cmdLine)
 
         Assertions.assertThat(errorOut.toString()).contains(Ccsh.NO_USABLE_PARSER_FOUND_MESSAGE)
         Assertions.assertThat(usableParsers).isNotNull
@@ -68,15 +76,9 @@ class InteractiveParserSuggestionDialogTest {
 
     @Test
     fun `should return empty map when user does not select any parser`() {
-        mockkStatic("com.github.kinquirer.components.InputKt")
-        every {
-            KInquirer.promptInput(any(), any(), any(), any(), any())
-        } returns "src"
-
-        mockkStatic("com.github.kinquirer.components.CheckboxKt")
-        every {
-            KInquirer.promptCheckbox(any(), any(), any(), any(), any(), any(), any())
-        } returns emptyList()
+        mockPrepareInteractiveDialog()
+        mockDialogScannerPath("src/test/resources/sampleproject/foo.java")
+        mockDialogApplicableParserSelection(emptyList())
 
         val parser = "dummyParser"
 
@@ -86,7 +88,7 @@ class InteractiveParserSuggestionDialogTest {
         } returns listOf(parser)
 
         val selectedParsers =
-            InteractiveParserSuggestionDialog.offerAndGetInteractiveParserSuggestionsAndConfigurations(cmdLine)
+            InteractiveParserSuggestion.offerAndGetInteractiveParserSuggestionsAndConfigurations(cmdLine)
 
         Assertions.assertThat(selectedParsers).isNotNull
         Assertions.assertThat(selectedParsers).isEmpty()
@@ -94,21 +96,15 @@ class InteractiveParserSuggestionDialogTest {
 
     @Test
     fun `should return configured parsers after user finished configuring selection`() {
-        mockkStatic("com.github.kinquirer.components.InputKt")
-        every {
-            KInquirer.promptInput(any(), any(), any(), any(), any())
-        } returns "src"
-
         val parserWithDescription = "dummyParser - dummyDescription"
         val parserWithoutDescription = "dummyParser"
         val configuration = listOf("dummyArg")
         val parserListWithDescription = listOf(parserWithDescription)
         val parserListWithoutDescription = listOf(parserWithoutDescription)
 
-        mockkStatic("com.github.kinquirer.components.CheckboxKt")
-        every {
-            KInquirer.promptCheckbox(any(), any(), any(), any(), any(), any(), any())
-        } returns parserListWithDescription
+        mockPrepareInteractiveDialog()
+        mockDialogApplicableParserSelection(parserListWithDescription)
+        mockDialogScannerPath("src")
 
         mockkObject(ParserService)
         every {
@@ -120,7 +116,7 @@ class InteractiveParserSuggestionDialogTest {
         } returns mapOf(parserWithoutDescription to configuration)
 
         val configuredParsers =
-            InteractiveParserSuggestionDialog.offerAndGetInteractiveParserSuggestionsAndConfigurations(cmdLine)
+            InteractiveParserSuggestion.offerAndGetInteractiveParserSuggestionsAndConfigurations(cmdLine)
 
         verify { ParserService.configureParserSelection(any(), any(), parserListWithoutDescription) }
 
@@ -133,13 +129,11 @@ class InteractiveParserSuggestionDialogTest {
 
     @Test
     fun `should return empty map when user enters empty input to scan`() {
-        mockkStatic("com.github.kinquirer.components.InputKt")
-        every {
-            KInquirer.promptInput(any(), any(), any(), any(), any())
-        } returns ""
+        mockPrepareInteractiveDialog()
+        mockDialogScannerPath("")
 
         val selectedParsers =
-            InteractiveParserSuggestionDialog.offerAndGetInteractiveParserSuggestionsAndConfigurations(cmdLine)
+            InteractiveParserSuggestion.offerAndGetInteractiveParserSuggestionsAndConfigurations(cmdLine)
 
         Assertions.assertThat(selectedParsers).isNotNull
         Assertions.assertThat(selectedParsers).isEmpty()
@@ -148,13 +142,11 @@ class InteractiveParserSuggestionDialogTest {
 
     @Test
     fun `should return empty map when user enters nonexistent input to scan`() {
-        mockkStatic("com.github.kinquirer.components.InputKt")
-        every {
-            KInquirer.promptInput(any(), any(), any(), any(), any())
-        } returns "src/test/resources/does/not/exist"
+        mockPrepareInteractiveDialog()
+        mockDialogScannerPath("src/test/resources/does/not/exist")
 
         val selectedParsers =
-            InteractiveParserSuggestionDialog.offerAndGetInteractiveParserSuggestionsAndConfigurations(cmdLine)
+            InteractiveParserSuggestion.offerAndGetInteractiveParserSuggestionsAndConfigurations(cmdLine)
 
         Assertions.assertThat(selectedParsers).isNotNull
         Assertions.assertThat(selectedParsers).isEmpty()

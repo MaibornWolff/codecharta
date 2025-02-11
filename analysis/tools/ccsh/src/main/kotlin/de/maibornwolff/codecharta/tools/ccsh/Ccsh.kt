@@ -1,8 +1,5 @@
 package de.maibornwolff.codecharta.tools.ccsh
 
-import com.github.kinquirer.KInquirer
-import com.github.kinquirer.components.promptConfirm
-import com.github.kinquirer.components.promptInput
 import de.maibornwolff.codecharta.exporter.csv.CSVExporter
 import de.maibornwolff.codecharta.filter.edgefilter.EdgeFilter
 import de.maibornwolff.codecharta.filter.mergefilter.MergeFilter
@@ -17,7 +14,8 @@ import de.maibornwolff.codecharta.parser.gitlogparser.GitLogParser
 import de.maibornwolff.codecharta.parser.rawtextparser.RawTextParser
 import de.maibornwolff.codecharta.parser.sourcecodeparser.SourceCodeParserMain
 import de.maibornwolff.codecharta.parser.svnlogparser.SVNLogParser
-import de.maibornwolff.codecharta.tools.ccsh.parser.InteractiveParserSuggestionDialog
+import de.maibornwolff.codecharta.tools.ccsh.parser.InteractiveDialog
+import de.maibornwolff.codecharta.tools.ccsh.parser.InteractiveParserSuggestion
 import de.maibornwolff.codecharta.tools.ccsh.parser.ParserService
 import de.maibornwolff.codecharta.tools.ccsh.parser.repository.PicocliParserRepository
 import de.maibornwolff.codecharta.tools.inspection.InspectionTool
@@ -105,18 +103,14 @@ class Ccsh : Callable<Unit?> {
 
         private fun executeParserSuggestions(commandLine: CommandLine): Int {
             val configuredParsers =
-                InteractiveParserSuggestionDialog.offerAndGetInteractiveParserSuggestionsAndConfigurations(
+                InteractiveParserSuggestion.offerAndGetInteractiveParserSuggestionsAndConfigurations(
                     commandLine
                 )
             if (configuredParsers.isEmpty()) {
                 return 0
             }
 
-            val shouldRunConfiguredParsers: Boolean =
-                KInquirer.promptConfirm(
-                    message = "Do you want to run all configured parsers now?",
-                    default = true
-                )
+            val shouldRunConfiguredParsers = InteractiveDialog.callAskRunParsers()
 
             return if (shouldRunConfiguredParsers) {
                 executeConfiguredParsers(commandLine, configuredParsers)
@@ -156,20 +150,14 @@ class Ccsh : Callable<Unit?> {
         }
 
         private fun askAndMergeResults(commandLine: CommandLine): Int {
-            val shouldMerge =
-                KInquirer.promptConfirm(
-                    message = "Do you want to merge all generated files into one result now?",
-                    default = false
-                )
+            val shouldMerge = InteractiveDialog.callAskForMerge()
+            var ccJsonFilePath = ""
+
+            if (shouldMerge) {
+                ccJsonFilePath = InteractiveDialog.callAskJsonPath()
+            }
 
             return if (shouldMerge) {
-                val ccJsonFilePath =
-                    KInquirer.promptInput(
-                        message = "What is the folder path containing all cc.json files?",
-                        hint = "If you did not output all cc.json files into the same folder, " +
-                            "you need to manually move them there before trying to merge."
-                    )
-
                 val outputFilePath =
                     "$ccJsonFilePath/mergedResult.cc.json" // Default args with input path being the output path as well
                 val mergeArguments =
