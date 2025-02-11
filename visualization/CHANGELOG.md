@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Fixed 🐞
 
 - Fixed changelog not displaying changes [#3925](https://github.com/MaibornWolff/codecharta/pull/3925)
+- Fixed camera not updating when metric scenario is applied [#3920](https://github.com/MaibornWolff/codecharta/pull/3920)
 
 ## [1.133.0] - 2025-02-11
 
