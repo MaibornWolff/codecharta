@@ -7,13 +7,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
-## [1.133.0] - 2025-02-11 (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
+## [1.133.0] - 2025-02-11
 
 ### Added
 
 - Updated the preview slider of the edge metric options to prioritize buildings with higher number of edges [#3918](https://github.com/MaibornWolff/codecharta/pull/3918)
 
-## [1.132.0] - 2025-02-04 (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
+## [1.132.0] - 2025-02-04
 
 ### Added
 
