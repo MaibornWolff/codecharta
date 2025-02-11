@@ -28,13 +28,8 @@ jobs:
           node-version: '20'
           registry-url: 'https://registry.npmjs.org'
 
-      - name: Build visualization
-        env:
-          NODE_OPTIONS: "--max_old_space_size=4096"
-        working-directory: ./visualization
-        run: |
-          npm ci
-          npm run build
+      - name: Create Sample File for Web Demo
+        run: sh ./.github/workflows/scripts/build_demo_files.sh
 
       # Deploy to GitHub Pages staging environment
       - name: Deploy to GitHub Pages
