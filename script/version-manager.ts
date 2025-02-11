@@ -143,7 +143,7 @@ class VersionManager {
                 unreleasedChangelogSection = this.extractChangelogSection(changelog, "unreleased")
 
                 const updatedChangelog = changelog.replace(
-                    "## [unreleased]",
+                    "## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)",
                     `## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)\n\n## [${newVersion}] - ${date}`
                 )
                 fs.writeFileSync(changelogPath, updatedChangelog)
