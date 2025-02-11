@@ -13,12 +13,12 @@ type CameraChangeEvents = {
 
 @Injectable({ providedIn: "root" })
 export class ThreeMapControlsService {
-    static CAMERA_CHANGED_EVENT_NAME = "camera-changed"
+    static readonly CAMERA_CHANGED_EVENT_NAME = "camera-changed"
     MAX_ZOOM = 200
     MIN_ZOOM = 10
 
     controls: MapControls
-    private eventEmitter = new EventEmitter<CameraChangeEvents>()
+    private readonly eventEmitter = new EventEmitter<CameraChangeEvents>()
     zoomPercentage$ = new BehaviorSubject<number>(100)
 
     constructor(
