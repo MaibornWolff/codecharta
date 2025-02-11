@@ -13,13 +13,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [1.133.0] - 2025-02-11
 
-### Added
+### Added 🚀
 
 - Updated the preview slider of the edge metric options to prioritize buildings with higher number of edges [#3918](https://github.com/MaibornWolff/codecharta/pull/3918)
 
 ## [1.132.0] - 2025-02-04
 
-### Added
+### Added 🚀
 
 - Add a cross-hair when hovering over the color quantile diagram [#3827](https://github.com/MaibornWolff/codecharta/pull/3827)
 - Maps are always shown and rendered in alphabetical order [#3905](https://github.com/MaibornWolff/codecharta/pull/3905)
