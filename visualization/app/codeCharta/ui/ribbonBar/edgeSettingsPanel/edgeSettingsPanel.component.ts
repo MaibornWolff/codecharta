@@ -9,7 +9,7 @@ import { setEdgeHeight } from "../../../state/store/appSettings/edgeHeight/edgeH
 import { edgeHeightSelector } from "../../../state/store/appSettings/edgeHeight/edgeHeight.selector"
 import { setShowOnlyBuildingsWithEdges } from "../../../state/store/appSettings/showOnlyBuildingsWithEdges/showOnlyBuildingsWithEdges.actions"
 import { showOnlyBuildingsWithEdgesSelector } from "../../../state/store/appSettings/showOnlyBuildingsWithEdges/showOnlyBuildingsWithEdges.selector"
-import { amountOfBuildingsWithSelectedEdgeMetricSelector } from "./selectors/amountOfBuildingsWithSelectedEdgeMetric.selector"
+import { amountOfBuildingsWithSelectedEdgeMetricSelector } from "../../../state/selectors/amountOfBuildingsWithSelectedEdgeMetric.selector"
 import { SliderComponent } from "../../slider/slider.component"
 import { ColorPickerForMapColorComponent } from "../../colorPickerForMapColor/colorPickerForMapColor.component"
 import { EdgeMetricToggleComponent } from "./edgeMetricToggle/edgeMetricToggle.component"
