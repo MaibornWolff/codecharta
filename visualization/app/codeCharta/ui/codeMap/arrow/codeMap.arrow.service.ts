@@ -90,7 +90,7 @@ export class CodeMapArrowService implements OnDestroy {
         this.threeSceneService.edgeArrows.children.length = 0
     }
 
-    addArrow(arrowTargetNode: Node, arrowOriginNode: Node, buildingIsOriginNode: boolean) {
+    addArrow(arrowOriginNode: Node, arrowTargetNode: Node, buildingIsOriginNode: boolean) {
         const { appSettings, dynamicSettings } = this.state.getValue()
         const curveScale = 100 * appSettings.edgeHeight
 
@@ -176,13 +176,13 @@ export class CodeMapArrowService implements OnDestroy {
                 continue
             }
             if (showOutgoingEdges && node.has(originNode.path)) {
-                this.addArrow(targetNode, originNode, true)
+                this.addArrow(originNode, targetNode, true)
                 this.threeSceneService.highlightBuildings()
                 // TODO: Check if the second part ot the second if case is actually necessary. Edges should
                 // always have valid origin and target paths. The test data is likely
                 // faulty and should be improved.
             } else if (showIncomingEdges && node.has(targetNode.path)) {
-                this.addArrow(targetNode, originNode, false)
+                this.addArrow(originNode, targetNode, false)
                 this.threeSceneService.highlightBuildings()
             }
         }
