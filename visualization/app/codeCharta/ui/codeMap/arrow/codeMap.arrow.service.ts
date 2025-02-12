@@ -21,7 +21,7 @@ export class CodeMapArrowService implements OnDestroy {
         (hoveredBuilding: CodeMapBuilding) => this.resetEdgesOfBuildings(hoveredBuilding),
         this.HIGHLIGHT_BUILDING_DELAY
     )
-    private readonly subscription = this.store
+    private readonly hoveredNodeSubscription = this.store
         .select(hoveredNodeIdSelector)
         .pipe(
             tap(hoveredNodeId => {
@@ -46,7 +46,7 @@ export class CodeMapArrowService implements OnDestroy {
     }
 
     ngOnDestroy(): void {
-        this.subscription.unsubscribe()
+        this.hoveredNodeSubscription.unsubscribe()
     }
 
     private resetEdgesOfBuildings = (hoveredBuilding: CodeMapBuilding) => {
@@ -156,9 +156,12 @@ export class CodeMapArrowService implements OnDestroy {
     }
 
     private buildPairingEdges(node: Map<string, Node>) {
-        const { edges } = this.state.getValue().fileSettings
         const showIncomingEdges = this.state.getValue().appSettings.showIncomingEdges
         const showOutgoingEdges = this.state.getValue().appSettings.showOutgoingEdges
+        if (!showIncomingEdges && !showOutgoingEdges) {
+            return
+        }
+        const { edges } = this.state.getValue().fileSettings
 
         for (const edge of edges) {
             const originNode = this.map.get(edge.fromNodeName)
