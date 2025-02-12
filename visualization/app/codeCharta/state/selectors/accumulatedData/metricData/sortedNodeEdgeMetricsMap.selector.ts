@@ -4,26 +4,39 @@ import { blacklistSelector } from "../../../store/fileSettings/blacklist/blackli
 import { calculateEdgeMetricData, NodeEdgeMetricsMap } from "./edgeMetricData.calculator"
 import { FileState } from "../../../../model/files/files"
 import { BlacklistItem } from "../../../../codeCharta.model"
+import { showIncomingEdgesSelector } from "../../../store/appSettings/showEdges/incoming/showIncomingEdges.selector"
+import { showOutgoingEdgesSelector } from "../../../store/appSettings/showEdges/outgoing/showOutgoingEdges.selector"
 
 export const sortedNodeEdgeMetricsMapSelector = createSelector(
     visibleFileStatesSelector,
     blacklistSelector,
-    (visibleFileStates: FileState[], blacklist: BlacklistItem[]): NodeEdgeMetricsMap => {
-        const { nodeEdgeMetricsMap } = calculateEdgeMetricData(visibleFileStates, blacklist)
-
-        const sortedNodeEdgeMetricsMap = new Map()
-
-        for (const [metric, node] of nodeEdgeMetricsMap) {
-            const newSortedEdgeMetricEntry = new Map(
-                [...node.entries()].sort((a, b) => {
-                    const aCount = a[1].incoming + a[1].outgoing
-                    const bCount = b[1].incoming + b[1].outgoing
-                    return bCount - aCount
-                })
-            )
-            sortedNodeEdgeMetricsMap.set(metric, newSortedEdgeMetricEntry)
-        }
-
-        return sortedNodeEdgeMetricsMap
-    }
+    showIncomingEdgesSelector,
+    showOutgoingEdgesSelector,
+    sortNodeEdgeMetricsMap
 )
+
+function sortNodeEdgeMetricsMap(
+    visibleFileStates: FileState[],
+    blacklist: BlacklistItem[],
+    showIncomingEdges: boolean,
+    showOutgoingEdges: boolean
+): NodeEdgeMetricsMap {
+    const { nodeEdgeMetricsMap } = calculateEdgeMetricData(visibleFileStates, blacklist)
+    if (!showIncomingEdges && !showOutgoingEdges) {
+        return new Map()
+    }
+    const sortedNodeEdgeMetricsMap = new Map()
+
+    for (const [metric, nodeEdgeMetricCounts] of nodeEdgeMetricsMap) {
+        const newSortedEdgeMetricEntry = new Map(
+            [...nodeEdgeMetricCounts.entries()].sort((a, b) => {
+                const aCount = (showIncomingEdges ? a[1].incoming : 0) + (showOutgoingEdges ? a[1].outgoing : 0)
+                const bCount = (showIncomingEdges ? b[1].incoming : 0) + (showOutgoingEdges ? b[1].outgoing : 0)
+                return bCount - aCount
+            })
+        )
+        sortedNodeEdgeMetricsMap.set(metric, newSortedEdgeMetricEntry)
+    }
+
+    return sortedNodeEdgeMetricsMap
+}
