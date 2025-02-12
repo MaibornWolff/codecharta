@@ -1,9 +1,9 @@
 import { createSelector } from "@ngrx/store"
-import { metricDataSelector } from "./accumulatedData/metricData/metricData.selector"
-import { edgeMetricSelector } from "../store/dynamicSettings/edgeMetric/edgeMetric.selector"
-import { showIncomingEdgesSelector } from "../store/appSettings/showEdges/incoming/showIncomingEdges.selector"
-import { showOutgoingEdgesSelector } from "../store/appSettings/showEdges/outgoing/showOutgoingEdges.selector"
-import { EdgeMetricCountMap } from "./accumulatedData/metricData/edgeMetricData.calculator"
+import { metricDataSelector } from "../accumulatedData/metricData/metricData.selector"
+import { edgeMetricSelector } from "../../store/dynamicSettings/edgeMetric/edgeMetric.selector"
+import { showIncomingEdgesSelector } from "../../store/appSettings/showEdges/incoming/showIncomingEdges.selector"
+import { showOutgoingEdgesSelector } from "../../store/appSettings/showEdges/outgoing/showOutgoingEdges.selector"
+import { EdgeMetricCountMap } from "../accumulatedData/metricData/edgeMetricData.calculator"
 
 export const amountOfBuildingsWithSelectedEdgeMetricSelector = createSelector(
     metricDataSelector,
