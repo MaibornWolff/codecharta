@@ -157,6 +157,8 @@ export class CodeMapArrowService implements OnDestroy {
 
     private buildPairingEdges(node: Map<string, Node>) {
         const { edges } = this.state.getValue().fileSettings
+        const showIncomingEdges = this.state.getValue().appSettings.showIncomingEdges
+        const showOutgoingEdges = this.state.getValue().appSettings.showOutgoingEdges
 
         for (const edge of edges) {
             const originNode = this.map.get(edge.fromNodeName)
@@ -170,13 +172,13 @@ export class CodeMapArrowService implements OnDestroy {
             if (targetNode === undefined) {
                 continue
             }
-            if (node.has(originNode.path)) {
+            if (showOutgoingEdges && node.has(originNode.path)) {
                 this.addArrow(targetNode, originNode, true)
                 this.threeSceneService.highlightBuildings()
-                // TODO: Check if the second if case is actually necessary. Edges should
+                // TODO: Check if the second part ot the second if case is actually necessary. Edges should
                 // always have valid origin and target paths. The test data is likely
                 // faulty and should be improved.
-            } else if (node.has(targetNode.path)) {
+            } else if (showIncomingEdges && node.has(targetNode.path)) {
                 this.addArrow(targetNode, originNode, false)
                 this.threeSceneService.highlightBuildings()
             }
