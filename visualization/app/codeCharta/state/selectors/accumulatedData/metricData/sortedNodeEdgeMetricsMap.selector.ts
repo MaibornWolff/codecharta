@@ -29,11 +29,19 @@ function sortNodeEdgeMetricsMap(
 
     for (const [metric, nodeEdgeMetricCounts] of nodeEdgeMetricsMap) {
         const newSortedEdgeMetricEntry = new Map(
-            [...nodeEdgeMetricCounts.entries()].sort((a, b) => {
-                const aCount = (showIncomingEdges ? a[1].incoming : 0) + (showOutgoingEdges ? a[1].outgoing : 0)
-                const bCount = (showIncomingEdges ? b[1].incoming : 0) + (showOutgoingEdges ? b[1].outgoing : 0)
-                return bCount - aCount
-            })
+            [...nodeEdgeMetricCounts.entries()]
+                .filter(nodeEdgeMetricCounts => {
+                    const incomingEdgesVisible = showIncomingEdges && nodeEdgeMetricCounts[1].incoming > 0
+                    const outgoingEdgesVisible = showOutgoingEdges && nodeEdgeMetricCounts[1].outgoing > 0
+                    return incomingEdgesVisible || outgoingEdgesVisible
+                })
+                .sort((a, b) => {
+                    const aCountIncoming = showIncomingEdges ? a[1].incoming : 0
+                    const aCountOutgoing = showOutgoingEdges ? a[1].outgoing : 0
+                    const bCountIncoming = showIncomingEdges ? b[1].incoming : 0
+                    const bCountOutgoing = showOutgoingEdges ? b[1].outgoing : 0
+                    return bCountIncoming + bCountOutgoing - (aCountIncoming + aCountOutgoing)
+                })
         )
         sortedNodeEdgeMetricsMap.set(metric, newSortedEdgeMetricEntry)
     }
