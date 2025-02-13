@@ -1,6 +1,12 @@
 import { Edge, EdgeVisibility } from "../../../../codeCharta.model"
 
-export const setEdgeVisibility = (edgePreviewNodes: Set<string>, edges: Edge[], edgeMetric: string) => {
+export const setEdgeVisibility = (
+    edgePreviewNodes: Set<string>,
+    edges: Edge[],
+    edgeMetric: string,
+    showIncomingEdges: boolean,
+    showOutgoingEdges: boolean
+) => {
     for (const edge of edges) {
         edge.visible = EdgeVisibility.none
 
@@ -8,11 +14,11 @@ export const setEdgeVisibility = (edgePreviewNodes: Set<string>, edges: Edge[], 
             const hasFromNodeEdgePreview = edgePreviewNodes.has(edge.fromNodeName)
             const hasToNodeEdgePreview = edgePreviewNodes.has(edge.toNodeName)
 
-            if (hasFromNodeEdgePreview && hasToNodeEdgePreview) {
+            if (showIncomingEdges && showOutgoingEdges && hasFromNodeEdgePreview && hasToNodeEdgePreview) {
                 edge.visible = EdgeVisibility.both
-            } else if (hasFromNodeEdgePreview) {
+            } else if (showOutgoingEdges && hasFromNodeEdgePreview) {
                 edge.visible = EdgeVisibility.from
-            } else if (hasToNodeEdgePreview) {
+            } else if (showIncomingEdges && hasToNodeEdgePreview) {
                 edge.visible = EdgeVisibility.to
             }
         }

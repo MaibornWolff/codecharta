@@ -2214,6 +2214,8 @@ export const STATE: CcState = {
             labelColorAndAlpha: { rgb: "#e0e0e0", alpha: 0.7 }
         },
         isPresentationMode: false,
+        showIncomingEdges: true,
+        showOutgoingEdges: true,
         showOnlyBuildingsWithEdges: false,
         resetCameraIfNewFileIsLoaded: true,
         isLoadingMap: true,
@@ -2270,6 +2272,8 @@ export const DEFAULT_STATE: CcState = {
         },
         scaling: new Vector3(1, 1, 1),
         isPresentationMode: false,
+        showIncomingEdges: true,
+        showOutgoingEdges: true,
         showOnlyBuildingsWithEdges: false,
         resetCameraIfNewFileIsLoaded: true,
         isLoadingMap: true,
