@@ -15,11 +15,11 @@ export class UpdateAmountOfEdgePreviewsEffect {
     updateAmountOfEdgePreviews$ = createEffect(() =>
         this.store.select(amountOfBuildingsWithSelectedEdgeMetricSelector).pipe(
             withLatestFrom(this.store.select(amountOfEdgePreviewsSelector)),
+            skip(1),
             filter(
                 ([amountOfBuildingsWithSelectedEdgeMetric, amountOfEdgePreviews]) =>
                     amountOfEdgePreviews > amountOfBuildingsWithSelectedEdgeMetric || amountOfEdgePreviews === 0
             ),
-            skip(1),
             map(([amountOfBuildingsWithSelectedEdgeMetric, amountOfEdgePreviews]) => {
                 if (amountOfEdgePreviews === 0) {
                     return setAmountOfEdgePreviews({ value: defaultAmountOfEdgesPreviews })
