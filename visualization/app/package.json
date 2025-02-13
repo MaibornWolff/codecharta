@@ -10,7 +10,7 @@
     "url": "https://github.com/MaibornWolff/codecharta.git"
   },
   "name": "codecharta-visualization",
-  "version": "1.133.0",
+  "version": "1.131.2",
   "engines": {
     "node": ">=20"
   },
@@ -49,6 +49,7 @@
     "e2e:ci": "npm run e2e -- --runInBand",
     "package": "node script/appMain.js",
     "package:local": "npm run package -- --local",
+    "package:zip": "node script/package-zips.js",
     "schema:generate": "typescript-json-schema ./app/codeCharta/codeCharta.model.ts ExportCCFile --required --topRef --out app/codeCharta/util/generatedSchema.json"
   },
   "lint-staged": {
