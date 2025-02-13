@@ -53,7 +53,6 @@ describe("sortedNodeEdgeMetricsMapSelector", () => {
 
     it("should only return nodes with incoming edges if show outgoing edges is false", async () => {
         store.dispatch(setShowOutgoingEdges({ value: false }))
-        await firstValueFrom(store.select(sortedNodeEdgeMetricsMapSelector))
         store.dispatch(setFiles({ value: FILE_STATES }))
 
         const result: NodeEdgeMetricsMap = await firstValueFrom(store.select(sortedNodeEdgeMetricsMapSelector))
@@ -65,7 +64,6 @@ describe("sortedNodeEdgeMetricsMapSelector", () => {
 
     it("should only return nodes with outgoing edges if show incoming edges is false", async () => {
         store.dispatch(setShowIncomingEdges({ value: false }))
-        await firstValueFrom(store.select(sortedNodeEdgeMetricsMapSelector))
         store.dispatch(setFiles({ value: FILE_STATES }))
 
         const result: NodeEdgeMetricsMap = await firstValueFrom(store.select(sortedNodeEdgeMetricsMapSelector))
@@ -82,11 +80,8 @@ describe("sortedNodeEdgeMetricsMapSelector", () => {
 
     it("should return an empty map if incoming and outgoing edges are disabled", async () => {
         store.dispatch(setShowIncomingEdges({ value: false }))
-        await firstValueFrom(store.select(sortedNodeEdgeMetricsMapSelector))
         store.dispatch(setShowOutgoingEdges({ value: false }))
-        await firstValueFrom(store.select(sortedNodeEdgeMetricsMapSelector))
         store.dispatch(setFiles({ value: FILE_STATES }))
-
         const result: NodeEdgeMetricsMap = await firstValueFrom(store.select(sortedNodeEdgeMetricsMapSelector))
 
         expect(result).toEqual(new Map())
