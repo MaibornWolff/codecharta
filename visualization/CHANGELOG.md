@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [1.133.1] - 2025-02-13
+
 ### Fixed 🐞
 
 - Fixed changelog not displaying changes [#3925](https://github.com/MaibornWolff/codecharta/pull/3925)
