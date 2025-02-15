@@ -1,6 +1,5 @@
 package de.maibornwolff.codecharta.parser.rawtextparser
 
-import com.varabyte.kotter.foundation.session
 import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.Session
 import de.maibornwolff.codecharta.tools.inquirer.InputType
@@ -12,13 +11,7 @@ import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 
 class ParserDialog {
     companion object : ParserDialogInterface {
-        override fun collectParserArgs(): List<String> {
-            val res = listOf<String>()
-            session { collectParserArgs2(this) }
-            return res
-        }
-
-        fun collectParserArgs2(session: Session): List<String> {
+        override fun collectParserArgs(session: Session): List<String> {
             val inputFileName = session.myPromptDefaultFileFolderInput(
                 inputType = InputType.FOLDER_AND_FILE,
                 fileExtensionList = listOf(),

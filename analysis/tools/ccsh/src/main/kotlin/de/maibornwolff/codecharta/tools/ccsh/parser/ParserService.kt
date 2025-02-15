@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.tools.ccsh.parser
 
+import com.varabyte.kotter.foundation.session
 import de.maibornwolff.codecharta.tools.ccsh.parser.repository.PicocliParserRepository
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import picocli.CommandLine
@@ -25,15 +26,17 @@ class ParserService {
             for (selectedParser in selectedParsers) {
                 println(System.lineSeparator() + "Now configuring $selectedParser.")
                 val interactiveParser = parserRepository.getInteractiveParser(commandLine, selectedParser)
-                if (interactiveParser == null) {
-                    throw IllegalArgumentException("Tried to configure non existing parser!")
-                } else {
-                    val configuration = interactiveParser.getDialog().collectParserArgs()
-                    configuredParsers[selectedParser] = configuration
 
-                    println("You can run the same command again by using the following command line arguments:")
-                    println("ccsh " + selectedParser + " " + configuration.joinToString(" ") { x -> '"' + x + '"' })
+                requireNotNull(interactiveParser) { "Tried to configure non existing parser!" }
+
+                var configuration = emptyList<String>()
+                session {
+                    configuration = interactiveParser.getDialog().collectParserArgs(this)
                 }
+                configuredParsers[selectedParser] = configuration
+
+                println("You can run the same command again by using the following command line arguments:")
+                println("ccsh " + selectedParser + " " + configuration.joinToString(" ") { x -> '"' + x + '"' })
             }
             return configuredParsers
         }
@@ -50,7 +53,10 @@ class ParserService {
             val parserObject = subCommand.commandSpec.userObject()
             val interactive = parserObject as? InteractiveParser
             return if (interactive != null) {
-                val collectedArgs = interactive.getDialog().collectParserArgs()
+                var collectedArgs = emptyList<String>()
+                session {
+                    collectedArgs = interactive.getDialog().collectParserArgs(this)
+                }
                 val subCommandLine = CommandLine(interactive)
                 println("You can run the same command again by using the following command line arguments:")
                 println("ccsh " + selectedParser + " " + collectedArgs.joinToString(" ") { x -> '"' + x + '"' })
