@@ -244,7 +244,7 @@ class ParserDialogTest {
     private fun provideInvalidTabWidth(): List<Arguments> {
         return listOf(
             Arguments.of("12."),
-            Arguments.of("12a sa---__d")
+            Arguments.of("noInt")
         )
     }
 }
