@@ -102,45 +102,15 @@ class ParserDialog {
             )
         }
 
-        // For testing purposes
-        internal fun fileCallback(): suspend RunScope.() -> Unit {
-            return {}
-        }
-
-        internal fun outFileCallback(): suspend RunScope.() -> Unit {
-            return {}
-        }
-
-        internal fun compressCallback(): suspend RunScope.() -> Unit {
-            return {}
-        }
-
-        internal fun verboseCallback(): suspend RunScope.() -> Unit {
-            return {}
-        }
-
-        internal fun metricCallback(): suspend RunScope.() -> Unit {
-            return {}
-        }
-
-        internal fun tabCallback(): suspend RunScope.() -> Unit {
-            return {}
-        }
-
-        internal fun indentationCallback(): suspend RunScope.() -> Unit {
-            return {}
-        }
-
-        internal fun excludeCallback(): suspend RunScope.() -> Unit {
-            return {}
-        }
-
-        internal fun extensionCallback(): suspend RunScope.() -> Unit {
-            return {}
-        }
-
-        internal fun defaultCallback(): suspend RunScope.() -> Unit {
-            return {}
-        }
+        internal fun fileCallback(): suspend RunScope.() -> Unit = {}
+        internal fun outFileCallback(): suspend RunScope.() -> Unit = {}
+        internal fun compressCallback(): suspend RunScope.() -> Unit = {}
+        internal fun verboseCallback(): suspend RunScope.() -> Unit = {}
+        internal fun metricCallback(): suspend RunScope.() -> Unit = {}
+        internal fun tabCallback(): suspend RunScope.() -> Unit = {}
+        internal fun indentationCallback(): suspend RunScope.() -> Unit = {}
+        internal fun excludeCallback(): suspend RunScope.() -> Unit = {}
+        internal fun extensionCallback(): suspend RunScope.() -> Unit = {}
+        internal fun defaultCallback(): suspend RunScope.() -> Unit = {}
     }
 }
