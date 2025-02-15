@@ -5,7 +5,7 @@ import com.varabyte.kotter.runtime.terminal.inmemory.press
 import com.varabyte.kotter.runtime.terminal.inmemory.type
 import com.varabyte.kotterx.test.foundation.testSession
 import de.maibornwolff.codecharta.parser.rawtextparser.ParserDialog
-import de.maibornwolff.codecharta.parser.rawtextparser.ParserDialog.Companion.collectParserArgs2
+import de.maibornwolff.codecharta.parser.rawtextparser.ParserDialog.Companion.collectParserArgs
 import de.maibornwolff.codecharta.parser.rawtextparser.RawTextParser
 import io.mockk.every
 import io.mockk.mockkObject
@@ -82,7 +82,7 @@ class ParserDialogTest {
                 terminal.press(Keys.ENTER)
             }
 
-            parserArguments = collectParserArgs2(this)
+            parserArguments = collectParserArgs(this)
         }
         val commandLine = CommandLine(RawTextParser())
         val parseResult = commandLine.parseArgs(*parserArguments.toTypedArray())
@@ -159,7 +159,7 @@ class ParserDialogTest {
                 terminal.press(Keys.ENTER)
             }
 
-            parserArguments = collectParserArgs2(this)
+            parserArguments = collectParserArgs(this)
         }
         val commandLine = CommandLine(RawTextParser())
         val parseResult = commandLine.parseArgs(*parserArguments.toTypedArray())
@@ -233,7 +233,7 @@ class ParserDialogTest {
                 terminal.press(Keys.ENTER)
             }
 
-            parserArguments = collectParserArgs2(this)
+            parserArguments = collectParserArgs(this)
         }
         val commandLine = CommandLine(RawTextParser())
         val parseResult = commandLine.parseArgs(*parserArguments.toTypedArray())
