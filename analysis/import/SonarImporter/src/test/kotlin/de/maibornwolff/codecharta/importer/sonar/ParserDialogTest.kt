@@ -4,7 +4,9 @@ import com.varabyte.kotter.foundation.input.Keys
 import com.varabyte.kotter.runtime.terminal.inmemory.press
 import com.varabyte.kotter.runtime.terminal.inmemory.type
 import com.varabyte.kotterx.test.foundation.testSession
-import de.maibornwolff.codecharta.importer.sonar.ParserDialog.Companion.myCollectParserArgs
+import de.maibornwolff.codecharta.importer.sonar.ParserDialog.Companion.collectParserArgs
+import io.mockk.every
+import io.mockk.mockkObject
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
@@ -25,42 +27,43 @@ class ParserDialogTest {
         val compress = false
         val mergeModules = false
 
+        mockkObject(ParserDialog.Companion)
+
         testSession { terminal ->
-            val parserArguments = myCollectParserArgs(
-                hostCallback = {
-                    terminal.type(hostUrl)
-                    terminal.press(Keys.ENTER)
-                },
-                projectCallback = {
-                    terminal.type(projectKey)
-                    terminal.press(Keys.ENTER)
-                },
-                tokenCallback = {
-                    terminal.type(userToken)
-                    terminal.press(Keys.ENTER)
-                },
-                outFileCallback = {
-                    terminal.type(outputFileName)
-                    terminal.press(Keys.ENTER)
-                },
-                metricCallback = {
-                    terminal.type(metrics)
-                    terminal.press(Keys.ENTER)
-                },
-                compressCallback = {
-                    terminal.press(Keys.RIGHT)
-                    terminal.press(Keys.ENTER)
-                },
-                mergeCallback = {
-                    terminal.press(Keys.RIGHT)
-                    terminal.press(Keys.ENTER)
-                }
-            )
+            every { ParserDialog.Companion.hostCallback() } returns {
+                terminal.type(hostUrl)
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.projectCallback() } returns {
+                terminal.type(projectKey)
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.tokenCallback() } returns {
+                terminal.type(userToken)
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.outFileCallback() } returns {
+                terminal.type(outputFileName)
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.metricCallback() } returns {
+                terminal.type(metrics)
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.compressCallback() } returns {
+                terminal.press(Keys.RIGHT)
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.mergeCallback() } returns {
+                terminal.press(Keys.RIGHT)
+                terminal.press(Keys.ENTER)
+            }
+
+            val parserArguments = collectParserArgs(this)
 
             val commandLine = CommandLine(SonarImporterMain())
             val parseResult = commandLine.parseArgs(*parserArguments.toTypedArray())
 
-            // then
             assertThat(parseResult.matchedPositional(0).getValue<String>()).isEqualTo(hostUrl)
             assertThat(parseResult.matchedPositional(1).getValue<String>()).isEqualTo(projectKey)
             assertThat(parseResult.matchedOption("user-token").getValue<String>()).isEqualTo(userToken)
@@ -78,40 +81,40 @@ class ParserDialogTest {
         val compress = false
         val mergeModules = false
 
+        mockkObject(ParserDialog.Companion)
+
         testSession { terminal ->
-            val parserArguments = myCollectParserArgs(
-                hostCallback = {
-                    terminal.type(hostUrl)
-                    terminal.press(Keys.ENTER)
-                },
-                projectCallback = {
-                    terminal.type(projectKey)
-                    terminal.press(Keys.ENTER)
-                },
-                tokenCallback = {
-                    terminal.type(userToken)
-                    terminal.press(Keys.ENTER)
-                },
-                outFileCallback = {
-                    terminal.type(outputFileName)
-                    terminal.press(Keys.ENTER)
-                },
-                metricCallback = {
-                    terminal.type(emptyMetrics)
-                    terminal.press(Keys.ENTER)
-                },
-                compressCallback = {
-                    terminal.press(Keys.RIGHT)
-                    terminal.press(Keys.ENTER)
-                },
-                mergeCallback = {
-                    terminal.press(Keys.RIGHT)
-                    terminal.press(Keys.ENTER)
-                }
-            )
+            every { ParserDialog.Companion.hostCallback() } returns {
+                terminal.type(hostUrl)
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.projectCallback() } returns {
+                terminal.type(projectKey)
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.tokenCallback() } returns {
+                terminal.type(userToken)
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.outFileCallback() } returns {
+                terminal.type(outputFileName)
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.metricCallback() } returns {
+                terminal.type(emptyMetrics)
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.compressCallback() } returns {
+                terminal.press(Keys.RIGHT)
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.mergeCallback() } returns {
+                terminal.press(Keys.RIGHT)
+                terminal.press(Keys.ENTER)
+            }
 
             val commandLine = CommandLine(SonarImporterMain())
-            val parseResult = commandLine.parseArgs(*parserArguments.toTypedArray())
+            val parseResult = commandLine.parseArgs(*collectParserArgs(this).toTypedArray())
 
             assertThat(parseResult.matchedPositional(0).getValue<String>()).isEqualTo(hostUrl)
             assertThat(parseResult.matchedPositional(1).getValue<String>()).isEqualTo(projectKey)
@@ -129,40 +132,40 @@ class ParserDialogTest {
         val compress = false
         val mergeModules = false
 
+        mockkObject(ParserDialog.Companion)
+
         testSession { terminal ->
-            val parserArguments = myCollectParserArgs(
-                hostCallback = {
-                    terminal.type(hostUrl)
-                    terminal.press(Keys.ENTER)
-                },
-                projectCallback = {
-                    terminal.type(projectKey)
-                    terminal.press(Keys.ENTER)
-                },
-                tokenCallback = {
-                    terminal.type(emptyUserToken)
-                    terminal.press(Keys.ENTER)
-                },
-                outFileCallback = {
-                    terminal.type(outputFileName)
-                    terminal.press(Keys.ENTER)
-                },
-                metricCallback = {
-                    terminal.type(metrics)
-                    terminal.press(Keys.ENTER)
-                },
-                compressCallback = {
-                    terminal.press(Keys.RIGHT)
-                    terminal.press(Keys.ENTER)
-                },
-                mergeCallback = {
-                    terminal.press(Keys.RIGHT)
-                    terminal.press(Keys.ENTER)
-                }
-            )
+            every { ParserDialog.Companion.hostCallback() } returns {
+                terminal.type(hostUrl)
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.projectCallback() } returns {
+                terminal.type(projectKey)
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.tokenCallback() } returns {
+                terminal.type(emptyUserToken)
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.outFileCallback() } returns {
+                terminal.type(outputFileName)
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.metricCallback() } returns {
+                terminal.type(metrics)
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.compressCallback() } returns {
+                terminal.press(Keys.RIGHT)
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.mergeCallback() } returns {
+                terminal.press(Keys.RIGHT)
+                terminal.press(Keys.ENTER)
+            }
 
             val commandLine = CommandLine(SonarImporterMain())
-            val parseResult = commandLine.parseArgs(*parserArguments.toTypedArray())
+            val parseResult = commandLine.parseArgs(*collectParserArgs(this).toTypedArray())
 
             assertThat(parseResult.matchedPositional(0).getValue<String>()).isEqualTo(hostUrl)
             assertThat(parseResult.matchedPositional(1).getValue<String>()).isEqualTo(projectKey)
@@ -179,42 +182,42 @@ class ParserDialogTest {
     fun `should prompt user twice for host-url when first host-url is empty`() {
         val emptyHostUrl = ""
 
+        mockkObject(ParserDialog.Companion)
+
         testSession { terminal ->
-            val parserArguments = myCollectParserArgs(
-                hostCallback = {
-                    terminal.type(emptyHostUrl)
-                    terminal.press(Keys.ENTER)
-                    terminal.type(hostUrl)
-                    terminal.press(Keys.ENTER)
-                },
-                projectCallback = {
-                    terminal.type(projectKey)
-                    terminal.press(Keys.ENTER)
-                },
-                tokenCallback = {
-                    terminal.type(userToken)
-                    terminal.press(Keys.ENTER)
-                },
-                outFileCallback = {
-                    terminal.type(outputFileName)
-                    terminal.press(Keys.ENTER)
-                },
-                metricCallback = {
-                    terminal.type(metrics)
-                    terminal.press(Keys.ENTER)
-                },
-                compressCallback = {
-                    terminal.press(Keys.RIGHT)
-                    terminal.press(Keys.ENTER)
-                },
-                mergeCallback = {
-                    terminal.press(Keys.RIGHT)
-                    terminal.press(Keys.ENTER)
-                }
-            )
+            every { ParserDialog.Companion.hostCallback() } returns {
+                terminal.type(emptyHostUrl)
+                terminal.press(Keys.ENTER)
+                terminal.type(hostUrl)
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.projectCallback() } returns {
+                terminal.type(projectKey)
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.tokenCallback() } returns {
+                terminal.type(userToken)
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.outFileCallback() } returns {
+                terminal.type(outputFileName)
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.metricCallback() } returns {
+                terminal.type(metrics)
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.compressCallback() } returns {
+                terminal.press(Keys.RIGHT)
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.mergeCallback() } returns {
+                terminal.press(Keys.RIGHT)
+                terminal.press(Keys.ENTER)
+            }
 
             val commandLine = CommandLine(SonarImporterMain())
-            val parseResult = commandLine.parseArgs(*parserArguments.toTypedArray())
+            val parseResult = commandLine.parseArgs(*collectParserArgs(this).toTypedArray())
 
             assertThat(parseResult.matchedPositional(0).getValue<String>()).isEqualTo(hostUrl)
         }
@@ -224,42 +227,42 @@ class ParserDialogTest {
     fun `should prompt user twice for project-key when first project-key is empty`() {
         val emptyProjectKey = ""
 
+        mockkObject(ParserDialog.Companion)
+
         testSession { terminal ->
-            val parserArguments = myCollectParserArgs(
-                hostCallback = {
-                    terminal.type(hostUrl)
-                    terminal.press(Keys.ENTER)
-                },
-                projectCallback = {
-                    terminal.type(emptyProjectKey)
-                    terminal.press(Keys.ENTER)
-                    terminal.type(projectKey)
-                    terminal.press(Keys.ENTER)
-                },
-                tokenCallback = {
-                    terminal.type(userToken)
-                    terminal.press(Keys.ENTER)
-                },
-                outFileCallback = {
-                    terminal.type(outputFileName)
-                    terminal.press(Keys.ENTER)
-                },
-                metricCallback = {
-                    terminal.type(metrics)
-                    terminal.press(Keys.ENTER)
-                },
-                compressCallback = {
-                    terminal.press(Keys.RIGHT)
-                    terminal.press(Keys.ENTER)
-                },
-                mergeCallback = {
-                    terminal.press(Keys.RIGHT)
-                    terminal.press(Keys.ENTER)
-                }
-            )
+            every { ParserDialog.Companion.hostCallback() } returns {
+                terminal.type(hostUrl)
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.projectCallback() } returns {
+                terminal.type(emptyProjectKey)
+                terminal.press(Keys.ENTER)
+                terminal.type(projectKey)
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.tokenCallback() } returns {
+                terminal.type(userToken)
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.outFileCallback() } returns {
+                terminal.type(outputFileName)
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.metricCallback() } returns {
+                terminal.type(metrics)
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.compressCallback() } returns {
+                terminal.press(Keys.RIGHT)
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.mergeCallback() } returns {
+                terminal.press(Keys.RIGHT)
+                terminal.press(Keys.ENTER)
+            }
 
             val commandLine = CommandLine(SonarImporterMain())
-            val parseResult = commandLine.parseArgs(*parserArguments.toTypedArray())
+            val parseResult = commandLine.parseArgs(*collectParserArgs(this).toTypedArray())
 
             assertThat(parseResult.matchedPositional(1).getValue<String>()).isEqualTo(projectKey)
         }

@@ -1,6 +1,5 @@
 package de.maibornwolff.codecharta.parser.svnlogparser
 
-import com.varabyte.kotter.foundation.session
 import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.Session
 import de.maibornwolff.codecharta.tools.inquirer.InputType
@@ -11,47 +10,35 @@ import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 
 class ParserDialog {
     companion object : ParserDialogInterface {
-        override fun collectParserArgs(): List<String> {
-            var res = listOf<String>()
-            session { res = myCollectParserArgs() }
-            return res
-        }
-
-        internal fun Session.myCollectParserArgs(
-            fileCallback: suspend RunScope.() -> Unit = {},
-            outFileCallback: suspend RunScope.() -> Unit = {},
-            compressCallback: suspend RunScope.() -> Unit = {},
-            silentCallback: suspend RunScope.() -> Unit = {},
-            authorCallback: suspend RunScope.() -> Unit = {}
-        ): List<String> {
-            print("You can generate this file with: svn log --verbose > svn.log")
-            val inputFileName: String = myPromptDefaultFileFolderInput(
+        override fun collectParserArgs(session: Session): List<String> {
+            println("You can generate this file with: svn log --verbose > svn.log")
+            val inputFileName: String = session.myPromptDefaultFileFolderInput(
                 inputType = InputType.FILE,
                 fileExtensionList = listOf(),
-                onInputReady = fileCallback
+                onInputReady = fileCallback()
             )
 
-            val outputFileName: String = myPromptInput(
+            val outputFileName: String = session.myPromptInput(
                 message = "What is the name of the output file?",
                 allowEmptyInput = true,
-                onInputReady = outFileCallback
+                onInputReady = outFileCallback()
             )
 
             val isCompressed =
                 (outputFileName.isEmpty()) ||
-                    myPromptConfirm(
+                    session.myPromptConfirm(
                         message = "Do you want to compress the output file?",
-                        onInputReady = compressCallback
+                        onInputReady = compressCallback()
                     )
 
-            val isSilent: Boolean = myPromptConfirm(
+            val isSilent: Boolean = session.myPromptConfirm(
                 message = "Do you want to suppress command line output?",
-                onInputReady = silentCallback
+                onInputReady = silentCallback()
             )
 
-            val addAuthor: Boolean = myPromptConfirm(
+            val addAuthor: Boolean = session.myPromptConfirm(
                 message = "Do you want to add authors to every file?",
-                onInputReady = authorCallback
+                onInputReady = authorCallback()
             )
 
             return listOfNotNull(
@@ -62,5 +49,15 @@ class ParserDialog {
                 "--add-author=$addAuthor"
             )
         }
+
+        internal fun fileCallback(): suspend RunScope.() -> Unit = {}
+
+        internal fun outFileCallback(): suspend RunScope.() -> Unit = {}
+
+        internal fun compressCallback(): suspend RunScope.() -> Unit = {}
+
+        internal fun silentCallback(): suspend RunScope.() -> Unit = {}
+
+        internal fun authorCallback(): suspend RunScope.() -> Unit = {}
     }
 }

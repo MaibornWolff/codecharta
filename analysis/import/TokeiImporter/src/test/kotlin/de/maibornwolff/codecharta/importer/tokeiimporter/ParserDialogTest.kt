@@ -5,6 +5,8 @@ import com.varabyte.kotter.runtime.terminal.inmemory.press
 import com.varabyte.kotter.runtime.terminal.inmemory.type
 import com.varabyte.kotterx.test.foundation.testSession
 import de.maibornwolff.codecharta.importer.tokeiimporter.ParserDialog.Companion.myCollectParserArgs
+import io.mockk.every
+import io.mockk.mockkObject
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
@@ -21,33 +23,35 @@ class ParserDialogTest {
     private val rootFolder = "/foo/bar"
 
     @Test
-    fun `should output correct arguments when valid input is provided`() { // given
+    fun `should output correct arguments when valid input is provided`() {
         val pathSeparator = "/"
         val isCompressed = false
 
+        mockkObject(ParserDialog.Companion)
+
         testSession { terminal ->
-            val parserArguments = myCollectParserArgs(
-                fileCallback = {
-                    terminal.type(inputFileName)
-                    terminal.press(Keys.ENTER)
-                },
-                outFileCallback = {
-                    terminal.type(outputFileName)
-                    terminal.press(Keys.ENTER)
-                },
-                rootCallback = {
-                    terminal.type(rootFolder)
-                    terminal.press(Keys.ENTER)
-                },
-                pathCallback = {
-                    terminal.type(pathSeparator)
-                    terminal.press(Keys.ENTER)
-                },
-                compressCallback = {
-                    terminal.press(Keys.RIGHT)
-                    terminal.press(Keys.ENTER)
-                }
-            )
+            every { ParserDialog.Companion.fileCallback() } returns {
+                terminal.type(inputFileName)
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.outFileCallback() } returns {
+                terminal.type(outputFileName)
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.rootCallback() } returns {
+                terminal.type(rootFolder)
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.pathCallback() } returns {
+                terminal.type(pathSeparator)
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.compressCallback() } returns {
+                terminal.press(Keys.RIGHT)
+                terminal.press(Keys.ENTER)
+            }
+
+            val parserArguments = myCollectParserArgs(this)
 
             val cmdLine = CommandLine(TokeiImporter())
             val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
@@ -61,34 +65,36 @@ class ParserDialogTest {
     }
 
     @Test
-    fun `should escape a single backslash`() { // given
+    fun `should escape a single backslash`() {
         val pathSeparator = "\\"
         val pathSeparatorEscaped = "\\\\"
         val isCompressed = false
 
+        mockkObject(ParserDialog.Companion)
+
         testSession { terminal ->
-            val parserArguments = myCollectParserArgs(
-                fileCallback = {
-                    terminal.type(inputFileName)
-                    terminal.press(Keys.ENTER)
-                },
-                outFileCallback = {
-                    terminal.type(outputFileName)
-                    terminal.press(Keys.ENTER)
-                },
-                rootCallback = {
-                    terminal.type(rootFolder)
-                    terminal.press(Keys.ENTER)
-                },
-                pathCallback = {
-                    terminal.type(pathSeparator)
-                    terminal.press(Keys.ENTER)
-                },
-                compressCallback = {
-                    terminal.press(Keys.RIGHT)
-                    terminal.press(Keys.ENTER)
-                }
-            )
+            every { ParserDialog.Companion.fileCallback() } returns {
+                terminal.type(inputFileName)
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.outFileCallback() } returns {
+                terminal.type(outputFileName)
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.rootCallback() } returns {
+                terminal.type(rootFolder)
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.pathCallback() } returns {
+                terminal.type(pathSeparator)
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.compressCallback() } returns {
+                terminal.press(Keys.RIGHT)
+                terminal.press(Keys.ENTER)
+            }
+
+            val parserArguments = myCollectParserArgs(this)
 
             val cmdLine = CommandLine(TokeiImporter())
             val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
@@ -107,29 +113,31 @@ class ParserDialogTest {
         val pathSeparator = "\\\\"
         val isCompressed = false
 
+        mockkObject(ParserDialog.Companion)
+
         testSession { terminal ->
-            val parserArguments = myCollectParserArgs(
-                fileCallback = {
-                    terminal.type(inputFileName)
-                    terminal.press(Keys.ENTER)
-                },
-                outFileCallback = {
-                    terminal.type(outputFileName)
-                    terminal.press(Keys.ENTER)
-                },
-                rootCallback = {
-                    terminal.type(rootFolder)
-                    terminal.press(Keys.ENTER)
-                },
-                pathCallback = {
-                    terminal.type(pathSeparator)
-                    terminal.press(Keys.ENTER)
-                },
-                compressCallback = {
-                    terminal.press(Keys.RIGHT)
-                    terminal.press(Keys.ENTER)
-                }
-            )
+            every { ParserDialog.Companion.fileCallback() } returns {
+                terminal.type(inputFileName)
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.outFileCallback() } returns {
+                terminal.type(outputFileName)
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.rootCallback() } returns {
+                terminal.type(rootFolder)
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.pathCallback() } returns {
+                terminal.type(pathSeparator)
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.compressCallback() } returns {
+                terminal.press(Keys.RIGHT)
+                terminal.press(Keys.ENTER)
+            }
+
+            val parserArguments = myCollectParserArgs(this)
 
             val cmdLine = CommandLine(TokeiImporter())
             val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
@@ -147,32 +155,34 @@ class ParserDialogTest {
         val invalidFileName = "inv"
         val pathSeparator = "/"
 
+        mockkObject(ParserDialog.Companion)
+
         testSession { terminal ->
-            val parserArguments = myCollectParserArgs(
-                fileCallback = {
-                    terminal.type(invalidFileName)
-                    terminal.press(Keys.ENTER)
-                    terminal.press(Keys.BACKSPACE, Keys.BACKSPACE, Keys.BACKSPACE)
-                    terminal.type(inputFileName)
-                    terminal.press(Keys.ENTER)
-                },
-                outFileCallback = {
-                    terminal.type(outputFileName)
-                    terminal.press(Keys.ENTER)
-                },
-                rootCallback = {
-                    terminal.type(rootFolder)
-                    terminal.press(Keys.ENTER)
-                },
-                pathCallback = {
-                    terminal.type(pathSeparator)
-                    terminal.press(Keys.ENTER)
-                },
-                compressCallback = {
-                    terminal.press(Keys.RIGHT)
-                    terminal.press(Keys.ENTER)
-                }
-            )
+            every { ParserDialog.Companion.fileCallback() } returns {
+                terminal.type(invalidFileName)
+                terminal.press(Keys.ENTER)
+                terminal.press(Keys.BACKSPACE, Keys.BACKSPACE, Keys.BACKSPACE)
+                terminal.type(inputFileName)
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.outFileCallback() } returns {
+                terminal.type(outputFileName)
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.rootCallback() } returns {
+                terminal.type(rootFolder)
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.pathCallback() } returns {
+                terminal.type(pathSeparator)
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.compressCallback() } returns {
+                terminal.press(Keys.RIGHT)
+                terminal.press(Keys.ENTER)
+            }
+
+            val parserArguments = myCollectParserArgs(this)
 
             val cmdLine = CommandLine(TokeiImporter())
             val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())

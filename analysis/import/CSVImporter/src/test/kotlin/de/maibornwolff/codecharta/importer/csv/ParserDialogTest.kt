@@ -6,7 +6,9 @@ import com.varabyte.kotter.foundation.input.Keys
 import com.varabyte.kotter.runtime.terminal.inmemory.press
 import com.varabyte.kotter.runtime.terminal.inmemory.type
 import com.varabyte.kotterx.test.foundation.testSession
-import de.maibornwolff.codecharta.importer.csv.ParserDialog.Companion.myCollectParserArgs
+import de.maibornwolff.codecharta.importer.csv.ParserDialog.Companion.collectParserArgs
+import io.mockk.every
+import io.mockk.mockkObject
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
@@ -29,33 +31,35 @@ class ParserDialogTest {
         val delimiter = ";"
         val isCompressed = false
 
+        mockkObject(ParserDialog.Companion)
+
         testSession { terminal ->
-            val parserArguments = myCollectParserArgs(
-                fileCallback = {
-                    terminal.type(inputFileName)
-                    terminal.press(Keys.ENTER)
-                },
-                outFileCallback = {
-                    terminal.type(outputFileName)
-                    terminal.press(Keys.ENTER)
-                },
-                columnCallback = {
-                    terminal.type(pathColumnName)
-                    terminal.press(Keys.ENTER)
-                },
-                delimiterCallback = {
-                    terminal.type(delimiter)
-                    terminal.press(Keys.ENTER)
-                },
-                separatorCallback = {
-                    terminal.type(pathSeparator)
-                    terminal.press(Keys.ENTER)
-                },
-                compressCallback = {
-                    terminal.press(Keys.RIGHT)
-                    terminal.press(Keys.ENTER)
-                }
-            )
+            every { ParserDialog.Companion.fileCallback() } returns {
+                terminal.type(inputFileName)
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.outFileCallback() } returns {
+                terminal.type(outputFileName)
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.columnCallback() } returns {
+                terminal.type(pathColumnName)
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.delimiterCallback() } returns {
+                terminal.type(delimiter)
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.separatorCallback() } returns {
+                terminal.type(pathSeparator)
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.compressCallback() } returns {
+                terminal.press(Keys.RIGHT)
+                terminal.press(Keys.ENTER)
+            }
+
+            val parserArguments = collectParserArgs(this)
 
             val cmdLine = CommandLine(CSVImporter())
             val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
@@ -81,46 +85,44 @@ class ParserDialogTest {
         val pathColumnName = "path"
         val delimiter = ";"
         val pathSeparator = "/"
-        val isCompressed = true
+
+        mockkObject(ParserDialog.Companion)
 
         testSession { terminal ->
-            val parserArguments = myCollectParserArgs(
-                fileCallback = {
-                    terminal.press(Keys.ENTER)
-                },
-                outFileCallback = {
-                    terminal.press(Keys.ENTER)
-                },
-                columnCallback = {
-                    terminal.press(Keys.ENTER)
-                },
-                delimiterCallback = {
-                    terminal.press(Keys.ENTER)
-                },
-                separatorCallback = {
-                    terminal.press(Keys.ENTER)
-                },
-                compressCallback = {
-                    terminal.press(Keys.ENTER)
-                }
-            )
+            every { ParserDialog.Companion.fileCallback() } returns {
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.outFileCallback() } returns {
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.columnCallback() } returns {
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.delimiterCallback() } returns {
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.separatorCallback() } returns {
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.compressCallback() } returns {
+                terminal.press(Keys.ENTER)
+            }
+
+            val parserArguments = collectParserArgs(this)
+
+            val cmdLine = CommandLine(CSVImporter())
+            val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
+
+            assertThat(parseResult.matchedOption("output-file").getValue<String>()).isEqualTo(outputFileName)
+            assertThat(parseResult.matchedOption("path-column-name").getValue<String>())
+                .isEqualTo(pathColumnName)
+            assertThat(parseResult.matchedOption("delimiter").getValue<Char>()).isEqualTo(delimiter[0])
+            assertThat(parseResult.matchedOption("path-separator").getValue<Char>()).isEqualTo(pathSeparator[0])
+            assertThat(parseResult.matchedOption("not-compressed")).isNull()
+            assertThat(parseResult.matchedPositional(0).getValue<ArrayList<File>>()[0].name).isEqualTo(fileName)
+            assertThat(parseResult.matchedPositional(0).getValue<ArrayList<File>>()[1].name).isEqualTo(fileName2)
+            assertThat(parseResult.matchedPositional(0).getValue<ArrayList<File>>()[2].name).isEqualTo(fileName3)
         }
-
-        // when
-        val parserArguments = ParserDialog.collectParserArgs()
-        val cmdLine = CommandLine(CSVImporter())
-        val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
-
-        // then
-        assertThat(parseResult.matchedOption("output-file").getValue<String>()).isEqualTo(outputFileName)
-        assertThat(parseResult.matchedOption("path-column-name").getValue<String>())
-            .isEqualTo(pathColumnName)
-        assertThat(parseResult.matchedOption("delimiter").getValue<Char>()).isEqualTo(delimiter[0])
-        assertThat(parseResult.matchedOption("path-separator").getValue<Char>()).isEqualTo(pathSeparator[0])
-        assertThat(parseResult.matchedOption("not-compressed")).isNull()
-        assertThat(parseResult.matchedPositional(0).getValue<ArrayList<File>>()[0].name).isEqualTo(fileName)
-        assertThat(parseResult.matchedPositional(0).getValue<ArrayList<File>>()[1].name).isEqualTo(fileName2)
-        assertThat(parseResult.matchedPositional(0).getValue<ArrayList<File>>()[2].name).isEqualTo(fileName3)
     }
 
     @Test
@@ -129,35 +131,37 @@ class ParserDialogTest {
         val delimiter = ","
         val separator = "\\"
 
+        mockkObject(ParserDialog.Companion)
+
         testSession { terminal ->
-            val parserArguments = myCollectParserArgs(
-                fileCallback = {
-                    terminal.type(invalidFileName1)
-                    terminal.press(Keys.ENTER)
-                    terminal.press(Keys.BACKSPACE, Keys.BACKSPACE, Keys.BACKSPACE)
-                    terminal.type(inputFileName)
-                    terminal.press(Keys.ENTER)
-                },
-                outFileCallback = {
-                    terminal.type(outputFileName)
-                    terminal.press(Keys.ENTER)
-                },
-                columnCallback = {
-                    terminal.type(pathColumnName)
-                    terminal.press(Keys.ENTER)
-                },
-                delimiterCallback = {
-                    terminal.press(Keys.RIGHT)
-                    terminal.press(Keys.ENTER)
-                },
-                separatorCallback = {
-                    terminal.type(separator)
-                    terminal.press(Keys.ENTER)
-                },
-                compressCallback = {
-                    terminal.press(Keys.ENTER)
-                }
-            )
+            every { ParserDialog.Companion.fileCallback() } returns {
+                terminal.type(invalidFileName1)
+                terminal.press(Keys.ENTER)
+                terminal.press(Keys.BACKSPACE, Keys.BACKSPACE, Keys.BACKSPACE)
+                terminal.type(inputFileName)
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.outFileCallback() } returns {
+                terminal.type(outputFileName)
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.columnCallback() } returns {
+                terminal.type(pathColumnName)
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.delimiterCallback() } returns {
+                terminal.press(Keys.RIGHT)
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.separatorCallback() } returns {
+                terminal.type(separator)
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.compressCallback() } returns {
+                terminal.press(Keys.ENTER)
+            }
+
+            val parserArguments = collectParserArgs(this)
 
             val cmdLine = CommandLine(CSVImporter())
             val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())

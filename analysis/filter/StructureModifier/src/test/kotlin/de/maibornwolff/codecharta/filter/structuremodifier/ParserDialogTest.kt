@@ -4,7 +4,9 @@ import com.varabyte.kotter.foundation.input.Keys
 import com.varabyte.kotter.runtime.terminal.inmemory.press
 import com.varabyte.kotter.runtime.terminal.inmemory.type
 import com.varabyte.kotterx.test.foundation.testSession
-import de.maibornwolff.codecharta.filter.structuremodifier.ParserDialog.Companion.myCollectParserArgs
+import de.maibornwolff.codecharta.filter.structuremodifier.ParserDialog.Companion.collectParserArgs
+import io.mockk.every
+import io.mockk.mockkObject
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -36,30 +38,30 @@ class ParserDialogTest {
 
     @Test
     fun `should output correct arguments when print structure is selected`() {
-        // given
         val printLevels = 5
         allModes.remove(printLevelsFlag)
 
-        testSession { terminal ->
-            // when
-            val parserArguments =
-                myCollectParserArgs(
-                    fileCallback = {
-                        terminal.type(sampleProjectPath.toString())
-                        terminal.press(Keys.ENTER)
-                    },
-                    actionCallback = {
-                        terminal.press(Keys.ENTER)
-                    },
-                    printCallback = {
-                        terminal.type(printLevels.toString())
-                        terminal.press(Keys.ENTER)
-                    }
-                )
+        mockkObject(ParserDialog.Companion)
 
-            // then
+        testSession { terminal ->
+
+            every { ParserDialog.Companion.fileCallback() } returns {
+                terminal.type(sampleProjectPath.toString())
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.actionCallback() } returns {
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.printCallback() } returns {
+                terminal.type(printLevels.toString())
+                terminal.press(Keys.ENTER)
+            }
+
+            val parserArguments = collectParserArgs(this)
+
             val commandLine = CommandLine(StructureModifier())
             val parseResult = commandLine.parseArgs(*parserArguments.toTypedArray())
+
             assertThat(parseResult.matchedPositional(0).getValue<File>().path).isEqualTo(sampleProjectPath.toString())
             assertThat(parseResult.matchedOption("print-levels").getValue<Int>()).isEqualTo(printLevels)
             assertThat(parseResult.matchedOption("output-file")).isNull()
@@ -71,36 +73,36 @@ class ParserDialogTest {
 
     @Test
     fun `should output correct arguments when rename mcc is selected`() {
-        // given
         val outputFileName = "output"
 
         allModes.remove(renameFlag)
 
-        testSession { terminal ->
-            val parserArguments = myCollectParserArgs(
-                fileCallback = {
-                    terminal.type(sampleProjectPath.toString())
-                    terminal.press(Keys.ENTER)
-                },
-                actionCallback = {
-                    terminal.press(Keys.DOWN)
-                    terminal.press(Keys.ENTER)
-                },
-                chooseNameCallback = {
-                    terminal.press(Keys.DOWN)
-                    terminal.press(Keys.ENTER)
-                },
-                outFileCallback = {
-                    terminal.type(outputFileName)
-                    terminal.press(Keys.ENTER)
-                }
-            )
+        mockkObject(ParserDialog.Companion)
 
-            // when
+        testSession { terminal ->
+
+            every { ParserDialog.Companion.fileCallback() } returns {
+                terminal.type(sampleProjectPath.toString())
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.actionCallback() } returns {
+                terminal.press(Keys.DOWN)
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.chooseNameCallback() } returns {
+                terminal.press(Keys.DOWN)
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.outFileCallback() } returns {
+                terminal.type(outputFileName)
+                terminal.press(Keys.ENTER)
+            }
+
+            val parserArguments = collectParserArgs(this)
+
             val commandLine = CommandLine(StructureModifier())
             val parseResult = commandLine.parseArgs(*parserArguments.toTypedArray())
 
-            // then
             assertThat(parseResult.matchedOption("output-file").getValue<String>()).isEqualTo(outputFileName)
             assertThat(parseResult.matchedOption("rename-mcc").getValue<String>()).isEqualTo("sonar")
             allModes.forEach {
@@ -111,38 +113,38 @@ class ParserDialogTest {
 
     @Test
     fun `should output correct arguments when extract path is selected`() {
-        // given
         val pathToBeExtracted = "/root/src/main"
         val outputFileName = "output"
 
         allModes.remove(setRootFlag)
 
+        mockkObject(ParserDialog.Companion)
+
         testSession { terminal ->
-            val parserArguments =
-                myCollectParserArgs(
-                    fileCallback = {
-                        terminal.type(sampleProjectPath.toString())
-                        terminal.press(Keys.ENTER)
-                    },
-                    actionCallback = {
-                        terminal.press(Keys.DOWN)
-                        terminal.press(Keys.DOWN)
-                        terminal.press(Keys.ENTER)
-                    },
-                    setRootCallback = {
-                        terminal.type(pathToBeExtracted)
-                        terminal.press(Keys.ENTER)
-                    },
-                    outFileCallback = {
-                        terminal.type(outputFileName)
-                        terminal.press(Keys.ENTER)
-                    }
-                )
+
+            every { ParserDialog.Companion.fileCallback() } returns {
+                terminal.type(sampleProjectPath.toString())
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.actionCallback() } returns {
+                terminal.press(Keys.DOWN)
+                terminal.press(Keys.DOWN)
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.setRootCallback() } returns {
+                terminal.type(pathToBeExtracted)
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.outFileCallback() } returns {
+                terminal.type(outputFileName)
+                terminal.press(Keys.ENTER)
+            }
+
+            val parserArguments = collectParserArgs(this)
 
             val commandLine = CommandLine(StructureModifier())
             val parseResult = commandLine.parseArgs(*parserArguments.toTypedArray())
 
-            // then
             assertThat(parseResult.matchedPositional(0).getValue<File>().path).isEqualTo(sampleProjectPath.toString())
             assertThat(parseResult.matchedOption("output-file").getValue<String>()).isEqualTo(outputFileName)
             assertThat(parseResult.matchedOption("set-root").getValue<String>()).isEqualTo(pathToBeExtracted)
@@ -155,44 +157,44 @@ class ParserDialogTest {
 
     @Test
     fun `should output correct arguments when move nodes is selected`() {
-        // given
         val outputFileName = "output"
         val moveFrom = "/root/src/main/java"
         val moveTo = "/root/src/main/java/subfolder"
 
         allModes.removeAll(listOf(moveToFlag, moveFromFlag))
 
+        mockkObject(ParserDialog.Companion)
+
         testSession { terminal ->
-            // when
-            val parserArguments =
-                myCollectParserArgs(
-                    fileCallback = {
-                        terminal.type(sampleProjectPath.toString())
-                        terminal.press(Keys.ENTER)
-                    },
-                    actionCallback = {
-                        terminal.press(Keys.DOWN)
-                        terminal.press(Keys.DOWN)
-                        terminal.press(Keys.DOWN)
-                        terminal.press(Keys.ENTER)
-                    },
-                    moveFromCallback = {
-                        terminal.type(moveFrom)
-                        terminal.press(Keys.ENTER)
-                    },
-                    moveToCallback = {
-                        terminal.type(moveTo)
-                        terminal.press(Keys.ENTER)
-                    },
-                    outFileCallback = {
-                        terminal.type(outputFileName)
-                        terminal.press(Keys.ENTER)
-                    }
-                )
+
+            every { ParserDialog.Companion.fileCallback() } returns {
+                terminal.type(sampleProjectPath.toString())
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.actionCallback() } returns {
+                terminal.press(Keys.DOWN)
+                terminal.press(Keys.DOWN)
+                terminal.press(Keys.DOWN)
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.moveFromCallback() } returns {
+                terminal.type(moveFrom)
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.moveToCallback() } returns {
+                terminal.type(moveTo)
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.outFileCallback() } returns {
+                terminal.type(outputFileName)
+                terminal.press(Keys.ENTER)
+            }
+
+            val parserArguments = collectParserArgs(this)
+
             val commandLine = CommandLine(StructureModifier())
             val parseResult = commandLine.parseArgs(*parserArguments.toTypedArray())
 
-            // then
             assertThat(parseResult.matchedPositional(0).getValue<File>().path).isEqualTo(sampleProjectPath.toString())
             assertThat(parseResult.matchedOption("output-file").getValue<String>()).isEqualTo(outputFileName)
             assertThat(parseResult.matchedOption("move-from").getValue<String>()).isEqualTo(moveFrom)
@@ -209,39 +211,39 @@ class ParserDialogTest {
 
     @Test
     fun `should output correct arguments when remove nodes is selected`() {
-        // given
         val outputFileName = "output"
         val nodeToRemove = "/root/src/main/java"
         val nodesToRemove = arrayOf(nodeToRemove)
 
+        mockkObject(ParserDialog.Companion)
+
         testSession { terminal ->
-            // when
-            val parserArguments =
-                myCollectParserArgs(
-                    fileCallback = {
-                        terminal.type(sampleProjectPath.toString())
-                        terminal.press(Keys.ENTER)
-                    },
-                    actionCallback = {
-                        terminal.press(Keys.DOWN)
-                        terminal.press(Keys.DOWN)
-                        terminal.press(Keys.DOWN)
-                        terminal.press(Keys.DOWN)
-                        terminal.press(Keys.ENTER)
-                    },
-                    removeNodesCallback = {
-                        terminal.type(nodeToRemove)
-                        terminal.press(Keys.ENTER)
-                    },
-                    outFileCallback = {
-                        terminal.type(outputFileName)
-                        terminal.press(Keys.ENTER)
-                    }
-                )
+
+            every { ParserDialog.Companion.fileCallback() } returns {
+                terminal.type(sampleProjectPath.toString())
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.actionCallback() } returns {
+                terminal.press(Keys.DOWN)
+                terminal.press(Keys.DOWN)
+                terminal.press(Keys.DOWN)
+                terminal.press(Keys.DOWN)
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.removeNodesCallback() } returns {
+                terminal.type(nodeToRemove)
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.outFileCallback() } returns {
+                terminal.type(outputFileName)
+                terminal.press(Keys.ENTER)
+            }
+
+            val parserArguments = collectParserArgs(this)
+
             val commandLine = CommandLine(StructureModifier())
             val parseResult = commandLine.parseArgs(*parserArguments.toTypedArray())
 
-            // then
             assertThat(parseResult.matchedPositional(0).getValue<File>().path).isEqualTo(sampleProjectPath.toString())
             assertThat(parseResult.matchedOption("output-file").getValue<String>()).isEqualTo(outputFileName)
             assertThat(parseResult.matchedOption("remove").getValue<Array<String>>()).isEqualTo(nodesToRemove)
@@ -254,42 +256,42 @@ class ParserDialogTest {
 
     @Test
     fun `should prompt user twice for input file when first input file is invalid`() {
-        // given
         val invalidInputFileName = "fail"
         val outputFileName = "output"
         val nodeToRemove = "/root/src/main/java"
 
+        mockkObject(ParserDialog.Companion)
+
         testSession { terminal ->
-            // when
-            val parserArguments =
-                myCollectParserArgs(
-                    fileCallback = {
-                        terminal.type(invalidInputFileName)
-                        terminal.press(Keys.ENTER)
-                        terminal.press(Keys.BACKSPACE, Keys.BACKSPACE, Keys.BACKSPACE, Keys.BACKSPACE)
-                        terminal.type(sampleProjectPath.toString())
-                        terminal.press(Keys.ENTER)
-                    },
-                    actionCallback = {
-                        terminal.press(Keys.DOWN)
-                        terminal.press(Keys.DOWN)
-                        terminal.press(Keys.DOWN)
-                        terminal.press(Keys.DOWN)
-                        terminal.press(Keys.ENTER)
-                    },
-                    removeNodesCallback = {
-                        terminal.type(nodeToRemove)
-                        terminal.press(Keys.ENTER)
-                    },
-                    outFileCallback = {
-                        terminal.type(outputFileName)
-                        terminal.press(Keys.ENTER)
-                    }
-                )
+
+            every { ParserDialog.Companion.fileCallback() } returns {
+                terminal.type(invalidInputFileName)
+                terminal.press(Keys.ENTER)
+                terminal.press(Keys.BACKSPACE, Keys.BACKSPACE, Keys.BACKSPACE, Keys.BACKSPACE)
+                terminal.type(sampleProjectPath.toString())
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.actionCallback() } returns {
+                terminal.press(Keys.DOWN)
+                terminal.press(Keys.DOWN)
+                terminal.press(Keys.DOWN)
+                terminal.press(Keys.DOWN)
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.removeNodesCallback() } returns {
+                terminal.type(nodeToRemove)
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.outFileCallback() } returns {
+                terminal.type(outputFileName)
+                terminal.press(Keys.ENTER)
+            }
+
+            val parserArguments = collectParserArgs(this)
+
             val commandLine = CommandLine(StructureModifier())
             val parseResult = commandLine.parseArgs(*parserArguments.toTypedArray())
 
-            // then
             assertThat(parseResult.matchedPositional(0).getValue<File>().path).isEqualTo(sampleProjectPath.toString())
         }
     }

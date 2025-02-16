@@ -1,6 +1,5 @@
 package de.maibornwolff.codecharta.parser.gitlogparser
 
-import com.varabyte.kotter.foundation.session
 import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.Session
 import de.maibornwolff.codecharta.parser.gitlogparser.subcommands.LogScanCommand
@@ -11,12 +10,8 @@ import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 
 class ParserDialog {
     companion object : ParserDialogInterface {
-        override fun collectParserArgs(): List<String> {
-            var res = listOf<String>()
-            var isLogScan = false
-            session {
-                isLogScan = collectSubcommand()
-            }
+        override fun collectParserArgs(session: Session): List<String> {
+            val isLogScan = collectSubcommand(session)
             val subcommand = if (isLogScan) {
                 "log-scan"
             } else {
@@ -24,49 +19,43 @@ class ParserDialog {
             }
 
             val subcommandArgs: List<String> = if (isLogScan) {
-                LogScanCommand().getDialog().collectParserArgs()
+                LogScanCommand().getDialog().collectParserArgs(session)
             } else {
-                RepoScanCommand().getDialog().collectParserArgs()
-            }
-            session {
-                res = listOf(subcommand) + myCollectParserArgs() + (subcommandArgs)
+                RepoScanCommand().getDialog().collectParserArgs(session)
             }
 
-            return res
+            val generalArgs = collectGeneralArgs(session)
+
+            return listOf(subcommand) + generalArgs + (subcommandArgs)
         }
 
-        internal fun Session.collectSubcommand(scanCallback: suspend RunScope.() -> Unit = {}): Boolean {
-            return myPromptConfirm(
+        internal fun collectSubcommand(session: Session): Boolean {
+            return session.myPromptConfirm(
                 message = "Do you already have a git.log and git ls file?",
-                onInputReady = scanCallback
+                onInputReady = scanCallback()
             )
         }
 
-        internal fun Session.myCollectParserArgs(
-            outFileCallback: suspend RunScope.() -> Unit = {},
-            compressCallback: suspend RunScope.() -> Unit = {},
-            silentCallback: suspend RunScope.() -> Unit = {},
-            authorCallback: suspend RunScope.() -> Unit = {}
-        ): List<String> {
-            val outputFileName: String = myPromptInput(
+        internal fun collectGeneralArgs(session: Session): List<String> {
+            val outputFileName: String = session.myPromptInput(
                 message = "What is the name of the output file?",
                 allowEmptyInput = true,
-                onInputReady = outFileCallback
+                onInputReady = outFileCallback()
             )
 
-            val isCompressed = (outputFileName.isEmpty()) || myPromptConfirm(
+            val isCompressed = (outputFileName.isEmpty()) || session.myPromptConfirm(
                 message = "Do you want to compress the output file?",
-                onInputReady = compressCallback
+                onInputReady = compressCallback()
             )
 
-            val isSilent: Boolean = myPromptConfirm(
+            val isSilent: Boolean = session.myPromptConfirm(
                 message = "Do you want to suppress command line output?",
-                onInputReady = silentCallback
+                onInputReady = silentCallback()
             )
 
-            val addAuthor: Boolean = myPromptConfirm(
+            val addAuthor: Boolean = session.myPromptConfirm(
                 message = "Do you want to add authors to every file?",
-                onInputReady = authorCallback
+                onInputReady = authorCallback()
             )
 
             return listOfNotNull(
@@ -76,5 +65,15 @@ class ParserDialog {
                 "--add-author=$addAuthor"
             )
         }
+
+        internal fun scanCallback(): suspend RunScope.() -> Unit = {}
+
+        internal fun outFileCallback(): suspend RunScope.() -> Unit = {}
+
+        internal fun compressCallback(): suspend RunScope.() -> Unit = {}
+
+        internal fun silentCallback(): suspend RunScope.() -> Unit = {}
+
+        internal fun authorCallback(): suspend RunScope.() -> Unit = {}
     }
 }

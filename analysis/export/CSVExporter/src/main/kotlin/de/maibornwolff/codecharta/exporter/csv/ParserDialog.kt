@@ -1,6 +1,5 @@
 package de.maibornwolff.codecharta.exporter.csv
 
-import com.varabyte.kotter.foundation.session
 import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.Session
 import de.maibornwolff.codecharta.serialization.FileExtension
@@ -11,34 +10,24 @@ import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 
 class ParserDialog {
     companion object : ParserDialogInterface {
-        override fun collectParserArgs(): List<String> {
-            var res = listOf<String>()
-            session { res = myCollectParserArgs() }
-            return res
-        }
-
-        internal fun Session.myCollectParserArgs(
-            fileCallback: suspend RunScope.() -> Unit = {},
-            outFileCallback: suspend RunScope.() -> Unit = {},
-            hierarchyCallback: suspend RunScope.() -> Unit = {}
-        ): List<String> {
-            val inputFileName: String = myPromptDefaultFileFolderInput(
+        override fun collectParserArgs(session: Session): List<String> {
+            val inputFileName: String = session.myPromptDefaultFileFolderInput(
                 inputType = de.maibornwolff.codecharta.tools.inquirer.InputType.FOLDER_AND_FILE,
                 fileExtensionList = listOf(FileExtension.CCJSON, FileExtension.CCGZ),
-                onInputReady = fileCallback
+                onInputReady = fileCallback()
             )
 
-            val outputFileName: String = myPromptInput(
+            val outputFileName: String = session.myPromptInput(
                 message = "What is the name of the output file?",
                 allowEmptyInput = true,
-                onInputReady = outFileCallback
+                onInputReady = outFileCallback()
             )
 
             val maxHierarchy: String =
-                myPromptInputNumber(
+                session.myPromptInputNumber(
                     message = "What is the maximum depth of hierarchy",
                     hint = "10",
-                    onInputReady = hierarchyCallback
+                    onInputReady = hierarchyCallback()
                 )
 
             return listOfNotNull(
@@ -47,5 +36,11 @@ class ParserDialog {
                 "--depth-of-hierarchy=$maxHierarchy"
             )
         }
+
+        internal fun fileCallback(): suspend RunScope.() -> Unit = {}
+
+        internal fun outFileCallback(): suspend RunScope.() -> Unit = {}
+
+        internal fun hierarchyCallback(): suspend RunScope.() -> Unit = {}
     }
 }
