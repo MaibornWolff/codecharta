@@ -210,7 +210,7 @@ class PicocliParserRepositoryTest {
         val dialogInterface = mockkClass(ParserDialogInterface::class)
         val dummyArgs = listOf("dummyArg")
         every {
-            dialogInterface.collectParserArgs()
+            dialogInterface.collectParserArgs(any())
         } returns dummyArgs
         every {
             obj.getDialog()

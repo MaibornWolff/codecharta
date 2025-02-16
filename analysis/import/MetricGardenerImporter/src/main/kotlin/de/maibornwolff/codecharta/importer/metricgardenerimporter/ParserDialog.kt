@@ -1,6 +1,5 @@
 package de.maibornwolff.codecharta.importer.metricgardenerimporter
 
-import com.varabyte.kotter.foundation.session
 import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.Session
 import de.maibornwolff.codecharta.serialization.FileExtension
@@ -12,42 +11,31 @@ import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 
 class ParserDialog {
     companion object : ParserDialogInterface {
-        override fun collectParserArgs(): List<String> {
-            var res = listOf<String>()
-            session { res = myCollectParserArgs() }
-            return res
-        }
-
-        internal fun Session.myCollectParserArgs(
-            jsonCallback: suspend RunScope.() -> Unit = {},
-            fileCallback: suspend RunScope.() -> Unit = {},
-            outFileCallback: suspend RunScope.() -> Unit = {},
-            compressCallback: suspend RunScope.() -> Unit = {}
-        ): List<String> {
-            val isJsonFile: Boolean = myPromptConfirm(
+        override fun collectParserArgs(session: Session): List<String> {
+            val isJsonFile: Boolean = session.myPromptConfirm(
                 message = "Do you already have a MetricGardener json-File?",
-                onInputReady = jsonCallback
+                onInputReady = jsonCallback()
             )
 
             val inputFileName: String = if (isJsonFile) {
-                myPromptDefaultFileFolderInput(
+                session.myPromptDefaultFileFolderInput(
                     InputType.FILE,
                     listOf(FileExtension.JSON),
-                    onInputReady = fileCallback
+                    onInputReady = fileCallback()
                 )
             } else {
-                myPromptDefaultFileFolderInput(InputType.FOLDER, listOf(), onInputReady = fileCallback)
+                session.myPromptDefaultFileFolderInput(InputType.FOLDER, listOf(), onInputReady = fileCallback())
             }
 
-            val outputFileName: String = myPromptInput(
+            val outputFileName: String = session.myPromptInput(
                 message = "What is the name of the output file?",
                 allowEmptyInput = true,
-                onInputReady = outFileCallback
+                onInputReady = outFileCallback()
             )
 
-            val isCompressed = outputFileName.isEmpty() || myPromptConfirm(
+            val isCompressed = outputFileName.isEmpty() || session.myPromptConfirm(
                 message = "Do you want to compress the output file?",
-                onInputReady = compressCallback
+                onInputReady = compressCallback()
             )
 
             return listOfNotNull(
@@ -57,5 +45,13 @@ class ParserDialog {
                 if (isJsonFile) "--is-json-file" else null
             )
         }
+
+        internal fun jsonCallback(): suspend RunScope.() -> Unit = {}
+
+        internal fun fileCallback(): suspend RunScope.() -> Unit = {}
+
+        internal fun outFileCallback(): suspend RunScope.() -> Unit = {}
+
+        internal fun compressCallback(): suspend RunScope.() -> Unit = {}
     }
 }

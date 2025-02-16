@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.ccsh.parser
 
+import com.varabyte.kotterx.test.foundation.testSession
 import de.maibornwolff.codecharta.tools.ccsh.Ccsh
 import de.maibornwolff.codecharta.tools.ccsh.parser.InteractiveDialog
 import de.maibornwolff.codecharta.tools.ccsh.parser.ParserService
@@ -77,7 +78,10 @@ class ParserServiceTest {
     fun `should output generated parser command for each configured parser`(selectedParser: String) {
         val parser = mockParserObject(selectedParser)
 
-        val collectedArgs = parser.getDialog().collectParserArgs()
+        var collectedArgs = emptyList<String>()
+        testSession {
+            collectedArgs = parser.getDialog().collectParserArgs(this)
+        }
         val expectedParserCommand =
             "ccsh " + selectedParser + " " + collectedArgs.map { x -> '"' + x + '"' }.joinToString(" ")
 
@@ -197,7 +201,12 @@ class ParserServiceTest {
     fun `should execute preconfigured parser`(parser: String) {
         val parserObject = mockParserObject(parser)
 
-        ParserService.executePreconfiguredParser(cmdLine, Pair(parser, parserObject.getDialog().collectParserArgs()))
+        var parserArgs = emptyList<String>()
+        testSession {
+            parserArgs = parserObject.getDialog().collectParserArgs(this)
+        }
+
+        ParserService.executePreconfiguredParser(cmdLine, Pair(parser, parserArgs))
 
         verify { anyConstructed<CommandLine>().execute(any()) }
     }
@@ -228,8 +237,9 @@ class ParserServiceTest {
         mockkObject(obj)
         val dialogInterface = mockkClass(ParserDialogInterface::class)
         val dummyArgs = listOf("dummyArg")
+
         every {
-            dialogInterface.collectParserArgs()
+            dialogInterface.collectParserArgs(any())
         } returns dummyArgs
         every {
             obj.getDialog()

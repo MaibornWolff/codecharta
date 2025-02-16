@@ -4,12 +4,14 @@ import com.varabyte.kotter.foundation.input.Keys
 import com.varabyte.kotter.runtime.terminal.inmemory.press
 import com.varabyte.kotter.runtime.terminal.inmemory.type
 import com.varabyte.kotterx.test.foundation.testSession
+import de.maibornwolff.codecharta.parser.gitlogparser.ParserDialog.Companion.collectGeneralArgs
 import de.maibornwolff.codecharta.parser.gitlogparser.ParserDialog.Companion.collectSubcommand
-import de.maibornwolff.codecharta.parser.gitlogparser.ParserDialog.Companion.myCollectParserArgs
 import de.maibornwolff.codecharta.parser.gitlogparser.subcommands.LogScanCommand
-import de.maibornwolff.codecharta.parser.gitlogparser.subcommands.LogScanParserDialog.Companion.collectLogScan
+import de.maibornwolff.codecharta.parser.gitlogparser.subcommands.LogScanParserDialog
 import de.maibornwolff.codecharta.parser.gitlogparser.subcommands.RepoScanCommand
-import de.maibornwolff.codecharta.parser.gitlogparser.subcommands.RepoScanParserDialog.Companion.collectRepoScan
+import de.maibornwolff.codecharta.parser.gitlogparser.subcommands.RepoScanParserDialog
+import io.mockk.every
+import io.mockk.mockkObject
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
@@ -25,11 +27,14 @@ class ParserDialogTest {
     @Test
     fun `should return true for log-scan`() {
         testSession { terminal ->
-            val isLogScan = collectSubcommand(
-                scanCallback = {
-                    terminal.press(Keys.ENTER)
-                }
-            )
+
+            mockkObject(ParserDialog.Companion)
+
+            every { ParserDialog.Companion.scanCallback() } returns {
+                terminal.press(Keys.ENTER)
+            }
+
+            val isLogScan = collectSubcommand(this)
             assertThat(isLogScan).isTrue()
         }
     }
@@ -37,12 +42,15 @@ class ParserDialogTest {
     @Test
     fun `should return false for log-scan`() {
         testSession { terminal ->
-            val isLogScan = collectSubcommand(
-                scanCallback = {
-                    terminal.press(Keys.RIGHT)
-                    terminal.press(Keys.ENTER)
-                }
-            )
+
+            mockkObject(ParserDialog.Companion)
+
+            every { ParserDialog.Companion.scanCallback() } returns {
+                terminal.press(Keys.RIGHT)
+                terminal.press(Keys.ENTER)
+            }
+
+            val isLogScan = collectSubcommand(this)
             assertThat(isLogScan).isFalse()
         }
     }
@@ -54,24 +62,25 @@ class ParserDialogTest {
         val lsFileName = "${testResourceBaseFolder}names-in-git-repo.txt"
         val invalidFileName = "inv"
 
-        testSession { terminal ->
-            val parserArguments = collectLogScan(
-                logCallback = {
-                    terminal.type(invalidFileName)
-                    terminal.press(Keys.ENTER)
-                    terminal.press(Keys.BACKSPACE, Keys.BACKSPACE, Keys.BACKSPACE)
-                    terminal.type(logFileName)
-                    terminal.press(Keys.ENTER)
-                },
-                lsCallback = {
-                    terminal.type(invalidFileName)
-                    terminal.press(Keys.ENTER)
-                    terminal.press(Keys.BACKSPACE, Keys.BACKSPACE, Keys.BACKSPACE)
-                    terminal.type(lsFileName)
-                    terminal.press(Keys.ENTER)
-                }
-            )
+        mockkObject(LogScanParserDialog.Companion)
 
+        testSession { terminal ->
+            every { LogScanParserDialog.Companion.logCallback() } returns {
+                terminal.type(invalidFileName)
+                terminal.press(Keys.ENTER)
+                terminal.press(Keys.BACKSPACE, Keys.BACKSPACE, Keys.BACKSPACE)
+                terminal.type(logFileName)
+                terminal.press(Keys.ENTER)
+            }
+            every { LogScanParserDialog.Companion.lsCallback() } returns {
+                terminal.type(invalidFileName)
+                terminal.press(Keys.ENTER)
+                terminal.press(Keys.BACKSPACE, Keys.BACKSPACE, Keys.BACKSPACE)
+                terminal.type(lsFileName)
+                terminal.press(Keys.ENTER)
+            }
+
+            val parserArguments = LogScanParserDialog.collectParserArgs(this)
             val cmdLine = CommandLine(LogScanCommand())
             val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
 
@@ -86,17 +95,18 @@ class ParserDialogTest {
         val repoFolderName = "${testResourceBaseFolder}my/"
         val invalidFileName = "inv"
 
-        testSession { terminal ->
-            val parserArguments = collectRepoScan(
-                repoCallback = {
-                    terminal.type(invalidFileName)
-                    terminal.press(Keys.ENTER)
-                    terminal.press(Keys.BACKSPACE, Keys.BACKSPACE, Keys.BACKSPACE)
-                    terminal.type(repoFolderName)
-                    terminal.press(Keys.ENTER)
-                }
-            )
+        mockkObject(RepoScanParserDialog.Companion)
 
+        testSession { terminal ->
+            every { RepoScanParserDialog.Companion.repoCallback() } returns {
+                terminal.type(invalidFileName)
+                terminal.press(Keys.ENTER)
+                terminal.press(Keys.BACKSPACE, Keys.BACKSPACE, Keys.BACKSPACE)
+                terminal.type(repoFolderName)
+                terminal.press(Keys.ENTER)
+            }
+
+            val parserArguments = RepoScanParserDialog.collectParserArgs(this)
             val cmdLine = CommandLine(RepoScanCommand())
             val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
             assertThat(File(parseResult.matchedOption("repo-path").getValue<String>())).isEqualTo(File(repoFolderName))
@@ -108,24 +118,26 @@ class ParserDialogTest {
         val isSilent = false
         val addAuthor = false
 
+        mockkObject(ParserDialog.Companion)
+
         testSession { terminal ->
-            val parserArguments = myCollectParserArgs(
-                outFileCallback = {
-                    terminal.type(outputFileName)
-                    terminal.press(Keys.ENTER)
-                },
-                compressCallback = {
-                    terminal.press(Keys.ENTER)
-                },
-                silentCallback = {
-                    terminal.press(Keys.RIGHT)
-                    terminal.press(Keys.ENTER)
-                },
-                authorCallback = {
-                    terminal.press(Keys.RIGHT)
-                    terminal.press(Keys.ENTER)
-                }
-            )
+            every { ParserDialog.Companion.outFileCallback() } returns {
+                terminal.type(outputFileName)
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.compressCallback() } returns {
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.silentCallback() } returns {
+                terminal.press(Keys.RIGHT)
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.authorCallback() } returns {
+                terminal.press(Keys.RIGHT)
+                terminal.press(Keys.ENTER)
+            }
+
+            val parserArguments = collectGeneralArgs(this)
 
             val cmdLine = CommandLine(RepoScanCommand())
             val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
@@ -142,18 +154,20 @@ class ParserDialogTest {
         val isSilent = true
         val addAuthor = true
 
+        mockkObject(ParserDialog.Companion)
+
         testSession { terminal ->
-            val parserArguments = myCollectParserArgs(
-                outFileCallback = {
-                    terminal.press(Keys.ENTER)
-                },
-                silentCallback = {
-                    terminal.press(Keys.ENTER)
-                },
-                authorCallback = {
-                    terminal.press(Keys.ENTER)
-                }
-            )
+            every { ParserDialog.Companion.outFileCallback() } returns {
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.silentCallback() } returns {
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.authorCallback() } returns {
+                terminal.press(Keys.ENTER)
+            }
+
+            val parserArguments = collectGeneralArgs(this)
 
             val cmdLine = CommandLine(RepoScanCommand())
             val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())

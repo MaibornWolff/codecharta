@@ -105,11 +105,10 @@ class ParserDialogTest {
 
     @ParameterizedTest
     @MethodSource("provideInvalidTabWidth")
-    fun `should set tab-width to 0 when non-integer tab-width provided`(invalidTabWidth: String) {
+    fun `should set tab-width to 0 when non-integer tab-width provided`(invalidTabWidth: String, tabWidthValue: Int) {
         val isCompressed = false
         val verbose = false
         val metrics = "metric1"
-        val tabWidthValue = 12
         val maxIndentLvl = 10
         val exclude = "file1"
         val withoutDefaultExcludes = false
@@ -243,8 +242,9 @@ class ParserDialogTest {
 
     private fun provideInvalidTabWidth(): List<Arguments> {
         return listOf(
-            Arguments.of("12."),
-            Arguments.of("noInt")
+            Arguments.of("12.", 12),
+            Arguments.of("12a sa---__d", 12),
+            Arguments.of("noInt", 0)
         )
     }
 }

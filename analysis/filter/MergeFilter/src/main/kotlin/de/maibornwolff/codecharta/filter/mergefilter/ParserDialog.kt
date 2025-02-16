@@ -17,37 +17,22 @@ import java.io.File
 
 class ParserDialog {
     companion object : ParserDialogInterface {
-        override fun collectParserArgs(): List<String> {
-            var res = listOf<String>()
-            session { res = myCollectParserArgs() }
-            return res
-        }
-
-        internal fun Session.myCollectParserArgs(
-            fileCallback: suspend RunScope.() -> Unit = {},
-            choiceCallback: suspend RunScope.() -> Unit = {},
-            outFileCallback: suspend RunScope.() -> Unit = {},
-            compressCallback: suspend RunScope.() -> Unit = {},
-            levenshteinCallback: suspend RunScope.() -> Unit = {},
-            strategyCallback: suspend RunScope.() -> Unit = {},
-            addMissingCallback: suspend RunScope.() -> Unit = {},
-            ignoreCaseCallback: suspend RunScope.() -> Unit = {}
-        ): List<String> {
+        override fun collectParserArgs(session: Session): List<String> {
             val inputDataName: String =
-                myPromptDefaultFileFolderInput(
+                session.myPromptDefaultFileFolderInput(
                     inputType = InputType.FOLDER_AND_FILE,
                     fileExtensionList = listOf(FileExtension.CCJSON, FileExtension.CCGZ),
-                    onInputReady = fileCallback
+                    onInputReady = fileCallback()
                 )
 
             val defaultMerge = "Default merging..."
             val mimoMerge = "Mimo Merge"
             val largeMerge = "Large Merge"
 
-            val mergeMode = myPromptList(
+            val mergeMode = session.myPromptList(
                 message = "Do you want to use a special merge mode?",
                 choices = listOf(defaultMerge, mimoMerge, largeMerge),
-                onInputReady = choiceCallback
+                onInputReady = choiceCallback()
             )
 
             val outputFileName: String
@@ -55,61 +40,61 @@ class ParserDialog {
             var levenshteinDistance = 0
 
             if (mergeMode == mimoMerge) {
-                outputFileName = myPromptInput(
+                outputFileName = session.myPromptInput(
                     message = "What is the output folder path?",
                     hint = "Uses the current working directory if empty",
                     allowEmptyInput = true,
-                    onInputReady = outFileCallback
+                    onInputReady = outFileCallback()
                 )
 
-                isCompressed = myPromptConfirm(
+                isCompressed = session.myPromptConfirm(
                     message = "Do you want to compress the output file(s)?",
-                    onInputReady = compressCallback
+                    onInputReady = compressCallback()
                 )
 
-                levenshteinDistance = myPromptInputNumber(
+                levenshteinDistance = session.myPromptInputNumber(
                     message = "Select Levenshtein Distance for name match suggestions (0 for no suggestions)",
                     hint = "3",
                     invalidInputMessage = "Specify a number greater or equal to 0",
                     inputValidator = InputValidator.isNumberGreaterThen(-1),
-                    onInputReady = levenshteinCallback
+                    onInputReady = levenshteinCallback()
                 ).toInt()
             } else {
-                outputFileName = myPromptInput(
+                outputFileName = session.myPromptInput(
                     message = "What is the name of the output file?",
                     hint = "mergeResult.cc.json",
                     allowEmptyInput = true,
-                    onInputReady = outFileCallback
+                    onInputReady = outFileCallback()
                 )
 
-                isCompressed = (outputFileName.isEmpty()) || myPromptConfirm(
+                isCompressed = (outputFileName.isEmpty()) || session.myPromptConfirm(
                     message = "Do you want to compress the output file?",
-                    onInputReady = compressCallback
+                    onInputReady = compressCallback()
                 )
             }
 
             val leafMergingStrategy = "Leaf Merging Strategy"
             val recursiveMergingStrategy = "Recursive Merging Strategy"
-            val strategy = myPromptList(
+            val strategy = session.myPromptList(
                 message = "Which merging strategy should be used?",
                 choices = listOf(recursiveMergingStrategy, leafMergingStrategy),
-                onInputReady = strategyCallback
+                onInputReady = strategyCallback()
             )
 
             var leafFlag = false
             var addMissing = false
             if (strategy == leafMergingStrategy) {
                 leafFlag = true
-                addMissing = myPromptConfirm(
+                addMissing = session.myPromptConfirm(
                     message = "Do you want to add missing nodes to reference?",
-                    onInputReady = addMissingCallback
+                    onInputReady = addMissingCallback()
                 )
             }
 
             val ignoreCase: Boolean =
-                myPromptConfirm(
+                session.myPromptConfirm(
                     message = "Do you want to ignore case when checking node names?",
-                    onInputReady = ignoreCaseCallback
+                    onInputReady = ignoreCaseCallback()
                 )
 
             val basicMergeConfig = listOf(
@@ -138,54 +123,76 @@ class ParserDialog {
             return basicMergeConfig
         }
 
-        internal val askForceMerge: (suspend RunScope.() -> Unit) -> Boolean = { forceCallback ->
-            var force = false
-            session {
-                force = myPromptConfirm(
-                    message = "Do you still want to merge non-overlapping at the top-level nodes?",
-                    onInputReady = forceCallback
-                )
-            }
-            force
+        private fun askForceMerge(session: Session): Boolean {
+            return session.myPromptConfirm(
+                message = "Do you still want to merge non-overlapping at the top-level nodes?",
+                onInputReady = forceCallback()
+            )
         }
 
-        fun callAskForceMerge(): Boolean {
-            return askForceMerge {}
+        internal fun callAskForceMerge(): Boolean {
+            var forceMerge = false
+            session {
+                forceMerge = askForceMerge(this)
+            }
+            return forceMerge
         }
 
-        internal val askForMimoPrefix: (Set<String>, suspend RunScope.() -> Unit) -> String = { prefixOptions, prefixCallback ->
-            var prefix = ""
-            session {
-                prefix = myPromptList(
-                    message = "Which prefix should be used for the output file?",
-                    choices = prefixOptions.toList(),
-                    onInputReady = prefixCallback
-                )
-            }
-            prefix
+        private fun askForMimoPrefix(prefixOptions: Set<String>, session: Session): String {
+            return session.myPromptList(
+                message = "Which prefix should be used for the output file?",
+                choices = prefixOptions.toList(),
+                onInputReady = prefixCallback()
+            )
         }
 
         fun callAskForMimoPrefix(prefixOptions: Set<String>): String {
-            return askForMimoPrefix(prefixOptions) {}
+            var prefix = ""
+            session {
+                prefix = askForMimoPrefix(prefixOptions, this)
+            }
+            return prefix
         }
 
-        internal val requestMimoFileSelection: (List<File>, suspend RunScope.() -> Unit) -> List<File> = { files, fileCallback ->
+        private fun requestMimoFileSelection(files: List<File>, session: Session): List<File> {
             val fileNameList = files.map { it.name }
-            var choiceList: List<String> = listOf()
-            session {
-                choiceList = myPromptCheckbox(
-                    message = "",
-                    choices = fileNameList,
-                    hint = "Not selected files will not get merged",
-                    allowEmptyInput = true,
-                    onInputReady = fileCallback
-                )
-            }
+            val choiceList: List<String> = session.myPromptCheckbox(
+                message = "",
+                choices = fileNameList,
+                hint = "Not selected files will not get merged",
+                allowEmptyInput = true,
+                onInputReady = fileCallback()
+            )
             files.filter { choiceList.contains(it.name) }
+            return files
         }
 
         fun callRequestMimoFileSelection(files: List<File>): List<File> {
-            return requestMimoFileSelection(files) {}
+            var selectedFiles = listOf<File>()
+            session {
+                selectedFiles = requestMimoFileSelection(files, this)
+            }
+            return selectedFiles
         }
+
+        internal fun fileCallback(): suspend RunScope.() -> Unit = {}
+
+        internal fun choiceCallback(): suspend RunScope.() -> Unit = {}
+
+        internal fun outFileCallback(): suspend RunScope.() -> Unit = {}
+
+        internal fun compressCallback(): suspend RunScope.() -> Unit = {}
+
+        internal fun levenshteinCallback(): suspend RunScope.() -> Unit = {}
+
+        internal fun strategyCallback(): suspend RunScope.() -> Unit = {}
+
+        internal fun addMissingCallback(): suspend RunScope.() -> Unit = {}
+
+        internal fun ignoreCaseCallback(): suspend RunScope.() -> Unit = {}
+
+        internal fun forceCallback(): suspend RunScope.() -> Unit = {}
+
+        internal fun prefixCallback(): suspend RunScope.() -> Unit = {}
     }
 }
