@@ -1,6 +1,5 @@
 package de.maibornwolff.codecharta.importer.tokeiimporter
 
-import com.varabyte.kotter.foundation.session
 import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.Session
 import de.maibornwolff.codecharta.serialization.FileExtension
@@ -12,51 +11,43 @@ import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 
 class ParserDialog {
     companion object : ParserDialogInterface {
-        override fun collectParserArgs(): List<String> {
-            var res = listOf<String>()
-            session { res = myCollectParserArgs() }
-            return res
+        override fun collectParserArgs(session: Session): List<String> {
+            return myCollectParserArgs(session)
         }
 
-        internal fun Session.myCollectParserArgs(
-            fileCallback: suspend RunScope.() -> Unit = {},
-            outFileCallback: suspend RunScope.() -> Unit = {},
-            rootCallback: suspend RunScope.() -> Unit = {},
-            pathCallback: suspend RunScope.() -> Unit = {},
-            compressCallback: suspend RunScope.() -> Unit = {}
-        ): List<String> {
-            val inputFileName: String = myPromptDefaultFileFolderInput(
+        internal fun myCollectParserArgs(session: Session): List<String> {
+            val inputFileName: String = session.myPromptDefaultFileFolderInput(
                 InputType.FILE,
                 listOf(FileExtension.JSON),
-                onInputReady = fileCallback
+                onInputReady = fileCallback()
             )
 
-            val outputFileName: String = myPromptInput(
+            val outputFileName: String = session.myPromptInput(
                 message = "What is the name of the output file?",
                 hint = "output.cc.json",
                 allowEmptyInput = true,
-                onInputReady = outFileCallback
+                onInputReady = outFileCallback()
             )
 
-            val rootName = myPromptInput(
+            val rootName = session.myPromptInput(
                 message = "Which root folder was specified when executing tokei?",
                 hint = ".",
                 allowEmptyInput = false,
-                onInputReady = rootCallback
+                onInputReady = rootCallback()
             )
 
-            var pathSeparator = myPromptInput(
+            var pathSeparator = session.myPromptInput(
                 message = "Which path separator is used? Leave empty for auto-detection",
                 hint = "",
                 allowEmptyInput = true,
-                onInputReady = pathCallback
+                onInputReady = pathCallback()
             )
 
             if (pathSeparator == "\\") pathSeparator = "\\\\"
 
-            val isCompressed = (outputFileName.isEmpty()) || myPromptConfirm(
+            val isCompressed = (outputFileName.isEmpty()) || session.myPromptConfirm(
                 message = "Do you want to compress the output file?",
-                onInputReady = compressCallback
+                onInputReady = compressCallback()
             )
 
             return listOfNotNull(
@@ -67,5 +58,15 @@ class ParserDialog {
                 if (isCompressed) null else "--not-compressed"
             )
         }
+
+        internal fun fileCallback(): suspend RunScope.() -> Unit = {}
+
+        internal fun outFileCallback(): suspend RunScope.() -> Unit = {}
+
+        internal fun rootCallback(): suspend RunScope.() -> Unit = {}
+
+        internal fun pathCallback(): suspend RunScope.() -> Unit = {}
+
+        internal fun compressCallback(): suspend RunScope.() -> Unit = {}
     }
 }

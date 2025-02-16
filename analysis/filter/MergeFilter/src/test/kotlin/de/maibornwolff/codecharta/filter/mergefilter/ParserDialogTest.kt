@@ -4,7 +4,9 @@ import com.varabyte.kotter.foundation.input.Keys
 import com.varabyte.kotter.runtime.terminal.inmemory.press
 import com.varabyte.kotter.runtime.terminal.inmemory.type
 import com.varabyte.kotterx.test.foundation.testSession
-import de.maibornwolff.codecharta.filter.mergefilter.ParserDialog.Companion.myCollectParserArgs
+import de.maibornwolff.codecharta.filter.mergefilter.ParserDialog.Companion.collectParserArgs
+import io.mockk.every
+import io.mockk.mockkObject
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.Timeout
@@ -30,36 +32,41 @@ class ParserDialogTest {
         val recursive = false
         val leaf = true
 
+        mockkObject(ParserDialog.Companion)
+
         testSession { terminal ->
-            val parserArguments = myCollectParserArgs(
-                fileCallback = {
-                    terminal.type(inputFolderName)
-                    terminal.press(Keys.ENTER)
-                },
-                choiceCallback = { terminal.press(Keys.ENTER) },
-                outFileCallback = {
-                    terminal.type(outputFileName)
-                    terminal.press(Keys.ENTER)
-                },
-                compressCallback = {
-                    terminal.press(Keys.RIGHT)
-                    terminal.press(Keys.ENTER)
-                },
-                strategyCallback = {
-                    terminal.press(Keys.DOWN)
-                    terminal.press(Keys.ENTER)
-                },
-                addMissingCallback = {
-                    terminal.press(Keys.ENTER)
-                },
-                ignoreCaseCallback = {
-                    terminal.press(Keys.RIGHT)
-                    terminal.press(Keys.ENTER)
-                }
-            )
+            every { ParserDialog.Companion.fileCallback() } returns {
+                terminal.type(inputFolderName)
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.choiceCallback() } returns {
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.outFileCallback() } returns {
+                terminal.type(outputFileName)
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.compressCallback() } returns {
+                terminal.press(Keys.RIGHT)
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.strategyCallback() } returns {
+                terminal.press(Keys.DOWN)
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.addMissingCallback() } returns {
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.ignoreCaseCallback() } returns {
+                terminal.press(Keys.RIGHT)
+                terminal.press(Keys.ENTER)
+            }
+
+            val parserArguments = collectParserArgs(this)
 
             val commandLine = CommandLine(MergeFilter())
             val parseResult = commandLine.parseArgs(*parserArguments.toTypedArray())
+
             assertThat(parseResult.matchedPositional(0).getValue<Array<File>>()[0].path).isEqualTo(inputFolderPath.toString())
             assertThat(parseResult.matchedOption("output-file").getValue<String>()).isEqualTo(outputFileName)
             assertThat(parseResult.matchedOption("not-compressed").getValue<Boolean>()).isEqualTo(compress)
@@ -85,28 +92,32 @@ class ParserDialogTest {
         val recursive = true
         val leaf = false
 
+        mockkObject(ParserDialog.Companion)
+
         testSession { terminal ->
-            val parserArguments = myCollectParserArgs(
-                fileCallback = {
-                    terminal.type(inputFolderName)
-                    terminal.press(Keys.ENTER)
-                },
-                choiceCallback = { terminal.press(Keys.ENTER) },
-                outFileCallback = {
-                    terminal.type(outputFileName)
-                    terminal.press(Keys.ENTER)
-                },
-                compressCallback = {
-                    terminal.press(Keys.ENTER)
-                },
-                strategyCallback = {
-                    terminal.press(Keys.ENTER)
-                },
-                ignoreCaseCallback = {
-                    terminal.press(Keys.RIGHT)
-                    terminal.press(Keys.ENTER)
-                }
-            )
+            every { ParserDialog.Companion.fileCallback() } returns {
+                terminal.type(inputFolderName)
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.choiceCallback() } returns {
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.outFileCallback() } returns {
+                terminal.type(outputFileName)
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.compressCallback() } returns {
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.strategyCallback() } returns {
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.ignoreCaseCallback() } returns {
+                terminal.press(Keys.RIGHT)
+                terminal.press(Keys.ENTER)
+            }
+
+            val parserArguments = collectParserArgs(this)
 
             val commandLine = CommandLine(MergeFilter())
             val parseResult = commandLine.parseArgs(*parserArguments.toTypedArray())
@@ -136,34 +147,36 @@ class ParserDialogTest {
         val recursive = true
         val leaf = false
 
+        mockkObject(ParserDialog.Companion)
+
         testSession { terminal ->
-            val parserArguments = myCollectParserArgs(
-                fileCallback = {
-                    terminal.type(inputFolderName)
-                    terminal.press(Keys.ENTER)
-                },
-                choiceCallback = {
-                    terminal.press(Keys.DOWN)
-                    terminal.press(Keys.ENTER)
-                },
-                outFileCallback = {
-                    terminal.type(outputFolderName)
-                    terminal.press(Keys.ENTER)
-                },
-                compressCallback = {
-                    terminal.press(Keys.ENTER)
-                },
-                levenshteinCallback = {
-                    terminal.type(levenshteinDistance.toString())
-                    terminal.press(Keys.ENTER)
-                },
-                strategyCallback = {
-                    terminal.press(Keys.ENTER)
-                },
-                ignoreCaseCallback = {
-                    terminal.press(Keys.ENTER)
-                }
-            )
+            every { ParserDialog.Companion.fileCallback() } returns {
+                terminal.type(inputFolderName)
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.choiceCallback() } returns {
+                terminal.press(Keys.DOWN)
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.outFileCallback() } returns {
+                terminal.type(outputFolderName)
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.compressCallback() } returns {
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.levenshteinCallback() } returns {
+                terminal.type(levenshteinDistance.toString())
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.strategyCallback() } returns {
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.ignoreCaseCallback() } returns {
+                terminal.press(Keys.ENTER)
+            }
+
+            val parserArguments = collectParserArgs(this)
 
             val commandLine = CommandLine(MergeFilter())
             val parseResult = commandLine.parseArgs(*parserArguments.toTypedArray())
@@ -192,31 +205,33 @@ class ParserDialogTest {
         val recursive = true
         val leaf = false
 
+        mockkObject(ParserDialog.Companion)
+
         testSession { terminal ->
-            val parserArguments = myCollectParserArgs(
-                fileCallback = {
-                    terminal.type(inputFolderName)
-                    terminal.press(Keys.ENTER)
-                },
-                choiceCallback = {
-                    terminal.press(Keys.DOWN)
-                    terminal.press(Keys.DOWN)
-                    terminal.press(Keys.ENTER)
-                },
-                outFileCallback = {
-                    terminal.type(outputFileName)
-                    terminal.press(Keys.ENTER)
-                },
-                compressCallback = {
-                    terminal.press(Keys.ENTER)
-                },
-                strategyCallback = {
-                    terminal.press(Keys.ENTER)
-                },
-                ignoreCaseCallback = {
-                    terminal.press(Keys.ENTER)
-                }
-            )
+            every { ParserDialog.Companion.fileCallback() } returns {
+                terminal.type(inputFolderName)
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.choiceCallback() } returns {
+                terminal.press(Keys.DOWN)
+                terminal.press(Keys.DOWN)
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.outFileCallback() } returns {
+                terminal.type(outputFileName)
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.compressCallback() } returns {
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.strategyCallback() } returns {
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.ignoreCaseCallback() } returns {
+                terminal.press(Keys.ENTER)
+            }
+
+            val parserArguments = collectParserArgs(this)
 
             val commandLine = CommandLine(MergeFilter())
             val parseResult = commandLine.parseArgs(*parserArguments.toTypedArray())
@@ -238,32 +253,34 @@ class ParserDialogTest {
         val invalidInputFolderName = ""
         val outputFileName = "sampleOutputFile"
 
+        mockkObject(ParserDialog.Companion)
+
         testSession { terminal ->
-            val parserArguments = myCollectParserArgs(
-                fileCallback = {
-                    terminal.type(invalidInputFolderName)
-                    terminal.press(Keys.ENTER)
-                    terminal.type(inputFolderName)
-                    terminal.press(Keys.ENTER)
-                },
-                choiceCallback = {
-                    terminal.press(Keys.ENTER)
-                },
-                outFileCallback = {
-                    terminal.type(outputFileName)
-                    terminal.press(Keys.ENTER)
-                },
-                compressCallback = {
-                    terminal.press(Keys.RIGHT)
-                    terminal.press(Keys.ENTER)
-                },
-                strategyCallback = {
-                    terminal.press(Keys.ENTER)
-                },
-                ignoreCaseCallback = {
-                    terminal.press(Keys.ENTER)
-                }
-            )
+            every { ParserDialog.Companion.fileCallback() } returns {
+                terminal.type(invalidInputFolderName)
+                terminal.press(Keys.ENTER)
+                terminal.type(inputFolderName)
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.choiceCallback() } returns {
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.outFileCallback() } returns {
+                terminal.type(outputFileName)
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.compressCallback() } returns {
+                terminal.press(Keys.RIGHT)
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.strategyCallback() } returns {
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.ignoreCaseCallback() } returns {
+                terminal.press(Keys.ENTER)
+            }
+
+            val parserArguments = collectParserArgs(this)
 
             val commandLine = CommandLine(MergeFilter())
             val parseResult = commandLine.parseArgs(*parserArguments.toTypedArray())

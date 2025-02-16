@@ -1,6 +1,5 @@
 package de.maibornwolff.codecharta.filter.edgefilter
 
-import com.varabyte.kotter.foundation.session
 import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.Session
 import de.maibornwolff.codecharta.serialization.FileExtension
@@ -12,42 +11,38 @@ import de.maibornwolff.codecharta.util.Logger
 
 class ParserDialog {
     companion object : ParserDialogInterface {
-        override fun collectParserArgs(): List<String> {
-            var res = listOf<String>()
-            session { res = myCollectParserArgs() }
-            return res
-        }
-
-        internal fun Session.myCollectParserArgs(
-            fileCallback: suspend RunScope.() -> Unit = {},
-            outFileCallback: suspend RunScope.() -> Unit = {},
-            separatorCallback: suspend RunScope.() -> Unit = {}
-        ): List<String> {
-            val inputFileName: String = myPromptDefaultFileFolderInput(
+        override fun collectParserArgs(session: Session): List<String> {
+            val inputFileName: String = session.myPromptDefaultFileFolderInput(
                 inputType = InputType.FILE,
                 fileExtensionList = listOf(FileExtension.CCJSON, FileExtension.CCGZ),
-                onInputReady = fileCallback
+                onInputReady = fileCallback()
             )
 
             Logger.info {
                 "File path: $inputFileName"
             }
 
-            val outputFileName: String = myPromptInput(
+            val outputFileName: String = session.myPromptInput(
                 message = "What is the name of the output file?",
                 allowEmptyInput = true,
-                onInputReady = outFileCallback
+                onInputReady = outFileCallback()
             )
 
             val defaultPathSeparator = "/"
-            val pathSeparator: String = myPromptInput(
+            val pathSeparator: String = session.myPromptInput(
                 message = "What is the path separator?",
                 hint = defaultPathSeparator,
                 invalidInputMessage = "Please specify a valid path separator like '/' or '\\'",
-                onInputReady = separatorCallback
+                onInputReady = separatorCallback()
             )
 
             return listOf(inputFileName, "--output-file=$outputFileName", "--path-separator=$pathSeparator")
         }
+
+        internal fun fileCallback(): suspend RunScope.() -> Unit = {}
+
+        internal fun outFileCallback(): suspend RunScope.() -> Unit = {}
+
+        internal fun separatorCallback(): suspend RunScope.() -> Unit = {}
     }
 }

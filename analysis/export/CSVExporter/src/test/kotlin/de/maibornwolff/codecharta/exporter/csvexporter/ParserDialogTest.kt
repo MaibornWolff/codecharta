@@ -5,7 +5,10 @@ import com.varabyte.kotter.runtime.terminal.inmemory.press
 import com.varabyte.kotter.runtime.terminal.inmemory.type
 import com.varabyte.kotterx.test.foundation.testSession
 import de.maibornwolff.codecharta.exporter.csv.CSVExporter
-import de.maibornwolff.codecharta.exporter.csv.ParserDialog.Companion.myCollectParserArgs
+import de.maibornwolff.codecharta.exporter.csv.ParserDialog
+import de.maibornwolff.codecharta.exporter.csv.ParserDialog.Companion.collectParserArgs
+import io.mockk.every
+import io.mockk.mockkObject
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
@@ -24,21 +27,23 @@ class ParserDialogTest {
     fun `should output correct arguments when provided with valid input`() {
         val hierarchy = 5
 
+        mockkObject(ParserDialog.Companion)
+
         testSession { terminal ->
-            val parserArguments = myCollectParserArgs(
-                fileCallback = {
-                    terminal.type(inputFileName)
-                    terminal.press(Keys.ENTER)
-                },
-                outFileCallback = {
-                    terminal.type(outputFileName)
-                    terminal.press(Keys.ENTER)
-                },
-                hierarchyCallback = {
-                    terminal.type(hierarchy.toString())
-                    terminal.press(Keys.ENTER)
-                }
-            )
+            every { ParserDialog.Companion.fileCallback() } returns {
+                terminal.type(inputFileName)
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.outFileCallback() } returns {
+                terminal.type(outputFileName)
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.hierarchyCallback() } returns {
+                terminal.type(hierarchy.toString())
+                terminal.press(Keys.ENTER)
+            }
+
+            val parserArguments = collectParserArgs(this)
 
             val commandLine = CommandLine(CSVExporter())
             val parseResult = commandLine.parseArgs(*parserArguments.toTypedArray())
@@ -54,24 +59,26 @@ class ParserDialogTest {
     fun `should prompt user twice for input file when first input file is invalid`() {
         val invalidFileName = "inv"
 
+        mockkObject(ParserDialog.Companion)
+
         testSession { terminal ->
-            val parserArguments = myCollectParserArgs(
-                fileCallback = {
-                    terminal.type(invalidFileName)
-                    terminal.press(Keys.ENTER)
-                    terminal.press(Keys.BACKSPACE, Keys.BACKSPACE, Keys.BACKSPACE)
-                    terminal.type(inputFileName)
-                    terminal.press(Keys.ENTER)
-                },
-                outFileCallback = {
-                    terminal.type(outputFileName)
-                    terminal.press(Keys.ENTER)
-                },
-                hierarchyCallback = {
-                    terminal.press(Keys.RIGHT)
-                    terminal.press(Keys.ENTER)
-                }
-            )
+            every { ParserDialog.Companion.fileCallback() } returns {
+                terminal.type(invalidFileName)
+                terminal.press(Keys.ENTER)
+                terminal.press(Keys.BACKSPACE, Keys.BACKSPACE, Keys.BACKSPACE)
+                terminal.type(inputFileName)
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.outFileCallback() } returns {
+                terminal.type(outputFileName)
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.hierarchyCallback() } returns {
+                terminal.press(Keys.RIGHT)
+                terminal.press(Keys.ENTER)
+            }
+
+            val parserArguments = collectParserArgs(this)
 
             val commandLine = CommandLine(CSVExporter())
             val parseResult = commandLine.parseArgs(*parserArguments.toTypedArray())

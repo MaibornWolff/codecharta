@@ -1,6 +1,5 @@
 package de.maibornwolff.codecharta.importer.sonar
 
-import com.varabyte.kotter.foundation.session
 import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.Session
 import de.maibornwolff.codecharta.tools.inquirer.myPromptConfirm
@@ -9,63 +8,49 @@ import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 
 class ParserDialog {
     companion object : ParserDialogInterface {
-        override fun collectParserArgs(): List<String> {
-            var res = listOf<String>()
-            session { res = myCollectParserArgs() }
-            return res
-        }
-
-        internal fun Session.myCollectParserArgs(
-            hostCallback: suspend RunScope.() -> Unit = {},
-            projectCallback: suspend RunScope.() -> Unit = {},
-            tokenCallback: suspend RunScope.() -> Unit = {},
-            outFileCallback: suspend RunScope.() -> Unit = {},
-            metricCallback: suspend RunScope.() -> Unit = {},
-            compressCallback: suspend RunScope.() -> Unit = {},
-            mergeCallback: suspend RunScope.() -> Unit = {}
-        ): List<String> {
-            val hostUrl = myPromptInput(
+        override fun collectParserArgs(session: Session): List<String> {
+            val hostUrl = session.myPromptInput(
                 message = "What is the sonar.host.url of your project?",
                 hint = "https://sonarcloud.io/",
                 allowEmptyInput = false,
                 invalidInputMessage = "Empty hostUrl is not allowed!",
-                onInputReady = hostCallback
+                onInputReady = hostCallback()
             )
 
-            val projectKey = myPromptInput(
+            val projectKey = session.myPromptInput(
                 message = "What is the sonar.projectKey?",
                 hint = "Unique identifier of your project",
                 allowEmptyInput = false,
                 invalidInputMessage = "Empty projectKey is not allowed!",
-                onInputReady = projectCallback
+                onInputReady = projectCallback()
             )
 
-            val userToken: String = myPromptInput(
+            val userToken: String = session.myPromptInput(
                 message = "What is the sonar user token (sonar.login) required to connect to the remote Sonar instance?",
                 hint = "sqp_0a81f6490875e062f79ccdeace23ac3c68dac6e",
                 allowEmptyInput = true,
-                onInputReady = tokenCallback
+                onInputReady = tokenCallback()
             )
 
-            val outputFileName: String = myPromptInput(
+            val outputFileName: String = session.myPromptInput(
                 message = "What is the name of the output file?",
                 allowEmptyInput = true,
-                onInputReady = outFileCallback
+                onInputReady = outFileCallback()
             )
 
-            val metrics: String = myPromptInput(
+            val metrics: String = session.myPromptInput(
                 message = "What are the metrics to import (comma separated)?",
                 hint = "metric1,metric2,metric3 (leave empty for all metrics)",
                 allowEmptyInput = true,
-                onInputReady = metricCallback
+                onInputReady = metricCallback()
             )
 
-            val isCompressed: Boolean = (outputFileName.isEmpty()) || myPromptConfirm(
-                message = "Do you want to compress the output file?", onInputReady = compressCallback
+            val isCompressed: Boolean = (outputFileName.isEmpty()) || session.myPromptConfirm(
+                message = "Do you want to compress the output file?", onInputReady = compressCallback()
             )
 
             val mergeModules: Boolean =
-                myPromptConfirm(message = "Do you want to merge modules in multi-module projects?", onInputReady = mergeCallback)
+                session.myPromptConfirm(message = "Do you want to merge modules in multi-module projects?", onInputReady = mergeCallback())
 
             return listOfNotNull(
                 hostUrl,
@@ -79,5 +64,19 @@ class ParserDialog {
         }
 
         private fun eraseWhitespace(input: String) = input.replace(" ", "")
+
+        internal fun hostCallback(): suspend RunScope.() -> Unit = {}
+
+        internal fun projectCallback(): suspend RunScope.() -> Unit = {}
+
+        internal fun tokenCallback(): suspend RunScope.() -> Unit = {}
+
+        internal fun outFileCallback(): suspend RunScope.() -> Unit = {}
+
+        internal fun metricCallback(): suspend RunScope.() -> Unit = {}
+
+        internal fun compressCallback(): suspend RunScope.() -> Unit = {}
+
+        internal fun mergeCallback(): suspend RunScope.() -> Unit = {}
     }
 }
