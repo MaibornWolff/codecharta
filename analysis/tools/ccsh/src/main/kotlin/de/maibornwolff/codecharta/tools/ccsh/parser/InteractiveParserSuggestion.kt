@@ -27,7 +27,7 @@ class InteractiveParserSuggestion {
         }
 
         private fun getApplicableInteractiveParsers(commandLine: CommandLine): List<String> {
-            val inputFilePath: String = InteractiveDialog.callAskForPath()
+            val inputFilePath: String = InteractiveDialog.askForPath()
 
             val inputFile = File(inputFilePath)
             if (inputFilePath == "" || !isInputFileOrDirectory(inputFile)) {
@@ -47,7 +47,7 @@ class InteractiveParserSuggestion {
         }
 
         private fun selectToBeExecutedInteractiveParsers(applicableParsers: List<String>): List<String> {
-            val selectedParsers: List<String> = InteractiveDialog.callAskApplicableParser(applicableParsers)
+            val selectedParsers: List<String> = InteractiveDialog.askApplicableParser(applicableParsers)
 
             if (selectedParsers.isEmpty()) {
                 Logger.info { "Did not select any parser to be configured!" }

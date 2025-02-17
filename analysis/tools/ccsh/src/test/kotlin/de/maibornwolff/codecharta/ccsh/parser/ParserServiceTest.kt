@@ -107,7 +107,7 @@ class ParserServiceTest {
         val fakeParser = "selectedParser"
         val fakeParserDescription = "This is a test parser. Please Stand by"
         mockkObject(InteractiveDialog)
-        every { InteractiveDialog.callAskParserToExecute(any()) } returns "$fakeParser $fakeParserDescription"
+        every { InteractiveDialog.askParserToExecute(any()) } returns "$fakeParser $fakeParserDescription"
 
         val selectedParser = ParserService.selectParser(cmdLine, PicocliParserRepository())
 
@@ -239,7 +239,7 @@ class ParserServiceTest {
         val dummyArgs = listOf("dummyArg")
 
         every {
-            dialogInterface.startSession<List<String>>(any())
+            dialogInterface.collectParserArgs(any())
         } returns dummyArgs
         every {
             obj.getDialog()
