@@ -16,7 +16,7 @@ export default class VerticalStreet extends Street {
     protected leftRow: BoundingBox[] = []
     protected rightRow: BoundingBox[] = []
     orientation: VerticalOrientation
-    private _origin: Vector2
+
     // biome-ignore lint/correctness/noUnusedVariables: <explanation>
     constructor(node: CodeMapNode, children: BoundingBox[], depth: number, orientation: VerticalOrientation = VerticalOrientation.UP) {
         super(node)

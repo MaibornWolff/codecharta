@@ -1,5 +1,10 @@
 package de.maibornwolff.codecharta.importer.sonar
 
+import com.github.tomakehurst.wiremock.client.WireMock.aResponse
+import com.github.tomakehurst.wiremock.client.WireMock.get
+import com.github.tomakehurst.wiremock.client.WireMock.stubFor
+import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
+import com.github.tomakehurst.wiremock.junit5.WireMockTest
 import de.maibornwolff.codecharta.importer.sonar.dataaccess.SonarMeasuresAPIDatasource
 import de.maibornwolff.codecharta.importer.sonar.dataaccess.SonarMetricsAPIDatasource
 import de.maibornwolff.codecharta.importer.sonar.model.Component
@@ -10,8 +15,13 @@ import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotEquals
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
+import java.net.URL
 
+private const val PORT = 8089
+
+@WireMockTest(httpPort = PORT)
 class SonarMeasuresAPIImporterTest {
     private val metrics = listOf("MetricOne", "MetricTwo", "MetricThree")
 
@@ -58,6 +68,34 @@ class SonarMeasuresAPIImporterTest {
         // then
         assertNotEquals(project, null)
         assertEquals(project.rootNode.children.size, 1)
+    }
+
+    @Test
+    @Throws(Exception::class)
+    fun `should build the right structure`() {
+        // given
+        val projectKey = "someProject"
+        val urlPath = "/api/measures/component_tree?component=$projectKey&qualifiers=FIL,UTS&metricKeys=coverage&p=1&ps=500"
+        stubFor(
+            get(urlEqualTo(urlPath)).willReturn(
+                aResponse().withHeader("Content-Type", "application/json").withStatus(200)
+                    .withBody(this.javaClass.classLoader.getResource("sonarqube_measures.json")!!.readText())
+            )
+        )
+
+        val measuresApiDatasource = SonarMeasuresAPIDatasource("", URL("http://localhost:$PORT"))
+        val sonar = SonarMeasuresAPIImporter(measuresApiDatasource, metricsDS)
+
+        // when
+        val project = sonar.getProjectFromMeasureAPI(projectKey, listOf("coverage"))
+
+        // then
+        assertEquals("root", project.rootNode.name)
+        assertEquals(1, project.rootNode.children.size)
+        assertEquals("codecharta", project.rootNode.children.first().name)
+        assertEquals(2, project.rootNode.children.first().children.size)
+        assertTrue(project.rootNode.children.first().children.map { it.name }.contains("import"))
+        assertTrue(project.rootNode.children.first().children.map { it.name }.contains("model"))
     }
 
     @Test

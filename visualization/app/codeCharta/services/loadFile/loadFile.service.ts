@@ -15,6 +15,7 @@ import { Store, State } from "@ngrx/store"
 import { setCurrentFilesAreSampleFiles } from "../../state/store/appStatus/currentFilesAreSampleFiles/currentFilesAreSampleFiles.actions"
 
 export const NO_FILES_LOADED_ERROR_MESSAGE = "File(s) could not be loaded"
+export const FILES_ALREADY_LOADED_ERROR_MESSAGE = "File(s) are already loaded"
 
 @Injectable({ providedIn: "root" })
 export class LoadFileService implements OnDestroy {
@@ -32,9 +33,9 @@ export class LoadFileService implements OnDestroy {
         .subscribe()
 
     constructor(
-        private store: Store<CcState>,
-        private state: State<CcState>,
-        private dialog: MatDialog
+        private readonly store: Store<CcState>,
+        private readonly state: State<CcState>,
+        private readonly dialog: MatDialog
     ) {}
 
     ngOnDestroy(): void {
@@ -46,7 +47,7 @@ export class LoadFileService implements OnDestroy {
         const recentFiles: string[] = []
         const fileValidationResults: CCFileValidationResult[] = []
 
-        enrichFileStatesAndRecentFilesWithValidationResults(
+        const hasAddedAtLeastOneFile = enrichFileStatesAndRecentFilesWithValidationResults(
             fileStates,
             recentFiles,
             nameDataPairs,
@@ -71,5 +72,9 @@ export class LoadFileService implements OnDestroy {
         const rootName = this.state.getValue().files.find(f => f.file.fileMeta.fileName === recentFile).file.map.name
         this.store.dispatch(setStandardByNames({ fileNames: recentFiles }))
         fileRoot.updateRoot(rootName)
+
+        if (!hasAddedAtLeastOneFile) {
+            throw new Error(FILES_ALREADY_LOADED_ERROR_MESSAGE)
+        }
     }
 }

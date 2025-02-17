@@ -65,14 +65,14 @@ export const sampleFile2 = { fileName: "sample2.cc.json", fileSize: 2 * 1024, co
 
 @Injectable({ providedIn: "root" })
 export class LoadInitialFileService {
-    private urlUtils = new UrlExtractor(this.httpClient)
+    private readonly urlUtils = new UrlExtractor(this.httpClient)
 
     constructor(
-        private store: Store,
-        private state: State<CcState>,
-        private dialog: MatDialog,
-        private loadFileService: LoadFileService,
-        private httpClient: HttpClient
+        private readonly store: Store,
+        private readonly state: State<CcState>,
+        private readonly dialog: MatDialog,
+        private readonly loadFileService: LoadFileService,
+        private readonly httpClient: HttpClient
     ) {}
 
     async loadFilesOrSampleFiles() {
@@ -145,9 +145,9 @@ export class LoadInitialFileService {
     }
 
     private async handleErrorLoadFilesFromQueryParams(error: Error) {
-        if ((error as Error).message !== NO_FILES_LOADED_ERROR_MESSAGE) {
+        if (error.message !== NO_FILES_LOADED_ERROR_MESSAGE) {
             const title = "File(s) could not be loaded from the given file URL parameter. Loaded sample files instead."
-            const message = this.createTitleUrlErrorDialog(error as Error)
+            const message = this.createTitleUrlErrorDialog(error)
             this.showErrorDialog(title, message)
         }
         await this.loadSampleFiles()
@@ -170,9 +170,9 @@ export class LoadInitialFileService {
     }
 
     private async handleErrorLoadFilesFromIndexedDB(error: Error) {
-        if ((error as Error).message !== NO_FILES_LOADED_ERROR_MESSAGE) {
+        if (error.message !== NO_FILES_LOADED_ERROR_MESSAGE) {
             const title = "Previously loaded files and settings could not be restored. Loaded sample files instead."
-            const message = (error as Error).message
+            const message = error.message
             this.showErrorDialog(title, message)
         }
         await this.loadSampleFiles()

@@ -10,8 +10,8 @@ export class NodeContextMenuService {
     private overlayReference: OverlayRef | null = null
 
     constructor(
-        private overlay: Overlay,
-        private store: Store
+        private readonly overlay: Overlay,
+        private readonly store: Store
     ) {}
 
     open(x: number, y: number) {
@@ -59,7 +59,7 @@ export class NodeContextMenuService {
         }
     }
 
-    private onLeftClickHideNodeContextMenu = (mouseEvent: MouseEvent) => {
+    private readonly onLeftClickHideNodeContextMenu = (mouseEvent: MouseEvent) => {
         if (this.isEventFromColorPicker(mouseEvent)) {
             return
         }
@@ -67,7 +67,7 @@ export class NodeContextMenuService {
         this.close()
     }
 
-    private onRightClickHideNodeContextMenu = event => {
+    private readonly onRightClickHideNodeContextMenu = event => {
         if (event.button !== 2) {
             return
         }

@@ -8,7 +8,6 @@ import { getInitialScenarioMetricProperties } from "./utils/getInitialScenarioMe
 import { State } from "@ngrx/store"
 import { CcState } from "../../../../codeCharta.model"
 import { MatToolbar } from "@angular/material/toolbar"
-import { CdkScrollable } from "@angular/cdk/scrolling"
 import { MatDialogContent, MatDialogActions, MatDialogClose } from "@angular/material/dialog"
 import { MatFormField, MatLabel, MatError } from "@angular/material/form-field"
 import { MatInput } from "@angular/material/input"
@@ -22,7 +21,6 @@ import { MatButton } from "@angular/material/button"
     standalone: true,
     imports: [
         MatToolbar,
-        CdkScrollable,
         MatDialogContent,
         MatFormField,
         MatLabel,
@@ -38,7 +36,6 @@ import { MatButton } from "@angular/material/button"
 })
 export class AddCustomScenarioDialogComponent {
     scenarioName = new UntypedFormControl("", [customScenarioNameValidator()])
-    scenarioNameErrorField: string | null = "Scenario name is required"
     scenarioContent: ScenarioMetricProperty[]
     areAnyScenarioMetricPropertiesSelected = true
 
@@ -48,8 +45,8 @@ export class AddCustomScenarioDialogComponent {
         threeOrbitControlsService: ThreeMapControlsService
     ) {
         this.scenarioContent = getInitialScenarioMetricProperties(this.state.getValue(), {
-            camera: threeCameraService.camera.position,
-            cameraTarget: threeOrbitControlsService.controls.target
+            camera: threeCameraService.camera.position.clone(),
+            cameraTarget: threeOrbitControlsService.controls.target.clone()
         })
     }
 

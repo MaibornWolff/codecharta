@@ -28,7 +28,7 @@ export class StreetLayoutGenerator {
 
         return layoutNodes.map(streetLayoutNode => {
             return StreetViewHelper.buildNodeFrom(
-                streetLayoutNode as CodeMapNode,
+                streetLayoutNode,
                 this.calculateHeightScale(map, treeMapSize, maxHeight),
                 maxHeight,
                 state,

@@ -13,7 +13,7 @@ import { CustomVisibilityMesh } from "../customVisibilityMesh"
 export class BackPrintContainerMesh extends GeneralMesh implements GeneralSizeChangeMesh {
     private childrenMeshes: Map<string, GeneralMesh>
 
-    constructor(private font: Font) {
+    constructor(private readonly font: Font) {
         const colorChangeStrategy = new BackPrintColorChangeStrategy()
         super("BackPrintContainer", colorChangeStrategy)
     }

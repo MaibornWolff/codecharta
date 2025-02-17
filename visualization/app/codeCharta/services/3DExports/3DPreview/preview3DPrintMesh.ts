@@ -34,11 +34,11 @@ export interface GeometryOptions {
 }
 
 export class Preview3DPrintMesh {
-    private printMesh: Mesh
+    private readonly printMesh: Mesh
     private currentSize: Vector3
 
     constructor(
-        private geometryOptions: GeometryOptions,
+        private readonly geometryOptions: GeometryOptions,
         private frontPrintContainerMesh: FrontPrintContainerMesh = new FrontPrintContainerMesh(new Font(font)),
         private backPrintContainerMesh: BackPrintContainerMesh = new BackPrintContainerMesh(new Font(font)),
         private baseplateMesh: BaseplateMesh = new BaseplateMesh(),

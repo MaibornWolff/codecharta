@@ -47,7 +47,7 @@ export class GlobalConfigurationDialogComponent {
     hideFlatBuildings$ = this.store.select(hideFlatBuildingsSelector)
     resetCameraIfNewFileIsLoaded$ = this.store.select(resetCameraIfNewFileIsLoadedSelector)
 
-    constructor(private store: Store<CcState>) {}
+    constructor(private readonly store: Store<CcState>) {}
 
     handleResetCameraIfNewFileIsLoadedChanged(event: MatSlideToggleChange) {
         this.store.dispatch(setResetCameraIfNewFileIsLoaded({ value: event.checked }))

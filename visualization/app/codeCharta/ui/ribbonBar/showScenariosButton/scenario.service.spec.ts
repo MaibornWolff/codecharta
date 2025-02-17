@@ -69,7 +69,7 @@ describe("scenarioService", () => {
                 { provide: MatDialog, useValue: { open: jest.fn() } },
                 { provide: State, useValue: { getValue: () => defaultState } },
                 { provide: ThreeCameraService, useValue: { setPosition: jest.fn() } },
-                { provide: ThreeMapControlsService, useValue: { setControlTarget: jest.fn() } }
+                { provide: ThreeMapControlsService, useValue: { setControlTarget: jest.fn(), updateControls: jest.fn() } }
             ]
         })
 

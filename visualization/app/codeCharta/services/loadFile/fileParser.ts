@@ -2,7 +2,12 @@ import { ExportBlacklistItem, ExportCCFile } from "../../codeCharta.api.model"
 import { CCFile, NameDataPair } from "../../codeCharta.model"
 import { FileSelectionState, FileState } from "../../model/files/files"
 import { getCCFile } from "../../util/fileHelper"
-import { CCFileValidationResult as FileValidationResult, checkErrors, checkWarnings } from "../../util/fileValidator"
+import {
+    CCFileValidationResult as FileValidationResult,
+    checkErrors,
+    checkWarnings,
+    removeAuthorsAttributes
+} from "../../util/fileValidator"
 import { NodeDecorator } from "../../util/nodeDecorator"
 
 export function getNameDataPair(ccFile: CCFile): NameDataPair {
@@ -41,24 +46,37 @@ export function enrichFileStatesAndRecentFilesWithValidationResults(
     fileValidationResults: FileValidationResult[],
     currentFilesAreSampleFilesCallback: () => boolean,
     setCurrentFilesAreNotSampleFilesCallback: () => void
-) {
+): boolean {
+    let hasAddedAtLeastOneFile = false
     for (const nameDataPair of nameDataPairs) {
         const fileValidationResult: FileValidationResult = {
             fileName: nameDataPair?.fileName,
             errors: [],
             warnings: []
         }
+        fileValidationResult.warnings.push(...removeAuthorsAttributes(nameDataPair?.content)) //Needs to be done before schema validation
+
         fileValidationResult.errors.push(...checkErrors(nameDataPair?.content))
 
         if (fileValidationResult.errors.length === 0) {
             fileValidationResult.warnings.push(...checkWarnings(nameDataPair?.content))
-            addFile(fileStates, recentFiles, nameDataPair, currentFilesAreSampleFilesCallback, setCurrentFilesAreNotSampleFilesCallback)
+            const hasAddedFile = addFile(
+                fileStates,
+                recentFiles,
+                nameDataPair,
+                currentFilesAreSampleFilesCallback,
+                setCurrentFilesAreNotSampleFilesCallback
+            )
+            if (hasAddedFile) {
+                hasAddedAtLeastOneFile = true
+            }
         }
 
         if (fileValidationResult.errors.length > 0 || fileValidationResult.warnings.length > 0) {
             fileValidationResults.push(fileValidationResult)
         }
     }
+    return hasAddedAtLeastOneFile
 }
 
 function addFile(
@@ -67,7 +85,7 @@ function addFile(
     file: NameDataPair,
     currentFilesAreSampleFilesCallback: () => boolean,
     setCurrentFilesAreNotSampleFilesCallback: () => void
-) {
+): boolean {
     if (currentFilesAreSampleFilesCallback()) {
         fileStates.length = 0
         setCurrentFilesAreNotSampleFilesCallback()
@@ -90,13 +108,13 @@ function addFile(
     }
     if (isDuplicate) {
         fileStates[storedFileChecksums.get(currentFileChecksum)].file.fileMeta.fileName = currentFileName
-        recentFiles[0] = currentFileName
-        recentFiles.push(currentFileName)
-        return
+        recentFiles.unshift(currentFileName)
+        return false
     }
 
     fileStates.push({ file: ccFile, selectedAs: FileSelectionState.None })
     recentFiles.push(currentFileName)
+    return true
 }
 
 function getFileName(currentFileName: string, storedFileNames: Map<string, string>, currentFileChecksum: string) {

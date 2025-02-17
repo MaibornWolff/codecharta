@@ -9,7 +9,7 @@ import { ActionIconComponent } from "../../actionIcon/actionIcon.component"
     imports: [ActionIconComponent]
 })
 export class UploadFilesButtonComponent {
-    constructor(private uploadFilesService: UploadFilesService) {}
+    constructor(private readonly uploadFilesService: UploadFilesService) {}
 
     uploadFiles() {
         this.uploadFilesService.uploadFiles()

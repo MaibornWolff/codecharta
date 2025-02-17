@@ -13,22 +13,26 @@ type CameraChangeEvents = {
 
 @Injectable({ providedIn: "root" })
 export class ThreeMapControlsService {
-    static CAMERA_CHANGED_EVENT_NAME = "camera-changed"
+    static readonly CAMERA_CHANGED_EVENT_NAME = "camera-changed"
     MAX_ZOOM = 200
     MIN_ZOOM = 10
 
     controls: MapControls
-    private eventEmitter = new EventEmitter<CameraChangeEvents>()
+    private readonly eventEmitter = new EventEmitter<CameraChangeEvents>()
     zoomPercentage$ = new BehaviorSubject<number>(100)
 
     constructor(
-        private threeCameraService: ThreeCameraService,
-        private threeSceneService: ThreeSceneService,
-        private threeRendererService: ThreeRendererService
+        private readonly threeCameraService: ThreeCameraService,
+        private readonly threeSceneService: ThreeSceneService,
+        private readonly threeRendererService: ThreeRendererService
     ) {}
 
     setControlTarget(cameraTarget: Vector3) {
         this.controls.target.set(cameraTarget.x, cameraTarget.y, cameraTarget.z)
+    }
+
+    updateControls() {
+        this.controls.update()
     }
 
     rotateCameraInVectorDirection(x: number, y: number, z: number) {
@@ -51,7 +55,7 @@ export class ThreeMapControlsService {
 
             cameraReference.position.set(length, length, boundingSphere.center.z)
 
-            this.controls.update()
+            this.updateControls()
 
             this.focusCameraViewToCenter(boundingSphere)
             this.threeRendererService.render()
@@ -190,7 +194,7 @@ export class ThreeMapControlsService {
         const newDistance = this.getDistanceFromZoomPercentage(zoom)
         const direction = new Vector3().subVectors(this.threeCameraService.camera.position, this.controls.target).normalize()
         this.threeCameraService.camera.position.copy(this.controls.target).add(direction.multiplyScalar(newDistance))
-        this.controls.update()
+        this.updateControls()
 
         this.zoomPercentage$.next(zoom)
     }

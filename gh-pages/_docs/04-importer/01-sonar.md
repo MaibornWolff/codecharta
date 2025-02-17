@@ -108,7 +108,7 @@ After you installed SonarQube do the following steps to analyze your Project:
 
 When using SonarQube version >= 9.5, you need to create a user token. In your account settings select the security settings.
 
-![Generate user token]-({{site.baseurl}}/assets/images/docs/how-to/generate_user_token.png)
+![Generate user token]({{site.baseurl}}/assets/images/docs/how-to/generate_user_token.png)
 
 For further information read [here](https://docs.sonarqube.org/latest/project-administration/project-existence/)
 
@@ -118,4 +118,4 @@ To visualize your project metrics created by Sonar use CodeCharta's sonar import
 
 ## Beginner's Guide for using SonarQube
 
-If you are totally new to SonarQube, you are welcome to read more detailed instructions here.
+If you are totally new to SonarQube, you are welcome to read more detailed instructions [here]({{site.docs_how_to}}/use-sonar-9-4).

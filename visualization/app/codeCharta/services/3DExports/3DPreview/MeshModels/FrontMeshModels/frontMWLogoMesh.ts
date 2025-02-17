@@ -32,6 +32,5 @@ export class FrontMWLogoMesh extends FrontLogo implements GeneralSizeChangeMesh 
 
     changeSize(geometryOptions: GeometryOptions, oldWidth: number): void {
         this.position.x += (geometryOptions.width - oldWidth) / 2
-        return
     }
 }

@@ -12,6 +12,8 @@ import { Action } from "@ngrx/store"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { provideMockActions } from "@ngrx/effects/testing"
 import { LayoutAlgorithm } from "../../../codeCharta.model"
+import { selectorsTriggeringAutoFit } from "./selectorsTriggeringAutoFit"
+import { colorRangeSelector } from "../../store/dynamicSettings/colorRange/colorRange.selector"
 
 describe("autoFitCodeMapOnFileSelectionChangeEffect", () => {
     let mockedRenderCodeMap$: Subject<unknown>
@@ -23,16 +25,18 @@ describe("autoFitCodeMapOnFileSelectionChangeEffect", () => {
         actions$ = new BehaviorSubject({ type: "" })
         mockedRenderCodeMap$ = new Subject()
         mockedAutoFitTo = jest.fn()
+        const mockedSelectorsTriggeringAutoFit = selectorsTriggeringAutoFit.map(selector => {
+            return { selector, value: [] }
+        })
         TestBed.configureTestingModule({
             imports: [EffectsModule.forRoot([AutoFitCodeMapEffect])],
             providers: [
                 { provide: RenderCodeMapEffect, useValue: { renderCodeMap$: mockedRenderCodeMap$ } },
                 provideMockStore({
                     selectors: [
-                        { selector: visibleFileStatesSelector, value: [] },
-                        { selector: focusedNodePathSelector, value: [] },
-                        { selector: layoutAlgorithmSelector, value: LayoutAlgorithm.StreetMap },
-                        { selector: resetCameraIfNewFileIsLoadedSelector, value: true }
+                        ...mockedSelectorsTriggeringAutoFit,
+                        { selector: resetCameraIfNewFileIsLoadedSelector, value: true },
+                        { selector: colorRangeSelector, value: { from: 0, to: 0 } }
                     ]
                 }),
                 provideMockActions(() => actions$),
@@ -66,6 +70,13 @@ describe("autoFitCodeMapOnFileSelectionChangeEffect", () => {
         store.overrideSelector(resetCameraIfNewFileIsLoadedSelector, false)
         store.refreshState()
         store.overrideSelector(visibleFileStatesSelector, [])
+        store.refreshState()
+        mockedRenderCodeMap$.next(undefined)
+        expect(mockedAutoFitTo).not.toHaveBeenCalled()
+    })
+
+    it("should do nothing when color range has changed", () => {
+        store.overrideSelector(colorRangeSelector, { from: 1, to: 2 })
         store.refreshState()
         mockedRenderCodeMap$.next(undefined)
         expect(mockedAutoFitTo).not.toHaveBeenCalled()

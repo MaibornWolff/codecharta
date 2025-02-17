@@ -3,7 +3,7 @@ import { LoadFileService } from "../services/loadFile/loadFile.service"
 const dateRegex = /_\d{4}(?:-\d{1,2}){2}_\d{1,2}-\d{1,2}\./
 
 export class FileNameHelper {
-    private static JSON_EXTENSION = ".json"
+    private static readonly JSON_EXTENSION = ".json"
 
     static getNewFileName(fileName: string, isDeltaState: boolean) {
         return `${this.getFileNameWithoutTimestamp(fileName, isDeltaState)}_${this.getNewTimestamp()}`

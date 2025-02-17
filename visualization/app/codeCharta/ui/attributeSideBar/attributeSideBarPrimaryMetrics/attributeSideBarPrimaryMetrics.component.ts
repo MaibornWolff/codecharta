@@ -29,7 +29,7 @@ export class AttributeSideBarPrimaryMetricsComponent {
     showAttributeTypeSelector$: Observable<boolean>
     attributeDescriptors$: Observable<AttributeDescriptors>
 
-    constructor(private store: Store<CcState>) {
+    constructor(private readonly store: Store<CcState>) {
         this.primaryMetrics$ = this.store.select(primaryMetricsSelector)
         this.showAttributeTypeSelector$ = this.store.select(showAttributeTypeSelectorSelector)
         this.attributeDescriptors$ = this.store.select(attributeDescriptorsSelector)

@@ -15,6 +15,7 @@ import { BehaviorSubject } from "rxjs"
 import { VisibleFilesBySelectionMode } from "../ui/customConfigs/visibleFilesBySelectionMode.selector"
 import { Store } from "@ngrx/store"
 import { ThreeRendererService } from "../ui/codeMap/threeViewer/threeRenderer.service"
+import { setState } from "../state/store/state.actions"
 
 export const CUSTOM_CONFIG_FILE_EXTENSION = ".cc.config.json"
 const CUSTOM_CONFIGS_LOCAL_STORAGE_VERSION = "1.0.1"
@@ -22,8 +23,8 @@ const CUSTOM_CONFIGS_DOWNLOAD_FILE_VERSION = "1.0.1"
 export const CUSTOM_CONFIGS_LOCAL_STORAGE_ELEMENT = "CodeCharta::customConfigs"
 
 export class CustomConfigHelper {
-    private static customConfigs: Map<string, CustomConfig> = CustomConfigHelper.loadCustomConfigsFromLocalStorage()
-    static customConfigChange$: BehaviorSubject<null> = new BehaviorSubject(null)
+    private static readonly customConfigs: Map<string, CustomConfig> = CustomConfigHelper.loadCustomConfigsFromLocalStorage()
+    public static readonly customConfigChange$: BehaviorSubject<null> = new BehaviorSubject(null)
 
     static setCustomConfigsToLocalStorage() {
         const newLocalStorageElement: LocalStorageCustomConfigs = {
@@ -191,13 +192,14 @@ export class CustomConfigHelper {
 
     static applyCustomConfig(
         configId: string,
-        // biome-ignore lint/correctness/noUnusedVariables: <explanation>
         store: Store,
         threeCameraService: ThreeCameraService,
         threeOrbitControlsService: ThreeMapControlsService,
         threeRendererService: ThreeRendererService
     ) {
         const customConfig = this.getCustomConfigSettings(configId)
+        store.dispatch(setState({ value: customConfig.stateSettings }))
+
         if (customConfig.camera) {
             threeCameraService.setPosition(customConfig.camera.camera)
             threeOrbitControlsService.setControlTarget(customConfig.camera.cameraTarget)

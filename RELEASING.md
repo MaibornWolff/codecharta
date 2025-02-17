@@ -12,6 +12,12 @@ CodeCharta uses several GitHub Actions workflows to manage releases for both the
 
 ## Release Process
 
+Before releasing:
+1. Ensure all changes are merged to main
+2. Verify tests pass
+3. Check changelog entries are complete
+4. Ensure you have required permissions
+
 ### 1. Prepare Release Workflow
 
 The prepare release workflow (`prepare-release.yml`) is triggered manually and handles:
@@ -22,42 +28,52 @@ The prepare release workflow (`prepare-release.yml`) is triggered manually and h
 - Opening a pull request for the release
 
 **Usage:**
-1. Go to Actions → "Prepare Release - Visualization/Analysis"
+1. Go to Actions → "Prepare Release - Visualization/Analysis" → "Run workflow"
 2. Select:
    - Repository (Visualization or Analysis)
-   - Version type (patch, minor, major)
+   - Version type (Follow [Semantic Versioning](http://semver.org/))
+     - **Patch**: Bug fixes, backward compatible
+     - **Minor**: New features, backward compatible
+     - **Major**: Breaking changes
 3. Run workflow
 
 The workflow will:
 - Use the version manager to update versions
-- Create a release PR
 - Add appropriate labels
 - Update documentation
+- Create a release PR
 
 ### 2. Main Release Workflows
 
 #### Visualization Release (`release-visualization.yml`)
 
 Triggered when:
-- A release PR is merged
-- Manual trigger with version input
+- The release PR from previous step is merged
 
-Steps:
-1. Builds artifacts
-2. Creates GitHub release
-3. Publishes to npm
-4. Publishes to Docker Hub
-5. Deploys to GitHub Pages
+The workflow will:
+1. Build artifacts
+2. Create GitHub release
+3. Publish to npm
+4. Publish to Docker Hub
+5. Deploy to GitHub Pages
 
 #### Analysis Release (`release-analysis.yml`)
 
-Similar to visualization but with analysis-specific steps:
-1. Builds artifacts
-2. Creates GitHub release
-3. Publishes node wrapper to npm
-4. Publishes to Docker Hub
+Similar to visualization but the workflow will:
+1. Build artifacts
+2. Create GitHub release
+3. Publish node wrapper to npm
+4. Publish to Docker Hub
 
-### 3. Staging Workflows
+### Post-Release
+
+After a release:
+1. Verify all artifacts are published
+2. Check documentation is updated
+3. Verify staging deployments
+4. Monitor for any issues
+
+## Staging Workflows
 
 #### Visualization Staging (`staging-visualization.yml`)
 
@@ -74,7 +90,7 @@ Deploys:
 
 Similar to visualization staging but for analysis components.
 
-### 4. Unpublish Workflow
+## Unpublish Workflow
 
 The unpublish workflow (`unpublish-release.yml`) provides options to:
 - Unpublish from npm
@@ -104,29 +120,6 @@ The version manager script (`version-manager.ts`) handles:
 2. `extractChangelog`: Extracts changelog entries for releases
 3. `updateReadme`: Updates version numbers in README.md
 
-## Requirements
-
-Before releasing:
-1. Ensure all changes are merged to main
-2. Verify tests pass
-3. Check changelog entries are complete
-4. Ensure you have required permissions
-
-## Release Types
-
-Follow [Semantic Versioning](http://semver.org/):
-- **Major**: Breaking changes
-- **Minor**: New features, backward compatible
-- **Patch**: Bug fixes, backward compatible
-
-## Post-Release
-
-After a release:
-1. Verify all artifacts are published
-2. Check documentation is updated
-3. Verify staging deployments
-4. Monitor for any issues
-
 ## Troubleshooting
 
 If a release fails:
@@ -139,4 +132,4 @@ If a release fails:
 - Always use the prepare release workflow instead of manual version updates
 - Keep changelogs up to date
 - Test staging deployments before releasing
-- Monitor release workflows for completion 
+- Monitor release workflows for completion

@@ -7,8 +7,8 @@ import { tap } from "rxjs"
 @Injectable()
 export class OpenNodeContextMenuEffect {
     constructor(
-        private actions$: Actions,
-        private nodeContextMenu: NodeContextMenuService
+        private readonly actions$: Actions,
+        private readonly nodeContextMenu: NodeContextMenuService
     ) {}
 
     openNodeContextMenu$ = createEffect(

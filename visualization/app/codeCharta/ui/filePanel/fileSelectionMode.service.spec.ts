@@ -19,9 +19,9 @@ describe("FileSelectionModeService", () => {
         })
         store = TestBed.inject(Store)
         state = TestBed.inject(State)
+        store.dispatch(addFile({ file: TEST_FILE_DATA_JAVA })) //fileName: "fileB"
         store.dispatch(addFile({ file: TEST_FILE_DATA }))
-        store.dispatch(addFile({ file: TEST_FILE_DATA_JAVA }))
-        store.dispatch(setStandard({ files: [TEST_FILE_DATA] }))
+        store.dispatch(setStandard({ files: [TEST_FILE_DATA] })) //fileName: "fileA"
 
         fileSelectionModeService = new FileSelectionModeService(store, state)
     })
@@ -38,8 +38,8 @@ describe("FileSelectionModeService", () => {
 
         fileSelectionModeService.toggle()
         store.dispatch(setDelta({ referenceFile: TEST_FILE_DATA_JAVA, comparisonFile: TEST_FILE_DATA }))
-
         fileSelectionModeService.toggle()
+
         fileStates = state.getValue().files
         expect(fileStates[0].selectedAs).toBe(FileSelectionState.Partial)
         expect(fileStates[1].selectedAs).toBe(FileSelectionState.None)
@@ -52,5 +52,27 @@ describe("FileSelectionModeService", () => {
         store.dispatch(removeFiles({ fileNames: [TEST_FILE_DATA_JAVA.fileMeta.fileName] }))
         fileSelectionModeService.toggle()
         expect(referenceFileSelector(state.getValue())).toBe(TEST_FILE_DATA)
+    })
+
+    it("should remain sorted after toggling", () => {
+        const file1 = { ...TEST_FILE_DATA, fileMeta: { ...TEST_FILE_DATA.fileMeta, fileName: "bFile", fileChecksum: "2" } }
+        const file2 = { ...TEST_FILE_DATA_JAVA, fileMeta: { ...TEST_FILE_DATA_JAVA.fileMeta, fileName: "aFile", fileChecksum: "1" } }
+        const file3 = { ...TEST_FILE_DATA, fileMeta: { ...TEST_FILE_DATA.fileMeta, fileName: "aFile", fileChecksum: "2" } }
+
+        store.dispatch(addFile({ file: file1 }))
+        store.dispatch(addFile({ file: file2 }))
+        store.dispatch(addFile({ file: file3 }))
+
+        fileSelectionModeService.toggle()
+        fileSelectionModeService.toggle()
+
+        const fileStates = state.getValue().files
+        expect(fileStates[0].file.fileMeta.fileName).toBe("aFile")
+        expect(fileStates[0].file.fileMeta.fileChecksum).toBe("1")
+        expect(fileStates[1].file.fileMeta.fileName).toBe("aFile")
+        expect(fileStates[1].file.fileMeta.fileChecksum).toBe("2")
+        expect(fileStates[2].file.fileMeta.fileName).toBe("bFile")
+        expect(fileStates[3].file.fileMeta.fileName).toBe("fileA")
+        expect(fileStates[4].file.fileMeta.fileName).toBe("fileB")
     })
 })

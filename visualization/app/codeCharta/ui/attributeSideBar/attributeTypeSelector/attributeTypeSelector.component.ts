@@ -18,7 +18,7 @@ export class AttributeTypeSelectorComponent {
 
     attributeTypes$ = this.store.select(attributeTypesSelector)
 
-    constructor(private store: Store<CcState>) {}
+    constructor(private readonly store: Store<CcState>) {}
 
     setToAbsolute() {
         this.setAttributeType(AttributeTypeValue.absolute)

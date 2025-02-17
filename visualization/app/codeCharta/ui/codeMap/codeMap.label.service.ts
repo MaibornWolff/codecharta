@@ -20,24 +20,24 @@ interface InternalLabel {
 @Injectable({ providedIn: "root" })
 export class CodeMapLabelService {
     private labels: InternalLabel[]
-    private mapLabelColors = defaultMapColors.labelColorAndAlpha
-    private LABEL_COLOR_RGB = ColorConverter.convertHexToRgba(this.mapLabelColors.rgb)
-    private LABEL_WIDTH_DIVISOR = 2100 // empirically gathered
-    private LABEL_HEIGHT_DIVISOR = 35 // empirically gathered
-    private LABEL_CORNER_RADIUS = 40 //empirically gathered
-    private LABEL_SCALE_FACTOR = 0.7 //empirically gathered
-    private LABEL_HEIGHT_COEFFICIENT = 15 / 4 //empirically gathered, needed to prevent label collision with building with higher margin, TODO scale with margin factor once its available
+    private readonly mapLabelColors = defaultMapColors.labelColorAndAlpha
+    private readonly LABEL_COLOR_RGB = ColorConverter.convertHexToRgba(this.mapLabelColors.rgb)
+    private readonly LABEL_WIDTH_DIVISOR = 2100 // empirically gathered
+    private readonly LABEL_HEIGHT_DIVISOR = 35 // empirically gathered
+    private readonly LABEL_CORNER_RADIUS = 40 //empirically gathered
+    private readonly LABEL_SCALE_FACTOR = 0.7 //empirically gathered
+    private readonly LABEL_HEIGHT_COEFFICIENT = 15 / 4 //empirically gathered, needed to prevent label collision with building with higher margin, TODO scale with margin factor once its available
     private LABEL_HEIGHT_POSITION = 60
 
-    private previousScaling: Vector3 = new Vector3(1, 1, 1)
+    private readonly previousScaling: Vector3 = new Vector3(1, 1, 1)
     private lineCount = 1
     private nodeHeight = 0
 
     constructor(
-        private state: State<CcState>,
-        private threeCameraService: ThreeCameraService,
+        private readonly state: State<CcState>,
+        private readonly threeCameraService: ThreeCameraService,
         private threeSceneService: ThreeSceneService,
-        private threeMapControlsService: ThreeMapControlsService
+        private readonly threeMapControlsService: ThreeMapControlsService
     ) {
         this.labels = new Array<InternalLabel>()
         this.threeMapControlsService.subscribe("onCameraChanged", () => this.onCameraChanged())

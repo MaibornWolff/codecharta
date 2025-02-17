@@ -167,7 +167,8 @@ export const VALID_NODE_WITH_MCC: CodeMapNode = {
             attributes: { rloc: 100, functions: 10, mcc: 1 },
             isExcluded: false,
             isFlattened: false,
-            link: "https://www.google.de"
+            link: "https://www.google.de",
+            path: "/root/big leaf"
         },
         {
             name: "Parent Leaf",
@@ -175,20 +176,23 @@ export const VALID_NODE_WITH_MCC: CodeMapNode = {
             attributes: {},
             isExcluded: false,
             isFlattened: false,
+            path: "/root/Parent Leaf",
             children: [
                 {
                     name: "small leaf",
                     type: NodeType.FILE,
                     attributes: { rloc: 30, functions: 100, mcc: 100 },
                     isExcluded: false,
-                    isFlattened: false
+                    isFlattened: false,
+                    path: "/root/Parent Leaf/small leaf"
                 },
                 {
                     name: "other small leaf",
                     type: NodeType.FILE,
                     attributes: { rloc: 70, functions: 1000, mcc: 10 },
                     isExcluded: false,
-                    isFlattened: false
+                    isFlattened: false,
+                    path: "/root/Parent Leaf/other small leaf"
                 }
             ]
         }
@@ -753,6 +757,84 @@ export const VALID_NODE_DECORATED: CodeMapNode = {
     ]
 }
 
+export const GIT_LOG_NODE_WITH_AUTHORS = {
+    name: "root",
+    type: NodeType.FOLDER,
+    attributes: {},
+    children: [
+        {
+            name: ".gitignore",
+            type: NodeType.FILE,
+            attributes: {
+                number_of_authors: 1,
+                number_of_commits: 2,
+                range_of_weeks_with_commits: 1,
+                weeks_with_commits: 1,
+                highly_coupled_files: 0,
+                median_coupled_files: 72.0,
+                number_of_renames: 0,
+                age_in_weeks: 11,
+                authors: ["TestAuthor1", "TestAuthor2"]
+            },
+            children: []
+        },
+        {
+            name: "tabs.tsx",
+            type: NodeType.FILE,
+            attributes: {
+                number_of_authors: 1,
+                number_of_commits: 1,
+                range_of_weeks_with_commits: 1,
+                weeks_with_commits: 1,
+                highly_coupled_files: 0,
+                median_coupled_files: 30.0,
+                number_of_renames: 0,
+                age_in_weeks: 11,
+                authors: ["TestAuthor"]
+            },
+            children: []
+        }
+    ]
+}
+
+export const VALID_GIT_LOG_NODE_WITHOUT_AUTHORS: CodeMapNode = {
+    name: "root",
+    type: NodeType.FOLDER,
+    attributes: {},
+    children: [
+        {
+            name: ".gitignore",
+            type: NodeType.FILE,
+            attributes: {
+                number_of_authors: 1,
+                number_of_commits: 2,
+                range_of_weeks_with_commits: 1,
+                weeks_with_commits: 1,
+                highly_coupled_files: 0,
+                median_coupled_files: 72.0,
+                number_of_renames: 0,
+                age_in_weeks: 11
+            },
+            children: []
+        },
+        {
+            name: "tabs.tsx",
+            type: NodeType.FILE,
+            attributes: {
+                number_of_authors: 1,
+                number_of_commits: 1,
+                range_of_weeks_with_commits: 1,
+                weeks_with_commits: 1,
+                highly_coupled_files: 0,
+                median_coupled_files: 30.0,
+                number_of_renames: 0,
+                age_in_weeks: 11
+            },
+            children: []
+        }
+    ]
+}
+
 export const VALID_EDGES_DECORATED: Edge[] = [
     {
         fromNodeName: "/root/big leaf",
@@ -828,6 +910,20 @@ export const TEST_FILE_CONTENT_NO_API: ExportCCFile = {
     nodes: [VALID_NODE_WITH_MCC]
 }
 
+export const TEST_FILE_CONTENT_WITH_AUTHORS = {
+    projectName: "Valid GitLogParser Sample Map",
+    fileChecksum: "md5-git-log-parser-file",
+    apiVersion: APIVersions.ONE_POINT_THREE,
+    nodes: [GIT_LOG_NODE_WITH_AUTHORS]
+}
+
+export const TEST_FILE_CONTENT_WITHOUT_AUTHORS: ExportCCFile = {
+    projectName: "Valid GitLogParser Sample Map",
+    fileChecksum: "md5-git-log-parser-file",
+    apiVersion: APIVersions.ONE_POINT_THREE,
+    nodes: [VALID_GIT_LOG_NODE_WITHOUT_AUTHORS]
+}
+
 export const FILE_META: FileMeta = {
     ...DEFAULT_FILE_META,
     fileName: "fileA",
@@ -838,6 +934,12 @@ export const TEST_FILE_DATA: CCFile = {
     fileMeta: FILE_META,
     map: VALID_NODE_WITH_MCC,
     settings: DEFAULT_SETTINGS
+}
+
+export const TEST_FILE_DATA_WITHOUT_EDGES: CCFile = {
+    fileMeta: FILE_META,
+    map: VALID_NODE_WITH_MCC,
+    settings: { ...DEFAULT_SETTINGS, fileSettings: { ...DEFAULT_SETTINGS.fileSettings, edges: [] } }
 }
 
 export const TEST_FILE_DATA_TWO: CCFile = {
@@ -2022,16 +2124,16 @@ export const FILE_STATES_TWO_FILES: FileState[] = [
     }
 ]
 
-export const FILE_STATES_UNSELECTED: FileState[] = [
-    {
-        file: TEST_FILE_DATA,
-        selectedAs: FileSelectionState.None
-    }
-]
-
 export const FILE_STATES_JAVA: FileState[] = [
     {
         file: TEST_FILE_DATA_JAVA,
+        selectedAs: FileSelectionState.Partial
+    }
+]
+
+export const FILE_STATES_WITHOUT_EDGES: FileState[] = [
+    {
+        file: TEST_FILE_DATA_WITHOUT_EDGES,
         selectedAs: FileSelectionState.Partial
     }
 ]

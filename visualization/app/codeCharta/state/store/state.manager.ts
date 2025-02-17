@@ -6,7 +6,6 @@ import { appStatus, defaultAppStatus } from "./appStatus/appStatus.reducer"
 import { ActionReducer } from "@ngrx/store"
 import { CcState } from "../../codeCharta.model"
 import { isSetStateAction } from "./state.actions"
-import { clone } from "../../util/clone"
 
 export const appReducers = {
     fileSettings,
@@ -26,11 +25,8 @@ export const defaultState: CcState = {
 export const setStateMiddleware =
     (reducer: ActionReducer<CcState>): ActionReducer<CcState> =>
     (state, action) => {
-        if (isSetStateAction(action)) {
-            const newState = clone(state)
-            return _applyPartialState(newState, action.value)
-        }
-        return reducer(state, action)
+        const newState = isSetStateAction(action) ? _applyPartialState({ ...state }, action.value) : state
+        return reducer(newState, action)
     }
 
 const objectWithDynamicKeysInStore = new Set([
@@ -59,7 +55,7 @@ export function _applyPartialState<T>(applyTo: T, toBeApplied: unknown, composed
         applyTo[key] =
             typeof value !== "object" || objectWithDynamicKeysInStore.has(composedJoinedPath)
                 ? value
-                : _applyPartialState(applyTo[key], value, newComposedPath)
+                : _applyPartialState({ ...applyTo[key] }, value, newComposedPath)
     }
 
     return applyTo

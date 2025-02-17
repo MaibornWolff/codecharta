@@ -6,7 +6,7 @@ import { ExportCCFile, ExportWrappedCCFile } from "../../codeCharta.api.model"
 import { ungzip } from "pako"
 
 export class UrlExtractor {
-    constructor(private httpClient: HttpClient) {}
+    constructor(private readonly httpClient: HttpClient) {}
 
     getParameterByName(name: string) {
         const sanitizedName = name.replaceAll(/[[\]]/g, "\\$&")
