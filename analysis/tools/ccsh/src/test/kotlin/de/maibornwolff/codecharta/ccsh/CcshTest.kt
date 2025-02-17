@@ -95,15 +95,15 @@ class CcshTest {
     }
 
     private fun mockDialogMergeResults(shouldMerge: Boolean) {
-        every { InteractiveDialog.callAskForMerge() } returns shouldMerge
+        every { InteractiveDialog.askForMerge() } returns shouldMerge
     }
 
     private fun mockDialogRunParsers(shouldRun: Boolean) {
-        every { InteractiveDialog.callAskRunParsers() } returns shouldRun
+        every { InteractiveDialog.askRunParsers() } returns shouldRun
     }
 
     private fun mockDialogResultLocation(pathToReturn: String) {
-        every { InteractiveDialog.callAskJsonPath() } returns pathToReturn
+        every { InteractiveDialog.askJsonPath() } returns pathToReturn
     }
 
     @Test

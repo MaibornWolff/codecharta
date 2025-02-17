@@ -50,11 +50,11 @@ class InteractiveParserSuggestionTest {
     }
 
     private fun mockDialogScannerPath(pathToReturn: String) {
-        every { InteractiveDialog.callAskForPath() } returns pathToReturn
+        every { InteractiveDialog.askForPath() } returns pathToReturn
     }
 
     private fun mockDialogApplicableParserSelection(parserSelection: List<String>) {
-        every { InteractiveDialog.callAskApplicableParser(any()) } returns parserSelection
+        every { InteractiveDialog.askApplicableParser(any()) } returns parserSelection
     }
 
     @Test

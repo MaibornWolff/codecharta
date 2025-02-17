@@ -2,6 +2,7 @@ package de.maibornwolff.codecharta.tools.ccsh.parser
 
 import de.maibornwolff.codecharta.tools.ccsh.parser.repository.PicocliParserRepository
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
+import de.maibornwolff.codecharta.tools.interactiveparser.startSession
 import picocli.CommandLine
 
 class ParserService {
@@ -28,8 +29,7 @@ class ParserService {
 
                 requireNotNull(interactiveParser) { "Tried to configure non existing parser!" }
 
-                val parserDialog = interactiveParser.getDialog()
-                val configuration = parserDialog.startSession { parserDialog.collectParserArgs(this) }
+                val configuration = startSession { interactiveParser.getDialog().collectParserArgs(this) }
 
                 configuredParsers[selectedParser] = configuration
 
@@ -40,7 +40,7 @@ class ParserService {
         }
 
         fun selectParser(commandLine: CommandLine, parserRepository: PicocliParserRepository): String {
-            val selectedParser = InteractiveDialog.callAskParserToExecute(
+            val selectedParser = InteractiveDialog.askParserToExecute(
                 parserRepository.getInteractiveParserNamesWithDescription(commandLine)
             )
             return parserRepository.extractParserName(selectedParser)
@@ -51,8 +51,7 @@ class ParserService {
             val parserObject = subCommand.commandSpec.userObject()
             val interactive = parserObject as? InteractiveParser
             return if (interactive != null) {
-                val parserDialog = interactive.getDialog()
-                val collectedArgs = parserDialog.startSession { parserDialog.collectParserArgs(this) }
+                val collectedArgs = startSession { interactive.getDialog().collectParserArgs(this) }
 
                 val subCommandLine = CommandLine(interactive)
                 println("You can run the same command again by using the following command line arguments:")

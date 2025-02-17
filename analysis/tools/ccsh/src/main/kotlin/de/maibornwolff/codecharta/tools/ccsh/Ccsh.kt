@@ -110,7 +110,7 @@ class Ccsh : Callable<Unit?> {
                 return 0
             }
 
-            val shouldRunConfiguredParsers = InteractiveDialog.callAskRunParsers()
+            val shouldRunConfiguredParsers = InteractiveDialog.askRunParsers()
 
             return if (shouldRunConfiguredParsers) {
                 executeConfiguredParsers(commandLine, configuredParsers)
@@ -150,11 +150,11 @@ class Ccsh : Callable<Unit?> {
         }
 
         private fun askAndMergeResults(commandLine: CommandLine): Int {
-            val shouldMerge = InteractiveDialog.callAskForMerge()
+            val shouldMerge = InteractiveDialog.askForMerge()
             var ccJsonFilePath = ""
 
             if (shouldMerge) {
-                ccJsonFilePath = InteractiveDialog.callAskJsonPath()
+                ccJsonFilePath = InteractiveDialog.askJsonPath()
             }
 
             return if (shouldMerge) {
