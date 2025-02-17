@@ -54,7 +54,7 @@ class Mimo {
         fun retrieveGroupName(files: List<String>): String {
             val filePrefixes = files.map { it.substringBefore(".") }.toSet()
             if (filePrefixes.size == 1) return filePrefixes.first()
-            return ParserDialog.callAskForMimoPrefix(filePrefixes)
+            return ParserDialog.askForMimoPrefix(filePrefixes)
         }
 
         private fun levenshteinDistance(lhs: CharSequence, rhs: CharSequence): Int {
