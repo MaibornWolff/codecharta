@@ -8,6 +8,7 @@ import { setColorRange } from "./colorRange.actions"
 import { fileActions } from "../../files/files.actions"
 import { CcState } from "../../../../codeCharta.model"
 import { visibleFileStatesSelector } from "../../../selectors/visibleFileStates/visibleFileStates.selector"
+import { setColorMetric } from "../colorMetric/colorMetric.actions"
 
 @Injectable()
 export class ResetColorRangeEffect {
@@ -21,6 +22,14 @@ export class ResetColorRangeEffect {
             ofType(...fileActions),
             withLatestFrom(this.store.select(visibleFileStatesSelector)),
             switchMap(() => this.store.select(selectedColorMetricDataSelector).pipe(skip(1), take(1))),
+            map(selectedColorMetricData => setColorRange({ value: calculateInitialColorRange(selectedColorMetricData) }))
+        )
+    )
+
+    resetColorRangeOnColorMetricChange$ = createEffect(() =>
+        this.actions$.pipe(
+            ofType(setColorMetric),
+            switchMap(() => this.store.select(selectedColorMetricDataSelector).pipe(take(1))),
             map(selectedColorMetricData => setColorRange({ value: calculateInitialColorRange(selectedColorMetricData) }))
         )
     )
