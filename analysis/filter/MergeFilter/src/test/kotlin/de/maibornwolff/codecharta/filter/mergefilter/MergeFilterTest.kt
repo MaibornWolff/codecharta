@@ -133,7 +133,7 @@ class MergeFilterTest {
     @Test
     fun `should warn if no top-level overlap and ask user to force merge`() {
         mockkObject(ParserDialog)
-        every { ParserDialog.callAskForceMerge() } returns true
+        every { ParserDialog.askForceMerge() } returns true
 
         setStreams()
         CommandLine(MergeFilter()).execute(
@@ -154,7 +154,7 @@ class MergeFilterTest {
     fun `should cancel merge if no top-level overlap and user declines force merge`() {
         mockkObject(ParserDialog)
         every {
-            ParserDialog.callAskForceMerge()
+            ParserDialog.askForceMerge()
         } returns false
 
         setStreams()
@@ -265,7 +265,7 @@ class MergeFilterTest {
                 val testFile2 = File(testProjectPathB)
 
                 mockkObject(ParserDialog)
-                every { ParserDialog.callRequestMimoFileSelection(any()) } returns listOf(testFile1, testFile2)
+                every { ParserDialog.requestMimoFileSelection(any()) } returns listOf(testFile1, testFile2)
 
                 setStreams()
                 CommandLine(MergeFilter()).execute(
@@ -294,7 +294,7 @@ class MergeFilterTest {
                 val testFile1 = File(testProjectPathA)
 
                 mockkObject(ParserDialog)
-                every { ParserDialog.callRequestMimoFileSelection(any()) } returns listOf(testFile1)
+                every { ParserDialog.requestMimoFileSelection(any()) } returns listOf(testFile1)
 
                 setStreams()
                 CommandLine(MergeFilter()).execute(
@@ -355,7 +355,7 @@ class MergeFilterTest {
         @Test
         fun `should warn if no top-level overlap for mimo merged files and skip merge`() {
             mockkObject(ParserDialog)
-            every { ParserDialog.callAskForceMerge() } returns false
+            every { ParserDialog.askForceMerge() } returns false
 
             setStreams()
             CommandLine(MergeFilter()).execute(
@@ -371,7 +371,7 @@ class MergeFilterTest {
         @Test
         fun `should not warn if no top-level overlap for mimo and merge`() {
             mockkObject(ParserDialog)
-            every { ParserDialog.callAskForceMerge() } returns false
+            every { ParserDialog.askForceMerge() } returns false
 
             setStreams()
             CommandLine(MergeFilter()).execute(
@@ -407,8 +407,8 @@ class MergeFilterTest {
                 val prefixTestFile3 = "testProjectX"
 
                 mockkObject(ParserDialog)
-                every { ParserDialog.callAskForMimoPrefix(any()) } returns prefixTestFile3
-                every { ParserDialog.callRequestMimoFileSelection(any()) } returns listOf(testFile1, testFile2, testFile3)
+                every { ParserDialog.askForMimoPrefix(any()) } returns prefixTestFile3
+                every { ParserDialog.requestMimoFileSelection(any()) } returns listOf(testFile1, testFile2, testFile3)
 
                 setStreams()
                 CommandLine(MergeFilter()).execute(

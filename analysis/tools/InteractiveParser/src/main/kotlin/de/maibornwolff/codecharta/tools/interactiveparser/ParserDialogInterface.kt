@@ -1,7 +1,16 @@
 package de.maibornwolff.codecharta.tools.interactiveparser
 
+import com.varabyte.kotter.foundation.session
 import com.varabyte.kotter.runtime.Session
 
-interface ParserDialogInterface {
+fun interface ParserDialogInterface {
+    fun <T> startSession(block: Session.() -> T): T {
+        var returnValue: T? = null
+        session {
+            returnValue = block()
+        }
+        return returnValue ?: throw IllegalStateException("Session did not return a value.")
+    }
+
     fun collectParserArgs(session: Session): List<String>
 }

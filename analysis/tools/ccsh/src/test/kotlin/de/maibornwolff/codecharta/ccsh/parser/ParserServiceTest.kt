@@ -239,7 +239,7 @@ class ParserServiceTest {
         val dummyArgs = listOf("dummyArg")
 
         every {
-            dialogInterface.collectParserArgs(any())
+            dialogInterface.startSession<List<String>>(any())
         } returns dummyArgs
         every {
             obj.getDialog()
