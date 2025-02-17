@@ -20,15 +20,16 @@ export class UpdateMapColorsEffect {
             map(colorMetric => {
                 const state = this.state.getValue()
                 const attributeDescriptors = state.fileSettings.attributeDescriptors
+                const mapColors = state.appSettings.mapColors
                 if (attributeDescriptors[colorMetric]?.direction === 1) {
-                    const reversedMapColors: MapColors = JSON.parse(stringify(state.appSettings.mapColors))
+                    const reversedMapColors: MapColors = JSON.parse(stringify(mapColors))
                     const temporary = reversedMapColors.negative
                     reversedMapColors.negative = reversedMapColors.positive
                     reversedMapColors.positive = temporary
 
                     return setMapColors({ value: reversedMapColors })
                 }
-                return setMapColors({ value: defaultMapColors })
+                return setMapColors({ value: mapColors ?? defaultMapColors })
             })
         )
     )
