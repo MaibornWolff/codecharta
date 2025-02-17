@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 - Add Checkbox for separately disabling incoming/outgoing edges in edge metric settings [#3928](https://github.com/MaibornWolff/codecharta/pull/3928)
 
+### Fixed 🐞
+
+- Fix resetting colors in color metrics [#3943](https://github.com/MaibornWolff/codecharta/pull/3943)
+
 ## [1.133.1] - 2025-02-13
 
 ### Fixed 🐞
