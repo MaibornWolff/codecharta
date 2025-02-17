@@ -14,6 +14,6 @@ describe("metricChooserComponent", () => {
         const { fixture } = await render(LogoComponent)
 
         const version = packageJson.version
-        expect(fixture.elementRef.nativeElement.querySelector("h2").textContent).toContain(version)
+        expect(fixture.elementRef.nativeElement.querySelector("#logo-version").textContent).toContain(version)
     })
 })
