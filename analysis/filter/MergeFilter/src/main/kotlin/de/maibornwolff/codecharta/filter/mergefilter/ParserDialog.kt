@@ -1,6 +1,5 @@
 package de.maibornwolff.codecharta.filter.mergefilter
 
-import com.varabyte.kotter.foundation.session
 import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.Session
 import de.maibornwolff.codecharta.serialization.FileExtension
@@ -123,56 +122,37 @@ class ParserDialog {
             return basicMergeConfig
         }
 
-        private fun askForceMerge(session: Session): Boolean {
-            return session.myPromptConfirm(
-                message = "Do you still want to merge non-overlapping at the top-level nodes?",
-                onInputReady = forceCallback()
-            )
-        }
-
-        internal fun callAskForceMerge(): Boolean {
-            var forceMerge = false
-            session {
-                forceMerge = askForceMerge(this)
+        fun askForceMerge(): Boolean {
+            return startSession {
+                myPromptConfirm(
+                    message = "Do you still want to merge non-overlapping at the top-level nodes?",
+                    onInputReady = forceCallback()
+                )
             }
-            return forceMerge
         }
 
-        private fun askForMimoPrefix(prefixOptions: Set<String>, session: Session): String {
-            return session.myPromptList(
-                message = "Which prefix should be used for the output file?",
-                choices = prefixOptions.toList(),
-                onInputReady = prefixCallback()
-            )
-        }
-
-        fun callAskForMimoPrefix(prefixOptions: Set<String>): String {
-            var prefix = ""
-            session {
-                prefix = askForMimoPrefix(prefixOptions, this)
+        fun askForMimoPrefix(prefixOptions: Set<String>): String {
+            return startSession {
+                myPromptList(
+                    message = "Which prefix should be used for the output file?",
+                    choices = prefixOptions.toList(),
+                    onInputReady = prefixCallback()
+                )
             }
-            return prefix
         }
 
-        private fun requestMimoFileSelection(files: List<File>, session: Session): List<File> {
-            val fileNameList = files.map { it.name }
-            val choiceList: List<String> = session.myPromptCheckbox(
-                message = "",
-                choices = fileNameList,
-                hint = "Not selected files will not get merged",
-                allowEmptyInput = true,
-                onInputReady = fileCallback()
-            )
-            files.filter { choiceList.contains(it.name) }
-            return files
-        }
-
-        fun callRequestMimoFileSelection(files: List<File>): List<File> {
-            var selectedFiles = listOf<File>()
-            session {
-                selectedFiles = requestMimoFileSelection(files, this)
+        fun requestMimoFileSelection(files: List<File>): List<File> {
+            return startSession {
+                val fileNameList = files.map { it.name }
+                val choiceList: List<String> = myPromptCheckbox(
+                    message = "",
+                    choices = fileNameList,
+                    hint = "Not selected files will not get merged",
+                    allowEmptyInput = true,
+                    onInputReady = fileCallback()
+                )
+                files.filter { choiceList.contains(it.name) }
             }
-            return selectedFiles
         }
 
         internal fun fileCallback(): suspend RunScope.() -> Unit = {}
