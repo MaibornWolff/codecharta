@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Added 🚀
+
+- Add Checkbox for separately disabling incoming/outgoing edges in edge metric settings [#3928](https://github.com/MaibornWolff/codecharta/pull/3928)
+
 ## [1.133.1] - 2025-02-13
 
 ### Fixed 🐞

@@ -18,8 +18,14 @@
 ></cc-slider>
 
 <div class="wrapper">
-    <cc-color-picker-for-map-color [mapColorFor]="'outgoingEdge'"></cc-color-picker-for-map-color>
-    <cc-color-picker-for-map-color [mapColorFor]="'incomingEdge'"></cc-color-picker-for-map-color>
+    <div class="edge-row">
+        <cc-color-picker-for-map-color [mapColorFor]="'outgoingEdge'"></cc-color-picker-for-map-color>
+        <mat-checkbox [checked]="(showOutgoingEdges$ | async)" (change)="applyShowOutgoingEdges($event.checked)">Show</mat-checkbox>
+    </div>
+    <div class="edge-row">
+        <cc-color-picker-for-map-color [mapColorFor]="'incomingEdge'"></cc-color-picker-for-map-color>
+        <mat-checkbox [checked]="(showIncomingEdges$ | async)" (change)="applyShowIncomingEdges($event.checked)">Show</mat-checkbox>
+    </div>
 </div>
 
 <mat-checkbox

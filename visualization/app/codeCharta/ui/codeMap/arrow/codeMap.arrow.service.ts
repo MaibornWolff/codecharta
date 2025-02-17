@@ -21,7 +21,7 @@ export class CodeMapArrowService implements OnDestroy {
         (hoveredBuilding: CodeMapBuilding) => this.resetEdgesOfBuildings(hoveredBuilding),
         this.HIGHLIGHT_BUILDING_DELAY
     )
-    private readonly subscription = this.store
+    private readonly hoveredNodeSubscription = this.store
         .select(hoveredNodeIdSelector)
         .pipe(
             tap(hoveredNodeId => {
@@ -46,7 +46,7 @@ export class CodeMapArrowService implements OnDestroy {
     }
 
     ngOnDestroy(): void {
-        this.subscription.unsubscribe()
+        this.hoveredNodeSubscription.unsubscribe()
     }
 
     private resetEdgesOfBuildings = (hoveredBuilding: CodeMapBuilding) => {
@@ -90,7 +90,7 @@ export class CodeMapArrowService implements OnDestroy {
         this.threeSceneService.edgeArrows.children.length = 0
     }
 
-    addArrow(arrowTargetNode: Node, arrowOriginNode: Node, buildingIsOriginNode: boolean) {
+    addArrow(arrowOriginNode: Node, arrowTargetNode: Node, buildingIsOriginNode: boolean) {
         const { appSettings, dynamicSettings } = this.state.getValue()
         const curveScale = 100 * appSettings.edgeHeight
 
@@ -156,6 +156,11 @@ export class CodeMapArrowService implements OnDestroy {
     }
 
     private buildPairingEdges(node: Map<string, Node>) {
+        const showIncomingEdges = this.state.getValue().appSettings.showIncomingEdges
+        const showOutgoingEdges = this.state.getValue().appSettings.showOutgoingEdges
+        if (!showIncomingEdges && !showOutgoingEdges) {
+            return
+        }
         const { edges } = this.state.getValue().fileSettings
 
         for (const edge of edges) {
@@ -170,14 +175,14 @@ export class CodeMapArrowService implements OnDestroy {
             if (targetNode === undefined) {
                 continue
             }
-            if (node.has(originNode.path)) {
-                this.addArrow(targetNode, originNode, true)
+            if (showOutgoingEdges && node.has(originNode.path)) {
+                this.addArrow(originNode, targetNode, true)
                 this.threeSceneService.highlightBuildings()
-                // TODO: Check if the second if case is actually necessary. Edges should
+                // TODO: Check if the second part ot the second if case is actually necessary. Edges should
                 // always have valid origin and target paths. The test data is likely
                 // faulty and should be improved.
-            } else if (node.has(targetNode.path)) {
-                this.addArrow(targetNode, originNode, false)
+            } else if (showIncomingEdges && node.has(targetNode.path)) {
+                this.addArrow(originNode, targetNode, false)
                 this.threeSceneService.highlightBuildings()
             }
         }

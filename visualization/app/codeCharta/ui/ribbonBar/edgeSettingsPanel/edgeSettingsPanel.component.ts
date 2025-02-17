@@ -9,16 +9,21 @@ import { setEdgeHeight } from "../../../state/store/appSettings/edgeHeight/edgeH
 import { edgeHeightSelector } from "../../../state/store/appSettings/edgeHeight/edgeHeight.selector"
 import { setShowOnlyBuildingsWithEdges } from "../../../state/store/appSettings/showOnlyBuildingsWithEdges/showOnlyBuildingsWithEdges.actions"
 import { showOnlyBuildingsWithEdgesSelector } from "../../../state/store/appSettings/showOnlyBuildingsWithEdges/showOnlyBuildingsWithEdges.selector"
-import { amountOfBuildingsWithSelectedEdgeMetricSelector } from "./selectors/amountOfBuildingsWithSelectedEdgeMetric.selector"
+import { amountOfBuildingsWithSelectedEdgeMetricSelector } from "../../../state/selectors/amountOfBuildingsWithSelectedEdgeMetric/amountOfBuildingsWithSelectedEdgeMetric.selector"
 import { SliderComponent } from "../../slider/slider.component"
 import { ColorPickerForMapColorComponent } from "../../colorPickerForMapColor/colorPickerForMapColor.component"
 import { EdgeMetricToggleComponent } from "./edgeMetricToggle/edgeMetricToggle.component"
 import { ResetSettingsButtonComponent } from "../../resetSettingsButton/resetSettingsButton.component"
 import { AsyncPipe } from "@angular/common"
+import { showOutgoingEdgesSelector } from "../../../state/store/appSettings/showEdges/outgoing/showOutgoingEdges.selector"
+import { showIncomingEdgesSelector } from "../../../state/store/appSettings/showEdges/incoming/showIncomingEdges.selector"
+import { setShowOutgoingEdges } from "../../../state/store/appSettings/showEdges/outgoing/showOutgoingEdges.actions"
+import { setShowIncomingEdges } from "../../../state/store/appSettings/showEdges/incoming/showIncomingEdges.actions"
 
 @Component({
     selector: "cc-edge-settings-panel",
     templateUrl: "./edgeSettingsPanel.component.html",
+    styleUrls: ["./edgeSettingsPanel.component.scss"],
     standalone: true,
     imports: [
         SliderComponent,
@@ -39,6 +44,8 @@ export class EdgeSettingsPanelComponent {
     )
     amountOfEdgePreviews$ = this.store.select(amountOfEdgePreviewsSelector)
     edgeHeight$ = this.store.select(edgeHeightSelector)
+    showOutgoingEdges$ = this.store.select(showOutgoingEdgesSelector)
+    showIncomingEdges$ = this.store.select(showIncomingEdgesSelector)
     showOnlyBuildingsWithEdges$ = this.store.select(showOnlyBuildingsWithEdgesSelector)
 
     constructor(private store: Store<CcState>) {}
@@ -49,6 +56,14 @@ export class EdgeSettingsPanelComponent {
 
     applySettingsEdgeHeight = (value: number) => {
         this.store.dispatch(setEdgeHeight({ value }))
+    }
+
+    applyShowOutgoingEdges(value: boolean) {
+        this.store.dispatch(setShowOutgoingEdges({ value }))
+    }
+
+    applyShowIncomingEdges(value: boolean) {
+        this.store.dispatch(setShowIncomingEdges({ value }))
     }
 
     applyShowOnlyBuildingsWithEdges(event: MatCheckboxChange) {

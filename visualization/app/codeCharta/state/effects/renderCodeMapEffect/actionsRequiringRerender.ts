@@ -31,6 +31,8 @@ import { setSearchPattern } from "../../store/dynamicSettings/searchPattern/sear
 import { setMarkedPackages, markPackages, unmarkPackage } from "../../store/fileSettings/markedPackages/markedPackages.actions"
 import { setEnableFloorLabels } from "../../store/appSettings/enableFloorLabels/enableFloorLabels.actions"
 import { setState } from "../../store/state.actions"
+import { setShowIncomingEdges } from "../../store/appSettings/showEdges/incoming/showIncomingEdges.actions"
+import { setShowOutgoingEdges } from "../../store/appSettings/showEdges/outgoing/showOutgoingEdges.actions"
 
 export const actionsRequiringRerender = [
     setColorLabels,
@@ -46,6 +48,8 @@ export const actionsRequiringRerender = [
     setScaling,
     setEdgeHeight,
     setAmountOfEdgePreviews,
+    setShowIncomingEdges,
+    setShowOutgoingEdges,
     setAmountOfTopLabels,
     setLayoutAlgorithm,
     setMaxTreeMapFiles,

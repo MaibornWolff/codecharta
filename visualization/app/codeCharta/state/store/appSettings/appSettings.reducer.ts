@@ -38,6 +38,8 @@ import {
 import { defaultIsSearchPanelPinned, isSearchPanelPinned } from "./isSearchPanelPinned/isSearchPanelPinned.reducer"
 import { defaultEnableFloorLabels, enableFloorLabels } from "./enableFloorLabels/enableFloorLabels.reducer"
 import { combineReducers } from "@ngrx/store"
+import { defaultShowIncomingEdges, showIncomingEdges } from "./showEdges/incoming/showIncomingEdges.reducer"
+import { defaultShowOutgoingEdges, showOutgoingEdges } from "./showEdges/outgoing/showOutgoingEdges.reducer"
 
 export const appSettings = combineReducers({
     colorLabels,
@@ -49,6 +51,8 @@ export const appSettings = combineReducers({
     isLoadingMap,
     mapColors,
     resetCameraIfNewFileIsLoaded,
+    showIncomingEdges,
+    showOutgoingEdges,
     showOnlyBuildingsWithEdges,
     isEdgeMetricVisible,
     isWhiteBackground,
@@ -79,6 +83,8 @@ export const defaultAppSettings = {
     isLoadingMap: defaultIsLoadingMap,
     mapColors: defaultMapColors,
     resetCameraIfNewFileIsLoaded: defaultResetCameraIfNewFileIsLoaded,
+    showIncomingEdges: defaultShowIncomingEdges,
+    showOutgoingEdges: defaultShowOutgoingEdges,
     showOnlyBuildingsWithEdges: defaultShowOnlyBuildingsWithEdges,
     isEdgeMetricVisible: defaultIsEdgeMetricVisible,
     isWhiteBackground: defaultIsWhiteBackground,

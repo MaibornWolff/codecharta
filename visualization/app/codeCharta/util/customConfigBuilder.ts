@@ -65,6 +65,8 @@ function initializeAppSettings(target: CustomConfig) {
         isWhiteBackground: false,
         resetCameraIfNewFileIsLoaded: false,
         scaling: undefined,
+        showIncomingEdges: true,
+        showOutgoingEdges: true,
         showOnlyBuildingsWithEdges: false,
         isEdgeMetricVisible: true,
         sortingOrderAscending: false,
