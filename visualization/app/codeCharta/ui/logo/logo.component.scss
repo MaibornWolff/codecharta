@@ -1,18 +1,19 @@
-#logo {
-    display: flex;
-    flex-direction: column;
+.logo {
     position: absolute;
     left: 2em;
     bottom: 1em;
     z-index: 1;
+    flex-direction: column;
+    display: flex;
+    align-items: flex-start;
 
     img {
         object-fit: contain;
-        max-width: 100%;
+        width: 5em;
         height: auto;
     }
 
-    h2 {
+    p {
         color: #5a585a;
         font-weight: bold;
         font-size: 10px;
