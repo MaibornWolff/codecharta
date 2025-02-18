@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.ccsh.parser
 
+import com.varabyte.kotter.runtime.Session
 import com.varabyte.kotterx.test.foundation.testSession
 import de.maibornwolff.codecharta.tools.ccsh.Ccsh
 import de.maibornwolff.codecharta.tools.ccsh.parser.InteractiveDialog
@@ -7,10 +8,12 @@ import de.maibornwolff.codecharta.tools.ccsh.parser.ParserService
 import de.maibornwolff.codecharta.tools.ccsh.parser.repository.PicocliParserRepository
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
+import de.maibornwolff.codecharta.tools.interactiveparser.startSession
 import io.mockk.every
 import io.mockk.mockkClass
 import io.mockk.mockkConstructor
 import io.mockk.mockkObject
+import io.mockk.mockkStatic
 import io.mockk.unmockkAll
 import io.mockk.verify
 import org.assertj.core.api.Assertions
@@ -227,6 +230,12 @@ class ParserServiceTest {
     fun `should output message informing about which parser is being configured`(parser: String) {
         val mockParserRepository = mockParserRepository(parser, listOf(parser))
 
+        mockkStatic("de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterfaceKt")
+        every { startSession(any<Session.() -> List<String>>()) } answers {
+            val collectParserArgs = firstArg<Session.() -> List<String>>()
+            startTestSession { collectParserArgs(this) }
+        }
+
         ParserService.configureParserSelection(cmdLine, mockParserRepository, listOf(parser))
 
         assertThat(outContent.toString()).contains("Now configuring $parser.")
@@ -265,5 +274,13 @@ class ParserServiceTest {
         } returns usableParsers
 
         return obj
+    }
+
+    private fun <T> startTestSession(block: Session.() -> T): T {
+        var returnValue: T? = null
+        testSession {
+            returnValue = block()
+        }
+        return returnValue ?: throw IllegalStateException("Session did not return a value.")
     }
 }
