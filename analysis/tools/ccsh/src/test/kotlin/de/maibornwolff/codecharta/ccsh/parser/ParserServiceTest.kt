@@ -111,7 +111,9 @@ class ParserServiceTest {
         val fakeParser = "selectedParser"
         val fakeParserDescription = "This is a test parser. Please Stand by"
         mockkObject(InteractiveDialog)
-        every { InteractiveDialog.askParserToExecute(any()) } returns "$fakeParser $fakeParserDescription"
+        every { InteractiveDialog.askParserToExecute(any(), any()) } returns "$fakeParser $fakeParserDescription"
+
+        mockStartSession()
 
         val selectedParser = ParserService.selectParser(cmdLine, PicocliParserRepository())
 
@@ -176,6 +178,8 @@ class ParserServiceTest {
                 "csvimport"
             )
 
+        mockStartSession()
+
         val mockPicocliParserRepository = mockParserRepository(selectedParserList[0], emptyList())
 
         val configuredParsers =
@@ -194,6 +198,7 @@ class ParserServiceTest {
     @MethodSource("providerParserArguments")
     fun `should execute parser`(parser: String) {
         mockParserObject(parser)
+        mockStartSession()
 
         ParserService.executeSelectedParser(cmdLine, parser)
 
@@ -240,9 +245,8 @@ class ParserServiceTest {
 
     private fun mockStartSession() {
         mockkStatic("de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterfaceKt")
-        every { startSession(any<Session.() -> List<String>>()) } answers {
-            val collectParserArgs = firstArg<Session.() -> List<String>>()
-            startTestSession { collectParserArgs(this) }
+        every { startSession(any<Session.() -> Any>()) } answers {
+            startTestSession { firstArg<Session.() -> Any>()(this) }
         }
     }
 

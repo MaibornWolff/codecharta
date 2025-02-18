@@ -2,6 +2,7 @@ package de.maibornwolff.codecharta.tools.ccsh.parser
 
 import de.maibornwolff.codecharta.tools.ccsh.Ccsh
 import de.maibornwolff.codecharta.tools.ccsh.parser.repository.PicocliParserRepository
+import de.maibornwolff.codecharta.tools.interactiveparser.startSession
 import de.maibornwolff.codecharta.util.Logger
 import picocli.CommandLine
 import java.io.File
@@ -27,7 +28,7 @@ class InteractiveParserSuggestion {
         }
 
         private fun getApplicableInteractiveParsers(commandLine: CommandLine): List<String> {
-            val inputFilePath: String = InteractiveDialog.askForPath()
+            val inputFilePath: String = startSession { InteractiveDialog.askForPath(this) }
 
             val inputFile = File(inputFilePath)
             if (inputFilePath == "" || !isInputFileOrDirectory(inputFile)) {
@@ -47,7 +48,7 @@ class InteractiveParserSuggestion {
         }
 
         private fun selectToBeExecutedInteractiveParsers(applicableParsers: List<String>): List<String> {
-            val selectedParsers: List<String> = InteractiveDialog.askApplicableParser(applicableParsers)
+            val selectedParsers: List<String> = startSession { InteractiveDialog.askApplicableParser(this, applicableParsers) }
 
             if (selectedParsers.isEmpty()) {
                 Logger.info { "Did not select any parser to be configured!" }
