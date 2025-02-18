@@ -40,9 +40,8 @@ class ParserService {
         }
 
         fun selectParser(commandLine: CommandLine, parserRepository: PicocliParserRepository): String {
-            val selectedParser = InteractiveDialog.askParserToExecute(
-                parserRepository.getInteractiveParserNamesWithDescription(commandLine)
-            )
+            val interactiveParserNames = parserRepository.getInteractiveParserNamesWithDescription(commandLine)
+            val selectedParser = startSession { InteractiveDialog.askParserToExecute(this, interactiveParserNames) }
             return parserRepository.extractParserName(selectedParser)
         }
 

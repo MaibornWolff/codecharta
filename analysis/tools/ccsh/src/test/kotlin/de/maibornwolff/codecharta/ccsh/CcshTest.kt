@@ -1,12 +1,16 @@
 package de.maibornwolff.codecharta.ccsh
 
+import com.varabyte.kotter.runtime.Session
+import com.varabyte.kotterx.test.foundation.testSession
 import de.maibornwolff.codecharta.tools.ccsh.Ccsh
 import de.maibornwolff.codecharta.tools.ccsh.parser.InteractiveDialog
 import de.maibornwolff.codecharta.tools.ccsh.parser.InteractiveParserSuggestion
 import de.maibornwolff.codecharta.tools.ccsh.parser.ParserService
+import de.maibornwolff.codecharta.tools.interactiveparser.startSession
 import de.maibornwolff.codecharta.util.Logger
 import io.mockk.every
 import io.mockk.mockkObject
+import io.mockk.mockkStatic
 import io.mockk.unmockkAll
 import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
@@ -95,15 +99,15 @@ class CcshTest {
     }
 
     private fun mockDialogMergeResults(shouldMerge: Boolean) {
-        every { InteractiveDialog.askForMerge() } returns shouldMerge
+        every { InteractiveDialog.askForMerge(any()) } returns shouldMerge
     }
 
     private fun mockDialogRunParsers(shouldRun: Boolean) {
-        every { InteractiveDialog.askRunParsers() } returns shouldRun
+        every { InteractiveDialog.askRunParsers(any()) } returns shouldRun
     }
 
     private fun mockDialogResultLocation(pathToReturn: String) {
-        every { InteractiveDialog.askJsonPath() } returns pathToReturn
+        every { InteractiveDialog.askJsonPath(any()) } returns pathToReturn
     }
 
     @Test
@@ -172,6 +176,7 @@ class CcshTest {
         val selectedParsers = listOf("parser1", "parser2")
         val args = listOf(listOf("dummyArg1"), listOf("dummyArg2"))
 
+        mockStartSession()
         mockInteractiveParserSuggestionDialog(selectedParsers, args)
         mockSuccessfulParserService()
         mockPrepareInteractiveDialog()
@@ -208,6 +213,7 @@ class CcshTest {
         val selectedParsers = listOf("parser1", "parser2")
         val args = listOf(listOf("dummyArg1"), listOf("dummyArg2"))
 
+        mockStartSession()
         mockInteractiveParserSuggestionDialog(selectedParsers, args)
         mockSuccessfulParserService()
         mockPrepareInteractiveDialog()
@@ -285,6 +291,7 @@ class CcshTest {
         val selectedParsers = listOf("parser1")
         val args = listOf(listOf("dummyArg1"))
 
+        mockStartSession()
         mockInteractiveParserSuggestionDialog(selectedParsers, args)
         mockSuccessfulParserService()
         mockPrepareInteractiveDialog()
@@ -316,6 +323,7 @@ class CcshTest {
         mockkObject(Logger)
         every { Logger.info(capture(lambdaSlot)) } returns Unit
 
+        mockStartSession()
         mockPrepareInteractiveDialog()
         mockDialogRunParsers(true)
         mockDialogMergeResults(true)
@@ -336,6 +344,7 @@ class CcshTest {
                 "dummyParser2" to listOf("dummyArg1", "dummyArg2")
             )
 
+        mockStartSession()
         mockPrepareInteractiveDialog()
         mockDialogRunParsers(true)
         mockDialogMergeResults(false)
@@ -371,6 +380,7 @@ class CcshTest {
                 )
             )
 
+        mockStartSession()
         mockInteractiveParserSuggestionDialog(selectedParsers, args)
         mockPrepareInteractiveDialog()
         mockDialogRunParsers(true)
@@ -383,5 +393,20 @@ class CcshTest {
         // then
         assertThat(exitCode).isZero()
         assertThat(mergedOutputFile).exists()
+    }
+
+    private fun mockStartSession() {
+        mockkStatic("de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterfaceKt")
+        every { startSession(any<Session.() -> Any>()) } answers {
+            startTestSession { firstArg<Session.() -> Any>()(this) }
+        }
+    }
+
+    private fun <T> startTestSession(block: Session.() -> T): T {
+        var returnValue: T? = null
+        testSession {
+            returnValue = block()
+        }
+        return returnValue ?: throw IllegalStateException("Session did not return a value.")
     }
 }
