@@ -12,62 +12,58 @@ import java.nio.file.Paths
 
 class InteractiveDialog {
     companion object {
-        internal fun askParserToExecute(parserOptions: List<String>, parserCallback: suspend RunScope.() -> Unit = {}): String {
+        internal fun askParserToExecute(parserOptions: List<String>): String {
             return startSession {
                 myPromptList(
                     message = "Which parser do you want to execute?",
                     choices = parserOptions,
-                    onInputReady = parserCallback
+                    onInputReady = parserCallback()
                 )
             }
         }
 
-        internal fun askForPath(pathCallback: suspend RunScope.() -> Unit = {}): String {
+        internal fun askForPath(): String {
             println("You can provide a directory path / file path / sonar url.")
             return startSession {
                 myPromptInput(
                     message = "Which path should be scanned?",
                     hint = Paths.get("").toAbsolutePath().toString(),
                     allowEmptyInput = false,
-                    onInputReady = pathCallback
+                    onInputReady = pathCallback()
                 )
             }
         }
 
-        internal fun askApplicableParser(
-            applicableParsers: List<String>,
-            applicableCallback: suspend RunScope.() -> Unit = {
-            }
-        ): List<String> {
+        internal fun askApplicableParser(applicableParsers: List<String>): List<String> {
             return startSession {
                 myPromptCheckbox(
                     message = "Choose from this list of applicable parsers. You can select individual parsers by pressing spacebar.",
                     choices = applicableParsers,
                     allowEmptyInput = true,
-                    onInputReady = applicableCallback
+                    onInputReady = applicableCallback()
                 )
             }
         }
 
-        internal fun askRunParsers(runCallback: suspend RunScope.() -> Unit = {}): Boolean {
+        internal fun askRunParsers(): Boolean {
             return startSession {
                 myPromptConfirm(
                     message = "Do you want to run all configured parsers now?",
-                    onInputReady = runCallback
+                    onInputReady = runCallback()
                 )
             }
         }
 
-        internal fun askForMerge(mergeCallback: suspend RunScope.() -> Unit = {}): Boolean {
+        internal fun askForMerge(): Boolean {
             return startSession {
                 myPromptConfirm(
                     message = "Do you want to merge all generated files into one result now?",
-                    onInputReady = mergeCallback
+                    onInputReady = mergeCallback()
                 )
             }
         }
 
-        internal fun askJsonPath(jsonCallback: suspend RunScope.() -> Unit = {}): String {
+        internal fun askJsonPath(): String {
             println(
                 "If you did not output all cc.json files into the same folder, " +
                     "you need to manually move them there before trying to merge."
@@ -77,9 +73,21 @@ class InteractiveDialog {
                     message = "What is the folder path containing all cc.json files?",
                     hint = Paths.get("").toAbsolutePath().toString(),
                     inputValidator = InputValidator.isFileOrFolderValid(InputType.FOLDER, listOf()),
-                    onInputReady = jsonCallback
+                    onInputReady = jsonCallback()
                 )
             }
         }
+
+        internal fun parserCallback(): suspend RunScope.() -> Unit = {}
+
+        internal fun pathCallback(): suspend RunScope.() -> Unit = {}
+
+        internal fun applicableCallback(): suspend RunScope.() -> Unit = {}
+
+        internal fun runCallback(): suspend RunScope.() -> Unit = {}
+
+        internal fun mergeCallback(): suspend RunScope.() -> Unit = {}
+
+        internal fun jsonCallback(): suspend RunScope.() -> Unit = {}
     }
 }
