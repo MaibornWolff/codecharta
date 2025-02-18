@@ -88,6 +88,7 @@ class ParserServiceTest {
         val expectedParserCommand =
             "ccsh " + selectedParser + " " + collectedArgs.map { x -> '"' + x + '"' }.joinToString(" ")
 
+        mockStartSession()
         val selectedParserList = listOf(selectedParser)
         val mockPicocliParserRepository = mockParserRepository(selectedParser, emptyList())
 
@@ -228,17 +229,21 @@ class ParserServiceTest {
     @ParameterizedTest
     @MethodSource("providerParserArguments")
     fun `should output message informing about which parser is being configured`(parser: String) {
+        mockStartSession()
+
         val mockParserRepository = mockParserRepository(parser, listOf(parser))
 
+        ParserService.configureParserSelection(cmdLine, mockParserRepository, listOf(parser))
+
+        assertThat(outContent.toString()).contains("Now configuring $parser.")
+    }
+
+    private fun mockStartSession() {
         mockkStatic("de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterfaceKt")
         every { startSession(any<Session.() -> List<String>>()) } answers {
             val collectParserArgs = firstArg<Session.() -> List<String>>()
             startTestSession { collectParserArgs(this) }
         }
-
-        ParserService.configureParserSelection(cmdLine, mockParserRepository, listOf(parser))
-
-        assertThat(outContent.toString()).contains("Now configuring $parser.")
     }
 
     private fun mockParserObject(name: String): InteractiveParser {
