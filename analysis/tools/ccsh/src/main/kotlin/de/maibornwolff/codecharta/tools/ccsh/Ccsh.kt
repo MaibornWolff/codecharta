@@ -19,6 +19,7 @@ import de.maibornwolff.codecharta.tools.ccsh.parser.InteractiveParserSuggestion
 import de.maibornwolff.codecharta.tools.ccsh.parser.ParserService
 import de.maibornwolff.codecharta.tools.ccsh.parser.repository.PicocliParserRepository
 import de.maibornwolff.codecharta.tools.inspection.InspectionTool
+import de.maibornwolff.codecharta.tools.interactiveparser.startSession
 import de.maibornwolff.codecharta.tools.interactiveparser.util.CodeChartaConstants
 import de.maibornwolff.codecharta.tools.validation.ValidationTool
 import de.maibornwolff.codecharta.util.AttributeGeneratorRegistry
@@ -110,7 +111,7 @@ class Ccsh : Callable<Unit?> {
                 return 0
             }
 
-            val shouldRunConfiguredParsers = InteractiveDialog.askRunParsers()
+            val shouldRunConfiguredParsers = startSession { InteractiveDialog.askRunParsers(this) }
 
             return if (shouldRunConfiguredParsers) {
                 executeConfiguredParsers(commandLine, configuredParsers)
@@ -150,11 +151,11 @@ class Ccsh : Callable<Unit?> {
         }
 
         private fun askAndMergeResults(commandLine: CommandLine): Int {
-            val shouldMerge = InteractiveDialog.askForMerge()
+            val shouldMerge = startSession { InteractiveDialog.askForMerge(this) }
             var ccJsonFilePath = ""
 
             if (shouldMerge) {
-                ccJsonFilePath = InteractiveDialog.askJsonPath()
+                ccJsonFilePath = startSession { InteractiveDialog.askJsonPath(this) }
             }
 
             return if (shouldMerge) {
@@ -205,7 +206,7 @@ class Ccsh : Callable<Unit?> {
 
         private fun isParserKnown(args: Array<String>, commandLine: CommandLine): Boolean {
             val firstArg = args.first()
-            val parserList = commandLine.subcommands.keys
+            val parserList: Set<String> = commandLine.subcommands.keys
             return parserList.contains(firstArg)
         }
 
@@ -252,6 +253,7 @@ class Ccsh : Callable<Unit?> {
         }
     }
 
+    @SuppressWarnings("kotlin:S6516") // Not possible to use a lambda here, because picocli expects a class type
     object ManifestVersionProvider : CommandLine.IVersionProvider {
         override fun getVersion(): Array<String> {
             return arrayOf(

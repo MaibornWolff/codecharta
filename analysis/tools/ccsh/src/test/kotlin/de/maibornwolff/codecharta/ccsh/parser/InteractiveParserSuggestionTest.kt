@@ -1,17 +1,22 @@
 package de.maibornwolff.codecharta.ccsh.parser
 
+import com.varabyte.kotter.runtime.Session
+import com.varabyte.kotterx.test.foundation.testSession
 import de.maibornwolff.codecharta.tools.ccsh.Ccsh
 import de.maibornwolff.codecharta.tools.ccsh.parser.InteractiveDialog
 import de.maibornwolff.codecharta.tools.ccsh.parser.InteractiveParserSuggestion
 import de.maibornwolff.codecharta.tools.ccsh.parser.ParserService
+import de.maibornwolff.codecharta.tools.interactiveparser.startSession
 import io.mockk.every
 import io.mockk.mockkObject
+import io.mockk.mockkStatic
 import io.mockk.unmockkAll
 import io.mockk.verify
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.Timeout
@@ -40,6 +45,11 @@ class InteractiveParserSuggestionTest {
         System.setErr(originalErrorOut)
     }
 
+    @BeforeEach
+    fun beforeTest() {
+        mockStartSession()
+    }
+
     @AfterEach
     fun afterTest() {
         unmockkAll()
@@ -50,11 +60,11 @@ class InteractiveParserSuggestionTest {
     }
 
     private fun mockDialogScannerPath(pathToReturn: String) {
-        every { InteractiveDialog.askForPath() } returns pathToReturn
+        every { InteractiveDialog.askForPath(any()) } returns pathToReturn
     }
 
     private fun mockDialogApplicableParserSelection(parserSelection: List<String>) {
-        every { InteractiveDialog.askApplicableParser(any()) } returns parserSelection
+        every { InteractiveDialog.askApplicableParser(any(), any()) } returns parserSelection
     }
 
     @Test
@@ -151,5 +161,20 @@ class InteractiveParserSuggestionTest {
         Assertions.assertThat(selectedParsers).isNotNull
         Assertions.assertThat(selectedParsers).isEmpty()
         Assertions.assertThat(errorOut.toString()).contains("Specified invalid or empty path to analyze! Aborting...")
+    }
+
+    private fun mockStartSession() {
+        mockkStatic("de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterfaceKt")
+        every { startSession(any<Session.() -> Any>()) } answers {
+            startTestSession { firstArg<Session.() -> Any>()(this) }
+        }
+    }
+
+    private fun <T> startTestSession(block: Session.() -> T): T {
+        var returnValue: T? = null
+        testSession {
+            returnValue = block()
+        }
+        return returnValue ?: throw IllegalStateException("Session did not return a value.")
     }
 }
