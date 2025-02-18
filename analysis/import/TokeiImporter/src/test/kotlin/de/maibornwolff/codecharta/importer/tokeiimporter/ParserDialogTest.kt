@@ -4,7 +4,7 @@ import com.varabyte.kotter.foundation.input.Keys
 import com.varabyte.kotter.runtime.terminal.inmemory.press
 import com.varabyte.kotter.runtime.terminal.inmemory.type
 import com.varabyte.kotterx.test.foundation.testSession
-import de.maibornwolff.codecharta.importer.tokeiimporter.ParserDialog.Companion.myCollectParserArgs
+import de.maibornwolff.codecharta.importer.tokeiimporter.ParserDialog.Companion.collectParserArgs
 import io.mockk.every
 import io.mockk.mockkObject
 import org.assertj.core.api.Assertions.assertThat
@@ -19,7 +19,7 @@ import java.io.File
 class ParserDialogTest {
     private val testResourceBaseFolder = "src/test/resources/"
     private val inputFileName = "${testResourceBaseFolder}tokei_12_minimal.json"
-    private val outputFileName = "out.cc.json"
+    private val outputFileName = "out_test.cc.json"
     private val rootFolder = "/foo/bar"
 
     @Test
@@ -30,7 +30,7 @@ class ParserDialogTest {
         mockkObject(ParserDialog.Companion)
 
         testSession { terminal ->
-            every { ParserDialog.Companion.fileCallback() } returns {
+            every { ParserDialog.Companion.testCallback() } returns {
                 terminal.type(inputFileName)
                 terminal.press(Keys.ENTER)
             }
@@ -51,7 +51,7 @@ class ParserDialogTest {
                 terminal.press(Keys.ENTER)
             }
 
-            val parserArguments = myCollectParserArgs(this)
+            val parserArguments = collectParserArgs(this)
 
             val cmdLine = CommandLine(TokeiImporter())
             val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
@@ -59,6 +59,46 @@ class ParserDialogTest {
             assertThat(parseResult.matchedPositional(0).getValue<File>().name).isEqualTo(File(inputFileName).name)
             assertThat(parseResult.matchedOption("output-file").getValue<String>().equals(outputFileName))
             assertThat(parseResult.matchedOption("not-compressed").getValue<Boolean>()).isEqualTo(isCompressed)
+            assertThat(parseResult.matchedOption("root-name").getValue<String>()).isEqualTo(rootFolder)
+            assertThat(parseResult.matchedOption("path-separator").getValue<String>()).isEqualTo(pathSeparator)
+        }
+    }
+
+    @Test
+    fun `should output correct arguments when output file is not provided`() {
+        val pathSeparator = "/"
+
+        mockkObject(ParserDialog.Companion)
+
+        testSession { terminal ->
+            every { ParserDialog.Companion.testCallback() } returns {
+                terminal.type(inputFileName)
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.outFileCallback() } returns {
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.rootCallback() } returns {
+                terminal.type(rootFolder)
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.pathCallback() } returns {
+                terminal.type(pathSeparator)
+                terminal.press(Keys.ENTER)
+            }
+            every { ParserDialog.Companion.compressCallback() } returns {
+                terminal.press(Keys.RIGHT)
+                terminal.press(Keys.ENTER)
+            }
+
+            val parserArguments = collectParserArgs(this)
+
+            val cmdLine = CommandLine(TokeiImporter())
+            val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
+
+            assertThat(parseResult.matchedPositional(0).getValue<File>().name).isEqualTo(File(inputFileName).name)
+            assertThat(parseResult.matchedOption("output-file").getValue<String>().equals("out.cc.json"))
+            assertThat(parseResult.matchedOption("not-compressed")).isNull()
             assertThat(parseResult.matchedOption("root-name").getValue<String>()).isEqualTo(rootFolder)
             assertThat(parseResult.matchedOption("path-separator").getValue<String>()).isEqualTo(pathSeparator)
         }
@@ -73,7 +113,7 @@ class ParserDialogTest {
         mockkObject(ParserDialog.Companion)
 
         testSession { terminal ->
-            every { ParserDialog.Companion.fileCallback() } returns {
+            every { ParserDialog.Companion.testCallback() } returns {
                 terminal.type(inputFileName)
                 terminal.press(Keys.ENTER)
             }
@@ -94,7 +134,7 @@ class ParserDialogTest {
                 terminal.press(Keys.ENTER)
             }
 
-            val parserArguments = myCollectParserArgs(this)
+            val parserArguments = collectParserArgs(this)
 
             val cmdLine = CommandLine(TokeiImporter())
             val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
@@ -116,7 +156,7 @@ class ParserDialogTest {
         mockkObject(ParserDialog.Companion)
 
         testSession { terminal ->
-            every { ParserDialog.Companion.fileCallback() } returns {
+            every { ParserDialog.Companion.testCallback() } returns {
                 terminal.type(inputFileName)
                 terminal.press(Keys.ENTER)
             }
@@ -137,7 +177,7 @@ class ParserDialogTest {
                 terminal.press(Keys.ENTER)
             }
 
-            val parserArguments = myCollectParserArgs(this)
+            val parserArguments = collectParserArgs(this)
 
             val cmdLine = CommandLine(TokeiImporter())
             val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
@@ -158,7 +198,7 @@ class ParserDialogTest {
         mockkObject(ParserDialog.Companion)
 
         testSession { terminal ->
-            every { ParserDialog.Companion.fileCallback() } returns {
+            every { ParserDialog.Companion.testCallback() } returns {
                 terminal.type(invalidFileName)
                 terminal.press(Keys.ENTER)
                 terminal.press(Keys.BACKSPACE, Keys.BACKSPACE, Keys.BACKSPACE)
@@ -182,7 +222,7 @@ class ParserDialogTest {
                 terminal.press(Keys.ENTER)
             }
 
-            val parserArguments = myCollectParserArgs(this)
+            val parserArguments = collectParserArgs(this)
 
             val cmdLine = CommandLine(TokeiImporter())
             val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())

@@ -12,14 +12,10 @@ import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 class ParserDialog {
     companion object : ParserDialogInterface {
         override fun collectParserArgs(session: Session): List<String> {
-            return myCollectParserArgs(session)
-        }
-
-        internal fun myCollectParserArgs(session: Session): List<String> {
             val inputFileName: String = session.myPromptDefaultFileFolderInput(
                 InputType.FILE,
                 listOf(FileExtension.JSON),
-                onInputReady = fileCallback()
+                onInputReady = testCallback()
             )
 
             val outputFileName: String = session.myPromptInput(
@@ -59,7 +55,7 @@ class ParserDialog {
             )
         }
 
-        internal fun fileCallback(): suspend RunScope.() -> Unit = {}
+        internal fun testCallback(): suspend RunScope.() -> Unit = {}
 
         internal fun outFileCallback(): suspend RunScope.() -> Unit = {}
 
