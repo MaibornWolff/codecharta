@@ -15,18 +15,18 @@ class ParserDialog {
             val inputFileName = session.myPromptDefaultFileFolderInput(
                 inputType = InputType.FILE,
                 fileExtensionList = listOf(FileExtension.CSV),
-                onInputReady = fileCallback()
+                onInputReady = testCallback()
             )
 
             val outputFileName: String = session.myPromptInput(
                 message = "What is the name of the output file?",
                 allowEmptyInput = true,
-                onInputReady = outFileCallback()
+                onInputReady = testCallback()
             )
 
             val isCompressed = (outputFileName.isEmpty()) || session.myPromptConfirm(
                 message = "Do you want to compress the output file?",
-                onInputReady = compressCallback()
+                onInputReady = testCallback()
             )
 
             return listOfNotNull(
@@ -36,10 +36,6 @@ class ParserDialog {
             )
         }
 
-        internal fun fileCallback(): suspend RunScope.() -> Unit = {}
-
-        internal fun outFileCallback(): suspend RunScope.() -> Unit = {}
-
-        internal fun compressCallback(): suspend RunScope.() -> Unit = {}
+        internal fun testCallback(): suspend RunScope.() -> Unit = {}
     }
 }

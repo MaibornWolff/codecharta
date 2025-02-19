@@ -1,6 +1,7 @@
 package de.maibornwolff.codecharta.tools.inspection
 
 import com.varabyte.kotter.foundation.input.Keys
+import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.terminal.inmemory.press
 import com.varabyte.kotter.runtime.terminal.inmemory.type
 import com.varabyte.kotterx.test.foundation.testSession
@@ -26,26 +27,34 @@ class ParserDialogTest {
 
         mockkObject(ParserDialog.Companion)
 
+        var parserArguments: List<String> = emptyList()
+
         testSession { terminal ->
 
-            every { ParserDialog.Companion.fileCallback() } returns {
+            val fileCallback: suspend RunScope.() -> Unit = {
                 terminal.type(inputFileName)
                 terminal.press(Keys.ENTER)
             }
-
-            every { ParserDialog.Companion.levelsCallback() } returns {
+            val levelsCallback: suspend RunScope.() -> Unit = {
                 terminal.type(level.toString())
                 terminal.press(Keys.ENTER)
             }
 
-            val parserArguments = collectParserArgs(this)
+            every { ParserDialog.Companion.testCallback() } returnsMany listOf(
+                fileCallback,
+                levelsCallback
+            )
 
-            val commandLine = CommandLine(InspectionTool())
-            val parseResult = commandLine.parseArgs(*parserArguments.toTypedArray())
-
-            assertThat(parseResult.matchedPositional(0).getValue<File>().name).isEqualTo(File(inputFileName).name)
-            assertThat(parseResult.matchedOption("levels").getValue<Int>()).isEqualTo(5)
+            parserArguments = collectParserArgs(this)
         }
+
+        val commandLine = CommandLine(InspectionTool())
+        val parseResult = commandLine.parseArgs(*parserArguments.toTypedArray())
+
+        assertThat(parseResult.matchedPositional(0).getValue<File>().name)
+            .isEqualTo(File(inputFileName).name)
+        assertThat(parseResult.matchedOption("levels").getValue<Int>())
+            .isEqualTo(5)
     }
 
     @Test
@@ -54,28 +63,36 @@ class ParserDialogTest {
 
         mockkObject(ParserDialog.Companion)
 
+        var parserArguments: List<String> = emptyList()
+
         testSession { terminal ->
 
-            every { ParserDialog.Companion.fileCallback() } returns {
+            val fileCallback: suspend RunScope.() -> Unit = {
                 terminal.type(invalidFileName)
                 terminal.press(Keys.ENTER)
                 terminal.press(Keys.BACKSPACE, Keys.BACKSPACE, Keys.BACKSPACE)
                 terminal.type(inputFileName)
                 terminal.press(Keys.ENTER)
             }
-
-            every { ParserDialog.Companion.levelsCallback() } returns {
+            val levelsCallback: suspend RunScope.() -> Unit = {
                 terminal.press(Keys.RIGHT)
                 terminal.press(Keys.ENTER)
             }
 
-            val parserArguments = collectParserArgs(this)
+            every { ParserDialog.Companion.testCallback() } returnsMany listOf(
+                fileCallback,
+                levelsCallback
+            )
 
-            val commandLine = CommandLine(InspectionTool())
-            val parseResult = commandLine.parseArgs(*parserArguments.toTypedArray())
-
-            assertThat(parseResult.matchedPositional(0).getValue<File>().name).isEqualTo(File(inputFileName).name)
-            assertThat(parseResult.matchedOption("levels").getValue<Int>()).isEqualTo(0)
+            parserArguments = collectParserArgs(this)
         }
+
+        val commandLine = CommandLine(InspectionTool())
+        val parseResult = commandLine.parseArgs(*parserArguments.toTypedArray())
+
+        assertThat(parseResult.matchedPositional(0).getValue<File>().name)
+            .isEqualTo(File(inputFileName).name)
+        assertThat(parseResult.matchedOption("levels").getValue<Int>())
+            .isEqualTo(0)
     }
 }

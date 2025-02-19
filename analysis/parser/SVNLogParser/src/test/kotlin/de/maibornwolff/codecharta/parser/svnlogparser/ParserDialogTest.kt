@@ -1,6 +1,7 @@
 package de.maibornwolff.codecharta.parser.svnlogparser
 
 import com.varabyte.kotter.foundation.input.Keys
+import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.terminal.inmemory.press
 import com.varabyte.kotter.runtime.terminal.inmemory.type
 import com.varabyte.kotterx.test.foundation.testSession
@@ -29,40 +30,55 @@ class ParserDialogTest {
 
         mockkObject(ParserDialog.Companion)
 
+        var parserArguments: List<String> = emptyList()
+
         testSession { terminal ->
 
-            every { ParserDialog.Companion.fileCallback() } returns {
+            val fileCallback: suspend RunScope.() -> Unit = {
                 terminal.type(inputFileName)
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.outFileCallback() } returns {
+            val outFileCallback: suspend RunScope.() -> Unit = {
                 terminal.type(outputFileName)
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.compressCallback() } returns {
+            val compressCallback: suspend RunScope.() -> Unit = {
                 terminal.press(Keys.RIGHT)
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.silentCallback() } returns {
+            val silentCallback: suspend RunScope.() -> Unit = {
                 terminal.press(Keys.RIGHT)
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.authorCallback() } returns {
+            val authorCallback: suspend RunScope.() -> Unit = {
                 terminal.press(Keys.RIGHT)
                 terminal.press(Keys.ENTER)
             }
 
-            val parserArguments = collectParserArgs(this)
+            every { ParserDialog.Companion.testCallback() } returnsMany listOf(
+                fileCallback,
+                outFileCallback,
+                compressCallback,
+                silentCallback,
+                authorCallback
+            )
 
-            val cmdLine = CommandLine(SVNLogParser())
-            val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
-
-            assertThat(parseResult.matchedOption("output-file").getValue<String>()).isEqualTo(outputFileName)
-            assertThat(parseResult.matchedOption("not-compressed").getValue<Boolean>()).isEqualTo(isCompressed)
-            assertThat(parseResult.matchedOption("silent").getValue<Boolean>()).isEqualTo(isSilent)
-            assertThat(parseResult.matchedOption("add-author").getValue<Boolean>()).isEqualTo(addAuthor)
-            assertThat(parseResult.matchedPositional(0).getValue<File>().name).isEqualTo(File(inputFileName).name)
+            parserArguments = collectParserArgs(this)
         }
+
+        val cmdLine = CommandLine(SVNLogParser())
+        val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
+
+        assertThat(parseResult.matchedOption("output-file").getValue<String>())
+            .isEqualTo(outputFileName)
+        assertThat(parseResult.matchedOption("not-compressed").getValue<Boolean>())
+            .isEqualTo(isCompressed)
+        assertThat(parseResult.matchedOption("silent").getValue<Boolean>())
+            .isEqualTo(isSilent)
+        assertThat(parseResult.matchedOption("add-author").getValue<Boolean>())
+            .isEqualTo(addAuthor)
+        assertThat(parseResult.matchedPositional(0).getValue<File>().name)
+            .isEqualTo(File(inputFileName).name)
     }
 
     @Test
@@ -73,39 +89,48 @@ class ParserDialogTest {
 
         mockkObject(ParserDialog.Companion)
 
+        var parserArguments: List<String> = emptyList()
+
         testSession { terminal ->
-            every { ParserDialog.Companion.fileCallback() } returns {
+            val fileCallback: suspend RunScope.() -> Unit = {
                 terminal.type(invalidFileName)
                 terminal.press(Keys.ENTER)
                 terminal.press(Keys.BACKSPACE, Keys.BACKSPACE, Keys.BACKSPACE)
                 terminal.type(inputFileName)
                 terminal.press(Keys.ENTER)
             }
-
-            every { ParserDialog.Companion.outFileCallback() } returns {
+            val outFileCallback: suspend RunScope.() -> Unit = {
                 terminal.type(outputFileName)
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.compressCallback() } returns {
+            val compressCallback: suspend RunScope.() -> Unit = {
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.silentCallback() } returns {
+            val silentCallback: suspend RunScope.() -> Unit = {
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.authorCallback() } returns {
+            val authorCallback: suspend RunScope.() -> Unit = {
                 terminal.press(Keys.ENTER)
             }
 
-            val parserArguments = collectParserArgs(this)
+            every { ParserDialog.Companion.testCallback() } returnsMany listOf(
+                fileCallback,
+                outFileCallback,
+                compressCallback,
+                silentCallback,
+                authorCallback
+            )
 
-            val cmdLine = CommandLine(SVNLogParser())
-            val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
-
-            assertThat(parseResult.matchedOption("output-file").getValue<String>()).isEqualTo(outputFileName)
-            assertThat(parseResult.matchedOption("not-compressed")).isNull()
-            assertThat(parseResult.matchedOption("silent").getValue<Boolean>()).isEqualTo(isSilent)
-            assertThat(parseResult.matchedOption("add-author").getValue<Boolean>()).isEqualTo(addAuthor)
-            assertThat(parseResult.matchedPositional(0).getValue<File>().name).isEqualTo(File(inputFileName).name)
+            parserArguments = collectParserArgs(this)
         }
+
+        val cmdLine = CommandLine(SVNLogParser())
+        val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
+
+        assertThat(parseResult.matchedOption("output-file").getValue<String>()).isEqualTo(outputFileName)
+        assertThat(parseResult.matchedOption("not-compressed")).isNull()
+        assertThat(parseResult.matchedOption("silent").getValue<Boolean>()).isEqualTo(isSilent)
+        assertThat(parseResult.matchedOption("add-author").getValue<Boolean>()).isEqualTo(addAuthor)
+        assertThat(parseResult.matchedPositional(0).getValue<File>().name).isEqualTo(File(inputFileName).name)
     }
 }

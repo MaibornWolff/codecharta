@@ -1,6 +1,7 @@
 package de.maibornwolff.codecharta.importer.metricgardenerimporter
 
 import com.varabyte.kotter.foundation.input.Keys
+import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.terminal.inmemory.press
 import com.varabyte.kotter.runtime.terminal.inmemory.type
 import com.varabyte.kotterx.test.foundation.testSession
@@ -29,33 +30,47 @@ class ParserDialogTest {
 
         mockkObject(ParserDialog.Companion)
 
+        var parserArguments: List<String> = emptyList()
+
         testSession { terminal ->
-            every { ParserDialog.Companion.jsonCallback() } returns {
+
+            val jsonCallback: suspend RunScope.() -> Unit = {
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.fileCallback() } returns {
+            val fileCallback: suspend RunScope.() -> Unit = {
                 terminal.type(inputFileName)
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.outFileCallback() } returns {
+            val outFileCallback: suspend RunScope.() -> Unit = {
                 terminal.type(outputFileName)
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.compressCallback() } returns {
+            val compressCallback: suspend RunScope.() -> Unit = {
                 terminal.press(Keys.RIGHT)
                 terminal.press(Keys.ENTER)
             }
 
-            val parserArguments = collectParserArgs(this)
+            every { ParserDialog.Companion.testCallback() } returnsMany listOf(
+                jsonCallback,
+                fileCallback,
+                outFileCallback,
+                compressCallback
+            )
 
-            val cmdLine = CommandLine(MetricGardenerImporter())
-            val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
-
-            assertThat(parseResult.matchedPositional(0).getValue<File>().name).isEqualTo(File(inputFileName).name)
-            assertThat(parseResult.matchedOption("output-file").getValue<String>().equals(outputFileName))
-            assertThat(parseResult.matchedOption("not-compressed").getValue<Boolean>()).isEqualTo(isCompressed)
-            assertThat(parseResult.matchedOption("is-json-file").getValue<Boolean>()).isEqualTo(isJsonFile)
+            parserArguments = collectParserArgs(this)
         }
+
+        val cmdLine = CommandLine(MetricGardenerImporter())
+        val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
+
+        assertThat(parseResult.matchedPositional(0).getValue<File>().name)
+            .isEqualTo(File(inputFileName).name)
+        assertThat(parseResult.matchedOption("output-file").getValue<String>())
+            .isEqualTo(outputFileName)
+        assertThat(parseResult.matchedOption("not-compressed").getValue<Boolean>())
+            .isEqualTo(isCompressed)
+        assertThat(parseResult.matchedOption("is-json-file").getValue<Boolean>())
+            .isEqualTo(isJsonFile)
     }
 
     @Test
@@ -64,34 +79,46 @@ class ParserDialogTest {
 
         mockkObject(ParserDialog.Companion)
 
+        var parserArguments: List<String> = emptyList()
+
         testSession { terminal ->
-            every { ParserDialog.Companion.jsonCallback() } returns {
+            val jsonCallback: suspend RunScope.() -> Unit = {
                 terminal.press(Keys.RIGHT)
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.fileCallback() } returns {
+            val fileCallback: suspend RunScope.() -> Unit = {
                 terminal.type(inputFolderName)
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.outFileCallback() } returns {
+            val outFileCallback: suspend RunScope.() -> Unit = {
                 terminal.type(outputFileName)
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.compressCallback() } returns {
+            val compressCallback: suspend RunScope.() -> Unit = {
                 terminal.press(Keys.RIGHT)
                 terminal.press(Keys.ENTER)
             }
 
-            val parserArguments = collectParserArgs(this)
+            every { ParserDialog.Companion.testCallback() } returnsMany listOf(
+                jsonCallback,
+                fileCallback,
+                outFileCallback,
+                compressCallback
+            )
 
-            val cmdLine = CommandLine(MetricGardenerImporter())
-            val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
-
-            assertThat(parseResult.matchedPositional(0).getValue<File>().name).isEqualTo(File(inputFolderName).name)
-            assertThat(parseResult.matchedOption("output-file").getValue<String>().equals(outputFileName))
-            assertThat(parseResult.matchedOption("not-compressed").getValue<Boolean>()).isEqualTo(isCompressed)
-            assertThat(parseResult.matchedOption("is-json-file")).isNull()
+            parserArguments = collectParserArgs(this)
         }
+
+        val cmdLine = CommandLine(MetricGardenerImporter())
+        val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
+
+        assertThat(parseResult.matchedPositional(0).getValue<File>().name)
+            .isEqualTo(File(inputFolderName).name)
+        assertThat(parseResult.matchedOption("output-file").getValue<String>())
+            .isEqualTo(outputFileName)
+        assertThat(parseResult.matchedOption("not-compressed").getValue<Boolean>())
+            .isEqualTo(isCompressed)
+        assertThat(parseResult.matchedOption("is-json-file")).isNull()
     }
 
     @Test
@@ -100,34 +127,44 @@ class ParserDialogTest {
 
         mockkObject(ParserDialog.Companion)
 
+        var parserArguments: List<String> = emptyList()
+
         testSession { terminal ->
-            every { ParserDialog.Companion.jsonCallback() } returns {
+            val jsonCallback: suspend RunScope.() -> Unit = {
                 terminal.press(Keys.RIGHT)
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.fileCallback() } returns {
+            val fileCallback: suspend RunScope.() -> Unit = {
                 terminal.type(invalidFileName)
                 terminal.press(Keys.ENTER)
                 terminal.press(Keys.BACKSPACE, Keys.BACKSPACE, Keys.BACKSPACE)
                 terminal.type(inputFolderName)
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.outFileCallback() } returns {
+            val outFileCallback: suspend RunScope.() -> Unit = {
                 terminal.type(outputFileName)
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.compressCallback() } returns {
+            val compressCallback: suspend RunScope.() -> Unit = {
                 terminal.press(Keys.ENTER)
             }
 
-            val parserArguments = collectParserArgs(this)
+            every { ParserDialog.Companion.testCallback() } returnsMany listOf(
+                jsonCallback,
+                fileCallback,
+                outFileCallback,
+                compressCallback
+            )
 
-            val cmdLine = CommandLine(MetricGardenerImporter())
-            val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
-
-            assertThat(parseResult.matchedPositional(0).getValue<File>().name).isEqualTo(File(inputFolderName).name)
-            assertThat(parseResult.matchedOption("not-compressed")).isNull()
-            assertThat(parseResult.matchedOption("is-json-file")).isNull()
+            parserArguments = collectParserArgs(this)
         }
+
+        val cmdLine = CommandLine(MetricGardenerImporter())
+        val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
+
+        assertThat(parseResult.matchedPositional(0).getValue<File>().name)
+            .isEqualTo(File(inputFolderName).name)
+        assertThat(parseResult.matchedOption("not-compressed")).isNull()
+        assertThat(parseResult.matchedOption("is-json-file")).isNull()
     }
 }

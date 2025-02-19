@@ -14,20 +14,20 @@ class ParserDialog {
             val inputFileName: String = session.myPromptDefaultFileFolderInput(
                 inputType = de.maibornwolff.codecharta.tools.inquirer.InputType.FOLDER_AND_FILE,
                 fileExtensionList = listOf(FileExtension.CCJSON, FileExtension.CCGZ),
-                onInputReady = fileCallback()
+                onInputReady = testCallback()
             )
 
             val outputFileName: String = session.myPromptInput(
                 message = "What is the name of the output file?",
                 allowEmptyInput = true,
-                onInputReady = outFileCallback()
+                onInputReady = testCallback()
             )
 
             val maxHierarchy: String =
                 session.myPromptInputNumber(
                     message = "What is the maximum depth of hierarchy",
                     hint = "10",
-                    onInputReady = hierarchyCallback()
+                    onInputReady = testCallback()
                 )
 
             return listOfNotNull(
@@ -37,10 +37,6 @@ class ParserDialog {
             )
         }
 
-        internal fun fileCallback(): suspend RunScope.() -> Unit = {}
-
-        internal fun outFileCallback(): suspend RunScope.() -> Unit = {}
-
-        internal fun hierarchyCallback(): suspend RunScope.() -> Unit = {}
+        internal fun testCallback(): suspend RunScope.() -> Unit = {}
     }
 }

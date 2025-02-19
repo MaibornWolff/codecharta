@@ -1,6 +1,7 @@
 package de.maibornwolff.codecharta.filter.edgefilter
 
 import com.varabyte.kotter.foundation.input.Keys
+import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.terminal.inmemory.press
 import com.varabyte.kotter.runtime.terminal.inmemory.type
 import com.varabyte.kotterx.test.foundation.testSession
@@ -26,29 +27,37 @@ class ParserDialogTest {
     fun `should output correct arguments when provided with valid input`() {
         mockkObject(ParserDialog.Companion)
 
+        var parserArguments: List<String> = listOf()
+
         testSession { terminal ->
-            every { ParserDialog.Companion.fileCallback() } returns {
+            val fileCallback: suspend RunScope.() -> Unit = {
                 terminal.type(inputFileName)
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.outFileCallback() } returns {
+            val outFileCallback: suspend RunScope.() -> Unit = {
                 terminal.type(outputFileName)
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.separatorCallback() } returns {
+            val separatorCallback: suspend RunScope.() -> Unit = {
                 terminal.type(separator)
                 terminal.press(Keys.ENTER)
             }
 
-            val parserArguments = collectParserArgs(this)
+            every { ParserDialog.Companion.testCallback() } returnsMany listOf(
+                fileCallback,
+                outFileCallback,
+                separatorCallback
+            )
 
-            val cmdLine = CommandLine(EdgeFilter())
-            val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
-
-            assertThat(parseResult.matchedOption("output-file").getValue<String>()).isEqualTo(outputFileName)
-            assertThat(parseResult.matchedOption("path-separator").getValue<Char>()).isEqualTo(separator)
-            assertThat(parseResult.matchedPositional(0).getValue<File>()).isEqualTo(File(inputFileName))
+            parserArguments = collectParserArgs(this)
         }
+
+        val cmdLine = CommandLine(EdgeFilter())
+        val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
+
+        assertThat(parseResult.matchedOption("output-file").getValue<String>()).isEqualTo(outputFileName)
+        assertThat(parseResult.matchedOption("path-separator").getValue<Char>()).isEqualTo(separator)
+        assertThat(parseResult.matchedPositional(0).getValue<File>()).isEqualTo(File(inputFileName))
     }
 
     @Test
@@ -57,30 +66,38 @@ class ParserDialogTest {
 
         mockkObject(ParserDialog.Companion)
 
+        var parserArguments: List<String> = listOf()
+
         testSession { terminal ->
-            every { ParserDialog.Companion.fileCallback() } returns {
+            val fileCallback: suspend RunScope.() -> Unit = {
                 terminal.type(invalidFileName)
                 terminal.press(Keys.ENTER)
                 terminal.type(inputFileName)
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.outFileCallback() } returns {
+            val outFileCallback: suspend RunScope.() -> Unit = {
                 terminal.type(outputFileName)
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.separatorCallback() } returns {
+            val separatorCallback: suspend RunScope.() -> Unit = {
                 terminal.press(Keys.RIGHT)
                 terminal.press(Keys.ENTER)
             }
 
-            val parserArguments = collectParserArgs(this)
+            every { ParserDialog.Companion.testCallback() } returnsMany listOf(
+                fileCallback,
+                outFileCallback,
+                separatorCallback
+            )
 
-            val cmdLine = CommandLine(EdgeFilter())
-            val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
-
-            assertThat(parseResult.matchedOption("output-file").getValue<String>()).isEqualTo(outputFileName)
-            assertThat(parseResult.matchedOption("path-separator").getValue<Char>()).isEqualTo(separator)
-            assertThat(parseResult.matchedPositional(0).getValue<File>()).isEqualTo(File(inputFileName))
+            parserArguments = collectParserArgs(this)
         }
+
+        val cmdLine = CommandLine(EdgeFilter())
+        val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
+
+        assertThat(parseResult.matchedOption("output-file").getValue<String>()).isEqualTo(outputFileName)
+        assertThat(parseResult.matchedOption("path-separator").getValue<Char>()).isEqualTo(separator)
+        assertThat(parseResult.matchedPositional(0).getValue<File>()).isEqualTo(File(inputFileName))
     }
 }

@@ -25,7 +25,7 @@ class ParserDialogTest {
         mockkObject(ParserDialog.Companion)
 
         testSession { terminal ->
-            every { ParserDialog.Companion.fileCallback() } returns {
+            every { ParserDialog.Companion.testCallback() } returns {
                 terminal.type(inputFileName)
                 terminal.press(Keys.ENTER)
             }

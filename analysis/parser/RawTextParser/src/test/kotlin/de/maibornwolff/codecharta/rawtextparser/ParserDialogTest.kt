@@ -116,7 +116,6 @@ class ParserDialogTest {
     @ParameterizedTest
     @MethodSource("provideInvalidTabWidth")
     fun `should set tab-width to 0 when non-integer tab-width provided`(invalidTabWidth: String, tabWidthValue: Int) {
-        val isCompressed = false
         val verbose = false
         val metrics = "metric1"
         val maxIndentLvl = 10
@@ -128,15 +127,11 @@ class ParserDialogTest {
         var parserArguments: List<String> = emptyList()
 
         testSession { terminal ->
-            val fileCallback: suspend RunScope.() -> Unit = {
+            val inputFileCallback: suspend RunScope.() -> Unit = {
+                terminal.type(inputFileName)
                 terminal.press(Keys.ENTER)
             }
             val outFileCallback: suspend RunScope.() -> Unit = {
-                terminal.type(outputFileName)
-                terminal.press(Keys.ENTER)
-            }
-            val compressCallback: suspend RunScope.() -> Unit = {
-                terminal.press(Keys.RIGHT)
                 terminal.press(Keys.ENTER)
             }
             val verboseCallback: suspend RunScope.() -> Unit = {
@@ -168,9 +163,8 @@ class ParserDialogTest {
             }
 
             every { ParserDialog.Companion.testCallback() } returnsMany listOf(
-                fileCallback,
+                inputFileCallback,
                 outFileCallback,
-                compressCallback,
                 verboseCallback,
                 metricCallback,
                 tabCallback,
@@ -186,7 +180,6 @@ class ParserDialogTest {
         val parseResult = commandLine.parseArgs(*parserArguments.toTypedArray())
 
         assertThat(parseResult.matchedOption("output-file").getValue<String>()).isEqualTo("")
-        assertThat(parseResult.matchedOption("not-compressed").getValue<Boolean>()).isEqualTo(isCompressed)
         assertThat(parseResult.matchedOption("metrics").getValue<List<String>>()).isEqualTo(listOf(metrics))
         assertThat(parseResult.matchedOption("max-indentation-level").getValue<Int>()).isEqualTo(maxIndentLvl)
         assertThat(parseResult.matchedOption("tab-width").getValue<Int>()).isEqualTo(tabWidthValue)

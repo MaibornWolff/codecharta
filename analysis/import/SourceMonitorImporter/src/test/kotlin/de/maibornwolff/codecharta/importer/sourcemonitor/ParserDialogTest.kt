@@ -1,6 +1,7 @@
 package de.maibornwolff.codecharta.importer.sourcemonitor
 
 import com.varabyte.kotter.foundation.input.Keys
+import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.terminal.inmemory.press
 import com.varabyte.kotter.runtime.terminal.inmemory.type
 import com.varabyte.kotterx.test.foundation.testSession
@@ -22,30 +23,40 @@ class ParserDialogTest {
     private val outputFileName = "out.cc.json"
 
     @Test
-    fun `should output correct arguments`() {
+    fun `should output correct arguments when valid input is provided`() {
         mockkObject(ParserDialog.Companion)
 
+        var parserArguments: List<String> = emptyList()
+
         testSession { terminal ->
-            every { ParserDialog.Companion.fileCallback() } returns {
+
+            val fileCallback: suspend RunScope.() -> Unit = {
                 terminal.type(inputFileName)
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.outFileCallback() } returns {
+            val outFileCallback: suspend RunScope.() -> Unit = {
                 terminal.type(outputFileName)
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.compressCallback() } returns {
+            val compressCallback: suspend RunScope.() -> Unit = {
                 terminal.press(Keys.ENTER)
             }
 
-            val parserArguments = collectParserArgs(this)
-            val cmdLine = CommandLine(SourceMonitorImporter())
-            val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
+            every { ParserDialog.Companion.testCallback() } returnsMany listOf(
+                fileCallback,
+                outFileCallback,
+                compressCallback
+            )
 
-            assertThat(parseResult.matchedOption("output-file").getValue<String>()).isEqualTo(outputFileName)
-            assertThat(parseResult.matchedOption("not-compressed")).isNull()
-            assertThat(parseResult.matchedPositional(0).getValue<ArrayList<File>>()[0].name).isEqualTo(File(inputFileName).name)
+            parserArguments = collectParserArgs(this)
         }
+
+        val cmdLine = CommandLine(SourceMonitorImporter())
+        val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
+
+        assertThat(parseResult.matchedOption("output-file").getValue<String>()).isEqualTo(outputFileName)
+        assertThat(parseResult.matchedOption("not-compressed")).isNull()
+        assertThat(parseResult.matchedPositional(0).getValue<ArrayList<File>>()[0].name).isEqualTo(File(inputFileName).name)
     }
 
     @Test
@@ -54,28 +65,40 @@ class ParserDialogTest {
 
         mockkObject(ParserDialog.Companion)
 
+        var parserArguments: List<String> = emptyList()
+
         testSession { terminal ->
-            every { ParserDialog.Companion.fileCallback() } returns {
+            val fileCallback: suspend RunScope.() -> Unit = {
                 terminal.type(inputFileName)
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.outFileCallback() } returns {
+            val outFileCallback: suspend RunScope.() -> Unit = {
                 terminal.type(outputFileName)
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.compressCallback() } returns {
+            val compressCallback: suspend RunScope.() -> Unit = {
                 terminal.press(Keys.RIGHT)
                 terminal.press(Keys.ENTER)
             }
 
-            val parserArguments = collectParserArgs(this)
-            val cmdLine = CommandLine(SourceMonitorImporter())
-            val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
+            every { ParserDialog.Companion.testCallback() } returnsMany listOf(
+                fileCallback,
+                outFileCallback,
+                compressCallback
+            )
 
-            assertThat(parseResult.matchedOption("output-file").getValue<String>()).isEqualTo(outputFileName)
-            assertThat(parseResult.matchedOption("not-compressed").getValue<Boolean>()).isEqualTo(isCompressed)
-            assertThat(parseResult.matchedPositional(0).getValue<ArrayList<File>>()[0].name).isEqualTo(File(inputFileName).name)
+            parserArguments = collectParserArgs(this)
         }
+
+        val cmdLine = CommandLine(SourceMonitorImporter())
+        val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
+
+        assertThat(parseResult.matchedOption("output-file").getValue<String>())
+            .isEqualTo(outputFileName)
+        assertThat(parseResult.matchedOption("not-compressed").getValue<Boolean>())
+            .isEqualTo(isCompressed)
+        assertThat(parseResult.matchedPositional(0).getValue<ArrayList<File>>()[0].name)
+            .isEqualTo(File(inputFileName).name)
     }
 
     @Test
@@ -84,29 +107,38 @@ class ParserDialogTest {
 
         mockkObject(ParserDialog.Companion)
 
+        var parserArguments: List<String> = emptyList()
+
         testSession { terminal ->
-            every { ParserDialog.Companion.fileCallback() } returns {
+            val fileCallback: suspend RunScope.() -> Unit = {
                 terminal.type(invalidFileName)
                 terminal.press(Keys.ENTER)
                 terminal.press(Keys.BACKSPACE, Keys.BACKSPACE, Keys.BACKSPACE)
                 terminal.type(inputFileName)
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.outFileCallback() } returns {
+            val outFileCallback: suspend RunScope.() -> Unit = {
                 terminal.type(outputFileName)
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.compressCallback() } returns {
+            val compressCallback: suspend RunScope.() -> Unit = {
                 terminal.press(Keys.RIGHT)
                 terminal.press(Keys.ENTER)
             }
 
-            val parserArguments = collectParserArgs(this)
-            val cmdLine = CommandLine(SourceMonitorImporter())
-            val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
+            every { ParserDialog.Companion.testCallback() } returnsMany listOf(
+                fileCallback,
+                outFileCallback,
+                compressCallback
+            )
 
-            assertThat(parseResult.matchedPositional(0).getValue<ArrayList<File>>()[0].name)
-                .isEqualTo(File(inputFileName).name)
+            parserArguments = collectParserArgs(this)
         }
+
+        val cmdLine = CommandLine(SourceMonitorImporter())
+        val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
+
+        assertThat(parseResult.matchedPositional(0).getValue<ArrayList<File>>()[0].name)
+            .isEqualTo(File(inputFileName).name)
     }
 }

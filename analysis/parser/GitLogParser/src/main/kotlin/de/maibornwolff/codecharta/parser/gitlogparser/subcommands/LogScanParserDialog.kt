@@ -15,7 +15,7 @@ class LogScanParserDialog {
                 hint = "git.log",
                 allowEmptyInput = false,
                 inputValidator = InputValidator.isInputAnExistingFile(),
-                onInputReady = logCallback()
+                onInputReady = testCallback()
             )
 
             print("You can generate this file with: git ls-files > file-name-list.txt")
@@ -24,7 +24,7 @@ class LogScanParserDialog {
                 hint = "file-name-list.txt",
                 allowEmptyInput = false,
                 inputValidator = InputValidator.isInputAnExistingFile(),
-                onInputReady = lsCallback()
+                onInputReady = testCallback()
             )
 
             return listOf(
@@ -33,8 +33,6 @@ class LogScanParserDialog {
             )
         }
 
-        internal fun logCallback(): suspend RunScope.() -> Unit = {}
-
-        internal fun lsCallback(): suspend RunScope.() -> Unit = {}
+        internal fun testCallback(): suspend RunScope.() -> Unit = {}
     }
 }

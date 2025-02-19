@@ -16,7 +16,7 @@ class InteractiveDialog {
             return session.myPromptList(
                 message = "Which parser do you want to execute?",
                 choices = parserOptions,
-                onInputReady = parserCallback()
+                onInputReady = testCallback()
             )
         }
 
@@ -26,7 +26,7 @@ class InteractiveDialog {
                 message = "Which path should be scanned?",
                 hint = Paths.get("").toAbsolutePath().toString(),
                 allowEmptyInput = false,
-                onInputReady = pathCallback()
+                onInputReady = testCallback()
             )
         }
 
@@ -35,21 +35,21 @@ class InteractiveDialog {
                 message = "Choose from this list of applicable parsers. You can select individual parsers by pressing spacebar.",
                 choices = applicableParsers,
                 allowEmptyInput = true,
-                onInputReady = applicableCallback()
+                onInputReady = testCallback()
             )
         }
 
         internal fun askRunParsers(session: Session): Boolean {
             return session.myPromptConfirm(
                 message = "Do you want to run all configured parsers now?",
-                onInputReady = runCallback()
+                onInputReady = testCallback()
             )
         }
 
         internal fun askForMerge(session: Session): Boolean {
             return session.myPromptConfirm(
                 message = "Do you want to merge all generated files into one result now?",
-                onInputReady = mergeCallback()
+                onInputReady = testCallback()
             )
         }
 
@@ -62,20 +62,10 @@ class InteractiveDialog {
                 message = "What is the folder path containing all cc.json files?",
                 hint = Paths.get("").toAbsolutePath().toString(),
                 inputValidator = InputValidator.isFileOrFolderValid(InputType.FOLDER, listOf()),
-                onInputReady = jsonCallback()
+                onInputReady = testCallback()
             )
         }
 
-        internal fun parserCallback(): suspend RunScope.() -> Unit = {}
-
-        internal fun pathCallback(): suspend RunScope.() -> Unit = {}
-
-        internal fun applicableCallback(): suspend RunScope.() -> Unit = {}
-
-        internal fun runCallback(): suspend RunScope.() -> Unit = {}
-
-        internal fun mergeCallback(): suspend RunScope.() -> Unit = {}
-
-        internal fun jsonCallback(): suspend RunScope.() -> Unit = {}
+        internal fun testCallback(): suspend RunScope.() -> Unit = {}
     }
 }

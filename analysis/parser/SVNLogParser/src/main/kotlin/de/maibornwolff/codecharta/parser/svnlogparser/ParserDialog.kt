@@ -15,30 +15,30 @@ class ParserDialog {
             val inputFileName: String = session.myPromptDefaultFileFolderInput(
                 inputType = InputType.FILE,
                 fileExtensionList = listOf(),
-                onInputReady = fileCallback()
+                onInputReady = testCallback()
             )
 
             val outputFileName: String = session.myPromptInput(
                 message = "What is the name of the output file?",
                 allowEmptyInput = true,
-                onInputReady = outFileCallback()
+                onInputReady = testCallback()
             )
 
             val isCompressed =
                 (outputFileName.isEmpty()) ||
                     session.myPromptConfirm(
                         message = "Do you want to compress the output file?",
-                        onInputReady = compressCallback()
+                        onInputReady = testCallback()
                     )
 
             val isSilent: Boolean = session.myPromptConfirm(
                 message = "Do you want to suppress command line output?",
-                onInputReady = silentCallback()
+                onInputReady = testCallback()
             )
 
             val addAuthor: Boolean = session.myPromptConfirm(
                 message = "Do you want to add authors to every file?",
-                onInputReady = authorCallback()
+                onInputReady = testCallback()
             )
 
             return listOfNotNull(
@@ -50,14 +50,6 @@ class ParserDialog {
             )
         }
 
-        internal fun fileCallback(): suspend RunScope.() -> Unit = {}
-
-        internal fun outFileCallback(): suspend RunScope.() -> Unit = {}
-
-        internal fun compressCallback(): suspend RunScope.() -> Unit = {}
-
-        internal fun silentCallback(): suspend RunScope.() -> Unit = {}
-
-        internal fun authorCallback(): suspend RunScope.() -> Unit = {}
+        internal fun testCallback(): suspend RunScope.() -> Unit = {}
     }
 }

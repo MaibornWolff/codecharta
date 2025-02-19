@@ -1,6 +1,7 @@
 package de.maibornwolff.codecharta.ccsh.parser
 
 import com.varabyte.kotter.foundation.input.Keys
+import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.terminal.inmemory.press
 import com.varabyte.kotter.runtime.terminal.inmemory.type
 import com.varabyte.kotterx.test.foundation.testSession
@@ -31,10 +32,14 @@ class InteractiveDialogTest {
         val option2 = "option2"
 
         testSession { terminal ->
-            every { InteractiveDialog.parserCallback() } returns {
+            val parserCallback: suspend RunScope.() -> Unit = {
                 terminal.press(Keys.DOWN)
                 terminal.press(Keys.ENTER)
             }
+
+            every { InteractiveDialog.Companion.testCallback() } returnsMany listOf(
+                parserCallback
+            )
 
             val result = askParserToExecute(this, listOf(option1, option2))
 
@@ -47,10 +52,14 @@ class InteractiveDialogTest {
         val someInput = "someInput"
 
         testSession { terminal ->
-            every { InteractiveDialog.pathCallback() } returns {
+            val pathCallback: suspend RunScope.() -> Unit = {
                 terminal.type(someInput)
                 terminal.press(Keys.ENTER)
             }
+
+            every { InteractiveDialog.Companion.testCallback() } returnsMany listOf(
+                pathCallback
+            )
 
             val result = askForPath(this)
 
@@ -64,11 +73,15 @@ class InteractiveDialogTest {
         val option2 = "option2"
 
         testSession { terminal ->
-            every { InteractiveDialog.applicableCallback() } returns {
+            val applicableCallback: suspend RunScope.() -> Unit = {
                 terminal.press(Keys.DOWN)
                 terminal.press(Keys.SPACE)
                 terminal.press(Keys.ENTER)
             }
+
+            every { InteractiveDialog.Companion.testCallback() } returnsMany listOf(
+                applicableCallback
+            )
 
             val result = askApplicableParser(this, listOf(option1, option2))
 
@@ -79,10 +92,14 @@ class InteractiveDialogTest {
     @Test
     fun `should ask for confirmation`() {
         testSession { terminal ->
-            every { InteractiveDialog.runCallback() } returns {
+            val runCallback: suspend RunScope.() -> Unit = {
                 terminal.press(Keys.RIGHT)
                 terminal.press(Keys.ENTER)
             }
+
+            every { InteractiveDialog.Companion.testCallback() } returnsMany listOf(
+                runCallback
+            )
 
             val result = askRunParsers(this)
 
@@ -93,10 +110,14 @@ class InteractiveDialogTest {
     @Test
     fun `should ask for merge`() {
         testSession { terminal ->
-            every { InteractiveDialog.mergeCallback() } returns {
+            val mergeCallback: suspend RunScope.() -> Unit = {
                 terminal.press(Keys.RIGHT)
                 terminal.press(Keys.ENTER)
             }
+
+            every { InteractiveDialog.Companion.testCallback() } returnsMany listOf(
+                mergeCallback
+            )
 
             val result = askForMerge(this)
 
@@ -109,10 +130,14 @@ class InteractiveDialogTest {
         val someInput = "src/test/resources/mergefiles"
 
         testSession { terminal ->
-            every { InteractiveDialog.jsonCallback() } returns {
+            val jsonCallback: suspend RunScope.() -> Unit = {
                 terminal.type(someInput)
                 terminal.press(Keys.ENTER)
             }
+
+            every { InteractiveDialog.Companion.testCallback() } returnsMany listOf(
+                jsonCallback
+            )
 
             val result = askJsonPath(this)
 

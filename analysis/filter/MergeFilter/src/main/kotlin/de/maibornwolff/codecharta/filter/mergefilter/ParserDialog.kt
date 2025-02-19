@@ -22,7 +22,7 @@ class ParserDialog {
                 session.myPromptDefaultFileFolderInput(
                     inputType = InputType.FOLDER_AND_FILE,
                     fileExtensionList = listOf(FileExtension.CCJSON, FileExtension.CCGZ),
-                    onInputReady = fileCallback()
+                    onInputReady = testCallback()
                 )
 
             val defaultMerge = "Default merging..."
@@ -32,7 +32,7 @@ class ParserDialog {
             val mergeMode = session.myPromptList(
                 message = "Do you want to use a special merge mode?",
                 choices = listOf(defaultMerge, mimoMerge, largeMerge),
-                onInputReady = choiceCallback()
+                onInputReady = testCallback()
             )
 
             val outputFileName: String
@@ -44,12 +44,12 @@ class ParserDialog {
                     message = "What is the output folder path?",
                     hint = "Uses the current working directory if empty",
                     allowEmptyInput = true,
-                    onInputReady = outFileCallback()
+                    onInputReady = testCallback()
                 )
 
                 isCompressed = session.myPromptConfirm(
                     message = "Do you want to compress the output file(s)?",
-                    onInputReady = compressCallback()
+                    onInputReady = testCallback()
                 )
 
                 levenshteinDistance = session.myPromptInputNumber(
@@ -57,19 +57,19 @@ class ParserDialog {
                     hint = "3",
                     invalidInputMessage = "Specify a number greater or equal to 0",
                     inputValidator = InputValidator.isNumberGreaterThen(-1),
-                    onInputReady = levenshteinCallback()
+                    onInputReady = testCallback()
                 ).toInt()
             } else {
                 outputFileName = session.myPromptInput(
                     message = "What is the name of the output file?",
                     hint = "mergeResult.cc.json",
                     allowEmptyInput = true,
-                    onInputReady = outFileCallback()
+                    onInputReady = testCallback()
                 )
 
                 isCompressed = (outputFileName.isEmpty()) || session.myPromptConfirm(
                     message = "Do you want to compress the output file?",
-                    onInputReady = compressCallback()
+                    onInputReady = testCallback()
                 )
             }
 
@@ -78,7 +78,7 @@ class ParserDialog {
             val strategy = session.myPromptList(
                 message = "Which merging strategy should be used?",
                 choices = listOf(recursiveMergingStrategy, leafMergingStrategy),
-                onInputReady = strategyCallback()
+                onInputReady = testCallback()
             )
 
             var leafFlag = false
@@ -87,14 +87,14 @@ class ParserDialog {
                 leafFlag = true
                 addMissing = session.myPromptConfirm(
                     message = "Do you want to add missing nodes to reference?",
-                    onInputReady = addMissingCallback()
+                    onInputReady = testCallback()
                 )
             }
 
             val ignoreCase: Boolean =
                 session.myPromptConfirm(
                     message = "Do you want to ignore case when checking node names?",
-                    onInputReady = ignoreCaseCallback()
+                    onInputReady = testCallback()
                 )
 
             val basicMergeConfig = listOf(
@@ -127,7 +127,7 @@ class ParserDialog {
             return startSession {
                 myPromptConfirm(
                     message = "Do you still want to merge non-overlapping at the top-level nodes?",
-                    onInputReady = forceCallback()
+                    onInputReady = testCallback()
                 )
             }
         }
@@ -137,7 +137,7 @@ class ParserDialog {
                 myPromptList(
                     message = "Which prefix should be used for the output file?",
                     choices = prefixOptions.toList(),
-                    onInputReady = prefixCallback()
+                    onInputReady = testCallback()
                 )
             }
         }
@@ -150,30 +150,12 @@ class ParserDialog {
                     choices = fileNameList,
                     hint = "Not selected files will not get merged",
                     allowEmptyInput = true,
-                    onInputReady = fileCallback()
+                    onInputReady = testCallback()
                 )
                 files.filter { choiceList.contains(it.name) }
             }
         }
 
-        internal fun fileCallback(): suspend RunScope.() -> Unit = {}
-
-        internal fun choiceCallback(): suspend RunScope.() -> Unit = {}
-
-        internal fun outFileCallback(): suspend RunScope.() -> Unit = {}
-
-        internal fun compressCallback(): suspend RunScope.() -> Unit = {}
-
-        internal fun levenshteinCallback(): suspend RunScope.() -> Unit = {}
-
-        internal fun strategyCallback(): suspend RunScope.() -> Unit = {}
-
-        internal fun addMissingCallback(): suspend RunScope.() -> Unit = {}
-
-        internal fun ignoreCaseCallback(): suspend RunScope.() -> Unit = {}
-
-        internal fun forceCallback(): suspend RunScope.() -> Unit = {}
-
-        internal fun prefixCallback(): suspend RunScope.() -> Unit = {}
+        internal fun testCallback(): suspend RunScope.() -> Unit = {}
     }
 }
