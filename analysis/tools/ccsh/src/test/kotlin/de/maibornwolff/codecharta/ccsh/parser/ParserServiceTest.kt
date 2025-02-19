@@ -1,6 +1,5 @@
 package de.maibornwolff.codecharta.ccsh.parser
 
-import com.varabyte.kotter.runtime.Session
 import com.varabyte.kotterx.test.foundation.testSession
 import de.maibornwolff.codecharta.tools.ccsh.Ccsh
 import de.maibornwolff.codecharta.tools.ccsh.parser.InteractiveDialog
@@ -8,12 +7,11 @@ import de.maibornwolff.codecharta.tools.ccsh.parser.ParserService
 import de.maibornwolff.codecharta.tools.ccsh.parser.repository.PicocliParserRepository
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
-import de.maibornwolff.codecharta.tools.interactiveparser.startSession
+import de.maibornwolff.codecharta.tools.interactiveparser.SessionMock
 import io.mockk.every
 import io.mockk.mockkClass
 import io.mockk.mockkConstructor
 import io.mockk.mockkObject
-import io.mockk.mockkStatic
 import io.mockk.unmockkAll
 import io.mockk.verify
 import org.assertj.core.api.Assertions
@@ -88,7 +86,7 @@ class ParserServiceTest {
         val expectedParserCommand =
             "ccsh " + selectedParser + " " + collectedArgs.map { x -> '"' + x + '"' }.joinToString(" ")
 
-        mockStartSession()
+        SessionMock.mockStartSession()
         val selectedParserList = listOf(selectedParser)
         val mockPicocliParserRepository = mockParserRepository(selectedParser, emptyList())
 
@@ -113,7 +111,7 @@ class ParserServiceTest {
         mockkObject(InteractiveDialog)
         every { InteractiveDialog.askParserToExecute(any(), any()) } returns "$fakeParser $fakeParserDescription"
 
-        mockStartSession()
+        SessionMock.mockStartSession()
 
         val selectedParser = ParserService.selectParser(cmdLine, PicocliParserRepository())
 
@@ -178,7 +176,7 @@ class ParserServiceTest {
                 "csvimport"
             )
 
-        mockStartSession()
+        SessionMock.mockStartSession()
 
         val mockPicocliParserRepository = mockParserRepository(selectedParserList[0], emptyList())
 
@@ -198,7 +196,7 @@ class ParserServiceTest {
     @MethodSource("providerParserArguments")
     fun `should execute parser`(parser: String) {
         mockParserObject(parser)
-        mockStartSession()
+        SessionMock.mockStartSession()
 
         ParserService.executeSelectedParser(cmdLine, parser)
 
@@ -234,20 +232,13 @@ class ParserServiceTest {
     @ParameterizedTest
     @MethodSource("providerParserArguments")
     fun `should output message informing about which parser is being configured`(parser: String) {
-        mockStartSession()
+        SessionMock.mockStartSession()
 
         val mockParserRepository = mockParserRepository(parser, listOf(parser))
 
         ParserService.configureParserSelection(cmdLine, mockParserRepository, listOf(parser))
 
         assertThat(outContent.toString()).contains("Now configuring $parser.")
-    }
-
-    private fun mockStartSession() {
-        mockkStatic("de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterfaceKt")
-        every { startSession(any<Session.() -> Any>()) } answers {
-            startTestSession { firstArg<Session.() -> Any>()(this) }
-        }
     }
 
     private fun mockParserObject(name: String): InteractiveParser {
@@ -283,13 +274,5 @@ class ParserServiceTest {
         } returns usableParsers
 
         return obj
-    }
-
-    private fun <T> startTestSession(block: Session.() -> T): T {
-        var returnValue: T? = null
-        testSession {
-            returnValue = block()
-        }
-        return returnValue ?: throw IllegalStateException("Session did not return a value.")
     }
 }

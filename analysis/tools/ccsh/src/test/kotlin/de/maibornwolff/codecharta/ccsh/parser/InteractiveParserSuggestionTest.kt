@@ -1,15 +1,12 @@
 package de.maibornwolff.codecharta.ccsh.parser
 
-import com.varabyte.kotter.runtime.Session
-import com.varabyte.kotterx.test.foundation.testSession
 import de.maibornwolff.codecharta.tools.ccsh.Ccsh
 import de.maibornwolff.codecharta.tools.ccsh.parser.InteractiveDialog
 import de.maibornwolff.codecharta.tools.ccsh.parser.InteractiveParserSuggestion
 import de.maibornwolff.codecharta.tools.ccsh.parser.ParserService
-import de.maibornwolff.codecharta.tools.interactiveparser.startSession
+import de.maibornwolff.codecharta.tools.interactiveparser.SessionMock
 import io.mockk.every
 import io.mockk.mockkObject
-import io.mockk.mockkStatic
 import io.mockk.unmockkAll
 import io.mockk.verify
 import org.assertj.core.api.Assertions
@@ -47,7 +44,7 @@ class InteractiveParserSuggestionTest {
 
     @BeforeEach
     fun beforeTest() {
-        mockStartSession()
+        SessionMock.mockStartSession()
     }
 
     @AfterEach
@@ -161,20 +158,5 @@ class InteractiveParserSuggestionTest {
         Assertions.assertThat(selectedParsers).isNotNull
         Assertions.assertThat(selectedParsers).isEmpty()
         Assertions.assertThat(errorOut.toString()).contains("Specified invalid or empty path to analyze! Aborting...")
-    }
-
-    private fun mockStartSession() {
-        mockkStatic("de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterfaceKt")
-        every { startSession(any<Session.() -> Any>()) } answers {
-            startTestSession { firstArg<Session.() -> Any>()(this) }
-        }
-    }
-
-    private fun <T> startTestSession(block: Session.() -> T): T {
-        var returnValue: T? = null
-        testSession {
-            returnValue = block()
-        }
-        return returnValue ?: throw IllegalStateException("Session did not return a value.")
     }
 }
