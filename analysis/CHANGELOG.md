@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Changed
+
+- Changed to a new terminal library [#3609](https://github.com/MaibornWolff/codecharta/pull/3609)
+
 ## [1.131.1] - 2025-02-26
 
 ### Chore 👨‍💻 👩‍💻
