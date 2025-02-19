@@ -19,7 +19,7 @@ import de.maibornwolff.codecharta.tools.ccsh.parser.InteractiveParserSuggestion
 import de.maibornwolff.codecharta.tools.ccsh.parser.ParserService
 import de.maibornwolff.codecharta.tools.ccsh.parser.repository.PicocliParserRepository
 import de.maibornwolff.codecharta.tools.inspection.InspectionTool
-import de.maibornwolff.codecharta.tools.interactiveparser.startSession
+import de.maibornwolff.codecharta.tools.interactiveparser.runInTerminalSession
 import de.maibornwolff.codecharta.tools.interactiveparser.util.CodeChartaConstants
 import de.maibornwolff.codecharta.tools.validation.ValidationTool
 import de.maibornwolff.codecharta.util.AttributeGeneratorRegistry
@@ -111,7 +111,7 @@ class Ccsh : Callable<Unit?> {
                 return 0
             }
 
-            val shouldRunConfiguredParsers = startSession { InteractiveDialog.askRunParsers(this) }
+            val shouldRunConfiguredParsers = runInTerminalSession { InteractiveDialog.askRunParsers(this) }
 
             return if (shouldRunConfiguredParsers) {
                 executeConfiguredParsers(commandLine, configuredParsers)
@@ -151,11 +151,11 @@ class Ccsh : Callable<Unit?> {
         }
 
         private fun askAndMergeResults(commandLine: CommandLine): Int {
-            val shouldMerge = startSession { InteractiveDialog.askForMerge(this) }
+            val shouldMerge = runInTerminalSession { InteractiveDialog.askForMerge(this) }
             var ccJsonFilePath = ""
 
             if (shouldMerge) {
-                ccJsonFilePath = startSession { InteractiveDialog.askJsonPath(this) }
+                ccJsonFilePath = runInTerminalSession { InteractiveDialog.askJsonPath(this) }
             }
 
             return if (shouldMerge) {
