@@ -22,28 +22,28 @@ class ParserDialog {
                 message = "What is the name of the output file?",
                 hint = "output.cc.json",
                 allowEmptyInput = true,
-                onInputReady = outFileCallback()
+                onInputReady = testCallback()
             )
 
             val rootName = session.myPromptInput(
                 message = "Which root folder was specified when executing tokei?",
                 hint = ".",
                 allowEmptyInput = false,
-                onInputReady = rootCallback()
+                onInputReady = testCallback()
             )
 
             var pathSeparator = session.myPromptInput(
                 message = "Which path separator is used? Leave empty for auto-detection",
                 hint = "",
                 allowEmptyInput = true,
-                onInputReady = pathCallback()
+                onInputReady = testCallback()
             )
 
             if (pathSeparator == "\\") pathSeparator = "\\\\"
 
             val isCompressed = (outputFileName.isEmpty()) || session.myPromptConfirm(
                 message = "Do you want to compress the output file?",
-                onInputReady = compressCallback()
+                onInputReady = testCallback()
             )
 
             return listOfNotNull(
@@ -56,13 +56,5 @@ class ParserDialog {
         }
 
         internal fun testCallback(): suspend RunScope.() -> Unit = {}
-
-        internal fun outFileCallback(): suspend RunScope.() -> Unit = {}
-
-        internal fun rootCallback(): suspend RunScope.() -> Unit = {}
-
-        internal fun pathCallback(): suspend RunScope.() -> Unit = {}
-
-        internal fun compressCallback(): suspend RunScope.() -> Unit = {}
     }
 }
