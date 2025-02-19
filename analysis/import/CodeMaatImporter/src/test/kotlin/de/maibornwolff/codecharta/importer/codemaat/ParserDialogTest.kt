@@ -1,6 +1,7 @@
 package de.maibornwolff.codecharta.importer.codemaat
 
 import com.varabyte.kotter.foundation.input.Keys
+import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.terminal.inmemory.press
 import com.varabyte.kotter.runtime.terminal.inmemory.type
 import com.varabyte.kotterx.test.foundation.testSession
@@ -19,36 +20,34 @@ import java.io.File
 class ParserDialogTest {
     private val testResourceBaseFolder = "src/test/resources/"
     private val inputFileName = "${testResourceBaseFolder}coupling-codemaat.csv"
-    private val outputFileName = "sampleOutputFile"
 
     @Test
     fun `should output correct arguments when valid input is provided`() {
-        val isCompressed = false
-
         mockkObject(ParserDialog.Companion)
 
         testSession { terminal ->
-            every { ParserDialog.Companion.fileCallback() } returns {
+            val fileCallback: suspend RunScope.() -> Unit = {
                 terminal.type(inputFileName)
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.outFileCallback() } returns {
-                terminal.type(outputFileName)
+            val outFileCallback: suspend RunScope.() -> Unit = {
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.compressCallback() } returns {
-                terminal.press(Keys.RIGHT)
-                terminal.press(Keys.ENTER)
-            }
+
+            every { ParserDialog.Companion.testCallback() } returnsMany listOf(
+                fileCallback,
+                outFileCallback
+            )
 
             val parserArguments = collectParserArgs(this)
-
             val cmdLine = CommandLine(CodeMaatImporter())
             val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
 
-            assertThat(parseResult.matchedOption("output-file").getValue<String>()).isEqualTo(outputFileName)
-            assertThat(parseResult.matchedOption("not-compressed").getValue<Boolean>()).isEqualTo(isCompressed)
-            assertThat(parseResult.matchedPositional(0).getValue<List<File>>()[0].name).isEqualTo(File(inputFileName).name)
+            assertThat(parseResult.matchedOption("output-file").getValue<String>())
+                .isEqualTo("")
+            assertThat(parseResult.matchedOption("not-compressed")).isNull()
+            assertThat(parseResult.matchedPositional(0).getValue<List<File>>()[0].name)
+                .isEqualTo(File(inputFileName).name)
         }
     }
 
@@ -60,21 +59,26 @@ class ParserDialogTest {
         mockkObject(ParserDialog.Companion)
 
         testSession { terminal ->
-            every { ParserDialog.Companion.fileCallback() } returns {
+            val fileCallback: suspend RunScope.() -> Unit = {
                 terminal.type(inputFileName)
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.outFileCallback() } returns {
+            val outFileCallback: suspend RunScope.() -> Unit = {
                 terminal.type(outputFileName)
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.compressCallback() } returns {
+            val compressCallback: suspend RunScope.() -> Unit = {
                 terminal.press(Keys.RIGHT)
                 terminal.press(Keys.ENTER)
             }
 
-            val parserArguments = collectParserArgs(this)
+            every { ParserDialog.Companion.testCallback() } returnsMany listOf(
+                fileCallback,
+                outFileCallback,
+                compressCallback
+            )
 
+            val parserArguments = collectParserArgs(this)
             val cmdLine = CommandLine(CodeMaatImporter())
             val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
 
@@ -92,22 +96,27 @@ class ParserDialogTest {
         mockkObject(ParserDialog.Companion)
 
         testSession { terminal ->
-            every { ParserDialog.Companion.fileCallback() } returns {
+            val fileCallback: suspend RunScope.() -> Unit = {
                 terminal.type(invalidFileName)
                 terminal.press(Keys.ENTER)
                 terminal.type(inputFileName)
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.outFileCallback() } returns {
+            val outFileCallback: suspend RunScope.() -> Unit = {
                 terminal.type(outputFileName)
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.compressCallback() } returns {
+            val compressCallback: suspend RunScope.() -> Unit = {
                 terminal.press(Keys.ENTER)
             }
 
-            val parserArguments = collectParserArgs(this)
+            every { ParserDialog.Companion.testCallback() } returnsMany listOf(
+                fileCallback,
+                outFileCallback,
+                compressCallback
+            )
 
+            val parserArguments = collectParserArgs(this)
             val cmdLine = CommandLine(CodeMaatImporter())
             val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
 
