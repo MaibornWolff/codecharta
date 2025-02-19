@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.tools.inquirer
 
+import com.varabyte.kotter.foundation.collections.LiveList
 import com.varabyte.kotter.foundation.collections.liveListOf
 import com.varabyte.kotter.foundation.input.Keys
 import com.varabyte.kotter.foundation.input.onInputChanged
@@ -116,22 +117,17 @@ fun Session.myPromptList(
     onInputReady: suspend RunScope.() -> Unit
 ): String {
     var result = ""
-    var selection by liveVarOf(0)
+    var selectionPosition by liveVarOf(0)
     section {
-        drawList(message, hint, choices, selection)
+        drawList(message, hint, choices, selectionPosition)
     }.runUntilSignal {
         onKeyPressed {
             when (key) {
-                Keys.UP ->
-                    if (selection > 0) {
-                        selection -= 1
-                    }
+                Keys.UP -> selectionPosition = moveUp(selectionPosition)
                 Keys.DOWN ->
-                    if (selection < choices.size - 1) {
-                        selection += 1
-                    }
+                    selectionPosition = moveDown(selectionPosition, choices.size)
                 Keys.ENTER -> {
-                    result = choices[selection]
+                    result = choices[selectionPosition]
                     signal()
                 }
             }
@@ -149,26 +145,22 @@ fun Session.myPromptCheckbox(
     onInputReady: suspend RunScope.() -> Unit
 ): List<String> {
     var result = listOf<String>()
-    var pos by liveVarOf(0)
-    val selectedElems = liveListOf(MutableList(choices.size) { false })
+    var currentPosition by liveVarOf(0)
+    val selectedChoices = liveListOf(MutableList(choices.size) { false })
     var isInputValid by liveVarOf(true)
     section {
-        drawCheckbox(message, hint, isInputValid, allowEmptyInput, choices, pos, selectedElems)
+        drawCheckbox(message, hint, isInputValid, allowEmptyInput, choices, currentPosition, selectedChoices)
     }.runUntilSignal {
         onKeyPressed {
             isInputValid = true
             when (key) {
                 Keys.UP ->
-                    if (pos > 0) {
-                        pos -= 1
-                    }
+                    currentPosition = moveUp(currentPosition)
                 Keys.DOWN ->
-                    if (pos < choices.size - 1) {
-                        pos += 1
-                    }
-                Keys.SPACE -> selectedElems[pos] = !selectedElems[pos]
+                    currentPosition = moveDown(currentPosition, choices.size)
+                Keys.SPACE -> selectOrUnselectChoice(selectedChoices, currentPosition)
                 Keys.ENTER -> {
-                    result = getSelectedElems(choices, selectedElems)
+                    result = getSelectedChoices(choices, selectedChoices)
                     if (allowEmptyInput || result.isNotEmpty()) {
                         signal()
                     } else {
@@ -182,7 +174,30 @@ fun Session.myPromptCheckbox(
     return result
 }
 
-private fun getSelectedElems(choices: List<String>, selection: List<Boolean>): List<String> {
+private fun selectOrUnselectChoice(
+    selectedChoices: LiveList<Boolean>,
+    position: Int
+) {
+    selectedChoices[position] = !selectedChoices[position]
+}
+
+private fun moveDown(position: Int, numberOfChoices: Int) : Int {
+    var positionCopy = position
+    if (positionCopy < numberOfChoices - 1) {
+        positionCopy += 1
+    }
+    return positionCopy
+}
+
+private fun moveUp(position: Int) : Int {
+    var positionCopy = position
+    if (positionCopy > 0) {
+        positionCopy -= 1
+    }
+    return positionCopy
+}
+
+private fun getSelectedChoices(choices: List<String>, selection: List<Boolean>): List<String> {
     val result = mutableListOf<String>()
     for (i in choices.indices) {
         if (selection[i]) result.add(choices[i])
