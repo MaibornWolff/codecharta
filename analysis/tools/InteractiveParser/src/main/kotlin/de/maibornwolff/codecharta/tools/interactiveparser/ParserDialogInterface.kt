@@ -7,7 +7,7 @@ fun interface ParserDialogInterface {
     fun collectParserArgs(session: Session): List<String>
 }
 
-fun <T> startSession(block: Session.() -> T): T {
+fun <T> runInTerminalSession(block: Session.() -> T): T {
     var returnValue: T? = null
     session {
         returnValue = block()

@@ -9,12 +9,12 @@ class SessionMock {
     companion object {
         fun mockStartSession() {
             mockkStatic("de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterfaceKt")
-            every { startSession(any<Session.() -> Any>()) } answers {
-                startTestSession { firstArg<Session.() -> Any>()(this) }
+            every { runInTerminalSession(any<Session.() -> Any>()) } answers {
+                runInTestSession { firstArg<Session.() -> Any>()(this) }
             }
         }
 
-        private fun <T> startTestSession(block: Session.() -> T): T {
+        private fun <T> runInTestSession(block: Session.() -> T): T {
             var returnValue: T? = null
             testSession {
                 returnValue = block()
