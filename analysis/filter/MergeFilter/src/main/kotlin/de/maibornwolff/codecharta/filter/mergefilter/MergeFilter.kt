@@ -8,6 +8,7 @@ import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
+import de.maibornwolff.codecharta.tools.interactiveparser.startSession
 import de.maibornwolff.codecharta.tools.interactiveparser.util.CodeChartaConstants
 import de.maibornwolff.codecharta.util.InputHelper
 import de.maibornwolff.codecharta.util.Logger
@@ -121,7 +122,7 @@ class MergeFilter(
         if (!hasTopLevelOverlap(projects)) {
             printOverlapError(projects)
 
-            val continueMerge = askForceMerge()
+            val continueMerge = startSession { askForceMerge(this) }
 
             if (!continueMerge) {
                 Logger.info { "Merge cancelled by the user." }
@@ -159,7 +160,7 @@ class MergeFilter(
             val confirmedFileList = if (exactMatch) {
                 files
             } else {
-                requestMimoFileSelection(files)
+                startSession { requestMimoFileSelection(this, files) }
             }
             if (confirmedFileList.size <= 1) {
                 Logger.info { "Continue with next group, because one or less files were selected" }

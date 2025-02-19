@@ -6,6 +6,7 @@ import com.varabyte.kotter.runtime.terminal.inmemory.press
 import com.varabyte.kotter.runtime.terminal.inmemory.type
 import com.varabyte.kotterx.test.foundation.testSession
 import de.maibornwolff.codecharta.filter.mergefilter.ParserDialog.Companion.collectParserArgs
+import de.maibornwolff.codecharta.filter.mergefilter.ParserDialog.Companion.testCallback
 import io.mockk.every
 import io.mockk.mockkObject
 import io.mockk.unmockkAll
@@ -340,5 +341,56 @@ class ParserDialogTest {
 
         assertThat(parseResult.matchedPositional(0).getValue<Array<File>>()[0].path).isEqualTo(inputFolderPath.toString())
         assertThat(parseResult.matchedOption("output-file").getValue<String>()).isEqualTo(outputFileName)
+    }
+
+    @Test
+    fun `should prompt for force merge`() {
+        var result = false
+
+        testSession { terminal ->
+            every { testCallback() } returns {
+                terminal.press(Keys.ENTER)
+            }
+
+            result = ParserDialog.askForceMerge(this)
+        }
+
+        assertThat(result).isTrue()
+    }
+
+    @Test
+    fun `should prompt for Mimo prefix`() {
+        val prefixOptions = setOf("prefix1", "prefix2")
+        var result = ""
+
+        testSession { terminal ->
+            every { testCallback() } returns {
+                terminal.press(Keys.DOWN)
+                terminal.press(Keys.ENTER)
+            }
+
+            result = ParserDialog.askForMimoPrefix(this, prefixOptions)
+        }
+
+        assertThat(result).isEqualTo("prefix2")
+    }
+
+    @Test
+    fun `should prompt for Mimo file selection`() {
+        val files = listOf(File("file1"), File("file2"))
+
+        var result = emptyList<File>()
+
+        testSession { terminal ->
+            every { testCallback() } returns {
+                terminal.press(Keys.DOWN)
+                terminal.press(Keys.SPACE)
+                terminal.press(Keys.ENTER)
+            }
+
+            result = ParserDialog.requestMimoFileSelection(this, files)
+        }
+
+        assertThat(result).containsExactly(File("file2"))
     }
 }

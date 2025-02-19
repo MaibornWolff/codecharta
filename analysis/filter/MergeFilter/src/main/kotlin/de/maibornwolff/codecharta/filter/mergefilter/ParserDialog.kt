@@ -12,7 +12,6 @@ import de.maibornwolff.codecharta.tools.inquirer.myPromptInputNumber
 import de.maibornwolff.codecharta.tools.inquirer.myPromptList
 import de.maibornwolff.codecharta.tools.inquirer.util.InputValidator
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
-import de.maibornwolff.codecharta.tools.interactiveparser.startSession
 import java.io.File
 
 class ParserDialog {
@@ -123,37 +122,31 @@ class ParserDialog {
             return basicMergeConfig
         }
 
-        fun askForceMerge(): Boolean {
-            return startSession {
-                myPromptConfirm(
-                    message = "Do you still want to merge non-overlapping at the top-level nodes?",
-                    onInputReady = testCallback()
-                )
-            }
+        fun askForceMerge(session: Session): Boolean {
+            return session.myPromptConfirm(
+                message = "Do you still want to merge non-overlapping at the top-level nodes?",
+                onInputReady = testCallback()
+            )
         }
 
-        fun askForMimoPrefix(prefixOptions: Set<String>): String {
-            return startSession {
-                myPromptList(
-                    message = "Which prefix should be used for the output file?",
-                    choices = prefixOptions.toList(),
-                    onInputReady = testCallback()
-                )
-            }
+        fun askForMimoPrefix(session: Session, prefixOptions: Set<String>): String {
+            return session.myPromptList(
+                message = "Which prefix should be used for the output file?",
+                choices = prefixOptions.toList(),
+                onInputReady = testCallback()
+            )
         }
 
-        fun requestMimoFileSelection(files: List<File>): List<File> {
-            return startSession {
-                val fileNameList = files.map { it.name }
-                val choiceList: List<String> = myPromptCheckbox(
-                    message = "",
-                    choices = fileNameList,
-                    hint = "Not selected files will not get merged",
-                    allowEmptyInput = true,
-                    onInputReady = testCallback()
-                )
-                files.filter { choiceList.contains(it.name) }
-            }
+        fun requestMimoFileSelection(session: Session, files: List<File>): List<File> {
+            val fileNameList = files.map { it.name }
+            val choiceList: List<String> = session.myPromptCheckbox(
+                message = "",
+                choices = fileNameList,
+                hint = "Not selected files will not get merged",
+                allowEmptyInput = true,
+                onInputReady = testCallback()
+            )
+            return files.filter { choiceList.contains(it.name) }
         }
 
         internal fun testCallback(): suspend RunScope.() -> Unit = {}

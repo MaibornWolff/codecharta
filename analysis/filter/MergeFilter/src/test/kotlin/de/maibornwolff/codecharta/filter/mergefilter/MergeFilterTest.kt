@@ -1,12 +1,17 @@
 package de.maibornwolff.codecharta.filter.mergefilter
 
+import com.varabyte.kotter.runtime.Session
+import com.varabyte.kotterx.test.foundation.testSession
 import de.maibornwolff.codecharta.filter.mergefilter.MergeFilter.Companion.main
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
+import de.maibornwolff.codecharta.tools.interactiveparser.startSession
 import io.mockk.every
 import io.mockk.mockkObject
+import io.mockk.mockkStatic
 import io.mockk.unmockkAll
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -20,6 +25,11 @@ class MergeFilterTest {
     val originalOut: PrintStream = System.out
     val errContent = ByteArrayOutputStream()
     val originalErr: PrintStream = System.err
+
+    @BeforeEach
+    fun beforeTest() {
+        mockStartSession()
+    }
 
     @AfterEach
     fun unmockEverything() {
@@ -133,7 +143,7 @@ class MergeFilterTest {
     @Test
     fun `should warn if no top-level overlap and ask user to force merge`() {
         mockkObject(ParserDialog)
-        every { ParserDialog.askForceMerge() } returns true
+        every { ParserDialog.askForceMerge(any()) } returns true
 
         setStreams()
         CommandLine(MergeFilter()).execute(
@@ -154,7 +164,7 @@ class MergeFilterTest {
     fun `should cancel merge if no top-level overlap and user declines force merge`() {
         mockkObject(ParserDialog)
         every {
-            ParserDialog.askForceMerge()
+            ParserDialog.askForceMerge(any())
         } returns false
 
         setStreams()
@@ -265,7 +275,7 @@ class MergeFilterTest {
                 val testFile2 = File(testProjectPathB)
 
                 mockkObject(ParserDialog)
-                every { ParserDialog.requestMimoFileSelection(any()) } returns listOf(testFile1, testFile2)
+                every { ParserDialog.requestMimoFileSelection(any(), any()) } returns listOf(testFile1, testFile2)
 
                 setStreams()
                 CommandLine(MergeFilter()).execute(
@@ -294,7 +304,7 @@ class MergeFilterTest {
                 val testFile1 = File(testProjectPathA)
 
                 mockkObject(ParserDialog)
-                every { ParserDialog.requestMimoFileSelection(any()) } returns listOf(testFile1)
+                every { ParserDialog.requestMimoFileSelection(any(), any()) } returns listOf(testFile1)
 
                 setStreams()
                 CommandLine(MergeFilter()).execute(
@@ -355,7 +365,7 @@ class MergeFilterTest {
         @Test
         fun `should warn if no top-level overlap for mimo merged files and skip merge`() {
             mockkObject(ParserDialog)
-            every { ParserDialog.askForceMerge() } returns false
+            every { ParserDialog.askForceMerge(any()) } returns false
 
             setStreams()
             CommandLine(MergeFilter()).execute(
@@ -371,7 +381,7 @@ class MergeFilterTest {
         @Test
         fun `should not warn if no top-level overlap for mimo and merge`() {
             mockkObject(ParserDialog)
-            every { ParserDialog.askForceMerge() } returns false
+            every { ParserDialog.askForceMerge(any()) } returns false
 
             setStreams()
             CommandLine(MergeFilter()).execute(
@@ -407,8 +417,8 @@ class MergeFilterTest {
                 val prefixTestFile3 = "testProjectX"
 
                 mockkObject(ParserDialog)
-                every { ParserDialog.askForMimoPrefix(any()) } returns prefixTestFile3
-                every { ParserDialog.requestMimoFileSelection(any()) } returns listOf(testFile1, testFile2, testFile3)
+                every { ParserDialog.askForMimoPrefix(any(), any()) } returns prefixTestFile3
+                every { ParserDialog.requestMimoFileSelection(any(), any()) } returns listOf(testFile1, testFile2, testFile3)
 
                 setStreams()
                 CommandLine(MergeFilter()).execute(
@@ -601,5 +611,20 @@ class MergeFilterTest {
                 errContent.toString()
             ).contains("Input project structure doesn't have '/root/' as a base folder. If that's intended open an issue.")
         }
+    }
+
+    private fun mockStartSession() {
+        mockkStatic("de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterfaceKt")
+        every { startSession(any<Session.() -> Any>()) } answers {
+            startTestSession { firstArg<Session.() -> Any>()(this) }
+        }
+    }
+
+    private fun <T> startTestSession(block: Session.() -> T): T {
+        var returnValue: T? = null
+        testSession {
+            returnValue = block()
+        }
+        return returnValue ?: throw IllegalStateException("Session did not return a value.")
     }
 }
