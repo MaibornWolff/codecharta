@@ -1,13 +1,17 @@
 package de.maibornwolff.codecharta.importer.sonar
 
 import com.varabyte.kotter.foundation.input.Keys
+import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.terminal.inmemory.press
 import com.varabyte.kotter.runtime.terminal.inmemory.type
 import com.varabyte.kotterx.test.foundation.testSession
 import de.maibornwolff.codecharta.importer.sonar.ParserDialog.Companion.collectParserArgs
 import io.mockk.every
 import io.mockk.mockkObject
+import io.mockk.unmockkAll
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.Timeout
@@ -22,57 +26,70 @@ class ParserDialogTest {
     private val outputFileName = "codecharta.cc.json"
     private val metrics = "metric1, metric2"
 
+    @BeforeEach
+    fun setup() {
+        mockkObject(ParserDialog.Companion)
+    }
+
+    @AfterEach
+    fun cleanup() {
+        unmockkAll()
+    }
+
     @Test
     fun `should output correct arguments when valid input is provided`() {
-        val compress = false
         val mergeModules = false
 
-        mockkObject(ParserDialog.Companion)
+        var parserArguments: List<String> = listOf()
 
         testSession { terminal ->
-            every { ParserDialog.Companion.hostCallback() } returns {
+            val hostCallback: suspend RunScope.() -> Unit = {
                 terminal.type(hostUrl)
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.projectCallback() } returns {
+            val projectCallback: suspend RunScope.() -> Unit = {
                 terminal.type(projectKey)
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.tokenCallback() } returns {
+            val tokenCallback: suspend RunScope.() -> Unit = {
                 terminal.type(userToken)
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.outFileCallback() } returns {
-                terminal.type(outputFileName)
+            val outFileCallback: suspend RunScope.() -> Unit = {
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.metricCallback() } returns {
+            val metricCallback: suspend RunScope.() -> Unit = {
                 terminal.type(metrics)
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.compressCallback() } returns {
-                terminal.press(Keys.RIGHT)
-                terminal.press(Keys.ENTER)
-            }
-            every { ParserDialog.Companion.mergeCallback() } returns {
+            val mergeCallback: suspend RunScope.() -> Unit = {
                 terminal.press(Keys.RIGHT)
                 terminal.press(Keys.ENTER)
             }
 
-            val parserArguments = collectParserArgs(this)
+            every { ParserDialog.Companion.testCallback() } returnsMany listOf(
+                hostCallback,
+                projectCallback,
+                tokenCallback,
+                outFileCallback,
+                metricCallback,
+                mergeCallback
+            )
 
-            val commandLine = CommandLine(SonarImporterMain())
-            val parseResult = commandLine.parseArgs(*parserArguments.toTypedArray())
-
-            assertThat(parseResult.matchedPositional(0).getValue<String>()).isEqualTo(hostUrl)
-            assertThat(parseResult.matchedPositional(1).getValue<String>()).isEqualTo(projectKey)
-            assertThat(parseResult.matchedOption("user-token").getValue<String>()).isEqualTo(userToken)
-            assertThat(parseResult.matchedOption("output-file").getValue<String>()).isEqualTo(outputFileName)
-            assertThat(parseResult.matchedOption("metrics").getValue<ArrayList<String>>())
-                .isEqualTo(listOf("metric1", "metric2"))
-            assertThat(parseResult.matchedOption("not-compressed").getValue<Boolean>()).isEqualTo(compress)
-            assertThat(parseResult.matchedOption("merge-modules").getValue<Boolean>()).isEqualTo(mergeModules)
+            parserArguments = collectParserArgs(this)
         }
+
+        val commandLine = CommandLine(SonarImporterMain())
+        val parseResult = commandLine.parseArgs(*parserArguments.toTypedArray())
+
+        assertThat(parseResult.matchedPositional(0).getValue<String>()).isEqualTo(hostUrl)
+        assertThat(parseResult.matchedPositional(1).getValue<String>()).isEqualTo(projectKey)
+        assertThat(parseResult.matchedOption("user-token").getValue<String>()).isEqualTo(userToken)
+        assertThat(parseResult.matchedOption("output-file").getValue<String>()).isEqualTo("")
+        assertThat(parseResult.matchedOption("metrics").getValue<ArrayList<String>>())
+            .isEqualTo(listOf("metric1", "metric2"))
+        assertThat(parseResult.matchedOption("not-compressed")).isNull()
+        assertThat(parseResult.matchedOption("merge-modules").getValue<Boolean>()).isEqualTo(mergeModules)
     }
 
     @Test
@@ -81,49 +98,61 @@ class ParserDialogTest {
         val compress = false
         val mergeModules = false
 
-        mockkObject(ParserDialog.Companion)
+        var parserArguments: List<String> = listOf()
 
         testSession { terminal ->
-            every { ParserDialog.Companion.hostCallback() } returns {
+            val hostCallback: suspend RunScope.() -> Unit = {
                 terminal.type(hostUrl)
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.projectCallback() } returns {
+            val projectCallback: suspend RunScope.() -> Unit = {
                 terminal.type(projectKey)
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.tokenCallback() } returns {
+            val tokenCallback: suspend RunScope.() -> Unit = {
                 terminal.type(userToken)
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.outFileCallback() } returns {
+            val outFileCallback: suspend RunScope.() -> Unit = {
                 terminal.type(outputFileName)
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.metricCallback() } returns {
+            val metricCallback: suspend RunScope.() -> Unit = {
                 terminal.type(emptyMetrics)
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.compressCallback() } returns {
+            val compressCallback: suspend RunScope.() -> Unit = {
                 terminal.press(Keys.RIGHT)
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.mergeCallback() } returns {
+            val mergeCallback: suspend RunScope.() -> Unit = {
                 terminal.press(Keys.RIGHT)
                 terminal.press(Keys.ENTER)
             }
 
-            val commandLine = CommandLine(SonarImporterMain())
-            val parseResult = commandLine.parseArgs(*collectParserArgs(this).toTypedArray())
+            every { ParserDialog.Companion.testCallback() } returnsMany listOf(
+                hostCallback,
+                projectCallback,
+                tokenCallback,
+                outFileCallback,
+                metricCallback,
+                compressCallback,
+                mergeCallback
+            )
 
-            assertThat(parseResult.matchedPositional(0).getValue<String>()).isEqualTo(hostUrl)
-            assertThat(parseResult.matchedPositional(1).getValue<String>()).isEqualTo(projectKey)
-            assertThat(parseResult.matchedOption("user-token").getValue<String>()).isEqualTo(userToken)
-            assertThat(parseResult.matchedOption("output-file").getValue<String>()).isEqualTo(outputFileName)
-            assertThat(parseResult.matchedOption("metrics")).isNull()
-            assertThat(parseResult.matchedOption("not-compressed").getValue<Boolean>()).isEqualTo(compress)
-            assertThat(parseResult.matchedOption("merge-modules").getValue<Boolean>()).isEqualTo(mergeModules)
+            parserArguments = collectParserArgs(this)
         }
+
+        val commandLine = CommandLine(SonarImporterMain())
+        val parseResult = commandLine.parseArgs(*parserArguments.toTypedArray())
+
+        assertThat(parseResult.matchedPositional(0).getValue<String>()).isEqualTo(hostUrl)
+        assertThat(parseResult.matchedPositional(1).getValue<String>()).isEqualTo(projectKey)
+        assertThat(parseResult.matchedOption("user-token").getValue<String>()).isEqualTo(userToken)
+        assertThat(parseResult.matchedOption("output-file").getValue<String>()).isEqualTo(outputFileName)
+        assertThat(parseResult.matchedOption("metrics")).isNull()
+        assertThat(parseResult.matchedOption("not-compressed").getValue<Boolean>()).isEqualTo(compress)
+        assertThat(parseResult.matchedOption("merge-modules").getValue<Boolean>()).isEqualTo(mergeModules)
     }
 
     @Test
@@ -132,139 +161,175 @@ class ParserDialogTest {
         val compress = false
         val mergeModules = false
 
-        mockkObject(ParserDialog.Companion)
+        var parserArguments: List<String> = listOf()
 
         testSession { terminal ->
-            every { ParserDialog.Companion.hostCallback() } returns {
+            val hostCallback: suspend RunScope.() -> Unit = {
                 terminal.type(hostUrl)
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.projectCallback() } returns {
+            val projectCallback: suspend RunScope.() -> Unit = {
                 terminal.type(projectKey)
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.tokenCallback() } returns {
+            val tokenCallback: suspend RunScope.() -> Unit = {
                 terminal.type(emptyUserToken)
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.outFileCallback() } returns {
+            val outFileCallback: suspend RunScope.() -> Unit = {
                 terminal.type(outputFileName)
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.metricCallback() } returns {
+            val metricCallback: suspend RunScope.() -> Unit = {
                 terminal.type(metrics)
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.compressCallback() } returns {
+            val compressCallback: suspend RunScope.() -> Unit = {
                 terminal.press(Keys.RIGHT)
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.mergeCallback() } returns {
+            val mergeCallback: suspend RunScope.() -> Unit = {
                 terminal.press(Keys.RIGHT)
                 terminal.press(Keys.ENTER)
             }
 
-            val commandLine = CommandLine(SonarImporterMain())
-            val parseResult = commandLine.parseArgs(*collectParserArgs(this).toTypedArray())
+            every { ParserDialog.Companion.testCallback() } returnsMany listOf(
+                hostCallback,
+                projectCallback,
+                tokenCallback,
+                outFileCallback,
+                metricCallback,
+                compressCallback,
+                mergeCallback
+            )
 
-            assertThat(parseResult.matchedPositional(0).getValue<String>()).isEqualTo(hostUrl)
-            assertThat(parseResult.matchedPositional(1).getValue<String>()).isEqualTo(projectKey)
-            assertThat(parseResult.matchedOption("user-token")).isNull()
-            assertThat(parseResult.matchedOption("output-file").getValue<String>()).isEqualTo(outputFileName)
-            assertThat(parseResult.matchedOption("metrics").getValue<ArrayList<String>>())
-                .isEqualTo(listOf("metric1", "metric2"))
-            assertThat(parseResult.matchedOption("not-compressed").getValue<Boolean>()).isEqualTo(compress)
-            assertThat(parseResult.matchedOption("merge-modules").getValue<Boolean>()).isEqualTo(mergeModules)
+            parserArguments = collectParserArgs(this)
         }
+
+        val commandLine = CommandLine(SonarImporterMain())
+        val parseResult = commandLine.parseArgs(*parserArguments.toTypedArray())
+
+        assertThat(parseResult.matchedPositional(0).getValue<String>()).isEqualTo(hostUrl)
+        assertThat(parseResult.matchedPositional(1).getValue<String>()).isEqualTo(projectKey)
+        assertThat(parseResult.matchedOption("user-token")).isNull()
+        assertThat(parseResult.matchedOption("output-file").getValue<String>()).isEqualTo(outputFileName)
+        assertThat(parseResult.matchedOption("metrics").getValue<ArrayList<String>>())
+            .isEqualTo(listOf("metric1", "metric2"))
+        assertThat(parseResult.matchedOption("not-compressed").getValue<Boolean>()).isEqualTo(compress)
+        assertThat(parseResult.matchedOption("merge-modules").getValue<Boolean>()).isEqualTo(mergeModules)
     }
 
     @Test
     fun `should prompt user twice for host-url when first host-url is empty`() {
         val emptyHostUrl = ""
 
-        mockkObject(ParserDialog.Companion)
+        var parserArguments: List<String> = listOf()
 
         testSession { terminal ->
-            every { ParserDialog.Companion.hostCallback() } returns {
+            val hostCallback: suspend RunScope.() -> Unit = {
                 terminal.type(emptyHostUrl)
                 terminal.press(Keys.ENTER)
                 terminal.type(hostUrl)
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.projectCallback() } returns {
+            val projectCallback: suspend RunScope.() -> Unit = {
                 terminal.type(projectKey)
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.tokenCallback() } returns {
+            val tokenCallback: suspend RunScope.() -> Unit = {
                 terminal.type(userToken)
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.outFileCallback() } returns {
+            val outFileCallback: suspend RunScope.() -> Unit = {
                 terminal.type(outputFileName)
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.metricCallback() } returns {
+            val metricCallback: suspend RunScope.() -> Unit = {
                 terminal.type(metrics)
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.compressCallback() } returns {
+            val compressCallback: suspend RunScope.() -> Unit = {
                 terminal.press(Keys.RIGHT)
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.mergeCallback() } returns {
+            val mergeCallback: suspend RunScope.() -> Unit = {
                 terminal.press(Keys.RIGHT)
                 terminal.press(Keys.ENTER)
             }
 
-            val commandLine = CommandLine(SonarImporterMain())
-            val parseResult = commandLine.parseArgs(*collectParserArgs(this).toTypedArray())
+            every { ParserDialog.Companion.testCallback() } returnsMany listOf(
+                hostCallback,
+                projectCallback,
+                tokenCallback,
+                outFileCallback,
+                metricCallback,
+                compressCallback,
+                mergeCallback
+            )
 
-            assertThat(parseResult.matchedPositional(0).getValue<String>()).isEqualTo(hostUrl)
+            parserArguments = collectParserArgs(this)
         }
+
+        val commandLine = CommandLine(SonarImporterMain())
+        val parseResult = commandLine.parseArgs(*parserArguments.toTypedArray())
+
+        assertThat(parseResult.matchedPositional(0).getValue<String>()).isEqualTo(hostUrl)
     }
 
     @Test
     fun `should prompt user twice for project-key when first project-key is empty`() {
         val emptyProjectKey = ""
 
-        mockkObject(ParserDialog.Companion)
+        var parserArguments: List<String> = listOf()
 
         testSession { terminal ->
-            every { ParserDialog.Companion.hostCallback() } returns {
+            val hostCallback: suspend RunScope.() -> Unit = {
                 terminal.type(hostUrl)
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.projectCallback() } returns {
+            val projectCallback: suspend RunScope.() -> Unit = {
                 terminal.type(emptyProjectKey)
                 terminal.press(Keys.ENTER)
                 terminal.type(projectKey)
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.tokenCallback() } returns {
+            val tokenCallback: suspend RunScope.() -> Unit = {
                 terminal.type(userToken)
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.outFileCallback() } returns {
+            val outFileCallback: suspend RunScope.() -> Unit = {
                 terminal.type(outputFileName)
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.metricCallback() } returns {
+            val metricCallback: suspend RunScope.() -> Unit = {
                 terminal.type(metrics)
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.compressCallback() } returns {
+            val compressCallback: suspend RunScope.() -> Unit = {
                 terminal.press(Keys.RIGHT)
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.mergeCallback() } returns {
+            val mergeCallback: suspend RunScope.() -> Unit = {
                 terminal.press(Keys.RIGHT)
                 terminal.press(Keys.ENTER)
             }
 
-            val commandLine = CommandLine(SonarImporterMain())
-            val parseResult = commandLine.parseArgs(*collectParserArgs(this).toTypedArray())
+            every { ParserDialog.Companion.testCallback() } returnsMany listOf(
+                hostCallback,
+                projectCallback,
+                tokenCallback,
+                outFileCallback,
+                metricCallback,
+                compressCallback,
+                mergeCallback
+            )
 
-            assertThat(parseResult.matchedPositional(1).getValue<String>()).isEqualTo(projectKey)
+            parserArguments = collectParserArgs(this)
         }
+
+        val commandLine = CommandLine(SonarImporterMain())
+        val parseResult = commandLine.parseArgs(*parserArguments.toTypedArray())
+
+        assertThat(parseResult.matchedPositional(1).getValue<String>()).isEqualTo(projectKey)
     }
 }
