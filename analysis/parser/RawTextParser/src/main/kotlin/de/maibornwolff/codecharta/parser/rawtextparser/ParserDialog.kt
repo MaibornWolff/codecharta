@@ -19,7 +19,7 @@ class ParserDialog {
             )
 
             val outputFileName: String = session.myPromptInput(
-                message = "xxWhat is the name of the output file?",
+                message = "What is the name of the output file?",
                 allowEmptyInput = true,
                 onInputReady = testCallback()
             )
