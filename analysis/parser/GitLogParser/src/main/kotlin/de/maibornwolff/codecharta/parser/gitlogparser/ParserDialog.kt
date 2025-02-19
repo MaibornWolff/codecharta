@@ -18,13 +18,13 @@ class ParserDialog {
                 "repo-scan"
             }
 
+            val generalArgs = collectGeneralArgs(session)
+
             val subcommandArgs: List<String> = if (isLogScan) {
                 LogScanCommand().getDialog().collectParserArgs(session)
             } else {
                 RepoScanCommand().getDialog().collectParserArgs(session)
             }
-
-            val generalArgs = collectGeneralArgs(session)
 
             return listOf(subcommand) + generalArgs + (subcommandArgs)
         }

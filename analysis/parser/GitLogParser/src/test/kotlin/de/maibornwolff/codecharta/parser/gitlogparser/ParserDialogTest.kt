@@ -32,12 +32,12 @@ class ParserDialogTest {
         var isLogScan = false
 
         testSession { terminal ->
-            val scanCallback: suspend RunScope.() -> Unit = {
+            val collectSubcommandCallback: suspend RunScope.() -> Unit = {
                 terminal.press(Keys.ENTER)
             }
 
             every { ParserDialog.Companion.testCallback() } returnsMany listOf(
-                scanCallback
+                collectSubcommandCallback
             )
 
             isLogScan = collectSubcommand(this)
@@ -53,13 +53,13 @@ class ParserDialogTest {
         var isLogScan = false
 
         testSession { terminal ->
-            val scanCallback: suspend RunScope.() -> Unit = {
+            val collectSubcommandCallback: suspend RunScope.() -> Unit = {
                 terminal.press(Keys.RIGHT)
                 terminal.press(Keys.ENTER)
             }
 
             every { ParserDialog.Companion.testCallback() } returnsMany listOf(
-                scanCallback
+                collectSubcommandCallback
             )
 
             isLogScan = collectSubcommand(this)
@@ -145,6 +145,7 @@ class ParserDialogTest {
     fun `should output correct arguments for standard questions`() {
         val isSilent = false
         val addAuthor = false
+        val isCompressed = false
 
         mockkObject(ParserDialog.Companion)
 
@@ -156,6 +157,7 @@ class ParserDialogTest {
                 terminal.press(Keys.ENTER)
             }
             val compressCallback: suspend RunScope.() -> Unit = {
+                terminal.press(Keys.RIGHT)
                 terminal.press(Keys.ENTER)
             }
             val silentCallback: suspend RunScope.() -> Unit = {
@@ -181,7 +183,7 @@ class ParserDialogTest {
         val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
 
         assertThat(parseResult.matchedOption("output-file").getValue<String>()).isEqualTo(outputFileName)
-        assertThat(parseResult.matchedOption("not-compressed")).isNull()
+        assertThat(parseResult.matchedOption("not-compressed").getValue<Boolean>()).isEqualTo(isCompressed)
         assertThat(parseResult.matchedOption("silent").getValue<Boolean>()).isEqualTo(isSilent)
         assertThat(parseResult.matchedOption("add-author").getValue<Boolean>()).isEqualTo(addAuthor)
     }
@@ -221,5 +223,121 @@ class ParserDialogTest {
         assertThat(parseResult.matchedOption("not-compressed")).isNull()
         assertThat(parseResult.matchedOption("silent").getValue<Boolean>()).isEqualTo(isSilent)
         assertThat(parseResult.matchedOption("add-author").getValue<Boolean>()).isEqualTo(addAuthor)
+    }
+
+    @Test
+    fun `should return correct arguments for log-scan`() {
+        val testResourceBaseFolder = "src/test/resources/"
+        val logFileName = "${testResourceBaseFolder}codeCharta.log"
+        val lsFileName = "${testResourceBaseFolder}names-in-git-repo.txt"
+        val outputFileName = "codecharta.cc.json"
+        val isSilent = true
+        val addAuthor = true
+
+        mockkObject(ParserDialog.Companion)
+        mockkObject(LogScanParserDialog.Companion)
+
+        every { LogScanCommand().getDialog().collectParserArgs(any()) } returns listOf("--git-log=$logFileName", "--repo-files=$lsFileName")
+
+        var parserArguments: List<String> = listOf()
+
+        testSession { terminal ->
+            val collectSubcommandCallback: suspend RunScope.() -> Unit = {
+                terminal.press(Keys.ENTER)
+            }
+            val outFileCallback: suspend RunScope.() -> Unit = {
+                terminal.type(outputFileName)
+                terminal.press(Keys.ENTER)
+            }
+            val compressCallback: suspend RunScope.() -> Unit = {
+                terminal.press(Keys.ENTER)
+            }
+            val silentCallback: suspend RunScope.() -> Unit = {
+                terminal.press(Keys.ENTER)
+            }
+            val authorCallback: suspend RunScope.() -> Unit = {
+                terminal.press(Keys.ENTER)
+            }
+
+            every { ParserDialog.Companion.testCallback() } returnsMany listOf(
+                collectSubcommandCallback,
+                outFileCallback,
+                compressCallback,
+                silentCallback,
+                authorCallback
+            )
+
+            parserArguments = ParserDialog.collectParserArgs(this)
+        }
+
+        val mainCmdLine = CommandLine(GitLogParser())
+        val mainParseResult = mainCmdLine.parseArgs(*parserArguments.toTypedArray())
+        val subParseResult = mainParseResult.subcommands().first()
+
+        assertThat(mainParseResult.asCommandLineList().size).isEqualTo(2)
+        assertThat(mainParseResult.asCommandLineList()[0].commandSpec.name()).isEqualTo("gitlogparser")
+        assertThat(mainParseResult.asCommandLineList()[1].commandSpec.name()).isEqualTo("log-scan")
+        assertThat(subParseResult.matchedOption("output-file").getValue<String>()).isEqualTo(outputFileName)
+        assertThat(subParseResult.matchedOption("not-compressed")).isNull()
+        assertThat(subParseResult.matchedOption("silent").getValue<Boolean>()).isEqualTo(isSilent)
+        assertThat(subParseResult.matchedOption("add-author").getValue<Boolean>()).isEqualTo(addAuthor)
+    }
+
+    @Test
+    fun `should return correct arguments for repo-scan`() {
+        val testResourceBaseFolder = "src/test/resources/"
+        val repoFolderName = "${testResourceBaseFolder}my/"
+        val outputFileName = "codecharta.cc.json"
+        val isSilent = true
+        val addAuthor = true
+
+        mockkObject(ParserDialog.Companion)
+        mockkObject(RepoScanParserDialog.Companion)
+
+        every { RepoScanCommand().getDialog().collectParserArgs(any()) } returns listOf("--repo-path=$repoFolderName")
+
+        var parserArguments: List<String> = listOf()
+
+        testSession { terminal ->
+            val collectSubcommandCallback: suspend RunScope.() -> Unit = {
+                terminal.press(Keys.RIGHT)
+                terminal.press(Keys.ENTER)
+            }
+            val outFileCallback: suspend RunScope.() -> Unit = {
+                terminal.type(outputFileName)
+                terminal.press(Keys.ENTER)
+            }
+            val compressCallback: suspend RunScope.() -> Unit = {
+                terminal.press(Keys.ENTER)
+            }
+            val silentCallback: suspend RunScope.() -> Unit = {
+                terminal.press(Keys.ENTER)
+            }
+            val authorCallback: suspend RunScope.() -> Unit = {
+                terminal.press(Keys.ENTER)
+            }
+
+            every { ParserDialog.Companion.testCallback() } returnsMany listOf(
+                collectSubcommandCallback,
+                outFileCallback,
+                compressCallback,
+                silentCallback,
+                authorCallback
+            )
+
+            parserArguments = ParserDialog.collectParserArgs(this)
+        }
+
+        val cmdLine = CommandLine(GitLogParser())
+        val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
+        val subParseResult = parseResult.subcommands().first()
+
+        assertThat(parseResult.asCommandLineList().size).isEqualTo(2)
+        assertThat(parseResult.asCommandLineList()[0].commandSpec.name()).isEqualTo("gitlogparser")
+        assertThat(parseResult.asCommandLineList()[1].commandSpec.name()).isEqualTo("repo-scan")
+        assertThat(File(subParseResult.matchedOption("repo-path").getValue<String>())).isEqualTo(File(repoFolderName))
+        assertThat(subParseResult.matchedOption("output-file").getValue<String>()).isEqualTo(outputFileName)
+        assertThat(subParseResult.matchedOption("silent").getValue<Boolean>()).isEqualTo(isSilent)
+        assertThat(subParseResult.matchedOption("add-author").getValue<Boolean>()).isEqualTo(addAuthor)
     }
 }
