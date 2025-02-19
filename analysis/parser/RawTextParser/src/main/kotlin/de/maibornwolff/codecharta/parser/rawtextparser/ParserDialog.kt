@@ -15,38 +15,38 @@ class ParserDialog {
             val inputFileName = session.myPromptDefaultFileFolderInput(
                 inputType = InputType.FOLDER_AND_FILE,
                 fileExtensionList = listOf(),
-                onInputReady = fileCallback()
+                onInputReady = testCallback()
             )
 
             val outputFileName: String = session.myPromptInput(
                 message = "xxWhat is the name of the output file?",
                 allowEmptyInput = true,
-                onInputReady = outFileCallback()
+                onInputReady = testCallback()
             )
 
             val isCompressed =
                 (outputFileName.isEmpty()) ||
                     session.myPromptConfirm(
                         message = "Do you want to compress the output file?",
-                        onInputReady = compressCallback()
+                        onInputReady = testCallback()
                     )
 
             val verbose: Boolean = session.myPromptConfirm(
                 message = "Do you want to suppress command line output?",
-                onInputReady = verboseCallback()
+                onInputReady = testCallback()
             )
 
             val metrics: String = session.myPromptInput(
                 message = "What are the metrics to import (comma separated)?",
                 hint = "metric1,metric2,metric3 (leave empty for all metrics)",
                 allowEmptyInput = true,
-                onInputReady = metricCallback()
+                onInputReady = testCallback()
             )
 
             val tabWidth: String = session.myPromptInputNumber(
                 message = "How many spaces represent one indentation level when using spaces for indentation (estimated if empty)?",
                 allowEmptyInput = true,
-                onInputReady = tabCallback()
+                onInputReady = testCallback()
             )
 
             val tabWidthValue = tabWidth.toIntOrNull() ?: 0
@@ -55,7 +55,7 @@ class ParserDialog {
                 message = "What is the maximum Indentation Level?",
                 hint = "10",
                 allowEmptyInput = false,
-                onInputReady = indentationCallback()
+                onInputReady = testCallback()
             ).toInt()
 
             val exclude: String =
@@ -63,7 +63,7 @@ class ParserDialog {
                     message = "Do you want to exclude file/folder according to regex pattern?",
                     hint = "regex1, regex2.. (leave empty if you don't want to exclude anything)",
                     allowEmptyInput = true,
-                    onInputReady = excludeCallback()
+                    onInputReady = testCallback()
                 )
 
             val fileExtensions: String =
@@ -71,14 +71,14 @@ class ParserDialog {
                     message = "Do you only want to parse files with specific file-extensions? ",
                     hint = "fileType1, fileType2... (leave empty to include all file-extensions)",
                     allowEmptyInput = true,
-                    onInputReady = extensionCallback()
+                    onInputReady = testCallback()
                 )
 
             val withoutDefaultExcludes: Boolean =
                 session.myPromptConfirm(
                     message = "Do you want to include build, target, dist, resources" +
                         " and out folders as well as files/folders starting with '.'?",
-                    onInputReady = defaultCallback()
+                    onInputReady = testCallback()
                 )
 
             return listOfNotNull(
@@ -95,24 +95,6 @@ class ParserDialog {
             )
         }
 
-        internal fun fileCallback(): suspend RunScope.() -> Unit = {}
-
-        internal fun outFileCallback(): suspend RunScope.() -> Unit = {}
-
-        internal fun compressCallback(): suspend RunScope.() -> Unit = {}
-
-        internal fun verboseCallback(): suspend RunScope.() -> Unit = {}
-
-        internal fun metricCallback(): suspend RunScope.() -> Unit = {}
-
-        internal fun tabCallback(): suspend RunScope.() -> Unit = {}
-
-        internal fun indentationCallback(): suspend RunScope.() -> Unit = {}
-
-        internal fun excludeCallback(): suspend RunScope.() -> Unit = {}
-
-        internal fun extensionCallback(): suspend RunScope.() -> Unit = {}
-
-        internal fun defaultCallback(): suspend RunScope.() -> Unit = {}
+        internal fun testCallback(): suspend RunScope.() -> Unit = {}
     }
 }
