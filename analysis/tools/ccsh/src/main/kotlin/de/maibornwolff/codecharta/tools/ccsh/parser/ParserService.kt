@@ -2,7 +2,7 @@ package de.maibornwolff.codecharta.tools.ccsh.parser
 
 import de.maibornwolff.codecharta.tools.ccsh.parser.repository.PicocliParserRepository
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
-import de.maibornwolff.codecharta.tools.interactiveparser.startSession
+import de.maibornwolff.codecharta.tools.interactiveparser.runInTerminalSession
 import picocli.CommandLine
 
 class ParserService {
@@ -29,7 +29,7 @@ class ParserService {
 
                 requireNotNull(interactiveParser) { "Tried to configure non existing parser!" }
 
-                val configuration = startSession { interactiveParser.getDialog().collectParserArgs(this) }
+                val configuration = runInTerminalSession { interactiveParser.getDialog().collectParserArgs(this) }
 
                 configuredParsers[selectedParser] = configuration
 
@@ -41,7 +41,7 @@ class ParserService {
 
         fun selectParser(commandLine: CommandLine, parserRepository: PicocliParserRepository): String {
             val interactiveParserNames = parserRepository.getInteractiveParserNamesWithDescription(commandLine)
-            val selectedParser = startSession { InteractiveDialog.askParserToExecute(this, interactiveParserNames) }
+            val selectedParser = runInTerminalSession { InteractiveDialog.askParserToExecute(this, interactiveParserNames) }
             return parserRepository.extractParserName(selectedParser)
         }
 
@@ -50,7 +50,7 @@ class ParserService {
             val parserObject = subCommand.commandSpec.userObject()
             val interactive = parserObject as? InteractiveParser
             return if (interactive != null) {
-                val collectedArgs = startSession { interactive.getDialog().collectParserArgs(this) }
+                val collectedArgs = runInTerminalSession { interactive.getDialog().collectParserArgs(this) }
 
                 val subCommandLine = CommandLine(interactive)
                 println("You can run the same command again by using the following command line arguments:")
