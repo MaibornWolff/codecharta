@@ -1,6 +1,7 @@
 package de.maibornwolff.codecharta.rawtextparser
 
 import com.varabyte.kotter.foundation.input.Keys
+import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.terminal.inmemory.press
 import com.varabyte.kotter.runtime.terminal.inmemory.type
 import com.varabyte.kotterx.test.foundation.testSession
@@ -42,63 +43,72 @@ class ParserDialogTest {
         var parserArguments: List<String> = emptyList()
 
         testSession { terminal ->
-            every { ParserDialog.Companion.fileCallback() } returns {
+            val fileCallback: suspend RunScope.() -> Unit = {
                 terminal.type(inputFileName)
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.outFileCallback() } returns {
+            val outFileCallback: suspend RunScope.() -> Unit = {
                 terminal.type(outputFileName)
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.compressCallback() } returns {
+            val compressCallback: suspend RunScope.() -> Unit = {
                 terminal.press(Keys.RIGHT)
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.verboseCallback() } returns {
+            val verboseCallback: suspend RunScope.() -> Unit = {
                 terminal.press(Keys.RIGHT)
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.metricCallback() } returns {
+            val metricCallback: suspend RunScope.() -> Unit = {
                 terminal.type(metrics)
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.tabCallback() } returns {
+            val tabCallback: suspend RunScope.() -> Unit = {
                 terminal.type(tabWidth)
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.indentationCallback() } returns {
+            val indentationCallback: suspend RunScope.() -> Unit = {
                 terminal.type(maxIndentLvl.toString())
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.excludeCallback() } returns {
+            val excludeCallback: suspend RunScope.() -> Unit = {
                 terminal.type(exclude)
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.extensionCallback() } returns {
+            val extensionCallback: suspend RunScope.() -> Unit = {
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.defaultCallback() } returns {
+            val defaultCallback: suspend RunScope.() -> Unit = {
                 terminal.press(Keys.RIGHT)
                 terminal.press(Keys.ENTER)
             }
+
+            every { ParserDialog.Companion.testCallback() } returnsMany listOf(
+                fileCallback,
+                outFileCallback,
+                compressCallback,
+                verboseCallback,
+                metricCallback,
+                tabCallback,
+                indentationCallback,
+                excludeCallback,
+                extensionCallback,
+                defaultCallback
+            )
 
             parserArguments = collectParserArgs(this)
         }
         val commandLine = CommandLine(RawTextParser())
         val parseResult = commandLine.parseArgs(*parserArguments.toTypedArray())
 
-        assertThat(parseResult.matchedOption("output-file").getValue<String>().equals(outputFileName))
+        assertThat(parseResult.matchedOption("output-file").getValue<String>()).isEqualTo(outputFileName)
         assertThat(parseResult.matchedOption("not-compressed").getValue<Boolean>()).isEqualTo(isCompressed)
         assertThat(parseResult.matchedOption("metrics").getValue<List<String>>()).isEqualTo(listOf(metrics))
-        assertThat(parseResult.matchedOption("max-indentation-level").getValue<Int>())
-            .isEqualTo(maxIndentLvl)
+        assertThat(parseResult.matchedOption("max-indentation-level").getValue<Int>()).isEqualTo(maxIndentLvl)
         assertThat(parseResult.matchedOption("tab-width").getValue<Int>()).isEqualTo(tabWidthValue)
-        assertThat(parseResult.matchedOption("file-extensions").getValue<List<String>>())
-            .isEqualTo(listOf<String>())
-        assertThat(parseResult.matchedOption("without-default-excludes").getValue<Boolean>())
-            .isEqualTo(withoutDefaultExcludes)
-        assertThat(parseResult.matchedOption("verbose").getValue<Boolean>())
-            .isEqualTo(verbose)
+        assertThat(parseResult.matchedOption("file-extensions").getValue<List<String>>()).isEqualTo(listOf<String>())
+        assertThat(parseResult.matchedOption("without-default-excludes").getValue<Boolean>()).isEqualTo(withoutDefaultExcludes)
+        assertThat(parseResult.matchedOption("verbose").getValue<Boolean>()).isEqualTo(verbose)
         assertThat(parseResult.matchedOption("exclude").getValue<List<String>>()).isEqualTo(listOf(exclude))
         assertThat(parseResult.matchedPositional(0).getValue<File>().name).isEqualTo(File(inputFileName).name)
     }
@@ -118,63 +128,71 @@ class ParserDialogTest {
         var parserArguments: List<String> = emptyList()
 
         testSession { terminal ->
-            every { ParserDialog.Companion.fileCallback() } returns {
-                terminal.type(inputFileName)
+            val fileCallback: suspend RunScope.() -> Unit = {
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.outFileCallback() } returns {
+            val outFileCallback: suspend RunScope.() -> Unit = {
                 terminal.type(outputFileName)
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.compressCallback() } returns {
+            val compressCallback: suspend RunScope.() -> Unit = {
                 terminal.press(Keys.RIGHT)
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.verboseCallback() } returns {
+            val verboseCallback: suspend RunScope.() -> Unit = {
                 terminal.press(Keys.RIGHT)
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.metricCallback() } returns {
+            val metricCallback: suspend RunScope.() -> Unit = {
                 terminal.type(metrics)
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.tabCallback() } returns {
+            val tabCallback: suspend RunScope.() -> Unit = {
                 terminal.type(invalidTabWidth)
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.indentationCallback() } returns {
+            val indentationCallback: suspend RunScope.() -> Unit = {
                 terminal.type(maxIndentLvl.toString())
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.excludeCallback() } returns {
+            val excludeCallback: suspend RunScope.() -> Unit = {
                 terminal.type(exclude)
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.extensionCallback() } returns {
+            val extensionCallback: suspend RunScope.() -> Unit = {
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.defaultCallback() } returns {
+            val defaultCallback: suspend RunScope.() -> Unit = {
                 terminal.press(Keys.RIGHT)
                 terminal.press(Keys.ENTER)
             }
+
+            every { ParserDialog.Companion.testCallback() } returnsMany listOf(
+                fileCallback,
+                outFileCallback,
+                compressCallback,
+                verboseCallback,
+                metricCallback,
+                tabCallback,
+                indentationCallback,
+                excludeCallback,
+                extensionCallback,
+                defaultCallback
+            )
 
             parserArguments = collectParserArgs(this)
         }
         val commandLine = CommandLine(RawTextParser())
         val parseResult = commandLine.parseArgs(*parserArguments.toTypedArray())
 
-        assertThat(parseResult.matchedOption("output-file").getValue<String>().equals(outputFileName))
+        assertThat(parseResult.matchedOption("output-file").getValue<String>()).isEqualTo("")
         assertThat(parseResult.matchedOption("not-compressed").getValue<Boolean>()).isEqualTo(isCompressed)
         assertThat(parseResult.matchedOption("metrics").getValue<List<String>>()).isEqualTo(listOf(metrics))
-        assertThat(parseResult.matchedOption("max-indentation-level").getValue<Int>())
-            .isEqualTo(maxIndentLvl)
+        assertThat(parseResult.matchedOption("max-indentation-level").getValue<Int>()).isEqualTo(maxIndentLvl)
         assertThat(parseResult.matchedOption("tab-width").getValue<Int>()).isEqualTo(tabWidthValue)
-        assertThat(parseResult.matchedOption("file-extensions").getValue<List<String>>())
-            .isEqualTo(listOf<String>())
-        assertThat(parseResult.matchedOption("without-default-excludes").getValue<Boolean>())
-            .isEqualTo(withoutDefaultExcludes)
-        assertThat(parseResult.matchedOption("verbose").getValue<Boolean>())
-            .isEqualTo(verbose)
+        assertThat(parseResult.matchedOption("file-extensions").getValue<List<String>>()).isEqualTo(listOf<String>())
+        assertThat(parseResult.matchedOption("without-default-excludes").getValue<Boolean>()).isEqualTo(withoutDefaultExcludes)
+        assertThat(parseResult.matchedOption("verbose").getValue<Boolean>()).isEqualTo(verbose)
         assertThat(parseResult.matchedOption("exclude").getValue<List<String>>()).isEqualTo(listOf(exclude))
         assertThat(parseResult.matchedPositional(0).getValue<File>().name).isEqualTo(File(inputFileName).name)
     }
@@ -192,45 +210,58 @@ class ParserDialogTest {
         var parserArguments: List<String> = emptyList()
 
         testSession { terminal ->
-            every { ParserDialog.Companion.fileCallback() } returns {
+            val fileCallback: suspend RunScope.() -> Unit = {
                 terminal.type(invalidFileName)
                 terminal.press(Keys.ENTER)
                 terminal.press(Keys.BACKSPACE, Keys.BACKSPACE, Keys.BACKSPACE)
                 terminal.type(inputFileName)
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.outFileCallback() } returns {
+            val outFileCallback: suspend RunScope.() -> Unit = {
                 terminal.type(outputFileName)
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.compressCallback() } returns {
+            val compressCallback: suspend RunScope.() -> Unit = {
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.verboseCallback() } returns {
+            val verboseCallback: suspend RunScope.() -> Unit = {
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.metricCallback() } returns {
+            val metricCallback: suspend RunScope.() -> Unit = {
                 terminal.type(metrics)
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.tabCallback() } returns {
+            val tabCallback: suspend RunScope.() -> Unit = {
                 terminal.type(tabWidth)
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.indentationCallback() } returns {
+            val indentationCallback: suspend RunScope.() -> Unit = {
                 terminal.type(maxIndentLvl.toString())
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.excludeCallback() } returns {
+            val excludeCallback: suspend RunScope.() -> Unit = {
                 terminal.type(exclude)
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.extensionCallback() } returns {
+            val extensionCallback: suspend RunScope.() -> Unit = {
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.defaultCallback() } returns {
+            val defaultCallback: suspend RunScope.() -> Unit = {
                 terminal.press(Keys.ENTER)
             }
+
+            every { ParserDialog.Companion.testCallback() } returnsMany listOf(
+                fileCallback,
+                outFileCallback,
+                compressCallback,
+                verboseCallback,
+                metricCallback,
+                tabCallback,
+                indentationCallback,
+                excludeCallback,
+                extensionCallback,
+                defaultCallback
+            )
 
             parserArguments = collectParserArgs(this)
         }
