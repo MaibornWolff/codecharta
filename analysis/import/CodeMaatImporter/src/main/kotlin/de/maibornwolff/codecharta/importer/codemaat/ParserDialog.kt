@@ -20,6 +20,7 @@ class ParserDialog {
 
             val outputFileName: String = session.myPromptInput(
                 message = "What is the name of the output file?",
+                hint = "output.cc.json",
                 allowEmptyInput = true,
                 onInputReady = outFileCallback()
             )
