@@ -17,7 +17,7 @@ class ParserDialog {
                 session.myPromptDefaultFileFolderInput(
                     inputType = InputType.FILE,
                     fileExtensionList = listOf(FileExtension.CCJSON, FileExtension.CCGZ),
-                    onInputReady = fileCallback()
+                    onInputReady = testCallback()
                 )
 
             val selectedAction: String =
@@ -31,7 +31,7 @@ class ParserDialog {
                             StructureModifierAction.MOVE_NODES.descripton,
                             StructureModifierAction.REMOVE_NODES.descripton
                         ),
-                    onInputReady = actionCallback()
+                    onInputReady = testCallback()
                 )
 
             return when (selectedAction) {
@@ -64,7 +64,7 @@ class ParserDialog {
                 session.myPromptInputNumber(
                     message = "How many print levels do you want to print?",
                     hint = "0",
-                    onInputReady = printCallback()
+                    onInputReady = testCallback()
                 )
             return arrayOf("--print-levels=$printLevels")
         }
@@ -74,7 +74,7 @@ class ParserDialog {
                 session.myPromptList(
                     message = "This action will rename the mcc metric. Which should the new name be?",
                     choices = listOf("complexity", "sonar_complexity"),
-                    onInputReady = chooseNameCallback()
+                    onInputReady = testCallback()
                 )
             val renameParam = if (newName == "sonar_complexity") "--rename-mcc=sonar" else "--rename-mcc"
             val outputFileName = collectOutputFileName(session)
@@ -85,7 +85,7 @@ class ParserDialog {
             val setRoot: String =
                 session.myPromptInput(
                     message = "What path within the project should be extracted as the new root?",
-                    onInputReady = setRootCallback()
+                    onInputReady = testCallback()
                 )
             val outputFileName = collectOutputFileName(session)
             return arrayOf("--set-root=$setRoot", "--output-file=$outputFileName")
@@ -95,12 +95,12 @@ class ParserDialog {
             val moveFrom: String =
                 session.myPromptInput(
                     message = "What path should be moved (contained children will be moved as well)?",
-                    onInputReady = moveFromCallback()
+                    onInputReady = testCallback()
                 )
             val moveTo: String =
                 session.myPromptInput(
                     message = "What is the target path to move them?",
-                    onInputReady = moveToCallback()
+                    onInputReady = testCallback()
                 )
             val outputFileName = collectOutputFileName(session)
             return arrayOf("--move-from=$moveFrom", "--move-to=$moveTo", "--output-file=$outputFileName")
@@ -110,7 +110,7 @@ class ParserDialog {
             val remove: String =
                 session.myPromptInput(
                     message = "What are the paths of the nodes to be removed?",
-                    onInputReady = removeNodesCallback()
+                    onInputReady = testCallback()
                 )
             val outputFileName = collectOutputFileName(session)
             return arrayOf("--remove=$remove", "--output-file=$outputFileName")
@@ -120,26 +120,10 @@ class ParserDialog {
             return session.myPromptInput(
                 message = "What is the name of the output file?",
                 allowEmptyInput = true,
-                onInputReady = outFileCallback()
+                onInputReady = testCallback()
             )
         }
 
-        internal fun fileCallback(): suspend RunScope.() -> Unit = {}
-
-        internal fun actionCallback(): suspend RunScope.() -> Unit = {}
-
-        internal fun printCallback(): suspend RunScope.() -> Unit = {}
-
-        internal fun setRootCallback(): suspend RunScope.() -> Unit = {}
-
-        internal fun moveFromCallback(): suspend RunScope.() -> Unit = {}
-
-        internal fun moveToCallback(): suspend RunScope.() -> Unit = {}
-
-        internal fun removeNodesCallback(): suspend RunScope.() -> Unit = {}
-
-        internal fun chooseNameCallback(): suspend RunScope.() -> Unit = {}
-
-        internal fun outFileCallback(): suspend RunScope.() -> Unit = {}
+        internal fun testCallback(): suspend RunScope.() -> Unit = {}
     }
 }

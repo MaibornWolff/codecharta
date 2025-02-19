@@ -15,7 +15,7 @@ class ParserDialog {
             val inputFileName: String = session.myPromptDefaultFileFolderInput(
                 inputType = InputType.FILE,
                 fileExtensionList = listOf(FileExtension.CCJSON, FileExtension.CCGZ),
-                onInputReady = fileCallback()
+                onInputReady = testCallback()
             )
 
             Logger.info {
@@ -25,7 +25,7 @@ class ParserDialog {
             val outputFileName: String = session.myPromptInput(
                 message = "What is the name of the output file?",
                 allowEmptyInput = true,
-                onInputReady = outFileCallback()
+                onInputReady = testCallback()
             )
 
             val defaultPathSeparator = "/"
@@ -33,16 +33,12 @@ class ParserDialog {
                 message = "What is the path separator?",
                 hint = defaultPathSeparator,
                 invalidInputMessage = "Please specify a valid path separator like '/' or '\\'",
-                onInputReady = separatorCallback()
+                onInputReady = testCallback()
             )
 
             return listOf(inputFileName, "--output-file=$outputFileName", "--path-separator=$pathSeparator")
         }
 
-        internal fun fileCallback(): suspend RunScope.() -> Unit = {}
-
-        internal fun outFileCallback(): suspend RunScope.() -> Unit = {}
-
-        internal fun separatorCallback(): suspend RunScope.() -> Unit = {}
+        internal fun testCallback(): suspend RunScope.() -> Unit = {}
     }
 }

@@ -16,11 +16,11 @@ class RepoScanParserDialog {
                 hint = Paths.get("").normalize().toAbsolutePath().toString(),
                 allowEmptyInput = false,
                 inputValidator = InputValidator.isFileOrFolderValid(InputType.FOLDER, listOf()),
-                onInputReady = repoCallback()
+                onInputReady = testCallback()
             )
             return listOf("--repo-path=$repoPath")
         }
 
-        internal fun repoCallback(): suspend RunScope.() -> Unit = {}
+        internal fun testCallback(): suspend RunScope.() -> Unit = {}
     }
 }

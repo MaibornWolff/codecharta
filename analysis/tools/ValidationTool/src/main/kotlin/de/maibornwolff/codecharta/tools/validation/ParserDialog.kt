@@ -17,12 +17,12 @@ class ParserDialog {
                     FileExtension.CCJSON,
                     FileExtension.CCGZ
                 ),
-                onInputReady = fileCallback()
+                onInputReady = testCallback()
             )
 
             return listOf(inputFileName)
         }
 
-        internal fun fileCallback(): suspend RunScope.() -> Unit = {}
+        internal fun testCallback(): suspend RunScope.() -> Unit = {}
     }
 }
