@@ -76,4 +76,21 @@ describe("AddCustomScenarioDialogComponent", () => {
 
         await waitFor(() => expect(screen.findByText("You cannot create an empty Scenario")).toBeTruthy())
     })
+
+    it("should not apply changes to camera position made after initialization", async () => {
+        ScenarioHelper.addScenario = jest.fn()
+        const { fixture } = await render(AddCustomScenarioDialogComponent)
+        const component = fixture.componentInstance
+        const threeCameraService = TestBed.inject(ThreeCameraService)
+        const threeOrbitControlsService = TestBed.inject(ThreeMapControlsService)
+
+        const initialScenarioContent = JSON.parse(JSON.stringify(component.scenarioContent))
+
+        threeCameraService.camera.position.set(1000, 2000, 3000)
+        threeOrbitControlsService.controls.target.set(1000, 2000, 3000)
+
+        fixture.detectChanges()
+
+        expect(component.scenarioContent).toEqual(initialScenarioContent)
+    })
 })

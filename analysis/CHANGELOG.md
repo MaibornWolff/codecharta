@@ -11,13 +11,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 - Changed to a new terminal library [#3609](https://github.com/MaibornWolff/codecharta/pull/3609)
 
-## [1.131.0] - 2025-02-11 (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
+## [1.131.0] - 2025-02-11
 
 ### Changed
 
 - Removed the top level from the output structure of the SonarImporter to match the other parsers and importers [3912](https://github.com/MaibornWolff/codecharta/pull/3912)
 
-## [1.130.0] - 2024-12-17 (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
+## [1.130.0] - 2024-12-17
 
 ### Added 🚀
 
