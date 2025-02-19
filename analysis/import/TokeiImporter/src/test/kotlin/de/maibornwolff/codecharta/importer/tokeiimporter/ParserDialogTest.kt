@@ -79,7 +79,6 @@ class ParserDialogTest {
     @Test
     fun `should output correct arguments when output file is not provided`() {
         val pathSeparator = "/"
-        val defaultOutputFileName = "out.cc.json"
 
         mockkObject(ParserDialog.Companion)
 
@@ -121,7 +120,7 @@ class ParserDialogTest {
             val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
 
             assertThat(parseResult.matchedPositional(0).getValue<File>().name).isEqualTo(File(inputFileName).name)
-            assertThat(parseResult.matchedOption("output-file").getValue<String>().equals(defaultOutputFileName))
+            assertThat(parseResult.matchedOption("output-file").getValue<String>()).isEqualTo("")
             assertThat(parseResult.matchedOption("not-compressed")).isNull()
             assertThat(parseResult.matchedOption("root-name").getValue<String>()).isEqualTo(rootFolder)
             assertThat(parseResult.matchedOption("path-separator").getValue<String>()).isEqualTo(pathSeparator)
