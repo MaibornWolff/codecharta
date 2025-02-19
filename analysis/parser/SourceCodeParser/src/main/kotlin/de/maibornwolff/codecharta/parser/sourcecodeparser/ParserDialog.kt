@@ -15,7 +15,7 @@ class ParserDialog {
             val inputFileName: String = session.myPromptDefaultFileFolderInput(
                 inputType = InputType.FOLDER_AND_FILE,
                 fileExtensionList = listOf(),
-                onInputReady = fileCallback()
+                onInputReady = testCallback()
             )
 
             val formatCCjson = "CodeCharta JSON"
@@ -25,7 +25,7 @@ class ParserDialog {
             val outputFormatAnswer = session.myPromptList(
                 message = "Which output format should be generated?",
                 choices = outputFormatChoices,
-                onInputReady = formatCallback()
+                onInputReady = testCallback()
             )
 
             val outputFormat = if (outputFormatAnswer == formatCCjson) OutputFormat.JSON else OutputFormat.CSV
@@ -35,26 +35,26 @@ class ParserDialog {
                 message = "What is the name of the output file?",
                 hint = defaultOutputFilename,
                 allowEmptyInput = true,
-                onInputReady = outFileCallback()
+                onInputReady = testCallback()
             )
 
             val isCompressed =
                 (outputFileName.isEmpty()) ||
                     session.myPromptConfirm(
                         message = "Do you want to compress the output file?",
-                        onInputReady = compressCallback()
+                        onInputReady = testCallback()
                     )
 
             val findIssues =
                 session.myPromptConfirm(
                     message = "Should we search for sonar issues?",
-                    onInputReady = issueCallback()
+                    onInputReady = testCallback()
                 )
 
             val defaultExcludes =
                 session.myPromptConfirm(
                     message = "Should we apply default excludes (build, target, dist and out folders, hidden files/folders)?",
-                    onInputReady = defaultCallback()
+                    onInputReady = testCallback()
                 )
 
             val exclude: String =
@@ -62,13 +62,13 @@ class ParserDialog {
                     message = "Do you want to exclude file/folder according to regex pattern?",
                     hint = "regex1, regex2.. (leave empty if you don't want to exclude anything)",
                     allowEmptyInput = true,
-                    onInputReady = excludeCallback()
+                    onInputReady = testCallback()
                 )
 
             val isVerbose: Boolean =
                 session.myPromptConfirm(
                     message = "Display info messages from sonar plugins?",
-                    onInputReady = verboseCallback()
+                    onInputReady = testCallback()
                 )
 
             return listOfNotNull(
@@ -83,20 +83,6 @@ class ParserDialog {
             )
         }
 
-        internal fun fileCallback(): suspend RunScope.() -> Unit = {}
-
-        internal fun formatCallback(): suspend RunScope.() -> Unit = {}
-
-        internal fun outFileCallback(): suspend RunScope.() -> Unit = {}
-
-        internal fun compressCallback(): suspend RunScope.() -> Unit = {}
-
-        internal fun issueCallback(): suspend RunScope.() -> Unit = {}
-
-        internal fun defaultCallback(): suspend RunScope.() -> Unit = {}
-
-        internal fun excludeCallback(): suspend RunScope.() -> Unit = {}
-
-        internal fun verboseCallback(): suspend RunScope.() -> Unit = {}
+        internal fun testCallback(): suspend RunScope.() -> Unit = {}
     }
 }
