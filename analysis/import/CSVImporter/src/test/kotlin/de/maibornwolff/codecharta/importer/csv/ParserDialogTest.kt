@@ -3,6 +3,7 @@
 package de.maibornwolff.codecharta.importer.csv
 
 import com.varabyte.kotter.foundation.input.Keys
+import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.terminal.inmemory.press
 import com.varabyte.kotter.runtime.terminal.inmemory.type
 import com.varabyte.kotterx.test.foundation.testSession
@@ -34,30 +35,39 @@ class ParserDialogTest {
         mockkObject(ParserDialog.Companion)
 
         testSession { terminal ->
-            every { ParserDialog.Companion.fileCallback() } returns {
+            val fileCallback: suspend RunScope.() -> Unit = {
                 terminal.type(inputFileName)
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.outFileCallback() } returns {
+            val outFileCallback: suspend RunScope.() -> Unit = {
                 terminal.type(outputFileName)
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.columnCallback() } returns {
+            val columnCallback: suspend RunScope.() -> Unit = {
                 terminal.type(pathColumnName)
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.delimiterCallback() } returns {
+            val delimiterCallback: suspend RunScope.() -> Unit = {
                 terminal.type(delimiter)
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.separatorCallback() } returns {
+            val separatorCallback: suspend RunScope.() -> Unit = {
                 terminal.type(pathSeparator)
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.compressCallback() } returns {
+            val compressCallback: suspend RunScope.() -> Unit = {
                 terminal.press(Keys.RIGHT)
                 terminal.press(Keys.ENTER)
             }
+
+            every { ParserDialog.Companion.testCallback() } returnsMany listOf(
+                fileCallback,
+                outFileCallback,
+                columnCallback,
+                delimiterCallback,
+                separatorCallback,
+                compressCallback
+            )
 
             val parserArguments = collectParserArgs(this)
 
@@ -76,7 +86,7 @@ class ParserDialogTest {
 
     @Disabled
     @Test
-    fun `should output correct arguments when multiple files are provided`() { // given
+    fun `should output correct arguments when multiple files are provided`() {
         // New multi input separated by comma, NotImplementedYet
         val fileName = "in.csv"
         val fileName2 = "in2.csv"
@@ -89,24 +99,33 @@ class ParserDialogTest {
         mockkObject(ParserDialog.Companion)
 
         testSession { terminal ->
-            every { ParserDialog.Companion.fileCallback() } returns {
+            val fileCallback: suspend RunScope.() -> Unit = {
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.outFileCallback() } returns {
+            val outFileCallback: suspend RunScope.() -> Unit = {
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.columnCallback() } returns {
+            val columnCallback: suspend RunScope.() -> Unit = {
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.delimiterCallback() } returns {
+            val delimiterCallback: suspend RunScope.() -> Unit = {
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.separatorCallback() } returns {
+            val separatorCallback: suspend RunScope.() -> Unit = {
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.compressCallback() } returns {
+            val compressCallback: suspend RunScope.() -> Unit = {
                 terminal.press(Keys.ENTER)
             }
+
+            every { ParserDialog.Companion.testCallback() } returnsMany listOf(
+                fileCallback,
+                outFileCallback,
+                columnCallback,
+                delimiterCallback,
+                separatorCallback,
+                compressCallback
+            )
 
             val parserArguments = collectParserArgs(this)
 
@@ -134,32 +153,41 @@ class ParserDialogTest {
         mockkObject(ParserDialog.Companion)
 
         testSession { terminal ->
-            every { ParserDialog.Companion.fileCallback() } returns {
+            val fileCallback: suspend RunScope.() -> Unit = {
                 terminal.type(invalidFileName1)
                 terminal.press(Keys.ENTER)
                 terminal.press(Keys.BACKSPACE, Keys.BACKSPACE, Keys.BACKSPACE)
                 terminal.type(inputFileName)
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.outFileCallback() } returns {
+            val outFileCallback: suspend RunScope.() -> Unit = {
                 terminal.type(outputFileName)
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.columnCallback() } returns {
+            val columnCallback: suspend RunScope.() -> Unit = {
                 terminal.type(pathColumnName)
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.delimiterCallback() } returns {
+            val delimiterCallback: suspend RunScope.() -> Unit = {
                 terminal.press(Keys.RIGHT)
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.separatorCallback() } returns {
+            val separatorCallback: suspend RunScope.() -> Unit = {
                 terminal.type(separator)
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.compressCallback() } returns {
+            val compressCallback: suspend RunScope.() -> Unit = {
                 terminal.press(Keys.ENTER)
             }
+
+            every { ParserDialog.Companion.testCallback() } returnsMany listOf(
+                fileCallback,
+                outFileCallback,
+                columnCallback,
+                delimiterCallback,
+                separatorCallback,
+                compressCallback
+            )
 
             val parserArguments = collectParserArgs(this)
 
