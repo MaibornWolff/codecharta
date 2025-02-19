@@ -15,37 +15,37 @@ class ParserDialog {
             val inputFileName: String = session.myPromptDefaultFileFolderInput(
                 inputType = InputType.FILE,
                 fileExtensionList = listOf(FileExtension.CSV),
-                onInputReady = fileCallback()
+                onInputReady = testCallback()
             )
 
             val outputFileName: String = session.myPromptInput(
                 message = "What is the name of the output file?",
                 allowEmptyInput = true,
-                onInputReady = outFileCallback()
+                onInputReady = testCallback()
             )
 
             val pathColumnName: String = session.myPromptInput(
                 message = "What is the name of the path column name?",
                 hint = "path",
                 allowEmptyInput = false,
-                onInputReady = columnCallback()
+                onInputReady = testCallback()
             )
 
             val delimiter: String = session.myPromptInput(
                 message = "Which column delimiter is used in the CSV file?",
                 hint = ",",
-                onInputReady = delimiterCallback()
+                onInputReady = testCallback()
             )
 
             val pathSeparator: String = session.myPromptInput(
                 message = "Which path separator is used in the path names?",
                 hint = "/",
-                onInputReady = separatorCallback()
+                onInputReady = testCallback()
             )
 
             val isCompressed = outputFileName.isEmpty() || session.myPromptConfirm(
                 message = "Do you want to compress the output file?",
-                onInputReady = compressCallback()
+                onInputReady = testCallback()
             )
 
             return listOfNotNull(
@@ -58,16 +58,6 @@ class ParserDialog {
             )
         }
 
-        internal fun fileCallback(): suspend RunScope.() -> Unit = {}
-
-        internal fun outFileCallback(): suspend RunScope.() -> Unit = {}
-
-        internal fun columnCallback(): suspend RunScope.() -> Unit = {}
-
-        internal fun delimiterCallback(): suspend RunScope.() -> Unit = {}
-
-        internal fun separatorCallback(): suspend RunScope.() -> Unit = {}
-
-        internal fun compressCallback(): suspend RunScope.() -> Unit = {}
+        internal fun testCallback(): suspend RunScope.() -> Unit = {}
     }
 }
