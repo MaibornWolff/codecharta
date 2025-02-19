@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [1.134.0] - 2025-02-19
+
 ### Fixed 🐞
 
 - Fix resetting colors in color metrics [#3943](https://github.com/MaibornWolff/codecharta/pull/3943)
