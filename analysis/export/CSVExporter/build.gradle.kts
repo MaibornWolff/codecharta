@@ -10,6 +10,7 @@ dependencies {
 
     testImplementation(libs.mockk)
     testImplementation(libs.assertj.core)
+    testImplementation(libs.junit.platform.runner)
 }
 
 tasks.test {
