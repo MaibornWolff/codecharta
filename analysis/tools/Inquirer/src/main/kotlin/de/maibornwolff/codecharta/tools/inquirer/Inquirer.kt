@@ -174,14 +174,11 @@ fun Session.myPromptCheckbox(
     return result
 }
 
-private fun selectOrUnselectChoice(
-    selectedChoices: LiveList<Boolean>,
-    position: Int
-) {
+private fun selectOrUnselectChoice(selectedChoices: LiveList<Boolean>, position: Int) {
     selectedChoices[position] = !selectedChoices[position]
 }
 
-private fun moveDown(position: Int, numberOfChoices: Int) : Int {
+private fun moveDown(position: Int, numberOfChoices: Int): Int {
     var positionCopy = position
     if (positionCopy < numberOfChoices - 1) {
         positionCopy += 1
@@ -189,7 +186,7 @@ private fun moveDown(position: Int, numberOfChoices: Int) : Int {
     return positionCopy
 }
 
-private fun moveUp(position: Int) : Int {
+private fun moveUp(position: Int): Int {
     var positionCopy = position
     if (positionCopy > 0) {
         positionCopy -= 1
