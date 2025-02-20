@@ -97,9 +97,6 @@ $ ccsh - h
 # done :)
 ```
 
-If you also have git, [tokei](https://github.com/XAMPPRocky/tokei) and [complexity](https://github.com/thoughtbot/complexity) installed,
-you can create a pretty informative software quality map for (almost) every programming language in one command by running [`simplecc.sh`](script/simplecc.sh) inside any git working copy.
-
 ## Get Involved
 
 Do you have a **bug**, **feature request**, or question? Please open [a new issue](https://github.com/MaibornWolff/codecharta/issues/new).
