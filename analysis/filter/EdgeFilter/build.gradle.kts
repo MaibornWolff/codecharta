@@ -10,6 +10,7 @@ dependencies {
     testImplementation(libs.kotlin.test)
     testImplementation(libs.assertj.core)
     testImplementation(libs.mockk)
+    testImplementation(libs.junit.platform.runner)
 
     testRuntimeOnly(libs.kotlin.reflect)
 }
