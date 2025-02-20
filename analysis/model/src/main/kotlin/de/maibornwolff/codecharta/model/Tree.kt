@@ -73,9 +73,9 @@ abstract class Tree<T> {
      */
     abstract fun getPathOfChild(child: Tree<T>): Path
 
-    private class TreeNode<out V> internal constructor(
-        internal val path: Path,
-        internal val node: V
+    private class TreeNode<out V> (
+        val path: Path,
+        val node: V
     )
 
     /**
