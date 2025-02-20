@@ -1,6 +1,5 @@
 package de.maibornwolff.codecharta.parser.sourcecodeparser.metricwriters
 
-import com.google.gson.JsonParser
 import de.maibornwolff.codecharta.parser.sourcecodeparser.metrics.FileMetricMap
 import de.maibornwolff.codecharta.parser.sourcecodeparser.metrics.ProjectMetrics
 import org.assertj.core.api.Assertions
@@ -20,10 +19,11 @@ class JSONMetricWriterTest {
         val result = ByteArrayOutputStream()
 
         JSONMetricWriter(result, false).generate(metrics, setOf())
-        val resultJSON = JsonParser.parseString(result.toString())
-        val expectedJSON = JsonParser.parseReader(expectedResultFile.reader())
 
-        Assertions.assertThat(resultJSON).isEqualTo(expectedJSON)
+        val resultJSON = JSONObject(result.toString()).toString()
+        val expectedJson = JSONObject(expectedResultFile.readText()).toString()
+
+        Assertions.assertThat(resultJSON).isEqualTo(expectedJson)
     }
 
     @Test
@@ -37,10 +37,11 @@ class JSONMetricWriterTest {
         val result = ByteArrayOutputStream()
 
         JSONMetricWriter(result, false).generate(metrics, setOf())
-        val resultJSON = JsonParser.parseString(result.toString())
-        val expectedJSON = JsonParser.parseReader(expectedResultFile.reader())
 
-        Assertions.assertThat(resultJSON).isEqualTo(expectedJSON)
+        val resultJSON = JSONObject(result.toString()).toString()
+        val expectedJson = JSONObject(expectedResultFile.readText()).toString()
+
+        Assertions.assertThat(resultJSON).isEqualTo(expectedJson)
     }
 
     @Test
