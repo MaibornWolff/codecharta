@@ -73,8 +73,23 @@ distributions {
                     into("bin") {
                         subproject.tasks.findByName("startScripts").let {
                             from(it!!.outputs.files) {
-                                // 7-5-5 in binary
-                                fileMode = 0b111101101
+                                filePermissions {
+                                    user {
+                                        read = true
+                                        write = true
+                                        execute = true
+                                    }
+                                    group {
+                                        read = true
+                                        write = false
+                                        execute = true
+                                    }
+                                    other {
+                                        read = true
+                                        write = false
+                                        execute = true
+                                    }
+                                }
                             }
                         }
                     }
