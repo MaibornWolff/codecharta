@@ -103,6 +103,7 @@ abstract class Tree<T> {
 
     // attention!!! Tree<T> = T
     fun asTreeNode(): T {
+        @Suppress("UNCHECKED_CAST")
         return this as T
     }
 
