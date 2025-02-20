@@ -1,10 +1,10 @@
 package de.maibornwolff.codecharta.ccsh
 
+import de.maibornwolff.codecharta.ccsh.SessionMock.Companion.mockRunInTerminalSession
 import de.maibornwolff.codecharta.tools.ccsh.Ccsh
 import de.maibornwolff.codecharta.tools.ccsh.parser.InteractiveDialog
 import de.maibornwolff.codecharta.tools.ccsh.parser.InteractiveParserSuggestion
 import de.maibornwolff.codecharta.tools.ccsh.parser.ParserService
-import de.maibornwolff.codecharta.tools.interactiveparser.SessionMock.Companion.mockStartSession
 import de.maibornwolff.codecharta.util.Logger
 import io.mockk.every
 import io.mockk.mockkObject
@@ -173,7 +173,7 @@ class CcshTest {
         val selectedParsers = listOf("parser1", "parser2")
         val args = listOf(listOf("dummyArg1"), listOf("dummyArg2"))
 
-        mockStartSession()
+        mockRunInTerminalSession()
         mockInteractiveParserSuggestionDialog(selectedParsers, args)
         mockSuccessfulParserService()
         mockPrepareInteractiveDialog()
@@ -210,7 +210,7 @@ class CcshTest {
         val selectedParsers = listOf("parser1", "parser2")
         val args = listOf(listOf("dummyArg1"), listOf("dummyArg2"))
 
-        mockStartSession()
+        mockRunInTerminalSession()
         mockInteractiveParserSuggestionDialog(selectedParsers, args)
         mockSuccessfulParserService()
         mockPrepareInteractiveDialog()
@@ -288,7 +288,7 @@ class CcshTest {
         val selectedParsers = listOf("parser1")
         val args = listOf(listOf("dummyArg1"))
 
-        mockStartSession()
+        mockRunInTerminalSession()
         mockInteractiveParserSuggestionDialog(selectedParsers, args)
         mockSuccessfulParserService()
         mockPrepareInteractiveDialog()
@@ -320,7 +320,7 @@ class CcshTest {
         mockkObject(Logger)
         every { Logger.info(capture(lambdaSlot)) } returns Unit
 
-        mockStartSession()
+        mockRunInTerminalSession()
         mockPrepareInteractiveDialog()
         mockDialogRunParsers(true)
         mockDialogMergeResults(true)
@@ -341,7 +341,7 @@ class CcshTest {
                 "dummyParser2" to listOf("dummyArg1", "dummyArg2")
             )
 
-        mockStartSession()
+        mockRunInTerminalSession()
         mockPrepareInteractiveDialog()
         mockDialogRunParsers(true)
         mockDialogMergeResults(false)
@@ -377,7 +377,7 @@ class CcshTest {
                 )
             )
 
-        mockStartSession()
+        mockRunInTerminalSession()
         mockInteractiveParserSuggestionDialog(selectedParsers, args)
         mockPrepareInteractiveDialog()
         mockDialogRunParsers(true)

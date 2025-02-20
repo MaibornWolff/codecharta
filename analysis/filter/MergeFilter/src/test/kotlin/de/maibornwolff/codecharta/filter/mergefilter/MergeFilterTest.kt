@@ -1,10 +1,13 @@
 package de.maibornwolff.codecharta.filter.mergefilter
 
+import com.varabyte.kotter.runtime.Session
+import com.varabyte.kotterx.test.foundation.testSession
 import de.maibornwolff.codecharta.filter.mergefilter.MergeFilter.Companion.main
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
-import de.maibornwolff.codecharta.tools.interactiveparser.SessionMock
+import de.maibornwolff.codecharta.tools.interactiveparser.runInTerminalSession
 import io.mockk.every
 import io.mockk.mockkObject
+import io.mockk.mockkStatic
 import io.mockk.unmockkAll
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
@@ -25,7 +28,7 @@ class MergeFilterTest {
 
     @BeforeEach
     fun beforeTest() {
-        SessionMock.mockStartSession()
+        mockRunInTerminalSession()
     }
 
     @AfterEach
@@ -608,5 +611,20 @@ class MergeFilterTest {
                 errContent.toString()
             ).contains("Input project structure doesn't have '/root/' as a base folder. If that's intended open an issue.")
         }
+    }
+
+    private fun mockRunInTerminalSession() {
+        mockkStatic("de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterfaceKt")
+        every { runInTerminalSession(any<Session.() -> Any>()) } answers {
+            runInTestSession { firstArg<Session.() -> Any>()(this) }
+        }
+    }
+
+    private fun <T> runInTestSession(block: Session.() -> T): T {
+        var returnValue: T? = null
+        testSession {
+            returnValue = block()
+        }
+        return returnValue ?: throw IllegalStateException("Session did not return a value.")
     }
 }
