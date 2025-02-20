@@ -20,13 +20,16 @@ function countBuildingsWithEdgeMetric(
     showOutgoingEdges: boolean
 ) {
     const nodeEdgeMetricCounts: EdgeMetricCountMap | undefined = nodeEdgeMetricsMap.get(edgeMetric)
-    if (!nodeEdgeMetricCounts || (!showIncomingEdges && !showOutgoingEdges)) {
+    const noEdgesAreShown = !showIncomingEdges && !showOutgoingEdges
+    if (!nodeEdgeMetricCounts || noEdgesAreShown) {
         return 0
     }
 
     let count = 0
     for (const nodeEdgeMetricCount of nodeEdgeMetricCounts.values()) {
-        if ((showIncomingEdges && nodeEdgeMetricCount.incoming > 0) || (showOutgoingEdges && nodeEdgeMetricCount.outgoing > 0)) {
+        const atLeastOneIncomingEdgeIsShown = showIncomingEdges && nodeEdgeMetricCount.incoming > 0
+        const atLeastOneOutgoingEdgeIsShown = showOutgoingEdges && nodeEdgeMetricCount.outgoing > 0
+        if (atLeastOneIncomingEdgeIsShown || atLeastOneOutgoingEdgeIsShown) {
             count++
         }
     }

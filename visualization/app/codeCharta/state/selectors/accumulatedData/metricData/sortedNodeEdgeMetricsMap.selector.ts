@@ -23,7 +23,8 @@ function sortNodeEdgeMetricsMap(
 ): NodeEdgeMetricsMap {
     const { nodeEdgeMetricsMap } = calculateEdgeMetricData(visibleFileStates, blacklist)
 
-    if (!showIncomingEdges && !showOutgoingEdges) {
+    const noEdgesAreShown = !showIncomingEdges && !showOutgoingEdges
+    if (noEdgesAreShown) {
         return new Map()
     }
 

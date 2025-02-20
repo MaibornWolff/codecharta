@@ -14,11 +14,14 @@ export const setEdgeVisibility = (
             const hasFromNodeEdgePreview = edgePreviewNodes.has(edge.fromNodeName)
             const hasToNodeEdgePreview = edgePreviewNodes.has(edge.toNodeName)
 
-            if (showIncomingEdges && showOutgoingEdges && hasFromNodeEdgePreview && hasToNodeEdgePreview) {
+            const incomingEdgeExistsAndIsShown = showIncomingEdges && hasToNodeEdgePreview
+            const outgoingEdgeExistsAndIsShown = showOutgoingEdges && hasFromNodeEdgePreview
+
+            if (outgoingEdgeExistsAndIsShown && incomingEdgeExistsAndIsShown) {
                 edge.visible = EdgeVisibility.both
-            } else if (showOutgoingEdges && hasFromNodeEdgePreview) {
+            } else if (outgoingEdgeExistsAndIsShown) {
                 edge.visible = EdgeVisibility.from
-            } else if (showIncomingEdges && hasToNodeEdgePreview) {
+            } else if (incomingEdgeExistsAndIsShown) {
                 edge.visible = EdgeVisibility.to
             }
         }
