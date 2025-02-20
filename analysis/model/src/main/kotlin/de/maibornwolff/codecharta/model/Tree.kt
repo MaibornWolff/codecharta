@@ -73,7 +73,7 @@ abstract class Tree<T> {
      */
     abstract fun getPathOfChild(child: Tree<T>): Path
 
-    private class TreeNode<out V> (
+    private class TreeNode<out V>(
         val path: Path,
         val node: V
     )
