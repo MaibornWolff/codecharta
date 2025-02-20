@@ -1,10 +1,10 @@
 package de.maibornwolff.codecharta.ccsh.parser
 
+import de.maibornwolff.codecharta.ccsh.SessionMock.Companion.mockRunInTerminalSession
 import de.maibornwolff.codecharta.tools.ccsh.Ccsh
 import de.maibornwolff.codecharta.tools.ccsh.parser.InteractiveDialog
 import de.maibornwolff.codecharta.tools.ccsh.parser.InteractiveParserSuggestion
 import de.maibornwolff.codecharta.tools.ccsh.parser.ParserService
-import de.maibornwolff.codecharta.tools.interactiveparser.SessionMock
 import io.mockk.every
 import io.mockk.mockkObject
 import io.mockk.unmockkAll
@@ -44,7 +44,7 @@ class InteractiveParserSuggestionTest {
 
     @BeforeEach
     fun beforeTest() {
-        SessionMock.mockStartSession()
+        mockRunInTerminalSession()
     }
 
     @AfterEach

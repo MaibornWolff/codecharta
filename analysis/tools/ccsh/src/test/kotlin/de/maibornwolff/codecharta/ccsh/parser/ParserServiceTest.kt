@@ -1,13 +1,13 @@
 package de.maibornwolff.codecharta.ccsh.parser
 
 import com.varabyte.kotterx.test.foundation.testSession
+import de.maibornwolff.codecharta.ccsh.SessionMock.Companion.mockRunInTerminalSession
 import de.maibornwolff.codecharta.tools.ccsh.Ccsh
 import de.maibornwolff.codecharta.tools.ccsh.parser.InteractiveDialog
 import de.maibornwolff.codecharta.tools.ccsh.parser.ParserService
 import de.maibornwolff.codecharta.tools.ccsh.parser.repository.PicocliParserRepository
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
-import de.maibornwolff.codecharta.tools.interactiveparser.SessionMock
 import io.mockk.every
 import io.mockk.mockkClass
 import io.mockk.mockkConstructor
@@ -86,7 +86,7 @@ class ParserServiceTest {
         val expectedParserCommand =
             "ccsh " + selectedParser + " " + collectedArgs.map { x -> '"' + x + '"' }.joinToString(" ")
 
-        SessionMock.mockStartSession()
+        mockRunInTerminalSession()
         val selectedParserList = listOf(selectedParser)
         val mockPicocliParserRepository = mockParserRepository(selectedParser, emptyList())
 
@@ -111,7 +111,7 @@ class ParserServiceTest {
         mockkObject(InteractiveDialog)
         every { InteractiveDialog.askParserToExecute(any(), any()) } returns "$fakeParser $fakeParserDescription"
 
-        SessionMock.mockStartSession()
+        mockRunInTerminalSession()
 
         val selectedParser = ParserService.selectParser(cmdLine, PicocliParserRepository())
 
@@ -176,7 +176,7 @@ class ParserServiceTest {
                 "csvimport"
             )
 
-        SessionMock.mockStartSession()
+        mockRunInTerminalSession()
 
         val mockPicocliParserRepository = mockParserRepository(selectedParserList[0], emptyList())
 
@@ -196,7 +196,7 @@ class ParserServiceTest {
     @MethodSource("providerParserArguments")
     fun `should execute parser`(parser: String) {
         mockParserObject(parser)
-        SessionMock.mockStartSession()
+        mockRunInTerminalSession()
 
         ParserService.executeSelectedParser(cmdLine, parser)
 
@@ -232,7 +232,7 @@ class ParserServiceTest {
     @ParameterizedTest
     @MethodSource("providerParserArguments")
     fun `should output message informing about which parser is being configured`(parser: String) {
-        SessionMock.mockStartSession()
+        mockRunInTerminalSession()
 
         val mockParserRepository = mockParserRepository(parser, listOf(parser))
 
