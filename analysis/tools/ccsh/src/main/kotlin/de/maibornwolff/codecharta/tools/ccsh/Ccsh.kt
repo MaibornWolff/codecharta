@@ -1,8 +1,5 @@
 package de.maibornwolff.codecharta.tools.ccsh
 
-import com.github.kinquirer.KInquirer
-import com.github.kinquirer.components.promptConfirm
-import com.github.kinquirer.components.promptInput
 import de.maibornwolff.codecharta.exporter.csv.CSVExporter
 import de.maibornwolff.codecharta.filter.edgefilter.EdgeFilter
 import de.maibornwolff.codecharta.filter.mergefilter.MergeFilter
@@ -17,10 +14,12 @@ import de.maibornwolff.codecharta.parser.gitlogparser.GitLogParser
 import de.maibornwolff.codecharta.parser.rawtextparser.RawTextParser
 import de.maibornwolff.codecharta.parser.sourcecodeparser.SourceCodeParserMain
 import de.maibornwolff.codecharta.parser.svnlogparser.SVNLogParser
-import de.maibornwolff.codecharta.tools.ccsh.parser.InteractiveParserSuggestionDialog
+import de.maibornwolff.codecharta.tools.ccsh.parser.InteractiveDialog
+import de.maibornwolff.codecharta.tools.ccsh.parser.InteractiveParserSuggestion
 import de.maibornwolff.codecharta.tools.ccsh.parser.ParserService
 import de.maibornwolff.codecharta.tools.ccsh.parser.repository.PicocliParserRepository
 import de.maibornwolff.codecharta.tools.inspection.InspectionTool
+import de.maibornwolff.codecharta.tools.interactiveparser.runInTerminalSession
 import de.maibornwolff.codecharta.tools.interactiveparser.util.CodeChartaConstants
 import de.maibornwolff.codecharta.tools.validation.ValidationTool
 import de.maibornwolff.codecharta.util.AttributeGeneratorRegistry
@@ -105,18 +104,14 @@ class Ccsh : Callable<Unit?> {
 
         private fun executeParserSuggestions(commandLine: CommandLine): Int {
             val configuredParsers =
-                InteractiveParserSuggestionDialog.offerAndGetInteractiveParserSuggestionsAndConfigurations(
+                InteractiveParserSuggestion.offerAndGetInteractiveParserSuggestionsAndConfigurations(
                     commandLine
                 )
             if (configuredParsers.isEmpty()) {
                 return 0
             }
 
-            val shouldRunConfiguredParsers: Boolean =
-                KInquirer.promptConfirm(
-                    message = "Do you want to run all configured parsers now?",
-                    default = true
-                )
+            val shouldRunConfiguredParsers = runInTerminalSession { InteractiveDialog.askRunParsers(this) }
 
             return if (shouldRunConfiguredParsers) {
                 executeConfiguredParsers(commandLine, configuredParsers)
@@ -156,20 +151,14 @@ class Ccsh : Callable<Unit?> {
         }
 
         private fun askAndMergeResults(commandLine: CommandLine): Int {
-            val shouldMerge =
-                KInquirer.promptConfirm(
-                    message = "Do you want to merge all generated files into one result now?",
-                    default = false
-                )
+            val shouldMerge = runInTerminalSession { InteractiveDialog.askForMerge(this) }
+            var ccJsonFilePath = ""
+
+            if (shouldMerge) {
+                ccJsonFilePath = runInTerminalSession { InteractiveDialog.askJsonPath(this) }
+            }
 
             return if (shouldMerge) {
-                val ccJsonFilePath =
-                    KInquirer.promptInput(
-                        message = "What is the folder path containing all cc.json files?",
-                        hint = "If you did not output all cc.json files into the same folder, " +
-                            "you need to manually move them there before trying to merge."
-                    )
-
                 val outputFilePath =
                     "$ccJsonFilePath/mergedResult.cc.json" // Default args with input path being the output path as well
                 val mergeArguments =
@@ -217,7 +206,7 @@ class Ccsh : Callable<Unit?> {
 
         private fun isParserKnown(args: Array<String>, commandLine: CommandLine): Boolean {
             val firstArg = args.first()
-            val parserList = commandLine.subcommands.keys
+            val parserList: Set<String> = commandLine.subcommands.keys
             return parserList.contains(firstArg)
         }
 
@@ -264,6 +253,7 @@ class Ccsh : Callable<Unit?> {
         }
     }
 
+    @SuppressWarnings("kotlin:S6516") // Not possible to use a lambda here, because picocli expects a class type
     object ManifestVersionProvider : CommandLine.IVersionProvider {
         override fun getVersion(): Array<String> {
             return arrayOf(

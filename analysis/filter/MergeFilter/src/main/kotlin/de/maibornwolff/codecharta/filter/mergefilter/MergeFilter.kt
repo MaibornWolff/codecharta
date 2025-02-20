@@ -1,11 +1,14 @@
 package de.maibornwolff.codecharta.filter.mergefilter
 
+import de.maibornwolff.codecharta.filter.mergefilter.ParserDialog.Companion.askForceMerge
+import de.maibornwolff.codecharta.filter.mergefilter.ParserDialog.Companion.requestMimoFileSelection
 import de.maibornwolff.codecharta.filter.mergefilter.mimo.Mimo
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
+import de.maibornwolff.codecharta.tools.interactiveparser.runInTerminalSession
 import de.maibornwolff.codecharta.tools.interactiveparser.util.CodeChartaConstants
 import de.maibornwolff.codecharta.util.InputHelper
 import de.maibornwolff.codecharta.util.Logger
@@ -92,8 +95,8 @@ class MergeFilter(
             else -> throw IllegalArgumentException("At least one merging strategy must be set")
         }
 
-        if (!InputHelper.isInputValid(sources, canInputContainFolders = true)) {
-            throw IllegalArgumentException("Input invalid files/folders for MergeFilter, stopping execution...")
+        require(InputHelper.isInputValid(sources, canInputContainFolders = true)) {
+            "Input invalid files/folders for MergeFilter, stopping execution..."
         }
 
         val sourceFiles = InputHelper.getFileListFromValidatedResourceArray(sources)
@@ -119,7 +122,7 @@ class MergeFilter(
         if (!hasTopLevelOverlap(projects)) {
             printOverlapError(projects)
 
-            val continueMerge = ParserDialog.askForceMerge()
+            val continueMerge = runInTerminalSession { askForceMerge(this) }
 
             if (!continueMerge) {
                 Logger.info { "Merge cancelled by the user." }
@@ -157,7 +160,7 @@ class MergeFilter(
             val confirmedFileList = if (exactMatch) {
                 files
             } else {
-                ParserDialog.requestMimoFileSelection(files)
+                runInTerminalSession { requestMimoFileSelection(this, files) }
             }
             if (confirmedFileList.size <= 1) {
                 Logger.info { "Continue with next group, because one or less files were selected" }
