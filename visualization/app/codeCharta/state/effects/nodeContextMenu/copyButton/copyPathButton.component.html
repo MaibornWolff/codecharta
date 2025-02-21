@@ -1,0 +1,4 @@
+<button mat-button (click)="copyToClipboard(codeMapNode.path)" id="copy-button" title="Copy to clipboard">
+    <i class="fa fa-light fa-copy"></i>
+    {{ codeMapNode.path | lastPartOfNodePath }}
+</button>

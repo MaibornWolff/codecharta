@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
+- Add the option to copy file paths directly from the node context menu [#3954](https://github.com/MaibornWolff/codecharta/pull/3954)
 - Add Checkbox for separately disabling incoming/outgoing edges in edge metric settings [#3928](https://github.com/MaibornWolff/codecharta/pull/3928)
 
 ## [1.134.0] - 2025-02-19
