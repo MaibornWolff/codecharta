@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Added 🚀
+
+- Add the option to copy file paths directly from the node context menu [#3954](https://github.com/MaibornWolff/codecharta/pull/3954)
+
 ### Fixed 🐞
 
 - Fix resetting colors in color metrics [#3943](https://github.com/MaibornWolff/codecharta/pull/3943)
