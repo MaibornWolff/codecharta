@@ -39,7 +39,16 @@
 <cc-edge-metric-toggle></cc-edge-metric-toggle>
 
 <cc-reset-settings-button
-    [settingsKeys]="['appSettings.showOnlyBuildingsWithEdges', 'appSettings.amountOfEdgePreviews', 'appSettings.edgeHeight']"
+    [settingsKeys]="[
+            'appSettings.amountOfEdgePreviews',
+            'appSettings.edgeHeight',
+            'appSettings.mapColors.outgoingEdge',
+            'appSettings.showOutgoingEdges',
+            'appSettings.mapColors.incomingEdge',
+            'appSettings.showIncomingEdges',
+            'appSettings.showOnlyBuildingsWithEdges',
+            'appSettings.isEdgeMetricVisible'
+        ]"
     tooltip="Reset edge metric settings to their defaults"
     label="Reset edge metric settings"
 ></cc-reset-settings-button>
