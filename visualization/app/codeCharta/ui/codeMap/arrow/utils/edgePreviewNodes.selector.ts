@@ -2,31 +2,34 @@ import { createSelector } from "@ngrx/store"
 import { NodeEdgeMetricsMap } from "../../../../state/selectors/accumulatedData/metricData/edgeMetricData.calculator"
 import { amountOfEdgePreviewsSelector } from "../../../../state/store/appSettings/amountOfEdgePreviews/amountOfEdgePreviews.selector"
 import { edgeMetricSelector } from "../../../../state/store/dynamicSettings/edgeMetric/edgeMetric.selector"
-import { metricDataSelector } from "../../../../state/selectors/accumulatedData/metricData/metricData.selector"
+import { sortedNodeEdgeMetricsMapSelector } from "../../../../state/selectors/accumulatedData/metricData/sortedNodeEdgeMetricsMap.selector"
 
 export const edgePreviewNodesSelector = createSelector(
-    metricDataSelector,
+    sortedNodeEdgeMetricsMapSelector,
     edgeMetricSelector,
     amountOfEdgePreviewsSelector,
-    (metricData, edgeMetric, amountOfEdgePreviews) =>
-        new Set(_getNodesWithHighestValue(metricData.nodeEdgeMetricsMap, edgeMetric, amountOfEdgePreviews))
+    (sortedNodeEdgeMetricsMap, edgeMetric, amountOfEdgePreviews) =>
+        new Set(_getNodesWithHighestValue(sortedNodeEdgeMetricsMap, edgeMetric, amountOfEdgePreviews))
 )
 
-export const _getNodesWithHighestValue = (edgeMetricMap: NodeEdgeMetricsMap, edgeMetric: string, amountOfEdgePreviews: number) => {
+export const _getNodesWithHighestValue = (
+    sortedNodeEdgeMetricsMap: NodeEdgeMetricsMap,
+    edgeMetric: string,
+    amountOfEdgePreviews: number
+) => {
     const keys: string[] = []
 
     if (amountOfEdgePreviews === 0) {
         return keys
     }
 
-    const nodeEdgeMetrics = edgeMetricMap.get(edgeMetric)
+    const sortedNodeEdgeMetrics = sortedNodeEdgeMetricsMap.get(edgeMetric)
 
-    if (nodeEdgeMetrics === undefined) {
+    if (sortedNodeEdgeMetrics === undefined) {
         return keys
     }
 
-    // note that this depends on the fact, that edgeMetricMap is created by a list which is sorted by max value
-    for (const key of nodeEdgeMetrics.keys()) {
+    for (const key of sortedNodeEdgeMetrics.keys()) {
         keys.push(key)
         if (keys.length === amountOfEdgePreviews) {
             break

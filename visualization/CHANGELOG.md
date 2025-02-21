@@ -5,9 +5,30 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/)
 
-## [1.132.0] - 2025-02-04 (Added 🚀 | Changed | Removed 🗑 | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
+## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
-### Added
+## [1.134.0] - 2025-02-19
+
+### Fixed 🐞
+
+- Fix resetting colors in color metrics [#3943](https://github.com/MaibornWolff/codecharta/pull/3943)
+
+## [1.133.1] - 2025-02-13
+
+### Fixed 🐞
+
+- Fixed changelog not displaying changes [#3925](https://github.com/MaibornWolff/codecharta/pull/3925)
+- Fixed camera not updating when metric scenario is applied [#3920](https://github.com/MaibornWolff/codecharta/pull/3920)
+
+## [1.133.0] - 2025-02-11
+
+### Added 🚀
+
+- Updated the preview slider of the edge metric options to prioritize buildings with higher number of edges [#3918](https://github.com/MaibornWolff/codecharta/pull/3918)
+
+## [1.132.0] - 2025-02-04
+
+### Added 🚀
 
 - Add a cross-hair when hovering over the color quantile diagram [#3827](https://github.com/MaibornWolff/codecharta/pull/3827)
 - Maps are always shown and rendered in alphabetical order [#3905](https://github.com/MaibornWolff/codecharta/pull/3905)

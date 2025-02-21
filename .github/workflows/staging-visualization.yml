@@ -69,6 +69,9 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
+      - name: Create Sample File for Web Demo
+        run: sh ./.github/workflows/scripts/build_demo_files.sh
+
       # Deploy to GitHub Pages staging environment
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4.7.2

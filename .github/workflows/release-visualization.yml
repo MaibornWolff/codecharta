@@ -24,8 +24,8 @@ jobs:
   build:
     if: |
       (github.event_name == 'workflow_dispatch') ||
-      (github.event_name == 'pull_request' && 
-       github.event.pull_request.merged == true && 
+      (github.event_name == 'pull_request' &&
+       github.event.pull_request.merged == true &&
        contains(github.event.pull_request.labels.*.name, 'release') &&
        startsWith(github.event.pull_request.head.ref, 'release/vis-'))
     name: Build
@@ -127,7 +127,7 @@ jobs:
           # Debug: List files
           echo "Contents of packages directory:"
           ls -la visualization/dist/packages/
-          
+
           CHANGELOG_CONTENT=$(bun script/version-manager.ts extract-changelog visualization ${{ needs.build.outputs.version }})
           gh release create "vis-${{ needs.build.outputs.version }}" \
             --title "Visualization release ${{ needs.build.outputs.version }}" \
@@ -142,6 +142,9 @@ jobs:
     name: Publish to npm
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -200,7 +203,7 @@ jobs:
           path: visualization/dist/webpack
 
       - name: Create Sample File for Web Demo
-        run: sh ./script/build_demo_file_visualization.sh
+        run: sh ./.github/workflows/scripts/build_demo_files.sh
 
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4.7.2

@@ -17,3 +17,7 @@ dependencies {
     testImplementation(libs.wiremock)
     testImplementation(libs.assertj.core)
 }
+
+tasks.test {
+    useJUnitPlatform()
+}
