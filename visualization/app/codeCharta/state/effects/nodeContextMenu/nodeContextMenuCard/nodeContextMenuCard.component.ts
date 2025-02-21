@@ -33,8 +33,7 @@ import { CopyPathButtonComponent } from "../copyButton/copyPathButton.component"
 export class NodeContextMenuCardComponent implements OnInit {
     codeMapNode$: Observable<CodeMapNode>
 
-    constructor(private readonly store: Store<CcState>) {
-    }
+    constructor(private readonly store: Store<CcState>) {}
 
     ngOnInit(): void {
         this.codeMapNode$ = this.store.select(rightClickedCodeMapNodeSelector)

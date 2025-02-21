@@ -14,8 +14,7 @@ import { LastPartOfNodePathPipe } from "../nodeContextMenuCard/lastPartOfNodePat
 export class CopyPathButtonComponent {
     @Input() codeMapNode: Pick<CodeMapNode, "path">
 
-    constructor() {
-    }
+    constructor() {}
 
     async copyToClipboard(path: string) {
         await navigator.clipboard.writeText(path)

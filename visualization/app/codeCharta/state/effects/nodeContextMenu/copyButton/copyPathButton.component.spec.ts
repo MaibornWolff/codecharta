@@ -3,7 +3,6 @@ import { By } from "@angular/platform-browser"
 import { CopyPathButtonComponent } from "./copyPathButton.component"
 import { DebugElement } from "@angular/core"
 
-
 describe("CopyPathButtonComponent", () => {
     const filePath = "/path/to/my/file.ts"
     let fixture: ComponentFixture<CopyPathButtonComponent>
@@ -11,9 +10,7 @@ describe("CopyPathButtonComponent", () => {
 
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
-            imports: [
-                CopyPathButtonComponent
-            ]
+            imports: [CopyPathButtonComponent]
         }).compileComponents()
 
         fixture = TestBed.createComponent(CopyPathButtonComponent)
