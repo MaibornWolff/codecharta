@@ -3,7 +3,7 @@
     [disabled]="isLabelsSliderDisabled$ | async"
     [title]="
         (isLabelsSliderDisabled$ | async)
-            ? 'Disabled because color labels are used'
+            ? 'Disabled because color labels are active'
             : 'Display the labels of the ' + (amountOfTopLabels$ | async) + ' highest buildings'
     "
     label="Labels"
@@ -13,12 +13,18 @@
     [onChange]="applyDebouncedTopLabels"
 ></cc-slider>
 
+@if ((isLabelsSliderDisabled$ | async)) {
+    <p class="color-metrics-active-info">
+        <i class="fa fa-exclamation-circle" aria-hidden="true"></i> Color metric labels active
+    </p>
+}
+
 <mat-checkbox [checked]="showMetricLabelNodeName$ | async" (change)="setShowMetricLabelNodeName($event)"
-    >Show label node names
+>Show label node names
 </mat-checkbox>
 
 <mat-checkbox [checked]="showMetricLabelNodeValue$ | async" (change)="setShowMetricLabelNameValue($event)"
-    >Show label node metrics
+>Show label node metrics
 </mat-checkbox>
 
 <cc-slider
@@ -33,7 +39,7 @@
 ></cc-slider>
 
 @if (!(isDeltaState$ | async)) {
-    <mat-checkbox (change)="setInvertHeight($event)" [checked]="invertHeight$ | async"> Invert Height </mat-checkbox>
+    <mat-checkbox (change)="setInvertHeight($event)" [checked]="invertHeight$ | async"> Invert Height</mat-checkbox>
 }
 
 <cc-reset-settings-button

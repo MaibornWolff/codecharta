@@ -23,6 +23,7 @@ import { AsyncPipe } from "@angular/common"
     selector: "cc-height-settings-panel",
     templateUrl: "./heightSettingsPanel.component.html",
     standalone: true,
+    styleUrls: ["./heighSettingsPanel.component.scss"],
     imports: [SliderComponent, MatCheckbox, ResetSettingsButtonComponent, AsyncPipe]
 })
 export class HeightSettingsPanelComponent {
