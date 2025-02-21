@@ -42,6 +42,9 @@ subprojects {
         testImplementation(rootProject.libs.junit.jupiter.api)
         testImplementation(rootProject.libs.junit.jupiter.engine)
         testImplementation(rootProject.libs.junit.jupiter.params)
+        testImplementation(rootProject.libs.assertj.core)
+        testImplementation(rootProject.libs.mockk)
+        testImplementation(rootProject.libs.junit.platform.runner)
     }
 
     tasks.test {

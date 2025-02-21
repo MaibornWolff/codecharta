@@ -14,10 +14,9 @@ dependencies {
     implementation(libs.kotlin.inquirer)
 
     testImplementation(libs.junit.jupiter.api)
-    testImplementation(libs.assertj.core)
+
     testImplementation(libs.mockito.kotlin)
     testImplementation(libs.mockito.core)
-    testImplementation(libs.mockk)
 }
 
 tasks.test {
