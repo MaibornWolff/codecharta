@@ -1,4 +1,17 @@
-# Automated Simple Analysis
+---
+permalink: /docs/how-to/automated-simple-analysis
+title: Automated Simple Analysis
+tags:
+  - sonarimport
+  - gitlogparser
+  - tokei
+  - complexity
+  - analysis
+
+toc: true
+toc_sticky: true
+toc_label: "Jump to Section"
+---
 
 If you have git, [tokei](https://github.com/XAMPPRocky/tokei) and [complexity](https://github.com/thoughtbot/complexity) installed,
 you can create a pretty informative software quality map for (almost) every programming language by running just one script.
