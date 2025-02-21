@@ -3,45 +3,7 @@ import { Injectable } from "@angular/core"
 import { MatDialog } from "@angular/material/dialog"
 import { State, Store } from "@ngrx/store"
 import stringify from "safe-stable-stringify"
-import { setAmountOfTopLabels } from "../../../../app/codeCharta/state/store/appSettings/amountOfTopLabels/amountOfTopLabels.actions"
-import { setColorLabels } from "../../../../app/codeCharta/state/store/appSettings/colorLabels/colorLabels.actions"
-import { setEdgeHeight } from "../../../../app/codeCharta/state/store/appSettings/edgeHeight/edgeHeight.actions"
-import { setScreenshotToClipboardEnabled } from "../../../../app/codeCharta/state/store/appSettings/enableClipboard/screenshotToClipboardEnabled.actions"
-import { setExperimentalFeaturesEnabled } from "../../../../app/codeCharta/state/store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.actions"
-import { setEnableFloorLabels } from "../../../../app/codeCharta/state/store/appSettings/enableFloorLabels/enableFloorLabels.actions"
-import { setHideFlatBuildings } from "../../../../app/codeCharta/state/store/appSettings/hideFlatBuildings/hideFlatBuildings.actions"
-import { setInvertArea } from "../../../../app/codeCharta/state/store/appSettings/invertArea/invertArea.actions"
-import { setInvertHeight } from "../../../../app/codeCharta/state/store/appSettings/invertHeight/invertHeight.actions"
-import { setIsEdgeMetricVisible } from "../../../../app/codeCharta/state/store/appSettings/isEdgeMetricVisible/isEdgeMetricVisible.actions"
-import { setIsColorMetricLinkedToHeightMetricAction } from "../../../../app/codeCharta/state/store/appSettings/isHeightAndColorMetricLinked/isColorMetricLinkedToHeightMetric.actions"
-import { setPresentationMode } from "../../../../app/codeCharta/state/store/appSettings/isPresentationMode/isPresentationMode.actions"
-import { setIsWhiteBackground } from "../../../../app/codeCharta/state/store/appSettings/isWhiteBackground/isWhiteBackground.actions"
-import { setLayoutAlgorithm } from "../../../../app/codeCharta/state/store/appSettings/layoutAlgorithm/layoutAlgorithm.actions"
-import { setMapColors } from "../../../../app/codeCharta/state/store/appSettings/mapColors/mapColors.actions"
-import { setMaxTreeMapFiles } from "../../../../app/codeCharta/state/store/appSettings/maxTreeMapFiles/maxTreeMapFiles.actions"
-import { setResetCameraIfNewFileIsLoaded } from "../../../../app/codeCharta/state/store/appSettings/resetCameraIfNewFileIsLoaded/resetCameraIfNewFileIsLoaded.actions"
-import { setScaling } from "../../../../app/codeCharta/state/store/appSettings/scaling/scaling.actions"
-import { setSharpnessMode } from "../../../../app/codeCharta/state/store/appSettings/sharpnessMode/sharpnessMode.actions"
-import { setShowMetricLabelNameValue } from "../../../../app/codeCharta/state/store/appSettings/showMetricLabelNameValue/showMetricLabelNameValue.actions"
-import { setShowMetricLabelNodeName } from "../../../../app/codeCharta/state/store/appSettings/showMetricLabelNodeName/showMetricLabelNodeName.actions"
-import { setShowOnlyBuildingsWithEdges } from "../../../../app/codeCharta/state/store/appSettings/showOnlyBuildingsWithEdges/showOnlyBuildingsWithEdges.actions"
-import { setAreaMetric } from "../../../../app/codeCharta/state/store/dynamicSettings/areaMetric/areaMetric.actions"
-import { setColorMetric } from "../../../../app/codeCharta/state/store/dynamicSettings/colorMetric/colorMetric.actions"
-import { setColorMode } from "../../../../app/codeCharta/state/store/dynamicSettings/colorMode/colorMode.actions"
-import { setColorRange } from "../../../../app/codeCharta/state/store/dynamicSettings/colorRange/colorRange.actions"
-import { setDistributionMetric } from "../../../../app/codeCharta/state/store/dynamicSettings/distributionMetric/distributionMetric.actions"
-import { setEdgeMetric } from "../../../../app/codeCharta/state/store/dynamicSettings/edgeMetric/edgeMetric.actions"
-import { setAllFocusedNodes } from "../../../../app/codeCharta/state/store/dynamicSettings/focusedNodePath/focusedNodePath.actions"
-import { setHeightMetric } from "../../../../app/codeCharta/state/store/dynamicSettings/heightMetric/heightMetric.actions"
-import { setMargin } from "../../../../app/codeCharta/state/store/dynamicSettings/margin/margin.actions"
-import { setSearchPattern } from "../../../../app/codeCharta/state/store/dynamicSettings/searchPattern/searchPattern.actions"
-import { setSortingOption } from "../../../../app/codeCharta/state/store/dynamicSettings/sortingOption/sortingOption.actions"
-import { setAttributeDescriptors } from "../../../../app/codeCharta/state/store/fileSettings/attributeDescriptors/attributeDescriptors.action"
-import { setAttributeTypes } from "../../../../app/codeCharta/state/store/fileSettings/attributeTypes/attributeTypes.actions"
-import { setBlacklist } from "../../../../app/codeCharta/state/store/fileSettings/blacklist/blacklist.actions"
-import { setEdges } from "../../../../app/codeCharta/state/store/fileSettings/edges/edges.actions"
-import { setMarkedPackages } from "../../../../app/codeCharta/state/store/fileSettings/markedPackages/markedPackages.actions"
-import { readCcState } from "../../../../app/codeCharta/util/indexedDB/indexedDBWriter"
+import { readCcState } from "../../util/indexedDB/indexedDBWriter"
 import sample1 from "../../assets/sample1.cc.json"
 import sample2 from "../../assets/sample2.cc.json"
 import { ExportCCFile } from "../../codeCharta.api.model"
@@ -59,6 +21,46 @@ import { getNameDataPair } from "../loadFile/fileParser"
 import { LoadFileService, NO_FILES_LOADED_ERROR_MESSAGE } from "../loadFile/loadFile.service"
 import { UrlExtractor } from "./urlExtractor"
 import { setCurrentFilesAreSampleFiles } from "../../state/store/appStatus/currentFilesAreSampleFiles/currentFilesAreSampleFiles.actions"
+import { setShowOutgoingEdges } from "../../state/store/appSettings/showEdges/outgoing/showOutgoingEdges.actions"
+import { setShowIncomingEdges } from "../../state/store/appSettings/showEdges/incoming/showIncomingEdges.actions"
+import { setAttributeTypes } from "../../state/store/fileSettings/attributeTypes/attributeTypes.actions"
+import { setAttributeDescriptors } from "../../state/store/fileSettings/attributeDescriptors/attributeDescriptors.action"
+import { setBlacklist } from "../../state/store/fileSettings/blacklist/blacklist.actions"
+import { setEdges } from "../../state/store/fileSettings/edges/edges.actions"
+import { setMarkedPackages } from "../../state/store/fileSettings/markedPackages/markedPackages.actions"
+import { setAreaMetric } from "../../state/store/dynamicSettings/areaMetric/areaMetric.actions"
+import { setHeightMetric } from "../../state/store/dynamicSettings/heightMetric/heightMetric.actions"
+import { setEdgeMetric } from "../../state/store/dynamicSettings/edgeMetric/edgeMetric.actions"
+import { setColorMetric } from "../../state/store/dynamicSettings/colorMetric/colorMetric.actions"
+import { setColorMode } from "../../state/store/dynamicSettings/colorMode/colorMode.actions"
+import { setSortingOption } from "../../state/store/dynamicSettings/sortingOption/sortingOption.actions"
+import { setColorRange } from "../../state/store/dynamicSettings/colorRange/colorRange.actions"
+import { setDistributionMetric } from "../../state/store/dynamicSettings/distributionMetric/distributionMetric.actions"
+import { setAllFocusedNodes } from "../../state/store/dynamicSettings/focusedNodePath/focusedNodePath.actions"
+import { setSearchPattern } from "../../state/store/dynamicSettings/searchPattern/searchPattern.actions"
+import { setMargin } from "../../state/store/dynamicSettings/margin/margin.actions"
+import { setAmountOfTopLabels } from "../../state/store/appSettings/amountOfTopLabels/amountOfTopLabels.actions"
+import { setEdgeHeight } from "../../state/store/appSettings/edgeHeight/edgeHeight.actions"
+import { setScaling } from "../../state/store/appSettings/scaling/scaling.actions"
+import { setHideFlatBuildings } from "../../state/store/appSettings/hideFlatBuildings/hideFlatBuildings.actions"
+import { setInvertHeight } from "../../state/store/appSettings/invertHeight/invertHeight.actions"
+import { setInvertArea } from "../../state/store/appSettings/invertArea/invertArea.actions"
+import { setIsWhiteBackground } from "../../state/store/appSettings/isWhiteBackground/isWhiteBackground.actions"
+import { setMapColors } from "../../state/store/appSettings/mapColors/mapColors.actions"
+import { setPresentationMode } from "../../state/store/appSettings/isPresentationMode/isPresentationMode.actions"
+import { setShowOnlyBuildingsWithEdges } from "../../state/store/appSettings/showOnlyBuildingsWithEdges/showOnlyBuildingsWithEdges.actions"
+import { setIsEdgeMetricVisible } from "../../state/store/appSettings/isEdgeMetricVisible/isEdgeMetricVisible.actions"
+import { setResetCameraIfNewFileIsLoaded } from "../../state/store/appSettings/resetCameraIfNewFileIsLoaded/resetCameraIfNewFileIsLoaded.actions"
+import { setShowMetricLabelNameValue } from "../../state/store/appSettings/showMetricLabelNameValue/showMetricLabelNameValue.actions"
+import { setShowMetricLabelNodeName } from "../../state/store/appSettings/showMetricLabelNodeName/showMetricLabelNodeName.actions"
+import { setLayoutAlgorithm } from "../../state/store/appSettings/layoutAlgorithm/layoutAlgorithm.actions"
+import { setMaxTreeMapFiles } from "../../state/store/appSettings/maxTreeMapFiles/maxTreeMapFiles.actions"
+import { setSharpnessMode } from "../../state/store/appSettings/sharpnessMode/sharpnessMode.actions"
+import { setExperimentalFeaturesEnabled } from "../../state/store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.actions"
+import { setScreenshotToClipboardEnabled } from "../../state/store/appSettings/enableClipboard/screenshotToClipboardEnabled.actions"
+import { setColorLabels } from "../../state/store/appSettings/colorLabels/colorLabels.actions"
+import { setIsColorMetricLinkedToHeightMetricAction } from "../../state/store/appSettings/isHeightAndColorMetricLinked/isColorMetricLinkedToHeightMetric.actions"
+import { setEnableFloorLabels } from "../../state/store/appSettings/enableFloorLabels/enableFloorLabels.actions"
 
 export const sampleFile1 = { fileName: "sample1.cc.json", fileSize: 3 * 1024, content: sample1 as ExportCCFile }
 export const sampleFile2 = { fileName: "sample2.cc.json", fileSize: 2 * 1024, content: sample2 as ExportCCFile }
@@ -269,8 +271,7 @@ export class LoadInitialFileService {
                 this.store.dispatch(setMarkedPackages({ value }))
                 break
             default: {
-                const exhaustiveCheck: never = key
-                throw new Error(`Unhandled key: ${exhaustiveCheck}`)
+                throw new Error(`Unhandled key: ${key}`)
             }
         }
     }
@@ -311,8 +312,7 @@ export class LoadInitialFileService {
                 this.store.dispatch(setMargin({ value }))
                 break
             default: {
-                const exhaustiveCheck: never = key
-                throw new Error(`Unhandled key: ${exhaustiveCheck}`)
+                throw new Error(`Unhandled key: ${key}`)
             }
         }
     }
@@ -348,6 +348,12 @@ export class LoadInitialFileService {
                 break
             case "isPresentationMode":
                 this.store.dispatch(setPresentationMode({ value }))
+                break
+            case "showIncomingEdges":
+                this.store.dispatch(setShowIncomingEdges({ value }))
+                break
+            case "showOutgoingEdges":
+                this.store.dispatch(setShowOutgoingEdges({ value }))
                 break
             case "showOnlyBuildingsWithEdges":
                 this.store.dispatch(setShowOnlyBuildingsWithEdges({ value }))
@@ -399,8 +405,7 @@ export class LoadInitialFileService {
                 this.store.dispatch(setEnableFloorLabels({ value }))
                 break
             default: {
-                const exhaustiveCheck: never = key
-                throw new Error(`Unhandled key: ${exhaustiveCheck}`)
+                throw new Error(`Unhandled key: ${key}`)
             }
         }
     }
