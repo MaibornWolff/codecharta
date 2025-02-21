@@ -10,8 +10,7 @@ dependencies {
 
     testImplementation(libs.kotlin.test)
     testImplementation(libs.junit.jupiter.api)
-    testImplementation(libs.assertj.core)
-    testImplementation(libs.mockk)
+
     testImplementation(libs.jsonassert)
     testImplementation(libs.commons.text)
     testImplementation(project(":tools:PipeableParser"))

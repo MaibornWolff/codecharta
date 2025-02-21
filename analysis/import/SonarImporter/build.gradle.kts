@@ -13,9 +13,8 @@ dependencies {
     implementation(libs.javax.activation)
 
     testImplementation(libs.junit.jupiter.api)
-    testImplementation(libs.mockk)
+
     testImplementation(libs.wiremock)
-    testImplementation(libs.assertj.core)
 }
 
 tasks.test {

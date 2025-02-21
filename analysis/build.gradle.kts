@@ -42,6 +42,9 @@ subprojects {
         testImplementation(rootProject.libs.junit.jupiter.api)
         testImplementation(rootProject.libs.junit.jupiter.engine)
         testImplementation(rootProject.libs.junit.jupiter.params)
+        testImplementation(rootProject.libs.assertj.core)
+        testImplementation(rootProject.libs.mockk)
+        testImplementation(rootProject.libs.junit.platform.runner)
     }
 
     tasks.test {
@@ -73,8 +76,23 @@ distributions {
                     into("bin") {
                         subproject.tasks.findByName("startScripts").let {
                             from(it!!.outputs.files) {
-                                // 7-5-5 in binary
-                                fileMode = 0b111101101
+                                filePermissions {
+                                    user {
+                                        read = true
+                                        write = true
+                                        execute = true
+                                    }
+                                    group {
+                                        read = true
+                                        write = false
+                                        execute = true
+                                    }
+                                    other {
+                                        read = true
+                                        write = false
+                                        execute = true
+                                    }
+                                }
                             }
                         }
                     }

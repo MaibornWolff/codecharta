@@ -103,8 +103,8 @@ class JavaSonarAnalyzer(verbose: Boolean = false, searchIssues: Boolean = true) 
         sensorContext.setRuntime(
             SonarRuntimeImpl.forSonarQube(
                 Version.create(
-                    Companion.SONAR_VERSION_MAJOR,
-                    Companion.SONAR_VERSION_MINOR
+                    SONAR_VERSION_MAJOR,
+                    SONAR_VERSION_MINOR
                 ),
                 SonarQubeSide.SERVER,
                 SonarEdition.COMMUNITY
@@ -274,10 +274,10 @@ class JavaSonarAnalyzer(verbose: Boolean = false, searchIssues: Boolean = true) 
     private fun printProgressBar(fileName: String) {
         analyzedFiles += 1
         val currentFile =
-            if (fileName.length > Companion.MAX_FILE_NAME_PRINT_LENGTH) {
+            if (fileName.length > MAX_FILE_NAME_PRINT_LENGTH) {
                 ".." +
                     fileName.takeLast(
-                        Companion.MAX_FILE_NAME_PRINT_LENGTH
+                        MAX_FILE_NAME_PRINT_LENGTH
                     )
             } else {
                 fileName

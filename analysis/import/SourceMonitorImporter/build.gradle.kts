@@ -9,11 +9,9 @@ dependencies {
     implementation(libs.slf4j.simple)
     implementation(libs.kotlin.inquirer)
 
-    testImplementation(libs.assertj.core)
     testImplementation(libs.junit.jupiter.api)
     testImplementation(libs.kotlin.test)
     testImplementation(libs.jsonassert)
-    testImplementation(libs.mockk)
 
     testRuntimeOnly(libs.kotlin.reflect)
 }

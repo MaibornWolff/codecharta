@@ -29,9 +29,6 @@ dependencies {
     implementation(libs.kotlin.inquirer)
 
     testImplementation(libs.junit.jupiter.api)
-    testImplementation(libs.assertj.core)
-    testImplementation(libs.mockk)
-    testImplementation(libs.junit.platform.runner)
 }
 
 tasks.jar {

@@ -10,8 +10,7 @@ dependencies {
     implementation(libs.kotlin.inquirer)
 
     testImplementation(libs.junit.jupiter.api)
-    testImplementation(libs.assertj.core)
-    testImplementation(libs.mockk)
+
     testImplementation(libs.jsonassert)
 }
 

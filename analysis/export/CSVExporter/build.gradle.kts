@@ -7,9 +7,6 @@ dependencies {
     implementation(libs.picocli)
     implementation(libs.univocity.parsers)
     implementation(libs.kotlin.inquirer)
-
-    testImplementation(libs.mockk)
-    testImplementation(libs.assertj.core)
 }
 
 tasks.test {
