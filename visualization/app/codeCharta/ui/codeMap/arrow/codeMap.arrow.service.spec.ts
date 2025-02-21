@@ -23,6 +23,8 @@ import { wait } from "../../../util/testUtils/wait"
 import { IdToBuildingService } from "../../../services/idToBuilding/idToBuilding.service"
 import { appReducers, setStateMiddleware } from "../../../state/store/state.manager"
 import { clone } from "../../../util/clone"
+import { setShowOutgoingEdges } from "../../../state/store/appSettings/showEdges/outgoing/showOutgoingEdges.actions"
+import { setShowIncomingEdges } from "../../../state/store/appSettings/showEdges/incoming/showIncomingEdges.actions"
 
 describe("CodeMapArrowService", () => {
     let codeMapArrowService: CodeMapArrowService
@@ -127,6 +129,47 @@ describe("CodeMapArrowService", () => {
             await wait(codeMapArrowService["HIGHLIGHT_BUILDING_DELAY"])
 
             expect(resetEdgesOfBuildingMock).toHaveBeenCalled()
+        })
+        it("should only add outgoing edges when showOutgoingEdges is true and node has originNode path", () => {
+            withMockedThreeSceneService()
+            codeMapArrowService.addArrow = jest.fn()
+
+            const outgoingNode: Node = OUTGOING_NODE
+            const incomingNode: Node = INCOMING_NODE
+            const nodesMap = new Map<string, Node>()
+            nodesMap.set(outgoingNode.path, outgoingNode)
+            nodesMap.set(incomingNode.path, incomingNode)
+            codeMapArrowService["map"] = nodesMap
+
+            store.dispatch(setShowOutgoingEdges({ value: true }))
+            store.dispatch(setShowIncomingEdges({ value: false }))
+            store.dispatch(setEdges({ value: [{ fromNodeName: outgoingNode.path, toNodeName: incomingNode.path, attributes: {} }] }))
+
+            codeMapArrowService["buildPairingEdges"](nodesMap)
+
+            expect(codeMapArrowService.addArrow).toHaveBeenCalledTimes(1)
+            expect(codeMapArrowService.addArrow).toHaveBeenCalledWith(outgoingNode, incomingNode, true)
+        })
+
+        it("should only add incoming edges when showIncomingEdges is true and node has targetNode path", () => {
+            withMockedThreeSceneService()
+            codeMapArrowService.addArrow = jest.fn()
+
+            const outgoingNode: Node = OUTGOING_NODE
+            const incomingNode: Node = INCOMING_NODE
+            const nodesMap = new Map<string, Node>()
+            nodesMap.set(outgoingNode.path, outgoingNode)
+            nodesMap.set(incomingNode.path, incomingNode)
+            codeMapArrowService["map"] = nodesMap
+
+            store.dispatch(setShowOutgoingEdges({ value: false }))
+            store.dispatch(setShowIncomingEdges({ value: true }))
+            store.dispatch(setEdges({ value: [{ fromNodeName: outgoingNode.path, toNodeName: incomingNode.path, attributes: {} }] }))
+
+            codeMapArrowService["buildPairingEdges"](nodesMap)
+
+            expect(codeMapArrowService.addArrow).toHaveBeenCalledTimes(1)
+            expect(codeMapArrowService.addArrow).toHaveBeenCalledWith(outgoingNode, incomingNode, false)
         })
     })
 
