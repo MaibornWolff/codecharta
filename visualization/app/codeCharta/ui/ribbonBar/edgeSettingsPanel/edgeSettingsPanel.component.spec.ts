@@ -9,7 +9,7 @@ import { setState } from "../../../state/store/state.actions"
 describe("EdgeSettingsPanelComponent", () => {
     beforeEach(async () => {
         TestBed.configureTestingModule({
-            imports: [EdgeSettingsPanelComponent, StoreModule.forRoot(appReducers, { metaReducers: [setStateMiddleware] })]
+            imports: [EdgeSettingsPanelComponent]
         })
 
         await render(EdgeSettingsPanelComponent)
