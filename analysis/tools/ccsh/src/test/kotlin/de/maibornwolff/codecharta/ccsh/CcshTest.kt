@@ -1,27 +1,27 @@
 package de.maibornwolff.codecharta.ccsh
 
-import com.github.kinquirer.KInquirer
-import com.github.kinquirer.components.promptConfirm
-import com.github.kinquirer.components.promptInput
+import de.maibornwolff.codecharta.ccsh.SessionMock.Companion.mockRunInTerminalSession
 import de.maibornwolff.codecharta.tools.ccsh.Ccsh
-import de.maibornwolff.codecharta.tools.ccsh.parser.InteractiveParserSuggestionDialog
+import de.maibornwolff.codecharta.tools.ccsh.parser.InteractiveDialog
+import de.maibornwolff.codecharta.tools.ccsh.parser.InteractiveParserSuggestion
 import de.maibornwolff.codecharta.tools.ccsh.parser.ParserService
 import de.maibornwolff.codecharta.util.Logger
 import io.mockk.every
 import io.mockk.mockkObject
-import io.mockk.mockkStatic
 import io.mockk.unmockkAll
 import io.mockk.verify
-import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
+import org.junit.jupiter.api.Timeout
 import picocli.CommandLine
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.PrintStream
 
+@Timeout(120)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class CcshTest {
     private val outContent = ByteArrayOutputStream()
@@ -85,17 +85,26 @@ class CcshTest {
             parsersAndArgs.put(currentParserName, currentParserArgs)
         }
 
-        mockkObject(InteractiveParserSuggestionDialog)
+        mockkObject(InteractiveParserSuggestion)
         every {
-            InteractiveParserSuggestionDialog.offerAndGetInteractiveParserSuggestionsAndConfigurations(any())
+            InteractiveParserSuggestion.offerAndGetInteractiveParserSuggestionsAndConfigurations(any())
         } returns parsersAndArgs
     }
 
-    private fun mockKInquirerConfirm(shouldConfirm: Boolean) {
-        mockkStatic("com.github.kinquirer.components.ConfirmKt")
-        every {
-            KInquirer.promptConfirm(any(), any())
-        } returns shouldConfirm
+    private fun mockPrepareInteractiveDialog() {
+        mockkObject(InteractiveDialog)
+    }
+
+    private fun mockDialogMergeResults(shouldMerge: Boolean) {
+        every { InteractiveDialog.askForMerge(any()) } returns shouldMerge
+    }
+
+    private fun mockDialogRunParsers(shouldRun: Boolean) {
+        every { InteractiveDialog.askRunParsers(any()) } returns shouldRun
+    }
+
+    private fun mockDialogResultLocation(pathToReturn: String) {
+        every { InteractiveDialog.askJsonPath(any()) } returns pathToReturn
     }
 
     @Test
@@ -109,8 +118,8 @@ class CcshTest {
         val exitCode = Ccsh.executeCommandLine(arrayOf("edgefilter", ".", "--defaultExcludesS=AbC"))
 
         // then
-        Assertions.assertThat(exitCode).isNotZero()
-        Assertions.assertThat(outStream.toString()).contains("--default-excludes-s=AbC")
+        assertThat(exitCode).isNotZero()
+        assertThat(outStream.toString()).contains("--default-excludes-s=AbC")
 
         // clean up
         System.setErr(originalErr)
@@ -128,8 +137,8 @@ class CcshTest {
         val exitCode = Ccsh.executeCommandLine(arrayOf("-h"))
 
         // then
-        Assertions.assertThat(exitCode).isEqualTo(0)
-        Assertions.assertThat(outStream.toString())
+        assertThat(exitCode).isEqualTo(0)
+        assertThat(outStream.toString())
             .contains("Usage: ccsh [-hiv] [COMMAND]", "Command Line Interface for CodeCharta analysis")
         verify(exactly = 0) { ParserService.executePreconfiguredParser(any(), any()) }
 
@@ -149,9 +158,9 @@ class CcshTest {
         val exitCode = Ccsh.executeCommandLine(arrayOf("-v"))
 
         // then
-        Assertions.assertThat(exitCode).isEqualTo(0)
+        assertThat(exitCode).isEqualTo(0)
         // The actual printed version is null, as well as the package name, as it is not set for this test class
-        Assertions.assertThat(outStream.toString()).contains("version", "Copyright(c) 2024, MaibornWolff GmbH")
+        assertThat(outStream.toString()).contains("version", "Copyright(c) 2024, MaibornWolff GmbH")
         verify(exactly = 0) { ParserService.executePreconfiguredParser(any(), any()) }
 
         // clean up
@@ -164,20 +173,19 @@ class CcshTest {
         val selectedParsers = listOf("parser1", "parser2")
         val args = listOf(listOf("dummyArg1"), listOf("dummyArg2"))
 
+        mockRunInTerminalSession()
         mockInteractiveParserSuggestionDialog(selectedParsers, args)
         mockSuccessfulParserService()
-        mockKInquirerConfirm(true)
-
-        mockkStatic("com.github.kinquirer.components.InputKt")
-        every {
-            KInquirer.promptInput(any(), any(), any(), any(), any())
-        } returns "dummy/path"
+        mockPrepareInteractiveDialog()
+        mockDialogRunParsers(true)
+        mockDialogMergeResults(true)
+        mockDialogResultLocation("dummy/path")
 
         // when
         val exitCode = Ccsh.executeCommandLine(emptyArray())
 
         // then
-        Assertions.assertThat(exitCode).isZero // 3 because 2 parsers and the merge in the end
+        assertThat(exitCode).isZero // 3 because 2 parsers and the merge in the end
         verify(exactly = 3) { ParserService.executePreconfiguredParser(any(), any()) }
     }
 
@@ -191,7 +199,7 @@ class CcshTest {
         val exitCode = Ccsh.executeCommandLine(emptyArray())
 
         // then
-        Assertions.assertThat(exitCode == 0).isTrue()
+        assertThat(exitCode == 0).isTrue()
         verify(exactly = 0) { ParserService.executeSelectedParser(any(), any()) }
         verify(exactly = 0) { ParserService.executePreconfiguredParser(any(), any()) }
     }
@@ -202,15 +210,17 @@ class CcshTest {
         val selectedParsers = listOf("parser1", "parser2")
         val args = listOf(listOf("dummyArg1"), listOf("dummyArg2"))
 
+        mockRunInTerminalSession()
         mockInteractiveParserSuggestionDialog(selectedParsers, args)
         mockSuccessfulParserService()
-        mockKInquirerConfirm(false)
+        mockPrepareInteractiveDialog()
+        mockDialogRunParsers(false)
 
         // when
         val exitCode = Ccsh.executeCommandLine(emptyArray())
 
         // then
-        Assertions.assertThat(exitCode == 0).isTrue()
+        assertThat(exitCode == 0).isTrue()
         verify(exactly = 0) { ParserService.executeSelectedParser(any(), any()) }
         verify(exactly = 0) { ParserService.executePreconfiguredParser(any(), any()) }
     }
@@ -242,7 +252,7 @@ class CcshTest {
         val exitCode = Ccsh.executeCommandLine(arrayOf("unknownparser"))
 
         // then
-        Assertions.assertThat(exitCode).isZero
+        assertThat(exitCode).isZero
         verify { ParserService.executeSelectedParser(any(), any()) }
     }
 
@@ -255,7 +265,7 @@ class CcshTest {
         val exitCode = Ccsh.executeCommandLine(arrayOf("-i"))
 
         // then
-        Assertions.assertThat(exitCode).isZero
+        assertThat(exitCode).isZero
         verify { ParserService.executeSelectedParser(any(), any()) }
     }
 
@@ -268,8 +278,8 @@ class CcshTest {
         val exitCode = Ccsh.executeCommandLine(arrayOf("sonarimport"))
 
         // then
-        Assertions.assertThat(exitCode).isEqualTo(0)
-        Assertions.assertThat(errContent.toString()).contains("Executing sonarimport")
+        assertThat(exitCode).isEqualTo(0)
+        assertThat(errContent.toString()).contains("Executing sonarimport")
     }
 
     @Test
@@ -278,16 +288,18 @@ class CcshTest {
         val selectedParsers = listOf("parser1")
         val args = listOf(listOf("dummyArg1"))
 
+        mockRunInTerminalSession()
         mockInteractiveParserSuggestionDialog(selectedParsers, args)
         mockSuccessfulParserService()
-        mockKInquirerConfirm(true)
+        mockPrepareInteractiveDialog()
+        mockDialogRunParsers(true)
 
         // when
         val exitCode = Ccsh.executeCommandLine(emptyArray())
 
         // then
-        Assertions.assertThat(exitCode).isZero()
-        Assertions.assertThat(errContent.toString()).contains("Parser was successfully executed.")
+        assertThat(exitCode).isZero()
+        assertThat(errContent.toString()).contains("Parser was successfully executed.")
     }
 
     @Test
@@ -308,18 +320,37 @@ class CcshTest {
         mockkObject(Logger)
         every { Logger.info(capture(lambdaSlot)) } returns Unit
 
-        mockKInquirerConfirm(true)
-
-        mockkStatic("com.github.kinquirer.components.InputKt")
-        every {
-            KInquirer.promptInput(any(), any(), any(), any(), any())
-        } returns folderPath
+        mockRunInTerminalSession()
+        mockPrepareInteractiveDialog()
+        mockDialogRunParsers(true)
+        mockDialogMergeResults(true)
+        mockDialogResultLocation(folderPath)
 
         // when
         Ccsh.executeConfiguredParsers(cmdLine, multipleConfiguredParsers)
 
         // then
-        Assertions.assertThat(lambdaSlot.last()().endsWith(absoluteOutputFilePath)).isTrue()
+        assertThat(lambdaSlot.last()().endsWith(absoluteOutputFilePath)).isTrue()
+    }
+
+    @Test
+    fun `should return zero if users chooses not to merge`() {
+        val multipleConfiguredParsers =
+            mapOf(
+                "dummyParser1" to listOf("dummyArg1", "dummyArg2"),
+                "dummyParser2" to listOf("dummyArg1", "dummyArg2")
+            )
+
+        mockRunInTerminalSession()
+        mockPrepareInteractiveDialog()
+        mockDialogRunParsers(true)
+        mockDialogMergeResults(false)
+
+        // when
+        val resultCode = Ccsh.executeConfiguredParsers(cmdLine, multipleConfiguredParsers)
+
+        // then
+        assertThat(resultCode).isEqualTo(0)
     }
 
     @Test
@@ -346,18 +377,18 @@ class CcshTest {
                 )
             )
 
+        mockRunInTerminalSession()
         mockInteractiveParserSuggestionDialog(selectedParsers, args)
-        mockKInquirerConfirm(true)
-        mockkStatic("com.github.kinquirer.components.InputKt")
-        every {
-            KInquirer.promptInput(any(), any(), any(), any(), any())
-        } returns File(folderPath).absolutePath
+        mockPrepareInteractiveDialog()
+        mockDialogRunParsers(true)
+        mockDialogMergeResults(true)
+        mockDialogResultLocation(File(folderPath).absolutePath)
 
         // when
         val exitCode = Ccsh.executeCommandLine(emptyArray())
 
         // then
-        Assertions.assertThat(exitCode).isZero()
-        Assertions.assertThat(mergedOutputFile).exists()
+        assertThat(exitCode).isZero()
+        assertThat(mergedOutputFile).exists()
     }
 }

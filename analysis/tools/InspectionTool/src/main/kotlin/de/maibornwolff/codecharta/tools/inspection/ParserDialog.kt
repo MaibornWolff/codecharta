@@ -1,37 +1,32 @@
 package de.maibornwolff.codecharta.tools.inspection
 
-import com.github.kinquirer.KInquirer
-import com.github.kinquirer.components.promptInput
-import com.github.kinquirer.components.promptInputNumber
+import com.varabyte.kotter.runtime.RunScope
+import com.varabyte.kotter.runtime.Session
+import de.maibornwolff.codecharta.serialization.FileExtension
+import de.maibornwolff.codecharta.tools.inquirer.InputType
+import de.maibornwolff.codecharta.tools.inquirer.myPromptDefaultFileFolderInput
+import de.maibornwolff.codecharta.tools.inquirer.myPromptInputNumber
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
-import de.maibornwolff.codecharta.util.InputHelper
-import java.io.File
-import java.math.BigDecimal
-import java.nio.file.Paths
 
 class ParserDialog {
     companion object : ParserDialogInterface {
-        override fun collectParserArgs(): List<String> {
-            var inputFileName: String
-            do {
-                inputFileName =
-                    KInquirer.promptInput(
-                        message = "What is the cc.json file that you want to inspect?",
-                        hint = Paths.get("").toAbsolutePath().toString() + File.separator + "yourInput.cc.json"
-                    )
-            } while (!InputHelper.isInputValidAndNotNull(arrayOf(File(inputFileName)), canInputContainFolders = false))
+        override fun collectParserArgs(session: Session): List<String> {
+            val inputFileName: String = session.myPromptDefaultFileFolderInput(
+                inputType = InputType.FILE,
+                fileExtensionList = listOf(FileExtension.CCJSON, FileExtension.CCGZ),
+                onInputReady = testCallback()
+            )
 
-            return listOf(inputFileName, *collectPrintArguments())
+            val levels = session.myPromptInputNumber(
+                message = "How many levels do you want to print?",
+                hint = "0",
+                allowEmptyInput = false,
+                onInputReady = testCallback()
+            )
+
+            return listOf(inputFileName, "--levels=$levels")
         }
 
-        private fun collectPrintArguments(): Array<String> {
-            val levels: BigDecimal =
-                KInquirer.promptInputNumber(
-                    message = "How many levels do you want to print?",
-                    default = "0",
-                    hint = "0"
-                )
-            return arrayOf("--levels=$levels")
-        }
+        internal fun testCallback(): suspend RunScope.() -> Unit = {}
     }
 }
