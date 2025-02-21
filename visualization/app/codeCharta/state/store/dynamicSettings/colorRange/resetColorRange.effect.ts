@@ -7,8 +7,8 @@ import { calculateInitialColorRange } from "./calculateInitialColorRange"
 import { setColorRange } from "./colorRange.actions"
 import { fileActions } from "../../files/files.actions"
 import { CcState } from "../../../../codeCharta.model"
-import { setColorMetric } from "../colorMetric/colorMetric.actions"
 import { visibleFileStatesSelector } from "../../../selectors/visibleFileStates/visibleFileStates.selector"
+import { setColorMetric } from "../colorMetric/colorMetric.actions"
 
 @Injectable()
 export class ResetColorRangeEffect {
