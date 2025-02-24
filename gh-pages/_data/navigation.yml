@@ -113,6 +113,8 @@ docs:
             url: "/docs/how-to/use-sonar-9-4"
           - title: "Script for automated Sonar Analysis"
             url: "/docs/how-to/automated-sonar-analysis"
+          - title: "Script for automated simple Analysis"
+            url: "/docs/how-to/automated-simple-analysis"
     - title: "About"
       children:
           - title: "License"
