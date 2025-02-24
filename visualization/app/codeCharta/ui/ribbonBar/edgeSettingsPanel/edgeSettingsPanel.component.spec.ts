@@ -3,13 +3,13 @@ import { render, screen } from "@testing-library/angular"
 import { EdgeSettingsPanelComponent } from "./edgeSettingsPanel.component"
 import { Store, StoreModule } from "@ngrx/store"
 import userEvent from "@testing-library/user-event"
-import { appReducers, setStateMiddleware } from "../../../state/store/state.manager"
 import { setState } from "../../../state/store/state.actions"
+import { appReducers, setStateMiddleware } from "../../../state/store/state.manager"
 
 describe("EdgeSettingsPanelComponent", () => {
     beforeEach(async () => {
         TestBed.configureTestingModule({
-            imports: [EdgeSettingsPanelComponent]
+            imports: [EdgeSettingsPanelComponent, StoreModule.forRoot(appReducers, { metaReducers: [setStateMiddleware] })]
         })
 
         await render(EdgeSettingsPanelComponent)
