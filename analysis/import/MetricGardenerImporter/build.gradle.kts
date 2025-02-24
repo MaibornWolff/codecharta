@@ -15,8 +15,7 @@ dependencies {
     implementation(libs.slf4j.simple)
 
     testImplementation(libs.junit.jupiter.api)
-    testImplementation(libs.assertj.core)
-    testImplementation(libs.mockk)
+
     testImplementation(libs.wiremock)
 }
 
