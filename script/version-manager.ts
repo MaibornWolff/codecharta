@@ -181,6 +181,7 @@ ${unreleasedChangelogSection}`
     }
 
     private replaceVersionBadge(repository: string, readme: string, newVersion: string): string {
+        const repositoryAbbreviation = repository === "visualization" ? "vis" : "ana"
         const repositoryCapitalized = repository === "visualization" ? "Visualization" : "Analysis"
 
         const versionBadgeRegex = new RegExp(`alt="${repositoryCapitalized} Version Badge" src="https://img\\.shields\\.io/badge/.*?-`)
@@ -190,9 +191,23 @@ ${unreleasedChangelogSection}`
             throw new Error(`Could not find version badge for ${repositoryCapitalized} in README.md`)
         }
 
-        return readme.replace(
+        const updatedReadme = readme.replace(
             versionBadgeRegex,
             `alt="${repositoryCapitalized} Version Badge" src="https://img.shields.io/badge/${newVersion}-`
+        )
+
+        const versionBadgeRefRegex = new RegExp(
+            `href="https://github\\.com/MaibornWolff/codecharta/releases/tag/${repositoryAbbreviation}-.*?"`
+        )
+        const matchVersionBadgeRef = versionBadgeRefRegex.exec(updatedReadme)
+
+        if (!matchVersionBadgeRef) {
+            throw new Error(`Could not find version badge reference for ${repositoryCapitalized} in README.md`)
+        }
+
+        return updatedReadme.replace(
+            versionBadgeRefRegex,
+            `href="https://github.com/MaibornWolff/codecharta/releases/tag/${repositoryAbbreviation}-${newVersion}"`
         )
     }
 
