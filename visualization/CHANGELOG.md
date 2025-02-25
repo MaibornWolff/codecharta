@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [1.134.1] - 2025-02-25
+
 ### Added 🚀
 
 - Add the option to copy file paths directly from the node context menu [#3954](https://github.com/MaibornWolff/codecharta/pull/3954)
