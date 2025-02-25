@@ -25,7 +25,7 @@
   </p>
 
   <!-- Analysis -->
-  <p>
+  <div>
     <a href="https://github.com/MaibornWolff/codecharta/tree/ana-1.131.0">
       <img alt="Release Analysis Badge" src="https://img.shields.io/github/check-runs/MaibornWolff/CodeCharta/ana-1.131.0?label=Release%20-%20Analysis&style=plastic">
     </a>
@@ -35,8 +35,10 @@
     <a href="https://sonarcloud.io/dashboard?id=maibornwolff-gmbh_codecharta_analysis">
       <img alt="Sonar Analysis Coverage" src="https://img.shields.io/sonar/coverage/maibornwolff-gmbh_codecharta_analysis/main?server=https%3A%2F%2Fsonarcloud.io&label=Coverage%20Analysis&style=plastic">
     </a>
-    <br>
-    <!-- Visualization -->
+  </div>
+
+  <!-- Visualization -->
+  <div>
     <a href="https://github.com/MaibornWolff/codecharta/tree/vis-1.134.0">
       <img alt="Release Visualization Badge" src="https://img.shields.io/github/check-runs/MaibornWolff/CodeCharta/vis-1.134.0?label=Release%20-%20Visualization&style=plastic">
     </a>
@@ -46,7 +48,7 @@
     <a href="https://sonarcloud.io/dashboard?id=maibornwolff-gmbh_codecharta_visualization">
       <img alt="Sonar Visualization Coverage" src="https://img.shields.io/sonar/coverage/maibornwolff-gmbh_codecharta_visualization/main?server=https%3A%2F%2Fsonarcloud.io&label=Coverage%20Visualization&style=plastic">
     </a>
-  </p>
+  </div>
 
   <br>
 
