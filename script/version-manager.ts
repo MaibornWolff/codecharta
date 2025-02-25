@@ -12,106 +12,6 @@ type Repository = "visualization" | "analysis"
 type VersionType = "major" | "minor" | "patch"
 
 class VersionManager {
-    private validateRepository(repository: string): asserts repository is Repository {
-        const normalized = repository.toLowerCase()
-        if (normalized !== "visualization" && normalized !== "analysis") {
-            throw new Error(`Invalid repository: ${repository}. Must be either "Visualization" or "Analysis" (case insensitive)`)
-        }
-    }
-
-    private getNormalizedRepository(repository: string): Repository {
-        return repository.toLowerCase() as Repository
-    }
-
-    private validateVersionType(type: string): asserts type is VersionType {
-        if (type !== "major" && type !== "minor" && type !== "patch") {
-            throw new Error(`Invalid version type: ${type}. Must be one of: major, minor, patch`)
-        }
-    }
-
-    private validateFiles(repository: string) {
-        const normalizedRepo = this.getNormalizedRepository(repository)
-        if (normalizedRepo === "visualization") {
-            const visualizationFiles = ["visualization/package.json", "visualization/CHANGELOG.md"]
-            for (const file of visualizationFiles) {
-                if (!fs.existsSync(file)) {
-                    throw new Error(`Required file not found: ${file}`)
-                }
-            }
-        } else {
-            // Analysis repository
-            const analysisFiles = ["analysis/CHANGELOG.md", "analysis/gradle.properties", "analysis/node-wrapper/package.json"]
-            for (const file of analysisFiles) {
-                if (!fs.existsSync(file)) {
-                    throw new Error(`Required file not found: ${file}`)
-                }
-            }
-        }
-    }
-
-    private ensureDirectoryExists(dir: string) {
-        if (!fs.existsSync(dir)) {
-            fs.mkdirSync(dir, { recursive: true })
-        }
-    }
-
-    private updateReadme(repository: Repository, newVersion: string): void {
-        const readmePath = "README.md"
-
-        let updatedReadme = fs.readFileSync(readmePath, "utf8")
-        updatedReadme = this.replaceVersionBadge(repository, updatedReadme, newVersion)
-        updatedReadme = this.replaceReleaseBadge(repository, updatedReadme, newVersion)
-
-        fs.writeFileSync(readmePath, updatedReadme)
-    }
-
-    private replaceVersionBadge(repository: string, readme: string, newVersion: string): string {
-        const repositoryCapitalized = repository === "visualization" ? "Visualization" : "Analysis"
-
-        const versionBadgeRegex = new RegExp(`alt="${repositoryCapitalized} Version Badge" src="https://img\\.shields\\.io/badge/.*?-`)
-        const matchVersionBadge = readme.match(versionBadgeRegex)
-
-        if (!matchVersionBadge) {
-            throw new Error(`Could not find version badge for ${repositoryCapitalized} in README.md`)
-        }
-
-        return readme.replace(
-            versionBadgeRegex,
-            `alt="${repositoryCapitalized} Version Badge" src="https://img.shields.io/badge/${newVersion}-`
-        )
-    }
-
-    private replaceReleaseBadge(repository: string, readme: string, newVersion: string): string {
-        const repositoryAbbreviation = repository === "visualization" ? "vis" : "ana"
-        const repositoryCapitalized = repository === "visualization" ? "Visualization" : "Analysis"
-
-        const releaseBadgeRegex = new RegExp(
-            `alt="Release ${repositoryCapitalized} Badge" src="https://img\\.shields\\.io/github/check-runs/MaibornWolff/CodeCharta/${repositoryAbbreviation}-.*?\\?`
-        )
-        const matchReleaseBadge = readme.match(releaseBadgeRegex)
-
-        if (!matchReleaseBadge) {
-            throw new Error(`Could not find release badge for ${repositoryCapitalized} in README.md`)
-        }
-
-        const updatedReadme = readme.replace(
-            releaseBadgeRegex,
-            `alt="Release ${repositoryCapitalized} Badge" src="https://img.shields.io/github/check-runs/MaibornWolff/CodeCharta/${repositoryAbbreviation}-${newVersion}?`
-        )
-
-        const releaseBadgeRefRegex = new RegExp(`href="https://github\\.com/MaibornWolff/codecharta/tree/${repositoryAbbreviation}-.*?"`)
-        const matchReleaseBadgeRef = updatedReadme.match(releaseBadgeRefRegex)
-
-        if (!matchReleaseBadgeRef) {
-            throw new Error(`Could not find release badge reference for ${repositoryCapitalized} in README.md`)
-        }
-
-        return updatedReadme.replace(
-            releaseBadgeRefRegex,
-            `href="https://github.com/MaibornWolff/codecharta/tree/${repositoryAbbreviation}-${newVersion}"`
-        )
-    }
-
     public updateVersion(repository: string, type: string): string {
         try {
             // Validate inputs
@@ -213,6 +113,120 @@ ${unreleasedChangelogSection}`
         }
     }
 
+    public extractChangelog(repository: string, version?: string): string {
+        try {
+            this.validateRepository(repository)
+            const normalizedRepo = this.getNormalizedRepository(repository)
+            const changelogPath = `${normalizedRepo}/CHANGELOG.md`
+            const changelog = fs.readFileSync(changelogPath, "utf8")
+
+            return version ? this.extractChangelogSection(changelog, version) : this.extractChangelogSection(changelog, "unreleased")
+        } catch (error) {
+            console.error(`Error extracting changelog: ${error}`)
+            throw error
+        }
+    }
+
+    private validateRepository(repository: string): asserts repository is Repository {
+        const normalized = repository.toLowerCase()
+        if (normalized !== "visualization" && normalized !== "analysis") {
+            throw new Error(`Invalid repository: ${repository}. Must be either "Visualization" or "Analysis" (case insensitive)`)
+        }
+    }
+
+    private getNormalizedRepository(repository: string): Repository {
+        return repository.toLowerCase() as Repository
+    }
+
+    private validateVersionType(type: string): asserts type is VersionType {
+        if (type !== "major" && type !== "minor" && type !== "patch") {
+            throw new Error(`Invalid version type: ${type}. Must be one of: major, minor, patch`)
+        }
+    }
+
+    private validateFiles(repository: string) {
+        const normalizedRepo = this.getNormalizedRepository(repository)
+        if (normalizedRepo === "visualization") {
+            const visualizationFiles = ["visualization/package.json", "visualization/CHANGELOG.md"]
+            for (const file of visualizationFiles) {
+                if (!fs.existsSync(file)) {
+                    throw new Error(`Required file not found: ${file}`)
+                }
+            }
+        } else {
+            // Analysis repository
+            const analysisFiles = ["analysis/CHANGELOG.md", "analysis/gradle.properties", "analysis/node-wrapper/package.json"]
+            for (const file of analysisFiles) {
+                if (!fs.existsSync(file)) {
+                    throw new Error(`Required file not found: ${file}`)
+                }
+            }
+        }
+    }
+
+    private ensureDirectoryExists(dir: string) {
+        if (!fs.existsSync(dir)) {
+            fs.mkdirSync(dir, { recursive: true })
+        }
+    }
+
+    private updateReadme(repository: Repository, newVersion: string): void {
+        const readmePath = "README.md"
+
+        let updatedReadme = fs.readFileSync(readmePath, "utf8")
+        updatedReadme = this.replaceVersionBadge(repository, updatedReadme, newVersion)
+        updatedReadme = this.replaceReleaseBadge(repository, updatedReadme, newVersion)
+
+        fs.writeFileSync(readmePath, updatedReadme)
+    }
+
+    private replaceVersionBadge(repository: string, readme: string, newVersion: string): string {
+        const repositoryCapitalized = repository === "visualization" ? "Visualization" : "Analysis"
+
+        const versionBadgeRegex = new RegExp(`alt="${repositoryCapitalized} Version Badge" src="https://img\\.shields\\.io/badge/.*?-`)
+        const matchVersionBadge = versionBadgeRegex.exec(readme)
+
+        if (!matchVersionBadge) {
+            throw new Error(`Could not find version badge for ${repositoryCapitalized} in README.md`)
+        }
+
+        return readme.replace(
+            versionBadgeRegex,
+            `alt="${repositoryCapitalized} Version Badge" src="https://img.shields.io/badge/${newVersion}-`
+        )
+    }
+
+    private replaceReleaseBadge(repository: string, readme: string, newVersion: string): string {
+        const repositoryAbbreviation = repository === "visualization" ? "vis" : "ana"
+        const repositoryCapitalized = repository === "visualization" ? "Visualization" : "Analysis"
+
+        const releaseBadgeRegex = new RegExp(
+            `alt="Release ${repositoryCapitalized} Badge" src="https://img\\.shields\\.io/github/check-runs/MaibornWolff/CodeCharta/${repositoryAbbreviation}-.*?\\?`
+        )
+        const matchReleaseBadge = releaseBadgeRegex.exec(readme)
+
+        if (!matchReleaseBadge) {
+            throw new Error(`Could not find release badge for ${repositoryCapitalized} in README.md`)
+        }
+
+        const updatedReadme = readme.replace(
+            releaseBadgeRegex,
+            `alt="Release ${repositoryCapitalized} Badge" src="https://img.shields.io/github/check-runs/MaibornWolff/CodeCharta/${repositoryAbbreviation}-${newVersion}?`
+        )
+
+        const releaseBadgeRefRegex = new RegExp(`href="https://github\\.com/MaibornWolff/codecharta/tree/${repositoryAbbreviation}-.*?"`)
+        const matchReleaseBadgeRef = releaseBadgeRefRegex.exec(updatedReadme)
+
+        if (!matchReleaseBadgeRef) {
+            throw new Error(`Could not find release badge reference for ${repositoryCapitalized} in README.md`)
+        }
+
+        return updatedReadme.replace(
+            releaseBadgeRefRegex,
+            `href="https://github.com/MaibornWolff/codecharta/tree/${repositoryAbbreviation}-${newVersion}"`
+        )
+    }
+
     private extractChangelogSection(changelog: string, version: string): string {
         const lines = changelog.split("\n")
         const startIndex = lines.findIndex(line => line.includes(`## [${version}]`))
@@ -240,20 +254,6 @@ ${unreleasedChangelogSection}`
         }
 
         return content
-    }
-
-    public extractChangelog(repository: string, version?: string): string {
-        try {
-            this.validateRepository(repository)
-            const normalizedRepo = this.getNormalizedRepository(repository)
-            const changelogPath = `${normalizedRepo}/CHANGELOG.md`
-            const changelog = fs.readFileSync(changelogPath, "utf8")
-
-            return version ? this.extractChangelogSection(changelog, version) : this.extractChangelogSection(changelog, "unreleased")
-        } catch (error) {
-            console.error(`Error extracting changelog: ${error}`)
-            throw error
-        }
     }
 }
 
