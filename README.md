@@ -20,7 +20,7 @@
   <div style="display: flex; justify-content: center; align-items: center;">
   <!-- Analysis Column -->
   <div style="display: flex; flex-direction: column; align-items: flex-end;">
-    <a href="https://github.com/MaibornWolff/codecharta/actions/workflows/release-analysis.yml">
+    <a href="https://github.com/MaibornWolff/codecharta/tree/ana-1.131.0">
       <img alt="Release Analysis Badge" src="https://img.shields.io/github/check-runs/MaibornWolff/CodeCharta/ana-1.131.0?label=Release%20-%20Analysis&style=plastic">
     </a>
     <a href="https://sonarcloud.io/dashboard?id=maibornwolff-gmbh_codecharta_analysis">
@@ -33,8 +33,8 @@
 
   <!-- Visualization Column -->
   <div style="display: flex; flex-direction: column; align-items: flex-start; margin-left: 5px;">
-    <a href="https://github.com/MaibornWolff/codecharta/actions/workflows/release-visualization.yml">
-      <img alt="Release Visualization Badge" src="https://img.shields.io/github/check-runs/MaibornWolff/CodeCharta/vis-1.131.0?label=Release%20-%20Visualization&style=plastic">
+    <a href="https://github.com/MaibornWolff/codecharta/tree/vis-1.134.0">
+      <img alt="Release Visualization Badge" src="https://img.shields.io/github/check-runs/MaibornWolff/CodeCharta/vis-1.134.0?label=Release%20-%20Visualization&style=plastic">
     </a>
     <a href="https://sonarcloud.io/dashboard?id=maibornwolff-gmbh_codecharta_visualization">
       <img alt="Quality Gate Visualization" src="https://img.shields.io/sonar/quality_gate/maibornwolff-gmbh_codecharta_visualization/main?server=https%3A%2F%2Fsonarcloud.io&label=Quality%20Gate%20Visualization&style=plastic">
