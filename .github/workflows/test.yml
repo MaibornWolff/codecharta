@@ -10,7 +10,6 @@ on:
 
 jobs:
  check_prettier:
-    if: "!contains(github.event.head_commit.message, 'Deploying to main')"
     name: Code Style
     runs-on: ubuntu-latest
     env:
@@ -44,7 +43,6 @@ jobs:
       working-directory: ${{env.working-directory}}
 
  build_visualization_test:
-    if: "!contains(github.event.head_commit.message, 'Deploying to main')"
     name: Unit Tests (Visualization)
     runs-on: ubuntu-latest
     env:
@@ -87,7 +85,6 @@ jobs:
           path: ./visualization/dist/
 
  build_visualization_e2e:
-    if: "!contains(github.event.head_commit.message, 'Deploying to main')"
     name: E2E Tests (Visualization)
     runs-on: ubuntu-latest
     env:
