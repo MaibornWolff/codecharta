@@ -94,9 +94,21 @@ class VersionManager {
             throw new Error(`Could not find release badge for ${repositoryCapitalized} in README.md`)
         }
 
-        return readme.replace(
+        const updatedReadme = readme.replace(
             releaseBadgeRegex,
             `alt="Release ${repositoryCapitalized} Badge" src="https://img.shields.io/github/check-runs/MaibornWolff/CodeCharta/${repositoryAbbreviation}-${newVersion}?`
+        )
+
+        const releaseBadgeRefRegex = new RegExp(`href="https://github\\.com/MaibornWolff/codecharta/tree/${repositoryAbbreviation}-.*?"`)
+        const matchReleaseBadgeRef = updatedReadme.match(releaseBadgeRefRegex)
+
+        if (!matchReleaseBadgeRef) {
+            throw new Error(`Could not find release badge reference for ${repositoryCapitalized} in README.md`)
+        }
+
+        return updatedReadme.replace(
+            releaseBadgeRefRegex,
+            `href="https://github.com/MaibornWolff/codecharta/tree/${repositoryAbbreviation}-${newVersion}"`
         )
     }
 
