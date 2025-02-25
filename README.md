@@ -25,9 +25,11 @@
     <a href="https://github.com/MaibornWolff/codecharta/tree/ana-1.131.0">
       <img alt="Release Analysis Badge" src="https://img.shields.io/github/check-runs/MaibornWolff/CodeCharta/ana-1.131.0?label=Release%20-%20Analysis&style=plastic">
     </a>
+    &nbsp;
     <a href="https://sonarcloud.io/dashboard?id=maibornwolff-gmbh_codecharta_analysis">
       <img alt="Quality Gate Analysis" src="https://img.shields.io/sonar/quality_gate/maibornwolff-gmbh_codecharta_analysis/main?server=https%3A%2F%2Fsonarcloud.io&label=Quality%20Gate%20Analysis&style=plastic">
     </a>
+    <span></span>
     <a href="https://sonarcloud.io/dashboard?id=maibornwolff-gmbh_codecharta_analysis">
       <img alt="Sonar Analysis Coverage" src="https://img.shields.io/sonar/coverage/maibornwolff-gmbh_codecharta_analysis/main?server=https%3A%2F%2Fsonarcloud.io&label=Coverage%20Analysis&style=plastic">
     </a>
@@ -36,6 +38,7 @@
     <a href="https://github.com/MaibornWolff/codecharta/tree/vis-1.134.0">
       <img alt="Release Visualization Badge" src="https://img.shields.io/github/check-runs/MaibornWolff/CodeCharta/vis-1.134.0?label=Release%20-%20Visualization&style=plastic">
     </a>
+    <tab></tab>
     <a href="https://sonarcloud.io/dashboard?id=maibornwolff-gmbh_codecharta_visualization">
       <img alt="Quality Gate Visualization" src="https://img.shields.io/sonar/quality_gate/maibornwolff-gmbh_codecharta_visualization/main?server=https%3A%2F%2Fsonarcloud.io&label=Quality%20Gate%20Visualization&style=plastic">
     </a>
