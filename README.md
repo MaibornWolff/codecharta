@@ -4,13 +4,9 @@
   </a>
 
   <p>
-    Latest Release: <br>
-    Analysis <a href="https://github.com/MaibornWolff/codecharta/releases/tag/ana-1.131.0">1.131.0</a> | Visualization <a href="https://github.com/MaibornWolff/codecharta/releases/tag/vis-1.134.0">1.134.0</a>
-
-[comment]: ##################################################################################
-[comment]: <Ensure that the words 'latest release' are above the line with the links>
-[comment]: ##################################################################################
-
+    Latest Releases: <br>
+    <img alt="Analysis Version Badge" src="https://img.shields.io/badge/1.131.0-x?style=plastic&label=Analysis&color=blue">
+    <img alt="Visualization Version Badge" src="https://img.shields.io/badge/1.134.0-x?label=Visualization&style=plastic&color=blue">
   </p>
 
   <div>
@@ -21,19 +17,43 @@
     <a href="#links">Links</a>
   </div>
 
-  <div>
+  <div style="display: flex; justify-content: center; align-items: center;">
+  <!-- Analysis Column -->
+  <div style="display: flex; flex-direction: column; align-items: flex-end;">
     <a href="https://github.com/MaibornWolff/codecharta/actions/workflows/release-analysis.yml">
-      <img src="https://github.com/MaibornWolff/codecharta/actions/workflows/release-analysis.yml/badge.svg" alt="Release Analysis">
-    </a>
-    <a href="https://github.com/MaibornWolff/codecharta/actions/workflows/release-visualization.yml">
-      <img src="https://github.com/MaibornWolff/codecharta/actions/workflows/release-visualization.yml/badge.svg" alt="Release Visualization">
+      <img alt="Release Analysis Badge" src="https://img.shields.io/github/check-runs/MaibornWolff/CodeCharta/ana-1.131.0?label=Release%20-%20Analysis&style=plastic">
     </a>
     <a href="https://sonarcloud.io/dashboard?id=maibornwolff-gmbh_codecharta_analysis">
-      <img src="https://sonarcloud.io/api/project_badges/measure?project=maibornwolff-gmbh_codecharta_analysis&metric=alert_status" alt="Quality Gate Analysis"></a>
-    <a href="https://sonarcloud.io/dashboard?id=maibornwolff-gmbh_codecharta_visualization">
-      <img src="https://sonarcloud.io/api/project_badges/measure?project=maibornwolff-gmbh_codecharta_visualization&metric=alert_status" alt="Quality Gate Visualization">
+      <img alt="Quality Gate Analysis" src="https://img.shields.io/sonar/quality_gate/maibornwolff-gmbh_codecharta_analysis/main?server=https%3A%2F%2Fsonarcloud.io&label=Quality%20Gate%20Analysis&style=plastic">
+    </a>
+    <a href="https://sonarcloud.io/dashboard?id=maibornwolff-gmbh_codecharta_analysis">
+      <img alt="Sonar Analysis Coverage" src="https://img.shields.io/sonar/coverage/maibornwolff-gmbh_codecharta_analysis/main?server=https%3A%2F%2Fsonarcloud.io&label=Coverage%20Analysis&style=plastic">
     </a>
   </div>
+
+  <!-- Visualization Column -->
+  <div style="display: flex; flex-direction: column; align-items: flex-start; margin-left: 5px;">
+    <a href="https://github.com/MaibornWolff/codecharta/actions/workflows/release-visualization.yml">
+      <img alt="Release Visualization Badge" src="https://img.shields.io/github/check-runs/MaibornWolff/CodeCharta/vis-1.131.0?label=Release%20-%20Visualization&style=plastic">
+    </a>
+    <a href="https://sonarcloud.io/dashboard?id=maibornwolff-gmbh_codecharta_visualization">
+      <img alt="Quality Gate Visualization" src="https://img.shields.io/sonar/quality_gate/maibornwolff-gmbh_codecharta_visualization/main?server=https%3A%2F%2Fsonarcloud.io&label=Quality%20Gate%20Visualization&style=plastic">
+    </a>
+    <a href="https://sonarcloud.io/dashboard?id=maibornwolff-gmbh_codecharta_visualization">
+      <img alt="Sonar Visualization Coverage" src="https://img.shields.io/sonar/coverage/maibornwolff-gmbh_codecharta_visualization/main?server=https%3A%2F%2Fsonarcloud.io&label=Coverage%20Visualization&style=plastic">
+    </a>
+  </div>
+  </div>
+
+  <div style="display: flex; flex-direction: column; align-items: center; margin-top: 10px;">
+      <a href="https://codecharta.com/visualization/app/index.html?file=codecharta.cc.json.gz&file=codecharta_analysis.cc.json.gz&area=rloc&height=sonar_complexity&color=sonar_complexity">
+        <img alt="Website Up Badge" src="https://img.shields.io/website?url=https%3A%2F%2Fcodecharta.com%2Fvisualization%2Fapp%2Findex.html%3Ffile%3Dcodecharta.cc.json.gz%26file%3Dcodecharta_analysis.cc.json.gz%26area%3Drloc%26height%3Dsonar_complexity%26color%3Dsonar_complexity&up_message=running&style=plastic&label=Web%20Studio">
+      </a>
+      <a href="https://codecharta.com/stg/visualization/index.html?file=codecharta.cc.json.gz&file=codecharta_analysis.cc.json.gz&area=rloc&height=functions&color=functions&currentFilesAreSampleFiles=true">
+        <img alt="Website Prerelease Badge" src="https://img.shields.io/website?url=https%3A%2F%2Fcodecharta.com%2Fstg%2Fvisualization%2Findex.html%3Ffile%3Dcodecharta.cc.json.gz%26file%3Dcodecharta_analysis.cc.json.gz%26area%3Drloc%26height%3Dfunctions%26color%3Dfunctions%26currentFilesAreSampleFiles%3Dtrue&up_message=running&style=plastic&label=Web%20Studio%20Prerelease%20Environment">
+      </a>
+  </div>
+
 </div>
 
 ![Screenshot of CodeCharta](assets/promo_img.png)
@@ -66,7 +86,8 @@ and [Raw Text](https://maibornwolff.github.io/codecharta/docs/parser/raw-text).
 
 ### [Web Studio](https://codecharta.com/visualization/app/index.html?file=codecharta.cc.json.gz&file=codecharta_analysis.cc.json.gz&area=rloc&height=sonar_complexity&color=sonar_complexity) (Visualisation)
 
-Our [Web Studio](https://codecharta.com/visualization/app/index.html?file=codecharta.cc.json.gz&file=codecharta_analysis.cc.json.gz&area=rloc&height=sonar_complexity&color=sonar_complexity) allows you to visualize your code base in 3D. It takes the results from our Shell and displays them in a city-like map.
+Our [Web Studio](https://codecharta.com/visualization/app/index.html?file=codecharta.cc.json.gz&file=codecharta_analysis.cc.json.gz&area=rloc&height=sonar_complexity&color=sonar_complexity)
+allows you to visualize your code base in 3D. It takes the results from our Shell and displays them in a city-like map.
 You can move around your code base, zoom in and out, and see the metrics of your code base in a 3D map.
 Files with metrics become buildings where the area, height and color represent different metrics, you can freely choose!
 Makes it easy to see the hotspots in your code base and find areas for improvement.
