@@ -7,8 +7,12 @@
   <!-- Releases -->
   <p>
     Latest Releases: <br>
-    <img alt="Analysis Version Badge" src="https://img.shields.io/badge/1.131.0-x?style=plastic&label=Analysis&color=blue">
-    <img alt="Visualization Version Badge" src="https://img.shields.io/badge/1.134.0-x?label=Visualization&style=plastic&color=blue">
+    <a href="https://github.com/MaibornWolff/codecharta/releases/tag/ana-1.131.0">
+      <img alt="Analysis Version Badge" src="https://img.shields.io/badge/1.131.0-x?style=plastic&label=Analysis&color=blue">
+    </a>
+    <a href="https://github.com/MaibornWolff/codecharta/releases/tag/vis-1.134.0">
+      <img alt="Visualization Version Badge" src="https://img.shields.io/badge/1.134.0-x?label=Visualization&style=plastic&color=blue">
+    </a>
   </p>
 
   <!-- Links -->
