@@ -12,6 +12,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Add the option to copy file paths directly from the node context menu [#3954](https://github.com/MaibornWolff/codecharta/pull/3954)
 - Add Checkbox for separately disabling incoming/outgoing edges in edge metric settings [#3928](https://github.com/MaibornWolff/codecharta/pull/3928)
 
+### Fixed 🐞
+
+- Edge metric settings reset button only resetting some settings [#3953](https://github.com/MaibornWolff/codecharta/pull/3953)
+
 ## [1.134.0] - 2025-02-19
 
 ### Fixed 🐞
@@ -50,6 +54,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - The camera is now only reset when the area or the height of the map is changed [#3896](https://github.com/MaibornWolff/codecharta/pull/3896)
 - Fix freezing app on uploading already loaded files [#3901](https://github.com/MaibornWolff/codecharta/pull/3901)
 - Fix switching maps in delta view [#3903](https://github.com/MaibornWolff/codecharta/pull/3903)
+- "Show labels" in color options also works now if "Show labels" in height options is disabled [#3907](https://github.com/MaibornWolff/codecharta/pull/3907)
 
 ## [1.131.2] - 2024-12-04
 
