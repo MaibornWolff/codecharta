@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [1.131.1] - 2025-02-26
+
 ### Chore 👨‍💻 👩‍💻
 
 - Update deprecated gradle features [#3948](https://github.com/MaibornWolff/codecharta/pull/3948)
