@@ -5,9 +5,11 @@ import de.maibornwolff.codecharta.parser.svnlogparser.input.VersionControlledFil
 import de.maibornwolff.codecharta.parser.svnlogparser.input.metrics.MetricsFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.tuple
+import org.assertj.core.api.Assertions.within
 import org.junit.jupiter.api.Test
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
+import java.time.temporal.ChronoUnit
 import java.util.stream.Stream
 
 abstract class ParserStrategyContractTest {
@@ -62,8 +64,12 @@ abstract class ParserStrategyContractTest {
 
     @Test
     fun `parse date from commit lines`() {
+        val expectedDate = OffsetDateTime.of(2017, 5, 9, 19, 57, 57, 0, ZoneOffset.ofHours(2))
+        val precision = within(1, ChronoUnit.NANOS)
+
         val commitDate = logParserStrategy.parseDate(fullCommit)
-        assertThat(commitDate).isEqualToIgnoringNanos(OffsetDateTime.of(2017, 5, 9, 19, 57, 57, 0, ZONE_OFFSET))
+
+        assertThat(commitDate).isCloseTo(expectedDate, precision)
     }
 
     @Test
