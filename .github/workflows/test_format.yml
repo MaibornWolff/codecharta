@@ -1,0 +1,43 @@
+name: Format Tests
+
+on:
+  push:
+    branches:
+    - main
+  pull_request:
+    branches:
+    - main
+
+jobs:
+ check_prettier:
+    name: Code Style
+    runs-on: ubuntu-latest
+    env:
+      working-directory: ./
+    steps:
+    - uses: actions/checkout@v4
+    - name: Setup Node.js environment
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+
+    - name: Cache root node modules
+      uses: actions/cache@v4
+      env:
+        cache-name: cache-root-node-modules
+      with:
+        path: ~/.npm
+        key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-build-${{ env.cache-name }}-
+          ${{ runner.os }}-build-
+          ${{ runner.os }}-
+
+    - name: Install node
+      run: npm ci
+      working-directory: ${{env.working-directory}}
+
+    - name: Check formatting and linting
+      run: |
+        npm run format:check
+      working-directory: ${{env.working-directory}}
