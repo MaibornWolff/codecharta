@@ -7,9 +7,7 @@
             </div>
         }
         <div class="button-group">
-            <button mat-button disabled="true" title="{{ codeMapNode.path }}">
-                {{ codeMapNode.path | lastPartOfNodePath }}
-            </button>
+            <cc-copy-button [codeMapNode]="codeMapNode"></cc-copy-button>
             <cc-focus-buttons [codeMapNode]="codeMapNode"></cc-focus-buttons>
             <cc-flatten-buttons [codeMapNode]="codeMapNode"></cc-flatten-buttons>
             <cc-highlight-buttons [codeMapNode]="codeMapNode"></cc-highlight-buttons>

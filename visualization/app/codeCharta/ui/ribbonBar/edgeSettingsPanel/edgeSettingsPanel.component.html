@@ -18,8 +18,14 @@
 ></cc-slider>
 
 <div class="wrapper">
-    <cc-color-picker-for-map-color [mapColorFor]="'outgoingEdge'"></cc-color-picker-for-map-color>
-    <cc-color-picker-for-map-color [mapColorFor]="'incomingEdge'"></cc-color-picker-for-map-color>
+    <div class="edge-row">
+        <cc-color-picker-for-map-color [mapColorFor]="'outgoingEdge'"></cc-color-picker-for-map-color>
+        <mat-checkbox [checked]="(showOutgoingEdges$ | async)" (change)="applyShowOutgoingEdges($event.checked)">Show</mat-checkbox>
+    </div>
+    <div class="edge-row">
+        <cc-color-picker-for-map-color [mapColorFor]="'incomingEdge'"></cc-color-picker-for-map-color>
+        <mat-checkbox [checked]="(showIncomingEdges$ | async)" (change)="applyShowIncomingEdges($event.checked)">Show</mat-checkbox>
+    </div>
 </div>
 
 <mat-checkbox
@@ -33,7 +39,16 @@
 <cc-edge-metric-toggle></cc-edge-metric-toggle>
 
 <cc-reset-settings-button
-    [settingsKeys]="['appSettings.showOnlyBuildingsWithEdges', 'appSettings.amountOfEdgePreviews', 'appSettings.edgeHeight']"
+    [settingsKeys]="[
+            'appSettings.amountOfEdgePreviews',
+            'appSettings.edgeHeight',
+            'appSettings.mapColors.outgoingEdge',
+            'appSettings.showOutgoingEdges',
+            'appSettings.mapColors.incomingEdge',
+            'appSettings.showIncomingEdges',
+            'appSettings.showOnlyBuildingsWithEdges',
+            'appSettings.isEdgeMetricVisible'
+        ]"
     tooltip="Reset edge metric settings to their defaults"
     label="Reset edge metric settings"
 ></cc-reset-settings-button>
