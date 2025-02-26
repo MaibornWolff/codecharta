@@ -1,0 +1,70 @@
+name: Tests
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - 'visualization/**'
+      - 'gh-pages/**'
+  pull_request:
+    branches:
+      - main
+    paths-ignore:
+      - 'visualization/**'
+      - 'gh-pages/**'
+
+jobs:
+ test_and_sonar_analysis:
+    name: "Code Quality Results (analysis)"
+    runs-on: ubuntu-latest
+    env:
+      working-directory: ./analysis
+      project-directory: .
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Build
+        run: |
+          chmod +x ./gradlew
+          ./gradlew build
+        working-directory: ${{env.working-directory}}
+
+      - name: Test Analysis
+        run: |
+          ./gradlew integrationTest
+          ./gradlew jacocoTestReport
+        working-directory: ${{env.working-directory}}
+
+      - name: Docker Test Analysis
+        run: |
+          user_instance="docker_runner"
+          docker build ./analysis -t local-ccsh --build-arg USER_ADD=true --build-arg USER_ID=1001 --build-arg USERNAME=${user_instance} --no-cache
+          current_version=$(node -pe "require('./analysis/node-wrapper/package.json').version")
+          docker run -w /home/${user_instance}/cc/analysis/test -v $(pwd):/home/${user_instance}/cc local-ccsh bash ./golden_test.sh ${current_version} /home/${user_instance}/tmp-files/ /usr/local/bin/ccsh
+          docker build ./analysis -t local-ccsh --no-cache
+        working-directory: ${{env.project-directory}}
+
+      - name: Setup Java JDK
+        uses: actions/setup-java@v3.13.0
+        with:
+          distribution: 'zulu'
+          java-version: 17
+
+      - name: SonarCloud Scan Gradle
+        run: |
+          ./gradlew sonar
+        working-directory: ${{env.working-directory}}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          JAVA_HOME: ${{ env.JAVA_HOME }}
+
