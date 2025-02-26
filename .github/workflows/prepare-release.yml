@@ -51,7 +51,7 @@ jobs:
         id: cpr
         uses: peter-evans/create-pull-request@v7
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.DEPLOY_TOKEN }}
           commit-message: "Releasing ${{ steps.version.outputs.prefix }}-${{ steps.version.outputs.new_version }}"
           committer: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
           author: ${{ github.actor }} <${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com>
@@ -60,7 +60,7 @@ jobs:
           title: "Release ${{ inputs.repository }} ${{ steps.version.outputs.new_version }}"
           body: |
             Automated PR for releasing ${{ inputs.repository }} version ${{ steps.version.outputs.new_version }}
-            
+
             This PR was automatically created by the release workflow.
             After merging, the release workflow will create a tag `${{ steps.version.outputs.prefix }}-${{ steps.version.outputs.new_version }}` and start the release process.
           labels: |
