@@ -48,7 +48,6 @@
   <a href="https://codecharta.com/visualization/app/index.html?file=codecharta.cc.json.gz&file=codecharta_analysis.cc.json.gz&area=rloc&height=sonar_complexity&color=sonar_complexity">
     <img alt="Website Up Badge" src="https://img.shields.io/website?url=https%3A%2F%2Fcodecharta.com%2Fvisualization%2Fapp%2Findex.html%3Ffile%3Dcodecharta.cc.json.gz%26file%3Dcodecharta_analysis.cc.json.gz%26area%3Drloc%26height%3Dsonar_complexity%26color%3Dsonar_complexity&up_message=running&style=plastic&label=Web%20Studio">
   </a>
-  <br>
   <a href="https://codecharta.com/stg/visualization/index.html?file=codecharta.cc.json.gz&file=codecharta_analysis.cc.json.gz&area=rloc&height=functions&color=functions&currentFilesAreSampleFiles=true">
     <img alt="Website Prerelease Badge" src="https://img.shields.io/website?url=https%3A%2F%2Fcodecharta.com%2Fstg%2Fvisualization%2Findex.html%3Ffile%3Dcodecharta.cc.json.gz%26file%3Dcodecharta_analysis.cc.json.gz%26area%3Drloc%26height%3Dfunctions%26color%3Dfunctions%26currentFilesAreSampleFiles%3Dtrue&up_message=running&style=plastic&label=Web%20Studio%20Prerelease%20Environment">
   </a>
