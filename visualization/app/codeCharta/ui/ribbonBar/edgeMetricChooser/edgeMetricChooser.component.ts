@@ -45,7 +45,12 @@ export class EdgeMetricChooserComponent {
             return null
         }
 
-        const edgeValues = node.edgeAttributes[edgeMetric]
+        let edgeValues = node.edgeAttributes[edgeMetric]
+        if (!edgeValues) {
+            return null
+        }
+
+        edgeValues = node.edgeAttributes[edgeMetric]
         if (!edgeValues) {
             return null
         }
