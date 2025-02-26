@@ -28,9 +28,27 @@ describe("HeightSettingsPanelComponent", () => {
         )
         detectChanges()
 
-        const amountOfTopLabelsSlider = screen.getByTitle("Disabled because color labels are used")
+        const amountOfTopLabelsSlider = screen.getByTitle("Disabled because color labels are active")
         const matSlider = amountOfTopLabelsSlider.querySelector("mat-slider")
         expect(matSlider.getAttribute("ng-reflect-disabled")).toBe("true")
+    })
+
+    it("should display warning when color labels are active", async () => {
+        const { detectChanges } = await render(HeightSettingsPanelComponent)
+        const store = TestBed.inject(Store)
+        store.dispatch(
+            setColorLabels({
+                value: {
+                    positive: true,
+                    negative: false,
+                    neutral: false
+                }
+            })
+        )
+        detectChanges()
+
+        const hint = screen.getByText("Color metric labels active")
+        expect(hint).not.toBe(null)
     })
 
     it("should enable amount of top labels slider when there are no colorLabels", async () => {
