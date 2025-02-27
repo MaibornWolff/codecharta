@@ -39,7 +39,7 @@ jobs:
         id: version
         run: |
           set -e  # Exit immediately if a command exits with a non-zero status
-          NEW_VERSION=$(bun script/version-manager.ts update-version ${{ inputs.repository }} ${{ inputs.version_type }})
+          NEW_VERSION=$(bun .github/workflows/scripts/version-manager.ts update-version ${{ inputs.repository }} ${{ inputs.version_type }})
           if [ $? -ne 0 ]; then
             echo "::error::Version manager failed"
             exit 1

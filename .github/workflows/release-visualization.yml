@@ -128,7 +128,7 @@ jobs:
           echo "Contents of packages directory:"
           ls -la visualization/dist/packages/
 
-          CHANGELOG_CONTENT=$(bun script/version-manager.ts extract-changelog visualization ${{ needs.build.outputs.version }})
+          CHANGELOG_CONTENT=$(bun .github/workflows/scripts/version-manager.ts extract-changelog visualization ${{ needs.build.outputs.version }})
           gh release create "vis-${{ needs.build.outputs.version }}" \
             --title "Visualization release ${{ needs.build.outputs.version }}" \
             --notes "$CHANGELOG_CONTENT" \

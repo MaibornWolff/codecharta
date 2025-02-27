@@ -1,4 +1,28 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
-./script/pre-push.sh
+BRANCH_NAME=$(git rev-parse --abbrev-ref HEAD)
+
+if [[ $BRANCH_NAME =~ ^[a-z]+\/([0-9]+\/)?[a-z0-9-]+$ || $BRANCH_NAME == "main" || $BRANCH_NAME == "gh-pages" || $BRANCH_NAME =~ ^renovate ]]
+then
+    exit 0
+fi
+
+echo "ERROR: Wrong branch naming with '$BRANCH_NAME'"
+
+if [[ $BRANCH_NAME =~ [A-Z] ]]
+then
+    echo "- Do not use uppercase letters; split words with dashes."
+fi
+
+if [[ $BRANCH_NAME =~ [_] ]]
+then
+    echo "- Do not use underscores; split words with dashes."
+fi
+
+echo "- The branch must be named using the following syntax, with the issue number being optional:"
+echo "  <branch-type>/[<issue-number>/]<branch-name>"
+echo "  Example: feature/123/my-branch-name"
+echo "  Rename the current branch with: git branch -m <new-branch-name>"
+
+exit 1

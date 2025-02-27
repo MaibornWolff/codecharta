@@ -24,8 +24,8 @@ jobs:
   build:
     if: |
       (github.event_name == 'workflow_dispatch') ||
-      (github.event_name == 'pull_request' && 
-       github.event.pull_request.merged == true && 
+      (github.event_name == 'pull_request' &&
+       github.event.pull_request.merged == true &&
        contains(github.event.pull_request.labels.*.name, 'release') &&
        startsWith(github.event.pull_request.head.ref, 'release/ana-'))
     name: Build
@@ -106,8 +106,8 @@ jobs:
           # Debug: List files
           echo "Contents of distributions directory:"
           ls -la analysis/build/distributions/
-          
-          CHANGELOG_CONTENT=$(bun script/version-manager.ts extract-changelog analysis ${{ needs.build.outputs.version }})
+
+          CHANGELOG_CONTENT=$(bun .github/workflows/scripts/version-manager.ts extract-changelog analysis ${{ needs.build.outputs.version }})
           gh release create "ana-${{ needs.build.outputs.version }}" \
             --title "Analysis release ${{ needs.build.outputs.version }}" \
             --notes "$CHANGELOG_CONTENT" \
