@@ -2,12 +2,6 @@ name: Deploy GitHub Pages
 
 on:
   workflow_dispatch:
-    inputs:
-      clean_deploy:
-        description: 'Clean deployment (removes all existing files)'
-        type: boolean
-        default: false
-        required: false
   push:
     paths:
       - 'gh-pages/**'
@@ -25,18 +19,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4.7.3
         with:
           token: ${{ secrets.DEPLOY_TOKEN }}
           branch: gh-pages
           folder: gh-pages
-          clean: ${{ inputs.clean_deploy }}
           clean-exclude: |
             stg/**
             visualization/**
