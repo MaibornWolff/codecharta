@@ -16,7 +16,6 @@
       "**/*.properties",
       "**/Dockerfile",
       "**/*.glsl",
-      "**/.*",
       "**/*.sh",
       "**/*.hbs",
       "**/*.kt",
