@@ -212,4 +212,3 @@ jobs:
           branch: gh-pages
           folder: visualization/dist/webpack
           target-folder: visualization/app
-          clean: true
