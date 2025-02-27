@@ -281,7 +281,7 @@ if (import.meta.main) {
     switch (command) {
         case "extract-changelog":
             if (args.length === 0 || args.length > 2) {
-                console.error("Usage: bun script/version-manager.ts extract-changelog <repository> [version]")
+                console.error("Usage: bun .github/workflows/scripts/version-manager.ts extract-changelog <repository> [version]")
                 process.exit(1)
             }
             process.stdout.write(manager.extractChangelog(args[0], args[1]))
@@ -289,7 +289,7 @@ if (import.meta.main) {
 
         case "update-version":
             if (args.length !== 2) {
-                console.error("Usage: bun script/version-manager.ts update-version <repository> <version-type>")
+                console.error("Usage: bun .github/workflows/scripts/version-manager.ts update-version <repository> <version-type>")
                 process.exit(1)
             }
             process.stdout.write(manager.updateVersion(args[0], args[1]))
