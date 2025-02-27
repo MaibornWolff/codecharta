@@ -28,6 +28,7 @@ Components that import data from an external source, e.g. SonarQube, and generat
 | Source            | Project                                                                          |
 | ----------------- | -------------------------------------------------------------------------------- |
 | CodeMaat CSV      | [CodeMaatImporter](import/CodeMaatImporter/README.md)                            |
+| Test Coverage Reports | [CoverageImporter](import/CoverageImporter/README.md)                            |
 | generic CSV       | [CSVImporter](import/CSVImporter/README.md)                                      |
 | Metric Gardener   | [MetricGardenerImporter](import/MetricGardenerImporter/README.md) (experimental) |
 | SonarQube         | [SonarImporter](import/SonarImporter/README.md)                                  |
