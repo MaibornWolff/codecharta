@@ -2,12 +2,6 @@ name: Deploy GitHub Pages
 
 on:
   workflow_dispatch:
-    inputs:
-      clean_deploy:
-        description: 'Clean deployment (removes all existing files)'
-        type: boolean
-        default: false
-        required: false
   push:
     paths:
       - 'gh-pages/**'
@@ -31,7 +25,6 @@ jobs:
           token: ${{ secrets.DEPLOY_TOKEN }}
           branch: gh-pages
           folder: gh-pages
-          clean: ${{ inputs.clean_deploy }}
           clean-exclude: |
             stg/**
             visualization/**
