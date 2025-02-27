@@ -5,12 +5,13 @@ plugins {
 include("model")
 include("filter:MergeFilter", "filter:EdgeFilter", "filter:StructureModifier")
 include(
-    "import:CSVImporter",
-    "import:SonarImporter",
     "import:CodeMaatImporter",
+    "import:CoverageImporter",
+    "import:CSVImporter",
+    "import:MetricGardenerImporter",
+    "import:SonarImporter",
     "import:SourceMonitorImporter",
-    "import:TokeiImporter",
-    "import:MetricGardenerImporter"
+    "import:TokeiImporter"
 )
 include(
     "parser:RawTextParser",
