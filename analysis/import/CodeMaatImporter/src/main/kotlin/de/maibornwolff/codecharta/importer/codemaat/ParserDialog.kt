@@ -1,40 +1,35 @@
 package de.maibornwolff.codecharta.importer.codemaat
 
-import com.github.kinquirer.KInquirer
-import com.github.kinquirer.components.promptConfirm
-import com.github.kinquirer.components.promptInput
+import com.varabyte.kotter.runtime.RunScope
+import com.varabyte.kotter.runtime.Session
+import de.maibornwolff.codecharta.serialization.FileExtension
+import de.maibornwolff.codecharta.tools.inquirer.InputType
+import de.maibornwolff.codecharta.tools.inquirer.myPromptConfirm
+import de.maibornwolff.codecharta.tools.inquirer.myPromptDefaultFileFolderInput
+import de.maibornwolff.codecharta.tools.inquirer.myPromptInput
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
-import de.maibornwolff.codecharta.util.InputHelper
-import java.io.File
-import java.nio.file.Paths
 
 class ParserDialog {
     companion object : ParserDialogInterface {
-        private const val EXTENSION =
-            "csv"
+        override fun collectParserArgs(session: Session): List<String> {
+            val inputFileName: String = session.myPromptDefaultFileFolderInput(
+                inputType = InputType.FILE,
+                fileExtensionList = listOf(FileExtension.CSV),
+                onInputReady = testCallback()
+            )
 
-        override fun collectParserArgs(): List<String> {
-            var inputFileName:
-                String
-            do {
-                inputFileName = getInputFileName()
-            } while (!InputHelper.isInputValidAndNotNull(arrayOf(File(inputFileName)), canInputContainFolders = false))
-
-            val defaultOutputFileName =
-                getOutputFileName(inputFileName)
-            val outputFileName:
-                String =
-                KInquirer.promptInput(
-                    message = "What is the name of the output file?",
-                    hint = defaultOutputFileName,
-                    default = defaultOutputFileName
-                )
+            val outputFileName: String = session.myPromptInput(
+                message = "What is the name of the output file?",
+                hint = "output.cc.json",
+                allowEmptyInput = true,
+                onInputReady = testCallback()
+            )
 
             val isCompressed =
                 (outputFileName.isEmpty()) ||
-                    KInquirer.promptConfirm(
+                    session.myPromptConfirm(
                         message = "Do you want to compress the output file?",
-                        default = true
+                        onInputReady = testCallback()
                     )
 
             return listOfNotNull(
@@ -44,16 +39,6 @@ class ParserDialog {
             )
         }
 
-        private fun getInputFileName(): String {
-            val defaultInputFileName =
-                "edges.$EXTENSION"
-            val defaultInputFilePath =
-                Paths.get("").toAbsolutePath().toString() + File.separator + defaultInputFileName
-            return KInquirer.promptInput(
-                message = "What is the $EXTENSION file that has to be parsed?",
-                hint = defaultInputFilePath,
-                default = defaultInputFilePath
-            )
-        }
+        internal fun testCallback(): suspend RunScope.() -> Unit = {}
     }
 }
