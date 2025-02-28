@@ -13,7 +13,7 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.PrintStream
 
-@TestInstance(TestInstance.Lifecycle.PER_METHOD)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class CoverageImporterTest {
     private val reportFilePath = "src/test/resources/languages/JavaScriptTypeScript/minimal_lcov.info"
 
