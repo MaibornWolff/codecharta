@@ -10,6 +10,7 @@ dependencies {
 
     testImplementation(libs.junit.jupiter.api)
     testImplementation(libs.kotlin.test)
+    testImplementation(libs.jsonassert)
 
     testRuntimeOnly(libs.kotlin.reflect)
 }
