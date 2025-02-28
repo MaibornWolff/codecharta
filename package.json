@@ -20,7 +20,7 @@
     "arrowParens": "avoid"
   },
   "scripts": {
-    "format": "biome format --fix",
+    "format": "biome format --fix --no-errors-on-unmatched",
     "format:check": "biome check",
     "prepare": "husky install",
     "commitlint": "commitlint --config commitlint.config.js --edit"
@@ -34,6 +34,6 @@
     "lint-staged": "^15.4.3"
   },
   "lint-staged": {
-    "*.{js,ts,cjs,mjs,d.cts,d.mts,jsx,tsx,json,jsonc}": "npm run format"
+    "*": "npm run format"
   }
 }
