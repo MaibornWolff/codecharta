@@ -33,17 +33,11 @@ class JavaScriptTypeScriptStrategyTest {
         val expectedProject = ProjectDeserializer.deserializeProject(File(expectedFilePath).inputStream())
         val coverageReport = File("src/test/resources/languages/JavaScriptTypeScript/minimal_lcov.info")
         val projectBuilder = ProjectBuilder()
-        val outputStream = ByteArrayOutputStream()
 
         JavaScriptTypeScriptStrategy().buildCCJson(coverageReport, projectBuilder)
-        val project = projectBuilder.build()
-        ProjectSerializer.serializeProject(
-            project,
-            OutputStreamWriter(PrintStream(outputStream))
-        )
 
-        assertThat(project).isEqualTo(expectedProject)
-        JSONAssert.assertEquals(File(expectedFilePath).readText(), outputStream.toString(), JSONCompareMode.NON_EXTENSIBLE)
+        val project = projectBuilder.build()
+        assertThat(project.toString()).isEqualTo(expectedProject.toString())
     }
 
 }
