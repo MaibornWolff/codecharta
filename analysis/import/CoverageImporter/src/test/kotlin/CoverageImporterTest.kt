@@ -2,7 +2,7 @@ package de.maibornwolff.codecharta.importer.coverage
 
 import de.maibornwolff.codecharta.model.AttributeType
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
-import io.mockk.*
+import io.mockk.unmockkAll
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
@@ -15,7 +15,7 @@ import java.io.PrintStream
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class CoverageImporterTest {
-    private val reportFilePath = "src/test/resources/languages/JavaScriptTypeScript/minimal_lcov.info"
+    private val reportFilePath = "src/test/resources/languages/javascript/minimal_lcov.info"
 
     @AfterEach
     fun afterTest() {
@@ -148,7 +148,7 @@ class CoverageImporterTest {
             "",
             arrayOf(
                 "--language=javascript",
-                "--report-file=src/test/resources/languages/JavaScriptTypeScript/empty_lcov.info"
+                "--report-file=src/test/resources/languages/javascript/empty_lcov.info"
             )
         )
 
@@ -164,7 +164,7 @@ fun executeForOutput(input: String, args: Array<String> = emptyArray()): String 
             CoverageImporter.mainWithInOut(
                 inputStream,
                 printStream,
-                PrintStream(ByteArrayOutputStream()), // Ignoring stderr
+                PrintStream(ByteArrayOutputStream()),
                 args
             )
             byteArrayOutput.toString()

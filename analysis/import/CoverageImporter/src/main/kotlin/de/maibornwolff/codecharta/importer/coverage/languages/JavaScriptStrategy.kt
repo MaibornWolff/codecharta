@@ -7,7 +7,7 @@ import de.maibornwolff.codecharta.model.ProjectBuilder
 import de.maibornwolff.codecharta.serialization.FileExtension
 import java.io.File
 
-class JavaScriptTypeScriptStrategy : ImporterStrategy {
+class JavaScriptStrategy : ImporterStrategy {
     override val fileExtensions: List<FileExtension> = listOf(FileExtension.JS_TS_COVERAGE)
     override val defaultReportFileName: String = "lcov.info"
 
