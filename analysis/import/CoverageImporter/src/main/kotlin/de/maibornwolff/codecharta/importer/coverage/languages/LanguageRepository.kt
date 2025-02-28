@@ -1,18 +1,21 @@
 package de.maibornwolff.codecharta.importer.coverage.languages
 
 import de.maibornwolff.codecharta.importer.tokeiimporter.strategy.ImporterStrategy
-import de.maibornwolff.codecharta.importer.tokeiimporter.strategy.JavaScriptTypeScriptStrategy
+import de.maibornwolff.codecharta.importer.tokeiimporter.strategy.JavaScriptStrategy
 import de.maibornwolff.codecharta.serialization.FileExtension
 
-val languageChoices = listOf("javascript/typescript")
+val languageChoicesToLanguage = mapOf("javascript/typescript" to "javascript")
 
 val languageToStrategyMap = mapOf(
-    "javascript/typescript" to JavaScriptTypeScriptStrategy(),
-    "javascript" to JavaScriptTypeScriptStrategy(),
-    "typescript" to JavaScriptTypeScriptStrategy(),
-    "js" to JavaScriptTypeScriptStrategy(),
-    "ts" to JavaScriptTypeScriptStrategy()
+    "javascript" to JavaScriptStrategy(),
+    "typescript" to JavaScriptStrategy(),
+    "js" to JavaScriptStrategy(),
+    "ts" to JavaScriptStrategy()
 )
+
+fun getLanguageForLanguageChoice(languageChoice: String): String {
+    return languageChoicesToLanguage[languageChoice] ?: throw IllegalArgumentException("Unsupported language choice: $languageChoice")
+}
 
 fun getStrategyForLanguage(language: String): ImporterStrategy {
     return languageToStrategyMap[language] ?: throw IllegalArgumentException("Unsupported language: $language")
@@ -20,6 +23,10 @@ fun getStrategyForLanguage(language: String): ImporterStrategy {
 
 fun getFileExtensionsForLanguage(language: String): List<FileExtension> {
     return getStrategyForLanguage(language).fileExtensions
+}
+
+fun getDefaultReportNameFileForLanguage(language: String): String {
+    return getStrategyForLanguage(language).defaultReportFileName
 }
 
 fun isLanguageSupported(language: String): Boolean {
