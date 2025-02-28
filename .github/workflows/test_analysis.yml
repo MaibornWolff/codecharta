@@ -4,17 +4,13 @@ on:
   push:
     branches:
       - main
-    paths-ignore:
-      - 'visualization/**'
-      - 'gh-pages/**'
-      - '**/*.md'
+    paths:
+      - 'analysis/**'
   pull_request:
     branches:
       - main
-    paths-ignore:
-      - 'visualization/**'
-      - 'gh-pages/**'
-      - '**/*.md'
+    paths:
+        - 'analysis/**'
 
 
 jobs:
