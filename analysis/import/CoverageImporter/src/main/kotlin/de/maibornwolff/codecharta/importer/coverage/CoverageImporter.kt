@@ -3,15 +3,21 @@ package de.maibornwolff.codecharta.importer.coverage
 import de.maibornwolff.codecharta.importer.coverage.languages.getStrategyForLanguage
 import de.maibornwolff.codecharta.importer.coverage.languages.isLanguageSupported
 import de.maibornwolff.codecharta.importer.coverageimporter.ParserDialog
-import de.maibornwolff.codecharta.model.*
+import de.maibornwolff.codecharta.model.AttributeDescriptor
+import de.maibornwolff.codecharta.model.AttributeGenerator
+import de.maibornwolff.codecharta.model.ProjectBuilder
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import de.maibornwolff.codecharta.tools.interactiveparser.util.CodeChartaConstants
 import de.maibornwolff.codecharta.tools.pipeableparser.PipeableParser
 import picocli.CommandLine
-import java.io.*
-import java.util.*
+import java.io.File
+import java.io.IOException
+import java.io.InputStream
+import java.io.PrintStream
+import java.io.PrintWriter
+import java.util.Locale
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
@@ -36,7 +42,7 @@ class CoverageImporter(
         description = ["Path to the coverage report file (leave empty for default)"],
         paramLabel = "REPORT_FILE"
     )
-    private var reportFile: File? = null
+    private var reportFile: String? = null
 
     @CommandLine.Option(
         names = ["-h", "--help"],
@@ -86,7 +92,7 @@ class CoverageImporter(
 
         val languageStrategy = getStrategyForLanguage(language)
 
-        val report = reportFile ?: File(languageStrategy.defaultReportFileName)
+        val report = File(reportFile ?: languageStrategy.defaultReportFileName)
         if (!report.exists()) {
             throw IOException("Coverage report file not found: ${report.absolutePath}")
         }
