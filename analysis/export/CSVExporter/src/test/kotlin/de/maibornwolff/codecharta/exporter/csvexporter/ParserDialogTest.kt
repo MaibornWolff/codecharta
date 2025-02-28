@@ -68,7 +68,7 @@ class ParserDialogTest {
 
     @Test
     fun `should prompt user twice for input file when first input file is invalid`() {
-        val invalidFileName = "inv"
+        val invalidFileName = "inv.txt"
 
         mockkObject(ParserDialog.Companion)
 
