@@ -2,7 +2,6 @@ package de.maibornwolff.codecharta.importer.coverage
 
 import de.maibornwolff.codecharta.importer.coverage.languages.getStrategyForLanguage
 import de.maibornwolff.codecharta.importer.coverage.languages.isLanguageSupported
-import de.maibornwolff.codecharta.importer.coverageimporter.ParserDialog
 import de.maibornwolff.codecharta.model.AttributeDescriptor
 import de.maibornwolff.codecharta.model.AttributeGenerator
 import de.maibornwolff.codecharta.model.ProjectBuilder

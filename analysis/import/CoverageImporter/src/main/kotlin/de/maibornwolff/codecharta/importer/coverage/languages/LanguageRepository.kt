@@ -1,7 +1,5 @@
 package de.maibornwolff.codecharta.importer.coverage.languages
 
-import de.maibornwolff.codecharta.importer.tokeiimporter.strategy.ImporterStrategy
-import de.maibornwolff.codecharta.importer.tokeiimporter.strategy.JavaScriptStrategy
 import de.maibornwolff.codecharta.serialization.FileExtension
 
 val languageChoicesToLanguage = mapOf("javascript/typescript" to "javascript")
