@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.importer.tokeiimporter.strategy
+package de.maibornwolff.codecharta.importer.coverage.languages
 
 import de.maibornwolff.codecharta.model.MutableNode
 import de.maibornwolff.codecharta.model.NodeType
