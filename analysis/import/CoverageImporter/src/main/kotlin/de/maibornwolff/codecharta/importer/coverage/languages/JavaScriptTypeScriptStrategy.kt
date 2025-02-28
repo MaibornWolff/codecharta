@@ -11,86 +11,69 @@ class JavaScriptTypeScriptStrategy : ImporterStrategy {
     override val fileExtensions: List<FileExtension> = listOf(FileExtension.JS_TS_COVERAGE)
 
     override fun buildCCJson(coverageFile: File, projectBuilder: ProjectBuilder) {
-        // Set the project name (optional, based on your requirements)
-        // Note: ProjectBuilder doesn't have a direct method to set the project name,
-        // so it might need to be set during the build process.
+        var currentFilePath: String? = null
+        var linesFound = 0
+        var linesHit = 0
+        var functionsFound = 0
+        var functionsHit = 0
+        var branchesFound = 0
+        var branchesHit = 0
 
-        // Initialize variables to hold coverage data
-        var currentFile: String? = null
-        var linesFound: Int = 0
-        var linesHit: Int = 0
-        var branchesFound: Int = 0
-        var branchesHit: Int = 0
+        coverageFile.forEachLine { line ->
+            when {
+                line.startsWith("SF:") -> {
+                    currentFilePath = line.substringAfter("SF:").trim()
+                    linesFound = 0
+                    linesHit = 0
+                    functionsFound = 0
+                    functionsHit = 0
+                    branchesFound = 0
+                    branchesHit = 0
+                }
+                line.startsWith("LF:") -> linesFound = line.substringAfter("LF:").trim().toInt()
+                line.startsWith("LH:") -> linesHit = line.substringAfter("LH:").trim().toInt()
+                line.startsWith("FNF:") -> functionsFound = line.substringAfter("FNF:").trim().toInt()
+                line.startsWith("FNH:") -> functionsHit = line.substringAfter("FNH:").trim().toInt()
+                line.startsWith("BRF:") -> branchesFound = line.substringAfter("BRF:").trim().toInt()
+                line.startsWith("BRH:") -> branchesHit = line.substringAfter("BRH:").trim().toInt()
+                line == "end_of_record" -> {
+                    currentFilePath?.let { filePath ->
+                        val (directoryPath, fileName) = splitFilePath(filePath)
+                        val path = PathFactory.fromFileSystemPath(directoryPath)
 
-        // Read the lcov.info file
-        coverageFile.bufferedReader().use { reader ->
-            reader.forEachLine { line ->
-                when {
-                    line.startsWith("SF:") -> {
-                        // When encountering a new source file, reset metrics
-                        currentFile = line.removePrefix("SF:").trim()
-                        linesFound = 0
-                        linesHit = 0
-                        branchesFound = 0
-                        branchesHit = 0
-                    }
-                    line.startsWith("LF:") -> {
-                        linesFound = line.removePrefix("LF:").trim().toIntOrNull() ?: 0
-                    }
-                    line.startsWith("LH:") -> {
-                        linesHit = line.removePrefix("LH:").trim().toIntOrNull() ?: 0
-                    }
-                    line.startsWith("BRF:") -> {
-                        branchesFound = line.removePrefix("BRF:").trim().toIntOrNull() ?: 0
-                    }
-                    line.startsWith("BRH:") -> {
-                        branchesHit = line.removePrefix("BRH:").trim().toIntOrNull() ?: 0
-                    }
-                    line == "end_of_record" -> {
-                        // When the end of a record is reached, process the collected data
-                        currentFile?.let { filePath ->
-                            // Calculate coverage metrics
-                            val lineCoverage = if (linesFound > 0) {
-                                (linesHit.toDouble() / linesFound) * 100
-                            } else {
-                                0.0
-                            }
-                            val branchCoverage = if (branchesFound > 0) {
-                                (branchesHit.toDouble() / branchesFound) * 100
-                            } else {
-                                0.0
-                            }
-                            val statementCoverage = lineCoverage // Assuming equivalent to line coverage
+                        val lineCoverage = calculatePercentage(linesHit, linesFound)
+                        val branchCoverage = calculatePercentage(branchesHit, branchesFound)
+                        val statementCoverage = calculatePercentage(functionsHit, functionsFound)
 
-                            // Create a MutableNode with coverage attributes
-                            val node = MutableNode(
-                                name = filePath,
-                                type = NodeType.File, // Assuming NodeType.File exists
-                                attributes = mapOf(
-                                    "line_coverage" to lineCoverage,
-                                    "branch_coverage" to branchCoverage,
-                                    "statement_coverage" to statementCoverage
-                                ).toMutableMap()
+                        val node = MutableNode(
+                            name = fileName,
+                            type = NodeType.File,
+                            attributes = mutableMapOf(
+                                "line_coverage" to lineCoverage,
+                                "branch_coverage" to branchCoverage,
+                                "statement_coverage" to statementCoverage
                             )
+                        )
 
-                            // Determine the directory and file name
-                            val sanitizedPath = filePath.replace("\\", "/") // Ensure consistent path separators
-                            val directory = sanitizedPath.substringBeforeLast("/", "root")
-                            val fileName = sanitizedPath.substringAfterLast("/")
-
-                            // Create a Path object
-                            val path = PathFactory.fromFileSystemPath(directory)
-
-                            // Insert the node into the ProjectBuilder
-                            projectBuilder.insertByPath(path, node)
-                        }
-
-                        // Reset currentFile after processing
-                        currentFile = null
+                        projectBuilder.insertByPath(path, node)
                     }
+                    currentFilePath = null
                 }
             }
         }
+    }
+
+    private fun splitFilePath(fullPath: String): Pair<String, String> {
+        return if (fullPath.contains("/")) {
+            val lastSlashIndex = fullPath.lastIndexOf("/")
+            fullPath.substring(0, lastSlashIndex) to fullPath.substring(lastSlashIndex + 1)
+        } else {
+            "" to fullPath
+        }
+    }
+
+    private fun calculatePercentage(numerator: Int, denominator: Int): Double {
+        return if (denominator > 0) (numerator.toDouble() / denominator) * 100 else 0.0
     }
 
     override fun findCoverageFile(coverageFile: File): File {
