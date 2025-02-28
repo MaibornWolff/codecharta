@@ -6,10 +6,9 @@ import java.io.File
 
 interface ImporterStrategy {
     val fileExtensions: List<FileExtension>
+    val defaultReportFileName: String
 
     fun buildCCJson(coverageFile: File, projectBuilder: ProjectBuilder)
 
     fun findCoverageFile(coverageFile: File): File
-
-
 }
