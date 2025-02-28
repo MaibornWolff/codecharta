@@ -1,0 +1,16 @@
+{
+  "projectName": "typescript_coverage",
+  "apiVersion": "1.2",
+  "nodes": [
+    {
+      "name": "app/app.config.ts",
+      "type": "File",
+      "attributes": {
+        "line_coverage": 0,
+        "branch_coverage": 0,
+        "statement_coverage": 0
+      }
+    }
+  ],
+  "edges": []
+}
