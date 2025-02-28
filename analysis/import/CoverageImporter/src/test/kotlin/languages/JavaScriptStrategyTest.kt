@@ -1,6 +1,6 @@
 package languages
 
-import de.maibornwolff.codecharta.importer.tokeiimporter.strategy.JavaScriptStrategy
+import de.maibornwolff.codecharta.importer.coverage.languages.JavaScriptStrategy
 import de.maibornwolff.codecharta.model.ProjectBuilder
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import io.mockk.unmockkAll
