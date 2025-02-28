@@ -9,6 +9,7 @@ import java.io.File
 
 class JavaScriptTypeScriptStrategy : ImporterStrategy {
     override val fileExtensions: List<FileExtension> = listOf(FileExtension.JS_TS_COVERAGE)
+    override val defaultReportFileName: String = "lcov.info"
 
     override fun buildCCJson(coverageFile: File, projectBuilder: ProjectBuilder) {
         var currentFilePath: String? = null
