@@ -1,5 +1,4 @@
-package de.maibornwolff.codecharta.importer.coverage
-
+import de.maibornwolff.codecharta.importer.coverage.CoverageImporter
 import de.maibornwolff.codecharta.model.AttributeType
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import io.mockk.unmockkAll

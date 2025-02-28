@@ -1,5 +1,3 @@
-package de.maibornwolff.codecharta.importer.coverageimporter
-
 import com.varabyte.kotter.foundation.input.Keys
 import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.terminal.inmemory.press
@@ -8,6 +6,7 @@ import com.varabyte.kotterx.test.foundation.testSession
 import de.maibornwolff.codecharta.importer.coverage.CoverageImporter
 import de.maibornwolff.codecharta.importer.coverage.languages.getDefaultReportNameFileForLanguage
 import de.maibornwolff.codecharta.importer.coverage.languages.languageChoicesToLanguage
+import de.maibornwolff.codecharta.importer.coverage.ParserDialog
 import io.mockk.every
 import io.mockk.mockkObject
 import org.assertj.core.api.Assertions.assertThat
@@ -22,13 +21,13 @@ import picocli.CommandLine
 
 @Timeout(120)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class CoverageImporterParserDialogTest {
+class ParserDialogTest {
     private val outputFileName = "coverage_out.cc.json"
     private val reportFileName = "${TEST_RESOURCE_BASE_FOLDER}javascript/minimal_lcov.info"
 
     @BeforeEach
     fun setup() {
-        mockkObject(ParserDialog.Companion)
+        mockkObject(ParserDialog)
     }
 
     companion object {
@@ -39,7 +38,7 @@ class CoverageImporterParserDialogTest {
             return languageChoicesToLanguage.map { (_, language) ->
                 Arguments.of(
                     language,
-                    "${TEST_RESOURCE_BASE_FOLDER}$language/${getDefaultReportNameFileForLanguage(language)}",
+                    "$TEST_RESOURCE_BASE_FOLDER$language/${getDefaultReportNameFileForLanguage(language)}",
                     "coverage_${language}_out.cc.json"
                 )
             }

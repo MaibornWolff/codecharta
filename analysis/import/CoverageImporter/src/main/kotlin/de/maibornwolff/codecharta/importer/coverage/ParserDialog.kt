@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.importer.coverageimporter
+package de.maibornwolff.codecharta.importer.coverage
 
 import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.Session
