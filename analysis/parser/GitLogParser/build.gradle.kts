@@ -1,5 +1,6 @@
 dependencies {
     implementation(project(":model"))
+    implementation(project(":tools:Inquirer"))
     implementation(project(":filter:MergeFilter"))
     implementation(project(":tools:InteractiveParser"))
     implementation(project(":tools:PipeableParser"))
@@ -8,7 +9,8 @@ dependencies {
     implementation(libs.picocli)
     implementation(libs.juniversalchardet)
     implementation(libs.slf4j.simple)
-    implementation(libs.kotlin.inquirer)
+    implementation(libs.kotter)
+    implementation(libs.kotter.test)
 
     testImplementation(libs.kotlin.test)
     testImplementation(libs.junit.jupiter.api)

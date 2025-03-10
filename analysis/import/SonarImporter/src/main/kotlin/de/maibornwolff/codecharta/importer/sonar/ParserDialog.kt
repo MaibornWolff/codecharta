@@ -1,55 +1,56 @@
 package de.maibornwolff.codecharta.importer.sonar
 
-import com.github.kinquirer.KInquirer
-import com.github.kinquirer.components.promptConfirm
-import com.github.kinquirer.components.promptInput
+import com.varabyte.kotter.runtime.RunScope
+import com.varabyte.kotter.runtime.Session
+import de.maibornwolff.codecharta.tools.inquirer.myPromptConfirm
+import de.maibornwolff.codecharta.tools.inquirer.myPromptInput
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
-import de.maibornwolff.codecharta.util.Logger
 
 class ParserDialog {
     companion object : ParserDialogInterface {
-        override fun collectParserArgs(): List<String> {
-            var hostUrl = collectHostUrl()
-            while (hostUrl.isEmpty()) {
-                Logger.error { "Empty hostUrl is not allowed!" }
-                hostUrl = collectHostUrl()
-            }
+        override fun collectParserArgs(session: Session): List<String> {
+            val hostUrl = session.myPromptInput(
+                message = "What is the sonar.host.url of your project?",
+                hint = "https://sonarcloud.io/",
+                allowEmptyInput = false,
+                invalidInputMessage = "Empty hostUrl is not allowed!",
+                onInputReady = testCallback()
+            )
 
-            var projectKey = collectProjectKey()
-            while (projectKey.isEmpty()) {
-                Logger.error { "Empty projectKey is not allowed!" }
-                projectKey = collectProjectKey()
-            }
+            val projectKey = session.myPromptInput(
+                message = "What is the sonar.projectKey?",
+                hint = "Unique identifier of your project",
+                allowEmptyInput = false,
+                invalidInputMessage = "Empty projectKey is not allowed!",
+                onInputReady = testCallback()
+            )
 
-            val userToken: String =
-                KInquirer.promptInput(
-                    message = "What is the sonar user token (sonar.login) required to connect to the remote Sonar instance?",
-                    hint = "sqp_0a81f6490875e062f79ccdeace23ac3c68dac6e"
-                )
+            val userToken: String = session.myPromptInput(
+                message = "What is the sonar user token (sonar.login) required to connect to the remote Sonar instance?",
+                hint = "sqp_0a81f6490875e062f79ccdeace23ac3c68dac6e",
+                allowEmptyInput = true,
+                onInputReady = testCallback()
+            )
 
-            val outputFileName: String =
-                KInquirer.promptInput(
-                    message = "What is the name of the output file?"
-                )
+            val outputFileName: String = session.myPromptInput(
+                message = "What is the name of the output file?",
+                allowEmptyInput = true,
+                onInputReady = testCallback()
+            )
 
-            val metrics: String =
-                KInquirer.promptInput(
-                    message = "What are the metrics to import (comma separated)?",
-                    hint = "metric1,metric2,metric3 (leave empty for all metrics)"
-                )
+            val metrics: String = session.myPromptInput(
+                message = "What are the metrics to import (comma separated)?",
+                hint = "metric1,metric2,metric3 (leave empty for all metrics)",
+                allowEmptyInput = true,
+                onInputReady = testCallback()
+            )
 
-            val isCompressed =
-                (outputFileName.isEmpty()) ||
-                    KInquirer.promptConfirm(
-                        message = "Do you want to compress the output file?",
-                        default = true
-                    )
+            val isCompressed: Boolean = (outputFileName.isEmpty()) || session.myPromptConfirm(
+                message = "Do you want to compress the output file?", onInputReady = testCallback()
+            )
 
             val mergeModules: Boolean =
-                KInquirer.promptConfirm(
-                    message = "Do you want to merge modules in multi-module projects?",
-                    default = false
-                )
+                session.myPromptConfirm(message = "Do you want to merge modules in multi-module projects?", onInputReady = testCallback())
 
             return listOfNotNull(
                 hostUrl,
@@ -64,18 +65,6 @@ class ParserDialog {
 
         private fun eraseWhitespace(input: String) = input.replace(" ", "")
 
-        private fun collectHostUrl(): String {
-            return KInquirer.promptInput(
-                message = "What is the sonar.host.url of your project?",
-                hint = "https://sonar.foo"
-            )
-        }
-
-        private fun collectProjectKey(): String {
-            return KInquirer.promptInput(
-                message = "What is the sonar.projectKey?",
-                hint = "Unique identifier of your project"
-            )
-        }
+        internal fun testCallback(): suspend RunScope.() -> Unit = {}
     }
 }

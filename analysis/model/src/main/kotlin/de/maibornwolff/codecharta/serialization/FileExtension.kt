@@ -6,5 +6,7 @@ enum class FileExtension(
     JSON(".json"),
     CSV(".csv"),
     CODECHARTA(".cc"),
-    GZIP(".gz")
+    GZIP(".gz"),
+    CCJSON(CODECHARTA.extension + JSON.extension),
+    CCGZ(CCJSON.extension + GZIP.extension)
 }
