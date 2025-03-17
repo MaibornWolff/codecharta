@@ -27,6 +27,21 @@ class JavaScriptStrategyTest {
         JavaScriptStrategy().buildCCJson(coverageReport, projectBuilder)
 
         val project = projectBuilder.build()
-        assertThat(project.toString()).isEqualTo(expectedProject.toString())
+        assertThat(project).usingRecursiveComparison().isEqualTo(expectedProject)
+    }
+
+    @Test
+    fun `should create correct cc json out of coverage report`()  {
+        val expectedFilePath = "src/test/resources/languages/javascript/coverage.cc.json"
+        val expectedProject = ProjectDeserializer.deserializeProject(File(expectedFilePath).inputStream())
+        val coverageReport = File("src/test/resources/languages/javascript/lcov.info")
+        val projectBuilder = ProjectBuilder()
+
+        JavaScriptStrategy().buildCCJson(coverageReport, projectBuilder)
+
+        val project = projectBuilder.build()
+        assertThat(
+            project
+        ).usingRecursiveComparison().ignoringFields("attributeDescriptors", "attributeTypes", "blacklist").isEqualTo(expectedProject)
     }
 }
