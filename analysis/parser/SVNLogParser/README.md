@@ -35,7 +35,7 @@ The names of authors are saved when the `--add-author` flag is set.
 | `--add-author`                  | add an array of authors to every file       |
 | `--silent`                      | suppress command line output during process |
 | `-h, --help`                    | displays help                               |
-| `-o, --outputFile=<outputFile>` | output File (or empty for stdout)           |
+| `-o, --output-file=<outputFile>` | output File (or empty for stdout)           |
 | `-nc, --not-compressed`         | safe uncompressed output file               |
 | `-log, --logfile`               | gives loghelp                               |
 

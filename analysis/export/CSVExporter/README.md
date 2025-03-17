@@ -21,7 +21,7 @@ _Conventions for csv output:_
 | `--depth-of-hierarchy=<maxHierarchy>` | Defines how many layers of the project structure should be listed (DEFAULT: 10) |
 | `FILE/FOLDER`                         | Input file or folder                                                            |
 | `-h, --help`                          | Displays help and exits                                                         |
-| `-o, --outputFile=<outputFile>`       | Output File (or empty for stdout)                                               |
+| `-o, --output-file=<outputFile>`       | Output File (or empty for stdout)                                               |
 
 ```
 ccsh csvexport [-h] [--depth-of-hierarchy=<maxHierarchy>]
