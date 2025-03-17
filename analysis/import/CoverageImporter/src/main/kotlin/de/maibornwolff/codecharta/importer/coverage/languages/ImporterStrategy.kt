@@ -9,6 +9,4 @@ interface ImporterStrategy {
     val defaultReportFileName: String
 
     fun buildCCJson(coverageFile: File, projectBuilder: ProjectBuilder)
-
-    fun findCoverageFile(coverageFile: File): File
 }
