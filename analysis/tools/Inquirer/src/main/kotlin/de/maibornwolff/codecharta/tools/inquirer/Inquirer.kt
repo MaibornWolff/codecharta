@@ -206,7 +206,7 @@ fun Session.myPromptDefaultFileFolderInput(
     fileExtensionList: List<FileExtension>,
     onInputReady: suspend RunScope.() -> Unit
 ): String {
-    val messageFileExtension = "[${fileExtensionList.joinToString(", ")}]"
+    val messageFileExtension = "[${fileExtensionList.map { fileExtension -> fileExtension.extension }.joinToString(", ")}]"
     val inputMessage: String =
         if (fileExtensionList.isEmpty()) {
             when (inputType) {
