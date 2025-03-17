@@ -3,8 +3,8 @@ package de.maibornwolff.codecharta.importer.coverage
 import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.Session
 import de.maibornwolff.codecharta.importer.coverage.languages.getFileExtensionsForLanguage
+import de.maibornwolff.codecharta.importer.coverage.languages.getLanguageChoices
 import de.maibornwolff.codecharta.importer.coverage.languages.getLanguageForLanguageChoice
-import de.maibornwolff.codecharta.importer.coverage.languages.languageChoicesToLanguage
 import de.maibornwolff.codecharta.tools.inquirer.InputType
 import de.maibornwolff.codecharta.tools.inquirer.myPromptConfirm
 import de.maibornwolff.codecharta.tools.inquirer.myPromptDefaultFileFolderInput
@@ -18,7 +18,7 @@ class ParserDialog {
         override fun collectParserArgs(session: Session): List<String> {
             val languageChoice: String = session.myPromptList(
                 message = "Specify the language of the coverage report",
-                choices = languageChoicesToLanguage.keys.toList(),
+                choices = getLanguageChoices(),
                 onInputReady = testCallback()
             ).lowercase(Locale.getDefault())
 
