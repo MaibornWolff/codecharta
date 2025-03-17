@@ -25,7 +25,7 @@ class ParserDialog {
             val language = getLanguageForLanguageChoice(languageChoice)
 
             val reportFile: String = session.myPromptDefaultFileFolderInput(
-                inputType = InputType.FILE,
+                inputType = InputType.FOLDER_AND_FILE,
                 fileExtensionList = getFileExtensionsForLanguage(language),
                 onInputReady = testCallback()
             )
