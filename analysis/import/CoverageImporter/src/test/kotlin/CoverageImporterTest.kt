@@ -6,6 +6,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
+import org.skyscreamer.jsonassert.JSONParser
 import picocli.CommandLine
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
@@ -148,6 +149,9 @@ class CoverageImporterTest {
     @Test
     fun `should handle piped input`() {
         val alreadyImportedCoverage = "src/test/resources/languages/javascript/coverage.cc.json"
+        val expectedOutputFileName = "src/test/resources/languages/javascript/expected_piped_output.cc.json"
+        val expectedOutput = File(expectedOutputFileName).bufferedReader().readLines()
+            .joinToString(separator = "\n") { it }
 
         val input =
             File(alreadyImportedCoverage).bufferedReader().readLines()
@@ -155,6 +159,7 @@ class CoverageImporterTest {
         val cliResult = executeForOutput(input, arrayOf("-l=js", "-rf=$reportFilePath"))
 
         assertThat(cliResult).contains(listOf("checksum", "data", "\"projectName\":\"\"", "app.config.ts", "codeCharta.api.model.ts"))
+        assertThat(JSONParser.parseJSON(cliResult)).usingRecursiveComparison().isEqualTo(JSONParser.parseJSON(expectedOutput))
     }
 
     @Test

@@ -1,11 +1,13 @@
 package de.maibornwolff.codecharta.importer.coverage
 
+import de.maibornwolff.codecharta.filter.mergefilter.MergeFilter
 import de.maibornwolff.codecharta.importer.coverage.languages.getStrategyForLanguage
 import de.maibornwolff.codecharta.importer.coverage.languages.isAnyStrategyApplicable
 import de.maibornwolff.codecharta.importer.coverage.languages.isLanguageSupported
 import de.maibornwolff.codecharta.model.AttributeDescriptor
 import de.maibornwolff.codecharta.model.AttributeGenerator
 import de.maibornwolff.codecharta.model.ProjectBuilder
+import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
@@ -98,7 +100,12 @@ class CoverageImporter(
         languageStrategy.buildCCJson(reportFile, projectBuilder)
         projectBuilder.addAttributeTypes(getAttributeTypes())
         projectBuilder.addAttributeDescriptions(getAttributeDescriptors())
-        val project = projectBuilder.build()
+        var project = projectBuilder.build()
+
+        val pipedProject = ProjectDeserializer.deserializeProject(input)
+        if (pipedProject != null) {
+            project = MergeFilter.mergePipedWithCurrentProject(pipedProject, project)
+        }
 
         ProjectSerializer.serializeToFileOrStream(project, outputFilePath, output, compress)
     }
