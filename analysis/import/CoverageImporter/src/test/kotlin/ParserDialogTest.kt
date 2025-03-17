@@ -4,9 +4,9 @@ import com.varabyte.kotter.runtime.terminal.inmemory.press
 import com.varabyte.kotter.runtime.terminal.inmemory.type
 import com.varabyte.kotterx.test.foundation.testSession
 import de.maibornwolff.codecharta.importer.coverage.CoverageImporter
+import de.maibornwolff.codecharta.importer.coverage.ParserDialog
 import de.maibornwolff.codecharta.importer.coverage.languages.getDefaultReportNameFileForLanguage
 import de.maibornwolff.codecharta.importer.coverage.languages.languageChoicesToLanguage
-import de.maibornwolff.codecharta.importer.coverage.ParserDialog
 import io.mockk.every
 import io.mockk.mockkObject
 import org.assertj.core.api.Assertions.assertThat
@@ -161,7 +161,6 @@ class ParserDialogTest {
             assertThat(parseResult.matchedOption("not-compressed")).isNull()
         }
     }
-
 
     @Test
     fun `should prompt user twice for report file when first input is invalid`() {
