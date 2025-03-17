@@ -76,8 +76,4 @@ class JavaScriptStrategy : ImporterStrategy {
     private fun calculatePercentage(numerator: Int, denominator: Int): Double {
         return if (denominator > 0) (numerator.toDouble() / denominator) * 100 else 0.0
     }
-
-    override fun findCoverageFile(coverageFile: File): File {
-        TODO("Not yet implemented")
-    }
 }
