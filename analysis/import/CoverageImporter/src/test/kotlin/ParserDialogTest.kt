@@ -23,7 +23,7 @@ import picocli.CommandLine
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ParserDialogTest {
     private val outputFileName = "coverage_out.cc.json"
-    private val reportFileName = "${TEST_RESOURCE_BASE_FOLDER}javascript/minimal_lcov.info"
+    private val reportFileName = "${TEST_RESOURCE_BASE_FOLDER}/javascript/minimal_lcov.info"
 
     @BeforeEach
     fun setup() {
@@ -31,14 +31,14 @@ class ParserDialogTest {
     }
 
     companion object {
-        private const val TEST_RESOURCE_BASE_FOLDER = "src/test/resources/languages/"
+        private const val TEST_RESOURCE_BASE_FOLDER = "src/test/resources/languages"
 
         @JvmStatic
         fun languageChoicesProvider(): List<Arguments> {
             return languageChoicesToLanguage.map { (_, language) ->
                 Arguments.of(
                     language,
-                    "$TEST_RESOURCE_BASE_FOLDER$language/${getDefaultReportNameFileForLanguage(language)}",
+                    "$TEST_RESOURCE_BASE_FOLDER/$language/${getDefaultReportNameFileForLanguage(language)}",
                     "coverage_${language}_out.cc.json"
                 )
             }
@@ -165,7 +165,7 @@ class ParserDialogTest {
 
     @Test
     fun `should prompt user twice for report file when first input is invalid`() {
-        val invalidReportFile = "${TEST_RESOURCE_BASE_FOLDER}javascript/invalid_existing_file.txt"
+        val invalidReportFile = "${TEST_RESOURCE_BASE_FOLDER}/javascript/invalid_existing_file.txt"
         val validReportFile = reportFileName
 
         testSession { terminal ->
