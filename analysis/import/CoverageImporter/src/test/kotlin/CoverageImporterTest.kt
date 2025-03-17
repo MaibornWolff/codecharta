@@ -22,6 +22,72 @@ class CoverageImporterTest {
     }
 
     @Test
+    fun `should use specified report file if it exists`() {
+        val cliResult = executeForOutput(
+            "",
+            arrayOf(
+                "--language=javascript",
+                "--report-file=$reportFilePath"
+            )
+        )
+
+        assertThat(cliResult).contains(listOf("checksum", "data", "\"projectName\":\"\""))
+    }
+
+    @Test
+    fun `should throw exception if no language is provided`() {
+        val errContent = ByteArrayOutputStream()
+        val originalErr = System.err
+
+        System.setErr(PrintStream(errContent))
+        CommandLine(CoverageImporter()).execute()
+        System.setErr(originalErr)
+
+        assertThat(errContent.toString()).startsWith("Missing required option: '--language=<language>'")
+    }
+
+    @Test
+    fun `should throw FileNotFoundException if provided file does not exist`() {
+        val notExistingFile = File("src/test/lcov.info")
+
+        val errContent = ByteArrayOutputStream()
+        val originalErr = System.err
+
+        System.setErr(PrintStream(errContent))
+        CommandLine(CoverageImporter()).execute("--language=javascript", "--report-file=${notExistingFile.path}")
+        System.setErr(originalErr)
+
+        assertThat(errContent.toString()).startsWith("java.io.FileNotFoundException: File not found: src/test/lcov.info")
+    }
+
+    @Test
+    fun `should throw IOException if no report files are found`() {
+        val directory = File("src/test/kotlin")
+        directory.mkdirs()
+
+        val errContent = ByteArrayOutputStream()
+        val originalErr = System.err
+
+        System.setErr(PrintStream(errContent))
+        CommandLine(CoverageImporter()).execute("--language=javascript", "--report-file=${directory.path}")
+        System.setErr(originalErr)
+
+        assertThat(errContent.toString()).contains("No matching files found in directory:")
+    }
+
+    @Test
+    fun `should throw IOException if multiple report files are found`() {
+        val errContent = ByteArrayOutputStream()
+        val originalErr = System.err
+
+        System.setErr(PrintStream(errContent))
+        CommandLine(CoverageImporter()).execute("--language=javascript")
+        System.setErr(originalErr)
+
+        assertThat(errContent.toString()).contains("Multiple matching files found in directory:")
+    }
+
+    @Test
     fun `should generate correct cc json from a valid coverage report`() {
         val cliResult = executeForOutput(
             "",
@@ -44,18 +110,6 @@ class CoverageImporterTest {
         System.setErr(originalErr)
 
         assertThat(errContent.toString()).startsWith("java.lang.IllegalArgumentException: Unsupported language: illegal_language")
-    }
-
-    @Test
-    fun `should use default report file when --report-file is not provided`() {
-        val errContent = ByteArrayOutputStream()
-        val originalErr = System.err
-
-        System.setErr(PrintStream(errContent))
-        CommandLine(CoverageImporter()).execute("--language=javascript")
-        System.setErr(originalErr)
-
-        assertThat(errContent.toString()).startsWith("java.io.IOException: Coverage report file not found:").contains("lcov.info")
     }
 
     @Test

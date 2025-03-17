@@ -1,6 +1,7 @@
 package de.maibornwolff.codecharta.importer.coverage
 
 import de.maibornwolff.codecharta.importer.coverage.languages.getStrategyForLanguage
+import de.maibornwolff.codecharta.importer.coverage.languages.isAnyStrategyApplicable
 import de.maibornwolff.codecharta.importer.coverage.languages.isLanguageSupported
 import de.maibornwolff.codecharta.model.AttributeDescriptor
 import de.maibornwolff.codecharta.model.AttributeGenerator
@@ -11,7 +12,6 @@ import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import de.maibornwolff.codecharta.tools.interactiveparser.util.CodeChartaConstants
 import de.maibornwolff.codecharta.tools.pipeableparser.PipeableParser
 import picocli.CommandLine
-import java.io.File
 import java.io.IOException
 import java.io.InputStream
 import java.io.PrintStream
@@ -34,14 +34,14 @@ class CoverageImporter(
         description = ["Specify the language of the coverage report (e.g., javascript, typescript, js, ts)"],
         required = true
     )
-    private var language: String = ""
+    private var language: String = "Not specified"
 
     @CommandLine.Option(
         names = ["-rf", "--report-file"],
         description = ["Path to the coverage report file (leave empty for default)"],
         paramLabel = "REPORT_FILE"
     )
-    private var reportFile: String? = null
+    private var reportFileName: String? = null
 
     @CommandLine.Option(
         names = ["-h", "--help"],
@@ -91,14 +91,11 @@ class CoverageImporter(
 
         val languageStrategy = getStrategyForLanguage(language)
 
-        val report = File(reportFile ?: languageStrategy.defaultReportFileName)
-        if (!report.exists()) {
-            throw IOException("Coverage report file not found: ${report.absolutePath}")
-        }
+        val reportFile = languageStrategy.getReportFileFromString(reportFileName ?: ".")
 
         val projectBuilder = ProjectBuilder()
 
-        languageStrategy.buildCCJson(report, projectBuilder)
+        languageStrategy.buildCCJson(reportFile, projectBuilder)
         projectBuilder.addAttributeTypes(getAttributeTypes())
         projectBuilder.addAttributeDescriptions(getAttributeDescriptors())
         val project = projectBuilder.build()
@@ -110,9 +107,7 @@ class CoverageImporter(
 
     override fun isApplicable(resourceToBeParsed: String): Boolean {
         println("Checking if CoverageImporter is applicable...")
-        // return ResourceSearchHelper.hasFileWithExtension(resourceToBeParsed, listOf("lcov.info"))
-        // TODO: Implement check for coverage report file
-        return false
+        return isAnyStrategyApplicable(resourceToBeParsed)
     }
 
     override fun getAttributeDescriptorMaps(): Map<String, AttributeDescriptor> {
