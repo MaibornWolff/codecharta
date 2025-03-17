@@ -1,6 +1,7 @@
 package de.maibornwolff.codecharta.importer.coverage.languages
 
 import de.maibornwolff.codecharta.model.ProjectBuilder
+import de.maibornwolff.codecharta.progresstracker.ProgressTracker
 import de.maibornwolff.codecharta.serialization.FileExtension
 import de.maibornwolff.codecharta.util.ResourceSearchHelper.Companion.endsWithAtLeastOne
 import de.maibornwolff.codecharta.util.ResourceSearchHelper.Companion.getFileFromStringIfExists
@@ -11,8 +12,14 @@ import java.io.FileNotFoundException
 interface ImporterStrategy {
     val fileExtensions: List<FileExtension>
     val defaultReportFileName: String
+    val progressTracker: ProgressTracker
+    var totalLines: Long
 
     fun buildCCJson(coverageFile: File, projectBuilder: ProjectBuilder)
+
+    fun updateProgress(parsedLines: Long) {
+        progressTracker.updateProgress(totalLines, parsedLines, "lines")
+    }
 
     fun getReportFileFromString(resourceToSearch: String): File {
         val existingFileOrDirectory = getFileFromStringIfExists(resourceToSearch)
