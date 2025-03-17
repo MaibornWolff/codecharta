@@ -20,13 +20,13 @@ The CoverageImporter generates visualisation data from a coverage report generat
 
 ## Usage and Parameters
 
-| Parameters                          | Description                                                                                       |
-|-------------------------------------|---------------------------------------------------------------------------------------------------|
-| `-l, --language`                    | specify the language of the coverage report (see above)                                           |
-| `-h, --help`                        | displays help and exits                                                                           |
-| `-nc, --not-compressed`             | save uncompressed output File                                                                     |
-| `-o, --outputFile=<outputFilePath>` | output File (or empty for stdout)                                                                 |
-| `-rf, --report-file=REPORT_FILE`    | path to the coverage report file (leave empty will result in search for default file - see above) |
+| Parameters                          | Description                                                                                                                              |
+|-------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------|
+| `-l, --language`                    | specify the language of the coverage report (see above)                                                                                  |
+| `-h, --help`                        | displays help and exits                                                                                                                  |
+| `-nc, --not-compressed`             | save uncompressed output File                                                                                                            |
+| `-o, --outputFile=<outputFilePath>` | output File (or empty for stdout)                                                                                                        |
+| `-rf, --report-file=REPORT_FILE`    | path to the coverage report file (when specifying a folder, the importer searches for a file matching the default file name - see above) |
 
 ```
 Usage: ccsh coverageimport [--language] [-h] [-nc] [-o=<outputFile>] FILE...
