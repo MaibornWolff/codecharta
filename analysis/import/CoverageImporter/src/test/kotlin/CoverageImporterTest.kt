@@ -97,7 +97,7 @@ class CoverageImporterTest {
             )
         )
 
-        assertThat(cliResult).contains(listOf("checksum", "data", "\"projectName\":\"\""))
+        assertThat(cliResult).contains(listOf("checksum", "data", "\"projectName\":\"\"", "app.config.ts"))
     }
 
     @Test
@@ -147,12 +147,14 @@ class CoverageImporterTest {
 
     @Test
     fun `should handle piped input`() {
+        val alreadyImportedCoverage = "src/test/resources/languages/javascript/coverage.cc.json"
+
         val input =
-            File(reportFilePath).bufferedReader().readLines()
+            File(alreadyImportedCoverage).bufferedReader().readLines()
                 .joinToString(separator = "\n") { it }
         val cliResult = executeForOutput(input, arrayOf("-l=js", "-rf=$reportFilePath"))
 
-        assertThat(cliResult).contains(listOf("checksum", "data", "\"projectName\":\"\""))
+        assertThat(cliResult).contains(listOf("checksum", "data", "\"projectName\":\"\"", "app.config.ts", "codeCharta.api.model.ts"))
     }
 
     @Test
