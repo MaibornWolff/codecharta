@@ -43,7 +43,7 @@ MetricGardener is in active development. More languages, metrics or command line
 | `FOLDER or FILE`                | path for project folder or code file             |
 | `-j, --is-json-file`            | Input file is already a MetricGardener JSON file |
 | `-h, --help`                    | displays help                                    |
-| `-o, --outputFile=<outputFile>` | output File (or empty for stdout)                |
+| `-o, --output-file=<outputFile>` | output File (or empty for stdout)                |
 | `-nc, --not-compressed`         | save uncompressed output File                    |
 
 ```

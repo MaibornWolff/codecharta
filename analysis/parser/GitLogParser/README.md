@@ -42,7 +42,7 @@ As this parser can generate metrics based on a given git-log file or given a git
 | `--git-log=FILE`                    | git-log file to parse (only available for log-scan mode!)                           |
 | `-h, --help`                        | displays help and exits                                                             |
 | `-nc, --not-compressed`             | save uncompressed output File                                                       |
-| `-o, --outputFile=<outputFilePath>` | output File (or empty for stdout)                                                   |
+| `-o, --output-file=<outputFilePath>` | output File (or empty for stdout)                                                   |
 | `--repo-files=FILE `                | list of all file names in current git project (only available for log-scan mode!)   |
 | `--repo-path=DIRECTORY`             | root directory of the repository (only available for repo-scan mode!)               |
 | `--silent`                          | suppress command line output during process                                         |

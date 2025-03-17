@@ -18,7 +18,7 @@ _Conventions for csv input:_
 | `--path-seperator=<pathSeperator>`  | path seperator (default= '/')                                     |
 | `-d, --delimeter=<csvDelimeter>`    | delimeter in csv file                                             |
 | `-h, --help`                        | displays help                                                     |
-| `-o, --outputFile=<outputFile>`     | output File (or empty for stdout)                                 |
+| `-o, --output-file=<outputFile>`     | output File (or empty for stdout)                                 |
 | `--pathColumnName=<pathColumnName>` | specify the path column name                                      |
 | `-nc, --not-compressed`             | uncompresses outputfile to json format, if format of File is gzip |
 

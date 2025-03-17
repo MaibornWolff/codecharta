@@ -59,7 +59,7 @@ class CoverageImporter(
     private var compress: Boolean = true
 
     @CommandLine.Option(
-        names = ["-o", "--outputFile"],
+        names = ["-o", "--output-file"],
         description = ["Output file (or empty for stdout)"],
         paramLabel = "<outputFilePath>"
     )

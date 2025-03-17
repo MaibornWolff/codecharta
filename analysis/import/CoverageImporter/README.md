@@ -25,7 +25,7 @@ The CoverageImporter generates visualisation data from a coverage report generat
 | `-l, --language`                    | specify the language of the coverage report (see above)                                                                                  |
 | `-h, --help`                        | displays help and exits                                                                                                                  |
 | `-nc, --not-compressed`             | save uncompressed output File                                                                                                            |
-| `-o, --outputFile=<outputFilePath>` | output File (or empty for stdout)                                                                                                        |
+| `-o, --output-file=<outputFilePath>` | output File (or empty for stdout)                                                                                                        |
 | `-rf, --report-file=REPORT_FILE`    | path to the coverage report file (when specifying a folder, the importer searches for a file matching the default file name - see above) |
 
 ```
