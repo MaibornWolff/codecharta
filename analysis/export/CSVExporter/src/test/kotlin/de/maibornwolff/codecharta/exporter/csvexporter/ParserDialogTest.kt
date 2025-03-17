@@ -78,7 +78,9 @@ class ParserDialogTest {
             val fileCallback: suspend RunScope.() -> Unit = {
                 terminal.type(invalidFileName)
                 terminal.press(Keys.ENTER)
-                terminal.press(Keys.BACKSPACE, Keys.BACKSPACE, Keys.BACKSPACE)
+                repeat(invalidFileName.length) {
+                    terminal.press(Keys.BACKSPACE)
+                }
                 terminal.type(inputFileName)
                 terminal.press(Keys.ENTER)
             }
