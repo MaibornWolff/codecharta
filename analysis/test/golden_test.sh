@@ -154,6 +154,18 @@ check_sourcecodeparser() {
   validate "${ACTUAL_SCP_JSON}"
 }
 
+check_coverageimporter_javascript() {
+    echo " ---- expect CoverageImporter to produce valid cc.json file for javascript"
+    ACTUAL_COVERAGE_JSON="${TEMP_DIR}/actual_coverageimporter.cc.json"
+    "${CCSH}" coverageimport --language=javascript --report-file="${DATA}/coverage/lcov.info" -o "${ACTUAL_COVERAGE_JSON}" -nc
+    validate "${ACTUAL_COVERAGE_JSON}"
+}
+
+check_coverageimporter() {
+    echo " -- expect CoverageImporter to produce valid cc.json files for all supported languages"
+    check_coverageimporter_javascript
+}
+
 check_svnlog() {
   echo " -- expect SVNLogParser to produce valid cc.json to system.out"
   ACTUAL_SVNLOG_JSON="${TEMP_DIR}/actual_svnlogparser.json"
@@ -229,6 +241,7 @@ run_tests() {
   check_metricgardener
   check_sonar
   check_sourcecodeparser
+  check_coverageimporter
   check_svnlog
   check_tokei
   check_rawtext
