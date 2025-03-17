@@ -4,14 +4,21 @@ import de.maibornwolff.codecharta.model.MutableNode
 import de.maibornwolff.codecharta.model.NodeType
 import de.maibornwolff.codecharta.model.PathFactory
 import de.maibornwolff.codecharta.model.ProjectBuilder
+import de.maibornwolff.codecharta.progresstracker.ProgressTracker
 import de.maibornwolff.codecharta.serialization.FileExtension
 import java.io.File
 
-class JavaScriptStrategy : ImporterStrategy {
+class JavaScriptStrategy() : ImporterStrategy {
     override val fileExtensions: List<FileExtension> = listOf(FileExtension.JS_TS_COVERAGE)
     override val defaultReportFileName: String = "lcov.info"
+    override val progressTracker: ProgressTracker = ProgressTracker()
+    override var totalLines: Long = 0
 
     override fun buildCCJson(coverageFile: File, projectBuilder: ProjectBuilder) {
+        totalLines = coverageFile.readLines().size.toLong()
+        var currentLine = 0L
+        updateProgress(currentLine)
+
         var currentFilePath: String? = null
         var linesFound = 0
         var linesHit = 0
@@ -61,6 +68,7 @@ class JavaScriptStrategy : ImporterStrategy {
                     currentFilePath = null
                 }
             }
+            updateProgress(++currentLine)
         }
     }
 
