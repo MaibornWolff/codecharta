@@ -5,8 +5,7 @@ import com.varabyte.kotter.runtime.terminal.inmemory.type
 import com.varabyte.kotterx.test.foundation.testSession
 import de.maibornwolff.codecharta.importer.coverage.CoverageImporter
 import de.maibornwolff.codecharta.importer.coverage.ParserDialog
-import de.maibornwolff.codecharta.importer.coverage.languages.getDefaultReportNameFileForLanguage
-import de.maibornwolff.codecharta.importer.coverage.languages.languageChoicesToLanguage
+import de.maibornwolff.codecharta.importer.coverage.languages.getStrategyForLanguage
 import io.mockk.every
 import io.mockk.mockkObject
 import org.assertj.core.api.Assertions.assertThat
@@ -35,10 +34,11 @@ class ParserDialogTest {
 
         @JvmStatic
         fun languageChoicesProvider(): List<Arguments> {
-            return languageChoicesToLanguage.map { (_, language) ->
+            val allStrategies = listOf("javascript")
+            return allStrategies.map { language ->
                 Arguments.of(
                     language,
-                    "$TEST_RESOURCE_BASE_FOLDER/$language/${getDefaultReportNameFileForLanguage(language)}",
+                    "$TEST_RESOURCE_BASE_FOLDER/$language/${getStrategyForLanguage(language).defaultReportFileName}",
                     "coverage_${language}_out.cc.json"
                 )
             }
