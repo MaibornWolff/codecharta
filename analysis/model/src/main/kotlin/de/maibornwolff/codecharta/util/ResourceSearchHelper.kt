@@ -41,11 +41,11 @@ class ResourceSearchHelper {
             return (inputFile.isDirectory && inputFile.name != "")
         }
 
-        private fun getFileFromStringIfExists(inputFilePath: String): File? {
-            if (inputFilePath == "") {
+        fun getFileFromStringIfExists(inputPath: String): File? {
+            if (inputPath == "") {
                 return null
             }
-            val result = File(inputFilePath.trim())
+            val result = File(inputPath.trim())
             if (result.exists()) {
                 return result
             }
@@ -56,7 +56,7 @@ class ResourceSearchHelper {
             return (inputFile.name == searchToken)
         }
 
-        private fun endsWithAtLeastOne(inputString: String, endings: List<String>): Boolean {
+        fun endsWithAtLeastOne(inputString: String, endings: List<String>): Boolean {
             for (ending in endings) {
                 if (inputString.endsWith(ending)) {
                     return true
