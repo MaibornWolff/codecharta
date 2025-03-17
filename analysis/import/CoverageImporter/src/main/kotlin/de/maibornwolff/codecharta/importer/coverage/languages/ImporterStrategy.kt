@@ -27,7 +27,7 @@ interface ImporterStrategy {
 
         println(
             "Given resource did not match with the default file name. " +
-                "Scanning directory `${existingFileOrDirectory.absolutePath}` if it contains matching files."
+                "Scanning directory `${existingFileOrDirectory.absolutePath}` for matching files."
         )
 
         val foundFiles = existingFileOrDirectory.walk().asSequence().filter {
