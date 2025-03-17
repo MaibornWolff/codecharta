@@ -31,7 +31,7 @@ class JavaScriptStrategyTest {
     }
 
     @Test
-    fun `should create correct cc json out of coverage report`()  {
+    fun `should create correct cc json out of coverage report`() {
         val expectedFilePath = "src/test/resources/languages/javascript/coverage.cc.json"
         val expectedProject = ProjectDeserializer.deserializeProject(File(expectedFilePath).inputStream())
         val coverageReport = File("src/test/resources/languages/javascript/lcov.info")
