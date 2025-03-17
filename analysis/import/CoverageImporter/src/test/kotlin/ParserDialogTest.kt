@@ -81,7 +81,7 @@ class ParserDialogTest {
 
             assertThat(parseResult.matchedOption("language").getValue<String>()).isEqualTo("javascript")
             assertThat(parseResult.matchedOption("report-file").getValue<String>()).isEqualTo(reportFileName)
-            assertThat(parseResult.matchedOption("outputFile").getValue<String>()).isEqualTo(outputFileName)
+            assertThat(parseResult.matchedOption("output-file").getValue<String>()).isEqualTo(outputFileName)
             assertThat(parseResult.matchedOption("not-compressed").getValue<Boolean>()).isFalse()
         }
     }
@@ -115,7 +115,7 @@ class ParserDialogTest {
 
             assertThat(parseResult.matchedOption("language").getValue<String>()).isEqualTo("javascript")
             assertThat(parseResult.matchedOption("report-file").getValue<String>()).isEqualTo(reportFileName)
-            assertThat(parseResult.matchedOption("outputFile")).isNull()
+            assertThat(parseResult.matchedOption("output-file")).isNull()
             assertThat(parseResult.matchedOption("not-compressed")).isNull()
         }
     }
@@ -157,7 +157,7 @@ class ParserDialogTest {
 
             assertThat(parseResult.matchedOption("language").getValue<String>()).isEqualTo(language)
             assertThat(parseResult.matchedOption("report-file").getValue<String>()).isEqualTo(expectedReportFile)
-            assertThat(parseResult.matchedOption("outputFile").getValue<String>()).isEqualTo(expectedOutputFile)
+            assertThat(parseResult.matchedOption("output-file").getValue<String>()).isEqualTo(expectedOutputFile)
             assertThat(parseResult.matchedOption("not-compressed")).isNull()
         }
     }
@@ -207,7 +207,7 @@ class ParserDialogTest {
 
             assertThat(parseResult.matchedOption("language").getValue<String>()).isEqualTo("javascript")
             assertThat(parseResult.matchedOption("report-file").getValue<String>()).isEqualTo(validReportFile)
-            assertThat(parseResult.matchedOption("outputFile").getValue<String>()).isEqualTo(outputFileName)
+            assertThat(parseResult.matchedOption("output-file").getValue<String>()).isEqualTo(outputFileName)
             assertThat(parseResult.matchedOption("not-compressed")).isNull()
         }
     }

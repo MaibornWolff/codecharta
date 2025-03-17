@@ -10,7 +10,7 @@ Generates visualization data from a cc.json file with edges data. For every node
 | ---------------------------------- | --------------------------------- |
 | `FILE`                             | files to filter                   |
 | `-h, --help`                       | displays help and exits           |
-| `-o, --outputFile=<outputFile>`    | output File (or empty for stdout) |
+| `-o, --output-file=<outputFile>`    | output File (or empty for stdout) |
 | `--path-seperator=<pathSeperator>` | path seperator (default= '/')     |
 
 ```

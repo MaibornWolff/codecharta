@@ -44,7 +44,7 @@ class ParserDialog {
 
             val languageParam = "--language=$language"
             val reportFileParam = "--report-file=$reportFile"
-            val outputFileParam = if (outputFileName.isNotEmpty()) "--outputFile=$outputFileName" else null
+            val outputFileParam = if (outputFileName.isNotEmpty()) "--output-file=$outputFileName" else null
             val notCompressedParam = if (isCompressed) null else "--not-compressed"
 
             return listOfNotNull(
