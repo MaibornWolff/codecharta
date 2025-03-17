@@ -162,12 +162,10 @@ class ParserDialogTest {
         }
     }
 
-    // TODO: make this test green
 
-    /*
     @Test
     fun `should prompt user twice for report file when first input is invalid`() {
-        val invalidReportFile = "invalid_file"
+        val invalidReportFile = "${TEST_RESOURCE_BASE_FOLDER}javascript/invalid_existing_file.txt"
         val validReportFile = reportFileName
 
         testSession { terminal ->
@@ -178,7 +176,11 @@ class ParserDialogTest {
             val reportFileCallback: suspend RunScope.() -> Unit = {
                 terminal.type(invalidReportFile)
                 terminal.press(Keys.ENTER)
-                terminal.press(Keys.BACKSPACE, Keys.BACKSPACE, Keys.BACKSPACE)
+
+                repeat(invalidReportFile.length) {
+                    terminal.press(Keys.BACKSPACE)
+                }
+
                 terminal.type(validReportFile)
                 terminal.press(Keys.ENTER)
             }
@@ -210,5 +212,4 @@ class ParserDialogTest {
             assertThat(parseResult.matchedOption("not-compressed")).isNull()
         }
     }
-     */
 }
