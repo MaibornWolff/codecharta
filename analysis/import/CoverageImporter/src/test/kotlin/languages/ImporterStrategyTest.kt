@@ -2,6 +2,7 @@ package languages
 
 import de.maibornwolff.codecharta.importer.coverage.languages.ImporterStrategy
 import de.maibornwolff.codecharta.model.ProjectBuilder
+import de.maibornwolff.codecharta.progresstracker.ProgressTracker
 import de.maibornwolff.codecharta.serialization.FileExtension
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
@@ -15,6 +16,8 @@ class ImporterStrategyTest {
     private val testStrategy = object : ImporterStrategy {
         override val fileExtensions: List<FileExtension> = listOf(FileExtension.JS_TS_COVERAGE)
         override val defaultReportFileName: String = "lcov.info"
+        override val progressTracker: ProgressTracker = ProgressTracker()
+        override var totalLines: Long = 0
 
         override fun buildCCJson(coverageFile: File, projectBuilder: ProjectBuilder) {
             // Implementation not needed for this test
