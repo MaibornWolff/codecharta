@@ -9,7 +9,7 @@ import io.mockk.every
 import io.mockk.mockkObject
 import io.mockk.unmockkAll
 import io.mockk.verify
-import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeAll
@@ -25,21 +25,19 @@ import java.io.PrintStream
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class InteractiveParserSuggestionTest {
     private val outContent = ByteArrayOutputStream()
-    private val originalOut = System.out
-    private val errorOut = ByteArrayOutputStream()
-    private val originalErrorOut = System.err
+    private val errContent = ByteArrayOutputStream()
     private val cmdLine = CommandLine(Ccsh())
 
     @BeforeAll
     fun setUpStreams() {
         System.setOut(PrintStream(outContent))
-        System.setErr(PrintStream(errorOut))
+        System.setErr(PrintStream(errContent))
     }
 
     @AfterAll
     fun restoreStreams() {
-        System.setOut(originalOut)
-        System.setErr(originalErrorOut)
+        System.setOut(System.out)
+        System.setErr(System.err)
     }
 
     @BeforeEach
@@ -49,6 +47,8 @@ class InteractiveParserSuggestionTest {
 
     @AfterEach
     fun afterTest() {
+        outContent.reset()
+        errContent.reset()
         unmockkAll()
     }
 
@@ -76,9 +76,9 @@ class InteractiveParserSuggestionTest {
         val usableParsers =
             InteractiveParserSuggestion.offerAndGetInteractiveParserSuggestionsAndConfigurations(cmdLine)
 
-        Assertions.assertThat(errorOut.toString()).contains(Ccsh.NO_USABLE_PARSER_FOUND_MESSAGE)
-        Assertions.assertThat(usableParsers).isNotNull
-        Assertions.assertThat(usableParsers).isEmpty()
+        assertThat(errContent.toString()).contains(Ccsh.NO_USABLE_PARSER_FOUND_MESSAGE)
+        assertThat(usableParsers).isNotNull
+        assertThat(usableParsers).isEmpty()
     }
 
     @Test
@@ -97,8 +97,8 @@ class InteractiveParserSuggestionTest {
         val selectedParsers =
             InteractiveParserSuggestion.offerAndGetInteractiveParserSuggestionsAndConfigurations(cmdLine)
 
-        Assertions.assertThat(selectedParsers).isNotNull
-        Assertions.assertThat(selectedParsers).isEmpty()
+        assertThat(selectedParsers).isNotNull
+        assertThat(selectedParsers).isEmpty()
     }
 
     @Test
@@ -127,11 +127,11 @@ class InteractiveParserSuggestionTest {
 
         verify { ParserService.configureParserSelection(any(), any(), parserListWithoutDescription) }
 
-        Assertions.assertThat(configuredParsers).isNotNull
-        Assertions.assertThat(configuredParsers).isNotEmpty
+        assertThat(configuredParsers).isNotNull
+        assertThat(configuredParsers).isNotEmpty
 
-        Assertions.assertThat(configuredParsers).containsKey(parserWithoutDescription)
-        Assertions.assertThat(configuredParsers[parserWithoutDescription] == configuration).isTrue()
+        assertThat(configuredParsers).containsKey(parserWithoutDescription)
+        assertThat(configuredParsers[parserWithoutDescription] == configuration).isTrue()
     }
 
     @Test
@@ -142,9 +142,9 @@ class InteractiveParserSuggestionTest {
         val selectedParsers =
             InteractiveParserSuggestion.offerAndGetInteractiveParserSuggestionsAndConfigurations(cmdLine)
 
-        Assertions.assertThat(selectedParsers).isNotNull
-        Assertions.assertThat(selectedParsers).isEmpty()
-        Assertions.assertThat(errorOut.toString()).contains("Specified invalid or empty path to analyze! Aborting...")
+        assertThat(selectedParsers).isNotNull
+        assertThat(selectedParsers).isEmpty()
+        assertThat(errContent.toString()).contains("Specified invalid or empty path to analyze! Aborting...")
     }
 
     @Test
@@ -155,8 +155,8 @@ class InteractiveParserSuggestionTest {
         val selectedParsers =
             InteractiveParserSuggestion.offerAndGetInteractiveParserSuggestionsAndConfigurations(cmdLine)
 
-        Assertions.assertThat(selectedParsers).isNotNull
-        Assertions.assertThat(selectedParsers).isEmpty()
-        Assertions.assertThat(errorOut.toString()).contains("Specified invalid or empty path to analyze! Aborting...")
+        assertThat(selectedParsers).isNotNull
+        assertThat(selectedParsers).isEmpty()
+        assertThat(errContent.toString()).contains("Specified invalid or empty path to analyze! Aborting...")
     }
 }

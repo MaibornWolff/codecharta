@@ -35,14 +35,11 @@ class RawTextParserTest {
         unmockkAll()
     }
 
-    companion object {
-        @JvmStatic
-        fun provideValidInputFiles(): List<Arguments> {
-            return listOf(
-                Arguments.of("src/test/resources/sampleproject"),
-                Arguments.of("src/test/resources/sampleproject/tabs.included")
-            )
-        }
+    private fun provideValidInputFiles(): List<Arguments> {
+        return listOf(
+            Arguments.of("src/test/resources/sampleproject"),
+            Arguments.of("src/test/resources/sampleproject/tabs.included")
+        )
     }
 
     private fun executeForOutput(input: String, args: Array<String>): String {

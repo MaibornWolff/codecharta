@@ -51,12 +51,12 @@ class ParserDialog {
 
             val tabWidthValue = tabWidth.toIntOrNull() ?: 0
 
-            val maxIndentationLevel: Int = session.myPromptInputNumber(
+            val maxIndentationLevel: String = session.myPromptInputNumber(
                 message = "What is the maximum Indentation Level?",
                 hint = "10",
                 allowEmptyInput = false,
                 onInputReady = testCallback()
-            ).toInt()
+            )
 
             val exclude: String =
                 session.myPromptInput(

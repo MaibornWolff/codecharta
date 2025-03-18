@@ -11,49 +11,44 @@ import org.junit.jupiter.params.provider.MethodSource
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class InputValidatorTest {
-    companion object {
-        @JvmStatic
-        fun provideValidationExpectations(): List<Arguments> {
-            return listOf(
-                Arguments.of("src/test/resources/valid.log", true, listOf("log")),
-                Arguments.of("src/test/resources/invalid.txt", false, listOf("log")),
-                Arguments.of("src/test/resources/valid.log", true, listOf<String>()),
-                Arguments.of("src/test/resources/valid.log", true, listOf("txt", "log")),
-                Arguments.of("src/test/resources", false, listOf<String>()),
-                Arguments.of("src/test/resources/doesNotExist.log", false, listOf("log"))
-            )
-        }
+    private fun provideValidationExpectations(): List<Arguments> {
+        return listOf(
+            Arguments.of("src/test/resources/valid.log", listOf("log"), true),
+            Arguments.of("src/test/resources/invalid.txt", listOf("log"), false),
+            Arguments.of("src/test/resources/valid.log", listOf<String>(), true),
+            Arguments.of("src/test/resources/valid.log", listOf("txt", "log"), true),
+            Arguments.of("src/test/resources", listOf<String>(), false),
+            Arguments.of("src/test/resources/doesNotExist.log", listOf("log"), false)
+        )
+    }
 
-        @JvmStatic
-        fun provideFileOrFolderInput(): List<Arguments> {
-            return listOf(
-                Arguments.of(InputType.FILE, listOf<FileExtension>(), "src/test/resources/valid.log", true),
-                Arguments.of(InputType.FILE, listOf(FileExtension.CCJSON), "src/test/resources/validExtension.cc.json", true),
-                Arguments.of(InputType.FILE, listOf(FileExtension.CCJSON), "src/test/resources/invalid.txt", false),
-                Arguments.of(InputType.FILE, listOf<FileExtension>(), "src/test/resources/doesNotExist.log", false),
-                Arguments.of(InputType.FOLDER_AND_FILE, listOf<FileExtension>(), "src/test/resources", true),
-                Arguments.of(InputType.FOLDER_AND_FILE, listOf<FileExtension>(), "src/test/resources/doesNotExistFolder", false),
-                Arguments.of(InputType.FOLDER_AND_FILE, listOf(FileExtension.CCJSON), "src/test/resources/validExtension.cc.json", true),
-                Arguments.of(InputType.FOLDER_AND_FILE, listOf(FileExtension.CCJSON), "src/test/resources/invalid.txt", false),
-                Arguments.of(InputType.FOLDER, listOf<FileExtension>(), "src/test/resources/invalid.txt", false),
-                Arguments.of(InputType.FOLDER, listOf<FileExtension>(), "src/test/resources", true)
-            )
-        }
+    private fun provideFileOrFolderInput(): List<Arguments> {
+        return listOf(
+            Arguments.of(InputType.FILE, listOf<FileExtension>(), "src/test/resources/valid.log", true),
+            Arguments.of(InputType.FILE, listOf(FileExtension.CCJSON), "src/test/resources/validExtension.cc.json", true),
+            Arguments.of(InputType.FILE, listOf(FileExtension.CCJSON), "src/test/resources/invalid.txt", false),
+            Arguments.of(InputType.FILE, listOf<FileExtension>(), "src/test/resources/doesNotExist.log", false),
+            Arguments.of(InputType.FOLDER_AND_FILE, listOf<FileExtension>(), "src/test/resources", true),
+            Arguments.of(InputType.FOLDER_AND_FILE, listOf<FileExtension>(), "src/test/resources/doesNotExistFolder", false),
+            Arguments.of(InputType.FOLDER_AND_FILE, listOf(FileExtension.CCJSON), "src/test/resources/validExtension.cc.json", true),
+            Arguments.of(InputType.FOLDER_AND_FILE, listOf(FileExtension.CCJSON), "src/test/resources/invalid.txt", false),
+            Arguments.of(InputType.FOLDER, listOf<FileExtension>(), "src/test/resources/invalid.txt", false),
+            Arguments.of(InputType.FOLDER, listOf<FileExtension>(), "src/test/resources", true)
+        )
+    }
 
-        @JvmStatic
-        fun provideNumbersForVerification(): List<Arguments> {
-            return listOf(
-                Arguments.of(0, 1, true),
-                Arguments.of(1, 0, false),
-                Arguments.of(-1, 0, true)
-            )
-        }
+    private fun provideNumbersForVerification(): List<Arguments> {
+        return listOf(
+            Arguments.of(0, 1, true),
+            Arguments.of(1, 0, false),
+            Arguments.of(-1, 0, true)
+        )
     }
 
     @ParameterizedTest
     @DisplayName("isInputAnExistingFile > should return expectedOutcome")
     @MethodSource("provideValidationExpectations")
-    fun `should return expected output`(filePath: String, expectedValidation: Boolean, validFileExtensions: List<String>) {
+    fun `should return expected output`(filePath: String, validFileExtensions: List<String>, expectedValidation: Boolean) {
         assertThat(InputValidator.isInputAnExistingFile(*validFileExtensions.toTypedArray())(filePath)).isEqualTo(expectedValidation)
     }
 

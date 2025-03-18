@@ -26,7 +26,7 @@ class ParserDialog {
                 RepoScanCommand().getDialog().collectParserArgs(session)
             }
 
-            return listOf(subcommand) + generalArgs + (subcommandArgs)
+            return listOf(subcommand) + generalArgs + subcommandArgs
         }
 
         internal fun collectSubcommand(session: Session): Boolean {

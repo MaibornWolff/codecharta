@@ -15,13 +15,11 @@ import io.mockk.every
 import io.mockk.mockkObject
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.Timeout
 import picocli.CommandLine
 import java.io.File
 
 @Timeout(120)
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ParserDialogTest {
     private val outputFileName = "codecharta.cc.json"
 

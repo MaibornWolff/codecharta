@@ -119,19 +119,6 @@ class ParserServiceTest {
     }
 
     @Test
-    fun `should inform user if interactive mode is not supported for selected parser`() {
-        val selectedParserName = "selectedParser"
-        val fakeCMDline = CommandLine(NotInteractiveParserTest())
-
-        var resultCode = ParserService.executeSelectedParser(fakeCMDline, selectedParserName)
-        assertThat(resultCode).isEqualTo(ParserService.EXIT_CODE_PARSER_NOT_SUPPORTED)
-
-        resultCode = ParserService.executePreconfiguredParser(fakeCMDline, Pair(selectedParserName, listOf(selectedParserName)))
-
-        assertThat(resultCode).isEqualTo(ParserService.EXIT_CODE_PARSER_NOT_SUPPORTED)
-    }
-
-    @Test
     fun `should output empty list for parser suggestions if no usable parsers were found`() { // Parser name is chosen arbitrarily
         val mockParserRepository = mockParserRepository("check", emptyList())
 

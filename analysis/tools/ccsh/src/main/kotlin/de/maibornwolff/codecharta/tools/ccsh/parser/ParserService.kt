@@ -7,8 +7,6 @@ import picocli.CommandLine
 
 class ParserService {
     companion object {
-        internal const val EXIT_CODE_PARSER_NOT_SUPPORTED = 42
-
         fun getParserSuggestions(commandLine: CommandLine, parserRepository: PicocliParserRepository, inputFile: String): List<String> {
             val allParsers = parserRepository.getAllInteractiveParsers(commandLine)
             val usableParsers =
@@ -48,37 +46,21 @@ class ParserService {
         fun executeSelectedParser(commandLine: CommandLine, selectedParser: String): Int {
             val subCommand = commandLine.subcommands.getValue(selectedParser)
             val parserObject = subCommand.commandSpec.userObject()
-            val interactive = parserObject as? InteractiveParser
-            return if (interactive != null) {
-                val collectedArgs = runInTerminalSession { interactive.getDialog().collectParserArgs(this) }
+            val interactive = parserObject as InteractiveParser
+            val collectedArgs = runInTerminalSession { interactive.getDialog().collectParserArgs(this) }
 
-                val subCommandLine = CommandLine(interactive)
-                println("You can run the same command again by using the following command line arguments:")
-                println("ccsh " + selectedParser + " " + collectedArgs.joinToString(" ") { x -> '"' + x + '"' })
-                subCommandLine.execute(*collectedArgs.toTypedArray())
-            } else {
-                printNotSupported(selectedParser)
-                EXIT_CODE_PARSER_NOT_SUPPORTED
-            }
+            val subCommandLine = CommandLine(interactive)
+            println("You can run the same command again by using the following command line arguments:")
+            println("ccsh " + selectedParser + " " + collectedArgs.joinToString(" ") { x -> '"' + x + '"' })
+            return subCommandLine.execute(*collectedArgs.toTypedArray())
         }
 
         fun executePreconfiguredParser(commandLine: CommandLine, configuredParser: Pair<String, List<String>>): Int {
             val subCommand = commandLine.subcommands.getValue(configuredParser.first)
             val parserObject = subCommand.commandSpec.userObject()
-            val interactive = parserObject as? InteractiveParser
-            return if (interactive != null) {
-                val subCommandLine = CommandLine(interactive)
-                subCommandLine.execute(*configuredParser.second.toTypedArray())
-            } else {
-                printNotSupported(configuredParser.first)
-                EXIT_CODE_PARSER_NOT_SUPPORTED
-            }
-        }
-
-        private fun printNotSupported(parserName: String) {
-            println(
-                "The interactive usage of $parserName is not supported yet.\nPlease specify the full command to run the parser."
-            )
+            val interactive = parserObject as InteractiveParser
+            val subCommandLine = CommandLine(interactive)
+            return subCommandLine.execute(*configuredParser.second.toTypedArray())
         }
     }
 }

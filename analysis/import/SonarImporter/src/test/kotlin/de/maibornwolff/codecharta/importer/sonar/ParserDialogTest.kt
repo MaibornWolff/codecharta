@@ -13,12 +13,10 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.Timeout
 import picocli.CommandLine
 
 @Timeout(120)
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ParserDialogTest {
     private val hostUrl = "https://sonar.foo"
     private val projectKey = "de.foo:bar"
