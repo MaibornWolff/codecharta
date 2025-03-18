@@ -1,87 +1,134 @@
 package de.maibornwolff.codecharta.parser.svnlogparser
 
-import com.github.kinquirer.KInquirer
-import com.github.kinquirer.components.promptConfirm
-import com.github.kinquirer.components.promptInput
-import de.maibornwolff.codecharta.util.InputHelper
+import com.varabyte.kotter.foundation.input.Keys
+import com.varabyte.kotter.runtime.RunScope
+import com.varabyte.kotter.runtime.terminal.inmemory.press
+import com.varabyte.kotter.runtime.terminal.inmemory.type
+import com.varabyte.kotterx.test.foundation.testSession
+import de.maibornwolff.codecharta.parser.svnlogparser.ParserDialog.Companion.collectParserArgs
 import io.mockk.every
 import io.mockk.mockkObject
-import io.mockk.mockkStatic
-import io.mockk.unmockkAll
-import org.assertj.core.api.Assertions
-import org.junit.jupiter.api.AfterEach
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.TestInstance
+import org.junit.jupiter.api.Timeout
 import picocli.CommandLine
 import java.io.File
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@Timeout(120)
 class ParserDialogTest {
-    @AfterEach
-    fun afterTest() {
-        unmockkAll()
-    }
+    private val testResourceBaseFolder = "src/test/resources/"
+    private val inputFileName = "${testResourceBaseFolder}example_svn.log"
+    private val outputFileName = "out.cc.json"
 
     @Test
-    fun `should output correct arguments when valid input is provided`() { // given
-        val fileName = "svn.log"
-        val outputFileName = "codecharta.cc.json"
+    fun `should output correct arguments when valid input is provided`() {
         val isCompressed = false
         val isSilent = false
         val addAuthor = false
 
-        mockkObject(InputHelper)
-        every { InputHelper.isInputValidAndNotNull(any(), any()) } returns true
+        mockkObject(ParserDialog.Companion)
 
-        mockkStatic("com.github.kinquirer.components.InputKt")
-        every {
-            KInquirer.promptInput(any(), any(), any())
-        } returns fileName andThen outputFileName
-        mockkStatic("com.github.kinquirer.components.ConfirmKt")
-        every {
-            KInquirer.promptConfirm(any(), any())
-        } returns isCompressed andThen isSilent andThen addAuthor
+        var parserArguments: List<String> = emptyList()
 
-        // when
-        val parserArguments = ParserDialog.collectParserArgs()
+        testSession { terminal ->
+
+            val fileCallback: suspend RunScope.() -> Unit = {
+                terminal.type(inputFileName)
+                terminal.press(Keys.ENTER)
+            }
+            val outFileCallback: suspend RunScope.() -> Unit = {
+                terminal.type(outputFileName)
+                terminal.press(Keys.ENTER)
+            }
+            val compressCallback: suspend RunScope.() -> Unit = {
+                terminal.press(Keys.RIGHT)
+                terminal.press(Keys.ENTER)
+            }
+            val silentCallback: suspend RunScope.() -> Unit = {
+                terminal.press(Keys.RIGHT)
+                terminal.press(Keys.ENTER)
+            }
+            val authorCallback: suspend RunScope.() -> Unit = {
+                terminal.press(Keys.RIGHT)
+                terminal.press(Keys.ENTER)
+            }
+
+            every { ParserDialog.Companion.testCallback() } returnsMany listOf(
+                fileCallback,
+                outFileCallback,
+                compressCallback,
+                silentCallback,
+                authorCallback
+            )
+
+            parserArguments = collectParserArgs(this)
+        }
+
         val cmdLine = CommandLine(SVNLogParser())
         val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
 
-        // then
-        Assertions.assertThat(parseResult.matchedOption("output-file").getValue<String>()).isEqualTo(outputFileName)
-        Assertions.assertThat(parseResult.matchedOption("not-compressed").getValue<Boolean>()).isEqualTo(isCompressed)
-        Assertions.assertThat(parseResult.matchedOption("silent").getValue<Boolean>()).isEqualTo(isSilent)
-        Assertions.assertThat(parseResult.matchedOption("add-author").getValue<Boolean>()).isEqualTo(addAuthor)
-        Assertions.assertThat(parseResult.matchedPositional(0).getValue<File>().name).isEqualTo(fileName)
+        assertThat(parseResult.matchedOption("output-file").getValue<String>())
+            .isEqualTo(outputFileName)
+        assertThat(parseResult.matchedOption("not-compressed").getValue<Boolean>())
+            .isEqualTo(isCompressed)
+        assertThat(parseResult.matchedOption("silent").getValue<Boolean>())
+            .isEqualTo(isSilent)
+        assertThat(parseResult.matchedOption("add-author").getValue<Boolean>())
+            .isEqualTo(addAuthor)
+        assertThat(parseResult.matchedPositional(0).getValue<File>().name)
+            .isEqualTo(File(inputFileName).name)
     }
 
     @Test
-    fun `should prompt user twice for input file when first input file is invalid`() { // given
-        val invalidInputFileName = ""
-        val validInputFileName = "svn.log"
-        val outputFileName = "codecharta.cc.json"
-        val isCompressed = false
-        val isSilent = false
-        val addAuthor = false
+    fun `should prompt user twice for input file when first input file is invalid`() {
+        val invalidFileName = "inv"
+        val isSilent = true
+        val addAuthor = true
 
-        mockkObject(InputHelper)
-        every { InputHelper.isInputValidAndNotNull(any(), any()) } returns false andThen true
+        mockkObject(ParserDialog.Companion)
 
-        mockkStatic("com.github.kinquirer.components.InputKt")
-        every {
-            KInquirer.promptInput(any(), any(), any())
-        } returns invalidInputFileName andThen validInputFileName andThen outputFileName
-        mockkStatic("com.github.kinquirer.components.ConfirmKt")
-        every {
-            KInquirer.promptConfirm(any(), any())
-        } returns isCompressed andThen isSilent andThen addAuthor
+        var parserArguments: List<String> = emptyList()
 
-        // when
-        val parserArguments = ParserDialog.collectParserArgs()
+        testSession { terminal ->
+            val fileCallback: suspend RunScope.() -> Unit = {
+                terminal.type(invalidFileName)
+                terminal.press(Keys.ENTER)
+                terminal.press(Keys.BACKSPACE, Keys.BACKSPACE, Keys.BACKSPACE)
+                terminal.type(inputFileName)
+                terminal.press(Keys.ENTER)
+            }
+            val outFileCallback: suspend RunScope.() -> Unit = {
+                terminal.type(outputFileName)
+                terminal.press(Keys.ENTER)
+            }
+            val compressCallback: suspend RunScope.() -> Unit = {
+                terminal.press(Keys.ENTER)
+            }
+            val silentCallback: suspend RunScope.() -> Unit = {
+                terminal.press(Keys.ENTER)
+            }
+            val authorCallback: suspend RunScope.() -> Unit = {
+                terminal.press(Keys.ENTER)
+            }
+
+            every { ParserDialog.Companion.testCallback() } returnsMany listOf(
+                fileCallback,
+                outFileCallback,
+                compressCallback,
+                silentCallback,
+                authorCallback
+            )
+
+            parserArguments = collectParserArgs(this)
+        }
+
         val cmdLine = CommandLine(SVNLogParser())
         val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
 
-        // then
-        Assertions.assertThat(parseResult.matchedPositional(0).getValue<File>().name).isEqualTo(validInputFileName)
+        assertThat(parseResult.matchedOption("output-file").getValue<String>()).isEqualTo(outputFileName)
+        assertThat(parseResult.matchedOption("not-compressed")).isNull()
+        assertThat(parseResult.matchedOption("silent").getValue<Boolean>()).isEqualTo(isSilent)
+        assertThat(parseResult.matchedOption("add-author").getValue<Boolean>()).isEqualTo(addAuthor)
+        assertThat(parseResult.matchedPositional(0).getValue<File>().name).isEqualTo(File(inputFileName).name)
     }
 }

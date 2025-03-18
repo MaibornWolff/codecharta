@@ -48,7 +48,7 @@ class EveritValidatorTest {
 
     @Test
     fun `should validate valid File`() {
-        validator.validate(this.javaClass.classLoader.getResourceAsStream("validFile.json"))
+        validator.validate(this.javaClass.classLoader.getResourceAsStream("validFile.cc.json"))
     }
 
     @Test

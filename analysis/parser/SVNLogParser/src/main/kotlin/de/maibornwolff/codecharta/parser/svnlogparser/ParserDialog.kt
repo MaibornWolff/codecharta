@@ -1,62 +1,55 @@
 package de.maibornwolff.codecharta.parser.svnlogparser
 
-import com.github.kinquirer.KInquirer
-import com.github.kinquirer.components.promptConfirm
-import com.github.kinquirer.components.promptInput
+import com.varabyte.kotter.runtime.RunScope
+import com.varabyte.kotter.runtime.Session
+import de.maibornwolff.codecharta.tools.inquirer.InputType
+import de.maibornwolff.codecharta.tools.inquirer.myPromptConfirm
+import de.maibornwolff.codecharta.tools.inquirer.myPromptDefaultFileFolderInput
+import de.maibornwolff.codecharta.tools.inquirer.myPromptInput
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
-import de.maibornwolff.codecharta.util.InputHelper
-import java.io.File
-import java.nio.file.Paths
 
 class ParserDialog {
     companion object : ParserDialogInterface {
-        private const val EXTENSION = "log"
+        override fun collectParserArgs(session: Session): List<String> {
+            println("You can generate this file with: svn log --verbose > svn.log")
+            val inputFileName: String = session.myPromptDefaultFileFolderInput(
+                inputType = InputType.FILE,
+                fileExtensionList = listOf(),
+                onInputReady = testCallback()
+            )
 
-        override fun collectParserArgs(): List<String> {
-            print("You can generate this file with: svn log --verbose > svn.log")
-            var inputFileName: String
-            do {
-                inputFileName = collectInputFileName()
-            } while (!InputHelper.isInputValidAndNotNull(arrayOf(File(inputFileName)), canInputContainFolders = false))
-
-            val defaultOutputFileName = getOutputFileName(inputFileName)
-            val outputFileName: String =
-                KInquirer.promptInput(
-                    message = "What is the name of the output file?",
-                    hint = defaultOutputFileName,
-                    default = defaultOutputFileName
-                )
+            val outputFileName: String = session.myPromptInput(
+                message = "What is the name of the output file?",
+                allowEmptyInput = true,
+                onInputReady = testCallback()
+            )
 
             val isCompressed =
                 (outputFileName.isEmpty()) ||
-                    KInquirer.promptConfirm(
+                    session.myPromptConfirm(
                         message = "Do you want to compress the output file?",
-                        default = true
+                        onInputReady = testCallback()
                     )
 
-            val isSilent: Boolean =
-                KInquirer.promptConfirm(message = "Do you want to suppress command line output?", default = false)
+            val isSilent: Boolean = session.myPromptConfirm(
+                message = "Do you want to suppress command line output?",
+                onInputReady = testCallback()
+            )
 
-            val addAuthor: Boolean =
-                KInquirer.promptConfirm(message = "Do you want to add authors to every file?", default = false)
+            val addAuthor: Boolean = session.myPromptConfirm(
+                message = "Do you want to add authors to every file?",
+                onInputReady = testCallback()
+            )
 
-            return listOf(
+            return listOfNotNull(
                 inputFileName,
                 "--output-file=$outputFileName",
-                "--not-compressed=$isCompressed",
+                if (isCompressed) null else "--not-compressed",
                 "--silent=$isSilent",
                 "--add-author=$addAuthor"
             )
         }
 
-        private fun collectInputFileName(): String {
-            val defaultInputFileName = "svn.$EXTENSION"
-            val defaultInputFilePath = Paths.get("").toAbsolutePath().toString() + File.separator + defaultInputFileName
-            return KInquirer.promptInput(
-                message = "What is the $EXTENSION file that has to be parsed?",
-                hint = defaultInputFilePath,
-                default = defaultInputFilePath
-            )
-        }
+        internal fun testCallback(): suspend RunScope.() -> Unit = {}
     }
 }

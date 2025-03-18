@@ -1,12 +1,14 @@
 dependencies {
-    implementation(project(":tools:InteractiveParser"))
     implementation(project(":model"))
+    implementation(project(":tools:Inquirer"))
+    implementation(project(":tools:InteractiveParser"))
 
     implementation(libs.rxjava2)
     implementation(libs.jersey.client)
     implementation(libs.gson)
     implementation(libs.picocli)
-    implementation(libs.kotlin.inquirer)
+    implementation(libs.kotter)
+    implementation(libs.kotter.test)
     implementation(libs.jackson.base)
     implementation(libs.jackson.dataformat.xml)
     implementation(libs.jackson.module.kotlin)

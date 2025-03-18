@@ -1,85 +1,96 @@
 package de.maibornwolff.codecharta.tools.inspection
 
-import com.github.kinquirer.KInquirer
-import com.github.kinquirer.components.promptInput
-import com.github.kinquirer.components.promptInputNumber
-import de.maibornwolff.codecharta.util.InputHelper
+import com.varabyte.kotter.foundation.input.Keys
+import com.varabyte.kotter.runtime.RunScope
+import com.varabyte.kotter.runtime.terminal.inmemory.press
+import com.varabyte.kotter.runtime.terminal.inmemory.type
+import com.varabyte.kotterx.test.foundation.testSession
+import de.maibornwolff.codecharta.tools.inspection.ParserDialog.Companion.collectParserArgs
 import io.mockk.every
 import io.mockk.mockkObject
-import io.mockk.mockkStatic
-import io.mockk.unmockkAll
-import org.assertj.core.api.Assertions
-import org.junit.jupiter.api.AfterEach
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.TestInstance
+import org.junit.jupiter.api.Timeout
 import picocli.CommandLine
 import java.io.File
-import java.math.BigDecimal
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@Timeout(120)
 class ParserDialogTest {
-    @AfterEach
-    fun afterTest() {
-        unmockkAll()
-    }
+    private val testResourceBaseFolder = "src/test/resources/"
+    private val inputFileName = "${testResourceBaseFolder}sample_project.cc.json"
 
     @Test
     fun `should output correct arguments when print structure is selected`() {
-        // given
-        val inputFolderName = "sampleInputFile"
-        val level = BigDecimal(5)
+        val level = 5
 
-        mockkObject(InputHelper)
-        every {
-            InputHelper.isInputValidAndNotNull(any(), any())
-        } returns true
+        mockkObject(ParserDialog.Companion)
 
-        mockkStatic("com.github.kinquirer.components.InputKt")
-        every {
-            KInquirer.promptInput(any(), any(), any(), any(), any(), any())
-        } returns inputFolderName
-        every {
-            KInquirer.promptInputNumber(any(), any(), any(), any())
-        } returns level
-        mockkStatic("com.github.kinquirer.components.ListKt")
+        var parserArguments: List<String> = emptyList()
 
-        // when
-        val parserArguments = ParserDialog.collectParserArgs()
+        testSession { terminal ->
+
+            val fileCallback: suspend RunScope.() -> Unit = {
+                terminal.type(inputFileName)
+                terminal.press(Keys.ENTER)
+            }
+            val levelsCallback: suspend RunScope.() -> Unit = {
+                terminal.type(level.toString())
+                terminal.press(Keys.ENTER)
+            }
+
+            every { ParserDialog.Companion.testCallback() } returnsMany listOf(
+                fileCallback,
+                levelsCallback
+            )
+
+            parserArguments = collectParserArgs(this)
+        }
+
         val commandLine = CommandLine(InspectionTool())
         val parseResult = commandLine.parseArgs(*parserArguments.toTypedArray())
 
-        // then
-        Assertions.assertThat(parseResult.matchedPositional(0).getValue<File>().name).isEqualTo(inputFolderName)
-        Assertions.assertThat(parseResult.matchedOption("levels").getValue<Int>()).isEqualTo(5)
+        assertThat(parseResult.matchedPositional(0).getValue<File>().name)
+            .isEqualTo(File(inputFileName).name)
+        assertThat(parseResult.matchedOption("levels").getValue<Int>())
+            .isEqualTo(5)
     }
 
     @Test
     fun `should prompt user twice for input file when first input file is invalid`() {
-        // given
-        val invalidInputFolderName = ""
-        val validInputFolderName = "sampleInputFile"
-        val level = BigDecimal(5)
+        val invalidFileName = "inv"
 
-        mockkObject(InputHelper)
-        every {
-            InputHelper.isInputValidAndNotNull(any(), any())
-        } returns false andThen true
+        mockkObject(ParserDialog.Companion)
 
-        mockkStatic("com.github.kinquirer.components.InputKt")
-        every {
-            KInquirer.promptInput(any(), any(), any(), any(), any(), any())
-        } returns invalidInputFolderName andThen validInputFolderName
-        every {
-            KInquirer.promptInputNumber(any(), any(), any(), any())
-        } returns level
-        mockkStatic("com.github.kinquirer.components.ListKt")
+        var parserArguments: List<String> = emptyList()
 
-        // when
-        val parserArguments = ParserDialog.collectParserArgs()
+        testSession { terminal ->
+
+            val fileCallback: suspend RunScope.() -> Unit = {
+                terminal.type(invalidFileName)
+                terminal.press(Keys.ENTER)
+                terminal.press(Keys.BACKSPACE, Keys.BACKSPACE, Keys.BACKSPACE)
+                terminal.type(inputFileName)
+                terminal.press(Keys.ENTER)
+            }
+            val levelsCallback: suspend RunScope.() -> Unit = {
+                terminal.press(Keys.RIGHT)
+                terminal.press(Keys.ENTER)
+            }
+
+            every { ParserDialog.Companion.testCallback() } returnsMany listOf(
+                fileCallback,
+                levelsCallback
+            )
+
+            parserArguments = collectParserArgs(this)
+        }
+
         val commandLine = CommandLine(InspectionTool())
         val parseResult = commandLine.parseArgs(*parserArguments.toTypedArray())
 
-        // then
-        Assertions.assertThat(parseResult.matchedPositional(0).getValue<File>().name).isEqualTo(validInputFolderName)
+        assertThat(parseResult.matchedPositional(0).getValue<File>().name)
+            .isEqualTo(File(inputFileName).name)
+        assertThat(parseResult.matchedOption("levels").getValue<Int>())
+            .isEqualTo(0)
     }
 }

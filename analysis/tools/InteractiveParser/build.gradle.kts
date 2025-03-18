@@ -3,5 +3,5 @@ repositories {
 }
 
 dependencies {
-    implementation(libs.kotlin.inquirer)
+    implementation(libs.kotter)
 }

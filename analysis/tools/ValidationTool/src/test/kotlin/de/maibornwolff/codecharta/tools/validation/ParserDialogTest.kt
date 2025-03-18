@@ -1,31 +1,38 @@
 package de.maibornwolff.codecharta.tools.validation
 
-import com.github.kinquirer.KInquirer
-import com.github.kinquirer.components.promptInput
+import com.varabyte.kotter.foundation.input.Keys
+import com.varabyte.kotter.runtime.terminal.inmemory.press
+import com.varabyte.kotter.runtime.terminal.inmemory.type
+import com.varabyte.kotterx.test.foundation.testSession
+import de.maibornwolff.codecharta.tools.validation.ParserDialog.Companion.collectParserArgs
 import io.mockk.every
-import io.mockk.mockkStatic
-import io.mockk.unmockkAll
-import org.assertj.core.api.Assertions
-import org.junit.jupiter.api.AfterEach
+import io.mockk.mockkObject
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.TestInstance
+import org.junit.jupiter.api.Timeout
+import picocli.CommandLine
+import java.io.File
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@Timeout(120)
 class ParserDialogTest {
-    @AfterEach
-    fun afterTest() {
-        unmockkAll()
-    }
+    private val testResourceBaseFolder = "src/test/resources/"
+    private val inputFileName = "${testResourceBaseFolder}validFile.cc.json"
 
     @Test
     fun `should output correct arguments`() {
-        mockkStatic("com.github.kinquirer.components.InputKt")
-        every {
-            KInquirer.promptInput(any(), any(), any())
-        } returns "sampleFile.cc.json"
+        mockkObject(ParserDialog.Companion)
 
-        val parserArguments = ParserDialog.collectParserArgs()
+        testSession { terminal ->
+            every { ParserDialog.Companion.testCallback() } returns {
+                terminal.type(inputFileName)
+                terminal.press(Keys.ENTER)
+            }
 
-        Assertions.assertThat(parserArguments).isEqualTo(listOf("sampleFile.cc.json"))
+            val parserArguments = collectParserArgs(this)
+
+            val commandLine = CommandLine(ValidationTool())
+            val parseResult = commandLine.parseArgs(*parserArguments.toTypedArray())
+            assertThat(parseResult.matchedPositional(0).getValue<File>().name).isEqualTo(File(inputFileName).name)
+        }
     }
 }

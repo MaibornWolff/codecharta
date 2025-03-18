@@ -1,61 +1,71 @@
 package de.maibornwolff.codecharta.parser.gitlogparser
 
-import com.github.kinquirer.KInquirer
-import com.github.kinquirer.components.promptConfirm
-import com.github.kinquirer.components.promptInput
+import com.varabyte.kotter.runtime.RunScope
+import com.varabyte.kotter.runtime.Session
 import de.maibornwolff.codecharta.parser.gitlogparser.subcommands.LogScanCommand
 import de.maibornwolff.codecharta.parser.gitlogparser.subcommands.RepoScanCommand
+import de.maibornwolff.codecharta.tools.inquirer.myPromptConfirm
+import de.maibornwolff.codecharta.tools.inquirer.myPromptInput
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 
 class ParserDialog {
     companion object : ParserDialogInterface {
-        override fun collectParserArgs(): List<String> {
-            val isLogScan =
-                KInquirer.promptConfirm(
-                    message = "Do you already have a git.log and git ls file?",
-                    default = false
-                )
+        override fun collectParserArgs(session: Session): List<String> {
+            val isLogScan = collectSubcommand(session)
+            val subcommand = if (isLogScan) {
+                "log-scan"
+            } else {
+                "repo-scan"
+            }
 
-            val subcommand: String =
-                if (isLogScan) {
-                    "log-scan"
-                } else {
-                    "repo-scan"
-                }
+            val generalArgs = collectGeneralArgs(session)
 
-            val subcommandArguments =
-                if (isLogScan) {
-                    LogScanCommand().getDialog().collectParserArgs()
-                } else {
-                    RepoScanCommand().getDialog().collectParserArgs()
-                }
+            val subcommandArgs: List<String> = if (isLogScan) {
+                LogScanCommand().getDialog().collectParserArgs(session)
+            } else {
+                RepoScanCommand().getDialog().collectParserArgs(session)
+            }
 
-            val outputFileName: String =
-                KInquirer.promptInput(
-                    message = "What is the name of the output file? If empty, the result will be returned to stdOut",
-                    hint = "path/to/output/filename.cc.json"
-                )
+            return listOf(subcommand) + generalArgs + subcommandArgs
+        }
 
-            val isCompressed =
-                (outputFileName.isEmpty()) ||
-                    KInquirer.promptConfirm(
-                        message = "Do you want to compress the output file?",
-                        default = true
-                    )
+        internal fun collectSubcommand(session: Session): Boolean {
+            return session.myPromptConfirm(
+                message = "Do you already have a git.log and git ls file?",
+                onInputReady = testCallback()
+            )
+        }
 
-            val isSilent: Boolean =
-                KInquirer.promptConfirm(message = "Do you want to suppress command line output?", default = false)
+        internal fun collectGeneralArgs(session: Session): List<String> {
+            val outputFileName: String = session.myPromptInput(
+                message = "What is the name of the output file?",
+                allowEmptyInput = true,
+                onInputReady = testCallback()
+            )
 
-            val addAuthor: Boolean =
-                KInquirer.promptConfirm(message = "Do you want to add authors to every file?", default = false)
+            val isCompressed = (outputFileName.isEmpty()) || session.myPromptConfirm(
+                message = "Do you want to compress the output file?",
+                onInputReady = testCallback()
+            )
+
+            val isSilent: Boolean = session.myPromptConfirm(
+                message = "Do you want to suppress command line output?",
+                onInputReady = testCallback()
+            )
+
+            val addAuthor: Boolean = session.myPromptConfirm(
+                message = "Do you want to add authors to every file?",
+                onInputReady = testCallback()
+            )
 
             return listOfNotNull(
-                subcommand,
                 "--output-file=$outputFileName",
                 if (isCompressed) null else "--not-compressed",
                 "--silent=$isSilent",
                 "--add-author=$addAuthor"
-            ).plus(subcommandArguments)
+            )
         }
+
+        internal fun testCallback(): suspend RunScope.() -> Unit = {}
     }
 }

@@ -20,24 +20,18 @@ import java.io.PrintStream
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class SVNLogParserTest {
-    val errContent = ByteArrayOutputStream()
-    val originalErr = System.err
-
     @AfterEach
     fun afterTest() {
         unmockkAll()
     }
 
-    companion object {
-        @JvmStatic
-        fun provideInvalidInputFiles(): List<Arguments> {
-            return listOf(
-                Arguments.of("src/test/resources/my/empty/repo"),
-                Arguments.of("src/test/resources/this/does/not/exist"),
-                Arguments.of(""),
-                Arguments.of("src/test/resources/my")
-            )
-        }
+    private fun provideInvalidInputFiles(): List<Arguments> {
+        return listOf(
+            Arguments.of("src/test/resources/my/empty/repo"),
+            Arguments.of("src/test/resources/this/does/not/exist"),
+            Arguments.of(""),
+            Arguments.of("src/test/resources/my")
+        )
     }
 
     @Test
@@ -96,6 +90,9 @@ class SVNLogParserTest {
 
     @Test
     fun `should stop execution if input files are invalid`() {
+        val errContent = ByteArrayOutputStream()
+        val originalErr = System.err
+
         mockkObject(InputHelper)
         every {
             InputHelper.isInputValid(any(), any())

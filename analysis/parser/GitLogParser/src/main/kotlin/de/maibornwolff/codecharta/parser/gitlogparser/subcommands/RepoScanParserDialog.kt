@@ -1,30 +1,26 @@
 package de.maibornwolff.codecharta.parser.gitlogparser.subcommands
 
-import com.github.kinquirer.KInquirer
-import com.github.kinquirer.components.promptInput
+import com.varabyte.kotter.runtime.RunScope
+import com.varabyte.kotter.runtime.Session
+import de.maibornwolff.codecharta.tools.inquirer.InputType
+import de.maibornwolff.codecharta.tools.inquirer.InputValidator
+import de.maibornwolff.codecharta.tools.inquirer.myPromptInput
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
-import de.maibornwolff.codecharta.util.InputHelper
-import java.io.File
 import java.nio.file.Paths
 
 class RepoScanParserDialog {
     companion object : ParserDialogInterface {
-        override fun collectParserArgs(): List<String> {
-            var repoPath: String
-            do {
-                repoPath = collectRepoPath()
-            } while (!InputHelper.isInputValidAndNotNull(arrayOf(File(repoPath)), canInputContainFolders = true))
-
-            return listOfNotNull(
-                if (repoPath.isBlank()) null else "--repo-path=$repoPath"
-            )
-        }
-
-        private fun collectRepoPath(): String {
-            return KInquirer.promptInput(
+        override fun collectParserArgs(session: Session): List<String> {
+            val repoPath = session.myPromptInput(
                 message = "What is the root directory of the git project you want to parse?",
-                default = Paths.get("").normalize().toAbsolutePath().toString()
+                hint = Paths.get("").normalize().toAbsolutePath().toString(),
+                allowEmptyInput = false,
+                inputValidator = InputValidator.isFileOrFolderValid(InputType.FOLDER, listOf()),
+                onInputReady = testCallback()
             )
+            return listOf("--repo-path=$repoPath")
         }
+
+        internal fun testCallback(): suspend RunScope.() -> Unit = {}
     }
 }

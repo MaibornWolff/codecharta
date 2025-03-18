@@ -1,151 +1,230 @@
 package de.maibornwolff.codecharta.parser.sourcecodeparser
 
-import com.github.kinquirer.KInquirer
-import com.github.kinquirer.components.promptConfirm
-import com.github.kinquirer.components.promptInput
-import com.github.kinquirer.components.promptListObject
-import com.github.kinquirer.core.Choice
-import de.maibornwolff.codecharta.util.InputHelper
+import com.varabyte.kotter.foundation.input.Keys
+import com.varabyte.kotter.runtime.RunScope
+import com.varabyte.kotter.runtime.terminal.inmemory.press
+import com.varabyte.kotter.runtime.terminal.inmemory.type
+import com.varabyte.kotterx.test.foundation.testSession
+import de.maibornwolff.codecharta.parser.sourcecodeparser.ParserDialog.Companion.collectParserArgs
 import io.mockk.every
 import io.mockk.mockkObject
-import io.mockk.mockkStatic
 import io.mockk.unmockkAll
-import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.TestInstance
+import org.junit.jupiter.api.Timeout
 import picocli.CommandLine
 import java.io.File
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@Timeout(120)
 class ParserDialogTest {
+    private val testResourceBaseFolder = "src/test/resources/"
+    private val inputFileName = "${testResourceBaseFolder}ScriptShellSample.java"
+    private val inputFileFolder = "${testResourceBaseFolder}my/"
+    private val outputFileName = "out.cc.json"
+
+    @BeforeEach
+    fun setup() {
+        mockkObject(ParserDialog.Companion)
+    }
+
     @AfterEach
-    fun afterTest() {
+    fun cleanup() {
         unmockkAll()
     }
 
     @Test
     fun `should output correct arguments when valid input is provided`() {
-        // given
-        val fileName = "in.java"
         val outputFormat = OutputFormat.JSON
-        val outputFileName = "out.cc.json"
-        val findIssues = true
         val defaultExcludes = true
         val isCompressed = false
         val isVerbose = true
 
-        mockkObject(InputHelper)
-        every { InputHelper.isInputValidAndNotNull(any(), any()) } returns true
+        var parserArguments: List<String> = listOf()
 
-        mockkStatic("com.github.kinquirer.components.InputKt")
-        every {
-            KInquirer.promptInput(any(), any(), any(), any())
-        } returns fileName andThen outputFileName andThen ""
-        mockkStatic("com.github.kinquirer.components.ConfirmKt")
-        every {
-            KInquirer.promptConfirm(any(), any())
-        } returns findIssues andThen defaultExcludes andThen isCompressed andThen isVerbose
-        mockkStatic("com.github.kinquirer.components.ListKt")
-        every {
-            KInquirer.promptListObject(any(), any<List<Choice<OutputFormat>>>(), any(), any(), any())
-        } returns outputFormat
+        testSession { terminal ->
+            val fileCallback: suspend RunScope.() -> Unit = {
+                terminal.type(inputFileFolder)
+                terminal.press(Keys.ENTER)
+            }
+            val formatCallback: suspend RunScope.() -> Unit = {
+                terminal.press(Keys.ENTER)
+            }
+            val outFileCallback: suspend RunScope.() -> Unit = {
+                terminal.type(outputFileName)
+                terminal.press(Keys.ENTER)
+            }
+            val compressCallback: suspend RunScope.() -> Unit = {
+                terminal.press(Keys.RIGHT)
+                terminal.press(Keys.ENTER)
+            }
+            val issueCallback: suspend RunScope.() -> Unit = {
+                terminal.press(Keys.ENTER)
+            }
+            val defaultCallback: suspend RunScope.() -> Unit = {
+                terminal.press(Keys.ENTER)
+            }
+            val excludeCallback: suspend RunScope.() -> Unit = {
+                terminal.press(Keys.ENTER)
+            }
+            val verboseCallback: suspend RunScope.() -> Unit = {
+                terminal.press(Keys.ENTER)
+            }
 
-        // when
-        val parserArguments = ParserDialog.collectParserArgs()
+            every { ParserDialog.Companion.testCallback() } returnsMany listOf(
+                fileCallback,
+                formatCallback,
+                outFileCallback,
+                compressCallback,
+                issueCallback,
+                defaultCallback,
+                excludeCallback,
+                verboseCallback
+            )
+
+            parserArguments = collectParserArgs(this)
+        }
+
         val cmdLine = CommandLine(SourceCodeParserMain())
         val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
 
-        // then
-        Assertions.assertThat(parseResult.matchedPositional(0).getValue<File>().name).isEqualTo(fileName)
-        Assertions.assertThat(parseResult.matchedOption("format").getValue<OutputFormat>()).isEqualTo(outputFormat)
-        Assertions.assertThat(parseResult.matchedOption("output-file").getValue<File>().name).isEqualTo(outputFileName)
-        Assertions.assertThat(parseResult.matchedOption("exclude")).isNull()
-        Assertions.assertThat(parseResult.matchedOption("no-issues")).isNull()
-        Assertions.assertThat(parseResult.matchedOption("default-excludes").getValue<Boolean>())
-            .isEqualTo(defaultExcludes)
-        Assertions.assertThat(parseResult.matchedOption("not-compressed").getValue<Boolean>()).isEqualTo(isCompressed)
-        Assertions.assertThat(parseResult.matchedOption("verbose").getValue<Boolean>()).isEqualTo(isVerbose)
+        assertThat(parseResult.matchedPositional(0).getValue<File>().name).isEqualTo(File(inputFileFolder).name)
+        assertThat(parseResult.matchedOption("format").getValue<OutputFormat>()).isEqualTo(outputFormat)
+        assertThat(parseResult.matchedOption("output-file").getValue<File>().name).isEqualTo(outputFileName)
+        assertThat(parseResult.matchedOption("exclude")).isNull()
+        assertThat(parseResult.matchedOption("no-issues")).isNull()
+        assertThat(parseResult.matchedOption("default-excludes").getValue<Boolean>()).isEqualTo(defaultExcludes)
+        assertThat(parseResult.matchedOption("not-compressed").getValue<Boolean>()).isEqualTo(isCompressed)
+        assertThat(parseResult.matchedOption("verbose").getValue<Boolean>()).isEqualTo(isVerbose)
     }
 
     @Test
     fun `should output correct arguments when multiple exclude patterns are specified`() {
-        // given
-        val fileName = "in.java"
         val outputFormat = OutputFormat.CSV
-        val outputFileName = "out.csv"
-        val excludes = arrayOf("ex1", "ex2")
+        val outputFileName = "output.csv"
+        val excludes = "ex1, ex2"
+        val excludeArray = arrayOf("ex1", "ex2")
         val findIssues = false
-        val defaultExcludes = false
-        val isCompressed = true
-        val isVerbose = false
 
-        mockkObject(InputHelper)
-        every { InputHelper.isInputValidAndNotNull(any(), any()) } returns true
+        var parserArguments: List<String> = listOf()
 
-        mockkStatic("com.github.kinquirer.components.InputKt")
-        every {
-            KInquirer.promptInput(any(), any(), any(), any())
-        } returns fileName andThen outputFileName andThen excludes[0] andThen excludes[1] andThen ""
-        mockkStatic("com.github.kinquirer.components.ConfirmKt")
-        every {
-            KInquirer.promptConfirm(any(), any())
-        } returns findIssues andThen defaultExcludes andThen isCompressed andThen isVerbose
-        mockkStatic("com.github.kinquirer.components.ListKt")
-        every {
-            KInquirer.promptListObject(any(), any<List<Choice<OutputFormat>>>(), any(), any(), any())
-        } returns outputFormat
+        testSession { terminal ->
+            val fileCallback: suspend RunScope.() -> Unit = {
+                terminal.type(inputFileName)
+                terminal.press(Keys.ENTER)
+            }
+            val formatCallback: suspend RunScope.() -> Unit = {
+                terminal.press(Keys.DOWN)
+                terminal.press(Keys.ENTER)
+            }
+            val outFileCallback: suspend RunScope.() -> Unit = {
+                terminal.press(Keys.RIGHT)
+                terminal.press(Keys.ENTER)
+            }
+            val compressCallback: suspend RunScope.() -> Unit = {
+                terminal.press(Keys.ENTER)
+            }
+            val issueCallback: suspend RunScope.() -> Unit = {
+                terminal.press(Keys.RIGHT)
+                terminal.press(Keys.ENTER)
+            }
+            val defaultCallback: suspend RunScope.() -> Unit = {
+                terminal.press(Keys.RIGHT)
+                terminal.press(Keys.ENTER)
+            }
+            val excludeCallback: suspend RunScope.() -> Unit = {
+                terminal.type(excludes)
+                terminal.press(Keys.ENTER)
+            }
+            val verboseCallback: suspend RunScope.() -> Unit = {
+                terminal.press(Keys.RIGHT)
+                terminal.press(Keys.ENTER)
+            }
 
-        // when
-        val parserArguments = ParserDialog.collectParserArgs()
+            every { ParserDialog.Companion.testCallback() } returnsMany listOf(
+                fileCallback,
+                formatCallback,
+                outFileCallback,
+                compressCallback,
+                issueCallback,
+                defaultCallback,
+                excludeCallback,
+                verboseCallback
+            )
+
+            parserArguments = collectParserArgs(this)
+        }
+
         val cmdLine = CommandLine(SourceCodeParserMain())
         val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
 
-        // then
-        Assertions.assertThat(parseResult.matchedPositional(0).getValue<File>().name).isEqualTo(fileName)
-        Assertions.assertThat(parseResult.matchedOption("format").getValue<OutputFormat>()).isEqualTo(outputFormat)
-        Assertions.assertThat(parseResult.matchedOption("output-file").getValue<File>().name).isEqualTo(outputFileName)
-        Assertions.assertThat(parseResult.matchedOption("exclude").getValue<Array<String>>()).containsExactly(*excludes)
-        Assertions.assertThat(parseResult.matchedOption("no-issues").getValue<Boolean>()).isEqualTo(!findIssues)
-        Assertions.assertThat(parseResult.matchedOption("default-excludes")).isNull()
-        Assertions.assertThat(parseResult.matchedOption("not-compressed")).isNull()
-        Assertions.assertThat(parseResult.matchedOption("verbose")).isNull()
+        assertThat(parseResult.matchedPositional(0).getValue<File>().name).isEqualTo(File(inputFileName).name)
+        assertThat(parseResult.matchedOption("format").getValue<OutputFormat>()).isEqualTo(outputFormat)
+        assertThat(parseResult.matchedOption("output-file").getValue<File>().name).isEqualTo(outputFileName)
+        assertThat(parseResult.matchedOption("exclude").getValue<Array<String>>()).containsExactly(*excludeArray)
+        assertThat(parseResult.matchedOption("no-issues").getValue<Boolean>()).isEqualTo(!findIssues)
+        assertThat(parseResult.matchedOption("default-excludes")).isNull()
+        assertThat(parseResult.matchedOption("not-compressed")).isNull()
+        assertThat(parseResult.matchedOption("verbose")).isNull()
     }
 
     @Test
     fun `should prompt user twice for input file when first input file is invalid`() {
-        // given
-        val invalidInputFileName = ""
-        val validInputFileName = "in.java"
-        val outputFormat = OutputFormat.JSON
-        val outputFileName = "out.cc.json"
-        val findIssues = true
-        val defaultExcludes = true
-        val isCompressed = false
-        val isVerbose = true
+        val invalidFileName = "inv"
+        val outputFileName = "sampleOutputFile"
 
-        mockkObject(InputHelper)
-        every { InputHelper.isInputValidAndNotNull(any(), any()) } returns false andThen true
+        var parserArguments: List<String> = listOf()
 
-        mockkStatic("com.github.kinquirer.components.InputKt")
-        every {
-            KInquirer.promptInput(any(), any(), any(), any())
-        } returns invalidInputFileName andThen validInputFileName andThen outputFileName andThen ""
-        mockkStatic("com.github.kinquirer.components.ConfirmKt")
-        every {
-            KInquirer.promptConfirm(any(), any())
-        } returns findIssues andThen defaultExcludes andThen isCompressed andThen isVerbose
-        mockkStatic("com.github.kinquirer.components.ListKt")
-        every {
-            KInquirer.promptListObject(any(), any<List<Choice<OutputFormat>>>(), any(), any(), any())
-        } returns outputFormat
+        testSession { terminal ->
+            val fileCallback: suspend RunScope.() -> Unit = {
+                terminal.type(invalidFileName)
+                terminal.press(Keys.ENTER)
+                terminal.press(Keys.BACKSPACE, Keys.BACKSPACE, Keys.BACKSPACE)
+                terminal.type(inputFileName)
+                terminal.press(Keys.ENTER)
+            }
+            val formatCallback: suspend RunScope.() -> Unit = {
+                terminal.press(Keys.ENTER)
+            }
+            val outFileCallback: suspend RunScope.() -> Unit = {
+                terminal.type(outputFileName)
+                terminal.press(Keys.ENTER)
+            }
+            val compressCallback: suspend RunScope.() -> Unit = {
+                terminal.press(Keys.RIGHT)
+                terminal.press(Keys.ENTER)
+            }
+            val issueCallback: suspend RunScope.() -> Unit = {
+                terminal.press(Keys.ENTER)
+            }
+            val defaultCallback: suspend RunScope.() -> Unit = {
+                terminal.press(Keys.ENTER)
+            }
+            val excludeCallback: suspend RunScope.() -> Unit = {
+                terminal.press(Keys.ENTER)
+            }
+            val verboseCallback: suspend RunScope.() -> Unit = {
+                terminal.press(Keys.ENTER)
+            }
 
-        // when
-        val parserArguments = ParserDialog.collectParserArgs()
+            every { ParserDialog.Companion.testCallback() } returnsMany listOf(
+                fileCallback,
+                formatCallback,
+                outFileCallback,
+                compressCallback,
+                issueCallback,
+                defaultCallback,
+                excludeCallback,
+                verboseCallback
+            )
+
+            parserArguments = collectParserArgs(this)
+        }
+
         val cmdLine = CommandLine(SourceCodeParserMain())
         val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
 
-        // then
-        Assertions.assertThat(parseResult.matchedPositional(0).getValue<File>().name).isEqualTo(validInputFileName)
+        assertThat(parseResult.matchedPositional(0).getValue<File>().name).isEqualTo(File(inputFileName).name)
     }
 }

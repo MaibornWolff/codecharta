@@ -1,35 +1,33 @@
 package de.maibornwolff.codecharta.exporter.csv
 
-import com.github.kinquirer.KInquirer
-import com.github.kinquirer.components.promptInput
-import com.github.kinquirer.components.promptInputNumber
-import de.maibornwolff.codecharta.tools.interactiveparser.InputType
+import com.varabyte.kotter.runtime.RunScope
+import com.varabyte.kotter.runtime.Session
+import de.maibornwolff.codecharta.serialization.FileExtension
+import de.maibornwolff.codecharta.tools.inquirer.myPromptDefaultFileFolderInput
+import de.maibornwolff.codecharta.tools.inquirer.myPromptInput
+import de.maibornwolff.codecharta.tools.inquirer.myPromptInputNumber
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
-import de.maibornwolff.codecharta.util.InputHelper
-import java.io.File
-import java.math.BigDecimal
 
 class ParserDialog {
     companion object : ParserDialogInterface {
-        override fun collectParserArgs(): List<String> {
-            var inputFileName: String
-            do {
-                inputFileName = getInputFileName("cc.json", InputType.FOLDER_AND_FILE)
-            } while (!InputHelper.isInputValidAndNotNull(arrayOf(File(inputFileName)), canInputContainFolders = true))
+        override fun collectParserArgs(session: Session): List<String> {
+            val inputFileName: String = session.myPromptDefaultFileFolderInput(
+                inputType = de.maibornwolff.codecharta.tools.inquirer.InputType.FOLDER_AND_FILE,
+                fileExtensionList = listOf(FileExtension.CCJSON, FileExtension.CCGZ),
+                onInputReady = testCallback()
+            )
 
-            val defaultOutputFileName = getOutputFileName(inputFileName)
-            val outputFileName: String =
-                KInquirer.promptInput(
-                    message = "What is the name of the output file?",
-                    hint = defaultOutputFileName,
-                    default = defaultOutputFileName
-                )
+            val outputFileName: String = session.myPromptInput(
+                message = "What is the name of the output file?",
+                allowEmptyInput = true,
+                onInputReady = testCallback()
+            )
 
-            val maxHierarchy: BigDecimal =
-                KInquirer.promptInputNumber(
+            val maxHierarchy: String =
+                session.myPromptInputNumber(
                     message = "What is the maximum depth of hierarchy",
                     hint = "10",
-                    default = "10"
+                    onInputReady = testCallback()
                 )
 
             return listOfNotNull(
@@ -38,5 +36,7 @@ class ParserDialog {
                 "--depth-of-hierarchy=$maxHierarchy"
             )
         }
+
+        internal fun testCallback(): suspend RunScope.() -> Unit = {}
     }
 }

@@ -1,155 +1,297 @@
 package de.maibornwolff.codecharta.importer.tokeiimporter
 
-import com.github.kinquirer.KInquirer
-import com.github.kinquirer.components.promptConfirm
-import com.github.kinquirer.components.promptInput
-import de.maibornwolff.codecharta.util.InputHelper
+import com.varabyte.kotter.foundation.input.Keys
+import com.varabyte.kotter.runtime.RunScope
+import com.varabyte.kotter.runtime.terminal.inmemory.press
+import com.varabyte.kotter.runtime.terminal.inmemory.type
+import com.varabyte.kotterx.test.foundation.testSession
+import de.maibornwolff.codecharta.importer.tokeiimporter.ParserDialog.Companion.collectParserArgs
 import io.mockk.every
 import io.mockk.mockkObject
-import io.mockk.mockkStatic
-import io.mockk.unmockkAll
-import org.assertj.core.api.Assertions
-import org.junit.jupiter.api.AfterEach
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.TestInstance
+import org.junit.jupiter.api.Timeout
 import picocli.CommandLine
 import java.io.File
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@Timeout(120)
 class ParserDialogTest {
-    @AfterEach
-    fun afterTest() {
-        unmockkAll()
-    }
+    private val testResourceBaseFolder = "src/test/resources/"
+    private val inputFileName = "${testResourceBaseFolder}tokei_12_minimal.json"
+    private val outputFileName = "out_test.cc.json"
+    private val rootFolder = "/foo/bar"
 
     @Test
-    fun `should output correct arguments when valid input is provided`() { // given
-        val fileName = "in.json"
-        val outputFileName = "out.cc.json"
-        val rootFolder = "/foo/bar"
+    fun `should output correct arguments when valid input is provided`() {
         val pathSeparator = "/"
         val isCompressed = false
 
-        mockkObject(InputHelper)
-        every { InputHelper.isInputValidAndNotNull(any(), any()) } returns true
+        mockkObject(ParserDialog.Companion)
 
-        mockkStatic("com.github.kinquirer.components.InputKt")
-        every {
-            KInquirer.promptInput(any(), any(), any(), any())
-        } returns fileName andThen outputFileName andThen rootFolder andThen pathSeparator
-        mockkStatic("com.github.kinquirer.components.ConfirmKt")
-        every {
-            KInquirer.promptConfirm(any(), any())
-        } returns isCompressed
+        testSession { terminal ->
+            val fileCallback: suspend RunScope.() -> Unit = {
+                terminal.type(inputFileName)
+                terminal.press(Keys.ENTER)
+            }
 
-        // when
-        val parserArguments = ParserDialog.collectParserArgs()
-        val cmdLine = CommandLine(TokeiImporter())
-        val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
+            val outFileCallback: suspend RunScope.() -> Unit = {
+                terminal.type(outputFileName)
+                terminal.press(Keys.ENTER)
+            }
 
-        // then
-        Assertions.assertThat(parseResult.matchedPositional(0).getValue<File>().name).isEqualTo(fileName)
-        Assertions.assertThat(parseResult.matchedOption("output-file").getValue<String>().equals(outputFileName))
-        Assertions.assertThat(parseResult.matchedOption("not-compressed").getValue<Boolean>()).isEqualTo(isCompressed)
-        Assertions.assertThat(parseResult.matchedOption("root-name").getValue<String>()).isEqualTo(rootFolder)
-        Assertions.assertThat(parseResult.matchedOption("path-separator").getValue<String>()).isEqualTo(pathSeparator)
+            val rootCallback: suspend RunScope.() -> Unit = {
+                terminal.type(rootFolder)
+                terminal.press(Keys.ENTER)
+            }
+
+            val pathCallback: suspend RunScope.() -> Unit = {
+                terminal.type(pathSeparator)
+                terminal.press(Keys.ENTER)
+            }
+
+            val compressCallback: suspend RunScope.() -> Unit = {
+                terminal.press(Keys.RIGHT)
+                terminal.press(Keys.ENTER)
+            }
+
+            every { ParserDialog.testCallback() } returnsMany listOf(
+                fileCallback,
+                outFileCallback,
+                rootCallback,
+                pathCallback,
+                compressCallback
+            )
+
+            val parserArguments = collectParserArgs(this)
+            val cmdLine = CommandLine(TokeiImporter())
+            val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
+
+            assertThat(parseResult.matchedPositional(0).getValue<File>().name).isEqualTo(File(inputFileName).name)
+            assertThat(parseResult.matchedOption("output-file").getValue<String>().equals(outputFileName))
+            assertThat(parseResult.matchedOption("not-compressed").getValue<Boolean>()).isEqualTo(isCompressed)
+            assertThat(parseResult.matchedOption("root-name").getValue<String>()).isEqualTo(rootFolder)
+            assertThat(parseResult.matchedOption("path-separator").getValue<String>()).isEqualTo(pathSeparator)
+        }
     }
 
     @Test
-    fun `should escape a single backslash`() { // given
-        val fileName = "in.json"
-        val outputFileName = "out.cc.json"
-        val rootFolder = "/foo/bar"
+    fun `should output correct arguments when output file is not provided`() {
+        val pathSeparator = "/"
+
+        mockkObject(ParserDialog.Companion)
+
+        testSession { terminal ->
+            val fileCallback: suspend RunScope.() -> Unit = {
+                terminal.type(inputFileName)
+                terminal.press(Keys.ENTER)
+            }
+
+            val outFileCallback: suspend RunScope.() -> Unit = {
+                terminal.press(Keys.ENTER) // User skips providing output file
+            }
+
+            val rootCallback: suspend RunScope.() -> Unit = {
+                terminal.type(rootFolder)
+                terminal.press(Keys.ENTER)
+            }
+
+            val pathCallback: suspend RunScope.() -> Unit = {
+                terminal.type(pathSeparator)
+                terminal.press(Keys.ENTER)
+            }
+
+            val compressCallback: suspend RunScope.() -> Unit = {
+                terminal.press(Keys.RIGHT)
+                terminal.press(Keys.ENTER)
+            }
+
+            every { ParserDialog.testCallback() } returnsMany listOf(
+                fileCallback,
+                outFileCallback,
+                rootCallback,
+                pathCallback,
+                compressCallback
+            )
+
+            val parserArguments = collectParserArgs(this)
+            val cmdLine = CommandLine(TokeiImporter())
+            val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
+
+            assertThat(parseResult.matchedPositional(0).getValue<File>().name).isEqualTo(File(inputFileName).name)
+            assertThat(parseResult.matchedOption("output-file").getValue<String>()).isEqualTo("")
+            assertThat(parseResult.matchedOption("not-compressed")).isNull()
+            assertThat(parseResult.matchedOption("root-name").getValue<String>()).isEqualTo(rootFolder)
+            assertThat(parseResult.matchedOption("path-separator").getValue<String>()).isEqualTo(pathSeparator)
+        }
+    }
+
+    @Test
+    fun `should escape a single backslash`() {
         val pathSeparator = "\\"
         val pathSeparatorEscaped = "\\\\"
         val isCompressed = false
 
-        mockkObject(InputHelper)
-        every { InputHelper.isInputValidAndNotNull(any(), any()) } returns true
+        mockkObject(ParserDialog.Companion)
 
-        mockkStatic("com.github.kinquirer.components.InputKt")
-        every {
-            KInquirer.promptInput(any(), any(), any(), any())
-        } returns fileName andThen outputFileName andThen rootFolder andThen pathSeparator
-        mockkStatic("com.github.kinquirer.components.ConfirmKt")
-        every {
-            KInquirer.promptConfirm(any(), any())
-        } returns isCompressed
+        testSession { terminal ->
+            val fileCallback: suspend RunScope.() -> Unit = {
+                terminal.type(inputFileName)
+                terminal.press(Keys.ENTER)
+            }
 
-        // when
-        val parserArguments = ParserDialog.collectParserArgs()
-        val cmdLine = CommandLine(TokeiImporter())
-        val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
+            val outFileCallback: suspend RunScope.() -> Unit = {
+                terminal.type(outputFileName)
+                terminal.press(Keys.ENTER)
+            }
 
-        // then
-        Assertions.assertThat(parseResult.matchedPositional(0).getValue<File>().name).isEqualTo(fileName)
-        Assertions.assertThat(parseResult.matchedOption("output-file").getValue<String>().equals(outputFileName))
-        Assertions.assertThat(parseResult.matchedOption("not-compressed").getValue<Boolean>()).isEqualTo(isCompressed)
-        Assertions.assertThat(parseResult.matchedOption("root-name").getValue<String>()).isEqualTo(rootFolder)
-        Assertions.assertThat(parseResult.matchedOption("path-separator").getValue<String>())
-            .isEqualTo(pathSeparatorEscaped)
+            val rootCallback: suspend RunScope.() -> Unit = {
+                terminal.type(rootFolder)
+                terminal.press(Keys.ENTER)
+            }
+
+            val pathCallback: suspend RunScope.() -> Unit = {
+                terminal.type(pathSeparator)
+                terminal.press(Keys.ENTER)
+            }
+
+            val compressCallback: suspend RunScope.() -> Unit = {
+                terminal.press(Keys.RIGHT)
+                terminal.press(Keys.ENTER)
+            }
+
+            every { ParserDialog.testCallback() } returnsMany listOf(
+                fileCallback,
+                outFileCallback,
+                rootCallback,
+                pathCallback,
+                compressCallback
+            )
+
+            val parserArguments = collectParserArgs(this)
+            val cmdLine = CommandLine(TokeiImporter())
+            val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
+
+            assertThat(parseResult.matchedPositional(0).getValue<File>().name)
+                .isEqualTo(File(inputFileName).name)
+            assertThat(parseResult.matchedOption("output-file").getValue<String>())
+                .isEqualTo(outputFileName)
+            assertThat(parseResult.matchedOption("not-compressed").getValue<Boolean>())
+                .isEqualTo(isCompressed)
+            assertThat(parseResult.matchedOption("root-name").getValue<String>())
+                .isEqualTo(rootFolder)
+            assertThat(parseResult.matchedOption("path-separator").getValue<String>())
+                .isEqualTo(pathSeparatorEscaped)
+        }
     }
 
     @Test
-    fun `should not escape a double backslash`() { // given
-        val fileName = "in.json"
-        val outputFileName = "out.cc.json"
-        val rootFolder = "/foo/bar"
+    fun `should not escape a double backslash`() {
         val pathSeparator = "\\\\"
         val isCompressed = false
 
-        mockkObject(InputHelper)
-        every { InputHelper.isInputValidAndNotNull(any(), any()) } returns true
+        mockkObject(ParserDialog.Companion)
 
-        mockkStatic("com.github.kinquirer.components.InputKt")
-        every {
-            KInquirer.promptInput(any(), any(), any(), any())
-        } returns fileName andThen outputFileName andThen rootFolder andThen pathSeparator
-        mockkStatic("com.github.kinquirer.components.ConfirmKt")
-        every {
-            KInquirer.promptConfirm(any(), any())
-        } returns isCompressed
+        testSession { terminal ->
+            val fileCallback: suspend RunScope.() -> Unit = {
+                terminal.type(inputFileName)
+                terminal.press(Keys.ENTER)
+            }
 
-        // when
-        val parserArguments = ParserDialog.collectParserArgs()
-        val cmdLine = CommandLine(TokeiImporter())
-        val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
+            val outFileCallback: suspend RunScope.() -> Unit = {
+                terminal.type(outputFileName)
+                terminal.press(Keys.ENTER)
+            }
 
-        // then
-        Assertions.assertThat(parseResult.matchedPositional(0).getValue<File>().name).isEqualTo(fileName)
-        Assertions.assertThat(parseResult.matchedOption("output-file").getValue<String>().equals(outputFileName))
-        Assertions.assertThat(parseResult.matchedOption("not-compressed").getValue<Boolean>()).isEqualTo(isCompressed)
-        Assertions.assertThat(parseResult.matchedOption("root-name").getValue<String>()).isEqualTo(rootFolder)
-        Assertions.assertThat(parseResult.matchedOption("path-separator").getValue<String>()).isEqualTo(pathSeparator)
+            val rootCallback: suspend RunScope.() -> Unit = {
+                terminal.type(rootFolder)
+                terminal.press(Keys.ENTER)
+            }
+
+            val pathCallback: suspend RunScope.() -> Unit = {
+                terminal.type(pathSeparator)
+                terminal.press(Keys.ENTER)
+            }
+
+            val compressCallback: suspend RunScope.() -> Unit = {
+                terminal.press(Keys.RIGHT)
+                terminal.press(Keys.ENTER)
+            }
+
+            every { ParserDialog.testCallback() } returnsMany listOf(
+                fileCallback,
+                outFileCallback,
+                rootCallback,
+                pathCallback,
+                compressCallback
+            )
+
+            val parserArguments = collectParserArgs(this)
+            val cmdLine = CommandLine(TokeiImporter())
+            val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
+
+            assertThat(parseResult.matchedPositional(0).getValue<File>().name)
+                .isEqualTo(File(inputFileName).name)
+            assertThat(parseResult.matchedOption("output-file").getValue<String>())
+                .isEqualTo(outputFileName)
+            assertThat(parseResult.matchedOption("not-compressed").getValue<Boolean>())
+                .isEqualTo(isCompressed)
+            assertThat(parseResult.matchedOption("root-name").getValue<String>())
+                .isEqualTo(rootFolder)
+            assertThat(parseResult.matchedOption("path-separator").getValue<String>())
+                .isEqualTo(pathSeparator)
+        }
     }
 
     @Test
-    fun `should prompt user twice for input file when first input file is invalid`() { // given
-        val invalidInputFileName = ""
-        val validInputFileName = "in.json"
-        val outputFileName = "out.cc.json"
-        val rootFolder = "/foo/bar"
+    fun `should prompt user twice for input file when first input file is invalid`() {
+        val invalidFileName = "inv"
         val pathSeparator = "/"
-        val isCompressed = false
 
-        mockkObject(InputHelper)
-        every { InputHelper.isInputValidAndNotNull(any(), any()) } returns false andThen true
+        mockkObject(ParserDialog.Companion)
 
-        mockkStatic("com.github.kinquirer.components.InputKt")
-        every {
-            KInquirer.promptInput(any(), any(), any(), any())
-        } returns invalidInputFileName andThen validInputFileName andThen outputFileName andThen rootFolder andThen pathSeparator
-        mockkStatic("com.github.kinquirer.components.ConfirmKt")
-        every {
-            KInquirer.promptConfirm(any(), any())
-        } returns isCompressed
+        testSession { terminal ->
+            val fileCallback: suspend RunScope.() -> Unit = {
+                terminal.type(invalidFileName)
+                terminal.press(Keys.ENTER)
+                terminal.press(Keys.BACKSPACE, Keys.BACKSPACE, Keys.BACKSPACE)
+                terminal.type(inputFileName)
+                terminal.press(Keys.ENTER)
+            }
 
-        // when
-        val parserArguments = ParserDialog.collectParserArgs()
-        val cmdLine = CommandLine(TokeiImporter())
-        val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
+            val outFileCallback: suspend RunScope.() -> Unit = {
+                terminal.type(outputFileName)
+                terminal.press(Keys.ENTER)
+            }
 
-        // then
-        Assertions.assertThat(parseResult.matchedPositional(0).getValue<File>().name).isEqualTo(validInputFileName)
+            val rootCallback: suspend RunScope.() -> Unit = {
+                terminal.type(rootFolder)
+                terminal.press(Keys.ENTER)
+            }
+
+            val pathCallback: suspend RunScope.() -> Unit = {
+                terminal.type(pathSeparator)
+                terminal.press(Keys.ENTER)
+            }
+
+            val compressCallback: suspend RunScope.() -> Unit = {
+                terminal.press(Keys.RIGHT)
+                terminal.press(Keys.ENTER)
+            }
+
+            every { ParserDialog.testCallback() } returnsMany listOf(
+                fileCallback,
+                outFileCallback,
+                rootCallback,
+                pathCallback,
+                compressCallback
+            )
+
+            val parserArguments = collectParserArgs(this)
+
+            val cmdLine = CommandLine(TokeiImporter())
+            val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
+
+            assertThat(parseResult.matchedPositional(0).getValue<File>().name).isEqualTo(File(inputFileName).name)
+        }
     }
 }

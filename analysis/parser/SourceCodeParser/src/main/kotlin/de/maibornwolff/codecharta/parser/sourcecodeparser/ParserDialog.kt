@@ -1,74 +1,75 @@
 package de.maibornwolff.codecharta.parser.sourcecodeparser
 
-import com.github.kinquirer.KInquirer
-import com.github.kinquirer.components.promptConfirm
-import com.github.kinquirer.components.promptInput
-import com.github.kinquirer.components.promptListObject
-import com.github.kinquirer.core.Choice
+import com.varabyte.kotter.runtime.RunScope
+import com.varabyte.kotter.runtime.Session
+import de.maibornwolff.codecharta.tools.inquirer.InputType
+import de.maibornwolff.codecharta.tools.inquirer.myPromptConfirm
+import de.maibornwolff.codecharta.tools.inquirer.myPromptDefaultFileFolderInput
+import de.maibornwolff.codecharta.tools.inquirer.myPromptInput
+import de.maibornwolff.codecharta.tools.inquirer.myPromptList
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
-import de.maibornwolff.codecharta.util.InputHelper
-import java.io.File
 
 class ParserDialog {
     companion object : ParserDialogInterface {
-        override fun collectParserArgs(): List<String> {
-            var inputFileName: String
-            do {
-                inputFileName = getInputFileName("Which project folder or code file should be parsed?", "")
-            } while (!InputHelper.isInputValidAndNotNull(arrayOf(File(inputFileName)), canInputContainFolders = true))
+        override fun collectParserArgs(session: Session): List<String> {
+            val inputFileName: String = session.myPromptDefaultFileFolderInput(
+                inputType = InputType.FOLDER_AND_FILE,
+                fileExtensionList = listOf(),
+                onInputReady = testCallback()
+            )
 
-            val outputFormat =
-                KInquirer.promptListObject(
-                    message = "Which output format should be generated?",
-                    choices =
-                        listOf(
-                            Choice("CodeCharta JSON", OutputFormat.JSON),
-                            Choice("CSV", OutputFormat.CSV)
-                        )
-                )
+            val formatCCjson = "CodeCharta JSON"
+            val formatCSV = "CSV"
+            val outputFormatChoices = listOf(formatCCjson, formatCSV)
 
+            val outputFormatAnswer = session.myPromptList(
+                message = "Which output format should be generated?",
+                choices = outputFormatChoices,
+                onInputReady = testCallback()
+            )
+
+            val outputFormat = if (outputFormatAnswer == formatCCjson) OutputFormat.JSON else OutputFormat.CSV
             val defaultOutputFilename = if (outputFormat == OutputFormat.JSON) "output.cc.json" else "output.csv"
-            val outputFileName: String =
-                KInquirer.promptInput(
-                    message = "What is the name of the output file?",
-                    hint = defaultOutputFilename,
-                    default = defaultOutputFilename
-                )
 
-            val findIssues =
-                KInquirer.promptConfirm(
-                    message = "Should we search for sonar issues?",
-                    default = true
-                )
-
-            val defaultExcludes =
-                KInquirer.promptConfirm(
-                    message = "Should we apply default excludes (build, target, dist and out folders, hidden files/folders)?",
-                    default = false
-                )
-
-            val exclude = mutableListOf<String>()
-            while (true) {
-                val additionalExclude =
-                    KInquirer.promptInput(
-                        message = "Exclude file/folder according to regex pattern? Leave empty to skip."
-                    )
-                if (additionalExclude.isNotBlank()) {
-                    exclude.add("--exclude=$additionalExclude")
-                } else {
-                    break
-                }
-            }
+            val outputFileName: String = session.myPromptInput(
+                message = "What is the name of the output file?",
+                hint = defaultOutputFilename,
+                allowEmptyInput = true,
+                onInputReady = testCallback()
+            )
 
             val isCompressed =
                 (outputFileName.isEmpty()) ||
-                    KInquirer.promptConfirm(
+                    session.myPromptConfirm(
                         message = "Do you want to compress the output file?",
-                        default = true
+                        onInputReady = testCallback()
                     )
 
+            val findIssues =
+                session.myPromptConfirm(
+                    message = "Should we search for sonar issues?",
+                    onInputReady = testCallback()
+                )
+
+            val defaultExcludes =
+                session.myPromptConfirm(
+                    message = "Should we apply default excludes (build, target, dist and out folders, hidden files/folders)?",
+                    onInputReady = testCallback()
+                )
+
+            val exclude: String =
+                session.myPromptInput(
+                    message = "Do you want to exclude file/folder according to regex pattern?",
+                    hint = "regex1, regex2.. (leave empty if you don't want to exclude anything)",
+                    allowEmptyInput = true,
+                    onInputReady = testCallback()
+                )
+
             val isVerbose: Boolean =
-                KInquirer.promptConfirm(message = "Display info messages from sonar plugins?", default = false)
+                session.myPromptConfirm(
+                    message = "Display info messages from sonar plugins?",
+                    onInputReady = testCallback()
+                )
 
             return listOfNotNull(
                 inputFileName,
@@ -77,8 +78,11 @@ class ParserDialog {
                 if (isCompressed) null else "--not-compressed",
                 if (findIssues) null else "--no-issues",
                 if (defaultExcludes) "--default-excludes" else null,
-                if (isVerbose) "--verbose" else null
-            ) + exclude
+                if (isVerbose) "--verbose" else null,
+                if (exclude.isEmpty()) null else "--exclude=$exclude"
+            )
         }
+
+        internal fun testCallback(): suspend RunScope.() -> Unit = {}
     }
 }

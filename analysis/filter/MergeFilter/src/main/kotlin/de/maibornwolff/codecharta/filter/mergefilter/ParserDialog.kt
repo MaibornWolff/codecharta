@@ -1,91 +1,103 @@
 package de.maibornwolff.codecharta.filter.mergefilter
 
-import com.github.kinquirer.KInquirer
-import com.github.kinquirer.components.promptCheckboxObject
-import com.github.kinquirer.components.promptConfirm
-import com.github.kinquirer.components.promptInput
-import com.github.kinquirer.components.promptInputNumber
-import com.github.kinquirer.components.promptList
-import com.github.kinquirer.core.Choice
-import de.maibornwolff.codecharta.tools.interactiveparser.InputType
+import com.varabyte.kotter.runtime.RunScope
+import com.varabyte.kotter.runtime.Session
+import de.maibornwolff.codecharta.serialization.FileExtension
+import de.maibornwolff.codecharta.tools.inquirer.InputType
+import de.maibornwolff.codecharta.tools.inquirer.InputValidator
+import de.maibornwolff.codecharta.tools.inquirer.myPromptCheckbox
+import de.maibornwolff.codecharta.tools.inquirer.myPromptConfirm
+import de.maibornwolff.codecharta.tools.inquirer.myPromptDefaultFileFolderInput
+import de.maibornwolff.codecharta.tools.inquirer.myPromptInput
+import de.maibornwolff.codecharta.tools.inquirer.myPromptInputNumber
+import de.maibornwolff.codecharta.tools.inquirer.myPromptList
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
-import de.maibornwolff.codecharta.util.InputHelper
 import java.io.File
 
 class ParserDialog {
     companion object : ParserDialogInterface {
-        override fun collectParserArgs(): List<String> {
-            var inputFolderName: String
-            do {
-                inputFolderName = getInputFileName("cc.json", InputType.FOLDER)
-            } while (!InputHelper.isInputValidAndNotNull(arrayOf(File(inputFolderName)), canInputContainFolders = true))
+        override fun collectParserArgs(session: Session): List<String> {
+            val inputDataName: String =
+                session.myPromptDefaultFileFolderInput(
+                    inputType = InputType.FOLDER_AND_FILE,
+                    fileExtensionList = listOf(FileExtension.CCJSON, FileExtension.CCGZ),
+                    onInputReady = testCallback()
+                )
 
             val defaultMerge = "Default merging..."
             val mimoMerge = "Mimo Merge"
             val largeMerge = "Large Merge"
-            val mergeMode = KInquirer.promptList(
+
+            val mergeMode = session.myPromptList(
                 message = "Do you want to use a special merge mode?",
-                choices = listOf(defaultMerge, mimoMerge, largeMerge)
+                choices = listOf(defaultMerge, mimoMerge, largeMerge),
+                onInputReady = testCallback()
             )
 
             val outputFileName: String
             val isCompressed: Boolean
             var levenshteinDistance = 0
+
             if (mergeMode == mimoMerge) {
-                outputFileName = KInquirer.promptInput(
+                outputFileName = session.myPromptInput(
                     message = "What is the output folder path?",
-                    hint = "Uses the current working directory if empty"
+                    hint = "Uses the current working directory if empty",
+                    allowEmptyInput = true,
+                    onInputReady = testCallback()
                 )
 
-                isCompressed = KInquirer.promptConfirm(
+                isCompressed = session.myPromptConfirm(
                     message = "Do you want to compress the output file(s)?",
-                    default = true
+                    onInputReady = testCallback()
                 )
 
-                levenshteinDistance = KInquirer.promptInputNumber(
+                levenshteinDistance = session.myPromptInputNumber(
                     message = "Select Levenshtein Distance for name match suggestions (0 for no suggestions)",
-                    default = "3"
+                    hint = "3",
+                    invalidInputMessage = "Specify a number greater or equal to 0",
+                    inputValidator = InputValidator.isNumberGreaterThen(-1),
+                    onInputReady = testCallback()
                 ).toInt()
             } else {
-                outputFileName =
-                    KInquirer.promptInput(
-                        message = "What is the name of the output file?"
-                    )
+                outputFileName = session.myPromptInput(
+                    message = "What is the name of the output file?",
+                    hint = "mergeResult.cc.json",
+                    allowEmptyInput = true,
+                    onInputReady = testCallback()
+                )
 
-                isCompressed =
-                    (outputFileName.isEmpty()) ||
-                    KInquirer.promptConfirm(
-                        message = "Do you want to compress the output file?",
-                        default = true
-                    )
+                isCompressed = (outputFileName.isEmpty()) || session.myPromptConfirm(
+                    message = "Do you want to compress the output file?",
+                    onInputReady = testCallback()
+                )
             }
 
             val leafMergingStrategy = "Leaf Merging Strategy"
             val recursiveMergingStrategy = "Recursive Merging Strategy"
-            val strategy = KInquirer.promptList(
+            val strategy = session.myPromptList(
                 message = "Which merging strategy should be used?",
                 choices = listOf(recursiveMergingStrategy, leafMergingStrategy),
-                hint = "Default is 'Recursive Merging Strategy'"
+                onInputReady = testCallback()
             )
 
             var leafFlag = false
             var addMissing = false
             if (strategy == leafMergingStrategy) {
                 leafFlag = true
-                addMissing = KInquirer.promptConfirm(
+                addMissing = session.myPromptConfirm(
                     message = "Do you want to add missing nodes to reference?",
-                    default = false
+                    onInputReady = testCallback()
                 )
             }
 
             val ignoreCase: Boolean =
-                KInquirer.promptConfirm(
+                session.myPromptConfirm(
                     message = "Do you want to ignore case when checking node names?",
-                    default = false
+                    onInputReady = testCallback()
                 )
 
             val basicMergeConfig = listOf(
-                inputFolderName,
+                inputDataName,
                 "--add-missing=$addMissing",
                 "--recursive=${!leafFlag}",
                 "--leaf=$leafFlag",
@@ -110,28 +122,33 @@ class ParserDialog {
             return basicMergeConfig
         }
 
-        fun askForceMerge(): Boolean {
-            return KInquirer.promptConfirm(
+        fun askForceMerge(session: Session): Boolean {
+            return session.myPromptConfirm(
                 message = "Do you still want to merge non-overlapping at the top-level nodes?",
-                default = false
+                onInputReady = testCallback()
             )
         }
 
-        fun askForMimoPrefix(prefixOptions: Set<String>): String {
-            return KInquirer.promptList(
+        fun askForMimoPrefix(session: Session, prefixOptions: Set<String>): String {
+            return session.myPromptList(
                 message = "Which prefix should be used for the output file?",
-                choices = prefixOptions.toList()
+                choices = prefixOptions.toList(),
+                onInputReady = testCallback()
             )
         }
 
-        fun requestMimoFileSelection(files: List<File>): List<File> {
-            val choiceList = files.map { Choice(it.name, it) }
-            return KInquirer.promptCheckboxObject(
-                message = "Which files should be merged? [Enter = Confirm, Space = Select]",
-                choices = choiceList,
+        fun requestMimoFileSelection(session: Session, files: List<File>): List<File> {
+            val fileNameList = files.map { it.name }
+            val choiceList: List<String> = session.myPromptCheckbox(
+                message = "",
+                choices = fileNameList,
                 hint = "Not selected files will not get merged",
-                pageSize = 10
+                allowEmptyInput = true,
+                onInputReady = testCallback()
             )
+            return files.filter { choiceList.contains(it.name) }
         }
+
+        internal fun testCallback(): suspend RunScope.() -> Unit = {}
     }
 }

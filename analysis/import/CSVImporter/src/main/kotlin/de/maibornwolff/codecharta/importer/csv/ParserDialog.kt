@@ -1,43 +1,55 @@
 package de.maibornwolff.codecharta.importer.csv
 
-import com.github.kinquirer.KInquirer
-import com.github.kinquirer.components.promptConfirm
-import com.github.kinquirer.components.promptInput
+import com.varabyte.kotter.runtime.RunScope
+import com.varabyte.kotter.runtime.Session
+import de.maibornwolff.codecharta.serialization.FileExtension
+import de.maibornwolff.codecharta.tools.inquirer.InputType
+import de.maibornwolff.codecharta.tools.inquirer.myPromptConfirm
+import de.maibornwolff.codecharta.tools.inquirer.myPromptDefaultFileFolderInput
+import de.maibornwolff.codecharta.tools.inquirer.myPromptInput
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
-import de.maibornwolff.codecharta.util.CSVFileAggregation.Companion.getInputFiles
 
 class ParserDialog {
     companion object : ParserDialogInterface {
-        override fun collectParserArgs(): List<String> {
-            val inputFileNames = getInputFiles("Please specify the name of the first CSV file to be parsed.")
+        override fun collectParserArgs(session: Session): List<String> {
+            val inputFileName: String = session.myPromptDefaultFileFolderInput(
+                inputType = InputType.FILE,
+                fileExtensionList = listOf(FileExtension.CSV),
+                onInputReady = testCallback()
+            )
 
-            val outputFileName: String = KInquirer.promptInput(
+            val outputFileName: String = session.myPromptInput(
                 message = "What is the name of the output file?",
-                hint = "output.cc.json"
+                allowEmptyInput = true,
+                onInputReady = testCallback()
             )
 
-            val pathColumnName: String = KInquirer.promptInput(
+            val pathColumnName: String = session.myPromptInput(
                 message = "What is the name of the path column name?",
-                default = "path"
+                hint = "path",
+                allowEmptyInput = false,
+                onInputReady = testCallback()
             )
 
-            val delimiter = KInquirer.promptInput(
+            val delimiter: String = session.myPromptInput(
                 message = "Which column delimiter is used in the CSV file?",
                 hint = ",",
-                default = ","
+                onInputReady = testCallback()
             )
 
-            val pathSeparator = KInquirer.promptInput(
+            val pathSeparator: String = session.myPromptInput(
                 message = "Which path separator is used in the path names?",
                 hint = "/",
-                default = "/"
+                onInputReady = testCallback()
             )
 
-            val isCompressed = outputFileName.isEmpty() || KInquirer.promptConfirm(
-                message = "Do you want to compress the output file?", default = true
+            val isCompressed = outputFileName.isEmpty() || session.myPromptConfirm(
+                message = "Do you want to compress the output file?",
+                onInputReady = testCallback()
             )
 
-            return inputFileNames + listOfNotNull(
+            return listOfNotNull(
+                inputFileName,
                 "--output-file=$outputFileName",
                 "--path-column-name=$pathColumnName",
                 "--delimiter=$delimiter",
@@ -45,5 +57,7 @@ class ParserDialog {
                 if (isCompressed) null else "--not-compressed"
             )
         }
+
+        internal fun testCallback(): suspend RunScope.() -> Unit = {}
     }
 }

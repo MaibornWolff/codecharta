@@ -1,6 +1,9 @@
 package de.maibornwolff.codecharta.ccsh.parser
 
+import com.varabyte.kotterx.test.foundation.testSession
+import de.maibornwolff.codecharta.ccsh.SessionMock.Companion.mockRunInTerminalSession
 import de.maibornwolff.codecharta.tools.ccsh.Ccsh
+import de.maibornwolff.codecharta.tools.ccsh.parser.InteractiveDialog
 import de.maibornwolff.codecharta.tools.ccsh.parser.ParserService
 import de.maibornwolff.codecharta.tools.ccsh.parser.repository.PicocliParserRepository
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
@@ -12,11 +15,13 @@ import io.mockk.mockkObject
 import io.mockk.unmockkAll
 import io.mockk.verify
 import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
+import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
@@ -74,16 +79,43 @@ class ParserServiceTest {
     fun `should output generated parser command for each configured parser`(selectedParser: String) {
         val parser = mockParserObject(selectedParser)
 
-        val collectedArgs = parser.getDialog().collectParserArgs()
+        var collectedArgs = emptyList<String>()
+        testSession {
+            collectedArgs = parser.getDialog().collectParserArgs(this)
+        }
         val expectedParserCommand =
             "ccsh " + selectedParser + " " + collectedArgs.map { x -> '"' + x + '"' }.joinToString(" ")
 
+        mockRunInTerminalSession()
         val selectedParserList = listOf(selectedParser)
         val mockPicocliParserRepository = mockParserRepository(selectedParser, emptyList())
 
         ParserService.configureParserSelection(cmdLine, mockPicocliParserRepository, selectedParserList)
 
-        Assertions.assertThat(outContent.toString()).contains(expectedParserCommand)
+        assertThat(outContent.toString()).contains(expectedParserCommand)
+    }
+
+    @Test
+    fun `should throw error in case a parser is selected that does not exist`() {
+        val repository = PicocliParserRepository()
+        val selectedParser = "invalidParser"
+        assertThrows<IllegalArgumentException> {
+            ParserService.configureParserSelection(cmdLine, repository, listOf(selectedParser))
+        }
+    }
+
+    @Test
+    fun `selectParser should extract the passed parser for return`() {
+        val fakeParser = "selectedParser"
+        val fakeParserDescription = "This is a test parser. Please Stand by"
+        mockkObject(InteractiveDialog)
+        every { InteractiveDialog.askParserToExecute(any(), any()) } returns "$fakeParser $fakeParserDescription"
+
+        mockRunInTerminalSession()
+
+        val selectedParser = ParserService.selectParser(cmdLine, PicocliParserRepository())
+
+        assertThat(selectedParser).isEqualTo(fakeParser)
     }
 
     @Test
@@ -92,8 +124,8 @@ class ParserServiceTest {
 
         val usableParsers = ParserService.getParserSuggestions(cmdLine, mockParserRepository, "dummy")
 
-        Assertions.assertThat(usableParsers).isNotNull
-        Assertions.assertThat(usableParsers).isEmpty()
+        assertThat(usableParsers).isNotNull
+        assertThat(usableParsers).isEmpty()
     }
 
     @Test
@@ -102,11 +134,11 @@ class ParserServiceTest {
         val mockParserRepository = mockParserRepository("check", expectedUsualParsers)
         val actualUsableParsers = ParserService.getParserSuggestions(cmdLine, mockParserRepository, "dummy")
 
-        Assertions.assertThat(actualUsableParsers).isNotNull
-        Assertions.assertThat(actualUsableParsers).isNotEmpty
+        assertThat(actualUsableParsers).isNotNull
+        assertThat(actualUsableParsers).isNotEmpty
 
-        Assertions.assertThat(actualUsableParsers).contains("check")
-        Assertions.assertThat(actualUsableParsers).contains("validate")
+        assertThat(actualUsableParsers).contains("check")
+        assertThat(actualUsableParsers).contains("validate")
     }
 
     @Test
@@ -131,17 +163,19 @@ class ParserServiceTest {
                 "csvimport"
             )
 
+        mockRunInTerminalSession()
+
         val mockPicocliParserRepository = mockParserRepository(selectedParserList[0], emptyList())
 
         val configuredParsers =
             ParserService.configureParserSelection(cmdLine, mockPicocliParserRepository, selectedParserList)
 
-        Assertions.assertThat(configuredParsers).isNotEmpty
-        Assertions.assertThat(configuredParsers).size().isEqualTo(selectedParserList.size)
+        assertThat(configuredParsers).isNotEmpty
+        assertThat(configuredParsers).size().isEqualTo(selectedParserList.size)
 
         for (entry in configuredParsers) {
-            Assertions.assertThat(entry.value).isNotEmpty
-            Assertions.assertThat(entry.value[0] == "dummyArg").isTrue()
+            assertThat(entry.value).isNotEmpty
+            assertThat(entry.value[0] == "dummyArg").isTrue()
         }
     }
 
@@ -149,6 +183,7 @@ class ParserServiceTest {
     @MethodSource("providerParserArguments")
     fun `should execute parser`(parser: String) {
         mockParserObject(parser)
+        mockRunInTerminalSession()
 
         ParserService.executeSelectedParser(cmdLine, parser)
 
@@ -160,7 +195,12 @@ class ParserServiceTest {
     fun `should execute preconfigured parser`(parser: String) {
         val parserObject = mockParserObject(parser)
 
-        ParserService.executePreconfiguredParser(cmdLine, Pair(parser, parserObject.getDialog().collectParserArgs()))
+        var parserArgs = emptyList<String>()
+        testSession {
+            parserArgs = parserObject.getDialog().collectParserArgs(this)
+        }
+
+        ParserService.executePreconfiguredParser(cmdLine, Pair(parser, parserArgs))
 
         verify { anyConstructed<CommandLine>().execute(any()) }
     }
@@ -179,11 +219,13 @@ class ParserServiceTest {
     @ParameterizedTest
     @MethodSource("providerParserArguments")
     fun `should output message informing about which parser is being configured`(parser: String) {
+        mockRunInTerminalSession()
+
         val mockParserRepository = mockParserRepository(parser, listOf(parser))
 
         ParserService.configureParserSelection(cmdLine, mockParserRepository, listOf(parser))
 
-        Assertions.assertThat(outContent.toString()).contains("Now configuring $parser.")
+        assertThat(outContent.toString()).contains("Now configuring $parser.")
     }
 
     private fun mockParserObject(name: String): InteractiveParser {
@@ -191,8 +233,9 @@ class ParserServiceTest {
         mockkObject(obj)
         val dialogInterface = mockkClass(ParserDialogInterface::class)
         val dummyArgs = listOf("dummyArg")
+
         every {
-            dialogInterface.collectParserArgs()
+            dialogInterface.collectParserArgs(any())
         } returns dummyArgs
         every {
             obj.getDialog()

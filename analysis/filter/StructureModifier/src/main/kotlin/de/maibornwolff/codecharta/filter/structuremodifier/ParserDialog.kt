@@ -1,29 +1,27 @@
 package de.maibornwolff.codecharta.filter.structuremodifier
 
-import com.github.kinquirer.KInquirer
-import com.github.kinquirer.components.promptInput
-import com.github.kinquirer.components.promptInputNumber
-import com.github.kinquirer.components.promptList
+import com.varabyte.kotter.runtime.RunScope
+import com.varabyte.kotter.runtime.Session
+import de.maibornwolff.codecharta.serialization.FileExtension
+import de.maibornwolff.codecharta.tools.inquirer.InputType
+import de.maibornwolff.codecharta.tools.inquirer.myPromptDefaultFileFolderInput
+import de.maibornwolff.codecharta.tools.inquirer.myPromptInput
+import de.maibornwolff.codecharta.tools.inquirer.myPromptInputNumber
+import de.maibornwolff.codecharta.tools.inquirer.myPromptList
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
-import de.maibornwolff.codecharta.util.InputHelper
-import java.io.File
-import java.math.BigDecimal
-import java.nio.file.Paths
 
 class ParserDialog {
     companion object : ParserDialogInterface {
-        override fun collectParserArgs(): List<String> {
-            var inputFileName: String
-            do {
-                inputFileName =
-                    KInquirer.promptInput(
-                        message = "What is the cc.json file that has to be modified?",
-                        hint = Paths.get("").toAbsolutePath().toString() + File.separator + "yourInput.cc.json"
-                    )
-            } while (!InputHelper.isInputValidAndNotNull(arrayOf(File(inputFileName)), canInputContainFolders = false))
+        override fun collectParserArgs(session: Session): List<String> {
+            val inputFileName: String =
+                session.myPromptDefaultFileFolderInput(
+                    inputType = InputType.FILE,
+                    fileExtensionList = listOf(FileExtension.CCJSON, FileExtension.CCGZ),
+                    onInputReady = testCallback()
+                )
 
             val selectedAction: String =
-                KInquirer.promptList(
+                session.myPromptList(
                     message = "Which action do you want to perform?",
                     choices =
                         listOf(
@@ -32,75 +30,100 @@ class ParserDialog {
                             StructureModifierAction.SET_ROOT.descripton,
                             StructureModifierAction.MOVE_NODES.descripton,
                             StructureModifierAction.REMOVE_NODES.descripton
-                        )
+                        ),
+                    onInputReady = testCallback()
                 )
 
             return when (selectedAction) {
-                StructureModifierAction.PRINT_STRUCTURE.descripton -> listOf(inputFileName, *collectPrintArguments())
-                StructureModifierAction.MIGRATE_MCC.descripton -> listOf(inputFileName, *collectMCCArguments())
-                StructureModifierAction.SET_ROOT.descripton -> listOf(inputFileName, *collectSetRootArguments())
-                StructureModifierAction.MOVE_NODES.descripton ->
-                    listOf(
-                        inputFileName,
-                        *collectMoveNodesArguments()
-                    )
-
-                StructureModifierAction.REMOVE_NODES.descripton ->
-                    listOf(
-                        inputFileName,
-                        *collectRemoveNodesArguments()
-                    )
-
+                StructureModifierAction.PRINT_STRUCTURE.descripton -> listOf(
+                    inputFileName,
+                    *collectPrintArguments(session)
+                )
+                StructureModifierAction.MIGRATE_MCC.descripton -> listOf(
+                    inputFileName,
+                    *collectMCCArguments(session)
+                )
+                StructureModifierAction.SET_ROOT.descripton -> listOf(
+                    inputFileName,
+                    *collectSetRootArguments(session)
+                )
+                StructureModifierAction.MOVE_NODES.descripton -> listOf(
+                    inputFileName,
+                    *collectMoveNodesArguments(session)
+                )
+                StructureModifierAction.REMOVE_NODES.descripton -> listOf(
+                    inputFileName,
+                    *collectRemoveNodesArguments(session)
+                )
                 else -> listOf()
             }
         }
 
-        private fun collectPrintArguments(): Array<String> {
-            val printLevels: BigDecimal =
-                KInquirer.promptInputNumber(
+        private fun collectPrintArguments(session: Session): Array<String> {
+            val printLevels: String =
+                session.myPromptInputNumber(
                     message = "How many print levels do you want to print?",
-                    default = "0",
-                    hint = "0"
+                    hint = "0",
+                    onInputReady = testCallback()
                 )
             return arrayOf("--print-levels=$printLevels")
         }
 
-        private fun collectMCCArguments(): Array<String> {
+        private fun collectMCCArguments(session: Session): Array<String> {
             val newName: String =
-                KInquirer.promptList(
+                session.myPromptList(
                     message = "This action will rename the mcc metric. Which should the new name be?",
-                    choices = listOf("complexity", "sonar_complexity")
+                    choices = listOf("complexity", "sonar_complexity"),
+                    onInputReady = testCallback()
                 )
             val renameParam = if (newName == "sonar_complexity") "--rename-mcc=sonar" else "--rename-mcc"
-            val outputFileName = collectOutputFileName()
+            val outputFileName = collectOutputFileName(session)
             return arrayOf(renameParam, "--output-file=$outputFileName")
         }
 
-        private fun collectSetRootArguments(): Array<String> {
+        private fun collectSetRootArguments(session: Session): Array<String> {
             val setRoot: String =
-                KInquirer.promptInput(message = "What path within the project should be extracted as the new root?")
-            val outputFileName = collectOutputFileName()
+                session.myPromptInput(
+                    message = "What path within the project should be extracted as the new root?",
+                    onInputReady = testCallback()
+                )
+            val outputFileName = collectOutputFileName(session)
             return arrayOf("--set-root=$setRoot", "--output-file=$outputFileName")
         }
 
-        private fun collectMoveNodesArguments(): Array<String> {
+        private fun collectMoveNodesArguments(session: Session): Array<String> {
             val moveFrom: String =
-                KInquirer.promptInput(
-                    message = "What path should be moved (contained children will be moved as well)?"
+                session.myPromptInput(
+                    message = "What path should be moved (contained children will be moved as well)?",
+                    onInputReady = testCallback()
                 )
-            val moveTo: String = KInquirer.promptInput(message = "What is the target path to move them?")
-            val outputFileName = collectOutputFileName()
+            val moveTo: String =
+                session.myPromptInput(
+                    message = "What is the target path to move them?",
+                    onInputReady = testCallback()
+                )
+            val outputFileName = collectOutputFileName(session)
             return arrayOf("--move-from=$moveFrom", "--move-to=$moveTo", "--output-file=$outputFileName")
         }
 
-        private fun collectRemoveNodesArguments(): Array<String> {
-            val remove: String = KInquirer.promptInput(message = "What are the paths of the nodes to be removed?")
-            val outputFileName = collectOutputFileName()
+        private fun collectRemoveNodesArguments(session: Session): Array<String> {
+            val remove: String =
+                session.myPromptInput(
+                    message = "What are the paths of the nodes to be removed?",
+                    onInputReady = testCallback()
+                )
+            val outputFileName = collectOutputFileName(session)
             return arrayOf("--remove=$remove", "--output-file=$outputFileName")
         }
 
-        private fun collectOutputFileName(): String {
-            return KInquirer.promptInput(message = "What is the name of the output file?")
+        private fun collectOutputFileName(session: Session): String {
+            return session.myPromptInput(
+                message = "What is the name of the output file?",
+                allowEmptyInput = true,
+                onInputReady = testCallback()
+            )
         }
+
+        internal fun testCallback(): suspend RunScope.() -> Unit = {}
     }
 }

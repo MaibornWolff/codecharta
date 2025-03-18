@@ -1,42 +1,44 @@
 package de.maibornwolff.codecharta.filter.edgefilter
 
-import com.github.kinquirer.KInquirer
-import com.github.kinquirer.components.promptInput
-import de.maibornwolff.codecharta.tools.interactiveparser.InputType
+import com.varabyte.kotter.runtime.RunScope
+import com.varabyte.kotter.runtime.Session
+import de.maibornwolff.codecharta.serialization.FileExtension
+import de.maibornwolff.codecharta.tools.inquirer.InputType
+import de.maibornwolff.codecharta.tools.inquirer.myPromptDefaultFileFolderInput
+import de.maibornwolff.codecharta.tools.inquirer.myPromptInput
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
-import de.maibornwolff.codecharta.util.InputHelper
 import de.maibornwolff.codecharta.util.Logger
-import java.io.File
 
 class ParserDialog {
     companion object : ParserDialogInterface {
-        override fun collectParserArgs(): List<String> {
-            var inputFileName: String
-            do {
-                inputFileName = getInputFileName("cc.json", InputType.FILE)
-            } while (!InputHelper.isInputValidAndNotNull(arrayOf(File(inputFileName)), canInputContainFolders = false))
+        override fun collectParserArgs(session: Session): List<String> {
+            val inputFileName: String = session.myPromptDefaultFileFolderInput(
+                inputType = InputType.FILE,
+                fileExtensionList = listOf(FileExtension.CCJSON, FileExtension.CCGZ),
+                onInputReady = testCallback()
+            )
 
             Logger.info {
                 "File path: $inputFileName"
             }
 
-            val defaultOutputFileName = getOutputFileName(inputFileName)
-            val outputFileName: String =
-                KInquirer.promptInput(
-                    message = "What is the name of the output file?",
-                    hint = defaultOutputFileName,
-                    default = defaultOutputFileName
-                )
+            val outputFileName: String = session.myPromptInput(
+                message = "What is the name of the output file?",
+                allowEmptyInput = true,
+                onInputReady = testCallback()
+            )
 
             val defaultPathSeparator = "/"
-            val pathSeparator: String =
-                KInquirer.promptInput(
-                    message = "What is the path separator?",
-                    hint = defaultPathSeparator,
-                    default = defaultPathSeparator
-                )
+            val pathSeparator: String = session.myPromptInput(
+                message = "What is the path separator?",
+                hint = defaultPathSeparator,
+                invalidInputMessage = "Please specify a valid path separator like '/' or '\\'",
+                onInputReady = testCallback()
+            )
 
             return listOf(inputFileName, "--output-file=$outputFileName", "--path-separator=$pathSeparator")
         }
+
+        internal fun testCallback(): suspend RunScope.() -> Unit = {}
     }
 }
