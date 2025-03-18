@@ -4,13 +4,13 @@ import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.Session
 import de.maibornwolff.codecharta.serialization.FileExtension
 import de.maibornwolff.codecharta.tools.inquirer.InputType
+import de.maibornwolff.codecharta.tools.inquirer.InputValidator
 import de.maibornwolff.codecharta.tools.inquirer.myPromptCheckbox
 import de.maibornwolff.codecharta.tools.inquirer.myPromptConfirm
 import de.maibornwolff.codecharta.tools.inquirer.myPromptDefaultFileFolderInput
 import de.maibornwolff.codecharta.tools.inquirer.myPromptInput
 import de.maibornwolff.codecharta.tools.inquirer.myPromptInputNumber
 import de.maibornwolff.codecharta.tools.inquirer.myPromptList
-import de.maibornwolff.codecharta.tools.inquirer.util.InputValidator
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import java.io.File
 

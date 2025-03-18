@@ -3,8 +3,8 @@ package de.maibornwolff.codecharta.parser.gitlogparser.subcommands
 import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.Session
 import de.maibornwolff.codecharta.tools.inquirer.InputType
+import de.maibornwolff.codecharta.tools.inquirer.InputValidator
 import de.maibornwolff.codecharta.tools.inquirer.myPromptInput
-import de.maibornwolff.codecharta.tools.inquirer.util.InputValidator
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import java.nio.file.Paths
 

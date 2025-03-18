@@ -3,11 +3,11 @@ package de.maibornwolff.codecharta.tools.ccsh.parser
 import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.Session
 import de.maibornwolff.codecharta.tools.inquirer.InputType
+import de.maibornwolff.codecharta.tools.inquirer.InputValidator
 import de.maibornwolff.codecharta.tools.inquirer.myPromptCheckbox
 import de.maibornwolff.codecharta.tools.inquirer.myPromptConfirm
 import de.maibornwolff.codecharta.tools.inquirer.myPromptInput
 import de.maibornwolff.codecharta.tools.inquirer.myPromptList
-import de.maibornwolff.codecharta.tools.inquirer.util.InputValidator
 import java.nio.file.Paths
 
 class InteractiveDialog {

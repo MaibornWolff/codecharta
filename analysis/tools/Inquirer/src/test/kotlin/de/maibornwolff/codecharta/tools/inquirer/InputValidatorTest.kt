@@ -1,7 +1,6 @@
-package de.maibornwolff.codecharta.tools.inquirer.util
+package de.maibornwolff.codecharta.tools.inquirer
 
 import de.maibornwolff.codecharta.serialization.FileExtension
-import de.maibornwolff.codecharta.tools.inquirer.InputType
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.TestInstance

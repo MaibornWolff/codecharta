@@ -11,7 +11,6 @@ import com.varabyte.kotter.foundation.runUntilSignal
 import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.Session
 import de.maibornwolff.codecharta.serialization.FileExtension
-import de.maibornwolff.codecharta.tools.inquirer.util.InputValidator
 import java.nio.file.Paths
 
 const val DEFAULT_INVALID_INPUT_MESSAGE = "Input is invalid!"
