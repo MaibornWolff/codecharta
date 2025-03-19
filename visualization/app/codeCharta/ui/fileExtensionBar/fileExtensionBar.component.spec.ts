@@ -24,8 +24,12 @@ describe("fileExtensionBarComponent", () => {
                                 buildings: [CODE_MAP_BUILDING_TS_NODE]
                             })
                         }),
+                        threeRendererService: {
+                            render: jest.fn()
+                        },
                         addBuildingToHighlightingList: jest.fn(),
-                        highlightBuildings: jest.fn()
+                        applyHighlights: jest.fn(),
+                        applyClearHightlights: jest.fn()
                     }
                 },
                 provideMockStore({
@@ -70,10 +74,14 @@ describe("fileExtensionBarComponent", () => {
 
     it("should highlight buildings on hover", async () => {
         await render(FileExtensionBarComponent)
-        await userEvent.hover(screen.getByText("ts 100.00%"))
+        const fileExtensionElement = screen.getByText("ts 100.00%")
+        await userEvent.hover(fileExtensionElement)
 
         const threeSceneService = TestBed.inject<ThreeSceneService>(ThreeSceneService)
         expect(threeSceneService.addBuildingToHighlightingList).toHaveBeenCalledWith(CODE_MAP_BUILDING_TS_NODE)
-        expect(threeSceneService.highlightBuildings).toHaveBeenCalled()
+        expect(threeSceneService.applyHighlights).toHaveBeenCalled()
+
+        await userEvent.unhover(fileExtensionElement)
+        expect(threeSceneService.applyClearHightlights).toHaveBeenCalled()
     })
 })

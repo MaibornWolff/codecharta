@@ -419,7 +419,7 @@ export class CodeMapMouseEventService implements OnDestroy {
                 this.threeSceneService.addBuildingToHighlightingList(building)
             }
         }
-        this.threeSceneService.highlightBuildings()
+        this.threeSceneService.applyHighlights()
         if (updateStore) {
             this.store.dispatch(setHoveredNodeId({ value: hoveredBuilding.node.id }))
         }

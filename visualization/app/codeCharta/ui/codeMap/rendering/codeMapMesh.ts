@@ -95,7 +95,7 @@ export class CodeMapMesh {
         this.updateVertices()
     }
 
-    clearHighlight(selected: CodeMapBuilding) {
+    clearUnselectedBuildings(selected: CodeMapBuilding) {
         for (const currentBuilding of this.mapGeomDesc.buildings) {
             if (!this.isBuildingSelected(selected, currentBuilding)) {
                 this.setVertexColor(

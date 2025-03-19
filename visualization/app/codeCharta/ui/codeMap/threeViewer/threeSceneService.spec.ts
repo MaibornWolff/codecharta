@@ -54,7 +54,7 @@ describe("ThreeSceneService", () => {
             threeSceneService["mapMesh"].highlightBuilding = jest.fn()
             threeSceneService["threeRendererService"].render = jest.fn()
 
-            threeSceneService.highlightBuildings()
+            threeSceneService.applyHighlights()
 
             expect(threeSceneService["mapMesh"].highlightBuilding).toHaveBeenCalledWith(
                 threeSceneService["highlighted"],
@@ -184,13 +184,13 @@ describe("ThreeSceneService", () => {
     describe("highlightSingleBuilding", () => {
         it("should add a building to the highlighting list and call the highlight function", () => {
             threeSceneService.addBuildingToHighlightingList = jest.fn()
-            threeSceneService.highlightBuildings = jest.fn()
+            threeSceneService.applyHighlights = jest.fn()
             threeSceneService["highlighted"] = []
 
             threeSceneService.highlightSingleBuilding(CODE_MAP_BUILDING)
 
             expect(threeSceneService.addBuildingToHighlightingList).toHaveBeenCalled()
-            expect(threeSceneService.highlightBuildings).toHaveBeenCalled()
+            expect(threeSceneService.applyHighlights).toHaveBeenCalled()
         })
     })
 
@@ -233,6 +233,14 @@ describe("ThreeSceneService", () => {
             threeSceneService.clearHighlight()
 
             expect(threeSceneService["highlighted"]).toHaveLength(0)
+        })
+    })
+
+    describe("applyClearHightlights", () => {
+        it("should call clearHightlight and render changes", () => {
+            threeSceneService.applyClearHightlights()
+
+            expect(threeSceneService["threeRendererService"].render).toHaveBeenCalled
         })
     })
 

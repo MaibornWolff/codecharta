@@ -163,7 +163,7 @@ describe("codeMapMouseEventService", () => {
             getHighlightedBuilding: jest.fn().mockReturnValue(CODE_MAP_BUILDING),
             getConstantHighlight: jest.fn().mockReturnValue(new Map()),
             addBuildingToHighlightingList: jest.fn(),
-            highlightBuildings: jest.fn(),
+            applyHighlights: jest.fn(),
             resetLabel: jest.fn()
         })()
     }
@@ -437,7 +437,7 @@ describe("codeMapMouseEventService", () => {
             codeMapMouseEventService.updateHovering()
 
             expect(threeSceneService.addBuildingToHighlightingList).toHaveBeenCalled()
-            expect(threeSceneService.highlightBuildings).toHaveBeenCalled()
+            expect(threeSceneService.applyHighlights).toHaveBeenCalled()
             expect(threeSceneService.getLabelForHoveredNode).toHaveBeenCalled()
             expect(threeSceneService.animateLabel).toHaveBeenCalled()
             expect(document.body.style.cursor).toEqual(CursorType.Pointer)
@@ -454,7 +454,7 @@ describe("codeMapMouseEventService", () => {
             codeMapMouseEventService.updateHovering()
 
             expect(threeSceneService.addBuildingToHighlightingList).not.toHaveBeenCalled()
-            expect(threeSceneService.highlightBuildings).not.toHaveBeenCalled()
+            expect(threeSceneService.applyHighlights).not.toHaveBeenCalled()
             expect(document.body.style.cursor).toEqual(CursorType.Grabbing)
         })
 
@@ -469,7 +469,7 @@ describe("codeMapMouseEventService", () => {
             codeMapMouseEventService.updateHovering()
 
             expect(threeSceneService.addBuildingToHighlightingList).not.toHaveBeenCalled()
-            expect(threeSceneService.highlightBuildings).not.toHaveBeenCalled()
+            expect(threeSceneService.applyHighlights).not.toHaveBeenCalled()
             expect(document.body.style.cursor).toEqual(CursorType.Moving)
         })
 
@@ -789,7 +789,7 @@ describe("codeMapMouseEventService", () => {
             codeMapMouseEventService["hoverBuilding"](codeMapBuilding)
 
             expect(threeSceneService.addBuildingToHighlightingList).toHaveBeenCalledWith(codeMapBuilding)
-            expect(threeSceneService.highlightBuildings).toHaveBeenCalled()
+            expect(threeSceneService.applyHighlights).toHaveBeenCalled()
         })
     })
 

@@ -177,13 +177,13 @@ export class CodeMapArrowService implements OnDestroy {
             }
             if (showOutgoingEdges && node.has(originNode.path)) {
                 this.addArrow(originNode, targetNode, true)
-                this.threeSceneService.highlightBuildings()
+                this.threeSceneService.applyHighlights()
                 // TODO: Check if the second part ot the second if case is actually necessary. Edges should
                 // always have valid origin and target paths. The test data is likely
                 // faulty and should be improved.
             } else if (showIncomingEdges && node.has(targetNode.path)) {
                 this.addArrow(originNode, targetNode, false)
-                this.threeSceneService.highlightBuildings()
+                this.threeSceneService.applyHighlights()
             }
         }
     }

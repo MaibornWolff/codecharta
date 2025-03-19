@@ -54,11 +54,11 @@ describe("CodeMapArrowService", () => {
             getMapMesh: jest.fn().mockReturnValue({
                 getMeshDescription: jest.fn().mockReturnValue({ getBuildingByPath: jest.fn() }),
                 clearHighlight: jest.fn(),
-                highlightBuilding: jest.fn(),
+                clearUnselectedBuildings: jest.fn(),
                 clearSelection: jest.fn(),
                 selectBuilding: jest.fn()
             }),
-            highlightBuildings: jest.fn(),
+            applyHighlights: jest.fn(),
             addBuildingToHighlightingList: jest.fn(),
             getSelectedBuilding: jest.fn().mockReturnValue({
                 value: "value"

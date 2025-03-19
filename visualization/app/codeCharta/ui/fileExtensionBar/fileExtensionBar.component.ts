@@ -47,11 +47,11 @@ export class FileExtensionBarComponent {
             }
         }
 
-        this.threeSceneService.highlightBuildings()
+        this.threeSceneService.applyHighlights()
     }
 
     onUnhoverFileExtensionBar() {
-        this.threeSceneService.clearHighlight()
+        this.threeSceneService.applyClearHightlights()
     }
 
     toggleShowDetails() {
