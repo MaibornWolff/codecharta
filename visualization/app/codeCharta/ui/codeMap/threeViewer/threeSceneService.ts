@@ -118,12 +118,17 @@ export class ThreeSceneService implements OnDestroy {
         return this.constantHighlight
     }
 
-    highlightBuildings() {
+    applyHighlights() {
         const state = this.state.getValue() as CcState
         this.getMapMesh().highlightBuilding(this.highlighted, this.selected, state, this.constantHighlight)
         if (this.mapGeometry.children[0]) {
             this.highlightMaterial(this.mapGeometry.children[0]["material"])
         }
+        this.threeRendererService.render()
+    }
+
+    applyClearHightlights() {
+        this.clearHighlight()
         this.threeRendererService.render()
     }
 
@@ -174,7 +179,7 @@ export class ThreeSceneService implements OnDestroy {
     highlightSingleBuilding(building: CodeMapBuilding) {
         this.highlighted = []
         this.addBuildingToHighlightingList(building)
-        this.highlightBuildings()
+        this.applyHighlights()
     }
 
     addBuildingToHighlightingList(building: CodeMapBuilding) {
@@ -183,12 +188,12 @@ export class ThreeSceneService implements OnDestroy {
 
     clearHoverHighlight() {
         this.highlighted = []
-        this.highlightBuildings()
+        this.applyHighlights()
     }
 
     clearHighlight() {
         if (this.getMapMesh()) {
-            this.getMapMesh().clearHighlight(this.selected)
+            this.getMapMesh().clearUnselectedBuildings(this.selected)
             this.highlighted = []
             this.constantHighlight.clear()
             if (this.mapGeometry.children[0]) {
@@ -205,7 +210,7 @@ export class ThreeSceneService implements OnDestroy {
 
         this.getMapMesh().selectBuilding(building, this.folderLabelColorSelected)
         this.selected = building
-        this.highlightBuildings()
+        this.applyHighlights()
 
         this.eventEmitter.emit("onBuildingSelected", { building: this.selected })
         if (this.mapGeometry.children[0]) {
@@ -380,7 +385,7 @@ export class ThreeSceneService implements OnDestroy {
         }
 
         if (this.highlighted.length > 0) {
-            this.highlightBuildings()
+            this.applyHighlights()
         }
         this.selected = null
         if (this.mapGeometry.children[0]) {
