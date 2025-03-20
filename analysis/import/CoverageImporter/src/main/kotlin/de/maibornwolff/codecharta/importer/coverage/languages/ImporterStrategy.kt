@@ -15,7 +15,7 @@ interface ImporterStrategy {
     val progressTracker: ProgressTracker
     var totalLines: Long
 
-    fun buildCCJson(coverageFile: File, projectBuilder: ProjectBuilder)
+    fun addNodesToProjectBuilder(coverageFile: File, projectBuilder: ProjectBuilder)
 
     fun updateProgress(parsedLines: Long) {
         progressTracker.updateProgress(totalLines, parsedLines, "lines")

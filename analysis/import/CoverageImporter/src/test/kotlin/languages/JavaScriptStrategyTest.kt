@@ -24,7 +24,7 @@ class JavaScriptStrategyTest {
         val coverageReport = File("src/test/resources/languages/javascript/minimal_lcov.info")
         val projectBuilder = ProjectBuilder()
 
-        JavaScriptStrategy().buildCCJson(coverageReport, projectBuilder)
+        JavaScriptStrategy().addNodesToProjectBuilder(coverageReport, projectBuilder)
 
         val project = projectBuilder.build()
         assertThat(project).usingRecursiveComparison().isEqualTo(expectedProject)
@@ -37,7 +37,7 @@ class JavaScriptStrategyTest {
         val coverageReport = File("src/test/resources/languages/javascript/lcov.info")
         val projectBuilder = ProjectBuilder()
 
-        JavaScriptStrategy().buildCCJson(coverageReport, projectBuilder)
+        JavaScriptStrategy().addNodesToProjectBuilder(coverageReport, projectBuilder)
 
         val project = projectBuilder.build()
         assertThat(

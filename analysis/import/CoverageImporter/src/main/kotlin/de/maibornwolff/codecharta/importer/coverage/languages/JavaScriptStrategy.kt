@@ -14,7 +14,7 @@ class JavaScriptStrategy() : ImporterStrategy {
     override val progressTracker: ProgressTracker = ProgressTracker()
     override var totalLines: Long = 0
 
-    override fun buildCCJson(coverageFile: File, projectBuilder: ProjectBuilder) {
+    override fun addNodesToProjectBuilder(coverageFile: File, projectBuilder: ProjectBuilder) {
         totalLines = coverageFile.readLines().size.toLong()
         var currentLine = 0L
         updateProgress(currentLine)
