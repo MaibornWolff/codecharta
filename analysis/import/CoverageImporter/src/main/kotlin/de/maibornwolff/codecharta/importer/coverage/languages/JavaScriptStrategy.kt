@@ -16,7 +16,7 @@ class JavaScriptStrategy() : ImporterStrategy {
 
     override fun addNodesToProjectBuilder(coverageFile: File, projectBuilder: ProjectBuilder) {
         totalLines = coverageFile.readLines().size.toLong()
-        var currentLine = 0L
+        var currentLine: Long = 0
         updateProgress(currentLine)
 
         var currentFilePath: String? = null
@@ -46,7 +46,9 @@ class JavaScriptStrategy() : ImporterStrategy {
                 line.startsWith("BRH:") -> branchesHit = line.substringAfter("BRH:").trim().toInt()
                 line == "end_of_record" -> {
                     currentFilePath?.let { filePath ->
-                        val (directoryPath, fileName) = splitFilePath(filePath)
+                        val file = File(filePath)
+                        val fileName = file.name
+                        val directoryPath = file.parent ?: ""
                         val path = PathFactory.fromFileSystemPath(directoryPath)
 
                         val lineCoverage = calculatePercentage(linesHit, linesFound)
@@ -69,15 +71,6 @@ class JavaScriptStrategy() : ImporterStrategy {
                 }
             }
             updateProgress(++currentLine)
-        }
-    }
-
-    private fun splitFilePath(fullPath: String): Pair<String, String> {
-        return if (fullPath.contains("/")) {
-            val lastSlashIndex = fullPath.lastIndexOf("/")
-            fullPath.substring(0, lastSlashIndex) to fullPath.substring(lastSlashIndex + 1)
-        } else {
-            "" to fullPath
         }
     }
 
