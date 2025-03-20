@@ -41,7 +41,7 @@ class CoverageImporter(
     @CommandLine.Option(
         names = ["-rf", "--report-file"],
         description = ["Path to the coverage report file (leave empty for default)"],
-        paramLabel = "REPORT_FILE"
+        paramLabel = "<reportFilePath>"
     )
     private var reportFileName: String? = null
 
