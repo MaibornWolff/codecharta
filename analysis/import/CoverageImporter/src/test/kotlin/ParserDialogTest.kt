@@ -23,13 +23,12 @@ import picocli.CommandLine
 class ParserDialogTest {
     private val outputFileName = "coverage_out.cc.json"
     private val testResourceBaseFolder = "src/test/resources/languages"
-    private val reportFileName = "${testResourceBaseFolder}/javascript/minimal_lcov.info"
+    private val reportFileName = "$testResourceBaseFolder/javascript/minimal_lcov.info"
 
     @BeforeEach
     fun setup() {
         mockkObject(ParserDialog)
     }
-
 
     private fun languageChoicesProvider(): List<Arguments> {
         val allStrategies = listOf("javascript")
@@ -161,7 +160,7 @@ class ParserDialogTest {
 
     @Test
     fun `should prompt user twice for report file when first input is invalid`() {
-        val invalidReportFile = "${testResourceBaseFolder}/javascript/invalid_existing_file.txt"
+        val invalidReportFile = "$testResourceBaseFolder/javascript/invalid_existing_file.txt"
         val validReportFile = reportFileName
 
         testSession { terminal ->
