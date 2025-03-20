@@ -97,7 +97,7 @@ class CoverageImporter(
 
         val projectBuilder = ProjectBuilder()
 
-        languageStrategy.buildCCJson(reportFile, projectBuilder)
+        languageStrategy.addNodesToProjectBuilder(reportFile, projectBuilder)
         projectBuilder.addAttributeTypes(getAttributeTypes())
         projectBuilder.addAttributeDescriptions(getAttributeDescriptors())
         var project = projectBuilder.build()
