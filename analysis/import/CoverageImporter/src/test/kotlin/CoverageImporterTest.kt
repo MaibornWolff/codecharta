@@ -5,7 +5,6 @@ import io.mockk.unmockkAll
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.TestInstance
 import org.skyscreamer.jsonassert.JSONParser
 import picocli.CommandLine
 import java.io.ByteArrayInputStream

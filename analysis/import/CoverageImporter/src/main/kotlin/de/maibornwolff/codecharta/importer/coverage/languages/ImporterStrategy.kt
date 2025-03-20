@@ -1,6 +1,7 @@
 package de.maibornwolff.codecharta.importer.coverage.languages
 
 import de.maibornwolff.codecharta.model.ProjectBuilder
+import de.maibornwolff.codecharta.progresstracker.ParsingUnit
 import de.maibornwolff.codecharta.progresstracker.ProgressTracker
 import de.maibornwolff.codecharta.serialization.FileExtension
 import de.maibornwolff.codecharta.util.ResourceSearchHelper.Companion.endsWithAtLeastOne
@@ -18,7 +19,7 @@ interface ImporterStrategy {
     fun addNodesToProjectBuilder(coverageFile: File, projectBuilder: ProjectBuilder)
 
     fun updateProgress(parsedLines: Long) {
-        progressTracker.updateProgress(totalLines, parsedLines, "lines")
+        progressTracker.updateProgress(totalLines, parsedLines, ParsingUnit.Lines.name)
     }
 
     fun getReportFileFromString(resourceToSearch: String): File {
