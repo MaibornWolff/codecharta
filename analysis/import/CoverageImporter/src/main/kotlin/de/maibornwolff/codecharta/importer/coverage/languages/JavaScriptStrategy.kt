@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.importer.coverage.languages
 
+import de.maibornwolff.codecharta.importer.coverage.CoverageAttributes
 import de.maibornwolff.codecharta.model.MutableNode
 import de.maibornwolff.codecharta.model.NodeType
 import de.maibornwolff.codecharta.model.PathFactory
@@ -59,9 +60,9 @@ class JavaScriptStrategy() : ImporterStrategy {
                             name = fileName,
                             type = NodeType.File,
                             attributes = mutableMapOf(
-                                "line_coverage" to lineCoverage,
-                                "branch_coverage" to branchCoverage,
-                                "statement_coverage" to statementCoverage
+                                CoverageAttributes.LINE_COVERAGE.attributeName to lineCoverage,
+                                CoverageAttributes.BRANCH_COVERAGE.attributeName to branchCoverage,
+                                CoverageAttributes.STATEMENT_COVERAGE.attributeName to statementCoverage
                             )
                         )
 
