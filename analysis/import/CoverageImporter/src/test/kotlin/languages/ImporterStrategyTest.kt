@@ -19,7 +19,7 @@ class ImporterStrategyTest {
         override val progressTracker: ProgressTracker = ProgressTracker()
         override var totalLines: Long = 0
 
-        override fun buildCCJson(coverageFile: File, projectBuilder: ProjectBuilder) {
+        override fun addNodesToProjectBuilder(coverageFile: File, projectBuilder: ProjectBuilder) {
             // Implementation not needed for this test
         }
     }
