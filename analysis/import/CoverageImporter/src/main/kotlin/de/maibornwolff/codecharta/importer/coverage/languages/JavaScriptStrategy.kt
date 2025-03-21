@@ -10,7 +10,7 @@ import de.maibornwolff.codecharta.serialization.FileExtension
 import java.io.File
 
 class JavaScriptStrategy() : ImporterStrategy {
-    override val fileExtensions: List<FileExtension> = listOf(FileExtension.JS_TS_COVERAGE)
+    override val fileExtensions: List<FileExtension> = listOf(FileExtension.INFO)
     override val defaultReportFileName: String = "lcov.info"
     override val progressTracker: ProgressTracker = ProgressTracker()
     override var totalLines: Long = 0
@@ -73,9 +73,5 @@ class JavaScriptStrategy() : ImporterStrategy {
             }
             updateProgress(++currentLine)
         }
-    }
-
-    private fun calculatePercentage(numerator: Int, denominator: Int): Double {
-        return if (denominator > 0) (numerator.toDouble() / denominator) * 100 else 0.0
     }
 }

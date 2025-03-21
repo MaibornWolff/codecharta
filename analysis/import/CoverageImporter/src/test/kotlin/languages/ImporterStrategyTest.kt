@@ -6,6 +6,7 @@ import de.maibornwolff.codecharta.progresstracker.ProgressTracker
 import de.maibornwolff.codecharta.serialization.FileExtension
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import java.io.File
@@ -14,7 +15,7 @@ import java.io.FileNotFoundException
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ImporterStrategyTest {
     private val testStrategy = object : ImporterStrategy {
-        override val fileExtensions: List<FileExtension> = listOf(FileExtension.JS_TS_COVERAGE)
+        override val fileExtensions: List<FileExtension> = listOf(FileExtension.INFO)
         override val defaultReportFileName: String = "lcov.info"
         override val progressTracker: ProgressTracker = ProgressTracker()
         override var totalLines: Long = 0
@@ -86,5 +87,15 @@ class ImporterStrategyTest {
         assertThatThrownBy { testStrategy.getReportFileFromString(directory.path) }
             .isInstanceOf(FileNotFoundException::class.java)
             .hasMessageContaining("Multiple matching files found in directory")
+    }
+
+    @Test
+    fun `should calculate coverage percentages accurately`() {
+        assertEquals(0.0, testStrategy.calculatePercentage(0, 0))
+        assertEquals(33.33, testStrategy.calculatePercentage(1, 3))
+        assertEquals(50.0, testStrategy.calculatePercentage(1, 2))
+        assertEquals(66.67, testStrategy.calculatePercentage(2, 3))
+        assertEquals(85.0, testStrategy.calculatePercentage(17, 20))
+        assertEquals(100.0, testStrategy.calculatePercentage(3, 3))
     }
 }

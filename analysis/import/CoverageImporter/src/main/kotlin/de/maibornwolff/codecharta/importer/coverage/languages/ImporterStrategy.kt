@@ -58,4 +58,13 @@ interface ImporterStrategy {
     fun isApplicable(resourceToBeParsed: String): Boolean {
         return isFileWithOneOrMoreOfEndingsPresent(resourceToBeParsed, fileExtensions.map { it.extension })
     }
+
+    fun calculatePercentage(numerator: Int, denominator: Int): Double {
+        return if (denominator > 0) {
+            val percentage = (numerator.toDouble() / denominator) * 100
+            Math.round(percentage * 100) / 100.0
+        } else {
+            0.0
+        }
+    }
 }

@@ -5,6 +5,8 @@ import com.varabyte.kotter.runtime.terminal.inmemory.type
 import com.varabyte.kotterx.test.foundation.testSession
 import de.maibornwolff.codecharta.importer.coverage.CoverageImporter
 import de.maibornwolff.codecharta.importer.coverage.ParserDialog
+import de.maibornwolff.codecharta.importer.coverage.languages.getLanguageChoices
+import de.maibornwolff.codecharta.importer.coverage.languages.getLanguageForLanguageChoice
 import de.maibornwolff.codecharta.importer.coverage.languages.getStrategyForLanguage
 import io.mockk.every
 import io.mockk.mockkObject
@@ -31,7 +33,7 @@ class ParserDialogTest {
     }
 
     private fun languageChoicesProvider(): List<Arguments> {
-        val allStrategies = listOf("javascript")
+        val allStrategies = getLanguageChoices().map { getLanguageForLanguageChoice(it) }
         return allStrategies.map { language ->
             Arguments.of(
                 language,
