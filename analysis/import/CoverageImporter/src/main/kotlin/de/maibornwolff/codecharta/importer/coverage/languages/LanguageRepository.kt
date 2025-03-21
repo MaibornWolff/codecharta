@@ -1,18 +1,24 @@
 package de.maibornwolff.codecharta.importer.coverage.languages
 
+import de.maibornwolff.codecharta.importer.coverage.JavaStrategy
 import de.maibornwolff.codecharta.serialization.FileExtension
 
 val allStrategies = listOf(
-    JavaScriptStrategy()
+    JavaScriptStrategy(),
+    JavaStrategy()
 )
 
-private val languageChoicesToLanguage = mapOf("javascript/typescript" to "javascript")
+private val languageChoicesToLanguage = mapOf(
+    "javascript/typescript" to "javascript",
+    "java" to "java"
+)
 
 private val languageToStrategyMap = mapOf(
     "javascript" to JavaScriptStrategy(),
     "typescript" to JavaScriptStrategy(),
     "js" to JavaScriptStrategy(),
-    "ts" to JavaScriptStrategy()
+    "ts" to JavaScriptStrategy(),
+    "java" to JavaStrategy()
 )
 
 fun getLanguageChoices(): List<String> {

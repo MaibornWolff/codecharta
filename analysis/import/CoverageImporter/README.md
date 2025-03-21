@@ -6,17 +6,19 @@ The CoverageImporter generates visualisation data from a coverage report generat
 
 ## Supported Metrics
 
-| Metric               | Description                                                |
-|----------------------|------------------------------------------------------------|
-| `line_coverage`      | The percentage of lines covered by tests in the file.      |
-| `branch_coverage`    | The percentage of branches covered by tests in the file.   |
-| `statement_coverage` | The percentage of statements covered by tests in the file. |
+| Metric                 | Description                                                  |
+|------------------------|--------------------------------------------------------------|
+| `line_coverage`        | The percentage of lines covered by tests in the file.        |
+| `branch_coverage`      | The percentage of branches covered by tests in the file.     |
+| `statement_coverage`   | The percentage of statements covered by tests in the file.   |
+| `instruction_coverage` | The percentage of instructions covered by tests in the file. |
 
 ## Supported Coverage Report Languages/Formats
 
 | Language                | Command                                                 | Default Report File |
 |-------------------------|---------------------------------------------------------|---------------------|
 | JavaScript / TypeScript | `javascript/typescript, javascript, typescript, js, ts` | lcov.info           |
+| Java                    | `java`                                                  | jacoco.xml          |
 
 ## Usage and Parameters
 
