@@ -9,5 +9,6 @@ enum class FileExtension(
     GZIP(".gz"),
     CCJSON(CODECHARTA.extension + JSON.extension),
     CCGZ(CCJSON.extension + GZIP.extension),
-    JS_TS_COVERAGE(".info")
+    INFO(".info"),
+    XML(".xml")
 }
