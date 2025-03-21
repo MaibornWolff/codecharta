@@ -44,6 +44,7 @@
     "test:auto": "npm test -- --watch",
     "test:autoNoCoverage": "npm run test:auto -- --coverage false",
     "test:updateSnaps": "npm test -- --updateSnapshot",
+    "test:createCoverageFile": "jest --config conf/jestUnit.config.json --coverage --coverageReporters=lcov --coverageDirectory=coverage",
     "e2e": "jest --config conf/jestE2E.config.json .*\\.e2e\\.ts --coverage false",
     "e2e:auto": "npm run e2e -- --watch",
     "e2e:ci": "npm run e2e -- --runInBand",

@@ -38,7 +38,7 @@ Generates visualisation data from [SourceMonitor](http://www.campwoodsw.com/sour
 | ------------------------------- | ----------------------------------------------------------------- |
 | `FILE`                          | sourcemonitor csv files                                           |
 | `-h, --help`                    | displays help                                                     |
-| `-o, --outputFile=<outputFile>` | output File (or empty for stdout)                                 |
+| `-o, --output-file=<outputFile>` | output File (or empty for stdout)                                 |
 | `-nc, --not-compressed`         | uncompresses outputfile to json format, if format of File is gzip |
 
 ```

@@ -21,7 +21,7 @@ The edges and blacklist entries associated with moved/removed nodes will be alte
 | `FILE`                             | files to merge                                                                                                                   |
 | `-f, --move-from=<moveFrom>`       | move nodes in project folder ... (use paired with the `--move-to` parameter)                                                     |
 | `-h, --help`                       | displays help and exits                                                                                                          |
-| `-o, --outputFile=<outputFile>`    | output File (or empty for stdout)                                                                                                |
+| `-o, --output-file=<outputFile>`    | output File (or empty for stdout)                                                                                                |
 | `-r, --remove=<remove>`            | comma-separated list of nodes to be removed (when using powershell, the list either can't contain spaces or has to be in quotes) |
 | `--rename-mcc[=<renameMcc>]`       | renames the mcc metric to complexity. Optionally specify 'sonar' for the metric to be renamed to sonar_complexity                |
 | `-s, --set-root=<setRoot>`         | path within project to be extracted as the new root                                                                              |

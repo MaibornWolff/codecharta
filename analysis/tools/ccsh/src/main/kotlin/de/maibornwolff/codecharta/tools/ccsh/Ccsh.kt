@@ -5,6 +5,7 @@ import de.maibornwolff.codecharta.filter.edgefilter.EdgeFilter
 import de.maibornwolff.codecharta.filter.mergefilter.MergeFilter
 import de.maibornwolff.codecharta.filter.structuremodifier.StructureModifier
 import de.maibornwolff.codecharta.importer.codemaat.CodeMaatImporter
+import de.maibornwolff.codecharta.importer.coverage.CoverageImporter
 import de.maibornwolff.codecharta.importer.csv.CSVImporter
 import de.maibornwolff.codecharta.importer.metricgardenerimporter.MetricGardenerImporter
 import de.maibornwolff.codecharta.importer.sonar.SonarImporterMain
@@ -49,6 +50,7 @@ import kotlin.system.exitProcess
         Installer::class,
         CSVExporter::class,
         SourceCodeParserMain::class,
+        CoverageImporter::class,
         CodeMaatImporter::class,
         TokeiImporter::class,
         RawTextParser::class,
@@ -248,6 +250,7 @@ class Ccsh : Callable<Unit?> {
             AttributeGeneratorRegistry.registerGenerator(MetricGardenerImporter())
             AttributeGeneratorRegistry.registerGenerator(SonarImporterMain())
             AttributeGeneratorRegistry.registerGenerator(SourceCodeParserMain())
+            AttributeGeneratorRegistry.registerGenerator(CoverageImporter())
             AttributeGeneratorRegistry.registerGenerator(SVNLogParser())
             AttributeGeneratorRegistry.registerGenerator(TokeiImporter())
         }

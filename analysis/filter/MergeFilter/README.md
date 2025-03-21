@@ -22,7 +22,7 @@ Both strategies will merge the unique list entries for `attributeTypes` and `bla
 | `--ignore-case`                 | ignores case when checking node names                                            |
 | `--leaf`                        | use leaf merging strategy                                                        |
 | `-nc, --not-compressed`         | save uncompressed output File                                                    |
-| `-o, --outputFile=<outputFile>` | output File (or empty for stdout; [MIMO mode] output folder))                    |
+| `-o, --output-file=<outputFile>` | output File (or empty for stdout; [MIMO mode] output folder))                    |
 | `--recursive`                   | use recursive merging strategy (default)                                         |
 | `--mimo`                        | merge multiple files with the same prefix into multiple output files             |
 | `-ld, --levenshtein-distance`   | [MIMO mode] levenshtein distance for name match suggestions                      |

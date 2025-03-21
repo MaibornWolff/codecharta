@@ -17,7 +17,7 @@ The Codemaatimporter generates visualisation data from CodeMaat Temporal Couplin
 | ------------------------------- | --------------------------------- |
 | `FILE`                          | codemaat coupling csv files       |
 | `-h, --help`                    | displays help                     |
-| `-o, --outputFile=<outputFile>` | output File (or empty for stdout) |
+| `-o, --output-file=<outputFile>` | output File (or empty for stdout) |
 | `-nc, --not-compressed`         | safe uncompressed output file     |
 
 ```
