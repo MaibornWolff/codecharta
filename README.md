@@ -147,8 +147,9 @@ more: [Software Health Check](https://www.maibornwolff.de/en/service/software-he
 - [Releases](https://github.com/MaibornWolff/codecharta/releases)
 - [Coverage](https://maibornwolff.github.io/codecharta/visualization/coverage/lcov-report/)
 - [Analysis - Changelog](analysis/CHANGELOG.md) | [Visualization - Changelog](visualization/CHANGELOG.md)
-- [Contributing](CONTRIBUTING.md)
-- [Code of Conduct](CODE_OF_CONDUCT.md)
+- [Contributing](dev_docs/CONTRIBUTING.md)
+- [Code of Conduct](dev_docs/CODE_OF_CONDUCT.md)
+- [Dev Start Guide](dev_docs/DEV_START_GUIDE.md)
 - [License](LICENSE.md)
 
 ## License
