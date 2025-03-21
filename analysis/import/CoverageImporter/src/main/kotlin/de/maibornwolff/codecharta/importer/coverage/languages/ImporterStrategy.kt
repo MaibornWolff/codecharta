@@ -33,22 +33,21 @@ interface ImporterStrategy {
             throw FileNotFoundException("File: $resourceToSearch does not match any known file extension: $knownFileExtensions")
         }
 
-        println(
-            "Given resource did not match with the default file name. " +
-                "Scanning directory `${existingFileOrDirectory.absolutePath}` for matching files."
-        )
+        println("Scanning directory `${existingFileOrDirectory.absolutePath}` for matching files.")
 
         val foundFiles = existingFileOrDirectory.walk().asSequence().filter {
             it.isFile && it.name.equals(defaultReportFileName)
         }.toList()
 
         if (foundFiles.isEmpty()) {
-            throw FileNotFoundException("No matching files found in directory: ${existingFileOrDirectory.absolutePath}")
+            throw FileNotFoundException(
+                "No files matching $defaultReportFileName found in directory: ${existingFileOrDirectory.absolutePath}"
+            )
         }
 
         if (foundFiles.size > 1) {
             throw FileNotFoundException(
-                "Multiple matching files found in directory: ${existingFileOrDirectory.absolutePath}. Please specify only one."
+                "Multiple files matching $defaultReportFileName found in directory: ${existingFileOrDirectory.absolutePath}. Please specify only one."
             )
         }
 
