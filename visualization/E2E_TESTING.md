@@ -1,18 +1,10 @@
----
-categories:
-  - Dev-guide
-tags:
-  - puppeteer
-  - e2e
-  - testing
-title: E2E Testing with puppeteer
----
+# E2E Testing with puppeteer
 
-# Introduction
+## Introduction
 
 [Puppeteer](https://github.com/puppeteer/puppeteer) is a headless Chrome Node.js API to execute actions on a wegpage and assert queries using jest. The tests can be run headless (in the background) or headful (opening a browser window and executing the actions live). Puppeteer provides an API that lets you select elements and interact with the html-template through selectors and events. Those actions are wrapped in a page-object (.po.ts)
 
-# Running e2e tests
+## Running e2e tests
 
 When you run e2e tests, puppeteers starts a html-server using the built application as it's entry point. In order to run the e2e tests, the application has to be built. Keep in mind that changing code in files, which change the outcome of the build, will require a rebuild of the application to test the new code. This includes all css, html and mostly all .ts-files (page-objects and test-files are excluded from the build and don't require a rebuild).
 
@@ -53,9 +45,9 @@ module.exports = {
 
 - Pipe console.logs from the browser to the terminal (Run `enableConsole()` from the `puppeteer.helper.ts` in a test).
 
-# Writing e2e tests
+## Writing e2e tests
 
-## Page-Objects
+### Page-Objects
 
 Writing and maintaining e2e-tests can be tedious. Selectors, such as classNames and ids may change and tests need to be adapted. In order to minimize changes across files, we introduce Page-Objects (.po.ts) to wrap our selectors and build our own API to the component.
 
@@ -104,11 +96,11 @@ describe("MapTreeViewLevel", () => {
 })
 ```
 
-## Setup and teardown
+### Setup and teardown
 
 Usually you'd have to setup the server, browser and page yourself. Luckily [jest-puppeteer](https://github.com/smooth-code/jest-puppeteer) provides global variables, such as `page` and automatically handles the setup and teardown for us. No need for boilerplate code in our tests.
 
-## Stability
+### Stability
 
 Running e2e-tests can lead to timeouts and race conditions depending on how fast your pc is. This can be quite frustrating across multiple developers and a CI. Therefore increasing the stability is very important to prevent the tests from failing randomly.
 
@@ -124,7 +116,7 @@ Running e2e-tests can lead to timeouts and race conditions depending on how fast
 - When clicking a button, import the `clickButtonOnPageElement` function from the ` puppeteer.helper` file and use `clickButtonOnPageElement(MY_SELECTOR, options)` instead of `expect(page).toClick(MY_SELECTOR, options)`. This function awaits the selector and clicks on it when it becomes available.
 - After clicking a button or changing the state, use `waitForSelector()` to verify, that the new state is rendered before continuing
 
-## Most used functions
+### Most used functions
 
 - `page.waitForSelector(MY_SELECTOR)` to avoid race conditions
 - `page.waitForSelector(MY_SELECTOR, { visible: false })` to check, if a HTMLElement is not visible through css (ng-show)
