@@ -1,7 +1,5 @@
 # Developer Quick Start Guide
 
----
-
 CodeCharta consists of two separate parts:
 
 - The [analysis](https://maibornwolff.github.io/codecharta/docs/analysis/) which is a cli-tool that generates a `.cc.json` file.

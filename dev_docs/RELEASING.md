@@ -108,7 +108,7 @@ The unpublish workflow (`unpublish-release.yml`) provides options to:
 
 ## Version Manager
 
-The version manager script ([version-manager.ts](.github/workflows/scripts/version-manager.ts)) handles:
+The version manager script ([version-manager.ts](../.github/workflows/scripts/version-manager.ts)) handles:
 - Version updates
 - Changelog management
 - Release post creation
