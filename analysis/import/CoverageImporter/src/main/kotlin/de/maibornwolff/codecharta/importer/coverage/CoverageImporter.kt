@@ -87,9 +87,7 @@ class CoverageImporter(
     override fun call() {
         val language = language.lowercase(Locale.getDefault())
 
-        if (!isLanguageSupported(language)) {
-            throw IllegalArgumentException("Unsupported language: $language")
-        }
+        require(isLanguageSupported(language)) { "Unsupported language: $language" }
 
         val languageStrategy = getStrategyForLanguage(language)
 
@@ -97,7 +95,7 @@ class CoverageImporter(
 
         val projectBuilder = ProjectBuilder()
 
-        languageStrategy.addNodesToProjectBuilder(reportFile, projectBuilder)
+        languageStrategy.addNodesToProjectBuilder(reportFile, projectBuilder, error)
         projectBuilder.addAttributeTypes(getAttributeTypes())
         projectBuilder.addAttributeDescriptions(getAttributeDescriptors())
         var project = projectBuilder.build()
