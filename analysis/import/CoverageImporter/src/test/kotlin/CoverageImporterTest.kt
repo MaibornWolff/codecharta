@@ -71,7 +71,7 @@ class CoverageImporterTest {
         CommandLine(CoverageImporter()).execute(directory.path, "--language=javascript")
         System.setErr(originalErr)
 
-        assertThat(errContent.toString()).contains("No matching files found in directory:")
+        assertThat(errContent.toString()).contains("No files matching lcov.info found in directory:")
     }
 
     @Test
@@ -83,7 +83,7 @@ class CoverageImporterTest {
         CommandLine(CoverageImporter()).execute("--language=javascript")
         System.setErr(originalErr)
 
-        assertThat(errContent.toString()).contains("Multiple matching files found in directory:")
+        assertThat(errContent.toString()).contains("Multiple files matching lcov.info found in directory:")
     }
 
     @Test
@@ -192,6 +192,7 @@ class CoverageImporterTest {
         )
 
         val project = ProjectDeserializer.deserializeProject(cliResult)
+        assertThat(project.attributeDescriptors.size).isEqualTo(3)
         assertThat(project.attributeDescriptors).containsKey("line_coverage")
         assertThat(project.attributeDescriptors["line_coverage"]?.title).isEqualTo("Line Coverage")
         assertThat(project.attributeDescriptors).containsKey("branch_coverage")
