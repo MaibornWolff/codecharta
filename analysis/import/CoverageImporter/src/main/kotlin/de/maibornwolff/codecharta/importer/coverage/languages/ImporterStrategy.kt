@@ -9,6 +9,7 @@ import de.maibornwolff.codecharta.util.ResourceSearchHelper.Companion.getFileFro
 import de.maibornwolff.codecharta.util.ResourceSearchHelper.Companion.isFileWithOneOrMoreOfEndingsPresent
 import java.io.File
 import java.io.FileNotFoundException
+import java.io.PrintStream
 
 interface ImporterStrategy {
     val fileExtensions: List<FileExtension>
@@ -16,7 +17,7 @@ interface ImporterStrategy {
     val progressTracker: ProgressTracker
     var totalLines: Long
 
-    fun addNodesToProjectBuilder(coverageFile: File, projectBuilder: ProjectBuilder)
+    fun addNodesToProjectBuilder(coverageFile: File, projectBuilder: ProjectBuilder, error: PrintStream)
 
     fun updateProgress(parsedLines: Long) {
         progressTracker.updateProgress(totalLines, parsedLines, ParsingUnit.Lines.name)
@@ -36,7 +37,7 @@ interface ImporterStrategy {
         println("Scanning directory `${existingFileOrDirectory.absolutePath}` for matching files.")
 
         val foundFiles = existingFileOrDirectory.walk().asSequence().filter {
-            it.isFile && it.name.equals(defaultReportFileName)
+            it.isFile && it.name == defaultReportFileName
         }.toList()
 
         if (foundFiles.isEmpty()) {
@@ -47,7 +48,8 @@ interface ImporterStrategy {
 
         if (foundFiles.size > 1) {
             throw FileNotFoundException(
-                "Multiple files matching $defaultReportFileName found in directory: ${existingFileOrDirectory.absolutePath}. Please specify only one."
+                "Multiple files matching $defaultReportFileName found in directory: ${existingFileOrDirectory.absolutePath}. " +
+                    "Please specify only one."
             )
         }
 

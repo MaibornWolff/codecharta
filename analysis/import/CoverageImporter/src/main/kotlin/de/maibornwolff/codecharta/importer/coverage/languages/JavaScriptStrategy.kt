@@ -8,6 +8,7 @@ import de.maibornwolff.codecharta.model.ProjectBuilder
 import de.maibornwolff.codecharta.progresstracker.ProgressTracker
 import de.maibornwolff.codecharta.serialization.FileExtension
 import java.io.File
+import java.io.PrintStream
 
 class JavaScriptStrategy() : ImporterStrategy {
     override val fileExtensions: List<FileExtension> = listOf(FileExtension.INFO)
@@ -15,8 +16,12 @@ class JavaScriptStrategy() : ImporterStrategy {
     override val progressTracker: ProgressTracker = ProgressTracker()
     override var totalLines: Long = 0
 
-    override fun addNodesToProjectBuilder(coverageFile: File, projectBuilder: ProjectBuilder) {
+    override fun addNodesToProjectBuilder(coverageFile: File, projectBuilder: ProjectBuilder, error: PrintStream) {
         totalLines = coverageFile.readLines().size.toLong()
+        if (totalLines == 0L) {
+            error.println("The coverage file is empty.")
+            return
+        }
         var currentLine: Long = 0
         updateProgress(currentLine)
 
