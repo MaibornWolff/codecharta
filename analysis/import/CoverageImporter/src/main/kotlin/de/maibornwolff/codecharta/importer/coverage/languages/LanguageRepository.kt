@@ -2,45 +2,49 @@ package de.maibornwolff.codecharta.importer.coverage.languages
 
 import de.maibornwolff.codecharta.importer.coverage.JavaStrategy
 import de.maibornwolff.codecharta.serialization.FileExtension
+import de.maibornwolff.codecharta.util.ResourceSearchHelper.Companion.isFileWithOneOrMoreOfEndingsPresent
 
-val allStrategies = listOf(
-    JavaScriptStrategy(),
-    JavaStrategy()
-)
+internal enum class Language(
+    val languageName: String,
+    val strategy: ImporterStrategy,
+    val fileExtensions: List<FileExtension>,
+    val defaultReportFileName: String
+) {
+    JAVASCRIPT("javascript", JavaScriptStrategy(), listOf(FileExtension.INFO), "lcov.info"),
+    JAVA("java", JavaStrategy(), listOf(FileExtension.XML), "jacoco.xml")
+}
 
 private val languageChoicesToLanguage = mapOf(
-    "javascript/typescript" to "javascript",
-    "java" to "java"
+    "javascript/typescript" to Language.JAVASCRIPT,
+    "java" to Language.JAVA
 )
 
-private val languageToStrategyMap = mapOf(
-    "javascript" to JavaScriptStrategy(),
-    "typescript" to JavaScriptStrategy(),
-    "js" to JavaScriptStrategy(),
-    "ts" to JavaScriptStrategy(),
-    "java" to JavaStrategy()
+private val languageInputToLanguage = mapOf(
+    "javascript" to Language.JAVASCRIPT,
+    "typescript" to Language.JAVASCRIPT,
+    "js" to Language.JAVASCRIPT,
+    "ts" to Language.JAVASCRIPT,
+    "java" to Language.JAVA
 )
 
-fun getLanguageChoices(): List<String> {
+internal fun getLanguageChoices(): List<String> {
     return languageChoicesToLanguage.keys.toList()
 }
 
-fun getLanguageForLanguageChoice(languageChoice: String): String {
+internal fun getLanguageForLanguageChoice(languageChoice: String): Language {
     return languageChoicesToLanguage[languageChoice] ?: throw IllegalArgumentException("Unsupported language choice: $languageChoice")
 }
 
-fun getStrategyForLanguage(language: String): ImporterStrategy {
-    return languageToStrategyMap[language] ?: throw IllegalArgumentException("Unsupported language: $language")
+internal fun getLanguageForLanguageInput(languageInput: String): Language {
+    return languageInputToLanguage[languageInput] ?: throw IllegalArgumentException("Unsupported language: $languageInput")
 }
 
-fun getFileExtensionsForLanguage(language: String): List<FileExtension> {
-    return getStrategyForLanguage(language).fileExtensions
+internal fun isLanguageSupported(language: String): Boolean {
+    return languageInputToLanguage.containsKey(language)
 }
 
-fun isLanguageSupported(language: String): Boolean {
-    return languageToStrategyMap.containsKey(language)
-}
-
-fun isAnyStrategyApplicable(resourceToBeParsed: String): Boolean {
-    return allStrategies.any { it.isApplicable(resourceToBeParsed) }
+internal fun isAnyStrategyApplicable(resourceToBeParsed: String): Boolean {
+    return Language.entries.any {
+        isFileWithOneOrMoreOfEndingsPresent(resourceToBeParsed, it.fileExtensions.map { it.extension })
+    } // TODO: change
 }

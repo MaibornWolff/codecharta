@@ -7,13 +7,10 @@ import de.maibornwolff.codecharta.model.PathFactory
 import de.maibornwolff.codecharta.model.ProjectBuilder
 import de.maibornwolff.codecharta.progresstracker.ParsingUnit
 import de.maibornwolff.codecharta.progresstracker.ProgressTracker
-import de.maibornwolff.codecharta.serialization.FileExtension
 import java.io.File
 import java.io.PrintStream
 
 class JavaScriptStrategy() : ImporterStrategy {
-    override val fileExtensions: List<FileExtension> = listOf(FileExtension.INFO)
-    override val defaultReportFileName: String = "lcov.info"
     override val progressTracker: ProgressTracker = ProgressTracker()
     override var totalTrackingItems: Long = 0
     override val parsingUnit: ParsingUnit = ParsingUnit.Lines

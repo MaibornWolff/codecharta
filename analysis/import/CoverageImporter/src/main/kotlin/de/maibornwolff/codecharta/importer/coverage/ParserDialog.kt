@@ -2,7 +2,6 @@ package de.maibornwolff.codecharta.importer.coverage
 
 import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.Session
-import de.maibornwolff.codecharta.importer.coverage.languages.getFileExtensionsForLanguage
 import de.maibornwolff.codecharta.importer.coverage.languages.getLanguageChoices
 import de.maibornwolff.codecharta.importer.coverage.languages.getLanguageForLanguageChoice
 import de.maibornwolff.codecharta.tools.inquirer.InputType
@@ -26,7 +25,7 @@ class ParserDialog {
 
             val reportFile: String = session.myPromptDefaultFileFolderInput(
                 inputType = InputType.FOLDER_AND_FILE,
-                fileExtensionList = getFileExtensionsForLanguage(language),
+                fileExtensionList = language.fileExtensions,
                 onInputReady = testCallback()
             )
 

@@ -5,9 +5,7 @@ import com.varabyte.kotter.runtime.terminal.inmemory.type
 import com.varabyte.kotterx.test.foundation.testSession
 import de.maibornwolff.codecharta.importer.coverage.CoverageImporter
 import de.maibornwolff.codecharta.importer.coverage.ParserDialog
-import de.maibornwolff.codecharta.importer.coverage.languages.getLanguageChoices
-import de.maibornwolff.codecharta.importer.coverage.languages.getLanguageForLanguageChoice
-import de.maibornwolff.codecharta.importer.coverage.languages.getStrategyForLanguage
+import de.maibornwolff.codecharta.importer.coverage.languages.Language
 import io.mockk.every
 import io.mockk.mockkObject
 import org.assertj.core.api.Assertions.assertThat
@@ -33,12 +31,11 @@ class ParserDialogTest {
     }
 
     private fun languageChoicesProvider(): List<Arguments> {
-        val allStrategies = getLanguageChoices().map { getLanguageForLanguageChoice(it) }
-        return allStrategies.map { language ->
+        return Language.entries.map { language ->
             Arguments.of(
                 language,
-                allStrategies.indexOf(language),
-                "$testResourceBaseFolder/$language/${getStrategyForLanguage(language).defaultReportFileName}",
+                Language.entries.indexOf(language),
+                "$testResourceBaseFolder/$language/${language.defaultReportFileName}",
                 "coverage_${language}_out.cc.json"
             )
         }
@@ -121,10 +118,15 @@ class ParserDialogTest {
 
     @ParameterizedTest
     @MethodSource("languageChoicesProvider")
-    fun `should handle different supported languages correctly`(language: String, languagueIndex: Int, expectedReportFile: String, expectedOutputFile: String) {
+    fun `should handle different supported languages correctly`(
+        language: String,
+        languagueIndex: Int,
+        expectedReportFile: String,
+        expectedOutputFile: String
+    ) {
         testSession { terminal ->
             val languageCallback: suspend RunScope.() -> Unit = {
-                repeat(languagueIndex){
+                repeat(languagueIndex) {
                     terminal.press(Keys.DOWN)
                 }
                 terminal.press(Keys.ENTER)
