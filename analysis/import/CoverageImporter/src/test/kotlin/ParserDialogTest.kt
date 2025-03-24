@@ -33,7 +33,7 @@ class ParserDialogTest {
     private fun languageChoicesProvider(): List<Arguments> {
         return Language.entries.map { language ->
             Arguments.of(
-                language,
+                language.languageName,
                 Language.entries.indexOf(language),
                 "$testResourceBaseFolder/$language/${language.defaultReportFileName}",
                 "coverage_${language}_out.cc.json"
@@ -119,7 +119,7 @@ class ParserDialogTest {
     @ParameterizedTest
     @MethodSource("languageChoicesProvider")
     fun `should handle different supported languages correctly`(
-        language: String,
+        languageName: String,
         languagueIndex: Int,
         expectedReportFile: String,
         expectedOutputFile: String
@@ -159,7 +159,7 @@ class ParserDialogTest {
             val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
 
             assertThat(parseResult.matchedPositionals()[0].getValue<String>()).isEqualTo(expectedReportFile)
-            assertThat(parseResult.matchedOption("language").getValue<String>()).isEqualTo(language)
+            assertThat(parseResult.matchedOption("language").getValue<String>()).isEqualTo(languageName)
             assertThat(parseResult.matchedOption("output-file").getValue<String>()).isEqualTo(expectedOutputFile)
             assertThat(parseResult.matchedOption("not-compressed")).isNull()
         }

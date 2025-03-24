@@ -6,12 +6,14 @@ import de.maibornwolff.codecharta.serialization.FileExtension
 import de.maibornwolff.codecharta.util.ResourceSearchHelper.Companion.isFileWithOneOrMoreOfEndingsPresent
 
 internal enum class Language(
+    val languageName: String,
     val strategy: ImporterStrategy,
     val fileExtensions: List<FileExtension>,
     val defaultReportFileName: String,
     val coverageAttributes: List<CoverageAttributes>
 ) {
     JAVASCRIPT(
+        "javascript",
         JavaScriptStrategy(),
         listOf(FileExtension.INFO),
         "lcov.info",
@@ -22,6 +24,7 @@ internal enum class Language(
         )
     ),
     JAVA(
+        "java",
         JavaStrategy(),
         listOf(FileExtension.XML),
         "jacoco.xml",
