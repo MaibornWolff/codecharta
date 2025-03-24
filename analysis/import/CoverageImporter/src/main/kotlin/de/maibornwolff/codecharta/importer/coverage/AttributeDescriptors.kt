@@ -1,6 +1,5 @@
 package de.maibornwolff.codecharta.importer.coverage
 
-import de.maibornwolff.codecharta.importer.coverage.languages.Language
 import de.maibornwolff.codecharta.model.AttributeDescriptor
 import de.maibornwolff.codecharta.model.AttributeType
 import de.maibornwolff.codecharta.model.AttributeTypes
