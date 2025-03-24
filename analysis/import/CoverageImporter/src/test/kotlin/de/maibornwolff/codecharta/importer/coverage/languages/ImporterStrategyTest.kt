@@ -1,4 +1,4 @@
-package languages
+package de.maibornwolff.codecharta.importer.coverage.languages
 
 import de.maibornwolff.codecharta.importer.coverage.strategies.ImporterStrategy
 import de.maibornwolff.codecharta.model.ProjectBuilder

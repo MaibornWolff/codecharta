@@ -1,11 +1,10 @@
+package de.maibornwolff.codecharta.importer.coverage
+
 import com.varabyte.kotter.foundation.input.Keys
 import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.terminal.inmemory.press
 import com.varabyte.kotter.runtime.terminal.inmemory.type
 import com.varabyte.kotterx.test.foundation.testSession
-import de.maibornwolff.codecharta.importer.coverage.CoverageImporter
-import de.maibornwolff.codecharta.importer.coverage.Language
-import de.maibornwolff.codecharta.importer.coverage.ParserDialog
 import io.mockk.every
 import io.mockk.mockkObject
 import org.assertj.core.api.Assertions.assertThat
