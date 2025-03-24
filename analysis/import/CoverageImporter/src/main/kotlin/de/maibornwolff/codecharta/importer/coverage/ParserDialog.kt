@@ -39,7 +39,7 @@ class ParserDialog {
                 onInputReady = testCallback()
             )
 
-            val languageParam = "--language=$language"
+            val languageParam = "--language=${language.languageName}"
             val outputFileParam = if (outputFileName.isNotEmpty()) "--output-file=$outputFileName" else null
             val notCompressedParam = if (isCompressed) null else "--not-compressed"
 
