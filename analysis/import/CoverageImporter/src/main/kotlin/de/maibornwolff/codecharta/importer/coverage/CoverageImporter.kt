@@ -88,7 +88,7 @@ class CoverageImporter(
     override fun call() {
         val languageInput = language.lowercase(Locale.getDefault())
 
-        require(isLanguageSupported(languageInput)) { "Unsupported language: $languageInput" }
+        require(isLanguageForLanguageInputSupported(languageInput)) { "Unsupported language: $languageInput" }
 
         val language = getLanguageForLanguageInput(languageInput)
 
