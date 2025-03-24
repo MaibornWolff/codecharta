@@ -6,12 +6,15 @@ The CoverageImporter generates visualisation data from a coverage report generat
 
 ## Supported Metrics
 
-| Metric                 | Description                                                  |
-|------------------------|--------------------------------------------------------------|
-| `line_coverage`        | The percentage of lines covered by tests in the file.        |
-| `branch_coverage`      | The percentage of branches covered by tests in the file.     |
-| `statement_coverage`   | The percentage of statements covered by tests in the file.   |
-| `instruction_coverage` | The percentage of instructions covered by tests in the file. |
+| Metric                  | Description                                                  |
+|-------------------------|--------------------------------------------------------------|
+| `line_coverage`         | The percentage of lines covered by tests in the file.        |
+| `branch_coverage`       | The percentage of branches covered by tests in the file.     |
+| `statement_coverage`    | The percentage of statements covered by tests in the file.   |
+| `instruction_coverage`  | The percentage of instructions covered by tests in the file. |
+| `complexity_coverage`   | The percentage of complexity covered by tests.               |
+| `method_coverage`       | The percentage of methods covered by tests in the file.      |
+| `class_coverage`        | The percentage of classes covered by tests.                  |
 
 ## Supported Coverage Report Languages/Formats
 
@@ -111,3 +114,4 @@ Example Output file: `typescript_coverage.cc.json`
   "edges": []
 }
 ```
+
