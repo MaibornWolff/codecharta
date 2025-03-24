@@ -37,7 +37,6 @@ gradle-app.setting
 # misc
 /.sass-cache
 /connect.lock
-/coverage/*
 /libpeerconnection.log
 npm-debug.log
 testem.log
@@ -63,11 +62,6 @@ visualization/dist/
 
 # Grunt usually preprocesses files such as coffeescript, compass... inside the .tmp directory
 .tmp/
-
-### Intellij ###
-# Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio and Webstorm
-# Reference: https://intellij-support.jetbrains.com/hc/en-us/articles/206544839
-*.iml
 
 # User-specific stuff:
 .idea/**/workspace.xml
@@ -111,11 +105,6 @@ fabric.properties
 
 ### Intellij Patch ###
 # Comment Reason: https://github.com/joeblau/gitignore.io/issues/186#issuecomment-215987721
-
-# *.iml
-# modules.xml
-# .idea/misc.xml
-# *.ipr
 
 ### Java ###
 # Compiled class file
@@ -168,11 +157,6 @@ hs_err_pid*
 
 ### JetBrains Patch ###
 # Comment Reason: https://github.com/joeblau/gitignore.io/issues/186#issuecomment-215987721
-
-# *.iml
-# modules.xml
-# .idea/misc.xml
-# *.ipr
 
 ### Linux ###
 *~
@@ -234,9 +218,6 @@ pids
 lib-cov
 # Directory for generated antlr files
 analysis/import/SourceCodeParser/src/generated
-
-# Coverage directory used by tools like istanbul
-coverage
 
 # nyc test coverage
 .nyc_output
