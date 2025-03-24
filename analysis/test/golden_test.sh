@@ -156,14 +156,22 @@ check_sourcecodeparser() {
 
 check_coverageimporter_javascript() {
     echo " ---- expect CoverageImporter to produce valid cc.json file for javascript"
-    ACTUAL_COVERAGE_JSON="${TEMP_DIR}/actual_coverageimporter.cc.json"
-    "${CCSH}" coverageimport "${DATA}/coverageReports/lcov.info" --language=javascript -o "${ACTUAL_COVERAGE_JSON}" -nc
-    validate "${ACTUAL_COVERAGE_JSON}"
+    ACTUAL_JAVASCRIPT_COVERAGE_JSON="${TEMP_DIR}/actual_coverageimporter_javascript.cc.json"
+    "${CCSH}" coverageimport "${DATA}/coverageReports/lcov.info" --language=javascript -o "${ACTUAL_JAVASCRIPT_COVERAGE_JSON}" -nc
+    validate "${ACTUAL_JAVASCRIPT_COVERAGE_JSON}"
+}
+
+check_coverageimporter_java() {
+    echo " ---- expect CoverageImporter to produce valid cc.json file for java"
+    ACTUAL_JAVA_COVERAGE_JSON="${TEMP_DIR}/actual_coverageimporter_java.cc.json"
+    "${CCSH}" coverageimport "${DATA}/coverageReports/jacoco.xml" --language=java -o "${ACTUAL_JAVA_COVERAGE_JSON}" -nc
+    validate "${ACTUAL_JAVA_COVERAGE_JSON}"
 }
 
 check_coverageimporter() {
     echo " -- expect CoverageImporter to produce valid cc.json files for all supported languages"
     check_coverageimporter_javascript
+    check_coverageimporter_java
 }
 
 check_svnlog() {
