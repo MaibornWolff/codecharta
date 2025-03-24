@@ -1,6 +1,5 @@
-package de.maibornwolff.codecharta.importer.coverage.languages
+package de.maibornwolff.codecharta.importer.coverage.strategies
 
-import de.maibornwolff.codecharta.importer.coverage.strategies.JavaScriptStrategy
 import de.maibornwolff.codecharta.model.MutableNode
 import de.maibornwolff.codecharta.model.NodeType
 import de.maibornwolff.codecharta.model.ProjectBuilder

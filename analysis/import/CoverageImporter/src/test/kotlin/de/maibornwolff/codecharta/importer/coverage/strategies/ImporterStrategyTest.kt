@@ -1,6 +1,5 @@
-package de.maibornwolff.codecharta.importer.coverage.languages
+package de.maibornwolff.codecharta.importer.coverage.strategies
 
-import de.maibornwolff.codecharta.importer.coverage.strategies.ImporterStrategy
 import de.maibornwolff.codecharta.model.ProjectBuilder
 import de.maibornwolff.codecharta.progresstracker.ParsingUnit
 import de.maibornwolff.codecharta.progresstracker.ProgressTracker
