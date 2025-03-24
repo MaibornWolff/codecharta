@@ -7,7 +7,6 @@ import de.maibornwolff.codecharta.model.PathFactory
 import de.maibornwolff.codecharta.model.ProjectBuilder
 import de.maibornwolff.codecharta.progresstracker.ParsingUnit
 import de.maibornwolff.codecharta.progresstracker.ProgressTracker
-import de.maibornwolff.codecharta.serialization.FileExtension
 import org.w3c.dom.Document
 import org.w3c.dom.Element
 import org.xml.sax.InputSource
@@ -18,8 +17,6 @@ import javax.xml.parsers.DocumentBuilder
 import javax.xml.parsers.DocumentBuilderFactory
 
 class JavaStrategy : ImporterStrategy {
-    override val fileExtensions: List<FileExtension> = listOf(FileExtension.XML)
-    override val defaultReportFileName: String = "jacoco.xml"
     override val progressTracker: ProgressTracker = ProgressTracker()
     override var totalTrackingItems: Long = 0
     override val parsingUnit: ParsingUnit = ParsingUnit.Packages

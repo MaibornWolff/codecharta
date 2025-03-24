@@ -1,7 +1,8 @@
 package de.maibornwolff.codecharta.importer.coverage
 
 import de.maibornwolff.codecharta.filter.mergefilter.MergeFilter
-import de.maibornwolff.codecharta.importer.coverage.languages.getStrategyForLanguage
+import de.maibornwolff.codecharta.importer.coverage.languages.Language
+import de.maibornwolff.codecharta.importer.coverage.languages.getLanguageForLanguageInput
 import de.maibornwolff.codecharta.importer.coverage.languages.isAnyStrategyApplicable
 import de.maibornwolff.codecharta.importer.coverage.languages.isLanguageSupported
 import de.maibornwolff.codecharta.model.AttributeDescriptor
@@ -13,7 +14,11 @@ import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import de.maibornwolff.codecharta.tools.interactiveparser.util.CodeChartaConstants
 import de.maibornwolff.codecharta.tools.pipeableparser.PipeableParser
+import de.maibornwolff.codecharta.util.ResourceSearchHelper.Companion.endsWithAtLeastOne
+import de.maibornwolff.codecharta.util.ResourceSearchHelper.Companion.getFileFromStringIfExists
 import picocli.CommandLine
+import java.io.File
+import java.io.FileNotFoundException
 import java.io.IOException
 import java.io.InputStream
 import java.io.PrintStream
@@ -85,19 +90,19 @@ class CoverageImporter(
 
     @Throws(IOException::class)
     override fun call() {
-        val language = language.lowercase(Locale.getDefault())
+        val languageInput = language.lowercase(Locale.getDefault())
 
-        require(isLanguageSupported(language)) { "Unsupported language: $language" }
+        require(isLanguageSupported(languageInput)) { "Unsupported language: $languageInput" }
 
-        val languageStrategy = getStrategyForLanguage(language)
+        val language = getLanguageForLanguageInput(languageInput)
 
-        val reportFile = languageStrategy.getReportFileFromString(reportFileName ?: ".")
+        val reportFile = getReportFileFromString(reportFileName ?: ".", language)
 
         val projectBuilder = ProjectBuilder()
 
-        languageStrategy.addNodesToProjectBuilder(reportFile, projectBuilder, error)
-        projectBuilder.addAttributeTypes(getAttributeTypes())
-        projectBuilder.addAttributeDescriptions(getAttributeDescriptors())
+        language.strategy.addNodesToProjectBuilder(reportFile, projectBuilder, error)
+        projectBuilder.addAttributeTypes(getAttributeTypes(language.languageName))
+        projectBuilder.addAttributeDescriptions(getAttributeDescriptors(language.languageName))
         var project = projectBuilder.build()
 
         val pipedProject = ProjectDeserializer.deserializeProject(input)
@@ -117,5 +122,38 @@ class CoverageImporter(
 
     override fun getAttributeDescriptorMaps(): Map<String, AttributeDescriptor> {
         return getAttributeDescriptors()
+    }
+
+    internal fun getReportFileFromString(resourceToSearch: String, language: Language): File {
+        val existingFileOrDirectory = getFileFromStringIfExists(resourceToSearch)
+            ?: throw FileNotFoundException("File not found: $resourceToSearch")
+        if (existingFileOrDirectory.isFile) {
+            val knownFileExtensions = language.fileExtensions.map { it.extension }
+            if (endsWithAtLeastOne(existingFileOrDirectory.name, knownFileExtensions)) {
+                return existingFileOrDirectory
+            }
+            throw FileNotFoundException("File: $resourceToSearch does not match any known file extension: $knownFileExtensions")
+        }
+
+        println("Scanning directory `${existingFileOrDirectory.absolutePath}` for matching files.")
+
+        val foundFiles = existingFileOrDirectory.walk().asSequence().filter {
+            it.isFile && it.name == language.defaultReportFileName
+        }.toList()
+
+        if (foundFiles.isEmpty()) {
+            throw FileNotFoundException(
+                "No files matching ${language.defaultReportFileName} found in directory: ${existingFileOrDirectory.absolutePath}"
+            )
+        }
+
+        if (foundFiles.size > 1) {
+            throw FileNotFoundException(
+                "Multiple files matching ${language.defaultReportFileName} found in directory: ${existingFileOrDirectory.absolutePath}. " +
+                    "Please specify only one."
+            )
+        }
+
+        return foundFiles.first()
     }
 }
