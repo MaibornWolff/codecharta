@@ -119,11 +119,11 @@ class SourceCodeParserMain(
     override fun call(): Unit? {
         logPipeableParserSyncSignal(PipeableParserSyncFlag.SYNC_FLAG)
 
-        if (!InputHelper.isInputValidAndNotNull(arrayOf(file), canInputContainFolders = true)) {
-            throw IllegalArgumentException("Input invalid file for SourceCodeParser, stopping execution...")
+        require(InputHelper.isInputValidAndNotNull(arrayOf(file), canInputContainFolders = true)) {
+            "Input invalid file for SourceCodeParser, stopping execution..."
         }
 
-        if (defaultExcludes) exclude += Companion.DEFAULT_EXCLUDES
+        if (defaultExcludes) exclude += DEFAULT_EXCLUDES
 
         val projectParser = ProjectParser(exclude, verbose, !findNoIssues)
 
@@ -181,10 +181,10 @@ class SourceCodeParserMain(
 
     override fun isApplicable(resourceToBeParsed: String): Boolean {
         println("Checking if SourceCodeParser is applicable...")
-        return ResourceSearchHelper.isFileWithOneOrMoreOfEndingsPresent(resourceToBeParsed, listOf(".java"))
+        return ResourceSearchHelper.isFileWithOneOrMoreOfEndingsPresent(resourceToBeParsed, listOf(FileExtension.JAVA))
     }
 
     override fun getAttributeDescriptorMaps(): Map<String, AttributeDescriptor> {
-        return de.maibornwolff.codecharta.parser.sourcecodeparser.getAttributeDescriptors()
+        return getAttributeDescriptors()
     }
 }

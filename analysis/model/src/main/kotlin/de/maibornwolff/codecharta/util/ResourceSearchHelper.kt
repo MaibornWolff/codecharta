@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.util
 
+import de.maibornwolff.codecharta.serialization.FileExtension
 import java.io.File
 
 class ResourceSearchHelper {
@@ -18,7 +19,7 @@ class ResourceSearchHelper {
             }.any()
         }
 
-        fun isFileWithOneOrMoreOfEndingsPresent(resourcePath: String, toBeCheckedFileEndings: List<String>): Boolean {
+        fun isFileWithOneOrMoreOfEndingsPresent(resourcePath: String, toBeCheckedFileEndings: List<FileExtension>): Boolean {
             val inputFile = getFileFromStringIfExists(resourcePath) ?: return false
             if (inputFile.isFile && endsWithAtLeastOne(inputFile.name, toBeCheckedFileEndings)) {
                 return true
@@ -56,9 +57,9 @@ class ResourceSearchHelper {
             return (inputFile.name == searchToken)
         }
 
-        fun endsWithAtLeastOne(inputString: String, endings: List<String>): Boolean {
+        fun endsWithAtLeastOne(inputString: String, endings: List<FileExtension>): Boolean {
             for (ending in endings) {
-                if (inputString.endsWith(ending)) {
+                if (inputString.endsWith(ending.extension)) {
                     return true
                 }
             }
