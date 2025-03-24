@@ -3,7 +3,7 @@ package de.maibornwolff.codecharta.importer.csv
 import de.maibornwolff.codecharta.model.AttributeDescriptor
 
 fun getAttributeDescriptors(): Map<String, AttributeDescriptor> {
-    val ghLink = "https://maibornwolff.github.io/codecharta/docs/csv-importer"
+    val ghLink = "https://codecharta.com/docs/importer/csv"
     val descriptors: MutableMap<String, AttributeDescriptor> = mutableMapOf()
     descriptors["loc"] =
         AttributeDescriptor(

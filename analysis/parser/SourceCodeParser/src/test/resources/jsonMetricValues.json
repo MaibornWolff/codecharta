@@ -39,7 +39,7 @@
         "description": "Number of code lines that contain at least one character which is neither a whitespace nor a tabulation nor part of a comment",
         "hintLowValue": "",
         "hintHighValue": "",
-        "link": "https://github.com/MaibornWolff/codecharta/blob/main/analysis/import/SourceCodeParser/README.md",
+        "link": "https://codecharta.com/docs/parser/source-code",
         "direction": -1
       },
       "complexity": {
@@ -54,5 +54,5 @@
     "edges": [],
     "blacklist": []
   },
-  "checksum": "7e877aaaff4cfb113f71c15c3bb6eca5"
+  "checksum": "b717ae9491864d3cee84c057b3d4d52d"
 }

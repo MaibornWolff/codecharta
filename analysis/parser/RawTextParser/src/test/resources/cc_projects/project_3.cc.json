@@ -1,5 +1,5 @@
 {
-  "checksum": "615c34ffddba6d9b6a940ece68dcffa5",
+  "checksum": "281a7a9ebe86b84f113ad9e0f3f57e25",
   "data": {
     "projectName": "",
     "nodes": [
@@ -40,7 +40,7 @@
         "description": "Statements with indentation level greater or equal 0",
         "hintLowValue": "",
         "hintHighValue": "",
-        "link": "https://github.com/MaibornWolff/codecharta/blob/main/analysis/parser/RawTextParser/README.md",
+        "link": "https://codecharta.com/docs/parser/raw-text",
         "direction": -1
       },
       "indentation_level_1+": {
@@ -48,7 +48,7 @@
         "description": "Statements with indentation level greater or equal 1",
         "hintLowValue": "",
         "hintHighValue": "",
-        "link": "https://github.com/MaibornWolff/codecharta/blob/main/analysis/parser/RawTextParser/README.md",
+        "link": "https://codecharta.com/docs/parser/raw-text",
         "direction": -1
       },
       "indentation_level_2+": {
@@ -56,7 +56,7 @@
         "description": "Statements with indentation level greater or equal 2",
         "hintLowValue": "",
         "hintHighValue": "",
-        "link": "https://github.com/MaibornWolff/codecharta/blob/main/analysis/parser/RawTextParser/README.md",
+        "link": "https://codecharta.com/docs/parser/raw-text",
         "direction": -1
       },
       "indentation_level_3+": {
@@ -64,7 +64,7 @@
         "description": "Statements with indentation level greater or equal 3",
         "hintLowValue": "",
         "hintHighValue": "",
-        "link": "https://github.com/MaibornWolff/codecharta/blob/main/analysis/parser/RawTextParser/README.md",
+        "link": "https://codecharta.com/docs/parser/raw-text",
         "direction": -1
       },
       "indentation_level_4+": {
@@ -72,7 +72,7 @@
         "description": "Statements with indentation level greater or equal 4",
         "hintLowValue": "",
         "hintHighValue": "",
-        "link": "https://github.com/MaibornWolff/codecharta/blob/main/analysis/parser/RawTextParser/README.md",
+        "link": "https://codecharta.com/docs/parser/raw-text",
         "direction": -1
       },
       "indentation_level_5+": {
@@ -80,7 +80,7 @@
         "description": "Statements with indentation level greater or equal 5",
         "hintLowValue": "",
         "hintHighValue": "",
-        "link": "https://github.com/MaibornWolff/codecharta/blob/main/analysis/parser/RawTextParser/README.md",
+        "link": "https://codecharta.com/docs/parser/raw-text",
         "direction": -1
       },
       "indentation_level_6+": {
@@ -88,7 +88,7 @@
         "description": "Statements with indentation level greater or equal 6",
         "hintLowValue": "",
         "hintHighValue": "",
-        "link": "https://github.com/MaibornWolff/codecharta/blob/main/analysis/parser/RawTextParser/README.md",
+        "link": "https://codecharta.com/docs/parser/raw-text",
         "direction": -1
       },
       "indentation_level_7+": {
@@ -96,7 +96,7 @@
         "description": "Statements with indentation level greater or equal 7",
         "hintLowValue": "",
         "hintHighValue": "",
-        "link": "https://github.com/MaibornWolff/codecharta/blob/main/analysis/parser/RawTextParser/README.md",
+        "link": "https://codecharta.com/docs/parser/raw-text",
         "direction": -1
       },
       "indentation_level_8+": {
@@ -104,7 +104,7 @@
         "description": "Statements with indentation level greater or equal 8",
         "hintLowValue": "",
         "hintHighValue": "",
-        "link": "https://github.com/MaibornWolff/codecharta/blob/main/analysis/parser/RawTextParser/README.md",
+        "link": "https://codecharta.com/docs/parser/raw-text",
         "direction": -1
       },
       "indentation_level_9+": {
@@ -112,7 +112,7 @@
         "description": "Statements with indentation level greater or equal 9",
         "hintLowValue": "",
         "hintHighValue": "",
-        "link": "https://github.com/MaibornWolff/codecharta/blob/main/analysis/parser/RawTextParser/README.md",
+        "link": "https://codecharta.com/docs/parser/raw-text",
         "direction": -1
       },
       "indentation_level_10+": {
@@ -120,7 +120,7 @@
         "description": "Statements with indentation level greater or equal 10",
         "hintLowValue": "",
         "hintHighValue": "",
-        "link": "https://github.com/MaibornWolff/codecharta/blob/main/analysis/parser/RawTextParser/README.md",
+        "link": "https://codecharta.com/docs/parser/raw-text",
         "direction": -1
       }
     },

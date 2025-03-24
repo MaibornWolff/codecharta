@@ -39,7 +39,7 @@
         "description": "Number of statements",
         "hintLowValue": "",
         "hintHighValue": "",
-        "link": "https://github.com/MaibornWolff/codecharta/blob/main/analysis/import/SourceCodeParser/README.md",
+        "link": "https://codecharta.com/docs/parser/source-code",
         "direction": -1
       }
     },
