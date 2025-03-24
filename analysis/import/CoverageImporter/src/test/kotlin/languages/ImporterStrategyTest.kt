@@ -20,7 +20,7 @@ class ImporterStrategyTest {
         override val progressTracker: ProgressTracker = ProgressTracker()
         override var totalLines: Long = 0
 
-        override fun addNodesToProjectBuilder(coverageFile: File, projectBuilder: ProjectBuilder) {
+        override fun addNodesToProjectBuilder(coverageFile: File, projectBuilder: ProjectBuilder, error: PrintStream) {
             // Implementation not needed for this test
         }
     }
@@ -59,7 +59,7 @@ class ImporterStrategyTest {
 
         assertThatThrownBy { testStrategy.getReportFileFromString(directory.path) }
             .isInstanceOf(FileNotFoundException::class.java)
-            .hasMessageContaining("No matching files found in directory")
+            .hasMessageContaining("No files matching lcov.info found in directory:")
     }
 
     @Test
@@ -86,7 +86,7 @@ class ImporterStrategyTest {
 
         assertThatThrownBy { testStrategy.getReportFileFromString(directory.path) }
             .isInstanceOf(FileNotFoundException::class.java)
-            .hasMessageContaining("Multiple matching files found in directory")
+            .hasMessageContaining("Multiple files matching lcov.info found in directory:")
     }
 
     @Test

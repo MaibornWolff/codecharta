@@ -37,6 +37,7 @@ class ParserDialogTest {
         return allStrategies.map { language ->
             Arguments.of(
                 language,
+                allStrategies.indexOf(language),
                 "$testResourceBaseFolder/$language/${getStrategyForLanguage(language).defaultReportFileName}",
                 "coverage_${language}_out.cc.json"
             )
@@ -120,10 +121,12 @@ class ParserDialogTest {
 
     @ParameterizedTest
     @MethodSource("languageChoicesProvider")
-    fun `should handle different supported languages correctly`(language: String, expectedReportFile: String, expectedOutputFile: String) {
+    fun `should handle different supported languages correctly`(language: String, languagueIndex: Int, expectedReportFile: String, expectedOutputFile: String) {
         testSession { terminal ->
             val languageCallback: suspend RunScope.() -> Unit = {
-                terminal.type(language)
+                repeat(languagueIndex){
+                    terminal.press(Keys.DOWN)
+                }
                 terminal.press(Keys.ENTER)
             }
 
