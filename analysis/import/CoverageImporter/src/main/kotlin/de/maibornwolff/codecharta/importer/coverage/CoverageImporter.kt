@@ -1,10 +1,6 @@
 package de.maibornwolff.codecharta.importer.coverage
 
 import de.maibornwolff.codecharta.filter.mergefilter.MergeFilter
-import de.maibornwolff.codecharta.importer.coverage.languages.Language
-import de.maibornwolff.codecharta.importer.coverage.languages.getLanguageForLanguageInput
-import de.maibornwolff.codecharta.importer.coverage.languages.isAnyStrategyApplicable
-import de.maibornwolff.codecharta.importer.coverage.languages.isLanguageSupported
 import de.maibornwolff.codecharta.model.AttributeDescriptor
 import de.maibornwolff.codecharta.model.AttributeGenerator
 import de.maibornwolff.codecharta.model.ProjectBuilder

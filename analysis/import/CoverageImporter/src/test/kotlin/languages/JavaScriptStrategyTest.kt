@@ -1,6 +1,6 @@
 package languages
 
-import de.maibornwolff.codecharta.importer.coverage.languages.JavaScriptStrategy
+import de.maibornwolff.codecharta.importer.coverage.strategies.JavaScriptStrategy
 import de.maibornwolff.codecharta.model.MutableNode
 import de.maibornwolff.codecharta.model.NodeType
 import de.maibornwolff.codecharta.model.ProjectBuilder

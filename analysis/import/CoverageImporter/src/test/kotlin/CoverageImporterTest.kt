@@ -1,5 +1,5 @@
 import de.maibornwolff.codecharta.importer.coverage.CoverageImporter
-import de.maibornwolff.codecharta.importer.coverage.languages.Language
+import de.maibornwolff.codecharta.importer.coverage.Language
 import de.maibornwolff.codecharta.model.AttributeType
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import io.mockk.unmockkAll

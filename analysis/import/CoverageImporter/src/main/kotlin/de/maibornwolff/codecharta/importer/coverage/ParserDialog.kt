@@ -2,8 +2,6 @@ package de.maibornwolff.codecharta.importer.coverage
 
 import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.Session
-import de.maibornwolff.codecharta.importer.coverage.languages.getLanguageChoices
-import de.maibornwolff.codecharta.importer.coverage.languages.getLanguageForLanguageChoice
 import de.maibornwolff.codecharta.tools.inquirer.InputType
 import de.maibornwolff.codecharta.tools.inquirer.myPromptConfirm
 import de.maibornwolff.codecharta.tools.inquirer.myPromptDefaultFileFolderInput

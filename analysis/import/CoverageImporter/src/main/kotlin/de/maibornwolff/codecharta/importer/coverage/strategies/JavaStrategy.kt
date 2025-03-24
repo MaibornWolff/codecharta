@@ -1,6 +1,6 @@
 package de.maibornwolff.codecharta.importer.coverage
 
-import de.maibornwolff.codecharta.importer.coverage.languages.ImporterStrategy
+import de.maibornwolff.codecharta.importer.coverage.strategies.ImporterStrategy
 import de.maibornwolff.codecharta.model.MutableNode
 import de.maibornwolff.codecharta.model.NodeType
 import de.maibornwolff.codecharta.model.PathFactory

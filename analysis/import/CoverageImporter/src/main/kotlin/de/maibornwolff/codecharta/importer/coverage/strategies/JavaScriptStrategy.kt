@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.importer.coverage.languages
+package de.maibornwolff.codecharta.importer.coverage.strategies
 
 import de.maibornwolff.codecharta.importer.coverage.CoverageAttributes
 import de.maibornwolff.codecharta.model.MutableNode
