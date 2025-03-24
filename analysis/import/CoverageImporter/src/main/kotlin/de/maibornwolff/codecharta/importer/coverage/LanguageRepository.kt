@@ -22,7 +22,10 @@ internal enum class Language(
         )
     ),
     JAVA(
-        JavaStrategy(), listOf(FileExtension.XML), "jacoco.xml", listOf(
+        JavaStrategy(),
+        listOf(FileExtension.XML),
+        "jacoco.xml",
+        listOf(
             CoverageAttributes.LINE_COVERAGE,
             CoverageAttributes.INSTRUCTION_COVERAGE,
             CoverageAttributes.COMPLEXITY_COVERAGE,
@@ -65,6 +68,6 @@ internal fun isLanguageSupported(language: String): Boolean {
 
 internal fun isAnyStrategyApplicable(resourceToBeParsed: String): Boolean {
     return Language.entries.any {
-        isFileWithOneOrMoreOfEndingsPresent(resourceToBeParsed, it.fileExtensions.map { it.extension })
-    } // TODO: change
+        isFileWithOneOrMoreOfEndingsPresent(resourceToBeParsed, it.fileExtensions)
+    }
 }

@@ -124,11 +124,12 @@ class CoverageImporter(
         val existingFileOrDirectory = getFileFromStringIfExists(resourceToSearch)
             ?: throw FileNotFoundException("File not found: $resourceToSearch")
         if (existingFileOrDirectory.isFile) {
-            val knownFileExtensions = language.fileExtensions.map { it.extension }
-            if (endsWithAtLeastOne(existingFileOrDirectory.name, knownFileExtensions)) {
+            if (endsWithAtLeastOne(existingFileOrDirectory.name, language.fileExtensions)) {
                 return existingFileOrDirectory
             }
-            throw FileNotFoundException("File: $resourceToSearch does not match any known file extension: $knownFileExtensions")
+            throw FileNotFoundException(
+                "File: $resourceToSearch does not match any known file extension: ${language.fileExtensions.map { it.extension }}"
+            )
         }
 
         println("Scanning directory `${existingFileOrDirectory.absolutePath}` for matching files.")

@@ -10,5 +10,14 @@ enum class FileExtension(
     CCJSON(CODECHARTA.extension + JSON.extension),
     CCGZ(CCJSON.extension + GZIP.extension),
     INFO(".info"),
-    XML(".xml")
+    XML(".xml"),
+    GO(".go"),
+    PHP(".php"),
+    TYPESCRIPT(".ts"),
+    CSHARP(".cs"),
+    CPP(".cpp"),
+    JAVA(".java"),
+    JAVASCRIPT(".js"),
+    KOTLIN(".kt"),
+    PYTHON(".py")
 }

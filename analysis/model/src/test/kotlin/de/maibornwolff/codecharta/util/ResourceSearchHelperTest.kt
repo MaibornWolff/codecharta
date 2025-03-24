@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.util
 
+import de.maibornwolff.codecharta.serialization.FileExtension
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 
@@ -10,7 +11,7 @@ class ResourceSearchHelperTest {
         val input = "src/test/resources/my/doesNotExist"
 
         val resultFolder = ResourceSearchHelper.isFolderDirectlyInGivenDirectory(input, "dummyVal")
-        val resultFile = ResourceSearchHelper.isFileWithOneOrMoreOfEndingsPresent(input, listOf("dummyVal"))
+        val resultFile = ResourceSearchHelper.isFileWithOneOrMoreOfEndingsPresent(input, listOf(FileExtension.CSV))
 
         Assertions.assertThat(resultFolder).isFalse()
         Assertions.assertThat(resultFile).isFalse()
@@ -21,7 +22,7 @@ class ResourceSearchHelperTest {
         val input = ""
 
         val resultFolder = ResourceSearchHelper.isFolderDirectlyInGivenDirectory(input, "dummyVal")
-        val resultFile = ResourceSearchHelper.isFileWithOneOrMoreOfEndingsPresent(input, listOf("dummyVal"))
+        val resultFile = ResourceSearchHelper.isFileWithOneOrMoreOfEndingsPresent(input, listOf(FileExtension.CSV))
 
         Assertions.assertThat(resultFolder).isFalse()
         Assertions.assertThat(resultFile).isFalse()
@@ -87,7 +88,7 @@ class ResourceSearchHelperTest {
     fun `should return true if resource ends with one of the given endings and is file`() {
         val input = "src/test/resources/my/java/repo/dummyFile.java"
 
-        val result = ResourceSearchHelper.isFileWithOneOrMoreOfEndingsPresent(input, listOf(".java"))
+        val result = ResourceSearchHelper.isFileWithOneOrMoreOfEndingsPresent(input, listOf(FileExtension.JAVA))
 
         Assertions.assertThat(result).isTrue()
     }
@@ -96,7 +97,7 @@ class ResourceSearchHelperTest {
     fun `should return true if resource is directory and contains file ending with one of the given file endings`() {
         val input = "src/test/resources/my/"
 
-        val result = ResourceSearchHelper.isFileWithOneOrMoreOfEndingsPresent(input, listOf(".java"))
+        val result = ResourceSearchHelper.isFileWithOneOrMoreOfEndingsPresent(input, listOf(FileExtension.JAVA))
 
         Assertions.assertThat(result).isTrue()
     }
@@ -114,7 +115,7 @@ class ResourceSearchHelperTest {
     fun `should return false if resource is directory and contains no file ending with one of the given file endings`() {
         val input = "src/test/resources/my/other"
 
-        val result = ResourceSearchHelper.isFileWithOneOrMoreOfEndingsPresent(input, listOf(".java"))
+        val result = ResourceSearchHelper.isFileWithOneOrMoreOfEndingsPresent(input, listOf(FileExtension.JAVA))
 
         Assertions.assertThat(result).isFalse()
     }
@@ -123,7 +124,7 @@ class ResourceSearchHelperTest {
     fun `should return false if resource is directory ending with one of the given file endings`() {
         val input = "src/test/resources/my/other/.java"
 
-        val result = ResourceSearchHelper.isFileWithOneOrMoreOfEndingsPresent(input, listOf(".java"))
+        val result = ResourceSearchHelper.isFileWithOneOrMoreOfEndingsPresent(input, listOf(FileExtension.JAVA))
 
         Assertions.assertThat(result).isFalse()
     }
@@ -132,7 +133,7 @@ class ResourceSearchHelperTest {
     fun `should return false if resource is directory and contains another directory ending with one of the given file endings`() {
         val input = "src/test/resources/my/other/"
 
-        val result = ResourceSearchHelper.isFileWithOneOrMoreOfEndingsPresent(input, listOf(".java"))
+        val result = ResourceSearchHelper.isFileWithOneOrMoreOfEndingsPresent(input, listOf(FileExtension.JAVA))
 
         Assertions.assertThat(result).isFalse()
     }

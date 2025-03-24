@@ -6,6 +6,7 @@ import de.maibornwolff.codecharta.importer.metricgardenerimporter.model.MetricGa
 import de.maibornwolff.codecharta.importer.metricgardenerimporter.model.MetricGardenerNodes
 import de.maibornwolff.codecharta.model.AttributeDescriptor
 import de.maibornwolff.codecharta.model.AttributeGenerator
+import de.maibornwolff.codecharta.serialization.FileExtension
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
@@ -67,16 +68,26 @@ class MetricGardenerImporter(
         }
 
         @JvmStatic
-        fun getSupportedLanguageFileEndings(): List<String> {
+        fun getSupportedLanguageFileEndings(): List<FileExtension> {
             // If needed: Add more file endings for each supported language
-            return listOf(".go", ".php", ".ts", ".cs", ".cpp", ".java", ".js", ".kt", ".py")
+            return listOf(
+                FileExtension.GO,
+                FileExtension.PHP,
+                FileExtension.TYPESCRIPT,
+                FileExtension.CSHARP,
+                FileExtension.CPP,
+                FileExtension.JAVA,
+                FileExtension.JAVASCRIPT,
+                FileExtension.KOTLIN,
+                FileExtension.PYTHON
+            )
         }
     }
 
     @Throws(IOException::class)
     override fun call(): Unit? {
-        if (!InputHelper.isInputValidAndNotNull(arrayOf(inputFile), canInputContainFolders = true)) {
-            throw IllegalArgumentException("Input invalid file for MetricGardenerImporter, stopping execution...")
+        require(InputHelper.isInputValidAndNotNull(arrayOf(inputFile), canInputContainFolders = true)) {
+            "Input invalid file for MetricGardenerImporter, stopping execution..."
         }
 
         if (!isJsonFile) {
