@@ -34,8 +34,8 @@ class ParserDialogTest {
             Arguments.of(
                 language.languageName,
                 Language.entries.indexOf(language),
-                "$testResourceBaseFolder/$language/${language.defaultReportFileName}",
-                "coverage_${language}_out.cc.json"
+                "$testResourceBaseFolder/${language.languageName}/${language.defaultReportFileName}",
+                "coverage_${language.languageName}_out.cc.json"
             )
         }
     }
