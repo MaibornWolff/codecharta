@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Added 🚀
 
 - Added coverage importer for javascript and typescript [#3989](https://github.com/MaibornWolff/codecharta/pull/3989)
+- Added coverage importer for java [#3999](https://github.com/MaibornWolff/codecharta/pull/3999)
 
 ### Changed
 
