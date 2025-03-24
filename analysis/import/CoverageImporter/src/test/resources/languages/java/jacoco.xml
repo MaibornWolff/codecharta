@@ -1,7 +1,33 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?><!DOCTYPE report PUBLIC "-//JACOCO//DTD Report 1.1//EN" "report.dtd">
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?><!DOCTYPE report PUBLIC "-//JACOCO//DTD Report 1.1//EN"
+        "report.dtd">
 <report name="my-java-example">
-    <sessioninfo id="MB-WJL7R577XG-c98c30cc" start="1742561025517" dump="1742561025857"/>
+    <sessioninfo id="MB-WJL7R577XG-320036af" start="1742808518208" dump="1742808518578"/>
     <package name="com/example">
+        <class name="com/example/Product$ProductDetail" sourcefilename="Product.java">
+            <method name="&lt;init&gt;" desc="(Lcom/example/Product;Ljava/lang/String;I)V" line="24">
+                <counter type="INSTRUCTION" missed="0" covered="12"/>
+                <counter type="LINE" missed="0" covered="4"/>
+                <counter type="COMPLEXITY" missed="0" covered="1"/>
+                <counter type="METHOD" missed="0" covered="1"/>
+            </method>
+            <method name="getDescription" desc="()Ljava/lang/String;" line="30">
+                <counter type="INSTRUCTION" missed="0" covered="3"/>
+                <counter type="LINE" missed="0" covered="1"/>
+                <counter type="COMPLEXITY" missed="0" covered="1"/>
+                <counter type="METHOD" missed="0" covered="1"/>
+            </method>
+            <method name="getStockQuantity" desc="()I" line="34">
+                <counter type="INSTRUCTION" missed="0" covered="3"/>
+                <counter type="LINE" missed="0" covered="1"/>
+                <counter type="COMPLEXITY" missed="0" covered="1"/>
+                <counter type="METHOD" missed="0" covered="1"/>
+            </method>
+            <counter type="INSTRUCTION" missed="0" covered="18"/>
+            <counter type="LINE" missed="0" covered="6"/>
+            <counter type="COMPLEXITY" missed="0" covered="3"/>
+            <counter type="METHOD" missed="0" covered="3"/>
+            <counter type="CLASS" missed="0" covered="1"/>
+        </class>
         <class name="com/example/App" sourcefilename="App.java">
             <method name="&lt;init&gt;" desc="()V" line="3">
                 <counter type="INSTRUCTION" missed="3" covered="0"/>
@@ -40,11 +66,11 @@
                 <counter type="COMPLEXITY" missed="0" covered="1"/>
                 <counter type="METHOD" missed="0" covered="1"/>
             </method>
-            <counter type="INSTRUCTION" missed="0" covered="15"/>
-            <counter type="LINE" missed="0" covered="6"/>
-            <counter type="COMPLEXITY" missed="0" covered="3"/>
-            <counter type="METHOD" missed="0" covered="3"/>
-            <counter type="CLASS" missed="0" covered="1"/>
+            <counter type="INSTRUCTION" missed="1" covered="15"/>
+            <counter type="LINE" missed="1" covered="6"/>
+            <counter type="COMPLEXITY" missed="1" covered="3"/>
+            <counter type="METHOD" missed="1" covered="3"/>
+            <counter type="CLASS" missed="1" covered="1"/>
         </class>
         <class name="com/example/Calculator" sourcefilename="Calculator.java">
             <method name="&lt;init&gt;" desc="()V" line="3">
@@ -141,11 +167,17 @@
             <line nr="10" mi="0" ci="1" mb="0" cb="0"/>
             <line nr="13" mi="0" ci="3" mb="0" cb="0"/>
             <line nr="17" mi="0" ci="3" mb="0" cb="0"/>
-            <counter type="INSTRUCTION" missed="0" covered="15"/>
-            <counter type="LINE" missed="0" covered="6"/>
-            <counter type="COMPLEXITY" missed="0" covered="3"/>
-            <counter type="METHOD" missed="0" covered="3"/>
-            <counter type="CLASS" missed="0" covered="1"/>
+            <line nr="24" mi="0" ci="5" mb="0" cb="0"/>
+            <line nr="25" mi="0" ci="3" mb="0" cb="0"/>
+            <line nr="26" mi="0" ci="3" mb="0" cb="0"/>
+            <line nr="27" mi="0" ci="1" mb="0" cb="0"/>
+            <line nr="30" mi="0" ci="3" mb="0" cb="0"/>
+            <line nr="34" mi="0" ci="3" mb="0" cb="0"/>
+            <counter type="INSTRUCTION" missed="0" covered="33"/>
+            <counter type="LINE" missed="0" covered="12"/>
+            <counter type="COMPLEXITY" missed="0" covered="6"/>
+            <counter type="METHOD" missed="0" covered="6"/>
+            <counter type="CLASS" missed="0" covered="2"/>
         </sourcefile>
         <sourcefile name="Calculator.java">
             <line nr="3" mi="0" ci="3" mb="0" cb="0"/>
@@ -180,15 +212,15 @@
             <counter type="METHOD" missed="2" covered="0"/>
             <counter type="CLASS" missed="1" covered="0"/>
         </sourcefile>
-        <counter type="INSTRUCTION" missed="7" covered="56"/>
-        <counter type="LINE" missed="3" covered="21"/>
-        <counter type="COMPLEXITY" missed="2" covered="12"/>
-        <counter type="METHOD" missed="2" covered="12"/>
-        <counter type="CLASS" missed="1" covered="4"/>
+        <counter type="INSTRUCTION" missed="7" covered="74"/>
+        <counter type="LINE" missed="3" covered="27"/>
+        <counter type="COMPLEXITY" missed="2" covered="15"/>
+        <counter type="METHOD" missed="2" covered="15"/>
+        <counter type="CLASS" missed="1" covered="5"/>
     </package>
-    <counter type="INSTRUCTION" missed="7" covered="56"/>
-    <counter type="LINE" missed="3" covered="21"/>
-    <counter type="COMPLEXITY" missed="2" covered="12"/>
-    <counter type="METHOD" missed="2" covered="12"/>
-    <counter type="CLASS" missed="1" covered="4"/>
+    <counter type="INSTRUCTION" missed="7" covered="74"/>
+    <counter type="LINE" missed="3" covered="27"/>
+    <counter type="COMPLEXITY" missed="2" covered="15"/>
+    <counter type="METHOD" missed="2" covered="15"/>
+    <counter type="CLASS" missed="1" covered="5"/>
 </report>
