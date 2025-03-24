@@ -2,6 +2,7 @@ package languages
 
 import de.maibornwolff.codecharta.importer.coverage.languages.ImporterStrategy
 import de.maibornwolff.codecharta.model.ProjectBuilder
+import de.maibornwolff.codecharta.progresstracker.ParsingUnit
 import de.maibornwolff.codecharta.progresstracker.ProgressTracker
 import de.maibornwolff.codecharta.serialization.FileExtension
 import org.assertj.core.api.Assertions.assertThat
@@ -11,6 +12,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import java.io.File
 import java.io.FileNotFoundException
+import java.io.PrintStream
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ImporterStrategyTest {
@@ -18,7 +20,8 @@ class ImporterStrategyTest {
         override val fileExtensions: List<FileExtension> = listOf(FileExtension.INFO)
         override val defaultReportFileName: String = "lcov.info"
         override val progressTracker: ProgressTracker = ProgressTracker()
-        override var totalLines: Long = 0
+        override var totalTrackingItems: Long = 0
+        override val parsingUnit: ParsingUnit = ParsingUnit.Lines
 
         override fun addNodesToProjectBuilder(coverageFile: File, projectBuilder: ProjectBuilder, error: PrintStream) {
             // Implementation not needed for this test

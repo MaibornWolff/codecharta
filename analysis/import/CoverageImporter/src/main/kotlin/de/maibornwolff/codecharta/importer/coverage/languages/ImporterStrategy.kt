@@ -15,12 +15,13 @@ interface ImporterStrategy {
     val fileExtensions: List<FileExtension>
     val defaultReportFileName: String
     val progressTracker: ProgressTracker
-    var totalLines: Long
+    var totalTrackingItems: Long
+    val parsingUnit: ParsingUnit
 
     fun addNodesToProjectBuilder(coverageFile: File, projectBuilder: ProjectBuilder, error: PrintStream)
 
     fun updateProgress(parsedLines: Long) {
-        progressTracker.updateProgress(totalLines, parsedLines, ParsingUnit.Lines.name)
+        progressTracker.updateProgress(totalTrackingItems, parsedLines, parsingUnit.name)
     }
 
     fun getReportFileFromString(resourceToSearch: String): File {
