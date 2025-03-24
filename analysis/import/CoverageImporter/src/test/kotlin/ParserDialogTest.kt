@@ -120,13 +120,13 @@ class ParserDialogTest {
     @MethodSource("languageChoicesProvider")
     fun `should handle different supported languages correctly`(
         languageName: String,
-        languagueIndex: Int,
+        languageIndex: Int,
         expectedReportFile: String,
         expectedOutputFile: String
     ) {
         testSession { terminal ->
             val languageCallback: suspend RunScope.() -> Unit = {
-                repeat(languagueIndex) {
+                repeat(languageIndex) {
                     terminal.press(Keys.DOWN)
                 }
                 terminal.press(Keys.ENTER)
