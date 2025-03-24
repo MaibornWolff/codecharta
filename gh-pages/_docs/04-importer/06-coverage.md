@@ -13,27 +13,32 @@ The CoverageImporter generates visualisation data from a coverage report generat
 
 ## Supported Metrics
 
-| Metric               | Description                                                |
-|----------------------|------------------------------------------------------------|
-| `line_coverage`      | The percentage of lines covered by tests in the file.      |
-| `branch_coverage`    | The percentage of branches covered by tests in the file.   |
-| `statement_coverage` | The percentage of statements covered by tests in the file. |
+| Metric                  | Description                                                  |
+|-------------------------|--------------------------------------------------------------|
+| `line_coverage`         | The percentage of lines covered by tests in the file.        |
+| `branch_coverage`       | The percentage of branches covered by tests in the file.     |
+| `statement_coverage`    | The percentage of statements covered by tests in the file.   |
+| `instruction_coverage`  | The percentage of instructions covered by tests in the file. |
+| `complexity_coverage`   | The percentage of complexity covered by tests.               |
+| `method_coverage`       | The percentage of methods covered by tests in the file.      |
+| `class_coverage`        | The percentage of classes covered by tests.                  |
 
 ## Supported Coverage Report Languages/Formats
 
 | Language                | Command                                                 | Default Report File |
 |-------------------------|---------------------------------------------------------|---------------------|
 | JavaScript / TypeScript | `javascript/typescript, javascript, typescript, js, ts` | lcov.info           |
+| Java                    | `java`                                                  | jacoco.xml          |
 
 ## Usage and Parameters
 
-| Parameters                          | Description                                                                                                                              |
-|-------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------|
-| `-l, --language`                    | specify the language of the coverage report (see above)                                                                                  |
-| `-h, --help`                        | displays help and exits                                                                                                                  |
-| `-nc, --not-compressed`             | save uncompressed output File                                                                                                            |
-| `-o, --output-file=<outputFilePath>` | output File (or empty for stdout)                                                                                                        |
-| `-rf, --report-file=REPORT_FILE`    | path to the coverage report file (when specifying a folder, the importer searches for a file matching the default file name - see above) |
+| Parameters                            | Description                                                                                                                              |
+|---------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------|
+| `-l, --language`                      | specify the language of the coverage report (see above)                                                                                  |
+| `-h, --help`                          | displays help and exits                                                                                                                  |
+| `-nc, --not-compressed`               | save uncompressed output File                                                                                                            |
+| `-o, --output-file=<outputFilePath>`  | output File (or empty for stdout)                                                                                                        |
+| `-rf, --report-file=<reportFilePath>` | path to the coverage report file (when specifying a folder, the importer searches for a file matching the default file name - see above) |
 
 ```
 Usage: ccsh coverageimport [--language] [-h] [-nc] [-o=<outputFile>] FILE...
@@ -54,8 +59,8 @@ Usage: ccsh coverageimport [--language] [-h] [-nc] [-o=<outputFile>] FILE...
 
 ### JavaScript / TypeScript
 
+Example Input file: `lcov.info`
 ```
-\$ cat lcov.info
 TN:
 SF:app/app.config.ts
 FN:55,(anonymous_0)
@@ -97,8 +102,8 @@ BRH:0
 end_of_record
 ```
 
+Example Output file: `typescript_coverage.cc.json`
 ```
-\$ cat typescript_coverage.cc.json
 {
   "projectName": "typescript_coverage",
   "apiVersion": "1.2",
