@@ -101,8 +101,8 @@ class CoverageImporter(
         val projectBuilder = ProjectBuilder()
 
         language.strategy.addNodesToProjectBuilder(reportFile, projectBuilder, error)
-        projectBuilder.addAttributeTypes(getAttributeTypes(language.languageName))
-        projectBuilder.addAttributeDescriptions(getAttributeDescriptors(language.languageName))
+        projectBuilder.addAttributeTypes(getAttributeTypes(language))
+        projectBuilder.addAttributeDescriptions(getAttributeDescriptors(language))
         var project = projectBuilder.build()
 
         val pipedProject = ProjectDeserializer.deserializeProject(input)
