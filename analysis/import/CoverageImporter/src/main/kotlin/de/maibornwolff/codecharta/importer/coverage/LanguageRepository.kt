@@ -65,8 +65,8 @@ internal fun getLanguageForLanguageInput(languageInput: String): Language {
         ?: throw IllegalArgumentException("Unsupported language: $languageInput")
 }
 
-internal fun isLanguageSupported(language: String): Boolean {
-    return languageInputToLanguage.containsKey(language)
+internal fun isLanguageForLanguageInputSupported(languageInput: String): Boolean {
+    return languageInputToLanguage.containsKey(languageInput)
 }
 
 internal fun isAnyStrategyApplicable(resourceToBeParsed: String): Boolean {
