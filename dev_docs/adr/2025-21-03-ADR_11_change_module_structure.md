@@ -26,7 +26,7 @@ The Tool Module contains more than just tools, it also contains general super ty
 
 # Status
 
-proposed
+accepted
 
 # Decision
 
