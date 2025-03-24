@@ -5,6 +5,7 @@ import de.maibornwolff.codecharta.model.MutableNode
 import de.maibornwolff.codecharta.model.NodeType
 import de.maibornwolff.codecharta.model.PathFactory
 import de.maibornwolff.codecharta.model.ProjectBuilder
+import de.maibornwolff.codecharta.progresstracker.ParsingUnit
 import de.maibornwolff.codecharta.progresstracker.ProgressTracker
 import de.maibornwolff.codecharta.serialization.FileExtension
 import org.w3c.dom.Document
@@ -20,7 +21,8 @@ class JavaStrategy : ImporterStrategy {
     override val fileExtensions: List<FileExtension> = listOf(FileExtension.XML)
     override val defaultReportFileName: String = "jacoco.xml"
     override val progressTracker: ProgressTracker = ProgressTracker()
-    override var totalLines: Long = 0
+    override var totalTrackingItems: Long = 0
+    override val parsingUnit: ParsingUnit = ParsingUnit.Packages
 
     override fun addNodesToProjectBuilder(coverageFile: File, projectBuilder: ProjectBuilder, error: PrintStream) {
         try {
@@ -32,10 +34,13 @@ class JavaStrategy : ImporterStrategy {
                 error.println("The coverage report file does not contain any package elements.")
                 return
             }
+            totalTrackingItems = packageElements.length.toLong()
+            updateProgress(0)
 
             for (packageIndex in 0 until packageElements.length) {
                 val packageElement = packageElements.item(packageIndex) as Element
                 processPackageElement(packageElement, projectBuilder)
+                updateProgress(packageIndex.toLong() + 1)
             }
         } catch (e: Exception) {
             error.println("Error while parsing XML file: ${e.message}")

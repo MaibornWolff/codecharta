@@ -5,6 +5,7 @@ import de.maibornwolff.codecharta.model.MutableNode
 import de.maibornwolff.codecharta.model.NodeType
 import de.maibornwolff.codecharta.model.PathFactory
 import de.maibornwolff.codecharta.model.ProjectBuilder
+import de.maibornwolff.codecharta.progresstracker.ParsingUnit
 import de.maibornwolff.codecharta.progresstracker.ProgressTracker
 import de.maibornwolff.codecharta.serialization.FileExtension
 import java.io.File
@@ -14,11 +15,12 @@ class JavaScriptStrategy() : ImporterStrategy {
     override val fileExtensions: List<FileExtension> = listOf(FileExtension.INFO)
     override val defaultReportFileName: String = "lcov.info"
     override val progressTracker: ProgressTracker = ProgressTracker()
-    override var totalLines: Long = 0
+    override var totalTrackingItems: Long = 0
+    override val parsingUnit: ParsingUnit = ParsingUnit.Lines
 
     override fun addNodesToProjectBuilder(coverageFile: File, projectBuilder: ProjectBuilder, error: PrintStream) {
-        totalLines = coverageFile.readLines().size.toLong()
-        if (totalLines == 0L) {
+        totalTrackingItems = coverageFile.readLines().size.toLong()
+        if (totalTrackingItems == 0L) {
             error.println("The coverage file is empty.")
             return
         }

@@ -3,5 +3,6 @@ package de.maibornwolff.codecharta.progresstracker
 enum class ParsingUnit {
     Byte,
     Files,
-    Lines
+    Lines,
+    Packages
 }
