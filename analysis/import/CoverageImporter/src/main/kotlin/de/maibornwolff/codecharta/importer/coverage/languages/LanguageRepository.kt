@@ -1,17 +1,35 @@
 package de.maibornwolff.codecharta.importer.coverage.languages
 
+import de.maibornwolff.codecharta.importer.coverage.CoverageAttributes
 import de.maibornwolff.codecharta.importer.coverage.JavaStrategy
 import de.maibornwolff.codecharta.serialization.FileExtension
 import de.maibornwolff.codecharta.util.ResourceSearchHelper.Companion.isFileWithOneOrMoreOfEndingsPresent
 
 internal enum class Language(
-    val languageName: String,
     val strategy: ImporterStrategy,
     val fileExtensions: List<FileExtension>,
-    val defaultReportFileName: String
+    val defaultReportFileName: String,
+    val coverageAttributes: List<CoverageAttributes>
 ) {
-    JAVASCRIPT("javascript", JavaScriptStrategy(), listOf(FileExtension.INFO), "lcov.info"),
-    JAVA("java", JavaStrategy(), listOf(FileExtension.XML), "jacoco.xml")
+    JAVASCRIPT(
+        JavaScriptStrategy(),
+        listOf(FileExtension.INFO),
+        "lcov.info",
+        listOf(
+            CoverageAttributes.LINE_COVERAGE,
+            CoverageAttributes.BRANCH_COVERAGE,
+            CoverageAttributes.STATEMENT_COVERAGE
+        )
+    ),
+    JAVA(
+        JavaStrategy(), listOf(FileExtension.XML), "jacoco.xml", listOf(
+            CoverageAttributes.LINE_COVERAGE,
+            CoverageAttributes.INSTRUCTION_COVERAGE,
+            CoverageAttributes.COMPLEXITY_COVERAGE,
+            CoverageAttributes.METHOD_COVERAGE,
+            CoverageAttributes.CLASS_COVERAGE
+        )
+    )
 }
 
 private val languageChoicesToLanguage = mapOf(
@@ -32,11 +50,13 @@ internal fun getLanguageChoices(): List<String> {
 }
 
 internal fun getLanguageForLanguageChoice(languageChoice: String): Language {
-    return languageChoicesToLanguage[languageChoice] ?: throw IllegalArgumentException("Unsupported language choice: $languageChoice")
+    return languageChoicesToLanguage[languageChoice]
+        ?: throw IllegalArgumentException("Unsupported language choice: $languageChoice")
 }
 
 internal fun getLanguageForLanguageInput(languageInput: String): Language {
-    return languageInputToLanguage[languageInput] ?: throw IllegalArgumentException("Unsupported language: $languageInput")
+    return languageInputToLanguage[languageInput]
+        ?: throw IllegalArgumentException("Unsupported language: $languageInput")
 }
 
 internal fun isLanguageSupported(language: String): Boolean {
