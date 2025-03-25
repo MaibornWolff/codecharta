@@ -157,7 +157,7 @@ check_sourcecodeparser() {
 check_coverageimporter_javascript() {
     echo " ---- expect CoverageImporter to produce valid cc.json file for javascript"
     ACTUAL_COVERAGE_JSON="${TEMP_DIR}/actual_coverageimporter.cc.json"
-    "${CCSH}" coverageimport --language=javascript --report-file="${DATA}/coverageReports/lcov.info" -o "${ACTUAL_COVERAGE_JSON}" -nc
+    "${CCSH}" coverageimport "${DATA}/coverageReports/lcov.info" --language=javascript -o "${ACTUAL_COVERAGE_JSON}" -nc
     validate "${ACTUAL_COVERAGE_JSON}"
 }
 
