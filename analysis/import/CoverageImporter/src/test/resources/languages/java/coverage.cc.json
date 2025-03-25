@@ -175,22 +175,6 @@
         "link": "",
         "direction": 1
       },
-      "branch_coverage": {
-        "title": "Branch Coverage",
-        "description": "Percentage of branches covered by tests",
-        "hintLowValue": "",
-        "hintHighValue": "",
-        "link": "",
-        "direction": 1
-      },
-      "statement_coverage": {
-        "title": "Statement Coverage",
-        "description": "Percentage of statements covered by tests",
-        "hintLowValue": "",
-        "hintHighValue": "",
-        "link": "",
-        "direction": 1
-      },
       "instruction_coverage": {
         "title": "Instruction Coverage",
         "description": "Percentage of instructions covered by tests",
