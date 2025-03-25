@@ -61,7 +61,6 @@ Currently, the following parsers are considered when checking for recommendation
 - GitLogParser
 - SVNLogParser
 - SonarImporter
-- MetricGardenerImporter
 - SourceCodeParser
 - RawTextParser
 

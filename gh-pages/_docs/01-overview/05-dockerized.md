@@ -66,7 +66,6 @@ Installed are:
 - Git `git`
 - Tokei `tokei`
 - CodeMaat `java -jar /opt/codemaat/codemaat.jar`
-- MetricGardener `metric-gardener`
 - SonarScanner `sonar-scanner`
 
 Once you have your .cc.json file ready, you can copy it to your machine.

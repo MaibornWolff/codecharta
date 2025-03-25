@@ -6,7 +6,6 @@ import de.maibornwolff.codecharta.filter.mergefilter.MergeFilter
 import de.maibornwolff.codecharta.filter.structuremodifier.StructureModifier
 import de.maibornwolff.codecharta.importer.codemaat.CodeMaatImporter
 import de.maibornwolff.codecharta.importer.csv.CSVImporter
-import de.maibornwolff.codecharta.importer.metricgardenerimporter.MetricGardenerImporter
 import de.maibornwolff.codecharta.importer.sonar.SonarImporterMain
 import de.maibornwolff.codecharta.importer.sourcemonitor.SourceMonitorImporter
 import de.maibornwolff.codecharta.importer.tokeiimporter.TokeiImporter
@@ -70,8 +69,7 @@ class PicocliParserRepositoryTest {
             SVNLogParser(), GitLogParser(),
             SourceCodeParserMain(), CodeMaatImporter(),
             TokeiImporter(), RawTextParser(),
-            MetricGardenerImporter(), ValidationTool(),
-            InspectionTool()
+            ValidationTool(), InspectionTool()
         )
     }
 
@@ -103,8 +101,7 @@ class PicocliParserRepositoryTest {
                 listOf(TokeiImporter.NAME, " - " + TokeiImporter.DESCRIPTION),
                 listOf(RawTextParser.NAME, " - " + RawTextParser.DESCRIPTION),
                 listOf(ValidationTool.NAME, " - " + ValidationTool.DESCRIPTION),
-                listOf(InspectionTool.NAME, " - " + InspectionTool.DESCRIPTION),
-                listOf(MetricGardenerImporter.NAME, " - " + MetricGardenerImporter.DESCRIPTION)
+                listOf(InspectionTool.NAME, " - " + InspectionTool.DESCRIPTION)
             )
         }
     }

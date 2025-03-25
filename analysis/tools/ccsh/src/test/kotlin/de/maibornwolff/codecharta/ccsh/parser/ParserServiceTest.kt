@@ -62,7 +62,6 @@ class ParserServiceTest {
                 Arguments.of("csvimport"),
                 Arguments.of("sourcemonitorimport"),
                 Arguments.of("gitlogparser"),
-                Arguments.of("metricgardenerimport"),
                 Arguments.of("sonarimport"),
                 Arguments.of("sourcecodeparser"),
                 Arguments.of("svnlogparser"),
@@ -159,7 +158,6 @@ class ParserServiceTest {
                 "modify",
                 "csvexport",
                 "codemaatimport",
-                "metricgardenerimport",
                 "csvimport"
             )
 
