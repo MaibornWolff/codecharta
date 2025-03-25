@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Changed
+
+- Removed Metric Gardener Support [#4004](https://github.com/MaibornWolff/codecharta/pull/4004)
+
 ## [1.132.0] - 2025-03-25
 
 ### Added 🚀
