@@ -1,8 +1,8 @@
 # {Meaningful title}
 
-_**Please read the [CONTRIBUTING.md](https://github.com/MaibornWolff/codecharta/blob/main/CONTRIBUTING.md) before opening a PR.**_
+_**Please read the [CONTRIBUTING.md](https://github.com/MaibornWolff/codecharta/blob/main/dev_docs/CONTRIBUTING.md) before opening a PR.**_
 
-{Issue/Closes}: #
+Closes: #
 
 ## Description
 
