@@ -21,7 +21,7 @@
                 "type": "File",
                 "attributes": {
                   "line_coverage": 0,
-                  "branch_coverage": 0,
+                  "branch_coverage": 100.0,
                   "statement_coverage": 0
                 },
                 "link": "",

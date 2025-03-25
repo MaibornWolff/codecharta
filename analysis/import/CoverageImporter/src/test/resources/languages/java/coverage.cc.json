@@ -158,8 +158,6 @@
     "attributeTypes": {
       "nodes": {
         "line_coverage": "relative",
-        "branch_coverage": "relative",
-        "statement_coverage": "relative",
         "instruction_coverage": "relative",
         "complexity_coverage": "relative",
         "method_coverage": "relative",
@@ -210,5 +208,5 @@
     },
     "blacklist": []
   },
-  "checksum": "9adb9e3b2e4537d4d6203e6086b4c600"
+  "checksum": "be16cfd827200deebed1ec786833a1b8"
 }

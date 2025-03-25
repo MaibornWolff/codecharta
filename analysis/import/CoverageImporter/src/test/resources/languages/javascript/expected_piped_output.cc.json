@@ -36,7 +36,7 @@
                 "type": "File",
                 "attributes": {
                   "line_coverage": 0.0,
-                  "branch_coverage": 0.0,
+                  "branch_coverage": 100.0,
                   "statement_coverage": 0.0
                 },
                 "link": "",
@@ -84,5 +84,5 @@
     },
     "blacklist": []
   },
-  "checksum": "c2b7289686e7c75d27a6cd5f8e0af5f4"
+  "checksum": "5f0ff4d7dc8ee4282666fe44a45e9d31"
 }
