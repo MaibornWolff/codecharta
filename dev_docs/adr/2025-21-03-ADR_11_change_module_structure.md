@@ -64,7 +64,6 @@ The analyser module contains those modules:
 - - ImporterInterface
 - - CSVImporter
 - - CodeMaatImporter
-- - MetricGardenerImporter
 - - SonarImporter
 - - SourceMonitorImporter
 - - TokeiImporter
