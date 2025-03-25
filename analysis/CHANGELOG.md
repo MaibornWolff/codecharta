@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [1.132.0] - 2025-03-25
+
 ### Added 🚀
 
 - Added coverage importer for javascript and typescript [#3989](https://github.com/MaibornWolff/codecharta/pull/3989)
