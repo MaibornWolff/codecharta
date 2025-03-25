@@ -25,8 +25,8 @@ class CoverageImporterTest {
         val cliResult = executeForOutput(
             "",
             arrayOf(
-                "--language=javascript",
-                "--report-file=$reportFilePath"
+                reportFilePath,
+                "--language=javascript"
             )
         )
 
@@ -53,7 +53,7 @@ class CoverageImporterTest {
         val originalErr = System.err
 
         System.setErr(PrintStream(errContent))
-        CommandLine(CoverageImporter()).execute("--language=javascript", "--report-file=${notExistingFile.path}")
+        CommandLine(CoverageImporter()).execute(notExistingFile.path, "--language=javascript")
         System.setErr(originalErr)
 
         assertThat(errContent.toString()).startsWith("java.io.FileNotFoundException: File not found: src/test/lcov.info")
@@ -68,7 +68,7 @@ class CoverageImporterTest {
         val originalErr = System.err
 
         System.setErr(PrintStream(errContent))
-        CommandLine(CoverageImporter()).execute("--language=javascript", "--report-file=${directory.path}")
+        CommandLine(CoverageImporter()).execute(directory.path, "--language=javascript")
         System.setErr(originalErr)
 
         assertThat(errContent.toString()).contains("No matching files found in directory:")
@@ -91,8 +91,8 @@ class CoverageImporterTest {
         val cliResult = executeForOutput(
             "",
             arrayOf(
-                "--language=javascript",
-                "--report-file=$reportFilePath"
+                reportFilePath,
+                "--language=javascript"
             )
         )
 
@@ -116,8 +116,8 @@ class CoverageImporterTest {
         executeForOutput(
             "",
             arrayOf(
+                reportFilePath,
                 "--language=js",
-                "--report-file=$reportFilePath",
                 "-o=src/test/resources/output",
                 "--not-compressed"
             )
@@ -133,8 +133,8 @@ class CoverageImporterTest {
         executeForOutput(
             "",
             arrayOf(
+                reportFilePath,
                 "--language=js",
-                "--report-file=$reportFilePath",
                 "-o=src/test/resources/output"
             )
         )
@@ -154,7 +154,7 @@ class CoverageImporterTest {
         val input =
             File(alreadyImportedCoverage).bufferedReader().readLines()
                 .joinToString(separator = "\n") { it }
-        val cliResult = executeForOutput(input, arrayOf("-l=js", "-rf=$reportFilePath"))
+        val cliResult = executeForOutput(input, arrayOf(reportFilePath, "-l=js"))
 
         assertThat(cliResult).contains(listOf("checksum", "data", "\"projectName\":\"\"", "app.config.ts", "codeCharta.api.model.ts"))
         assertThat(JSONParser.parseJSON(cliResult)).usingRecursiveComparison().isEqualTo(JSONParser.parseJSON(expectedOutput))
@@ -165,8 +165,8 @@ class CoverageImporterTest {
         val cliResult = executeForOutput(
             "",
             arrayOf(
-                "--language=typescript",
-                "--report-file=$reportFilePath"
+                reportFilePath,
+                "--language=typescript"
             )
         )
 
@@ -186,8 +186,8 @@ class CoverageImporterTest {
         val cliResult = executeForOutput(
             "",
             arrayOf(
-                "--language=typescript",
-                "--report-file=$reportFilePath"
+                reportFilePath,
+                "--language=typescript"
             )
         )
 
@@ -205,8 +205,8 @@ class CoverageImporterTest {
         val cliResult = executeForOutput(
             "",
             arrayOf(
-                "--language=javascript",
-                "--report-file=src/test/resources/languages/javascript/empty_lcov.info"
+                "src/test/resources/languages/javascript/empty_lcov.info",
+                "--language=javascript"
             )
         )
 

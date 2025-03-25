@@ -38,10 +38,10 @@ class CoverageImporter(
     )
     private var language: String = "Not specified"
 
-    @CommandLine.Option(
-        names = ["-rf", "--report-file"],
-        description = ["Path to the coverage report file (leave empty for default)"],
-        paramLabel = "<reportFilePath>"
+    @CommandLine.Parameters(
+        arity = "0..1",
+        paramLabel = "pathToReportFile",
+        description = ["Path to the coverage report file (leave empty for default)"]
     )
     private var reportFileName: String? = null
 

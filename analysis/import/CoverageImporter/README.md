@@ -20,16 +20,16 @@ The CoverageImporter generates visualisation data from a coverage report generat
 
 ## Usage and Parameters
 
-| Parameters                            | Description                                                                                                                              |
-|---------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------|
-| `-l, --language`                      | specify the language of the coverage report (see above)                                                                                  |
-| `-h, --help`                          | displays help and exits                                                                                                                  |
-| `-nc, --not-compressed`               | save uncompressed output File                                                                                                            |
-| `-o, --output-file=<outputFilePath>`  | output File (or empty for stdout)                                                                                                        |
-| `-rf, --report-file=<reportFilePath>` | path to the coverage report file (when specifying a folder, the importer searches for a file matching the default file name - see above) |
+| Parameters                           | Description                                                                                                                              |
+|--------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------|
+| `<pathToReportFile>`                 | path to the coverage report file (when specifying a folder, the importer searches for a file matching the default file name - see above) |
+| `-l, --language`                     | specify the language of the coverage report (see above)                                                                                  |
+| `-h, --help`                         | displays help and exits                                                                                                                  |
+| `-nc, --not-compressed`              | save uncompressed output File                                                                                                            |
+| `-o, --output-file=<outputFilePath>` | output File (or empty for stdout)                                                                                                        |
 
 ```
-Usage: ccsh coverageimport [--language] [-h] [-nc] [-o=<outputFile>] FILE...
+Usage: ccsh coverageimport <pathToReportFile> [--language] [-h] [-nc] [-o=<outputFile>]...
 ```
 
 ## Example
@@ -40,7 +40,7 @@ Usage: ccsh coverageimport [--language] [-h] [-nc] [-o=<outputFile>] FILE...
 2. Import the coverage report with the CoverageImporter
 
 ```bash
-  ccsh coverageimport --language=javascript --report-file=lcov.info -o typescript_coverage.cc.json
+  ccsh coverageimport lcov.info --language=javascript -o typescript_coverage.cc.json
 ```
 
 ## Example File Content

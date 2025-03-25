@@ -75,8 +75,8 @@ class ParserDialogTest {
             val cmdLine = CommandLine(CoverageImporter())
             val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
 
+            assertThat(parseResult.matchedPositionals()[0].getValue<String>()).isEqualTo(reportFileName)
             assertThat(parseResult.matchedOption("language").getValue<String>()).isEqualTo("javascript")
-            assertThat(parseResult.matchedOption("report-file").getValue<String>()).isEqualTo(reportFileName)
             assertThat(parseResult.matchedOption("output-file").getValue<String>()).isEqualTo(outputFileName)
             assertThat(parseResult.matchedOption("not-compressed").getValue<Boolean>()).isFalse()
         }
@@ -109,8 +109,8 @@ class ParserDialogTest {
             val cmdLine = CommandLine(CoverageImporter())
             val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
 
+            assertThat(parseResult.matchedPositionals()[0].getValue<String>()).isEqualTo(reportFileName)
             assertThat(parseResult.matchedOption("language").getValue<String>()).isEqualTo("javascript")
-            assertThat(parseResult.matchedOption("report-file").getValue<String>()).isEqualTo(reportFileName)
             assertThat(parseResult.matchedOption("output-file")).isNull()
             assertThat(parseResult.matchedOption("not-compressed")).isNull()
         }
@@ -151,8 +151,8 @@ class ParserDialogTest {
             val cmdLine = CommandLine(CoverageImporter())
             val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
 
+            assertThat(parseResult.matchedPositionals()[0].getValue<String>()).isEqualTo(expectedReportFile)
             assertThat(parseResult.matchedOption("language").getValue<String>()).isEqualTo(language)
-            assertThat(parseResult.matchedOption("report-file").getValue<String>()).isEqualTo(expectedReportFile)
             assertThat(parseResult.matchedOption("output-file").getValue<String>()).isEqualTo(expectedOutputFile)
             assertThat(parseResult.matchedOption("not-compressed")).isNull()
         }
@@ -201,8 +201,8 @@ class ParserDialogTest {
             val cmdLine = CommandLine(CoverageImporter())
             val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
 
+            assertThat(parseResult.matchedPositionals()[0].getValue<String>()).isEqualTo(validReportFile)
             assertThat(parseResult.matchedOption("language").getValue<String>()).isEqualTo("javascript")
-            assertThat(parseResult.matchedOption("report-file").getValue<String>()).isEqualTo(validReportFile)
             assertThat(parseResult.matchedOption("output-file").getValue<String>()).isEqualTo(outputFileName)
             assertThat(parseResult.matchedOption("not-compressed")).isNull()
         }
