@@ -18,11 +18,14 @@ interface ImporterStrategy {
     }
 
     fun calculatePercentage(numerator: Int, denominator: Int): Double {
+        require(denominator >= 0) { "Denominator must be greater than or equal to 0" }
+        require(numerator >= 0) { "Numerator must be greater than or equal to 0" }
+        require(denominator >= numerator) { "Denominator must be greater than or equal to numerator" }
         return if (denominator > 0) {
             val percentage = (numerator.toDouble() / denominator) * 100
             Math.round(percentage * 100) / 100.0
         } else {
-            0.0
+            100.0
         }
     }
 }
