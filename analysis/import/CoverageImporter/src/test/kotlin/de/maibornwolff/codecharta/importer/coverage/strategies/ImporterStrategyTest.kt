@@ -33,15 +33,14 @@ class ImporterStrategyTest {
         assertEquals(85.0, testStrategy.calculatePercentage(17, 20))
         assertEquals(100.0, testStrategy.calculatePercentage(3, 3))
     }
+
     @Test
     fun `should throw if values are invalid percentages`() {
         val exception = assertThrows<IllegalArgumentException> { testStrategy.calculatePercentage(1, 0) }
-        assertThat(exception.message).isEqualTo("Denominator must be greater than or equal to numerator");
+        assertThat(exception.message).isEqualTo("Denominator must be greater than or equal to numerator")
         val exception1 = assertThrows<IllegalArgumentException> { testStrategy.calculatePercentage(1, -1) }
-        assertThat(exception1.message).isEqualTo("Denominator must be greater than or equal to 0");
+        assertThat(exception1.message).isEqualTo("Denominator must be greater than or equal to 0")
         val exception2 = assertThrows<IllegalArgumentException> { testStrategy.calculatePercentage(-1, 1) }
-        assertThat(exception2.message).isEqualTo("Numerator must be greater than or equal to 0");
-
-
+        assertThat(exception2.message).isEqualTo("Numerator must be greater than or equal to 0")
     }
 }
