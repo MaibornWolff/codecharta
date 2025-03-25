@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 - Changed to a new terminal library [#3609](https://github.com/MaibornWolff/codecharta/pull/3609)
 
+### Fixed 🐞
+
+- Fix urls to not end in "Page not found" [#3995](https://github.com/MaibornWolff/codecharta/issues/3995)
+
 ## [1.131.1] - 2025-02-26
 
 ### Chore 👨‍💻 👩‍💻
