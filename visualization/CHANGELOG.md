@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Fixed 🐞
 
 - Fix map highlighting not getting removed when unhovering the file extension distribution bar [#3991](https://github.com/MaibornWolff/codecharta/pull/3991)
+- Fix urls to not end in "Page not found" [#3995](https://github.com/MaibornWolff/codecharta/issues/3995)
 
 ## [1.135.1] - 2025-02-27
 
