@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [1.135.2] - 2025-03-25
+
 ### Fixed 🐞
 
 - Fix map highlighting not getting removed when unhovering the file extension distribution bar [#3991](https://github.com/MaibornWolff/codecharta/pull/3991)
