@@ -137,7 +137,6 @@ We mainly use IntelliJ for our development. The project generally works right aw
 
 - Sometimes when opening the main CodeCharta folder, the analysis part does not get detected as a module. To solve this, directly open the analysis folder.
 - If you get Error `lint-staged: command not found` when trying to commit: Try to reinstall the node packages in the project. To do that, visit the root directory of the project (and the subdirectories for analysis and visualization if that still fails) and execute `npm ci`.
-- Sometimes the first analysis build fails on new setup: One of our parsers depends on MetricGardener which is a multi-language parser to calculate metrics for a variety of languages. Therefore, make sure to install MetricGardener before trying to build the project. Also make sure that `metric-gardener` is available in your CLI, else npm will try to install it on the fly. You can find more information on the documentation page about the [MetricGardenerImporter](https://maibornwolff.github.io/codecharta/docs/metricgardener-importer).
 - The integration tests for the analysis (`./gradlew integrationTest`) can fail due to OS specific problems:
 
   - On **windows** this may be caused by a missing or unknown `sh` command.

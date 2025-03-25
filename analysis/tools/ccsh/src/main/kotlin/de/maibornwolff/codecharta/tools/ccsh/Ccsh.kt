@@ -7,7 +7,6 @@ import de.maibornwolff.codecharta.filter.structuremodifier.StructureModifier
 import de.maibornwolff.codecharta.importer.codemaat.CodeMaatImporter
 import de.maibornwolff.codecharta.importer.coverage.CoverageImporter
 import de.maibornwolff.codecharta.importer.csv.CSVImporter
-import de.maibornwolff.codecharta.importer.metricgardenerimporter.MetricGardenerImporter
 import de.maibornwolff.codecharta.importer.sonar.SonarImporterMain
 import de.maibornwolff.codecharta.importer.sourcemonitor.SourceMonitorImporter
 import de.maibornwolff.codecharta.importer.tokeiimporter.TokeiImporter
@@ -53,8 +52,7 @@ import kotlin.system.exitProcess
         CoverageImporter::class,
         CodeMaatImporter::class,
         TokeiImporter::class,
-        RawTextParser::class,
-        MetricGardenerImporter::class
+        RawTextParser::class
     ],
     versionProvider = Ccsh.ManifestVersionProvider::class,
     footer = [CodeChartaConstants.General.GENERIC_FOOTER]
@@ -247,7 +245,6 @@ class Ccsh : Callable<Unit?> {
             AttributeGeneratorRegistry.registerGenerator(CodeMaatImporter())
             AttributeGeneratorRegistry.registerGenerator(CSVImporter())
             AttributeGeneratorRegistry.registerGenerator(GitLogParser())
-            AttributeGeneratorRegistry.registerGenerator(MetricGardenerImporter())
             AttributeGeneratorRegistry.registerGenerator(SonarImporterMain())
             AttributeGeneratorRegistry.registerGenerator(SourceCodeParserMain())
             AttributeGeneratorRegistry.registerGenerator(CoverageImporter())

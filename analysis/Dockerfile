@@ -29,8 +29,7 @@ RUN wget -qO codemaat.jar https://github.com/adamtornhill/code-maat/releases/dow
 
 RUN curl -sL https://deb.nodesource.com/setup_20.x -o /tmp/nodesource_setup.sh; \
     bash /tmp/nodesource_setup.sh; \
-    apt-get install nodejs make gcc build-essential -y; \
-    npm install -g metric-gardener;
+    apt-get install nodejs make gcc build-essential -y;
 
 RUN wget -qO /tmp/sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-6.1.0.4477-linux-x64.zip; \
     apt-get install unzip -y; \

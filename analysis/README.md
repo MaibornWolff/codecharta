@@ -23,14 +23,11 @@ Components that generate metrics from a given source, e.g. source code or log fi
 
 Components that import data from an external source, e.g. SonarQube, and generate visualisation data.
 
-> Attention: The direct execution of metric-gardener has been temporarily disabled.
-
 | Source            | Project                                                                          |
 | ----------------- | -------------------------------------------------------------------------------- |
 | CodeMaat CSV      | [CodeMaatImporter](import/CodeMaatImporter/README.md)                            |
 | Test Coverage Reports | [CoverageImporter](import/CoverageImporter/README.md)                            |
 | generic CSV       | [CSVImporter](import/CSVImporter/README.md)                                      |
-| Metric Gardener   | [MetricGardenerImporter](import/MetricGardenerImporter/README.md) (experimental) |
 | SonarQube         | [SonarImporter](import/SonarImporter/README.md)                                  |
 | SourceMonitor CSV | [SourceMonitorImporter](import/CSVImporter/README.md)                            |
 | Tokei             | [TokeiImporter](import/TokeiImporter/README.md)                                  |
@@ -140,9 +137,6 @@ To containerize the analysis, please follow the below listed steps.
 There are some additional requirements if you want to build it yourself:
 
 - NodeJS
-- Metric-Gardener:
-  - Python
-  - C/C++ compiler toolchain (e.g. Visual Studio Build Tools 2022 with "Desktop development with C++")
 
 ## Build
 

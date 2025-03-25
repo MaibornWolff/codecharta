@@ -128,18 +128,6 @@ check_sourcemonitor() {
   validate "${ACTUAL_SOURCEMON_JSON}"
 }
 
-check_metricgardener() {
-  echo " -- expect MetricGardenerImporter to produce valid cc.json file with added extensions"
-  ACTUAL_METRICGARDENER_JSON="${TEMP_DIR}/actual_metricgardenerparser"
-  "${CCSH}" metricgardenerimport "${DATA}/metricgardener.json" -o "${ACTUAL_METRICGARDENER_JSON}" --is-json-file
-  validate "${ACTUAL_METRICGARDENER_JSON}.cc.json.gz"
-
-  echo " -- expect MetricGardenerImporter to produce valid cc.json file when no MG.json was available"
-  ACTUAL_METRICGARDENER_JSON2="${TEMP_DIR}/actual_metricgardenerparser2"
-  "${CCSH}" metricgardenerimport "${DATA}/metric-gardener-Example" -o "${ACTUAL_METRICGARDENER_JSON2}"
-  validate "${ACTUAL_METRICGARDENER_JSON2}.cc.json.gz"
-}
-
 check_sonar() {
   echo " -- expect SonarImporter to produce valid cc.json file with multiple extensions"
   ACTUAL_SONAR_JASON="${TEMP_DIR}/actual_sonarimport.drive0.storage"
@@ -246,7 +234,6 @@ run_tests() {
   check_codemaatimporter
   check_csvimporter
   check_sourcemonitor
-  check_metricgardener
   check_sonar
   check_sourcecodeparser
   check_coverageimporter
