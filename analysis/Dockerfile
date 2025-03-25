@@ -7,8 +7,9 @@ ARG USERNAME=ubuntu
 
 COPY ./build/distributions/codecharta-analysis-*.tar /usr/local/
 
-RUN cd /usr/local; \
-    tar -xf codecharta-analysis-*; \
+WORKDIR /usr/local
+
+RUN tar -xf codecharta-analysis-*; \
     rm codecharta-analysis-*.tar; \
     mv codecharta-analysis-*/bin/ccsh /usr/local/bin; \
     mv codecharta-analysis-*/lib/ccsh-*.jar /usr/local/lib; \
@@ -40,8 +41,8 @@ RUN wget -qO /tmp/sonar-scanner.zip https://binaries.sonarsource.com/Distributio
     cp -r ./jre/ /usr/local/jre; cd /; rm /tmp/sonar-scanner.zip; rm -rf /tmp/sonar-scanner-*-linux-x64;
 
 RUN if [ -n "$USER_ADD" ]; then \
-      groupadd --gid $USER_GID $USERNAME \
-          && useradd --uid $USER_ID --gid $USER_GID -m $USERNAME; \
+      groupadd --gid "$USER_GID" "$USERNAME" \
+          && useradd --uid "$USER_ID" --gid "$USER_GID" -m "$USERNAME"; \
     fi
 
 USER $USERNAME
