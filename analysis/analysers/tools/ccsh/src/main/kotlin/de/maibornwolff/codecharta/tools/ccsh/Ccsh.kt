@@ -1,6 +1,6 @@
 package de.maibornwolff.codecharta.tools.ccsh
 
-import de.maibornwolff.codecharta.exporter.csv.CSVExporter
+import de.maibornwolff.codecharta.analysers.exporters.csv.CSVExporter
 import de.maibornwolff.codecharta.filter.edgefilter.EdgeFilter
 import de.maibornwolff.codecharta.filter.mergefilter.MergeFilter
 import de.maibornwolff.codecharta.filter.structuremodifier.StructureModifier
