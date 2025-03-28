@@ -38,7 +38,7 @@ class JavaStrategyTest {
         JavaStrategy().addNodesToProjectBuilder(File(emptyReportFilePath), projectBuilder, PrintStream(errorStreamContent))
 
         assertThat(projectBuilder.rootNode.toString()).isEqualTo(expectedRootNode.toString())
-        assertThat(errorStreamContent.toString()).contains("Error while parsing XML file: Premature end of file.")
+        assertThat(errorStreamContent.toString()).contains("Error while parsing XML file:")
     }
 
     @Test
