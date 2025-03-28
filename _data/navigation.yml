@@ -125,3 +125,5 @@ docs:
             url: "/docs/about/feedback"
           - title: "Price (Free)"
             url: "/docs/about/price"
+          - title: "Imprint"
+            url: "/docs/about/imprint"
