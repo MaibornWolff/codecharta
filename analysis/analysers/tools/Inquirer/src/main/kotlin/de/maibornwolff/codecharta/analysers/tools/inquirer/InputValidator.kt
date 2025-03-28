@@ -11,10 +11,7 @@ class InputValidator {
             file.exists() && file.isFile && isFileCorrectType
         }
 
-        fun isFileOrFolderValid(
-            inputType: InputType,
-            fileExtensionList: List<FileExtension>
-        ): (String) -> Boolean = { input ->
+        fun isFileOrFolderValid(inputType: InputType, fileExtensionList: List<FileExtension>): (String) -> Boolean = { input ->
             val objectToVerify = File(input)
             objectToVerify.exists() && when (inputType) {
                 InputType.FOLDER -> {

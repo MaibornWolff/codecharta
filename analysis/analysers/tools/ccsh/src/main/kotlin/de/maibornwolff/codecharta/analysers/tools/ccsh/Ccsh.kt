@@ -1,6 +1,9 @@
 package de.maibornwolff.codecharta.analysers.tools.ccsh
 
 import de.maibornwolff.codecharta.analysers.exporters.csv.CSVExporter
+import de.maibornwolff.codecharta.analysers.filter.edgefilter.EdgeFilter
+import de.maibornwolff.codecharta.analysers.filter.mergefilter.MergeFilter
+import de.maibornwolff.codecharta.analysers.filter.structuremodifier.StructureModifier
 import de.maibornwolff.codecharta.analysers.tools.ccsh.parser.InteractiveDialog
 import de.maibornwolff.codecharta.analysers.tools.ccsh.parser.InteractiveParserSuggestion
 import de.maibornwolff.codecharta.analysers.tools.ccsh.parser.ParserService
@@ -9,9 +12,6 @@ import de.maibornwolff.codecharta.analysers.tools.inspection.InspectionTool
 import de.maibornwolff.codecharta.analysers.tools.interactiveparser.runInTerminalSession
 import de.maibornwolff.codecharta.analysers.tools.interactiveparser.util.CodeChartaConstants
 import de.maibornwolff.codecharta.analysers.tools.validation.ValidationTool
-import de.maibornwolff.codecharta.filter.edgefilter.EdgeFilter
-import de.maibornwolff.codecharta.filter.mergefilter.MergeFilter
-import de.maibornwolff.codecharta.filter.structuremodifier.StructureModifier
 import de.maibornwolff.codecharta.importer.codemaat.CodeMaatImporter
 import de.maibornwolff.codecharta.importer.coverage.CoverageImporter
 import de.maibornwolff.codecharta.importer.csv.CSVImporter
