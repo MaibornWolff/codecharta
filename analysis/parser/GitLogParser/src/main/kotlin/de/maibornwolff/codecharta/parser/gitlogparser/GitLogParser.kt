@@ -1,11 +1,11 @@
 package de.maibornwolff.codecharta.parser.gitlogparser
 
+import de.maibornwolff.codecharta.analysers.filter.mergefilter.MergeFilter
 import de.maibornwolff.codecharta.analysers.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.analysers.tools.interactiveparser.ParserDialogInterface
 import de.maibornwolff.codecharta.analysers.tools.interactiveparser.util.CodeChartaConstants
 import de.maibornwolff.codecharta.analysers.tools.pipeableparser.PipeableParser
 import de.maibornwolff.codecharta.analysers.tools.pipeableparser.PipeableParserSyncFlag
-import de.maibornwolff.codecharta.filter.mergefilter.MergeFilter
 import de.maibornwolff.codecharta.model.AttributeDescriptor
 import de.maibornwolff.codecharta.model.AttributeGenerator
 import de.maibornwolff.codecharta.model.Project

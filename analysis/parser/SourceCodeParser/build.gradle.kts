@@ -1,7 +1,7 @@
 dependencies {
     implementation(project(":model"))
     implementation(project(":analysers:tools:Inquirer"))
-    implementation(project(":filter:MergeFilter"))
+    implementation(project(":analysers:filter:MergeFilter"))
     implementation(project(":analysers:tools:InteractiveParser"))
     implementation(project(":analysers:tools:PipeableParser"))
 

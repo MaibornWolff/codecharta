@@ -1,15 +1,15 @@
 package de.maibornwolff.codecharta.ccsh.parser.repository
 
 import de.maibornwolff.codecharta.analysers.exporters.csv.CSVExporter
+import de.maibornwolff.codecharta.analysers.filter.edgefilter.EdgeFilter
+import de.maibornwolff.codecharta.analysers.filter.mergefilter.MergeFilter
+import de.maibornwolff.codecharta.analysers.filter.structuremodifier.StructureModifier
 import de.maibornwolff.codecharta.analysers.tools.ccsh.Ccsh
 import de.maibornwolff.codecharta.analysers.tools.ccsh.parser.repository.PicocliParserRepository
 import de.maibornwolff.codecharta.analysers.tools.inspection.InspectionTool
 import de.maibornwolff.codecharta.analysers.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.analysers.tools.interactiveparser.ParserDialogInterface
 import de.maibornwolff.codecharta.analysers.tools.validation.ValidationTool
-import de.maibornwolff.codecharta.filter.edgefilter.EdgeFilter
-import de.maibornwolff.codecharta.filter.mergefilter.MergeFilter
-import de.maibornwolff.codecharta.filter.structuremodifier.StructureModifier
 import de.maibornwolff.codecharta.importer.codemaat.CodeMaatImporter
 import de.maibornwolff.codecharta.importer.csv.CSVImporter
 import de.maibornwolff.codecharta.importer.sonar.SonarImporterMain
