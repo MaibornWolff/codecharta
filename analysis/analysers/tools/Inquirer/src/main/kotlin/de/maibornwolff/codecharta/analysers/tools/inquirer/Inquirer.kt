@@ -1,0 +1,249 @@
+package de.maibornwolff.codecharta.analysers.tools.inquirer
+
+import com.varabyte.kotter.foundation.collections.LiveList
+import com.varabyte.kotter.foundation.collections.liveListOf
+import com.varabyte.kotter.foundation.input.Keys
+import com.varabyte.kotter.foundation.input.onInputChanged
+import com.varabyte.kotter.foundation.input.onInputEntered
+import com.varabyte.kotter.foundation.input.onKeyPressed
+import com.varabyte.kotter.foundation.liveVarOf
+import com.varabyte.kotter.foundation.runUntilSignal
+import com.varabyte.kotter.runtime.RunScope
+import com.varabyte.kotter.runtime.Session
+import de.maibornwolff.codecharta.serialization.FileExtension
+import java.nio.file.Paths
+
+const val DEFAULT_INVALID_INPUT_MESSAGE = "Input is invalid!"
+
+enum class InputType(val inputType: String) {
+    FOLDER("folder"),
+    FILE("file"),
+    FOLDER_AND_FILE("folder or file")
+}
+
+fun Session.myPromptInput(
+    message: String,
+    hint: String = "",
+    allowEmptyInput: Boolean = false,
+    invalidInputMessage: String = DEFAULT_INVALID_INPUT_MESSAGE,
+    inputValidator: (String) -> Boolean = { true },
+    onInputReady: suspend RunScope.() -> Unit
+): String {
+    var lastUserInput = ""
+    var hintText = hint
+    var isInputValid by liveVarOf(true)
+    section {
+        drawInput(message, hintText, isInputValid, allowEmptyInput, invalidInputMessage, lastUserInput.isEmpty())
+    }.runUntilSignal {
+        onInputChanged { isInputValid = true }
+        onInputEntered {
+            if ((allowEmptyInput && input.isEmpty()) || (inputValidator(input) && input.isNotEmpty())) {
+                isInputValid = true
+                hintText = ""
+                signal()
+            } else {
+                isInputValid = false
+            }
+            lastUserInput = input
+        }
+        onInputReady()
+    }
+    return lastUserInput
+}
+
+fun Session.myPromptInputNumber(
+    message: String,
+    hint: String = "",
+    allowEmptyInput: Boolean = false,
+    invalidInputMessage: String = DEFAULT_INVALID_INPUT_MESSAGE,
+    inputValidator: (String) -> Boolean = { true },
+    onInputReady: suspend RunScope.() -> Unit
+): String {
+    var lastUserInput = ""
+    var hintText = hint
+    var isInputValid by liveVarOf(true)
+    section {
+        drawInput(message, hintText, isInputValid, allowEmptyInput, invalidInputMessage, lastUserInput.isEmpty())
+    }.runUntilSignal {
+        onInputChanged {
+            isInputValid = true
+            input = input.filter { it.isDigit() }
+        }
+        onInputEntered {
+            if ((allowEmptyInput && input.isEmpty()) || (inputValidator(input) && input.isNotEmpty())) {
+                isInputValid = true
+                hintText = ""
+                signal()
+            } else {
+                isInputValid = false
+            }
+            lastUserInput = input
+        }
+        onInputReady()
+    }
+    return lastUserInput
+}
+
+fun Session.myPromptConfirm(
+    message: String,
+    hint: String = "arrow keys to change selection",
+    onInputReady: suspend RunScope.() -> Unit
+): Boolean {
+    var result = true
+    var choice by liveVarOf(true)
+    section {
+        drawConfirm(message, hint, choice)
+    }.runUntilSignal {
+        onKeyPressed {
+            when (key) {
+                Keys.LEFT -> choice = true
+                Keys.RIGHT -> choice = false
+                Keys.ENTER -> {
+                    result = choice
+                    signal()
+                }
+            }
+        }
+        onInputReady()
+    }
+    return result
+}
+
+fun Session.myPromptList(
+    message: String,
+    choices: List<String>,
+    hint: String = "arrow keys to move, ENTER to select",
+    onInputReady: suspend RunScope.() -> Unit
+): String {
+    var result = ""
+    var selectionPosition by liveVarOf(0)
+    section {
+        drawList(message, hint, choices, selectionPosition)
+    }.runUntilSignal {
+        onKeyPressed {
+            when (key) {
+                Keys.UP -> selectionPosition = moveUp(selectionPosition)
+                Keys.DOWN ->
+                    selectionPosition = moveDown(selectionPosition, choices.size)
+                Keys.ENTER -> {
+                    result = choices[selectionPosition]
+                    signal()
+                }
+            }
+        }
+        onInputReady()
+    }
+    return result
+}
+
+fun Session.myPromptCheckbox(
+    message: String,
+    choices: List<String>,
+    hint: String = "SPACE to select, ENTER to confirm selection",
+    allowEmptyInput: Boolean = false,
+    onInputReady: suspend RunScope.() -> Unit
+): List<String> {
+    var result = listOf<String>()
+    var currentPosition by liveVarOf(0)
+    val selectedChoices = liveListOf(MutableList(choices.size) { false })
+    var isInputValid by liveVarOf(true)
+    section {
+        drawCheckbox(message, hint, isInputValid, allowEmptyInput, choices, currentPosition, selectedChoices)
+    }.runUntilSignal {
+        onKeyPressed {
+            isInputValid = true
+            when (key) {
+                Keys.UP ->
+                    currentPosition = moveUp(currentPosition)
+                Keys.DOWN ->
+                    currentPosition = moveDown(currentPosition, choices.size)
+                Keys.SPACE -> selectOrUnselectChoice(selectedChoices, currentPosition)
+                Keys.ENTER -> {
+                    result = getSelectedChoices(choices, selectedChoices)
+                    if (allowEmptyInput || result.isNotEmpty()) {
+                        signal()
+                    } else {
+                        isInputValid = false
+                    }
+                }
+            }
+        }
+        onInputReady()
+    }
+    return result
+}
+
+private fun selectOrUnselectChoice(selectedChoices: LiveList<Boolean>, position: Int) {
+    selectedChoices[position] = !selectedChoices[position]
+}
+
+private fun moveDown(position: Int, numberOfChoices: Int): Int {
+    var positionCopy = position
+    if (positionCopy < numberOfChoices - 1) {
+        positionCopy += 1
+    }
+    return positionCopy
+}
+
+private fun moveUp(position: Int): Int {
+    var positionCopy = position
+    if (positionCopy > 0) {
+        positionCopy -= 1
+    }
+    return positionCopy
+}
+
+private fun getSelectedChoices(choices: List<String>, selection: List<Boolean>): List<String> {
+    val result = mutableListOf<String>()
+    for (i in choices.indices) {
+        if (selection[i]) result.add(choices[i])
+    }
+    return result
+}
+
+fun Session.myPromptDefaultFileFolderInput(
+    inputType: InputType,
+    fileExtensionList: List<FileExtension>,
+    onInputReady: suspend RunScope.() -> Unit
+): String {
+    val messageFileExtension = "[${fileExtensionList.map { fileExtension -> fileExtension.extension }.joinToString(", ")}]"
+    val inputMessage: String =
+        if (fileExtensionList.isEmpty()) {
+            when (inputType) {
+                InputType.FOLDER -> {
+                    "folder"
+                }
+                InputType.FILE -> {
+                    "file"
+                }
+                else -> {
+                    "folder or file"
+                }
+            }
+        } else {
+            when (inputType) {
+                InputType.FOLDER -> {
+                    "folder of $messageFileExtension files"
+                }
+                InputType.FILE -> {
+                    "$messageFileExtension file"
+                }
+                else -> {
+                    "folder or $messageFileExtension file"
+                }
+            }
+        }
+    val currentWorkingDirectory = Paths.get("").toAbsolutePath().toString()
+
+    return myPromptInput(
+        message = "What is the input $inputMessage",
+        hint = currentWorkingDirectory,
+        allowEmptyInput = false,
+        invalidInputMessage = "Please input a valid ${inputType.inputType}",
+        inputValidator = de.maibornwolff.codecharta.analysers.tools.inquirer.InputValidator.isFileOrFolderValid(
+            inputType,
+            fileExtensionList
+        ),
+        onInputReady = onInputReady
+    )
+}

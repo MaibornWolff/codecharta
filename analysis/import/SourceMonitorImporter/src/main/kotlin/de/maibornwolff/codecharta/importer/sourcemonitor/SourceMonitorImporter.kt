@@ -1,10 +1,10 @@
 package de.maibornwolff.codecharta.importer.sourcemonitor
 
+import de.maibornwolff.codecharta.analysers.tools.interactiveparser.InteractiveParser
+import de.maibornwolff.codecharta.analysers.tools.interactiveparser.ParserDialogInterface
+import de.maibornwolff.codecharta.analysers.tools.interactiveparser.util.CodeChartaConstants
 import de.maibornwolff.codecharta.importer.csv.CSVProjectBuilder
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
-import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
-import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
-import de.maibornwolff.codecharta.tools.interactiveparser.util.CodeChartaConstants
 import de.maibornwolff.codecharta.translator.MetricNameTranslator
 import de.maibornwolff.codecharta.util.InputHelper
 import picocli.CommandLine

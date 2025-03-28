@@ -1,5 +1,8 @@
 package de.maibornwolff.codecharta.importer.sonar
 
+import de.maibornwolff.codecharta.analysers.tools.interactiveparser.InteractiveParser
+import de.maibornwolff.codecharta.analysers.tools.interactiveparser.ParserDialogInterface
+import de.maibornwolff.codecharta.analysers.tools.interactiveparser.util.CodeChartaConstants
 import de.maibornwolff.codecharta.filter.mergefilter.MergeFilter
 import de.maibornwolff.codecharta.importer.sonar.dataaccess.SonarMeasuresAPIDatasource
 import de.maibornwolff.codecharta.importer.sonar.dataaccess.SonarMetricsAPIDatasource
@@ -8,9 +11,6 @@ import de.maibornwolff.codecharta.model.AttributeDescriptor
 import de.maibornwolff.codecharta.model.AttributeGenerator
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
-import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
-import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
-import de.maibornwolff.codecharta.tools.interactiveparser.util.CodeChartaConstants
 import de.maibornwolff.codecharta.util.CommaSeparatedParameterPreprocessor
 import de.maibornwolff.codecharta.util.CommaSeparatedStringToListConverter
 import de.maibornwolff.codecharta.util.ResourceSearchHelper

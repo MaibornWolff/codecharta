@@ -1,7 +1,7 @@
 package de.maibornwolff.codecharta.filter.mergefilter.mimo
 
+import de.maibornwolff.codecharta.analysers.tools.interactiveparser.runInTerminalSession
 import de.maibornwolff.codecharta.filter.mergefilter.ParserDialog
-import de.maibornwolff.codecharta.tools.interactiveparser.runInTerminalSession
 import de.maibornwolff.codecharta.util.Logger
 import java.io.File
 

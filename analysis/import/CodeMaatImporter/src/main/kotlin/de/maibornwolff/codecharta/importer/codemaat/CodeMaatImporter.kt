@@ -1,13 +1,13 @@
 package de.maibornwolff.codecharta.importer.codemaat
 
+import de.maibornwolff.codecharta.analysers.tools.interactiveparser.InteractiveParser
+import de.maibornwolff.codecharta.analysers.tools.interactiveparser.ParserDialogInterface
+import de.maibornwolff.codecharta.analysers.tools.interactiveparser.util.CodeChartaConstants
 import de.maibornwolff.codecharta.model.AttributeDescriptor
 import de.maibornwolff.codecharta.model.AttributeGenerator
 import de.maibornwolff.codecharta.model.AttributeType
 import de.maibornwolff.codecharta.model.AttributeTypes
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
-import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
-import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
-import de.maibornwolff.codecharta.tools.interactiveparser.util.CodeChartaConstants
 import de.maibornwolff.codecharta.translator.MetricNameTranslator
 import de.maibornwolff.codecharta.util.InputHelper
 import picocli.CommandLine
