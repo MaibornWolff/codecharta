@@ -165,6 +165,6 @@ class SVNLogParser(
     }
 
     override fun getAttributeDescriptorMaps(): Map<String, AttributeDescriptor> {
-        return de.maibornwolff.codecharta.parser.svnlogparser.getAttributeDescriptors()
+        return getAttributeDescriptors()
     }
 }
