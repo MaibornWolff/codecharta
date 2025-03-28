@@ -3,7 +3,7 @@ plugins {
 }
 
 include("model")
-include("analysers:filter:MergeFilter", "analysers:filter:EdgeFilter", "analysers:filter:StructureModifier")
+include("analysers:filters:MergeFilter", "analysers:filters:EdgeFilter", "analysers:filters:StructureModifier")
 include(
     "import:CodeMaatImporter",
     "import:CoverageImporter",
