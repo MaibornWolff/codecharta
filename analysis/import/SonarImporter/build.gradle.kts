@@ -1,7 +1,7 @@
 dependencies {
     implementation(project(":model"))
     implementation(project(":analysers:tools:Inquirer"))
-    implementation(project(":analysers:filter:MergeFilter"))
+    implementation(project(":analysers:filters:MergeFilter"))
     implementation(project(":analysers:tools:InteractiveParser"))
 
     implementation(libs.rxjava2)

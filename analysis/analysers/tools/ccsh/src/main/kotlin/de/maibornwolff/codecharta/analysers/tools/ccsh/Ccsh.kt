@@ -1,9 +1,9 @@
 package de.maibornwolff.codecharta.analysers.tools.ccsh
 
 import de.maibornwolff.codecharta.analysers.exporters.csv.CSVExporter
-import de.maibornwolff.codecharta.analysers.filter.edgefilter.EdgeFilter
-import de.maibornwolff.codecharta.analysers.filter.mergefilter.MergeFilter
-import de.maibornwolff.codecharta.analysers.filter.structuremodifier.StructureModifier
+import de.maibornwolff.codecharta.analysers.filters.edgefilter.EdgeFilter
+import de.maibornwolff.codecharta.analysers.filters.mergefilter.MergeFilter
+import de.maibornwolff.codecharta.analysers.filters.structuremodifier.StructureModifier
 import de.maibornwolff.codecharta.analysers.tools.ccsh.parser.InteractiveDialog
 import de.maibornwolff.codecharta.analysers.tools.ccsh.parser.InteractiveParserSuggestion
 import de.maibornwolff.codecharta.analysers.tools.ccsh.parser.ParserService
