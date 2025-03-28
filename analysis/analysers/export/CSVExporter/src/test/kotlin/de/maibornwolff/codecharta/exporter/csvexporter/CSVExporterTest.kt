@@ -211,7 +211,7 @@ class CSVExporterTest {
     @Test
     fun `should write output to stdout when no output file specified`() {
         // given
-        val inputFilePath = "../../test/data/codecharta/csvexport_input.cc.json"
+        val inputFilePath = "../../../test/data/codecharta/csvexport_input.cc.json"
         System.setOut(PrintStream(outContent))
 
         // when
@@ -246,7 +246,7 @@ class CSVExporterTest {
     @Test
     fun `should create correct output when depth-of-hierarchy is five`() {
         // given
-        val filePath = "../../test/data/codecharta/csvexport_input.cc.json"
+        val filePath = "../../../test/data/codecharta/csvexport_input.cc.json"
         val maxHierarchy = 5
         val dirsZeroToFour = "dir0,dir1,dir2,dir3,dir4"
         val dirsFiveToNine = "dir[5-9]"
@@ -267,7 +267,7 @@ class CSVExporterTest {
 
     @Test
     fun `should create correct output when depth-of-hierarchy is zero`() { // given
-        val filePath = "../../test/data/codecharta/csvexport_input.cc.json"
+        val filePath = "../../../test/data/codecharta/csvexport_input.cc.json"
         val maxHierarchy = 0
         System.setOut(PrintStream(outContent))
 
@@ -285,7 +285,7 @@ class CSVExporterTest {
 
     @Test
     fun `should fail to create output when depth-of-hierarchy is negative`() { // given
-        val filePath = "../../test/data/codecharta/csvexport_input.cc.json"
+        val filePath = "../../../test/data/codecharta/csvexport_input.cc.json"
         val maxHierarchy = -1
         System.setErr(PrintStream(errContent))
 
@@ -301,7 +301,7 @@ class CSVExporterTest {
 
     @Test
     fun `should log the correct absolute path when output file is specified`() { // given
-        val inputFilePath = "../../test/data/codecharta/csvexport_input.cc.json"
+        val inputFilePath = "../../../test/data/codecharta/csvexport_input.cc.json"
         val outputFilePath = "src/test/resources/output.csv"
         val absoluteOutputFilePath = File(outputFilePath).absolutePath
         val outputFile = File(outputFilePath)
