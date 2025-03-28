@@ -1,6 +1,6 @@
 package de.maibornwolff.codecharta.importer.coverage
 
-import de.maibornwolff.codecharta.analysers.filter.mergefilter.MergeFilter
+import de.maibornwolff.codecharta.analysers.filters.mergefilter.MergeFilter
 import de.maibornwolff.codecharta.analysers.tools.interactiveparser.InteractiveParser
 import de.maibornwolff.codecharta.analysers.tools.interactiveparser.ParserDialogInterface
 import de.maibornwolff.codecharta.analysers.tools.interactiveparser.util.CodeChartaConstants
