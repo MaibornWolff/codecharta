@@ -1,8 +1,8 @@
 dependencies {
     implementation(project(":model"))
-    implementation(project(":tools:Inquirer"))
+    implementation(project(":analysers:tools:Inquirer"))
     implementation(project(":filter:MergeFilter"))
-    implementation(project(":tools:InteractiveParser"))
+    implementation(project(":analysers:tools:InteractiveParser"))
 
     implementation(libs.rxjava2)
     implementation(libs.jersey.client)
