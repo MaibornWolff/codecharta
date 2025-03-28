@@ -18,7 +18,7 @@ include(
     "parser:SourceCodeParser",
     "parser:SVNLogParser"
 )
-include("analysers:export:CSVExporter")
+include("analysers:exporters:CSVExporter")
 include(
     "analysers:tools:ValidationTool",
     "analysers:tools:ccsh",

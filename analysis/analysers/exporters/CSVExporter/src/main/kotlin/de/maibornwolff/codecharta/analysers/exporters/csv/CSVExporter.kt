@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.exporter.csv
+package de.maibornwolff.codecharta.analysers.exporters.csv
 
 import com.univocity.parsers.csv.CsvWriter
 import com.univocity.parsers.csv.CsvWriterSettings

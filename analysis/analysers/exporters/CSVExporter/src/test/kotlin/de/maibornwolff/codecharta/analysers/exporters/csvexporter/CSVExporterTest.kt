@@ -1,6 +1,6 @@
-package de.maibornwolff.codecharta.exporter.csvexporter
+package de.maibornwolff.codecharta.analysers.exporters.csvexporter
 
-import de.maibornwolff.codecharta.exporter.csv.CSVExporter
+import de.maibornwolff.codecharta.analysers.exporters.csv.CSVExporter
 import de.maibornwolff.codecharta.util.InputHelper
 import de.maibornwolff.codecharta.util.Logger
 import io.mockk.every
