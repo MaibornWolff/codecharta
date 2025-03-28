@@ -55,7 +55,7 @@ class ParserDialog {
                     message = "Select Levenshtein Distance for name match suggestions (0 for no suggestions)",
                     hint = "3",
                     invalidInputMessage = "Specify a number greater or equal to 0",
-                    inputValidator = de.maibornwolff.codecharta.analysers.tools.inquirer.InputValidator.isNumberGreaterThen(-1),
+                    inputValidator = InputValidator.isNumberGreaterThen(-1),
                     onInputReady = testCallback()
                 ).toInt()
             } else {

@@ -49,7 +49,7 @@ class InputValidatorTest {
     @MethodSource("provideValidationExpectations")
     fun `should return expected output`(filePath: String, validFileExtensions: List<String>, expectedValidation: Boolean) {
         assertThat(
-            de.maibornwolff.codecharta.analysers.tools.inquirer.InputValidator.isInputAnExistingFile(
+            InputValidator.isInputAnExistingFile(
                 *validFileExtensions.toTypedArray()
             )(filePath)
         ).isEqualTo(expectedValidation)

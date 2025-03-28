@@ -61,7 +61,7 @@ class InteractiveDialog {
             return session.myPromptInput(
                 message = "What is the folder path containing all cc.json files?",
                 hint = Paths.get("").toAbsolutePath().toString(),
-                inputValidator = de.maibornwolff.codecharta.analysers.tools.inquirer.InputValidator.isFileOrFolderValid(
+                inputValidator = InputValidator.isFileOrFolderValid(
                     InputType.FOLDER,
                     listOf()
                 ),
