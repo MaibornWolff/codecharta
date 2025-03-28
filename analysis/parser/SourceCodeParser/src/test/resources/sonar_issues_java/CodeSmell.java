@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.importer.sourcecodeparser.oop.infrastructure.antlr.java;
+package de.maibornwolff.codecharta.analysis.importer.sourcecodeparser.oop.infrastructure.antlr.java;
 
 import de.maibornwolff.codecharta.parser.sourcecodeparser.core.domain.tagging.Tags;
 import de.maibornwolff.codecharta.parser.sourcecodeparser.oop.domain.tagging.NonCodeTags;

@@ -12,14 +12,14 @@ dependencies {
 
     val projects =
         listOf(
-            ":import:CodeMaatImporter",
-            ":import:CoverageImporter",
-            ":import:CSVImporter",
+            ":analysers:import:CodeMaatImporter",
+            ":analysers:import:CoverageImporter",
+            ":analysers:import:CSVImporter",
             ":analysers:filters:StructureModifier",
             ":parser:SVNLogParser",
-            ":import:SonarImporter",
+            ":analysers:import:SonarImporter",
             ":parser:SourceCodeParser",
-            ":import:TokeiImporter",
+            ":analysers:import:TokeiImporter",
             ":analysers:filters:MergeFilter",
             ":analysers:filters:EdgeFilter",
             ":analysers:tools:ValidationTool",
@@ -30,7 +30,7 @@ dependencies {
             ":analysers:tools:InteractiveParser",
             ":analysers:tools:PipeableParser",
             ":analysers:tools:Inquirer",
-            ":import:SourceMonitorImporter"
+            ":analysers:import:SourceMonitorImporter"
         )
 
     projects.forEach {

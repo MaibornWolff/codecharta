@@ -7,7 +7,7 @@
     {
       "gameObjectPositions": [
         {
-          "name": "root.analysis.import.SourceCodeParser.src.test.kotlin.de.maibornwolff.codecharta.importer.sourcecodeparser.oop.core.extract.HelloWorldTest",
+          "name": "root.analysis.import.SourceCodeParser.src.test.kotlin.de.maibornwolff.codecharta.analysis.importer.sourcecodeparser.oop.core.extract.HelloWorldTest",
           "position": {
             "x": 69.0,
             "y": 18.5,
@@ -20,7 +20,7 @@
           }
         },
         {
-          "name": "root.analysis.import.SourceCodeParser.src.test.kotlin.de.maibornwolff.codecharta.importer.sourcecodeparser.oop.core.extract.TryCatchFinallyTest",
+          "name": "root.analysis.import.SourceCodeParser.src.test.kotlin.de.maibornwolff.codecharta.analysis.importer.sourcecodeparser.oop.core.extract.TryCatchFinallyTest",
           "position": {
             "x": 66.0,
             "y": 22.5,
@@ -35,8 +35,8 @@
       ],
       "cycles": [
         {
-          "from": "root.analysis.import.SCMLogParser.src.main.java.de.maibornwolff.codecharta.importer.scmlogparser.SCMLogParser",
-          "to": "root.analysis.import.SCMLogParser.src.main.java.de.maibornwolff.codecharta.importer.scmlogparser.SCMLogParserParameter"
+          "from": "root.analysis.import.SCMLogParser.src.main.java.de.maibornwolff.codecharta.analysis.importer.scmlogparser.SCMLogParser",
+          "to": "root.analysis.import.SCMLogParser.src.main.java.de.maibornwolff.codecharta.analysis.importer.scmlogparser.SCMLogParserParameter"
         }
       ]
     }
@@ -54,7 +54,7 @@
       "examples": [
         [
           {
-            "name": "root.analysis.import.SourceCodeParser.src.test.kotlin.de.maibornwolff.codecharta.importer.sourcecodeparser.oop.core.extract.HelloWorldTest",
+            "name": "root.analysis.import.SourceCodeParser.src.test.kotlin.de.maibornwolff.codecharta.analysis.importer.sourcecodeparser.oop.core.extract.HelloWorldTest",
             "position": {
               "x": 69.0,
               "y": 18.5,
@@ -67,7 +67,7 @@
             }
           },
           {
-            "name": "root.analysis.import.SourceCodeParser.src.test.kotlin.de.maibornwolff.codecharta.importer.sourcecodeparser.oop.core.extract.SwitchCaseTest",
+            "name": "root.analysis.import.SourceCodeParser.src.test.kotlin.de.maibornwolff.codecharta.analysis.importer.sourcecodeparser.oop.core.extract.SwitchCaseTest",
             "position": {
               "x": 65.0,
               "y": 22.0,
@@ -93,7 +93,7 @@
             "default": {},
             "examples": [
               {
-                "name": "root.analysis.import.SourceCodeParser.src.test.kotlin.de.maibornwolff.codecharta.importer.sourcecodeparser.oop.core.extract.HelloWorldTest",
+                "name": "root.analysis.import.SourceCodeParser.src.test.kotlin.de.maibornwolff.codecharta.analysis.importer.sourcecodeparser.oop.core.extract.HelloWorldTest",
                 "position": {
                   "x": 69.0,
                   "y": 18.5,
@@ -115,7 +115,7 @@
                 "description": "An explanation about the purpose of this instance.",
                 "default": "",
                 "examples": [
-                  "root.analysis.import.SourceCodeParser.src.test.kotlin.de.maibornwolff.codecharta.importer.sourcecodeparser.oop.core.extract.HelloWorldTest"
+                  "root.analysis.import.SourceCodeParser.src.test.kotlin.de.maibornwolff.codecharta.analysis.importer.sourcecodeparser.oop.core.extract.HelloWorldTest"
                 ]
               },
               "position": {
@@ -217,8 +217,8 @@
       "examples": [
         [
           {
-            "from": "root.analysis.import.SCMLogParser.src.main.java.de.maibornwolff.codecharta.importer.scmlogparser.SCMLogParser",
-            "to": "root.analysis.import.SCMLogParser.src.main.java.de.maibornwolff.codecharta.importer.scmlogparser.SCMLogParserParameter"
+            "from": "root.analysis.import.SCMLogParser.src.main.java.de.maibornwolff.codecharta.analysis.importer.scmlogparser.SCMLogParser",
+            "to": "root.analysis.import.SCMLogParser.src.main.java.de.maibornwolff.codecharta.analysis.importer.scmlogparser.SCMLogParserParameter"
           }
         ]
       ],
@@ -234,8 +234,8 @@
             "default": {},
             "examples": [
               {
-                "from": "root.analysis.import.SCMLogParser.src.main.java.de.maibornwolff.codecharta.importer.scmlogparser.SCMLogParser",
-                "to": "root.analysis.import.SCMLogParser.src.main.java.de.maibornwolff.codecharta.importer.scmlogparser.SCMLogParserParameter"
+                "from": "root.analysis.import.SCMLogParser.src.main.java.de.maibornwolff.codecharta.analysis.importer.scmlogparser.SCMLogParser",
+                "to": "root.analysis.import.SCMLogParser.src.main.java.de.maibornwolff.codecharta.analysis.importer.scmlogparser.SCMLogParserParameter"
               }
             ],
             "required": ["from", "to"],
@@ -247,7 +247,7 @@
                 "description": "from GameObject",
                 "default": "",
                 "examples": [
-                  "root.analysis.import.SCMLogParser.src.main.java.de.maibornwolff.codecharta.importer.scmlogparser.SCMLogParser"
+                  "root.analysis.import.SCMLogParser.src.main.java.de.maibornwolff.codecharta.analysis.importer.scmlogparser.SCMLogParser"
                 ]
               },
               "to": {
@@ -257,7 +257,7 @@
                 "description": "to GameObject",
                 "default": "",
                 "examples": [
-                  "root.analysis.import.SCMLogParser.src.main.java.de.maibornwolff.codecharta.importer.scmlogparser.SCMLogParserParameter"
+                  "root.analysis.import.SCMLogParser.src.main.java.de.maibornwolff.codecharta.analysis.importer.scmlogparser.SCMLogParserParameter"
                 ]
               }
             },
