@@ -1,6 +1,6 @@
 package de.maibornwolff.codecharta.serialization
 
-import de.maibornwolff.codecharta.tools.pipeableparser.PipeableParserSyncFlag
+import de.maibornwolff.codecharta.analysers.tools.pipeableparser.PipeableParserSyncFlag
 import java.io.BufferedInputStream
 import java.io.BufferedReader
 import java.io.InputStream

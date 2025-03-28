@@ -2,11 +2,11 @@ package de.maibornwolff.codecharta.parser.gitlogparser
 
 import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.Session
+import de.maibornwolff.codecharta.analysers.tools.inquirer.myPromptConfirm
+import de.maibornwolff.codecharta.analysers.tools.inquirer.myPromptInput
+import de.maibornwolff.codecharta.analysers.tools.interactiveparser.ParserDialogInterface
 import de.maibornwolff.codecharta.parser.gitlogparser.subcommands.LogScanCommand
 import de.maibornwolff.codecharta.parser.gitlogparser.subcommands.RepoScanCommand
-import de.maibornwolff.codecharta.tools.inquirer.myPromptConfirm
-import de.maibornwolff.codecharta.tools.inquirer.myPromptInput
-import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 
 class ParserDialog {
     companion object : ParserDialogInterface {

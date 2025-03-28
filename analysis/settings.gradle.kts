@@ -3,7 +3,7 @@ plugins {
 }
 
 include("model")
-include("filter:MergeFilter", "filter:EdgeFilter", "filter:StructureModifier")
+include("analysers:filters:MergeFilter", "analysers:filters:EdgeFilter", "analysers:filters:StructureModifier")
 include(
     "import:CodeMaatImporter",
     "import:CoverageImporter",
@@ -18,8 +18,16 @@ include(
     "parser:SourceCodeParser",
     "parser:SVNLogParser"
 )
-include("export:CSVExporter")
-include("tools:ValidationTool", "tools:ccsh", "tools:InspectionTool", "tools:InteractiveParser", "tools:PipeableParser", "tools:Inquirer")
+include("analysers:exporters:CSVExporter")
+include(
+    "analysers:tools:ValidationTool",
+    "analysers:tools:ccsh",
+    "analysers:tools:InspectionTool",
+    "analysers:tools:InteractiveParser",
+    "analysers:tools:PipeableParser",
+    "analysers:tools:Inquirer"
+)
 
 rootProject.name = "codecharta"
-findProject(":tools:PipeableParser")?.name = "PipeableParser"
+findProject(":analysers:tools:PipeableParser")?.name = "PipeableParser"
+include("analysers")

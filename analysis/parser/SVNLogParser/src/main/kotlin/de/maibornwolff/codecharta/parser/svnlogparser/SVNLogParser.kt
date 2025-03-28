@@ -1,6 +1,11 @@
 package de.maibornwolff.codecharta.parser.svnlogparser
 
-import de.maibornwolff.codecharta.filter.mergefilter.MergeFilter
+import de.maibornwolff.codecharta.analysers.filters.mergefilter.MergeFilter
+import de.maibornwolff.codecharta.analysers.tools.interactiveparser.InteractiveParser
+import de.maibornwolff.codecharta.analysers.tools.interactiveparser.ParserDialogInterface
+import de.maibornwolff.codecharta.analysers.tools.interactiveparser.util.CodeChartaConstants
+import de.maibornwolff.codecharta.analysers.tools.pipeableparser.PipeableParser
+import de.maibornwolff.codecharta.analysers.tools.pipeableparser.PipeableParserSyncFlag
 import de.maibornwolff.codecharta.model.AttributeDescriptor
 import de.maibornwolff.codecharta.model.AttributeGenerator
 import de.maibornwolff.codecharta.model.Project
@@ -11,11 +16,6 @@ import de.maibornwolff.codecharta.parser.svnlogparser.parser.LogParserStrategy
 import de.maibornwolff.codecharta.parser.svnlogparser.parser.svn.SVNLogParserStrategy
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
-import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
-import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
-import de.maibornwolff.codecharta.tools.interactiveparser.util.CodeChartaConstants
-import de.maibornwolff.codecharta.tools.pipeableparser.PipeableParser
-import de.maibornwolff.codecharta.tools.pipeableparser.PipeableParserSyncFlag
 import de.maibornwolff.codecharta.util.InputHelper
 import de.maibornwolff.codecharta.util.ResourceSearchHelper
 import org.mozilla.universalchardet.UniversalDetector
@@ -165,6 +165,6 @@ class SVNLogParser(
     }
 
     override fun getAttributeDescriptorMaps(): Map<String, AttributeDescriptor> {
-        return de.maibornwolff.codecharta.parser.svnlogparser.getAttributeDescriptors()
+        return getAttributeDescriptors()
     }
 }
