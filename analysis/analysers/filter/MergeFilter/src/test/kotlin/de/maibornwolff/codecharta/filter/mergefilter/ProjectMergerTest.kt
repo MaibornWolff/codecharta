@@ -64,7 +64,7 @@ class ProjectMergerTest {
             )
         val originalProject2 =
             ProjectDeserializer.deserializeProject(
-                InputStreamReader(this.javaClass.classLoader.getResourceAsStream(Companion.TEST_JSON_FILE2)!!)
+                InputStreamReader(this.javaClass.classLoader.getResourceAsStream(TEST_JSON_FILE2)!!)
             )
         val projectList = listOf(originalProject1, originalProject2)
         val project = ProjectMerger(projectList, nodeMergerStrategy).merge()
@@ -77,13 +77,13 @@ class ProjectMergerTest {
         val originalProject1 =
             ProjectDeserializer.deserializeProject(
                 InputStreamReader(
-                    this.javaClass.classLoader.getResourceAsStream(Companion.TEST_EDGES_JSON_FILE)!!
+                    this.javaClass.classLoader.getResourceAsStream(TEST_EDGES_JSON_FILE)!!
                 )
             )
         val originalProject2 =
             ProjectDeserializer.deserializeProject(
                 InputStreamReader(
-                    this.javaClass.classLoader.getResourceAsStream(Companion.TEST_EDGES_JSON_FILE2)!!
+                    this.javaClass.classLoader.getResourceAsStream(TEST_EDGES_JSON_FILE2)!!
                 )
             )
         val projectList = listOf(originalProject1, originalProject2)
@@ -104,13 +104,13 @@ class ProjectMergerTest {
         val originalProject1 =
             ProjectDeserializer.deserializeProject(
                 InputStreamReader(
-                    this.javaClass.classLoader.getResourceAsStream(Companion.TEST_EDGES_JSON_FILE)!!
+                    this.javaClass.classLoader.getResourceAsStream(TEST_EDGES_JSON_FILE)!!
                 )
             )
         val originalProject2 =
             ProjectDeserializer.deserializeProject(
                 InputStreamReader(
-                    this.javaClass.classLoader.getResourceAsStream(Companion.TEST_EDGES_JSON_FILE2)!!
+                    this.javaClass.classLoader.getResourceAsStream(TEST_EDGES_JSON_FILE2)!!
                 )
             )
         val projectList = listOf(originalProject1, originalProject2)
@@ -128,11 +128,11 @@ class ProjectMergerTest {
     fun `should contain all three attributeDescriptors after merge`() {
         val originalProject1 =
             ProjectDeserializer.deserializeProject(
-                InputStreamReader(this.javaClass.classLoader.getResourceAsStream(Companion.TEST_DESC_FILE)!!)
+                InputStreamReader(this.javaClass.classLoader.getResourceAsStream(TEST_DESC_FILE)!!)
             )
         val originalProject2 =
             ProjectDeserializer.deserializeProject(
-                InputStreamReader(this.javaClass.classLoader.getResourceAsStream(Companion.TEST_DESC_FILE2)!!)
+                InputStreamReader(this.javaClass.classLoader.getResourceAsStream(TEST_DESC_FILE2)!!)
             )
         val projectList = listOf(originalProject1, originalProject2)
         val project = ProjectMerger(projectList, nodeMergerStrategy).merge()
