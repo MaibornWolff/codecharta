@@ -1,6 +1,6 @@
 dependencies {
-    implementation(project(":tools:InteractiveParser"))
-    implementation(project(":tools:Inquirer"))
+    implementation(project(":analysers:tools:InteractiveParser"))
+    implementation(project(":analysers:tools:Inquirer"))
     implementation(project(":model"))
 
     implementation(libs.json.schema)

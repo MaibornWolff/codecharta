@@ -1,8 +1,8 @@
 dependencies {
     implementation(project(":model"))
-    implementation(project(":tools:InteractiveParser"))
-    implementation(project(":tools:Inquirer"))
-    implementation(project(":tools:InspectionTool"))
+    implementation(project(":analysers:tools:InteractiveParser"))
+    implementation(project(":analysers:tools:Inquirer"))
+    implementation(project(":analysers:tools:InspectionTool"))
 
     implementation(libs.picocli)
     implementation(libs.kotter)
