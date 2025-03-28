@@ -2,9 +2,9 @@ package de.maibornwolff.codecharta.parser.gitlogparser.subcommands
 
 import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.Session
-import de.maibornwolff.codecharta.tools.inquirer.InputValidator
-import de.maibornwolff.codecharta.tools.inquirer.myPromptInput
-import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
+import de.maibornwolff.codecharta.analysers.tools.inquirer.InputValidator
+import de.maibornwolff.codecharta.analysers.tools.inquirer.myPromptInput
+import de.maibornwolff.codecharta.analysers.tools.interactiveparser.ParserDialogInterface
 
 class LogScanParserDialog {
     companion object : ParserDialogInterface {
@@ -14,7 +14,7 @@ class LogScanParserDialog {
                 message = "What is the git.log file that has to be parsed?",
                 hint = "git.log",
                 allowEmptyInput = false,
-                inputValidator = InputValidator.isInputAnExistingFile(),
+                inputValidator = de.maibornwolff.codecharta.analysers.tools.inquirer.InputValidator.isInputAnExistingFile(),
                 onInputReady = testCallback()
             )
 
@@ -23,7 +23,7 @@ class LogScanParserDialog {
                 message = "What is the path to the file name list?",
                 hint = "file-name-list.txt",
                 allowEmptyInput = false,
-                inputValidator = InputValidator.isInputAnExistingFile(),
+                inputValidator = de.maibornwolff.codecharta.analysers.tools.inquirer.InputValidator.isInputAnExistingFile(),
                 onInputReady = testCallback()
             )
 

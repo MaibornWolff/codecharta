@@ -2,10 +2,10 @@ package de.maibornwolff.codecharta.parser.gitlogparser.subcommands
 
 import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.Session
-import de.maibornwolff.codecharta.tools.inquirer.InputType
-import de.maibornwolff.codecharta.tools.inquirer.InputValidator
-import de.maibornwolff.codecharta.tools.inquirer.myPromptInput
-import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
+import de.maibornwolff.codecharta.analysers.tools.inquirer.InputType
+import de.maibornwolff.codecharta.analysers.tools.inquirer.InputValidator
+import de.maibornwolff.codecharta.analysers.tools.inquirer.myPromptInput
+import de.maibornwolff.codecharta.analysers.tools.interactiveparser.ParserDialogInterface
 import java.nio.file.Paths
 
 class RepoScanParserDialog {
@@ -15,7 +15,10 @@ class RepoScanParserDialog {
                 message = "What is the root directory of the git project you want to parse?",
                 hint = Paths.get("").normalize().toAbsolutePath().toString(),
                 allowEmptyInput = false,
-                inputValidator = InputValidator.isFileOrFolderValid(InputType.FOLDER, listOf()),
+                inputValidator = de.maibornwolff.codecharta.analysers.tools.inquirer.InputValidator.isFileOrFolderValid(
+                    InputType.FOLDER,
+                    listOf()
+                ),
                 onInputReady = testCallback()
             )
             return listOf("--repo-path=$repoPath")
