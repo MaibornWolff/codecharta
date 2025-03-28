@@ -172,6 +172,6 @@ class GitLogParser(
     }
 
     override fun getAttributeDescriptorMaps(): Map<String, AttributeDescriptor> {
-        return de.maibornwolff.codecharta.parser.gitlogparser.getAttributeDescriptors()
+        return getAttributeDescriptors()
     }
 }

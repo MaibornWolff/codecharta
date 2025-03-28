@@ -231,7 +231,7 @@ class InquirerTest {
                 myPromptInputNumber(
                     testMessage,
                     invalidInputMessage = testInvalidInputMessage,
-                    inputValidator = de.maibornwolff.codecharta.analysers.tools.inquirer.InputValidator.isNumberGreaterThen(
+                    inputValidator = InputValidator.isNumberGreaterThen(
                         2
                     ),
                     onInputReady = {
@@ -277,7 +277,7 @@ class InquirerTest {
                 myPromptInputNumber(
                     testMessage,
                     allowEmptyInput = true,
-                    inputValidator = de.maibornwolff.codecharta.analysers.tools.inquirer.InputValidator.isNumberGreaterThen(
+                    inputValidator = InputValidator.isNumberGreaterThen(
                         2
                     ),
                     onInputReady = {

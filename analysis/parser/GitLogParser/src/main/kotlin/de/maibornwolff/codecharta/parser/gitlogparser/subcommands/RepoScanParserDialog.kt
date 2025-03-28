@@ -15,7 +15,7 @@ class RepoScanParserDialog {
                 message = "What is the root directory of the git project you want to parse?",
                 hint = Paths.get("").normalize().toAbsolutePath().toString(),
                 allowEmptyInput = false,
-                inputValidator = de.maibornwolff.codecharta.analysers.tools.inquirer.InputValidator.isFileOrFolderValid(
+                inputValidator = InputValidator.isFileOrFolderValid(
                     InputType.FOLDER,
                     listOf()
                 ),

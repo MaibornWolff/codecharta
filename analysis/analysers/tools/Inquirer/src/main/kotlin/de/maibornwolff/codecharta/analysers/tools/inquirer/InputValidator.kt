@@ -12,22 +12,22 @@ class InputValidator {
         }
 
         fun isFileOrFolderValid(
-            inputType: de.maibornwolff.codecharta.analysers.tools.inquirer.InputType,
+            inputType: InputType,
             fileExtensionList: List<FileExtension>
         ): (String) -> Boolean = { input ->
             val objectToVerify = File(input)
             objectToVerify.exists() && when (inputType) {
-                de.maibornwolff.codecharta.analysers.tools.inquirer.InputType.FOLDER -> {
+                InputType.FOLDER -> {
                     objectToVerify.isDirectory
                 }
-                de.maibornwolff.codecharta.analysers.tools.inquirer.InputType.FILE -> {
-                    de.maibornwolff.codecharta.analysers.tools.inquirer.InputValidator.Companion.verifyFile(
+                InputType.FILE -> {
+                    verifyFile(
                         objectToVerify,
                         fileExtensionList
                     )
                 }
                 else -> {
-                    objectToVerify.isDirectory || de.maibornwolff.codecharta.analysers.tools.inquirer.InputValidator.Companion.verifyFile(
+                    objectToVerify.isDirectory || verifyFile(
                         objectToVerify,
                         fileExtensionList
                     )

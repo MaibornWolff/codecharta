@@ -14,7 +14,7 @@ class LogScanParserDialog {
                 message = "What is the git.log file that has to be parsed?",
                 hint = "git.log",
                 allowEmptyInput = false,
-                inputValidator = de.maibornwolff.codecharta.analysers.tools.inquirer.InputValidator.isInputAnExistingFile(),
+                inputValidator = InputValidator.isInputAnExistingFile(),
                 onInputReady = testCallback()
             )
 
@@ -23,7 +23,7 @@ class LogScanParserDialog {
                 message = "What is the path to the file name list?",
                 hint = "file-name-list.txt",
                 allowEmptyInput = false,
-                inputValidator = de.maibornwolff.codecharta.analysers.tools.inquirer.InputValidator.isInputAnExistingFile(),
+                inputValidator = InputValidator.isInputAnExistingFile(),
                 onInputReady = testCallback()
             )
 

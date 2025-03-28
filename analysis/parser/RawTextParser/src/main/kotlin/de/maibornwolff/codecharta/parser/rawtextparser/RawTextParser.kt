@@ -106,7 +106,7 @@ class RawTextParser(
             throw IllegalArgumentException("Input invalid file for RawTextParser, stopping execution...")
         }
 
-        if (!withoutDefaultExcludes) exclude += Companion.DEFAULT_EXCLUDES
+        if (!withoutDefaultExcludes) exclude += DEFAULT_EXCLUDES
 
         val projectMetrics: ProjectMetrics =
             ProjectMetricsCollector(
