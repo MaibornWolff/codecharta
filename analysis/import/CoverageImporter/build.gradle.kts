@@ -3,7 +3,7 @@ dependencies {
     implementation(project(":analysers:tools:Inquirer"))
     implementation(project(":analysers:tools:InteractiveParser"))
     implementation(project(":analysers:tools:PipeableParser"))
-    implementation(project(":filter:MergeFilter"))
+    implementation(project(":analysers:filter:MergeFilter"))
 
     implementation(libs.picocli)
     implementation(libs.kotter)

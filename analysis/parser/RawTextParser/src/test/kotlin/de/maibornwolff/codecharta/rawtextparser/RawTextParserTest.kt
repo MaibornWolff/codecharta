@@ -1,6 +1,6 @@
 package de.maibornwolff.codecharta.rawtextparser
 
-import de.maibornwolff.codecharta.filter.mergefilter.MergeFilter
+import de.maibornwolff.codecharta.analysers.filter.mergefilter.MergeFilter
 import de.maibornwolff.codecharta.parser.rawtextparser.RawTextParser
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
