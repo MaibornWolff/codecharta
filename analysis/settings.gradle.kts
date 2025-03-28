@@ -19,7 +19,15 @@ include(
     "parser:SVNLogParser"
 )
 include("export:CSVExporter")
-include("tools:ValidationTool", "tools:ccsh", "tools:InspectionTool", "tools:InteractiveParser", "tools:PipeableParser", "tools:Inquirer")
+include(
+    "analysers:tools:ValidationTool",
+    "analysers:tools:ccsh",
+    "analysers:tools:InspectionTool",
+    "analysers:tools:InteractiveParser",
+    "analysers:tools:PipeableParser",
+    "analysers:tools:Inquirer"
+)
 
 rootProject.name = "codecharta"
-findProject(":tools:PipeableParser")?.name = "PipeableParser"
+findProject(":analysers:tools:PipeableParser")?.name = "PipeableParser"
+include("analysers")
