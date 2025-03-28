@@ -6,8 +6,8 @@ import com.varabyte.kotter.runtime.Session
 import com.varabyte.kotter.runtime.terminal.inmemory.press
 import com.varabyte.kotter.runtime.terminal.inmemory.type
 import com.varabyte.kotterx.test.foundation.testSession
+import de.maibornwolff.codecharta.analysers.tools.inquirer.myPromptList
 import de.maibornwolff.codecharta.filter.structuremodifier.ParserDialog.Companion.collectParserArgs
-import de.maibornwolff.codecharta.tools.inquirer.myPromptList
 import io.mockk.every
 import io.mockk.mockkObject
 import io.mockk.mockkStatic
@@ -418,7 +418,7 @@ class ParserDialogTest {
                 fileCallback
             )
 
-            mockkStatic("de.maibornwolff.codecharta.tools.inquirer.InquirerKt")
+            mockkStatic("de.maibornwolff.codecharta.analysers.tools.inquirer.InquirerKt")
             every { any<Session>().myPromptList(any(), any(), any(), any()) } returns unknownAction
 
             parserArguments = collectParserArgs(this)

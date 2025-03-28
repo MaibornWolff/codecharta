@@ -2,16 +2,16 @@ package de.maibornwolff.codecharta.filter.mergefilter
 
 import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.Session
+import de.maibornwolff.codecharta.analysers.tools.inquirer.InputType
+import de.maibornwolff.codecharta.analysers.tools.inquirer.InputValidator
+import de.maibornwolff.codecharta.analysers.tools.inquirer.myPromptCheckbox
+import de.maibornwolff.codecharta.analysers.tools.inquirer.myPromptConfirm
+import de.maibornwolff.codecharta.analysers.tools.inquirer.myPromptDefaultFileFolderInput
+import de.maibornwolff.codecharta.analysers.tools.inquirer.myPromptInput
+import de.maibornwolff.codecharta.analysers.tools.inquirer.myPromptInputNumber
+import de.maibornwolff.codecharta.analysers.tools.inquirer.myPromptList
+import de.maibornwolff.codecharta.analysers.tools.interactiveparser.ParserDialogInterface
 import de.maibornwolff.codecharta.serialization.FileExtension
-import de.maibornwolff.codecharta.tools.inquirer.InputType
-import de.maibornwolff.codecharta.tools.inquirer.InputValidator
-import de.maibornwolff.codecharta.tools.inquirer.myPromptCheckbox
-import de.maibornwolff.codecharta.tools.inquirer.myPromptConfirm
-import de.maibornwolff.codecharta.tools.inquirer.myPromptDefaultFileFolderInput
-import de.maibornwolff.codecharta.tools.inquirer.myPromptInput
-import de.maibornwolff.codecharta.tools.inquirer.myPromptInputNumber
-import de.maibornwolff.codecharta.tools.inquirer.myPromptList
-import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
 import java.io.File
 
 class ParserDialog {
@@ -55,7 +55,7 @@ class ParserDialog {
                     message = "Select Levenshtein Distance for name match suggestions (0 for no suggestions)",
                     hint = "3",
                     invalidInputMessage = "Specify a number greater or equal to 0",
-                    inputValidator = InputValidator.isNumberGreaterThen(-1),
+                    inputValidator = de.maibornwolff.codecharta.analysers.tools.inquirer.InputValidator.isNumberGreaterThen(-1),
                     onInputReady = testCallback()
                 ).toInt()
             } else {

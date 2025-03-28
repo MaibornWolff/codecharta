@@ -2,6 +2,11 @@ package de.maibornwolff.codecharta.importer.tokeiimporter
 
 import com.google.gson.JsonElement
 import com.google.gson.JsonParser
+import de.maibornwolff.codecharta.analysers.tools.interactiveparser.InteractiveParser
+import de.maibornwolff.codecharta.analysers.tools.interactiveparser.ParserDialogInterface
+import de.maibornwolff.codecharta.analysers.tools.interactiveparser.util.CodeChartaConstants
+import de.maibornwolff.codecharta.analysers.tools.pipeableparser.PipeableParser
+import de.maibornwolff.codecharta.analysers.tools.pipeableparser.PipeableParserSyncFlag
 import de.maibornwolff.codecharta.importer.tokeiimporter.strategy.ImporterStrategy
 import de.maibornwolff.codecharta.importer.tokeiimporter.strategy.TokeiInnerStrategy
 import de.maibornwolff.codecharta.importer.tokeiimporter.strategy.TokeiTwelveStrategy
@@ -12,11 +17,6 @@ import de.maibornwolff.codecharta.model.AttributeTypes
 import de.maibornwolff.codecharta.model.ProjectBuilder
 import de.maibornwolff.codecharta.serialization.ProjectInputReader
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
-import de.maibornwolff.codecharta.tools.interactiveparser.InteractiveParser
-import de.maibornwolff.codecharta.tools.interactiveparser.ParserDialogInterface
-import de.maibornwolff.codecharta.tools.interactiveparser.util.CodeChartaConstants
-import de.maibornwolff.codecharta.tools.pipeableparser.PipeableParser
-import de.maibornwolff.codecharta.tools.pipeableparser.PipeableParserSyncFlag
 import de.maibornwolff.codecharta.util.InputHelper
 import de.maibornwolff.codecharta.util.Logger
 import kotlinx.coroutines.Dispatchers
