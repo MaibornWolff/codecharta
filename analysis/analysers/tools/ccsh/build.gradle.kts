@@ -23,7 +23,7 @@ dependencies {
             ":filter:MergeFilter",
             ":filter:EdgeFilter",
             ":analysers:tools:ValidationTool",
-            ":analysers:export:CSVExporter",
+            ":analysers:exporters:CSVExporter",
             ":parser:GitLogParser",
             ":parser:RawTextParser",
             ":analysers:tools:InspectionTool",

@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.exporter.csv
+package de.maibornwolff.codecharta.analysers.exporters.csv
 
 import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.Session
