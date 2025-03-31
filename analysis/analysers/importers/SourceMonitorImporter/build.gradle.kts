@@ -1,7 +1,7 @@
 dependencies {
     implementation(project(":model"))
     implementation(project(":analysers:tools:Inquirer"))
-    implementation(project(":analysers:import:CSVImporter"))
+    implementation(project(":analysers:importers:CSVImporter"))
     implementation(project(":analysers:tools:InteractiveParser"))
 
     implementation(libs.univocity.parsers)
