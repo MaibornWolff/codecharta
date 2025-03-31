@@ -13,10 +13,10 @@ include(
     "analysers:importers:TokeiImporter"
 )
 include(
-    "analysers:parser:RawTextParser",
-    "analysers:parser:GitLogParser",
-    "analysers:parser:SourceCodeParser",
-    "analysers:parser:SVNLogParser"
+    "analysers:parsers:RawTextParser",
+    "analysers:parsers:GitLogParser",
+    "analysers:parsers:SourceCodeParser",
+    "analysers:parsers:SVNLogParser"
 )
 include("analysers:exporters:CSVExporter")
 include(
