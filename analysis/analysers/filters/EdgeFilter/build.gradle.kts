@@ -1,7 +1,7 @@
 dependencies {
     implementation(project(":model"))
     implementation(project(":analysers:AnalyserInterface"))
-    implementation(project(":analysers:Inquirer"))
+    implementation(project(":DialogProvider"))
 
     implementation(libs.univocity.parsers)
     implementation(libs.picocli)
