@@ -23,11 +23,11 @@ class ParserService {
             val configuredParsers = mutableMapOf<String, List<String>>()
             for (selectedParser in selectedParsers) {
                 println(System.lineSeparator() + "Now configuring $selectedParser.")
-                val AnalyserInterface = parserRepository.getAnalyserInterface(commandLine, selectedParser)
+                val analyserInterface = parserRepository.getAnalyserInterface(commandLine, selectedParser)
 
-                requireNotNull(AnalyserInterface) { "Tried to configure non existing parser!" }
+                requireNotNull(analyserInterface) { "Tried to configure non existing parser!" }
 
-                val configuration = runInTerminalSession { AnalyserInterface.getDialog().collectParserArgs(this) }
+                val configuration = runInTerminalSession { analyserInterface.getDialog().collectParserArgs(this) }
 
                 configuredParsers[selectedParser] = configuration
 
@@ -38,8 +38,8 @@ class ParserService {
         }
 
         fun selectParser(commandLine: CommandLine, parserRepository: PicocliParserRepository): String {
-            val AnalyserInterfaceNames = parserRepository.getAnalyserInterfaceNamesWithDescription(commandLine)
-            val selectedParser = runInTerminalSession { InteractiveDialog.askParserToExecute(this, AnalyserInterfaceNames) }
+            val analyserInterfaceNames = parserRepository.getAnalyserInterfaceNamesWithDescription(commandLine)
+            val selectedParser = runInTerminalSession { InteractiveDialog.askParserToExecute(this, analyserInterfaceNames) }
             return parserRepository.extractParserName(selectedParser)
         }
 

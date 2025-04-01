@@ -5,8 +5,8 @@ import com.google.gson.JsonParser
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
 import de.maibornwolff.codecharta.analysers.analyserinterface.ParserDialogInterface
 import de.maibornwolff.codecharta.analysers.analyserinterface.util.CodeChartaConstants
-import de.maibornwolff.codecharta.analysers.tools.pipeableparser.PipeableParser
-import de.maibornwolff.codecharta.analysers.tools.pipeableparser.PipeableParserSyncFlag
+import de.maibornwolff.codecharta.analysers.pipeableparser.PipeableParser
+import de.maibornwolff.codecharta.analysers.pipeableparser.PipeableParserSyncFlag
 import de.maibornwolff.codecharta.analysis.importer.tokeiimporter.strategy.ImporterStrategy
 import de.maibornwolff.codecharta.analysis.importer.tokeiimporter.strategy.TokeiInnerStrategy
 import de.maibornwolff.codecharta.analysis.importer.tokeiimporter.strategy.TokeiTwelveStrategy

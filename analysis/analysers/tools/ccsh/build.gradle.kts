@@ -28,7 +28,7 @@ dependencies {
             ":analysers:parsers:RawTextParser",
             ":analysers:tools:InspectionTool",
             ":analysers:AnalyserInterface",
-            ":analysers:tools:PipeableParser",
+            ":analysers:PipeableParser",
             ":analysers:tools:Inquirer",
             ":analysers:importers:SourceMonitorImporter"
         )
