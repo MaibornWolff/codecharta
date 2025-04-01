@@ -32,7 +32,7 @@ accepted
 
 There will be a new Module: "Analysers". This module contains the 5 different analyser type modules. For every of those 5 analyser types, there is an interface. These interfaces will be added in the future using the scout rule when the different analysers are adjusted.
 The "InteractiveParser" will be renamed to "AnalyserInterface". This interface implements the "Callable"-Interface.
-The "PipeableParser" will be renamed to "PipeableAnalyserInterface". (If all analysers should be piepable, we can remove this interface and implement the "PipeableInterface" in the "AnalyserInterface").
+The "PipeableParser" will be renamed to "PipeableAnalyserInterface". (If all analysers should be pipeable, we can remove this interface and implement the "PipeableInterface" in the "AnalyserInterface").
 
 The Inquirer module will be renamed to DialogProvider and placed in the analysis root module.
 
