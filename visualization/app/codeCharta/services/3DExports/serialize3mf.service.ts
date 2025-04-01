@@ -35,7 +35,7 @@ export async function serialize3mf(mesh: Mesh): Promise<string> {
     // Strings get encoded either via latin1, TextEncode or Fallback.
     // The TextEncode works fine during Prod/Dev usage, but in the test environment, is produces an array that is not "native" u8int
     // which causes the zip/unzip process to missinterpret the data.
-    // This could be an issue cause by our config stack, angular-jest-preset or fflate.
+    // This could be an issue cause by our config stack, angular-jest-preset or fflate. Issue for further investigation: https://github.com/101arrowz/fflate/issues/234
     const useLatinEncoding = true
 
     const data = {
