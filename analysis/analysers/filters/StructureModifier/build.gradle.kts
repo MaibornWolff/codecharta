@@ -1,7 +1,7 @@
 dependencies {
     implementation(project(":model"))
     implementation(project(":analysers:AnalyserInterface"))
-    implementation(project(":DialogProvider"))
+    implementation(project(":dialogProvider"))
     implementation(project(":analysers:tools:InspectionTool"))
 
     implementation(libs.picocli)

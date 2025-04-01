@@ -3,7 +3,7 @@ plugins {
 }
 
 include("ccsh")
-include("DialogProvider")
+include("dialogProvider")
 include("model")
 include("analysers:AnalyserInterface", "analysers:PipeableAnalyserInterface")
 include("analysers:filters:MergeFilter", "analysers:filters:EdgeFilter", "analysers:filters:StructureModifier")

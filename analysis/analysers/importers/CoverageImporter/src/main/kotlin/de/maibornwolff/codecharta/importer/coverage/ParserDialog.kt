@@ -3,11 +3,11 @@ package de.maibornwolff.codecharta.analysis.importer.coverage
 import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.Session
 import de.maibornwolff.codecharta.analysers.analyserinterface.ParserDialogInterface
-import de.maibornwolff.codecharta.analysers.inquirer.InputType
-import de.maibornwolff.codecharta.analysers.inquirer.myPromptConfirm
-import de.maibornwolff.codecharta.analysers.inquirer.myPromptDefaultFileFolderInput
-import de.maibornwolff.codecharta.analysers.inquirer.myPromptInput
-import de.maibornwolff.codecharta.analysers.inquirer.myPromptList
+import de.maibornwolff.codecharta.dialogProvider.InputType
+import de.maibornwolff.codecharta.dialogProvider.myPromptConfirm
+import de.maibornwolff.codecharta.dialogProvider.myPromptDefaultFileFolderInput
+import de.maibornwolff.codecharta.dialogProvider.myPromptInput
+import de.maibornwolff.codecharta.dialogProvider.myPromptList
 import java.util.Locale
 
 class ParserDialog {

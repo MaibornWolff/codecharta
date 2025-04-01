@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.analysers.inquirer
+package de.maibornwolff.codecharta.dialogProvider
 
 import com.varabyte.kotter.foundation.collections.LiveList
 import com.varabyte.kotter.foundation.collections.liveListOf

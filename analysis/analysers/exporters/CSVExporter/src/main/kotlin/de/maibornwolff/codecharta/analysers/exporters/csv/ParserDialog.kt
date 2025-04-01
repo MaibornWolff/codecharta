@@ -3,10 +3,10 @@ package de.maibornwolff.codecharta.analysers.exporters.csv
 import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.Session
 import de.maibornwolff.codecharta.analysers.analyserinterface.ParserDialogInterface
-import de.maibornwolff.codecharta.analysers.inquirer.InputType
-import de.maibornwolff.codecharta.analysers.inquirer.myPromptDefaultFileFolderInput
-import de.maibornwolff.codecharta.analysers.inquirer.myPromptInput
-import de.maibornwolff.codecharta.analysers.inquirer.myPromptInputNumber
+import de.maibornwolff.codecharta.dialogProvider.InputType
+import de.maibornwolff.codecharta.dialogProvider.myPromptDefaultFileFolderInput
+import de.maibornwolff.codecharta.dialogProvider.myPromptInput
+import de.maibornwolff.codecharta.dialogProvider.myPromptInputNumber
 import de.maibornwolff.codecharta.serialization.FileExtension
 
 class ParserDialog {

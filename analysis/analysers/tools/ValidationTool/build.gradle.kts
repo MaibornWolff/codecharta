@@ -1,6 +1,6 @@
 dependencies {
     implementation(project(":analysers:AnalyserInterface"))
-    implementation(project(":DialogProvider"))
+    implementation(project(":dialogProvider"))
     implementation(project(":model"))
 
     implementation(libs.json.schema)
