@@ -113,6 +113,7 @@
     "@types/color-convert": "^2.0.0",
     "@types/d3-hierarchy": "^3.0.2",
     "@types/expect-puppeteer": "^5.0.2",
+    "@types/jest": "^29.5.14",
     "@types/jest-environment-puppeteer": "^5.0.6",
     "@types/node": "^18.0.0",
     "@types/three": "^0.168.0",

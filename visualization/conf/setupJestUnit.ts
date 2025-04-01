@@ -1,4 +1,6 @@
-import "jest-preset-angular/setup-jest"
+import { setupZoneTestEnv } from "jest-preset-angular/setup-env/zone"
+
+setupZoneTestEnv()
 
 const numberToLocaleString = Number.prototype.toLocaleString
 Number.prototype.toLocaleString = function (locale = "en-US") {
