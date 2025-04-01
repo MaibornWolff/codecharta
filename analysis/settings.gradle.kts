@@ -23,10 +23,10 @@ include(
     "analysers:tools:ValidationTool",
     "analysers:tools:ccsh",
     "analysers:tools:InspectionTool",
-    "analysers:tools:InteractiveParser",
     "analysers:tools:PipeableParser",
     "analysers:tools:Inquirer"
 )
+include("analysers:InteractiveParser")
 
 rootProject.name = "codecharta"
 findProject(":analysers:tools:PipeableParser")?.name = "PipeableParser"

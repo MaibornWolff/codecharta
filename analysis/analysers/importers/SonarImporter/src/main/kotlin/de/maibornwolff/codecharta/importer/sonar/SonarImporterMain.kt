@@ -1,9 +1,9 @@
 package de.maibornwolff.codecharta.analysis.importer.sonar
 
 import de.maibornwolff.codecharta.analysers.filters.mergefilter.MergeFilter
-import de.maibornwolff.codecharta.analysers.tools.interactiveparser.InteractiveParser
-import de.maibornwolff.codecharta.analysers.tools.interactiveparser.ParserDialogInterface
-import de.maibornwolff.codecharta.analysers.tools.interactiveparser.util.CodeChartaConstants
+import de.maibornwolff.codecharta.analysers.interactiveparser.InteractiveParser
+import de.maibornwolff.codecharta.analysers.interactiveparser.ParserDialogInterface
+import de.maibornwolff.codecharta.analysers.interactiveparser.util.CodeChartaConstants
 import de.maibornwolff.codecharta.analysis.importer.sonar.dataaccess.SonarMeasuresAPIDatasource
 import de.maibornwolff.codecharta.analysis.importer.sonar.dataaccess.SonarMetricsAPIDatasource
 import de.maibornwolff.codecharta.analysis.importer.sonar.dataaccess.SonarVersionAPIDatasource

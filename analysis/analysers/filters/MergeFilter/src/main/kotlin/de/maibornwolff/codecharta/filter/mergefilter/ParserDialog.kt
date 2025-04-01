@@ -2,6 +2,7 @@ package de.maibornwolff.codecharta.analysers.filters.mergefilter
 
 import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.Session
+import de.maibornwolff.codecharta.analysers.interactiveparser.ParserDialogInterface
 import de.maibornwolff.codecharta.analysers.tools.inquirer.InputType
 import de.maibornwolff.codecharta.analysers.tools.inquirer.InputValidator
 import de.maibornwolff.codecharta.analysers.tools.inquirer.myPromptCheckbox
@@ -10,7 +11,6 @@ import de.maibornwolff.codecharta.analysers.tools.inquirer.myPromptDefaultFileFo
 import de.maibornwolff.codecharta.analysers.tools.inquirer.myPromptInput
 import de.maibornwolff.codecharta.analysers.tools.inquirer.myPromptInputNumber
 import de.maibornwolff.codecharta.analysers.tools.inquirer.myPromptList
-import de.maibornwolff.codecharta.analysers.tools.interactiveparser.ParserDialogInterface
 import de.maibornwolff.codecharta.serialization.FileExtension
 import java.io.File
 

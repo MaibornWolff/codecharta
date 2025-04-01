@@ -3,10 +3,10 @@ package de.maibornwolff.codecharta.analysers.filters.mergefilter
 import de.maibornwolff.codecharta.analysers.filters.mergefilter.ParserDialog.Companion.askForceMerge
 import de.maibornwolff.codecharta.analysers.filters.mergefilter.ParserDialog.Companion.requestMimoFileSelection
 import de.maibornwolff.codecharta.analysers.filters.mergefilter.mimo.Mimo
-import de.maibornwolff.codecharta.analysers.tools.interactiveparser.InteractiveParser
-import de.maibornwolff.codecharta.analysers.tools.interactiveparser.ParserDialogInterface
-import de.maibornwolff.codecharta.analysers.tools.interactiveparser.runInTerminalSession
-import de.maibornwolff.codecharta.analysers.tools.interactiveparser.util.CodeChartaConstants
+import de.maibornwolff.codecharta.analysers.interactiveparser.InteractiveParser
+import de.maibornwolff.codecharta.analysers.interactiveparser.ParserDialogInterface
+import de.maibornwolff.codecharta.analysers.interactiveparser.runInTerminalSession
+import de.maibornwolff.codecharta.analysers.interactiveparser.util.CodeChartaConstants
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer

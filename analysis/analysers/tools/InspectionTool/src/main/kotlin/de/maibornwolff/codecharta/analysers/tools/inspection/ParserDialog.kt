@@ -2,10 +2,10 @@ package de.maibornwolff.codecharta.analysers.tools.inspection
 
 import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.Session
+import de.maibornwolff.codecharta.analysers.interactiveparser.ParserDialogInterface
 import de.maibornwolff.codecharta.analysers.tools.inquirer.InputType
 import de.maibornwolff.codecharta.analysers.tools.inquirer.myPromptDefaultFileFolderInput
 import de.maibornwolff.codecharta.analysers.tools.inquirer.myPromptInputNumber
-import de.maibornwolff.codecharta.analysers.tools.interactiveparser.ParserDialogInterface
 import de.maibornwolff.codecharta.serialization.FileExtension
 
 class ParserDialog {

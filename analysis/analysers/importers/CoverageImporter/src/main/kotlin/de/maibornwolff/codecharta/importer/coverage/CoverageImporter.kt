@@ -1,9 +1,9 @@
 package de.maibornwolff.codecharta.analysis.importer.coverage
 
 import de.maibornwolff.codecharta.analysers.filters.mergefilter.MergeFilter
-import de.maibornwolff.codecharta.analysers.tools.interactiveparser.InteractiveParser
-import de.maibornwolff.codecharta.analysers.tools.interactiveparser.ParserDialogInterface
-import de.maibornwolff.codecharta.analysers.tools.interactiveparser.util.CodeChartaConstants
+import de.maibornwolff.codecharta.analysers.interactiveparser.InteractiveParser
+import de.maibornwolff.codecharta.analysers.interactiveparser.ParserDialogInterface
+import de.maibornwolff.codecharta.analysers.interactiveparser.util.CodeChartaConstants
 import de.maibornwolff.codecharta.analysers.tools.pipeableparser.PipeableParser
 import de.maibornwolff.codecharta.model.AttributeDescriptor
 import de.maibornwolff.codecharta.model.AttributeGenerator

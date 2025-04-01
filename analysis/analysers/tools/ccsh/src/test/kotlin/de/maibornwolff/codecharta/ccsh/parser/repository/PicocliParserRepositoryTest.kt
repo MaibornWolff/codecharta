@@ -4,11 +4,11 @@ import de.maibornwolff.codecharta.analysers.exporters.csv.CSVExporter
 import de.maibornwolff.codecharta.analysers.filters.edgefilter.EdgeFilter
 import de.maibornwolff.codecharta.analysers.filters.mergefilter.MergeFilter
 import de.maibornwolff.codecharta.analysers.filters.structuremodifier.StructureModifier
+import de.maibornwolff.codecharta.analysers.interactiveparser.InteractiveParser
+import de.maibornwolff.codecharta.analysers.interactiveparser.ParserDialogInterface
 import de.maibornwolff.codecharta.analysers.tools.ccsh.Ccsh
 import de.maibornwolff.codecharta.analysers.tools.ccsh.parser.repository.PicocliParserRepository
 import de.maibornwolff.codecharta.analysers.tools.inspection.InspectionTool
-import de.maibornwolff.codecharta.analysers.tools.interactiveparser.InteractiveParser
-import de.maibornwolff.codecharta.analysers.tools.interactiveparser.ParserDialogInterface
 import de.maibornwolff.codecharta.analysers.tools.validation.ValidationTool
 import de.maibornwolff.codecharta.analysis.importer.codemaat.CodeMaatImporter
 import de.maibornwolff.codecharta.analysis.importer.csv.CSVImporter

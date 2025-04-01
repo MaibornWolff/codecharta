@@ -1,8 +1,8 @@
 package de.maibornwolff.codecharta.analysers.tools.ccsh.parser
 
+import de.maibornwolff.codecharta.analysers.interactiveparser.InteractiveParser
+import de.maibornwolff.codecharta.analysers.interactiveparser.runInTerminalSession
 import de.maibornwolff.codecharta.analysers.tools.ccsh.parser.repository.PicocliParserRepository
-import de.maibornwolff.codecharta.analysers.tools.interactiveparser.InteractiveParser
-import de.maibornwolff.codecharta.analysers.tools.interactiveparser.runInTerminalSession
 import picocli.CommandLine
 
 class ParserService {

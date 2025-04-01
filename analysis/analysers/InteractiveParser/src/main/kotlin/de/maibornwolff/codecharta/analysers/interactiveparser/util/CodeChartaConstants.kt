@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.analysers.tools.interactiveparser.util
+package de.maibornwolff.codecharta.analysers.interactiveparser.util
 
 class CodeChartaConstants {
     object General {
