@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.analysers.tools.pipeableparser
+package de.maibornwolff.codecharta.analysers.pipeableparser
 
 interface PipeableParser {
     fun logPipeableParserSyncSignal(syncSignal: PipeableParserSyncFlag) {

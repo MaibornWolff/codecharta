@@ -2,7 +2,7 @@ dependencies {
     implementation(project(":model"))
     implementation(project(":analysers:tools:Inquirer"))
     implementation(project(":analysers:AnalyserInterface"))
-    implementation(project(":analysers:tools:PipeableParser"))
+    implementation(project(":analysers:PipeableParser"))
 
     implementation(libs.picocli)
     implementation(libs.boon)
