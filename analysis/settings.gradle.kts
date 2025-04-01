@@ -25,8 +25,8 @@ include(
     "analysers:tools:InspectionTool",
     "analysers:tools:Inquirer"
 )
-include("analysers:AnalyserInterface", "analysers:PipeableParser")
+include("analysers:AnalyserInterface", "analysers:PipeableAnalyserInterface")
 
 rootProject.name = "codecharta"
-findProject(":analysers:PipeableParser")?.name = "PipeableParser"
+findProject(":analysers:PipeableAnalyserInterface")?.name = "PipeableAnalyserInterface"
 include("analysers")

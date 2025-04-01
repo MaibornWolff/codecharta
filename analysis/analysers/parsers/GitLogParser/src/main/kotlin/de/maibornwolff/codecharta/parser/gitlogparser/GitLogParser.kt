@@ -4,8 +4,8 @@ import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
 import de.maibornwolff.codecharta.analysers.analyserinterface.ParserDialogInterface
 import de.maibornwolff.codecharta.analysers.analyserinterface.util.CodeChartaConstants
 import de.maibornwolff.codecharta.analysers.filters.mergefilter.MergeFilter
-import de.maibornwolff.codecharta.analysers.pipeableparser.PipeableParser
-import de.maibornwolff.codecharta.analysers.pipeableparser.PipeableParserSyncFlag
+import de.maibornwolff.codecharta.analysers.pipeableanalyserinterface.PipeableAnalyserInterface
+import de.maibornwolff.codecharta.analysers.pipeableanalyserinterface.PipeableAnalyserSyncFlag
 import de.maibornwolff.codecharta.model.AttributeDescriptor
 import de.maibornwolff.codecharta.model.AttributeGenerator
 import de.maibornwolff.codecharta.model.Project
@@ -40,7 +40,7 @@ class GitLogParser(
     private val input: InputStream = System.`in`,
     private val output: PrintStream = System.out,
     private val error: PrintStream = System.err
-) : Callable<Unit>, AnalyserInterface, PipeableParser, AttributeGenerator {
+) : Callable<Unit>, AnalyserInterface, PipeableAnalyserInterface, AttributeGenerator {
     private val inputFormatNames = GIT_LOG_NUMSTAT_RAW_REVERSED
 
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
@@ -99,7 +99,7 @@ class GitLogParser(
 
     @Throws(IOException::class)
     override fun call(): Unit? {
-        logPipeableParserSyncSignal(PipeableParserSyncFlag.SYNC_FLAG)
+        logPipeableAnalyserSyncSignal(PipeableAnalyserSyncFlag.SYNC_FLAG)
         return null
     }
 

@@ -5,8 +5,8 @@ import com.google.gson.JsonParser
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
 import de.maibornwolff.codecharta.analysers.analyserinterface.ParserDialogInterface
 import de.maibornwolff.codecharta.analysers.analyserinterface.util.CodeChartaConstants
-import de.maibornwolff.codecharta.analysers.pipeableparser.PipeableParser
-import de.maibornwolff.codecharta.analysers.pipeableparser.PipeableParserSyncFlag
+import de.maibornwolff.codecharta.analysers.pipeableanalyserinterface.PipeableAnalyserInterface
+import de.maibornwolff.codecharta.analysers.pipeableanalyserinterface.PipeableAnalyserSyncFlag
 import de.maibornwolff.codecharta.analysis.importer.tokeiimporter.strategy.ImporterStrategy
 import de.maibornwolff.codecharta.analysis.importer.tokeiimporter.strategy.TokeiInnerStrategy
 import de.maibornwolff.codecharta.analysis.importer.tokeiimporter.strategy.TokeiTwelveStrategy
@@ -39,7 +39,7 @@ class TokeiImporter(
     private val input: InputStream = System.`in`,
     private val output: PrintStream = System.out,
     private val error: PrintStream = System.err
-) : Callable<Unit>, AnalyserInterface, PipeableParser, AttributeGenerator {
+) : Callable<Unit>, AnalyserInterface, PipeableAnalyserInterface, AttributeGenerator {
     private val attributeTypes =
         AttributeTypes(type = "nodes").add("rloc", AttributeType.ABSOLUTE).add("loc", AttributeType.ABSOLUTE)
             .add("empty_lines", AttributeType.ABSOLUTE).add("comment_lines", AttributeType.ABSOLUTE)
@@ -87,7 +87,7 @@ class TokeiImporter(
 
     @Throws(IOException::class)
     override fun call(): Unit? {
-        logPipeableParserSyncSignal(PipeableParserSyncFlag.SYNC_FLAG)
+        logPipeableAnalyserSyncSignal(PipeableAnalyserSyncFlag.SYNC_FLAG)
 
         projectBuilder = ProjectBuilder()
         val root = getInput() ?: return null

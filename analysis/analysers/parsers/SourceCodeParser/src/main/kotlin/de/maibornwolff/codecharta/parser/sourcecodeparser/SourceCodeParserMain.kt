@@ -3,8 +3,8 @@ package de.maibornwolff.codecharta.parser.sourcecodeparser
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
 import de.maibornwolff.codecharta.analysers.analyserinterface.ParserDialogInterface
 import de.maibornwolff.codecharta.analysers.analyserinterface.util.CodeChartaConstants
-import de.maibornwolff.codecharta.analysers.pipeableparser.PipeableParser
-import de.maibornwolff.codecharta.analysers.pipeableparser.PipeableParserSyncFlag
+import de.maibornwolff.codecharta.analysers.pipeableanalyserinterface.PipeableAnalyserInterface
+import de.maibornwolff.codecharta.analysers.pipeableanalyserinterface.PipeableAnalyserSyncFlag
 import de.maibornwolff.codecharta.model.AttributeDescriptor
 import de.maibornwolff.codecharta.model.AttributeGenerator
 import de.maibornwolff.codecharta.parser.sourcecodeparser.metricwriters.CSVMetricWriter
@@ -39,7 +39,7 @@ class SourceCodeParserMain(
     private val output: PrintStream,
     private val input: InputStream = System.`in`,
     private val error: PrintStream = System.err
-) : Callable<Unit>, AnalyserInterface, PipeableParser, AttributeGenerator {
+) : Callable<Unit>, AnalyserInterface, PipeableAnalyserInterface, AttributeGenerator {
     // we need this constructor because ccsh requires an empty constructor
     constructor() : this(System.out)
 
@@ -117,7 +117,7 @@ class SourceCodeParserMain(
 
     @Throws(IOException::class)
     override fun call(): Unit? {
-        logPipeableParserSyncSignal(PipeableParserSyncFlag.SYNC_FLAG)
+        logPipeableAnalyserSyncSignal(PipeableAnalyserSyncFlag.SYNC_FLAG)
 
         require(InputHelper.isInputValidAndNotNull(arrayOf(file), canInputContainFolders = true)) {
             "Input invalid file for SourceCodeParser, stopping execution..."
