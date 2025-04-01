@@ -30,17 +30,25 @@ export async function serialize3mf(mesh: Mesh): Promise<string> {
     const contentType = getXMLcontentType()
     const relationships = getXMLrelationships()
 
+    // tl&dr: We use latin1 encoding here, because the default TextEncode doesn't work during the test environment with fflate zip/unzip.
+    //
+    // Strings get encoded either via latin1, TextEncode or Fallback.
+    // The TextEncode works fine during Prod/Dev usage, but in the test environment, is produces an array that is not "native" u8int
+    // which causes the zip/unzip process to missinterpret the data.
+    // This could be an issue cause by our config stack, angular-jest-preset or fflate.
+    const useLatinEncoding = true
+
     const data = {
         "3D": {
-            "3dmodel.model": strToU8(model)
+            "3dmodel.model": strToU8(model, useLatinEncoding)
         },
         _rels: {
-            ".rels": strToU8(relationships)
+            ".rels": strToU8(relationships, useLatinEncoding)
         },
         Metadata: {
-            "Slic3r_PE_model.config": strToU8(modelConfig)
+            "Slic3r_PE_model.config": strToU8(modelConfig, useLatinEncoding)
         },
-        "[Content_Types].xml": strToU8(contentType)
+        "[Content_Types].xml": strToU8(contentType, useLatinEncoding)
     }
     const options = {
         comment: "created by CodeCharta"
