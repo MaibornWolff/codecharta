@@ -2,7 +2,7 @@ dependencies {
     implementation(project(":model"))
     implementation(project(":analysers:tools:Inquirer"))
     implementation(project(":analysers:AnalyserInterface"))
-    implementation(project(":analysers:PipeableParser"))
+    implementation(project(":analysers:PipeableAnalyserInterface"))
     implementation(project(":analysers:filters:MergeFilter"))
 
     implementation(libs.picocli)
