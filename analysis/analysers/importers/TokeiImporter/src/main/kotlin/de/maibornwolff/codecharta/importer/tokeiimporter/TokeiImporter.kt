@@ -2,9 +2,9 @@ package de.maibornwolff.codecharta.analysis.importer.tokeiimporter
 
 import com.google.gson.JsonElement
 import com.google.gson.JsonParser
-import de.maibornwolff.codecharta.analysers.interactiveparser.InteractiveParser
-import de.maibornwolff.codecharta.analysers.interactiveparser.ParserDialogInterface
-import de.maibornwolff.codecharta.analysers.interactiveparser.util.CodeChartaConstants
+import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
+import de.maibornwolff.codecharta.analysers.analyserinterface.ParserDialogInterface
+import de.maibornwolff.codecharta.analysers.analyserinterface.util.CodeChartaConstants
 import de.maibornwolff.codecharta.analysers.tools.pipeableparser.PipeableParser
 import de.maibornwolff.codecharta.analysers.tools.pipeableparser.PipeableParserSyncFlag
 import de.maibornwolff.codecharta.analysis.importer.tokeiimporter.strategy.ImporterStrategy
@@ -39,7 +39,7 @@ class TokeiImporter(
     private val input: InputStream = System.`in`,
     private val output: PrintStream = System.out,
     private val error: PrintStream = System.err
-) : Callable<Unit>, InteractiveParser, PipeableParser, AttributeGenerator {
+) : Callable<Unit>, AnalyserInterface, PipeableParser, AttributeGenerator {
     private val attributeTypes =
         AttributeTypes(type = "nodes").add("rloc", AttributeType.ABSOLUTE).add("loc", AttributeType.ABSOLUTE)
             .add("empty_lines", AttributeType.ABSOLUTE).add("comment_lines", AttributeType.ABSOLUTE)

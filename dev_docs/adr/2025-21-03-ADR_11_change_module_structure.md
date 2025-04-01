@@ -19,7 +19,7 @@ We have 5 different analyser types:
 - parser
 - tool
 
-All of those 5 analyser types implements the "Callable"-Interface and the "InteractiveParser"-Interface.
+All of those 5 analyser types implements the "Callable"-Interface and the "AnalyserInterface"-Interface.
 Not all analysers that have a method like: "getAttributeDescriptorMaps" implement the "AttributeGenerator"-Interface - this can lead to confusion and potential errors.
 
 The Tool Module contains more than just tools, it also contains general super types like ccsh, inquirer or interactive parser. We need to separate the tools from the general super types.
@@ -31,10 +31,10 @@ accepted
 # Decision
 
 There will be a new Module: "Analysers". This module contains the 5 different analyser type modules. For every of those 5 analyser types, there is an interface.
-The "InteractiveParser" will be renamed to "AnalyserInterface". This interface implements the "Callable"-Interface.
+The "AnalyserInterface" will be renamed to "AnalyserInterface". This interface implements the "Callable"-Interface.
 The "PipeableParser" will be renamed to "PipeableAnalyserInterface". (If all analysers should be pipable, we can remove this interface and implement the "PipeableInterface" in the "AnalyserInterface").
 
-The Inquirer module will be placed in the new "AnalyserInterface" module (former "InteractiveParser" module), because all analysers that implement the "InteractiveParser"-Interface also need this "Inquirer"-Module.
+The Inquirer module will be placed in the new "AnalyserInterface" module (former "AnalyserInterface" module), because all analysers that implement the "AnalyserInterface"-Interface also need this "Inquirer"-Module.
 
 The "ccsh"-module will be moved one level up to the analysis folder.
 All mentions of "parser" in the ccsh are renamed to "analyser".

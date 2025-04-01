@@ -1,22 +1,22 @@
 package de.maibornwolff.codecharta.analysers.tools.ccsh.parser
 
-import de.maibornwolff.codecharta.analysers.interactiveparser.runInTerminalSession
+import de.maibornwolff.codecharta.analysers.analyserinterface.runInTerminalSession
 import de.maibornwolff.codecharta.analysers.tools.ccsh.Ccsh
 import de.maibornwolff.codecharta.analysers.tools.ccsh.parser.repository.PicocliParserRepository
 import de.maibornwolff.codecharta.util.Logger
 import picocli.CommandLine
 import java.io.File
 
-class InteractiveParserSuggestion {
+class AnalyserInterfaceSuggestion {
     companion object {
-        fun offerAndGetInteractiveParserSuggestionsAndConfigurations(commandLine: CommandLine): Map<String, List<String>> {
-            val applicableParsers = getApplicableInteractiveParsers(commandLine)
+        fun offerAndGetAnalyserInterfaceSuggestionsAndConfigurations(commandLine: CommandLine): Map<String, List<String>> {
+            val applicableParsers = getApplicableAnalyserInterfaces(commandLine)
 
             if (applicableParsers.isEmpty()) {
                 return emptyMap()
             }
 
-            val selectedParsers = selectToBeExecutedInteractiveParsers(applicableParsers)
+            val selectedParsers = selectToBeExecutedAnalyserInterfaces(applicableParsers)
 
             return if (selectedParsers.isEmpty()) {
                 emptyMap()
@@ -27,7 +27,7 @@ class InteractiveParserSuggestion {
             }
         }
 
-        private fun getApplicableInteractiveParsers(commandLine: CommandLine): List<String> {
+        private fun getApplicableAnalyserInterfaces(commandLine: CommandLine): List<String> {
             val inputFilePath: String = runInTerminalSession { InteractiveDialog.askForPath(this) }
 
             val inputFile = File(inputFilePath)
@@ -47,7 +47,7 @@ class InteractiveParserSuggestion {
             return applicableParsers
         }
 
-        private fun selectToBeExecutedInteractiveParsers(applicableParsers: List<String>): List<String> {
+        private fun selectToBeExecutedAnalyserInterfaces(applicableParsers: List<String>): List<String> {
             val selectedParsers: List<String> = runInTerminalSession { InteractiveDialog.askApplicableParser(this, applicableParsers) }
 
             if (selectedParsers.isEmpty()) {

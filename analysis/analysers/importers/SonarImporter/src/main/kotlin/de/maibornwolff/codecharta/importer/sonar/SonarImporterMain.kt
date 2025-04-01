@@ -1,9 +1,9 @@
 package de.maibornwolff.codecharta.analysis.importer.sonar
 
+import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
+import de.maibornwolff.codecharta.analysers.analyserinterface.ParserDialogInterface
+import de.maibornwolff.codecharta.analysers.analyserinterface.util.CodeChartaConstants
 import de.maibornwolff.codecharta.analysers.filters.mergefilter.MergeFilter
-import de.maibornwolff.codecharta.analysers.interactiveparser.InteractiveParser
-import de.maibornwolff.codecharta.analysers.interactiveparser.ParserDialogInterface
-import de.maibornwolff.codecharta.analysers.interactiveparser.util.CodeChartaConstants
 import de.maibornwolff.codecharta.analysis.importer.sonar.dataaccess.SonarMeasuresAPIDatasource
 import de.maibornwolff.codecharta.analysis.importer.sonar.dataaccess.SonarMetricsAPIDatasource
 import de.maibornwolff.codecharta.analysis.importer.sonar.dataaccess.SonarVersionAPIDatasource
@@ -29,7 +29,7 @@ import java.util.concurrent.Callable
 class SonarImporterMain(
     private val input: InputStream = System.`in`,
     private val output: PrintStream = System.out
-) : Callable<Unit>, InteractiveParser, AttributeGenerator {
+) : Callable<Unit>, AnalyserInterface, AttributeGenerator {
     @CommandLine.Option(
         names = ["-h", "--help"],
         usageHelp = true,

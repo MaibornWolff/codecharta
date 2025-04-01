@@ -1,6 +1,6 @@
-package de.maibornwolff.codecharta.analysers.interactiveparser
+package de.maibornwolff.codecharta.analysers.analyserinterface
 
-interface InteractiveParser {
+interface AnalyserInterface {
     val name: String
     val description: String
 

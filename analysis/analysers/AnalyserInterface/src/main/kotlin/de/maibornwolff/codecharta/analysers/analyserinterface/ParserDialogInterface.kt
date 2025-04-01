@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.analysers.interactiveparser
+package de.maibornwolff.codecharta.analysers.analyserinterface
 
 import com.varabyte.kotter.foundation.session
 import com.varabyte.kotter.runtime.Session

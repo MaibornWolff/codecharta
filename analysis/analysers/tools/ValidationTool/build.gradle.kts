@@ -1,5 +1,5 @@
 dependencies {
-    implementation(project(":analysers:InteractiveParser"))
+    implementation(project(":analysers:AnalyserInterface"))
     implementation(project(":analysers:tools:Inquirer"))
     implementation(project(":model"))
 

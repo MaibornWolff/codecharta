@@ -1,9 +1,9 @@
 package de.maibornwolff.codecharta.parser.svnlogparser
 
+import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
+import de.maibornwolff.codecharta.analysers.analyserinterface.ParserDialogInterface
+import de.maibornwolff.codecharta.analysers.analyserinterface.util.CodeChartaConstants
 import de.maibornwolff.codecharta.analysers.filters.mergefilter.MergeFilter
-import de.maibornwolff.codecharta.analysers.interactiveparser.InteractiveParser
-import de.maibornwolff.codecharta.analysers.interactiveparser.ParserDialogInterface
-import de.maibornwolff.codecharta.analysers.interactiveparser.util.CodeChartaConstants
 import de.maibornwolff.codecharta.analysers.tools.pipeableparser.PipeableParser
 import de.maibornwolff.codecharta.analysers.tools.pipeableparser.PipeableParserSyncFlag
 import de.maibornwolff.codecharta.model.AttributeDescriptor
@@ -38,7 +38,7 @@ class SVNLogParser(
     private val input: InputStream = System.`in`,
     private val output: PrintStream = System.out,
     private val error: PrintStream = System.err
-) : Callable<Unit>, InteractiveParser, PipeableParser, AttributeGenerator {
+) : Callable<Unit>, AnalyserInterface, PipeableParser, AttributeGenerator {
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
 

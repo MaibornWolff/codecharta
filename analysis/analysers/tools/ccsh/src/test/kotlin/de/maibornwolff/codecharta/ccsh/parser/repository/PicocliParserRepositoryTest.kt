@@ -1,11 +1,11 @@
 package de.maibornwolff.codecharta.ccsh.parser.repository
 
+import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
+import de.maibornwolff.codecharta.analysers.analyserinterface.ParserDialogInterface
 import de.maibornwolff.codecharta.analysers.exporters.csv.CSVExporter
 import de.maibornwolff.codecharta.analysers.filters.edgefilter.EdgeFilter
 import de.maibornwolff.codecharta.analysers.filters.mergefilter.MergeFilter
 import de.maibornwolff.codecharta.analysers.filters.structuremodifier.StructureModifier
-import de.maibornwolff.codecharta.analysers.interactiveparser.InteractiveParser
-import de.maibornwolff.codecharta.analysers.interactiveparser.ParserDialogInterface
 import de.maibornwolff.codecharta.analysers.tools.ccsh.Ccsh
 import de.maibornwolff.codecharta.analysers.tools.ccsh.parser.repository.PicocliParserRepository
 import de.maibornwolff.codecharta.analysers.tools.inspection.InspectionTool
@@ -60,8 +60,8 @@ class PicocliParserRepositoryTest {
         unmockkAll()
     }
 
-    private fun getExpectedParsers(): List<InteractiveParser> {
-        return listOf<InteractiveParser>(
+    private fun getExpectedParsers(): List<AnalyserInterface> {
+        return listOf<AnalyserInterface>(
             CSVExporter(),
             EdgeFilter(), MergeFilter(),
             StructureModifier(), CSVImporter(),
@@ -111,7 +111,7 @@ class PicocliParserRepositoryTest {
         val expectedParsers = getExpectedParsers()
         val expectedParserNames = expectedParsers.map { it.getParserName() }
 
-        val actualParsers = picocliParserRepository.getAllInteractiveParsers(cmdLine)
+        val actualParsers = picocliParserRepository.getAllAnalyserInterfaces(cmdLine)
         val actualParserNames = actualParsers.map { it.getParserName() }
 
         for (parser in expectedParserNames) {
@@ -124,7 +124,7 @@ class PicocliParserRepositoryTest {
         val expectedParsers = getExpectedParsers()
         val expectedParserNames = expectedParsers.map { it.getParserName() }
 
-        val actualParserNames = picocliParserRepository.getInteractiveParserNames(cmdLine)
+        val actualParserNames = picocliParserRepository.getAnalyserInterfaceNames(cmdLine)
 
         for (parser in expectedParserNames) {
             Assertions.assertTrue(actualParserNames.contains(parser))
@@ -137,7 +137,7 @@ class PicocliParserRepositoryTest {
         val unusableParser = mockParserObject("sonarimport", false)
 
         val usableParsers =
-            picocliParserRepository.getApplicableInteractiveParserNamesWithDescription(
+            picocliParserRepository.getApplicableAnalyserInterfaceNamesWithDescription(
                 "input",
                 listOf(usableParser, unusableParser)
             )
@@ -155,7 +155,7 @@ class PicocliParserRepositoryTest {
         val parserNameAndDescription = parserNameWithDescription[0] + parserNameWithDescription[1]
 
         val applicableParser =
-            picocliParserRepository.getApplicableInteractiveParserNamesWithDescription("input", listOf(parser))
+            picocliParserRepository.getApplicableAnalyserInterfaceNamesWithDescription("input", listOf(parser))
 
         Assertions.assertTrue(applicableParser.size == 1)
         Assertions.assertTrue(applicableParser[0] == parserNameAndDescription)
@@ -165,7 +165,7 @@ class PicocliParserRepositoryTest {
     fun `should return all parser names with description`() {
         val expectedParserNamesWithDescription = getExpectedParserNamesWithDescription()
 
-        val actualParserNamesWithDescription = picocliParserRepository.getInteractiveParserNamesWithDescription(cmdLine)
+        val actualParserNamesWithDescription = picocliParserRepository.getAnalyserInterfaceNamesWithDescription(cmdLine)
 
         for (parserNameWithDescriptionList in expectedParserNamesWithDescription) {
             val parserNameWithDescription = parserNameWithDescriptionList[0] + parserNameWithDescriptionList[1]
@@ -193,7 +193,7 @@ class PicocliParserRepositoryTest {
 
     @Test
     fun `should not crash when trying to get invalid parser name and output message`() {
-        val parserName = picocliParserRepository.getInteractiveParser(cmdLine, "nonexistent")
+        val parserName = picocliParserRepository.getAnalyserInterface(cmdLine, "nonexistent")
 
         Assertions.assertNull(parserName)
         Assertions.assertTrue(
@@ -201,8 +201,8 @@ class PicocliParserRepositoryTest {
         )
     }
 
-    private fun mockParserObject(name: String, isUsable: Boolean): InteractiveParser {
-        val obj = cmdLine.subcommands[name]!!.commandSpec.userObject() as InteractiveParser
+    private fun mockParserObject(name: String, isUsable: Boolean): AnalyserInterface {
+        val obj = cmdLine.subcommands[name]!!.commandSpec.userObject() as AnalyserInterface
         mockkObject(obj)
         val dialogInterface = mockkClass(ParserDialogInterface::class)
         val dummyArgs = listOf("dummyArg")

@@ -2,9 +2,9 @@ package de.maibornwolff.codecharta.analysers.exporters.csv
 
 import com.univocity.parsers.csv.CsvWriter
 import com.univocity.parsers.csv.CsvWriterSettings
-import de.maibornwolff.codecharta.analysers.interactiveparser.InteractiveParser
-import de.maibornwolff.codecharta.analysers.interactiveparser.ParserDialogInterface
-import de.maibornwolff.codecharta.analysers.interactiveparser.util.CodeChartaConstants
+import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
+import de.maibornwolff.codecharta.analysers.analyserinterface.ParserDialogInterface
+import de.maibornwolff.codecharta.analysers.analyserinterface.util.CodeChartaConstants
 import de.maibornwolff.codecharta.model.Node
 import de.maibornwolff.codecharta.model.Path
 import de.maibornwolff.codecharta.model.Project
@@ -27,7 +27,7 @@ import java.util.concurrent.Callable
     description = [CSVExporter.DESCRIPTION],
     footer = [CodeChartaConstants.General.GENERIC_FOOTER]
 )
-class CSVExporter() : Callable<Unit>, InteractiveParser {
+class CSVExporter() : Callable<Unit>, AnalyserInterface {
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
 

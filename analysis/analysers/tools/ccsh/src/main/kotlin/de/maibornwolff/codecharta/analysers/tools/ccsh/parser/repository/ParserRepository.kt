@@ -1,19 +1,19 @@
 package de.maibornwolff.codecharta.analysers.tools.ccsh.parser.repository
 
-import de.maibornwolff.codecharta.analysers.interactiveparser.InteractiveParser
+import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
 
 interface ParserRepository<T> {
-    fun getInteractiveParserNames(dataSource: T): List<String>
+    fun getAnalyserInterfaceNames(dataSource: T): List<String>
 
-    fun getInteractiveParserNamesWithDescription(dataSource: T): List<String>
+    fun getAnalyserInterfaceNamesWithDescription(dataSource: T): List<String>
 
     fun extractParserName(parserNameWithDescription: String): String
 
-    fun getAllInteractiveParsers(dataSource: T): List<InteractiveParser>
+    fun getAllAnalyserInterfaces(dataSource: T): List<AnalyserInterface>
 
-    fun getApplicableParsers(inputFile: String, allParsers: List<InteractiveParser>): List<InteractiveParser>
+    fun getApplicableParsers(inputFile: String, allParsers: List<AnalyserInterface>): List<AnalyserInterface>
 
-    fun getApplicableInteractiveParserNamesWithDescription(inputFile: String, allParsers: List<InteractiveParser>): List<String>
+    fun getApplicableAnalyserInterfaceNamesWithDescription(inputFile: String, allParsers: List<AnalyserInterface>): List<String>
 
-    fun getInteractiveParser(dataSource: T, name: String): InteractiveParser?
+    fun getAnalyserInterface(dataSource: T, name: String): AnalyserInterface?
 }

@@ -1,13 +1,13 @@
 package de.maibornwolff.codecharta.analysers.tools.ccsh
 
+import de.maibornwolff.codecharta.analysers.analyserinterface.runInTerminalSession
+import de.maibornwolff.codecharta.analysers.analyserinterface.util.CodeChartaConstants
 import de.maibornwolff.codecharta.analysers.exporters.csv.CSVExporter
 import de.maibornwolff.codecharta.analysers.filters.edgefilter.EdgeFilter
 import de.maibornwolff.codecharta.analysers.filters.mergefilter.MergeFilter
 import de.maibornwolff.codecharta.analysers.filters.structuremodifier.StructureModifier
-import de.maibornwolff.codecharta.analysers.interactiveparser.runInTerminalSession
-import de.maibornwolff.codecharta.analysers.interactiveparser.util.CodeChartaConstants
+import de.maibornwolff.codecharta.analysers.tools.ccsh.parser.AnalyserInterfaceSuggestion
 import de.maibornwolff.codecharta.analysers.tools.ccsh.parser.InteractiveDialog
-import de.maibornwolff.codecharta.analysers.tools.ccsh.parser.InteractiveParserSuggestion
 import de.maibornwolff.codecharta.analysers.tools.ccsh.parser.ParserService
 import de.maibornwolff.codecharta.analysers.tools.ccsh.parser.repository.PicocliParserRepository
 import de.maibornwolff.codecharta.analysers.tools.inspection.InspectionTool
@@ -95,16 +95,16 @@ class Ccsh : Callable<Unit?> {
                         args.contains(
                             "--interactive"
                         ) || args.contains("-i")
-                ) -> selectAndExecuteInteractiveParser(commandLine)
+                ) -> selectAndExecuteAnalyserInterface(commandLine)
 
-                isParserKnownButWithoutArgs(args, commandLine) -> executeInteractiveParser(args.first(), commandLine)
+                isParserKnownButWithoutArgs(args, commandLine) -> executeAnalyserInterface(args.first(), commandLine)
                 else -> commandLine.execute(*sanitizeArgs(args))
             }
         }
 
         private fun executeParserSuggestions(commandLine: CommandLine): Int {
             val configuredParsers =
-                InteractiveParserSuggestion.offerAndGetInteractiveParserSuggestionsAndConfigurations(
+                AnalyserInterfaceSuggestion.offerAndGetAnalyserInterfaceSuggestionsAndConfigurations(
                     commandLine
                 )
             if (configuredParsers.isEmpty()) {
@@ -194,12 +194,12 @@ class Ccsh : Callable<Unit?> {
             return exitCode
         }
 
-        private fun selectAndExecuteInteractiveParser(commandLine: CommandLine): Int {
+        private fun selectAndExecuteAnalyserInterface(commandLine: CommandLine): Int {
             val selectedParser = ParserService.selectParser(commandLine, PicocliParserRepository())
-            return executeInteractiveParser(selectedParser, commandLine)
+            return executeAnalyserInterface(selectedParser, commandLine)
         }
 
-        private fun executeInteractiveParser(selectedParser: String, commandLine: CommandLine): Int {
+        private fun executeAnalyserInterface(selectedParser: String, commandLine: CommandLine): Int {
             Logger.info { "Executing $selectedParser" }
             return ParserService.executeSelectedParser(commandLine, selectedParser)
         }

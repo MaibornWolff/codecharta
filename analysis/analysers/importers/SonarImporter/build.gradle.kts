@@ -2,7 +2,7 @@ dependencies {
     implementation(project(":model"))
     implementation(project(":analysers:tools:Inquirer"))
     implementation(project(":analysers:filters:MergeFilter"))
-    implementation(project(":analysers:InteractiveParser"))
+    implementation(project(":analysers:AnalyserInterface"))
 
     implementation(libs.rxjava2)
     implementation(libs.jersey.client)

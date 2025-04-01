@@ -1,8 +1,8 @@
 package de.maibornwolff.codecharta.analysers.tools.inspection
 
-import de.maibornwolff.codecharta.analysers.interactiveparser.InteractiveParser
-import de.maibornwolff.codecharta.analysers.interactiveparser.ParserDialogInterface
-import de.maibornwolff.codecharta.analysers.interactiveparser.util.CodeChartaConstants
+import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
+import de.maibornwolff.codecharta.analysers.analyserinterface.ParserDialogInterface
+import de.maibornwolff.codecharta.analysers.analyserinterface.util.CodeChartaConstants
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.util.InputHelper
@@ -21,7 +21,7 @@ import java.util.concurrent.Callable
 class InspectionTool(
     private val input: InputStream = System.`in`,
     private val output: PrintStream = System.out
-) : Callable<Unit?>, InteractiveParser {
+) : Callable<Unit?>, AnalyserInterface {
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     var help: Boolean = false
 

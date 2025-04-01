@@ -1,8 +1,8 @@
 package de.maibornwolff.codecharta.ccsh.parser
 
 import com.varabyte.kotterx.test.foundation.testSession
-import de.maibornwolff.codecharta.analysers.interactiveparser.InteractiveParser
-import de.maibornwolff.codecharta.analysers.interactiveparser.ParserDialogInterface
+import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
+import de.maibornwolff.codecharta.analysers.analyserinterface.ParserDialogInterface
 import de.maibornwolff.codecharta.analysers.tools.ccsh.Ccsh
 import de.maibornwolff.codecharta.analysers.tools.ccsh.parser.InteractiveDialog
 import de.maibornwolff.codecharta.analysers.tools.ccsh.parser.ParserService
@@ -226,8 +226,8 @@ class ParserServiceTest {
         assertThat(outContent.toString()).contains("Now configuring $parser.")
     }
 
-    private fun mockParserObject(name: String): InteractiveParser {
-        val obj = cmdLine.subcommands[name]!!.commandSpec.userObject() as InteractiveParser
+    private fun mockParserObject(name: String): AnalyserInterface {
+        val obj = cmdLine.subcommands[name]!!.commandSpec.userObject() as AnalyserInterface
         mockkObject(obj)
         val dialogInterface = mockkClass(ParserDialogInterface::class)
         val dummyArgs = listOf("dummyArg")
@@ -247,15 +247,15 @@ class ParserServiceTest {
         val obj = mockkClass(PicocliParserRepository::class)
 
         every {
-            obj.getInteractiveParser(any(), any())
+            obj.getAnalyserInterface(any(), any())
         } returns mockParserObject(mockParserName)
 
         every {
-            obj.getAllInteractiveParsers(any())
+            obj.getAllAnalyserInterfaces(any())
         } returns emptyList()
 
         every {
-            obj.getApplicableInteractiveParserNamesWithDescription(any(), any())
+            obj.getApplicableAnalyserInterfaceNamesWithDescription(any(), any())
         } returns usableParsers
 
         return obj

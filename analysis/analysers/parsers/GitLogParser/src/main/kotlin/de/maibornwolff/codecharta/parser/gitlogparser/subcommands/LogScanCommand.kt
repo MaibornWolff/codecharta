@@ -1,8 +1,8 @@
 package de.maibornwolff.codecharta.parser.gitlogparser.subcommands
 
-import de.maibornwolff.codecharta.analysers.interactiveparser.InteractiveParser
-import de.maibornwolff.codecharta.analysers.interactiveparser.ParserDialogInterface
-import de.maibornwolff.codecharta.analysers.interactiveparser.util.CodeChartaConstants
+import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
+import de.maibornwolff.codecharta.analysers.analyserinterface.ParserDialogInterface
+import de.maibornwolff.codecharta.analysers.analyserinterface.util.CodeChartaConstants
 import de.maibornwolff.codecharta.parser.gitlogparser.GitLogParser
 import de.maibornwolff.codecharta.util.InputHelper
 import picocli.CommandLine
@@ -14,7 +14,7 @@ import java.util.concurrent.Callable
     description = [LogScanCommand.DESCRIPTION],
     footer = [CodeChartaConstants.General.GENERIC_FOOTER]
 )
-class LogScanCommand : Callable<Unit>, InteractiveParser {
+class LogScanCommand : Callable<Unit>, AnalyserInterface {
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
 
