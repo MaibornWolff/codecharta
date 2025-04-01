@@ -1,16 +1,16 @@
 package de.maibornwolff.codecharta.analysers.tools.ccsh.parser
 
-import de.maibornwolff.codecharta.analysers.interactiveparser.InteractiveParser
-import de.maibornwolff.codecharta.analysers.interactiveparser.runInTerminalSession
+import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
+import de.maibornwolff.codecharta.analysers.analyserinterface.runInTerminalSession
 import de.maibornwolff.codecharta.analysers.tools.ccsh.parser.repository.PicocliParserRepository
 import picocli.CommandLine
 
 class ParserService {
     companion object {
         fun getParserSuggestions(commandLine: CommandLine, parserRepository: PicocliParserRepository, inputFile: String): List<String> {
-            val allParsers = parserRepository.getAllInteractiveParsers(commandLine)
+            val allParsers = parserRepository.getAllAnalyserInterfaces(commandLine)
             val usableParsers =
-                parserRepository.getApplicableInteractiveParserNamesWithDescription(inputFile, allParsers)
+                parserRepository.getApplicableAnalyserInterfaceNamesWithDescription(inputFile, allParsers)
 
             return usableParsers.ifEmpty { emptyList() }
         }
@@ -23,11 +23,11 @@ class ParserService {
             val configuredParsers = mutableMapOf<String, List<String>>()
             for (selectedParser in selectedParsers) {
                 println(System.lineSeparator() + "Now configuring $selectedParser.")
-                val interactiveParser = parserRepository.getInteractiveParser(commandLine, selectedParser)
+                val AnalyserInterface = parserRepository.getAnalyserInterface(commandLine, selectedParser)
 
-                requireNotNull(interactiveParser) { "Tried to configure non existing parser!" }
+                requireNotNull(AnalyserInterface) { "Tried to configure non existing parser!" }
 
-                val configuration = runInTerminalSession { interactiveParser.getDialog().collectParserArgs(this) }
+                val configuration = runInTerminalSession { AnalyserInterface.getDialog().collectParserArgs(this) }
 
                 configuredParsers[selectedParser] = configuration
 
@@ -38,15 +38,15 @@ class ParserService {
         }
 
         fun selectParser(commandLine: CommandLine, parserRepository: PicocliParserRepository): String {
-            val interactiveParserNames = parserRepository.getInteractiveParserNamesWithDescription(commandLine)
-            val selectedParser = runInTerminalSession { InteractiveDialog.askParserToExecute(this, interactiveParserNames) }
+            val AnalyserInterfaceNames = parserRepository.getAnalyserInterfaceNamesWithDescription(commandLine)
+            val selectedParser = runInTerminalSession { InteractiveDialog.askParserToExecute(this, AnalyserInterfaceNames) }
             return parserRepository.extractParserName(selectedParser)
         }
 
         fun executeSelectedParser(commandLine: CommandLine, selectedParser: String): Int {
             val subCommand = commandLine.subcommands.getValue(selectedParser)
             val parserObject = subCommand.commandSpec.userObject()
-            val interactive = parserObject as InteractiveParser
+            val interactive = parserObject as AnalyserInterface
             val collectedArgs = runInTerminalSession { interactive.getDialog().collectParserArgs(this) }
 
             val subCommandLine = CommandLine(interactive)
@@ -58,7 +58,7 @@ class ParserService {
         fun executePreconfiguredParser(commandLine: CommandLine, configuredParser: Pair<String, List<String>>): Int {
             val subCommand = commandLine.subcommands.getValue(configuredParser.first)
             val parserObject = subCommand.commandSpec.userObject()
-            val interactive = parserObject as InteractiveParser
+            val interactive = parserObject as AnalyserInterface
             val subCommandLine = CommandLine(interactive)
             return subCommandLine.execute(*configuredParser.second.toTypedArray())
         }

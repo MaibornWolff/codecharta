@@ -1,8 +1,8 @@
 package de.maibornwolff.codecharta.parser.sourcecodeparser
 
-import de.maibornwolff.codecharta.analysers.interactiveparser.InteractiveParser
-import de.maibornwolff.codecharta.analysers.interactiveparser.ParserDialogInterface
-import de.maibornwolff.codecharta.analysers.interactiveparser.util.CodeChartaConstants
+import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
+import de.maibornwolff.codecharta.analysers.analyserinterface.ParserDialogInterface
+import de.maibornwolff.codecharta.analysers.analyserinterface.util.CodeChartaConstants
 import de.maibornwolff.codecharta.analysers.tools.pipeableparser.PipeableParser
 import de.maibornwolff.codecharta.analysers.tools.pipeableparser.PipeableParserSyncFlag
 import de.maibornwolff.codecharta.model.AttributeDescriptor
@@ -39,7 +39,7 @@ class SourceCodeParserMain(
     private val output: PrintStream,
     private val input: InputStream = System.`in`,
     private val error: PrintStream = System.err
-) : Callable<Unit>, InteractiveParser, PipeableParser, AttributeGenerator {
+) : Callable<Unit>, AnalyserInterface, PipeableParser, AttributeGenerator {
     // we need this constructor because ccsh requires an empty constructor
     constructor() : this(System.out)
 

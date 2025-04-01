@@ -2,8 +2,8 @@ package de.maibornwolff.codecharta.analysers.filters.mergefilter
 
 import com.varabyte.kotter.runtime.Session
 import com.varabyte.kotterx.test.foundation.testSession
+import de.maibornwolff.codecharta.analysers.analyserinterface.runInTerminalSession
 import de.maibornwolff.codecharta.analysers.filters.mergefilter.MergeFilter.Companion.main
-import de.maibornwolff.codecharta.analysers.interactiveparser.runInTerminalSession
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import io.mockk.every
 import io.mockk.mockkObject
@@ -575,7 +575,7 @@ class MergeFilterTest {
     }
 
     private fun mockRunInTerminalSession() {
-        mockkStatic("de.maibornwolff.codecharta.analysers.interactiveparser.ParserDialogInterfaceKt")
+        mockkStatic("de.maibornwolff.codecharta.analysers.analyserinterface.ParserDialogInterfaceKt")
         every { runInTerminalSession(any<Session.() -> Any>()) } answers {
             runInTestSession { firstArg<Session.() -> Any>()(this) }
         }

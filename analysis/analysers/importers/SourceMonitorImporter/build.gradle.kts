@@ -2,7 +2,7 @@ dependencies {
     implementation(project(":model"))
     implementation(project(":analysers:tools:Inquirer"))
     implementation(project(":analysers:importers:CSVImporter"))
-    implementation(project(":analysers:InteractiveParser"))
+    implementation(project(":analysers:AnalyserInterface"))
 
     implementation(libs.univocity.parsers)
     implementation(libs.picocli)

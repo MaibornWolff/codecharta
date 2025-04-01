@@ -2,7 +2,7 @@ package de.maibornwolff.codecharta.analysers.filters.edgefilter
 
 import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.Session
-import de.maibornwolff.codecharta.analysers.interactiveparser.ParserDialogInterface
+import de.maibornwolff.codecharta.analysers.analyserinterface.ParserDialogInterface
 import de.maibornwolff.codecharta.analysers.tools.inquirer.InputType
 import de.maibornwolff.codecharta.analysers.tools.inquirer.myPromptDefaultFileFolderInput
 import de.maibornwolff.codecharta.analysers.tools.inquirer.myPromptInput

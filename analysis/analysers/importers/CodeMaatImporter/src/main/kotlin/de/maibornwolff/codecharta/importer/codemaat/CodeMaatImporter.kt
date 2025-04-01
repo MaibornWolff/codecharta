@@ -1,8 +1,8 @@
 package de.maibornwolff.codecharta.analysis.importer.codemaat
 
-import de.maibornwolff.codecharta.analysers.interactiveparser.InteractiveParser
-import de.maibornwolff.codecharta.analysers.interactiveparser.ParserDialogInterface
-import de.maibornwolff.codecharta.analysers.interactiveparser.util.CodeChartaConstants
+import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
+import de.maibornwolff.codecharta.analysers.analyserinterface.ParserDialogInterface
+import de.maibornwolff.codecharta.analysers.analyserinterface.util.CodeChartaConstants
 import de.maibornwolff.codecharta.model.AttributeDescriptor
 import de.maibornwolff.codecharta.model.AttributeGenerator
 import de.maibornwolff.codecharta.model.AttributeType
@@ -24,7 +24,7 @@ import java.util.concurrent.Callable
 )
 class CodeMaatImporter(
     private val output: PrintStream = System.out
-) : Callable<Unit>, InteractiveParser, AttributeGenerator {
+) : Callable<Unit>, AnalyserInterface, AttributeGenerator {
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
 

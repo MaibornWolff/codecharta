@@ -1,14 +1,14 @@
 package de.maibornwolff.codecharta.analysers.tools.ccsh.parser.repository
 
-import de.maibornwolff.codecharta.analysers.interactiveparser.InteractiveParser
+import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
 import picocli.CommandLine
 
 class PicocliParserRepository : ParserRepository<CommandLine> {
-    override fun getInteractiveParserNames(dataSource: CommandLine): List<String> {
+    override fun getAnalyserInterfaceNames(dataSource: CommandLine): List<String> {
         val subCommands = dataSource.subcommands.values
         return subCommands.mapNotNull { subCommand ->
             val parserName = subCommand.commandName
-            if (subCommand.commandSpec.userObject() is InteractiveParser) {
+            if (subCommand.commandSpec.userObject() is AnalyserInterface) {
                 parserName
             } else {
                 null
@@ -16,12 +16,12 @@ class PicocliParserRepository : ParserRepository<CommandLine> {
         }
     }
 
-    override fun getInteractiveParserNamesWithDescription(dataSource: CommandLine): List<String> {
+    override fun getAnalyserInterfaceNamesWithDescription(dataSource: CommandLine): List<String> {
         val subCommands = dataSource.subcommands.values
         return subCommands.mapNotNull { subCommand ->
             val parserName = subCommand.commandName
             val parser = subCommand.commandSpec.userObject()
-            if (parser is InteractiveParser) {
+            if (parser is AnalyserInterface) {
                 val parserDescriptions = subCommand.commandSpec.usageMessage().description()
                 val parserDescription = parserDescriptions[0]
                 "$parserName - $parserDescription"
@@ -35,8 +35,8 @@ class PicocliParserRepository : ParserRepository<CommandLine> {
         return parserNameWithDescription.substringBefore(' ')
     }
 
-    override fun getApplicableParsers(inputFile: String, allParsers: List<InteractiveParser>): List<InteractiveParser> {
-        val usableParsers = mutableListOf<InteractiveParser>()
+    override fun getApplicableParsers(inputFile: String, allParsers: List<AnalyserInterface>): List<AnalyserInterface> {
+        val usableParsers = mutableListOf<AnalyserInterface>()
 
         for (parser in allParsers) {
             if (parser.isApplicable(inputFile)) {
@@ -47,11 +47,11 @@ class PicocliParserRepository : ParserRepository<CommandLine> {
         return usableParsers
     }
 
-    override fun getAllInteractiveParsers(dataSource: CommandLine): List<InteractiveParser> {
-        val allParserNames = getInteractiveParserNames(dataSource)
-        val allParsers = mutableListOf<InteractiveParser>()
+    override fun getAllAnalyserInterfaces(dataSource: CommandLine): List<AnalyserInterface> {
+        val allParserNames = getAnalyserInterfaceNames(dataSource)
+        val allParsers = mutableListOf<AnalyserInterface>()
         for (parserName in allParserNames) {
-            val interactive = getInteractiveParser(dataSource, parserName)
+            val interactive = getAnalyserInterface(dataSource, parserName)
 
             if (interactive != null) {
                 allParsers.add(interactive)
@@ -60,7 +60,7 @@ class PicocliParserRepository : ParserRepository<CommandLine> {
         return allParsers
     }
 
-    override fun getApplicableInteractiveParserNamesWithDescription(inputFile: String, allParsers: List<InteractiveParser>): List<String> {
+    override fun getApplicableAnalyserInterfaceNamesWithDescription(inputFile: String, allParsers: List<AnalyserInterface>): List<String> {
         val applicableParsers = getApplicableParsers(inputFile, allParsers)
         val result = mutableListOf<String>()
         for (parser in applicableParsers) {
@@ -70,11 +70,11 @@ class PicocliParserRepository : ParserRepository<CommandLine> {
         return result
     }
 
-    override fun getInteractiveParser(dataSource: CommandLine, name: String): InteractiveParser? {
+    override fun getAnalyserInterface(dataSource: CommandLine, name: String): AnalyserInterface? {
         return try {
             val subCommand = dataSource.subcommands.getValue(name)
             val parserObject = subCommand.commandSpec.userObject()
-            parserObject as? InteractiveParser
+            parserObject as? AnalyserInterface
         } catch (exception: NoSuchElementException) {
             println("Could not find the specified parser with the name '$name'!")
             null

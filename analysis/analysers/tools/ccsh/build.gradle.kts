@@ -27,7 +27,7 @@ dependencies {
             ":analysers:parsers:GitLogParser",
             ":analysers:parsers:RawTextParser",
             ":analysers:tools:InspectionTool",
-            ":analysers:InteractiveParser",
+            ":analysers:AnalyserInterface",
             ":analysers:tools:PipeableParser",
             ":analysers:tools:Inquirer",
             ":analysers:importers:SourceMonitorImporter"

@@ -1,8 +1,8 @@
 package de.maibornwolff.codecharta.analysers.tools.validation
 
-import de.maibornwolff.codecharta.analysers.interactiveparser.InteractiveParser
-import de.maibornwolff.codecharta.analysers.interactiveparser.ParserDialogInterface
-import de.maibornwolff.codecharta.analysers.interactiveparser.util.CodeChartaConstants
+import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
+import de.maibornwolff.codecharta.analysers.analyserinterface.ParserDialogInterface
+import de.maibornwolff.codecharta.analysers.analyserinterface.util.CodeChartaConstants
 import de.maibornwolff.codecharta.util.InputHelper
 import picocli.CommandLine
 import java.io.File
@@ -14,7 +14,7 @@ import java.util.concurrent.Callable
     description = [ValidationTool.DESCRIPTION],
     footer = [CodeChartaConstants.General.GENERIC_FOOTER]
 )
-class ValidationTool : Callable<Unit?>, InteractiveParser {
+class ValidationTool : Callable<Unit?>, AnalyserInterface {
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     var help: Boolean = false
 

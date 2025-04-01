@@ -1,7 +1,7 @@
 package de.maibornwolff.codecharta.parser.gitlogparser.subcommands
 
-import de.maibornwolff.codecharta.analysers.interactiveparser.InteractiveParser
-import de.maibornwolff.codecharta.analysers.interactiveparser.ParserDialogInterface
+import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
+import de.maibornwolff.codecharta.analysers.analyserinterface.ParserDialogInterface
 import de.maibornwolff.codecharta.parser.gitlogparser.GitLogParser
 import de.maibornwolff.codecharta.parser.gitlogparser.util.GitAdapter
 import de.maibornwolff.codecharta.util.InputHelper
@@ -16,7 +16,7 @@ import java.util.concurrent.Callable
     description = [RepoScanCommand.DESCRIPTION],
     footer = ["Copyright(c) 2024, MaibornWolff GmbH"]
 )
-class RepoScanCommand : Callable<Unit>, InteractiveParser {
+class RepoScanCommand : Callable<Unit>, AnalyserInterface {
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
 
