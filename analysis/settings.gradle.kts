@@ -22,10 +22,9 @@ include("analysers:exporters:CSVExporter")
 include(
     "analysers:tools:ValidationTool",
     "analysers:tools:ccsh",
-    "analysers:tools:InspectionTool",
-    "analysers:tools:Inquirer"
+    "analysers:tools:InspectionTool"
 )
-include("analysers:AnalyserInterface", "analysers:PipeableAnalyserInterface")
+include("analysers:AnalyserInterface", "analysers:PipeableAnalyserInterface", "analysers:Inquirer")
 
 rootProject.name = "codecharta"
 findProject(":analysers:PipeableAnalyserInterface")?.name = "PipeableAnalyserInterface"

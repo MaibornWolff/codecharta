@@ -7,16 +7,16 @@ import de.maibornwolff.codecharta.util.Logger
 import picocli.CommandLine
 import java.io.File
 
-class AnalyserInterfaceSuggestion {
+class InteractiveAnalyserSuggestion {
     companion object {
-        fun offerAndGetAnalyserInterfaceSuggestionsAndConfigurations(commandLine: CommandLine): Map<String, List<String>> {
-            val applicableParsers = getApplicableAnalyserInterfaces(commandLine)
+        fun offerAndGetAnalyserSuggestionsAndConfigurations(commandLine: CommandLine): Map<String, List<String>> {
+            val applicableParsers = getApplicableAnalyser(commandLine)
 
             if (applicableParsers.isEmpty()) {
                 return emptyMap()
             }
 
-            val selectedParsers = selectToBeExecutedAnalyserInterfaces(applicableParsers)
+            val selectedParsers = selectToBeExecutedAnalyser(applicableParsers)
 
             return if (selectedParsers.isEmpty()) {
                 emptyMap()
@@ -27,7 +27,7 @@ class AnalyserInterfaceSuggestion {
             }
         }
 
-        private fun getApplicableAnalyserInterfaces(commandLine: CommandLine): List<String> {
+        private fun getApplicableAnalyser(commandLine: CommandLine): List<String> {
             val inputFilePath: String = runInTerminalSession { InteractiveDialog.askForPath(this) }
 
             val inputFile = File(inputFilePath)
@@ -47,7 +47,7 @@ class AnalyserInterfaceSuggestion {
             return applicableParsers
         }
 
-        private fun selectToBeExecutedAnalyserInterfaces(applicableParsers: List<String>): List<String> {
+        private fun selectToBeExecutedAnalyser(applicableParsers: List<String>): List<String> {
             val selectedParsers: List<String> = runInTerminalSession { InteractiveDialog.askApplicableParser(this, applicableParsers) }
 
             if (selectedParsers.isEmpty()) {

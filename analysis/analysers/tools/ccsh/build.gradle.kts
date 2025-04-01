@@ -29,7 +29,7 @@ dependencies {
             ":analysers:tools:InspectionTool",
             ":analysers:AnalyserInterface",
             ":analysers:PipeableAnalyserInterface",
-            ":analysers:tools:Inquirer",
+            ":analysers:Inquirer",
             ":analysers:importers:SourceMonitorImporter"
         )
 

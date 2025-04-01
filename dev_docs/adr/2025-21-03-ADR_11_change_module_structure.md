@@ -32,7 +32,7 @@ accepted
 
 There will be a new Module: "Analysers". This module contains the 5 different analyser type modules. For every of those 5 analyser types, there is an interface.
 The "AnalyserInterface" will be renamed to "AnalyserInterface". This interface implements the "Callable"-Interface.
-The "PipeableParser" will be renamed to "PipeableAnalyserInterface". (If all analysers should be pipable, we can remove this interface and implement the "PipeableInterface" in the "AnalyserInterface").
+The "PipeableParser" will be renamed to "PipeableAnalyserInterface". (If all analysers should be piepable, we can remove this interface and implement the "PipeableInterface" in the "AnalyserInterface").
 
 The Inquirer module will be placed in the new "AnalyserInterface" module (former "AnalyserInterface" module), because all analysers that implement the "AnalyserInterface"-Interface also need this "Inquirer"-Module.
 

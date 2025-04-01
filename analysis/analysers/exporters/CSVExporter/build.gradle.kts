@@ -1,6 +1,6 @@
 dependencies {
     implementation(project(":model"))
-    implementation(project(":analysers:tools:Inquirer"))
+    implementation(project(":analysers:Inquirer"))
     implementation(project(":analysers:AnalyserInterface"))
 
     implementation(libs.boon)

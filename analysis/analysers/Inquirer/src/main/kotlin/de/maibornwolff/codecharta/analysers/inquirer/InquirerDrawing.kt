@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.analysers.tools.inquirer
+package de.maibornwolff.codecharta.analysers.inquirer
 
 import com.varabyte.kotter.foundation.collections.LiveList
 import com.varabyte.kotter.foundation.input.Completions

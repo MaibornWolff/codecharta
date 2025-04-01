@@ -3,16 +3,17 @@ package de.maibornwolff.codecharta.analysers.exporters.csv
 import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.Session
 import de.maibornwolff.codecharta.analysers.analyserinterface.ParserDialogInterface
-import de.maibornwolff.codecharta.analysers.tools.inquirer.myPromptDefaultFileFolderInput
-import de.maibornwolff.codecharta.analysers.tools.inquirer.myPromptInput
-import de.maibornwolff.codecharta.analysers.tools.inquirer.myPromptInputNumber
+import de.maibornwolff.codecharta.analysers.inquirer.InputType
+import de.maibornwolff.codecharta.analysers.inquirer.myPromptDefaultFileFolderInput
+import de.maibornwolff.codecharta.analysers.inquirer.myPromptInput
+import de.maibornwolff.codecharta.analysers.inquirer.myPromptInputNumber
 import de.maibornwolff.codecharta.serialization.FileExtension
 
 class ParserDialog {
     companion object : ParserDialogInterface {
         override fun collectParserArgs(session: Session): List<String> {
             val inputFileName: String = session.myPromptDefaultFileFolderInput(
-                inputType = de.maibornwolff.codecharta.analysers.tools.inquirer.InputType.FOLDER_AND_FILE,
+                inputType = InputType.FOLDER_AND_FILE,
                 fileExtensionList = listOf(FileExtension.CCJSON, FileExtension.CCGZ),
                 onInputReady = testCallback()
             )

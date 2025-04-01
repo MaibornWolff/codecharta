@@ -3,10 +3,10 @@ package de.maibornwolff.codecharta.parser.svnlogparser
 import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.Session
 import de.maibornwolff.codecharta.analysers.analyserinterface.ParserDialogInterface
-import de.maibornwolff.codecharta.analysers.tools.inquirer.InputType
-import de.maibornwolff.codecharta.analysers.tools.inquirer.myPromptConfirm
-import de.maibornwolff.codecharta.analysers.tools.inquirer.myPromptDefaultFileFolderInput
-import de.maibornwolff.codecharta.analysers.tools.inquirer.myPromptInput
+import de.maibornwolff.codecharta.analysers.inquirer.InputType
+import de.maibornwolff.codecharta.analysers.inquirer.myPromptConfirm
+import de.maibornwolff.codecharta.analysers.inquirer.myPromptDefaultFileFolderInput
+import de.maibornwolff.codecharta.analysers.inquirer.myPromptInput
 
 class ParserDialog {
     companion object : ParserDialogInterface {
