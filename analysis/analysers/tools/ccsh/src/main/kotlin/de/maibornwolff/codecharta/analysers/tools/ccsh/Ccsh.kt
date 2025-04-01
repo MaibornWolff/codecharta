@@ -6,7 +6,7 @@ import de.maibornwolff.codecharta.analysers.exporters.csv.CSVExporter
 import de.maibornwolff.codecharta.analysers.filters.edgefilter.EdgeFilter
 import de.maibornwolff.codecharta.analysers.filters.mergefilter.MergeFilter
 import de.maibornwolff.codecharta.analysers.filters.structuremodifier.StructureModifier
-import de.maibornwolff.codecharta.analysers.tools.ccsh.parser.AnalyserInterfaceSuggestion
+import de.maibornwolff.codecharta.analysers.tools.ccsh.parser.InteractiveAnalyserSuggestion
 import de.maibornwolff.codecharta.analysers.tools.ccsh.parser.InteractiveDialog
 import de.maibornwolff.codecharta.analysers.tools.ccsh.parser.ParserService
 import de.maibornwolff.codecharta.analysers.tools.ccsh.parser.repository.PicocliParserRepository
@@ -95,16 +95,16 @@ class Ccsh : Callable<Unit?> {
                         args.contains(
                             "--interactive"
                         ) || args.contains("-i")
-                ) -> selectAndExecuteAnalyserInterface(commandLine)
+                ) -> selectAndExecuteAnalyser(commandLine)
 
-                isParserKnownButWithoutArgs(args, commandLine) -> executeAnalyserInterface(args.first(), commandLine)
+                isParserKnownButWithoutArgs(args, commandLine) -> executeAnalyser(args.first(), commandLine)
                 else -> commandLine.execute(*sanitizeArgs(args))
             }
         }
 
         private fun executeParserSuggestions(commandLine: CommandLine): Int {
             val configuredParsers =
-                AnalyserInterfaceSuggestion.offerAndGetAnalyserInterfaceSuggestionsAndConfigurations(
+                InteractiveAnalyserSuggestion.offerAndGetAnalyserSuggestionsAndConfigurations(
                     commandLine
                 )
             if (configuredParsers.isEmpty()) {
@@ -194,12 +194,12 @@ class Ccsh : Callable<Unit?> {
             return exitCode
         }
 
-        private fun selectAndExecuteAnalyserInterface(commandLine: CommandLine): Int {
+        private fun selectAndExecuteAnalyser(commandLine: CommandLine): Int {
             val selectedParser = ParserService.selectParser(commandLine, PicocliParserRepository())
-            return executeAnalyserInterface(selectedParser, commandLine)
+            return executeAnalyser(selectedParser, commandLine)
         }
 
-        private fun executeAnalyserInterface(selectedParser: String, commandLine: CommandLine): Int {
+        private fun executeAnalyser(selectedParser: String, commandLine: CommandLine): Int {
             Logger.info { "Executing $selectedParser" }
             return ParserService.executeSelectedParser(commandLine, selectedParser)
         }

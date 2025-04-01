@@ -1,6 +1,6 @@
 dependencies {
     implementation(project(":analysers:AnalyserInterface"))
-    implementation(project(":analysers:tools:Inquirer"))
+    implementation(project(":analysers:Inquirer"))
     implementation(project(":model"))
 
     implementation(libs.json.schema)

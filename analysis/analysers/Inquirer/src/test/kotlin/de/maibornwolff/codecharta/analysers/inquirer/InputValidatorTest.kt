@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.analysers.tools.inquirer
+package de.maibornwolff.codecharta.analysers.inquirer
 
 import de.maibornwolff.codecharta.serialization.FileExtension
 import org.assertj.core.api.Assertions.assertThat
@@ -65,7 +65,7 @@ class InputValidatorTest {
         expectedValidation: Boolean
     ) {
         assertThat(
-            de.maibornwolff.codecharta.analysers.tools.inquirer.InputValidator.isFileOrFolderValid(inputType, fileExtensionList)(path)
+            InputValidator.isFileOrFolderValid(inputType, fileExtensionList)(path)
         ).isEqualTo(expectedValidation)
     }
 
@@ -74,7 +74,7 @@ class InputValidatorTest {
     @MethodSource("provideNumbersForVerification")
     fun `should return expected greater then check`(baseNumber: Int, inputNumber: Int, expectedValidation: Boolean) {
         assertThat(
-            de.maibornwolff.codecharta.analysers.tools.inquirer.InputValidator.isNumberGreaterThen(baseNumber)(inputNumber.toString())
+            InputValidator.isNumberGreaterThen(baseNumber)(inputNumber.toString())
         ).isEqualTo(expectedValidation)
     }
 }

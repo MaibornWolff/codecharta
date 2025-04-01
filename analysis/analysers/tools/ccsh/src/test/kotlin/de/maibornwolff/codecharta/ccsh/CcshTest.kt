@@ -1,7 +1,7 @@
 package de.maibornwolff.codecharta.ccsh
 
 import de.maibornwolff.codecharta.analysers.tools.ccsh.Ccsh
-import de.maibornwolff.codecharta.analysers.tools.ccsh.parser.AnalyserInterfaceSuggestion
+import de.maibornwolff.codecharta.analysers.tools.ccsh.parser.InteractiveAnalyserSuggestion
 import de.maibornwolff.codecharta.analysers.tools.ccsh.parser.InteractiveDialog
 import de.maibornwolff.codecharta.analysers.tools.ccsh.parser.ParserService
 import de.maibornwolff.codecharta.ccsh.SessionMock.Companion.mockRunInTerminalSession
@@ -75,7 +75,7 @@ class CcshTest {
         } returns -1
     }
 
-    private fun mockAnalyserInterfaceSuggestionDialog(selectedParsers: List<String>, parserArgs: List<List<String>>) {
+    private fun mockAnalyserSuggestionDialog(selectedParsers: List<String>, parserArgs: List<List<String>>) {
         if (selectedParsers.size != parserArgs.size) {
             throw IllegalArgumentException("There must be the same amount of args as parsers!")
         }
@@ -85,9 +85,9 @@ class CcshTest {
             parsersAndArgs.put(currentParserName, currentParserArgs)
         }
 
-        mockkObject(AnalyserInterfaceSuggestion)
+        mockkObject(InteractiveAnalyserSuggestion)
         every {
-            AnalyserInterfaceSuggestion.offerAndGetAnalyserInterfaceSuggestionsAndConfigurations(any())
+            InteractiveAnalyserSuggestion.offerAndGetAnalyserSuggestionsAndConfigurations(any())
         } returns parsersAndArgs
     }
 
@@ -174,7 +174,7 @@ class CcshTest {
         val args = listOf(listOf("dummyArg1"), listOf("dummyArg2"))
 
         mockRunInTerminalSession()
-        mockAnalyserInterfaceSuggestionDialog(selectedParsers, args)
+        mockAnalyserSuggestionDialog(selectedParsers, args)
         mockSuccessfulParserService()
         mockPrepareInteractiveDialog()
         mockDialogRunParsers(true)
@@ -192,7 +192,7 @@ class CcshTest {
     @Test
     fun `should only execute parsers when configuration was successful`() {
         // given
-        mockAnalyserInterfaceSuggestionDialog(emptyList(), emptyList())
+        mockAnalyserSuggestionDialog(emptyList(), emptyList())
         mockSuccessfulParserService()
 
         // when
@@ -211,7 +211,7 @@ class CcshTest {
         val args = listOf(listOf("dummyArg1"), listOf("dummyArg2"))
 
         mockRunInTerminalSession()
-        mockAnalyserInterfaceSuggestionDialog(selectedParsers, args)
+        mockAnalyserSuggestionDialog(selectedParsers, args)
         mockSuccessfulParserService()
         mockPrepareInteractiveDialog()
         mockDialogRunParsers(false)
@@ -289,7 +289,7 @@ class CcshTest {
         val args = listOf(listOf("dummyArg1"))
 
         mockRunInTerminalSession()
-        mockAnalyserInterfaceSuggestionDialog(selectedParsers, args)
+        mockAnalyserSuggestionDialog(selectedParsers, args)
         mockSuccessfulParserService()
         mockPrepareInteractiveDialog()
         mockDialogRunParsers(true)
@@ -378,7 +378,7 @@ class CcshTest {
             )
 
         mockRunInTerminalSession()
-        mockAnalyserInterfaceSuggestionDialog(selectedParsers, args)
+        mockAnalyserSuggestionDialog(selectedParsers, args)
         mockPrepareInteractiveDialog()
         mockDialogRunParsers(true)
         mockDialogMergeResults(true)

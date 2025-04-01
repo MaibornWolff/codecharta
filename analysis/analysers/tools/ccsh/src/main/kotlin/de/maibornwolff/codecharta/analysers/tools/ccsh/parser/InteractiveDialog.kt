@@ -2,12 +2,12 @@ package de.maibornwolff.codecharta.analysers.tools.ccsh.parser
 
 import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.Session
-import de.maibornwolff.codecharta.analysers.tools.inquirer.InputType
-import de.maibornwolff.codecharta.analysers.tools.inquirer.InputValidator
-import de.maibornwolff.codecharta.analysers.tools.inquirer.myPromptCheckbox
-import de.maibornwolff.codecharta.analysers.tools.inquirer.myPromptConfirm
-import de.maibornwolff.codecharta.analysers.tools.inquirer.myPromptInput
-import de.maibornwolff.codecharta.analysers.tools.inquirer.myPromptList
+import de.maibornwolff.codecharta.analysers.inquirer.InputType
+import de.maibornwolff.codecharta.analysers.inquirer.InputValidator
+import de.maibornwolff.codecharta.analysers.inquirer.myPromptCheckbox
+import de.maibornwolff.codecharta.analysers.inquirer.myPromptConfirm
+import de.maibornwolff.codecharta.analysers.inquirer.myPromptInput
+import de.maibornwolff.codecharta.analysers.inquirer.myPromptList
 import java.nio.file.Paths
 
 class InteractiveDialog {

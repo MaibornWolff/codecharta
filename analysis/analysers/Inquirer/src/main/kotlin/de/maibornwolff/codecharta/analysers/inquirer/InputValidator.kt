@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.analysers.tools.inquirer
+package de.maibornwolff.codecharta.analysers.inquirer
 
 import de.maibornwolff.codecharta.serialization.FileExtension
 import java.io.File

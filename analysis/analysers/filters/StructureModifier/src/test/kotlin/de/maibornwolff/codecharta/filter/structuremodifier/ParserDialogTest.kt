@@ -7,7 +7,7 @@ import com.varabyte.kotter.runtime.terminal.inmemory.press
 import com.varabyte.kotter.runtime.terminal.inmemory.type
 import com.varabyte.kotterx.test.foundation.testSession
 import de.maibornwolff.codecharta.analysers.filters.structuremodifier.ParserDialog.Companion.collectParserArgs
-import de.maibornwolff.codecharta.analysers.tools.inquirer.myPromptList
+import de.maibornwolff.codecharta.analysers.inquirer.myPromptList
 import io.mockk.every
 import io.mockk.mockkObject
 import io.mockk.mockkStatic
