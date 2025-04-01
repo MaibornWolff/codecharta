@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.analysers.tools.interactiveparser
+package de.maibornwolff.codecharta.analysers.interactiveparser
 
 interface InteractiveParser {
     val name: String

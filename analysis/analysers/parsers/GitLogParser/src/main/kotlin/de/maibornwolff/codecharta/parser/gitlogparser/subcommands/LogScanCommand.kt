@@ -1,8 +1,8 @@
 package de.maibornwolff.codecharta.parser.gitlogparser.subcommands
 
-import de.maibornwolff.codecharta.analysers.tools.interactiveparser.InteractiveParser
-import de.maibornwolff.codecharta.analysers.tools.interactiveparser.ParserDialogInterface
-import de.maibornwolff.codecharta.analysers.tools.interactiveparser.util.CodeChartaConstants
+import de.maibornwolff.codecharta.analysers.interactiveparser.InteractiveParser
+import de.maibornwolff.codecharta.analysers.interactiveparser.ParserDialogInterface
+import de.maibornwolff.codecharta.analysers.interactiveparser.util.CodeChartaConstants
 import de.maibornwolff.codecharta.parser.gitlogparser.GitLogParser
 import de.maibornwolff.codecharta.util.InputHelper
 import picocli.CommandLine

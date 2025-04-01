@@ -1,6 +1,6 @@
 package de.maibornwolff.codecharta.analysers.tools.ccsh.parser.repository
 
-import de.maibornwolff.codecharta.analysers.tools.interactiveparser.InteractiveParser
+import de.maibornwolff.codecharta.analysers.interactiveparser.InteractiveParser
 import picocli.CommandLine
 
 class PicocliParserRepository : ParserRepository<CommandLine> {
