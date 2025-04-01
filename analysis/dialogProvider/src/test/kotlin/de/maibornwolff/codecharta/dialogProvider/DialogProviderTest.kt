@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.analysers.inquirer
+package de.maibornwolff.codecharta.dialogProvider
 
 import com.varabyte.kotter.foundation.input.Keys
 import com.varabyte.kotter.foundation.text.black
@@ -18,7 +18,7 @@ import com.varabyte.kotterx.test.terminal.assertMatches
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
-class InquirerTest {
+class DialogProviderTest {
     private val testInput = "this is text to simulate user input."
 
     private val testMessage = "this test message is displayed as the question."

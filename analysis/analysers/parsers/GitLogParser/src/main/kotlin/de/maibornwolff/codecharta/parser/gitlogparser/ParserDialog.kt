@@ -3,8 +3,8 @@ package de.maibornwolff.codecharta.parser.gitlogparser
 import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.Session
 import de.maibornwolff.codecharta.analysers.analyserinterface.ParserDialogInterface
-import de.maibornwolff.codecharta.analysers.inquirer.myPromptConfirm
-import de.maibornwolff.codecharta.analysers.inquirer.myPromptInput
+import de.maibornwolff.codecharta.dialogProvider.myPromptConfirm
+import de.maibornwolff.codecharta.dialogProvider.myPromptInput
 import de.maibornwolff.codecharta.parser.gitlogparser.subcommands.LogScanCommand
 import de.maibornwolff.codecharta.parser.gitlogparser.subcommands.RepoScanCommand
 

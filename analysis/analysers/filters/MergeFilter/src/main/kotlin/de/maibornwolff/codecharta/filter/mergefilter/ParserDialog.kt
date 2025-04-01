@@ -3,14 +3,14 @@ package de.maibornwolff.codecharta.analysers.filters.mergefilter
 import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.Session
 import de.maibornwolff.codecharta.analysers.analyserinterface.ParserDialogInterface
-import de.maibornwolff.codecharta.analysers.inquirer.InputType
-import de.maibornwolff.codecharta.analysers.inquirer.InputValidator
-import de.maibornwolff.codecharta.analysers.inquirer.myPromptCheckbox
-import de.maibornwolff.codecharta.analysers.inquirer.myPromptConfirm
-import de.maibornwolff.codecharta.analysers.inquirer.myPromptDefaultFileFolderInput
-import de.maibornwolff.codecharta.analysers.inquirer.myPromptInput
-import de.maibornwolff.codecharta.analysers.inquirer.myPromptInputNumber
-import de.maibornwolff.codecharta.analysers.inquirer.myPromptList
+import de.maibornwolff.codecharta.dialogProvider.InputType
+import de.maibornwolff.codecharta.dialogProvider.InputValidator
+import de.maibornwolff.codecharta.dialogProvider.myPromptCheckbox
+import de.maibornwolff.codecharta.dialogProvider.myPromptConfirm
+import de.maibornwolff.codecharta.dialogProvider.myPromptDefaultFileFolderInput
+import de.maibornwolff.codecharta.dialogProvider.myPromptInput
+import de.maibornwolff.codecharta.dialogProvider.myPromptInputNumber
+import de.maibornwolff.codecharta.dialogProvider.myPromptList
 import de.maibornwolff.codecharta.serialization.FileExtension
 import java.io.File
 

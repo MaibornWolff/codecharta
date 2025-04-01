@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.analysers.inquirer
+package de.maibornwolff.codecharta.dialogProvider
 
 import de.maibornwolff.codecharta.serialization.FileExtension
 import org.assertj.core.api.Assertions.assertThat

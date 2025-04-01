@@ -1,6 +1,6 @@
 dependencies {
     implementation(project(":model"))
-    implementation(project(":DialogProvider"))
+    implementation(project(":dialogProvider"))
     implementation(project(":analysers:AnalyserInterface"))
     implementation(project(":analysers:PipeableAnalyserInterface"))
 
