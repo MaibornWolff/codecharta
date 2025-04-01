@@ -2,7 +2,9 @@ plugins {
     id("org.gradle.toolchains.foojay-resolver-convention") version "0.9.0"
 }
 
+include("ccsh")
 include("model")
+include("analysers:AnalyserInterface", "analysers:PipeableAnalyserInterface", "analysers:Inquirer")
 include("analysers:filters:MergeFilter", "analysers:filters:EdgeFilter", "analysers:filters:StructureModifier")
 include(
     "analysers:importers:CodeMaatImporter",
@@ -21,10 +23,8 @@ include(
 include("analysers:exporters:CSVExporter")
 include(
     "analysers:tools:ValidationTool",
-    "analysers:tools:ccsh",
     "analysers:tools:InspectionTool"
 )
-include("analysers:AnalyserInterface", "analysers:PipeableAnalyserInterface", "analysers:Inquirer")
 
 rootProject.name = "codecharta"
 findProject(":analysers:PipeableAnalyserInterface")?.name = "PipeableAnalyserInterface"
