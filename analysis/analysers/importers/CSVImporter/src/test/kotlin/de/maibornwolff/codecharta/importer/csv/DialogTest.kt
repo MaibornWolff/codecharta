@@ -7,7 +7,7 @@ import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.terminal.inmemory.press
 import com.varabyte.kotter.runtime.terminal.inmemory.type
 import com.varabyte.kotterx.test.foundation.testSession
-import de.maibornwolff.codecharta.analysis.importer.csv.ParserDialog.Companion.collectParserArgs
+import de.maibornwolff.codecharta.analysis.importer.csv.Dialog.Companion.collectParserArgs
 import io.mockk.every
 import io.mockk.mockkObject
 import org.assertj.core.api.Assertions.assertThat
@@ -18,7 +18,7 @@ import picocli.CommandLine
 import java.io.File
 
 @Timeout(120)
-class ParserDialogTest {
+class DialogTest {
     private val testResourceBaseFolder = "src/test/resources/"
     private val inputFileName = "${testResourceBaseFolder}csvimporter.csv"
     private val outputFileName = "out.cc.json"
@@ -30,7 +30,7 @@ class ParserDialogTest {
         val delimiter = ";"
         val isCompressed = false
 
-        mockkObject(ParserDialog.Companion)
+        mockkObject(Dialog.Companion)
 
         testSession { terminal ->
             val fileCallback: suspend RunScope.() -> Unit = {
@@ -58,7 +58,7 @@ class ParserDialogTest {
                 terminal.press(Keys.ENTER)
             }
 
-            every { ParserDialog.Companion.testCallback() } returnsMany listOf(
+            every { Dialog.Companion.testCallback() } returnsMany listOf(
                 fileCallback,
                 outFileCallback,
                 columnCallback,
@@ -94,7 +94,7 @@ class ParserDialogTest {
         val delimiter = ";"
         val pathSeparator = "/"
 
-        mockkObject(ParserDialog.Companion)
+        mockkObject(Dialog.Companion)
 
         testSession { terminal ->
             val fileCallback: suspend RunScope.() -> Unit = {
@@ -116,7 +116,7 @@ class ParserDialogTest {
                 terminal.press(Keys.ENTER)
             }
 
-            every { ParserDialog.Companion.testCallback() } returnsMany listOf(
+            every { Dialog.Companion.testCallback() } returnsMany listOf(
                 fileCallback,
                 outFileCallback,
                 columnCallback,
@@ -148,7 +148,7 @@ class ParserDialogTest {
         val delimiter = ","
         val separator = "\\"
 
-        mockkObject(ParserDialog.Companion)
+        mockkObject(Dialog.Companion)
 
         testSession { terminal ->
             val fileCallback: suspend RunScope.() -> Unit = {
@@ -178,7 +178,7 @@ class ParserDialogTest {
                 terminal.press(Keys.ENTER)
             }
 
-            every { ParserDialog.Companion.testCallback() } returnsMany listOf(
+            every { Dialog.Companion.testCallback() } returnsMany listOf(
                 fileCallback,
                 outFileCallback,
                 columnCallback,

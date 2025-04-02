@@ -118,7 +118,7 @@ class CodeMaatImporter(
             return AttributeTypes(attributeTypes.toMutableMap(), type)
         }
 
-    override fun getDialog(): ParserDialogInterface = ParserDialog
+    override fun getDialog(): ParserDialogInterface = Dialog
 
     override fun isApplicable(resourceToBeParsed: String): Boolean {
         return false

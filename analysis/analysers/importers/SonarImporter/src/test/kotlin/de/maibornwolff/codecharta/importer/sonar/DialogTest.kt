@@ -5,7 +5,7 @@ import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.terminal.inmemory.press
 import com.varabyte.kotter.runtime.terminal.inmemory.type
 import com.varabyte.kotterx.test.foundation.testSession
-import de.maibornwolff.codecharta.analysis.importer.sonar.ParserDialog.Companion.collectParserArgs
+import de.maibornwolff.codecharta.analysis.importer.sonar.Dialog.Companion.collectParserArgs
 import io.mockk.every
 import io.mockk.mockkObject
 import io.mockk.unmockkAll
@@ -26,7 +26,7 @@ class DialogTest {
 
     @BeforeEach
     fun setup() {
-        mockkObject(ParserDialog.Companion)
+        mockkObject(Dialog.Companion)
     }
 
     @AfterEach
@@ -65,7 +65,7 @@ class DialogTest {
                 terminal.press(Keys.ENTER)
             }
 
-            every { ParserDialog.Companion.testCallback() } returnsMany listOf(
+            every { Dialog.Companion.testCallback() } returnsMany listOf(
                 hostCallback,
                 projectCallback,
                 tokenCallback,
@@ -128,7 +128,7 @@ class DialogTest {
                 terminal.press(Keys.ENTER)
             }
 
-            every { ParserDialog.Companion.testCallback() } returnsMany listOf(
+            every { Dialog.Companion.testCallback() } returnsMany listOf(
                 hostCallback,
                 projectCallback,
                 tokenCallback,
@@ -191,7 +191,7 @@ class DialogTest {
                 terminal.press(Keys.ENTER)
             }
 
-            every { ParserDialog.Companion.testCallback() } returnsMany listOf(
+            every { Dialog.Companion.testCallback() } returnsMany listOf(
                 hostCallback,
                 projectCallback,
                 tokenCallback,
@@ -255,7 +255,7 @@ class DialogTest {
                 terminal.press(Keys.ENTER)
             }
 
-            every { ParserDialog.Companion.testCallback() } returnsMany listOf(
+            every { Dialog.Companion.testCallback() } returnsMany listOf(
                 hostCallback,
                 projectCallback,
                 tokenCallback,
@@ -312,7 +312,7 @@ class DialogTest {
                 terminal.press(Keys.ENTER)
             }
 
-            every { ParserDialog.Companion.testCallback() } returnsMany listOf(
+            every { Dialog.Companion.testCallback() } returnsMany listOf(
                 hostCallback,
                 projectCallback,
                 tokenCallback,
