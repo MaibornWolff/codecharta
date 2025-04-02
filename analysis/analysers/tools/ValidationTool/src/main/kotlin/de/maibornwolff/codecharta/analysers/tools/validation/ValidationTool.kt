@@ -1,7 +1,7 @@
 package de.maibornwolff.codecharta.analysers.tools.validation
 
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
-import de.maibornwolff.codecharta.analysers.analyserinterface.ParserDialogInterface
+import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserDialogInterface
 import de.maibornwolff.codecharta.analysers.analyserinterface.util.CodeChartaConstants
 import de.maibornwolff.codecharta.util.InputHelper
 import picocli.CommandLine
@@ -41,7 +41,7 @@ class ValidationTool : Callable<Unit?>, AnalyserInterface {
         return null
     }
 
-    override fun getDialog(): ParserDialogInterface = Dialog
+    override fun getDialog(): AnalyserDialogInterface = Dialog
 
     override fun isApplicable(resourceToBeParsed: String): Boolean {
         return false

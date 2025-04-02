@@ -2,7 +2,7 @@ package de.maibornwolff.codecharta.analysers.filters.mergefilter
 
 import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.Session
-import de.maibornwolff.codecharta.analysers.analyserinterface.ParserDialogInterface
+import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserDialogInterface
 import de.maibornwolff.codecharta.dialogProvider.InputType
 import de.maibornwolff.codecharta.dialogProvider.InputValidator
 import de.maibornwolff.codecharta.dialogProvider.myPromptCheckbox
@@ -15,7 +15,7 @@ import de.maibornwolff.codecharta.serialization.FileExtension
 import java.io.File
 
 class Dialog {
-    companion object : ParserDialogInterface {
+    companion object : AnalyserDialogInterface {
         override fun collectParserArgs(session: Session): List<String> {
             val inputDataName: String =
                 session.myPromptDefaultFileFolderInput(

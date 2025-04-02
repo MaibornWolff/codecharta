@@ -2,12 +2,12 @@ package de.maibornwolff.codecharta.analysis.importer.sonar
 
 import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.Session
-import de.maibornwolff.codecharta.analysers.analyserinterface.ParserDialogInterface
+import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserDialogInterface
 import de.maibornwolff.codecharta.dialogProvider.myPromptConfirm
 import de.maibornwolff.codecharta.dialogProvider.myPromptInput
 
 class Dialog {
-    companion object : ParserDialogInterface {
+    companion object : AnalyserDialogInterface {
         override fun collectParserArgs(session: Session): List<String> {
             val hostUrl = session.myPromptInput(
                 message = "What is the sonar.host.url of your project?",

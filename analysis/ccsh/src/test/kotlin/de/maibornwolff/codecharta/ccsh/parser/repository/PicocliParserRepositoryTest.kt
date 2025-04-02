@@ -1,7 +1,7 @@
 package de.maibornwolff.codecharta.ccsh.parser.repository
 
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
-import de.maibornwolff.codecharta.analysers.analyserinterface.ParserDialogInterface
+import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserDialogInterface
 import de.maibornwolff.codecharta.analysers.exporters.csv.CSVExporter
 import de.maibornwolff.codecharta.analysers.filters.edgefilter.EdgeFilter
 import de.maibornwolff.codecharta.analysers.filters.mergefilter.MergeFilter
@@ -203,7 +203,7 @@ class PicocliParserRepositoryTest {
     private fun mockParserObject(name: String, isUsable: Boolean): AnalyserInterface {
         val obj = cmdLine.subcommands[name]!!.commandSpec.userObject() as AnalyserInterface
         mockkObject(obj)
-        val dialogInterface = mockkClass(ParserDialogInterface::class)
+        val dialogInterface = mockkClass(AnalyserDialogInterface::class)
         val dummyArgs = listOf("dummyArg")
         every {
             dialogInterface.collectParserArgs(any())

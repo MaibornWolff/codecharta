@@ -1,7 +1,7 @@
 package de.maibornwolff.codecharta.parser.gitlogparser.subcommands
 
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
-import de.maibornwolff.codecharta.analysers.analyserinterface.ParserDialogInterface
+import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserDialogInterface
 import de.maibornwolff.codecharta.analysers.analyserinterface.util.CodeChartaConstants
 import de.maibornwolff.codecharta.parser.gitlogparser.GitLogParser
 import de.maibornwolff.codecharta.util.InputHelper
@@ -68,7 +68,7 @@ class LogScanCommand : Callable<Unit>, AnalyserInterface {
         return null
     }
 
-    override fun getDialog(): ParserDialogInterface = LogScanParserDialog
+    override fun getDialog(): AnalyserDialogInterface = LogScanDialog
 
     override fun isApplicable(resourceToBeParsed: String): Boolean {
         return false

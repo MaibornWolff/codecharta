@@ -4,7 +4,7 @@ interface AnalyserInterface {
     val name: String
     val description: String
 
-    fun getDialog(): ParserDialogInterface
+    fun getDialog(): AnalyserDialogInterface
 
     fun isApplicable(resourceToBeParsed: String): Boolean
 

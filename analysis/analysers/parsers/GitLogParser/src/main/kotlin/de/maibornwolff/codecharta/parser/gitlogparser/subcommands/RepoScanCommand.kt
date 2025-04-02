@@ -1,7 +1,7 @@
 package de.maibornwolff.codecharta.parser.gitlogparser.subcommands
 
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
-import de.maibornwolff.codecharta.analysers.analyserinterface.ParserDialogInterface
+import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserDialogInterface
 import de.maibornwolff.codecharta.parser.gitlogparser.GitLogParser
 import de.maibornwolff.codecharta.parser.gitlogparser.util.GitAdapter
 import de.maibornwolff.codecharta.util.InputHelper
@@ -94,7 +94,7 @@ class RepoScanCommand : Callable<Unit>, AnalyserInterface {
         return tempGitLs
     }
 
-    override fun getDialog(): ParserDialogInterface = RepoScanParserDialog
+    override fun getDialog(): AnalyserDialogInterface = RepoScanDialog
 
     override fun isApplicable(resourceToBeParsed: String): Boolean {
         return false

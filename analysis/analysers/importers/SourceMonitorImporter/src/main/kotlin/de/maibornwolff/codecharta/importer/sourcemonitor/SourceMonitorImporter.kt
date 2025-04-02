@@ -1,7 +1,7 @@
 package de.maibornwolff.codecharta.analysis.importer.sourcemonitor
 
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
-import de.maibornwolff.codecharta.analysers.analyserinterface.ParserDialogInterface
+import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserDialogInterface
 import de.maibornwolff.codecharta.analysers.analyserinterface.util.CodeChartaConstants
 import de.maibornwolff.codecharta.analysis.importer.csv.CSVProjectBuilder
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
@@ -100,7 +100,7 @@ class SourceMonitorImporter(
             return MetricNameTranslator(replacementMap.toMap(), prefix)
         }
 
-    override fun getDialog(): ParserDialogInterface = Dialog
+    override fun getDialog(): AnalyserDialogInterface = Dialog
 
     override fun isApplicable(resourceToBeParsed: String): Boolean {
         return false

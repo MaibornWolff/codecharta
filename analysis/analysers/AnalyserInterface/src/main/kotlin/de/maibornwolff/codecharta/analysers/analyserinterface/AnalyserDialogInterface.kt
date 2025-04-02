@@ -3,7 +3,7 @@ package de.maibornwolff.codecharta.analysers.analyserinterface
 import com.varabyte.kotter.foundation.session
 import com.varabyte.kotter.runtime.Session
 
-fun interface ParserDialogInterface {
+fun interface AnalyserDialogInterface {
     fun collectParserArgs(session: Session): List<String>
 }
 

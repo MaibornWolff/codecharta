@@ -3,7 +3,7 @@ package de.maibornwolff.codecharta.analysis.importer.tokeiimporter
 import com.google.gson.JsonElement
 import com.google.gson.JsonParser
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
-import de.maibornwolff.codecharta.analysers.analyserinterface.ParserDialogInterface
+import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserDialogInterface
 import de.maibornwolff.codecharta.analysers.analyserinterface.util.CodeChartaConstants
 import de.maibornwolff.codecharta.analysers.pipeableanalyserinterface.PipeableAnalyserInterface
 import de.maibornwolff.codecharta.analysers.pipeableanalyserinterface.PipeableAnalyserSyncFlag
@@ -148,7 +148,7 @@ class TokeiImporter(
         if (pathSeparator == "\\\\") this.pathSeparator = "\\"
     }
 
-    override fun getDialog(): ParserDialogInterface = Dialog
+    override fun getDialog(): AnalyserDialogInterface = Dialog
 
     override fun isApplicable(resourceToBeParsed: String): Boolean {
         return false
