@@ -7,7 +7,7 @@ import com.varabyte.kotter.runtime.terminal.inmemory.press
 import com.varabyte.kotter.runtime.terminal.inmemory.type
 import com.varabyte.kotterx.test.foundation.testSession
 import de.maibornwolff.codecharta.analysers.filters.structuremodifier.Dialog.Companion.collectParserArgs
-import de.maibornwolff.codecharta.dialogProvider.myPromptList
+import de.maibornwolff.codecharta.dialogProvider.promptList
 import io.mockk.every
 import io.mockk.mockkObject
 import io.mockk.mockkStatic
@@ -419,7 +419,7 @@ class DialogTest {
             )
 
             mockkStatic("de.maibornwolff.codecharta.dialogProvider.DialogProviderKt")
-            every { any<Session>().myPromptList(any(), any(), any(), any()) } returns unknownAction
+            every { any<Session>().promptList(any(), any(), any(), any()) } returns unknownAction
 
             parserArguments = collectParserArgs(this)
         }

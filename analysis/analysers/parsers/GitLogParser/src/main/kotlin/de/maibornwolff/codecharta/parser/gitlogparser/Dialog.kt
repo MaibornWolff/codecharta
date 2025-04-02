@@ -3,8 +3,8 @@ package de.maibornwolff.codecharta.parser.gitlogparser
 import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.Session
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserDialogInterface
-import de.maibornwolff.codecharta.dialogProvider.myPromptConfirm
-import de.maibornwolff.codecharta.dialogProvider.myPromptInput
+import de.maibornwolff.codecharta.dialogProvider.promptConfirm
+import de.maibornwolff.codecharta.dialogProvider.promptInput
 import de.maibornwolff.codecharta.parser.gitlogparser.subcommands.LogScanCommand
 import de.maibornwolff.codecharta.parser.gitlogparser.subcommands.RepoScanCommand
 
@@ -30,30 +30,30 @@ class Dialog {
         }
 
         internal fun collectSubcommand(session: Session): Boolean {
-            return session.myPromptConfirm(
+            return session.promptConfirm(
                 message = "Do you already have a git.log and git ls file?",
                 onInputReady = testCallback()
             )
         }
 
         internal fun collectGeneralArgs(session: Session): List<String> {
-            val outputFileName: String = session.myPromptInput(
+            val outputFileName: String = session.promptInput(
                 message = "What is the name of the output file?",
                 allowEmptyInput = true,
                 onInputReady = testCallback()
             )
 
-            val isCompressed = (outputFileName.isEmpty()) || session.myPromptConfirm(
+            val isCompressed = (outputFileName.isEmpty()) || session.promptConfirm(
                 message = "Do you want to compress the output file?",
                 onInputReady = testCallback()
             )
 
-            val isSilent: Boolean = session.myPromptConfirm(
+            val isSilent: Boolean = session.promptConfirm(
                 message = "Do you want to suppress command line output?",
                 onInputReady = testCallback()
             )
 
-            val addAuthor: Boolean = session.myPromptConfirm(
+            val addAuthor: Boolean = session.promptConfirm(
                 message = "Do you want to add authors to every file?",
                 onInputReady = testCallback()
             )

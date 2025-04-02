@@ -5,13 +5,13 @@ import com.varabyte.kotter.runtime.Session
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserDialogInterface
 import de.maibornwolff.codecharta.dialogProvider.InputType
 import de.maibornwolff.codecharta.dialogProvider.InputValidator
-import de.maibornwolff.codecharta.dialogProvider.myPromptInput
+import de.maibornwolff.codecharta.dialogProvider.promptInput
 import java.nio.file.Paths
 
 class RepoScanDialog {
     companion object : AnalyserDialogInterface {
         override fun collectParserArgs(session: Session): List<String> {
-            val repoPath = session.myPromptInput(
+            val repoPath = session.promptInput(
                 message = "What is the root directory of the git project you want to parse?",
                 hint = Paths.get("").normalize().toAbsolutePath().toString(),
                 allowEmptyInput = false,

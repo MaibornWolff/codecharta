@@ -4,21 +4,21 @@ import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.Session
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserDialogInterface
 import de.maibornwolff.codecharta.dialogProvider.InputType
-import de.maibornwolff.codecharta.dialogProvider.myPromptConfirm
-import de.maibornwolff.codecharta.dialogProvider.myPromptDefaultFileFolderInput
-import de.maibornwolff.codecharta.dialogProvider.myPromptInput
-import de.maibornwolff.codecharta.dialogProvider.myPromptInputNumber
+import de.maibornwolff.codecharta.dialogProvider.promptConfirm
+import de.maibornwolff.codecharta.dialogProvider.promptDefaultFileFolderInput
+import de.maibornwolff.codecharta.dialogProvider.promptInput
+import de.maibornwolff.codecharta.dialogProvider.promptInputNumber
 
 class Dialog {
     companion object : AnalyserDialogInterface {
         override fun collectParserArgs(session: Session): List<String> {
-            val inputFileName = session.myPromptDefaultFileFolderInput(
+            val inputFileName = session.promptDefaultFileFolderInput(
                 inputType = InputType.FOLDER_AND_FILE,
                 fileExtensionList = listOf(),
                 onInputReady = testCallback()
             )
 
-            val outputFileName: String = session.myPromptInput(
+            val outputFileName: String = session.promptInput(
                 message = "What is the name of the output file?",
                 allowEmptyInput = true,
                 onInputReady = testCallback()
@@ -26,24 +26,24 @@ class Dialog {
 
             val isCompressed =
                 (outputFileName.isEmpty()) ||
-                    session.myPromptConfirm(
+                    session.promptConfirm(
                         message = "Do you want to compress the output file?",
                         onInputReady = testCallback()
                     )
 
-            val verbose: Boolean = session.myPromptConfirm(
+            val verbose: Boolean = session.promptConfirm(
                 message = "Do you want to suppress command line output?",
                 onInputReady = testCallback()
             )
 
-            val metrics: String = session.myPromptInput(
+            val metrics: String = session.promptInput(
                 message = "What are the metrics to import (comma separated)?",
                 hint = "metric1,metric2,metric3 (leave empty for all metrics)",
                 allowEmptyInput = true,
                 onInputReady = testCallback()
             )
 
-            val tabWidth: String = session.myPromptInputNumber(
+            val tabWidth: String = session.promptInputNumber(
                 message = "How many spaces represent one indentation level when using spaces for indentation (estimated if empty)?",
                 allowEmptyInput = true,
                 onInputReady = testCallback()
@@ -51,7 +51,7 @@ class Dialog {
 
             val tabWidthValue = tabWidth.toIntOrNull() ?: 0
 
-            val maxIndentationLevel: String = session.myPromptInputNumber(
+            val maxIndentationLevel: String = session.promptInputNumber(
                 message = "What is the maximum Indentation Level?",
                 hint = "10",
                 allowEmptyInput = false,
@@ -59,7 +59,7 @@ class Dialog {
             )
 
             val exclude: String =
-                session.myPromptInput(
+                session.promptInput(
                     message = "Do you want to exclude file/folder according to regex pattern?",
                     hint = "regex1, regex2.. (leave empty if you don't want to exclude anything)",
                     allowEmptyInput = true,
@@ -67,7 +67,7 @@ class Dialog {
                 )
 
             val fileExtensions: String =
-                session.myPromptInput(
+                session.promptInput(
                     message = "Do you only want to parse files with specific file-extensions? ",
                     hint = "fileType1, fileType2... (leave empty to include all file-extensions)",
                     allowEmptyInput = true,
@@ -75,7 +75,7 @@ class Dialog {
                 )
 
             val withoutDefaultExcludes: Boolean =
-                session.myPromptConfirm(
+                session.promptConfirm(
                     message = "Do you want to include build, target, dist, resources" +
                         " and out folders as well as files/folders starting with '.'?",
                     onInputReady = testCallback()

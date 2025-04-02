@@ -4,28 +4,28 @@ import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.Session
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserDialogInterface
 import de.maibornwolff.codecharta.dialogProvider.InputType
-import de.maibornwolff.codecharta.dialogProvider.myPromptDefaultFileFolderInput
-import de.maibornwolff.codecharta.dialogProvider.myPromptInput
-import de.maibornwolff.codecharta.dialogProvider.myPromptInputNumber
+import de.maibornwolff.codecharta.dialogProvider.promptDefaultFileFolderInput
+import de.maibornwolff.codecharta.dialogProvider.promptInput
+import de.maibornwolff.codecharta.dialogProvider.promptInputNumber
 import de.maibornwolff.codecharta.serialization.FileExtension
 
 class Dialog {
     companion object : AnalyserDialogInterface {
         override fun collectParserArgs(session: Session): List<String> {
-            val inputFileName: String = session.myPromptDefaultFileFolderInput(
+            val inputFileName: String = session.promptDefaultFileFolderInput(
                 inputType = InputType.FOLDER_AND_FILE,
                 fileExtensionList = listOf(FileExtension.CCJSON, FileExtension.CCGZ),
                 onInputReady = testCallback()
             )
 
-            val outputFileName: String = session.myPromptInput(
+            val outputFileName: String = session.promptInput(
                 message = "What is the name of the output file?",
                 allowEmptyInput = true,
                 onInputReady = testCallback()
             )
 
             val maxHierarchy: String =
-                session.myPromptInputNumber(
+                session.promptInputNumber(
                     message = "What is the maximum depth of hierarchy",
                     hint = "10",
                     onInputReady = testCallback()

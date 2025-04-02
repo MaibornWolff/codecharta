@@ -4,15 +4,15 @@ import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.Session
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserDialogInterface
 import de.maibornwolff.codecharta.dialogProvider.InputType
-import de.maibornwolff.codecharta.dialogProvider.myPromptConfirm
-import de.maibornwolff.codecharta.dialogProvider.myPromptDefaultFileFolderInput
-import de.maibornwolff.codecharta.dialogProvider.myPromptInput
-import de.maibornwolff.codecharta.dialogProvider.myPromptList
+import de.maibornwolff.codecharta.dialogProvider.promptConfirm
+import de.maibornwolff.codecharta.dialogProvider.promptDefaultFileFolderInput
+import de.maibornwolff.codecharta.dialogProvider.promptInput
+import de.maibornwolff.codecharta.dialogProvider.promptList
 
 class Dialog {
     companion object : AnalyserDialogInterface {
         override fun collectParserArgs(session: Session): List<String> {
-            val inputFileName: String = session.myPromptDefaultFileFolderInput(
+            val inputFileName: String = session.promptDefaultFileFolderInput(
                 inputType = InputType.FOLDER_AND_FILE,
                 fileExtensionList = listOf(),
                 onInputReady = testCallback()
@@ -22,7 +22,7 @@ class Dialog {
             val formatCSV = "CSV"
             val outputFormatChoices = listOf(formatCCjson, formatCSV)
 
-            val outputFormatAnswer = session.myPromptList(
+            val outputFormatAnswer = session.promptList(
                 message = "Which output format should be generated?",
                 choices = outputFormatChoices,
                 onInputReady = testCallback()
@@ -31,7 +31,7 @@ class Dialog {
             val outputFormat = if (outputFormatAnswer == formatCCjson) OutputFormat.JSON else OutputFormat.CSV
             val defaultOutputFilename = if (outputFormat == OutputFormat.JSON) "output.cc.json" else "output.csv"
 
-            val outputFileName: String = session.myPromptInput(
+            val outputFileName: String = session.promptInput(
                 message = "What is the name of the output file?",
                 hint = defaultOutputFilename,
                 allowEmptyInput = true,
@@ -40,25 +40,25 @@ class Dialog {
 
             val isCompressed =
                 (outputFileName.isEmpty()) ||
-                    session.myPromptConfirm(
+                    session.promptConfirm(
                         message = "Do you want to compress the output file?",
                         onInputReady = testCallback()
                     )
 
             val findIssues =
-                session.myPromptConfirm(
+                session.promptConfirm(
                     message = "Should we search for sonar issues?",
                     onInputReady = testCallback()
                 )
 
             val defaultExcludes =
-                session.myPromptConfirm(
+                session.promptConfirm(
                     message = "Should we apply default excludes (build, target, dist and out folders, hidden files/folders)?",
                     onInputReady = testCallback()
                 )
 
             val exclude: String =
-                session.myPromptInput(
+                session.promptInput(
                     message = "Do you want to exclude file/folder according to regex pattern?",
                     hint = "regex1, regex2.. (leave empty if you don't want to exclude anything)",
                     allowEmptyInput = true,
@@ -66,7 +66,7 @@ class Dialog {
                 )
 
             val isVerbose: Boolean =
-                session.myPromptConfirm(
+                session.promptConfirm(
                     message = "Display info messages from sonar plugins?",
                     onInputReady = testCallback()
                 )

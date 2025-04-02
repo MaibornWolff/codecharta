@@ -4,16 +4,16 @@ import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.Session
 import de.maibornwolff.codecharta.dialogProvider.InputType
 import de.maibornwolff.codecharta.dialogProvider.InputValidator
-import de.maibornwolff.codecharta.dialogProvider.myPromptCheckbox
-import de.maibornwolff.codecharta.dialogProvider.myPromptConfirm
-import de.maibornwolff.codecharta.dialogProvider.myPromptInput
-import de.maibornwolff.codecharta.dialogProvider.myPromptList
+import de.maibornwolff.codecharta.dialogProvider.promptCheckbox
+import de.maibornwolff.codecharta.dialogProvider.promptConfirm
+import de.maibornwolff.codecharta.dialogProvider.promptInput
+import de.maibornwolff.codecharta.dialogProvider.promptList
 import java.nio.file.Paths
 
 class InteractiveDialog {
     companion object {
         internal fun askParserToExecute(session: Session, parserOptions: List<String>): String {
-            return session.myPromptList(
+            return session.promptList(
                 message = "Which parser do you want to execute?",
                 choices = parserOptions,
                 onInputReady = testCallback()
@@ -22,7 +22,7 @@ class InteractiveDialog {
 
         internal fun askForPath(session: Session): String {
             println("You can provide a directory path / file path / sonar url.")
-            return session.myPromptInput(
+            return session.promptInput(
                 message = "Which path should be scanned?",
                 hint = Paths.get("").toAbsolutePath().toString(),
                 allowEmptyInput = false,
@@ -31,7 +31,7 @@ class InteractiveDialog {
         }
 
         internal fun askApplicableParser(session: Session, applicableParsers: List<String>): List<String> {
-            return session.myPromptCheckbox(
+            return session.promptCheckbox(
                 message = "Choose from this list of applicable parsers. You can select individual parsers by pressing spacebar.",
                 choices = applicableParsers,
                 allowEmptyInput = true,
@@ -40,14 +40,14 @@ class InteractiveDialog {
         }
 
         internal fun askRunParsers(session: Session): Boolean {
-            return session.myPromptConfirm(
+            return session.promptConfirm(
                 message = "Do you want to run all configured parsers now?",
                 onInputReady = testCallback()
             )
         }
 
         internal fun askForMerge(session: Session): Boolean {
-            return session.myPromptConfirm(
+            return session.promptConfirm(
                 message = "Do you want to merge all generated files into one result now?",
                 onInputReady = testCallback()
             )
@@ -58,7 +58,7 @@ class InteractiveDialog {
                 "If you did not output all cc.json files into the same folder, " +
                     "you need to manually move them there before trying to merge."
             )
-            return session.myPromptInput(
+            return session.promptInput(
                 message = "What is the folder path containing all cc.json files?",
                 hint = Paths.get("").toAbsolutePath().toString(),
                 inputValidator = InputValidator.isFileOrFolderValid(

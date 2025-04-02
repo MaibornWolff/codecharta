@@ -4,35 +4,35 @@ import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.Session
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserDialogInterface
 import de.maibornwolff.codecharta.dialogProvider.InputType
-import de.maibornwolff.codecharta.dialogProvider.myPromptConfirm
-import de.maibornwolff.codecharta.dialogProvider.myPromptDefaultFileFolderInput
-import de.maibornwolff.codecharta.dialogProvider.myPromptInput
+import de.maibornwolff.codecharta.dialogProvider.promptConfirm
+import de.maibornwolff.codecharta.dialogProvider.promptDefaultFileFolderInput
+import de.maibornwolff.codecharta.dialogProvider.promptInput
 import de.maibornwolff.codecharta.serialization.FileExtension
 
 class Dialog {
     companion object : AnalyserDialogInterface {
         override fun collectParserArgs(session: Session): List<String> {
-            val inputFileName: String = session.myPromptDefaultFileFolderInput(
+            val inputFileName: String = session.promptDefaultFileFolderInput(
                 InputType.FILE,
                 listOf(FileExtension.JSON),
                 onInputReady = testCallback()
             )
 
-            val outputFileName: String = session.myPromptInput(
+            val outputFileName: String = session.promptInput(
                 message = "What is the name of the output file?",
                 hint = "output.cc.json",
                 allowEmptyInput = true,
                 onInputReady = testCallback()
             )
 
-            val rootName = session.myPromptInput(
+            val rootName = session.promptInput(
                 message = "Which root folder was specified when executing tokei?",
                 hint = ".",
                 allowEmptyInput = false,
                 onInputReady = testCallback()
             )
 
-            var pathSeparator = session.myPromptInput(
+            var pathSeparator = session.promptInput(
                 message = "Which path separator is used? Leave empty for auto-detection",
                 hint = "",
                 allowEmptyInput = true,
@@ -41,7 +41,7 @@ class Dialog {
 
             if (pathSeparator == "\\") pathSeparator = "\\\\"
 
-            val isCompressed = (outputFileName.isEmpty()) || session.myPromptConfirm(
+            val isCompressed = (outputFileName.isEmpty()) || session.promptConfirm(
                 message = "Do you want to compress the output file?",
                 onInputReady = testCallback()
             )
