@@ -9,7 +9,7 @@ import de.maibornwolff.codecharta.dialogProvider.myPromptInput
 import de.maibornwolff.codecharta.dialogProvider.myPromptInputNumber
 import de.maibornwolff.codecharta.serialization.FileExtension
 
-class ParserDialog {
+class Dialog {
     companion object : ParserDialogInterface {
         override fun collectParserArgs(session: Session): List<String> {
             val inputFileName: String = session.myPromptDefaultFileFolderInput(
