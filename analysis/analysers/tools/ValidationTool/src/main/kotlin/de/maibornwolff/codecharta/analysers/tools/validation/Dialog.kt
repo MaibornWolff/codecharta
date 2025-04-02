@@ -7,7 +7,7 @@ import de.maibornwolff.codecharta.dialogProvider.InputType
 import de.maibornwolff.codecharta.dialogProvider.myPromptDefaultFileFolderInput
 import de.maibornwolff.codecharta.serialization.FileExtension
 
-class ParserDialog {
+class Dialog {
     companion object : ParserDialogInterface {
         override fun collectParserArgs(session: Session): List<String> {
             print("Which file do you want to validate?")

@@ -4,7 +4,7 @@ import com.varabyte.kotter.foundation.input.Keys
 import com.varabyte.kotter.runtime.terminal.inmemory.press
 import com.varabyte.kotter.runtime.terminal.inmemory.type
 import com.varabyte.kotterx.test.foundation.testSession
-import de.maibornwolff.codecharta.analysers.tools.validation.ParserDialog.Companion.collectParserArgs
+import de.maibornwolff.codecharta.analysers.tools.validation.Dialog.Companion.collectParserArgs
 import io.mockk.every
 import io.mockk.mockkObject
 import org.assertj.core.api.Assertions.assertThat
@@ -14,16 +14,16 @@ import picocli.CommandLine
 import java.io.File
 
 @Timeout(120)
-class ParserDialogTest {
+class DialogTest {
     private val testResourceBaseFolder = "src/test/resources/"
     private val inputFileName = "${testResourceBaseFolder}validFile.cc.json"
 
     @Test
     fun `should output correct arguments`() {
-        mockkObject(ParserDialog.Companion)
+        mockkObject(Dialog.Companion)
 
         testSession { terminal ->
-            every { ParserDialog.Companion.testCallback() } returns {
+            every { Dialog.Companion.testCallback() } returns {
                 terminal.type(inputFileName)
                 terminal.press(Keys.ENTER)
             }
