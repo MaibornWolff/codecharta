@@ -26,7 +26,7 @@ class DialogTest {
 
     @BeforeEach
     fun setup() {
-        mockkObject(ParserDialog)
+        mockkObject(Dialog)
     }
 
     private fun languageChoicesProvider(): List<Arguments> {
@@ -62,14 +62,14 @@ class DialogTest {
                 terminal.press(Keys.ENTER)
             }
 
-            every { ParserDialog.testCallback() } returnsMany listOf(
+            every { Dialog.testCallback() } returnsMany listOf(
                 languageCallback,
                 reportFileCallback,
                 outputFileCallback,
                 compressCallback
             )
 
-            val parserArguments = ParserDialog.collectParserArgs(this)
+            val parserArguments = Dialog.collectParserArgs(this)
 
             val cmdLine = CommandLine(CoverageImporter())
             val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
@@ -97,13 +97,13 @@ class DialogTest {
                 terminal.press(Keys.ENTER)
             }
 
-            every { ParserDialog.testCallback() } returnsMany listOf(
+            every { Dialog.testCallback() } returnsMany listOf(
                 languageCallback,
                 reportFileCallback,
                 outputFileCallback
             )
 
-            val parserArguments = ParserDialog.collectParserArgs(this)
+            val parserArguments = Dialog.collectParserArgs(this)
 
             val cmdLine = CommandLine(CoverageImporter())
             val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
@@ -145,14 +145,14 @@ class DialogTest {
                 terminal.press(Keys.ENTER)
             }
 
-            every { ParserDialog.testCallback() } returnsMany listOf(
+            every { Dialog.testCallback() } returnsMany listOf(
                 languageCallback,
                 reportFileCallback,
                 outputFileCallback,
                 compressCallback
             )
 
-            val parserArguments = ParserDialog.collectParserArgs(this)
+            val parserArguments = Dialog.collectParserArgs(this)
 
             val cmdLine = CommandLine(CoverageImporter())
             val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
@@ -195,14 +195,14 @@ class DialogTest {
                 terminal.press(Keys.ENTER)
             }
 
-            every { ParserDialog.testCallback() } returnsMany listOf(
+            every { Dialog.testCallback() } returnsMany listOf(
                 languageCallback,
                 reportFileCallback,
                 outputFileCallback,
                 compressCallback
             )
 
-            val parserArguments = ParserDialog.collectParserArgs(this)
+            val parserArguments = Dialog.collectParserArgs(this)
 
             val cmdLine = CommandLine(CoverageImporter())
             val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())

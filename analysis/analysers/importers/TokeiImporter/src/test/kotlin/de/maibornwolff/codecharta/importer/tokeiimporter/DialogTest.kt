@@ -5,7 +5,7 @@ import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.terminal.inmemory.press
 import com.varabyte.kotter.runtime.terminal.inmemory.type
 import com.varabyte.kotterx.test.foundation.testSession
-import de.maibornwolff.codecharta.analysis.importer.tokeiimporter.ParserDialog.Companion.collectParserArgs
+import de.maibornwolff.codecharta.analysis.importer.tokeiimporter.Dialog.Companion.collectParserArgs
 import io.mockk.every
 import io.mockk.mockkObject
 import org.assertj.core.api.Assertions.assertThat
@@ -15,7 +15,7 @@ import picocli.CommandLine
 import java.io.File
 
 @Timeout(120)
-class ParserDialogTest {
+class DialogTest {
     private val testResourceBaseFolder = "src/test/resources/"
     private val inputFileName = "${testResourceBaseFolder}tokei_12_minimal.json"
     private val outputFileName = "out_test.cc.json"
@@ -26,7 +26,7 @@ class ParserDialogTest {
         val pathSeparator = "/"
         val isCompressed = false
 
-        mockkObject(ParserDialog.Companion)
+        mockkObject(Dialog.Companion)
 
         testSession { terminal ->
             val fileCallback: suspend RunScope.() -> Unit = {
@@ -54,7 +54,7 @@ class ParserDialogTest {
                 terminal.press(Keys.ENTER)
             }
 
-            every { ParserDialog.testCallback() } returnsMany listOf(
+            every { Dialog.testCallback() } returnsMany listOf(
                 fileCallback,
                 outFileCallback,
                 rootCallback,
@@ -78,7 +78,7 @@ class ParserDialogTest {
     fun `should output correct arguments when output file is not provided`() {
         val pathSeparator = "/"
 
-        mockkObject(ParserDialog.Companion)
+        mockkObject(Dialog.Companion)
 
         testSession { terminal ->
             val fileCallback: suspend RunScope.() -> Unit = {
@@ -105,7 +105,7 @@ class ParserDialogTest {
                 terminal.press(Keys.ENTER)
             }
 
-            every { ParserDialog.testCallback() } returnsMany listOf(
+            every { Dialog.testCallback() } returnsMany listOf(
                 fileCallback,
                 outFileCallback,
                 rootCallback,
@@ -131,7 +131,7 @@ class ParserDialogTest {
         val pathSeparatorEscaped = "\\\\"
         val isCompressed = false
 
-        mockkObject(ParserDialog.Companion)
+        mockkObject(Dialog.Companion)
 
         testSession { terminal ->
             val fileCallback: suspend RunScope.() -> Unit = {
@@ -159,7 +159,7 @@ class ParserDialogTest {
                 terminal.press(Keys.ENTER)
             }
 
-            every { ParserDialog.testCallback() } returnsMany listOf(
+            every { Dialog.testCallback() } returnsMany listOf(
                 fileCallback,
                 outFileCallback,
                 rootCallback,
@@ -189,7 +189,7 @@ class ParserDialogTest {
         val pathSeparator = "\\\\"
         val isCompressed = false
 
-        mockkObject(ParserDialog.Companion)
+        mockkObject(Dialog.Companion)
 
         testSession { terminal ->
             val fileCallback: suspend RunScope.() -> Unit = {
@@ -217,7 +217,7 @@ class ParserDialogTest {
                 terminal.press(Keys.ENTER)
             }
 
-            every { ParserDialog.testCallback() } returnsMany listOf(
+            every { Dialog.testCallback() } returnsMany listOf(
                 fileCallback,
                 outFileCallback,
                 rootCallback,
@@ -247,7 +247,7 @@ class ParserDialogTest {
         val invalidFileName = "inv"
         val pathSeparator = "/"
 
-        mockkObject(ParserDialog.Companion)
+        mockkObject(Dialog.Companion)
 
         testSession { terminal ->
             val fileCallback: suspend RunScope.() -> Unit = {
@@ -278,7 +278,7 @@ class ParserDialogTest {
                 terminal.press(Keys.ENTER)
             }
 
-            every { ParserDialog.testCallback() } returnsMany listOf(
+            every { Dialog.testCallback() } returnsMany listOf(
                 fileCallback,
                 outFileCallback,
                 rootCallback,

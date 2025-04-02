@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.analysis.importer.tokeiimporter
+package de.maibornwolff.codecharta.analysis.importer.csv
 
 import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.Session
@@ -9,39 +9,41 @@ import de.maibornwolff.codecharta.dialogProvider.myPromptDefaultFileFolderInput
 import de.maibornwolff.codecharta.dialogProvider.myPromptInput
 import de.maibornwolff.codecharta.serialization.FileExtension
 
-class ParserDialog {
+class Dialog {
     companion object : ParserDialogInterface {
         override fun collectParserArgs(session: Session): List<String> {
             val inputFileName: String = session.myPromptDefaultFileFolderInput(
-                InputType.FILE,
-                listOf(FileExtension.JSON),
+                inputType = InputType.FILE,
+                fileExtensionList = listOf(FileExtension.CSV),
                 onInputReady = testCallback()
             )
 
             val outputFileName: String = session.myPromptInput(
                 message = "What is the name of the output file?",
-                hint = "output.cc.json",
                 allowEmptyInput = true,
                 onInputReady = testCallback()
             )
 
-            val rootName = session.myPromptInput(
-                message = "Which root folder was specified when executing tokei?",
-                hint = ".",
+            val pathColumnName: String = session.myPromptInput(
+                message = "What is the name of the path column name?",
+                hint = "path",
                 allowEmptyInput = false,
                 onInputReady = testCallback()
             )
 
-            var pathSeparator = session.myPromptInput(
-                message = "Which path separator is used? Leave empty for auto-detection",
-                hint = "",
-                allowEmptyInput = true,
+            val delimiter: String = session.myPromptInput(
+                message = "Which column delimiter is used in the CSV file?",
+                hint = ",",
                 onInputReady = testCallback()
             )
 
-            if (pathSeparator == "\\") pathSeparator = "\\\\"
+            val pathSeparator: String = session.myPromptInput(
+                message = "Which path separator is used in the path names?",
+                hint = "/",
+                onInputReady = testCallback()
+            )
 
-            val isCompressed = (outputFileName.isEmpty()) || session.myPromptConfirm(
+            val isCompressed = outputFileName.isEmpty() || session.myPromptConfirm(
                 message = "Do you want to compress the output file?",
                 onInputReady = testCallback()
             )
@@ -49,7 +51,8 @@ class ParserDialog {
             return listOfNotNull(
                 inputFileName,
                 "--output-file=$outputFileName",
-                "--root-name=$rootName",
+                "--path-column-name=$pathColumnName",
+                "--delimiter=$delimiter",
                 "--path-separator=$pathSeparator",
                 if (isCompressed) null else "--not-compressed"
             )

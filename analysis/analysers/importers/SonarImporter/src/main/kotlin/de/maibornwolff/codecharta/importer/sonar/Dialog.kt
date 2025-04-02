@@ -6,7 +6,7 @@ import de.maibornwolff.codecharta.analysers.analyserinterface.ParserDialogInterf
 import de.maibornwolff.codecharta.dialogProvider.myPromptConfirm
 import de.maibornwolff.codecharta.dialogProvider.myPromptInput
 
-class ParserDialog {
+class Dialog {
     companion object : ParserDialogInterface {
         override fun collectParserArgs(session: Session): List<String> {
             val hostUrl = session.myPromptInput(

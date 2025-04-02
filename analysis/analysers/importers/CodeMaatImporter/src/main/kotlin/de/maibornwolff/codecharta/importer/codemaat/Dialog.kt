@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.analysis.importer.sourcemonitor
+package de.maibornwolff.codecharta.analysis.importer.codemaat
 
 import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.Session
@@ -9,10 +9,10 @@ import de.maibornwolff.codecharta.dialogProvider.myPromptDefaultFileFolderInput
 import de.maibornwolff.codecharta.dialogProvider.myPromptInput
 import de.maibornwolff.codecharta.serialization.FileExtension
 
-class ParserDialog {
+class Dialog {
     companion object : ParserDialogInterface {
         override fun collectParserArgs(session: Session): List<String> {
-            val inputFileName = session.myPromptDefaultFileFolderInput(
+            val inputFileName: String = session.myPromptDefaultFileFolderInput(
                 inputType = InputType.FILE,
                 fileExtensionList = listOf(FileExtension.CSV),
                 onInputReady = testCallback()
@@ -20,14 +20,17 @@ class ParserDialog {
 
             val outputFileName: String = session.myPromptInput(
                 message = "What is the name of the output file?",
+                hint = "output.cc.json",
                 allowEmptyInput = true,
                 onInputReady = testCallback()
             )
 
-            val isCompressed = (outputFileName.isEmpty()) || session.myPromptConfirm(
-                message = "Do you want to compress the output file?",
-                onInputReady = testCallback()
-            )
+            val isCompressed =
+                (outputFileName.isEmpty()) ||
+                    session.myPromptConfirm(
+                        message = "Do you want to compress the output file?",
+                        onInputReady = testCallback()
+                    )
 
             return listOfNotNull(
                 inputFileName,

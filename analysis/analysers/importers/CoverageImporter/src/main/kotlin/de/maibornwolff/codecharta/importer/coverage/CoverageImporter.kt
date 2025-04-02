@@ -109,7 +109,7 @@ class CoverageImporter(
         ProjectSerializer.serializeToFileOrStream(project, outputFilePath, output, compress)
     }
 
-    override fun getDialog(): ParserDialogInterface = ParserDialog
+    override fun getDialog(): ParserDialogInterface = Dialog
 
     override fun isApplicable(resourceToBeParsed: String): Boolean {
         println("Checking if CoverageImporter is applicable...")
