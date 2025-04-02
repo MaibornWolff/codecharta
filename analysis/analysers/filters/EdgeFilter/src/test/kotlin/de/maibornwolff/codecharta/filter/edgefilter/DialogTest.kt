@@ -5,7 +5,7 @@ import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.terminal.inmemory.press
 import com.varabyte.kotter.runtime.terminal.inmemory.type
 import com.varabyte.kotterx.test.foundation.testSession
-import de.maibornwolff.codecharta.analysers.filters.edgefilter.ParserDialog.Companion.collectParserArgs
+import de.maibornwolff.codecharta.analysers.filters.edgefilter.Dialog.Companion.collectParserArgs
 import io.mockk.every
 import io.mockk.mockkObject
 import org.assertj.core.api.Assertions.assertThat
@@ -17,7 +17,7 @@ import java.io.File
 
 @Timeout(120)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class ParserDialogTest {
+class DialogTest {
     private val testResourceBaseFolder = "src/test/resources/"
     private val inputFileName = "${testResourceBaseFolder}coupling.cc.json"
     private val outputFileName = "sampleOutputFile"
@@ -25,7 +25,7 @@ class ParserDialogTest {
 
     @Test
     fun `should output correct arguments when provided with valid input`() {
-        mockkObject(ParserDialog.Companion)
+        mockkObject(Dialog.Companion)
 
         var parserArguments: List<String> = listOf()
 
@@ -43,7 +43,7 @@ class ParserDialogTest {
                 terminal.press(Keys.ENTER)
             }
 
-            every { ParserDialog.Companion.testCallback() } returnsMany listOf(
+            every { Dialog.Companion.testCallback() } returnsMany listOf(
                 fileCallback,
                 outFileCallback,
                 separatorCallback
@@ -64,7 +64,7 @@ class ParserDialogTest {
     fun `should prompt user twice for input file when first input file is invalid`() {
         val invalidFileName = ""
 
-        mockkObject(ParserDialog.Companion)
+        mockkObject(Dialog.Companion)
 
         var parserArguments: List<String> = listOf()
 
@@ -84,7 +84,7 @@ class ParserDialogTest {
                 terminal.press(Keys.ENTER)
             }
 
-            every { ParserDialog.Companion.testCallback() } returnsMany listOf(
+            every { Dialog.Companion.testCallback() } returnsMany listOf(
                 fileCallback,
                 outFileCallback,
                 separatorCallback

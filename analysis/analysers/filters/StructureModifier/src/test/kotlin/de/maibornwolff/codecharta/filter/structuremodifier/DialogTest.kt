@@ -6,7 +6,7 @@ import com.varabyte.kotter.runtime.Session
 import com.varabyte.kotter.runtime.terminal.inmemory.press
 import com.varabyte.kotter.runtime.terminal.inmemory.type
 import com.varabyte.kotterx.test.foundation.testSession
-import de.maibornwolff.codecharta.analysers.filters.structuremodifier.ParserDialog.Companion.collectParserArgs
+import de.maibornwolff.codecharta.analysers.filters.structuremodifier.Dialog.Companion.collectParserArgs
 import de.maibornwolff.codecharta.dialogProvider.myPromptList
 import io.mockk.every
 import io.mockk.mockkObject
@@ -23,7 +23,7 @@ import java.nio.file.Paths
 import kotlin.io.path.Path
 
 @Timeout(120)
-class ParserDialogTest {
+class DialogTest {
     private val absolutePath = Paths.get("").toAbsolutePath().toString()
     private val resourceFolder = Path(absolutePath, "/src/test/resources/")
     private val sampleProjectPath = resourceFolder.resolve("sample_project.cc.json")
@@ -39,7 +39,7 @@ class ParserDialogTest {
 
     @BeforeEach
     fun resetParameters() {
-        mockkObject(ParserDialog.Companion)
+        mockkObject(Dialog.Companion)
         allModes = mutableSetOf(printLevelsFlag, moveToFlag, moveFromFlag, setRootFlag, removeFlag, renameFlag)
     }
 
@@ -69,7 +69,7 @@ class ParserDialogTest {
                 terminal.press(Keys.ENTER)
             }
 
-            every { ParserDialog.Companion.testCallback() } returnsMany listOf(
+            every { Dialog.Companion.testCallback() } returnsMany listOf(
                 fileCallback,
                 actionCallback,
                 printCallback
@@ -116,7 +116,7 @@ class ParserDialogTest {
                 terminal.press(Keys.ENTER)
             }
 
-            every { ParserDialog.Companion.testCallback() } returnsMany listOf(
+            every { Dialog.Companion.testCallback() } returnsMany listOf(
                 fileCallback,
                 actionCallback,
                 collectMccCallback,
@@ -162,7 +162,7 @@ class ParserDialogTest {
                 terminal.press(Keys.ENTER)
             }
 
-            every { ParserDialog.Companion.testCallback() } returnsMany listOf(
+            every { Dialog.Companion.testCallback() } returnsMany listOf(
                 fileCallback,
                 actionCallback,
                 collectMccCallback,
@@ -211,7 +211,7 @@ class ParserDialogTest {
                 terminal.press(Keys.ENTER)
             }
 
-            every { ParserDialog.Companion.testCallback() } returnsMany listOf(
+            every { Dialog.Companion.testCallback() } returnsMany listOf(
                 fileCallback,
                 actionCallback,
                 setRootCallback,
@@ -268,7 +268,7 @@ class ParserDialogTest {
                 terminal.press(Keys.ENTER)
             }
 
-            every { ParserDialog.Companion.testCallback() } returnsMany listOf(
+            every { Dialog.Companion.testCallback() } returnsMany listOf(
                 fileCallback,
                 actionCallback,
                 moveFromCallback,
@@ -327,7 +327,7 @@ class ParserDialogTest {
                 terminal.press(Keys.ENTER)
             }
 
-            every { ParserDialog.Companion.testCallback() } returnsMany listOf(
+            every { Dialog.Companion.testCallback() } returnsMany listOf(
                 fileCallback,
                 actionCallback,
                 removeNodesCallback,
@@ -386,7 +386,7 @@ class ParserDialogTest {
                 terminal.press(Keys.ENTER)
             }
 
-            every { ParserDialog.Companion.testCallback() } returnsMany listOf(
+            every { Dialog.Companion.testCallback() } returnsMany listOf(
                 fileCallback,
                 actionCallback,
                 removeNodesCallback,
@@ -414,7 +414,7 @@ class ParserDialogTest {
                 terminal.type(sampleProjectPath.toString())
                 terminal.press(Keys.ENTER)
             }
-            every { ParserDialog.Companion.testCallback() } returnsMany listOf(
+            every { Dialog.Companion.testCallback() } returnsMany listOf(
                 fileCallback
             )
 

@@ -5,8 +5,8 @@ import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.terminal.inmemory.press
 import com.varabyte.kotter.runtime.terminal.inmemory.type
 import com.varabyte.kotterx.test.foundation.testSession
-import de.maibornwolff.codecharta.analysers.filters.mergefilter.ParserDialog.Companion.collectParserArgs
-import de.maibornwolff.codecharta.analysers.filters.mergefilter.ParserDialog.Companion.testCallback
+import de.maibornwolff.codecharta.analysers.filters.mergefilter.Dialog.Companion.collectParserArgs
+import de.maibornwolff.codecharta.analysers.filters.mergefilter.Dialog.Companion.testCallback
 import io.mockk.every
 import io.mockk.mockkObject
 import io.mockk.unmockkAll
@@ -20,14 +20,14 @@ import java.io.File
 import kotlin.io.path.Path
 
 @Timeout(120)
-class ParserDialogTest {
+class DialogTest {
     private val testResourceBaseFolder = "src/test/resources/"
     private val inputFolderName = testResourceBaseFolder
     private val inputFolderPath = Path(inputFolderName)
 
     @BeforeEach
     fun setup() {
-        mockkObject(ParserDialog.Companion)
+        mockkObject(Dialog.Companion)
     }
 
     @AfterEach
@@ -74,7 +74,7 @@ class ParserDialogTest {
                 terminal.press(Keys.ENTER)
             }
 
-            every { ParserDialog.Companion.testCallback() } returnsMany listOf(
+            every { Dialog.Companion.testCallback() } returnsMany listOf(
                 fileCallback,
                 choiceCallback,
                 outFileCallback,
@@ -136,7 +136,7 @@ class ParserDialogTest {
                 terminal.press(Keys.ENTER)
             }
 
-            every { ParserDialog.Companion.testCallback() } returnsMany listOf(
+            every { Dialog.Companion.testCallback() } returnsMany listOf(
                 fileCallback,
                 choiceCallback,
                 outFileCallback,
@@ -202,7 +202,7 @@ class ParserDialogTest {
                 terminal.press(Keys.ENTER)
             }
 
-            every { ParserDialog.Companion.testCallback() } returnsMany listOf(
+            every { Dialog.Companion.testCallback() } returnsMany listOf(
                 fileCallback,
                 choiceCallback,
                 outFileCallback,
@@ -265,7 +265,7 @@ class ParserDialogTest {
                 terminal.press(Keys.ENTER)
             }
 
-            every { ParserDialog.Companion.testCallback() } returnsMany listOf(
+            every { Dialog.Companion.testCallback() } returnsMany listOf(
                 fileCallback,
                 choiceCallback,
                 outFileCallback,
@@ -324,7 +324,7 @@ class ParserDialogTest {
                 terminal.press(Keys.ENTER)
             }
 
-            every { ParserDialog.Companion.testCallback() } returnsMany listOf(
+            every { Dialog.Companion.testCallback() } returnsMany listOf(
                 fileCallback,
                 choiceCallback,
                 outFileCallback,
@@ -352,7 +352,7 @@ class ParserDialogTest {
                 terminal.press(Keys.ENTER)
             }
 
-            result = ParserDialog.askForceMerge(this)
+            result = Dialog.askForceMerge(this)
         }
 
         assertThat(result).isTrue()
@@ -369,7 +369,7 @@ class ParserDialogTest {
                 terminal.press(Keys.ENTER)
             }
 
-            result = ParserDialog.askForMimoPrefix(this, prefixOptions)
+            result = Dialog.askForMimoPrefix(this, prefixOptions)
         }
 
         assertThat(result).isEqualTo("prefix2")
@@ -388,7 +388,7 @@ class ParserDialogTest {
                 terminal.press(Keys.ENTER)
             }
 
-            result = ParserDialog.requestMimoFileSelection(this, files)
+            result = Dialog.requestMimoFileSelection(this, files)
         }
 
         assertThat(result).containsExactly(File("file2"))

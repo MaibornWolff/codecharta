@@ -1,7 +1,7 @@
 package de.maibornwolff.codecharta.analysers.filters.mergefilter.mimo
 
 import de.maibornwolff.codecharta.analysers.analyserinterface.runInTerminalSession
-import de.maibornwolff.codecharta.analysers.filters.mergefilter.ParserDialog
+import de.maibornwolff.codecharta.analysers.filters.mergefilter.Dialog
 import de.maibornwolff.codecharta.util.Logger
 import java.io.File
 
@@ -55,7 +55,7 @@ class Mimo {
         fun retrieveGroupName(files: List<String>): String {
             val filePrefixes = files.map { it.substringBefore(".") }.toSet()
             if (filePrefixes.size == 1) return filePrefixes.first()
-            return runInTerminalSession { ParserDialog.askForMimoPrefix(this, filePrefixes) }
+            return runInTerminalSession { Dialog.askForMimoPrefix(this, filePrefixes) }
         }
 
         private fun levenshteinDistance(lhs: CharSequence, rhs: CharSequence): Int {

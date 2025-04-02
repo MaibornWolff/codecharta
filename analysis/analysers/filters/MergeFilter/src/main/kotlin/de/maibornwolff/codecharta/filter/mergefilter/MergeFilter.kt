@@ -4,8 +4,8 @@ import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
 import de.maibornwolff.codecharta.analysers.analyserinterface.ParserDialogInterface
 import de.maibornwolff.codecharta.analysers.analyserinterface.runInTerminalSession
 import de.maibornwolff.codecharta.analysers.analyserinterface.util.CodeChartaConstants
-import de.maibornwolff.codecharta.analysers.filters.mergefilter.ParserDialog.Companion.askForceMerge
-import de.maibornwolff.codecharta.analysers.filters.mergefilter.ParserDialog.Companion.requestMimoFileSelection
+import de.maibornwolff.codecharta.analysers.filters.mergefilter.Dialog.Companion.askForceMerge
+import de.maibornwolff.codecharta.analysers.filters.mergefilter.Dialog.Companion.requestMimoFileSelection
 import de.maibornwolff.codecharta.analysers.filters.mergefilter.mimo.Mimo
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
@@ -147,7 +147,7 @@ class MergeFilter(
         }
     }
 
-    override fun getDialog(): ParserDialogInterface = ParserDialog
+    override fun getDialog(): ParserDialogInterface = Dialog
 
     override fun isApplicable(resourceToBeParsed: String): Boolean {
         return false

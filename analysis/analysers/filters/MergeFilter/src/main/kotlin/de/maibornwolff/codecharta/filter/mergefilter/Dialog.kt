@@ -14,7 +14,7 @@ import de.maibornwolff.codecharta.dialogProvider.myPromptList
 import de.maibornwolff.codecharta.serialization.FileExtension
 import java.io.File
 
-class ParserDialog {
+class Dialog {
     companion object : ParserDialogInterface {
         override fun collectParserArgs(session: Session): List<String> {
             val inputDataName: String =

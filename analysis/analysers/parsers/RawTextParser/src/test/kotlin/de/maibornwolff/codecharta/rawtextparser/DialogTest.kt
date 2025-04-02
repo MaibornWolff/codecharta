@@ -22,7 +22,7 @@ import java.io.File
 
 @Timeout(120)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class ParserDialogTest {
+class DialogTest {
     private val testResourceBaseFolder = "src/test/resources/"
     private val inputFileName = "${testResourceBaseFolder}sampleproject/tabs.included"
     private val outputFileName = "test.cc.json"
