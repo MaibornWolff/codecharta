@@ -5,7 +5,7 @@ import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.terminal.inmemory.press
 import com.varabyte.kotter.runtime.terminal.inmemory.type
 import com.varabyte.kotterx.test.foundation.testSession
-import de.maibornwolff.codecharta.parser.svnlogparser.ParserDialog.Companion.collectParserArgs
+import de.maibornwolff.codecharta.parser.svnlogparser.Dialog.Companion.collectParserArgs
 import io.mockk.every
 import io.mockk.mockkObject
 import org.assertj.core.api.Assertions.assertThat
@@ -26,7 +26,7 @@ class DialogTest {
         val isSilent = false
         val addAuthor = false
 
-        mockkObject(ParserDialog.Companion)
+        mockkObject(Dialog.Companion)
 
         var parserArguments: List<String> = emptyList()
 
@@ -53,7 +53,7 @@ class DialogTest {
                 terminal.press(Keys.ENTER)
             }
 
-            every { ParserDialog.Companion.testCallback() } returnsMany listOf(
+            every { Dialog.Companion.testCallback() } returnsMany listOf(
                 fileCallback,
                 outFileCallback,
                 compressCallback,
@@ -85,7 +85,7 @@ class DialogTest {
         val isSilent = true
         val addAuthor = true
 
-        mockkObject(ParserDialog.Companion)
+        mockkObject(Dialog.Companion)
 
         var parserArguments: List<String> = emptyList()
 
@@ -111,7 +111,7 @@ class DialogTest {
                 terminal.press(Keys.ENTER)
             }
 
-            every { ParserDialog.Companion.testCallback() } returnsMany listOf(
+            every { Dialog.Companion.testCallback() } returnsMany listOf(
                 fileCallback,
                 outFileCallback,
                 compressCallback,

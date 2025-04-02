@@ -5,8 +5,8 @@ import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.terminal.inmemory.press
 import com.varabyte.kotter.runtime.terminal.inmemory.type
 import com.varabyte.kotterx.test.foundation.testSession
-import de.maibornwolff.codecharta.parser.gitlogparser.ParserDialog.Companion.collectGeneralArgs
-import de.maibornwolff.codecharta.parser.gitlogparser.ParserDialog.Companion.collectSubcommand
+import de.maibornwolff.codecharta.parser.gitlogparser.Dialog.Companion.collectGeneralArgs
+import de.maibornwolff.codecharta.parser.gitlogparser.Dialog.Companion.collectSubcommand
 import de.maibornwolff.codecharta.parser.gitlogparser.subcommands.LogScanCommand
 import de.maibornwolff.codecharta.parser.gitlogparser.subcommands.LogScanParserDialog
 import de.maibornwolff.codecharta.parser.gitlogparser.subcommands.RepoScanCommand
@@ -25,7 +25,7 @@ class DialogTest {
 
     @Test
     fun `should return true for log-scan`() {
-        mockkObject(ParserDialog.Companion)
+        mockkObject(Dialog.Companion)
 
         var isLogScan = false
 
@@ -34,7 +34,7 @@ class DialogTest {
                 terminal.press(Keys.ENTER)
             }
 
-            every { ParserDialog.Companion.testCallback() } returnsMany listOf(
+            every { Dialog.Companion.testCallback() } returnsMany listOf(
                 collectSubcommandCallback
             )
 
@@ -46,7 +46,7 @@ class DialogTest {
 
     @Test
     fun `should return false for log-scan`() {
-        mockkObject(ParserDialog.Companion)
+        mockkObject(Dialog.Companion)
 
         var isLogScan = false
 
@@ -56,7 +56,7 @@ class DialogTest {
                 terminal.press(Keys.ENTER)
             }
 
-            every { ParserDialog.Companion.testCallback() } returnsMany listOf(
+            every { Dialog.Companion.testCallback() } returnsMany listOf(
                 collectSubcommandCallback
             )
 
@@ -145,7 +145,7 @@ class DialogTest {
         val addAuthor = false
         val isCompressed = false
 
-        mockkObject(ParserDialog.Companion)
+        mockkObject(Dialog.Companion)
 
         var parserArguments: List<String> = listOf()
 
@@ -167,7 +167,7 @@ class DialogTest {
                 terminal.press(Keys.ENTER)
             }
 
-            every { ParserDialog.Companion.testCallback() } returnsMany listOf(
+            every { Dialog.Companion.testCallback() } returnsMany listOf(
                 outFileCallback,
                 compressCallback,
                 silentCallback,
@@ -191,7 +191,7 @@ class DialogTest {
         val isSilent = true
         val addAuthor = true
 
-        mockkObject(ParserDialog.Companion)
+        mockkObject(Dialog.Companion)
 
         var parserArguments: List<String> = listOf()
 
@@ -206,7 +206,7 @@ class DialogTest {
                 terminal.press(Keys.ENTER)
             }
 
-            every { ParserDialog.Companion.testCallback() } returnsMany listOf(
+            every { Dialog.Companion.testCallback() } returnsMany listOf(
                 outFileCallback,
                 silentCallback,
                 authorCallback
@@ -232,7 +232,7 @@ class DialogTest {
         val isSilent = true
         val addAuthor = true
 
-        mockkObject(ParserDialog.Companion)
+        mockkObject(Dialog.Companion)
         mockkObject(LogScanParserDialog.Companion)
 
         every { LogScanCommand().getDialog().collectParserArgs(any()) } returns listOf("--git-log=$logFileName", "--repo-files=$lsFileName")
@@ -257,7 +257,7 @@ class DialogTest {
                 terminal.press(Keys.ENTER)
             }
 
-            every { ParserDialog.Companion.testCallback() } returnsMany listOf(
+            every { Dialog.Companion.testCallback() } returnsMany listOf(
                 collectSubcommandCallback,
                 outFileCallback,
                 compressCallback,
@@ -265,7 +265,7 @@ class DialogTest {
                 authorCallback
             )
 
-            parserArguments = ParserDialog.collectParserArgs(this)
+            parserArguments = Dialog.collectParserArgs(this)
         }
 
         val mainCmdLine = CommandLine(GitLogParser())
@@ -289,7 +289,7 @@ class DialogTest {
         val isSilent = true
         val addAuthor = true
 
-        mockkObject(ParserDialog.Companion)
+        mockkObject(Dialog.Companion)
         mockkObject(RepoScanParserDialog.Companion)
 
         every { RepoScanCommand().getDialog().collectParserArgs(any()) } returns listOf("--repo-path=$repoFolderName")
@@ -315,7 +315,7 @@ class DialogTest {
                 terminal.press(Keys.ENTER)
             }
 
-            every { ParserDialog.Companion.testCallback() } returnsMany listOf(
+            every { Dialog.Companion.testCallback() } returnsMany listOf(
                 collectSubcommandCallback,
                 outFileCallback,
                 compressCallback,
@@ -323,7 +323,7 @@ class DialogTest {
                 authorCallback
             )
 
-            parserArguments = ParserDialog.collectParserArgs(this)
+            parserArguments = Dialog.collectParserArgs(this)
         }
 
         val cmdLine = CommandLine(GitLogParser())

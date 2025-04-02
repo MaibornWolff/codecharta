@@ -1,52 +1,35 @@
-package de.maibornwolff.codecharta.parser.gitlogparser
+package de.maibornwolff.codecharta.parser.svnlogparser
 
 import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.Session
 import de.maibornwolff.codecharta.analysers.analyserinterface.ParserDialogInterface
+import de.maibornwolff.codecharta.dialogProvider.InputType
 import de.maibornwolff.codecharta.dialogProvider.myPromptConfirm
+import de.maibornwolff.codecharta.dialogProvider.myPromptDefaultFileFolderInput
 import de.maibornwolff.codecharta.dialogProvider.myPromptInput
-import de.maibornwolff.codecharta.parser.gitlogparser.subcommands.LogScanCommand
-import de.maibornwolff.codecharta.parser.gitlogparser.subcommands.RepoScanCommand
 
-class ParserDialog {
+class Dialog {
     companion object : ParserDialogInterface {
         override fun collectParserArgs(session: Session): List<String> {
-            val isLogScan = collectSubcommand(session)
-            val subcommand = if (isLogScan) {
-                "log-scan"
-            } else {
-                "repo-scan"
-            }
-
-            val generalArgs = collectGeneralArgs(session)
-
-            val subcommandArgs: List<String> = if (isLogScan) {
-                LogScanCommand().getDialog().collectParserArgs(session)
-            } else {
-                RepoScanCommand().getDialog().collectParserArgs(session)
-            }
-
-            return listOf(subcommand) + generalArgs + subcommandArgs
-        }
-
-        internal fun collectSubcommand(session: Session): Boolean {
-            return session.myPromptConfirm(
-                message = "Do you already have a git.log and git ls file?",
+            println("You can generate this file with: svn log --verbose > svn.log")
+            val inputFileName: String = session.myPromptDefaultFileFolderInput(
+                inputType = InputType.FILE,
+                fileExtensionList = listOf(),
                 onInputReady = testCallback()
             )
-        }
 
-        internal fun collectGeneralArgs(session: Session): List<String> {
             val outputFileName: String = session.myPromptInput(
                 message = "What is the name of the output file?",
                 allowEmptyInput = true,
                 onInputReady = testCallback()
             )
 
-            val isCompressed = (outputFileName.isEmpty()) || session.myPromptConfirm(
-                message = "Do you want to compress the output file?",
-                onInputReady = testCallback()
-            )
+            val isCompressed =
+                (outputFileName.isEmpty()) ||
+                    session.myPromptConfirm(
+                        message = "Do you want to compress the output file?",
+                        onInputReady = testCallback()
+                    )
 
             val isSilent: Boolean = session.myPromptConfirm(
                 message = "Do you want to suppress command line output?",
@@ -59,6 +42,7 @@ class ParserDialog {
             )
 
             return listOfNotNull(
+                inputFileName,
                 "--output-file=$outputFileName",
                 if (isCompressed) null else "--not-compressed",
                 "--silent=$isSilent",
