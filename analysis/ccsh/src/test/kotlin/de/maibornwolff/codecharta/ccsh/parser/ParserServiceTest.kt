@@ -255,7 +255,7 @@ class ParserServiceTest {
         } returns emptyList()
 
         every {
-            obj.getApplicableAnalyserInterfaceNamesWithDescription(any(), any())
+            obj.getApplicableAnalyserNamesWithDescription(any(), any())
         } returns usableParsers
 
         return obj

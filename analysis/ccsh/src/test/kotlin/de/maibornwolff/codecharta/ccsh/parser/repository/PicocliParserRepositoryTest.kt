@@ -137,7 +137,7 @@ class PicocliParserRepositoryTest {
         val unusableParser = mockParserObject("sonarimport", false)
 
         val usableParsers =
-            picocliParserRepository.getApplicableAnalyserInterfaceNamesWithDescription(
+            picocliParserRepository.getApplicableAnalyserNamesWithDescription(
                 "input",
                 listOf(usableParser, unusableParser)
             )
@@ -155,7 +155,7 @@ class PicocliParserRepositoryTest {
         val parserNameAndDescription = parserNameWithDescription[0] + parserNameWithDescription[1]
 
         val applicableParser =
-            picocliParserRepository.getApplicableAnalyserInterfaceNamesWithDescription("input", listOf(parser))
+            picocliParserRepository.getApplicableAnalyserNamesWithDescription("input", listOf(parser))
 
         Assertions.assertTrue(applicableParser.size == 1)
         Assertions.assertTrue(applicableParser[0] == parserNameAndDescription)

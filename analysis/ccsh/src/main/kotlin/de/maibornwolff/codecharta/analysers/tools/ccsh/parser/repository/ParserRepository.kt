@@ -13,7 +13,7 @@ interface ParserRepository<T> {
 
     fun getApplicableParsers(inputFile: String, allParsers: List<AnalyserInterface>): List<AnalyserInterface>
 
-    fun getApplicableAnalyserInterfaceNamesWithDescription(inputFile: String, allParsers: List<AnalyserInterface>): List<String>
+    fun getApplicableAnalyserNamesWithDescription(inputFile: String, allParsers: List<AnalyserInterface>): List<String>
 
     fun getAnalyserInterface(dataSource: T, name: String): AnalyserInterface?
 }
