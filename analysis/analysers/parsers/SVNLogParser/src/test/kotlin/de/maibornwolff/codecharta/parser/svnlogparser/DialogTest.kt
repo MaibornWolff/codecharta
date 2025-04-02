@@ -15,7 +15,7 @@ import picocli.CommandLine
 import java.io.File
 
 @Timeout(120)
-class ParserDialogTest {
+class DialogTest {
     private val testResourceBaseFolder = "src/test/resources/"
     private val inputFileName = "${testResourceBaseFolder}example_svn.log"
     private val outputFileName = "out.cc.json"

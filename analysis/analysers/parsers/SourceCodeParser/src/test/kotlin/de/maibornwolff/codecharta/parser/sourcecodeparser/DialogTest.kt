@@ -18,7 +18,7 @@ import picocli.CommandLine
 import java.io.File
 
 @Timeout(120)
-class ParserDialogTest {
+class DialogTest {
     private val testResourceBaseFolder = "src/test/resources/"
     private val inputFileName = "${testResourceBaseFolder}ScriptShellSample.java"
     private val inputFileFolder = "${testResourceBaseFolder}my/"

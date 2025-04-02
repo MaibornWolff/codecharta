@@ -20,7 +20,7 @@ import picocli.CommandLine
 import java.io.File
 
 @Timeout(120)
-class ParserDialogTest {
+class DialogTest {
     private val outputFileName = "codecharta.cc.json"
 
     @Test

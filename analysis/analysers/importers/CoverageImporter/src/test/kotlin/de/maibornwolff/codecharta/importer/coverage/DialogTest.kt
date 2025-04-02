@@ -19,7 +19,7 @@ import picocli.CommandLine
 
 @Timeout(120)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class ParserDialogTest {
+class DialogTest {
     private val outputFileName = "coverage_out.cc.json"
     private val testResourceBaseFolder = "src/test/resources/languages"
     private val reportFileName = "$testResourceBaseFolder/javascript/minimal_lcov.info"

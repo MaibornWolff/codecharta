@@ -17,7 +17,7 @@ import org.junit.jupiter.api.Timeout
 import picocli.CommandLine
 
 @Timeout(120)
-class ParserDialogTest {
+class DialogTest {
     private val hostUrl = "https://sonar.foo"
     private val projectKey = "de.foo:bar"
     private val userToken = "c123d456"
