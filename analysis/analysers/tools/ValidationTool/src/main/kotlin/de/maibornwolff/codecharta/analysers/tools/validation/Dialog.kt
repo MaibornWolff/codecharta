@@ -4,14 +4,14 @@ import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.Session
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserDialogInterface
 import de.maibornwolff.codecharta.dialogProvider.InputType
-import de.maibornwolff.codecharta.dialogProvider.myPromptDefaultFileFolderInput
+import de.maibornwolff.codecharta.dialogProvider.promptDefaultFileFolderInput
 import de.maibornwolff.codecharta.serialization.FileExtension
 
 class Dialog {
     companion object : AnalyserDialogInterface {
         override fun collectParserArgs(session: Session): List<String> {
             print("Which file do you want to validate?")
-            val inputFileName: String = session.myPromptDefaultFileFolderInput(
+            val inputFileName: String = session.promptDefaultFileFolderInput(
                 inputType = InputType.FILE,
                 fileExtensionList = listOf(
                     FileExtension.CCJSON,

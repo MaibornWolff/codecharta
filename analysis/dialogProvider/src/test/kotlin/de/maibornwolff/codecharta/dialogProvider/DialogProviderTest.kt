@@ -43,7 +43,7 @@ class DialogProviderTest {
     @Test
     fun `should correctly apply the text formatting when prompt is first displayed`() {
         testSession { terminal ->
-            myPromptInput(testMessage, testHint, true, testInvalidInputMessage, onInputReady = {
+            promptInput(testMessage, testHint, true, testInvalidInputMessage, onInputReady = {
                 terminal.assertMatches {
                     bold {
                         green { text("? ") }
@@ -67,7 +67,7 @@ class DialogProviderTest {
 
         testSession { terminal ->
             result =
-                myPromptInput(testMessage, onInputReady = {
+                promptInput(testMessage, onInputReady = {
                     terminal.type(testInput)
                     terminal.press(Keys.ENTER)
                 })
@@ -87,7 +87,7 @@ class DialogProviderTest {
 
         testSession { terminal ->
             result =
-                myPromptInput(testMessage, allowEmptyInput = true, onInputReady = {
+                promptInput(testMessage, allowEmptyInput = true, onInputReady = {
                     terminal.press(Keys.ENTER)
 
                     assertThat(terminal.resolveRerenders().stripFormatting()).containsExactly(
@@ -103,7 +103,7 @@ class DialogProviderTest {
     @Test
     fun `should not accept empty input and display warning message when empty input is not allowed`() {
         testSession { terminal ->
-            myPromptInput(
+            promptInput(
                 testMessage,
                 allowEmptyInput = false,
                 onInputReady = {
@@ -131,7 +131,7 @@ class DialogProviderTest {
 
         testSession { terminal ->
             result =
-                myPromptInput(testMessage, inputValidator = { true }, onInputReady = {
+                promptInput(testMessage, inputValidator = { true }, onInputReady = {
                     terminal.type(testInput)
                     terminal.press(Keys.ENTER)
                 })
@@ -145,7 +145,7 @@ class DialogProviderTest {
 
         testSession { terminal ->
             result =
-                myPromptInput(testMessage, allowEmptyInput = true, inputValidator = { false }, onInputReady = {
+                promptInput(testMessage, allowEmptyInput = true, inputValidator = { false }, onInputReady = {
                     terminal.press(Keys.ENTER)
                 })
             assertThat(result).isEqualTo("")
@@ -155,7 +155,7 @@ class DialogProviderTest {
     @Test
     fun `should not accept input and display default warning message when input was invalid`() {
         testSession { terminal ->
-            myPromptInput(
+            promptInput(
                 testMessage,
                 allowEmptyInput = false,
                 inputValidator = { input -> input.contains("accepted") },
@@ -182,7 +182,7 @@ class DialogProviderTest {
     @Test
     fun `should not accept invalid input and display custom warning message when a custom invalid input message was specified`() {
         testSession { terminal ->
-            myPromptInput(
+            promptInput(
                 testMessage,
                 allowEmptyInput = false,
                 invalidInputMessage = testInvalidInputMessage,
@@ -215,7 +215,7 @@ class DialogProviderTest {
 
         testSession { terminal ->
             result =
-                myPromptInputNumber(testMessage, onInputReady = {
+                promptInputNumber(testMessage, onInputReady = {
                     terminal.type("test 1, test 2; test 3.?/%!IV")
                     terminal.press(Keys.ENTER)
                 })
@@ -228,7 +228,7 @@ class DialogProviderTest {
         var rendered: List<String> = listOf()
         testSession { terminal ->
             val result =
-                myPromptInputNumber(
+                promptInputNumber(
                     testMessage,
                     invalidInputMessage = testInvalidInputMessage,
                     inputValidator = InputValidator.isNumberGreaterThen(
@@ -263,7 +263,7 @@ class DialogProviderTest {
     @Test
     fun `should accept empty number input`() {
         testSession { terminal ->
-            val result = myPromptInputNumber(testMessage, allowEmptyInput = true, onInputReady = {
+            val result = promptInputNumber(testMessage, allowEmptyInput = true, onInputReady = {
                 terminal.press(Keys.ENTER)
             })
             assertThat(result).isEqualTo("")
@@ -274,7 +274,7 @@ class DialogProviderTest {
     fun `should accept empty input but still check if valid`() {
         testSession { terminal ->
             val result =
-                myPromptInputNumber(
+                promptInputNumber(
                     testMessage,
                     allowEmptyInput = true,
                     inputValidator = InputValidator.isNumberGreaterThen(
@@ -297,7 +297,7 @@ class DialogProviderTest {
     @Test
     fun `should correctly display all text formatting when prompt is first displayed`() {
         testSession { terminal ->
-            myPromptConfirm(testMessage, testHint, onInputReady = {
+            promptConfirm(testMessage, testHint, onInputReady = {
                 terminal.assertMatches {
                     bold {
                         green { text("? ") }
@@ -319,7 +319,7 @@ class DialogProviderTest {
 
         testSession { terminal ->
             result =
-                myPromptConfirm(testMessage, onInputReady = {
+                promptConfirm(testMessage, onInputReady = {
                     terminal.press(Keys.ENTER)
                 })
 
@@ -338,7 +338,7 @@ class DialogProviderTest {
 
         testSession { terminal ->
             result =
-                myPromptConfirm(testMessage, testHint, onInputReady = {
+                promptConfirm(testMessage, testHint, onInputReady = {
                     terminal.press(Keys.RIGHT)
                     terminal.press(Keys.ENTER)
                 })
@@ -358,7 +358,7 @@ class DialogProviderTest {
 
         testSession { terminal ->
             result =
-                myPromptConfirm(testMessage, onInputReady = {
+                promptConfirm(testMessage, onInputReady = {
                     repeat(5) {
                         terminal.press(Keys.RIGHT)
                     }
@@ -374,7 +374,7 @@ class DialogProviderTest {
     @Test
     fun `should display all list options that were specified in the correct format when prompt is first displayed`() {
         testSession { terminal ->
-            myPromptList(testMessage, testChoices, testHint, onInputReady = {
+            promptList(testMessage, testChoices, testHint, onInputReady = {
                 terminal.assertMatches {
                     bold {
                         green { text("? ") }
@@ -398,7 +398,7 @@ class DialogProviderTest {
 
         testSession { terminal ->
             result =
-                myPromptList(testMessage, testChoices, onInputReady = {
+                promptList(testMessage, testChoices, onInputReady = {
                     terminal.press(Keys.ENTER)
                 })
 
@@ -420,7 +420,7 @@ class DialogProviderTest {
 
         testSession { terminal ->
             result =
-                myPromptList(testMessage, testChoices, onInputReady = {
+                promptList(testMessage, testChoices, onInputReady = {
                     terminal.press(Keys.DOWN)
                     terminal.press(Keys.ENTER)
                 })
@@ -443,7 +443,7 @@ class DialogProviderTest {
 
         testSession { terminal ->
             result =
-                myPromptList(testMessage, testChoices, onInputReady = {
+                promptList(testMessage, testChoices, onInputReady = {
                     repeat(5) {
                         terminal.press(Keys.UP)
                     }
@@ -473,7 +473,7 @@ class DialogProviderTest {
 
         testSession { terminal ->
             result =
-                myPromptList(testMessage, testChoices, onInputReady = {
+                promptList(testMessage, testChoices, onInputReady = {
                     repeat(6) {
                         terminal.press(Keys.DOWN)
                     }
@@ -497,7 +497,7 @@ class DialogProviderTest {
     @Test
     fun `should display all checkbox options that were specified in the correct format when the first option is selected`() {
         testSession { terminal ->
-            myPromptCheckbox(testMessage, testChoices, testHint, true, onInputReady = {
+            promptCheckbox(testMessage, testChoices, testHint, true, onInputReady = {
                 terminal.press(Keys.SPACE)
                 terminal.press(Keys.ENTER)
             })
@@ -525,7 +525,7 @@ class DialogProviderTest {
 
         testSession { terminal ->
             result =
-                myPromptCheckbox(testMessage, testChoices, testHint, allowEmptyInput = true, onInputReady = {
+                promptCheckbox(testMessage, testChoices, testHint, allowEmptyInput = true, onInputReady = {
                     terminal.press(Keys.ENTER)
                 })
             assertThat(terminal.resolveRerenders().stripFormatting()).containsExactly(
@@ -543,7 +543,7 @@ class DialogProviderTest {
     @Test
     fun `should not accept input and display hint when selection is empty and empty input is not allowed`() {
         testSession { terminal ->
-            myPromptCheckbox(
+            promptCheckbox(
                 testMessage,
                 testChoices,
                 testHint,
@@ -576,7 +576,7 @@ class DialogProviderTest {
 
         testSession { terminal ->
             result =
-                myPromptCheckbox(testMessage, testChoices, testHint, onInputReady = {
+                promptCheckbox(testMessage, testChoices, testHint, onInputReady = {
                     terminal.press(Keys.SPACE)
                     terminal.press(Keys.ENTER)
                 })
@@ -598,7 +598,7 @@ class DialogProviderTest {
 
         testSession { terminal ->
             result =
-                myPromptCheckbox(testMessage, testChoices, testHint, onInputReady = {
+                promptCheckbox(testMessage, testChoices, testHint, onInputReady = {
                     terminal.press(Keys.DOWN)
                     terminal.press(Keys.SPACE)
                     terminal.press(Keys.ENTER)
@@ -621,7 +621,7 @@ class DialogProviderTest {
 
         testSession { terminal ->
             result =
-                myPromptCheckbox(testMessage, testChoices, testHint, onInputReady = {
+                promptCheckbox(testMessage, testChoices, testHint, onInputReady = {
                     terminal.press(Keys.SPACE)
                     terminal.press(Keys.SPACE)
                     repeat(5) {
@@ -655,7 +655,7 @@ class DialogProviderTest {
 
         testSession { terminal ->
             result =
-                myPromptCheckbox(testMessage, testChoices, testHint, onInputReady = {
+                promptCheckbox(testMessage, testChoices, testHint, onInputReady = {
                     repeat(6) {
                         terminal.press(Keys.DOWN)
                     }
@@ -680,7 +680,7 @@ class DialogProviderTest {
 
         testSession { terminal ->
             result =
-                myPromptCheckbox(testMessage, testChoices, testHint, onInputReady = {
+                promptCheckbox(testMessage, testChoices, testHint, onInputReady = {
                     terminal.press(Keys.DOWN)
                     terminal.press(Keys.DOWN)
                     terminal.press(Keys.SPACE)
@@ -706,7 +706,7 @@ class DialogProviderTest {
 
         testSession { terminal ->
             result =
-                myPromptCheckbox(testMessage, testChoices, testHint, onInputReady = {
+                promptCheckbox(testMessage, testChoices, testHint, onInputReady = {
                     terminal.press(Keys.SPACE)
 
                     terminal.press(Keys.DOWN)

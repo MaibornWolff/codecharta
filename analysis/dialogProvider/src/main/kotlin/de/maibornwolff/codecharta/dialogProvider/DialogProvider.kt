@@ -21,7 +21,7 @@ enum class InputType(val inputType: String) {
     FOLDER_AND_FILE("folder or file")
 }
 
-fun Session.myPromptInput(
+fun Session.promptInput(
     message: String,
     hint: String = "",
     allowEmptyInput: Boolean = false,
@@ -51,7 +51,7 @@ fun Session.myPromptInput(
     return lastUserInput
 }
 
-fun Session.myPromptInputNumber(
+fun Session.promptInputNumber(
     message: String,
     hint: String = "",
     allowEmptyInput: Boolean = false,
@@ -84,7 +84,7 @@ fun Session.myPromptInputNumber(
     return lastUserInput
 }
 
-fun Session.myPromptConfirm(
+fun Session.promptConfirm(
     message: String,
     hint: String = "arrow keys to change selection",
     onInputReady: suspend RunScope.() -> Unit
@@ -109,7 +109,7 @@ fun Session.myPromptConfirm(
     return result
 }
 
-fun Session.myPromptList(
+fun Session.promptList(
     message: String,
     choices: List<String>,
     hint: String = "arrow keys to move, ENTER to select",
@@ -136,7 +136,7 @@ fun Session.myPromptList(
     return result
 }
 
-fun Session.myPromptCheckbox(
+fun Session.promptCheckbox(
     message: String,
     choices: List<String>,
     hint: String = "SPACE to select, ENTER to confirm selection",
@@ -201,7 +201,7 @@ private fun getSelectedChoices(choices: List<String>, selection: List<Boolean>):
     return result
 }
 
-fun Session.myPromptDefaultFileFolderInput(
+fun Session.promptDefaultFileFolderInput(
     inputType: InputType,
     fileExtensionList: List<FileExtension>,
     onInputReady: suspend RunScope.() -> Unit
@@ -235,7 +235,7 @@ fun Session.myPromptDefaultFileFolderInput(
         }
     val currentWorkingDirectory = Paths.get("").toAbsolutePath().toString()
 
-    return myPromptInput(
+    return promptInput(
         message = "What is the input $inputMessage",
         hint = currentWorkingDirectory,
         allowEmptyInput = false,

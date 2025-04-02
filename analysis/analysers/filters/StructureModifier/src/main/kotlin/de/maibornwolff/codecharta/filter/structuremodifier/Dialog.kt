@@ -4,24 +4,24 @@ import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.Session
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserDialogInterface
 import de.maibornwolff.codecharta.dialogProvider.InputType
-import de.maibornwolff.codecharta.dialogProvider.myPromptDefaultFileFolderInput
-import de.maibornwolff.codecharta.dialogProvider.myPromptInput
-import de.maibornwolff.codecharta.dialogProvider.myPromptInputNumber
-import de.maibornwolff.codecharta.dialogProvider.myPromptList
+import de.maibornwolff.codecharta.dialogProvider.promptDefaultFileFolderInput
+import de.maibornwolff.codecharta.dialogProvider.promptInput
+import de.maibornwolff.codecharta.dialogProvider.promptInputNumber
+import de.maibornwolff.codecharta.dialogProvider.promptList
 import de.maibornwolff.codecharta.serialization.FileExtension
 
 class Dialog {
     companion object : AnalyserDialogInterface {
         override fun collectParserArgs(session: Session): List<String> {
             val inputFileName: String =
-                session.myPromptDefaultFileFolderInput(
+                session.promptDefaultFileFolderInput(
                     inputType = InputType.FILE,
                     fileExtensionList = listOf(FileExtension.CCJSON, FileExtension.CCGZ),
                     onInputReady = testCallback()
                 )
 
             val selectedAction: String =
-                session.myPromptList(
+                session.promptList(
                     message = "Which action do you want to perform?",
                     choices =
                         listOf(
@@ -61,7 +61,7 @@ class Dialog {
 
         private fun collectPrintArguments(session: Session): Array<String> {
             val printLevels: String =
-                session.myPromptInputNumber(
+                session.promptInputNumber(
                     message = "How many print levels do you want to print?",
                     hint = "0",
                     onInputReady = testCallback()
@@ -71,7 +71,7 @@ class Dialog {
 
         private fun collectMCCArguments(session: Session): Array<String> {
             val newName: String =
-                session.myPromptList(
+                session.promptList(
                     message = "This action will rename the mcc metric. Which should the new name be?",
                     choices = listOf("complexity", "sonar_complexity"),
                     onInputReady = testCallback()
@@ -83,7 +83,7 @@ class Dialog {
 
         private fun collectSetRootArguments(session: Session): Array<String> {
             val setRoot: String =
-                session.myPromptInput(
+                session.promptInput(
                     message = "What path within the project should be extracted as the new root?",
                     onInputReady = testCallback()
                 )
@@ -93,12 +93,12 @@ class Dialog {
 
         private fun collectMoveNodesArguments(session: Session): Array<String> {
             val moveFrom: String =
-                session.myPromptInput(
+                session.promptInput(
                     message = "What path should be moved (contained children will be moved as well)?",
                     onInputReady = testCallback()
                 )
             val moveTo: String =
-                session.myPromptInput(
+                session.promptInput(
                     message = "What is the target path to move them?",
                     onInputReady = testCallback()
                 )
@@ -108,7 +108,7 @@ class Dialog {
 
         private fun collectRemoveNodesArguments(session: Session): Array<String> {
             val remove: String =
-                session.myPromptInput(
+                session.promptInput(
                     message = "What are the paths of the nodes to be removed?",
                     onInputReady = testCallback()
                 )
@@ -117,7 +117,7 @@ class Dialog {
         }
 
         private fun collectOutputFileName(session: Session): String {
-            return session.myPromptInput(
+            return session.promptInput(
                 message = "What is the name of the output file?",
                 allowEmptyInput = true,
                 onInputReady = testCallback()

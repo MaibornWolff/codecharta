@@ -5,12 +5,12 @@ import com.varabyte.kotter.runtime.Session
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserDialogInterface
 import de.maibornwolff.codecharta.dialogProvider.InputType
 import de.maibornwolff.codecharta.dialogProvider.InputValidator
-import de.maibornwolff.codecharta.dialogProvider.myPromptCheckbox
-import de.maibornwolff.codecharta.dialogProvider.myPromptConfirm
-import de.maibornwolff.codecharta.dialogProvider.myPromptDefaultFileFolderInput
-import de.maibornwolff.codecharta.dialogProvider.myPromptInput
-import de.maibornwolff.codecharta.dialogProvider.myPromptInputNumber
-import de.maibornwolff.codecharta.dialogProvider.myPromptList
+import de.maibornwolff.codecharta.dialogProvider.promptCheckbox
+import de.maibornwolff.codecharta.dialogProvider.promptConfirm
+import de.maibornwolff.codecharta.dialogProvider.promptDefaultFileFolderInput
+import de.maibornwolff.codecharta.dialogProvider.promptInput
+import de.maibornwolff.codecharta.dialogProvider.promptInputNumber
+import de.maibornwolff.codecharta.dialogProvider.promptList
 import de.maibornwolff.codecharta.serialization.FileExtension
 import java.io.File
 
@@ -18,7 +18,7 @@ class Dialog {
     companion object : AnalyserDialogInterface {
         override fun collectParserArgs(session: Session): List<String> {
             val inputDataName: String =
-                session.myPromptDefaultFileFolderInput(
+                session.promptDefaultFileFolderInput(
                     inputType = InputType.FOLDER_AND_FILE,
                     fileExtensionList = listOf(FileExtension.CCJSON, FileExtension.CCGZ),
                     onInputReady = testCallback()
@@ -28,7 +28,7 @@ class Dialog {
             val mimoMerge = "Mimo Merge"
             val largeMerge = "Large Merge"
 
-            val mergeMode = session.myPromptList(
+            val mergeMode = session.promptList(
                 message = "Do you want to use a special merge mode?",
                 choices = listOf(defaultMerge, mimoMerge, largeMerge),
                 onInputReady = testCallback()
@@ -39,19 +39,19 @@ class Dialog {
             var levenshteinDistance = 0
 
             if (mergeMode == mimoMerge) {
-                outputFileName = session.myPromptInput(
+                outputFileName = session.promptInput(
                     message = "What is the output folder path?",
                     hint = "Uses the current working directory if empty",
                     allowEmptyInput = true,
                     onInputReady = testCallback()
                 )
 
-                isCompressed = session.myPromptConfirm(
+                isCompressed = session.promptConfirm(
                     message = "Do you want to compress the output file(s)?",
                     onInputReady = testCallback()
                 )
 
-                levenshteinDistance = session.myPromptInputNumber(
+                levenshteinDistance = session.promptInputNumber(
                     message = "Select Levenshtein Distance for name match suggestions (0 for no suggestions)",
                     hint = "3",
                     invalidInputMessage = "Specify a number greater or equal to 0",
@@ -59,14 +59,14 @@ class Dialog {
                     onInputReady = testCallback()
                 ).toInt()
             } else {
-                outputFileName = session.myPromptInput(
+                outputFileName = session.promptInput(
                     message = "What is the name of the output file?",
                     hint = "mergeResult.cc.json",
                     allowEmptyInput = true,
                     onInputReady = testCallback()
                 )
 
-                isCompressed = (outputFileName.isEmpty()) || session.myPromptConfirm(
+                isCompressed = (outputFileName.isEmpty()) || session.promptConfirm(
                     message = "Do you want to compress the output file?",
                     onInputReady = testCallback()
                 )
@@ -74,7 +74,7 @@ class Dialog {
 
             val leafMergingStrategy = "Leaf Merging Strategy"
             val recursiveMergingStrategy = "Recursive Merging Strategy"
-            val strategy = session.myPromptList(
+            val strategy = session.promptList(
                 message = "Which merging strategy should be used?",
                 choices = listOf(recursiveMergingStrategy, leafMergingStrategy),
                 onInputReady = testCallback()
@@ -84,14 +84,14 @@ class Dialog {
             var addMissing = false
             if (strategy == leafMergingStrategy) {
                 leafFlag = true
-                addMissing = session.myPromptConfirm(
+                addMissing = session.promptConfirm(
                     message = "Do you want to add missing nodes to reference?",
                     onInputReady = testCallback()
                 )
             }
 
             val ignoreCase: Boolean =
-                session.myPromptConfirm(
+                session.promptConfirm(
                     message = "Do you want to ignore case when checking node names?",
                     onInputReady = testCallback()
                 )
@@ -123,14 +123,14 @@ class Dialog {
         }
 
         fun askForceMerge(session: Session): Boolean {
-            return session.myPromptConfirm(
+            return session.promptConfirm(
                 message = "Do you still want to merge non-overlapping at the top-level nodes?",
                 onInputReady = testCallback()
             )
         }
 
         fun askForMimoPrefix(session: Session, prefixOptions: Set<String>): String {
-            return session.myPromptList(
+            return session.promptList(
                 message = "Which prefix should be used for the output file?",
                 choices = prefixOptions.toList(),
                 onInputReady = testCallback()
@@ -139,7 +139,7 @@ class Dialog {
 
         fun requestMimoFileSelection(session: Session, files: List<File>): List<File> {
             val fileNameList = files.map { it.name }
-            val choiceList: List<String> = session.myPromptCheckbox(
+            val choiceList: List<String> = session.promptCheckbox(
                 message = "",
                 choices = fileNameList,
                 hint = "Not selected files will not get merged",

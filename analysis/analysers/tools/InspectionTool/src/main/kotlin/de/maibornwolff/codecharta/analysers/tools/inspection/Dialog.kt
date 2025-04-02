@@ -4,20 +4,20 @@ import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.Session
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserDialogInterface
 import de.maibornwolff.codecharta.dialogProvider.InputType
-import de.maibornwolff.codecharta.dialogProvider.myPromptDefaultFileFolderInput
-import de.maibornwolff.codecharta.dialogProvider.myPromptInputNumber
+import de.maibornwolff.codecharta.dialogProvider.promptDefaultFileFolderInput
+import de.maibornwolff.codecharta.dialogProvider.promptInputNumber
 import de.maibornwolff.codecharta.serialization.FileExtension
 
 class Dialog {
     companion object : AnalyserDialogInterface {
         override fun collectParserArgs(session: Session): List<String> {
-            val inputFileName: String = session.myPromptDefaultFileFolderInput(
+            val inputFileName: String = session.promptDefaultFileFolderInput(
                 inputType = InputType.FILE,
                 fileExtensionList = listOf(FileExtension.CCJSON, FileExtension.CCGZ),
                 onInputReady = testCallback()
             )
 
-            val levels = session.myPromptInputNumber(
+            val levels = session.promptInputNumber(
                 message = "How many levels do you want to print?",
                 hint = "0",
                 allowEmptyInput = false,

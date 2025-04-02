@@ -4,13 +4,13 @@ import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.Session
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserDialogInterface
 import de.maibornwolff.codecharta.dialogProvider.InputValidator
-import de.maibornwolff.codecharta.dialogProvider.myPromptInput
+import de.maibornwolff.codecharta.dialogProvider.promptInput
 
 class LogScanDialog {
     companion object : AnalyserDialogInterface {
         override fun collectParserArgs(session: Session): List<String> {
             print("You can generate this file with: git log --numstat --raw --topo-order --reverse -m > git.log")
-            val gitLogFile = session.myPromptInput(
+            val gitLogFile = session.promptInput(
                 message = "What is the git.log file that has to be parsed?",
                 hint = "git.log",
                 allowEmptyInput = false,
@@ -19,7 +19,7 @@ class LogScanDialog {
             )
 
             print("You can generate this file with: git ls-files > file-name-list.txt")
-            val gitLsFile = session.myPromptInput(
+            val gitLsFile = session.promptInput(
                 message = "What is the path to the file name list?",
                 hint = "file-name-list.txt",
                 allowEmptyInput = false,
