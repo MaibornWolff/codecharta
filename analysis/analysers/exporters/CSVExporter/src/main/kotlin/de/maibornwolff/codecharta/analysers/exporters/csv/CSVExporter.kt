@@ -151,7 +151,7 @@ class CSVExporter() : Callable<Unit>, AnalyserInterface {
         }
     }
 
-    override fun getDialog(): ParserDialogInterface = ParserDialog
+    override fun getDialog(): ParserDialogInterface = Dialog
 
     override fun isApplicable(resourceToBeParsed: String): Boolean {
         return false

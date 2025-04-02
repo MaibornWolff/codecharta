@@ -6,8 +6,8 @@ import com.varabyte.kotter.runtime.terminal.inmemory.press
 import com.varabyte.kotter.runtime.terminal.inmemory.type
 import com.varabyte.kotterx.test.foundation.testSession
 import de.maibornwolff.codecharta.analysers.exporters.csv.CSVExporter
-import de.maibornwolff.codecharta.analysers.exporters.csv.ParserDialog
-import de.maibornwolff.codecharta.analysers.exporters.csv.ParserDialog.Companion.collectParserArgs
+import de.maibornwolff.codecharta.analysers.exporters.csv.Dialog
+import de.maibornwolff.codecharta.analysers.exporters.csv.Dialog.Companion.collectParserArgs
 import io.mockk.every
 import io.mockk.mockkObject
 import org.assertj.core.api.Assertions.assertThat
@@ -19,7 +19,7 @@ import java.io.File
 
 @Timeout(120)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class ParserDialogTest {
+class DialogTest {
     private val testResourceBaseFolder = "src/test/resources/"
     private val inputFileName = "${testResourceBaseFolder}input_valid_1.cc.json"
     private val outputFileName = "out.csv"
@@ -28,7 +28,7 @@ class ParserDialogTest {
     fun `should output correct arguments when provided with valid input`() {
         val hierarchy = 5
 
-        mockkObject(ParserDialog.Companion)
+        mockkObject(Dialog.Companion)
 
         var parserArguments: List<String> = emptyList()
 
@@ -46,7 +46,7 @@ class ParserDialogTest {
                 terminal.press(Keys.ENTER)
             }
 
-            every { ParserDialog.Companion.testCallback() } returnsMany listOf(
+            every { Dialog.Companion.testCallback() } returnsMany listOf(
                 fileCallback,
                 outFileCallback,
                 hierarchyCallback
@@ -70,7 +70,7 @@ class ParserDialogTest {
     fun `should prompt user twice for input file when first input file is invalid`() {
         val invalidFileName = "inv.txt"
 
-        mockkObject(ParserDialog.Companion)
+        mockkObject(Dialog.Companion)
 
         var parserArguments: List<String> = emptyList()
 
@@ -93,7 +93,7 @@ class ParserDialogTest {
                 terminal.press(Keys.ENTER)
             }
 
-            every { ParserDialog.Companion.testCallback() } returnsMany listOf(
+            every { Dialog.Companion.testCallback() } returnsMany listOf(
                 fileCallback,
                 outFileCallback,
                 hierarchyCallback
