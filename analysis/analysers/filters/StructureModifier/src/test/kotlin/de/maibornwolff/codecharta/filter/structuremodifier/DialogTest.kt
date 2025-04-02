@@ -6,7 +6,7 @@ import com.varabyte.kotter.runtime.Session
 import com.varabyte.kotter.runtime.terminal.inmemory.press
 import com.varabyte.kotter.runtime.terminal.inmemory.type
 import com.varabyte.kotterx.test.foundation.testSession
-import de.maibornwolff.codecharta.analysers.filters.structuremodifier.Dialog.Companion.collectParserArgs
+import de.maibornwolff.codecharta.analysers.filters.structuremodifier.Dialog.Companion.collectAnalyserArgs
 import de.maibornwolff.codecharta.dialogProvider.promptList
 import io.mockk.every
 import io.mockk.mockkObject
@@ -75,7 +75,7 @@ class DialogTest {
                 printCallback
             )
 
-            parserArguments = collectParserArgs(this)
+            parserArguments = collectAnalyserArgs(this)
         }
 
         val commandLine = CommandLine(StructureModifier())
@@ -123,7 +123,7 @@ class DialogTest {
                 outFileCallback
             )
 
-            parserArguments = collectParserArgs(this)
+            parserArguments = collectAnalyserArgs(this)
         }
 
         val commandLine = CommandLine(StructureModifier())
@@ -169,7 +169,7 @@ class DialogTest {
                 outFileCallback
             )
 
-            parserArguments = collectParserArgs(this)
+            parserArguments = collectAnalyserArgs(this)
         }
 
         val commandLine = CommandLine(StructureModifier())
@@ -218,7 +218,7 @@ class DialogTest {
                 outFileCallback
             )
 
-            parserArguments = collectParserArgs(this)
+            parserArguments = collectAnalyserArgs(this)
         }
 
         val commandLine = CommandLine(StructureModifier())
@@ -276,7 +276,7 @@ class DialogTest {
                 outFileCallback
             )
 
-            parserArguments = collectParserArgs(this)
+            parserArguments = collectAnalyserArgs(this)
         }
 
         val commandLine = CommandLine(StructureModifier())
@@ -334,7 +334,7 @@ class DialogTest {
                 outFileCallback
             )
 
-            parserArguments = collectParserArgs(this)
+            parserArguments = collectAnalyserArgs(this)
         }
 
         val commandLine = CommandLine(StructureModifier())
@@ -393,7 +393,7 @@ class DialogTest {
                 outFileCallback
             )
 
-            parserArguments = collectParserArgs(this)
+            parserArguments = collectAnalyserArgs(this)
         }
 
         val commandLine = CommandLine(StructureModifier())
@@ -421,7 +421,7 @@ class DialogTest {
             mockkStatic("de.maibornwolff.codecharta.dialogProvider.DialogProviderKt")
             every { any<Session>().promptList(any(), any(), any(), any()) } returns unknownAction
 
-            parserArguments = collectParserArgs(this)
+            parserArguments = collectAnalyserArgs(this)
         }
 
         val commandLine = CommandLine(StructureModifier())

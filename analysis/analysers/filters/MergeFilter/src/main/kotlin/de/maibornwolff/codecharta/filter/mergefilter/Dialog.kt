@@ -16,7 +16,7 @@ import java.io.File
 
 class Dialog {
     companion object : AnalyserDialogInterface {
-        override fun collectParserArgs(session: Session): List<String> {
+        override fun collectAnalyserArgs(session: Session): List<String> {
             val inputDataName: String =
                 session.promptDefaultFileFolderInput(
                     inputType = InputType.FOLDER_AND_FILE,

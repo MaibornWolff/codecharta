@@ -57,78 +57,78 @@ class InteractiveAnalyserSuggestionTest {
         every { InteractiveDialog.askForPath(any()) } returns pathToReturn
     }
 
-    private fun mockDialogApplicableParserSelection(parserSelection: List<String>) {
-        every { InteractiveDialog.askApplicableParser(any(), any()) } returns parserSelection
+    private fun mockDialogApplicableAnalyserSelection(analyserSelection: List<String>) {
+        every { InteractiveDialog.askApplicableAnalyser(any(), any()) } returns analyserSelection
     }
 
     @Test
-    fun `should only output message when no usable parsers were found`() {
+    fun `should only output message when no usable analysers were found`() {
         mockPrepareInteractiveDialog()
         mockDialogScannerPath("src")
-        mockkObject(ParserService)
+        mockkObject(AnalyserService)
         every {
-            ParserService.getParserSuggestions(any(), any(), any())
+            AnalyserService.getAnalyserSuggestions(any(), any(), any())
         } returns emptyList()
 
-        val usableParsers =
+        val usableAnalysers =
             InteractiveAnalyserSuggestion.offerAndGetAnalyserSuggestionsAndConfigurations(cmdLine)
 
-        assertThat(errContent.toString()).contains(Ccsh.NO_USABLE_PARSER_FOUND_MESSAGE)
-        assertThat(usableParsers).isNotNull
-        assertThat(usableParsers).isEmpty()
+        assertThat(errContent.toString()).contains(Ccsh.NO_USABLE_ANALYSER_FOUND_MESSAGE)
+        assertThat(usableAnalysers).isNotNull
+        assertThat(usableAnalysers).isEmpty()
     }
 
     @Test
-    fun `should return empty map when user does not select any parser`() {
+    fun `should return empty map when user does not select any analyser`() {
         mockPrepareInteractiveDialog()
         mockDialogScannerPath("src/test/resources/sampleproject/foo.java")
-        mockDialogApplicableParserSelection(emptyList())
+        mockDialogApplicableAnalyserSelection(emptyList())
 
-        val parser = "dummyParser"
+        val analyser = "dummyAnalyser"
 
-        mockkObject(ParserService)
+        mockkObject(AnalyserService)
         every {
-            ParserService.getParserSuggestions(any(), any(), any())
-        } returns listOf(parser)
+            AnalyserService.getAnalyserSuggestions(any(), any(), any())
+        } returns listOf(analyser)
 
-        val selectedParsers =
+        val selectedAnalysers =
             InteractiveAnalyserSuggestion.offerAndGetAnalyserSuggestionsAndConfigurations(cmdLine)
 
-        assertThat(selectedParsers).isNotNull
-        assertThat(selectedParsers).isEmpty()
+        assertThat(selectedAnalysers).isNotNull
+        assertThat(selectedAnalysers).isEmpty()
     }
 
     @Test
-    fun `should return configured parsers after user finished configuring selection`() {
-        val parserWithDescription = "dummyParser - dummyDescription"
-        val parserWithoutDescription = "dummyParser"
+    fun `should return configured analysers after user finished configuring selection`() {
+        val analyserWithDescription = "dummyAnalyser - dummyDescription"
+        val analyserWithoutDescription = "dummyAnalyser"
         val configuration = listOf("dummyArg")
-        val parserListWithDescription = listOf(parserWithDescription)
-        val parserListWithoutDescription = listOf(parserWithoutDescription)
+        val analyserListWithDescription = listOf(analyserWithDescription)
+        val analyserListWithoutDescription = listOf(analyserWithoutDescription)
 
         mockPrepareInteractiveDialog()
-        mockDialogApplicableParserSelection(parserListWithDescription)
+        mockDialogApplicableAnalyserSelection(analyserListWithDescription)
         mockDialogScannerPath("src")
 
-        mockkObject(ParserService)
+        mockkObject(AnalyserService)
         every {
-            ParserService.getParserSuggestions(any(), any(), any())
-        } returns parserListWithDescription
+            AnalyserService.getAnalyserSuggestions(any(), any(), any())
+        } returns analyserListWithDescription
 
         every {
-            ParserService.configureParserSelection(any(), any(), any())
-        } returns mapOf(parserWithoutDescription to configuration)
+            AnalyserService.configureAnalyserSelection(any(), any(), any())
+        } returns mapOf(analyserWithoutDescription to configuration)
 
-        val configuredParsers =
+        val configureAnalysers =
             InteractiveAnalyserSuggestion.offerAndGetAnalyserSuggestionsAndConfigurations(cmdLine)
 
-        verify { ParserService.configureParserSelection(any(), any(), parserListWithoutDescription) }
+        verify { AnalyserService.configureAnalyserSelection(any(), any(), analyserListWithoutDescription) }
 
-        assertThat(configuredParsers).isNotNull
-        assertThat(configuredParsers).isNotEmpty
+        assertThat(configureAnalysers).isNotNull
+        assertThat(configureAnalysers).isNotEmpty
 
-        assertThat(configuredParsers).containsKey(parserWithoutDescription)
-        assertThat(configuredParsers[parserWithoutDescription] == configuration).isTrue()
+        assertThat(configureAnalysers).containsKey(analyserWithoutDescription)
+        assertThat(configureAnalysers[analyserWithoutDescription] == configuration).isTrue()
     }
 
     @Test
@@ -136,11 +136,11 @@ class InteractiveAnalyserSuggestionTest {
         mockPrepareInteractiveDialog()
         mockDialogScannerPath("")
 
-        val selectedParsers =
+        val selectedAnalysers =
             InteractiveAnalyserSuggestion.offerAndGetAnalyserSuggestionsAndConfigurations(cmdLine)
 
-        assertThat(selectedParsers).isNotNull
-        assertThat(selectedParsers).isEmpty()
+        assertThat(selectedAnalysers).isNotNull
+        assertThat(selectedAnalysers).isEmpty()
         assertThat(errContent.toString()).contains("Specified invalid or empty path to analyze! Aborting...")
     }
 
@@ -149,11 +149,11 @@ class InteractiveAnalyserSuggestionTest {
         mockPrepareInteractiveDialog()
         mockDialogScannerPath("src/test/resources/does/not/exist")
 
-        val selectedParsers =
+        val selectedAnalysers =
             InteractiveAnalyserSuggestion.offerAndGetAnalyserSuggestionsAndConfigurations(cmdLine)
 
-        assertThat(selectedParsers).isNotNull
-        assertThat(selectedParsers).isEmpty()
+        assertThat(selectedAnalysers).isNotNull
+        assertThat(selectedAnalysers).isEmpty()
         assertThat(errContent.toString()).contains("Specified invalid or empty path to analyze! Aborting...")
     }
 }

@@ -14,10 +14,10 @@ import de.maibornwolff.codecharta.analysis.importer.csv.CSVImporter
 import de.maibornwolff.codecharta.analysis.importer.sonar.SonarImporter
 import de.maibornwolff.codecharta.analysis.importer.sourcemonitor.SourceMonitorImporter
 import de.maibornwolff.codecharta.analysis.importer.tokeiimporter.TokeiImporter
+import de.maibornwolff.codecharta.ccsh.parser.AnalyserService
 import de.maibornwolff.codecharta.ccsh.parser.InteractiveAnalyserSuggestion
 import de.maibornwolff.codecharta.ccsh.parser.InteractiveDialog
-import de.maibornwolff.codecharta.ccsh.parser.ParserService
-import de.maibornwolff.codecharta.ccsh.parser.repository.PicocliParserRepository
+import de.maibornwolff.codecharta.ccsh.parser.repository.PicocliAnalyserRepository
 import de.maibornwolff.codecharta.parser.gitlogparser.GitLogParser
 import de.maibornwolff.codecharta.parser.rawtextparser.RawTextParser
 import de.maibornwolff.codecharta.parser.sourcecodeparser.SourceCodeParser
@@ -68,7 +68,7 @@ class Ccsh : Callable<Unit?> {
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exit"])
     var help: Boolean = false
 
-    @CommandLine.Option(names = ["-i", "--interactive"], description = ["starts interactive parser"])
+    @CommandLine.Option(names = ["-i", "--interactive"], description = ["starts interactive analyser"])
     var shouldUseInteractiveShell: Boolean = false
 
     override fun call(): Unit? { // info: always run
@@ -77,7 +77,7 @@ class Ccsh : Callable<Unit?> {
     }
 
     companion object {
-        const val NO_USABLE_PARSER_FOUND_MESSAGE = "No usable parser was found for the input file path!"
+        const val NO_USABLE_ANALYSER_FOUND_MESSAGE = "No usable analyser was found for the input file path!"
 
         @JvmStatic
         fun main(args: Array<String>) {
@@ -89,44 +89,44 @@ class Ccsh : Callable<Unit?> {
             val commandLine = CommandLine(Ccsh())
             commandLine.executionStrategy = CommandLine.RunAll()
             return when {
-                args.isEmpty() -> executeParserSuggestions(commandLine)
+                args.isEmpty() -> executeAnalyserSuggestions(commandLine)
                 (
-                    !isParserKnown(args, commandLine) && !isCommandKnown(args, commandLine) ||
+                    !isAnalyserKnown(args, commandLine) && !isCommandKnown(args, commandLine) ||
                         args.contains(
                             "--interactive"
                         ) || args.contains("-i")
                 ) -> selectAndExecuteAnalyser(commandLine)
 
-                isParserKnownButWithoutArgs(args, commandLine) -> executeAnalyser(args.first(), commandLine)
+                isAnalyserKnownButWithoutArgs(args, commandLine) -> executeAnalyser(args.first(), commandLine)
                 else -> commandLine.execute(*sanitizeArgs(args))
             }
         }
 
-        private fun executeParserSuggestions(commandLine: CommandLine): Int {
-            val configuredParsers =
+        private fun executeAnalyserSuggestions(commandLine: CommandLine): Int {
+            val configuredAnalysers =
                 InteractiveAnalyserSuggestion.offerAndGetAnalyserSuggestionsAndConfigurations(
                     commandLine
                 )
-            if (configuredParsers.isEmpty()) {
+            if (configuredAnalysers.isEmpty()) {
                 return 0
             }
 
-            val shouldRunConfiguredParsers = runInTerminalSession { InteractiveDialog.askRunParsers(this) }
+            val shouldRunConfiguredAnalysers = runInTerminalSession { InteractiveDialog.askRunAnalysers(this) }
 
-            return if (shouldRunConfiguredParsers) {
-                executeConfiguredParsers(commandLine, configuredParsers)
+            return if (shouldRunConfiguredAnalysers) {
+                executeConfiguredAnalysers(commandLine, configuredAnalysers)
             } else {
                 0
             }
         }
 
-        fun executeConfiguredParsers(commandLine: CommandLine, configuredParsers: Map<String, List<String>>): Int {
+        fun executeConfiguredAnalysers(commandLine: CommandLine, configuredAnalysers: Map<String, List<String>>): Int {
             val exitCode = AtomicInteger(0)
-            val numberOfThreadsToBeStarted = min(configuredParsers.size, Runtime.getRuntime().availableProcessors())
+            val numberOfThreadsToBeStarted = min(configuredAnalysers.size, Runtime.getRuntime().availableProcessors())
             val threadPool = Executors.newFixedThreadPool(numberOfThreadsToBeStarted)
-            for (configuredParser in configuredParsers) {
+            for (configuredAnalyser in configuredAnalysers) {
                 threadPool.execute {
-                    val currentExitCode = executeConfiguredParser(commandLine, configuredParser)
+                    val currentExitCode = executeConfiguredAnalyser(commandLine, configuredAnalyser)
                     if (currentExitCode != 0) {
                         exitCode.set(currentExitCode)
                         Logger.info { "Code: $currentExitCode" }
@@ -141,12 +141,12 @@ class Ccsh : Callable<Unit?> {
             if (finalExitCode != 0) {
                 return finalExitCode
             } // Improvement: Try to extract merge commands before so user does not have to configure merge args?
-            if (configuredParsers.size == 1) {
-                Logger.info { "Parser was successfully executed." }
+            if (configuredAnalysers.size == 1) {
+                Logger.info { "Analyser was successfully executed." }
                 return 0
             }
 
-            Logger.info { "Each parser was successfully executed." }
+            Logger.info { "Each analyser was successfully executed." }
             return askAndMergeResults(commandLine)
         }
 
@@ -173,41 +173,41 @@ class Ccsh : Callable<Unit?> {
                     )
 
                 val map = mapOf(MergeFilter.NAME to mergeArguments)
-                executeConfiguredParser(commandLine, map.entries.first())
+                executeConfiguredAnalyser(commandLine, map.entries.first())
             } else {
                 0
             }
         }
 
-        private fun executeConfiguredParser(commandLine: CommandLine, configuredParser: Map.Entry<String, List<String>>): Int {
-            Logger.info { "Executing ${configuredParser.key}" }
+        private fun executeConfiguredAnalyser(commandLine: CommandLine, configuredAnalyser: Map.Entry<String, List<String>>): Int {
+            Logger.info { "Executing ${configuredAnalyser.key}" }
             val exitCode =
-                ParserService.executePreconfiguredParser(
+                AnalyserService.executePreconfiguredAnalyser(
                     commandLine,
-                    Pair(configuredParser.key, configuredParser.value)
+                    Pair(configuredAnalyser.key, configuredAnalyser.value)
                 )
 
             if (exitCode != 0) {
-                Logger.info { "Error executing ${configuredParser.key}, code $exitCode" }
+                Logger.info { "Error executing ${configuredAnalyser.key}, code $exitCode" }
             }
 
             return exitCode
         }
 
         private fun selectAndExecuteAnalyser(commandLine: CommandLine): Int {
-            val selectedParser = ParserService.selectParser(commandLine, PicocliParserRepository())
-            return executeAnalyser(selectedParser, commandLine)
+            val selectedAnalyser = AnalyserService.selectAnalyser(commandLine, PicocliAnalyserRepository())
+            return executeAnalyser(selectedAnalyser, commandLine)
         }
 
-        private fun executeAnalyser(selectedParser: String, commandLine: CommandLine): Int {
-            Logger.info { "Executing $selectedParser" }
-            return ParserService.executeSelectedParser(commandLine, selectedParser)
+        private fun executeAnalyser(selectedAnalyser: String, commandLine: CommandLine): Int {
+            Logger.info { "Executing $selectedAnalyser" }
+            return AnalyserService.executeSelectedAnalyser(commandLine, selectedAnalyser)
         }
 
-        private fun isParserKnown(args: Array<String>, commandLine: CommandLine): Boolean {
+        private fun isAnalyserKnown(args: Array<String>, commandLine: CommandLine): Boolean {
             val firstArg = args.first()
-            val parserList: Set<String> = commandLine.subcommands.keys
-            return parserList.contains(firstArg)
+            val analyserList: Set<String> = commandLine.subcommands.keys
+            return analyserList.contains(firstArg)
         }
 
         private fun isCommandKnown(args: Array<String>, commandLine: CommandLine): Boolean {
@@ -216,8 +216,8 @@ class Ccsh : Callable<Unit?> {
             return optionsList.contains(firstArg)
         }
 
-        private fun isParserKnownButWithoutArgs(args: Array<String>, commandLine: CommandLine): Boolean {
-            return isParserKnown(args, commandLine) && args.size == 1
+        private fun isAnalyserKnownButWithoutArgs(args: Array<String>, commandLine: CommandLine): Boolean {
+            return isAnalyserKnown(args, commandLine) && args.size == 1
         }
 
         private fun sanitizeArgs(args: Array<String>): Array<String> {
