@@ -60,7 +60,7 @@ class PicocliParserRepository : ParserRepository<CommandLine> {
         return allParsers
     }
 
-    override fun getApplicableAnalyserInterfaceNamesWithDescription(inputFile: String, allParsers: List<AnalyserInterface>): List<String> {
+    override fun getApplicableAnalyserNamesWithDescription(inputFile: String, allParsers: List<AnalyserInterface>): List<String> {
         val applicableParsers = getApplicableParsers(inputFile, allParsers)
         val result = mutableListOf<String>()
         for (parser in applicableParsers) {
