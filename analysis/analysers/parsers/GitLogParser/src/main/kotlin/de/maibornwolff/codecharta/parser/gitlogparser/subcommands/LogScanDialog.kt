@@ -8,7 +8,7 @@ import de.maibornwolff.codecharta.dialogProvider.promptInput
 
 class LogScanDialog {
     companion object : AnalyserDialogInterface {
-        override fun collectParserArgs(session: Session): List<String> {
+        override fun collectAnalyserArgs(session: Session): List<String> {
             print("You can generate this file with: git log --numstat --raw --topo-order --reverse -m > git.log")
             val gitLogFile = session.promptInput(
                 message = "What is the git.log file that has to be parsed?",

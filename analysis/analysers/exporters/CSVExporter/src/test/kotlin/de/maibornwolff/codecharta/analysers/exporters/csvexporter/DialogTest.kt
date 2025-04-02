@@ -7,7 +7,7 @@ import com.varabyte.kotter.runtime.terminal.inmemory.type
 import com.varabyte.kotterx.test.foundation.testSession
 import de.maibornwolff.codecharta.analysers.exporters.csv.CSVExporter
 import de.maibornwolff.codecharta.analysers.exporters.csv.Dialog
-import de.maibornwolff.codecharta.analysers.exporters.csv.Dialog.Companion.collectParserArgs
+import de.maibornwolff.codecharta.analysers.exporters.csv.Dialog.Companion.collectAnalyserArgs
 import io.mockk.every
 import io.mockk.mockkObject
 import org.assertj.core.api.Assertions.assertThat
@@ -52,7 +52,7 @@ class DialogTest {
                 hierarchyCallback
             )
 
-            parserArguments = collectParserArgs(this)
+            parserArguments = collectAnalyserArgs(this)
         }
 
         val commandLine = CommandLine(CSVExporter())
@@ -99,7 +99,7 @@ class DialogTest {
                 hierarchyCallback
             )
 
-            parserArguments = collectParserArgs(this)
+            parserArguments = collectAnalyserArgs(this)
         }
 
         val commandLine = CommandLine(CSVExporter())

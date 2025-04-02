@@ -37,12 +37,12 @@ import java.io.ByteArrayOutputStream
 import java.io.PrintStream
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class PicocliParserRepositoryTest {
+class PicocliAnalyserRepositoryTest {
     private val outContent = ByteArrayOutputStream()
     private val originalOut = System.out
     private val cmdLine = CommandLine(Ccsh())
 
-    private val picocliParserRepository = PicocliParserRepository()
+    private val picocliAnalyserRepository = PicocliAnalyserRepository()
 
     @BeforeAll
     fun setUpStreams() {
@@ -59,7 +59,7 @@ class PicocliParserRepositoryTest {
         unmockkAll()
     }
 
-    private fun getExpectedParsers(): List<AnalyserInterface> {
+    private fun getExpectedAnalysers(): List<AnalyserInterface> {
         return listOf<AnalyserInterface>(
             CSVExporter(),
             EdgeFilter(), MergeFilter(),
@@ -74,17 +74,17 @@ class PicocliParserRepositoryTest {
 
     companion object {
         @JvmStatic
-        fun getArgumentsOfExpectedParserNamesWithDescriptions(): List<Arguments> {
-            val expectedParserNamesWithDescriptions = getExpectedParserNamesWithDescription()
+        fun getArgumentsOfExpectedAnalyserNamesWithDescriptions(): List<Arguments> {
+            val expectedAnalyserNamesWithDescriptions = getExpectedAnalyserNamesWithDescription()
             val result = mutableListOf<Arguments>()
 
-            for (expectedParserNameWithDescription in expectedParserNamesWithDescriptions) {
-                result.add(Arguments.of(expectedParserNameWithDescription))
+            for (expectedAnalyserNameWithDescription in expectedAnalyserNamesWithDescriptions) {
+                result.add(Arguments.of(expectedAnalyserNameWithDescription))
             }
             return result
         }
 
-        fun getExpectedParserNamesWithDescription(): List<List<String>> {
+        fun getExpectedAnalyserNamesWithDescription(): List<List<String>> {
             return listOf(
                 listOf(CSVExporter.NAME, " - " + CSVExporter.DESCRIPTION),
                 listOf(EdgeFilter.NAME, " - " + EdgeFilter.DESCRIPTION),
@@ -106,107 +106,107 @@ class PicocliParserRepositoryTest {
     }
 
     @Test
-    fun `should return all interactive parsers`() {
-        val expectedParsers = getExpectedParsers()
-        val expectedParserNames = expectedParsers.map { it.getParserName() }
+    fun `should return all interactive analysers`() {
+        val expectedAnalysers = getExpectedAnalysers()
+        val expectedAnalyserNames = expectedAnalysers.map { it.getAnalyserName() }
 
-        val actualParsers = picocliParserRepository.getAllAnalyserInterfaces(cmdLine)
-        val actualParserNames = actualParsers.map { it.getParserName() }
+        val actualAnalysers = picocliAnalyserRepository.getAllAnalyserInterfaces(cmdLine)
+        val actualAnalyserNames = actualAnalysers.map { it.getAnalyserName() }
 
-        for (parser in expectedParserNames) {
-            Assertions.assertTrue(actualParserNames.contains(parser))
+        for (analyser in expectedAnalyserNames) {
+            Assertions.assertTrue(actualAnalyserNames.contains(analyser))
         }
     }
 
     @Test
-    fun `should return all interactive parser names`() {
-        val expectedParsers = getExpectedParsers()
-        val expectedParserNames = expectedParsers.map { it.getParserName() }
+    fun `should return all interactive analyser names`() {
+        val expectedAnalysers = getExpectedAnalysers()
+        val expectedAnalyserNames = expectedAnalysers.map { it.getAnalyserName() }
 
-        val actualParserNames = picocliParserRepository.getAnalyserInterfaceNames(cmdLine)
+        val actualAnalyserNames = picocliAnalyserRepository.getAnalyserInterfaceNames(cmdLine)
 
-        for (parser in expectedParserNames) {
-            Assertions.assertTrue(actualParserNames.contains(parser))
+        for (analyser in expectedAnalyserNames) {
+            Assertions.assertTrue(actualAnalyserNames.contains(analyser))
         }
     }
 
     @Test
-    fun `should return only applicable parser names with description`() {
-        val usableParser = mockParserObject("gitlogparser", true)
-        val unusableParser = mockParserObject("sonarimport", false)
+    fun `should return only applicable analyser names with description`() {
+        val usableAnalyser = mockAnalyserObject("gitlogparser", true)
+        val unusableAnalyser = mockAnalyserObject("sonarimport", false)
 
-        val usableParsers =
-            picocliParserRepository.getApplicableAnalyserNamesWithDescription(
+        val usableAnalysers =
+            picocliAnalyserRepository.getApplicableAnalyserNamesWithDescription(
                 "input",
-                listOf(usableParser, unusableParser)
+                listOf(usableAnalyser, unusableAnalyser)
             )
 
-        Assertions.assertTrue(usableParsers.contains("gitlogparser - generates cc.json from git-log files"))
+        Assertions.assertTrue(usableAnalysers.contains("gitlogparser - generates cc.json from git-log files"))
         Assertions.assertFalse(
-            usableParsers.contains("sonarimport - generates cc.json from metric data from SonarQube")
+            usableAnalysers.contains("sonarimport - generates cc.json from metric data from SonarQube")
         )
     }
 
     @ParameterizedTest
-    @MethodSource("getArgumentsOfExpectedParserNamesWithDescriptions")
-    fun `should return all applicable parser names with description`(parserNameWithDescription: List<String>) {
-        val parser = mockParserObject(parserNameWithDescription[0], true)
-        val parserNameAndDescription = parserNameWithDescription[0] + parserNameWithDescription[1]
+    @MethodSource("getArgumentsOfExpectedAnalyserNamesWithDescriptions")
+    fun `should return all applicable analyser names with description`(analyserNameWithDescription: List<String>) {
+        val analyser = mockAnalyserObject(analyserNameWithDescription[0], true)
+        val analyserNameAndDescription = analyserNameWithDescription[0] + analyserNameWithDescription[1]
 
-        val applicableParser =
-            picocliParserRepository.getApplicableAnalyserNamesWithDescription("input", listOf(parser))
+        val applicableAnalyser =
+            picocliAnalyserRepository.getApplicableAnalyserNamesWithDescription("input", listOf(analyser))
 
-        Assertions.assertTrue(applicableParser.size == 1)
-        Assertions.assertTrue(applicableParser[0] == parserNameAndDescription)
+        Assertions.assertTrue(applicableAnalyser.size == 1)
+        Assertions.assertTrue(applicableAnalyser[0] == analyserNameAndDescription)
     }
 
     @Test
-    fun `should return all parser names with description`() {
-        val expectedParserNamesWithDescription = getExpectedParserNamesWithDescription()
+    fun `should return all analyser names with description`() {
+        val expectedAnalyserNamesWithDescription = getExpectedAnalyserNamesWithDescription()
 
-        val actualParserNamesWithDescription = picocliParserRepository.getAnalyserInterfaceNamesWithDescription(cmdLine)
+        val actualAnalyserNamesWithDescription = picocliAnalyserRepository.getAnalyserInterfaceNamesWithDescription(cmdLine)
 
-        for (parserNameWithDescriptionList in expectedParserNamesWithDescription) {
-            val parserNameWithDescription = parserNameWithDescriptionList[0] + parserNameWithDescriptionList[1]
+        for (analyserNameWithDescriptionList in expectedAnalyserNamesWithDescription) {
+            val analyserNameWithDescription = analyserNameWithDescriptionList[0] + analyserNameWithDescriptionList[1]
             Assertions.assertTrue(
-                actualParserNamesWithDescription.contains(parserNameWithDescription)
+                actualAnalyserNamesWithDescription.contains(analyserNameWithDescription)
             )
         }
     }
 
     @Test
-    fun `should return the selected parser name`() {
-        val expectedParserNamesWithDescription = getExpectedParserNamesWithDescription()
-        val expectedParsers = getExpectedParsers()
-        val expectedParserNames = expectedParsers.map { it.getParserName() }
+    fun `should return the selected analyser name`() {
+        val expectedAnalyserNamesWithDescription = getExpectedAnalyserNamesWithDescription()
+        val expectedAnalysers = getExpectedAnalysers()
+        val expectedAnalyserNames = expectedAnalysers.map { it.getAnalyserName() }
 
-        for (parserNameDescriptionList in expectedParserNamesWithDescription) {
-            val parserName = parserNameDescriptionList[0]
+        for (analyserNameDescriptionList in expectedAnalyserNamesWithDescription) {
+            val analyserName = analyserNameDescriptionList[0]
             Assertions.assertTrue(
-                expectedParserNames.contains(
-                    picocliParserRepository.extractParserName(parserName)
+                expectedAnalyserNames.contains(
+                    picocliAnalyserRepository.extractAnalyserName(analyserName)
                 )
             )
         }
     }
 
     @Test
-    fun `should not crash when trying to get invalid parser name and output message`() {
-        val parserName = picocliParserRepository.getAnalyserInterface(cmdLine, "nonexistent")
+    fun `should not crash when trying to get invalid analyser name and output message`() {
+        val analyserName = picocliAnalyserRepository.getAnalyserInterface(cmdLine, "nonexistent")
 
-        Assertions.assertNull(parserName)
+        Assertions.assertNull(analyserName)
         Assertions.assertTrue(
-            outContent.toString().contains("Could not find the specified parser with the name 'nonexistent'!")
+            outContent.toString().contains("Could not find the specified analyser with the name 'nonexistent'!")
         )
     }
 
-    private fun mockParserObject(name: String, isUsable: Boolean): AnalyserInterface {
+    private fun mockAnalyserObject(name: String, isUsable: Boolean): AnalyserInterface {
         val obj = cmdLine.subcommands[name]!!.commandSpec.userObject() as AnalyserInterface
         mockkObject(obj)
         val dialogInterface = mockkClass(AnalyserDialogInterface::class)
         val dummyArgs = listOf("dummyArg")
         every {
-            dialogInterface.collectParserArgs(any())
+            dialogInterface.collectAnalyserArgs(any())
         } returns dummyArgs
         every {
             obj.getDialog()
@@ -215,7 +215,7 @@ class PicocliParserRepositoryTest {
             obj.isApplicable(any())
         } returns isUsable
         every {
-            obj.getParserName()
+            obj.getAnalyserName()
         } returns name
         mockkConstructor(CommandLine::class)
         every { anyConstructed<CommandLine>().execute(*dummyArgs.toTypedArray()) } returns 0

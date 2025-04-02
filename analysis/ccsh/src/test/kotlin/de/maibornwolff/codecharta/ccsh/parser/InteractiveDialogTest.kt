@@ -5,12 +5,12 @@ import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.terminal.inmemory.press
 import com.varabyte.kotter.runtime.terminal.inmemory.type
 import com.varabyte.kotterx.test.foundation.testSession
-import de.maibornwolff.codecharta.ccsh.parser.InteractiveDialog.Companion.askApplicableParser
+import de.maibornwolff.codecharta.ccsh.parser.InteractiveDialog.Companion.askAnalyserToExecute
+import de.maibornwolff.codecharta.ccsh.parser.InteractiveDialog.Companion.askApplicableAnalyser
 import de.maibornwolff.codecharta.ccsh.parser.InteractiveDialog.Companion.askForMerge
 import de.maibornwolff.codecharta.ccsh.parser.InteractiveDialog.Companion.askForPath
 import de.maibornwolff.codecharta.ccsh.parser.InteractiveDialog.Companion.askJsonPath
-import de.maibornwolff.codecharta.ccsh.parser.InteractiveDialog.Companion.askParserToExecute
-import de.maibornwolff.codecharta.ccsh.parser.InteractiveDialog.Companion.askRunParsers
+import de.maibornwolff.codecharta.ccsh.parser.InteractiveDialog.Companion.askRunAnalysers
 import io.mockk.every
 import io.mockk.mockkObject
 import org.assertj.core.api.Assertions.assertThat
@@ -31,16 +31,16 @@ class InteractiveDialogTest {
         val option2 = "option2"
 
         testSession { terminal ->
-            val parserCallback: suspend RunScope.() -> Unit = {
+            val analyserCallback: suspend RunScope.() -> Unit = {
                 terminal.press(Keys.DOWN)
                 terminal.press(Keys.ENTER)
             }
 
             every { InteractiveDialog.Companion.testCallback() } returnsMany listOf(
-                parserCallback
+                analyserCallback
             )
 
-            val result = askParserToExecute(this, listOf(option1, option2))
+            val result = askAnalyserToExecute(this, listOf(option1, option2))
 
             assertThat(result).isEqualTo(option2)
         }
@@ -67,7 +67,7 @@ class InteractiveDialogTest {
     }
 
     @Test
-    fun `should ask for applicable parsers`() {
+    fun `should ask for applicable analysers`() {
         val option1 = "option1"
         val option2 = "option2"
 
@@ -82,7 +82,7 @@ class InteractiveDialogTest {
                 applicableCallback
             )
 
-            val result = askApplicableParser(this, listOf(option1, option2))
+            val result = askApplicableAnalyser(this, listOf(option1, option2))
 
             assertThat(result[0]).isEqualTo(option2)
         }
@@ -100,7 +100,7 @@ class InteractiveDialogTest {
                 runCallback
             )
 
-            val result = askRunParsers(this)
+            val result = askRunAnalysers(this)
 
             assertThat(result).isFalse()
         }

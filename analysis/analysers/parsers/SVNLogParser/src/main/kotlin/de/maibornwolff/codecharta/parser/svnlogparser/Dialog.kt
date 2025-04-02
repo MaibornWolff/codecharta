@@ -2,7 +2,7 @@ package de.maibornwolff.codecharta.parser.svnlogparser
 
 import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.Session
-import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserDialogInterface
+import de.maibornwolff.codecharta.analysers.analyserinterface.ParserDialogInterface
 import de.maibornwolff.codecharta.dialogProvider.InputType
 import de.maibornwolff.codecharta.dialogProvider.promptConfirm
 import de.maibornwolff.codecharta.dialogProvider.promptDefaultFileFolderInput
@@ -10,7 +10,7 @@ import de.maibornwolff.codecharta.dialogProvider.promptInput
 
 class Dialog {
     companion object : AnalyserDialogInterface {
-        override fun collectParserArgs(session: Session): List<String> {
+        override fun collectAnalyserArgs(session: Session): List<String> {
             println("You can generate this file with: svn log --verbose > svn.log")
             val inputFileName: String = session.promptDefaultFileFolderInput(
                 inputType = InputType.FILE,

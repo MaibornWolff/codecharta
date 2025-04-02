@@ -5,7 +5,7 @@ import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.terminal.inmemory.press
 import com.varabyte.kotter.runtime.terminal.inmemory.type
 import com.varabyte.kotterx.test.foundation.testSession
-import de.maibornwolff.codecharta.analysers.filters.mergefilter.Dialog.Companion.collectParserArgs
+import de.maibornwolff.codecharta.analysers.filters.mergefilter.Dialog.Companion.collectAnalyserArgs
 import de.maibornwolff.codecharta.analysers.filters.mergefilter.Dialog.Companion.testCallback
 import io.mockk.every
 import io.mockk.mockkObject
@@ -84,7 +84,7 @@ class DialogTest {
                 ignoreCaseCallback
             )
 
-            parserArguments = collectParserArgs(this)
+            parserArguments = collectAnalyserArgs(this)
         }
 
         val commandLine = CommandLine(MergeFilter())
@@ -145,7 +145,7 @@ class DialogTest {
                 ignoreCaseCallback
             )
 
-            parserArguments = collectParserArgs(this)
+            parserArguments = collectAnalyserArgs(this)
         }
 
         val commandLine = CommandLine(MergeFilter())
@@ -212,7 +212,7 @@ class DialogTest {
                 ignoreCaseCallback
             )
 
-            parserArguments = collectParserArgs(this)
+            parserArguments = collectAnalyserArgs(this)
         }
 
         val commandLine = CommandLine(MergeFilter())
@@ -274,7 +274,7 @@ class DialogTest {
                 ignoreCaseCallback
             )
 
-            parserArguments = collectParserArgs(this)
+            parserArguments = collectAnalyserArgs(this)
         }
 
         val commandLine = CommandLine(MergeFilter())
@@ -333,7 +333,7 @@ class DialogTest {
                 ignoreCaseCallback
             )
 
-            parserArguments = collectParserArgs(this)
+            parserArguments = collectAnalyserArgs(this)
         }
 
         val commandLine = CommandLine(MergeFilter())

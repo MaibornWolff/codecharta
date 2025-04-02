@@ -10,7 +10,7 @@ import de.maibornwolff.codecharta.parser.gitlogparser.subcommands.RepoScanComman
 
 class Dialog {
     companion object : AnalyserDialogInterface {
-        override fun collectParserArgs(session: Session): List<String> {
+        override fun collectAnalyserArgs(session: Session): List<String> {
             val isLogScan = collectSubcommand(session)
             val subcommand = if (isLogScan) {
                 "log-scan"
@@ -21,9 +21,9 @@ class Dialog {
             val generalArgs = collectGeneralArgs(session)
 
             val subcommandArgs: List<String> = if (isLogScan) {
-                LogScanCommand().getDialog().collectParserArgs(session)
+                LogScanCommand().getDialog().collectAnalyserArgs(session)
             } else {
-                RepoScanCommand().getDialog().collectParserArgs(session)
+                RepoScanCommand().getDialog().collectAnalyserArgs(session)
             }
 
             return listOf(subcommand) + generalArgs + subcommandArgs
