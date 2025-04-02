@@ -1,7 +1,7 @@
 package de.maibornwolff.codecharta.parser.gitlogparser
 
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
-import de.maibornwolff.codecharta.analysers.analyserinterface.ParserDialogInterface
+import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserDialogInterface
 import de.maibornwolff.codecharta.analysers.analyserinterface.util.CodeChartaConstants
 import de.maibornwolff.codecharta.analysers.filters.mergefilter.MergeFilter
 import de.maibornwolff.codecharta.analysers.pipeableanalyserinterface.PipeableAnalyserInterface
@@ -164,7 +164,7 @@ class GitLogParser(
         )
     }
 
-    override fun getDialog(): ParserDialogInterface = Dialog
+    override fun getDialog(): AnalyserDialogInterface = Dialog
 
     override fun isApplicable(resourceToBeParsed: String): Boolean {
         println("Checking if GitLogParser is applicable...")

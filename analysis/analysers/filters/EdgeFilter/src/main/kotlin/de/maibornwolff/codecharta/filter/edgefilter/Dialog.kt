@@ -2,7 +2,7 @@ package de.maibornwolff.codecharta.analysers.filters.edgefilter
 
 import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.Session
-import de.maibornwolff.codecharta.analysers.analyserinterface.ParserDialogInterface
+import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserDialogInterface
 import de.maibornwolff.codecharta.dialogProvider.InputType
 import de.maibornwolff.codecharta.dialogProvider.myPromptDefaultFileFolderInput
 import de.maibornwolff.codecharta.dialogProvider.myPromptInput
@@ -10,7 +10,7 @@ import de.maibornwolff.codecharta.serialization.FileExtension
 import de.maibornwolff.codecharta.util.Logger
 
 class Dialog {
-    companion object : ParserDialogInterface {
+    companion object : AnalyserDialogInterface {
         override fun collectParserArgs(session: Session): List<String> {
             val inputFileName: String = session.myPromptDefaultFileFolderInput(
                 inputType = InputType.FILE,

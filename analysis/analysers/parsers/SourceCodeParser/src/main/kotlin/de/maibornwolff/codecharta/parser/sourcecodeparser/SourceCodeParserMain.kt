@@ -1,7 +1,7 @@
 package de.maibornwolff.codecharta.parser.sourcecodeparser
 
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
-import de.maibornwolff.codecharta.analysers.analyserinterface.ParserDialogInterface
+import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserDialogInterface
 import de.maibornwolff.codecharta.analysers.analyserinterface.util.CodeChartaConstants
 import de.maibornwolff.codecharta.analysers.pipeableanalyserinterface.PipeableAnalyserInterface
 import de.maibornwolff.codecharta.analysers.pipeableanalyserinterface.PipeableAnalyserSyncFlag
@@ -177,7 +177,7 @@ class SourceCodeParserMain(
 
     private fun getJsonOutputStream() = OutputFileHandler.stream(outputFile?.absolutePath, output, compress)
 
-    override fun getDialog(): ParserDialogInterface = Dialog
+    override fun getDialog(): AnalyserDialogInterface = Dialog
 
     override fun isApplicable(resourceToBeParsed: String): Boolean {
         println("Checking if SourceCodeParser is applicable...")

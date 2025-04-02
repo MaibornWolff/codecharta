@@ -1,7 +1,7 @@
 package de.maibornwolff.codecharta.analysers.filters.mergefilter
 
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
-import de.maibornwolff.codecharta.analysers.analyserinterface.ParserDialogInterface
+import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserDialogInterface
 import de.maibornwolff.codecharta.analysers.analyserinterface.runInTerminalSession
 import de.maibornwolff.codecharta.analysers.analyserinterface.util.CodeChartaConstants
 import de.maibornwolff.codecharta.analysers.filters.mergefilter.Dialog.Companion.askForceMerge
@@ -147,7 +147,7 @@ class MergeFilter(
         }
     }
 
-    override fun getDialog(): ParserDialogInterface = Dialog
+    override fun getDialog(): AnalyserDialogInterface = Dialog
 
     override fun isApplicable(resourceToBeParsed: String): Boolean {
         return false

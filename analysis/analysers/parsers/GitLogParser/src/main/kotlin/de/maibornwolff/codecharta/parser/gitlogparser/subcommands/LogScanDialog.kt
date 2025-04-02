@@ -2,12 +2,12 @@ package de.maibornwolff.codecharta.parser.gitlogparser.subcommands
 
 import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.Session
-import de.maibornwolff.codecharta.analysers.analyserinterface.ParserDialogInterface
+import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserDialogInterface
 import de.maibornwolff.codecharta.dialogProvider.InputValidator
 import de.maibornwolff.codecharta.dialogProvider.myPromptInput
 
-class LogScanParserDialog {
-    companion object : ParserDialogInterface {
+class LogScanDialog {
+    companion object : AnalyserDialogInterface {
         override fun collectParserArgs(session: Session): List<String> {
             print("You can generate this file with: git log --numstat --raw --topo-order --reverse -m > git.log")
             val gitLogFile = session.myPromptInput(

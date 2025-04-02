@@ -8,9 +8,9 @@ import com.varabyte.kotterx.test.foundation.testSession
 import de.maibornwolff.codecharta.parser.gitlogparser.Dialog.Companion.collectGeneralArgs
 import de.maibornwolff.codecharta.parser.gitlogparser.Dialog.Companion.collectSubcommand
 import de.maibornwolff.codecharta.parser.gitlogparser.subcommands.LogScanCommand
-import de.maibornwolff.codecharta.parser.gitlogparser.subcommands.LogScanParserDialog
+import de.maibornwolff.codecharta.parser.gitlogparser.subcommands.LogScanDialog
 import de.maibornwolff.codecharta.parser.gitlogparser.subcommands.RepoScanCommand
-import de.maibornwolff.codecharta.parser.gitlogparser.subcommands.RepoScanParserDialog
+import de.maibornwolff.codecharta.parser.gitlogparser.subcommands.RepoScanDialog
 import io.mockk.every
 import io.mockk.mockkObject
 import org.assertj.core.api.Assertions.assertThat
@@ -73,7 +73,7 @@ class DialogTest {
         val lsFileName = "${testResourceBaseFolder}names-in-git-repo.txt"
         val invalidFileName = "inv"
 
-        mockkObject(LogScanParserDialog.Companion)
+        mockkObject(LogScanDialog.Companion)
 
         var parserArguments: List<String> = listOf()
 
@@ -93,12 +93,12 @@ class DialogTest {
                 terminal.press(Keys.ENTER)
             }
 
-            every { LogScanParserDialog.Companion.testCallback() } returnsMany listOf(
+            every { LogScanDialog.Companion.testCallback() } returnsMany listOf(
                 testCallback,
                 lsCallback
             )
 
-            parserArguments = LogScanParserDialog.collectParserArgs(this)
+            parserArguments = LogScanDialog.collectParserArgs(this)
         }
 
         val cmdLine = CommandLine(LogScanCommand())
@@ -114,7 +114,7 @@ class DialogTest {
         val repoFolderName = "${testResourceBaseFolder}my/"
         val invalidFileName = "inv"
 
-        mockkObject(RepoScanParserDialog.Companion)
+        mockkObject(RepoScanDialog.Companion)
 
         var parserArguments: List<String> = listOf()
 
@@ -127,11 +127,11 @@ class DialogTest {
                 terminal.press(Keys.ENTER)
             }
 
-            every { RepoScanParserDialog.Companion.testCallback() } returnsMany listOf(
+            every { RepoScanDialog.Companion.testCallback() } returnsMany listOf(
                 repoScanCallback
             )
 
-            parserArguments = RepoScanParserDialog.collectParserArgs(this)
+            parserArguments = RepoScanDialog.collectParserArgs(this)
         }
 
         val cmdLine = CommandLine(RepoScanCommand())
@@ -233,7 +233,7 @@ class DialogTest {
         val addAuthor = true
 
         mockkObject(Dialog.Companion)
-        mockkObject(LogScanParserDialog.Companion)
+        mockkObject(LogScanDialog.Companion)
 
         every { LogScanCommand().getDialog().collectParserArgs(any()) } returns listOf("--git-log=$logFileName", "--repo-files=$lsFileName")
 
@@ -290,7 +290,7 @@ class DialogTest {
         val addAuthor = true
 
         mockkObject(Dialog.Companion)
-        mockkObject(RepoScanParserDialog.Companion)
+        mockkObject(RepoScanDialog.Companion)
 
         every { RepoScanCommand().getDialog().collectParserArgs(any()) } returns listOf("--repo-path=$repoFolderName")
 
