@@ -157,7 +157,7 @@ class SVNLogParser(
         ).parse(lines)
     }
 
-    override fun getDialog(): ParserDialogInterface = ParserDialog
+    override fun getDialog(): ParserDialogInterface = Dialog
 
     override fun isApplicable(resourceToBeParsed: String): Boolean {
         println("Checking if SVNLogParser is applicable...")

@@ -5,8 +5,8 @@ import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.terminal.inmemory.press
 import com.varabyte.kotter.runtime.terminal.inmemory.type
 import com.varabyte.kotterx.test.foundation.testSession
-import de.maibornwolff.codecharta.parser.rawtextparser.ParserDialog
-import de.maibornwolff.codecharta.parser.rawtextparser.ParserDialog.Companion.collectParserArgs
+import de.maibornwolff.codecharta.parser.rawtextparser.Dialog
+import de.maibornwolff.codecharta.parser.rawtextparser.Dialog.Companion.collectParserArgs
 import de.maibornwolff.codecharta.parser.rawtextparser.RawTextParser
 import io.mockk.every
 import io.mockk.mockkObject
@@ -38,7 +38,7 @@ class DialogTest {
         val exclude = "file1"
         val withoutDefaultExcludes = false
 
-        mockkObject(ParserDialog.Companion)
+        mockkObject(Dialog.Companion)
 
         var parserArguments: List<String> = emptyList()
 
@@ -83,7 +83,7 @@ class DialogTest {
                 terminal.press(Keys.ENTER)
             }
 
-            every { ParserDialog.Companion.testCallback() } returnsMany listOf(
+            every { Dialog.Companion.testCallback() } returnsMany listOf(
                 fileCallback,
                 outFileCallback,
                 compressCallback,
@@ -122,7 +122,7 @@ class DialogTest {
         val exclude = "file1"
         val withoutDefaultExcludes = false
 
-        mockkObject(ParserDialog.Companion)
+        mockkObject(Dialog.Companion)
 
         var parserArguments: List<String> = emptyList()
 
@@ -162,7 +162,7 @@ class DialogTest {
                 terminal.press(Keys.ENTER)
             }
 
-            every { ParserDialog.Companion.testCallback() } returnsMany listOf(
+            every { Dialog.Companion.testCallback() } returnsMany listOf(
                 inputFileCallback,
                 outFileCallback,
                 verboseCallback,
@@ -198,7 +198,7 @@ class DialogTest {
         val maxIndentLvl = 10
         val exclude = "file1"
 
-        mockkObject(ParserDialog.Companion)
+        mockkObject(Dialog.Companion)
 
         var parserArguments: List<String> = emptyList()
 
@@ -243,7 +243,7 @@ class DialogTest {
                 terminal.press(Keys.ENTER)
             }
 
-            every { ParserDialog.Companion.testCallback() } returnsMany listOf(
+            every { Dialog.Companion.testCallback() } returnsMany listOf(
                 fileCallback,
                 outFileCallback,
                 compressCallback,
