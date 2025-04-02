@@ -9,7 +9,7 @@ import io.mockk.mockkStatic
 class SessionMock {
     companion object {
         fun mockRunInTerminalSession() {
-            mockkStatic("de.maibornwolff.codecharta.analysers.analyserinterface.ParserDialogInterfaceKt")
+            mockkStatic("de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserDialogInterfaceKt")
             every { runInTerminalSession(any<Session.() -> Any>()) } answers {
                 runInTestSession { firstArg<Session.() -> Any>()(this) }
             }

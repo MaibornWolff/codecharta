@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.analysers.tools.ccsh.parser
+package de.maibornwolff.codecharta.ccsh.parser
 
 import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.Session

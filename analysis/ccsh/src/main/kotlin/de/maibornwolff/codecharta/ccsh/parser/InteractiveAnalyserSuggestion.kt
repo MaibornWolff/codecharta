@@ -1,8 +1,8 @@
-package de.maibornwolff.codecharta.analysers.tools.ccsh.parser
+package de.maibornwolff.codecharta.ccsh.parser
 
 import de.maibornwolff.codecharta.analysers.analyserinterface.runInTerminalSession
-import de.maibornwolff.codecharta.analysers.tools.ccsh.Ccsh
-import de.maibornwolff.codecharta.analysers.tools.ccsh.parser.repository.PicocliParserRepository
+import de.maibornwolff.codecharta.ccsh.Ccsh
+import de.maibornwolff.codecharta.ccsh.parser.repository.PicocliParserRepository
 import de.maibornwolff.codecharta.util.Logger
 import picocli.CommandLine
 import java.io.File
@@ -48,7 +48,12 @@ class InteractiveAnalyserSuggestion {
         }
 
         private fun selectToBeExecutedAnalyser(applicableParsers: List<String>): List<String> {
-            val selectedParsers: List<String> = runInTerminalSession { InteractiveDialog.askApplicableParser(this, applicableParsers) }
+            val selectedParsers: List<String> = runInTerminalSession {
+                InteractiveDialog.askApplicableParser(
+                    this,
+                    applicableParsers
+                )
+            }
 
             if (selectedParsers.isEmpty()) {
                 Logger.info { "Did not select any parser to be configured!" }
