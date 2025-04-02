@@ -575,7 +575,7 @@ class MergeFilterTest {
     }
 
     private fun mockRunInTerminalSession() {
-        mockkStatic("de.maibornwolff.codecharta.analysers.analyserinterface.ParserDialogInterfaceKt")
+        mockkStatic("de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserDialogInterfaceKt")
         every { runInTerminalSession(any<Session.() -> Any>()) } answers {
             runInTestSession { firstArg<Session.() -> Any>()(this) }
         }

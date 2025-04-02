@@ -4,7 +4,7 @@ plugins {
 
 application {
     applicationName = "ccsh"
-    mainClass = "de.maibornwolff.codecharta.analysers.tools.ccsh.Ccsh"
+    mainClass = "de.maibornwolff.codecharta.ccsh.Ccsh"
 }
 
 dependencies {

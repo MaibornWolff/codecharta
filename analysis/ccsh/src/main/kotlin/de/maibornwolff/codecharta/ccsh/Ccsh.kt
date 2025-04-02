@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.analysers.tools.ccsh
+package de.maibornwolff.codecharta.ccsh
 
 import de.maibornwolff.codecharta.analysers.analyserinterface.runInTerminalSession
 import de.maibornwolff.codecharta.analysers.analyserinterface.util.CodeChartaConstants
@@ -6,10 +6,6 @@ import de.maibornwolff.codecharta.analysers.exporters.csv.CSVExporter
 import de.maibornwolff.codecharta.analysers.filters.edgefilter.EdgeFilter
 import de.maibornwolff.codecharta.analysers.filters.mergefilter.MergeFilter
 import de.maibornwolff.codecharta.analysers.filters.structuremodifier.StructureModifier
-import de.maibornwolff.codecharta.analysers.tools.ccsh.parser.InteractiveAnalyserSuggestion
-import de.maibornwolff.codecharta.analysers.tools.ccsh.parser.InteractiveDialog
-import de.maibornwolff.codecharta.analysers.tools.ccsh.parser.ParserService
-import de.maibornwolff.codecharta.analysers.tools.ccsh.parser.repository.PicocliParserRepository
 import de.maibornwolff.codecharta.analysers.tools.inspection.InspectionTool
 import de.maibornwolff.codecharta.analysers.tools.validation.ValidationTool
 import de.maibornwolff.codecharta.analysis.importer.codemaat.CodeMaatImporter
@@ -18,6 +14,10 @@ import de.maibornwolff.codecharta.analysis.importer.csv.CSVImporter
 import de.maibornwolff.codecharta.analysis.importer.sonar.SonarImporterMain
 import de.maibornwolff.codecharta.analysis.importer.sourcemonitor.SourceMonitorImporter
 import de.maibornwolff.codecharta.analysis.importer.tokeiimporter.TokeiImporter
+import de.maibornwolff.codecharta.ccsh.parser.InteractiveAnalyserSuggestion
+import de.maibornwolff.codecharta.ccsh.parser.InteractiveDialog
+import de.maibornwolff.codecharta.ccsh.parser.ParserService
+import de.maibornwolff.codecharta.ccsh.parser.repository.PicocliParserRepository
 import de.maibornwolff.codecharta.parser.gitlogparser.GitLogParser
 import de.maibornwolff.codecharta.parser.rawtextparser.RawTextParser
 import de.maibornwolff.codecharta.parser.sourcecodeparser.SourceCodeParserMain

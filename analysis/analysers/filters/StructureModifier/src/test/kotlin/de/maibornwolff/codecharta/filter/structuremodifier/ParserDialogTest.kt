@@ -418,7 +418,7 @@ class ParserDialogTest {
                 fileCallback
             )
 
-            mockkStatic("de.maibornwolff.codecharta.analysers.tools.inquirer.InquirerKt")
+            mockkStatic("de.maibornwolff.codecharta.dialogProvider.DialogProviderKt")
             every { any<Session>().myPromptList(any(), any(), any(), any()) } returns unknownAction
 
             parserArguments = collectParserArgs(this)

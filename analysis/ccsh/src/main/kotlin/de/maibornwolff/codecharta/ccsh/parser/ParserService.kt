@@ -1,8 +1,8 @@
-package de.maibornwolff.codecharta.analysers.tools.ccsh.parser
+package de.maibornwolff.codecharta.ccsh.parser
 
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
 import de.maibornwolff.codecharta.analysers.analyserinterface.runInTerminalSession
-import de.maibornwolff.codecharta.analysers.tools.ccsh.parser.repository.PicocliParserRepository
+import de.maibornwolff.codecharta.ccsh.parser.repository.PicocliParserRepository
 import picocli.CommandLine
 
 class ParserService {
@@ -39,7 +39,12 @@ class ParserService {
 
         fun selectParser(commandLine: CommandLine, parserRepository: PicocliParserRepository): String {
             val analyserInterfaceNames = parserRepository.getAnalyserInterfaceNamesWithDescription(commandLine)
-            val selectedParser = runInTerminalSession { InteractiveDialog.askParserToExecute(this, analyserInterfaceNames) }
+            val selectedParser = runInTerminalSession {
+                InteractiveDialog.askParserToExecute(
+                    this,
+                    analyserInterfaceNames
+                )
+            }
             return parserRepository.extractParserName(selectedParser)
         }
 
