@@ -1,7 +1,7 @@
 package de.maibornwolff.codecharta.parser.sourcecodeparser
 
-import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserDialogInterface
+import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
 import de.maibornwolff.codecharta.analysers.analyserinterface.util.CodeChartaConstants
 import de.maibornwolff.codecharta.analysers.pipeableanalyserinterface.PipeableAnalyserInterface
 import de.maibornwolff.codecharta.analysers.pipeableanalyserinterface.PipeableAnalyserSyncFlag

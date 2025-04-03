@@ -1,8 +1,8 @@
 package de.maibornwolff.codecharta.ccsh.parser
 
 import com.varabyte.kotterx.test.foundation.testSession
-import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserDialogInterface
+import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
 import de.maibornwolff.codecharta.ccsh.Ccsh
 import de.maibornwolff.codecharta.ccsh.SessionMock.Companion.mockRunInTerminalSession
 import de.maibornwolff.codecharta.ccsh.parser.repository.PicocliParserRepository
