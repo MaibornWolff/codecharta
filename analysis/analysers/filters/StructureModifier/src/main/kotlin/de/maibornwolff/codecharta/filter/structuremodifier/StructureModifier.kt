@@ -1,7 +1,7 @@
 package de.maibornwolff.codecharta.analysers.filters.structuremodifier
 
-import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserDialogInterface
+import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
 import de.maibornwolff.codecharta.analysers.analyserinterface.util.CodeChartaConstants
 import de.maibornwolff.codecharta.analysers.tools.inspection.ProjectStructurePrinter
 import de.maibornwolff.codecharta.model.Project
