@@ -2,7 +2,7 @@ package de.maibornwolff.codecharta.analysers.analyserinterface
 
 import java.util.concurrent.Callable
 
-interface AnalyserInterface: Callable<Unit?> {
+interface AnalyserInterface : Callable<Unit?> {
     val name: String
     val description: String
 
