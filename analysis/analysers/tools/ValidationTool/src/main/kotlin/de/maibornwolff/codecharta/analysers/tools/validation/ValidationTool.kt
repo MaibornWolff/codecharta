@@ -7,14 +7,13 @@ import de.maibornwolff.codecharta.util.InputHelper
 import picocli.CommandLine
 import java.io.File
 import java.io.FileInputStream
-import java.util.concurrent.Callable
 
 @CommandLine.Command(
     name = ValidationTool.NAME,
     description = [ValidationTool.DESCRIPTION],
     footer = [CodeChartaConstants.General.GENERIC_FOOTER]
 )
-class ValidationTool : Callable<Unit?>, AnalyserInterface {
+class ValidationTool : AnalyserInterface {
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     var help: Boolean = false
 

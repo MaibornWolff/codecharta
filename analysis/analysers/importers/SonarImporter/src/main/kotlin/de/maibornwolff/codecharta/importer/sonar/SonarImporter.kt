@@ -19,17 +19,16 @@ import java.io.File
 import java.io.InputStream
 import java.io.PrintStream
 import java.net.URL
-import java.util.concurrent.Callable
 
 @CommandLine.Command(
-    name = SonarImporterMain.NAME,
-    description = [SonarImporterMain.DESCRIPTION],
+    name = SonarImporter.NAME,
+    description = [SonarImporter.DESCRIPTION],
     footer = [CodeChartaConstants.General.GENERIC_FOOTER]
 )
-class SonarImporterMain(
+class SonarImporter(
     private val input: InputStream = System.`in`,
     private val output: PrintStream = System.out
-) : Callable<Unit>, AnalyserInterface, AttributeGenerator {
+) : AnalyserInterface, AttributeGenerator {
     @CommandLine.Option(
         names = ["-h", "--help"],
         usageHelp = true,

@@ -20,7 +20,6 @@ import java.io.InputStream
 import java.io.PrintStream
 import java.io.PrintWriter
 import java.util.Locale
-import java.util.concurrent.Callable
 
 @CommandLine.Command(
     name = CoverageImporter.NAME,
@@ -31,7 +30,7 @@ class CoverageImporter(
     private val input: InputStream = System.`in`,
     private val output: PrintStream = System.out,
     private val error: PrintStream = System.err
-) : Callable<Unit>, AnalyserInterface, PipeableAnalyserInterface, AttributeGenerator {
+) : AnalyserInterface, PipeableAnalyserInterface, AttributeGenerator {
     @CommandLine.Option(
         names = ["-l", "--language"],
         description = ["Specify the language of the coverage report (e.g., javascript, typescript, js, ts)"],

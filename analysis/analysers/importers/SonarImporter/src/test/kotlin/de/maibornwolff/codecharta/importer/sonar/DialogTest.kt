@@ -77,7 +77,7 @@ class DialogTest {
             parserArguments = collectParserArgs(this)
         }
 
-        val commandLine = CommandLine(SonarImporterMain())
+        val commandLine = CommandLine(SonarImporter())
         val parseResult = commandLine.parseArgs(*parserArguments.toTypedArray())
 
         assertThat(parseResult.matchedPositional(0).getValue<String>()).isEqualTo(hostUrl)
@@ -141,7 +141,7 @@ class DialogTest {
             parserArguments = collectParserArgs(this)
         }
 
-        val commandLine = CommandLine(SonarImporterMain())
+        val commandLine = CommandLine(SonarImporter())
         val parseResult = commandLine.parseArgs(*parserArguments.toTypedArray())
 
         assertThat(parseResult.matchedPositional(0).getValue<String>()).isEqualTo(hostUrl)
@@ -204,7 +204,7 @@ class DialogTest {
             parserArguments = collectParserArgs(this)
         }
 
-        val commandLine = CommandLine(SonarImporterMain())
+        val commandLine = CommandLine(SonarImporter())
         val parseResult = commandLine.parseArgs(*parserArguments.toTypedArray())
 
         assertThat(parseResult.matchedPositional(0).getValue<String>()).isEqualTo(hostUrl)
@@ -268,7 +268,7 @@ class DialogTest {
             parserArguments = collectParserArgs(this)
         }
 
-        val commandLine = CommandLine(SonarImporterMain())
+        val commandLine = CommandLine(SonarImporter())
         val parseResult = commandLine.parseArgs(*parserArguments.toTypedArray())
 
         assertThat(parseResult.matchedPositional(0).getValue<String>()).isEqualTo(hostUrl)
@@ -325,7 +325,7 @@ class DialogTest {
             parserArguments = collectParserArgs(this)
         }
 
-        val commandLine = CommandLine(SonarImporterMain())
+        val commandLine = CommandLine(SonarImporter())
         val parseResult = commandLine.parseArgs(*parserArguments.toTypedArray())
 
         assertThat(parseResult.matchedPositional(1).getValue<String>()).isEqualTo(projectKey)

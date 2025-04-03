@@ -1,6 +1,6 @@
 package de.maibornwolff.codecharta.parser.sourcecodeparser.e2e
 
-import de.maibornwolff.codecharta.parser.sourcecodeparser.SourceCodeParserMain.Companion.mainWithInOut
+import de.maibornwolff.codecharta.parser.sourcecodeparser.SourceCodeParser.Companion.mainWithInOut
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.io.ByteArrayInputStream

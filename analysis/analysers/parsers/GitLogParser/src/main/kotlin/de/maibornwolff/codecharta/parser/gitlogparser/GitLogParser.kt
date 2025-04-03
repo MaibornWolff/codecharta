@@ -27,7 +27,6 @@ import java.io.InputStream
 import java.io.PrintStream
 import java.nio.charset.Charset
 import java.nio.file.Files
-import java.util.concurrent.Callable
 import java.util.stream.Stream
 
 @CommandLine.Command(
@@ -40,7 +39,7 @@ class GitLogParser(
     private val input: InputStream = System.`in`,
     private val output: PrintStream = System.out,
     private val error: PrintStream = System.err
-) : Callable<Unit>, AnalyserInterface, PipeableAnalyserInterface, AttributeGenerator {
+) : AnalyserInterface, PipeableAnalyserInterface, AttributeGenerator {
     private val inputFormatNames = GIT_LOG_NUMSTAT_RAW_REVERSED
 
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])

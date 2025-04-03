@@ -9,7 +9,6 @@ import de.maibornwolff.codecharta.util.InputHelper
 import picocli.CommandLine
 import java.io.File
 import java.io.PrintStream
-import java.util.concurrent.Callable
 
 @CommandLine.Command(
     name = EdgeFilter.NAME,
@@ -18,7 +17,7 @@ import java.util.concurrent.Callable
 )
 class EdgeFilter(
     private val output: PrintStream = System.out
-) : Callable<Unit?>, AnalyserInterface {
+) : AnalyserInterface {
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     var help: Boolean = false
 

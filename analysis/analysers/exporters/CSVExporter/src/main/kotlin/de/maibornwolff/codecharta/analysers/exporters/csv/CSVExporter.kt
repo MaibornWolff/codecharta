@@ -20,14 +20,13 @@ import java.io.FileWriter
 import java.io.IOException
 import java.io.OutputStreamWriter
 import java.io.Writer
-import java.util.concurrent.Callable
 
 @CommandLine.Command(
     name = CSVExporter.NAME,
     description = [CSVExporter.DESCRIPTION],
     footer = [CodeChartaConstants.General.GENERIC_FOOTER]
 )
-class CSVExporter() : Callable<Unit>, AnalyserInterface {
+class CSVExporter : AnalyserInterface {
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
 

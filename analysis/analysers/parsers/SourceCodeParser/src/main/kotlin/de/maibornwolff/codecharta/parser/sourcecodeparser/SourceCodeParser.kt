@@ -28,18 +28,17 @@ import java.io.OutputStreamWriter
 import java.io.PrintStream
 import java.io.PrintWriter
 import java.io.Writer
-import java.util.concurrent.Callable
 
 @CommandLine.Command(
-    name = SourceCodeParserMain.NAME,
-    description = [SourceCodeParserMain.DESCRIPTION],
-    footer = [SourceCodeParserMain.FOOTER]
+    name = SourceCodeParser.NAME,
+    description = [SourceCodeParser.DESCRIPTION],
+    footer = [SourceCodeParser.FOOTER]
 )
-class SourceCodeParserMain(
+class SourceCodeParser(
     private val output: PrintStream,
     private val input: InputStream = System.`in`,
     private val error: PrintStream = System.err
-) : Callable<Unit>, AnalyserInterface, PipeableAnalyserInterface, AttributeGenerator {
+) : AnalyserInterface, PipeableAnalyserInterface, AttributeGenerator {
     // we need this constructor because ccsh requires an empty constructor
     constructor() : this(System.out)
 
@@ -102,12 +101,12 @@ class SourceCodeParserMain(
 
         @JvmStatic
         fun mainWithOutputStream(outputStream: PrintStream, args: Array<String>) {
-            CommandLine(SourceCodeParserMain(outputStream)).execute(*args)
+            CommandLine(SourceCodeParser(outputStream)).execute(*args)
         }
 
         @JvmStatic
         fun mainWithInOut(outputStream: PrintStream, input: InputStream, error: PrintStream, args: Array<String>) {
-            CommandLine(SourceCodeParserMain(outputStream, input, error))
+            CommandLine(SourceCodeParser(outputStream, input, error))
                 .setOut(PrintWriter(outputStream))
                 .execute(*args)
         }

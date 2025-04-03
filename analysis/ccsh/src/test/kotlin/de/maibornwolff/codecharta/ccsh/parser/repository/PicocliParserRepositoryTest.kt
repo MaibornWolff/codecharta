@@ -10,13 +10,13 @@ import de.maibornwolff.codecharta.analysers.tools.inspection.InspectionTool
 import de.maibornwolff.codecharta.analysers.tools.validation.ValidationTool
 import de.maibornwolff.codecharta.analysis.importer.codemaat.CodeMaatImporter
 import de.maibornwolff.codecharta.analysis.importer.csv.CSVImporter
-import de.maibornwolff.codecharta.analysis.importer.sonar.SonarImporterMain
+import de.maibornwolff.codecharta.analysis.importer.sonar.SonarImporter
 import de.maibornwolff.codecharta.analysis.importer.sourcemonitor.SourceMonitorImporter
 import de.maibornwolff.codecharta.analysis.importer.tokeiimporter.TokeiImporter
 import de.maibornwolff.codecharta.ccsh.Ccsh
 import de.maibornwolff.codecharta.parser.gitlogparser.GitLogParser
 import de.maibornwolff.codecharta.parser.rawtextparser.RawTextParser
-import de.maibornwolff.codecharta.parser.sourcecodeparser.SourceCodeParserMain
+import de.maibornwolff.codecharta.parser.sourcecodeparser.SourceCodeParser
 import de.maibornwolff.codecharta.parser.svnlogparser.SVNLogParser
 import io.mockk.every
 import io.mockk.mockkClass
@@ -64,9 +64,9 @@ class PicocliParserRepositoryTest {
             CSVExporter(),
             EdgeFilter(), MergeFilter(),
             StructureModifier(), CSVImporter(),
-            SonarImporterMain(), SourceMonitorImporter(),
+            SonarImporter(), SourceMonitorImporter(),
             SVNLogParser(), GitLogParser(),
-            SourceCodeParserMain(), CodeMaatImporter(),
+            SourceCodeParser(), CodeMaatImporter(),
             TokeiImporter(), RawTextParser(),
             ValidationTool(), InspectionTool()
         )
@@ -91,11 +91,11 @@ class PicocliParserRepositoryTest {
                 listOf(MergeFilter.NAME, " - " + MergeFilter.DESCRIPTION),
                 listOf(StructureModifier.NAME, " - " + StructureModifier.DESCRIPTION),
                 listOf(CSVImporter.NAME, " - " + CSVImporter.DESCRIPTION),
-                listOf(SonarImporterMain.NAME, " - " + SonarImporterMain.DESCRIPTION),
+                listOf(SonarImporter.NAME, " - " + SonarImporter.DESCRIPTION),
                 listOf(SourceMonitorImporter.NAME, " - " + SourceMonitorImporter.DESCRIPTION),
                 listOf(SVNLogParser.NAME, " - " + SVNLogParser.DESCRIPTION),
                 listOf(GitLogParser.NAME, " - " + GitLogParser.DESCRIPTION),
-                listOf(SourceCodeParserMain.NAME, " - " + SourceCodeParserMain.DESCRIPTION),
+                listOf(SourceCodeParser.NAME, " - " + SourceCodeParser.DESCRIPTION),
                 listOf(CodeMaatImporter.NAME, " - " + CodeMaatImporter.DESCRIPTION),
                 listOf(TokeiImporter.NAME, " - " + TokeiImporter.DESCRIPTION),
                 listOf(RawTextParser.NAME, " - " + RawTextParser.DESCRIPTION),

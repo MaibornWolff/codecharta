@@ -11,7 +11,7 @@ import de.maibornwolff.codecharta.analysers.tools.validation.ValidationTool
 import de.maibornwolff.codecharta.analysis.importer.codemaat.CodeMaatImporter
 import de.maibornwolff.codecharta.analysis.importer.coverage.CoverageImporter
 import de.maibornwolff.codecharta.analysis.importer.csv.CSVImporter
-import de.maibornwolff.codecharta.analysis.importer.sonar.SonarImporterMain
+import de.maibornwolff.codecharta.analysis.importer.sonar.SonarImporter
 import de.maibornwolff.codecharta.analysis.importer.sourcemonitor.SourceMonitorImporter
 import de.maibornwolff.codecharta.analysis.importer.tokeiimporter.TokeiImporter
 import de.maibornwolff.codecharta.ccsh.parser.InteractiveAnalyserSuggestion
@@ -20,7 +20,7 @@ import de.maibornwolff.codecharta.ccsh.parser.ParserService
 import de.maibornwolff.codecharta.ccsh.parser.repository.PicocliParserRepository
 import de.maibornwolff.codecharta.parser.gitlogparser.GitLogParser
 import de.maibornwolff.codecharta.parser.rawtextparser.RawTextParser
-import de.maibornwolff.codecharta.parser.sourcecodeparser.SourceCodeParserMain
+import de.maibornwolff.codecharta.parser.sourcecodeparser.SourceCodeParser
 import de.maibornwolff.codecharta.parser.svnlogparser.SVNLogParser
 import de.maibornwolff.codecharta.util.AttributeGeneratorRegistry
 import de.maibornwolff.codecharta.util.Logger
@@ -42,13 +42,13 @@ import kotlin.system.exitProcess
         EdgeFilter::class,
         StructureModifier::class,
         CSVImporter::class,
-        SonarImporterMain::class,
+        SonarImporter::class,
         SourceMonitorImporter::class,
         SVNLogParser::class,
         GitLogParser::class,
         Installer::class,
         CSVExporter::class,
-        SourceCodeParserMain::class,
+        SourceCodeParser::class,
         CoverageImporter::class,
         CodeMaatImporter::class,
         TokeiImporter::class,
@@ -245,8 +245,8 @@ class Ccsh : Callable<Unit?> {
             AttributeGeneratorRegistry.registerGenerator(CodeMaatImporter())
             AttributeGeneratorRegistry.registerGenerator(CSVImporter())
             AttributeGeneratorRegistry.registerGenerator(GitLogParser())
-            AttributeGeneratorRegistry.registerGenerator(SonarImporterMain())
-            AttributeGeneratorRegistry.registerGenerator(SourceCodeParserMain())
+            AttributeGeneratorRegistry.registerGenerator(SonarImporter())
+            AttributeGeneratorRegistry.registerGenerator(SourceCodeParser())
             AttributeGeneratorRegistry.registerGenerator(CoverageImporter())
             AttributeGeneratorRegistry.registerGenerator(SVNLogParser())
             AttributeGeneratorRegistry.registerGenerator(TokeiImporter())

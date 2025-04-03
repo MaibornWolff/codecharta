@@ -12,7 +12,6 @@ import java.io.File
 import java.io.IOException
 import java.io.InputStream
 import java.io.PrintStream
-import java.util.concurrent.Callable
 
 @CommandLine.Command(
     name = SourceMonitorImporter.NAME,
@@ -21,7 +20,7 @@ import java.util.concurrent.Callable
 )
 class SourceMonitorImporter(
     private val output: PrintStream = System.out
-) : Callable<Unit>, AnalyserInterface {
+) : AnalyserInterface {
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
 

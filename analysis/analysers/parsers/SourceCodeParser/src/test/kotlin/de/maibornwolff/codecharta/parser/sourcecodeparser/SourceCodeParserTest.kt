@@ -18,7 +18,7 @@ import java.io.File
 import java.io.PrintStream
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class SourceCodeParserMainTest {
+class SourceCodeParserTest {
     val errContent = ByteArrayOutputStream()
     val originalErr = System.err
     private val originalOut = System.out
@@ -54,7 +54,7 @@ class SourceCodeParserMainTest {
     @MethodSource("provideValidInputFiles")
     fun `should be identified as applicable when given directory path contains a java file`(resourceToBeParsed: String) {
         // when
-        val isUsable = SourceCodeParserMain().isApplicable(resourceToBeParsed)
+        val isUsable = SourceCodeParser().isApplicable(resourceToBeParsed)
 
         // then
         Assertions.assertThat(isUsable).isTrue()
@@ -64,7 +64,7 @@ class SourceCodeParserMainTest {
     @MethodSource("provideInvalidInputFiles")
     fun `should NOT be identified as applicable when no java file is present at given path`(resourceToBeParsed: String) {
         // when
-        val isUsable = SourceCodeParserMain().isApplicable(resourceToBeParsed)
+        val isUsable = SourceCodeParser().isApplicable(resourceToBeParsed)
 
         // then
         Assertions.assertThat(isUsable).isFalse()
@@ -81,7 +81,7 @@ class SourceCodeParserMainTest {
         System.setErr(PrintStream(errContent))
 
         // when
-        CommandLine(SourceCodeParserMain()).execute("thisDoesNotExist")
+        CommandLine(SourceCodeParser()).execute("thisDoesNotExist")
 
         // then
         Assertions.assertThat(errContent.toString())
@@ -105,7 +105,7 @@ class SourceCodeParserMainTest {
         every { Logger.info(capture(lambdaSlot)) } returns Unit
 
         // when
-        CommandLine(SourceCodeParserMain()).execute(inputFilePath, "-o", outputFilePath, "-nc")
+        CommandLine(SourceCodeParser()).execute(inputFilePath, "-o", outputFilePath, "-nc")
 
         // then
         Assertions.assertThat(lambdaSlot.last()().endsWith(absoluteOutputFilePath)).isTrue()
@@ -121,7 +121,7 @@ class SourceCodeParserMainTest {
         val exclude = listOf(fileToExclude1, fileToExclude2)
 
         // when
-        CommandLine(SourceCodeParserMain(PrintStream(outputStream))).execute(inputFilePath, "--exclude", "$exclude")
+        CommandLine(SourceCodeParser(PrintStream(outputStream))).execute(inputFilePath, "--exclude", "$exclude")
 
         // then
         Assertions.assertThat(outputStream.toString()).doesNotContain(fileToExclude1)
