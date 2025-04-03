@@ -14,10 +14,10 @@ import de.maibornwolff.codecharta.analysis.importer.csv.CSVImporter
 import de.maibornwolff.codecharta.analysis.importer.sonar.SonarImporter
 import de.maibornwolff.codecharta.analysis.importer.sourcemonitor.SourceMonitorImporter
 import de.maibornwolff.codecharta.analysis.importer.tokeiimporter.TokeiImporter
-import de.maibornwolff.codecharta.ccsh.parser.AnalyserService
-import de.maibornwolff.codecharta.ccsh.parser.InteractiveAnalyserSuggestion
-import de.maibornwolff.codecharta.ccsh.parser.InteractiveDialog
-import de.maibornwolff.codecharta.ccsh.parser.repository.PicocliAnalyserRepository
+import de.maibornwolff.codecharta.ccsh.analyser.AnalyserService
+import de.maibornwolff.codecharta.ccsh.analyser.InteractiveAnalyserSuggestion
+import de.maibornwolff.codecharta.ccsh.analyser.InteractiveDialog
+import de.maibornwolff.codecharta.ccsh.analyser.repository.PicocliAnalyserRepository
 import de.maibornwolff.codecharta.parser.gitlogparser.GitLogParser
 import de.maibornwolff.codecharta.parser.rawtextparser.RawTextParser
 import de.maibornwolff.codecharta.parser.sourcecodeparser.SourceCodeParser
