@@ -2,24 +2,31 @@ plugins {
     id("org.gradle.toolchains.foojay-resolver-convention") version "0.9.0"
 }
 
+include("ccsh")
+include("dialogProvider")
 include("model")
-include("filter:MergeFilter", "filter:EdgeFilter", "filter:StructureModifier")
+include("analysers:AnalyserInterface", "analysers:PipeableAnalyserInterface")
+include("analysers:filters:MergeFilter", "analysers:filters:EdgeFilter", "analysers:filters:StructureModifier")
 include(
-    "import:CodeMaatImporter",
-    "import:CoverageImporter",
-    "import:CSVImporter",
-    "import:SonarImporter",
-    "import:SourceMonitorImporter",
-    "import:TokeiImporter"
+    "analysers:importers:CodeMaatImporter",
+    "analysers:importers:CoverageImporter",
+    "analysers:importers:CSVImporter",
+    "analysers:importers:SonarImporter",
+    "analysers:importers:SourceMonitorImporter",
+    "analysers:importers:TokeiImporter"
 )
 include(
-    "parser:RawTextParser",
-    "parser:GitLogParser",
-    "parser:SourceCodeParser",
-    "parser:SVNLogParser"
+    "analysers:parsers:RawTextParser",
+    "analysers:parsers:GitLogParser",
+    "analysers:parsers:SourceCodeParser",
+    "analysers:parsers:SVNLogParser"
 )
-include("export:CSVExporter")
-include("tools:ValidationTool", "tools:ccsh", "tools:InspectionTool", "tools:InteractiveParser", "tools:PipeableParser", "tools:Inquirer")
+include("analysers:exporters:CSVExporter")
+include(
+    "analysers:tools:ValidationTool",
+    "analysers:tools:InspectionTool"
+)
 
 rootProject.name = "codecharta"
-findProject(":tools:PipeableParser")?.name = "PipeableParser"
+findProject(":analysers:PipeableAnalyserInterface")?.name = "PipeableAnalyserInterface"
+include("analysers")

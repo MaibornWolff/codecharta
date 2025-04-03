@@ -538,9 +538,9 @@ analysis/test/data/codecharta/tomerge.json
 analysis/test/data/codecharta/tomerge2.json
 analysis/test/data/codecharta/understand.csv
 analysis/test/golden_test.sh
-analysis/tools/InteractiveParser/build.gradle
-analysis/tools/InteractiveParser/src/main/kotlin/de/maibornwolff/codecharta/tools/interactiveparser/InteractiveParser.kt
-analysis/tools/InteractiveParser/src/main/kotlin/de/maibornwolff/codecharta/tools/interactiveparser/ParserDialogInterface.kt
+analysis/tools/AnalyserInterface/build.gradle
+analysis/tools/AnalyserInterface/src/main/kotlin/de/maibornwolff/codecharta/tools/AnalyserInterface/AnalyserInterface.kt
+analysis/tools/AnalyserInterface/src/main/kotlin/de/maibornwolff/codecharta/tools/AnalyserInterface/ParserDialogInterface.kt
 analysis/tools/ValidationTool/README.md
 analysis/tools/ValidationTool/build.gradle
 analysis/tools/ValidationTool/src/main/kotlin/de/maibornwolff/codecharta/tools/validation/EveritValidator.kt

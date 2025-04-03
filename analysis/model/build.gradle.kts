@@ -1,7 +1,7 @@
 dependencies {
     implementation(libs.gson)
     implementation(libs.kotlin.reflect)
-    implementation(project(":tools:PipeableParser"))
+    implementation(project(":analysers:PipeableAnalyserInterface"))
 
     implementation(libs.picocli)
     implementation(libs.slf4j.simple)
@@ -12,7 +12,7 @@ dependencies {
 
     testImplementation(libs.jsonassert)
     testImplementation(libs.commons.text)
-    testImplementation(project(":tools:PipeableParser"))
+    testImplementation(project(":analysers:PipeableAnalyserInterface"))
 
     testRuntimeOnly(libs.kotlin.reflect)
 }
