@@ -7,14 +7,13 @@ import de.maibornwolff.codecharta.parser.gitlogparser.GitLogParser
 import de.maibornwolff.codecharta.util.InputHelper
 import picocli.CommandLine
 import java.io.File
-import java.util.concurrent.Callable
 
 @CommandLine.Command(
     name = LogScanCommand.NAME,
     description = [LogScanCommand.DESCRIPTION],
     footer = [CodeChartaConstants.General.GENERIC_FOOTER]
 )
-class LogScanCommand : Callable<Unit>, AnalyserInterface {
+class LogScanCommand : AnalyserInterface {
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
 
