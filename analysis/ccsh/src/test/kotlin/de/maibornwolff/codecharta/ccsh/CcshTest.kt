@@ -1,9 +1,9 @@
 package de.maibornwolff.codecharta.ccsh
 
 import de.maibornwolff.codecharta.ccsh.SessionMock.Companion.mockRunInTerminalSession
-import de.maibornwolff.codecharta.ccsh.parser.AnalyserService
-import de.maibornwolff.codecharta.ccsh.parser.InteractiveAnalyserSuggestion
-import de.maibornwolff.codecharta.ccsh.parser.InteractiveDialog
+import de.maibornwolff.codecharta.ccsh.analyser.AnalyserService
+import de.maibornwolff.codecharta.ccsh.analyser.InteractiveAnalyserSuggestion
+import de.maibornwolff.codecharta.ccsh.analyser.InteractiveDialog
 import de.maibornwolff.codecharta.util.Logger
 import io.mockk.every
 import io.mockk.mockkObject

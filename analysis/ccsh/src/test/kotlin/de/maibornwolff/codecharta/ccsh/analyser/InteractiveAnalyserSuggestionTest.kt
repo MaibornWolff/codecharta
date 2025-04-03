@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.ccsh.parser
+package de.maibornwolff.codecharta.ccsh.analyser
 
 import de.maibornwolff.codecharta.ccsh.Ccsh
 import de.maibornwolff.codecharta.ccsh.SessionMock.Companion.mockRunInTerminalSession

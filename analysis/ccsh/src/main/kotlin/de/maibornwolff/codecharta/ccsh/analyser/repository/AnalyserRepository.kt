@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.ccsh.parser.repository
+package de.maibornwolff.codecharta.ccsh.analyser.repository
 
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
 

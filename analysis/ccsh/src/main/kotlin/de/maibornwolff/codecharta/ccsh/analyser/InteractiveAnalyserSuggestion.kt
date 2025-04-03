@@ -1,8 +1,8 @@
-package de.maibornwolff.codecharta.ccsh.parser
+package de.maibornwolff.codecharta.ccsh.analyser
 
 import de.maibornwolff.codecharta.analysers.analyserinterface.runInTerminalSession
 import de.maibornwolff.codecharta.ccsh.Ccsh
-import de.maibornwolff.codecharta.ccsh.parser.repository.PicocliAnalyserRepository
+import de.maibornwolff.codecharta.ccsh.analyser.repository.PicocliAnalyserRepository
 import de.maibornwolff.codecharta.util.Logger
 import picocli.CommandLine
 import java.io.File

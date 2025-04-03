@@ -1,16 +1,16 @@
-package de.maibornwolff.codecharta.ccsh.parser
+package de.maibornwolff.codecharta.ccsh.analyser
 
 import com.varabyte.kotter.foundation.input.Keys
 import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.terminal.inmemory.press
 import com.varabyte.kotter.runtime.terminal.inmemory.type
 import com.varabyte.kotterx.test.foundation.testSession
-import de.maibornwolff.codecharta.ccsh.parser.InteractiveDialog.Companion.askAnalyserToExecute
-import de.maibornwolff.codecharta.ccsh.parser.InteractiveDialog.Companion.askApplicableAnalyser
-import de.maibornwolff.codecharta.ccsh.parser.InteractiveDialog.Companion.askForMerge
-import de.maibornwolff.codecharta.ccsh.parser.InteractiveDialog.Companion.askForPath
-import de.maibornwolff.codecharta.ccsh.parser.InteractiveDialog.Companion.askJsonPath
-import de.maibornwolff.codecharta.ccsh.parser.InteractiveDialog.Companion.askRunAnalysers
+import de.maibornwolff.codecharta.ccsh.analyser.InteractiveDialog.Companion.askAnalyserToExecute
+import de.maibornwolff.codecharta.ccsh.analyser.InteractiveDialog.Companion.askApplicableAnalyser
+import de.maibornwolff.codecharta.ccsh.analyser.InteractiveDialog.Companion.askForMerge
+import de.maibornwolff.codecharta.ccsh.analyser.InteractiveDialog.Companion.askForPath
+import de.maibornwolff.codecharta.ccsh.analyser.InteractiveDialog.Companion.askJsonPath
+import de.maibornwolff.codecharta.ccsh.analyser.InteractiveDialog.Companion.askRunAnalysers
 import io.mockk.every
 import io.mockk.mockkObject
 import org.assertj.core.api.Assertions.assertThat
