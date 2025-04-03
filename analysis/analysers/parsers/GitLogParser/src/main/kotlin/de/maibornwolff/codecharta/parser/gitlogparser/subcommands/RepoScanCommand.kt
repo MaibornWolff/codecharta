@@ -9,14 +9,13 @@ import picocli.CommandLine
 import java.io.File
 import java.nio.file.Path
 import java.nio.file.Paths
-import java.util.concurrent.Callable
 
 @CommandLine.Command(
     name = RepoScanCommand.NAME,
     description = [RepoScanCommand.DESCRIPTION],
     footer = ["Copyright(c) 2024, MaibornWolff GmbH"]
 )
-class RepoScanCommand : Callable<Unit>, AnalyserInterface {
+class RepoScanCommand : AnalyserInterface {
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
 
