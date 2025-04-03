@@ -1,4 +1,4 @@
-import de.maibornwolff.codecharta.parser.sourcecodeparser.SourceCodeParserMain
+import de.maibornwolff.codecharta.parser.sourcecodeparser.SourceCodeParser
 import de.maibornwolff.codecharta.parser.sourcecodeparser.e2e.StreamHelper.Companion.retrieveStreamAsString
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -8,7 +8,7 @@ class ParseFileToJson {
 
     private val output =
         retrieveStreamAsString {
-            SourceCodeParserMain.mainWithOutputStream(it, arrayOf(resource, "--format=json", "-nc"))
+            SourceCodeParser.mainWithOutputStream(it, arrayOf(resource, "--format=json", "-nc"))
         }
 
     @Test

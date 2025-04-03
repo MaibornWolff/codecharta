@@ -28,7 +28,6 @@ import java.io.IOException
 import java.io.InputStream
 import java.io.PrintStream
 import java.io.PrintWriter
-import java.util.concurrent.Callable
 
 @CommandLine.Command(
     name = TokeiImporter.NAME,
@@ -39,7 +38,7 @@ class TokeiImporter(
     private val input: InputStream = System.`in`,
     private val output: PrintStream = System.out,
     private val error: PrintStream = System.err
-) : Callable<Unit>, AnalyserInterface, PipeableAnalyserInterface, AttributeGenerator {
+) : AnalyserInterface, PipeableAnalyserInterface, AttributeGenerator {
     private val attributeTypes =
         AttributeTypes(type = "nodes").add("rloc", AttributeType.ABSOLUTE).add("loc", AttributeType.ABSOLUTE)
             .add("empty_lines", AttributeType.ABSOLUTE).add("comment_lines", AttributeType.ABSOLUTE)

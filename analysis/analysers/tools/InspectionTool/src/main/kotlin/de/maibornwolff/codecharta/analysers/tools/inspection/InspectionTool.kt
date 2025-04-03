@@ -11,7 +11,6 @@ import picocli.CommandLine
 import java.io.File
 import java.io.InputStream
 import java.io.PrintStream
-import java.util.concurrent.Callable
 
 @CommandLine.Command(
     name = InspectionTool.NAME,
@@ -21,7 +20,7 @@ import java.util.concurrent.Callable
 class InspectionTool(
     private val input: InputStream = System.`in`,
     private val output: PrintStream = System.out
-) : Callable<Unit?>, AnalyserInterface {
+) : AnalyserInterface {
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     var help: Boolean = false
 

@@ -86,7 +86,7 @@ class DialogTest {
             parserArguments = collectParserArgs(this)
         }
 
-        val cmdLine = CommandLine(SourceCodeParserMain())
+        val cmdLine = CommandLine(SourceCodeParser())
         val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
 
         assertThat(parseResult.matchedPositional(0).getValue<File>().name).isEqualTo(File(inputFileFolder).name)
@@ -156,7 +156,7 @@ class DialogTest {
             parserArguments = collectParserArgs(this)
         }
 
-        val cmdLine = CommandLine(SourceCodeParserMain())
+        val cmdLine = CommandLine(SourceCodeParser())
         val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
 
         assertThat(parseResult.matchedPositional(0).getValue<File>().name).isEqualTo(File(inputFileName).name)
@@ -222,7 +222,7 @@ class DialogTest {
             parserArguments = collectParserArgs(this)
         }
 
-        val cmdLine = CommandLine(SourceCodeParserMain())
+        val cmdLine = CommandLine(SourceCodeParser())
         val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
 
         assertThat(parseResult.matchedPositional(0).getValue<File>().name).isEqualTo(File(inputFileName).name)

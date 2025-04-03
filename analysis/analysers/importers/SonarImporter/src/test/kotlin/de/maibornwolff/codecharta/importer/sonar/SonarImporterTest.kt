@@ -25,7 +25,7 @@ import javax.ws.rs.core.MediaType
 private const val PORT = 8089
 
 @WireMockTest(httpPort = PORT)
-class SonarImporterMainTest {
+class SonarImporterTest {
     val errContent = ByteArrayOutputStream()
     val originalErr = System.err
 
@@ -97,7 +97,7 @@ class SonarImporterMainTest {
             )
         )
 
-        CommandLine(SonarImporterMain()).execute(*arrayOf("http://localhost:8089/", "someproject"))
+        CommandLine(SonarImporter()).execute(*arrayOf("http://localhost:8089/", "someproject"))
 
         verify(1, getRequestedFor(urlEqualTo(METRIC_LIST_URL_PATH)))
     }
@@ -112,7 +112,7 @@ class SonarImporterMainTest {
             )
         )
 
-        CommandLine(SonarImporterMain()).execute(*arrayOf("http://localhost:8089", "someproject"))
+        CommandLine(SonarImporter()).execute(*arrayOf("http://localhost:8089", "someproject"))
 
         verify(1, getRequestedFor(urlEqualTo(METRIC_LIST_URL_PATH)))
     }
@@ -120,28 +120,28 @@ class SonarImporterMainTest {
     @ParameterizedTest
     @MethodSource("provideValidURLs")
     fun `should be identified as applicable for given directory path being an url`(resourceToBeParsed: String) {
-        val isApplicable = SonarImporterMain().isApplicable(resourceToBeParsed)
+        val isApplicable = SonarImporter().isApplicable(resourceToBeParsed)
         Assertions.assertTrue(isApplicable)
     }
 
     @ParameterizedTest
     @MethodSource("provideValidInputFiles")
     fun `should be identified as applicable for given directory path containing a sonar properties file`(resourceToBeParsed: String) {
-        val isApplicable = SonarImporterMain().isApplicable(resourceToBeParsed)
+        val isApplicable = SonarImporter().isApplicable(resourceToBeParsed)
         Assertions.assertTrue(isApplicable)
     }
 
     @ParameterizedTest
     @MethodSource("provideInvalidInputFiles")
     fun `should NOT be identified as applicable if no sonar properties file is present at given path`(resourceToBeParsed: String) {
-        val isApplicable = SonarImporterMain().isApplicable(resourceToBeParsed)
+        val isApplicable = SonarImporter().isApplicable(resourceToBeParsed)
         Assertions.assertFalse(isApplicable)
     }
 
     @ParameterizedTest
     @MethodSource("provideInvalidURLs")
     fun `should NOT be identified as applicable for given broken url`(resourceToBeParsed: String) {
-        val isApplicable = SonarImporterMain().isApplicable(resourceToBeParsed)
+        val isApplicable = SonarImporter().isApplicable(resourceToBeParsed)
         Assertions.assertFalse(isApplicable)
     }
 
@@ -153,7 +153,7 @@ class SonarImporterMainTest {
         } returns false
 
         System.setErr(PrintStream(errContent))
-        CommandLine(SonarImporterMain()).execute(*arrayOf("", "dummyVal"))
+        CommandLine(SonarImporter()).execute(*arrayOf("", "dummyVal"))
         System.setErr(originalErr)
 
         Assertions.assertTrue(
@@ -169,7 +169,7 @@ class SonarImporterMainTest {
         } returns false
 
         System.setErr(PrintStream(errContent))
-        CommandLine(SonarImporterMain()).execute(*arrayOf("dummyVal", ""))
+        CommandLine(SonarImporter()).execute(*arrayOf("dummyVal", ""))
         System.setErr(originalErr)
 
         Assertions.assertTrue(
@@ -179,13 +179,13 @@ class SonarImporterMainTest {
 
     @Test
     fun `should NOT be identified as applicable if input is a file but not the sonar properties file`() {
-        val isApplicable = SonarImporterMain().isApplicable("src/test/resources/example.xml")
+        val isApplicable = SonarImporter().isApplicable("src/test/resources/example.xml")
         Assertions.assertFalse(isApplicable)
     }
 
     @Test
     fun `should NOT be identified as applicable if input does not contain sonar properties file in first two directory levels`() {
-        val isApplicable = SonarImporterMain().isApplicable("src/test/resources/my")
+        val isApplicable = SonarImporter().isApplicable("src/test/resources/my")
         Assertions.assertFalse(isApplicable)
     }
 }

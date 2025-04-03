@@ -1,6 +1,6 @@
 package de.maibornwolff.codecharta.parser.sourcecodeparser.e2e
 
-import de.maibornwolff.codecharta.parser.sourcecodeparser.SourceCodeParserMain
+import de.maibornwolff.codecharta.parser.sourcecodeparser.SourceCodeParser
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 
@@ -11,7 +11,7 @@ class ExcludeFilesAndFolders {
     fun `should exclude files in ignored folders`() {
         val outputStream =
             StreamHelper.retrieveStreamAsString {
-                SourceCodeParserMain.mainWithOutputStream(it, arrayOf(resource, "-e=/bar/"))
+                SourceCodeParser.mainWithOutputStream(it, arrayOf(resource, "-e=/bar/"))
             }
 
         Assertions.assertThat(outputStream.lines()[0]).doesNotContain(""""name":"bar""")
@@ -22,7 +22,7 @@ class ExcludeFilesAndFolders {
     fun `should exclude files in multiple ignored folders`() {
         val outputStream =
             StreamHelper.retrieveStreamAsString {
-                SourceCodeParserMain.mainWithOutputStream(
+                SourceCodeParser.mainWithOutputStream(
                     it,
                     arrayOf(resource, "-e=/bar/", "-e=/sonar_issues_java/")
                 )
@@ -37,7 +37,7 @@ class ExcludeFilesAndFolders {
     fun `should exclude files where regex pattern matches`() {
         val outputStream =
             StreamHelper.retrieveStreamAsString {
-                SourceCodeParserMain.mainWithOutputStream(it, arrayOf(resource, "-e=/sonar.*/"))
+                SourceCodeParser.mainWithOutputStream(it, arrayOf(resource, "-e=/sonar.*/"))
             }
         Assertions.assertThat(outputStream.lines()[0]).doesNotContain(""""name":"sonar_issues_java""")
     }
@@ -46,7 +46,7 @@ class ExcludeFilesAndFolders {
     fun `should exclude files with defaultExcludes option`() {
         val outputStream =
             StreamHelper.retrieveStreamAsString {
-                SourceCodeParserMain.mainWithOutputStream(it, arrayOf(resource, "--defaultExcludes"))
+                SourceCodeParser.mainWithOutputStream(it, arrayOf(resource, "--defaultExcludes"))
             }
         Assertions.assertThat(outputStream.lines()[0]).doesNotContain(""""name":".whatever""")
         Assertions.assertThat(outputStream.lines()[0]).doesNotContain(""""name":"something.java""")
