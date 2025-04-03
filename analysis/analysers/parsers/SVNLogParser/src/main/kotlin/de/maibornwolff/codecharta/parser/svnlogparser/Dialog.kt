@@ -2,7 +2,7 @@ package de.maibornwolff.codecharta.parser.svnlogparser
 
 import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.Session
-import de.maibornwolff.codecharta.analysers.analyserinterface.ParserDialogInterface
+import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserDialogInterface
 import de.maibornwolff.codecharta.dialogProvider.InputType
 import de.maibornwolff.codecharta.dialogProvider.promptConfirm
 import de.maibornwolff.codecharta.dialogProvider.promptDefaultFileFolderInput
