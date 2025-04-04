@@ -250,6 +250,7 @@ class Ccsh : Callable<Unit?> {
             AttributeGeneratorRegistry.registerGenerator(CoverageImporter())
             AttributeGeneratorRegistry.registerGenerator(SVNLogParser())
             AttributeGeneratorRegistry.registerGenerator(TokeiImporter())
+            AttributeGeneratorRegistry.registerGenerator(SourceMonitorImporter())
         }
     }
 

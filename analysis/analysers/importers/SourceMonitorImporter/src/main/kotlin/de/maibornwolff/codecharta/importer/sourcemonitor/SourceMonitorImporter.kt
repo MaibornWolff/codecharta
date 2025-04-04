@@ -4,6 +4,8 @@ import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserDialogInte
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
 import de.maibornwolff.codecharta.analysers.analyserinterface.util.CodeChartaConstants
 import de.maibornwolff.codecharta.analysis.importer.csv.CSVProjectBuilder
+import de.maibornwolff.codecharta.model.AttributeDescriptor
+import de.maibornwolff.codecharta.model.AttributeGenerator
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.translator.MetricNameTranslator
 import de.maibornwolff.codecharta.util.InputHelper
@@ -20,7 +22,7 @@ import java.io.PrintStream
 )
 class SourceMonitorImporter(
     private val output: PrintStream = System.out
-) : AnalyserInterface {
+) : AnalyserInterface, AttributeGenerator {
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
 
@@ -103,5 +105,9 @@ class SourceMonitorImporter(
 
     override fun isApplicable(resourceToBeParsed: String): Boolean {
         return false
+    }
+
+    override fun getAttributeDescriptorMaps(): Map<String, AttributeDescriptor> {
+        return getAttributeDescriptors()
     }
 }
