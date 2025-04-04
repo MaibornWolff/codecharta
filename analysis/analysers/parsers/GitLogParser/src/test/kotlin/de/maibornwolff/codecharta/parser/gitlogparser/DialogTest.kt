@@ -98,7 +98,7 @@ class DialogTest {
                 lsCallback
             )
 
-            parserArguments = LogScanDialog.collectParserArgs(this)
+            parserArguments = LogScanDialog.collectAnalyserArgs(this)
         }
 
         val cmdLine = CommandLine(LogScanCommand())
@@ -131,7 +131,7 @@ class DialogTest {
                 repoScanCallback
             )
 
-            parserArguments = RepoScanDialog.collectParserArgs(this)
+            parserArguments = RepoScanDialog.collectAnalyserArgs(this)
         }
 
         val cmdLine = CommandLine(RepoScanCommand())
@@ -235,7 +235,10 @@ class DialogTest {
         mockkObject(Dialog.Companion)
         mockkObject(LogScanDialog.Companion)
 
-        every { LogScanCommand().getDialog().collectParserArgs(any()) } returns listOf("--git-log=$logFileName", "--repo-files=$lsFileName")
+        every { LogScanCommand().getDialog().collectAnalyserArgs(any()) } returns listOf(
+            "--git-log=$logFileName",
+            "--repo-files=$lsFileName"
+        )
 
         var parserArguments: List<String> = listOf()
 
@@ -265,7 +268,7 @@ class DialogTest {
                 authorCallback
             )
 
-            parserArguments = Dialog.collectParserArgs(this)
+            parserArguments = Dialog.collectAnalyserArgs(this)
         }
 
         val mainCmdLine = CommandLine(GitLogParser())
@@ -292,7 +295,7 @@ class DialogTest {
         mockkObject(Dialog.Companion)
         mockkObject(RepoScanDialog.Companion)
 
-        every { RepoScanCommand().getDialog().collectParserArgs(any()) } returns listOf("--repo-path=$repoFolderName")
+        every { RepoScanCommand().getDialog().collectAnalyserArgs(any()) } returns listOf("--repo-path=$repoFolderName")
 
         var parserArguments: List<String> = listOf()
 
@@ -323,7 +326,7 @@ class DialogTest {
                 authorCallback
             )
 
-            parserArguments = Dialog.collectParserArgs(this)
+            parserArguments = Dialog.collectAnalyserArgs(this)
         }
 
         val cmdLine = CommandLine(GitLogParser())

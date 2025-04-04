@@ -6,7 +6,7 @@ import com.varabyte.kotter.runtime.terminal.inmemory.press
 import com.varabyte.kotter.runtime.terminal.inmemory.type
 import com.varabyte.kotterx.test.foundation.testSession
 import de.maibornwolff.codecharta.parser.rawtextparser.Dialog
-import de.maibornwolff.codecharta.parser.rawtextparser.Dialog.Companion.collectParserArgs
+import de.maibornwolff.codecharta.parser.rawtextparser.Dialog.Companion.collectAnalyserArgs
 import de.maibornwolff.codecharta.parser.rawtextparser.RawTextParser
 import io.mockk.every
 import io.mockk.mockkObject
@@ -96,7 +96,7 @@ class DialogTest {
                 defaultCallback
             )
 
-            parserArguments = collectParserArgs(this)
+            parserArguments = collectAnalyserArgs(this)
         }
         val commandLine = CommandLine(RawTextParser())
         val parseResult = commandLine.parseArgs(*parserArguments.toTypedArray())
@@ -174,7 +174,7 @@ class DialogTest {
                 defaultCallback
             )
 
-            parserArguments = collectParserArgs(this)
+            parserArguments = collectAnalyserArgs(this)
         }
         val commandLine = CommandLine(RawTextParser())
         val parseResult = commandLine.parseArgs(*parserArguments.toTypedArray())
@@ -256,7 +256,7 @@ class DialogTest {
                 defaultCallback
             )
 
-            parserArguments = collectParserArgs(this)
+            parserArguments = collectAnalyserArgs(this)
         }
         val commandLine = CommandLine(RawTextParser())
         val parseResult = commandLine.parseArgs(*parserArguments.toTypedArray())

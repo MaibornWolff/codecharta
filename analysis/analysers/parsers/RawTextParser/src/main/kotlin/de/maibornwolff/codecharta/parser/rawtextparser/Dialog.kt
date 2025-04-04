@@ -11,7 +11,7 @@ import de.maibornwolff.codecharta.dialogProvider.promptInputNumber
 
 class Dialog {
     companion object : AnalyserDialogInterface {
-        override fun collectParserArgs(session: Session): List<String> {
+        override fun collectAnalyserArgs(session: Session): List<String> {
             val inputFileName = session.promptDefaultFileFolderInput(
                 inputType = InputType.FOLDER_AND_FILE,
                 fileExtensionList = listOf(),

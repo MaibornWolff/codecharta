@@ -176,7 +176,7 @@ class MergeFilterTest {
     }
 
     @Test
-    fun `should return ParserDialog when getDialog is called`() {
+    fun `should return Dialog when getDialog is called`() {
         val mergeFilter = MergeFilter()
 
         assertThat(mergeFilter.getDialog()).isSameAs(Dialog)

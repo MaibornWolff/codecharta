@@ -4,7 +4,7 @@ import com.varabyte.kotter.foundation.session
 import com.varabyte.kotter.runtime.Session
 
 fun interface AnalyserDialogInterface {
-    fun collectParserArgs(session: Session): List<String>
+    fun collectAnalyserArgs(session: Session): List<String>
 }
 
 fun <T> runInTerminalSession(block: Session.() -> T): T {

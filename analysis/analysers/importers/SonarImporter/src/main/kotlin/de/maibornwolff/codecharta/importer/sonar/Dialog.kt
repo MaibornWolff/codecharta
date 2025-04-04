@@ -8,7 +8,7 @@ import de.maibornwolff.codecharta.dialogProvider.promptInput
 
 class Dialog {
     companion object : AnalyserDialogInterface {
-        override fun collectParserArgs(session: Session): List<String> {
+        override fun collectAnalyserArgs(session: Session): List<String> {
             val hostUrl = session.promptInput(
                 message = "What is the sonar.host.url of your project?",
                 hint = "https://sonarcloud.io/",

@@ -10,7 +10,7 @@ import java.nio.file.Paths
 
 class RepoScanDialog {
     companion object : AnalyserDialogInterface {
-        override fun collectParserArgs(session: Session): List<String> {
+        override fun collectAnalyserArgs(session: Session): List<String> {
             val repoPath = session.promptInput(
                 message = "What is the root directory of the git project you want to parse?",
                 hint = Paths.get("").normalize().toAbsolutePath().toString(),

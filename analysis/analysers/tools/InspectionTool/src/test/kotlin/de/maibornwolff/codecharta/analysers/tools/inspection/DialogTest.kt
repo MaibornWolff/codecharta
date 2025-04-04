@@ -5,7 +5,7 @@ import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.terminal.inmemory.press
 import com.varabyte.kotter.runtime.terminal.inmemory.type
 import com.varabyte.kotterx.test.foundation.testSession
-import de.maibornwolff.codecharta.analysers.tools.inspection.Dialog.Companion.collectParserArgs
+import de.maibornwolff.codecharta.analysers.tools.inspection.Dialog.Companion.collectAnalyserArgs
 import io.mockk.every
 import io.mockk.mockkObject
 import org.assertj.core.api.Assertions.assertThat
@@ -43,7 +43,7 @@ class DialogTest {
                 levelsCallback
             )
 
-            parserArguments = collectParserArgs(this)
+            parserArguments = collectAnalyserArgs(this)
         }
 
         val commandLine = CommandLine(InspectionTool())
@@ -82,7 +82,7 @@ class DialogTest {
                 levelsCallback
             )
 
-            parserArguments = collectParserArgs(this)
+            parserArguments = collectAnalyserArgs(this)
         }
 
         val commandLine = CommandLine(InspectionTool())

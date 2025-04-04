@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.ccsh.parser
+package de.maibornwolff.codecharta.ccsh.analyser
 
 import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.Session
@@ -12,10 +12,10 @@ import java.nio.file.Paths
 
 class InteractiveDialog {
     companion object {
-        internal fun askParserToExecute(session: Session, parserOptions: List<String>): String {
+        internal fun askAnalyserToExecute(session: Session, analyserOptions: List<String>): String {
             return session.promptList(
-                message = "Which parser do you want to execute?",
-                choices = parserOptions,
+                message = "Which analyser do you want to execute?",
+                choices = analyserOptions,
                 onInputReady = testCallback()
             )
         }
@@ -30,18 +30,18 @@ class InteractiveDialog {
             )
         }
 
-        internal fun askApplicableParser(session: Session, applicableParsers: List<String>): List<String> {
+        internal fun askApplicableAnalyser(session: Session, applicableAnalysers: List<String>): List<String> {
             return session.promptCheckbox(
-                message = "Choose from this list of applicable parsers. You can select individual parsers by pressing spacebar.",
-                choices = applicableParsers,
+                message = "Choose from this list of applicable analysers. You can select individual analysers by pressing spacebar.",
+                choices = applicableAnalysers,
                 allowEmptyInput = true,
                 onInputReady = testCallback()
             )
         }
 
-        internal fun askRunParsers(session: Session): Boolean {
+        internal fun askRunAnalysers(session: Session): Boolean {
             return session.promptConfirm(
-                message = "Do you want to run all configured parsers now?",
+                message = "Do you want to run all configured analysers now?",
                 onInputReady = testCallback()
             )
         }

@@ -69,7 +69,7 @@ class DialogTest {
                 compressCallback
             )
 
-            val parserArguments = Dialog.collectParserArgs(this)
+            val parserArguments = Dialog.collectAnalyserArgs(this)
 
             val cmdLine = CommandLine(CoverageImporter())
             val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
@@ -103,7 +103,7 @@ class DialogTest {
                 outputFileCallback
             )
 
-            val parserArguments = Dialog.collectParserArgs(this)
+            val parserArguments = Dialog.collectAnalyserArgs(this)
 
             val cmdLine = CommandLine(CoverageImporter())
             val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
@@ -152,7 +152,7 @@ class DialogTest {
                 compressCallback
             )
 
-            val parserArguments = Dialog.collectParserArgs(this)
+            val parserArguments = Dialog.collectAnalyserArgs(this)
 
             val cmdLine = CommandLine(CoverageImporter())
             val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
@@ -202,7 +202,7 @@ class DialogTest {
                 compressCallback
             )
 
-            val parserArguments = Dialog.collectParserArgs(this)
+            val parserArguments = Dialog.collectAnalyserArgs(this)
 
             val cmdLine = CommandLine(CoverageImporter())
             val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())

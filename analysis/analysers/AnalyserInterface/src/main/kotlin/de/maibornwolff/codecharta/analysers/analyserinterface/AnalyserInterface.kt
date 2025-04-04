@@ -10,11 +10,11 @@ interface AnalyserInterface : Callable<Unit?> {
 
     fun isApplicable(resourceToBeParsed: String): Boolean
 
-    fun getParserName(): String {
+    fun getAnalyserName(): String {
         return name
     }
 
-    fun getParserDescription(): String {
+    fun getAnalyserDescription(): String {
         return description
     }
 }

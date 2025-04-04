@@ -7,7 +7,7 @@ import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.terminal.inmemory.press
 import com.varabyte.kotter.runtime.terminal.inmemory.type
 import com.varabyte.kotterx.test.foundation.testSession
-import de.maibornwolff.codecharta.analysis.importer.csv.Dialog.Companion.collectParserArgs
+import de.maibornwolff.codecharta.analysis.importer.csv.Dialog.Companion.collectAnalyserArgs
 import io.mockk.every
 import io.mockk.mockkObject
 import org.assertj.core.api.Assertions.assertThat
@@ -67,7 +67,7 @@ class DialogTest {
                 compressCallback
             )
 
-            val parserArguments = collectParserArgs(this)
+            val parserArguments = collectAnalyserArgs(this)
 
             val cmdLine = CommandLine(CSVImporter())
             val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
@@ -125,7 +125,7 @@ class DialogTest {
                 compressCallback
             )
 
-            val parserArguments = collectParserArgs(this)
+            val parserArguments = collectAnalyserArgs(this)
 
             val cmdLine = CommandLine(CSVImporter())
             val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
@@ -187,7 +187,7 @@ class DialogTest {
                 compressCallback
             )
 
-            val parserArguments = collectParserArgs(this)
+            val parserArguments = collectAnalyserArgs(this)
 
             val cmdLine = CommandLine(CSVImporter())
             val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
