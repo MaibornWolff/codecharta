@@ -2,7 +2,7 @@ package de.maibornwolff.codecharta.analysis.importer.tokeiimporter
 
 import de.maibornwolff.codecharta.model.AttributeDescriptor
 
-fun getAttributeDescriptors(): Map<String, AttributeDescriptor> {
+internal fun getAttributeDescriptors(): Map<String, AttributeDescriptor> {
     val ghLink = "https://github.com/XAMPPRocky/tokei/"
     return mapOf(
         "empty_lines" to

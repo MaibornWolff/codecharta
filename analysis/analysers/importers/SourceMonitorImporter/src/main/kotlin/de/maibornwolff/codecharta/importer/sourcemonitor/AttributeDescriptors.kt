@@ -2,7 +2,7 @@ package de.maibornwolff.codecharta.analysis.importer.sourcemonitor
 
 import de.maibornwolff.codecharta.model.AttributeDescriptor
 
-fun getAttributeDescriptors(): Map<String, AttributeDescriptor> {
+internal fun getAttributeDescriptors(): Map<String, AttributeDescriptor> {
     val ghLink = "https://github.com/SourceMonitor/SM-Info"
     val descriptors: MutableMap<String, AttributeDescriptor> = mutableMapOf()
     descriptors["loc"] =

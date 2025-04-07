@@ -2,7 +2,7 @@ package de.maibornwolff.codecharta.parser.rawtextparser
 
 import de.maibornwolff.codecharta.model.AttributeDescriptor
 
-fun getAttributeDescriptors(maxOccurringIndentationLevel: Int): Map<String, AttributeDescriptor> {
+internal fun getAttributeDescriptors(maxOccurringIndentationLevel: Int): Map<String, AttributeDescriptor> {
     val ghLink = "https://codecharta.com/docs/parser/raw-text"
     val descriptors: MutableMap<String, AttributeDescriptor> = mutableMapOf()
     for (i in 0..maxOccurringIndentationLevel) {
