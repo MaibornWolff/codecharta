@@ -9,7 +9,6 @@ import de.maibornwolff.codecharta.model.Node
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.model.ProjectWrapper
 import de.maibornwolff.codecharta.util.Logger
-import model.src.main.kotlin.de.maibornwolff.codecharta.serialization.NodeJsonDeserializer
 import java.io.FileInputStream
 import java.io.InputStream
 import java.io.Reader

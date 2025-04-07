@@ -1,4 +1,4 @@
-package model.src.main.kotlin.de.maibornwolff.codecharta.serialization
+package de.maibornwolff.codecharta.serialization
 
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonDeserializationContext

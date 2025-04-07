@@ -21,130 +21,68 @@
                 "link": "",
                 "children": [
                   {
-                    "name": "Product$ProductDetail",
-                    "type": "Folder",
-                    "attributes": {},
+                    "name": "App.java",
+                    "type": "File",
+                    "attributes": {
+                      "line_coverage": 0.0,
+                      "instruction_coverage": 0.0,
+                      "complexity_coverage": 0.0,
+                      "method_coverage": 0.0,
+                      "class_coverage": 0.0
+                    },
                     "link": "",
-                    "children": [
-                      {
-                        "name": "Product.java",
-                        "type": "File",
-                        "attributes": {
-                          "line_coverage": 100.0,
-                          "instruction_coverage": 100.0,
-                          "complexity_coverage": 100.0,
-                          "method_coverage": 100.0,
-                          "class_coverage": 100.0
-                        },
-                        "link": "",
-                        "children": []
-                      }
-                    ]
+                    "children": []
                   },
                   {
-                    "name": "App",
-                    "type": "Folder",
-                    "attributes": {},
+                    "name": "Order.java",
+                    "type": "File",
+                    "attributes": {
+                      "line_coverage": 85.71,
+                      "instruction_coverage": 93.75,
+                      "complexity_coverage": 75.0,
+                      "method_coverage": 75.0,
+                      "class_coverage": 50.0
+                    },
                     "link": "",
-                    "children": [
-                      {
-                        "name": "App.java",
-                        "type": "File",
-                        "attributes": {
-                          "line_coverage": 0.0,
-                          "instruction_coverage": 0.0,
-                          "complexity_coverage": 0.0,
-                          "method_coverage": 0.0,
-                          "class_coverage": 0.0
-                        },
-                        "link": "",
-                        "children": []
-                      }
-                    ]
+                    "children": []
                   },
                   {
-                    "name": "Order",
-                    "type": "Folder",
-                    "attributes": {},
+                    "name": "Calculator.java",
+                    "type": "File",
+                    "attributes": {
+                      "line_coverage": 100.0,
+                      "instruction_coverage": 100.0,
+                      "complexity_coverage": 100.0,
+                      "method_coverage": 100.0,
+                      "class_coverage": 100.0
+                    },
                     "link": "",
-                    "children": [
-                      {
-                        "name": "Order.java",
-                        "type": "File",
-                        "attributes": {
-                          "line_coverage": 85.71,
-                          "instruction_coverage": 93.75,
-                          "complexity_coverage": 75.0,
-                          "method_coverage": 75.0,
-                          "class_coverage": 50.0
-                        },
-                        "link": "",
-                        "children": []
-                      }
-                    ]
+                    "children": []
                   },
                   {
-                    "name": "Calculator",
-                    "type": "Folder",
-                    "attributes": {},
+                    "name": "User.java",
+                    "type": "File",
+                    "attributes": {
+                      "line_coverage": 100.0,
+                      "instruction_coverage": 100.0,
+                      "complexity_coverage": 100.0,
+                      "method_coverage": 100.0,
+                      "class_coverage": 100.0
+                    },
                     "link": "",
-                    "children": [
-                      {
-                        "name": "Calculator.java",
-                        "type": "File",
-                        "attributes": {
-                          "line_coverage": 100.0,
-                          "instruction_coverage": 100.0,
-                          "complexity_coverage": 100.0,
-                          "method_coverage": 100.0,
-                          "class_coverage": 100.0
-                        },
-                        "link": "",
-                        "children": []
-                      }
-                    ]
+                    "children": []
                   },
                   {
-                    "name": "User",
-                    "type": "Folder",
-                    "attributes": {},
-                    "link": "",
-                    "children": [
-                      {
-                        "name": "User.java",
-                        "type": "File",
-                        "attributes": {
-                          "line_coverage": 100.0,
-                          "instruction_coverage": 100.0,
-                          "complexity_coverage": 100.0,
-                          "method_coverage": 100.0,
-                          "class_coverage": 100.0
-                        },
-                        "link": "",
-                        "children": []
-                      }
-                    ]
-                  },
-                  {
-                    "name": "Product",
-                    "type": "Folder",
-                    "attributes": {},
-                    "link": "",
-                    "children": [
-                      {
-                        "name": "Product.java",
-                        "type": "File",
-                        "attributes": {
-                          "line_coverage": 100.0,
-                          "instruction_coverage": 100.0,
-                          "complexity_coverage": 100.0,
-                          "method_coverage": 100.0,
-                          "class_coverage": 100.0
-                        },
-                        "link": "",
-                        "children": []
-                      }
-                    ]
+                    "name": "Product.java",
+                    "type": "File",
+                    "attributes": {
+                      "line_coverage": 100.0,
+                      "instruction_coverage": 100.0,
+                      "complexity_coverage": 100.0,
+                      "method_coverage": 100.0,
+                      "class_coverage": 100.0
+                    },
+                    "children": []
                   }
                 ]
               }
@@ -208,5 +146,5 @@
     },
     "blacklist": []
   },
-  "checksum": "be16cfd827200deebed1ec786833a1b8"
+  "checksum": "b7400ba649b5818b25505f7f66d6d0e7"
 }
