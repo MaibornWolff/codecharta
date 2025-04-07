@@ -33,6 +33,7 @@ gradle-app.setting
 # IDEs and editors
 /.idea
 *.iml
+/.vscode
 
 # misc
 /.sass-cache

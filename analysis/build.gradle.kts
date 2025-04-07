@@ -14,6 +14,7 @@ plugins {
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.sonarqube)
     alias(libs.plugins.ktlint)
+    id("org.cyclonedx.bom") version "2.2.0"
 }
 
 allprojects {
@@ -164,4 +165,15 @@ configure<SonarExtension> {
 
 tasks.named("sonar") {
     dependsOn("build", "jacocoTestReport")
+}
+
+tasks.cyclonedxBom {
+    setIncludeConfigs(listOf("runtimeClasspath"))
+    setSkipConfigs(listOf("compileClasspath", "testCompileClasspath"))
+    setProjectType("application")
+    setSchemaVersion("1.6")
+    setDestination(project.file("build/reports"))
+    setOutputName("sbom_analysis.cdx")
+    setOutputFormat("json")
+    setIncludeLicenseText(true)
 }

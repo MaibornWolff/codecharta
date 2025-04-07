@@ -1,0 +1,66 @@
+name: Check application licenses for main branch
+
+on:
+  push:
+    branches:
+      - main
+      - chore/check-licenses
+
+permissions: read-all
+
+jobs:
+  scan_licenses_analysis:
+    if: github.event.repository.url == 'https://github.com/StefanFl/codecharta'
+    runs-on: ubuntu-latest
+    steps:
+      -
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+      - 
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - 
+        name: Generate CycloneDX SBOM for analysis
+        run: |
+          chmod +x ./gradlew
+          ./gradlew cyclonedxbom
+      # -
+      #   name: Import backend SBOM
+      #   uses: MaibornWolff/secobserve_actions_templates/actions/importer@2f7b500fde2de2bdea7eef3b6df5503c2476916f # main
+      #   with:
+      #     so_product_name: 'CodeCharta'
+      #     so_file_name: 'analysis/build/report/sbom_analysis.cdx.json'
+      #     so_branch_name: 'main'
+      #     so_api_base_url: "https://secobserve-backend.maibornwolff.de"
+      #     so_api_token: ${{ secrets.SO_API_TOKEN }}
+      - 
+        name: Check licenses for analysis
+        uses: MaibornWolff/purl-patrol@04bf67d65b6dc2cf395ada722ec242ce48c93247 # v1.6.0
+        with:
+          SBOM_PATH: 'analysis/build/report/sbom_analysis.cdx.json'
+          LICENSE_POLICY_PATH: 'license_policy.json'
+          BREAK_ENABLED: false
+
+  scan_licenses_visualization:
+    if: github.event.repository.url == 'https://github.com/StefanFl/codecharta'
+    runs-on: ubuntu-latest
+    steps:
+      - 
+        uses: actions/setup-node@cdca7365b2dadb8aad0a33bc7601856ffabcc48e # v4.3.0
+        with:
+          node-version: 22
+      - 
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - 
+        name: Generate SBOM for visualization
+        run: |
+          npm install
+          npm run sbom
+      - 
+        name: Check licenses for visualization
+        uses: MaibornWolff/purl-patrol@04bf67d65b6dc2cf395ada722ec242ce48c93247 # v1.6.0
+        with:
+          SBOM_PATH: 'visualization/build/report/sbom_visualization.cdx.json'
+          LICENSE_POLICY_PATH: 'license_policy.json'
+          BREAK_ENABLED: false
