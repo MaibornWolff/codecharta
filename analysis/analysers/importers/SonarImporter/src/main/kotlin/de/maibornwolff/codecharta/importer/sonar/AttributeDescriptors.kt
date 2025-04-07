@@ -6,13 +6,13 @@ import de.maibornwolff.codecharta.model.AttributeDescriptor
 
 // sonar provides descriptions for all metrics via their api here: https://sonarcloud.io/api/metrics/search?p=1&ps=500
 
-fun getAttributeDescriptors(): Map<String, AttributeDescriptor> {
+internal fun getAttributeDescriptors(): Map<String, AttributeDescriptor> {
     val metricLink = "https://docs.sonarcloud.io/digging-deeper/metric-definitions/"
     return getAttributeDescriptorsWithNegativeDirection(metricLink) +
         getAttributeDescriptorsWithPositiveDirection(metricLink)
 }
 
-fun getAttributeDescriptorsWithNegativeDirection(metricLink: String): Map<String, AttributeDescriptor> {
+private fun getAttributeDescriptorsWithNegativeDirection(metricLink: String): Map<String, AttributeDescriptor> {
     return mapOf(
         "accepted_issues" to
             createAttributeDescriptor("Accepted Issues", "Accepted issues", -1, metricLink),
@@ -390,7 +390,7 @@ fun getAttributeDescriptorsWithNegativeDirection(metricLink: String): Map<String
     )
 }
 
-fun getAttributeDescriptorsWithPositiveDirection(metricLink: String): Map<String, AttributeDescriptor> {
+private fun getAttributeDescriptorsWithPositiveDirection(metricLink: String): Map<String, AttributeDescriptor> {
     return mapOf(
         "branch_coverage" to
             createAttributeDescriptor(
@@ -445,6 +445,6 @@ fun getAttributeDescriptorsWithPositiveDirection(metricLink: String): Map<String
     )
 }
 
-fun createAttributeDescriptor(title: String, description: String, direction: Int, link: String): AttributeDescriptor {
+private fun createAttributeDescriptor(title: String, description: String, direction: Int, link: String): AttributeDescriptor {
     return AttributeDescriptor(title = title, description = description, link = link, direction = direction)
 }

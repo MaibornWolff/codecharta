@@ -2,7 +2,7 @@ package de.maibornwolff.codecharta.analysis.importer.codemaat
 
 import de.maibornwolff.codecharta.model.AttributeDescriptor
 
-fun getAttributeDescriptors(): Map<String, AttributeDescriptor> {
+internal fun getAttributeDescriptors(): Map<String, AttributeDescriptor> {
     return mapOf(
         "pairingRate" to
             AttributeDescriptor(

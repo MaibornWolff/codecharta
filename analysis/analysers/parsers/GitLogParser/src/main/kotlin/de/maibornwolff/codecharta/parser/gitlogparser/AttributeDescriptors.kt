@@ -2,7 +2,7 @@ package de.maibornwolff.codecharta.parser.gitlogparser
 
 import de.maibornwolff.codecharta.model.AttributeDescriptor
 
-fun getAttributeDescriptors(): Map<String, AttributeDescriptor> {
+internal fun getAttributeDescriptors(): Map<String, AttributeDescriptor> {
     val ghLink = "https://codecharta.com/docs/parser/git-log"
     return mapOf(
         "age_in_weeks" to

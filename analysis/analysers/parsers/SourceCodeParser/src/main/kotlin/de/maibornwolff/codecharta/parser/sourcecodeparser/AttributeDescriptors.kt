@@ -4,7 +4,7 @@ package de.maibornwolff.codecharta.parser.sourcecodeparser
 
 import de.maibornwolff.codecharta.model.AttributeDescriptor
 
-fun getAttributeDescriptors(): Map<String, AttributeDescriptor> {
+internal fun getAttributeDescriptors(): Map<String, AttributeDescriptor> {
     val ghLink = "https://codecharta.com/docs/parser/source-code"
     return mapOf(
         "rloc" to
