@@ -62,7 +62,7 @@ class JavaStrategy : ImporterStrategy {
             val sourceFileName = classElement.getAttribute("sourcefilename")
             val fileNode = createFileNode(sourceFileName, classElement)
 
-            val path = PathFactory.fromFileSystemPath(className)
+            val path = PathFactory.fromFileSystemPath(className).parent
             projectBuilder.insertByPath(path, fileNode)
         }
     }
