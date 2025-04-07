@@ -14,7 +14,7 @@ plugins {
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.sonarqube)
     alias(libs.plugins.ktlint)
-    id("org.cyclonedx.bom") version "2.2.0"
+    alias(libs.plugins.cyclonedx)
 }
 
 allprojects {
