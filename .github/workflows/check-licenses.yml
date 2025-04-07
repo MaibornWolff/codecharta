@@ -27,11 +27,11 @@ jobs:
           chmod +x ./gradlew
           ./gradlew cyclonedxbom
       # -
-      #   name: Import backend SBOM
+      #   name: Import analysis SBOM
       #   uses: MaibornWolff/secobserve_actions_templates/actions/importer@2f7b500fde2de2bdea7eef3b6df5503c2476916f # main
       #   with:
       #     so_product_name: 'CodeCharta'
-      #     so_file_name: 'analysis/build/report/sbom_analysis.cdx.json'
+      #     so_file_name: 'analysis/build/reports/sbom_analysis.cdx.json'
       #     so_branch_name: 'main'
       #     so_api_base_url: "https://secobserve-backend.maibornwolff.de"
       #     so_api_token: ${{ secrets.SO_API_TOKEN }}
@@ -39,7 +39,7 @@ jobs:
         name: Check licenses for analysis
         uses: MaibornWolff/purl-patrol@04bf67d65b6dc2cf395ada722ec242ce48c93247 # v1.6.0
         with:
-          SBOM_PATH: 'analysis/build/report/sbom_analysis.cdx.json'
+          SBOM_PATH: 'analysis/build/reports/sbom_analysis.cdx.json'
           LICENSE_POLICY_PATH: 'license_policy.json'
           BREAK_ENABLED: false
 
@@ -59,10 +59,19 @@ jobs:
           cd visualization
           npm install
           npm run sbom
+      # -
+      #   name: Import analysis SBOM
+      #   uses: MaibornWolff/secobserve_actions_templates/actions/importer@2f7b500fde2de2bdea7eef3b6df5503c2476916f # main
+      #   with:
+      #     so_product_name: 'CodeCharta'
+      #     so_file_name: 'visualization/build/reports/sbom_visualization.cdx.json'
+      #     so_branch_name: 'main'
+      #     so_api_base_url: "https://secobserve-backend.maibornwolff.de"
+      #     so_api_token: ${{ secrets.SO_API_TOKEN }}
       - 
         name: Check licenses for visualization
         uses: MaibornWolff/purl-patrol@04bf67d65b6dc2cf395ada722ec242ce48c93247 # v1.6.0
         with:
-          SBOM_PATH: 'visualization/build/report/sbom_visualization.cdx.json'
+          SBOM_PATH: 'visualization/build/reports/sbom_visualization.cdx.json'
           LICENSE_POLICY_PATH: 'license_policy.json'
           BREAK_ENABLED: false
