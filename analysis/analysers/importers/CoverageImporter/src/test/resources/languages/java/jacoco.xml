@@ -2,7 +2,7 @@
 <!DOCTYPE report PUBLIC "-//JACOCO//DTD Report 1.1//EN"
         "report.dtd">
 <report name="my-java-example">
-    <sessioninfo id="MB-WJL7R577XG-320036af" start="1742808518208" dump="1742808518578"/>
+    <sessioninfo id="test" start="1742808518208" dump="1742808518578"/>
     <package name="com/example">
         <class name="com/example/Product$ProductDetail" sourcefilename="Product.java">
             <method name="&lt;init&gt;" desc="(Lcom/example/Product;Ljava/lang/String;I)V" line="24">
