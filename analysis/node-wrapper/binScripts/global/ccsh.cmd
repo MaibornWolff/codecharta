@@ -7,4 +7,4 @@ EXIT /b
 SETLOCAL
 CALL :find_dp0
 
-endLocal & goto #_undefined_# 2>NUL || title %COMSPEC% & "%dp0%\node_modules\codecharta-analysis\public\bin\ccsh.bat" %*
+"%dp0%\node_modules\codecharta-analysis\public\bin\ccsh.bat" %*
