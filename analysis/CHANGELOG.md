@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 - Removed Metric Gardener Support [#4004](https://github.com/MaibornWolff/codecharta/pull/4004)
 
+### Fixed 🐞
+
+- Fix ccsh visually breaking on windows cmd [#4027](https://github.com/MaibornWolff/codecharta/pull/4027)
+
 ## [1.132.0] - 2025-03-25
 
 ### Added 🚀
