@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!DOCTYPE report PUBLIC "-//XDEBUG//DTD Report 1.1//EN" "report.dtd">
+<coverage version="1">
+    <project name="sample_php_project">
+        <file name="/path/to/project/src/FileA.php">
+            <class name="SampleClassA">
+                <method name="sampleMethodA" line-rate="1.0" branch-rate="0.8">
+                    <line number="10" hits="1"/>
+                    <line number="11" hits="1"/>
+                    <line number="12" hits="1"/>
+                    <line number="13" hits="0"/>
+                    <line number="14" hits="1"/>
+                </method>
+                <method name="sampleMethodB" line-rate="0.6" branch-rate="0.4">
+                    <line number="20" hits="1"/>
+                    <line number="21" hits="0"/>
+                    <line number="22" hits="1"/>
+                    <line number="23" hits="0"/>
+                    <line number="24" hits="1"/>
+                </method>
+            </class>
+        </file>
+        <file name="/path/to/project/src/FileB.php">
+            <class name="SampleClassB">
+                <method name="sampleMethodC" line-rate="0.5" branch-rate="1.0">
+                    <line number="30" hits="0"/>
+                    <line number="31" hits="1"/>
+                    <line number="32" hits="1"/>
+                    <line number="33" hits="0"/>
+                    <line number="34" hits="0"/>
+                </method>
+            </class>
+        </file>
+        <file name="/path/to/project/tests/FileATest.php">
+            <class name="TestSampleClassA">
+                <method name="testSampleMethodA" line-rate="0.7" branch-rate="0.7">
+                    <line number="40" hits="1"/>
+                    <line number="41" hits="1"/>
+                    <line number="42" hits="0"/>
+                    <line number="43" hits="1"/>
+                    <line number="44" hits="0"/>
+                </method>
+                <method name="testSampleMethodB" line-rate="1.0" branch-rate="1.0">
+                    <line number="50" hits="1"/>
+                    <line number="51" hits="1"/>
+                    <line number="52" hits="1"/>
+                    <line number="53" hits="1"/>
+                    <line number="54" hits="1"/>
+                </method>
+            </class>
+        </file>
+    </project>
+</coverage>
