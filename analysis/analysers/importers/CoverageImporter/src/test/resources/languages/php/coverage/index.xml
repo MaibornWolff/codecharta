@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<phpunit xmlns="https://schema.phpunit.de/coverage/1.0">
+  <build time="Tue Apr 8 11:42:38 UTC 2025" phpunit="9.6.22" coverage="9.2.32">
+    <runtime name="PHP" version="8.4.5" url="https://secure.php.net/"/>
+    <driver name="xdebug" version="3.4.2"/>
+  </build>
+  <project source="/Users/lisa.walter/Source/PHPSampleProject/src">
+    <tests>
+      <test name="AdvancedCalculatorTest::testMultiply" size="unknown" result="0" status="PASSED"/>
+      <test name="AdvancedCalculatorTest::testDivide" size="unknown" result="0" status="PASSED"/>
+      <test name="AdvancedCalculatorTest::testDivideByZero" size="unknown" result="0" status="PASSED"/>
+      <test name="CalculatorTest::testAdd" size="unknown" result="0" status="PASSED"/>
+      <test name="CalculatorTest::testSubtract" size="unknown" result="0" status="PASSED"/>
+      <test name="MathHelperTest::testSquare" size="unknown" result="0" status="PASSED"/>
+      <test name="MathHelperTest::testFactorial" size="unknown" result="0" status="PASSED"/>
+      <test name="MathHelperTest::testFactorialNegative" size="unknown" result="0" status="PASSED"/>
+    </tests>
+    <directory name="/">
+      <totals>
+        <lines total="52" comments="0" code="52" executable="10" executed="10" percent="100.00"/>
+        <methods count="6" tested="6" percent="100.00"/>
+        <functions count="0" tested="0" percent="0"/>
+        <classes count="3" tested="3" percent="100.00"/>
+        <traits count="0" tested="0" percent="0"/>
+      </totals>
+      <file name="AdvancedCalculator.php" href="AdvancedCalculator.php.xml">
+        <totals>
+          <lines total="18" comments="0" code="18" executable="4" executed="4" percent="100.00"/>
+          <methods count="2" tested="2" percent="100.00"/>
+          <functions count="0" tested="0" percent="0"/>
+          <classes count="1" tested="1" percent="100.00"/>
+          <traits count="0" tested="0" percent="0"/>
+        </totals>
+      </file>
+      <file name="Calculator.php" href="Calculator.php.xml">
+        <totals>
+          <lines total="15" comments="0" code="15" executable="2" executed="2" percent="100.00"/>
+          <methods count="2" tested="2" percent="100.00"/>
+          <functions count="0" tested="0" percent="0"/>
+          <classes count="1" tested="1" percent="100.00"/>
+          <traits count="0" tested="0" percent="0"/>
+        </totals>
+      </file>
+      <file name="MathHelper.php" href="MathHelper.php.xml">
+        <totals>
+          <lines total="19" comments="0" code="19" executable="4" executed="4" percent="100.00"/>
+          <methods count="2" tested="2" percent="100.00"/>
+          <functions count="0" tested="0" percent="0"/>
+          <classes count="1" tested="1" percent="100.00"/>
+          <traits count="0" tested="0" percent="0"/>
+        </totals>
+      </file>
+    </directory>
+  </project>
+</phpunit>
