@@ -67,6 +67,53 @@ class DialogTest {
     }
 
     @Test
+    fun `should accept multiple input files separated by comma`() {
+        val hierarchy = 5
+        val inputFileName2 = "${testResourceBaseFolder}input_valid_2.cc.json"
+
+        mockkObject(Dialog.Companion)
+
+        var parserArguments: List<String> = emptyList()
+
+        testSession { terminal ->
+            val fileCallback: suspend RunScope.() -> Unit = {
+                terminal.type(inputFileName)
+                terminal.type(", ")
+                terminal.type(inputFileName2)
+                terminal.press(Keys.ENTER)
+            }
+            val outFileCallback: suspend RunScope.() -> Unit = {
+                terminal.type(outputFileName)
+                terminal.press(Keys.ENTER)
+            }
+            val hierarchyCallback: suspend RunScope.() -> Unit = {
+                terminal.type(hierarchy.toString())
+                terminal.press(Keys.ENTER)
+            }
+
+            every { Dialog.Companion.testCallback() } returnsMany listOf(
+                fileCallback,
+                outFileCallback,
+                hierarchyCallback
+            )
+
+            parserArguments = collectAnalyserArgs(this)
+        }
+
+        val commandLine = CommandLine(CSVExporter())
+        val parseResult = commandLine.parseArgs(*parserArguments.toTypedArray())
+
+        assertThat(parseResult.matchedPositional(0).getValue<Array<File>>().first().name)
+            .isEqualTo(File(inputFileName).name)
+        assertThat(parseResult.matchedPositional(0).getValue<Array<File>>()[1].name)
+            .isEqualTo(File(inputFileName2).name)
+        assertThat(parseResult.matchedOption("output-file").getValue<String>())
+            .isEqualTo(outputFileName)
+        assertThat(parseResult.matchedOption("depth-of-hierarchy").getValue<Int>())
+            .isEqualTo(hierarchy)
+    }
+
+    @Test
     fun `should prompt user twice for input file when first input file is invalid`() {
         val invalidFileName = "inv.txt"
 
