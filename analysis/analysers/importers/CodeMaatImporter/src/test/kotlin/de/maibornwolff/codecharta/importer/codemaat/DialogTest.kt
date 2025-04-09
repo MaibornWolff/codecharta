@@ -50,6 +50,41 @@ class DialogTest {
     }
 
     @Test
+    fun `should output correct arguments when multiple valid inputs are provided`() {
+        mockkObject(Dialog.Companion)
+        val inputFileName2 = "${testResourceBaseFolder}testFile.csv"
+
+        testSession { terminal ->
+            val fileCallback: suspend RunScope.() -> Unit = {
+                terminal.type(inputFileName)
+                terminal.type(" , ")
+                terminal.type(inputFileName2)
+                terminal.press(Keys.ENTER)
+            }
+            val outFileCallback: suspend RunScope.() -> Unit = {
+                terminal.press(Keys.ENTER)
+            }
+
+            every { Dialog.Companion.testCallback() } returnsMany listOf(
+                fileCallback,
+                outFileCallback
+            )
+
+            val parserArguments = collectAnalyserArgs(this)
+            val cmdLine = CommandLine(CodeMaatImporter())
+            val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
+
+            assertThat(parseResult.matchedOption("output-file").getValue<String>())
+                .isEqualTo("")
+            assertThat(parseResult.matchedOption("not-compressed")).isNull()
+            assertThat(parseResult.matchedPositional(0).getValue<List<File>>()[0].name)
+                .isEqualTo(File(inputFileName).name)
+            assertThat(parseResult.matchedPositional(0).getValue<List<File>>()[1].name)
+                .isEqualTo(File(inputFileName2).name)
+        }
+    }
+
+    @Test
     fun `should output correct arguments when compress flag is set`() {
         val outputFileName = "cmi.cc.json"
         val isCompressed = false
