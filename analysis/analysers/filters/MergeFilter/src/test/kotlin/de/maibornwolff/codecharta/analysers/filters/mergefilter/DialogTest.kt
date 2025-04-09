@@ -103,6 +103,73 @@ class DialogTest {
     }
 
     @Test
+    fun `should output correct arguments and skip questions with multiple files (leaf, no mimo or large)`() {
+        val outputFileName = "sampleOutputFile"
+        val compress = false
+        val addMissing = true
+        val ignoreCase = false
+        val recursive = false
+        val leaf = true
+
+        var parserArguments: List<String> = listOf()
+
+        testSession { terminal ->
+            val fileCallback: suspend RunScope.() -> Unit = {
+                terminal.type(inputFolderName)
+                terminal.press(Keys.ENTER)
+            }
+            val choiceCallback: suspend RunScope.() -> Unit = {
+                terminal.press(Keys.ENTER)
+            }
+            val outFileCallback: suspend RunScope.() -> Unit = {
+                terminal.type(outputFileName)
+                terminal.press(Keys.ENTER)
+            }
+            val compressCallback: suspend RunScope.() -> Unit = {
+                terminal.press(Keys.RIGHT)
+                terminal.press(Keys.ENTER)
+            }
+            val strategyCallback: suspend RunScope.() -> Unit = {
+                terminal.press(Keys.DOWN)
+                terminal.press(Keys.ENTER)
+            }
+            val addMissingCallback: suspend RunScope.() -> Unit = {
+                terminal.press(Keys.ENTER)
+            }
+            val ignoreCaseCallback: suspend RunScope.() -> Unit = {
+                terminal.press(Keys.RIGHT)
+                terminal.press(Keys.ENTER)
+            }
+
+            every { Dialog.Companion.testCallback() } returnsMany listOf(
+                fileCallback,
+                choiceCallback,
+                outFileCallback,
+                compressCallback,
+                strategyCallback,
+                addMissingCallback,
+                ignoreCaseCallback
+            )
+
+            parserArguments = collectAnalyserArgs(this)
+        }
+
+        val commandLine = CommandLine(MergeFilter())
+        val parseResult = commandLine.parseArgs(*parserArguments.toTypedArray())
+
+        assertThat(parseResult.matchedPositional(0).getValue<Array<File>>()[0].path).isEqualTo(inputFolderPath.toString())
+        assertThat(parseResult.matchedOption("output-file").getValue<String>()).isEqualTo(outputFileName)
+        assertThat(parseResult.matchedOption("not-compressed").getValue<Boolean>()).isEqualTo(compress)
+        assertThat(parseResult.matchedOption("add-missing").getValue<Boolean>()).isEqualTo(addMissing)
+        assertThat(parseResult.matchedOption("recursive").getValue<Boolean>()).isEqualTo(recursive)
+        assertThat(parseResult.matchedOption("leaf").getValue<Boolean>()).isEqualTo(leaf)
+        assertThat(parseResult.matchedOption("ignore-case").getValue<Boolean>()).isEqualTo(ignoreCase)
+        assertThat(parseResult.matchedOption("mimo")).isNull()
+        assertThat(parseResult.matchedOption("large")).isNull()
+        assertThat(parseResult.matchedOption("levenshtein-distance")).isNull()
+    }
+
+    @Test
     fun `should output correct arguments and skip questions (recursive, no mimo or large)`() {
         val outputFileName = "sampleOutputFile"
         val compress = true
@@ -115,6 +182,8 @@ class DialogTest {
 
         testSession { terminal ->
             val fileCallback: suspend RunScope.() -> Unit = {
+                terminal.type(inputFolderName)
+                terminal.type(", ")
                 terminal.type(inputFolderName)
                 terminal.press(Keys.ENTER)
             }
@@ -152,6 +221,7 @@ class DialogTest {
         val parseResult = commandLine.parseArgs(*parserArguments.toTypedArray())
 
         assertThat(parseResult.matchedPositional(0).getValue<Array<File>>()[0].path).isEqualTo(inputFolderPath.toString())
+        assertThat(parseResult.matchedPositional(0).getValue<Array<File>>()[1].path).isEqualTo(inputFolderPath.toString())
         assertThat(parseResult.matchedOption("output-file").getValue<String>()).isEqualTo(outputFileName)
         assertThat(parseResult.matchedOption("not-compressed").getValue<Boolean>()).isEqualTo(compress)
         assertThat(parseResult.matchedOption("add-missing").getValue<Boolean>()).isEqualTo(addMissing)
