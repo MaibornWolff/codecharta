@@ -49,7 +49,7 @@ internal enum class Language(
 private val languageChoicesToLanguage = mapOf(
     "javascript/typescript" to Language.JAVASCRIPT,
     "java" to Language.JAVA,
-    "php" to Language.PHP,
+    "php" to Language.PHP
 )
 
 private val languageInputToLanguage = mapOf(
@@ -58,7 +58,7 @@ private val languageInputToLanguage = mapOf(
     "js" to Language.JAVASCRIPT,
     "ts" to Language.JAVASCRIPT,
     "java" to Language.JAVA,
-    "php" to Language.PHP,
+    "php" to Language.PHP
 )
 
 internal fun getLanguageChoices(): List<String> {

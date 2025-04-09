@@ -11,7 +11,7 @@ import java.io.File
 import java.io.PrintStream
 
 class PHPStrategyTest {
-    private val complexTestReportFilePath = "src/test/resources/languages/php/coverage.xml"
+    private val complexTestReportFilePath = "src/test/resources/languages/php/index.xml"
     private val expectedOutputPath = "src/test/resources/languages/php/coverage.cc.json"
 
     @Test
@@ -29,7 +29,7 @@ class PHPStrategyTest {
 
     @Test
     fun `should handle empty report files gracefully and print error`() {
-        val emptyReportFilePath = "src/test/resources/languages/php/empty_coverage.xml"
+        val emptyReportFilePath = "src/test/resources/languages/php/empty_report.xml"
         val expectedRootNode = MutableNode("root", NodeType.Folder)
         val projectBuilder = ProjectBuilder()
         val errorStreamContent = ByteArrayOutputStream()
@@ -63,6 +63,10 @@ class PHPStrategyTest {
         PHPStrategy().addNodesToProjectBuilder(File(noFilesReportFilePath), projectBuilder, PrintStream(errorStreamContent))
 
         assertThat(projectBuilder.rootNode.toString()).isEqualTo(expectedRootNode.toString())
-        assertThat(errorStreamContent.toString()).contains("No line-coverage information was found for the UserController.php file! Please ensure the xml file is correctly formatted.")
+        assertThat(
+            errorStreamContent.toString()
+        ).contains(
+            "No line-coverage information was found for the UserController.php file! Please ensure the xml file is correctly formatted."
+        )
     }
 }

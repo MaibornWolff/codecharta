@@ -34,6 +34,7 @@ class DialogTest {
             Arguments.of(
                 language.languageName,
                 Language.entries.indexOf(language),
+                // ensure this default report file exists, otherwise the test will not complete and run into timeout
                 "$testResourceBaseFolder/${language.languageName}/${language.defaultReportFileName}",
                 "coverage_${language.languageName}_out.cc.json"
             )

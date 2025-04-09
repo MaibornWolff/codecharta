@@ -156,6 +156,13 @@ check_coverageimporter_java() {
     validate "${ACTUAL_JAVA_COVERAGE_JSON}"
 }
 
+check_codemaatimporter_php() {
+    echo " ---- expect CoverageImporter to produce valid cc.json file for php"
+    ACTUAL_PHP_COVERAGE_JSON="${TEMP_DIR}/actual_coverageimporter_php.cc.json"
+    "${CCSH}" coverageimport "${DATA}/coverageReports/phpunit.xml" --language=php -o "${ACTUAL_PHP_COVERAGE_JSON}" -nc
+    validate "${ACTUAL_PHP_COVERAGE_JSON}"
+}
+
 check_coverageimporter() {
     echo " -- expect CoverageImporter to produce valid cc.json files for all supported languages"
     check_coverageimporter_javascript

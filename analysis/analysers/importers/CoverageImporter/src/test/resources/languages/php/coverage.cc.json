@@ -1,5 +1,5 @@
 {
-  "checksum": "0412efc1ef401ddc5dc9e308008dd4b0",
+  "checksum": "3f7e5328c03ce0d4a5f7383ddd4f55bf",
   "data": {
     "projectName": "",
     "nodes": [
@@ -25,7 +25,7 @@
                     "name": "UserController.php",
                     "type": "File",
                     "attributes": {
-                      "line_coverage": "100.00"
+                      "line_coverage": 100.0
                     },
                     "link": "",
                     "children": []
@@ -50,7 +50,7 @@
                     "name": "User.php",
                     "type": "File",
                     "attributes": {
-                      "line_coverage": "100.00"
+                      "line_coverage": 100.0
                     },
                     "link": "",
                     "children": []
@@ -73,7 +73,7 @@
                         "name": "Connection.php",
                         "type": "File",
                         "attributes": {
-                          "line_coverage": "100.00"
+                          "line_coverage": 100.0
                         },
                         "link": "",
                         "children": []
@@ -100,7 +100,7 @@
                     "name": "DateFormatter.php",
                     "type": "File",
                     "attributes": {
-                      "line_coverage": "86.67"
+                      "line_coverage": 86.67
                     },
                     "link": "",
                     "children": []
@@ -111,7 +111,7 @@
                 "name": "StringUtils.php",
                 "type": "File",
                 "attributes": {
-                  "line_coverage": "100.00"
+                  "line_coverage": 100.0
                 },
                 "link": "",
                 "children": []
