@@ -10,13 +10,15 @@ import java.io.File
 import java.io.PrintStream
 
 class PHPStrategyTest {
-    private val testReportFilePath = "src/test/resources/languages/php/coverage.xml"
+    //TODO: remove unnecessary resources
+    private val minimalTestReportFilePath = "src/test/resources/languages/php/coverage/index.xml"
+    private val complexTestReportFilePath = "src/test/resources/languages/php/coverage.xml"
 
     @Test
     fun `should correctly import coverage report and build project structure`() {
         var projectBuilder = ProjectBuilder()
 
-        PHPStrategy().addNodesToProjectBuilder(File(testReportFilePath), projectBuilder, System.err)
+        PHPStrategy().addNodesToProjectBuilder(File(complexTestReportFilePath), projectBuilder, System.err)
 
 
         val project = projectBuilder.build()
