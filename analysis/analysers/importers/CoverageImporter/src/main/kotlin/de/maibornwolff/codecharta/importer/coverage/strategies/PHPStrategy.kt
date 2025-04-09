@@ -26,7 +26,6 @@ class PHPStrategy : ImporterStrategy {
         try {
             val document: Document = parseXML(coverageFile.absolutePath)
 
-            // TODO: can a php coverage report have multiple projects? -> if so, change to project
             val fileElements = document.getElementsByTagName("file")
 
             if (fileElements.length == 0) {
@@ -57,27 +56,23 @@ class PHPStrategy : ImporterStrategy {
         return builder.parse(InputSource(FileInputStream(filePath)))
     }
 
+    private fun processFileElement(fileElement: Element, projectBuilder: ProjectBuilder) {
+        val fileNode = createFileNode(fileElement)
+        val pathRelativeToProjectRoot = PathFactory.fromFileSystemPath(fileElement.getAttribute("href")).parent
+        projectBuilder.insertByPath(pathRelativeToProjectRoot, fileNode)
+    }
+
     private fun createFileNode(fileElement: Element): MutableNode {
-        var totalLines = 0
-        var hitLines = 0
-        val classElements = fileElement.getElementsByTagName("class")
-        for (i in 0 until classElements.length) {
-            val classElement = classElements.item(i) as Element
-            val methodElements = classElement.getElementsByTagName("method")
-            for (j in 0 until methodElements.length) {
-                val methodElement = methodElements.item(j) as Element
-                val lineElements = methodElement.getElementsByTagName("line")
-                for (h in 0 until lineElements.length) {
-                    val lineElement = lineElements.item(h) as Element
-                    totalLines++
-                    if (lineElement.getAttribute("hit").toInt() > 0)
-                        hitLines++
-                }
-            }
+        val fileName = fileElement.getAttribute("name")
+        val linesForFile = fileElement.getElementsByTagName("lines")
+        if (linesForFile.length == 0) {
+            throw IllegalStateException("No line-coverage information was found for the $fileName file! Please ensure the xml file is correctly formatted.")
         }
-        val lineCoverage = calculatePercentage(hitLines, totalLines)
-        val filePath = fileElement.getAttribute("name")
-        val fileName = filePath.split('/').last()
+        if (linesForFile.length > 1) {
+            throw IllegalStateException("More than one line-coverage was found for a file! Please ensure the xml file is in the default output format of phpunit.")
+        }
+        val lineReportForFile = linesForFile.item(0) as Element
+        val lineCoverage = lineReportForFile.getAttribute("percent")
 
         val attributeMap = mutableMapOf(
             CoverageAttributes.LINE_COVERAGE.attributeName to lineCoverage,
@@ -88,11 +83,5 @@ class PHPStrategy : ImporterStrategy {
             type = NodeType.File,
             attributes = attributeMap,
         )
-    }
-
-    private fun processFileElement(fileElement: Element, projectBuilder: ProjectBuilder) {
-        val fileNode = createFileNode(fileElement)
-        val path = PathFactory.fromFileSystemPath(fileElement.getAttribute("name"))
-        projectBuilder.insertByPath(path, fileNode)
     }
 }
