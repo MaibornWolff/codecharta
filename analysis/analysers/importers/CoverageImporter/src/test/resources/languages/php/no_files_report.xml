@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<phpunit xmlns="https://schema.phpunit.de/coverage/1.0">
+    <build time="Wed Apr 9 8:28:25 UTC 2025" phpunit="9.6.22" coverage="9.2.32">
+        <runtime name="PHP" version="8.4.5" url="https://secure.php.net/"/>
+        <driver name="xdebug" version="3.4.2"/>
+    </build>
+    <project source="/Users/testUser/path/to/php-testproject/src">
+        <tests>
+            <test name="Tests\Unit\Api\Controllers\UserControllerTest::testGetAll" size="unknown" result="0" status="PASSED"/>
+            <test name="Tests\Unit\Api\Controllers\UserControllerTest::testGetById" size="unknown" result="0" status="PASSED"/>
+            <test name="Tests\Unit\Api\Controllers\UserControllerTest::testCreate" size="unknown" result="0" status="PASSED"/>
+            <test name="Tests\Unit\Api\Controllers\UserControllerTest::testFormatUsername" size="unknown" result="0" status="PASSED"/>
+            <test name="Tests\Unit\Core\Models\UserTest::testGetId" size="unknown" result="0" status="PASSED"/>
+            <test name="Tests\Unit\Core\Models\UserTest::testGetAndSetName" size="unknown" result="0" status="PASSED"/>
+            <test name="Tests\Unit\Core\Models\UserTest::testGetAndSetEmail" size="unknown" result="0" status="PASSED"/>
+            <test name="Tests\Unit\Core\Models\UserTest::testGetCreatedAt" size="unknown" result="0" status="PASSED"/>
+            <test name="Tests\Unit\Core\Models\UserTest::testToArray" size="unknown" result="0" status="PASSED"/>
+            <test name="Tests\Unit\Core\Services\Database\ConnectionTest::testConstructor" size="unknown" result="0" status="PASSED"/>
+            <test name="Tests\Unit\Core\Services\Database\ConnectionTest::testConnectAndDisconnect" size="unknown" result="0" status="PASSED"/>
+            <test name="Tests\Unit\Core\Services\Database\ConnectionTest::testExecuteQuery" size="unknown" result="0" status="PASSED"/>
+            <test name="Tests\Unit\Core\Services\Database\ConnectionTest::testExecuteQueryThrowsExceptionWhenNotConnected" size="unknown" result="0" status="PASSED"/>
+            <test name="Tests\Unit\Utils\Formatters\DateFormatterTest::testFormatYmd" size="unknown" result="0" status="PASSED"/>
+            <test name="Tests\Unit\Utils\Formatters\DateFormatterTest::testFormatDmy" size="unknown" result="0" status="PASSED"/>
+            <test name="Tests\Unit\Utils\Formatters\DateFormatterTest::testFormatRelative" size="unknown" result="0" status="PASSED"/>
+            <test name="Tests\Unit\Utils\StringUtilsTest::testToTitleCase" size="unknown" result="0" status="PASSED"/>
+            <test name="Tests\Unit\Utils\StringUtilsTest::testTruncate" size="unknown" result="0" status="PASSED"/>
+            <test name="Tests\Unit\Utils\StringUtilsTest::testSlugify" size="unknown" result="0" status="PASSED"/>
+        </tests>
+        <directory name="/">
+            <totals>
+                <lines total="263" comments="22" code="241" executable="75" executed="73" percent="97.33"/>
+                <methods count="26" tested="25" percent="96.15"/>
+                <functions count="0" tested="0" percent="0"/>
+                <classes count="5" tested="4" percent="80.00"/>
+                <traits count="0" tested="0" percent="0"/>
+            </totals>
+        </directory>
+    </project>
+</phpunit>
