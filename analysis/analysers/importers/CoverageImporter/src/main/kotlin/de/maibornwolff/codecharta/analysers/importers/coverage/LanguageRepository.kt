@@ -73,7 +73,7 @@ private val languageInputToLanguage = mapOf(
     "java" to Language.JAVA,
     "csharp" to Language.CSHARP,
     "dotnet" to Language.CSHARP,
-    "php" to Language.PHP,
+    "php" to Language.PHP
 )
 
 internal fun getLanguageChoices(): List<String> {
