@@ -1,0 +1,153 @@
+<?xml version="1.0"?>
+<phpunit xmlns="https://schema.phpunit.de/coverage/1.0">
+    <build time="Wed Apr 9 8:28:25 UTC 2025" phpunit="9.6.22" coverage="9.2.32">
+        <runtime name="PHP" version="8.4.5" url="https://secure.php.net/"/>
+        <driver name="xdebug" version="3.4.2"/>
+    </build>
+    <project source="/Users/testUser/path/to/php-testproject/src">
+        <tests>
+            <test name="Tests\Unit\Api\Controllers\UserControllerTest::testGetAll" size="unknown" result="0" status="PASSED"/>
+            <test name="Tests\Unit\Api\Controllers\UserControllerTest::testGetById" size="unknown" result="0" status="PASSED"/>
+            <test name="Tests\Unit\Api\Controllers\UserControllerTest::testCreate" size="unknown" result="0" status="PASSED"/>
+            <test name="Tests\Unit\Api\Controllers\UserControllerTest::testFormatUsername" size="unknown" result="0" status="PASSED"/>
+            <test name="Tests\Unit\Core\Models\UserTest::testGetId" size="unknown" result="0" status="PASSED"/>
+            <test name="Tests\Unit\Core\Models\UserTest::testGetAndSetName" size="unknown" result="0" status="PASSED"/>
+            <test name="Tests\Unit\Core\Models\UserTest::testGetAndSetEmail" size="unknown" result="0" status="PASSED"/>
+            <test name="Tests\Unit\Core\Models\UserTest::testGetCreatedAt" size="unknown" result="0" status="PASSED"/>
+            <test name="Tests\Unit\Core\Models\UserTest::testToArray" size="unknown" result="0" status="PASSED"/>
+            <test name="Tests\Unit\Core\Services\Database\ConnectionTest::testConstructor" size="unknown" result="0" status="PASSED"/>
+            <test name="Tests\Unit\Core\Services\Database\ConnectionTest::testConnectAndDisconnect" size="unknown" result="0" status="PASSED"/>
+            <test name="Tests\Unit\Core\Services\Database\ConnectionTest::testExecuteQuery" size="unknown" result="0" status="PASSED"/>
+            <test name="Tests\Unit\Core\Services\Database\ConnectionTest::testExecuteQueryThrowsExceptionWhenNotConnected" size="unknown" result="0" status="PASSED"/>
+            <test name="Tests\Unit\Utils\Formatters\DateFormatterTest::testFormatYmd" size="unknown" result="0" status="PASSED"/>
+            <test name="Tests\Unit\Utils\Formatters\DateFormatterTest::testFormatDmy" size="unknown" result="0" status="PASSED"/>
+            <test name="Tests\Unit\Utils\Formatters\DateFormatterTest::testFormatRelative" size="unknown" result="0" status="PASSED"/>
+            <test name="Tests\Unit\Utils\StringUtilsTest::testToTitleCase" size="unknown" result="0" status="PASSED"/>
+            <test name="Tests\Unit\Utils\StringUtilsTest::testTruncate" size="unknown" result="0" status="PASSED"/>
+            <test name="Tests\Unit\Utils\StringUtilsTest::testSlugify" size="unknown" result="0" status="PASSED"/>
+        </tests>
+        <directory name="/">
+            <totals>
+                <lines total="263" comments="22" code="241" executable="75" executed="73" percent="97.33"/>
+                <methods count="26" tested="25" percent="96.15"/>
+                <functions count="0" tested="0" percent="0"/>
+                <classes count="5" tested="4" percent="80.00"/>
+                <traits count="0" tested="0" percent="0"/>
+            </totals>
+            <directory name="Api">
+                <totals>
+                    <lines total="52" comments="1" code="51" executable="16" executed="16" percent="100.00"/>
+                    <methods count="5" tested="5" percent="100.00"/>
+                    <functions count="0" tested="0" percent="0"/>
+                    <classes count="1" tested="1" percent="100.00"/>
+                    <traits count="0" tested="0" percent="0"/>
+                </totals>
+                <directory name="Controllers">
+                    <totals>
+                        <lines total="52" comments="1" code="51" executable="16" executed="16" percent="100.00"/>
+                        <methods count="5" tested="5" percent="100.00"/>
+                        <functions count="0" tested="0" percent="0"/>
+                        <classes count="1" tested="1" percent="100.00"/>
+                        <traits count="0" tested="0" percent="0"/>
+                    </totals>
+                    <file name="UserController.php" href="Api/Controllers/UserController.php.xml">
+                        <totals>
+                            <classes count="1" tested="1" percent="100.00"/>
+                            <traits count="0" tested="0" percent="0"/>
+                        </totals>
+                    </file>
+                </directory>
+            </directory>
+            <directory name="Core">
+                <totals>
+                    <lines total="124" comments="3" code="121" executable="36" executed="36" percent="100.00"/>
+                    <methods count="15" tested="15" percent="100.00"/>
+                    <functions count="0" tested="0" percent="0"/>
+                    <classes count="2" tested="2" percent="100.00"/>
+                    <traits count="0" tested="0" percent="0"/>
+                </totals>
+                <directory name="Models">
+                    <totals>
+                        <lines total="61" comments="0" code="61" executable="18" executed="18" percent="100.00"/>
+                        <methods count="8" tested="8" percent="100.00"/>
+                        <functions count="0" tested="0" percent="0"/>
+                        <classes count="1" tested="1" percent="100.00"/>
+                        <traits count="0" tested="0" percent="0"/>
+                    </totals>
+                    <file name="User.php" href="Core/Models/User.php.xml">
+                        <totals>
+                            <lines total="61" comments="0" code="61" executable="18" executed="18" percent="100.00"/>
+                            <methods count="8" tested="8" percent="100.00"/>
+                            <functions count="0" tested="0" percent="0"/>
+                            <classes count="1" tested="1" percent="100.00"/>
+                            <traits count="0" tested="0" percent="0"/>
+                        </totals>
+                    </file>
+                </directory>
+                <directory name="Services">
+                    <totals>
+                        <lines total="63" comments="3" code="60" executable="18" executed="18" percent="100.00"/>
+                        <methods count="7" tested="7" percent="100.00"/>
+                        <functions count="0" tested="0" percent="0"/>
+                        <classes count="1" tested="1" percent="100.00"/>
+                        <traits count="0" tested="0" percent="0"/>
+                    </totals>
+                    <directory name="Database">
+                        <totals>
+                            <lines total="63" comments="3" code="60" executable="18" executed="18" percent="100.00"/>
+                            <methods count="7" tested="7" percent="100.00"/>
+                            <functions count="0" tested="0" percent="0"/>
+                            <classes count="1" tested="1" percent="100.00"/>
+                            <traits count="0" tested="0" percent="0"/>
+                        </totals>
+                        <file name="Connection.php" href="Core/Services/Database/Connection.php.xml">
+                            <totals>
+                                <lines total="63" comments="3" code="60" executable="18" executed="18" percent="100.00"/>
+                                <methods count="7" tested="7" percent="100.00"/>
+                                <functions count="0" tested="0" percent="0"/>
+                                <classes count="1" tested="1" percent="100.00"/>
+                                <traits count="0" tested="0" percent="0"/>
+                            </totals>
+                        </file>
+                    </directory>
+                </directory>
+            </directory>
+            <directory name="Utils">
+                <totals>
+                    <lines total="87" comments="18" code="69" executable="23" executed="21" percent="91.30"/>
+                    <methods count="6" tested="5" percent="83.33"/>
+                    <functions count="0" tested="0" percent="0"/>
+                    <classes count="2" tested="1" percent="50.00"/>
+                    <traits count="0" tested="0" percent="0"/>
+                </totals>
+                <directory name="Formatters">
+                    <totals>
+                        <lines total="49" comments="9" code="40" executable="15" executed="13" percent="86.67"/>
+                        <methods count="3" tested="2" percent="66.67"/>
+                        <functions count="0" tested="0" percent="0"/>
+                        <classes count="1" tested="0" percent="0.00"/>
+                        <traits count="0" tested="0" percent="0"/>
+                    </totals>
+                    <file name="DateFormatter.php" href="Utils/Formatters/DateFormatter.php.xml">
+                        <totals>
+                            <lines total="49" comments="9" code="40" executable="15" executed="13" percent="86.67"/>
+                            <methods count="3" tested="2" percent="66.67"/>
+                            <functions count="0" tested="0" percent="0"/>
+                            <classes count="1" tested="0" percent="0.00"/>
+                            <traits count="0" tested="0" percent="0"/>
+                        </totals>
+                    </file>
+                </directory>
+                <file name="StringUtils.php" href="Utils/StringUtils.php.xml">
+                    <totals>
+                        <lines total="38" comments="9" code="29" executable="8" executed="8" percent="100.00"/>
+                        <methods count="3" tested="3" percent="100.00"/>
+                        <functions count="0" tested="0" percent="0"/>
+                        <classes count="1" tested="1" percent="100.00"/>
+                        <traits count="0" tested="0" percent="0"/>
+                    </totals>
+                </file>
+            </directory>
+        </directory>
+    </project>
+</phpunit>
