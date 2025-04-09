@@ -4,6 +4,7 @@ import de.maibornwolff.codecharta.analysers.importers.coverage.strategies.Dotnet
 import de.maibornwolff.codecharta.analysers.importers.coverage.strategies.ImporterStrategy
 import de.maibornwolff.codecharta.analysers.importers.coverage.strategies.JavaScriptStrategy
 import de.maibornwolff.codecharta.analysers.importers.coverage.strategies.JavaStrategy
+import de.maibornwolff.codecharta.analysers.importers.coverage.strategies.PHPStrategy
 import de.maibornwolff.codecharta.serialization.FileExtension
 import de.maibornwolff.codecharta.util.ResourceSearchHelper.Companion.isFileWithOneOrMoreOfEndingsPresent
 
@@ -47,13 +48,21 @@ internal enum class Language(
             CoverageAttributes.LINE_COVERAGE,
             CoverageAttributes.BRANCH_COVERAGE
         )
+    ),
+    PHP(
+        "php",
+        PHPStrategy(),
+        listOf(FileExtension.XML),
+        "index.xml",
+        listOf(CoverageAttributes.LINE_COVERAGE)
     )
 }
 
 private val languageChoicesToLanguage = mapOf(
     "javascript/typescript" to Language.JAVASCRIPT,
     "java" to Language.JAVA,
-    "csharp/dotnet" to Language.CSHARP
+    "csharp/dotnet" to Language.CSHARP,
+    "php" to Language.PHP
 )
 
 private val languageInputToLanguage = mapOf(
@@ -63,7 +72,8 @@ private val languageInputToLanguage = mapOf(
     "ts" to Language.JAVASCRIPT,
     "java" to Language.JAVA,
     "csharp" to Language.CSHARP,
-    "dotnet" to Language.CSHARP
+    "dotnet" to Language.CSHARP,
+    "php" to Language.PHP,
 )
 
 internal fun getLanguageChoices(): List<String> {
