@@ -40,7 +40,6 @@ class PHPStrategy : ImporterStrategy {
                 processFileElement(fileElement, projectBuilder)
                 updateProgress(fileIndex.toLong() + 1)
             }
-
         } catch (e: Exception) {
             error.println("Error while parsing XML file: ${e.message}")
             return
@@ -66,22 +65,26 @@ class PHPStrategy : ImporterStrategy {
         val fileName = fileElement.getAttribute("name")
         val linesForFile = fileElement.getElementsByTagName("lines")
         if (linesForFile.length == 0) {
-            throw IllegalStateException("No line-coverage information was found for the $fileName file! Please ensure the xml file is correctly formatted.")
+            throw IllegalStateException(
+                "No line-coverage information was found for the $fileName file! Please ensure the xml file is correctly formatted."
+            )
         }
         if (linesForFile.length > 1) {
-            throw IllegalStateException("More than one line-coverage was found for a file! Please ensure the xml file is in the default output format of phpunit.")
+            throw IllegalStateException(
+                "More than one line-coverage was found for a file! Please ensure the xml file is in the default output format of phpunit."
+            )
         }
         val lineReportForFile = linesForFile.item(0) as Element
-        val lineCoverage = lineReportForFile.getAttribute("percent")
+        val lineCoverage = lineReportForFile.getAttribute("percent").toDouble()
 
         val attributeMap = mutableMapOf(
-            CoverageAttributes.LINE_COVERAGE.attributeName to lineCoverage,
+            CoverageAttributes.LINE_COVERAGE.attributeName to lineCoverage
         )
 
         return MutableNode(
             name = fileName,
             type = NodeType.File,
-            attributes = attributeMap,
+            attributes = attributeMap
         )
     }
 }
