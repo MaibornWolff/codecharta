@@ -11,7 +11,6 @@ import de.maibornwolff.codecharta.analysers.importers.csv.Dialog.Companion.colle
 import io.mockk.every
 import io.mockk.mockkObject
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.Timeout
 import picocli.CommandLine
@@ -82,34 +81,36 @@ class DialogTest {
         }
     }
 
-    @Disabled
     @Test
     fun `should output correct arguments when multiple files are provided`() {
-        // New multi input separated by comma, NotImplementedYet
-        val fileName = "in.csv"
-        val fileName2 = "in2.csv"
-        val fileName3 = "in3.csv"
+        val inputFileName2 = "${testResourceBaseFolder}csvimporter_different_path_column_name.csv"
         val outputFileName = "out.cc.json"
         val pathColumnName = "path"
-        val delimiter = ";"
         val pathSeparator = "/"
 
         mockkObject(Dialog.Companion)
 
         testSession { terminal ->
             val fileCallback: suspend RunScope.() -> Unit = {
+                terminal.type(inputFileName)
+                terminal.type(",")
+                terminal.type(inputFileName2)
                 terminal.press(Keys.ENTER)
             }
             val outFileCallback: suspend RunScope.() -> Unit = {
+                terminal.type(outputFileName)
                 terminal.press(Keys.ENTER)
             }
             val columnCallback: suspend RunScope.() -> Unit = {
+                terminal.type(pathColumnName)
                 terminal.press(Keys.ENTER)
             }
             val delimiterCallback: suspend RunScope.() -> Unit = {
+                terminal.press(Keys.RIGHT)
                 terminal.press(Keys.ENTER)
             }
             val separatorCallback: suspend RunScope.() -> Unit = {
+                terminal.type(pathSeparator)
                 terminal.press(Keys.ENTER)
             }
             val compressCallback: suspend RunScope.() -> Unit = {
@@ -133,12 +134,11 @@ class DialogTest {
             assertThat(parseResult.matchedOption("output-file").getValue<String>()).isEqualTo(outputFileName)
             assertThat(parseResult.matchedOption("path-column-name").getValue<String>())
                 .isEqualTo(pathColumnName)
-            assertThat(parseResult.matchedOption("delimiter").getValue<Char>()).isEqualTo(delimiter[0])
+            assertThat(parseResult.matchedOption("delimiter").getValue<Char>()).isEqualTo(',')
             assertThat(parseResult.matchedOption("path-separator").getValue<Char>()).isEqualTo(pathSeparator[0])
             assertThat(parseResult.matchedOption("not-compressed")).isNull()
-            assertThat(parseResult.matchedPositional(0).getValue<ArrayList<File>>()[0].name).isEqualTo(fileName)
-            assertThat(parseResult.matchedPositional(0).getValue<ArrayList<File>>()[1].name).isEqualTo(fileName2)
-            assertThat(parseResult.matchedPositional(0).getValue<ArrayList<File>>()[2].name).isEqualTo(fileName3)
+            assertThat(parseResult.matchedPositional(0).getValue<ArrayList<File>>()[0].name).isEqualTo(File(inputFileName).name)
+            assertThat(parseResult.matchedPositional(0).getValue<ArrayList<File>>()[1].name).isEqualTo(File(inputFileName2).name)
         }
     }
 
