@@ -2,6 +2,7 @@ package de.maibornwolff.codecharta.analysis.importer.coverage
 
 import de.maibornwolff.codecharta.analysis.importer.coverage.strategies.ImporterStrategy
 import de.maibornwolff.codecharta.analysis.importer.coverage.strategies.JavaScriptStrategy
+import de.maibornwolff.codecharta.importer.coverage.strategies.PHPStrategy
 import de.maibornwolff.codecharta.serialization.FileExtension
 import de.maibornwolff.codecharta.util.ResourceSearchHelper.Companion.isFileWithOneOrMoreOfEndingsPresent
 
@@ -35,12 +36,20 @@ internal enum class Language(
             CoverageAttributes.METHOD_COVERAGE,
             CoverageAttributes.CLASS_COVERAGE
         )
+    ),
+    PHP(
+        "php",
+        PHPStrategy(),
+        listOf(FileExtension.XML),
+        "index.xml",
+        listOf(CoverageAttributes.LINE_COVERAGE)
     )
 }
 
 private val languageChoicesToLanguage = mapOf(
     "javascript/typescript" to Language.JAVASCRIPT,
-    "java" to Language.JAVA
+    "java" to Language.JAVA,
+    "php" to Language.PHP,
 )
 
 private val languageInputToLanguage = mapOf(
@@ -48,7 +57,8 @@ private val languageInputToLanguage = mapOf(
     "typescript" to Language.JAVASCRIPT,
     "js" to Language.JAVASCRIPT,
     "ts" to Language.JAVASCRIPT,
-    "java" to Language.JAVA
+    "java" to Language.JAVA,
+    "php" to Language.PHP,
 )
 
 internal fun getLanguageChoices(): List<String> {
