@@ -10,7 +10,7 @@ import de.maibornwolff.codecharta.dialogProvider.promptInput
 
 class Dialog {
     companion object : AnalyserDialogInterface {
-        override fun collectParserArgs(session: Session): List<String> {
+        override fun collectAnalyserArgs(session: Session): List<String> {
             println("You can generate this file with: svn log --verbose > svn.log")
             val inputFileName: String = session.promptDefaultFileFolderInput(
                 inputType = InputType.FILE,

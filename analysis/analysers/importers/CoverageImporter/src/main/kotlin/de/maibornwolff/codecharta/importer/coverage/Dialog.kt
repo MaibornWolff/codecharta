@@ -12,7 +12,7 @@ import java.util.Locale
 
 class Dialog {
     companion object : AnalyserDialogInterface {
-        override fun collectParserArgs(session: Session): List<String> {
+        override fun collectAnalyserArgs(session: Session): List<String> {
             val languageChoice: String = session.promptList(
                 message = "Specify the language of the coverage report",
                 choices = getLanguageChoices(),

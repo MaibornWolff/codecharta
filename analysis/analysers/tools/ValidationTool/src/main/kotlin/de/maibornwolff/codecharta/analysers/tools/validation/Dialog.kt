@@ -9,7 +9,7 @@ import de.maibornwolff.codecharta.serialization.FileExtension
 
 class Dialog {
     companion object : AnalyserDialogInterface {
-        override fun collectParserArgs(session: Session): List<String> {
+        override fun collectAnalyserArgs(session: Session): List<String> {
             print("Which file do you want to validate?")
             val inputFileName: String = session.promptDefaultFileFolderInput(
                 inputType = InputType.FILE,

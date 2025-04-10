@@ -5,7 +5,7 @@ import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.terminal.inmemory.press
 import com.varabyte.kotter.runtime.terminal.inmemory.type
 import com.varabyte.kotterx.test.foundation.testSession
-import de.maibornwolff.codecharta.parser.sourcecodeparser.Dialog.Companion.collectParserArgs
+import de.maibornwolff.codecharta.parser.sourcecodeparser.Dialog.Companion.collectAnalyserArgs
 import io.mockk.every
 import io.mockk.mockkObject
 import io.mockk.unmockkAll
@@ -83,7 +83,7 @@ class DialogTest {
                 verboseCallback
             )
 
-            parserArguments = collectParserArgs(this)
+            parserArguments = collectAnalyserArgs(this)
         }
 
         val cmdLine = CommandLine(SourceCodeParser())
@@ -153,7 +153,7 @@ class DialogTest {
                 verboseCallback
             )
 
-            parserArguments = collectParserArgs(this)
+            parserArguments = collectAnalyserArgs(this)
         }
 
         val cmdLine = CommandLine(SourceCodeParser())
@@ -219,7 +219,7 @@ class DialogTest {
                 verboseCallback
             )
 
-            parserArguments = collectParserArgs(this)
+            parserArguments = collectAnalyserArgs(this)
         }
 
         val cmdLine = CommandLine(SourceCodeParser())

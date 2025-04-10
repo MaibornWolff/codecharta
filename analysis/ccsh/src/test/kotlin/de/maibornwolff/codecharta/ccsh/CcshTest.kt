@@ -1,9 +1,9 @@
 package de.maibornwolff.codecharta.ccsh
 
 import de.maibornwolff.codecharta.ccsh.SessionMock.Companion.mockRunInTerminalSession
-import de.maibornwolff.codecharta.ccsh.parser.InteractiveAnalyserSuggestion
-import de.maibornwolff.codecharta.ccsh.parser.InteractiveDialog
-import de.maibornwolff.codecharta.ccsh.parser.ParserService
+import de.maibornwolff.codecharta.ccsh.analyser.AnalyserService
+import de.maibornwolff.codecharta.ccsh.analyser.InteractiveAnalyserSuggestion
+import de.maibornwolff.codecharta.ccsh.analyser.InteractiveDialog
 import de.maibornwolff.codecharta.util.Logger
 import io.mockk.every
 import io.mockk.mockkObject
@@ -47,47 +47,47 @@ class CcshTest {
         unmockkAll()
     }
 
-    private fun mockSuccessfulParserService() {
-        mockkObject(ParserService)
+    private fun mockSuccessfulAnalyserService() {
+        mockkObject(AnalyserService)
         every {
-            ParserService.selectParser(any(), any())
-        } returns "someparser"
+            AnalyserService.selectAnalyser(any(), any())
+        } returns "someanalyser"
 
         every {
-            ParserService.executeSelectedParser(any(), any())
+            AnalyserService.executeSelectedAnalyser(any(), any())
         } returns 0
 
         every {
-            ParserService.executePreconfiguredParser(any(), any())
+            AnalyserService.executePreconfiguredAnalyser(any(), any())
         } returns 0
     }
 
-    private fun mockUnsuccessfulParserService() {
-        mockkObject(ParserService)
+    private fun mockUnsuccessfulAnalyserService() {
+        mockkObject(AnalyserService)
 
         every {
-            ParserService.executeSelectedParser(any(), any())
+            AnalyserService.executeSelectedAnalyser(any(), any())
         } returns -1
 
         every {
-            ParserService.executePreconfiguredParser(any(), any())
+            AnalyserService.executePreconfiguredAnalyser(any(), any())
         } returns -1
     }
 
-    private fun mockAnalyserSuggestionDialog(selectedParsers: List<String>, parserArgs: List<List<String>>) {
-        if (selectedParsers.size != parserArgs.size) {
-            throw IllegalArgumentException("There must be the same amount of args as parsers!")
+    private fun mockAnalyserSuggestionDialog(selectedAnalysers: List<String>, analyserArgs: List<List<String>>) {
+        if (selectedAnalysers.size != analyserArgs.size) {
+            throw IllegalArgumentException("There must be the same amount of args as analysers!")
         }
 
-        val parsersAndArgs = mutableMapOf<String, List<String>>()
-        selectedParsers.zip(parserArgs) { currentParserName, currentParserArgs ->
-            parsersAndArgs.put(currentParserName, currentParserArgs)
+        val analysersAndArgs = mutableMapOf<String, List<String>>()
+        selectedAnalysers.zip(analyserArgs) { currentAnalyserName, currentAnalyserArgs ->
+            analysersAndArgs.put(currentAnalyserName, currentAnalyserArgs)
         }
 
         mockkObject(InteractiveAnalyserSuggestion)
         every {
             InteractiveAnalyserSuggestion.offerAndGetAnalyserSuggestionsAndConfigurations(any())
-        } returns parsersAndArgs
+        } returns analysersAndArgs
     }
 
     private fun mockPrepareInteractiveDialog() {
@@ -98,8 +98,8 @@ class CcshTest {
         every { InteractiveDialog.askForMerge(any()) } returns shouldMerge
     }
 
-    private fun mockDialogRunParsers(shouldRun: Boolean) {
-        every { InteractiveDialog.askRunParsers(any()) } returns shouldRun
+    private fun mockDialogRunAnalysers(shouldRun: Boolean) {
+        every { InteractiveDialog.askRunAnalysers(any()) } returns shouldRun
     }
 
     private fun mockDialogResultLocation(pathToReturn: String) {
@@ -127,7 +127,7 @@ class CcshTest {
     @Test
     fun `should only show help message when executed with help flag`() {
         // given
-        mockkObject(ParserService)
+        mockkObject(AnalyserService)
         val outStream = ByteArrayOutputStream()
         val originalOut = System.out
         System.setOut(PrintStream(outStream))
@@ -139,7 +139,7 @@ class CcshTest {
         assertThat(exitCode).isEqualTo(0)
         assertThat(outStream.toString())
             .contains("Usage: ccsh [-hiv] [COMMAND]", "Command Line Interface for CodeCharta analysis")
-        verify(exactly = 0) { ParserService.executePreconfiguredParser(any(), any()) }
+        verify(exactly = 0) { AnalyserService.executePreconfiguredAnalyser(any(), any()) }
 
         // clean up
         System.setOut(originalOut)
@@ -148,7 +148,7 @@ class CcshTest {
     @Test
     fun `should show version and copyright when executed with version flag`() {
         // given
-        mockkObject(ParserService)
+        mockkObject(AnalyserService)
         val outStream = ByteArrayOutputStream()
         val originalOut = System.out
         System.setOut(PrintStream(outStream))
@@ -160,23 +160,23 @@ class CcshTest {
         assertThat(exitCode).isEqualTo(0)
         // The actual printed version is null, as well as the package name, as it is not set for this test class
         assertThat(outStream.toString()).contains("version", "Copyright(c) 2024, MaibornWolff GmbH")
-        verify(exactly = 0) { ParserService.executePreconfiguredParser(any(), any()) }
+        verify(exactly = 0) { AnalyserService.executePreconfiguredAnalyser(any(), any()) }
 
         // clean up
         System.setOut(originalOut)
     }
 
     @Test
-    fun `should execute parser suggestions and all selected parsers when no options are passed`() {
+    fun `should execute analyser suggestions and all selected analyser when no options are passed`() {
         // given
-        val selectedParsers = listOf("parser1", "parser2")
+        val selectedAnalysers = listOf("analyser1", "analyser2")
         val args = listOf(listOf("dummyArg1"), listOf("dummyArg2"))
 
         mockRunInTerminalSession()
-        mockAnalyserSuggestionDialog(selectedParsers, args)
-        mockSuccessfulParserService()
+        mockAnalyserSuggestionDialog(selectedAnalysers, args)
+        mockSuccessfulAnalyserService()
         mockPrepareInteractiveDialog()
-        mockDialogRunParsers(true)
+        mockDialogRunAnalysers(true)
         mockDialogMergeResults(true)
         mockDialogResultLocation("dummy/path")
 
@@ -184,94 +184,94 @@ class CcshTest {
         val exitCode = Ccsh.executeCommandLine(emptyArray())
 
         // then
-        assertThat(exitCode).isZero // 3 because 2 parsers and the merge in the end
-        verify(exactly = 3) { ParserService.executePreconfiguredParser(any(), any()) }
+        assertThat(exitCode).isZero // 3 because 2 analysers and the merge in the end
+        verify(exactly = 3) { AnalyserService.executePreconfiguredAnalyser(any(), any()) }
     }
 
     @Test
-    fun `should only execute parsers when configuration was successful`() {
+    fun `should only execute analysers when configuration was successful`() {
         // given
         mockAnalyserSuggestionDialog(emptyList(), emptyList())
-        mockSuccessfulParserService()
+        mockSuccessfulAnalyserService()
 
         // when
         val exitCode = Ccsh.executeCommandLine(emptyArray())
 
         // then
         assertThat(exitCode == 0).isTrue()
-        verify(exactly = 0) { ParserService.executeSelectedParser(any(), any()) }
-        verify(exactly = 0) { ParserService.executePreconfiguredParser(any(), any()) }
+        verify(exactly = 0) { AnalyserService.executeSelectedAnalyser(any(), any()) }
+        verify(exactly = 0) { AnalyserService.executePreconfiguredAnalyser(any(), any()) }
     }
 
     @Test
-    fun `should only execute parsers when user does confirm execution`() {
+    fun `should only execute analysers when user does confirm execution`() {
         // given
-        val selectedParsers = listOf("parser1", "parser2")
+        val selectedAnalysers = listOf("analyser1", "analyser2")
         val args = listOf(listOf("dummyArg1"), listOf("dummyArg2"))
 
         mockRunInTerminalSession()
-        mockAnalyserSuggestionDialog(selectedParsers, args)
-        mockSuccessfulParserService()
+        mockAnalyserSuggestionDialog(selectedAnalysers, args)
+        mockSuccessfulAnalyserService()
         mockPrepareInteractiveDialog()
-        mockDialogRunParsers(false)
+        mockDialogRunAnalysers(false)
 
         // when
         val exitCode = Ccsh.executeCommandLine(emptyArray())
 
         // then
         assertThat(exitCode == 0).isTrue()
-        verify(exactly = 0) { ParserService.executeSelectedParser(any(), any()) }
-        verify(exactly = 0) { ParserService.executePreconfiguredParser(any(), any()) }
+        verify(exactly = 0) { AnalyserService.executeSelectedAnalyser(any(), any()) }
+        verify(exactly = 0) { AnalyserService.executePreconfiguredAnalyser(any(), any()) }
     }
 
     @Test
-    fun `should continue executing parsers even when one parser throws an error`() {
+    fun `should continue executing analysers even when one analyser throws an error`() {
         // given
-        mockUnsuccessfulParserService()
-        val dummyConfiguredParsers =
+        mockUnsuccessfulAnalyserService()
+        val dummyConfiguredAnalysers =
             mapOf(
-                "dummyParser1" to listOf("dummyArg1", "dummyArg2"),
-                "dummyParser2" to listOf("dummyArg1", "dummyArg2")
+                "dummyAnalyser1" to listOf("dummyArg1", "dummyArg2"),
+                "dummyAnalyser2" to listOf("dummyArg1", "dummyArg2")
             )
 
         // when
-        Ccsh.executeConfiguredParsers(cmdLine, dummyConfiguredParsers)
+        Ccsh.executeConfiguredAnalysers(cmdLine, dummyConfiguredAnalysers)
 
         // then
-        verify(exactly = 2) { ParserService.executePreconfiguredParser(any(), any()) }
-        verify(exactly = 0) { ParserService.executeSelectedParser(any(), any()) }
+        verify(exactly = 2) { AnalyserService.executePreconfiguredAnalyser(any(), any()) }
+        verify(exactly = 0) { AnalyserService.executeSelectedAnalyser(any(), any()) }
     }
 
     @Test
-    fun `should execute interactive parser when passed parser is unknown`() {
+    fun `should execute interactive analyser when passed analyser is unknown`() {
         // given
-        mockSuccessfulParserService()
+        mockSuccessfulAnalyserService()
 
         // when
-        val exitCode = Ccsh.executeCommandLine(arrayOf("unknownparser"))
+        val exitCode = Ccsh.executeCommandLine(arrayOf("unknownanalyser"))
 
         // then
         assertThat(exitCode).isZero
-        verify { ParserService.executeSelectedParser(any(), any()) }
+        verify { AnalyserService.executeSelectedAnalyser(any(), any()) }
     }
 
     @Test
-    fun `should execute interactive parser when -i option is passed`() {
+    fun `should execute interactive analyser when -i option is passed`() {
         // given
-        mockSuccessfulParserService()
+        mockSuccessfulAnalyserService()
 
         // when
         val exitCode = Ccsh.executeCommandLine(arrayOf("-i"))
 
         // then
         assertThat(exitCode).isZero
-        verify { ParserService.executeSelectedParser(any(), any()) }
+        verify { AnalyserService.executeSelectedAnalyser(any(), any()) }
     }
 
     @Test
-    fun `should execute the selected interactive parser when only called with name and no args`() {
+    fun `should execute the selected interactive analyser when only called with name and no args`() {
         // given
-        mockSuccessfulParserService()
+        mockSuccessfulAnalyserService()
 
         // when
         val exitCode = Ccsh.executeCommandLine(arrayOf("sonarimport"))
@@ -282,23 +282,23 @@ class CcshTest {
     }
 
     @Test
-    fun `should not ask for merging results after using parser suggestions when only one parser was executed`() {
+    fun `should not ask for merging results after using analyser suggestions when only one analyser was executed`() {
         // given
-        val selectedParsers = listOf("parser1")
+        val selectedAnalysers = listOf("analyser1")
         val args = listOf(listOf("dummyArg1"))
 
         mockRunInTerminalSession()
-        mockAnalyserSuggestionDialog(selectedParsers, args)
-        mockSuccessfulParserService()
+        mockAnalyserSuggestionDialog(selectedAnalysers, args)
+        mockSuccessfulAnalyserService()
         mockPrepareInteractiveDialog()
-        mockDialogRunParsers(true)
+        mockDialogRunAnalysers(true)
 
         // when
         val exitCode = Ccsh.executeCommandLine(emptyArray())
 
         // then
         assertThat(exitCode).isZero()
-        assertThat(errContent.toString()).contains("Parser was successfully executed.")
+        assertThat(errContent.toString()).contains("Analyser was successfully executed.")
     }
 
     @Test
@@ -309,10 +309,10 @@ class CcshTest {
         val absoluteOutputFilePath = File(outputFilePath).absolutePath
         val outputFile = File(outputFilePath)
         outputFile.deleteOnExit()
-        val multipleConfiguredParsers =
+        val multipleConfiguredAnalysers =
             mapOf(
-                "dummyParser1" to listOf("dummyArg1", "dummyArg2"),
-                "dummyParser2" to listOf("dummyArg1", "dummyArg2")
+                "dummyAnalyser1" to listOf("dummyArg1", "dummyArg2"),
+                "dummyAnalyser2" to listOf("dummyArg1", "dummyArg2")
             )
 
         val lambdaSlot = mutableListOf<() -> String>()
@@ -321,12 +321,12 @@ class CcshTest {
 
         mockRunInTerminalSession()
         mockPrepareInteractiveDialog()
-        mockDialogRunParsers(true)
+        mockDialogRunAnalysers(true)
         mockDialogMergeResults(true)
         mockDialogResultLocation(folderPath)
 
         // when
-        Ccsh.executeConfiguredParsers(cmdLine, multipleConfiguredParsers)
+        Ccsh.executeConfiguredAnalysers(cmdLine, multipleConfiguredAnalysers)
 
         // then
         assertThat(lambdaSlot.last()().endsWith(absoluteOutputFilePath)).isTrue()
@@ -334,26 +334,26 @@ class CcshTest {
 
     @Test
     fun `should return zero if users chooses not to merge`() {
-        val multipleConfiguredParsers =
+        val multipleConfiguredAnalysers =
             mapOf(
-                "dummyParser1" to listOf("dummyArg1", "dummyArg2"),
-                "dummyParser2" to listOf("dummyArg1", "dummyArg2")
+                "dummyAnalyser1" to listOf("dummyArg1", "dummyArg2"),
+                "dummyAnalyser2" to listOf("dummyArg1", "dummyArg2")
             )
 
         mockRunInTerminalSession()
         mockPrepareInteractiveDialog()
-        mockDialogRunParsers(true)
+        mockDialogRunAnalysers(true)
         mockDialogMergeResults(false)
 
         // when
-        val resultCode = Ccsh.executeConfiguredParsers(cmdLine, multipleConfiguredParsers)
+        val resultCode = Ccsh.executeConfiguredAnalysers(cmdLine, multipleConfiguredAnalysers)
 
         // then
         assertThat(resultCode).isEqualTo(0)
     }
 
     @Test
-    fun `should log the absolute path of the merged output file when one out of two parsers prints output to stdout`() {
+    fun `should log the absolute path of the merged output file when one out of two analysers prints output to stdout`() {
         val folderPath = "src/test/resources/sampleproject"
         val mergedOutputFilePath = "$folderPath/mergedResult.cc.json.gz"
         val mergedOutputFile = File(mergedOutputFilePath)
@@ -362,7 +362,7 @@ class CcshTest {
         mergedOutputFile.deleteOnExit()
         sourcecodeOutputFile.deleteOnExit()
 
-        val selectedParsers = listOf("rawtextparser", "sourcecodeparser")
+        val selectedAnalysers = listOf("rawtextparser", "sourcecodeparser")
         val args =
             listOf(
                 listOf(File(folderPath).absolutePath, "--output-file="),
@@ -377,9 +377,9 @@ class CcshTest {
             )
 
         mockRunInTerminalSession()
-        mockAnalyserSuggestionDialog(selectedParsers, args)
+        mockAnalyserSuggestionDialog(selectedAnalysers, args)
         mockPrepareInteractiveDialog()
-        mockDialogRunParsers(true)
+        mockDialogRunAnalysers(true)
         mockDialogMergeResults(true)
         mockDialogResultLocation(File(folderPath).absolutePath)
 

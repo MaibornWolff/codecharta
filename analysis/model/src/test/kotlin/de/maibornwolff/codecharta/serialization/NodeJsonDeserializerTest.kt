@@ -6,7 +6,6 @@ import com.google.gson.JsonObject
 import com.google.gson.JsonParseException
 import de.maibornwolff.codecharta.model.MutableNode
 import de.maibornwolff.codecharta.model.NodeType
-import model.src.main.kotlin.de.maibornwolff.codecharta.serialization.NodeJsonDeserializer
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import kotlin.test.assertFailsWith
