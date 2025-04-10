@@ -208,7 +208,19 @@ fun Session.promptDefaultFileFolderInput(
     onInputReady: suspend RunScope.() -> Unit
 ): String {
     val messageFileExtension = "[${fileExtensionList.joinToString(", ") { fileExtension -> fileExtension.extension }}]"
-    val pluralSuffix = if (multiple) "(s)" else ""
+
+    val pluralSuffix: String
+    val hintText: String
+    val messageExtension: String
+    if (multiple) {
+        pluralSuffix = "(s)"
+        hintText = "input1.txt, input2.log, ..."
+        messageExtension = " Enter multiple files comma separated."
+    } else {
+        pluralSuffix = ""
+        hintText = Paths.get("").toAbsolutePath().toString()
+        messageExtension = ""
+    }
 
     val inputMessage: String =
         if (fileExtensionList.isEmpty()) {
@@ -236,11 +248,10 @@ fun Session.promptDefaultFileFolderInput(
                 }
             }
         }
-    val currentWorkingDirectory = Paths.get("").toAbsolutePath().toString()
 
     return promptInput(
-        message = "What ${if (multiple) "are" else "is"} the input $inputMessage",
-        hint = currentWorkingDirectory,
+        message = "What ${if (multiple) "are" else "is"} the input $inputMessage.$messageExtension",
+        hint = hintText,
         allowEmptyInput = false,
         invalidInputMessage = "Please input a valid ${inputType.inputType}",
         inputValidator = InputValidator.isFileOrFolderValid(
