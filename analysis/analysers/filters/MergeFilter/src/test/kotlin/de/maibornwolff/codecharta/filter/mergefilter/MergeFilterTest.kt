@@ -533,17 +533,18 @@ class MergeFilterTest {
 
         @Test
         fun `should output into specified file`() {
-            val outPutFilePath = "$fatMergeTestFolder/largeOutputToFile.cc.json"
+            val outputFilePath = "$fatMergeTestFolder/largeOutputToFile.cc.json"
             CommandLine(MergeFilter()).execute(
                 testFilePath1,
                 testFilePath2,
                 "--large",
-                "-o=$outPutFilePath",
+                "-o=$outputFilePath",
                 "-nc"
             ).toString()
-            val outPutFile = File(outPutFilePath)
-            assertThat(outPutFile).exists()
-            val project = ProjectDeserializer.deserializeProject(outPutFile.inputStream())
+            val outputFile = File(outputFilePath)
+            assertThat(outputFile).exists()
+            val outputFileInputStream = outputFile.inputStream()
+            val project = ProjectDeserializer.deserializeProject(outputFileInputStream)
             val projectInput1 = ProjectDeserializer.deserializeProject(File(testFilePath1).inputStream())
             val projectInput2 = ProjectDeserializer.deserializeProject(File(testFilePath2).inputStream())
             assertThat(project.sizeOfEdges()).isEqualTo(2)
@@ -554,7 +555,8 @@ class MergeFilterTest {
             val outputProject2 = project.rootNode.children.first { it.name == "testProject" }
             assertThat(outputProject1.children.toString()).isEqualTo(projectInput1.rootNode.children.toString())
             assertThat(outputProject2.children.toString()).isEqualTo(projectInput2.rootNode.children.toString())
-            outPutFile.deleteOnExit()
+            outputFileInputStream.close()
+            outputFile.deleteOnExit()
         }
 
         @Test
