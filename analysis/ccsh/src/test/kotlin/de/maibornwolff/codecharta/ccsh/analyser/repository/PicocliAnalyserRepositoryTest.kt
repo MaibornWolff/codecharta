@@ -10,7 +10,7 @@ import de.maibornwolff.codecharta.analysers.tools.inspection.InspectionTool
 import de.maibornwolff.codecharta.analysers.tools.validation.ValidationTool
 import de.maibornwolff.codecharta.analysers.importers.codemaat.CodeMaatImporter
 import de.maibornwolff.codecharta.analysers.importers.csv.CSVImporter
-import de.maibornwolff.codecharta.analysis.importer.sonar.SonarImporter
+import de.maibornwolff.codecharta.analysers.importers.sonar.SonarImporter
 import de.maibornwolff.codecharta.analysis.importer.sourcemonitor.SourceMonitorImporter
 import de.maibornwolff.codecharta.analysis.importer.tokeiimporter.TokeiImporter
 import de.maibornwolff.codecharta.ccsh.Ccsh
