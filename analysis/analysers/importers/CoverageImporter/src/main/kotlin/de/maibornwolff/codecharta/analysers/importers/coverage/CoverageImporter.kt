@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.analysis.importer.coverage
+package de.maibornwolff.codecharta.analysers.importers.coverage
 
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserDialogInterface
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface

@@ -1,7 +1,7 @@
-package de.maibornwolff.codecharta.analysis.importer.coverage
+package de.maibornwolff.codecharta.analysers.importers.coverage
 
-import de.maibornwolff.codecharta.analysis.importer.coverage.strategies.ImporterStrategy
-import de.maibornwolff.codecharta.analysis.importer.coverage.strategies.JavaScriptStrategy
+import de.maibornwolff.codecharta.analysers.importers.coverage.strategies.ImporterStrategy
+import de.maibornwolff.codecharta.analysers.importers.coverage.strategies.JavaScriptStrategy
 import de.maibornwolff.codecharta.serialization.FileExtension
 import de.maibornwolff.codecharta.util.ResourceSearchHelper.Companion.isFileWithOneOrMoreOfEndingsPresent
 
