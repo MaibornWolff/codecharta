@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.analysis.importer.coverage
+package de.maibornwolff.codecharta.analysers.importers.coverage
 
 import de.maibornwolff.codecharta.model.AttributeDescriptor
 import de.maibornwolff.codecharta.model.AttributeType

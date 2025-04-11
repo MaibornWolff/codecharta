@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.analysis.importer.coverage.strategies
+package de.maibornwolff.codecharta.analysers.importers.coverage.strategies
 
 import de.maibornwolff.codecharta.model.ProjectBuilder
 import de.maibornwolff.codecharta.progresstracker.ParsingUnit

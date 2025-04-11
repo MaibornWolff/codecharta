@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.analysis.importer.coverage
+package de.maibornwolff.codecharta.analysers.importers.coverage
 
 import com.varabyte.kotter.foundation.input.Keys
 import com.varabyte.kotter.runtime.RunScope
