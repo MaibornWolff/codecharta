@@ -1,6 +1,6 @@
-package de.maibornwolff.codecharta.analysis.importer.tokeiimporter
+package de.maibornwolff.codecharta.analysers.importers.tokei
 
-import de.maibornwolff.codecharta.analysis.importer.tokeiimporter.TokeiImporter.Companion.mainWithInOut
+import de.maibornwolff.codecharta.analysers.importers.tokei.TokeiImporter.Companion.mainWithInOut
 import de.maibornwolff.codecharta.model.AttributeType
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.util.InputHelper

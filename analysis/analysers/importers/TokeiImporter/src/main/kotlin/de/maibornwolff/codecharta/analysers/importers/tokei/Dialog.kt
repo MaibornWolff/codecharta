@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.analysis.importer.tokeiimporter
+package de.maibornwolff.codecharta.analysers.importers.tokei
 
 import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.Session

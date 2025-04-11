@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.analysis.importer.tokeiimporter.strategy
+package de.maibornwolff.codecharta.analysers.importers.tokei.strategy
 
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
