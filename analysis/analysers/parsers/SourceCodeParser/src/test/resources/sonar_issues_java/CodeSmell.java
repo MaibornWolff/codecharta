@@ -1,8 +1,8 @@
 package de.maibornwolff.codecharta.analysis.importer.sourcecodeparser.oop.infrastructure.antlr.java;
 
-import de.maibornwolff.codecharta.parser.sourcecodeparser.core.domain.tagging.Tags;
-import de.maibornwolff.codecharta.parser.sourcecodeparser.oop.domain.tagging.NonCodeTags;
-import de.maibornwolff.codecharta.parser.sourcecodeparser.oop.domain.tagging.UnsortedCodeTags;
+import de.maibornwolff.codecharta.analysers.parsers.sourcecode.core.domain.tagging.Tags;
+import de.maibornwolff.codecharta.analysers.parsers.sourcecode.oop.domain.tagging.NonCodeTags;
+import de.maibornwolff.codecharta.analysers.parsers.sourcecode.oop.domain.tagging.UnsortedCodeTags;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
