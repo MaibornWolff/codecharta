@@ -1,9 +1,9 @@
-package de.maibornwolff.codecharta.rawtextparser
+package de.maibornwolff.codecharta.analysers.parsers.rawtext
 
 import com.google.gson.JsonParser
-import de.maibornwolff.codecharta.parser.rawtextparser.FileMetrics
-import de.maibornwolff.codecharta.parser.rawtextparser.ProjectGenerator
-import de.maibornwolff.codecharta.parser.rawtextparser.ProjectMetrics
+import de.maibornwolff.codecharta.analysers.parsers.rawtext.FileMetrics
+import de.maibornwolff.codecharta.analysers.parsers.rawtext.ProjectGenerator
+import de.maibornwolff.codecharta.analysers.parsers.rawtext.ProjectMetrics
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import org.assertj.core.api.Assertions

@@ -1,7 +1,7 @@
-package de.maibornwolff.codecharta.parser.rawtextparser
+package de.maibornwolff.codecharta.analysers.parsers.rawtext
 
-import de.maibornwolff.codecharta.parser.rawtextparser.metrics.IndentationMetric
-import de.maibornwolff.codecharta.parser.rawtextparser.metrics.Metric
+import de.maibornwolff.codecharta.analysers.parsers.rawtext.metrics.IndentationMetric
+import de.maibornwolff.codecharta.analysers.parsers.rawtext.metrics.Metric
 import de.maibornwolff.codecharta.progresstracker.ParsingUnit
 import de.maibornwolff.codecharta.progresstracker.ProgressTracker
 import kotlinx.coroutines.Dispatchers

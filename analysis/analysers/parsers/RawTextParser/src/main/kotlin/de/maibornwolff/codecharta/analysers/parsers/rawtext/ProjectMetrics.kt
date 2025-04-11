@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.parser.rawtextparser
+package de.maibornwolff.codecharta.analysers.parsers.rawtext
 
 import java.util.concurrent.ConcurrentHashMap
 
