@@ -12,7 +12,7 @@ import de.maibornwolff.codecharta.analysers.importers.codemaat.CodeMaatImporter
 import de.maibornwolff.codecharta.analysers.importers.coverage.CoverageImporter
 import de.maibornwolff.codecharta.analysers.importers.csv.CSVImporter
 import de.maibornwolff.codecharta.analysers.importers.sonar.SonarImporter
-import de.maibornwolff.codecharta.analysis.importer.sourcemonitor.SourceMonitorImporter
+import de.maibornwolff.codecharta.analysers.importers.sourcemonitor.SourceMonitorImporter
 import de.maibornwolff.codecharta.analysis.importer.tokeiimporter.TokeiImporter
 import de.maibornwolff.codecharta.ccsh.analyser.AnalyserService
 import de.maibornwolff.codecharta.ccsh.analyser.InteractiveAnalyserSuggestion

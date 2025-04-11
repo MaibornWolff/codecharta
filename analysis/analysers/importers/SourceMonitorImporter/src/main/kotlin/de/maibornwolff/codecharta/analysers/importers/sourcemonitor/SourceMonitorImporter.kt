@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.analysis.importer.sourcemonitor
+package de.maibornwolff.codecharta.analysers.importers.sourcemonitor
 
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserDialogInterface
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
