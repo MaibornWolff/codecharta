@@ -54,7 +54,7 @@ class JavaScriptStrategy() : ImporterStrategy {
                         val file = File(filePath)
                         val fileName = file.name
                         val directoryPath = file.parent ?: ""
-                        val path = PathFactory.fromFileSystemPath(directoryPath)
+                        val path = PathFactory.fromFileSystemPath(directoryPath, File.separatorChar)
 
                         val lineCoverage = calculatePercentage(linesHit, linesFound)
                         val branchCoverage = calculatePercentage(branchesHit, branchesFound)
