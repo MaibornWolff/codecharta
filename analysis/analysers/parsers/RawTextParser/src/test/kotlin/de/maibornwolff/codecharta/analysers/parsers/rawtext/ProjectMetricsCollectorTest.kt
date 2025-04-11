@@ -1,7 +1,7 @@
-package de.maibornwolff.codecharta.rawtextparser
+package de.maibornwolff.codecharta.analysers.parsers.rawtext
 
-import de.maibornwolff.codecharta.parser.rawtextparser.ProjectMetricsCollector
-import de.maibornwolff.codecharta.parser.rawtextparser.RawTextParser
+import de.maibornwolff.codecharta.analysers.parsers.rawtext.ProjectMetricsCollector
+import de.maibornwolff.codecharta.analysers.parsers.rawtext.RawTextParser
 import io.mockk.unmockkAll
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.AfterEach

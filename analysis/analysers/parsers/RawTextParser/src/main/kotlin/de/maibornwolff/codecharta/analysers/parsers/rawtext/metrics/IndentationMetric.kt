@@ -1,6 +1,6 @@
-package de.maibornwolff.codecharta.parser.rawtextparser.metrics
+package de.maibornwolff.codecharta.analysers.parsers.rawtext.metrics
 
-import de.maibornwolff.codecharta.parser.rawtextparser.FileMetrics
+import de.maibornwolff.codecharta.analysers.parsers.rawtext.FileMetrics
 import de.maibornwolff.codecharta.util.Logger
 import java.lang.Integer.min
 

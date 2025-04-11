@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.parser.rawtextparser
+package de.maibornwolff.codecharta.analysers.parsers.rawtext
 
 import de.maibornwolff.codecharta.analysers.filters.mergefilter.MergeFilter
 import de.maibornwolff.codecharta.model.MutableNode
