@@ -17,7 +17,7 @@ import de.maibornwolff.codecharta.ccsh.Ccsh
 import de.maibornwolff.codecharta.analysers.parsers.gitlog.GitLogParser
 import de.maibornwolff.codecharta.analysers.parsers.rawtext.RawTextParser
 import de.maibornwolff.codecharta.analysers.parsers.sourcecode.SourceCodeParser
-import de.maibornwolff.codecharta.parser.svnlogparser.SVNLogParser
+import de.maibornwolff.codecharta.analysers.parsers.svnlog.SVNLogParser
 import io.mockk.every
 import io.mockk.mockkClass
 import io.mockk.mockkConstructor

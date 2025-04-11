@@ -21,7 +21,7 @@ import de.maibornwolff.codecharta.ccsh.analyser.repository.PicocliAnalyserReposi
 import de.maibornwolff.codecharta.analysers.parsers.gitlog.GitLogParser
 import de.maibornwolff.codecharta.analysers.parsers.rawtext.RawTextParser
 import de.maibornwolff.codecharta.analysers.parsers.sourcecode.SourceCodeParser
-import de.maibornwolff.codecharta.parser.svnlogparser.SVNLogParser
+import de.maibornwolff.codecharta.analysers.parsers.svnlog.SVNLogParser
 import de.maibornwolff.codecharta.util.AttributeGeneratorRegistry
 import de.maibornwolff.codecharta.util.Logger
 import picocli.CommandLine
