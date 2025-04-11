@@ -1,11 +1,11 @@
-package de.maibornwolff.codecharta.analysis.importer.tokeiimporter.strategy
+package de.maibornwolff.codecharta.analysers.importers.tokei.strategy
 
 import com.google.gson.Gson
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
-import de.maibornwolff.codecharta.analysis.importer.tokeiimporter.TokeiImporter
-import de.maibornwolff.codecharta.analysis.importer.tokeiimporter.analysisObject.AnalysisObject
-import de.maibornwolff.codecharta.analysis.importer.tokeiimporter.analysisObject.Stats
+import de.maibornwolff.codecharta.analysers.importers.tokei.TokeiImporter
+import de.maibornwolff.codecharta.analysers.importers.tokei.analysisObject.AnalysisObject
+import de.maibornwolff.codecharta.analysers.importers.tokei.analysisObject.Stats
 import de.maibornwolff.codecharta.model.MutableNode
 import de.maibornwolff.codecharta.model.PathFactory
 import de.maibornwolff.codecharta.model.ProjectBuilder
