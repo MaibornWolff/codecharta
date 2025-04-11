@@ -59,7 +59,7 @@ class CoverageImporterTest {
         CommandLine(CoverageImporter()).execute(notExistingFile.path, "--language=javascript")
         System.setErr(originalErr)
 
-        assertThat(errContent.toString()).startsWith("java.io.FileNotFoundException: File not found: src/test/lcov.info")
+        assertThat(errContent.toString()).startsWith("java.io.FileNotFoundException: File not found: ${notExistingFile.path}")
     }
 
     @Test

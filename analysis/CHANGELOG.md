@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Added 🚀
+
+- Add support for multi file input in dialogs [#4030](https://github.com/MaibornWolff/codecharta/pull/4030)
+
 ### Changed
 
 - Removed Metric Gardener Support [#4004](https://github.com/MaibornWolff/codecharta/pull/4004)
