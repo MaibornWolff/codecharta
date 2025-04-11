@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.analysis.importer.codemaat
+package de.maibornwolff.codecharta.analysers.importers.codemaat
 
 import de.maibornwolff.codecharta.model.Edge
 import de.maibornwolff.codecharta.translator.MetricNameTranslator

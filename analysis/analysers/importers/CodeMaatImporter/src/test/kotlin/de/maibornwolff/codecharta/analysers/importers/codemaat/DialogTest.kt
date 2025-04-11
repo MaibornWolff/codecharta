@@ -1,11 +1,11 @@
-package de.maibornwolff.codecharta.analysis.importer.codemaat
+package de.maibornwolff.codecharta.analysers.importers.codemaat
 
 import com.varabyte.kotter.foundation.input.Keys
 import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.terminal.inmemory.press
 import com.varabyte.kotter.runtime.terminal.inmemory.type
 import com.varabyte.kotterx.test.foundation.testSession
-import de.maibornwolff.codecharta.analysis.importer.codemaat.Dialog.Companion.collectAnalyserArgs
+import de.maibornwolff.codecharta.analysers.importers.codemaat.Dialog.Companion.collectAnalyserArgs
 import io.mockk.every
 import io.mockk.mockkObject
 import org.assertj.core.api.Assertions.assertThat

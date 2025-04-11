@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.analysis.importer.codemaat
+package de.maibornwolff.codecharta.analysers.importers.codemaat
 
 import com.univocity.parsers.csv.CsvParser
 import com.univocity.parsers.csv.CsvParserSettings

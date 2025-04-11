@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.analysis.importer.codemaat
+package de.maibornwolff.codecharta.analysers.importers.codemaat
 
 import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.Session
