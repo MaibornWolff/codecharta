@@ -1,6 +1,6 @@
-package de.maibornwolff.codecharta.analysis.importer.sourcemonitor
+package de.maibornwolff.codecharta.analysers.importers.sourcemonitor
 
-import de.maibornwolff.codecharta.analysis.importer.sourcemonitor.SourceMonitorImporter.Companion.main
+import de.maibornwolff.codecharta.analysers.importers.sourcemonitor.SourceMonitorImporter.Companion.main
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.util.InputHelper
 import io.mockk.every

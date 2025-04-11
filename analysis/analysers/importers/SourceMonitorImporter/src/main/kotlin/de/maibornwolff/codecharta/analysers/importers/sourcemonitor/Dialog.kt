@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.analysis.importer.sourcemonitor
+package de.maibornwolff.codecharta.analysers.importers.sourcemonitor
 
 import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.Session
