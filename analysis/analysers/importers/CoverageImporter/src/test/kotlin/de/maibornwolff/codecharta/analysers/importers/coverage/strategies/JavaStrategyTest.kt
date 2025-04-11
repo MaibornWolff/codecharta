@@ -1,6 +1,5 @@
 package de.maibornwolff.codecharta.analysers.importers.coverage.strategies
 
-import de.maibornwolff.codecharta.analysers.importers.coverage.JavaStrategy
 import de.maibornwolff.codecharta.model.MutableNode
 import de.maibornwolff.codecharta.model.NodeType
 import de.maibornwolff.codecharta.model.ProjectBuilder
