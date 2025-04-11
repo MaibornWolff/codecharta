@@ -3,7 +3,7 @@ package de.maibornwolff.codecharta.analysis.importer.sourcemonitor
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserDialogInterface
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
 import de.maibornwolff.codecharta.analysers.analyserinterface.util.CodeChartaConstants
-import de.maibornwolff.codecharta.analysis.importer.csv.CSVProjectBuilder
+import de.maibornwolff.codecharta.analysers.importers.csv.CSVProjectBuilder
 import de.maibornwolff.codecharta.model.AttributeDescriptor
 import de.maibornwolff.codecharta.model.AttributeGenerator
 import de.maibornwolff.codecharta.serialization.ProjectSerializer

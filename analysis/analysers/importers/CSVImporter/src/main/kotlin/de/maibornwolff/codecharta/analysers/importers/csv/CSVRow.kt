@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.analysis.importer.csv
+package de.maibornwolff.codecharta.analysers.importers.csv
 
 import de.maibornwolff.codecharta.model.MutableNode
 import de.maibornwolff.codecharta.model.NodeType

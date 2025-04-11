@@ -1,6 +1,6 @@
-package de.maibornwolff.codecharta.analysis.importer.csv
+package de.maibornwolff.codecharta.analysers.importers.csv
 
-import de.maibornwolff.codecharta.analysis.importer.csv.CSVImporter.Companion.main
+import de.maibornwolff.codecharta.analysers.importers.csv.CSVImporter.Companion.main
 import de.maibornwolff.codecharta.util.InputHelper
 import io.mockk.every
 import io.mockk.mockkObject

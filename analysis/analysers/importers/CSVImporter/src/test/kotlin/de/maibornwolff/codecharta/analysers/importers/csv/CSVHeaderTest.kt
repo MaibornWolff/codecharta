@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.analysis.importer.csv
+package de.maibornwolff.codecharta.analysers.importers.csv
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
