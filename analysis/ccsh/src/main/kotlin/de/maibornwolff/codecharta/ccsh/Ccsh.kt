@@ -20,7 +20,7 @@ import de.maibornwolff.codecharta.ccsh.analyser.InteractiveDialog
 import de.maibornwolff.codecharta.ccsh.analyser.repository.PicocliAnalyserRepository
 import de.maibornwolff.codecharta.analysers.parsers.gitlog.GitLogParser
 import de.maibornwolff.codecharta.analysers.parsers.rawtext.RawTextParser
-import de.maibornwolff.codecharta.parser.sourcecodeparser.SourceCodeParser
+import de.maibornwolff.codecharta.analysers.parsers.sourcecode.SourceCodeParser
 import de.maibornwolff.codecharta.parser.svnlogparser.SVNLogParser
 import de.maibornwolff.codecharta.util.AttributeGeneratorRegistry
 import de.maibornwolff.codecharta.util.Logger
