@@ -18,7 +18,7 @@ import de.maibornwolff.codecharta.ccsh.analyser.AnalyserService
 import de.maibornwolff.codecharta.ccsh.analyser.InteractiveAnalyserSuggestion
 import de.maibornwolff.codecharta.ccsh.analyser.InteractiveDialog
 import de.maibornwolff.codecharta.ccsh.analyser.repository.PicocliAnalyserRepository
-import de.maibornwolff.codecharta.parser.gitlogparser.GitLogParser
+import de.maibornwolff.codecharta.analysers.parsers.gitlog.GitLogParser
 import de.maibornwolff.codecharta.parser.rawtextparser.RawTextParser
 import de.maibornwolff.codecharta.parser.sourcecodeparser.SourceCodeParser
 import de.maibornwolff.codecharta.parser.svnlogparser.SVNLogParser

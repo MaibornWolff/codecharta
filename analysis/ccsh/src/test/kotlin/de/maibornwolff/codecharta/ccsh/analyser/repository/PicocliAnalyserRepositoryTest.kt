@@ -14,7 +14,7 @@ import de.maibornwolff.codecharta.analysers.importers.sonar.SonarImporter
 import de.maibornwolff.codecharta.analysers.importers.sourcemonitor.SourceMonitorImporter
 import de.maibornwolff.codecharta.analysers.importers.tokei.TokeiImporter
 import de.maibornwolff.codecharta.ccsh.Ccsh
-import de.maibornwolff.codecharta.parser.gitlogparser.GitLogParser
+import de.maibornwolff.codecharta.analysers.parsers.gitlog.GitLogParser
 import de.maibornwolff.codecharta.parser.rawtextparser.RawTextParser
 import de.maibornwolff.codecharta.parser.sourcecodeparser.SourceCodeParser
 import de.maibornwolff.codecharta.parser.svnlogparser.SVNLogParser
