@@ -40,8 +40,7 @@ class ParsingIntegrationTest {
         val projectNameList = readFileNameListFile(file)
 
         // parsed git-log
-        val parserStrategy =
-            de.maibornwolff.codecharta.analysers.parsers.gitlog.parser.git.GitLogNumstatRawParserStrategy()
+        val parserStrategy = GitLogNumstatRawParserStrategy()
         val codeChartaLog = this.javaClass.classLoader.getResourceAsStream("codeCharta.log")
         val parser = LogLineParser(parserStrategy, metricsFactory)
         val codeList = mutableListOf<String>()

@@ -5,36 +5,33 @@ import java.time.ZoneOffset
 import java.time.temporal.ChronoUnit
 import java.time.temporal.WeekFields
 
-internal data class CalendarWeek(private val week: Int, private val year: Int) : Comparable<de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.CalendarWeek> {
-    override fun compareTo(other: de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.CalendarWeek): Int {
-        return de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.CalendarWeek.Companion.numberOfWeeksBetween(
+internal data class CalendarWeek(private val week: Int, private val year: Int) : Comparable<CalendarWeek> {
+    override fun compareTo(other: CalendarWeek): Int {
+        return numberOfWeeksBetween(
             this,
             other
         )
     }
 
     companion object {
-        fun forDateTime(dateTime: OffsetDateTime): de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.CalendarWeek {
+        fun forDateTime(dateTime: OffsetDateTime): CalendarWeek {
             val week = dateTime.get(WeekFields.ISO.weekOfWeekBasedYear())
             var year = dateTime.year
-            year = de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.CalendarWeek.Companion.modifyYear(
+            year = modifyYear(
                 dateTime,
                 week,
                 year
             )
-            return de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.CalendarWeek(week, year)
+            return CalendarWeek(week, year)
         }
 
-        fun numberOfWeeksBetween(
-            a: de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.CalendarWeek,
-            b: de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.CalendarWeek
-        ): Int {
+        fun numberOfWeeksBetween(a: CalendarWeek, b: CalendarWeek): Int {
             return ChronoUnit.WEEKS.between(
-                de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.CalendarWeek.Companion.getWeekDate(
+                getWeekDate(
                     a.year,
                     a.week
                 ),
-                de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.CalendarWeek.Companion.getWeekDate(
+                getWeekDate(
                     b.year,
                     b.week
                 )
@@ -49,17 +46,17 @@ internal data class CalendarWeek(private val week: Int, private val year: Int) :
 
         private fun modifyYear(dateTime: OffsetDateTime, week: Int, initialYear: Int): Int {
             var year = initialYear
-            if (de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.CalendarWeek.Companion.isFirstOrSecondWeek(
+            if (isFirstOrSecondWeek(
                     week
                 )
             ) {
-                if (de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.CalendarWeek.Companion.dayIsOneOfTheLastSevenDaysInYear(
+                if (dayIsOneOfTheLastSevenDaysInYear(
                         dateTime
                     )
                 ) {
                     year += 1
                 }
-            } else if (de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.CalendarWeek.Companion.dayIsOneOfTheFirstSevenDaysOfTheYear(
+            } else if (dayIsOneOfTheFirstSevenDaysOfTheYear(
                     dateTime
                 )
             ) {

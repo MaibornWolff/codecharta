@@ -13,11 +13,11 @@ class CalendarWeekTest {
         val commitDateTime = OffsetDateTime.of(2016, 4, 2, 12, 0, 0, 0, zoneOffset)
 
         // when
-        val kw = de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.CalendarWeek.forDateTime(commitDateTime)
+        val kw = CalendarWeek.forDateTime(commitDateTime)
 
         // then
         assertThat(kw).isEqualTo(
-            de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.CalendarWeek(
+            CalendarWeek(
                 13,
                 2016
             )
@@ -29,11 +29,11 @@ class CalendarWeekTest {
         val commitDateTime = OffsetDateTime.of(2016, 1, 3, 12, 0, 0, 0, zoneOffset)
 
         // when
-        val kw = de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.CalendarWeek.forDateTime(commitDateTime)
+        val kw = CalendarWeek.forDateTime(commitDateTime)
 
         // then
         assertThat(kw).isEqualTo(
-            de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.CalendarWeek(
+            CalendarWeek(
                 53,
                 2015
             )
@@ -45,11 +45,11 @@ class CalendarWeekTest {
         val commitDateTime = OffsetDateTime.of(2017, 1, 3, 12, 0, 0, 0, zoneOffset)
 
         // when
-        val kw = de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.CalendarWeek.forDateTime(commitDateTime)
+        val kw = CalendarWeek.forDateTime(commitDateTime)
 
         // then
         assertThat(kw).isEqualTo(
-            de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.CalendarWeek(
+            CalendarWeek(
                 1,
                 2017
             )
@@ -61,11 +61,11 @@ class CalendarWeekTest {
         val commitDateTime = OffsetDateTime.of(2018, 12, 31, 12, 0, 0, 0, zoneOffset)
 
         // when
-        val kw = de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.CalendarWeek.forDateTime(commitDateTime)
+        val kw = CalendarWeek.forDateTime(commitDateTime)
 
         // then
         assertThat(kw).isEqualTo(
-            de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.CalendarWeek(
+            CalendarWeek(
                 1,
                 2019
             )
@@ -77,21 +77,21 @@ class CalendarWeekTest {
         val commitDateTime2 = OffsetDateTime.of(2018, 1, 11, 12, 0, 0, 0, zoneOffset)
         val commitDateTime3 = OffsetDateTime.of(2017, 12, 13, 12, 0, 0, 0, zoneOffset)
 
-        val kw1 = de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.CalendarWeek.forDateTime(commitDateTime2)
-        val kw2 = de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.CalendarWeek.forDateTime(commitDateTime3)
+        val kw1 = CalendarWeek.forDateTime(commitDateTime2)
+        val kw2 = CalendarWeek.forDateTime(commitDateTime3)
 
         // then
         assertThat(
-            de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.CalendarWeek.numberOfWeeksBetween(kw2, kw1)
+            CalendarWeek.numberOfWeeksBetween(kw2, kw1)
         ).isEqualTo(4)
         assertThat(
-            de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.CalendarWeek.numberOfWeeksBetween(kw1, kw2)
+            CalendarWeek.numberOfWeeksBetween(kw1, kw2)
         ).isEqualTo(-4)
         assertThat(
-            de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.CalendarWeek.numberOfWeeksBetween(kw1, kw1)
+            CalendarWeek.numberOfWeeksBetween(kw1, kw1)
         ).isEqualTo(0)
         assertThat(
-            de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.CalendarWeek.numberOfWeeksBetween(kw2, kw2)
+            CalendarWeek.numberOfWeeksBetween(kw2, kw2)
         ).isEqualTo(0)
     }
 
@@ -100,21 +100,21 @@ class CalendarWeekTest {
         val commitDateTime2 = OffsetDateTime.of(2021, 1, 11, 12, 0, 0, 0, zoneOffset)
         val commitDateTime3 = OffsetDateTime.of(2020, 12, 13, 12, 0, 0, 0, zoneOffset)
 
-        val kw1 = de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.CalendarWeek.forDateTime(commitDateTime2)
-        val kw2 = de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.CalendarWeek.forDateTime(commitDateTime3)
+        val kw1 = CalendarWeek.forDateTime(commitDateTime2)
+        val kw2 = CalendarWeek.forDateTime(commitDateTime3)
 
         // then
         assertThat(
-            de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.CalendarWeek.numberOfWeeksBetween(kw2, kw1)
+            CalendarWeek.numberOfWeeksBetween(kw2, kw1)
         ).isEqualTo(5)
         assertThat(
-            de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.CalendarWeek.numberOfWeeksBetween(kw1, kw2)
+            CalendarWeek.numberOfWeeksBetween(kw1, kw2)
         ).isEqualTo(-5)
         assertThat(
-            de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.CalendarWeek.numberOfWeeksBetween(kw1, kw1)
+            CalendarWeek.numberOfWeeksBetween(kw1, kw1)
         ).isEqualTo(0)
         assertThat(
-            de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.CalendarWeek.numberOfWeeksBetween(kw2, kw2)
+            CalendarWeek.numberOfWeeksBetween(kw2, kw2)
         ).isEqualTo(0)
     }
 }

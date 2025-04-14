@@ -20,22 +20,22 @@ class GitLogNumstatRawParserStrategy : LogParserStrategy {
 
     override fun createLogLineCollector(): Collector<String, *, Stream<List<String>>> {
         return LogLineCollector.create(
-            de.maibornwolff.codecharta.analysers.parsers.gitlog.parser.git.GitLogNumstatRawParserStrategy.Companion.GIT_COMMIT_SEPARATOR_TEST
+            GIT_COMMIT_SEPARATOR_TEST
         )
     }
 
     override fun parseAuthor(commitLines: List<String>): String {
         val authorLine = commitLines.first { commitLine -> commitLine.startsWith(AUTHOR_ROW_INDICATOR) }
-        return de.maibornwolff.codecharta.analysers.parsers.gitlog.parser.git.AuthorParser.parseAuthor(authorLine)
+        return AuthorParser.parseAuthor(authorLine)
     }
 
     override fun parseModifications(commitLines: List<String>): List<Modification> {
         return commitLines.mapNotNull {
-            if (de.maibornwolff.codecharta.analysers.parsers.gitlog.parser.git.GitLogNumstatRawParserStrategy.Companion.isFileLine(
+            if (isFileLine(
                     it
                 )
             ) {
-                de.maibornwolff.codecharta.analysers.parsers.gitlog.parser.git.GitLogNumstatRawParserStrategy.Companion.parseModification(
+                parseModification(
                     it
                 )
             } else {
@@ -44,10 +44,10 @@ class GitLogNumstatRawParserStrategy : LogParserStrategy {
         }.groupingBy { it.currentFilename }
             .aggregate { _, aggregatedModification: Modification?, currentModification, _ ->
                 when (aggregatedModification) {
-                    null -> de.maibornwolff.codecharta.analysers.parsers.gitlog.parser.git.GitLogNumstatRawParserStrategy.Companion.mergeModifications(
+                    null -> mergeModifications(
                         currentModification
                     )
-                    else -> de.maibornwolff.codecharta.analysers.parsers.gitlog.parser.git.GitLogNumstatRawParserStrategy.Companion.mergeModifications(
+                    else -> mergeModifications(
                         aggregatedModification,
                         currentModification
                     )
@@ -57,7 +57,7 @@ class GitLogNumstatRawParserStrategy : LogParserStrategy {
 
     override fun parseDate(commitLines: List<String>): OffsetDateTime {
         val dateLine = commitLines.first { commitLine -> commitLine.startsWith(DATE_ROW_INDICATOR) }
-        return de.maibornwolff.codecharta.analysers.parsers.gitlog.parser.git.CommitDateParser.parseCommitDate(dateLine)
+        return CommitDateParser.parseCommitDate(dateLine)
     }
 
     override fun parseIsMergeCommit(commitLines: List<String>): Boolean {

@@ -5,7 +5,7 @@ import de.maibornwolff.codecharta.model.AttributeType
 import java.util.TreeSet
 
 class SuccessiveWeeksWithCommits : Metric {
-    private val weeksWithCommits = TreeSet<de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.CalendarWeek>()
+    private val weeksWithCommits = TreeSet<CalendarWeek>()
 
     override fun description(): String {
         return "Successive Weeks With Commits: maximal number of successive weeks with commits."
@@ -16,16 +16,16 @@ class SuccessiveWeeksWithCommits : Metric {
     }
 
     override fun registerCommit(commit: Commit) {
-        weeksWithCommits.add(de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.CalendarWeek.forDateTime(commit.commitDate))
+        weeksWithCommits.add(CalendarWeek.forDateTime(commit.commitDate))
     }
 
     override fun value(): Number {
         var numberOfSuccessiveWeeks = 0
 
         var temp = 0
-        var lastWeekWithCommit: de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.CalendarWeek? = null
+        var lastWeekWithCommit: CalendarWeek? = null
         for (week in weeksWithCommits) {
-            if (lastWeekWithCommit == null || de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.CalendarWeek.numberOfWeeksBetween(week, lastWeekWithCommit) == 1) {
+            if (lastWeekWithCommit == null || CalendarWeek.numberOfWeeksBetween(week, lastWeekWithCommit) == 1) {
                 temp += 1
             } else {
                 temp = 1

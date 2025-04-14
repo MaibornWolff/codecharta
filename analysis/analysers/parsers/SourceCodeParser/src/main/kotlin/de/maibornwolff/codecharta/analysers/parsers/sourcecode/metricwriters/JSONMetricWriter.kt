@@ -1,6 +1,7 @@
 package de.maibornwolff.codecharta.analysers.parsers.sourcecode.metricwriters
 
 import de.maibornwolff.codecharta.analysers.filters.mergefilter.MergeFilter
+import de.maibornwolff.codecharta.analysers.parsers.sourcecode.getAttributeDescriptors
 import de.maibornwolff.codecharta.analysers.parsers.sourcecode.metrics.FileMetricMap
 import de.maibornwolff.codecharta.analysers.parsers.sourcecode.metrics.ProjectMetrics
 import de.maibornwolff.codecharta.model.MutableNode
@@ -17,7 +18,7 @@ class JSONMetricWriter(private val outputStream: OutputStream, private val toCom
         projectMetrics.projectMetrics.forEach { addAsNode(it) }
 
         var project =
-            projectBuilder.addAttributeDescriptions(de.maibornwolff.codecharta.analysers.parsers.sourcecode.getAttributeDescriptors())
+            projectBuilder.addAttributeDescriptions(getAttributeDescriptors())
                 .build(cleanAttributeDescriptors = true)
         if (pipedProject != null) {
             project = MergeFilter.mergePipedWithCurrentProject(pipedProject, project)

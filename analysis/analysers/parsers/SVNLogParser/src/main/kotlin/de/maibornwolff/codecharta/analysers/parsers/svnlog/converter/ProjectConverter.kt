@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.analysers.parsers.svnlog.converter
 
+import de.maibornwolff.codecharta.analysers.parsers.svnlog.getAttributeDescriptors
 import de.maibornwolff.codecharta.analysers.parsers.svnlog.input.VersionControlledFile
 import de.maibornwolff.codecharta.analysers.parsers.svnlog.input.metrics.MetricsFactory
 import de.maibornwolff.codecharta.model.Edge
@@ -50,7 +51,7 @@ class ProjectConverter(private val containsAuthors: Boolean) {
         val metrics = metricsFactory.createMetrics()
         projectBuilder.addAttributeTypes(AttributeTypesFactory.createNodeAttributeTypes(metrics))
         projectBuilder.addAttributeTypes(AttributeTypesFactory.createEdgeAttributeTypes(metrics))
-        projectBuilder.addAttributeDescriptions(de.maibornwolff.codecharta.analysers.parsers.svnlog.getAttributeDescriptors())
+        projectBuilder.addAttributeDescriptions(getAttributeDescriptors())
 
         return projectBuilder.build(cleanAttributeDescriptors = true)
     }
