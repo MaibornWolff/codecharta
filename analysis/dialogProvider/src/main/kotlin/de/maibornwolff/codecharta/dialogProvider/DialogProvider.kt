@@ -214,7 +214,8 @@ fun Session.promptDefaultFileFolderInput(
     val messageExtension: String
     if (multiple) {
         pluralSuffix = "(s)"
-        hintText = "input1.txt, input2.log, ..."
+        val sampleFileExtension = if (fileExtensionList.isEmpty()) "" else fileExtensionList.first().extension
+        hintText = "input1$sampleFileExtension, input2$sampleFileExtension, ..."
         messageExtension = " Enter multiple files comma separated."
     } else {
         pluralSuffix = ""
