@@ -1,7 +1,7 @@
 package de.maibornwolff.codecharta.analysers.parsers.sourcecode.metricwriters
 
-import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.analysers.parsers.sourcecode.metrics.ProjectMetrics
+import de.maibornwolff.codecharta.model.Project
 import java.io.Writer
 
 class CSVMetricWriter(private val writer: Writer) : MetricWriter {

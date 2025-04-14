@@ -1,8 +1,8 @@
 package de.maibornwolff.codecharta.analysers.parsers.svnlog.input
 
-import de.maibornwolff.codecharta.model.Edge
 import de.maibornwolff.codecharta.analysers.parsers.svnlog.input.metrics.Metric
 import de.maibornwolff.codecharta.analysers.parsers.svnlog.input.metrics.MetricsFactory
+import de.maibornwolff.codecharta.model.Edge
 import java.util.Arrays
 
 class VersionControlledFile internal constructor(

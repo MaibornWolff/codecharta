@@ -5,9 +5,7 @@ import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.terminal.inmemory.press
 import com.varabyte.kotter.runtime.terminal.inmemory.type
 import com.varabyte.kotterx.test.foundation.testSession
-import de.maibornwolff.codecharta.analysers.parsers.rawtext.Dialog
 import de.maibornwolff.codecharta.analysers.parsers.rawtext.Dialog.Companion.collectAnalyserArgs
-import de.maibornwolff.codecharta.analysers.parsers.rawtext.RawTextParser
 import io.mockk.every
 import io.mockk.mockkObject
 import org.assertj.core.api.Assertions.assertThat

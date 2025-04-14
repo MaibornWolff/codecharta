@@ -1,9 +1,9 @@
 package de.maibornwolff.codecharta.analysers.parsers.svnlog
 
-import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.analysers.parsers.svnlog.converter.ProjectConverter
 import de.maibornwolff.codecharta.analysers.parsers.svnlog.input.metrics.MetricsFactory
 import de.maibornwolff.codecharta.analysers.parsers.svnlog.parser.svn.SVNLogParserStrategy
+import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import org.assertj.core.api.Assertions.assertThat

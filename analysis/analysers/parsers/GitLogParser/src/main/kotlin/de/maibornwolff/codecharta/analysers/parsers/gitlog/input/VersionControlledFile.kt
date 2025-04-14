@@ -1,8 +1,8 @@
 package de.maibornwolff.codecharta.analysers.parsers.gitlog.input
 
-import de.maibornwolff.codecharta.model.Edge
 import de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.Metric
 import de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.MetricsFactory
+import de.maibornwolff.codecharta.model.Edge
 import java.util.Arrays
 
 class VersionControlledFile internal constructor(

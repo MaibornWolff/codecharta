@@ -1,7 +1,7 @@
 package de.maibornwolff.codecharta.analysers.parsers.svnlog.converter
 
-import de.maibornwolff.codecharta.model.AttributeType
 import de.maibornwolff.codecharta.analysers.parsers.svnlog.input.metrics.MetricsFactory
+import de.maibornwolff.codecharta.model.AttributeType
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 

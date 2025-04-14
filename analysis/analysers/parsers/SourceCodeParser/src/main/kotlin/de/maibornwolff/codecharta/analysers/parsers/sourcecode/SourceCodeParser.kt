@@ -3,13 +3,13 @@ package de.maibornwolff.codecharta.analysers.parsers.sourcecode
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserDialogInterface
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
 import de.maibornwolff.codecharta.analysers.analyserinterface.util.CodeChartaConstants
+import de.maibornwolff.codecharta.analysers.parsers.sourcecode.metricwriters.CSVMetricWriter
+import de.maibornwolff.codecharta.analysers.parsers.sourcecode.metricwriters.JSONMetricWriter
+import de.maibornwolff.codecharta.analysers.parsers.sourcecode.metricwriters.MetricWriter
 import de.maibornwolff.codecharta.analysers.pipeableanalyserinterface.PipeableAnalyserInterface
 import de.maibornwolff.codecharta.analysers.pipeableanalyserinterface.PipeableAnalyserSyncFlag
 import de.maibornwolff.codecharta.model.AttributeDescriptor
 import de.maibornwolff.codecharta.model.AttributeGenerator
-import de.maibornwolff.codecharta.analysers.parsers.sourcecode.metricwriters.CSVMetricWriter
-import de.maibornwolff.codecharta.analysers.parsers.sourcecode.metricwriters.JSONMetricWriter
-import de.maibornwolff.codecharta.analysers.parsers.sourcecode.metricwriters.MetricWriter
 import de.maibornwolff.codecharta.serialization.FileExtension
 import de.maibornwolff.codecharta.serialization.OutputFileHandler
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer

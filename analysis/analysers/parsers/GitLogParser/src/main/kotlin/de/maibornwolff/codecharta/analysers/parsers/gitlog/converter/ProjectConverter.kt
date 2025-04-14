@@ -1,15 +1,15 @@
 package de.maibornwolff.codecharta.analysers.parsers.gitlog.converter
 
+import de.maibornwolff.codecharta.analysers.parsers.gitlog.input.VersionControlledFile
+import de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.MetricsFactory
+import de.maibornwolff.codecharta.analysers.parsers.gitlog.parser.VersionControlledFilesInGitProject
+import de.maibornwolff.codecharta.analysers.parsers.gitlog.parser.VersionControlledFilesList
 import de.maibornwolff.codecharta.model.Edge
 import de.maibornwolff.codecharta.model.MutableNode
 import de.maibornwolff.codecharta.model.NodeType
 import de.maibornwolff.codecharta.model.PathFactory
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.model.ProjectBuilder
-import de.maibornwolff.codecharta.analysers.parsers.gitlog.input.VersionControlledFile
-import de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.MetricsFactory
-import de.maibornwolff.codecharta.analysers.parsers.gitlog.parser.VersionControlledFilesInGitProject
-import de.maibornwolff.codecharta.analysers.parsers.gitlog.parser.VersionControlledFilesList
 
 /**
  * creates Projects from List of VersionControlledFiles

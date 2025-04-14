@@ -1,7 +1,7 @@
 package de.maibornwolff.codecharta.analysers.parsers.gitlog.converter
 
-import de.maibornwolff.codecharta.model.AttributeType
 import de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.MetricsFactory
+import de.maibornwolff.codecharta.model.AttributeType
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 

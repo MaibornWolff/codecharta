@@ -3,10 +3,10 @@ package de.maibornwolff.codecharta.analysers.parsers.gitlog
 import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.Session
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserDialogInterface
-import de.maibornwolff.codecharta.dialogProvider.promptConfirm
-import de.maibornwolff.codecharta.dialogProvider.promptInput
 import de.maibornwolff.codecharta.analysers.parsers.gitlog.subcommands.LogScanCommand
 import de.maibornwolff.codecharta.analysers.parsers.gitlog.subcommands.RepoScanCommand
+import de.maibornwolff.codecharta.dialogProvider.promptConfirm
+import de.maibornwolff.codecharta.dialogProvider.promptInput
 
 class Dialog {
     companion object : AnalyserDialogInterface {

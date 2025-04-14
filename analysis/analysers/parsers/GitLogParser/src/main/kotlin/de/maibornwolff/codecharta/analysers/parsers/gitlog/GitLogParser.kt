@@ -4,11 +4,6 @@ import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserDialogInte
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
 import de.maibornwolff.codecharta.analysers.analyserinterface.util.CodeChartaConstants
 import de.maibornwolff.codecharta.analysers.filters.mergefilter.MergeFilter
-import de.maibornwolff.codecharta.analysers.pipeableanalyserinterface.PipeableAnalyserInterface
-import de.maibornwolff.codecharta.analysers.pipeableanalyserinterface.PipeableAnalyserSyncFlag
-import de.maibornwolff.codecharta.model.AttributeDescriptor
-import de.maibornwolff.codecharta.model.AttributeGenerator
-import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.analysers.parsers.gitlog.InputFormatNames.GIT_LOG_NUMSTAT_RAW_REVERSED
 import de.maibornwolff.codecharta.analysers.parsers.gitlog.converter.ProjectConverter
 import de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.MetricsFactory
@@ -16,6 +11,11 @@ import de.maibornwolff.codecharta.analysers.parsers.gitlog.parser.LogParserStrat
 import de.maibornwolff.codecharta.analysers.parsers.gitlog.parser.git.GitLogNumstatRawParserStrategy
 import de.maibornwolff.codecharta.analysers.parsers.gitlog.subcommands.LogScanCommand
 import de.maibornwolff.codecharta.analysers.parsers.gitlog.subcommands.RepoScanCommand
+import de.maibornwolff.codecharta.analysers.pipeableanalyserinterface.PipeableAnalyserInterface
+import de.maibornwolff.codecharta.analysers.pipeableanalyserinterface.PipeableAnalyserSyncFlag
+import de.maibornwolff.codecharta.model.AttributeDescriptor
+import de.maibornwolff.codecharta.model.AttributeGenerator
+import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.util.ResourceSearchHelper

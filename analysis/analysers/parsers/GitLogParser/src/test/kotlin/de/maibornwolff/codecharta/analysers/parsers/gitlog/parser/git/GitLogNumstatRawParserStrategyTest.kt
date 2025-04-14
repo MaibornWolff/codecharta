@@ -32,14 +32,18 @@ class GitLogNumstatRawParserStrategyTest : ParserStrategyContractTest() {
     @Test
     fun parsesFilenameFromFileMetadataNumstat() {
         val fileMetadata = "0 10\t src/Main.java"
-        val modification = de.maibornwolff.codecharta.analysers.parsers.gitlog.parser.git.GitLogNumstatRawParserStrategy.parseModification(fileMetadata)
+        val modification = de.maibornwolff.codecharta.analysers.parsers.gitlog.parser.git.GitLogNumstatRawParserStrategy.parseModification(
+            fileMetadata
+        )
         assertThat(modification.currentFilename).isEqualTo("src/Main.java")
     }
 
     @Test
     fun parsesFilenameFromFileMetadataRaw() {
         val fileMetadata = ":100644 100644 afb6ce4... b1c5aa3... A\tsrc/Added.java"
-        val modification = de.maibornwolff.codecharta.analysers.parsers.gitlog.parser.git.GitLogNumstatRawParserStrategy.parseModification(fileMetadata)
+        val modification = de.maibornwolff.codecharta.analysers.parsers.gitlog.parser.git.GitLogNumstatRawParserStrategy.parseModification(
+            fileMetadata
+        )
         assertThat(modification.currentFilename).isEqualTo("src/Added.java")
     }
 

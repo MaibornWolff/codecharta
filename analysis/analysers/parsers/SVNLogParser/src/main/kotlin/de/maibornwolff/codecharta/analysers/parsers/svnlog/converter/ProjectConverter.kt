@@ -1,13 +1,13 @@
 package de.maibornwolff.codecharta.analysers.parsers.svnlog.converter
 
+import de.maibornwolff.codecharta.analysers.parsers.svnlog.input.VersionControlledFile
+import de.maibornwolff.codecharta.analysers.parsers.svnlog.input.metrics.MetricsFactory
 import de.maibornwolff.codecharta.model.Edge
 import de.maibornwolff.codecharta.model.MutableNode
 import de.maibornwolff.codecharta.model.NodeType
 import de.maibornwolff.codecharta.model.PathFactory
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.model.ProjectBuilder
-import de.maibornwolff.codecharta.analysers.parsers.svnlog.input.VersionControlledFile
-import de.maibornwolff.codecharta.analysers.parsers.svnlog.input.metrics.MetricsFactory
 
 /**
  * creates Projects from List of VersionControlledFiles

@@ -1,11 +1,11 @@
 package de.maibornwolff.codecharta.analysers.parsers.gitlog
 
-import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.analysers.parsers.gitlog.converter.ProjectConverter
 import de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.MetricsFactory
 import de.maibornwolff.codecharta.analysers.parsers.gitlog.parser.LogLineParser
 import de.maibornwolff.codecharta.analysers.parsers.gitlog.parser.LogParserStrategy
 import de.maibornwolff.codecharta.analysers.parsers.gitlog.parser.VersionControlledFilesList
+import de.maibornwolff.codecharta.model.Project
 import java.util.stream.Stream
 
 /**

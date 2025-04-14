@@ -1,8 +1,8 @@
 package de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics
 
-import de.maibornwolff.codecharta.model.Edge
 import de.maibornwolff.codecharta.analysers.parsers.gitlog.input.Commit
 import de.maibornwolff.codecharta.analysers.parsers.gitlog.input.Modification
+import de.maibornwolff.codecharta.model.Edge
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.time.OffsetDateTime
