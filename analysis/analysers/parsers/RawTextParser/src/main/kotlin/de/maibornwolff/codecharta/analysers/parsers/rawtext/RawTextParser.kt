@@ -3,8 +3,6 @@ package de.maibornwolff.codecharta.analysers.parsers.rawtext
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserDialogInterface
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
 import de.maibornwolff.codecharta.analysers.analyserinterface.util.CodeChartaConstants
-import de.maibornwolff.codecharta.analysers.pipeableanalyserinterface.PipeableAnalyserInterface
-import de.maibornwolff.codecharta.analysers.pipeableanalyserinterface.PipeableAnalyserSyncFlag
 import de.maibornwolff.codecharta.model.AttributeDescriptor
 import de.maibornwolff.codecharta.model.AttributeGenerator
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
@@ -29,7 +27,7 @@ class RawTextParser(
     private val input: InputStream = System.`in`,
     private val output: PrintStream = System.out,
     private val error: PrintStream = System.err
-) : AnalyserInterface, PipeableAnalyserInterface, AttributeGenerator {
+) : AnalyserInterface, AttributeGenerator {
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
 
@@ -99,7 +97,7 @@ class RawTextParser(
 
     @Throws(IOException::class)
     override fun call(): Unit? {
-        logPipeableAnalyserSyncSignal(PipeableAnalyserSyncFlag.SYNC_FLAG)
+        logExecutionStartedSyncSignal()
 
         if (!InputHelper.isInputValidAndNotNull(arrayOf(inputFile), canInputContainFolders = true)) {
             throw IllegalArgumentException("Input invalid file for RawTextParser, stopping execution...")
