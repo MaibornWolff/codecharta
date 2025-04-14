@@ -1,7 +1,7 @@
 package de.maibornwolff.codecharta.analysers.parsers.svnlog.converter
 
-import de.maibornwolff.codecharta.model.AttributeTypes
 import de.maibornwolff.codecharta.analysers.parsers.svnlog.input.metrics.Metric
+import de.maibornwolff.codecharta.model.AttributeTypes
 
 object AttributeTypesFactory {
     fun createNodeAttributeTypes(metricList: List<Metric>): AttributeTypes {

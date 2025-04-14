@@ -1,8 +1,8 @@
 package de.maibornwolff.codecharta.analysers.parsers.svnlog.input.metrics
 
-import de.maibornwolff.codecharta.model.Edge
 import de.maibornwolff.codecharta.analysers.parsers.svnlog.input.Commit
 import de.maibornwolff.codecharta.analysers.parsers.svnlog.input.Modification
+import de.maibornwolff.codecharta.model.Edge
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.time.OffsetDateTime

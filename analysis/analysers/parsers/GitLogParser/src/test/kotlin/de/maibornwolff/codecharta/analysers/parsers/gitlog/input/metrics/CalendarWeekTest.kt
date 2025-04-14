@@ -81,10 +81,18 @@ class CalendarWeekTest {
         val kw2 = de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.CalendarWeek.forDateTime(commitDateTime3)
 
         // then
-        assertThat(de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.CalendarWeek.numberOfWeeksBetween(kw2, kw1)).isEqualTo(4)
-        assertThat(de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.CalendarWeek.numberOfWeeksBetween(kw1, kw2)).isEqualTo(-4)
-        assertThat(de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.CalendarWeek.numberOfWeeksBetween(kw1, kw1)).isEqualTo(0)
-        assertThat(de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.CalendarWeek.numberOfWeeksBetween(kw2, kw2)).isEqualTo(0)
+        assertThat(
+            de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.CalendarWeek.numberOfWeeksBetween(kw2, kw1)
+        ).isEqualTo(4)
+        assertThat(
+            de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.CalendarWeek.numberOfWeeksBetween(kw1, kw2)
+        ).isEqualTo(-4)
+        assertThat(
+            de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.CalendarWeek.numberOfWeeksBetween(kw1, kw1)
+        ).isEqualTo(0)
+        assertThat(
+            de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.CalendarWeek.numberOfWeeksBetween(kw2, kw2)
+        ).isEqualTo(0)
     }
 
     @Test
@@ -96,9 +104,17 @@ class CalendarWeekTest {
         val kw2 = de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.CalendarWeek.forDateTime(commitDateTime3)
 
         // then
-        assertThat(de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.CalendarWeek.numberOfWeeksBetween(kw2, kw1)).isEqualTo(5)
-        assertThat(de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.CalendarWeek.numberOfWeeksBetween(kw1, kw2)).isEqualTo(-5)
-        assertThat(de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.CalendarWeek.numberOfWeeksBetween(kw1, kw1)).isEqualTo(0)
-        assertThat(de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.CalendarWeek.numberOfWeeksBetween(kw2, kw2)).isEqualTo(0)
+        assertThat(
+            de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.CalendarWeek.numberOfWeeksBetween(kw2, kw1)
+        ).isEqualTo(5)
+        assertThat(
+            de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.CalendarWeek.numberOfWeeksBetween(kw1, kw2)
+        ).isEqualTo(-5)
+        assertThat(
+            de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.CalendarWeek.numberOfWeeksBetween(kw1, kw1)
+        ).isEqualTo(0)
+        assertThat(
+            de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.CalendarWeek.numberOfWeeksBetween(kw2, kw2)
+        ).isEqualTo(0)
     }
 }

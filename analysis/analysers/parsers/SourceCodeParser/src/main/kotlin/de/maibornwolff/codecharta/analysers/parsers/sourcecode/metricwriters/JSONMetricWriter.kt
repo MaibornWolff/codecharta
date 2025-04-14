@@ -1,12 +1,12 @@
 package de.maibornwolff.codecharta.analysers.parsers.sourcecode.metricwriters
 
 import de.maibornwolff.codecharta.analysers.filters.mergefilter.MergeFilter
+import de.maibornwolff.codecharta.analysers.parsers.sourcecode.metrics.FileMetricMap
+import de.maibornwolff.codecharta.analysers.parsers.sourcecode.metrics.ProjectMetrics
 import de.maibornwolff.codecharta.model.MutableNode
 import de.maibornwolff.codecharta.model.PathFactory
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.model.ProjectBuilder
-import de.maibornwolff.codecharta.analysers.parsers.sourcecode.metrics.FileMetricMap
-import de.maibornwolff.codecharta.analysers.parsers.sourcecode.metrics.ProjectMetrics
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import java.io.OutputStream
 

@@ -1,7 +1,7 @@
 package de.maibornwolff.codecharta.analysers.parsers.svnlog.input.metrics
 
-import de.maibornwolff.codecharta.model.AttributeType
 import de.maibornwolff.codecharta.analysers.parsers.svnlog.input.Commit
+import de.maibornwolff.codecharta.model.AttributeType
 import java.time.OffsetDateTime
 
 class AgeInWeeks : Metric {

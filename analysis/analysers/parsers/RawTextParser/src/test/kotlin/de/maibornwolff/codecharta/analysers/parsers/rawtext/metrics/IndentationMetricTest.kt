@@ -1,7 +1,6 @@
 package de.maibornwolff.codecharta.analysers.parsers.rawtext.metrics
 
 import de.maibornwolff.codecharta.analysers.parsers.rawtext.RawTextParser
-import de.maibornwolff.codecharta.analysers.parsers.rawtext.metrics.IndentationMetric
 import de.maibornwolff.codecharta.util.Logger
 import io.mockk.every
 import io.mockk.mockkObject

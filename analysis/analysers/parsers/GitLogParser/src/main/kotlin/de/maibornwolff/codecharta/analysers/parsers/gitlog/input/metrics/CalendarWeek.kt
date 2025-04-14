@@ -25,7 +25,10 @@ internal data class CalendarWeek(private val week: Int, private val year: Int) :
             return de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.CalendarWeek(week, year)
         }
 
-        fun numberOfWeeksBetween(a: de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.CalendarWeek, b: de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.CalendarWeek): Int {
+        fun numberOfWeeksBetween(
+            a: de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.CalendarWeek,
+            b: de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.CalendarWeek
+        ): Int {
             return ChronoUnit.WEEKS.between(
                 de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.CalendarWeek.Companion.getWeekDate(
                     a.year,

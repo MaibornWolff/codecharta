@@ -1,7 +1,7 @@
 package de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics
 
-import de.maibornwolff.codecharta.model.AttributeType
 import de.maibornwolff.codecharta.analysers.parsers.gitlog.input.Commit
+import de.maibornwolff.codecharta.model.AttributeType
 
 class NumberOfAuthors : Metric {
     private val authors = mutableSetOf<String>()

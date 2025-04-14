@@ -19,7 +19,9 @@ class GitLogNumstatRawParserStrategy : LogParserStrategy {
     }
 
     override fun createLogLineCollector(): Collector<String, *, Stream<List<String>>> {
-        return LogLineCollector.create(de.maibornwolff.codecharta.analysers.parsers.gitlog.parser.git.GitLogNumstatRawParserStrategy.Companion.GIT_COMMIT_SEPARATOR_TEST)
+        return LogLineCollector.create(
+            de.maibornwolff.codecharta.analysers.parsers.gitlog.parser.git.GitLogNumstatRawParserStrategy.Companion.GIT_COMMIT_SEPARATOR_TEST
+        )
     }
 
     override fun parseAuthor(commitLines: List<String>): String {

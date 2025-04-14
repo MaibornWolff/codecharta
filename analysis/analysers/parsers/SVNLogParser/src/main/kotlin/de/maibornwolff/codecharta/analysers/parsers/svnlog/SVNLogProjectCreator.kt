@@ -1,10 +1,10 @@
 package de.maibornwolff.codecharta.analysers.parsers.svnlog
 
-import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.analysers.parsers.svnlog.converter.ProjectConverter
 import de.maibornwolff.codecharta.analysers.parsers.svnlog.input.metrics.MetricsFactory
 import de.maibornwolff.codecharta.analysers.parsers.svnlog.parser.LogLineParser
 import de.maibornwolff.codecharta.analysers.parsers.svnlog.parser.LogParserStrategy
+import de.maibornwolff.codecharta.model.Project
 import java.util.stream.Stream
 
 /**

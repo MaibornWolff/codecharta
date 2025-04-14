@@ -1,8 +1,8 @@
 package de.maibornwolff.codecharta.serialization
 
-import de.maibornwolff.codecharta.model.AttributeTypeSerializer
 import com.google.gson.GsonBuilder
 import de.maibornwolff.codecharta.model.AttributeType
+import de.maibornwolff.codecharta.model.AttributeTypeSerializer
 import de.maibornwolff.codecharta.model.BlacklistType
 import de.maibornwolff.codecharta.model.BlacklistTypeSerializer
 import de.maibornwolff.codecharta.model.Project
