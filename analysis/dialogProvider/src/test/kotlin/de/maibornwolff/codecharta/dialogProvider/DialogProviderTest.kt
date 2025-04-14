@@ -810,11 +810,46 @@ class DialogProviderTest {
             val testFilePath = "src/test/resources"
             val inputFileName = "$testFilePath/valid.log"
             val testMessage = "What are the input file(s). Enter multiple files comma separated."
-            val multiTestHint = "input1.txt, input2.log, ..."
+            val multiTestHint = "input1, input2, ..."
 
             testSession { terminal ->
                 result =
                     promptDefaultFileFolderInput(InputType.FILE, listOf(), multiple = true, onInputReady = {
+                        terminal.assertMatches {
+                            bold {
+                                green { text("? ") }
+                                textLine(testMessage)
+                            }
+                            text("> ")
+                            black(isBright = true) {
+                                invert { text(multiTestHint[0]) }
+                                text("${multiTestHint.drop(1)} ")
+                            }
+                        }
+                        terminal.type(inputFileName)
+                        terminal.press(Keys.ENTER)
+                    })
+                assertThat(terminal.resolveRerenders().stripFormatting()).containsExactly(
+                    "? $testMessage",
+                    "> $inputFileName ",
+                    ""
+                )
+
+                assertThat(result).isEqualTo(inputFileName)
+            }
+        }
+
+        @Test
+        fun `should prompt plural if multiple is set with file extension`() {
+            var result: String
+            val testFilePath = "src/test/resources"
+            val inputFileName = "$testFilePath/validExtension.cc.json"
+            val testMessage = "What are the input [.cc.json] file(s). Enter multiple files comma separated."
+            val multiTestHint = "input1.cc.json, input2.cc.json, ..."
+
+            testSession { terminal ->
+                result =
+                    promptDefaultFileFolderInput(InputType.FILE, listOf(FileExtension.CCJSON), multiple = true, onInputReady = {
                         terminal.assertMatches {
                             bold {
                                 green { text("? ") }
