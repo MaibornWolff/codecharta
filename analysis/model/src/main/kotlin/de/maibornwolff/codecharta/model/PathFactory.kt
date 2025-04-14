@@ -6,7 +6,7 @@ object PathFactory {
             path.split(pathSeparator).dropLastWhile {
                 it.isEmpty()
             }.filter {
-                !it.isEmpty()
+                it.isNotEmpty()
             }
         )
     }

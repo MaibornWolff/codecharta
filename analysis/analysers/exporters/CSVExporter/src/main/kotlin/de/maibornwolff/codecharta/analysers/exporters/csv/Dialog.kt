@@ -12,9 +12,10 @@ import de.maibornwolff.codecharta.serialization.FileExtension
 class Dialog {
     companion object : AnalyserDialogInterface {
         override fun collectAnalyserArgs(session: Session): List<String> {
-            val inputFileName: String = session.promptDefaultFileFolderInput(
+            val inputFileNames: String = session.promptDefaultFileFolderInput(
                 inputType = InputType.FOLDER_AND_FILE,
                 fileExtensionList = listOf(FileExtension.CCJSON, FileExtension.CCGZ),
+                multiple = true,
                 onInputReady = testCallback()
             )
 
@@ -31,8 +32,7 @@ class Dialog {
                     onInputReady = testCallback()
                 )
 
-            return listOfNotNull(
-                inputFileName,
+            return inputFileNames.split(",").map { it.trim() } + listOfNotNull(
                 "--output-file=$outputFileName",
                 "--depth-of-hierarchy=$maxHierarchy"
             )

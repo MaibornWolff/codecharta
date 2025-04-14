@@ -17,10 +17,11 @@ import java.io.File
 class Dialog {
     companion object : AnalyserDialogInterface {
         override fun collectAnalyserArgs(session: Session): List<String> {
-            val inputDataName: String =
+            val inputFileNames: String =
                 session.promptDefaultFileFolderInput(
                     inputType = InputType.FOLDER_AND_FILE,
                     fileExtensionList = listOf(FileExtension.CCJSON, FileExtension.CCGZ),
+                    multiple = true,
                     onInputReady = testCallback()
                 )
 
@@ -96,8 +97,7 @@ class Dialog {
                     onInputReady = testCallback()
                 )
 
-            val basicMergeConfig = listOf(
-                inputDataName,
+            val basicMergeConfig = inputFileNames.split(",").map { it.trim() } + listOf(
                 "--add-missing=$addMissing",
                 "--recursive=${!leafFlag}",
                 "--leaf=$leafFlag",

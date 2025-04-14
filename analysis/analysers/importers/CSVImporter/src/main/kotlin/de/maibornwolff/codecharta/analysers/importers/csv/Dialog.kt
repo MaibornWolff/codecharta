@@ -12,9 +12,10 @@ import de.maibornwolff.codecharta.serialization.FileExtension
 class Dialog {
     companion object : AnalyserDialogInterface {
         override fun collectAnalyserArgs(session: Session): List<String> {
-            val inputFileName: String = session.promptDefaultFileFolderInput(
+            val inputFileNames: String = session.promptDefaultFileFolderInput(
                 inputType = InputType.FILE,
                 fileExtensionList = listOf(FileExtension.CSV),
+                multiple = true,
                 onInputReady = testCallback()
             )
 
@@ -48,8 +49,7 @@ class Dialog {
                 onInputReady = testCallback()
             )
 
-            return listOfNotNull(
-                inputFileName,
+            return inputFileNames.split(",").map { it.trim() } + listOfNotNull(
                 "--output-file=$outputFileName",
                 "--path-column-name=$pathColumnName",
                 "--delimiter=$delimiter",

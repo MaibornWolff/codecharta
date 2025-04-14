@@ -204,45 +204,61 @@ private fun getSelectedChoices(choices: List<String>, selection: List<Boolean>):
 fun Session.promptDefaultFileFolderInput(
     inputType: InputType,
     fileExtensionList: List<FileExtension>,
+    multiple: Boolean = false,
     onInputReady: suspend RunScope.() -> Unit
 ): String {
-    val messageFileExtension = "[${fileExtensionList.map { fileExtension -> fileExtension.extension }.joinToString(", ")}]"
+    val messageFileExtension = "[${fileExtensionList.joinToString(", ") { fileExtension -> fileExtension.extension }}]"
+
+    val pluralSuffix: String
+    val hintText: String
+    val messageExtension: String
+    if (multiple) {
+        pluralSuffix = "(s)"
+        val sampleFileExtension = if (fileExtensionList.isEmpty()) "" else fileExtensionList.first().extension
+        hintText = "input1$sampleFileExtension, input2$sampleFileExtension, ..."
+        messageExtension = " Enter multiple files comma separated."
+    } else {
+        pluralSuffix = ""
+        hintText = Paths.get("").toAbsolutePath().toString()
+        messageExtension = ""
+    }
+
     val inputMessage: String =
         if (fileExtensionList.isEmpty()) {
             when (inputType) {
                 InputType.FOLDER -> {
-                    "folder"
+                    "folder$pluralSuffix"
                 }
                 InputType.FILE -> {
-                    "file"
+                    "file$pluralSuffix"
                 }
                 else -> {
-                    "folder or file"
+                    "folder$pluralSuffix or file$pluralSuffix"
                 }
             }
         } else {
             when (inputType) {
                 InputType.FOLDER -> {
-                    "folder of $messageFileExtension files"
+                    "folder$pluralSuffix of $messageFileExtension files"
                 }
                 InputType.FILE -> {
-                    "$messageFileExtension file"
+                    "$messageFileExtension file$pluralSuffix"
                 }
                 else -> {
-                    "folder or $messageFileExtension file"
+                    "folder$pluralSuffix or $messageFileExtension file$pluralSuffix"
                 }
             }
         }
-    val currentWorkingDirectory = Paths.get("").toAbsolutePath().toString()
 
     return promptInput(
-        message = "What is the input $inputMessage",
-        hint = currentWorkingDirectory,
+        message = "What ${if (multiple) "are" else "is"} the input $inputMessage.$messageExtension",
+        hint = hintText,
         allowEmptyInput = false,
         invalidInputMessage = "Please input a valid ${inputType.inputType}",
         inputValidator = InputValidator.isFileOrFolderValid(
             inputType,
-            fileExtensionList
+            fileExtensionList,
+            multiple = multiple
         ),
         onInputReady = onInputReady
     )
