@@ -4,7 +4,6 @@ import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserDialogInte
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
 import de.maibornwolff.codecharta.analysers.analyserinterface.util.CodeChartaConstants
 import de.maibornwolff.codecharta.analysers.filters.mergefilter.MergeFilter
-import de.maibornwolff.codecharta.analysers.pipeableanalyserinterface.PipeableAnalyserInterface
 import de.maibornwolff.codecharta.model.AttributeDescriptor
 import de.maibornwolff.codecharta.model.AttributeGenerator
 import de.maibornwolff.codecharta.model.ProjectBuilder
@@ -30,7 +29,7 @@ class CoverageImporter(
     private val input: InputStream = System.`in`,
     private val output: PrintStream = System.out,
     private val error: PrintStream = System.err
-) : AnalyserInterface, PipeableAnalyserInterface, AttributeGenerator {
+) : AnalyserInterface, AttributeGenerator {
     @CommandLine.Option(
         names = ["-l", "--language"],
         description = ["Specify the language of the coverage report (e.g., javascript, typescript, js, ts)"],
