@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.analysers.parsers.gitlog.converter
 
+import de.maibornwolff.codecharta.analysers.parsers.gitlog.getAttributeDescriptors
 import de.maibornwolff.codecharta.analysers.parsers.gitlog.input.VersionControlledFile
 import de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.MetricsFactory
 import de.maibornwolff.codecharta.analysers.parsers.gitlog.parser.VersionControlledFilesInGitProject
@@ -63,7 +64,7 @@ class ProjectConverter(private val containsAuthors: Boolean) {
         val metrics = metricsFactory.createMetrics()
         projectBuilder.addAttributeTypes(AttributeTypesFactory.createNodeAttributeTypes(metrics))
         projectBuilder.addAttributeTypes(AttributeTypesFactory.createEdgeAttributeTypes(metrics))
-        projectBuilder.addAttributeDescriptions(de.maibornwolff.codecharta.analysers.parsers.gitlog.getAttributeDescriptors())
+        projectBuilder.addAttributeDescriptions(getAttributeDescriptors())
 
         return projectBuilder.build()
     }

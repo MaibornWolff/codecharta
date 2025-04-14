@@ -5,7 +5,7 @@ import de.maibornwolff.codecharta.model.AttributeType
 import java.util.TreeSet
 
 class RangeOfWeeksWithCommits : Metric {
-    private val weeksWithCommits = TreeSet<de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.CalendarWeek>()
+    private val weeksWithCommits = TreeSet<CalendarWeek>()
 
     override fun description(): String {
         return "Range Of Weeks With Commits: Range in Weeks between first and last commit of this file."
@@ -16,14 +16,14 @@ class RangeOfWeeksWithCommits : Metric {
     }
 
     override fun registerCommit(commit: Commit) {
-        weeksWithCommits.add(de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.CalendarWeek.forDateTime(commit.commitDate))
+        weeksWithCommits.add(CalendarWeek.forDateTime(commit.commitDate))
     }
 
     override fun value(): Number {
         return if (weeksWithCommits.size < 1) {
             0
         } else {
-            1 + de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.CalendarWeek.numberOfWeeksBetween(weeksWithCommits.last(), weeksWithCommits.first())
+            1 + CalendarWeek.numberOfWeeksBetween(weeksWithCommits.last(), weeksWithCommits.first())
         }
     }
 

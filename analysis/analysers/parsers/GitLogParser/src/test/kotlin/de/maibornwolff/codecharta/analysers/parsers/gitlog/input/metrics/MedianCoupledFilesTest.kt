@@ -18,7 +18,7 @@ class MedianCoupledFilesTest {
     @Test
     fun should_have_initial_value_zero() {
 // when
-        val metric = de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.MedianCoupledFiles()
+        val metric = MedianCoupledFiles()
 
         // then
         assertThat(metric.value()).isEqualTo(0.0)
@@ -26,12 +26,12 @@ class MedianCoupledFilesTest {
 
     @Test
     fun should_not_increase_on_commits_of_same_file() { // given
-        val metric = de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.MedianCoupledFiles()
+        val metric = MedianCoupledFiles()
 
         // when
         registerModifications(
             metric,
-            de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.MedianCoupledFilesTest.Companion.FILENAME
+            MedianCoupledFilesTest.Companion.FILENAME
         )
 
         // then
@@ -40,13 +40,13 @@ class MedianCoupledFilesTest {
 
     @Test
     fun should_increase_on_commit_of_several_files() { // given
-        val metric = de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.MedianCoupledFiles()
+        val metric = MedianCoupledFiles()
 
         // when
         registerModifications(
             metric,
-            de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.MedianCoupledFilesTest.Companion.FILENAME,
-            de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.MedianCoupledFilesTest.Companion.COUPLED_FILE1
+            MedianCoupledFilesTest.Companion.FILENAME,
+            MedianCoupledFilesTest.Companion.COUPLED_FILE1
         )
 
         // then
@@ -55,17 +55,17 @@ class MedianCoupledFilesTest {
 
     @Test
     fun should_increase_by_two_modification() { // given
-        val metric = de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.MedianCoupledFiles()
+        val metric = MedianCoupledFiles()
 
         // when
         registerModifications(
             metric,
-            de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.MedianCoupledFilesTest.Companion.FILENAME,
-            de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.MedianCoupledFilesTest.Companion.COUPLED_FILE1
+            MedianCoupledFilesTest.Companion.FILENAME,
+            MedianCoupledFilesTest.Companion.COUPLED_FILE1
         )
         registerModifications(
             metric,
-            de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.MedianCoupledFilesTest.Companion.FILENAME
+            MedianCoupledFilesTest.Companion.FILENAME
         )
 
         // then
@@ -74,38 +74,35 @@ class MedianCoupledFilesTest {
 
     @Test
     fun should_increase_by_three_modification() { // given
-        val metric = de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.MedianCoupledFiles()
+        val metric = MedianCoupledFiles()
 
         // when
         registerModifications(
             metric,
-            de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.MedianCoupledFilesTest.Companion.FILENAME,
-            de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.MedianCoupledFilesTest.Companion.COUPLED_FILE1
+            MedianCoupledFilesTest.Companion.FILENAME,
+            MedianCoupledFilesTest.Companion.COUPLED_FILE1
         )
         registerModifications(
             metric,
-            de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.MedianCoupledFilesTest.Companion.FILENAME,
-            de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.MedianCoupledFilesTest.Companion.COUPLED_FILE2
+            MedianCoupledFilesTest.Companion.FILENAME,
+            MedianCoupledFilesTest.Companion.COUPLED_FILE2
         )
         registerModifications(
             metric,
-            de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.MedianCoupledFilesTest.Companion.FILENAME
+            MedianCoupledFilesTest.Companion.FILENAME
         )
 
         // then
         assertThat(metric.value()).isEqualTo(1.0)
     }
 
-    private fun registerModifications(
-        metric: de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.Metric,
-        vararg filenames: String
-    ) {
+    private fun registerModifications(metric: Metric, vararg filenames: String) {
         val modificationList = Arrays.stream(filenames).map { Modification(it) }.collect(Collectors.toList())
 
         val commit = Commit("author", modificationList, OffsetDateTime.now())
         metric.registerCommit(commit)
 
-        modificationList.stream().filter { mod -> de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.MedianCoupledFilesTest.Companion.FILENAME == mod.currentFilename }.findFirst()
+        modificationList.stream().filter { mod -> MedianCoupledFilesTest.Companion.FILENAME == mod.currentFilename }.findFirst()
             .ifPresent { metric.registerModification(it) }
     }
 }

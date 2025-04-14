@@ -5,7 +5,7 @@ import de.maibornwolff.codecharta.model.AttributeType
 import java.time.OffsetDateTime
 
 class AgeInWeeks : Metric {
-    private var firstCommit: de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.CalendarWeek = de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.CalendarWeek.forDateTime(
+    private var firstCommit: CalendarWeek = CalendarWeek.forDateTime(
         OffsetDateTime.now()
     )
 
@@ -18,12 +18,12 @@ class AgeInWeeks : Metric {
     }
 
     override fun registerCommit(commit: Commit) {
-        firstCommit = de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.CalendarWeek.forDateTime(commit.commitDate)
+        firstCommit = CalendarWeek.forDateTime(commit.commitDate)
     }
 
     override fun value(): Number {
-        val thisWeek = de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.CalendarWeek.forDateTime(OffsetDateTime.now())
-        return de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.CalendarWeek.numberOfWeeksBetween(firstCommit, thisWeek)
+        val thisWeek = CalendarWeek.forDateTime(OffsetDateTime.now())
+        return CalendarWeek.numberOfWeeksBetween(firstCommit, thisWeek)
     }
 
     override fun attributeType(): AttributeType {

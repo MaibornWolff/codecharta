@@ -10,8 +10,8 @@ import java.util.function.Function
 import java.util.stream.Stream
 
 class GitLogNumstatRawParserStrategyTest : ParserStrategyContractTest() {
-    private var parserStrategy: de.maibornwolff.codecharta.analysers.parsers.gitlog.parser.git.GitLogNumstatRawParserStrategy =
-        de.maibornwolff.codecharta.analysers.parsers.gitlog.parser.git.GitLogNumstatRawParserStrategy()
+    private var parserStrategy: GitLogNumstatRawParserStrategy =
+        GitLogNumstatRawParserStrategy()
 
     override val fullCommit: List<String>
         get() = FULL_COMMIT
@@ -32,7 +32,7 @@ class GitLogNumstatRawParserStrategyTest : ParserStrategyContractTest() {
     @Test
     fun parsesFilenameFromFileMetadataNumstat() {
         val fileMetadata = "0 10\t src/Main.java"
-        val modification = de.maibornwolff.codecharta.analysers.parsers.gitlog.parser.git.GitLogNumstatRawParserStrategy.parseModification(
+        val modification = GitLogNumstatRawParserStrategy.parseModification(
             fileMetadata
         )
         assertThat(modification.currentFilename).isEqualTo("src/Main.java")
@@ -41,7 +41,7 @@ class GitLogNumstatRawParserStrategyTest : ParserStrategyContractTest() {
     @Test
     fun parsesFilenameFromFileMetadataRaw() {
         val fileMetadata = ":100644 100644 afb6ce4... b1c5aa3... A\tsrc/Added.java"
-        val modification = de.maibornwolff.codecharta.analysers.parsers.gitlog.parser.git.GitLogNumstatRawParserStrategy.parseModification(
+        val modification = GitLogNumstatRawParserStrategy.parseModification(
             fileMetadata
         )
         assertThat(modification.currentFilename).isEqualTo("src/Added.java")
