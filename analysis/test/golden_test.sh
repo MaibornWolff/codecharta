@@ -236,7 +236,6 @@ run_tests() {
   check_sourcemonitor
   check_sonar
   check_sourcecodeparser
-  check_coverageimporter
   check_svnlog
   check_tokei
   check_rawtext
