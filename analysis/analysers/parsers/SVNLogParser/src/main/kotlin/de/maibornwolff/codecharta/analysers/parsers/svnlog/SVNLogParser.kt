@@ -9,8 +9,6 @@ import de.maibornwolff.codecharta.analysers.parsers.svnlog.converter.ProjectConv
 import de.maibornwolff.codecharta.analysers.parsers.svnlog.input.metrics.MetricsFactory
 import de.maibornwolff.codecharta.analysers.parsers.svnlog.parser.LogParserStrategy
 import de.maibornwolff.codecharta.analysers.parsers.svnlog.parser.svn.SVNLogParserStrategy
-import de.maibornwolff.codecharta.analysers.pipeableanalyserinterface.PipeableAnalyserInterface
-import de.maibornwolff.codecharta.analysers.pipeableanalyserinterface.PipeableAnalyserSyncFlag
 import de.maibornwolff.codecharta.model.AttributeDescriptor
 import de.maibornwolff.codecharta.model.AttributeGenerator
 import de.maibornwolff.codecharta.model.Project
@@ -37,7 +35,7 @@ class SVNLogParser(
     private val input: InputStream = System.`in`,
     private val output: PrintStream = System.out,
     private val error: PrintStream = System.err
-) : AnalyserInterface, PipeableAnalyserInterface, AttributeGenerator {
+) : AnalyserInterface, AttributeGenerator {
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
 
@@ -110,7 +108,7 @@ class SVNLogParser(
 
     @Throws(IOException::class)
     override fun call(): Unit? {
-        logPipeableAnalyserSyncSignal(PipeableAnalyserSyncFlag.SYNC_FLAG)
+        logExecutionStartedSyncSignal()
 
         if (!InputHelper.isInputValidAndNotNull(arrayOf(file), canInputContainFolders = false)) {
             throw IllegalArgumentException("Input invalid file for SVNLogParser, stopping execution...")

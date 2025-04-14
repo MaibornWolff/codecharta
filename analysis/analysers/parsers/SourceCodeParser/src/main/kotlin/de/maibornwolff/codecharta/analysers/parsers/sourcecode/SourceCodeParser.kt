@@ -6,8 +6,6 @@ import de.maibornwolff.codecharta.analysers.analyserinterface.util.CodeChartaCon
 import de.maibornwolff.codecharta.analysers.parsers.sourcecode.metricwriters.CSVMetricWriter
 import de.maibornwolff.codecharta.analysers.parsers.sourcecode.metricwriters.JSONMetricWriter
 import de.maibornwolff.codecharta.analysers.parsers.sourcecode.metricwriters.MetricWriter
-import de.maibornwolff.codecharta.analysers.pipeableanalyserinterface.PipeableAnalyserInterface
-import de.maibornwolff.codecharta.analysers.pipeableanalyserinterface.PipeableAnalyserSyncFlag
 import de.maibornwolff.codecharta.model.AttributeDescriptor
 import de.maibornwolff.codecharta.model.AttributeGenerator
 import de.maibornwolff.codecharta.serialization.FileExtension
@@ -38,7 +36,7 @@ class SourceCodeParser(
     private val output: PrintStream,
     private val input: InputStream = System.`in`,
     private val error: PrintStream = System.err
-) : AnalyserInterface, PipeableAnalyserInterface, AttributeGenerator {
+) : AnalyserInterface, AttributeGenerator {
     // we need this constructor because ccsh requires an empty constructor
     constructor() : this(System.out)
 
@@ -116,7 +114,7 @@ class SourceCodeParser(
 
     @Throws(IOException::class)
     override fun call(): Unit? {
-        logPipeableAnalyserSyncSignal(PipeableAnalyserSyncFlag.SYNC_FLAG)
+        logExecutionStartedSyncSignal()
 
         require(InputHelper.isInputValidAndNotNull(arrayOf(file), canInputContainFolders = true)) {
             "Input invalid file for SourceCodeParser, stopping execution..."

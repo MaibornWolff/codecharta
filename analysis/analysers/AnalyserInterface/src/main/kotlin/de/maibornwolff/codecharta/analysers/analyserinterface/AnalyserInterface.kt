@@ -17,4 +17,10 @@ interface AnalyserInterface : Callable<Unit?> {
     fun getAnalyserDescription(): String {
         return description
     }
+
+    // print 12 invisible characters so signal to other parsers that execution has started
+    fun logExecutionStartedSyncSignal() {
+        val syncFlag = "\u000E\u000E\u000E\u000E\u000E\u000E\u000E\u000E\u000E\u000E\u000E\u000E"
+        print(syncFlag)
+    }
 }
