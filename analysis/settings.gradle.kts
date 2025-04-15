@@ -5,7 +5,7 @@ plugins {
 include("ccsh")
 include("dialogProvider")
 include("model")
-include("analysers:AnalyserInterface", "analysers:PipeableAnalyserInterface")
+include("analysers:AnalyserInterface")
 include("analysers:filters:MergeFilter", "analysers:filters:EdgeFilter", "analysers:filters:StructureModifier")
 include(
     "analysers:importers:CodeMaatImporter",
@@ -28,5 +28,4 @@ include(
 )
 
 rootProject.name = "codecharta"
-findProject(":analysers:PipeableAnalyserInterface")?.name = "PipeableAnalyserInterface"
 include("analysers")

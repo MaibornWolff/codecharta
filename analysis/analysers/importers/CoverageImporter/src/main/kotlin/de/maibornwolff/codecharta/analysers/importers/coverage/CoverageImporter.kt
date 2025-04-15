@@ -23,7 +23,7 @@ import java.util.Locale
 @CommandLine.Command(
     name = CoverageImporter.NAME,
     description = [CoverageImporter.DESCRIPTION],
-    footer = [CodeChartaConstants.General.GENERIC_FOOTER]
+    footer = [CodeChartaConstants.GENERIC_FOOTER]
 )
 class CoverageImporter(
     private val input: InputStream = System.`in`,

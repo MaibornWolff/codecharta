@@ -55,7 +55,7 @@ import kotlin.system.exitProcess
         RawTextParser::class
     ],
     versionProvider = Ccsh.ManifestVersionProvider::class,
-    footer = [CodeChartaConstants.General.GENERIC_FOOTER]
+    footer = [CodeChartaConstants.GENERIC_FOOTER]
 )
 class Ccsh : Callable<Unit?> {
     @CommandLine.Option(

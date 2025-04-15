@@ -90,7 +90,7 @@ class SourceCodeParser(
         const val DESCRIPTION = "generates cc.json from source code"
         const val FOOTER =
             "This program uses the SonarJava, which is licensed under the GNU Lesser General Public Library, version 3.\n" +
-                CodeChartaConstants.General.GENERIC_FOOTER
+                CodeChartaConstants.GENERIC_FOOTER
 
         @JvmStatic
         fun main(args: Array<String>) {

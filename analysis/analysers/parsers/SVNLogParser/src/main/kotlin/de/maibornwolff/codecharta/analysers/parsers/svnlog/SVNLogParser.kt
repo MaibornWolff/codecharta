@@ -29,7 +29,7 @@ import java.util.stream.Stream
 @CommandLine.Command(
     name = SVNLogParser.NAME,
     description = [SVNLogParser.DESCRIPTION],
-    footer = [CodeChartaConstants.General.GENERIC_FOOTER]
+    footer = [CodeChartaConstants.GENERIC_FOOTER]
 )
 class SVNLogParser(
     private val input: InputStream = System.`in`,

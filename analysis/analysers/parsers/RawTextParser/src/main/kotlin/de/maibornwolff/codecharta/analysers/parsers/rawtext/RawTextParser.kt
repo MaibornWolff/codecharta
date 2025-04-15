@@ -21,7 +21,7 @@ import java.io.PrintStream
 @CommandLine.Command(
     name = RawTextParser.NAME,
     description = [RawTextParser.DESCRIPTION],
-    footer = [CodeChartaConstants.General.GENERIC_FOOTER]
+    footer = [CodeChartaConstants.GENERIC_FOOTER]
 )
 class RawTextParser(
     private val input: InputStream = System.`in`,

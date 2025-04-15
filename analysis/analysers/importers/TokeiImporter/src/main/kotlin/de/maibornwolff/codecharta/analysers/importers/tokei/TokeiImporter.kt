@@ -30,7 +30,7 @@ import java.io.PrintWriter
 @CommandLine.Command(
     name = TokeiImporter.NAME,
     description = [TokeiImporter.DESCRIPTION],
-    footer = [CodeChartaConstants.General.GENERIC_FOOTER]
+    footer = [CodeChartaConstants.GENERIC_FOOTER]
 )
 class TokeiImporter(
     private val input: InputStream = System.`in`,

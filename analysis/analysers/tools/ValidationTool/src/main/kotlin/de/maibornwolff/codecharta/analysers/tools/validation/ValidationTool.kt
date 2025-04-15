@@ -11,7 +11,7 @@ import java.io.FileInputStream
 @CommandLine.Command(
     name = ValidationTool.NAME,
     description = [ValidationTool.DESCRIPTION],
-    footer = [CodeChartaConstants.General.GENERIC_FOOTER]
+    footer = [CodeChartaConstants.GENERIC_FOOTER]
 )
 class ValidationTool : AnalyserInterface {
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
