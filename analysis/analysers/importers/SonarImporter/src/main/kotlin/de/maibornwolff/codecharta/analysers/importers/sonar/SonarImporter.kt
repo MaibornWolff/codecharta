@@ -23,7 +23,7 @@ import java.net.URL
 @CommandLine.Command(
     name = SonarImporter.NAME,
     description = [SonarImporter.DESCRIPTION],
-    footer = [CodeChartaConstants.General.GENERIC_FOOTER]
+    footer = [CodeChartaConstants.GENERIC_FOOTER]
 )
 class SonarImporter(
     private val input: InputStream = System.`in`,

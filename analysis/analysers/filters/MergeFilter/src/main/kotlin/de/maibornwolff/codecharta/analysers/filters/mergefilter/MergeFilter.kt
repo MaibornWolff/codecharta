@@ -19,7 +19,7 @@ import java.io.PrintStream
 @CommandLine.Command(
     name = MergeFilter.NAME,
     description = [MergeFilter.DESCRIPTION],
-    footer = [CodeChartaConstants.General.GENERIC_FOOTER]
+    footer = [CodeChartaConstants.GENERIC_FOOTER]
 )
 class MergeFilter(
     private val output: PrintStream = System.out

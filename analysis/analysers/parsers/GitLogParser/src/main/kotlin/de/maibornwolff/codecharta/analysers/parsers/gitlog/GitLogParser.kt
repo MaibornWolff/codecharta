@@ -31,7 +31,7 @@ import java.util.stream.Stream
     name = GitLogParser.NAME,
     description = [GitLogParser.DESCRIPTION],
     subcommands = [LogScanCommand::class, RepoScanCommand::class],
-    footer = [CodeChartaConstants.General.GENERIC_FOOTER]
+    footer = [CodeChartaConstants.GENERIC_FOOTER]
 )
 class GitLogParser(
     private val input: InputStream = System.`in`,

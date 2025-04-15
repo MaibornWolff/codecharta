@@ -15,7 +15,7 @@ import java.io.PrintStream
 @CommandLine.Command(
     name = InspectionTool.NAME,
     description = [InspectionTool.DESCRIPTION],
-    footer = [CodeChartaConstants.General.GENERIC_FOOTER]
+    footer = [CodeChartaConstants.GENERIC_FOOTER]
 )
 class InspectionTool(
     private val input: InputStream = System.`in`,

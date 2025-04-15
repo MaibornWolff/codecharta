@@ -18,7 +18,7 @@ import java.io.PrintStream
 @CommandLine.Command(
     name = SourceMonitorImporter.NAME,
     description = [SourceMonitorImporter.DESCRIPTION],
-    footer = [CodeChartaConstants.General.GENERIC_FOOTER]
+    footer = [CodeChartaConstants.GENERIC_FOOTER]
 )
 class SourceMonitorImporter(
     private val output: PrintStream = System.out

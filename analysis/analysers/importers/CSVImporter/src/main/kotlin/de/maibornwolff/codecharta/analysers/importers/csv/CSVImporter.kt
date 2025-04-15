@@ -16,7 +16,7 @@ import java.io.PrintStream
 @CommandLine.Command(
     name = CSVImporter.NAME,
     description = [CSVImporter.DESCRIPTION],
-    footer = [CodeChartaConstants.General.GENERIC_FOOTER]
+    footer = [CodeChartaConstants.GENERIC_FOOTER]
 )
 class CSVImporter(
     private val output: PrintStream = System.out
