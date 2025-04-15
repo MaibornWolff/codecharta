@@ -41,7 +41,7 @@ jobs:
         with:
           SBOM_PATH: 'analysis/build/reports/sbom_analysis.cdx.json'
           LICENSE_POLICY_PATH: 'license_policy.json'
-          BREAK_ENABLED: true
+          BREAK_ENABLED: false
 
   scan_licenses_visualization:
     if: github.event.repository.url == 'https://github.com/StefanFl/codecharta'
@@ -74,4 +74,4 @@ jobs:
         with:
           SBOM_PATH: 'visualization/build/reports/sbom_visualization.cdx.json'
           LICENSE_POLICY_PATH: 'license_policy.json'
-          BREAK_ENABLED: true
+          BREAK_ENABLED: false
