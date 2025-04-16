@@ -11,8 +11,6 @@ import de.maibornwolff.codecharta.analysers.parsers.gitlog.parser.LogParserStrat
 import de.maibornwolff.codecharta.analysers.parsers.gitlog.parser.git.GitLogNumstatRawParserStrategy
 import de.maibornwolff.codecharta.analysers.parsers.gitlog.subcommands.LogScanCommand
 import de.maibornwolff.codecharta.analysers.parsers.gitlog.subcommands.RepoScanCommand
-import de.maibornwolff.codecharta.analysers.pipeableanalyserinterface.PipeableAnalyserInterface
-import de.maibornwolff.codecharta.analysers.pipeableanalyserinterface.PipeableAnalyserSyncFlag
 import de.maibornwolff.codecharta.model.AttributeDescriptor
 import de.maibornwolff.codecharta.model.AttributeGenerator
 import de.maibornwolff.codecharta.model.Project
@@ -33,13 +31,13 @@ import java.util.stream.Stream
     name = GitLogParser.NAME,
     description = [GitLogParser.DESCRIPTION],
     subcommands = [LogScanCommand::class, RepoScanCommand::class],
-    footer = [CodeChartaConstants.General.GENERIC_FOOTER]
+    footer = [CodeChartaConstants.GENERIC_FOOTER]
 )
 class GitLogParser(
     private val input: InputStream = System.`in`,
     private val output: PrintStream = System.out,
     private val error: PrintStream = System.err
-) : AnalyserInterface, PipeableAnalyserInterface, AttributeGenerator {
+) : AnalyserInterface, AttributeGenerator {
     private val inputFormatNames = GIT_LOG_NUMSTAT_RAW_REVERSED
 
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
@@ -98,7 +96,7 @@ class GitLogParser(
 
     @Throws(IOException::class)
     override fun call(): Unit? {
-        logPipeableAnalyserSyncSignal(PipeableAnalyserSyncFlag.SYNC_FLAG)
+        logExecutionStartedSyncSignal()
         return null
     }
 

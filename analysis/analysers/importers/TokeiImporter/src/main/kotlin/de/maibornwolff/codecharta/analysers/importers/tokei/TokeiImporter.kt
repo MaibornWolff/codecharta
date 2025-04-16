@@ -8,8 +8,6 @@ import de.maibornwolff.codecharta.analysers.analyserinterface.util.CodeChartaCon
 import de.maibornwolff.codecharta.analysers.importers.tokei.strategy.ImporterStrategy
 import de.maibornwolff.codecharta.analysers.importers.tokei.strategy.TokeiInnerStrategy
 import de.maibornwolff.codecharta.analysers.importers.tokei.strategy.TokeiTwelveStrategy
-import de.maibornwolff.codecharta.analysers.pipeableanalyserinterface.PipeableAnalyserInterface
-import de.maibornwolff.codecharta.analysers.pipeableanalyserinterface.PipeableAnalyserSyncFlag
 import de.maibornwolff.codecharta.model.AttributeDescriptor
 import de.maibornwolff.codecharta.model.AttributeGenerator
 import de.maibornwolff.codecharta.model.AttributeType
@@ -32,13 +30,13 @@ import java.io.PrintWriter
 @CommandLine.Command(
     name = TokeiImporter.NAME,
     description = [TokeiImporter.DESCRIPTION],
-    footer = [CodeChartaConstants.General.GENERIC_FOOTER]
+    footer = [CodeChartaConstants.GENERIC_FOOTER]
 )
 class TokeiImporter(
     private val input: InputStream = System.`in`,
     private val output: PrintStream = System.out,
     private val error: PrintStream = System.err
-) : AnalyserInterface, PipeableAnalyserInterface, AttributeGenerator {
+) : AnalyserInterface, AttributeGenerator {
     private val attributeTypes =
         AttributeTypes(type = "nodes").add("rloc", AttributeType.ABSOLUTE).add("loc", AttributeType.ABSOLUTE)
             .add("empty_lines", AttributeType.ABSOLUTE).add("comment_lines", AttributeType.ABSOLUTE)
@@ -86,7 +84,7 @@ class TokeiImporter(
 
     @Throws(IOException::class)
     override fun call(): Unit? {
-        logPipeableAnalyserSyncSignal(PipeableAnalyserSyncFlag.SYNC_FLAG)
+        logExecutionStartedSyncSignal()
 
         projectBuilder = ProjectBuilder()
         val root = getInput() ?: return null

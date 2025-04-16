@@ -19,7 +19,7 @@ import java.io.PrintStream
 @CommandLine.Command(
     name = CodeMaatImporter.NAME,
     description = [CodeMaatImporter.DESCRIPTION],
-    footer = [CodeChartaConstants.General.GENERIC_FOOTER]
+    footer = [CodeChartaConstants.GENERIC_FOOTER]
 )
 class CodeMaatImporter(
     private val output: PrintStream = System.out

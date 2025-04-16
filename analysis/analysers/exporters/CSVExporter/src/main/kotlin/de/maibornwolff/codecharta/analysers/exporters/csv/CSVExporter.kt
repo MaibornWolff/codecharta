@@ -24,7 +24,7 @@ import java.io.Writer
 @CommandLine.Command(
     name = CSVExporter.NAME,
     description = [CSVExporter.DESCRIPTION],
-    footer = [CodeChartaConstants.General.GENERIC_FOOTER]
+    footer = [CodeChartaConstants.GENERIC_FOOTER]
 )
 class CSVExporter : AnalyserInterface {
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])

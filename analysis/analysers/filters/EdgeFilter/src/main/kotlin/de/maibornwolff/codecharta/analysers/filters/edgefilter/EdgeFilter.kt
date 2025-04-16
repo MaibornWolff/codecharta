@@ -13,7 +13,7 @@ import java.io.PrintStream
 @CommandLine.Command(
     name = EdgeFilter.NAME,
     description = [EdgeFilter.DESCRIPTION],
-    footer = [CodeChartaConstants.General.GENERIC_FOOTER]
+    footer = [CodeChartaConstants.GENERIC_FOOTER]
 )
 class EdgeFilter(
     private val output: PrintStream = System.out

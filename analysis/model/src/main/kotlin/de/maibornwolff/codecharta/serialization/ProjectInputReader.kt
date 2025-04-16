@@ -1,6 +1,6 @@
 package de.maibornwolff.codecharta.serialization
 
-import de.maibornwolff.codecharta.analysers.pipeableanalyserinterface.PipeableAnalyserSyncFlag
+import de.maibornwolff.codecharta.analysers.analyserinterface.util.CodeChartaConstants
 import java.io.BufferedInputStream
 import java.io.BufferedReader
 import java.io.InputStream
@@ -56,7 +56,7 @@ object ProjectInputReader {
         input.mark(bufferSize)
         input.read(buffer, 0, bufferSize)
 
-        val syncFlag = PipeableAnalyserSyncFlag.SYNC_FLAG.value
+        val syncFlag = CodeChartaConstants.EXECUTION_STARTED_SYNC_FLAG
         val syncSignalBytes = syncFlag.toByteArray()
         input.reset()
         return isSubarray(syncSignalBytes, buffer)

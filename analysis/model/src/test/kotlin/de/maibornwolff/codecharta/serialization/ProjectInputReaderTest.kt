@@ -1,6 +1,6 @@
 package de.maibornwolff.codecharta.serialization
 
-import de.maibornwolff.codecharta.analysers.pipeableanalyserinterface.PipeableAnalyserSyncFlag
+import de.maibornwolff.codecharta.analysers.analyserinterface.util.CodeChartaConstants
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -37,7 +37,7 @@ class ProjectInputReaderTest {
     @Test
     fun `Should wait for input when pipeable parser sync flag is set`() {
         // given
-        val syncFlag = PipeableAnalyserSyncFlag.SYNC_FLAG.value
+        val syncFlag = CodeChartaConstants.EXECUTION_STARTED_SYNC_FLAG
         val line1 = "{\"data\":\"data\"}"
         val inputStream = PipedInputStream()
         val outputStream = PipedOutputStream(inputStream)
@@ -81,7 +81,7 @@ class ProjectInputReaderTest {
     @Test
     fun `Should discard input before project string when project comes at end of stream`() {
         // given
-        val syncFlag = PipeableAnalyserSyncFlag.SYNC_FLAG.value
+        val syncFlag = CodeChartaConstants.EXECUTION_STARTED_SYNC_FLAG
         val line1 = "line1"
         val line2 = "{\"data\":\"data\"}"
 
