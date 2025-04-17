@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<coverage line-rate="0.8201" branch-rate="0.6875" version="1.9" timestamp="1744712956" lines-covered="114" lines-valid="139" branches-covered="11" branches-valid="16">
+    <sources>
+        <source>/Users/testuser/path/to/testproject/</source>
+    </sources>
+    <packages>
+
+    </packages>
+</coverage>

@@ -1,0 +1,193 @@
+{
+  "checksum": "c09699276517861a3c45495d8b644afa",
+  "data": {
+    "projectName": "",
+    "nodes": [
+      {
+        "name": "root",
+        "type": "Folder",
+        "attributes": {},
+        "link": "",
+        "children": [
+          {
+            "name": "SampleApp.Api",
+            "type": "Folder",
+            "attributes": {},
+            "link": "",
+            "children": [
+              {
+                "name": "Program.cs",
+                "type": "File",
+                "attributes": {
+                  "line_coverage": 0.0,
+                  "branch_coverage": 100.0
+                },
+                "link": "",
+                "children": []
+              },
+              {
+                "name": "Controllers",
+                "type": "Folder",
+                "attributes": {},
+                "link": "",
+                "children": [
+                  {
+                    "name": "TasksController.cs",
+                    "type": "File",
+                    "attributes": {
+                      "line_coverage": 92.5,
+                      "branch_coverage": 100.0
+                    },
+                    "link": "",
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "SampleApp.Data",
+            "type": "Folder",
+            "attributes": {},
+            "link": "",
+            "children": [
+              {
+                "name": "Repositories",
+                "type": "Folder",
+                "attributes": {},
+                "link": "",
+                "children": [
+                  {
+                    "name": "TaskRepository.cs",
+                    "type": "File",
+                    "attributes": {
+                      "line_coverage": 96.77,
+                      "branch_coverage": 50.0
+                    },
+                    "link": "",
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "name": "Context",
+                "type": "Folder",
+                "attributes": {},
+                "link": "",
+                "children": [
+                  {
+                    "name": "ApplicationDbContext.cs",
+                    "type": "File",
+                    "attributes": {
+                      "line_coverage": 100.0,
+                      "branch_coverage": 100.0
+                    },
+                    "link": "",
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "SampleApp.Core",
+            "type": "Folder",
+            "attributes": {},
+            "link": "",
+            "children": [
+              {
+                "name": "Utils",
+                "type": "Folder",
+                "attributes": {},
+                "link": "",
+                "children": [
+                  {
+                    "name": "Helpers",
+                    "type": "Folder",
+                    "attributes": {},
+                    "link": "",
+                    "children": [
+                      {
+                        "name": "TaskHelpers.cs",
+                        "type": "File",
+                        "attributes": {
+                          "line_coverage": 93.75,
+                          "branch_coverage": 83.33
+                        },
+                        "link": "",
+                        "children": []
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "name": "Services",
+                "type": "Folder",
+                "attributes": {},
+                "link": "",
+                "children": [
+                  {
+                    "name": "TaskService.cs",
+                    "type": "File",
+                    "attributes": {
+                      "line_coverage": 100.0,
+                      "branch_coverage": 100.0
+                    },
+                    "link": "",
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "name": "Models",
+                "type": "Folder",
+                "attributes": {},
+                "link": "",
+                "children": [
+                  {
+                    "name": "Task.cs",
+                    "type": "File",
+                    "attributes": {
+                      "line_coverage": 100.0,
+                      "branch_coverage": 100.0
+                    },
+                    "link": "",
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "apiVersion": "1.3",
+    "edges": [],
+    "attributeTypes": {
+      "nodes": {
+        "line_coverage": "relative",
+        "branch_coverage": "relative"
+      }
+    },
+    "attributeDescriptors": {
+      "line_coverage": {
+        "title": "Line Coverage",
+        "description": "Percentage of lines covered by tests",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "",
+        "direction": 1
+      },
+      "branch_coverage": {
+        "title": "Branch Coverage",
+        "description": "Percentage of branches covered by tests",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "",
+        "direction": 1
+      }
+    },
+    "blacklist": []
+  }
+}

@@ -156,6 +156,13 @@ check_coverageimporter_java() {
     validate "${ACTUAL_JAVA_COVERAGE_JSON}"
 }
 
+check_coverageimporter_csharp() {
+    echo " ---- expect CoverageImporter to produce valid cc.json file for csharp"
+    ACTUAL_CSHARP_COVERAGE_JSON="${TEMP_DIR}/actual_coverageimporter_csharp.cc.json"
+    "${CCSH}" coverageimport "${DATA}/coverageReports/coverage.cobertura.xml" --language=csharp -o "${ACTUAL_CSHARP_COVERAGE_JSON}" -nc
+    validate "${ACTUAL_CSHARP_COVERAGE_JSON}"
+}
+
 check_coverageimporter() {
     echo " -- expect CoverageImporter to produce valid cc.json files for all supported languages"
     check_coverageimporter_javascript
