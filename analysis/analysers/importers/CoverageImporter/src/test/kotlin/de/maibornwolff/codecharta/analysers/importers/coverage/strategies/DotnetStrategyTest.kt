@@ -43,7 +43,7 @@ class DotnetStrategyTest {
 
     @Test
     fun `should handle report without packages gracefully and print error`() {
-        val noPackagesReportFilePath = "src/test/resources/languages/dotnet/no_packages.cobertura.xml"
+        val noPackagesReportFilePath = "src/test/resources/languages/csharp/no_packages.cobertura.xml"
         val expectedRootNode = MutableNode("root", NodeType.Folder)
         val projectBuilder = ProjectBuilder()
         val errorStreamContent = ByteArrayOutputStream()
