@@ -84,8 +84,8 @@ class DotnetStrategy : ImporterStrategy {
     }
 
     private fun createFileNode(fileName: String, classElement: Element): MutableNode {
-        val lineCoverage = classElement.getAttribute("line-rate").toDouble()
-        val branchCoverage = classElement.getAttribute("branch-rate").toDouble()
+        val lineCoverage = classElement.getAttribute("line-rate").toDouble() * 100
+        val branchCoverage = classElement.getAttribute("branch-rate").toDouble() * 100
 
         val attributes = mutableMapOf(
             CoverageAttributes.LINE_COVERAGE.attributeName to lineCoverage,
@@ -100,8 +100,8 @@ class DotnetStrategy : ImporterStrategy {
     }
 
     private fun updateFileNode(fileNode: MutableNode, classElement: Element) {
-        val newElementLineCoverage = classElement.getAttribute("line-rate").toDouble()
-        val newElementBranchCoverage = classElement.getAttribute("branch-rate").toDouble()
+        val newElementLineCoverage = classElement.getAttribute("line-rate").toDouble() * 100
+        val newElementBranchCoverage = classElement.getAttribute("branch-rate").toDouble() * 100
 
         val existingLineCoverage = fileNode.attributes[CoverageAttributes.LINE_COVERAGE.attributeName] as Double
         val existingBranchCoverage = fileNode.attributes[CoverageAttributes.BRANCH_COVERAGE.attributeName] as Double
