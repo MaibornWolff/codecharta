@@ -28,7 +28,7 @@ jobs:
           ./gradlew cyclonedxbom
       -
         name: Import analysis SBOM
-        uses: MaibornWolff/secobserve_actions_templates/actions/importer@2f7b500fde2de2bdea7eef3b6df5503c2476916f # main
+        uses: MaibornWolff/secobserve_actions_templates/dev/actions/upload_sbom
         with:
           so_product_name: 'CodeCharta'
           so_file_name: 'analysis/build/reports/sbom_analysis.cdx.json'
@@ -61,7 +61,7 @@ jobs:
           npm run sbom
       -
         name: Import visualization SBOM
-        uses: MaibornWolff/secobserve_actions_templates/actions/importer@2f7b500fde2de2bdea7eef3b6df5503c2476916f # main
+        uses: MaibornWolff/secobserve_actions_templates/dev/actions/upload_sbom
         with:
           so_product_name: 'CodeCharta'
           so_file_name: 'visualization/build/reports/sbom_visualization.cdx.json'
