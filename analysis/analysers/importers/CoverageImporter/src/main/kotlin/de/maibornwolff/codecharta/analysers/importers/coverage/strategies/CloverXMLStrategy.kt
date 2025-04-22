@@ -58,14 +58,18 @@ class CloverXMLStrategy : ImporterStrategy {
 
         if (directChildrenMetricElements.isEmpty()) {
             throw Exception("no metrics found for file '$fileName', malformed clover.xml file!")
-        }
-        else if (directChildrenMetricElements.size > 1) {
+        } else if (directChildrenMetricElements.size > 1) {
             throw Exception("Found too many metric elements for file $fileName, malformed clover.xml file!")
         }
         val metricElements = allMetricElements.item(0) as Element
 
-        val methodCoverage = calculatePercentage(metricElements.getAttribute("coveredmethods").toInt(), metricElements.getAttribute("methods").toInt())
-        val branchCoverage = calculatePercentage(metricElements.getAttribute("coveredconditionals").toInt(), metricElements.getAttribute("conditionals").toInt())
+        val methodCoverage =
+            calculatePercentage(metricElements.getAttribute("coveredmethods").toInt(), metricElements.getAttribute("methods").toInt())
+        val branchCoverage =
+            calculatePercentage(
+                metricElements.getAttribute("coveredconditionals").toInt(),
+                metricElements.getAttribute("conditionals").toInt()
+            )
 
         // if multiple statements are in one line they get ignored so it's actually more like line coverage
         val lineCoverage =
