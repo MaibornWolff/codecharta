@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<coverage generated="1745313582">
+    <project timestamp="1745313582">
+
+        <metrics files="5" loc="263" ncloc="241" classes="5" methods="26" coveredmethods="25" conditionals="0" coveredconditionals="0" statements="75" coveredstatements="73" elements="101" coveredelements="98"/>
+    </project>
+</coverage>
