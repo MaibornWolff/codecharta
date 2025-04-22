@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.analysers.importers.coverage
 
+import de.maibornwolff.codecharta.analysers.importers.coverage.strategies.CloverXMLStrategy
 import de.maibornwolff.codecharta.analysers.importers.coverage.strategies.DotnetStrategy
 import de.maibornwolff.codecharta.analysers.importers.coverage.strategies.ImporterStrategy
 import de.maibornwolff.codecharta.analysers.importers.coverage.strategies.JavaScriptStrategy
@@ -39,6 +40,17 @@ internal enum class Language(
             CoverageAttributes.CLASS_COVERAGE
         )
     ),
+    CLOVER(
+        "clover",
+        CloverXMLStrategy(),
+        listOf(FileExtension.XML),
+        "clover.xml",
+        listOf(
+            CoverageAttributes.LINE_COVERAGE,
+            CoverageAttributes.BRANCH_COVERAGE,
+            CoverageAttributes.METHOD_COVERAGE
+        )
+    ),
     CSHARP(
         "csharp",
         DotnetStrategy(),
@@ -61,6 +73,7 @@ internal enum class Language(
 private val languageChoicesToLanguage = mapOf(
     "javascript/typescript" to Language.JAVASCRIPT,
     "java" to Language.JAVA,
+    "clover.xml format" to Language.CLOVER,
     "csharp/dotnet" to Language.CSHARP,
     "php" to Language.PHP
 )
@@ -71,6 +84,8 @@ private val languageInputToLanguage = mapOf(
     "js" to Language.JAVASCRIPT,
     "ts" to Language.JAVASCRIPT,
     "java" to Language.JAVA,
+    "clover" to Language.CLOVER,
+    "clover.xml" to Language.CLOVER,
     "csharp" to Language.CSHARP,
     "dotnet" to Language.CSHARP,
     "php" to Language.PHP
