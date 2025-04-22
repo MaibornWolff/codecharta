@@ -156,6 +156,13 @@ check_coverageimporter_java() {
     validate "${ACTUAL_JAVA_COVERAGE_JSON}"
 }
 
+check_coverageimporter_clover() {
+    echo " ---- expect CoverageImporter to produce valid cc.json file for clover.xml format"
+    ACTUAL_CLOVER_COVERAGE_JSON="${TEMP_DIR}/actual_coverageimporter_clover.cc.json"
+    "${CCSH}" coverageimport "${DATA}/coverageReports/clover.xml" --language=clover -o "${ACTUAL_CLOVER_COVERAGE_JSON}" -nc
+    validate "${ACTUAL_CLOVER_COVERAGE_JSON}"
+}
+
 check_coverageimporter_csharp() {
     echo " ---- expect CoverageImporter to produce valid cc.json file for csharp"
     ACTUAL_CSHARP_COVERAGE_JSON="${TEMP_DIR}/actual_coverageimporter_csharp.cc.json"

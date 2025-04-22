@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<coverage generated="1745313582">
+    <project timestamp="1745313582">
+        <file name="/Users/testuser/path/to/sample-project/src/Api/Controllers/UserController.php">
+            <class name="App\Api\Controllers\UserController" namespace="global">
+                <metrics complexity="7" methods="5" coveredmethods="5" conditionals="0" coveredconditionals="0" statements="16" coveredstatements="16" elements="21" coveredelements="21"/>
+            </class>
+            <line num="12" type="method" name="__construct" visibility="public" complexity="1" crap="1" count="4"/>
+            <line num="15" type="stmt" count="4"/>
+            <line num="16" type="stmt" count="4"/>
+            <line num="17" type="stmt" count="4"/>
+            <line num="18" type="stmt" count="4"/>
+            <line num="21" type="method" name="getAll" visibility="public" complexity="1" crap="1" count="2"/>
+            <line num="23" type="stmt" count="2"/>
+            <line num="24" type="stmt" count="2"/>
+            <line num="25" type="stmt" count="2"/>
+            <line num="28" type="method" name="getById" visibility="public" complexity="3" crap="3" count="1"/>
+            <line num="30" type="stmt" count="1"/>
+            <line num="31" type="stmt" count="1"/>
+            <line num="32" type="stmt" count="1"/>
+            <line num="36" type="stmt" count="1"/>
+            <line num="39" type="method" name="create" visibility="public" complexity="1" crap="1" count="1"/>
+            <line num="41" type="stmt" count="1"/>
+            <line num="42" type="stmt" count="1"/>
+            <line num="43" type="stmt" count="1"/>
+            <line num="45" type="stmt" count="1"/>
+            <line num="48" type="method" name="formatUsername" visibility="public" complexity="1" crap="1" count="1"/>
+            <line num="50" type="stmt" count="1"/>
+            <metrics loc="52" ncloc="51" classes="1" methods="5" coveredmethods="5" conditionals="0" coveredconditionals="0" statements="16" coveredstatements="16" elements="21" coveredelements="21"/>
+        </file>
+        <file name="/Users/testuser/path/to/sample-project/src/Core/Models/User.php">
+            <class name="App\Core\Models\User" namespace="global">
+                <metrics complexity="8" methods="8" coveredmethods="8" conditionals="0" coveredconditionals="0" statements="18" coveredstatements="18" elements="26" coveredelements="26"/>
+            </class>
+            <line num="12" type="method" name="__construct" visibility="public" complexity="1" crap="1" count="9"/>
+            <line num="14" type="stmt" count="9"/>
+            <line num="15" type="stmt" count="9"/>
+            <line num="16" type="stmt" count="9"/>
+            <line num="17" type="stmt" count="9"/>
+            <line num="20" type="method" name="getId" visibility="public" complexity="1" crap="1" count="2"/>
+            <line num="22" type="stmt" count="2"/>
+            <line num="25" type="method" name="getName" visibility="public" complexity="1" crap="1" count="1"/>
+            <line num="27" type="stmt" count="1"/>
+            <line num="30" type="method" name="setName" visibility="public" complexity="1" crap="1" count="1"/>
+            <line num="32" type="stmt" count="1"/>
+            <line num="33" type="stmt" count="1"/>
+            <line num="36" type="method" name="getEmail" visibility="public" complexity="1" crap="1" count="1"/>
+            <line num="38" type="stmt" count="1"/>
+            <line num="41" type="method" name="setEmail" visibility="public" complexity="1" crap="1" count="1"/>
+            <line num="43" type="stmt" count="1"/>
+            <line num="44" type="stmt" count="1"/>
+            <line num="47" type="method" name="getCreatedAt" visibility="public" complexity="1" crap="1" count="1"/>
+            <line num="49" type="stmt" count="1"/>
+            <line num="52" type="method" name="toArray" visibility="public" complexity="1" crap="1" count="4"/>
+            <line num="54" type="stmt" count="4"/>
+            <line num="55" type="stmt" count="4"/>
+            <line num="56" type="stmt" count="4"/>
+            <line num="57" type="stmt" count="4"/>
+            <line num="58" type="stmt" count="4"/>
+            <line num="59" type="stmt" count="4"/>
+            <metrics loc="61" ncloc="61" classes="1" methods="8" coveredmethods="8" conditionals="0" coveredconditionals="0" statements="18" coveredstatements="18" elements="26" coveredelements="26"/>
+        </file>
+        <file name="/Users/testuser/path/to/sample-project/src/Core/Services/Database/Connection.php">
+            <class name="App\Core\Services\Database\Connection" namespace="global">
+                <metrics complexity="8" methods="7" coveredmethods="7" conditionals="0" coveredconditionals="0" statements="18" coveredstatements="18" elements="25" coveredelements="25"/>
+            </class>
+            <line num="13" type="method" name="__construct" visibility="public" complexity="1" crap="1" count="4"/>
+            <line num="15" type="stmt" count="4"/>
+            <line num="16" type="stmt" count="4"/>
+            <line num="17" type="stmt" count="4"/>
+            <line num="18" type="stmt" count="4"/>
+            <line num="21" type="method" name="connect" visibility="public" complexity="1" crap="1" count="2"/>
+            <line num="24" type="stmt" count="2"/>
+            <line num="25" type="stmt" count="2"/>
+            <line num="28" type="method" name="disconnect" visibility="public" complexity="1" crap="1" count="1"/>
+            <line num="30" type="stmt" count="1"/>
+            <line num="33" type="method" name="isConnected" visibility="public" complexity="1" crap="1" count="1"/>
+            <line num="35" type="stmt" count="1"/>
+            <line num="38" type="method" name="getHost" visibility="public" complexity="1" crap="1" count="1"/>
+            <line num="40" type="stmt" count="1"/>
+            <line num="43" type="method" name="getDatabaseName" visibility="public" complexity="1" crap="1" count="1"/>
+            <line num="45" type="stmt" count="1"/>
+            <line num="48" type="method" name="executeQuery" visibility="public" complexity="2" crap="2" count="2"/>
+            <line num="51" type="stmt" count="2"/>
+            <line num="52" type="stmt" count="1"/>
+            <line num="56" type="stmt" count="1"/>
+            <line num="57" type="stmt" count="1"/>
+            <line num="58" type="stmt" count="1"/>
+            <line num="59" type="stmt" count="1"/>
+            <line num="60" type="stmt" count="1"/>
+            <line num="61" type="stmt" count="1"/>
+            <metrics loc="63" ncloc="60" classes="1" methods="7" coveredmethods="7" conditionals="0" coveredconditionals="0" statements="18" coveredstatements="18" elements="25" coveredelements="25"/>
+        </file>
+        <file name="/Users/testuser/path/to/sample-project/src/Utils/Formatters/DateFormatter.php">
+            <class name="App\Utils\Formatters\DateFormatter" namespace="global">
+                <metrics complexity="13" methods="3" coveredmethods="2" conditionals="0" coveredconditionals="0" statements="15" coveredstatements="13" elements="18" coveredelements="15"/>
+            </class>
+            <line num="10" type="method" name="formatYmd" visibility="public" complexity="1" crap="1" count="1"/>
+            <line num="12" type="stmt" count="1"/>
+            <line num="18" type="method" name="formatDmy" visibility="public" complexity="1" crap="1" count="1"/>
+            <line num="20" type="stmt" count="1"/>
+            <line num="26" type="method" name="formatRelative" visibility="public" complexity="11" crap="11.44" count="1"/>
+            <line num="28" type="stmt" count="1"/>
+            <line num="29" type="stmt" count="1"/>
+            <line num="31" type="stmt" count="1"/>
+            <line num="32" type="stmt" count="0"/>
+            <line num="34" type="stmt" count="1"/>
+            <line num="35" type="stmt" count="0"/>
+            <line num="37" type="stmt" count="1"/>
+            <line num="38" type="stmt" count="1"/>
+            <line num="40" type="stmt" count="1"/>
+            <line num="41" type="stmt" count="1"/>
+            <line num="43" type="stmt" count="1"/>
+            <line num="44" type="stmt" count="1"/>
+            <line num="47" type="stmt" count="1"/>
+            <metrics loc="49" ncloc="40" classes="1" methods="3" coveredmethods="2" conditionals="0" coveredconditionals="0" statements="15" coveredstatements="13" elements="18" coveredelements="15"/>
+        </file>
+        <file name="/Users/testuser/path/to/sample-project/src/Utils/StringUtils.php">
+            <class name="App\Utils\StringUtils" namespace="global">
+                <metrics complexity="4" methods="3" coveredmethods="3" conditionals="0" coveredconditionals="0" statements="8" coveredstatements="8" elements="11" coveredelements="11"/>
+            </class>
+            <line num="10" type="method" name="toTitleCase" visibility="public" complexity="1" crap="1" count="2"/>
+            <line num="12" type="stmt" count="2"/>
+            <line num="18" type="method" name="truncate" visibility="public" complexity="2" crap="2" count="1"/>
+            <line num="20" type="stmt" count="1"/>
+            <line num="21" type="stmt" count="1"/>
+            <line num="24" type="stmt" count="1"/>
+            <line num="30" type="method" name="slugify" visibility="public" complexity="1" crap="1" count="1"/>
+            <line num="32" type="stmt" count="1"/>
+            <line num="33" type="stmt" count="1"/>
+            <line num="34" type="stmt" count="1"/>
+            <line num="36" type="stmt" count="1"/>
+            <metrics loc="38" ncloc="29" classes="1" methods="3" coveredmethods="3" conditionals="0" coveredconditionals="0" statements="8" coveredstatements="8" elements="11" coveredelements="11"/>
+        </file>
+        <metrics files="5" loc="263" ncloc="241" classes="5" methods="26" coveredmethods="25" conditionals="0" coveredconditionals="0" statements="75" coveredstatements="73" elements="101" coveredelements="98"/>
+    </project>
+</coverage>
