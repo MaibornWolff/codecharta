@@ -48,7 +48,7 @@ class CloverXMLStrategy : ImporterStrategy {
     }
 
     private fun createFileNode(fileElement: Element): MutableNode {
-        val fileName = fileElement.getAttribute("name")
+        val fileName = extractFileNameFromPath(fileElement.getAttribute("name"))
         val allMetricElements = fileElement.getElementsByTagName("metrics")
 
         // as NodeList is not iterable, we need to do it manually
@@ -64,12 +64,12 @@ class CloverXMLStrategy : ImporterStrategy {
         }
         val metricElements = allMetricElements.item(0) as Element
 
-        val methodCoverage = calculatePercentage(metricElements.getAttribute("methods").toInt(), metricElements.getAttribute("coveredmethods").toInt())
-        val branchCoverage = calculatePercentage(metricElements.getAttribute("conditionals").toInt(), metricElements.getAttribute("coveredconditionals").toInt())
+        val methodCoverage = calculatePercentage(metricElements.getAttribute("coveredmethods").toInt(), metricElements.getAttribute("methods").toInt())
+        val branchCoverage = calculatePercentage(metricElements.getAttribute("coveredconditionals").toInt(), metricElements.getAttribute("conditionals").toInt())
 
         // if multiple statements are in one line they get ignored so it's actually more like line coverage
         val lineCoverage =
-            calculatePercentage(metricElements.getAttribute("statements").toInt(), metricElements.getAttribute("coveredstatements").toInt())
+            calculatePercentage(metricElements.getAttribute("coveredstatements").toInt(), metricElements.getAttribute("statements").toInt())
 
         val attributes = mutableMapOf(
             CoverageAttributes.LINE_COVERAGE.attributeName to lineCoverage,
