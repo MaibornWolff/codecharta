@@ -3,6 +3,7 @@ package de.maibornwolff.codecharta.analysers.importers.coverage.strategies
 import de.maibornwolff.codecharta.model.ProjectBuilder
 import de.maibornwolff.codecharta.progresstracker.ParsingUnit
 import de.maibornwolff.codecharta.progresstracker.ProgressTracker
+import de.maibornwolff.codecharta.util.Logger
 import org.w3c.dom.Document
 import org.xml.sax.InputSource
 import java.io.File
@@ -41,5 +42,22 @@ interface ImporterStrategy {
 
         val builder: DocumentBuilder = factory.newDocumentBuilder()
         return builder.parse(InputSource(FileInputStream(filePath)))
+    }
+
+    fun extractFileNameFromPath(path: String): String {
+        val lastUnixPathSeparator = path.lastIndexOf('/')
+        val lastWindowsPathSeparator = path.lastIndexOf('\\')
+
+        val lastPathSeparatorIndex = maxOf(lastUnixPathSeparator, lastWindowsPathSeparator)
+
+        if (path[lastPathSeparatorIndex] != File.separatorChar) {
+            Logger.warn { "Non-native file paths detected in coverage report! This might result in an incorrect cc.json" }
+        }
+
+        return if (lastPathSeparatorIndex >= 0) {
+            path.substring(lastPathSeparatorIndex + 1)
+        } else {
+            path
+        }
     }
 }
