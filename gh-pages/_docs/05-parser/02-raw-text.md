@@ -18,11 +18,12 @@ This parser analyzes code, regardless of the programming language, to generate t
 ## Supported Metrics
 
 - Indentation Level: The number of lines of code of a file, with a certain indentation level or higher.
+- Lines of Code: The total number of lines in a file, including blank lines.
 
 ## Usage and Parameters
 
 | Parameter                                 | Description                                                                                          |
-| ----------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+|-------------------------------------------|------------------------------------------------------------------------------------------------------|
 | `FILE or FOLDER`                          | file/project to parseProject                                                                         |
 | `-e, --exclude=<exclude>`                 | comma-separated list of regex patterns to exclude files/folders                                      |
 | `-e, --exclude=<exclude>`                 | comma-separated list of regex patterns to exclude files/folders                                      |
@@ -53,7 +54,7 @@ ccsh rawtextparser foo/bar/project
 ```
 
 ```
-ccsh rawtextparser foo.txt --max-indentation-level=6 tab-width=4 --metrics=IndentationLevel
+ccsh rawtextparser foo.txt --max-indentation-level=6 tab-width=4 --metrics=IndentationLevel, LinesOfCode
 ```
 
 ```
