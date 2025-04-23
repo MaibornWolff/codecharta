@@ -1,5 +1,4 @@
 {
-  "checksum": "b1247793209c3564dccb91079e1451c7",
   "data": {
     "projectName": "",
     "nodes": [
@@ -16,23 +15,25 @@
             "link": "",
             "children": [
               {
-                "name": "spaces_4.included",
+                "name": "spaces_3.included",
                 "type": "File",
                 "attributes": {
-                  "indentation_level_0+": 7,
-                  "indentation_level_1+": 4,
-                  "indentation_level_2+": 4
+                  "loc": 6.0,
+                  "indentation_level_0+": 5.0,
+                  "indentation_level_1+": 3.0,
+                  "indentation_level_2+": 3.0
                 },
                 "link": "",
                 "children": []
               },
               {
-                "name": "spaces_3.included",
+                "name": "spaces_4.included",
                 "type": "File",
                 "attributes": {
-                  "indentation_level_0+": 5,
-                  "indentation_level_1+": 3,
-                  "indentation_level_2+": 3
+                  "loc": 7.0,
+                  "indentation_level_0+": 7.0,
+                  "indentation_level_1+": 4.0,
+                  "indentation_level_2+": 4.0
                 },
                 "link": "",
                 "children": []
@@ -41,6 +42,7 @@
                 "name": "spaces_5.includedtoo",
                 "type": "File",
                 "attributes": {
+                  "loc": 6.0,
                   "indentation_level_0+": 5.0,
                   "indentation_level_1+": 3.0,
                   "indentation_level_2+": 3.0
@@ -52,9 +54,10 @@
                 "name": "spaces_x_not_included.excluded",
                 "type": "File",
                 "attributes": {
-                  "indentation_level_0+": 4,
-                  "indentation_level_1+": 3,
-                  "indentation_level_2+": 3
+                  "loc": 5.0,
+                  "indentation_level_0+": 4.0,
+                  "indentation_level_1+": 3.0,
+                  "indentation_level_2+": 3.0
                 },
                 "link": "",
                 "children": []
@@ -91,8 +94,17 @@
         "hintHighValue": "",
         "link": "https://codecharta.com/docs/parser/raw-text",
         "direction": -1
+      },
+      "loc": {
+        "title": "Lines of Code",
+        "description": "Lines of code including empty lines and comments",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://codecharta.com/docs/parser/raw-text",
+        "direction": -1
       }
     },
     "blacklist": []
-  }
+  },
+  "checksum": "acde1d7baca6e337a596d4717ef79b39"
 }

@@ -6,18 +6,16 @@ class LinesOfCodeMetric : Metric {
     private var lineCount = 0
 
     companion object {
-        const val NAME = "loc"
+        const val NAME = "LinesOfCode"
     }
 
     override fun parseLine(line: String) {
-        if (line.isNotBlank()) {
-            lineCount++
-        }
+        lineCount++
     }
 
     override fun getValue(): FileMetrics {
         val fileMetrics = FileMetrics()
-        fileMetrics.addMetric("lines_of_code", lineCount)
+        fileMetrics.addMetric("loc", lineCount)
         return fileMetrics
     }
 }

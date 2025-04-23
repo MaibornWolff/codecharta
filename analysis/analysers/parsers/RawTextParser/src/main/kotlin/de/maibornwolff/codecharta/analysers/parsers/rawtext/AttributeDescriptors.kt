@@ -14,12 +14,13 @@ internal fun getAttributeDescriptors(maxOccurringIndentationLevel: Int): Map<Str
             )
     }
 
-    descriptors["loc"] = AttributeDescriptor(
-        title = "Lines of Code",
-        description = "The total number of non-blank lines in the file",
-        link = ghLink,
-        direction = 1
-    )
+    descriptors["loc"] =
+        AttributeDescriptor(
+            title = "Lines of Code",
+            description = "Lines of code including empty lines and comments",
+            link = ghLink,
+            direction = -1
+        )
 
     return descriptors.toMap()
 }

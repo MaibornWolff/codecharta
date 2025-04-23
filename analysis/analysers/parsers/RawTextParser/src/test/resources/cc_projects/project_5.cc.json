@@ -1,5 +1,4 @@
 {
-  "checksum": "a32467cb4aed3a57d94cde7eeb7cedcd",
   "data": {
     "projectName": "",
     "nodes": [
@@ -19,6 +18,7 @@
                 "name": "spaces_3.included",
                 "type": "File",
                 "attributes": {
+                  "loc": 6.0,
                   "indentation_level_0+": 5.0,
                   "indentation_level_1+": 3.0,
                   "indentation_level_2+": 2.0,
@@ -38,6 +38,7 @@
                 "name": "spaces_4.included",
                 "type": "File",
                 "attributes": {
+                  "loc": 7.0,
                   "indentation_level_0+": 7.0,
                   "indentation_level_1+": 4.0,
                   "indentation_level_2+": 2.0,
@@ -57,6 +58,7 @@
                 "name": "spaces_5.includedtoo",
                 "type": "File",
                 "attributes": {
+                  "loc": 6.0,
                   "indentation_level_0+": 5.0,
                   "indentation_level_1+": 3.0,
                   "indentation_level_2+": 1.0,
@@ -76,6 +78,7 @@
                 "name": "spaces_x_not_included.excluded",
                 "type": "File",
                 "attributes": {
+                  "loc": 5.0,
                   "indentation_level_0+": 4.0,
                   "indentation_level_1+": 3.0,
                   "indentation_level_2+": 3.0,
@@ -97,6 +100,7 @@
             "name": "tabs.included",
             "type": "File",
             "attributes": {
+              "loc": 7.0,
               "indentation_level_0+": 6.0,
               "indentation_level_1+": 3.0,
               "indentation_level_2+": 1.0,
@@ -206,8 +210,17 @@
         "hintHighValue": "",
         "link": "https://codecharta.com/docs/parser/raw-text",
         "direction": -1
+      },
+      "loc": {
+        "title": "Lines of Code",
+        "description": "Lines of code including empty lines and comments",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://codecharta.com/docs/parser/raw-text",
+        "direction": -1
       }
     },
     "blacklist": []
-  }
+  },
+  "checksum": "aadbb3fdc9728abe91c3bee9f4846a2f"
 }
