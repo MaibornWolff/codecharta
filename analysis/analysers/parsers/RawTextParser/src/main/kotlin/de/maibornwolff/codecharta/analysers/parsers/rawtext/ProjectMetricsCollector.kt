@@ -1,6 +1,7 @@
 package de.maibornwolff.codecharta.analysers.parsers.rawtext
 
 import de.maibornwolff.codecharta.analysers.parsers.rawtext.metrics.IndentationMetric
+import de.maibornwolff.codecharta.analysers.parsers.rawtext.metrics.LinesOfCodeMetric
 import de.maibornwolff.codecharta.analysers.parsers.rawtext.metrics.Metric
 import de.maibornwolff.codecharta.progresstracker.ParsingUnit
 import de.maibornwolff.codecharta.progresstracker.ProgressTracker
@@ -70,6 +71,9 @@ class ProjectMetricsCollector(
         if (IndentationMetric.NAME in metricNames) {
             metrics.add(IndentationMetric(maxIndentLvl, verbose, tabWidth))
         }
+        if (LinesOfCodeMetric.NAME in metricNames) {
+            metrics.add(LinesOfCodeMetric())
+        }
 
         return metrics
     }
@@ -77,6 +81,7 @@ class ProjectMetricsCollector(
     private fun getAllMetrics(): List<Metric> {
         val metrics = mutableListOf<Metric>()
         metrics.add(IndentationMetric(maxIndentLvl, verbose, tabWidth))
+        metrics.add(LinesOfCodeMetric())
         return metrics.toList()
     }
 
