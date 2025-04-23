@@ -4,7 +4,6 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 class LinesOfCodeMetricTest {
-
     @Test
     fun `should count non-blank lines correctly`() {
         // given
