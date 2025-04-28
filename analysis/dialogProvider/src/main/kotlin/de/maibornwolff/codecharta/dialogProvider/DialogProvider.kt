@@ -2,6 +2,8 @@ package de.maibornwolff.codecharta.dialogProvider
 
 import com.varabyte.kotter.foundation.collections.LiveList
 import com.varabyte.kotter.foundation.collections.liveListOf
+import com.varabyte.kotter.foundation.input.Completions
+import com.varabyte.kotter.foundation.input.InputCompleter
 import com.varabyte.kotter.foundation.input.Keys
 import com.varabyte.kotter.foundation.input.onInputChanged
 import com.varabyte.kotter.foundation.input.onInputEntered
@@ -27,13 +29,14 @@ fun Session.promptInput(
     allowEmptyInput: Boolean = false,
     invalidInputMessage: String = DEFAULT_INVALID_INPUT_MESSAGE,
     inputValidator: (String) -> Boolean = { true },
+    inputCompleter: InputCompleter = Completions(hint),
     onInputReady: suspend RunScope.() -> Unit
 ): String {
     var lastUserInput = ""
     var hintText = hint
     var isInputValid by liveVarOf(true)
     section {
-        drawInput(message, hintText, isInputValid, allowEmptyInput, invalidInputMessage, lastUserInput.isEmpty())
+        drawInput(message, hintText, isInputValid, allowEmptyInput, invalidInputMessage, lastUserInput.isEmpty(), inputCompleter)
     }.runUntilSignal {
         onInputChanged { isInputValid = true }
         onInputEntered {
@@ -51,6 +54,43 @@ fun Session.promptInput(
     return lastUserInput
 }
 
+fun Session.promptInputComplete(
+    message: String,
+    hint: String = "",
+    allowEmptyInput: Boolean = false,
+    invalidInputMessage: String = DEFAULT_INVALID_INPUT_MESSAGE,
+    inputValidator: (String) -> Boolean = { true },
+    inputCompleter: InputCompleter = Completions(hint),
+    onInputReady: suspend RunScope.() -> Unit
+): String {
+    var lastUserInput = ""
+    var lastUserInputLive = ""
+    var hintText = hint
+    var isInputValid by liveVarOf(true)
+    section {
+        drawInputWithInfo(message, hintText, isInputValid, allowEmptyInput, invalidInputMessage, lastUserInput.isEmpty(), lastUserInputLive)
+    }.runUntilSignal {
+        onInputChanged {
+            isInputValid = true
+            lastUserInputLive  = input
+        }
+        onInputEntered {
+            if ((allowEmptyInput && input.isEmpty()) || (inputValidator(input) && input.isNotEmpty())) {
+                isInputValid = true
+                hintText = ""
+                signal()
+            } else {
+                isInputValid = false
+            }
+
+            lastUserInput = input
+        }
+        onInputReady()
+    }
+    return lastUserInput
+}
+
+
 fun Session.promptInputNumber(
     message: String,
     hint: String = "",
@@ -63,7 +103,7 @@ fun Session.promptInputNumber(
     var hintText = hint
     var isInputValid by liveVarOf(true)
     section {
-        drawInput(message, hintText, isInputValid, allowEmptyInput, invalidInputMessage, lastUserInput.isEmpty())
+        drawInput(message, hintText, isInputValid, allowEmptyInput, invalidInputMessage, lastUserInput.isEmpty(), inputCompleter = Completions(hint))
     }.runUntilSignal {
         onInputChanged {
             isInputValid = true
