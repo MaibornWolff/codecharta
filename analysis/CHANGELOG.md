@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Added 🚀
 
 - Add support for multi file input in dialogs [#4030](https://github.com/MaibornWolff/codecharta/pull/4030)
+- Add support for the coverage importer for:
+  - Coverlet (Dotnet) [#4042](https://github.com/MaibornWolff/codecharta/pull/4042)
 
 ### Changed
 

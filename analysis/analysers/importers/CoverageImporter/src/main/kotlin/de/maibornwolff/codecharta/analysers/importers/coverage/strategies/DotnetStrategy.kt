@@ -72,15 +72,13 @@ class DotnetStrategy : ImporterStrategy {
 
         val lastPathSeparatorIndex = maxOf(lastUnixPathSeparator, lastWindowsPathSeparator)
 
+        if (lastPathSeparatorIndex < 0) return path
+
         if (path[lastPathSeparatorIndex] != File.separatorChar) {
-            Logger.warn { "Non-native file paths detected in coverage report! This might result in an incorrect cc.json" }
+            Logger.warn { "Non-native file paths detected in coverage report! This might result in an incorrect cc.json file" }
         }
 
-        return if (lastPathSeparatorIndex >= 0) {
-            path.substring(lastPathSeparatorIndex + 1)
-        } else {
-            path
-        }
+        return path.substring(lastPathSeparatorIndex + 1)
     }
 
     private fun createFileNode(fileName: String, classElement: Element): MutableNode {
