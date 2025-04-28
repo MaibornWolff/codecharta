@@ -10,7 +10,7 @@ permissions: read-all
 
 jobs:
   scan_licenses_analysis:
-    if: github.repository == 'StefanFl/codecharta'
+    if: github.repository == 'MaibornWolff/codecharta'
     runs-on: ubuntu-latest
     steps:
       -
@@ -44,7 +44,7 @@ jobs:
           BREAK_ENABLED: false
 
   scan_licenses_visualization:
-    if: github.repository == 'StefanFl/codecharta'
+    if: github.repository == 'MaibornWolff/codecharta'
     runs-on: ubuntu-latest
     steps:
       - 
