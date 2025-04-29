@@ -17,7 +17,7 @@ class JavaStrategy : ImporterStrategy {
     override var totalTrackingItems: Long = 0
     override val parsingUnit: ParsingUnit = ParsingUnit.Packages
 
-    override fun addNodesToProjectBuilder(coverageFile: File, projectBuilder: ProjectBuilder, error: PrintStream) {
+    override fun addNodesToProjectBuilder(coverageFile: File, projectBuilder: ProjectBuilder, error: PrintStream, keepFullPaths: Boolean) {
         try {
             val document: Document = parseXML(coverageFile.absolutePath)
 
@@ -35,6 +35,8 @@ class JavaStrategy : ImporterStrategy {
                 processPackageElement(packageElement, projectBuilder)
                 updateProgress(packageIndex.toLong() + 1)
             }
+
+            if (!keepFullPaths) removeExtraNodesAroundProject(projectBuilder)
         } catch (e: Exception) {
             error.println("Error while parsing XML file: ${e.message}")
             return

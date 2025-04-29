@@ -149,15 +149,14 @@ class CoverageImporterTest {
 
     @Test
     fun `should handle piped input`() {
-        val alreadyImportedCoverage = "src/test/resources/languages/javascript/coverage.cc.json"
+        val alreadyImportedCoverage = "src/test/resources/languages/javascript/coverage_full_paths.cc.json"
         val expectedOutputFileName = "src/test/resources/languages/javascript/expected_piped_output.cc.json"
         val expectedOutput = File(expectedOutputFileName).bufferedReader().readLines()
             .joinToString(separator = "\n") { it }
 
-        val input =
-            File(alreadyImportedCoverage).bufferedReader().readLines()
-                .joinToString(separator = "\n") { it }
-        val cliResult = executeForOutput(input, arrayOf(reportFilePath, "-l=js"))
+        val input = File(alreadyImportedCoverage).bufferedReader().readLines()
+            .joinToString(separator = "\n") { it }
+        val cliResult = executeForOutput(input, arrayOf(reportFilePath, "-l=js", "--keep-full-paths"))
 
         assertThat(cliResult).contains(listOf("checksum", "data", "\"projectName\":\"\"", "app.config.ts", "codeCharta.api.model.ts"))
         assertThat(JSONParser.parseJSON(cliResult)).usingRecursiveComparison().isEqualTo(JSONParser.parseJSON(expectedOutput))

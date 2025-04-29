@@ -12,10 +12,10 @@ import java.io.PrintStream
 
 class CloverXMLStrategyTest {
     private val testReportFilePath = "src/test/resources/languages/clover/clover.xml"
-    private val expectedOutputPath = "src/test/resources/languages/clover/coverage.cc.json"
 
     @Test
     fun `should correctly import coverage report and build project structure`() {
+        val expectedOutputPath = "src/test/resources/languages/clover/coverage.cc.json"
         val projectBuilder = ProjectBuilder()
 
         CloverXMLStrategy().addNodesToProjectBuilder(File(testReportFilePath), projectBuilder, System.err)
@@ -25,6 +25,21 @@ class CloverXMLStrategyTest {
 
         assertThat(project).usingRecursiveComparison().ignoringFields("attributeDescriptors", "attributeTypes", "blacklist")
             .isEqualTo(expectedProject)
+    }
+
+    @Test
+    fun `should keep folders surrounding the project when the flag is set`() {
+        val expectedOutputPath = "src/test/resources/languages/clover/coverage_full_paths.cc.json"
+        val projectBuilder = ProjectBuilder()
+
+        CloverXMLStrategy().addNodesToProjectBuilder(File(testReportFilePath), projectBuilder, System.err, true)
+
+        val project = projectBuilder.build()
+        val expectedProject = ProjectDeserializer.deserializeProject(File(expectedOutputPath).inputStream())
+
+        assertThat(project).usingRecursiveComparison().ignoringFields("attributeDescriptors", "attributeTypes", "blacklist")
+            .isEqualTo(expectedProject)
+
     }
 
     @Test
