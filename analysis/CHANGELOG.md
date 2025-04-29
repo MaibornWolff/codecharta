@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Add support for the coverage importer for:
   - Coverlet (Dotnet) [#4042](https://github.com/MaibornWolff/codecharta/pull/4042)
   - PHPUnit (PHP) [#4029](https://github.com/MaibornWolff/codecharta/pull/4029)
+  - Clover.xml report format [#4047](https://github.com/MaibornWolff/codecharta/pull/4047)
 
 ### Changed
 
