@@ -59,6 +59,8 @@ docs:
             url: "/docs/importer/sonar"
           - title: "Tokei"
             url: "/docs/importer/tokei"
+          - title: "Coverage"
+            url: "/docs/importer/coverage"
           - title: "CSV"
             url: "/docs/importer/csv"
           - title: "SourceMonitor"
